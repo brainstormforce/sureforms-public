@@ -125,7 +125,7 @@ class Generate_Form_Markup {
 			$form_custom_css_meta    = Helper::get_meta_value( $id, '_srfm_form_custom_css' );
 			$custom_css              = ! empty( $form_custom_css_meta ) && is_string( $form_custom_css_meta ) ? $form_custom_css_meta : '';
 
-			$bg_type = Helper::get_meta_value( $id, '_srfm_bg_type', true, 'image' );
+			$bg_type = Helper::get_meta_value( $id, '_srfm_bg_type', true, 'color' );
 
 			if ( 'image' === $bg_type ) {
 				$background_image_url = Helper::get_meta_value( $id, '_srfm_bg_image' );

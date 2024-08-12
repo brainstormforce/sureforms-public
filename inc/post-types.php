@@ -416,19 +416,23 @@ class Post_Types {
 			'srfm_register_post_meta',
 			[
 				// General tab metas.
-				'_srfm_use_label_as_placeholder' => 'boolean',
-				'_srfm_single_page_form_title'   => 'boolean',
-				'_srfm_submit_button_text'       => 'string',
-				'_srfm_instant_form'             => 'boolean',
-				'_srfm_is_inline_button'         => 'boolean',
+				'_srfm_use_label_as_placeholder'      => 'boolean',
+				'_srfm_single_page_form_title'        => 'boolean',
+				'_srfm_submit_button_text'            => 'string',
+				'_srfm_instant_form'                  => 'boolean',
+				'_srfm_use_banner_as_form_background' => 'boolean',
+				'_srfm_is_inline_button'              => 'boolean',
 
 				// Styling tab metas.
 				// Form Container.
-				'_srfm_form_container_width'     => 'integer',
-				'_srfm_bg_type'                  => 'string',
-				'_srfm_bg_image'                 => 'string',
-				'_srfm_cover_image'              => 'string',
-				'_srfm_bg_color'                 => 'string',
+				'_srfm_form_container_width' => 'integer',
+				'_srfm_bg_type'              => 'string',
+				'_srfm_bg_color'             => 'string',
+				'_srfm_bg_image'             => 'string',
+				'_srfm_cover_type'           => 'string',
+				'_srfm_cover_color'          => 'string',
+				'_srfm_cover_image'          => 'string',
+				'_srfm_site_logo'            => 'string',
 				// Submit Button.
 				'_srfm_submit_width_backend'     => 'string',
 				'_srfm_button_border_radius'     => 'integer',

@@ -52,6 +52,7 @@
 
 				&.srfm-instant-form-settings-inline {
 					flex-direction: row;
+					align-items: center;
 					justify-content: space-between;
 				}
 
@@ -64,15 +65,47 @@
 					margin: 0;
 				}
 
+				input {
+					background: #ffffff;
+				}
+
 				input,
 				.components-input-control__backdrop {
-					background: #fff;
 					border: 1px solid #d1d5db;
 					padding: 8px;
 					border-radius: 4px;
 					font-weight: 400;
 					font-size: 12px;
 					line-height: 16px;
+				}
+
+				.srfm-instant-form-url {
+					position: relative;
+
+					input {
+						width: 100%;
+						padding-right: 32px;
+						text-overflow: ellipsis;
+					}
+
+					button {
+						cursor: pointer;
+						position: absolute;
+						right: 8px;
+						top: 10px;
+						background: rgba(0, 0, 0, 0);
+						border: none;
+						padding: 0px;
+						margin: 0px;
+						height: 16px;
+						width: 16px;
+						outline: none;
+						box-shadow: none;
+
+						svg {
+							fill: none;
+						}
+					}
 				}
 			}
 
@@ -92,5 +125,4 @@
 		border: 1px solid #E4E4E7;
 		margin: 20px 0;
 	}
-}
 }

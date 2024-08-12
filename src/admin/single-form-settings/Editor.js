@@ -41,6 +41,7 @@ const defaultKeys = {
 	_srfm_use_label_as_placeholder: false,
 	_srfm_single_page_form_title: true,
 	_srfm_instant_form: false,
+	_srfm_use_banner_as_form_background: false,
 	_srfm_is_inline_button: false,
 	// Submit Button
 	_srfm_submit_button_text: 'Submit',
@@ -54,10 +55,13 @@ const defaultKeys = {
 	// Style Tab
 	// Form Container
 	_srfm_form_container_width: 650,
-	_srfm_bg_type: 'image',
-	_srfm_bg_image: '',
+	_srfm_cover_type: 'color',
+	_srfm_cover_color: '#0C78FB',
 	_srfm_cover_image: '',
+	_srfm_site_logo: '',
+	_srfm_bg_type: 'color',
 	_srfm_bg_color: '#ffffff',
+	_srfm_bg_image: '',
 	// Submit Button
 	_srfm_inherit_theme_button: false,
 	_srfm_submit_alignment: 'left',
