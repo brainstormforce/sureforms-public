@@ -95,6 +95,7 @@
 	display: flex;
 	flex-wrap: wrap;
 	margin: 0 -4px;
+	padding: var( --srfm-multi-choice-outer-padding ) 0;
 
 	@media ( min-width: 431px ) {
 		&.srfm-choice-width-100 {
