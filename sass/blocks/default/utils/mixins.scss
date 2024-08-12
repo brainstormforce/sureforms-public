@@ -73,13 +73,6 @@
 	padding: 0 !important;
 }
 
-@mixin srfm-dropdown-arrow {
-	// Need to check for a way to use alias from webpack instead of using the path.
-	background-image: url( "../../../../../svg/dark-dropdown-arrow.svg" );
-	background-position: right 12px center;
-	background-repeat: no-repeat;
-	background-size: 16px 16px;
-}
 @mixin srfm-check-mark {
 	content: "";
 	width: 7.33px;

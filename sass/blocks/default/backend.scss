@@ -199,7 +199,11 @@
 
 			.srfm-input-common {
 				width: 100%;
-				@include srfm-dropdown-arrow;
+				// Adding base64 for now, should be looked into later for text color solution.
+				background-image: url( "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4NCiAgICA8cGF0aCBkPSJNNCA2TDggMTBMMTIgNiIgc3Ryb2tlPSIjMUUxRTFFIiBzdHJva2Utb3BhY2l0eT0iMC42NSIgc3Ryb2tlLXdpZHRoPSIxLjI1Ig0KICAgICAgICBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIC8+DQo8L3N2Zz4NCiAgICA=" );
+				background-position: right 12px center;
+				background-repeat: no-repeat;
+				background-size: 16px 16px;
 			}
 		}
 	}

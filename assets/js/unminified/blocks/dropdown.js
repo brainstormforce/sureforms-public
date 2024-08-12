@@ -66,11 +66,23 @@ function initializeDropdown() {
 			};
 			new TomSelect( element, config );
 
+			// Clear Icon and Dropdown Arrow SVGs.
+			const clearSVG = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 4L4 12" stroke="currentColor" stroke-opacity="0.65" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 4L12 12" stroke="currentColor" stroke-opacity="0.65" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+			const dropdownSVG = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-opacity="0.65" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" /></svg>`;
+			const dropdownWrapper = element
+				.closest( '.srfm-dropdown-block' )
+				.querySelector( '.ts-control' );
+
+			const clearButton =
+				dropdownWrapper.querySelector( '.clear-button' );
+			clearButton.innerHTML = clearSVG;
+			const dropdownIconDiv = document.createElement( 'div' );
+			dropdownIconDiv.classList.add( 'ts-dropdown-icon' );
+			dropdownIconDiv.innerHTML = dropdownSVG;
+			dropdownWrapper.appendChild( dropdownIconDiv );
+
 			// Add placeholder to the dropdown when Search is disabled.
 			if ( config.controlInput === null ) {
-				const dropdownWrapper = element
-					.closest( '.srfm-dropdown-block' )
-					.querySelector( '.ts-control' );
 				const placeholderText = element
 					.closest( '.srfm-dropdown-block' )
 					.querySelector( '.srfm-dropdown-placeholder' );
