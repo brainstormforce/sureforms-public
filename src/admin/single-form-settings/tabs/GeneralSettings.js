@@ -5,7 +5,7 @@ import svgIcons from '@Image/single-form-logo.json';
 import {
 	Modal,
 	SelectControl,
-	ToggleControl
+	ToggleControl,
 } from '@wordpress/components';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { store as editorStore } from '@wordpress/editor';
