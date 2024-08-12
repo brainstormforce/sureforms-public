@@ -74,6 +74,11 @@ body.post-type-sureforms_form {
 			width: 32px;
 			height: 32px;
 			flex-direction: row;
+
+			.srfm-media-control__clickable{
+				min-width: 30px;
+			}
+
 			.srfm-media-control__footer {
 				background-color: transparent;
 				height: 32px;
