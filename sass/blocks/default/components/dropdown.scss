@@ -1,10 +1,4 @@
 .srfm-form-container {
-	&.srfm-has-dark-bg {
-		.ts-control {
-			// Need to check for a way to use alias from webpack instead of using the path.
-			background-image: url( "../../../../../svg/light-dropdown-arrow.svg" ) !important;
-		}
-	}
 	.srfm-form {
 		.srfm-block {
 			.srfm-dropdown-common-wrap {
