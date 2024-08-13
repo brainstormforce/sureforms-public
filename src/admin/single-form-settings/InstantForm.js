@@ -64,7 +64,6 @@ const InstantFormComponent = () => {
 	 * @param {Object} media - The media object representing the selected image.
 	 */
 	const onImageSelect = ( key, media ) => {
-
 		let key_id = '';
 		let imageID = 0;
 		let imageURL = media;
