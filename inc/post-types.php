@@ -676,7 +676,7 @@ class Post_Types {
 						'confirmation_type' => 'same page',
 						'page_url'          => '',
 						'custom_url'        => '',
-						'message'           => '<p class="default-p"><img src="' . esc_attr( $check_icon ) . '"></img></p><h2 class="default-h2">Thank you</h2><p class="default-p">We have received your email. You\'ll hear from us as soon as possible.</p><p class="default-p">Please be sure to whitelist our {admin_email} email address to ensure our replies reach your inbox safely.</p>',
+						'message'           => '<p style="text-align: center;"><img src="' . esc_attr( $check_icon ) . '"></img></p><h2 style="text-align: center;">Thank you</h2><p style="text-align: center;">We have received your email. You\'ll hear from us as soon as possible.</p><p style="text-align: center;">Please be sure to whitelist our {admin_email} email address to ensure our replies reach your inbox safely.</p>',
 						'submission_action' => 'hide form',
 					],
 				],
