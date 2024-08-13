@@ -1,9 +1,11 @@
 $page_title_color: #fff;
 $bg_color: var( --srfm-bg-color );
+$banner_height: 256px;
 
 .single-sureforms_form {
 	.srfm-single-page-container {
 		.srfm-page-banner {
+			height: $banner_height;
 			padding: 58px 15px 112px 15px;
 			text-align: center;
 			.srfm-single-banner-title {
@@ -19,8 +21,8 @@ $bg_color: var( --srfm-bg-color );
 				padding: 32px;
 				max-width: var( --srfm-form-container-width );
 				margin: 0 auto;
-				margin-top: -70px;
-				border-radius: 4px;
+				margin-top: calc( $banner_height / -2 );
+				border-radius: 12px;
 				background-color: $bg_color;
 				box-shadow: 0px 4px 6px -2px rgba( 0, 0, 0, 0.05 );
 				box-shadow: 0px 10px 15px -3px rgba( 0, 0, 0, 0.1 );
