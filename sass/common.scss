@@ -78,6 +78,14 @@
 		}
 	}
 
+	// Common Dropdown Arrow Styles for Editor and Frontend.
+	.ts-dropdown-icon {
+		position: absolute;
+		background: none !important;
+		right: var( --srfm-dropdown-padding-right );
+		color: var( --srfm-color-input-text );
+	}
+
 	// .srfm-btn-bg-color {
 	// 	border-radius: var( --srfm-btn-border-radius );
 	// 	font-family: inherit;
