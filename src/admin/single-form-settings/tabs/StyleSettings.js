@@ -168,12 +168,6 @@ function StyleSettings( props ) {
 			'--srfm-checkbox-input-border-radius',
 			'4px'
 		);
-		root.style.setProperty( '--srfm-check-ctn-width', '16px' );
-		root.style.setProperty( '--srfm-check-ctn-height', '16px' );
-		root.style.setProperty( '--srfm-check-svg-top', '2px' );
-		root.style.setProperty( '--srfm-check-svg-left', '2px' );
-		root.style.setProperty( '--srfm-check-svg-width', '10px' );
-		root.style.setProperty( '--srfm-check-svg-height', '10px' );
 
 		root.style.setProperty(
 			'--srfm-color-multi-choice-svg',
