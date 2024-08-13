@@ -627,8 +627,9 @@ class Helper {
 				// Checkbox and GDPR Variables.
 				'--srfm-check-ctn-width'                  => '16px',
 				'--srfm-check-ctn-height'                 => '16px',
-				'--srfm-check-svg-width'                  => '10px',
-				'--srfm-check-svg-height'                 => '10px',
+				'--srfm-check-svg-size'                   => '10px',
+				'--srfm-checkbox-margin-top-frontend'     => '2px',
+				'--srfm-checkbox-margin-top-editor'       => '3px',
 				'--srfm-check-gap'                        => '8px',
 				// Phone Number field variables.
 				'--srfm-flag-section-padding'             => '10px 0 10px 12px',
@@ -663,6 +664,9 @@ class Helper {
 				'--srfm-input-field-font-size'            => '16px',
 				'--srfm-input-field-line-height'          => '24px',
 				'--srfm-input-field-margin'               => '6px 0',
+				// Checkbox and GDPR Variables.
+				'--srfm-checkbox-margin-top-frontend'     => '3px',
+				'--srfm-checkbox-margin-top-editor'       => '5px',
 				// Label Variables.
 				'--srfm-label-font-size'                  => '16px',
 				'--srfm-label-line-height'                => '24px',
@@ -703,9 +707,10 @@ class Helper {
 				// Checkbox and GDPR Variables.
 				'--srfm-check-ctn-width'                  => '20px',
 				'--srfm-check-ctn-height'                 => '20px',
-				'--srfm-check-svg-width'                  => '14px',
-				'--srfm-check-svg-height'                 => '14px',
+				'--srfm-check-svg-size'                   => '14px',
 				'--srfm-check-gap'                        => '10px',
+				'--srfm-checkbox-margin-top-frontend'     => '4px',
+				'--srfm-checkbox-margin-top-editor'       => '5px',
 				// Label Variables.
 				'--srfm-label-font-size'                  => '18px',
 				'--srfm-label-line-height'                => '28px',
