@@ -84,6 +84,8 @@
 		background: none !important;
 		right: var( --srfm-dropdown-padding-right );
 		color: var( --srfm-color-input-text );
+		display: flex;
+		align-items: center;
 	}
 
 	// .srfm-btn-bg-color {
