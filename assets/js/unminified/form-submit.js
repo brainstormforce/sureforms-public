@@ -53,7 +53,7 @@ document.addEventListener( 'DOMContentLoaded', function () {
 			!! hCaptchaDiv ||
 			!! turnstileDiv
 		) {
-			form.addEventListener( 'submit',  ( e ) => {
+			form.addEventListener( 'submit', ( e ) => {
 				e.preventDefault();
 				let captchaResponse;
 				if ( 'v2-checkbox' === recaptchaType ) {
@@ -134,14 +134,13 @@ async function submitFormData( form ) {
 		} );
 }
 
-
-async function afterSubmit(formStatus) {
+async function afterSubmit( formStatus ) {
 	const site_url = window.srfm_submit.site_url;
 	const submissionId = formStatus.data.submission_id;
 
 	try {
 		const response = await fetch(
-			`${site_url}/wp-json/sureforms/v1/after-submission/${submissionId}`,
+			`${ site_url }/wp-json/sureforms/v1/after-submission/${ submissionId }`,
 			{
 				headers: {
 					'X-WP-Nonce': window.srfm_submit.nonce,
@@ -149,12 +148,11 @@ async function afterSubmit(formStatus) {
 			}
 		);
 
-		if (!response.ok) {
-			throw new Error(`HTTP error! Status: ${response.status}`);
+		if ( ! response.ok ) {
+			throw new Error( `HTTP error! Status: ${ response.status }` );
 		}
-
-	} catch (error) {
-		console.error( error);
+	} catch ( error ) {
+		console.error( error );
 	}
 }
 
