@@ -30,13 +30,14 @@ const InstantFormComponent = () => {
 		_srfm_use_banner_as_form_background,
 	} = select( editorStore ).getEditedPostAttribute( 'meta' );
 
-	const { link } = select( editorStore ).getCurrentPost();
 	const { editPost } = useDispatch( editorStore );
 
 	const [ popoverAnchor, setPopoverAnchor ] = useState();
-	const [ isVisible, setIsVisible ] = useState( false );
+	const [ openPopover, setOpenPopover ] = useState( false ); // Load / unload popover component from DOM.
+	const [ hidePopover, setHidePopover ] = useState( false ); // Just hide the popover using CSS instead of unloading it from DOM.
 	const [ isLinkCopied, setIsLinkCopied ] = useState( false );
-	const [ isHidden, setIsHidden ] = useState( false );
+
+	const { link } = select( editorStore ).getCurrentPost();
 
 	const clipboardRef = useCopyToClipboard( link, () => {
 		setIsLinkCopied( true );
@@ -51,8 +52,20 @@ const InstantFormComponent = () => {
 		} );
 	};
 
+	/**
+	 * Handles the selection of an image and updates the post metadata with the selected image's URL and ID.
+	 *
+	 * This function performs the following steps:
+	 * 1. Sets the visibility of an element to be visible by calling `setIsHidden(false)`.
+	 * 2. Checks if the provided `media` object is valid and of type 'image'.
+	 * 3. If valid, it extracts the image's ID and URL, and then updates the post metadata with this information.
+	 * 4. If the `media` object is not valid or is not an image, it sets the image URL to `null`.
+	 *
+	 * @param {string} key   - The key used to identify the metadata field for the image URL in the post metadata.
+	 * @param {Object} media - The media object representing the selected image.
+	 */
 	const onImageSelect = ( key, media ) => {
-		setIsHidden( false );
+		setHidePopover( false );
 
 		let key_id = '';
 		let imageID = 0;
@@ -83,31 +96,31 @@ const InstantFormComponent = () => {
 
 	return (
 		<>
-			<button ref={ setPopoverAnchor } onClick={ () => setIsVisible( ! isVisible ) } className="srfm-instant-form-button">
+			<button ref={ setPopoverAnchor } onClick={ () => setOpenPopover( ! openPopover ) } className="srfm-instant-form-button">
 				<div className="srfm-instant-form-status" style={ !! _srfm_instant_form ? { backgroundColor: '#22C55E' } : {} } />
 				<span>{ __( 'Instant Form', 'sureforms' ) }</span>
 			</button>
 
-			{ isVisible && (
+			{ openPopover && (
 				<Popover
-					shift
 					resize
-					hidden={ isHidden }
+					hidden={ hidePopover }
 					placement="bottom-end"
 					anchor={ popoverAnchor }
 					onFocusOutside={ ( event ) => {
 						if ( event.relatedTarget.className === popoverAnchor.className ) {
-							// Bail if click on the Instant Form toggle button.
+							// Bail if clicked on the Instant Form toggle button.
 							return;
 						}
 
 						if ( event.relatedTarget.className.includes( 'media-modal' ) ) {
-							// Don't close the Popover when media uploader is opened, instead just hide it.
-							setIsHidden( true );
+							// Unloading the Popover triggers error when media uploader modal is opened.
+							// Don't close the Popover when media uploader is opened, instead just hide the popover.
+							setHidePopover( true );
 							return;
 						}
 
-						setIsVisible( false );
+						setOpenPopover( false );
 					} }
 					className="srfm-instant-form-popover"
 				>
