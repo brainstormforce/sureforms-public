@@ -56,16 +56,14 @@ const InstantFormComponent = () => {
 	 * Handles the selection of an image and updates the post metadata with the selected image's URL and ID.
 	 *
 	 * This function performs the following steps:
-	 * 1. Sets the visibility of an element to be visible by calling `setIsHidden(false)`.
-	 * 2. Checks if the provided `media` object is valid and of type 'image'.
-	 * 3. If valid, it extracts the image's ID and URL, and then updates the post metadata with this information.
-	 * 4. If the `media` object is not valid or is not an image, it sets the image URL to `null`.
+	 * 1. Checks if the provided `media` object is valid and of type 'image'.
+	 * 2. If valid, it extracts the image's ID and URL, and then updates the post metadata with this information.
+	 * 3. If the `media` object is not valid or is not an image, it sets the image URL to `null`.
 	 *
 	 * @param {string} key   - The key used to identify the metadata field for the image URL in the post metadata.
 	 * @param {Object} media - The media object representing the selected image.
 	 */
 	const onImageSelect = ( key, media ) => {
-		setHidePopover( false );
 
 		let key_id = '';
 		let imageID = 0;
@@ -151,6 +149,7 @@ const InstantFormComponent = () => {
 								<label>{ __( 'Site Logo', 'sureforms' ) }</label>
 								<SRFMMediaPicker
 									label={ '' }
+									onModalClose={ () => setHidePopover( false ) }
 									onSelectImage={ ( media ) => onImageSelect( '_srfm_site_logo', media ) }
 									backgroundImage={ _srfm_site_logo }
 									onRemoveImage={ () => onHandleChange( '_srfm_site_logo', '' ) }
@@ -186,6 +185,7 @@ const InstantFormComponent = () => {
 										<label>{ __( 'Upload Image', 'sureforms' ) }</label>
 										<SRFMMediaPicker
 											label={ '' }
+											onModalClose={ () => setHidePopover( false ) }
 											onSelectImage={ ( media ) => onImageSelect( '_srfm_cover_image', media ) }
 											backgroundImage={ _srfm_cover_image }
 											onRemoveImage={ () => onHandleChange( '_srfm_cover_image', '' ) }
@@ -249,6 +249,7 @@ const InstantFormComponent = () => {
 										<label>{ __( 'Upload Image', 'sureforms' ) }</label>
 										<SRFMMediaPicker
 											label={ '' }
+											onModalClose={ () => setHidePopover( false ) }
 											onSelectImage={ ( imageURL ) => onImageSelect( '_srfm_bg_image', imageURL ) }
 											backgroundImage={ _srfm_bg_image }
 											onRemoveImage={ () => onHandleChange( '_srfm_bg_image', '' ) }
