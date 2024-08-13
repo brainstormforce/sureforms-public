@@ -425,33 +425,33 @@ class Post_Types {
 
 				// Styling tab metas.
 				// Form Container.
-				'_srfm_form_container_width' => 'integer',
-				'_srfm_bg_type'              => 'string',
-				'_srfm_bg_color'             => 'string',
-				'_srfm_bg_image'             => 'string',
-				'_srfm_cover_type'           => 'string',
-				'_srfm_cover_color'          => 'string',
-				'_srfm_cover_image'          => 'string',
-				'_srfm_site_logo'            => 'string',
+				'_srfm_form_container_width'          => 'integer',
+				'_srfm_bg_type'                       => 'string',
+				'_srfm_bg_color'                      => 'string',
+				'_srfm_bg_image'                      => 'string',
+				'_srfm_cover_type'                    => 'string',
+				'_srfm_cover_color'                   => 'string',
+				'_srfm_cover_image'                   => 'string',
+				'_srfm_site_logo'                     => 'string',
 				// Submit Button.
-				'_srfm_submit_width_backend'     => 'string',
-				'_srfm_button_border_radius'     => 'integer',
-				'_srfm_submit_alignment'         => 'string',
-				'_srfm_submit_alignment_backend' => 'string',
-				'_srfm_submit_width'             => 'string',
-				'_srfm_inherit_theme_button'     => 'boolean',
+				'_srfm_submit_width_backend'          => 'string',
+				'_srfm_button_border_radius'          => 'integer',
+				'_srfm_submit_alignment'              => 'string',
+				'_srfm_submit_alignment_backend'      => 'string',
+				'_srfm_submit_width'                  => 'string',
+				'_srfm_inherit_theme_button'          => 'boolean',
 				// Additional Classes.
-				'_srfm_additional_classes'       => 'string',
+				'_srfm_additional_classes'            => 'string',
 
 				// Advanced tab metas.
 				// Success Message.
-				'_srfm_submit_type'              => 'string',
-				'_srfm_thankyou_message_title'   => 'string',
-				'_srfm_thankyou_message'         => 'string',
-				'_srfm_submit_url'               => 'string',
+				'_srfm_submit_type'                   => 'string',
+				'_srfm_thankyou_message_title'        => 'string',
+				'_srfm_thankyou_message'              => 'string',
+				'_srfm_submit_url'                    => 'string',
 				// Security.
-				'_srfm_captcha_security_type'    => 'string',
-				'_srfm_form_recaptcha'           => 'string',
+				'_srfm_captcha_security_type'         => 'string',
+				'_srfm_form_recaptcha'                => 'string',
 			]
 		);
 
