@@ -75,6 +75,7 @@ document.addEventListener( 'DOMContentLoaded', function () {
 					nonce,
 					loader,
 					successUrl,
+					successContainer,
 					successElement,
 					errorElement,
 					submitType,
