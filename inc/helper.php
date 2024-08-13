@@ -650,6 +650,7 @@ class Helper {
 				'--srfm-multi-choice-vertical-svg-size'   => '32px',
 				'--srfm-multi-choice-horizontal-image-size' => '20px',
 				'--srfm-multi-choice-vertical-image-size' => '100px',
+				'--srfm-multi-choice-outer-padding'       => '0',
 			],
 			'medium' => [
 				'--srfm-row-gap-between-blocks'           => '20px',
@@ -678,6 +679,7 @@ class Helper {
 				'--srfm-multi-choice-vertical-svg-size'   => '40px',
 				'--srfm-multi-choice-horizontal-image-size' => '24px',
 				'--srfm-multi-choice-vertical-image-size' => '120px',
+				'--srfm-multi-choice-outer-padding'       => '2px',
 			],
 			'large'  => [
 				'--srfm-row-gap-between-blocks'           => '24px',
@@ -721,6 +723,7 @@ class Helper {
 				'--srfm-multi-choice-vertical-svg-size'   => '48px',
 				'--srfm-multi-choice-horizontal-image-size' => '28px',
 				'--srfm-multi-choice-vertical-image-size' => '140px',
+				'--srfm-multi-choice-outer-padding'       => '4px',
 			],
 		];
 		// Return complete sizes array if field_spacing is false. Required in case of JS for Editor changes.
