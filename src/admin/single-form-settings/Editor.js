@@ -41,7 +41,7 @@ const defaultKeys = {
 	_srfm_use_label_as_placeholder: false,
 	_srfm_single_page_form_title: true,
 	_srfm_instant_form: false,
-	_srfm_use_banner_as_form_background: false,
+	_srfm_use_banner_as_page_background: false,
 	_srfm_is_inline_button: false,
 	// Submit Button
 	_srfm_submit_button_text: 'Submit',

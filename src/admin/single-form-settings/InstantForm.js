@@ -27,7 +27,7 @@ const InstantFormComponent = () => {
 		_srfm_instant_form,
 		_srfm_form_container_width,
 		_srfm_single_page_form_title,
-		_srfm_use_banner_as_form_background,
+		_srfm_use_banner_as_page_background,
 	} = select( editorStore ).getEditedPostAttribute( 'meta' );
 
 	const { editPost } = useDispatch( editorStore );
@@ -214,67 +214,61 @@ const InstantFormComponent = () => {
 
 						<div className="srfm-instant-form-settings-group">
 							<div className="srfm-instant-form-settings srfm-instant-form-settings-inline">
-								<label>{ __( 'Use banner as form background', 'sureforms' ) }</label>
+								<label>{ __( 'Use banner as page background', 'sureforms' ) }</label>
 								<ToggleControl
-									checked={ _srfm_use_banner_as_form_background }
-									onChange={ ( value ) => onHandleChange( '_srfm_use_banner_as_form_background', value ) }
+									checked={ _srfm_use_banner_as_page_background }
+									onChange={ ( value ) => onHandleChange( '_srfm_use_banner_as_page_background', value ) }
+								/>
+							</div>
+
+							<div className="srfm-instant-form-settings">
+								<label>{ __( 'Form Background', 'sureforms' ) }</label>
+								<MultiButtonsControl
+									data={ {
+										value: _srfm_bg_type,
+										label: '_srfm_bg_type',
+									} }
+									options={ [
+										{
+											value: 'color',
+											label: __( 'Color', 'sureforms' ),
+										},
+										{
+											value: 'image',
+											label: __( 'Image', 'sureforms' ),
+										},
+									] }
+									showIcons={ false }
+									onChange={ ( value ) => onHandleChange( '_srfm_bg_type', value ) }
 								/>
 							</div>
 
 							{
-								! _srfm_use_banner_as_form_background && (
-									<>
-										<div className="srfm-instant-form-settings">
-											<label>{ __( 'Form Background', 'sureforms' ) }</label>
-											<MultiButtonsControl
-												data={ {
-													value: _srfm_bg_type,
-													label: '_srfm_bg_type',
-												} }
-												options={ [
-													{
-														value: 'color',
-														label: __( 'Color', 'sureforms' ),
-													},
-													{
-														value: 'image',
-														label: __( 'Image', 'sureforms' ),
-													},
-												] }
-												showIcons={ false }
-												onChange={ ( value ) => onHandleChange( '_srfm_bg_type', value ) }
-											/>
-										</div>
-
-										{
-											'image' === _srfm_bg_type ? (
-												<div className="srfm-instant-form-settings">
-													<label>{ __( 'Upload Image', 'sureforms' ) }</label>
-													<SRFMMediaPicker
-														label={ '' }
-														onSelectImage={ ( imageURL ) => onImageSelect( '_srfm_bg_image', imageURL ) }
-														backgroundImage={ _srfm_bg_image }
-														onRemoveImage={ () => onHandleChange( '_srfm_bg_image', '' ) }
-														isFormSpecific={ true }
-													/>
-												</div>
-											) : (
-												<div className="srfm-instant-form-settings srfm-instant-form-settings-inline">
-													<label>{ __( 'Background Color', 'sureforms' ) }</label>
-													<AdvancedPopColorControl
-														colorValue={ _srfm_bg_color }
-														data={ {
-															value: _srfm_bg_color,
-															label: '_srfm_bg_color',
-														} }
-														onColorChange={ ( colorValue ) => onHandleChange( '_srfm_bg_color', colorValue ) }
-														value={ _srfm_bg_color }
-														isFormSpecific={ true }
-													/>
-												</div>
-											)
-										}
-									</>
+								'image' === _srfm_bg_type ? (
+									<div className="srfm-instant-form-settings">
+										<label>{ __( 'Upload Image', 'sureforms' ) }</label>
+										<SRFMMediaPicker
+											label={ '' }
+											onSelectImage={ ( imageURL ) => onImageSelect( '_srfm_bg_image', imageURL ) }
+											backgroundImage={ _srfm_bg_image }
+											onRemoveImage={ () => onHandleChange( '_srfm_bg_image', '' ) }
+											isFormSpecific={ true }
+										/>
+									</div>
+								) : (
+									<div className="srfm-instant-form-settings srfm-instant-form-settings-inline">
+										<label>{ __( 'Background Color', 'sureforms' ) }</label>
+										<AdvancedPopColorControl
+											colorValue={ _srfm_bg_color }
+											data={ {
+												value: _srfm_bg_color,
+												label: '_srfm_bg_color',
+											} }
+											onColorChange={ ( colorValue ) => onHandleChange( '_srfm_bg_color', colorValue ) }
+											value={ _srfm_bg_color }
+											isFormSpecific={ true }
+										/>
+									</div>
 								)
 							}
 

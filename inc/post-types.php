@@ -420,7 +420,7 @@ class Post_Types {
 				'_srfm_single_page_form_title'        => 'boolean',
 				'_srfm_submit_button_text'            => 'string',
 				'_srfm_instant_form'                  => 'boolean',
-				'_srfm_use_banner_as_form_background' => 'boolean',
+				'_srfm_use_banner_as_page_background' => 'boolean',
 				'_srfm_is_inline_button'              => 'boolean',
 
 				// Styling tab metas.

@@ -26,6 +26,7 @@ const defaultKeys = {
 	text_color: { default: '#1E1E1E' },
 	text_color_on_primary: { default: '#FFFFFF' },
 	_srfm_form_container_width: { default: 650 },
+	_srfm_cover_color: { default: '#0C78FB' },
 	_srfm_bg_color: { default: '#ffffff' },
 	// Page Break
 	_srfm_page_break_button_text_color: { default: '#ffffff' },

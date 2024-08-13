@@ -95,7 +95,7 @@ class Create_New_Form {
 			'_srfm_use_label_as_placeholder'        => [ '' ],
 			'_srfm_single_page_form_title'          => [ 1 ],
 			'_srfm_instant_form'                    => [ '' ],
-			'_srfm_use_banner_as_form_background'   => [ '' ],
+			'_srfm_use_banner_as_page_background'   => [ '' ],
 			'_srfm_form_container_width'            => [ 650 ],
 			'_srfm_cover_type'                      => [ 'color' ],
 			'_srfm_cover_color'                     => [ '#0C78FB' ],
