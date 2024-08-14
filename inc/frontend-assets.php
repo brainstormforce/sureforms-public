@@ -192,12 +192,22 @@ class Frontend_Assets {
 	 * @since 0.0.1
 	 */
 	public function page_template( $template ) {
-		if ( is_singular( SRFM_FORMS_POST_TYPE ) ) {
-			$file_name = 'single-form.php';
-			$template  = locate_template( $file_name ) ? locate_template( $file_name ) : SRFM_DIR . '/templates/' . $file_name;
-			$template  = apply_filters( 'srfm_form_template', $template );
+
+		if ( ! is_singular( SRFM_FORMS_POST_TYPE ) ) {
+			// Bail if not SureForms post type.
+			return $template;
 		}
-		return $template;
+
+		$file_name = 'single-form.php';
+		$template  = locate_template( $file_name );
+
+		/**
+		 * Hook: srfm_form_template filter.
+		 *
+		 * @param string Full path to single-form.php file from theme or other place. Defaults back to SRFM plugin directory.
+		 * @since 0.0.1
+		 */
+		return apply_filters( 'srfm_form_template', $template ? $template : SRFM_DIR . '/templates/' . $file_name );
 	}
 
 }

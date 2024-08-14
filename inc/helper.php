@@ -336,8 +336,15 @@ class Helper {
 	 * @return string Meta value.
 	 */
 	public static function get_meta_value( $post_id, $key, $single = true, $default = '' ) {
-		$meta_value = get_post_meta( self::get_integer_value( $post_id ), $key, $single ) ? self::get_string_value( get_post_meta( self::get_integer_value( $post_id ), $key, $single ) ) : self::get_string_value( $default );
-		return $meta_value;
+
+		$meta_value = get_post_meta( self::get_integer_value( $post_id ), $key, $single );
+
+		if ( is_array( $meta_value ) || is_array( $default ) ) {
+			// Add support for array type meta values.
+			return $meta_value ? $meta_value : $default;
+		}
+
+		return $meta_value ? self::get_string_value( $meta_value ) : self::get_string_value( $default );
 	}
 
 
