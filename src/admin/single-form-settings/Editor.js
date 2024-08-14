@@ -64,14 +64,6 @@ const defaultKeys = {
 	_srfm_submit_alignment_backend: '100%',
 	_srfm_submit_width_backend: 'max-content',
 	_srfm_additional_classes: '',
-	// Page Break Button
-	_srfm_page_break_inherit_theme_button: false,
-	_srfm_page_break_button_bg_color: '#D54407',
-	_srfm_page_break_button_text_color: '#ffffff',
-	_srfm_page_break_button_border_color: '#ffffff',
-	_srfm_page_break_button_border_width: 0,
-	_srfm_page_break_button_border_radius: 4,
-	_srfm_page_break_button_bg_type: 'filled',
 
 	// Advanced Tab
 	// Success Message

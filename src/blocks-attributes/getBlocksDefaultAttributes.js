@@ -27,12 +27,6 @@ const defaultKeys = {
 	text_color_on_primary: { default: '#FFFFFF' },
 	_srfm_form_container_width: { default: 650 },
 	_srfm_bg_color: { default: '#ffffff' },
-	// Page Break
-	_srfm_page_break_button_text_color: { default: '#ffffff' },
-	_srfm_page_break_button_bg_color: { default: '#D54407' },
-	_srfm_page_break_button_border_color: { default: '#ffffff' },
-	_srfm_page_break_button_border_width: { default: 0 },
-	_srfm_page_break_button_border_radius: { default: 4 },
 	// Advanced Tab
 	_srfm_thankyou_message_title: { default: 'Thank you' },
 	_srfm_thankyou_message: { default: 'Form submitted successfully!' },
