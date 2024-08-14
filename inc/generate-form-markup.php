@@ -119,13 +119,13 @@ class Generate_Form_Markup {
 			$button_text             = Helper::get_meta_value( $id, '_srfm_submit_button_text' );
 			$submit_button_alignment = $form_styling['submit_button_alignment'];
 			$btn_from_theme          = Helper::get_meta_value( $id, '_srfm_inherit_theme_button' );
-			$instant_form            = Helper::get_meta_value( $id, '_srfm_instant_form' );
+			$instant_form            = Helper::get_meta_value( $id, 'enable_instant_form' );
 			$is_inline_button        = Helper::get_meta_value( $id, '_srfm_is_inline_button' );
 			$security_type           = Helper::get_meta_value( $id, '_srfm_captcha_security_type' );
 			$form_custom_css_meta    = Helper::get_meta_value( $id, '_srfm_form_custom_css' );
 			$custom_css              = ! empty( $form_custom_css_meta ) && is_string( $form_custom_css_meta ) ? $form_custom_css_meta : '';
 
-			$bg_type = Helper::get_meta_value( $id, '_srfm_bg_type', true, 'image' );
+			$bg_type = Helper::get_meta_value( $id, '_srfm_bg_type', true, 'color' );
 
 			if ( 'image' === $bg_type ) {
 				$background_image_url = Helper::get_meta_value( $id, '_srfm_bg_image' );

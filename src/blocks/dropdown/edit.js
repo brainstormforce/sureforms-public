@@ -293,9 +293,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 							</div>
 							<div className="sureform-add-option-container">
 								<SRFMTextControl
-									showHeaderControls={
-										false
-									}
+									showHeaderControls={ false }
 									label={ __(
 										'Add New Option',
 										'sureforms'

@@ -32,6 +32,7 @@ import { useDeviceType } from '@Controls/getPreviewType';
 
 import ProPanel from './components/pro-panel/index.js';
 import { BlockInserterWrapper } from './Inserter.js';
+import InstantForm from './InstantForm.js';
 
 const { select, dispatch } = wp.data;
 
@@ -39,7 +40,6 @@ const defaultKeys = {
 	// General Tab
 	_srfm_use_label_as_placeholder: false,
 	_srfm_single_page_form_title: true,
-	_srfm_instant_form: false,
 	_srfm_is_inline_button: false,
 	// Submit Button
 	_srfm_submit_button_text: 'Submit',
@@ -50,13 +50,6 @@ const defaultKeys = {
 	_srfm_page_break_toggle_label: false,
 	_srfm_previous_button_text: 'Previous',
 	_srfm_next_button_text: 'Next',
-	// Style Tab
-	// Form Container
-	_srfm_form_container_width: 650,
-	_srfm_bg_type: 'image',
-	_srfm_bg_image: '',
-	_srfm_cover_image: '',
-	_srfm_bg_color: '#ffffff',
 	// Submit Button
 	_srfm_inherit_theme_button: false,
 	_srfm_submit_alignment: 'left',
@@ -559,4 +552,5 @@ const forcePanel = () => {
 
 wp.domReady( () => {
 	forcePanel();
+	InstantForm();
 } );
