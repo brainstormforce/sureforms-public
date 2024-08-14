@@ -204,7 +204,6 @@ class Frontend_Assets {
 		/**
 		 * Hook: srfm_form_template filter.
 		 *
-		 * @param string Full path to single-form.php file from theme or other place. Defaults back to SRFM plugin directory.
 		 * @since 0.0.1
 		 */
 		return apply_filters( 'srfm_form_template', $template ? $template : SRFM_DIR . '/templates/' . $file_name );

@@ -298,7 +298,7 @@ const InstantFormComponent = () => {
 										label: 'form_container_width',
 									} }
 									value={ form_container_width }
-									min={ 650 }
+									min={ 560 }
 									max={ 1000 }
 									displayUnit={ false }
 									responsive={ false }

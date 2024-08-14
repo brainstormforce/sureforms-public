@@ -42,37 +42,63 @@ $srfm_custom_post_id = get_the_ID();
 		]
 	);
 
-	$instant_form_settings  = Helper::get_meta_value( absint( $srfm_custom_post_id ), '_srfm_instant_form_settings' );
-	$cover_image            = $instant_form_settings['cover_image'];
-	$enable_instant_form    = $instant_form_settings['enable_instant_form'];
-	$form_container_width   = $instant_form_settings['form_container_width'];
-	$single_page_form_title = $instant_form_settings['single_page_form_title'];
+	$instant_form_settings         = Helper::get_meta_value( absint( $srfm_custom_post_id ), '_srfm_instant_form_settings' );
+	$site_logo                     = $instant_form_settings['site_logo'];
+	$cover_type                    = $instant_form_settings['cover_type'];
+	$cover_color                   = $instant_form_settings['cover_color'];
+	$cover_image                   = $instant_form_settings['cover_image'];
+	$enable_instant_form           = $instant_form_settings['enable_instant_form'];
+	$form_container_width          = $instant_form_settings['form_container_width'];
+	$single_page_form_title        = $instant_form_settings['single_page_form_title'];
+	$use_banner_as_page_background = $instant_form_settings['use_banner_as_page_background'];
 
-	$srfm_color_primary   = $form_styling['primary_color'];
 	$srfm_cover_image_url = $cover_image ? rawurldecode( strval( $cover_image ) ) : '';
 
 	if ( ! $srfm_form_preview ) {
+
+		$selector = '.single-sureforms_form .srfm-single-page-container';
+
+		if ( ! $use_banner_as_page_background ) {
+			$selector = $selector . ' .srfm-page-banner';
+		}
+
 		?>
 		<style>
 			#srfm-single-page-container {
 				--srfm-form-container-width: <?php echo esc_attr( $form_container_width . 'px' ); ?>;
 			}
-			.single-sureforms_form .srfm-single-page-container .srfm-page-banner {
-				<?php if ( ! empty( $srfm_cover_image_url ) ) : ?>
+			<?php echo esc_html( $selector ); ?> {
+				<?php if ( 'image' === $cover_type && ! empty( $srfm_cover_image_url ) ) : ?>
 					background-image: url(<?php echo esc_attr( $srfm_cover_image_url ); ?> );
 					background-position: center;
 					background-size: cover;
 					background-repeat: no-repeat;
 				<?php else : ?>
-					background-color: <?php echo esc_attr( $srfm_color_primary ); ?>;
+					background-color: <?php echo esc_attr( $cover_color ); ?>;
 				<?php endif; ?>
 			}
 		</style>
-		<div id="srfm-single-page-container" class="srfm-single-page-container">
+		<div id="srfm-single-page-container" class="srfm-single-page-container <?php echo ! ! $single_page_form_title ? 'has-form-title' : ''; ?>">
 			<div class="srfm-page-banner">
-				<?php if ( ! empty( $single_page_form_title ) && ! empty( $enable_instant_form ) ) : ?>
+				<?php
+				if ( ! empty( $site_logo ) ) {
+					?>
+					<img class="srfm-site-logo" src="<?php echo esc_url( $site_logo ); ?>">
+					<?php
+				}
+
+				if ( ! empty( $single_page_form_title ) ) {
+					?>
 					<h1 class="srfm-single-banner-title"><?php echo esc_html( get_the_title() ); ?></h1>
-				<?php endif; ?>
+					<?php
+				}
+
+				if ( empty( $enable_instant_form ) ) {
+					?>
+					<div class="srfm-form-status-badge"><?php esc_html_e( 'Unpublished', 'sureforms' ); ?></div>
+					<?php
+				}
+				?>
 			</div>
 			<div class="srfm-form-wrapper">
 				<?php

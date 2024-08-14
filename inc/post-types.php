@@ -489,6 +489,9 @@ class Post_Types {
 							'site_logo'              => [
 								'type' => 'string',
 							],
+							'site_logo_id'           => [
+								'type' => 'integer',
+							],
 							// Form page banner settings.
 							'cover_type'             => [
 								'type' => 'string',
@@ -499,6 +502,9 @@ class Post_Types {
 							'cover_image'            => [
 								'type' => 'string',
 							],
+							'cover_image_id'         => [
+								'type' => 'integer',
+							],
 							// Form page background settings.
 							'bg_type'                => [
 								'type' => 'string',
@@ -508,6 +514,9 @@ class Post_Types {
 							],
 							'bg_image'               => [
 								'type' => 'string',
+							],
+							'bg_image_id'            => [
+								'type' => 'integer',
 							],
 							'enable_instant_form'    => [
 								'type' => 'boolean',
@@ -533,7 +542,7 @@ class Post_Types {
 					'cover_color'                   => '#0C78FB',
 					'cover_image'                   => '',
 					'enable_instant_form'           => false,
-					'form_container_width'          => 650,
+					'form_container_width'          => 560,
 					'single_page_form_title'        => true,
 					'use_banner_as_page_background' => false,
 				],
@@ -1236,9 +1245,10 @@ class Post_Types {
 
 		$form_id = Helper::get_integer_value( get_the_ID() );
 
-		$is_instant_form = get_post_meta( $form_id, 'enable_instant_form', true );
+		$instant_form_settings = Helper::get_meta_value( $form_id, '_srfm_instant_form_settings' );
+		$enable_instant_form   = ! empty( $instant_form_settings['enable_instant_form'] ) ? boolval( $instant_form_settings['enable_instant_form'] ) : false;
 
-		if ( $is_instant_form ) {
+		if ( $enable_instant_form ) {
 			return;
 		}
 

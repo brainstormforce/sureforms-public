@@ -87,14 +87,23 @@ class Generate_Form_Markup {
 
 		$blocks            = parse_blocks( $content );
 		$block_count       = count( $blocks );
-		$color_secondary   = '';
 		$current_post_type = get_post_type();
 
 		ob_start();
 		if ( '' !== $id && 0 !== $block_count ) {
+
+			$container_id = 'srfm-form-container-' . Helper::get_string_value( $id );
+
+			$form_classes = [
+				'srfm-form-container',
+				$container_id,
+				$sf_classname,
+			];
+
+			$form_classes[] = is_string( Helper::get_meta_value( $id, '_srfm_additional_classes' ) ) ? Helper::get_meta_value( $id, '_srfm_additional_classes' ) : '';
+
 			$form_styling             = get_post_meta( $id, '_srfm_forms_styling', true );
 			$form_styling             = ! empty( $form_styling ) && is_array( $form_styling ) ? $form_styling : [];
-			$classname                = Helper::get_meta_value( $id, '_srfm_additional_classes' );
 			$is_page_break            = defined( 'SRFM_PRO_VER' ) && Helper::get_meta_value( $id, '_srfm_is_page_break' );
 			$page_break_progress_type = Helper::get_meta_value( $id, '_srfm_page_break_progress_indicator' );
 			$form_confirmation        = get_post_meta( $id, '_srfm_form_confirmation' );
@@ -115,26 +124,26 @@ class Generate_Form_Markup {
 				}
 			}
 
+			$instant_form_settings = Helper::get_meta_value( $id, '_srfm_instant_form_settings' );
+			$bg_type               = is_array( $instant_form_settings ) ? $instant_form_settings['bg_type'] : '';
+			$bg_color              = is_array( $instant_form_settings ) ? $instant_form_settings['bg_color'] : '';
+			$bg_image              = is_array( $instant_form_settings ) ? $instant_form_settings['bg_image'] : '';
+
 			// Submit button.
-			$button_text             = Helper::get_meta_value( $id, '_srfm_submit_button_text' );
+			$button_text             = is_string( Helper::get_meta_value( $id, '_srfm_submit_button_text' ) ) ? Helper::get_meta_value( $id, '_srfm_submit_button_text' ) : '';
 			$submit_button_alignment = $form_styling['submit_button_alignment'];
 			$btn_from_theme          = Helper::get_meta_value( $id, '_srfm_inherit_theme_button' );
-			$instant_form            = Helper::get_meta_value( $id, 'enable_instant_form' );
 			$is_inline_button        = Helper::get_meta_value( $id, '_srfm_is_inline_button' );
 			$security_type           = Helper::get_meta_value( $id, '_srfm_captcha_security_type' );
 			$form_custom_css_meta    = Helper::get_meta_value( $id, '_srfm_form_custom_css' );
 			$custom_css              = ! empty( $form_custom_css_meta ) && is_string( $form_custom_css_meta ) ? $form_custom_css_meta : '';
 
-			$bg_type = Helper::get_meta_value( $id, '_srfm_bg_type', true, 'color' );
-
 			if ( 'image' === $bg_type ) {
-				$background_image_url = Helper::get_meta_value( $id, '_srfm_bg_image' );
-				$bg_image             = $background_image_url ? 'url(' . $background_image_url . ')' : '';
-				$bg_color             = '#ffffff';
+				$bg_image = $bg_image ? 'url(' . $bg_image . ')' : '';
+				$bg_color = '#ffffff';
 			} else {
-				$background_color = Helper::get_meta_value( $id, '_srfm_bg_color' );
-				$bg_image         = 'none';
-				$bg_color         = $background_color ? $background_color : '';
+				$bg_image = 'none';
+				$bg_color = $bg_color ? $bg_color : '';
 			}
 
 			$full                       = 'justify' === $submit_button_alignment ? true : false;
@@ -185,18 +194,15 @@ class Generate_Form_Markup {
 
 			$primary_color_var    = $primary_color ? $primary_color : '#046bd2';
 			$label_text_color_var = $label_text_color ? $label_text_color : '#111827';
-			$container_id         = '.srfm-form-container-' . Helper::get_string_value( $id );
 
 			$selected_size = Helper::get_css_vars( $field_spacing );
 			?>
-
-			<div class="srfm-form-container srfm-form-container-<?php echo esc_attr( Helper::get_string_value( $id ) ); ?> <?php echo esc_attr( $sf_classname ); ?> <?php echo esc_attr( $classname ); ?>">
+			<div class="<?php echo esc_attr( implode( ' ', array_filter( $form_classes ) ) ); ?>">
 			<style>
 				/* Need to check and remove the input variables related to the Style Tab. */
-				<?php echo esc_html( $container_id ); ?> {
-					/*
-					--srfm-bg-image: <?php echo $bg_image ? esc_html( $bg_image ) : ''; ?>; */
-					--srfm-bg-color: <?php echo $bg_color ? esc_html( $bg_color ) : ''; ?>;
+				<?php echo esc_html( ".{$container_id}" ); ?> {
+					--srfm-bg-image: <?php echo $bg_image && is_string( $bg_image ) ? esc_html( $bg_image ) : ''; ?>;
+					--srfm-bg-color: <?php echo $bg_color && is_string( $bg_color ) ? esc_html( $bg_color ) : ''; ?>;
 					/* New test variables */
 					--srfm-color-scheme-primary: <?php echo esc_html( $primary_color_var ); ?>;
 					--srfm-color-scheme-text-on-primary: <?php echo esc_html( $label_text_color_var ); ?>;
@@ -250,25 +256,6 @@ class Generate_Form_Markup {
 				$title = ! empty( get_the_title( (int) $id ) ) ? get_the_title( (int) $id ) : '';
 				?>
 				<h2 class="srfm-form-title"><?php echo esc_html( $title ); ?></h2>
-				<?php
-			}
-			?>
-			<?php
-			if ( ! $instant_form && current_user_can( 'manage_options' ) && is_singular( 'sureforms_form' ) ) {
-				?>
-				<div class="srfm-instant-form-wrn-ctn">
-					<div class="srfm-svg-container">
-					<?php echo Helper::fetch_svg( 'instant-form-warning', '' ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Ignored to render svg. ?>
-					</div>
-					<div class="srfm-wrn-text-ctn">
-						<span class="srfm-wrn-description">
-						<?php echo esc_html__( 'Enable the Instant Form in the editor from ', 'sureforms' ); ?>
-						<a class="srfm-wrn-link" href="<?php echo esc_url( admin_url( 'post.php?post=' . $id . '&action=edit' ) ); ?>">
-							<?php echo esc_html__( 'here.', 'sureforms' ); ?>
-						</a>
-						</span>
-					</div>
-				</div>
 				<?php
 			}
 			?>
