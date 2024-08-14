@@ -39,6 +39,7 @@ const SRFMMediaPicker = ( props ) => {
 		allow = [ 'image' ],
 		disableDynamicContent = false,
 		help = false,
+		addIcon = null,
 	} = props;
 
 	// This is used to render an icon in place of the background image when needed.
@@ -172,13 +173,21 @@ const SRFMMediaPicker = ( props ) => {
 		);
 	};
 
-	const renderButton = ( buttonType ) => (
-		<div
-			className={ `srfm-media-control__button srfm-media-control__button--${ buttonType }` }
-		>
-			{ SRFM_Block_Icons[ buttonType ] }
-		</div>
-	);
+	const renderButton = ( buttonType ) => {
+		let renderIcon = SRFM_Block_Icons[ buttonType ];
+
+		if ( addIcon && 'add' === buttonType ) {
+			renderIcon = addIcon;
+		}
+
+		return (
+			<div
+				className={ `srfm-media-control__button srfm-media-control__button--${ buttonType }` }
+			>
+				{ renderIcon }
+			</div>
+		);
+	};
 
 	// This Can Be Deprecated.
 	const generateBackground = ( media ) => {
