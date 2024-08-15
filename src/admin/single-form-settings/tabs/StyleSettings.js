@@ -84,7 +84,7 @@ function StyleSettings( props ) {
 	}
 
 	const setCssValueInRoot = ( varName, value = null, defaultValue = null ) => {
-		if( ! root?.style ) {
+		if ( ! root?.style ) {
 			return;
 		}
 
@@ -96,37 +96,39 @@ function StyleSettings( props ) {
 	useEffect( () => {
 		if ( sureformsKeys ) {
 			const defaultTextColor = '#1E1E1E';
-			// Set the CSS variables for the form styling.
-			[
-				// Form Container
-				[ 'srfm-color-scheme-primary', formStyling?.primary_color || '#0C78FB' ],
-				[ 'srfm-btn-color-hover', `hsl( from ${ formStyling?.primary_color || '#0C78FB' } h s l / 0.9)` ],
-				[ 'srfm-color-scheme-text-on-primary', formStyling?.text_color_on_primary || '#FFFFFF' ],
-				[ 'srfm-color-scheme-text', formStyling?.text_color || defaultTextColor ],
-				[ 'srfm-color-input-label', formStyling?.text_color || defaultTextColor ],
-				[ 'srfm-color-input-placeholder', `hsl( from ${ formStyling?.text_color || defaultTextColor } h s l / 0.5)` ],
-				[ 'srfm-color-input-text', formStyling?.text_color || defaultTextColor ],
-				[ 'srfm-color-input-description', `hsl( from ${ formStyling?.text_color || defaultTextColor } h s l / 0.65)` ],
-				[ 'srfm-color-input-prefix', `hsl( from ${ formStyling?.text_color || defaultTextColor } h s l / 0.65)` ],
-				[ 'srfm-color-input-background', `hsl( from ${ formStyling?.text_color || defaultTextColor } h s l / 0.02)` ],
-				[ 'srfm-color-input-background-disabled', `hsl( from ${ formStyling?.text_color || defaultTextColor } h s l / 0.05)` ],
-				[ 'srfm-color-input-border', `hsl( from ${ formStyling?.text_color || defaultTextColor } h s l / 0.25)` ],
-				[ 'srfm-color-input-border-disabled', `hsl( from ${ formStyling?.text_color || defaultTextColor } h s l / 0.15)` ],
-				[ 'srfm-color-input-border-focus-glow', formStyling?.primary_color ? `hsl( from ${ formStyling?.primary_color } h s l / 0.15)` : '#FAE4DC' ],
-				// checkbox and gdpr - for small, medium and large checkbox sizes
-				[ 'srfm-checkbox-description-margin-left', '24px' ],
-				[ 'srfm-checkbox-input-border-radius', '4px' ],
-				[ 'srfm-color-multi-choice-svg', `hsl( from ${ formStyling?.text_color || defaultTextColor } h s l / 0.7)` ],
-				// Button text color
-				[ 'srfm-btn-text-color', formStyling?.text_color_on_primary || '#FFFFFF' ],
-				// btn border color
-				[ 'srfm-btn-border-color', formStyling?.primary_color || '#0C78FB' ],
-				// Button alignment
-				[ 'srfm-submit-alignment', formStyling?.submit_button_alignment || 'left' ],
-				[ 'srfm-submit-width', sureformsKeys?._srfm_submit_width || '' ],
-				[ 'srfm-submit-alignment-backend', sureformsKeys?._srfm_submit_alignment_backend || '' ],
-				[ 'srfm-submit-width-backend', sureformsKeys?._srfm_submit_width_backend || '' ],
-			].forEach( ( [ varName, value ] ) => setCssValueInRoot( varName, value ) );
+
+			const cssVariables = {
+				// Form Container.
+				'srfm-color-scheme-primary': formStyling?.primary_color || '#0C78FB',
+				'srfm-btn-color-hover': `hsl( from ${ formStyling?.primary_color || '#0C78FB' } h s l / 0.9)`,
+				'srfm-color-scheme-text-on-primary': formStyling?.text_color_on_primary || '#FFFFFF',
+				'srfm-color-scheme-text': formStyling?.text_color || defaultTextColor,
+				'srfm-color-input-label': formStyling?.text_color || defaultTextColor,
+				'srfm-color-input-placeholder': `hsl( from ${ formStyling?.text_color || defaultTextColor } h s l / 0.5)`,
+				'srfm-color-input-text': formStyling?.text_color || defaultTextColor,
+				'srfm-color-input-description': `hsl( from ${ formStyling?.text_color || defaultTextColor } h s l / 0.65)`,
+				'srfm-color-input-prefix': `hsl( from ${ formStyling?.text_color || defaultTextColor } h s l / 0.65)`,
+				'srfm-color-input-background': `hsl( from ${ formStyling?.text_color || defaultTextColor } h s l / 0.02)`,
+				'srfm-color-input-background-disabled': `hsl( from ${ formStyling?.text_color || defaultTextColor } h s l / 0.05)`,
+				'srfm-color-input-border': `hsl( from ${ formStyling?.text_color || defaultTextColor } h s l / 0.25)`,
+				'srfm-color-input-border-disabled': `hsl( from ${ formStyling?.text_color || defaultTextColor } h s l / 0.15)`,
+				'srfm-color-input-border-focus-glow': formStyling?.primary_color ? `hsl( from ${ formStyling?.primary_color } h s l / 0.15)` : '#FAE4DC',
+				// checkbox and gdpr - for small, medium and large checkbox sizes.
+				'srfm-checkbox-description-margin-left': '24px',
+				'srfm-checkbox-input-border-radius': '4px',
+				'srfm-color-multi-choice-svg': `hsl( from ${ formStyling?.text_color || defaultTextColor } h s l / 0.7)`,
+				// Button text color.
+				'srfm-btn-text-color': formStyling?.text_color_on_primary || '#FFFFFF',
+				// Button border color.
+				'srfm-btn-border-color': formStyling?.primary_color || '#0C78FB',
+				// Button alignment.
+				'srfm-submit-alignment': formStyling?.submit_button_alignment || 'left',
+				'srfm-submit-width': sureformsKeys?._srfm_submit_width || '',
+				'srfm-submit-alignment-backend': sureformsKeys?._srfm_submit_alignment_backend || '',
+				'srfm-submit-width-backend': sureformsKeys?._srfm_submit_width_backend || '',
+			};
+
+			Object.entries( cssVariables ).forEach( ( [ varName, value ] ) => setCssValueInRoot( varName, value ) );
 		} else {
 			sureformsKeys = defaultKeys;
 			editPost( {
@@ -189,54 +191,54 @@ function StyleSettings( props ) {
 	 */
 	function updateFormStyling( option, value ) {
 		// List of CSS variables to update.
-		const cssVarList = [];
+		const cssVarList = {};
 
 		if ( option === 'primary_color' ) {
-			cssVarList.push( [ 'srfm-color-scheme-primary', value || '#0C78FB' ] );
-			cssVarList.push( [ 'srfm-btn-color-hover', `hsl( from ${ value || '#0C78FB' } h s l / 0.9)` ] );
+			cssVarList[ 'srfm-color-scheme-primary' ] = value || '#0C78FB';
+			cssVarList[ 'srfm-btn-color-hover' ] = `hsl( from ${ value || '#0C78FB' } h s l / 0.9)`;
 		} else if ( option === 'text_color' ) {
 			const defaultTextColor = '#1E1E1E';
 
 			// Push the CSS variables to update.
-			cssVarList.push( [ 'srfm-color-scheme-text', value || defaultTextColor ] );
-			cssVarList.push( [ 'srfm-color-input-label', value || defaultTextColor ] );
-			cssVarList.push( [ 'srfm-color-input-placeholder', value || defaultTextColor ] );
-			cssVarList.push( [ 'srfm-color-input-text', value || defaultTextColor ] );
-			cssVarList.push( [ 'srfm-color-input-description', `hsl( from ${ value || defaultTextColor } h s l / 0.65)` ] );
-			cssVarList.push( [ 'srfm-color-input-prefix', `hsl( from ${ value || defaultTextColor } h s l / 0.65)` ] );
-			cssVarList.push( [ 'srfm-color-input-background', `hsl( from ${ value || defaultTextColor } h s l / 0.02)` ] );
-			cssVarList.push( [ 'srfm-color-input-background-disabled', `hsl( from ${ value || defaultTextColor } h s l / 0.05)` ] );
-			cssVarList.push( [ 'srfm-color-input-border', `hsl( from ${ value || defaultTextColor } h s l / 0.25)` ] );
-			cssVarList.push( [ 'srfm-color-input-border-disabled', `hsl( from ${ value || defaultTextColor } h s l / 0.15)` ] );
+			cssVarList[ 'srfm-color-scheme-text' ] = value || defaultTextColor;
+			cssVarList[ 'srfm-color-input-label' ] = value || defaultTextColor;
+			cssVarList[ 'srfm-color-input-placeholder' ] = value || defaultTextColor;
+			cssVarList[ 'srfm-color-input-text' ] = value || defaultTextColor;
+			cssVarList[ 'srfm-color-input-description' ] = `hsl( from ${ value || defaultTextColor } h s l / 0.65)`;
+			cssVarList[ 'srfm-color-input-prefix' ] = `hsl( from ${ value || defaultTextColor } h s l / 0.65)`;
+			cssVarList[ 'srfm-color-input-background' ] = `hsl( from ${ value || defaultTextColor } h s l / 0.02)`;
+			cssVarList[ 'srfm-color-input-background-disabled' ] = `hsl( from ${ value || defaultTextColor } h s l / 0.05)`;
+			cssVarList[ 'srfm-color-input-border' ] = `hsl( from ${ value || defaultTextColor } h s l / 0.25)`;
+			cssVarList[ 'srfm-color-input-border-disabled' ] = `hsl( from ${ value || defaultTextColor } h s l / 0.15)`;
 		} else if ( option === 'text_color_on_primary' ) {
-			cssVarList.push( [ 'srfm-color-scheme-text-on-primary', value || '#FFFFFF' ] );
+			cssVarList[ 'srfm-color-scheme-text-on-primary' ] = value || '#FFFFFF';
 		} else if ( option === 'field_spacing' ) {
-			cssVarList.push( [ 'srfm-field-spacing', value || 'small' ] );
+			cssVarList[ 'srfm-field-spacing' ] = value || 'small';
 		} else if ( option === 'submit_button_alignment' ) {
-			cssVarList.push( [ 'srfm-submit-alignment', value || 'left' ] );
-			cssVarList.push( [ 'srfm-submit-width-backend', 'max-content' ] );
+			cssVarList[ 'srfm-submit-alignment' ] = value || 'left';
+			cssVarList[ 'srfm-submit-width-backend' ] = 'max-content';
 
 			updateMeta( '_srfm_submit_width_backend', 'max-content' );
 
 			if ( value === 'left' ) {
-				cssVarList.push( [ 'srfm-submit-alignment-backend', '100%' ] );
+				cssVarList[ 'srfm-submit-alignment-backend' ] = '100%';
 				updateMeta( '_srfm_submit_alignment_backend', '100%' );
 			} else if ( value === 'right' ) {
-				cssVarList.push( [ 'srfm-submit-alignment-backend', '0%' ] );
+				cssVarList[ 'srfm-submit-alignment-backend' ] = '0%';
 				updateMeta( '_srfm_submit_alignment_backend', '0%' );
 			} else if ( value === 'center' ) {
-				cssVarList.push( [ 'srfm-submit-alignment-backend', '50%' ] );
+				cssVarList[ 'srfm-submit-alignment-backend' ] = '50%';
 				updateMeta( '_srfm_submit_alignment_backend', '50%' );
 			} else if ( value === 'justify' ) {
-				cssVarList.push( [ 'srfm-submit-alignment-backend', '50%' ] );
-				cssVarList.push( [ 'srfm-submit-width-backend', 'auto' ] );
+				cssVarList[ 'srfm-submit-alignment-backend' ] = '50%';
+				cssVarList[ 'srfm-submit-width-backend' ] = 'auto';
 
 				updateMeta( '_srfm_submit_alignment_backend', '50%' );
 			}
 		}
 
 		// Update the CSS variables.
-		cssVarList?.forEach( ( [ varName, varValue ] ) => setCssValueInRoot( varName, varValue ) );
+		Object.entries( cssVarList ).forEach( ( [ varName, varValue ] ) => setCssValueInRoot( varName, varValue ) );
 
 		editPost( {
 			meta: {
