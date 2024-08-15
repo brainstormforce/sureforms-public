@@ -590,7 +590,7 @@ class Helper {
 	 *
 	 * @param string|null $field_spacing The field spacing size or boolean false to return complete sizes array.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.7
 	 * @return array<string|mixed>
 	 */
 	public static function get_css_vars( $field_spacing = null ) {
