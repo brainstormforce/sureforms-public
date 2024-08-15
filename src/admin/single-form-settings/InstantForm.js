@@ -3,14 +3,30 @@ import SRFMMediaPicker from '@Components/image';
 import MultiButtonsControl from '@Components/multi-buttons-control';
 import Range from '@Components/range/Range.js';
 import svgIcons from '@Svg/svgs.json';
-import { Popover, ToggleControl } from '@wordpress/components';
+import { ExternalLink, FormToggle, Popover } from '@wordpress/components';
 import { useCopyToClipboard } from '@wordpress/compose';
 import { select, useDispatch } from '@wordpress/data';
 import { store as editorStore } from '@wordpress/editor';
-import { useState } from '@wordpress/element';
+import { useId, useState, useEffect } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
+import { cleanForSlug } from '@wordpress/url';
 import parse from 'html-react-parser';
 import { createRoot } from 'react-dom/client';
+
+const InstantFormToggle = ( props ) => {
+	const toggleID = useId();
+
+	return (
+		<div className="srfm-instant-form-settings srfm-instant-form-settings-inline">
+			<label htmlFor={ toggleID } style={ { cursor: 'pointer' } }>{ props.label }</label>
+			<FormToggle
+				{ ...props }
+				label=""
+				id={ toggleID }
+			/>
+		</div>
+	);
+};
 
 const InstantFormComponent = () => {
 	const { _srfm_instant_form_settings } = select( editorStore ).getEditedPostAttribute( 'meta' );
@@ -35,17 +51,73 @@ const InstantFormComponent = () => {
 
 	const { editPost } = useDispatch( editorStore );
 
+	const [ isLiveMode, setIsLiveMode ] = useState( false );
+
 	const [ popoverAnchor, setPopoverAnchor ] = useState();
 	const [ openPopover, setOpenPopover ] = useState( false ); // Load / unload popover component from DOM.
 	const [ hidePopover, setHidePopover ] = useState( false ); // Just hide the popover using CSS instead of unloading it from DOM.
 	const [ isLinkCopied, setIsLinkCopied ] = useState( false );
+	const [ editPostSlug, setEditPostSlug ] = useState( {
+		edit: false,
+		forceEmptyField: false,
+	} );
 
-	const { link } = select( editorStore ).getCurrentPost();
+	const { prefix, postName } = select( editorStore ).getPermalinkParts();
+
+	const link = prefix + postName;
 
 	const clipboardRef = useCopyToClipboard( link, () => {
 		setIsLinkCopied( true );
 		setTimeout( () => setIsLinkCopied( false ), 2000 );
 	} );
+
+	/**
+	 * Manage live preview mode.
+	 */
+	useEffect( () => {
+		const contentArea = document.querySelector( '#editor .interface-interface-skeleton__body' );
+
+		if ( ! contentArea ) {
+			return;
+		}
+
+		let iframe = contentArea.querySelector( '.srfm-instant-form-live-mode-iframe' );
+
+		if ( ! isLiveMode ) {
+			// Unload live mode iframe is live mode is disabled.
+			contentArea.classList.remove( 'srfm-instant-form-live-mode' );
+			iframe?.remove();
+			return;
+		}
+
+		contentArea.classList.add( 'srfm-instant-form-live-mode' );
+
+		const url = new URL( link );
+		const params = new URLSearchParams( _srfm_instant_form_settings );
+
+		params.set( 'live_mode', true );
+
+		url.search = params.toString();
+
+		if ( ! iframe ) {
+			iframe = document.createElement( 'iframe' );
+			iframe.className = 'srfm-instant-form-live-mode-iframe';
+			contentArea.append( iframe );
+		}
+
+		// Pre-content load.
+		let iframeHTMLTag = iframe.contentDocument.querySelector( 'html' );
+		iframeHTMLTag.style.opacity = 0;
+		iframeHTMLTag.style.transition = 'all 1s ease-in-out';
+
+		iframe.addEventListener( 'load', function() {
+			// After content load
+			iframeHTMLTag = iframe.contentDocument.querySelector( 'html' );
+			iframeHTMLTag.style.opacity = 1;
+		} );
+
+		iframe.src = url.toString();
+	}, [ isLiveMode, _srfm_instant_form_settings ] );
 
 	const onHandleChange = ( key, value ) => {
 		const instantFormSettings = {
@@ -107,7 +179,6 @@ const InstantFormComponent = () => {
 			},
 		} );
 	};
-	console.log( 'Rendered' );
 
 	return (
 		<>
@@ -123,12 +194,12 @@ const InstantFormComponent = () => {
 					placement="bottom-end"
 					anchor={ popoverAnchor }
 					onFocusOutside={ ( event ) => {
-						if ( event.relatedTarget.className === popoverAnchor.className ) {
+						if ( event.relatedTarget?.className === popoverAnchor.className ) {
 							// Bail if clicked on the Instant Form toggle button.
 							return;
 						}
 
-						if ( event.relatedTarget.className.includes( 'media-modal' ) ) {
+						if ( event.relatedTarget?.className?.includes( 'media-modal' ) ) {
 							// Unloading the Popover triggers error when media uploader modal is opened.
 							// Don't close the Popover when media uploader is opened, instead just hide the popover.
 							setHidePopover( true );
@@ -142,21 +213,23 @@ const InstantFormComponent = () => {
 					<div className="srfm-instant-form-settings-container">
 
 						<div className="srfm-instant-form-settings-group">
-							<div className="srfm-instant-form-settings srfm-instant-form-settings-inline">
-								<label>{ __( 'Enable Instant Form', 'sureforms' ) }</label>
-								<ToggleControl
-									checked={ true === enable_instant_form }
-									onChange={ ( value ) => onHandleChange( 'enable_instant_form', value ) }
-								/>
-							</div>
+							<InstantFormToggle
+								label={ __( 'Enable Instant Form', 'sureforms' ) }
+								checked={ true === enable_instant_form }
+								onChange={ () => onHandleChange( 'enable_instant_form', ! enable_instant_form ) }
+							/>
 
-							<div className="srfm-instant-form-settings srfm-instant-form-settings-inline">
-								<label>{ __( 'Show Title', 'sureforms' ) }</label>
-								<ToggleControl
-									checked={ single_page_form_title }
-									onChange={ ( value ) => onHandleChange( 'single_page_form_title', value ) }
-								/>
-							</div>
+							<InstantFormToggle
+								label={ __( 'Enable Live Mode', 'sureforms' ) }
+								checked={ true === isLiveMode }
+								onChange={ () => setIsLiveMode( ! isLiveMode ) }
+							/>
+
+							<InstantFormToggle
+								label={ __( 'Show Title', 'sureforms' ) }
+								checked={ true === single_page_form_title }
+								onChange={ () => onHandleChange( 'single_page_form_title', ! single_page_form_title ) }
+							/>
 						</div>
 
 						<div className="srfm-instant-form-settings-separator" />
@@ -230,13 +303,11 @@ const InstantFormComponent = () => {
 						<div className="srfm-instant-form-settings-separator" />
 
 						<div className="srfm-instant-form-settings-group">
-							<div className="srfm-instant-form-settings srfm-instant-form-settings-inline">
-								<label>{ __( 'Use banner as page background', 'sureforms' ) }</label>
-								<ToggleControl
-									checked={ use_banner_as_page_background }
-									onChange={ ( value ) => onHandleChange( 'use_banner_as_page_background', value ) }
-								/>
-							</div>
+							<InstantFormToggle
+								label={ __( 'Use banner as page background', 'sureforms' ) }
+								checked={ true === use_banner_as_page_background }
+								onChange={ () => onHandleChange( 'use_banner_as_page_background', ! use_banner_as_page_background ) }
+							/>
 
 							<div className="srfm-instant-form-settings">
 								<label>{ __( 'Form Background', 'sureforms' ) }</label>
@@ -314,7 +385,13 @@ const InstantFormComponent = () => {
 							<div className="srfm-instant-form-settings">
 								<label>{ __( 'URL', 'sureforms' ) }</label>
 								<div className="srfm-instant-form-url">
-									<input type="url" readOnly defaultValue={ link } />
+									<input
+										readOnly
+										disabled={ editPostSlug.edit }
+										type="url"
+										value={ link }
+										onClick={ () => setEditPostSlug( { ...editPostSlug, ...{ edit: ! editPostSlug.edit } } ) }
+									/>
 									<button
 										type="button"
 										ref={ clipboardRef }
@@ -322,6 +399,64 @@ const InstantFormComponent = () => {
 										{ isLinkCopied ? parse( svgIcons[ 'square-checked' ] ) : parse( svgIcons.copy ) }
 									</button>
 								</div>
+
+								{
+									!! editPostSlug.edit && (
+										<Popover
+											variant="toolbar"
+											noArrow={ false }
+											focusOnMount={ true }
+											onFocusOutside={ () => setEditPostSlug( { ...editPostSlug, ...{ edit: false } } ) }
+										>
+											<div className="srfm-instant-form-settings-container">
+												<div className="srfm-instant-form-settings-group">
+													<div className="srfm-instant-form-settings">
+
+														<div className="srfm-instant-form-settings srfm-instant-form-settings-inline">
+															<label>{ __( 'URL Slug', 'sureforms' ) }</label>
+															<button
+																className="button button-link"
+																onClick={ () => setEditPostSlug( { ...editPostSlug, ...{ edit: false } } ) }
+															>
+																{ __( 'Save', 'sureforms' ) }
+															</button>
+														</div>
+														<input
+															type="text"
+															value={ ! editPostSlug.forceEmptyField ? postName : '' }
+															spellCheck={ false }
+															autoComplete={ 'off' }
+															onChange={ ( e ) => {
+																editPost( {
+																	slug: e.target.value,
+																} );
+
+																if ( e.target.value ) {
+																	return setEditPostSlug( { ...editPostSlug, ...{ forceEmptyField: false } } );
+																}
+
+																// Force empty field of this input field.
+																setEditPostSlug( { ...editPostSlug, ...{ forceEmptyField: true } } );
+															} }
+															onBlur={ ( e ) => {
+																editPost( {
+																	slug: cleanForSlug( e.target.value.replace( prefix, '' ) ),
+																} );
+																setEditPostSlug( { ...editPostSlug, ...{ forceEmptyField: false } } );
+															} }
+														/>
+														<small>
+															{ __( 'The last part of the URL.', 'sureforms' ) }{ ' ' }
+															<ExternalLink href={ 'https://wordpress.org/documentation/article/page-post-settings-sidebar/#permalink' }>
+																{ __( 'Learn more.', 'sureforms' ) }
+															</ExternalLink>
+														</small>
+													</div>
+												</div>
+											</div>
+										</Popover>
+									)
+								}
 							</div>
 						</div>
 					</div>

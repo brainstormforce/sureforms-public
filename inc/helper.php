@@ -347,6 +347,24 @@ class Helper {
 		return $meta_value ? self::get_string_value( $meta_value ) : self::get_string_value( $default );
 	}
 
+	/**
+	 * Returns query params data for instant form live preview.
+	 *
+	 * @since x.x.x
+	 * @return array<mixed> Live preview data.
+	 */
+	public static function get_instant_form_live_data() {
+		$srfm_live_mode_data = isset( $_GET['live_mode'] ) && current_user_can( 'edit_posts' ) ? self::sanitize_recursively( 'sanitize_text_field', wp_unslash( $_GET ) ) : []; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+
+		return $srfm_live_mode_data ? array_map(
+			// Normalize falsy values.
+			function( $live_data ) {
+				return 'false' === $live_data ? false : $live_data;
+			},
+			$srfm_live_mode_data
+		) : [];
+	}
+
 
 	/**
 	 * Default dynamic block value.

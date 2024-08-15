@@ -12,8 +12,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-$srfm_form_preview   = isset( $_GET['form_preview'] ) ? boolval( sanitize_text_field( wp_unslash( $_GET['form_preview'] ) ) ) : false;  // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 $srfm_custom_post_id = get_the_ID();
+$srfm_form_preview   = isset( $_GET['form_preview'] ) ? boolval( sanitize_text_field( wp_unslash( $_GET['form_preview'] ) ) ) : false;  // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+$srfm_live_mode_data = Helper::get_instant_form_live_data();
+
 ?>
 <!DOCTYPE html>
 <html class="srfm-html" <?php language_attributes(); ?>>
@@ -23,7 +25,22 @@ $srfm_custom_post_id = get_the_ID();
 	<meta http-equiv="x-ua-compatible" content="ie=edge">
 	<?php wp_head(); ?>
 	<style>
-		<?php echo wp_kses_post( Helper::get_meta_value( $srfm_custom_post_id, '_srfm_form_custom_css' ) ); ?>
+		<?php
+		echo wp_kses_post( Helper::get_meta_value( $srfm_custom_post_id, '_srfm_form_custom_css' ) );
+
+		if ( $srfm_live_mode_data ) {
+			?>
+			html {
+				margin: 0 !important;
+				opacity: 0;
+				transition: all 1s ease-in-out;
+			}
+			#wpadminbar {
+				display: none;
+			}
+			<?php
+		}
+		?>
 	</style>
 </head>
 
@@ -42,7 +59,7 @@ $srfm_custom_post_id = get_the_ID();
 		]
 	);
 
-	$instant_form_settings         = Helper::get_meta_value( absint( $srfm_custom_post_id ), '_srfm_instant_form_settings' );
+	$instant_form_settings         = ! empty( $srfm_live_mode_data ) ? $srfm_live_mode_data : Helper::get_meta_value( absint( $srfm_custom_post_id ), '_srfm_instant_form_settings' );
 	$site_logo                     = $instant_form_settings['site_logo'];
 	$cover_type                    = $instant_form_settings['cover_type'];
 	$cover_color                   = $instant_form_settings['cover_color'];

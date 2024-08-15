@@ -35,8 +35,21 @@ export const DropdownComponent = ( { attributes, setAttributes, blockID } ) => {
 					readOnly
 				/>
 				<div className="ts-dropdown-icon">
-					<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-						<path d="M4 6L8 10L12 6" stroke="currentColor" strokeOpacity="0.65" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round" />
+					<svg
+						width="16"
+						height="16"
+						viewBox="0 0 16 16"
+						fill="none"
+						xmlns="http://www.w3.org/2000/svg"
+					>
+						<path
+							d="M4 6L8 10L12 6"
+							stroke="currentColor"
+							strokeOpacity="0.65"
+							strokeWidth="1.25"
+							strokeLinecap="round"
+							strokeLinejoin="round"
+						/>
 					</svg>
 				</div>
 			</div>

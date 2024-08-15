@@ -124,7 +124,8 @@ class Generate_Form_Markup {
 				}
 			}
 
-			$instant_form_settings = Helper::get_meta_value( $id, '_srfm_instant_form_settings' );
+			$srfm_live_mode_data   = Helper::get_instant_form_live_data();
+			$instant_form_settings = $srfm_live_mode_data ? $srfm_live_mode_data : Helper::get_meta_value( $id, '_srfm_instant_form_settings' );
 			$bg_type               = is_array( $instant_form_settings ) ? $instant_form_settings['bg_type'] : '';
 			$bg_color              = is_array( $instant_form_settings ) ? $instant_form_settings['bg_color'] : '';
 			$bg_image              = is_array( $instant_form_settings ) ? $instant_form_settings['bg_image'] : '';
