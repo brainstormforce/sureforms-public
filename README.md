@@ -252,9 +252,9 @@ When you use the SureForms, you get a huge library of ready-to-use form template
 ## Changelog ##
 ### 0.0.7 ###
 * New: Improved styling of fields on the front-end and in the form editor.
-* New: Added Primary, Text, and Text on Primary color options.
-* New: Added field spacing options of Small, Medium, and Large.
-* New: Removed Show Labels and Show Asterisk settings and added an option to use labels as placeholders. Removed the placeholder setting from all fields that supported it previously.
+* Improvement: Added Primary, Text, and Text on Primary color options.
+* Improvement: Added field spacing options of Small, Medium, and Large.
+* Improvement: Removed Show Labels and Show Asterisk settings and added an option to use labels as placeholders. Removed the placeholder setting from all fields that supported it previously.
 * Fix: Removed Paragraph block and added custom appender for adding fields to a form.
 * Fix: Resolved a few other minor issues.
 ### 0.0.6 ###
