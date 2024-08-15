@@ -249,7 +249,7 @@ class Admin_Ajax {
 				'redirect_url' => SRFM_SURETRIGGERS_INTERGATION_BASE_URL . 'embed-login',
 				'st-code'      => $secret_key,
 				'base_url'     => $base_url,
-				'reset_url'    => base64_encode( $base_url ), // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode, required as we need to encode base url for suretriggers.
+				'reset_url'    => rtrim( base64_encode( wp_nonce_url( admin_url( 'admin.php?st-reset=true' ), 'st-reset-action' ) ), '=' ), // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode, required as we need to encode base url for suretriggers.
 			],
 			SRFM_SURETRIGGERS_INTERGATION_BASE_URL . 'wp-login'
 		);
