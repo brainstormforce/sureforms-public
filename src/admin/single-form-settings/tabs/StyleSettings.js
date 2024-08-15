@@ -161,10 +161,6 @@ function StyleSettings( props ) {
 
 		// checkbox and gdpr - for small, medium and large checkbox sizes
 		root.style.setProperty(
-			'--srfm-checkbox-description-margin-left',
-			'24px'
-		);
-		root.style.setProperty(
 			'--srfm-checkbox-input-border-radius',
 			'4px'
 		);

@@ -143,6 +143,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 						allowedFormats={ [] }
 					/>
 				) }
+				<div className="srfm-error-wrap"></div>
 			</div>
 		</div>
 	);
