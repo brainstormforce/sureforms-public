@@ -1,5 +1,115 @@
 body.post-type-sureforms_form {
+	// Added to align the icon picker component with the option text field.
+	.srfm-size-type-field-tabs {
+		// Astra theme adds a top padding which distorts the layout.
+		.components-base-control__field {
+			padding-top: 0 !important;
+		}
+	}
+	.srfm-icon-picker {
+		.uag-control-label {
+			display: none;
+		}
+		.uag-ip-remove-icon {
+			top: 2px !important;
+			right: 2px !important;
+			svg {
+				height: 8px !important;
+				width: 8px !important;
+			}
+		}
+		.uag-ip-placeholder-wrap {
+			// Container size 32x32 px.
+			width: 32px;
+			min-height: 32px !important;
+
+			&:hover {
+				background-color: #f8fafc;
+			}
+
+			.uag-ip-remove-icon svg {
+				background-color: var( --srfm-error-color );
+			}
+
+			// Match selected icon size with delete icon.
+			.uag-ip-selected-icon-value svg {
+				height: 20px;
+				width: 20px;
+			}
+		}
+		.uag-ip-actions {
+			display: none !important;
+		}
+	}
 	overflow-y: hidden;
+
+	// Adding multi choice repeater styles.
+	.srfm-option-outer-wrapper {
+		&:first-child {
+			> div {
+				padding-top: 0;
+			}
+		}
+
+		> div {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			padding: 4px 0;
+			.components-base-control {
+				margin-bottom: 0 !important;
+			}
+		}
+	}
+
+	.srfm-media-picker {
+		div {
+			margin: 0;
+		}
+
+		.components-base-control__field {
+			padding: 0;
+		}
+		.srfm-media-control__wrapper {
+			width: 32px;
+			height: 32px;
+			flex-direction: row;
+
+			.srfm-media-control__clickable {
+				min-width: 30px;
+			}
+
+			.srfm-media-control__footer {
+				background-color: transparent;
+				height: 32px;
+				width: 32px;
+				overflow: hidden;
+				position: relative;
+				z-index: 9;
+				.srfm-control-label {
+					background-color: transparent;
+					color: transparent;
+				}
+			}
+			.srfm-media-control__clickable--close {
+				padding: 0;
+				top: 2px;
+				right: 2px;
+				z-index: 10;
+				.srfm-media-control__button--close {
+					height: 8px;
+					width: 8px;
+					svg {
+						background-color: var( --srfm-error-color );
+						padding: 2.4px;
+						path {
+							fill: #ffffff;
+						}
+					}
+				}
+			}
+		}
+	}
 	.edit-post-sidebar > .components-panel > .components-panel__body {
 		display: none;
 
@@ -164,7 +274,7 @@ body.post-type-sureforms_form {
 		font-family: inherit;
 		.block-editor-block-list__layout {
 			// font-size: var( --srfm-font-size ); will be used in the future.
-			font-size: 20px;
+			font-size: 16px;
 		}
 	}
 
@@ -199,11 +309,12 @@ body.post-type-sureforms_form {
 
 		.block-editor-block-list__block,
 		.block-list-appender {
-			padding: 0 0.3em;
-			margin-left: 0 !important; // This is needed to get the field width working.
-			margin-right: 0 !important; // This is needed to get the field width working.
-			margin-top: 1.2em !important; // Had to add as various themes remove this margin.
-			margin-bottom: 0 !important; // Had to add as various themes remove this margin.
+			&:not( .wp-block-srfm-separator ) {
+				margin-left: 0 !important; // This is needed to get the field width working.
+				margin-right: 0 !important; // This is needed to get the field width working.
+				margin-top: 0 !important; // Had to add as various themes distort the layout.
+			}
+			padding: 0 0.5rem;
 			max-width: 100%;
 		}
 	}
@@ -289,60 +400,69 @@ body.post-type-sureforms_form {
 		width: 100%;
 	}
 
-	// Plus button, Block appended.
+	// Hide block inserter below wordpress version 6.6.
+	// This default appender is not available from 6.6.
+	.srfm-form-container {
+		> div:last-child.block-list-appender.wp-block {
+			display: none;
+		}
+	}
 
 	// Add submit button below the Block Appended.
-	// Target all the block-list-appender class except the one inside the address block.
-	.block-list-appender:not( .srfm-address-block-wrap .block-list-appender ) {
+	.srfm-custom-block-inserter {
 		width: 100%;
-		padding: 0 0.3em;
+		max-width: calc( 620px - 0em );
+		margin: 1.2em auto;
+		.components-dropdown.block-editor-inserter {
+			width: 100%;
 
-		.block-editor-button-block-appender.components-button.components-button {
-			box-shadow: none;
-			border: 1px dashed #959595;
-			padding: 24px;
-			background-color: #fff;
-			transition: 0.3s;
-
-			svg {
-				width: 30px;
-				height: 30px;
-				color: white;
-				background-color: #555d66;
-				border-radius: 100%;
+			button.srfm-custom-block-inserter-button {
+				box-shadow: none;
+				border: 1px dashed #959595;
+				padding: 24px;
+				background-color: #fff;
 				transition: 0.3s;
-			}
-
-			&:hover {
-				border-color: #1e1e1e;
 
 				svg {
-					background-color: #1e1e1e;
+					width: 30px;
+					height: 30px;
+					background-color: #555d66;
+					border-radius: 100%;
+					transition: 0.3s;
+					path {
+						fill: white;
+					}
+				}
+
+				&:hover {
+					border-color: #1e1e1e;
+
+					svg {
+						background-color: #1e1e1e;
+					}
 				}
 			}
 		}
 	}
 
-	.srfm-submit-btn-font-size {
-		font-size: var( --srfm-font-size );
-	}
-
 	.srfm-submit-btn-container {
 		position: relative;
 		max-width: calc( 620px - 0em );
-		padding: 0 0.3em;
-		margin: 1.2em auto 6em auto;
+		padding: 0;
+		margin: 0 auto 6em auto;
 
 		.srfm-btn-bg-color {
-			border-radius: var( --srfm-btn-border-radius );
 			font-family: inherit;
-			font-weight: var( --wp--custom--font-weight--medium );
-			line-height: normal;
-			padding: 0.625em 1em;
 			text-decoration: none;
-			color: var( --srfm-btn-text-color );
-			background-color: var( --srfm-btn-bg-color );
-			border: var( --srfm-btn-border-width ) solid var( --srfm-btn-border-color );
+			border: 0px;
+			padding: var( --srfm-btn-padding ) !important;
+			font-size: var( --srfm-btn-font-size ) !important;
+			font-weight: var( --srfm-btn-font-weight ) !important;
+			line-height: var( --srfm-btn-line-height ) !important;
+			border-radius: var( --srfm-btn-border-radius ) !important;
+			background: var( --srfm-color-scheme-primary ) !important;
+			color: var( --srfm-color-scheme-text-on-primary ) !important;
+			border: 1px solid var( --srfm-color-scheme-primary ) !important;
 		}
 		.srfm-btn-alignment {
 			position: absolute;
@@ -358,10 +478,6 @@ body.post-type-sureforms_form {
 			}
 		}
 
-		.srfm-submit-button {
-			font-size: 0.8em;
-		}
-
 		@media ( max-width: 778px ) {
 			max-width: calc( 620px - 0.6em );
 		}
@@ -375,7 +491,7 @@ body.post-type-sureforms_form {
 
 	// SureForms Custom Button Styles.
 	.srfm-inline-submit-button {
-		// padding: calc( 0.667em + 2px ) calc( 1.333em + 2px );
+		margin-top: 4px;
 	}
 
 	.editor-post-publish-panel__content {

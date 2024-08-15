@@ -1,285 +1,82 @@
+@import "./utils/mixins.scss";
+
 .is-root-container {
 	font-size: var( --srfm-font-size );
 	margin-top: 2em;
 
-	// --srfm-primary-color : '#046bd2';
-	// --srfm-label-text-color: #1f2937;
-	// --srfm-body-input-color: #4b5563;
-	// --srfm-placeholder-color: #9ca3af;
-	// --srfm-border-color: #d0d5dd;
-	// --srfm-help-color: #6b7280;
-	// --srfm-base-background-color: #ffffff;
-	// --srfm-light-background-color : '#F9FAFB';
-	// --srfm-info-surface-color : '#3B82F6';
-	// --srfm-info-text-color : '#2563EB';
-	// --srfm-info-background-color : '#EFF6FF';
-	// --srfm-success-surface-color : '#22C55E';
-	// --srfm-success-text-color : '#16A34A';
-	// --srfm-success-background-color : '#F0FDF4';
-	// --srfm-warning-surface-color : '#FACC15';
-	// --srfm-warning-text-color : '#CA8A04';
-	// --srfm-warning-background-color :'#FEFCE8';
-	// --srfm-error-surface-color : '#EF4444';
-	// --srfm-error-text-color: #dc2626;
-	// --srfm-error-background-color : '#FEF2F2';
-	// --srfm-border-radius: 4px;
-	// --srfm-border: 1px;
-
-	.srfm-input-common {
-		width: 100%;
-	}
-
-	.srfm-block-margin-top {
-		margin-top: 1.2em;
-	}
-
 	.srfm-block-wrap {
-		position: relative;
 		pointer-events: none;
-	}
-
-	.srfm-block-label {
-		display: block;
-		font-size: 0.7em;
-		margin-bottom: 0.429em;
-		font-weight: 500;
-		line-height: normal;
-		color: var( --srfm-label-text-color );
 	}
 
 	.srfm-block-text,
 	.srfm-block-label {
 		&.srfm-required::after {
 			content: " *";
-			color: var( --srfm-error-text-color );
+			color: var( --srfm-error-color );
 		}
 	}
 
 	.srfm-input-common {
-		font-size: 0.7em;
-		font-weight: 400;
-		padding: 0.72em 1.143em;
-		line-height: normal;
-		color: var( --srfm-body-input-color );
-		border: var( --srfm-border ) solid var( --srfm-border-color );
-		border-radius: var( --srfm-border-radius );
-		background-color: var( --srfm-base-background-color );
-		outline: none;
-		margin: 0;
-
-		&::placeholder {
-			font-size: 1em;
-			color: var( --srfm-placeholder-color );
-		}
+		@include srfm-input-common-styles( true );
 	}
 
-	.srfm-with-icon {
-		.srfm-input-common {
-			padding-left: 2.4em;
-		}
-
-		.srfm-input-icon {
-			display: block;
-			position: absolute;
-			top: 50%;
-			left: 0.7em;
-			transform: translateY( -50% );
-			line-height: 0;
-
-			svg {
-				width: 0.9em;
-				height: 0.9em;
-				stroke: var( --srfm-body-input-color );
-
-				path {
-					stroke: var( --srfm-body-input-color );
+	// checkbox and gdpr
+	.srfm-checkbox-block,
+	.srfm-gdpr-block {
+		.srfm-block-wrap {
+			.srfm-cbx {
+				.srfm-span-wrap {
+					&:first-child {
+						margin-top: var( --srfm-checkbox-margin-top-editor ) !important;
+					}
 				}
 			}
 		}
 	}
 
-	.srfm-description {
-		display: block;
-		font-size: 0.7em;
-		margin-top: 0.571em;
-		font-weight: 400;
-		line-height: normal;
-		color: var( --srfm-help-color );
-	}
+	// checkbox and gdpr
+	.srfm-input-checkbox,
+	.srfm-input-gdpr {
+		display: none;
 
-	// URL.
-	div[data-type="srfm/url"] {
-		.srfm-protocol {
-			color: var( --srfm-label-text-color );
-			position: absolute;
-			top: 50%;
-			left: 0;
-			transform: translateY( -50% );
-			width: inherit;
-			width: 5.5em;
-			height: 100%;
-			display: flex;
-			align-items: center;
-			border-top-left-radius: var( --srfm-border-radius );
-			border-bottom-left-radius: var( --srfm-border-radius );
-			border-right: var( --srfm-border ) solid var( --srfm-border-color );
-			padding-left: 1em;
-			padding-right: 1em;
-			font-size: 0.7em;
-		}
-
-		.srfm-input-url {
-			padding-left: 6.4375em;
+		&:checked {
+			+ {
+				.srfm-cbx {
+					span {
+						&:first-child:not( .srfm-required ) {
+							background: var( --srfm-color-scheme-primary );
+							border-color: var( --srfm-color-scheme-primary );
+						}
+					}
+				}
+			}
 		}
 	}
 
-	// apply to normal address block
-	.srfm-address-block-container {
-		margin-top: -0.5em;
-
-		.srfm-address-block-label {
-			padding: 0 0.3em;
-			margin-top: 1em;
-		}
-
-		.srfm-address-help-txt {
-			padding: 0 0.3em;
-		}
+	.srfm-input-textarea {
+		height: unset !important;
 	}
 
 	// Address block styles.
 	.srfm-address-block-wrap {
-		padding-left: 0 !important;
-		padding-right: 0 !important;
-		margin-bottom: 0 !important;
+		.srfm-block-wrap {
+			display: flex;
+			flex-wrap: wrap;
+		}
 		.block-editor-inner-blocks {
+			margin-top: var( --srfm-gap-below-address-label );
+
 			.block-editor-block-list__layout {
+				@include srfm-address-block-styles;
+
 				.block-editor-block-list__block {
-					margin-top: 0.5em !important;
+					@include srfm-no-margin-padding;
 				}
 			}
 		}
 		.block-editor-block-list__block,
 		.block-list-appender {
 			margin-top: 1em !important;
-		}
-	}
-
-	// Address compact block styles.
-	div[data-type="srfm/address-compact"] {
-		.srfm-block-wrap {
-			display: flex;
-			flex-wrap: wrap;
-
-			.srfm-input-common {
-				border-radius: 0;
-				border-bottom-width: 0;
-				padding-right: 0.875em;
-				&:nth-child( 1 ) {
-					border-top-left-radius: var( --srfm-border-radius );
-					border-top-right-radius: var( --srfm-border-radius );
-				}
-				&:nth-last-child( 1 ) {
-					border-bottom-width: var( --srfm-border );
-					border-bottom-left-radius: var( --srfm-border-radius );
-					border-bottom-right-radius: var( --srfm-border-radius );
-				}
-
-				&.srfm-input-address-compact-city,
-				&.srfm-input-address-compact-state {
-					width: 50%;
-				}
-
-				&.srfm-input-address-compact-state {
-					border-left: 0;
-				}
-
-				&.srfm-input-address-compact-country {
-					-webkit-appearance: none;
-					-moz-appearance: none;
-					text-indent: 1px;
-				}
-			}
-
-			.srfm-address-compact-country-wrap {
-				position: relative;
-				width: 100%;
-
-				.srfm-input-address-compact-country {
-					border-radius: 0;
-					border-bottom: 0;
-				}
-
-				.srfm-address-compact-icon {
-					position: absolute;
-					top: 50%;
-					right: 15px;
-					transform: translateY( -50% );
-					width: 18px;
-					line-height: 0;
-					transition: 0.2s ease;
-					cursor: pointer;
-				}
-			}
-		}
-	}
-
-	// Address
-	div[data-type="srfm/address"] {
-		.srfm-block-wrap {
-			display: flex;
-			flex-wrap: wrap;
-
-			.srfm-input-common {
-				border-radius: 0;
-				border-bottom-width: 0;
-				padding-right: 0.875em;
-				&:nth-child( 1 ) {
-					border-top-left-radius: var( --srfm-border-radius );
-					border-top-right-radius: var( --srfm-border-radius );
-				}
-				&:nth-last-child( 1 ) {
-					border-bottom-width: var( --srfm-border );
-					border-bottom-left-radius: var( --srfm-border-radius );
-					border-bottom-right-radius: var( --srfm-border-radius );
-				}
-
-				// &.srfm-input-address-city,
-				// &.srfm-input-address-state {
-				// 	width: 50%;
-				// }
-
-				// &.srfm-input-address-state {
-				// 	border-left: 0;
-				// }
-
-				// &.srfm-input-address-country {
-				// 	-webkit-appearance: none;
-				// 	-moz-appearance: none;
-				// 	text-indent: 1px;
-				// }
-			}
-
-			// .srfm-address-country-wrap {
-			// 	position: relative;
-			// 	width: 100%;
-
-			// 	.srfm-input-address-country {
-			// 		border-radius: 0;
-			// 		border-bottom: 0;
-			// 	}
-
-			// 	.srfm-address-icon {
-			// 		position: absolute;
-			// 		top: 50%;
-			// 		right: 15px;
-			// 		transform: translateY( -50% );
-			// 		width: 18px;
-			// 		line-height: 0;
-			// 		transition: 0.2s ease;
-			// 		cursor: pointer;
-			// 	}
-			// }
 		}
 	}
 
@@ -299,9 +96,8 @@
 		.srfm-block-wrap {
 			input {
 				margin: 0;
-				border: 1px solid var( --srfm-border-color );
+				border: 1px solid var( --srfm-color-input-border );
 				box-shadow: none;
-				background-color: var( --srfm-base-background-color );
 			}
 
 			.srfm-block-text {
@@ -323,44 +119,15 @@
 		}
 
 		.srfm-block-wrap {
-			display: flex;
-			flex-wrap: wrap;
-			margin: 0 -0.3em;
-			row-gap: 0.6em;
-
-			@media ( min-width: 431px ) {
-				&.srfm-choice-width-100 {
-					.srfm-multi-choice-single {
-						width: 100%;
-					}
-				}
-
-				&.srfm-choice-width-50 {
-					.srfm-multi-choice-single {
-						width: 50%;
-					}
-				}
-
-				&.srfm-choice-width-33-33 {
-					.srfm-multi-choice-single {
-						width: 33%;
-					}
-				}
-
-				&.srfm-choice-width-25 {
-					.srfm-multi-choice-single {
-						width: 25%;
-					}
-				}
-			}
+			@include srfm-multi-choice-wrap-styles;
 
 			.srfm-multi-choice-single {
-				padding: 0 0.3em;
-				cursor: pointer;
-				margin: 0;
+				@include srfm-multi-choice-single-styles;
 
 				.srfm-input-common {
 					width: calc( 100% - 3em );
+					margin: 0 !important;
+					height: auto !important;
 				}
 
 				.components-button {
@@ -370,46 +137,11 @@
 				}
 
 				.srfm-block-content-wrap {
-					position: relative;
-					display: flex;
-					flex-wrap: wrap;
-					align-items: flex-start;
-					font-size: 0.7em;
-					padding: 0.72em 1.143em 0.72em 0.72em;
-					background-color: var( --srfm-base-background-color );
-					border: var( --srfm-border ) solid var( --srfm-border-color );
-					border-radius: var( --srfm-border-radius );
+					@include srfm-multi-choice-block-content-wrap-styles( true );
 					width: auto;
-					height: 100%;
 
 					.srfm-multi-choice-icon {
-						position: relative;
-						width: 1em;
-						height: 1em;
-						top: 0.18em;
-						border-radius: 100%;
-						border: 1px solid var( --srfm-border-color );
-						border-radius: 100%;
-						line-height: 1.5em;
-
-						svg {
-							position: absolute;
-							top: 0;
-							width: 1em;
-							height: 1em;
-							opacity: 0;
-						}
-					}
-
-					p {
-						font-size: 1em;
-						line-height: normal;
-						padding-left: 0.575em;
-						width: calc( 100% - 1em );
-						color: var( --srfm-body-input-color );
-						margin-top: 0;
-						margin-bottom: 0;
-						word-break: break-word;
+						@include srfm-multi-choice-icon-styles;
 					}
 				}
 
@@ -420,29 +152,53 @@
 
 			.srfm-multi-choice-add-option-wrapper {
 				width: 100%;
+				margin-top: 4px;
+				margin-left: 4px;
 			}
+
+			@include srfm-multi-choice-vertical-layout( true );
 		}
 	}
 
 	// Phone.
-	div[data-type="srfm/phone"] {
+	.srfm-phone-block-wrap {
+		// Adding margin to srfm-block-wrap because the library styles are overriding the input styles.
+		.srfm-block-wrap {
+			margin: var( --srfm-input-field-margin ) !important;
+		}
+		.iti-flag {
+			margin-right: 4px; // Fixed gap between the flag and the country code.
+		}
 		.flag-container {
-			.arrow {
-				&:after {
-					background-color: transparent;
-					color: var( --srfm-body-input-color );
+			width: auto !important;
+			padding: var( --srfm-flag-section-padding ) !important;
+			.selected-flag {
+				display: flex !important;
+				width: auto !important;
+				background-color: inherit !important;
+				.selected-dial-code {
+					font-size: var( --srfm-input-field-font-size );
+					padding-left: 0;
+					color: var( --srfm-color-input-prefix );
 				}
+			}
+			.arrow {
+				display: none;
 			}
 		}
 	}
 
 	// Select / Dropdown
-	div[data-type="srfm/address-compact"],
 	div[data-type="srfm/dropdown"] {
 		.srfm-dropdown-common-wrap {
 			position: relative;
 			width: 100%;
-			color: var( --srfm-placeholder-color );
+			color: var( --srfm-color-input-placeholder );
+
+			.ts-dropdown-icon {
+				top: 50%;
+				transform: translateY( -50% );
+			}
 
 			input[type="text"] {
 				padding-right: 2em;
@@ -460,20 +216,12 @@
 			.srfm-input-common {
 				width: 100%;
 			}
-
-			&::after {
-				content: "";
-				position: absolute;
-				width: 0.5em;
-				height: 0.5em;
-				font-size: 0.7em;
-				border: 1px solid var( --srfm-body-input-color );
-				border-left: 0;
-				border-top: 0;
-				transform: rotate( 45deg );
-				right: 1em;
-				top: 1em;
-			}
 		}
+	}
+}
+
+.editor-styles-wrapper {
+	&::before {
+		background-color: red;
 	}
 }

@@ -481,11 +481,7 @@ class Form_Submit {
 		// If so, send email and do not store entries.
 		if ( $gdpr && $do_not_store_entries ) {
 
-			$modified_message = [];
-			foreach ( $submission_data as $key => $value ) {
-				$only_key                      = str_replace( ':', '', ucfirst( explode( 'SF', $key )[0] ) );
-				$modified_message[ $only_key ] = esc_attr( Helper::get_string_value( $value ) );
-			}
+			$modified_message = $this->prepare_submission_data( $submission_data );
 
 			$form_submit_response = [
 				'success'   => true,
@@ -591,19 +587,7 @@ class Form_Submit {
 				],
 			];
 
-			$modified_message = [];
-			foreach ( $submission_data as $key => $value ) {
-				$only_key = str_replace( ':', '', ucfirst( explode( 'SF', $key )[0] ) );
-				$parts    = explode( '-lbl-', $only_key );
-
-				if ( ! empty( $parts[1] ) ) {
-					$tokens = explode( '-', $parts[1] );
-					if ( count( $tokens ) > 1 ) {
-						$only_key = implode( '-', array_slice( $tokens, 1 ) );
-					}
-					$modified_message[ $only_key ] = esc_attr( Helper::get_string_value( $value ) );
-				}
-			}
+			$modified_message = $this->prepare_submission_data( $submission_data );
 
 			$form_submit_response = [
 				'success'   => true,
@@ -624,6 +608,31 @@ class Form_Submit {
 		}
 
 		return $response;
+	}
+
+	/**
+	 * Prepare submission data.
+	 *
+	 * @param array<mixed> $submission_data Submission data.
+	 * @since 0.0.7
+	 * @return array<mixed> Modified submission data.
+	 */
+	public function prepare_submission_data( $submission_data ) {
+		$modified_message = [];
+		foreach ( $submission_data as $key => $value ) {
+			$parts = explode( '-lbl-', $key );
+			$label = '';
+
+			if ( ! empty( $parts[1] ) ) {
+				$tokens = explode( '-', $parts[1] );
+				if ( count( $tokens ) > 1 ) {
+					$label = implode( '-', array_slice( $tokens, 1 ) );
+				}
+				$modified_message[ $label ] = html_entity_decode( esc_attr( Helper::get_string_value( $value ) ) );
+			}
+		}
+
+		return $modified_message;
 	}
 
 	/**

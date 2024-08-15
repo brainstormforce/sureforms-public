@@ -216,13 +216,13 @@ class Helper {
 	public static function generate_common_form_markup( $form_id, $type, $label = '', $slug = '', $block_id = '', $required = false, $help = '', $error_msg = '', $is_unique = false, $duplicate_msg = '', $override = false ) {
 		$duplicate_msg = $duplicate_msg ? ' data-unique-msg="' . $duplicate_msg . '"' : '';
 
-		$markup         = '';
-		$show_labels    = get_post_meta( self::get_integer_value( $form_id ), '_srfm_show_labels', true ) ? self::get_string_value( get_post_meta( self::get_integer_value( $form_id ), '_srfm_show_labels', true ) ) : true;
-		$show_asterisks = get_post_meta( self::get_integer_value( $form_id ), '_srfm_show_asterisk', true ) ? self::get_string_value( get_post_meta( self::get_integer_value( $form_id ), '_srfm_show_asterisk', true ) ) : true;
+		$markup                     = '';
+		$show_labels_as_placeholder = get_post_meta( self::get_integer_value( $form_id ), '_srfm_use_label_as_placeholder', true );
+		$show_labels_as_placeholder = $show_labels_as_placeholder ? self::get_string_value( $show_labels_as_placeholder ) : false;
 
 		switch ( $type ) {
 			case 'label':
-				$markup = $label && '1' === $show_labels ? '<label for="srfm-' . $slug . '-' . esc_attr( $block_id ) . '" class="srfm-block-label">' . htmlspecialchars_decode( esc_html( $label ) ) . ( $required && '1' === $show_asterisks ? '<span class="srfm-required"> *</span>' : '' ) . '</label>' : '';
+				$markup = $label ? '<label for="srfm-' . $slug . '-' . esc_attr( $block_id ) . '" class="srfm-block-label">' . htmlspecialchars_decode( esc_html( $label ) ) . ( $required ? '<span class="srfm-required"> *</span>' : '' ) . '</label>' : '';
 				break;
 			case 'help':
 				$markup = $help ? '<div class="srfm-description" id="srfm-description-' . esc_attr( $block_id ) . '">' . esc_html( $help ) . '</div>' : '';
@@ -232,6 +232,9 @@ class Helper {
 				break;
 			case 'is_unique':
 				$markup = $is_unique ? '<div class="srfm-error">' . esc_html( $duplicate_msg ) . '</div>' : '';
+				break;
+			case 'placeholder':
+				$markup = $label && '1' === $show_labels_as_placeholder ? $label . ( $required ? ' *' : '' ) : '';
 				break;
 			default:
 				$markup = '';
@@ -349,21 +352,20 @@ class Helper {
 		$common_err_msg = self::get_common_err_msg();
 
 		$default_values = [
-			'srfm_url_block_required_text'             => $common_err_msg['required'],
-			'srfm_input_block_required_text'           => $common_err_msg['required'],
-			'srfm_input_block_unique_text'             => $common_err_msg['unique'],
-			'srfm_address_block_required_text'         => $common_err_msg['required'],
-			'srfm_address_compact_block_required_text' => $common_err_msg['required'],
-			'srfm_phone_block_required_text'           => $common_err_msg['required'],
-			'srfm_phone_block_unique_text'             => $common_err_msg['unique'],
-			'srfm_number_block_required_text'          => $common_err_msg['required'],
-			'srfm_textarea_block_required_text'        => $common_err_msg['required'],
-			'srfm_multi_choice_block_required_text'    => $common_err_msg['required'],
-			'srfm_checkbox_block_required_text'        => $common_err_msg['required'],
-			'srfm_gdpr_block_required_text'            => $common_err_msg['required'],
-			'srfm_email_block_required_text'           => $common_err_msg['required'],
-			'srfm_email_block_unique_text'             => $common_err_msg['unique'],
-			'srfm_dropdown_block_required_text'        => $common_err_msg['required'],
+			'srfm_url_block_required_text'          => $common_err_msg['required'],
+			'srfm_input_block_required_text'        => $common_err_msg['required'],
+			'srfm_input_block_unique_text'          => $common_err_msg['unique'],
+			'srfm_address_block_required_text'      => $common_err_msg['required'],
+			'srfm_phone_block_required_text'        => $common_err_msg['required'],
+			'srfm_phone_block_unique_text'          => $common_err_msg['unique'],
+			'srfm_number_block_required_text'       => $common_err_msg['required'],
+			'srfm_textarea_block_required_text'     => $common_err_msg['required'],
+			'srfm_multi_choice_block_required_text' => $common_err_msg['required'],
+			'srfm_checkbox_block_required_text'     => $common_err_msg['required'],
+			'srfm_gdpr_block_required_text'         => $common_err_msg['required'],
+			'srfm_email_block_required_text'        => $common_err_msg['required'],
+			'srfm_email_block_unique_text'          => $common_err_msg['unique'],
+			'srfm_dropdown_block_required_text'     => $common_err_msg['required'],
 		];
 
 		return apply_filters( 'srfm_default_dynamic_block_option', $default_values, $common_err_msg );
@@ -581,6 +583,168 @@ class Helper {
 		}
 
 		return $form_options;
+	}
+
+	/**
+	 * Get the CSS variables based on different field spacing sizes.
+	 *
+	 * @param string|null $field_spacing The field spacing size or boolean false to return complete sizes array.
+	 *
+	 * @since 0.0.7
+	 * @return array<string|mixed>
+	 */
+	public static function get_css_vars( $field_spacing = null ) {
+		/**
+		* $sizes - Field Spacing Sizes Variables.
+		* The array contains the CSS variables for different field spacing sizes.
+		* Each key corresponds to the field spacing size, and the value is an array of CSS variables.
+		*
+		* For future variables depending on the field spacing size, add the variable to the array respectively.
+		*/
+		$sizes = [
+			'small'  => [
+				'--srfm-row-gap-between-blocks'           => '16px',
+				// Address block gap and spacing variables.
+				'--srfm-col-gap-between-fields'           => '12px',
+				'--srfm-row-gap-between-fields'           => '12px',
+				'--srfm-gap-below-address-label'          => '12px',
+				// Dropdown Variables.
+				'--srfm-dropdown-font-size'               => '14px',
+				'--srfm-dropdown-gap-between-input-menu'  => '4px',
+				'--srfm-dropdown-badge-padding'           => '2px 6px',
+				'--srfm-dropdown-multiselect-font-size'   => '12px',
+				'--srfm-dropdown-multiselect-line-height' => '16px',
+				'--srfm-dropdown-padding-right'           => '12px',
+				// initial padding and from 20px - 12px for dropdown arrow width and 8px for gap before dropdown arrow.
+				'--srfm-dropdown-padding-right-icon'      => 'calc( var( --srfm-dropdown-padding-right ) + 20px )',
+				'--srfm-dropdown-multiselect-padding'     => '8px var( --srfm-dropdown-padding-right-icon ) 8px 8px',
+				// Input Field Variables.
+				'--srfm-input-height'                     => '40px',
+				'--srfm-input-field-padding'              => '10px 12px',
+				'--srfm-input-field-font-size'            => '14px',
+				'--srfm-input-field-line-height'          => '20px',
+				'--srfm-input-field-margin'               => '4px 0',
+				// Checkbox and GDPR Variables.
+				'--srfm-check-ctn-width'                  => '16px',
+				'--srfm-check-ctn-height'                 => '16px',
+				'--srfm-check-svg-size'                   => '10px',
+				'--srfm-checkbox-margin-top-frontend'     => '2px',
+				'--srfm-checkbox-margin-top-editor'       => '3px',
+				'--srfm-check-gap'                        => '8px',
+				'--srfm-checkbox-description-margin-left' => '24px',
+				// Phone Number field variables.
+				'--srfm-flag-section-padding'             => '10px 0 10px 12px',
+				'--srfm-gap-between-icon-text'            => '8px',
+				// Label Variables.
+				'--srfm-label-font-size'                  => '14px',
+				'--srfm-label-line-height'                => '20px',
+				// Description Variables.
+				'--srfm-description-font-size'            => '12px',
+				'--srfm-description-line-height'          => '16px',
+				// Button Variables.
+				'--srfm-btn-padding'                      => '8px 14px',
+				'--srfm-btn-font-size'                    => '14px',
+				'--srfm-btn-line-height'                  => '20px',
+				// Multi Choice Variables.
+				'--srfm-multi-choice-horizontal-padding'  => '16px',
+				'--srfm-multi-choice-vertical-padding'    => '16px',
+				'--srfm-multi-choice-internal-option-gap' => '8px',
+				'--srfm-multi-choice-vertical-svg-size'   => '32px',
+				'--srfm-multi-choice-horizontal-image-size' => '20px',
+				'--srfm-multi-choice-vertical-image-size' => '100px',
+				'--srfm-multi-choice-outer-padding'       => '0',
+			],
+			'medium' => [
+				'--srfm-row-gap-between-blocks'           => '20px',
+				// Address block gap and spacing variables.
+				'--srfm-col-gap-between-fields'           => '16px',
+				'--srfm-row-gap-between-fields'           => '16px',
+				'--srfm-gap-below-address-label'          => '14px',
+				// Input Field Variables.
+				'--srfm-input-height'                     => '44px',
+				'--srfm-input-field-font-size'            => '16px',
+				'--srfm-input-field-line-height'          => '24px',
+				'--srfm-input-field-margin'               => '6px 0',
+				// Checkbox and GDPR Variables.
+				'--srfm-checkbox-margin-top-frontend'     => '4px',
+				'--srfm-checkbox-margin-top-editor'       => '6px',
+				'--srfm-checkbox-description-margin-left' => '24px',
+				// Label Variables.
+				'--srfm-label-font-size'                  => '16px',
+				'--srfm-label-line-height'                => '24px',
+				// Description Variables.
+				'--srfm-description-font-size'            => '14px',
+				'--srfm-description-line-height'          => '20px',
+				// Button Variables.
+				'--srfm-btn-padding'                      => '10px 14px',
+				'--srfm-btn-font-size'                    => '16px',
+				'--srfm-btn-line-height'                  => '24px',
+				// Multi Choice Variables.
+				'--srfm-multi-choice-horizontal-padding'  => '20px',
+				'--srfm-multi-choice-vertical-padding'    => '20px',
+				'--srfm-multi-choice-vertical-svg-size'   => '40px',
+				'--srfm-multi-choice-horizontal-image-size' => '24px',
+				'--srfm-multi-choice-vertical-image-size' => '120px',
+				'--srfm-multi-choice-outer-padding'       => '2px',
+			],
+			'large'  => [
+				'--srfm-row-gap-between-blocks'           => '24px',
+				// Address Block Gap and Spacing Variables.
+				'--srfm-col-gap-between-fields'           => '16px',
+				'--srfm-row-gap-between-fields'           => '20px',
+				'--srfm-gap-below-address-label'          => '16px',
+				// Dropdown Variables.
+				'--srfm-dropdown-font-size'               => '16px',
+				'--srfm-dropdown-gap-between-input-menu'  => '6px',
+				'--srfm-dropdown-badge-padding'           => '6px 6px',
+				'--srfm-dropdown-multiselect-font-size'   => '14px',
+				'--srfm-dropdown-multiselect-line-height' => '20px',
+				'--srfm-dropdown-padding-right'           => '14px',
+				// Input Field Variables.
+				'--srfm-input-height'                     => '48px',
+				'--srfm-input-field-padding'              => '10px 14px',
+				'--srfm-input-field-font-size'            => '18px',
+				'--srfm-input-field-line-height'          => '28px',
+				'--srfm-input-field-margin'               => '8px 0',
+				// Checkbox and GDPR Variables.
+				'--srfm-check-ctn-width'                  => '20px',
+				'--srfm-check-ctn-height'                 => '20px',
+				'--srfm-check-svg-size'                   => '14px',
+				'--srfm-check-gap'                        => '10px',
+				'--srfm-checkbox-margin-top-frontend'     => '4px',
+				'--srfm-checkbox-margin-top-editor'       => '5px',
+				'--srfm-checkbox-description-margin-left' => '30px',
+				// Label Variables.
+				'--srfm-label-font-size'                  => '18px',
+				'--srfm-label-line-height'                => '28px',
+				// Description Variables.
+				'--srfm-description-font-size'            => '16px',
+				'--srfm-description-line-height'          => '24px',
+				// Button Variables.
+				'--srfm-btn-padding'                      => '10px 14px',
+				'--srfm-btn-font-size'                    => '18px',
+				'--srfm-btn-line-height'                  => '28px',
+				// Multi Choice Variables.
+				'--srfm-multi-choice-horizontal-padding'  => '24px',
+				'--srfm-multi-choice-vertical-padding'    => '24px',
+				'--srfm-multi-choice-internal-option-gap' => '12px',
+				'--srfm-multi-choice-vertical-svg-size'   => '48px',
+				'--srfm-multi-choice-horizontal-image-size' => '28px',
+				'--srfm-multi-choice-vertical-image-size' => '140px',
+				'--srfm-multi-choice-outer-padding'       => '4px',
+			],
+		];
+		// Return complete sizes array if field_spacing is false. Required in case of JS for Editor changes.
+		if ( ! $field_spacing ) {
+			return $sizes;
+		}
+
+		$selected_size = $sizes['small'];
+		if ( 'small' !== $field_spacing && isset( $sizes[ $field_spacing ] ) ) {
+			$selected_size = array_merge( $selected_size, $sizes[ $field_spacing ] );
+		}
+
+		return $selected_size;
 	}
 
 }

@@ -7,13 +7,8 @@ import {
 	SelectControl,
 	Button,
 	Icon,
-	TextControl,
 } from '@wordpress/components';
-import {
-	InspectorControls,
-	RichText,
-	useBlockProps,
-} from '@wordpress/block-editor';
+import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
 import { useState, useEffect } from '@wordpress/element';
 import SRFMTextControl from '@Components/text-control';
 import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
@@ -21,7 +16,7 @@ import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
 	SRFMTabs,
 } from '@Components/inspector-tabs/InspectorTab.js';
-import { useErrMessage, decodeHtmlEntities } from '@Blocks/util';
+import { useErrMessage } from '@Blocks/util';
 
 /**
  * Component Dependencies
@@ -35,6 +30,9 @@ import { compose } from '@wordpress/compose';
 import widthOptions from '../width-options.json';
 import { FieldsPreview } from '../FieldsPreview.jsx';
 import ConditionalLogic from '@Components/conditional-logic';
+import MultiButtonsControl from '@Components/multi-buttons-control';
+import UAGIconPicker from '@Components/icon-picker';
+import SRFMMediaPicker from '@Components/image';
 
 const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 	const {
@@ -48,32 +46,12 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 		errorMsg,
 		formId,
 		preview,
+		verticalLayout,
+		optionType,
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
 	const [ newOption, setNewOption ] = useState( options );
 	const blockProps = useBlockProps();
-
-	const addOption = () => {
-		const newOptions = {
-			optionTitle:
-				__( 'Option ', 'sureforms' ) + `${ options.length + 1 }`,
-		};
-
-		setAttributes( {
-			options: [ ...options, newOptions ],
-		} );
-	};
-
-	const changeOption = ( e, index ) => {
-		const newEditOptions = options.map( ( item, thisIndex ) => {
-			if ( index === thisIndex ) {
-				item = { ...item, ...e };
-			}
-			return item;
-		} );
-
-		setAttributes( { options: newEditOptions } );
-	};
 
 	const deleteOption = ( index ) => {
 		const deleteOptions = options.map( ( item, thisIndex ) => {
@@ -87,14 +65,31 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 		setAttributes( { deleteOptions } );
 	};
 
+	const changeOption = ( option, index ) => {
+		const newEditOptions = options.map( ( item, thisIndex ) => {
+			if ( index === thisIndex ) {
+				item = { ...item, ...option };
+			}
+			return item;
+		} );
+
+		setAttributes( { options: newEditOptions } );
+	};
+
 	function editOption( value, i ) {
 		if ( value === '' ) {
 			deleteOption( i );
 			return;
 		}
-		const updatedOptions = [ ...options ];
-		updatedOptions[ i ].optionTitle = value;
-		setAttributes( { options: updatedOptions } );
+
+		const newEditOptions = options.map( ( item, thisIndex ) => {
+			if ( i === thisIndex ) {
+				item = { ...item, ...{ optionTitle: value } };
+			}
+			return item;
+		} );
+
+		setAttributes( { options: newEditOptions } );
 	}
 
 	useEffect( () => {
@@ -113,6 +108,21 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 		const fieldName = srfm_fields_preview.multi_choice_preview;
 		return <FieldsPreview fieldName={ fieldName } />;
 	}
+
+	// This function adds url of media chosen by user to an option.
+	const onSelectImage = ( media, index ) => {
+		const url = media?.sizes?.thumbnail?.url
+			? media?.sizes?.thumbnail?.url
+			: media?.url
+				? media.url
+				: '';
+		changeOption( { image: url }, index );
+	};
+
+	// Removes chose image from and option.
+	const onRemoveImage = ( index ) => {
+		changeOption( { image: '' }, index );
+	};
 
 	return (
 		<div { ...blockProps }>
@@ -158,6 +168,13 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 									} }
 								/>
 							) }
+							<ToggleControl
+								label={ __( 'Vertical Layout', 'sureforms' ) }
+								checked={ verticalLayout }
+								onChange={ ( checked ) =>
+									setAttributes( { verticalLayout: checked } )
+								}
+							/>
 							<ToggleControl
 								label={ __(
 									'Allow Only Single Selection',
@@ -206,6 +223,34 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 											}
 										} }
 									>
+										<MultiButtonsControl
+											setAttributes={ setAttributes }
+											label={ __(
+												'Option Type',
+												'sureforms'
+											) }
+											data={ {
+												value: optionType,
+												label: 'optionType',
+											} }
+											options={ [
+												{
+													value: 'icon',
+													label: __(
+														'Icon',
+														'sureforms'
+													),
+												},
+												{
+													value: 'image',
+													label: __(
+														'Image',
+														'sureforms'
+													),
+												},
+											] }
+											showIcons={ false }
+										/>
 										<span className="srfm-control-label srfm-control__header">
 											{ __(
 												'Edit Options',
@@ -238,17 +283,10 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 																			ref={
 																				param.innerRef
 																			}
+																			className="srfm-option-outer-wrapper"
 																			{ ...param.draggableProps }
 																		>
-																			<div
-																				style={ {
-																					display:
-																						'flex',
-																					alignItems:
-																						'center',
-																					gap: '10px',
-																				} }
-																			>
+																			<div>
 																				<>
 																					<Icon
 																						icon={
@@ -257,12 +295,7 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 																						{ ...param.dragHandleProps }
 																					/>
 																				</>
-																				<div
-																					style={ {
-																						marginBottom:
-																							'0',
-																					} }
-																				>
+																				<div>
 																					<SRFMTextControl
 																						showHeaderControls={
 																							false
@@ -288,6 +321,55 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 																					/>
 																				</div>
 																				<>
+																					{ optionType ===
+																						'icon' && (
+																						<div className="srfm-icon-picker">
+																							<UAGIconPicker
+																								label={
+																									''
+																								}
+																								value={
+																									option.icon
+																								}
+																								onChange={ (
+																									value
+																								) =>
+																									changeOption(
+																										{
+																											icon: value,
+																										},
+																										i
+																									)
+																								}
+																							/>
+																						</div>
+																					) }
+																					{ optionType ===
+																						'image' && (
+																						<div className="srfm-media-picker">
+																							<SRFMMediaPicker
+																								onSelectImage={ (
+																									e
+																								) => {
+																									onSelectImage(
+																										e,
+																										i
+																									);
+																								} }
+																								backgroundImage={
+																									option.image
+																								}
+																								onRemoveImage={ () => {
+																									onRemoveImage(
+																										i
+																									);
+																								} }
+																								disableLabel={
+																									true
+																								}
+																							/>
+																						</div>
+																					) }
 																					<Button
 																						icon="trash"
 																						onClick={ () =>
@@ -312,7 +394,8 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 								) }
 							</div>
 							<div className="sureform-add-option-container">
-								<TextControl
+								<SRFMTextControl
+									showHeaderControls={ false }
 									label={ __(
 										'Add New Option',
 										'sureforms'
@@ -333,7 +416,10 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 											setAttributes( {
 												options: [
 													...options,
-													newOption,
+													{
+														optionTitle:
+															newOption.optionTitle,
+													},
 												],
 											} );
 											setNewOption( { optionTitle: '' } );
@@ -369,27 +455,9 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 			</InspectorControls>
 			<MultiChoiceComponent
 				blockID={ block_id }
-				attributes={ attributes }
-				isSelected={ isSelected }
-				addOption={ addOption }
-				deleteOption={ deleteOption }
-				changeOption={ changeOption }
-				setAttributes={ setAttributes }
+				{ ...{ attributes, isSelected, setAttributes, optionType } }
 			/>
-
-			{ help !== '' && (
-				<RichText
-					tagName="label"
-					value={ help }
-					onChange={ ( value ) => {
-						setAttributes( { help: decodeHtmlEntities( value ) } );
-					} }
-					className="srfm-description"
-					multiline={ false }
-					id={ block_id }
-					allowedFormats={ [] }
-				/>
-			) }
+			<div className="srfm-error-wrap"></div>
 		</div>
 	);
 };
