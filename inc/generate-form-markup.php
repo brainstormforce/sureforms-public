@@ -232,34 +232,12 @@ class Generate_Form_Markup {
 					--srfm-dropdown-placeholder-color: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.50 );
 					--srfm-dropdown-icon-color: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.65 );
 					--srfm-dropdown-icon-disabled: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.25 );
-
-					/* Page Break Variables. */
-					--srfm-page-break-completed-check-container: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.50 );
-					--srfm-page-break-indicator-font-size: 12px;
-					--srfm-page-break-indicator-font-weight: 500;
-					--srfm-page-break-indicator-line-height: 16px;
-					--srfm-page-break-indicator-gap: 8px;
-					--srfm-page-break-indicator-size: 24px;
-					--srfm-page-break-back-btn-text-color: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.80 );
-					--srfm-page-break-back-btn-background: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.05 );
-					--srfm-page-break-unfilled-progress: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.15 );
-					/* The text color variable also acts as the connector check SVG stroke. */
-					--srfm-page-break-indicator-text-color: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.50 );
-					--srfm-page-break-connector-checked: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.15 );
-					--srfm-page-break-connector-pending: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.25 );
-					--srfm-page-break-connector-active: rgba( from <?php echo esc_html( $primary_color ); ?> r g b / 0.50 );
-					--srfm-page-break-steps-unfilled: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.65 );
-					--srfm-page-break-steps-filled: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.25 );
-					--srfm-page-break-steps-progress: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.15 );
-					--srfm-page-break-steps-pending-text-color: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.80 );
-
-					--srfm-btn-disabled: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.25 );
 					<?php
 					// Echo the CSS variables for the form according to the field spacing selected.
 					foreach ( $selected_size as $variable => $value ) {
 						echo esc_html( Helper::get_string_value( $variable ) ) . ': ' . esc_html( Helper::get_string_value( $value ) ) . ';';
 					}
-					do_action( 'srfm_form_css_variables', $id );
+					do_action( 'srfm_form_css_variables', $id, $primary_color, $help_color_var );
 					// echo custom css on page/post.
 					if ( 'sureforms_form' !== $current_post_type ) :
 						echo wp_kses_post( $custom_css );

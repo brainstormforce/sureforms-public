@@ -3,11 +3,9 @@ import { useSelect, useDispatch } from '@wordpress/data';
 import { useState, useEffect } from '@wordpress/element';
 import { store as editorStore } from '@wordpress/editor';
 import AdvancedPopColorControl from '@Components/color-control/advanced-pop-color-control.js';
-import Range from '@Components/range/Range.js';
 import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
 import MultiButtonsControl from '@Components/multi-buttons-control';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { ToggleControl } from '@wordpress/components';
 import {
 	faAlignLeft,
 	faAlignRight,
@@ -18,7 +16,7 @@ import { useDeviceType } from '@Controls/getPreviewType';
 
 function StyleSettings( props ) {
 	const { editPost } = useDispatch( editorStore );
-	const { defaultKeys, isInlineButtonBlockPresent, isPageBreak } = props;
+	const { defaultKeys, isInlineButtonBlockPresent } = props;
 
 	let sureformsKeys = useSelect( ( select ) =>
 		select( editorStore ).getEditedPostAttribute( 'meta' )

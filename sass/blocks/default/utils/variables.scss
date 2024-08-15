@@ -44,6 +44,7 @@
 	--srfm-description-margin-top: 2px;
 
 	// Error variables.
+	// Using the same variables for page break, should be refactored for more generalized name.
 	--srfm-error-font-size: 12px;
 	--srfm-error-font-weight: 500;
 	--srfm-error-line-height: 16px;
@@ -54,4 +55,7 @@
 
 	// Multi Choice variables.
 	--srfm-multi-choice-horizontal-svg-size: 16px;
+
+	// Page Break variables.
+	--srfm-page-break-indicator-size: 24px;
 }
