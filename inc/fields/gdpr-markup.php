@@ -44,19 +44,20 @@ class GDPR_Markup extends Base {
 	 * @return string|boolean
 	 */
 	public function markup() {
+		$label_random_id = 'srfm-' . $this->slug . '-' . wp_rand();
 		ob_start(); ?>
 			<div data-block-id="<?php echo esc_attr( $this->block_id ); ?>" class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $this->slug ); ?>-block srf-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?>-block<?php echo esc_attr( $this->block_width ); ?><?php echo esc_attr( $this->class_name ); ?> <?php echo esc_attr( $this->conditional_class ); ?>">
 				<div class="srfm-block-wrap">
-					<input class="srfm-input-common screen-reader-text srfm-input-<?php echo esc_attr( $this->slug ); ?>" id="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?>" name="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?><?php echo esc_attr( $this->field_name ); ?>"
+					<input class="srfm-input-common screen-reader-text srfm-input-<?php echo esc_attr( $this->slug ); ?>" id="<?php echo esc_attr( $label_random_id ); ?>" name="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?><?php echo esc_attr( $this->field_name ); ?>"
 					<?php echo ! empty( $this->aria_described_by ) ? "aria-describedby='" . esc_attr( trim( $this->aria_described_by ) ) . "'" : ''; ?>
 					aria-required="<?php echo esc_attr( $this->aria_require_attr ); ?>" type="checkbox" <?php echo esc_attr( $this->checked_attr ); ?>/>
-					<label class="srfm-cbx" for="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?>">
+					<label class="srfm-cbx" for="<?php echo esc_attr( $label_random_id ); ?>">
 						<span class="srfm-span-wrap">
 							<svg class="srfm-check-icon" width="12px" height="10px">
 								<use xlink:href="#srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?>-check"></use>
 							</svg>
 						</span>
-						<span class="srfm-block-text srfm-span-wrap"><?php echo wp_kses( $this->label, $this->allowed_tags ); ?>
+						<span class="srfm-span-wrap srfm-block-label"><?php echo wp_kses( $this->label, $this->allowed_tags ); ?>
 							<span class="srfm-required"> *</span></span>
 					</label>
 					<svg class="srfm-inline-svg">
@@ -66,7 +67,9 @@ class GDPR_Markup extends Base {
 					</svg>
 				</div>
 				<?php echo wp_kses_post( $this->help_markup ); ?>
-				<?php echo wp_kses_post( $this->error_msg_markup ); ?>
+				<div class="srfm-error-wrap">
+					<?php echo wp_kses_post( $this->error_msg_markup ); ?>
+				</div>
 			</div>
 		<?php
 		return ob_get_clean();

@@ -1,0 +1,56 @@
+// All the spacing variables in the file are common and do not change with the field spacing.
+:root {
+	--srfm-font-size: 16px;
+
+	// Error color variables.
+	$srfmColorErrorLight: #dc2626 !default;
+	--srfm-error-color: #dc2626;
+	--srfm-error-color-border: #{rgba( $srfmColorErrorLight, 0.65 )};
+	--srfm-error-color-border-glow: #{rgba( $srfmColorErrorLight, 0.15 )};
+
+	// Gaps and Spacing variables.
+	--srfm-col-gap-between-blocks: 8px; // Vertical Gap will stay the same.
+
+	// Dropdown Variables.
+	--srfm-dropdown-font-weight: 400;
+	--srfm-dropdown-badge-gap: 6px;
+	--srfm-dropdown-badge-icon-gap: 6px;
+	--srfm-dropdown-menu-padding: 6px;
+	--srfm-dropdown-menu-icon-gap: 8px;
+	--srfm-dropdown-option-padding: 8px 12px;
+	--srfm-dropdown-badge-delete-icon: #{rgba( $srfmColorErrorLight, 0.65 )};
+	--srfm-dropdown-menu-background: #ffffff;
+
+	// Input field variables.
+	--srfm-input-field-border-radius: 6px;
+	--srfm-input-field-font-weight: 400;
+
+	// checkbox and gdpr
+	--srfm-checkbox-description-margin-left: 24px;
+	--srfm-checkbox-input-border-radius: 4px;
+	--srfm-check-svg-top: 2px;
+	--srfm-check-svg-left: 2px;
+
+	// Phone Number field variables.
+	--srfm-flag-section-padding: 10px 0 10px 12px;
+	--srfm-gap-between-icon-text: 8px;
+
+	// Label variables
+	--srfm-label-font-weight: 500;
+
+	// Description variables.
+	--srfm-description-font-weight: 400;
+	--srfm-description-margin-top: 2px;
+
+	// Error variables.
+	--srfm-error-font-size: 12px;
+	--srfm-error-font-weight: 500;
+	--srfm-error-line-height: 16px;
+
+	// Button variables.
+	--srfm-btn-border-radius: 6px;
+	--srfm-btn-font-weight: 500;
+
+	// Multi Choice variables.
+	--srfm-multi-choice-horizontal-svg-size: 16px;
+}

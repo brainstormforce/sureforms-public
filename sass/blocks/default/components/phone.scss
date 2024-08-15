@@ -5,18 +5,86 @@
 				width: 100%;
 
 				.iti__flag-container {
-					.iti__arrow {
-						border-top-color: var( --srfm-body-input-color );
+					// Setting the line height to normal aligns the country code with the phone number regardless of the browser.
+					line-height: normal;
+					margin: var( --srfm-input-field-margin );
+					.iti__country-list {
+						display: block;
+						opacity: 1;
+						top: 100%;
+						bottom: auto; // Prevent the dropdown menu from shrinking.
+						width: 310px;
+						line-height: var( --srfm-input-field-line-height );
+						transition: 0.2s ease-out;
+						@include srfm-dropdown-styles;
 
-						&.iti__arrow--up {
-							border-bottom-color: var( --srfm-body-input-color );
+						&.iti__hide {
+							display: block;
+							transform: translateY( 1em );
+							opacity: 0;
+							visibility: hidden;
+						}
+						.iti__country {
+							padding: var( --srfm-dropdown-option-padding );
+							gap: var( --srfm-gap-between-icon-text );
+							border-radius: var( --srfm-input-field-border-radius );
+
+							.iti__country-name {
+								color: var( --srfm-dropdown-option-text-color );
+								white-space: nowrap;
+								overflow: hidden;
+								text-overflow: ellipsis;
+							}
+							.iti__dial-code {
+								color: var( --srfm-color-input-text );
+								font-weight: 600;
+							}
+
+							.iti__flag-box,
+							.iti__country-name {
+								margin-right: 0; // Removing default margin.
+							}
+
+							&.iti__highlight {
+								background-color: var( --srfm-dropdown-option-background-hover );
+							}
+
+							&.iti__active {
+								background-color: var( --srfm-dropdown-option-background-selected );
+								&::after {
+									@include srfm-check-mark;
+								}
+							}
 						}
 					}
-				}
+					.iti__selected-flag {
+						background-color: inherit !important;
+						padding-top: 10px;
+						padding-bottom: 10px;
+						gap: 4px; // Fixed gap between the flag and the country code.
 
-				.srfm-input-phone {
-					padding-left: 4em;
+						&:focus-visible {
+							outline: none;
+							border: var( --srfm-color-scheme-primary ) solid 1px;
+							// The border radius is reduced by 1px to eliminate any gaps remaining from the input element border.
+							border-top-left-radius: calc( var( --srfm-input-field-border-radius ) - 1px );
+							border-bottom-left-radius: calc( var( --srfm-input-field-border-radius ) - 1px );
+						}
+					}
+					.iti__selected-dial-code {
+						font-size: var( --srfm-input-field-font-size );
+						margin-left: 0; // Removed library default margin.
+						color: var( --srfm-color-input-prefix );
+					}
+					.iti__arrow {
+						display: none;
+					}
 				}
+			}
+			// Adding important attribute to override the library margin.
+			.srfm-input-phone {
+				margin: var( --srfm-input-field-margin ) !important;
+				padding-right: var( --srfm-dropdown-padding-right );
 			}
 		}
 	}

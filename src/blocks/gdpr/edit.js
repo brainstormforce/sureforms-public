@@ -121,27 +121,30 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 					</InspectorTab>
 				</InspectorTabs>
 			</InspectorControls>
-			<CheckboxComponent
-				blockID={ block_id }
-				setAttributes={ setAttributes }
-				attributes={ attributes }
-				blockType="gdpr"
-			/>
-			{ gdprHelpText !== '' && (
-				<RichText
-					tagName="label"
-					value={ gdprHelpText }
-					onChange={ ( value ) => {
-						setAttributes( {
-							gdprHelpText: decodeHtmlEntities( value ),
-						} );
-					} }
-					className="srfm-description"
-					multiline={ false }
-					id={ block_id }
-					allowedFormats={ [] }
+			<div className="srfm-gdpr-block">
+				<CheckboxComponent
+					blockID={ block_id }
+					setAttributes={ setAttributes }
+					attributes={ attributes }
+					blockType="gdpr"
 				/>
-			) }
+				{ gdprHelpText !== '' && (
+					<RichText
+						tagName="label"
+						value={ gdprHelpText }
+						onChange={ ( value ) => {
+							setAttributes( {
+								gdprHelpText: decodeHtmlEntities( value ),
+							} );
+						} }
+						className="srfm-description"
+						multiline={ false }
+						id={ block_id }
+						allowedFormats={ [] }
+					/>
+				) }
+				<div className="srfm-error-wrap"></div>
+			</div>
 		</div>
 	);
 };

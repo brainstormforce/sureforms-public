@@ -3,7 +3,7 @@
  */
 import { __ } from '@wordpress/i18n';
 import { ToggleControl, SelectControl } from '@wordpress/components';
-import { InspectorControls, RichText } from '@wordpress/block-editor';
+import { InspectorControls } from '@wordpress/block-editor';
 import { useEffect, useState } from '@wordpress/element';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
@@ -19,7 +19,7 @@ import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
 import widthOptions from '../width-options.json';
 import { FieldsPreview } from '../FieldsPreview.jsx';
-import { useErrMessage, decodeHtmlEntities } from '@Blocks/util';
+import { useErrMessage } from '@Blocks/util';
 import ConditionalLogic from '@Components/conditional-logic';
 
 const formatNumber = ( number, formatType ) => {
@@ -39,13 +39,21 @@ const formatNumber = ( number, formatType ) => {
 	const formatOptions = { style: 'decimal', maximumFractionDigits: 20 };
 
 	if ( 'eu-style' === formatType ) {
-		const normalizeNumber = parseFloat( number.replace( /\./g, '' ).replace( ',', '.' ) );
+		const normalizeNumber = parseFloat(
+			number.replace( /\./g, '' ).replace( ',', '.' )
+		);
 
 		// EU style number format.
-		formattedNumber = new Intl.NumberFormat( 'de-DE', formatOptions ).format( normalizeNumber );
+		formattedNumber = new Intl.NumberFormat(
+			'de-DE',
+			formatOptions
+		).format( normalizeNumber );
 	} else {
 		// US style number format. Default.
-		formattedNumber = new Intl.NumberFormat( 'en-US', formatOptions ).format( parseFloat( number.replace( /,/g, '' ) ) );
+		formattedNumber = new Intl.NumberFormat(
+			'en-US',
+			formatOptions
+		).format( parseFloat( number.replace( /,/g, '' ) ) );
 	}
 
 	if ( 'NaN' === formattedNumber ) {
@@ -140,11 +148,17 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 								} }
 								options={ [
 									{
-										label: __( 'US Style (Eg: 9,999.99)', 'sureforms' ),
+										label: __(
+											'US Style (Eg: 9,999.99)',
+											'sureforms'
+										),
 										value: 'us-style',
 									},
 									{
-										label: __( 'EU Style (Eg: 9.999,99)', 'sureforms' ),
+										label: __(
+											'EU Style (Eg: 9.999,99)',
+											'sureforms'
+										),
 										value: 'eu-style',
 									},
 								] }
@@ -159,7 +173,10 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 								value={ defaultValue }
 								setAttributes={ ( value ) => {
 									setAttributes( {
-										defaultValue: formatNumber( value.defaultValue, formatType ),
+										defaultValue: formatNumber(
+											value.defaultValue,
+											formatType
+										),
 									} );
 								} }
 								showControlHeader={ false }
@@ -266,19 +283,7 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 				formatNumber={ formatNumber }
 				setAttributes={ setAttributes }
 			/>
-			{ help !== '' && (
-				<RichText
-					tagName="label"
-					value={ help }
-					onChange={ ( value ) => {
-						setAttributes( { help: decodeHtmlEntities( value ) } );
-					} }
-					className="srfm-description"
-					multiline={ false }
-					id={ block_id }
-					allowedFormats={ [] }
-				/>
-			) }
+			<div className="srfm-error-wrap"></div>
 		</div>
 	);
 };

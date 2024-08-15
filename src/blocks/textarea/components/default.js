@@ -1,5 +1,6 @@
 import { RichText } from '@wordpress/block-editor';
 import { decodeHtmlEntities } from '@Blocks/util';
+import HelpText from '@Components/misc/HelpText';
 
 export const TextareaComponent = ( { attributes, blockID, setAttributes } ) => {
 	const {
@@ -10,6 +11,7 @@ export const TextareaComponent = ( { attributes, blockID, setAttributes } ) => {
 		defaultValue,
 		rows,
 		cols,
+		textAreaHelpText,
 	} = attributes;
 	const isRequired = required ? ' srfm-required' : '';
 	const slug = 'textarea';
@@ -25,6 +27,11 @@ export const TextareaComponent = ( { attributes, blockID, setAttributes } ) => {
 				multiline={ false }
 				id={ blockID }
 				allowedFormats={ [] }
+			/>
+			<HelpText
+				help={ textAreaHelpText }
+				setAttributes={ setAttributes }
+				block_id={ blockID }
 			/>
 			<div className="srfm-block-wrap">
 				<textarea

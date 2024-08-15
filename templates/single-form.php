@@ -38,37 +38,45 @@ if ( $srfm_form_preview_attr ) {
 	</head>
 	<body <?php body_class(); ?>>
 	<?php
-		$srfm_color1_val           = get_post_meta( intval( $srfm_custom_post_id ), '_srfm_color1', true );
+		$default_form_styling      = [
+			'primary_color'           => '#0C78FB',
+			'text_color'              => '#1E1E1E',
+			'text_color_on_primary'   => '#FFFFFF',
+			'field_spacing'           => 'small',
+			'submit_button_alignment' => 'left',
+		];
+		$form_styling              = get_post_meta( intval( $srfm_custom_post_id ), '_srfm_forms_styling', true );
+		$form_styling              = ! empty( $form_styling ) && is_array( $form_styling ) ? $form_styling : $default_form_styling;
 		$srfm_cover_image          = get_post_meta( intval( $srfm_custom_post_id ), '_srfm_cover_image', true );
 		$srfm_fontsize_val         = get_post_meta( intval( $srfm_custom_post_id ), '_srfm_fontsize', true );
 		$srfm_form_container_width = get_post_meta( intval( $srfm_custom_post_id ), '_srfm_form_container_width', true ) ? strval( get_post_meta( intval( $srfm_custom_post_id ), '_srfm_form_container_width', true ) ) : 650;
 		$show_title                = get_post_meta( intval( $srfm_custom_post_id ), '_srfm_single_page_form_title', true ) ? strval( get_post_meta( intval( $srfm_custom_post_id ), '_srfm_single_page_form_title', true ) ) : '';
 		$instant_form              = Helper::get_meta_value( $srfm_custom_post_id, '_srfm_instant_form' );
 
-		$srfm_color_primary    = $srfm_color1_val ? strval( $srfm_color1_val ) : '#0284c7';
+		$srfm_color_primary    = $form_styling['primary_color'];
 		$srfm_cover_image_url  = $srfm_cover_image ? rawurldecode( strval( $srfm_cover_image ) ) : '';
 		$srfm_button_alignment = get_post_meta( intval( $srfm_custom_post_id ), '_srfm_submit_alignment', true ) ? strval( get_post_meta( intval( $srfm_custom_post_id ), '_srfm_submit_alignment', true ) ) : '';
 
-	if ( ! $srfm_form_preview ) {
+		if ( ! $srfm_form_preview ) {
 
 
 
-		if ( 'justify' === $srfm_button_alignment ) {
-			$srfm_full = true;
-		} else {
-			$srfm_full = false;
-		}
-		?>
+			if ( 'justify' === $srfm_button_alignment ) {
+				$srfm_full = true;
+			} else {
+				$srfm_full = false;
+			}
+			?>
 		<style>
 			#srfm-single-page-container {
-				--srfm-form-container-width: 
+				--srfm-form-container-width:
 					<?php
 					echo esc_attr( $srfm_form_container_width . 'px' );
 					?>
 					;
 			}
 			.single-sureforms_form .srfm-single-page-container .srfm-page-banner {
-				<?php if ( ! empty( $srfm_cover_image_url ) ) : ?>
+					<?php if ( ! empty( $srfm_cover_image_url ) ) : ?>
 					background-image: url( <?php echo esc_attr( $srfm_cover_image_url ); ?> );
 					background-position: center;
 					background-size: cover;
@@ -80,23 +88,23 @@ if ( $srfm_form_preview_attr ) {
 		</style>
 		<div id="srfm-single-page-container" class="srfm-single-page-container">
 			<div class="srfm-page-banner">
-				<?php if ( ! empty( $show_title ) && ! empty( $instant_form ) ) : ?>
+					<?php if ( ! empty( $show_title ) && ! empty( $instant_form ) ) : ?>
 					<h1 class="srfm-single-banner-title"><?php echo esc_html( get_the_title() ); ?></h1>
 				<?php endif; ?>
 			</div>
 			<div class="srfm-form-wrapper">
-				<?php
+					<?php
 					// phpcs:ignore
 					echo Generate_Form_Markup::get_form_markup( absint( $srfm_custom_post_id ), false,'', 'sureforms_form' );
 					// phpcs:ignoreEnd
-				?>
+					?>
 						<?php
 						wp_footer();
 						?>
 		</div>
 		</div>
 
-		<?php } else { ?>
+			<?php } else { ?>
 			<style>
 				html.srfm-html {
 					margin-top: 0 !important; /* Needs to be important to remove margin-top added by WordPress admin bar  */
@@ -106,8 +114,8 @@ if ( $srfm_form_preview_attr ) {
 					background-color: transparent;
 				}
 
-				.srfm-form-container ~ div, .srfm-instant-form-wrn-ctn { 
-					display: none !important; /* Needs to be important to remove any blocks added by external plugins in wp_footer() */	
+				.srfm-form-container ~ div, .srfm-instant-form-wrn-ctn {
+					display: none !important; /* Needs to be important to remove any blocks added by external plugins in wp_footer() */
 				}
 			</style>
 			<?php
@@ -119,7 +127,7 @@ if ( $srfm_form_preview_attr ) {
 			// phpcs:ignoreEnd
 
 			wp_footer();
-		}
-		?>
+			}
+			?>
 	</body>
 </html>

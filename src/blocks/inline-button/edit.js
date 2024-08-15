@@ -44,9 +44,10 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 
 	return (
 		<div
-			className={ `${
-				is_inherit_from_theme ? 'wp-block-button' : ''
-			} ${ className }` }
+			className={
+				'srfm-custom-button-ctn' +
+				( className ? ` ${ className }` : '' )
+			}
 		>
 			<InspectorControls>
 				<InspectorTabs
@@ -79,7 +80,6 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 				</InspectorTabs>
 			</InspectorControls>
 			<>
-				<label className="srfm-block-label">‎</label>
 				<button
 					style={ {
 						width: '100%',
@@ -102,6 +102,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 						allowedFormats={ [] }
 					/>
 				</button>
+				<div className="srfm-error-wrap"></div>
 			</>
 		</div>
 	);
