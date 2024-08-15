@@ -80,7 +80,6 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 				</InspectorTabs>
 			</InspectorControls>
 			<>
-				{ /* <label className="srfm-block-label">‎</label> */ }
 				<button
 					style={ {
 						width: '100%',
