@@ -256,7 +256,7 @@ function StyleSettings( props ) {
 	 *
 	 * @param {string} sizingValue - The selected field spacing size ('small', 'medium', 'large').
 	 * @return {void}
-	 * @since x.x.x
+	 * @since 0.0.7
 	 */
 	function applyFieldSpacing( sizingValue ) {
 		const baseSize = srfm_admin?.field_spacing_vars?.small;
@@ -275,7 +275,7 @@ function StyleSettings( props ) {
 	 * @param {string} option
 	 * @param {string} value
 	 * @return {void}
-	 * @since x.x.x
+	 * @since 0.0.7
 	 */
 	function updateFormStyling( option, value ) {
 		if ( option === 'primary_color' ) {
