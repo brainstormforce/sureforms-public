@@ -672,8 +672,8 @@ class Helper {
 				'--srfm-input-field-line-height'          => '24px',
 				'--srfm-input-field-margin'               => '6px 0',
 				// Checkbox and GDPR Variables.
-				'--srfm-checkbox-margin-top-frontend'     => '3px',
-				'--srfm-checkbox-margin-top-editor'       => '5px',
+				'--srfm-checkbox-margin-top-frontend'     => '4px',
+				'--srfm-checkbox-margin-top-editor'       => '6px',
 				// Label Variables.
 				'--srfm-label-font-size'                  => '16px',
 				'--srfm-label-line-height'                => '24px',
