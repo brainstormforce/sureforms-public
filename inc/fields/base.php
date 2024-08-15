@@ -418,7 +418,7 @@ class Base {
 	 * works when user selects option 'Use labels as placeholder'
 	 *
 	 * @param string $input_label label of block where functionality is required.
-	 * @since x.x.x
+	 * @since 0.0.7
 	 * @return void
 	 */
 	protected function set_label_as_placeholder( $input_label = '' ) {

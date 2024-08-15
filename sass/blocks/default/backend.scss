@@ -195,6 +195,11 @@
 			width: 100%;
 			color: var( --srfm-color-input-placeholder );
 
+			.ts-dropdown-icon {
+				top: 50%;
+				transform: translateY( -50% );
+			}
+
 			input[type="text"] {
 				padding-right: 2em;
 				&:placeholder-shown {
@@ -210,7 +215,6 @@
 
 			.srfm-input-common {
 				width: 100%;
-				@include srfm-dropdown-arrow;
 			}
 		}
 	}

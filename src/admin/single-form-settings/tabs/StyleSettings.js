@@ -24,7 +24,7 @@ function StyleSettings( props ) {
 		select( editorStore ).getEditedPostAttribute( 'meta' )
 	);
 	const formStyling = sureformsKeys?._srfm_forms_styling || {};
-	const root = document.documentElement.querySelector( 'body' );
+	const [ root, setRoot ] = useState( document.documentElement.querySelector( 'body' ) );
 	const deviceType = useDeviceType();
 	const [ submitBtn, setSubmitBtn ] = useState(
 		document.querySelector( '.srfm-submit-richtext' )
@@ -33,6 +33,10 @@ function StyleSettings( props ) {
 		document.querySelector( '.srfm-submit-btn-container' )
 	);
 	const [ fieldSpacing, setFieldSpacing ] = useState( formStyling?.field_spacing || 'small' );
+
+	useEffect( () => {
+		setRoot( document.documentElement.querySelector( 'body' ) );
+	}, [] );
 
 	// Apply the sizings when field spacing changes.
 	useEffect( () => {
@@ -80,50 +84,56 @@ function StyleSettings( props ) {
 	}
 
 	const setCssValueInRoot = ( varName, value = null, defaultValue = null ) => {
+		if( ! root?.style ) {
+			return;
+		}
+
 		const variableName = `--${ varName }`;
 		const variableValue = !! value ? value : defaultValue;
 		root.style.setProperty( variableName, variableValue );
 	};
 
-	if ( sureformsKeys ) {
-		const defaultTextColor = '#1E1E1E';
-		// Set the CSS variables for the form styling.
-		[
-			// Form Container
-			[ 'srfm-color-scheme-primary', formStyling?.primary_color || '#0C78FB' ],
-			[ 'srfm-btn-color-hover', `rgba( from ${ formStyling?.primary_color || '#0C78FB' } r g b / 0.9)` ],
-			[ 'srfm-color-scheme-text-on-primary', formStyling?.text_color_on_primary || '#FFFFFF' ],
-			[ 'srfm-color-scheme-text', formStyling?.text_color || defaultTextColor ],
-			[ 'srfm-color-input-label', formStyling?.text_color || defaultTextColor ],
-			[ 'srfm-color-input-placeholder', `rgba( from ${ formStyling?.text_color || defaultTextColor } r g b / 0.5)` ],
-			[ 'srfm-color-input-text', formStyling?.text_color || defaultTextColor ],
-			[ 'srfm-color-input-description', `rgba( from ${ formStyling?.text_color || defaultTextColor } r g b / 0.65)` ],
-			[ 'srfm-color-input-prefix', `rgba( from ${ formStyling?.text_color || defaultTextColor } r g b / 0.65)` ],
-			[ 'srfm-color-input-background', `rgba( from ${ formStyling?.text_color || defaultTextColor } r g b / 0.02)` ],
-			[ 'srfm-color-input-background-disabled', `rgba( from ${ formStyling?.text_color || defaultTextColor } r g b / 0.05)` ],
-			[ 'srfm-color-input-border', `rgba( from ${ formStyling?.text_color || defaultTextColor } r g b / 0.25)` ],
-			[ 'srfm-color-input-border-disabled', `rgba( from ${ formStyling?.text_color || defaultTextColor } r g b / 0.15)` ],
-			[ 'srfm-color-input-border-focus-glow', formStyling?.primary_color ? `rgba( from ${ formStyling?.primary_color } r g b / 0.15)` : '#FAE4DC' ],
-			// checkbox and gdpr - for small, medium and large checkbox sizes
-			[ 'srfm-checkbox-description-margin-left', '24px' ],
-			[ 'srfm-checkbox-input-border-radius', '4px' ],
-			[ 'srfm-color-multi-choice-svg', `rgba( from ${ formStyling?.text_color || defaultTextColor } r g b / 0.7)` ],
-			// Button text color
-			[ 'srfm-btn-text-color', formStyling?.text_color_on_primary || '#FFFFFF' ],
-			// btn border color
-			[ 'srfm-btn-border-color', formStyling?.primary_color || '#0C78FB' ],
-			// Button alignment
-			[ 'srfm-submit-alignment', formStyling?.submit_button_alignment || 'left' ],
-			[ 'srfm-submit-width', sureformsKeys?._srfm_submit_width || '' ],
-			[ 'srfm-submit-alignment-backend', sureformsKeys?._srfm_submit_alignment_backend || '' ],
-			[ 'srfm-submit-width-backend', sureformsKeys?._srfm_submit_width_backend || '' ],
-		].forEach( ( [ varName, value ] ) => setCssValueInRoot( varName, value ) );
-	} else {
-		sureformsKeys = defaultKeys;
-		editPost( {
-			meta: sureformsKeys,
-		} );
-	}
+	useEffect( () => {
+		if ( sureformsKeys ) {
+			const defaultTextColor = '#1E1E1E';
+			// Set the CSS variables for the form styling.
+			[
+				// Form Container
+				[ 'srfm-color-scheme-primary', formStyling?.primary_color || '#0C78FB' ],
+				[ 'srfm-btn-color-hover', `hsl( from ${ formStyling?.primary_color || '#0C78FB' } h s l / 0.9)` ],
+				[ 'srfm-color-scheme-text-on-primary', formStyling?.text_color_on_primary || '#FFFFFF' ],
+				[ 'srfm-color-scheme-text', formStyling?.text_color || defaultTextColor ],
+				[ 'srfm-color-input-label', formStyling?.text_color || defaultTextColor ],
+				[ 'srfm-color-input-placeholder', `hsl( from ${ formStyling?.text_color || defaultTextColor } h s l / 0.5)` ],
+				[ 'srfm-color-input-text', formStyling?.text_color || defaultTextColor ],
+				[ 'srfm-color-input-description', `hsl( from ${ formStyling?.text_color || defaultTextColor } h s l / 0.65)` ],
+				[ 'srfm-color-input-prefix', `hsl( from ${ formStyling?.text_color || defaultTextColor } h s l / 0.65)` ],
+				[ 'srfm-color-input-background', `hsl( from ${ formStyling?.text_color || defaultTextColor } h s l / 0.02)` ],
+				[ 'srfm-color-input-background-disabled', `hsl( from ${ formStyling?.text_color || defaultTextColor } h s l / 0.05)` ],
+				[ 'srfm-color-input-border', `hsl( from ${ formStyling?.text_color || defaultTextColor } h s l / 0.25)` ],
+				[ 'srfm-color-input-border-disabled', `hsl( from ${ formStyling?.text_color || defaultTextColor } h s l / 0.15)` ],
+				[ 'srfm-color-input-border-focus-glow', formStyling?.primary_color ? `hsl( from ${ formStyling?.primary_color } h s l / 0.15)` : '#FAE4DC' ],
+				// checkbox and gdpr - for small, medium and large checkbox sizes
+				[ 'srfm-checkbox-description-margin-left', '24px' ],
+				[ 'srfm-checkbox-input-border-radius', '4px' ],
+				[ 'srfm-color-multi-choice-svg', `hsl( from ${ formStyling?.text_color || defaultTextColor } h s l / 0.7)` ],
+				// Button text color
+				[ 'srfm-btn-text-color', formStyling?.text_color_on_primary || '#FFFFFF' ],
+				// btn border color
+				[ 'srfm-btn-border-color', formStyling?.primary_color || '#0C78FB' ],
+				// Button alignment
+				[ 'srfm-submit-alignment', formStyling?.submit_button_alignment || 'left' ],
+				[ 'srfm-submit-width', sureformsKeys?._srfm_submit_width || '' ],
+				[ 'srfm-submit-alignment-backend', sureformsKeys?._srfm_submit_alignment_backend || '' ],
+				[ 'srfm-submit-width-backend', sureformsKeys?._srfm_submit_width_backend || '' ],
+			].forEach( ( [ varName, value ] ) => setCssValueInRoot( varName, value ) );
+		} else {
+			sureformsKeys = defaultKeys;
+			editPost( {
+				meta: sureformsKeys,
+			} );
+		}
+	}, [ sureformsKeys, formStyling, root ] );
 
 	function updateMeta( option, value ) {
 		const value_id = 0;
@@ -156,7 +166,7 @@ function StyleSettings( props ) {
 	 *
 	 * @param {string} sizingValue - The selected field spacing size ('small', 'medium', 'large').
 	 * @return {void}
-	 * @since x.x.x
+	 * @since 0.0.7
 	 */
 	function applyFieldSpacing( sizingValue ) {
 		const baseSize = srfm_admin?.field_spacing_vars?.small;
@@ -175,7 +185,7 @@ function StyleSettings( props ) {
 	 * @param {string} option
 	 * @param {string} value
 	 * @return {void}
-	 * @since x.x.x
+	 * @since 0.0.7
 	 */
 	function updateFormStyling( option, value ) {
 		// List of CSS variables to update.
@@ -183,7 +193,7 @@ function StyleSettings( props ) {
 
 		if ( option === 'primary_color' ) {
 			cssVarList.push( [ 'srfm-color-scheme-primary', value || '#0C78FB' ] );
-			cssVarList.push( [ 'srfm-btn-color-hover', `rgba( from ${ value || '#0C78FB' } r g b / 0.9)` ] );
+			cssVarList.push( [ 'srfm-btn-color-hover', `hsl( from ${ value || '#0C78FB' } h s l / 0.9)` ] );
 		} else if ( option === 'text_color' ) {
 			const defaultTextColor = '#1E1E1E';
 
@@ -192,12 +202,12 @@ function StyleSettings( props ) {
 			cssVarList.push( [ 'srfm-color-input-label', value || defaultTextColor ] );
 			cssVarList.push( [ 'srfm-color-input-placeholder', value || defaultTextColor ] );
 			cssVarList.push( [ 'srfm-color-input-text', value || defaultTextColor ] );
-			cssVarList.push( [ 'srfm-color-input-description', `rgba( from ${ value || defaultTextColor } r g b / 0.65)` ] );
-			cssVarList.push( [ 'srfm-color-input-prefix', `rgba( from ${ value || defaultTextColor } r g b / 0.65)` ] );
-			cssVarList.push( [ 'srfm-color-input-background', `rgba( from ${ value || defaultTextColor } r g b / 0.02)` ] );
-			cssVarList.push( [ 'srfm-color-input-background-disabled', `rgba( from ${ value || defaultTextColor } r g b / 0.05)` ] );
-			cssVarList.push( [ 'srfm-color-input-border', `rgba( from ${ value || defaultTextColor } r g b / 0.25)` ] );
-			cssVarList.push( [ 'srfm-color-input-border-disabled', `rgba( from ${ value || defaultTextColor } r g b / 0.15)` ] );
+			cssVarList.push( [ 'srfm-color-input-description', `hsl( from ${ value || defaultTextColor } h s l / 0.65)` ] );
+			cssVarList.push( [ 'srfm-color-input-prefix', `hsl( from ${ value || defaultTextColor } h s l / 0.65)` ] );
+			cssVarList.push( [ 'srfm-color-input-background', `hsl( from ${ value || defaultTextColor } h s l / 0.02)` ] );
+			cssVarList.push( [ 'srfm-color-input-background-disabled', `hsl( from ${ value || defaultTextColor } h s l / 0.05)` ] );
+			cssVarList.push( [ 'srfm-color-input-border', `hsl( from ${ value || defaultTextColor } h s l / 0.25)` ] );
+			cssVarList.push( [ 'srfm-color-input-border-disabled', `hsl( from ${ value || defaultTextColor } h s l / 0.15)` ] );
 		} else if ( option === 'text_color_on_primary' ) {
 			cssVarList.push( [ 'srfm-color-scheme-text-on-primary', value || '#FFFFFF' ] );
 		} else if ( option === 'field_spacing' ) {

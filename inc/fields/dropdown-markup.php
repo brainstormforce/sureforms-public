@@ -27,7 +27,7 @@ class Dropdown_Markup extends Base {
 	 * Stores the multi select attribute value.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 0.0.7
 	 */
 	protected $multi_select_attr;
 
@@ -35,7 +35,7 @@ class Dropdown_Markup extends Base {
 	 * Stores the search attribute value.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 0.0.7
 	 */
 	protected $search_attr;
 
