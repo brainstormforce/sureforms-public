@@ -79,138 +79,45 @@ function StyleSettings( props ) {
 		}
 	}
 
+	const setCssValueInRoot = ( varName, value = null, defaultValue = null ) => {
+		const variableName = `--${ varName }`;
+		const variableValue = !! value ? value : defaultValue;
+		root.style.setProperty( variableName, variableValue );
+	};
+
 	if ( sureformsKeys ) {
-		// Form Container
-		root.style.setProperty(
-			'--srfm-color-scheme-primary',
-			formStyling?.primary_color || '#0C78FB'
-		);
-		root.style.setProperty(
-			'--srfm-btn-color-hover',
-			formStyling?.primary_color
-				? `rgba( from ${ formStyling.primary_color } r g b / 0.9)`
-				: `rgba( from #0C78FB r g b / 0.9)`
-		);
-		root.style.setProperty(
-			'--srfm-color-scheme-text-on-primary',
-			formStyling?.text_color_on_primary || '#FFFFFF'
-		);
-
 		const defaultTextColor = '#1E1E1E';
-
-		root.style.setProperty(
-			'--srfm-color-scheme-text',
-			formStyling?.text_color || defaultTextColor
-		);
-		root.style.setProperty(
-			'--srfm-color-input-label',
-			formStyling?.text_color || defaultTextColor
-		);
-		root.style.setProperty(
-			'--srfm-color-input-placeholder',
-			formStyling?.text_color
-				? `rgba( from ${ formStyling.text_color } r g b / 0.5)`
-				: `rgba( from ${ defaultTextColor } r g b / 0.5)`
-		);
-		root.style.setProperty(
-			'--srfm-color-input-text',
-			formStyling?.text_color || defaultTextColor
-		);
-		root.style.setProperty(
-			'--srfm-color-input-description',
-			formStyling?.text_color
-				? `rgba( from ${ formStyling.text_color } r g b / 0.65)`
-				: `rgba( from ${ defaultTextColor } r g b / 0.65)`
-		);
-		root.style.setProperty(
-			'--srfm-color-input-prefix',
-			formStyling?.text_color
-				? `rgba( from ${ formStyling.text_color } r g b / 0.65)`
-				: `rgba( from ${ defaultTextColor } r g b / 0.65)`
-		);
-		root.style.setProperty(
-			'--srfm-color-input-background',
-			formStyling?.text_color
-				? `rgba( from ${ formStyling.text_color } r g b / 0.02)`
-				: `rgba( from ${ defaultTextColor } r g b / 0.02)`
-		);
-		root.style.setProperty(
-			'--srfm-color-input-background-disabled',
-			formStyling?.text_color
-				? `rgba( from ${ formStyling.text_color } r g b / 0.05)`
-				: `rgba( from ${ defaultTextColor } r g b / 0.05)`
-		);
-		root.style.setProperty(
-			'--srfm-color-input-border',
-			formStyling?.text_color
-				? `rgba( from ${ formStyling.text_color } r g b / 0.25)`
-				: `rgba( from ${ defaultTextColor } r g b / 0.25)`
-		);
-		root.style.setProperty(
-			'--srfm-color-input-border-disabled',
-			formStyling?.text_color
-				? `rgba( from ${ formStyling.text_color } r g b / 0.15)`
-				: `rgba( from ${ defaultTextColor } r g b / 0.15)`
-		);
-		root.style.setProperty(
-			'--srfm-color-input-border-focus-glow',
-			formStyling.primary_color
-				? `rgba( from ${ formStyling.primary_color } r g b / 0.15 )`
-				: '#FAE4DC'
-		);
-
-		// checkbox and gdpr - for small, medium and large checkbox sizes
-		root.style.setProperty(
-			'--srfm-checkbox-description-margin-left',
-			'24px'
-		);
-		root.style.setProperty(
-			'--srfm-checkbox-input-border-radius',
-			'4px'
-		);
-
-		root.style.setProperty(
-			'--srfm-color-multi-choice-svg',
-			formStyling?.text_color
-				? `rgba( from ${ formStyling.text_color } r g b / 0.7)`
-				: `rgba( from ${ defaultTextColor } r g b / 0.7)`
-		);
-
-		// Button
-		// Button text color
-		root.style.setProperty(
-			'--srfm-btn-text-color',
-			formStyling?.text_color_on_primary || '#FFFFFF'
-		);
-		// btn border color
-		root.style.setProperty(
-			'--srfm-btn-border-color',
-			formStyling?.primary_color || '#0C78FB'
-		);
-
-		// Button alignment
-		root.style.setProperty(
-			'--srfm-submit-alignment',
-			formStyling?.submit_button_alignment || 'left'
-		);
-		root.style.setProperty(
-			'--srfm-submit-width',
-			sureformsKeys._srfm_submit_width
-				? sureformsKeys._srfm_submit_width
-				: ''
-		);
-		root.style.setProperty(
-			'--srfm-submit-alignment-backend',
-			sureformsKeys._srfm_submit_alignment_backend
-				? sureformsKeys._srfm_submit_alignment_backend
-				: ''
-		);
-		root.style.setProperty(
-			'--srfm-submit-width-backend',
-			sureformsKeys._srfm_submit_width_backend
-				? sureformsKeys._srfm_submit_width_backend
-				: ''
-		);
+		// Set the CSS variables for the form styling.
+		[
+			// Form Container
+			[ 'srfm-color-scheme-primary', formStyling?.primary_color || '#0C78FB' ],
+			[ 'srfm-btn-color-hover', `rgba( from ${ formStyling?.primary_color || '#0C78FB' } r g b / 0.9)` ],
+			[ 'srfm-color-scheme-text-on-primary', formStyling?.text_color_on_primary || '#FFFFFF' ],
+			[ 'srfm-color-scheme-text', formStyling?.text_color || defaultTextColor ],
+			[ 'srfm-color-input-label', formStyling?.text_color || defaultTextColor ],
+			[ 'srfm-color-input-placeholder', `rgba( from ${ formStyling?.text_color || defaultTextColor } r g b / 0.5)` ],
+			[ 'srfm-color-input-text', formStyling?.text_color || defaultTextColor ],
+			[ 'srfm-color-input-description', `rgba( from ${ formStyling?.text_color || defaultTextColor } r g b / 0.65)` ],
+			[ 'srfm-color-input-prefix', `rgba( from ${ formStyling?.text_color || defaultTextColor } r g b / 0.65)` ],
+			[ 'srfm-color-input-background', `rgba( from ${ formStyling?.text_color || defaultTextColor } r g b / 0.02)` ],
+			[ 'srfm-color-input-background-disabled', `rgba( from ${ formStyling?.text_color || defaultTextColor } r g b / 0.05)` ],
+			[ 'srfm-color-input-border', `rgba( from ${ formStyling?.text_color || defaultTextColor } r g b / 0.25)` ],
+			[ 'srfm-color-input-border-disabled', `rgba( from ${ formStyling?.text_color || defaultTextColor } r g b / 0.15)` ],
+			[ 'srfm-color-input-border-focus-glow', formStyling?.primary_color ? `rgba( from ${ formStyling?.primary_color } r g b / 0.15)` : '#FAE4DC' ],
+			// checkbox and gdpr - for small, medium and large checkbox sizes
+			[ 'srfm-checkbox-description-margin-left', '24px' ],
+			[ 'srfm-checkbox-input-border-radius', '4px' ],
+			[ 'srfm-color-multi-choice-svg', `rgba( from ${ formStyling?.text_color || defaultTextColor } r g b / 0.7)` ],
+			// Button text color
+			[ 'srfm-btn-text-color', formStyling?.text_color_on_primary || '#FFFFFF' ],
+			// btn border color
+			[ 'srfm-btn-border-color', formStyling?.primary_color || '#0C78FB' ],
+			// Button alignment
+			[ 'srfm-submit-alignment', formStyling?.submit_button_alignment || 'left' ],
+			[ 'srfm-submit-width', sureformsKeys?._srfm_submit_width || '' ],
+			[ 'srfm-submit-alignment-backend', sureformsKeys?._srfm_submit_alignment_backend || '' ],
+			[ 'srfm-submit-width-backend', sureformsKeys?._srfm_submit_width_backend || '' ],
+		].forEach( ( [ varName, value ] ) => setCssValueInRoot( varName, value ) );
 	} else {
 		sureformsKeys = defaultKeys;
 		editPost( {
@@ -224,16 +131,9 @@ function StyleSettings( props ) {
 
 		// Button
 		if ( option === '_srfm_button_border_width' ) {
-			root.style.setProperty(
-				'--srfm-btn-border-width',
-				value ? value + 'px' : '0px'
-			);
-		}
-		if ( option === '_srfm_button_border_color' ) {
-			root.style.setProperty(
-				'--srfm-btn-border-color',
-				value ? value : '#000000'
-			);
+			setCssValueInRoot( 'srfm-btn-border-width', value ? value + 'px' : '0px' );
+		} else if ( option === '_srfm_button_border_color' ) {
+			setCssValueInRoot( 'srfm-btn-border-color', value || '#000000' );
 		}
 
 		const option_array = {};
@@ -278,129 +178,55 @@ function StyleSettings( props ) {
 	 * @since x.x.x
 	 */
 	function updateFormStyling( option, value ) {
+		// List of CSS variables to update.
+		const cssVarList = [];
+
 		if ( option === 'primary_color' ) {
-			root.style.setProperty(
-				'--srfm-color-scheme-primary',
-				value || '#0C78FB'
-			);
-
-			root.style.setProperty(
-				'--srfm-btn-color-hover',
-				value
-					? `rgba( from ${ value } r g b / 0.9)`
-					: `rgba( from #0C78FB r g b / 0.9)`
-			);
-		}
-
-		if ( option === 'text_color' ) {
+			cssVarList.push( [ 'srfm-color-scheme-primary', value || '#0C78FB' ] );
+			cssVarList.push( [ 'srfm-btn-color-hover', `rgba( from ${ value || '#0C78FB' } r g b / 0.9)` ] );
+		} else if ( option === 'text_color' ) {
 			const defaultTextColor = '#1E1E1E';
 
-			root.style.setProperty(
-				'--srfm-color-scheme-text',
-				value ? value : defaultTextColor
-			);
-			root.style.setProperty(
-				'--srfm-color-input-label',
-				value ? value : defaultTextColor
-			);
-			root.style.setProperty(
-				'--srfm-color-input-placeholder',
-				value ? value : defaultTextColor
-			);
-			root.style.setProperty(
-				'--srfm-color-input-text',
-				value ? value : defaultTextColor
-			);
-			root.style.setProperty(
-				'--srfm-color-input-description',
-				value
-					? `rgba( from ${ value } r g b / 0.65)`
-					: `rgba( from ${ defaultTextColor } r g b / 0.65)`
-			);
-			root.style.setProperty(
-				'--srfm-color-input-prefix',
-				value
-					? `rgba( from ${ value } r g b / 0.65)`
-					: `rgba( from ${ defaultTextColor } r g b / 0.65)`
-			);
-			root.style.setProperty(
-				'--srfm-color-input-background',
-				value
-					? `rgba( from ${ value } r g b / 0.02)`
-					: `rgba( from ${ defaultTextColor } r g b / 0.02)`
-			);
-			root.style.setProperty(
-				'--srfm-color-input-background-disabled',
-				value
-					? `rgba( from ${ value } r g b / 0.05)`
-					: `rgba( from ${ defaultTextColor } r g b / 0.05)`
-			);
-			root.style.setProperty(
-				'--srfm-color-input-border',
-				value
-					? `rgba( from ${ value } r g b / 0.25)`
-					: `rgba( from ${ defaultTextColor } r g b / 0.25)`
-			);
-			root.style.setProperty(
-				'--srfm-color-input-border-disabled',
-				value
-					? `rgba( from ${ value } r g b / 0.15)`
-					: `rgba( from ${ defaultTextColor } r g b / 0.15)`
-			);
-		}
+			// Push the CSS variables to update.
+			cssVarList.push( [ 'srfm-color-scheme-text', value || defaultTextColor ] );
+			cssVarList.push( [ 'srfm-color-input-label', value || defaultTextColor ] );
+			cssVarList.push( [ 'srfm-color-input-placeholder', value || defaultTextColor ] );
+			cssVarList.push( [ 'srfm-color-input-text', value || defaultTextColor ] );
+			cssVarList.push( [ 'srfm-color-input-description', `rgba( from ${ value || defaultTextColor } r g b / 0.65)` ] );
+			cssVarList.push( [ 'srfm-color-input-prefix', `rgba( from ${ value || defaultTextColor } r g b / 0.65)` ] );
+			cssVarList.push( [ 'srfm-color-input-background', `rgba( from ${ value || defaultTextColor } r g b / 0.02)` ] );
+			cssVarList.push( [ 'srfm-color-input-background-disabled', `rgba( from ${ value || defaultTextColor } r g b / 0.05)` ] );
+			cssVarList.push( [ 'srfm-color-input-border', `rgba( from ${ value || defaultTextColor } r g b / 0.25)` ] );
+			cssVarList.push( [ 'srfm-color-input-border-disabled', `rgba( from ${ value || defaultTextColor } r g b / 0.15)` ] );
+		} else if ( option === 'text_color_on_primary' ) {
+			cssVarList.push( [ 'srfm-color-scheme-text-on-primary', value || '#FFFFFF' ] );
+		} else if ( option === 'field_spacing' ) {
+			cssVarList.push( [ 'srfm-field-spacing', value || 'small' ] );
+		} else if ( option === 'submit_button_alignment' ) {
+			cssVarList.push( [ 'srfm-submit-alignment', value || 'left' ] );
+			cssVarList.push( [ 'srfm-submit-width-backend', 'max-content' ] );
 
-		if ( option === 'text_color_on_primary' ) {
-			root.style.setProperty(
-				'--srfm-color-scheme-text-on-primary',
-				value || '#FFFFFF'
-			);
-		}
-
-		if ( option === 'field_spacing' ) {
-			root.style.setProperty( '--srfm-field-spacing', value || 'small' );
-		}
-
-		if ( option === 'submit_button_alignment' ) {
-			root.style.setProperty(
-				'--srfm-submit-alignment',
-				value || 'left'
-			);
-			root.style.setProperty(
-				'--srfm-submit-width-backend',
-				'max-content'
-			);
 			updateMeta( '_srfm_submit_width_backend', 'max-content' );
 
 			if ( value === 'left' ) {
-				root.style.setProperty(
-					'--srfm-submit-alignment-backend',
-					'100%'
-				);
+				cssVarList.push( [ 'srfm-submit-alignment-backend', '100%' ] );
 				updateMeta( '_srfm_submit_alignment_backend', '100%' );
-			}
-			if ( value === 'right' ) {
-				root.style.setProperty(
-					'--srfm-submit-alignment-backend',
-					'0%'
-				);
+			} else if ( value === 'right' ) {
+				cssVarList.push( [ 'srfm-submit-alignment-backend', '0%' ] );
 				updateMeta( '_srfm_submit_alignment_backend', '0%' );
-			}
-			if ( value === 'center' ) {
-				root.style.setProperty(
-					'--srfm-submit-alignment-backend',
-					'50%'
-				);
+			} else if ( value === 'center' ) {
+				cssVarList.push( [ 'srfm-submit-alignment-backend', '50%' ] );
 				updateMeta( '_srfm_submit_alignment_backend', '50%' );
-			}
-			if ( value === 'justify' ) {
-				root.style.setProperty(
-					'--srfm-submit-alignment-backend',
-					'50%'
-				);
-				root.style.setProperty( '--srfm-submit-width-backend', 'auto' );
+			} else if ( value === 'justify' ) {
+				cssVarList.push( [ 'srfm-submit-alignment-backend', '50%' ] );
+				cssVarList.push( [ 'srfm-submit-width-backend', 'auto' ] );
+
 				updateMeta( '_srfm_submit_alignment_backend', '50%' );
 			}
 		}
+
+		// Update the CSS variables.
+		cssVarList?.forEach( ( [ varName, varValue ] ) => setCssValueInRoot( varName, varValue ) );
 
 		editPost( {
 			meta: {

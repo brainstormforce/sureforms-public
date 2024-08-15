@@ -203,35 +203,35 @@ class Generate_Form_Markup {
 					--srfm-color-scheme-text: <?php echo esc_html( $help_color_var ); ?>;
 
 					--srfm-color-input-label: <?php echo esc_html( $help_color_var ); ?>;
-					--srfm-color-input-description: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.65 );
-					--srfm-color-input-placeholder: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.5 );
+					--srfm-color-input-description: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.65 );
+					--srfm-color-input-placeholder: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.5 );
 					--srfm-color-input-text: <?php echo esc_html( $help_color_var ); ?>;
-					--srfm-color-input-prefix: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.65 );
-					--srfm-color-input-background: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.02 );
-					--srfm-color-input-background-hover: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.05 );
-					--srfm-color-input-background-disabled: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.05 );
-					--srfm-color-input-border: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.25 );
-					--srfm-color-input-border-disabled: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.15 );
-					--srfm-color-multi-choice-svg: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.7 );
-					--srfm-color-input-border-hover: rgba( from <?php echo esc_html( $primary_color_var ); ?> r g b / 0.65 );
-					--srfm-color-input-border-focus-glow: rgba( from <?php echo esc_html( $primary_color_var ); ?> r g b / 0.15 );
-					--srfm-color-input-selected: rgba( from <?php echo esc_html( $primary_color_var ); ?> r g b / 0.1 );
-					--srfm-btn-color-hover: rgba( from <?php echo esc_html( $primary_color_var ); ?> r g b / 0.9 );
-					--srfm-btn-color-disabled: rgba( from <?php echo esc_html( $primary_color_var ); ?> r g b / 0.25 );
+					--srfm-color-input-prefix: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.65 );
+					--srfm-color-input-background: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.02 );
+					--srfm-color-input-background-hover: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.05 );
+					--srfm-color-input-background-disabled: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.05 );
+					--srfm-color-input-border: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.25 );
+					--srfm-color-input-border-disabled: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.15 );
+					--srfm-color-multi-choice-svg: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.7 );
+					--srfm-color-input-border-hover: hsl( from <?php echo esc_html( $primary_color_var ); ?> h s l / 0.65 );
+					--srfm-color-input-border-focus-glow: hsl( from <?php echo esc_html( $primary_color_var ); ?> h s l / 0.15 );
+					--srfm-color-input-selected: hsl( from <?php echo esc_html( $primary_color_var ); ?> h s l / 0.1 );
+					--srfm-btn-color-hover: hsl( from <?php echo esc_html( $primary_color_var ); ?> h s l / 0.9 );
+					--srfm-btn-color-disabled: hsl( from <?php echo esc_html( $primary_color_var ); ?> h s l / 0.25 );
 
 					/* Dropdown Variables */
-					--srfm-dropdown-input-background-hover: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.05 );
-					--srfm-dropdown-option-background-hover: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.10 );
-					--srfm-dropdown-option-background-selected: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.05 );
-					--srfm-dropdown-option-selected-icon: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.65 );
-					--srfm-dropdown-option-text-color: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.80 );
+					--srfm-dropdown-input-background-hover: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.05 );
+					--srfm-dropdown-option-background-hover: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.10 );
+					--srfm-dropdown-option-background-selected: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.05 );
+					--srfm-dropdown-option-selected-icon: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.65 );
+					--srfm-dropdown-option-text-color: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.80 );
 					--srfm-dropdown-option-selected-text: <?php echo esc_html( $help_color_var ); ?>;
-					--srfm-dropdown-badge-background: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.05 );
-					--srfm-dropdown-badge-background-hover: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.10 );
-					--srfm-dropdown-menu-border-color: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.10 );
-					--srfm-dropdown-placeholder-color: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.50 );
-					--srfm-dropdown-icon-color: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.65 );
-					--srfm-dropdown-icon-disabled: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.25 );
+					--srfm-dropdown-badge-background: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.05 );
+					--srfm-dropdown-badge-background-hover: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.10 );
+					--srfm-dropdown-menu-border-color: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.10 );
+					--srfm-dropdown-placeholder-color: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.50 );
+					--srfm-dropdown-icon-color: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.65 );
+					--srfm-dropdown-icon-disabled: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.25 );
 					<?php
 					// Echo the CSS variables for the form according to the field spacing selected.
 					foreach ( $selected_size as $variable => $value ) {
