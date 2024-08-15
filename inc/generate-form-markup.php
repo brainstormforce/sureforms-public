@@ -239,6 +239,7 @@ class Generate_Form_Markup {
 					--srfm-page-break-indicator-font-weight: 500;
 					--srfm-page-break-indicator-line-height: 16px;
 					--srfm-page-break-indicator-gap: 8px;
+					--srfm-page-break-indicator-size: 24px;
 					--srfm-page-break-back-btn-text-color: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.80 );
 					--srfm-page-break-back-btn-background: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.05 );
 					--srfm-page-break-unfilled-progress: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.15 );
@@ -247,6 +248,10 @@ class Generate_Form_Markup {
 					--srfm-page-break-connector-checked: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.15 );
 					--srfm-page-break-connector-pending: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.25 );
 					--srfm-page-break-connector-active: rgba( from <?php echo esc_html( $primary_color ); ?> r g b / 0.50 );
+					--srfm-page-break-steps-unfilled: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.65 );
+					--srfm-page-break-steps-filled: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.25 );
+					--srfm-page-break-steps-progress: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.15 );
+					--srfm-page-break-steps-pending-text-color: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.80 );
 
 					--srfm-btn-disabled: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.25 );
 					<?php

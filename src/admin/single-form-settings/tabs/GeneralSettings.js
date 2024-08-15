@@ -277,25 +277,25 @@ function GeneralSettings( props ) {
 					/>
 					<SRFMTextControl
 						data={ {
-							value: sureformsKeys._srfm_previous_button_text,
-							label: '_srfm_previous_button_text',
-						} }
-						label={ __( 'Previous Button Text', 'sureforms' ) }
-						value={ sureformsKeys._srfm_previous_button_text }
-						onChange={ ( value ) => {
-							updateMeta( '_srfm_previous_button_text', value );
-						} }
-						isFormSpecific={ true }
-					/>
-					<SRFMTextControl
-						data={ {
-							value: sureformsKeys._srfm_previous_button_text,
+							value: sureformsKeys._srfm_next_button_text,
 							label: '_srfm_next_button_text',
 						} }
 						label={ __( 'Next Button Text', 'sureforms' ) }
 						value={ sureformsKeys._srfm_next_button_text }
 						onChange={ ( value ) => {
 							updateMeta( '_srfm_next_button_text', value );
+						} }
+						isFormSpecific={ true }
+					/>
+					<SRFMTextControl
+						data={ {
+							value: sureformsKeys._srfm_previous_button_text,
+							label: '_srfm_previous_button_text',
+						} }
+						label={ __( 'Back Button Text', 'sureforms' ) }
+						value={ sureformsKeys._srfm_previous_button_text }
+						onChange={ ( value ) => {
+							updateMeta( '_srfm_previous_button_text', value );
 						} }
 						isFormSpecific={ true }
 					/>
