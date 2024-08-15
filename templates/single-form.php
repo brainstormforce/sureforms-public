@@ -33,7 +33,7 @@ $srfm_live_mode_data = Helper::get_instant_form_live_data();
 			html {
 				margin: 0 !important;
 				opacity: 0;
-				transition: all 1s ease-in-out;
+				transition: all 0.5s ease-in-out;
 			}
 			#wpadminbar {
 				display: none;
@@ -152,6 +152,18 @@ $srfm_live_mode_data = Helper::get_instant_form_live_data();
 	}
 
 	wp_footer();
+
+	if ( $srfm_live_mode_data ) {
+		?>
+		<script>
+			(function() {
+				document.addEventListener('DOMContentLoaded', function() {
+					document.querySelector('html').style.opacity = 1;
+				});
+			}());
+		</script>
+		<?php
+	}
 	?>
 </body>
 

@@ -92,7 +92,9 @@ const InstantFormComponent = () => {
 
 		contentArea.classList.add( 'srfm-instant-form-live-mode' );
 
-		const url = new URL( link );
+		const currentPost = select( editorStore ).getCurrentPost();
+
+		const url = new URL( currentPost.link ); // Use the default ( not edited ) post link for live mode as edited version is not saved yet.
 		const params = new URLSearchParams( _srfm_instant_form_settings );
 
 		params.set( 'live_mode', true );
@@ -106,15 +108,9 @@ const InstantFormComponent = () => {
 		}
 
 		// Pre-content load.
-		let iframeHTMLTag = iframe.contentDocument.querySelector( 'html' );
+		const iframeHTMLTag = iframe.contentDocument.querySelector( 'html' );
 		iframeHTMLTag.style.opacity = 0;
-		iframeHTMLTag.style.transition = 'all 1s ease-in-out';
-
-		iframe.addEventListener( 'load', function() {
-			// After content load
-			iframeHTMLTag = iframe.contentDocument.querySelector( 'html' );
-			iframeHTMLTag.style.opacity = 1;
-		} );
+		iframeHTMLTag.style.transition = 'all 0.5s ease-in-out';
 
 		iframe.src = url.toString();
 	}, [ isLiveMode, _srfm_instant_form_settings ] );
