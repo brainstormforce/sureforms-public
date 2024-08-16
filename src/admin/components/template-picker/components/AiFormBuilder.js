@@ -1,7 +1,9 @@
 import { __ } from '@wordpress/i18n';
 import { Button } from '@wordpress/components';
 import apiFetch from '@wordpress/api-fetch';
-import { useState } from '@wordpress/element';
+import { useState,
+	useEffect
+ } from '@wordpress/element';
 import { handleAddNewPost } from '@Utils/Helpers';
 import {
 	MdArrowForward,
@@ -13,6 +15,7 @@ import { CircularProgressBar } from '@tomickigrzegorz/react-circular-progress-ba
 import Header from './Header.js';
 import LimitReachedPopup from './LimitReachedPopup.js';
 import ErrorPopup from './ErrorPopup.js';
+import {AuthErrorPopup} from './AuthErrorPopup.js';
 
 const AiFormBuilder = () => {
 	const [ message, setMessage ] = useState(
@@ -25,6 +28,8 @@ const AiFormBuilder = () => {
 		useState( false );
 	const [ showFormCreationErr, setShowFormCreationErr ] = useState( false );
 	const [ showFormIdeas, setShowFormIdeas ] = useState( false );
+	const [ characterCount, setCharacterCount ] = useState( 0 );
+	const [ showAuthErrorPopup, setShowAuthErrorPopup ] = useState( false );
 	const examplePrompts = [
 		{
 			title: 'Generate a user feedback form',
@@ -136,6 +141,57 @@ const AiFormBuilder = () => {
 		userPrompt.value = prompt;
 	};
 
+	const initiateAuth = async () => {
+		const response = await apiFetch({
+			path: '/sureforms/v1/initiate-auth',
+			headers: {
+				'Content-Type': 'application/json',
+				'X-WP-Nonce': srfm_admin.template_picker_nonce,
+			},
+			method: 'GET',
+		})
+
+		if ( response?.success ) {
+			window.location.href = response.data;
+		}
+	};
+
+	const handleAccessKey = async (accessKey) => {
+	  	// if access key is present, handle it by decrypting it and redirecting to form builder
+		const response = await apiFetch({
+			path: '/sureforms/v1/handle-access-key',
+			headers: {
+				'Content-Type': 'application/json',
+				'X-WP-Nonce': srfm_admin.template_picker_nonce,
+			},
+			method: 'POST',
+			body: JSON.stringify({
+				accessKey
+			}),
+		})
+
+		if ( response?.success ) {
+			const decryptedAccessKey = response?.data;
+
+			if (decryptedAccessKey) {
+				window.location.href = srfm_admin.site_url + `/wp-admin/admin.php?page=add-new-form&method=ai`;
+			}
+		} else {
+			setShowAuthErrorPopup(true);
+		}
+	};
+
+	const urlParams = new URLSearchParams(window.location.search);
+	const accessKey = urlParams.get('access_key');
+  
+	// Handle access key on component mount
+	useEffect(() => {
+		if (accessKey) {
+			handleAccessKey(accessKey);
+		} 
+	}, [accessKey]);
+
+	// shows while the form is being built
 	if ( isBuildingForm ) {
 		return (
 			<>
@@ -178,12 +234,59 @@ const AiFormBuilder = () => {
 		);
 	}
 
+	// show limit reached popup when free forms are consumed
 	if ( showLimitReachedPopup ) {
+
+		const isRegistered = srfm_admin?.srfm_ai_usage_details?.is_registered;
+		const formCreationleft = srfm_admin?.srfm_ai_usage_details?.remaining;
+
+
+		// show upgrade plan popup if user is registered and form creation limit is reached
+		if (isRegistered === 'registered'&& formCreationleft === 0) {
+			return (
+				<LimitReachedPopup
+					setShowLimitReachedPopup={ setShowLimitReachedPopup }
+					initiateAuth={ initiateAuth }
+					paraOne={ 	 __(
+						'You have reached the maximum number of form generations in your Free Plan.',
+						'sureforms'
+					) }
+					paraTwo={ __(
+						'Please upgrade your free plan to keep creating more forms with AI.',
+						'sureforms'
+					) }
+					buttonText={ __( 'Upgrade Plan', 'sureforms' ) }
+					onClick={ () => {
+						window.open(
+							'https://sureforms.com/pricing',
+							'_blank'
+						);
+					} }
+				/>
+			);
+		}
+
 		return (
 			<LimitReachedPopup
 				setShowLimitReachedPopup={ setShowLimitReachedPopup }
+				onlClick={ initiateAuth }
+				paraOne={ 	 __(
+					'You have reached the maximum number of form generations.',
+					'sureforms'
+				) }
+				paraTwo={ __(
+					'Please connect your website with SureForms AI to create 20 more forms with AI.',
+					'sureforms'
+				) }
 			/>
 		);
+	}
+
+	// show auth error popup when access key is not present while authenticating
+	if ( showAuthErrorPopup ) {
+		return <AuthErrorPopup 
+		initiateAuth={ initiateAuth }
+		/>;
 	}
 
 	return (
@@ -210,7 +313,9 @@ const AiFormBuilder = () => {
 									'sureforms'
 								) }
 								maxLength={ 2000 }
-								onChange={ () => setShowEmptyError( false ) }
+								onChange={ (e) => {setShowEmptyError( false );
+									setCharacterCount(e.target.value.length);
+								} }
 							/>
 							{ showEmptyError && (
 								<span className="srfm-ai-builder-textarea-error">
@@ -254,6 +359,23 @@ const AiFormBuilder = () => {
 							) }
 						</div>
 						<hr className="srfm-ai-builder-separator" />
+						<div
+						style={{
+							display: 'flex',
+							alignItems: 'center',
+							justifyContent:'flex-end',
+							gap: '16px',
+						}}>
+							<span
+							style={{
+								fontSize: '16px',
+								fontWeight: '500',
+								lineHeight: '24px',
+								color: ' #64748B',
+							}}
+							>
+						{ characterCount }/2000
+						</span>
 						<Button
 							className="srfm-ai-builder-create-form-btn"
 							onClick={ () => {
@@ -285,6 +407,7 @@ const AiFormBuilder = () => {
 							</span>
 							<MdArrowForward color="white" size={ 20 } />
 						</Button>
+						</div>
 					</div>
 				</div>
 			</div>

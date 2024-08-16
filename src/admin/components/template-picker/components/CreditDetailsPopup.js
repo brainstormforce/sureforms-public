@@ -55,22 +55,18 @@ const CreditDetailsPopup = ( {
 			</div>
 			<div className="srfm-tp-header-credits-popover-title">
 				<span className="srfm-tp-header-credits-popover-description">
-
-					{ wp.i18n.sprintf(
-						/* translators: %s: number of AI form generations left */
+					{ 
 						__(
-							'Free plan only allows %d AI form generations. Need to create more forms with AI?',
+							'Free plan only allows 25 AI form generations. Need to create more forms with AI?',
 							'sureforms'
-						),
-						totalFormCount
-					) }
+						)}
 				</span>
 			</div>
 			<Button
 				className="srfm-credits-popover-more-btn"
 				onClick={ () => {
 					window.open(
-						'https://app.zipwp.com/credits-pricing',
+						'https://sureforms.com/pricing',
 						'_blank'
 					);
 				} }
