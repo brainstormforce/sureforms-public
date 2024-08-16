@@ -43,13 +43,6 @@ const defaultKeys = {
 	_srfm_is_inline_button: false,
 	// Submit Button
 	_srfm_submit_button_text: 'Submit',
-	// Page Break
-	_srfm_is_page_break: false,
-	_srfm_first_page_label: 'Page break',
-	_srfm_page_break_progress_indicator: 'connector',
-	_srfm_page_break_toggle_label: false,
-	_srfm_previous_button_text: 'Back',
-	_srfm_next_button_text: 'Next',
 	// Style Tab
 	// Form Container
 	_srfm_form_container_width: 650,
@@ -167,8 +160,12 @@ const SureformsFormSpecificSettings = ( props ) => {
 	}, [ formCustomCssData ] );
 
 	useEffect( () => {
-		if ( typeof sureformsKeys._srfm_is_page_break === 'boolean' ) {
-			updateMeta( '_srfm_is_page_break', isPageBreak );
+		if ( typeof sureformsKeys?._srfm_page_break_settings?.is_page_break === 'boolean' ) {
+			const updatedPageBreakSettings = {
+				...sureformsKeys._srfm_page_break_settings,
+				is_page_break: isPageBreak,
+			};
+			updateMeta( '_srfm_page_break_settings', updatedPageBreakSettings );
 		}
 
 		if ( typeof sureformsKeys._srfm_is_inline_button === 'boolean' ) {

@@ -17,9 +17,9 @@ const defaultKeys = {
 	// Submit button
 	_srfm_submit_button_text: { default: 'Submit' },
 	// Page Break
-	_srfm_first_page_label: { default: 'Page break' },
-	_srfm_previous_button_text: { default: 'Back' },
-	_srfm_next_button_text: { default: 'Next' },
+	first_page_label: { default: 'Page Break' },
+	next_button_text: { default: 'Next' },
+	back_button_text: { default: 'Back' },
 	// Style Tab
 	// Form Container
 	primary_color: { default: '#0C78FB' },
