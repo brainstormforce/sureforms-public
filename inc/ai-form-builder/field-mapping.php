@@ -162,9 +162,6 @@ class Field_Mapping {
 				case 'address':
 					$post_content .= '<!-- wp:srfm/address ' . wp_json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
 					break;
-				case 'address-compact':
-					$post_content .= '<!-- wp:srfm/address-compact ' . wp_json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
-					break;
 				case 'inline-button':
 					$post_content .= '<!-- wp:srfm/inline-button ' . wp_json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
 					break;

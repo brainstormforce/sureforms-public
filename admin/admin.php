@@ -8,6 +8,7 @@
 namespace SRFM\Admin;
 
 use SRFM\Inc\Traits\Get_Instance;
+use ZipAI\Classes\Helper as AI_Helper;
 use SRFM\Inc\Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {
