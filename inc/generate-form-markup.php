@@ -188,55 +188,51 @@ class Generate_Form_Markup {
 			$container_id         = '.srfm-form-container-' . Helper::get_string_value( $id );
 
 			$selected_size = Helper::get_css_vars( $field_spacing );
-
-			$style_list = [
-				'srfm-bg-color'                            => $bg_color,
-				'srfm-color-scheme-primary'                => $primary_color_var,
-				'srfm-color-scheme-text-on-primary'        => $label_text_color_var,
-				'srfm-color-scheme-text'                   => $help_color_var,
-				'srfm-color-input-label'                   => $help_color_var,
-				'srfm-color-input-description'             => 'hsl( from ' . $help_color_var . ' h s l / 0.65 )',
-				'srfm-color-input-placeholder'             => 'hsl( from ' . $help_color_var . ' h s l / 0.5 )',
-				'srfm-color-input-text'                    => $help_color_var,
-				'srfm-color-input-prefix'                  => 'hsl( from ' . $help_color_var . ' h s l / 0.65 )',
-				'srfm-color-input-background'              => 'hsl( from ' . $help_color_var . ' h s l / 0.02 )',
-				'srfm-color-input-background-hover'        => 'hsl( from ' . $help_color_var . ' h s l / 0.05 )',
-				'srfm-color-input-background-disabled'     => 'hsl( from ' . $help_color_var . ' h s l / 0.05 )',
-				'srfm-color-input-border'                  => 'hsl( from ' . $help_color_var . ' h s l / 0.25 )',
-				'srfm-color-input-border-disabled'         => 'hsl( from ' . $help_color_var . ' h s l / 0.15 )',
-				'srfm-color-multi-choice-svg'              => 'hsl( from ' . $help_color_var . ' h s l / 0.7 )',
-				'srfm-color-input-border-hover'            => 'hsl( from ' . $primary_color_var . ' h s l / 0.65 )',
-				'srfm-color-input-border-focus-glow'       => 'hsl( from ' . $primary_color_var . ' h s l / 0.15 )',
-				'srfm-color-input-selected'                => 'hsl( from ' . $primary_color_var . ' h s l / 0.1 )',
-				'srfm-btn-color-hover'                     => 'hsl( from ' . $primary_color_var . ' h s l / 0.9 )',
-				'srfm-btn-color-disabled'                  => 'hsl( from ' . $primary_color_var . ' h s l / 0.25 )',
-				/* Dropdown Variables */
-				'srfm-dropdown-input-background-hover'     => 'hsl( from ' . $help_color_var . ' h s l / 0.05 )',
-				'srfm-dropdown-option-background-hover'    => 'hsl( from ' . $help_color_var . ' h s l / 0.10 )',
-				'srfm-dropdown-option-background-selected' => 'hsl( from ' . $help_color_var . ' h s l / 0.05 )',
-				'srfm-dropdown-option-selected-icon'       => 'hsl( from ' . $help_color_var . ' h s l / 0.65 )',
-				'srfm-dropdown-option-text-color'          => 'hsl( from ' . $help_color_var . ' h s l / 0.80 )',
-				'srfm-dropdown-option-selected-text'       => $help_color_var,
-				'srfm-dropdown-badge-background'           => 'hsl( from ' . $help_color_var . ' h s l / 0.05 )',
-				'srfm-dropdown-badge-background-hover'     => 'hsl( from ' . $help_color_var . ' h s l / 0.10 )',
-				'srfm-dropdown-menu-border-color'          => 'hsl( from ' . $help_color_var . ' h s l / 0.10 )',
-				'srfm-dropdown-placeholder-color'          => 'hsl( from ' . $help_color_var . ' h s l / 0.50 )',
-				'srfm-dropdown-icon-color'                 => 'hsl( from ' . $help_color_var . ' h s l / 0.65 )',
-				'srfm-dropdown-icon-disabled'              => 'hsl( from ' . $help_color_var . ' h s l / 0.25 )',
-			];
-
 			?>
 
 			<div class="srfm-form-container srfm-form-container-<?php echo esc_attr( Helper::get_string_value( $id ) ); ?> <?php echo esc_attr( $sf_classname ); ?> <?php echo esc_attr( $classname ); ?>">
 			<style>
 				/* Need to check and remove the input variables related to the Style Tab. */
 				<?php echo esc_html( $container_id ); ?> {
+					/*
+					--srfm-bg-image: <?php echo $bg_image ? esc_html( $bg_image ) : ''; ?>; */
+					--srfm-bg-color: <?php echo $bg_color ? esc_html( $bg_color ) : ''; ?>;
+					/* New test variables */
+					--srfm-color-scheme-primary: <?php echo esc_html( $primary_color_var ); ?>;
+					--srfm-color-scheme-text-on-primary: <?php echo esc_html( $label_text_color_var ); ?>;
+					--srfm-color-scheme-text: <?php echo esc_html( $help_color_var ); ?>;
+
+					--srfm-color-input-label: <?php echo esc_html( $help_color_var ); ?>;
+					--srfm-color-input-description: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.65 );
+					--srfm-color-input-placeholder: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.5 );
+					--srfm-color-input-text: <?php echo esc_html( $help_color_var ); ?>;
+					--srfm-color-input-prefix: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.65 );
+					--srfm-color-input-background: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.02 );
+					--srfm-color-input-background-hover: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.05 );
+					--srfm-color-input-background-disabled: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.05 );
+					--srfm-color-input-border: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.25 );
+					--srfm-color-input-border-disabled: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.15 );
+					--srfm-color-multi-choice-svg: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.7 );
+					--srfm-color-input-border-hover: hsl( from <?php echo esc_html( $primary_color_var ); ?> h s l / 0.65 );
+					--srfm-color-input-border-focus-glow: hsl( from <?php echo esc_html( $primary_color_var ); ?> h s l / 0.15 );
+					--srfm-color-input-selected: hsl( from <?php echo esc_html( $primary_color_var ); ?> h s l / 0.1 );
+					--srfm-btn-color-hover: hsl( from <?php echo esc_html( $primary_color_var ); ?> h s l / 0.9 );
+					--srfm-btn-color-disabled: hsl( from <?php echo esc_html( $primary_color_var ); ?> h s l / 0.25 );
+
+					/* Dropdown Variables */
+					--srfm-dropdown-input-background-hover: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.05 );
+					--srfm-dropdown-option-background-hover: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.10 );
+					--srfm-dropdown-option-background-selected: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.05 );
+					--srfm-dropdown-option-selected-icon: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.65 );
+					--srfm-dropdown-option-text-color: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.80 );
+					--srfm-dropdown-option-selected-text: <?php echo esc_html( $help_color_var ); ?>;
+					--srfm-dropdown-badge-background: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.05 );
+					--srfm-dropdown-badge-background-hover: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.10 );
+					--srfm-dropdown-menu-border-color: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.10 );
+					--srfm-dropdown-placeholder-color: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.50 );
+					--srfm-dropdown-icon-color: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.65 );
+					--srfm-dropdown-icon-disabled: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.25 );
 					<?php
-					foreach ( $style_list as $style_var => $style_value ) {
-						?>
-						--<?php echo esc_html( $style_var ); ?>: <?php echo esc_html( $style_value ); ?>;
-						<?php
-					}
 					// Echo the CSS variables for the form according to the field spacing selected.
 					foreach ( $selected_size as $variable => $value ) {
 						echo esc_html( Helper::get_string_value( $variable ) ) . ': ' . esc_html( Helper::get_string_value( $value ) ) . ';';

@@ -24,7 +24,7 @@ function StyleSettings( props ) {
 		select( editorStore ).getEditedPostAttribute( 'meta' )
 	);
 	const formStyling = sureformsKeys?._srfm_forms_styling || {};
-	const [ root, setRoot ] = useState( document.documentElement.querySelector( 'body' ) );
+	const root = document.documentElement.querySelector( 'body' );
 	const deviceType = useDeviceType();
 	const [ submitBtn, setSubmitBtn ] = useState(
 		document.querySelector( '.srfm-submit-richtext' )
@@ -33,10 +33,6 @@ function StyleSettings( props ) {
 		document.querySelector( '.srfm-submit-btn-container' )
 	);
 	const [ fieldSpacing, setFieldSpacing ] = useState( formStyling?.field_spacing || 'small' );
-
-	useEffect( () => {
-		setRoot( document.documentElement.querySelector( 'body' ) );
-	}, [] );
 
 	// Apply the sizings when field spacing changes.
 	useEffect( () => {
@@ -83,59 +79,140 @@ function StyleSettings( props ) {
 		}
 	}
 
-	const setCssValueInRoot = ( varName, value = null, defaultValue = null ) => {
-		if ( ! root?.style ) {
-			return;
-		}
+	if ( sureformsKeys ) {
+		// Form Container
+		root.style.setProperty(
+			'--srfm-color-scheme-primary',
+			formStyling?.primary_color || '#0C78FB'
+		);
+		root.style.setProperty(
+			'--srfm-btn-color-hover',
+			formStyling?.primary_color
+				? `hsl( from ${ formStyling.primary_color } h s l / 0.9)`
+				: `hsl( from #0C78FB h s l / 0.9)`
+		);
+		root.style.setProperty(
+			'--srfm-color-scheme-text-on-primary',
+			formStyling?.text_color_on_primary || '#FFFFFF'
+		);
 
-		const variableName = `--${ varName }`;
-		const variableValue = !! value ? value : defaultValue;
-		root.style.setProperty( variableName, variableValue );
-	};
+		const defaultTextColor = '#1E1E1E';
 
-	useEffect( () => {
-		if ( sureformsKeys ) {
-			const defaultTextColor = '#1E1E1E';
+		root.style.setProperty(
+			'--srfm-color-scheme-text',
+			formStyling?.text_color || defaultTextColor
+		);
+		root.style.setProperty(
+			'--srfm-color-input-label',
+			formStyling?.text_color || defaultTextColor
+		);
+		root.style.setProperty(
+			'--srfm-color-input-placeholder',
+			formStyling?.text_color
+				? `hsl( from ${ formStyling.text_color } h s l / 0.5)`
+				: `hsl( from ${ defaultTextColor } h s l / 0.5)`
+		);
+		root.style.setProperty(
+			'--srfm-color-input-text',
+			formStyling?.text_color || defaultTextColor
+		);
+		root.style.setProperty(
+			'--srfm-color-input-description',
+			formStyling?.text_color
+				? `hsl( from ${ formStyling.text_color } h s l / 0.65)`
+				: `hsl( from ${ defaultTextColor } h s l / 0.65)`
+		);
+		root.style.setProperty(
+			'--srfm-color-input-prefix',
+			formStyling?.text_color
+				? `hsl( from ${ formStyling.text_color } h s l / 0.65)`
+				: `hsl( from ${ defaultTextColor } h s l / 0.65)`
+		);
+		root.style.setProperty(
+			'--srfm-color-input-background',
+			formStyling?.text_color
+				? `hsl( from ${ formStyling.text_color } h s l / 0.02)`
+				: `hsl( from ${ defaultTextColor } h s l / 0.02)`
+		);
+		root.style.setProperty(
+			'--srfm-color-input-background-disabled',
+			formStyling?.text_color
+				? `hsl( from ${ formStyling.text_color } h s l / 0.05)`
+				: `hsl( from ${ defaultTextColor } h s l / 0.05)`
+		);
+		root.style.setProperty(
+			'--srfm-color-input-border',
+			formStyling?.text_color
+				? `hsl( from ${ formStyling.text_color } h s l / 0.25)`
+				: `hsl( from ${ defaultTextColor } h s l / 0.25)`
+		);
+		root.style.setProperty(
+			'--srfm-color-input-border-disabled',
+			formStyling?.text_color
+				? `hsl( from ${ formStyling.text_color } h s l / 0.15)`
+				: `hsl( from ${ defaultTextColor } h s l / 0.15)`
+		);
+		root.style.setProperty(
+			'--srfm-color-input-border-focus-glow',
+			formStyling.primary_color
+				? `hsl( from ${ formStyling.primary_color } h s l / 0.15 )`
+				: '#FAE4DC'
+		);
 
-			const cssVariables = {
-				// Form Container.
-				'srfm-color-scheme-primary': formStyling?.primary_color || '#0C78FB',
-				'srfm-btn-color-hover': `hsl( from ${ formStyling?.primary_color || '#0C78FB' } h s l / 0.9)`,
-				'srfm-color-scheme-text-on-primary': formStyling?.text_color_on_primary || '#FFFFFF',
-				'srfm-color-scheme-text': formStyling?.text_color || defaultTextColor,
-				'srfm-color-input-label': formStyling?.text_color || defaultTextColor,
-				'srfm-color-input-placeholder': `hsl( from ${ formStyling?.text_color || defaultTextColor } h s l / 0.5)`,
-				'srfm-color-input-text': formStyling?.text_color || defaultTextColor,
-				'srfm-color-input-description': `hsl( from ${ formStyling?.text_color || defaultTextColor } h s l / 0.65)`,
-				'srfm-color-input-prefix': `hsl( from ${ formStyling?.text_color || defaultTextColor } h s l / 0.65)`,
-				'srfm-color-input-background': `hsl( from ${ formStyling?.text_color || defaultTextColor } h s l / 0.02)`,
-				'srfm-color-input-background-disabled': `hsl( from ${ formStyling?.text_color || defaultTextColor } h s l / 0.05)`,
-				'srfm-color-input-border': `hsl( from ${ formStyling?.text_color || defaultTextColor } h s l / 0.25)`,
-				'srfm-color-input-border-disabled': `hsl( from ${ formStyling?.text_color || defaultTextColor } h s l / 0.15)`,
-				'srfm-color-input-border-focus-glow': formStyling?.primary_color ? `hsl( from ${ formStyling?.primary_color } h s l / 0.15)` : '#FAE4DC',
-				// checkbox and gdpr - for small, medium and large checkbox sizes.
-				'srfm-checkbox-description-margin-left': '24px',
-				'srfm-checkbox-input-border-radius': '4px',
-				'srfm-color-multi-choice-svg': `hsl( from ${ formStyling?.text_color || defaultTextColor } h s l / 0.7)`,
-				// Button text color.
-				'srfm-btn-text-color': formStyling?.text_color_on_primary || '#FFFFFF',
-				// Button border color.
-				'srfm-btn-border-color': formStyling?.primary_color || '#0C78FB',
-				// Button alignment.
-				'srfm-submit-alignment': formStyling?.submit_button_alignment || 'left',
-				'srfm-submit-width': sureformsKeys?._srfm_submit_width || '',
-				'srfm-submit-alignment-backend': sureformsKeys?._srfm_submit_alignment_backend || '',
-				'srfm-submit-width-backend': sureformsKeys?._srfm_submit_width_backend || '',
-			};
+		// checkbox and gdpr - for small, medium and large checkbox sizes
+		root.style.setProperty(
+			'--srfm-checkbox-input-border-radius',
+			'4px'
+		);
 
-			Object.entries( cssVariables ).forEach( ( [ varName, value ] ) => setCssValueInRoot( varName, value ) );
-		} else {
-			sureformsKeys = defaultKeys;
-			editPost( {
-				meta: sureformsKeys,
-			} );
-		}
-	}, [ sureformsKeys, formStyling, root ] );
+		root.style.setProperty(
+			'--srfm-color-multi-choice-svg',
+			formStyling?.text_color
+				? `hsl( from ${ formStyling.text_color } h s l / 0.7)`
+				: `hsl( from ${ defaultTextColor } h s l / 0.7)`
+		);
+
+		// Button
+		// Button text color
+		root.style.setProperty(
+			'--srfm-btn-text-color',
+			formStyling?.text_color_on_primary || '#FFFFFF'
+		);
+		// btn border color
+		root.style.setProperty(
+			'--srfm-btn-border-color',
+			formStyling?.primary_color || '#0C78FB'
+		);
+
+		// Button alignment
+		root.style.setProperty(
+			'--srfm-submit-alignment',
+			formStyling?.submit_button_alignment || 'left'
+		);
+		root.style.setProperty(
+			'--srfm-submit-width',
+			sureformsKeys._srfm_submit_width
+				? sureformsKeys._srfm_submit_width
+				: ''
+		);
+		root.style.setProperty(
+			'--srfm-submit-alignment-backend',
+			sureformsKeys._srfm_submit_alignment_backend
+				? sureformsKeys._srfm_submit_alignment_backend
+				: ''
+		);
+		root.style.setProperty(
+			'--srfm-submit-width-backend',
+			sureformsKeys._srfm_submit_width_backend
+				? sureformsKeys._srfm_submit_width_backend
+				: ''
+		);
+	} else {
+		sureformsKeys = defaultKeys;
+		editPost( {
+			meta: sureformsKeys,
+		} );
+	}
 
 	function updateMeta( option, value ) {
 		const value_id = 0;
@@ -143,9 +220,16 @@ function StyleSettings( props ) {
 
 		// Button
 		if ( option === '_srfm_button_border_width' ) {
-			setCssValueInRoot( 'srfm-btn-border-width', value ? value + 'px' : '0px' );
-		} else if ( option === '_srfm_button_border_color' ) {
-			setCssValueInRoot( 'srfm-btn-border-color', value || '#000000' );
+			root.style.setProperty(
+				'--srfm-btn-border-width',
+				value ? value + 'px' : '0px'
+			);
+		}
+		if ( option === '_srfm_button_border_color' ) {
+			root.style.setProperty(
+				'--srfm-btn-border-color',
+				value ? value : '#000000'
+			);
 		}
 
 		const option_array = {};
@@ -190,55 +274,129 @@ function StyleSettings( props ) {
 	 * @since 0.0.7
 	 */
 	function updateFormStyling( option, value ) {
-		// List of CSS variables to update.
-		const cssVarList = {};
-
 		if ( option === 'primary_color' ) {
-			cssVarList[ 'srfm-color-scheme-primary' ] = value || '#0C78FB';
-			cssVarList[ 'srfm-btn-color-hover' ] = `hsl( from ${ value || '#0C78FB' } h s l / 0.9)`;
-		} else if ( option === 'text_color' ) {
+			root.style.setProperty(
+				'--srfm-color-scheme-primary',
+				value || '#0C78FB'
+			);
+
+			root.style.setProperty(
+				'--srfm-btn-color-hover',
+				value
+					? `hsl( from ${ value } h s l / 0.9)`
+					: `hsl( from #0C78FB h s l / 0.9)`
+			);
+		}
+
+		if ( option === 'text_color' ) {
 			const defaultTextColor = '#1E1E1E';
 
-			// Push the CSS variables to update.
-			cssVarList[ 'srfm-color-scheme-text' ] = value || defaultTextColor;
-			cssVarList[ 'srfm-color-input-label' ] = value || defaultTextColor;
-			cssVarList[ 'srfm-color-input-placeholder' ] = value || defaultTextColor;
-			cssVarList[ 'srfm-color-input-text' ] = value || defaultTextColor;
-			cssVarList[ 'srfm-color-input-description' ] = `hsl( from ${ value || defaultTextColor } h s l / 0.65)`;
-			cssVarList[ 'srfm-color-input-prefix' ] = `hsl( from ${ value || defaultTextColor } h s l / 0.65)`;
-			cssVarList[ 'srfm-color-input-background' ] = `hsl( from ${ value || defaultTextColor } h s l / 0.02)`;
-			cssVarList[ 'srfm-color-input-background-disabled' ] = `hsl( from ${ value || defaultTextColor } h s l / 0.05)`;
-			cssVarList[ 'srfm-color-input-border' ] = `hsl( from ${ value || defaultTextColor } h s l / 0.25)`;
-			cssVarList[ 'srfm-color-input-border-disabled' ] = `hsl( from ${ value || defaultTextColor } h s l / 0.15)`;
-		} else if ( option === 'text_color_on_primary' ) {
-			cssVarList[ 'srfm-color-scheme-text-on-primary' ] = value || '#FFFFFF';
-		} else if ( option === 'field_spacing' ) {
-			cssVarList[ 'srfm-field-spacing' ] = value || 'small';
-		} else if ( option === 'submit_button_alignment' ) {
-			cssVarList[ 'srfm-submit-alignment' ] = value || 'left';
-			cssVarList[ 'srfm-submit-width-backend' ] = 'max-content';
+			root.style.setProperty(
+				'--srfm-color-scheme-text',
+				value ? value : defaultTextColor
+			);
+			root.style.setProperty(
+				'--srfm-color-input-label',
+				value ? value : defaultTextColor
+			);
+			root.style.setProperty(
+				'--srfm-color-input-placeholder',
+				value ? value : defaultTextColor
+			);
+			root.style.setProperty(
+				'--srfm-color-input-text',
+				value ? value : defaultTextColor
+			);
+			root.style.setProperty(
+				'--srfm-color-input-description',
+				value
+					? `hsl( from ${ value } h s l / 0.65)`
+					: `hsl( from ${ defaultTextColor } h s l / 0.65)`
+			);
+			root.style.setProperty(
+				'--srfm-color-input-prefix',
+				value
+					? `hsl( from ${ value } h s l / 0.65)`
+					: `hsl( from ${ defaultTextColor } h s l / 0.65)`
+			);
+			root.style.setProperty(
+				'--srfm-color-input-background',
+				value
+					? `hsl( from ${ value } h s l / 0.02)`
+					: `hsl( from ${ defaultTextColor } h s l / 0.02)`
+			);
+			root.style.setProperty(
+				'--srfm-color-input-background-disabled',
+				value
+					? `hsl( from ${ value } h s l / 0.05)`
+					: `hsl( from ${ defaultTextColor } h s l / 0.05)`
+			);
+			root.style.setProperty(
+				'--srfm-color-input-border',
+				value
+					? `hsl( from ${ value } h s l / 0.25)`
+					: `hsl( from ${ defaultTextColor } h s l / 0.25)`
+			);
+			root.style.setProperty(
+				'--srfm-color-input-border-disabled',
+				value
+					? `hsl( from ${ value } h s l / 0.15)`
+					: `hsl( from ${ defaultTextColor } h s l / 0.15)`
+			);
+		}
 
+		if ( option === 'text_color_on_primary' ) {
+			root.style.setProperty(
+				'--srfm-color-scheme-text-on-primary',
+				value || '#FFFFFF'
+			);
+		}
+
+		if ( option === 'field_spacing' ) {
+			root.style.setProperty( '--srfm-field-spacing', value || 'small' );
+		}
+
+		if ( option === 'submit_button_alignment' ) {
+			root.style.setProperty(
+				'--srfm-submit-alignment',
+				value || 'left'
+			);
+			root.style.setProperty(
+				'--srfm-submit-width-backend',
+				'max-content'
+			);
 			updateMeta( '_srfm_submit_width_backend', 'max-content' );
 
 			if ( value === 'left' ) {
-				cssVarList[ 'srfm-submit-alignment-backend' ] = '100%';
+				root.style.setProperty(
+					'--srfm-submit-alignment-backend',
+					'100%'
+				);
 				updateMeta( '_srfm_submit_alignment_backend', '100%' );
-			} else if ( value === 'right' ) {
-				cssVarList[ 'srfm-submit-alignment-backend' ] = '0%';
+			}
+			if ( value === 'right' ) {
+				root.style.setProperty(
+					'--srfm-submit-alignment-backend',
+					'0%'
+				);
 				updateMeta( '_srfm_submit_alignment_backend', '0%' );
-			} else if ( value === 'center' ) {
-				cssVarList[ 'srfm-submit-alignment-backend' ] = '50%';
+			}
+			if ( value === 'center' ) {
+				root.style.setProperty(
+					'--srfm-submit-alignment-backend',
+					'50%'
+				);
 				updateMeta( '_srfm_submit_alignment_backend', '50%' );
-			} else if ( value === 'justify' ) {
-				cssVarList[ 'srfm-submit-alignment-backend' ] = '50%';
-				cssVarList[ 'srfm-submit-width-backend' ] = 'auto';
-
+			}
+			if ( value === 'justify' ) {
+				root.style.setProperty(
+					'--srfm-submit-alignment-backend',
+					'50%'
+				);
+				root.style.setProperty( '--srfm-submit-width-backend', 'auto' );
 				updateMeta( '_srfm_submit_alignment_backend', '50%' );
 			}
 		}
-
-		// Update the CSS variables.
-		Object.entries( cssVarList ).forEach( ( [ varName, varValue ] ) => setCssValueInRoot( varName, varValue ) );
 
 		editPost( {
 			meta: {
