@@ -50,6 +50,25 @@ class Gutenberg_Hooks {
 			'subscription-form',
 		];
 
+		// Set form blocks.
+		$this->srfm_blocks = apply_filters(
+			'srfm_blocks',
+			[
+				'srfm/input',
+				'srfm/email',
+				'srfm/textarea',
+				'srfm/number',
+				'srfm/checkbox',
+				'srfm/gdpr',
+				'srfm/phone',
+				'srfm/address',
+				'srfm/address-compact',
+				'srfm/dropdown',
+				'srfm/multi-choice',
+				'srfm/url',
+			]
+		);
+
 		// Initializing hooks.
 		add_action( 'enqueue_block_editor_assets', [ $this, 'form_editor_screen_assets' ] );
 		add_action( 'enqueue_block_editor_assets', [ $this, 'block_editor_assets' ] );
@@ -80,8 +99,6 @@ class Gutenberg_Hooks {
 				'srfm/address',
 				'srfm/dropdown',
 				'srfm/multi-choice',
-				'srfm/radio',
-				'srfm/submit',
 				'srfm/url',
 				'srfm/separator',
 				'srfm/icon',
