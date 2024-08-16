@@ -4,7 +4,12 @@ import Header from './Header.js';
 import ICONS from './icons.js';
 import AiFormBuilder from './AiFormBuilder.js';
 
-const LimitReachedPopup = ( { setShowLimitReachedPopup } ) => {
+const LimitReachedPopup = ( { setShowLimitReachedPopup,
+	paraOne,
+	paraTwo,
+	onlClick,
+	buttonText,
+} ) => {
 	return (
 		<>
 			<Header />
@@ -24,29 +29,20 @@ const LimitReachedPopup = ( { setShowLimitReachedPopup } ) => {
 				</div>
 				<div className="srfm-limit-reached-popup-content">
 					<span className="srfm-limit-reached-popup-text">
-						{ __(
-							'You have reached the maximum number of form generations.',
-							'sureforms'
-						) }
+						{ paraOne }
 					</span>
 					<span>
-						{ __(
-							'Please upgrade to Pro plan to continue generating forms.',
-							'sureforms'
-						) }
+						{ paraTwo }
 					</span>
 				</div>
 				<div className="srfm-limit-reached-popup-content">
 					<Button
 						className="srfm-limit-reached-more-credits-btn"
-						onClick={ () => {
-							window.open(
-								srfm_admin?.sureforms_pricing_page || 'https://sureforms.com/pricing/',
-								'_blank'
-							);
-						} }
+						onClick={
+							onlClick
+						 }
 					>
-						{ __( 'Upgrade Plan', 'sureforms' ) }
+						{ buttonText ?? __( 'Connect Now', 'sureforms' ) }
 					</Button>
 				</div>
 			</div>

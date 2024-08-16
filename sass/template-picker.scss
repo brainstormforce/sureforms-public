@@ -65,7 +65,7 @@ $sidebar_width: 290px;
 		width: 100%;
 		height: 100%;
 		background-color: #0f172ab2;
-		z-index: 999;
+		z-index: 99999999;
 	}
 
 	.srfm-popup-header {
@@ -86,12 +86,12 @@ $sidebar_width: 290px;
 		}
 	}
 
-	.srfm-revoke-confirmation-container {
+	.srfm-auth-err-confirmation-container {
 		position: fixed;
 		top: 50%;
 		left: 50%;
 		transform: translate( -50%, -50% );
-		z-index: 1000;
+		z-index: 99999999;
 		display: flex;
 		flex-direction: column;
 		align-items: flex-start;
@@ -102,21 +102,21 @@ $sidebar_width: 290px;
 		background: #ffffff;
 		border-radius: 8px;
 
-		.srfm-revoke-confirmation-description {
+		.srfm-auth-err-confirmation-description {
 			font-size: 14px;
 			font-weight: 400;
 			line-height: 20px;
 			color: #475569;
 		}
 
-		.srfm-revoke-confirmation-btn-container {
+		.srfm-auth-err-confirmation-btn-container {
 			display: flex;
 			align-items: flex-start;
 			gap: 12px;
 		}
 
-		.srfm-revoke-confirmation-revoke-btn {
-			background-color: #dc2626;
+		.srfm-auth-err-confirmation-auth-err-btn {
+			background-color: #d54407;
 			color: #ffffff;
 			font-size: 14px;
 			font-weight: 600;
@@ -128,7 +128,7 @@ $sidebar_width: 290px;
 			border-radius: 6px;
 		}
 
-		.srfm-revoke-confirmation-cancel-btn {
+		.srfm-auth-err-confirmation-cancel-btn {
 			background-color: transparent;
 			color: #0f172a;
 			font-size: 14px;
@@ -148,7 +148,7 @@ $sidebar_width: 290px;
 		top: 50%;
 		left: 50%;
 		transform: translate( -50%, -50% );
-		z-index: 1000;
+		z-index: 99999999;
 		display: flex;
 		flex-direction: column;
 		align-items: flex-start;
@@ -174,7 +174,6 @@ $sidebar_width: 290px;
 
 		.srfm-limit-reached-popup-content {
 			width: 432px;
-			// height: 84px;
 			display: flex;
 			flex-direction: column;
 			gap: 12px;
@@ -375,6 +374,7 @@ $sidebar_width: 290px;
 		transform: translate( -50%, -50% );
 		width: 100%;
 		height: 100%;
+		overflow-y: auto;
 
 		.srfm-ai-builder-inner-container {
 			display: flex;
@@ -499,7 +499,7 @@ $sidebar_width: 290px;
 				justify-content: center;
 				background-color: #d54407;
 				color: white;
-				width: 688px;
+				width: 183px;
 				height: 56px;
 				padding: 12px 16px 12px 24px;
 				gap: 8px;
@@ -647,7 +647,7 @@ $sidebar_width: 290px;
 			padding: 20px 1.25em;
 			border-bottom: 1px solid $border;
 			background: $bg_white;
-			z-index: 9;
+			z-index: 9999999;
 
 			.srfm-tp-main-title {
 				display: flex;
@@ -790,7 +790,7 @@ $sidebar_width: 290px;
 						line-height: 12px;
 					}
 
-					.srfm-credits-popover-revoke-btn {
+					.srfm-credits-popover-auth-err-btn {
 						background-color: transparent;
 						color: #cd1a1a;
 						font-size: 14px;
@@ -805,6 +805,10 @@ $sidebar_width: 290px;
 
 			.srfm-tp-header-close {
 				cursor: pointer;
+
+				.srfm-tp-header-close-icon {
+					height: 24px;
+				}
 			}
 
 			.srfm-ai-sub-header {

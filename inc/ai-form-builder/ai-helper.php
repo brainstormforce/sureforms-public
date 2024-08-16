@@ -37,7 +37,7 @@ class AI_Helper {
 
 		$api_args = [
 			'headers' => [
-				'X-Token'      => 'aHR0cHM6Ly93d3cudGhlc2F1cnVzLmNvbQ==', // For now, this is a dummy token. Once we go live, we will replace this with the actual token. That will be user's SureCart license or base64 encoded site URL.
+				'X-Token'      => base64_encode( self::get_user_token() ), // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode -- This is not for obfuscation.
 				'Content-Type' => 'application/json',
 			],
 			'timeout' => 30, // phpcs:ignore WordPressVIPMinimum.Performance.RemoteRequestTimeout.timeout_timeout -- 30 seconds is required sometime for open ai responses
@@ -55,8 +55,6 @@ class AI_Helper {
 
 		// Get the response from the endpoint.
 		$response = wp_remote_post( $api_url, $api_args );
-
-		self::update_current_usage_details();
 
 		// If the response was an error, or not a 200 status code, then abandon ship.
 		if ( is_wp_error( $response ) || empty( $response['response'] ) || 200 !== wp_remote_retrieve_response_code( $response ) ) {
@@ -83,9 +81,9 @@ class AI_Helper {
 	 * Get the SureForms Token from the SureForms AI Settings.
 	 *
 	 * @since x.x.x
-	 * @return void
+	 * @return array<mixed>|void The SureForms Token.
 	 */
-	public static function update_current_usage_details() {
+	public static function get_current_usage_details() {
 		$current_usage_details = [];
 
 		// Get the response from the endpoint.
@@ -109,7 +107,7 @@ class AI_Helper {
 			}
 		}
 
-		update_option( 'srfm_ai_current_usage_details', $current_usage_details );
+		return $current_usage_details;
 
 	}
 
@@ -128,7 +126,7 @@ class AI_Helper {
 			$api_url,
 			[
 				'headers' => [
-					'X-Token'      => 'aHR0cHM6Ly93d3cudGhlc2F1cnVzLmNvbQ==', // For now, this is a dummy token. Once we go live, we will replace this with the actual token. That will be user's SureCart license or base64 encoded site URL.
+					'X-Token'      => base64_encode( self::get_user_token() ), // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode -- This is not for obfuscation.
 					'Content-Type' => 'application/json',
 				],
 				'timeout' => 30, // phpcs:ignore WordPressVIPMinimum.Performance.RemoteRequestTimeout.timeout_timeout -- 30 seconds is required sometime for the SureForms API response
@@ -154,6 +152,18 @@ class AI_Helper {
 
 		// Return the response body.
 		return json_decode( $response_body, true );
+	}
+
+	/**
+	 * Get the User Token.
+	 *
+	 * @since x.x.x
+	 * @return string The User Token.
+	 */
+	public static function get_user_token() {
+		$user_email = get_option( 'srfm_ai_auth_user_email' );
+		$token      = ! empty( $user_email ) && is_array( $user_email ) ? $user_email['user_email'] : site_url();
+		return $token;
 	}
 
 }

@@ -30,5 +30,6 @@ define( 'SRFM_FORMS_POST_TYPE', 'sureforms_form' );
 define( 'SRFM_ENTRIES_POST_TYPE', 'sureforms_entry' );
 define( 'SRFM_WEBSITE', 'https://sureforms.com/' );
 define( 'SRFM_AI_MIDDLEWARE', 'https://credits.startertemplates.com/sureforms/' );
+define( 'SRFM_BILLING_PORTAL', 'https://billing.sureforms.com/' );
 
 require_once 'plugin-loader.php';

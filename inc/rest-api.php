@@ -10,6 +10,7 @@ namespace SRFM\Inc;
 use SRFM\Inc\Traits\Get_Instance;
 use SRFM\Inc\AI_Form_Builder\AI_Form_Builder;
 use SRFM\Inc\AI_Form_Builder\Field_Mapping;
+use SRFM\Inc\AI_Form_Builder\AI_Auth;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -92,6 +93,16 @@ class Rest_Api {
 			'map-fields'           => [
 				'methods'             => 'POST',
 				'callback'            => [ Field_Mapping::get_instance(), 'generate_gutenberg_fields_from_questions' ],
+				'permission_callback' => [ $this, 'can_edit_posts' ],
+			],
+			'initiate-auth'        => [
+				'methods'             => 'GET',
+				'callback'            => [ AI_Auth::get_instance(), 'get_auth_url' ],
+				'permission_callback' => [ $this, 'can_edit_posts' ],
+			],
+			'handle-access-key'    => [
+				'methods'             => 'POST',
+				'callback'            => [ AI_Auth::get_instance(), 'handle_access_key' ],
 				'permission_callback' => [ $this, 'can_edit_posts' ],
 			],
 		];

@@ -9,7 +9,6 @@ namespace SRFM\Admin;
 
 use SRFM\Inc\Traits\Get_Instance;
 use SRFM\Inc\AI_Form_Builder\AI_Helper;
-use SRFM\Inc\AI_Form_Builder\AI_Form_Builder;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -457,7 +456,8 @@ class Admin {
 					'capability'                   => current_user_can( 'edit_posts' ),
 					'template_picker_nonce'        => current_user_can( 'edit_posts' ) ? wp_create_nonce( 'wp_rest' ) : '',
 					'is_pro_active'                => defined( 'SRFM_PRO_VER' ),
-					'srfm_ai_usage_details'        => get_option( 'srfm_ai_current_usage_details' ),
+					'srfm_ai_usage_details'        => AI_Helper::get_current_usage_details(),
+					'srfm_ai_auth_user_email'      => get_option( 'srfm_ai_auth_user_email' ),
 				]
 			);
 		}
