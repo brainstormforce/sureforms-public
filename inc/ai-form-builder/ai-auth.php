@@ -147,6 +147,9 @@ class AI_Auth {
 			wp_send_json_error( 'No user email found in the decrypted data.' );
 		}
 
+		// remove the nonce from the decrypted data before saving it to the options.
+		unset( $decrypted_data_array['nonce'] );
+
 		// verify the nonce.
 		$is_option_updated = update_option( 'srfm_ai_auth_user_email', $decrypted_data_array );
 
