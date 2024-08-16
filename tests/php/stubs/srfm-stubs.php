@@ -9896,8 +9896,9 @@ namespace {
          *
          * @since 0.0.1
          * @param  array $icon Decoded fontawesome json file data.
+         * @param  boolean $return Return or echo the svg markup.
          */
-        public static function render_svg_html($icon)
+        public static function render_svg_html($icon, $return = false)
         {
         }
     }

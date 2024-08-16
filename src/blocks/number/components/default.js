@@ -1,12 +1,8 @@
 import { RichText } from '@wordpress/block-editor';
 import { decodeHtmlEntities } from '@Blocks/util';
+import HelpText from '@Components/misc/HelpText';
 
-export const NumberComponent = ( {
-	attributes,
-	blockID,
-	handleInput,
-	setAttributes,
-} ) => {
+export const NumberComponent = ( { attributes, blockID, setAttributes } ) => {
 	const {
 		label,
 		placeholder,
@@ -14,7 +10,7 @@ export const NumberComponent = ( {
 		defaultValue,
 		minValue,
 		maxValue,
-		formatType,
+		help,
 	} = attributes;
 
 	const isRequired = required ? ' srfm-required' : '';
@@ -33,13 +29,19 @@ export const NumberComponent = ( {
 				id={ blockID }
 				allowedFormats={ [] }
 			/>
+			<HelpText
+				help={ help }
+				setAttributes={ setAttributes }
+				block_id={ blockID }
+			/>
 			<div className="srfm-block-wrap">
 				<input
 					className={ `srfm-input-common srfm-input-${ slug }` }
 					id={ `srfm-${ slug }-${ blockID }` }
-					type={ formatType === 'none' ? 'number' : 'text' }
+					type={ 'text' }
+					defaultValue={ defaultValue }
 					value={ defaultValue }
-					onChange={ handleInput }
+					readOnly={ true }
 					placeholder={ placeholder }
 					required={ required }
 					min={ minValue }

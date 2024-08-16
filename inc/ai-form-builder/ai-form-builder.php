@@ -72,7 +72,7 @@ class AI_Form_Builder {
 					
 					1. For input type if needed you can return. defaultValue, isUnique, duplicateMsg, errorMsg, textLength.
 					
-					2) For dropdown type also return fieldOptions array as array of strings. For example, for dropdown the fieldOptions can be [ "Option 1", "Option 2", "Option 3" ].
+					2) For dropdown type also return fieldOptions array as array of strings. For example, for dropdown the fieldOptions can be [ {"label":"Option 1"}, {"label":"Option 2"}, {"label":"Option 3"} ].
 
 					3) For multi-choice type also return fieldOptions array as array of objects. For example, for multi-choice the fieldOptions can be [ {"optionTitle":"Option 1"}, {"optionTitle":"Option 2"}, {"optionTitle":"Option 3"}, {"optionTitle":"Option 4"} ]. Also return singleSelection as boolean value.
 

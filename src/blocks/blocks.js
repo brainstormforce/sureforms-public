@@ -77,7 +77,7 @@ const blockWidthWrapperProps = createHigherOrderComponent(
 						className={
 							attributes?.fieldWidth &&
 							'Mobile' !== useDeviceType()
-								? `srfm-block-single srfm-${ slug }-block-wrap srfm-block-width-${ width }`
+								? `srfm-block srfm-block-single srfm-${ slug }-block-wrap srfm-block-width-${ width }`
 								: ''
 						}
 					/>

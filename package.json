@@ -1,6 +1,6 @@
 {
 	"name": "sureforms",
-	"version": "0.0.6",
+	"version": "0.0.7",
 	"description": "A simple yet powerful way to add forms to your website.",
 	"main": "index.js",
 	"scripts": {
@@ -87,6 +87,7 @@
 		"react-quill": "^2.0.0",
 		"react-router-dom": "^6.11.0",
 		"react-select": "^5.7.2",
+		"react-virtualized": "^9.22.5",
 		"use-debounce": "^10.0.0"
 	},
 	"volta": {
