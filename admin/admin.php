@@ -41,34 +41,6 @@ class Admin {
 		// this action is used to restrict Spectra's quick action bar on SureForms CPTS.
 		add_action( 'uag_enable_quick_action_sidebar', [ $this, 'restrict_spectra_quick_action_bar' ] );
 
-		// Add custom redirection URL for Zip AI after authentication.
-		add_filter( 'zip_ai_auth_redirection_url', [ $this, 'custom_zip_ai_auth_redirection_url' ] );
-		// Add custom redirection URL for Zip AI after authentication revoke.
-		add_filter( 'zip_ai_revoke_redirection_url', [ $this, 'custom_zip_ai_auth_revoke_redirection_url' ], 9999, 1 );
-	}
-
-	/**
-	 * Custom redirection URL for Zip AI after authentication.
-	 *
-	 * @param string $url Redirection URL.
-	 * @return string
-	 */
-	public function custom_zip_ai_auth_redirection_url( $url ) {
-		return admin_url( 'admin.php?page=add-new-form&method=ai' );
-	}
-
-	/**
-	 * Custom redirection URL for Zip AI after authentication revoke.
-	 *
-	 * @param string $url Redirection URL.
-	 * @return string
-	 */
-	public function custom_zip_ai_auth_revoke_redirection_url( $url ) {
-		// only change admin URL if the user is on the add new form page.
-		if ( isset( $_GET['page'] ) && 'add-new-form' === $_GET['page'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- $_GET['page'] does not provide nonce.
-			return admin_url( 'admin.php?page=add-new-form' );
-		}
-		return $url;
 	}
 
 	/**

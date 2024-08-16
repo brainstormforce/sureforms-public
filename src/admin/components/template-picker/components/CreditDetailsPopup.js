@@ -65,7 +65,7 @@ const CreditDetailsPopup = ( {
 				className="srfm-credits-popover-more-btn"
 				onClick={ () => {
 					window.open(
-						'https://sureforms.com/pricing',
+						srfm_admin?.sureforms_pricing_page,
 						'_blank'
 					);
 				} }
