@@ -590,7 +590,7 @@ class Helper {
 	 *
 	 * @param string|null $field_spacing The field spacing size or boolean false to return complete sizes array.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.7
 	 * @return array<string|mixed>
 	 */
 	public static function get_css_vars( $field_spacing = null ) {
@@ -631,6 +631,7 @@ class Helper {
 				'--srfm-checkbox-margin-top-frontend'     => '2px',
 				'--srfm-checkbox-margin-top-editor'       => '3px',
 				'--srfm-check-gap'                        => '8px',
+				'--srfm-checkbox-description-margin-left' => '24px',
 				// Phone Number field variables.
 				'--srfm-flag-section-padding'             => '10px 0 10px 12px',
 				'--srfm-gap-between-icon-text'            => '8px',
@@ -667,6 +668,7 @@ class Helper {
 				// Checkbox and GDPR Variables.
 				'--srfm-checkbox-margin-top-frontend'     => '4px',
 				'--srfm-checkbox-margin-top-editor'       => '6px',
+				'--srfm-checkbox-description-margin-left' => '24px',
 				// Label Variables.
 				'--srfm-label-font-size'                  => '16px',
 				'--srfm-label-line-height'                => '24px',
@@ -711,6 +713,7 @@ class Helper {
 				'--srfm-check-gap'                        => '10px',
 				'--srfm-checkbox-margin-top-frontend'     => '4px',
 				'--srfm-checkbox-margin-top-editor'       => '5px',
+				'--srfm-checkbox-description-margin-left' => '30px',
 				// Label Variables.
 				'--srfm-label-font-size'                  => '18px',
 				'--srfm-label-line-height'                => '28px',

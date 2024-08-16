@@ -475,6 +475,7 @@ class Post_Types {
 			);
 		}
 
+		// Registers meta to handle values associated with form styling.
 		register_post_meta(
 			SRFM_FORMS_POST_TYPE,
 			'_srfm_instant_form_settings',
