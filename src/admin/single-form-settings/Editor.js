@@ -39,7 +39,6 @@ const { select, dispatch } = wp.data;
 const defaultKeys = {
 	// General Tab
 	_srfm_use_label_as_placeholder: false,
-	_srfm_single_page_form_title: true,
 	_srfm_is_inline_button: false,
 	// Submit Button
 	_srfm_submit_button_text: 'Submit',

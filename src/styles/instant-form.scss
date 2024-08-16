@@ -35,87 +35,87 @@
 	border: 1px solid #e5e7eb;
 	border-radius: 4px;
 	box-shadow: 0px 4px 6px -2px #0000000d;
+}
 
-	.srfm-instant-form-settings-container {
-		padding: 16px;
-		width: 302px;
+.srfm-instant-form-settings-container {
+	padding: 16px;
+	width: 302px;
 
-		.srfm-instant-form-settings-group {
+	.srfm-instant-form-settings-group {
+		display: flex;
+		flex-direction: column;
+		gap: 20px;
+
+		.srfm-instant-form-settings {
 			display: flex;
 			flex-direction: column;
-			gap: 20px;
+			gap: 4px;
 
-			.srfm-instant-form-settings {
-				display: flex;
-				flex-direction: column;
-				gap: 4px;
+			&.srfm-instant-form-settings-inline {
+				flex-direction: row;
+				align-items: center;
+				justify-content: space-between;
+			}
 
-				&.srfm-instant-form-settings-inline {
-					flex-direction: row;
-					align-items: center;
-					justify-content: space-between;
-				}
+			.components-toggle-control {
+				margin: 0;
+				padding: 0;
+			}
 
-				.components-toggle-control {
-					margin: 0;
-					padding: 0;
-				}
+			.srfm-responsive-common-button {
+				margin: 0;
+			}
 
-				.srfm-responsive-common-button {
-					margin: 0;
-				}
+			input {
+				background: #ffffff;
+				width: 100%;
+			}
+
+			input,
+			.components-input-control__backdrop {
+				border: 1px solid #d1d5db;
+				padding: 8px;
+				border-radius: 4px;
+				font-weight: 400;
+				font-size: 12px;
+				line-height: 16px;
+			}
+
+			.srfm-instant-form-url {
+				position: relative;
 
 				input {
-					background: #ffffff;
+					padding-right: 32px;
+					text-overflow: ellipsis;
 				}
 
-				input,
-				.components-input-control__backdrop {
-					border: 1px solid #d1d5db;
-					padding: 8px;
-					border-radius: 4px;
-					font-weight: 400;
-					font-size: 12px;
-					line-height: 16px;
-				}
+				button {
+					cursor: pointer;
+					position: absolute;
+					right: 8px;
+					top: 10px;
+					background: rgba( 0, 0, 0, 0 );
+					border: none;
+					padding: 0px;
+					margin: 0px;
+					height: 16px;
+					width: 16px;
+					outline: none;
+					box-shadow: none;
 
-				.srfm-instant-form-url {
-					position: relative;
-
-					input {
-						width: 100%;
-						padding-right: 32px;
-						text-overflow: ellipsis;
-					}
-
-					button {
-						cursor: pointer;
-						position: absolute;
-						right: 8px;
-						top: 10px;
-						background: rgba( 0, 0, 0, 0 );
-						border: none;
-						padding: 0px;
-						margin: 0px;
-						height: 16px;
-						width: 16px;
-						outline: none;
-						box-shadow: none;
-
-						svg {
-							fill: none;
-						}
+					svg {
+						fill: none;
 					}
 				}
 			}
+		}
 
-			label,
-			.components-base-control .srfm-control-label {
-				color: #50575e;
-				font-weight: 500 !important;
-				font-size: 13px !important;
-				line-height: 16px !important;
-			}
+		label,
+		.components-base-control .srfm-control-label {
+			color: #50575e;
+			font-weight: 500 !important;
+			font-size: 13px !important;
+			line-height: 16px !important;
 		}
 	}
 
@@ -124,5 +124,18 @@
 		width: 100%;
 		border: 1px solid #e4e4e7;
 		margin: 20px 0;
+	}
+}
+
+.srfm-instant-form-live-mode {
+	pointer-events: none;
+
+	.srfm-instant-form-live-mode-iframe {
+		position: absolute;
+		width: 100%;
+		height: 100%;
+		pointer-events: none;
+		z-index: 9999999;
+		background-color: #ffffff;
 	}
 }
