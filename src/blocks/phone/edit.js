@@ -4,7 +4,7 @@
 import { __ } from '@wordpress/i18n';
 import { useState, useEffect } from '@wordpress/element';
 import { ToggleControl, SelectControl } from '@wordpress/components';
-import { InspectorControls, RichText } from '@wordpress/block-editor';
+import { InspectorControls } from '@wordpress/block-editor';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
 	SRFMTabs,
@@ -17,7 +17,7 @@ import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
 import widthOptions from '../width-options.json';
 import { FieldsPreview } from '../FieldsPreview.jsx';
-import { useErrMessage, decodeHtmlEntities } from '@Blocks/util';
+import { useErrMessage } from '@Blocks/util';
 import ConditionalLogic from '@Components/conditional-logic';
 
 const Edit = ( { attributes, setAttributes, clientId } ) => {
@@ -25,7 +25,6 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 		required,
 		fieldWidth,
 		help,
-		placeholder,
 		block_id,
 		isUnique,
 		duplicateMsg,
@@ -87,17 +86,6 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 									} )
 								}
 								__nextHasNoMarginBottom
-							/>
-							<SRFMTextControl
-								label={ __( 'Placeholder', 'sureforms' ) }
-								value={ placeholder }
-								data={ {
-									value: placeholder,
-									label: 'placeholder',
-								} }
-								onChange={ ( value ) =>
-									setAttributes( { placeholder: value } )
-								}
 							/>
 							<ToggleControl
 								label={ __( 'Required', 'sureforms' ) }
@@ -186,19 +174,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 				handleChange={ handleChange }
 				setAttributes={ setAttributes }
 			/>
-			{ help !== '' && (
-				<RichText
-					tagName="label"
-					value={ help }
-					onChange={ ( value ) => {
-						setAttributes( { help: decodeHtmlEntities( value ) } );
-					} }
-					className="srfm-description"
-					multiline={ false }
-					id={ block_id }
-					allowedFormats={ [] }
-				/>
-			) }
+			<div className="srfm-error-wrap"></div>
 		</div>
 	);
 };

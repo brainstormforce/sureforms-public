@@ -44,6 +44,7 @@ class Input_Markup extends Base {
 		$this->set_field_name( $this->unique_slug );
 		$this->set_markup_properties( $this->input_label );
 		$this->set_aria_described_by();
+		$this->set_label_as_placeholder( $this->input_label );
 	}
 
 	/**
@@ -56,17 +57,17 @@ class Input_Markup extends Base {
 		ob_start(); ?>
 			<div data-block-id="<?php echo esc_attr( $this->block_id ); ?>" class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $this->slug ); ?>-block srf-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?>-block<?php echo esc_attr( $this->block_width ); ?><?php echo esc_attr( $this->class_name ); ?> <?php echo esc_attr( $this->conditional_class ); ?>">
 			<?php echo wp_kses_post( $this->label_markup ); ?>
+			<?php echo wp_kses_post( $this->help_markup ); ?>
 				<div class="srfm-block-wrap">
-					<input class="srfm-input-common srfm-input-<?php echo esc_attr( $this->slug ); ?>" type="text" name="<?php echo esc_attr( $this->field_name ); ?>" id="<?php echo esc_attr( $this->unique_slug ); ?>"
+				<input class="srfm-input-common srfm-input-<?php echo esc_attr( $this->slug ); ?>" type="text" name="<?php echo esc_attr( $this->field_name ); ?>" id="<?php echo esc_attr( $this->unique_slug ); ?>"
 					<?php echo ! empty( $this->aria_described_by ) ? "aria-describedby='" . esc_attr( trim( $this->aria_described_by ) ) . "'" : ''; ?>
-					aria-required="<?php echo esc_attr( strval( $this->aria_require_attr ) ); ?>" data-unique="<?php echo esc_attr( $this->aria_unique ); ?>" placeholder="<?php echo esc_attr( $this->placeholder ); ?>" maxlength="<?php echo esc_attr( $this->max_text_length ); ?>" value="<?php echo esc_attr( $this->default ); ?>" />
-					<?php echo $this->error_svg;  //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Ignored to render svg ?>
+					aria-required="<?php echo esc_attr( strval( $this->aria_require_attr ) ); ?>" data-unique="<?php echo esc_attr( $this->aria_unique ); ?>" maxlength="<?php echo esc_attr( $this->max_text_length ); ?>" value="<?php echo esc_attr( $this->default ); ?>" <?php echo wp_kses_post( $this->placeholder_attr ); ?> />
 				</div>
-				<?php echo wp_kses_post( $this->help_markup ); ?>
-				<?php echo wp_kses_post( $this->duplicate_msg_markup ); ?>
+				<div class="srfm-error-wrap">
+					<?php echo wp_kses_post( $this->duplicate_msg_markup ); ?>
+				</div>
 			</div>
 		<?php
 		return ob_get_clean();
 	}
-
 }

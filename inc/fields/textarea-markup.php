@@ -99,6 +99,7 @@ class Textarea_Markup extends Base {
 		$this->set_field_name( $this->unique_slug );
 		$this->set_markup_properties( $this->input_label );
 		$this->set_aria_described_by();
+		$this->set_label_as_placeholder( $this->input_label );
 	}
 
 	/**
@@ -111,16 +112,15 @@ class Textarea_Markup extends Base {
 		ob_start(); ?>
 		<div data-block-id="<?php echo esc_attr( $this->block_id ); ?>" class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $this->slug ); ?>-block srf-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?>-block<?php echo esc_attr( $this->block_width ); ?><?php echo esc_attr( $this->class_name ); ?> <?php echo esc_attr( $this->conditional_class ); ?>">
 			<?php echo wp_kses_post( $this->label_markup ); ?>
+			<?php echo wp_kses_post( $this->help_markup ); ?>
 			<div class="srfm-block-wrap">
-				<?php if ( $this->max_length_html ) { ?>
-					<div class="srfm-text-counter"><?php echo esc_html( $this->max_length_html ); ?></div>
-				<?php } ?>
 				<textarea class="srfm-input-common srfm-input-<?php echo esc_attr( $this->slug ); ?>" name="<?php echo esc_attr( $this->field_name ); ?>" id="<?php echo esc_attr( $this->unique_slug ); ?>"
 				<?php echo ! empty( $this->aria_described_by ) ? "aria-describedby='" . esc_attr( trim( $this->aria_described_by ) ) . "'" : ''; ?>
-				aria-required="<?php echo esc_attr( $this->aria_require_attr ); ?>" <?php echo wp_kses_post( $this->placeholder_attr . '' . $this->max_length_attr . '' . $this->cols_attr . '' . $this->rows_attr ); ?> ><?php echo esc_html( $this->default ); ?></textarea>
+				aria-required="<?php echo esc_attr( $this->aria_require_attr ); ?>" <?php echo wp_kses_post( $this->max_length_attr . '' . $this->cols_attr . '' . $this->rows_attr ); ?> <?php echo wp_kses_post( $this->placeholder_attr ); ?>><?php echo esc_html( $this->default ); ?></textarea>
 			</div>
-			<?php echo wp_kses_post( $this->help_markup ); ?>
-			<?php echo wp_kses_post( $this->error_msg_markup ); ?>
+			<div class="srfm-error-wrap">
+				<?php echo wp_kses_post( $this->error_msg_markup ); ?>
+			</div>
 		</div>
 
 		<?php

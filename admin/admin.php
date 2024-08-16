@@ -8,7 +8,7 @@
 namespace SRFM\Admin;
 
 use SRFM\Inc\Traits\Get_Instance;
-use ZipAI\Classes\Helper as AI_Helper;
+use SRFM\Inc\Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -344,6 +344,7 @@ class Admin {
 			'is_pro_active'           => defined( 'SRFM_PRO_VER' ),
 			'pro_plugin_version'      => defined( 'SRFM_PRO_VER' ) ? SRFM_PRO_VER : '',
 			'sureforms_pricing_page'  => $this->get_sureforms_website_url( 'pricing' ),
+			'field_spacing_vars'      => Helper::get_css_vars(),
 		];
 
 		if ( class_exists( 'SRFM_PRO\Admin\Licensing' ) ) {
@@ -563,7 +564,7 @@ class Admin {
 	 * Get SureForms Website URL.
 	 *
 	 * @param string $trail The URL trail to append to SureForms website URL. The parameter should not include a leading slash as the base URL already ends with a trailing slash.
-	 * @since x.x.x
+	 * @since 0.0.7
 	 * @return string
 	 */
 	public static function get_sureforms_website_url( $trail ) {

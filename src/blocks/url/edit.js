@@ -1,7 +1,6 @@
 /**
  * WordPress dependencies
  */
-import { RichText } from '@wordpress/block-editor';
 import { useEffect } from '@wordpress/element';
 import Settings from './settings';
 import { UrlComponent } from './components/default.js';
@@ -9,10 +8,9 @@ import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
 import { FieldsPreview } from '../FieldsPreview.jsx';
-import { decodeHtmlEntities } from '@Blocks/util';
 
 const Edit = ( { attributes, setAttributes, clientId } ) => {
-	const { help, block_id, formId, preview, className } = attributes;
+	const { block_id, formId, preview, className } = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
 
 	useEffect( () => {
@@ -38,19 +36,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 				setAttributes={ setAttributes }
 				attributes={ attributes }
 			/>
-			{ help !== '' && (
-				<RichText
-					tagName="label"
-					value={ help }
-					onChange={ ( value ) => {
-						setAttributes( { help: decodeHtmlEntities( value ) } );
-					} }
-					className="srfm-description"
-					multiline={ false }
-					id={ block_id }
-					allowedFormats={ [] }
-				/>
-			) }
+			<div className="srfm-error-wrap"></div>
 		</div>
 	);
 };
