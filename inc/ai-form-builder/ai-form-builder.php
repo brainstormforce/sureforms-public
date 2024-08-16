@@ -66,7 +66,7 @@ class AI_Form_Builder {
 				$messages,
 				[
 					'role'    => 'system',
-					'content' => 'Based on the description, generate a survey with questions array where every element has five fields: label, fieldType, placeholder, required (add only if it is mentioned by user or if it is mandatory for form submission), helpText (add only if it is mentioned by user or if it is needed based on the field). fieldType can only be of these options ' . $field_types . '. fieldType can be used in any order and any number of times. Also return formTitle in the response.
+					'content' => 'Based on the description, generate a survey with questions array where every element has five fields: label, fieldType, required (add only if it is mentioned by user or if it is mandatory for form submission), helpText (add only if it is mentioned by user or if it is needed based on the field). fieldType can only be of these options ' . $field_types . '. fieldType can be used in any order and any number of times. Also return formTitle in the response.
 					
 					Here are the field specific properties that you need to return with that specific field:
 					

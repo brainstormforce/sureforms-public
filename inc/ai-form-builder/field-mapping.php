@@ -72,7 +72,6 @@ class Field_Mapping {
 				[
 					'label'       => sanitize_text_field( $question['label'] ),
 					'required'    => filter_var( $question['required'], FILTER_VALIDATE_BOOLEAN ),
-					'placeholder' => sanitize_text_field( $question['placeholder'] ),
 					'help'        => sanitize_text_field( $question['helpText'] ),
 				]
 			);
