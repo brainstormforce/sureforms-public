@@ -4,11 +4,11 @@ import Header from './Header.js';
 import ICONS from './icons.js';
 import AiFormBuilder from './AiFormBuilder.js';
 
-const LimitReachedPopup = ( { setShowLimitReachedPopup ,
-	paraOne ,
-	paraTwo ,
+const LimitReachedPopup = ( { setShowLimitReachedPopup,
+	paraOne,
+	paraTwo,
 	onlClick,
-	buttonText
+	buttonText,
 } ) => {
 	return (
 		<>
@@ -32,13 +32,13 @@ const LimitReachedPopup = ( { setShowLimitReachedPopup ,
 						{ paraOne }
 					</span>
 					<span>
-						{ paraTwo}
+						{ paraTwo }
 					</span>
 				</div>
 				<div className="srfm-limit-reached-popup-content">
 					<Button
 						className="srfm-limit-reached-more-credits-btn"
-						onClick={ 
+						onClick={
 							onlClick
 						 }
 					>

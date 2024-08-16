@@ -3,7 +3,7 @@ import { Button } from '@wordpress/components';
 import ICONS from './icons';
 import Header from './Header.js';
 
-export const AuthErrorPopup = ( { initiateAuth} ) => {
+export const AuthErrorPopup = ( { initiateAuth } ) => {
 	return (
 		<>
 			<Header />
@@ -20,26 +20,26 @@ export const AuthErrorPopup = ( { initiateAuth} ) => {
 						'Please check your username and password for the account, and try to reconnect again. Need help? ',
 						'sureforms'
 					) }
-                    <a href="https://sureforms.com/contact/" target="_blank" 
-                    style={{
-                        color: '#D54407',
-                        textDecoration: 'underline'
-                    }}
-                    >Contact Support</a>
+					<a href="https://sureforms.com/contact/" target="_blank"
+						style={ {
+							color: '#D54407',
+							textDecoration: 'underline',
+						} } rel="noreferrer"
+					>Contact Support</a>
 				</span>
 				<div className="srfm-auth-err-confirmation-btn-container">
 					<Button
 						className="srfm-auth-err-confirmation-auth-err-btn"
-						onClick={ 
-                            initiateAuth
-                         }
+						onClick={
+							initiateAuth
+						}
 					>
 						{ __( 'Click Here to Retry', 'sureforms' ) }
 					</Button>
 					<Button
 						className="srfm-auth-err-confirmation-cancel-btn"
 						onClick={ () => {
-window.location.href = '/wp-admin/edit.php?post_type=sureforms_form';
+							window.location.href = '/wp-admin/admin.php?page=sureforms_menu';
 						} }
 					>
 						{ __( 'Exit to Dashboard', 'sureforms' ) }

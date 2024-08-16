@@ -2,8 +2,8 @@ import { __ } from '@wordpress/i18n';
 import { Button } from '@wordpress/components';
 import apiFetch from '@wordpress/api-fetch';
 import { useState,
-	useEffect
- } from '@wordpress/element';
+	useEffect,
+} from '@wordpress/element';
 import { handleAddNewPost } from '@Utils/Helpers';
 import {
 	MdArrowForward,
@@ -15,7 +15,7 @@ import { CircularProgressBar } from '@tomickigrzegorz/react-circular-progress-ba
 import Header from './Header.js';
 import LimitReachedPopup from './LimitReachedPopup.js';
 import ErrorPopup from './ErrorPopup.js';
-import {AuthErrorPopup} from './AuthErrorPopup.js';
+import { AuthErrorPopup } from './AuthErrorPopup.js';
 
 const AiFormBuilder = () => {
 	const [ message, setMessage ] = useState(
@@ -30,6 +30,8 @@ const AiFormBuilder = () => {
 	const [ showFormIdeas, setShowFormIdeas ] = useState( false );
 	const [ characterCount, setCharacterCount ] = useState( 0 );
 	const [ showAuthErrorPopup, setShowAuthErrorPopup ] = useState( false );
+	const urlParams = new URLSearchParams( window.location.search );
+	const accessKey = urlParams.get( 'access_key' );
 	const examplePrompts = [
 		{
 			title: 'Generate a user feedback form',
@@ -142,54 +144,51 @@ const AiFormBuilder = () => {
 	};
 
 	const initiateAuth = async () => {
-		const response = await apiFetch({
+		const response = await apiFetch( {
 			path: '/sureforms/v1/initiate-auth',
 			headers: {
 				'Content-Type': 'application/json',
 				'X-WP-Nonce': srfm_admin.template_picker_nonce,
 			},
 			method: 'GET',
-		})
+		} );
 
 		if ( response?.success ) {
 			window.location.href = response.data;
 		}
 	};
 
-	const handleAccessKey = async (accessKey) => {
+	const handleAccessKey = async () => {
 	  	// if access key is present, handle it by decrypting it and redirecting to form builder
-		const response = await apiFetch({
+		const response = await apiFetch( {
 			path: '/sureforms/v1/handle-access-key',
 			headers: {
 				'Content-Type': 'application/json',
 				'X-WP-Nonce': srfm_admin.template_picker_nonce,
 			},
 			method: 'POST',
-			body: JSON.stringify({
-				accessKey
-			}),
-		})
+			body: JSON.stringify( {
+				accessKey,
+			} ),
+		} );
 
 		if ( response?.success ) {
 			const decryptedAccessKey = response?.data;
 
-			if (decryptedAccessKey) {
+			if ( decryptedAccessKey ) {
 				window.location.href = srfm_admin.site_url + `/wp-admin/admin.php?page=add-new-form&method=ai`;
 			}
 		} else {
-			setShowAuthErrorPopup(true);
+			setShowAuthErrorPopup( true );
 		}
 	};
 
-	const urlParams = new URLSearchParams(window.location.search);
-	const accessKey = urlParams.get('access_key');
-  
 	// Handle access key on component mount
-	useEffect(() => {
-		if (accessKey) {
-			handleAccessKey(accessKey);
-		} 
-	}, [accessKey]);
+	useEffect( () => {
+		if ( accessKey ) {
+			handleAccessKey( );
+		}
+	}, [ accessKey ] );
 
 	// shows while the form is being built
 	if ( isBuildingForm ) {
@@ -236,13 +235,11 @@ const AiFormBuilder = () => {
 
 	// show limit reached popup when free forms are consumed
 	if ( showLimitReachedPopup ) {
-
 		const isRegistered = srfm_admin?.srfm_ai_usage_details?.is_registered;
-		const formCreationleft = srfm_admin?.srfm_ai_usage_details?.remaining;
-
+		const formCreationleft = srfm_admin?.srfm_ai_usage_details?.remaining ?? 0;
 
 		// show upgrade plan popup if user is registered and form creation limit is reached
-		if (isRegistered === 'registered'&& formCreationleft === 0) {
+		if ( isRegistered === 'registered' && formCreationleft === 0 ) {
 			return (
 				<LimitReachedPopup
 					setShowLimitReachedPopup={ setShowLimitReachedPopup }
@@ -284,8 +281,8 @@ const AiFormBuilder = () => {
 
 	// show auth error popup when access key is not present while authenticating
 	if ( showAuthErrorPopup ) {
-		return <AuthErrorPopup 
-		initiateAuth={ initiateAuth }
+		return <AuthErrorPopup
+			initiateAuth={ initiateAuth }
 		/>;
 	}
 
@@ -313,8 +310,9 @@ const AiFormBuilder = () => {
 									'sureforms'
 								) }
 								maxLength={ 2000 }
-								onChange={ (e) => {setShowEmptyError( false );
-									setCharacterCount(e.target.value.length);
+								onChange={ ( e ) => {
+									setShowEmptyError( false );
+									setCharacterCount( e.target.value.length );
 								} }
 							/>
 							{ showEmptyError && (
@@ -360,53 +358,53 @@ const AiFormBuilder = () => {
 						</div>
 						<hr className="srfm-ai-builder-separator" />
 						<div
-						style={{
-							display: 'flex',
-							alignItems: 'center',
-							justifyContent:'flex-end',
-							gap: '16px',
-						}}>
+							style={ {
+								display: 'flex',
+								alignItems: 'center',
+								justifyContent: 'flex-end',
+								gap: '16px',
+							} }>
 							<span
-							style={{
-								fontSize: '16px',
-								fontWeight: '500',
-								lineHeight: '24px',
-								color: ' #64748B',
-							}}
+								style={ {
+									fontSize: '16px',
+									fontWeight: '500',
+									lineHeight: '24px',
+									color: ' #64748B',
+								} }
 							>
-						{ characterCount }/2000
-						</span>
-						<Button
-							className="srfm-ai-builder-create-form-btn"
-							onClick={ () => {
-								const userPrompt =
+								{ characterCount }/2000
+							</span>
+							<Button
+								className="srfm-ai-builder-create-form-btn"
+								onClick={ () => {
+									const userPrompt =
 									document.querySelector( 'textarea' );
 
-								if ( ! userPrompt.value ) {
-									setShowEmptyError( true );
-									return;
-								}
+									if ( ! userPrompt.value ) {
+										setShowEmptyError( true );
+										return;
+									}
 
-								if (
-									srfm_admin?.srfm_ai_usage_details?.remaining === 0
-								) {
-									setShowLimitReachedPopup( true );
-									return;
-								}
+									if (
+										srfm_admin?.srfm_ai_usage_details?.remaining === 0
+									) {
+										setShowLimitReachedPopup( true );
+										return;
+									}
 
-								handleCreateAiForm(
-									userPrompt.value,
-									[],
-									true
-								);
-								setIsBuildingForm( true );
-							} }
-						>
-							<span className="srfm-ai-builder-create-form-btn-text">
-								{ __( 'Generate Form', 'sureforms' ) }
-							</span>
-							<MdArrowForward color="white" size={ 20 } />
-						</Button>
+									handleCreateAiForm(
+										userPrompt.value,
+										[],
+										true
+									);
+									setIsBuildingForm( true );
+								} }
+							>
+								<span className="srfm-ai-builder-create-form-btn-text">
+									{ __( 'Generate Form', 'sureforms' ) }
+								</span>
+								<MdArrowForward color="white" size={ 20 } />
+							</Button>
 						</div>
 					</div>
 				</div>

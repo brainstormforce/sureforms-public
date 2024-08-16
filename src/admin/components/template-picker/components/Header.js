@@ -28,7 +28,7 @@ const Header = () => {
 		}
 	}, [ method ] );
 
-	const formCreationleft = srfm_admin?.srfm_ai_usage_details?.remaining;
+	const formCreationleft = srfm_admin?.srfm_ai_usage_details?.remaining ?? 0;
 
 	return (
 		<div

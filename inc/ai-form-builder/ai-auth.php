@@ -8,6 +8,7 @@
 namespace SRFM\Inc\AI_Form_Builder;
 
 use SRFM\Inc\Traits\Get_Instance;
+use SRFM\Inc\Helper;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
@@ -20,97 +21,141 @@ if ( ! defined( 'ABSPATH' ) ) {
 class AI_Auth {
 	use Get_Instance;
 
-    public $key = "";
+	/**
+	 * The key for encryption and decryption.
+	 *
+	 * @var string
+	 */
+	public $key = '';
 
-    public function initiate_auth() {
+	/**
+	 * Initiates the auth process.
+	 *
+	 * @param \WP_REST_Request $request The request object.
+	 * @return void
+	 */
+	public function get_auth_url( $request ) {
 
-        $this->key = wp_generate_password(16, false);
+		$nonce = Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) );
 
-        $token_data = array(
-            "redirect-back" => site_url() . "/wp-admin/admin.php?page=add-new-form&method=ai",
-            "key" => $this->key,
-            // "key" => "Lg(pRHTc3PoQ0STZ",
-            "site-url" => site_url(),
-            "nonce" => wp_create_nonce('ai_auth_nonce')
-        );
-    
-        // Convert to JSON and Base64 encode
-        $encoded_token_data = base64_encode(json_encode($token_data));
-    
-        // Generate the auth URL
-        $auth_url = "https://billing.sureforms.com/auth/?token=" . $encoded_token_data;
-    
-        wp_send_json_success($auth_url);
-    }
+		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
+			wp_send_json_error( 'Nonce verification failed.' );
+		}
 
-    public function handle_access_key($request) {
-        // get body data
-        $body = json_decode($request->get_body(), true);
+		// Generate a random key of 16 characters.
+		$this->key = wp_generate_password( 16, false );
 
-        // get access key
-        $access_key = $body['accessKey'];
-        $access_key = $body['accessKey'];
+		// Prepare the token data.
+		$token_data = [
+			'redirect-back' => site_url() . '/wp-admin/admin.php?page=add-new-form&method=ai',
+			'key'           => $this->key,
+			'site-url'      => site_url(),
+			'nonce'         => wp_create_nonce( 'ai_auth_nonce' ),
+		];
 
-        if (!empty($access_key)) {
-            $this->decrypt_access_key($access_key, $this->key,
-                'AES-256-CBC', 0 );
-        } else {
-            wp_send_json_error("No access key provided.");
-        }
-    }
-    
-        /**
-         * Decrypts a string using OpenSSL decryption.
-         *
-         * @param string $data The data to decrypt.
-         * @param string $key The encryption key.
-         * @param string $method The encryption method (e.g., AES-256-CBC).
-         * @param int $options Encryption options (default is 0).
-         * @return string|false The decrypted string or false on failure.
-         */
-        public function decrypt_access_key($data, $key, $method = 'AES-256-CBC', $options = 0)
-        {
-            // Decode the data and split IV and encrypted data
-            $decodedData = base64_decode($data);
-            if ($decodedData === false) {
-                return false;
-            }
+		$encoded_token_data = wp_json_encode( $token_data );
 
-            list($key, $encrypted) = explode('::', $decodedData, 2);
+		if ( empty( $encoded_token_data ) ) {
+			wp_send_json_error( 'Failed to encode the token data.' );
+		}
 
-            // Decrypt the data
-            $decrypted = openssl_decrypt($encrypted, $method, $key, $options, $key);
+		// Send the token data to the frontend for redirection.
+		wp_send_json_success( SRFM_BILLING_PORTAL . 'auth/?token=' . base64_encode( $encoded_token_data ) );  // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
 
-            if ($decrypted === false) {
-                wp_send_json_error("Failed to decrypt the access key.");
-            }
+	}
 
-            // json decode the decrypted data
-            $decrypted_email_array = json_decode($decrypted, true);
+	/**
+	 * Handles the access key.
+	 *
+	 * @param \WP_REST_Request $request The request object.
+	 * @return void
+	 */
+	public function handle_access_key( $request ) {
 
-            if (empty($decrypted_email_array)) {
-                wp_send_json_error("Failed to json decode the decrypted data.");
-            }
+		$nonce = Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) );
+
+		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
+			wp_send_json_error( 'Nonce verification failed.' );
+		}
+
+		// get body data.
+		$body = json_decode( $request->get_body(), true );
+
+		if ( empty( $body ) ) {
+			wp_send_json_error( 'Error processing Access Key.' );
+		}
+
+		// get access key.
+		$access_key = is_array( $body ) ? Helper::get_string_value( $body['accessKey'] ) : '';
+
+		// decrypt the access key.
+		if ( ! empty( $access_key ) ) {
+			$this->decrypt_access_key(
+				$access_key,
+				$this->key,
+				'AES-256-CBC',
+				0
+			);
+		} else {
+			wp_send_json_error( 'No access key provided.' );
+		}
+	}
+
+	/**
+	 * Decrypts a string using OpenSSL decryption.
+	 *
+	 * @param string $data The data to decrypt.
+	 * @param string $key The encryption key.
+	 * @param string $method The encryption method (e.g., AES-256-CBC).
+	 * @param int    $options Encryption options (default is 0).
+	 * @return string|false The decrypted string or false on failure.
+	 */
+	public function decrypt_access_key( $data, $key, $method = 'AES-256-CBC', $options = 0 ) {
+		// Decode the data and split IV and encrypted data.
+		$decoded_data = base64_decode( $data ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_decode
+
+		// if the data is not base64 encoded then return false.
+		if ( empty( $decoded_data ) ) {
+			return false;
+		}
+
+		// split the key and encrypted data.
+		list($key, $encrypted) = explode( '::', $decoded_data, 2 );
+
+		// Decrypt the data using the key.
+		$decrypted = openssl_decrypt( $encrypted, $method, $key, $options, $key );
+
+		// if the decryption returns false then send error.
+		if ( empty( $decrypted ) ) {
+			wp_send_json_error( 'Failed to decrypt the access key.' );
+		}
+
+		// json decode the decrypted data.
+		$decrypted_data_array = json_decode( $decrypted, true );
+
+		if ( ! is_array( $decrypted_data_array ) || empty( $decrypted_data_array ) ) {
+			wp_send_json_error( 'Failed to json decode the decrypted data.' );
+		}
+
+		// verify the nonce that comes in $encrypted_email_array.
+		if ( ! empty( $decrypted_data_array['nonce'] ) && ! wp_verify_nonce( $decrypted_data_array['nonce'], 'ai_auth_nonce' ) ) {
+			wp_send_json_error( 'Nonce verification failed.' );
+		}
+
+		// check if the user email is present in the decrypted data.
+		if ( empty( $decrypted_data_array['user_email'] ) ) {
+			wp_send_json_error( 'No user email found in the decrypted data.' );
+		}
+
+		// verify the nonce.
+		$is_option_updated = update_option( 'srfm_ai_auth_user_email', $decrypted_data_array );
+
+		wp_send_json_success( $is_option_updated );
+	}
 
 
-            if (empty($decrypted_email_array['user_email'])) {
-                wp_send_json_error("No user email found in the decrypted data.");
-            }
 
-            // verify the nonce that comes in $encrypted_email_array
-            if (!empty($decrypted_email_array['nonce']) && !wp_verify_nonce($decrypted_email_array['nonce'], 'ai_auth_nonce')) {
-                wp_send_json_error("Nonce verification failed.");
-            }
 
-            // verify the nonce
-            $is_option_updated = update_option('srfm_ai_auth_user_email', $decrypted_email_array );
-
-            wp_send_json_success($is_option_updated);
-        }
-
-    
-
-    
 
 }
 

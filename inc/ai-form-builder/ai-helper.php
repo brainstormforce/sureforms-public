@@ -35,25 +35,9 @@ class AI_Helper {
 		// Set the API URL.
 		$api_url = SRFM_AI_MIDDLEWARE . 'chat/completions';
 
-		$user_email = get_option( 'srfm_ai_auth_user_email' );
-
-		// For free version, set token as site url or user email.
-		if ( empty($user_email) ) {
-			// set token as site url if user email is not available.
-			$token = site_url();
-			// $token = "https://www.addictinggames.com/";
-		} else{
-			$token = $user_email['user_email'];
-		}
-
-		// TODO: if pro version is active then add $token as sureforms license key.
-		if ( defined( 'SRFM_PRO_VER' ) ) {
-			// is license active
-		}
-
 		$api_args = [
 			'headers' => [
-				'X-Token'      => base64_encode( $token ), // For now, this is a dummy token. Once we go live, we will replace this with the actual token. That will be user's SureCart license or base64 encoded site URL.
+				'X-Token'      => base64_encode( self::get_user_token() ), // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode -- This is not for obfuscation.
 				'Content-Type' => 'application/json',
 			],
 			'timeout' => 30, // phpcs:ignore WordPressVIPMinimum.Performance.RemoteRequestTimeout.timeout_timeout -- 30 seconds is required sometime for open ai responses
@@ -137,28 +121,12 @@ class AI_Helper {
 		// Set the API URL.
 		$api_url = SRFM_AI_MIDDLEWARE . 'usage';
 
-		$user_email = get_option( 'srfm_ai_auth_user_email' );
-
-		// For free version, set token as site url or user email.
-		if ( empty($user_email) ) {
-			// set token as site url if user email is not available.
-			$token = site_url();
-			// $token = "https://www.addictinggames.com/";
-		} else{
-			$token = $user_email['user_email'];
-		}
-
-		// TODO: if pro version is active then add $token as sureforms license key.
-		if ( defined( 'SRFM_PRO_VER' ) ) {
-			// check if license is active using SureCart Classes
-		}
-
 		// Get the response from the endpoint.
 		$response = wp_remote_post(
 			$api_url,
 			[
 				'headers' => [
-					'X-Token'      => base64_encode( $token ), // For now, this is a dummy token. Once we go live, we will replace this with the actual token. That will be user's SureCart license or base64 encoded site URL.
+					'X-Token'      => base64_encode( self::get_user_token() ), // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode -- This is not for obfuscation.
 					'Content-Type' => 'application/json',
 				],
 				'timeout' => 30, // phpcs:ignore WordPressVIPMinimum.Performance.RemoteRequestTimeout.timeout_timeout -- 30 seconds is required sometime for the SureForms API response
@@ -184,6 +152,21 @@ class AI_Helper {
 
 		// Return the response body.
 		return json_decode( $response_body, true );
+	}
+
+	/**
+	 * Get the User Token.
+	 *
+	 * @since x.x.x
+	 * @return string The User Token.
+	 */
+	public static function get_user_token() {
+		$token = '';
+
+		$user_email = get_option( 'srfm_ai_auth_user_email' );
+		$token      = empty( $user_email ) ? site_url() : $user_email['user_email'];
+
+		return $token;
 	}
 
 }

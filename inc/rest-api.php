@@ -97,10 +97,10 @@ class Rest_Api {
 			],
 			'initiate-auth'        => [
 				'methods'             => 'GET',
-				'callback'            => [ AI_Auth::get_instance(), 'initiate_auth' ],
+				'callback'            => [ AI_Auth::get_instance(), 'get_auth_url' ],
 				'permission_callback' => [ $this, 'can_edit_posts' ],
 			],
-			'handle-access-key'       => [
+			'handle-access-key'    => [
 				'methods'             => 'POST',
 				'callback'            => [ AI_Auth::get_instance(), 'handle_access_key' ],
 				'permission_callback' => [ $this, 'can_edit_posts' ],
