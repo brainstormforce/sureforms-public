@@ -100,7 +100,7 @@ class Generate_Form_Markup {
 				$sf_classname,
 			];
 
-			$form_classes[] = is_string( Helper::get_meta_value( $id, '_srfm_additional_classes' ) ) ? Helper::get_meta_value( $id, '_srfm_additional_classes' ) : '';
+			$form_classes[] = Helper::get_string_value( Helper::get_meta_value( $id, '_srfm_additional_classes' ) );
 
 			$form_styling             = get_post_meta( $id, '_srfm_forms_styling', true );
 			$form_styling             = ! empty( $form_styling ) && is_array( $form_styling ) ? $form_styling : [];
