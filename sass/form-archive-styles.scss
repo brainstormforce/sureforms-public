@@ -214,11 +214,6 @@ input:checked + .slider:before {
 		vertical-align: baseline;
 	}
 
-	.srfm-import-btn {
-		vertical-align: baseline;
-		margin-left: 4px;
-		float: right;
-	}
 	@media screen and ( max-width: 782px ) {
 		.srfm-import-btn {
 			margin-bottom: 10px;
@@ -263,7 +258,6 @@ input:checked + .slider:before {
 .sureform-add-new-form {
 	.sureforms-add-new-form-container {
 		display: flex;
-		flex-direction: row-reverse;
 		gap: 12px;
 	}
 }

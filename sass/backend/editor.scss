@@ -43,6 +43,25 @@ body.post-type-sureforms_form {
 	}
 	overflow-y: hidden;
 
+	// Adding multi choice repeater styles.
+	.srfm-option-outer-wrapper {
+		&:first-child {
+			> div {
+				padding-top: 0;
+			}
+		}
+
+		> div {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			padding: 4px 0;
+			.components-base-control {
+				margin-bottom: 0 !important;
+			}
+		}
+	}
+
 	.srfm-media-picker {
 		div {
 			margin: 0;
@@ -55,9 +74,18 @@ body.post-type-sureforms_form {
 			width: 32px;
 			height: 32px;
 			flex-direction: row;
-			justify-content: flex-start;
+
+			.srfm-media-control__clickable {
+				min-width: 30px;
+			}
+
 			.srfm-media-control__footer {
 				background-color: transparent;
+				height: 32px;
+				width: 32px;
+				overflow: hidden;
+				position: relative;
+				z-index: 9;
 				.srfm-control-label {
 					background-color: transparent;
 					color: transparent;
@@ -67,6 +95,7 @@ body.post-type-sureforms_form {
 				padding: 0;
 				top: 2px;
 				right: 2px;
+				z-index: 10;
 				.srfm-media-control__button--close {
 					height: 8px;
 					width: 8px;
@@ -280,7 +309,7 @@ body.post-type-sureforms_form {
 
 		.block-editor-block-list__block,
 		.block-list-appender {
-			&:not(.wp-block-srfm-separator) {
+			&:not( .wp-block-srfm-separator ) {
 				margin-left: 0 !important; // This is needed to get the field width working.
 				margin-right: 0 !important; // This is needed to get the field width working.
 				margin-top: 0 !important; // Had to add as various themes distort the layout.

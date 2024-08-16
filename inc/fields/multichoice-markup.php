@@ -58,7 +58,7 @@ class Multichoice_Markup extends Base {
 	 * SVG type for the input field.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 0.0.7
 	 */
 	protected $svg_type;
 
@@ -74,7 +74,7 @@ class Multichoice_Markup extends Base {
 	 * Flag indicating if the layout is vertical.
 	 *
 	 * @var bool
-	 * @since x.x.x
+	 * @since 0.0.7
 	 */
 	protected $vertical_layout;
 
@@ -82,7 +82,7 @@ class Multichoice_Markup extends Base {
 	 * Contains value if the option contains icon / image
 	 *
 	 * @var mixed
-	 * @since x.x.x
+	 * @since 0.0.7
 	 */
 	protected $option_type;
 

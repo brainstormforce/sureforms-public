@@ -590,7 +590,7 @@ class Helper {
 	 *
 	 * @param string|null $field_spacing The field spacing size or boolean false to return complete sizes array.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.7
 	 * @return array<string|mixed>
 	 */
 	public static function get_css_vars( $field_spacing = null ) {
@@ -627,9 +627,11 @@ class Helper {
 				// Checkbox and GDPR Variables.
 				'--srfm-check-ctn-width'                  => '16px',
 				'--srfm-check-ctn-height'                 => '16px',
-				'--srfm-check-svg-width'                  => '10px',
-				'--srfm-check-svg-height'                 => '10px',
+				'--srfm-check-svg-size'                   => '10px',
+				'--srfm-checkbox-margin-top-frontend'     => '2px',
+				'--srfm-checkbox-margin-top-editor'       => '3px',
 				'--srfm-check-gap'                        => '8px',
+				'--srfm-checkbox-description-margin-left' => '24px',
 				// Phone Number field variables.
 				'--srfm-flag-section-padding'             => '10px 0 10px 12px',
 				'--srfm-gap-between-icon-text'            => '8px',
@@ -650,6 +652,7 @@ class Helper {
 				'--srfm-multi-choice-vertical-svg-size'   => '32px',
 				'--srfm-multi-choice-horizontal-image-size' => '20px',
 				'--srfm-multi-choice-vertical-image-size' => '100px',
+				'--srfm-multi-choice-outer-padding'       => '0',
 			],
 			'medium' => [
 				'--srfm-row-gap-between-blocks'           => '20px',
@@ -662,6 +665,10 @@ class Helper {
 				'--srfm-input-field-font-size'            => '16px',
 				'--srfm-input-field-line-height'          => '24px',
 				'--srfm-input-field-margin'               => '6px 0',
+				// Checkbox and GDPR Variables.
+				'--srfm-checkbox-margin-top-frontend'     => '4px',
+				'--srfm-checkbox-margin-top-editor'       => '6px',
+				'--srfm-checkbox-description-margin-left' => '24px',
 				// Label Variables.
 				'--srfm-label-font-size'                  => '16px',
 				'--srfm-label-line-height'                => '24px',
@@ -678,6 +685,7 @@ class Helper {
 				'--srfm-multi-choice-vertical-svg-size'   => '40px',
 				'--srfm-multi-choice-horizontal-image-size' => '24px',
 				'--srfm-multi-choice-vertical-image-size' => '120px',
+				'--srfm-multi-choice-outer-padding'       => '2px',
 			],
 			'large'  => [
 				'--srfm-row-gap-between-blocks'           => '24px',
@@ -701,9 +709,11 @@ class Helper {
 				// Checkbox and GDPR Variables.
 				'--srfm-check-ctn-width'                  => '20px',
 				'--srfm-check-ctn-height'                 => '20px',
-				'--srfm-check-svg-width'                  => '14px',
-				'--srfm-check-svg-height'                 => '14px',
+				'--srfm-check-svg-size'                   => '14px',
 				'--srfm-check-gap'                        => '10px',
+				'--srfm-checkbox-margin-top-frontend'     => '4px',
+				'--srfm-checkbox-margin-top-editor'       => '5px',
+				'--srfm-checkbox-description-margin-left' => '30px',
 				// Label Variables.
 				'--srfm-label-font-size'                  => '18px',
 				'--srfm-label-line-height'                => '28px',
@@ -721,6 +731,7 @@ class Helper {
 				'--srfm-multi-choice-vertical-svg-size'   => '48px',
 				'--srfm-multi-choice-horizontal-image-size' => '28px',
 				'--srfm-multi-choice-vertical-image-size' => '140px',
+				'--srfm-multi-choice-outer-padding'       => '4px',
 			],
 		];
 		// Return complete sizes array if field_spacing is false. Required in case of JS for Editor changes.

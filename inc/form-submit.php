@@ -614,7 +614,7 @@ class Form_Submit {
 	 * Prepare submission data.
 	 *
 	 * @param array<mixed> $submission_data Submission data.
-	 * @since x.x.x
+	 * @since 0.0.7
 	 * @return array<mixed> Modified submission data.
 	 */
 	public function prepare_submission_data( $submission_data ) {
