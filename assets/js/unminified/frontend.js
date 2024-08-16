@@ -250,6 +250,7 @@ function onSuccess( response ) {
 		if ( ! isColorDark( labelLuminance ) ) {
 			const cssVariablesAndColors = {
 				'--srfm-color-input-label-inverse': '#181818',
+				'--srfm-dropdown-menu-background': '#2e2e2e',
 			};
 
 			const cssElements = [];

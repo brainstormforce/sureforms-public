@@ -21,9 +21,23 @@
 	}
 
 	// checkbox and gdpr
+	.srfm-checkbox-block,
+	.srfm-gdpr-block {
+		.srfm-block-wrap {
+			.srfm-cbx {
+				.srfm-span-wrap {
+					&:first-child {
+						margin-top: var( --srfm-checkbox-margin-top-editor ) !important;
+					}
+				}
+			}
+		}
+	}
+
+	// checkbox and gdpr
 	.srfm-input-checkbox,
 	.srfm-input-gdpr {
-		display: none; // Different display property
+		display: none;
 
 		&:checked {
 			+ {
@@ -32,9 +46,6 @@
 						&:first-child:not( .srfm-required ) {
 							background: var( --srfm-color-scheme-primary );
 							border-color: var( --srfm-color-scheme-primary );
-							svg {
-								stroke-dashoffset: 0;
-							}
 						}
 					}
 				}
@@ -184,6 +195,11 @@
 			width: 100%;
 			color: var( --srfm-color-input-placeholder );
 
+			.ts-dropdown-icon {
+				top: 50%;
+				transform: translateY( -50% );
+			}
+
 			input[type="text"] {
 				padding-right: 2em;
 				&:placeholder-shown {
@@ -199,7 +215,6 @@
 
 			.srfm-input-common {
 				width: 100%;
-				@include srfm-dropdown-arrow;
 			}
 		}
 	}

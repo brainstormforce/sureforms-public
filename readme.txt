@@ -2,9 +2,9 @@
 Contributors: brainstormforce
 Tags: contact form, custom form, form builder, forms, gutenberg
 Requires at least: 6.4
-Tested up to: 6.6
+Tested up to: 6.6.1
 Requires PHP: 7.4
-Stable tag: 0.0.6
+Stable tag: 0.0.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -250,6 +250,13 @@ Yes! You can certainly use SureForms on yours as well as your client’s website
 When you use the SureForms, you get a huge library of ready-to-use form templates that can be used to build your forms fast.
 
 == Changelog ==
+= 0.0.7 =
+* New: Improved styling of fields on the front-end and in the form editor.
+* Improvement: Added Primary, Text, and Text on Primary color options.
+* Improvement: Added field spacing options of Small, Medium, and Large.
+* Improvement: Removed Show Labels and Show Asterisk settings and added an option to use labels as placeholders. Removed the placeholder setting from all fields that supported it previously.
+* Fix: Removed Paragraph block and added custom appender for adding fields to a form.
+* Fix: Resolved a few other minor issues.
 = 0.0.6 =
 * New: Added Support for Core Paragraph Block.
 * Improvement: Added compatibility for WordPress 6.6.

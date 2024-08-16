@@ -302,57 +302,59 @@ class Generate_Form_Markup {
 				}
 				?>
 				<?php if ( 0 !== $block_count && ! $is_inline_button || $is_page_break ) : ?>
+					<?php if ( ! empty( $security_type ) && 'none' !== $security_type ) : ?>
 					<div class="srfm-captcha-container">
-					<?php if ( is_string( $google_captcha_site_key ) && ! empty( $google_captcha_site_key ) && 'g-recaptcha' === $security_type ) : ?>
+						<?php if ( is_string( $google_captcha_site_key ) && ! empty( $google_captcha_site_key ) && 'g-recaptcha' === $security_type ) : ?>
 
-						<?php if ( 'v2-checkbox' === $recaptcha_version ) : ?>
-							<?php
-							wp_enqueue_script( 'google-recaptcha', 'https://www.google.com/recaptcha/api.js', [], SRFM_VER, true );
-							?>
+							<?php if ( 'v2-checkbox' === $recaptcha_version ) : ?>
+								<?php
+								wp_enqueue_script( 'google-recaptcha', 'https://www.google.com/recaptcha/api.js', [], SRFM_VER, true );
+								?>
 							<div class='g-recaptcha' data-callback="onSuccess" recaptcha-type="<?php echo esc_attr( $recaptcha_version ); ?>" data-sitekey="<?php echo esc_attr( strval( $google_captcha_site_key ) ); ?>" ></div>
 						<?php endif; ?>
 
-						<?php if ( 'v2-invisible' === $recaptcha_version ) : ?>
-							<?php
-							wp_enqueue_script( 'google-recaptcha-invisible', 'https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit', [ SRFM_SLUG . '-form-submit' ], SRFM_VER, true );
-							?>
+							<?php if ( 'v2-invisible' === $recaptcha_version ) : ?>
+								<?php
+								wp_enqueue_script( 'google-recaptcha-invisible', 'https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit', [ SRFM_SLUG . '-form-submit' ], SRFM_VER, true );
+								?>
 							<div class='g-recaptcha' recaptcha-type="<?php echo esc_attr( $recaptcha_version ); ?>" data-sitekey="<?php echo esc_attr( $google_captcha_site_key ); ?>" data-size="invisible"></div>
 						<?php endif; ?>
 
-						<?php if ( 'v3-reCAPTCHA' === $recaptcha_version ) : ?>
-							<?php wp_enqueue_script( 'srfm-google-recaptchaV3', 'https://www.google.com/recaptcha/api.js?render=' . esc_js( $google_captcha_site_key ), [], SRFM_VER, true ); ?>
+							<?php if ( 'v3-reCAPTCHA' === $recaptcha_version ) : ?>
+								<?php wp_enqueue_script( 'srfm-google-recaptchaV3', 'https://www.google.com/recaptcha/api.js?render=' . esc_js( $google_captcha_site_key ), [], SRFM_VER, true ); ?>
 						<?php endif; ?>
 
 					<?php endif; ?>
-					<?php
+						<?php
 
-					if ( 'cf-turnstile' === $security_type ) :
-						// Cloudflare Turnstile script.
-						wp_enqueue_script( // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
-							SRFM_SLUG . '-cf-turnstile',
-							'https://challenges.cloudflare.com/turnstile/v0/api.js',
-							[],
-							null,
-							[
-								false,
-								'defer' => true,
-							]
-						);
-						?>
+						if ( 'cf-turnstile' === $security_type ) :
+							// Cloudflare Turnstile script.
+							wp_enqueue_script( // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
+								SRFM_SLUG . '-cf-turnstile',
+								'https://challenges.cloudflare.com/turnstile/v0/api.js',
+								[],
+								null,
+								[
+									false,
+									'defer' => true,
+								]
+							);
+							?>
 						<div id="srfm-cf-sitekey" class="cf-turnstile" data-callback="onSuccess" data-theme="<?php echo esc_attr( $srfm_cf_appearance_mode ); ?>" data-sitekey="<?php echo esc_attr( $srfm_cf_turnstile_site_key ); ?>"></div>
-						<?php
+							<?php
 					endif;
 
-					if ( 'hcaptcha' === $security_type ) :
-						// hCaptcha script.
-						wp_enqueue_script( 'hcaptcha', 'https://js.hcaptcha.com/1/api.js', [], null, [ 'strategy' => 'defer' ] ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
-						?>
+						if ( 'hcaptcha' === $security_type ) :
+							// hCaptcha script.
+							wp_enqueue_script( 'hcaptcha', 'https://js.hcaptcha.com/1/api.js', [], null, [ 'strategy' => 'defer' ] ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
+							?>
 						<div id="srfm-hcaptcha-sitekey" data-callback="onSuccess" class="h-captcha" data-sitekey="<?php echo esc_attr( $srfm_hcaptcha_site_key ); ?>"></div>
-						<?php
+							<?php
 					endif;
-					?>
-					<div class="srfm-validation-error" id="captcha-error" style="display: none;"><?php echo esc_attr__( 'Please verify that you are not a robot.', 'sureforms' ); ?></div>
+						?>
+						<div class="srfm-validation-error" id="captcha-error" style="display: none;"><?php echo esc_attr__( 'Please verify that you are not a robot.', 'sureforms' ); ?></div>
 					</div>
+					<?php endif; ?>
 
 					<?php
 					if ( $is_page_break ) {

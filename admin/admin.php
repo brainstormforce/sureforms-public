@@ -530,7 +530,7 @@ class Admin {
 	 * Get SureForms Website URL.
 	 *
 	 * @param string $trail The URL trail to append to SureForms website URL. The parameter should not include a leading slash as the base URL already ends with a trailing slash.
-	 * @since x.x.x
+	 * @since 0.0.7
 	 * @return string
 	 */
 	public static function get_sureforms_website_url( $trail ) {
