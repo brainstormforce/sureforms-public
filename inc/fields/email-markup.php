@@ -57,7 +57,7 @@ class Email_Markup extends Base {
 	 * Retains a copy of Confirmation Email input label.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 0.0.7
 	 */
 	protected $confirm_label;
 
