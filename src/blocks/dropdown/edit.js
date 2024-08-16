@@ -18,6 +18,7 @@ import InspectorTab, {
 	SRFMTabs,
 } from '@Components/inspector-tabs/InspectorTab.js';
 import { useErrMessage } from '@Blocks/util';
+import { thinAddIcon } from '@Utils/Helpers';
 
 /**
  * Component Dependencies
@@ -266,6 +267,9 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 																									i
 																								)
 																							}
+																							addIcon={
+																								thinAddIcon
+																							}
 																						/>
 																					</div>
 																					<Button
@@ -293,9 +297,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 							</div>
 							<div className="sureform-add-option-container">
 								<SRFMTextControl
-									showHeaderControls={
-										false
-									}
+									showHeaderControls={ false }
 									label={ __(
 										'Add New Option',
 										'sureforms'

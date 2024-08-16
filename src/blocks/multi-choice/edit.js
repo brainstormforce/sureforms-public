@@ -17,6 +17,7 @@ import InspectorTab, {
 	SRFMTabs,
 } from '@Components/inspector-tabs/InspectorTab.js';
 import { useErrMessage } from '@Blocks/util';
+import { thinAddIcon } from '@Utils/Helpers';
 
 /**
  * Component Dependencies
@@ -123,20 +124,6 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 	const onRemoveImage = ( index ) => {
 		changeOption( { image: '' }, index );
 	};
-
-	const addIcon = (
-		<svg
-			width="8"
-			height="8"
-			viewBox="0 0 8 8"
-			className="srfm-custom-plus-icon"
-		>
-			<path
-				fill="srfmDarkColor"
-				d="M4.35613 0.231675L3.52528 0.231675V3.52561L0.231343 3.52561V4.35647L3.52528 4.35647V7.65041L4.35613 7.65041L4.35613 4.35647H7.65007V3.52561H4.35613L4.35613 0.231675Z"
-			/>
-		</svg>
-	);
 
 	return (
 		<div { ...blockProps }>
@@ -356,7 +343,7 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 																									)
 																								}
 																								addIcon={
-																									addIcon
+																									thinAddIcon
 																								}
 																							/>
 																						</div>
