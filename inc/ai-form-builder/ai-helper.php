@@ -161,11 +161,8 @@ class AI_Helper {
 	 * @return string The User Token.
 	 */
 	public static function get_user_token() {
-		$token = '';
-
 		$user_email = get_option( 'srfm_ai_auth_user_email' );
-		$token      = empty( $user_email ) ? site_url() : $user_email['user_email'];
-
+		$token      = ! empty( $user_email ) && is_array( $user_email ) ? $user_email['user_email'] : site_url();
 		return $token;
 	}
 
