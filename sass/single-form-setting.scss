@@ -175,7 +175,7 @@ $req_err_color: #dc2625;
 
 						&:hover {
 							.srfm-back-btn {
-								transform: translateX(-5px);
+								transform: translateX( -5px );
 							}
 						}
 
@@ -314,7 +314,7 @@ $req_err_color: #dc2625;
 								line-height: 20px;
 
 								.srfm-required {
-									color: var( --srfm-error-text-color );
+									color: var( --srfm-error-color );
 								}
 							}
 
@@ -493,7 +493,7 @@ $req_err_color: #dc2625;
 									}
 
 									.srfm-required-body {
-										color: var( --srfm-error-text-color );
+										color: var( --srfm-error-color );
 									}
 								}
 
@@ -799,10 +799,10 @@ $req_err_color: #dc2625;
 			}
 
 			.srfm-validation-error {
-				color: var( --srfm-error-text-color );
+				color: var( --srfm-error-color );
 			}
 			.srfm-validation-error {
-				color: var( --srfm-error-text-color );
+				color: var( --srfm-error-color );
 			}
 		}
 
@@ -962,8 +962,11 @@ $req_err_color: #dc2625;
 	}
 }
 
-.components-modal__screen-overlay:has( .srfm-settings-modal ) {
-	z-index: 0 !important;
+// added to show the CSS Editor hints above the form settings modal.
+.block-editor-page.post-type-sureforms_form {
+	.CodeMirror-hints {
+		z-index: 999999;
+	}
 }
 
 .srfm-el-popover {

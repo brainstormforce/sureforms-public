@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Rest API handler class.
  *
- * @since x.x.x
+ * @since 0.0.7
  */
 class Rest_Api {
 
@@ -25,7 +25,7 @@ class Rest_Api {
 	/**
 	 * Constructor
 	 *
-	 * @since X.X.X
+	 * @since 0.0.7
 	 * @return void
 	 */
 	public function __construct() {
@@ -35,7 +35,7 @@ class Rest_Api {
 	/**
 	 * Register endpoints
 	 *
-	 * @since X.X.X
+	 * @since 0.0.7
 	 * @return void
 	 */
 	public function register_endpoints() {
@@ -57,7 +57,7 @@ class Rest_Api {
 	/**
 	 * Check if user can edit posts
 	 *
-	 * @since X.X.X
+	 * @since 0.0.7
 	 * @return bool
 	 */
 	public function can_edit_posts() {
@@ -67,7 +67,7 @@ class Rest_Api {
 	/**
 	 * Get endpoints
 	 *
-	 * @since X.X.X
+	 * @since 0.0.7
 	 * @return array<array<mixed>>
 	 */
 	private function get_endpoints() {
@@ -84,7 +84,7 @@ class Rest_Api {
 	 * Generate the block slugs as per the request by parsing the post content.
 	 *
 	 * @param  \WP_REST_Request $request Full details about the request.
-	 * @since x.x.x
+	 * @since 0.0.7
 	 * @return void
 	 */
 	public function generate_block_slugs_by_content( $request ) {

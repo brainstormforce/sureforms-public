@@ -50,7 +50,7 @@
 		},
 		"rows": {
 			"type": "number",
-			"default": 5
+			"default": 4
 		},
 		"cols": {
 			"type": "number",

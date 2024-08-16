@@ -22,29 +22,11 @@ const defaultKeys = {
 	_srfm_next_button_text: { default: 'Next' },
 	// Style Tab
 	// Form Container
+	primary_color: { default: '#0C78FB' },
+	text_color: { default: '#1E1E1E' },
+	text_color_on_primary: { default: '#FFFFFF' },
 	_srfm_form_container_width: { default: 650 },
-	_srfm_color1: { default: '#D54407' },
 	_srfm_bg_color: { default: '#ffffff' },
-	_srfm_fontsize: { default: 20 },
-	_srfm_label_color: { default: '#111827' },
-	_srfm_help_color: { default: '#4B5563' },
-	// Input
-	_srfm_input_text_color: { default: '#4B5563' },
-	_srfm_input_placeholder_color: { default: '#94A3B8' },
-	_srfm_input_bg_color: { default: '#ffffff' },
-	_srfm_input_border_color: { default: '#D0D5DD' },
-	_srfm_input_border_width: { default: 1 },
-	_srfm_input_border_radius: { default: 4 },
-	// Error
-	_srfm_field_error_color: { default: '#DC2626' },
-	_srfm_field_error_surface_color: { default: '#EF4444' },
-	_srfm_field_error_bg_color: { default: '#FEF2F2' },
-	// Submit
-	_srfm_button_text_color: { default: '#ffffff' },
-	_srfm_button_bg_color: { default: '#D54407' },
-	_srfm_button_border_color: { default: '#ffffff' },
-	_srfm_button_border_width: { default: 0 },
-	_srfm_button_border_radius: { default: 4 },
 	// Page Break
 	_srfm_page_break_button_text_color: { default: '#ffffff' },
 	_srfm_page_break_button_bg_color: { default: '#D54407' },

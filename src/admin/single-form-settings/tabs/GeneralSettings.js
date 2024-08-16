@@ -105,20 +105,7 @@ function GeneralSettings( props ) {
 		}, 100 );
 	}, [ deviceType, rootContainer ] );
 
-	if ( sureformsKeys && '_srfm_show_labels' in sureformsKeys ) {
-		if ( rootContainer ) {
-			if ( ! sureformsKeys._srfm_show_labels ) {
-				rootContainer.classList.add( 'srfm-hide-labels' );
-			} else {
-				rootContainer.classList.remove( 'srfm-hide-labels' );
-			}
-			if ( ! sureformsKeys._srfm_show_asterisk ) {
-				rootContainer.classList.add( 'srfm-hide-asterisk' );
-			} else {
-				rootContainer.classList.remove( 'srfm-hide-asterisk' );
-			}
-		}
-
+	if ( sureformsKeys ) {
 		// Font Size
 		root.style.setProperty(
 			'--srfm-font-size',
@@ -156,24 +143,6 @@ function GeneralSettings( props ) {
 				value = value.sizes.full.url;
 			}
 			key_id = option + '_id';
-		}
-
-		if ( option === '_srfm_show_labels' ) {
-			if ( ! value ) {
-				rootContainer.classList.add( 'srfm-hide-labels' );
-				updateMeta( '_srfm_show_asterisk', false );
-			} else {
-				rootContainer.classList.remove( 'srfm-hide-labels' );
-				updateMeta( '_srfm_show_asterisk', true );
-			}
-		}
-
-		if ( option === '_srfm_show_asterisk' ) {
-			if ( ! value ) {
-				rootContainer.classList.add( 'srfm-hide-asterisk' );
-			} else {
-				rootContainer.classList.remove( 'srfm-hide-asterisk' );
-			}
 		}
 
 		const option_array = {};
@@ -238,21 +207,18 @@ function GeneralSettings( props ) {
 				initialOpen={ true }
 			>
 				<ToggleControl
-					label={ __( 'Show Labels', 'sureforms' ) }
-					checked={ sureformsKeys._srfm_show_labels }
+					label={ __( 'Use Labels as Placeholders', 'sureforms' ) }
+					checked={ sureformsKeys._srfm_use_label_as_placeholder }
 					onChange={ ( value ) => {
-						updateMeta( '_srfm_show_labels', value );
+						updateMeta( '_srfm_use_label_as_placeholder', value );
 					} }
 				/>
-				{ sureformsKeys._srfm_show_labels && (
-					<ToggleControl
-						label={ __( 'Show Asterisk', 'sureforms' ) }
-						checked={ sureformsKeys._srfm_show_asterisk }
-						onChange={ ( value ) => {
-							updateMeta( '_srfm_show_asterisk', value );
-						} }
-					/>
-				) }
+				<p className="components-base-control__help">
+					{ __(
+						'Above setting will place the labels inside the fields as placeholders (where possible). This setting takes effect only on the live page, not in the editor preview.',
+						'sureforms'
+					) }
+				</p>
 			</SRFMAdvancedPanelBody>
 			{ isPageBreak && (
 				<SRFMAdvancedPanelBody

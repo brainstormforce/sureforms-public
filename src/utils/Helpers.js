@@ -182,7 +182,9 @@ const pushSmartTagToArray = (
 	}
 
 	blocks.forEach( ( block ) => {
-		const isInnerBlock = Array.isArray( block?.innerBlocks ) && 0 !== block?.innerBlocks.length;
+		const isInnerBlock =
+			Array.isArray( block?.innerBlocks ) &&
+			0 !== block?.innerBlocks.length;
 
 		if ( isInnerBlock ) {
 			// If is inner block, process inner block recursively.
@@ -195,7 +197,9 @@ const pushSmartTagToArray = (
 			);
 		}
 
-		const isAllowedBlock = !! allowedBlocks.length ? allowedBlocks.includes( block?.name ) : true;
+		const isAllowedBlock = !! allowedBlocks.length
+			? allowedBlocks.includes( block?.name )
+			: true;
 
 		if ( ! isAllowedBlock ) {
 			return;
@@ -263,10 +267,19 @@ export const setFormSpecificSmartTags = ( savedBlocks, blockSlugs ) => {
 		( savedBlock ) => ! excludedBlocks.includes( savedBlock?.name )
 	);
 
-	pushSmartTagToArray( savedBlocks, blockSlugs, formSmartTags, formSmartTagsUniqueSlugs );
-	pushSmartTagToArray( savedBlocks, blockSlugs, formEmailSmartTags, formEmailSmartTagsUniqueSlugs, [
-		'srfm/email',
-	] );
+	pushSmartTagToArray(
+		savedBlocks,
+		blockSlugs,
+		formSmartTags,
+		formSmartTagsUniqueSlugs
+	);
+	pushSmartTagToArray(
+		savedBlocks,
+		blockSlugs,
+		formEmailSmartTags,
+		formEmailSmartTagsUniqueSlugs,
+		[ 'srfm/email' ]
+	);
 
 	window.sureforms.formSpecificSmartTags = formSmartTags;
 	window.sureforms.formSpecificEmailSmartTags = formEmailSmartTags;
@@ -314,3 +327,7 @@ export const SRFMToaster = ( {
 		</Toaster>
 	);
 };
+
+// Using for the icon picker component.
+export const uagbClassNames = ( classes ) =>
+	classes.filter( Boolean ).join( ' ' );
