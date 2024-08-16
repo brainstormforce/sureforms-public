@@ -83,21 +83,42 @@ const InstantFormComponent = () => {
 
 		let iframe = contentArea.querySelector( '.srfm-instant-form-live-mode-iframe' );
 
+		// Array of elements selectors to hide/show when live preview is enabled/disabled.
+		const toggleElements = [
+			'.editor-header .editor-header__toolbar',
+			'.editor-header__settings .interface-pinned-items',
+			'.editor-header__settings .components-dropdown-menu .components-dropdown-menu__toggle',
+		];
+
 		if ( ! isLiveMode ) {
 			// Unload live mode iframe is live mode is disabled.
 			contentArea.classList.remove( 'srfm-instant-form-live-mode' );
 			iframe?.remove();
+
+			toggleElements.forEach( ( toggleElement ) => {
+				document.querySelector( toggleElement ).classList.remove( 'hidden' );
+			} );
+
 			return;
 		}
+
+		toggleElements.forEach( ( toggleElement ) => {
+			document.querySelector( toggleElement ).classList.add( 'hidden' );
+		} );
 
 		contentArea.classList.add( 'srfm-instant-form-live-mode' );
 
 		const currentPost = select( editorStore ).getCurrentPost();
 
 		const url = new URL( currentPost.link ); // Use the default ( not edited ) post link for live mode as edited version is not saved yet.
-		const params = new URLSearchParams( _srfm_instant_form_settings );
+		const params = new URLSearchParams( url.search );
 
+		params.set( 'preview', true );
 		params.set( 'live_mode', true );
+
+		Object.keys( _srfm_instant_form_settings ).forEach( ( key ) => {
+			params.set( key, _srfm_instant_form_settings[ key ] );
+		} );
 
 		url.search = params.toString();
 
@@ -191,7 +212,8 @@ const InstantFormComponent = () => {
 					anchor={ popoverAnchor }
 					onFocusOutside={ ( event ) => {
 						if ( event.relatedTarget?.className === popoverAnchor.className ) {
-							// Bail if clicked on the Instant Form toggle button.
+							// Bail if clicked on the Instant Form toggle button, and remove Live Preview.
+							setIsLiveMode( false );
 							return;
 						}
 
@@ -202,6 +224,7 @@ const InstantFormComponent = () => {
 							return;
 						}
 
+						setIsLiveMode( false );
 						setOpenPopover( false );
 					} }
 					className="srfm-instant-form-popover"

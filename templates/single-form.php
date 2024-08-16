@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-$srfm_custom_post_id = get_the_ID();
+$srfm_custom_post_id = absint( get_the_ID() );
 $srfm_form_preview   = isset( $_GET['form_preview'] ) ? boolval( sanitize_text_field( wp_unslash( $_GET['form_preview'] ) ) ) : false;  // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 $srfm_live_mode_data = Helper::get_instant_form_live_data();
 
@@ -59,7 +59,7 @@ $srfm_live_mode_data = Helper::get_instant_form_live_data();
 		]
 	);
 
-	$instant_form_settings         = ! empty( $srfm_live_mode_data ) ? $srfm_live_mode_data : Helper::get_meta_value( absint( $srfm_custom_post_id ), '_srfm_instant_form_settings' );
+	$instant_form_settings         = ! empty( $srfm_live_mode_data ) ? $srfm_live_mode_data : Helper::get_array_value( Helper::get_post_meta( $srfm_custom_post_id, '_srfm_instant_form_settings' ) );
 	$site_logo                     = $instant_form_settings['site_logo'];
 	$cover_type                    = $instant_form_settings['cover_type'];
 	$cover_color                   = $instant_form_settings['cover_color'];
@@ -120,7 +120,7 @@ $srfm_live_mode_data = Helper::get_instant_form_live_data();
 			<div class="srfm-form-wrapper">
 				<?php
 				// phpcs:ignore
-				echo Generate_Form_Markup::get_form_markup( absint( $srfm_custom_post_id ), false, '', 'sureforms_form' );
+				echo Generate_Form_Markup::get_form_markup( $srfm_custom_post_id, false, '', 'sureforms_form' );
 				// phpcs:ignoreEnd
 				?>
 			</div>
@@ -147,7 +147,7 @@ $srfm_live_mode_data = Helper::get_instant_form_live_data();
 		show_admin_bar( false );
 
 		// phpcs:ignore
-		echo Generate_Form_Markup::get_form_markup( absint( $srfm_custom_post_id ), false, 'sureforms_form' );
+		echo Generate_Form_Markup::get_form_markup( $srfm_custom_post_id, false, 'sureforms_form' );
 		// phpcs:ignoreEnd
 	}
 

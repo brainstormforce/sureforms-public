@@ -1246,7 +1246,7 @@ class Post_Types {
 
 		$form_id = Helper::get_integer_value( get_the_ID() );
 
-		$instant_form_settings = Helper::get_meta_value( $form_id, '_srfm_instant_form_settings' );
+		$instant_form_settings = Helper::get_array_value( Helper::get_post_meta( $form_id, '_srfm_instant_form_settings' ) );
 		$enable_instant_form   = ! empty( $instant_form_settings['enable_instant_form'] ) ? boolval( $instant_form_settings['enable_instant_form'] ) : false;
 
 		if ( $enable_instant_form ) {

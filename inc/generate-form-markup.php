@@ -125,13 +125,13 @@ class Generate_Form_Markup {
 			}
 
 			$srfm_live_mode_data   = Helper::get_instant_form_live_data();
-			$instant_form_settings = $srfm_live_mode_data ? $srfm_live_mode_data : Helper::get_meta_value( $id, '_srfm_instant_form_settings' );
-			$bg_type               = is_array( $instant_form_settings ) ? $instant_form_settings['bg_type'] : '';
-			$bg_color              = is_array( $instant_form_settings ) ? $instant_form_settings['bg_color'] : '';
-			$bg_image              = is_array( $instant_form_settings ) ? $instant_form_settings['bg_image'] : '';
+			$instant_form_settings = $srfm_live_mode_data ? $srfm_live_mode_data : Helper::get_array_value( Helper::get_post_meta( $id, '_srfm_instant_form_settings' ) );
+			$bg_type               = isset( $instant_form_settings['bg_type'] ) ? $instant_form_settings['bg_type'] : '';
+			$bg_color              = isset( $instant_form_settings['bg_color'] ) ? $instant_form_settings['bg_color'] : '';
+			$bg_image              = isset( $instant_form_settings['bg_image'] ) ? $instant_form_settings['bg_image'] : '';
 
 			// Submit button.
-			$button_text             = is_string( Helper::get_meta_value( $id, '_srfm_submit_button_text' ) ) ? Helper::get_meta_value( $id, '_srfm_submit_button_text' ) : '';
+			$button_text             = Helper::get_meta_value( $id, '_srfm_submit_button_text' );
 			$submit_button_alignment = $form_styling['submit_button_alignment'];
 			$btn_from_theme          = Helper::get_meta_value( $id, '_srfm_inherit_theme_button' );
 			$is_inline_button        = Helper::get_meta_value( $id, '_srfm_is_inline_button' );

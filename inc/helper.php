@@ -88,6 +88,24 @@ class Helper {
 	}
 
 	/**
+	 * Checks if current value is an array or else returns default value
+	 *
+	 * @param mixed $data Data which needs to be checked if it is an array.
+	 *
+	 * @since 0.0.3
+	 * @return array<mixed>
+	 */
+	public static function get_array_value( $data ) {
+		if ( is_array( $data ) ) {
+			return $data;
+		} elseif ( is_null( $data ) ) {
+			return [];
+		} else {
+			return (array) $data;
+		}
+	}
+
+	/**
 	 * Extracts the field type from the dynamic field key ( or field slug ).
 	 *
 	 * @param string $field_key Dynamic field key.
@@ -333,18 +351,26 @@ class Helper {
 	 * @param mixed      $default default value.
 	 *
 	 * @since 0.0.1
-	 * @return string|array<mixed> Meta value.
+	 * @return string Meta value.
 	 */
 	public static function get_meta_value( $post_id, $key, $single = true, $default = '' ) {
+		$meta_value = get_post_meta( self::get_integer_value( $post_id ), $key, $single ) ? self::get_string_value( get_post_meta( self::get_integer_value( $post_id ), $key, $single ) ) : self::get_string_value( $default );
+		return $meta_value;
+	}
 
+	/**
+	 * Wrapper for the WordPress's get_post_meta function with the support for default values.
+	 *
+	 * @param int|string $post_id Post ID.
+	 * @param string     $key The meta key to retrieve.
+	 * @param mixed      $default Default value.
+	 * @param boolean    $single Optional. Whether to return a single value.
+	 * @since x.x.x
+	 * @return mixed Meta value.
+	 */
+	public static function get_post_meta( $post_id, $key, $default = null, $single = true ) {
 		$meta_value = get_post_meta( self::get_integer_value( $post_id ), $key, $single );
-
-		if ( is_array( $meta_value ) ) {
-			// Add support for array type meta values.
-			return $meta_value ? $meta_value : ( is_array( $default ) ? $default : [] );
-		}
-
-		return $meta_value ? self::get_string_value( $meta_value ) : self::get_string_value( $default );
+		return $meta_value ? $meta_value : $default;
 	}
 
 	/**
@@ -538,24 +564,6 @@ class Helper {
 			$mapped_data[ $slug ] = $value;
 		}
 		return $mapped_data;
-	}
-
-	/**
-	 * Checks if current value is an array or else returns default value
-	 *
-	 * @param mixed $data Data which needs to be checked if it is an array.
-	 *
-	 * @since 0.0.3
-	 * @return array<mixed>
-	 */
-	public static function get_array_value( $data ) {
-		if ( is_array( $data ) ) {
-			return $data;
-		} elseif ( is_null( $data ) ) {
-			return [];
-		} else {
-			return (array) $data;
-		}
 	}
 
 	/**
