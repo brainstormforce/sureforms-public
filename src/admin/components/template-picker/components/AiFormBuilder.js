@@ -139,8 +139,11 @@ const AiFormBuilder = () => {
 
 	const handlePromptClick = ( prompt ) => {
 		setShowEmptyError( false );
-		const userPrompt = document.querySelector( 'textarea' );
-		userPrompt.value = prompt;
+		const textArea = document.querySelector( 'textarea' );
+		setCharacterCount(
+			 prompt.length
+		);
+		textArea.value = prompt;
 	};
 
 	const initiateAuth = async () => {
