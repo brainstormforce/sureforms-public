@@ -27,10 +27,6 @@ const defaultKeys = {
 	text_color_on_primary: { default: '#FFFFFF' },
 	_srfm_form_container_width: { default: 650 },
 	_srfm_bg_color: { default: '#ffffff' },
-	// Advanced Tab
-	_srfm_thankyou_message_title: { default: 'Thank you' },
-	_srfm_thankyou_message: { default: 'Form submitted successfully!' },
-	_srfm_submit_url: { default: '' },
 };
 
 export const blocksAttributes = {

@@ -442,9 +442,6 @@ class Post_Types {
 				// Advanced tab metas.
 				// Success Message.
 				'_srfm_submit_type'              => 'string',
-				'_srfm_thankyou_message_title'   => 'string',
-				'_srfm_thankyou_message'         => 'string',
-				'_srfm_submit_url'               => 'string',
 				// Security.
 				'_srfm_captcha_security_type'    => 'string',
 				'_srfm_form_recaptcha'           => 'string',

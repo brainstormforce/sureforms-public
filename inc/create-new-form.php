@@ -107,9 +107,6 @@ class Create_New_Form {
 			'_srfm_inherit_theme_button'     => [ '' ],
 			'_srfm_additional_classes'       => [ '' ],
 			'_srfm_submit_type'              => [ 'message' ],
-			'_srfm_thankyou_message_title'   => [ 'Thank you' ],
-			'_srfm_thankyou_message'         => [ 'Form submitted successfully!' ],
-			'_srfm_submit_url'               => [ '' ],
 			'_srfm_form_recaptcha'           => [ 'none' ],
 		];
 	}

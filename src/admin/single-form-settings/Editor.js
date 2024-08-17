@@ -61,9 +61,6 @@ const defaultKeys = {
 	// Advanced Tab
 	// Success Message
 	_srfm_submit_type: 'message',
-	_srfm_thankyou_message_title: 'Thank you',
-	_srfm_thankyou_message: 'Form submitted successfully!',
-	_srfm_submit_url: '',
 	_srfm_form_recaptcha: 'none',
 };
 
