@@ -14,7 +14,8 @@ const UAGIconPicker = ( props ) => {
 		};
 	}, [] );
 
-	const { label, value, onChange, help = false } = props;
+	const { label, value, onChange, help = false, addIcon = null } = props;
+
 	const defaultIcons = [ ...wp.UAGBSvgIcons ];
 	const iconCategoryList = [ ...wp.uagb_icon_category_list ];
 	// For modal.
@@ -42,7 +43,7 @@ const UAGIconPicker = ( props ) => {
 
 			<div className="uag-ip-selected-icon" onClick={ openModal }>
 				<div className="uag-ip-selected-icon-overlay">
-					{ ! isIconAvailable && renderSVG( 'plus' ) }
+					{ ! isIconAvailable && ( addIcon || renderSVG( 'plus' ) ) }
 				</div>
 				{ isIconAvailable && (
 					<div className="uag-ip-selected-icon-value">
