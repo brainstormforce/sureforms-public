@@ -232,6 +232,14 @@ class Generate_Form_Markup {
 					--srfm-dropdown-placeholder-color: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.50 );
 					--srfm-dropdown-icon-color: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.65 );
 					--srfm-dropdown-icon-disabled: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.25 );
+					
+					/* Slider Variables -> Temporary, will be moved later. */
+					--srfm-slider-label-font-size: 12px;
+					--srfm-slider-label-font-weight: 400;
+					--srfm-slider-label-line-height: 16px;
+					--srfm-slider-label-top-padding: 6px;
+					--srfm-slider-label-color: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.50 );
+					--srfm-slider-thumb-shadow-color: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.10 );
 					<?php
 					// Echo the CSS variables for the form according to the field spacing selected.
 					foreach ( $selected_size as $variable => $value ) {
