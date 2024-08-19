@@ -91,6 +91,21 @@ export const handleAddNewPost = async (
 	}
 };
 
+export const initiateAuth = async () => {
+	const response = await apiFetch( {
+		path: '/sureforms/v1/initiate-auth',
+		headers: {
+			'Content-Type': 'application/json',
+			'X-WP-Nonce': srfm_admin.template_picker_nonce,
+		},
+		method: 'GET',
+	} );
+
+	if ( response?.success ) {
+		window.location.href = response.data;
+	}
+};
+
 export const randomNiceColor = () => {
 	const randomInt = ( min, max ) => {
 		return Math.floor( Math.random() * ( max - min + 1 ) ) + min;

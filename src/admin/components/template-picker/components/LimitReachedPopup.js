@@ -22,7 +22,9 @@ const LimitReachedPopup = ( { setShowLimitReachedPopup,
 					</span>
 					<div
 						className="srfm-ai-limit-reached-close"
-						onClick={ () => setShowLimitReachedPopup( false ) }
+						onClick={ 
+							() => window.location.href = srfm_admin.site_url + '/wp-admin/admin.php?page=add-new-form'
+						 }
 					>
 						{ ICONS.close }
 					</div>

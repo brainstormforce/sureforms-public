@@ -1,12 +1,14 @@
-import { useEffect, render } from '@wordpress/element';
+import { useState, useEffect, render } from '@wordpress/element';
 import Header from './components/Header.js';
 import { __ } from '@wordpress/i18n';
 import StartingPoint from './components/StartingPoint.js';
 import ICONS from './components/icons';
 import { BrowserRouter as Router, useLocation } from 'react-router-dom';
-import AiFormBuilder from './components/AiFormBuilder.js';
+import  AiFormBuilder,{ getLimitReachedPopup } from './components/AiFormBuilder.js';
 
 const TemplatePicker = () => {
+	const [ showLimitReachedPopup, setShowLimitReachedPopup ] =
+		useState( false );
 	// Remove admin bar padding.
 	useEffect( () => {
 		document.querySelector( 'html.wp-toolbar' ).style.paddingTop = 0;
@@ -23,7 +25,11 @@ const TemplatePicker = () => {
 		switch ( method ) {
 			case 'ai':
 				return (
-					<AiFormBuilder />
+					srfm_admin?.srfm_ai_usage_details?.remaining !== 0 ? <AiFormBuilder /> : getLimitReachedPopup(
+						showLimitReachedPopup,
+						setShowLimitReachedPopup,
+
+					)
 				);
 
 			default:

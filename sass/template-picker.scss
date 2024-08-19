@@ -418,9 +418,9 @@ $sidebar_width: 290px;
 					&::placeholder {
 						width: 664px;
 						height: 96px;
-						font-size: 20px;
+						font-size: 18px;
 						font-weight: 400;
-						line-height: 32px;
+						line-height: 28px;
 						text-align: left;
 						color: #94a3b8;
 					}
@@ -476,11 +476,8 @@ $sidebar_width: 290px;
 					}
 
 					.srfm-ai-builder-prompt-title {
-						width: 194px;
-						height: 20px;
-						gap: 0px;
 						font-size: 14px;
-						font-weight: 500;
+						font-weight: 400;
 						line-height: 20px;
 						text-align: center;
 					}

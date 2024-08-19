@@ -4,7 +4,7 @@ import apiFetch from '@wordpress/api-fetch';
 import { useState,
 	useEffect,
 } from '@wordpress/element';
-import { handleAddNewPost } from '@Utils/Helpers';
+import { handleAddNewPost, initiateAuth } from '@Utils/Helpers';
 import {
 	MdArrowForward,
 	MdKeyboardArrowDown,
@@ -146,21 +146,6 @@ const AiFormBuilder = () => {
 		textArea.value = prompt;
 	};
 
-	const initiateAuth = async () => {
-		const response = await apiFetch( {
-			path: '/sureforms/v1/initiate-auth',
-			headers: {
-				'Content-Type': 'application/json',
-				'X-WP-Nonce': srfm_admin.template_picker_nonce,
-			},
-			method: 'GET',
-		} );
-
-		if ( response?.success ) {
-			window.location.href = response.data;
-		}
-	};
-
 	const handleAccessKey = async () => {
 	  	// if access key is present, handle it by decrypting it and redirecting to form builder
 		const response = await apiFetch( {
@@ -237,48 +222,12 @@ const AiFormBuilder = () => {
 	}
 
 	// show limit reached popup when free forms are consumed
-	if ( showLimitReachedPopup ) {
-		const isRegistered = srfm_admin?.srfm_ai_usage_details?.is_registered;
-		const formCreationleft = srfm_admin?.srfm_ai_usage_details?.remaining ?? 0;
-
-		// show upgrade plan popup if user is registered and form creation limit is reached
-		if ( isRegistered === 'registered' && formCreationleft === 0 ) {
-			return (
-				<LimitReachedPopup
-					setShowLimitReachedPopup={ setShowLimitReachedPopup }
-					initiateAuth={ initiateAuth }
-					paraOne={ 	 __(
-						'You have reached the maximum number of form generations in your Free Plan.',
-						'sureforms'
-					) }
-					paraTwo={ __(
-						'Please upgrade your free plan to keep creating more forms with AI.',
-						'sureforms'
-					) }
-					buttonText={ __( 'Upgrade Plan', 'sureforms' ) }
-					onClick={ () => {
-						window.open(
-							'https://sureforms.com/pricing',
-							'_blank'
-						);
-					} }
-				/>
-			);
-		}
-
-		return (
-			<LimitReachedPopup
-				setShowLimitReachedPopup={ setShowLimitReachedPopup }
-				onlClick={ initiateAuth }
-				paraOne={ 	 __(
-					'You have reached the maximum number of form generations.',
-					'sureforms'
-				) }
-				paraTwo={ __(
-					'Please connect your website with SureForms AI to create 20 more forms with AI.',
-					'sureforms'
-				) }
-			/>
+	if ( showLimitReachedPopup 
+	 ) {
+	
+		return getLimitReachedPopup(
+			showLimitReachedPopup,
+			setShowLimitReachedPopup,
 		);
 	}
 
@@ -414,6 +363,54 @@ const AiFormBuilder = () => {
 			</div>
 		</>
 	);
+};
+
+
+export const getLimitReachedPopup = (
+	showLimitReachedPopup,
+	setShowLimitReachedPopup
+) => {
+	const isRegistered = srfm_admin?.srfm_ai_usage_details?.is_registered;
+	const formCreationleft = srfm_admin?.srfm_ai_usage_details?.remaining ?? 0;
+		// show upgrade plan popup if user is registered and form creation limit is reached
+		if ( isRegistered === 'registered' && formCreationleft === 0 ) {
+			return (
+				<LimitReachedPopup
+					setShowLimitReachedPopup={ setShowLimitReachedPopup }
+					initiateAuth={ initiateAuth }
+					paraOne={ 	 __(
+						'You have reached the maximum number of form generations in your Free Plan.',
+						'sureforms'
+					) }
+					paraTwo={ __(
+						'Please upgrade your free plan to keep creating more forms with AI.',
+						'sureforms'
+					) }
+					buttonText={ __( 'Upgrade Plan', 'sureforms' ) }
+					onClick={ () => {
+						window.open(
+							'https://sureforms.com/pricing',
+							'_blank'
+						);
+					} }
+				/>
+			);
+		}
+
+		return (
+			<LimitReachedPopup
+				setShowLimitReachedPopup={ setShowLimitReachedPopup }
+				onlClick={ initiateAuth }
+				paraOne={ 	 __(
+					'You have reached the maximum number of form generations.',
+					'sureforms'
+				) }
+				paraTwo={ __(
+					'Please connect your website with SureForms AI to create 20 more forms with AI.',
+					'sureforms'
+				) }
+			/>
+		);
 };
 
 export default AiFormBuilder;
