@@ -88,6 +88,7 @@ const InstantFormComponent = () => {
 			'.editor-header .editor-header__toolbar',
 			'.editor-header__settings .interface-pinned-items',
 			'.editor-header__settings .components-dropdown-menu .components-dropdown-menu__toggle',
+			'.interface-navigable-region.interface-interface-skeleton__footer',
 		];
 
 		if ( ! isLiveMode ) {
@@ -430,16 +431,8 @@ const InstantFormComponent = () => {
 											<div className="srfm-instant-form-settings-container">
 												<div className="srfm-instant-form-settings-group">
 													<div className="srfm-instant-form-settings">
+														<label>{ __( 'URL Slug', 'sureforms' ) }</label>
 
-														<div className="srfm-instant-form-settings srfm-instant-form-settings-inline">
-															<label>{ __( 'URL Slug', 'sureforms' ) }</label>
-															<button
-																className="button button-link"
-																onClick={ () => setEditPostSlug( { ...editPostSlug, ...{ edit: false } } ) }
-															>
-																{ __( 'Save', 'sureforms' ) }
-															</button>
-														</div>
 														<input
 															type="text"
 															value={ ! editPostSlug.forceEmptyField ? postName : '' }

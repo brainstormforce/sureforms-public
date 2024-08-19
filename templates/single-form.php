@@ -73,10 +73,10 @@ $srfm_live_mode_data = Helper::get_instant_form_live_data();
 
 	if ( ! $srfm_form_preview ) {
 
-		$selector = '.single-sureforms_form .srfm-single-page-container';
+		$selector = '.single-sureforms_form .srfm-single-page-container .srfm-page-banner';
 
-		if ( ! $use_banner_as_page_background ) {
-			$selector = $selector . ' .srfm-page-banner';
+		if ( $use_banner_as_page_background ) {
+			$selector = 'html body.single-sureforms_form';
 		}
 
 		?>
@@ -88,12 +88,35 @@ $srfm_live_mode_data = Helper::get_instant_form_live_data();
 				<?php if ( 'image' === $cover_type && ! empty( $srfm_cover_image_url ) ) : ?>
 					background-image: url(<?php echo esc_attr( $srfm_cover_image_url ); ?> );
 					background-position: center;
-					background-size: cover;
+					/* background-size: cover; */
 					background-repeat: no-repeat;
 				<?php else : ?>
 					background-color: <?php echo esc_attr( $cover_color ); ?>;
 				<?php endif; ?>
 			}
+			<?php
+			if ( $use_banner_as_page_background ) {
+
+				// Some special edge case css when banner as page background enabled.
+				?>
+
+				.single-sureforms_form .srfm-single-page-container.has-form-title .srfm-page-banner {
+					height: 172px;
+				}
+				.single-sureforms_form .srfm-single-page-container .srfm-page-banner {
+					height: 112px;
+					padding-bottom: 60px;
+				}
+				.single-sureforms_form .srfm-single-page-container .srfm-form-wrapper {
+					padding-bottom: 100px;
+					height: 100%;
+				}
+				.single-sureforms_form .srfm-single-page-container .srfm-form-wrapper .srfm-form-container {
+					position: static;
+				}
+				<?php
+			}
+			?>
 		</style>
 		<div id="srfm-single-page-container" class="srfm-single-page-container <?php echo ! ! $single_page_form_title ? 'has-form-title' : ''; ?>">
 			<div class="srfm-page-banner">
