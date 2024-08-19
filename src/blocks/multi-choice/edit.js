@@ -17,7 +17,8 @@ import InspectorTab, {
 	SRFMTabs,
 } from '@Components/inspector-tabs/InspectorTab.js';
 import { useErrMessage } from '@Blocks/util';
-import { thinAddIcon } from '@Utils/Helpers';
+import svgIcons from '@Svg/svgs.json';
+import parse from 'html-react-parser';
 
 /**
  * Component Dependencies
@@ -342,9 +343,9 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 																										i
 																									)
 																								}
-																								addIcon={
-																									thinAddIcon
-																								}
+																								addIcon={ parse(
+																									svgIcons.custom_plus_icon
+																								) }
 																							/>
 																						</div>
 																					) }
