@@ -28,6 +28,25 @@ const InstantFormToggle = ( props ) => {
 	);
 };
 
+let live_mode_prev_srfm_instant_form_settings = {};
+
+// Extract the key from obj1 if the obj1 key value is different from obj2 key value.
+function findDifferentKeyValue( obj1, obj2 ) {
+	let differentKey = '';
+
+	// Iterate through the keys of obj2 (or obj1, they should be the same)
+	for ( const key in obj2 ) {
+		if ( obj2.hasOwnProperty( key ) ) {
+			// Check if the key exists in obj1 and if the values are different
+			if ( obj1.hasOwnProperty( key ) && obj1[ key ] !== obj2[ key ] ) {
+				differentKey = key;
+				break;
+			}
+		}
+	}
+	return differentKey;
+}
+
 const InstantFormComponent = () => {
 	const { _srfm_instant_form_settings } = select( editorStore ).getEditedPostAttribute( 'meta' );
 
@@ -78,6 +97,7 @@ const InstantFormComponent = () => {
 		const contentArea = document.querySelector( '#editor .interface-interface-skeleton__body' );
 
 		if ( ! contentArea ) {
+			live_mode_prev_srfm_instant_form_settings = {};
 			return;
 		}
 
@@ -100,6 +120,7 @@ const InstantFormComponent = () => {
 				document.querySelector( toggleElement ).classList.remove( 'hidden' );
 			} );
 
+			live_mode_prev_srfm_instant_form_settings = {};
 			return;
 		}
 
@@ -110,7 +131,6 @@ const InstantFormComponent = () => {
 		contentArea.classList.add( 'srfm-instant-form-live-mode' );
 
 		const currentPost = select( editorStore ).getCurrentPost();
-
 		const url = new URL( currentPost.link ); // Use the default ( not edited ) post link for live mode as edited version is not saved yet.
 		const params = new URLSearchParams( url.search );
 
@@ -129,15 +149,69 @@ const InstantFormComponent = () => {
 			contentArea.append( iframe );
 		}
 
-		// Pre-content load.
-		const iframeHTMLTag = iframe.contentDocument.querySelector( 'html' );
-		iframeHTMLTag.style.opacity = 0;
-		iframeHTMLTag.style.transition = 'all 0.5s ease-in-out';
+		/** @type {document} */
+		const iframeContentDocument = iframe.contentDocument;
+		const instantStyles = [];
 
-		iframe.src = url.toString();
+		// Instantly display changes inside iframe without refreshing the iframe.
+		switch ( findDifferentKeyValue( live_mode_prev_srfm_instant_form_settings, _srfm_instant_form_settings ) ) {
+			case 'cover_color':
+				instantStyles.push( `
+					${ ! use_banner_as_page_background ? '.single-sureforms_form .srfm-single-page-container .srfm-page-banner' : 'html body.single-sureforms_form' } {
+						background-color: ${ cover_color };
+					}
+				` );
+				break;
+
+			case 'bg_color':
+				instantStyles.push( `
+					#srfm-single-page-container {
+						--srfm-bg-color: ${ bg_color };
+					}
+				` );
+				break;
+
+			case 'form_container_width':
+				instantStyles.push( `
+					#srfm-single-page-container {
+						--srfm-form-container-width: ${ form_container_width }px;
+					}
+				` );
+				break;
+
+			default:
+				// Pre-content load.
+				const iframeHTMLTag = iframeContentDocument.querySelector( 'html' );
+				iframeHTMLTag.style.opacity = 0;
+				iframeHTMLTag.style.transition = 'all 0.5s ease-in-out';
+
+				// Refresh the iframe for other keys.
+				iframe.src = url.toString();
+				break;
+		}
+
+		if ( instantStyles.length > 0 ) {
+			/** @type {HTMLStyleElement} */
+			let styleTag = iframeContentDocument.head.querySelector( '#srfm-instant-form-live-mode-styles' );
+
+			if ( ! styleTag ) {
+				styleTag = document.createElement( 'style' );
+				styleTag.id = 'srfm-instant-form-live-mode-styles';
+			}
+
+			styleTag.innerHTML += instantStyles.join( ' ' );
+			iframeContentDocument.head.append( styleTag );
+		}
+
+		live_mode_prev_srfm_instant_form_settings = _srfm_instant_form_settings;
 	}, [ isLiveMode, _srfm_instant_form_settings ] );
 
 	const onHandleChange = ( key, value ) => {
+		if ( _srfm_instant_form_settings?.[ key ] === value ) {
+			// Do not re-render if the value is same. This is necessary for color picker type controls which re-render on selection.
+			return;
+		}
+
 		const instantFormSettings = {
 			..._srfm_instant_form_settings,
 			...{

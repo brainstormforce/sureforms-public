@@ -124,12 +124,6 @@ class Generate_Form_Markup {
 				}
 			}
 
-			$srfm_live_mode_data   = Helper::get_instant_form_live_data();
-			$instant_form_settings = $srfm_live_mode_data ? $srfm_live_mode_data : Helper::get_array_value( Helper::get_post_meta( $id, '_srfm_instant_form_settings' ) );
-			$bg_type               = isset( $instant_form_settings['bg_type'] ) ? $instant_form_settings['bg_type'] : '';
-			$bg_color              = isset( $instant_form_settings['bg_color'] ) ? $instant_form_settings['bg_color'] : '';
-			$bg_image              = isset( $instant_form_settings['bg_image'] ) ? $instant_form_settings['bg_image'] : '';
-
 			// Submit button.
 			$button_text             = Helper::get_meta_value( $id, '_srfm_submit_button_text' );
 			$submit_button_alignment = $form_styling['submit_button_alignment'];
@@ -138,14 +132,6 @@ class Generate_Form_Markup {
 			$security_type           = Helper::get_meta_value( $id, '_srfm_captcha_security_type' );
 			$form_custom_css_meta    = Helper::get_meta_value( $id, '_srfm_form_custom_css' );
 			$custom_css              = ! empty( $form_custom_css_meta ) && is_string( $form_custom_css_meta ) ? $form_custom_css_meta : '';
-
-			if ( 'image' === $bg_type ) {
-				$bg_image = $bg_image ? 'url(' . $bg_image . ')' : '';
-				$bg_color = '#ffffff';
-			} else {
-				$bg_image = 'none';
-				$bg_color = $bg_color ? $bg_color : '';
-			}
 
 			$full                       = 'justify' === $submit_button_alignment ? true : false;
 			$recaptcha_version          = 'g-recaptcha' === $security_type ? Helper::get_meta_value( $id, '_srfm_form_recaptcha' ) : '';
@@ -202,8 +188,6 @@ class Generate_Form_Markup {
 			<style>
 				/* Need to check and remove the input variables related to the Style Tab. */
 				<?php echo esc_html( ".{$container_id}" ); ?> {
-					--srfm-bg-image: <?php echo $bg_image && is_string( $bg_image ) ? esc_html( $bg_image ) : ''; ?>;
-					--srfm-bg-color: <?php echo $bg_color && is_string( $bg_color ) ? esc_html( $bg_color ) : ''; ?>;
 					/* New test variables */
 					--srfm-color-scheme-primary: <?php echo esc_html( $primary_color_var ); ?>;
 					--srfm-color-scheme-text-on-primary: <?php echo esc_html( $label_text_color_var ); ?>;
