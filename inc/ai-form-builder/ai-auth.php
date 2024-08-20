@@ -27,7 +27,7 @@ class AI_Auth {
 	 * @since x.x.x
 	 * @var string
 	 */
-	public $key = '';
+	private $key = '';
 
 	/**
 	 * Initiates the auth process.

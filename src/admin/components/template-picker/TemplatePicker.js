@@ -29,7 +29,6 @@ const TemplatePicker = () => {
 					srfm_admin?.srfm_ai_usage_details?.remaining !== 0 ? <AiFormBuilder /> : getLimitReachedPopup(
 						showLimitReachedPopup,
 						setShowLimitReachedPopup,
-
 					)
 				);
 
