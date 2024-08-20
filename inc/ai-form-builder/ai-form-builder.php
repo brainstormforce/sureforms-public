@@ -3,6 +3,7 @@
  * SureForms - AI Form Builder.
  *
  * @package sureforms
+ * @since x.x.x
  */
 
 namespace SRFM\Inc\AI_Form_Builder;
@@ -92,7 +93,6 @@ class AI_Form_Builder {
 
 		// send the request to the open ai server.
 		$data = [
-			'source'   => 'openai',
 			'messages' => $messages,
 		];
 

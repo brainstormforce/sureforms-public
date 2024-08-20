@@ -176,6 +176,7 @@ const AiFormBuilder = () => {
 			}
 		} else {
 			setShowAuthErrorPopup( true );
+			console.error( 'Error handling access key: ', response.message );
 		}
 	};
 
@@ -233,8 +234,6 @@ const AiFormBuilder = () => {
 	if ( showLimitReachedPopup
 	 ) {
 		return getLimitReachedPopup(
-			showLimitReachedPopup,
-			setShowLimitReachedPopup,
 		);
 	}
 
@@ -373,17 +372,13 @@ const AiFormBuilder = () => {
 };
 
 export const getLimitReachedPopup = (
-	showLimitReachedPopup,
-	setShowLimitReachedPopup
 ) => {
-	const isRegistered = srfm_admin?.srfm_ai_usage_details?.is_registered;
+	const isRegistered = srfm_admin?.srfm_ai_usage_details?.type;
 	const formCreationleft = srfm_admin?.srfm_ai_usage_details?.remaining ?? 0;
 	// show upgrade plan popup if user is registered and form creation limit is reached
 	if ( isRegistered === 'registered' && formCreationleft === 0 ) {
 		return (
 			<LimitReachedPopup
-				setShowLimitReachedPopup={ setShowLimitReachedPopup }
-				initiateAuth={ initiateAuth }
 				paraOne={ 	 __(
 					'You have reached the maximum number of form generations in your Free Plan.',
 					'sureforms'
@@ -393,7 +388,7 @@ export const getLimitReachedPopup = (
 					'sureforms'
 				) }
 				buttonText={ __( 'Upgrade Plan', 'sureforms' ) }
-				onClick={ () => {
+				onclick={ () => {
 					window.open(
 						srfm_admin?.pricing_page_url,
 						'_blank'
@@ -405,7 +400,6 @@ export const getLimitReachedPopup = (
 
 	return (
 		<LimitReachedPopup
-			onlClick={ initiateAuth }
 			paraOne={ 	 __(
 				'You have reached the maximum number of form generations.',
 				'sureforms'
@@ -414,6 +408,7 @@ export const getLimitReachedPopup = (
 				'Please connect your website with SureForms AI to create 20 more forms with AI.',
 				'sureforms'
 			) }
+			onlClick={ initiateAuth }
 		/>
 	);
 };

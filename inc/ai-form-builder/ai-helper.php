@@ -6,6 +6,7 @@
  * Helpers are functions that are used throughout the library.
  *
  * @package sureforms
+ * @since x.x.x
  */
 
 namespace SRFM\Inc\AI_Form_Builder;
@@ -91,7 +92,7 @@ class AI_Helper {
 
 		// check if response is an array if not then send error.
 		if ( ! is_array( $response ) ) {
-			return;
+			wp_send_json_error( [ 'message' => __( 'Unable to get usage response.', 'sureforms' ) ] );
 		}
 
 		// If the response is not an error, then use it - else create an error response array.

@@ -7,8 +7,8 @@ import AiFormBuilder from './AiFormBuilder.js';
 const LimitReachedPopup = ( {
 	paraOne,
 	paraTwo,
-	onlClick,
 	buttonText,
+	onclick,
 } ) => {
 	return (
 		<>
@@ -41,7 +41,7 @@ const LimitReachedPopup = ( {
 					<Button
 						className="srfm-limit-reached-more-credits-btn"
 						onClick={
-							onlClick
+							onclick
 						 }
 					>
 						{ buttonText ?? __( 'Connect Now', 'sureforms' ) }

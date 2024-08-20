@@ -90,16 +90,19 @@ class Rest_Api {
 					],
 				],
 			],
+			// This route is used to map the AI response to SureForms fields markup.
 			'map-fields'           => [
 				'methods'             => 'POST',
 				'callback'            => [ Field_Mapping::get_instance(), 'generate_gutenberg_fields_from_questions' ],
 				'permission_callback' => [ $this, 'can_edit_posts' ],
 			],
+			// This route is used to initiate auth process when user tries to authenticate on billing portal.
 			'initiate-auth'        => [
 				'methods'             => 'GET',
 				'callback'            => [ AI_Auth::get_instance(), 'get_auth_url' ],
 				'permission_callback' => [ $this, 'can_edit_posts' ],
 			],
+			// This route is to used to decrypt the access key and save it in the database.
 			'handle-access-key'    => [
 				'methods'             => 'POST',
 				'callback'            => [ AI_Auth::get_instance(), 'handle_access_key' ],

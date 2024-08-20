@@ -1,7 +1,6 @@
 import { Button } from '@wordpress/components';
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { useEffect, useRef } from '@wordpress/element';
-import { sprintf } from '@wordpress/i18n';
 
 const CreditDetailsPopup = ( {
 	setShowRevokePopover,
@@ -57,12 +56,13 @@ const CreditDetailsPopup = ( {
 				<span className="srfm-tp-header-credits-popover-description">
 					{
 						sprintf(
+							// translators: %s: Number of AI form generations
 							__(
 								'Free plan only allows %s AI form generations. Need to create more forms with AI?',
 								'sureforms'
 							),
 							totalFormCount
-						)						
+						)
 					}
 				</span>
 			</div>

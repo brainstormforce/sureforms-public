@@ -404,7 +404,7 @@ $sidebar_width: 290px;
 
 				textarea {
 					width: 688px;
-					height: 112px;
+					height: 114px;
 					padding: 8px 12px 8px 12px;
 					border-radius: 6px;
 					border: 1px solid #cbd5e1;
@@ -414,6 +414,7 @@ $sidebar_width: 290px;
 					font-size: 20px;
 					font-weight: 400;
 					line-height: 32px;
+					overflow-y: auto;
 
 					&::placeholder {
 						width: 664px;
