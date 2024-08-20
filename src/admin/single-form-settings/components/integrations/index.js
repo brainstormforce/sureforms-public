@@ -131,6 +131,10 @@ const UpsellSureTriggers = () => {
 						setAction( 'sureforms_recommended_plugin_activate' );
 						setCTA( srfm_admin.plugin_installed_text );
 						activatePlugin();
+					} else {
+						setAction( 'sureforms_recommended_plugin_install' );
+						setCTA( __( 'Install', 'sureforms' ) );
+						alert( __( `Plugin Installation failed, Please try again later.`, 'sureforms' ) );
 					}
 				} );
 				break;
@@ -158,6 +162,9 @@ const UpsellSureTriggers = () => {
 				setTimeout( () => {
 					setCTA( 'Go To Dashboard' );
 				}, 3000 );
+			} else {
+				alert( __( 'Plugin activation failed, Please try again later.', 'sureforms' ) );
+				setCTA( srfm_admin.plugin_activate_text );
 			}
 		} );
 	};
