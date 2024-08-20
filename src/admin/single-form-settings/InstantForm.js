@@ -288,7 +288,6 @@ const InstantFormComponent = () => {
 					onFocusOutside={ ( event ) => {
 						if ( event.relatedTarget?.className === popoverAnchor.className ) {
 							// Bail if clicked on the Instant Form toggle button, and remove Live Preview.
-							setIsLiveMode( false );
 							return;
 						}
 
@@ -299,7 +298,6 @@ const InstantFormComponent = () => {
 							return;
 						}
 
-						setIsLiveMode( false );
 						setOpenPopover( false );
 					} }
 					className="srfm-instant-form-popover"

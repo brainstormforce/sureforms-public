@@ -12,7 +12,6 @@
 				top: 24px;
 				left: 24px;
 				height: 40px;
-				width: 40px;
 			}
 
 			.srfm-form-status-badge {
@@ -84,6 +83,17 @@
 
 			.srfm-form-container {
 				top: 172px;
+			}
+		}
+
+		@media screen and ( max-width: 430px ) {
+			.srfm-page-banner {
+				padding-top: 50px;
+
+				.srfm-site-logo {
+					position: static;
+					height: 20px;
+				}
 			}
 		}
 	}
