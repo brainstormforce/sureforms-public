@@ -79,6 +79,10 @@ $form_styling = Helper::get_meta_value(
 
 		if ( ! $srfm_form_preview ) {
 			?>
+			body * {
+				/* Maintain consistent box-sizing for different themes. */
+				box-sizing: border-box;
+			}
 			#srfm-single-page-container {
 				--srfm-form-container-width: <?php echo esc_attr( $form_container_width . 'px' ); ?>;
 				--srfm-bg-image: <?php echo $bg_image && is_string( $bg_image ) ? esc_html( $bg_image ) : ''; ?>;
