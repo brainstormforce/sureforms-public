@@ -24,6 +24,7 @@ class AI_Auth {
 	/**
 	 * The key for encryption and decryption.
 	 *
+	 * @since x.x.x
 	 * @var string
 	 */
 	public $key = '';
