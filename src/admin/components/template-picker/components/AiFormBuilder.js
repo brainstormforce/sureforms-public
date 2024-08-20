@@ -408,7 +408,7 @@ export const getLimitReachedPopup = (
 				'Please connect your website with SureForms AI to create 20 more forms with AI.',
 				'sureforms'
 			) }
-			onlClick={ initiateAuth }
+			onclick={ initiateAuth }
 		/>
 	);
 };
