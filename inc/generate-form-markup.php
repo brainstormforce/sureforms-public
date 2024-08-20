@@ -240,6 +240,7 @@ class Generate_Form_Markup {
 					--srfm-slider-label-top-padding: 6px;
 					--srfm-slider-label-color: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.50 );
 					--srfm-slider-thumb-shadow-color: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.10 );
+					--srfm-slider-tooltip-shadow-color: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.08 );
 					<?php
 					// Echo the CSS variables for the form according to the field spacing selected.
 					foreach ( $selected_size as $variable => $value ) {
