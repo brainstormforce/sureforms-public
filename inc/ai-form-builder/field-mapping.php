@@ -70,9 +70,9 @@ class Field_Mapping {
 			$merged_attributes = array_merge(
 				$common_attributes,
 				[
-					'label'       => sanitize_text_field( $question['label'] ),
-					'required'    => filter_var( $question['required'], FILTER_VALIDATE_BOOLEAN ),
-					'help'        => sanitize_text_field( $question['helpText'] ),
+					'label'    => sanitize_text_field( $question['label'] ),
+					'required' => filter_var( $question['required'], FILTER_VALIDATE_BOOLEAN ),
+					'help'     => sanitize_text_field( $question['helpText'] ),
 				]
 			);
 
@@ -92,11 +92,15 @@ class Field_Mapping {
 					if ( 'textarea' === $question['fieldType'] && ! empty( $question['helpText'] ) ) {
 						$merged_attributes['textAreaHelpText'] = sanitize_text_field( $question['helpText'] );
 					}
-					if ( 'dropdown' === $question['fieldType'] && ! empty( $question['fieldOptions'] ) ) {
+					if ( 'dropdown' === $question['fieldType'] && ! empty( $question['fieldOptions'] ) && is_array( $question['fieldOptions'] ) &&
+					! empty( $question['fieldOptions'][0]['label'] )
+					) {
 						$merged_attributes['options'] = $question['fieldOptions'];
 					}
 					if ( 'multi-choice' === $question['fieldType'] ) {
-						if ( ! empty( $question['fieldOptions'] ) ) {
+						if ( ! empty( $question['fieldOptions'] ) && is_array( $question['fieldOptions'] )
+						&& ! empty( $question['fieldOptions'][0]['optionTitle'] )
+						) {
 							$merged_attributes['options'] = $question['fieldOptions'];
 						}
 						if ( ! empty( $question['singleSelection'] ) ) {

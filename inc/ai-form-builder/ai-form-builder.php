@@ -111,34 +111,18 @@ class AI_Form_Builder {
 				$message = $response['error']['message'];
 			} elseif ( is_string( $response['error'] ) ) {  // If any error message received from server.
 				if ( ! empty( $response['code'] && is_string( $response['code'] ) ) ) {
-					$message = $this->custom_message( $response['code'] );
+					$message = __( 'The SureForms AI Middleware encountered an error.', 'sureforms' );
 				}
 				$message = ! empty( $message ) ? $message : $response['error'];
 			}
 			wp_send_json_error( [ 'message' => $message ] );
 		} elseif ( is_array( $response['choices'] ) && ! empty( $response['choices'][0]['message']['content'] ) ) {
 			// If the message was sent successfully, send it successfully.
-			wp_send_json_success( $response );
+			wp_send_json_success( $response['choices'][0]['message']['content'] );
 		} else {
 			// If you've reached here, then something has definitely gone amuck. Abandon ship.
 			wp_send_json_error( [ 'message' => __( 'Something went wrong', 'sureforms' ) ] );
 		}//end if
-	}
-
-	/**
-	 * This function converts the code received from scs to a readable error message.
-	 * Useful to provide better language for error codes.
-	 *
-	 * @param string $code error code received from SCS ( Credits server ).
-	 * @since x.x.x
-	 * @return string
-	 */
-	private function custom_message( $code ) {
-		$message_array = [
-			'insufficient_credits' => __( 'You have no forms left.', 'sureforms' ),
-		];
-
-		return isset( $message_array[ $code ] ) ? $message_array[ $code ] : '';
 	}
 
 }

@@ -4,7 +4,7 @@ import Header from './Header.js';
 import ICONS from './icons.js';
 import AiFormBuilder from './AiFormBuilder.js';
 
-const LimitReachedPopup = ( { setShowLimitReachedPopup,
+const LimitReachedPopup = ( {
 	paraOne,
 	paraTwo,
 	onlClick,
@@ -22,7 +22,7 @@ const LimitReachedPopup = ( { setShowLimitReachedPopup,
 					</span>
 					<div
 						className="srfm-ai-limit-reached-close"
-						onClick={ 
+						onClick={
 							() => window.location.href = srfm_admin.site_url + '/wp-admin/admin.php?page=add-new-form'
 						 }
 					>

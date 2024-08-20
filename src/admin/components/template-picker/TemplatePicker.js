@@ -4,7 +4,7 @@ import { __ } from '@wordpress/i18n';
 import StartingPoint from './components/StartingPoint.js';
 import ICONS from './components/icons';
 import { BrowserRouter as Router, useLocation } from 'react-router-dom';
-import  AiFormBuilder,{ getLimitReachedPopup } from './components/AiFormBuilder.js';
+import AiFormBuilder, { getLimitReachedPopup } from './components/AiFormBuilder.js';
 
 const TemplatePicker = () => {
 	const [ showLimitReachedPopup, setShowLimitReachedPopup ] =
@@ -25,6 +25,7 @@ const TemplatePicker = () => {
 		switch ( method ) {
 			case 'ai':
 				return (
+					// Check if the user has reached the limit of AI usage. If not, show the AI form builder.
 					srfm_admin?.srfm_ai_usage_details?.remaining !== 0 ? <AiFormBuilder /> : getLimitReachedPopup(
 						showLimitReachedPopup,
 						setShowLimitReachedPopup,

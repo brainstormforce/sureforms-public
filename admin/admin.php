@@ -460,6 +460,7 @@ class Admin {
 					'is_pro_active'                => defined( 'SRFM_PRO_VER' ),
 					'srfm_ai_usage_details'        => AI_Helper::get_current_usage_details(),
 					'srfm_ai_auth_user_email'      => get_option( 'srfm_ai_auth_user_email' ),
+					'pricing_page_url'             => $this->get_sureforms_website_url( 'pricing' ),
 				]
 			);
 		}

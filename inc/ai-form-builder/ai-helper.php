@@ -162,7 +162,7 @@ class AI_Helper {
 	 */
 	public static function get_user_token() {
 		$user_email = get_option( 'srfm_ai_auth_user_email' );
-		$token      = ! empty( $user_email ) && is_array( $user_email ) ? $user_email['user_email'] : 'https://maze.toys/';
+		$token      = ! empty( $user_email ) && is_array( $user_email ) ? $user_email['user_email'] : site_url();
 		return $token;
 	}
 
