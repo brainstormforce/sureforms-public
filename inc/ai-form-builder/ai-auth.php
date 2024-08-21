@@ -59,7 +59,7 @@ class AI_Auth {
 		$encoded_token_data = wp_json_encode( $token_data );
 
 		if ( empty( $encoded_token_data ) ) {
-			wp_send_json_error( 'Failed to encode the token data.' );
+			wp_send_json_error( [ 'message' => 'Failed to encode the token data.' ] );
 		}
 
 		// Send the token data to the frontend for redirection.
@@ -86,7 +86,7 @@ class AI_Auth {
 		$body = json_decode( $request->get_body(), true );
 
 		if ( empty( $body ) ) {
-			wp_send_json_error( 'Error processing Access Key.' );
+			wp_send_json_error( [ 'message' => 'Error processing Access Key.' ] );
 		}
 
 		// get access key.
@@ -99,11 +99,10 @@ class AI_Auth {
 			$this->decrypt_access_key(
 				$access_key,
 				$this->key,
-				'AES-256-CBC',
-				0
+				'AES-256-CBC'
 			);
 		} else {
-			wp_send_json_error( 'No access key provided.' );
+			wp_send_json_error( [ 'message' => 'No access key provided.' ] );
 		}
 	}
 
@@ -113,11 +112,10 @@ class AI_Auth {
 	 * @param string $data The data to decrypt.
 	 * @param string $key The encryption key.
 	 * @param string $method The encryption method (e.g., AES-256-CBC).
-	 * @param int    $options Encryption options (default is 0).
 	 * @since x.x.x
 	 * @return string|false The decrypted string or false on failure.
 	 */
-	public function decrypt_access_key( $data, $key, $method = 'AES-256-CBC', $options = 0 ) {
+	public function decrypt_access_key( $data, $key, $method = 'AES-256-CBC' ) {
 		// Decode the data and split IV and encrypted data.
 		$decoded_data = base64_decode( $data ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_decode
 
@@ -130,37 +128,37 @@ class AI_Auth {
 		list($key, $encrypted) = explode( '::', $decoded_data, 2 );
 
 		// Decrypt the data using the key.
-		$decrypted = openssl_decrypt( $encrypted, $method, $key, $options, $key );
+		$decrypted = openssl_decrypt( $encrypted, $method, $key, 0, $key );
 
 		// if the decryption returns false then send error.
 		if ( empty( $decrypted ) ) {
-			wp_send_json_error( 'Failed to decrypt the access key.' );
+			wp_send_json_error( [ 'message' => 'Failed to decrypt the access key.' ] );
 		}
 
 		// json decode the decrypted data.
 		$decrypted_data_array = json_decode( $decrypted, true );
 
 		if ( ! is_array( $decrypted_data_array ) || empty( $decrypted_data_array ) ) {
-			wp_send_json_error( 'Failed to json decode the decrypted data.' );
+			wp_send_json_error( [ 'message' => 'Failed to json decode the decrypted data.' ] );
 		}
 
 		// verify the nonce that comes in $encrypted_email_array.
 		if ( ! empty( $decrypted_data_array['nonce'] ) && ! wp_verify_nonce( $decrypted_data_array['nonce'], 'ai_auth_nonce' ) ) {
-			wp_send_json_error( 'Nonce verification failed.' );
+			wp_send_json_error( [ 'message' => 'Nonce verification failed.' ] );
 		}
 
 		// check if the user email is present in the decrypted data.
 		if ( empty( $decrypted_data_array['user_email'] ) ) {
-			wp_send_json_error( 'No user email found in the decrypted data.' );
+			wp_send_json_error( [ 'message' => 'No user email found in the decrypted data.' ] );
 		}
 
 		// remove the nonce from the decrypted data before saving it to the options.
 		unset( $decrypted_data_array['nonce'] );
 
-		// verify the nonce.
-		$is_option_updated = update_option( 'srfm_ai_auth_user_email', $decrypted_data_array );
+		// save the user email to the options.
+		update_option( 'srfm_ai_auth_user_email', $decrypted_data_array );
 
-		wp_send_json_success( $is_option_updated );
+		wp_send_json_success();
 	}
 
 }
