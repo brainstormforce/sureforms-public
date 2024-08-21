@@ -417,18 +417,8 @@ class Post_Types {
 			[
 				// General tab metas.
 				'_srfm_use_label_as_placeholder' => 'boolean',
-				'_srfm_single_page_form_title'   => 'boolean',
 				'_srfm_submit_button_text'       => 'string',
-				'_srfm_instant_form'             => 'boolean',
 				'_srfm_is_inline_button'         => 'boolean',
-
-				// Styling tab metas.
-				// Form Container.
-				'_srfm_form_container_width'     => 'integer',
-				'_srfm_bg_type'                  => 'string',
-				'_srfm_bg_image'                 => 'string',
-				'_srfm_cover_image'              => 'string',
-				'_srfm_bg_color'                 => 'string',
 				// Submit Button.
 				'_srfm_submit_width_backend'     => 'string',
 				'_srfm_button_border_radius'     => 'integer',
@@ -486,6 +476,80 @@ class Post_Types {
 		}
 
 		// Registers meta to handle values associated with form styling.
+		register_post_meta(
+			SRFM_FORMS_POST_TYPE,
+			'_srfm_instant_form_settings',
+			[
+				'single'        => true,
+				'type'          => 'object',
+				'auth_callback' => '__return_true',
+				'show_in_rest'  => [
+					'schema' => [
+						'type'       => 'object',
+						'properties' => [
+							'site_logo'              => [
+								'type' => 'string',
+							],
+							'site_logo_id'           => [
+								'type' => 'integer',
+							],
+							// Form page banner settings.
+							'cover_type'             => [
+								'type' => 'string',
+							],
+							'cover_color'            => [
+								'type' => 'string',
+							],
+							'cover_image'            => [
+								'type' => 'string',
+							],
+							'cover_image_id'         => [
+								'type' => 'integer',
+							],
+							// Form page background settings.
+							'bg_type'                => [
+								'type' => 'string',
+							],
+							'bg_color'               => [
+								'type' => 'string',
+							],
+							'bg_image'               => [
+								'type' => 'string',
+							],
+							'bg_image_id'            => [
+								'type' => 'integer',
+							],
+							'enable_instant_form'    => [
+								'type' => 'boolean',
+							],
+							'form_container_width'   => [
+								'type' => 'integer',
+							],
+							'single_page_form_title' => [
+								'type' => 'boolean',
+							],
+							'use_banner_as_page_background' => [
+								'type' => 'boolean',
+							],
+						],
+					],
+				],
+				'default'       => [
+					'bg_type'                       => 'color',
+					'bg_color'                      => '#ffffff',
+					'bg_image'                      => '',
+					'site_logo'                     => '',
+					'cover_type'                    => 'color',
+					'cover_color'                   => '#0C78FB',
+					'cover_image'                   => '',
+					'enable_instant_form'           => false,
+					'form_container_width'          => 560,
+					'single_page_form_title'        => true,
+					'use_banner_as_page_background' => false,
+				],
+			]
+		);
+
 		register_post_meta(
 			SRFM_FORMS_POST_TYPE,
 			'_srfm_forms_styling',
@@ -1182,9 +1246,10 @@ class Post_Types {
 
 		$form_id = Helper::get_integer_value( get_the_ID() );
 
-		$is_instant_form = get_post_meta( $form_id, '_srfm_instant_form', true );
+		$instant_form_settings = Helper::get_array_value( Helper::get_post_meta( $form_id, '_srfm_instant_form_settings' ) );
+		$enable_instant_form   = ! empty( $instant_form_settings['enable_instant_form'] ) ? boolval( $instant_form_settings['enable_instant_form'] ) : false;
 
-		if ( $is_instant_form ) {
+		if ( $enable_instant_form ) {
 			return;
 		}
 

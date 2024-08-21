@@ -190,7 +190,7 @@ class Gutenberg_Hooks {
 				'version'      => SRFM_VER,
 			];
 
-		wp_enqueue_script( SRFM_SLUG . $form_editor_script, SRFM_URL . 'assets/build/formEditor.js', $script_info['dependencies'], SRFM_VER, true );
+		wp_enqueue_script( SRFM_SLUG . $form_editor_script, SRFM_URL . 'assets/build/formEditor.js', $script_info['dependencies'], $script_info['version'], true );
 
 		// Enqueue the code editor for the Custom CSS Editor in SureForms.
 		wp_enqueue_code_editor( [ 'type' => 'text/css' ] );
