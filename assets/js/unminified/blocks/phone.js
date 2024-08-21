@@ -52,6 +52,39 @@ function initializePhoneField() {
 			phoneNumber.addEventListener( 'change', updatePhoneNumber );
 			phoneNumber.addEventListener( 'countrychange', updatePhoneNumber );
 		}
+
+		itiContainerClass( element );
+	} );
+}
+
+/**
+ * Checks if the current device is a mobile device.
+ *
+ * @return {boolean} True if the device is considered mobile, false otherwise.
+ */
+function isMobileDevice() {
+	return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+		navigator.userAgent
+	);
+}
+
+/**
+ * This function adds an event listener to the selected flag container to add a class to the iti container for mobile devices.
+ * The class needs to be added as the CSS variables are scoped under the form container class,
+ * and for mobile view the iti container is not a child of the form container.
+ *
+ * @param {HTMLElement} element - The phone block element inside the form.
+ * @return {void} This function does not return a value. It modifies the DOM by adding an event listener to the country list dropdown.
+ */
+function itiContainerClass( element ) {
+	if ( ! isMobileDevice() ) {
+		return;
+	}
+	const id = element.closest( 'form' ).getAttribute( 'form-id' );
+	const flagContainer = element.querySelector( '.iti__selected-flag' );
+	flagContainer.addEventListener( 'click', () => {
+		const itiContainerMobile = document.querySelector( '.iti--container' );
+		itiContainerMobile?.classList.add( `srfm-form-container-${ id }` );
 	} );
 }
 
