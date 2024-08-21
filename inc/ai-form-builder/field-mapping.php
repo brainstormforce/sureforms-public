@@ -90,6 +90,7 @@ class Field_Mapping {
 				case 'gdpr':
 				case 'multi-choice':
 				case 'url':
+				case 'phone':
 					// Handle specific attributes for certain fields.
 					if ( 'textarea' === $question['fieldType'] && ! empty( $question['helpText'] ) ) {
 						$merged_attributes['textAreaHelpText'] = sanitize_text_field( $question['helpText'] );
@@ -118,7 +119,6 @@ class Field_Mapping {
 				case 'upload':
 				case 'hidden':
 				case 'rating':
-				case 'phone':
 					// If pro version is not active then do not add pro fields.
 					if ( ! defined( 'SRFM_PRO_VER' ) ) {
 						break;
