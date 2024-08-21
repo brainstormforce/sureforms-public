@@ -88,6 +88,24 @@ class Helper {
 	}
 
 	/**
+	 * Checks if current value is an array or else returns default value
+	 *
+	 * @param mixed $data Data which needs to be checked if it is an array.
+	 *
+	 * @since 0.0.3
+	 * @return array<mixed>
+	 */
+	public static function get_array_value( $data ) {
+		if ( is_array( $data ) ) {
+			return $data;
+		} elseif ( is_null( $data ) ) {
+			return [];
+		} else {
+			return (array) $data;
+		}
+	}
+
+	/**
 	 * Extracts the field type from the dynamic field key ( or field slug ).
 	 *
 	 * @param string $field_key Dynamic field key.
@@ -340,6 +358,39 @@ class Helper {
 		return $meta_value;
 	}
 
+	/**
+	 * Wrapper for the WordPress's get_post_meta function with the support for default values.
+	 *
+	 * @param int|string $post_id Post ID.
+	 * @param string     $key The meta key to retrieve.
+	 * @param mixed      $default Default value.
+	 * @param boolean    $single Optional. Whether to return a single value.
+	 * @since x.x.x
+	 * @return mixed Meta value.
+	 */
+	public static function get_post_meta( $post_id, $key, $default = null, $single = true ) {
+		$meta_value = get_post_meta( self::get_integer_value( $post_id ), $key, $single );
+		return $meta_value ? $meta_value : $default;
+	}
+
+	/**
+	 * Returns query params data for instant form live preview.
+	 *
+	 * @since x.x.x
+	 * @return array<mixed> Live preview data.
+	 */
+	public static function get_instant_form_live_data() {
+		$srfm_live_mode_data = isset( $_GET['live_mode'] ) && current_user_can( 'edit_posts' ) ? self::sanitize_recursively( 'sanitize_text_field', wp_unslash( $_GET ) ) : []; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+
+		return $srfm_live_mode_data ? array_map(
+			// Normalize falsy values.
+			function( $live_data ) {
+				return 'false' === $live_data ? false : $live_data;
+			},
+			$srfm_live_mode_data
+		) : [];
+	}
+
 
 	/**
 	 * Default dynamic block value.
@@ -513,24 +564,6 @@ class Helper {
 			$mapped_data[ $slug ] = $value;
 		}
 		return $mapped_data;
-	}
-
-	/**
-	 * Checks if current value is an array or else returns default value
-	 *
-	 * @param mixed $data Data which needs to be checked if it is an array.
-	 *
-	 * @since 0.0.3
-	 * @return array<mixed>
-	 */
-	public static function get_array_value( $data ) {
-		if ( is_array( $data ) ) {
-			return $data;
-		} elseif ( is_null( $data ) ) {
-			return [];
-		} else {
-			return (array) $data;
-		}
 	}
 
 	/**
