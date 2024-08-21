@@ -89,6 +89,7 @@ class Field_Mapping {
 				case 'inline-button':
 				case 'gdpr':
 				case 'multi-choice':
+				case 'url':
 					// Handle specific attributes for certain fields.
 					if ( 'textarea' === $question['fieldType'] && ! empty( $question['helpText'] ) ) {
 						$merged_attributes['textAreaHelpText'] = sanitize_text_field( $question['helpText'] );
