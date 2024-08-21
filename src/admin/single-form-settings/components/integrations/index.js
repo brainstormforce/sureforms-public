@@ -140,6 +140,10 @@ const UpsellSureTriggers = ( { setSelectedTab, action, setAction, CTA, setCTA, p
 						setAction( 'sureforms_recommended_plugin_activate' );
 						setCTA( srfm_admin.plugin_installed_text );
 						activatePlugin();
+					} else {
+						setAction( 'sureforms_recommended_plugin_install' );
+						setCTA( __( 'Install', 'sureforms' ) );
+						alert( __( `Plugin Installation failed, Please try again later.`, 'sureforms' ) );
 					}
 				} );
 				break;
@@ -240,6 +244,9 @@ const UpsellSureTriggers = ( { setSelectedTab, action, setAction, CTA, setCTA, p
 						integrateWithSureTriggers();
 					}
 				}, 2000 );
+			} else {
+				alert( __( 'Plugin activation failed, Please try again later.', 'sureforms' ) );
+				setCTA( srfm_admin.plugin_activate_text );
 			}
 		} );
 	};
