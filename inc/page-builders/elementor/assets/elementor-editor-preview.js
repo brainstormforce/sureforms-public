@@ -13,6 +13,9 @@
 				) {
 					loadPageBreak();
 				}
+
+				initializeDropdown();
+				initializePhoneField();
 			};
 
 			elementorFrontend.hooks.addAction(

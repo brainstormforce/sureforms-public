@@ -55,4 +55,7 @@ function initializePhoneField() {
 	} );
 }
 
+// make phone field initialization function available globally
+window.initializePhoneField = initializePhoneField;
+
 document.addEventListener( 'DOMContentLoaded', initializePhoneField );
