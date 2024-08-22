@@ -32,7 +32,6 @@ const Header = () => {
 
 	return (
 		<div
-
 			className="srfm-tp-header-ctn"
 		>
 			<div
@@ -46,9 +45,9 @@ const Header = () => {
 					</div>
 				</div>
 
-				{ /* if the page is add-new-form and the method is ai then show the credits left in the account
+				{ /* if the page is add-new-form and the method is ai then show the credits left in the account only if the user is not pro user
 				 */ }
-				{ page === 'add-new-form' && method === 'ai' ? (
+				{ page === 'add-new-form' && method === 'ai' && ! srfm_admin?.is_pro_active ? (
 					<div className="srfm-tp-header-credits-ctn">
 						<Button
 							style={ {
@@ -80,7 +79,6 @@ const Header = () => {
 						{ showRevokePopover && (
 							<CreditDetailsPopup
 								setShowRevokePopover={ setShowRevokePopover }
-
 							/>
 						) }
 						<div
@@ -90,7 +88,8 @@ const Header = () => {
 									'/wp-admin/admin.php?page=sureforms_menu';
 							} }
 						>
-							<div 						className="srfm-tp-header-close-icon"
+							<div
+								className="srfm-tp-header-close-icon"
 							>
 								{ ICONS.close }
 							</div>

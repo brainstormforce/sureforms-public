@@ -12,6 +12,7 @@
 namespace SRFM\Inc\AI_Form_Builder;
 
 use SRFM\Inc\Traits\Get_Instance;
+use SRFM_Pro\Admin\Licensing;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
@@ -23,6 +24,25 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class AI_Helper {
 	use Get_Instance;
+
+	/**
+	 * SureForms Pro License Key.
+	 *
+	 * @var string
+	 */
+	private $license_key;
+
+	/**
+	 *
+	 * Class constructor
+	 */
+	public function __construct() {
+		if ( class_exists( 'SRFM_Pro\Admin\Licensing' ) ) {
+			$licensing         = Licensing::get_instance();
+			$client            = $licensing->licensing_setup();
+			$this->license_key = $client->settings()->license_key;
+		}
+	}
 
 	/**
 	 * Get the SureForms AI Response from the SureForms Credit Server.
@@ -161,8 +181,16 @@ class AI_Helper {
 	 * @since x.x.x
 	 * @return string The User Token.
 	 */
-	public static function get_user_token() {
+	private static function get_user_token() {
 		$user_email = get_option( 'srfm_ai_auth_user_email' );
+		$ai_helper  = self::get_instance();
+
+		// if the license is active then use the license key as the token.
+		if ( ! empty( $ai_helper->license_key ) ) {
+			return $ai_helper->license_key;
+		}
+
+		// if the license is not active then use the user email/site url as the token.
 		return ! empty( $user_email ) && is_array( $user_email ) ? $user_email['user_email'] : site_url();
 	}
 
