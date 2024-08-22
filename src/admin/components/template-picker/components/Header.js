@@ -45,9 +45,9 @@ const Header = () => {
 					</div>
 				</div>
 
-				{ /* if the page is add-new-form and the method is ai then show the credits left in the account only if the user is not pro user
+				{ /* if the page is add-new-form and the method is ai then show the credits left in the account
 				 */ }
-				{ page === 'add-new-form' && method === 'ai' && ! srfm_admin?.is_pro_active ? (
+				{ page === 'add-new-form' && method === 'ai' ? (
 					<div className="srfm-tp-header-credits-ctn">
 						<Button
 							style={ {
