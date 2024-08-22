@@ -38,8 +38,8 @@ class AI_Helper {
 	 */
 	public function __construct() {
 		if ( class_exists( 'SRFM_Pro\Admin\Licensing' ) ) {
-			$licensing         = Licensing::get_instance();
-			$client            = $licensing->licensing_setup();
+			$licensing = Licensing::get_instance();
+			$client    = $licensing->licensing_setup();
 			// check if the SureForms Pro license is active.
 			$is_license_active = $licensing->is_license_active();
 			// if the license is active then get the license key.
