@@ -110,6 +110,14 @@ class Field_Mapping {
 							$merged_attributes['singleSelection'] = filter_var( $question['singleSelection'], FILTER_VALIDATE_BOOLEAN );
 						}
 					}
+					// if checkbox then map help to checkboxHelpText.
+					if ( 'checkbox' === $question['fieldType'] && ! empty( $question['helpText'] ) ) {
+						$merged_attributes['checkboxHelpText'] = sanitize_text_field( $question['helpText'] );
+					}
+					// if gdpr then map help to gdprHelpText.
+					if ( 'gdpr' === $question['fieldType'] && ! empty( $question['helpText'] ) ) {
+						$merged_attributes['gdprHelpText'] = sanitize_text_field( $question['helpText'] );
+					}
 
 					$post_content .= '<!-- wp:srfm/' . $question['fieldType'] . ' ' . wp_json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
 					break;
