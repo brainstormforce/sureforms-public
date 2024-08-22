@@ -169,11 +169,7 @@ const AiFormBuilder = () => {
 		} );
 
 		if ( response?.success ) {
-			const decryptedAccessKey = response?.data;
-
-			if ( decryptedAccessKey ) {
-				window.location.href = srfm_admin.site_url + `/wp-admin/admin.php?page=add-new-form&method=ai`;
-			}
+			window.location.href = srfm_admin.site_url + `/wp-admin/admin.php?page=add-new-form&method=ai`;
 		} else {
 			setShowAuthErrorPopup( true );
 			console.error( 'Error handling access key: ', response.message );
