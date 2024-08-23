@@ -4,14 +4,15 @@ import { useEffect, useRef } from '@wordpress/element';
 
 const CreditDetailsPopup = ( {
 	setShowRevokePopover,
+	finalFormCreationCountRemaining
 } ) => {
 	const revokePopover = useRef( null );
 
 	const formCreationleft = srfm_admin?.srfm_ai_usage_details?.remaining ?? 0;
 	const totalFormCount = srfm_admin?.srfm_ai_usage_details?.limit;
 	const aiFormCreationCount = totalFormCount - formCreationleft;
-	const regFormCreationCount = formCreationleft < 20 ? 20 - formCreationleft : '20';
 	const isRegistered = srfm_admin?.srfm_ai_usage_details?.type === 'registered';
+	const aiFormsConsumed = 20 - finalFormCreationCountRemaining;
 
 	useEffect( () => {
 		const handleClickOutside = ( event ) => {
@@ -38,7 +39,7 @@ const CreditDetailsPopup = ( {
 				<div className="srfm-tp-header-credits-popover-stats">
 					<span>{ __( 'Usage ', 'sureforms' ) }</span>
 					<span>{ isRegistered
-						? regFormCreationCount + '/' + 20
+						? aiFormsConsumed + '/' + 20
 						: aiFormCreationCount + '/' + totalFormCount }</span>
 				</div>
 				<div className="srfm-progress-bar bg-slate-200">
@@ -48,7 +49,7 @@ const CreditDetailsPopup = ( {
 							width: `${
 								// If the user is registered, show the progress bar based on the remaining form creations
 								isRegistered
-									? formCreationleft < 20 ? regFormCreationCount / 20 * 100 : 100
+									? aiFormsConsumed / 20 * 100
 									: aiFormCreationCount < totalFormCount ? ( aiFormCreationCount / totalFormCount ) * 100 : 100
 							}%`,
 						} }
