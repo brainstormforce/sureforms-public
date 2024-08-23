@@ -58,14 +58,13 @@ function initializePhoneField() {
 }
 
 /**
- * Checks if the current device is a mobile device.
+ * Checks if the current device is a mobile device based on screen width.
+ * Considering the devices with a screen width of 768px or less as mobile devices.
  *
  * @return {boolean} True if the device is considered mobile, false otherwise.
  */
 function isMobileDevice() {
-	return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-		navigator.userAgent
-	);
+	return window.innerWidth <= 768;
 }
 
 /**
