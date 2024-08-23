@@ -32,14 +32,13 @@ const CreditDetailsPopup = ( {
 			document.removeEventListener( 'mousedown', handleClickOutside );
 		};
 	}, [ revokePopover ] );
-
 	return (
 		<div className="srfm-tp-header-credits-popover" ref={ revokePopover }>
 			<div className="srfm-tp-header-credits-popover-stats-ctn">
 				<div className="srfm-tp-header-credits-popover-stats">
 					<span>{ __( 'Usage ', 'sureforms' ) }</span>
 					<span>{ isRegistered
-						? 20 - regFormCreationCount + '/' + 20
+						? regFormCreationCount + '/' + 20
 						: aiFormCreationCount + '/' + totalFormCount }</span>
 				</div>
 				<div className="srfm-progress-bar bg-slate-200">
@@ -49,7 +48,7 @@ const CreditDetailsPopup = ( {
 							width: `${
 								// If the user is registered, show the progress bar based on the remaining form creations
 								isRegistered
-									? regFormCreationCount < 20 ? ( 20 - regFormCreationCount ) * 100 : 0
+									? formCreationleft < 20 ? regFormCreationCount / 20 * 100 : 100
 									: aiFormCreationCount < totalFormCount ? ( aiFormCreationCount / totalFormCount ) * 100 : 100
 							}%`,
 						} }

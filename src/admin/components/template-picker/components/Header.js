@@ -29,7 +29,6 @@ const Header = () => {
 	}, [ method ] );
 
 	const formCreationleft = srfm_admin?.srfm_ai_usage_details?.remaining ?? 0;
-	const regFormCreationCount = formCreationleft < 20 ? 20 - formCreationleft : '20';
 
 	return (
 		<div
@@ -70,7 +69,7 @@ const Header = () => {
 										'%d AI form generations left',
 										'sureforms'
 									),
-									srfm_admin?.srfm_ai_usage_details?.type === 'registered' ? regFormCreationCount : formCreationleft
+									formCreationleft
 								) }
 							</span>
 							<div className="srfm-tp-header-bolt-icon">
