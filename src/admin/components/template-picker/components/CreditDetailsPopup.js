@@ -10,7 +10,7 @@ const CreditDetailsPopup = ( {
 	const formCreationleft = srfm_admin?.srfm_ai_usage_details?.remaining ?? 0;
 	const totalFormCount = srfm_admin?.srfm_ai_usage_details?.limit;
 	const aiFormCreationCount = totalFormCount - formCreationleft;
-	const regFormCreationCount = formCreationleft < 20 ? 20 -  formCreationleft : '20';
+	const regFormCreationCount = formCreationleft < 20 ? 20 - formCreationleft : '20';
 	const isRegistered = srfm_admin?.srfm_ai_usage_details?.type === 'registered';
 
 	useEffect( () => {
