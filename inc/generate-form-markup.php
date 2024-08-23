@@ -87,14 +87,23 @@ class Generate_Form_Markup {
 
 		$blocks            = parse_blocks( $content );
 		$block_count       = count( $blocks );
-		$color_secondary   = '';
 		$current_post_type = get_post_type();
 
 		ob_start();
 		if ( '' !== $id && 0 !== $block_count ) {
+
+			$container_id = 'srfm-form-container-' . Helper::get_string_value( $id );
+
+			$form_classes = [
+				'srfm-form-container',
+				$container_id,
+				$sf_classname,
+			];
+
+			$form_classes[] = Helper::get_string_value( Helper::get_meta_value( $id, '_srfm_additional_classes' ) );
+
 			$form_styling             = get_post_meta( $id, '_srfm_forms_styling', true );
 			$form_styling             = ! empty( $form_styling ) && is_array( $form_styling ) ? $form_styling : [];
-			$classname                = Helper::get_meta_value( $id, '_srfm_additional_classes' );
 			$page_break_settings      = get_post_meta( $id, '_srfm_page_break_settings', true );
 			$page_break_settings      = ! empty( $page_break_settings ) && is_array( $page_break_settings ) ? $page_break_settings : [];
 			$is_page_break            = $page_break_settings['is_page_break'];
@@ -121,23 +130,10 @@ class Generate_Form_Markup {
 			$button_text             = Helper::get_meta_value( $id, '_srfm_submit_button_text' );
 			$submit_button_alignment = $form_styling['submit_button_alignment'];
 			$btn_from_theme          = Helper::get_meta_value( $id, '_srfm_inherit_theme_button' );
-			$instant_form            = Helper::get_meta_value( $id, '_srfm_instant_form' );
 			$is_inline_button        = Helper::get_meta_value( $id, '_srfm_is_inline_button' );
 			$security_type           = Helper::get_meta_value( $id, '_srfm_captcha_security_type' );
 			$form_custom_css_meta    = Helper::get_meta_value( $id, '_srfm_form_custom_css' );
 			$custom_css              = ! empty( $form_custom_css_meta ) && is_string( $form_custom_css_meta ) ? $form_custom_css_meta : '';
-
-			$bg_type = Helper::get_meta_value( $id, '_srfm_bg_type', true, 'image' );
-
-			if ( 'image' === $bg_type ) {
-				$background_image_url = Helper::get_meta_value( $id, '_srfm_bg_image' );
-				$bg_image             = $background_image_url ? 'url(' . $background_image_url . ')' : '';
-				$bg_color             = '#ffffff';
-			} else {
-				$background_color = Helper::get_meta_value( $id, '_srfm_bg_color' );
-				$bg_image         = 'none';
-				$bg_color         = $background_color ? $background_color : '';
-			}
 
 			$full                       = 'justify' === $submit_button_alignment ? true : false;
 			$recaptcha_version          = 'g-recaptcha' === $security_type ? Helper::get_meta_value( $id, '_srfm_form_recaptcha' ) : '';
@@ -187,53 +183,48 @@ class Generate_Form_Markup {
 
 			$primary_color_var    = $primary_color ? $primary_color : '#046bd2';
 			$label_text_color_var = $label_text_color ? $label_text_color : '#111827';
-			$container_id         = '.srfm-form-container-' . Helper::get_string_value( $id );
 
 			$selected_size = Helper::get_css_vars( $field_spacing );
 			?>
-
-			<div class="srfm-form-container srfm-form-container-<?php echo esc_attr( Helper::get_string_value( $id ) ); ?> <?php echo esc_attr( $sf_classname ); ?> <?php echo esc_attr( $classname ); ?>">
+			<div class="<?php echo esc_attr( implode( ' ', array_filter( $form_classes ) ) ); ?>">
 			<style>
 				/* Need to check and remove the input variables related to the Style Tab. */
-				<?php echo esc_html( $container_id ); ?> {
-					/*
-					--srfm-bg-image: <?php echo $bg_image ? esc_html( $bg_image ) : ''; ?>; */
-					--srfm-bg-color: <?php echo $bg_color ? esc_html( $bg_color ) : ''; ?>;
+				<?php echo esc_html( ".{$container_id}" ); ?> {
 					/* New test variables */
 					--srfm-color-scheme-primary: <?php echo esc_html( $primary_color_var ); ?>;
 					--srfm-color-scheme-text-on-primary: <?php echo esc_html( $label_text_color_var ); ?>;
 					--srfm-color-scheme-text: <?php echo esc_html( $help_color_var ); ?>;
 
 					--srfm-color-input-label: <?php echo esc_html( $help_color_var ); ?>;
-					--srfm-color-input-description: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.65 );
-					--srfm-color-input-placeholder: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.5 );
+					--srfm-color-input-description: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.65 );
+					--srfm-color-input-placeholder: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.5 );
 					--srfm-color-input-text: <?php echo esc_html( $help_color_var ); ?>;
-					--srfm-color-input-prefix: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.65 );
-					--srfm-color-input-background: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.02 );
-					--srfm-color-input-background-hover: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.05 );
-					--srfm-color-input-background-disabled: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.05 );
-					--srfm-color-input-border: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.25 );
-					--srfm-color-input-border-disabled: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.15 );
-					--srfm-color-multi-choice-svg: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.7 );
-					--srfm-color-input-border-hover: rgba( from <?php echo esc_html( $primary_color_var ); ?> r g b / 0.65 );
-					--srfm-color-input-border-focus-glow: rgba( from <?php echo esc_html( $primary_color_var ); ?> r g b / 0.15 );
-					--srfm-color-input-selected: rgba( from <?php echo esc_html( $primary_color_var ); ?> r g b / 0.1 );
-					--srfm-btn-color-hover: rgba( from <?php echo esc_html( $primary_color_var ); ?> r g b / 0.9 );
-					--srfm-btn-color-disabled: rgba( from <?php echo esc_html( $primary_color_var ); ?> r g b / 0.25 );
+					--srfm-color-input-prefix: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.65 );
+					--srfm-color-input-background: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.02 );
+					--srfm-color-input-background-hover: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.05 );
+					--srfm-color-input-background-disabled: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.05 );
+					--srfm-color-input-border: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.25 );
+					--srfm-color-input-border-disabled: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.15 );
+					--srfm-color-multi-choice-svg: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.7 );
+					--srfm-color-input-border-hover: hsl( from <?php echo esc_html( $primary_color_var ); ?> h s l / 0.65 );
+					--srfm-color-input-border-focus-glow: hsl( from <?php echo esc_html( $primary_color_var ); ?> h s l / 0.15 );
+					--srfm-color-input-selected: hsl( from <?php echo esc_html( $primary_color_var ); ?> h s l / 0.1 );
+					--srfm-btn-color-hover: hsl( from <?php echo esc_html( $primary_color_var ); ?> h s l / 0.9 );
+					--srfm-btn-color-disabled: hsl( from <?php echo esc_html( $primary_color_var ); ?> h s l / 0.25 );
 
 					/* Dropdown Variables */
-					--srfm-dropdown-input-background-hover: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.05 );
-					--srfm-dropdown-option-background-hover: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.10 );
-					--srfm-dropdown-option-background-selected: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.05 );
-					--srfm-dropdown-option-selected-icon: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.65 );
-					--srfm-dropdown-option-text-color: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.80 );
+					--srfm-dropdown-input-background-hover: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.05 );
+					--srfm-dropdown-option-background-hover: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.10 );
+					--srfm-dropdown-option-background-selected: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.05 );
+					--srfm-dropdown-option-selected-icon: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.65 );
+					--srfm-dropdown-option-text-color: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.80 );
 					--srfm-dropdown-option-selected-text: <?php echo esc_html( $help_color_var ); ?>;
-					--srfm-dropdown-badge-background: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.05 );
-					--srfm-dropdown-badge-background-hover: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.10 );
-					--srfm-dropdown-menu-border-color: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.10 );
-					--srfm-dropdown-placeholder-color: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.50 );
-					--srfm-dropdown-icon-color: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.65 );
-					--srfm-dropdown-icon-disabled: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.25 );
+					--srfm-dropdown-badge-background: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.05 );
+					--srfm-dropdown-badge-background-hover: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.10 );
+					--srfm-dropdown-menu-border-color: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.10 );
+					--srfm-dropdown-placeholder-color: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.50 );
+					--srfm-dropdown-icon-color: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.65 );
+					--srfm-dropdown-icon-disabled: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.25 );
 					<?php
 					// Echo the CSS variables for the form according to the field spacing selected.
 					foreach ( $selected_size as $variable => $value ) {
@@ -252,25 +243,6 @@ class Generate_Form_Markup {
 				$title = ! empty( get_the_title( (int) $id ) ) ? get_the_title( (int) $id ) : '';
 				?>
 				<h2 class="srfm-form-title"><?php echo esc_html( $title ); ?></h2>
-				<?php
-			}
-			?>
-			<?php
-			if ( ! $instant_form && current_user_can( 'manage_options' ) && is_singular( 'sureforms_form' ) ) {
-				?>
-				<div class="srfm-instant-form-wrn-ctn">
-					<div class="srfm-svg-container">
-					<?php echo Helper::fetch_svg( 'instant-form-warning', '' ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Ignored to render svg. ?>
-					</div>
-					<div class="srfm-wrn-text-ctn">
-						<span class="srfm-wrn-description">
-						<?php echo esc_html__( 'Enable the Instant Form in the editor from ', 'sureforms' ); ?>
-						<a class="srfm-wrn-link" href="<?php echo esc_url( admin_url( 'post.php?post=' . $id . '&action=edit' ) ); ?>">
-							<?php echo esc_html__( 'here.', 'sureforms' ); ?>
-						</a>
-						</span>
-					</div>
-				</div>
 				<?php
 			}
 			?>

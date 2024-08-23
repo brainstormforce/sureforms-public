@@ -31,6 +31,12 @@ body.post-type-sureforms_form {
 				background-color: var( --srfm-error-color );
 			}
 
+			.uag-ip-selected-icon svg {
+				&.srfm-custom-plus-icon {
+					padding: 5px;
+				}
+			}
+
 			// Match selected icon size with delete icon.
 			.uag-ip-selected-icon-value svg {
 				height: 20px;
