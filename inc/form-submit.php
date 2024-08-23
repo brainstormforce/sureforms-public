@@ -486,7 +486,7 @@ class Form_Submit {
 			$form_submit_response = [
 				'success'   => true,
 				'form_id'   => $id ? intval( $id ) : '',
-				'emails'    => $emails,
+				'to_emails' => $emails,
 				'form_name' => $name ? esc_attr( $name ) : '',
 				'message'   => Generate_Form_Markup::get_confirmation_markup( $form_data, $submission_data ),
 				'data'      => $modified_message,
@@ -592,7 +592,7 @@ class Form_Submit {
 			$form_submit_response = [
 				'success'   => true,
 				'form_id'   => $id ? intval( $id ) : '',
-				'emails'    => $emails,
+				'to_emails' => $emails,
 				'form_name' => $name ? esc_attr( $name ) : '',
 				'message'   => Generate_Form_Markup::get_confirmation_markup( $form_data, $submission_data ),
 				'data'      => $modified_message,

@@ -32,4 +32,6 @@ define( 'SRFM_WEBSITE', 'https://sureforms.com/' );
 define( 'SRFM_AI_MIDDLEWARE', 'https://credits.startertemplates.com/sureforms/' );
 define( 'SRFM_BILLING_PORTAL', 'https://billing.sureforms.com/' );
 
+define( 'SRFM_SURETRIGGERS_INTERGATION_BASE_URL', 'https://app.suretriggers.com/' );
+
 require_once 'plugin-loader.php';
