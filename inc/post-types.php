@@ -583,7 +583,7 @@ class Post_Types {
 					'primary_color'           => '#0C78FB',
 					'text_color'              => '#1E1E1E',
 					'text_color_on_primary'   => '#FFFFFF',
-					'field_spacing'           => 'small',
+					'field_spacing'           => 'medium',
 					'submit_button_alignment' => 'left',
 				],
 			]
