@@ -3,6 +3,7 @@
  * SureForms - AI Form Builder.
  *
  * @package sureforms
+ * @since x.x.x
  */
 
 namespace SRFM\Inc\AI_Form_Builder;
@@ -19,47 +20,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class Field_Mapping {
 	use Get_Instance;
-
-	/**
-	 * The namespace for the Rest Routes.
-	 *
-	 * @since x.x.x
-	 * @var string
-	 */
-	private $namespace = 'sureforms/v1';
-
-	/**
-	 * Constructor of this class.
-	 *
-	 * @since x.x.x
-	 * @return void
-	 */
-	public function __construct() {
-		add_action( 'rest_api_init', [ $this, 'register_route' ] );
-	}
-
-	/**
-	 * Register All Routes.
-	 *
-	 * @hooked - rest_api_init
-	 * @since x.x.x
-	 * @return void
-	 */
-	public function register_route() {
-		register_rest_route(
-			$this->namespace,
-			'/map-fields',
-			[
-				[
-					'methods'             => \WP_REST_Server::CREATABLE,
-					'callback'            => [ $this, 'generate_gutenberg_fields_from_questions' ],
-					'permission_callback' => function () {
-						return current_user_can( 'edit_posts' );
-					},
-				],
-			]
-		);
-	}
 
 	/**
 	 * Generate Gutenberg Fields from AI data.
@@ -94,7 +54,7 @@ class Field_Mapping {
 		$post_content = '';
 
 		// Loop through questions.
-		foreach ( $questions as $index => $question ) {
+		foreach ( $questions as $question ) {
 
 			// Check if question is empty then continue to next question.
 			if ( empty( $question ) || ! is_array( $question ) ) {
@@ -111,95 +71,87 @@ class Field_Mapping {
 			$merged_attributes = array_merge(
 				$common_attributes,
 				[
-					'label'       => sanitize_text_field( $question['label'] ),
-					'required'    => filter_var( $question['required'], FILTER_VALIDATE_BOOLEAN ),
-					'placeholder' => sanitize_text_field( $question['placeholder'] ),
-					'help'        => sanitize_text_field( $question['helpText'] ),
+					'label'    => sanitize_text_field( $question['label'] ),
+					'required' => filter_var( $question['required'], FILTER_VALIDATE_BOOLEAN ),
+					'help'     => sanitize_text_field( $question['helpText'] ),
 				]
 			);
 
 			// Determine field type based on fieldType.
 			switch ( $question['fieldType'] ) {
 				case 'input':
-					$post_content .= '<!-- wp:srfm/input ' . wp_json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
-					break;
 				case 'email':
-					$post_content .= '<!-- wp:srfm/email ' . wp_json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
-					break;
 				case 'number':
-					$post_content .= '<!-- wp:srfm/number ' . wp_json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
-					break;
 				case 'textarea':
-					// Check if helpText is provided.
-					if ( ! empty( $question['helpText'] ) ) {
+				case 'dropdown':
+				case 'checkbox':
+				case 'address':
+				case 'inline-button':
+				case 'gdpr':
+				case 'multi-choice':
+				case 'url':
+				case 'phone':
+					// Handle specific attributes for certain fields.
+					if ( 'textarea' === $question['fieldType'] && ! empty( $question['helpText'] ) ) {
 						$merged_attributes['textAreaHelpText'] = sanitize_text_field( $question['helpText'] );
 					}
-					$post_content .= '<!-- wp:srfm/textarea ' . wp_json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
-					break;
-				case 'dropdown':
-					// Check if fieldOptions are provided.
-					if ( ! empty( $question['fieldOptions'] ) ) {
+					if ( 'dropdown' === $question['fieldType'] && ! empty( $question['fieldOptions'] ) && is_array( $question['fieldOptions'] ) &&
+					! empty( $question['fieldOptions'][0]['label'] )
+					) {
 						$merged_attributes['options'] = $question['fieldOptions'];
 					}
-					$post_content .= '<!-- wp:srfm/dropdown ' . wp_json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
-					break;
-				case 'checkbox':
-					$post_content .= '<!-- wp:srfm/checkbox ' . wp_json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
-					break;
-				case 'date-time':
-					$post_content .= '<!-- wp:srfm/date-time-picker ' . wp_json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
-					break;
-				case 'upload':
-					// Check if allowedFormats and fileSizeLimit are provided.
-					if ( ! empty( $question['allowedFormats'] ) ) {
-						$merged_attributes['allowedFormats'] = $question['allowedFormats'];
+					if ( 'multi-choice' === $question['fieldType'] ) {
+						if ( ! empty( $question['fieldOptions'] ) && is_array( $question['fieldOptions'] )
+						&& ! empty( $question['fieldOptions'][0]['optionTitle'] )
+						) {
+							$merged_attributes['options'] = $question['fieldOptions'];
+						}
+						if ( ! empty( $question['singleSelection'] ) ) {
+							$merged_attributes['singleSelection'] = filter_var( $question['singleSelection'], FILTER_VALIDATE_BOOLEAN );
+						}
 					}
-					if ( ! empty( $question['fileSizeLimit'] ) ) {
-						$merged_attributes['fileSizeLimit'] = filter_var( $question['fileSizeLimit'], FILTER_VALIDATE_INT );
+					// if checkbox then map help to checkboxHelpText.
+					if ( 'checkbox' === $question['fieldType'] && ! empty( $question['helpText'] ) ) {
+						$merged_attributes['checkboxHelpText'] = sanitize_text_field( $question['helpText'] );
 					}
-					$post_content .= '<!-- wp:srfm/upload ' . wp_json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
-					break;
-				case 'address':
-					$post_content .= '<!-- wp:srfm/address ' . wp_json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
-					break;
-				case 'inline-button':
-					$post_content .= '<!-- wp:srfm/inline-button ' . wp_json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
-					break;
-				case 'hidden':
-					$post_content .= '<!-- wp:srfm/hidden ' . wp_json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
-					break;
-				case 'rating':
-					if ( ! empty( $question['helpText'] ) ) {
-						$merged_attributes['ratingBoxHelpText'] = sanitize_text_field( $question['helpText'] );
+					// if gdpr then map help to gdprHelpText.
+					if ( 'gdpr' === $question['fieldType'] && ! empty( $question['helpText'] ) ) {
+						$merged_attributes['gdprHelpText'] = sanitize_text_field( $question['helpText'] );
 					}
-					$post_content .= '<!-- wp:srfm/rating ' . wp_json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
-					break;
-				case 'phone':
-					$merged_attributes['autoCountry'] = true;
-					$post_content                    .= '<!-- wp:srfm/phone ' . wp_json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
-					break;
-				case 'gdpr':
-					$post_content .= '<!-- wp:srfm/gdpr ' . wp_json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
+
+					$post_content .= '<!-- wp:srfm/' . $question['fieldType'] . ' ' . wp_json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
 					break;
 				case 'number-slider':
-					$post_content .= '<!-- wp:srfm/number-slider ' . wp_json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
-					break;
 				case 'page-break':
-					$post_content .= '<!-- wp:srfm/page-break ' . wp_json_encode( $common_attributes ) . ' /-->' . PHP_EOL;
-					break;
-				case 'multi-choice':
-					// check if fieldOptions or singleSelection is provided.
-					if ( ! empty( $question['fieldOptions'] ) ) {
-						$merged_attributes['options'] = $question['fieldOptions'];
+				case 'date-time-picker':
+				case 'upload':
+				case 'hidden':
+				case 'rating':
+					// If pro version is not active then do not add pro fields.
+					if ( ! defined( 'SRFM_PRO_VER' ) ) {
+						break;
 					}
-					if ( ! empty( $question['singleSelection'] ) ) {
-						$merged_attributes['singleSelection'] = filter_var( $question['singleSelection'], FILTER_VALIDATE_BOOLEAN );
+					// Handle specific attributes for certain pro fields.
+					if ( 'upload' === $question['fieldType'] ) {
+						if ( ! empty( $question['allowedFormats'] ) ) {
+							$merged_attributes['allowedFormats'] = $question['allowedFormats'];
+						}
+						if ( ! empty( $question['fileSizeLimit'] ) ) {
+							$merged_attributes['fileSizeLimit'] = filter_var( $question['fileSizeLimit'], FILTER_VALIDATE_INT );
+						}
 					}
-					$post_content .= '<!-- wp:srfm/multi-choice ' . wp_json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
+					if ( 'rating' === $question['fieldType'] && ! empty( $question['helpText'] ) ) {
+						$merged_attributes['ratingBoxHelpText'] = sanitize_text_field( $question['helpText'] );
+					}
+					if ( 'phone' === $question['fieldType'] ) {
+						$merged_attributes['autoCountry'] = true;
+					}
+
+					$post_content .= '<!-- wp:srfm/' . $question['fieldType'] . ' ' . wp_json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
 					break;
 				default:
 					// Unsupported field type - fallback to input.
-					$post_content .= '<!-- wp:srfm/' . $question['fieldType'] . ' ' . wp_json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
+					$post_content .= '<!-- wp:srfm/input ' . wp_json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
 			}
 		}
 

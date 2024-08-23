@@ -1,15 +1,15 @@
 import { Button } from '@wordpress/components';
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { useEffect, useRef } from '@wordpress/element';
 
 const CreditDetailsPopup = ( {
 	setShowRevokePopover,
-	setShowRevokeConfirmation,
-	creditsLeft,
 } ) => {
 	const revokePopover = useRef( null );
-	const creditUsed = srfm_admin?.zip_ai_credit_details?.used;
-	const totalCredits = srfm_admin?.zip_ai_credit_details?.total;
+
+	const formCreationleft = srfm_admin?.srfm_ai_usage_details?.remaining ?? 0;
+	const totalFormCount = srfm_admin?.srfm_ai_usage_details?.limit;
+	const aiFormCreationCount = totalFormCount - formCreationleft;
 
 	useEffect( () => {
 		const handleClickOutside = ( event ) => {
@@ -33,54 +33,49 @@ const CreditDetailsPopup = ( {
 
 	return (
 		<div className="srfm-tp-header-credits-popover" ref={ revokePopover }>
-			<div className="srfm-tp-header-credits-popover-title">
-				{ typeof creditsLeft === 'number' && ! isNaN( creditsLeft )
-					? `${ creditsLeft
-						.toString()
-						.replace( /\B(?=(\d{3})+(?!\d))/g, ',' ) }
-                            `
-					: '0' }
-				{ __( ' Credits in Your Account', 'sureforms' ) }
-				<span className="srfm-tp-header-credits-popover-description">
-					{ __(
-						'100 Credits are used for each form generated with AI.',
-						'sureforms'
-					) }
-				</span>
-			</div>
 			<div className="srfm-tp-header-credits-popover-stats-ctn">
 				<div className="srfm-tp-header-credits-popover-stats">
-					<span>{ __( 'Credits Usage ', 'sureforms' ) }</span>
-					<span>{ creditUsed + '/' + totalCredits }</span>
+					<span>{ __( 'Usage ', 'sureforms' ) }</span>
+					<span>{ aiFormCreationCount + '/' + totalFormCount }</span>
 				</div>
 				<div className="srfm-progress-bar bg-slate-200">
 					<div
 						className="progress"
 						style={ {
-							width: `${ srfm_admin.zip_ai_credit_details.percentage }%`,
+							width: `${
+								aiFormCreationCount < totalFormCount
+									? ( aiFormCreationCount / totalFormCount ) *
+									  100
+									: 100
+							}%`,
 						} }
 					/>
 				</div>
+			</div>
+			<div className="srfm-tp-header-credits-popover-title">
+				<span className="srfm-tp-header-credits-popover-description">
+					{
+						sprintf(
+							// translators: %s: Number of AI form generations
+							__(
+								'Free plan only allows %s AI form generations. Need to create more forms with AI?',
+								'sureforms'
+							),
+							totalFormCount
+						)
+					}
+				</span>
 			</div>
 			<Button
 				className="srfm-credits-popover-more-btn"
 				onClick={ () => {
 					window.open(
-						'https://app.zipwp.com/credits-pricing',
+						srfm_admin?.pricing_page_url,
 						'_blank'
 					);
 				} }
 			>
-				{ __( 'Get More Credits', 'sureforms' ) }
-			</Button>
-			<Button
-				className="srfm-credits-popover-revoke-btn"
-				onClick={ () => {
-					setShowRevokePopover( false );
-					setShowRevokeConfirmation( true );
-				} }
-			>
-				{ __( 'Disconnect Account', 'sureforms' ) }
+				{ __( 'Upgrade Plan', 'sureforms' ) }
 			</Button>
 		</div>
 	);

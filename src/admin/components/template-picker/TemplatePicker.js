@@ -4,8 +4,7 @@ import { __ } from '@wordpress/i18n';
 import StartingPoint from './components/StartingPoint.js';
 import ICONS from './components/icons';
 import { BrowserRouter as Router, useLocation } from 'react-router-dom';
-import AiFormBuilder from './components/AiFormBuilder.js';
-import AiAuthScreen from './components/AiAuthScreen.js';
+import AiFormBuilder, { getLimitReachedPopup } from './components/AiFormBuilder.js';
 
 const TemplatePicker = () => {
 	// Remove admin bar padding.
@@ -24,13 +23,9 @@ const TemplatePicker = () => {
 		switch ( method ) {
 			case 'ai':
 				return (
-					<>
-						{ srfm_admin.is_authorized ? (
-							<AiFormBuilder />
-						) : (
-							<AiAuthScreen />
-						) }
-					</>
+					// Check if the user has reached the limit of AI usage. If not, show the AI form builder.
+					srfm_admin?.srfm_ai_usage_details?.remaining !== 0 ? <AiFormBuilder /> : getLimitReachedPopup(
+					)
 				);
 
 			default:

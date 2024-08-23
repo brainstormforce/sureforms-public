@@ -4,7 +4,12 @@ import Header from './Header.js';
 import ICONS from './icons.js';
 import AiFormBuilder from './AiFormBuilder.js';
 
-const LimitReachedPopup = ( { setShowLimitReachedPopup } ) => {
+const LimitReachedPopup = ( {
+	paraOne,
+	paraTwo,
+	buttonText,
+	onclick,
+} ) => {
 	return (
 		<>
 			<Header />
@@ -17,48 +22,30 @@ const LimitReachedPopup = ( { setShowLimitReachedPopup } ) => {
 					</span>
 					<div
 						className="srfm-ai-limit-reached-close"
-						onClick={ () => setShowLimitReachedPopup( false ) }
+						onClick={
+							() => window.location.href = srfm_admin.site_url + '/wp-admin/admin.php?page=add-new-form'
+						 }
 					>
 						{ ICONS.close }
 					</div>
 				</div>
 				<div className="srfm-limit-reached-popup-content">
 					<span className="srfm-limit-reached-popup-text">
-						{ __(
-							'You have reached the maximum number of credits usage in your Free Plan.',
-							'sureforms'
-						) }
+						{ paraOne }
 					</span>
 					<span>
-						{ __(
-							'Please upgrade your plan in order to create more forms.',
-							'sureforms'
-						) }
+						{ paraTwo }
 					</span>
 				</div>
 				<div className="srfm-limit-reached-popup-content">
 					<Button
 						className="srfm-limit-reached-more-credits-btn"
-						onClick={ () => {
-							window.open(
-								'https://app.zipwp.com/credits-pricing',
-								'_blank'
-							);
-						} }
+						onClick={
+							onclick
+						 }
 					>
-						{ __( 'Get more credits', 'sureforms' ) }
+						{ buttonText ?? __( 'Connect Now', 'sureforms' ) }
 					</Button>
-					<span
-						className="srfm-limit-reached-check-usage-btn"
-						onClick={ () => {
-							window.open(
-								'https://app.zipwp.com/dashboard',
-								'_blank'
-							);
-						} }
-					>
-						{ __( 'Check Your Usage', 'sureforms' ) }
-					</span>
 				</div>
 			</div>
 			<AiFormBuilder />

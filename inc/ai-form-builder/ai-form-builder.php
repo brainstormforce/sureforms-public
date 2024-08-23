@@ -3,12 +3,12 @@
  * SureForms - AI Form Builder.
  *
  * @package sureforms
+ * @since x.x.x
  */
 
 namespace SRFM\Inc\AI_Form_Builder;
 
 use SRFM\Inc\Traits\Get_Instance;
-use ZipAI\Classes\Helper as AI_Helper;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
@@ -19,76 +19,10 @@ if ( ! defined( 'ABSPATH' ) ) {
  * SureForms AI Form Builder Class.
  */
 class AI_Form_Builder {
-
-	/**
-	 * The namespace for the Rest Routes.
-	 *
-	 * @since x.x.x
-	 * @var string
-	 */
-	private $namespace = 'sureforms/v1';
-
-	/**
-	 * Instance of this class.
-	 *
-	 * @since x.x.x
-	 * @var object Class object.
-	 */
-	private static $instance;
-
 	use Get_Instance;
 
 	/**
-	 * Constructor of this class.
-	 *
-	 * @since x.x.x
-	 * @return void
-	 */
-	public function __construct() {
-		add_action( 'rest_api_init', [ $this, 'register_route' ] );
-	}
-
-	/**
-	 * Register All Routes.
-	 *
-	 * @hooked - rest_api_init
-	 * @since x.x.x
-	 * @return void
-	 */
-	public function register_route() {
-		register_rest_route(
-			$this->namespace,
-			'/generate-form',
-			[
-				[
-					'methods'             => \WP_REST_Server::CREATABLE,
-					'callback'            => [ $this, 'generate_ai_form' ],
-					'permission_callback' => function () {
-						return current_user_can( 'edit_posts' );
-					},
-					'args'                => [
-						'use_system_message' => [
-							'sanitize_callback' => [ $this, 'sanitize_boolean_field' ],
-						],
-					],
-				],
-			]
-		);
-	}
-
-	/**
-	 * Checks whether the value is boolean or not.
-	 *
-	 * @param mixed $value value to be checked.
-	 * @since x.x.x
-	 * @return boolean
-	 */
-	public function sanitize_boolean_field( $value ) {
-		return filter_var( $value, FILTER_VALIDATE_BOOLEAN );
-	}
-
-	/**
-	 * Fetches ai data from the middleware server - this will be merged with the get_credit_server_response() function.
+	 * Fetches ai data from the middleware server
 	 *
 	 * @param \WP_REST_Request $request request object.
 	 * @since x.x.x
@@ -122,7 +56,9 @@ class AI_Form_Builder {
 
 		// if pro is active then add pro field types.
 		if ( defined( 'SRFM_PRO_VER' ) ) {
-			$field_types .= ', hidden, rating, upload, date-time, number-slider, page-break';
+			$field_types .= ', hidden, rating, upload, date-time-picker, number-slider, page-break';
+		} else {
+			$field_types .= 'and make sure fields like hidden, rating, upload, date-time-picker, number-slider fields should not be included STRICTLY in the response';
 		}
 
 		// Finally add the system message to the start of the array.
@@ -131,7 +67,7 @@ class AI_Form_Builder {
 				$messages,
 				[
 					'role'    => 'system',
-					'content' => 'Based on the description, generate a survey with questions array where every element has five fields: label, fieldType, placeholder, required (add only if it is mentioned by user or if it is mandatory for form submission), helpText (add only if it is mentioned by user or if it is needed based on the field). fieldType can only be of these options ' . $field_types . '. fieldType can be used in any order and any number of times. Also return formTitle in the response.
+					'content' => 'Based on the description, generate a survey with questions array where every element has five fields: label, fieldType, required (add only if it is mentioned by user or if it is mandatory for form submission), helpText (add only if it is mentioned by user or if it is needed based on the field). fieldType can only be of these options ' . $field_types . '. fieldType can be used in any order and any number of times. Also return formTitle in the response.
 					
 					Here are the field specific properties that you need to return with that specific field:
 					
@@ -156,15 +92,17 @@ class AI_Form_Builder {
 		}
 
 		// send the request to the open ai server.
-		$endpoint = 'chat/completions';
-		$data     = [
-			'model'    => 'gpt-3.5-turbo',
+		$data = [
 			'messages' => $messages,
-			'type'     => 'form-builder',
 		];
 
 		// Get the response from the endpoint.
-		$response = AI_Helper::get_credit_server_response( $endpoint, $data );
+		$response = AI_Helper::get_chat_completions_response( $data );
+
+		// check if response is an array if not then send error.
+		if ( ! is_array( $response ) ) {
+			wp_send_json_error( [ 'message' => __( 'The SureForms AI Middleware encountered an error.', 'sureforms' ) ] );
+		}
 
 		if ( ! empty( $response['error'] ) ) {
 			// If the response has an error, handle it and report it back.
@@ -173,34 +111,18 @@ class AI_Form_Builder {
 				$message = $response['error']['message'];
 			} elseif ( is_string( $response['error'] ) ) {  // If any error message received from server.
 				if ( ! empty( $response['code'] && is_string( $response['code'] ) ) ) {
-					$message = $this->custom_message( $response['code'] );
+					$message = __( 'The SureForms AI Middleware encountered an error.', 'sureforms' );
 				}
 				$message = ! empty( $message ) ? $message : $response['error'];
 			}
 			wp_send_json_error( [ 'message' => $message ] );
 		} elseif ( is_array( $response['choices'] ) && ! empty( $response['choices'][0]['message']['content'] ) ) {
 			// If the message was sent successfully, send it successfully.
-			wp_send_json_success( $response );
+			wp_send_json_success( $response['choices'][0]['message']['content'] );
 		} else {
 			// If you've reached here, then something has definitely gone amuck. Abandon ship.
 			wp_send_json_error( [ 'message' => __( 'Something went wrong', 'sureforms' ) ] );
 		}//end if
 	}
 
-	/**
-	 * This function converts the code received from scs to a readable error message.
-	 * Useful to provide better language for error codes.
-	 *
-	 * @param string $code error code received from SCS ( Credits server ).
-	 * @since x.x.x
-	 * @return string
-	 */
-	private function custom_message( $code ) {
-		$message_array = [
-			'no_auth'              => __( 'Invalid auth token.', 'sureforms' ),
-			'insufficient_credits' => __( 'You have no credits left.', 'sureforms' ),
-		];
-
-		return isset( $message_array[ $code ] ) ? $message_array[ $code ] : '';
-	}
 }

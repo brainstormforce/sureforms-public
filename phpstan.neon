@@ -19,7 +19,6 @@ parameters:
 	bootstrapFiles:
 		- %rootDir%/../../php-stubs/wordpress-stubs/wordpress-stubs.php
 		- tests/php/stubs/srfm-constants.php
-		- tests/php/stubs/zip-ai-stubs.php
 		- tests/php/stubs/srfm-stubs.php
 		- tests/php/stubs/srfm-elementor-stubs.php
 		- tests/php/stubs/srfm-bricks-stubs.php
@@ -33,7 +32,6 @@ parameters:
 		- inc/form-builder
 		- inc/services/browser
 		- inc/lib
-		- inc/lib/zip-ai
 #    excludes_analyse:
 #    autoload_files:
 #        # Missing constants, function and class stubs

@@ -1,17 +1,14 @@
+import { __ } from '@wordpress/i18n';
 import { useState, useEffect } from '@wordpress/element';
 import ICONS from './icons';
 import Breadcrumbs from './Breadcrumbs';
 import { useLocation } from 'react-router-dom';
 import { BsLightningCharge } from 'react-icons/bs';
-import RevokeConfirmationPopup from './RevokeConfirmationPopup.js';
 import CreditDetailsPopup from './CreditDetailsPopup.js';
-import { formatNumber, getRemaingCredits } from '@Utils/Helpers';
 import { Button } from '@wordpress/components';
 
 const Header = () => {
 	const [ showRevokePopover, setShowRevokePopover ] = useState( false );
-	const [ showRevokeConfirmation, setShowRevokeConfirmation ] =
-		useState( false );
 
 	function useQuery() {
 		return new URLSearchParams( useLocation().search );
@@ -31,35 +28,34 @@ const Header = () => {
 		}
 	}, [ method ] );
 
-	const creditsLeft = getRemaingCredits();
-
-	if ( showRevokeConfirmation ) {
-		return (
-			<RevokeConfirmationPopup
-				setShowRevokeConfirmation={ setShowRevokeConfirmation }
-			/>
-		);
-	}
+	const formCreationleft = srfm_admin?.srfm_ai_usage_details?.remaining ?? 0;
 
 	return (
-		<div className="srfm-tp-header">
-			<div className="srfm-tp-header-items">
-				{ /** Logo & Breadcrumbs */ }
-				<div className="srfm-tp-main-title">
-					<Breadcrumbs />
-				</div>
-			</div>
+		<div
+			className="srfm-tp-header-ctn"
+		>
+			<div
+				className="srfm-tp-header"
 
-			{ /* if the user is authorized and the page is add-new-form and the method is ai then show the credits left in the account
-			 */ }
-			{ srfm_admin.is_authorized &&
-			page === 'add-new-form' &&
-			method === 'ai' ? (
+			>
+				<div className="srfm-tp-header-items">
+					{ /** Logo & Breadcrumbs */ }
+					<div className="srfm-tp-main-title">
+						<Breadcrumbs />
+					</div>
+				</div>
+
+				{ /* if the page is add-new-form and the method is ai then show the credits left in the account
+				 */ }
+				{ page === 'add-new-form' && method === 'ai' ? (
 					<div className="srfm-tp-header-credits-ctn">
 						<Button
 							style={ {
-							// if popover is open, change background color
-								background: showRevokePopover ? '#F3F4F6' : 'white',
+								// if popover is open, change background color
+								background: showRevokePopover
+									? '#F3F4F6'
+									: 'white',
+								width: '225px',
 							} }
 							className="srfm-tp-header-credits"
 							onClick={ () => {
@@ -67,7 +63,14 @@ const Header = () => {
 							} }
 						>
 							<span className="srfm-tp-header-credits-left">
-								{ formatNumber( creditsLeft ) }
+								{ wp.i18n.sprintf(
+									/* translators: %s: number of AI form generations left */
+									__(
+										'%d AI form generations left',
+										'sureforms'
+									),
+									formCreationleft
+								) }
 							</span>
 							<div className="srfm-tp-header-bolt-icon">
 								<BsLightningCharge />
@@ -76,20 +79,20 @@ const Header = () => {
 						{ showRevokePopover && (
 							<CreditDetailsPopup
 								setShowRevokePopover={ setShowRevokePopover }
-								setShowRevokeConfirmation={
-									setShowRevokeConfirmation
-								}
-								creditsLeft={ creditsLeft }
 							/>
 						) }
 						<div
 							className="srfm-tp-header-close"
 							onClick={ () => {
 								window.location.href =
-								'/wp-admin/admin.php?page=sureforms_menu';
+									'/wp-admin/admin.php?page=sureforms_menu';
 							} }
 						>
-							<div style={ { height: '24px' } }>{ ICONS.close }</div>
+							<div
+								className="srfm-tp-header-close-icon"
+							>
+								{ ICONS.close }
+							</div>
 						</div>
 					</div>
 				) : (
@@ -97,12 +100,15 @@ const Header = () => {
 						className="srfm-tp-header-close"
 						onClick={ () => {
 							window.location.href =
-							'/wp-admin/admin.php?page=sureforms_menu';
+								'/wp-admin/admin.php?page=sureforms_menu';
 						} }
 					>
-						<div style={ { height: '24px' } }>{ ICONS.close }</div>
+						<div
+							className="srfm-tp-header-close-icon"
+						>{ ICONS.close }</div>
 					</div>
 				) }
+			</div>
 		</div>
 	);
 };
