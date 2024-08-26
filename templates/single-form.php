@@ -59,7 +59,12 @@ $form_styling = Helper::get_meta_value(
 <head>
 	<meta charset="<?php bloginfo( 'charset' ); ?>">
 	<meta http-equiv="x-ua-compatible" content="ie=edge">
-	<?php wp_head(); ?>
+	<?php if ( ! wp_is_block_theme() ) { ?>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<?php
+	}
+	wp_head();
+	?>
 	<style>
 		<?php
 		echo wp_kses_post( Helper::get_meta_value( $srfm_custom_post_id, '_srfm_form_custom_css' ) );
