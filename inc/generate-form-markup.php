@@ -228,7 +228,7 @@ class Generate_Form_Markup {
 					foreach ( $selected_size as $variable => $value ) {
 						echo esc_html( Helper::get_string_value( $variable ) ) . ': ' . esc_html( Helper::get_string_value( $value ) ) . ';';
 					}
-					do_action( 'srfm_form_css_variables', $id );
+					do_action( 'srfm_form_css_variables', $id, $primary_color_var, $help_color_var );
 					// echo custom css on page/post.
 					if ( 'sureforms_form' !== $current_post_type ) :
 						echo wp_kses_post( $custom_css );
