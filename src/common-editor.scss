@@ -83,16 +83,9 @@
 				margin-bottom: 25px;
 				.srfm-date-setting-icon {
 					position: absolute;
-					right: 0;
-					top: 0;
+					top: 6px;
+					right: 6px;
 					bottom: 0;
-					padding: 6px;
-					.icon {
-						color: #aaacb0;
-						display: block;
-						transform: translateY( -15% );
-						line-height: 0;
-					}
 				}
 				.srfm-date-picker {
 					margin-left: 0;
