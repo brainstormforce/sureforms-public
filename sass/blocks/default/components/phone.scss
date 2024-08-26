@@ -9,52 +9,16 @@
 					line-height: normal;
 					margin: var( --srfm-input-field-margin );
 					.iti__country-list {
-						display: block;
-						opacity: 1;
 						top: 100%;
 						bottom: auto; // Prevent the dropdown menu from shrinking.
 						width: 310px;
-						line-height: var( --srfm-input-field-line-height );
 						transition: 0.2s ease-out;
-						@include srfm-dropdown-styles;
 
 						&.iti__hide {
 							display: block;
 							transform: translateY( 1em );
 							opacity: 0;
 							visibility: hidden;
-						}
-						.iti__country {
-							padding: var( --srfm-dropdown-option-padding );
-							gap: var( --srfm-gap-between-icon-text );
-							border-radius: var( --srfm-input-field-border-radius );
-
-							.iti__country-name {
-								color: var( --srfm-dropdown-option-text-color );
-								white-space: nowrap;
-								overflow: hidden;
-								text-overflow: ellipsis;
-							}
-							.iti__dial-code {
-								color: var( --srfm-color-input-text );
-								font-weight: 600;
-							}
-
-							.iti__flag-box,
-							.iti__country-name {
-								margin-right: 0; // Removing default margin.
-							}
-
-							&.iti__highlight {
-								background-color: var( --srfm-dropdown-option-background-hover );
-							}
-
-							&.iti__active {
-								background-color: var( --srfm-dropdown-option-background-selected );
-								&::after {
-									@include srfm-check-mark;
-								}
-							}
 						}
 					}
 					.iti__selected-flag {
@@ -85,6 +49,48 @@
 			.srfm-input-phone {
 				margin: var( --srfm-input-field-margin ) !important;
 				padding-right: var( --srfm-dropdown-padding-right );
+			}
+		}
+	}
+}
+
+.iti {
+	.iti__country-list {
+		display: block;
+		opacity: 1;
+		line-height: var( --srfm-input-field-line-height );
+		@include srfm-dropdown-styles;
+
+		.iti__country {
+			padding: var( --srfm-dropdown-option-padding );
+			gap: var( --srfm-gap-between-icon-text );
+			border-radius: var( --srfm-input-field-border-radius );
+
+			.iti__country-name {
+				color: var( --srfm-dropdown-option-text-color );
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+			}
+			.iti__dial-code {
+				color: var( --srfm-color-input-text );
+				font-weight: 600;
+			}
+
+			.iti__flag-box,
+			.iti__country-name {
+				margin-right: 0; // Removing default margin.
+			}
+
+			&.iti__highlight {
+				background-color: var( --srfm-dropdown-option-background-hover );
+			}
+
+			&.iti__active {
+				background-color: var( --srfm-dropdown-option-background-selected );
+				&::after {
+					@include srfm-check-mark;
+				}
 			}
 		}
 	}
