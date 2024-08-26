@@ -109,24 +109,19 @@ const AiFormBuilder = () => {
 					return;
 				}
 
-				let sanitizedFormJsonData = content
-					.replace( /```/g, '' )
-					.replace( /json/g, '' );
-				sanitizedFormJsonData = JSON.parse( sanitizedFormJsonData );
-
 				const postContent = await apiFetch( {
 					path: 'sureforms/v1/map-fields',
 					method: 'POST',
-					data: { form_data: sanitizedFormJsonData },
+					data: { form_data: content },
 				} );
 
 				if ( postContent ) {
 					setMessage( __( 'Redirecting to Editor', 'sureforms' ) );
 					setPercentBuild( 100 );
-
+					const formTitle = content?.form?.formTitle;
 					handleAddNewPost(
 						postContent,
-						sanitizedFormJsonData?.formTitle,
+						formTitle,
 						[]
 					);
 				} else {

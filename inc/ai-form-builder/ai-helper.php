@@ -34,7 +34,7 @@ class AI_Helper {
 	 */
 	public static function get_chat_completions_response( $body = [], $extra_args = [] ) {
 		// Set the API URL.
-		$api_url = SRFM_AI_MIDDLEWARE . 'chat/completions';
+		$api_url = SRFM_AI_MIDDLEWARE . 'generate/form';
 
 		$api_args = [
 			'headers' => [

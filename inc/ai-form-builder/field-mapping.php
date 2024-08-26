@@ -38,15 +38,19 @@ class Field_Mapping {
 		}
 
 		// Get questions from form data.
-		$questions = $params['form_data']['questions'];
-
-		// Check if questions are null then set it to form_data.
-		if ( empty( $questions ) ) {
-			$questions = $params['form_data'];
+		$form_data = $params['form_data'];
+		if ( empty( $form_data ) || ! is_array( $form_data ) ) {
+			return '';
 		}
 
+		$form = $form_data['form'];
+		if ( empty( $form ) || ! is_array( $form ) ) {
+			return '';
+		}
+
+		$form_fields = $form['formFields'];
 		// if questions is empty then return empty string.
-		if ( empty( $questions ) ) {
+		if ( empty( $form_fields ) || ! is_array( $form ) ) {
 			return '';
 		}
 
@@ -54,7 +58,7 @@ class Field_Mapping {
 		$post_content = '';
 
 		// Loop through questions.
-		foreach ( $questions as $question ) {
+		foreach ( $form_fields as $question ) {
 
 			// Check if question is empty then continue to next question.
 			if ( empty( $question ) || ! is_array( $question ) ) {
