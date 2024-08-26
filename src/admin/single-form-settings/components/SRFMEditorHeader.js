@@ -30,7 +30,7 @@ const SRFMEditorHeader = () => {
 };
 
 export const addHeaderCenterContainer = () => {
-	let intervalToClear = setInterval( () => {
+	const intervalToClear = setInterval( () => {
 		const headerCenterContainer =
 			document.querySelector( '.edit-post-header__center' ) ||
 			// added support for WP 6.6.

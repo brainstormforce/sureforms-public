@@ -32,7 +32,7 @@ const InspectorTabs = ( props ) => {
 	const {
 		defaultTab = 'general',
 		children,
-		tabs = ['general', 'style', 'advance']
+		tabs = [ 'general', 'style', 'advance' ],
 	} = props;
 
 	const [ currentTab, setCurrentTab ] = useState(

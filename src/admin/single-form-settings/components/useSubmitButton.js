@@ -1,21 +1,25 @@
-import { useEffect } from '@wordpress/element';
+import { useEffect, useState } from '@wordpress/element';
 import { createRoot } from 'react-dom/client';
 import { RichText } from '@wordpress/block-editor';
 import { __ } from '@wordpress/i18n';
 import { BlockInserterWrapper } from '../Inserter.js';
 
 export default function useSubmitButton( args ) {
-    const {
-        sureformsKeys,
-        codeEditor,
-        blockCount,
-        isInlineButtonBlockPresent,
-        updateMeta,
-    } = args;
+	const {
+		sureformsKeys,
+		blockCount,
+		isInlineButtonBlockPresent,
+		updateMeta,
+	} = args;
 
-    const submitBtnContainer = document.querySelector(
-		'.srfm-submit-btn-container'
-	);
+	const [ codeEditor, setCodeEditor ] = useState( null );
+	const [ submitBtnContainer, setSubmitBtnContainer ] = useState( null );
+
+	useEffect( () => {
+		setCodeEditor( document.querySelector( '.editor-post-text-editor' ) );
+		setSubmitBtnContainer( document.querySelector( '.srfm-submit-btn-container' ) );
+	}, [] );
+
 	function addSubmitButton( elm ) {
 		const inheritClass = 'srfm-btn-alignment wp-block-button__link';
 		const customClass =
@@ -151,5 +155,6 @@ export default function useSubmitButton( args ) {
 		codeEditor,
 		blockCount,
 		isInlineButtonBlockPresent,
+		submitBtnContainer,
 	] );
 }

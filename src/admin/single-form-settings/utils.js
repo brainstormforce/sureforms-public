@@ -1,3 +1,5 @@
+const { select, dispatch } = wp.data;
+
 export const defaultKeys = {
 	// General Tab
 	_srfm_use_label_as_placeholder: false,
@@ -43,4 +45,31 @@ export const defaultKeys = {
 	_srfm_thankyou_message: 'Form submitted successfully!',
 	_srfm_submit_url: '',
 	_srfm_form_recaptcha: 'none',
+};
+
+//force panel open
+export const forcePanel = () => {
+	//force sidebar open
+	if ( ! select( 'core/edit-post' ).isEditorSidebarOpened() ) {
+		dispatch( 'core/edit-post' ).openGeneralSidebar( 'edit-post/document' );
+	}
+	//force panel open
+	if (
+		! select( 'core/editor' ).isEditorPanelEnabled(
+			'srfm-form-specific-settings/srfm-sidebar'
+		)
+	) {
+		dispatch( 'core/edit-post' ).toggleEditorPanelEnabled(
+			'srfm-form-specific-settings/srfm-sidebar'
+		);
+	}
+	if (
+		! select( 'core/editor' ).isEditorPanelOpened(
+			'srfm-form-specific-settings/srfm-sidebar'
+		)
+	) {
+		dispatch( 'core/edit-post' ).toggleEditorPanelOpened(
+			'srfm-form-specific-settings/srfm-sidebar'
+		);
+	}
 };

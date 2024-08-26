@@ -1,11 +1,6 @@
 import { registerPlugin } from '@wordpress/plugins';
 
 import {
-	PluginDocumentSettingPanel,
-	PluginPostPublishPanel,
-} from '@wordpress/editor';
-
-import {
 	ClipboardButton,
 	PanelRow,
 	BaseControl,
@@ -15,7 +10,7 @@ import { __ } from '@wordpress/i18n';
 import { useState, useEffect, render } from '@wordpress/element';
 
 import { useSelect, useDispatch } from '@wordpress/data';
-import { store as editorStore } from '@wordpress/editor';
+import { store as editorStore, PluginDocumentSettingPanel, PluginPostPublishPanel } from '@wordpress/editor';
 import { store as blockEditorStore } from '@wordpress/block-editor';
 
 import GeneralSettings from './tabs/GeneralSettings.js';
@@ -23,9 +18,7 @@ import StyleSettings from './tabs/StyleSettings.js';
 import AdvancedSettings from './tabs/AdvancedSettings.js';
 
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
-import InspectorTab, {
-	SRFMTabs,
-} from '@Components/inspector-tabs/InspectorTab.js';
+import InspectorTab, { SRFMTabs } from '@Components/inspector-tabs/InspectorTab.js';
 import { addHeaderCenterContainer } from './components/SRFMEditorHeader.js';
 import {
 	attachSidebar,
@@ -36,27 +29,36 @@ import { useDeviceType } from '@Controls/getPreviewType';
 import ProPanel from './components/pro-panel/index.js';
 import useSubmitButton from './components/useSubmitButton.js';
 import SureFormsDescription from './components/SureFormsDescription.js';
-
-const { select, dispatch } = wp.data;
-import { defaultKeys } from './utils.js';
+import { defaultKeys, forcePanel } from './utils.js';
 
 const SureformsFormSpecificSettings = ( props ) => {
 	const [ hasCopied, setHasCopied ] = useState( false );
 	const [ enableQuickActionSidebar, setEnableQuickActionSidebar ] =
 		useState( 'enabled' );
-	const postId = useSelect( () => {
-		return select( 'core/editor' ).getCurrentPostId();
-	}, [] );
-	const sureformsKeys = useSelect( () =>
-		select( editorStore ).getEditedPostAttribute( 'meta' )
-	);
 
-	const blockCount = useSelect( () =>
-		select( blockEditorStore ).getBlockCount()
-	);
+	const {
+		postId,
+		sureformsKeys,
+		blockCount,
+		blocks,
+	} = useSelect( ( select ) => {
+		return {
+			postId: select( 'core/editor' ).getCurrentPostId(),
+			sureformsKeys: select( editorStore ).getEditedPostAttribute( 'meta' ),
+			blockCount: select( blockEditorStore ).getBlockCount(),
+			blocks: select( 'core/block-editor' ).getBlocks(),
+		};
+	} );
+
 	const { editPost } = useDispatch( editorStore );
-	const rootContainer = document.querySelector( '.is-root-container' );
-	const blocks = wp.data.select( 'core/block-editor' ).getBlocks();
+	const [ rootContainer, setRootContainer ] = useState( null );
+	const [ rootContainerDiv, setRootContainerDiv ] = useState( null );
+
+	useEffect( () => {
+		setRootContainer( document.querySelector( '.is-root-container' ) );
+		setRootContainerDiv( document.querySelector( '.edit-post-visual-editor__content-area' ) );
+	}, [] );
+
 	const isPageBreak = blocks.some(
 		( block ) => block.name === 'srfm/page-break'
 	);
@@ -73,21 +75,13 @@ const SureformsFormSpecificSettings = ( props ) => {
 		} );
 	}
 
-	// find if code editor is open/close then trigger adding button again
-	const codeEditor = document.querySelector( '.editor-post-text-editor' );
-
-	// Find the main Editor Container
-	const rootContainerDiv = document.querySelector(
-		'.edit-post-visual-editor__content-area'
-	);
-
 	// Add styling class to main Editor Container
 	const addFormStylingClass = () => {
 		if ( rootContainer && 'Desktop' === deviceType ) {
-			rootContainer?.classList.add( 'srfm-form-container' );
+			rootContainer?.classList?.add( 'srfm-form-container' );
 			rootContainer.setAttribute( 'id', 'srfm-form-container' );
 		} else if ( rootContainerDiv ) {
-			rootContainerDiv?.classList.add( 'srfm-form-container' );
+			rootContainerDiv?.classList?.add( 'srfm-form-container' );
 			rootContainerDiv.setAttribute( 'id', 'srfm-form-container' );
 		}
 	};
@@ -144,10 +138,9 @@ const SureformsFormSpecificSettings = ( props ) => {
 
 	useSubmitButton( {
 		sureformsKeys,
-		codeEditor,
 		blockCount,
 		isInlineButtonBlockPresent,
-		updateMeta
+		updateMeta,
 	} );
 
 	useEffect( () => {
@@ -314,33 +307,6 @@ registerPlugin( 'srfm-form-specific-settings', {
 	render: SureformsFormSpecificSettings,
 	icon: 'palmtree',
 } );
-
-//force panel open
-const forcePanel = () => {
-	//force sidebar open
-	if ( ! select( 'core/edit-post' ).isEditorSidebarOpened() ) {
-		dispatch( 'core/edit-post' ).openGeneralSidebar( 'edit-post/document' );
-	}
-	//force panel open
-	if (
-		! select( 'core/editor' ).isEditorPanelEnabled(
-			'srfm-form-specific-settings/srfm-sidebar'
-		)
-	) {
-		dispatch( 'core/edit-post' ).toggleEditorPanelEnabled(
-			'srfm-form-specific-settings/srfm-sidebar'
-		);
-	}
-	if (
-		! select( 'core/editor' ).isEditorPanelOpened(
-			'srfm-form-specific-settings/srfm-sidebar'
-		)
-	) {
-		dispatch( 'core/edit-post' ).toggleEditorPanelOpened(
-			'srfm-form-specific-settings/srfm-sidebar'
-		);
-	}
-};
 
 wp.domReady( () => {
 	forcePanel();
