@@ -79,7 +79,7 @@ const PopoverModal = ( {
 	const isSrfmBlock = ( item ) =>
 		item?.name?.includes( 'srfm/' ) && ! item.parent;
 
-	const isTitleMatched = ( item ) =>
+	const isTermMatched = ( item ) =>
 		item?.title?.toLowerCase()?.includes( searchTerm.toLowerCase() );
 
 	const addToSidebar = () => {
@@ -138,7 +138,7 @@ const PopoverModal = ( {
 			/>
 			<div className="srfm-block-container">
 				{ unusedArray.some(
-					( item ) => isSrfmBlock( item ) && isTitleMatched( item )
+					( item ) => isSrfmBlock( item ) && isTermMatched( item )
 				) && (
 					<div className="block-editor-inserter__panel-header srfm-quick-action-block-popover-header__add-to-quick-action-bar">
 						<h2 className="block-editor-inserter__panel-title">
@@ -148,7 +148,7 @@ const PopoverModal = ( {
 				) }
 				{ addToSidebar() }
 				{ usedArray.some(
-					( item ) => isSrfmBlock( item ) && isTitleMatched( item )
+					( item ) => isSrfmBlock( item ) && isTermMatched( item )
 				) && (
 					<div className="block-editor-inserter__panel-header srfm-quick-action-block-popover-header__already-present-in-quick-action-bar">
 						<h2 className="block-editor-inserter__panel-title">
@@ -161,7 +161,7 @@ const PopoverModal = ( {
 				) }
 				{ alreadyPresentInSidebar() }
 				{ ! unusedArray.some(
-					( item ) => isSrfmBlock( item ) && isTitleMatched( item )
+					( item ) => isSrfmBlock( item ) && isTermMatched( item )
 				) &&
 					! usedArray.some(
 						( item ) =>
