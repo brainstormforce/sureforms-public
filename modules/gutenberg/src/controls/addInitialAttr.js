@@ -139,7 +139,12 @@ const addInitialAttr = ( ChildComponent ) => {
 				'uagb/post-masonry',
 			];
 
-			const attributeObject = { block_id: clientId.substr( 0, 8 ) };
+			const attributeObject = {};
+
+			// If block_id is not set then only we will set it to first 8 characters of clientId, this will prevent the issue of new block id generation on every page reload.
+			if ( ! block_id || '0' === block_id || 'not_set' === block_id ) {
+				attributeObject.block_id = clientId.substr( 0, 8 );
+			}
 
 			if ( listOfAllTaxonomyStore.includes( name ) ) {
 				attributeObject.allTaxonomyStore = undefined;
