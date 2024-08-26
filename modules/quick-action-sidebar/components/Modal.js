@@ -76,13 +76,19 @@ const PopoverModal = ( {
 		}
 	} );
 
+	const isSrfmBlock = ( item ) =>
+		item?.name?.includes( 'srfm/' ) && ! item.parent;
+
+	const isTitleMatched = ( item ) =>
+		item?.title?.toLowerCase()?.includes( searchTerm.toLowerCase() );
+
+	console.log( { usedArray, unusedArray } );
+
 	const addToSidebar = () => {
 		return unusedArray.map(
 			( item, index ) =>
 				// include all srfm blocks and core/paragraph block
-				( item?.name?.includes( 'srfm/' ) ||
-					item?.name?.includes( 'core/paragraph' ) ) &&
-				! item.parent && (
+				isSrfmBlock( item ) && (
 					<div
 						key={ index }
 						className="srfm-block-wrap"
@@ -105,9 +111,7 @@ const PopoverModal = ( {
 	const alreadyPresentInSidebar = () => {
 		return usedArray.map(
 			( item, index ) =>
-				( item?.name?.includes( 'srfm/' ) ||
-					item?.name?.includes( 'core/paragraph' ) ) &&
-				! item.parent && (
+				isSrfmBlock( item ) && (
 					<div key={ index } className="srfm-block-wrap">
 						<div className="srfm-ee-quick-access__sidebar--blocks--block--icon">
 							<Icon
@@ -136,13 +140,7 @@ const PopoverModal = ( {
 			/>
 			<div className="srfm-block-container">
 				{ unusedArray.some(
-					( item ) =>
-						( item?.name?.includes( 'srfm/' ) ||
-							item?.name?.includes( 'core/paragraph' ) ) &&
-						! item.parent &&
-						item.title
-							.toLowerCase()
-							.includes( searchTerm.toLowerCase() )
+					( item ) => isSrfmBlock( item ) && isTitleMatched( item )
 				) && (
 					<div className="block-editor-inserter__panel-header srfm-quick-action-block-popover-header__add-to-quick-action-bar">
 						<h2 className="block-editor-inserter__panel-title">
@@ -152,13 +150,7 @@ const PopoverModal = ( {
 				) }
 				{ addToSidebar() }
 				{ usedArray.some(
-					( item ) =>
-						( item?.name?.includes( 'srfm/' ) ||
-							item?.name?.includes( 'core/paragraph' ) ) &&
-						! item.parent &&
-						item.title
-							.toLowerCase()
-							.includes( searchTerm.toLowerCase() )
+					( item ) => isSrfmBlock( item ) && isTitleMatched( item )
 				) && (
 					<div className="block-editor-inserter__panel-header srfm-quick-action-block-popover-header__already-present-in-quick-action-bar">
 						<h2 className="block-editor-inserter__panel-title">
@@ -171,19 +163,11 @@ const PopoverModal = ( {
 				) }
 				{ alreadyPresentInSidebar() }
 				{ ! unusedArray.some(
-					( item ) =>
-						( item?.name?.includes( 'srfm/' ) ||
-							item?.name?.includes( 'core/paragraph' ) ) &&
-						! item.parent &&
-						item.title
-							.toLowerCase()
-							.includes( searchTerm.toLowerCase() )
+					( item ) => isSrfmBlock( item ) && isTitleMatched( item )
 				) &&
 					! usedArray.some(
 						( item ) =>
-							( item?.name?.includes( 'srfm/' ) ||
-								item?.name?.includes( 'core/paragraph' ) ) &&
-							! item.parent &&
+							isSrfmBlock( item ) &&
 							item.title
 								.toLowerCase()
 								.includes( searchTerm.toLowerCase() )
