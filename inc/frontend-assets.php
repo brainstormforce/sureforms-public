@@ -109,7 +109,6 @@ class Frontend_Assets {
 		$block_name = str_replace( 'srfm/', '', $block_type );
 		// associative array to keep the count of block that requires scripts to work.
 		$script_dep_blocks = [
-			'checkbox'     => 0,
 			'dropdown'     => 0,
 			'multi-choice' => 0,
 			'number'       => 0,
