@@ -5,8 +5,8 @@ export const useDeviceType = () => {
 		return {
 			deviceType:
 				select(
-					'core/edit-post'
-				)?.__experimentalGetPreviewDeviceType() || 'Desktop',
+					'core/editor'
+				)?.getDeviceType() || 'Desktop',
 		};
 	}, [] );
 

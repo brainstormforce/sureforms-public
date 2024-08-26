@@ -2,6 +2,7 @@ import { __ } from '@wordpress/i18n';
 import { useEntityProp } from '@wordpress/core-data';
 import { TextControl } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
+import { createRoot } from 'react-dom/client';
 
 const SRFMEditorHeader = () => {
 	const postId = useSelect( ( select ) => {
@@ -28,4 +29,23 @@ const SRFMEditorHeader = () => {
 	);
 };
 
-export default SRFMEditorHeader;
+export const addHeaderCenterContainer = () => {
+	let intervalToClear = setInterval( () => {
+		const headerCenterContainer =
+			document.querySelector( '.edit-post-header__center' ) ||
+			// added support for WP 6.6.
+			document.querySelector( '.editor-header__center' );
+		if ( headerCenterContainer ) {
+			// Clear the interval.
+			clearInterval( intervalToClear );
+
+			// remove the command bar and add our custom header title editor
+			const header = document.querySelector( '.editor-post-title__block' );
+			if ( header ) {
+				header.remove();
+			}
+			const root = createRoot( headerCenterContainer );
+			root.render( <SRFMEditorHeader /> );
+		}
+	}, 50 );
+};

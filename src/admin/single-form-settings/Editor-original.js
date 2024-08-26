@@ -1,18 +1,8 @@
 import { registerPlugin } from '@wordpress/plugins';
-// import {
-// 	PluginDocumentSettingPanel,
-// 	PluginPostPublishPanel,
-// } from '@wordpress/edit-post';
-// import {
-// 	PluginDocumentSettingPanel as EditorPluginDocumentSettingPanel,
-// 	PluginPostPublishPanel as EditorPluginPostPublishPanel,
-// } from '@wordpress/editor';
-
 import {
 	PluginDocumentSettingPanel,
 	PluginPostPublishPanel,
-} from '@wordpress/editor';
-
+} from '@wordpress/edit-post';
 import {
 	ClipboardButton,
 	PanelRow,
@@ -20,9 +10,7 @@ import {
 	TextControl,
 } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
-import { useState, useEffect, render } from '@wordpress/element';
-import { createRoot } from 'react-dom/client';
-
+import { useState, useEffect, createRoot, render } from '@wordpress/element';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { store as editorStore } from '@wordpress/editor';
 import { store as blockEditorStore, RichText } from '@wordpress/block-editor';
@@ -35,7 +23,7 @@ import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
 	SRFMTabs,
 } from '@Components/inspector-tabs/InspectorTab.js';
-import { addHeaderCenterContainer } from './components/SRFMEditorHeader.js';
+import SRFMEditorHeader from './components/SRFMEditorHeader.js';
 import {
 	attachSidebar,
 	toggleSidebar,
@@ -46,7 +34,53 @@ import ProPanel from './components/pro-panel/index.js';
 import { BlockInserterWrapper } from './Inserter.js';
 
 const { select, dispatch } = wp.data;
-import { defaultKeys } from './utils.js';
+
+const defaultKeys = {
+	// General Tab
+	_srfm_use_label_as_placeholder: false,
+	_srfm_single_page_form_title: true,
+	_srfm_instant_form: false,
+	_srfm_is_inline_button: false,
+	// Submit Button
+	_srfm_submit_button_text: 'Submit',
+	// Page Break
+	_srfm_is_page_break: false,
+	_srfm_first_page_label: 'Page break',
+	_srfm_page_break_progress_indicator: 'connector',
+	_srfm_page_break_toggle_label: false,
+	_srfm_previous_button_text: 'Previous',
+	_srfm_next_button_text: 'Next',
+	// Style Tab
+	// Form Container
+	_srfm_form_container_width: 650,
+	_srfm_bg_type: 'image',
+	_srfm_bg_image: '',
+	_srfm_cover_image: '',
+	_srfm_bg_color: '#ffffff',
+	// Submit Button
+	_srfm_inherit_theme_button: false,
+	_srfm_submit_alignment: 'left',
+	_srfm_submit_width: '',
+	_srfm_submit_alignment_backend: '100%',
+	_srfm_submit_width_backend: 'max-content',
+	_srfm_additional_classes: '',
+	// Page Break Button
+	_srfm_page_break_inherit_theme_button: false,
+	_srfm_page_break_button_bg_color: '#D54407',
+	_srfm_page_break_button_text_color: '#ffffff',
+	_srfm_page_break_button_border_color: '#ffffff',
+	_srfm_page_break_button_border_width: 0,
+	_srfm_page_break_button_border_radius: 4,
+	_srfm_page_break_button_bg_type: 'filled',
+
+	// Advanced Tab
+	// Success Message
+	_srfm_submit_type: 'message',
+	_srfm_thankyou_message_title: 'Thank you',
+	_srfm_thankyou_message: 'Form submitted successfully!',
+	_srfm_submit_url: '',
+	_srfm_form_recaptcha: 'none',
+};
 
 const SureformsFormSpecificSettings = ( props ) => {
 	const [ hasCopied, setHasCopied ] = useState( false );
@@ -149,6 +183,22 @@ const SureformsFormSpecificSettings = ( props ) => {
 			updateMeta( '_srfm_is_inline_button', isInlineButtonBlockPresent );
 		}
 	}, [ blockCount ] );
+
+	// Render the Components in the center of the Header
+	const headerCenterContainer =
+		document.querySelector( '.edit-post-header__center' ) ||
+		// added support for WP 6.6.
+		document.querySelector( '.editor-header__center' );
+
+	if ( headerCenterContainer ) {
+		// remove the command bar and add our custom header title editor
+		const header = document.querySelector( '.editor-post-title__block' );
+		if ( header ) {
+			header.remove();
+		}
+		const root = createRoot( headerCenterContainer );
+		root.render( <SRFMEditorHeader /> );
+	}
 
 	const submitBtnContainer = document.querySelector(
 		'.srfm-submit-btn-container'
@@ -488,7 +538,7 @@ const forcePanel = () => {
 	}
 	//force panel open
 	if (
-		! select( 'core/editor' ).isEditorPanelEnabled(
+		! select( 'core/edit-post' ).isEditorPanelEnabled(
 			'srfm-form-specific-settings/srfm-sidebar'
 		)
 	) {
@@ -497,7 +547,7 @@ const forcePanel = () => {
 		);
 	}
 	if (
-		! select( 'core/editor' ).isEditorPanelOpened(
+		! select( 'core/edit-post' ).isEditorPanelOpened(
 			'srfm-form-specific-settings/srfm-sidebar'
 		)
 	) {
@@ -509,7 +559,4 @@ const forcePanel = () => {
 
 wp.domReady( () => {
 	forcePanel();
-
-	// Add the header center container.
-	addHeaderCenterContainer();
 } );
