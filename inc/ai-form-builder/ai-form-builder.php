@@ -53,9 +53,11 @@ class AI_Form_Builder {
 		}
 
 		// Get the response from the endpoint.
-		$response = AI_Helper::get_chat_completions_response( [
-			'query' => $messages[0]['content'],
-		] );
+		$response = AI_Helper::get_chat_completions_response(
+			[
+				'query' => $messages[0]['content'],
+			]
+		);
 
 		// check if response is an array if not then send error.
 		if ( ! is_array( $response ) ) {
