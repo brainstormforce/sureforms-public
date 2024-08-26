@@ -4,7 +4,7 @@ import { useEffect, useRef } from '@wordpress/element';
 
 const CreditDetailsPopup = ( {
 	setShowRevokePopover,
-	finalFormCreationCountRemaining
+	finalFormCreationCountRemaining,
 } ) => {
 	const revokePopover = useRef( null );
 
