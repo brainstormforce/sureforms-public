@@ -4,8 +4,8 @@
 	&.srfm-has-dark-bg {
 		// We are treating these colors as static here because it will be the fixed color as suggested in Figma.
 		--srfm-error-color: #f87171;
-		--srfm-error-color-border: rgba( from var( --srfm-error-color ) r g b / 0.65 );
-		--srfm-error-color-border-glow: rgba( from var( --srfm-error-color ) r g b / 0.15 );
+		--srfm-error-color-border: hsl( from var( --srfm-error-color ) h s l / 0.65 );
+		--srfm-error-color-border-glow: hsl( from var( --srfm-error-color ) h s l / 0.15 );
 	}
 
 	.srfm-form {
