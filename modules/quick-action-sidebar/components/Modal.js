@@ -82,8 +82,6 @@ const PopoverModal = ( {
 	const isTitleMatched = ( item ) =>
 		item?.title?.toLowerCase()?.includes( searchTerm.toLowerCase() );
 
-	console.log( { usedArray, unusedArray } );
-
 	const addToSidebar = () => {
 		return unusedArray.map(
 			( item, index ) =>
