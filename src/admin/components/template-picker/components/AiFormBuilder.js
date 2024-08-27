@@ -329,7 +329,9 @@ const AiFormBuilder = () => {
 									const userPrompt =
 									document.querySelector( 'textarea' );
 
-									if ( ! userPrompt.value ) {
+									if ( ! userPrompt.value ||
+										! userPrompt.value.trim()
+									) {
 										setShowEmptyError( true );
 										return;
 									}
