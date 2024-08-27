@@ -32,7 +32,7 @@ function StyleSettings( props ) {
 	const [ submitBtnCtn, setSubmitBtnCtn ] = useState(
 		document.querySelector( '.srfm-submit-btn-container' )
 	);
-	const [ fieldSpacing, setFieldSpacing ] = useState( formStyling?.field_spacing || 'small' );
+	const [ fieldSpacing, setFieldSpacing ] = useState( formStyling?.field_spacing || 'medium' );
 
 	// Apply the sizings when field spacing changes.
 	useEffect( () => {
@@ -353,7 +353,7 @@ function StyleSettings( props ) {
 		}
 
 		if ( option === 'field_spacing' ) {
-			root.style.setProperty( '--srfm-field-spacing', value || 'small' );
+			root.style.setProperty( '--srfm-field-spacing', value || 'medium' );
 		}
 
 		if ( option === 'submit_button_alignment' ) {
@@ -467,7 +467,7 @@ function StyleSettings( props ) {
 				<MultiButtonsControl
 					label={ __( 'Field Spacing', 'sureforms' ) }
 					data={ {
-						value: formStyling?.field_spacing || 'small',
+						value: formStyling?.field_spacing || 'medium',
 						label: 'field_spacing',
 					} }
 					options={ [
