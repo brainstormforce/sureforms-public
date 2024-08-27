@@ -33,7 +33,7 @@ class Field_Mapping {
 		$params = $request->get_params();
 
 		// check parama is empty or not and is an array and consist form_data key.
-		if ( empty( $params ) || ! is_array( $params ) || ! array_key_exists( 'form_data', $params ) || 0 === count( $params['form_data'] ) ) {
+		if ( ! isset( $params ) || ! is_array( $params ) || ! array_key_exists( 'form_data', $params ) || 0 === count( $params['form_data'] ) ) {
 			return '';
 		}
 
@@ -125,7 +125,7 @@ class Field_Mapping {
 
 					$post_content .= '<!-- wp:srfm/' . $question['fieldType'] . ' ' . wp_json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
 					break;
-				case 'number-slider':
+				case 'slider':
 				case 'page-break':
 				case 'date-time-picker':
 				case 'upload':

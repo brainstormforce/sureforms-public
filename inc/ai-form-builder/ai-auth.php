@@ -99,7 +99,6 @@ class AI_Auth {
 			$this->decrypt_access_key(
 				$access_key,
 				$this->key,
-				'AES-256-CBC'
 			);
 		} else {
 			wp_send_json_error( [ 'message' => 'No access key provided.' ] );
