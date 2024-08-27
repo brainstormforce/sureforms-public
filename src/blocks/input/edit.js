@@ -35,6 +35,8 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 		formId,
 		preview,
 		className,
+		inputMask,
+		customInputMask,
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
 
@@ -83,11 +85,81 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 								}
 								__nextHasNoMarginBottom
 							/>
+							<SelectControl
+								label={ __( 'Input Mask', 'sureforms' ) }
+								value={ inputMask }
+								options={ [
+									{
+										label: __(
+											'None',
+											'sureforms'
+										),
+										value: 'none',
+									},
+									{
+										label: __(
+											'(###) ###-####',
+											'sureforms'
+										),
+										value: '(000) 000-0000',
+									},
+									{
+										label: __(
+											'(##) ####-####',
+											'sureforms'
+										),
+										value: '(00) 0000-0000',
+									},
+									{
+										label: __(
+											'27/08/2024',
+											'sureforms'
+										),
+										value: '00/00/0000',
+									},
+									{
+										label: __(
+											'23:59:59',
+											'sureforms'
+										),
+										value: '00:00:00',
+									},
+									{
+										label: __(
+											'27/08/2024 23:59:59',
+											'sureforms'
+										),
+										value: '00/00/0000 00:00:00',
+									},
+									{
+										label: __(
+											'Custom',
+											'sureforms'
+										),
+										value: 'custom-mask',
+									},
+								] }
+								onChange={ ( value ) => {
+									setAttributes( { inputMask: value } );
+								} }
+							/>
+							{ inputMask === 'custom-mask' && (
+								<SRFMTextControl
+									label={ __( 'Custom Mask', 'sureforms' ) }
+									value={ customInputMask }
+									data={ {
+										value: customInputMask,
+										label: 'customInputMask',
+									} }
+									onChange={ ( value ) =>
+										setAttributes( { customInputMask: value } )
+									}
+								/>
+							) }
 							<SRFMTextControl
 								label={ __( 'Default Value', 'sureforms' ) }
 								className="srfm-with-dropdown"
 								value={ defaultValue }
-								withSmartTagDropdown={ true }
 								data={ {
 									value: defaultValue,
 									label: 'defaultValue',

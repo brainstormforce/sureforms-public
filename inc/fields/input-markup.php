@@ -28,6 +28,14 @@ class Input_Markup extends Base {
 	protected $max_text_length;
 
 	/**
+	 * Input mask for the input field.
+	 *
+	 * @var string
+	 * @since x.x.x
+	 */
+	protected $input_mask;
+
+	/**
 	 * Initialize the properties based on block attributes.
 	 *
 	 * @param array<mixed> $attributes Block attributes.
@@ -36,6 +44,10 @@ class Input_Markup extends Base {
 	public function __construct( $attributes ) {
 		$this->slug            = 'input';
 		$this->max_text_length = isset( $attributes['textLength'] ) ? $attributes['textLength'] : '';
+		$this->input_mask      = isset( $attributes['inputMask'] ) ? $attributes['inputMask'] : '';
+		if ( $this->input_mask === 'custom' && isset( $attributes['customInputMask'] ) ) {
+			$this->input_mask = $attributes['customInputMask'];
+		}
 		$this->set_properties( $attributes );
 		$this->set_input_label( __( 'Text Field', 'sureforms' ) );
 		$this->set_error_msg( $attributes, 'srfm_input_block_required_text' );
@@ -61,7 +73,7 @@ class Input_Markup extends Base {
 				<div class="srfm-block-wrap">
 				<input class="srfm-input-common srfm-input-<?php echo esc_attr( $this->slug ); ?>" type="text" name="<?php echo esc_attr( $this->field_name ); ?>" id="<?php echo esc_attr( $this->unique_slug ); ?>"
 					<?php echo ! empty( $this->aria_described_by ) ? "aria-describedby='" . esc_attr( trim( $this->aria_described_by ) ) . "'" : ''; ?>
-					aria-required="<?php echo esc_attr( strval( $this->aria_require_attr ) ); ?>" data-unique="<?php echo esc_attr( $this->aria_unique ); ?>" maxlength="<?php echo esc_attr( $this->max_text_length ); ?>" value="<?php echo esc_attr( $this->default ); ?>" <?php echo wp_kses_post( $this->placeholder_attr ); ?> />
+					aria-required="<?php echo esc_attr( strval( $this->aria_require_attr ) ); ?>" data-unique="<?php echo esc_attr( $this->aria_unique ); ?>" maxlength="<?php echo esc_attr( $this->max_text_length ); ?>" value="<?php echo esc_attr( $this->default ); ?>" <?php echo wp_kses_post( $this->placeholder_attr ); ?> data-mask="<?php echo esc_attr( $this->input_mask ); ?>" />
 				</div>
 				<div class="srfm-error-wrap">
 					<?php echo wp_kses_post( $this->duplicate_msg_markup ); ?>

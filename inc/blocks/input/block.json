@@ -73,6 +73,14 @@
 		"slug": {
 			"type": "string",
 			"default": ""
+		},
+		"inputMask": {
+			"type": "string",
+			"default": "none"
+		},
+		"customInputMask": {
+			"type": "string",
+			"default": ""
 		}
 	}
 }
