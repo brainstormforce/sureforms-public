@@ -115,7 +115,7 @@ class Rest_Api {
 	 * Checks whether the value is boolean or not.
 	 *
 	 * @param mixed $value value to be checked.
-	 * @since x.x.x
+	 * @since 0.0.8
 	 * @return boolean
 	 */
 	public function sanitize_boolean_field( $value ) {
