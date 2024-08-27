@@ -312,7 +312,7 @@ const InstantFormComponent = () => {
 							/>
 
 							<InstantFormToggle
-								label={ __( 'Enable Live Mode', 'sureforms' ) }
+								label={ __( 'Enable Preview', 'sureforms' ) }
 								checked={ true === isLiveMode }
 								onChange={ () => setIsLiveMode( ! isLiveMode ) }
 							/>
