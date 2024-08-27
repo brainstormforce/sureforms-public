@@ -6,7 +6,7 @@
  * Helpers are functions that are used throughout the library.
  *
  * @package sureforms
- * @since x.x.x
+ * @since 0.0.8
  */
 
 namespace SRFM\Inc\AI_Form_Builder;
@@ -29,7 +29,7 @@ class AI_Helper {
 	 *
 	 * @param array<mixed> $body The data to be passed as the request body, if any.
 	 * @param array<mixed> $extra_args Extra arguments to be passed to the request, if any.
-	 * @since x.x.x
+	 * @since 0.0.8
 	 * @return array<array<array<array<mixed>>>|string>|mixed The SureForms AI Response.
 	 */
 	public static function get_chat_completions_response( $body = [], $extra_args = [] ) {
@@ -81,7 +81,7 @@ class AI_Helper {
 	/**
 	 * Get the SureForms Token from the SureForms AI Settings.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.8
 	 * @return array<mixed>|void The SureForms Token.
 	 */
 	public static function get_current_usage_details() {
@@ -115,7 +115,7 @@ class AI_Helper {
 	/**
 	 * Get a response from the SureForms API server.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.8
 	 * @return array<mixed>|mixed The SureForms API Response.
 	 */
 	public static function get_usage_response() {
@@ -158,7 +158,7 @@ class AI_Helper {
 	/**
 	 * Get the User Token.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.8
 	 * @return string The User Token.
 	 */
 	private static function get_user_token() {

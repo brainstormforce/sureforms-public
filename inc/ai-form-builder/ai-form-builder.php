@@ -3,7 +3,7 @@
  * SureForms - AI Form Builder.
  *
  * @package sureforms
- * @since x.x.x
+ * @since 0.0.8
  */
 
 namespace SRFM\Inc\AI_Form_Builder;
@@ -25,7 +25,7 @@ class AI_Form_Builder {
 	 * Fetches ai data from the middleware server
 	 *
 	 * @param \WP_REST_Request $request request object.
-	 * @since x.x.x
+	 * @since 0.0.8
 	 * @return void
 	 */
 	public function generate_ai_form( $request ) {

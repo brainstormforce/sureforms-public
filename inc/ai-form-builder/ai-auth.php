@@ -3,7 +3,7 @@
  * SureForms - AI Auth.
  *
  * @package sureforms
- * @since x.x.x
+ * @since 0.0.8
  */
 
 namespace SRFM\Inc\AI_Form_Builder;
@@ -25,7 +25,7 @@ class AI_Auth {
 	/**
 	 * The key for encryption and decryption.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.8
 	 * @var string
 	 */
 	private $key = '';
@@ -34,7 +34,7 @@ class AI_Auth {
 	 * Initiates the auth process.
 	 *
 	 * @param \WP_REST_Request $request The request object.
-	 * @since x.x.x
+	 * @since 0.0.8
 	 * @return void
 	 */
 	public function get_auth_url( $request ) {
@@ -71,7 +71,7 @@ class AI_Auth {
 	 * Handles the access key.
 	 *
 	 * @param \WP_REST_Request $request The request object.
-	 * @since x.x.x
+	 * @since 0.0.8
 	 * @return void
 	 */
 	public function handle_access_key( $request ) {
@@ -112,7 +112,7 @@ class AI_Auth {
 	 * @param string $data The data to decrypt.
 	 * @param string $key The encryption key.
 	 * @param string $method The encryption method (e.g., AES-256-CBC).
-	 * @since x.x.x
+	 * @since 0.0.8
 	 * @return string|false The decrypted string or false on failure.
 	 */
 	public function decrypt_access_key( $data, $key, $method = 'AES-256-CBC' ) {

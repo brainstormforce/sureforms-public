@@ -209,7 +209,7 @@ class Admin_Ajax {
 	/**
 	 * Generates data required for suretriggers integration
 	 *
-	 * @since x.x.x
+	 * @since 0.0.8
 	 * @return void
 	 */
 	public function generate_data_for_suretriggers_integration() {
@@ -297,7 +297,7 @@ class Admin_Ajax {
 	 * This function populates data for particular form.
 	 *
 	 * @param  int $form_id Form ID.
-	 * @since x.x.x
+	 * @since 0.0.8
 	 * @return array<mixed>
 	 */
 	public function get_form_fields( $form_id ) {
@@ -343,7 +343,7 @@ class Admin_Ajax {
 	 * Returns sample data for a block.
 	 *
 	 * @param  string $block_name Block name.
-	 * @since x.x.x
+	 * @since 0.0.8
 	 * @return mixed
 	 */
 	public function get_sample_data( $block_name ) {
