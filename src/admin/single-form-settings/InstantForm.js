@@ -61,7 +61,6 @@ const InstantFormComponent = () => {
 		cover_color,
 		cover_image,
 
-		site_logo,
 		enable_instant_form,
 		form_container_width,
 		single_page_form_title,
@@ -312,7 +311,7 @@ const InstantFormComponent = () => {
 							/>
 
 							<InstantFormToggle
-								label={ __( 'Enable Live Mode', 'sureforms' ) }
+								label={ __( 'Enable Preview', 'sureforms' ) }
 								checked={ true === isLiveMode }
 								onChange={ () => setIsLiveMode( ! isLiveMode ) }
 							/>
@@ -327,18 +326,6 @@ const InstantFormComponent = () => {
 						<div className="srfm-instant-form-settings-separator" />
 
 						<div className="srfm-instant-form-settings-group">
-							<div className="srfm-instant-form-settings">
-								<label>{ __( 'Site Logo', 'sureforms' ) }</label>
-								<SRFMMediaPicker
-									label={ '' }
-									onModalClose={ () => setHidePopover( false ) }
-									onSelectImage={ ( media ) => onImageSelect( 'site_logo', media ) }
-									backgroundImage={ site_logo }
-									onRemoveImage={ () => onHandleChange( 'site_logo', '' ) }
-									isFormSpecific={ true }
-								/>
-							</div>
-
 							<div className="srfm-instant-form-settings">
 								<label>{ __( 'Banner Background', 'sureforms' ) }</label>
 								<MultiButtonsControl
