@@ -43,13 +43,5 @@
 	},
 	"require": {
 		"wp-cli/wp-cli-bundle": "^2.10"
-	},
-	"extra": {
-		"installer-paths": {
-			"inc/lib/{$name}/": [
-				"brainstormforce/astra-notices",
-				"brainstormforce/gutenberg-templates"
-			]
-		}
 	}
 }
