@@ -52,52 +52,12 @@ class AI_Form_Builder {
 			array_unshift( $messages, $current_message );
 		}
 
-		$field_types = 'input, email, url, textarea,  multi-choice, checkbox, gdpr, number, phone, dropdown, address';
-
-		// if pro is active then add pro field types.
-		if ( defined( 'SRFM_PRO_VER' ) ) {
-			$field_types .= ', hidden, rating, upload, date-time-picker, number-slider, page-break';
-		} else {
-			$field_types .= 'and make sure fields like hidden, rating, upload, date-time-picker, number-slider fields should not be included STRICTLY in the response';
-		}
-
-		// Finally add the system message to the start of the array.
-		if ( ! empty( $params['use_system_message'] ) ) {
-			array_unshift(
-				$messages,
-				[
-					'role'    => 'system',
-					'content' => 'Based on the description, generate a survey with questions array where every element has five fields: label, fieldType, required (add only if it is mentioned by user or if it is mandatory for form submission), helpText (add only if it is mentioned by user or if it is needed based on the field). fieldType can only be of these options ' . $field_types . '. fieldType can be used in any order and any number of times. Also return formTitle in the response.
-					
-					Here are the field specific properties that you need to return with that specific field:
-					
-					1. For input type if needed you can return. defaultValue, isUnique, duplicateMsg, errorMsg, textLength.
-					
-					2) For dropdown type also return fieldOptions array as array of strings. For example, for dropdown the fieldOptions can be [ {"label":"Option 1"}, {"label":"Option 2"}, {"label":"Option 3"} ].
-
-					3) For multi-choice type also return fieldOptions array as array of objects. For example, for multi-choice the fieldOptions can be [ {"optionTitle":"Option 1"}, {"optionTitle":"Option 2"}, {"optionTitle":"Option 3"}, {"optionTitle":"Option 4"} ]. Also return singleSelection as boolean value.
-
-					4) consider multi step form as page-break and you can use it multiple time if required and use it only if asked to.
-
-					5) For upload field also return fileSizeLimit, allowedFormats. For example, for upload field the allowedFileTypes can be [ { "value": "jpg", "label": "jpg" }, { "value": "jpeg", "label": "jpeg" }] and fileSizeLimit number can be between 10 to 300.
-
-					6) Never give labels as generic names Field 1, Field 2, etc.
-
-					7) Do not generate more than 20 fields in a form. If the user enter number of fields more than 20, then just return the first 20 fields.
-
-					
-					It is essential to provide a valid JSON structure. If there is an error, return an empty JSON. Make sure you don\'t entertain the empty cases, like Hey there, or kind of message, just check for the proper prompt and understand if the prompt has the word form or any kind of direction to create the form.',
-				]
-			);
-		}
-
-		// send the request to the open ai server.
-		$data = [
-			'messages' => $messages,
-		];
-
 		// Get the response from the endpoint.
-		$response = AI_Helper::get_chat_completions_response( $data );
+		$response = AI_Helper::get_chat_completions_response(
+			[
+				'query' => $messages[0]['content'],
+			]
+		);
 
 		// check if response is an array if not then send error.
 		if ( ! is_array( $response ) ) {
@@ -116,9 +76,9 @@ class AI_Form_Builder {
 				$message = ! empty( $message ) ? $message : $response['error'];
 			}
 			wp_send_json_error( [ 'message' => $message ] );
-		} elseif ( is_array( $response['choices'] ) && ! empty( $response['choices'][0]['message']['content'] ) ) {
+		} elseif ( is_array( $response['form'] ) && ! empty( $response['form']['formTitle'] ) && is_array( $response['form']['formFields'] ) && ! empty( $response['form']['formFields'] ) ) {
 			// If the message was sent successfully, send it successfully.
-			wp_send_json_success( $response['choices'][0]['message']['content'] );
+			wp_send_json_success( $response );
 		} else {
 			// If you've reached here, then something has definitely gone amuck. Abandon ship.
 			wp_send_json_error( [ 'message' => __( 'Something went wrong', 'sureforms' ) ] );

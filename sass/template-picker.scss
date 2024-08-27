@@ -847,6 +847,10 @@ $sidebar_width: 290px;
 			color: $desc_color;
 			cursor: pointer;
 			gap: 8px;
+
+			svg {
+				margin-top: 2px;
+			}
 		}
 		.srfm-tp-sp-heading {
 			font-size: 1.875em;
