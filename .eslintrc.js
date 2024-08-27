@@ -79,5 +79,6 @@ module.exports = {
 		srfmElementorData: true,
 		elementorFrontend: true,
 		loadPageBreak: true,
+		screen: true,
 	},
 };

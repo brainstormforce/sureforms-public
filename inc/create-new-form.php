@@ -93,13 +93,6 @@ class Create_New_Form {
 		return [
 			'_srfm_submit_button_text'              => [ 'Submit' ],
 			'_srfm_use_label_as_placeholder'        => [ '' ],
-			'_srfm_single_page_form_title'          => [ 1 ],
-			'_srfm_instant_form'                    => [ '' ],
-			'_srfm_form_container_width'            => [ 650 ],
-			'_srfm_bg_type'                         => [ 'image' ],
-			'_srfm_bg_image'                        => [ '' ],
-			'_srfm_cover_image'                     => [ '' ],
-			'_srfm_bg_color'                        => [ '#ffffff' ],
 			'_srfm_submit_width_backend'            => [ 'max-content' ],
 			'_srfm_submit_alignment'                => [ 'left' ],
 			'_srfm_submit_alignment_backend'        => [ '100%' ],
@@ -175,6 +168,11 @@ class Create_New_Form {
 		$title          = isset( $form_info_obj->template_name ) ? $form_info_obj->template_name : '';
 		$content        = isset( $form_info_obj->form_data ) ? $form_info_obj->form_data : '';
 		$template_metas = isset( $form_info_obj->template_metas ) ? (array) $form_info_obj->template_metas : [];
+
+		// if post content contains srfm/page-break block, then set _srfm_is_page_break meta to true.
+		if ( strpos( $content, 'srfm/page-break' ) !== false ) {
+			$template_metas['_srfm_is_page_break'] = [ 'true' ];
+		}
 
 		$post_id = wp_insert_post(
 			[

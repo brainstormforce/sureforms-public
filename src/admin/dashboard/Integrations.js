@@ -41,6 +41,9 @@ export default () => {
 					if ( data.success ) {
 						e.target.innerText = srfm_admin.plugin_installed_text;
 						activatePlugin( e );
+					} else {
+						e.target.innerText = __( 'Install', 'sureforms' );
+						alert( __( `Plugin Installation failed, Please try again later.`, 'sureforms' ) );
 					}
 				} );
 				break;
@@ -65,6 +68,9 @@ export default () => {
 				e.target.style.color = '#16A34A';
 				e.target.innerText = srfm_admin.plugin_activated_text;
 				window.location = e.target.dataset.redirection;
+			} else {
+				alert( __( 'Plugin activation failed, Please try again later.', 'sureforms' ) );
+				e.target.innerText = srfm_admin.plugin_activate_text;
 			}
 		} );
 	};

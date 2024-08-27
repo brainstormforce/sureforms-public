@@ -87,7 +87,7 @@ class Dropdown_Markup extends Base {
 								$icon_svg         = Spec_Gb_Helper::render_svg_html( isset( $option['icon'] ) ? $option['icon'] : '', true );
 								$escaped_icon_svg = htmlspecialchars( Helper::get_string_value( $icon_svg ), ENT_QUOTES, 'UTF-8' );
 							?>
-								<option value="<?php echo esc_html( $option['label'] ); ?>" data-icon="<?php echo ! empty( $escaped_icon_svg ) ? esc_attr( $escaped_icon_svg ) : ''; ?>"><?php echo esc_html( $option['label'] ); ?></option>
+								<option value="<?php echo isset( $option['label'] ) ? esc_html( $option['label'] ) : ''; ?>" data-icon="<?php echo ! empty( $escaped_icon_svg ) ? esc_attr( $escaped_icon_svg ) : ''; ?>"><?php echo isset( $option['label'] ) ? esc_html( $option['label'] ) : ''; ?></option>
 								<?php
 						}
 						?>

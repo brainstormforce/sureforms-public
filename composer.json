@@ -32,8 +32,8 @@
 			"chmod +x .git/hooks/pre-commit",
 			"echo 'pre-commit hook copied'"
 		],
-    "activate-checkout-build": "chmod +x bin/checkout-and-build",
-    "gcb": "bin/checkout-and-build"
+		"activate-checkout-build": "chmod +x bin/checkout-and-build",
+		"gcb": "bin/checkout-and-build"
 	},
 	"config": {
 		"allow-plugins": {
