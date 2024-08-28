@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: SureForms 0.0.8\n"
+"Project-Id-Version: SureForms 0.0.9\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/sureforms\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-08-27T09:35:23+00:00\n"
+"POT-Creation-Date: 2024-08-28T08:17:51+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.10.0\n"
 "X-Domain: sureforms\n"
@@ -172,7 +172,6 @@ msgid "Installed"
 msgstr ""
 
 #: inc/admin-ajax.php:164
-#: assets/build/formEditor.js:172
 msgid "SureTriggers"
 msgstr ""
 
@@ -788,7 +787,6 @@ msgstr ""
 
 #: modules/gutenberg/classes/class-spec-block-config.php:562
 #: modules/gutenberg/icons/icons-v6-1.php:5470
-#: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks-placeholder.js:11
 #: modules/gutenberg/build/blocks.js:11
@@ -798,7 +796,6 @@ msgid "Image"
 msgstr ""
 
 #: modules/gutenberg/classes/class-spec-block-config.php:574
-#: assets/build/blocks.js:172
 #: modules/gutenberg/build/blocks-placeholder.js:10
 #: modules/gutenberg/build/blocks.js:7
 #: modules/gutenberg/build/blocks.js:11
@@ -2299,6 +2296,7 @@ msgid "Circle Xmark"
 msgstr ""
 
 #: modules/gutenberg/icons/icons-v6-0.php:4355
+#: assets/build/blocks.js:172
 msgid "City"
 msgstr ""
 
@@ -5025,7 +5023,6 @@ msgid "MedApps"
 msgstr ""
 
 #: modules/gutenberg/icons/icons-v6-2.php:1591
-#: assets/build/formEditor.js:172
 msgid "Medium"
 msgstr ""
 
@@ -8216,7 +8213,7 @@ msgstr ""
 msgid "Support"
 msgstr ""
 
-#: templates/single-form.php:164
+#: templates/single-form.php:165
 msgid "Unpublished"
 msgstr ""
 
@@ -8378,6 +8375,7 @@ msgid "Required"
 msgstr ""
 
 #: assets/build/blocks.js:172
+#: assets/build/formEditor.js:172
 msgid "Error Message"
 msgstr ""
 
@@ -8398,22 +8396,6 @@ msgid "Maximum Text Length"
 msgstr ""
 
 #: assets/build/blocks.js:172
-msgid "Placeholder"
-msgstr ""
-
-#: assets/build/blocks.js:172
-msgid "Number Format"
-msgstr ""
-
-#: assets/build/blocks.js:172
-msgid "US Style (Eg: 9,999.99)"
-msgstr ""
-
-#: assets/build/blocks.js:172
-msgid "EU Style (Eg: 9.999,99)"
-msgstr ""
-
-#: assets/build/blocks.js:172
 msgid "Minimum Value"
 msgstr ""
 
@@ -8427,6 +8409,10 @@ msgstr ""
 
 #: assets/build/blocks.js:172
 msgid "Note: Maximum value should always be greater than minimum value"
+msgstr ""
+
+#: assets/build/blocks.js:172
+msgid "Number Format"
 msgstr ""
 
 #: assets/build/blocks.js:172
@@ -8462,142 +8448,7 @@ msgid "Help"
 msgstr ""
 
 #: assets/build/blocks.js:172
-#: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:7
-msgid "Please add a option props to MultiButtonsControl"
-msgstr ""
-
-#: assets/build/blocks.js:172
-#: modules/gutenberg/build/blocks.js:7
-msgid "Icon Library"
-msgstr ""
-
-#: assets/build/blocks.js:172
-#: modules/gutenberg/build/blocks.js:7
-msgid "Search"
-msgstr ""
-
-#: assets/build/blocks.js:172
-#: modules/gutenberg/build/blocks.js:7
-msgid "Close"
-msgstr ""
-
-#: assets/build/blocks.js:172
-#: modules/gutenberg/build/blocks.js:7
-msgid "All Icons"
-msgstr ""
-
-#: assets/build/blocks.js:172
-#: modules/gutenberg/build/blocks.js:7
-msgid "Other"
-msgstr ""
-
-#: assets/build/blocks.js:172
-#: modules/gutenberg/build/blocks.js:7
-msgid "No Icons Found"
-msgstr ""
-
-#: assets/build/blocks.js:172
-#: modules/gutenberg/build/blocks.js:7
-msgid "Insert Icon"
-msgstr ""
-
-#: assets/build/blocks.js:172
-#: modules/gutenberg/build/blocks.js:7
-msgid "Change Icon"
-msgstr ""
-
-#: assets/build/blocks.js:172
-#: modules/gutenberg/build/blocks.js:7
-msgid "Choose Icon"
-msgstr ""
-
-#: assets/build/blocks.js:172
-#: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:11
-msgid "Confirm"
-msgstr ""
-
-#: assets/build/blocks.js:172
-#: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:11
-msgid "Cancel"
-msgstr ""
-
-#: assets/build/blocks.js:172
-#: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:11
-msgid "Processing…"
-msgstr ""
-
-#: assets/build/blocks.js:172
-#: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:11
-msgid "Select Video"
-msgstr ""
-
-#: assets/build/blocks.js:172
-#: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:11
-msgid "Change Video"
-msgstr ""
-
-#: assets/build/blocks.js:172
-#: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:11
-msgid "Select Lottie Animation"
-msgstr ""
-
-#: assets/build/blocks.js:172
-#: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:11
-msgid "Change Lottie Animation"
-msgstr ""
-
-#: assets/build/blocks.js:172
-#: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:11
-msgid "Upload SVG"
-msgstr ""
-
-#: assets/build/blocks.js:172
-#: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:11
-msgid "Change SVG"
-msgstr ""
-
-#: assets/build/blocks.js:172
-#: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:11
-msgid "Select Image"
-msgstr ""
-
-#: assets/build/blocks.js:172
-#: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:11
-msgid "Change Image"
-msgstr ""
-
-#: assets/build/blocks.js:172
-#: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:11
-msgid "Upload SVG?"
-msgstr ""
-
-#: assets/build/blocks.js:172
-#: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:11
-msgid "Upload SVG can be potentially risky. Are you sure?"
-msgstr ""
-
-#: assets/build/blocks.js:172
-#: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:11
-msgid "Upload Anyway"
-msgstr ""
-
-#: assets/build/blocks.js:172
-msgid "Vertical Layout"
+msgid " + Add Option "
 msgstr ""
 
 #: assets/build/blocks.js:172
@@ -8606,10 +8457,6 @@ msgstr ""
 
 #: assets/build/blocks.js:172
 msgid "Choice Width"
-msgstr ""
-
-#: assets/build/blocks.js:172
-msgid "Option Type"
 msgstr ""
 
 #: assets/build/blocks.js:172
@@ -8625,15 +8472,35 @@ msgid "ADD"
 msgstr ""
 
 #: assets/build/blocks.js:172
+msgid "Option "
+msgstr ""
+
+#: assets/build/blocks.js:172
 msgid "Enable Auto Country Detection"
 msgstr ""
 
 #: assets/build/blocks.js:172
-msgid "Enable Multiple Selections"
+msgid "Address Line 1"
 msgstr ""
 
 #: assets/build/blocks.js:172
-msgid "Enable Search"
+msgid "Placeholder"
+msgstr ""
+
+#: assets/build/blocks.js:172
+msgid "Address Line 2"
+msgstr ""
+
+#: assets/build/blocks.js:172
+msgid "State"
+msgstr ""
+
+#: assets/build/blocks.js:172
+msgid "Postal Code"
+msgstr ""
+
+#: assets/build/blocks.js:172
+msgid "Country"
 msgstr ""
 
 #: assets/build/dashboard.js:2
@@ -8653,6 +8520,7 @@ msgid "Effortlessly design visually stunning forms with our user-friendly form b
 msgstr ""
 
 #: assets/build/dashboard.js:2
+#: assets/build/templatePicker.js:172
 msgid "All Forms"
 msgstr ""
 
@@ -8686,21 +8554,6 @@ msgstr ""
 
 #: assets/build/dashboard.js:2
 #: assets/build/formEditor.js:172
-msgid "Install"
-msgstr ""
-
-#: assets/build/dashboard.js:2
-#: assets/build/formEditor.js:172
-msgid "Plugin Installation failed, Please try again later."
-msgstr ""
-
-#: assets/build/dashboard.js:2
-#: assets/build/formEditor.js:172
-msgid "Plugin activation failed, Please try again later."
-msgstr ""
-
-#: assets/build/dashboard.js:2
-#: assets/build/formEditor.js:172
 #: assets/build/settings.js:2
 msgid "Integrations"
 msgstr ""
@@ -8724,7 +8577,6 @@ msgid "Core"
 msgstr ""
 
 #: assets/build/dashboard.js:2
-#: assets/build/formEditor.js:172
 #: assets/build/page_header.js:2
 #: assets/build/settings.js:2
 #: assets/build/settings.js:172
@@ -8792,8 +8644,126 @@ msgstr ""
 msgid "Re-arrange block inside Quick Action Bar"
 msgstr ""
 
+#: assets/build/formEditor.js:2
+msgid "GDPR Agreement"
+msgstr ""
+
 #: assets/build/formEditor.js:172
-#: assets/build/settings.js:2
+#: modules/gutenberg/build/blocks.js:17
+msgid "URL"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+msgid "Permalink"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+msgid "The last part of the URL."
+msgstr ""
+
+#: assets/build/formEditor.js:172
+msgid "https://wordpress.org/documentation/article/page-post-settings-sidebar/#permalink"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+msgid "Learn more."
+msgstr ""
+
+#: assets/build/formEditor.js:172
+msgid "View post"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+msgid "Change URL: %s"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+#: modules/gutenberg/build/blocks.js:11
+msgid "Confirm"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+#: modules/gutenberg/build/blocks.js:11
+msgid "Cancel"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+#: modules/gutenberg/build/blocks.js:11
+msgid "Processing…"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+#: modules/gutenberg/build/blocks.js:11
+msgid "Select Video"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+#: modules/gutenberg/build/blocks.js:11
+msgid "Change Video"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+#: modules/gutenberg/build/blocks.js:11
+msgid "Select Lottie Animation"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+#: modules/gutenberg/build/blocks.js:11
+msgid "Change Lottie Animation"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+#: modules/gutenberg/build/blocks.js:11
+msgid "Upload SVG"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+#: modules/gutenberg/build/blocks.js:11
+msgid "Change SVG"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+#: modules/gutenberg/build/blocks.js:11
+msgid "Select Image"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+#: modules/gutenberg/build/blocks.js:11
+msgid "Change Image"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+#: modules/gutenberg/build/blocks.js:11
+msgid "Upload SVG?"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+#: modules/gutenberg/build/blocks.js:11
+msgid "Upload SVG can be potentially risky. Are you sure?"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+#: modules/gutenberg/build/blocks.js:11
+msgid "Upload Anyway"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+#: modules/gutenberg/build/blocks.js:7
+msgid "Please add a option props to MultiButtonsControl"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+#: modules/gutenberg/build/blocks.js:7
+msgid "Clear"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+#: modules/gutenberg/build/blocks.js:7
+msgid "Select Color"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
 msgid "Upgrade to Pro"
 msgstr ""
 
@@ -8803,7 +8773,8 @@ msgid "Webhooks"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-msgid "Effortlessly broadcast your SureForms Submission to any web API endpoint with the advanced webhook module."
+#: assets/build/settings.js:172
+msgid "Broadcast your SureForms submission to any web API endpoint with the powerful webhook module."
 msgstr ""
 
 #: assets/build/formEditor.js:172
@@ -8819,23 +8790,15 @@ msgid "Enable from Settings"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-msgid "Connecting…"
+msgid "Go to Dashboard"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-msgid "View Integrations"
+msgid "Install"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-msgid "Connect with SureTriggers"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-msgid "Install & Activate"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-msgid "SureTriggers lets you connect your forms to over 600+ apps. With this integration you can automatically send form entries to your CRM, add subscribers to you email marketing platform, etc. Whatever you want SureForms and SureTriggers has you covered."
+msgid "SureTriggers is a powerful automation platform that helps you connect all your plugins, apps, tools & automate everything!"
 msgstr ""
 
 #: assets/build/formEditor.js:172
@@ -8843,11 +8806,7 @@ msgid "All Integrations"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-msgid "Integrations via SureTriggers"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-msgid "SureTriggers Integrations"
+msgid "Free Extension"
 msgstr ""
 
 #: assets/build/formEditor.js:172
@@ -8923,6 +8882,10 @@ msgid "Email Notification"
 msgstr ""
 
 #: assets/build/formEditor.js:172
+msgid "Save Changes"
+msgstr ""
+
+#: assets/build/formEditor.js:172
 msgid "Notification Settings"
 msgstr ""
 
@@ -8956,6 +8919,10 @@ msgstr ""
 
 #: assets/build/formEditor.js:172
 msgid "Please fill out the required field."
+msgstr ""
+
+#: assets/build/formEditor.js:172
+msgid "Email Notification updated successfully."
 msgstr ""
 
 #: assets/build/formEditor.js:172
@@ -9003,7 +8970,7 @@ msgid "Please select a page."
 msgstr ""
 
 #: assets/build/formEditor.js:172
-msgid "Suggestion: URL should use HTTPS"
+msgid "URL should use HTTPS"
 msgstr ""
 
 #: assets/build/formEditor.js:172
@@ -9020,6 +8987,10 @@ msgstr ""
 
 #: assets/build/formEditor.js:172
 msgid "Form Confirmation"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+msgid "Form Confirmation updated successfully."
 msgstr ""
 
 #: assets/build/formEditor.js:172
@@ -9067,19 +9038,15 @@ msgid "Reset Form"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-msgid "Use Labels as Placeholders"
+msgid "Show Labels"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-msgid "Above setting will place the labels inside the fields as placeholders (where possible). This setting takes effect only on the live page, not in the editor preview."
+msgid "Show Asterisk"
 msgstr ""
 
 #: assets/build/formEditor.js:172
 msgid "Page Break"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-msgid "Show Labels"
 msgstr ""
 
 #: assets/build/formEditor.js:172
@@ -9099,25 +9066,60 @@ msgid "Next Button Text"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-msgid "Are you sure you want to close? Your unsaved changes will be lost as you have some validation errors."
+msgid "Instant Form"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-msgid "There are few unsaved changes. Please save your changes to reflect the updates."
+msgid "Enable Instant Form"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+msgid "Show Title on Instant Form"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+msgid "Instant Form Styling Settings"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+msgid "Please preview the styling for the instant form "
+msgstr ""
+
+#: assets/build/formEditor.js:172
+msgid "here"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+msgid "Header Background Image"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+msgid "Form Container Width"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+#: modules/gutenberg/build/blocks.js:17
+msgid "Background Type"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:17
+msgid "Color"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+msgid "Background Image"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+#: modules/gutenberg/build/blocks.js:11
+msgid "Background Color"
 msgstr ""
 
 #: assets/build/formEditor.js:172
 msgid "Form Behavior"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:7
-msgid "Clear"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:7
-msgid "Select Color"
 msgstr ""
 
 #: assets/build/formEditor.js:172
@@ -9129,28 +9131,60 @@ msgid "Primary Color"
 msgstr ""
 
 #: assets/build/formEditor.js:172
+msgid "Label Color"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+msgid "Help Text Color"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+msgid "Input"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+msgid "Input Text Color"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+msgid "Placeholder Color"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+msgid "Field Background Color"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+msgid "Border Color"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+msgid "Border Width"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+msgid "Border Radius"
+msgstr ""
+
+#: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:11
 msgid "Text Color"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-msgid "Text Color on Primary"
+msgid "Surface Color"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-msgid "Field Spacing"
+msgid "Submit Button"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-msgid "Small"
+msgid "Inherit From Theme"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-msgid "Large"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-msgid "Submit Button Alignment"
+msgid "Button Alignment"
 msgstr ""
 
 #: assets/build/formEditor.js:172
@@ -9180,27 +9214,6 @@ msgstr ""
 
 #: assets/build/formEditor.js:172
 msgid "Page Break Buttons"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-msgid "Inherit From Theme"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:11
-msgid "Background Color"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-msgid "Border Color"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-msgid "Border Width"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-msgid "Border Radius"
 msgstr ""
 
 #: assets/build/formEditor.js:172
@@ -9257,10 +9270,6 @@ msgid "Before selecting the security type, please make sure you have configured 
 msgstr ""
 
 #: assets/build/formEditor.js:172
-msgid "here"
-msgstr ""
-
-#: assets/build/formEditor.js:172
 msgid "Please configure the API keys correctly in the "
 msgstr ""
 
@@ -9285,7 +9294,7 @@ msgid "Hidden"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-msgid "Slider"
+msgid "Number Slider"
 msgstr ""
 
 #: assets/build/formEditor.js:172
@@ -9298,70 +9307,6 @@ msgstr ""
 
 #: assets/build/formEditor.js:172
 msgid "Upgrade to Unlock These Fields"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-msgid "Add Block"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-msgid "Instant Form"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-msgid "Enable Instant Form"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-msgid "Enable Preview"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-msgid "Show Title"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-msgid "Banner Background"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:15
-#: modules/gutenberg/build/blocks.js:17
-msgid "Color"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-msgid "Upload Image"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-msgid "Use banner as page background"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-msgid "Form Background"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-msgid "Form Width"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:17
-msgid "URL"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-msgid "URL Slug"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-msgid "The last part of the URL."
-msgstr ""
-
-#: assets/build/formEditor.js:172
-msgid "Learn more."
 msgstr ""
 
 #: assets/build/formEditor.js:172
@@ -9403,6 +9348,10 @@ msgstr ""
 
 #: assets/build/settings.js:2
 msgid "Unlock revenue boosting features when you upgrade to Pro"
+msgstr ""
+
+#: assets/build/settings.js:2
+msgid "Upgrade to Premium"
 msgstr ""
 
 #: assets/build/settings.js:172
@@ -9551,164 +9500,91 @@ msgid "Enter your secret key here"
 msgstr ""
 
 #: assets/build/settings.js:172
-msgid "Broadcast your SureForms submission to any web API endpoint with the powerful webhook module."
-msgstr ""
-
-#: assets/build/settings.js:172
 msgid "This field cannot be left blank."
 msgstr ""
 
 #: assets/build/templatePicker.js:2
-msgid "Describe your Form"
-msgstr ""
-
-#: assets/build/templatePicker.js:2
-msgid "Usage "
-msgstr ""
-
-#: assets/build/templatePicker.js:2
-msgid "Free plan only allows %s AI form generations. Need to create more forms with AI?"
-msgstr ""
-
-#: assets/build/templatePicker.js:2
-#: assets/build/templatePicker.js:172
-msgid "Upgrade Plan"
-msgstr ""
-
-#: assets/build/templatePicker.js:2
-msgid "%d AI form generations left"
+msgid "Select a Template"
 msgstr ""
 
 #: assets/build/templatePicker.js:2
 msgid "Coming Soon…"
 msgstr ""
 
-#: assets/build/templatePicker.js:2
-msgid "Beta"
+#: assets/build/templatePicker.js:172
+msgid "PREMIUM"
 msgstr ""
 
 #: assets/build/templatePicker.js:172
-msgid "Limit Reached"
+msgid "Upgrade To Pro"
 msgstr ""
 
 #: assets/build/templatePicker.js:172
-msgid "Connect Now"
+msgid "Use Template"
 msgstr ""
 
 #: assets/build/templatePicker.js:172
-msgid "Error Creating Form"
+msgid "Template preview image"
 msgstr ""
 
 #: assets/build/templatePicker.js:172
-msgid "There was an error mapping the AI response to Fields. Please try again."
+msgid "Blank template image"
 msgstr ""
 
 #: assets/build/templatePicker.js:172
-msgid "Try Again!"
+msgid "Job Application Form"
 msgstr ""
 
 #: assets/build/templatePicker.js:172
-msgid "Authentication Failed"
+msgid "Job Application"
 msgstr ""
 
 #: assets/build/templatePicker.js:172
-msgid "Please check your username and password for the account, and try to reconnect again. Need help? "
+msgid "Error loading form templates:"
 msgstr ""
 
 #: assets/build/templatePicker.js:172
-msgid "Click Here to Retry"
+msgid "Search Templates…"
 msgstr ""
 
 #: assets/build/templatePicker.js:172
-msgid "Exit to Dashboard"
+msgid "Request template"
 msgstr ""
 
 #: assets/build/templatePicker.js:172
-msgid "You have reached the maximum number of form generations in your Free Plan."
+msgid "Can't find it? Let us know what kind of form do you need."
 msgstr ""
 
 #: assets/build/templatePicker.js:172
-msgid "Please upgrade your free plan to keep creating more forms with AI."
+msgid "Request a Template"
 msgstr ""
 
 #: assets/build/templatePicker.js:172
-msgid "You have reached the maximum number of form generations."
+msgid "Create a New Form"
 msgstr ""
 
 #: assets/build/templatePicker.js:172
-msgid "Please connect your website with SureForms AI to create 20 more forms with AI."
+msgid "Start from Scratch"
 msgstr ""
 
 #: assets/build/templatePicker.js:172
-msgid "Connecting with AI…"
+msgid "Tailoring your form precisely to your unique needs. No coding skills required—just unleash your creativity."
 msgstr ""
 
 #: assets/build/templatePicker.js:172
-msgid "Generating Fields…"
+msgid "Use a Template"
 msgstr ""
 
 #: assets/build/templatePicker.js:172
-msgid "Just doing some final touches…"
+msgid "Save time and jumpstart your form creation process with our extensive library of professionally designed templates."
 msgstr ""
 
 #: assets/build/templatePicker.js:172
-msgid "Redirecting to Editor"
+msgid "Create with AI"
 msgstr ""
 
 #: assets/build/templatePicker.js:172
-msgid "We are building your Form…"
-msgstr ""
-
-#: assets/build/templatePicker.js:172
-msgid "AI Form Builder"
-msgstr ""
-
-#: assets/build/templatePicker.js:172
-msgid "Please describe the form you want to create"
-msgstr ""
-
-#: assets/build/templatePicker.js:172
-msgid "E.g. Form to gather feedback from our customer for our product functionality, usability , how much you will rate it and what you don’t like about it."
-msgstr ""
-
-#: assets/build/templatePicker.js:172
-msgid "Prompt cannot be empty."
-msgstr ""
-
-#: assets/build/templatePicker.js:172
-msgid "Some Form Ideas"
-msgstr ""
-
-#: assets/build/templatePicker.js:172
-msgid "Generate Form"
-msgstr ""
-
-#: assets/build/templatePicker.js:172
-msgid "How would you like to create a new form?"
-msgstr ""
-
-#: assets/build/templatePicker.js:172
-msgid "Build Form From Scratch"
-msgstr ""
-
-#: assets/build/templatePicker.js:172
-msgid "Tailor your form precisely to your unique needs. No coding skills required—just unleash your creativity."
-msgstr ""
-
-#: assets/build/templatePicker.js:172
-msgid "Build From Scratch"
-msgstr ""
-
-#: assets/build/templatePicker.js:172
-msgid "Generate Form with AI"
-msgstr ""
-
-#: assets/build/templatePicker.js:172
-msgid "Experience the future of form building with AI-powered forms. Use AI to build your form 10x faster."
-msgstr ""
-
-#: assets/build/templatePicker.js:172
-msgid "Try the AI Form Builder"
+msgid "Experience the future of form building. AI-powered algorithms analyze your requirements and generate a tailor-made form."
 msgstr ""
 
 #: assets/js/unminified/export.js:142
@@ -9778,6 +9654,42 @@ msgstr ""
 
 #: modules/gutenberg/build/blocks.js:7
 msgid "Line Through"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:7
+msgid "Icon Library"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:7
+msgid "Search"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:7
+msgid "Close"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:7
+msgid "All Icons"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:7
+msgid "Other"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:7
+msgid "No Icons Found"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:7
+msgid "Insert Icon"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:7
+msgid "Change Icon"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:7
+msgid "Choose Icon"
 msgstr ""
 
 #: modules/gutenberg/build/blocks.js:7
@@ -10489,10 +10401,6 @@ msgid "Icon Color"
 msgstr ""
 
 #: modules/gutenberg/build/blocks.js:17
-msgid "Background Type"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:17
 msgid "Drop Shadow"
 msgstr ""
 
@@ -10504,36 +10412,38 @@ msgstr ""
 msgid "icon"
 msgstr ""
 
-#: assets/build/blocks/address/block.json
-#: inc/blocks/address/block.json
+#: assets/build/blocks/address-compact/block.json
 msgctxt "block title"
-msgid "Address"
+msgid "Address Compact"
 msgstr ""
 
-#: assets/build/blocks/address/block.json
-#: inc/blocks/address/block.json
+#: assets/build/blocks/address-compact/block.json
 msgctxt "block description"
-msgid "Displays a SureForm Address Field"
+msgid "Displays a SureForm Address Compact field."
 msgstr ""
 
+#: assets/build/blocks/address-compact/block.json
 #: assets/build/blocks/address/block.json
 #: inc/blocks/address/block.json
 msgctxt "block keyword"
 msgid "address"
 msgstr ""
 
+#: assets/build/blocks/address-compact/block.json
 #: assets/build/blocks/address/block.json
 #: inc/blocks/address/block.json
 msgctxt "block keyword"
 msgid "country"
 msgstr ""
 
+#: assets/build/blocks/address-compact/block.json
 #: assets/build/blocks/address/block.json
 #: inc/blocks/address/block.json
 msgctxt "block keyword"
 msgid "location"
 msgstr ""
 
+#: assets/build/blocks/address-compact/block.json
 #: assets/build/blocks/address/block.json
 #: assets/build/blocks/dropdown/block.json
 #: assets/build/blocks/input/block.json
@@ -10548,6 +10458,23 @@ msgstr ""
 #: inc/blocks/textarea/block.json
 msgctxt "block keyword"
 msgid "field"
+msgstr ""
+
+#: assets/build/blocks/address-compact/block.json
+msgctxt "block keyword"
+msgid "compact"
+msgstr ""
+
+#: assets/build/blocks/address/block.json
+#: inc/blocks/address/block.json
+msgctxt "block title"
+msgid "Address"
+msgstr ""
+
+#: assets/build/blocks/address/block.json
+#: inc/blocks/address/block.json
+msgctxt "block description"
+msgid "Displays a SureForm Address Field"
 msgstr ""
 
 #: assets/build/blocks/checkbox/block.json
