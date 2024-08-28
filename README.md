@@ -4,7 +4,7 @@
 **Requires at least:** 6.4  
 **Tested up to:** 6.6.1  
 **Requires PHP:** 7.4  
-**Stable tag:** 0.0.8  
+**Stable tag:** 0.0.9  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -250,8 +250,8 @@ Yes! You can certainly use SureForms on yours as well as your client’s website
 When you use the SureForms, you get a huge library of ready-to-use form templates that can be used to build your forms fast.
 
 ## Changelog ##
-### x.x.x ###
-Fix: Instant Form background size issue.
+### 0.0.9 ###
+* Fix: Resolved Instant Form background size issue.
 ### 0.0.8 ###
 * New: Build forms using SureForms AI.
 * New: SureTriggers integration.
