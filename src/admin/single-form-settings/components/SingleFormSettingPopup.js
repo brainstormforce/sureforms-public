@@ -1,4 +1,5 @@
 import Integrations from './integrations';
+import Suretriggers from './integrations/suretriggers';
 import Compliance from './Compliance';
 import FormCustomCssPanel from './FormCustomCssPanel';
 import { __ } from '@wordpress/i18n';
@@ -28,6 +29,9 @@ const SingleFormSettingsPopup = ( props ) => {
 	);
 
 	const [ parentTab, setParentTab ] = useState( null );
+	const [ action, setAction ] = useState();
+	const [ CTA, setCTA ] = useState();
+	const [ pluginConnected, setPluginConnected ] = useState( null );
 
 	const [ blockSlugs, setBlockSlugs ] = useState( {} );
 
@@ -51,34 +55,35 @@ const SingleFormSettingsPopup = ( props ) => {
 				title: __( 'Email Notification', 'sureforms' ),
 				icon: <MdOutlineMailOutline size={ 20 } />,
 				component: (
-					<EmailNotification
-						setHasValidationErrors={ setHasValidationErrors }
-						emailNotificationData={ emailNotificationData }
-						toast={ toast }
-					/>
+					<EmailNotification { ...{ setHasValidationErrors, emailNotificationData, toast } } />
 				),
 			},
 			{
 				id: 'compliance_settings',
 				title: __( 'Compliance Settings', 'sureforms' ),
 				icon: <MdSecurity size={ 20 } />,
-				component: <Compliance complianceData={ complianceData } />,
+				component: <Compliance { ...{ complianceData } } />,
 			},
 			{
 				id: 'integrations',
 				title: __( 'Integrations', 'sureforms' ),
 				icon: <MdOutlineDashboardCustomize size={ 20 } />,
-				component: <Integrations setSelectedTab={ setSelectedTab } />,
+				component: <Integrations { ...{ setSelectedTab, action, setAction, CTA, setCTA, pluginConnected, setPluginConnected } } />,
 			},
 			{
 				id: 'form_custom_css',
 				title: __( 'Custom CSS', 'sureforms' ),
 				icon: <MdOutlineCode size={ 20 } />,
 				component: (
-					<FormCustomCssPanel
-						formCustomCssData={ formCustomCssData }
-					/>
+					<FormCustomCssPanel { ...{ formCustomCssData } } />
 				),
+			},
+			{
+				id: 'suretriggers',
+				parent: 'integrations',
+				title: __( 'SureTriggers', 'sureforms' ),
+				icon: {},
+				component: <Suretriggers { ...{ setSelectedTab } } />,
 			},
 			/* can contain child tabs not linked to nav */
 			/* add parent nav id for child tabs */
