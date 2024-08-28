@@ -76,6 +76,8 @@ class Frontend_Assets {
 		wp_enqueue_style( SRFM_SLUG . '-tom-select', $css_vendor . 'tom-select.css', [], SRFM_VER );
 		// Int-tel-input CSS.
 		wp_enqueue_style( SRFM_SLUG . '-intl-tel-input', $css_vendor . 'intl/intlTelInput.min.css', [], SRFM_VER );
+		// Input mask JS.
+		wp_enqueue_script( SRFM_SLUG . '-inputmask', $js_uri . 'deps/inputmask.min.js', [], null, true );
 
 		wp_enqueue_script(
 			SRFM_SLUG . '-form-submit',
@@ -115,6 +117,7 @@ class Frontend_Assets {
 			'textarea'     => 0,
 			'url'          => 0,
 			'phone'        => 0,
+			'input'        => 0,
 		];
 
 		$file_prefix = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? '' : '.min';

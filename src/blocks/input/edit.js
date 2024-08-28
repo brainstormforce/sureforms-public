@@ -101,35 +101,35 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 											'(###) ###-####',
 											'sureforms'
 										),
-										value: '(000) 000-0000',
+										value: '(###) ###-####',
 									},
 									{
 										label: __(
 											'(##) ####-####',
 											'sureforms'
 										),
-										value: '(00) 0000-0000',
+										value: '(##) ####-####',
 									},
 									{
 										label: __(
 											'27/08/2024',
 											'sureforms'
 										),
-										value: '00/00/0000',
+										value: 'dd/mm/yyyy',
 									},
 									{
 										label: __(
 											'23:59:59',
 											'sureforms'
 										),
-										value: '00:00:00',
+										value: 'hh:mm:ss',
 									},
 									{
 										label: __(
 											'27/08/2024 23:59:59',
 											'sureforms'
 										),
-										value: '00/00/0000 00:00:00',
+										value: 'dd/mm/yyyy hh:mm:ss',
 									},
 									{
 										label: __(
