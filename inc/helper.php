@@ -365,7 +365,7 @@ class Helper {
 	 * @param string     $key The meta key to retrieve.
 	 * @param mixed      $default Default value.
 	 * @param boolean    $single Optional. Whether to return a single value.
-	 * @since x.x.x
+	 * @since 0.0.8
 	 * @return mixed Meta value.
 	 */
 	public static function get_post_meta( $post_id, $key, $default = null, $single = true ) {
@@ -376,7 +376,7 @@ class Helper {
 	/**
 	 * Returns query params data for instant form live preview.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.8
 	 * @return array<mixed> Live preview data.
 	 */
 	public static function get_instant_form_live_data() {
