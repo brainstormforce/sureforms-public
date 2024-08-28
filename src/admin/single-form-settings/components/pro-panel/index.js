@@ -43,7 +43,7 @@ const IconGrid = () => (
 				/>
 				<IconBlock
 					icon={ <RxSlider size={ 24 } color="#B4B4B4" /> }
-					label={ __( 'Number Slider', 'sureforms' ) }
+					label={ __( 'Slider', 'sureforms' ) }
 				/>
 			</div>
 			<div role="presentation">
