@@ -13,7 +13,6 @@
 		flex-wrap: wrap;
 
 		.conditional-logic {
-			overflow: hidden;
 			&.move-up-to-down {
 				animation: moveUpToDown 500ms linear forwards;
 			}
