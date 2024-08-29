@@ -15,6 +15,7 @@
 		.conditional-logic {
 			&.move-up-to-down {
 				animation: moveUpToDown 500ms linear forwards;
+				z-index: 1;
 			}
 
 			&.move-down-to-up {
