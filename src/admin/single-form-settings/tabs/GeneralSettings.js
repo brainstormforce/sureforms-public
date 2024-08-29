@@ -68,11 +68,11 @@ function GeneralSettings( props ) {
 	};
 
 	useSelect( ( select ) => {
-		if ( ! select('core/editor').isSavingPost() ) {
+		if ( ! select( 'core/editor' ).isSavingPost() ) {
 			return;
 		}
 
-		if ( select('core/notices').getNotices()?.filter( (notice) => 'srfm-unsaved-changes-warning' === notice?.id ).length > 0 ) {
+		if ( select( 'core/notices' ).getNotices()?.filter( ( notice ) => 'srfm-unsaved-changes-warning' === notice?.id ).length > 0 ) {
 			// Remove SRFM unsaved changes notice if user is saving the current form.
 			removeNotice( 'srfm-unsaved-changes-warning' );
 		}

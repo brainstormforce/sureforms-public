@@ -91,7 +91,7 @@ const SingleFormSettingsPopup = ( props ) => {
 		{
 			// Other arguments that can be consumed from hooks.
 			setSelectedTab,
-			setHasValidationErrors
+			setHasValidationErrors,
 		}
 	);
 
