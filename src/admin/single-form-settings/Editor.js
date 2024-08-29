@@ -555,7 +555,7 @@ const focusTitleBarOnLoad = () => {
 	setTimeout( () => {
 		const formTitleInput = document.querySelector( '.srfm-header-title-input input' );
 
-		if ( formTitleInput ) {
+		if ( formTitleInput && ! formTitleInput.value ) {
 			formTitleInput.focus();
 		}
 	}, 100 );
