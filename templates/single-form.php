@@ -104,6 +104,7 @@ $form_styling = Helper::get_meta_value(
 					background-image: url(<?php echo esc_attr( $srfm_cover_image_url ); ?> );
 					background-position: center;
 					background-repeat: no-repeat;
+					background-size: cover;
 				<?php else : ?>
 					background-color: <?php echo esc_attr( $cover_color ); ?>;
 				<?php endif; ?>
