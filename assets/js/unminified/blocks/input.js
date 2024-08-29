@@ -4,7 +4,9 @@ function inputFieldMasking() {
 	
 	inputFields.forEach( ( inputField ) => {
 		const inputMask = inputField.getAttribute( 'data-mask' );
-        let inputMaskOptions = {}
+        let inputMaskOptions = {
+            clearIncomplete: true,
+        }
         switch ( inputMask ) {
             case '(###) ###-####':
                 inputMaskOptions.mask = '(999) 999-9999';
@@ -18,17 +20,17 @@ function inputFieldMasking() {
                 break;
             case 'hh:mm:ss':
                 inputMaskOptions.alias = 'datetime';
-                inputMaskOptions.inputFormat = 'hh:mm:ss';
+                inputMaskOptions.inputFormat = 'HH:MM:ss';
                 break;
             case 'dd/mm/yyyy hh:mm:ss':
                 inputMaskOptions.alias = 'datetime';
-                inputMaskOptions.inputFormat = 'dd/mm/yyyy hh:mm:ss';
+                inputMaskOptions.inputFormat = 'dd/mm/yyyy HH:MM:ss';
                 break;
             case 'custom-mask':
                 inputMaskOptions.regex = inputField.getAttribute( 'data-custom-mask' );
                 break;
             default:
-                inputMask = 'none';
+                break;
         }
 		if ( inputMask !== 'none' ) {
 			const im = new Inputmask( inputMaskOptions );

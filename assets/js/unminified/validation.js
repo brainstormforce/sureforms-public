@@ -98,6 +98,20 @@ export async function fieldValidation(
 			fieldName = fieldName.replace( /_/g, ' ' );
 		}
 
+		const im = inputField.inputmaskInstance;
+		if ( isRequired === 'true' && inputField.type === 'text' && im ) {
+			const isValid = im.isValid( inputValue );
+			const isComplete = im.isComplete();
+			if ( ! isValid || ! isComplete ) {
+				inputField.closest( '.srfm-block' ).classList.add( 'srfm-error' );
+				if ( ! firstErrorInput ) {
+					firstErrorInput = inputField;
+				}
+			} else {
+				inputField.closest( '.srfm-block' ).classList.remove( 'srfm-error' );
+			}
+		}
+
 		// Checks if input if required is filled or not.
 		if ( isRequired && inputField.type !== 'hidden' ) {
 			if ( isRequired === 'true' && ! inputValue ) {
