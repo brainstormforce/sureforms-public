@@ -15,11 +15,11 @@
 		.conditional-logic {
 			overflow: hidden;
 			&.move-up-to-down {
-				animation: moveUpToDown 500ms ease-out forwards;
+				animation: moveUpToDown 500ms linear forwards;
 			}
 
 			&.move-down-to-up {
-				animation: moveDownToUp 500ms ease-out forwards;
+				animation: moveDownToUp 500ms linear forwards;
 			}
 
 			&.show-element {
@@ -117,14 +117,14 @@
 
 	100% {
 		opacity: 1;
-		max-height: 1000px;
+		max-height: 500px;
 	}
 }
 
 @keyframes moveDownToUp {
 	0% {
 		opacity: 1;
-		max-height: 1000px;
+		max-height: 500px;
 	}
 
 	100% {
