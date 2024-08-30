@@ -81,7 +81,7 @@ class AI_Form_Builder {
 			wp_send_json_success( $response );
 		} else {
 			// If you've reached here, then something has definitely gone amuck. Abandon ship.
-			wp_send_json_error( [ 'message' => __( 'Something went wrong', 'sureforms' ) ] );
+			wp_send_json_error( $response );
 		}//end if
 	}
 

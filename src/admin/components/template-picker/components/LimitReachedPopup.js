@@ -5,6 +5,7 @@ import ICONS from './icons.js';
 import AiFormBuilder from './AiFormBuilder.js';
 
 const LimitReachedPopup = ( {
+	title = __( 'Limit Reached', 'sureforms' ),
 	paraOne,
 	paraTwo,
 	buttonText,
@@ -18,7 +19,7 @@ const LimitReachedPopup = ( {
 				<div className="srfm-popup-header">
 					<span className="srfm-popup-icon">{ ICONS.warning }</span>
 					<span className="srfm-popup-title">
-						{ __( 'Limit Reached', 'sureforms' ) }
+						{ title }
 					</span>
 					<div
 						className="srfm-ai-limit-reached-close"
