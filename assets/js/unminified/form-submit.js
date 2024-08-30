@@ -213,6 +213,9 @@ async function handleFormSubmission(
 
 		if ( isValidate ) {
 			loader.classList.remove( 'srfm-active' );
+			if ( isValidate[ 1 ] ) {
+				isValidate[ 1 ].focus();
+			}
 			return;
 		}
 

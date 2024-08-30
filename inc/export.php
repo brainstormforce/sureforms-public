@@ -36,6 +36,7 @@ class Export {
 		'_srfm_compliance',
 		'_srfm_forms_styling',
 		'_srfm_integrations_webhooks',
+		'_srfm_instant_form_settings',
 	];
 
 	/**

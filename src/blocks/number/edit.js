@@ -67,7 +67,6 @@ const formatNumber = ( number, formatType ) => {
 const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 	const {
 		fieldWidth,
-		placeholder,
 		help,
 		required,
 		block_id,
@@ -122,17 +121,6 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 									} )
 								}
 								__nextHasNoMarginBottom
-							/>
-							<SRFMTextControl
-								label={ __( 'Placeholder', 'sureforms' ) }
-								value={ placeholder }
-								data={ {
-									value: placeholder,
-									label: 'placeholder',
-								} }
-								onChange={ ( newValue ) =>
-									setAttributes( { placeholder: newValue } )
-								}
 							/>
 							<SRFMSelectControl
 								label={ __( 'Number Format', 'sureforms' ) }
