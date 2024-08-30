@@ -314,6 +314,6 @@ wp.domReady( () => {
 
 	// Add the header center container.
 	addHeaderCenterContainer();
-	
+
 	InstantForm();
 } );
