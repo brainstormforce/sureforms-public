@@ -377,7 +377,7 @@ export const getLimitReachedPopup = (
 				title={
 					srfm_admin?.srfm_ai_usage_details?.title
 				}
-				paraOne={ 	 
+				paraOne={
 					srfm_admin?.srfm_ai_usage_details?.message
 				 }
 				buttonText={ __( 'Retry !', 'sureforms' ) }
@@ -412,7 +412,7 @@ export const getLimitReachedPopup = (
 	}
 
 	// shows up one when user is not registered and the remaining form creation limit is 0
-	if (srfm_admin?.srfm_ai_usage_details?.remaining === 0){
+	if ( srfm_admin?.srfm_ai_usage_details?.remaining === 0 ) {
 		return (
 			<LimitReachedPopup
 				paraOne={ 	 __(
@@ -427,7 +427,6 @@ export const getLimitReachedPopup = (
 			/>
 		);
 	}
-
 };
 
 export default AiFormBuilder;

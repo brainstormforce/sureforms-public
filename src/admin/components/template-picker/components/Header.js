@@ -6,7 +6,6 @@ import { useLocation } from 'react-router-dom';
 import { BsLightningCharge } from 'react-icons/bs';
 import CreditDetailsPopup from './CreditDetailsPopup.js';
 import { Button } from '@wordpress/components';
-import apiFetch from '@wordpress/api-fetch';
 
 const Header = () => {
 	const [ showRevokePopover, setShowRevokePopover ] = useState( false );

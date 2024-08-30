@@ -40,7 +40,7 @@ class AI_Helper {
 			'headers' => [
 				'X-Token'      => base64_encode( self::get_user_token() ), // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode -- This is not for obfuscation.
 				'Content-Type' => 'application/json',
-				'Referer' => site_url(),
+				'Referer'      => site_url(),
 			],
 			'timeout' => 30, // phpcs:ignore WordPressVIPMinimum.Performance.RemoteRequestTimeout.timeout_timeout -- 30 seconds is required sometime for open ai responses
 		];
@@ -128,7 +128,7 @@ class AI_Helper {
 				'headers' => [
 					'X-Token'      => base64_encode( self::get_user_token() ), // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode -- This is not for obfuscation.
 					'Content-Type' => 'application/json',
-					'Referer' => site_url(),
+					'Referer'      => site_url(),
 				],
 				'timeout' => 30, // phpcs:ignore WordPressVIPMinimum.Performance.RemoteRequestTimeout.timeout_timeout -- 30 seconds is required sometime for the SureForms API response
 			]
@@ -164,12 +164,21 @@ class AI_Helper {
 		return ! empty( $user_email ) && is_array( $user_email ) ? $user_email['user_email'] : site_url();
 	}
 
+	/**
+	 * Get the Error Message.
+	 *
+	 * @param array<string,mixed>|array<int|string,mixed>|\WP_Error $response The response from the SureForms API server.
+	 * @since x.x.x
+	 * @return array<string, mixed> The Error Message.
+	 */
 	public static function get_error_message( $response ) {
 		$errors = isset( $response->errors ) ? $response->errors : [];
 
-		if ( empty( $errors ) ) {
-			$errors = json_decode( $response['body'], true );
-			$error_key = $errors['code'];
+		if ( empty( $errors )
+		&& is_array( $response ) && isset( $response['body'] ) && is_string( $response['body'] )
+		) {
+			$errors    = json_decode( $response['body'], true );
+			$error_key = is_array( $errors ) && isset( $errors['code'] ) ? $errors['code'] : '';
 		} else {
 			$error_key = array_key_first( $errors );
 			if ( empty( $errors[ $error_key ] ) ) {
@@ -180,37 +189,37 @@ class AI_Helper {
 		// Error Codes with Messages.
 		switch ( $error_key ) {
 			case 'http_request_failed':
-				$title = __( 'HTTP Request Failed', 'sureforms' );
+				$title   = __( 'HTTP Request Failed', 'sureforms' );
 				$message = __( 'An error occurred while trying to connect to the SureForms API server. Please check your connection', 'sureforms' );
 				break;
 			case 'license_verification_failed':
-				$title = __( 'License Verification Failed', 'sureforms' );
+				$title   = __( 'License Verification Failed', 'sureforms' );
 				$message = __( 'An error occurred while trying to verify your license. Please check your license key', 'sureforms' );
 				break;
 			case 'user_verification_failed':
-				$title = __( 'User Verification Failed', 'sureforms' );
+				$title   = __( 'User Verification Failed', 'sureforms' );
 				$message = __( 'An error occurred while trying to verify your email. Please check your email you have used to log in/ sign up on billing.sureforms.com.', 'sureforms' );
 				break;
 			case 'referer_mismatch':
-				$title = __( 'Referer Mismatch', 'sureforms' );
+				$title   = __( 'Referer Mismatch', 'sureforms' );
 				$message = __( 'An error occurred while trying to verify your referer. Please check your referer.', 'sureforms' );
 				break;
 			case 'invalid_token':
-				$title = __( 'Invalid Website URL', 'sureforms' );
+				$title   = __( 'Invalid Website URL', 'sureforms' );
 				$message = __( 'AI Form Builder does not work on localhost/staging sites. Please try on a live website.', 'sureforms' );
 				break;
 			case 'domain_verification_failed':
-				$title = __( 'Domain Verification Failed', 'sureforms' );
+				$title   = __( 'Domain Verification Failed', 'sureforms' );
 				$message = __( 'Domain Verification Failed on current site. Please try again on any another website.', 'sureforms' );
 				break;
 			default:
-				$title = __( 'Unknown Error', 'sureforms' );
+				$title   = __( 'Unknown Error', 'sureforms' );
 				$message = __( 'An unknown error occurred.', 'sureforms' );
 		}
 
 		return [
-			'code' => $error_key,
-			'title' => $title,
+			'code'    => $error_key,
+			'title'   => $title,
 			'message' => $message,
 		];
 	}
