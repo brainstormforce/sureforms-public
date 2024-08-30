@@ -13,25 +13,21 @@
 		flex-wrap: wrap;
 
 		.conditional-logic {
-			&.show {
-				display: none;
-				font-size: 1px;
-				transition: opacity 350ms ease-out, transform 320ms ease-out, font-size 320ms ease-out;
-			}
-
-			&.hide {
-				display: block;
-				transition: opacity 350ms ease-out, transform 320ms ease-out, font-size 320ms ease-out;
-			}
-
 			&.move-up-to-down {
-				animation: moveUpToDown 320ms ease-out;
-				font-size: inherit;
+				animation: moveUpToDown 500ms linear forwards;
+				z-index: 1;
 			}
 
 			&.move-down-to-up {
-				animation: moveDownToUp 320ms ease-out;
-				font-size: 1px;
+				animation: moveDownToUp 500ms linear forwards;
+			}
+
+			&.show-element {
+				display: block;
+			}
+
+			&.hide-element {
+				display: none;
 			}
 		}
 
@@ -116,23 +112,23 @@
 @keyframes moveUpToDown {
 	0% {
 		opacity: 0;
-		transform: translate3d( 0, -20px, 0 ) scaleY( 0.5 );
+		max-height: 0;
 	}
 
 	100% {
 		opacity: 1;
-		transform: translate3d( 0, 0, 0 ) scaleY( 1 );
+		max-height: 500px;
 	}
 }
 
 @keyframes moveDownToUp {
 	0% {
 		opacity: 1;
-		transform: translate3d( 0, 0, 0 ) scaleY( 1 );
+		max-height: 500px;
 	}
 
 	100% {
 		opacity: 0;
-		transform: translate3d( 0, -20px, 0 ) scaleY( 0.5 );
+		max-height: 0;
 	}
 }
