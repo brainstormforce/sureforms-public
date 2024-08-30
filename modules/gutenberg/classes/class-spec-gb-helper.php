@@ -1054,8 +1054,9 @@ if ( ! class_exists( 'Spec_Gb_Helper' ) ) {
 		 *
 		 * @since 0.0.1
 		 * @param  array $icon Decoded fontawesome json file data.
+		 * @param  bool  $return The parameter decides whether to return or echo the svg markup.
 		 */
-		public static function render_svg_html( $icon ) {
+		public static function render_svg_html( $icon, $return = false ) {
 			$icon = sanitize_text_field( esc_attr( $icon ) );
 
 			$json = self::backend_load_font_awesome_icons();
@@ -1074,9 +1075,17 @@ if ( ! class_exists( 'Spec_Gb_Helper' ) ) {
 			$view                = isset( $icon_brand_or_solid['width'] ) && isset( $icon_brand_or_solid['height'] ) ? '0 0 ' . $icon_brand_or_solid['width'] . ' ' . $icon_brand_or_solid['height'] : null;
 
 			if ( $path && $view ) {
-				?>
+				if ( $return ) {
+					ob_start();
+					?>
 				<svg xmlns="https://www.w3.org/2000/svg" viewBox= "<?php echo esc_attr( $view ); ?>"><path d="<?php echo esc_attr( $path ); ?>"></path></svg>
-				<?php
+					<?php
+					return ob_get_clean();
+				} else {
+					?>
+				<svg xmlns="https://www.w3.org/2000/svg" viewBox= "<?php echo esc_attr( $view ); ?>"><path d="<?php echo esc_attr( $path ); ?>"></path></svg>
+					<?php
+				}
 			}
 		}
 

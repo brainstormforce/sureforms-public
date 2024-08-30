@@ -1,66 +1,45 @@
+// All the spacing variables in the file are common and do not change with the field spacing.
 :root {
 	--srfm-font-size: 16px;
-	// Color scheme variables.
-	// This need to be made dynamic just keeping it here for testing purpose.
-	// --srfm-color-scheme-primary: #1E4ED8;
-	// --srfm-color-scheme-text-on-primary: #FFFFFF;
-	// --srfm-color-scheme-text: #000000;
-
-	// Input field color variables.
-	// --srfm-color-input-label: var( --srfm-color-scheme-text );
-	// --srfm-color-input-description: rgba( --srfm-color-scheme-text, 0.65 );
-	// --srfm-color-input-placeholder: var( --srfm-color-scheme-text );
-	// --srfm-color-input-text: var( --srfm-color-scheme-text );
-	// --srfm-color-input-prefix: rgba( var( --srfm-color-scheme-text ), 0.65 );
-	// --srfm-color-input-background: rgba( var( --srfm-color-scheme-text ), 0.02 );
-	// --srfm-color-input-background-disabled: rgba( var( --srfm-color-scheme-text ), 0.05 );
-	// --srfm-color-input-border: rgba( var( --srfm-color-scheme-text ), 0.25 );
-	// --srfm-color-input-border-disabled: rgba( var( --srfm-color-scheme-text ), 0.15 );
-	// --srfm-color-input-border-hover: rgba( var( --srfm-color-scheme-primary ), 0.65 );
-	// --srfm-color-input-border-focus-glow: rgba( var( --srfm-color-scheme-primary ), 0.15 );
-
-	// Button color variables.
-
-	// Icon color variables.
 
 	// Error color variables.
 	$srfmColorErrorLight: #dc2626 !default;
-	$srfmColorErrorDark: #f87171 !default;
-	--srfm-error-color-light: #dc2626;
-	--srfm-error-color-light-border: #{rgba( $srfmColorErrorLight, 0.65 )};
-	--srfm-error-color-light-border-glow: #{rgba( $srfmColorErrorLight, 0.15 )};
-
-	--srfm-error-color-dark: #f87171;
-	--srfm-error-color-dark-border: #{rgba( $srfmColorErrorDark, 0.65 )};
-	--srfm-error-color-dark-border-glow: #{rgba( $srfmColorErrorDark, 0.15 )};
+	--srfm-error-color: #dc2626;
+	--srfm-error-color-border: #{rgba( $srfmColorErrorLight, 0.65 )};
+	--srfm-error-color-border-glow: #{rgba( $srfmColorErrorLight, 0.15 )};
 
 	// Gaps and Spacing variables.
-	--srfm-row-gap-between-blocks: 16px;
-	--srfm-col-gap-between-blocks: 8px;
+	--srfm-col-gap-between-blocks: 8px; // Vertical Gap will stay the same.
 
-	// Address block gap and spacing variables.
-	--srfm-col-gap-between-fields: 12px;
-	--srfm-row-gap-between-fields: 12px;
-	--srfm-gap-below-address-label: 12px;
+	// Dropdown Variables.
+	--srfm-dropdown-font-weight: 400;
+	--srfm-dropdown-badge-gap: 6px;
+	--srfm-dropdown-badge-icon-gap: 6px;
+	--srfm-dropdown-menu-padding: 6px;
+	--srfm-dropdown-menu-icon-gap: 8px;
+	--srfm-dropdown-option-padding: 8px 12px;
+	--srfm-dropdown-badge-delete-icon: #{rgba( $srfmColorErrorLight, 0.65 )};
+	--srfm-dropdown-menu-background: #ffffff;
 
 	// Input field variables.
-	--srfm-input-height: 40px;
-	--srfm-input-field-padding: 10px 12px;
 	--srfm-input-field-border-radius: 6px;
-	--srfm-input-field-font-size: 14px;
 	--srfm-input-field-font-weight: 400;
-	--srfm-input-field-line-height: 20px;
-	--srfm-input-field-margin: 4px 0;
+
+	// checkbox and gdpr
+	--srfm-checkbox-description-margin-left: 24px;
+	--srfm-checkbox-input-border-radius: 4px;
+	--srfm-check-svg-top: 2px;
+	--srfm-check-svg-left: 2px;
+
+	// Phone Number field variables.
+	--srfm-flag-section-padding: 10px 0 10px 12px;
+	--srfm-gap-between-icon-text: 8px;
 
 	// Label variables
-	--srfm-label-font-size: 14px;
 	--srfm-label-font-weight: 500;
-	--srfm-label-line-height: 20px;
 
 	// Description variables.
-	--srfm-description-font-size: 12px;
 	--srfm-description-font-weight: 400;
-	--srfm-description-line-height: 18px;
 	--srfm-description-margin-top: 2px;
 
 	// Error variables.
@@ -70,4 +49,11 @@
 
 	// slider field variables.
 	--srfm-slider-default-value: 10%;
+
+	// Button variables.
+	--srfm-btn-border-radius: 6px;
+	--srfm-btn-font-weight: 500;
+
+	// Multi Choice variables.
+	--srfm-multi-choice-horizontal-svg-size: 16px;
 }

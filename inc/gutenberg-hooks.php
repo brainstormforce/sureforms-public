@@ -36,7 +36,7 @@ class Gutenberg_Hooks {
 	 * @var array<string>
 	 * @since 0.0.2
 	 */
-	protected $srfm_blocks = [
+	protected static $srfm_blocks = [
 		'srfm/input',
 		'srfm/email',
 		'srfm/textarea',
@@ -45,7 +45,6 @@ class Gutenberg_Hooks {
 		'srfm/gdpr',
 		'srfm/phone',
 		'srfm/address',
-		'srfm/address-compact',
 		'srfm/dropdown',
 		'srfm/multi-choice',
 		'srfm/radio',
@@ -61,6 +60,125 @@ class Gutenberg_Hooks {
 	];
 
 	use Get_Instance;
+
+	/**
+	 * Process blocks and inner blocks.
+	 *
+	 * @param array<array<array<mixed>>> $blocks The block data.
+	 * @param array<string>              $slugs The array of existing slugs.
+	 * @param bool                       $updated The array of existing slugs.
+	 * @param string                     $prefix The array of existing slugs.
+	 * @param boolean                    $skip_checking_existing_slug Skips the checking of existing slug if passed true. More information documented inside this function.
+	 * @since 0.0.3
+	 * @return array{array<array<array<mixed>>>,array<string>,bool}
+	 */
+	public static function process_blocks( $blocks, &$slugs, &$updated, $prefix = '', $skip_checking_existing_slug = false ) {
+
+		if ( ! is_array( $blocks ) ) {
+			return [ $blocks, $slugs, $updated ];
+		}
+
+		foreach ( $blocks as $index => $block ) {
+
+			if ( ! is_array( $block ) ) {
+				continue;
+			}
+			// Checking only for SureForms blocks which can have user input.
+			if ( empty( $block['blockName'] ) || ! in_array( $block['blockName'], self::$srfm_blocks, true ) ) {
+				continue;
+			}
+
+			/**
+			 * Lets continue if slug already exists.
+			 * This will ensure that we don't update already existing slugs.
+			 */
+			if ( isset( $block['attrs'] ) && ! empty( $block['attrs']['slug'] ) && ! in_array( $block['attrs']['slug'], $slugs, true ) ) {
+
+				// Made it associative array, so that we can directly check it using block_id rather than mapping or using "in_array" for the checks.
+				$slugs[ $block['attrs']['block_id'] ] = Helper::get_string_value( $block['attrs']['slug'] );
+				continue;
+			}
+
+			if ( $skip_checking_existing_slug && empty( $block['innerBlocks'] ) && isset( $slugs[ $block['attrs']['block_id'] ] ) ) {
+				/**
+				 * Skip re-processing of the already process or existing slugs if above parameter "$skip_checking_existing_slug" is passed as true.
+				 * This is helpful in the scenarios where we need to compare and verify between already saved blocks and new unsaved blocks parsed
+				 * from the contents.
+				 *
+				 * However, it is also necessary to make sure if that current block is not a parent / wrapper block
+				 * by checking "$block['innerBlocks']" empty.
+				 *
+				 * And finally, checking if the block-id "$block['attrs']['block_id']" is already set in the list of "$slugs",
+				 * making sure that we are only processing the new blocks.
+				 */
+				continue;
+			}
+
+			if ( is_array( $blocks[ $index ]['attrs'] ) ) {
+
+				$blocks[ $index ]['attrs']['slug']    = self::generate_unique_block_slug( $block, $slugs, $prefix );
+				$slugs[ $block['attrs']['block_id'] ] = $blocks[ $index ]['attrs']['slug']; // Made it associative array, so that we can directly check it using block_id rather than mapping or using "in_array" for the checks.
+				$updated                              = true;
+				if ( is_array( $block['innerBlocks'] ) && ! empty( $block['innerBlocks'] ) ) {
+
+					list( $blocks[ $index ]['innerBlocks'], $slugs, $updated ) = self::process_blocks( $block['innerBlocks'], $slugs, $updated, $blocks[ $index ]['attrs']['slug'] );
+
+				}
+			}
+		}
+		return [ $blocks, $slugs, $updated ];
+	}
+
+	/**
+	 * Generates slug based on the provided block and existing slugs.
+	 *
+	 * @param array<mixed>  $block The block data.
+	 * @param array<string> $slugs The array of existing slugs.
+	 * @param string        $prefix The array of existing slugs.
+	 * @since 0.0.2
+	 * @return string The generated unique block slug.
+	 */
+	public static function generate_unique_block_slug( $block, $slugs, $prefix ) {
+		$slug = is_string( $block['blockName'] ) ? $block['blockName'] : '';
+
+		if ( ! empty( $block['attrs']['label'] ) && is_string( $block['attrs']['label'] ) ) {
+			// Using "wp_trim_words" for long labels.
+			$slug = sanitize_title( wp_trim_words( $block['attrs']['label'], 5 ) );
+		}
+
+		if ( ! empty( $prefix ) ) {
+			$slug = $prefix . '-' . $slug;
+		}
+
+		$slug = self::generate_slug( $slug, $slugs );
+
+		return $slug;
+	}
+
+	/**
+	 * This function ensures that the slug is unique.
+	 * If the slug is already taken, it appends a number to the slug to make it unique.
+	 *
+	 * @param string        $slug test to be converted to slug.
+	 * @param array<string> $slugs An array of existing slugs.
+	 * @since 0.0.2
+	 * @return string The unique slug.
+	 */
+	public static function generate_slug( $slug, $slugs ) {
+		$slug = sanitize_title( $slug );
+
+		if ( ! in_array( $slug, $slugs, true ) ) {
+			return $slug;
+		}
+
+		$index = 1;
+
+		while ( in_array( $slug . '-' . $index, $slugs, true ) ) {
+			$index++;
+		}
+
+		return $slug . '-' . $index;
+	}
 
 	/**
 	 * Class constructor.
@@ -108,7 +226,6 @@ class Gutenberg_Hooks {
 				'srfm/gdpr',
 				'srfm/phone',
 				'srfm/address',
-				'srfm/address-compact',
 				'srfm/dropdown',
 				'srfm/multi-choice',
 				'srfm/radio',
@@ -119,7 +236,6 @@ class Gutenberg_Hooks {
 				'srfm/image',
 				'srfm/advanced-heading',
 				'srfm/inline-button',
-				'core/paragraph',
 			];
 			// Apply a filter to the $allow_block_types types array.
 			$allow_block_types = apply_filters( 'srfm_allowed_block_types', $allow_block_types, $editor_context );
@@ -224,7 +340,7 @@ class Gutenberg_Hooks {
 				'version'      => SRFM_VER,
 			];
 
-		wp_enqueue_script( SRFM_SLUG . $form_editor_script, SRFM_URL . 'assets/build/formEditor.js', $script_info['dependencies'], SRFM_VER, true );
+		wp_enqueue_script( SRFM_SLUG . $form_editor_script, SRFM_URL . 'assets/build/formEditor.js', $script_info['dependencies'], $script_info['version'], true );
 
 		// Enqueue the code editor for the Custom CSS Editor in SureForms.
 		wp_enqueue_code_editor( [ 'type' => 'text/css' ] );
@@ -289,18 +405,17 @@ class Gutenberg_Hooks {
 			apply_filters(
 				'srfm_block_preview_images',
 				[
-					'input_preview'           => SRFM_URL . 'images/field-previews/input.svg',
-					'email_preview'           => SRFM_URL . 'images/field-previews/email.svg',
-					'url_preview'             => SRFM_URL . 'images/field-previews/url.svg',
-					'textarea_preview'        => SRFM_URL . 'images/field-previews/textarea.svg',
-					'multi_choice_preview'    => SRFM_URL . 'images/field-previews/multi-choice.svg',
-					'checkbox_preview'        => SRFM_URL . 'images/field-previews/checkbox.svg',
-					'number_preview'          => SRFM_URL . 'images/field-previews/number.svg',
-					'phone_preview'           => SRFM_URL . 'images/field-previews/phone.svg',
-					'dropdown_preview'        => SRFM_URL . 'images/field-previews/dropdown.svg',
-					'address_preview'         => SRFM_URL . 'images/field-previews/address.svg',
-					'address_compact_preview' => SRFM_URL . 'images/field-previews/address-compact.svg',
-					'sureforms_preview'       => SRFM_URL . 'images/field-previews/sureforms.svg',
+					'input_preview'        => SRFM_URL . 'images/field-previews/input.svg',
+					'email_preview'        => SRFM_URL . 'images/field-previews/email.svg',
+					'url_preview'          => SRFM_URL . 'images/field-previews/url.svg',
+					'textarea_preview'     => SRFM_URL . 'images/field-previews/textarea.svg',
+					'multi_choice_preview' => SRFM_URL . 'images/field-previews/multi-choice.svg',
+					'checkbox_preview'     => SRFM_URL . 'images/field-previews/checkbox.svg',
+					'number_preview'       => SRFM_URL . 'images/field-previews/number.svg',
+					'phone_preview'        => SRFM_URL . 'images/field-previews/phone.svg',
+					'dropdown_preview'     => SRFM_URL . 'images/field-previews/dropdown.svg',
+					'address_preview'      => SRFM_URL . 'images/field-previews/address.svg',
+					'sureforms_preview'    => SRFM_URL . 'images/field-previews/sureforms.svg',
 				]
 			)
 		);
@@ -357,104 +472,4 @@ class Gutenberg_Hooks {
 		);
 	}
 
-	/**
-	 * Process blocks and inner blocks.
-	 *
-	 * @param array<array<array<mixed>>> $blocks The block data.
-	 * @param array<string>              $slugs The array of existing slugs.
-	 * @param bool                       $updated The array of existing slugs.
-	 * @param string                     $prefix The array of existing slugs.
-	 * @since 0.0.3
-	 * @return array{array<array<array<mixed>>>,array<string>,bool}
-	 */
-	public function process_blocks( $blocks, $slugs, $updated, $prefix = '' ) {
-
-		if ( ! is_array( $blocks ) ) {
-			return [ $blocks, $slugs, $updated ];
-		}
-
-		foreach ( $blocks as $index => $block ) {
-
-			if ( ! is_array( $block ) ) {
-				continue;
-			}
-			// Checking only for SureForms blocks which can have user input.
-			if ( empty( $block['blockName'] ) || ! in_array( $block['blockName'], $this->srfm_blocks, true ) ) {
-				continue;
-			}
-
-			/**
-			 * Lets continue if slug already exists.
-			 * This will ensure that we don't update already existing slugs.
-			 */
-			if ( isset( $block['attrs'] ) && ! empty( $block['attrs']['slug'] ) && ! in_array( $block['attrs']['slug'], $slugs, true ) ) {
-
-				$slugs[] = Helper::get_string_value( $block['attrs']['slug'] );
-				continue;
-			}
-
-			if ( is_array( $blocks[ $index ]['attrs'] ) ) {
-
-				$blocks[ $index ]['attrs']['slug'] = $this->generate_unique_block_slug( $block, $slugs, $prefix );
-				$slugs[]                           = $blocks[ $index ]['attrs']['slug'];
-				$updated                           = true;
-				if ( is_array( $block['innerBlocks'] ) && ! empty( $block['innerBlocks'] ) ) {
-
-					list( $blocks[ $index ]['innerBlocks'], $slugs, $updated ) = $this->process_blocks( $block['innerBlocks'], $slugs, $updated, $blocks[ $index ]['attrs']['slug'] );
-
-				}
-			}
-		}
-		return [ $blocks, $slugs, $updated ];
-	}
-
-	/**
-	 * Generates slug based on the provided block and existing slugs.
-	 *
-	 * @param array<mixed>  $block The block data.
-	 * @param array<string> $slugs The array of existing slugs.
-	 * @param string        $prefix The array of existing slugs.
-	 * @since 0.0.2
-	 * @return string The generated unique block slug.
-	 */
-	public function generate_unique_block_slug( $block, $slugs, $prefix ) {
-		$slug = is_string( $block['blockName'] ) ? $block['blockName'] : '';
-
-		if ( ! empty( $block['attrs']['label'] ) && is_string( $block['attrs']['label'] ) ) {
-			$slug = sanitize_title( $block['attrs']['label'] );
-		}
-
-		if ( ! empty( $prefix ) ) {
-			$slug = $prefix . '-' . $slug;
-		}
-
-		$slug = $this->generate_slug( $slug, $slugs );
-
-		return $slug;
-	}
-
-	/**
-	 * This function ensures that the slug is unique.
-	 * If the slug is already taken, it appends a number to the slug to make it unique.
-	 *
-	 * @param string        $slug test to be converted to slug.
-	 * @param array<string> $slugs An array of existing slugs.
-	 * @since 0.0.2
-	 * @return string The unique slug.
-	 */
-	public function generate_slug( $slug, $slugs ) {
-		$slug = sanitize_title( $slug );
-
-		if ( ! in_array( $slug, $slugs, true ) ) {
-			return $slug;
-		}
-
-		$index = 1;
-
-		while ( in_array( $slug . '-' . $index, $slugs, true ) ) {
-			$index++;
-		}
-
-		return $slug . '-' . $index;
-	}
 }

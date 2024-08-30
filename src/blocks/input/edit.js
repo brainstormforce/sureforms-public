@@ -3,8 +3,8 @@
  */
 import { __ } from '@wordpress/i18n';
 import { ToggleControl, SelectControl } from '@wordpress/components';
-import { InspectorControls, RichText } from '@wordpress/block-editor';
-import { useEffect, Fragment } from '@wordpress/element';
+import { InspectorControls } from '@wordpress/block-editor';
+import { useEffect } from '@wordpress/element';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
 	SRFMTabs,
@@ -18,7 +18,7 @@ import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
 import widthOptions from '../width-options.json';
 import { FieldsPreview } from '../FieldsPreview.jsx';
-import { useErrMessage, decodeHtmlEntities } from '@Blocks/util';
+import { useErrMessage } from '@Blocks/util';
 import ConditionalLogic from '@Components/conditional-logic';
 
 const Edit = ( { clientId, attributes, setAttributes } ) => {
@@ -59,21 +59,6 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 		const fieldName = srfm_fields_preview.input_preview;
 		return <FieldsPreview fieldName={ fieldName } />;
 	}
-
-	const helpComponent =
-		help !== '' ? (
-			<RichText
-				tagName="label"
-				value={ help }
-				onChange={ ( value ) => {
-					setAttributes( { help: decodeHtmlEntities( value ) } );
-				} }
-				className="srfm-description"
-				multiline={ false }
-				id={ block_id }
-				allowedFormats={ [] }
-			/>
-		) : null;
 
 	return (
 		<div className={ className }>
@@ -205,25 +190,8 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 					blockID={ block_id }
 					setAttributes={ setAttributes }
 					attributes={ attributes }
-					help={ helpComponent }
 				/>
 				<div className="srfm-error-wrap"></div>
-
-				{ /* { help !== '' && (
-					<RichText
-						tagName="label"
-						value={ help }
-						onChange={ ( value ) => {
-							setAttributes( {
-								help: decodeHtmlEntities( value ),
-							} );
-						} }
-						className="srfm-description"
-						multiline={ false }
-						id={ block_id }
-						allowedFormats={ [] }
-					/>
-				) } */ }
 			</>
 		</div>
 	);

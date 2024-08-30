@@ -4,9 +4,15 @@ import { useState, useEffect } from '@wordpress/element';
 import SmartTagList from '@Components/misc/SmartTagList';
 import svgIcons from '@Image/single-form-logo.json';
 import parse from 'html-react-parser';
+import { useDebouncedCallback } from 'use-debounce';
 
 const EmailConfirmation = ( props ) => {
-	const { data, handleConfirmEmail, handleBackNotifation } = props;
+	const {
+		data,
+		handleConfirmEmail,
+		handleBackNotification,
+		setHasValidationErrors,
+	} = props;
 	const backArrow = parse( svgIcons.leftArrow );
 	const [ formData, setFormData ] = useState( {
 		id: data.id || false,
@@ -38,7 +44,8 @@ const EmailConfirmation = ( props ) => {
 		: [];
 	const formSmartTags = window.sureforms?.formSpecificSmartTags ?? [];
 
-	const formEmailSmartTags = window.sureforms?.formSpecificEmailSmartTags ?? [];
+	const formEmailSmartTags =
+		window.sureforms?.formSpecificEmailSmartTags ?? [];
 
 	// Remove the required error class from the input field on change
 	const maybeRemoveRequiredError = ( e ) => {
@@ -59,24 +66,45 @@ const EmailConfirmation = ( props ) => {
 		removeErrorClassIfNeeded( '.srfm-modal-subject', dynamicSubject );
 	}, [ formData.email_to, dynamicSubject ] );
 
+	const onClickBack = () => {
+		if ( handleConfirmEmail( formData ) ) {
+			handleBackNotification();
+		}
+	};
+
+	const debounced = useDebouncedCallback( ( value ) => {
+		if ( ! handleConfirmEmail( value ) ) {
+			setHasValidationErrors( true );
+		}
+	}, 500 );
+
+	useEffect( () => {
+		setHasValidationErrors( false );
+
+		if ( formData.id ) {
+			/**
+			 * Only do autosave, if it is an existing data item.
+			 */
+			debounced( formData );
+		}
+	}, [ formData ] );
+
 	return (
 		<div className="srfm-modal-content">
 			<div className="srfm-modal-inner-content">
 				<div className="srfm-modal-inner-heading">
-					<div className="srfm-modal-inner-heading-text">
-						<span
-							onClick={ handleBackNotifation }
-							className="srfm-back-btn"
-						>
-							{ backArrow }
-						</span>
+					<div
+						onClick={ onClickBack }
+						className="srfm-modal-inner-heading-text srfm-modal-inner-heading-back-button"
+					>
+						<span className="srfm-back-btn">{ backArrow }</span>
 						<h4>{ __( 'Email Notification', 'sureforms' ) }</h4>
 					</div>
 					<button
-						onClick={ () => handleConfirmEmail( formData ) }
+						onClick={ handleBackNotification }
 						className="srfm-modal-inner-heading-button"
 					>
-						{ __( 'Save Changes', 'sureforms' ) }
+						{ __( 'Cancel', 'sureforms' ) }
 					</button>
 				</div>
 				<div className="srfm-modal-inner-box">
@@ -366,15 +394,6 @@ const EmailConfirmation = ( props ) => {
 						</div>
 					</div>
 				</div>
-				<button
-					onClick={ () => handleConfirmEmail( formData ) }
-					className="srfm-modal-inner-footer-button"
-					style={ {
-						alignSelf: 'flex-start',
-					} }
-				>
-					{ __( 'Save Changes', 'sureforms' ) }
-				</button>
 			</div>
 		</div>
 	);

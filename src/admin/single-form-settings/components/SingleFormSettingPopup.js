@@ -1,4 +1,5 @@
 import Integrations from './integrations';
+import Suretriggers from './integrations/suretriggers';
 import Compliance from './Compliance';
 import FormCustomCssPanel from './FormCustomCssPanel';
 import { __ } from '@wordpress/i18n';
@@ -12,14 +13,14 @@ import {
 	MdOutlineCode,
 	MdOutlineDashboardCustomize,
 } from 'react-icons/md';
-import { useSelect } from '@wordpress/data';
+import { select } from '@wordpress/data';
 import { store as editorStore } from '@wordpress/editor';
 import FormConfirmSetting from './form-confirm-setting';
-import { setFormSpecificSmartTags, SRFMToaster } from '@Utils/Helpers';
+import { setFormSpecificSmartTags, SRFMToaster, getServerGeneratedBlockSlugs } from '@Utils/Helpers';
 import toast from 'react-hot-toast';
 
 const SingleFormSettingsPopup = ( props ) => {
-	const { sureformsKeys, targetTab } = props;
+	const { sureformsKeys, targetTab, setHasValidationErrors } = props;
 	const emailNotificationData = sureformsKeys._srfm_email_notification || [];
 	const complianceData = sureformsKeys._srfm_compliance || [];
 	const formCustomCssData = sureformsKeys._srfm_form_custom_css || [];
@@ -28,6 +29,11 @@ const SingleFormSettingsPopup = ( props ) => {
 	);
 
 	const [ parentTab, setParentTab ] = useState( null );
+	const [ action, setAction ] = useState();
+	const [ CTA, setCTA ] = useState();
+	const [ pluginConnected, setPluginConnected ] = useState( null );
+
+	const [ blockSlugs, setBlockSlugs ] = useState( {} );
 
 	const tabs = applyFilters(
 		'srfm.formSettings.tabs',
@@ -37,40 +43,47 @@ const SingleFormSettingsPopup = ( props ) => {
 				id: 'form_confirmation',
 				title: __( 'Form Confirmation', 'sureforms' ),
 				icon: <MdOutlineCheckCircleOutline size={ 20 } />,
-				component: <FormConfirmSetting toast={ toast } />,
+				component: (
+					<FormConfirmSetting
+						setHasValidationErrors={ setHasValidationErrors }
+						toast={ toast }
+					/>
+				),
 			},
 			{
 				id: 'email_notification',
 				title: __( 'Email Notification', 'sureforms' ),
 				icon: <MdOutlineMailOutline size={ 20 } />,
 				component: (
-					<EmailNotification
-						emailNotificationData={ emailNotificationData }
-						toast={ toast }
-					/>
+					<EmailNotification { ...{ setHasValidationErrors, emailNotificationData, toast } } />
 				),
 			},
 			{
 				id: 'compliance_settings',
 				title: __( 'Compliance Settings', 'sureforms' ),
 				icon: <MdSecurity size={ 20 } />,
-				component: <Compliance complianceData={ complianceData } />,
+				component: <Compliance { ...{ complianceData } } />,
 			},
 			{
 				id: 'integrations',
 				title: __( 'Integrations', 'sureforms' ),
 				icon: <MdOutlineDashboardCustomize size={ 20 } />,
-				component: <Integrations setSelectedTab={ setSelectedTab } />,
+				component: <Integrations { ...{ setSelectedTab, action, setAction, CTA, setCTA, pluginConnected, setPluginConnected } } />,
 			},
 			{
 				id: 'form_custom_css',
 				title: __( 'Custom CSS', 'sureforms' ),
 				icon: <MdOutlineCode size={ 20 } />,
 				component: (
-					<FormCustomCssPanel
-						formCustomCssData={ formCustomCssData }
-					/>
+					<FormCustomCssPanel { ...{ formCustomCssData } } />
 				),
+			},
+			{
+				id: 'suretriggers',
+				parent: 'integrations',
+				title: __( 'SureTriggers', 'sureforms' ),
+				icon: {},
+				component: <Suretriggers { ...{ setSelectedTab } } />,
 			},
 			/* can contain child tabs not linked to nav */
 			/* add parent nav id for child tabs */
@@ -78,11 +91,9 @@ const SingleFormSettingsPopup = ( props ) => {
 		setSelectedTab
 	);
 
-	const savedBlocks = useSelect( ( select ) =>
-		select( editorStore ).getBlocks()
-	);
+	const { getBlocks, getCurrentPostId, getEditedPostContent } = select( editorStore );
 
-	setFormSpecificSmartTags( savedBlocks );
+	setFormSpecificSmartTags( getBlocks(), blockSlugs );
 
 	useEffect( () => {
 		const activeTabObject = tabs.find( ( tab ) => tab.id === selectedTab );
@@ -90,6 +101,19 @@ const SingleFormSettingsPopup = ( props ) => {
 			setParentTab( activeTabObject.parent );
 		} else {
 			setParentTab( null );
+		}
+
+		if ( ! Object.keys( blockSlugs ).length ) {
+			// Process the blocks using fetch one time per Modal open ( Or if data is not set already in blockSlugs state. )
+			getServerGeneratedBlockSlugs( getCurrentPostId(), getEditedPostContent() )
+				.then( ( response ) => {
+					if ( true !== response?.success ) {
+						return console.error( 'Unable to fetch saved blocks: ', response?.data );
+					}
+					setBlockSlugs( response.data );
+				} ).catch( ( err ) => {
+					console.error( 'Unable to fetch saved blocks: ', err );
+				} );
 		}
 	}, [ selectedTab ] );
 

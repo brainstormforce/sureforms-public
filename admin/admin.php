@@ -8,6 +8,7 @@
 namespace SRFM\Admin;
 
 use SRFM\Inc\Traits\Get_Instance;
+use SRFM\Inc\Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -313,6 +314,8 @@ class Admin {
 			'global_settings_nonce'   => current_user_can( 'manage_options' ) ? wp_create_nonce( 'wp_rest' ) : '',
 			'is_pro_active'           => defined( 'SRFM_PRO_VER' ),
 			'pro_plugin_version'      => defined( 'SRFM_PRO_VER' ) ? SRFM_PRO_VER : '',
+			'sureforms_pricing_page'  => $this->get_sureforms_website_url( 'pricing' ),
+			'field_spacing_vars'      => Helper::get_css_vars(),
 		];
 
 		if ( class_exists( 'SRFM_PRO\Admin\Licensing' ) ) {
@@ -491,6 +494,14 @@ class Admin {
 				'srfm_ajax_url'                    => admin_url( 'admin-ajax.php' ),
 			]
 		);
+
+		/**
+		 * Enqueuing SureTriggers Integration script.
+		 * This script loads suretriggers iframe in Intergations tab.
+		 */
+		if ( SRFM_FORMS_POST_TYPE === $current_screen->post_type ) {
+			wp_enqueue_script( SRFM_SLUG . '-suretriggers-integration', SRFM_SURETRIGGERS_INTERGATION_BASE_URL . 'js/embed.js', [], SRFM_VER, true );
+		}
 	}
 
 	/**
@@ -521,5 +532,21 @@ class Admin {
 		}
 
 		return $status;
+	}
+
+	/**
+	 * Get SureForms Website URL.
+	 *
+	 * @param string $trail The URL trail to append to SureForms website URL. The parameter should not include a leading slash as the base URL already ends with a trailing slash.
+	 * @since 0.0.7
+	 * @return string
+	 */
+	public static function get_sureforms_website_url( $trail ) {
+		$url = SRFM_WEBSITE;
+		if ( ! empty( $trail ) && is_string( $trail ) ) {
+			$url = SRFM_WEBSITE . $trail;
+		}
+
+		return esc_url( $url );
 	}
 }

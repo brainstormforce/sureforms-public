@@ -12,12 +12,45 @@
 	.srfm-block-label {
 		&.srfm-required::after {
 			content: " *";
-			color: var( --srfm-error-text-color );
+			color: var( --srfm-error-color );
 		}
 	}
 
 	.srfm-input-common {
 		@include srfm-input-common-styles( true );
+	}
+
+	// checkbox and gdpr
+	.srfm-checkbox-block,
+	.srfm-gdpr-block {
+		.srfm-block-wrap {
+			.srfm-cbx {
+				.srfm-span-wrap {
+					&:first-child {
+						margin-top: var( --srfm-checkbox-margin-top-editor ) !important;
+					}
+				}
+			}
+		}
+	}
+
+	// checkbox and gdpr
+	.srfm-input-checkbox,
+	.srfm-input-gdpr {
+		display: none;
+
+		&:checked {
+			+ {
+				.srfm-cbx {
+					span {
+						&:first-child:not( .srfm-required ) {
+							background: var( --srfm-color-scheme-primary );
+							border-color: var( --srfm-color-scheme-primary );
+						}
+					}
+				}
+			}
+		}
 	}
 
 	.srfm-input-textarea {
@@ -63,9 +96,8 @@
 		.srfm-block-wrap {
 			input {
 				margin: 0;
-				border: 1px solid var( --srfm-border-color );
+				border: 1px solid var( --srfm-color-input-border );
 				box-shadow: none;
-				background-color: var( --srfm-base-background-color );
 			}
 
 			.srfm-block-text {
@@ -87,44 +119,15 @@
 		}
 
 		.srfm-block-wrap {
-			display: flex;
-			flex-wrap: wrap;
-			margin: 0 -0.3em;
-			row-gap: 0.6em;
-
-			@media ( min-width: 431px ) {
-				&.srfm-choice-width-100 {
-					.srfm-multi-choice-single {
-						width: 100%;
-					}
-				}
-
-				&.srfm-choice-width-50 {
-					.srfm-multi-choice-single {
-						width: 50%;
-					}
-				}
-
-				&.srfm-choice-width-33-33 {
-					.srfm-multi-choice-single {
-						width: 33%;
-					}
-				}
-
-				&.srfm-choice-width-25 {
-					.srfm-multi-choice-single {
-						width: 25%;
-					}
-				}
-			}
+			@include srfm-multi-choice-wrap-styles;
 
 			.srfm-multi-choice-single {
-				padding: 0 0.3em;
-				cursor: pointer;
-				margin: 0;
+				@include srfm-multi-choice-single-styles;
 
 				.srfm-input-common {
 					width: calc( 100% - 3em );
+					margin: 0 !important;
+					height: auto !important;
 				}
 
 				.components-button {
@@ -134,46 +137,11 @@
 				}
 
 				.srfm-block-content-wrap {
-					position: relative;
-					display: flex;
-					flex-wrap: wrap;
-					align-items: flex-start;
-					font-size: 0.7em;
-					padding: 0.72em 1.143em 0.72em 0.72em;
-					background-color: var( --srfm-base-background-color );
-					border: var( --srfm-border ) solid var( --srfm-border-color );
-					border-radius: var( --srfm-border-radius );
+					@include srfm-multi-choice-block-content-wrap-styles( true );
 					width: auto;
-					height: 100%;
 
 					.srfm-multi-choice-icon {
-						position: relative;
-						width: 1em;
-						height: 1em;
-						top: 0.18em;
-						border-radius: 100%;
-						border: 1px solid var( --srfm-border-color );
-						border-radius: 100%;
-						line-height: 1.5em;
-
-						svg {
-							position: absolute;
-							top: 0;
-							width: 1em;
-							height: 1em;
-							opacity: 0;
-						}
-					}
-
-					p {
-						font-size: 1em;
-						line-height: normal;
-						padding-left: 0.575em;
-						width: calc( 100% - 1em );
-						color: var( --srfm-body-input-color );
-						margin-top: 0;
-						margin-bottom: 0;
-						word-break: break-word;
+						@include srfm-multi-choice-icon-styles;
 					}
 				}
 
@@ -184,29 +152,53 @@
 
 			.srfm-multi-choice-add-option-wrapper {
 				width: 100%;
+				margin-top: 4px;
+				margin-left: 4px;
 			}
+
+			@include srfm-multi-choice-vertical-layout( true );
 		}
 	}
 
 	// Phone.
-	div[data-type="srfm/phone"] {
+	.srfm-phone-block-wrap {
+		// Adding margin to srfm-block-wrap because the library styles are overriding the input styles.
+		.srfm-block-wrap {
+			margin: var( --srfm-input-field-margin ) !important;
+		}
+		.iti-flag {
+			margin-right: 4px; // Fixed gap between the flag and the country code.
+		}
 		.flag-container {
-			.arrow {
-				&:after {
-					background-color: transparent;
-					color: var( --srfm-body-input-color );
+			width: auto !important;
+			padding: var( --srfm-flag-section-padding ) !important;
+			.selected-flag {
+				display: flex !important;
+				width: auto !important;
+				background-color: inherit !important;
+				.selected-dial-code {
+					font-size: var( --srfm-input-field-font-size );
+					padding-left: 0;
+					color: var( --srfm-color-input-prefix );
 				}
+			}
+			.arrow {
+				display: none;
 			}
 		}
 	}
 
 	// Select / Dropdown
-	div[data-type="srfm/address-compact"],
 	div[data-type="srfm/dropdown"] {
 		.srfm-dropdown-common-wrap {
 			position: relative;
 			width: 100%;
-			color: var( --srfm-placeholder-color );
+			color: var( --srfm-color-input-placeholder );
+
+			.ts-dropdown-icon {
+				top: 50%;
+				transform: translateY( -50% );
+			}
 
 			input[type="text"] {
 				padding-right: 2em;
@@ -224,20 +216,12 @@
 			.srfm-input-common {
 				width: 100%;
 			}
-
-			&::after {
-				content: "";
-				position: absolute;
-				width: 0.5em;
-				height: 0.5em;
-				font-size: 0.7em;
-				border: 1px solid var( --srfm-body-input-color );
-				border-left: 0;
-				border-top: 0;
-				transform: rotate( 45deg );
-				right: 1em;
-				top: 1em;
-			}
 		}
+	}
+}
+
+.editor-styles-wrapper {
+	&::before {
+		background-color: red;
 	}
 }

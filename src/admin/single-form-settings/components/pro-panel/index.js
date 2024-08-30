@@ -43,7 +43,7 @@ const IconGrid = () => (
 				/>
 				<IconBlock
 					icon={ <RxSlider size={ 24 } color="#B4B4B4" /> }
-					label={ __( 'Number Slider', 'sureforms' ) }
+					label={ __( 'Slider', 'sureforms' ) }
 				/>
 			</div>
 			<div role="presentation">
@@ -81,7 +81,7 @@ const index = () => {
 					style={ {} }
 					className="srfm-upgrade-pro-btn"
 					onClick={ () => {
-						window.open( '/', '_blank' );
+						window.open( srfm_admin?.sureforms_pricing_page, '_blank' );
 					} }
 				>
 					{ __( 'Upgrade to Unlock These Fields', 'sureforms' ) }
