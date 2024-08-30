@@ -27,7 +27,17 @@ function inputFieldMasking() {
                 inputMaskOptions.inputFormat = 'dd/mm/yyyy HH:MM:ss';
                 break;
             case 'custom-mask':
-                inputMaskOptions.regex = inputField.getAttribute( 'data-custom-mask' );
+                const customMask = inputField.getAttribute( 'data-custom-mask' );
+                if ( customMask.startsWith( 'date:' ) ) {
+                    const format = customMask.replace(/^date:\s*/, '');
+                    inputMaskOptions.alias = 'datetime';
+                    inputMaskOptions.inputFormat = format;
+                } else if ( customMask.startsWith( 'alias:' ) ) {
+                    const alias = customMask.replace(/^alias:\s*/, '');
+                    inputMaskOptions.alias = alias;
+                } else {
+                    inputMaskOptions.mask = customMask;
+                }
                 break;
             default:
                 break;
