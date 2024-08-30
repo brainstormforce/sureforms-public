@@ -18,6 +18,8 @@ import InspectorTab, {
 	SRFMTabs,
 } from '@Components/inspector-tabs/InspectorTab.js';
 import { useErrMessage } from '@Blocks/util';
+import svgIcons from '@Svg/svgs.json';
+import parse from 'html-react-parser';
 
 /**
  * Component Dependencies
@@ -266,6 +268,9 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 																									i
 																								)
 																							}
+																							addIcon={ parse(
+																								svgIcons.custom_plus_icon
+																							) }
 																						/>
 																					</div>
 																					<Button
