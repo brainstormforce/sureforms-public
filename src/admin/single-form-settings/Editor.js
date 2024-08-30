@@ -30,6 +30,7 @@ import ProPanel from './components/pro-panel/index.js';
 import useSubmitButton from './components/useSubmitButton.js';
 import SureFormsDescription from './components/SureFormsDescription.js';
 import { defaultKeys, forcePanel } from './utils.js';
+import InstantForm from './InstantForm.js';
 
 const SureformsFormSpecificSettings = ( props ) => {
 	const [ hasCopied, setHasCopied ] = useState( false );
@@ -313,4 +314,6 @@ wp.domReady( () => {
 
 	// Add the header center container.
 	addHeaderCenterContainer();
+	
+	InstantForm();
 } );

@@ -1,25 +1,116 @@
+import { __ } from '@wordpress/i18n';
+import { useState, useEffect } from '@wordpress/element';
 import ICONS from './icons';
 import Breadcrumbs from './Breadcrumbs';
+import { useLocation } from 'react-router-dom';
+import { BsLightningCharge } from 'react-icons/bs';
+import CreditDetailsPopup from './CreditDetailsPopup.js';
+import { Button } from '@wordpress/components';
 
 const Header = () => {
-	return (
-		<div className="srfm-tp-header">
-			<div className="srfm-tp-header-items">
-				{ /** Logo & Breadcrumbs */ }
-				<div className="srfm-tp-main-title">
-					<Breadcrumbs />
-				</div>
-			</div>
+	const [ showRevokePopover, setShowRevokePopover ] = useState( false );
 
-			{ /** Close Icon */ }
+	function useQuery() {
+		return new URLSearchParams( useLocation().search );
+	}
+
+	const query = useQuery();
+
+	const page = query.get( 'page' );
+	const method = query.get( 'method' );
+
+	// if the methods is ai then hide the the scrollbar from body
+	useEffect( () => {
+		if ( method === 'template' ) {
+			document.body.style.overflow = 'auto';
+		} else {
+			document.body.style.overflow = 'hidden';
+		}
+	}, [ method ] );
+
+	const formCreationleft = srfm_admin?.srfm_ai_usage_details?.remaining ?? 0;
+	const isRegistered = srfm_admin?.srfm_ai_usage_details?.type === 'registered';
+	const finalFormCreationCountRemaining = isRegistered && formCreationleft > 20 ? 20 : formCreationleft;
+
+	return (
+		<div
+			className="srfm-tp-header-ctn"
+		>
 			<div
-				className="srfm-tp-header-close"
-				onClick={ () => {
-					window.location.href =
-						'/wp-admin/admin.php?page=sureforms_menu';
-				} }
+				className="srfm-tp-header"
+
 			>
-				<div>{ ICONS.close }</div>
+				<div className="srfm-tp-header-items">
+					{ /** Logo & Breadcrumbs */ }
+					<div className="srfm-tp-main-title">
+						<Breadcrumbs />
+					</div>
+				</div>
+
+				{ /* if the page is add-new-form and the method is ai then show the credits left in the account
+				 */ }
+				{ page === 'add-new-form' && method === 'ai' ? (
+					<div className="srfm-tp-header-credits-ctn">
+						<Button
+							style={ {
+								// if popover is open, change background color
+								background: showRevokePopover
+									? '#F3F4F6'
+									: 'white',
+								width: '225px',
+							} }
+							className="srfm-tp-header-credits"
+							onClick={ () => {
+								setShowRevokePopover( ! showRevokePopover );
+							} }
+						>
+							<span className="srfm-tp-header-credits-left">
+								{ wp.i18n.sprintf(
+									/* translators: %s: number of AI form generations left */
+									__(
+										'%d AI form generations left',
+										'sureforms'
+									),
+									finalFormCreationCountRemaining
+								) }
+							</span>
+							<div className="srfm-tp-header-bolt-icon">
+								<BsLightningCharge />
+							</div>
+						</Button>
+						{ showRevokePopover && (
+							<CreditDetailsPopup
+								finalFormCreationCountRemaining={ finalFormCreationCountRemaining }
+								setShowRevokePopover={ setShowRevokePopover }
+							/>
+						) }
+						<div
+							className="srfm-tp-header-close"
+							onClick={ () => {
+								window.location.href =
+									'/wp-admin/admin.php?page=sureforms_menu';
+							} }
+						>
+							<div
+								className="srfm-tp-header-close-icon"
+							>
+								{ ICONS.close }
+							</div>
+						</div>
+					</div>
+				) : (
+					<div
+						className="srfm-tp-header-close"
+						onClick={ () => {
+							window.location.href =
+								'/wp-admin/admin.php?page=sureforms_menu';
+						} }
+					>
+						<div
+							className="srfm-tp-header-close-icon"
+						>{ ICONS.close }</div>
+					</div>
+				) }
 			</div>
 		</div>
 	);

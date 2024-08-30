@@ -88,6 +88,7 @@ class Number_Markup extends Base {
 		$this->set_field_name( $this->unique_slug );
 		$this->set_markup_properties( $this->input_label );
 		$this->set_aria_described_by();
+		$this->set_label_as_placeholder( $this->input_label );
 	}
 
 	/**

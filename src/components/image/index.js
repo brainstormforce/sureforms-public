@@ -29,6 +29,7 @@ const SRFMMediaPicker = ( props ) => {
 	const [ isOpen, setOpen ] = useState( false );
 
 	const {
+		onModalClose,
 		onSelectImage,
 		backgroundImage,
 		onRemoveImage,
@@ -271,6 +272,7 @@ const SRFMMediaPicker = ( props ) => {
 								render={ ( { open } ) =>
 									renderMediaUploader( open )
 								}
+								onClose={ onModalClose }
 							/>
 							{ ! disableRemove && backgroundImage && (
 								<button

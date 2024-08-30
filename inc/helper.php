@@ -88,6 +88,24 @@ class Helper {
 	}
 
 	/**
+	 * Checks if current value is an array or else returns default value
+	 *
+	 * @param mixed $data Data which needs to be checked if it is an array.
+	 *
+	 * @since 0.0.3
+	 * @return array<mixed>
+	 */
+	public static function get_array_value( $data ) {
+		if ( is_array( $data ) ) {
+			return $data;
+		} elseif ( is_null( $data ) ) {
+			return [];
+		} else {
+			return (array) $data;
+		}
+	}
+
+	/**
 	 * Extracts the field type from the dynamic field key ( or field slug ).
 	 *
 	 * @param string $field_key Dynamic field key.
@@ -340,6 +358,39 @@ class Helper {
 		return $meta_value;
 	}
 
+	/**
+	 * Wrapper for the WordPress's get_post_meta function with the support for default values.
+	 *
+	 * @param int|string $post_id Post ID.
+	 * @param string     $key The meta key to retrieve.
+	 * @param mixed      $default Default value.
+	 * @param boolean    $single Optional. Whether to return a single value.
+	 * @since 0.0.8
+	 * @return mixed Meta value.
+	 */
+	public static function get_post_meta( $post_id, $key, $default = null, $single = true ) {
+		$meta_value = get_post_meta( self::get_integer_value( $post_id ), $key, $single );
+		return $meta_value ? $meta_value : $default;
+	}
+
+	/**
+	 * Returns query params data for instant form live preview.
+	 *
+	 * @since 0.0.8
+	 * @return array<mixed> Live preview data.
+	 */
+	public static function get_instant_form_live_data() {
+		$srfm_live_mode_data = isset( $_GET['live_mode'] ) && current_user_can( 'edit_posts' ) ? self::sanitize_recursively( 'sanitize_text_field', wp_unslash( $_GET ) ) : []; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+
+		return $srfm_live_mode_data ? array_map(
+			// Normalize falsy values.
+			function( $live_data ) {
+				return 'false' === $live_data ? false : $live_data;
+			},
+			$srfm_live_mode_data
+		) : [];
+	}
+
 
 	/**
 	 * Default dynamic block value.
@@ -516,24 +567,6 @@ class Helper {
 	}
 
 	/**
-	 * Checks if current value is an array or else returns default value
-	 *
-	 * @param mixed $data Data which needs to be checked if it is an array.
-	 *
-	 * @since 0.0.3
-	 * @return array<mixed>
-	 */
-	public static function get_array_value( $data ) {
-		if ( is_array( $data ) ) {
-			return $data;
-		} elseif ( is_null( $data ) ) {
-			return [];
-		} else {
-			return (array) $data;
-		}
-	}
-
-	/**
 	 * Get forms options. Shows all the available forms in the dropdown.
 	 *
 	 * @since 0.0.5
@@ -601,139 +634,142 @@ class Helper {
 		*
 		* For future variables depending on the field spacing size, add the variable to the array respectively.
 		*/
-		$sizes = [
-			'small'  => [
-				'--srfm-row-gap-between-blocks'           => '16px',
-				// Address block gap and spacing variables.
-				'--srfm-col-gap-between-fields'           => '12px',
-				'--srfm-row-gap-between-fields'           => '12px',
-				'--srfm-gap-below-address-label'          => '12px',
-				// Dropdown Variables.
-				'--srfm-dropdown-font-size'               => '14px',
-				'--srfm-dropdown-gap-between-input-menu'  => '4px',
-				'--srfm-dropdown-badge-padding'           => '2px 6px',
-				'--srfm-dropdown-multiselect-font-size'   => '12px',
-				'--srfm-dropdown-multiselect-line-height' => '16px',
-				'--srfm-dropdown-padding-right'           => '12px',
-				// initial padding and from 20px - 12px for dropdown arrow width and 8px for gap before dropdown arrow.
-				'--srfm-dropdown-padding-right-icon'      => 'calc( var( --srfm-dropdown-padding-right ) + 20px )',
-				'--srfm-dropdown-multiselect-padding'     => '8px var( --srfm-dropdown-padding-right-icon ) 8px 8px',
-				// Input Field Variables.
-				'--srfm-input-height'                     => '40px',
-				'--srfm-input-field-padding'              => '10px 12px',
-				'--srfm-input-field-font-size'            => '14px',
-				'--srfm-input-field-line-height'          => '20px',
-				'--srfm-input-field-margin'               => '4px 0',
-				// Checkbox and GDPR Variables.
-				'--srfm-check-ctn-width'                  => '16px',
-				'--srfm-check-ctn-height'                 => '16px',
-				'--srfm-check-svg-size'                   => '10px',
-				'--srfm-checkbox-margin-top-frontend'     => '2px',
-				'--srfm-checkbox-margin-top-editor'       => '3px',
-				'--srfm-check-gap'                        => '8px',
-				'--srfm-checkbox-description-margin-left' => '24px',
-				// Phone Number field variables.
-				'--srfm-flag-section-padding'             => '10px 0 10px 12px',
-				'--srfm-gap-between-icon-text'            => '8px',
-				// Label Variables.
-				'--srfm-label-font-size'                  => '14px',
-				'--srfm-label-line-height'                => '20px',
-				// Description Variables.
-				'--srfm-description-font-size'            => '12px',
-				'--srfm-description-line-height'          => '16px',
-				// Button Variables.
-				'--srfm-btn-padding'                      => '8px 14px',
-				'--srfm-btn-font-size'                    => '14px',
-				'--srfm-btn-line-height'                  => '20px',
-				// Multi Choice Variables.
-				'--srfm-multi-choice-horizontal-padding'  => '16px',
-				'--srfm-multi-choice-vertical-padding'    => '16px',
-				'--srfm-multi-choice-internal-option-gap' => '8px',
-				'--srfm-multi-choice-vertical-svg-size'   => '32px',
-				'--srfm-multi-choice-horizontal-image-size' => '20px',
-				'--srfm-multi-choice-vertical-image-size' => '100px',
-				'--srfm-multi-choice-outer-padding'       => '0',
-			],
-			'medium' => [
-				'--srfm-row-gap-between-blocks'           => '20px',
-				// Address block gap and spacing variables.
-				'--srfm-col-gap-between-fields'           => '16px',
-				'--srfm-row-gap-between-fields'           => '16px',
-				'--srfm-gap-below-address-label'          => '14px',
-				// Input Field Variables.
-				'--srfm-input-height'                     => '44px',
-				'--srfm-input-field-font-size'            => '16px',
-				'--srfm-input-field-line-height'          => '24px',
-				'--srfm-input-field-margin'               => '6px 0',
-				// Checkbox and GDPR Variables.
-				'--srfm-checkbox-margin-top-frontend'     => '4px',
-				'--srfm-checkbox-margin-top-editor'       => '6px',
-				'--srfm-checkbox-description-margin-left' => '24px',
-				// Label Variables.
-				'--srfm-label-font-size'                  => '16px',
-				'--srfm-label-line-height'                => '24px',
-				// Description Variables.
-				'--srfm-description-font-size'            => '14px',
-				'--srfm-description-line-height'          => '20px',
-				// Button Variables.
-				'--srfm-btn-padding'                      => '10px 14px',
-				'--srfm-btn-font-size'                    => '16px',
-				'--srfm-btn-line-height'                  => '24px',
-				// Multi Choice Variables.
-				'--srfm-multi-choice-horizontal-padding'  => '20px',
-				'--srfm-multi-choice-vertical-padding'    => '20px',
-				'--srfm-multi-choice-vertical-svg-size'   => '40px',
-				'--srfm-multi-choice-horizontal-image-size' => '24px',
-				'--srfm-multi-choice-vertical-image-size' => '120px',
-				'--srfm-multi-choice-outer-padding'       => '2px',
-			],
-			'large'  => [
-				'--srfm-row-gap-between-blocks'           => '24px',
-				// Address Block Gap and Spacing Variables.
-				'--srfm-col-gap-between-fields'           => '16px',
-				'--srfm-row-gap-between-fields'           => '20px',
-				'--srfm-gap-below-address-label'          => '16px',
-				// Dropdown Variables.
-				'--srfm-dropdown-font-size'               => '16px',
-				'--srfm-dropdown-gap-between-input-menu'  => '6px',
-				'--srfm-dropdown-badge-padding'           => '6px 6px',
-				'--srfm-dropdown-multiselect-font-size'   => '14px',
-				'--srfm-dropdown-multiselect-line-height' => '20px',
-				'--srfm-dropdown-padding-right'           => '14px',
-				// Input Field Variables.
-				'--srfm-input-height'                     => '48px',
-				'--srfm-input-field-padding'              => '10px 14px',
-				'--srfm-input-field-font-size'            => '18px',
-				'--srfm-input-field-line-height'          => '28px',
-				'--srfm-input-field-margin'               => '8px 0',
-				// Checkbox and GDPR Variables.
-				'--srfm-check-ctn-width'                  => '20px',
-				'--srfm-check-ctn-height'                 => '20px',
-				'--srfm-check-svg-size'                   => '14px',
-				'--srfm-check-gap'                        => '10px',
-				'--srfm-checkbox-margin-top-frontend'     => '4px',
-				'--srfm-checkbox-margin-top-editor'       => '5px',
-				'--srfm-checkbox-description-margin-left' => '30px',
-				// Label Variables.
-				'--srfm-label-font-size'                  => '18px',
-				'--srfm-label-line-height'                => '28px',
-				// Description Variables.
-				'--srfm-description-font-size'            => '16px',
-				'--srfm-description-line-height'          => '24px',
-				// Button Variables.
-				'--srfm-btn-padding'                      => '10px 14px',
-				'--srfm-btn-font-size'                    => '18px',
-				'--srfm-btn-line-height'                  => '28px',
-				// Multi Choice Variables.
-				'--srfm-multi-choice-horizontal-padding'  => '24px',
-				'--srfm-multi-choice-vertical-padding'    => '24px',
-				'--srfm-multi-choice-internal-option-gap' => '12px',
-				'--srfm-multi-choice-vertical-svg-size'   => '48px',
-				'--srfm-multi-choice-horizontal-image-size' => '28px',
-				'--srfm-multi-choice-vertical-image-size' => '140px',
-				'--srfm-multi-choice-outer-padding'       => '4px',
-			],
-		];
+		$sizes = apply_filters(
+			'srfm_css_vars_sizes',
+			[
+				'small'  => [
+					'--srfm-row-gap-between-blocks'        => '16px',
+					// Address block gap and spacing variables.
+					'--srfm-col-gap-between-fields'        => '12px',
+					'--srfm-row-gap-between-fields'        => '12px',
+					'--srfm-gap-below-address-label'       => '12px',
+					// Dropdown Variables.
+					'--srfm-dropdown-font-size'            => '14px',
+					'--srfm-dropdown-gap-between-input-menu' => '4px',
+					'--srfm-dropdown-badge-padding'        => '2px 6px',
+					'--srfm-dropdown-multiselect-font-size' => '12px',
+					'--srfm-dropdown-multiselect-line-height' => '16px',
+					'--srfm-dropdown-padding-right'        => '12px',
+					// initial padding and from 20px - 12px for dropdown arrow width and 8px for gap before dropdown arrow.
+					'--srfm-dropdown-padding-right-icon'   => 'calc( var( --srfm-dropdown-padding-right ) + 20px )',
+					'--srfm-dropdown-multiselect-padding'  => '8px var( --srfm-dropdown-padding-right-icon ) 8px 8px',
+					// Input Field Variables.
+					'--srfm-input-height'                  => '40px',
+					'--srfm-input-field-padding'           => '10px 12px',
+					'--srfm-input-field-font-size'         => '14px',
+					'--srfm-input-field-line-height'       => '20px',
+					'--srfm-input-field-margin'            => '4px 0',
+					// Checkbox and GDPR Variables.
+					'--srfm-check-ctn-width'               => '16px',
+					'--srfm-check-ctn-height'              => '16px',
+					'--srfm-check-svg-size'                => '10px',
+					'--srfm-checkbox-margin-top-frontend'  => '2px',
+					'--srfm-checkbox-margin-top-editor'    => '3px',
+					'--srfm-check-gap'                     => '8px',
+					'--srfm-checkbox-description-margin-left' => '24px',
+					// Phone Number field variables.
+					'--srfm-flag-section-padding'          => '10px 0 10px 12px',
+					'--srfm-gap-between-icon-text'         => '8px',
+					// Label Variables.
+					'--srfm-label-font-size'               => '14px',
+					'--srfm-label-line-height'             => '20px',
+					// Description Variables.
+					'--srfm-description-font-size'         => '12px',
+					'--srfm-description-line-height'       => '16px',
+					// Button Variables.
+					'--srfm-btn-padding'                   => '8px 14px',
+					'--srfm-btn-font-size'                 => '14px',
+					'--srfm-btn-line-height'               => '20px',
+					// Multi Choice Variables.
+					'--srfm-multi-choice-horizontal-padding' => '16px',
+					'--srfm-multi-choice-vertical-padding' => '16px',
+					'--srfm-multi-choice-internal-option-gap' => '8px',
+					'--srfm-multi-choice-vertical-svg-size' => '32px',
+					'--srfm-multi-choice-horizontal-image-size' => '20px',
+					'--srfm-multi-choice-vertical-image-size' => '100px',
+					'--srfm-multi-choice-outer-padding'    => '0',
+				],
+				'medium' => [
+					'--srfm-row-gap-between-blocks'        => '20px',
+					// Address block gap and spacing variables.
+					'--srfm-col-gap-between-fields'        => '16px',
+					'--srfm-row-gap-between-fields'        => '16px',
+					'--srfm-gap-below-address-label'       => '14px',
+					// Input Field Variables.
+					'--srfm-input-height'                  => '44px',
+					'--srfm-input-field-font-size'         => '16px',
+					'--srfm-input-field-line-height'       => '24px',
+					'--srfm-input-field-margin'            => '6px 0',
+					// Checkbox and GDPR Variables.
+					'--srfm-checkbox-margin-top-frontend'  => '4px',
+					'--srfm-checkbox-margin-top-editor'    => '6px',
+					'--srfm-checkbox-description-margin-left' => '24px',
+					// Label Variables.
+					'--srfm-label-font-size'               => '16px',
+					'--srfm-label-line-height'             => '24px',
+					// Description Variables.
+					'--srfm-description-font-size'         => '14px',
+					'--srfm-description-line-height'       => '20px',
+					// Button Variables.
+					'--srfm-btn-padding'                   => '10px 14px',
+					'--srfm-btn-font-size'                 => '16px',
+					'--srfm-btn-line-height'               => '24px',
+					// Multi Choice Variables.
+					'--srfm-multi-choice-horizontal-padding' => '20px',
+					'--srfm-multi-choice-vertical-padding' => '20px',
+					'--srfm-multi-choice-vertical-svg-size' => '40px',
+					'--srfm-multi-choice-horizontal-image-size' => '24px',
+					'--srfm-multi-choice-vertical-image-size' => '120px',
+					'--srfm-multi-choice-outer-padding'    => '2px',
+				],
+				'large'  => [
+					'--srfm-row-gap-between-blocks'        => '24px',
+					// Address Block Gap and Spacing Variables.
+					'--srfm-col-gap-between-fields'        => '16px',
+					'--srfm-row-gap-between-fields'        => '20px',
+					'--srfm-gap-below-address-label'       => '16px',
+					// Dropdown Variables.
+					'--srfm-dropdown-font-size'            => '16px',
+					'--srfm-dropdown-gap-between-input-menu' => '6px',
+					'--srfm-dropdown-badge-padding'        => '6px 6px',
+					'--srfm-dropdown-multiselect-font-size' => '14px',
+					'--srfm-dropdown-multiselect-line-height' => '20px',
+					'--srfm-dropdown-padding-right'        => '14px',
+					// Input Field Variables.
+					'--srfm-input-height'                  => '48px',
+					'--srfm-input-field-padding'           => '10px 14px',
+					'--srfm-input-field-font-size'         => '18px',
+					'--srfm-input-field-line-height'       => '28px',
+					'--srfm-input-field-margin'            => '8px 0',
+					// Checkbox and GDPR Variables.
+					'--srfm-check-ctn-width'               => '20px',
+					'--srfm-check-ctn-height'              => '20px',
+					'--srfm-check-svg-size'                => '14px',
+					'--srfm-check-gap'                     => '10px',
+					'--srfm-checkbox-margin-top-frontend'  => '4px',
+					'--srfm-checkbox-margin-top-editor'    => '5px',
+					'--srfm-checkbox-description-margin-left' => '30px',
+					// Label Variables.
+					'--srfm-label-font-size'               => '18px',
+					'--srfm-label-line-height'             => '28px',
+					// Description Variables.
+					'--srfm-description-font-size'         => '16px',
+					'--srfm-description-line-height'       => '24px',
+					// Button Variables.
+					'--srfm-btn-padding'                   => '10px 14px',
+					'--srfm-btn-font-size'                 => '18px',
+					'--srfm-btn-line-height'               => '28px',
+					// Multi Choice Variables.
+					'--srfm-multi-choice-horizontal-padding' => '24px',
+					'--srfm-multi-choice-vertical-padding' => '24px',
+					'--srfm-multi-choice-internal-option-gap' => '12px',
+					'--srfm-multi-choice-vertical-svg-size' => '48px',
+					'--srfm-multi-choice-horizontal-image-size' => '28px',
+					'--srfm-multi-choice-vertical-image-size' => '140px',
+					'--srfm-multi-choice-outer-padding'    => '4px',
+				],
+			]
+		);
 		// Return complete sizes array if field_spacing is false. Required in case of JS for Editor changes.
 		if ( ! $field_spacing ) {
 			return $sizes;

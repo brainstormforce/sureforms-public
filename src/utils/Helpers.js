@@ -91,6 +91,21 @@ export const handleAddNewPost = async (
 	}
 };
 
+export const initiateAuth = async () => {
+	const response = await apiFetch( {
+		path: '/sureforms/v1/initiate-auth',
+		headers: {
+			'Content-Type': 'application/json',
+			'X-WP-Nonce': srfm_admin.template_picker_nonce,
+		},
+		method: 'GET',
+	} );
+
+	if ( response?.success ) {
+		window.location.href = response.data;
+	}
+};
+
 export const randomNiceColor = () => {
 	const randomInt = ( min, max ) => {
 		return Math.floor( Math.random() * ( max - min + 1 ) ) + min;
@@ -300,6 +315,35 @@ export const isObjectNotEmpty = ( obj ) => {
 		Object.keys( obj ).length > 0 &&
 		Object.getPrototypeOf( obj ) === Object.prototype
 	);
+};
+
+/**
+ * Formats a number to display in a human-readable format.
+ *
+ * @param {number} num - The number to format.
+ * @return {string} The formatted number.
+ */
+export const formatNumber = ( num ) => {
+	if ( ! num ) {
+		return '0';
+	}
+	const thresholds = [
+		{ magnitude: 1e12, suffix: 'T' },
+		{ magnitude: 1e9, suffix: 'B' },
+		{ magnitude: 1e6, suffix: 'M' },
+		{ magnitude: 1e3, suffix: 'K' },
+		{ magnitude: 1, suffix: '' },
+	];
+
+	const { magnitude, suffix } = thresholds.find(
+		( { magnitude: magnitudeValue } ) => num >= magnitudeValue
+	);
+
+	const formattedNum = ( num / magnitude ).toFixed( 1 ).replace( /\.0$/, '' );
+
+	return num < 1000
+		? num.toString()
+		: formattedNum + suffix + ( num % magnitude > 0 ? '+' : '' );
 };
 
 export const SRFMToaster = ( {

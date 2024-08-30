@@ -505,7 +505,6 @@ export async function fieldValidation(
 		}
 	}
 
-	// return validateResult;
 	return validateResult
 		? [ validateResult, firstErrorInput ]
 		: validateResult;
