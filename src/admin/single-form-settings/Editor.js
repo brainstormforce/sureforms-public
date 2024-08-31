@@ -549,7 +549,20 @@ const forcePanel = () => {
 	}
 };
 
+// Shift the focus on title bar when the editor is loaded.
+const focusTitleBarOnLoad = () => {
+	// Adding a 100ms delay so that the input element is completely loaded in the DOM.
+	setTimeout( () => {
+		const formTitleInput = document.querySelector( '.srfm-header-title-input input' );
+
+		if ( formTitleInput && ! formTitleInput.value ) {
+			formTitleInput.focus();
+		}
+	}, 100 );
+};
+
 wp.domReady( () => {
 	forcePanel();
+	focusTitleBarOnLoad();
 	InstantForm();
 } );
