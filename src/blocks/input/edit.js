@@ -90,10 +90,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 								value={ inputMask }
 								options={ [
 									{
-										label: __(
-											'None',
-											'sureforms'
-										),
+										label: __( 'None', 'sureforms' ),
 										value: 'none',
 									},
 									{
@@ -111,17 +108,11 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 										value: '(##) ####-####',
 									},
 									{
-										label: __(
-											'27/08/2024',
-											'sureforms'
-										),
+										label: __( '27/08/2024', 'sureforms' ),
 										value: 'dd/mm/yyyy',
 									},
 									{
-										label: __(
-											'23:59:59',
-											'sureforms'
-										),
+										label: __( '23:59:59', 'sureforms' ),
 										value: 'hh:mm:ss',
 									},
 									{
@@ -132,10 +123,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 										value: 'dd/mm/yyyy hh:mm:ss',
 									},
 									{
-										label: __(
-											'Custom',
-											'sureforms'
-										),
+										label: __( 'Custom', 'sureforms' ),
 										value: 'custom-mask',
 									},
 								] }
@@ -152,7 +140,9 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 										label: 'customInputMask',
 									} }
 									onChange={ ( value ) =>
-										setAttributes( { customInputMask: value } )
+										setAttributes( {
+											customInputMask: value,
+										} )
 									}
 								/>
 							) }

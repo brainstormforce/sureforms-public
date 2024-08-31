@@ -76,8 +76,6 @@ class Frontend_Assets {
 		wp_enqueue_style( SRFM_SLUG . '-tom-select', $css_vendor . 'tom-select.css', [], SRFM_VER );
 		// Int-tel-input CSS.
 		wp_enqueue_style( SRFM_SLUG . '-intl-tel-input', $css_vendor . 'intl/intlTelInput.min.css', [], SRFM_VER );
-		// Input mask JS.
-		wp_enqueue_script( SRFM_SLUG . '-inputmask', $js_uri . 'deps/inputmask.min.js', [], null, true );
 
 		wp_enqueue_script(
 			SRFM_SLUG . '-form-submit',
@@ -167,6 +165,11 @@ class Frontend_Assets {
 
 			if ( 'dropdown' !== $block_name ) {
 				wp_enqueue_script( SRFM_SLUG . "-{$block_name}", $js_uri . $block_name . $file_prefix . '.js', [], SRFM_VER, true );
+			}
+
+			if ( 'input' === $block_name ) {
+				// Input mask JS.
+				wp_enqueue_script( SRFM_SLUG . '-inputmask', $js_vendor_uri . 'inputmask.min.js', [], SRFM_VER, true );
 			}
 		}
 	}
