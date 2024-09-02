@@ -116,12 +116,55 @@ const withToolbarButton = createHigherOrderComponent( ( BlockEdit ) => {
 				<>
 					<BlockControls>
 						<ToolbarGroup>
+							{
+								[100, 75, 50, 33.33, 25].map( ( width ) => {
+									return (
+										<ToolbarButton
+											key={ width }
+											icon={ <span className='srfm-toolbar-width'>{ width }%</span> }
+											label={ `${ width }%` }
+											onClick={ () => {
+												setAttributes( {
+													fieldWidth: Number( width ),
+												} );
+											} }
+										/>
+									);
+								})
+							}
+						</ToolbarGroup>
+						{/* <ToolbarGroup>
+							{
+								[100, 75, 50, 33.33, 25].map( ( width ) => {
+									return (
+										<ToolbarButton
+											key={ width }
+											icon={ <span className='srfm-toolbar-width'>{ width }%</span> }
+											label={ `${ width }%` }
+											onClick={ () => {
+												setAttributes( {
+													fieldWidth: Number( width ),
+												} );
+											} }
+										/>
+									);
+							}
+
 							<ToolbarButton
 								icon={ oneColIcon }
 								label="Full Width"
 								onClick={ () => {
 									setAttributes( {
 										fieldWidth: Number( 100 ),
+									} );
+								} }
+							/>
+							<ToolbarButton
+								icon={ <span className='srfm-toolbar-width'>75%</span> }
+								label="75%"
+								onClick={ () => {
+									setAttributes( {
+										fieldWidth: Number( 75 ),
 									} );
 								} }
 							/>
@@ -152,7 +195,7 @@ const withToolbarButton = createHigherOrderComponent( ( BlockEdit ) => {
 									} );
 								} }
 							/>
-						</ToolbarGroup>
+						</ToolbarGroup> */}
 					</BlockControls>
 					<BlockEdit { ...props } />
 				</>
