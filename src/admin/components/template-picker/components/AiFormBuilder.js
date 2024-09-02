@@ -380,7 +380,7 @@ export const getLimitReachedPopup = (
 				paraOne={
 					srfm_admin?.srfm_ai_usage_details?.message
 				 }
-				buttonText={ __( 'Retry !', 'sureforms' ) }
+				buttonText={ __( 'Try Again', 'sureforms' ) }
 				onclick={ () => {
 					window.location.href = srfm_admin.site_url + '/wp-admin/admin.php?page=add-new-form&method=ai';
 				} }
