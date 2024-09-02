@@ -250,8 +250,6 @@ Yes! You can certainly use SureForms on yours as well as your client’s website
 When you use the SureForms, you get a huge library of ready-to-use form templates that can be used to build your forms fast.
 
 ## Changelog ##
-### x.x.x ###
-* New: Added input mask setting for the text field.
 ### 0.0.9 ###
 * Fix: Resolved Instant Form background size issue.
 ### 0.0.8 ###
