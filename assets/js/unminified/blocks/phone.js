@@ -88,6 +88,6 @@ function itiContainerClass( element ) {
 }
 
 // make phone field initialization function available globally
-window.initializePhoneField = initializePhoneField;
+window.srfmInitializePhoneField = initializePhoneField;
 
 document.addEventListener( 'DOMContentLoaded', initializePhoneField );

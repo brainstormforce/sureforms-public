@@ -50,7 +50,7 @@ class Form_Widget extends \Bricks\Element {
 
 		if ( bricks_is_builder() ) {
 			// call the js functions to handle form submission, load page break, phone, dropdown.
-			$this->scripts = [ 'handleBricksPreviewFormSubmission', 'loadPageBreak', 'initializePhoneField', 'initializeDropdown' ];
+			$this->scripts = [ 'handleBricksPreviewFormSubmission', 'srfmLoadPageBreak', 'srfmInitializePhoneField', 'srfmInitializeDropdown' ];
 		}
 
 		parent::__construct( $element );
