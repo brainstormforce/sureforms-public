@@ -21,7 +21,10 @@
 
 				// initial dropdown field
 				if ( typeof initializeDropdown === 'function' ) {
-					initializeDropdown();
+					// call the hook after 2 seconds to make sure the dropdown is initialized properly without any issues.
+					setTimeout( function () {
+						initializeDropdown();
+					}, 2000 );
 				}
 			};
 
