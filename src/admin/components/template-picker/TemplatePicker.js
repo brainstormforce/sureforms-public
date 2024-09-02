@@ -24,8 +24,8 @@ const TemplatePicker = () => {
 			case 'ai':
 				return (
 					// Check if the user has reached the limit of AI usage. If not, show the AI form builder.
-					srfm_admin?.srfm_ai_usage_details?.remaining !== 0 ? <AiFormBuilder /> : getLimitReachedPopup(
-					)
+					srfm_admin?.srfm_ai_usage_details?.remaining === 0 || srfm_admin?.srfm_ai_usage_details?.code ? getLimitReachedPopup(
+					) : <AiFormBuilder />
 				);
 
 			default:
