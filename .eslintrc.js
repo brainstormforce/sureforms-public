@@ -79,6 +79,8 @@ module.exports = {
 		srfmElementorData: true,
 		elementorFrontend: true,
 		loadPageBreak: true,
+		initializePhoneField: true,
+		initializeDropdown: true,
 		screen: true,
 	},
 };

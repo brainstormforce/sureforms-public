@@ -14,11 +14,14 @@
 					loadPageBreak();
 				}
 
-				if (
-					typeof initializeDropdown === 'function'
-				) {
-					initializeDropdown();
+				// initial phone field
+				if ( typeof initializePhoneField === 'function' ) {
 					initializePhoneField();
+				}
+
+				// initial dropdown field
+				if ( typeof initializeDropdown === 'function' ) {
+					initializeDropdown();
 				}
 			};
 

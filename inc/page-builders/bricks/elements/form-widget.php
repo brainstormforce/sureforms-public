@@ -49,8 +49,8 @@ class Form_Widget extends \Bricks\Element {
 	public function __construct( $element = null ) {
 
 		if ( bricks_is_builder() ) {
-
-			$this->scripts = [ 'handleBricksPreviewFormSubmission', 'loadPageBreak' ];
+			// call the js functions to handle form submission, load page break, phone, dropdown.
+			$this->scripts = [ 'handleBricksPreviewFormSubmission', 'loadPageBreak', 'initializePhoneField', 'initializeDropdown' ];
 		}
 
 		parent::__construct( $element );
@@ -115,6 +115,26 @@ class Form_Widget extends \Bricks\Element {
 			'required' => [ 'form-id', '!=', '' ],
 		];
 
+	}
+
+	/**
+	 * Enqueue scripts for phone and dropdown field in the Bricks editor.
+	 *
+	 * @since x.x.x
+	 * @return void
+	 */
+	public function enqueue_scripts() {
+		$file_prefix   = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? '' : '.min';
+		$dir_name      = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? 'unminified' : 'minified';
+		$js_uri        = SRFM_URL . 'assets/js/' . $dir_name . '/blocks/';
+		$js_vendor_uri = SRFM_URL . 'assets/js/minified/deps/';
+
+		wp_enqueue_script( SRFM_SLUG . '-phone', $js_uri . 'phone' . $file_prefix . '.js', [], SRFM_VER, true );
+		wp_enqueue_script( SRFM_SLUG . '-phone-intl-input-deps', $js_vendor_uri . 'intl/intTelInput.min.js', [], SRFM_VER, true );
+		wp_enqueue_script( SRFM_SLUG . '-phone-intl-utils-deps', $js_vendor_uri . 'intl/intTelUtils.min.js', [], SRFM_VER, true );
+
+		wp_enqueue_script( SRFM_SLUG . '-dropdown', $js_uri . 'dropdown' . $file_prefix . '.js', [], SRFM_VER, true );
+		wp_enqueue_script( SRFM_SLUG . '-tom-select', $js_vendor_uri . 'tom-select.min.js', [], SRFM_VER, true );
 	}
 
 	/**
