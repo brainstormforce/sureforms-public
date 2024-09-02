@@ -97,17 +97,6 @@ export default function useSubmitButton( args ) {
 						const styleTabElement = document.querySelectorAll( '.srfm-inspector-tabs div' )[ 1 ]; // Style Tab
 						styleTabElement?.click();
 					}, 150 );
-
-					// then click on submit accordion
-					setTimeout( () => {
-						// elements for submit button event listener
-						const submitBtnStyleContainer = document.querySelector( '.srfm-advance-panel-body-submit-button' );
-						const submitBtnElement = submitBtnStyleContainer?.querySelector( 'button' );
-
-						if ( ! submitBtnStyleContainer?.classList?.contains( 'is-opened' ) ) {
-							submitBtnElement?.click();
-						}
-					}, 200 );
 				} );
 			}
 		}
