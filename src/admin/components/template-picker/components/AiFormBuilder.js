@@ -368,6 +368,26 @@ export const getLimitReachedPopup = (
 ) => {
 	const isRegistered = srfm_admin?.srfm_ai_usage_details?.type;
 	const formCreationleft = srfm_admin?.srfm_ai_usage_details?.remaining ?? 0;
+	const errorCode = srfm_admin?.srfm_ai_usage_details?.code;
+
+	// shows when the user has encountered an error.
+	if ( errorCode ) {
+		return (
+			<LimitReachedPopup
+				title={
+					srfm_admin?.srfm_ai_usage_details?.title
+				}
+				paraOne={
+					srfm_admin?.srfm_ai_usage_details?.message
+				 }
+				buttonText={ __( 'Try Again', 'sureforms' ) }
+				onclick={ () => {
+					window.location.href = srfm_admin.site_url + '/wp-admin/admin.php?page=add-new-form&method=ai';
+				} }
+			/>
+		);
+	}
+
 	// show upgrade plan popup if user is registered and form creation limit is reached
 	if ( isRegistered === 'registered' && formCreationleft === 0 ) {
 		return (
@@ -391,19 +411,22 @@ export const getLimitReachedPopup = (
 		);
 	}
 
-	return (
-		<LimitReachedPopup
-			paraOne={ 	 __(
-				'You have reached the maximum number of form generations.',
-				'sureforms'
-			) }
-			paraTwo={ __(
-				'Please connect your website with SureForms AI to create 20 more forms with AI.',
-				'sureforms'
-			) }
-			onclick={ initiateAuth }
-		/>
-	);
+	// shows up one when user is not registered and the remaining form creation limit is 0
+	if ( srfm_admin?.srfm_ai_usage_details?.remaining === 0 ) {
+		return (
+			<LimitReachedPopup
+				paraOne={ 	 __(
+					'You have reached the maximum number of form generations.',
+					'sureforms'
+				) }
+				paraTwo={ __(
+					'Please connect your website with SureForms AI to create 20 more forms with AI.',
+					'sureforms'
+				) }
+				onclick={ initiateAuth }
+			/>
+		);
+	}
 };
 
 export default AiFormBuilder;
