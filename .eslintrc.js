@@ -80,5 +80,6 @@ module.exports = {
 		elementorFrontend: true,
 		loadPageBreak: true,
 		screen: true,
+		SureTriggers: true,
 	},
 };

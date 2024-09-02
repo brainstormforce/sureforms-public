@@ -153,10 +153,7 @@ class Admin_Ajax {
 	 * @return array<mixed>
 	 */
 	public function sureforms_get_integration() {
-		$sc_api_token          = get_option( 'sc_api_token', '' );
-		$suretriggers_data     = get_option( 'suretrigger_options', [] );
-		$suretrigger_connected = ( ! is_array( $suretriggers_data ) || empty( $suretriggers_data['secret_key'] ) || ! is_string( $suretriggers_data['secret_key'] ) ) ? false : true;
-
+		$suretrigger_connected = apply_filters( 'suretriggers_stwp_saas_connected_data', '' );
 		return apply_filters(
 			'srfm_integrated_plugins',
 			[
@@ -242,19 +239,8 @@ class Admin_Ajax {
 			wp_send_json_error( [ 'message' => __( 'Invalid form ID.', 'sureforms' ) ] );
 		}
 
-		$secret_key = $suretriggers_data['secret_key'];
-		$base_url   = get_site_url();
-		$form_name  = ! empty( $form->post_title ) ? $form->post_title : 'SureForms id: ' . $form_id;
-
-		$api_url = add_query_arg(
-			[
-				'redirect_url' => SRFM_SURETRIGGERS_INTERGATION_BASE_URL . 'embed-login',
-				'st-code'      => $secret_key,
-				'base_url'     => $base_url,
-				'reset_url'    => rtrim( base64_encode( wp_nonce_url( admin_url( 'admin.php?st-reset=true' ), 'st-reset-action' ) ), '=' ), // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode, required as we need to encode base url for suretriggers.
-			],
-			SRFM_SURETRIGGERS_INTERGATION_BASE_URL . 'wp-login'
-		);
+		$form_name = ! empty( $form->post_title ) ? $form->post_title : 'SureForms id: ' . $form_id;
+		$api_url   = apply_filters( 'suretriggers_stwp_iframe_filter_data', SRFM_SURETRIGGERS_INTERGATION_BASE_URL );
 
 		// This is the format of data required by SureTriggers for adding iframe in target id.
 		$body = [
