@@ -11,6 +11,7 @@ namespace SRFM\Inc\Page_Builders\Elementor;
 use Elementor\Widget_Base;
 use Elementor\Plugin;
 use SRFM\Inc\Helper;
+use SRFM\Inc\Page_Builders\Page_Builders;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -43,17 +44,9 @@ class Form_Widget extends Widget_Base {
 		$this->is_preview_mode = \Elementor\Plugin::$instance->preview->is_preview_mode();
 
 		if ( $this->is_preview_mode ) {
-			$file_prefix   = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? '' : '.min';
-			$dir_name      = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? 'unminified' : 'minified';
-			$js_uri        = SRFM_URL . 'assets/js/' . $dir_name . '/blocks/';
-			$js_vendor_uri = SRFM_URL . 'assets/js/minified/deps/';
 
-			wp_enqueue_script( SRFM_SLUG . '-phone', $js_uri . 'phone' . $file_prefix . '.js', [], SRFM_VER, true );
-			wp_enqueue_script( SRFM_SLUG . '-phone-intl-input-deps', $js_vendor_uri . 'intl/intTelInput.min.js', [], SRFM_VER, true );
-			wp_enqueue_script( SRFM_SLUG . '-phone-intl-utils-deps', $js_vendor_uri . 'intl/intTelUtils.min.js', [], SRFM_VER, true );
-
-			wp_enqueue_script( SRFM_SLUG . '-dropdown', $js_uri . 'dropdown' . $file_prefix . '.js', [], SRFM_VER, true );
-			wp_enqueue_script( SRFM_SLUG . '-tom-select', $js_vendor_uri . 'tom-select.min.js', [], SRFM_VER, true );
+			// enqueue common fields assets for the dropdown and phone fields.
+			Page_Builders::enqueue_common_fields_assets();
 
 			wp_register_script( 'srfm-elementor-preview', SRFM_URL . 'inc/page-builders/elementor/assets/elementor-editor-preview.js', [ 'elementor-frontend' ], SRFM_VER, true );
 			wp_localize_script(
