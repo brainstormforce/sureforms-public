@@ -88,7 +88,7 @@ export async function fieldValidation(
 		if ( currentFormId !== formId ) {
 			continue;
 		}
-		const inputField = container.querySelector( 'input, textarea,select' );
+		const inputField = container.querySelector( 'input, textarea, select' );
 		const isRequired = inputField.getAttribute( 'aria-required' );
 		const isUnique = inputField.getAttribute( 'data-unique' );
 		let fieldName = inputField.getAttribute( 'name' );
@@ -458,6 +458,33 @@ export async function fieldValidation(
 			}
 		}
 
+		// Slider Field.
+		if ( container.classList.contains( 'srfm-slider-block' ) ) {
+			const isSliderRequired = container.getAttribute( 'data-required' );
+			const sliderInput = container.querySelector( '.srfm-input-slider' );
+			const textSliderElement = container.querySelector( '.srfm-text-slider' );
+			const selectedTextSliderOption = textSliderElement ? textSliderElement.querySelector( '.srfm-text-slider-option input[type="radio"]:checked' ) : null;
+			const sliderDefault = container.getAttribute( 'data-default' );
+			if ( isSliderRequired === 'true' ) {
+				let hasError = false;
+				if ( sliderInput && ! sliderInput.dataset.interacted && ! sliderDefault ) {
+					hasError = true;
+				} else if ( textSliderElement && ! selectedTextSliderOption ) {
+					hasError = true;
+				}
+
+				if ( hasError ) {
+					container.classList.add( 'srfm-error' );
+					validateResult = true;
+					if ( ! firstErrorInput ) {
+						firstErrorInput = sliderInput;
+					}
+				} else {
+					container.classList.remove( 'srfm-error' );
+				}
+			}
+		}
+
 		// Dropdown Field
 		if ( container.classList.contains( 'srfm-dropdown-block' ) ) {
 			const dropdownInputs = container.querySelectorAll(
@@ -530,6 +557,7 @@ export function initializeInlineFieldValidation() {
 		'srfm-rating-block',
 		'srfm-textarea-block',
 		'srfm-dropdown-block',
+		'srfm-slider-block',
 	];
 
 	srfmFields.forEach( ( block ) => addBlurListener( block, `.${ block }` ) );
