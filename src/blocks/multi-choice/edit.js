@@ -179,26 +179,30 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 							<SelectControl
 								label={ __( 'Choice Width', 'sureforms' ) }
 								value={ choiceWidth }
-								options={ 
-									[
-										{
-											label: __( 'Full Width', 'sureforms' ),
-											value: 100,
-										},
-										{
-											label: __( 'Two Columns', 'sureforms' ),
-											value: 50,
-										},
-										{
-											label: __( 'Three Columns', 'sureforms' ),
-											value: 33.33,
-										},
-										{
-											label: __( 'Four Columns', 'sureforms' ),
-											value: 25,
-										},
-									]
-								}
+								options={ [
+									{
+										label: __( 'Full Width', 'sureforms' ),
+										value: 100,
+									},
+									{
+										label: __( 'Two Columns', 'sureforms' ),
+										value: 50,
+									},
+									{
+										label: __(
+											'Three Columns',
+											'sureforms'
+										),
+										value: 33.33,
+									},
+									{
+										label: __(
+											'Four Columns',
+											'sureforms'
+										),
+										value: 25,
+									},
+								] }
 								onChange={ ( value ) =>
 									setAttributes( {
 										choiceWidth: Number( value ),
