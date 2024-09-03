@@ -3,19 +3,18 @@
  */
 import { __ } from '@wordpress/i18n';
 import { InspectorControls } from '@wordpress/block-editor';
-import { ToggleControl, SelectControl } from '@wordpress/components';
+import { ToggleControl } from '@wordpress/components';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
 	SRFMTabs,
 } from '@Components/inspector-tabs/InspectorTab.js';
 import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
 import SRFMTextControl from '@Components/text-control';
-import widthOptions from '../width-options.json';
 import { useErrMessage } from '@Blocks/util';
 import ConditionalLogic from '@Components/conditional-logic';
 
 export default ( { attributes, setAttributes } ) => {
-	const { help, required, defaultValue, errorMsg, fieldWidth } = attributes;
+	const { help, required, defaultValue, errorMsg } = attributes;
 
 	const {
 		currentMessage: currentErrorMsg,
@@ -33,15 +32,6 @@ export default ( { attributes, setAttributes } ) => {
 						title={ __( 'Attributes', 'sureforms' ) }
 						initialOpen={ true }
 					>
-						<SelectControl
-							label={ __( 'Field Width', 'sureforms' ) }
-							value={ fieldWidth }
-							options={ widthOptions }
-							onChange={ ( value ) =>
-								setAttributes( { fieldWidth: Number( value ) } )
-							}
-							__nextHasNoMarginBottom
-						/>
 						<SRFMTextControl
 							label={ __( 'Default Value', 'sureforms' ) }
 							className="srfm-with-dropdown"

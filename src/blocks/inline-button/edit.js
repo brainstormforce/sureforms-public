@@ -1,19 +1,15 @@
 /**
  * WordPress dependencies
  */
-import { __ } from '@wordpress/i18n';
-import { SelectControl } from '@wordpress/components';
 import { InspectorControls, RichText } from '@wordpress/block-editor';
 import { useEffect } from '@wordpress/element';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
 	SRFMTabs,
 } from '@Components/inspector-tabs/InspectorTab.js';
-import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
 import { useGetCurrentFormId } from '../../blocks-attributes/getFormId.js';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
-import widthOptions from '../width-options.json';
 import { FieldsPreview } from '../FieldsPreview.jsx';
 import { decodeHtmlEntities } from '@Blocks/util';
 import ConditionalLogic from '@Components/conditional-logic';
@@ -21,8 +17,7 @@ import { useSelect } from '@wordpress/data';
 import { store as editorStore } from '@wordpress/editor';
 
 const Edit = ( { clientId, attributes, setAttributes } ) => {
-	const { buttonText, fieldWidth, block_id, formId, preview, className } =
-		attributes;
+	const { buttonText, block_id, formId, preview, className } = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
 	useEffect( () => {
 		if ( formId !== currentFormId ) {
@@ -50,28 +45,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 			}
 		>
 			<InspectorControls>
-				<InspectorTabs
-					tabs={ [ 'general', 'advance' ] }
-					defaultTab={ 'general' }
-				>
-					<InspectorTab { ...SRFMTabs.general }>
-						<SRFMAdvancedPanelBody
-							title={ __( 'Attributes', 'sureforms' ) }
-							initialOpen={ true }
-						>
-							<SelectControl
-								label={ __( 'Field Width', 'sureforms' ) }
-								value={ fieldWidth }
-								options={ widthOptions }
-								onChange={ ( value ) =>
-									setAttributes( {
-										fieldWidth: Number( value ),
-									} )
-								}
-								__nextHasNoMarginBottom
-							/>
-						</SRFMAdvancedPanelBody>
-					</InspectorTab>
+				<InspectorTabs tabs={ [ 'advance' ] } defaultTab={ 'advance' }>
 					<InspectorTab { ...SRFMTabs.advance }>
 						<ConditionalLogic
 							{ ...{ setAttributes, attributes } }

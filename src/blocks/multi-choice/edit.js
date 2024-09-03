@@ -40,7 +40,6 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 	const {
 		required,
 		options,
-		fieldWidth,
 		choiceWidth,
 		singleSelection,
 		help,
@@ -138,17 +137,6 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 							title={ __( 'Attributes', 'sureforms' ) }
 							initialOpen={ true }
 						>
-							<SelectControl
-								label={ __( 'Field Width', 'sureforms' ) }
-								value={ fieldWidth }
-								options={ widthOptions }
-								onChange={ ( value ) =>
-									setAttributes( {
-										fieldWidth: Number( value ),
-									} )
-								}
-								__nextHasNoMarginBottom
-							/>
 							<ToggleControl
 								label={ __( 'Required', 'sureforms' ) }
 								checked={ required }
