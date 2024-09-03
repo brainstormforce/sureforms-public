@@ -32,7 +32,7 @@ function StyleSettings( props ) {
 	const [ submitBtnCtn, setSubmitBtnCtn ] = useState(
 		document.querySelector( '.srfm-submit-btn-container' )
 	);
-	const [ fieldSpacing, setFieldSpacing ] = useState( formStyling?.field_spacing || 'small' );
+	const [ fieldSpacing, setFieldSpacing ] = useState( formStyling?.field_spacing || 'medium' );
 
 	// Apply the sizings when field spacing changes.
 	useEffect( () => {
@@ -88,8 +88,8 @@ function StyleSettings( props ) {
 		root.style.setProperty(
 			'--srfm-btn-color-hover',
 			formStyling?.primary_color
-				? `rgba( from ${ formStyling.primary_color } r g b / 0.9)`
-				: `rgba( from #0C78FB r g b / 0.9)`
+				? `hsl( from ${ formStyling.primary_color } h s l / 0.9)`
+				: `hsl( from #0C78FB h s l / 0.9)`
 		);
 		root.style.setProperty(
 			'--srfm-color-scheme-text-on-primary',
@@ -109,8 +109,8 @@ function StyleSettings( props ) {
 		root.style.setProperty(
 			'--srfm-color-input-placeholder',
 			formStyling?.text_color
-				? `rgba( from ${ formStyling.text_color } r g b / 0.5)`
-				: `rgba( from ${ defaultTextColor } r g b / 0.5)`
+				? `hsl( from ${ formStyling.text_color } h s l / 0.5)`
+				: `hsl( from ${ defaultTextColor } h s l / 0.5)`
 		);
 		root.style.setProperty(
 			'--srfm-color-input-text',
@@ -119,43 +119,43 @@ function StyleSettings( props ) {
 		root.style.setProperty(
 			'--srfm-color-input-description',
 			formStyling?.text_color
-				? `rgba( from ${ formStyling.text_color } r g b / 0.65)`
-				: `rgba( from ${ defaultTextColor } r g b / 0.65)`
+				? `hsl( from ${ formStyling.text_color } h s l / 0.65)`
+				: `hsl( from ${ defaultTextColor } h s l / 0.65)`
 		);
 		root.style.setProperty(
 			'--srfm-color-input-prefix',
 			formStyling?.text_color
-				? `rgba( from ${ formStyling.text_color } r g b / 0.65)`
-				: `rgba( from ${ defaultTextColor } r g b / 0.65)`
+				? `hsl( from ${ formStyling.text_color } h s l / 0.65)`
+				: `hsl( from ${ defaultTextColor } h s l / 0.65)`
 		);
 		root.style.setProperty(
 			'--srfm-color-input-background',
 			formStyling?.text_color
-				? `rgba( from ${ formStyling.text_color } r g b / 0.02)`
-				: `rgba( from ${ defaultTextColor } r g b / 0.02)`
+				? `hsl( from ${ formStyling.text_color } h s l / 0.02)`
+				: `hsl( from ${ defaultTextColor } h s l / 0.02)`
 		);
 		root.style.setProperty(
 			'--srfm-color-input-background-disabled',
 			formStyling?.text_color
-				? `rgba( from ${ formStyling.text_color } r g b / 0.05)`
-				: `rgba( from ${ defaultTextColor } r g b / 0.05)`
+				? `hsl( from ${ formStyling.text_color } h s l / 0.05)`
+				: `hsl( from ${ defaultTextColor } h s l / 0.05)`
 		);
 		root.style.setProperty(
 			'--srfm-color-input-border',
 			formStyling?.text_color
-				? `rgba( from ${ formStyling.text_color } r g b / 0.25)`
-				: `rgba( from ${ defaultTextColor } r g b / 0.25)`
+				? `hsl( from ${ formStyling.text_color } h s l / 0.25)`
+				: `hsl( from ${ defaultTextColor } h s l / 0.25)`
 		);
 		root.style.setProperty(
 			'--srfm-color-input-border-disabled',
 			formStyling?.text_color
-				? `rgba( from ${ formStyling.text_color } r g b / 0.15)`
-				: `rgba( from ${ defaultTextColor } r g b / 0.15)`
+				? `hsl( from ${ formStyling.text_color } h s l / 0.15)`
+				: `hsl( from ${ defaultTextColor } h s l / 0.15)`
 		);
 		root.style.setProperty(
 			'--srfm-color-input-border-focus-glow',
 			formStyling.primary_color
-				? `rgba( from ${ formStyling.primary_color } r g b / 0.15 )`
+				? `hsl( from ${ formStyling.primary_color } h s l / 0.15 )`
 				: '#FAE4DC'
 		);
 
@@ -168,8 +168,8 @@ function StyleSettings( props ) {
 		root.style.setProperty(
 			'--srfm-color-multi-choice-svg',
 			formStyling?.text_color
-				? `rgba( from ${ formStyling.text_color } r g b / 0.7)`
-				: `rgba( from ${ defaultTextColor } r g b / 0.7)`
+				? `hsl( from ${ formStyling.text_color } h s l / 0.7)`
+				: `hsl( from ${ defaultTextColor } h s l / 0.7)`
 		);
 
 		// Button
@@ -283,8 +283,8 @@ function StyleSettings( props ) {
 			root.style.setProperty(
 				'--srfm-btn-color-hover',
 				value
-					? `rgba( from ${ value } r g b / 0.9)`
-					: `rgba( from #0C78FB r g b / 0.9)`
+					? `hsl( from ${ value } h s l / 0.9)`
+					: `hsl( from #0C78FB h s l / 0.9)`
 			);
 		}
 
@@ -310,38 +310,38 @@ function StyleSettings( props ) {
 			root.style.setProperty(
 				'--srfm-color-input-description',
 				value
-					? `rgba( from ${ value } r g b / 0.65)`
-					: `rgba( from ${ defaultTextColor } r g b / 0.65)`
+					? `hsl( from ${ value } h s l / 0.65)`
+					: `hsl( from ${ defaultTextColor } h s l / 0.65)`
 			);
 			root.style.setProperty(
 				'--srfm-color-input-prefix',
 				value
-					? `rgba( from ${ value } r g b / 0.65)`
-					: `rgba( from ${ defaultTextColor } r g b / 0.65)`
+					? `hsl( from ${ value } h s l / 0.65)`
+					: `hsl( from ${ defaultTextColor } h s l / 0.65)`
 			);
 			root.style.setProperty(
 				'--srfm-color-input-background',
 				value
-					? `rgba( from ${ value } r g b / 0.02)`
-					: `rgba( from ${ defaultTextColor } r g b / 0.02)`
+					? `hsl( from ${ value } h s l / 0.02)`
+					: `hsl( from ${ defaultTextColor } h s l / 0.02)`
 			);
 			root.style.setProperty(
 				'--srfm-color-input-background-disabled',
 				value
-					? `rgba( from ${ value } r g b / 0.05)`
-					: `rgba( from ${ defaultTextColor } r g b / 0.05)`
+					? `hsl( from ${ value } h s l / 0.05)`
+					: `hsl( from ${ defaultTextColor } h s l / 0.05)`
 			);
 			root.style.setProperty(
 				'--srfm-color-input-border',
 				value
-					? `rgba( from ${ value } r g b / 0.25)`
-					: `rgba( from ${ defaultTextColor } r g b / 0.25)`
+					? `hsl( from ${ value } h s l / 0.25)`
+					: `hsl( from ${ defaultTextColor } h s l / 0.25)`
 			);
 			root.style.setProperty(
 				'--srfm-color-input-border-disabled',
 				value
-					? `rgba( from ${ value } r g b / 0.15)`
-					: `rgba( from ${ defaultTextColor } r g b / 0.15)`
+					? `hsl( from ${ value } h s l / 0.15)`
+					: `hsl( from ${ defaultTextColor } h s l / 0.15)`
 			);
 		}
 
@@ -353,7 +353,7 @@ function StyleSettings( props ) {
 		}
 
 		if ( option === 'field_spacing' ) {
-			root.style.setProperty( '--srfm-field-spacing', value || 'small' );
+			root.style.setProperty( '--srfm-field-spacing', value || 'medium' );
 		}
 
 		if ( option === 'submit_button_alignment' ) {
@@ -467,7 +467,7 @@ function StyleSettings( props ) {
 				<MultiButtonsControl
 					label={ __( 'Field Spacing', 'sureforms' ) }
 					data={ {
-						value: formStyling?.field_spacing || 'small',
+						value: formStyling?.field_spacing || 'medium',
 						label: 'field_spacing',
 					} }
 					options={ [

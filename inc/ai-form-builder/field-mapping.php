@@ -3,7 +3,7 @@
  * SureForms - AI Form Builder.
  *
  * @package sureforms
- * @since x.x.x
+ * @since 0.0.8
  */
 
 namespace SRFM\Inc\AI_Form_Builder;
@@ -33,20 +33,24 @@ class Field_Mapping {
 		$params = $request->get_params();
 
 		// check parama is empty or not and is an array and consist form_data key.
-		if ( empty( $params ) || ! is_array( $params ) || ! array_key_exists( 'form_data', $params ) || 0 === count( $params['form_data'] ) ) {
+		if ( empty( $params ) || ! is_array( $params ) || ! isset( $params['form_data'] ) || 0 === count( $params['form_data'] ) ) {
 			return '';
 		}
 
 		// Get questions from form data.
-		$questions = $params['form_data']['questions'];
-
-		// Check if questions are null then set it to form_data.
-		if ( empty( $questions ) ) {
-			$questions = $params['form_data'];
+		$form_data = $params['form_data'];
+		if ( empty( $form_data ) || ! is_array( $form_data ) ) {
+			return '';
 		}
 
+		$form = $form_data['form'];
+		if ( empty( $form ) || ! is_array( $form ) ) {
+			return '';
+		}
+
+		$form_fields = $form['formFields'];
 		// if questions is empty then return empty string.
-		if ( empty( $questions ) ) {
+		if ( empty( $form_fields ) || ! is_array( $form ) ) {
 			return '';
 		}
 
@@ -54,7 +58,7 @@ class Field_Mapping {
 		$post_content = '';
 
 		// Loop through questions.
-		foreach ( $questions as $question ) {
+		foreach ( $form_fields as $question ) {
 
 			// Check if question is empty then continue to next question.
 			if ( empty( $question ) || ! is_array( $question ) ) {
@@ -121,7 +125,7 @@ class Field_Mapping {
 
 					$post_content .= '<!-- wp:srfm/' . $question['fieldType'] . ' ' . wp_json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
 					break;
-				case 'number-slider':
+				case 'slider':
 				case 'page-break':
 				case 'date-time-picker':
 				case 'upload':

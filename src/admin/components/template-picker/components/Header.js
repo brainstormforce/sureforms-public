@@ -29,6 +29,8 @@ const Header = () => {
 	}, [ method ] );
 
 	const formCreationleft = srfm_admin?.srfm_ai_usage_details?.remaining ?? 0;
+	const isRegistered = srfm_admin?.srfm_ai_usage_details?.type === 'registered';
+	const finalFormCreationCountRemaining = isRegistered && formCreationleft > 20 ? 20 : formCreationleft;
 
 	return (
 		<div
@@ -69,7 +71,7 @@ const Header = () => {
 										'%d AI form generations left',
 										'sureforms'
 									),
-									formCreationleft
+									finalFormCreationCountRemaining
 								) }
 							</span>
 							<div className="srfm-tp-header-bolt-icon">
@@ -78,6 +80,7 @@ const Header = () => {
 						</Button>
 						{ showRevokePopover && (
 							<CreditDetailsPopup
+								finalFormCreationCountRemaining={ finalFormCreationCountRemaining }
 								setShowRevokePopover={ setShowRevokePopover }
 							/>
 						) }

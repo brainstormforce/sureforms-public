@@ -109,24 +109,19 @@ const AiFormBuilder = () => {
 					return;
 				}
 
-				let sanitizedFormJsonData = content
-					.replace( /```/g, '' )
-					.replace( /json/g, '' );
-				sanitizedFormJsonData = JSON.parse( sanitizedFormJsonData );
-
 				const postContent = await apiFetch( {
 					path: 'sureforms/v1/map-fields',
 					method: 'POST',
-					data: { form_data: sanitizedFormJsonData },
+					data: { form_data: content },
 				} );
 
 				if ( postContent ) {
 					setMessage( __( 'Redirecting to Editor', 'sureforms' ) );
 					setPercentBuild( 100 );
-
+					const formTitle = content?.form?.formTitle;
 					handleAddNewPost(
 						postContent,
-						sanitizedFormJsonData?.formTitle,
+						formTitle,
 						[]
 					);
 				} else {
@@ -169,11 +164,7 @@ const AiFormBuilder = () => {
 		} );
 
 		if ( response?.success ) {
-			const decryptedAccessKey = response?.data;
-
-			if ( decryptedAccessKey ) {
-				window.location.href = srfm_admin.site_url + `/wp-admin/admin.php?page=add-new-form&method=ai`;
-			}
+			window.location.href = srfm_admin.site_url + `/wp-admin/admin.php?page=add-new-form&method=ai`;
 		} else {
 			setShowAuthErrorPopup( true );
 			console.error( 'Error handling access key: ', response.message );
@@ -338,7 +329,9 @@ const AiFormBuilder = () => {
 									const userPrompt =
 									document.querySelector( 'textarea' );
 
-									if ( ! userPrompt.value ) {
+									if ( ! userPrompt.value ||
+										! userPrompt.value.trim()
+									) {
 										setShowEmptyError( true );
 										return;
 									}
@@ -375,6 +368,26 @@ export const getLimitReachedPopup = (
 ) => {
 	const isRegistered = srfm_admin?.srfm_ai_usage_details?.type;
 	const formCreationleft = srfm_admin?.srfm_ai_usage_details?.remaining ?? 0;
+	const errorCode = srfm_admin?.srfm_ai_usage_details?.code;
+
+	// shows when the user has encountered an error.
+	if ( errorCode ) {
+		return (
+			<LimitReachedPopup
+				title={
+					srfm_admin?.srfm_ai_usage_details?.title
+				}
+				paraOne={
+					srfm_admin?.srfm_ai_usage_details?.message
+				 }
+				buttonText={ __( 'Try Again', 'sureforms' ) }
+				onclick={ () => {
+					window.location.href = srfm_admin.site_url + '/wp-admin/admin.php?page=add-new-form&method=ai';
+				} }
+			/>
+		);
+	}
+
 	// show upgrade plan popup if user is registered and form creation limit is reached
 	if ( isRegistered === 'registered' && formCreationleft === 0 ) {
 		return (
@@ -398,19 +411,22 @@ export const getLimitReachedPopup = (
 		);
 	}
 
-	return (
-		<LimitReachedPopup
-			paraOne={ 	 __(
-				'You have reached the maximum number of form generations.',
-				'sureforms'
-			) }
-			paraTwo={ __(
-				'Please connect your website with SureForms AI to create 20 more forms with AI.',
-				'sureforms'
-			) }
-			onclick={ initiateAuth }
-		/>
-	);
+	// shows up one when user is not registered and the remaining form creation limit is 0
+	if ( srfm_admin?.srfm_ai_usage_details?.remaining === 0 ) {
+		return (
+			<LimitReachedPopup
+				paraOne={ 	 __(
+					'You have reached the maximum number of form generations.',
+					'sureforms'
+				) }
+				paraTwo={ __(
+					'Please connect your website with SureForms AI to create 20 more forms with AI.',
+					'sureforms'
+				) }
+				onclick={ initiateAuth }
+			/>
+		);
+	}
 };
 
 export default AiFormBuilder;

@@ -93,13 +93,6 @@ class Create_New_Form {
 		return [
 			'_srfm_submit_button_text'              => [ 'Submit' ],
 			'_srfm_use_label_as_placeholder'        => [ '' ],
-			'_srfm_single_page_form_title'          => [ 1 ],
-			'_srfm_instant_form'                    => [ '' ],
-			'_srfm_form_container_width'            => [ 650 ],
-			'_srfm_bg_type'                         => [ 'image' ],
-			'_srfm_bg_image'                        => [ '' ],
-			'_srfm_cover_image'                     => [ '' ],
-			'_srfm_bg_color'                        => [ '#ffffff' ],
 			'_srfm_submit_width_backend'            => [ 'max-content' ],
 			'_srfm_submit_alignment'                => [ 'left' ],
 			'_srfm_submit_alignment_backend'        => [ '100%' ],

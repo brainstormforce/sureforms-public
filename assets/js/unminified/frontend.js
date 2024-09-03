@@ -214,8 +214,8 @@ function onSuccess( response ) {
 	 * It then determines if the background color of the container element is dark. If the background is dark,
 	 * it adds a specific class (`'srfm-has-dark-bg'`) to the container element for potential use by other styles or scripts.
 	 *
-	 * The function further adjusts the form's label color and other related elements (such as dropdowns and calendars)
-	 * based on whether the existing label color is dark or light. If the label color is not dark, it updates CSS variables
+	 * The function can further be used to adjust the form's label color and other related elements (such as dropdowns and calendars)
+	 * based on whether the existing text color is dark or light. If the text color is not dark, it updates CSS variables
 	 * to ensure proper visibility on a dark background, and appends these styles to a `<style>` tag within the element.
 	 *
 	 * @param {HTMLElement} element - The container element which includes the form and other related elements. This element should contain a form and be styled appropriately to have a background color that is checked for darkness.
@@ -231,25 +231,22 @@ function onSuccess( response ) {
 
 		const { isDark } = getPrimaryBackgroundColor( element );
 
-		if ( ! isDark ) {
-			return;
+		if ( isDark ) {
+			// Add a class in the form container if background color is dark, so that it can be used by other developers as well.
+			element.classList.add( 'srfm-has-dark-bg' );
 		}
 
-		// Add a class in the form container, so that it can be used by other developers as well.
-		element.classList.add( 'srfm-has-dark-bg' );
-
 		/**
-		 * Lets calculate the form's label color and other elements such as dropdown, and calendar.
+		 * Lets calculate the form's text color.
 		 */
-		const labelColor = window
+		const textColor = window
 			.getComputedStyle( element )
-			.getPropertyValue( '--srfm-color-input-label' );
+			.getPropertyValue( '--srfm-color-input-text' );
 
-		const labelLuminance = getColorLuminance( labelColor );
+		const textLuminance = getColorLuminance( textColor );
 
-		if ( ! isColorDark( labelLuminance ) ) {
+		if ( ! isColorDark( textLuminance ) ) {
 			const cssVariablesAndColors = {
-				'--srfm-color-input-label-inverse': '#181818',
 				'--srfm-dropdown-menu-background': '#2e2e2e',
 			};
 
