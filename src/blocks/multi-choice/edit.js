@@ -29,7 +29,6 @@ import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
 import { MultiChoiceComponent } from './components/default';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
-import widthOptions from '../width-options.json';
 import { FieldsPreview } from '../FieldsPreview.jsx';
 import ConditionalLogic from '@Components/conditional-logic';
 import MultiButtonsControl from '@Components/multi-buttons-control';
@@ -180,7 +179,26 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 							<SelectControl
 								label={ __( 'Choice Width', 'sureforms' ) }
 								value={ choiceWidth }
-								options={ widthOptions }
+								options={ 
+									[
+										{
+											label: __( 'Full Width', 'sureforms' ),
+											value: 100,
+										},
+										{
+											label: __( 'Two Columns', 'sureforms' ),
+											value: 50,
+										},
+										{
+											label: __( 'Three Columns', 'sureforms' ),
+											value: 33.33,
+										},
+										{
+											label: __( 'Four Columns', 'sureforms' ),
+											value: 25,
+										},
+									]
+								}
 								onChange={ ( value ) =>
 									setAttributes( {
 										choiceWidth: Number( value ),
