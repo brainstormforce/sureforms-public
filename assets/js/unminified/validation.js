@@ -467,7 +467,7 @@ export async function fieldValidation(
 			const sliderDefault = container.getAttribute( 'data-default' );
 			if ( isSliderRequired === 'true' ) {
 				let hasError = false;
-				if ( sliderInput && ! sliderInput.dataset.interacted && ! sliderDefault ) {
+				if ( sliderInput && ! sliderInput.dataset.interacted && ( ( ! sliderDefault || sliderDefault === 'false' ) ) ) {
 					hasError = true;
 				} else if ( textSliderElement && ! selectedTextSliderOption ) {
 					hasError = true;
