@@ -48,7 +48,7 @@ function findDifferentKeyValue( obj1, obj2 ) {
 }
 
 const InstantFormComponent = () => {
-	const { _srfm_instant_form_settings } = select( editorStore ).getEditedPostAttribute( 'meta' );
+	const { _srfm_submit_button_text, _srfm_instant_form_settings } = select( editorStore ).getEditedPostAttribute( 'meta' );
 
 	const {
 		// Form background color / image.
@@ -135,6 +135,7 @@ const InstantFormComponent = () => {
 
 		params.set( 'preview', true );
 		params.set( 'live_mode', true );
+		params.set( '_srfm_submit_button_text', _srfm_submit_button_text ); // This will help display submit button if live preview is for unpublished form (draft).
 
 		Object.keys( _srfm_instant_form_settings ).forEach( ( key ) => {
 			params.set( key, _srfm_instant_form_settings[ key ] );
