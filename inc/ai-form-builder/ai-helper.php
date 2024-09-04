@@ -171,11 +171,6 @@ class AI_Helper {
 			}
 		}
 
-		// if the license is active then use the license key as the token.
-		if ( ! empty( $license_key ) ) {
-			return $license_key;
-		}
-
 		// if the license is not active then use the user email/site url as the token.
 		return ! empty( $user_email ) && is_array( $user_email ) ? $user_email['user_email'] : site_url();
 	}
