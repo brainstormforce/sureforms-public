@@ -285,5 +285,4 @@ class AI_Helper {
 		return $licensing->is_license_active();
 	}
 
-
 }
