@@ -49,69 +49,69 @@ const Header = () => {
 
 				{ /* if the page is add-new-form and the method is ai then show the credits left in the account only if the user is not pro user
 				 */ }
-				{ page === 'add-new-form' && method === 'ai' && ! srfm_admin?.is_pro_active || ! srfm_admin?.is_pro_license_active 
+				{ page === 'add-new-form' && method === 'ai' && ( ! srfm_admin?.is_pro_active || ! srfm_admin?.is_pro_license_active )
 				 ? (
-					<div className="srfm-tp-header-credits-ctn">
-						<Button
-							style={ {
+						<div className="srfm-tp-header-credits-ctn">
+							<Button
+								style={ {
 								// if popover is open, change background color
-								background: showRevokePopover
-									? '#F3F4F6'
-									: 'white',
-								width: '225px',
-							} }
-							className="srfm-tp-header-credits"
-							onClick={ () => {
-								setShowRevokePopover( ! showRevokePopover );
-							} }
-						>
-							<span className="srfm-tp-header-credits-left">
-								{ wp.i18n.sprintf(
+									background: showRevokePopover
+										? '#F3F4F6'
+										: 'white',
+									width: '225px',
+								} }
+								className="srfm-tp-header-credits"
+								onClick={ () => {
+									setShowRevokePopover( ! showRevokePopover );
+								} }
+							>
+								<span className="srfm-tp-header-credits-left">
+									{ wp.i18n.sprintf(
 									/* translators: %s: number of AI form generations left */
-									__(
-										'%d AI form generations left',
-										'sureforms'
-									),
-									finalFormCreationCountRemaining
-								) }
-							</span>
-							<div className="srfm-tp-header-bolt-icon">
-								<BsLightningCharge />
+										__(
+											'%d AI form generations left',
+											'sureforms'
+										),
+										finalFormCreationCountRemaining
+									) }
+								</span>
+								<div className="srfm-tp-header-bolt-icon">
+									<BsLightningCharge />
+								</div>
+							</Button>
+							{ showRevokePopover && (
+								<CreditDetailsPopup
+									finalFormCreationCountRemaining={ finalFormCreationCountRemaining }
+									setShowRevokePopover={ setShowRevokePopover }
+								/>
+							) }
+							<div
+								className="srfm-tp-header-close"
+								onClick={ () => {
+									window.location.href =
+									'/wp-admin/admin.php?page=sureforms_menu';
+								} }
+							>
+								<div
+									className="srfm-tp-header-close-icon"
+								>
+									{ ICONS.close }
+								</div>
 							</div>
-						</Button>
-						{ showRevokePopover && (
-							<CreditDetailsPopup
-								finalFormCreationCountRemaining={ finalFormCreationCountRemaining }
-								setShowRevokePopover={ setShowRevokePopover }
-							/>
-						) }
+						</div>
+					) : (
 						<div
 							className="srfm-tp-header-close"
 							onClick={ () => {
 								window.location.href =
-									'/wp-admin/admin.php?page=sureforms_menu';
+								'/wp-admin/admin.php?page=sureforms_menu';
 							} }
 						>
 							<div
 								className="srfm-tp-header-close-icon"
-							>
-								{ ICONS.close }
-							</div>
+							>{ ICONS.close }</div>
 						</div>
-					</div>
-				) : (
-					<div
-						className="srfm-tp-header-close"
-						onClick={ () => {
-							window.location.href =
-								'/wp-admin/admin.php?page=sureforms_menu';
-						} }
-					>
-						<div
-							className="srfm-tp-header-close-icon"
-						>{ ICONS.close }</div>
-					</div>
-				) }
+					) }
 			</div>
 		</div>
 	);
