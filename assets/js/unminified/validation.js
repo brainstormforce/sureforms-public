@@ -462,13 +462,22 @@ export async function fieldValidation(
 		if ( container.classList.contains( 'srfm-slider-block' ) ) {
 			const isSliderRequired = container.getAttribute( 'data-required' );
 			const sliderInput = container.querySelector( '.srfm-input-slider' );
-			const textSliderElement = container.querySelector( '.srfm-text-slider' );
+			const textSliderElement =
+				container.querySelector( '.srfm-text-slider' );
 			const sliderDefault = container.getAttribute( 'data-default' );
 			if ( isSliderRequired === 'true' ) {
 				let hasError = false;
-				if ( sliderInput && ! sliderInput.dataset.interacted && ( ! sliderDefault || sliderDefault === 'false' ) ) {
+				if (
+					sliderInput &&
+					! sliderInput.dataset.interacted &&
+					( ! sliderDefault || sliderDefault === 'false' )
+				) {
 					hasError = true;
-				} else if ( textSliderElement && ! textSliderElement.dataset.interacted && ( ! sliderDefault || sliderDefault === 'false' ) ) {
+				} else if (
+					textSliderElement &&
+					! textSliderElement.dataset.interacted &&
+					( ! sliderDefault || sliderDefault === 'false' )
+				) {
 					hasError = true;
 				}
 
@@ -736,29 +745,29 @@ function addEmailBlurListener( areaInput, blockClass ) {
 /**
  * Add blur listeners to slider fields
  * That shows validation errors on blur.
- * 
+ *
  * @param {HTMLElement} areaField
  * @param {HTMLElement} areaInput
  * @param {string}      blockClass
  */
 function addSliderBlurListener( areaField, areaInput, blockClass ) {
-	const sliderInput = areaInput.querySelector('.srfm-input-slider');
-	const textSliderElement = areaInput.querySelector('.srfm-text-slider');
+	const sliderInput = areaInput.querySelector( '.srfm-input-slider' );
+	const textSliderElement = areaInput.querySelector( '.srfm-text-slider' );
 	// Number slider
 	if ( sliderInput ) {
-		sliderInput.addEventListener('blur', async function () {
+		sliderInput.addEventListener( 'blur', async function () {
 			fieldValidationInit( sliderInput, blockClass );
-		});
+		} );
 	}
 
 	// Text slider
 	if ( textSliderElement ) {
-		const sliderThumb = textSliderElement.querySelector('.srfm-slider-thumb');
+		const sliderThumb =
+			textSliderElement.querySelector( '.srfm-slider-thumb' );
 		if ( sliderThumb ) {
-			sliderThumb.addEventListener('blur', async function () {
+			sliderThumb.addEventListener( 'blur', async function () {
 				fieldValidationInit( sliderThumb, blockClass );
-				// textSliderElement.dataset.interacted = true;
-			});
+			} );
 		}
 	}
 }
