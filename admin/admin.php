@@ -459,6 +459,7 @@ class Admin {
 					'template_picker_nonce'        => current_user_can( 'edit_posts' ) ? wp_create_nonce( 'wp_rest' ) : '',
 					'is_pro_active'                => defined( 'SRFM_PRO_VER' ),
 					'srfm_ai_usage_details'        => AI_Helper::get_current_usage_details(),
+					'is_pro_license_active'        => AI_Helper::is_pro_license_active(),
 					'srfm_ai_auth_user_email'      => get_option( 'srfm_ai_auth_user_email' ),
 					'pricing_page_url'             => $this->get_sureforms_website_url( 'pricing' ),
 				]
