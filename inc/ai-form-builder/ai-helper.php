@@ -161,8 +161,8 @@ class AI_Helper {
 	 * @return string The User Token.
 	 */
 	private static function get_user_token() {
-		$user_email = get_option( 'srfm_ai_auth_user_email' );
-		$license_key  = self::get_license_key();
+		$user_email  = get_option( 'srfm_ai_auth_user_email' );
+		$license_key = self::get_license_key();
 
 		// if the license is active then use the license key as the token.
 		if ( ! empty( $license_key ) ) {
@@ -234,33 +234,54 @@ class AI_Helper {
 
 	}
 
+	/**
+	 * Get the Licensing Instance.
+	 *
+	 * @since x.x.x
+	 * @return object|null The Licensing Instance.
+	 */
 	private static function get_licensing_instance() {
 		if ( ! class_exists( 'SRFM_Pro\Admin\Licensing' ) ) {
 			return null;
 		}
 		return Licensing::get_instance();
 	}
-	
-	private static function get_license_key(){
+
+	/**
+	 * Get the SureForms Pro License Key.
+	 *
+	 * @since x.x.x
+	 * @return string The SureForms Pro License Key.
+	 */
+	private static function get_license_key() {
 		$licensing = self::get_licensing_instance();
-		if ( ! $licensing ) {
+		if ( ! $licensing || ! method_exists( $licensing, 'is_license_active' ) ||
+		! method_exists( $licensing, 'licensing_setup' ) || ! method_exists( $licensing->licensing_setup(), 'settings' ) ) {
 			return '';
 		}
 		// Check if the SureForms Pro license is active.
 		$is_license_active = $licensing->is_license_active();
 		// If the license is active, get the license key.
-		$license_key = ! empty( $is_license_active ) ? $licensing->licensing_setup()->settings()->license_key : '';
-		return $license_key;
+		$license_setup = $licensing->licensing_setup();
+		$license_key   = ( ! empty( $is_license_active ) && is_object( $license_setup ) && method_exists( $license_setup, 'settings' ) ) ? $license_setup->settings()->license_key : '';
+				return $license_key;
 	}
-	
+
+	/**
+	 * Check if the SureForms Pro license is active.
+	 *
+	 * @since x.x.x
+	 * @return bool|string True if the SureForms Pro license is active, false otherwise.
+	 */
 	public static function is_pro_license_active() {
 		$licensing = self::get_licensing_instance();
-		if ( ! $licensing ) {
-			return false;
+		if ( ! $licensing || ! method_exists( $licensing, 'is_license_active' )
+		) {
+			return '';
 		}
 		// Check if the SureForms Pro license is active.
 		return $licensing->is_license_active();
 	}
-	
+
 
 }
