@@ -13,6 +13,9 @@
 .block-editor-block-inspector,
 .srfm--panel {
 	.srfm-inspector-tab {
+		.components-flex.components-input-base {
+			gap: 0;
+		}
 		.components-notice.is-warning {
 			margin-top: 20px;
 			margin-bottom: 20px;
@@ -77,28 +80,6 @@
 			/* Add a border top and bottom of responsive condition */
 			&:last-child {
 				border-bottom: 1px solid #e0e0e0;
-			}
-			.srfm-date-setting-wrap {
-				position: relative;
-				margin-bottom: 25px;
-				.srfm-date-setting-icon {
-					position: absolute;
-					top: 6px;
-					right: 6px;
-					bottom: 0;
-				}
-				.srfm-date-picker {
-					margin-left: 0;
-					margin-right: 0;
-					color: #50575e;
-					border: 1px solid #e6e7e9;
-					border-radius: 2px;
-					box-shadow: 0 0 0 transparent;
-					font-size: 13px;
-					line-height: normal;
-					padding: 6px 8px;
-					width: 100%;
-				}
 			}
 		}
 	}
