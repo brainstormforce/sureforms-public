@@ -114,4 +114,8 @@ function handleInputState( element ) {
 		}
 	}
 }
+
+// make dropdown initialization function available globally
+window.srfmInitializeDropdown = initializeDropdown;
+
 document.addEventListener( 'DOMContentLoaded', initializeDropdown );
