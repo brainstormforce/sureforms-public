@@ -255,12 +255,12 @@ class AI_Helper {
 	 */
 	private static function get_license_key() {
 		$licensing = self::get_licensing_instance();
-		if ( ! $licensing || ! method_exists( $licensing, 'is_license_active' ) ||
+		if ( ! $licensing ||
 		! method_exists( $licensing, 'licensing_setup' ) || ! method_exists( $licensing->licensing_setup(), 'settings' ) ) {
 			return '';
 		}
 		// Check if the SureForms Pro license is active.
-		$is_license_active = $licensing->is_license_active();
+		$is_license_active = self::is_pro_license_active();
 		// If the license is active, get the license key.
 		$license_setup = $licensing->licensing_setup();
 		$license_key   = ( ! empty( $is_license_active ) && is_object( $license_setup ) && method_exists( $license_setup, 'settings' ) ) ? $license_setup->settings()->license_key : '';
