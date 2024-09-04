@@ -161,7 +161,7 @@ class AI_Helper {
 	 * @return string The User Token.
 	 */
 	private static function get_user_token() {
-		$user_email  = get_option( 'srfm_ai_auth_user_email' );
+		$user_email = get_option( 'srfm_ai_auth_user_email' );
 
 		// if the license is active then use the license key as the token.
 		if ( defined( 'SRFM_PRO_VER' ) ) {
