@@ -162,7 +162,14 @@ class AI_Helper {
 	 */
 	private static function get_user_token() {
 		$user_email  = get_option( 'srfm_ai_auth_user_email' );
-		$license_key = self::get_license_key();
+
+		// if the license is active then use the license key as the token.
+		if ( defined( 'SRFM_PRO_VER' ) ) {
+			$license_key = self::get_license_key();
+			if ( ! empty( $license_key ) ) {
+				return $license_key;
+			}
+		}
 
 		// if the license is active then use the license key as the token.
 		if ( ! empty( $license_key ) ) {
