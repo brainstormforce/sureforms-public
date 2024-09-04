@@ -377,12 +377,14 @@ body.post-type-sureforms_form {
 			border: 1px solid #ddd;
 			background: rgb( 249, 250, 251 );
 			box-shadow: none;
+			transition: 0.2s ease-out;
 			// need to declare height for WP6.5.
 			height: 36px;
 
 			&:focus {
 				border-color: #0284c7;
-				box-shadow: unset;
+				box-shadow: 0px 0px 0px 3px #0284c726;
+				outline: none;
 			}
 		}
 	}
