@@ -8,7 +8,7 @@ import CreditDetailsPopup from './CreditDetailsPopup.js';
 import { Button } from '@wordpress/components';
 
 const Header = () => {
-	const [ showRevokePopover, setShowRevokePopover ] = useState( false );
+	const [ showRevokePopover, setShowRevokePopover ] = useState( true );
 
 	function useQuery() {
 		return new URLSearchParams( useLocation().search );
