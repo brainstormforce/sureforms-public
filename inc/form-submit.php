@@ -8,6 +8,7 @@
 
 namespace SRFM\Inc;
 
+use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Traits\Get_Instance;
 use SRFM\Inc\Helper;
 use SRFM\Inc\Email\Email_Template;
@@ -606,6 +607,14 @@ class Form_Submit {
 				'message' => __( 'Error submitting form', 'sureforms' ),
 			];
 		}
+
+		Entries::get_instance()->insert(
+			compact(
+				'submission_data',
+				'srfm_submission_info',
+				'id',
+			)
+		);
 
 		return $response;
 	}
