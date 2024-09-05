@@ -88,7 +88,7 @@ export async function fieldValidation(
 		if ( currentFormId !== formId ) {
 			continue;
 		}
-		const inputField = container.querySelector( 'input, textarea,select' );
+		const inputField = container.querySelector( 'input, textarea, select' );
 		const isRequired = inputField.getAttribute( 'aria-required' );
 		const isUnique = inputField.getAttribute( 'data-unique' );
 		let fieldName = inputField.getAttribute( 'name' );
@@ -458,6 +458,41 @@ export async function fieldValidation(
 			}
 		}
 
+		// Slider Field.
+		if ( container.classList.contains( 'srfm-slider-block' ) ) {
+			const isSliderRequired = container.getAttribute( 'data-required' );
+			const sliderInput = container.querySelector( '.srfm-input-slider' );
+			const textSliderElement =
+				container.querySelector( '.srfm-text-slider' );
+			const sliderDefault = container.getAttribute( 'data-default' );
+			if ( isSliderRequired === 'true' ) {
+				let hasError = false;
+				if (
+					sliderInput &&
+					! sliderInput.dataset.interacted &&
+					( ! sliderDefault || sliderDefault === 'false' )
+				) {
+					hasError = true;
+				} else if (
+					textSliderElement &&
+					! textSliderElement.dataset.interacted &&
+					( ! sliderDefault || sliderDefault === 'false' )
+				) {
+					hasError = true;
+				}
+
+				if ( hasError ) {
+					container.classList.add( 'srfm-error' );
+					validateResult = true;
+					if ( ! firstErrorInput ) {
+						firstErrorInput = sliderInput;
+					}
+				} else {
+					container.classList.remove( 'srfm-error' );
+				}
+			}
+		}
+
 		// Dropdown Field
 		if ( container.classList.contains( 'srfm-dropdown-block' ) ) {
 			const dropdownInputs = container.querySelectorAll(
@@ -530,6 +565,7 @@ export function initializeInlineFieldValidation() {
 		'srfm-rating-block',
 		'srfm-textarea-block',
 		'srfm-dropdown-block',
+		'srfm-slider-block',
 	];
 
 	srfmFields.forEach( ( block ) => addBlurListener( block, `.${ block }` ) );
@@ -572,6 +608,11 @@ function addBlurListener( containerClass, blockClass ) {
 			// Function to validate email inputs within the email block
 			if ( containerClass === 'srfm-email-block-wrap' ) {
 				addEmailBlurListener( areaInput, blockClass );
+			}
+
+			// Function to validate slider inputs within the slider block
+			if ( containerClass === 'srfm-slider-block' ) {
+				addSliderBlurListener( areaField, areaInput, blockClass );
 			}
 
 			// for all other fields
@@ -699,6 +740,36 @@ function addEmailBlurListener( areaInput, blockClass ) {
 			}
 		} );
 	} );
+}
+
+/**
+ * Add blur listeners to slider fields
+ * That shows validation errors on blur.
+ *
+ * @param {HTMLElement} areaField
+ * @param {HTMLElement} areaInput
+ * @param {string}      blockClass
+ */
+function addSliderBlurListener( areaField, areaInput, blockClass ) {
+	const sliderInput = areaInput.querySelector( '.srfm-input-slider' );
+	const textSliderElement = areaInput.querySelector( '.srfm-text-slider' );
+	// Number slider
+	if ( sliderInput ) {
+		sliderInput.addEventListener( 'blur', async function () {
+			fieldValidationInit( sliderInput, blockClass );
+		} );
+	}
+
+	// Text slider
+	if ( textSliderElement ) {
+		const sliderThumb =
+			textSliderElement.querySelector( '.srfm-slider-thumb' );
+		if ( sliderThumb ) {
+			sliderThumb.addEventListener( 'blur', async function () {
+				fieldValidationInit( sliderThumb, blockClass );
+			} );
+		}
+	}
 }
 
 /**
