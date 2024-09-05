@@ -45,8 +45,8 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 			}
 		>
 			<InspectorControls>
-				<InspectorTabs tabs={ [ 'advance' ] } defaultTab={ 'advance' }>
-					<InspectorTab { ...SRFMTabs.advance }>
+				<InspectorTabs tabs={ [ 'advance' ] }>
+					<InspectorTab { ...SRFMTabs.advance } initialOpen={ true }>
 						<ConditionalLogic
 							{ ...{ setAttributes, attributes } }
 						/>
