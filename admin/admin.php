@@ -56,15 +56,15 @@ class Admin {
 		if ( ! class_exists( 'Classic_Editor' ) || 'block' === get_option( 'classic-editor-replace' ) ) {
 			return;
 		}
-	
+
 		$srfm_post_types = apply_filters( 'srfm_enable_gutenberg_post_types', [ SRFM_FORMS_POST_TYPE ] );
-	
+
 		if ( in_array( get_current_screen()->post_type, $srfm_post_types, true ) ) {
 			add_filter( 'use_block_editor_for_post_type', '__return_true', 110 );
 			add_filter( 'gutenberg_can_edit_post_type', '__return_true', 110 );
 		}
 	}
-	
+
 
 	/**
 	 * Sureforms editor header styles.
