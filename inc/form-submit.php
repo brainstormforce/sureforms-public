@@ -566,14 +566,13 @@ class Form_Submit {
 		update_post_meta( $post_id, 'srfm_entry_meta', $submission_data );
 		add_post_meta( $post_id, 'srfm_entry_meta_form_id', $id, true );
 		if ( $post_id ) {
-			$srfm_submission_info[] = [
+			$submission_info = [
 				'user_ip'      => $user_ip,
 				'browser_name' => $browser_name,
 				'device_name'  => $device_name,
 			];
 
 			update_post_meta( $post_id, 'srfm_entry_meta', $submission_data );
-			update_post_meta( $post_id, '_srfm_submission_info', $srfm_submission_info );
 			update_post_meta( $post_id, '_srfm_entry_form_id', $id );
 
 			wp_set_object_terms( $post_id, $id, 'sureforms_tax' );
@@ -601,20 +600,19 @@ class Form_Submit {
 
 			do_action( 'srfm_form_submit', $form_submit_response );
 
+			Entries::get_instance()->add(
+				[
+					'form_id'         => $id,
+					'user_data'       => $submission_data,
+					'submission_info' => $submission_info,
+				]
+			);
 		} else {
 			$response = [
 				'success' => false,
 				'message' => __( 'Error submitting form', 'sureforms' ),
 			];
 		}
-
-		Entries::get_instance()->insert(
-			compact(
-				'submission_data',
-				'srfm_submission_info',
-				'id',
-			)
-		);
 
 		return $response;
 	}
@@ -659,6 +657,9 @@ class Form_Submit {
 		$emails             = [];
 
 		if ( is_iterable( $email_notification ) ) {
+			$entries_db_instance = Entries::get_instance();
+			$entries_db_instance->add_log( __( 'Email Notification Initiated', 'sureforms' ) );
+
 			foreach ( $email_notification as $notification ) {
 				foreach ( $notification as $item ) {
 					if ( true === $item['status'] ) {
@@ -684,7 +685,17 @@ class Form_Submit {
 							$headers .= 'Bcc:' . $smart_tags->process_smart_tags( $item['email_bcc'], $submission_data ) . "\r\n";
 						}
 
-						$sent         = wp_mail( $to, $subject, $message, $headers );
+						$sent = wp_mail( $to, $subject, $message, $headers );
+
+						$entries_db_instance->update_log(
+							$entries_db_instance->get_last_log_key(),
+							null,
+							[
+								/* translators: Here, %s is the comma separated emails list. */
+								$sent ? sprintf( __( 'Email notification sent to %s', 'sureforms' ), esc_html( $to ) ) : sprintf( __( 'Failed sending email notification to %s', 'sureforms' ) ),
+							]
+						);
+
 						$is_mail_sent = $sent;
 						$emails[]     = $to;
 					}

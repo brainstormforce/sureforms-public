@@ -27,7 +27,7 @@ trait Get_Instance {
 	 * Initiator
 	 *
 	 * @since 0.0.1
-	 * @return object initialized object of class.
+	 * @return self initialized object of class.
 	 */
 	public static function get_instance() {
 		if ( null === self::$instance ) {

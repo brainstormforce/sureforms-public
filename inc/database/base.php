@@ -1,6 +1,6 @@
 <?php
 /**
- * SureForms Database Base Class.
+ * SureForms Database Tables Base Class.
  *
  * @link       https://sureforms.com
  * @since      x.x.x
@@ -10,10 +10,17 @@
 
 namespace SRFM\Inc\Database;
 
+use SRFM\Inc\Helper;
+
 // Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
 
-class Base {
+/**
+ * SureForms Database Tables Base Class
+ *
+ * @since x.x.x
+ */
+abstract class Base {
 
 	/**
 	 * WordPress Database class instance.
@@ -50,6 +57,14 @@ class Base {
 	private $table_name;
 
 	/**
+	 * Current table database result caches.
+	 *
+	 * @var array<mixed>
+	 * @since x.x.x
+	 */
+	private $caches = [];
+
+	/**
 	 * Init class.
 	 *
 	 * @since x.x.x
@@ -64,6 +79,14 @@ class Base {
 	}
 
 	/**
+	 * Returns the current table schema.
+	 *
+	 * @since x.x.x
+	 * @return array
+	 */
+	abstract public function get_schema();
+
+	/**
 	 * Returns full table name.
 	 *
 	 * @since x.x.x
@@ -71,6 +94,45 @@ class Base {
 	 */
 	public function get_tablename() {
 		return $this->table_name;
+	}
+
+	/**
+	 * Retrieve a cached value by its key.
+	 *
+	 * @param string $key The cache key.
+	 * @since x.x.x
+	 * @return mixed|null The cached value if it exists, or null if the key does not exist in the cache.
+	 */
+	protected function cache_get( $key ) {
+		$key = md5( $key );
+		if ( ! isset( $this->caches[ $key ] ) ) {
+			return null;
+		}
+		return $this->caches[ $key ];
+	}
+
+	/**
+	 * Store a value in the cache with the specified key.
+	 *
+	 * @param string $key The cache key.
+	 * @param mixed  $value The value to store in the cache.
+	 * @since x.x.x
+	 * @return mixed The stored value.
+	 */
+	protected function cache_set( $key, $value ) {
+		$key                  = md5( $key );
+		$this->caches[ $key ] = $value;
+		return $value;
+	}
+
+	/**
+	 * Reset the cache by clearing all stored values.
+	 *
+	 * @since x.x.x
+	 * @return void
+	 */
+	protected function cache_reset() {
+		$this->caches = [];
 	}
 
 	/**
@@ -101,21 +163,30 @@ class Base {
 	 * @since x.x.x
 	 * @return int|bool
 	 */
-	public function create( $columns = array() ) {
+	public function create( $columns = [] ) {
 		if ( empty( $columns ) ) {
-			return;
+			return false; // It's better to return a boolean for failure.
 		}
 
-		$_columns = implode( ',', $columns );
+		// Escape table name.
+		$table_name = $this->wpdb->esc_like( $this->get_tablename() );
 
-		$queries = [
-			'CREATE TABLE IF NOT EXISTS',
-			$this->get_tablename(),
-			"( $_columns )",
-			$this->get_charset_collate(),
-		];
+		// Prepare columns list.
+		$columns_list = implode(
+			', ',
+			array_map(
+				function ( $col ) {
+					return $this->wpdb->esc_like( $col );
+				},
+				$columns
+			)
+		);
 
-		return $this->wpdb->query( implode( ' ', $queries ) );
+		$wpdb = $this->wpdb;
+
+		// Execute the query.
+		// phpcs:ignore
+		return $wpdb->query( $wpdb->prepare( 'CREATE TABLE IF NOT EXISTS %s ( %s ) %s', $table_name, $columns_list, $this->get_charset_collate() ) );
 	}
 
 	/**
@@ -125,11 +196,20 @@ class Base {
 	 * @return int|bool
 	 */
 	public function drop() {
-		$queries = [
-			'DROP TABLE IF EXISTS',
-			$this->get_tablename(),
-		];
-		return $this->wpdb->query( implode( ' ', $queries ) );
+		$wpdb = $this->wpdb;
+
+		// Escape table name.
+		$table_name = $wpdb->esc_like( $this->get_tablename() );
+
+		// Prepare the SQL query.
+		$query = $wpdb->prepare(
+			'DROP TABLE IF EXISTS %s',
+			$table_name
+		);
+
+		// Execute the query.
+		// phpcs:ignore
+		return $wpdb->query( $query );
 	}
 
 	/**
@@ -139,10 +219,23 @@ class Base {
 	 * @return boolean
 	 */
 	public function exists() {
-		$query = $this->wpdb->prepare( 'SHOW TABLES LIKE %s', $this->wpdb->esc_like( $this->get_tablename() ) );
-		if ( $this->wpdb->get_var( $query ) == $this->get_tablename() ) {
+		global $wpdb;
+
+		// Escape table name.
+		$table_name = $wpdb->esc_like( $this->get_tablename() );
+
+		// Prepare the SQL query to check if the table exists.
+		$query = $wpdb->prepare(
+			'SHOW TABLES LIKE %s',
+			$table_name
+		);
+
+		// Check if the table exists.
+		// phpcs:ignore
+		if ( $wpdb->get_var( $query ) === $table_name ) {
 			return true;
 		}
+
 		return false;
 	}
 
@@ -162,6 +255,183 @@ class Base {
 	 * @return int|false The number of rows inserted, or false on error.
 	 */
 	public function insert( $data, $format = null ) {
-		return $this->wpdb->insert( $this->get_tablename(), $data, $format );
+		$processed_data = $this->process_data( $data );
+		return $this->wpdb->insert(
+			$this->get_tablename(),
+			$processed_data['data'],
+			! is_null( $format ) ? $format : $processed_data['format'] // If format is not null, use it otherwise use from schema.
+		);
+	}
+
+	/**
+	 * Retrieve results from the database based on the given WHERE clauses and selected columns.
+	 *
+	 * This method builds a SQL SELECT query with optional WHERE clauses and retrieves the results
+	 * from the database. The results are cached to improve performance on subsequent requests.
+	 *
+	 * @param array  $where_clauses Optional. An associative array of WHERE clauses for the SQL query.
+	 *                               Each key represents a column name, and each value is the value
+	 *                               to match. If the value is an array, it will be used in an IN clause.
+	 *                               Example: ['column1' => 'value1', 'column2' => ['value2', 'value3']].
+	 *                               Default is an empty array.
+	 * @param string $columns Optional. A string specifying which columns to select. Defaults to '*' (all columns).
+	 * @since x.x.x
+	 * @return array An associative array of results where each element represents a row, or an empty array if no results are found.
+	 */
+	public function get_results( $where_clauses = [], $columns = '*' ) {
+		$wpdb = $this->wpdb;
+
+		$table_name = $this->get_tablename();
+
+		// Start building the query.
+		$query = "SELECT {$columns} FROM {$table_name}";
+
+		// If there are WHERE clauses, prepare and append them to the query.
+		if ( is_array( $where_clauses ) && ! empty( $where_clauses ) ) {
+			// Start constructing WHERE clause.
+			$where_clause = [];
+			$values       = [];
+
+			foreach ( $where_clauses as $key => $value ) {
+				// Check if value is an array for multiple values (IN clause).
+				if ( is_array( $value ) ) {
+					$placeholders   = implode( ',', array_fill( 0, count( $value ), '%s' ) );
+					$where_clause[] = "{$key} IN ({$placeholders})";
+					$values         = array_merge( $values, $value );
+				} else {
+					$where_clause[] = "{$key} = %s";
+					$values[]       = $value;
+				}
+			}
+
+			// Combine the WHERE clauses into a single string.
+			$query .= ' WHERE ' . implode( ' AND ', $where_clause );
+
+			// Prepare the query with placeholders.
+			// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+			$query = $wpdb->prepare( $query, ...$values );
+		}
+
+		// Add a semicolon (optional, not necessary in practice).
+		$query .= ';';
+
+		$cached_results = $this->cache_get( $query );
+		if ( $cached_results ) {
+			// Return the cached data if exists.
+			return $cached_results;
+		}
+
+		// phpcs:ignore
+		$results = $wpdb->get_results( $query, ARRAY_A );
+
+		if ( ! empty( $results ) && is_array( $results ) ) {
+			foreach ( $results as &$result ) {
+				$result = $this->decode_by_datatype( $result );
+			}
+		}
+
+		// Execute the query and return results.
+		return $this->cache_set( $query, $results );
+	}
+
+	/**
+	 * Get the SQL format specifier based on the provided data type.
+	 *
+	 * @param string $type The data type for which to get the SQL format specifier.
+	 *                     Possible values: 'string', 'array', 'number', 'boolean'.
+	 * @since x.x.x
+	 * @return string The SQL format specifier. One of '%s' for string or array (converted to JSON), '%d' for number or boolean.
+	 */
+	protected function get_format_by_datatype( $type ) {
+		switch ( $type ) {
+			case 'string':
+			case 'array': // Because array will be converted to json string.
+				return '%s';
+
+			case 'number':
+			case 'boolean':
+				return '%d';
+		}
+	}
+
+	/**
+	 * Decode data based on the schema data types.
+	 *
+	 * @param array $data An associative array of data where the key is the column name and the value is the data to decode.
+	 *                    The data will be decoded if the column type in the schema is 'array' (JSON string).
+	 * @since x.x.x
+	 * @return array An associative array of decoded data based on the schema.
+	 */
+	protected function decode_by_datatype( $data ) {
+		$_data = [];
+		foreach ( $this->get_schema() as $key => $value ) {
+			// Process defaults.
+			if ( ! isset( $data[ $key ] ) ) {
+				continue;
+			}
+
+			$_data[ $key ] = 'array' === $value['type'] ? json_decode( $data[ $key ], true ) : $data[ $key ];
+		}
+		return $_data;
+	}
+
+	/**
+	 * Encode a value based on the specified data type.
+	 *
+	 * @param mixed  $value The value to encode. The encoding will depend on the data type specified.
+	 * @param string $type The data type for encoding. Possible values: 'string', 'number', 'boolean', 'array'.
+	 * @since x.x.x
+	 * @return mixed The encoded value. The type of the return value depends on the specified type:
+	 *               - 'string': Encoded as a string.
+	 *               - 'number': Encoded as an integer.
+	 *               - 'boolean': Encoded as a boolean.
+	 *               - 'array': Encoded as a JSON string.
+	 */
+	protected function encode_by_datatype( $value, $type ) {
+		switch ( $type ) {
+			case 'string':
+				return Helper::get_string_value( $value );
+
+			case 'number':
+				return Helper::get_integer_value( $value );
+
+			case 'boolean':
+				return boolval( $value );
+
+			case 'array':
+				// Lets json_encode array values instead of serializing it.
+				return wp_json_encode( Helper::get_array_value( $value ) );
+		}
+	}
+
+	/**
+	 * Process and format data based on the schema.
+	 *
+	 * @param array $data An associative array of data where the key is the column name and the value is the data to process.
+	 *                    Missing values will be replaced with default values specified in the schema.
+	 * @since x.x.x
+	 * @return array An associative array containing:
+	 *                - 'data': Processed data with values encoded according to their data types.
+	 *                - 'format': An array of format specifiers corresponding to the data values.
+	 */
+	protected function process_data( $data ) {
+		$_data  = [];
+		$format = [];
+		foreach ( $this->get_schema() as $key => $value ) {
+			// Process defaults.
+			if ( ! isset( $data[ $key ] ) ) {
+				if ( ! isset( $value['default'] ) ) {
+					continue;
+				}
+				$data[ $key ] = $value['default'];
+			}
+
+			$format[]      = $this->get_format_by_datatype( $value['type'] ); // Format for the WP database methods.
+			$_data[ $key ] = $this->encode_by_datatype( $data[ $key ], $value['type'] );
+		}
+		return [
+			'data'   => $_data,
+			'format' => $format,
+		];
 	}
 }
