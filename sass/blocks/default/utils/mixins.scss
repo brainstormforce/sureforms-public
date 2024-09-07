@@ -101,6 +101,12 @@
 			}
 		}
 
+		&.srfm-choice-width-75 {
+			.srfm-multi-choice-single {
+				width: 75%;
+			}
+		}
+
 		&.srfm-choice-width-50 {
 			.srfm-multi-choice-single {
 				width: 50%;

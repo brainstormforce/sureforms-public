@@ -55,7 +55,8 @@ button.srfm-toolbar-width-setting-button {
 	@media ( max-width: 576px ) {
 		.srfm-block-width-25,
 		.srfm-block-width-33-33,
-		.srfm-block-width-50 {
+		.srfm-block-width-50,
+		.srfm-block-width-75 {
 			min-width: 100%; // Added min-width to override the flex property for address block.
 			width: 100%;
 		}
