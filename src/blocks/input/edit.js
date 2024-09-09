@@ -86,7 +86,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 								__nextHasNoMarginBottom
 							/>
 							<SelectControl
-								label={ __( 'Input Mask', 'sureforms' ) }
+								label={ __( 'Input Pattern', 'sureforms' ) }
 								value={ inputMask }
 								options={ [
 									{
