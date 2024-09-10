@@ -600,7 +600,7 @@ class Form_Submit {
 
 			do_action( 'srfm_form_submit', $form_submit_response );
 
-			Entries::get_instance()->add(
+			Entries::add(
 				[
 					'form_id'         => $id,
 					'user_data'       => $submission_data,

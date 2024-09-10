@@ -158,7 +158,7 @@ class Entries extends Base {
 	 * @since x.x.x
 	 * @return int|false The number of rows inserted, or false if the insertion fails.
 	 */
-	public function add( $data ) {
+	public static function add( $data ) {
 		if ( empty( $data['form_id'] ) ) {
 			return false;
 		}
@@ -168,7 +168,14 @@ class Entries extends Base {
 			unset( $data['ID'] );
 		}
 
-		return $this->insert( $data );
+		$instance = self::get_instance();
+
+		if ( ! isset( $data['logs'] ) ) {
+			// Add default logs if no logs provided.
+			$data['logs'] = $instance->get_logs();
+		}
+
+		return $instance->insert( $data );
 	}
 
 	/**
@@ -178,8 +185,8 @@ class Entries extends Base {
 	 * @since x.x.x
 	 * @return array<mixed> An associative array representing the entry, or an empty array if no entry is found.
 	 */
-	public function get( $entry_id ) {
-		$results = $this->get_results(
+	public static function get( $entry_id ) {
+		$results = self::get_instance()->get_results(
 			[
 				'ID' => $entry_id,
 			]

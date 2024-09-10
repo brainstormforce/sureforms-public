@@ -69,6 +69,8 @@ class Activator {
 				'status VARCHAR(10)',
 				'created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP',
 				'updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP',
+				'INDEX idx_form_id (form_id)', // Indexing for the performance improvements.
+				'INDEX idx_form_id_created_at_status (form_id, created_at, status)', // Composite index for performance improvements.
 			]
 		);
 	}
