@@ -19,7 +19,7 @@ trait Get_Instance {
 	/**
 	 * Instance object.
 	 *
-	 * @var object Class Instance.
+	 * @var self Class Instance.
 	 */
 	private static $instance = null;
 

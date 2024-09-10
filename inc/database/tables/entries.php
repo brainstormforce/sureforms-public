@@ -33,9 +33,16 @@ class Entries extends Base {
 	protected $table_suffix = 'entries';
 
 	/**
-	 * Current entry logs.
+	 * Current logs.
 	 *
-	 * @var array
+	 * @var array<array<string,mixed>> $logs
+	 * The structure of each log entry is:
+	 * [
+	 *     'title'    => string,
+	 *     'messages' => array<string>,
+	 *     'timestamp' => int
+	 * ]
+	 *
 	 * @since x.x.x
 	 */
 	private $logs = [];
@@ -95,8 +102,8 @@ class Entries extends Base {
 	/**
 	 * Add a new log entry.
 	 *
-	 * @param string $title The title of the log entry.
-	 * @param array  $messages Optional. An array of messages to include in the log entry. Default is an empty array.
+	 * @param string   $title The title of the log entry.
+	 * @param string[] $messages Optional. An array of messages to include in the log entry. Default is an empty array.
 	 * @since x.x.x
 	 * @return int|null The key of the newly added log entry, or null if the log could not be added.
 	 */
@@ -115,7 +122,7 @@ class Entries extends Base {
 	 *
 	 * @param int         $log_key The key of the log entry to update.
 	 * @param string|null $title Optional. The new title for the log entry. If null, the title will not be changed.
-	 * @param array       $messages Optional. An array of new messages to add to the log entry.
+	 * @param string[]    $messages Optional. An array of new messages to add to the log entry.
 	 * @since x.x.x
 	 * @return int|null The key of the updated log entry, or null if the log entry does not exist.
 	 */
@@ -127,7 +134,7 @@ class Entries extends Base {
 		$logs = $this->logs;
 
 		$logs[ $log_key ]['title']    = ! is_null( $title ) ? Helper::get_string_value( trim( $title ) ) : $logs[ $log_key ]['title'];
-		$logs[ $log_key ]['messages'] = array_merge( $logs[ $log_key ]['messages'], Helper::get_array_value( $messages ) );
+		$logs[ $log_key ]['messages'] = array_merge( Helper::get_array_value( $logs[ $log_key ]['messages'] ), Helper::get_array_value( $messages ) );
 
 		$this->logs = $logs;
 		return $log_key;
@@ -137,7 +144,7 @@ class Entries extends Base {
 	 * Retrieve all log entries.
 	 *
 	 * @since x.x.x
-	 * @return array An array of log entries, where each entry is an associative array with 'title', 'messages', and 'timestamp' keys.
+	 * @return array<array<string,mixed>>
 	 */
 	public function get_logs() {
 		return $this->logs;
@@ -146,7 +153,7 @@ class Entries extends Base {
 	/**
 	 * Add a new entry to the database.
 	 *
-	 * @param array $data An associative array of data for the new entry. Must include 'form_id'.
+	 * @param array<mixed> $data An associative array of data for the new entry. Must include 'form_id'.
 	 *                    If 'ID' is set, it will be removed before inserting.
 	 * @since x.x.x
 	 * @return int|false The number of rows inserted, or false if the insertion fails.
@@ -169,7 +176,7 @@ class Entries extends Base {
 	 *
 	 * @param int $entry_id The ID of the entry to retrieve.
 	 * @since x.x.x
-	 * @return array An associative array representing the entry, or an empty array if no entry is found.
+	 * @return array<mixed> An associative array representing the entry, or an empty array if no entry is found.
 	 */
 	public function get( $entry_id ) {
 		$results = $this->get_results(
@@ -178,6 +185,6 @@ class Entries extends Base {
 			]
 		);
 
-		return isset( $results[0] ) ? $results[0] : [];
+		return isset( $results[0] ) ? Helper::get_array_value( $results[0] ) : [];
 	}
 }

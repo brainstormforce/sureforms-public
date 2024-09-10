@@ -82,7 +82,7 @@ abstract class Base {
 	 * Returns the current table schema.
 	 *
 	 * @since x.x.x
-	 * @return array
+	 * @return array<string,array<mixed>>
 	 */
 	abstract public function get_schema();
 
@@ -159,7 +159,7 @@ abstract class Base {
 	/**
 	 * Create table.
 	 *
-	 * @param array $columns Array of columns.
+	 * @param array<string> $columns Array of columns.
 	 * @since x.x.x
 	 * @return int|bool
 	 */
@@ -168,25 +168,15 @@ abstract class Base {
 			return false; // It's better to return a boolean for failure.
 		}
 
-		// Escape table name.
-		$table_name = $this->wpdb->esc_like( $this->get_tablename() );
-
 		// Prepare columns list.
 		$columns_list = implode(
 			', ',
-			array_map(
-				function ( $col ) {
-					return $this->wpdb->esc_like( $col );
-				},
-				$columns
-			)
+			$columns
 		);
-
-		$wpdb = $this->wpdb;
 
 		// Execute the query.
 		// phpcs:ignore
-		return $wpdb->query( $wpdb->prepare( 'CREATE TABLE IF NOT EXISTS %s ( %s ) %s', $table_name, $columns_list, $this->get_charset_collate() ) );
+		return $this->wpdb->query( "CREATE TABLE IF NOT EXISTS {$this->get_tablename()} ( {$columns_list} ) {$this->get_charset_collate()}" );
 	}
 
 	/**
@@ -206,6 +196,10 @@ abstract class Base {
 			'DROP TABLE IF EXISTS %s',
 			$table_name
 		);
+
+		if ( ! $query ) {
+			return false;
+		}
 
 		// Execute the query.
 		// phpcs:ignore
@@ -242,11 +236,11 @@ abstract class Base {
 	/**
 	 * Insert data. Basically, a wrapper method for wpdb::insert.
 	 *
-	 * @param [type] $data Data to insert (in column => value pairs).
-	 *                     Both `$data` columns and `$data` values should be "raw" (neither should be SQL escaped).
-	 *                     Sending a null value will cause the column to be set to NULL - the corresponding
-	 *                     format is ignored in this case.
-	 * @param [type] $format Optional. An array of formats to be mapped to each of the value in `$data`.
+	 * @param array<mixed>    $data Data to insert (in column => value pairs).
+	 *                        Both `$data` columns and `$data` values should be "raw" (neither should be SQL escaped).
+	 *                        Sending a null value will cause the column to be set to NULL - the corresponding
+	 *                        format is ignored in this case.
+	 * @param string[]|string $format Optional. An array of formats to be mapped to each of the value in `$data`.
 	 *                       If string, that format will be used for all of the values in `$data`.
 	 *                       A format is one of '%d', '%f', '%s' (integer, float, string).
 	 *                       If omitted, all values in `$data` will be treated as strings unless otherwise
@@ -255,12 +249,14 @@ abstract class Base {
 	 * @return int|false The number of rows inserted, or false on error.
 	 */
 	public function insert( $data, $format = null ) {
-		$processed_data = $this->process_data( $data );
-		return $this->wpdb->insert(
-			$this->get_tablename(),
-			$processed_data['data'],
-			! is_null( $format ) ? $format : $processed_data['format'] // If format is not null, use it otherwise use from schema.
-		);
+		$prepared_data = $this->prepare_data( $data );
+
+		if ( is_null( $format ) ) {
+			$format = $prepared_data['format'];
+		}
+
+		// @phpstan-ignore-next-line
+		return $this->wpdb->insert( $this->get_tablename(), $prepared_data['data'], $format );
 	}
 
 	/**
@@ -269,14 +265,14 @@ abstract class Base {
 	 * This method builds a SQL SELECT query with optional WHERE clauses and retrieves the results
 	 * from the database. The results are cached to improve performance on subsequent requests.
 	 *
-	 * @param array  $where_clauses Optional. An associative array of WHERE clauses for the SQL query.
-	 *                               Each key represents a column name, and each value is the value
-	 *                               to match. If the value is an array, it will be used in an IN clause.
-	 *                               Example: ['column1' => 'value1', 'column2' => ['value2', 'value3']].
-	 *                               Default is an empty array.
-	 * @param string $columns Optional. A string specifying which columns to select. Defaults to '*' (all columns).
+	 * @param array<mixed> $where_clauses Optional. An associative array of WHERE clauses for the SQL query.
+	 *                              Each key represents a column name, and each value is the value
+	 *                              to match. If the value is an array, it will be used in an IN clause.
+	 *                              Example: ['column1' => 'value1', 'column2' => ['value2', 'value3']].
+	 *                              Default is an empty array.
+	 * @param string       $columns Optional. A string specifying which columns to select. Defaults to '*' (all columns).
 	 * @since x.x.x
-	 * @return array An associative array of results where each element represents a row, or an empty array if no results are found.
+	 * @return array<mixed> An associative array of results where each element represents a row, or an empty array if no results are found.
 	 */
 	public function get_results( $where_clauses = [], $columns = '*' ) {
 		$wpdb = $this->wpdb;
@@ -292,24 +288,30 @@ abstract class Base {
 			$where_clause = [];
 			$values       = [];
 
+			// Current table schema.
+			$schema = $this->get_schema();
+
 			foreach ( $where_clauses as $key => $value ) {
-				// Check if value is an array for multiple values (IN clause).
-				if ( is_array( $value ) ) {
-					$placeholders   = implode( ',', array_fill( 0, count( $value ), '%s' ) );
-					$where_clause[] = "{$key} IN ({$placeholders})";
-					$values         = array_merge( $values, $value );
-				} else {
-					$where_clause[] = "{$key} = %s";
-					$values[]       = $value;
+				if ( ! isset( $schema[ $key ] ) ) {
+					// Skip strictly if current key is not in our schema.
+					continue;
 				}
+
+				// @phpstan-ignore-next-line
+				$where_clause[] = $key . ' = ' . $this->get_format_by_datatype( $schema[ $key ]['type'] );
+				$values[]       = $value;
 			}
 
-			// Combine the WHERE clauses into a single string.
-			$query .= ' WHERE ' . implode( ' AND ', $where_clause );
+			if ( ! empty( $where_clause ) ) {
+				// Combine the WHERE clauses into a single string.
+				$query .= ' WHERE ' . implode( ' AND ', $where_clause );
+			}
 
 			// Prepare the query with placeholders.
-			// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+			// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared
+			// @phpstan-ignore-next-line
 			$query = $wpdb->prepare( $query, ...$values );
+			// phpcs:enable
 		}
 
 		// Add a semicolon (optional, not necessary in practice).
@@ -318,7 +320,7 @@ abstract class Base {
 		$cached_results = $this->cache_get( $query );
 		if ( $cached_results ) {
 			// Return the cached data if exists.
-			return $cached_results;
+			return Helper::get_array_value( $cached_results );
 		}
 
 		// phpcs:ignore
@@ -331,7 +333,38 @@ abstract class Base {
 		}
 
 		// Execute the query and return results.
-		return $this->cache_set( $query, $results );
+		return Helper::get_array_value( $this->cache_set( $query, $results ) );
+	}
+
+	/**
+	 * Prepare and format data based on the schema.
+	 *
+	 * @param array<mixed> $data An associative array of data where the key is the column name and the value is the data to process.
+	 *                    Missing values will be replaced with default values specified in the schema.
+	 * @since x.x.x
+	 * @return array<array<mixed>> An associative array containing:
+	 *                - 'data': Prepared data with values encoded according to their data types.
+	 *                - 'format': An array of format specifiers corresponding to the data values.
+	 */
+	protected function prepare_data( $data ) {
+		$_data  = [];
+		$format = [];
+		foreach ( $this->get_schema() as $key => $value ) {
+			// Process defaults.
+			if ( ! isset( $data[ $key ] ) ) {
+				if ( ! isset( $value['default'] ) ) {
+					continue;
+				}
+				$data[ $key ] = $value['default'];
+			}
+
+			$format[]      = $this->get_format_by_datatype( $value['type'] ); // Format for the WP database methods.
+			$_data[ $key ] = $this->encode_by_datatype( $data[ $key ], $value['type'] );
+		}
+		return [
+			'data'   => $_data,
+			'format' => $format,
+		];
 	}
 
 	/**
@@ -343,34 +376,40 @@ abstract class Base {
 	 * @return string The SQL format specifier. One of '%s' for string or array (converted to JSON), '%d' for number or boolean.
 	 */
 	protected function get_format_by_datatype( $type ) {
+		$format = '%s';
 		switch ( $type ) {
 			case 'string':
 			case 'array': // Because array will be converted to json string.
-				return '%s';
+				$format = '%s';
+				break;
 
 			case 'number':
 			case 'boolean':
-				return '%d';
+				$format = '%d';
+				break;
 		}
+
+		return $format;
 	}
 
 	/**
 	 * Decode data based on the schema data types.
 	 *
-	 * @param array $data An associative array of data where the key is the column name and the value is the data to decode.
+	 * @param array<mixed> $data An associative array of data where the key is the column name and the value is the data to decode.
 	 *                    The data will be decoded if the column type in the schema is 'array' (JSON string).
 	 * @since x.x.x
-	 * @return array An associative array of decoded data based on the schema.
+	 * @return array<mixed> An associative array of decoded data based on the schema.
 	 */
 	protected function decode_by_datatype( $data ) {
 		$_data = [];
-		foreach ( $this->get_schema() as $key => $value ) {
+		foreach ( $this->get_schema() as $key => $schema ) {
 			// Process defaults.
 			if ( ! isset( $data[ $key ] ) ) {
 				continue;
 			}
 
-			$_data[ $key ] = 'array' === $value['type'] ? json_decode( $data[ $key ], true ) : $data[ $key ];
+			// Lets decode from JSON to Array for the results.
+			$_data[ $key ] = 'array' === $schema['type'] ? json_decode( Helper::get_string_value( $data[ $key ] ), true ) : $data[ $key ];
 		}
 		return $_data;
 	}
@@ -402,36 +441,5 @@ abstract class Base {
 				// Lets json_encode array values instead of serializing it.
 				return wp_json_encode( Helper::get_array_value( $value ) );
 		}
-	}
-
-	/**
-	 * Process and format data based on the schema.
-	 *
-	 * @param array $data An associative array of data where the key is the column name and the value is the data to process.
-	 *                    Missing values will be replaced with default values specified in the schema.
-	 * @since x.x.x
-	 * @return array An associative array containing:
-	 *                - 'data': Processed data with values encoded according to their data types.
-	 *                - 'format': An array of format specifiers corresponding to the data values.
-	 */
-	protected function process_data( $data ) {
-		$_data  = [];
-		$format = [];
-		foreach ( $this->get_schema() as $key => $value ) {
-			// Process defaults.
-			if ( ! isset( $data[ $key ] ) ) {
-				if ( ! isset( $value['default'] ) ) {
-					continue;
-				}
-				$data[ $key ] = $value['default'];
-			}
-
-			$format[]      = $this->get_format_by_datatype( $value['type'] ); // Format for the WP database methods.
-			$_data[ $key ] = $this->encode_by_datatype( $data[ $key ], $value['type'] );
-		}
-		return [
-			'data'   => $_data,
-			'format' => $format,
-		];
 	}
 }

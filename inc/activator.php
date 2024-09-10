@@ -67,8 +67,8 @@ class Activator {
 				'notes LONGTEXT',
 				'submission_info LONGTEXT',
 				'status VARCHAR(10)',
-				'created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP()',
-				'updated_at TIMESTAMP NOT NULL',
+				'created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP',
+				'updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP',
 			]
 		);
 	}

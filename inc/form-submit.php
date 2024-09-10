@@ -658,7 +658,7 @@ class Form_Submit {
 
 		if ( is_iterable( $email_notification ) ) {
 			$entries_db_instance = Entries::get_instance();
-			$entries_db_instance->add_log( __( 'Email Notification Initiated', 'sureforms' ) );
+			$log_key             = $entries_db_instance->add_log( __( 'Email Notification Initiated', 'sureforms' ) );
 
 			foreach ( $email_notification as $notification ) {
 				foreach ( $notification as $item ) {
@@ -687,14 +687,16 @@ class Form_Submit {
 
 						$sent = wp_mail( $to, $subject, $message, $headers );
 
-						$entries_db_instance->update_log(
-							$entries_db_instance->get_last_log_key(),
-							null,
-							[
-								/* translators: Here, %s is the comma separated emails list. */
-								$sent ? sprintf( __( 'Email notification sent to %s', 'sureforms' ), esc_html( $to ) ) : sprintf( __( 'Failed sending email notification to %s', 'sureforms' ) ),
-							]
-						);
+						if ( is_int( $log_key ) ) {
+							$entries_db_instance->update_log(
+								$log_key,
+								null,
+								[
+									/* translators: Here, %s is the comma separated emails list. */
+									$sent ? sprintf( __( 'Email notification sent to %s', 'sureforms' ), esc_html( $to ) ) : sprintf( __( 'Failed sending email notification to %s', 'sureforms' ) ),
+								]
+							);
+						}
 
 						$is_mail_sent = $sent;
 						$emails[]     = $to;

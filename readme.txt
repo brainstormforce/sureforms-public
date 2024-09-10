@@ -253,6 +253,7 @@ When you use the SureForms, you get a huge library of ready-to-use form template
 
 == Changelog ==
 = x.x.x =
+* New: Introducing a new custom table for the entries.
 * Improvement: Webhook settings fields UX Improvements.
 * Fix: Resolved conditional logic getting erased on page reload for heading block.
 = 0.0.9 =
