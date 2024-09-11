@@ -41,6 +41,13 @@ export async function fieldValidation(
 ) {
 	let validateResult = false;
 	let firstErrorInput = null;
+
+	const setFirstErrorInput = ( input ) => {
+		if ( ! firstErrorInput ) {
+			firstErrorInput = input;
+		}
+	};
+
 	let uniqueEntryData = null;
 	const uniqueFields = document.querySelectorAll(
 		'input[data-unique="true"]'
@@ -111,10 +118,8 @@ export async function fieldValidation(
 						errorMessage.getAttribute( 'data-error-msg' );
 				}
 				validateResult = true;
-
-				if ( ! firstErrorInput ) {
-					firstErrorInput = inputField;
-				}
+				// Set the first error input.
+				setFirstErrorInput( inputField );
 			} else if ( inputField ) {
 				inputField
 					.closest( '.srfm-block' )
@@ -146,9 +151,8 @@ export async function fieldValidation(
 					errorMessage.getAttribute( 'data-unique-msg' );
 
 				validateResult = true;
-				if ( ! firstErrorInput ) {
-					firstErrorInput = inputField;
-				}
+				// Set the first error input.
+				setFirstErrorInput( inputField );
 			} else if ( inputField ) {
 				inputField
 					.closest( '.srfm-block' )
@@ -183,9 +187,8 @@ export async function fieldValidation(
 					container.classList.add( 'srfm-error' );
 				}
 				validateResult = true;
-				if ( ! firstErrorInput && visibleInput ) {
-					firstErrorInput = visibleInput;
-				}
+				// Set the first error input.
+				setFirstErrorInput( visibleInput );
 			} else if ( errorMessage ) {
 				container.classList.remove( 'srfm-error' );
 			}
@@ -206,9 +209,8 @@ export async function fieldValidation(
 			if ( urlError ) {
 				container.classList.add( 'srfm-error' );
 				validateResult = true;
-				if ( ! firstErrorInput ) {
-					firstErrorInput = urlInput;
-				}
+				// Set the first error input.
+				setFirstErrorInput( urlInput );
 			}
 
 			// remove the error message on input of the url input
@@ -226,9 +228,8 @@ export async function fieldValidation(
 			if ( isIntelError ) {
 				container.classList.add( 'srfm-error' );
 				validateResult = true;
-				if ( ! firstErrorInput ) {
-					firstErrorInput = phoneInput;
-				}
+				// Set the first error input.
+				setFirstErrorInput( phoneInput );
 			}
 
 			// remove the error message on input of the phone input
@@ -265,19 +266,16 @@ export async function fieldValidation(
 						confirmError.textContent =
 							confirmError.getAttribute( 'data-error-msg' );
 						confirmParent.classList.add( 'srfm-error' );
-
-						if ( ! firstErrorInput ) {
-							firstErrorInput = confirmValue;
-						}
+						// Set the first error input.
+						setFirstErrorInput( confirmValue );
 						validateResult = true;
 					} else if ( confirmValue !== inputValue ) {
 						confirmParent.classList.add( 'srfm-error' );
 						confirmError.textContent =
 							'Confirmation Password is not the same';
 
-						if ( ! firstErrorInput ) {
-							firstErrorInput = confirmValue;
-						}
+						// Set the first error input.
+						setFirstErrorInput( confirmValue );
 						validateResult = true;
 					} else {
 						confirmParent.classList.remove( 'srfm-error' );
@@ -314,18 +312,16 @@ export async function fieldValidation(
 							confirmError.getAttribute( 'data-error-msg' );
 						confirmParent.classList.add( 'srfm-error' );
 
-						if ( ! firstErrorInput ) {
-							firstErrorInput = confirmInput;
-						}
+						// Set the first error input.
+						setFirstErrorInput( confirmInput );
 						validateResult = true;
 					} else if ( confirmValue !== inputValue ) {
 						confirmParent.classList.add( 'srfm-error' );
 						confirmError.textContent =
 							'Confirmation email is not the same';
 
-						if ( ! firstErrorInput ) {
-							firstErrorInput = confirmInput;
-						}
+						// Set the first error input.
+						setFirstErrorInput( confirmInput );
 						validateResult = true;
 					} else {
 						confirmParent.classList.remove( 'srfm-error' );
@@ -367,9 +363,8 @@ export async function fieldValidation(
 				}
 
 				validateResult = true;
-				if ( ! firstErrorInput ) {
-					firstErrorInput = uploadInput;
-				}
+				// Set the first error input.
+				setFirstErrorInput( uploadInput );
 			} else if ( inputField ) {
 				inputField
 					.closest( '.srfm-block' )
@@ -451,6 +446,8 @@ export async function fieldValidation(
 					.closest( '.srfm-block' )
 					.classList.add( 'srfm-error' );
 				validateResult = true;
+				// Set the first error input.
+				setFirstErrorInput( container.querySelector( '.srfm-icon' ) );
 			} else {
 				ratingInput
 					.closest( '.srfm-block' )
@@ -547,6 +544,8 @@ function addBlurListener( containerClass, blockClass ) {
 		document.getElementsByClassName( containerClass )
 	);
 
+	console.log( 'addBlurListener container', { container, blockClass } );
+
 	if ( container ) {
 		for ( const areaInput of container ) {
 			let areaField =
@@ -593,7 +592,7 @@ function addBlurListener( containerClass, blockClass ) {
  * @param {string}      blockClass
  */
 function addRatingBlurListener( areaField, areaInput, blockClass ) {
-	areaField = areaInput.querySelectorAll( '.srfm-star-icon' );
+	areaField = areaInput.querySelectorAll( '.srfm-icon' );
 
 	areaField.forEach( ( field, index ) => {
 		if ( index === areaField.length - 1 ) {
