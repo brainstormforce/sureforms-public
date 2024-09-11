@@ -1,8 +1,5 @@
 import { registerPlugin } from '@wordpress/plugins';
-import {
-	PluginDocumentSettingPanel,
-	PluginPostPublishPanel,
-} from '@wordpress/edit-post';
+
 import {
 	ClipboardButton,
 	PanelRow,
@@ -10,20 +7,19 @@ import {
 	TextControl,
 } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
-import { useState, useEffect, createRoot, render } from '@wordpress/element';
+import { useState, useEffect, render } from '@wordpress/element';
+
 import { useSelect, useDispatch } from '@wordpress/data';
-import { store as editorStore } from '@wordpress/editor';
-import { store as blockEditorStore, RichText } from '@wordpress/block-editor';
+import { store as editorStore, PluginDocumentSettingPanel, PluginPostPublishPanel } from '@wordpress/editor';
+import { store as blockEditorStore } from '@wordpress/block-editor';
 
 import GeneralSettings from './tabs/GeneralSettings.js';
 import StyleSettings from './tabs/StyleSettings.js';
 import AdvancedSettings from './tabs/AdvancedSettings.js';
 
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
-import InspectorTab, {
-	SRFMTabs,
-} from '@Components/inspector-tabs/InspectorTab.js';
-import SRFMEditorHeader from './components/SRFMEditorHeader.js';
+import InspectorTab, { SRFMTabs } from '@Components/inspector-tabs/InspectorTab.js';
+import { addHeaderCenterContainer } from './components/SRFMEditorHeader.js';
 import {
 	attachSidebar,
 	toggleSidebar,
@@ -31,66 +27,39 @@ import {
 import { useDeviceType } from '@Controls/getPreviewType';
 
 import ProPanel from './components/pro-panel/index.js';
-import { BlockInserterWrapper } from './Inserter.js';
+import useSubmitButton from './components/useSubmitButton.js';
+import SureFormsDescription from './components/SureFormsDescription.js';
+import { defaultKeys, forcePanel } from './utils.js';
 import InstantForm from './InstantForm.js';
-
-const { select, dispatch } = wp.data;
-
-const defaultKeys = {
-	// General Tab
-	_srfm_use_label_as_placeholder: false,
-	_srfm_is_inline_button: false,
-	// Submit Button
-	_srfm_submit_button_text: 'Submit',
-	// Page Break
-	_srfm_is_page_break: false,
-	_srfm_first_page_label: 'Page break',
-	_srfm_page_break_progress_indicator: 'connector',
-	_srfm_page_break_toggle_label: false,
-	_srfm_previous_button_text: 'Previous',
-	_srfm_next_button_text: 'Next',
-	// Submit Button
-	_srfm_inherit_theme_button: false,
-	_srfm_submit_alignment: 'left',
-	_srfm_submit_width: '',
-	_srfm_submit_alignment_backend: '100%',
-	_srfm_submit_width_backend: 'max-content',
-	_srfm_additional_classes: '',
-	// Page Break Button
-	_srfm_page_break_inherit_theme_button: false,
-	_srfm_page_break_button_bg_color: '#D54407',
-	_srfm_page_break_button_text_color: '#ffffff',
-	_srfm_page_break_button_border_color: '#ffffff',
-	_srfm_page_break_button_border_width: 0,
-	_srfm_page_break_button_border_radius: 4,
-	_srfm_page_break_button_bg_type: 'filled',
-
-	// Advanced Tab
-	// Success Message
-	_srfm_submit_type: 'message',
-	_srfm_thankyou_message_title: 'Thank you',
-	_srfm_thankyou_message: 'Form submitted successfully!',
-	_srfm_submit_url: '',
-	_srfm_form_recaptcha: 'none',
-};
 
 const SureformsFormSpecificSettings = ( props ) => {
 	const [ hasCopied, setHasCopied ] = useState( false );
 	const [ enableQuickActionSidebar, setEnableQuickActionSidebar ] =
 		useState( 'enabled' );
-	const postId = useSelect( () => {
-		return select( 'core/editor' ).getCurrentPostId();
-	}, [] );
-	const sureformsKeys = useSelect( () =>
-		select( editorStore ).getEditedPostAttribute( 'meta' )
-	);
 
-	const blockCount = useSelect( () =>
-		select( blockEditorStore ).getBlockCount()
-	);
+	const {
+		postId,
+		sureformsKeys,
+		blockCount,
+		blocks,
+	} = useSelect( ( select ) => {
+		return {
+			postId: select( 'core/editor' ).getCurrentPostId(),
+			sureformsKeys: select( editorStore ).getEditedPostAttribute( 'meta' ),
+			blockCount: select( blockEditorStore ).getBlockCount(),
+			blocks: select( 'core/block-editor' ).getBlocks(),
+		};
+	} );
+
 	const { editPost } = useDispatch( editorStore );
-	const rootContainer = document.querySelector( '.is-root-container' );
-	const blocks = wp.data.select( 'core/block-editor' ).getBlocks();
+	const [ rootContainer, setRootContainer ] = useState( null );
+	const [ rootContainerDiv, setRootContainerDiv ] = useState( null );
+
+	useEffect( () => {
+		setRootContainer( document.querySelector( '.is-root-container' ) );
+		setRootContainerDiv( document.querySelector( '.edit-post-visual-editor__content-area' ) );
+	}, [] );
+
 	const isPageBreak = blocks.some(
 		( block ) => block.name === 'srfm/page-break'
 	);
@@ -107,21 +76,13 @@ const SureformsFormSpecificSettings = ( props ) => {
 		} );
 	}
 
-	// find if code editor is open/close then trigger adding button again
-	const codeEditor = document.querySelector( '.editor-post-text-editor' );
-
-	// Find the main Editor Container
-	const rootContainerDiv = document.querySelector(
-		'.edit-post-visual-editor__content-area'
-	);
-
 	// Add styling class to main Editor Container
 	const addFormStylingClass = () => {
 		if ( rootContainer && 'Desktop' === deviceType ) {
-			rootContainer?.classList.add( 'srfm-form-container' );
+			rootContainer?.classList?.add( 'srfm-form-container' );
 			rootContainer.setAttribute( 'id', 'srfm-form-container' );
 		} else if ( rootContainerDiv ) {
-			rootContainerDiv?.classList.add( 'srfm-form-container' );
+			rootContainerDiv?.classList?.add( 'srfm-form-container' );
 			rootContainerDiv.setAttribute( 'id', 'srfm-form-container' );
 		}
 	};
@@ -176,161 +137,12 @@ const SureformsFormSpecificSettings = ( props ) => {
 		}
 	}, [ blockCount ] );
 
-	// Render the Components in the center of the Header
-	const headerCenterContainer =
-		document.querySelector( '.edit-post-header__center' ) ||
-		// added support for WP 6.6.
-		document.querySelector( '.editor-header__center' );
-
-	if ( headerCenterContainer ) {
-		// remove the command bar and add our custom header title editor
-		const header = document.querySelector( '.editor-post-title__block' );
-		if ( header ) {
-			header.remove();
-		}
-		const root = createRoot( headerCenterContainer );
-		root.render( <SRFMEditorHeader /> );
-	}
-
-	const submitBtnContainer = document.querySelector(
-		'.srfm-submit-btn-container'
-	);
-	function addSubmitButton( elm ) {
-		const inheritClass = 'srfm-btn-alignment wp-block-button__link';
-		const customClass =
-			'srfm-button srfm-submit-button srfm-btn-alignment srfm-btn-bg-color';
-		const btnClass =
-			sureformsKeys?._srfm_inherit_theme_button &&
-			sureformsKeys._srfm_inherit_theme_button
-				? inheritClass
-				: customClass;
-		const btnCtnClass =
-			sureformsKeys?._srfm_inherit_theme_button &&
-			sureformsKeys._srfm_inherit_theme_button
-				? 'wp-block-button'
-				: 'srfm-submit-btn-font-size';
-
-		const appendHtml = `<div class="srfm-custom-block-inserter"></div><div class="srfm-submit-btn-container ${ btnCtnClass }"><button class="srfm-submit-richtext ${ btnClass }"></button></div>`;
-
-		if ( elm ) {
-			if (
-				! elm
-					.closest( 'body' )
-					.querySelector( '.srfm-submit-btn-container' )
-			) {
-				elm.insertAdjacentHTML( 'afterend', appendHtml );
-
-				// If the normal button is present, add RichText to the button.
-				const elementParent = elm.parentElement;
-
-				const buttonContainer = elementParent.querySelector(
-					'.srfm-submit-btn-container'
-				);
-
-				const button = buttonContainer.querySelector(
-					'.srfm-submit-richtext'
-				);
-
-				const submitBtnText = sureformsKeys._srfm_submit_button_text;
-
-				// Add block inserter in the srfm-custom-block-inserter div.
-				const getBlockInserterDiv = elementParent.querySelector(
-					'.srfm-custom-block-inserter'
-				);
-
-				if ( getBlockInserterDiv ) {
-					createRoot( getBlockInserterDiv ).render( <BlockInserterWrapper /> );
-				}
-
-				createRoot( button ).render(
-					<RichText
-						tagName="label"
-						value={
-							submitBtnText
-								? submitBtnText
-								: __( 'Submit', 'sureforms' )
-						}
-						onChange={ ( value ) =>
-							updateMeta( '_srfm_submit_button_text', value )
-						}
-						placeholder={ __( 'Submit', 'sureforms' ) }
-					/>
-				);
-
-				button.addEventListener( 'click', () => {
-					// need multiple timeouts for DOM elements to find.
-					// click on form section
-					setTimeout( () => {
-						const editPostTab = document.getElementById( 'tabs-0-edit-post/document' );
-
-						editPostTab?.click();
-					}, 100 );
-
-					// click on style tab
-					setTimeout( () => {
-						// elements for submit button event listener
-						const styleTabElement = document.querySelectorAll( '.srfm-inspector-tabs div' )[ 1 ]; // Style Tab
-						styleTabElement?.click();
-					}, 150 );
-
-					// then click on submit accordion
-					setTimeout( () => {
-						// elements for submit button event listener
-						const submitBtnStyleContainer = document.querySelector( '.srfm-advance-panel-body-submit-button' );
-						const submitBtnElement = submitBtnStyleContainer?.querySelector( 'button' );
-
-						if ( ! submitBtnStyleContainer?.classList?.contains( 'is-opened' ) ) {
-							submitBtnElement?.click();
-						}
-					}, 200 );
-				} );
-			}
-		}
-	}
-
-	useEffect( () => {
-		setTimeout( () => {
-			const elm = document.querySelector(
-				'.block-editor-block-list__layout'
-			);
-
-			// If Custom Button is present, remove the default button.
-			if ( isInlineButtonBlockPresent ) {
-				const submitBtn = document.querySelectorAll(
-					'.srfm-submit-btn-container'
-				);
-				if ( submitBtn.length > 0 ) {
-					submitBtn[ 0 ].remove();
-				}
-			}
-
-			// If Custom Button is not present, add the default button. Remove the default button if there are more than one.
-			if ( ! submitBtnContainer && ! isInlineButtonBlockPresent ) {
-				addSubmitButton( elm );
-
-				// remove duplicated submit button from the view after inline button is removed
-				const submitBtn = document.querySelectorAll(
-					'.srfm-submit-btn-container'
-				);
-				if ( submitBtn.length > 1 ) {
-					submitBtn[ 1 ].remove();
-				}
-
-				// remove duplicated inserter from the view after inline button is removed
-				const appender = document.querySelectorAll(
-					'.srfm-custom-block-inserter'
-				);
-				if ( appender.length > 1 ) {
-					appender[ 1 ].remove();
-				}
-			}
-		}, 200 );
-	}, [
+	useSubmitButton( {
 		sureformsKeys,
-		codeEditor,
 		blockCount,
 		isInlineButtonBlockPresent,
-	] );
+		updateMeta,
+	} );
 
 	useEffect( () => {
 		//quick action sidebar
@@ -423,32 +235,7 @@ const SureformsFormSpecificSettings = ( props ) => {
 				className="srfm-single-form-settings-description"
 				title={ __( 'SureForms Description', 'sureforms' ) }
 			>
-				<div className="block-editor-block-card">
-					<span className="block-editor-block-icon has-colors">
-						<svg
-							width="24"
-							height="24"
-							viewBox="0 0 24 24"
-							fill="none"
-							xmlns="http://www.w3.org/2000/svg"
-						>
-							<path
-								fillRule="evenodd"
-								clipRule="evenodd"
-								d="M12.0078 24C18.6352 24 24.0078 18.6274 24.0078 12C24.0078 5.37259 18.6352 0 12.0078 0C5.3804 0 0.0078125 5.37259 0.0078125 12C0.0078125 18.6274 5.3804 24 12.0078 24ZM12.0595 6C11.0959 6 9.76255 6.55103 9.08115 7.23077L7.2307 9.07692H16.4543L19.5384 6H12.0595ZM14.9189 16.7692C14.2376 17.449 12.9041 18 11.9406 18H4.46169L7.54585 14.9231H16.7694L14.9189 16.7692ZM17.9166 10.6154H5.69197L5.11453 11.1923C3.74722 12.4231 4.15274 13.3846 6.0676 13.3846H18.3253L18.903 12.8077C20.257 11.5841 19.8315 10.6154 17.9166 10.6154Z"
-								fill="#D54407"
-							/>
-						</svg>
-					</span>
-					<div className="block-editor-block-card__content">
-						<h2 className="block-editor-block-card__title">
-							{ __( 'SureForms', 'sureforms' ) }
-						</h2>
-						<span className="block-editor-block-card__description">
-							{ __( 'Customize with SureForms', 'sureforms' ) }
-						</span>
-					</div>
-				</div>
+				<SureFormsDescription />
 			</PluginDocumentSettingPanel>
 			<PluginDocumentSettingPanel
 				className="srfm--panel"
@@ -522,47 +309,11 @@ registerPlugin( 'srfm-form-specific-settings', {
 	icon: 'palmtree',
 } );
 
-//force panel open
-const forcePanel = () => {
-	//force sidebar open
-	if ( ! select( 'core/edit-post' ).isEditorSidebarOpened() ) {
-		dispatch( 'core/edit-post' ).openGeneralSidebar( 'edit-post/document' );
-	}
-	//force panel open
-	if (
-		! select( 'core/edit-post' ).isEditorPanelEnabled(
-			'srfm-form-specific-settings/srfm-sidebar'
-		)
-	) {
-		dispatch( 'core/edit-post' ).toggleEditorPanelEnabled(
-			'srfm-form-specific-settings/srfm-sidebar'
-		);
-	}
-	if (
-		! select( 'core/edit-post' ).isEditorPanelOpened(
-			'srfm-form-specific-settings/srfm-sidebar'
-		)
-	) {
-		dispatch( 'core/edit-post' ).toggleEditorPanelOpened(
-			'srfm-form-specific-settings/srfm-sidebar'
-		);
-	}
-};
-
-// Shift the focus on title bar when the editor is loaded.
-const focusTitleBarOnLoad = () => {
-	// Adding a 100ms delay so that the input element is completely loaded in the DOM.
-	setTimeout( () => {
-		const formTitleInput = document.querySelector( '.srfm-header-title-input input' );
-
-		if ( formTitleInput && ! formTitleInput.value ) {
-			formTitleInput.focus();
-		}
-	}, 100 );
-};
-
 wp.domReady( () => {
 	forcePanel();
-	focusTitleBarOnLoad();
+
+	// Add the header center container.
+	addHeaderCenterContainer();
+
 	InstantForm();
 } );
