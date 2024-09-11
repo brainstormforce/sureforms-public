@@ -544,8 +544,6 @@ function addBlurListener( containerClass, blockClass ) {
 		document.getElementsByClassName( containerClass )
 	);
 
-	console.log( 'addBlurListener container', { container, blockClass } );
-
 	if ( container ) {
 		for ( const areaInput of container ) {
 			let areaField =
