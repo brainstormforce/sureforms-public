@@ -205,7 +205,7 @@
 
 			.srfm-input-checkbox,
 			.srfm-input-gdpr {
-				position: absolute;
+				position: fixed; // Changing the position from absolute to fixed solves the page jump issue without affecting the UI.
 
 				&:checked {
 					+ {
