@@ -27,7 +27,7 @@ const AiFormBuilder = () => {
 	const [ showLimitReachedPopup, setShowLimitReachedPopup ] =
 		useState( false );
 	const [ showFormCreationErr, setShowFormCreationErr ] = useState( false );
-	const [ showFormIdeas, setShowFormIdeas ] = useState( false );
+	const [ showFormIdeas, setShowFormIdeas ] = useState( true );
 	const [ characterCount, setCharacterCount ] = useState( 0 );
 	const [ showAuthErrorPopup, setShowAuthErrorPopup ] = useState( false );
 	const urlParams = new URLSearchParams( window.location.search );
