@@ -156,8 +156,8 @@ $form_styling = Helper::get_meta_value(
 				<?php
 				if ( ! empty( $site_logo ) ) {
 					?>
-					<a href="<?php echo esc_url( home_url() ); ?>">
-						<img class="srfm-site-logo" src="<?php echo esc_url( $site_logo ); ?>">
+					<a href="<?php echo esc_url( home_url() ); ?>" aria-label="<?php esc_attr_e( 'Link to homepage', 'sureforms' ); ?>">
+						<img class="srfm-site-logo" src="<?php echo esc_url( $site_logo ); ?>" alt="<?php esc_attr_e( 'Instant form site logo', 'sureforms' ); ?>">
 					</a>
 					<?php
 				}
