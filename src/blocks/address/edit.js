@@ -2,7 +2,6 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { SelectControl } from '@wordpress/components';
 import {
 	InspectorControls,
 	RichText,
@@ -18,7 +17,6 @@ import InspectorTab, {
 import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
-import widthOptions from '../width-options.json';
 import { FieldsPreview } from '../FieldsPreview.jsx';
 import { decodeHtmlEntities } from '@Blocks/util';
 
@@ -27,8 +25,7 @@ import ConditionalLogic from '@Components/conditional-logic';
 import HelpText from '@Components/misc/HelpText';
 
 const Edit = ( { clientId, attributes, setAttributes } ) => {
-	const { fieldWidth, label, block_id, formId, preview, help, className } =
-		attributes;
+	const { label, block_id, formId, preview, help, className } = attributes;
 
 	const currentFormId = useGetCurrentFormId( clientId );
 
@@ -112,17 +109,6 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 							title={ __( 'Attributes', 'sureforms' ) }
 							initialOpen={ true }
 						>
-							<SelectControl
-								label={ __( 'Field Width', 'sureforms' ) }
-								value={ fieldWidth }
-								options={ widthOptions }
-								onChange={ ( value ) =>
-									setAttributes( {
-										fieldWidth: Number( value ),
-									} )
-								}
-								__nextHasNoMarginBottom
-							/>
 							<SRFMTextControl
 								label={ __( 'Help Text', 'sureforms' ) }
 								value={ help }
