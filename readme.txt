@@ -253,6 +253,7 @@ When you use the SureForms, you get a huge library of ready-to-use form template
 
 == Changelog ==
 = x.x.x =
+* Improvement: Added support for the Gutenberg editor, even when the Classic Editor plugin is enabled.
 * Fix: Dropdown and Phone field preview in Bricks and Elementor editor.
 * Fix: Error codes in AI Form Builder.
 * Fix: Resolved conditional logic getting erased on page reload for heading block.
