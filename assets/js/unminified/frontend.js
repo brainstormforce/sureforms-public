@@ -266,7 +266,44 @@ function onSuccess( response ) {
 		}
 	}
 
+	/**
+	 * Ensures that the element with the class 'srfm-branding' is always fully visible.
+	 * 
+	 * This function checks the computed styles of the element with the class 'srfm-branding'
+	 * every second to ensure that its opacity is set to 1, its visibility is set to 'visible',
+	 * and its display property is set to 'block'. If any of these styles are not set correctly,
+	 * they are updated to ensure the element is always fully visible.
+	 * 
+	 * Note: This function relies on the presence of the element with the class 'srfm-branding'
+	 * in the DOM. If the element is not found, the function exits early without making any changes.
+	 */
+	function handleInstantFormBranding() {
+		const srfmBranding = document.querySelector( '.srfm-branding' );
+
+		if ( ! srfmBranding ) {
+			return;
+		}
+
+		setInterval( () => {
+			const { opacity, visibility, display } = window.getComputedStyle( srfmBranding );
+
+			if ( opacity < 1 ) {
+				srfmBranding.style.opacity = 1;
+			}
+
+			if ( 'visible' !== visibility ) {
+				srfmBranding.style.visibility = 'visible';
+			}
+
+			if ( 'none' === display ) {
+				srfmBranding.style.display = 'block';
+			}
+		}, 1000 );
+	}
+
 	window.addEventListener( 'load', function () {
+		handleInstantFormBranding();
+
 		const formContainers = document.querySelectorAll(
 			'.srfm-form-container'
 		);
