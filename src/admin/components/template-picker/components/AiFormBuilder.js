@@ -360,9 +360,10 @@ const AiFormBuilder = () => {
 };
 
 export const getLimitReachedPopup = () => {
-	const isRegistered = srfm_admin?.srfm_ai_usage_details?.type;
+	const type = srfm_admin?.srfm_ai_usage_details?.type;
 	const formCreationleft = srfm_admin?.srfm_ai_usage_details?.remaining ?? 0;
 	const errorCode = srfm_admin?.srfm_ai_usage_details?.code;
+	const resetAt = srfm_admin?.srfm_ai_usage_details?.resetAt;
 
 	// shows when the user has encountered an error.
 	if ( errorCode ) {
@@ -382,9 +383,11 @@ export const getLimitReachedPopup = () => {
 
 	// When pro limit is consumed
 	if (
+		type === 'subscribed' &&
 		srfm_admin?.is_pro_active &&
 		srfm_admin?.is_pro_license_active &&
-		formCreationleft === 0
+		formCreationleft === 0 &&
+		resetAt && resetAt > Date.now() / 1000
 	) {
 		return (
 			<LimitReachedPopup
@@ -396,7 +399,7 @@ export const getLimitReachedPopup = () => {
 					/* translators: %s: reset time */
 					__( 'Please try again after %s.', 'sureforms' ),
 					new Date(
-						srfm_admin?.srfm_ai_usage_details?.resetAt * 1000
+						resetAt * 1000
 					).toLocaleString()
 				) }
 				buttonText={ __( 'Try Again', 'sureforms' ) }
@@ -410,7 +413,7 @@ export const getLimitReachedPopup = () => {
 	}
 
 	// When registered limit is consumed
-	if ( isRegistered === 'registered' && formCreationleft === 0 ) {
+	if ( type === 'registered' && formCreationleft === 0 ) {
 		return (
 			<LimitReachedPopup
 				paraOne={ __(
@@ -430,7 +433,7 @@ export const getLimitReachedPopup = () => {
 	}
 
 	// when initial 5 forms are consumed
-	if ( srfm_admin?.srfm_ai_usage_details?.remaining === 0 ) {
+	if ( type === 'non-registered' && formCreationleft === 0 ) {
 		return (
 			<LimitReachedPopup
 				paraOne={ __(
@@ -445,6 +448,8 @@ export const getLimitReachedPopup = () => {
 			/>
 		);
 	}
+
+	return <AiFormBuilder />;
 };
 
 export default AiFormBuilder;
