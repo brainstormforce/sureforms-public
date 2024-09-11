@@ -251,6 +251,9 @@ When you use the SureForms, you get a huge library of ready-to-use form template
 
 == Changelog ==
 = x.x.x =
+* Improvement: Added help text for email fields.
+* Improvement: UX improvements for phone number and dropdown field.
+* Improvement: Improved field spacing between fields.
 * Improvement: Added Site Logo option for the Instant Forms.
 = 0.0.7 =
 * New: Improved styling of fields on the front-end and in the form editor.
