@@ -5,7 +5,10 @@ import parse from 'html-react-parser';
 const Suretriggers = ( { setSelectedTab } ) => {
 	const backArrow = parse( svgIcons.leftArrow );
 
-	SureTriggers.init( window.SureTriggersConfig );
+	// Adding validation for the SureTriggersConfig and SureTriggers object
+	if ( window?.SureTriggers && window?.SureTriggersConfig ) {
+		window.SureTriggers.init( window.SureTriggersConfig );
+	}
 
 	return (
 		<div className="srfm-modal-content" style={ { height: '100%' } }>
