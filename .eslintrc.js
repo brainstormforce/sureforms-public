@@ -82,5 +82,6 @@ module.exports = {
 		srfmInitializePhoneField: true,
 		srfmInitializeDropdown: true,
 		screen: true,
+		SureTriggers: true,
 	},
 };

@@ -527,7 +527,7 @@ class Admin {
 		 * This script loads suretriggers iframe in Intergations tab.
 		 */
 		if ( SRFM_FORMS_POST_TYPE === $current_screen->post_type ) {
-			wp_enqueue_script( SRFM_SLUG . '-suretriggers-integration', SRFM_SURETRIGGERS_INTERGATION_BASE_URL . 'js/embed.js', [], SRFM_VER, true );
+			wp_enqueue_script( SRFM_SLUG . '-suretriggers-integration', SRFM_SURETRIGGERS_INTERGATION_BASE_URL . 'js/v2/embed.js', [], SRFM_VER, true );
 		}
 	}
 
