@@ -691,7 +691,7 @@ class Helper {
 					'--srfm-multi-choice-outer-padding'    => '0',
 				],
 				'medium' => [
-					'--srfm-row-gap-between-blocks'        => '20px',
+					'--srfm-row-gap-between-blocks'        => '18px',
 					// Address block gap and spacing variables.
 					'--srfm-col-gap-between-fields'        => '16px',
 					'--srfm-row-gap-between-fields'        => '16px',
@@ -724,7 +724,7 @@ class Helper {
 					'--srfm-multi-choice-outer-padding'    => '2px',
 				],
 				'large'  => [
-					'--srfm-row-gap-between-blocks'        => '24px',
+					'--srfm-row-gap-between-blocks'        => '20px',
 					// Address Block Gap and Spacing Variables.
 					'--srfm-col-gap-between-fields'        => '16px',
 					'--srfm-row-gap-between-fields'        => '20px',
