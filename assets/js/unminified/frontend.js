@@ -284,7 +284,15 @@ function onSuccess( response ) {
 			return;
 		}
 
+		const srfmForm = document.querySelector( 'form.srfm-form' );
+
 		setInterval( () => {
+			if ( 'none' === window.getComputedStyle( srfmForm ).display ) {
+				// Hide the SureForms branding if Form is hidden.
+				srfmBranding.style.display = 'none';
+				return;
+			}
+
 			const { opacity, visibility, display } =
 				window.getComputedStyle( srfmBranding );
 
@@ -299,7 +307,7 @@ function onSuccess( response ) {
 			if ( 'none' === display ) {
 				srfmBranding.style.display = 'block';
 			}
-		}, 1000 );
+		}, 100 );
 	}
 
 	window.addEventListener( 'load', function () {
