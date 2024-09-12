@@ -205,24 +205,28 @@ function GeneralSettings( props ) {
 					title={ __( 'Page Break', 'sureforms' ) }
 					initialOpen={ false }
 				>
-					<ToggleControl
-						label={ __( 'Show Labels', 'sureforms' ) }
-						checked={ pageBreakSettings?.toggle_label }
-						onChange={ ( value ) => {
-							updatePageBreakSettings( 'toggle_label', value );
-						} }
-					/>
-					<SRFMTextControl
-						label={ __( 'First Page Label', 'sureforms' ) }
-						value={ pageBreakSettings?.first_page_label }
-						data={ {
-							value: pageBreakSettings?.first_page_label,
-							label: 'first_page_label',
-						} }
-						onChange={ ( value ) =>
-							updatePageBreakSettings( 'first_page_label', value )
-						}
-					/>
+					{ pageBreakSettings?.progress_indicator_type !== 'none' && (
+						<>
+							<ToggleControl
+								label={ __( 'Show Labels', 'sureforms' ) }
+								checked={ pageBreakSettings?.toggle_label }
+								onChange={ ( value ) => {
+									updatePageBreakSettings( 'toggle_label', value );
+								} }
+							/>
+							<SRFMTextControl
+								label={ __( 'First Page Label', 'sureforms' ) }
+								value={ pageBreakSettings?.first_page_label }
+								data={ {
+									value: pageBreakSettings?.first_page_label,
+									label: 'first_page_label',
+								} }
+								onChange={ ( value ) =>
+									updatePageBreakSettings( 'first_page_label', value )
+								}
+							/>
+						</>
+					) }
 					<SelectControl
 						label={ __( 'Progress Indicator', 'sureforms' ) }
 						value={
