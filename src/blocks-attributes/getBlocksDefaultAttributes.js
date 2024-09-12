@@ -17,7 +17,7 @@ const defaultKeys = {
 	// Submit button
 	_srfm_submit_button_text: { default: 'Submit' },
 	// Page Break
-	first_page_label: { default: 'Page Break' },
+	first_page_label: { default: 'Page Break Label' },
 	next_button_text: { default: 'Next' },
 	back_button_text: { default: 'Back' },
 	// Style Tab
