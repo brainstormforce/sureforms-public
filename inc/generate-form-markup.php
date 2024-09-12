@@ -104,10 +104,10 @@ class Generate_Form_Markup {
 
 			$form_styling             = get_post_meta( $id, '_srfm_forms_styling', true );
 			$form_styling             = ! empty( $form_styling ) && is_array( $form_styling ) ? $form_styling : [];
-			$page_break_settings      = get_post_meta( $id, '_srfm_page_break_settings', true );
+			$page_break_settings      = defined( 'SRFM_PRO_VER' ) ? get_post_meta( $id, '_srfm_page_break_settings', true ) : [];
 			$page_break_settings      = ! empty( $page_break_settings ) && is_array( $page_break_settings ) ? $page_break_settings : [];
-			$is_page_break            = $page_break_settings['is_page_break'];
-			$page_break_progress_type = $page_break_settings['progress_indicator_type'];
+			$is_page_break            = ! empty( $page_break_settings ) ? $page_break_settings['is_page_break'] : false;
+			$page_break_progress_type = ! empty( $page_break_settings ) ? $page_break_settings['progress_indicator_type'] : 'none';
 			$form_confirmation        = get_post_meta( $id, '_srfm_form_confirmation' );
 			$confirmation_type        = '';
 			$submission_action        = '';
