@@ -24,8 +24,6 @@ const AiFormBuilder = () => {
 	const [ isBuildingForm, setIsBuildingForm ] = useState( false );
 	const [ percentBuild, setPercentBuild ] = useState( 0 );
 	const [ showEmptyError, setShowEmptyError ] = useState( false );
-	const [ showLimitReachedPopup, setShowLimitReachedPopup ] =
-		useState( false );
 	const [ showFormCreationErr, setShowFormCreationErr ] = useState( false );
 	const [ showFormIdeas, setShowFormIdeas ] = useState( false );
 	const [ characterCount, setCharacterCount ] = useState( 0 );
@@ -215,11 +213,6 @@ const AiFormBuilder = () => {
 				{ showFormCreationErr && <ErrorPopup /> }
 			</>
 		);
-	}
-
-	// show limit reached popup when free forms are consumed
-	if ( showLimitReachedPopup ) {
-		return getLimitReachedPopup();
 	}
 
 	// show auth error popup when access key is not present while authenticating
