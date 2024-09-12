@@ -89,6 +89,8 @@ const EmailConfirmation = ( props ) => {
 		}
 	}, [ formData ] );
 
+	const emailHelpText = __( 'Comma separated values are also accepted.', 'sureforms' );
+
 	return (
 		<div className="srfm-modal-content">
 			<div className="srfm-modal-inner-content">
@@ -150,6 +152,7 @@ const EmailConfirmation = ( props ) => {
 								value={ formData.email_to }
 								className="srfm-modal-input srfm-modal-email-to"
 							/>
+							<p className="components-base-control__help">{ emailHelpText }</p>
 							<SmartTagList
 								tagsArray={ [
 									{
@@ -273,6 +276,7 @@ const EmailConfirmation = ( props ) => {
 										value={ formData.email_cc }
 										className="srfm-modal-input"
 									/>
+									<p className="components-base-control__help">{ emailHelpText }</p>
 									<SmartTagList
 										tagsArray={ [
 											{
@@ -321,6 +325,7 @@ const EmailConfirmation = ( props ) => {
 										value={ formData.email_bcc }
 										className="srfm-modal-input"
 									/>
+									<p className="components-base-control__help">{ emailHelpText }</p>
 									<SmartTagList
 										tagsArray={ [
 											{
@@ -365,6 +370,7 @@ const EmailConfirmation = ( props ) => {
 									value={ formData.email_reply_to }
 									className="srfm-modal-input"
 								/>
+								<p className="components-base-control__help">{ emailHelpText }</p>
 								<SmartTagList
 									tagsArray={ [
 										{
