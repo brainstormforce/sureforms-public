@@ -161,20 +161,6 @@ if ( 'image' === $bg_type ) {
 				// phpcs:ignoreEnd
 				?>
 			</div>
-
-			<?php
-			if ( ! defined( 'SRFM_PRO_VER' ) ) {
-				// Display SureForms branding if SureForms Pro is not activated.
-				echo wp_kses_post(
-					sprintf(
-						'<a href="%1$s" class="srfm-branding" target="_blank">%2$s</a>',
-						esc_url( SRFM_WEBSITE ),
-						/* translators: Here %s is the plugin's name. */
-							sprintf( esc_html__( 'Powered by %s', 'sureforms' ), 'SureForms' )
-					)
-				);
-			}
-			?>
 		</div>
 	<?php } else { ?>
 		<?php

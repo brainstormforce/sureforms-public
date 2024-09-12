@@ -33,6 +33,37 @@ class Generate_Form_Markup {
 	 */
 	public function __construct() {
 		add_action( 'rest_api_init', [ $this, 'register_custom_endpoint' ] );
+		add_action( 'srfm_before_form_container_close', [ $this, 'add_branding' ] );
+	}
+
+	/**
+	 * Add SureForms branding in Instant Forms.
+	 *
+	 * @param int|string $form_id Form ID.
+	 * @since x.x.x
+	 * @return void
+	 */
+	public function add_branding( $form_id ) {
+		if ( ! $form_id ) {
+			return;
+		}
+
+		if ( defined( 'SRFM_PRO_VER' ) ) {
+			return;
+		}
+
+		if ( SRFM_FORMS_POST_TYPE !== get_post_type() ) {
+			return;
+		}
+
+		echo wp_kses_post(
+			sprintf(
+				'<a href="%1$s" class="srfm-branding" target="_blank">%2$s</a>',
+				esc_url( SRFM_WEBSITE ),
+				/* translators: Here %s is the plugin's name. */
+				sprintf( esc_html__( 'Powered by %s', 'sureforms' ), 'SureForms' )
+			)
+		);
 	}
 
 	/**
@@ -361,6 +392,14 @@ class Generate_Form_Markup {
 			$segments  = explode( '/', $path );
 			$form_path = isset( $segments[1] ) ? $segments[1] : '';
 		}
+
+		/**
+		 * Action hook - srfm_before_form_container_close
+		 *
+		 * @since x.x.x
+		 * @param int|string $id Current form ID.
+		 */
+		do_action( 'srfm_before_form_container_close', $id );
 		?>
 			</div>
 		<?php

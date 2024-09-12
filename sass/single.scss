@@ -81,7 +81,7 @@
 		}
 
 		.srfm-branding {
-			position: absolute;
+			position: fixed;
 			right: 23px;
 			bottom: 36px;
 			padding: 4px 15px;
@@ -110,7 +110,7 @@
 				position: static;
 				display: block;
 				width: max-content;
-				margin: 0 auto 36px;
+				margin: 0 auto;
 			}
 		}
 	}
