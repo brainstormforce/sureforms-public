@@ -330,14 +330,6 @@ const AiFormBuilder = () => {
 										return;
 									}
 
-									if (
-										srfm_admin?.srfm_ai_usage_details
-											?.remaining === 0
-									) {
-										setShowLimitReachedPopup( true );
-										return;
-									}
-
 									handleCreateAiForm(
 										userPrompt.value,
 										[],
