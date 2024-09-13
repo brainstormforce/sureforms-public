@@ -10,7 +10,6 @@ import { __ } from '@wordpress/i18n';
 import {
 	Button,
 	Popover,
-	ColorIndicator,
 	Tooltip,
 	Dashicon,
 	ColorPicker,
@@ -27,6 +26,13 @@ import {
 import { getIdFromString, getPanelIdFromRef } from '@Utils/Helpers';
 import SRFMReset from '../reset';
 import { applyFilters } from '@wordpress/hooks';
+
+const ColorIndicator = (props) => {
+	const { colorValue, className, isGlobal } = props;
+	let classes = "component-color-indicator srfm-advanced-color-indicate";
+	classes = className ? `${classes} ${className}` : classes;
+	return <span className={classes} style={{ background: colorValue }}>{ isGlobal ? cIcons.globe : "" }</span>;
+};
 
 const AdvancedPopColorControl = ( props ) => {
 	const [ panelNameForHook, setPanelNameForHook ] = useState( null );
@@ -184,11 +190,9 @@ const AdvancedPopColorControl = ( props ) => {
 	const globalIconColor = pickIconColorBasedOnBgColorAdvanced(
 		maybeGetColorForVariable( colorVal )
 	);
-
-	const globalIndicator =
-		colorVal && colorVal.includes( 'var' )
-			? `srfm-global-indicator srfm-global-icon-${ globalIconColor }`
-			: '';
+	
+	const globalIndicator = colorVal && colorVal.includes( 'var' );
+	const globalIndicatorClasses = globalIndicator ? `srfm-global-indicator srfm-global-icon-${ globalIconColor }` : '';
 
 	const controlName = getIdFromString( props.label );
 	const controlBeforeDomElement = applyFilters(
@@ -279,7 +283,8 @@ const AdvancedPopColorControl = ( props ) => {
 									onClick={ toggleClose }
 								>
 									<ColorIndicator
-										className={ `srfm-advanced-color-indicate ${ globalIndicator }` }
+										isGlobal={ globalIndicator }
+										className={ globalIndicatorClasses }
 										colorValue={ colorVal }
 									/>
 									{ '' === colorVal && value.inherit && (
@@ -305,7 +310,8 @@ const AdvancedPopColorControl = ( props ) => {
 									onClick={ toggleVisible }
 								>
 									<ColorIndicator
-										className={ `srfm-advanced-color-indicate ${ globalIndicator }` }
+										isGlobal={ globalIndicator }
+										className={ globalIndicatorClasses }
 										colorValue={ colorVal }
 									/>
 									{ '' === colorVal && value.inherit && (

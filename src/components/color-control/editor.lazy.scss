@@ -34,22 +34,19 @@
 		height: $srfm-control-circle-indicator;
 		border-radius: 50%;
 		margin: 0;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		> svg{
+			fill: transparent;
+		}
 	}
-
-	.srfm-advanced-color-indicate.srfm-global-indicator::before {
-		content: "\f11f";
-		font-family: dashicons; // stylelint-disable-line font-family-no-missing-generic-family-keyword
-		position: absolute;
-		font-size: 16px;
-		top: 6px;
-		left: 7px;
-	}
-
-	.srfm-global-icon-black::before {
+	
+	.srfm-global-icon-black {
 		color: #000;
 	}
 
-	.srfm-global-icon-white::before {
+	.srfm-global-icon-white {
 		color: #fff;
 	}
 }
