@@ -417,6 +417,7 @@ class Helper {
 			'srfm_email_block_required_text'        => $common_err_msg['required'],
 			'srfm_email_block_unique_text'          => $common_err_msg['unique'],
 			'srfm_dropdown_block_required_text'     => $common_err_msg['required'],
+			'srfm_rating_block_required_text'       => $common_err_msg['required'],
 		];
 
 		return apply_filters( 'srfm_default_dynamic_block_option', $default_values, $common_err_msg );
