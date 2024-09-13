@@ -26,11 +26,15 @@ import { getIdFromString, getPanelIdFromRef } from '@Utils/Helpers';
 import UAGReset from '../reset';
 import { applyFilters } from '@wordpress/hooks';
 
-const ColorIndicator = (props) => {
+const ColorIndicator = ( props ) => {
 	const { colorValue, className, isGlobal } = props;
-	let classes = "component-color-indicator uagb-advanced-color-indicate";
-	classes = className ? `${classes} ${className}` : classes;
-	return <span className={classes} style={{ background: colorValue }}>{ isGlobal ? cIcons.globe : "" }</span>;
+	let classes = 'component-color-indicator uagb-advanced-color-indicate';
+	classes = className ? `${ classes } ${ className }` : classes;
+	return (
+		<span className={ classes } style={ { background: colorValue } }>
+			{ isGlobal ? cIcons.globe : '' }
+		</span>
+	);
 };
 
 const AdvancedPopColorControl = ( props ) => {
@@ -185,8 +189,9 @@ const AdvancedPopColorControl = ( props ) => {
 	);
 
 	const globalIndicator = colorVal && colorVal.includes( 'var' );
-	const globalIndicatorClasses = globalIndicator ? `uag-global-indicator uag-global-icon-${ globalIconColor }` : '';
-
+	const globalIndicatorClasses = globalIndicator
+		? `uag-global-indicator uag-global-icon-${ globalIconColor }`
+		: '';
 
 	const controlName = getIdFromString( props.label );
 	const controlBeforeDomElement = applyFilters(

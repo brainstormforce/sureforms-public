@@ -27,11 +27,15 @@ import { getIdFromString, getPanelIdFromRef } from '@Utils/Helpers';
 import SRFMReset from '../reset';
 import { applyFilters } from '@wordpress/hooks';
 
-const ColorIndicator = (props) => {
+const ColorIndicator = ( props ) => {
 	const { colorValue, className, isGlobal } = props;
-	let classes = "component-color-indicator srfm-advanced-color-indicate";
-	classes = className ? `${classes} ${className}` : classes;
-	return <span className={classes} style={{ background: colorValue }}>{ isGlobal ? cIcons.globe : "" }</span>;
+	let classes = 'component-color-indicator srfm-advanced-color-indicate';
+	classes = className ? `${ classes } ${ className }` : classes;
+	return (
+		<span className={ classes } style={ { background: colorValue } }>
+			{ isGlobal ? cIcons.globe : '' }
+		</span>
+	);
 };
 
 const AdvancedPopColorControl = ( props ) => {
@@ -190,9 +194,11 @@ const AdvancedPopColorControl = ( props ) => {
 	const globalIconColor = pickIconColorBasedOnBgColorAdvanced(
 		maybeGetColorForVariable( colorVal )
 	);
-	
+
 	const globalIndicator = colorVal && colorVal.includes( 'var' );
-	const globalIndicatorClasses = globalIndicator ? `srfm-global-indicator srfm-global-icon-${ globalIconColor }` : '';
+	const globalIndicatorClasses = globalIndicator
+		? `srfm-global-indicator srfm-global-icon-${ globalIconColor }`
+		: '';
 
 	const controlName = getIdFromString( props.label );
 	const controlBeforeDomElement = applyFilters(
