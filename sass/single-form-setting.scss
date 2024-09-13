@@ -305,6 +305,14 @@ $req_err_color: #dc2625;
 									}
 								}
 							}
+							.components-base-control__help {
+								margin: 0;
+								align-self: flex-start;
+
+								& + .components-dropdown {
+									bottom: 30%;
+								}
+							}
 
 							.srfm-modal-label {
 								width: 100%;

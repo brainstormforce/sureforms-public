@@ -49,6 +49,10 @@
 		&:hover {
 			background: var( --srfm-btn-color-hover ) !important;
 		}
+
+		&:focus {
+			box-shadow: 0px 0px 0px 3px var( --srfm-color-input-border-focus-glow );
+		}
 	}
 
 	.srfm-submit-button {
@@ -205,7 +209,7 @@
 
 			.srfm-input-checkbox,
 			.srfm-input-gdpr {
-				position: absolute;
+				position: fixed; // Changing the position from absolute to fixed solves the page jump issue without affecting the UI.
 
 				&:checked {
 					+ {

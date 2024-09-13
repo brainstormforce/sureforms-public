@@ -42,13 +42,6 @@ const defaultKeys = {
 	_srfm_is_inline_button: false,
 	// Submit Button
 	_srfm_submit_button_text: 'Submit',
-	// Page Break
-	_srfm_is_page_break: false,
-	_srfm_first_page_label: 'Page break',
-	_srfm_page_break_progress_indicator: 'connector',
-	_srfm_page_break_toggle_label: false,
-	_srfm_previous_button_text: 'Previous',
-	_srfm_next_button_text: 'Next',
 	// Submit Button
 	_srfm_inherit_theme_button: false,
 	_srfm_submit_alignment: 'left',
@@ -56,21 +49,10 @@ const defaultKeys = {
 	_srfm_submit_alignment_backend: '100%',
 	_srfm_submit_width_backend: 'max-content',
 	_srfm_additional_classes: '',
-	// Page Break Button
-	_srfm_page_break_inherit_theme_button: false,
-	_srfm_page_break_button_bg_color: '#D54407',
-	_srfm_page_break_button_text_color: '#ffffff',
-	_srfm_page_break_button_border_color: '#ffffff',
-	_srfm_page_break_button_border_width: 0,
-	_srfm_page_break_button_border_radius: 4,
-	_srfm_page_break_button_bg_type: 'filled',
 
 	// Advanced Tab
 	// Success Message
 	_srfm_submit_type: 'message',
-	_srfm_thankyou_message_title: 'Thank you',
-	_srfm_thankyou_message: 'Form submitted successfully!',
-	_srfm_submit_url: '',
 	_srfm_form_recaptcha: 'none',
 };
 
@@ -167,8 +149,12 @@ const SureformsFormSpecificSettings = ( props ) => {
 	}, [ formCustomCssData ] );
 
 	useEffect( () => {
-		if ( typeof sureformsKeys._srfm_is_page_break === 'boolean' ) {
-			updateMeta( '_srfm_is_page_break', isPageBreak );
+		if ( typeof sureformsKeys?._srfm_page_break_settings?.is_page_break === 'boolean' ) {
+			const updatedPageBreakSettings = {
+				...sureformsKeys._srfm_page_break_settings,
+				is_page_break: isPageBreak,
+			};
+			updateMeta( '_srfm_page_break_settings', updatedPageBreakSettings );
 		}
 
 		if ( typeof sureformsKeys._srfm_is_inline_button === 'boolean' ) {
