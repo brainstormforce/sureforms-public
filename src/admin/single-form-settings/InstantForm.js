@@ -94,7 +94,7 @@ const InstantFormComponent = () => {
 	 * Manage live preview mode.
 	 */
 	useEffect( () => {
-		const contentArea = document.querySelector( '#editor .interface-interface-skeleton__body' );
+		const contentArea = document.querySelector( '#editor .interface-interface-skeleton__editor' );
 
 		if ( ! contentArea ) {
 			live_mode_prev_srfm_instant_form_settings = {};
@@ -105,6 +105,7 @@ const InstantFormComponent = () => {
 
 		// Array of elements selectors to hide/show when live preview is enabled/disabled.
 		const toggleElements = [
+			'.interface-interface-skeleton__body',
 			'.editor-header .editor-header__toolbar',
 			'.editor-header__settings .interface-pinned-items',
 			'.editor-header__settings .components-dropdown-menu .components-dropdown-menu__toggle',
@@ -113,7 +114,6 @@ const InstantFormComponent = () => {
 
 		if ( ! isLiveMode ) {
 			// Unload live mode iframe is live mode is disabled.
-			contentArea.classList.remove( 'srfm-instant-form-live-mode' );
 			iframe?.remove();
 
 			toggleElements.forEach( ( toggleElement ) => {
@@ -127,8 +127,6 @@ const InstantFormComponent = () => {
 		toggleElements.forEach( ( toggleElement ) => {
 			document.querySelector( toggleElement ).classList.add( 'hidden' );
 		} );
-
-		contentArea.classList.add( 'srfm-instant-form-live-mode' );
 
 		const currentPost = select( editorStore ).getCurrentPost();
 		const url = new URL( currentPost.link ); // Use the default ( not edited ) post link for live mode as edited version is not saved yet.
@@ -147,6 +145,7 @@ const InstantFormComponent = () => {
 		if ( ! iframe ) {
 			iframe = document.createElement( 'iframe' );
 			iframe.className = 'srfm-instant-form-live-mode-iframe';
+			iframe.setAttribute( 'style', 'height:100vh;background-color:#ffffff;' );
 			contentArea.append( iframe );
 		}
 

@@ -79,6 +79,9 @@ $form_styling = Helper::get_meta_value(
 			#wpadminbar {
 				display: none;
 			}
+			body {
+				pointer-events: none;
+			}
 			<?php
 		}
 
