@@ -292,6 +292,13 @@ export async function fieldValidation(
 					'.srfm-email-confirm-block'
 				);
 
+				if ( parent.classList.contains( 'srfm-valid-email-error' ) ) {
+					if ( ! firstErrorInput ) {
+						firstErrorInput = inputField;
+					}
+					validateResult = true;
+				}
+
 				if ( confirmParent ) {
 					const confirmInput = confirmParent.querySelector(
 						'.srfm-input-email-confirm'
@@ -687,12 +694,16 @@ function addEmailBlurListener( areaInput, blockClass ) {
 
 			// Handle general email validation
 			if ( ! isValidEmail ) {
-				inputBlock.classList.add( 'srfm-valid-email-error' );
+				inputBlock.parentElement.classList.add(
+					'srfm-valid-email-error'
+				);
 				errorContainer.style.display = 'block';
 				errorContainer.innerHTML = 'Please enter a valid email address';
 			} else {
 				errorContainer.style.display = 'none';
-				inputBlock.classList.remove( 'srfm-valid-email-error' );
+				inputBlock.parentElement.classList.remove(
+					'srfm-valid-email-error'
+				);
 			}
 		} );
 	} );

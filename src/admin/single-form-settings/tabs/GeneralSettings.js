@@ -25,6 +25,9 @@ function GeneralSettings( props ) {
 	let sureformsKeys = useSelect( ( select ) =>
 		select( editorStore ).getEditedPostAttribute( 'meta' )
 	);
+
+	const pageBreakSettings = sureformsKeys?._srfm_page_break_settings || {};
+
 	const deviceType = useDeviceType();
 	const [ rootContainer, setRootContainer ] = useState(
 		document.getElementById( 'srfm-form-container' )
@@ -169,6 +172,14 @@ function GeneralSettings( props ) {
 		},
 	];
 
+	function updatePageBreakSettings( option, value ) {
+		editPost( {
+			meta: {
+				_srfm_page_break_settings: { ...pageBreakSettings, [ option ]: value },
+			},
+		} );
+	}
+
 	return (
 		<>
 			<SRFMAdvancedPanelBody
@@ -194,31 +205,32 @@ function GeneralSettings( props ) {
 					title={ __( 'Page Break', 'sureforms' ) }
 					initialOpen={ false }
 				>
-					<ToggleControl
-						label={ __( 'Show Labels', 'sureforms' ) }
-						checked={ sureformsKeys._srfm_page_break_toggle_label }
-						onChange={ ( value ) => {
-							updateMeta(
-								'_srfm_page_break_toggle_label',
-								value
-							);
-						} }
-					/>
-					<SRFMTextControl
-						label={ __( 'First Page Label', 'sureforms' ) }
-						value={ sureformsKeys._srfm_first_page_label }
-						data={ {
-							value: sureformsKeys._srfm_first_page_label,
-							label: '_srfm_first_page_label',
-						} }
-						onChange={ ( value ) =>
-							updateMeta( '_srfm_first_page_label', value )
-						}
-					/>
+					{ pageBreakSettings?.progress_indicator_type !== 'none' && (
+						<>
+							<ToggleControl
+								label={ __( 'Show Labels', 'sureforms' ) }
+								checked={ pageBreakSettings?.toggle_label }
+								onChange={ ( value ) => {
+									updatePageBreakSettings( 'toggle_label', value );
+								} }
+							/>
+							<SRFMTextControl
+								label={ __( 'First Page Label', 'sureforms' ) }
+								value={ pageBreakSettings?.first_page_label }
+								data={ {
+									value: pageBreakSettings?.first_page_label,
+									label: 'first_page_label',
+								} }
+								onChange={ ( value ) =>
+									updatePageBreakSettings( 'first_page_label', value )
+								}
+							/>
+						</>
+					) }
 					<SelectControl
 						label={ __( 'Progress Indicator', 'sureforms' ) }
 						value={
-							sureformsKeys._srfm_page_break_progress_indicator
+							pageBreakSettings?.progress_indicator_type
 						}
 						className="srfm-progress-control"
 						options={ [
@@ -237,34 +249,31 @@ function GeneralSettings( props ) {
 							},
 						] }
 						onChange={ ( value ) =>
-							updateMeta(
-								'_srfm_page_break_progress_indicator',
-								value
-							)
+							updatePageBreakSettings( 'progress_indicator_type', value )
 						}
 						__nextHasNoMarginBottom
 					/>
 					<SRFMTextControl
 						data={ {
-							value: sureformsKeys._srfm_previous_button_text,
-							label: '_srfm_previous_button_text',
+							value: pageBreakSettings?.next_button_text,
+							label: 'next_button_text',
 						} }
-						label={ __( 'Previous Button Text', 'sureforms' ) }
-						value={ sureformsKeys._srfm_previous_button_text }
+						label={ __( 'Next Button Text', 'sureforms' ) }
+						value={ pageBreakSettings?.next_button_text }
 						onChange={ ( value ) => {
-							updateMeta( '_srfm_previous_button_text', value );
+							updatePageBreakSettings( 'next_button_text', value );
 						} }
 						isFormSpecific={ true }
 					/>
 					<SRFMTextControl
 						data={ {
-							value: sureformsKeys._srfm_previous_button_text,
-							label: '_srfm_next_button_text',
+							value: pageBreakSettings?.back_button_text,
+							label: 'back_button_text',
 						} }
-						label={ __( 'Next Button Text', 'sureforms' ) }
-						value={ sureformsKeys._srfm_next_button_text }
+						label={ __( 'Back Button Text', 'sureforms' ) }
+						value={ pageBreakSettings?.back_button_text }
 						onChange={ ( value ) => {
-							updateMeta( '_srfm_next_button_text', value );
+							updatePageBreakSettings( 'back_button_text', value );
 						} }
 						isFormSpecific={ true }
 					/>

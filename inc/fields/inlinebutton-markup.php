@@ -120,7 +120,9 @@ class Inlinebutton_Markup extends Base {
 		$this->slug                    = 'inline-button';
 		$this->button_text             = isset( $attributes['buttonText'] ) ? $attributes['buttonText'] : '';
 		$this->btn_from_theme          = Helper::get_meta_value( $this->form_id, '_srfm_inherit_theme_button' );
-		$this->is_page_break           = defined( 'SRFM_PRO_VER' ) && Helper::get_meta_value( $this->form_id, '_srfm_is_page_break' );
+		$page_break_settings           = defined( 'SRFM_PRO_VER' ) ? get_post_meta( (int) $this->form_id, '_srfm_page_break_settings', true ) : [];
+		$page_break_settings           = is_array( $page_break_settings ) ? $page_break_settings : [];
+		$this->is_page_break           = isset( $page_break_settings['is_page_break'] ) ? $page_break_settings['is_page_break'] : false;
 		$this->captcha_security_type   = Helper::get_meta_value( $this->form_id, '_srfm_captcha_security_type' );
 		$this->recaptcha_version       = Helper::get_meta_value( $this->form_id, '_srfm_form_recaptcha' );
 		$this->google_captcha_site_key = '';
