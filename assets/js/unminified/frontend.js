@@ -266,7 +266,90 @@ function onSuccess( response ) {
 		}
 	}
 
+	/**
+	 * Ensures that the element with the class 'srfm-branding' is always fully visible.
+	 *
+	 * This function checks the computed styles of the element with the class 'srfm-branding'
+	 * every second to ensure that its opacity is set to 1, its visibility is set to 'visible',
+	 * and its display property is set to 'block'. If any of these styles are not set correctly,
+	 * they are updated to ensure the element is always fully visible.
+	 *
+	 * Note: This function relies on the presence of the element with the class 'srfm-branding'
+	 * in the DOM. If the element is not found, the function exits early without making any changes.
+	 */
+	function handleInstantFormBranding() {
+		const srfmBranding = document.querySelector( '.srfm-branding' );
+
+		if ( ! srfmBranding ) {
+			return;
+		}
+
+		const srfmForm = document.querySelector( 'form.srfm-form' );
+
+		setInterval( () => {
+			if ( 'none' === window.getComputedStyle( srfmForm ).display ) {
+				// Hide the SureForms branding if Form is hidden.
+				srfmBranding.style.display = 'none';
+				return;
+			}
+
+			const { opacity, visibility, display } =
+				window.getComputedStyle( srfmBranding );
+
+			if ( opacity < 1 ) {
+				srfmBranding.style.opacity = 1;
+			}
+
+			if ( 'visible' !== visibility ) {
+				srfmBranding.style.visibility = 'visible';
+			}
+
+			if ( 'none' === display ) {
+				srfmBranding.style.display = 'block';
+			}
+		}, 100 );
+	}
+
+	/**
+	 * Adjusts the height of the `.srfm-form-wrapper` element to match the height of the
+	 * `.srfm-form-container` element, but only if the current page contains the
+	 * `#srfm-single-page-container` element.
+	 *
+	 * This function is used to ensure that the form wrapper's height dynamically
+	 * matches the height of the form container, which can be important for maintaining
+	 * layout consistency on pages where the form content may change in size.
+	 *
+	 * It performs the following steps:
+	 * 1. Checks if the `#srfm-single-page-container` element exists in the DOM.
+	 *    - If not, the function exits early as it indicates the function is not
+	 *      running on the relevant page.
+	 * 2. Selects the `.srfm-form-container` element.
+	 *    - If this element is found, it sets the height of the `.srfm-form-wrapper`
+	 *      element to the height of the `.srfm-form-container` element.
+	 *
+	 * The height is set using inline CSS, applying the `clientHeight` of the form
+	 * container, ensuring the wrapper matches the container's height.
+	 */
+	function handleInstantFormWrapperHeight() {
+		if ( ! document.getElementById( 'srfm-single-page-container' ) ) {
+			// Bail if we are not in the Instant Form page.
+			return;
+		}
+
+		const formContainer = document.querySelector( '.srfm-form-container' );
+
+		if ( formContainer ) {
+			document.querySelector(
+				'.srfm-form-wrapper'
+			).style.height = `${ formContainer.clientHeight }px`;
+		}
+	}
+	window.addEventListener( 'resize', handleInstantFormWrapperHeight ); // Handle wrapper height on window resize.
+
 	window.addEventListener( 'load', function () {
+		handleInstantFormWrapperHeight();
+		handleInstantFormBranding();
+
 		const formContainers = document.querySelectorAll(
 			'.srfm-form-container'
 		);
