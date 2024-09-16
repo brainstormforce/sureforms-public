@@ -29,7 +29,12 @@ const InspectorTabs = ( props ) => {
 	const srfmSettingState =
 		getSRFMEditorStateLocalStorage( 'srfmSettingState' );
 
-	const { defaultTab, children, tabs } = props;
+	const {
+		defaultTab = 'general',
+		children,
+		tabs = [ 'general', 'style', 'advance' ],
+	} = props;
+
 	const [ currentTab, setCurrentTab ] = useState(
 		defaultTab ? defaultTab : tabs[ 0 ]
 	);
@@ -250,11 +255,6 @@ const InspectorTabs = ( props ) => {
 				} ) }
 		</>
 	);
-};
-
-InspectorTabs.defaultProps = {
-	defaultTab: 'general',
-	tabs: [ 'general', 'style', 'advance' ],
 };
 
 export default InspectorTabs;

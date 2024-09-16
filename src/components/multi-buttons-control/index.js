@@ -91,7 +91,6 @@ const MultiButtonsControl = ( props ) => {
 					<Button
 						key={ `option-${ option.value }` }
 						className={ `srfm-multi-button` }
-						isLarge
 						isSecondary={
 							data.desktop.value !== option.value ||
 							! buttonPrimaryStateDesktop
@@ -142,7 +141,6 @@ const MultiButtonsControl = ( props ) => {
 					<Button
 						key={ `option-${ option.value }` }
 						className={ `srfm-multi-button` }
-						isLarge
 						isSecondary={
 							data.tablet.value !== option.value ||
 							! buttonPrimaryStateTablet
@@ -194,7 +192,6 @@ const MultiButtonsControl = ( props ) => {
 					<Button
 						key={ `option-${ option.value }` }
 						className={ `srfm-multi-button` }
-						isLarge
 						isSecondary={
 							data.mobile.value !== option.value ||
 							! buttonPrimaryStateMobile
@@ -311,7 +308,6 @@ const MultiButtonsControl = ( props ) => {
 						<Button
 							key={ `option-${ option.value }` }
 							className={ `srfm-multi-button` }
-							isLarge
 							isSecondary={
 								data.value !== option.value ||
 								! buttonPrimaryStateDesktop

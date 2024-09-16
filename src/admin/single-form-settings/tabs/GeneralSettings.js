@@ -18,7 +18,7 @@ import SingleFormSettingsPopup from '../components/SingleFormSettingPopup';
 let prevMetaHash = '';
 
 function GeneralSettings( props ) {
-	const { createNotice } = useDispatch( 'core/notices' );
+	const { createNotice, removeNotice } = useDispatch( 'core/notices' );
 
 	const { editPost } = useDispatch( editorStore );
 	const { defaultKeys, isPageBreak } = props;
@@ -66,6 +66,17 @@ function GeneralSettings( props ) {
 			);
 		}
 	};
+
+	useSelect( ( select ) => {
+		if ( ! select( 'core/editor' ).isSavingPost() ) {
+			return;
+		}
+
+		if ( select( 'core/notices' ).getNotices()?.filter( ( notice ) => 'srfm-unsaved-changes-warning' === notice?.id ).length > 0 ) {
+			// Remove SRFM unsaved changes notice if user is saving the current form.
+			removeNotice( 'srfm-unsaved-changes-warning' );
+		}
+	}, [] );
 
 	const modalIcon = parse( svgIcons.modalLogo );
 
