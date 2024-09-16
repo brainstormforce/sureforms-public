@@ -4,6 +4,7 @@ import {
 	MdOutlineInsertPageBreak,
 	MdOutlineStarBorder,
 	MdOutlineCloudUpload,
+	MdAccessTime
 } from 'react-icons/md';
 import { FaRegEyeSlash } from 'react-icons/fa';
 import { RxSlider } from 'react-icons/rx';
@@ -35,18 +36,24 @@ const IconGrid = () => (
 					icon={
 						<MdOutlineCalendarMonth size={ 24 } color="#B4B4B4" />
 					}
-					label={ __( 'Date & Time Picker', 'sureforms' ) }
+					label={ __( 'Date Picker', 'sureforms' ) }
+				/>
+				<IconBlock
+					icon={
+						<MdAccessTime size={ 24 } color="#B4B4B4" />
+					}
+					label={ __( 'Time Picker', 'sureforms' ) }
 				/>
 				<IconBlock
 					icon={ <FaRegEyeSlash size={ 24 } color="#B4B4B4" /> }
 					label={ __( 'Hidden', 'sureforms' ) }
 				/>
+			</div>
+			<div role="presentation">
 				<IconBlock
 					icon={ <RxSlider size={ 24 } color="#B4B4B4" /> }
 					label={ __( 'Slider', 'sureforms' ) }
 				/>
-			</div>
-			<div role="presentation">
 				<IconBlock
 					icon={
 						<MdOutlineInsertPageBreak size={ 24 } color="#B4B4B4" />
@@ -57,6 +64,8 @@ const IconGrid = () => (
 					icon={ <MdOutlineStarBorder size={ 24 } color="#B4B4B4" /> }
 					label={ __( 'Rating', 'sureforms' ) }
 				/>
+			</div>
+			<div role="presentation">
 				<IconBlock
 					icon={
 						<MdOutlineCloudUpload size={ 24 } color="#B4B4B4" />
