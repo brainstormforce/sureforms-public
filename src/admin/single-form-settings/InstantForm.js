@@ -13,21 +13,6 @@ import { cleanForSlug } from '@wordpress/url';
 import parse from 'html-react-parser';
 import { createRoot } from 'react-dom/client';
 
-const InstantFormToggle = ( props ) => {
-	const toggleID = useId();
-
-	return (
-		<div className="srfm-instant-form-settings srfm-instant-form-settings-inline">
-			<label htmlFor={ toggleID } style={ { cursor: 'pointer' } }>{ props.label }</label>
-			<FormToggle
-				{ ...props }
-				label=""
-				id={ toggleID }
-			/>
-		</div>
-	);
-};
-
 let live_mode_prev_srfm_instant_form_settings = {};
 
 // Extract the key from obj1 if the obj1 key value is different from obj2 key value.
@@ -90,29 +75,16 @@ const InstantFormComponent = () => {
 		setTimeout( () => setIsLinkCopied( false ), 2000 );
 	} );
 
-	/**
-	 * Manage live preview mode.
-	 */
-	useEffect( () => {
-		const contentArea = document.querySelector( '#editor .interface-interface-skeleton__editor' );
+	// Hide or show the elements in live mode.
+	const toggleElementsInLiveMode = ( remove = false ) => {
+		const styleTagID = 'srfm-instant-form-toggle-elements-style';
+		const tag = document.getElementById( styleTagID );
 
-		if ( ! contentArea ) {
-			live_mode_prev_srfm_instant_form_settings = {};
-			return;
+		if ( remove ) {
+			return tag?.remove();
 		}
 
-		let iframe = contentArea.querySelector( '.srfm-instant-form-live-mode-iframe' );
-
-		if ( ! isLiveMode ) {
-			// Unload live mode iframe is live mode is disabled.
-			iframe?.remove();
-			document.getElementById( 'srfm-instant-form-toggle-elements-style' )?.remove();
-
-			live_mode_prev_srfm_instant_form_settings = {};
-			return;
-		}
-
-		if ( ! document.getElementById( 'srfm-instant-form-toggle-elements-style' ) ) {
+		if ( ! tag ) {
 			// Array of elements selectors to hide/show when live preview is enabled/disabled.
 			const toggleElements = [
 				'.interface-interface-skeleton__body',
@@ -121,7 +93,7 @@ const InstantFormComponent = () => {
 			];
 
 			const toggleElementsStyle = document.createElement( 'style' );
-			toggleElementsStyle.id = 'srfm-instant-form-toggle-elements-style';
+			toggleElementsStyle.id = styleTagID;
 			toggleElementsStyle.innerText = toggleElements.join( ', ' ) + '{ display:none !important; }';
 
 			// Adding visibility:hidden separately so that it don't create visual disturbance.
@@ -129,30 +101,10 @@ const InstantFormComponent = () => {
 
 			document.head.append( toggleElementsStyle );
 		}
+	};
 
-		const currentPost = select( editorStore ).getCurrentPost();
-		const url = new URL( currentPost.link ); // Use the default ( not edited ) post link for live mode as edited version is not saved yet.
-		const params = new URLSearchParams( url.search );
-
-		params.set( 'preview', true );
-		params.set( 'live_mode', true );
-		params.set( '_srfm_submit_button_text', _srfm_submit_button_text ); // This will help display submit button if live preview is for unpublished form (draft).
-
-		Object.keys( _srfm_instant_form_settings ).forEach( ( key ) => {
-			params.set( key, _srfm_instant_form_settings[ key ] );
-		} );
-
-		url.search = params.toString();
-
-		if ( ! iframe ) {
-			iframe = document.createElement( 'iframe' );
-			iframe.className = 'srfm-instant-form-live-mode-iframe';
-			iframe.setAttribute( 'style', 'height:100vh;background-color:#ffffff;' );
-			contentArea.append( iframe );
-		}
-
-		/** @type {document} */
-		const iframeContentDocument = iframe.contentDocument;
+	// Returns array of instant styles that don't needs iframe refresh.
+	const getInstantStyles = () => {
 		const instantStyles = [];
 
 		// Instantly display changes inside iframe without refreshing the iframe.
@@ -182,15 +134,66 @@ const InstantFormComponent = () => {
 				break;
 
 			default:
-				// Pre-content load.
-				const iframeHTMLTag = iframeContentDocument.querySelector( 'html' );
-				iframeHTMLTag.style.opacity = 0;
-				iframeHTMLTag.style.transition = 'all 0.5s ease-in-out';
-
-				// Refresh the iframe for other keys.
-				iframe.src = url.toString();
 				break;
 		}
+
+		return instantStyles;
+	};
+
+	// Returns URL for the Instant Form Live Preview.
+	const getIframePreviewURL = ( postLink ) => {
+		const url = new URL( postLink ); // Use the default ( not edited ) post link for live mode as edited version is not saved yet.
+		const params = new URLSearchParams( url.search );
+
+		params.set( 'preview', true );
+		params.set( 'live_mode', true );
+		params.set( '_srfm_submit_button_text', _srfm_submit_button_text ); // This will help display submit button if live preview is for unpublished form (draft).
+
+		Object.keys( _srfm_instant_form_settings ).forEach( ( key ) => {
+			params.set( key, _srfm_instant_form_settings[ key ] );
+		} );
+
+		url.search = params.toString();
+
+		return url.toString();
+	};
+
+	/**
+	 * Manage live preview mode.
+	 */
+	useEffect( () => {
+		const contentArea = document.querySelector( '#editor .interface-interface-skeleton__editor' );
+
+		if ( ! contentArea ) {
+			live_mode_prev_srfm_instant_form_settings = {};
+			return;
+		}
+
+		let iframe = contentArea.querySelector( '.srfm-instant-form-live-mode-iframe' );
+
+		if ( ! isLiveMode ) {
+			// Unload live mode iframe is live mode is disabled.
+			iframe?.remove();
+			toggleElementsInLiveMode( true );
+
+			live_mode_prev_srfm_instant_form_settings = {};
+			return;
+		}
+
+		toggleElementsInLiveMode();
+
+		const currentPost = select( editorStore ).getCurrentPost();
+
+		if ( ! iframe ) {
+			iframe = document.createElement( 'iframe' );
+			iframe.className = 'srfm-instant-form-live-mode-iframe';
+			iframe.setAttribute( 'style', 'height:100vh;background-color:#ffffff;' );
+			contentArea.append( iframe );
+		}
+
+		/** @type {document} */
+		const iframeContentDocument = iframe.contentDocument;
+		const instantStyles = getInstantStyles();
 
 		if ( instantStyles.length > 0 ) {
 			/** @type {HTMLStyleElement} */
@@ -203,6 +206,14 @@ const InstantFormComponent = () => {
 
 			styleTag.innerHTML += instantStyles.join( ' ' );
 			iframeContentDocument.head.append( styleTag );
+		} else {
+			// Pre-content load.
+			const iframeHTMLTag = iframeContentDocument.querySelector( 'html' );
+			iframeHTMLTag.style.opacity = 0;
+			iframeHTMLTag.style.transition = 'all 0.5s ease-in-out';
+
+			// Refresh the iframe for other keys.
+			iframe.src = getIframePreviewURL( currentPost.link );
 		}
 
 		live_mode_prev_srfm_instant_form_settings = _srfm_instant_form_settings;
@@ -549,6 +560,21 @@ const InstantFormComponent = () => {
 				</Popover>
 			) }
 		</>
+	);
+};
+
+const InstantFormToggle = ( props ) => {
+	const toggleID = useId();
+
+	return (
+		<div className="srfm-instant-form-settings srfm-instant-form-settings-inline">
+			<label htmlFor={ toggleID } style={ { cursor: 'pointer' } }>{ props.label }</label>
+			<FormToggle
+				{ ...props }
+				label=""
+				id={ toggleID }
+			/>
+		</div>
 	);
 };
 
