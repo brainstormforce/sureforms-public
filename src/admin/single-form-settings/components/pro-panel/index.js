@@ -4,7 +4,7 @@ import {
 	MdOutlineInsertPageBreak,
 	MdOutlineStarBorder,
 	MdOutlineCloudUpload,
-	MdAccessTime
+	MdAccessTime,
 } from 'react-icons/md';
 import { FaRegEyeSlash } from 'react-icons/fa';
 import { RxSlider } from 'react-icons/rx';
