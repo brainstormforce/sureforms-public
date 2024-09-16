@@ -9125,7 +9125,7 @@ namespace SRFM\Inc {
             // pro blocks.
             'srfm/date-time-picker',
             'srfm/hidden',
-            'srfm/number-slider',
+            'srfm/slider',
             'srfm/password',
             'srfm/rating',
             'srfm/upload',

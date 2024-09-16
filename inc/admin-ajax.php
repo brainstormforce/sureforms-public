@@ -368,7 +368,7 @@ class Admin_Ajax {
 			'srfm/url'              => 'https://example.com',
 			'srfm/date-time-picker' => '2022-01-01 12:00:00',
 			'srfm/hidden'           => 'Hidden Value',
-			'srfm/number-slider'    => 50,
+			'srfm/slider'           => 50,
 			'srfm/password'         => 'DummyPassword123',
 			'srfm/rating'           => 4,
 			'srfm/upload'           => 'https://example.com/uploads/file.pdf',
