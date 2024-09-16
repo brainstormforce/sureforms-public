@@ -12,114 +12,192 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-$srfm_form_preview = '';
+$srfm_custom_post_id = absint( get_the_ID() );
+$srfm_form_preview   = isset( $_GET['form_preview'] ) ? boolval( sanitize_text_field( wp_unslash( $_GET['form_preview'] ) ) ) : false;  // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+$srfm_live_mode_data = Helper::get_instant_form_live_data();
 
-$srfm_form_preview_attr = isset( $_GET['form_preview'] ) ? sanitize_text_field( wp_unslash( $_GET['form_preview'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+$instant_form_settings         = ! empty( $srfm_live_mode_data ) ? $srfm_live_mode_data : Helper::get_array_value( Helper::get_post_meta( $srfm_custom_post_id, '_srfm_instant_form_settings' ) );
+$bg_type                       = $instant_form_settings['bg_type'];
+$bg_color                      = $instant_form_settings['bg_color'];
+$bg_image                      = $instant_form_settings['bg_image'];
+$cover_type                    = $instant_form_settings['cover_type'];
+$cover_color                   = $instant_form_settings['cover_color'];
+$cover_image                   = $instant_form_settings['cover_image'];
+$enable_instant_form           = $instant_form_settings['enable_instant_form'];
+$form_container_width          = $instant_form_settings['form_container_width'];
+$single_page_form_title        = $instant_form_settings['single_page_form_title'];
+$use_banner_as_page_background = $instant_form_settings['use_banner_as_page_background'];
 
-if ( $srfm_form_preview_attr ) {
-	$srfm_form_preview = filter_var( $srfm_form_preview_attr, FILTER_VALIDATE_BOOLEAN );
+$srfm_cover_image_url = $cover_image ? rawurldecode( strval( $cover_image ) ) : '';
+
+if ( 'image' === $bg_type ) {
+	$bg_image = $bg_image ? 'url(' . $bg_image . ')' : '';
+	$bg_color = '#ffffff';
+} else {
+	$bg_image = 'none';
+	$bg_color = $bg_color ? $bg_color : '';
 }
 
 ?>
 <!DOCTYPE html>
 <html class="srfm-html" <?php language_attributes(); ?>>
-	<head>
-		<meta charset="<?php bloginfo( 'charset' ); ?>">
-		<meta http-equiv="x-ua-compatible" content="ie=edge">
-		<?php wp_head(); ?>
+
+<head>
+	<meta charset="<?php bloginfo( 'charset' ); ?>">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+	<?php if ( ! wp_is_block_theme() ) { ?>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<?php
-			$srfm_custom_post_id  = get_the_ID();
-			$form_custom_css_meta = get_post_meta( $srfm_custom_post_id, '_srfm_form_custom_css', true );
-			$custom_css           = ! empty( $form_custom_css_meta ) && is_string( $form_custom_css_meta ) ? $form_custom_css_meta : '';
-		?>
-		<style>
-			<?php echo wp_kses_post( $custom_css ); ?>
-		</style>
-	</head>
-	<body <?php body_class(); ?>>
-	<?php
-		$srfm_color1_val           = get_post_meta( intval( $srfm_custom_post_id ), '_srfm_color1', true );
-		$srfm_cover_image          = get_post_meta( intval( $srfm_custom_post_id ), '_srfm_cover_image', true );
-		$srfm_fontsize_val         = get_post_meta( intval( $srfm_custom_post_id ), '_srfm_fontsize', true );
-		$srfm_form_container_width = get_post_meta( intval( $srfm_custom_post_id ), '_srfm_form_container_width', true ) ? strval( get_post_meta( intval( $srfm_custom_post_id ), '_srfm_form_container_width', true ) ) : 650;
-		$show_title                = get_post_meta( intval( $srfm_custom_post_id ), '_srfm_single_page_form_title', true ) ? strval( get_post_meta( intval( $srfm_custom_post_id ), '_srfm_single_page_form_title', true ) ) : '';
-		$instant_form              = Helper::get_meta_value( $srfm_custom_post_id, '_srfm_instant_form' );
+	}
+	wp_head();
+	?>
+	<style>
+		<?php
+		echo wp_kses_post( Helper::get_meta_value( $srfm_custom_post_id, '_srfm_form_custom_css' ) );
 
-		$srfm_color_primary    = $srfm_color1_val ? strval( $srfm_color1_val ) : '#0284c7';
-		$srfm_cover_image_url  = $srfm_cover_image ? rawurldecode( strval( $srfm_cover_image ) ) : '';
-		$srfm_button_alignment = get_post_meta( intval( $srfm_custom_post_id ), '_srfm_submit_alignment', true ) ? strval( get_post_meta( intval( $srfm_custom_post_id ), '_srfm_submit_alignment', true ) ) : '';
+		if ( $srfm_live_mode_data ) {
+			?>
+			html {
+				margin: 0 !important;
+				opacity: 0;
+				transition: all 0.5s ease-in-out;
+			}
+			#wpadminbar {
+				display: none;
+			}
+			<?php
+		}
 
-	if ( ! $srfm_form_preview ) {
+		if ( ! $srfm_form_preview ) {
+			?>
+			body * {
+				/* Maintain consistent box-sizing for different themes. */
+				box-sizing: border-box;
+			}
+			#srfm-single-page-container {
+				--srfm-form-container-width: <?php echo esc_attr( $form_container_width . 'px' ); ?>;
+				--srfm-bg-image: <?php echo $bg_image && is_string( $bg_image ) ? esc_html( $bg_image ) : ''; ?>;
+				--srfm-bg-color: <?php echo $bg_color && is_string( $bg_color ) ? esc_html( $bg_color ) : ''; ?>;
+			}
+			<?php
+			$selector = '.single-sureforms_form .srfm-single-page-container .srfm-page-banner';
 
-
-
-		if ( 'justify' === $srfm_button_alignment ) {
-			$srfm_full = true;
+			if ( $use_banner_as_page_background ) {
+				$selector = 'html body.single-sureforms_form';
+			}
+			?>
+			<?php echo esc_html( $selector ); ?> {
+				<?php if ( 'image' === $cover_type && ! empty( $srfm_cover_image_url ) ) : ?>
+					background-image: url(<?php echo esc_attr( $srfm_cover_image_url ); ?> );
+					background-position: center;
+					background-repeat: no-repeat;
+					background-size: cover;
+				<?php else : ?>
+					background-color: <?php echo esc_attr( $cover_color ); ?>;
+				<?php endif; ?>
+			}
+			<?php
+			if ( $use_banner_as_page_background ) {
+				// Some special edge case css when banner as page background enabled.
+				?>
+				.single-sureforms_form .srfm-single-page-container.has-form-title .srfm-page-banner {
+					height: 172px;
+				}
+				.single-sureforms_form .srfm-single-page-container .srfm-page-banner {
+					height: 112px;
+					padding-bottom: 60px;
+				}
+				.single-sureforms_form .srfm-single-page-container .srfm-form-wrapper {
+					padding-bottom: 100px;
+					height: 100%;
+				}
+				.single-sureforms_form .srfm-single-page-container .srfm-form-wrapper .srfm-form-container {
+					position: static;
+				}
+				<?php
+			}
 		} else {
-			$srfm_full = false;
+			?>
+			html.srfm-html {
+				margin-top: 0 !important;
+				/* Needs to be important to remove margin-top added by WordPress admin bar  */
+			}
+			body.single.single-sureforms_form {
+				background-color: transparent;
+			}
+			.srfm-form-container~div,
+			.srfm-instant-form-wrn-ctn {
+				display: none !important;
+				/* Needs to be important to remove any blocks added by external plugins in wp_footer() */
+			}
+			<?php
 		}
 		?>
-		<style>
-			#srfm-single-page-container {
-				--srfm-form-container-width: 
-					<?php
-					echo esc_attr( $srfm_form_container_width . 'px' );
-					?>
-					;
-			}
-			.single-sureforms_form .srfm-single-page-container .srfm-page-banner {
-				<?php if ( ! empty( $srfm_cover_image_url ) ) : ?>
-					background-image: url( <?php echo esc_attr( $srfm_cover_image_url ); ?> );
-					background-position: center;
-					background-size: cover;
-					background-repeat: no-repeat;
-				<?php else : ?>
-					background-color: <?php echo esc_attr( $srfm_color_primary ); ?>;
-				<?php endif; ?>
-			}
-		</style>
-		<div id="srfm-single-page-container" class="srfm-single-page-container">
+	</style>
+</head>
+
+<body <?php body_class(); ?>>
+	<?php if ( ! $srfm_form_preview ) { ?>
+		<div id="srfm-single-page-container" class="srfm-single-page-container <?php echo ! ! $single_page_form_title ? 'has-form-title' : ''; ?>">
 			<div class="srfm-page-banner">
-				<?php if ( ! empty( $show_title ) && ! empty( $instant_form ) ) : ?>
+				<?php
+				if ( ! empty( $single_page_form_title ) ) {
+					?>
 					<h1 class="srfm-single-banner-title"><?php echo esc_html( get_the_title() ); ?></h1>
-				<?php endif; ?>
+					<?php
+				}
+
+				if ( empty( $enable_instant_form ) ) {
+					?>
+					<div class="srfm-form-status-badge"><?php esc_html_e( 'Unpublished', 'sureforms' ); ?></div>
+					<?php
+				}
+				?>
 			</div>
 			<div class="srfm-form-wrapper">
 				<?php
-					// phpcs:ignore
-					echo Generate_Form_Markup::get_form_markup( absint( $srfm_custom_post_id ), false,'', 'sureforms_form' );
-					// phpcs:ignoreEnd
+				// phpcs:ignore
+				echo Generate_Form_Markup::get_form_markup( $srfm_custom_post_id, false, '', 'sureforms_form' );
+				// phpcs:ignoreEnd
 				?>
-						<?php
-						wp_footer();
-						?>
-		</div>
-		</div>
-
-		<?php } else { ?>
-			<style>
-				html.srfm-html {
-					margin-top: 0 !important; /* Needs to be important to remove margin-top added by WordPress admin bar  */
-				}
-
-				body.single.single-sureforms_form {
-					background-color: transparent;
-				}
-
-				.srfm-form-container ~ div, .srfm-instant-form-wrn-ctn { 
-					display: none !important; /* Needs to be important to remove any blocks added by external plugins in wp_footer() */	
-				}
-			</style>
+			</div>
 			<?php
+			if ( ! defined( 'SRFM_PRO_VER' ) ) {
+				// Display SureForms branding if SureForms Pro is not activated.
+				echo wp_kses_post(
+					sprintf(
+						'<a href="%1$s" class="srfm-branding" target="_blank">%2$s</a>',
+						esc_url( SRFM_WEBSITE ),
+						/* translators: Here %s is the plugin's name. */
+							sprintf( esc_html__( 'Powered By %s', 'sureforms' ), 'SureForms' )
+					)
+				);
+			}
+			?>
+		</div>
+	<?php } else { ?>
+		<?php
+		show_admin_bar( false );
+		// phpcs:ignore
+		echo Generate_Form_Markup::get_form_markup( $srfm_custom_post_id, false, 'sureforms_form' );
+		// phpcs:ignoreEnd
+	}
 
-			show_admin_bar( false );
+	wp_footer();
 
-			// phpcs:ignore
-			echo Generate_Form_Markup::get_form_markup( absint( $srfm_custom_post_id ), false, 'sureforms_form' );
-			// phpcs:ignoreEnd
-
-			wp_footer();
-		}
+	if ( $srfm_live_mode_data ) {
 		?>
-	</body>
+		<script>
+			(function() {
+				document.addEventListener('DOMContentLoaded', function() {
+					document.querySelector('html').style.opacity = 1;
+				});
+			}());
+		</script>
+		<?php
+	}
+	?>
+</body>
+
 </html>
+<?php

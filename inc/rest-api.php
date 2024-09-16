@@ -8,6 +8,9 @@
 namespace SRFM\Inc;
 
 use SRFM\Inc\Traits\Get_Instance;
+use SRFM\Inc\AI_Form_Builder\AI_Form_Builder;
+use SRFM\Inc\AI_Form_Builder\Field_Mapping;
+use SRFM\Inc\AI_Form_Builder\AI_Auth;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -16,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Rest API handler class.
  *
- * @since x.x.x
+ * @since 0.0.7
  */
 class Rest_Api {
 
@@ -25,7 +28,7 @@ class Rest_Api {
 	/**
 	 * Constructor
 	 *
-	 * @since X.X.X
+	 * @since 0.0.7
 	 * @return void
 	 */
 	public function __construct() {
@@ -35,7 +38,7 @@ class Rest_Api {
 	/**
 	 * Register endpoints
 	 *
-	 * @since X.X.X
+	 * @since 0.0.7
 	 * @return void
 	 */
 	public function register_endpoints() {
@@ -57,7 +60,7 @@ class Rest_Api {
 	/**
 	 * Check if user can edit posts
 	 *
-	 * @since X.X.X
+	 * @since 0.0.7
 	 * @return bool
 	 */
 	public function can_edit_posts() {
@@ -67,7 +70,7 @@ class Rest_Api {
 	/**
 	 * Get endpoints
 	 *
-	 * @since X.X.X
+	 * @since 0.0.7
 	 * @return array<array<mixed>>
 	 */
 	private function get_endpoints() {
@@ -77,14 +80,53 @@ class Rest_Api {
 				'callback'            => [ $this, 'generate_block_slugs_by_content' ],
 				'permission_callback' => [ $this, 'can_edit_posts' ],
 			],
+			'generate-form'        => [
+				'methods'             => 'POST',
+				'callback'            => [ AI_Form_Builder::get_instance(), 'generate_ai_form' ],
+				'permission_callback' => [ $this, 'can_edit_posts' ],
+				'args'                => [
+					'use_system_message' => [
+						'sanitize_callback' => [ $this, 'sanitize_boolean_field' ],
+					],
+				],
+			],
+			// This route is used to map the AI response to SureForms fields markup.
+			'map-fields'           => [
+				'methods'             => 'POST',
+				'callback'            => [ Field_Mapping::get_instance(), 'generate_gutenberg_fields_from_questions' ],
+				'permission_callback' => [ $this, 'can_edit_posts' ],
+			],
+			// This route is used to initiate auth process when user tries to authenticate on billing portal.
+			'initiate-auth'        => [
+				'methods'             => 'GET',
+				'callback'            => [ AI_Auth::get_instance(), 'get_auth_url' ],
+				'permission_callback' => [ $this, 'can_edit_posts' ],
+			],
+			// This route is to used to decrypt the access key and save it in the database.
+			'handle-access-key'    => [
+				'methods'             => 'POST',
+				'callback'            => [ AI_Auth::get_instance(), 'handle_access_key' ],
+				'permission_callback' => [ $this, 'can_edit_posts' ],
+			],
 		];
+	}
+
+	/**
+	 * Checks whether the value is boolean or not.
+	 *
+	 * @param mixed $value value to be checked.
+	 * @since 0.0.8
+	 * @return boolean
+	 */
+	public function sanitize_boolean_field( $value ) {
+		return filter_var( $value, FILTER_VALIDATE_BOOLEAN );
 	}
 
 	/**
 	 * Generate the block slugs as per the request by parsing the post content.
 	 *
 	 * @param  \WP_REST_Request $request Full details about the request.
-	 * @since x.x.x
+	 * @since 0.0.7
 	 * @return void
 	 */
 	public function generate_block_slugs_by_content( $request ) {

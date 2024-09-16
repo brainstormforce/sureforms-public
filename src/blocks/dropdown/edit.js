@@ -7,9 +7,8 @@ import {
 	SelectControl,
 	Button,
 	Icon,
-	TextControl,
 } from '@wordpress/components';
-import { InspectorControls, RichText } from '@wordpress/block-editor';
+import { InspectorControls } from '@wordpress/block-editor';
 import { useEffect, useState } from '@wordpress/element';
 import SRFMTextControl from '@Components/text-control';
 
@@ -18,7 +17,9 @@ import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
 	SRFMTabs,
 } from '@Components/inspector-tabs/InspectorTab.js';
-import { useErrMessage, decodeHtmlEntities } from '@Blocks/util';
+import { useErrMessage } from '@Blocks/util';
+import svgIcons from '@Svg/svgs.json';
+import parse from 'html-react-parser';
 
 /**
  * Component Dependencies
@@ -31,6 +32,7 @@ import { compose } from '@wordpress/compose';
 import widthOptions from '../width-options.json';
 import { FieldsPreview } from '../FieldsPreview.jsx';
 import ConditionalLogic from '@Components/conditional-logic';
+import UAGIconPicker from '@Components/icon-picker';
 
 const Edit = ( { attributes, setAttributes, clientId } ) => {
 	const {
@@ -41,21 +43,32 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 		block_id,
 		errorMsg,
 		formId,
-		placeholder,
 		preview,
 		className,
+		multiSelect,
+		searchable,
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
 	const [ newOption, setNewOption ] = useState( '' );
+
+	const changeOption = ( value, index ) => {
+		const updatedOptions = options.map( ( item, thisIndex ) => {
+			if ( index === thisIndex ) {
+				item = { ...item, ...value };
+			}
+			return item;
+		} );
+
+		setAttributes( { options: updatedOptions } );
+	};
 
 	function editOption( value, i ) {
 		if ( value === '' ) {
 			handleDelete( i );
 			return;
 		}
-		const updatedOptions = [ ...options ];
-		updatedOptions[ i ] = value;
-		setAttributes( { options: updatedOptions } );
+
+		changeOption( { label: value }, i );
 	}
 
 	function handleDelete( i ) {
@@ -104,22 +117,28 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 								}
 								__nextHasNoMarginBottom
 							/>
-							<SRFMTextControl
-								label={ __( 'Placeholder', 'sureforms' ) }
-								data={ {
-									value: placeholder,
-									label: 'placeholder',
-								} }
-								value={ placeholder }
-								onChange={ ( value ) => {
-									setAttributes( { placeholder: value } );
-								} }
-							/>
 							<ToggleControl
 								label={ __( 'Required', 'sureforms' ) }
 								checked={ required }
 								onChange={ ( checked ) =>
 									setAttributes( { required: checked } )
+								}
+							/>
+							<ToggleControl
+								label={ __(
+									'Enable Multiple Selections',
+									'sureforms'
+								) }
+								checked={ multiSelect }
+								onChange={ ( checked ) =>
+									setAttributes( { multiSelect: checked } )
+								}
+							/>
+							<ToggleControl
+								label={ __( 'Enable Search', 'sureforms' ) }
+								checked={ searchable }
+								onChange={ ( checked ) =>
+									setAttributes( { searchable: checked } )
 								}
 							/>
 							{ required && (
@@ -193,17 +212,10 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 																			ref={
 																				param.innerRef
 																			}
+																			className="srfm-option-outer-wrapper"
 																			{ ...param.draggableProps }
 																		>
-																			<div
-																				style={ {
-																					display:
-																						'flex',
-																					alignItems:
-																						'center',
-																					gap: '10px',
-																				} }
-																			>
+																			<div>
 																				<>
 																					<Icon
 																						icon={
@@ -212,12 +224,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 																						{ ...param.dragHandleProps }
 																					/>
 																				</>
-																				<div
-																					style={ {
-																						marginBottom:
-																							'0',
-																					} }
-																				>
+																				<div>
 																					<SRFMTextControl
 																						showHeaderControls={
 																							false
@@ -226,10 +233,10 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 																							i
 																						}
 																						value={
-																							option
+																							option.label
 																						}
 																						data={ {
-																							value: option,
+																							value: option.label,
 																							label: 'option',
 																						} }
 																						onChange={ (
@@ -243,6 +250,29 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 																					/>
 																				</div>
 																				<>
+																					<div className="srfm-icon-picker">
+																						<UAGIconPicker
+																							label={
+																								''
+																							}
+																							value={
+																								option.icon
+																							}
+																							onChange={ (
+																								value
+																							) =>
+																								changeOption(
+																									{
+																										icon: value,
+																									},
+																									i
+																								)
+																							}
+																							addIcon={ parse(
+																								svgIcons.custom_plus_icon
+																							) }
+																						/>
+																					</div>
 																					<Button
 																						icon="trash"
 																						onClick={ () =>
@@ -267,7 +297,8 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 								) }
 							</div>
 							<div className="sureform-add-option-container">
-								<TextControl
+								<SRFMTextControl
+									showHeaderControls={ false }
 									label={ __(
 										'Add New Option',
 										'sureforms'
@@ -281,11 +312,14 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 									className="sureform-add-option-button"
 									variant="secondary"
 									onClick={ () => {
-										if ( newOption && newOption ) {
+										if ( newOption ) {
 											setAttributes( {
 												options: [
 													...options,
-													newOption,
+													{
+														label: newOption,
+														icon: '',
+													},
 												],
 											} );
 											setNewOption( '' );
@@ -324,19 +358,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 				blockID={ block_id }
 				setAttributes={ setAttributes }
 			/>
-			{ help !== '' && (
-				<RichText
-					tagName="label"
-					value={ help }
-					onChange={ ( value ) => {
-						setAttributes( { help: decodeHtmlEntities( value ) } );
-					} }
-					className="srfm-description"
-					multiline={ false }
-					id={ block_id }
-					allowedFormats={ [] }
-				/>
-			) }
+			<div className="srfm-error-wrap"></div>
 		</div>
 	);
 };

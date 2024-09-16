@@ -1,6 +1,8 @@
 /* eslint-disable no-undef */
-import { fieldValidation } from './validation';
+import { fieldValidation, initializeInlineFieldValidation } from './validation';
 document.addEventListener( 'DOMContentLoaded', function () {
+	initializeInlineFieldValidation();
+
 	const forms = Array.from( document.querySelectorAll( '.srfm-form' ) );
 	for ( const form of forms ) {
 		const {
@@ -53,7 +55,7 @@ document.addEventListener( 'DOMContentLoaded', function () {
 			!! hCaptchaDiv ||
 			!! turnstileDiv
 		) {
-			submitBtn.addEventListener( 'click', ( e ) => {
+			form.addEventListener( 'submit', ( e ) => {
 				e.preventDefault();
 				let captchaResponse;
 				if ( 'v2-checkbox' === recaptchaType ) {
@@ -75,6 +77,7 @@ document.addEventListener( 'DOMContentLoaded', function () {
 					nonce,
 					loader,
 					successUrl,
+					successContainer,
 					successElement,
 					errorElement,
 					submitType,
@@ -137,20 +140,23 @@ async function submitFormData( form ) {
 async function afterSubmit( formStatus ) {
 	const site_url = window.srfm_submit.site_url;
 	const submissionId = formStatus.data.submission_id;
-	return await fetch(
-		`${ site_url }/wp-json/sureforms/v1/after-submission/` + submissionId,
-		{
-			headers: {
-				'X-WP-Nonce': window.srfm_submit.nonce,
-			},
+
+	try {
+		const response = await fetch(
+			`${ site_url }/wp-json/sureforms/v1/after-submission/${ submissionId }`,
+			{
+				headers: {
+					'X-WP-Nonce': window.srfm_submit.nonce,
+				},
+			}
+		);
+
+		if ( ! response.ok ) {
+			throw new Error( `HTTP error! Status: ${ response.status }` );
 		}
-	)
-		.then( ( response ) => {
-			return response.json();
-		} )
-		.catch( ( e ) => {
-			console.log( e );
-		} );
+	} catch ( error ) {
+		console.error( error );
+	}
 }
 
 function showSuccessMessage(
@@ -207,6 +213,9 @@ async function handleFormSubmission(
 
 		if ( isValidate ) {
 			loader.classList.remove( 'srfm-active' );
+			if ( isValidate[ 1 ] ) {
+				isValidate[ 1 ].focus();
+			}
 			return;
 		}
 
@@ -222,7 +231,7 @@ async function handleFormSubmission(
 				);
 				loader.classList.remove( 'srfm-active' );
 				if ( formStatus?.data?.after_submit ) {
-					void afterSubmit( formStatus );
+					afterSubmit( formStatus );
 				}
 			} else {
 				redirectToUrl( successUrl );

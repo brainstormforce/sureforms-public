@@ -44,9 +44,8 @@ class Address_Markup extends Base {
 			<div data-block-id="<?php echo esc_attr( $this->block_id ); ?>" class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $this->slug ); ?>-block srf-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?>-block<?php echo esc_attr( $this->block_width ); ?><?php echo esc_attr( $this->class_name ); ?> <?php echo esc_attr( $this->conditional_class ); ?>">
 				<fieldset>
 					<legend>
-						<div class="srfm-address-label-ctn">
-							<?php echo wp_kses_post( $this->label_markup ); ?>
-						</div>
+						<?php echo wp_kses_post( $this->label_markup ); ?>
+						<?php echo wp_kses_post( $this->help_markup ); ?>
 					</legend>
 					<div class="srfm-block-wrap">
 					<?php
@@ -55,15 +54,10 @@ class Address_Markup extends Base {
                         // phpcs:ignoreEnd
 					?>
 					</div>
-				<div class="srfm-address-help-ctn">
-					<?php echo wp_kses_post( $this->help_markup ); ?>
-				</div>
-			</fieldset>
+				</fieldset>
 			</div>
 		<?php
 
 		return ob_get_clean();
-
 	}
-
 }

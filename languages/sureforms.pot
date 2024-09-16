@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: SureForms 0.0.6\n"
+"Project-Id-Version: SureForms 0.0.9\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/sureforms\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-07-15T12:24:05+00:00\n"
+"POT-Creation-Date: 2024-08-28T08:35:55+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.10.0\n"
 "X-Domain: sureforms\n"
@@ -17,8 +17,9 @@ msgstr ""
 #. Plugin Name of the plugin
 #. Author of the plugin
 #: sureforms.php
-#: admin/admin.php:82
-#: admin/admin.php:83
+#: admin/admin.php:85
+#: admin/admin.php:86
+#: inc/gutenberg-hooks.php:259
 #: inc/page-builders/bricks/elements/form-widget.php:66
 #: inc/page-builders/bricks/service-provider.php:55
 #: inc/page-builders/elementor/form-widget.php:89
@@ -30,7 +31,7 @@ msgstr ""
 
 #. Plugin URI of the plugin
 #: sureforms.php
-msgid "https://www.brainstormforce.com"
+msgid "https://sureforms.com"
 msgstr ""
 
 #. Description of the plugin
@@ -40,28 +41,28 @@ msgstr ""
 
 #. Author URI of the plugin
 #: sureforms.php
-msgid "https://brainstormforce.com/"
+msgid "https://sureforms.com/"
 msgstr ""
 
-#: admin/admin.php:94
-#: admin/admin.php:95
+#: admin/admin.php:97
+#: admin/admin.php:98
 msgid "Dashboard"
 msgstr ""
 
-#: admin/admin.php:112
-#: admin/admin.php:113
-#: admin/admin.php:189
+#: admin/admin.php:115
+#: admin/admin.php:116
+#: admin/admin.php:192
 msgid "Settings"
 msgstr ""
 
-#: admin/admin.php:157
-#: admin/admin.php:158
+#: admin/admin.php:160
+#: admin/admin.php:161
 #: inc/post-types.php:133
 msgid "New Form"
 msgstr ""
 
 #. Translators: Post Title.
-#: admin/admin.php:260
+#: admin/admin.php:263
 msgid "Edit %1$s"
 msgstr ""
 
@@ -71,12 +72,13 @@ msgstr ""
 
 #: api/block-patterns.php:111
 #: inc/background-process.php:103
-#: inc/create-new-form.php:167
-#: inc/export.php:115
+#: inc/create-new-form.php:138
+#: inc/export.php:118
 #: inc/form-submit.php:206
 #: inc/forms-data.php:89
 #: inc/global-settings/global-settings.php:87
-#: inc/global-settings/global-settings.php:265
+#: inc/global-settings/global-settings.php:264
+#: inc/rest-api.php:136
 msgid "Nonce verification failed."
 msgstr ""
 
@@ -140,45 +142,80 @@ msgstr ""
 msgid "Determines whether the pattern is visible in inserter."
 msgstr ""
 
-#: inc/admin-ajax.php:73
+#: inc/admin-ajax.php:77
 msgid "No plugin specified"
 msgstr ""
 
-#: inc/admin-ajax.php:94
+#: inc/admin-ajax.php:98
 msgid "Plugin Successfully Activated"
 msgstr ""
 
-#: inc/admin-ajax.php:131
+#: inc/admin-ajax.php:135
 msgid "Activating..."
 msgstr ""
 
-#: inc/admin-ajax.php:132
+#: inc/admin-ajax.php:136
 msgid "Activated"
 msgstr ""
 
-#: inc/admin-ajax.php:133
+#: inc/admin-ajax.php:137
 #: assets/build/formEditor.js:172
 msgid "Activate"
 msgstr ""
 
-#: inc/admin-ajax.php:135
+#: inc/admin-ajax.php:139
 msgid "Installing..."
 msgstr ""
 
-#: inc/admin-ajax.php:136
+#: inc/admin-ajax.php:140
 msgid "Installed"
 msgstr ""
 
-#: inc/admin-ajax.php:157
+#: inc/admin-ajax.php:164
+#: assets/build/formEditor.js:172
 msgid "SureTriggers"
 msgstr ""
 
-#: inc/admin-ajax.php:158
+#: inc/admin-ajax.php:165
 msgid "Connect SureForms to over 600 apps, CRMs and tools such as Slack, Mailchimp, etc."
 msgstr ""
 
-#: inc/admin-ajax.php:159
+#: inc/admin-ajax.php:166
 msgid "SureTriggers is a powerful automation platform that helps you connect your various plugins and apps together. It allows you to automate repetitive tasks, so you can focus on more important work."
+msgstr ""
+
+#: inc/admin-ajax.php:242
+msgid "Invalid form ID."
+msgstr ""
+
+#: inc/ai-form-builder/ai-form-builder.php:38
+msgid "The message array was not supplied"
+msgstr ""
+
+#: inc/ai-form-builder/ai-form-builder.php:64
+#: inc/ai-form-builder/ai-form-builder.php:74
+#: inc/ai-form-builder/ai-helper.php:73
+msgid "The SureForms AI Middleware encountered an error."
+msgstr ""
+
+#: inc/ai-form-builder/ai-form-builder.php:84
+msgid "Something went wrong"
+msgstr ""
+
+#: inc/ai-form-builder/ai-helper.php:63
+msgid "The SureForms AI Middleware is not responding."
+msgstr ""
+
+#: inc/ai-form-builder/ai-helper.php:95
+msgid "Unable to get usage response."
+msgstr ""
+
+#: inc/ai-form-builder/ai-helper.php:140
+msgid "The SureForms API server is not responding."
+msgstr ""
+
+#: inc/ai-form-builder/ai-helper.php:150
+msgid "The SureForms API server encountered an error."
 msgstr ""
 
 #: inc/background-process.php:113
@@ -193,19 +230,19 @@ msgstr ""
 msgid "Sorry, you are not allowed to create forms."
 msgstr ""
 
-#: inc/create-new-form.php:179
+#: inc/create-new-form.php:150
 msgid "Invalid JSON format."
 msgstr ""
 
-#: inc/create-new-form.php:191
+#: inc/create-new-form.php:162
 msgid "Missing required properties in form info."
 msgstr ""
 
-#: inc/create-new-form.php:222
+#: inc/create-new-form.php:198
 msgid "SureForms Form created successfully."
 msgstr ""
 
-#: inc/create-new-form.php:229
+#: inc/create-new-form.php:205
 msgid "Error creating SureForms Form, "
 msgstr ""
 
@@ -227,14 +264,13 @@ msgstr ""
 msgid "View"
 msgstr ""
 
-#: inc/export.php:124
-#: inc/export.php:129
-#: inc/export.php:164
-#: inc/export.php:181
+#: inc/export.php:127
+#: inc/export.php:132
+#: inc/export.php:167
+#: inc/export.php:184
 msgid "Failed to import form."
 msgstr ""
 
-#: inc/fields/address-compact-markup.php:126
 #: inc/fields/address-markup.php:30
 msgid "Address"
 msgstr ""
@@ -243,29 +279,34 @@ msgstr ""
 msgid "Checkbox"
 msgstr ""
 
-#: inc/fields/dropdown-markup.php:38
+#: inc/fields/dropdown-markup.php:50
 msgid "Dropdown"
 msgstr ""
 
-#: inc/fields/dropdown-markup.php:41
-msgid "Select option"
+#: inc/fields/dropdown-markup.php:58
+msgid "Select an option"
 msgstr ""
 
-#: inc/fields/email-markup.php:64
+#: inc/fields/email-markup.php:72
 #: assets/build/settings.js:2
 msgid "Email"
 msgstr ""
 
-#: inc/fields/email-markup.php:69
+#: inc/fields/email-markup.php:77
 msgid "Confirm "
+msgstr ""
+
+#. Translators: %s is label of block.
+#: inc/fields/email-markup.php:85
+msgid "Confirm %s"
 msgstr ""
 
 #: inc/fields/gdpr-markup.php:30
 msgid "I consent to have this website store my submitted information so they can respond to my inquiry."
 msgstr ""
 
-#: inc/fields/inlinebutton-markup.php:180
-#: inc/generate-form-markup.php:389
+#: inc/fields/inlinebutton-markup.php:181
+#: inc/generate-form-markup.php:327
 msgid "Please verify that you are not a robot."
 msgstr ""
 
@@ -273,7 +314,7 @@ msgstr ""
 msgid "Text Field"
 msgstr ""
 
-#: inc/fields/multichoice-markup.php:72
+#: inc/fields/multichoice-markup.php:97
 msgid "Multi Choice"
 msgstr ""
 
@@ -294,11 +335,6 @@ msgstr ""
 msgid "Url"
 msgstr ""
 
-#: inc/fields/url-markup.php:49
-#: assets/build/blocks.js:172
-msgid "https://"
-msgstr ""
-
 #: inc/form-submit.php:85
 msgid "Sorry, you cannot access this route"
 msgstr ""
@@ -315,11 +351,11 @@ msgstr ""
 msgid "Form Id is missing."
 msgstr ""
 
-#: inc/form-submit.php:560
+#: inc/form-submit.php:556
 msgid "Entry #"
 msgstr ""
 
-#: inc/form-submit.php:622
+#: inc/form-submit.php:606
 msgid "Error submitting form"
 msgstr ""
 
@@ -327,15 +363,7 @@ msgstr ""
 msgid "Sorry, you are not allowed to view the form."
 msgstr ""
 
-#: inc/generate-form-markup.php:300
-msgid "Enable the Instant Form in the editor from "
-msgstr ""
-
-#: inc/generate-form-markup.php:302
-msgid "here."
-msgstr ""
-
-#: inc/generate-form-markup.php:414
+#: inc/generate-form-markup.php:353
 msgid "There was an error trying to submit your form. Please try again."
 msgstr ""
 
@@ -352,13 +380,13 @@ msgid "Let's see how your forms performed in the last week"
 msgstr ""
 
 #: inc/global-settings/email-summary.php:105
-#: inc/post-types.php:1061
+#: inc/post-types.php:1143
 msgid "Form Name"
 msgstr ""
 
 #: inc/global-settings/email-summary.php:106
 #: inc/post-types.php:170
-#: inc/post-types.php:982
+#: inc/post-types.php:1064
 #: assets/build/dashboard.js:2
 msgid "Entries"
 msgstr ""
@@ -380,11 +408,11 @@ msgstr ""
 msgid "Settings Saved Successfully."
 msgstr ""
 
-#: inc/gutenberg-hooks.php:141
+#: inc/gutenberg-hooks.php:257
 msgid "General Fields"
 msgstr ""
 
-#: inc/gutenberg-hooks.php:145
+#: inc/gutenberg-hooks.php:269
 #: assets/build/formEditor.js:172
 msgid "Advanced Fields"
 msgstr ""
@@ -397,7 +425,7 @@ msgstr ""
 msgid "Value needs to be unique."
 msgstr ""
 
-#: inc/helper.php:415
+#: inc/helper.php:468
 msgid "Sorry, you are not allowed to perform this action."
 msgstr ""
 
@@ -584,7 +612,7 @@ msgstr ""
 
 #: inc/post-types.php:173
 #: assets/build/formEditor.js:2
-#: modules/quick-action-sidebar/components/Modal.js:192
+#: modules/quick-action-sidebar/components/Modal.js:174
 msgid "No results found."
 msgstr ""
 
@@ -604,69 +632,73 @@ msgstr ""
 msgid "Export"
 msgstr ""
 
-#: inc/post-types.php:737
+#: inc/post-types.php:819
 msgid "Fields"
 msgstr ""
 
-#: inc/post-types.php:737
+#: inc/post-types.php:819
 msgid "Values"
 msgstr ""
 
-#: inc/post-types.php:826
+#: inc/post-types.php:908
 msgid "Open"
 msgstr ""
 
-#: inc/post-types.php:915
+#: inc/post-types.php:997
 msgid "Form Name:"
 msgstr ""
 
-#: inc/post-types.php:919
+#: inc/post-types.php:1001
 msgid "Form ID:"
 msgstr ""
 
-#: inc/post-types.php:923
+#: inc/post-types.php:1005
 msgid "User IP:"
 msgstr ""
 
-#: inc/post-types.php:927
+#: inc/post-types.php:1009
 msgid "Browser:"
 msgstr ""
 
-#: inc/post-types.php:931
+#: inc/post-types.php:1013
 msgid "Device:"
 msgstr ""
 
-#: inc/post-types.php:938
-#: inc/post-types.php:1091
+#: inc/post-types.php:1020
+#: inc/post-types.php:1173
 msgid "SureForms Form"
 msgstr ""
 
-#: inc/post-types.php:981
+#: inc/post-types.php:1063
 msgid "Shortcode"
 msgstr ""
 
-#: inc/post-types.php:1060
+#: inc/post-types.php:1142
 msgid "First Field"
 msgstr ""
 
-#: inc/post-types.php:1062
+#: inc/post-types.php:1144
 msgid "ID"
 msgstr ""
 
-#: inc/post-types.php:1063
+#: inc/post-types.php:1145
 msgid "Submitted On"
 msgstr ""
 
-#: inc/post-types.php:1119
+#: inc/post-types.php:1201
 msgid " All Form Entries"
 msgstr ""
 
-#: inc/post-types.php:1145
+#: inc/post-types.php:1227
 msgid "Please choose the SureForms export file (.json) that you wish to import."
 msgstr ""
 
-#: inc/post-types.php:1150
+#: inc/post-types.php:1232
 msgid "There is some error in json file, please export the SureForms Forms again."
+msgstr ""
+
+#: inc/rest-api.php:144
+msgid "Invalid request. Form ID missing."
 msgstr ""
 
 #: inc/smart-tags.php:78
@@ -749,59 +781,46 @@ msgstr ""
 
 #: modules/gutenberg/classes/class-spec-block-config.php:470
 #: modules/gutenberg/build/blocks-placeholder.js:12
-#: modules/gutenberg/build/blocks.js:32616
-#: modules/gutenberg/build/blocks.js:32938
-#: modules/gutenberg/build/blocks.js:38932
-#: modules/gutenberg/build/blocks.js:40786
-#: modules/gutenberg/build/blocks.js:41116
+#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:15
 msgid "Separator"
 msgstr ""
 
-#: modules/gutenberg/classes/class-spec-block-config.php:528
+#: modules/gutenberg/classes/class-spec-block-config.php:562
 #: modules/gutenberg/icons/icons-v6-1.php:5470
+#: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks-placeholder.js:11
-#: modules/gutenberg/build/blocks.js:36546
-#: modules/gutenberg/build/blocks.js:36569
-#: modules/gutenberg/build/blocks.js:38019
-#: modules/gutenberg/build/blocks.js:38595
-#: modules/gutenberg/build/blocks.js:39386
-#: modules/gutenberg/build/blocks.js:44118
+#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:17
 msgid "Image"
 msgstr ""
 
-#: modules/gutenberg/classes/class-spec-block-config.php:540
+#: modules/gutenberg/classes/class-spec-block-config.php:574
+#: assets/build/blocks.js:172
 #: modules/gutenberg/build/blocks-placeholder.js:10
-#: modules/gutenberg/build/blocks.js:34188
-#: modules/gutenberg/build/blocks.js:34273
-#: modules/gutenberg/build/blocks.js:34276
-#: modules/gutenberg/build/blocks.js:34517
-#: modules/gutenberg/build/blocks.js:41169
-#: modules/gutenberg/build/blocks.js:41214
-#: modules/gutenberg/build/blocks.js:41398
-#: modules/gutenberg/build/blocks.js:43409
+#: modules/gutenberg/build/blocks.js:7
+#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:17
 msgid "Icon"
 msgstr ""
 
-#: modules/gutenberg/classes/class-spec-block-config.php:551
+#: modules/gutenberg/classes/class-spec-block-config.php:585
 #: modules/gutenberg/icons/icons-v6-1.php:4571
 #: modules/gutenberg/build/blocks-placeholder.js:9
-#: modules/gutenberg/build/blocks.js:31661
-#: modules/gutenberg/build/blocks.js:31678
-#: modules/gutenberg/build/blocks.js:32533
-#: modules/gutenberg/build/blocks.js:32654
-#: modules/gutenberg/build/blocks.js:38992
-#: modules/gutenberg/build/blocks.js:39032
+#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:15
 msgid "Heading"
 msgstr ""
 
 #: modules/gutenberg/dist/blocks/advanced-heading/class-advanced-heading.php:86
-#: modules/gutenberg/build/blocks.js:31061
+#: modules/gutenberg/build/blocks.js:1
 msgid "Your Attractive Heading"
 msgstr ""
 
 #: modules/gutenberg/dist/blocks/separator/class-spec-separator.php:235
-#: modules/gutenberg/build/blocks.js:40628
+#: modules/gutenberg/build/blocks.js:1
 msgid "Divider"
 msgstr ""
 
@@ -2155,7 +2174,7 @@ msgid "Church"
 msgstr ""
 
 #: modules/gutenberg/icons/icons-v6-0.php:3954
-#: modules/gutenberg/build/blocks.js:38825
+#: modules/gutenberg/build/blocks.js:15
 msgid "Circle"
 msgstr ""
 
@@ -2280,7 +2299,6 @@ msgid "Circle Xmark"
 msgstr ""
 
 #: modules/gutenberg/icons/icons-v6-0.php:4355
-#: assets/build/blocks.js:172
 msgid "City"
 msgstr ""
 
@@ -2605,7 +2623,7 @@ msgid "Critical Role"
 msgstr ""
 
 #: modules/gutenberg/icons/icons-v6-0.php:5301
-#: modules/gutenberg/build/blocks.js:37154
+#: modules/gutenberg/build/blocks.js:17
 msgid "Crop"
 msgstr ""
 
@@ -2712,7 +2730,7 @@ msgstr ""
 #: modules/gutenberg/icons/icons-v6-1.php:290
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:46967
+#: modules/gutenberg/build/blocks.js:1
 msgid "Desktop"
 msgstr ""
 
@@ -2749,7 +2767,7 @@ msgid "Diagram Successor"
 msgstr ""
 
 #: modules/gutenberg/icons/icons-v6-1.php:389
-#: modules/gutenberg/build/blocks.js:38828
+#: modules/gutenberg/build/blocks.js:15
 msgid "Diamond"
 msgstr ""
 
@@ -3470,9 +3488,7 @@ msgid "File Zipper"
 msgstr ""
 
 #: modules/gutenberg/icons/icons-v6-1.php:2569
-#: modules/gutenberg/build/blocks.js:38559
-#: modules/gutenberg/build/blocks.js:38572
-#: modules/gutenberg/build/blocks.js:38585
+#: modules/gutenberg/build/blocks.js:15
 msgid "Fill"
 msgstr ""
 
@@ -4509,7 +4525,7 @@ msgid "ioxhost"
 msgstr ""
 
 #: modules/gutenberg/icons/icons-v6-2.php:180
-#: modules/gutenberg/build/blocks.js:48950
+#: modules/gutenberg/build/blocks.js:7
 msgid "Italic"
 msgstr ""
 
@@ -4754,8 +4770,8 @@ msgid "Lines Leaning"
 msgstr ""
 
 #: modules/gutenberg/icons/icons-v6-2.php:893
-#: modules/gutenberg/build/blocks.js:33195
-#: modules/gutenberg/build/blocks.js:34361
+#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:17
 msgid "Link"
 msgstr ""
 
@@ -4964,7 +4980,7 @@ msgid "Martini Glass Empty"
 msgstr ""
 
 #: modules/gutenberg/icons/icons-v6-2.php:1470
-#: modules/gutenberg/build/blocks.js:38811
+#: modules/gutenberg/build/blocks.js:15
 msgid "Mask"
 msgstr ""
 
@@ -5009,6 +5025,7 @@ msgid "MedApps"
 msgstr ""
 
 #: modules/gutenberg/icons/icons-v6-2.php:1591
+#: assets/build/formEditor.js:172
 msgid "Medium"
 msgstr ""
 
@@ -5115,7 +5132,7 @@ msgstr ""
 #: modules/gutenberg/icons/icons-v6-2.php:1882
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:46977
+#: modules/gutenberg/build/blocks.js:1
 msgid "Mobile"
 msgstr ""
 
@@ -5380,8 +5397,7 @@ msgid "Outdent"
 msgstr ""
 
 #: modules/gutenberg/icons/icons-v6-2.php:2649
-#: modules/gutenberg/build/blocks.js:32565
-#: modules/gutenberg/build/blocks.js:41211
+#: modules/gutenberg/build/blocks.js:11
 msgid "P"
 msgstr ""
 
@@ -6082,7 +6098,7 @@ msgid "Renren"
 msgstr ""
 
 #: modules/gutenberg/icons/icons-v6-2.php:4659
-#: modules/gutenberg/build/blocks.js:38921
+#: modules/gutenberg/build/blocks.js:15
 msgid "Repeat"
 msgstr ""
 
@@ -6555,7 +6571,7 @@ msgid "Slack Logo"
 msgstr ""
 
 #: modules/gutenberg/icons/icons-v6-3.php:790
-#: modules/gutenberg/build/blocks.js:41149
+#: modules/gutenberg/build/blocks.js:11
 msgid "Slash"
 msgstr ""
 
@@ -7006,7 +7022,7 @@ msgstr ""
 #: modules/gutenberg/icons/icons-v6-3.php:2125
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:46972
+#: modules/gutenberg/build/blocks.js:1
 msgid "Tablet"
 msgstr ""
 
@@ -7456,7 +7472,7 @@ msgid "Uncharted Software"
 msgstr ""
 
 #: modules/gutenberg/icons/icons-v6-3.php:3405
-#: modules/gutenberg/build/blocks.js:49374
+#: modules/gutenberg/build/blocks.js:7
 msgid "Underline"
 msgstr ""
 
@@ -8128,7 +8144,7 @@ msgstr ""
 
 #: templates/forms/blank-form.php:19
 #: templates/forms/contact-form.php:20
-#: modules/gutenberg/build/blocks.js:43101
+#: modules/gutenberg/build/blocks.js:11
 msgid "Basic"
 msgstr ""
 
@@ -8200,6 +8216,10 @@ msgstr ""
 msgid "Support"
 msgstr ""
 
+#: templates/single-form.php:165
+msgid "Unpublished"
+msgstr ""
+
 #: assets/build/blocks.js:2
 msgid "(no title)"
 msgstr ""
@@ -8247,25 +8267,22 @@ msgstr ""
 #: assets/build/blocks.js:2
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:2
-#: modules/gutenberg/build/blocks.js:44583
+#: modules/gutenberg/build/blocks.js:7
 msgid "General"
 msgstr ""
 
 #: assets/build/blocks.js:2
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:32619
-#: modules/gutenberg/build/blocks.js:38951
-#: modules/gutenberg/build/blocks.js:41119
-#: modules/gutenberg/build/blocks.js:44596
-#: modules/gutenberg/build/blocks.js:46326
-#: modules/gutenberg/build/blocks.js:48939
+#: modules/gutenberg/build/blocks.js:7
+#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:15
 msgid "Style"
 msgstr ""
 
 #: assets/build/blocks.js:2
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:43104
-#: modules/gutenberg/build/blocks.js:44608
+#: modules/gutenberg/build/blocks.js:7
+#: modules/gutenberg/build/blocks.js:11
 msgid "Advanced"
 msgstr ""
 
@@ -8276,7 +8293,7 @@ msgstr ""
 
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:47062
+#: modules/gutenberg/build/blocks.js:1
 msgid "Device"
 msgstr ""
 
@@ -8285,9 +8302,10 @@ msgstr ""
 msgid "Select Shortcodes"
 msgstr ""
 
+#. translators: abbreviation for units
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:46253
+#: modules/gutenberg/build/blocks.js:3
 msgid "Reset"
 msgstr ""
 
@@ -8298,64 +8316,48 @@ msgstr ""
 
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:32803
-#: modules/gutenberg/build/blocks.js:32929
-#: modules/gutenberg/build/blocks.js:32963
-#: modules/gutenberg/build/blocks.js:32985
-#: modules/gutenberg/build/blocks.js:33019
-#: modules/gutenberg/build/blocks.js:39655
-#: modules/gutenberg/build/blocks.js:41288
-#: modules/gutenberg/build/blocks.js:41318
-#: modules/gutenberg/build/blocks.js:41348
-#: modules/gutenberg/build/blocks.js:41378
-#: modules/gutenberg/build/blocks.js:41546
-#: modules/gutenberg/build/blocks.js:41576
-#: modules/gutenberg/build/blocks.js:45272
-#: modules/gutenberg/build/blocks.js:45941
-#: modules/gutenberg/build/blocks.js:46542
-#: modules/gutenberg/build/blocks.js:47777
+#: modules/gutenberg/build/blocks.js:3
+#: modules/gutenberg/build/blocks.js:7
+#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:15
 msgid "Pixel"
 msgstr ""
 
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:39658
-#: modules/gutenberg/build/blocks.js:45275
-#: modules/gutenberg/build/blocks.js:45944
-#: modules/gutenberg/build/blocks.js:47780
+#: modules/gutenberg/build/blocks.js:3
+#: modules/gutenberg/build/blocks.js:7
+#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:15
 msgid "Em"
 msgstr ""
 
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:45360
-#: modules/gutenberg/build/blocks.js:46039
-#: modules/gutenberg/build/blocks.js:48003
+#: modules/gutenberg/build/blocks.js:3
+#: modules/gutenberg/build/blocks.js:7
+#: modules/gutenberg/build/blocks.js:11
 msgid "Select Units"
 msgstr ""
 
 #. translators: abbreviation for units
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:45332
-#: modules/gutenberg/build/blocks.js:45343
-#: modules/gutenberg/build/blocks.js:46001
-#: modules/gutenberg/build/blocks.js:46012
-#: modules/gutenberg/build/blocks.js:47796
-#: modules/gutenberg/build/blocks.js:47807
+#: modules/gutenberg/build/blocks.js:5
+#: modules/gutenberg/build/blocks.js:7
+#: modules/gutenberg/build/blocks.js:9
+#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:13
+#: modules/gutenberg/build/blocks.js:15
 msgid "%s units"
 msgstr ""
 
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:33122
-#: modules/gutenberg/build/blocks.js:34816
-#: modules/gutenberg/build/blocks.js:39152
-#: modules/gutenberg/build/blocks.js:39316
-#: modules/gutenberg/build/blocks.js:39394
-#: modules/gutenberg/build/blocks.js:39687
-#: modules/gutenberg/build/blocks.js:45394
-#: modules/gutenberg/build/blocks.js:46066
+#: modules/gutenberg/build/blocks.js:7
+#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:17
 msgid "Margin"
 msgstr ""
 
@@ -8368,10 +8370,6 @@ msgid "Field Width"
 msgstr ""
 
 #: assets/build/blocks.js:172
-msgid "Placeholder"
-msgstr ""
-
-#: assets/build/blocks.js:172
 msgid "Default Value"
 msgstr ""
 
@@ -8380,7 +8378,6 @@ msgid "Required"
 msgstr ""
 
 #: assets/build/blocks.js:172
-#: assets/build/formEditor.js:172
 msgid "Error Message"
 msgstr ""
 
@@ -8401,6 +8398,18 @@ msgid "Maximum Text Length"
 msgstr ""
 
 #: assets/build/blocks.js:172
+msgid "Number Format"
+msgstr ""
+
+#: assets/build/blocks.js:172
+msgid "US Style (Eg: 9,999.99)"
+msgstr ""
+
+#: assets/build/blocks.js:172
+msgid "EU Style (Eg: 9.999,99)"
+msgstr ""
+
+#: assets/build/blocks.js:172
 msgid "Minimum Value"
 msgstr ""
 
@@ -8414,10 +8423,6 @@ msgstr ""
 
 #: assets/build/blocks.js:172
 msgid "Note: Maximum value should always be greater than minimum value"
-msgstr ""
-
-#: assets/build/blocks.js:172
-msgid "Number Format"
 msgstr ""
 
 #: assets/build/blocks.js:172
@@ -8453,7 +8458,142 @@ msgid "Help"
 msgstr ""
 
 #: assets/build/blocks.js:172
-msgid " + Add Option "
+#: assets/build/formEditor.js:172
+#: modules/gutenberg/build/blocks.js:7
+msgid "Please add a option props to MultiButtonsControl"
+msgstr ""
+
+#: assets/build/blocks.js:172
+#: modules/gutenberg/build/blocks.js:7
+msgid "Icon Library"
+msgstr ""
+
+#: assets/build/blocks.js:172
+#: modules/gutenberg/build/blocks.js:7
+msgid "Search"
+msgstr ""
+
+#: assets/build/blocks.js:172
+#: modules/gutenberg/build/blocks.js:7
+msgid "Close"
+msgstr ""
+
+#: assets/build/blocks.js:172
+#: modules/gutenberg/build/blocks.js:7
+msgid "All Icons"
+msgstr ""
+
+#: assets/build/blocks.js:172
+#: modules/gutenberg/build/blocks.js:7
+msgid "Other"
+msgstr ""
+
+#: assets/build/blocks.js:172
+#: modules/gutenberg/build/blocks.js:7
+msgid "No Icons Found"
+msgstr ""
+
+#: assets/build/blocks.js:172
+#: modules/gutenberg/build/blocks.js:7
+msgid "Insert Icon"
+msgstr ""
+
+#: assets/build/blocks.js:172
+#: modules/gutenberg/build/blocks.js:7
+msgid "Change Icon"
+msgstr ""
+
+#: assets/build/blocks.js:172
+#: modules/gutenberg/build/blocks.js:7
+msgid "Choose Icon"
+msgstr ""
+
+#: assets/build/blocks.js:172
+#: assets/build/formEditor.js:172
+#: modules/gutenberg/build/blocks.js:11
+msgid "Confirm"
+msgstr ""
+
+#: assets/build/blocks.js:172
+#: assets/build/formEditor.js:172
+#: modules/gutenberg/build/blocks.js:11
+msgid "Cancel"
+msgstr ""
+
+#: assets/build/blocks.js:172
+#: assets/build/formEditor.js:172
+#: modules/gutenberg/build/blocks.js:11
+msgid "Processing…"
+msgstr ""
+
+#: assets/build/blocks.js:172
+#: assets/build/formEditor.js:172
+#: modules/gutenberg/build/blocks.js:11
+msgid "Select Video"
+msgstr ""
+
+#: assets/build/blocks.js:172
+#: assets/build/formEditor.js:172
+#: modules/gutenberg/build/blocks.js:11
+msgid "Change Video"
+msgstr ""
+
+#: assets/build/blocks.js:172
+#: assets/build/formEditor.js:172
+#: modules/gutenberg/build/blocks.js:11
+msgid "Select Lottie Animation"
+msgstr ""
+
+#: assets/build/blocks.js:172
+#: assets/build/formEditor.js:172
+#: modules/gutenberg/build/blocks.js:11
+msgid "Change Lottie Animation"
+msgstr ""
+
+#: assets/build/blocks.js:172
+#: assets/build/formEditor.js:172
+#: modules/gutenberg/build/blocks.js:11
+msgid "Upload SVG"
+msgstr ""
+
+#: assets/build/blocks.js:172
+#: assets/build/formEditor.js:172
+#: modules/gutenberg/build/blocks.js:11
+msgid "Change SVG"
+msgstr ""
+
+#: assets/build/blocks.js:172
+#: assets/build/formEditor.js:172
+#: modules/gutenberg/build/blocks.js:11
+msgid "Select Image"
+msgstr ""
+
+#: assets/build/blocks.js:172
+#: assets/build/formEditor.js:172
+#: modules/gutenberg/build/blocks.js:11
+msgid "Change Image"
+msgstr ""
+
+#: assets/build/blocks.js:172
+#: assets/build/formEditor.js:172
+#: modules/gutenberg/build/blocks.js:11
+msgid "Upload SVG?"
+msgstr ""
+
+#: assets/build/blocks.js:172
+#: assets/build/formEditor.js:172
+#: modules/gutenberg/build/blocks.js:11
+msgid "Upload SVG can be potentially risky. Are you sure?"
+msgstr ""
+
+#: assets/build/blocks.js:172
+#: assets/build/formEditor.js:172
+#: modules/gutenberg/build/blocks.js:11
+msgid "Upload Anyway"
+msgstr ""
+
+#: assets/build/blocks.js:172
+msgid "Vertical Layout"
 msgstr ""
 
 #: assets/build/blocks.js:172
@@ -8462,6 +8602,10 @@ msgstr ""
 
 #: assets/build/blocks.js:172
 msgid "Choice Width"
+msgstr ""
+
+#: assets/build/blocks.js:172
+msgid "Option Type"
 msgstr ""
 
 #: assets/build/blocks.js:172
@@ -8477,31 +8621,15 @@ msgid "ADD"
 msgstr ""
 
 #: assets/build/blocks.js:172
-msgid "Option "
-msgstr ""
-
-#: assets/build/blocks.js:172
 msgid "Enable Auto Country Detection"
 msgstr ""
 
 #: assets/build/blocks.js:172
-msgid "Address Line 1"
+msgid "Enable Multiple Selections"
 msgstr ""
 
 #: assets/build/blocks.js:172
-msgid "Address Line 2"
-msgstr ""
-
-#: assets/build/blocks.js:172
-msgid "State"
-msgstr ""
-
-#: assets/build/blocks.js:172
-msgid "Postal Code"
-msgstr ""
-
-#: assets/build/blocks.js:172
-msgid "Country"
+msgid "Enable Search"
 msgstr ""
 
 #: assets/build/dashboard.js:2
@@ -8521,12 +8649,11 @@ msgid "Effortlessly design visually stunning forms with our user-friendly form b
 msgstr ""
 
 #: assets/build/dashboard.js:2
-#: assets/build/templatePicker.js:172
 msgid "All Forms"
 msgstr ""
 
 #: assets/build/dashboard.js:2
-msgid "Check out your created forms easily edit and customize settings as needed."
+msgid "Check out your created forms, and easily edit and customize the settings as needed."
 msgstr ""
 
 #: assets/build/dashboard.js:2
@@ -8555,6 +8682,21 @@ msgstr ""
 
 #: assets/build/dashboard.js:2
 #: assets/build/formEditor.js:172
+msgid "Install"
+msgstr ""
+
+#: assets/build/dashboard.js:2
+#: assets/build/formEditor.js:172
+msgid "Plugin Installation failed, Please try again later."
+msgstr ""
+
+#: assets/build/dashboard.js:2
+#: assets/build/formEditor.js:172
+msgid "Plugin activation failed, Please try again later."
+msgstr ""
+
+#: assets/build/dashboard.js:2
+#: assets/build/formEditor.js:172
 #: assets/build/settings.js:2
 msgid "Integrations"
 msgstr ""
@@ -8578,6 +8720,7 @@ msgid "Core"
 msgstr ""
 
 #: assets/build/dashboard.js:2
+#: assets/build/formEditor.js:172
 #: assets/build/page_header.js:2
 #: assets/build/settings.js:2
 #: assets/build/settings.js:172
@@ -8610,12 +8753,12 @@ msgstr ""
 
 #. translators: abbreviation for units
 #: assets/build/formEditor.js:2
-#: modules/quick-action-sidebar/components/draggable-block.js:86
+#: modules/quick-action-sidebar/components/draggable-block.js:83
 msgid "%s Removed from Quick Action Bar."
 msgstr ""
 
 #: assets/build/formEditor.js:2
-#: modules/quick-action-sidebar/components/Modal.js:149
+#: modules/quick-action-sidebar/components/Modal.js:145
 msgid "Add to Quick Action Bar"
 msgstr ""
 
@@ -8626,12 +8769,12 @@ msgid "%s Added to Quick Action Bar."
 msgstr ""
 
 #: assets/build/formEditor.js:2
-#: modules/quick-action-sidebar/components/Modal.js:165
+#: modules/quick-action-sidebar/components/Modal.js:155
 msgid "Already Present in Quick Action Bar"
 msgstr ""
 
 #: assets/build/formEditor.js:2
-#: modules/gutenberg/build/blocks.js:61251
+#: modules/gutenberg/build/blocks.js:11
 msgid "data object is empty"
 msgstr ""
 
@@ -8645,128 +8788,8 @@ msgstr ""
 msgid "Re-arrange block inside Quick Action Bar"
 msgstr ""
 
-#: assets/build/formEditor.js:2
-msgid "GDPR Agreement"
-msgstr ""
-
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:34367
-msgid "URL"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-msgid "Permalink"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-msgid "The last part of the URL."
-msgstr ""
-
-#: assets/build/formEditor.js:172
-msgid "https://wordpress.org/documentation/article/page-post-settings-sidebar/#permalink"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-msgid "Learn more."
-msgstr ""
-
-#: assets/build/formEditor.js:172
-msgid "View post"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-msgid "Change URL: %s"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:45494
-msgid "Confirm"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:44221
-#: modules/gutenberg/build/blocks.js:45495
-msgid "Cancel"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:45496
-msgid "Processing…"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:44132
-msgid "Select Video"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:44133
-msgid "Change Video"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:44138
-msgid "Select Lottie Animation"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:44139
-msgid "Change Lottie Animation"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:44144
-msgid "Upload SVG"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:44145
-msgid "Change SVG"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:44149
-msgid "Select Image"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:44150
-msgid "Change Image"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:44218
-msgid "Upload SVG?"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:44219
-msgid "Upload SVG can be potentially risky. Are you sure?"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:44220
-msgid "Upload Anyway"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:44950
-msgid "Please add a option props to MultiButtonsControl"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:42652
-msgid "Clear"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:42653
-#: modules/gutenberg/build/blocks.js:42667
-msgid "Select Color"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-#: assets/build/settings.js:172
+#: assets/build/settings.js:2
 msgid "Upgrade to Pro"
 msgstr ""
 
@@ -8776,8 +8799,7 @@ msgid "Webhooks"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-#: assets/build/settings.js:172
-msgid "Broadcast your SureForms submission to any web API endpoint with the powerful webhook module."
+msgid "Effortlessly broadcast your SureForms Submission to any web API endpoint with the advanced webhook module."
 msgstr ""
 
 #: assets/build/formEditor.js:172
@@ -8793,15 +8815,23 @@ msgid "Enable from Settings"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-msgid "Go to Dashboard"
+msgid "Connecting…"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-msgid "Install"
+msgid "View Integrations"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-msgid "SureTriggers is a powerful automation platform that helps you connect all your plugins, apps, tools & automate everything!"
+msgid "Connect with SureTriggers"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+msgid "Install & Activate"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+msgid "SureTriggers lets you connect your forms to over 600+ apps. With this integration you can automatically send form entries to your CRM, add subscribers to you email marketing platform, etc. Whatever you want SureForms and SureTriggers has you covered."
 msgstr ""
 
 #: assets/build/formEditor.js:172
@@ -8809,7 +8839,11 @@ msgid "All Integrations"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-msgid "Free Extension"
+msgid "Integrations via SureTriggers"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+msgid "SureTriggers Integrations"
 msgstr ""
 
 #: assets/build/formEditor.js:172
@@ -8885,10 +8919,6 @@ msgid "Email Notification"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-msgid "Save Changes"
-msgstr ""
-
-#: assets/build/formEditor.js:172
 msgid "Notification Settings"
 msgstr ""
 
@@ -8922,10 +8952,6 @@ msgstr ""
 
 #: assets/build/formEditor.js:172
 msgid "Please fill out the required field."
-msgstr ""
-
-#: assets/build/formEditor.js:172
-msgid "Email Notification updated successfully."
 msgstr ""
 
 #: assets/build/formEditor.js:172
@@ -8973,7 +8999,7 @@ msgid "Please select a page."
 msgstr ""
 
 #: assets/build/formEditor.js:172
-msgid "URL should use HTTPS"
+msgid "Suggestion: URL should use HTTPS"
 msgstr ""
 
 #: assets/build/formEditor.js:172
@@ -8990,10 +9016,6 @@ msgstr ""
 
 #: assets/build/formEditor.js:172
 msgid "Form Confirmation"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-msgid "Form Confirmation updated successfully."
 msgstr ""
 
 #: assets/build/formEditor.js:172
@@ -9041,15 +9063,19 @@ msgid "Reset Form"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-msgid "Show Labels"
+msgid "Use Labels as Placeholders"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-msgid "Show Asterisk"
+msgid "Above setting will place the labels inside the fields as placeholders (where possible). This setting takes effect only on the live page, not in the editor preview."
 msgstr ""
 
 #: assets/build/formEditor.js:172
 msgid "Page Break"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+msgid "Show Labels"
 msgstr ""
 
 #: assets/build/formEditor.js:172
@@ -9069,79 +9095,25 @@ msgid "Next Button Text"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-msgid "Instant Form"
+msgid "Are you sure you want to close? Your unsaved changes will be lost as you have some validation errors."
 msgstr ""
 
 #: assets/build/formEditor.js:172
-msgid "Enable Instant Form"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-msgid "Show Title on Instant Form"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-msgid "Instant Form Styling Settings"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-msgid "Please preview the styling for the instant form "
-msgstr ""
-
-#: assets/build/formEditor.js:172
-msgid "here"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-msgid "Header Background Image"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-msgid "Form Container Width"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:34536
-#: modules/gutenberg/build/blocks.js:34560
-msgid "Background Type"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:32762
-#: modules/gutenberg/build/blocks.js:32815
-#: modules/gutenberg/build/blocks.js:32989
-#: modules/gutenberg/build/blocks.js:33208
-#: modules/gutenberg/build/blocks.js:33217
-#: modules/gutenberg/build/blocks.js:33236
-#: modules/gutenberg/build/blocks.js:34595
-#: modules/gutenberg/build/blocks.js:34640
-#: modules/gutenberg/build/blocks.js:34678
-#: modules/gutenberg/build/blocks.js:34717
-#: modules/gutenberg/build/blocks.js:39144
-#: modules/gutenberg/build/blocks.js:39308
-#: modules/gutenberg/build/blocks.js:39491
-#: modules/gutenberg/build/blocks.js:39531
-#: modules/gutenberg/build/blocks.js:39572
-#: modules/gutenberg/build/blocks.js:39679
-#: modules/gutenberg/build/blocks.js:41386
-#: modules/gutenberg/build/blocks.js:41440
-#: modules/gutenberg/build/blocks.js:42926
-#: modules/gutenberg/build/blocks.js:46329
-#: modules/gutenberg/build/blocks.js:46330
-msgid "Color"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-msgid "Background Image"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:33031
-msgid "Background Color"
+msgid "There are few unsaved changes. Please save your changes to reflect the updates."
 msgstr ""
 
 #: assets/build/formEditor.js:172
 msgid "Form Behavior"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+#: modules/gutenberg/build/blocks.js:7
+msgid "Clear"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+#: modules/gutenberg/build/blocks.js:7
+msgid "Select Color"
 msgstr ""
 
 #: assets/build/formEditor.js:172
@@ -9153,27 +9125,66 @@ msgid "Primary Color"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-msgid "Label Color"
+#: modules/gutenberg/build/blocks.js:11
+msgid "Text Color"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-msgid "Help Text Color"
+msgid "Text Color on Primary"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-msgid "Input"
+msgid "Field Spacing"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-msgid "Input Text Color"
+msgid "Small"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-msgid "Placeholder Color"
+msgid "Large"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-msgid "Field Background Color"
+msgid "Submit Button Alignment"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:17
+msgid "Left"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:17
+msgid "Center"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:17
+msgid "Right"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+msgid "Full Width"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+msgid "Page Break Buttons"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+msgid "Inherit From Theme"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+#: modules/gutenberg/build/blocks.js:11
+msgid "Background Color"
 msgstr ""
 
 #: assets/build/formEditor.js:172
@@ -9189,67 +9200,6 @@ msgid "Border Radius"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:32657
-msgid "Text Color"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-msgid "Surface Color"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-msgid "Submit Button"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-msgid "Inherit From Theme"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-msgid "Button Alignment"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:32516
-#: modules/gutenberg/build/blocks.js:34326
-#: modules/gutenberg/build/blocks.js:38635
-#: modules/gutenberg/build/blocks.js:38793
-#: modules/gutenberg/build/blocks.js:41249
-#: modules/gutenberg/build/blocks.js:41424
-#: modules/gutenberg/build/blocks.js:48014
-msgid "Left"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:32522
-#: modules/gutenberg/build/blocks.js:34332
-#: modules/gutenberg/build/blocks.js:38641
-#: modules/gutenberg/build/blocks.js:38799
-#: modules/gutenberg/build/blocks.js:41255
-#: modules/gutenberg/build/blocks.js:41430
-msgid "Center"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:32528
-#: modules/gutenberg/build/blocks.js:34338
-#: modules/gutenberg/build/blocks.js:38647
-#: modules/gutenberg/build/blocks.js:38805
-#: modules/gutenberg/build/blocks.js:41261
-#: modules/gutenberg/build/blocks.js:41436
-#: modules/gutenberg/build/blocks.js:48010
-msgid "Right"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-msgid "Full Width"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-msgid "Page Break Buttons"
-msgstr ""
-
-#: assets/build/formEditor.js:172
 msgid "Anti-Spam Settings"
 msgstr ""
 
@@ -9258,13 +9208,9 @@ msgid "Security Type"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:32627
-#: modules/gutenberg/build/blocks.js:38822
-#: modules/gutenberg/build/blocks.js:38959
-#: modules/gutenberg/build/blocks.js:41128
-#: modules/gutenberg/build/blocks.js:41163
-#: modules/gutenberg/build/blocks.js:46406
-#: modules/gutenberg/build/blocks.js:49371
+#: modules/gutenberg/build/blocks.js:7
+#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:15
 msgid "None"
 msgstr ""
 
@@ -9307,6 +9253,10 @@ msgid "Before selecting the security type, please make sure you have configured 
 msgstr ""
 
 #: assets/build/formEditor.js:172
+msgid "here"
+msgstr ""
+
+#: assets/build/formEditor.js:172
 msgid "Please configure the API keys correctly in the "
 msgstr ""
 
@@ -9331,7 +9281,7 @@ msgid "Hidden"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-msgid "Number Slider"
+msgid "Slider"
 msgstr ""
 
 #: assets/build/formEditor.js:172
@@ -9344,6 +9294,70 @@ msgstr ""
 
 #: assets/build/formEditor.js:172
 msgid "Upgrade to Unlock These Fields"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+msgid "Add Block"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+msgid "Instant Form"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+msgid "Enable Instant Form"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+msgid "Enable Preview"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+msgid "Show Title"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+msgid "Banner Background"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:17
+msgid "Color"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+msgid "Upload Image"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+msgid "Use banner as page background"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+msgid "Form Background"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+msgid "Form Width"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+#: modules/gutenberg/build/blocks.js:17
+msgid "URL"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+msgid "URL Slug"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+msgid "The last part of the URL."
+msgstr ""
+
+#: assets/build/formEditor.js:172
+msgid "Learn more."
 msgstr ""
 
 #: assets/build/formEditor.js:172
@@ -9385,10 +9399,6 @@ msgstr ""
 
 #: assets/build/settings.js:2
 msgid "Unlock revenue boosting features when you upgrade to Pro"
-msgstr ""
-
-#: assets/build/settings.js:2
-msgid "Upgrade to Premium"
 msgstr ""
 
 #: assets/build/settings.js:172
@@ -9448,7 +9458,7 @@ msgid "Send a Test Email Summary"
 msgstr ""
 
 #: assets/build/settings.js:172
-#: modules/gutenberg/build/blocks.js:38866
+#: modules/gutenberg/build/blocks.js:15
 msgid "Auto"
 msgstr ""
 
@@ -9537,1106 +9547,957 @@ msgid "Enter your secret key here"
 msgstr ""
 
 #: assets/build/settings.js:172
+msgid "Broadcast your SureForms submission to any web API endpoint with the powerful webhook module."
+msgstr ""
+
+#: assets/build/settings.js:172
 msgid "This field cannot be left blank."
 msgstr ""
 
 #: assets/build/templatePicker.js:2
-msgid "Select a Template"
+msgid "Describe your Form"
+msgstr ""
+
+#: assets/build/templatePicker.js:2
+msgid "Usage "
+msgstr ""
+
+#: assets/build/templatePicker.js:2
+msgid "Free plan only allows %s AI form generations. Need to create more forms with AI?"
+msgstr ""
+
+#: assets/build/templatePicker.js:2
+#: assets/build/templatePicker.js:172
+msgid "Upgrade Plan"
+msgstr ""
+
+#: assets/build/templatePicker.js:2
+msgid "%d AI form generations left"
 msgstr ""
 
 #: assets/build/templatePicker.js:2
 msgid "Coming Soon…"
 msgstr ""
 
-#: assets/build/templatePicker.js:172
-msgid "PREMIUM"
+#: assets/build/templatePicker.js:2
+msgid "Beta"
 msgstr ""
 
 #: assets/build/templatePicker.js:172
-msgid "Upgrade To Pro"
+msgid "Limit Reached"
 msgstr ""
 
 #: assets/build/templatePicker.js:172
-msgid "Use Template"
+msgid "Connect Now"
 msgstr ""
 
 #: assets/build/templatePicker.js:172
-msgid "Template preview image"
+msgid "Error Creating Form"
 msgstr ""
 
 #: assets/build/templatePicker.js:172
-msgid "Blank template image"
+msgid "There was an error mapping the AI response to Fields. Please try again."
 msgstr ""
 
 #: assets/build/templatePicker.js:172
-msgid "Job Application Form"
+msgid "Try Again!"
 msgstr ""
 
 #: assets/build/templatePicker.js:172
-msgid "Job Application"
+msgid "Authentication Failed"
 msgstr ""
 
 #: assets/build/templatePicker.js:172
-msgid "Error loading form templates:"
+msgid "Please check your username and password for the account, and try to reconnect again. Need help? "
 msgstr ""
 
 #: assets/build/templatePicker.js:172
-msgid "Search Templates…"
+msgid "Click Here to Retry"
 msgstr ""
 
 #: assets/build/templatePicker.js:172
-msgid "Request template"
+msgid "Exit to Dashboard"
 msgstr ""
 
 #: assets/build/templatePicker.js:172
-msgid "Can't find it? Let us know what kind of form do you need."
+msgid "You have reached the maximum number of form generations in your Free Plan."
 msgstr ""
 
 #: assets/build/templatePicker.js:172
-msgid "Request a Template"
+msgid "Please upgrade your free plan to keep creating more forms with AI."
 msgstr ""
 
 #: assets/build/templatePicker.js:172
-msgid "Create a New Form"
+msgid "You have reached the maximum number of form generations."
 msgstr ""
 
 #: assets/build/templatePicker.js:172
-msgid "Start from Scratch"
+msgid "Please connect your website with SureForms AI to create 20 more forms with AI."
 msgstr ""
 
 #: assets/build/templatePicker.js:172
-msgid "Tailoring your form precisely to your unique needs. No coding skills required—just unleash your creativity."
+msgid "Connecting with AI…"
 msgstr ""
 
 #: assets/build/templatePicker.js:172
-msgid "Use a Template"
+msgid "Generating Fields…"
 msgstr ""
 
 #: assets/build/templatePicker.js:172
-msgid "Save time and jumpstart your form creation process with our extensive library of professionally designed templates."
+msgid "Just doing some final touches…"
 msgstr ""
 
 #: assets/build/templatePicker.js:172
-msgid "Create with AI"
+msgid "Redirecting to Editor"
 msgstr ""
 
 #: assets/build/templatePicker.js:172
-msgid "Experience the future of form building. AI-powered algorithms analyze your requirements and generate a tailor-made form."
+msgid "We are building your Form…"
 msgstr ""
 
-#: assets/js/unminified/export.js:140
+#: assets/build/templatePicker.js:172
+msgid "AI Form Builder"
+msgstr ""
+
+#: assets/build/templatePicker.js:172
+msgid "Please describe the form you want to create"
+msgstr ""
+
+#: assets/build/templatePicker.js:172
+msgid "E.g. Form to gather feedback from our customer for our product functionality, usability , how much you will rate it and what you don’t like about it."
+msgstr ""
+
+#: assets/build/templatePicker.js:172
+msgid "Prompt cannot be empty."
+msgstr ""
+
+#: assets/build/templatePicker.js:172
+msgid "Some Form Ideas"
+msgstr ""
+
+#: assets/build/templatePicker.js:172
+msgid "Generate Form"
+msgstr ""
+
+#: assets/build/templatePicker.js:172
+msgid "How would you like to create a new form?"
+msgstr ""
+
+#: assets/build/templatePicker.js:172
+msgid "Build Form From Scratch"
+msgstr ""
+
+#: assets/build/templatePicker.js:172
+msgid "Tailor your form precisely to your unique needs. No coding skills required—just unleash your creativity."
+msgstr ""
+
+#: assets/build/templatePicker.js:172
+msgid "Build From Scratch"
+msgstr ""
+
+#: assets/build/templatePicker.js:172
+msgid "Generate Form with AI"
+msgstr ""
+
+#: assets/build/templatePicker.js:172
+msgid "Experience the future of form building with AI-powered forms. Use AI to build your form 10x faster."
+msgstr ""
+
+#: assets/build/templatePicker.js:172
+msgid "Try the AI Form Builder"
+msgstr ""
+
+#: assets/js/unminified/export.js:142
 msgid "Import Form"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:31662
-msgid "Add heading, sub heading and a separator using one block."
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:31664
-msgid "creative heading"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:31664
-#: modules/gutenberg/build/blocks.js:34192
-msgid "uag"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:31664
-msgid "heading"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:31985
-msgid "Highlight Text"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:32112
-msgid "Write a Description"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:32185
-msgid "Write a Heading"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:32432
-#: modules/gutenberg/build/blocks.js:32457
-#: modules/gutenberg/build/blocks.js:32467
-#: modules/gutenberg/build/blocks.js:32480
-#: modules/gutenberg/build/blocks.js:32606
-msgid "Above Heading"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:32435
-#: modules/gutenberg/build/blocks.js:32460
-#: modules/gutenberg/build/blocks.js:32470
-#: modules/gutenberg/build/blocks.js:32483
-#: modules/gutenberg/build/blocks.js:32609
-msgid "Below Heading"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:32438
-#: modules/gutenberg/build/blocks.js:32447
-#: modules/gutenberg/build/blocks.js:32473
-msgid "Above Sub-heading"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:32441
-#: modules/gutenberg/build/blocks.js:32450
-#: modules/gutenberg/build/blocks.js:32486
-msgid "Below Sub-heading"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:32492
-msgid "Content"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:32496
-#: modules/gutenberg/build/blocks.js:34306
-#: modules/gutenberg/build/blocks.js:38614
-#: modules/gutenberg/build/blocks.js:38782
-#: modules/gutenberg/build/blocks.js:41228
-#: modules/gutenberg/build/blocks.js:41402
-#: modules/gutenberg/build/blocks.js:44761
-msgid "Alignment"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:32540
-#: modules/gutenberg/build/blocks.js:39036
-#: modules/gutenberg/build/blocks.js:41183
-msgid "Heading Tag"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:32547
-#: modules/gutenberg/build/blocks.js:39043
-#: modules/gutenberg/build/blocks.js:41190
-msgid "H1"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:32550
-#: modules/gutenberg/build/blocks.js:39046
-#: modules/gutenberg/build/blocks.js:41193
-msgid "H2"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:32553
-#: modules/gutenberg/build/blocks.js:39049
-#: modules/gutenberg/build/blocks.js:41196
-msgid "H3"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:32556
-#: modules/gutenberg/build/blocks.js:39052
-#: modules/gutenberg/build/blocks.js:41199
-msgid "H4"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:32559
-#: modules/gutenberg/build/blocks.js:39055
-#: modules/gutenberg/build/blocks.js:41202
-msgid "H5"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:32562
-#: modules/gutenberg/build/blocks.js:39058
-#: modules/gutenberg/build/blocks.js:41205
-msgid "H6"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:32568
-#: modules/gutenberg/build/blocks.js:32579
-msgid "Div"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:32572
-msgid "Heading Wrapper"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:32582
-msgid "Header"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:32589
-#: modules/gutenberg/build/blocks.js:32812
-msgid "Sub Heading"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:32592
-msgid "Enable Sub Heading"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:32598
-#: modules/gutenberg/build/blocks.js:32642
-#: modules/gutenberg/build/blocks.js:34665
-#: modules/gutenberg/build/blocks.js:34703
-#: modules/gutenberg/build/blocks.js:34742
-#: modules/gutenberg/build/blocks.js:38974
-#: modules/gutenberg/build/blocks.js:39516
-#: modules/gutenberg/build/blocks.js:39556
-#: modules/gutenberg/build/blocks.js:39597
-msgid "Position"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:32630
-#: modules/gutenberg/build/blocks.js:38962
-#: modules/gutenberg/build/blocks.js:41140
-#: modules/gutenberg/build/blocks.js:46409
-msgid "Solid"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:32633
-#: modules/gutenberg/build/blocks.js:38965
-#: modules/gutenberg/build/blocks.js:41137
-#: modules/gutenberg/build/blocks.js:46418
-msgid "Double"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:32636
-#: modules/gutenberg/build/blocks.js:38968
-#: modules/gutenberg/build/blocks.js:41134
-#: modules/gutenberg/build/blocks.js:46415
-msgid "Dashed"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:32639
-#: modules/gutenberg/build/blocks.js:38971
-#: modules/gutenberg/build/blocks.js:41131
-#: modules/gutenberg/build/blocks.js:46412
-msgid "Dotted"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:32672
-#: modules/gutenberg/build/blocks.js:32823
-#: modules/gutenberg/build/blocks.js:33252
-#: modules/gutenberg/build/blocks.js:39061
-#: modules/gutenberg/build/blocks.js:39225
-#: modules/gutenberg/build/blocks.js:41448
-msgid "Typography"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:32758
-#: modules/gutenberg/build/blocks.js:48458
-msgid "Text Shadow"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:32767
-#: modules/gutenberg/build/blocks.js:34600
-#: modules/gutenberg/build/blocks.js:34645
-#: modules/gutenberg/build/blocks.js:34683
-#: modules/gutenberg/build/blocks.js:34722
-#: modules/gutenberg/build/blocks.js:39496
-#: modules/gutenberg/build/blocks.js:39536
-#: modules/gutenberg/build/blocks.js:39577
-msgid "Horizontal"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:32772
-#: modules/gutenberg/build/blocks.js:34605
-#: modules/gutenberg/build/blocks.js:34650
-#: modules/gutenberg/build/blocks.js:34688
-#: modules/gutenberg/build/blocks.js:34727
-#: modules/gutenberg/build/blocks.js:39501
-#: modules/gutenberg/build/blocks.js:39541
-#: modules/gutenberg/build/blocks.js:39582
-msgid "Vertical"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:32777
-#: modules/gutenberg/build/blocks.js:34610
-#: modules/gutenberg/build/blocks.js:34655
-#: modules/gutenberg/build/blocks.js:34693
-#: modules/gutenberg/build/blocks.js:34732
-#: modules/gutenberg/build/blocks.js:38770
-#: modules/gutenberg/build/blocks.js:39506
-#: modules/gutenberg/build/blocks.js:39546
-#: modules/gutenberg/build/blocks.js:39587
-msgid "Blur"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:32781
-#: modules/gutenberg/build/blocks.js:32907
-#: modules/gutenberg/build/blocks.js:32997
-msgid "Bottom Spacing"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:32941
-#: modules/gutenberg/build/blocks.js:39641
-#: modules/gutenberg/build/blocks.js:41266
-#: modules/gutenberg/build/blocks.js:43818
-#: modules/gutenberg/build/blocks.js:43859
-#: modules/gutenberg/build/blocks.js:43900
-#: modules/gutenberg/build/blocks.js:46327
-msgid "Width"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:32966
-#: modules/gutenberg/build/blocks.js:39661
-#: modules/gutenberg/build/blocks.js:41291
-#: modules/gutenberg/build/blocks.js:41321
-#: modules/gutenberg/build/blocks.js:41351
-#: modules/gutenberg/build/blocks.js:41381
-#: modules/gutenberg/build/blocks.js:46545
-#: modules/gutenberg/build/blocks.js:47783
-msgid "%"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:32971
-#: modules/gutenberg/build/blocks.js:39665
-msgid "Thickness"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:33028
-#: modules/gutenberg/build/blocks.js:33244
-#: modules/gutenberg/build/blocks.js:39605
-msgid "Background"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:33050
-#: modules/gutenberg/build/blocks.js:34745
-#: modules/gutenberg/build/blocks.js:41554
-msgid "Spacing"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:33053
-#: modules/gutenberg/build/blocks.js:33336
-#: modules/gutenberg/build/blocks.js:34748
-msgid "Padding"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:33199
-msgid "Below settings will apply to the heading text to which a link is applied."
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:33202
-#: modules/gutenberg/build/blocks.js:34522
-#: modules/gutenberg/build/blocks.js:34625
-#: modules/gutenberg/build/blocks.js:38661
-#: modules/gutenberg/build/blocks.js:39475
-#: modules/gutenberg/build/blocks.js:46352
-#: modules/gutenberg/build/blocks.js:49342
-msgid "Normal"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:33205
-#: modules/gutenberg/build/blocks.js:34525
-#: modules/gutenberg/build/blocks.js:34628
-#: modules/gutenberg/build/blocks.js:38947
-#: modules/gutenberg/build/blocks.js:39007
-#: modules/gutenberg/build/blocks.js:39027
-#: modules/gutenberg/build/blocks.js:39478
-#: modules/gutenberg/build/blocks.js:46353
-msgid "Hover"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:33231
-msgid "Highlight"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:33235
-msgid "Highlight heading text from toolbar to see the below controls working."
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:34189
-msgid "Add stunning customizable icons to your website."
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:34192
-msgid "icon"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:34282
-#: modules/gutenberg/build/blocks.js:41326
-msgid "Size"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:34343
-msgid "Rotation"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:34357
-msgid "Degree"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:34377
-msgid "Enter URL"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:34379
-msgid "Open in New Tab"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:34385
-msgid "Presets"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:34528
-#: modules/gutenberg/build/blocks.js:34552
-msgid "Icon Color"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:34583
-msgid "Drop Shadow"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:34614
-#: modules/gutenberg/build/blocks.js:39464
-#: modules/gutenberg/build/blocks.js:39487
-#: modules/gutenberg/build/blocks.js:39527
-#: modules/gutenberg/build/blocks.js:39568
-#: modules/gutenberg/build/blocks.js:42228
-msgid "Box Shadow"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:34617
-#: modules/gutenberg/build/blocks.js:39467
-msgid "Separate Hover Shadow"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:34660
-#: modules/gutenberg/build/blocks.js:34698
-#: modules/gutenberg/build/blocks.js:34737
-#: modules/gutenberg/build/blocks.js:39511
-#: modules/gutenberg/build/blocks.js:39551
-#: modules/gutenberg/build/blocks.js:39592
-msgid "Spread"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:34981
-#: modules/gutenberg/build/blocks.js:35069
-#: modules/gutenberg/build/blocks.js:35192
-#: modules/gutenberg/build/blocks.js:35338
-#: modules/gutenberg/build/blocks.js:37269
-#: modules/gutenberg/build/blocks.js:37392
-msgid "Preset 1"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:34995
-#: modules/gutenberg/build/blocks.js:35089
-#: modules/gutenberg/build/blocks.js:35212
-#: modules/gutenberg/build/blocks.js:35373
-#: modules/gutenberg/build/blocks.js:37289
-#: modules/gutenberg/build/blocks.js:37412
-msgid "Preset 2"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:35009
-#: modules/gutenberg/build/blocks.js:35109
-#: modules/gutenberg/build/blocks.js:35232
-#: modules/gutenberg/build/blocks.js:35420
-#: modules/gutenberg/build/blocks.js:37309
-#: modules/gutenberg/build/blocks.js:37432
-msgid "Preset 3"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:35023
-#: modules/gutenberg/build/blocks.js:35129
-#: modules/gutenberg/build/blocks.js:35252
-#: modules/gutenberg/build/blocks.js:35455
-#: modules/gutenberg/build/blocks.js:37329
-#: modules/gutenberg/build/blocks.js:37452
-msgid "Preset 4"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:35037
-#: modules/gutenberg/build/blocks.js:35149
-#: modules/gutenberg/build/blocks.js:35272
-#: modules/gutenberg/build/blocks.js:37349
-#: modules/gutenberg/build/blocks.js:37472
-msgid "Preset 5"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:35051
-#: modules/gutenberg/build/blocks.js:35169
-#: modules/gutenberg/build/blocks.js:35292
-#: modules/gutenberg/build/blocks.js:37369
-#: modules/gutenberg/build/blocks.js:37492
-msgid "Preset 6"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:36547
-msgid "Add images on your webpage with multiple customization options."
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:36549
-msgid "image"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:36549
-msgid "advance image"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:36549
-msgid "caption"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:36549
-msgid "overlay image"
-msgstr ""
-
-#. translators: %s: file name
-#: modules/gutenberg/build/blocks.js:36968
-msgid "This image has an empty alt attribute; its file name is %s"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:36970
-msgid "This image has an empty alt attribute"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:37217
-msgid "Image overlay heading text"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:37218
-msgid "Add Heading"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:37228
-msgid "Image caption text"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:37229
-msgid "Add caption"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:37921
-#: modules/gutenberg/build/blocks.js:37922
-msgid "Edit image"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:37951
-msgid "Image uploaded."
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:37989
-msgid "Upload external image"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:38020
-msgid "Upload an image file, pick one from your media library, or add one with a URL."
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:38556
-#: modules/gutenberg/build/blocks.js:38569
-#: modules/gutenberg/build/blocks.js:38582
-#: modules/gutenberg/build/blocks.js:46403
-#: modules/gutenberg/build/blocks.js:48743
-#: modules/gutenberg/build/blocks.js:48922
-#: modules/gutenberg/build/blocks.js:48947
-#: modules/gutenberg/build/blocks.js:49339
-#: modules/gutenberg/build/blocks.js:49368
+#: modules/gutenberg/build/blocks.js:7
+#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:15
 msgid "Default"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:38562
-#: modules/gutenberg/build/blocks.js:38575
-#: modules/gutenberg/build/blocks.js:38588
-#: modules/gutenberg/build/blocks.js:38872
-msgid "Cover"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:38565
-#: modules/gutenberg/build/blocks.js:38578
-#: modules/gutenberg/build/blocks.js:38591
-#: modules/gutenberg/build/blocks.js:38869
-msgid "Contain"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:38605
-msgid "Disable Lazy Loading"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:38653
-msgid "Layout"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:38664
-#: modules/gutenberg/build/blocks.js:39602
-msgid "Overlay"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:38668
-msgid "Content Position"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:38680
-msgid "Border Distance From EDGE"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:38721
-msgid "Alt Text"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:38732
-msgid "Object Fit"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:38750
-msgid "On Hover Image"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:38758
-msgid "Static"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:38761
-msgid "Zoom In"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:38764
-msgid "Slide"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:38767
-msgid "Gray Scale"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:38773
-msgid "Enable Caption"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:38814
-msgid "Mask Shape"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:38831
-msgid "Hexagon"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:38834
-msgid "Rounded"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:38837
-msgid "Blob 1"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:38840
-msgid "Blob 2"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:38843
-msgid "Blob 3"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:38846
-msgid "Blob 4"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:38849
-msgid "Custom"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:38855
-msgid "Custom Mask Image"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:38858
-msgid "Mask Size"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:38875
-msgid "Mask Position"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:38883
-msgid "Center Top"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:38886
-msgid "Center Center"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:38889
-msgid "Center Bottom"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:38892
-msgid "Left Top"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:38895
-msgid "Left Center"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:38898
-msgid "Left Bottom"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:38901
-msgid "Right Top"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:38904
-msgid "Right Center"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:38907
-msgid "Right Bottom"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:38910
-msgid "Mask Repeat"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:38918
-msgid "No Repeat"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:38924
-msgid "Repeat-X"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:38927
-msgid "Repeat-Y"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:38936
-#: modules/gutenberg/build/blocks.js:38996
-#: modules/gutenberg/build/blocks.js:39016
-msgid "Show On"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:38944
-#: modules/gutenberg/build/blocks.js:39004
-#: modules/gutenberg/build/blocks.js:39024
-msgid "Always"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:38982
-msgid "Before Title"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:38985
-msgid "After Title"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:38988
-msgid "After Sub Title"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:39012
-#: modules/gutenberg/build/blocks.js:39222
-msgid "Description"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:39222
-msgid "Caption"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:39613
-msgid "Overlay Opacity"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:39625
-msgid "Overlay Hover Opacity"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:40787
-msgid "Add a modern separator to divide your page content with icon/text."
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:40790
-msgid "divider"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:40790
-msgid "separator"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:41124
-msgid "Note: Please set Separator Height for proper thickness."
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:41143
-msgid "Rectangles"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:41146
-msgid "Parallelogram"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:41152
-msgid "Leaves"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:41156
-msgid "Add Element"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:41166
-#: modules/gutenberg/build/blocks.js:41174
-#: modules/gutenberg/build/blocks.js:41398
-msgid "Text"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:41208
-msgid "Span"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:41296
-#: modules/gutenberg/build/blocks.js:43832
-#: modules/gutenberg/build/blocks.js:43873
-#: modules/gutenberg/build/blocks.js:43914
-msgid "Height"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:41356
-msgid "Separator Height"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:41524
-msgid "Icon Size"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:41549
-msgid "EM"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:42338
-#: modules/gutenberg/build/blocks.js:42339
-#: modules/gutenberg/build/blocks.js:46427
-msgid "Outset"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:42342
-#: modules/gutenberg/build/blocks.js:46424
-msgid "Inset"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:42343
-msgid "Inset (10px)"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:42919
-msgid "Classic"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:42922
-msgid "Gradient"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:43117
-msgid "Color 1"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:43125
-msgid "Color 2"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:43134
-msgid "Type"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:43142
-msgid "Linear"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:43145
-msgid "Radial"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:43148
-msgid "Location 1"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:43159
-msgid "Location 2"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:43170
-msgid "Angle"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:43316
-msgid "Icon Library"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:43322
-msgid "Search"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:43404
-msgid "Change Icon"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:43404
-msgid "Choose Icon"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:43553
-msgid "No Icons Found"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:43621
-msgid "All Icons"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:43629
-msgid "Other"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:43637
-msgid "Close"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:43663
-msgid "Insert Icon"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:43948
-msgid "Image Size"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:43976
-msgid "Image Dimensions"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:45868
-msgid "Select Preset"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:46328
-msgid "Radius"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:46351
-msgid "Border"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:46421
-msgid "Groove"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:46430
-msgid "Ridge"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:48008
-msgid "Top"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:48012
-msgid "Bottom"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:48906
-#: modules/gutenberg/build/blocks.js:48907
-#: modules/gutenberg/build/blocks.js:48908
+#: modules/gutenberg/build/blocks.js:7
 msgid "Font Size"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:48920
+#: modules/gutenberg/build/blocks.js:7
 msgid "Font Family"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:48931
+#: modules/gutenberg/build/blocks.js:7
 msgid "Weight"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:48953
+#: modules/gutenberg/build/blocks.js:7
 msgid "Oblique"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:49304
-#: modules/gutenberg/build/blocks.js:49305
-#: modules/gutenberg/build/blocks.js:49306
+#: modules/gutenberg/build/blocks.js:7
 msgid "Line Height"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:49322
-#: modules/gutenberg/build/blocks.js:49323
-#: modules/gutenberg/build/blocks.js:49324
+#: modules/gutenberg/build/blocks.js:7
 msgid "Letter Spacing"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:49331
+#: modules/gutenberg/build/blocks.js:7
 msgid "Transform"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:49345
+#: modules/gutenberg/build/blocks.js:7
+#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:17
+msgid "Normal"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:7
 msgid "Capitalize"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:49348
+#: modules/gutenberg/build/blocks.js:7
 msgid "Uppercase"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:49351
+#: modules/gutenberg/build/blocks.js:7
 msgid "Lowercase"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:49360
+#: modules/gutenberg/build/blocks.js:7
 msgid "Decoration"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:49377
+#: modules/gutenberg/build/blocks.js:7
 msgid "Overline"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:49380
+#: modules/gutenberg/build/blocks.js:7
 msgid "Line Through"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:61445
+#: modules/gutenberg/build/blocks.js:7
+#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:15
+msgid "%"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:11
+msgid "Top"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:11
+msgid "Bottom"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:11
+msgid "Note: Please set Separator Height for proper thickness."
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:15
+msgid "Dotted"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:15
+msgid "Dashed"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:15
+msgid "Double"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:15
+msgid "Solid"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:11
+msgid "Rectangles"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:11
+msgid "Parallelogram"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:11
+msgid "Leaves"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:11
+msgid "Add Element"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:11
+msgid "Text"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:15
+msgid "Heading Tag"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:15
+msgid "H1"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:15
+msgid "H2"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:15
+msgid "H3"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:15
+msgid "H4"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:15
+msgid "H5"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:15
+msgid "H6"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:11
+msgid "Span"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:17
+msgid "Alignment"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:15
+msgid "Width"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:17
+msgid "Size"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:11
+msgid "Separator Height"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:15
+msgid "Typography"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:11
+msgid "Icon Size"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:11
+msgid "EM"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:17
+msgid "Spacing"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:17
+msgid "Padding"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:11
 msgid "Please add preview image."
 msgstr ""
 
-#: assets/build/blocks/address-compact/block.json
-#: inc/blocks/address-compact/block.json
-msgctxt "block title"
-msgid "Address Compact"
+#: modules/gutenberg/build/blocks.js:11
+msgid "Add a modern separator to divide your page content with icon/text."
 msgstr ""
 
-#: assets/build/blocks/address-compact/block.json
-#: inc/blocks/address-compact/block.json
-msgctxt "block description"
-msgid "Displays a SureForm Address Compact field."
+#: modules/gutenberg/build/blocks.js:11
+msgid "divider"
 msgstr ""
 
-#: assets/build/blocks/address-compact/block.json
-#: assets/build/blocks/address/block.json
-#: inc/blocks/address-compact/block.json
-#: inc/blocks/address/block.json
-msgctxt "block keyword"
-msgid "address"
+#: modules/gutenberg/build/blocks.js:11
+msgid "separator"
 msgstr ""
 
-#: assets/build/blocks/address-compact/block.json
-#: assets/build/blocks/address/block.json
-#: inc/blocks/address-compact/block.json
-#: inc/blocks/address/block.json
-msgctxt "block keyword"
-msgid "country"
+#: modules/gutenberg/build/blocks.js:11
+msgid "Color 1"
 msgstr ""
 
-#: assets/build/blocks/address-compact/block.json
-#: assets/build/blocks/address/block.json
-#: inc/blocks/address-compact/block.json
-#: inc/blocks/address/block.json
-msgctxt "block keyword"
-msgid "location"
+#: modules/gutenberg/build/blocks.js:11
+msgid "Color 2"
 msgstr ""
 
-#: assets/build/blocks/address-compact/block.json
-#: assets/build/blocks/address/block.json
-#: assets/build/blocks/dropdown/block.json
-#: assets/build/blocks/input/block.json
-#: assets/build/blocks/number/block.json
-#: assets/build/blocks/phone/block.json
-#: assets/build/blocks/textarea/block.json
-#: inc/blocks/address-compact/block.json
-#: inc/blocks/address/block.json
-#: inc/blocks/dropdown/block.json
-#: inc/blocks/input/block.json
-#: inc/blocks/number/block.json
-#: inc/blocks/phone/block.json
-#: inc/blocks/textarea/block.json
-msgctxt "block keyword"
-msgid "field"
+#: modules/gutenberg/build/blocks.js:11
+msgid "Type"
 msgstr ""
 
-#: assets/build/blocks/address-compact/block.json
-#: inc/blocks/address-compact/block.json
-msgctxt "block keyword"
-msgid "compact"
+#: modules/gutenberg/build/blocks.js:11
+msgid "Linear"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:11
+msgid "Radial"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:11
+msgid "Location 1"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:11
+msgid "Location 2"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:11
+msgid "Angle"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:11
+msgid "Classic"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:11
+msgid "Gradient"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:11
+msgid "Text Shadow"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:11
+msgid "Radius"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:11
+msgid "Border"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:17
+msgid "Hover"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:11
+msgid "Groove"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:11
+msgid "Inset"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:11
+msgid "Outset"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:11
+msgid "Ridge"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:11
+msgid "Above Heading"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:11
+msgid "Below Heading"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:11
+msgid "Above Sub-heading"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:11
+msgid "Below Sub-heading"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:11
+msgid "Content"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:11
+msgid "Div"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:11
+msgid "Heading Wrapper"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:11
+msgid "Header"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:11
+msgid "Sub Heading"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:11
+msgid "Enable Sub Heading"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:17
+msgid "Position"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:17
+msgid "Horizontal"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:17
+msgid "Vertical"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:17
+msgid "Blur"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:11
+msgid "Bottom Spacing"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:15
+msgid "Thickness"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:11
+msgid "Below settings will apply to the heading text to which a link is applied."
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:11
+msgid "Highlight"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:11
+msgid "Highlight heading text from toolbar to see the below controls working."
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:15
+msgid "Background"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:11
+msgid "Write a Heading"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:11
+msgid "Write a Description"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:11
+msgid "Highlight Text"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:11
+msgid "Add heading, sub heading and a separator using one block."
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:11
+msgid "creative heading"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:17
+msgid "uag"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:11
+msgid "heading"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:17
+msgid "Box Shadow"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:11
+msgid "Inset (10px)"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:15
+msgid "Height"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:15
+msgid "Image Size"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:15
+msgid "Image Dimensions"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:17
+msgid "Preset 1"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:17
+msgid "Preset 2"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:17
+msgid "Preset 3"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:17
+msgid "Preset 4"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:17
+msgid "Preset 5"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:17
+msgid "Preset 6"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:15
+msgid "Select Preset"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:15
+msgid "Cover"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:15
+msgid "Contain"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:15
+msgid "Disable Lazy Loading"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:15
+msgid "Layout"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:15
+msgid "Overlay"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:15
+msgid "Content Position"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:15
+msgid "Border Distance From EDGE"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:15
+msgid "Alt Text"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:15
+msgid "Object Fit"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:15
+msgid "On Hover Image"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:15
+msgid "Static"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:15
+msgid "Zoom In"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:15
+msgid "Slide"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:15
+msgid "Gray Scale"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:15
+msgid "Enable Caption"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:15
+msgid "Mask Shape"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:15
+msgid "Hexagon"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:15
+msgid "Rounded"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:15
+msgid "Blob 1"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:15
+msgid "Blob 2"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:15
+msgid "Blob 3"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:15
+msgid "Blob 4"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:15
+msgid "Custom"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:15
+msgid "Custom Mask Image"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:15
+msgid "Mask Size"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:15
+msgid "Mask Position"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:15
+msgid "Center Top"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:15
+msgid "Center Center"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:15
+msgid "Center Bottom"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:15
+msgid "Left Top"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:15
+msgid "Left Center"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:15
+msgid "Left Bottom"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:15
+msgid "Right Top"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:15
+msgid "Right Center"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:15
+msgid "Right Bottom"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:15
+msgid "Mask Repeat"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:15
+msgid "No Repeat"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:15
+msgid "Repeat-X"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:15
+msgid "Repeat-Y"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:15
+msgid "Show On"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:15
+msgid "Always"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:15
+msgid "Before Title"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:15
+msgid "After Title"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:15
+msgid "After Sub Title"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:15
+msgid "Description"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:15
+msgid "Caption"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:17
+msgid "Separate Hover Shadow"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:17
+msgid "Spread"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:15
+msgid "Overlay Opacity"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:15
+msgid "Overlay Hover Opacity"
+msgstr ""
+
+#. translators: %s: file name
+#: modules/gutenberg/build/blocks.js:17
+msgid "This image has an empty alt attribute; its file name is %s"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:17
+msgid "This image has an empty alt attribute"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:17
+msgid "Image overlay heading text"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:17
+msgid "Add Heading"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:17
+msgid "Image caption text"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:17
+msgid "Add caption"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:17
+msgid "Edit image"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:17
+msgid "Image uploaded."
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:17
+msgid "Upload external image"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:17
+msgid "Upload an image file, pick one from your media library, or add one with a URL."
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:17
+msgid "Add images on your webpage with multiple customization options."
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:17
+msgid "image"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:17
+msgid "advance image"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:17
+msgid "caption"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:17
+msgid "overlay image"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:17
+msgid "Accessibility Mode"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:17
+msgid "SVG"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:17
+msgid "Decorative"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:17
+msgid "Accessibility Label"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:17
+msgid "Rotation"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:17
+msgid "Degree"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:17
+msgid "Enter URL"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:17
+msgid "Open in New Tab"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:17
+msgid "Presets"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:17
+msgid "Icon Color"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:17
+msgid "Background Type"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:17
+msgid "Drop Shadow"
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:17
+msgid "Add stunning customizable icons to your website."
+msgstr ""
+
+#: modules/gutenberg/build/blocks.js:17
+msgid "icon"
 msgstr ""
 
 #: assets/build/blocks/address/block.json
@@ -10649,6 +10510,40 @@ msgstr ""
 #: inc/blocks/address/block.json
 msgctxt "block description"
 msgid "Displays a SureForm Address Field"
+msgstr ""
+
+#: assets/build/blocks/address/block.json
+#: inc/blocks/address/block.json
+msgctxt "block keyword"
+msgid "address"
+msgstr ""
+
+#: assets/build/blocks/address/block.json
+#: inc/blocks/address/block.json
+msgctxt "block keyword"
+msgid "country"
+msgstr ""
+
+#: assets/build/blocks/address/block.json
+#: inc/blocks/address/block.json
+msgctxt "block keyword"
+msgid "location"
+msgstr ""
+
+#: assets/build/blocks/address/block.json
+#: assets/build/blocks/dropdown/block.json
+#: assets/build/blocks/input/block.json
+#: assets/build/blocks/number/block.json
+#: assets/build/blocks/phone/block.json
+#: assets/build/blocks/textarea/block.json
+#: inc/blocks/address/block.json
+#: inc/blocks/dropdown/block.json
+#: inc/blocks/input/block.json
+#: inc/blocks/number/block.json
+#: inc/blocks/phone/block.json
+#: inc/blocks/textarea/block.json
+msgctxt "block keyword"
+msgid "field"
 msgstr ""
 
 #: assets/build/blocks/checkbox/block.json

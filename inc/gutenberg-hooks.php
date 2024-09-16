@@ -45,7 +45,6 @@ class Gutenberg_Hooks {
 		'srfm/gdpr',
 		'srfm/phone',
 		'srfm/address',
-		'srfm/address-compact',
 		'srfm/dropdown',
 		'srfm/multi-choice',
 		'srfm/radio',
@@ -54,7 +53,7 @@ class Gutenberg_Hooks {
 		// pro blocks.
 		'srfm/date-time-picker',
 		'srfm/hidden',
-		'srfm/number-slider',
+		'srfm/slider',
 		'srfm/password',
 		'srfm/rating',
 		'srfm/upload',
@@ -227,7 +226,6 @@ class Gutenberg_Hooks {
 				'srfm/gdpr',
 				'srfm/phone',
 				'srfm/address',
-				'srfm/address-compact',
 				'srfm/dropdown',
 				'srfm/multi-choice',
 				'srfm/radio',
@@ -238,7 +236,6 @@ class Gutenberg_Hooks {
 				'srfm/image',
 				'srfm/advanced-heading',
 				'srfm/inline-button',
-				'core/paragraph',
 			];
 			// Apply a filter to the $allow_block_types types array.
 			$allow_block_types = apply_filters( 'srfm_allowed_block_types', $allow_block_types, $editor_context );
@@ -343,7 +340,7 @@ class Gutenberg_Hooks {
 				'version'      => SRFM_VER,
 			];
 
-		wp_enqueue_script( SRFM_SLUG . $form_editor_script, SRFM_URL . 'assets/build/formEditor.js', $script_info['dependencies'], SRFM_VER, true );
+		wp_enqueue_script( SRFM_SLUG . $form_editor_script, SRFM_URL . 'assets/build/formEditor.js', $script_info['dependencies'], $script_info['version'], true );
 
 		// Enqueue the code editor for the Custom CSS Editor in SureForms.
 		wp_enqueue_code_editor( [ 'type' => 'text/css' ] );
@@ -408,18 +405,17 @@ class Gutenberg_Hooks {
 			apply_filters(
 				'srfm_block_preview_images',
 				[
-					'input_preview'           => SRFM_URL . 'images/field-previews/input.svg',
-					'email_preview'           => SRFM_URL . 'images/field-previews/email.svg',
-					'url_preview'             => SRFM_URL . 'images/field-previews/url.svg',
-					'textarea_preview'        => SRFM_URL . 'images/field-previews/textarea.svg',
-					'multi_choice_preview'    => SRFM_URL . 'images/field-previews/multi-choice.svg',
-					'checkbox_preview'        => SRFM_URL . 'images/field-previews/checkbox.svg',
-					'number_preview'          => SRFM_URL . 'images/field-previews/number.svg',
-					'phone_preview'           => SRFM_URL . 'images/field-previews/phone.svg',
-					'dropdown_preview'        => SRFM_URL . 'images/field-previews/dropdown.svg',
-					'address_preview'         => SRFM_URL . 'images/field-previews/address.svg',
-					'address_compact_preview' => SRFM_URL . 'images/field-previews/address-compact.svg',
-					'sureforms_preview'       => SRFM_URL . 'images/field-previews/sureforms.svg',
+					'input_preview'        => SRFM_URL . 'images/field-previews/input.svg',
+					'email_preview'        => SRFM_URL . 'images/field-previews/email.svg',
+					'url_preview'          => SRFM_URL . 'images/field-previews/url.svg',
+					'textarea_preview'     => SRFM_URL . 'images/field-previews/textarea.svg',
+					'multi_choice_preview' => SRFM_URL . 'images/field-previews/multi-choice.svg',
+					'checkbox_preview'     => SRFM_URL . 'images/field-previews/checkbox.svg',
+					'number_preview'       => SRFM_URL . 'images/field-previews/number.svg',
+					'phone_preview'        => SRFM_URL . 'images/field-previews/phone.svg',
+					'dropdown_preview'     => SRFM_URL . 'images/field-previews/dropdown.svg',
+					'address_preview'      => SRFM_URL . 'images/field-previews/address.svg',
+					'sureforms_preview'    => SRFM_URL . 'images/field-previews/sureforms.svg',
 				]
 			)
 		);

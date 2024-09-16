@@ -1,13 +1,8 @@
 import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
-import AdvancedPopColorControl from '@Components/color-control/advanced-pop-color-control.js';
-import SRFMMediaPicker from '@Components/image';
-import MultiButtonsControl from '@Components/multi-buttons-control';
-import Range from '@Components/range/Range.js';
 import SRFMTextControl from '@Components/text-control';
 import { useDeviceType } from '@Controls/getPreviewType';
 import svgIcons from '@Image/single-form-logo.json';
 import {
-	ExternalLink,
 	Modal,
 	SelectControl,
 	ToggleControl,
@@ -17,9 +12,8 @@ import { store as editorStore } from '@wordpress/editor';
 import { useEffect, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import parse from 'html-react-parser';
-import SingleFormSettingsPopup from '../components/SingleFormSettingPopup';
-import PostURLPanel from '../components/form-permalink/Panel';
 import FormBehaviorPopupButton from '../../components/FormBehaviorPopupButton';
+import SingleFormSettingsPopup from '../components/SingleFormSettingPopup';
 
 let prevMetaHash = '';
 
@@ -105,20 +99,7 @@ function GeneralSettings( props ) {
 		}, 100 );
 	}, [ deviceType, rootContainer ] );
 
-	if ( sureformsKeys && '_srfm_show_labels' in sureformsKeys ) {
-		if ( rootContainer ) {
-			if ( ! sureformsKeys._srfm_show_labels ) {
-				rootContainer.classList.add( 'srfm-hide-labels' );
-			} else {
-				rootContainer.classList.remove( 'srfm-hide-labels' );
-			}
-			if ( ! sureformsKeys._srfm_show_asterisk ) {
-				rootContainer.classList.add( 'srfm-hide-asterisk' );
-			} else {
-				rootContainer.classList.remove( 'srfm-hide-asterisk' );
-			}
-		}
-
+	if ( sureformsKeys ) {
 		// Font Size
 		root.style.setProperty(
 			'--srfm-font-size',
@@ -158,24 +139,6 @@ function GeneralSettings( props ) {
 			key_id = option + '_id';
 		}
 
-		if ( option === '_srfm_show_labels' ) {
-			if ( ! value ) {
-				rootContainer.classList.add( 'srfm-hide-labels' );
-				updateMeta( '_srfm_show_asterisk', false );
-			} else {
-				rootContainer.classList.remove( 'srfm-hide-labels' );
-				updateMeta( '_srfm_show_asterisk', true );
-			}
-		}
-
-		if ( option === '_srfm_show_asterisk' ) {
-			if ( ! value ) {
-				rootContainer.classList.add( 'srfm-hide-asterisk' );
-			} else {
-				rootContainer.classList.remove( 'srfm-hide-asterisk' );
-			}
-		}
-
 		const option_array = {};
 
 		if ( key_id ) {
@@ -186,31 +149,6 @@ function GeneralSettings( props ) {
 			meta: option_array,
 		} );
 	}
-
-	const onSelectRestImage = ( meta, media ) => {
-		let imageUrl = media;
-		if (
-			! media ||
-			! media.url ||
-			! media.type ||
-			'image' !== media.type
-		) {
-			imageUrl = null;
-		}
-
-		updateMeta( meta, imageUrl );
-	};
-
-	/*
-	 * Event to set Image as null while removing it.
-	 */
-	const onRemoveRestImage = ( meta ) => {
-		updateMeta( meta, '' );
-	};
-
-	const instantFormUrl = useSelect( ( select ) =>
-		select( editorStore ).getPermalink()
-	);
 
 	const singleSettings = [
 		{
@@ -238,21 +176,18 @@ function GeneralSettings( props ) {
 				initialOpen={ true }
 			>
 				<ToggleControl
-					label={ __( 'Show Labels', 'sureforms' ) }
-					checked={ sureformsKeys._srfm_show_labels }
+					label={ __( 'Use Labels as Placeholders', 'sureforms' ) }
+					checked={ sureformsKeys._srfm_use_label_as_placeholder }
 					onChange={ ( value ) => {
-						updateMeta( '_srfm_show_labels', value );
+						updateMeta( '_srfm_use_label_as_placeholder', value );
 					} }
 				/>
-				{ sureformsKeys._srfm_show_labels && (
-					<ToggleControl
-						label={ __( 'Show Asterisk', 'sureforms' ) }
-						checked={ sureformsKeys._srfm_show_asterisk }
-						onChange={ ( value ) => {
-							updateMeta( '_srfm_show_asterisk', value );
-						} }
-					/>
-				) }
+				<p className="components-base-control__help">
+					{ __(
+						'Above setting will place the labels inside the fields as placeholders (where possible). This setting takes effect only on the live page, not in the editor preview.',
+						'sureforms'
+					) }
+				</p>
 			</SRFMAdvancedPanelBody>
 			{ isPageBreak && (
 				<SRFMAdvancedPanelBody
@@ -335,195 +270,6 @@ function GeneralSettings( props ) {
 					/>
 				</SRFMAdvancedPanelBody>
 			) }
-			<SRFMAdvancedPanelBody
-				title={ __( 'Instant Form', 'sureforms' ) }
-				initialOpen={ false }
-			>
-				<ToggleControl
-					label={ __( 'Enable Instant Form', 'sureforms' ) }
-					checked={ sureformsKeys._srfm_instant_form }
-					onChange={ ( value ) => {
-						updateMeta( '_srfm_instant_form', value );
-					} }
-				/>
-				{ sureformsKeys._srfm_instant_form && (
-					<>
-						<ToggleControl
-							label={ __(
-								'Show Title on Instant Form',
-								'sureforms'
-							) }
-							checked={
-								sureformsKeys._srfm_single_page_form_title
-							}
-							onChange={ ( value ) => {
-								updateMeta(
-									'_srfm_single_page_form_title',
-									value
-								);
-							} }
-						/>
-						<PostURLPanel />
-						{ sureformsKeys._srfm_instant_form && (
-							<>
-								<div>
-									<div className="srfm-instant-form-settings-separator"></div>
-								</div>
-								<p className="srfm-panel__body-sub-heading">
-									{ __(
-										'Instant Form Styling Settings',
-										'sureforms'
-									) }
-								</p>
-								<p className="components-base-control__help">
-									{ __(
-										'Please preview the styling for the instant form ',
-										'sureforms'
-									) }
-									<ExternalLink href={ instantFormUrl }>
-										{ __( 'here', 'sureforms' ) }
-									</ExternalLink>
-								</p>
-								<SRFMMediaPicker
-									label={ __(
-										'Header Background Image',
-										'sureforms'
-									) }
-									onSelectImage={ ( media ) =>
-										onSelectRestImage(
-											'_srfm_cover_image',
-											media
-										)
-									}
-									backgroundImage={
-										sureformsKeys._srfm_cover_image
-									}
-									onRemoveImage={ () =>
-										onRemoveRestImage( '_srfm_cover_image' )
-									}
-									isFormSpecific={ true }
-								/>
-								<Range
-									label={ __(
-										'Form Container Width',
-										'sureforms'
-									) }
-									value={
-										sureformsKeys._srfm_form_container_width
-									}
-									min={ 650 }
-									max={ 1000 }
-									displayUnit={ false }
-									data={ {
-										value: sureformsKeys._srfm_form_container_width,
-										label: '_srfm_form_container_width',
-									} }
-									onChange={ ( value ) =>
-										updateMeta(
-											'_srfm_form_container_width',
-											value
-										)
-									}
-									isFormSpecific={ true }
-								/>
-								<p className="components-base-control__help" />
-								<MultiButtonsControl
-									label={ __(
-										'Background Type',
-										'sureforms'
-									) }
-									data={ {
-										value: sureformsKeys._srfm_bg_type,
-										label: '_srfm_bg_type',
-									} }
-									options={ [
-										{
-											value: 'image',
-											label: __( 'Image', 'sureforms' ),
-										},
-										{
-											value: 'color',
-											label: __( 'Color', 'sureforms' ),
-										},
-									] }
-									showIcons={ false }
-									onChange={ ( value ) => {
-										updateMeta( '_srfm_bg_type', value );
-										if ( value === 'color' ) {
-											updateMeta( '_srfm_bg_image', '' );
-											updateMeta(
-												'_srfm_bg_color',
-												sureformsKeys._srfm_bg_color
-													? sureformsKeys._srfm_bg_color
-													: '#ffffff'
-											);
-										} else {
-											updateMeta( '_srfm_bg_color', '' );
-											updateMeta(
-												'_srfm_bg_image',
-												sureformsKeys._srfm_bg_image
-													? sureformsKeys._srfm_bg_image
-													: ''
-											);
-										}
-									} }
-								/>
-								<p className="components-base-control__help" />
-								{ sureformsKeys._srfm_bg_type === 'image' ? (
-									<SRFMMediaPicker
-										label={ __(
-											'Background Image',
-											'sureforms'
-										) }
-										onSelectImage={ ( media ) =>
-											onSelectRestImage(
-												'_srfm_bg_image',
-												media
-											)
-										}
-										backgroundImage={
-											sureformsKeys._srfm_bg_image
-										}
-										onRemoveImage={ () =>
-											onRemoveRestImage(
-												'_srfm_bg_image'
-											)
-										}
-										isFormSpecific={ true }
-									/>
-								) : (
-									<AdvancedPopColorControl
-										label={ __(
-											'Background Color',
-											'sureforms'
-										) }
-										colorValue={
-											sureformsKeys._srfm_bg_color
-										}
-										data={ {
-											value: sureformsKeys._srfm_bg_color,
-											label: '_srfm_bg_color',
-										} }
-										onColorChange={ ( colorValue ) => {
-											if (
-												colorValue !==
-												sureformsKeys._srfm_bg_color
-											) {
-												updateMeta(
-													'_srfm_bg_color',
-													colorValue
-												);
-											}
-										} }
-										value={ sureformsKeys._srfm_bg_color }
-										isFormSpecific={ true }
-									/>
-								) }
-							</>
-						) }
-					</>
-				) }
-			</SRFMAdvancedPanelBody>
 
 			{
 				singleSettings.map( ( set ) => {

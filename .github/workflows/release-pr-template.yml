@@ -27,6 +27,7 @@ jobs:
             ---
             ### Release Checklist:
             - [ ] Run to update version number  : `grunt version-bump --ver=<version-number>`
+            - [ ] Verify the version number in `package.json` and `package-lock.json`
             - [ ] Verify `Stable tag` is `<version-number>` in readme.txt
             - [ ] Verify `Tested upto` is set to latest tested version of WordPress
             - [ ] Update version in `sureforms.php` in plugin description

@@ -416,61 +416,28 @@ class Post_Types {
 			'srfm_register_post_meta',
 			[
 				// General tab metas.
-				'_srfm_show_labels'               => 'boolean',
-				'_srfm_show_asterisk'             => 'boolean',
-				'_srfm_single_page_form_title'    => 'boolean',
-				'_srfm_submit_button_text'        => 'string',
-				'_srfm_instant_form'              => 'boolean',
-				'_srfm_is_inline_button'          => 'boolean',
-
-				// Styling tab metas.
-				// Form Container.
-				'_srfm_form_container_width'      => 'integer',
-				'_srfm_color1'                    => 'string',
-				'_srfm_bg_type'                   => 'string',
-				'_srfm_bg_image'                  => 'string',
-				'_srfm_cover_image'               => 'string',
-				'_srfm_bg_color'                  => 'string',
-				'_srfm_fontsize'                  => 'integer',
-				'_srfm_label_color'               => 'string',
-				'_srfm_help_color'                => 'string',
-				// Input Fields.
-				'_srfm_input_text_color'          => 'string',
-				'_srfm_input_placeholder_color'   => 'string',
-				'_srfm_input_bg_color'            => 'string',
-				'_srfm_input_border_color'        => 'string',
-				'_srfm_input_shadow_color'        => 'string',
-				'_srfm_input_border_width'        => 'integer',
-				'_srfm_input_border_radius'       => 'integer',
-				// Error.
-				'_srfm_field_error_color'         => 'string',
-				'_srfm_field_error_surface_color' => 'string',
-				'_srfm_field_error_shadow_color'  => 'string',
-				'_srfm_field_error_bg_color'      => 'string',
+				'_srfm_use_label_as_placeholder' => 'boolean',
+				'_srfm_submit_button_text'       => 'string',
+				'_srfm_is_inline_button'         => 'boolean',
 				// Submit Button.
-				'_srfm_button_text_color'         => 'string',
-				'_srfm_btn_bg_type'               => 'string',
-				'_srfm_button_bg_color'           => 'string',
-				'_srfm_button_border_color'       => 'string',
-				'_srfm_button_border_width'       => 'integer',
-				'_srfm_submit_width_backend'      => 'string',
-				'_srfm_button_border_radius'      => 'integer',
-				'_srfm_submit_alignment'          => 'string',
-				'_srfm_submit_alignment_backend'  => 'string',
-				'_srfm_submit_width'              => 'string',
-				'_srfm_inherit_theme_button'      => 'boolean',
+				'_srfm_submit_width_backend'     => 'string',
+				'_srfm_button_border_radius'     => 'integer',
+				'_srfm_submit_alignment'         => 'string',
+				'_srfm_submit_alignment_backend' => 'string',
+				'_srfm_submit_width'             => 'string',
+				'_srfm_inherit_theme_button'     => 'boolean',
 				// Additional Classes.
-				'_srfm_additional_classes'        => 'string',
+				'_srfm_additional_classes'       => 'string',
 
 				// Advanced tab metas.
 				// Success Message.
-				'_srfm_submit_type'               => 'string',
-				'_srfm_thankyou_message_title'    => 'string',
-				'_srfm_thankyou_message'          => 'string',
-				'_srfm_submit_url'                => 'string',
+				'_srfm_submit_type'              => 'string',
+				'_srfm_thankyou_message_title'   => 'string',
+				'_srfm_thankyou_message'         => 'string',
+				'_srfm_submit_url'               => 'string',
 				// Security.
-				'_srfm_captcha_security_type'     => 'string',
-				'_srfm_form_recaptcha'            => 'string',
+				'_srfm_captcha_security_type'    => 'string',
+				'_srfm_form_recaptcha'           => 'string',
 			]
 		);
 
@@ -507,6 +474,120 @@ class Post_Types {
 				]
 			);
 		}
+
+		// Registers meta to handle values associated with form styling.
+		register_post_meta(
+			SRFM_FORMS_POST_TYPE,
+			'_srfm_instant_form_settings',
+			[
+				'single'        => true,
+				'type'          => 'object',
+				'auth_callback' => '__return_true',
+				'show_in_rest'  => [
+					'schema' => [
+						'type'       => 'object',
+						'properties' => [
+							'site_logo'              => [
+								'type' => 'string',
+							],
+							'site_logo_id'           => [
+								'type' => 'integer',
+							],
+							// Form page banner settings.
+							'cover_type'             => [
+								'type' => 'string',
+							],
+							'cover_color'            => [
+								'type' => 'string',
+							],
+							'cover_image'            => [
+								'type' => 'string',
+							],
+							'cover_image_id'         => [
+								'type' => 'integer',
+							],
+							// Form page background settings.
+							'bg_type'                => [
+								'type' => 'string',
+							],
+							'bg_color'               => [
+								'type' => 'string',
+							],
+							'bg_image'               => [
+								'type' => 'string',
+							],
+							'bg_image_id'            => [
+								'type' => 'integer',
+							],
+							'enable_instant_form'    => [
+								'type' => 'boolean',
+							],
+							'form_container_width'   => [
+								'type' => 'integer',
+							],
+							'single_page_form_title' => [
+								'type' => 'boolean',
+							],
+							'use_banner_as_page_background' => [
+								'type' => 'boolean',
+							],
+						],
+					],
+				],
+				'default'       => [
+					'bg_type'                       => 'color',
+					'bg_color'                      => '#ffffff',
+					'bg_image'                      => '',
+					'site_logo'                     => '',
+					'cover_type'                    => 'color',
+					'cover_color'                   => '#0C78FB',
+					'cover_image'                   => '',
+					'enable_instant_form'           => false,
+					'form_container_width'          => 620,
+					'single_page_form_title'        => true,
+					'use_banner_as_page_background' => false,
+				],
+			]
+		);
+
+		register_post_meta(
+			SRFM_FORMS_POST_TYPE,
+			'_srfm_forms_styling',
+			[
+				'single'        => true,
+				'type'          => 'object',
+				'auth_callback' => '__return_true',
+				'show_in_rest'  => [
+					'schema' => [
+						'type'       => 'object',
+						'properties' => [
+							'primary_color'           => [
+								'type' => 'string',
+							],
+							'text_color'              => [
+								'type' => 'string',
+							],
+							'text_color_on_primary'   => [
+								'type' => 'string',
+							],
+							'field_spacing'           => [
+								'type' => 'string',
+							],
+							'submit_button_alignment' => [
+								'type' => 'string',
+							],
+						],
+					],
+				],
+				'default'       => [
+					'primary_color'           => '#0C78FB',
+					'text_color'              => '#1E1E1E',
+					'text_color_on_primary'   => '#FFFFFF',
+					'field_spacing'           => 'medium',
+					'submit_button_alignment' => 'left',
+				],
+			]
+		);
 
 		// Email notification Metas.
 		register_post_meta(
@@ -660,7 +741,7 @@ class Post_Types {
 						'confirmation_type' => 'same page',
 						'page_url'          => '',
 						'custom_url'        => '',
-						'message'           => '<p class="default-p"><img src="' . esc_attr( $check_icon ) . '"></img></p><h2 class="default-h2">Thank you</h2><p class="default-p">We have received your email. You\'ll hear from us as soon as possible.</p><p class="default-p">Please be sure to whitelist our {admin_email} email address to ensure our replies reach your inbox safely.</p>',
+						'message'           => '<p style="text-align: center;"><img src="' . esc_attr( $check_icon ) . '"></img></p><h2 style="text-align: center;">Thank you</h2><p style="text-align: center;">We have received your email. You\'ll hear from us as soon as possible.</p><p style="text-align: center;">Please be sure to whitelist our {admin_email} email address to ensure our replies reach your inbox safely.</p>',
 						'submission_action' => 'hide form',
 					],
 				],
@@ -1165,9 +1246,10 @@ class Post_Types {
 
 		$form_id = Helper::get_integer_value( get_the_ID() );
 
-		$is_instant_form = get_post_meta( $form_id, '_srfm_instant_form', true );
+		$instant_form_settings = Helper::get_array_value( Helper::get_post_meta( $form_id, '_srfm_instant_form_settings' ) );
+		$enable_instant_form   = ! empty( $instant_form_settings['enable_instant_form'] ) ? boolval( $instant_form_settings['enable_instant_form'] ) : false;
 
-		if ( $is_instant_form ) {
+		if ( $enable_instant_form ) {
 			return;
 		}
 

@@ -2,9 +2,9 @@
 Contributors: brainstormforce
 Tags: contact form, custom form, form builder, forms, gutenberg
 Requires at least: 6.4
-Tested up to: 6.6
+Tested up to: 6.6.1
 Requires PHP: 7.4
-Stable tag: 0.0.6
+Stable tag: 0.0.9
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -17,6 +17,8 @@ SureForms: Transform your WordPress form-building experience with stunning desig
 #### CREATE BEAUTIFUL RESPONSIVE FORMS USING WORDPRESS WITHOUT CODING ⚡
 
 ★★★★★
+
+[youtube https://www.youtube.com/watch?v=qLpnm4GdXks]
 
 Our mission at SureForms is to empower you to build beautiful forms without code.
 
@@ -250,6 +252,29 @@ Yes! You can certainly use SureForms on yours as well as your client’s website
 When you use the SureForms, you get a huge library of ready-to-use form templates that can be used to build your forms fast.
 
 == Changelog ==
+= x.x.x =
+* Improvement: Added support for the Gutenberg editor, even when the Classic Editor plugin is enabled.
+* Fix: Dropdown and Phone field preview in Bricks and Elementor editor.
+* Fix: Error codes in AI Form Builder.
+* Fix: Resolved conditional logic getting erased on page reload for heading block.
+= 0.0.9 =
+* Fix: Resolved Instant Form background size issue.
+= 0.0.8 =
+* New: Build forms using SureForms AI.
+* New: SureTriggers integration.
+* Improvement: Added Instant Form styling options.
+* Improvement: Removed the option to create forms using templates.
+* Improvement: Added Text, Dropdown, and Phone Number field styling for dark themes.
+* Fix: Resolved a few UI issues in Firefox and Safari browsers.
+* Fix: Resolved Custom Button positioning issue with reCAPTCHA.
+* Fix: Resolved a few other minor issues.
+= 0.0.7 =
+* New: Improved styling of fields on the front-end and in the form editor.
+* Improvement: Added Primary, Text, and Text on Primary color options.
+* Improvement: Added field spacing options of Small, Medium, and Large.
+* Improvement: Removed Show Labels and Show Asterisk settings and added an option to use labels as placeholders. Removed the placeholder setting from all fields that supported it previously.
+* Fix: Removed Paragraph block and added custom appender for adding fields to a form.
+* Fix: Resolved a few other minor issues.
 = 0.0.6 =
 * New: Added Support for Core Paragraph Block.
 * Improvement: Added compatibility for WordPress 6.6.

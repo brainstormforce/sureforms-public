@@ -7702,6 +7702,13 @@ namespace SRFM\Inc\Lib\Browser {
         }
     }
 }
+
+namespace SRFM\Inc\Lib {
+    class Connect_Zip_AI{
+        use \SRFM\Inc\Traits\Get_Instance;
+    }
+}
+
 namespace SRFM\Inc {
     /**
      * Create New Form.
@@ -9889,8 +9896,9 @@ namespace {
          *
          * @since 0.0.1
          * @param  array $icon Decoded fontawesome json file data.
+         * @param  boolean $return Return or echo the svg markup.
          */
-        public static function render_svg_html($icon)
+        public static function render_svg_html($icon, $return = false)
         {
         }
     }
