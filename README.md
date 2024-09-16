@@ -255,6 +255,10 @@ When you use the SureForms, you get a huge library of ready-to-use form template
 ### x.x.x ###
 * New: Introducing a new custom table for the entries.
 * Improvement: Webhook settings fields UX Improvements.
+* Improvement: Added help text for email field.
+* Improvement: UX improvements for phone number and dropdown field.
+* Improvement: Improved field spacing between fields.
+* Improvement: Added Site Logo option for the Instant Forms.
 * Improvement: Added support for the Gutenberg editor, even when the Classic Editor plugin is enabled.
 * Fix: Dropdown and Phone field preview in Bricks and Elementor editor.
 * Fix: Error codes in AI Form Builder.

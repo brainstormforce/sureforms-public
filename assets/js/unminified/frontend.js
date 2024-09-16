@@ -247,7 +247,7 @@ function onSuccess( response ) {
 
 		if ( ! isColorDark( textLuminance ) ) {
 			const cssVariablesAndColors = {
-				'--srfm-dropdown-menu-background': '#2e2e2e',
+				'--srfm-expandable-menu-background': '#2e2e2e',
 			};
 
 			const cssElements = [];

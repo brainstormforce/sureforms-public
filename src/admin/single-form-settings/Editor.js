@@ -128,8 +128,12 @@ const SureformsFormSpecificSettings = ( props ) => {
 	}, [ formCustomCssData ] );
 
 	useEffect( () => {
-		if ( typeof sureformsKeys._srfm_is_page_break === 'boolean' ) {
-			updateMeta( '_srfm_is_page_break', isPageBreak );
+		if ( typeof sureformsKeys?._srfm_page_break_settings?.is_page_break === 'boolean' ) {
+			const updatedPageBreakSettings = {
+				...sureformsKeys._srfm_page_break_settings,
+				is_page_break: isPageBreak,
+			};
+			updateMeta( '_srfm_page_break_settings', updatedPageBreakSettings );
 		}
 
 		if ( typeof sureformsKeys._srfm_is_inline_button === 'boolean' ) {

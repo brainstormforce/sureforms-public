@@ -3,11 +3,9 @@ import { useSelect, useDispatch } from '@wordpress/data';
 import { useState, useEffect } from '@wordpress/element';
 import { store as editorStore } from '@wordpress/editor';
 import AdvancedPopColorControl from '@Components/color-control/advanced-pop-color-control.js';
-import Range from '@Components/range/Range.js';
 import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
 import MultiButtonsControl from '@Components/multi-buttons-control';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { ToggleControl } from '@wordpress/components';
 import {
 	faAlignLeft,
 	faAlignRight,
@@ -18,7 +16,7 @@ import { useDeviceType } from '@Controls/getPreviewType';
 
 function StyleSettings( props ) {
 	const { editPost } = useDispatch( editorStore );
-	const { defaultKeys, isInlineButtonBlockPresent, isPageBreak } = props;
+	const { defaultKeys, isInlineButtonBlockPresent } = props;
 
 	let sureformsKeys = useSelect( ( select ) =>
 		select( editorStore ).getEditedPostAttribute( 'meta' )
@@ -558,170 +556,6 @@ function StyleSettings( props ) {
 					</>
 				) }
 			</SRFMAdvancedPanelBody>
-			{ isPageBreak && (
-				<SRFMAdvancedPanelBody
-					title={ __( 'Page Break Buttons', 'sureforms' ) }
-					initialOpen={ false }
-				>
-					<ToggleControl
-						label={ __( 'Inherit From Theme', 'sureforms' ) }
-						checked={
-							sureformsKeys._srfm_page_break_inherit_theme_button
-						}
-						onChange={ ( value ) => {
-							updateMeta(
-								'_srfm_page_break_inherit_theme_button',
-								value
-							);
-						} }
-					/>
-					{ ! sureformsKeys._srfm_page_break_inherit_theme_button && (
-						<>
-							<AdvancedPopColorControl
-								label={ __( 'Text Color', 'sureforms' ) }
-								colorValue={
-									sureformsKeys._srfm_page_break_button_text_color
-								}
-								data={ {
-									value: sureformsKeys._srfm_page_break_button_text_color,
-									label: '_srfm_page_break_button_text_color',
-								} }
-								onColorChange={ ( colorValue ) => {
-									if (
-										colorValue !==
-										sureformsKeys._srfm_page_break_button_text_color
-									) {
-										updateMeta(
-											'_srfm_page_break_button_text_color',
-											colorValue
-										);
-									}
-								} }
-								value={
-									sureformsKeys._srfm_page_break_button_text_color
-								}
-								isFormSpecific={ true }
-							/>
-							{ sureformsKeys._srfm_page_break_button_bg_type ===
-								'filled' && (
-								<>
-									<p className="components-base-control__help" />
-									<AdvancedPopColorControl
-										label={ __(
-											'Background Color',
-											'sureforms'
-										) }
-										colorValue={
-											sureformsKeys._srfm_page_break_button_bg_color
-										}
-										data={ {
-											value: sureformsKeys._srfm_page_break_button_bg_color,
-											label: '_srfm_page_break_button_bg_color',
-										} }
-										onColorChange={ ( colorValue ) => {
-											if (
-												colorValue !==
-												sureformsKeys._srfm_page_break_button_bg_color
-											) {
-												updateMeta(
-													'_srfm_page_break_button_bg_color',
-													colorValue
-												);
-											}
-										} }
-										value={
-											sureformsKeys._srfm_page_break_button_bg_color
-										}
-										isFormSpecific={ true }
-									/>
-								</>
-							) }
-							{ sureformsKeys._srfm_page_break_button_bg_type ===
-								'filled' && (
-								<>
-									<p className="components-base-control__help" />
-									<AdvancedPopColorControl
-										label={ __(
-											'Border Color',
-											'sureforms'
-										) }
-										colorValue={
-											sureformsKeys._srfm_page_break_button_border_color
-										}
-										data={ {
-											value: sureformsKeys._srfm_page_break_button_border_color,
-											label: '_srfm_page_break_button_border_color',
-										} }
-										onColorChange={ ( colorValue ) => {
-											if (
-												colorValue !==
-												sureformsKeys._srfm_page_break_button_border_color
-											) {
-												updateMeta(
-													'_srfm_page_break_button_border_color',
-													colorValue
-												);
-											}
-										} }
-										value={
-											sureformsKeys._srfm_page_break_button_border_color
-										}
-										isFormSpecific={ true }
-									/>
-									<p className="components-base-control__help" />
-									<Range
-										label={ __(
-											'Border Width',
-											'sureforms'
-										) }
-										value={
-											sureformsKeys._srfm_page_break_button_border_width
-										}
-										min={ 0 }
-										max={ 10 }
-										displayUnit={ false }
-										data={ {
-											value: sureformsKeys._srfm_page_break_button_border_width,
-											label: '_srfm_page_break_button_border_width',
-										} }
-										onChange={ ( value ) =>
-											updateMeta(
-												'_srfm_page_break_button_border_width',
-												value
-											)
-										}
-										isFormSpecific={ true }
-									/>
-									<p className="components-base-control__help" />
-									<Range
-										label={ __(
-											'Border Radius',
-											'sureforms'
-										) }
-										value={
-											sureformsKeys._srfm_page_break_button_border_radius
-										}
-										min={ 1 }
-										max={ 100 }
-										displayUnit={ false }
-										data={ {
-											value: sureformsKeys._srfm_page_break_button_border_radius,
-											label: '_srfm_page_break_button_border_radius',
-										} }
-										onChange={ ( value ) =>
-											updateMeta(
-												'_srfm_page_break_button_border_radius',
-												value
-											)
-										}
-										isFormSpecific={ true }
-									/>
-								</>
-							) }
-						</>
-					) }
-				</SRFMAdvancedPanelBody>
-			) }
 		</>
 	);
 }
