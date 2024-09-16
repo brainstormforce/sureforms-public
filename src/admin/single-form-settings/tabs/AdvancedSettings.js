@@ -11,11 +11,12 @@ import parse from 'html-react-parser';
 import FormBehaviorPopupButton from '../../components/FormBehaviorPopupButton';
 import SingleFormSettingsPopup from '../components/SingleFormSettingPopup';
 
+let prevMetaHash = '';
+
 function AdvancedSettings( props ) {
 	const [ hasValidationErrors, setHasValidationErrors ] = useState( false );
 	const { editPost } = useDispatch( editorStore );
 
-	let prevMetaHash = '';
 	const { createNotice } = useDispatch( 'core/notices' );
 
 	const { defaultKeys } = props;
