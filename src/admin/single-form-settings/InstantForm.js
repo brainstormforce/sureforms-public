@@ -107,26 +107,28 @@ const InstantFormComponent = () => {
 		const toggleElements = [
 			'.interface-interface-skeleton__body',
 			'.editor-header .editor-header__toolbar',
-			'.editor-header__settings .interface-pinned-items',
-			'.editor-header__settings .components-dropdown-menu .components-dropdown-menu__toggle',
 			'.interface-navigable-region.interface-interface-skeleton__footer',
 		];
 
 		if ( ! isLiveMode ) {
 			// Unload live mode iframe is live mode is disabled.
 			iframe?.remove();
-
-			toggleElements.forEach( ( toggleElement ) => {
-				document.querySelector( toggleElement ).classList.remove( 'hidden' );
-			} );
+			document.getElementById( 'srfm-instant-form-toggle-elements-style' )?.remove();
 
 			live_mode_prev_srfm_instant_form_settings = {};
 			return;
 		}
 
-		toggleElements.forEach( ( toggleElement ) => {
-			document.querySelector( toggleElement ).classList.add( 'hidden' );
-		} );
+		if ( ! document.getElementById( 'srfm-instant-form-toggle-elements-style' ) ) {
+			const toggleElementsStyle = document.createElement( 'style' );
+			toggleElementsStyle.id = 'srfm-instant-form-toggle-elements-style';
+			toggleElementsStyle.innerText = toggleElements.join( ', ' ) + '{ display:none !important; }';
+
+			// Adding visibility:hidden separately so that it don't create visual disturbance.
+			toggleElementsStyle.innerText += '.editor-header__settings > :not(.srfm-instant-form-root) { visibility:hidden !important; }';
+
+			document.head.append( toggleElementsStyle );
+		}
 
 		const currentPost = select( editorStore ).getCurrentPost();
 		const url = new URL( currentPost.link ); // Use the default ( not edited ) post link for live mode as edited version is not saved yet.
