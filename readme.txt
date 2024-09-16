@@ -255,6 +255,10 @@ When you use the SureForms, you get a huge library of ready-to-use form template
 = x.x.x =
 * New: Introducing a new custom table for the entries.
 * Improvement: Webhook settings fields UX Improvements.
+* Improvement: Added help text for email field.
+* Improvement: UX improvements for phone number and dropdown field.
+* Improvement: Improved field spacing between fields.
+* Improvement: Added Site Logo option for the Instant Forms.
 * Fix: Resolved conditional logic getting erased on page reload for heading block.
 = 0.0.9 =
 * Fix: Resolved Instant Form background size issue.
