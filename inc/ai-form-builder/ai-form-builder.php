@@ -55,7 +55,8 @@ class AI_Form_Builder {
 		// Get the response from the endpoint.
 		$response = AI_Helper::get_chat_completions_response(
 			[
-				'query' => $messages[0]['content'],
+				'version' => '1.0.0',
+				'query'   => $messages[0]['content'],
 			]
 		);
 
