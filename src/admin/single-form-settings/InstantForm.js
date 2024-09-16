@@ -103,13 +103,6 @@ const InstantFormComponent = () => {
 
 		let iframe = contentArea.querySelector( '.srfm-instant-form-live-mode-iframe' );
 
-		// Array of elements selectors to hide/show when live preview is enabled/disabled.
-		const toggleElements = [
-			'.interface-interface-skeleton__body',
-			'.editor-header .editor-header__toolbar',
-			'.interface-navigable-region.interface-interface-skeleton__footer',
-		];
-
 		if ( ! isLiveMode ) {
 			// Unload live mode iframe is live mode is disabled.
 			iframe?.remove();
@@ -120,6 +113,13 @@ const InstantFormComponent = () => {
 		}
 
 		if ( ! document.getElementById( 'srfm-instant-form-toggle-elements-style' ) ) {
+			// Array of elements selectors to hide/show when live preview is enabled/disabled.
+			const toggleElements = [
+				'.interface-interface-skeleton__body',
+				'.editor-header .editor-header__toolbar',
+				'.interface-navigable-region.interface-interface-skeleton__footer',
+			];
+
 			const toggleElementsStyle = document.createElement( 'style' );
 			toggleElementsStyle.id = 'srfm-instant-form-toggle-elements-style';
 			toggleElementsStyle.innerText = toggleElements.join( ', ' ) + '{ display:none !important; }';
