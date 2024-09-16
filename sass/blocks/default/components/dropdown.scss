@@ -155,6 +155,7 @@
 							border-radius: 4px;
 							// gap: var( --srfm-dropdown-menu-icon-gap ); // Will be used while working with the icon picker.
 							padding: var( --srfm-dropdown-option-padding );
+							white-space: pre-wrap;
 							&.active {
 								background-color: var( --srfm-dropdown-option-background-hover );
 							}

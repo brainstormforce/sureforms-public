@@ -42,7 +42,29 @@ class Admin {
 		// this action is used to restrict Spectra's quick action bar on SureForms CPTS.
 		add_action( 'uag_enable_quick_action_sidebar', [ $this, 'restrict_spectra_quick_action_bar' ] );
 
+		add_action( 'current_screen', [ $this, 'enable_gutenberg_for_sureforms' ], 100 );
 	}
+
+	/**
+	 * Enable Gutenberg for SureForms associated post types.
+	 *
+	 * @since x.x.x
+	 */
+	public function enable_gutenberg_for_sureforms() {
+
+		// Check if the Classic Editor plugin is active and if it is set to replace the block editor.
+		if ( ! class_exists( 'Classic_Editor' ) || 'block' === get_option( 'classic-editor-replace' ) ) {
+			return;
+		}
+
+		$srfm_post_types = apply_filters( 'srfm_enable_gutenberg_post_types', [ SRFM_FORMS_POST_TYPE ] );
+
+		if ( in_array( get_current_screen()->post_type, $srfm_post_types, true ) ) {
+			add_filter( 'use_block_editor_for_post_type', '__return_true', 110 );
+			add_filter( 'gutenberg_can_edit_post_type', '__return_true', 110 );
+		}
+	}
+
 
 	/**
 	 * Sureforms editor header styles.
@@ -459,6 +481,7 @@ class Admin {
 					'template_picker_nonce'        => current_user_can( 'edit_posts' ) ? wp_create_nonce( 'wp_rest' ) : '',
 					'is_pro_active'                => defined( 'SRFM_PRO_VER' ),
 					'srfm_ai_usage_details'        => AI_Helper::get_current_usage_details(),
+					'is_pro_license_active'        => AI_Helper::is_pro_license_active(),
 					'srfm_ai_auth_user_email'      => get_option( 'srfm_ai_auth_user_email' ),
 					'pricing_page_url'             => $this->get_sureforms_website_url( 'pricing' ),
 				]
@@ -505,7 +528,7 @@ class Admin {
 		 * This script loads suretriggers iframe in Intergations tab.
 		 */
 		if ( SRFM_FORMS_POST_TYPE === $current_screen->post_type ) {
-			wp_enqueue_script( SRFM_SLUG . '-suretriggers-integration', SRFM_SURETRIGGERS_INTERGATION_BASE_URL . 'js/embed.js', [], SRFM_VER, true );
+			wp_enqueue_script( SRFM_SLUG . '-suretriggers-integration', SRFM_SURETRIGGERS_INTERGATION_BASE_URL . 'js/v2/embed.js', [], SRFM_VER, true );
 		}
 	}
 

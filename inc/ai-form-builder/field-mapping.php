@@ -122,12 +122,16 @@ class Field_Mapping {
 					if ( 'gdpr' === $question['fieldType'] && ! empty( $question['helpText'] ) ) {
 						$merged_attributes['gdprHelpText'] = sanitize_text_field( $question['helpText'] );
 					}
+					if ( 'phone' === $question['fieldType'] ) {
+						$merged_attributes['autoCountry'] = true;
+					}
 
 					$post_content .= '<!-- wp:srfm/' . $question['fieldType'] . ' ' . wp_json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
 					break;
 				case 'slider':
 				case 'page-break':
-				case 'date-time-picker':
+				case 'date-picker':
+				case 'time-picker':
 				case 'upload':
 				case 'hidden':
 				case 'rating':
@@ -135,20 +139,79 @@ class Field_Mapping {
 					if ( ! defined( 'SRFM_PRO_VER' ) ) {
 						break;
 					}
+
 					// Handle specific attributes for certain pro fields.
+					if ( 'date-picker' === $question['fieldType'] ) {
+						$merged_attributes['dateFormat'] = ! empty( $question['dateFormat'] ) ? sanitize_text_field( $question['dateFormat'] ) : 'mm/dd/yy';
+						$merged_attributes['min']        = ! empty( $question['minDate'] ) ? sanitize_text_field( $question['minDate'] ) : '';
+						$merged_attributes['max']        = ! empty( $question['maxDate'] ) ? sanitize_text_field( $question['maxDate'] ) : '';
+					}
+					if ( 'time-picker' === $question['fieldType'] ) {
+						$merged_attributes['increment']            = ! empty( $question['increment'] ) ? filter_var( $question['increment'], FILTER_VALIDATE_INT ) : 30;
+						$merged_attributes['showTwelveHourFormat'] = ! empty( $question['showTwelveHourFormat'] ) ? filter_var( $question['useTwelveHourFormat'], FILTER_VALIDATE_BOOLEAN ) : false;
+						$merged_attributes['min']                  = ! empty( $question['minTime'] ) ? sanitize_text_field( $question['minTime'] ) : '';
+						$merged_attributes['max']                  = ! empty( $question['maxTime'] ) ? sanitize_text_field( $question['maxTime'] ) : '';
+					}
+					if ( 'rating' === $question['fieldType'] ) {
+						$merged_attributes['iconShape']     = ! empty( $question['iconShape'] ) ? sanitize_text_field( $question['iconShape'] ) : 'star';
+						$merged_attributes['showText']      = ! empty( $question['showText'] ) ? filter_var( $question['showText'], FILTER_VALIDATE_BOOLEAN ) : false;
+						$merged_attributes['defaultRating'] = ! empty( $question['defaultRating'] ) ? filter_var( $question['defaultRating'], FILTER_VALIDATE_INT ) : 0;
+						foreach ( $question['tooltipValues'] as $tooltips ) {
+							$i = 0;
+							foreach ( $tooltips as $key => $value ) {
+								$merged_attributes['ratingText'][ $i ] = ! empty( $value ) ? sanitize_text_field( $value ) : '';
+								$i++;
+							}
+						}
+					}
 					if ( 'upload' === $question['fieldType'] ) {
-						if ( ! empty( $question['allowedFormats'] ) ) {
-							$merged_attributes['allowedFormats'] = $question['allowedFormats'];
+						if ( ! empty( $question['allowedTypes'] ) ) {
+							$allowed_types = str_replace( '.', '', $question['allowedTypes'] );
+
+							$allowed_types = explode( ',', $allowed_types );
+
+							$types_array = array_map(
+								function( $type ) {
+									return [
+										'value' => $type,
+										'label' => $type,
+									];
+								},
+								$allowed_types
+							);
+
+							$merged_attributes['allowedFormats'] = $types_array;
+						} else {
+							$merged_attributes['allowedFormats'] = [
+								[
+									'value' => 'jpg',
+									'label' => 'jpg',
+								],
+								[
+									'value' => 'jpeg',
+									'label' => 'jpeg',
+								],
+								[
+									'value' => 'gif',
+									'label' => 'gif',
+								],
+								[
+									'value' => 'png',
+									'label' => 'png',
+								],
+								[
+									'value' => 'pdf',
+									'label' => 'pdf',
+								],
+							];
 						}
-						if ( ! empty( $question['fileSizeLimit'] ) ) {
-							$merged_attributes['fileSizeLimit'] = filter_var( $question['fileSizeLimit'], FILTER_VALIDATE_INT );
-						}
-					}
-					if ( 'rating' === $question['fieldType'] && ! empty( $question['helpText'] ) ) {
-						$merged_attributes['ratingBoxHelpText'] = sanitize_text_field( $question['helpText'] );
-					}
-					if ( 'phone' === $question['fieldType'] ) {
-						$merged_attributes['autoCountry'] = true;
+
+						$merged_attributes['fileSizeLimit'] = ! empty( $question['uploadSize'] ) ? filter_var( $question['uploadSize'], FILTER_VALIDATE_INT ) : 10;
+
+						$merged_attributes['multiple'] = ! empty( $question['multiUpload'] ) ? filter_var( $question['multiUpload'], FILTER_VALIDATE_BOOLEAN ) : false;
+
+						$merged_attributes['maxFiles'] = ! empty( $question['multiFilesNumber'] ) ? filter_var( $question['multiFilesNumber'], FILTER_VALIDATE_INT ) : 2;
+
 					}
 
 					$post_content .= '<!-- wp:srfm/' . $question['fieldType'] . ' ' . wp_json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;

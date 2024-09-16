@@ -1,14 +1,14 @@
 import { __ } from '@wordpress/i18n';
 import svgIcons from '@Image/single-form-logo.json';
 import parse from 'html-react-parser';
-import { useEffect } from '@wordpress/element';
 
 const Suretriggers = ( { setSelectedTab } ) => {
 	const backArrow = parse( svgIcons.leftArrow );
 
-	useEffect( () => {
-		document.dispatchEvent( new Event( 'InitSureTriggers' ) );
-	}, [] );
+	// Adding validation for the SureTriggersConfig and SureTriggers object
+	if ( window?.SureTriggers && window?.SureTriggersConfig ) {
+		window.SureTriggers.init( window.SureTriggersConfig );
+	}
 
 	return (
 		<div className="srfm-modal-content" style={ { height: '100%' } }>
