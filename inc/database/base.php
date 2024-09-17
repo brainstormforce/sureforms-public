@@ -3,7 +3,7 @@
  * SureForms Database Tables Base Class.
  *
  * @link       https://sureforms.com
- * @since      x.x.x
+ * @since      0.0.10
  * @package    SureForms
  * @author     SureForms <https://sureforms.com/>
  */
@@ -18,7 +18,7 @@ defined( 'ABSPATH' ) || exit;
 /**
  * SureForms Database Tables Base Class
  *
- * @since x.x.x
+ * @since 0.0.10
  */
 abstract class Base {
 
@@ -26,7 +26,7 @@ abstract class Base {
 	 * WordPress Database class instance.
 	 *
 	 * @var \wpdb
-	 * @since x.x.x
+	 * @since 0.0.10
 	 */
 	protected $wpdb;
 
@@ -34,7 +34,7 @@ abstract class Base {
 	 * Current database table prefix mixed with 'srfm_' as ending.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 0.0.10
 	 */
 	protected $table_prefix;
 
@@ -43,7 +43,7 @@ abstract class Base {
 	 * Eg: For entries table, suffix will be 'entries' which will be prefixed and finally named as 'wp_srfm_entries'.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 0.0.10
 	 * @override
 	 */
 	protected $table_suffix;
@@ -52,7 +52,7 @@ abstract class Base {
 	 * Full table name mixed with table prefix and table suffix.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 0.0.10
 	 */
 	private $table_name;
 
@@ -60,14 +60,14 @@ abstract class Base {
 	 * Current table database result caches.
 	 *
 	 * @var array<mixed>
-	 * @since x.x.x
+	 * @since 0.0.10
 	 */
 	private $caches = [];
 
 	/**
 	 * Init class.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.10
 	 * @return void
 	 */
 	public function __construct() {
@@ -81,7 +81,7 @@ abstract class Base {
 	/**
 	 * Returns the current table schema.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.10
 	 * @return array<string,array<mixed>>
 	 */
 	abstract public function get_schema();
@@ -89,7 +89,7 @@ abstract class Base {
 	/**
 	 * Returns full table name.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.10
 	 * @return string
 	 */
 	public function get_tablename() {
@@ -100,7 +100,7 @@ abstract class Base {
 	 * Retrieve a cached value by its key.
 	 *
 	 * @param string $key The cache key.
-	 * @since x.x.x
+	 * @since 0.0.10
 	 * @return mixed|null The cached value if it exists, or null if the key does not exist in the cache.
 	 */
 	protected function cache_get( $key ) {
@@ -116,7 +116,7 @@ abstract class Base {
 	 *
 	 * @param string $key The cache key.
 	 * @param mixed  $value The value to store in the cache.
-	 * @since x.x.x
+	 * @since 0.0.10
 	 * @return mixed The stored value.
 	 */
 	protected function cache_set( $key, $value ) {
@@ -128,7 +128,7 @@ abstract class Base {
 	/**
 	 * Reset the cache by clearing all stored values.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.10
 	 * @return void
 	 */
 	protected function cache_reset() {
@@ -138,7 +138,7 @@ abstract class Base {
 	/**
 	 * Conditionally returns current database charset or collate.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.10
 	 * @return string
 	 */
 	public function get_charset_collate() {
@@ -160,7 +160,7 @@ abstract class Base {
 	 * Create table.
 	 *
 	 * @param array<string> $columns Array of columns.
-	 * @since x.x.x
+	 * @since 0.0.10
 	 * @return int|bool
 	 */
 	public function create( $columns = [] ) {
@@ -182,7 +182,7 @@ abstract class Base {
 	/**
 	 * Drop or delete current table.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.10
 	 * @return int|bool
 	 */
 	public function drop() {
@@ -209,7 +209,7 @@ abstract class Base {
 	/**
 	 * Check if current table exists.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.10
 	 * @return boolean
 	 */
 	public function exists() {
@@ -245,7 +245,7 @@ abstract class Base {
 	 *                       A format is one of '%d', '%f', '%s' (integer, float, string).
 	 *                       If omitted, all values in `$data` will be treated as strings unless otherwise
 	 *                       specified in wpdb::$field_types. Default null.
-	 * @since x.x.x
+	 * @since 0.0.10
 	 * @return int|false The number of rows inserted, or false on error.
 	 */
 	public function insert( $data, $format = null ) {
@@ -271,7 +271,7 @@ abstract class Base {
 	 *                              Example: ['column1' => 'value1', 'column2' => ['value2', 'value3']].
 	 *                              Default is an empty array.
 	 * @param string       $columns Optional. A string specifying which columns to select. Defaults to '*' (all columns).
-	 * @since x.x.x
+	 * @since 0.0.10
 	 * @return array<mixed> An associative array of results where each element represents a row, or an empty array if no results are found.
 	 */
 	public function get_results( $where_clauses = [], $columns = '*' ) {
@@ -341,7 +341,7 @@ abstract class Base {
 	 *
 	 * @param array<mixed> $data An associative array of data where the key is the column name and the value is the data to process.
 	 *                    Missing values will be replaced with default values specified in the schema.
-	 * @since x.x.x
+	 * @since 0.0.10
 	 * @return array<array<mixed>> An associative array containing:
 	 *                - 'data': Prepared data with values encoded according to their data types.
 	 *                - 'format': An array of format specifiers corresponding to the data values.
@@ -372,7 +372,7 @@ abstract class Base {
 	 *
 	 * @param string $type The data type for which to get the SQL format specifier.
 	 *                     Possible values: 'string', 'array', 'number', 'boolean'.
-	 * @since x.x.x
+	 * @since 0.0.10
 	 * @return string The SQL format specifier. One of '%s' for string or array (converted to JSON), '%d' for number or boolean.
 	 */
 	protected function get_format_by_datatype( $type ) {
@@ -397,7 +397,7 @@ abstract class Base {
 	 *
 	 * @param array<mixed> $data An associative array of data where the key is the column name and the value is the data to decode.
 	 *                    The data will be decoded if the column type in the schema is 'array' (JSON string).
-	 * @since x.x.x
+	 * @since 0.0.10
 	 * @return array<mixed> An associative array of decoded data based on the schema.
 	 */
 	protected function decode_by_datatype( $data ) {
@@ -419,7 +419,7 @@ abstract class Base {
 	 *
 	 * @param mixed  $value The value to encode. The encoding will depend on the data type specified.
 	 * @param string $type The data type for encoding. Possible values: 'string', 'number', 'boolean', 'array'.
-	 * @since x.x.x
+	 * @since 0.0.10
 	 * @return mixed The encoded value. The type of the return value depends on the specified type:
 	 *               - 'string': Encoded as a string.
 	 *               - 'number': Encoded as an integer.
