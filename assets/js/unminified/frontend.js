@@ -339,9 +339,13 @@ function onSuccess( response ) {
 		const formContainer = document.querySelector( '.srfm-form-container' );
 
 		if ( formContainer ) {
-			document.querySelector(
-				'.srfm-form-wrapper'
-			).style.height = `${ formContainer.clientHeight }px`;
+			if (
+				'absolute' === window.getComputedStyle( formContainer ).position
+			) {
+				document.querySelector(
+					'.srfm-form-wrapper'
+				).style.height = `${ formContainer.clientHeight }px`;
+			}
 		}
 	}
 	window.addEventListener( 'resize', handleInstantFormWrapperHeight ); // Handle wrapper height on window resize.
