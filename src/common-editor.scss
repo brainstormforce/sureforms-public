@@ -75,6 +75,10 @@
 			/* Gutenberg Toggle Help CSS*/
 			.components-base-control__help {
 				margin-top: 10px;
+
+				&.help--mb-25 {
+					margin-bottom: 25px;
+				}
 			}
 
 			/* Add a border top and bottom of responsive condition */
