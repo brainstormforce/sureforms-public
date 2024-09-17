@@ -3,7 +3,7 @@
  * SureForms Database Entires Table Class.
  *
  * @link       https://sureforms.com
- * @since      x.x.x
+ * @since      0.0.10
  * @package    SureForms
  * @author     SureForms <https://sureforms.com/>
  */
@@ -20,7 +20,7 @@ defined( 'ABSPATH' ) || exit;
 /**
  * SureForms Database Entires Table Class.
  *
- * @since x.x.x
+ * @since 0.0.10
  */
 class Entries extends Base {
 	use Get_Instance;
@@ -43,7 +43,7 @@ class Entries extends Base {
 	 *     'timestamp' => int
 	 * ]
 	 *
-	 * @since x.x.x
+	 * @since 0.0.10
 	 */
 	private $logs = [];
 
@@ -91,7 +91,7 @@ class Entries extends Base {
 	/**
 	 * Retrieve the key of the last log entry.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.10
 	 * @return int|null The key of the last log entry if logs exist, or null if no logs are present.
 	 */
 	public function get_last_log_key() {
@@ -104,7 +104,7 @@ class Entries extends Base {
 	 *
 	 * @param string   $title The title of the log entry.
 	 * @param string[] $messages Optional. An array of messages to include in the log entry. Default is an empty array.
-	 * @since x.x.x
+	 * @since 0.0.10
 	 * @return int|null The key of the newly added log entry, or null if the log could not be added.
 	 */
 	public function add_log( $title, $messages = [] ) {
@@ -123,7 +123,7 @@ class Entries extends Base {
 	 * @param int         $log_key The key of the log entry to update.
 	 * @param string|null $title Optional. The new title for the log entry. If null, the title will not be changed.
 	 * @param string[]    $messages Optional. An array of new messages to add to the log entry.
-	 * @since x.x.x
+	 * @since 0.0.10
 	 * @return int|null The key of the updated log entry, or null if the log entry does not exist.
 	 */
 	public function update_log( $log_key, $title = null, $messages = [] ) {
@@ -143,7 +143,7 @@ class Entries extends Base {
 	/**
 	 * Retrieve all log entries.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.10
 	 * @return array<array<string,mixed>>
 	 */
 	public function get_logs() {
@@ -155,7 +155,7 @@ class Entries extends Base {
 	 *
 	 * @param array<mixed> $data An associative array of data for the new entry. Must include 'form_id'.
 	 *                    If 'ID' is set, it will be removed before inserting.
-	 * @since x.x.x
+	 * @since 0.0.10
 	 * @return int|false The number of rows inserted, or false if the insertion fails.
 	 */
 	public static function add( $data ) {
@@ -182,7 +182,7 @@ class Entries extends Base {
 	 * Retrieve a specific entry from the database.
 	 *
 	 * @param int $entry_id The ID of the entry to retrieve.
-	 * @since x.x.x
+	 * @since 0.0.10
 	 * @return array<mixed> An associative array representing the entry, or an empty array if no entry is found.
 	 */
 	public static function get( $entry_id ) {
