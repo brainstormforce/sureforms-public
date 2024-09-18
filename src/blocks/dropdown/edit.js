@@ -70,18 +70,18 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 		setAttributes( { options: newOptions } );
 	}
 
-	const addOption = ( newOption ) => {
+	const addOption = ( value ) => {
 		setAttributes( {
 			options: [
 				...options,
 				{
-					label: newOption,
+					label: value,
 					icon: '',
 				},
 			],
 		} );
 		setNewOption( '' );
-	}
+	};
 
 	useEffect( () => {
 		if ( formId !== currentFormId ) {
@@ -291,7 +291,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 									</DragDropContext>
 								) }
 							</div>
-							<div 
+							<div
 								className="sureform-add-option-container"
 								onKeyDown={ ( event ) => {
 									if ( event.key === 'Enter' && newOption ) {
