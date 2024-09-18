@@ -46,7 +46,7 @@ jobs:
         run: bash ./bin/build-zip.sh
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: sureforms-plugin
           path: ./artifact/sureforms.zip
