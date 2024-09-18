@@ -5,7 +5,7 @@
  * Description: A simple yet powerful way to create modern forms for your website.
  * Author: SureForms
  * Author URI: https://sureforms.com/
- * Version: 0.0.9
+ * Version: 0.0.10
  * License: GPLv2 or later
  * Text Domain: sureforms
  *
