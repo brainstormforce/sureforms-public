@@ -31,4 +31,24 @@ class Page_Builders {
 		Bricks_Service_Provider::get_instance();
 	}
 
+	/**
+	 * Enqueue common fields assets for the dropdown and phone fields.
+	 *
+	 * @since 0.0.10
+	 * @return void
+	 */
+	public static function enqueue_common_fields_assets() {
+		$file_prefix   = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? '' : '.min';
+		$dir_name      = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? 'unminified' : 'minified';
+		$js_uri        = SRFM_URL . 'assets/js/' . $dir_name . '/blocks/';
+		$js_vendor_uri = SRFM_URL . 'assets/js/minified/deps/';
+
+		wp_enqueue_script( SRFM_SLUG . '-phone', $js_uri . 'phone' . $file_prefix . '.js', [], SRFM_VER, true );
+		wp_enqueue_script( SRFM_SLUG . '-phone-intl-input-deps', $js_vendor_uri . 'intl/intTelInput.min.js', [], SRFM_VER, true );
+		wp_enqueue_script( SRFM_SLUG . '-phone-intl-utils-deps', $js_vendor_uri . 'intl/intTelUtils.min.js', [], SRFM_VER, true );
+
+		wp_enqueue_script( SRFM_SLUG . '-dropdown', $js_uri . 'dropdown' . $file_prefix . '.js', [], SRFM_VER, true );
+		wp_enqueue_script( SRFM_SLUG . '-tom-select', $js_vendor_uri . 'tom-select.min.js', [], SRFM_VER, true );
+	}
+
 }

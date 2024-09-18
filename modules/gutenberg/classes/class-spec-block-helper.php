@@ -996,7 +996,7 @@ if ( ! class_exists( 'Spec_Block_Helper' ) ) {
 					'padding-right'  => Spec_Gb_Helper::get_css_value( $attr['blockRightPaddingTablet'], $attr['blockPaddingUnit'] ),
 					'padding-bottom' => Spec_Gb_Helper::get_css_value( $attr['blockBottomPaddingTablet'], $attr['blockPaddingUnit'] ),
 					'padding-left'   => Spec_Gb_Helper::get_css_value( $attr['blockLeftPaddingTablet'], $attr['blockPaddingUnit'] ),
-					'text-align'     => $attr['separatorAlign'],
+					'text-align'     => $attr['separatorAlignTablet'],
 				],
 				'.wp-block-uagb-separator--text .wp-block-uagb-separator-element .uagb-html-tag' => [
 					'font-family'     => $attr['elementTextFontFamily'],
@@ -1090,7 +1090,7 @@ if ( ! class_exists( 'Spec_Block_Helper' ) ) {
 					'padding-right'  => Spec_Gb_Helper::get_css_value( $attr['blockRightPaddingMobile'], $attr['blockPaddingUnit'] ),
 					'padding-bottom' => Spec_Gb_Helper::get_css_value( $attr['blockBottomPaddingMobile'], $attr['blockPaddingUnit'] ),
 					'padding-left'   => Spec_Gb_Helper::get_css_value( $attr['blockLeftPaddingMobile'], $attr['blockPaddingUnit'] ),
-					'text-align'     => $attr['separatorAlign'],
+					'text-align'     => $attr['separatorAlignMobile'],
 				],
 				'.wp-block-uagb-separator--text .wp-block-uagb-separator-element .uagb-html-tag' => [
 					'font-family'     => $attr['elementTextFontFamily'],

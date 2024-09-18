@@ -9,7 +9,7 @@ const CreditDetailsPopup = ( {
 	const revokePopover = useRef( null );
 
 	const formCreationleft = srfm_admin?.srfm_ai_usage_details?.remaining ?? 0;
-	const totalFormCount = srfm_admin?.srfm_ai_usage_details?.limit;
+	const totalFormCount = srfm_admin?.srfm_ai_usage_details?.limit ?? 0;
 	const aiFormCreationCount = totalFormCount - formCreationleft;
 	const isRegistered = srfm_admin?.srfm_ai_usage_details?.type === 'registered';
 	const aiFormsConsumed = 20 - finalFormCreationCountRemaining;

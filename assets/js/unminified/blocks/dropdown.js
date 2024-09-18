@@ -53,9 +53,9 @@ function initializeDropdown() {
 				...additionalConfig,
 				render: {
 					option( data, escape ) {
-						return `<div>${ data.icon } ${ escape(
+						return `<div>${ data.icon } <span>${ escape(
 							data.text
-						) }</div>`;
+						) }</span></div>`;
 					},
 					item( item, escape ) {
 						return `<div>${ item.icon } ${ escape(
@@ -114,4 +114,8 @@ function handleInputState( element ) {
 		}
 	}
 }
+
+// make dropdown initialization function available globally
+window.srfmInitializeDropdown = initializeDropdown;
+
 document.addEventListener( 'DOMContentLoaded', initializeDropdown );

@@ -214,8 +214,8 @@ function onSuccess( response ) {
 	 * It then determines if the background color of the container element is dark. If the background is dark,
 	 * it adds a specific class (`'srfm-has-dark-bg'`) to the container element for potential use by other styles or scripts.
 	 *
-	 * The function further adjusts the form's label color and other related elements (such as dropdowns and calendars)
-	 * based on whether the existing label color is dark or light. If the label color is not dark, it updates CSS variables
+	 * The function can further be used to adjust the form's label color and other related elements (such as dropdowns and calendars)
+	 * based on whether the existing text color is dark or light. If the text color is not dark, it updates CSS variables
 	 * to ensure proper visibility on a dark background, and appends these styles to a `<style>` tag within the element.
 	 *
 	 * @param {HTMLElement} element - The container element which includes the form and other related elements. This element should contain a form and be styled appropriately to have a background color that is checked for darkness.
@@ -231,26 +231,23 @@ function onSuccess( response ) {
 
 		const { isDark } = getPrimaryBackgroundColor( element );
 
-		if ( ! isDark ) {
-			return;
+		if ( isDark ) {
+			// Add a class in the form container if background color is dark, so that it can be used by other developers as well.
+			element.classList.add( 'srfm-has-dark-bg' );
 		}
 
-		// Add a class in the form container, so that it can be used by other developers as well.
-		element.classList.add( 'srfm-has-dark-bg' );
-
 		/**
-		 * Lets calculate the form's label color and other elements such as dropdown, and calendar.
+		 * Lets calculate the form's text color.
 		 */
-		const labelColor = window
+		const textColor = window
 			.getComputedStyle( element )
-			.getPropertyValue( '--srfm-color-input-label' );
+			.getPropertyValue( '--srfm-color-input-text' );
 
-		const labelLuminance = getColorLuminance( labelColor );
+		const textLuminance = getColorLuminance( textColor );
 
-		if ( ! isColorDark( labelLuminance ) ) {
+		if ( ! isColorDark( textLuminance ) ) {
 			const cssVariablesAndColors = {
-				'--srfm-color-input-label-inverse': '#181818',
-				'--srfm-dropdown-menu-background': '#2e2e2e',
+				'--srfm-expandable-menu-background': '#2e2e2e',
 			};
 
 			const cssElements = [];
@@ -269,7 +266,94 @@ function onSuccess( response ) {
 		}
 	}
 
+	/**
+	 * Ensures that the element with the class 'srfm-branding' is always fully visible.
+	 *
+	 * This function checks the computed styles of the element with the class 'srfm-branding'
+	 * every second to ensure that its opacity is set to 1, its visibility is set to 'visible',
+	 * and its display property is set to 'block'. If any of these styles are not set correctly,
+	 * they are updated to ensure the element is always fully visible.
+	 *
+	 * Note: This function relies on the presence of the element with the class 'srfm-branding'
+	 * in the DOM. If the element is not found, the function exits early without making any changes.
+	 */
+	function handleInstantFormBranding() {
+		const srfmBranding = document.querySelector( '.srfm-branding' );
+
+		if ( ! srfmBranding ) {
+			return;
+		}
+
+		const srfmForm = document.querySelector( 'form.srfm-form' );
+
+		setInterval( () => {
+			if ( 'none' === window.getComputedStyle( srfmForm ).display ) {
+				// Hide the SureForms branding if Form is hidden.
+				srfmBranding.style.display = 'none';
+				return;
+			}
+
+			const { opacity, visibility, display } =
+				window.getComputedStyle( srfmBranding );
+
+			if ( opacity < 1 ) {
+				srfmBranding.style.opacity = 1;
+			}
+
+			if ( 'visible' !== visibility ) {
+				srfmBranding.style.visibility = 'visible';
+			}
+
+			if ( 'none' === display ) {
+				srfmBranding.style.display = 'block';
+			}
+		}, 100 );
+	}
+
+	/**
+	 * Adjusts the height of the `.srfm-form-wrapper` element to match the height of the
+	 * `.srfm-form-container` element, but only if the current page contains the
+	 * `#srfm-single-page-container` element.
+	 *
+	 * This function is used to ensure that the form wrapper's height dynamically
+	 * matches the height of the form container, which can be important for maintaining
+	 * layout consistency on pages where the form content may change in size.
+	 *
+	 * It performs the following steps:
+	 * 1. Checks if the `#srfm-single-page-container` element exists in the DOM.
+	 *    - If not, the function exits early as it indicates the function is not
+	 *      running on the relevant page.
+	 * 2. Selects the `.srfm-form-container` element.
+	 *    - If this element is found, it sets the height of the `.srfm-form-wrapper`
+	 *      element to the height of the `.srfm-form-container` element.
+	 *
+	 * The height is set using inline CSS, applying the `clientHeight` of the form
+	 * container, ensuring the wrapper matches the container's height.
+	 */
+	function handleInstantFormWrapperHeight() {
+		if ( ! document.getElementById( 'srfm-single-page-container' ) ) {
+			// Bail if we are not in the Instant Form page.
+			return;
+		}
+
+		const formContainer = document.querySelector( '.srfm-form-container' );
+
+		if ( formContainer ) {
+			if (
+				'absolute' === window.getComputedStyle( formContainer ).position
+			) {
+				document.querySelector(
+					'.srfm-form-wrapper'
+				).style.height = `${ formContainer.clientHeight }px`;
+			}
+		}
+	}
+	window.addEventListener( 'resize', handleInstantFormWrapperHeight ); // Handle wrapper height on window resize.
+
 	window.addEventListener( 'load', function () {
+		handleInstantFormWrapperHeight();
+		handleInstantFormBranding();
+
 		const formContainers = document.querySelectorAll(
 			'.srfm-form-container'
 		);
