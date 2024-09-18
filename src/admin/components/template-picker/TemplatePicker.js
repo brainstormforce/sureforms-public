@@ -69,7 +69,7 @@ const TemplatePicker = () => {
 											) }
 											btnText={
 												<>
-													<span>{ __( 'Try the AI Form Builder', 'sureforms' ) }</span>
+													<span>{ __( 'Build With AI', 'sureforms' ) }</span>
 													<span className="srfm-btn-arrow">{ ICONS.arrowRight }</span>
 												</>
 											}
