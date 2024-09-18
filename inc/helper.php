@@ -354,6 +354,13 @@ class Helper {
 	 * @return string Meta value.
 	 */
 	public static function get_meta_value( $post_id, $key, $single = true, $default = '' ) {
+		$srfm_live_mode_data = self::get_instant_form_live_data();
+
+		if ( isset( $srfm_live_mode_data[ $key ] ) ) {
+			// Give priority to live mode data if we have one set from the Instant Form.
+			return self::get_string_value( $srfm_live_mode_data[ $key ] );
+		}
+
 		$meta_value = get_post_meta( self::get_integer_value( $post_id ), $key, $single ) ? self::get_string_value( get_post_meta( self::get_integer_value( $post_id ), $key, $single ) ) : self::get_string_value( $default );
 		return $meta_value;
 	}

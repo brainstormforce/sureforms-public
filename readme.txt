@@ -260,6 +260,7 @@ When you use the SureForms, you get a huge library of ready-to-use form template
 * Improvement: Added Site Logo option in Instant Form settings.
 * Improvement: Added support for the Gutenberg editor when the Classic Editor plugin is enabled.
 * Fix: Fixed Dropdown and Phone Number field previews in Bricks and Elementor editors.
+* Fix: Submit button on newly created form does not display in live preview mode.
 * Fix: Fixed error codes in AI Form Builder.
 = 0.0.9 =
 * Fix: Resolved Instant Form background size issue.
