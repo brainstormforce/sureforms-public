@@ -254,6 +254,7 @@ When you use the SureForms, you get a huge library of ready-to-use form template
 == Changelog ==
 = x.x.x =
 * New: Introducing a new custom table for the entries.
+* Improvement: Dropdown field add option by pressing enter key.
 * Improvement: Webhook settings fields UX Improvements.
 * Improvement: Added help text for email field.
 * Improvement: UX improvements for phone number and dropdown field.
