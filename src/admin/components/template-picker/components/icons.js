@@ -230,6 +230,57 @@ const ICONS = {
 			/>
 		</svg>
 	),
+	warning: (
+		<svg
+			width="22"
+			height="20"
+			viewBox="0 0 22 20"
+			fill="none"
+			xmlns="http://www.w3.org/2000/svg"
+		>
+			<path
+				d="M10.9983 7.9975V11.7475M1.69506 15.1231C0.829677 16.6231 1.91225 18.4975 3.64398 18.4975H18.3526C20.0844 18.4975 21.1669 16.6231 20.3016 15.1231L12.9472 2.37562C12.0814 0.874792 9.91525 0.874792 9.04939 2.37562L1.69506 15.1231ZM10.9983 14.7475H11.0058V14.755H10.9983V14.7475Z"
+				stroke="#EF4444"
+				strokeWidth="2"
+				strokeLinecap="round"
+				strokeLinejoin="round"
+			/>
+		</svg>
+	),
+	exit: (
+		<svg
+			width="20"
+			height="20"
+			viewBox="0 0 20 20"
+			fill="none"
+			xmlns="http://www.w3.org/2000/svg"
+		>
+			<path
+				d="M9.625 6.5V3.375C9.625 2.33947 8.78553 1.5 7.75 1.5L2.75 1.5C1.71447 1.5 0.875001 2.33947 0.875 3.375L0.875 14.625C0.875 15.6605 1.71447 16.5 2.75 16.5H7.75C8.78553 16.5 9.625 15.6605 9.625 14.625V11.5M12.125 11.5L14.625 9M14.625 9L12.125 6.5M14.625 9L4 9"
+				stroke="#64748B"
+				strokeWidth="1.5"
+				strokeLinecap="round"
+				strokeLinejoin="round"
+			/>
+		</svg>
+	),
+	arrowRight: (
+		<svg
+			width="14"
+			height="12"
+			viewBox="0 0 14 12"
+			fill="none"
+			xmlns="http://www.w3.org/2000/svg"
+		>
+			<path
+				d="M7.75 1L12.75 6M12.75 6L7.75 11M12.75 6H0.75"
+				stroke="white"
+				strokeWidth="1.5"
+				strokeLinecap="round"
+				strokeLinejoin="round"
+			/>
+		</svg>
+	),
 };
 
 export default ICONS;

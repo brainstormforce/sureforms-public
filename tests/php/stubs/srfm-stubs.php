@@ -7702,6 +7702,13 @@ namespace SRFM\Inc\Lib\Browser {
         }
     }
 }
+
+namespace SRFM\Inc\Lib {
+    class Connect_Zip_AI{
+        use \SRFM\Inc\Traits\Get_Instance;
+    }
+}
+
 namespace SRFM\Inc {
     /**
      * Create New Form.
@@ -9094,35 +9101,7 @@ namespace SRFM\Inc {
          * @var array<mixed>
          */
         protected $patterns = [];
-        /**
-         * Array of SureForms blocks which get have user input.
-         *
-         * @var array<string>
-         * @since 0.0.3
-         */
-        protected $srfm_blocks = [
-            'srfm/input',
-            'srfm/email',
-            'srfm/textarea',
-            'srfm/number',
-            'srfm/checkbox',
-            'srfm/gdpr',
-            'srfm/phone',
-            'srfm/address',
-            'srfm/address-compact',
-            'srfm/dropdown',
-            'srfm/multi-choice',
-            'srfm/radio',
-            'srfm/submit',
-            'srfm/url',
-            // pro blocks.
-            'srfm/date-time-picker',
-            'srfm/hidden',
-            'srfm/number-slider',
-            'srfm/password',
-            'srfm/rating',
-            'srfm/upload',
-        ];
+
         use \SRFM\Inc\Traits\Get_Instance;
         /**
          * Class constructor.

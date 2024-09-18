@@ -540,7 +540,7 @@ class Post_Types {
 					'cover_color'                   => '#0C78FB',
 					'cover_image'                   => '',
 					'enable_instant_form'           => false,
-					'form_container_width'          => 560,
+					'form_container_width'          => 620,
 					'single_page_form_title'        => true,
 					'use_banner_as_page_background' => false,
 				],

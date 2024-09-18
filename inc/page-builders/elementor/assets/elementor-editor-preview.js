@@ -5,23 +5,36 @@
 			typeof elementorFrontend !== 'undefined' &&
 			elementorFrontend.hooks
 		) {
-			const checkAndLoadPageBreak = function () {
+			const checkAndloadPageBreak = function () {
 				if (
 					typeof srfmElementorData !== 'undefined' &&
 					srfmElementorData.isProActive &&
-					typeof loadPageBreak === 'function'
+					typeof srfmLoadPageBreak === 'function'
 				) {
-					loadPageBreak();
+					srfmLoadPageBreak();
+				}
+
+				// initial phone field
+				if ( typeof srfmInitializePhoneField === 'function' ) {
+					srfmInitializePhoneField();
+				}
+
+				// initial dropdown field
+				if ( typeof srfmInitializeDropdown === 'function' ) {
+					// call the hook after 2 seconds to make sure the dropdown is initialized properly without any issues.
+					setTimeout( function () {
+						srfmInitializeDropdown();
+					}, 2000 );
 				}
 			};
 
 			elementorFrontend.hooks.addAction(
 				'frontend/element_ready/sureforms_form.default',
-				checkAndLoadPageBreak
+				checkAndloadPageBreak
 			);
 			elementorFrontend.hooks.addAction(
 				'frontend/element_ready/shortcode.default',
-				checkAndLoadPageBreak
+				checkAndloadPageBreak
 			);
 		}
 	} );

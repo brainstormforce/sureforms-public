@@ -87,7 +87,29 @@
 			}
 		}
 
-		@media screen and ( max-width: 430px ) {
+		.srfm-branding {
+			position: relative;
+			display: block;
+			width: max-content;
+			bottom: 36px;
+			padding: 4px 16px;
+			margin: 0 auto;
+			color: #1f2937;
+			background: #fff;
+			border: 0.5px solid #d1d5db;
+			border-radius: var( --srfm-btn-border-radius, 6px );
+			font-size: 16px;
+			line-height: 24px;
+			font-weight: 500;
+			box-shadow: 0 2px 4px -1px rgba( 0, 0, 0, 0.0588235294 ), 0 4px 6px -1px rgba( 0, 0, 0, 0.1019607843 );
+			text-decoration: none;
+
+			&:hover {
+				color: #0c78fb;
+			}
+		}
+
+		@media screen and ( max-width: 599px ) {
 			.srfm-page-banner {
 				padding-top: 50px;
 

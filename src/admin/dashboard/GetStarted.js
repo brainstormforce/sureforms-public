@@ -71,7 +71,7 @@ export default () => {
 						infoText={ __( 'Form', 'sureforms' ) }
 						title={ __( 'All Forms', 'sureforms' ) }
 						description={ __(
-							'Check out your created forms easily edit and customize settings as needed.',
+							'Check out your created forms, and easily edit and customize the settings as needed.',
 							'sureforms'
 						) }
 						buttonLabel={ __( 'View All Forms', 'sureforms' ) }

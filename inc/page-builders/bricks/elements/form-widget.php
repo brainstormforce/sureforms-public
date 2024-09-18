@@ -9,7 +9,7 @@
 namespace SRFM\Inc\Page_Builders\Bricks\Elements;
 
 use SRFM\Inc\Helper;
-use SRFM\Inc\Frontend_Assets;
+use SRFM\Inc\Page_Builders\Page_Builders;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -49,8 +49,8 @@ class Form_Widget extends \Bricks\Element {
 	public function __construct( $element = null ) {
 
 		if ( bricks_is_builder() ) {
-
-			$this->scripts = [ 'handleBricksPreviewFormSubmission', 'loadPageBreak' ];
+			// call the js functions to handle form submission, load page break, phone, dropdown.
+			$this->scripts = [ 'handleBricksPreviewFormSubmission', 'srfmLoadPageBreak', 'srfmInitializePhoneField', 'srfmInitializeDropdown' ];
 		}
 
 		parent::__construct( $element );
@@ -115,6 +115,17 @@ class Form_Widget extends \Bricks\Element {
 			'required' => [ 'form-id', '!=', '' ],
 		];
 
+	}
+
+	/**
+	 * Enqueue scripts for phone and dropdown field in the Bricks editor.
+	 *
+	 * @since 0.0.10
+	 * @return void
+	 */
+	public function enqueue_scripts() {
+		// enqueue common fields assets for the dropdown and phone fields.
+		Page_Builders::enqueue_common_fields_assets();
 	}
 
 	/**

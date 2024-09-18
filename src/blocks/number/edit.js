@@ -2,7 +2,7 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { ToggleControl, SelectControl } from '@wordpress/components';
+import { ToggleControl } from '@wordpress/components';
 import { InspectorControls } from '@wordpress/block-editor';
 import { useEffect, useState } from '@wordpress/element';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
@@ -17,7 +17,6 @@ import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
 import { NumberComponent } from './components/default';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
-import widthOptions from '../width-options.json';
 import { FieldsPreview } from '../FieldsPreview.jsx';
 import { useErrMessage } from '@Blocks/util';
 import ConditionalLogic from '@Components/conditional-logic';
@@ -66,8 +65,6 @@ const formatNumber = ( number, formatType ) => {
 
 const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 	const {
-		fieldWidth,
-		placeholder,
 		help,
 		required,
 		block_id,
@@ -112,28 +109,6 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 							title={ __( 'Attributes', 'sureforms' ) }
 							initialOpen={ true }
 						>
-							<SelectControl
-								label={ __( 'Field Width', 'sureforms' ) }
-								value={ fieldWidth }
-								options={ widthOptions }
-								onChange={ ( value ) =>
-									setAttributes( {
-										fieldWidth: Number( value ),
-									} )
-								}
-								__nextHasNoMarginBottom
-							/>
-							<SRFMTextControl
-								label={ __( 'Placeholder', 'sureforms' ) }
-								value={ placeholder }
-								data={ {
-									value: placeholder,
-									label: 'placeholder',
-								} }
-								onChange={ ( newValue ) =>
-									setAttributes( { placeholder: newValue } )
-								}
-							/>
 							<SRFMSelectControl
 								label={ __( 'Number Format', 'sureforms' ) }
 								data={ {

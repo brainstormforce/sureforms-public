@@ -372,7 +372,7 @@ class Helper {
 	 * @param string     $key The meta key to retrieve.
 	 * @param mixed      $default Default value.
 	 * @param boolean    $single Optional. Whether to return a single value.
-	 * @since x.x.x
+	 * @since 0.0.8
 	 * @return mixed Meta value.
 	 */
 	public static function get_post_meta( $post_id, $key, $default = null, $single = true ) {
@@ -383,7 +383,7 @@ class Helper {
 	/**
 	 * Returns query params data for instant form live preview.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.8
 	 * @return array<mixed> Live preview data.
 	 */
 	public static function get_instant_form_live_data() {
@@ -794,7 +794,7 @@ class Helper {
 	/**
 	 * Array of SureForms blocks which get have user input.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.10
 	 * @return array<string>
 	 */
 	public static function get_sureforms_blocks() {
@@ -826,7 +826,7 @@ class Helper {
 	 * @param bool                       $updated The array of existing slugs.
 	 * @param string                     $prefix The array of existing slugs.
 	 * @param boolean                    $skip_checking_existing_slug Skips the checking of existing slug if passed true. More information documented inside this function.
-	 * @since x.x.x
+	 * @since 0.0.10
 	 * @return array{array<array<array<mixed>>>,array<string>,bool}
 	 */
 	public static function process_blocks( $blocks, &$slugs, &$updated, $prefix = '', $skip_checking_existing_slug = false ) {
@@ -892,7 +892,7 @@ class Helper {
 	 * @param array<mixed>  $block The block data.
 	 * @param array<string> $slugs The array of existing slugs.
 	 * @param string        $prefix The array of existing slugs.
-	 * @since x.x.x
+	 * @since 0.0.10
 	 * @return string The generated unique block slug.
 	 */
 	public static function generate_unique_block_slug( $block, $slugs, $prefix ) {
@@ -917,7 +917,7 @@ class Helper {
 	 *
 	 * @param string        $slug test to be converted to slug.
 	 * @param array<string> $slugs An array of existing slugs.
-	 * @since x.x.x
+	 * @since 0.0.10
 	 * @return string The unique slug.
 	 */
 	public static function generate_slug( $slug, $slugs ) {

@@ -39,19 +39,6 @@ if ( 'image' === $bg_type ) {
 	$bg_color = $bg_color ? $bg_color : '';
 }
 
-$form_styling = Helper::get_meta_value(
-	$srfm_custom_post_id,
-	'_srfm_forms_styling',
-	true,
-	[
-		'primary_color'           => '#0C78FB',
-		'text_color'              => '#1E1E1E',
-		'text_color_on_primary'   => '#FFFFFF',
-		'field_spacing'           => 'medium',
-		'submit_button_alignment' => 'left',
-	]
-);
-
 ?>
 <!DOCTYPE html>
 <html class="srfm-html" <?php language_attributes(); ?>>
@@ -108,6 +95,7 @@ $form_styling = Helper::get_meta_value(
 					background-image: url(<?php echo esc_attr( $srfm_cover_image_url ); ?> );
 					background-position: center;
 					background-repeat: no-repeat;
+					background-size: cover;
 				<?php else : ?>
 					background-color: <?php echo esc_attr( $cover_color ); ?>;
 				<?php endif; ?>
@@ -185,6 +173,19 @@ $form_styling = Helper::get_meta_value(
 				// phpcs:ignoreEnd
 				?>
 			</div>
+			<?php
+			if ( ! defined( 'SRFM_PRO_VER' ) ) {
+				// Display SureForms branding if SureForms Pro is not activated.
+				echo wp_kses_post(
+					sprintf(
+						'<a href="%1$s" class="srfm-branding" target="_blank">%2$s</a>',
+						esc_url( SRFM_WEBSITE ),
+						/* translators: Here %s is the plugin's name. */
+							sprintf( esc_html__( 'Powered By %s', 'sureforms' ), 'SureForms' )
+					)
+				);
+			}
+			?>
 		</div>
 	<?php } else { ?>
 		<?php

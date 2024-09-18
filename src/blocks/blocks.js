@@ -17,9 +17,8 @@ import { addFilter, applyFilters } from '@wordpress/hooks';
 import { useDeviceType } from '@Controls/getPreviewType';
 import { BlockControls } from '@wordpress/block-editor';
 import { ToolbarGroup, ToolbarButton } from '@wordpress/components';
-import parse from 'html-react-parser';
-import svgIcons from '@Svg/svgs.json';
 import { getBlockTypes } from '@Blocks/util';
+import { __, sprintf } from '@wordpress/i18n';
 
 const registerBlock = [
 	text,
@@ -97,7 +96,7 @@ addFilter(
 
 const withToolbarButton = createHigherOrderComponent( ( BlockEdit ) => {
 	return ( props ) => {
-		const { name, setAttributes } = props;
+		const { name, setAttributes, attributes } = props;
 
 		const excludeBlocks = applyFilters(
 			'srfm.ExcludeWithToolbarButton',
@@ -106,52 +105,43 @@ const withToolbarButton = createHigherOrderComponent( ( BlockEdit ) => {
 
 		const allowedBlocks = getBlockTypes( excludeBlocks );
 
-		const oneColIcon = parse( svgIcons.width_full );
-		const twoColIcon = parse( svgIcons.with_two_col );
-		const threeColIcon = parse( svgIcons.width_three_col );
-		const fourColIcon = parse( svgIcons.width_four_col );
-
 		if ( allowedBlocks.includes( name ) ) {
 			return (
 				<>
 					<BlockControls>
 						<ToolbarGroup>
-							<ToolbarButton
-								icon={ oneColIcon }
-								label="Full Width"
-								onClick={ () => {
-									setAttributes( {
-										fieldWidth: Number( 100 ),
-									} );
-								} }
-							/>
-							<ToolbarButton
-								icon={ twoColIcon }
-								label="Two Columns"
-								onClick={ () => {
-									setAttributes( {
-										fieldWidth: Number( 50 ),
-									} );
-								} }
-							/>
-							<ToolbarButton
-								icon={ threeColIcon }
-								label="Three Columns"
-								onClick={ () => {
-									setAttributes( {
-										fieldWidth: Number( 33.33 ),
-									} );
-								} }
-							/>
-							<ToolbarButton
-								icon={ fourColIcon }
-								label="Four Columns"
-								onClick={ () => {
-									setAttributes( {
-										fieldWidth: Number( 25 ),
-									} );
-								} }
-							/>
+							{ [ 100, 75, 50, 33.33, 25 ].map( ( width ) => {
+								const labelText =
+									33.33 === width ? '33%' : `${ width }%`;
+								const labelWithText = sprintf(
+									// translators: %s: Width of the block
+									__( '%s Width', 'sureforms' ),
+									labelText
+								);
+
+								const selectedClass =
+									attributes?.fieldWidth === width
+										? 'is-selected srfm-toolbar-width-setting-button'
+										: 'srfm-toolbar-width-setting-button';
+
+								return (
+									<ToolbarButton
+										key={ width }
+										className={ selectedClass }
+										icon={
+											<span className="srfm-toolbar-width-setting-icon">
+												{ labelText }
+											</span>
+										}
+										label={ labelWithText }
+										onClick={ () =>
+											setAttributes( {
+												fieldWidth: Number( width ),
+											} )
+										}
+									/>
+								);
+							} ) }
 						</ToolbarGroup>
 					</BlockControls>
 					<BlockEdit { ...props } />

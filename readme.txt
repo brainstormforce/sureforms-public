@@ -2,9 +2,9 @@
 Contributors: brainstormforce
 Tags: contact form, custom form, form builder, forms, gutenberg
 Requires at least: 6.4
-Tested up to: 6.6.1
+Tested up to: 6.6.2
 Requires PHP: 7.4
-Stable tag: 0.0.7
+Stable tag: 0.0.10
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -17,6 +17,8 @@ SureForms: Transform your WordPress form-building experience with stunning desig
 #### CREATE BEAUTIFUL RESPONSIVE FORMS USING WORDPRESS WITHOUT CODING ⚡
 
 ★★★★★
+
+[youtube https://www.youtube.com/watch?v=qLpnm4GdXks]
 
 Our mission at SureForms is to empower you to build beautiful forms without code.
 
@@ -32,7 +34,7 @@ After all, the ultimate aim of most websites is to get those forms filled out.
 SureForms addresses several pain points commonly experienced by website owners:
 
  - **Complex Form Building**: Form builders often have steep learning curves, convoluted interfaces, or limited customization options. SureForms aims to simplify the form-building process, providing a user-friendly interface and intuitive drag-and-drop functionality using WordPress's native block editor.
- - **Design Limitations**: Designers face challenges in creating visually appealing forms. Form builders require designers to spend hours trying to figure out settings and options just to get the form look right. Or write custom CSS. SureForms eliminates these limitations by providing modern and customizable form templates, allowing designers to create stunning forms that seamlessly integrate with their design vision.
+ - **Design Limitations**: Designers face challenges in creating visually appealing forms. Form builders require designers to spend hours trying to figure out settings and options just to get the form look right. Or write custom CSS. SureForms eliminates these limitations by providing modern styling right out-of-the-box, allowing designers to create stunning forms that seamlessly integrate with their design vision.
  - **Lack of Mobile Friendliness and Accessibility**: Building forms that are mobile-friendly and accessible to all users can be a challenge. SureForms priorities mobile-first design and accessibility standards, ensuring that forms created with the plugin are responsive and inclusive, providing a positive user experience across different devices and for users with disabilities.
 
 In response to these pain points, we set out to create SureForms. Our goal is to provide a fresh and innovative form builder that leverages the power of native WordPress drag-and-drop builder, delivering a seamless and intuitive form-building experience.
@@ -41,7 +43,7 @@ We want to empower website makers to effortlessly create stunning, modern-lookin
 
 That's why we're committed to delivering stunning, modern-looking forms right out of the box. Gone are the days of relying on themes for styling or spending endless hours tweaking settings and writing custom CSS.
 
-With SureForms, our customers can expect a delightful range of pre-made templates that will make their forms look amazing from the very start. And if they want to infuse their personal touch, customizing the styling should be a breeze, whether it's through easy-to-use settings or diving into CSS.
+With SureForms, our customers can expect a delightful range of pre-made form styling that will make their forms look amazing from the very start. And if they want to infuse their personal touch, customizing the styling should be a breeze, whether it's through easy-to-use settings or diving into CSS.
 
 We're here to empower our customers to create forms that not only function flawlessly but also captivate their audience. Say goodbye to the mundane and hello to a whole new level of form-building experience.
 With SureForms, let's revolutionize the way people create and design forms for their websites.
@@ -70,16 +72,16 @@ SureForms is packed with features that will help you create forms fast and save 
 
 SureForms leverages the power of WordPress's native block editor, as its foundation. This integration provides a seamless and intuitive form-building experience for users familiar with the WordPress ecosystem. By utilizing drag-and-drop interface, SureForms eliminates the need to learn a separate form builder, saving time and simplifying the form creation process.
 
-#### Stunning Out-of-the-Box Form Templates
+#### Create Forms Effortlessly with AI
 
-SureForms prioritizes aesthetics and user experience by offering modern and visually appealing form templates. Users can create stunning forms without relying on their theme or writing custom CSS. Our pre-made templates ensure that forms look amazing from the start, providing a polished and professional appearance that captivates users.
+SureForms empowers users to build custom forms effortlessly using AI. Whether you're creating simple contact forms or complex multi-step surveys, our AI engine intelligently guides you through the process, offering suggestions and optimizing form fields based on your needs. No need to worry about the details—AI does the heavy lifting, helping you craft forms that are functional, user-friendly, and tailored to your audience with just a few clicks.
 
-#### Here are a few of the templates:
+#### Here are a few examples of forms you can create with SureForms AI:
 
  - Contact Form
  - Feedback / Survey Form
  - Event RSVP Form
- - Job Application
+ - Job Application Form
  - Newsletter Form
  - Support Form
 
@@ -250,12 +252,27 @@ Yes! You can certainly use SureForms on yours as well as your client’s website
 When you use the SureForms, you get a huge library of ready-to-use form templates that can be used to build your forms fast.
 
 == Changelog ==
-= x.x.x =
-* Improvement: Added help text for email fields.
-* Improvement: UX improvements for phone number and dropdown field.
+= 0.0.10 =
+* New: Added a new custom table for the entries to improve performance.
+* Improvement: Added help text for the Email field.
+* Improvement: Improved UX of the Phone Number and Dropdown fields.
 * Improvement: Improved field spacing between fields.
-* Improvement: Added Site Logo option for the Instant Forms.
+* Improvement: Added Site Logo option in Instant Form settings.
+* Improvement: Added support for the Gutenberg editor when the Classic Editor plugin is enabled.
+* Fix: Fixed Dropdown and Phone Number field previews in Bricks and Elementor editors.
 * Fix: Submit button on newly created form does not display in live preview mode.
+* Fix: Fixed error codes in AI Form Builder.
+= 0.0.9 =
+* Fix: Resolved Instant Form background size issue.
+= 0.0.8 =
+* New: Build forms using SureForms AI.
+* New: SureTriggers integration.
+* Improvement: Added Instant Form styling options.
+* Improvement: Removed the option to create forms using templates.
+* Improvement: Added Text, Dropdown, and Phone Number field styling for dark themes.
+* Fix: Resolved a few UI issues in Firefox and Safari browsers.
+* Fix: Resolved Custom Button positioning issue with reCAPTCHA.
+* Fix: Resolved a few other minor issues.
 = 0.0.7 =
 * New: Improved styling of fields on the front-end and in the form editor.
 * Improvement: Added Primary, Text, and Text on Primary color options.
