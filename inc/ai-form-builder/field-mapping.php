@@ -96,9 +96,6 @@ class Field_Mapping {
 				case 'url':
 				case 'phone':
 					// Handle specific attributes for certain fields.
-					if ( 'textarea' === $question['fieldType'] && ! empty( $question['helpText'] ) ) {
-						$merged_attributes['textAreaHelpText'] = sanitize_text_field( $question['helpText'] );
-					}
 					if ( 'dropdown' === $question['fieldType'] && ! empty( $question['fieldOptions'] ) && is_array( $question['fieldOptions'] ) &&
 					! empty( $question['fieldOptions'][0]['label'] )
 					) {
@@ -113,14 +110,6 @@ class Field_Mapping {
 						if ( ! empty( $question['singleSelection'] ) ) {
 							$merged_attributes['singleSelection'] = filter_var( $question['singleSelection'], FILTER_VALIDATE_BOOLEAN );
 						}
-					}
-					// if checkbox then map help to checkboxHelpText.
-					if ( 'checkbox' === $question['fieldType'] && ! empty( $question['helpText'] ) ) {
-						$merged_attributes['checkboxHelpText'] = sanitize_text_field( $question['helpText'] );
-					}
-					// if gdpr then map help to gdprHelpText.
-					if ( 'gdpr' === $question['fieldType'] && ! empty( $question['helpText'] ) ) {
-						$merged_attributes['gdprHelpText'] = sanitize_text_field( $question['helpText'] );
 					}
 					if ( 'phone' === $question['fieldType'] ) {
 						$merged_attributes['autoCountry'] = true;
