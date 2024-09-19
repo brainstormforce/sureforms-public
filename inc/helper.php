@@ -354,6 +354,13 @@ class Helper {
 	 * @return string Meta value.
 	 */
 	public static function get_meta_value( $post_id, $key, $single = true, $default = '' ) {
+		$srfm_live_mode_data = self::get_instant_form_live_data();
+
+		if ( isset( $srfm_live_mode_data[ $key ] ) ) {
+			// Give priority to live mode data if we have one set from the Instant Form.
+			return self::get_string_value( $srfm_live_mode_data[ $key ] );
+		}
+
 		$meta_value = get_post_meta( self::get_integer_value( $post_id ), $key, $single ) ? self::get_string_value( get_post_meta( self::get_integer_value( $post_id ), $key, $single ) ) : self::get_string_value( $default );
 		return $meta_value;
 	}
@@ -417,6 +424,7 @@ class Helper {
 			'srfm_email_block_required_text'        => $common_err_msg['required'],
 			'srfm_email_block_unique_text'          => $common_err_msg['unique'],
 			'srfm_dropdown_block_required_text'     => $common_err_msg['required'],
+			'srfm_rating_block_required_text'       => $common_err_msg['required'],
 		];
 
 		return apply_filters( 'srfm_default_dynamic_block_option', $default_values, $common_err_msg );
@@ -690,7 +698,7 @@ class Helper {
 					'--srfm-multi-choice-outer-padding'    => '0',
 				],
 				'medium' => [
-					'--srfm-row-gap-between-blocks'        => '20px',
+					'--srfm-row-gap-between-blocks'        => '18px',
 					// Address block gap and spacing variables.
 					'--srfm-col-gap-between-fields'        => '16px',
 					'--srfm-row-gap-between-fields'        => '16px',
@@ -723,7 +731,7 @@ class Helper {
 					'--srfm-multi-choice-outer-padding'    => '2px',
 				],
 				'large'  => [
-					'--srfm-row-gap-between-blocks'        => '24px',
+					'--srfm-row-gap-between-blocks'        => '20px',
 					// Address Block Gap and Spacing Variables.
 					'--srfm-col-gap-between-fields'        => '16px',
 					'--srfm-row-gap-between-fields'        => '20px',
@@ -781,6 +789,151 @@ class Helper {
 		}
 
 		return $selected_size;
+	}
+
+	/**
+	 * Array of SureForms blocks which get have user input.
+	 *
+	 * @since 0.0.10
+	 * @return array<string>
+	 */
+	public static function get_sureforms_blocks() {
+		return apply_filters(
+			'srfm_blocks',
+			[
+				'srfm/input',
+				'srfm/email',
+				'srfm/textarea',
+				'srfm/number',
+				'srfm/checkbox',
+				'srfm/gdpr',
+				'srfm/phone',
+				'srfm/address',
+				'srfm/dropdown',
+				'srfm/multi-choice',
+				'srfm/radio',
+				'srfm/submit',
+				'srfm/url',
+			]
+		);
+	}
+
+	/**
+	 * Process blocks and inner blocks.
+	 *
+	 * @param array<array<array<mixed>>> $blocks The block data.
+	 * @param array<string>              $slugs The array of existing slugs.
+	 * @param bool                       $updated The array of existing slugs.
+	 * @param string                     $prefix The array of existing slugs.
+	 * @param boolean                    $skip_checking_existing_slug Skips the checking of existing slug if passed true. More information documented inside this function.
+	 * @since 0.0.10
+	 * @return array{array<array<array<mixed>>>,array<string>,bool}
+	 */
+	public static function process_blocks( $blocks, &$slugs, &$updated, $prefix = '', $skip_checking_existing_slug = false ) {
+
+		if ( ! is_array( $blocks ) ) {
+			return [ $blocks, $slugs, $updated ];
+		}
+
+		foreach ( $blocks as $index => $block ) {
+
+			if ( ! is_array( $block ) ) {
+				continue;
+			}
+			// Checking only for SureForms blocks which can have user input.
+			if ( empty( $block['blockName'] ) || ! in_array( $block['blockName'], self::get_sureforms_blocks(), true ) ) {
+				continue;
+			}
+
+			/**
+			 * Lets continue if slug already exists.
+			 * This will ensure that we don't update already existing slugs.
+			 */
+			if ( isset( $block['attrs'] ) && ! empty( $block['attrs']['slug'] ) && ! in_array( $block['attrs']['slug'], $slugs, true ) ) {
+
+				// Made it associative array, so that we can directly check it using block_id rather than mapping or using "in_array" for the checks.
+				$slugs[ $block['attrs']['block_id'] ] = self::get_string_value( $block['attrs']['slug'] );
+				continue;
+			}
+
+			if ( $skip_checking_existing_slug && empty( $block['innerBlocks'] ) && isset( $slugs[ $block['attrs']['block_id'] ] ) ) {
+				/**
+				 * Skip re-processing of the already process or existing slugs if above parameter "$skip_checking_existing_slug" is passed as true.
+				 * This is helpful in the scenarios where we need to compare and verify between already saved blocks and new unsaved blocks parsed
+				 * from the contents.
+				 *
+				 * However, it is also necessary to make sure if that current block is not a parent / wrapper block
+				 * by checking "$block['innerBlocks']" empty.
+				 *
+				 * And finally, checking if the block-id "$block['attrs']['block_id']" is already set in the list of "$slugs",
+				 * making sure that we are only processing the new blocks.
+				 */
+				continue;
+			}
+
+			if ( is_array( $blocks[ $index ]['attrs'] ) ) {
+
+				$blocks[ $index ]['attrs']['slug']    = self::generate_unique_block_slug( $block, $slugs, $prefix );
+				$slugs[ $block['attrs']['block_id'] ] = $blocks[ $index ]['attrs']['slug']; // Made it associative array, so that we can directly check it using block_id rather than mapping or using "in_array" for the checks.
+				$updated                              = true;
+				if ( is_array( $block['innerBlocks'] ) && ! empty( $block['innerBlocks'] ) ) {
+
+					list( $blocks[ $index ]['innerBlocks'], $slugs, $updated ) = self::process_blocks( $block['innerBlocks'], $slugs, $updated, $blocks[ $index ]['attrs']['slug'] );
+
+				}
+			}
+		}
+		return [ $blocks, $slugs, $updated ];
+	}
+
+	/**
+	 * Generates slug based on the provided block and existing slugs.
+	 *
+	 * @param array<mixed>  $block The block data.
+	 * @param array<string> $slugs The array of existing slugs.
+	 * @param string        $prefix The array of existing slugs.
+	 * @since 0.0.10
+	 * @return string The generated unique block slug.
+	 */
+	public static function generate_unique_block_slug( $block, $slugs, $prefix ) {
+		$slug = is_string( $block['blockName'] ) ? $block['blockName'] : '';
+
+		if ( ! empty( $block['attrs']['label'] ) && is_string( $block['attrs']['label'] ) ) {
+			$slug = sanitize_title( $block['attrs']['label'] );
+		}
+
+		if ( ! empty( $prefix ) ) {
+			$slug = $prefix . '-' . $slug;
+		}
+
+		$slug = self::generate_slug( $slug, $slugs );
+
+		return $slug;
+	}
+
+	/**
+	 * This function ensures that the slug is unique.
+	 * If the slug is already taken, it appends a number to the slug to make it unique.
+	 *
+	 * @param string        $slug test to be converted to slug.
+	 * @param array<string> $slugs An array of existing slugs.
+	 * @since 0.0.10
+	 * @return string The unique slug.
+	 */
+	public static function generate_slug( $slug, $slugs ) {
+		$slug = sanitize_title( $slug );
+
+		if ( ! in_array( $slug, $slugs, true ) ) {
+			return $slug;
+		}
+
+		$index = 1;
+
+		while ( in_array( $slug . '-' . $index, $slugs, true ) ) {
+			$index++;
+		}
+
+		return $slug . '-' . $index;
 	}
 
 }

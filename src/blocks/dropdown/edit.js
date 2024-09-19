@@ -2,12 +2,7 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import {
-	ToggleControl,
-	SelectControl,
-	Button,
-	Icon,
-} from '@wordpress/components';
+import { ToggleControl, Button, Icon } from '@wordpress/components';
 import { InspectorControls } from '@wordpress/block-editor';
 import { useEffect, useState } from '@wordpress/element';
 import SRFMTextControl from '@Components/text-control';
@@ -29,7 +24,6 @@ import { DropdownComponent } from './components/default';
 import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
-import widthOptions from '../width-options.json';
 import { FieldsPreview } from '../FieldsPreview.jsx';
 import ConditionalLogic from '@Components/conditional-logic';
 import UAGIconPicker from '@Components/icon-picker';
@@ -38,7 +32,6 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 	const {
 		required,
 		options,
-		fieldWidth,
 		help,
 		block_id,
 		errorMsg,
@@ -106,17 +99,6 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 							title={ __( 'Attributes', 'sureforms' ) }
 							initialOpen={ true }
 						>
-							<SelectControl
-								label={ __( 'Field Width', 'sureforms' ) }
-								value={ fieldWidth }
-								options={ widthOptions }
-								onChange={ ( value ) =>
-									setAttributes( {
-										fieldWidth: Number( value ),
-									} )
-								}
-								__nextHasNoMarginBottom
-							/>
 							<ToggleControl
 								label={ __( 'Required', 'sureforms' ) }
 								checked={ required }

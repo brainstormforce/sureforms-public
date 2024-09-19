@@ -9,7 +9,6 @@ import { __ } from '@wordpress/i18n';
 import {
 	Button,
 	Popover,
-	ColorIndicator,
 	Tooltip,
 	Dashicon,
 	ColorPicker,
@@ -26,6 +25,17 @@ import {
 import { getIdFromString, getPanelIdFromRef } from '@Utils/Helpers';
 import UAGReset from '../reset';
 import { applyFilters } from '@wordpress/hooks';
+
+const ColorIndicator = ( props ) => {
+	const { colorValue, className, isGlobal } = props;
+	let classes = 'component-color-indicator uagb-advanced-color-indicate';
+	classes = className ? `${ classes } ${ className }` : classes;
+	return (
+		<span className={ classes } style={ { background: colorValue } }>
+			{ isGlobal ? cIcons.globe : '' }
+		</span>
+	);
+};
 
 const AdvancedPopColorControl = ( props ) => {
 	const [ panelNameForHook, setPanelNameForHook ] = useState( null );
@@ -178,10 +188,10 @@ const AdvancedPopColorControl = ( props ) => {
 		maybeGetColorForVariable( colorVal )
 	);
 
-	const globalIndicator =
-		colorVal && colorVal.includes( 'var' )
-			? `uag-global-indicator uag-global-icon-${ globalIconColor }`
-			: '';
+	const globalIndicator = colorVal && colorVal.includes( 'var' );
+	const globalIndicatorClasses = globalIndicator
+		? `uag-global-indicator uag-global-icon-${ globalIconColor }`
+		: '';
 
 	const controlName = getIdFromString( props.label );
 	const controlBeforeDomElement = applyFilters(
@@ -270,7 +280,8 @@ const AdvancedPopColorControl = ( props ) => {
 									onClick={ toggleClose }
 								>
 									<ColorIndicator
-										className={ `uagb-advanced-color-indicate ${ globalIndicator }` }
+										isGlobal={ globalIndicator }
+										className={ globalIndicatorClasses }
 										colorValue={ colorVal }
 									/>
 									{ '' === colorVal && value.inherit && (
@@ -296,7 +307,8 @@ const AdvancedPopColorControl = ( props ) => {
 									onClick={ toggleVisible }
 								>
 									<ColorIndicator
-										className={ `uagb-advanced-color-indicate ${ globalIndicator }` }
+										isGlobal={ globalIndicator }
+										className={ globalIndicatorClasses }
 										colorValue={ colorVal }
 									/>
 									{ '' === colorVal && value.inherit && (

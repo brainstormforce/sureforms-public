@@ -148,10 +148,10 @@ class Rest_Api {
 		$content = ! empty( $params['content'] ) ? wp_kses_post( $params['content'] ) : '';
 
 		if ( ! is_null( $form ) ) {
-			Gutenberg_Hooks::process_blocks( parse_blocks( $form->post_content ), $slugs, $updated );
+			Helper::process_blocks( parse_blocks( $form->post_content ), $slugs, $updated );
 		}
 
-		Gutenberg_Hooks::process_blocks( parse_blocks( $content ), $slugs, $updated, '', true );
+		Helper::process_blocks( parse_blocks( $content ), $slugs, $updated, '', true );
 
 		wp_send_json_success( $slugs );
 	}
