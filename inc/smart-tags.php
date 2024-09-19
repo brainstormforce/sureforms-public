@@ -134,11 +134,20 @@ class Smart_Tags {
 			return $content;
 		}
 
+		$get_smart_tag_list = self::smart_tag_list();
+
 		foreach ( $matches[0] as $tag ) {
+			$is_valid_tag       = isset( $get_smart_tag_list[ $tag ] ) ||
+			strpos( $tag, 'get_input:' ) === 0 ||
+			strpos( $tag, 'get_cookie:' ) === 0 ||
+			0 === strpos( $tag, '{form:' );
+
+			if ( ! $is_valid_tag ) {
+				continue;
+			}
 
 			$replace = Helper::get_string_value( self::smart_tags_callback( $tag, $submission_data, $form_data ) );
 			$content = str_replace( $tag, $replace, $content );
-
 		}
 
 		return $content;
@@ -154,16 +163,6 @@ class Smart_Tags {
 	 * @return mixed
 	 */
 	public static function smart_tags_callback( $tag, $submission_data = null, $form_data = null ) {
-		$get_smart_tag_list = self::smart_tag_list();
-		$is_valid_tag       = isset( $get_smart_tag_list[ $tag ] ) ||
-			strpos( $tag, 'get_input:' ) === 0 ||
-			strpos( $tag, 'get_cookie:' ) === 0 ||
-			0 === strpos( $tag, '{form:' );
-
-		if ( ! $is_valid_tag ) {
-			return $tag;
-		}
-
 		$parsed_tag = apply_filters( 'srfm_parse_smart_tags', null, compact( 'tag', 'submission_data', 'form_data' ) );
 
 		if ( ! is_null( $parsed_tag ) ) {
