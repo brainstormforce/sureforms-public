@@ -1,6 +1,7 @@
 import { useState, useEffect } from '@wordpress/element';
 import { RichText } from '@wordpress/block-editor';
 import { decodeHtmlEntities } from '@Blocks/util';
+import HelpText from '@Components/misc/HelpText';
 
 export const CheckboxComponent = ( {
 	attributes,
@@ -8,7 +9,7 @@ export const CheckboxComponent = ( {
 	blockID,
 	blockType,
 } ) => {
-	const { label, checked: isChecked, required } = attributes;
+	const { label, checked: isChecked, required, help } = attributes;
 	const [ selected, setSelected ] = useState( isChecked );
 	let isRequired = required ? 'srfm-required' : '';
 	useEffect( () => {
@@ -56,6 +57,11 @@ export const CheckboxComponent = ( {
 					/>
 				</span>
 			</label>
+			<HelpText
+				help={ help }
+				setAttributes={ setAttributes }
+				block_id={ blockID }
+			/>
 		</div>
 	);
 };
