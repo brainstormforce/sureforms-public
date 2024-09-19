@@ -126,7 +126,7 @@ class Field_Mapping {
 						$merged_attributes['autoCountry'] = true;
 					}
 
-					$post_content .= '<!-- wp:srfm/' . $question['fieldType'] . ' ' . wp_json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
+					$post_content .= '<!-- wp:srfm/' . $question['fieldType'] . ' ' . wp_json_encode( $merged_attributes, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES ) . ' /-->' . PHP_EOL;
 					break;
 				case 'slider':
 				case 'page-break':
@@ -217,11 +217,11 @@ class Field_Mapping {
 
 					}
 
-					$post_content .= '<!-- wp:srfm/' . $question['fieldType'] . ' ' . wp_json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
+					$post_content .= '<!-- wp:srfm/' . $question['fieldType'] . ' ' . wp_json_encode( $merged_attributes, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES ) . ' /-->' . PHP_EOL;
 					break;
 				default:
 					// Unsupported field type - fallback to input.
-					$post_content .= '<!-- wp:srfm/input ' . wp_json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
+					$post_content .= '<!-- wp:srfm/input ' . wp_json_encode( $merged_attributes, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES ) . ' /-->' . PHP_EOL;
 			}
 		}
 
