@@ -57,6 +57,9 @@
 	.srfm-block-width-100 {
 		flex: 0 1 100%;
 	}
+	.srfm-block-width-75 {
+		flex: 0 1 calc( 75% - var( --srfm-col-gap-between-fields ) / 4 );
+	}
 	.srfm-block-width-50 {
 		flex: 0 1 calc( 50% - var( --srfm-col-gap-between-fields ) / 2 );
 	}
@@ -95,6 +98,12 @@
 		&.srfm-choice-width-100 {
 			.srfm-multi-choice-single {
 				width: 100%;
+			}
+		}
+
+		&.srfm-choice-width-75 {
+			.srfm-multi-choice-single {
+				width: 75%;
 			}
 		}
 
@@ -244,7 +253,7 @@
 }
 
 @mixin srfm-dropdown-styles {
-	background: var( --srfm-dropdown-menu-background );
+	background: var( --srfm-expandable-menu-background );
 	font-size: var( --srfm-dropdown-font-size );
 	font-weight: var( --srfm-dropdown-font-weight );
 	padding: var( --srfm-dropdown-menu-padding );

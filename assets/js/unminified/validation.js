@@ -41,6 +41,13 @@ export async function fieldValidation(
 ) {
 	let validateResult = false;
 	let firstErrorInput = null;
+
+	const setFirstErrorInput = ( input ) => {
+		if ( ! firstErrorInput ) {
+			firstErrorInput = input;
+		}
+	};
+
 	let uniqueEntryData = null;
 	const uniqueFields = document.querySelectorAll(
 		'input[data-unique="true"]'
@@ -88,7 +95,7 @@ export async function fieldValidation(
 		if ( currentFormId !== formId ) {
 			continue;
 		}
-		const inputField = container.querySelector( 'input, textarea,select' );
+		const inputField = container.querySelector( 'input, textarea, select' );
 		const isRequired = inputField.getAttribute( 'aria-required' );
 		const isUnique = inputField.getAttribute( 'data-unique' );
 		let fieldName = inputField.getAttribute( 'name' );
@@ -111,10 +118,8 @@ export async function fieldValidation(
 						errorMessage.getAttribute( 'data-error-msg' );
 				}
 				validateResult = true;
-
-				if ( ! firstErrorInput ) {
-					firstErrorInput = inputField;
-				}
+				// Set the first error input.
+				setFirstErrorInput( inputField );
 			} else if ( inputField ) {
 				inputField
 					.closest( '.srfm-block' )
@@ -146,9 +151,8 @@ export async function fieldValidation(
 					errorMessage.getAttribute( 'data-unique-msg' );
 
 				validateResult = true;
-				if ( ! firstErrorInput ) {
-					firstErrorInput = inputField;
-				}
+				// Set the first error input.
+				setFirstErrorInput( inputField );
 			} else if ( inputField ) {
 				inputField
 					.closest( '.srfm-block' )
@@ -183,9 +187,8 @@ export async function fieldValidation(
 					container.classList.add( 'srfm-error' );
 				}
 				validateResult = true;
-				if ( ! firstErrorInput && visibleInput ) {
-					firstErrorInput = visibleInput;
-				}
+				// Set the first error input.
+				setFirstErrorInput( visibleInput );
 			} else if ( errorMessage ) {
 				container.classList.remove( 'srfm-error' );
 			}
@@ -206,9 +209,8 @@ export async function fieldValidation(
 			if ( urlError ) {
 				container.classList.add( 'srfm-error' );
 				validateResult = true;
-				if ( ! firstErrorInput ) {
-					firstErrorInput = urlInput;
-				}
+				// Set the first error input.
+				setFirstErrorInput( urlInput );
 			}
 
 			// remove the error message on input of the url input
@@ -226,9 +228,8 @@ export async function fieldValidation(
 			if ( isIntelError ) {
 				container.classList.add( 'srfm-error' );
 				validateResult = true;
-				if ( ! firstErrorInput ) {
-					firstErrorInput = phoneInput;
-				}
+				// Set the first error input.
+				setFirstErrorInput( phoneInput );
 			}
 
 			// remove the error message on input of the phone input
@@ -265,19 +266,16 @@ export async function fieldValidation(
 						confirmError.textContent =
 							confirmError.getAttribute( 'data-error-msg' );
 						confirmParent.classList.add( 'srfm-error' );
-
-						if ( ! firstErrorInput ) {
-							firstErrorInput = confirmValue;
-						}
+						// Set the first error input.
+						setFirstErrorInput( confirmValue );
 						validateResult = true;
 					} else if ( confirmValue !== inputValue ) {
 						confirmParent.classList.add( 'srfm-error' );
 						confirmError.textContent =
 							'Confirmation Password is not the same';
 
-						if ( ! firstErrorInput ) {
-							firstErrorInput = confirmValue;
-						}
+						// Set the first error input.
+						setFirstErrorInput( confirmValue );
 						validateResult = true;
 					} else {
 						confirmParent.classList.remove( 'srfm-error' );
@@ -293,6 +291,13 @@ export async function fieldValidation(
 				const confirmParent = parent.querySelector(
 					'.srfm-email-confirm-block'
 				);
+
+				if ( parent.classList.contains( 'srfm-valid-email-error' ) ) {
+					if ( ! firstErrorInput ) {
+						firstErrorInput = inputField;
+					}
+					validateResult = true;
+				}
 
 				if ( confirmParent ) {
 					const confirmInput = confirmParent.querySelector(
@@ -314,18 +319,16 @@ export async function fieldValidation(
 							confirmError.getAttribute( 'data-error-msg' );
 						confirmParent.classList.add( 'srfm-error' );
 
-						if ( ! firstErrorInput ) {
-							firstErrorInput = confirmInput;
-						}
+						// Set the first error input.
+						setFirstErrorInput( confirmInput );
 						validateResult = true;
 					} else if ( confirmValue !== inputValue ) {
 						confirmParent.classList.add( 'srfm-error' );
 						confirmError.textContent =
 							'Confirmation email is not the same';
 
-						if ( ! firstErrorInput ) {
-							firstErrorInput = confirmInput;
-						}
+						// Set the first error input.
+						setFirstErrorInput( confirmInput );
 						validateResult = true;
 					} else {
 						confirmParent.classList.remove( 'srfm-error' );
@@ -367,9 +370,8 @@ export async function fieldValidation(
 				}
 
 				validateResult = true;
-				if ( ! firstErrorInput ) {
-					firstErrorInput = uploadInput;
-				}
+				// Set the first error input.
+				setFirstErrorInput( uploadInput );
 			} else if ( inputField ) {
 				inputField
 					.closest( '.srfm-block' )
@@ -451,10 +453,47 @@ export async function fieldValidation(
 					.closest( '.srfm-block' )
 					.classList.add( 'srfm-error' );
 				validateResult = true;
+				// Set the first error input.
+				setFirstErrorInput( container.querySelector( '.srfm-icon' ) );
 			} else {
 				ratingInput
 					.closest( '.srfm-block' )
 					.classList.remove( 'srfm-error' );
+			}
+		}
+
+		// Slider Field.
+		if ( container.classList.contains( 'srfm-slider-block' ) ) {
+			const isSliderRequired = container.getAttribute( 'data-required' );
+			const sliderInput = container.querySelector( '.srfm-input-slider' );
+			const textSliderElement =
+				container.querySelector( '.srfm-text-slider' );
+			const sliderDefault = container.getAttribute( 'data-default' );
+			if ( isSliderRequired === 'true' ) {
+				let hasError = false;
+				if (
+					sliderInput &&
+					! sliderInput.dataset.interacted &&
+					( ! sliderDefault || sliderDefault === 'false' )
+				) {
+					hasError = true;
+				} else if (
+					textSliderElement &&
+					! textSliderElement.dataset.interacted &&
+					( ! sliderDefault || sliderDefault === 'false' )
+				) {
+					hasError = true;
+				}
+
+				if ( hasError ) {
+					container.classList.add( 'srfm-error' );
+					validateResult = true;
+					if ( ! firstErrorInput ) {
+						firstErrorInput = sliderInput;
+					}
+				} else {
+					container.classList.remove( 'srfm-error' );
+				}
 			}
 		}
 
@@ -529,6 +568,7 @@ export function initializeInlineFieldValidation() {
 		'srfm-rating-block',
 		'srfm-textarea-block',
 		'srfm-dropdown-block',
+		'srfm-slider-block',
 	];
 
 	srfmFields.forEach( ( block ) => addBlurListener( block, `.${ block }` ) );
@@ -573,6 +613,11 @@ function addBlurListener( containerClass, blockClass ) {
 				addEmailBlurListener( areaInput, blockClass );
 			}
 
+			// Function to validate slider inputs within the slider block
+			if ( containerClass === 'srfm-slider-block' ) {
+				addSliderBlurListener( areaField, areaInput, blockClass );
+			}
+
 			// for all other fields
 			if ( areaField ) {
 				areaField.addEventListener( 'blur', async function () {
@@ -592,7 +637,7 @@ function addBlurListener( containerClass, blockClass ) {
  * @param {string}      blockClass
  */
 function addRatingBlurListener( areaField, areaInput, blockClass ) {
-	areaField = areaInput.querySelectorAll( '.srfm-star-icon' );
+	areaField = areaInput.querySelectorAll( '.srfm-icon' );
 
 	areaField.forEach( ( field, index ) => {
 		if ( index === areaField.length - 1 ) {
@@ -689,15 +734,49 @@ function addEmailBlurListener( areaInput, blockClass ) {
 
 			// Handle general email validation
 			if ( ! isValidEmail ) {
-				inputBlock.classList.add( 'srfm-valid-email-error' );
+				inputBlock.parentElement.classList.add(
+					'srfm-valid-email-error'
+				);
 				errorContainer.style.display = 'block';
 				errorContainer.innerHTML = 'Please enter a valid email address';
 			} else {
 				errorContainer.style.display = 'none';
-				inputBlock.classList.remove( 'srfm-valid-email-error' );
+				inputBlock.parentElement.classList.remove(
+					'srfm-valid-email-error'
+				);
 			}
 		} );
 	} );
+}
+
+/**
+ * Add blur listeners to slider fields
+ * That shows validation errors on blur.
+ *
+ * @param {HTMLElement} areaField
+ * @param {HTMLElement} areaInput
+ * @param {string}      blockClass
+ */
+function addSliderBlurListener( areaField, areaInput, blockClass ) {
+	const sliderInput = areaInput.querySelector( '.srfm-input-slider' );
+	const textSliderElement = areaInput.querySelector( '.srfm-text-slider' );
+	// Number slider
+	if ( sliderInput ) {
+		sliderInput.addEventListener( 'blur', async function () {
+			fieldValidationInit( sliderInput, blockClass );
+		} );
+	}
+
+	// Text slider
+	if ( textSliderElement ) {
+		const sliderThumb =
+			textSliderElement.querySelector( '.srfm-slider-thumb' );
+		if ( sliderThumb ) {
+			sliderThumb.addEventListener( 'blur', async function () {
+				fieldValidationInit( sliderThumb, blockClass );
+			} );
+		}
+	}
 }
 
 /**

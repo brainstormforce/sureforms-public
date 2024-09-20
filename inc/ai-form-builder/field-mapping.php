@@ -143,13 +143,16 @@ class Field_Mapping {
 					}
 					if ( 'rating' === $question['fieldType'] ) {
 						$merged_attributes['iconShape']     = ! empty( $question['iconShape'] ) ? sanitize_text_field( $question['iconShape'] ) : 'star';
-						$merged_attributes['showText']      = ! empty( $question['showText'] ) ? filter_var( $question['showText'], FILTER_VALIDATE_BOOLEAN ) : false;
+						$merged_attributes['showText']      = ! empty( $question['showTooltip'] ) ? filter_var( $question['showTooltip'], FILTER_VALIDATE_BOOLEAN ) : false;
 						$merged_attributes['defaultRating'] = ! empty( $question['defaultRating'] ) ? filter_var( $question['defaultRating'], FILTER_VALIDATE_INT ) : 0;
-						foreach ( $question['tooltipValues'] as $tooltips ) {
-							$i = 0;
-							foreach ( $tooltips as $key => $value ) {
-								$merged_attributes['ratingText'][ $i ] = ! empty( $value ) ? sanitize_text_field( $value ) : '';
-								$i++;
+
+						if ( ! empty( $merged_attributes['showText'] ) ) {
+							foreach ( $question['tooltipValues'] as $tooltips ) {
+								$i = 0;
+								foreach ( $tooltips as $key => $value ) {
+									$merged_attributes['ratingText'][ $i ] = ! empty( $value ) ? sanitize_text_field( $value ) : '';
+									$i++;
+								}
 							}
 						}
 					}

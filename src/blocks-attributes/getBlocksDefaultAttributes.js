@@ -17,9 +17,9 @@ const defaultKeys = {
 	// Submit button
 	_srfm_submit_button_text: { default: 'Submit' },
 	// Page Break
-	_srfm_first_page_label: { default: 'Page break' },
-	_srfm_previous_button_text: { default: 'Previous' },
-	_srfm_next_button_text: { default: 'Next' },
+	first_page_label: { default: 'Page Break Label' },
+	next_button_text: { default: 'Next' },
+	back_button_text: { default: 'Back' },
 	// Style Tab
 	// Form Container
 	primary_color: { default: '#0C78FB' },
@@ -28,16 +28,6 @@ const defaultKeys = {
 	form_container_width: { default: 620 },
 	cover_color: { default: '#0C78FB' },
 	bg_color: { default: '#ffffff' },
-	// Page Break
-	_srfm_page_break_button_text_color: { default: '#ffffff' },
-	_srfm_page_break_button_bg_color: { default: '#D54407' },
-	_srfm_page_break_button_border_color: { default: '#ffffff' },
-	_srfm_page_break_button_border_width: { default: 0 },
-	_srfm_page_break_button_border_radius: { default: 4 },
-	// Advanced Tab
-	_srfm_thankyou_message_title: { default: 'Thank you' },
-	_srfm_thankyou_message: { default: 'Form submitted successfully!' },
-	_srfm_submit_url: { default: '' },
 };
 
 export const blocksAttributes = {

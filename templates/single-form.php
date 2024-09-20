@@ -17,6 +17,7 @@ $srfm_form_preview   = isset( $_GET['form_preview'] ) ? boolval( sanitize_text_f
 $srfm_live_mode_data = Helper::get_instant_form_live_data();
 
 $instant_form_settings         = ! empty( $srfm_live_mode_data ) ? $srfm_live_mode_data : Helper::get_array_value( Helper::get_post_meta( $srfm_custom_post_id, '_srfm_instant_form_settings' ) );
+$site_logo                     = $instant_form_settings['site_logo'];
 $bg_type                       = $instant_form_settings['bg_type'];
 $bg_color                      = $instant_form_settings['bg_color'];
 $bg_image                      = $instant_form_settings['bg_image'];
@@ -64,6 +65,9 @@ if ( 'image' === $bg_type ) {
 			}
 			#wpadminbar {
 				display: none;
+			}
+			body {
+				pointer-events: none;
 			}
 			<?php
 		}
@@ -141,6 +145,14 @@ if ( 'image' === $bg_type ) {
 		<div id="srfm-single-page-container" class="srfm-single-page-container <?php echo ! ! $single_page_form_title ? 'has-form-title' : ''; ?>">
 			<div class="srfm-page-banner">
 				<?php
+				if ( ! empty( $site_logo ) ) {
+					?>
+					<a href="<?php echo esc_url( home_url() ); ?>" aria-label="<?php esc_attr_e( 'Link to homepage', 'sureforms' ); ?>">
+						<img class="srfm-site-logo" src="<?php echo esc_url( $site_logo ); ?>" alt="<?php esc_attr_e( 'Instant form site logo', 'sureforms' ); ?>">
+					</a>
+					<?php
+				}
+
 				if ( ! empty( $single_page_form_title ) ) {
 					?>
 					<h1 class="srfm-single-banner-title"><?php echo esc_html( get_the_title() ); ?></h1>

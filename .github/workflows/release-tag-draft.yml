@@ -46,7 +46,7 @@ jobs:
         run: bash ./bin/build-zip.sh
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: sureforms-plugin
           path: ./artifact/sureforms.zip
@@ -63,7 +63,7 @@ jobs:
         run: echo ::set-output name=version::$(echo $VERSION | cut -d / -f 3 | sed 's/-rc./ RC/' )
 
       - name: Download Plugin Zip Artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
           name: sureforms-plugin
 

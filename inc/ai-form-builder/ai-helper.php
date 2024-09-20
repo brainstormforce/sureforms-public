@@ -179,7 +179,7 @@ class AI_Helper {
 	 * Get the Error Message.
 	 *
 	 * @param array<string,mixed>|array<int|string,mixed>|\WP_Error $response The response from the SureForms API server.
-	 * @since x.x.x
+	 * @since 0.0.10
 	 * @return array<string, mixed> The Error Message.
 	 */
 	public static function get_error_message( $response ) {
@@ -239,7 +239,7 @@ class AI_Helper {
 	/**
 	 * Get the Licensing Instance.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.10
 	 * @return object|null The Licensing Instance.
 	 */
 	private static function get_licensing_instance() {
@@ -252,7 +252,7 @@ class AI_Helper {
 	/**
 	 * Get the SureForms Pro License Key.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.10
 	 * @return string The SureForms Pro License Key.
 	 */
 	private static function get_license_key() {
@@ -272,7 +272,7 @@ class AI_Helper {
 	/**
 	 * Check if the SureForms Pro license is active.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.10
 	 * @return bool|string True if the SureForms Pro license is active, false otherwise.
 	 */
 	public static function is_pro_license_active() {

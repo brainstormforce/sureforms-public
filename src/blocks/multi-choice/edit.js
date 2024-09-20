@@ -29,7 +29,6 @@ import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
 import { MultiChoiceComponent } from './components/default';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
-import widthOptions from '../width-options.json';
 import { FieldsPreview } from '../FieldsPreview.jsx';
 import ConditionalLogic from '@Components/conditional-logic';
 import MultiButtonsControl from '@Components/multi-buttons-control';
@@ -40,7 +39,6 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 	const {
 		required,
 		options,
-		fieldWidth,
 		choiceWidth,
 		singleSelection,
 		help,
@@ -138,17 +136,6 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 							title={ __( 'Attributes', 'sureforms' ) }
 							initialOpen={ true }
 						>
-							<SelectControl
-								label={ __( 'Field Width', 'sureforms' ) }
-								value={ fieldWidth }
-								options={ widthOptions }
-								onChange={ ( value ) =>
-									setAttributes( {
-										fieldWidth: Number( value ),
-									} )
-								}
-								__nextHasNoMarginBottom
-							/>
 							<ToggleControl
 								label={ __( 'Required', 'sureforms' ) }
 								checked={ required }
@@ -192,7 +179,30 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 							<SelectControl
 								label={ __( 'Choice Width', 'sureforms' ) }
 								value={ choiceWidth }
-								options={ widthOptions }
+								options={ [
+									{
+										label: __( 'Full Width', 'sureforms' ),
+										value: 100,
+									},
+									{
+										label: __( 'Two Columns', 'sureforms' ),
+										value: 50,
+									},
+									{
+										label: __(
+											'Three Columns',
+											'sureforms'
+										),
+										value: 33.33,
+									},
+									{
+										label: __(
+											'Four Columns',
+											'sureforms'
+										),
+										value: 25,
+									},
+								] }
 								onChange={ ( value ) =>
 									setAttributes( {
 										choiceWidth: Number( value ),

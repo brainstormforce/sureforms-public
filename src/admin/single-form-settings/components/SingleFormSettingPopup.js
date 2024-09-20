@@ -88,7 +88,11 @@ const SingleFormSettingsPopup = ( props ) => {
 			/* can contain child tabs not linked to nav */
 			/* add parent nav id for child tabs */
 		],
-		setSelectedTab
+		{
+			// Other arguments that can be consumed from hooks.
+			setSelectedTab,
+			setHasValidationErrors,
+		}
 	);
 
 	const { getBlocks, getCurrentPostId, getEditedPostContent } = select( editorStore );

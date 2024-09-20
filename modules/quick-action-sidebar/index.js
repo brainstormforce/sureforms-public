@@ -1,7 +1,7 @@
 /**
  * The Quick Access React App for Spectra Enhanced Editor.
  */
-import { createRoot } from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import Sidebar from './components/Sidebar';
 
 // Toggles the sidebar based on the url parameters.
