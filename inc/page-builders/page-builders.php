@@ -34,7 +34,7 @@ class Page_Builders {
 	/**
 	 * Enqueue common fields assets for the dropdown and phone fields.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.10
 	 * @return void
 	 */
 	public static function enqueue_common_fields_assets() {
