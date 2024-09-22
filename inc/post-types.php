@@ -1105,7 +1105,7 @@ class Post_Types {
 						'terms'    => $post_id_formatted,
 					],
 				],
-				'posts_per_page' => -1, // Retrieve all entries.
+				'posts_per_page' => 1, // Retrieve only 1 entry to minimize load.
 			];
 
 			$key   = 'sureforms_entries_count_' . $post_id_formatted;
@@ -1117,9 +1117,7 @@ class Post_Types {
 			}
 
 			if ( $query instanceof WP_Query ) {
-				$post_count = $query->post_count;
-
-				$post_count = strval( $post_count );
+				$post_count = Helper::get_string_value( $query->found_posts );
 
 				ob_start();
 				?>
