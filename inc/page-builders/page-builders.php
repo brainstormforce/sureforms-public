@@ -11,6 +11,7 @@ namespace SRFM\Inc\Page_Builders;
 use SRFM\Inc\Page_Builders\Elementor\Service_Provider as Elementor_Service_Provider;
 use SRFM\Inc\Page_Builders\Bricks\Service_Provider as Bricks_Service_Provider;
 use SRFM\Inc\Traits\Get_Instance;
+use SRFM\Inc\Frontend_Assets;
 
 /**
  * Class to add SureForms widget in other page builders.
@@ -49,6 +50,7 @@ class Page_Builders {
 
 		wp_enqueue_script( SRFM_SLUG . '-dropdown', $js_uri . 'dropdown' . $file_prefix . '.js', [], SRFM_VER, true );
 		wp_enqueue_script( SRFM_SLUG . '-tom-select', $js_vendor_uri . 'tom-select.min.js', [], SRFM_VER, true );
+		Frontend_Assets::enqueue_scripts();
 	}
 
 }

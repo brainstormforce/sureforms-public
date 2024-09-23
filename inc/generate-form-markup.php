@@ -13,6 +13,7 @@ use WP_Error;
 use SRFM\Inc\Traits\Get_Instance;
 use SRFM\Inc\Helper;
 use SRFM\Inc\Smart_Tags;
+use SRFM\Inc\Frontend_Assets;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -88,6 +89,9 @@ class Generate_Form_Markup {
 		$blocks            = parse_blocks( $content );
 		$block_count       = count( $blocks );
 		$current_post_type = get_post_type();
+
+		// load all the frontend assets.
+		Frontend_Assets::enqueue_scripts();
 
 		ob_start();
 		if ( '' !== $id && 0 !== $block_count ) {
