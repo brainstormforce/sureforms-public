@@ -20,9 +20,6 @@ export default ( { children } ) => {
 					#wpwrap {
 						background-color: #f1f5f9;
 					}
-					#wpcontent {
-						padding: 0;
-					}
 					@media screen and ( max-width: 782px ) {
 						.auto-fold #wpcontent {
 							padding-left: 0;
