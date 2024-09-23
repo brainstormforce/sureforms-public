@@ -537,3 +537,10 @@ body.post-type-sureforms_form {
 		box-shadow: 0 0 0 1px var( --wp-components-color-accent, var( --wp-admin-theme-color, #3858e9 ) ) !important;
 	}
 }
+
+// TODO: Adding style fot the temprary hide spectra QAB.
+body.post-type-sureforms_form {
+	.spectra-ee-quick-access-container {
+		display: none !important;
+	}
+}

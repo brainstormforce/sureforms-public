@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: SureForms 0.0.9\n"
+"Project-Id-Version: SureForms 0.0.10\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/sureforms\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-08-28T08:35:55+00:00\n"
+"POT-Creation-Date: 2024-09-17T11:32:50+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.10.0\n"
 "X-Domain: sureforms\n"
@@ -17,13 +17,13 @@ msgstr ""
 #. Plugin Name of the plugin
 #. Author of the plugin
 #: sureforms.php
-#: admin/admin.php:85
-#: admin/admin.php:86
-#: inc/gutenberg-hooks.php:259
+#: admin/admin.php:107
+#: admin/admin.php:108
+#: inc/gutenberg-hooks.php:109
 #: inc/page-builders/bricks/elements/form-widget.php:66
 #: inc/page-builders/bricks/service-provider.php:55
-#: inc/page-builders/elementor/form-widget.php:89
-#: inc/page-builders/elementor/form-widget.php:139
+#: inc/page-builders/elementor/form-widget.php:94
+#: inc/page-builders/elementor/form-widget.php:144
 #: inc/page-builders/elementor/service-provider.php:72
 #: assets/build/formEditor.js:172
 msgid "SureForms"
@@ -44,25 +44,25 @@ msgstr ""
 msgid "https://sureforms.com/"
 msgstr ""
 
-#: admin/admin.php:97
-#: admin/admin.php:98
+#: admin/admin.php:119
+#: admin/admin.php:120
 msgid "Dashboard"
 msgstr ""
 
-#: admin/admin.php:115
-#: admin/admin.php:116
-#: admin/admin.php:192
+#: admin/admin.php:137
+#: admin/admin.php:138
+#: admin/admin.php:214
 msgid "Settings"
 msgstr ""
 
-#: admin/admin.php:160
-#: admin/admin.php:161
+#: admin/admin.php:182
+#: admin/admin.php:183
 #: inc/post-types.php:133
 msgid "New Form"
 msgstr ""
 
 #. Translators: Post Title.
-#: admin/admin.php:263
+#: admin/admin.php:285
 msgid "Edit %1$s"
 msgstr ""
 
@@ -72,9 +72,9 @@ msgstr ""
 
 #: api/block-patterns.php:111
 #: inc/background-process.php:103
-#: inc/create-new-form.php:138
+#: inc/create-new-form.php:129
 #: inc/export.php:118
-#: inc/form-submit.php:206
+#: inc/form-submit.php:207
 #: inc/forms-data.php:89
 #: inc/global-settings/global-settings.php:87
 #: inc/global-settings/global-settings.php:264
@@ -171,51 +171,96 @@ msgstr ""
 msgid "Installed"
 msgstr ""
 
-#: inc/admin-ajax.php:164
+#: inc/admin-ajax.php:161
 #: assets/build/formEditor.js:172
 msgid "SureTriggers"
 msgstr ""
 
-#: inc/admin-ajax.php:165
+#: inc/admin-ajax.php:162
 msgid "Connect SureForms to over 600 apps, CRMs and tools such as Slack, Mailchimp, etc."
 msgstr ""
 
-#: inc/admin-ajax.php:166
+#: inc/admin-ajax.php:163
 msgid "SureTriggers is a powerful automation platform that helps you connect your various plugins and apps together. It allows you to automate repetitive tasks, so you can focus on more important work."
 msgstr ""
 
-#: inc/admin-ajax.php:242
+#: inc/admin-ajax.php:239
 msgid "Invalid form ID."
 msgstr ""
 
-#: inc/ai-form-builder/ai-form-builder.php:38
+#: inc/ai-form-builder/ai-form-builder.php:39
 msgid "The message array was not supplied"
 msgstr ""
 
-#: inc/ai-form-builder/ai-form-builder.php:64
-#: inc/ai-form-builder/ai-form-builder.php:74
+#: inc/ai-form-builder/ai-form-builder.php:68
+#: inc/ai-form-builder/ai-form-builder.php:78
 #: inc/ai-form-builder/ai-helper.php:73
 msgid "The SureForms AI Middleware encountered an error."
-msgstr ""
-
-#: inc/ai-form-builder/ai-form-builder.php:84
-msgid "Something went wrong"
-msgstr ""
-
-#: inc/ai-form-builder/ai-helper.php:63
-msgid "The SureForms AI Middleware is not responding."
 msgstr ""
 
 #: inc/ai-form-builder/ai-helper.php:95
 msgid "Unable to get usage response."
 msgstr ""
 
-#: inc/ai-form-builder/ai-helper.php:140
-msgid "The SureForms API server is not responding."
+#: inc/ai-form-builder/ai-helper.php:149
+msgid "The SureForms API server encountered an error."
 msgstr ""
 
-#: inc/ai-form-builder/ai-helper.php:150
-msgid "The SureForms API server encountered an error."
+#: inc/ai-form-builder/ai-helper.php:196
+#: inc/ai-form-builder/ai-helper.php:228
+msgid "An unknown error occurred."
+msgstr ""
+
+#: inc/ai-form-builder/ai-helper.php:203
+msgid "HTTP Request Failed"
+msgstr ""
+
+#: inc/ai-form-builder/ai-helper.php:204
+msgid "An error occurred while trying to connect to the SureForms API server. Please check your connection"
+msgstr ""
+
+#: inc/ai-form-builder/ai-helper.php:207
+msgid "License Verification Failed"
+msgstr ""
+
+#: inc/ai-form-builder/ai-helper.php:208
+msgid "An error occurred while trying to verify your license. Please check your license key"
+msgstr ""
+
+#: inc/ai-form-builder/ai-helper.php:211
+msgid "User Verification Failed"
+msgstr ""
+
+#: inc/ai-form-builder/ai-helper.php:212
+msgid "An error occurred while trying to verify your email. Please check your email you have used to log in/ sign up on billing.sureforms.com."
+msgstr ""
+
+#: inc/ai-form-builder/ai-helper.php:215
+msgid "Referer Mismatch"
+msgstr ""
+
+#: inc/ai-form-builder/ai-helper.php:216
+msgid "An error occurred while trying to verify your referer. Please check your referer."
+msgstr ""
+
+#: inc/ai-form-builder/ai-helper.php:219
+msgid "Invalid Website URL"
+msgstr ""
+
+#: inc/ai-form-builder/ai-helper.php:220
+msgid "AI Form Builder does not work on localhost. Please try on a live website."
+msgstr ""
+
+#: inc/ai-form-builder/ai-helper.php:223
+msgid "Domain Verification Failed"
+msgstr ""
+
+#: inc/ai-form-builder/ai-helper.php:224
+msgid "Domain Verification Failed on current site. Please try again on any another website."
+msgstr ""
+
+#: inc/ai-form-builder/ai-helper.php:227
+msgid "Unknown Error"
 msgstr ""
 
 #: inc/background-process.php:113
@@ -230,19 +275,19 @@ msgstr ""
 msgid "Sorry, you are not allowed to create forms."
 msgstr ""
 
-#: inc/create-new-form.php:150
+#: inc/create-new-form.php:141
 msgid "Invalid JSON format."
 msgstr ""
 
-#: inc/create-new-form.php:162
+#: inc/create-new-form.php:153
 msgid "Missing required properties in form info."
 msgstr ""
 
-#: inc/create-new-form.php:198
+#: inc/create-new-form.php:189
 msgid "SureForms Form created successfully."
 msgstr ""
 
-#: inc/create-new-form.php:205
+#: inc/create-new-form.php:196
 msgid "Error creating SureForms Form, "
 msgstr ""
 
@@ -305,8 +350,8 @@ msgstr ""
 msgid "I consent to have this website store my submitted information so they can respond to my inquiry."
 msgstr ""
 
-#: inc/fields/inlinebutton-markup.php:181
-#: inc/generate-form-markup.php:327
+#: inc/fields/inlinebutton-markup.php:183
+#: inc/generate-form-markup.php:329
 msgid "Please verify that you are not a robot."
 msgstr ""
 
@@ -335,35 +380,49 @@ msgstr ""
 msgid "Url"
 msgstr ""
 
-#: inc/form-submit.php:85
+#: inc/form-submit.php:86
 msgid "Sorry, you cannot access this route"
 msgstr ""
 
-#: inc/form-submit.php:215
+#: inc/form-submit.php:216
 msgid "Form data is not found."
 msgstr ""
 
-#: inc/form-submit.php:251
+#: inc/form-submit.php:252
 msgid "File is not uploaded"
 msgstr ""
 
-#: inc/form-submit.php:261
+#: inc/form-submit.php:262
 msgid "Form Id is missing."
 msgstr ""
 
-#: inc/form-submit.php:556
+#: inc/form-submit.php:557
 msgid "Entry #"
 msgstr ""
 
-#: inc/form-submit.php:606
+#: inc/form-submit.php:613
 msgid "Error submitting form"
+msgstr ""
+
+#: inc/form-submit.php:661
+msgid "Email Notification Initiated"
+msgstr ""
+
+#. translators: Here, %s is the comma separated emails list.
+#: inc/form-submit.php:696
+msgid "Email notification sent to %s"
+msgstr ""
+
+#. translators: Here, %s is the comma separated emails list.
+#: inc/form-submit.php:696
+msgid "Failed sending email notification to %s"
 msgstr ""
 
 #: inc/forms-data.php:69
 msgid "Sorry, you are not allowed to view the form."
 msgstr ""
 
-#: inc/generate-form-markup.php:353
+#: inc/generate-form-markup.php:355
 msgid "There was an error trying to submit your form. Please try again."
 msgstr ""
 
@@ -380,13 +439,13 @@ msgid "Let's see how your forms performed in the last week"
 msgstr ""
 
 #: inc/global-settings/email-summary.php:105
-#: inc/post-types.php:1143
+#: inc/post-types.php:1140
 msgid "Form Name"
 msgstr ""
 
 #: inc/global-settings/email-summary.php:106
 #: inc/post-types.php:170
-#: inc/post-types.php:1064
+#: inc/post-types.php:1061
 #: assets/build/dashboard.js:2
 msgid "Entries"
 msgstr ""
@@ -408,11 +467,11 @@ msgstr ""
 msgid "Settings Saved Successfully."
 msgstr ""
 
-#: inc/gutenberg-hooks.php:257
+#: inc/gutenberg-hooks.php:107
 msgid "General Fields"
 msgstr ""
 
-#: inc/gutenberg-hooks.php:269
+#: inc/gutenberg-hooks.php:119
 #: assets/build/formEditor.js:172
 msgid "Advanced Fields"
 msgstr ""
@@ -425,7 +484,7 @@ msgstr ""
 msgid "Value needs to be unique."
 msgstr ""
 
-#: inc/helper.php:468
+#: inc/helper.php:469
 msgid "Sorry, you are not allowed to perform this action."
 msgstr ""
 
@@ -435,7 +494,7 @@ msgid "Form"
 msgstr ""
 
 #: inc/page-builders/bricks/elements/form-widget.php:99
-#: inc/page-builders/elementor/form-widget.php:146
+#: inc/page-builders/elementor/form-widget.php:151
 msgid "Select Form"
 msgstr ""
 
@@ -448,45 +507,45 @@ msgid "Enable this to show form title."
 msgstr ""
 
 #: inc/page-builders/bricks/elements/form-widget.php:113
-#: inc/page-builders/elementor/form-widget.php:194
+#: inc/page-builders/elementor/form-widget.php:199
 msgid "Form submission will be possible on the frontend."
 msgstr ""
 
-#: inc/page-builders/bricks/elements/form-widget.php:141
-#: inc/page-builders/elementor/form-widget.php:222
+#: inc/page-builders/bricks/elements/form-widget.php:152
+#: inc/page-builders/elementor/form-widget.php:227
 msgid "Select the form that you wish to add here."
 msgstr ""
 
-#: inc/page-builders/elementor/form-widget.php:156
+#: inc/page-builders/elementor/form-widget.php:161
 #: assets/build/blocks.js:2
 #: assets/build/formEditor.js:172
 msgid "Form Title"
 msgstr ""
 
-#: inc/page-builders/elementor/form-widget.php:158
+#: inc/page-builders/elementor/form-widget.php:163
 msgid "Show"
 msgstr ""
 
-#: inc/page-builders/elementor/form-widget.php:159
+#: inc/page-builders/elementor/form-widget.php:164
 msgid "Hide"
 msgstr ""
 
-#: inc/page-builders/elementor/form-widget.php:170
+#: inc/page-builders/elementor/form-widget.php:175
 #: inc/post-types.php:134
 #: assets/build/blocks.js:2
 msgid "Edit Form"
 msgstr ""
 
-#: inc/page-builders/elementor/form-widget.php:173
+#: inc/page-builders/elementor/form-widget.php:178
 msgid "Edit"
 msgstr ""
 
-#: inc/page-builders/elementor/form-widget.php:184
+#: inc/page-builders/elementor/form-widget.php:189
 #: assets/build/dashboard.js:2
 msgid "Create New Form"
 msgstr ""
 
-#: inc/page-builders/elementor/form-widget.php:186
+#: inc/page-builders/elementor/form-widget.php:191
 msgid "Create"
 msgstr ""
 
@@ -632,68 +691,68 @@ msgstr ""
 msgid "Export"
 msgstr ""
 
-#: inc/post-types.php:819
+#: inc/post-types.php:816
 msgid "Fields"
 msgstr ""
 
-#: inc/post-types.php:819
+#: inc/post-types.php:816
 msgid "Values"
 msgstr ""
 
-#: inc/post-types.php:908
+#: inc/post-types.php:905
 msgid "Open"
 msgstr ""
 
-#: inc/post-types.php:997
+#: inc/post-types.php:994
 msgid "Form Name:"
 msgstr ""
 
-#: inc/post-types.php:1001
+#: inc/post-types.php:998
 msgid "Form ID:"
 msgstr ""
 
-#: inc/post-types.php:1005
+#: inc/post-types.php:1002
 msgid "User IP:"
 msgstr ""
 
-#: inc/post-types.php:1009
+#: inc/post-types.php:1006
 msgid "Browser:"
 msgstr ""
 
-#: inc/post-types.php:1013
+#: inc/post-types.php:1010
 msgid "Device:"
 msgstr ""
 
-#: inc/post-types.php:1020
-#: inc/post-types.php:1173
+#: inc/post-types.php:1017
+#: inc/post-types.php:1170
 msgid "SureForms Form"
 msgstr ""
 
-#: inc/post-types.php:1063
+#: inc/post-types.php:1060
 msgid "Shortcode"
 msgstr ""
 
-#: inc/post-types.php:1142
+#: inc/post-types.php:1139
 msgid "First Field"
 msgstr ""
 
-#: inc/post-types.php:1144
+#: inc/post-types.php:1141
 msgid "ID"
 msgstr ""
 
-#: inc/post-types.php:1145
+#: inc/post-types.php:1142
 msgid "Submitted On"
 msgstr ""
 
-#: inc/post-types.php:1201
+#: inc/post-types.php:1198
 msgid " All Form Entries"
 msgstr ""
 
-#: inc/post-types.php:1227
+#: inc/post-types.php:1224
 msgid "Please choose the SureForms export file (.json) that you wish to import."
 msgstr ""
 
-#: inc/post-types.php:1232
+#: inc/post-types.php:1229
 msgid "There is some error in json file, please export the SureForms Forms again."
 msgstr ""
 
@@ -8216,8 +8275,21 @@ msgstr ""
 msgid "Support"
 msgstr ""
 
-#: templates/single-form.php:165
+#: templates/single-form.php:147
+msgid "Link to homepage"
+msgstr ""
+
+#: templates/single-form.php:148
+msgid "Instant form site logo"
+msgstr ""
+
+#: templates/single-form.php:161
 msgid "Unpublished"
+msgstr ""
+
+#. translators: Here %s is the plugin's name.
+#: templates/single-form.php:181
+msgid "Powered By %s"
 msgstr ""
 
 #: assets/build/blocks.js:2
@@ -8363,10 +8435,6 @@ msgstr ""
 
 #: assets/build/blocks.js:172
 msgid "Attributes"
-msgstr ""
-
-#: assets/build/blocks.js:172
-msgid "Field Width"
 msgstr ""
 
 #: assets/build/blocks.js:172
@@ -8605,6 +8673,23 @@ msgid "Choice Width"
 msgstr ""
 
 #: assets/build/blocks.js:172
+#: assets/build/formEditor.js:172
+msgid "Full Width"
+msgstr ""
+
+#: assets/build/blocks.js:172
+msgid "Two Columns"
+msgstr ""
+
+#: assets/build/blocks.js:172
+msgid "Three Columns"
+msgstr ""
+
+#: assets/build/blocks.js:172
+msgid "Four Columns"
+msgstr ""
+
+#: assets/build/blocks.js:172
 msgid "Option Type"
 msgstr ""
 
@@ -8630,6 +8715,10 @@ msgstr ""
 
 #: assets/build/blocks.js:172
 msgid "Enable Search"
+msgstr ""
+
+#: assets/build/blocks.js:172
+msgid "%s Width"
 msgstr ""
 
 #: assets/build/dashboard.js:2
@@ -8915,6 +9004,11 @@ msgid "Form input tags"
 msgstr ""
 
 #: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
+msgid "Comma separated values are also accepted."
+msgstr ""
+
+#: assets/build/formEditor.js:172
 msgid "Email Notification"
 msgstr ""
 
@@ -9087,11 +9181,11 @@ msgid "Progress Indicator"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-msgid "Previous Button Text"
+msgid "Next Button Text"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-msgid "Next Button Text"
+msgid "Back Button Text"
 msgstr ""
 
 #: assets/build/formEditor.js:172
@@ -9171,35 +9265,6 @@ msgid "Right"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-msgid "Full Width"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-msgid "Page Break Buttons"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-msgid "Inherit From Theme"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:11
-msgid "Background Color"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-msgid "Border Color"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-msgid "Border Width"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-msgid "Border Radius"
-msgstr ""
-
-#: assets/build/formEditor.js:172
 msgid "Anti-Spam Settings"
 msgstr ""
 
@@ -9273,7 +9338,11 @@ msgid " Separate multiple classes with spaces. "
 msgstr ""
 
 #: assets/build/formEditor.js:172
-msgid "Date & Time Picker"
+msgid "Date Picker"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+msgid "Time Picker"
 msgstr ""
 
 #: assets/build/formEditor.js:172
@@ -9301,6 +9370,10 @@ msgid "Add Block"
 msgstr ""
 
 #: assets/build/formEditor.js:172
+msgid "Customize with SureForms"
+msgstr ""
+
+#: assets/build/formEditor.js:172
 msgid "Instant Form"
 msgstr ""
 
@@ -9317,6 +9390,10 @@ msgid "Show Title"
 msgstr ""
 
 #: assets/build/formEditor.js:172
+msgid "Site Logo"
+msgstr ""
+
+#: assets/build/formEditor.js:172
 msgid "Banner Background"
 msgstr ""
 
@@ -9329,6 +9406,11 @@ msgstr ""
 
 #: assets/build/formEditor.js:172
 msgid "Upload Image"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+#: modules/gutenberg/build/blocks.js:11
+msgid "Background Color"
 msgstr ""
 
 #: assets/build/formEditor.js:172
@@ -9366,10 +9448,6 @@ msgstr ""
 
 #: assets/build/formEditor.js:172
 msgid "SureForms Description"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-msgid "Customize with SureForms"
 msgstr ""
 
 #: assets/build/formEditor.js:172
@@ -9443,10 +9521,6 @@ msgstr ""
 
 #: assets/build/settings.js:172
 msgid "To"
-msgstr ""
-
-#: assets/build/settings.js:172
-msgid "Comma separated values are also accepted."
 msgstr ""
 
 #: assets/build/settings.js:172
@@ -9620,22 +9694,6 @@ msgid "Exit to Dashboard"
 msgstr ""
 
 #: assets/build/templatePicker.js:172
-msgid "You have reached the maximum number of form generations in your Free Plan."
-msgstr ""
-
-#: assets/build/templatePicker.js:172
-msgid "Please upgrade your free plan to keep creating more forms with AI."
-msgstr ""
-
-#: assets/build/templatePicker.js:172
-msgid "You have reached the maximum number of form generations."
-msgstr ""
-
-#: assets/build/templatePicker.js:172
-msgid "Please connect your website with SureForms AI to create 20 more forms with AI."
-msgstr ""
-
-#: assets/build/templatePicker.js:172
 msgid "Connecting with AI…"
 msgstr ""
 
@@ -9677,6 +9735,34 @@ msgstr ""
 
 #: assets/build/templatePicker.js:172
 msgid "Generate Form"
+msgstr ""
+
+#: assets/build/templatePicker.js:172
+msgid "Try Again"
+msgstr ""
+
+#: assets/build/templatePicker.js:172
+msgid "You have reached the FUP limit of AI form generations for the day."
+msgstr ""
+
+#: assets/build/templatePicker.js:172
+msgid "Please try again after %s."
+msgstr ""
+
+#: assets/build/templatePicker.js:172
+msgid "You have reached the maximum number of form generations in your Free Plan."
+msgstr ""
+
+#: assets/build/templatePicker.js:172
+msgid "Please upgrade your free plan to keep creating more forms with AI."
+msgstr ""
+
+#: assets/build/templatePicker.js:172
+msgid "You have reached the maximum number of form generations."
+msgstr ""
+
+#: assets/build/templatePicker.js:172
+msgid "Please connect your website with SureForms AI to create 20 more forms with AI."
 msgstr ""
 
 #: assets/build/templatePicker.js:172

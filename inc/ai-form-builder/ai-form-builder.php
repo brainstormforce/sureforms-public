@@ -9,6 +9,7 @@
 namespace SRFM\Inc\AI_Form_Builder;
 
 use SRFM\Inc\Traits\Get_Instance;
+use SRFM\Inc\Helper;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
@@ -54,9 +55,12 @@ class AI_Form_Builder {
 
 		// Get the response from the endpoint.
 		$response = AI_Helper::get_chat_completions_response(
-			[
-				'query' => $messages[0]['content'],
-			]
+			array_merge(
+				[
+					'query' => $messages[0]['content'],
+				],
+				defined( 'SRFM_AI_SYSTEM_PROMPT_ARGS' ) ? Helper::get_array_value( SRFM_AI_SYSTEM_PROMPT_ARGS ) : []
+			)
 		);
 
 		// check if response is an array if not then send error.
@@ -81,7 +85,7 @@ class AI_Form_Builder {
 			wp_send_json_success( $response );
 		} else {
 			// If you've reached here, then something has definitely gone amuck. Abandon ship.
-			wp_send_json_error( [ 'message' => __( 'Something went wrong', 'sureforms' ) ] );
+			wp_send_json_error( $response );
 		}//end if
 	}
 

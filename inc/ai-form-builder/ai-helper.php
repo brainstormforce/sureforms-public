@@ -12,6 +12,7 @@
 namespace SRFM\Inc\AI_Form_Builder;
 
 use SRFM\Inc\Traits\Get_Instance;
+use SRFM_Pro\Admin\Licensing;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
@@ -40,6 +41,7 @@ class AI_Helper {
 			'headers' => [
 				'X-Token'      => base64_encode( self::get_user_token() ), // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode -- This is not for obfuscation.
 				'Content-Type' => 'application/json',
+				'Referer'      => site_url(),
 			],
 			'timeout' => 30, // phpcs:ignore WordPressVIPMinimum.Performance.RemoteRequestTimeout.timeout_timeout -- 30 seconds is required sometime for open ai responses
 		];
@@ -59,9 +61,7 @@ class AI_Helper {
 
 		// If the response was an error, or not a 200 status code, then abandon ship.
 		if ( is_wp_error( $response ) || empty( $response['response'] ) || 200 !== wp_remote_retrieve_response_code( $response ) ) {
-			return [
-				'error' => __( 'The SureForms AI Middleware is not responding.', 'sureforms' ),
-			];
+			return self::get_error_message( $response );
 		}
 
 		// Get the response body.
@@ -129,6 +129,7 @@ class AI_Helper {
 				'headers' => [
 					'X-Token'      => base64_encode( self::get_user_token() ), // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode -- This is not for obfuscation.
 					'Content-Type' => 'application/json',
+					'Referer'      => site_url(),
 				],
 				'timeout' => 30, // phpcs:ignore WordPressVIPMinimum.Performance.RemoteRequestTimeout.timeout_timeout -- 30 seconds is required sometime for the SureForms API response
 			]
@@ -136,9 +137,7 @@ class AI_Helper {
 
 		// If the response was an error, or not a 200 status code, then abandon ship.
 		if ( is_wp_error( $response ) || empty( $response['response'] ) || 200 !== wp_remote_retrieve_response_code( $response ) ) {
-			return [
-				'error' => __( 'The SureForms API server is not responding.', 'sureforms' ),
-			];
+			return self::get_error_message( $response );
 		}
 
 		// Get the response body.
@@ -162,8 +161,128 @@ class AI_Helper {
 	 * @return string The User Token.
 	 */
 	private static function get_user_token() {
+		// if the license is active then use the license key as the token.
+		if ( defined( 'SRFM_PRO_VER' ) ) {
+			$license_key = self::get_license_key();
+			if ( ! empty( $license_key ) ) {
+				return $license_key;
+			}
+		}
+
 		$user_email = get_option( 'srfm_ai_auth_user_email' );
+
+		// if the license is not active then use the user email/site url as the token.
 		return ! empty( $user_email ) && is_array( $user_email ) ? $user_email['user_email'] : site_url();
+	}
+
+	/**
+	 * Get the Error Message.
+	 *
+	 * @param array<string,mixed>|array<int|string,mixed>|\WP_Error $response The response from the SureForms API server.
+	 * @since 0.0.10
+	 * @return array<string, mixed> The Error Message.
+	 */
+	public static function get_error_message( $response ) {
+		$errors = isset( $response->errors ) ? $response->errors : [];
+
+		if ( empty( $errors )
+		&& is_array( $response ) && isset( $response['body'] ) && is_string( $response['body'] )
+		) {
+			$errors    = json_decode( $response['body'], true );
+			$error_key = is_array( $errors ) && isset( $errors['code'] ) ? $errors['code'] : '';
+		} else {
+			$error_key = array_key_first( $errors );
+			if ( empty( $errors[ $error_key ] ) ) {
+				$message = __( 'An unknown error occurred.', 'sureforms' );
+			}
+		}
+
+		// Error Codes with Messages.
+		switch ( $error_key ) {
+			case 'http_request_failed':
+				$title   = __( 'HTTP Request Failed', 'sureforms' );
+				$message = __( 'An error occurred while trying to connect to the SureForms API server. Please check your connection', 'sureforms' );
+				break;
+			case 'license_verification_failed':
+				$title   = __( 'License Verification Failed', 'sureforms' );
+				$message = __( 'An error occurred while trying to verify your license. Please check your license key', 'sureforms' );
+				break;
+			case 'user_verification_failed':
+				$title   = __( 'User Verification Failed', 'sureforms' );
+				$message = __( 'An error occurred while trying to verify your email. Please check your email you have used to log in/ sign up on billing.sureforms.com.', 'sureforms' );
+				break;
+			case 'referer_mismatch':
+				$title   = __( 'Referer Mismatch', 'sureforms' );
+				$message = __( 'An error occurred while trying to verify your referer. Please check your referer.', 'sureforms' );
+				break;
+			case 'invalid_token':
+				$title   = __( 'Invalid Website URL', 'sureforms' );
+				$message = __( 'AI Form Builder does not work on localhost. Please try on a live website.', 'sureforms' );
+				break;
+			case 'domain_verification_failed':
+				$title   = __( 'Domain Verification Failed', 'sureforms' );
+				$message = __( 'Domain Verification Failed on current site. Please try again on any another website.', 'sureforms' );
+				break;
+			default:
+				$title   = __( 'Unknown Error', 'sureforms' );
+				$message = __( 'An unknown error occurred.', 'sureforms' );
+		}
+
+		return [
+			'code'    => $error_key,
+			'title'   => $title,
+			'message' => $message,
+		];
+
+	}
+
+	/**
+	 * Get the Licensing Instance.
+	 *
+	 * @since 0.0.10
+	 * @return object|null The Licensing Instance.
+	 */
+	private static function get_licensing_instance() {
+		if ( ! class_exists( 'SRFM_Pro\Admin\Licensing' ) ) {
+			return null;
+		}
+		return Licensing::get_instance();
+	}
+
+	/**
+	 * Get the SureForms Pro License Key.
+	 *
+	 * @since 0.0.10
+	 * @return string The SureForms Pro License Key.
+	 */
+	private static function get_license_key() {
+		$licensing = self::get_licensing_instance();
+		if ( ! $licensing ||
+		! method_exists( $licensing, 'licensing_setup' ) || ! method_exists( $licensing->licensing_setup(), 'settings' ) ) {
+			return '';
+		}
+		// Check if the SureForms Pro license is active.
+		$is_license_active = self::is_pro_license_active();
+		// If the license is active, get the license key.
+		$license_setup = $licensing->licensing_setup();
+		$license_key   = ( ! empty( $is_license_active ) && is_object( $license_setup ) && method_exists( $license_setup, 'settings' ) ) ? $license_setup->settings()->license_key : '';
+				return $license_key;
+	}
+
+	/**
+	 * Check if the SureForms Pro license is active.
+	 *
+	 * @since 0.0.10
+	 * @return bool|string True if the SureForms Pro license is active, false otherwise.
+	 */
+	public static function is_pro_license_active() {
+		$licensing = self::get_licensing_instance();
+		if ( ! $licensing || ! method_exists( $licensing, 'is_license_active' )
+		) {
+			return '';
+		}
+		// Check if the SureForms Pro license is active.
+		return $licensing->is_license_active();
 	}
 
 }

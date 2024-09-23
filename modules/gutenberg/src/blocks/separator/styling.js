@@ -339,6 +339,7 @@ function styling( attributes, clientId, name, deviceType ) {
 				blockLeftPadding,
 				blockPaddingUnit || 'px'
 			),
+			'text-align': separatorAlign,
 		},
 	};
 
@@ -709,6 +710,7 @@ function styling( attributes, clientId, name, deviceType ) {
 				blockLeftPaddingMobile,
 				blockPaddingUnitMobile || 'px'
 			),
+			'text-align': separatorAlignMobile,
 		},
 	};
 

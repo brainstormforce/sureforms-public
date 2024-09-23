@@ -87,4 +87,7 @@ function itiContainerClass( element ) {
 	} );
 }
 
+// make phone field initialization function available globally
+window.srfmInitializePhoneField = initializePhoneField;
+
 document.addEventListener( 'DOMContentLoaded', initializePhoneField );

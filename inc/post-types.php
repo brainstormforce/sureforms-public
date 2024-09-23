@@ -432,9 +432,6 @@ class Post_Types {
 				// Advanced tab metas.
 				// Success Message.
 				'_srfm_submit_type'              => 'string',
-				'_srfm_thankyou_message_title'   => 'string',
-				'_srfm_thankyou_message'         => 'string',
-				'_srfm_submit_url'               => 'string',
 				// Security.
 				'_srfm_captcha_security_type'    => 'string',
 				'_srfm_form_recaptcha'           => 'string',
@@ -543,7 +540,7 @@ class Post_Types {
 					'cover_color'                   => '#0C78FB',
 					'cover_image'                   => '',
 					'enable_instant_form'           => false,
-					'form_container_width'          => 560,
+					'form_container_width'          => 620,
 					'single_page_form_title'        => true,
 					'use_banner_as_page_background' => false,
 				],

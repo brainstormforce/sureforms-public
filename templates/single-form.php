@@ -17,6 +17,7 @@ $srfm_form_preview   = isset( $_GET['form_preview'] ) ? boolval( sanitize_text_f
 $srfm_live_mode_data = Helper::get_instant_form_live_data();
 
 $instant_form_settings         = ! empty( $srfm_live_mode_data ) ? $srfm_live_mode_data : Helper::get_array_value( Helper::get_post_meta( $srfm_custom_post_id, '_srfm_instant_form_settings' ) );
+$site_logo                     = $instant_form_settings['site_logo'];
 $bg_type                       = $instant_form_settings['bg_type'];
 $bg_color                      = $instant_form_settings['bg_color'];
 $bg_image                      = $instant_form_settings['bg_image'];
@@ -37,19 +38,6 @@ if ( 'image' === $bg_type ) {
 	$bg_image = 'none';
 	$bg_color = $bg_color ? $bg_color : '';
 }
-
-$form_styling = Helper::get_meta_value(
-	$srfm_custom_post_id,
-	'_srfm_forms_styling',
-	true,
-	[
-		'primary_color'           => '#0C78FB',
-		'text_color'              => '#1E1E1E',
-		'text_color_on_primary'   => '#FFFFFF',
-		'field_spacing'           => 'medium',
-		'submit_button_alignment' => 'left',
-	]
-);
 
 ?>
 <!DOCTYPE html>
@@ -77,6 +65,9 @@ $form_styling = Helper::get_meta_value(
 			}
 			#wpadminbar {
 				display: none;
+			}
+			body {
+				pointer-events: none;
 			}
 			<?php
 		}
@@ -154,6 +145,14 @@ $form_styling = Helper::get_meta_value(
 		<div id="srfm-single-page-container" class="srfm-single-page-container <?php echo ! ! $single_page_form_title ? 'has-form-title' : ''; ?>">
 			<div class="srfm-page-banner">
 				<?php
+				if ( ! empty( $site_logo ) ) {
+					?>
+					<a href="<?php echo esc_url( home_url() ); ?>" aria-label="<?php esc_attr_e( 'Link to homepage', 'sureforms' ); ?>">
+						<img class="srfm-site-logo" src="<?php echo esc_url( $site_logo ); ?>" alt="<?php esc_attr_e( 'Instant form site logo', 'sureforms' ); ?>">
+					</a>
+					<?php
+				}
+
 				if ( ! empty( $single_page_form_title ) ) {
 					?>
 					<h1 class="srfm-single-banner-title"><?php echo esc_html( get_the_title() ); ?></h1>
@@ -174,6 +173,19 @@ $form_styling = Helper::get_meta_value(
 				// phpcs:ignoreEnd
 				?>
 			</div>
+			<?php
+			if ( ! defined( 'SRFM_PRO_VER' ) ) {
+				// Display SureForms branding if SureForms Pro is not activated.
+				echo wp_kses_post(
+					sprintf(
+						'<a href="%1$s" class="srfm-branding" target="_blank">%2$s</a>',
+						esc_url( SRFM_WEBSITE ),
+						/* translators: Here %s is the plugin's name. */
+							sprintf( esc_html__( 'Powered By %s', 'sureforms' ), 'SureForms' )
+					)
+				);
+			}
+			?>
 		</div>
 	<?php } else { ?>
 		<?php
