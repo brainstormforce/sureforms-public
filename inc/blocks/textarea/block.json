@@ -40,7 +40,7 @@
 			"type": "string",
 			"default": "Textarea"
 		},
-		"textAreaHelpText": {
+		"help": {
 			"type": "string",
 			"default": ""
 		},

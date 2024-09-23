@@ -30,7 +30,6 @@ class Checkbox_Markup extends Base {
 		$this->set_input_label( __( 'Checkbox', 'sureforms' ) );
 		$this->set_error_msg( $attributes, 'srfm_checkbox_block_required_text' );
 		$this->slug = 'checkbox';
-		$this->help = isset( $attributes['checkboxHelpText'] ) ? $attributes['checkboxHelpText'] : '';
 		$this->set_markup_properties();
 		$this->set_aria_described_by();
 	}
