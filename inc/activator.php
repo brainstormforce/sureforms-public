@@ -54,7 +54,7 @@ class Activator {
 	/**
 	 * Create necessary table tables on plugin activation.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.10
 	 * @return void
 	 */
 	protected static function create_tables() {

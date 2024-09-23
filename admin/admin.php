@@ -48,7 +48,7 @@ class Admin {
 	/**
 	 * Enable Gutenberg for SureForms associated post types.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.10
 	 */
 	public function enable_gutenberg_for_sureforms() {
 

@@ -120,7 +120,7 @@ class Form_Widget extends \Bricks\Element {
 	/**
 	 * Enqueue scripts for phone and dropdown field in the Bricks editor.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.10
 	 * @return void
 	 */
 	public function enqueue_scripts() {

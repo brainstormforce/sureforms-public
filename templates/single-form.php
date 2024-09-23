@@ -66,6 +66,9 @@ if ( 'image' === $bg_type ) {
 			#wpadminbar {
 				display: none;
 			}
+			body {
+				pointer-events: none;
+			}
 			<?php
 		}
 
