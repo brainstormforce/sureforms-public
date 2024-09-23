@@ -146,7 +146,7 @@ export async function fieldValidation(
 						.closest( '.srfm-block' )
 						.classList.add( 'srfm-error' );
 				}
-				
+
 				errorMessage.style.display = 'block';
 
 				errorMessage.textContent =
