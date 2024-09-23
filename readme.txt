@@ -252,6 +252,8 @@ Yes! You can certainly use SureForms on yours as well as your client’s website
 When you use the SureForms, you get a huge library of ready-to-use form templates that can be used to build your forms fast.
 
 == Changelog ==
+= x.x.x =
+* Improvement: Added support for emojis and special characters in SureForm AI response.
 = 0.0.10 =
 * New: Added a new custom table for the entries to improve performance.
 * Improvement: Added help text for the Email field.

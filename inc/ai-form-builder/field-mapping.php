@@ -9,6 +9,7 @@
 namespace SRFM\Inc\AI_Form_Builder;
 
 use SRFM\Inc\Traits\Get_Instance;
+use SRFM\Inc\Helper;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
@@ -126,7 +127,7 @@ class Field_Mapping {
 						$merged_attributes['autoCountry'] = true;
 					}
 
-					$post_content .= '<!-- wp:srfm/' . $question['fieldType'] . ' ' . wp_json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
+					$post_content .= '<!-- wp:srfm/' . $question['fieldType'] . ' ' . Helper::encode_json( $merged_attributes ) . ' /-->' . PHP_EOL;
 					break;
 				case 'slider':
 				case 'page-break':
@@ -217,11 +218,11 @@ class Field_Mapping {
 
 					}
 
-					$post_content .= '<!-- wp:srfm/' . $question['fieldType'] . ' ' . wp_json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
+					$post_content .= '<!-- wp:srfm/' . $question['fieldType'] . ' ' . Helper::encode_json( $merged_attributes ) . ' /-->' . PHP_EOL;
 					break;
 				default:
 					// Unsupported field type - fallback to input.
-					$post_content .= '<!-- wp:srfm/input ' . wp_json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
+					$post_content .= '<!-- wp:srfm/input ' . Helper::encode_json( $merged_attributes ) . ' /-->' . PHP_EOL;
 			}
 		}
 

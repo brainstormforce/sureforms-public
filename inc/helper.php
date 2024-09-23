@@ -936,4 +936,15 @@ class Helper {
 		return $slug . '-' . $index;
 	}
 
+	/**
+	 * Encode data to JSON. This function will encode the data with JSON_UNESCAPED_SLASHES and JSON_UNESCAPED_UNICODE.
+	 *
+	 * @since x.x.x
+	 * @param array<mixed> $data The data to encode.
+	 * @return string|false The JSON representation of the value on success or false on failure.
+	 */
+	public static function encode_json( $data ) {
+		return wp_json_encode( $data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE );
+	}
+
 }
