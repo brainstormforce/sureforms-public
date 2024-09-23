@@ -1096,7 +1096,7 @@ class Post_Types {
 			$taxonomy = 'sureforms_tax';
 
 			$args = [
-				'post_type' => SRFM_ENTRIES_POST_TYPE,
+				'post_type'      => SRFM_ENTRIES_POST_TYPE,
 				'tax_query' // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query. -- We require tax_query for this function to work.
 				=> [
 					[
@@ -1105,6 +1105,7 @@ class Post_Types {
 						'terms'    => $post_id_formatted,
 					],
 				],
+				'posts_per_page' => 1, // Retrieve only 1 entry to minimize load.
 			];
 
 			$key   = 'sureforms_entries_count_' . $post_id_formatted;
@@ -1116,9 +1117,7 @@ class Post_Types {
 			}
 
 			if ( $query instanceof WP_Query ) {
-				$post_count = $query->post_count;
-
-				$post_count = strval( $post_count );
+				$post_count = Helper::get_string_value( $query->found_posts );
 
 				ob_start();
 				?>
