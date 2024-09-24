@@ -66,10 +66,7 @@ class Frontend_Assets {
 		wp_register_style( SRFM_SLUG . '-common', $css_uri . 'common' . $file_prefix . '.css', [], SRFM_VER, 'all' );
 		wp_register_style( SRFM_SLUG . '-form', $css_uri . 'frontend/form' . $file_prefix . '.css', [], SRFM_VER, 'all' );
 
-		// only register the single form css if it is a Instant form page.
-		if ( is_singular( SRFM_FORMS_POST_TYPE ) ) {
-			wp_register_style( SRFM_SLUG . '-single', $css_uri . 'single' . $file_prefix . '.css', [], SRFM_VER );
-		}
+		wp_register_style( SRFM_SLUG . '-single', $css_uri . 'single' . $file_prefix . '.css', [], SRFM_VER );
 
 		// Dependencies
 		// Nice Select CSS.
