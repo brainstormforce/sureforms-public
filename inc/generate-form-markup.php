@@ -91,7 +91,7 @@ class Generate_Form_Markup {
 		$current_post_type = get_post_type();
 
 		// load all the frontend assets.
-		Frontend_Assets::enqueue_scripts();
+		Frontend_Assets::enqueue_scripts_and_styles();
 
 		ob_start();
 		if ( '' !== $id && 0 !== $block_count ) {

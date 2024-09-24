@@ -31,7 +31,7 @@ class Frontend_Assets {
 	 */
 	public function __construct() {
 		add_filter( 'template_include', [ $this, 'page_template' ], PHP_INT_MAX );
-
+		add_action( 'wp_enqueue_scripts', [ $this, 'register_scripts' ] );
 		add_filter( 'render_block', [ $this, 'generate_render_script' ], 10, 2 );
 	}
 
@@ -41,7 +41,7 @@ class Frontend_Assets {
 	 * @return void
 	 * @since 0.0.1
 	 */
-	public static function enqueue_scripts() {
+	public function register_scripts() {
 		$file_prefix = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? '' : '.min';
 		$dir_name    = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? 'unminified' : 'minified';
 		$js_uri      = SRFM_URL . 'assets/js/' . $dir_name . '/';
@@ -60,24 +60,24 @@ class Frontend_Assets {
 		}
 
 		// Styles based on meta style.
-		wp_enqueue_style( SRFM_SLUG . '-frontend-default', $css_uri . '/blocks/default/frontend' . $file_prefix . '.css', [], SRFM_VER );
+		wp_register_style( SRFM_SLUG . '-frontend-default', $css_uri . '/blocks/default/frontend' . $file_prefix . '.css', [], SRFM_VER );
 
 		// Common styles for all meta styles.
-		wp_enqueue_style( SRFM_SLUG . '-common', $css_uri . 'common' . $file_prefix . '.css', [], SRFM_VER, 'all' );
-		wp_enqueue_style( SRFM_SLUG . '-form', $css_uri . 'frontend/form' . $file_prefix . '.css', [], SRFM_VER, 'all' );
+		wp_register_style( SRFM_SLUG . '-common', $css_uri . 'common' . $file_prefix . '.css', [], SRFM_VER, 'all' );
+		wp_register_style( SRFM_SLUG . '-form', $css_uri . 'frontend/form' . $file_prefix . '.css', [], SRFM_VER, 'all' );
 
-		// only enqueue the single form css if it is a Instant form page.
+		// only register the single form css if it is a Instant form page.
 		if ( is_singular( SRFM_FORMS_POST_TYPE ) ) {
-			wp_enqueue_style( SRFM_SLUG . '-single', $css_uri . 'single' . $file_prefix . '.css', [], SRFM_VER );
+			wp_register_style( SRFM_SLUG . '-single', $css_uri . 'single' . $file_prefix . '.css', [], SRFM_VER );
 		}
 
 		// Dependencies
 		// Nice Select CSS.
-		wp_enqueue_style( SRFM_SLUG . '-tom-select', $css_vendor . 'tom-select.css', [], SRFM_VER );
+		wp_register_style( SRFM_SLUG . '-tom-select', $css_vendor . 'tom-select.css', [], SRFM_VER );
 		// Int-tel-input CSS.
-		wp_enqueue_style( SRFM_SLUG . '-intl-tel-input', $css_vendor . 'intl/intlTelInput.min.css', [], SRFM_VER );
+		wp_register_style( SRFM_SLUG . '-intl-tel-input', $css_vendor . 'intl/intlTelInput.min.css', [], SRFM_VER );
 
-		wp_enqueue_script(
+		wp_register_script(
 			SRFM_SLUG . '-form-submit',
 			SRFM_URL . 'assets/build/formSubmit.js',
 			[],
@@ -86,7 +86,7 @@ class Frontend_Assets {
 		);
 
 		// Frontend common and validation before submit.
-		wp_enqueue_script( SRFM_SLUG . '-frontend', $js_uri . 'frontend.min.js', [], SRFM_VER, true );
+		wp_register_script( SRFM_SLUG . '-frontend', $js_uri . 'frontend.min.js', [], SRFM_VER, true );
 
 		wp_localize_script(
 			SRFM_SLUG . '-form-submit',
@@ -96,6 +96,41 @@ class Frontend_Assets {
 				'nonce'    => wp_create_nonce( 'wp_rest' ),
 			]
 		);
+	}
+
+	/**
+	 * Enqueue Script.
+	 *
+	 * @return void
+	 * @since 0.0.1
+	 */
+	public static function enqueue_scripts_and_styles() {
+		$css_handles = [
+			SRFM_SLUG . '-frontend-default',
+			SRFM_SLUG . '-common',
+			SRFM_SLUG . '-form',
+			SRFM_SLUG . '-frontend',
+			SRFM_SLUG . '-tom-select',
+			SRFM_SLUG . '-intl-tel-input',
+		];
+
+		$js_handles = [
+			SRFM_SLUG . '-frontend',
+			SRFM_SLUG . '-form-submit',
+		];
+
+		// Enqueue styles.
+		foreach ( $css_handles as $handle ) {
+			if ( is_singular( SRFM_FORMS_POST_TYPE ) ) {
+				wp_enqueue_style( SRFM_SLUG . '-single' );
+			}
+			wp_enqueue_style( $handle );
+		}
+
+		// Enqueue scripts.
+		foreach ( $js_handles as $handle ) {
+			wp_enqueue_script( $handle );
+		}
 	}
 
 	/**

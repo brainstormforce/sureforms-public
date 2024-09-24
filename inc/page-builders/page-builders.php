@@ -50,7 +50,7 @@ class Page_Builders {
 
 		wp_enqueue_script( SRFM_SLUG . '-dropdown', $js_uri . 'dropdown' . $file_prefix . '.js', [], SRFM_VER, true );
 		wp_enqueue_script( SRFM_SLUG . '-tom-select', $js_vendor_uri . 'tom-select.min.js', [], SRFM_VER, true );
-		Frontend_Assets::enqueue_scripts();
+		Frontend_Assets::enqueue_scripts_and_styles();
 	}
 
 }
