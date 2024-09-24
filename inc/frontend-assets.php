@@ -99,10 +99,10 @@ class Frontend_Assets {
 	}
 
 	/**
-	 * Enqueue Script.
+	 * Enqueue scripts and styles.
 	 *
 	 * @return void
-	 * @since 0.0.1
+	 * @since x.x.x
 	 */
 	public static function enqueue_scripts_and_styles() {
 		$css_handles = [
