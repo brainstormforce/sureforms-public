@@ -121,10 +121,12 @@ class Frontend_Assets {
 
 		// Enqueue styles.
 		foreach ( $css_handles as $handle ) {
-			if ( is_singular( SRFM_FORMS_POST_TYPE ) ) {
-				wp_enqueue_style( SRFM_SLUG . '-single' );
-			}
 			wp_enqueue_style( $handle );
+		}
+
+		// only enqueue the single form css if it is a Instant form page.
+		if ( is_singular( SRFM_FORMS_POST_TYPE ) ) {
+			wp_enqueue_style( SRFM_SLUG . '-single' );
 		}
 
 		// Enqueue scripts.
