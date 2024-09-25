@@ -2,7 +2,11 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { ToggleControl, SelectControl } from '@wordpress/components';
+import {
+	ToggleControl,
+	SelectControl,
+	ExternalLink,
+} from '@wordpress/components';
 import { InspectorControls } from '@wordpress/block-editor';
 import { useEffect } from '@wordpress/element';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
@@ -119,6 +123,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 								} }
 							/>
 							{ inputMask === 'custom-mask' && (
+								// TODO: Improve the help text later.
 								<SRFMTextControl
 									label={ __( 'Custom Mask', 'sureforms' ) }
 									value={ customInputMask }
@@ -130,6 +135,22 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 										setAttributes( {
 											customInputMask: value,
 										} )
+									}
+									help={
+										<>
+											{ __(
+												'Please check the documentation to manage custom input mask ',
+												'sureforms'
+											) }
+											<ExternalLink
+												href="https://sureforms.com/docs/input-pattern"
+												target="_blank"
+												rel="noreferrer"
+												className="srfm-block-url"
+											>
+												{ __( 'here', 'sureforms' ) }
+											</ExternalLink>
+										</>
 									}
 								/>
 							) }
