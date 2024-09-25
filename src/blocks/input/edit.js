@@ -139,7 +139,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 									help={
 										<>
 											{ __(
-												'Please check the documentation to manage custom input mask ',
+												'Please check the documentation to manage custom input pattern ',
 												'sureforms'
 											) }
 											<ExternalLink
