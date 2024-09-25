@@ -254,32 +254,47 @@ class Create_New_Form {
 					foreach ( $template_metas as $meta_key => $value ) {
 
 						$meta_value = '';
-						if ( is_array( $value ) && $meta_key === '_srfm_instant_form_settings' ) {
-							$meta_value = 
-							array_merge( $default_post_metas[ $meta_key ], (array) $value[0] );
-						} else if ( is_array( $value ) && $meta_key === '_srfm_forms_styling' ) {
-							$meta_value = 
-							array_merge( $default_post_metas[ $meta_key ], (array) $value[0] );
-						} else if ( is_array( $value ) && $meta_key === '_srfm_form_confirmation' ) {
-							$meta_value = [
-							array_merge( $default_post_metas[ $meta_key ], (array) $value[0] )];
-							$check_icon = 'data:image/svg+xml;base64,' . base64_encode( strval( file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/check-icon.svg' ) ) ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
-							$meta_value[0]['message'] = '<p style="text-align: center;"><img src="' . $check_icon . '"></img></p><h2 style="text-align: center;">Thank you</h2><p style="text-align: center;">' . $meta_value[0]['message'] . '</p><p style="text-align: center;">Please be sure to whitelist our {admin_email} email address to ensure our replies reach your inbox safely.</p>';
-						}  else if ( is_array( $value ) && $meta_key === '_srfm_page_break_settings' ) {
-							// will be implemented later
-						} else if ( is_array( $value ) && $meta_key === '_srfm_email_notification' ) {
-							$meta_value = [
-							array_merge( $default_post_metas[ $meta_key ], (array) $value[0] )];
-							$meta_value[0]['email_body'] = '<p style="text-align: center;">' . $meta_value[0]['email_body'] . '</p><p style="text-align: center;">{all_data}</p>';
-						} else if ( is_array( $value ) && $meta_key === '_srfm_compliance' ) {
-							$meta_value = [
-							array_merge( $default_post_metas[ $meta_key ], (array) $value[0] )];
-						} else {
-							$meta_value = $value;
+
+						if ( is_array( $value ) ) {
+							switch ( $meta_key ) {
+								case '_srfm_instant_form_settings':
+								case '_srfm_forms_styling':
+									$meta_value = array_merge( $default_post_metas[ $meta_key ], (array) $value[0] );
+									break;
+
+								case '_srfm_form_confirmation':
+									$meta_value               = [
+										array_merge( $default_post_metas[ $meta_key ], (array) $value[0] ),
+									];
+									$check_icon               = 'data:image/svg+xml;base64,' . base64_encode( strval( file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/check-icon.svg' ) ) ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
+									$meta_value[0]['message'] = '<p style="text-align: center;"><img src="' . $check_icon . '"></img></p><h2 style="text-align: center;">Thank you</h2><p style="text-align: center;">' . $meta_value[0]['message'] . '</p><p style="text-align: center;">Please be sure to whitelist our {admin_email} email address to ensure our replies reach your inbox safely.</p>';
+									break;
+
+								case '_srfm_email_notification':
+									$meta_value                  = [
+										array_merge( $default_post_metas[ $meta_key ], (array) $value[0] ),
+									];
+									$meta_value[0]['email_body'] = '<p style="text-align: center;">' . $meta_value[0]['email_body'] . '</p><p style="text-align: center;">{all_data}</p>';
+									break;
+
+								case '_srfm_compliance':
+									$meta_value = [
+										array_merge( $default_post_metas[ $meta_key ], (array) $value[0] ),
+									];
+									break;
+
+								case '_srfm_page_break_settings':
+									// Add logic if necessary.
+									break;
+
+								default:
+									$meta_value = $value;
+									break;
+							}
+
+							add_post_meta( $post_id, $meta_key, $meta_value );
+
 						}
-
-						add_post_meta( $post_id, $meta_key, $meta_value );
-
 					}
 				}
 			}
