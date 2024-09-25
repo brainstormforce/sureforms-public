@@ -25,6 +25,42 @@ class Frontend_Assets {
 	use Get_Instance;
 
 	/**
+	 * JS Assets.
+	 *
+	 * @since x.x.x
+	 * @var array<string>
+	 */
+	public $js_assets = [
+		'form-submit' => 'formSubmit.js',
+		'frontend'    => 'frontend.min.js',
+	];
+
+	/**
+	 * CSS Assets.
+	 *
+	 * @since x.x.x
+	 * @var array<string>
+	 */
+	public $css_assets = [
+		'frontend-default' => 'blocks/default/frontend',
+		'common'           => 'common',
+		'form'             => 'frontend/form',
+		'single'           => 'single',
+	];
+
+	/**
+	 * External CSS Assets.
+	 *
+	 * @since x.x.x
+	 * @var array<string>
+	 */
+	public $css_external_assets = [
+		'tom-select'     => 'tom-select',
+		'intl-tel-input' => 'intl/intlTelInput.min',
+	];
+
+
+	/**
 	 * Constructor
 	 *
 	 * @since  0.0.1
@@ -60,30 +96,35 @@ class Frontend_Assets {
 		}
 
 		// Styles based on meta style.
-		wp_register_style( SRFM_SLUG . '-frontend-default', $css_uri . '/blocks/default/frontend' . $file_prefix . '.css', [], SRFM_VER );
+		foreach ( $this->css_assets as $handle => $path ) {
+			wp_register_style( SRFM_SLUG . '-' . $handle, $css_uri . $path . $file_prefix . '.css', [], SRFM_VER );
+		}
 
-		// Common styles for all meta styles.
-		wp_register_style( SRFM_SLUG . '-common', $css_uri . 'common' . $file_prefix . '.css', [], SRFM_VER, 'all' );
-		wp_register_style( SRFM_SLUG . '-form', $css_uri . 'frontend/form' . $file_prefix . '.css', [], SRFM_VER, 'all' );
+		// External styles.
+		foreach ( $this->css_external_assets as $handle => $path ) {
+			wp_register_style( SRFM_SLUG . '-' . $handle, $css_vendor . $path . '.css', [], SRFM_VER );
+		}
 
-		wp_register_style( SRFM_SLUG . '-single', $css_uri . 'single' . $file_prefix . '.css', [], SRFM_VER );
-
-		// Dependencies
-		// Nice Select CSS.
-		wp_register_style( SRFM_SLUG . '-tom-select', $css_vendor . 'tom-select.css', [], SRFM_VER );
-		// Int-tel-input CSS.
-		wp_register_style( SRFM_SLUG . '-intl-tel-input', $css_vendor . 'intl/intlTelInput.min.css', [], SRFM_VER );
-
-		wp_register_script(
-			SRFM_SLUG . '-form-submit',
-			SRFM_URL . 'assets/build/formSubmit.js',
-			[],
-			SRFM_VER,
-			true
-		);
-
-		// Frontend common and validation before submit.
-		wp_register_script( SRFM_SLUG . '-frontend', $js_uri . 'frontend.min.js', [], SRFM_VER, true );
+		// Scripts.
+		foreach ( $this->js_assets as $handle => $name ) {
+			if ( 'form-submit' === $handle ) {
+				wp_register_script(
+					SRFM_SLUG . '-' . $handle,
+					SRFM_URL . 'assets/build/' . $name,
+					[],
+					SRFM_VER,
+					true
+				);
+			} else {
+				wp_register_script(
+					SRFM_SLUG . '-' . $handle,
+					$js_uri . $name,
+					[],
+					SRFM_VER,
+					true
+				);
+			}
+		}
 
 		wp_localize_script(
 			SRFM_SLUG . '-form-submit',
@@ -102,33 +143,25 @@ class Frontend_Assets {
 	 * @since x.x.x
 	 */
 	public static function enqueue_scripts_and_styles() {
-		$css_handles = [
-			SRFM_SLUG . '-frontend-default',
-			SRFM_SLUG . '-common',
-			SRFM_SLUG . '-form',
-			SRFM_SLUG . '-frontend',
-			SRFM_SLUG . '-tom-select',
-			SRFM_SLUG . '-intl-tel-input',
-		];
+		// Load the styles.
+		foreach ( self::get_instance()->css_assets as $handle => $path ) {
 
-		$js_handles = [
-			SRFM_SLUG . '-frontend',
-			SRFM_SLUG . '-form-submit',
-		];
+			// Skip single form styles if not on single form page.
+			if ( 'single' === $handle && ! is_singular( SRFM_FORMS_POST_TYPE ) ) {
+				continue;
+			}
 
-		// Enqueue styles.
-		foreach ( $css_handles as $handle ) {
-			wp_enqueue_style( $handle );
+			wp_enqueue_style( SRFM_SLUG . '-' . $handle );
 		}
 
-		// only enqueue the single form css if it is a Instant form page.
-		if ( is_singular( SRFM_FORMS_POST_TYPE ) ) {
-			wp_enqueue_style( SRFM_SLUG . '-single' );
+		// Load the external styles. Like Phone and Tom Select.
+		foreach ( self::get_instance()->css_external_assets as $handle => $path ) {
+			wp_enqueue_style( SRFM_SLUG . '-' . $handle );
 		}
 
-		// Enqueue scripts.
-		foreach ( $js_handles as $handle ) {
-			wp_enqueue_script( $handle );
+		// Load the scripts.
+		foreach ( self::get_instance()->js_assets as $handle => $path ) {
+			wp_enqueue_script( SRFM_SLUG . '-' . $handle );
 		}
 	}
 
