@@ -86,14 +86,14 @@ class Create_New_Form {
 	/**
 	 * Get default post metas for form when creating using template.
 	 *
-	 * @return array<string, array<int, int|string>> Default meta keys.
 	 * @since 0.0.2
+	 * @return array<mixed>
 	 */
 	public static function get_default_meta_keys() {
 		return [
 			'_srfm_submit_button_text'       => 'Submit',
 			'_srfm_use_label_as_placeholder' => false,
-			'_srfm_is_inline_button'         => false ,
+			'_srfm_is_inline_button'         => false,
 			'_srfm_single_page_form_title'   => true,
 			'_srfm_instant_form'             => false,
 			'_srfm_form_container_width'     => 650,
@@ -105,13 +105,13 @@ class Create_New_Form {
 			'_srfm_submit_alignment'         => 'left',
 			'_srfm_submit_alignment_backend' => '100%',
 			'_srfm_submit_width'             => '',
-			'_srfm_inherit_theme_button'     => false ,
+			'_srfm_inherit_theme_button'     => false,
 			'_srfm_additional_classes'       => '',
 			'_srfm_submit_type'              => 'message',
 			'_srfm_form_recaptcha'           => 'none',
 			'_srfm_button_border_radius'     => 0,
 			'_srfm_captcha_security_type'    => '',
-			
+
 			// Instant Form Settings.
 			'_srfm_instant_form_settings'    =>
 				[
@@ -127,9 +127,9 @@ class Create_New_Form {
 					'single_page_form_title'        => true,
 					'use_banner_as_page_background' => false,
 				],
-	
+
 			// Form Styling Settings.
-			'_srfm_forms_styling'            => 
+			'_srfm_forms_styling'            =>
 				[
 					'primary_color'           => '#0C78FB',
 					'text_color'              => '#1E1E1E',
@@ -137,9 +137,9 @@ class Create_New_Form {
 					'field_spacing'           => 'medium',
 					'submit_button_alignment' => 'left',
 				],
-	
+
 			// Email Notification.
-			'_srfm_email_notification'       => 
+			'_srfm_email_notification'       =>
 				[
 					'id'             => 1,
 					'status'         => true,
@@ -152,9 +152,9 @@ class Create_New_Form {
 					'subject'        => 'New Form Submission',
 					'email_body'     => '{all_data}',
 				],
-	
+
 			// Compliance Settings.
-			'_srfm_compliance'               => 
+			'_srfm_compliance'               =>
 				[
 					'id'                   => 'gdpr',
 					'gdpr'                 => false,
@@ -163,9 +163,8 @@ class Create_New_Form {
 					'auto_delete_days'     => '',
 				],
 
-	
 			// Form Confirmation.
-			'_srfm_form_confirmation'        => 
+			'_srfm_form_confirmation'        =>
 				[
 					'id'                => 1,
 					'confirmation_type' => 'same page',
@@ -173,10 +172,19 @@ class Create_New_Form {
 					'custom_url'        => '',
 					'message'           => '<p style="text-align: center;"><img src=""></img></p><h2 style="text-align: center;">Thank you</h2><p style="text-align: center;">We have received your email. You\'ll hear from us as soon as possible.</p><p style="text-align: center;">Please be sure to whitelist our {admin_email} email address to ensure our replies reach your inbox safely.</p>',
 					'submission_action' => 'hide form',
-				]
+				],
+
+			'_srfm_page_break_settings'      =>
+				[
+					'is_page_break'           => false,
+					'first_page_label'        => 'Page Break Label',
+					'progress_indicator_type' => 'connector',
+					'toggle_label'            => false,
+					'next_button_text'        => 'Next',
+					'back_button_text'        => 'Back',
+				],
 		];
 	}
-	
 
 	/**
 	 * Create new form post from selected template.
@@ -227,11 +235,6 @@ class Create_New_Form {
 		$content        = isset( $form_info_obj->form_data ) ? $form_info_obj->form_data : '';
 		$template_metas = isset( $form_info_obj->template_metas ) ? (array) $form_info_obj->template_metas[0] : [];
 
-		// if post content contains srfm/page-break block, then set _srfm_is_page_break meta to true.
-		if ( strpos( $content, 'srfm/page-break' ) !== false ) {
-			$template_metas['_srfm_is_page_break'] = [ 'true' ];
-		}
-
 		$post_id = wp_insert_post(
 			[
 				'post_title'   => $title,
@@ -242,45 +245,42 @@ class Create_New_Form {
 		);
 
 		if ( ! empty( $post_id ) ) {
-			// if ( ! empty( $template_metas ) ) {
-			// 	$default_post_metas = self::get_default_meta_keys();
-			// 	$post_metas         = array_merge( $default_post_metas, $template_metas );
 
-			// 	foreach ( $post_metas as $meta_key => $meta_value ) {
-			// 		add_post_meta( $post_id, $meta_key, $meta_value[0] );
-			// 	}
-			// }
-
-			if ( ! empty( $template_metas ) ) {
+			if ( ! empty( $template_metas ) && is_array( $template_metas ) ) {
 				// Get default post metas.
 				$default_post_metas = self::get_default_meta_keys();
-			
-				foreach ( $template_metas as $meta_key => $value ) {
 
-					if ( is_array( $value ) && $meta_key === '_srfm_instant_form_settings' ) {
-						$meta_value = 
-						array_merge( $default_post_metas[ $meta_key ], (array) $value[0] );
-					} else if ( is_array( $value ) && $meta_key === '_srfm_forms_styling' ) {
-						$meta_value = 
-						array_merge( $default_post_metas[ $meta_key ], (array) $value[0] );
-					} else if ( is_array( $value ) && $meta_key === '_srfm_form_confirmation' ) {
-						$meta_value = [
-						array_merge( $default_post_metas[ $meta_key ], (array) $value[0] )];
-						$check_icon = 'data:image/svg+xml;base64,' . base64_encode( strval( file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/check-icon.svg' ) ) ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
-						$meta_value[0]['message'] = '<p style="text-align: center;"><img src="' . $check_icon . '"></img></p><h2 style="text-align: center;">Thank you</h2><p style="text-align: center;">' . $meta_value[0]['message'] . '</p><p style="text-align: center;">Please be sure to whitelist our {admin_email} email address to ensure our replies reach your inbox safely.</p>';
-					} else if ( is_array( $value ) && $meta_key === '_srfm_email_notification' ) {
-						$meta_value = [
-						array_merge( $default_post_metas[ $meta_key ], (array) $value[0] )];
-						$meta_value[0]['email_body'] = '<p style="text-align: center;">' . $meta_value[0]['email_body'] . '</p><p style="text-align: center;">{all_data}</p>';
-					} else if ( is_array( $value ) && $meta_key === '_srfm_compliance' ) {
-						$meta_value = [
-						array_merge( $default_post_metas[ $meta_key ], (array) $value[0] )];
-					} else {
-						$meta_value = $value;
+				if ( is_array( $default_post_metas ) ) {
+					foreach ( $template_metas as $meta_key => $value ) {
+
+						$meta_value = '';
+						if ( is_array( $value ) && $meta_key === '_srfm_instant_form_settings' ) {
+							$meta_value = 
+							array_merge( $default_post_metas[ $meta_key ], (array) $value[0] );
+						} else if ( is_array( $value ) && $meta_key === '_srfm_forms_styling' ) {
+							$meta_value = 
+							array_merge( $default_post_metas[ $meta_key ], (array) $value[0] );
+						} else if ( is_array( $value ) && $meta_key === '_srfm_form_confirmation' ) {
+							$meta_value = [
+							array_merge( $default_post_metas[ $meta_key ], (array) $value[0] )];
+							$check_icon = 'data:image/svg+xml;base64,' . base64_encode( strval( file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/check-icon.svg' ) ) ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
+							$meta_value[0]['message'] = '<p style="text-align: center;"><img src="' . $check_icon . '"></img></p><h2 style="text-align: center;">Thank you</h2><p style="text-align: center;">' . $meta_value[0]['message'] . '</p><p style="text-align: center;">Please be sure to whitelist our {admin_email} email address to ensure our replies reach your inbox safely.</p>';
+						}  else if ( is_array( $value ) && $meta_key === '_srfm_page_break_settings' ) {
+							// will be implemented later
+						} else if ( is_array( $value ) && $meta_key === '_srfm_email_notification' ) {
+							$meta_value = [
+							array_merge( $default_post_metas[ $meta_key ], (array) $value[0] )];
+							$meta_value[0]['email_body'] = '<p style="text-align: center;">' . $meta_value[0]['email_body'] . '</p><p style="text-align: center;">{all_data}</p>';
+						} else if ( is_array( $value ) && $meta_key === '_srfm_compliance' ) {
+							$meta_value = [
+							array_merge( $default_post_metas[ $meta_key ], (array) $value[0] )];
+						} else {
+							$meta_value = $value;
+						}
+
+						add_post_meta( $post_id, $meta_key, $meta_value );
+
 					}
-					
-					add_post_meta( $post_id, $meta_key, $meta_value );
-	
 				}
 			}
 

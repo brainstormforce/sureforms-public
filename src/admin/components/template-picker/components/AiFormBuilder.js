@@ -107,7 +107,7 @@ const AiFormBuilder = () => {
 					return;
 				}
 
-				const {postContent, postMeta } = await apiFetch( {
+				const { postContent, postMeta } = await apiFetch( {
 					path: 'sureforms/v1/map-fields',
 					method: 'POST',
 					data: { form_data: content },
