@@ -50,6 +50,17 @@ class Field_Mapping {
 		}
 
 		$form_fields = $form['formFields'];
+
+		// Manage form meta data.
+		$form_meta_data = $form['formMetaData'];
+		$mapped_form_meta	  = [];
+
+		if ( ! empty( $form_meta_data ) && is_array( $form_meta_data ) ) {
+			$mapped_form_meta = $form_meta_data;
+		} else {
+			$mapped_form_meta = [];
+		}
+
 		// if questions is empty then return empty string.
 		if ( empty( $form_fields ) || ! is_array( $form ) ) {
 			return '';
@@ -215,7 +226,10 @@ class Field_Mapping {
 			}
 		}
 
-		return $post_content;
-	}
+		return [
+			'postContent' => $post_content,
+			'postMeta'    => $mapped_form_meta,
+		];
+	}	
 
 }
