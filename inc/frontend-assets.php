@@ -30,7 +30,7 @@ class Frontend_Assets {
 	 * @since x.x.x
 	 * @var array<string>
 	 */
-	public $js_assets = [
+	public static $js_assets = [
 		'form-submit' => 'formSubmit.js',
 		'frontend'    => 'frontend.min.js',
 	];
@@ -41,7 +41,7 @@ class Frontend_Assets {
 	 * @since x.x.x
 	 * @var array<string>
 	 */
-	public $css_assets = [
+	public static $css_assets = [
 		'frontend-default' => 'blocks/default/frontend',
 		'common'           => 'common',
 		'form'             => 'frontend/form',
@@ -54,7 +54,7 @@ class Frontend_Assets {
 	 * @since x.x.x
 	 * @var array<string>
 	 */
-	public $css_external_assets = [
+	public static $css_external_assets = [
 		'tom-select'     => 'tom-select',
 		'intl-tel-input' => 'intl/intlTelInput.min',
 	];
@@ -96,17 +96,17 @@ class Frontend_Assets {
 		}
 
 		// Styles based on meta style.
-		foreach ( $this->css_assets as $handle => $path ) {
+		foreach ( self::$css_assets as $handle => $path ) {
 			wp_register_style( SRFM_SLUG . '-' . $handle, $css_uri . $path . $file_prefix . '.css', [], SRFM_VER );
 		}
 
 		// External styles.
-		foreach ( $this->css_external_assets as $handle => $path ) {
+		foreach ( self::$css_external_assets as $handle => $path ) {
 			wp_register_style( SRFM_SLUG . '-' . $handle, $css_vendor . $path . '.css', [], SRFM_VER );
 		}
 
 		// Scripts.
-		foreach ( $this->js_assets as $handle => $name ) {
+		foreach ( self::$js_assets as $handle => $name ) {
 			if ( 'form-submit' === $handle ) {
 				wp_register_script(
 					SRFM_SLUG . '-' . $handle,
@@ -144,7 +144,7 @@ class Frontend_Assets {
 	 */
 	public static function enqueue_scripts_and_styles() {
 		// Load the styles.
-		foreach ( self::get_instance()->css_assets as $handle => $path ) {
+		foreach ( self::$css_assets as $handle => $path ) {
 
 			// Skip single form styles if not on single form page.
 			if ( 'single' === $handle && ! is_singular( SRFM_FORMS_POST_TYPE ) ) {
@@ -155,12 +155,12 @@ class Frontend_Assets {
 		}
 
 		// Load the external styles. Like Phone and Tom Select.
-		foreach ( self::get_instance()->css_external_assets as $handle => $path ) {
+		foreach ( self::$css_external_assets as $handle => $path ) {
 			wp_enqueue_style( SRFM_SLUG . '-' . $handle );
 		}
 
 		// Load the scripts.
-		foreach ( self::get_instance()->js_assets as $handle => $path ) {
+		foreach ( self::$js_assets as $handle => $path ) {
 			wp_enqueue_script( SRFM_SLUG . '-' . $handle );
 		}
 	}
