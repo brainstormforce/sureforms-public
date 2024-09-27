@@ -215,7 +215,13 @@ class Admin {
 	 */
 	public function render_entries() {
 		$entries_template = plugin_dir_path(__FILE__) . 'admin-templates/all-entries-page.php';
-		include( $entries_template );
+        $single_entry_template = plugin_dir_path(__FILE__) . 'admin-templates/single-entry-page.php';
+        if ( isset( $_GET['entry_id'] ) && is_numeric( $_GET['entry_id'] ) ) {
+            include( $single_entry_template );
+        } else {
+            include( $entries_template );
+        }
+
 	}
 
 	/**

@@ -171,7 +171,7 @@ use SRFM\Inc\Database\Tables\Entries;
                                             </th>
                                             <td class="entry_id column-entry_id has-row-actions" data-colname="ID">
                                                 <strong>
-                                                    <a class="row-title" aria-label="“Entry #<?php esc_attr_e( $entry_id ); ?> (Edit)"><?php esc_html_e( 'Entry #' ); esc_attr_e( $entry_id ); ?></a>
+                                                    <a class="row-title" href="<?php echo esc_url( add_query_arg( 'entry_id', $entry_id, admin_url( 'admin.php?page=entries' ) ) ); ?>" aria-label="“Entry #<?php esc_attr_e( $entry_id ); ?> (Edit)"><?php esc_html_e( 'Entry #' ); esc_attr_e( $entry_id ); ?></a>
                                                 </strong>
                                                 <div class="row-actions">
                                                     <span class="edit">
