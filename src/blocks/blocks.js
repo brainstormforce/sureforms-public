@@ -175,3 +175,10 @@ function changeCoreParagraphCategory( settings, name ) {
 	}
 	return settings;
 }
+
+// Disable the responsive toggle for SureForms.
+addFilter(
+	'spectra.enable.responsiveToggle',
+	'srfm/disable-responsive-toggle',
+	() => false
+);
