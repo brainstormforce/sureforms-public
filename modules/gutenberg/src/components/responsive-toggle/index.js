@@ -2,7 +2,6 @@
  * Internal & External dependencies.
  */
 import { useDeviceType } from '@Controls/getPreviewType';
-import { __ } from '@wordpress/i18n';
 import { useEffect, useState, useRef } from '@wordpress/element';
 import { select } from '@wordpress/data';
 import { getIdFromString, getPanelIdFromRef } from '@Utils/Helpers';
