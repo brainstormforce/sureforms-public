@@ -32,8 +32,6 @@ const ResponsiveToggle = ( props ) => {
 		() => true
 	);
 
-	console.log( 'shouldDisplayResponsiveIcon', shouldDisplayResponsiveIcon );
-
 	useEffect( () => {
 		setPanelNameForHook( getPanelIdFromRef( panelRef ) );
 	}, [ blockNameForHook ] );
