@@ -85,6 +85,10 @@ class Entries extends Base {
 				'type'    => 'array',
 				'default' => [],
 			],
+			// Submitted on date.
+			'created_at'      => [
+				'type'    => 'string',
+			],
 		];
 	}
 
@@ -193,5 +197,18 @@ class Entries extends Base {
 		);
 
 		return isset( $results[0] ) ? Helper::get_array_value( $results[0] ) : [];
+	}
+
+	/**
+	 * Retrieve all entries from the database.
+	 * 
+	 * TODO: Improve the function and maybe consider limiting entries for pagination.
+	 * 
+	 * @since x.x.x
+	 * @return array<mixed>
+	 */
+	public static function get_all() {
+		$results = self::get_instance()->get_results();
+		return isset( $results ) ? Helper::get_array_value( $results ) : [];
 	}
 }

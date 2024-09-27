@@ -186,6 +186,15 @@ class Admin {
 			[ $this, 'add_new_form_callback' ],
 			2
 		);
+		add_submenu_page(
+			'sureforms_menu',
+			__( 'Entries', 'sureforms' ),
+			__( 'Entries', 'sureforms' ),
+			'edit_others_posts',
+			'entries',
+			[ $this, 'render_entries' ],
+			3
+		);
 	}
 
 	/**
@@ -196,6 +205,17 @@ class Admin {
 	 */
 	public function add_new_form_callback() {
 		echo '<div id="srfm-add-new-form-container"></div>';
+	}
+
+	/**
+	 * Entries page callback.
+	 * 
+	 * @return void
+	 * @since x.x.x
+	 */
+	public function render_entries() {
+		$entries_template = plugin_dir_path(__FILE__) . 'admin-templates/all-entries-page.php';
+		include( $entries_template );
 	}
 
 	/**
@@ -380,6 +400,11 @@ class Admin {
 
 		if ( 'sureforms_page_sureforms_form_settings' === $current_screen->id ) {
 			wp_enqueue_style( SRFM_SLUG . '-settings', $css_uri . 'backend/settings' . $file_prefix . '.css', [], SRFM_VER );
+		}
+
+		// Enqueue styles for the entries page.
+		if ( 'sureforms_page_entries' === $current_screen->id ) {
+			wp_enqueue_style( SRFM_SLUG . '-entries', $css_uri . 'backend/entries' . $file_prefix . '.css', [], SRFM_VER );
 		}
 
 		// Admin Submenu Styles.
