@@ -74,6 +74,7 @@ export default () => {
 							css={ css`
 								margin: 0;
 								font-size: var( --sc-font-size-large );
+								min-height: 24px;
 							` }
 						>
 							<ScBreadcrumbs>
