@@ -13,7 +13,7 @@
 		flex-wrap: wrap;
 
 		.conditional-logic {
-			display:none;
+			display: none;
 			&.move-up-to-down {
 				animation: moveUpToDown 500ms linear forwards;
 				z-index: 1;
