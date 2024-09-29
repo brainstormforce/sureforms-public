@@ -187,7 +187,9 @@ const ResponsiveToggle = ( props ) => {
 			{ controlBeforeDomElement }
 
 			{ label && <span className="uag-control-label">{ label }</span> }
-			{ shouldDisplayResponsiveIcon && ! displayResponsive && responsive && (
+			{ shouldDisplayResponsiveIcon &&
+				! displayResponsive &&
+				responsive && (
 				<Button
 					key="uag-responsive-common-button"
 					className="uag-responsive-common-button"
@@ -196,7 +198,9 @@ const ResponsiveToggle = ( props ) => {
 					{ devicesSvgs[ deviceType.toLowerCase() ] }
 				</Button>
 			) }
-			{ shouldDisplayResponsiveIcon && displayResponsive && responsive && (
+			{ shouldDisplayResponsiveIcon &&
+				displayResponsive &&
+				responsive && (
 				<ButtonGroup
 					className="uagb-range-control-responsive components-tab-panel__tabs"
 					aria-label={ __( 'Device', 'sureforms' ) }
@@ -218,9 +222,13 @@ const ResponsiveToggle = ( props ) => {
 											? ' active-tab'
 											: ''
 									}` }
-									aria-pressed={ deviceType === staticName }
+									aria-pressed={
+										deviceType === staticName
+									}
 									onClick={ () =>
-										customSetPreviewDeviceType( staticName )
+										customSetPreviewDeviceType(
+											staticName
+										)
 									}
 								>
 									{ title }
