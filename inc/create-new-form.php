@@ -292,6 +292,9 @@ class Create_New_Form {
 									break;
 							}
 
+							// pass meta value to function which checks if the the values inside it are of correct type according to the default meta keys. and check if any key is empty then set it to default value.
+							$meta_value = self::validate_meta_values( $default_post_metas[ $meta_key ], $meta_value );
+
 							add_post_meta( $post_id, $meta_key, $meta_value );
 
 						}
@@ -312,6 +315,59 @@ class Create_New_Form {
 				]
 			);
 		}
+	}
+
+	/**
+	 * Validate meta values.
+	 *
+	 * @param array<mixed>              $default_meta_keys Default meta keys.
+	 * @param array<mixed>|string|mixed $meta_values Meta values.
+	 *
+	 * @return array<mixed>|string|mixed
+	 * @since 0.0.2
+	 */
+	public static function validate_meta_values( $default_meta_keys, $meta_values ) {
+		// Check if the meta values are of correct type according to the default meta keys.
+		foreach ( $default_meta_keys as $key => $value ) {
+
+			if ( ! is_array( $meta_values ) ) {
+				// check if the meta values are empty then set it to default value.
+				if ( empty( $meta_values ) ) {
+					$meta_values = $value;
+
+				}
+
+				return $meta_values;
+
+			}
+
+			// add special case for email_notification.
+			if ( '_srfm_email_notification' === $key ) {
+				if ( ! array_key_exists( $key, $meta_values ) ) {
+					$meta_values[ $key ] = $value;
+				} else {
+					if ( is_array( $value ) ) {
+						$meta_values[ $key ] = self::validate_meta_values( $value, $meta_values[ $key ] );
+					}
+				}
+
+				return $meta_values;
+			}
+
+			if ( ! array_key_exists( $key, $meta_values ) ) {
+				$meta_values[ $key ] = $value;
+			} else {
+				if ( is_array( $value ) ) {
+					$meta_values[ $key ] = self::validate_meta_values( $value, $meta_values[ $key ] );
+				} else {
+					if ( gettype( $value ) !== gettype( $meta_values[ $key ] ) ) {
+						$meta_values[ $key ] = $value;
+					}
+				}
+			}
+		}
+
+		return $meta_values;
 	}
 
 
