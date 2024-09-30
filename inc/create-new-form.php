@@ -244,77 +244,86 @@ class Create_New_Form {
 			]
 		);
 
-		if ( ! empty( $post_id ) ) {
-
-			if ( ! empty( $template_metas ) && is_array( $template_metas ) ) {
-				// Get default post metas.
-				$default_post_metas = self::get_default_meta_keys();
-
-				if ( is_array( $default_post_metas ) ) {
-					foreach ( $template_metas as $meta_key => $value ) {
-
-						$meta_value = '';
-
-						if ( is_array( $value ) ) {
-							switch ( $meta_key ) {
-								case '_srfm_instant_form_settings':
-								case '_srfm_forms_styling':
-									$meta_value = array_merge( $default_post_metas[ $meta_key ], (array) $value[0] );
-									break;
-
-								case '_srfm_form_confirmation':
-									$meta_value               = [
-										array_merge( $default_post_metas[ $meta_key ], (array) $value[0] ),
-									];
-									$check_icon               = 'data:image/svg+xml;base64,' . base64_encode( strval( file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/check-icon.svg' ) ) ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
-									$meta_value[0]['message'] = '<p style="text-align: center;"><img src="' . $check_icon . '"></img></p><h2 style="text-align: center;">Thank you</h2><p style="text-align: center;">' . $meta_value[0]['message'] . '</p><p style="text-align: center;">Please be sure to whitelist our {admin_email} email address to ensure our replies reach your inbox safely.</p>';
-									break;
-
-								case '_srfm_email_notification':
-									$meta_value                  = [
-										array_merge( $default_post_metas[ $meta_key ], (array) $value[0] ),
-									];
-									$meta_value[0]['email_body'] = '<p style="text-align: center;">' . $meta_value[0]['email_body'] . '</p><p style="text-align: center;">{all_data}</p>';
-									break;
-
-								case '_srfm_compliance':
-									$meta_value = [
-										array_merge( $default_post_metas[ $meta_key ], (array) $value[0] ),
-									];
-									break;
-
-								case '_srfm_page_break_settings':
-									// Add logic if necessary.
-									break;
-
-								default:
-									$meta_value = $value;
-									break;
-							}
-
-							// pass meta value to function which checks if the the values inside it are of correct type according to the default meta keys. and check if any key is empty then set it to default value.
-							$meta_value = self::validate_meta_values( $default_post_metas[ $meta_key ], $meta_value );
-
-							add_post_meta( $post_id, $meta_key, $meta_value );
-
-						}
-					}
-				}
-			}
-
-			return new WP_REST_Response(
-				[
-					'message' => __( 'SureForms Form created successfully.', 'sureforms' ),
-					'id'      => $post_id,
-				]
-			);
-		} else {
+		// if post id is empty then return error.
+		if ( empty( $post_id ) ) {
 			wp_send_json_error(
 				[
 					'message' => __( 'Error creating SureForms Form, ', 'sureforms' ),
 				]
 			);
 		}
+
+		if ( ! empty( $template_metas ) && is_array( $template_metas ) ) {
+			// Get default post metas.
+			$default_post_metas = self::get_default_meta_keys();
+
+			if ( ! is_array( $default_post_metas ) ) {
+				return new WP_Error(
+					'error',
+					__( 'Error creating SureForms got invalid default post meta type, ', 'sureforms' )
+				);
+			}
+
+			foreach ( $template_metas as $meta_key => $value ) {
+
+				$meta_value = '';
+
+				if ( empty( $value ) || ! is_array( $value ) ) {
+					continue;
+				}
+
+				switch ( $meta_key ) {
+					case '_srfm_instant_form_settings':
+					case '_srfm_forms_styling':
+						$meta_value = array_merge( $default_post_metas[ $meta_key ], (array) $value[0] );
+						break;
+
+					case '_srfm_form_confirmation':
+						$meta_value               = [
+							array_merge( $default_post_metas[ $meta_key ], (array) $value[0] ),
+						];
+						$check_icon               = 'data:image/svg+xml;base64,' . base64_encode( strval( file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/check-icon.svg' ) ) ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
+						$meta_value[0]['message'] = '<p style="text-align: center;"><img src="' . $check_icon . '"></img></p><h2 style="text-align: center;">Thank you</h2><p style="text-align: center;">' . $meta_value[0]['message'] . '</p><p style="text-align: center;">Please be sure to whitelist our {admin_email} email address to ensure our replies reach your inbox safely.</p>';
+						break;
+
+					case '_srfm_email_notification':
+						$meta_value                  = [
+							array_merge( $default_post_metas[ $meta_key ], (array) $value[0] ),
+						];
+						$meta_value[0]['email_body'] = '<p style="text-align: center;">' . $meta_value[0]['email_body'] . '</p><p style="text-align: center;">{all_data}</p>';
+						break;
+
+					case '_srfm_compliance':
+						$meta_value = [
+							array_merge( $default_post_metas[ $meta_key ], (array) $value[0] ),
+						];
+						break;
+
+					case '_srfm_page_break_settings':
+						// Add logic if necessary will be added after testing
+						break;
+
+					default:
+						$meta_value = $value;
+						break;
+				}
+
+					// pass meta value to function which checks if the the values inside it are of correct type according to the default meta keys. and check if any key is empty then set it to default value.
+					// TODO: I will uncomment this line after initial testing.
+					// $meta_value = self::validate_meta_values( $default_post_metas[ $meta_key ], $meta_value );
+
+					add_post_meta( $post_id, $meta_key, $meta_value );
+
+			}
+		}
+
+		return new WP_REST_Response(
+			[
+				'message' => __( 'SureForms Form created successfully.', 'sureforms' ),
+				'id'      => $post_id,
+			]
+		);
+
 	}
 
 	/**
