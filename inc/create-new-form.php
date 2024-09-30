@@ -300,7 +300,7 @@ class Create_New_Form {
 						break;
 
 					case '_srfm_page_break_settings':
-						// Add logic if necessary will be added after testing
+						// Add logic if necessary will be added after testing.
 						break;
 
 					default:
@@ -309,8 +309,8 @@ class Create_New_Form {
 				}
 
 					// pass meta value to function which checks if the the values inside it are of correct type according to the default meta keys. and check if any key is empty then set it to default value.
-					// TODO: I will uncomment this line after initial testing.
-					// $meta_value = self::validate_meta_values( $default_post_metas[ $meta_key ], $meta_value );
+					// I will uncomment this line after initial testing.
+					// $meta_value = self::validate_meta_values( $default_post_metas[ $meta_key ], $meta_value );.
 
 					add_post_meta( $post_id, $meta_key, $meta_value );
 
