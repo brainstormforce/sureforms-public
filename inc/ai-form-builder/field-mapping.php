@@ -57,8 +57,6 @@ class Field_Mapping {
 
 		if ( ! empty( $form_meta_data ) && is_array( $form_meta_data ) ) {
 			$mapped_form_meta = $form_meta_data;
-		} else {
-			$mapped_form_meta = [];
 		}
 
 		// if questions is empty then return empty string.

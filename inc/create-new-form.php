@@ -352,7 +352,7 @@ class Create_New_Form {
 
 			// add special case for email_notification.
 			if ( '_srfm_email_notification' === $key ) {
-				if ( ! array_key_exists( $key, $meta_values ) ) {
+				if ( ! isset( $meta_values[ $key ] ) ) {
 					$meta_values[ $key ] = $value;
 				} else {
 					if ( is_array( $value ) ) {
@@ -363,7 +363,7 @@ class Create_New_Form {
 				return $meta_values;
 			}
 
-			if ( ! array_key_exists( $key, $meta_values ) ) {
+			if ( ! isset( $meta_values[ $key ] ) ) {
 				$meta_values[ $key ] = $value;
 			} else {
 				if ( is_array( $value ) ) {
