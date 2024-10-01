@@ -1,6 +1,6 @@
 <?php
 /**
- * Entries Table Class.
+ * SureForms Entries Table Class.
  *
  * @package sureforms.
  */
@@ -8,7 +8,7 @@
 namespace SRFM\Admin;
 
 use SRFM\Inc\Database\Tables\Entries;
- 
+
 /**
  * Exit if accessed directly.
  */
@@ -23,29 +23,29 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
 /**
  * Create the entries table using WP_List_Table.
  */
-class Entries_Table extends \WP_List_Table {
+class SRFM_Entries_Table extends \WP_List_Table {
 	/**
 	 * Display content when no entries are found in the database.
-	 * 
+	 *
 	 * @return void
 	 */
 	public function no_items() {
-		printf( esc_html__( 'No entries found.' ) );
+		printf( esc_html__( 'No entries found.', 'sureforms' ) );
 	}
 
 	/**
 	 * Override the parent columns method. Defines the columns to use in your listing table.
-	 * 
+	 *
 	 * @return array
 	 */
 	public function get_columns() {
 		$columns = [
-			'cb' => '<input type="checkbox" />',
-			'id' => __( 'ID', 'sureforms' ),
-			'form_name' => __( 'Form Name', 'sureforms' ),
-			'status' => __( 'Status', 'sureforms' ),
+			'cb'          => '<input type="checkbox" />',
+			'id'          => __( 'ID', 'sureforms' ),
+			'form_name'   => __( 'Form Name', 'sureforms' ),
+			'status'      => __( 'Status', 'sureforms' ),
 			'first_field' => __( 'First Field', 'sureforms' ),
-			'created_at' => __( 'Submitted On', 'sureforms' ),
+			'created_at'  => __( 'Submitted On', 'sureforms' ),
 		];
 
 		return $columns;
@@ -53,13 +53,13 @@ class Entries_Table extends \WP_List_Table {
 
 	/**
 	 * Define the sortable columns.
-	 * 
+	 *
 	 * @return array
 	 */
 	public function get_sortable_columns() {
 		return [
-			'id' => [ 'ID', false ],
-			'status' => [ 'status', false ],
+			'id'         => [ 'ID', false ],
+			'status'     => [ 'status', false ],
 			'created_at' => [ 'created_at', false ],
 		];
 	}
@@ -68,15 +68,15 @@ class Entries_Table extends \WP_List_Table {
 	 * Bulk action items.
 	 *
 	 * @since x.x.x
-	 * 
+	 *
 	 * @return array $actions Bulk actions.
 	 */
 	public function get_bulk_actions() {
 		$actions = [
-			'edit' => __( 'Edit', 'sureforms' ),
+			'edit'   => __( 'Edit', 'sureforms' ),
 			'export' => __( 'Export', 'sureforms' ),
-			'trash' => __( 'Move to Trash', 'sureforms' ),
-			'read' => __( 'Mark as Read', 'sureforms' ),
+			'trash'  => __( 'Move to Trash', 'sureforms' ),
+			'read'   => __( 'Mark as Read', 'sureforms' ),
 			'unread' => __( 'Mark as Unread', 'sureforms' ),
 		];
 
@@ -85,7 +85,7 @@ class Entries_Table extends \WP_List_Table {
 
 	/**
 	 * Get the entries data.
-	 * 
+	 *
 	 * @return array
 	 */
 	private function table_data() {
@@ -94,18 +94,18 @@ class Entries_Table extends \WP_List_Table {
 
 	/**
 	 * Prepare the items for the table to process.
-	 * 
+	 *
 	 * @return void
 	 */
 	public function prepare_items() {
-		$columns = $this->get_columns();
-		$hidden = [];
+		$columns  = $this->get_columns();
+		$hidden   = [];
 		$sortable = $this->get_sortable_columns();
-		$data = $this->table_data();
+		$data     = $this->table_data();
 		usort( $data, [ $this, 'sort_data' ] );
-		$per_page = 10;
+		$per_page     = 10;
 		$current_page = $this->get_pagenum();
-		$total_items = count( $data );
+		$total_items  = count( $data );
 
 		$this->set_pagination_args(
 			[
@@ -114,17 +114,17 @@ class Entries_Table extends \WP_List_Table {
 			]
 		);
 
-		$data = array_slice( $data, ( ( $current_page - 1 ) * $per_page ), $per_page );
+		$data                  = array_slice( $data, ( ( $current_page - 1 ) * $per_page ), $per_page );
 		$this->_column_headers = [ $columns, $hidden, $sortable ];
-		$this->items = $data;
+		$this->items           = $data;
 	}
 
 	/**
 	 * Define what data to show on each column of the table.
-	 * 
-	 * @param array $item Column data.
+	 *
+	 * @param array  $item Column data.
 	 * @param string $column_name Current column name.
-	 * 
+	 *
 	 * @return mixed
 	 */
 	public function column_default( $item, $column_name ) {
@@ -132,7 +132,7 @@ class Entries_Table extends \WP_List_Table {
 			case 'id':
 				return $this->column_id( $item );
 			case 'form_name':
-				$form_name = ! empty( get_the_title( $item['form_id'] ) ) ? get_the_title( $item['form_id'] ) : 'SureForms Form #' . intval( $item["form_id"] );
+				$form_name = ! empty( get_the_title( $item['form_id'] ) ) ? get_the_title( $item['form_id'] ) : 'SureForms Form #' . intval( $item['form_id'] );
 				return $form_name;
 			case 'status':
 				return $this->column_status( $item );
@@ -162,14 +162,14 @@ class Entries_Table extends \WP_List_Table {
 
 	/**
 	 * Define the data for the "id" column and return the markup.
-	 * 
+	 *
 	 * @param array $item Column data.
-	 * 
+	 *
 	 * @return string
 	 */
 	protected function column_id( $item ) {
 		$entry_id = esc_attr( $item['ID'] );
-		$url = esc_url( add_query_arg( 'entry_id', $entry_id, admin_url( 'admin.php?page=entries' ) ) );
+		$url      = esc_url( add_query_arg( 'entry_id', $entry_id, admin_url( 'admin.php?page=entries' ) ) );
 
 		return sprintf(
 			'<strong><a class="row-title" href="%1$s">%2$s%3$s</a></strong>' . $this->row_actions( $this->package_row_actions( $item ) ),
@@ -178,70 +178,70 @@ class Entries_Table extends \WP_List_Table {
 			$entry_id
 		);
 	}
-	
+
 	/**
 	 * Define the data for the "status" column and return the markup.
-	 * 
+	 *
 	 * @param array $item Column data.
-	 * 
+	 *
 	 * @return string
 	 */
 	protected function column_status( $item ) {
 		$status = esc_attr( $item['status'] );
-		
+
 		return sprintf(
 			'<span class="%1$s">%2$s</span>',
-			"read" === $status ? "status-read" : "status-unread",
+			'read' === $status ? 'status-read' : 'status-unread',
 			$status
-		);		
+		);
 	}
-	
+
 	/**
 	 * Define the data for the "first field" column and return the markup.
-	 * 
+	 *
 	 * @param array $item Column data.
-	 * 
+	 *
 	 * @return string
 	 */
 	protected function column_first_field( $item ) {
 		$first_field = reset( $item['user_data'] );
-		
+
 		return sprintf(
 			'<p>%s</p>',
 			$first_field
-		);		
+		);
 	}
-	
+
 	/**
 	 * Define the data for the "submitted on" column and return the markup.
-	 * 
+	 *
 	 * @param array $item Column data.
-	 * 
+	 *
 	 * @return string
 	 */
 	protected function column_created_at( $item ) {
-		$created_at = date( 'Y/m/d \a\t g:i a', strtotime( $item['created_at'] ) );
-		
+		$created_at = gmdate( 'Y/m/d \a\t g:i a', strtotime( $item['created_at'] ) );
+
 		return sprintf(
 			'<span>%1$s<br>%2$s</span>',
 			esc_html__( 'Published', 'sureforms' ),
 			$created_at
-		);		
+		);
 	}
 
 	/**
 	 * Returns array of row actions for packages.
-	 * 
+	 *
 	 * @param array $item Column data.
 	 * @since x.x.x
-	 * 
+	 *
 	 * @return array
 	 */
 	protected function package_row_actions( $item ) {
-		$url = esc_url( add_query_arg( 'entry_id', esc_attr( $item['ID'] ), admin_url( 'admin.php?page=entries' ) ) );
+		$url         = esc_url( add_query_arg( 'entry_id', esc_attr( $item['ID'] ), admin_url( 'admin.php?page=entries' ) ) );
 		$row_actions = [
-			'view' => sprintf( '<a href="%1$s">%2$s</a>', esc_url( $url ), esc_html__( 'View', 'sureforms' ) ),
-			'trash' => sprintf( '<a href="%1$s">%2$s</a>', esc_url($url), esc_html__( 'Trash', 'sureforms' ) )
+			'view'  => sprintf( '<a href="%1$s">%2$s</a>', esc_url( $url ), esc_html__( 'View', 'sureforms' ) ),
+			'trash' => sprintf( '<a href="%1$s">%2$s</a>', esc_url( $url ), esc_html__( 'Trash', 'sureforms' ) ),
 		];
 
 		return array_filter( $row_actions );
@@ -263,19 +263,18 @@ class Entries_Table extends \WP_List_Table {
 
 	/**
 	 * Display the available form name to filter entries.
-	 * 
+	 *
 	 * @since x.x.x
 	 * @return void
 	 */
 	protected function display_form_filter() {
-		// TODO: set the $forms variable with available forms.
+		// TODO: set the $forms variable with available forms and add nonce verification check.
 		$forms = [];
 
 		echo '<select name="form_filter">';
-		echo '<option value="all_entries">' . __( 'All Form Entries', 'sureforms' ) . '</option>';
+		echo '<option value="all_entries">' . esc_html__( 'All Form Entries', 'sureforms' ) . '</option>';
 		foreach ( $forms as $form_id => $form_name ) {
-			$selected = ( isset( $_GET['form_filter'] ) && $_GET['form_filter'] == $form_id ) ? ' selected="selected"' : '';
-			printf( '<option value="%s"%s>%s</option>', esc_attr( $form_id ), $selected, esc_html( $form_name ) );
+			printf( '<option value="%s">%s</option>', esc_attr( $form_id ), esc_html( $form_name ) );
 		}
 		echo '</select>';
 		echo '<input type="submit" name="filter_action" value="Filter" class="button" />';
@@ -283,42 +282,41 @@ class Entries_Table extends \WP_List_Table {
 
 	/**
 	 * Display the month and year from which the entries are present to filter entries according to time.
-	 * 
+	 *
 	 * @since x.x.x
 	 * @return void
 	 */
 	protected function display_month_filter() {
-		// TODO: set the $months variable with available months.
+		// TODO: set the $months variable with available months and add nonce verification check.
 		$months = [];
 
 		echo '<select name="month_filter">';
-    	echo '<option value="all_date">' . __( 'All Dates', 'sureforms' ) . '</option>';
-    	foreach ( $months as $month_value => $month_label ) {
-        	$selected = ( isset( $_GET['month_filter'] ) && $_GET['month_filter'] == $month_value ) ? ' selected="selected"' : '';
-        	printf( '<option value="%s"%s>%s</option>', esc_attr( $month_value ), $selected, esc_html( $month_label ) );
-    	}
-    	echo '</select>';
+		echo '<option value="all_dates">' . esc_html__( 'All Dates', 'sureforms' ) . '</option>';
+		foreach ( $months as $month_value => $month_label ) {
+			printf( '<option value="%s">%s</option>', esc_attr( $month_value ), esc_html( $month_label ) );
+		}
+		echo '</select>';
 	}
 
 	/**
 	 * Allows you to sort the data by the variables set in the $_GET superglobal.
-	 * 
+	 *
 	 * @param array $data1 Data one to compare to.
 	 * @param array $data2 Data two to compare with.
-	 * 
+	 *
 	 * @since x.x.x
 	 * @return mixed
 	 */
 	protected function sort_data( $data1, $data2 ) {
 		$orderby = 'ID';
-		$order = 'desc';
+		$order   = 'desc';
 
-		if ( ! empty( $_GET[ 'orderby' ] ) ) {
-			$orderby = $_GET[ 'orderby' ];
+		if ( ! empty( $_GET['orderby'] ) ) {
+			$orderby = sanitize_key( wp_unslash( $_GET['orderby'] ) );
 		}
 
-		if ( ! empty( $_GET[ 'order' ] ) ) {
-			$order = $_GET[ 'order' ];
+		if ( ! empty( $_GET['order'] ) ) {
+			$order = sanitize_key( wp_unslash( $_GET['order'] ) );
 		}
 
 		$result = strcmp( $data1[ $orderby ], $data2[ $orderby ] );
@@ -330,4 +328,4 @@ class Entries_Table extends \WP_List_Table {
 	}
 }
 
-?>
+

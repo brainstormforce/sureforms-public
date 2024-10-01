@@ -87,7 +87,7 @@ class Entries extends Base {
 			],
 			// Submitted on date.
 			'created_at'      => [
-				'type'    => 'string',
+				'type' => 'string',
 			],
 		];
 	}
@@ -201,9 +201,7 @@ class Entries extends Base {
 
 	/**
 	 * Retrieve all entries from the database.
-	 * 
-	 * TODO: Improve the function and maybe consider limiting entries for pagination.
-	 * 
+	 *
 	 * @since x.x.x
 	 * @return array<mixed>
 	 */

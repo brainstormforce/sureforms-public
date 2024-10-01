@@ -10,7 +10,7 @@ namespace SRFM\Admin;
 use SRFM\Inc\Traits\Get_Instance;
 use SRFM\Inc\AI_Form_Builder\AI_Helper;
 use SRFM\Inc\Helper;
-use SRFM\Admin\Entries_Table;
+use SRFM\Admin\SRFM_Entries_Table;
 
 require_once __DIR__ . '/class-entries-table.php';
 
@@ -212,25 +212,24 @@ class Admin {
 
 	/**
 	 * Entries page callback.
-	 * 
+	 *
 	 * @return void
 	 * @since x.x.x
 	 */
 	public function render_entries() {
-		// TODO: Improve the following implementation.
-        $single_entry_template = plugin_dir_path(__FILE__) . 'admin-templates/single-entry-page.php';
-        if ( isset( $_GET['entry_id'] ) && is_numeric( $_GET['entry_id'] ) ) {
-            include( $single_entry_template );
-        } else {
-            $entries_table = new Entries_Table();
+		// TODO: Improve the following implementation and check for nonce verification.
+		$single_entry_template = plugin_dir_path( __FILE__ ) . 'admin-templates/single-entry-page.php';
+		if ( isset( $_GET['entry_id'] ) && is_numeric( $_GET['entry_id'] ) ) {
+			include $single_entry_template;
+		} else {
+			$entries_table = new SRFM_Entries_Table();
 			$entries_table->prepare_items();
 			echo '<div class="wrap"><h1 class="wp-heading-inline">Entries</h1>';
 			echo '<form method="post">';
 			$entries_table->display();
 			echo '</form>';
 			echo '</div>';
-        }
-
+		}
 	}
 
 	/**
