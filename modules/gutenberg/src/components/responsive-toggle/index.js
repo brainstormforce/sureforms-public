@@ -25,8 +25,8 @@ const ResponsiveToggle = ( props ) => {
 	 * Filter to globally control the visibility of the responsive toggle in SRFM forms.
 	 * This filter enables developers to specify whether the responsive toggle icon should be displayed for certain post types.
 	 * For instance, you can use this filter to disable the responsive toggle for the 'srfm_form' post type.
-	 * 
-	 * Note: This filter is specifically for SRFM and ensures that the responsive icon is removed for designated post types. 
+	 *
+	 * Note: This filter is specifically for SRFM and ensures that the responsive icon is removed for designated post types.
 	 * It should not be overridden or removed when updating this component.
 	 */
 	const shouldDisplayResponsiveIcon = applyFilters(
