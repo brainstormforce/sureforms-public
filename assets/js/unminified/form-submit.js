@@ -214,12 +214,15 @@ async function handleFormSubmission(
 		if ( isValidate ) {
 			loader.classList.remove( 'srfm-active' );
 			if ( isValidate[ 1 ] ) {
-				isValidate[ 1 ].focus();
-			} else if ( isValidate?.[ 2 ]?.smoothScrollElement ) {
-				isValidate[ 2 ].smoothScrollElement.scrollIntoView( {
-					behavior: 'smooth',
-					block: 'center',
-				} );
+				if ( isValidate?.[ 2 ]?.smoothScrollElement ) {
+					isValidate[ 1 ].focus({ preventScroll: true });
+					isValidate[ 2 ].smoothScrollElement.scrollIntoView( {
+						behavior: 'smooth',
+						block: 'center',
+					} );
+				} else {
+					isValidate[ 1 ].focus();
+				}
 			}
 			return;
 		}

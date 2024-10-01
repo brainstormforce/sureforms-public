@@ -200,12 +200,12 @@ export async function fieldValidation(
 				}
 				validateResult = true;
 
+				// Set the first error input.
+				setFirstErrorInput( visibleInput );
+
 				// As of now we have added smoothscroll functionality for the checkbox only.
 				if ( container.classList.contains( 'srfm-checkbox-block' ) ) {
 					setSmoothScrollElement( container );
-				} else {
-					// Set the first error input.
-					setFirstErrorInput( visibleInput );
 				}
 			} else if ( errorMessage ) {
 				container.classList.remove( 'srfm-error' );
