@@ -63,7 +63,9 @@ class Post_Types {
 	 * @return void
 	 * @since 0.0.1
 	 */
-	public function get_blank_page_markup( $title, $subtitle, $image, $button_text = '', $button_url = '' ) {
+	public function get_blank_page_markup( $title, $subtitle, $image, $button_text = '', $button_url = '', $post_type = '' ) {
+		$import_button = 'sureforms_form' === $post_type ? '<button class="button button-secondary srfm-import-btn">' . __( 'Import Form', 'sureforms' ) . '</button>' : '';
+
 		echo '<div class="sureform-add-new-form">';
 
 		echo '<p class="sureform-blank-page-title">' . esc_html( $title ) . '</p>';
@@ -73,7 +75,7 @@ class Post_Types {
 		echo '<img src="' . esc_url( SRFM_URL . '/images/' . $image . '.svg' ) . '">';
 
 		if ( ! empty( $button_text ) && ! empty( $button_url ) ) {
-			echo '<div class="sureforms-add-new-form-container"><a class="sf-add-new-form-button" href="' . esc_url( $button_url ) . '"><div class="button-secondary">' . esc_html( $button_text ) . '</div></a></div>';
+			echo '<div class="sureforms-add-new-form-container"><a class="sf-add-new-form-button" href="' . esc_url( $button_url ) . '"><div class="button-secondary">' . esc_html( $button_text ) . '</div></a>' . $import_button . '</div>';
 		}
 
 		echo '</div>';
@@ -100,7 +102,8 @@ class Post_Types {
 				),
 				'add-new-form',
 				esc_html__( 'Add New Form', 'sureforms' ),
-				$new_form_url
+				$new_form_url,
+				SRFM_FORMS_POST_TYPE
 			);
 		}
 
