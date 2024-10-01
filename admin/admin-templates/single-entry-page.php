@@ -14,6 +14,7 @@
             $form_name = ! empty( get_the_title( $entry['form_id'] ) ) ? get_the_title( $entry['form_id'] ) : 'SureForms Form #' . intval( $entry["form_id"] );
             $meta_data = $entry['user_data'];
             $excluded_fields = [ 'srfm-honeypot-field', 'g-recaptcha-response', 'srfm-sender-email-field' ];
+            $entry_logs = $entry['logs'];
             ?>
                 <div class="wrap">
                     <h1 class="wp-heading-inline"><?php esc_html_e( 'View Entry', 'sureforms' ); ?></h1>
@@ -26,9 +27,6 @@
                                             <label class="screen-reader-text" id="title-prompt-text" for="title"><?php esc_html_e( 'Add title', 'sureforms' ); ?></label>
                                             <input type="text" name="post_title" size="30" value="Entry #<?php echo esc_attr( $entry_id ); ?>" id="title" spellcheck="true" autocomplete="off" readonly>
                                         </div>
-                                        <div class="inside">
-                                        </div>
-                                        <!-- <input type="hidden" id="samplepermalinknonce" name="samplepermalinknonce" value="315728b3dd"> -->
                                     </div><!-- /titlediv -->
                                 </div><!-- /post-body-content -->
 
@@ -36,164 +34,65 @@
                                     <div id="side-sortables" class="meta-box-sortables ui-sortable">
                                         <div id="submitdiv" class="postbox ">
                                             <div class="postbox-header">
-                                                <!-- Removing class "hndle ui-sortable-handle" from the below h2 tag to prevent the draggable cursor. --> 
-                                                <h2>Publish</h2>
-                                                <div class="handle-actions hide-if-no-js"><button type="button" class="handle-order-higher" aria-disabled="true" aria-describedby="submitdiv-handle-order-higher-description"><span class="screen-reader-text">Move up</span><span class="order-higher-indicator" aria-hidden="true"></span></button><span class="hidden" id="submitdiv-handle-order-higher-description">Move Publish box up</span><button type="button" class="handle-order-lower" aria-disabled="false" aria-describedby="submitdiv-handle-order-lower-description"><span class="screen-reader-text">Move down</span><span class="order-lower-indicator" aria-hidden="true"></span></button><span class="hidden" id="submitdiv-handle-order-lower-description">Move Publish box down</span><button type="button" class="handlediv" aria-expanded="true"><span class="screen-reader-text">Toggle panel: Publish</span><span class="toggle-indicator" aria-hidden="true"></span></button></div>
+                                                <!-- Removed class "hndle ui-sortable-handle" from the below h2 tag to prevent the draggable cursor. --> 
+                                                <h2><?php esc_html_e( 'Entry Notes', 'sureforms' ); ?></h2>
+                                                <button id="srfm-add-entry-note" class="srfm-add-entry-note-button">
+                                                    <?php esc_html_e( 'Add Note' ); ?>
+                                                    <svg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M8 3.33594V12.6693' stroke='black' stroke-width='1.25' stroke-linecap='round' stroke-linejoin='round'/><path d='M3.33337 8H12.6667' stroke='black' stroke-width='1.25' stroke-linecap='round' stroke-linejoin='round'/></svg>
+                                                </button>
                                             </div>
                                             <div class="inside">
-                                                <div class="submitbox" id="submitpost">
-
-                                                    <div id="minor-publishing">
-
-                                                        <div style="display:none;">
-                                                            <p class="submit"><input type="submit" name="save" id="save" class="button" value="Save"></p>
-                                                        </div>
-
-                                                        <div id="minor-publishing-actions">
-                                                            <div id="save-action">
-                                                            </div>
-
-                                                            <div class="clear"></div>
-                                                        </div>
-
-                                                        <div id="misc-publishing-actions">
-                                                            <div class="misc-pub-section misc-pub-post-status">
-                                                                Status: <span id="post-status-display">
-                                                                    Published </span>
-
-                                                                <a href="#post_status" class="edit-post-status hide-if-no-js" role="button"><span aria-hidden="true">Edit</span> <span class="screen-reader-text">
-                                                                        Edit status </span></a>
-
-                                                                <div id="post-status-select" class="hide-if-js">
-                                                                    <input type="hidden" name="hidden_post_status" id="hidden_post_status" value="publish">
-                                                                    <label for="post_status" class="screen-reader-text">
-                                                                        Set status </label>
-                                                                    <select name="post_status" id="post_status">
-                                                                        <option selected="selected" value="publish">Published</option>
-                                                                        <option value="pending">Pending Review</option>
-                                                                        <option value="draft">Draft</option>
-                                                                    </select>
-                                                                    <a href="#post_status" class="save-post-status hide-if-no-js button">OK</a>
-                                                                    <a href="#post_status" class="cancel-post-status hide-if-no-js button-cancel">Cancel</a>
-                                                                </div>
-                                                            </div>
-
-                                                            <div class="misc-pub-section misc-pub-visibility" id="visibility">
-                                                                Visibility: <span id="post-visibility-display">
-                                                                    Public </span>
-
-                                                                <a href="#visibility" class="edit-visibility hide-if-no-js" role="button"><span aria-hidden="true">Edit</span> <span class="screen-reader-text">
-                                                                        Edit visibility </span></a>
-
-                                                                <div id="post-visibility-select" class="hide-if-js">
-                                                                    <input type="hidden" name="hidden_post_password" id="hidden-post-password" value="">
-
-                                                                    <input type="hidden" name="hidden_post_visibility" id="hidden-post-visibility" value="public">
-                                                                    <input type="radio" name="visibility" id="visibility-radio-public" value="public" checked="checked"> <label for="visibility-radio-public" class="selectit">Public</label><br>
-
-
-                                                                    <input type="radio" name="visibility" id="visibility-radio-password" value="password"> <label for="visibility-radio-password" class="selectit">Password protected</label><br>
-                                                                    <span id="password-span"><label for="post_password">Password:</label> <input type="text" name="post_password" id="post_password" value="" maxlength="255"><br></span>
-
-                                                                    <input type="radio" name="visibility" id="visibility-radio-private" value="private"> <label for="visibility-radio-private" class="selectit">Private</label><br>
-
-                                                                    <p>
-                                                                        <a href="#visibility" class="save-post-visibility hide-if-no-js button">OK</a>
-                                                                        <a href="#visibility" class="cancel-post-visibility hide-if-no-js button-cancel">Cancel</a>
-                                                                    </p>
-                                                                </div>
-                                                            </div>
-
-                                                            <div class="misc-pub-section curtime misc-pub-curtime">
-                                                                <span id="timestamp">
-                                                                    Published on: <b>Sep 26, 2024 at 12:34</b> </span>
-                                                                <a href="#edit_timestamp" class="edit-timestamp hide-if-no-js" role="button">
-                                                                    <span aria-hidden="true">Edit</span>
-                                                                    <span class="screen-reader-text">
-                                                                        Edit date and time </span>
-                                                                </a>
-                                                                <fieldset id="timestampdiv" class="hide-if-js">
-                                                                    <legend class="screen-reader-text">
-                                                                        Date and time </legend>
-                                                                    <div class="timestamp-wrap"><label><span class="screen-reader-text">Month</span><select class="form-required" id="mm" name="mm">
-                                                                                <option value="01" data-text="Jan">01-Jan</option>
-                                                                                <option value="02" data-text="Feb">02-Feb</option>
-                                                                                <option value="03" data-text="Mar">03-Mar</option>
-                                                                                <option value="04" data-text="Apr">04-Apr</option>
-                                                                                <option value="05" data-text="May">05-May</option>
-                                                                                <option value="06" data-text="Jun">06-Jun</option>
-                                                                                <option value="07" data-text="Jul">07-Jul</option>
-                                                                                <option value="08" data-text="Aug">08-Aug</option>
-                                                                                <option value="09" data-text="Sep" selected="selected">09-Sep</option>
-                                                                                <option value="10" data-text="Oct">10-Oct</option>
-                                                                                <option value="11" data-text="Nov">11-Nov</option>
-                                                                                <option value="12" data-text="Dec">12-Dec</option>
-                                                                            </select></label> <label><span class="screen-reader-text">Day</span><input type="text" id="jj" name="jj" value="26" size="2" maxlength="2" autocomplete="off" class="form-required"></label>, <label><span class="screen-reader-text">Year</span><input type="text" id="aa" name="aa" value="2024" size="4" maxlength="4" autocomplete="off" class="form-required"></label> at <label><span class="screen-reader-text">Hour</span><input type="text" id="hh" name="hh" value="12" size="2" maxlength="2" autocomplete="off" class="form-required"></label>:<label><span class="screen-reader-text">Minute</span><input type="text" id="mn" name="mn" value="34" size="2" maxlength="2" autocomplete="off" class="form-required"></label></div><input type="hidden" id="ss" name="ss" value="15">
-
-                                                                    <input type="hidden" id="hidden_mm" name="hidden_mm" value="09">
-                                                                    <input type="hidden" id="cur_mm" name="cur_mm" value="09">
-                                                                    <input type="hidden" id="hidden_jj" name="hidden_jj" value="26">
-                                                                    <input type="hidden" id="cur_jj" name="cur_jj" value="27">
-                                                                    <input type="hidden" id="hidden_aa" name="hidden_aa" value="2024">
-                                                                    <input type="hidden" id="cur_aa" name="cur_aa" value="2024">
-                                                                    <input type="hidden" id="hidden_hh" name="hidden_hh" value="12">
-                                                                    <input type="hidden" id="cur_hh" name="cur_hh" value="10">
-                                                                    <input type="hidden" id="hidden_mn" name="hidden_mn" value="34">
-                                                                    <input type="hidden" id="cur_mn" name="cur_mn" value="58">
-
-                                                                    <p>
-                                                                        <a href="#edit_timestamp" class="save-timestamp hide-if-no-js button">OK</a>
-                                                                        <a href="#edit_timestamp" class="cancel-timestamp hide-if-no-js button-cancel">Cancel</a>
-                                                                    </p>
-                                                                </fieldset>
-                                                            </div>
-                                                        </div>
-                                                        <div class="clear"></div>
-                                                    </div>
-
-                                                    <div id="major-publishing-actions">
-                                                        <div id="delete-action">
-                                                            <a class="submitdelete deletion" href="http://sureforms-dev.local/wp-admin/post.php?post=1122&amp;action=trash&amp;_wpnonce=0a024c572d">Move to Trash</a>
-                                                        </div>
-
-                                                        <div id="publishing-action">
-                                                            <span class="spinner"></span>
-                                                            <input name="original_publish" type="hidden" id="original_publish" value="Update">
-                                                            <input type="submit" name="save" id="publish" class="button button-primary button-large" value="Update">
-                                                        </div>
-                                                        <div class="clear"></div>
-                                                    </div>
-
+                                                <div class="srfm-entry-note-wrapper">
+                                                    <!-- TODO: Proper implementation for the entry notes section. -->
+                                                    <textarea id="srfm-entry-note" name="srfm_entry_note" rows="5"></textarea>
+                                                    <button type="submit" id="srfm-add-note" data-entry-id=<?php echo esc_html( $entry_id ); ?>><?php esc_html_e( 'Submit Note', 'sureforms' ); ?></button>
                                                 </div>
                                             </div>
                                         </div>
                                         <div id="sureform_form_name_meta" class="postbox ">
                                             <div class="postbox-header">
-                                                <h2 class="hndle ui-sortable-handle">Submission Info</h2>
-                                                <div class="handle-actions hide-if-no-js"><button type="button" class="handle-order-higher" aria-disabled="false" aria-describedby="sureform_form_name_meta-handle-order-higher-description"><span class="screen-reader-text">Move up</span><span class="order-higher-indicator" aria-hidden="true"></span></button><span class="hidden" id="sureform_form_name_meta-handle-order-higher-description">Move Submission Info box up</span><button type="button" class="handle-order-lower" aria-disabled="false" aria-describedby="sureform_form_name_meta-handle-order-lower-description"><span class="screen-reader-text">Move down</span><span class="order-lower-indicator" aria-hidden="true"></span></button><span class="hidden" id="sureform_form_name_meta-handle-order-lower-description">Move Submission Info box down</span><button type="button" class="handlediv" aria-expanded="true"><span class="screen-reader-text">Toggle panel: Submission Info</span><span class="toggle-indicator" aria-hidden="true"></span></button></div>
+                                                <!-- Removed "hndle ui-sortable-handle" class from h2 to remove the draggable stylings. -->
+                                                <h2><?php esc_html_e( 'Submission Info', 'sureforms' ) ?></h2>
+                                                <select id="srfm-update-entry-status" class="srfm-entry-status">
+                                                    <option value="read"><?php esc_html_e( 'Read', 'sureforms' ) ?></option>
+                                                    <option value="unread"><?php esc_html_e( 'Unread', 'sureforms' ) ?></option>
+                                                </select>
                                             </div>
                                             <div class="inside">
                                                 <table style="border-collapse: separate; border-spacing: 5px 5px;">
                                                     <tbody>
+                                                        <!-- TODO :: Add Type and User info and data for URL. -->
                                                         <tr style="margin-bottom: 10px;">
-                                                            <td><b>Form Name:</b></td>
-                                                            <td>SF-1396</td>
+                                                            <td><b><?php esc_html_e( 'Entry:', 'sureforms' ); ?></b></td>
+                                                            <td>#<?php echo esc_attr( $entry_id ); ?></td>
                                                         </tr>
                                                         <tr style="margin-bottom: 10px;">
-                                                            <td><b>Form ID:</b></td>
-                                                            <td></td>
+                                                            <td><b><?php esc_html_e( 'Form Name:', 'sureforms' ); ?></b></td>
+                                                            <td><?php echo esc_attr( $form_name ); ?></td>
                                                         </tr>
                                                         <tr style="margin-bottom: 10px;">
-                                                            <td><b>User IP:</b></td>
+                                                            <td><b><?php esc_html_e( 'User IP:', 'sureforms' ); ?></b></td>
+                                                            <td><a target="_blank" rel="noopener" href="https://ipinfo.io/"><?php echo esc_attr( $entry['submission_info']['user_ip'] ); ?></a></td>
+                                                        </tr>
+                                                        <tr style="margin-bottom: 10px;">
+                                                            <td><b><?php esc_html_e( 'URL:', 'sureforms' ); ?></b></td>
                                                             <td><a target="_blank" rel="noopener" href="https://ipinfo.io/"></a></td>
                                                         </tr>
                                                         <tr style="margin-bottom: 10px;">
-                                                            <td><b>Browser:</b></td>
-                                                            <td></td>
+                                                            <td><b><?php esc_html_e( 'Browser:', 'sureforms' ); ?></b></td>
+                                                            <td><?php echo esc_attr( $entry['submission_info']['browser_name'] ); ?></td>
                                                         </tr>
                                                         <tr style="margin-bottom: 10px;">
-                                                            <td><b>Device:</b></td>
-                                                            <td></td>
+                                                            <td><b><?php esc_html_e( 'Device:', 'sureforms' ); ?></b></td>
+                                                            <td><?php echo esc_attr( $entry['submission_info']['device_name'] ); ?></td>
+                                                        </tr>
+                                                        <tr style="margin-bottom: 10px;">
+                                                            <td><b><?php esc_html_e( 'Status:', 'sureforms' ); ?></b></td>
+                                                            <td style="text-transform: capitalize;"><?php echo esc_attr( $status ); ?></td>
+                                                        </tr>
+                                                        <tr style="margin-bottom: 10px;">
+                                                            <td><b><?php esc_html_e( 'Submitted On:', 'sureforms' ); ?></b></td>
+                                                            <td><?php echo esc_attr( $submitted_on ); ?></td>
                                                         </tr>
                                                     </tbody>
                                                 </table>
@@ -203,20 +102,11 @@
                                 </div>
                                 <div id="postbox-container-2" class="postbox-container">
                                     <div id="normal-sortables" class="meta-box-sortables ui-sortable">
-                                        <div id="slugdiv" class="postbox  hide-if-js" style="">
+                                        <div id="sureform_entry_meta" class="postbox">
                                             <div class="postbox-header">
-                                                <h2 class="hndle ui-sortable-handle">Slug</h2>
-                                                <div class="handle-actions hide-if-no-js"><button type="button" class="handle-order-higher" aria-disabled="false" aria-describedby="slugdiv-handle-order-higher-description"><span class="screen-reader-text">Move up</span><span class="order-higher-indicator" aria-hidden="true"></span></button><span class="hidden" id="slugdiv-handle-order-higher-description">Move Slug box up</span><button type="button" class="handle-order-lower" aria-disabled="false" aria-describedby="slugdiv-handle-order-lower-description"><span class="screen-reader-text">Move down</span><span class="order-lower-indicator" aria-hidden="true"></span></button><span class="hidden" id="slugdiv-handle-order-lower-description">Move Slug box down</span><button type="button" class="handlediv" aria-expanded="true"><span class="screen-reader-text">Toggle panel: Slug</span><span class="toggle-indicator" aria-hidden="true"></span></button></div>
-                                            </div>
-                                            <div class="inside">
-                                                <label class="screen-reader-text" for="post_name">
-                                                    Slug</label><input name="post_name" type="text" class="large-text" id="post_name" value="1122">
-                                            </div>
-                                        </div>
-                                        <div id="sureform_entry_meta" class="postbox ">
-                                            <div class="postbox-header">
-                                                <h2 class="hndle ui-sortable-handle">Form Data</h2>
-                                                <div class="handle-actions hide-if-no-js"><button type="button" class="handle-order-higher" aria-disabled="false" aria-describedby="sureform_entry_meta-handle-order-higher-description"><span class="screen-reader-text">Move up</span><span class="order-higher-indicator" aria-hidden="true"></span></button><span class="hidden" id="sureform_entry_meta-handle-order-higher-description">Move Form Data box up</span><button type="button" class="handle-order-lower" aria-disabled="false" aria-describedby="sureform_entry_meta-handle-order-lower-description"><span class="screen-reader-text">Move down</span><span class="order-lower-indicator" aria-hidden="true"></span></button><span class="hidden" id="sureform_entry_meta-handle-order-lower-description">Move Form Data box down</span><button type="button" class="handlediv" aria-expanded="true"><span class="screen-reader-text">Toggle panel: Form Data</span><span class="toggle-indicator" aria-hidden="true"></span></button></div>
+                                                <!-- Removed "hndle ui-sortable-handle" class from h2 to remove the draggable stylings. -->
+                                                <h2><?php esc_html_e( 'Form Data', 'sureforms' ); ?></h2>
+                                                <!-- <div class="handle-actions hide-if-no-js"><button type="button" class="handle-order-higher" aria-disabled="false" aria-describedby="sureform_entry_meta-handle-order-higher-description"><span class="screen-reader-text">Move up</span><span class="order-higher-indicator" aria-hidden="true"></span></button><span class="hidden" id="sureform_entry_meta-handle-order-higher-description">Move Form Data box up</span><button type="button" class="handle-order-lower" aria-disabled="false" aria-describedby="sureform_entry_meta-handle-order-lower-description"><span class="screen-reader-text">Move down</span><span class="order-lower-indicator" aria-hidden="true"></span></button><span class="hidden" id="sureform_entry_meta-handle-order-lower-description">Move Form Data box down</span><button type="button" class="handlediv" aria-expanded="true"><span class="screen-reader-text">Toggle panel: Form Data</span><span class="toggle-indicator" aria-hidden="true"></span></button></div> -->
                                             </div>
                                             <div class="inside">
                                                 <table class="widefat striped">
@@ -334,7 +224,51 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div id="advanced-sortables" class="meta-box-sortables ui-sortable empty-container"></div>
+                                </div>
+                                <div id="postbox-container-3" class="postbox-container">
+                                    <div id="normal-sortables" class="meta-box-sortables ui-sortable">
+                                        <div id="sureform_entry_meta" class="postbox">
+                                            <div class="postbox-header">
+                                                <!-- Removed "hndle ui-sortable-handle" class from h2 to remove the draggable stylings. -->
+                                                <h2><?php esc_html_e( 'Entry Logs', 'sureforms' ); ?></h2>
+                                                <!-- <div class="handle-actions hide-if-no-js"><button type="button" class="handle-order-higher" aria-disabled="false" aria-describedby="sureform_entry_meta-handle-order-higher-description"><span class="screen-reader-text">Move up</span><span class="order-higher-indicator" aria-hidden="true"></span></button><span class="hidden" id="sureform_entry_meta-handle-order-higher-description">Move Form Data box up</span><button type="button" class="handle-order-lower" aria-disabled="false" aria-describedby="sureform_entry_meta-handle-order-lower-description"><span class="screen-reader-text">Move down</span><span class="order-lower-indicator" aria-hidden="true"></span></button><span class="hidden" id="sureform_entry_meta-handle-order-lower-description">Move Form Data box down</span><button type="button" class="handlediv" aria-expanded="true"><span class="screen-reader-text">Toggle panel: Form Data</span><span class="toggle-indicator" aria-hidden="true"></span></button></div> -->
+                                            </div>
+                                            <div class="inside">
+                                                <table class="widefat striped entry-logs-table">
+                                                    <tbody>
+                                                        <?php if(!empty($entry_logs)): ?>
+                                                                <?php foreach ($entry_logs as $index => $log): ?>
+                                                                    <tr>
+                                                                        <td class="entry-log-container">
+                                                                            <div class="entry-log">
+                                                                                <h4 class="entry-log-title">
+                                                                                    <?php echo esc_html( $log['title'] ); ?>
+                                                                                    <?php echo esc_html(date('\a\t Y-m-d H:i:s', $log['timestamp'])); ?>
+                                                                                    <div class="entry-log-delete">
+                                                                                        <button class="delete-log-btn" title="Delete Log" data-entry-id="<?php echo esc_attr($entry_id); ?>" data-log-index="<?php echo esc_attr($index); ?>">
+                                                                                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                                                <path d="M12.2837 7.5L11.9952 15M8.00481 15L7.71635 7.5M16.023 4.82547C16.308 4.86851 16.592 4.91456 16.875 4.96358M16.023 4.82547L15.1332 16.3938C15.058 17.3707 14.2434 18.125 13.2637 18.125H6.73631C5.75655 18.125 4.94198 17.3707 4.86683 16.3938L3.97696 4.82547M16.023 4.82547C15.0677 4.6812 14.1013 4.57071 13.125 4.49527M3.125 4.96358C3.40798 4.91456 3.69198 4.86851 3.97696 4.82547M3.97696 4.82547C4.93231 4.6812 5.89874 4.57071 6.875 4.49527M13.125 4.49527V3.73182C13.125 2.74902 12.3661 1.92853 11.3838 1.8971C10.9244 1.8824 10.463 1.875 10 1.875C9.53696 1.875 9.07565 1.8824 8.61618 1.8971C7.63388 1.92853 6.875 2.74902 6.875 3.73182V4.49527M13.125 4.49527C12.0938 4.41558 11.0516 4.375 10 4.375C8.94836 4.375 7.9062 4.41558 6.875 4.49527" stroke="#94A3B8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                                                                            </svg>
+                                                                                        </button>
+                                                                                    </div>
+                                                                                </h4>
+                                                                                <div class="entry-log-messages">
+                                                                                <?php foreach ($log['messages'] as $message) : ?>
+                                                                                    <p><?php echo esc_html($message); ?></p>
+                                                                                <?php endforeach; ?>
+                                                                                </div>
+                                                                            </div>
+                                                                        </td>
+                                                                    </tr>
+                                                                <?php endforeach; ?>
+                                                        <?php else: ?>
+                                                            <p><?php esc_html_e( 'No logs found for this entry.', 'sureforms' ); ?></p>
+                                                        <?php endif; ?>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div><!-- /post-body -->
                             <br class="clear">
