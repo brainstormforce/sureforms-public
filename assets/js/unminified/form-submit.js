@@ -177,6 +177,7 @@ function showSuccessMessage(
 	}
 	element.innerHTML = message;
 	container.classList.add( 'srfm-active' );
+	window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function redirectToUrl( url ) {
