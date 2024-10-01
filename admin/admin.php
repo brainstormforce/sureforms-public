@@ -226,6 +226,7 @@ class Admin {
 			$entries_table->prepare_items();
 			echo '<div class="wrap"><h1 class="wp-heading-inline">Entries</h1>';
 			echo '<form method="post">';
+			$entries_table->search_box( esc_html__( 'Search', 'sureforms' ), 'srfm-entries' );
 			$entries_table->display();
 			echo '</form>';
 			echo '</div>';

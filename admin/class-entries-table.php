@@ -74,7 +74,6 @@ class SRFM_Entries_Table extends \WP_List_Table {
 	public function get_bulk_actions() {
 		$actions = [
 			'edit'   => __( 'Edit', 'sureforms' ),
-			'export' => __( 'Export', 'sureforms' ),
 			'trash'  => __( 'Move to Trash', 'sureforms' ),
 			'read'   => __( 'Mark as Read', 'sureforms' ),
 			'unread' => __( 'Mark as Unread', 'sureforms' ),
@@ -255,10 +254,37 @@ class SRFM_Entries_Table extends \WP_List_Table {
 	 * @return void
 	 */
 	protected function extra_tablenav( $which ) {
+		if ( 'top' !== $which ) {
+			return;
+		}
 		if ( 'top' === $which ) {
 			$this->display_month_filter();
 			$this->display_form_filter();
 		}
+	}
+
+	/**
+	 * Generates the table navigation above or below the table.
+	 * 
+	 * @param string $which is it the top or bottom of the table.
+	 * 
+	 * @since x.x.x
+	 * @return void
+	 */
+	protected function display_tablenav( $which ) {
+		?>
+		<div class="tablenav <?php echo esc_attr( $which ) ?>">
+			<?php if ( $this->has_items() ) : ?>
+				<div class="alignleft actions bulkactions">
+					<?php $this->bulk_actions( $which ); ?>
+				</div>
+			<?php
+			endif;
+			$this->extra_tablenav( $which );
+			$this->pagination( $which );
+			?>
+		</div>
+		<?php
 	}
 
 	/**
@@ -299,6 +325,42 @@ class SRFM_Entries_Table extends \WP_List_Table {
 	}
 
 	/**
+	 * Entries table form search.
+	 * 
+	 * @param string $text The "search entries" button label.
+	 * @param string $input_id ID attribute for the search input field.
+	 * 
+	 * @since x.x.x
+	 * @return void
+	 */
+	public function search_box( $text, $input_id ) {
+		$input_id .= '-search-input';
+		// TODO: Search logic implementation.
+		$this->search_box_output( $text, $input_id );
+	}
+
+	/**
+	 * Entries table form search input markup.
+	 * 
+	 * @param string $text The 'submit' button label.
+	 * @param string $input_id ID attribute value for the search input field.
+	 * 
+	 * @since x.x.x
+	 * @return void
+	 */
+	protected function search_box_output( $text, $input_id ) {
+		?>
+		<p class="search-box sureforms-form-search-box">
+			<label class="screen-reader-text" for="<?php echo esc_attr( $input_id ); ?>">
+				<?php echo esc_html( $text ); ?>:
+			</label>
+			<input type="search" class="sureforms-form-search-box-term" id="<?php echo esc_attr( $input_id ); ?>">
+			<button type="submit" class="button" id="search-submit"><?php echo esc_html( $text ); ?></button>
+		</p>
+		<?php
+	}
+
+	/**
 	 * Allows you to sort the data by the variables set in the $_GET superglobal.
 	 *
 	 * @param array $data1 Data one to compare to.
@@ -325,6 +387,70 @@ class SRFM_Entries_Table extends \WP_List_Table {
 		}
 
 		return -$result;
+	}
+
+	/**
+	 * Displays the table.
+	 * 
+	 * @since x.x.x
+	 */
+	public function display() {
+		$singular = $this->_args['singular'];
+		$this->display_tablenav( 'top' );
+		$this->screen->render_screen_reader_content( 'heading_list' );
+		?>
+		<div class="sureforms-table-container">
+			<table class="wp-list-table <?php echo esc_attr( implode( ' ', $this->get_table_classes() ) ); ?>">
+				<?php $this->print_table_description(); ?>
+				<thead>
+				<tr>
+					<?php $this->print_column_headers(); ?>
+				</tr>
+				</thead>
+
+				<tbody id="the-list"
+					<?php
+					if ( $singular ) {
+						echo ' data-wp-lists="list:' . esc_attr( $singular ) . '"';
+					}
+					?>
+				>
+				<?php $this->display_rows_or_placeholder(); ?>
+				</tbody>
+
+				<tfoot>
+				<tr>
+					<?php $this->print_column_headers( false ); ?>
+				</tr>
+				</tfoot>
+			</table>
+		</div>
+		<?php
+		$this->display_tablenav( 'bottom' );
+	}
+
+	/**
+	 * List of CSS classes for the "WP_List_Table" table element.
+	 * 
+	 * @global string $mode List table view mode.
+	 * @since x.x.x
+	 * 
+	 * @return array
+	 */
+	protected function get_table_classes() {
+		global $mode;
+		$mode = get_user_setting( 'posts_list_mode', 'list' );
+		$mode_class = esc_attr( 'table-view-' . $mode );
+		$classes    = [
+			'widefat',
+			'striped',
+			$mode_class,
+		];
+
+		$columns_class = $this->get_column_count() > 5 ? 'many' : 'few';
+		$classes[] = "has-{$columns_class}-columns";
+
+		return $classes;
 	}
 }
 
