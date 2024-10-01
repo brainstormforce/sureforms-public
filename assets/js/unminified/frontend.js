@@ -1,3 +1,12 @@
+// This function helps to add functions and variables in global scope, which can be further used from different files.
+function addGlobalSrfmObject( key, value ) {
+	const obj = window?.srfm || {};
+	obj[ key ] = value;
+	window.srfm = obj;
+}
+
+window.addGlobalSrfmObject = addGlobalSrfmObject;
+
 // Sender's Email.
 
 const emailElements = document.getElementsByClassName(
@@ -362,4 +371,12 @@ function onSuccess( response ) {
 			normalizeCSSVariablesForDarkBackground( formContainer );
 		} );
 	} );
+
+	// example usage:
+	// addGlobalSrfmObject( 'some_key', 'some_value' );
+
+	addGlobalSrfmObject(
+		'handleInstantFormWrapperHeight',
+		handleInstantFormWrapperHeight
+	);
 }() );
