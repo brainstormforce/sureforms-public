@@ -30,9 +30,6 @@ const FormPageHeader = () => {
 							padding-top: 46px;
 						}
 					}
-					#show-settings-link {
-						margin-right: 26px;
-					}
 				` }
 			/>
 			<Header />
