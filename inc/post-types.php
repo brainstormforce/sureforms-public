@@ -60,6 +60,7 @@ class Post_Types {
 	 * @param string $image Parent slug.
 	 * @param string $button_text Parent slug.
 	 * @param string $button_url Parent slug.
+	 * @param string $post_type Parent slug.
 	 * @return void
 	 * @since 0.0.1
 	 */
@@ -75,7 +76,7 @@ class Post_Types {
 		echo '<img src="' . esc_url( SRFM_URL . '/images/' . $image . '.svg' ) . '">';
 
 		if ( ! empty( $button_text ) && ! empty( $button_url ) ) {
-			echo '<div class="sureforms-add-new-form-container"><a class="sf-add-new-form-button" href="' . esc_url( $button_url ) . '"><div class="button-secondary">' . esc_html( $button_text ) . '</div></a>' . $import_button . '</div>';
+			echo '<div class="sureforms-add-new-form-container"><a class="sf-add-new-form-button" href="' . esc_url( $button_url ) . '"><div class="button-secondary">' . esc_html( $button_text ) . '</div></a>' . wp_kses_post( $import_button ) . '</div>';
 		}
 
 		echo '</div>';

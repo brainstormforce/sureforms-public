@@ -274,16 +274,16 @@ $placeholder_color: #9ca3af;
 	margin-bottom: 12px;
 }
 
-.srfm-page-pre-nav-content{
+.srfm-page-pre-nav-content {
 	position: -webkit-sticky;
 	position: sticky;
-	background-color: rgba(255, 255, 255, 0.75);
-	-webkit-backdrop-filter: blur(5px);
-	backdrop-filter: blur(5px);
+	background-color: rgba( 255, 255, 255, 0.75 );
+	-webkit-backdrop-filter: blur( 5px );
+	backdrop-filter: blur( 5px );
 	top: 32px;
 	width: 100%;
 	z-index: 4;
-	border-bottom: 1px solid rgb(229, 231, 235);
+	border-bottom: 1px solid rgb( 229, 231, 235 );
 	height: 65px;
 	box-sizing: border-box;
 }
@@ -291,7 +291,7 @@ $placeholder_color: #9ca3af;
 .post-type-sureforms_entry,
 .post-type-sureforms_form,
 .sureforms_page_sureforms_form_settings,
-.toplevel_page_sureforms_menu{
+.toplevel_page_sureforms_menu {
 	#wpcontent {
 		padding: 0;
 	}

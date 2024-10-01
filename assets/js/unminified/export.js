@@ -126,7 +126,7 @@ function importForm() {
 
 function appendImportBtn() {
 	// checks whether current page is initial UI where no forms exists.
-	let attachmentElement = document.querySelector(
+	const attachmentElement = document.querySelector(
 		'#posts-filter .search-box'
 	);
 
