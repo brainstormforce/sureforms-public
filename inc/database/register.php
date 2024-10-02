@@ -33,7 +33,11 @@ class Register {
 	 * @return void
 	 */
 	protected static function create_entries_table() {
-		Entries::get_instance()->create(
+		$entries = Entries::get_instance();
+$entries->get_all();
+		$entries->start_db_upgrade();
+
+		$entries->create(
 			[
 				'ID BIGINT(20) UNSIGNED AUTO_INCREMENT PRIMARY KEY',
 				'form_id BIGINT(20) UNSIGNED',
@@ -49,11 +53,14 @@ class Register {
 			]
 		);
 
-		Entries::get_instance()->maybe_add_new_columns(
+		// Add new column to existing table.
+		$entries->maybe_add_new_columns(
 			[
 				'user_id BIGINT(20) UNSIGNED AFTER form_id',
 				'INDEX idx_user_id (user_id)'
 			]
 		);
+
+		$entries->stop_db_upgrade();
 	}
 }

@@ -88,8 +88,14 @@ abstract class Base {
 		$this->wpdb         = $wpdb;
 		$this->table_prefix = $this->wpdb->prefix . 'srfm_';
 		$this->table_name   = $this->table_prefix . $this->table_suffix;
+	}
 
-		$this->check_is_db_upgradable();
+	public function __destruct() {
+		/**
+		 * Just incase if any developer forgets to stop the db upgrade after starting.
+		 * This fallback handling will take care of such scenarios.
+		 */
+		$this->stop_db_upgrade();
 	}
 
 	/**
@@ -100,8 +106,8 @@ abstract class Base {
 	 */
 	abstract public function get_schema();
 
-	protected function check_is_db_upgradable() {
-		$versions     = get_options( 'srfm_database_table_versions', array() );
+	public function start_db_upgrade() {
+		$versions     = get_option( 'srfm_database_table_versions', array() );
 		$prev_version = ! empty( $versions[ $this->table_suffix ] ) ? absint( $versions[ $this->table_suffix ] ) : false;
 
 		if ( ! $prev_version ) {
@@ -116,8 +122,13 @@ abstract class Base {
 		$this->db_upgradable = $this->table_version > $prev_version;
 	}
 
-	protected function update_table_version() {
-		$versions = get_options( 'srfm_database_table_versions', array() );
+	public function stop_db_upgrade() {
+		if ( ! $this->db_upgradable ) {
+			// Only upgrade when it is needed.
+			return false;
+		}
+
+		$versions = get_option( 'srfm_database_table_versions', array() );
 
 		$versions[ $this->table_suffix ] = $this->table_version;
 
@@ -202,13 +213,13 @@ abstract class Base {
 	 * @return int|bool
 	 */
 	public function create( $columns = [] ) {
-		if ( empty( $columns ) ) {
-			return false; // It's better to return a boolean for failure.
-		}
-
 		if ( ! $this->db_upgradable ) {
 			// Only upgrade when it is needed.
 			return false;
+		}
+
+		if ( empty( $columns ) ) {
+			return false; // It's better to return a boolean for failure.
 		}
 
 		// Prepare columns list.
@@ -219,9 +230,7 @@ abstract class Base {
 
 		// Execute the query.
 		// phpcs:ignore
-		$result = $this->wpdb->query( "CREATE TABLE IF NOT EXISTS {$this->get_tablename()} ( {$columns_list} ) {$this->get_charset_collate()}" );
-		$this->update_table_version();
-		return $result;
+		return $this->wpdb->query( "CREATE TABLE IF NOT EXISTS {$this->get_tablename()} ( {$columns_list} ) {$this->get_charset_collate()}" );
 	}
 
 	public function maybe_add_new_columns( $new_columns = [] ) {
@@ -240,16 +249,24 @@ abstract class Base {
 		$table_name    = $this->get_tablename();
 		$alter_queries = [];
 
+		$existing_indexes = $this->get_indexes();
+
 		// Check and add each column if it does not exist.
 		foreach ( $new_columns as $column_definition ) {
-			preg_match( '/(\w+)\s/', $column_definition, $matches );
-			$column_name = $matches[1];
+			preg_match( '/INDEX\s+(.*?)\s+\(/', $column_definition, $index_matches );
 
-			if ( 'index' === strtolower( $column_name ) ) {
+			if ( ! empty( $index_matches[1] ) ) {
+				if ( isset( $existing_indexes[ $index_matches[1] ] ) ) {
+					// Move to next element if current index already exists.
+					continue;
+				}
 				// Stack and move to next if we are indexing.
 				$alter_queries[] = "ADD {$column_definition}";
 				continue;
 			}
+
+			preg_match( '/(\w+)\s/', $column_definition, $column_matches );
+			$column_name = $column_matches[1];
 
 			// If the column does not exist, add it
 			if ( ! isset( $existing_columns[ $column_name ] ) ) {
@@ -259,9 +276,7 @@ abstract class Base {
 
 		if ( $alter_queries ) {
 			$alter_queries = implode( ', ', $alter_queries );
-			$result = $this->wpdb->query( "ALTER TABLE {$table_name} {$alter_queries}" );
-			$this->update_table_version();
-			return $result;
+			return $this->wpdb->query( "ALTER TABLE {$table_name} {$alter_queries}" );
 		}
 	}
 
@@ -279,6 +294,22 @@ abstract class Base {
 			}
 		}
 		return $_columns;
+	}
+
+	public function get_indexes() {
+		$indexes = $this->wpdb->get_results( "SHOW INDEX FROM {$this->get_tablename()}" );
+
+		if ( empty( $indexes ) ) {
+			return array();
+		}
+
+		$_indexes = array();
+		if ( ! empty( $indexes ) && is_array( $indexes ) ) {
+			foreach ( $indexes as $index ) {
+				$_indexes[ $index->Key_name ] = $index;
+			}
+		}
+		return $_indexes;
 	}
 
 	/**
@@ -376,7 +407,7 @@ abstract class Base {
 	 * @since 0.0.10
 	 * @return array<mixed> An associative array of results where each element represents a row, or an empty array if no results are found.
 	 */
-	public function get_results( $where_clauses = [], $columns = '*' ) {
+	public function get_results( $where_clauses = [], $columns = '*', $extra_query = '' ) {
 		$wpdb = $this->wpdb;
 
 		$table_name = $this->get_tablename();
@@ -414,6 +445,10 @@ abstract class Base {
 			// @phpstan-ignore-next-line
 			$query = $wpdb->prepare( $query, ...$values );
 			// phpcs:enable
+		}
+
+		if ( ! empty( $extra_query ) ) {
+			$query .= ' ' . trim( $extra_query );
 		}
 
 		// Add a semicolon (optional, not necessary in practice).
@@ -505,8 +540,7 @@ abstract class Base {
 	protected function decode_by_datatype( $data ) {
 		$_data = [];
 		foreach ( $this->get_schema() as $key => $schema ) {
-			// Process defaults.
-			if ( ! isset( $data[ $key ] ) ) {
+			if ( ! array_key_exists( $key, $data ) ) {
 				continue;
 			}
 

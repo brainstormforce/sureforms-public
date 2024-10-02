@@ -67,6 +67,10 @@ class Entries extends Base {
 			'form_id'         => [
 				'type' => 'number',
 			],
+			// User ID.
+			'user_id'         => [
+				'type' => 'number',
+			],
 			// Current entry status: ['read', 'unread'].
 			'status'          => [
 				'type'    => 'string',
@@ -200,5 +204,18 @@ class Entries extends Base {
 		);
 
 		return isset( $results[0] ) ? Helper::get_array_value( $results[0] ) : [];
+	}
+
+	public static function get_all( $args = array() ) {
+		$_args = wp_parse_args(
+			$args,
+			array(
+				'where'  => [],
+				'limit'  => 10,
+				'offset' => 0,
+			)
+		);
+
+		return self::get_instance()->get_results( $_args['where'], '*', "LIMIT {$_args['offset']}, {$_args['limit']}" );
 	}
 }
