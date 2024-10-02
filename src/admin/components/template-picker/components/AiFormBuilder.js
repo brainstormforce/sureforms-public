@@ -107,7 +107,7 @@ const AiFormBuilder = () => {
 					return;
 				}
 
-				const { postContent, postMeta } = await apiFetch( {
+				const postContent = await apiFetch( {
 					path: 'sureforms/v1/map-fields',
 					method: 'POST',
 					data: { form_data: content },
@@ -117,7 +117,7 @@ const AiFormBuilder = () => {
 					setMessage( __( 'Redirecting to Editor', 'sureforms' ) );
 					setPercentBuild( 100 );
 					const formTitle = content?.form?.formTitle;
-					handleAddNewPost( postContent, formTitle, postMeta );
+					handleAddNewPost( postContent, formTitle, [] );
 				} else {
 					setShowFormCreationErr( true );
 				}
