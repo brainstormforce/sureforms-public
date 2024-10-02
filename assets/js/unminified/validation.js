@@ -43,6 +43,15 @@ export async function fieldValidation(
 	let firstErrorInput = null;
 	let scrollElement = null;
 
+	/**
+	 * Sets the first error input and the element to scroll to.
+	 * This function is used to identify the first input field that has an error
+	 * and set it as the target for scrolling. It ensures that the user is
+	 * directed to the first error input when validation fails.
+	 *
+	 * @param {HTMLElement} input   - The input element that has the error.
+	 * @param {HTMLElement} element - The element to scroll to, typically the same as the input or its container.
+	 */
 	const setFirstErrorInput = ( input, element ) => {
 		if ( ! firstErrorInput ) {
 			firstErrorInput = input;
