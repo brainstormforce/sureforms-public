@@ -25,14 +25,49 @@ class Frontend_Assets {
 	use Get_Instance;
 
 	/**
+	 * JS Assets.
+	 *
+	 * @since x.x.x
+	 * @var array<string>
+	 */
+	public static $js_assets = [
+		'form-submit' => 'formSubmit.js',
+		'frontend'    => 'frontend.min.js',
+	];
+
+	/**
+	 * CSS Assets.
+	 *
+	 * @since x.x.x
+	 * @var array<string>
+	 */
+	public static $css_assets = [
+		'frontend-default' => 'blocks/default/frontend',
+		'common'           => 'common',
+		'form'             => 'frontend/form',
+		'single'           => 'single',
+	];
+
+	/**
+	 * External CSS Assets.
+	 *
+	 * @since x.x.x
+	 * @var array<string>
+	 */
+	public static $css_external_assets = [
+		'tom-select'     => 'tom-select',
+		'intl-tel-input' => 'intl/intlTelInput.min',
+	];
+
+
+	/**
 	 * Constructor
 	 *
 	 * @since  0.0.1
 	 */
 	public function __construct() {
 		add_filter( 'template_include', [ $this, 'page_template' ], PHP_INT_MAX );
-
-		add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_scripts' ] );
+		add_action( 'wp_enqueue_scripts', [ $this, 'register_scripts' ] );
 		add_filter( 'render_block', [ $this, 'generate_render_script' ], 10, 2 );
 	}
 
@@ -42,7 +77,7 @@ class Frontend_Assets {
 	 * @return void
 	 * @since 0.0.1
 	 */
-	public function enqueue_scripts() {
+	public function register_scripts() {
 		$file_prefix = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? '' : '.min';
 		$dir_name    = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? 'unminified' : 'minified';
 		$js_uri      = SRFM_URL . 'assets/js/' . $dir_name . '/';
@@ -61,32 +96,35 @@ class Frontend_Assets {
 		}
 
 		// Styles based on meta style.
-		wp_enqueue_style( SRFM_SLUG . '-frontend-default', $css_uri . '/blocks/default/frontend' . $file_prefix . '.css', [], SRFM_VER );
-
-		// Common styles for all meta styles.
-		wp_enqueue_style( SRFM_SLUG . '-common', $css_uri . 'common' . $file_prefix . '.css', [], SRFM_VER, 'all' );
-		wp_enqueue_style( SRFM_SLUG . '-form', $css_uri . 'frontend/form' . $file_prefix . '.css', [], SRFM_VER, 'all' );
-
-		if ( is_single() ) {
-			wp_enqueue_style( SRFM_SLUG . '-single', $css_uri . 'single' . $file_prefix . '.css', [], SRFM_VER );
+		foreach ( self::$css_assets as $handle => $path ) {
+			wp_register_style( SRFM_SLUG . '-' . $handle, $css_uri . $path . $file_prefix . '.css', [], SRFM_VER );
 		}
 
-		// Dependencies
-		// Nice Select CSS.
-		wp_enqueue_style( SRFM_SLUG . '-tom-select', $css_vendor . 'tom-select.css', [], SRFM_VER );
-		// Int-tel-input CSS.
-		wp_enqueue_style( SRFM_SLUG . '-intl-tel-input', $css_vendor . 'intl/intlTelInput.min.css', [], SRFM_VER );
+		// External styles.
+		foreach ( self::$css_external_assets as $handle => $path ) {
+			wp_register_style( SRFM_SLUG . '-' . $handle, $css_vendor . $path . '.css', [], SRFM_VER );
+		}
 
-		wp_enqueue_script(
-			SRFM_SLUG . '-form-submit',
-			SRFM_URL . 'assets/build/formSubmit.js',
-			[],
-			SRFM_VER,
-			true
-		);
-
-		// Frontend common and validation before submit.
-		wp_enqueue_script( SRFM_SLUG . '-frontend', $js_uri . 'frontend.min.js', [], SRFM_VER, true );
+		// Scripts.
+		foreach ( self::$js_assets as $handle => $name ) {
+			if ( 'form-submit' === $handle ) {
+				wp_register_script(
+					SRFM_SLUG . '-' . $handle,
+					SRFM_URL . 'assets/build/' . $name,
+					[],
+					SRFM_VER,
+					true
+				);
+			} else {
+				wp_register_script(
+					SRFM_SLUG . '-' . $handle,
+					$js_uri . $name,
+					[],
+					SRFM_VER,
+					true
+				);
+			}
+		}
 
 		wp_localize_script(
 			SRFM_SLUG . '-form-submit',
@@ -96,6 +134,35 @@ class Frontend_Assets {
 				'nonce'    => wp_create_nonce( 'wp_rest' ),
 			]
 		);
+	}
+
+	/**
+	 * Enqueue scripts and styles.
+	 *
+	 * @return void
+	 * @since x.x.x
+	 */
+	public static function enqueue_scripts_and_styles() {
+		// Load the styles.
+		foreach ( self::$css_assets as $handle => $path ) {
+
+			// Skip single form styles if not on single form page.
+			if ( 'single' === $handle && ! is_singular( SRFM_FORMS_POST_TYPE ) ) {
+				continue;
+			}
+
+			wp_enqueue_style( SRFM_SLUG . '-' . $handle );
+		}
+
+		// Load the external styles. Like Phone and Tom Select.
+		foreach ( self::$css_external_assets as $handle => $path ) {
+			wp_enqueue_style( SRFM_SLUG . '-' . $handle );
+		}
+
+		// Load the scripts.
+		foreach ( self::$js_assets as $handle => $path ) {
+			wp_enqueue_script( SRFM_SLUG . '-' . $handle );
+		}
 	}
 
 	/**
