@@ -255,7 +255,7 @@ When you use the SureForms, you get a huge library of ready-to-use form template
 = 0.0.11 =
 * New: Added input mask setting for the text field.
 * Improvement: Added support for emojis and special characters in SureForm AI response.
-* Improvement: Dropdown field add option by pressing enter key.
+* Improvement: Dropdown and Multiple Choice field add option by pressing enter key.
 * Improvement: Load frontend assets only when SureForms is present on the page.
 * Improvement: Webhook settings fields UX Improvements.
 * Fix: Fixed the missing form submission information.
