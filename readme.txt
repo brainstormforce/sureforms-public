@@ -258,6 +258,7 @@ When you use the SureForms, you get a huge library of ready-to-use form template
 * Improvement: Dropdown field add option by pressing enter key.
 * Improvement: Webhook settings fields UX Improvements.
 * Improvement: Load frontend assets only when SureForms is present on the page.
+* Fix: Fixed the missing form submission information.
 = 0.0.10 =
 * New: Added a new custom table for the entries to improve performance.
 * Improvement: Added help text for the Email field.
