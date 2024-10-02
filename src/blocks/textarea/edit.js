@@ -23,7 +23,7 @@ import ConditionalLogic from '@Components/conditional-logic';
 
 const Edit = ( { clientId, attributes, setAttributes } ) => {
 	const {
-		textAreaHelpText,
+		help,
 		required,
 		maxLength,
 		block_id,
@@ -150,13 +150,13 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 							/>
 							<SRFMTextControl
 								label={ __( 'Help Text', 'sureforms' ) }
-								value={ textAreaHelpText }
+								value={ help }
 								data={ {
-									value: textAreaHelpText,
-									label: 'textAreaHelpText',
+									value: help,
+									label: 'help',
 								} }
 								onChange={ ( value ) =>
-									setAttributes( { textAreaHelpText: value } )
+									setAttributes( { help: value } )
 								}
 							/>
 						</SRFMAdvancedPanelBody>

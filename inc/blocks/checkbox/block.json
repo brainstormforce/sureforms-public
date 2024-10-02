@@ -38,7 +38,7 @@
 			"type": "boolean",
 			"default": false
 		},
-		"checkboxHelpText": {
+		"help": {
 			"type": "string",
 			"default": ""
 		},
