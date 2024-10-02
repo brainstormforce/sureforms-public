@@ -43,15 +43,16 @@ export async function fieldValidation(
 	let firstErrorInput = null;
 	let smoothScrollElement = false;
 
-	const setFirstErrorInput = ( input ) => {
+	// TODO: If smooth scrolling is required for all input errors, implement this functionality for all inputs accordingly.
+	// const setSmoothScrollElement = ( element ) => {
+	// 	if ( ! smoothScrollElement ) {
+	// 		smoothScrollElement = element;
+	// 	}
+	// };
+
+	const setFirstErrorInput = ( input, element ) => {
 		if ( ! firstErrorInput ) {
 			firstErrorInput = input;
-		}
-	};
-
-	// TODO: If smooth scrolling is required for all input errors, implement this functionality for all inputs accordingly.
-	const setSmoothScrollElement = ( element ) => {
-		if ( ! smoothScrollElement ) {
 			smoothScrollElement = element;
 		}
 	};
@@ -109,6 +110,7 @@ export async function fieldValidation(
 		let fieldName = inputField.getAttribute( 'name' );
 		const inputValue = inputField.value;
 		const errorMessage = container.querySelector( '.srfm-error-message' );
+
 		if ( fieldName ) {
 			fieldName = fieldName.replace( /_/g, ' ' );
 		}
@@ -127,7 +129,7 @@ export async function fieldValidation(
 				}
 				validateResult = true;
 				// Set the first error input.
-				setFirstErrorInput( inputField );
+				setFirstErrorInput( inputField, inputField.closest( '.srfm-block' ) );
 			} else if ( inputField ) {
 				inputField
 					.closest( '.srfm-block' )
@@ -162,7 +164,7 @@ export async function fieldValidation(
 
 				validateResult = true;
 				// Set the first error input.
-				setFirstErrorInput( inputField );
+				setFirstErrorInput( inputField, inputField.closest( '.srfm-block' ) );
 			} else if ( inputField ) {
 				inputField
 					.closest( '.srfm-block' )
@@ -201,12 +203,12 @@ export async function fieldValidation(
 				validateResult = true;
 
 				// Set the first error input.
-				setFirstErrorInput( visibleInput );
+				setFirstErrorInput( visibleInput, container );
 
-				// As of now we have added smoothscroll functionality for the checkbox only.
-				if ( container.classList.contains( 'srfm-checkbox-block' ) ) {
-					setSmoothScrollElement( container );
-				}
+				// // As of now we have added smoothscroll functionality for the checkbox only.
+				// if ( container.classList.contains( 'srfm-checkbox-block' ) ) {
+				// 	setSmoothScrollElement( container );
+				// }
 			} else if ( errorMessage ) {
 				container.classList.remove( 'srfm-error' );
 			}
@@ -228,7 +230,7 @@ export async function fieldValidation(
 				container.classList.add( 'srfm-error' );
 				validateResult = true;
 				// Set the first error input.
-				setFirstErrorInput( urlInput );
+				setFirstErrorInput( urlInput, container );
 			}
 
 			// remove the error message on input of the url input
@@ -247,7 +249,7 @@ export async function fieldValidation(
 				container.classList.add( 'srfm-error' );
 				validateResult = true;
 				// Set the first error input.
-				setFirstErrorInput( phoneInput );
+				setFirstErrorInput( phoneInput, container );
 			}
 
 			// remove the error message on input of the phone input
@@ -285,7 +287,7 @@ export async function fieldValidation(
 							confirmError.getAttribute( 'data-error-msg' );
 						confirmParent.classList.add( 'srfm-error' );
 						// Set the first error input.
-						setFirstErrorInput( confirmValue );
+						setFirstErrorInput( confirmValue, confirmParent );
 						validateResult = true;
 					} else if ( confirmValue !== inputValue ) {
 						confirmParent.classList.add( 'srfm-error' );
@@ -293,7 +295,7 @@ export async function fieldValidation(
 							'Confirmation Password is not the same';
 
 						// Set the first error input.
-						setFirstErrorInput( confirmValue );
+						setFirstErrorInput( confirmValue, confirmParent );
 						validateResult = true;
 					} else {
 						confirmParent.classList.remove( 'srfm-error' );
@@ -311,9 +313,8 @@ export async function fieldValidation(
 				);
 
 				if ( parent.classList.contains( 'srfm-valid-email-error' ) ) {
-					if ( ! firstErrorInput ) {
-						firstErrorInput = inputField;
-					}
+					// set the first error input.
+					setFirstErrorInput( inputField, parent );
 					validateResult = true;
 				}
 
@@ -338,7 +339,7 @@ export async function fieldValidation(
 						confirmParent.classList.add( 'srfm-error' );
 
 						// Set the first error input.
-						setFirstErrorInput( confirmInput );
+						setFirstErrorInput( confirmInput, confirmParent );
 						validateResult = true;
 					} else if ( confirmValue !== inputValue ) {
 						confirmParent.classList.add( 'srfm-error' );
@@ -346,7 +347,7 @@ export async function fieldValidation(
 							'Confirmation email is not the same';
 
 						// Set the first error input.
-						setFirstErrorInput( confirmInput );
+						setFirstErrorInput( confirmInput, confirmParent );
 						validateResult = true;
 					} else {
 						confirmParent.classList.remove( 'srfm-error' );
@@ -367,7 +368,7 @@ export async function fieldValidation(
 			}
 		}
 
-		//Upload field
+		// Upload field
 		if ( container.classList.contains( 'srfm-upload-block' ) ) {
 			const uploadInput = container.querySelector( '.srfm-input-upload' );
 
@@ -389,7 +390,7 @@ export async function fieldValidation(
 
 				validateResult = true;
 				// Set the first error input.
-				setFirstErrorInput( uploadInput );
+				setFirstErrorInput( uploadInput, container );
 			} else if ( inputField ) {
 				inputField
 					.closest( '.srfm-block' )
@@ -472,7 +473,7 @@ export async function fieldValidation(
 					.classList.add( 'srfm-error' );
 				validateResult = true;
 				// Set the first error input.
-				setFirstErrorInput( container.querySelector( '.srfm-icon' ) );
+				setFirstErrorInput( container.querySelector( '.srfm-icon' ), container );
 			} else {
 				ratingInput
 					.closest( '.srfm-block' )
@@ -562,9 +563,10 @@ export async function fieldValidation(
 		}
 	}
 
-	return validateResult
-		? [ validateResult, firstErrorInput, { smoothScrollElement } ]
-		: validateResult;
+	// return validateResult
+	// 	? [ validateResult, firstErrorInput, { smoothScrollElement } ]
+	// 	: validateResult;
+	return validateResult ? { validateResult, firstErrorInput, smoothScrollElement } : validateResult;
 }
 
 /**
