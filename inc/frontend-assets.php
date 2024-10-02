@@ -115,6 +115,7 @@ class Frontend_Assets {
 			'textarea'     => 0,
 			'url'          => 0,
 			'phone'        => 0,
+			'input'        => 0,
 		];
 
 		$file_prefix = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? '' : '.min';
@@ -164,6 +165,11 @@ class Frontend_Assets {
 
 			if ( 'dropdown' !== $block_name ) {
 				wp_enqueue_script( SRFM_SLUG . "-{$block_name}", $js_uri . $block_name . $file_prefix . '.js', [], SRFM_VER, true );
+			}
+
+			if ( 'input' === $block_name ) {
+				// Input mask JS.
+				wp_enqueue_script( SRFM_SLUG . '-inputmask', $js_vendor_uri . 'inputmask.min.js', [], SRFM_VER, true );
 			}
 		}
 	}
