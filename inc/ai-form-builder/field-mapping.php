@@ -26,7 +26,7 @@ class Field_Mapping {
 	 * Generate Gutenberg Fields from AI data.
 	 *
 	 * @param \WP_REST_Request $request Full details about the request.
-	 * @return string
+	 * @return string|array<mixed> Post content and the post metas.
 	 */
 	public static function generate_gutenberg_fields_from_questions( $request ) {
 
@@ -50,6 +50,15 @@ class Field_Mapping {
 		}
 
 		$form_fields = $form['formFields'];
+
+		// Manage form meta data.
+		$form_meta_data   = $form['formMetaData'];
+		$mapped_form_meta = [];
+
+		if ( ! empty( $form_meta_data ) && is_array( $form_meta_data ) ) {
+			$mapped_form_meta = $form_meta_data;
+		}
+
 		// if questions is empty then return empty string.
 		if ( empty( $form_fields ) || ! is_array( $form ) ) {
 			return '';
@@ -215,7 +224,10 @@ class Field_Mapping {
 			}
 		}
 
-		return $post_content;
+		return [
+			'postContent' => $post_content,
+			'postMeta'    => $mapped_form_meta,
+		];
 	}
 
 }
