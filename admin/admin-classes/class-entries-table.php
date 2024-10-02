@@ -265,20 +265,20 @@ class SRFM_Entries_Table extends \WP_List_Table {
 
 	/**
 	 * Generates the table navigation above or below the table.
-	 * 
+	 *
 	 * @param string $which is it the top or bottom of the table.
-	 * 
+	 *
 	 * @since x.x.x
 	 * @return void
 	 */
 	protected function display_tablenav( $which ) {
 		?>
-		<div class="tablenav <?php echo esc_attr( $which ) ?>">
+		<div class="tablenav <?php echo esc_attr( $which ); ?>">
 			<?php if ( $this->has_items() ) : ?>
 				<div class="alignleft actions bulkactions">
 					<?php $this->bulk_actions( $which ); ?>
 				</div>
-			<?php
+				<?php
 			endif;
 			$this->extra_tablenav( $which );
 			$this->pagination( $which );
@@ -326,10 +326,10 @@ class SRFM_Entries_Table extends \WP_List_Table {
 
 	/**
 	 * Entries table form search.
-	 * 
+	 *
 	 * @param string $text The "search entries" button label.
 	 * @param string $input_id ID attribute for the search input field.
-	 * 
+	 *
 	 * @since x.x.x
 	 * @return void
 	 */
@@ -341,10 +341,10 @@ class SRFM_Entries_Table extends \WP_List_Table {
 
 	/**
 	 * Entries table form search input markup.
-	 * 
+	 *
 	 * @param string $text The 'submit' button label.
 	 * @param string $input_id ID attribute value for the search input field.
-	 * 
+	 *
 	 * @since x.x.x
 	 * @return void
 	 */
@@ -391,7 +391,7 @@ class SRFM_Entries_Table extends \WP_List_Table {
 
 	/**
 	 * Displays the table.
-	 * 
+	 *
 	 * @since x.x.x
 	 */
 	public function display() {
@@ -431,15 +431,12 @@ class SRFM_Entries_Table extends \WP_List_Table {
 
 	/**
 	 * List of CSS classes for the "WP_List_Table" table element.
-	 * 
-	 * @global string $mode List table view mode.
+	 *
 	 * @since x.x.x
-	 * 
-	 * @return array
+	 * @return array<string>
 	 */
 	protected function get_table_classes() {
-		global $mode;
-		$mode = get_user_setting( 'posts_list_mode', 'list' );
+		$mode       = get_user_setting( 'posts_list_mode', 'list' );
 		$mode_class = esc_attr( 'table-view-' . $mode );
 		$classes    = [
 			'widefat',
@@ -448,7 +445,7 @@ class SRFM_Entries_Table extends \WP_List_Table {
 		];
 
 		$columns_class = $this->get_column_count() > 5 ? 'many' : 'few';
-		$classes[] = "has-{$columns_class}-columns";
+		$classes[]     = "has-{$columns_class}-columns";
 
 		return $classes;
 	}
