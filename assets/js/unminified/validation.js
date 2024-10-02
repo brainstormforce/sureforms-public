@@ -41,14 +41,7 @@ export async function fieldValidation(
 ) {
 	let validateResult = false;
 	let firstErrorInput = null;
-	let scrollElement = false;
-
-	// TODO: If smooth scrolling is required for all input errors, implement this functionality for all inputs accordingly.
-	// const setSmoothScrollElement = ( element ) => {
-	// 	if ( ! smoothScrollElement ) {
-	// 		smoothScrollElement = element;
-	// 	}
-	// };
+	let scrollElement = null;
 
 	const setFirstErrorInput = ( input, element ) => {
 		if ( ! firstErrorInput ) {
@@ -210,11 +203,6 @@ export async function fieldValidation(
 
 				// Set the first error input.
 				setFirstErrorInput( visibleInput, container );
-
-				// // As of now we have added smoothscroll functionality for the checkbox only.
-				// if ( container.classList.contains( 'srfm-checkbox-block' ) ) {
-				// 	setSmoothScrollElement( container );
-				// }
 			} else if ( errorMessage ) {
 				container.classList.remove( 'srfm-error' );
 			}
@@ -572,6 +560,12 @@ export async function fieldValidation(
 		}
 	}
 
+	/**
+	 * If the validation fails, return validateResult, firstErrorInput and scrollElement
+	 *  validateResult: if validation fails return true || default value is false
+	 *  firstErrorInput: the first input field that has an error
+	 *  scrollElement: the element to scroll to
+	 */
 	return validateResult
 		? { validateResult, firstErrorInput, scrollElement }
 		: false;
