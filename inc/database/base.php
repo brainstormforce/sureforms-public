@@ -49,12 +49,24 @@ abstract class Base {
 	protected $table_suffix;
 
 	/**
+	 * Version for current custom table. Default is 1.
+	 * Unlike semantic versioning [eg: 1.0.0, 1.0.1] we use natural integer like 1, 2, 3... and so on.
+	 *
+	 * @var int
+	 * @since x.x.x
+	 * @override
+	 */
+	protected $table_version = 1;
+
+	/**
 	 * Full table name mixed with table prefix and table suffix.
 	 *
 	 * @var string
 	 * @since 0.0.10
 	 */
 	private $table_name;
+
+	private $db_upgradable;
 
 	/**
 	 * Current table database result caches.
@@ -76,6 +88,8 @@ abstract class Base {
 		$this->wpdb         = $wpdb;
 		$this->table_prefix = $this->wpdb->prefix . 'srfm_';
 		$this->table_name   = $this->table_prefix . $this->table_suffix;
+
+		$this->check_is_db_upgradable();
 	}
 
 	/**
@@ -85,6 +99,30 @@ abstract class Base {
 	 * @return array<string,array<mixed>>
 	 */
 	abstract public function get_schema();
+
+	protected function check_is_db_upgradable() {
+		$versions     = get_options( 'srfm_database_table_versions', array() );
+		$prev_version = ! empty( $versions[ $this->table_suffix ] ) ? absint( $versions[ $this->table_suffix ] ) : false;
+
+		if ( ! $prev_version ) {
+			/**
+			 * If we are here then there is the chance that
+			 * this site is the new site or fresh setup.
+			 */
+			$this->db_upgradable = true;
+			return;
+		}
+
+		$this->db_upgradable = $this->table_version > $prev_version;
+	}
+
+	protected function update_table_version() {
+		$versions = get_options( 'srfm_database_table_versions', array() );
+
+		$versions[ $this->table_suffix ] = $this->table_version;
+
+		update_option( 'srfm_database_table_versions', $versions );
+	}
 
 	/**
 	 * Returns full table name.
@@ -168,6 +206,11 @@ abstract class Base {
 			return false; // It's better to return a boolean for failure.
 		}
 
+		if ( ! $this->db_upgradable ) {
+			// Only upgrade when it is needed.
+			return false;
+		}
+
 		// Prepare columns list.
 		$columns_list = implode(
 			', ',
@@ -176,7 +219,66 @@ abstract class Base {
 
 		// Execute the query.
 		// phpcs:ignore
-		return $this->wpdb->query( "CREATE TABLE IF NOT EXISTS {$this->get_tablename()} ( {$columns_list} ) {$this->get_charset_collate()}" );
+		$result = $this->wpdb->query( "CREATE TABLE IF NOT EXISTS {$this->get_tablename()} ( {$columns_list} ) {$this->get_charset_collate()}" );
+		$this->update_table_version();
+		return $result;
+	}
+
+	public function maybe_add_new_columns( $new_columns = [] ) {
+		if ( ! $this->db_upgradable ) {
+			// Only upgrade when it is needed.
+			return false;
+		}
+
+		$existing_columns = $this->get_columns();
+
+		if ( ! $existing_columns ) {
+			// Table does not exists or is new table.
+			return false;
+		}
+
+		$table_name    = $this->get_tablename();
+		$alter_queries = [];
+
+		// Check and add each column if it does not exist.
+		foreach ( $new_columns as $column_definition ) {
+			preg_match( '/(\w+)\s/', $column_definition, $matches );
+			$column_name = $matches[1];
+
+			if ( 'index' === strtolower( $column_name ) ) {
+				// Stack and move to next if we are indexing.
+				$alter_queries[] = "ADD {$column_definition}";
+				continue;
+			}
+
+			// If the column does not exist, add it
+			if ( ! isset( $existing_columns[ $column_name ] ) ) {
+				$alter_queries[] = "ADD COLUMN {$column_definition}";
+			}
+		}
+
+		if ( $alter_queries ) {
+			$alter_queries = implode( ', ', $alter_queries );
+			$result = $this->wpdb->query( "ALTER TABLE {$table_name} {$alter_queries}" );
+			$this->update_table_version();
+			return $result;
+		}
+	}
+
+	public function get_columns() {
+		$columns = $this->wpdb->get_results( "SHOW COLUMNS FROM {$this->get_tablename()}" );
+
+		if ( empty( $columns ) ) {
+			return array();
+		}
+
+		$_columns = array();
+		if ( ! empty( $columns ) && is_array( $columns ) ) {
+			foreach ( $columns as $column ) {
+				$_columns[ $column->Field ] = $column;
+			}
+		}
+		return $_columns;
 	}
 
 	/**

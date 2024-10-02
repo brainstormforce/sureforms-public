@@ -33,6 +33,13 @@ class Entries extends Base {
 	protected $table_suffix = 'entries';
 
 	/**
+	 * {@inheritDoc}
+	 *
+	 * @var int
+	 */
+	protected $table_version = 1;
+
+	/**
 	 * Current logs.
 	 *
 	 * @var array<array<string,mixed>> $logs
