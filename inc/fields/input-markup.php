@@ -31,14 +31,14 @@ class Input_Markup extends Base {
 	 * Input mask for the input field.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 0.0.11
 	 */
 	protected $input_mask;
 	/**
 	 * Custom input mask for the input field.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 0.0.11
 	 */
 	protected $custom_input_mask;
 

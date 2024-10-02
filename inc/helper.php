@@ -939,7 +939,7 @@ class Helper {
 	/**
 	 * Encode data to JSON. This function will encode the data with JSON_UNESCAPED_SLASHES and JSON_UNESCAPED_UNICODE.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.11
 	 * @param array<mixed> $data The data to encode.
 	 * @return string|false The JSON representation of the value on success or false on failure.
 	 */
