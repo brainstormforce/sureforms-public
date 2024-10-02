@@ -12,6 +12,7 @@ use SRFM\Inc\AI_Form_Builder\AI_Helper;
 use SRFM\Inc\Helper;
 use SRFM\Admin\SRFM_Entries_Table;
 use SRFM\Admin\SRFM_Single_Entry;
+use SRFM\Inc\Post_Types;
 
 require_once __DIR__ . '/admin-classes/class-entries-table.php';
 require_once __DIR__ . '/admin-classes/class-single-entry.php';
@@ -227,10 +228,16 @@ class Admin {
 			$entries_table = new SRFM_Entries_Table();
 			$entries_table->prepare_items();
 			echo '<div class="wrap"><h1 class="wp-heading-inline">Entries</h1>';
-			echo '<form method="post">';
-			$entries_table->search_box( esc_html__( 'Search', 'sureforms' ), 'srfm-entries' );
-			$entries_table->display();
-			echo '</form>';
+			if ( $entries_table->has_items() ) {
+				echo '<form method="post">';
+				$entries_table->search_box( esc_html__( 'Search', 'sureforms' ), 'srfm-entries' );
+				$entries_table->display();
+				echo '</form>';
+			} else {
+				$instance = new Post_Types();
+				$instance->sureforms_render_blank_state( SRFM_ENTRIES_POST_TYPE );
+				$instance->get_blank_state_styles();
+			}
 			echo '</div>';
 		}
 	}

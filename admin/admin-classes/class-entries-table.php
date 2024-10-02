@@ -25,15 +25,6 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
  */
 class SRFM_Entries_Table extends \WP_List_Table {
 	/**
-	 * Display content when no entries are found in the database.
-	 *
-	 * @return void
-	 */
-	public function no_items() {
-		printf( esc_html__( 'No entries found.', 'sureforms' ) );
-	}
-
-	/**
 	 * Override the parent columns method. Defines the columns to use in your listing table.
 	 *
 	 * @return array
