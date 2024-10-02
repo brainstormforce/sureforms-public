@@ -9,6 +9,7 @@
 namespace SRFM\Inc\AI_Form_Builder;
 
 use SRFM\Inc\Traits\Get_Instance;
+use SRFM\Inc\Helper;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
@@ -96,9 +97,6 @@ class Field_Mapping {
 				case 'url':
 				case 'phone':
 					// Handle specific attributes for certain fields.
-					if ( 'textarea' === $question['fieldType'] && ! empty( $question['helpText'] ) ) {
-						$merged_attributes['textAreaHelpText'] = sanitize_text_field( $question['helpText'] );
-					}
 					if ( 'dropdown' === $question['fieldType'] && ! empty( $question['fieldOptions'] ) && is_array( $question['fieldOptions'] ) &&
 					! empty( $question['fieldOptions'][0]['label'] )
 					) {
@@ -114,19 +112,11 @@ class Field_Mapping {
 							$merged_attributes['singleSelection'] = filter_var( $question['singleSelection'], FILTER_VALIDATE_BOOLEAN );
 						}
 					}
-					// if checkbox then map help to checkboxHelpText.
-					if ( 'checkbox' === $question['fieldType'] && ! empty( $question['helpText'] ) ) {
-						$merged_attributes['checkboxHelpText'] = sanitize_text_field( $question['helpText'] );
-					}
-					// if gdpr then map help to gdprHelpText.
-					if ( 'gdpr' === $question['fieldType'] && ! empty( $question['helpText'] ) ) {
-						$merged_attributes['gdprHelpText'] = sanitize_text_field( $question['helpText'] );
-					}
 					if ( 'phone' === $question['fieldType'] ) {
 						$merged_attributes['autoCountry'] = true;
 					}
 
-					$post_content .= '<!-- wp:srfm/' . $question['fieldType'] . ' ' . wp_json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
+					$post_content .= '<!-- wp:srfm/' . $question['fieldType'] . ' ' . Helper::encode_json( $merged_attributes ) . ' /-->' . PHP_EOL;
 					break;
 				case 'slider':
 				case 'page-break':
@@ -217,11 +207,11 @@ class Field_Mapping {
 
 					}
 
-					$post_content .= '<!-- wp:srfm/' . $question['fieldType'] . ' ' . wp_json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
+					$post_content .= '<!-- wp:srfm/' . $question['fieldType'] . ' ' . Helper::encode_json( $merged_attributes ) . ' /-->' . PHP_EOL;
 					break;
 				default:
 					// Unsupported field type - fallback to input.
-					$post_content .= '<!-- wp:srfm/input ' . wp_json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
+					$post_content .= '<!-- wp:srfm/input ' . Helper::encode_json( $merged_attributes ) . ' /-->' . PHP_EOL;
 			}
 		}
 

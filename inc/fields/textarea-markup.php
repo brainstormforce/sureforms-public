@@ -87,7 +87,6 @@ class Textarea_Markup extends Base {
 		$this->set_error_msg( $attributes, 'srfm_textarea_block_required_text' );
 		$this->slug       = 'textarea';
 		$this->max_length = isset( $attributes['maxLength'] ) ? $attributes['maxLength'] : '';
-		$this->help       = isset( $attributes['textAreaHelpText'] ) ? $attributes['textAreaHelpText'] : '';
 		$this->rows       = isset( $attributes['rows'] ) ? $attributes['rows'] : '';
 		$this->cols       = isset( $attributes['cols'] ) ? $attributes['cols'] : '';
 		// html attributes.

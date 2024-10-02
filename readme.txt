@@ -253,8 +253,10 @@ When you use the SureForms, you get a huge library of ready-to-use form template
 
 == Changelog ==
 = x.x.x =
+* Improvement: Added support for emojis and special characters in SureForm AI response.
 * Improvement: Dropdown field add option by pressing enter key.
 * Improvement: Webhook settings fields UX Improvements.
+
 = 0.0.10 =
 * New: Added a new custom table for the entries to improve performance.
 * Improvement: Added help text for the Email field.

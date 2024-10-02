@@ -11,7 +11,7 @@ export const TextareaComponent = ( { attributes, blockID, setAttributes } ) => {
 		defaultValue,
 		rows,
 		cols,
-		textAreaHelpText,
+		help,
 	} = attributes;
 	const isRequired = required ? ' srfm-required' : '';
 	const slug = 'textarea';
@@ -29,7 +29,7 @@ export const TextareaComponent = ( { attributes, blockID, setAttributes } ) => {
 				allowedFormats={ [] }
 			/>
 			<HelpText
-				help={ textAreaHelpText }
+				help={ help }
 				setAttributes={ setAttributes }
 				block_id={ blockID }
 			/>
