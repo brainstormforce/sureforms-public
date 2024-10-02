@@ -240,7 +240,7 @@ const AiFormBuilder = () => {
 										: '#CBD5E1',
 								} }
 								placeholder={ __(
-									'E.g. Form to gather feedback from our customer for our product functionality, usability , how much you will rate it and what you don’t like about it.',
+									'E.g. Form to gather feedback from our customers for our product functionality, usability, how much you will rate it, and what you don’t like about it.',
 									'sureforms'
 								) }
 								maxLength={ 2000 }
