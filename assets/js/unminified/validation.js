@@ -41,7 +41,7 @@ export async function fieldValidation(
 ) {
 	let validateResult = false;
 	let firstErrorInput = null;
-	let smoothScrollElement = false;
+	let scrollElement = false;
 
 	// TODO: If smooth scrolling is required for all input errors, implement this functionality for all inputs accordingly.
 	// const setSmoothScrollElement = ( element ) => {
@@ -53,7 +53,7 @@ export async function fieldValidation(
 	const setFirstErrorInput = ( input, element ) => {
 		if ( ! firstErrorInput ) {
 			firstErrorInput = input;
-			smoothScrollElement = element;
+			scrollElement = element;
 		}
 	};
 
@@ -129,7 +129,10 @@ export async function fieldValidation(
 				}
 				validateResult = true;
 				// Set the first error input.
-				setFirstErrorInput( inputField, inputField.closest( '.srfm-block' ) );
+				setFirstErrorInput(
+					inputField,
+					inputField.closest( '.srfm-block' )
+				);
 			} else if ( inputField ) {
 				inputField
 					.closest( '.srfm-block' )
@@ -164,7 +167,10 @@ export async function fieldValidation(
 
 				validateResult = true;
 				// Set the first error input.
-				setFirstErrorInput( inputField, inputField.closest( '.srfm-block' ) );
+				setFirstErrorInput(
+					inputField,
+					inputField.closest( '.srfm-block' )
+				);
 			} else if ( inputField ) {
 				inputField
 					.closest( '.srfm-block' )
@@ -473,7 +479,10 @@ export async function fieldValidation(
 					.classList.add( 'srfm-error' );
 				validateResult = true;
 				// Set the first error input.
-				setFirstErrorInput( container.querySelector( '.srfm-icon' ), container );
+				setFirstErrorInput(
+					container.querySelector( '.srfm-icon' ),
+					container
+				);
 			} else {
 				ratingInput
 					.closest( '.srfm-block' )
@@ -563,10 +572,9 @@ export async function fieldValidation(
 		}
 	}
 
-	// return validateResult
-	// 	? [ validateResult, firstErrorInput, { smoothScrollElement } ]
-	// 	: validateResult;
-	return validateResult ? { validateResult, firstErrorInput, smoothScrollElement } : validateResult;
+	return validateResult
+		? { validateResult, firstErrorInput, scrollElement }
+		: false;
 }
 
 /**

@@ -211,17 +211,21 @@ async function handleFormSubmission(
 			form
 		);
 
-		if ( isValidate ) {
+		/**
+		 * if validation fails, show error message and scroll to the first
+		 */
+		if ( isValidate?.validateResult ) {
 			loader.classList.remove( 'srfm-active' );
-			if ( isValidate[ 1 ] ) {
-				if ( isValidate?.[ 2 ]?.smoothScrollElement ) {
-					isValidate[ 1 ].focus({ preventScroll: true });
-					isValidate[ 2 ].smoothScrollElement.scrollIntoView( {
+			// If firstErrorInput is available, focus on that element and don't scroll by focus.
+			if ( isValidate?.firstErrorInput ) {
+				isValidate.firstErrorInput.focus( { preventScroll: true } );
+
+				// If scrollElement is available, scroll to that element.
+				if ( isValidate?.scrollElement ) {
+					isValidate.scrollElement.scrollIntoView( {
 						behavior: 'smooth',
 						block: 'center',
 					} );
-				} else {
-					isValidate[ 1 ].focus();
 				}
 			}
 			return;
