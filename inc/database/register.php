@@ -23,6 +23,12 @@ defined( 'ABSPATH' ) || exit;
  */
 class Register {
 
+	/**
+	 * Init database registration.
+	 *
+	 * @since x.x.x
+	 * @return void
+	 */
 	public static function init() {
 		self::create_entries_table();
 	}
@@ -58,7 +64,7 @@ class Register {
 		$entries->maybe_add_new_columns(
 			[
 				'user_id BIGINT(20) UNSIGNED AFTER form_id',
-				'INDEX idx_user_id (user_id)'
+				'INDEX idx_user_id (user_id)',
 			]
 		);
 

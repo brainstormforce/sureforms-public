@@ -186,14 +186,14 @@ class Entries extends Base {
 			$data['logs'] = $instance->get_logs();
 		}
 
-		return $instance->_insert( $data );
+		return $instance->use_insert( $data );
 	}
 
 	/**
 	 * Update an entry by entry id.
 	 *
-	 * @param int $entry_id
-	 * @param array $data
+	 * @param int                 $entry_id Entry ID.
+	 * @param array<string,mixed> $data     Data to update.
 	 * @since x.x.x
 	 * @return int|false The number of rows updated, or false on error.
 	 */
@@ -201,18 +201,18 @@ class Entries extends Base {
 		if ( empty( $entry_id ) ) {
 			return false;
 		}
-		return self::get_instance()->_update( $data, [ 'ID' => absint( $entry_id ) ] );
+		return self::get_instance()->use_update( $data, [ 'ID' => absint( $entry_id ) ] );
 	}
 
 	/**
 	 * Delete an entry by entry id.
 	 *
-	 * @param int $entry_id
+	 * @param int $entry_id Entry ID to delete.
 	 * @since x.x.x
 	 * @return int|false The number of rows deleted, or false on error.
 	 */
 	public static function delete( $entry_id ) {
-		return self::get_instance()->_delete( [ 'ID' => absint( $entry_id ) ], [ '%d' ] );
+		return self::get_instance()->use_delete( [ 'ID' => absint( $entry_id ) ], [ '%d' ] );
 	}
 
 	/**
@@ -238,7 +238,7 @@ class Entries extends Base {
 	 * This method fetches results from the database, allowing for various
 	 * customization options such as filtering, pagination, and sorting.
 	 *
-	 * @param array $args {
+	 * @param array<string,mixed> $args {
 	 *     Optional. An array of arguments to customize the query.
 	 *
 	 *     @type array  $where   An associative array of conditions to filter the results.
@@ -249,7 +249,7 @@ class Entries extends Base {
 	 * }
 	 *
 	 * @since x.x.x
-	 * @return array The results of the query, typically an array of objects or associative arrays.
+	 * @return array<mixed> The results of the query, typically an array of objects or associative arrays.
 	 */
 	public static function get_all( $args = [] ) {
 		$_args = wp_parse_args(
