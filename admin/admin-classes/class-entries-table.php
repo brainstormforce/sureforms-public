@@ -396,7 +396,11 @@ class SRFM_Entries_Table extends \WP_List_Table {
 			$order = sanitize_key( wp_unslash( $_GET['order'] ) );
 		}
 
-		$result = strcmp( $data1[ $orderby ], $data2[ $orderby ] );
+		if ( 'ID' === $orderby ) {
+			$result = intval( $data1[ $orderby ] ) - intval( $data2[ $orderby ] );
+		} else {
+			$result = strcmp( $data1[ $orderby ], $data2[ $orderby ] );
+		}
 		if ( 'asc' === $order ) {
 			return $result;
 		}
