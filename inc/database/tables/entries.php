@@ -77,7 +77,7 @@ class Entries extends Base {
 				'default' => 'unread',
 			],
 			// Submitted form data by user.
-			'user_data'       => [
+			'form_data'       => [
 				'type'    => 'array',
 				'default' => [],
 			],

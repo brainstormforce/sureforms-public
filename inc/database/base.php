@@ -261,6 +261,44 @@ abstract class Base {
 	}
 
 	/**
+	 * Rename the column of the current table conditionally.
+	 *
+	 * @param array<array<string,string>> $rename_columns Array of columns to rename.
+	 * @since x.x.x
+	 * @return int|bool Boolean true for CREATE, ALTER, TRUNCATE and DROP queries. Number of rows affected/selected for all other queries. Boolean false on error.
+	 */
+	public function maybe_rename_columns( $rename_columns = [] ) {
+		if ( ! $this->db_upgradable ) {
+			// Only upgrade when it is needed.
+			return false;
+		}
+
+		$existing_columns = $this->get_columns();
+
+		if ( ! $existing_columns ) {
+			// Table does not exists or is new table.
+			return false;
+		}
+
+		$wpdb = $this->wpdb;
+
+		$query_parts = [];
+		foreach ( $rename_columns as $column ) {
+			if ( empty( $existing_columns[ $column['from'] ] ) ) {
+				// Bail if column is already renamed or does not exists.
+				continue;
+			}
+
+			// @phpstan-ignore-next-line.
+			$column_type = ! empty( $column['type'] ) ? $column['type'] : $existing_columns[ $column['from'] ]['Type'];
+			// @phpstan-ignore-next-line.
+			$query_parts[] = trim( $wpdb->prepare( "CHANGE %i %i {$column_type}", $column['from'], $column['to'] ) ); // phpcs:ignore
+		}
+
+		return $wpdb->query( $wpdb->prepare( 'ALTER TABLE %i ', $this->get_tablename() ) . implode( ', ', $query_parts ) . ';' ); // phpcs:ignore
+	}
+
+	/**
 	 * Adds the new columns to the current table conditionally.
 	 *
 	 * @param array<string> $new_columns The array of new columns to add. Same as the create method.
@@ -329,8 +367,7 @@ abstract class Base {
 	public function get_columns() {
 		$wpdb = $this->wpdb;
 
-		// @phpstan-ignore-next-line
-		$columns = $wpdb->get_results( $wpdb->prepare( "SHOW COLUMNS FROM {$this->get_tablename()}" ) ); // phpcs:ignore
+		$columns = $wpdb->get_results( $wpdb->prepare( 'SHOW COLUMNS FROM %i', $this->get_tablename() ), ARRAY_A ); // phpcs:ignore
 
 		if ( empty( $columns ) ) {
 			return [];
@@ -339,7 +376,7 @@ abstract class Base {
 		$_columns = [];
 		if ( is_array( $columns ) ) {
 			foreach ( $columns as $column ) {
-				$_columns[ $column->Field ] = $column; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+				$_columns[ $column['Field'] ] = $column;
 			}
 		}
 		return $_columns;
@@ -354,8 +391,7 @@ abstract class Base {
 	public function get_indexes() {
 		$wpdb = $this->wpdb;
 
-		// @phpstan-ignore-next-line
-		$indexes = $wpdb->get_results( $wpdb->prepare( "SHOW INDEX FROM {$this->get_tablename()}" ) ); // phpcs:ignore
+		$indexes = $wpdb->get_results( $wpdb->prepare( "SHOW INDEX FROM %i", $this->get_tablename() ), ARRAY_A ); // phpcs:ignore
 
 		if ( empty( $indexes ) ) {
 			return [];
@@ -364,7 +400,7 @@ abstract class Base {
 		$_indexes = [];
 		if ( is_array( $indexes ) ) {
 			foreach ( $indexes as $index ) {
-				$_indexes[ $index->Key_name ] = $index; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+				$_indexes[ $index['Key_name'] ] = $index; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 			}
 		}
 		return $_indexes;

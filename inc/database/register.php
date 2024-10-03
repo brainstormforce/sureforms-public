@@ -48,7 +48,8 @@ class Register {
 			[
 				'ID BIGINT(20) UNSIGNED AUTO_INCREMENT PRIMARY KEY',
 				'form_id BIGINT(20) UNSIGNED',
-				'user_data LONGTEXT',
+				'user_id BIGINT(20) UNSIGNED',
+				'form_data LONGTEXT',
 				'logs LONGTEXT',
 				'notes LONGTEXT',
 				'submission_info LONGTEXT',
@@ -56,6 +57,7 @@ class Register {
 				'created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP',
 				'updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP',
 				'INDEX idx_form_id (form_id)', // Indexing for the performance improvements.
+				'INDEX idx_user_id (user_id)',
 				'INDEX idx_form_id_created_at_status (form_id, created_at, status)', // Composite index for performance improvements.
 			]
 		);
@@ -65,6 +67,15 @@ class Register {
 			[
 				'user_id BIGINT(20) UNSIGNED AFTER form_id',
 				'INDEX idx_user_id (user_id)',
+			]
+		);
+
+		$entries->maybe_rename_columns(
+			[
+				[
+					'from' => 'user_data',
+					'to'   => 'form_data',
+				],
 			]
 		);
 

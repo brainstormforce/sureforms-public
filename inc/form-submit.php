@@ -602,7 +602,7 @@ class Form_Submit {
 
 			$entries_data = [
 				'form_id'         => $id,
-				'user_data'       => $submission_data,
+				'form_data'       => $submission_data,
 				'submission_info' => $submission_info,
 			];
 
