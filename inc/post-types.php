@@ -91,7 +91,7 @@ class Post_Types {
 		if ( SRFM_FORMS_POST_TYPE === $post_type ) {
 			$page_name     = 'add-new-form';
 			$new_form_url  = admin_url( 'admin.php?page=' . $page_name );
-			$import_button = 'sureforms_form' === $post_type ? '<button class="button button-secondary srfm-import-btn">' . __( 'Import Form', 'sureforms' ) . '</button>' : '';
+			$import_button = '<button class="button button-secondary srfm-import-btn">' . __( 'Import Form', 'sureforms' ) . '</button>';
 
 			$this->get_blank_page_markup(
 				esc_html__( 'Let’s build your first form', 'sureforms' ),
