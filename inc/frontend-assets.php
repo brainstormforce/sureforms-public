@@ -27,7 +27,7 @@ class Frontend_Assets {
 	/**
 	 * JS Assets.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.11
 	 * @var array<string>
 	 */
 	public static $js_assets = [
@@ -38,7 +38,7 @@ class Frontend_Assets {
 	/**
 	 * CSS Assets.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.11
 	 * @var array<string>
 	 */
 	public static $css_assets = [
@@ -51,7 +51,7 @@ class Frontend_Assets {
 	/**
 	 * External CSS Assets.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.11
 	 * @var array<string>
 	 */
 	public static $css_external_assets = [
@@ -140,7 +140,7 @@ class Frontend_Assets {
 	 * Enqueue scripts and styles.
 	 *
 	 * @return void
-	 * @since x.x.x
+	 * @since 0.0.11
 	 */
 	public static function enqueue_scripts_and_styles() {
 		// Load the styles.

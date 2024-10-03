@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: SureForms 0.0.10\n"
+"Project-Id-Version: SureForms 0.0.11\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/sureforms\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-09-17T11:32:50+00:00\n"
+"POT-Creation-Date: 2024-10-02T11:33:49+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.10.0\n"
 "X-Domain: sureforms\n"
@@ -73,7 +73,7 @@ msgstr ""
 #: api/block-patterns.php:111
 #: inc/background-process.php:103
 #: inc/create-new-form.php:129
-#: inc/export.php:118
+#: inc/export.php:119
 #: inc/form-submit.php:207
 #: inc/forms-data.php:89
 #: inc/global-settings/global-settings.php:87
@@ -177,7 +177,7 @@ msgid "SureTriggers"
 msgstr ""
 
 #: inc/admin-ajax.php:162
-msgid "Connect SureForms to over 600 apps, CRMs and tools such as Slack, Mailchimp, etc."
+msgid "Connect SureForms to hundreds of apps, CRMs and tools such as Slack, Mailchimp, etc."
 msgstr ""
 
 #: inc/admin-ajax.php:163
@@ -309,10 +309,10 @@ msgstr ""
 msgid "View"
 msgstr ""
 
-#: inc/export.php:127
-#: inc/export.php:132
-#: inc/export.php:167
-#: inc/export.php:184
+#: inc/export.php:128
+#: inc/export.php:133
+#: inc/export.php:168
+#: inc/export.php:185
 msgid "Failed to import form."
 msgstr ""
 
@@ -351,11 +351,11 @@ msgid "I consent to have this website store my submitted information so they can
 msgstr ""
 
 #: inc/fields/inlinebutton-markup.php:183
-#: inc/generate-form-markup.php:329
+#: inc/generate-form-markup.php:333
 msgid "Please verify that you are not a robot."
 msgstr ""
 
-#: inc/fields/input-markup.php:40
+#: inc/fields/input-markup.php:57
 msgid "Text Field"
 msgstr ""
 
@@ -400,21 +400,21 @@ msgstr ""
 msgid "Entry #"
 msgstr ""
 
-#: inc/form-submit.php:613
+#: inc/form-submit.php:616
 msgid "Error submitting form"
 msgstr ""
 
-#: inc/form-submit.php:661
+#: inc/form-submit.php:664
 msgid "Email Notification Initiated"
 msgstr ""
 
 #. translators: Here, %s is the comma separated emails list.
-#: inc/form-submit.php:696
+#: inc/form-submit.php:699
 msgid "Email notification sent to %s"
 msgstr ""
 
 #. translators: Here, %s is the comma separated emails list.
-#: inc/form-submit.php:696
+#: inc/form-submit.php:699
 msgid "Failed sending email notification to %s"
 msgstr ""
 
@@ -422,7 +422,7 @@ msgstr ""
 msgid "Sorry, you are not allowed to view the form."
 msgstr ""
 
-#: inc/generate-form-markup.php:355
+#: inc/generate-form-markup.php:359
 msgid "There was an error trying to submit your form. Please try again."
 msgstr ""
 
@@ -439,7 +439,7 @@ msgid "Let's see how your forms performed in the last week"
 msgstr ""
 
 #: inc/global-settings/email-summary.php:105
-#: inc/post-types.php:1140
+#: inc/post-types.php:1139
 msgid "Form Name"
 msgstr ""
 
@@ -484,7 +484,7 @@ msgstr ""
 msgid "Value needs to be unique."
 msgstr ""
 
-#: inc/helper.php:469
+#: inc/helper.php:476
 msgid "Sorry, you are not allowed to perform this action."
 msgstr ""
 
@@ -724,7 +724,7 @@ msgid "Device:"
 msgstr ""
 
 #: inc/post-types.php:1017
-#: inc/post-types.php:1170
+#: inc/post-types.php:1169
 msgid "SureForms Form"
 msgstr ""
 
@@ -732,27 +732,27 @@ msgstr ""
 msgid "Shortcode"
 msgstr ""
 
-#: inc/post-types.php:1139
+#: inc/post-types.php:1138
 msgid "First Field"
 msgstr ""
 
-#: inc/post-types.php:1141
+#: inc/post-types.php:1140
 msgid "ID"
 msgstr ""
 
-#: inc/post-types.php:1142
+#: inc/post-types.php:1141
 msgid "Submitted On"
 msgstr ""
 
-#: inc/post-types.php:1198
+#: inc/post-types.php:1197
 msgid " All Form Entries"
 msgstr ""
 
-#: inc/post-types.php:1224
+#: inc/post-types.php:1223
 msgid "Please choose the SureForms export file (.json) that you wish to import."
 msgstr ""
 
-#: inc/post-types.php:1229
+#: inc/post-types.php:1228
 msgid "There is some error in json file, please export the SureForms Forms again."
 msgstr ""
 
@@ -8275,20 +8275,20 @@ msgstr ""
 msgid "Support"
 msgstr ""
 
-#: templates/single-form.php:147
+#: templates/single-form.php:150
 msgid "Link to homepage"
 msgstr ""
 
-#: templates/single-form.php:148
+#: templates/single-form.php:151
 msgid "Instant form site logo"
 msgstr ""
 
-#: templates/single-form.php:161
+#: templates/single-form.php:164
 msgid "Unpublished"
 msgstr ""
 
 #. translators: Here %s is the plugin's name.
-#: templates/single-form.php:181
+#: templates/single-form.php:184
 msgid "Powered By %s"
 msgstr ""
 
@@ -8438,6 +8438,56 @@ msgid "Attributes"
 msgstr ""
 
 #: assets/build/blocks.js:172
+msgid "Input Pattern"
+msgstr ""
+
+#: assets/build/blocks.js:172
+#: assets/build/formEditor.js:172
+#: modules/gutenberg/build/blocks.js:7
+#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:15
+msgid "None"
+msgstr ""
+
+#: assets/build/blocks.js:172
+msgid "(###) ###-####"
+msgstr ""
+
+#: assets/build/blocks.js:172
+msgid "(##) ####-####"
+msgstr ""
+
+#: assets/build/blocks.js:172
+msgid "27/08/2024"
+msgstr ""
+
+#: assets/build/blocks.js:172
+msgid "23:59:59"
+msgstr ""
+
+#: assets/build/blocks.js:172
+msgid "27/08/2024 23:59:59"
+msgstr ""
+
+#: assets/build/blocks.js:172
+#: modules/gutenberg/build/blocks.js:15
+msgid "Custom"
+msgstr ""
+
+#: assets/build/blocks.js:172
+msgid "Custom Mask"
+msgstr ""
+
+#: assets/build/blocks.js:172
+msgid "Please check the documentation to manage custom input pattern "
+msgstr ""
+
+#: assets/build/blocks.js:172
+#: assets/build/formEditor.js:172
+msgid "here"
+msgstr ""
+
+#: assets/build/blocks.js:172
 msgid "Default Value"
 msgstr ""
 
@@ -8519,10 +8569,6 @@ msgstr ""
 
 #: assets/build/blocks.js:172
 msgid "Checked by default"
-msgstr ""
-
-#: assets/build/blocks.js:172
-msgid "Help"
 msgstr ""
 
 #: assets/build/blocks.js:172
@@ -8920,7 +8966,7 @@ msgid "Install & Activate"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-msgid "SureTriggers lets you connect your forms to over 600+ apps. With this integration you can automatically send form entries to your CRM, add subscribers to you email marketing platform, etc. Whatever you want SureForms and SureTriggers has you covered."
+msgid "SureTriggers lets you connect your forms to hundreds of apps. With this integration you can automatically send form entries to your CRM, add subscribers to you email marketing platform, etc. Whatever you want SureForms and SureTriggers has you covered."
 msgstr ""
 
 #: assets/build/formEditor.js:172
@@ -9273,13 +9319,6 @@ msgid "Security Type"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:7
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:15
-msgid "None"
-msgstr ""
-
-#: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
 msgid "Google reCAPTCHA"
 msgstr ""
@@ -9315,10 +9354,6 @@ msgstr ""
 
 #: assets/build/formEditor.js:172
 msgid "Before selecting the security type, please make sure you have configured the API keys "
-msgstr ""
-
-#: assets/build/formEditor.js:172
-msgid "here"
 msgstr ""
 
 #: assets/build/formEditor.js:172
@@ -9790,7 +9825,7 @@ msgid "Experience the future of form building with AI-powered forms. Use AI to b
 msgstr ""
 
 #: assets/build/templatePicker.js:172
-msgid "Try the AI Form Builder"
+msgid "Build With AI"
 msgstr ""
 
 #: assets/js/unminified/export.js:142
@@ -10353,10 +10388,6 @@ msgstr ""
 
 #: modules/gutenberg/build/blocks.js:15
 msgid "Blob 4"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:15
-msgid "Custom"
 msgstr ""
 
 #: modules/gutenberg/build/blocks.js:15
