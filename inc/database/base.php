@@ -90,6 +90,12 @@ abstract class Base {
 		$this->table_name   = $this->table_prefix . $this->table_suffix;
 	}
 
+	/**
+	 * Actions to initialize during object unload.
+	 *
+	 * @since x.x.x
+	 * @return void
+	 */
 	public function __destruct() {
 		/**
 		 * Just incase if any developer forgets to stop the db upgrade after starting.
@@ -107,7 +113,7 @@ abstract class Base {
 	abstract public function get_schema();
 
 	public function start_db_upgrade() {
-		$versions     = get_option( 'srfm_database_table_versions', array() );
+		$versions     = get_option( 'srfm_database_table_versions', [] );
 		$prev_version = ! empty( $versions[ $this->table_suffix ] ) ? absint( $versions[ $this->table_suffix ] ) : false;
 
 		if ( ! $prev_version ) {
@@ -128,7 +134,7 @@ abstract class Base {
 			return false;
 		}
 
-		$versions = get_option( 'srfm_database_table_versions', array() );
+		$versions = get_option( 'srfm_database_table_versions', [] );
 
 		$versions[ $this->table_suffix ] = $this->table_version;
 
@@ -284,10 +290,10 @@ abstract class Base {
 		$columns = $this->wpdb->get_results( "SHOW COLUMNS FROM {$this->get_tablename()}" );
 
 		if ( empty( $columns ) ) {
-			return array();
+			return [];
 		}
 
-		$_columns = array();
+		$_columns = [];
 		if ( ! empty( $columns ) && is_array( $columns ) ) {
 			foreach ( $columns as $column ) {
 				$_columns[ $column->Field ] = $column;
@@ -300,10 +306,10 @@ abstract class Base {
 		$indexes = $this->wpdb->get_results( "SHOW INDEX FROM {$this->get_tablename()}" );
 
 		if ( empty( $indexes ) ) {
-			return array();
+			return [];
 		}
 
-		$_indexes = array();
+		$_indexes = [];
 		if ( ! empty( $indexes ) && is_array( $indexes ) ) {
 			foreach ( $indexes as $index ) {
 				$_indexes[ $index->Key_name ] = $index;
@@ -381,7 +387,7 @@ abstract class Base {
 	 * @since 0.0.10
 	 * @return int|false The number of rows inserted, or false on error.
 	 */
-	public function insert( $data, $format = null ) {
+	public function _insert( $data, $format = null ) {
 		$prepared_data = $this->prepare_data( $data );
 
 		if ( is_null( $format ) ) {
@@ -390,6 +396,57 @@ abstract class Base {
 
 		// @phpstan-ignore-next-line
 		return $this->wpdb->insert( $this->get_tablename(), $prepared_data['data'], $format );
+	}
+
+	/**
+	 * Update a row data of current table. Basically, a wrapper method for wpdb::update.
+	 *
+	 * @param array           $data            Data to update (in column => value pairs).
+	 *                                         Both $data columns and $data values should be "raw" (neither should be SQL escaped).
+	 *                                         Sending a null value will cause the column to be set to NULL - the corresponding
+	 *                                         format is ignored in this case.
+	 * @param array           $where           A named array of WHERE clauses (in column => value pairs).
+	 *                                         Multiple clauses will be joined with ANDs.
+	 *                                         Both $where columns and $where values should be "raw".
+	 *                                         Sending a null value will create an IS NULL comparison - the corresponding
+	 *                                         format will be ignored in this case.
+	 * @param string[]|string $format       Optional. An array of formats to be mapped to each of the values in $data.
+	 * @since x.x.x
+	 * @return int|false The number of rows updated, or false on error.
+	 */
+	public function _update( $data, $where, $format = null ) {
+		$prepared_data = $this->prepare_data( $data );
+
+		if ( is_null( $format ) ) {
+			$format = $prepared_data['format'];
+		}
+
+		return $this->wpdb->update(
+			$this->get_tablename(),
+			$data,
+			$where,
+			$format
+		);
+	}
+
+	/**
+	 * Delete a row data of current table. Basically, a wrapper method for wpdb::delete.
+	 *
+	 * @param array           $where        A named array of WHERE clauses (in column => value pairs).
+	 *                                      Multiple clauses will be joined with ANDs.
+	 *                                      Both $where columns and $where values should be "raw".
+	 *                                      Sending a null value will create an IS NULL comparison - the corresponding
+	 *                                      format will be ignored in this case.
+	 * @param string[]|string $where_format Optional. An array of formats to be mapped to each of the values in $where.
+	 *                                      If string, that format will be used for all of the items in $where.
+	 *                                      A format is one of '%d', '%f', '%s' (integer, float, string).
+	 *                                      If omitted, all values in $data will be treated as strings unless otherwise
+	 *                                      specified in wpdb::$field_types. Default null.
+	 * @since x.x.x
+	 * @return int|false The number of rows deleted, or false on error.
+	 */
+	public function _delete( $where, $where_format = null ) {
+		return $this->wpdb->delete( $this->get_tablename(), $where, $where_format );
 	}
 
 	/**
@@ -407,7 +464,7 @@ abstract class Base {
 	 * @since 0.0.10
 	 * @return array<mixed> An associative array of results where each element represents a row, or an empty array if no results are found.
 	 */
-	public function get_results( $where_clauses = [], $columns = '*', $extra_query = '' ) {
+	public function get_results( $where_clauses = [], $columns = '*', $extra_queries = [] ) {
 		$wpdb = $this->wpdb;
 
 		$table_name = $this->get_tablename();
@@ -416,43 +473,14 @@ abstract class Base {
 		$query = "SELECT {$columns} FROM {$table_name}";
 
 		// If there are WHERE clauses, prepare and append them to the query.
-		if ( is_array( $where_clauses ) && ! empty( $where_clauses ) ) {
-			// Start constructing WHERE clause.
-			$where_clause = [];
-			$values       = [];
+		$query .= $this->prepare_where_clauses( $where_clauses );
 
-			// Current table schema.
-			$schema = $this->get_schema();
-
-			foreach ( $where_clauses as $key => $value ) {
-				if ( ! isset( $schema[ $key ] ) ) {
-					// Skip strictly if current key is not in our schema.
-					continue;
-				}
-
-				// @phpstan-ignore-next-line
-				$where_clause[] = $key . ' = ' . $this->get_format_by_datatype( $schema[ $key ]['type'] );
-				$values[]       = $value;
-			}
-
-			if ( ! empty( $where_clause ) ) {
-				// Combine the WHERE clauses into a single string.
-				$query .= ' WHERE ' . implode( ' AND ', $where_clause );
-			}
-
-			// Prepare the query with placeholders.
-			// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared
-			// @phpstan-ignore-next-line
-			$query = $wpdb->prepare( $query, ...$values );
-			// phpcs:enable
+		if ( ! empty( $extra_queries ) ) {
+			$query .= ' ' . implode( ' ', array_map( 'trim', $extra_queries ) );
 		}
 
-		if ( ! empty( $extra_query ) ) {
-			$query .= ' ' . trim( $extra_query );
-		}
-
-		// Add a semicolon (optional, not necessary in practice).
-		$query .= ';';
+		// Add a semicolon at the end of the query.
+		$query = rtrim( trim( $query ), ';' ) . ';';
 
 		$cached_results = $this->cache_get( $query );
 		if ( $cached_results ) {
@@ -471,6 +499,87 @@ abstract class Base {
 
 		// Execute the query and return results.
 		return Helper::get_array_value( $this->cache_set( $query, $results ) );
+	}
+
+	/**
+	 * Prepares WHERE clauses for a SQL query based on the provided conditions.
+	 *
+	 * This method constructs a WHERE statement by iterating through the
+	 * specified conditions, appending them with the appropriate SQL syntax.
+	 * It supports both single key-value pairs and arrays of conditions.
+	 *
+	 * @param array<mixed> $where_clauses {
+	 *     An associative array of conditions to include in the WHERE clause.
+	 *
+	 *     @type string|array $key   The column name or an array of conditions.
+	 *     @type array $value {
+	 *         An associative array of comparison data.
+	 *
+	 *         @type string $key     The column name for comparison.
+	 *         @type string $compare The comparison operator (e.g., '=', 'LIKE').
+	 *         @type mixed  $value   The value to compare against.
+	 *         @type string $RELATION Optional. The logical relation ('AND' or 'OR').
+	 *     }
+	 * }
+	 *
+	 * @since x.x.x
+	 * @return string The prepared SQL WHERE clause with placeholders, or an empty string if no clauses were provided.
+	 */
+	protected function prepare_where_clauses( $where_clauses = [] ) {
+		if ( empty( $where_clauses ) ) {
+			return '';
+		}
+
+		$wpdb = $this->wpdb;
+
+		// If there are WHERE clauses, prepare and append them to the query.
+		if ( is_array( $where_clauses ) && ! empty( $where_clauses ) ) {
+			$where  = '';
+			$values = [];
+			$schema = $this->get_schema();
+
+			foreach ( $where_clauses as $key => $value ) {
+
+				$relation = ! empty( $value['RELATION'] ) ? trim( $value['RELATION'] ) : 'AND';
+
+				if ( is_int( $key ) ) {
+					foreach ( $value as $_key => $_value ) {
+						if ( is_int( $_key ) ) {
+							if ( 'LIKE' === $_value['compare'] ) {
+								$where .= ' ' . $_value['key'] . ' ' . $_value['compare'] . ' ' . '"%%' . $this->get_format_by_datatype( $schema[ $_value['key'] ]['type'] )  . '%%"' . ' ' . $relation;
+							} else {
+								$where .= ' ' . $_value['key'] . ' ' . $_value['compare'] . ' ' . $this->get_format_by_datatype( $schema[ $_value['key'] ]['type'] ) . ' ' . $relation;
+							}
+							$values[]  = $_value['value'];
+						}
+					}
+					continue;
+				}
+
+				if ( ! isset( $schema[ $key ] ) ) {
+					// Skip strictly if current key is not in our schema.
+					continue;
+				}
+
+				// @phpstan-ignore-next-line
+				$where    .= ' ' . $key . ' = ' . $this->get_format_by_datatype( $schema[ $key ]['type'] ) . ' ' . $relation;
+				$values[]  = $value;
+			}
+
+			if ( ! $where ) {
+				return '';
+			}
+
+			$where = ' WHERE ' . trim( trim( $where, $relation ) );
+
+			// Prepare the query with placeholders.
+			// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared
+			// @phpstan-ignore-next-line
+			return $wpdb->prepare( $where, ...$values );
+			// phpcs:enable
+		}
+
+		return '';
 	}
 
 	/**

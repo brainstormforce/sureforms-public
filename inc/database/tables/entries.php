@@ -186,7 +186,33 @@ class Entries extends Base {
 			$data['logs'] = $instance->get_logs();
 		}
 
-		return $instance->insert( $data );
+		return $instance->_insert( $data );
+	}
+
+	/**
+	 * Update an entry by entry id.
+	 *
+	 * @param int $entry_id
+	 * @param array $data
+	 * @since x.x.x
+	 * @return int|false The number of rows updated, or false on error.
+	 */
+	public static function update( $entry_id, $data = [] ) {
+		if ( empty( $entry_id ) ) {
+			return false;
+		}
+		return self::get_instance()->_update( $data, [ 'ID' => absint( $entry_id ) ] );
+	}
+
+	/**
+	 * Delete an entry by entry id.
+	 *
+	 * @param int $entry_id
+	 * @since x.x.x
+	 * @return int|false The number of rows deleted, or false on error.
+	 */
+	public static function delete( $entry_id ) {
+		return self::get_instance()->_delete( [ 'ID' => absint( $entry_id ) ], [ '%d' ] );
 	}
 
 	/**
@@ -206,16 +232,43 @@ class Entries extends Base {
 		return isset( $results[0] ) ? Helper::get_array_value( $results[0] ) : [];
 	}
 
-	public static function get_all( $args = array() ) {
+	/**
+	 * Retrieves a list of records based on the provided arguments.
+	 *
+	 * This method fetches results from the database, allowing for various
+	 * customization options such as filtering, pagination, and sorting.
+	 *
+	 * @param array $args {
+	 *     Optional. An array of arguments to customize the query.
+	 *
+	 *     @type array  $where   An associative array of conditions to filter the results.
+	 *     @type int    $limit   The maximum number of results to return. Default is 10.
+	 *     @type int    $offset  The number of records to skip before starting to collect results. Default is 0.
+	 *     @type string $orderby  The column by which to order the results. Default is 'created_at'.
+	 *     @type string $order    The direction of the order (ASC or DESC). Default is 'DESC'.
+	 * }
+	 *
+	 * @since x.x.x
+	 * @return array The results of the query, typically an array of objects or associative arrays.
+	 */
+	public static function get_all( $args = [] ) {
 		$_args = wp_parse_args(
 			$args,
-			array(
-				'where'  => [],
-				'limit'  => 10,
-				'offset' => 0,
-			)
+			[
+				'where'   => [],
+				'limit'   => 10,
+				'offset'  => 0,
+				'orderby' => 'created_at',
+				'order'   => 'DESC',
+			]
 		);
-
-		return self::get_instance()->get_results( $_args['where'], '*', "LIMIT {$_args['offset']}, {$_args['limit']}" );
+		return self::get_instance()->get_results(
+			$_args['where'],
+			'*',
+			[
+				"ORDER BY `{$_args['orderby']}` {$_args['order']}",
+				"LIMIT {$_args['offset']}, {$_args['limit']}",
+			]
+		);
 	}
 }

@@ -11,6 +11,7 @@
 namespace SRFM\Inc\Database;
 
 use SRFM\Inc\Database\Tables\Entries;
+use WP_Query;
 
 // Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
@@ -18,7 +19,7 @@ defined( 'ABSPATH' ) || exit;
 /**
  * SureForms Database Tables Register Class
  *
- * @since 0.0.10
+ * @since x.x.x
  */
 class Register {
 
@@ -34,7 +35,7 @@ class Register {
 	 */
 	protected static function create_entries_table() {
 		$entries = Entries::get_instance();
-$entries->get_all();
+
 		$entries->start_db_upgrade();
 
 		$entries->create(
