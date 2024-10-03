@@ -295,6 +295,11 @@ abstract class Base {
 			$query_parts[] = trim( $wpdb->prepare( "CHANGE %i %i {$column_type}", $column['from'], $column['to'] ) ); // phpcs:ignore
 		}
 
+		if ( empty( $query_parts ) ) {
+			// No renaming required.
+			return false;
+		}
+
 		return $wpdb->query( $wpdb->prepare( 'ALTER TABLE %i ', $this->get_tablename() ) . implode( ', ', $query_parts ) . ';' ); // phpcs:ignore
 	}
 
