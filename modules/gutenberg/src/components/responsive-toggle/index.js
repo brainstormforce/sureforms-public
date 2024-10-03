@@ -20,6 +20,21 @@ const ResponsiveToggle = ( props ) => {
 
 	const { getSelectedBlock } = select( 'core/block-editor' );
 	const blockNameForHook = getSelectedBlock()?.name.split( '/' ).pop(); // eslint-disable-line @wordpress/no-unused-vars-before-return
+
+	/**
+	 * Filter to globally control the visibility of the responsive toggle in SRFM forms.
+	 * This filter enables developers to specify whether the responsive toggle icon should be displayed for certain post types.
+	 * For instance, you can use this filter to disable the responsive toggle for the 'srfm_form' post type.
+	 *
+	 * Note: This filter is specifically for SRFM and ensures that the responsive icon is removed for designated post types.
+	 * It should not be overridden or removed when updating this component.
+	 */
+	const shouldDisplayResponsiveIcon = applyFilters(
+		`srfm.enable.responsiveToggle`,
+		true,
+		() => true
+	);
+
 	useEffect( () => {
 		setPanelNameForHook( getPanelIdFromRef( panelRef ) );
 	}, [ blockNameForHook ] );
@@ -175,7 +190,9 @@ const ResponsiveToggle = ( props ) => {
 			{ controlBeforeDomElement }
 
 			{ label && <span className="uag-control-label">{ label }</span> }
-			{ ! displayResponsive && responsive && (
+			{ shouldDisplayResponsiveIcon &&
+				! displayResponsive &&
+				responsive && (
 				<Button
 					key="uag-responsive-common-button"
 					className="uag-responsive-common-button"
@@ -184,7 +201,9 @@ const ResponsiveToggle = ( props ) => {
 					{ devicesSvgs[ deviceType.toLowerCase() ] }
 				</Button>
 			) }
-			{ displayResponsive && responsive && (
+			{ shouldDisplayResponsiveIcon &&
+				displayResponsive &&
+				responsive && (
 				<ButtonGroup
 					className="uagb-range-control-responsive components-tab-panel__tabs"
 					aria-label={ __( 'Device', 'sureforms' ) }
@@ -206,9 +225,13 @@ const ResponsiveToggle = ( props ) => {
 											? ' active-tab'
 											: ''
 									}` }
-									aria-pressed={ deviceType === staticName }
+									aria-pressed={
+										deviceType === staticName
+									}
 									onClick={ () =>
-										customSetPreviewDeviceType( staticName )
+										customSetPreviewDeviceType(
+											staticName
+										)
 									}
 								>
 									{ title }

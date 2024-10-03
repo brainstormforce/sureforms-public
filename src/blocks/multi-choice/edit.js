@@ -92,6 +92,18 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 		setAttributes( { options: newEditOptions } );
 	}
 
+	const addOption = ( value ) => {
+		setAttributes( {
+			options: [
+				...options,
+				{
+					optionTitle: value,
+				},
+			],
+		} );
+		setNewOption( { optionTitle: '' } );
+	};
+
 	useEffect( () => {
 		if ( formId !== currentFormId ) {
 			setAttributes( { formId: currentFormId } );
@@ -408,7 +420,17 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 									</DragDropContext>
 								) }
 							</div>
-							<div className="sureform-add-option-container">
+							<div
+								className="sureform-add-option-container"
+								onKeyDown={ ( event ) => {
+									if (
+										event.key === 'Enter' &&
+										newOption?.optionTitle
+									) {
+										addOption( newOption.optionTitle );
+									}
+								} }
+							>
 								<SRFMTextControl
 									showHeaderControls={ false }
 									label={ __(
@@ -428,16 +450,7 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 											newOption?.optionTitle &&
 											newOption?.optionTitle
 										) {
-											setAttributes( {
-												options: [
-													...options,
-													{
-														optionTitle:
-															newOption.optionTitle,
-													},
-												],
-											} );
-											setNewOption( { optionTitle: '' } );
+											addOption( newOption.optionTitle );
 										} else {
 											// TODO: May be add a tooltip here
 										}
