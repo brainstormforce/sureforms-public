@@ -68,7 +68,7 @@ class SRFM_Single_Entry {
 		?>
 		<div class="wrap">
 			<h1 class="wp-heading-inline"><?php esc_html_e( 'View Entry', 'sureforms' ); ?></h1>
-			<form name="post" action="post.php" method="post" id="post"> <!-- check for nonce, referrer, etc. --> 
+			<form method="get" id="get"> <!-- check for nonce, referrer, etc. --> 
 				<div id="poststuff">
 					<div id="post-body" class="metabox-holder columns-2">
 						<div id="post-body-content">
@@ -80,21 +80,14 @@ class SRFM_Single_Entry {
 							</div><!-- /titlediv -->
 						</div><!-- /post-body-content -->
 						<div id="postbox-container-1" class="postbox-container">
-							<div id="side-sortables" class="meta-box-sortables ui-sortable">
-								<?php $this->render_entry_notes(); ?>
-								<?php $this->render_submission_info( $form_name, $entry_status, $submitted_on ); ?>
-							</div>
+							<?php $this->render_entry_notes(); ?>
+							<?php $this->render_submission_info( $form_name, $entry_status, $submitted_on ); ?>
 						</div>
 						<div id="postbox-container-2" class="postbox-container">
-							<div id="normal-sortables" class="meta-box-sortables ui-sortable">
-								<?php $this->render_form_data( $meta_data, $excluded_fields ); ?>
-								
-							</div>
+							<?php $this->render_form_data( $meta_data, $excluded_fields ); ?>
 						</div>
 						<div id="postbox-container-3" class="postbox-container">
-							<div id="normal-sortables" class="meta-box-sortables ui-sortable">
-								<?php $this->render_entry_logs( $entry_logs ); ?>
-							</div>
+							<?php $this->render_entry_logs( $entry_logs ); ?>
 						</div>
 					</div><!-- /post-body -->
 					<br class="clear">
@@ -145,10 +138,6 @@ class SRFM_Single_Entry {
 			<div class="postbox-header">
 				<!-- Removed "hndle ui-sortable-handle" class from h2 to remove the draggable stylings. -->
 				<h2><?php esc_html_e( 'Submission Info', 'sureforms' ); ?></h2>
-				<select id="srfm-update-entry-status" class="srfm-entry-status">
-					<option value="read"><?php esc_html_e( 'Read', 'sureforms' ); ?></option>
-					<option value="unread"><?php esc_html_e( 'Unread', 'sureforms' ); ?></option>
-				</select>
 			</div>
 			<div class="inside">
 				<table style="border-collapse: separate; border-spacing: 5px 5px;">
@@ -180,7 +169,12 @@ class SRFM_Single_Entry {
 						</tr>
 						<tr style="margin-bottom: 10px;">
 							<td><b><?php esc_html_e( 'Status:', 'sureforms' ); ?></b></td>
-							<td style="text-transform: capitalize;"><?php echo esc_attr( $entry_status ); ?></td>
+							<td>
+								<span style="text-transform: capitalize;">
+									<?php echo esc_attr( $entry_status ); ?>
+								</span>
+								<span> | <a href="#" id="erfm-entry-mark-unread" style="font-size: 12px;"><?php esc_html_e( 'Mark as Unread', 'sureforms' ); ?></a></span>
+							</td>
 						</tr>
 						<tr style="margin-bottom: 10px;">
 							<td><b><?php esc_html_e( 'Submitted On:', 'sureforms' ); ?></b></td>

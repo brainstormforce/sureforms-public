@@ -8,6 +8,7 @@
 namespace SRFM\Admin;
 
 use SRFM\Inc\Database\Tables\Entries;
+use SRFM\Inc\Helper;
 
 /**
  * Exit if accessed directly.
@@ -24,6 +25,23 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
  * Create the entries table using WP_List_Table.
  */
 class SRFM_Entries_Table extends \WP_List_Table {
+
+	/**
+	 * Stores the entries data fetched from database.
+	 *
+	 * @var array<mixed>
+	 * @since x.x.x
+	 */
+	protected $data = [];
+
+	/**
+	 * Stores the count for the entries data fetched from the database.
+	 *
+	 * @var int
+	 * @since x.x.x
+	 */
+	public $entries_count;
+
 	/**
 	 * Override the parent columns method. Defines the columns to use in your listing table.
 	 *
@@ -74,12 +92,27 @@ class SRFM_Entries_Table extends \WP_List_Table {
 	}
 
 	/**
+	 * Message to be displayed when there are no entries.
+	 *
+	 * @since x.x.x
+	 */
+	public function no_items() {
+
+		printf(
+			'<div class="sureforms-no-entries-found">%1$s</div>',
+			esc_html__( 'No entries found.', 'sureforms' )
+		);
+	}
+
+	/**
 	 * Get the entries data.
 	 *
 	 * @return array
 	 */
 	private function table_data() {
-		return Entries::get_all();
+		$this->data          = Entries::get_all();
+		$this->entries_count = count( $this->data );
+		return $this->data;
 	}
 
 	/**
@@ -92,6 +125,8 @@ class SRFM_Entries_Table extends \WP_List_Table {
 		$hidden   = [];
 		$sortable = $this->get_sortable_columns();
 		$data     = $this->table_data();
+		$data     = $this->filter_entries_data( $data );
+
 		usort( $data, [ $this, 'sort_data' ] );
 		$per_page     = 10;
 		$current_page = $this->get_pagenum();
@@ -159,7 +194,7 @@ class SRFM_Entries_Table extends \WP_List_Table {
 	 */
 	protected function column_id( $item ) {
 		$entry_id = esc_attr( $item['ID'] );
-		$url      = esc_url( add_query_arg( 'entry_id', $entry_id, admin_url( 'admin.php?page=entries' ) ) );
+		$url      = esc_url( add_query_arg( 'entry_id', $entry_id, admin_url( 'admin.php?page=sureforms_entries' ) ) );
 
 		return sprintf(
 			'<strong><a class="row-title" href="%1$s">%2$s%3$s</a></strong>' . $this->row_actions( $this->package_row_actions( $item ) ),
@@ -228,7 +263,7 @@ class SRFM_Entries_Table extends \WP_List_Table {
 	 * @return array
 	 */
 	protected function package_row_actions( $item ) {
-		$url         = esc_url( add_query_arg( 'entry_id', esc_attr( $item['ID'] ), admin_url( 'admin.php?page=entries' ) ) );
+		$url         = esc_url( add_query_arg( 'entry_id', esc_attr( $item['ID'] ), admin_url( 'admin.php?page=sureforms_entries' ) ) );
 		$row_actions = [
 			'view'  => sprintf( '<a href="%1$s">%2$s</a>', esc_url( $url ), esc_html__( 'View', 'sureforms' ) ),
 			'trash' => sprintf( '<a href="%1$s">%2$s</a>', esc_url( $url ), esc_html__( 'Trash', 'sureforms' ) ),
@@ -285,13 +320,14 @@ class SRFM_Entries_Table extends \WP_List_Table {
 	 * @return void
 	 */
 	protected function display_form_filter() {
-		// TODO: set the $forms variable with available forms and add nonce verification check.
-		$forms = [];
+		// TODO: Add nonce verification check.
+		$forms = $this->get_available_forms();
 
 		echo '<select name="form_filter">';
-		echo '<option value="all_entries">' . esc_html__( 'All Form Entries', 'sureforms' ) . '</option>';
+		echo '<option value="all">' . esc_html__( 'All Form Entries', 'sureforms' ) . '</option>';
 		foreach ( $forms as $form_id => $form_name ) {
-			printf( '<option value="%s">%s</option>', esc_attr( $form_id ), esc_html( $form_name ) );
+			$selected = ( isset( $_GET['form_filter'] ) && $_GET['form_filter'] === $form_id ) ? ' selected="selected"' : '';
+			printf( '<option value="%s"%s>%s</option>', esc_attr( $form_id ), esc_attr( $selected ), esc_html( $form_name ) );
 		}
 		echo '</select>';
 		echo '<input type="submit" name="filter_action" value="Filter" class="button" />';
@@ -304,30 +340,16 @@ class SRFM_Entries_Table extends \WP_List_Table {
 	 * @return void
 	 */
 	protected function display_month_filter() {
-		// TODO: set the $months variable with available months and add nonce verification check.
-		$months = [];
+		// TODO: Add nonce verification check.
+		$months = $this->get_available_months();
 
 		echo '<select name="month_filter">';
-		echo '<option value="all_dates">' . esc_html__( 'All Dates', 'sureforms' ) . '</option>';
+		echo '<option value="all">' . esc_html__( 'All Dates', 'sureforms' ) . '</option>';
 		foreach ( $months as $month_value => $month_label ) {
-			printf( '<option value="%s">%s</option>', esc_attr( $month_value ), esc_html( $month_label ) );
+			$selected = ( isset( $_GET['month_filter'] ) && Helper::get_string_value( $month_value ) === $_GET['month_filter'] ) ? ' selected="selected"' : '';
+			printf( '<option value="%s"%s>%s</option>', esc_attr( $month_value ), esc_attr( $selected ), esc_html( $month_label ) );
 		}
 		echo '</select>';
-	}
-
-	/**
-	 * Entries table form search.
-	 *
-	 * @param string $text The "search entries" button label.
-	 * @param string $input_id ID attribute for the search input field.
-	 *
-	 * @since x.x.x
-	 * @return void
-	 */
-	public function search_box( $text, $input_id ) {
-		$input_id .= '-search-input';
-		// TODO: Search logic implementation.
-		$this->search_box_output( $text, $input_id );
 	}
 
 	/**
@@ -339,13 +361,14 @@ class SRFM_Entries_Table extends \WP_List_Table {
 	 * @since x.x.x
 	 * @return void
 	 */
-	protected function search_box_output( $text, $input_id ) {
+	public function search_box_markup( $text, $input_id ) {
+		$input_id .= '-search-input';
 		?>
 		<p class="search-box sureforms-form-search-box">
 			<label class="screen-reader-text" for="<?php echo esc_attr( $input_id ); ?>">
 				<?php echo esc_html( $text ); ?>:
 			</label>
-			<input type="search" class="sureforms-form-search-box-term" id="<?php echo esc_attr( $input_id ); ?>">
+			<input type="search" name="search_filter" class="sureforms-form-search-box-term" id="<?php echo esc_attr( $input_id ); ?>">
 			<button type="submit" class="button" id="search-submit"><?php echo esc_html( $text ); ?></button>
 		</p>
 		<?php
@@ -366,6 +389,7 @@ class SRFM_Entries_Table extends \WP_List_Table {
 
 		if ( ! empty( $_GET['orderby'] ) ) {
 			$orderby = sanitize_key( wp_unslash( $_GET['orderby'] ) );
+			$orderby = 'id' === $orderby ? strtoupper( $orderby ) : $orderby;
 		}
 
 		if ( ! empty( $_GET['order'] ) ) {
@@ -411,7 +435,7 @@ class SRFM_Entries_Table extends \WP_List_Table {
 
 				<tfoot>
 				<tr>
-					<?php $this->print_column_headers( false ); ?>
+					<?php $this->print_column_headers(); ?>
 				</tr>
 				</tfoot>
 			</table>
@@ -440,6 +464,116 @@ class SRFM_Entries_Table extends \WP_List_Table {
 
 		return $classes;
 	}
+
+	/**
+	 * Populate the month/year filter dropdown.
+	 *
+	 * @since x.x.x
+	 * @return array<string>
+	 */
+	private function get_available_months() {
+		$months = [];
+		foreach ( $this->data as $entry ) {
+			if ( isset( $entry['created_at'] ) ) {
+				// Convert created_at to a DateTime object.
+				$date = new \DateTime( $entry['created_at'] );
+
+				// Get month in 'YYYYMM' format for value and 'Month Year' for display.
+				$month_value = $date->format( 'Ym' );   // Example: 202408.
+				$month_label = $date->format( 'F Y' );  // Example: August 2024.
+
+				// Add to months array if not already present.
+				if ( ! isset( $months[ $month_value ] ) ) {
+					$months[ $month_value ] = $month_label;
+				}
+			}
+		}
+
+		return $months;
+	}
+
+	/**
+	 * Populate the forms filter dropdown.
+	 *
+	 * @since x.x.x
+	 * @return array<string>
+	 */
+	private function get_available_forms() {
+		$forms = get_posts(
+			[
+				'post_type'      => SRFM_FORMS_POST_TYPE,
+				'posts_per_page' => -1,
+				'orderby'        => 'title',
+				'order'          => 'ASC',
+			]
+		);
+
+		$available_forms = [];
+
+		if ( ! empty( $forms ) ) {
+			foreach ( $forms as $form ) {
+				// Populate the array with the form ID as key and title as value.
+				$available_forms[ $form->ID ] = $form->post_title;
+			}
+		}
+
+		return $available_forms;
+	}
+
+	/**
+	 * Filter the data according to options applied.
+	 *
+	 * @param array $data The form entries which will be displayed in the table.
+	 *
+	 * @since x.x.x
+	 * @return array<mixed>
+	 */
+	private function filter_entries_data( $data ) {
+		// Handle the search according to entry ID.
+		$search_term = isset( $_GET['search_filter'] ) ? sanitize_text_field( wp_unslash( $_GET['search_filter'] ) ) : '';
+
+		// Filter the data based on the form name selected.
+		$form_filter = isset( $_GET['form_filter'] ) ? sanitize_text_field( wp_unslash( $_GET['form_filter'] ) ) : '';
+
+		// Filter data based on the month and year selected.
+		$month_filter = isset( $_GET['month_filter'] ) ? sanitize_text_field( wp_unslash( $_GET['month_filter'] ) ) : '';
+
+		// If no filters are applied, return all data.
+		if ( empty( $search_term ) && ( empty( $form_filter ) || 'all' === $form_filter ) && ( empty( $month_filter ) || 'all' === $month_filter ) ) {
+			return $data;
+		}
+
+		// Apply search filter.
+		if ( ! empty( $search_term ) ) {
+			$data = array_filter(
+				$data,
+				function( $entry ) use ( $search_term ) {
+					return isset( $entry['ID'] ) && strpos( Helper::get_string_value( $entry['ID'] ), $search_term ) !== false;
+				}
+			);
+		}
+
+		// Apply form filter.
+		if ( ! empty( $form_filter ) && 'all' !== $form_filter ) {
+			$data = array_filter(
+				$data,
+				function( $entry ) use ( $form_filter ) {
+					return isset( $entry['form_id'] ) && $entry['form_id'] === $form_filter;
+				}
+			);
+		}
+
+		// Apply month filter.
+		if ( ! empty( $month_filter ) && 'all' !== $month_filter ) {
+			$data = array_filter(
+				$data,
+				function( $entry ) use ( $month_filter ) {
+					$entry_month = ( new \DateTime( $entry['created_at'] ) )->format( 'Ym' ); // Format as 'YYYYMM'.
+					return $entry_month === $month_filter;
+				}
+			);
+		}
+
+		return $data;
+	}
 }
-
-

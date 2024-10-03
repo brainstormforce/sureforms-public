@@ -197,7 +197,7 @@ class Admin {
 			__( 'Entries', 'sureforms' ),
 			__( 'Entries', 'sureforms' ),
 			'edit_others_posts',
-			'entries',
+			'sureforms_entries',
 			[ $this, 'render_entries' ],
 			3
 		);
@@ -216,8 +216,8 @@ class Admin {
 	/**
 	 * Entries page callback.
 	 *
-	 * @return void
 	 * @since x.x.x
+	 * @return void
 	 */
 	public function render_entries() {
 		// TODO: Improve the following implementation and check for nonce verification.
@@ -228,16 +228,17 @@ class Admin {
 			$entries_table = new SRFM_Entries_Table();
 			$entries_table->prepare_items();
 			echo '<div class="wrap"><h1 class="wp-heading-inline">Entries</h1>';
-			if ( $entries_table->has_items() ) {
-				echo '<form method="post">';
-				$entries_table->search_box( esc_html__( 'Search', 'sureforms' ), 'srfm-entries' );
-				$entries_table->display();
-				echo '</form>';
-			} else {
-				$instance = new Post_Types();
+			if ( 0 >= $entries_table->entries_count ) {
+				$instance = Post_Types::get_instance();
 				$instance->sureforms_render_blank_state( SRFM_ENTRIES_POST_TYPE );
 				$instance->get_blank_state_styles();
+				return;
 			}
+			echo '<form method="GET">';
+			echo '<input type="hidden" name="page" value="sureforms_entries">';
+			$entries_table->search_box_markup( esc_html__( 'Search', 'sureforms' ), 'srfm-entries' );
+			$entries_table->display();
+			echo '</form>';
 			echo '</div>';
 		}
 	}
@@ -427,7 +428,7 @@ class Admin {
 		}
 
 		// Enqueue styles for the entries page.
-		if ( 'sureforms_page_entries' === $current_screen->id ) {
+		if ( 'sureforms_page_sureforms_entries' === $current_screen->id ) {
 			wp_enqueue_style( SRFM_SLUG . '-entries', $css_uri . 'backend/entries' . $file_prefix . '.css', [], SRFM_VER );
 		}
 
