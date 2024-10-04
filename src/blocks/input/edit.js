@@ -2,7 +2,11 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { ToggleControl } from '@wordpress/components';
+import {
+	ToggleControl,
+	SelectControl,
+	ExternalLink,
+} from '@wordpress/components';
 import { InspectorControls } from '@wordpress/block-editor';
 import { useEffect } from '@wordpress/element';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
@@ -33,6 +37,8 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 		formId,
 		preview,
 		className,
+		inputMask,
+		customInputMask,
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
 
@@ -70,6 +76,84 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 							title={ __( 'Attributes', 'sureforms' ) }
 							initialOpen={ true }
 						>
+							<SelectControl
+								label={ __( 'Input Pattern', 'sureforms' ) }
+								value={ inputMask }
+								options={ [
+									{
+										label: __( 'None', 'sureforms' ),
+										value: 'none',
+									},
+									{
+										label: __(
+											'(###) ###-####',
+											'sureforms'
+										),
+										value: '(###) ###-####',
+									},
+									{
+										label: __(
+											'(##) ####-####',
+											'sureforms'
+										),
+										value: '(##) ####-####',
+									},
+									{
+										label: __( '27/08/2024', 'sureforms' ),
+										value: 'dd/mm/yyyy',
+									},
+									{
+										label: __( '23:59:59', 'sureforms' ),
+										value: 'hh:mm:ss',
+									},
+									{
+										label: __(
+											'27/08/2024 23:59:59',
+											'sureforms'
+										),
+										value: 'dd/mm/yyyy hh:mm:ss',
+									},
+									{
+										label: __( 'Custom', 'sureforms' ),
+										value: 'custom-mask',
+									},
+								] }
+								onChange={ ( value ) => {
+									setAttributes( { inputMask: value } );
+								} }
+							/>
+							{ inputMask === 'custom-mask' && (
+								// TODO: Improve the help text later.
+								<SRFMTextControl
+									label={ __( 'Custom Mask', 'sureforms' ) }
+									value={ customInputMask }
+									data={ {
+										value: customInputMask,
+										label: 'customInputMask',
+									} }
+									onChange={ ( value ) =>
+										setAttributes( {
+											customInputMask: value,
+										} )
+									}
+									help={
+										<>
+											{ __(
+												'Please check the documentation to manage custom input pattern ',
+												'sureforms'
+											) }
+											<ExternalLink
+												href="https://sureforms.com/docs/input-pattern"
+												target="_blank"
+												rel="noreferrer"
+												className="srfm-block-url"
+											>
+												{ __( 'here', 'sureforms' ) }
+											</ExternalLink>
+										</>
+									}
+								/>
+							) }
 							<SRFMTextControl
 								label={ __( 'Default Value', 'sureforms' ) }
 								className="srfm-with-dropdown"

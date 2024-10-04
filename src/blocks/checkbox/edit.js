@@ -3,11 +3,7 @@
  */
 import { __ } from '@wordpress/i18n';
 import { ToggleControl } from '@wordpress/components';
-import {
-	InspectorControls,
-	RichText,
-	useBlockProps,
-} from '@wordpress/block-editor';
+import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
 import { useEffect } from '@wordpress/element';
 import SRFMTextControl from '@Components/text-control';
 import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
@@ -20,14 +16,14 @@ import { CheckboxComponent } from '../components/default.js';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
 import { FieldsPreview } from '../FieldsPreview.jsx';
-import { useErrMessage, decodeHtmlEntities } from '@Blocks/util';
+import { useErrMessage } from '@Blocks/util';
 import ConditionalLogic from '@Components/conditional-logic';
 
 const Edit = ( { attributes, setAttributes, clientId } ) => {
 	const {
 		checked: isChecked,
 		required,
-		checkboxHelpText,
+		help,
 		block_id,
 		errorMsg,
 		preview,
@@ -99,13 +95,13 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 							/>
 							<SRFMTextControl
 								data={ {
-									value: checkboxHelpText,
-									label: 'checkboxHelpText',
+									value: help,
+									label: 'help',
 								} }
 								label={ __( 'Help Text', 'sureforms' ) }
-								value={ checkboxHelpText }
+								value={ help }
 								onChange={ ( value ) =>
-									setAttributes( { checkboxHelpText: value } )
+									setAttributes( { help: value } )
 								}
 							/>
 						</SRFMAdvancedPanelBody>
@@ -125,21 +121,6 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 					attributes={ attributes }
 					blockType="checkbox"
 				/>
-				{ checkboxHelpText !== '' && (
-					<RichText
-						tagName="label"
-						value={ checkboxHelpText }
-						onChange={ ( value ) => {
-							setAttributes( {
-								checkboxHelpText: decodeHtmlEntities( value ),
-							} );
-						} }
-						className="srfm-description"
-						multiline={ false }
-						id={ block_id }
-						allowedFormats={ [] }
-					/>
-				) }
 				<div className="srfm-error-wrap"></div>
 			</div>
 		</div>

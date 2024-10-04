@@ -83,5 +83,6 @@ module.exports = {
 		srfmInitializeDropdown: true,
 		screen: true,
 		SureTriggers: true,
+		Inputmask: true,
 	},
 };
