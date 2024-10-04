@@ -69,7 +69,8 @@ class Entries extends Base {
 			],
 			// User ID.
 			'user_id'         => [
-				'type' => 'number',
+				'type'    => 'number',
+				'default' => 0,
 			],
 			// Current entry status: ['read', 'unread'].
 			'status'          => [
@@ -93,6 +94,11 @@ class Entries extends Base {
 			],
 			// Entry activities logs.
 			'logs'            => [
+				'type'    => 'array',
+				'default' => [],
+			],
+			// Any misc extra data that needs to be saved.
+			'extras'          => [
 				'type'    => 'array',
 				'default' => [],
 			],

@@ -323,10 +323,9 @@ abstract class Base {
 			return false;
 		}
 
-		$table_name    = $this->get_tablename();
-		$alter_queries = [];
-
 		$existing_indexes = $this->get_indexes();
+
+		$alter_queries = [];
 
 		// Check and add each column if it does not exist.
 		foreach ( $new_columns as $column_definition ) {
@@ -357,7 +356,7 @@ abstract class Base {
 			$alter_queries = implode( ', ', $alter_queries );
 			// Execute the query.
 			// @phpstan-ignore-next-line.
-			return $wpdb->query( $wpdb->prepare( "ALTER TABLE {$table_name} {$alter_queries}" ) ); // phpcs:ignore
+			return $wpdb->query( $wpdb->prepare( "ALTER TABLE %i {$alter_queries}", $this->get_tablename() ) ); // phpcs:ignore
 		}
 
 		return false;
@@ -409,60 +408,6 @@ abstract class Base {
 			}
 		}
 		return $_indexes;
-	}
-
-	/**
-	 * Drop or delete current table.
-	 *
-	 * @since 0.0.10
-	 * @return int|bool
-	 */
-	public function drop() {
-		$wpdb = $this->wpdb;
-
-		// Escape table name.
-		$table_name = $wpdb->esc_like( $this->get_tablename() );
-
-		// Prepare the SQL query.
-		$query = $wpdb->prepare(
-			'DROP TABLE IF EXISTS %s',
-			$table_name
-		);
-
-		if ( ! $query ) {
-			return false;
-		}
-
-		// Execute the query.
-		// phpcs:ignore
-		return $wpdb->query( $query );
-	}
-
-	/**
-	 * Check if current table exists.
-	 *
-	 * @since 0.0.10
-	 * @return boolean
-	 */
-	public function exists() {
-		global $wpdb;
-
-		// Escape table name.
-		$table_name = $wpdb->esc_like( $this->get_tablename() );
-
-		// Prepare the SQL query to check if the table exists.
-		$query = $wpdb->prepare(
-			'SHOW TABLES LIKE %s',
-			$table_name
-		);
-
-		// Check if the table exists.
-		// phpcs:ignore
-		if ( $wpdb->get_var( $query ) === $table_name ) {
-			return true;
-		}
-
-		return false;
 	}
 
 	/**

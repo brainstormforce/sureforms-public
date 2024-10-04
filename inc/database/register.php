@@ -11,7 +11,6 @@
 namespace SRFM\Inc\Database;
 
 use SRFM\Inc\Database\Tables\Entries;
-use WP_Query;
 
 // Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
@@ -44,6 +43,7 @@ class Register {
 
 		$entries->start_db_upgrade();
 
+		// Create new table if does not exists.
 		$entries->create(
 			[
 				'ID BIGINT(20) UNSIGNED AUTO_INCREMENT PRIMARY KEY',
@@ -54,6 +54,7 @@ class Register {
 				'notes LONGTEXT',
 				'submission_info LONGTEXT',
 				'status VARCHAR(10)',
+				'extras LONGTEXT',
 				'created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP',
 				'updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP',
 				'INDEX idx_form_id (form_id)', // Indexing for the performance improvements.
@@ -65,11 +66,13 @@ class Register {
 		// Add new column to existing table.
 		$entries->maybe_add_new_columns(
 			[
+				'extras LONGTEXT AFTER status',
 				'user_id BIGINT(20) UNSIGNED AFTER form_id',
 				'INDEX idx_user_id (user_id)',
 			]
 		);
 
+		// Rename columns of existing table.
 		$entries->maybe_rename_columns(
 			[
 				[
