@@ -32,13 +32,16 @@ const AiFormBuilder = () => {
 	const accessKey = urlParams.get( 'access_key' );
 	const examplePrompts = [
 		{
+			title: 'Create simple contact form',
+		},
+		{
+			title: 'Create a lead generation form',
+		},
+		{
 			title: 'Generate a user feedback form',
 		},
 		{
 			title: 'Create a job application form',
-		},
-		{
-			title: 'Create simple contact form',
 		},
 		{
 			title: 'Make an event registration form',
