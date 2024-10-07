@@ -572,6 +572,9 @@ class Form_Submit {
 				'device_name'  => $device_name,
 			];
 
+			// Giving backward compatibility for Entries Post Type for now. It will be completed replaced with custom database table in next release.
+			$srfm_submission_info[] = $submission_info;
+			update_post_meta( $post_id, '_srfm_submission_info', $srfm_submission_info );
 			update_post_meta( $post_id, 'srfm_entry_meta', $submission_data );
 			update_post_meta( $post_id, '_srfm_entry_form_id', $id );
 
