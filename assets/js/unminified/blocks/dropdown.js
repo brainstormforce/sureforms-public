@@ -7,7 +7,7 @@ function initializeDropdown() {
 		if ( element ) {
 			let additionalConfig = {};
 			const inputName = element.getAttribute( 'name' );
-			
+
 			if ( element.getAttribute( 'data-multiple' ) === 'true' ) {
 				additionalConfig = {
 					maxItems: null, // Enabling multi selection for dropdown.
@@ -66,22 +66,22 @@ function initializeDropdown() {
 					},
 				},
 			};
-			
+
 			/**
 			 * Creates a new TomSelect instance for the given input element and adds it to the global `window.srfm` object.
-			 * 
-			 * The TomSelect input instance is created and stored in the `window.srfm` object, which is a global registry 
-			 * for managing input instances used by the third-party library. This allows easy access to the input instance 
+			 *
+			 * The TomSelect input instance is created and stored in the `window.srfm` object, which is a global registry
+			 * for managing input instances used by the third-party library. This allows easy access to the input instance
 			 * later for manipulation (e.g., focusing the input).
 			 *
-			 * @param {HTMLElement} element - The DOM element to initialize TomSelect on.
-			 * @param {Object} config - The configuration options for the TomSelect instance.
-			 * @param {string} inputName - The key under which the TomSelect instance is stored in the `window.srfm` object.
+			 * @param {HTMLElement} element   - The DOM element to initialize TomSelect on.
+			 * @param {Object}      config    - The configuration options for the TomSelect instance.
+			 * @param {string}      inputName - The key under which the TomSelect instance is stored in the `window.srfm` object.
 			 */
-			const tomInputInstance = new TomSelect(element, config);
+			const tomInputInstance = new TomSelect( element, config );
 
 			// Add the TomSelect instance to the global window.srfm object for future reference
-			window?.addGlobalSrfmObject(inputName, tomInputInstance);
+			window?.addGlobalSrfmObject( inputName, tomInputInstance );
 
 			// Clear Icon and Dropdown Arrow SVGs.
 			const clearSVG = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 4L4 12" stroke="currentColor" stroke-opacity="0.65" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 4L12 12" stroke="currentColor" stroke-opacity="0.65" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/></svg>`;

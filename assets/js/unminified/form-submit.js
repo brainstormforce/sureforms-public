@@ -1,5 +1,9 @@
 /* eslint-disable no-undef */
-import { fieldValidation, initializeInlineFieldValidation, handleScrollAndFocusOnError } from './validation';
+import {
+	fieldValidation,
+	initializeInlineFieldValidation,
+	handleScrollAndFocusOnError,
+} from './validation';
 document.addEventListener( 'DOMContentLoaded', function () {
 	initializeInlineFieldValidation();
 

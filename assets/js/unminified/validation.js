@@ -55,9 +55,9 @@ export async function fieldValidation(
 	 * and set it as the target for scrolling. It ensures that the user is
 	 * directed to the first error input when validation fails.
 	 *
-	 * @param {HTMLElement} input   - The input element that has the error.
-	 * @param {HTMLElement} element - The element to scroll to, typically the same as the input or its container.
-	 * @param {Object} additionalObj - Additional validation object.
+	 * @param {HTMLElement} input         - The input element that has the error.
+	 * @param {HTMLElement} element       - The element to scroll to, typically the same as the input or its container.
+	 * @param {Object}      additionalObj - Additional validation object.
 	 */
 	const setFirstErrorInput = ( input, element, additionalObj = {} ) => {
 		if ( ! firstErrorInput ) {
@@ -553,12 +553,13 @@ export async function fieldValidation(
 
 					/**
 					 * Set the first error input element.
-					 * 
+					 *
 					 * We are retrieving the input element from the third-party library's global `window.srfm` object.
-					 * The input instance is stored within the `srfm` object, where `inputName` corresponds to the specific 
+					 * The input instance is stored within the `srfm` object, where `inputName` corresponds to the specific
 					 * input field. We focus on this input if it exists. If not found, we fallback to a default `dropdownInput`.
 					 */
-					let inputElement = window?.srfm?.[ inputName ] || dropdownInput;
+					const inputElement =
+						window?.srfm?.[ inputName ] || dropdownInput;
 					setFirstErrorInput(
 						inputElement,
 						dropdownInput.closest( '.srfm-block' ),
@@ -601,7 +602,12 @@ export async function fieldValidation(
 	 *  scrollElement: the element to scroll to
 	 */
 	return validateResult
-		? { validateResult, firstErrorInput, scrollElement, ...additionalValidationObject }
+		? {
+			validateResult,
+			firstErrorInput,
+			scrollElement,
+			...additionalValidationObject,
+		  }
 		: false;
 }
 
@@ -855,32 +861,33 @@ const fieldValidationInit = async ( areaField, blockClass ) => {
 /**
  * Scrolls to the first input error and focuses on it if necessary.
  *
- * @param {Object} validationObject - The validation object containing error details and settings.
- * @param {HTMLElement} validationObject.firstErrorInput - The first input field that has an error.
- * @param {HTMLElement} [validationObject.scrollElement] - The element to scroll into view if present.
- * @param {boolean} [validationObject.shouldDelayOnFocus=false] - Whether to delay focusing on the input field.
+ * @param {Object}      validationObject                            - The validation object containing error details and settings.
+ * @param {HTMLElement} validationObject.firstErrorInput            - The first input field that has an error.
+ * @param {HTMLElement} [validationObject.scrollElement]            - The element to scroll into view if present.
+ * @param {boolean}     [validationObject.shouldDelayOnFocus=false] - Whether to delay focusing on the input field.
  */
-export const handleScrollAndFocusOnError = (validationObject) => {
-    // If the first error input is available
-    if (validationObject?.firstErrorInput) {
+export const handleScrollAndFocusOnError = ( validationObject ) => {
+	// If the first error input is available
+	if ( validationObject?.firstErrorInput ) {
+		// If the scroll element exists, smoothly scroll the element into view
+		if ( validationObject?.scrollElement ) {
+			validationObject.scrollElement.scrollIntoView( {
+				behavior: 'smooth', // Smooth scrolling animation
+				block: 'center', // Align the element at the center of the view
+			} );
+		}
 
-        // If the scroll element exists, smoothly scroll the element into view
-        if (validationObject?.scrollElement) {
-            validationObject.scrollElement.scrollIntoView({
-                behavior: 'smooth',   // Smooth scrolling animation
-                block: 'center'       // Align the element at the center of the view
-            });
-        }
-
-        // Check if we should delay the focus on the error input
-        if (validationObject?.shouldDelayOnFocus) {
-            // Delay focusing the input by 500ms to allow for the scroll animation to complete
-            setTimeout(() => {
-                validationObject.firstErrorInput.focus({ preventScroll: true }); // Focus without scrolling
-            }, 500);
-        } else {
-            // Immediately focus the error input without scrolling
-            validationObject.firstErrorInput.focus({ preventScroll: true });
-        }
-    }
-}
+		// Check if we should delay the focus on the error input
+		if ( validationObject?.shouldDelayOnFocus ) {
+			// Delay focusing the input by 500ms to allow for the scroll animation to complete
+			setTimeout( () => {
+				validationObject.firstErrorInput.focus( {
+					preventScroll: true,
+				} ); // Focus without scrolling
+			}, 500 );
+		} else {
+			// Immediately focus the error input without scrolling
+			validationObject.firstErrorInput.focus( { preventScroll: true } );
+		}
+	}
+};
