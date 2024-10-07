@@ -163,7 +163,7 @@ export default () => {
 											font-size: 11px;
 										` }
 									>
-										{ __( 'Pro', 'sureforms' ) }
+										{ srfm_admin?.pro_plugin_name.split( ' ' )[ 1 ] }
 									</span>
 								</article>
 								<div
