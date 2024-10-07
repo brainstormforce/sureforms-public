@@ -1,3 +1,30 @@
+/**
+ * Adds a key-value pair to the global `window.srfm` object.
+ * 
+ * This function ensures that an object called `srfm` exists in the global `window` scope, and allows 
+ * developers to store variables, instances, or functions in that object. These stored values can then 
+ * be accessed globally across different files and components in the project.
+ *
+ * @param {string} key - The key under which the value will be stored in the global `window.srfm` object.
+ * @param {*} value - The value to store under the specified key. Can be any type (e.g., string, object, function).
+ * 
+ * * @example
+ * addGlobalSrfmObject('some_key', 'some_value');
+ */
+function addGlobalSrfmObject(key, value) {
+    // Retrieve the existing `srfm` object from the global `window` object, or create an empty object if it doesn't exist.
+    const obj = window?.srfm || {};
+    
+    // Assign the provided key-value pair to the `srfm` object.
+    obj[key] = value;
+    
+    // Update the global `window.srfm` object with the modified `srfm` object.
+    window.srfm = obj;
+}
+
+// Assign the function to the global `window` object so it can be accessed anywhere in the project.
+window.addGlobalSrfmObject = addGlobalSrfmObject;
+
 // Sender's Email.
 
 const emailElements = document.getElementsByClassName(
@@ -362,4 +389,12 @@ function onSuccess( response ) {
 			normalizeCSSVariablesForDarkBackground( formContainer );
 		} );
 	} );
+
+	// Adding the `handleInstantFormWrapperHeight` function to the global `srfm` object.
+	// This allows the function to be accessed from other parts of the application,
+	// enabling consistent handling of the form wrapper height across different modules.
+	addGlobalSrfmObject(
+		'handleInstantFormWrapperHeight',
+		handleInstantFormWrapperHeight
+	);
 }() );

@@ -291,7 +291,7 @@ const UpsellSureTriggers = ( { setSelectedTab, action, setAction, CTA, setCTA, p
 					<img height="24px" src={ plugin.logo_full } alt="logo" />
 					<p>
 						{ __(
-							'SureTriggers lets you connect your forms to over 600+ apps. With this integration you can automatically send form entries to your CRM, add subscribers to you email marketing platform, etc. Whatever you want SureForms and SureTriggers has you covered.',
+							'SureTriggers lets you connect your forms to hundreds of apps. With this integration you can automatically send form entries to your CRM, add subscribers to you email marketing platform, etc. Whatever you want SureForms and SureTriggers has you covered.',
 							'sureforms'
 						) }
 					</p>

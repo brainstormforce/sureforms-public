@@ -4,7 +4,7 @@
 **Requires at least:** 6.4  
 **Tested up to:** 6.6.2  
 **Requires PHP:** 7.4  
-**Stable tag:** 0.0.10  
+**Stable tag:** 0.0.11  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -252,6 +252,15 @@ Yes! You can certainly use SureForms on yours as well as your client’s website
 When you use the SureForms, you get a huge library of ready-to-use form templates that can be used to build your forms fast.
 
 ## Changelog ##
+### 0.0.11 ###
+* New: Added input mask setting for the text field.
+* Improvement: Added support for emojis and special characters in SureForm AI response.
+* Improvement: Dropdown and Multiple Choice field add option by pressing enter key.
+* Improvement: Load frontend assets only when SureForms is present on the page.
+* Improvement: Webhook settings fields UX Improvements.
+* Fix: Fixed the missing form submission information.
+* Fix: Help text not updating from editor for textarea field.
+* Fix: Thank you message not showing properly for long forms.
 ### 0.0.10 ###
 * New: Added a new custom table for the entries to improve performance.
 * Improvement: Added help text for the Email field.

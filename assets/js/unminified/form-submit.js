@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-import { fieldValidation, initializeInlineFieldValidation } from './validation';
+import { fieldValidation, initializeInlineFieldValidation, handleScrollAndFocusOnError } from './validation';
 document.addEventListener( 'DOMContentLoaded', function () {
 	initializeInlineFieldValidation();
 
@@ -177,6 +177,8 @@ function showSuccessMessage(
 	}
 	element.innerHTML = message;
 	container.classList.add( 'srfm-active' );
+	window?.srfm?.handleInstantFormWrapperHeight();
+	form.parentElement.scrollIntoView( { behavior: 'smooth' } );
 }
 
 function redirectToUrl( url ) {
@@ -216,18 +218,9 @@ async function handleFormSubmission(
 		 */
 		if ( isValidate?.validateResult ) {
 			loader.classList.remove( 'srfm-active' );
-			// If firstErrorInput is available, focus on that element and don't scroll by focus.
-			if ( isValidate?.firstErrorInput ) {
-				isValidate.firstErrorInput.focus( { preventScroll: true } );
 
-				// If scrollElement is available, scroll to that element.
-				if ( isValidate?.scrollElement ) {
-					isValidate.scrollElement.scrollIntoView( {
-						behavior: 'smooth',
-						block: 'center',
-					} );
-				}
-			}
+			// Handle scroll and focus on error field when validation fails.
+			handleScrollAndFocusOnError( isValidate );
 			return;
 		}
 
