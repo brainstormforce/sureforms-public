@@ -3,7 +3,7 @@ function inputFieldMasking() {
 	const inputFields = document.querySelectorAll( '.srfm-input-input' );
 
 	inputFields.forEach( ( inputField ) => {
-		const inputMask = inputField.getAttribute( 'data-mask' );
+		const inputMask = inputField.getAttribute( 'data-srfm-mask' );
 		if ( inputMask === 'none' ) {
 			return;
 		}
@@ -31,7 +31,7 @@ function inputFieldMasking() {
 				break;
 			case 'custom-mask':
 				const customMask =
-					inputField.getAttribute( 'data-custom-mask' );
+					inputField.getAttribute( 'data-custom-srfm-mask' );
 				if ( customMask.startsWith( 'date:' ) ) {
 					const format = customMask.replace( /^date:\s*/, '' );
 					inputMaskOptions.alias = 'datetime';
