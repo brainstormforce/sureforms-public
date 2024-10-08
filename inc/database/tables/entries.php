@@ -106,6 +106,53 @@ class Entries extends Base {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 */
+	public function get_columns_definition() {
+		return [
+			'ID BIGINT(20) UNSIGNED AUTO_INCREMENT PRIMARY KEY',
+			'form_id BIGINT(20) UNSIGNED',
+			'user_id BIGINT(20) UNSIGNED NOT NULL DEFAULT 0',
+			'form_data LONGTEXT', // Note: @since x.x.x -- We have renamed `user_data` column to `form_data`.
+			'logs LONGTEXT',
+			'notes LONGTEXT',
+			'submission_info LONGTEXT',
+			'status VARCHAR(10)',
+			'extras LONGTEXT',
+			'created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP',
+			'updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP',
+			'INDEX idx_form_id (form_id)', // Indexing for the performance improvements.
+			'INDEX idx_user_id (user_id)',
+			'INDEX idx_form_id_created_at_status (form_id, created_at, status)', // Composite index for performance improvements.
+		];
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function get_new_columns_definition() {
+		return [
+			// Note: @since x.x.x -- We have added new columns `extras` and `user_id`.
+			'extras LONGTEXT AFTER status',
+			'user_id BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 AFTER form_id',
+			'INDEX idx_user_id (user_id)',
+		];
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function get_columns_to_rename() {
+		return [
+			// Note: @since x.x.x -- We have renamed `user_data` column to `form_data`.
+			[
+				'from' => 'user_data',
+				'to'   => 'form_data',
+			],
+		];
+	}
+
+	/**
 	 * Retrieve the key of the last log entry.
 	 *
 	 * @since 0.0.10
@@ -272,8 +319,9 @@ class Entries extends Base {
 			$_args['where'],
 			'*',
 			[
-				"ORDER BY `{$_args['orderby']}` {$_args['order']}",
-				"LIMIT {$_args['offset']}, {$_args['limit']}",
+				// @phpstan-ignore-next-line -- sprintf below will always gets the string values as we are passing the string.
+				sprintf( 'ORDER BY `%1$s` %2$s', esc_sql( $_args['orderby'] ), esc_sql( $_args['order'] ) ),
+				sprintf( 'LIMIT %1$d, %2$d', absint( $_args['offset'] ), absint( $_args['limit'] ) ),
 			]
 		);
 	}

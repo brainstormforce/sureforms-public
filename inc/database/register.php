@@ -29,59 +29,38 @@ class Register {
 	 * @return void
 	 */
 	public static function init() {
-		self::create_entries_table();
+		/*
+		 * ### Here, order is important. ###
+		 * 1. Start the DB upgrade which also manages the internal versioning of each tables.
+		 * 2. Init create method, which create the table if the table does not exists.
+		 * 3. Init maybe_add_new_columns, it only runs if we have new columns definition and DB is upgradable ( has new version ).
+		 * 4. Init maybe_rename_columns, it only runs if got any columns to rename and DB is upgradable ( has new version ).
+		 * 5. Finally, stop the DB upgrade and update the current version in option table.
+		 */
+		foreach ( self::get_db_tables() as $instance ) {
+			$instance->start_db_upgrade();
+
+			if ( $instance->is_db_upgradable() ) {
+				// Only execute below methods if DB is upgradable.
+				$instance->create( $instance->get_columns_definition() );
+				$instance->maybe_add_new_columns( $instance->get_new_columns_definition() );
+				$instance->maybe_rename_columns( $instance->get_columns_to_rename() );
+			}
+
+			// Stop the upgrade process of current table and move to next.
+			$instance->stop_db_upgrade();
+		}
 	}
 
 	/**
-	 * Create entries table.
+	 * Returns an array of instances/objects of our custom tables.
 	 *
 	 * @since x.x.x
-	 * @return void
+	 * @return array<string,\SRFM\Inc\Database\Base>
 	 */
-	protected static function create_entries_table() {
-		$entries = Entries::get_instance();
-
-		$entries->start_db_upgrade();
-
-		// Create new table if does not exists.
-		$entries->create(
-			[
-				'ID BIGINT(20) UNSIGNED AUTO_INCREMENT PRIMARY KEY',
-				'form_id BIGINT(20) UNSIGNED',
-				'user_id BIGINT(20) UNSIGNED NOT NULL DEFAULT 0',
-				'form_data LONGTEXT',
-				'logs LONGTEXT',
-				'notes LONGTEXT',
-				'submission_info LONGTEXT',
-				'status VARCHAR(10)',
-				'extras LONGTEXT',
-				'created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP',
-				'updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP',
-				'INDEX idx_form_id (form_id)', // Indexing for the performance improvements.
-				'INDEX idx_user_id (user_id)',
-				'INDEX idx_form_id_created_at_status (form_id, created_at, status)', // Composite index for performance improvements.
-			]
-		);
-
-		// Add new column to existing table.
-		$entries->maybe_add_new_columns(
-			[
-				'extras LONGTEXT AFTER status',
-				'user_id BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 AFTER form_id',
-				'INDEX idx_user_id (user_id)',
-			]
-		);
-
-		// Rename columns of existing table.
-		$entries->maybe_rename_columns(
-			[
-				[
-					'from' => 'user_data',
-					'to'   => 'form_data',
-				],
-			]
-		);
-
-		$entries->stop_db_upgrade();
+	public static function get_db_tables() {
+		return [
+			'entries' => Entries::get_instance(),
+		];
 	}
 }

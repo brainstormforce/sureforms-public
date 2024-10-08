@@ -51,6 +51,7 @@ abstract class Base {
 	/**
 	 * Version for current custom table. Default is 1.
 	 * Unlike semantic versioning [eg: 1.0.0, 1.0.1] we use natural integer like 1, 2, 3... and so on.
+	 * Update the table version from child class when any DB upgrade or alteration related changes are made.
 	 *
 	 * @var int
 	 * @since x.x.x
@@ -120,6 +121,44 @@ abstract class Base {
 	abstract public function get_schema();
 
 	/**
+	 * Current table columns definition to create table. These definitions will be used by the create() method.
+	 *
+	 * @since x.x.x
+	 * @return array<string>
+	 */
+	abstract public function get_columns_definition();
+
+	/**
+	 * Any columns that needs to be added if the current table already exists. These definitions will be used by maybe_add_new_columns() method.
+	 * Override this from child class if needed.
+	 *
+	 * @since x.x.x
+	 * @return array<string>
+	 * @override
+	 */
+	public function get_new_columns_definition() {
+		return [];
+	}
+
+	/**
+	 * Array of columns that needs to be renamed to new column name. It will be used by maybe_rename_columns() method.
+	 * Format:
+	 * [
+			[
+				'from' => 'old_column_name',
+				'to'   => 'new_column_name',
+				'type' => 'column type definition eg: LONGTEXT', // Optional.
+			],
+		]
+	 *
+	 * @since x.x.x
+	 * @return array<array<string,string>>
+	 */
+	public function get_columns_to_rename() {
+		return [];
+	}
+
+	/**
 	 * Start the database upgrade process.
 	 *
 	 * @since x.x.x
@@ -160,6 +199,16 @@ abstract class Base {
 		update_option( 'srfm_database_table_versions', $versions );
 
 		return true;
+	}
+
+	/**
+	 * Check if current table's DB is upgradable or not.
+	 *
+	 * @since x.x.x
+	 * @return boolean True or false depending if DB is upgradable or not.
+	 */
+	public function is_db_upgradable() {
+		return $this->db_upgradable;
 	}
 
 	/**
@@ -255,9 +304,11 @@ abstract class Base {
 			$columns
 		);
 
+		$wpdb = $this->wpdb;
+
 		// Execute the query.
-		// phpcs:ignore
-		$result = $this->wpdb->query( "CREATE TABLE IF NOT EXISTS {$this->get_tablename()} ( {$columns_list} ) {$this->get_charset_collate()}" );
+		// @phpstan-ignore-next-line -- Query will not get null value here.
+		$result = $wpdb->query( $wpdb->prepare( 'CREATE TABLE IF NOT EXISTS %1s ( %2s ) %3s', $this->get_tablename(), $columns_list, $this->get_charset_collate() ) ); // phpcs:ignore -- It is okay to use complex placeholder here for the table name, column list and character set because we don't want to quote these variables.
 
 		if ( false === $result ) {
 			// Stop DB alteration if we have any error.
@@ -275,6 +326,10 @@ abstract class Base {
 	 * @return int|bool Boolean true for CREATE, ALTER, TRUNCATE and DROP queries. Number of rows affected/selected for all other queries. Boolean false on error.
 	 */
 	public function maybe_rename_columns( $rename_columns = [] ) {
+		if ( ! $rename_columns ) {
+			return false;
+		}
+
 		if ( ! $this->db_upgradable ) {
 			// Only upgrade when it is needed.
 			return false;
@@ -299,7 +354,7 @@ abstract class Base {
 			// @phpstan-ignore-next-line.
 			$column_type = ! empty( $column['type'] ) ? $column['type'] : $existing_columns[ $column['from'] ]['Type'];
 			// @phpstan-ignore-next-line.
-			$query_parts[] = trim( $wpdb->prepare( "CHANGE %i %i {$column_type}", $column['from'], $column['to'] ) ); // phpcs:ignore
+			$query_parts[] = trim( $wpdb->prepare( 'CHANGE %1s %2s %3s', $column['from'], $column['to'], $column_type ) ); // phpcs:ignore -- It is okay to use complex placeholders as we don't want values to be quoted.
 		}
 
 		if ( empty( $query_parts ) ) {
@@ -307,7 +362,7 @@ abstract class Base {
 			return false;
 		}
 
-		$result = $wpdb->query( $wpdb->prepare( 'ALTER TABLE %i ', $this->get_tablename() ) . implode( ', ', $query_parts ) . ';' ); // phpcs:ignore
+		$result = $wpdb->query( $wpdb->prepare( 'ALTER TABLE %1s ', $this->get_tablename() ) . implode( ', ', $query_parts ) . ';' ); // phpcs:ignore -- It is okay to use query directly here.
 
 		if ( false === $result ) {
 			// Stop DB alteration if we have any error.
@@ -325,6 +380,10 @@ abstract class Base {
 	 * @return int|bool Boolean true for CREATE, ALTER, TRUNCATE and DROP queries. Number of rows affected/selected for all other queries. Boolean false on error.
 	 */
 	public function maybe_add_new_columns( $new_columns = [] ) {
+		if ( ! $new_columns ) {
+			return false;
+		}
+
 		if ( ! $this->db_upgradable ) {
 			// Only upgrade when it is needed.
 			return false;
@@ -341,6 +400,8 @@ abstract class Base {
 
 		$alter_queries = [];
 
+		$wpdb = $this->wpdb;
+
 		// Check and add each column if it does not exist.
 		foreach ( $new_columns as $column_definition ) {
 			preg_match( '/INDEX\s+(.*?)\s+\(/', $column_definition, $index_matches );
@@ -351,7 +412,7 @@ abstract class Base {
 					continue;
 				}
 				// Stack and move to next if we are indexing.
-				$alter_queries[] = "ADD {$column_definition}";
+				$alter_queries[] = $wpdb->prepare( 'ADD %1s', $column_definition ); // phpcs:ignore -- We don't need quote here.
 				continue;
 			}
 
@@ -360,17 +421,15 @@ abstract class Base {
 
 			// If the column does not exist, add it.
 			if ( ! isset( $existing_columns[ $column_name ] ) ) {
-				$alter_queries[] = "ADD COLUMN {$column_definition}";
+				$alter_queries[] = $wpdb->prepare( 'ADD COLUMN %1s', $column_definition ); // phpcs:ignore -- We don't need quote here.
 			}
 		}
 
 		if ( $alter_queries ) {
-			$wpdb = $this->wpdb;
-
 			$alter_queries = implode( ', ', $alter_queries );
 			// Execute the query.
 			// @phpstan-ignore-next-line.
-			$result = $wpdb->query( $wpdb->prepare( "ALTER TABLE %i {$alter_queries}", $this->get_tablename() ) ); // phpcs:ignore
+			$result = $wpdb->query( $wpdb->prepare( "ALTER TABLE %1s {$alter_queries}", $this->get_tablename() ) ); // phpcs:ignore -- Here, we have used placeholder for the tablename but we are using variable directly as we have already prepared it above.
 
 			if ( false === $result ) {
 				// Stop DB alteration if we have any error.
@@ -392,7 +451,7 @@ abstract class Base {
 	public function get_columns() {
 		$wpdb = $this->wpdb;
 
-		$columns = $wpdb->get_results( $wpdb->prepare( 'SHOW COLUMNS FROM %i', $this->get_tablename() ), ARRAY_A ); // phpcs:ignore
+		$columns = $wpdb->get_results( $wpdb->prepare( 'SHOW COLUMNS FROM %1s', $this->get_tablename() ), ARRAY_A ); // phpcs:ignore -- It is okay to use query db directly here.
 
 		if ( empty( $columns ) ) {
 			return [];
@@ -416,7 +475,7 @@ abstract class Base {
 	public function get_indexes() {
 		$wpdb = $this->wpdb;
 
-		$indexes = $wpdb->get_results( $wpdb->prepare( "SHOW INDEX FROM %i", $this->get_tablename() ), ARRAY_A ); // phpcs:ignore
+		$indexes = $wpdb->get_results( $wpdb->prepare( "SHOW INDEX FROM %1s", $this->get_tablename() ), ARRAY_A ); // phpcs:ignore -- We don't need quote here so this is fine.
 
 		if ( empty( $indexes ) ) {
 			return [];
@@ -472,7 +531,7 @@ abstract class Base {
 	 * @since x.x.x
 	 * @return int|false The number of rows updated, or false on error.
 	 */
-	public function use_update( $data, $where ) { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore - It is okay. This is our wrapper method.
+	public function use_update( $data, $where ) { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore -- It is okay. This is our wrapper method.
 		$prepared_data = $this->prepare_data( $data );
 
 		/**
