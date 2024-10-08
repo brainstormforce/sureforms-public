@@ -46,9 +46,6 @@ const AiFormBuilder = () => {
 		{
 			title: 'Make an event registration form',
 		},
-		{
-			title: 'Create a gym membership form',
-		},
 	];
 
 	const handleCreateAiForm = async (
