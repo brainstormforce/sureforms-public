@@ -257,7 +257,14 @@ abstract class Base {
 
 		// Execute the query.
 		// phpcs:ignore
-		return $this->wpdb->query( "CREATE TABLE IF NOT EXISTS {$this->get_tablename()} ( {$columns_list} ) {$this->get_charset_collate()}" );
+		$result = $this->wpdb->query( "CREATE TABLE IF NOT EXISTS {$this->get_tablename()} ( {$columns_list} ) {$this->get_charset_collate()}" );
+
+		if ( false === $result ) {
+			// Stop DB alteration if we have any error.
+			$this->db_upgradable = false;
+		}
+
+		return $result;
 	}
 
 	/**
@@ -300,7 +307,14 @@ abstract class Base {
 			return false;
 		}
 
-		return $wpdb->query( $wpdb->prepare( 'ALTER TABLE %i ', $this->get_tablename() ) . implode( ', ', $query_parts ) . ';' ); // phpcs:ignore
+		$result = $wpdb->query( $wpdb->prepare( 'ALTER TABLE %i ', $this->get_tablename() ) . implode( ', ', $query_parts ) . ';' ); // phpcs:ignore
+
+		if ( false === $result ) {
+			// Stop DB alteration if we have any error.
+			$this->db_upgradable = false;
+		}
+
+		return $result;
 	}
 
 	/**
@@ -356,7 +370,14 @@ abstract class Base {
 			$alter_queries = implode( ', ', $alter_queries );
 			// Execute the query.
 			// @phpstan-ignore-next-line.
-			return $wpdb->query( $wpdb->prepare( "ALTER TABLE %i {$alter_queries}", $this->get_tablename() ) ); // phpcs:ignore
+			$result = $wpdb->query( $wpdb->prepare( "ALTER TABLE %i {$alter_queries}", $this->get_tablename() ) ); // phpcs:ignore
+
+			if ( false === $result ) {
+				// Stop DB alteration if we have any error.
+				$this->db_upgradable = false;
+			}
+
+			return $result;
 		}
 
 		return false;
@@ -695,7 +716,7 @@ abstract class Base {
 			}
 
 			// Lets decode from JSON to Array for the results.
-			$_data[ $key ] = 'array' === $schema['type'] ? json_decode( Helper::get_string_value( $data[ $key ] ), true ) : $data[ $key ];
+			$_data[ $key ] = 'array' === $schema['type'] ? Helper::get_array_value( json_decode( Helper::get_string_value( $data[ $key ] ), true ) ) : $data[ $key ];
 		}
 		return $_data;
 	}

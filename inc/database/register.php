@@ -54,7 +54,7 @@ class Register {
 				'notes LONGTEXT',
 				'submission_info LONGTEXT',
 				'status VARCHAR(10)',
-				"extras LONGTEXT NOT NULL DEFAULT '[]'",
+				'extras LONGTEXT',
 				'created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP',
 				'updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP',
 				'INDEX idx_form_id (form_id)', // Indexing for the performance improvements.
@@ -66,7 +66,7 @@ class Register {
 		// Add new column to existing table.
 		$entries->maybe_add_new_columns(
 			[
-				"extras LONGTEXT NOT NULL DEFAULT '[]' AFTER status",
+				'extras LONGTEXT AFTER status',
 				'user_id BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 AFTER form_id',
 				'INDEX idx_user_id (user_id)',
 			]
