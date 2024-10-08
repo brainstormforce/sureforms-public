@@ -48,13 +48,13 @@ class Register {
 			[
 				'ID BIGINT(20) UNSIGNED AUTO_INCREMENT PRIMARY KEY',
 				'form_id BIGINT(20) UNSIGNED',
-				'user_id BIGINT(20) UNSIGNED',
+				'user_id BIGINT(20) UNSIGNED NOT NULL DEFAULT 0',
 				'form_data LONGTEXT',
 				'logs LONGTEXT',
 				'notes LONGTEXT',
 				'submission_info LONGTEXT',
 				'status VARCHAR(10)',
-				'extras LONGTEXT',
+				"extras LONGTEXT NOT NULL DEFAULT '[]'",
 				'created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP',
 				'updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP',
 				'INDEX idx_form_id (form_id)', // Indexing for the performance improvements.
@@ -66,8 +66,8 @@ class Register {
 		// Add new column to existing table.
 		$entries->maybe_add_new_columns(
 			[
-				'extras LONGTEXT AFTER status',
-				'user_id BIGINT(20) UNSIGNED AFTER form_id',
+				"extras LONGTEXT NOT NULL DEFAULT '[]' AFTER status",
+				'user_id BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 AFTER form_id',
 				'INDEX idx_user_id (user_id)',
 			]
 		);
