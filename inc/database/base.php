@@ -746,7 +746,7 @@ abstract class Base {
 
 			case 'array':
 				// Lets json_encode array values instead of serializing it.
-				return wp_json_encode( Helper::get_array_value( $value ) );
+				return Helper::encode_json( Helper::get_array_value( $value ) );
 		}
 	}
 }
