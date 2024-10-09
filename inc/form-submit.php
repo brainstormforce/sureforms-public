@@ -572,6 +572,9 @@ class Form_Submit {
 				'device_name'  => $device_name,
 			];
 
+			// Giving backward compatibility for Entries Post Type for now. It will be completed replaced with custom database table in next release.
+			$srfm_submission_info[] = $submission_info;
+			update_post_meta( $post_id, '_srfm_submission_info', $srfm_submission_info );
 			update_post_meta( $post_id, 'srfm_entry_meta', $submission_data );
 			update_post_meta( $post_id, '_srfm_entry_form_id', $id );
 
@@ -600,13 +603,18 @@ class Form_Submit {
 
 			do_action( 'srfm_form_submit', $form_submit_response );
 
-			Entries::add(
-				[
-					'form_id'         => $id,
-					'user_data'       => $submission_data,
-					'submission_info' => $submission_info,
-				]
-			);
+			$entries_data = [
+				'form_id'         => $id,
+				'form_data'       => $submission_data,
+				'submission_info' => $submission_info,
+			];
+
+			if ( is_user_logged_in() ) {
+				// If user is logged in then save their user id.
+				$entries_data['user_id'] = get_current_user_id();
+			}
+
+			Entries::add( $entries_data );
 		} else {
 			$response = [
 				'success' => false,

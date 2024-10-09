@@ -74,13 +74,49 @@ class Spec_Init_Blocks {
 
 		global $post;
 
-			// Register block styles for both frontend + backend.
-			wp_enqueue_style(
-				'srfm-block-style-css', // Handle.
-				SRFM_URL . 'modules/gutenberg/build/style-blocks.css',
-				is_admin() ? [ 'wp-editor' ] : null, // Dependency to include the CSS after it.
-				SRFM_VER // filemtime( plugin_dir_path( __DIR__ ) . 'build/style-blocks.css' ) // Version: File modification time.
-			);
+		if ( empty( $post->post_content ) ) {
+			return;
+		}
+
+		// find blocks in post content.
+		$blocks = parse_blocks( $post->post_content );
+
+		if ( empty( $blocks ) && ! is_array( $blocks ) ) {
+			return;
+		}
+
+		$allowed_blocks = [
+			'srfm/form',
+			'srfm/advanced-heading',
+			'srfm/separator',
+			'srfm/image',
+			'srfm/icon',
+		];
+
+		$has_required_block = false;
+
+		foreach ( $blocks as $block ) {
+
+			if ( $has_required_block ) {
+				break;
+			}
+
+			if ( in_array( $block['blockName'], $allowed_blocks, true ) ) {
+				$has_required_block = true;
+			}
+		}
+
+		if ( ! $has_required_block ) {
+			return;
+		}
+
+		// Register block styles for both frontend + backend.
+		wp_enqueue_style(
+			'srfm-block-style-css', // Handle.
+			SRFM_URL . 'modules/gutenberg/build/style-blocks.css',
+			is_admin() ? [ 'wp-editor' ] : null, // Dependency to include the CSS after it.
+			SRFM_VER // filemtime( plugin_dir_path( __DIR__ ) . 'build/style-blocks.css' ) // Version: File modification time.
+		);
 
 	}
 

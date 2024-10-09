@@ -232,7 +232,7 @@ class Helper {
 	 * @since 0.0.1
 	 */
 	public static function generate_common_form_markup( $form_id, $type, $label = '', $slug = '', $block_id = '', $required = false, $help = '', $error_msg = '', $is_unique = false, $duplicate_msg = '', $override = false ) {
-		$duplicate_msg = $duplicate_msg ? ' data-unique-msg="' . $duplicate_msg . '"' : '';
+		$duplicate_msg = $duplicate_msg ? ' data-unique-msg="' . esc_attr( $duplicate_msg ) . '"' : '';
 
 		$markup                     = '';
 		$show_labels_as_placeholder = get_post_meta( self::get_integer_value( $form_id ), '_srfm_use_label_as_placeholder', true );
@@ -246,7 +246,7 @@ class Helper {
 				$markup = $help ? '<div class="srfm-description" id="srfm-description-' . esc_attr( $block_id ) . '">' . esc_html( $help ) . '</div>' : '';
 				break;
 			case 'error':
-				$markup = $required || $override ? '<div class="srfm-error-message" id="srfm-error-' . esc_attr( $block_id ) . '" data-error-msg="' . esc_attr( $error_msg ) . '"' . esc_attr( $duplicate_msg ) . '>' . esc_html( $error_msg ) . '</div>' : '';
+				$markup = $required || $override ? '<div class="srfm-error-message" id="srfm-error-' . esc_attr( $block_id ) . '" data-error-msg="' . esc_attr( $error_msg ) . '"' . $duplicate_msg . '>' . esc_html( $error_msg ) . '</div>' : '';
 				break;
 			case 'is_unique':
 				$markup = $is_unique ? '<div class="srfm-error">' . esc_html( $duplicate_msg ) . '</div>' : '';
@@ -567,6 +567,9 @@ class Helper {
 	public static function map_slug_to_submission_data( $submission_data = [] ) {
 		$mapped_data = [];
 		foreach ( $submission_data as $key => $value ) {
+			if ( false === strpos( $key, '-lbl-' ) ) {
+				continue;
+			}
 			$label                = explode( '-lbl-', $key )[1];
 			$slug                 = implode( '-', array_slice( explode( '-', $label ), 1 ) );
 			$mapped_data[ $slug ] = $value;
@@ -934,6 +937,17 @@ class Helper {
 		}
 
 		return $slug . '-' . $index;
+	}
+
+	/**
+	 * Encode data to JSON. This function will encode the data with JSON_UNESCAPED_SLASHES and JSON_UNESCAPED_UNICODE.
+	 *
+	 * @since 0.0.11
+	 * @param array<mixed> $data The data to encode.
+	 * @return string|false The JSON representation of the value on success or false on failure.
+	 */
+	public static function encode_json( $data ) {
+		return wp_json_encode( $data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE );
 	}
 
 }

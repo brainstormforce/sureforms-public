@@ -69,6 +69,14 @@
 		"isConditionalLogic": {
 			"type": "boolean",
 			"default": false
+		},
+		"inputMask": {
+			"type": "string",
+			"default": "none"
+		},
+		"customInputMask": {
+			"type": "string",
+			"default": ""
 		}
 	}
 }
