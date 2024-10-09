@@ -33,6 +33,13 @@ class Entries extends Base {
 	protected $table_suffix = 'entries';
 
 	/**
+	 * {@inheritDoc}
+	 *
+	 * @var int
+	 */
+	protected $table_version = 1;
+
+	/**
 	 * Current logs.
 	 *
 	 * @var array<array<string,mixed>> $logs
@@ -60,13 +67,18 @@ class Entries extends Base {
 			'form_id'         => [
 				'type' => 'number',
 			],
+			// User ID.
+			'user_id'         => [
+				'type'    => 'number',
+				'default' => 0,
+			],
 			// Current entry status: ['read', 'unread'].
 			'status'          => [
 				'type'    => 'string',
 				'default' => 'unread',
 			],
 			// Submitted form data by user.
-			'user_data'       => [
+			'form_data'       => [
 				'type'    => 'array',
 				'default' => [],
 			],
@@ -84,6 +96,58 @@ class Entries extends Base {
 			'logs'            => [
 				'type'    => 'array',
 				'default' => [],
+			],
+			// Any misc extra data that needs to be saved.
+			'extras'          => [
+				'type'    => 'array',
+				'default' => [],
+			],
+		];
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function get_columns_definition() {
+		return [
+			'ID BIGINT(20) UNSIGNED AUTO_INCREMENT PRIMARY KEY',
+			'form_id BIGINT(20) UNSIGNED',
+			'user_id BIGINT(20) UNSIGNED NOT NULL DEFAULT 0',
+			'form_data LONGTEXT', // Note: @since x.x.x -- We have renamed `user_data` column to `form_data`.
+			'logs LONGTEXT',
+			'notes LONGTEXT',
+			'submission_info LONGTEXT',
+			'status VARCHAR(10)',
+			'extras LONGTEXT',
+			'created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP',
+			'updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP',
+			'INDEX idx_form_id (form_id)', // Indexing for the performance improvements.
+			'INDEX idx_user_id (user_id)',
+			'INDEX idx_form_id_created_at_status (form_id, created_at, status)', // Composite index for performance improvements.
+		];
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function get_new_columns_definition() {
+		return [
+			// Note: @since x.x.x -- We have added new columns `extras` and `user_id`.
+			'extras LONGTEXT AFTER status',
+			'user_id BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 AFTER form_id',
+			'INDEX idx_user_id (user_id)',
+		];
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function get_columns_to_rename() {
+		return [
+			// Note: @since x.x.x -- We have renamed `user_data` column to `form_data`.
+			[
+				'from' => 'user_data',
+				'to'   => 'form_data',
 			],
 		];
 	}
@@ -175,7 +239,33 @@ class Entries extends Base {
 			$data['logs'] = $instance->get_logs();
 		}
 
-		return $instance->insert( $data );
+		return $instance->use_insert( $data );
+	}
+
+	/**
+	 * Update an entry by entry id.
+	 *
+	 * @param int                 $entry_id Entry ID.
+	 * @param array<string,mixed> $data     Data to update.
+	 * @since x.x.x
+	 * @return int|false The number of rows updated, or false on error.
+	 */
+	public static function update( $entry_id, $data = [] ) {
+		if ( empty( $entry_id ) ) {
+			return false;
+		}
+		return self::get_instance()->use_update( $data, [ 'ID' => absint( $entry_id ) ] );
+	}
+
+	/**
+	 * Delete an entry by entry id.
+	 *
+	 * @param int $entry_id Entry ID to delete.
+	 * @since x.x.x
+	 * @return int|false The number of rows deleted, or false on error.
+	 */
+	public static function delete( $entry_id ) {
+		return self::get_instance()->use_delete( [ 'ID' => absint( $entry_id ) ], [ '%d' ] );
 	}
 
 	/**
@@ -193,5 +283,45 @@ class Entries extends Base {
 		);
 
 		return isset( $results[0] ) ? Helper::get_array_value( $results[0] ) : [];
+	}
+
+	/**
+	 * Retrieves a list of records based on the provided arguments.
+	 *
+	 * This method fetches results from the database, allowing for various
+	 * customization options such as filtering, pagination, and sorting.
+	 *
+	 * @param array<string,mixed> $args {
+	 *     Optional. An array of arguments to customize the query.
+	 *
+	 *     @type array  $where   An associative array of conditions to filter the results.
+	 *     @type int    $limit   The maximum number of results to return. Default is 10.
+	 *     @type int    $offset  The number of records to skip before starting to collect results. Default is 0.
+	 *     @type string $orderby  The column by which to order the results. Default is 'created_at'.
+	 *     @type string $order    The direction of the order (ASC or DESC). Default is 'DESC'.
+	 * }
+	 *
+	 * @since x.x.x
+	 * @return array<mixed> The results of the query, typically an array of objects or associative arrays.
+	 */
+	public static function get_all( $args = [] ) {
+		$_args = wp_parse_args(
+			$args,
+			[
+				'where'   => [],
+				'limit'   => 10,
+				'offset'  => 0,
+				'orderby' => 'created_at',
+				'order'   => 'DESC',
+			]
+		);
+		return self::get_instance()->get_results(
+			$_args['where'],
+			'*',
+			[
+				sprintf( 'ORDER BY `%1$s` %2$s', Helper::get_string_value( esc_sql( $_args['orderby'] ) ), Helper::get_string_value( esc_sql( $_args['order'] ) ) ),
+				sprintf( 'LIMIT %1$d, %2$d', absint( $_args['offset'] ), absint( $_args['limit'] ) ),
+			]
+		);
 	}
 }
