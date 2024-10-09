@@ -307,8 +307,14 @@ abstract class Base {
 		$wpdb = $this->wpdb;
 
 		// Execute the query.
-		// @phpstan-ignore-next-line -- Query will not get null value here.
-		$result = $wpdb->query( $wpdb->prepare( 'CREATE TABLE IF NOT EXISTS %1s ( %2s ) %3s', $this->get_tablename(), $columns_list, $this->get_charset_collate() ) ); // phpcs:ignore -- It is okay to use complex placeholder here for the table name, column list and character set because we don't want to quote these variables.
+		$query = $wpdb->prepare( 'CREATE TABLE IF NOT EXISTS %1s ( %2s ) %3s', $this->get_tablename(), $columns_list, $this->get_charset_collate() ); // phpcs:ignore -- It is okay to use complex placeholder here for the table name, column list and character set because we don't want to quote these variables.
+
+		if ( ! $query ) {
+			// If we are here, then we probably have bad query to work with and prepare method has returned null-ish value.
+			return false;
+		}
+
+		$result = $wpdb->query( $query ); // phpcs:ignore -- We are already using prepare above.
 
 		if ( false === $result ) {
 			// Stop DB alteration if we have any error.
@@ -351,10 +357,16 @@ abstract class Base {
 				continue;
 			}
 
-			// @phpstan-ignore-next-line.
-			$column_type = ! empty( $column['type'] ) ? $column['type'] : $existing_columns[ $column['from'] ]['Type'];
-			// @phpstan-ignore-next-line.
-			$query_parts[] = trim( $wpdb->prepare( 'CHANGE %1s %2s %3s', $column['from'], $column['to'], $column_type ) ); // phpcs:ignore -- It is okay to use complex placeholders as we don't want values to be quoted.
+			$query_part = $wpdb->prepare(
+				'CHANGE %1s %2s %3s', // phpcs:ignore -- It is okay to use complex placeholders as we don't want values to be quoted.
+				$column['from'],
+				$column['to'],
+				! empty( $column['type'] ) ? $column['type'] : $existing_columns[ $column['from'] ]['Type'] // This is column type i.e LONGTEXT, BIGINT etc.
+			);
+
+			if ( is_string( $query_part ) && $query_part ) {
+				$query_parts[] = trim( $query_part );
+			}
 		}
 
 		if ( empty( $query_parts ) ) {
@@ -426,10 +438,19 @@ abstract class Base {
 		}
 
 		if ( $alter_queries ) {
-			$alter_queries = implode( ', ', $alter_queries );
+			$query = $wpdb->prepare(
+				"ALTER TABLE %1s %2s", // phpcs:ignore -- We don't want to quote the value strings for the query.
+				$this->get_tablename(),
+				implode( ', ', $alter_queries )
+			);
+
+			if ( ! $query ) {
+				// If we are here then we probably have bad query and prepare method has returned null.
+				return false;
+			}
+
 			// Execute the query.
-			// @phpstan-ignore-next-line.
-			$result = $wpdb->query( $wpdb->prepare( "ALTER TABLE %1s {$alter_queries}", $this->get_tablename() ) ); // phpcs:ignore -- Here, we have used placeholder for the tablename but we are using variable directly as we have already prepared it above.
+			$result = $wpdb->query( $query ); // phpcs:ignore -- It is okay. We are already using prepare above and we need to do DB query directly here.
 
 			if ( false === $result ) {
 				// Stop DB alteration if we have any error.
@@ -446,7 +467,7 @@ abstract class Base {
 	 * Returns an array columns of current table.
 	 *
 	 * @since x.x.x
-	 * @return array<mixed>
+	 * @return array<string,array<string,mixed>>
 	 */
 	public function get_columns() {
 		$wpdb = $this->wpdb;
@@ -460,6 +481,10 @@ abstract class Base {
 		$_columns = [];
 		if ( is_array( $columns ) ) {
 			foreach ( $columns as $column ) {
+				if ( ! is_string( $column['Field'] ) ) {
+					continue;
+				}
+
 				$_columns[ $column['Field'] ] = $column;
 			}
 		}
@@ -493,11 +518,11 @@ abstract class Base {
 	/**
 	 * Insert data. Basically, a wrapper method for wpdb::insert.
 	 *
-	 * @param array<mixed>    $data Data to insert (in column => value pairs).
-	 *                        Both `$data` columns and `$data` values should be "raw" (neither should be SQL escaped).
-	 *                        Sending a null value will cause the column to be set to NULL - the corresponding
-	 *                        format is ignored in this case.
-	 * @param string[]|string $format Optional. An array of formats to be mapped to each of the value in `$data`.
+	 * @param array<mixed>              $data Data to insert (in column => value pairs).
+	 *                                  Both `$data` columns and `$data` values should be "raw" (neither should be SQL escaped).
+	 *                                  Sending a null value will cause the column to be set to NULL - the corresponding
+	 *                                  format is ignored in this case.
+	 * @param array<string>|string|null $format Optional. An array of formats to be mapped to each of the value in `$data`.
 	 *                       If string, that format will be used for all of the values in `$data`.
 	 *                       A format is one of '%d', '%f', '%s' (integer, float, string).
 	 *                       If omitted, all values in `$data` will be treated as strings unless otherwise
@@ -509,10 +534,14 @@ abstract class Base {
 		$prepared_data = $this->prepare_data( $data );
 
 		if ( is_null( $format ) ) {
+			/**
+			 * Use formats from schema if not provided explicitly.
+			 *
+			 * @var array<string>|string|null
+			 */
 			$format = $prepared_data['format'];
 		}
 
-		// @phpstan-ignore-next-line
 		return $this->wpdb->insert( $this->get_tablename(), $prepared_data['data'], $format );
 	}
 
@@ -682,8 +711,7 @@ abstract class Base {
 					continue;
 				}
 
-				// @phpstan-ignore-next-line
-				$where   .= ' ' . $key . ' = ' . $this->get_format_by_datatype( $schema[ $key ]['type'] ) . ' ' . $relation;
+				$where   .= ' ' . $key . ' = ' . $this->get_format_by_datatype( Helper::get_string_value( $schema[ $key ]['type'] ) ) . ' ' . $relation;
 				$values[] = $value;
 			}
 
@@ -694,10 +722,8 @@ abstract class Base {
 			$where = ' WHERE ' . trim( trim( $where, $relation ) );
 
 			// Prepare the query with placeholders.
-			// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared
-			// @phpstan-ignore-next-line
-			return $wpdb->prepare( $where, ...$values );
-			// phpcs:enable
+			// @phpstan-ignore-next-line -- We are already assigning non-literal string above using "get_format_by_datatype" methods.
+			return $wpdb->prepare( $where, ...$values ); // phpcs:ignore -- We are returning prepared sql query here. We are already using necessary placeholders in $where variable.
 		}
 
 		return '';
