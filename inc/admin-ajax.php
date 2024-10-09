@@ -274,7 +274,7 @@ class Admin_Ajax {
 		wp_send_json_success(
 			[
 				'message' => 'success',
-				'data'    => $body,
+				'data'    => apply_filters( 'srfm_suretriggers_integration_data_filter', $body, $form_id ),
 			]
 		);
 	}
