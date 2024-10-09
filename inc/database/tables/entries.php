@@ -319,8 +319,7 @@ class Entries extends Base {
 			$_args['where'],
 			'*',
 			[
-				// @phpstan-ignore-next-line -- sprintf below will always gets the string values as we are passing the string.
-				sprintf( 'ORDER BY `%1$s` %2$s', esc_sql( $_args['orderby'] ), esc_sql( $_args['order'] ) ),
+				sprintf( 'ORDER BY `%1$s` %2$s', Helper::get_string_value( esc_sql( $_args['orderby'] ) ), Helper::get_string_value( esc_sql( $_args['order'] ) ) ),
 				sprintf( 'LIMIT %1$d, %2$d', absint( $_args['offset'] ), absint( $_args['limit'] ) ),
 			]
 		);
