@@ -182,7 +182,6 @@ class Entries_List_Table extends \WP_List_Table {
 		if ( isset( $_GET['srfm_entries_nonce'] ) && ! wp_verify_nonce( sanitize_key( $_GET['srfm_entries_nonce'] ), 'srfm_entries_action' ) ) {
 			return;
 		}
-		self::remove_query_args();
 		$columns  = $this->get_columns();
 		$sortable = $this->get_sortable_columns();
 		$hidden   = [];

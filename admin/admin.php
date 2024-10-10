@@ -646,6 +646,7 @@ class Admin {
 		if ( isset( $_GET['srfm_entries_nonce'] ) && ! wp_verify_nonce( sanitize_key( $_GET['srfm_entries_nonce'] ), 'srfm_entries_action' ) ) {
 			wp_die( esc_html__( 'Nonce verification failed.', 'sureforms' ) );
 		}
+		Entries_List_Table::remove_query_args();
 		Entries_List_Table::process_bulk_actions();
 		if ( ! isset( $_GET['page'] ) || 'sureforms_entries' !== $_GET['page'] ) {
 			return;
