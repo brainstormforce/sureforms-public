@@ -27,6 +27,7 @@ import { compose } from '@wordpress/compose';
 import { FieldsPreview } from '../FieldsPreview.jsx';
 import ConditionalLogic from '@Components/conditional-logic';
 import UAGIconPicker from '@Components/icon-picker';
+import SRFMNumberControl from '@Components/number-control';
 
 const Edit = ( { attributes, setAttributes, clientId } ) => {
 	const {
@@ -40,9 +41,12 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 		className,
 		multiSelect,
 		searchable,
+		minValue,
+		maxValue,
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
 	const [ newOption, setNewOption ] = useState( '' );
+	const [ error, setError ] = useState( false );
 
 	const changeOption = ( value, index ) => {
 		const updatedOptions = options.map( ( item, thisIndex ) => {
@@ -129,6 +133,83 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 									setAttributes( { multiSelect: checked } )
 								}
 							/>
+							{ multiSelect && options.length > 1 && (
+								<>
+									<SRFMNumberControl
+										label={ __(
+											'Minimum Value',
+											'sureforms'
+										) }
+										displayUnit={ false }
+										data={ {
+											value: minValue,
+											label: 'minValue',
+										} }
+										min={ 1 }
+										max={
+											( maxValue || options.length ) - 1
+										}
+										value={ minValue }
+										onChange={ ( value ) => {
+											if ( value >= maxValue ) {
+												setError( true );
+												setAttributes( {
+													minValue: 0,
+												} );
+											} else {
+												setError( false );
+												setAttributes( {
+													minValue: value,
+												} );
+											}
+										} }
+										showControlHeader={ false }
+									/>
+									<SRFMNumberControl
+										label={ __(
+											'Maximum Value',
+											'sureforms'
+										) }
+										displayUnit={ false }
+										data={ {
+											value: maxValue,
+											label: 'maxValue',
+										} }
+										min={ minValue + 1 || 1 }
+										max={ options.length }
+										value={ maxValue }
+										onChange={ ( value ) => {
+											if ( value <= minValue ) {
+												setError( true );
+												setAttributes( {
+													maxValue:
+														Number( minValue ) + 1,
+												} );
+											} else {
+												setError( false );
+												setAttributes( {
+													maxValue: value,
+												} );
+											}
+										} }
+										showControlHeader={ false }
+									/>
+									{ error && (
+										<p className="srfm-min-max-error-styles">
+											{ __(
+												'Please check the Minimum and Maximum value',
+												'sureforms'
+											) }
+										</p>
+									) }
+									<p className="components-base-control__help">
+										{ __(
+											'Note: Maximum value should always be greater than minimum value',
+											'sureforms'
+										) }
+									</p>
+								</>
+							) }
 							<ToggleControl
 								label={ __( 'Enable Search', 'sureforms' ) }
 								checked={ searchable }
