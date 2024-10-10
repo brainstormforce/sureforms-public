@@ -20,6 +20,20 @@ function initializeTextarea() {
 						}
 					}
 				} );
+
+				// Adding quill editor to the textarea.
+				// check attribute data-is-richtext="true"' available and should be true.
+				const isRichText = areaField.getAttribute( 'data-is-richtext' );
+				console.log("isRichText:2 ", isRichText);
+
+				// const quill = new Quill('#editor', {
+				// 	theme: 'snow'
+				//   });
+				if( isRichText === 'true' ) {
+					const quillEditor = new Quill("#quill-srfm-textarea-f72a6a0f-lbl-VGV4dGFyZWE", {
+						theme: 'snow'
+					});
+				}
 			}
 		}
 	}

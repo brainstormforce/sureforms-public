@@ -33,6 +33,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 		formId,
 		preview,
 		className,
+		isRichText,
 	} = attributes;
 
 	const currentFormId = useGetCurrentFormId( clientId );
@@ -142,6 +143,13 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 								} }
 								onChange={ ( value ) =>
 									setAttributes( { help: value } )
+								}
+							/>
+							<ToggleControl
+								label={ __( 'Rich Text', 'sureforms' ) }
+								checked={ isRichText }
+								onChange={ ( checked ) =>
+									setAttributes( { isRichText: checked } )
 								}
 							/>
 						</SRFMAdvancedPanelBody>

@@ -238,6 +238,14 @@ class Frontend_Assets {
 				// Input mask JS.
 				wp_enqueue_script( SRFM_SLUG . '-inputmask', $js_vendor_uri . 'inputmask.min.js', [], SRFM_VER, true );
 			}
+
+			// Adding js for the input textarea block.
+			if ( 'textarea' === $block_name ) {
+				// wp_enqueue_script( SRFM_SLUG . '-quill-editor', $js_vendor_uri . 'quill.min.js', [], SRFM_VER, true );
+				https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js
+				wp_enqueue_script( SRFM_SLUG . '-quill-editor', 'https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js', [], SRFM_VER, true );
+				wp_enqueue_style( SRFM_SLUG . '-quill-editor', 'https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css');
+			}
 		}
 	}
 
