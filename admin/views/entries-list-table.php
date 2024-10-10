@@ -62,11 +62,9 @@ class Entries_List_Table extends \WP_List_Table {
 			'filter_action',
 			'srfm_entries_nonce',
 			'_wp_http_referer',
+			'paged',
 		];
 
-		if ( isset( $_GET['paged'] ) && (int) sanitize_key( $_GET['paged'] ) < 2 ) {
-			$remove_args[] = 'paged';
-		}
 		if ( isset( $_SERVER['REQUEST_URI'] ) ) {
 			// Adding the phpcs ignore to avoid removing slashes from the URL.
 			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash
@@ -143,12 +141,34 @@ class Entries_List_Table extends \WP_List_Table {
 	/**
 	 * Get the entries data.
 	 *
+	 * @param int $per_page Number of entries to fetch per page.
+	 * @param int $current_page Current page number.
+	 * @param string $view The view to fetch the entries count from.
+	 * 
 	 * @since x.x.x
 	 * @return array
 	 */
-	private function table_data() {
-		$this->data          = Entries::get_all();
-		$this->entries_count = count( $this->data );
+	private function table_data( $per_page, $current_page, $view ) {
+		$offset = ( $current_page - 1 ) * $per_page;
+		// If view is all, then we need to fetch all entries except the trash.
+		$compare = 'all' === $view ? '!=' : '=';
+		$value   = 'all' === $view ? 'trash' : $view;
+		$this->data          = Entries::get_all(
+			[
+				'limit'  => $per_page,
+				'offset' => $offset,
+				'where'  => [
+					[
+						[
+							'key'     => 'status',
+							'compare' => $compare,
+							'value'   => $value,
+						]
+					],
+				],
+			]
+		);
+		$this->entries_count = Entries::get_total_entries_by_status( $view );
 		return $this->data;
 	}
 
@@ -161,24 +181,26 @@ class Entries_List_Table extends \WP_List_Table {
 	public function prepare_items() {
 		self::remove_query_args();
 		$columns  = $this->get_columns();
-		$hidden   = [];
 		$sortable = $this->get_sortable_columns();
-		$data     = $this->table_data();
-		$data     = $this->filter_entries_data( $data );
+		$hidden   = [];
 
-		usort( $data, [ $this, 'sort_data' ] );
 		$per_page     = 10;
 		$current_page = $this->get_pagenum();
-		$total_items  = count( $data );
+		$view         = isset( $_GET['view'] ) ? sanitize_text_field( wp_unslash( $_GET['view'] ) ) : 'all';
+
+		$data = $this->table_data( $per_page, $current_page, $view );
+		$data = $this->filter_entries_data( $data );
+
+		usort( $data, [ $this, 'sort_data' ] );
 
 		$this->set_pagination_args(
 			[
-				'total_items' => $total_items,
+				'total_items' => $this->entries_count,
+				'total_pages' => ceil( $this->entries_count / $per_page ),
 				'per_page'    => $per_page,
 			]
 		);
 
-		$data                  = array_slice( $data, ( ( $current_page - 1 ) * $per_page ), $per_page );
 		$this->_column_headers = [ $columns, $hidden, $sortable ];
 		$this->items           = $data;
 	}
@@ -197,7 +219,7 @@ class Entries_List_Table extends \WP_List_Table {
 			case 'id':
 				return $this->column_id( $item );
 			case 'form_name':
-				$form_name = ! empty( get_the_title( $item['form_id'] ) ) ? get_the_title( $item['form_id'] ) : 'SureForms Form #' . intval( $item['form_id'] );
+				$form_name = ! empty( get_the_title( $item['form_id'] ) ) ? get_the_title( $item['form_id'] ) : 'SureForms Form #' . Helper::get_integer_value( $item['form_id'] );
 				return $form_name;
 			case 'status':
 				return $this->column_status( $item );
@@ -429,7 +451,7 @@ class Entries_List_Table extends \WP_List_Table {
 		echo '<select name="form_filter">';
 		echo '<option value="all">' . esc_html__( 'All Form Entries', 'sureforms' ) . '</option>';
 		foreach ( $forms as $form_id => $form_name ) {
-			$selected = ( isset( $_GET['form_filter'] ) && intval( $_GET['form_filter'] ) === $form_id ) ? ' selected="selected"' : '';
+			$selected = ( isset( $_GET['form_filter'] ) && Helper::get_integer_value( $_GET['form_filter'] ) === $form_id ) ? ' selected="selected"' : '';
 			printf( '<option value="%s"%s>%s</option>', esc_attr( $form_id ), esc_attr( $selected ), esc_html( $form_name ) );
 		}
 		echo '</select>';
@@ -509,7 +531,7 @@ class Entries_List_Table extends \WP_List_Table {
 		}
 
 		if ( 'ID' === $orderby ) {
-			$result = intval( $data1[ $orderby ] ) - intval( $data2[ $orderby ] );
+			$result = Helper::get_integer_value( $data1[ $orderby ] ) - Helper::get_integer_value( $data2[ $orderby ] );
 		} else {
 			$result = strcmp( $data1[ $orderby ], $data2[ $orderby ] );
 		}
@@ -731,9 +753,9 @@ class Entries_List_Table extends \WP_List_Table {
 			return;
 		}
 		$status_count = [
-			'all'    => count( array_filter( $this->data, fn( $entry) => 'trash' !== $entry['status'] ) ),
-			'unread' => count( array_filter( $this->data, fn( $entry) => 'unread' === $entry['status'] ) ),
-			'trash'  => count( array_filter( $this->data, fn( $entry) => 'trash' === $entry['status'] ) ),
+			'all'    => Entries::get_total_entries_by_status( 'all' ),
+			'unread' => Entries::get_total_entries_by_status( 'unread' ),
+			'trash'  => Entries::get_total_entries_by_status( 'trash' ),
 		];
 
 		// Get the current view (All, Read, Unread, Trash) to highlight the selected one.
@@ -792,7 +814,7 @@ class Entries_List_Table extends \WP_List_Table {
 
 				// Update the status of each selected entry.
 				foreach ( $entry_ids as $entry_id ) {
-					self::handle_entry_status( intval( $entry_id ), $action );
+					self::handle_entry_status( Helper::get_integer_value( $entry_id ), $action );
 				}
 
 				// Redirect to prevent form resubmission.
@@ -848,10 +870,10 @@ class Entries_List_Table extends \WP_List_Table {
 			case 'unread':
 			case 'read':
 			case 'trash':
-				Entries::update( intval( $entry_id ), [ 'status' => $action ] );
+				Entries::update( $entry_id, [ 'status' => $action ] );
 				break;
 			case 'delete':
-				Entries::delete( intval( $entry_id ) );
+				Entries::delete( $entry_id );
 				break;
 			default:
 				break;

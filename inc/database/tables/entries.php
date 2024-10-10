@@ -330,4 +330,32 @@ class Entries extends Base {
 			]
 		);
 	}
+
+	/**
+	 * Get the total count of entries by status.
+	 *
+	 * @param string $status The status of the entries to count.
+	 * @since x.x.x
+	 * @return int The total number of entries with the specified status.
+	 */
+	public static function get_total_entries_by_status( $status = 'all' ) {
+		switch ( $status ) {
+			case 'all':
+				$where_clause = [
+					[
+						[
+							'key' => 'status',
+							'compare' => '!=',
+							'value' => 'trash',
+						]
+					]
+				];
+				return self::get_instance()->get_total_count( $where_clause );
+			case 'unread':
+			case 'trash':
+				return self::get_instance()->get_total_count( [ 'status' => $status ] );
+			default:
+				return self::get_instance()->get_total_count();
+		}
+	}
 }
