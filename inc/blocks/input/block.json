@@ -3,7 +3,7 @@
 	"title": "Text",
 	"description": "Displays a SureForm Text Field",
 	"category": "sureforms",
-	"keywords": [ "text", "input", "custom", "field" ],
+	"keywords": [ "text", "input", "custom", "field", "name" ],
 	"textdomain": "sureforms",
 	"supports": {
 		"reusable": false,
@@ -71,6 +71,14 @@
 			"default": false
 		},
 		"slug": {
+			"type": "string",
+			"default": ""
+		},
+		"inputMask": {
+			"type": "string",
+			"default": "none"
+		},
+		"customInputMask": {
 			"type": "string",
 			"default": ""
 		}

@@ -40,7 +40,7 @@
 			"type": "string",
 			"default": "Textarea"
 		},
-		"textAreaHelpText": {
+		"help": {
 			"type": "string",
 			"default": ""
 		},
@@ -51,10 +51,6 @@
 		"rows": {
 			"type": "number",
 			"default": 4
-		},
-		"cols": {
-			"type": "number",
-			"default": 3
 		},
 		"errorMsg": {
 			"type": "string",

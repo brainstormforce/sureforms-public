@@ -177,17 +177,19 @@ function showSuccessMessage(
 	}
 	element.innerHTML = message;
 	container.classList.add( 'srfm-active' );
+	window?.srfm?.handleInstantFormWrapperHeight();
+	form.parentElement.scrollIntoView( { behavior: 'smooth' } );
 
-    // Create and dispatch a custom event
-    const event = new CustomEvent('SRFM_Form_Success_Message', {
-        detail: {
+	// Create and dispatch a custom event
+	const event = new CustomEvent('SRFM_Form_Success_Message', {
+		detail: {
 			form: form,
-            element: element,
-            message: message,
-        }
-    });
+			element: element,
+			message: message,
+		}
+	});
 
-    document.dispatchEvent(event);
+	document.dispatchEvent(event);
 }
 
 function redirectToUrl( url ) {

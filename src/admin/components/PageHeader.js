@@ -19,18 +19,6 @@ const FormPageHeader = () => {
 						--dashboard-text: #64748b;
 						overflow-x: hidden;
 					}
-					#wpcontent {
-						padding: 0;
-					}
-					.wrap {
-						margin-right: 46px;
-					}
-					#wpbody-content {
-						margin: 0 0 0 20px;
-					}
-					.wrap {
-						margin-right: 46px;
-					}
 					@media screen and ( max-width: 782px ) {
 						#wpbody {
 							padding-top: 0;
@@ -41,9 +29,6 @@ const FormPageHeader = () => {
 						#srfm-form-page-header {
 							padding-top: 46px;
 						}
-					}
-					#show-settings-link {
-						margin-right: 26px;
 					}
 				` }
 			/>

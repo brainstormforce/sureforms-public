@@ -124,6 +124,8 @@ if ( 'image' === $bg_type ) {
 			?>
 			html.srfm-html {
 				margin-top: 0 !important;
+				/* make the background transparent for the sureforms/form block preview */
+				background-color: transparent;
 				/* Needs to be important to remove margin-top added by WordPress admin bar  */
 			}
 			body.single.single-sureforms_form {

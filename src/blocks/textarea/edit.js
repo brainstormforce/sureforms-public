@@ -23,14 +23,13 @@ import ConditionalLogic from '@Components/conditional-logic';
 
 const Edit = ( { clientId, attributes, setAttributes } ) => {
 	const {
-		textAreaHelpText,
+		help,
 		required,
 		maxLength,
 		block_id,
 		defaultValue,
 		errorMsg,
 		rows,
-		cols,
 		formId,
 		preview,
 		className,
@@ -134,29 +133,15 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 									setAttributes( { rows: Number( value ) } );
 								} }
 							/>
-							<Range
-								label={ __( 'Columns', 'sureforms' ) }
-								displayUnit={ false }
-								value={ cols }
-								min={ 1 }
-								max={ 100 }
-								data={ {
-									value: cols,
-									label: 'cols',
-								} }
-								onChange={ ( value ) => {
-									setAttributes( { cols: Number( value ) } );
-								} }
-							/>
 							<SRFMTextControl
 								label={ __( 'Help Text', 'sureforms' ) }
-								value={ textAreaHelpText }
+								value={ help }
 								data={ {
-									value: textAreaHelpText,
-									label: 'textAreaHelpText',
+									value: help,
+									label: 'help',
 								} }
 								onChange={ ( value ) =>
-									setAttributes( { textAreaHelpText: value } )
+									setAttributes( { help: value } )
 								}
 							/>
 						</SRFMAdvancedPanelBody>

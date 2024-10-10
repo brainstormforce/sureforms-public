@@ -35,7 +35,7 @@
 			"type": "boolean",
 			"default": false
 		},
-		"gdprHelpText": {
+		"help": {
 			"type": "string",
 			"default": ""
 		},

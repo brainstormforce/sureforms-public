@@ -147,6 +147,8 @@ export async function fieldValidation(
 						.classList.add( 'srfm-error' );
 				}
 
+				errorMessage.style.display = 'block';
+
 				errorMessage.textContent =
 					errorMessage.getAttribute( 'data-unique-msg' );
 
@@ -157,6 +159,8 @@ export async function fieldValidation(
 				inputField
 					.closest( '.srfm-block' )
 					.classList.remove( 'srfm-error' );
+
+				errorMessage.style.display = 'none';
 			}
 		}
 

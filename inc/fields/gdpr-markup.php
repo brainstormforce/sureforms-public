@@ -30,7 +30,6 @@ class GDPR_Markup extends Base {
 		$this->set_input_label( __( 'I consent to have this website store my submitted information so they can respond to my inquiry.', 'sureforms' ) );
 		$this->set_error_msg( $attributes, 'srfm_gdpr_block_required_text' );
 		$this->slug              = 'gdpr';
-		$this->help              = isset( $attributes['gdprHelpText'] ) ? $attributes['gdprHelpText'] : '';
 		$this->required          = true;
 		$this->aria_require_attr = 'true';
 		$this->set_markup_properties();
