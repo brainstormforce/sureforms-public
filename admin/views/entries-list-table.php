@@ -783,14 +783,18 @@ class Entries_List_Table extends \WP_List_Table {
 				/* translators: %d refers to the number of unread entries. */
 				sprintf( __( 'Unread <span class="count">(%d)</span>', 'sureforms' ), $status_count['unread'] )
 			),
-			'trash'  => sprintf(
+		];
+
+		// Only add the Trash view if the count is greater than 0.
+		if ( $status_count['trash'] > 0 ) {
+			$views['trash'] = sprintf(
 				'<a href="%1$s" class="%2$s">%3$s</a>',
 				add_query_arg( 'view', 'trash', $base_url ),
 				( 'trash' === $current_view ) ? 'current' : '',
 				/* translators: %d refers to the number of entries in the trash. */
 				sprintf( __( 'Trash <span class="count">(%d)</span>', 'sureforms' ), $status_count['trash'] )
-			),
-		];
+			);
+		}
 
 		return $views;
 	}
