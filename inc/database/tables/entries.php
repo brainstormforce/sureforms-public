@@ -69,10 +69,12 @@ class Entries extends Base {
 			],
 			// User ID.
 			'user_id'         => [
-				'type'    => 'number',
-				'default' => 0,
+				'type' => 'number',
+				// The following phpcs ignore will be removed once the issue is fixed.
+				// phpcs:ignore Squiz.PHP.CommentedOutCode.Found
+				// 'default' => 0,
 			],
-			// Current entry status: ['read', 'unread'].
+			// Current entry status: 'read', 'unread' and 'trash'.
 			'status'          => [
 				'type'    => 'string',
 				'default' => 'unread',
@@ -96,6 +98,10 @@ class Entries extends Base {
 			'logs'            => [
 				'type'    => 'array',
 				'default' => [],
+			],
+			// Entry submitted date and time.
+			'created_at'      => [
+				'type' => 'datetime',
 			],
 			// Any misc extra data that needs to be saved.
 			'extras'          => [

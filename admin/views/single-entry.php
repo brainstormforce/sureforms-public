@@ -5,7 +5,7 @@
  * @package sureforms.
  */
 
-namespace SRFM\Admin;
+namespace SRFM\Admin\Views;
 
 use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Helper;
@@ -22,7 +22,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @since x.x.x
  */
-class SRFM_Single_Entry {
+class Single_Entry {
 	/**
 	 * Stores the entry ID.
 	 *
@@ -45,6 +45,9 @@ class SRFM_Single_Entry {
 	 * @since x.x.x
 	 */
 	public function __construct() {
+		if ( isset( $_GET['srfm_entries_nonce'] ) && ! wp_verify_nonce( sanitize_key( $_GET['srfm_entries_nonce'] ), 'srfm_entries_action' ) ) {
+			return;
+		}
 		$this->entry_id = isset( $_GET['entry_id'] ) ? intval( sanitize_key( wp_unslash( $_GET['entry_id'] ) ) ) : null;
 		$this->entry    = $this->entry_id ? Entries::get( $this->entry_id ) : null;
 	}
@@ -62,7 +65,7 @@ class SRFM_Single_Entry {
 		$entry_status    = $this->entry['status'];
 		$submitted_on    = gmdate( 'Y/m/d \a\t g:i a', strtotime( $this->entry['created_at'] ) );
 		$form_name       = ! empty( get_the_title( $this->entry['form_id'] ) ) ? get_the_title( $this->entry['form_id'] ) : 'SureForms Form #' . intval( $this->entry['form_id'] );
-		$meta_data       = $this->entry['user_data'];
+		$meta_data       = $this->entry['form_data'];
 		$excluded_fields = [ 'srfm-honeypot-field', 'g-recaptcha-response', 'srfm-sender-email-field' ];
 		$entry_logs      = $this->entry['logs'];
 		?>
