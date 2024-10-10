@@ -661,7 +661,7 @@ class Entries_List_Table extends \WP_List_Table {
 		// Filter data based on the status (All, Unread, Trash).
 		$status_filter = isset( $_GET['view'] ) ? sanitize_key( wp_unslash( $_GET['view'] ) ) : 'all';
 
-		// Apply search filter.
+		// Apply search filter, currently search is based on entry ID only and not text.
 		if ( ! empty( $search_term ) ) {
 			$data = array_filter(
 				$data,
