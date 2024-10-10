@@ -69,10 +69,8 @@ class Entries extends Base {
 			],
 			// User ID.
 			'user_id'         => [
-				'type' => 'number',
-				// The following phpcs ignore will be removed once the issue is fixed.
-				// phpcs:ignore Squiz.PHP.CommentedOutCode.Found
-				// 'default' => 0,
+				'type'    => 'number',
+				'default' => 0,
 			],
 			// Current entry status: 'read', 'unread' and 'trash'.
 			'status'          => [
