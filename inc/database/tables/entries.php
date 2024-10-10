@@ -342,11 +342,11 @@ class Entries extends Base {
 				$where_clause = [
 					[
 						[
-							'key' => 'status',
+							'key'     => 'status',
 							'compare' => '!=',
-							'value' => 'trash',
-						]
-					]
+							'value'   => 'trash',
+						],
+					],
 				];
 				return self::get_instance()->get_total_count( $where_clause );
 			case 'unread':

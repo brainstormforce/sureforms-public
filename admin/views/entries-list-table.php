@@ -141,18 +141,18 @@ class Entries_List_Table extends \WP_List_Table {
 	/**
 	 * Get the entries data.
 	 *
-	 * @param int $per_page Number of entries to fetch per page.
-	 * @param int $current_page Current page number.
+	 * @param int    $per_page Number of entries to fetch per page.
+	 * @param int    $current_page Current page number.
 	 * @param string $view The view to fetch the entries count from.
-	 * 
+	 *
 	 * @since x.x.x
 	 * @return array
 	 */
 	private function table_data( $per_page, $current_page, $view ) {
 		$offset = ( $current_page - 1 ) * $per_page;
 		// If view is all, then we need to fetch all entries except the trash.
-		$compare = 'all' === $view ? '!=' : '=';
-		$value   = 'all' === $view ? 'trash' : $view;
+		$compare             = 'all' === $view ? '!=' : '=';
+		$value               = 'all' === $view ? 'trash' : $view;
 		$this->data          = Entries::get_all(
 			[
 				'limit'  => $per_page,
@@ -163,7 +163,7 @@ class Entries_List_Table extends \WP_List_Table {
 							'key'     => 'status',
 							'compare' => $compare,
 							'value'   => $value,
-						]
+						],
 					],
 				],
 			]
@@ -179,6 +179,9 @@ class Entries_List_Table extends \WP_List_Table {
 	 * @return void
 	 */
 	public function prepare_items() {
+		if ( isset( $_GET['srfm_entries_nonce'] ) && ! wp_verify_nonce( sanitize_key( $_GET['srfm_entries_nonce'] ), 'srfm_entries_action' ) ) {
+			return;
+		}
 		self::remove_query_args();
 		$columns  = $this->get_columns();
 		$sortable = $this->get_sortable_columns();
@@ -451,7 +454,7 @@ class Entries_List_Table extends \WP_List_Table {
 		echo '<select name="form_filter">';
 		echo '<option value="all">' . esc_html__( 'All Form Entries', 'sureforms' ) . '</option>';
 		foreach ( $forms as $form_id => $form_name ) {
-			$selected = ( isset( $_GET['form_filter'] ) && Helper::get_integer_value( $_GET['form_filter'] ) === $form_id ) ? ' selected="selected"' : '';
+			$selected = ( isset( $_GET['form_filter'] ) && Helper::get_integer_value( sanitize_key( wp_unslash( $_GET['form_filter'] ) ) ) === $form_id ) ? ' selected="selected"' : '';
 			printf( '<option value="%s"%s>%s</option>', esc_attr( $form_id ), esc_attr( $selected ), esc_html( $form_name ) );
 		}
 		echo '</select>';

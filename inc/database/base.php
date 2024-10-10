@@ -654,7 +654,7 @@ abstract class Base {
 	/**
 	 * Get the total number of rows in the table.
 	 *
-	 * @param array<mixed> $where Optional. An associative array of WHERE clauses for the SQL query.
+	 * @param array<mixed> $where_clauses Optional. An associative array of WHERE clauses for the SQL query.
 	 * @since x.x.x
 	 * @return int The total number of rows in the table.
 	 */
@@ -768,7 +768,7 @@ abstract class Base {
 	 *
 	 * @param array<mixed> $data An associative array of data where the key is the column name and the value is the data to process.
 	 *                    Missing values will be replaced with default values specified in the schema.
-	 * @param boolean $skip_defaults Whether or not to skip the defaults values. Pass true if updating the data.
+	 * @param boolean      $skip_defaults Whether or not to skip the defaults values. Pass true if updating the data.
 	 * @since 0.0.10
 	 * @return array<array<mixed>> An associative array containing:
 	 *                - 'data': Prepared data with values encoded according to their data types.
