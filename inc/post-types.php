@@ -190,7 +190,7 @@ class Post_Types {
 					'create_posts' => 'do_not_allow',
 				],
 				'map_meta_cap'        => true,
-				'show_ui'             => true,
+				'show_ui'             => false, // Hide the entries post type from the admin menu.
 				'show_in_menu'        => 'sureforms_menu',
 			]
 		);
