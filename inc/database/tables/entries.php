@@ -339,10 +339,11 @@ class Entries extends Base {
 	 * Get the total count of entries by status.
 	 *
 	 * @param string $status The status of the entries to count.
+	 * @param int|null $form_id The ID of the form to count entries for.
 	 * @since x.x.x
 	 * @return int The total number of entries with the specified status.
 	 */
-	public static function get_total_entries_by_status( $status = 'all' ) {
+	public static function get_total_entries_by_status( $status = 'all', $form_id = null ) {
 		switch ( $status ) {
 			case 'all':
 				$where_clause = [
@@ -354,6 +355,15 @@ class Entries extends Base {
 						],
 					],
 				];
+				if ( ! is_null( $form_id ) ) {
+					$where_clause[] = [
+						[
+							'key'     => 'form_id',
+							'compare' => '=',
+							'value'   => $form_id,
+						],
+					];
+				}
 				return self::get_instance()->get_total_count( $where_clause );
 			case 'unread':
 			case 'trash':

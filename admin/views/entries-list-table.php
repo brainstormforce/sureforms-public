@@ -56,8 +56,6 @@ class Entries_List_Table extends \WP_List_Table {
 		$remove_args = [
 			'action',
 			'action2',
-			'form_filter',
-			'month_filter',
 			'search_filter',
 			'filter_action',
 			'srfm_entries_nonce',
