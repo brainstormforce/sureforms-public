@@ -78,7 +78,7 @@ class Entries extends Base {
 				'default' => 'unread',
 			],
 			// Entry's form type eg quiz, standard etc. Default empty or null means standard.
-			'type'          => [
+			'type'            => [
 				'type' => 'string',
 			],
 			// Submitted form data by user.
@@ -338,7 +338,7 @@ class Entries extends Base {
 	/**
 	 * Get the total count of entries by status.
 	 *
-	 * @param string $status The status of the entries to count.
+	 * @param string   $status The status of the entries to count.
 	 * @param int|null $form_id The ID of the form to count entries for.
 	 * @since x.x.x
 	 * @return int The total number of entries with the specified status.

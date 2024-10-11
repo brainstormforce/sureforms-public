@@ -219,8 +219,7 @@ class Entries_List_Table extends \WP_List_Table {
 			case 'id':
 				return $this->column_id( $item );
 			case 'form_name':
-				$form_name = ! empty( get_the_title( $item['form_id'] ) ) ? get_the_title( $item['form_id'] ) : 'SureForms Form #' . Helper::get_integer_value( $item['form_id'] );
-				return $form_name;
+				return $this->column_form_name( $item );
 			case 'status':
 				return $this->column_status( $item );
 			case 'first_field':
@@ -273,6 +272,19 @@ class Entries_List_Table extends \WP_List_Table {
 			esc_html__( 'Entry #', 'sureforms' ),
 			$entry_id
 		);
+	}
+
+	/**
+	 * Define the data for the "form name" column and return the markup.
+	 *
+	 * @param array $item Column data.
+	 *
+	 * @since x.x.x
+	 * @return string
+	 */
+	protected function column_form_name( $item ) {
+		$form_name = ! empty( get_the_title( $item['form_id'] ) ) ? get_the_title( $item['form_id'] ) : 'SureForms Form #' . Helper::get_integer_value( $item['form_id'] );
+		return sprintf( '<strong><a class="row-title" href="%1$s" target="_blank">%2$s</a></strong>', get_edit_post_link( $item['form_id'] ), esc_html( $form_name ) );
 	}
 
 	/**

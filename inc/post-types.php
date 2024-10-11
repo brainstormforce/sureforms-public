@@ -1093,7 +1093,7 @@ class Post_Types {
 		}
 		if ( 'entries' === $column ) {
 			// Entries URL to redirect user based on the form ID.
-			$entries_url   = add_query_arg(
+			$entries_url = add_query_arg(
 				[
 					'form_filter' => $post_id,
 				],
@@ -1105,7 +1105,7 @@ class Post_Types {
 
 			ob_start();
 			?>
-				<p class="srfm-entries-number"><a href="<?php echo esc_url( $entries_url ); ?>"><?php echo esc_html( $entries_count ); ?></a></p>
+				<p class="srfm-entries-number"><a href="<?php echo esc_url( $entries_url ); ?>"><?php echo esc_html( Helper::get_string_value( $entries_count ) ); ?></a></p>
 			<?php
 			ob_end_flush();
 		}
