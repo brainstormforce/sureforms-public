@@ -60,10 +60,11 @@ class Post_Types {
 	 * @param string $image Parent slug.
 	 * @param string $button_text Parent slug.
 	 * @param string $button_url Parent slug.
+	 * @param string $after_button After button content.
 	 * @return void
 	 * @since 0.0.1
 	 */
-	public function get_blank_page_markup( $title, $subtitle, $image, $button_text = '', $button_url = '' ) {
+	public function get_blank_page_markup( $title, $subtitle, $image, $button_text = '', $button_url = '', $after_button = '' ) {
 		echo '<div class="sureform-add-new-form">';
 
 		echo '<p class="sureform-blank-page-title">' . esc_html( $title ) . '</p>';
@@ -73,9 +74,8 @@ class Post_Types {
 		echo '<img src="' . esc_url( SRFM_URL . '/images/' . $image . '.svg' ) . '">';
 
 		if ( ! empty( $button_text ) && ! empty( $button_url ) ) {
-			echo '<div class="sureforms-add-new-form-container"><a class="sf-add-new-form-button" href="' . esc_url( $button_url ) . '"><div class="button-secondary">' . esc_html( $button_text ) . '</div></a></div>';
+			echo '<div class="sureforms-add-new-form-container"><a class="sf-add-new-form-button" href="' . esc_url( $button_url ) . '"><div class="button-secondary">' . esc_html( $button_text ) . '</div></a>' . wp_kses_post( $after_button ) . '</div>';
 		}
-
 		echo '</div>';
 	}
 
@@ -89,8 +89,9 @@ class Post_Types {
 	public function sureforms_render_blank_state( $post_type ) {
 
 		if ( SRFM_FORMS_POST_TYPE === $post_type ) {
-			$page_name    = 'add-new-form';
-			$new_form_url = admin_url( 'admin.php?page=' . $page_name );
+			$page_name     = 'add-new-form';
+			$new_form_url  = admin_url( 'admin.php?page=' . $page_name );
+			$import_button = '<button class="button button-secondary srfm-import-btn">' . __( 'Import Form', 'sureforms' ) . '</button>';
 
 			$this->get_blank_page_markup(
 				esc_html__( 'Let’s build your first form', 'sureforms' ),
@@ -100,7 +101,8 @@ class Post_Types {
 				),
 				'add-new-form',
 				esc_html__( 'Add New Form', 'sureforms' ),
-				$new_form_url
+				$new_form_url,
+				$import_button
 			);
 		}
 
@@ -393,12 +395,15 @@ class Post_Types {
 			?>
 		<style>
 			.srfm-page-header {
+				min-height: 65px;
 				@media screen and ( max-width: 600px ) {
 					padding-top: 46px;
 				}
 			}
 		</style>
-		<div id="srfm-page-header" class="srfm-page-header"></div>
+		<div id="srfm-page-header" class="srfm-page-header">
+			<div class="srfm-page-pre-nav-content"></div>
+		</div>
 			<?php
 		}
 	}
