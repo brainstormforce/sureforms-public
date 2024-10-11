@@ -871,9 +871,24 @@ export const handleScrollAndFocusOnError = ( validationObject ) => {
 	if ( validationObject?.firstErrorInput ) {
 		// If the scroll element exists, smoothly scroll the element into view
 		if ( validationObject?.scrollElement ) {
-			validationObject.scrollElement.scrollIntoView( {
+			/**
+			 * Scrolls the window to center the specified element in the viewport with a smooth animation.
+			 *
+			 * @param {HTMLElement} validationObject.scrollElement - The element to scroll to.
+			 */
+			const getElementTop =
+				validationObject.scrollElement.getBoundingClientRect().top; // Get element's top position relative to the viewport
+			const getPageYOffset = window.pageYOffset; // Get the current vertical scroll position of the window
+			const getWindowHeight = window.innerHeight; // Get the height of the browser window
+			const getHalfWindowHeight = getWindowHeight / 2; // Calculate half of the window height for centering
+
+			// Calculate the scroll position to align the element in the center of the viewport
+			const calculatedScrollTop =
+				getElementTop + getPageYOffset - getHalfWindowHeight;
+
+			window.scroll( {
+				top: calculatedScrollTop, // Set the calculated top scroll position
 				behavior: 'smooth', // Smooth scrolling animation
-				block: 'center', // Align the element at the center of the view
 			} );
 		}
 
