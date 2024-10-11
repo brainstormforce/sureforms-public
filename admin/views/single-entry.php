@@ -83,7 +83,6 @@ class Single_Entry {
 							</div><!-- /titlediv -->
 						</div><!-- /post-body-content -->
 						<div id="postbox-container-1" class="postbox-container">
-							<?php $this->render_entry_notes(); ?>
 							<?php $this->render_submission_info( $form_name, $entry_status, $submitted_on ); ?>
 						</div>
 						<div id="postbox-container-2" class="postbox-container">
@@ -96,33 +95,6 @@ class Single_Entry {
 					<br class="clear">
 				</div><!-- /poststuff -->
 			</form>
-		</div>
-		<?php
-	}
-
-	/**
-	 * Render the entry notes for the specific entry.
-	 *
-	 * @since x.x.x
-	 */
-	private function render_entry_notes() {
-		?>
-		<div id="submitdiv" class="postbox ">
-			<div class="postbox-header">
-				<!-- Removed class "hndle ui-sortable-handle" from the below h2 tag to prevent the draggable cursor. --> 
-				<h2><?php esc_html_e( 'Entry Notes', 'sureforms' ); ?></h2>
-				<button id="srfm-add-entry-note" class="srfm-add-entry-note-button">
-				<?php esc_html_e( 'Add Note', 'sureforms' ); ?>
-					<svg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M8 3.33594V12.6693' stroke='black' stroke-width='1.25' stroke-linecap='round' stroke-linejoin='round'/><path d='M3.33337 8H12.6667' stroke='black' stroke-width='1.25' stroke-linecap='round' stroke-linejoin='round'/></svg>
-				</button>
-			</div>
-			<div class="inside">
-				<div class="srfm-entry-note-wrapper">
-					<!-- TODO: Proper implementation for the entry notes section. -->
-					<textarea id="srfm-entry-note" name="srfm_entry_note" rows="5"></textarea>
-					<button type="submit" id="srfm-add-note" data-entry-id=<?php echo esc_html( $this->entry_id ); ?>><?php esc_html_e( 'Submit Note', 'sureforms' ); ?></button>
-				</div>
-			</div>
 		</div>
 		<?php
 	}
@@ -154,14 +126,12 @@ class Single_Entry {
 							<td><b><?php esc_html_e( 'Form Name:', 'sureforms' ); ?></b></td>
 							<td><?php echo esc_attr( $form_name ); ?></td>
 						</tr>
-						<tr style="margin-bottom: 10px;">
-							<td><b><?php esc_html_e( 'User IP:', 'sureforms' ); ?></b></td>
-							<td><a target="_blank" rel="noopener" href="https://ipinfo.io/"><?php echo esc_attr( $this->entry['submission_info']['user_ip'] ); ?></a></td>
-						</tr>
-						<tr style="margin-bottom: 10px;">
-							<td><b><?php esc_html_e( 'URL:', 'sureforms' ); ?></b></td>
-							<td><a target="_blank" rel="noopener" href="https://ipinfo.io/"></a></td>
-						</tr>
+						<?php if ( ! empty( $this->entry['submission_info']['user_ip'] ) ) : ?>
+							<tr style="margin-bottom: 10px;">
+								<td><b><?php esc_html_e( 'User IP:', 'sureforms' ); ?></b></td>
+								<td><a target="_blank" rel="noopener" href="https://ipinfo.io/"><?php echo esc_attr( $this->entry['submission_info']['user_ip'] ); ?></a></td>
+							</tr>
+						<?php endif; ?>
 						<tr style="margin-bottom: 10px;">
 							<td><b><?php esc_html_e( 'Browser:', 'sureforms' ); ?></b></td>
 							<td><?php echo esc_attr( $this->entry['submission_info']['browser_name'] ); ?></td>
@@ -176,7 +146,6 @@ class Single_Entry {
 								<span style="text-transform: capitalize;">
 									<?php echo esc_attr( $entry_status ); ?>
 								</span>
-								<span> | <a href="#" id="erfm-entry-mark-unread" style="font-size: 12px;"><?php esc_html_e( 'Mark as Unread', 'sureforms' ); ?></a></span>
 							</td>
 						</tr>
 						<tr style="margin-bottom: 10px;">
