@@ -139,34 +139,45 @@ class Entries_List_Table extends \WP_List_Table {
 	/**
 	 * Get the entries data.
 	 *
-	 * @param int    $per_page Number of entries to fetch per page.
-	 * @param int    $current_page Current page number.
-	 * @param string $view The view to fetch the entries count from.
+	 * @param int      $per_page Number of entries to fetch per page.
+	 * @param int      $current_page Current page number.
+	 * @param string   $view The view to fetch the entries count from.
+	 * @param int|null $form_id The ID of the form to fetch entries for.
 	 *
 	 * @since x.x.x
 	 * @return array
 	 */
-	private function table_data( $per_page, $current_page, $view ) {
+	private function table_data( $per_page, $current_page, $view, $form_id = null ) {
 		$offset = ( $current_page - 1 ) * $per_page;
 		// If view is all, then we need to fetch all entries except the trash.
-		$compare             = 'all' === $view ? '!=' : '=';
-		$value               = 'all' === $view ? 'trash' : $view;
+		$compare = 'all' === $view ? '!=' : '=';
+		$value   = 'all' === $view ? 'trash' : $view;
+		// Default where clause for all views.
+		$where_condition = [
+			[
+				'key'     => 'status',
+				'compare' => $compare,
+				'value'   => $value,
+			],
+		];
+		// If form ID is set, then we need to add the form ID condition to the where clause to fetch entries only for that form.
+		if ( $form_id ) {
+			$where_condition[] = [
+				[
+					'key'     => 'form_id',
+					'compare' => '=',
+					'value'   => $form_id,
+				],
+			];
+		}
 		$this->data          = Entries::get_all(
 			[
 				'limit'  => $per_page,
 				'offset' => $offset,
-				'where'  => [
-					[
-						[
-							'key'     => 'status',
-							'compare' => $compare,
-							'value'   => $value,
-						],
-					],
-				],
+				'where'  => $where_condition,
 			]
 		);
-		$this->entries_count = Entries::get_total_entries_by_status( $view );
+		$this->entries_count = Entries::get_total_entries_by_status( $view, $form_id );
 		return $this->data;
 	}
 
@@ -187,8 +198,9 @@ class Entries_List_Table extends \WP_List_Table {
 		$per_page     = 10;
 		$current_page = $this->get_pagenum();
 		$view         = isset( $_GET['view'] ) ? sanitize_text_field( wp_unslash( $_GET['view'] ) ) : 'all';
+		$form_id      = isset( $_GET['form_filter'] ) ? sanitize_text_field( wp_unslash( $_GET['form_filter'] ) ) : null;
 
-		$data = $this->table_data( $per_page, $current_page, $view );
+		$data = $this->table_data( $per_page, $current_page, $view, $form_id );
 		$data = $this->filter_entries_data( $data );
 
 		usort( $data, [ $this, 'sort_data' ] );
