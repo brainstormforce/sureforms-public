@@ -136,6 +136,12 @@ class Single_Entry {
 	 * @since x.x.x
 	 */
 	private function render_submission_info( $form_name, $entry_status, $submitted_on ) {
+		$current_url        = isset( $_SERVER['REQUEST_URI'] ) ? esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : admin_url( 'admin.php?page=sureforms_entries' ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash
+		$mark_as_unread_url = add_query_arg( 'action', 'unread', $current_url );
+		$user_id            = Helper::get_integer_value( $this->entry['user_id'] );
+		$user_info          = 0 !== $user_id ? get_userdata( $user_id ) : null;
+		$user_name          = $user_info ? $user_info->display_name : '';
+		$user_profile_url   = $user_info ? get_author_posts_url( $user_id ) : '';
 		?>
 		<div id="sureform_form_name_meta" class="postbox ">
 			<div class="postbox-header">
@@ -145,22 +151,18 @@ class Single_Entry {
 			<div class="inside">
 				<table style="border-collapse: separate; border-spacing: 5px 5px;">
 					<tbody>
-						<!-- TODO :: Add Type and User info and data for URL. -->
+						<!-- TODO: Add Type and User info. -->
 						<tr style="margin-bottom: 10px;">
 							<td><b><?php esc_html_e( 'Entry:', 'sureforms' ); ?></b></td>
 							<td>#<?php echo esc_attr( $this->entry_id ); ?></td>
 						</tr>
 						<tr style="margin-bottom: 10px;">
 							<td><b><?php esc_html_e( 'Form Name:', 'sureforms' ); ?></b></td>
-							<td><?php echo esc_attr( $form_name ); ?></td>
+							<td><a target="_blank" rel="noopener" href="<?php the_permalink( $this->entry['form_id'] ); ?>"><?php echo esc_attr( $form_name ); ?></a></td>
 						</tr>
 						<tr style="margin-bottom: 10px;">
 							<td><b><?php esc_html_e( 'User IP:', 'sureforms' ); ?></b></td>
 							<td><a target="_blank" rel="noopener" href="https://ipinfo.io/"><?php echo esc_attr( $this->entry['submission_info']['user_ip'] ); ?></a></td>
-						</tr>
-						<tr style="margin-bottom: 10px;">
-							<td><b><?php esc_html_e( 'URL:', 'sureforms' ); ?></b></td>
-							<td><a target="_blank" rel="noopener" href="https://ipinfo.io/"></a></td>
 						</tr>
 						<tr style="margin-bottom: 10px;">
 							<td><b><?php esc_html_e( 'Browser:', 'sureforms' ); ?></b></td>
@@ -170,13 +172,21 @@ class Single_Entry {
 							<td><b><?php esc_html_e( 'Device:', 'sureforms' ); ?></b></td>
 							<td><?php echo esc_attr( $this->entry['submission_info']['device_name'] ); ?></td>
 						</tr>
+						<?php if ( 0 !== $user_id ) : ?>
+							<tr style="margin-bottom: 10px;">
+								<td><b><?php esc_html_e( 'User:', 'sureforms' ); ?></b></td>
+								<td><a target="_blank" rel="noopener" href="<?php echo esc_url( $user_profile_url ); ?>"><?php echo esc_attr( $user_name ); ?></a></td>
+							</tr>
+						<?php endif; ?>
 						<tr style="margin-bottom: 10px;">
 							<td><b><?php esc_html_e( 'Status:', 'sureforms' ); ?></b></td>
 							<td>
 								<span style="text-transform: capitalize;">
 									<?php echo esc_attr( $entry_status ); ?>
 								</span>
-								<span> | <a href="#" id="erfm-entry-mark-unread" style="font-size: 12px;"><?php esc_html_e( 'Mark as Unread', 'sureforms' ); ?></a></span>
+								<?php if ( 'read' === $entry_status ) : ?>
+									<span> | <a href="<?php echo esc_url( $mark_as_unread_url ); ?>" id="srfm-entry-mark-unread" style="font-size: 12px;"><?php esc_html_e( 'Mark as Unread', 'sureforms' ); ?></a></span>
+								<?php endif; ?>
 							</td>
 						</tr>
 						<tr style="margin-bottom: 10px;">

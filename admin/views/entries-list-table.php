@@ -43,6 +43,16 @@ class Entries_List_Table extends \WP_List_Table {
 	public $entries_count;
 
 	/**
+	 * Constructor.
+	 *
+	 * @since x.x.x
+	 */
+	public function __construct() {
+		parent::__construct();
+		add_action( 'admin_init', [ $this, 'remove_query_args' ] );
+	}
+
+	/**
 	 * Remove unnecessary query arguments from the URL.
 	 * WIP: This is currently work in progress and will be improved later.
 	 *
@@ -50,9 +60,6 @@ class Entries_List_Table extends \WP_List_Table {
 	 * @return void
 	 */
 	public static function remove_query_args() {
-		if ( isset( $_GET['srfm_entries_nonce'] ) && ! wp_verify_nonce( sanitize_key( $_GET['srfm_entries_nonce'] ), 'srfm_entries_action' ) ) {
-			return;
-		}
 		$remove_args = [
 			'action',
 			'action2',
@@ -62,7 +69,6 @@ class Entries_List_Table extends \WP_List_Table {
 			'filter_action',
 			'srfm_entries_nonce',
 			'_wp_http_referer',
-			'paged',
 		];
 
 		if ( isset( $_SERVER['REQUEST_URI'] ) ) {
@@ -264,6 +270,7 @@ class Entries_List_Table extends \WP_List_Table {
 				[
 					'entry_id' => esc_attr( $item['ID'] ),
 					'view'     => 'details',
+					'action'   => 'read',
 				],
 				admin_url( 'admin.php?page=sureforms_entries' )
 			)
@@ -344,6 +351,7 @@ class Entries_List_Table extends \WP_List_Table {
 				[
 					'entry_id' => esc_attr( $item['ID'] ),
 					'view'     => 'details',
+					'action'   => 'read',
 				],
 				admin_url( 'admin.php?page=sureforms_entries' )
 			)
@@ -864,11 +872,12 @@ class Entries_List_Table extends \WP_List_Table {
 	 *
 	 * @param int    $entry_id The ID of the entry to update.
 	 * @param string $action The action to perform.
+	 * @param string $view The view to handle redirection.
 	 *
 	 * @since x.x.x
 	 * @return void
 	 */
-	public static function handle_entry_status( $entry_id, $action ) {
+	public static function handle_entry_status( $entry_id, $action, $view = '' ) {
 		switch ( $action ) {
 			case 'restore':
 				Entries::update( $entry_id, [ 'status' => 'unread' ] );
@@ -883,6 +892,12 @@ class Entries_List_Table extends \WP_List_Table {
 				break;
 			default:
 				break;
+		}
+		// Redirect to appropriate page after action is performed.
+		if ( 'details' === $view ) {
+			wp_safe_redirect( admin_url( 'admin.php?page=sureforms_entries&view=details&entry_id=' . $entry_id ) );
+		} else {
+			wp_safe_redirect( admin_url( 'admin.php?page=sureforms_entries' ) );
 		}
 	}
 }
