@@ -77,6 +77,10 @@ class Entries extends Base {
 				'type'    => 'string',
 				'default' => 'unread',
 			],
+			// Entry's form type eg quiz, standard etc. Default empty or null means standard.
+			'type'            => [
+				'type' => 'string',
+			],
 			// Submitted form data by user.
 			'form_data'       => [
 				'type'    => 'array',
@@ -122,6 +126,7 @@ class Entries extends Base {
 			'notes LONGTEXT',
 			'submission_info LONGTEXT',
 			'status VARCHAR(10)',
+			'type VARCHAR(20)', // Note: @since x.x.x -- We have added type column, it will have entry's form type eg quiz, standard etc.
 			'extras LONGTEXT',
 			'created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP',
 			'updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP',
@@ -136,7 +141,8 @@ class Entries extends Base {
 	 */
 	public function get_new_columns_definition() {
 		return [
-			// Note: @since x.x.x -- We have added new columns `extras` and `user_id`.
+			// Note: @since x.x.x -- We have added new columns `type`, `extras` and `user_id`.
+			'type VARCHAR(20) AFTER status',
 			'extras LONGTEXT AFTER status',
 			'user_id BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 AFTER form_id',
 			'INDEX idx_user_id (user_id)',
@@ -332,11 +338,12 @@ class Entries extends Base {
 	/**
 	 * Get the total count of entries by status.
 	 *
-	 * @param string $status The status of the entries to count.
+	 * @param string   $status The status of the entries to count.
+	 * @param int|null $form_id The ID of the form to count entries for.
 	 * @since x.x.x
 	 * @return int The total number of entries with the specified status.
 	 */
-	public static function get_total_entries_by_status( $status = 'all' ) {
+	public static function get_total_entries_by_status( $status = 'all', $form_id = null ) {
 		switch ( $status ) {
 			case 'all':
 				$where_clause = [
@@ -348,6 +355,15 @@ class Entries extends Base {
 						],
 					],
 				];
+				if ( ! is_null( $form_id ) ) {
+					$where_clause[] = [
+						[
+							'key'     => 'form_id',
+							'compare' => '=',
+							'value'   => $form_id,
+						],
+					];
+				}
 				return self::get_instance()->get_total_count( $where_clause );
 			case 'unread':
 			case 'trash':
