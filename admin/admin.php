@@ -50,6 +50,7 @@ class Admin {
 
 		// Handle entry actions.
 		add_action( 'admin_init', [ $this, 'handle_entry_actions' ] );
+		add_action( 'admin_notices', [ Entries_List_Table::class, 'display_entry_action_notice' ] );
 	}
 
 	/**

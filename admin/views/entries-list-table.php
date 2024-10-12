@@ -845,8 +845,17 @@ class Entries_List_Table extends \WP_List_Table {
 					self::handle_entry_status( Helper::get_integer_value( $entry_id ), $action );
 				}
 
+				$redirect_url = add_query_arg(
+					[
+						'page'        => 'sureforms_entries',
+						'bulk_action' => $action,
+						'bulk_result' => 'success',
+						'count'       => count( $entry_ids ),
+					],
+					admin_url( 'admin.php' )
+				);
 				// Redirect to prevent form resubmission.
-				wp_safe_redirect( admin_url( 'admin.php?page=sureforms_entries' ) );
+				wp_safe_redirect( $redirect_url );
 				exit;
 			}
 		}
@@ -905,6 +914,48 @@ class Entries_List_Table extends \WP_List_Table {
 				break;
 			default:
 				break;
+		}
+	}
+
+	/**
+	 * Display admin notice for bulk actions.
+	 *
+	 * @since x.x.x
+	 * @return void
+	 */
+	public static function display_bulk_action_notice() {
+		if ( isset( $_GET['srfm_entries_nonce'] ) && ! wp_verify_nonce( sanitize_key( $_GET['srfm_entries_nonce'] ), 'srfm_entries_action' ) ) {
+			return;
+		}
+		if ( isset( $_GET['bulk_result'] ) && 'success' === sanitize_key( $_GET['bulk_result'] ) ) {
+			$action = isset( $_GET['bulk_action'] ) ? sanitize_key( wp_unslash( $_GET['bulk_action'] ) ) : '';
+			$count  = isset( $_GET['count'] ) ? absint( $_GET['count'] ) : 0;
+			switch ( $action ) {
+				case 'read':
+				case 'unread':
+					// translators: %1$d refers to the number of entries, %2$s refers to the status (read or unread).
+					$message = sprintf( _n( '%1$d entry was successfully marked as %2$s.', '%1$d entries were successfully marked as %2$s.', $count, 'sureforms' ), $count, $action );
+					break;
+				case 'trash':
+					// translators: %1$d refers to the number of entries, %2$s refers to the action (trash).
+					$message = sprintf( _n( '%1$d entry was successfully moved to trash.', '%1$d entries were successfully moved to trash.', $count, 'sureforms' ), $count );
+					break;
+				case 'restore':
+					// translators: %1$d refers to the number of entries, %2$s refers to the action (restore).
+					$message = sprintf( _n( '%1$d entry was successfully restored.', '%1$d entries were successfully restored.', $count, 'sureforms' ), $count );
+					break;
+				case 'delete':
+					// translators: %1$d refers to the number of entries, %2$s refers to the action (delete).
+					$message = sprintf( _n( '%1$d entry was permanently deleted.', '%1$d entries were permanently deleted.', $count, 'sureforms' ), $count );
+					break;
+				case 'export':
+					// translators: %1$d refers to the number of entries, %2$s refers to the action (export).
+					$message = sprintf( _n( '%1$d entry was successfully exported.', '%1$d entries were successfully exported.', $count, 'sureforms' ), $count );
+					break;
+				default:
+					break;
+			}
+			echo '<div class="notice notice-success is-dismissible"><p>' . esc_html( $message ) . '</p></div>';
 		}
 	}
 }
