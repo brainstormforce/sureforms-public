@@ -155,9 +155,11 @@ class Entries_List_Table extends \WP_List_Table {
 		// Default where clause for all views.
 		$where_condition = [
 			[
-				'key'     => 'status',
-				'compare' => $compare,
-				'value'   => $value,
+				[
+					'key'     => 'status',
+					'compare' => $compare,
+					'value'   => $value,
+				],
 			],
 		];
 		// If form ID is set, then we need to add the form ID condition to the where clause to fetch entries only for that form.
