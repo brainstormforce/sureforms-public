@@ -343,7 +343,7 @@ class Entries extends Base {
 	 * @since x.x.x
 	 * @return int The total number of entries with the specified status.
 	 */
-	public static function get_total_entries_by_status( $status = 'all', $form_id = null ) {
+	public static function get_total_entries_by_status( $status = 'all', $form_id = 0 ) {
 		switch ( $status ) {
 			case 'all':
 				$where_clause = [
@@ -355,7 +355,7 @@ class Entries extends Base {
 						],
 					],
 				];
-				if ( ! is_null( $form_id ) ) {
+				if ( 0 < $form_id ) {
 					$where_clause[] = [
 						[
 							'key'     => 'form_id',

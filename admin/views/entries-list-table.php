@@ -147,7 +147,7 @@ class Entries_List_Table extends \WP_List_Table {
 	 * @since x.x.x
 	 * @return array
 	 */
-	private function table_data( $per_page, $current_page, $view, $form_id = null ) {
+	private function table_data( $per_page, $current_page, $view, $form_id = 0 ) {
 		$offset = ( $current_page - 1 ) * $per_page;
 		// If view is all, then we need to fetch all entries except the trash.
 		$compare = 'all' === $view ? '!=' : '=';
@@ -161,7 +161,7 @@ class Entries_List_Table extends \WP_List_Table {
 			],
 		];
 		// If form ID is set, then we need to add the form ID condition to the where clause to fetch entries only for that form.
-		if ( $form_id ) {
+		if ( 0 < $form_id ) {
 			$where_condition[] = [
 				[
 					'key'     => 'form_id',
@@ -198,7 +198,7 @@ class Entries_List_Table extends \WP_List_Table {
 		$per_page     = 10;
 		$current_page = $this->get_pagenum();
 		$view         = isset( $_GET['view'] ) ? sanitize_text_field( wp_unslash( $_GET['view'] ) ) : 'all';
-		$form_id      = isset( $_GET['form_filter'] ) ? sanitize_text_field( wp_unslash( $_GET['form_filter'] ) ) : null;
+		$form_id      = isset( $_GET['form_filter'] ) ? Helper::get_integer_value( sanitize_text_field( wp_unslash( $_GET['form_filter'] ) ) ) : 0;
 
 		$data = $this->table_data( $per_page, $current_page, $view, $form_id );
 		$data = $this->filter_entries_data( $data );
