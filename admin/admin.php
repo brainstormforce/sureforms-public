@@ -222,32 +222,29 @@ class Admin {
 	 * @return void
 	 */
 	public function render_entries() {
-		if ( isset( $_GET['_wpnonce'] ) && ! wp_verify_nonce( sanitize_text_field( $_GET['_wpnonce'] ), 'srfm_entries_action' ) ) {
-			wp_die( esc_html__( 'Nonce verification failed.', 'sureforms' ) );
-		}
-		if ( isset( $_GET['entry_id'] ) && is_numeric( $_GET['entry_id'] ) && isset( $_GET['view'] ) && 'details' === $_GET['view'] ) {
-			$entry_id = isset( $_GET['entry_id'] ) ? sanitize_text_field( wp_unslash( $_GET['entry_id'] ) ) : '';
-			// Mark the entry as read when viewed.
-			Entries::update( intval( $entry_id ), [ 'status' => 'read' ] );
+		// Render single entry view.
+		if ( isset( $_GET['entry_id'] ) && is_numeric( $_GET['entry_id'] ) && isset( $_GET['view'] ) && 'details' === $_GET['view'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended - No database operations are performed in this function, it is used to display the single entry view.
 			$single_entry_view = new Single_Entry();
 			$single_entry_view->render();
-		} else {
-			$entries_table = new Entries_List_Table();
-			$entries_table->prepare_items();
-			echo '<div class="wrap"><h1 class="wp-heading-inline">Entries</h1>';
-			if ( 0 >= $entries_table->entries_count ) {
-				$instance = Post_Types::get_instance();
-				$instance->sureforms_render_blank_state( SRFM_ENTRIES_POST_TYPE );
-				$instance->get_blank_state_styles();
-				return;
-			}
-			echo '<form method="get">';
-			echo '<input type="hidden" name="page" value="sureforms_entries">';
-			$entries_table->search_box_markup( esc_html__( 'Search', 'sureforms' ), 'srfm-entries' );
-			$entries_table->display();
-			echo '</form>';
-			echo '</div>';
+			return;
 		}
+
+		// Render all entries view.
+		$entries_table = new Entries_List_Table();
+		$entries_table->prepare_items();
+		echo '<div class="wrap"><h1 class="wp-heading-inline">Entries</h1>';
+		if ( 0 >= $entries_table->entries_count ) {
+			$instance = Post_Types::get_instance();
+			$instance->sureforms_render_blank_state( SRFM_ENTRIES_POST_TYPE );
+			$instance->get_blank_state_styles();
+			return;
+		}
+		echo '<form method="get">';
+		echo '<input type="hidden" name="page" value="sureforms_entries">';
+		$entries_table->search_box_markup( esc_html__( 'Search', 'sureforms' ), 'srfm-entries' );
+		$entries_table->display();
+		echo '</form>';
+		echo '</div>';
 	}
 
 	/**
