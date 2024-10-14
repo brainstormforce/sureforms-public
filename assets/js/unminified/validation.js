@@ -681,11 +681,11 @@ function addBlurListener( containerClass, blockClass ) {
 			}
 
 			// Function to validate dropdown blur
-			// on tomselect blur event.
+			// on tom-select blur event.
 			if ( containerClass === 'srfm-dropdown-block' ) {
-				let blockName = areaField.getAttribute( 'name' );
+				const blockName = areaField.getAttribute( 'name' );
 				setTimeout( () => {
-					window?.srfm?.[ blockName ].on( 'blur', function ( e ) {
+					window?.srfm?.[ blockName ].on( 'blur', function () {
 						fieldValidationInit( areaField, blockClass );
 					} );
 				}, 500 );
