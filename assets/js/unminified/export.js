@@ -126,16 +126,14 @@ function importForm() {
 
 function appendImportBtn() {
 	// checks whether current page is initial UI where no forms exists.
-	let attachmentElement = document.querySelector(
-		'.sureforms-add-new-form-container'
+	const attachmentElement = document.querySelector(
+		'#posts-filter .search-box'
 	);
 
-	// Choose selector for form listing page.
 	if ( ! attachmentElement ) {
-		attachmentElement = document.querySelector(
-			'#posts-filter .search-box'
-		);
+		return;
 	}
+
 	const newElement = document.createElement( 'button' );
 
 	newElement.className = 'button button-secondary srfm-import-btn';

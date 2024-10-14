@@ -30,7 +30,6 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 		defaultValue,
 		errorMsg,
 		rows,
-		cols,
 		formId,
 		preview,
 		className,
@@ -132,20 +131,6 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 								} }
 								onChange={ ( value ) => {
 									setAttributes( { rows: Number( value ) } );
-								} }
-							/>
-							<Range
-								label={ __( 'Columns', 'sureforms' ) }
-								displayUnit={ false }
-								value={ cols }
-								min={ 1 }
-								max={ 100 }
-								data={ {
-									value: cols,
-									label: 'cols',
-								} }
-								onChange={ ( value ) => {
-									setAttributes( { cols: Number( value ) } );
 								} }
 							/>
 							<SRFMTextControl
