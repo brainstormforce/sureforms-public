@@ -99,9 +99,9 @@ const Compliance = ( { complianceData } ) => {
 								{ complianceData[ 0 ]
 									?.auto_delete_entries && (
 									<div
-									style={{
-										marginLeft: '50px',
-									}}
+										style={ {
+											marginLeft: '50px',
+										} }
 									>
 										<label className="components-flex-item components-flex-block components-toggle-control__label">
 											{ __(
