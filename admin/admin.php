@@ -222,7 +222,7 @@ class Admin {
 	 * @return void
 	 */
 	public function render_entries() {
-		if ( isset( $_GET['srfm_entries_nonce'] ) && ! wp_verify_nonce( sanitize_text_field( $_GET['srfm_entries_nonce'] ), 'srfm_entries_action' ) ) {
+		if ( isset( $_GET['_wpnonce'] ) && ! wp_verify_nonce( sanitize_text_field( $_GET['_wpnonce'] ), 'srfm_entries_action' ) ) {
 			wp_die( esc_html__( 'Nonce verification failed.', 'sureforms' ) );
 		}
 		if ( isset( $_GET['entry_id'] ) && is_numeric( $_GET['entry_id'] ) && isset( $_GET['view'] ) && 'details' === $_GET['view'] ) {
@@ -644,16 +644,18 @@ class Admin {
 	 * @return void
 	 */
 	public function handle_entry_actions() {
-		if ( isset( $_GET['srfm_entries_nonce'] ) && ! wp_verify_nonce( sanitize_text_field( $_GET['srfm_entries_nonce'] ), 'srfm_entries_action' ) ) {
-			wp_die( esc_html__( 'Nonce verification failed.', 'sureforms' ) );
+		if ( isset( $_GET['entry'] ) && isset( $_GET['action'] ) ) {
+			Entries_List_Table::process_bulk_actions();
+			return;
 		}
-		Entries_List_Table::remove_query_args();
-		Entries_List_Table::process_bulk_actions();
 		if ( ! isset( $_GET['page'] ) || 'sureforms_entries' !== $_GET['page'] ) {
 			return;
 		}
 		if ( ! isset( $_GET['entry_id'] ) || ! isset( $_GET['action'] ) ) {
 			return;
+		}
+		if ( ! isset( $_GET['_wpnonce'] ) || ! wp_verify_nonce( sanitize_text_field( $_GET['_wpnonce'] ), 'srfm_entries_action' ) ) {
+			wp_die( esc_html__( 'Nonce verification failed.', 'sureforms' ) );
 		}
 		$action   = isset( $_GET['action'] ) ? sanitize_text_field( $_GET['action'] ) : '';
 		$entry_id = intval( $_GET['entry_id'] );

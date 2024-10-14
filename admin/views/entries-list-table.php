@@ -50,7 +50,7 @@ class Entries_List_Table extends \WP_List_Table {
 	 * @return void
 	 */
 	public static function remove_query_args() {
-		if ( isset( $_GET['srfm_entries_nonce'] ) && ! wp_verify_nonce( sanitize_text_field( $_GET['srfm_entries_nonce'] ), 'srfm_entries_action' ) ) {
+		if ( isset( $_GET['_wpnonce'] ) && ! wp_verify_nonce( sanitize_text_field( $_GET['_wpnonce'] ), 'srfm_entries_action' ) ) {
 			return;
 		}
 		$remove_args = [
@@ -58,7 +58,7 @@ class Entries_List_Table extends \WP_List_Table {
 			'action2',
 			'search_filter',
 			'filter_action',
-			'srfm_entries_nonce',
+			'_wpnonce',
 			'_wp_http_referer',
 			'paged',
 		];
@@ -190,7 +190,7 @@ class Entries_List_Table extends \WP_List_Table {
 	 * @return void
 	 */
 	public function prepare_items() {
-		if ( isset( $_GET['srfm_entries_nonce'] ) && ! wp_verify_nonce( sanitize_text_field( $_GET['srfm_entries_nonce'] ), 'srfm_entries_action' ) ) {
+		if ( isset( $_GET['_wpnonce'] ) && ! wp_verify_nonce( sanitize_text_field( $_GET['_wpnonce'] ), 'srfm_entries_action' ) ) {
 			return;
 		}
 		$columns  = $this->get_columns();
@@ -281,11 +281,11 @@ class Entries_List_Table extends \WP_List_Table {
 		);
 
 		return sprintf(
-			'<strong><a class="row-title" href="%1$s">%2$s%3$s</a></strong>' . $this->row_actions( $this->package_row_actions( $item ) ),
+			'<strong><a class="row-title" href="%1$s">%2$s%3$s</a></strong>',
 			$view_url,
 			esc_html__( 'Entry #', 'sureforms' ),
 			$entry_id
-		);
+		) . $this->row_actions( $this->package_row_actions( $item ) );
 	}
 
 	/**
@@ -312,12 +312,23 @@ class Entries_List_Table extends \WP_List_Table {
 	 * @return string
 	 */
 	protected function column_status( $item ) {
-		$status = esc_attr( $item['status'] );
+		$translated_status = '';
+		switch ( $item['status'] ) {
+			case 'read':
+				$translated_status = esc_html__( 'Read', 'sureforms' );
+				break;
+			case 'unread':
+				$translated_status = esc_html__( 'Unread', 'sureforms' );
+				break;
+			case 'trash':
+				$translated_status = esc_html__( 'Trash', 'sureforms' );
+				break;
+		}
 
 		return sprintf(
-			'<span class="%1$s">%2$s</span>',
-			'read' === $status ? 'status-read' : 'status-unread',
-			$status
+			'<span class="status-%1$s">%2$s</span>',
+			esc_attr( $item['status'] ),
+			$translated_status
 		);
 	}
 
@@ -375,11 +386,15 @@ class Entries_List_Table extends \WP_List_Table {
 			)
 		);
 		$trash_url   = esc_url(
-			add_query_arg(
-				[
-					'entry_id' => esc_attr( $item['ID'] ),
-					'action'   => 'trash',
-				]
+			wp_nonce_url(
+				add_query_arg(
+					[
+						'entry_id' => esc_attr( $item['ID'] ),
+						'action'   => 'trash',
+					],
+					admin_url( 'admin.php?page=sureforms_entries' )
+				),
+				'srfm_entries_action'
 			)
 		);
 		$row_actions = [
@@ -394,22 +409,28 @@ class Entries_List_Table extends \WP_List_Table {
 
 			// Add Restore and Delete actions.
 			$restore_url = esc_url(
-				add_query_arg(
-					[
-						'entry_id' => esc_attr( $item['ID'] ),
-						'action'   => 'restore',
-					],
-					admin_url( 'admin.php?page=sureforms_entries' )
+				wp_nonce_url(
+					add_query_arg(
+						[
+							'entry_id' => esc_attr( $item['ID'] ),
+							'action'   => 'restore',
+						],
+						admin_url( 'admin.php?page=sureforms_entries' )
+					),
+					'srfm_entries_action'
 				)
 			);
 
 			$delete_url             = esc_url(
-				add_query_arg(
-					[
-						'entry_id' => esc_attr( $item['ID'] ),
-						'action'   => 'delete',
-					],
-					admin_url( 'admin.php?page=sureforms_entries' )
+				wp_nonce_url(
+					add_query_arg(
+						[
+							'entry_id' => esc_attr( $item['ID'] ),
+							'action'   => 'delete',
+						],
+						admin_url( 'admin.php?page=sureforms_entries' )
+					),
+					'srfm_entries_action'
 				)
 			);
 			$row_actions['restore'] = sprintf( '<a href="%1$s">%2$s</a>', esc_url( $restore_url ), esc_html__( 'Restore', 'sureforms' ) );
@@ -447,7 +468,7 @@ class Entries_List_Table extends \WP_List_Table {
 	 */
 	protected function display_tablenav( $which ) {
 		if ( 'top' === $which ) {
-			wp_nonce_field( 'srfm_entries_action', 'srfm_entries_nonce' );
+			wp_nonce_field( 'srfm_entries_action' );
 		}
 		?>
 		<div class="tablenav <?php echo esc_attr( $which ); ?>">
@@ -471,7 +492,7 @@ class Entries_List_Table extends \WP_List_Table {
 	 * @return void
 	 */
 	protected function display_form_filter() {
-		if ( isset( $_GET['srfm_entries_nonce'] ) && ! wp_verify_nonce( sanitize_text_field( $_GET['srfm_entries_nonce'] ), 'srfm_entries_action' ) ) {
+		if ( isset( $_GET['_wpnonce'] ) && ! wp_verify_nonce( sanitize_text_field( $_GET['_wpnonce'] ), 'srfm_entries_action' ) ) {
 			return;
 		}
 		$forms = $this->get_available_forms();
@@ -493,7 +514,7 @@ class Entries_List_Table extends \WP_List_Table {
 	 * @return void
 	 */
 	protected function display_month_filter() {
-		if ( isset( $_GET['srfm_entries_nonce'] ) && ! wp_verify_nonce( sanitize_text_field( $_GET['srfm_entries_nonce'] ), 'srfm_entries_action' ) ) {
+		if ( isset( $_GET['_wpnonce'] ) && ! wp_verify_nonce( sanitize_text_field( $_GET['_wpnonce'] ), 'srfm_entries_action' ) ) {
 			return;
 		}
 		$months = $this->get_available_months();
@@ -543,7 +564,7 @@ class Entries_List_Table extends \WP_List_Table {
 	 * @return mixed
 	 */
 	protected function sort_data( $data1, $data2 ) {
-		if ( isset( $_GET['srfm_entries_nonce'] ) && ! wp_verify_nonce( sanitize_text_field( $_GET['srfm_entries_nonce'] ), 'srfm_entries_action' ) ) {
+		if ( isset( $_GET['_wpnonce'] ) && ! wp_verify_nonce( sanitize_text_field( $_GET['_wpnonce'] ), 'srfm_entries_action' ) ) {
 			return;
 		}
 		$orderby = 'ID';
@@ -696,7 +717,7 @@ class Entries_List_Table extends \WP_List_Table {
 	 * @return array<mixed>
 	 */
 	private function filter_entries_data( $data ) {
-		if ( isset( $_GET['srfm_entries_nonce'] ) && ! wp_verify_nonce( sanitize_text_field( $_GET['srfm_entries_nonce'] ), 'srfm_entries_action' ) ) {
+		if ( isset( $_GET['_wpnonce'] ) && ! wp_verify_nonce( sanitize_text_field( $_GET['_wpnonce'] ), 'srfm_entries_action' ) ) {
 			return;
 		}
 		// Handle the search according to entry ID.
@@ -777,7 +798,7 @@ class Entries_List_Table extends \WP_List_Table {
 	 * @return array<string,string>
 	 */
 	protected function get_views() {
-		if ( isset( $_GET['srfm_entries_nonce'] ) && ! wp_verify_nonce( sanitize_text_field( $_GET['srfm_entries_nonce'] ), 'srfm_entries_action' ) ) {
+		if ( isset( $_GET['_wpnonce'] ) && ! wp_verify_nonce( sanitize_text_field( $_GET['_wpnonce'] ), 'srfm_entries_action' ) ) {
 			return;
 		}
 		$status_count = [
@@ -831,7 +852,7 @@ class Entries_List_Table extends \WP_List_Table {
 	 * @return void
 	 */
 	public static function process_bulk_actions() {
-		if ( isset( $_GET['srfm_entries_nonce'] ) && ! wp_verify_nonce( sanitize_text_field( $_GET['srfm_entries_nonce'] ), 'srfm_entries_action' ) ) {
+		if ( ! isset( $_GET['_wpnonce'] ) || ! wp_verify_nonce( sanitize_text_field( $_GET['_wpnonce'] ), 'srfm_entries_action' ) ) {
 			return;
 		}
 		// Check if the form is submitted with bulk action using GET.
@@ -849,17 +870,9 @@ class Entries_List_Table extends \WP_List_Table {
 					self::handle_entry_status( Helper::get_integer_value( $entry_id ), $action );
 				}
 
-				$redirect_url = add_query_arg(
-					[
-						'page'        => 'sureforms_entries',
-						'bulk_action' => $action,
-						'bulk_result' => 'success',
-						'count'       => count( $entry_ids ),
-					],
-					admin_url( 'admin.php' )
-				);
+				set_transient( 'srfm_bulk_action_message', [ 'action' => $action, 'count' => count( $entry_ids ) ], 10 ); // Transient expires in 10 seconds.
 				// Redirect to prevent form resubmission.
-				wp_safe_redirect( $redirect_url );
+				wp_safe_redirect( admin_url( 'admin.php?page=sureforms_entries' ) );
 				exit;
 			}
 		}
@@ -928,38 +941,42 @@ class Entries_List_Table extends \WP_List_Table {
 	 * @return void
 	 */
 	public static function display_bulk_action_notice() {
-		if ( isset( $_GET['srfm_entries_nonce'] ) && ! wp_verify_nonce( sanitize_text_field( $_GET['srfm_entries_nonce'] ), 'srfm_entries_action' ) ) {
+		$bulk_action_message = get_transient( 'srfm_bulk_action_message' );
+		if ( ! $bulk_action_message ) {
 			return;
 		}
-		if ( isset( $_GET['bulk_result'] ) && 'success' === sanitize_text_field( $_GET['bulk_result'] ) ) {
-			$action = isset( $_GET['bulk_action'] ) ? sanitize_text_field( wp_unslash( $_GET['bulk_action'] ) ) : '';
-			$count  = isset( $_GET['count'] ) ? absint( $_GET['count'] ) : 0;
-			switch ( $action ) {
-				case 'read':
-				case 'unread':
-					// translators: %1$d refers to the number of entries, %2$s refers to the status (read or unread).
-					$message = sprintf( _n( '%1$d entry was successfully marked as %2$s.', '%1$d entries were successfully marked as %2$s.', $count, 'sureforms' ), $count, $action );
-					break;
-				case 'trash':
-					// translators: %1$d refers to the number of entries, %2$s refers to the action (trash).
-					$message = sprintf( _n( '%1$d entry was successfully moved to trash.', '%1$d entries were successfully moved to trash.', $count, 'sureforms' ), $count );
-					break;
-				case 'restore':
-					// translators: %1$d refers to the number of entries, %2$s refers to the action (restore).
-					$message = sprintf( _n( '%1$d entry was successfully restored.', '%1$d entries were successfully restored.', $count, 'sureforms' ), $count );
-					break;
-				case 'delete':
-					// translators: %1$d refers to the number of entries, %2$s refers to the action (delete).
-					$message = sprintf( _n( '%1$d entry was permanently deleted.', '%1$d entries were permanently deleted.', $count, 'sureforms' ), $count );
-					break;
-				case 'export':
-					// translators: %1$d refers to the number of entries, %2$s refers to the action (export).
-					$message = sprintf( _n( '%1$d entry was successfully exported.', '%1$d entries were successfully exported.', $count, 'sureforms' ), $count );
-					break;
-				default:
-					break;
-			}
-			echo '<div class="notice notice-success is-dismissible"><p>' . esc_html( $message ) . '</p></div>';
+		if ( isset( $_GET['_wpnonce'] ) && ! wp_verify_nonce( sanitize_text_field( $_GET['_wpnonce'] ), 'srfm_entries_action' ) ) {
+			return;
 		}
+		// Manually delete the transient after retrieval to prevent it from being displayed again after page reload.
+		delete_transient( 'srfm_bulk_action_message' );
+		$action = $bulk_action_message['action'];
+		$count  = $bulk_action_message['count'];
+		switch ( $action ) {
+			case 'read':
+			case 'unread':
+				// translators: %1$d refers to the number of entries, %2$s refers to the status (read or unread).
+				$message = sprintf( _n( '%1$d entry was successfully marked as %2$s.', '%1$d entries were successfully marked as %2$s.', $count, 'sureforms' ), $count, $action );
+				break;
+			case 'trash':
+				// translators: %1$d refers to the number of entries, %2$s refers to the action (trash).
+				$message = sprintf( _n( '%1$d entry was successfully moved to trash.', '%1$d entries were successfully moved to trash.', $count, 'sureforms' ), $count );
+				break;
+			case 'restore':
+				// translators: %1$d refers to the number of entries, %2$s refers to the action (restore).
+				$message = sprintf( _n( '%1$d entry was successfully restored.', '%1$d entries were successfully restored.', $count, 'sureforms' ), $count );
+				break;
+			case 'delete':
+				// translators: %1$d refers to the number of entries, %2$s refers to the action (delete).
+				$message = sprintf( _n( '%1$d entry was permanently deleted.', '%1$d entries were permanently deleted.', $count, 'sureforms' ), $count );
+				break;
+			case 'export':
+				// translators: %1$d refers to the number of entries, %2$s refers to the action (export).
+				$message = sprintf( _n( '%1$d entry was successfully exported.', '%1$d entries were successfully exported.', $count, 'sureforms' ), $count );
+				break;
+			default:
+				break;
+		}
+		echo '<div class="notice notice-success is-dismissible"><p>' . esc_html( $message ) . '</p></div>';
 	}
 }
