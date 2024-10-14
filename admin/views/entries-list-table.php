@@ -50,7 +50,7 @@ class Entries_List_Table extends \WP_List_Table {
 	 * @return void
 	 */
 	public static function remove_query_args() {
-		if ( isset( $_GET['srfm_entries_nonce'] ) && ! wp_verify_nonce( sanitize_key( $_GET['srfm_entries_nonce'] ), 'srfm_entries_action' ) ) {
+		if ( isset( $_GET['srfm_entries_nonce'] ) && ! wp_verify_nonce( sanitize_text_field( $_GET['srfm_entries_nonce'] ), 'srfm_entries_action' ) ) {
 			return;
 		}
 		$remove_args = [
@@ -190,7 +190,7 @@ class Entries_List_Table extends \WP_List_Table {
 	 * @return void
 	 */
 	public function prepare_items() {
-		if ( isset( $_GET['srfm_entries_nonce'] ) && ! wp_verify_nonce( sanitize_key( $_GET['srfm_entries_nonce'] ), 'srfm_entries_action' ) ) {
+		if ( isset( $_GET['srfm_entries_nonce'] ) && ! wp_verify_nonce( sanitize_text_field( $_GET['srfm_entries_nonce'] ), 'srfm_entries_action' ) ) {
 			return;
 		}
 		$columns  = $this->get_columns();
@@ -297,7 +297,9 @@ class Entries_List_Table extends \WP_List_Table {
 	 * @return string
 	 */
 	protected function column_form_name( $item ) {
-		$form_name = ! empty( get_the_title( $item['form_id'] ) ) ? get_the_title( $item['form_id'] ) : 'SureForms Form #' . Helper::get_integer_value( $item['form_id'] );
+		$form_name = get_the_title( $item['form_id'] );
+		// translators: %1$s is the word "form", %2$d is the form ID.
+		$form_name = ! empty( $form_name ) ? $form_name : sprintf( 'SureForms %1$s #%2$d', esc_html__( 'Form', 'sureforms' ), Helper::get_integer_value( $item['form_id'] ) );
 		return sprintf( '<strong><a class="row-title" href="%1$s" target="_blank">%2$s</a></strong>', get_edit_post_link( $item['form_id'] ), esc_html( $form_name ) );
 	}
 
@@ -469,7 +471,7 @@ class Entries_List_Table extends \WP_List_Table {
 	 * @return void
 	 */
 	protected function display_form_filter() {
-		if ( isset( $_GET['srfm_entries_nonce'] ) && ! wp_verify_nonce( sanitize_key( $_GET['srfm_entries_nonce'] ), 'srfm_entries_action' ) ) {
+		if ( isset( $_GET['srfm_entries_nonce'] ) && ! wp_verify_nonce( sanitize_text_field( $_GET['srfm_entries_nonce'] ), 'srfm_entries_action' ) ) {
 			return;
 		}
 		$forms = $this->get_available_forms();
@@ -477,7 +479,7 @@ class Entries_List_Table extends \WP_List_Table {
 		echo '<select name="form_filter">';
 		echo '<option value="all">' . esc_html__( 'All Form Entries', 'sureforms' ) . '</option>';
 		foreach ( $forms as $form_id => $form_name ) {
-			$selected = ( isset( $_GET['form_filter'] ) && Helper::get_integer_value( sanitize_key( wp_unslash( $_GET['form_filter'] ) ) ) === $form_id ) ? ' selected="selected"' : '';
+			$selected = ( isset( $_GET['form_filter'] ) && Helper::get_integer_value( sanitize_text_field( wp_unslash( $_GET['form_filter'] ) ) ) === $form_id ) ? ' selected="selected"' : '';
 			printf( '<option value="%s"%s>%s</option>', esc_attr( $form_id ), esc_attr( $selected ), esc_html( $form_name ) );
 		}
 		echo '</select>';
@@ -491,7 +493,7 @@ class Entries_List_Table extends \WP_List_Table {
 	 * @return void
 	 */
 	protected function display_month_filter() {
-		if ( isset( $_GET['srfm_entries_nonce'] ) && ! wp_verify_nonce( sanitize_key( $_GET['srfm_entries_nonce'] ), 'srfm_entries_action' ) ) {
+		if ( isset( $_GET['srfm_entries_nonce'] ) && ! wp_verify_nonce( sanitize_text_field( $_GET['srfm_entries_nonce'] ), 'srfm_entries_action' ) ) {
 			return;
 		}
 		$months = $this->get_available_months();
@@ -502,7 +504,7 @@ class Entries_List_Table extends \WP_List_Table {
 		echo '<select name="month_filter">';
 		echo '<option value="all">' . esc_html__( 'All Dates', 'sureforms' ) . '</option>';
 		foreach ( $months as $month_value => $month_label ) {
-			$selected = ( isset( $_GET['month_filter'] ) && Helper::get_string_value( $month_value ) === sanitize_key( $_GET['month_filter'] ) ) ? ' selected="selected"' : '';
+			$selected = ( isset( $_GET['month_filter'] ) && Helper::get_string_value( $month_value ) === sanitize_text_field( $_GET['month_filter'] ) ) ? ' selected="selected"' : '';
 			printf( '<option value="%s"%s>%s</option>', esc_attr( $month_value ), esc_attr( $selected ), esc_html( $month_label ) );
 		}
 		echo '</select>';
@@ -541,19 +543,19 @@ class Entries_List_Table extends \WP_List_Table {
 	 * @return mixed
 	 */
 	protected function sort_data( $data1, $data2 ) {
-		if ( isset( $_GET['srfm_entries_nonce'] ) && ! wp_verify_nonce( sanitize_key( $_GET['srfm_entries_nonce'] ), 'srfm_entries_action' ) ) {
+		if ( isset( $_GET['srfm_entries_nonce'] ) && ! wp_verify_nonce( sanitize_text_field( $_GET['srfm_entries_nonce'] ), 'srfm_entries_action' ) ) {
 			return;
 		}
 		$orderby = 'ID';
 		$order   = 'desc';
 
 		if ( ! empty( $_GET['orderby'] ) ) {
-			$orderby = sanitize_key( wp_unslash( $_GET['orderby'] ) );
+			$orderby = sanitize_text_field( wp_unslash( $_GET['orderby'] ) );
 			$orderby = 'id' === $orderby ? strtoupper( $orderby ) : $orderby;
 		}
 
 		if ( ! empty( $_GET['order'] ) ) {
-			$order = sanitize_key( wp_unslash( $_GET['order'] ) );
+			$order = sanitize_text_field( wp_unslash( $_GET['order'] ) );
 		}
 
 		if ( 'ID' === $orderby ) {
@@ -694,20 +696,20 @@ class Entries_List_Table extends \WP_List_Table {
 	 * @return array<mixed>
 	 */
 	private function filter_entries_data( $data ) {
-		if ( isset( $_GET['srfm_entries_nonce'] ) && ! wp_verify_nonce( sanitize_key( $_GET['srfm_entries_nonce'] ), 'srfm_entries_action' ) ) {
+		if ( isset( $_GET['srfm_entries_nonce'] ) && ! wp_verify_nonce( sanitize_text_field( $_GET['srfm_entries_nonce'] ), 'srfm_entries_action' ) ) {
 			return;
 		}
 		// Handle the search according to entry ID.
-		$search_term = isset( $_GET['search_filter'] ) ? sanitize_key( wp_unslash( $_GET['search_filter'] ) ) : '';
+		$search_term = isset( $_GET['search_filter'] ) ? sanitize_text_field( wp_unslash( $_GET['search_filter'] ) ) : '';
 
 		// Filter the data based on the form name selected.
-		$form_filter = isset( $_GET['form_filter'] ) ? sanitize_key( wp_unslash( $_GET['form_filter'] ) ) : '';
+		$form_filter = isset( $_GET['form_filter'] ) ? sanitize_text_field( wp_unslash( $_GET['form_filter'] ) ) : '';
 
 		// Filter data based on the month and year selected.
-		$month_filter = isset( $_GET['month_filter'] ) ? sanitize_key( wp_unslash( $_GET['month_filter'] ) ) : '';
+		$month_filter = isset( $_GET['month_filter'] ) ? sanitize_text_field( wp_unslash( $_GET['month_filter'] ) ) : '';
 
 		// Filter data based on the status (All, Unread, Trash).
-		$status_filter = isset( $_GET['view'] ) ? sanitize_key( wp_unslash( $_GET['view'] ) ) : 'all';
+		$status_filter = isset( $_GET['view'] ) ? sanitize_text_field( wp_unslash( $_GET['view'] ) ) : 'all';
 
 		// Apply search filter, currently search is based on entry ID only and not text.
 		if ( ! empty( $search_term ) ) {
@@ -775,7 +777,7 @@ class Entries_List_Table extends \WP_List_Table {
 	 * @return array<string,string>
 	 */
 	protected function get_views() {
-		if ( isset( $_GET['srfm_entries_nonce'] ) && ! wp_verify_nonce( sanitize_key( $_GET['srfm_entries_nonce'] ), 'srfm_entries_action' ) ) {
+		if ( isset( $_GET['srfm_entries_nonce'] ) && ! wp_verify_nonce( sanitize_text_field( $_GET['srfm_entries_nonce'] ), 'srfm_entries_action' ) ) {
 			return;
 		}
 		$status_count = [
@@ -785,7 +787,7 @@ class Entries_List_Table extends \WP_List_Table {
 		];
 
 		// Get the current view (All, Read, Unread, Trash) to highlight the selected one.
-		$current_view = isset( $_GET['view'] ) ? sanitize_key( wp_unslash( $_GET['view'] ) ) : 'all';
+		$current_view = isset( $_GET['view'] ) ? sanitize_text_field( wp_unslash( $_GET['view'] ) ) : 'all';
 
 		// Define the base URL for the views (without query parameters).
 		$base_url = esc_url( admin_url( 'admin.php?page=sureforms_entries' ) );
@@ -829,7 +831,7 @@ class Entries_List_Table extends \WP_List_Table {
 	 * @return void
 	 */
 	public static function process_bulk_actions() {
-		if ( isset( $_GET['srfm_entries_nonce'] ) && ! wp_verify_nonce( sanitize_key( $_GET['srfm_entries_nonce'] ), 'srfm_entries_action' ) ) {
+		if ( isset( $_GET['srfm_entries_nonce'] ) && ! wp_verify_nonce( sanitize_text_field( $_GET['srfm_entries_nonce'] ), 'srfm_entries_action' ) ) {
 			return;
 		}
 		// Check if the form is submitted with bulk action using GET.
@@ -840,7 +842,7 @@ class Entries_List_Table extends \WP_List_Table {
 
 			// If there are entry IDs selected, process the bulk action.
 			if ( ! empty( $entry_ids ) ) {
-				$action = sanitize_key( wp_unslash( $_GET['action'] ) );
+				$action = sanitize_text_field( wp_unslash( $_GET['action'] ) );
 
 				// Update the status of each selected entry.
 				foreach ( $entry_ids as $entry_id ) {
@@ -889,7 +891,7 @@ class Entries_List_Table extends \WP_List_Table {
 	 * @return bool
 	 */
 	public static function is_trash_view() {
-		return isset( $_GET['view'] ) && 'trash' === sanitize_key( $_GET['view'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		return isset( $_GET['view'] ) && 'trash' === sanitize_text_field( $_GET['view'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 	}
 
 	/**
@@ -926,11 +928,11 @@ class Entries_List_Table extends \WP_List_Table {
 	 * @return void
 	 */
 	public static function display_bulk_action_notice() {
-		if ( isset( $_GET['srfm_entries_nonce'] ) && ! wp_verify_nonce( sanitize_key( $_GET['srfm_entries_nonce'] ), 'srfm_entries_action' ) ) {
+		if ( isset( $_GET['srfm_entries_nonce'] ) && ! wp_verify_nonce( sanitize_text_field( $_GET['srfm_entries_nonce'] ), 'srfm_entries_action' ) ) {
 			return;
 		}
-		if ( isset( $_GET['bulk_result'] ) && 'success' === sanitize_key( $_GET['bulk_result'] ) ) {
-			$action = isset( $_GET['bulk_action'] ) ? sanitize_key( wp_unslash( $_GET['bulk_action'] ) ) : '';
+		if ( isset( $_GET['bulk_result'] ) && 'success' === sanitize_text_field( $_GET['bulk_result'] ) ) {
+			$action = isset( $_GET['bulk_action'] ) ? sanitize_text_field( wp_unslash( $_GET['bulk_action'] ) ) : '';
 			$count  = isset( $_GET['count'] ) ? absint( $_GET['count'] ) : 0;
 			switch ( $action ) {
 				case 'read':

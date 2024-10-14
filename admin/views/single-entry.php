@@ -45,10 +45,10 @@ class Single_Entry {
 	 * @since x.x.x
 	 */
 	public function __construct() {
-		if ( isset( $_GET['srfm_entries_nonce'] ) && ! wp_verify_nonce( sanitize_key( $_GET['srfm_entries_nonce'] ), 'srfm_entries_action' ) ) {
+		if ( isset( $_GET['srfm_entries_nonce'] ) && ! wp_verify_nonce( sanitize_text_field( $_GET['srfm_entries_nonce'] ), 'srfm_entries_action' ) ) {
 			return;
 		}
-		$this->entry_id = isset( $_GET['entry_id'] ) ? intval( sanitize_key( wp_unslash( $_GET['entry_id'] ) ) ) : null;
+		$this->entry_id = isset( $_GET['entry_id'] ) ? intval( sanitize_text_field( wp_unslash( $_GET['entry_id'] ) ) ) : null;
 		$this->entry    = $this->entry_id ? Entries::get( $this->entry_id ) : null;
 	}
 
