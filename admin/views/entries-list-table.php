@@ -254,7 +254,7 @@ class Entries_List_Table extends \WP_List_Table {
 		$view_url = esc_url(
 			add_query_arg(
 				[
-					'entry_id' => esc_attr( $item['ID'] ),
+					'entry_id' => $entry_id,
 					'view'     => 'details',
 				],
 				admin_url( 'admin.php?page=sureforms_entries' )
