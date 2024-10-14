@@ -126,6 +126,13 @@ class Entries_List_Table extends \WP_List_Table {
 	 * @return array
 	 */
 	private function table_data( $per_page, $current_page, $view, $form_id = 0 ) {
+		// Disabled the nonce verification due to the sorting functionality, will need custom implementation to display the sortable columns to accommodate nonce check.
+		// phpcs:disable WordPress.Security.NonceVerification.Recommended
+		$orderby = isset( $_GET['orderby'] ) ? sanitize_text_field( wp_unslash( $_GET['orderby'] ) ) : 'created_at';
+		$orderby = 'id' === $orderby ? strtoupper( $orderby ) : $orderby;
+		$order   = isset( $_GET['order'] ) ? sanitize_text_field( wp_unslash( $_GET['order'] ) ) : 'desc';
+		// phpcs:enable WordPress.Security.NonceVerification.Recommended
+
 		$offset = ( $current_page - 1 ) * $per_page;
 		// If view is all, then we need to fetch all entries except the trash.
 		$compare = 'all' === $view ? '!=' : '=';
@@ -152,9 +159,11 @@ class Entries_List_Table extends \WP_List_Table {
 		}
 		$this->data          = Entries::get_all(
 			[
-				'limit'  => $per_page,
-				'offset' => $offset,
-				'where'  => $where_condition,
+				'limit'   => $per_page,
+				'offset'  => $offset,
+				'where'   => $where_condition,
+				'orderby' => $orderby,
+				'order'   => $order,
 			]
 		);
 		$this->entries_count = Entries::get_total_entries_by_status( $view, $form_id );
@@ -185,8 +194,6 @@ class Entries_List_Table extends \WP_List_Table {
 
 		$data = $this->table_data( $per_page, $current_page, $view, $form_id );
 		$data = $this->filter_entries_data( $data );
-
-		usort( $data, [ $this, 'sort_data' ] );
 
 		$this->set_pagination_args(
 			[
@@ -541,43 +548,6 @@ class Entries_List_Table extends \WP_List_Table {
 	}
 
 	/**
-	 * Allows you to sort the data by the variables set in the $_GET superglobal.
-	 *
-	 * @param array $data1 Data one to compare to.
-	 * @param array $data2 Data two to compare with.
-	 *
-	 * @since x.x.x
-	 * @return mixed
-	 */
-	protected function sort_data( $data1, $data2 ) {
-		$orderby = 'ID';
-		$order   = 'desc';
-
-		// Adding the phpcs ignore nonce verification as no database operations are performed in this function.
-		// phpcs:disable WordPress.Security.NonceVerification.Recommended
-		if ( ! empty( $_GET['orderby'] ) ) {
-			$orderby = sanitize_text_field( wp_unslash( $_GET['orderby'] ) );
-			$orderby = 'id' === $orderby ? strtoupper( $orderby ) : $orderby;
-		}
-
-		if ( ! empty( $_GET['order'] ) ) {
-			$order = sanitize_text_field( wp_unslash( $_GET['order'] ) );
-		}
-		// phpcs:enable WordPress.Security.NonceVerification.Recommended
-
-		if ( 'ID' === $orderby ) {
-			$result = Helper::get_integer_value( $data1[ $orderby ] ) - Helper::get_integer_value( $data2[ $orderby ] );
-		} else {
-			$result = strcmp( $data1[ $orderby ], $data2[ $orderby ] );
-		}
-		if ( 'asc' === $order ) {
-			return $result;
-		}
-
-		return -$result;
-	}
-
-	/**
 	 * Displays the table.
 	 *
 	 * @since x.x.x
@@ -882,7 +852,6 @@ class Entries_List_Table extends \WP_List_Table {
 			);
 		}
 		wp_safe_redirect( $url );
-		exit;
 	}
 
 	/**
