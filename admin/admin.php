@@ -657,12 +657,10 @@ class Admin {
 		}
 		$action   = isset( $_GET['action'] ) ? sanitize_text_field( wp_unslash( $_GET['action'] ) ) : '';
 		$entry_id = intval( $_GET['entry_id'] );
+		$view     = isset( $_GET['view'] ) ? sanitize_text_field( wp_unslash( $_GET['view'] ) ) : '';
 		if ( $entry_id > 0 ) {
-			Entries_List_Table::handle_entry_status( $entry_id, $action );
+			Entries_List_Table::handle_entry_status( $entry_id, $action, $view );
 		}
-		// Redirect to prevent form resubmission.
-		wp_safe_redirect( admin_url( 'admin.php?page=sureforms_entries' ) );
-		exit;
 	}
 
 }

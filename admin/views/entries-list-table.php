@@ -251,15 +251,19 @@ class Entries_List_Table extends \WP_List_Table {
 	 */
 	protected function column_id( $item ) {
 		$entry_id = esc_attr( $item['ID'] );
-		$view_url = esc_url(
-			add_query_arg(
-				[
-					'entry_id' => $entry_id,
-					'view'     => 'details',
-				],
-				admin_url( 'admin.php?page=sureforms_entries' )
-			)
-		);
+
+		$view_url =
+			wp_nonce_url(
+				add_query_arg(
+					[
+						'entry_id' => $entry_id,
+						'view'     => 'details',
+						'action'   => 'read',
+					],
+					admin_url( 'admin.php?page=sureforms_entries' )
+				),
+				'srfm_entries_action'
+			);
 
 		return sprintf(
 			'<strong><a class="row-title" href="%1$s">%2$s%3$s</a></strong>',
@@ -357,16 +361,19 @@ class Entries_List_Table extends \WP_List_Table {
 	 * @return array
 	 */
 	protected function package_row_actions( $item ) {
-		$view_url    = esc_url(
-			add_query_arg(
-				[
-					'entry_id' => esc_attr( $item['ID'] ),
-					'view'     => 'details',
-				],
-				admin_url( 'admin.php?page=sureforms_entries' )
-			)
-		);
-		$trash_url   = esc_url(
+		$view_url  =
+			wp_nonce_url(
+				add_query_arg(
+					[
+						'entry_id' => esc_attr( $item['ID'] ),
+						'view'     => 'details',
+						'action'   => 'read',
+					],
+					admin_url( 'admin.php?page=sureforms_entries' )
+				),
+				'srfm_entries_action'
+			);
+		$trash_url =
 			wp_nonce_url(
 				add_query_arg(
 					[
@@ -376,8 +383,8 @@ class Entries_List_Table extends \WP_List_Table {
 					admin_url( 'admin.php?page=sureforms_entries' )
 				),
 				'srfm_entries_action'
-			)
-		);
+			);
+
 		$row_actions = [
 			'view'  => sprintf( '<a href="%1$s">%2$s</a>', esc_url( $view_url ), esc_html__( 'View', 'sureforms' ) ),
 			'trash' => sprintf( '<a href="%1$s">%2$s</a>', esc_url( $trash_url ), esc_html__( 'Trash', 'sureforms' ) ),
@@ -389,7 +396,7 @@ class Entries_List_Table extends \WP_List_Table {
 			unset( $row_actions['view'] );
 
 			// Add Restore and Delete actions.
-			$restore_url = esc_url(
+			$restore_url =
 				wp_nonce_url(
 					add_query_arg(
 						[
@@ -399,10 +406,9 @@ class Entries_List_Table extends \WP_List_Table {
 						admin_url( 'admin.php?page=sureforms_entries' )
 					),
 					'srfm_entries_action'
-				)
-			);
+				);
 
-			$delete_url             = esc_url(
+			$delete_url =
 				wp_nonce_url(
 					add_query_arg(
 						[
@@ -412,8 +418,8 @@ class Entries_List_Table extends \WP_List_Table {
 						admin_url( 'admin.php?page=sureforms_entries' )
 					),
 					'srfm_entries_action'
-				)
-			);
+				);
+
 			$row_actions['restore'] = sprintf( '<a href="%1$s">%2$s</a>', esc_url( $restore_url ), esc_html__( 'Restore', 'sureforms' ) );
 			$row_actions['delete']  = sprintf( '<a href="%1$s">%2$s</a>', esc_url( $delete_url ), esc_html__( 'Delete Permanently', 'sureforms' ) );
 		}
@@ -840,11 +846,12 @@ class Entries_List_Table extends \WP_List_Table {
 	 *
 	 * @param int    $entry_id The ID of the entry to update.
 	 * @param string $action The action to perform.
+	 * @param string $view The view to handle redirection.
 	 *
 	 * @since x.x.x
 	 * @return void
 	 */
-	public static function handle_entry_status( $entry_id, $action ) {
+	public static function handle_entry_status( $entry_id, $action, $view = '' ) {
 		switch ( $action ) {
 			case 'restore':
 				Entries::update( $entry_id, [ 'status' => 'unread' ] );
@@ -860,6 +867,22 @@ class Entries_List_Table extends \WP_List_Table {
 			default:
 				break;
 		}
+		$url = wp_nonce_url(
+			admin_url( 'admin.php?page=sureforms_entries' ),
+			'srfm_entries_action'
+		);
+		// Redirect to appropriate page after action is performed.
+		if ( 'details' === $view ) {
+			$url = add_query_arg(
+				[
+					'entry_id' => $entry_id,
+					'view'     => 'details',
+				],
+				$url
+			);
+		}
+		wp_safe_redirect( $url );
+		exit;
 	}
 
 	/**
