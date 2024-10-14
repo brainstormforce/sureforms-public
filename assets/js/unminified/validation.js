@@ -521,9 +521,9 @@ export async function fieldValidation(
 				if ( hasError ) {
 					container.classList.add( 'srfm-error' );
 					validateResult = true;
-					if ( ! firstErrorInput ) {
-						firstErrorInput = sliderInput;
-					}
+
+					// Set the first error input.
+					setFirstErrorInput( sliderInput, container );
 				} else {
 					container.classList.remove( 'srfm-error' );
 				}
