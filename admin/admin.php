@@ -222,29 +222,30 @@ class Admin {
 	 * @return void
 	 */
 	public function render_entries() {
-		if ( isset( $_GET['srfm_entries_nonce'] ) && ! wp_verify_nonce( sanitize_key( $_GET['srfm_entries_nonce'] ), 'srfm_entries_action' ) ) {
-			wp_die( esc_html__( 'Nonce verification failed.', 'sureforms' ) );
-		}
-		if ( isset( $_GET['entry_id'] ) && is_numeric( $_GET['entry_id'] ) && isset( $_GET['view'] ) && 'details' === $_GET['view'] ) {
+		// Render single entry view.
+		// Adding the phpcs ignore nonce verification as no database operations are performed in this function, it is used to display the single entry view.
+		if ( isset( $_GET['entry_id'] ) && is_numeric( $_GET['entry_id'] ) && isset( $_GET['view'] ) && 'details' === $_GET['view'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			$single_entry_view = new Single_Entry();
 			$single_entry_view->render();
-		} else {
-			$entries_table = new Entries_List_Table();
-			$entries_table->prepare_items();
-			echo '<div class="wrap"><h1 class="wp-heading-inline">Entries</h1>';
-			if ( 0 >= $entries_table->entries_count ) {
-				$instance = Post_Types::get_instance();
-				$instance->sureforms_render_blank_state( SRFM_ENTRIES_POST_TYPE );
-				$instance->get_blank_state_styles();
-				return;
-			}
-			echo '<form method="get">';
-			echo '<input type="hidden" name="page" value="sureforms_entries">';
-			$entries_table->search_box_markup( esc_html__( 'Search', 'sureforms' ), 'srfm-entries' );
-			$entries_table->display();
-			echo '</form>';
-			echo '</div>';
+			return;
 		}
+
+		// Render all entries view.
+		$entries_table = new Entries_List_Table();
+		$entries_table->prepare_items();
+		echo '<div class="wrap"><h1 class="wp-heading-inline">Entries</h1>';
+		if ( 0 >= $entries_table->entries_count ) {
+			$instance = Post_Types::get_instance();
+			$instance->sureforms_render_blank_state( SRFM_ENTRIES_POST_TYPE );
+			$instance->get_blank_state_styles();
+			return;
+		}
+		echo '<form method="get">';
+		echo '<input type="hidden" name="page" value="sureforms_entries">';
+		$entries_table->search_box_markup( esc_html__( 'Search', 'sureforms' ), 'srfm-entries' );
+		$entries_table->display();
+		echo '</form>';
+		echo '</div>';
 	}
 
 	/**
@@ -641,8 +642,9 @@ class Admin {
 	 * @return void
 	 */
 	public function handle_entry_actions() {
-		if ( isset( $_GET['srfm_entries_nonce'] ) && ! wp_verify_nonce( sanitize_key( $_GET['srfm_entries_nonce'] ), 'srfm_entries_action' ) ) {
-			wp_die( esc_html__( 'Nonce verification failed.', 'sureforms' ) );
+		if ( isset( $_GET['entry'] ) && isset( $_GET['action'] ) ) {
+			Entries_List_Table::process_bulk_actions();
+			return;
 		}
 		if ( ! isset( $_GET['page'] ) || 'sureforms_entries' !== $_GET['page'] ) {
 			return;
@@ -650,8 +652,10 @@ class Admin {
 		if ( ! isset( $_GET['entry_id'] ) || ! isset( $_GET['action'] ) ) {
 			return;
 		}
-		Entries_List_Table::process_bulk_actions();
-		$action   = isset( $_GET['action'] ) ? sanitize_key( $_GET['action'] ) : '';
+		if ( ! isset( $_GET['_wpnonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'srfm_entries_action' ) ) {
+			wp_die( esc_html__( 'Nonce verification failed.', 'sureforms' ) );
+		}
+		$action   = isset( $_GET['action'] ) ? sanitize_text_field( wp_unslash( $_GET['action'] ) ) : '';
 		$entry_id = intval( $_GET['entry_id'] );
 		$view     = isset( $_GET['view'] ) ? sanitize_key( $_GET['view'] ) : '';
 		if ( $entry_id > 0 ) {
