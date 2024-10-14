@@ -127,7 +127,6 @@ class Field_Mapping {
 						}
 
 						// if every option has an icon then set the verticalLayout to true.
-						$icons = array_column( $question['fieldOptions'], 'icon' );
 						if ( count( $icons ) === count( array_filter( $icons ) ) ) {
 							$merged_attributes['verticalLayout'] = true;
 						}
