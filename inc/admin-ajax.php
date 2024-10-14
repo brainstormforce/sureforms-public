@@ -9,6 +9,7 @@
 
 namespace SRFM\Inc;
 
+use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Traits\Get_Instance;
 use SRFM\Inc\Helper;
 
@@ -39,9 +40,53 @@ class Admin_Ajax {
 		add_action( 'wp_ajax_sureforms_recommended_plugin_install', 'wp_ajax_install_plugin' );
 		add_action( 'wp_ajax_sureforms_integration', [ $this, 'generate_data_for_suretriggers_integration' ] );
 
+		add_action( 'wp_ajax_sureforms_save_entry_notes', [ $this, 'save_entry_notes' ] );
+
 		add_filter( SRFM_SLUG . '_admin_filter', [ $this, 'localize_script_integration' ] );
 	}
 
+	public function save_entry_notes() {
+
+		$response_data = [ 'message' => $this->get_error_msg( 'permission' ) ];
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( $response_data );
+		}
+
+		if ( empty( $_POST['note'] ) && empty( $_POST['entryID'] ) ) {
+			$response_data = [ 'message' => $this->get_error_msg( 'invalid' ) ];
+			wp_send_json_error( $response_data );
+		}
+
+		/**
+		 * Nonce verification.
+		 */
+		if ( ! check_ajax_referer( '_srfm_entry_notes_nonce', 'security' ) ) {
+			$response_data = [ 'message' => $this->get_error_msg( 'nonce' ) ];
+			wp_send_json_error( $response_data );
+		}
+
+		$entry_id = sanitize_text_field( wp_unslash( $_POST['entryID'] ) );
+
+		Entries::add_note( $entry_id, sanitize_textarea_field( wp_unslash( $_POST['note'] ) ) );
+
+		ob_start();
+		$notes = Entries::get( $entry_id )['notes'];
+		if ( ! empty( $notes ) && is_array( $notes ) ) {
+			foreach ( $notes as $note ) {
+				?>
+				<div>
+					<strong class="entry-log-title"><?php echo esc_html( $note['title'] ); ?></strong> <br/>
+					<small><?php echo esc_html( gmdate( 'Y-m-d H:i:s', $note['timestamp'] ) ); ?></small>
+					<p><?php echo esc_html( $note['note'] ) ?></p>
+				</div>
+				<?php
+			}
+		}
+		$data = ob_get_clean();
+
+		wp_send_json_success( $data );
+	}
 
 	/**
 	 * Required Plugin Activate

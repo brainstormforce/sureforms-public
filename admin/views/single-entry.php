@@ -72,7 +72,7 @@ class Single_Entry {
 		?>
 		<div class="wrap">
 			<h1 class="wp-heading-inline"><?php esc_html_e( 'View Entry', 'sureforms' ); ?></h1>
-			<form method="get" id="get"> <!-- check for nonce, referrer, etc. --> 
+			<form method="post" action="<?php echo esc_url( admin_url( "admin.php?page=sureforms_entries&entry_id={$this->entry_id}&view=details" ) ); ?>"> <!-- check for nonce, referrer, etc. -->
 				<div id="poststuff">
 					<div id="post-body" class="metabox-holder columns-2">
 						<div id="post-body-content">
@@ -84,6 +84,7 @@ class Single_Entry {
 							</div><!-- /titlediv -->
 						</div><!-- /post-body-content -->
 						<div id="postbox-container-1" class="postbox-container">
+							<?php $this->render_entry_notes(); ?>
 							<?php $this->render_submission_info( $form_name, $entry_status, $submitted_on ); ?>
 						</div>
 						<div id="postbox-container-2" class="postbox-container">
@@ -96,6 +97,50 @@ class Single_Entry {
 					<br class="clear">
 				</div><!-- /poststuff -->
 			</form>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Render the entry notes for the specific entry.
+	 *
+	 * @since x.x.x
+	 */
+	private function render_entry_notes() {
+		$notes = $this->entry['notes'];
+		?>
+		<div id="submitdiv" class="postbox entry-notes">
+			<div class="postbox-header">
+				<h2><?php esc_html_e( 'Entry Notes', 'sureforms' ); ?></h2>
+				<button type="button" id="srfm-add-entry-note" class="srfm-add-entry-note-button <?php echo empty( $notes ) ? 'hidden' : ''; ?>">
+					<?php esc_html_e( 'Add Note', 'sureforms' ); ?>
+					<svg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M8 3.33594V12.6693' stroke='black' stroke-width='1.25' stroke-linecap='round' stroke-linejoin='round'/><path d='M3.33337 8H12.6667' stroke='black' stroke-width='1.25' stroke-linecap='round' stroke-linejoin='round'/></svg>
+				</button>
+			</div>
+			<div class="inside">
+				<div class="srfm-entry-note-wrapper">
+					<div class="entry-notes-container">
+						<?php
+						if ( ! empty( $notes ) && is_array( $notes ) ) {
+							foreach ( $notes as $note ) {
+								?>
+								<div>
+									<strong class="entry-log-title"><?php echo esc_html( $note['title'] ); ?></strong> <br/>
+									<small><?php echo esc_html( gmdate( 'Y-m-d H:i:s', $note['timestamp'] ) ); ?></small>
+									<p><?php echo esc_html( $note['note'] ) ?></p>
+								</div>
+								<?php
+							}
+						}
+						?>
+					</div>
+
+					<div class="add-notes-field">
+						<textarea id="srfm-entry-note" rows="5"></textarea>
+						<button type="submit" class="button" data-entry-id=<?php echo esc_html( $this->entry_id ); ?>><?php esc_html_e( 'Submit Note', 'sureforms' ); ?></button>
+					</div>
+				</div>
+			</div>
 		</div>
 		<?php
 	}
@@ -168,12 +213,31 @@ class Single_Entry {
 	 * @since x.x.x
 	 */
 	private function render_form_data( $meta_data, $excluded_fields ) {
+		$is_edit_mode = ! empty( $_GET['edit'] ) && sanitize_text_field( wp_unslash( $_GET['edit'] ) );
+
 		?>
 		<div id="sureform_entry_meta" class="postbox">
 			<div class="postbox-header">
 				<!-- Removed "hndle ui-sortable-handle" class from h2 to remove the draggable stylings. -->
 				<h2><?php esc_html_e( 'Form Data', 'sureforms' ); ?></h2>
-				<!-- <div class="handle-actions hide-if-no-js"><button type="button" class="handle-order-higher" aria-disabled="false" aria-describedby="sureform_entry_meta-handle-order-higher-description"><span class="screen-reader-text">Move up</span><span class="order-higher-indicator" aria-hidden="true"></span></button><span class="hidden" id="sureform_entry_meta-handle-order-higher-description">Move Form Data box up</span><button type="button" class="handle-order-lower" aria-disabled="false" aria-describedby="sureform_entry_meta-handle-order-lower-description"><span class="screen-reader-text">Move down</span><span class="order-lower-indicator" aria-hidden="true"></span></button><span class="hidden" id="sureform_entry_meta-handle-order-lower-description">Move Form Data box down</span><button type="button" class="handlediv" aria-expanded="true"><span class="screen-reader-text">Toggle panel: Form Data</span><span class="toggle-indicator" aria-hidden="true"></span></button></div> -->
+				<?php
+				if ( $is_edit_mode ) {
+					wp_nonce_field( 'srfm-edit-entry-' . $this->entry_id, 'srfm-edit-entry-nonce' );
+					?>
+					<input type="hidden" name="entry_id" value="<?php echo esc_attr( $this->entry_id ); ?>">
+					<input class="button srfm-edit-entry" type="submit" value="<?php esc_attr_e( 'Save', 'sureforms' ); ?>">
+					<?php
+				} else {
+					?>
+					<a href="<?php echo esc_url( add_query_arg( 'edit', true ) ); ?>" class="button srfm-edit-entry" type="button">
+						<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+							<path d="M11.2411 2.99111L12.3661 1.86612C12.8543 1.37796 13.6457 1.37796 14.1339 1.86612C14.622 2.35427 14.622 3.14573 14.1339 3.63388L7.05479 10.713C6.70234 11.0654 6.26762 11.3245 5.78993 11.4668L4 12L4.53319 10.2101C4.67548 9.73239 4.93456 9.29767 5.28701 8.94522L11.2411 2.99111ZM11.2411 2.99111L13 4.74999M12 9.33333V12.5C12 13.3284 11.3284 14 10.5 14H3.5C2.67157 14 2 13.3284 2 12.5V5.49999C2 4.67157 2.67157 3.99999 3.5 3.99999H6.66667" stroke="#2271b1" stroke-linecap="round" stroke-linejoin="round"/>
+						</svg>
+						<?php esc_html_e( 'Edit', 'sureforms' ); ?>
+					</a>
+					<?php
+				}
+				?>
 			</div>
 			<div class="inside">
 				<table class="widefat striped">
@@ -277,7 +341,33 @@ class Single_Entry {
 								<?php elseif ( false !== strpos( $field_name, 'srfm-url' ) ) : ?>
 									<td><a target="_blank" href="<?php echo esc_url( $value ); ?>"><?php echo esc_url( $value ); ?></a></td>
 								<?php else : ?>
-									<td><?php echo false !== strpos( $value, PHP_EOL ) ? wp_kses_post( wpautop( $value ) ) : wp_kses_post( $value ); ?></td>
+									<?php
+									if ( $is_edit_mode ) {
+										$field_type = Helper::get_field_type_from_key( $field_name );
+
+										switch ( $field_type ) {
+											case 'textarea':
+												?>
+												<td>
+													<textarea name="srfm_edit_entry[<?php echo esc_attr( $field_name ); ?>]"><?php echo wp_kses_post( $value ); ?></textarea>
+												</td>
+												<?php
+												break;
+
+											default:
+												?>
+												<td>
+													<input type="text" name="srfm_edit_entry[<?php echo esc_attr( $field_name ); ?>]" value="<?php echo esc_attr( $value ); ?>">
+												</td>
+												<?php
+												break;
+										}
+									} else {
+										?>
+										<td><?php echo false !== strpos( $value, PHP_EOL ) ? wp_kses_post( wpautop( $value ) ) : wp_kses_post( $value ); ?></td>
+										<?php
+									}
+									?>
 								<?php endif; ?>
 							</tr>
 							<?php endforeach; ?>
@@ -316,7 +406,7 @@ class Single_Entry {
 												</h4>
 												<div class="entry-log-messages">
 												<?php foreach ( $log['messages'] as $message ) : ?>
-													<p><?php echo esc_html( $message ); ?></p>
+													<p><?php echo wp_kses_post( $message ); ?></p>
 												<?php endforeach; ?>
 												</div>
 											</div>

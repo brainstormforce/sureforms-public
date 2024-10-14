@@ -51,6 +51,7 @@ class Admin {
 		// Handle entry actions.
 		add_action( 'admin_init', [ $this, 'handle_entry_actions' ] );
 		add_action( 'admin_notices', [ Entries_List_Table::class, 'display_bulk_action_notice' ] );
+		add_action( 'admin_init', [ $this, 'save_edit_entry_data' ] );
 	}
 
 	/**
@@ -435,6 +436,21 @@ class Admin {
 		// Enqueue styles for the entries page.
 		if ( 'sureforms_page_sureforms_entries' === $current_screen->id ) {
 			wp_enqueue_style( SRFM_SLUG . '-entries', $css_uri . 'backend/entries' . $file_prefix . '.css', [], SRFM_VER );
+			wp_enqueue_script( SRFM_SLUG . '-entries', $js_uri . 'entries' . $file_prefix . '.js', [], SRFM_VER, true );
+			wp_localize_script(
+				SRFM_SLUG . '-entries',
+				'srfm_entries',
+				[
+					'entryID' => isset( $_GET['entry_id'] ) ? absint( wp_unslash( $_GET['entry_id'] ) ) : 0,
+					'ajaxURL' => add_query_arg(
+						[
+							'action'   => 'sureforms_save_entry_notes',
+							'security' => wp_create_nonce( '_srfm_entry_notes_nonce' )
+						],
+						admin_url( 'admin-ajax.php' )
+					)
+				]
+			);
 		}
 
 		// Admin Submenu Styles.
@@ -662,6 +678,68 @@ class Admin {
 		}
 		// Redirect to prevent form resubmission.
 		wp_safe_redirect( admin_url( 'admin.php?page=sureforms_entries' ) );
+		exit;
+	}
+
+	public function save_edit_entry_data() {
+
+		if ( empty( $_POST['srfm-edit-entry-nonce'] ) && empty( $_POST['entry_id'] ) ) {
+			// Bail early if we don't have nonce key or entry id key.
+			return;
+		}
+
+		$entry_id = sanitize_text_field( wp_unslash( $_POST['entry_id'] ) );
+
+		if ( ! wp_verify_nonce( $_POST['srfm-edit-entry-nonce'], 'srfm-edit-entry-' . $entry_id ) ) {
+			return;
+		}
+
+		if ( empty( $_POST['srfm_edit_entry'] ) ) {
+			return;
+		}
+
+		$data = Helper::sanitize_by_field_type( wp_unslash( $_POST['srfm_edit_entry'] ) );
+
+		$instance = Entries::get_instance();
+
+		$instance->add_log( sprintf( __( 'Entry edited by %s', 'sureforms' ), wp_get_current_user()->user_login ) ); // Init log.
+
+		$form_data = $instance::get( $entry_id )['form_data'];
+
+		$changed = 0;
+		if ( ! empty( $data ) && is_array( $data ) ) {
+			foreach ( $data as $k => $v ) {
+				if ( ! isset( $form_data[ $k ] ) ) {
+					// &#8594; is html entity for arrow -> sign.
+					$instance->update_log( $instance->get_last_log_key(), null, '"" &#8594; ' . $v );
+					$changed++;
+					continue;
+				}
+
+				if ( $form_data[ $k ] === $v ) {
+					continue;
+				}
+
+				// &#8594; is html entity for arrow -> sign.
+				$instance->update_log( $instance->get_last_log_key(), null, sprintf( '%1$s &#8594; %2$s', $form_data[ $k ], $v ) );
+				$changed++;
+			}
+		}
+
+		if ( ! $changed ) {
+			// Reset logs to zero if no valid changes are made.
+			$instance->reset_logs();
+		}
+
+		$instance::update(
+			$entry_id,
+			[
+				'form_data' => $data,
+				'logs'      => $instance->get_logs(),
+			]
+		);
+
+		wp_safe_redirect( remove_query_arg( 'edit' ) );
 		exit;
 	}
 

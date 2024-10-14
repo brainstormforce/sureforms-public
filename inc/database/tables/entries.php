@@ -215,6 +215,16 @@ class Entries extends Base {
 	}
 
 	/**
+	 * Resets logs to zero.
+	 *
+	 * @since x.x.x
+	 * @return void
+	 */
+	public function reset_logs() {
+		$this->logs = [];
+	}
+
+	/**
 	 * Retrieve all log entries.
 	 *
 	 * @since 0.0.10
@@ -222,6 +232,33 @@ class Entries extends Base {
 	 */
 	public function get_logs() {
 		return $this->logs;
+	}
+
+	public static function add_note( $entry_id, $note = '' ) {
+		if ( empty( $entry_id ) ) {
+			return false;
+		}
+
+		$note = trim( $note );
+
+		if ( empty( $note ) ) {
+			return false;
+		}
+
+		// Format notes structure.
+		$_note = [
+			'title'     => sprintf( __( 'Submitted by %s', 'sureforms' ), wp_get_current_user()->display_name ),
+			'timestamp' => time(),
+			'note'      => $note,
+		];
+
+		// Merge with old notes and save it to database.
+		self::update(
+			$entry_id,
+			[
+				'notes' => array_merge( [ $_note ], Helper::get_array_value( self::get( $entry_id )['notes'] ) ),
+			]
+		);
 	}
 
 	/**
@@ -264,6 +301,12 @@ class Entries extends Base {
 		if ( empty( $entry_id ) ) {
 			return false;
 		}
+
+		if ( isset( $data['logs'] ) ) {
+			// Add logs from the current cache at the very last moment so that we don't tax the performance.
+			$data['logs'] = array_merge( $data['logs'], Helper::get_array_value( self::get( $entry_id )['logs'] ) );
+		}
+
 		return self::get_instance()->use_update( $data, [ 'ID' => absint( $entry_id ) ] );
 	}
 
