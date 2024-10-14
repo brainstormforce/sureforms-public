@@ -49,40 +49,6 @@ class Entries_List_Table extends \WP_List_Table {
 	public $entries_count;
 
 	/**
-	 * Constructor.
-	 *
-	 * @since x.x.x
-	 */
-	public function __construct() {
-		parent::__construct();
-		add_action( 'admin_init', [ $this, 'remove_query_args' ] );
-	}
-
-	/**
-	 * Remove unnecessary query arguments from the URL.
-	 * WIP: This is currently work in progress and will be improved later.
-	 *
-	 * @since x.x.x
-	 * @return void
-	 */
-	public static function remove_query_args() {
-		$remove_args = [
-			'action',
-			'action2',
-			'search_filter',
-			'filter_action',
-			'srfm_entries_nonce',
-			'_wp_http_referer',
-		];
-
-		if ( isset( $_SERVER['REQUEST_URI'] ) ) {
-			// Adding the phpcs ignore to avoid removing slashes from the URL.
-			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash
-			$_SERVER['REQUEST_URI'] = remove_query_arg( $remove_args, esc_url_raw( $_SERVER['REQUEST_URI'] ) );
-		}
-	}
-
-	/**
 	 * Override the parent columns method. Defines the columns to use in your listing table.
 	 *
 	 * @since x.x.x
