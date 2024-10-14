@@ -109,8 +109,7 @@ class Single_Entry {
 	 * @since x.x.x
 	 */
 	private function render_submission_info( $form_name, $entry_status, $submitted_on ) {
-		$current_url        = isset( $_SERVER['REQUEST_URI'] ) ? esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : admin_url( 'admin.php?page=sureforms_entries' ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash
-		$mark_as_unread_url = add_query_arg( 'action', 'unread', $current_url );
+		$mark_as_unread_url = add_query_arg( 'action', 'unread' );
 		$user_id            = Helper::get_integer_value( $this->entry['user_id'] );
 		$user_info          = 0 !== $user_id ? get_userdata( $user_id ) : null;
 		$user_name          = $user_info ? $user_info->display_name : '';
