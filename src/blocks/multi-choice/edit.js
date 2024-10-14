@@ -34,6 +34,7 @@ import ConditionalLogic from '@Components/conditional-logic';
 import MultiButtonsControl from '@Components/multi-buttons-control';
 import UAGIconPicker from '@Components/icon-picker';
 import SRFMMediaPicker from '@Components/image';
+import BulkInserter from '../components/BulkInserter';
 
 const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 	const {
@@ -49,8 +50,41 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 		verticalLayout,
 		optionType,
 	} = attributes;
+
+	console.log( 'attributes -> ', attributes );
+
 	const currentFormId = useGetCurrentFormId( clientId );
 	const [ newOption, setNewOption ] = useState( options );
+
+	// // bulk edit code --------------------------
+	const [ isModalOpen, setIsModalOpen ] = useState( false );
+	const closeModal = () => {
+		setIsModalOpen( false );
+	};
+	const bulkEdit = (
+		<>
+			<Button
+				className="sureform-add-option-button"
+				variant="secondary"
+				onClick={ () => {
+					setIsModalOpen( true );
+				} }
+			>
+				{ __( 'Bulk Edit', 'sureforms' ) }
+			</Button>
+			{ isModalOpen && (
+				<BulkInserter
+					closeModal={ closeModal }
+					options={ options }
+					insertOptions={ ( newOptions ) => {
+						console.log( 'newOptions', newOptions );
+					} }
+				/>
+			) }
+		</>
+	);
+	// // bulk edit code end --------------------------
+
 	const blockProps = useBlockProps();
 
 	const deleteOption = ( index ) => {
@@ -458,6 +492,7 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 								>
 									{ __( 'ADD', 'sureforms' ) }
 								</Button>
+								{ bulkEdit }
 							</div>
 							<span className="srfm-control-label srfm-control__header" />
 							<SRFMTextControl

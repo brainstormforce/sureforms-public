@@ -1027,3 +1027,71 @@ $req_err_color: #dc2625;
 		}
 	}
 }
+
+// Css for bulk edit modal.
+.components-modal__frame.srfm-bulk-edit-modal{
+	width: 75%;
+    max-width: 650px;
+    max-height: 80%;
+    border-radius: 8px;
+	.components-modal__header{
+		display: none;
+	}
+	.components-modal__content{
+		margin: 0;
+		padding: 0;
+	}
+
+	.srfm-modal-header{
+		border-bottom: 1px solid #e5e7eb;
+		display: flex;
+		padding: 20px;
+		align-items: center;
+		justify-content: space-between;
+
+		.srfm-modal-header-content{
+			display: flex;
+			align-items: center;
+		}
+		.srfm-modal-logo{
+			border-right: 1px solid #D0D5DD;
+			line-height: 1;
+			display: flex;
+			padding-right: 10px;
+			margin-right: 10px;
+		}
+		.srfm-modal-title{
+			h1{
+				font-size: 14px;
+				font-weight: 600;
+				color: #111827;
+				line-height: 1.4;
+				margin: 0;
+			}
+		}
+		.srfm-modal-header-close-icon{
+			display: flex;
+		}
+	}
+
+	.srfm-modal-body{
+		padding: 20px;
+		.srfm-bulk-edit-textarea{
+			min-height: 130px;
+			border: 1px solid #dadbdd;
+			border-radius: 8px;
+			color: #606266;
+			line-height: 1.5;
+			padding: 5px 15px;
+			resize: vertical;
+			width: 100%;
+		}
+	}
+	.srfm-modal-footer{
+		padding: 32px;
+		border-top: 1px solid red;
+		display: flex;
+		align-items: center;
+		gap: 12px;
+	}
+}
