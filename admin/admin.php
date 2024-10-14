@@ -223,7 +223,8 @@ class Admin {
 	 */
 	public function render_entries() {
 		// Render single entry view.
-		if ( isset( $_GET['entry_id'] ) && is_numeric( $_GET['entry_id'] ) && isset( $_GET['view'] ) && 'details' === $_GET['view'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended - No database operations are performed in this function, it is used to display the single entry view.
+		// Adding the phpcs ignore nonce verification as no database operations are performed in this function, it is used to display the single entry view.
+		if ( isset( $_GET['entry_id'] ) && is_numeric( $_GET['entry_id'] ) && isset( $_GET['view'] ) && 'details' === $_GET['view'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			$single_entry_view = new Single_Entry();
 			$single_entry_view->render();
 			return;
@@ -651,10 +652,10 @@ class Admin {
 		if ( ! isset( $_GET['entry_id'] ) || ! isset( $_GET['action'] ) ) {
 			return;
 		}
-		if ( ! isset( $_GET['_wpnonce'] ) || ! wp_verify_nonce( sanitize_text_field( $_GET['_wpnonce'] ), 'srfm_entries_action' ) ) {
+		if ( ! isset( $_GET['_wpnonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'srfm_entries_action' ) ) {
 			wp_die( esc_html__( 'Nonce verification failed.', 'sureforms' ) );
 		}
-		$action   = isset( $_GET['action'] ) ? sanitize_text_field( $_GET['action'] ) : '';
+		$action   = isset( $_GET['action'] ) ? sanitize_text_field( wp_unslash( $_GET['action'] ) ) : '';
 		$entry_id = intval( $_GET['entry_id'] );
 		if ( $entry_id > 0 ) {
 			Entries_List_Table::handle_entry_status( $entry_id, $action );

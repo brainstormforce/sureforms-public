@@ -46,7 +46,7 @@ class Single_Entry {
 	 * @since x.x.x
 	 */
 	public function __construct() {
-		if ( isset( $_GET['_wpnonce'] ) && ! wp_verify_nonce( sanitize_text_field( $_GET['_wpnonce'] ), 'srfm_entries_action' ) ) {
+		if ( isset( $_GET['_wpnonce'] ) && ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'srfm_entries_action' ) ) {
 			return;
 		}
 		$this->entry_id = isset( $_GET['entry_id'] ) ? intval( sanitize_text_field( wp_unslash( $_GET['entry_id'] ) ) ) : null;

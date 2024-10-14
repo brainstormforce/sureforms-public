@@ -168,7 +168,7 @@ class Entries_List_Table extends \WP_List_Table {
 	 * @return void
 	 */
 	public function prepare_items() {
-		if ( isset( $_GET['_wpnonce'] ) && ! wp_verify_nonce( sanitize_text_field( $_GET['_wpnonce'] ), 'srfm_entries_action' ) ) {
+		if ( isset( $_GET['_wpnonce'] ) && ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'srfm_entries_action' ) ) {
 			return;
 		}
 		$columns  = $this->get_columns();
@@ -470,7 +470,7 @@ class Entries_List_Table extends \WP_List_Table {
 	 * @return void
 	 */
 	protected function display_form_filter() {
-		if ( isset( $_GET['_wpnonce'] ) && ! wp_verify_nonce( sanitize_text_field( $_GET['_wpnonce'] ), 'srfm_entries_action' ) ) {
+		if ( isset( $_GET['_wpnonce'] ) && ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'srfm_entries_action' ) ) {
 			return;
 		}
 		$forms = $this->get_available_forms();
@@ -492,7 +492,7 @@ class Entries_List_Table extends \WP_List_Table {
 	 * @return void
 	 */
 	protected function display_month_filter() {
-		if ( isset( $_GET['_wpnonce'] ) && ! wp_verify_nonce( sanitize_text_field( $_GET['_wpnonce'] ), 'srfm_entries_action' ) ) {
+		if ( isset( $_GET['_wpnonce'] ) && ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'srfm_entries_action' ) ) {
 			return;
 		}
 		$months = $this->get_available_months();
@@ -503,7 +503,7 @@ class Entries_List_Table extends \WP_List_Table {
 		echo '<select name="month_filter">';
 		echo '<option value="all">' . esc_html__( 'All Dates', 'sureforms' ) . '</option>';
 		foreach ( $months as $month_value => $month_label ) {
-			$selected = ( isset( $_GET['month_filter'] ) && Helper::get_string_value( $month_value ) === sanitize_text_field( $_GET['month_filter'] ) ) ? ' selected="selected"' : '';
+			$selected = ( isset( $_GET['month_filter'] ) && Helper::get_string_value( $month_value ) === sanitize_text_field( wp_unslash( $_GET['month_filter'] ) ) ) ? ' selected="selected"' : '';
 			printf( '<option value="%s"%s>%s</option>', esc_attr( $month_value ), esc_attr( $selected ), esc_html( $month_label ) );
 		}
 		echo '</select>';
@@ -542,7 +542,7 @@ class Entries_List_Table extends \WP_List_Table {
 	 * @return mixed
 	 */
 	protected function sort_data( $data1, $data2 ) {
-		if ( isset( $_GET['_wpnonce'] ) && ! wp_verify_nonce( sanitize_text_field( $_GET['_wpnonce'] ), 'srfm_entries_action' ) ) {
+		if ( isset( $_GET['_wpnonce'] ) && ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'srfm_entries_action' ) ) {
 			return;
 		}
 		$orderby = 'ID';
@@ -695,7 +695,7 @@ class Entries_List_Table extends \WP_List_Table {
 	 * @return array<mixed>
 	 */
 	private function filter_entries_data( $data ) {
-		if ( isset( $_GET['_wpnonce'] ) && ! wp_verify_nonce( sanitize_text_field( $_GET['_wpnonce'] ), 'srfm_entries_action' ) ) {
+		if ( isset( $_GET['_wpnonce'] ) && ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'srfm_entries_action' ) ) {
 			return;
 		}
 		// Handle the search according to entry ID.
@@ -776,7 +776,7 @@ class Entries_List_Table extends \WP_List_Table {
 	 * @return array<string,string>
 	 */
 	protected function get_views() {
-		if ( isset( $_GET['_wpnonce'] ) && ! wp_verify_nonce( sanitize_text_field( $_GET['_wpnonce'] ), 'srfm_entries_action' ) ) {
+		if ( isset( $_GET['_wpnonce'] ) && ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'srfm_entries_action' ) ) {
 			return;
 		}
 		$status_count = [
@@ -830,7 +830,7 @@ class Entries_List_Table extends \WP_List_Table {
 	 * @return void
 	 */
 	public static function process_bulk_actions() {
-		if ( ! isset( $_GET['_wpnonce'] ) || ! wp_verify_nonce( sanitize_text_field( $_GET['_wpnonce'] ), 'srfm_entries_action' ) ) {
+		if ( ! isset( $_GET['_wpnonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'srfm_entries_action' ) ) {
 			return;
 		}
 		// Check if the form is submitted with bulk action using GET.
@@ -848,7 +848,14 @@ class Entries_List_Table extends \WP_List_Table {
 					self::handle_entry_status( Helper::get_integer_value( $entry_id ), $action );
 				}
 
-				set_transient( 'srfm_bulk_action_message', [ 'action' => $action, 'count' => count( $entry_ids ) ], 10 ); // Transient expires in 10 seconds.
+				set_transient(
+					'srfm_bulk_action_message',
+					[
+						'action' => $action,
+						'count'  => count( $entry_ids ),
+					],
+					10
+				); // Transient expires in 10 seconds.
 				// Redirect to prevent form resubmission.
 				wp_safe_redirect( admin_url( 'admin.php?page=sureforms_entries' ) );
 				exit;
@@ -882,7 +889,7 @@ class Entries_List_Table extends \WP_List_Table {
 	 * @return bool
 	 */
 	public static function is_trash_view() {
-		return isset( $_GET['view'] ) && 'trash' === sanitize_text_field( $_GET['view'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		return isset( $_GET['view'] ) && 'trash' === sanitize_text_field( wp_unslash( $_GET['view'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 	}
 
 	/**
@@ -923,7 +930,7 @@ class Entries_List_Table extends \WP_List_Table {
 		if ( ! $bulk_action_message ) {
 			return;
 		}
-		if ( isset( $_GET['_wpnonce'] ) && ! wp_verify_nonce( sanitize_text_field( $_GET['_wpnonce'] ), 'srfm_entries_action' ) ) {
+		if ( isset( $_GET['_wpnonce'] ) && ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'srfm_entries_action' ) ) {
 			return;
 		}
 		// Manually delete the transient after retrieval to prevent it from being displayed again after page reload.
