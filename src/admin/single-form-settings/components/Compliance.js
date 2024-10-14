@@ -98,10 +98,14 @@ const Compliance = ( { complianceData } ) => {
 								/>
 								{ complianceData[ 0 ]
 									?.auto_delete_entries && (
-									<div>
+									<div
+									style={{
+										marginLeft: '50px',
+									}}
+									>
 										<label className="components-flex-item components-flex-block components-toggle-control__label">
 											{ __(
-												'Set the automatic deletion period for entries in this form (in days)',
+												'Set the automatic deletion period for entries of this form (in days)',
 												'sureforms'
 											) }
 										</label>
