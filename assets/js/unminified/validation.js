@@ -702,7 +702,7 @@ export async function fieldValidation(
 
 				if ( errorFound ) {
 					container.classList.add( 'srfm-error' );
-					setFirstErrorInput( visibleInput );
+					setFirstErrorInput( visibleInput, container );
 					validateResult = true;
 				} else if ( ! isRequired ) {
 					container.classList.remove( 'srfm-error' );
@@ -801,7 +801,7 @@ function addBlurListener( containerClass, blockClass ) {
 			if ( containerClass === 'srfm-dropdown-block' ) {
 				const blockName = areaField.getAttribute( 'name' );
 				setTimeout( () => {
-					window?.srfm?.[ blockName ].on( 'blur', function () {
+					window?.srfm?.[ blockName ]?.on( 'blur', function () {
 						fieldValidationInit( areaField, blockClass );
 					} );
 				}, 500 );
