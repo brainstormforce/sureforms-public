@@ -101,43 +101,15 @@ class Field_Mapping {
 					! empty( $question['fieldOptions'][0]['label'] )
 					) {
 						$merged_attributes['options'] = $question['fieldOptions'];
-
-						// remove icon from options for the dropdown field.
-						foreach ( $merged_attributes['options'] as $key => $option ) {
-							if ( ! empty( $merged_attributes['options'][ $key ]['icon'] ) ) {
-								$merged_attributes['options'][ $key ]['icon'] = '';
-							}
-						}
 					}
 					if ( 'multi-choice' === $question['fieldType'] ) {
-
-						// if any icon are same then remove the icon from the options using array_unique.
-						$icons        = array_column( $question['fieldOptions'], 'icon' );
-						$unique_icons = array_unique( $icons );
-						if ( count( $unique_icons ) === 1 ) {
-							foreach ( $question['fieldOptions'] as $key => $option ) {
-								$question['fieldOptions'][ $key ]['icon'] = '';
-							}
-						}
-
 						if ( ! empty( $question['fieldOptions'] ) && is_array( $question['fieldOptions'] )
 						&& ! empty( $question['fieldOptions'][0]['optionTitle'] )
 						) {
 							$merged_attributes['options'] = $question['fieldOptions'];
 						}
-
-						// if every option has an icon then set the verticalLayout to true.
-						if ( count( $icons ) === count( array_filter( $icons ) ) ) {
-							$merged_attributes['verticalLayout'] = true;
-						}
-
 						if ( ! empty( $question['singleSelection'] ) ) {
 							$merged_attributes['singleSelection'] = filter_var( $question['singleSelection'], FILTER_VALIDATE_BOOLEAN );
-						}
-
-						// if number of options is a multiple of 3 then set the choiceWidth to 33.3.
-						if ( ! empty( $merged_attributes['options'] ) && count( $merged_attributes['options'] ) % 3 === 0 ) {
-							$merged_attributes['choiceWidth'] = 33.33;
 						}
 					}
 					if ( 'phone' === $question['fieldType'] ) {
