@@ -1093,11 +1093,14 @@ class Post_Types {
 		}
 		if ( 'entries' === $column ) {
 			// Entries URL to redirect user based on the form ID.
-			$entries_url = add_query_arg(
-				[
-					'form_filter' => $post_id,
-				],
-				admin_url( 'admin.php?page=sureforms_entries' )
+			$entries_url = wp_nonce_url(
+				add_query_arg(
+					[
+						'form_filter' => $post_id,
+					],
+					admin_url( 'admin.php?page=sureforms_entries' )
+				),
+				'srfm_entries_action'
 			);
 
 			// Get the entry count for the form.

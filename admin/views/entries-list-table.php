@@ -168,8 +168,13 @@ class Entries_List_Table extends \WP_List_Table {
 	 * @return void
 	 */
 	public function prepare_items() {
-		if ( isset( $_GET['_wpnonce'] ) && ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'srfm_entries_action' ) ) {
-			return;
+		// If nonce verification fails, set the view to all else set the view to the view passed in the GET request.
+		if ( ! isset( $_GET['_wpnonce'] ) || ( isset( $_GET['_wpnonce'] ) && ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'srfm_entries_action' ) ) ) {
+			$view    = 'all';
+			$form_id = 0;
+		} else {
+			$view    = isset( $_GET['view'] ) ? sanitize_text_field( wp_unslash( $_GET['view'] ) ) : 'all';
+			$form_id = isset( $_GET['form_filter'] ) ? Helper::get_integer_value( sanitize_text_field( wp_unslash( $_GET['form_filter'] ) ) ) : 0;
 		}
 		$columns  = $this->get_columns();
 		$sortable = $this->get_sortable_columns();
@@ -177,8 +182,6 @@ class Entries_List_Table extends \WP_List_Table {
 
 		$per_page     = 10;
 		$current_page = $this->get_pagenum();
-		$view         = isset( $_GET['view'] ) ? sanitize_text_field( wp_unslash( $_GET['view'] ) ) : 'all';
-		$form_id      = isset( $_GET['form_filter'] ) ? Helper::get_integer_value( sanitize_text_field( wp_unslash( $_GET['form_filter'] ) ) ) : 0;
 
 		$data = $this->table_data( $per_page, $current_page, $view, $form_id );
 		$data = $this->filter_entries_data( $data );
@@ -470,14 +473,13 @@ class Entries_List_Table extends \WP_List_Table {
 	 * @return void
 	 */
 	protected function display_form_filter() {
-		if ( isset( $_GET['_wpnonce'] ) && ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'srfm_entries_action' ) ) {
-			return;
-		}
 		$forms = $this->get_available_forms();
 
 		echo '<select name="form_filter">';
 		echo '<option value="all">' . esc_html__( 'All Form Entries', 'sureforms' ) . '</option>';
 		foreach ( $forms as $form_id => $form_name ) {
+			// Adding the phpcs ignore nonce verification as no database operations are performed in this function.
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			$selected = ( isset( $_GET['form_filter'] ) && Helper::get_integer_value( sanitize_text_field( wp_unslash( $_GET['form_filter'] ) ) ) === $form_id ) ? ' selected="selected"' : '';
 			printf( '<option value="%s"%s>%s</option>', esc_attr( $form_id ), esc_attr( $selected ), esc_html( $form_name ) );
 		}
@@ -492,10 +494,10 @@ class Entries_List_Table extends \WP_List_Table {
 	 * @return void
 	 */
 	protected function display_month_filter() {
-		if ( isset( $_GET['_wpnonce'] ) && ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'srfm_entries_action' ) ) {
+		if ( isset( $_GET['month_filter'] ) && ! isset( $_GET['_wpnonce'] ) || ( isset( $_GET['_wpnonce'] ) && ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'srfm_entries_action' ) ) ) {
 			return;
 		}
-		$months = $this->get_available_months();
+		$months = Entries::get_available_months();
 
 		// Sort the months in descending order according to key.
 		krsort( $months );
@@ -542,12 +544,11 @@ class Entries_List_Table extends \WP_List_Table {
 	 * @return mixed
 	 */
 	protected function sort_data( $data1, $data2 ) {
-		if ( isset( $_GET['_wpnonce'] ) && ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'srfm_entries_action' ) ) {
-			return;
-		}
 		$orderby = 'ID';
 		$order   = 'desc';
 
+		// Adding the phpcs ignore nonce verification as no database operations are performed in this function.
+		// phpcs:disable WordPress.Security.NonceVerification.Recommended
 		if ( ! empty( $_GET['orderby'] ) ) {
 			$orderby = sanitize_text_field( wp_unslash( $_GET['orderby'] ) );
 			$orderby = 'id' === $orderby ? strtoupper( $orderby ) : $orderby;
@@ -556,6 +557,7 @@ class Entries_List_Table extends \WP_List_Table {
 		if ( ! empty( $_GET['order'] ) ) {
 			$order = sanitize_text_field( wp_unslash( $_GET['order'] ) );
 		}
+		// phpcs:enable WordPress.Security.NonceVerification.Recommended
 
 		if ( 'ID' === $orderby ) {
 			$result = Helper::get_integer_value( $data1[ $orderby ] ) - Helper::get_integer_value( $data2[ $orderby ] );
@@ -632,33 +634,6 @@ class Entries_List_Table extends \WP_List_Table {
 	}
 
 	/**
-	 * Populate the month/year filter dropdown.
-	 *
-	 * @since x.x.x
-	 * @return array<string>
-	 */
-	private function get_available_months() {
-		$months = [];
-		foreach ( $this->data as $entry ) {
-			if ( isset( $entry['created_at'] ) ) {
-				// Convert created_at to a DateTime object.
-				$date = new \DateTime( $entry['created_at'] );
-
-				// Get month in 'YYYYMM' format for value and 'Month Year' for display.
-				$month_value = $date->format( 'Ym' );   // Example: 202408.
-				$month_label = $date->format( 'F Y' );  // Example: August 2024.
-
-				// Add to months array if not already present.
-				if ( ! isset( $months[ $month_value ] ) ) {
-					$months[ $month_value ] = $month_label;
-				}
-			}
-		}
-
-		return $months;
-	}
-
-	/**
 	 * Populate the forms filter dropdown.
 	 *
 	 * @since x.x.x
@@ -695,8 +670,8 @@ class Entries_List_Table extends \WP_List_Table {
 	 * @return array<mixed>
 	 */
 	private function filter_entries_data( $data ) {
-		if ( isset( $_GET['_wpnonce'] ) && ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'srfm_entries_action' ) ) {
-			return;
+		if ( ! isset( $_GET['_wpnonce'] ) || ( isset( $_GET['_wpnonce'] ) && ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'srfm_entries_action' ) ) ) {
+			return $data;
 		}
 		// Handle the search according to entry ID.
 		$search_term = isset( $_GET['search_filter'] ) ? sanitize_text_field( wp_unslash( $_GET['search_filter'] ) ) : '';
@@ -706,9 +681,6 @@ class Entries_List_Table extends \WP_List_Table {
 
 		// Filter data based on the month and year selected.
 		$month_filter = isset( $_GET['month_filter'] ) ? sanitize_text_field( wp_unslash( $_GET['month_filter'] ) ) : '';
-
-		// Filter data based on the status (All, Unread, Trash).
-		$status_filter = isset( $_GET['view'] ) ? sanitize_text_field( wp_unslash( $_GET['view'] ) ) : 'all';
 
 		// Apply search filter, currently search is based on entry ID only and not text.
 		if ( ! empty( $search_term ) ) {
@@ -741,31 +713,6 @@ class Entries_List_Table extends \WP_List_Table {
 			);
 		}
 
-		// Apply status filter.
-		if ( ! empty( $status_filter ) && 'all' !== $status_filter ) {
-			$data = array_filter(
-				$data,
-				function( $entry ) use ( $status_filter ) {
-					if ( 'unread' === $status_filter ) {
-						return isset( $entry['status'] ) && 'unread' === $entry['status'];
-					} elseif ( 'trash' === $status_filter ) {
-						return isset( $entry['status'] ) && 'trash' === $entry['status'];
-					}
-					return true; // Return true for all other cases.
-				}
-			);
-		}
-
-		// Filter out trash entries if the status is 'all'.
-		if ( 'all' === $status_filter ) {
-			$data = array_filter(
-				$data,
-				function( $entry ) {
-					return ! isset( $entry['status'] ) || 'trash' !== $entry['status'];
-				}
-			);
-		}
-
 		return $data;
 	}
 
@@ -776,9 +723,7 @@ class Entries_List_Table extends \WP_List_Table {
 	 * @return array<string,string>
 	 */
 	protected function get_views() {
-		if ( isset( $_GET['_wpnonce'] ) && ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'srfm_entries_action' ) ) {
-			return;
-		}
+		// Get the status count of the entries.
 		$status_count = [
 			'all'    => Entries::get_total_entries_by_status( 'all' ),
 			'unread' => Entries::get_total_entries_by_status( 'unread' ),
@@ -786,37 +731,38 @@ class Entries_List_Table extends \WP_List_Table {
 		];
 
 		// Get the current view (All, Read, Unread, Trash) to highlight the selected one.
-		$current_view = isset( $_GET['view'] ) ? sanitize_text_field( wp_unslash( $_GET['view'] ) ) : 'all';
+		// Adding the phpcs ignore nonce verification as no complex operations are performed here only the count of the entries is required.
+		$current_view = isset( $_GET['view'] ) ? sanitize_text_field( wp_unslash( $_GET['view'] ) ) : 'all'; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 
 		// Define the base URL for the views (without query parameters).
-		$base_url = esc_url( admin_url( 'admin.php?page=sureforms_entries' ) );
+		$base_url = wp_nonce_url( admin_url( 'admin.php?page=sureforms_entries' ), 'srfm_entries_action' );
 
 		// Create the array of view links.
 		$views = [
 			'all'    => sprintf(
-				'<a href="%1$s" class="%2$s">%3$s</a>',
+				'<a href="%1$s" class="%2$s">%3$s <span class="count">(%4$d)</span></a>',
 				add_query_arg( 'view', 'all', $base_url ),
 				( 'all' === $current_view ) ? 'current' : '',
-				/* translators: %d refers to the number of entries in 'All' view. */
-				sprintf( __( 'All <span class="count">(%d)</span>', 'sureforms' ), $status_count['all'] )
+				esc_html__( 'All', 'sureforms' ),
+				$status_count['all']
 			),
 			'unread' => sprintf(
-				'<a href="%1$s" class="%2$s">%3$s</a>',
+				'<a href="%1$s" class="%2$s">%3$s <span class="count">(%4$d)</span></a>',
 				add_query_arg( 'view', 'unread', $base_url ),
 				( 'unread' === $current_view ) ? 'current' : '',
-				/* translators: %d refers to the number of unread entries. */
-				sprintf( __( 'Unread <span class="count">(%d)</span>', 'sureforms' ), $status_count['unread'] )
+				esc_html__( 'Unread', 'sureforms' ),
+				$status_count['unread']
 			),
 		];
 
 		// Only add the Trash view if the count is greater than 0.
 		if ( $status_count['trash'] > 0 ) {
 			$views['trash'] = sprintf(
-				'<a href="%1$s" class="%2$s">%3$s</a>',
+				'<a href="%1$s" class="%2$s">%3$s <span class="count">(%4$d)</span></a>',
 				add_query_arg( 'view', 'trash', $base_url ),
 				( 'trash' === $current_view ) ? 'current' : '',
-				/* translators: %d refers to the number of entries in the trash. */
-				sprintf( __( 'Trash <span class="count">(%d)</span>', 'sureforms' ), $status_count['trash'] )
+				esc_html__( 'Trash', 'sureforms' ),
+				$status_count['trash']
 			);
 		}
 
@@ -833,33 +779,30 @@ class Entries_List_Table extends \WP_List_Table {
 		if ( ! isset( $_GET['_wpnonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'srfm_entries_action' ) ) {
 			return;
 		}
-		// Check if the form is submitted with bulk action using GET.
-		if ( isset( $_GET['action'] ) && isset( $_GET['entry'] ) ) {
 
-			// Get the selected entry IDs.
-			$entry_ids = isset( $_GET['entry'] ) ? array_map( 'sanitize_text_field', wp_unslash( $_GET['entry'] ) ) : [];
+		// Get the selected entry IDs.
+		$entry_ids = isset( $_GET['entry'] ) ? array_map( 'sanitize_text_field', wp_unslash( $_GET['entry'] ) ) : [];
 
-			// If there are entry IDs selected, process the bulk action.
-			if ( ! empty( $entry_ids ) ) {
-				$action = sanitize_text_field( wp_unslash( $_GET['action'] ) );
+		// If there are entry IDs selected, process the bulk action.
+		if ( ! empty( $entry_ids ) ) {
+			$action = isset( $_GET['action'] ) ? sanitize_text_field( wp_unslash( $_GET['action'] ) ) : '';
 
-				// Update the status of each selected entry.
-				foreach ( $entry_ids as $entry_id ) {
-					self::handle_entry_status( Helper::get_integer_value( $entry_id ), $action );
-				}
-
-				set_transient(
-					'srfm_bulk_action_message',
-					[
-						'action' => $action,
-						'count'  => count( $entry_ids ),
-					],
-					10
-				); // Transient expires in 10 seconds.
-				// Redirect to prevent form resubmission.
-				wp_safe_redirect( admin_url( 'admin.php?page=sureforms_entries' ) );
-				exit;
+			// Update the status of each selected entry.
+			foreach ( $entry_ids as $entry_id ) {
+				self::handle_entry_status( Helper::get_integer_value( $entry_id ), $action );
 			}
+
+			set_transient(
+				'srfm_bulk_action_message',
+				[
+					'action' => $action,
+					'count'  => count( $entry_ids ),
+				],
+				30
+			); // Transient expires in 30 seconds.
+			// Redirect to prevent form resubmission.
+			wp_safe_redirect( admin_url( 'admin.php?page=sureforms_entries' ) );
+			exit;
 		}
 	}
 
@@ -928,9 +871,6 @@ class Entries_List_Table extends \WP_List_Table {
 	public static function display_bulk_action_notice() {
 		$bulk_action_message = get_transient( 'srfm_bulk_action_message' );
 		if ( ! $bulk_action_message ) {
-			return;
-		}
-		if ( isset( $_GET['_wpnonce'] ) && ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'srfm_entries_action' ) ) {
 			return;
 		}
 		// Manually delete the transient after retrieval to prevent it from being displayed again after page reload.
