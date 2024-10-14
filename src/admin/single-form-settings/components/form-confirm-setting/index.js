@@ -6,6 +6,7 @@ import { __ } from '@wordpress/i18n';
 import Select from 'react-select';
 import { useDebouncedCallback } from 'use-debounce';
 import Editor from '../QuillEditor';
+// import KeyValueUI from '@components/misc/keyValueUI';
 
 const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 	const sureforms_keys = useSelect( ( select ) =>
@@ -339,6 +340,18 @@ const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 										} ) }
 									/>
 								</div>
+								<KeyValueUI
+									editorData={ {} }
+									dataId={ 'custom_data_filters' }
+									label={ __( 'Add Data Filters', 'sureforms-pro' ) }
+									helpText={ __(
+										'Select if you want to modify the data payload',
+										'sureforms-pro'
+									) }
+									withSmartTags={ true }
+									header={ __( 'Custom Data Filters', 'sureforms-pro' ) }
+									handleOnChange={ handleOnChange }
+								/>
 							</div>
 						) }
 						{ data?.confirmation_type === 'custom url' && (
