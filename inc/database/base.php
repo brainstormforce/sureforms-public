@@ -561,7 +561,7 @@ abstract class Base {
 	 * @return int|false The number of rows updated, or false on error.
 	 */
 	public function use_update( $data, $where ) { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore -- It is okay. This is our wrapper method.
-		$prepared_data = $this->prepare_data( $data );
+		$prepared_data = $this->prepare_data( $data, true );
 
 		/**
 		 * Data format specifier.
@@ -611,10 +611,11 @@ abstract class Base {
 	 *                               Default is an empty array.
 	 * @param string        $columns Optional. A string specifying which columns to select. Defaults to '*' (all columns).
 	 * @param array<string> $extra_queries Optional. Array of extra queries to append at the end of main query.
+	 * @param boolean       $decode Optional. Whether to decode the results by datatype. Default is true.
 	 * @since 0.0.10
 	 * @return array<mixed> An associative array of results where each element represents a row, or an empty array if no results are found.
 	 */
-	public function get_results( $where_clauses = [], $columns = '*', $extra_queries = [] ) {
+	public function get_results( $where_clauses = [], $columns = '*', $extra_queries = [], $decode = true ) {
 		$wpdb = $this->wpdb;
 
 		$table_name = $this->get_tablename();
@@ -641,7 +642,7 @@ abstract class Base {
 		// phpcs:ignore
 		$results = $wpdb->get_results( $query, ARRAY_A );
 
-		if ( ! empty( $results ) && is_array( $results ) ) {
+		if ( $decode && ! empty( $results ) && is_array( $results ) ) {
 			foreach ( $results as &$result ) {
 				$result = $this->decode_by_datatype( $result );
 			}
@@ -649,6 +650,40 @@ abstract class Base {
 
 		// Execute the query and return results.
 		return Helper::get_array_value( $this->cache_set( $query, $results ) );
+	}
+
+	/**
+	 * Get the total number of rows in the table.
+	 *
+	 * @param array<mixed> $where_clauses Optional. An associative array of WHERE clauses for the SQL query.
+	 * @since x.x.x
+	 * @return int The total number of rows in the table.
+	 */
+	public function get_total_count( $where_clauses = [] ) {
+		$wpdb = $this->wpdb;
+
+		$table_name = $this->get_tablename();
+
+		// Start building the query.
+		$query = "SELECT COUNT(*) FROM {$table_name}";
+
+		// If there are WHERE clauses, prepare and append them to the query.
+		$query .= $this->prepare_where_clauses( $where_clauses );
+
+		// Add a semicolon at the end of the query.
+		$query = rtrim( trim( $query ), ';' ) . ';';
+
+		$cached_results = $this->cache_get( $query );
+		if ( $cached_results ) {
+			// Return the cached data if exists.
+			return Helper::get_integer_value( $cached_results );
+		}
+
+		// phpcs:ignore
+		$results = Helper::get_integer_value( $wpdb->get_var( $query ) );
+
+		// Execute the query and return the integer count.
+		return Helper::get_integer_value( $this->cache_set( $query, $results ) );
 	}
 
 	/**
@@ -734,18 +769,19 @@ abstract class Base {
 	 *
 	 * @param array<mixed> $data An associative array of data where the key is the column name and the value is the data to process.
 	 *                    Missing values will be replaced with default values specified in the schema.
+	 * @param boolean      $skip_defaults Whether or not to skip the defaults values. Pass true if updating the data.
 	 * @since 0.0.10
 	 * @return array<array<mixed>> An associative array containing:
 	 *                - 'data': Prepared data with values encoded according to their data types.
 	 *                - 'format': An array of format specifiers corresponding to the data values.
 	 */
-	protected function prepare_data( $data ) {
+	protected function prepare_data( $data, $skip_defaults = false ) {
 		$_data  = [];
 		$format = [];
 		foreach ( $this->get_schema() as $key => $value ) {
 			// Process defaults.
 			if ( ! isset( $data[ $key ] ) ) {
-				if ( ! isset( $value['default'] ) ) {
+				if ( $skip_defaults || ! isset( $value['default'] ) ) {
 					continue;
 				}
 				$data[ $key ] = $value['default'];

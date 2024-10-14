@@ -72,13 +72,13 @@ class Entries extends Base {
 				'type'    => 'number',
 				'default' => 0,
 			],
-			// Current entry status: ['read', 'unread'].
+			// Current entry status: 'read', 'unread' and 'trash'.
 			'status'          => [
 				'type'    => 'string',
 				'default' => 'unread',
 			],
 			// Entry's form type eg quiz, standard etc. Default empty or null means standard.
-			'type'          => [
+			'type'            => [
 				'type' => 'string',
 			],
 			// Submitted form data by user.
@@ -100,6 +100,10 @@ class Entries extends Base {
 			'logs'            => [
 				'type'    => 'array',
 				'default' => [],
+			],
+			// Entry submitted date and time.
+			'created_at'      => [
+				'type' => 'datetime',
 			],
 			// Any misc extra data that needs to be saved.
 			'extras'          => [
@@ -329,5 +333,68 @@ class Entries extends Base {
 				sprintf( 'LIMIT %1$d, %2$d', absint( $_args['offset'] ), absint( $_args['limit'] ) ),
 			]
 		);
+	}
+
+	/**
+	 * Get the total count of entries by status.
+	 *
+	 * @param string   $status The status of the entries to count.
+	 * @param int|null $form_id The ID of the form to count entries for.
+	 * @since x.x.x
+	 * @return int The total number of entries with the specified status.
+	 */
+	public static function get_total_entries_by_status( $status = 'all', $form_id = 0 ) {
+		switch ( $status ) {
+			case 'all':
+				$where_clause = [
+					[
+						[
+							'key'     => 'status',
+							'compare' => '!=',
+							'value'   => 'trash',
+						],
+					],
+				];
+				if ( 0 < $form_id ) {
+					$where_clause[] = [
+						[
+							'key'     => 'form_id',
+							'compare' => '=',
+							'value'   => $form_id,
+						],
+					];
+				}
+				return self::get_instance()->get_total_count( $where_clause );
+			case 'unread':
+			case 'trash':
+				return self::get_instance()->get_total_count( [ 'status' => $status ] );
+			default:
+				return self::get_instance()->get_total_count();
+		}
+	}
+
+	/**
+	 * Get the available months for entries.
+	 *
+	 * @since x.x.x
+	 * @return array<int|string, mixed>
+	 */
+	public static function get_available_months() {
+		$results = self::get_instance()->get_results(
+			[],
+			'DISTINCT DATE_FORMAT(created_at, "%Y%m") as month_value, DATE_FORMAT(created_at, "%M %Y") as month_label',
+			[
+				'ORDER BY month_value ASC',
+			],
+			false
+		);
+
+		$months = [];
+		foreach ( $results as $result ) {
+			if ( is_array( $result ) && isset( $result['month_value'], $result['month_label'] ) ) {
+				$months[ $result['month_value'] ] = $result['month_label'];
+			}
+		}
+		return $months;
 	}
 }

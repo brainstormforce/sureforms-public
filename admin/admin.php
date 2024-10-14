@@ -10,6 +10,10 @@ namespace SRFM\Admin;
 use SRFM\Inc\Traits\Get_Instance;
 use SRFM\Inc\AI_Form_Builder\AI_Helper;
 use SRFM\Inc\Helper;
+use SRFM\Admin\Views\Single_Entry;
+use SRFM\Admin\Views\Entries_List_Table;
+use SRFM\Inc\Post_Types;
+use SRFM\Inc\Database\Tables\Entries;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -43,6 +47,10 @@ class Admin {
 		add_action( 'uag_enable_quick_action_sidebar', [ $this, 'restrict_spectra_quick_action_bar' ] );
 
 		add_action( 'current_screen', [ $this, 'enable_gutenberg_for_sureforms' ], 100 );
+
+		// Handle entry actions.
+		add_action( 'admin_init', [ $this, 'handle_entry_actions' ] );
+		add_action( 'admin_notices', [ Entries_List_Table::class, 'display_bulk_action_notice' ] );
 	}
 
 	/**
@@ -186,6 +194,15 @@ class Admin {
 			[ $this, 'add_new_form_callback' ],
 			2
 		);
+		add_submenu_page(
+			'sureforms_menu',
+			__( 'Entries', 'sureforms' ),
+			__( 'Entries', 'sureforms' ),
+			'edit_others_posts',
+			'sureforms_entries',
+			[ $this, 'render_entries' ],
+			3
+		);
 	}
 
 	/**
@@ -196,6 +213,39 @@ class Admin {
 	 */
 	public function add_new_form_callback() {
 		echo '<div id="srfm-add-new-form-container"></div>';
+	}
+
+	/**
+	 * Entries page callback.
+	 *
+	 * @since x.x.x
+	 * @return void
+	 */
+	public function render_entries() {
+		// Render single entry view.
+		// Adding the phpcs ignore nonce verification as no database operations are performed in this function, it is used to display the single entry view.
+		if ( isset( $_GET['entry_id'] ) && is_numeric( $_GET['entry_id'] ) && isset( $_GET['view'] ) && 'details' === $_GET['view'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			$single_entry_view = new Single_Entry();
+			$single_entry_view->render();
+			return;
+		}
+
+		// Render all entries view.
+		$entries_table = new Entries_List_Table();
+		$entries_table->prepare_items();
+		echo '<div class="wrap"><h1 class="wp-heading-inline">Entries</h1>';
+		if ( 0 >= $entries_table->entries_count ) {
+			$instance = Post_Types::get_instance();
+			$instance->sureforms_render_blank_state( SRFM_ENTRIES_POST_TYPE );
+			$instance->get_blank_state_styles();
+			return;
+		}
+		echo '<form method="get">';
+		echo '<input type="hidden" name="page" value="sureforms_entries">';
+		$entries_table->search_box_markup( esc_html__( 'Search', 'sureforms' ), 'srfm-entries' );
+		$entries_table->display();
+		echo '</form>';
+		echo '</div>';
 	}
 
 	/**
@@ -380,6 +430,11 @@ class Admin {
 
 		if ( 'sureforms_page_sureforms_form_settings' === $current_screen->id ) {
 			wp_enqueue_style( SRFM_SLUG . '-settings', $css_uri . 'backend/settings' . $file_prefix . '.css', [], SRFM_VER );
+		}
+
+		// Enqueue styles for the entries page.
+		if ( 'sureforms_page_sureforms_entries' === $current_screen->id ) {
+			wp_enqueue_style( SRFM_SLUG . '-entries', $css_uri . 'backend/entries' . $file_prefix . '.css', [], SRFM_VER );
 		}
 
 		// Admin Submenu Styles.
@@ -577,4 +632,35 @@ class Admin {
 
 		return esc_url( $url );
 	}
+
+	// Entries methods.
+
+	/**
+	 * Handle entry actions.
+	 *
+	 * @since x.x.x
+	 * @return void
+	 */
+	public function handle_entry_actions() {
+		if ( isset( $_GET['entry'] ) && isset( $_GET['action'] ) ) {
+			Entries_List_Table::process_bulk_actions();
+			return;
+		}
+		if ( ! isset( $_GET['page'] ) || 'sureforms_entries' !== $_GET['page'] ) {
+			return;
+		}
+		if ( ! isset( $_GET['entry_id'] ) || ! isset( $_GET['action'] ) ) {
+			return;
+		}
+		if ( ! isset( $_GET['_wpnonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'srfm_entries_action' ) ) {
+			wp_die( esc_html__( 'Nonce verification failed.', 'sureforms' ) );
+		}
+		$action   = isset( $_GET['action'] ) ? sanitize_text_field( wp_unslash( $_GET['action'] ) ) : '';
+		$entry_id = intval( $_GET['entry_id'] );
+		$view     = isset( $_GET['view'] ) ? sanitize_text_field( wp_unslash( $_GET['view'] ) ) : '';
+		if ( $entry_id > 0 ) {
+			Entries_List_Table::handle_entry_status( $entry_id, $action, $view );
+		}
+	}
+
 }
