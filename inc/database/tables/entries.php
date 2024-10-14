@@ -78,7 +78,7 @@ class Entries extends Base {
 				'default' => 'unread',
 			],
 			// Entry's form type eg quiz, standard etc. Default empty or null means standard.
-			'type'          => [
+			'type'            => [
 				'type' => 'string',
 			],
 			// Submitted form data by user.
@@ -333,5 +333,43 @@ class Entries extends Base {
 				sprintf( 'LIMIT %1$d, %2$d', absint( $_args['offset'] ), absint( $_args['limit'] ) ),
 			]
 		);
+	}
+
+	/**
+	 * Get the total count of entries by status.
+	 *
+	 * @param string   $status The status of the entries to count.
+	 * @param int|null $form_id The ID of the form to count entries for.
+	 * @since x.x.x
+	 * @return int The total number of entries with the specified status.
+	 */
+	public static function get_total_entries_by_status( $status = 'all', $form_id = 0 ) {
+		switch ( $status ) {
+			case 'all':
+				$where_clause = [
+					[
+						[
+							'key'     => 'status',
+							'compare' => '!=',
+							'value'   => 'trash',
+						],
+					],
+				];
+				if ( 0 < $form_id ) {
+					$where_clause[] = [
+						[
+							'key'     => 'form_id',
+							'compare' => '=',
+							'value'   => $form_id,
+						],
+					];
+				}
+				return self::get_instance()->get_total_count( $where_clause );
+			case 'unread':
+			case 'trash':
+				return self::get_instance()->get_total_count( [ 'status' => $status ] );
+			default:
+				return self::get_instance()->get_total_count();
+		}
 	}
 }

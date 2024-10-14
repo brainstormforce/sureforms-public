@@ -3,6 +3,7 @@
  * SureForms Entries Table Class.
  *
  * @package sureforms.
+ * @since x.x.x
  */
 
 namespace SRFM\Admin\Views;
@@ -17,6 +18,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+/**
+ * Check if WP_List_Table class exists and if not, load it.
+ *
+ * @since x.x.x
+ */
 if ( ! class_exists( 'WP_List_Table' ) ) {
 	require_once ABSPATH . 'wp-admin/includes/class-wp-list-table.php';
 }
@@ -41,38 +47,6 @@ class Entries_List_Table extends \WP_List_Table {
 	 * @since x.x.x
 	 */
 	public $entries_count;
-
-	/**
-	 * Remove unnecessary query arguments from the URL.
-	 * WIP: This is currently work in progress and will be improved later.
-	 *
-	 * @since x.x.x
-	 * @return void
-	 */
-	public static function remove_query_args() {
-		if ( isset( $_GET['srfm_entries_nonce'] ) && ! wp_verify_nonce( sanitize_key( $_GET['srfm_entries_nonce'] ), 'srfm_entries_action' ) ) {
-			return;
-		}
-		$remove_args = [
-			'action',
-			'action2',
-			'form_filter',
-			'month_filter',
-			'search_filter',
-			'filter_action',
-			'srfm_entries_nonce',
-			'_wp_http_referer',
-		];
-
-		if ( isset( $_GET['paged'] ) && (int) sanitize_key( $_GET['paged'] ) < 2 ) {
-			$remove_args[] = 'paged';
-		}
-		if ( isset( $_SERVER['REQUEST_URI'] ) ) {
-			// Adding the phpcs ignore to avoid removing slashes from the URL.
-			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash
-			$_SERVER['REQUEST_URI'] = remove_query_arg( $remove_args, esc_url_raw( $_SERVER['REQUEST_URI'] ) );
-		}
-	}
 
 	/**
 	 * Override the parent columns method. Defines the columns to use in your listing table.
@@ -143,12 +117,47 @@ class Entries_List_Table extends \WP_List_Table {
 	/**
 	 * Get the entries data.
 	 *
+	 * @param int      $per_page Number of entries to fetch per page.
+	 * @param int      $current_page Current page number.
+	 * @param string   $view The view to fetch the entries count from.
+	 * @param int|null $form_id The ID of the form to fetch entries for.
+	 *
 	 * @since x.x.x
 	 * @return array
 	 */
-	private function table_data() {
-		$this->data          = Entries::get_all();
-		$this->entries_count = count( $this->data );
+	private function table_data( $per_page, $current_page, $view, $form_id = 0 ) {
+		$offset = ( $current_page - 1 ) * $per_page;
+		// If view is all, then we need to fetch all entries except the trash.
+		$compare = 'all' === $view ? '!=' : '=';
+		$value   = 'all' === $view ? 'trash' : $view;
+		// Default where clause for all views.
+		$where_condition = [
+			[
+				[
+					'key'     => 'status',
+					'compare' => $compare,
+					'value'   => $value,
+				],
+			],
+		];
+		// If form ID is set, then we need to add the form ID condition to the where clause to fetch entries only for that form.
+		if ( 0 < $form_id ) {
+			$where_condition[] = [
+				[
+					'key'     => 'form_id',
+					'compare' => '=',
+					'value'   => $form_id,
+				],
+			];
+		}
+		$this->data          = Entries::get_all(
+			[
+				'limit'  => $per_page,
+				'offset' => $offset,
+				'where'  => $where_condition,
+			]
+		);
+		$this->entries_count = Entries::get_total_entries_by_status( $view, $form_id );
 		return $this->data;
 	}
 
@@ -159,26 +168,31 @@ class Entries_List_Table extends \WP_List_Table {
 	 * @return void
 	 */
 	public function prepare_items() {
-		self::remove_query_args();
+		if ( isset( $_GET['_wpnonce'] ) && ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'srfm_entries_action' ) ) {
+			return;
+		}
 		$columns  = $this->get_columns();
-		$hidden   = [];
 		$sortable = $this->get_sortable_columns();
-		$data     = $this->table_data();
-		$data     = $this->filter_entries_data( $data );
+		$hidden   = [];
 
-		usort( $data, [ $this, 'sort_data' ] );
 		$per_page     = 10;
 		$current_page = $this->get_pagenum();
-		$total_items  = count( $data );
+		$view         = isset( $_GET['view'] ) ? sanitize_text_field( wp_unslash( $_GET['view'] ) ) : 'all';
+		$form_id      = isset( $_GET['form_filter'] ) ? Helper::get_integer_value( sanitize_text_field( wp_unslash( $_GET['form_filter'] ) ) ) : 0;
+
+		$data = $this->table_data( $per_page, $current_page, $view, $form_id );
+		$data = $this->filter_entries_data( $data );
+
+		usort( $data, [ $this, 'sort_data' ] );
 
 		$this->set_pagination_args(
 			[
-				'total_items' => $total_items,
+				'total_items' => $this->entries_count,
+				'total_pages' => ceil( $this->entries_count / $per_page ),
 				'per_page'    => $per_page,
 			]
 		);
 
-		$data                  = array_slice( $data, ( ( $current_page - 1 ) * $per_page ), $per_page );
 		$this->_column_headers = [ $columns, $hidden, $sortable ];
 		$this->items           = $data;
 	}
@@ -197,8 +211,7 @@ class Entries_List_Table extends \WP_List_Table {
 			case 'id':
 				return $this->column_id( $item );
 			case 'form_name':
-				$form_name = ! empty( get_the_title( $item['form_id'] ) ) ? get_the_title( $item['form_id'] ) : 'SureForms Form #' . intval( $item['form_id'] );
-				return $form_name;
+				return $this->column_form_name( $item );
 			case 'status':
 				return $this->column_status( $item );
 			case 'first_field':
@@ -246,11 +259,26 @@ class Entries_List_Table extends \WP_List_Table {
 		);
 
 		return sprintf(
-			'<strong><a class="row-title" href="%1$s">%2$s%3$s</a></strong>' . $this->row_actions( $this->package_row_actions( $item ) ),
+			'<strong><a class="row-title" href="%1$s">%2$s%3$s</a></strong>',
 			$view_url,
 			esc_html__( 'Entry #', 'sureforms' ),
 			$entry_id
-		);
+		) . $this->row_actions( $this->package_row_actions( $item ) );
+	}
+
+	/**
+	 * Define the data for the "form name" column and return the markup.
+	 *
+	 * @param array $item Column data.
+	 *
+	 * @since x.x.x
+	 * @return string
+	 */
+	protected function column_form_name( $item ) {
+		$form_name = get_the_title( $item['form_id'] );
+		// translators: %1$s is the word "form", %2$d is the form ID.
+		$form_name = ! empty( $form_name ) ? $form_name : sprintf( 'SureForms %1$s #%2$d', esc_html__( 'Form', 'sureforms' ), Helper::get_integer_value( $item['form_id'] ) );
+		return sprintf( '<strong><a class="row-title" href="%1$s" target="_blank">%2$s</a></strong>', get_edit_post_link( $item['form_id'] ), esc_html( $form_name ) );
 	}
 
 	/**
@@ -262,12 +290,23 @@ class Entries_List_Table extends \WP_List_Table {
 	 * @return string
 	 */
 	protected function column_status( $item ) {
-		$status = esc_attr( $item['status'] );
+		$translated_status = '';
+		switch ( $item['status'] ) {
+			case 'read':
+				$translated_status = esc_html__( 'Read', 'sureforms' );
+				break;
+			case 'unread':
+				$translated_status = esc_html__( 'Unread', 'sureforms' );
+				break;
+			case 'trash':
+				$translated_status = esc_html__( 'Trash', 'sureforms' );
+				break;
+		}
 
 		return sprintf(
-			'<span class="%1$s">%2$s</span>',
-			'read' === $status ? 'status-read' : 'status-unread',
-			$status
+			'<span class="status-%1$s">%2$s</span>',
+			esc_attr( $item['status'] ),
+			$translated_status
 		);
 	}
 
@@ -325,11 +364,15 @@ class Entries_List_Table extends \WP_List_Table {
 			)
 		);
 		$trash_url   = esc_url(
-			add_query_arg(
-				[
-					'entry_id' => esc_attr( $item['ID'] ),
-					'action'   => 'trash',
-				]
+			wp_nonce_url(
+				add_query_arg(
+					[
+						'entry_id' => esc_attr( $item['ID'] ),
+						'action'   => 'trash',
+					],
+					admin_url( 'admin.php?page=sureforms_entries' )
+				),
+				'srfm_entries_action'
 			)
 		);
 		$row_actions = [
@@ -344,22 +387,28 @@ class Entries_List_Table extends \WP_List_Table {
 
 			// Add Restore and Delete actions.
 			$restore_url = esc_url(
-				add_query_arg(
-					[
-						'entry_id' => esc_attr( $item['ID'] ),
-						'action'   => 'restore',
-					],
-					admin_url( 'admin.php?page=sureforms_entries' )
+				wp_nonce_url(
+					add_query_arg(
+						[
+							'entry_id' => esc_attr( $item['ID'] ),
+							'action'   => 'restore',
+						],
+						admin_url( 'admin.php?page=sureforms_entries' )
+					),
+					'srfm_entries_action'
 				)
 			);
 
 			$delete_url             = esc_url(
-				add_query_arg(
-					[
-						'entry_id' => esc_attr( $item['ID'] ),
-						'action'   => 'delete',
-					],
-					admin_url( 'admin.php?page=sureforms_entries' )
+				wp_nonce_url(
+					add_query_arg(
+						[
+							'entry_id' => esc_attr( $item['ID'] ),
+							'action'   => 'delete',
+						],
+						admin_url( 'admin.php?page=sureforms_entries' )
+					),
+					'srfm_entries_action'
 				)
 			);
 			$row_actions['restore'] = sprintf( '<a href="%1$s">%2$s</a>', esc_url( $restore_url ), esc_html__( 'Restore', 'sureforms' ) );
@@ -397,7 +446,7 @@ class Entries_List_Table extends \WP_List_Table {
 	 */
 	protected function display_tablenav( $which ) {
 		if ( 'top' === $which ) {
-			wp_nonce_field( 'srfm_entries_action', 'srfm_entries_nonce' );
+			wp_nonce_field( 'srfm_entries_action' );
 		}
 		?>
 		<div class="tablenav <?php echo esc_attr( $which ); ?>">
@@ -421,7 +470,7 @@ class Entries_List_Table extends \WP_List_Table {
 	 * @return void
 	 */
 	protected function display_form_filter() {
-		if ( isset( $_GET['srfm_entries_nonce'] ) && ! wp_verify_nonce( sanitize_key( $_GET['srfm_entries_nonce'] ), 'srfm_entries_action' ) ) {
+		if ( isset( $_GET['_wpnonce'] ) && ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'srfm_entries_action' ) ) {
 			return;
 		}
 		$forms = $this->get_available_forms();
@@ -429,7 +478,7 @@ class Entries_List_Table extends \WP_List_Table {
 		echo '<select name="form_filter">';
 		echo '<option value="all">' . esc_html__( 'All Form Entries', 'sureforms' ) . '</option>';
 		foreach ( $forms as $form_id => $form_name ) {
-			$selected = ( isset( $_GET['form_filter'] ) && intval( $_GET['form_filter'] ) === $form_id ) ? ' selected="selected"' : '';
+			$selected = ( isset( $_GET['form_filter'] ) && Helper::get_integer_value( sanitize_text_field( wp_unslash( $_GET['form_filter'] ) ) ) === $form_id ) ? ' selected="selected"' : '';
 			printf( '<option value="%s"%s>%s</option>', esc_attr( $form_id ), esc_attr( $selected ), esc_html( $form_name ) );
 		}
 		echo '</select>';
@@ -443,7 +492,7 @@ class Entries_List_Table extends \WP_List_Table {
 	 * @return void
 	 */
 	protected function display_month_filter() {
-		if ( isset( $_GET['srfm_entries_nonce'] ) && ! wp_verify_nonce( sanitize_key( $_GET['srfm_entries_nonce'] ), 'srfm_entries_action' ) ) {
+		if ( isset( $_GET['_wpnonce'] ) && ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'srfm_entries_action' ) ) {
 			return;
 		}
 		$months = $this->get_available_months();
@@ -454,7 +503,7 @@ class Entries_List_Table extends \WP_List_Table {
 		echo '<select name="month_filter">';
 		echo '<option value="all">' . esc_html__( 'All Dates', 'sureforms' ) . '</option>';
 		foreach ( $months as $month_value => $month_label ) {
-			$selected = ( isset( $_GET['month_filter'] ) && Helper::get_string_value( $month_value ) === sanitize_key( $_GET['month_filter'] ) ) ? ' selected="selected"' : '';
+			$selected = ( isset( $_GET['month_filter'] ) && Helper::get_string_value( $month_value ) === sanitize_text_field( wp_unslash( $_GET['month_filter'] ) ) ) ? ' selected="selected"' : '';
 			printf( '<option value="%s"%s>%s</option>', esc_attr( $month_value ), esc_attr( $selected ), esc_html( $month_label ) );
 		}
 		echo '</select>';
@@ -493,23 +542,23 @@ class Entries_List_Table extends \WP_List_Table {
 	 * @return mixed
 	 */
 	protected function sort_data( $data1, $data2 ) {
-		if ( isset( $_GET['srfm_entries_nonce'] ) && ! wp_verify_nonce( sanitize_key( $_GET['srfm_entries_nonce'] ), 'srfm_entries_action' ) ) {
+		if ( isset( $_GET['_wpnonce'] ) && ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'srfm_entries_action' ) ) {
 			return;
 		}
 		$orderby = 'ID';
 		$order   = 'desc';
 
 		if ( ! empty( $_GET['orderby'] ) ) {
-			$orderby = sanitize_key( wp_unslash( $_GET['orderby'] ) );
+			$orderby = sanitize_text_field( wp_unslash( $_GET['orderby'] ) );
 			$orderby = 'id' === $orderby ? strtoupper( $orderby ) : $orderby;
 		}
 
 		if ( ! empty( $_GET['order'] ) ) {
-			$order = sanitize_key( wp_unslash( $_GET['order'] ) );
+			$order = sanitize_text_field( wp_unslash( $_GET['order'] ) );
 		}
 
 		if ( 'ID' === $orderby ) {
-			$result = intval( $data1[ $orderby ] ) - intval( $data2[ $orderby ] );
+			$result = Helper::get_integer_value( $data1[ $orderby ] ) - Helper::get_integer_value( $data2[ $orderby ] );
 		} else {
 			$result = strcmp( $data1[ $orderby ], $data2[ $orderby ] );
 		}
@@ -646,20 +695,20 @@ class Entries_List_Table extends \WP_List_Table {
 	 * @return array<mixed>
 	 */
 	private function filter_entries_data( $data ) {
-		if ( isset( $_GET['srfm_entries_nonce'] ) && ! wp_verify_nonce( sanitize_key( $_GET['srfm_entries_nonce'] ), 'srfm_entries_action' ) ) {
+		if ( isset( $_GET['_wpnonce'] ) && ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'srfm_entries_action' ) ) {
 			return;
 		}
 		// Handle the search according to entry ID.
-		$search_term = isset( $_GET['search_filter'] ) ? sanitize_key( wp_unslash( $_GET['search_filter'] ) ) : '';
+		$search_term = isset( $_GET['search_filter'] ) ? sanitize_text_field( wp_unslash( $_GET['search_filter'] ) ) : '';
 
 		// Filter the data based on the form name selected.
-		$form_filter = isset( $_GET['form_filter'] ) ? sanitize_key( wp_unslash( $_GET['form_filter'] ) ) : '';
+		$form_filter = isset( $_GET['form_filter'] ) ? sanitize_text_field( wp_unslash( $_GET['form_filter'] ) ) : '';
 
 		// Filter data based on the month and year selected.
-		$month_filter = isset( $_GET['month_filter'] ) ? sanitize_key( wp_unslash( $_GET['month_filter'] ) ) : '';
+		$month_filter = isset( $_GET['month_filter'] ) ? sanitize_text_field( wp_unslash( $_GET['month_filter'] ) ) : '';
 
 		// Filter data based on the status (All, Unread, Trash).
-		$status_filter = isset( $_GET['view'] ) ? sanitize_key( wp_unslash( $_GET['view'] ) ) : 'all';
+		$status_filter = isset( $_GET['view'] ) ? sanitize_text_field( wp_unslash( $_GET['view'] ) ) : 'all';
 
 		// Apply search filter, currently search is based on entry ID only and not text.
 		if ( ! empty( $search_term ) ) {
@@ -727,17 +776,17 @@ class Entries_List_Table extends \WP_List_Table {
 	 * @return array<string,string>
 	 */
 	protected function get_views() {
-		if ( isset( $_GET['srfm_entries_nonce'] ) && ! wp_verify_nonce( sanitize_key( $_GET['srfm_entries_nonce'] ), 'srfm_entries_action' ) ) {
+		if ( isset( $_GET['_wpnonce'] ) && ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'srfm_entries_action' ) ) {
 			return;
 		}
 		$status_count = [
-			'all'    => count( array_filter( $this->data, fn( $entry) => 'trash' !== $entry['status'] ) ),
-			'unread' => count( array_filter( $this->data, fn( $entry) => 'unread' === $entry['status'] ) ),
-			'trash'  => count( array_filter( $this->data, fn( $entry) => 'trash' === $entry['status'] ) ),
+			'all'    => Entries::get_total_entries_by_status( 'all' ),
+			'unread' => Entries::get_total_entries_by_status( 'unread' ),
+			'trash'  => Entries::get_total_entries_by_status( 'trash' ),
 		];
 
 		// Get the current view (All, Read, Unread, Trash) to highlight the selected one.
-		$current_view = isset( $_GET['view'] ) ? sanitize_key( wp_unslash( $_GET['view'] ) ) : 'all';
+		$current_view = isset( $_GET['view'] ) ? sanitize_text_field( wp_unslash( $_GET['view'] ) ) : 'all';
 
 		// Define the base URL for the views (without query parameters).
 		$base_url = esc_url( admin_url( 'admin.php?page=sureforms_entries' ) );
@@ -758,14 +807,18 @@ class Entries_List_Table extends \WP_List_Table {
 				/* translators: %d refers to the number of unread entries. */
 				sprintf( __( 'Unread <span class="count">(%d)</span>', 'sureforms' ), $status_count['unread'] )
 			),
-			'trash'  => sprintf(
+		];
+
+		// Only add the Trash view if the count is greater than 0.
+		if ( $status_count['trash'] > 0 ) {
+			$views['trash'] = sprintf(
 				'<a href="%1$s" class="%2$s">%3$s</a>',
 				add_query_arg( 'view', 'trash', $base_url ),
 				( 'trash' === $current_view ) ? 'current' : '',
 				/* translators: %d refers to the number of entries in the trash. */
 				sprintf( __( 'Trash <span class="count">(%d)</span>', 'sureforms' ), $status_count['trash'] )
-			),
-		];
+			);
+		}
 
 		return $views;
 	}
@@ -777,7 +830,7 @@ class Entries_List_Table extends \WP_List_Table {
 	 * @return void
 	 */
 	public static function process_bulk_actions() {
-		if ( isset( $_GET['srfm_entries_nonce'] ) && ! wp_verify_nonce( sanitize_key( $_GET['srfm_entries_nonce'] ), 'srfm_entries_action' ) ) {
+		if ( ! isset( $_GET['_wpnonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'srfm_entries_action' ) ) {
 			return;
 		}
 		// Check if the form is submitted with bulk action using GET.
@@ -788,13 +841,21 @@ class Entries_List_Table extends \WP_List_Table {
 
 			// If there are entry IDs selected, process the bulk action.
 			if ( ! empty( $entry_ids ) ) {
-				$action = sanitize_key( wp_unslash( $_GET['action'] ) );
+				$action = sanitize_text_field( wp_unslash( $_GET['action'] ) );
 
 				// Update the status of each selected entry.
 				foreach ( $entry_ids as $entry_id ) {
-					self::handle_entry_status( intval( $entry_id ), $action );
+					self::handle_entry_status( Helper::get_integer_value( $entry_id ), $action );
 				}
 
+				set_transient(
+					'srfm_bulk_action_message',
+					[
+						'action' => $action,
+						'count'  => count( $entry_ids ),
+					],
+					10
+				); // Transient expires in 10 seconds.
 				// Redirect to prevent form resubmission.
 				wp_safe_redirect( admin_url( 'admin.php?page=sureforms_entries' ) );
 				exit;
@@ -828,7 +889,7 @@ class Entries_List_Table extends \WP_List_Table {
 	 * @return bool
 	 */
 	public static function is_trash_view() {
-		return isset( $_GET['view'] ) && 'trash' === sanitize_key( $_GET['view'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		return isset( $_GET['view'] ) && 'trash' === sanitize_text_field( wp_unslash( $_GET['view'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 	}
 
 	/**
@@ -848,13 +909,59 @@ class Entries_List_Table extends \WP_List_Table {
 			case 'unread':
 			case 'read':
 			case 'trash':
-				Entries::update( intval( $entry_id ), [ 'status' => $action ] );
+				Entries::update( $entry_id, [ 'status' => $action ] );
 				break;
 			case 'delete':
-				Entries::delete( intval( $entry_id ) );
+				Entries::delete( $entry_id );
 				break;
 			default:
 				break;
 		}
+	}
+
+	/**
+	 * Display admin notice for bulk actions.
+	 *
+	 * @since x.x.x
+	 * @return void
+	 */
+	public static function display_bulk_action_notice() {
+		$bulk_action_message = get_transient( 'srfm_bulk_action_message' );
+		if ( ! $bulk_action_message ) {
+			return;
+		}
+		if ( isset( $_GET['_wpnonce'] ) && ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'srfm_entries_action' ) ) {
+			return;
+		}
+		// Manually delete the transient after retrieval to prevent it from being displayed again after page reload.
+		delete_transient( 'srfm_bulk_action_message' );
+		$action = $bulk_action_message['action'];
+		$count  = $bulk_action_message['count'];
+		switch ( $action ) {
+			case 'read':
+			case 'unread':
+				// translators: %1$d refers to the number of entries, %2$s refers to the status (read or unread).
+				$message = sprintf( _n( '%1$d entry was successfully marked as %2$s.', '%1$d entries were successfully marked as %2$s.', $count, 'sureforms' ), $count, $action );
+				break;
+			case 'trash':
+				// translators: %1$d refers to the number of entries, %2$s refers to the action (trash).
+				$message = sprintf( _n( '%1$d entry was successfully moved to trash.', '%1$d entries were successfully moved to trash.', $count, 'sureforms' ), $count );
+				break;
+			case 'restore':
+				// translators: %1$d refers to the number of entries, %2$s refers to the action (restore).
+				$message = sprintf( _n( '%1$d entry was successfully restored.', '%1$d entries were successfully restored.', $count, 'sureforms' ), $count );
+				break;
+			case 'delete':
+				// translators: %1$d refers to the number of entries, %2$s refers to the action (delete).
+				$message = sprintf( _n( '%1$d entry was permanently deleted.', '%1$d entries were permanently deleted.', $count, 'sureforms' ), $count );
+				break;
+			case 'export':
+				// translators: %1$d refers to the number of entries, %2$s refers to the action (export).
+				$message = sprintf( _n( '%1$d entry was successfully exported.', '%1$d entries were successfully exported.', $count, 'sureforms' ), $count );
+				break;
+			default:
+				break;
+		}
+		echo '<div class="notice notice-success is-dismissible"><p>' . esc_html( $message ) . '</p></div>';
 	}
 }

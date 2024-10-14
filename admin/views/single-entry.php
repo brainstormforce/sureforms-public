@@ -2,6 +2,7 @@
 /**
  * SureForms Single Entries Page.
  *
+ * @since x.x.x
  * @package sureforms.
  */
 
@@ -45,10 +46,10 @@ class Single_Entry {
 	 * @since x.x.x
 	 */
 	public function __construct() {
-		if ( isset( $_GET['srfm_entries_nonce'] ) && ! wp_verify_nonce( sanitize_key( $_GET['srfm_entries_nonce'] ), 'srfm_entries_action' ) ) {
+		if ( isset( $_GET['_wpnonce'] ) && ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'srfm_entries_action' ) ) {
 			return;
 		}
-		$this->entry_id = isset( $_GET['entry_id'] ) ? intval( sanitize_key( wp_unslash( $_GET['entry_id'] ) ) ) : null;
+		$this->entry_id = isset( $_GET['entry_id'] ) ? intval( sanitize_text_field( wp_unslash( $_GET['entry_id'] ) ) ) : null;
 		$this->entry    = $this->entry_id ? Entries::get( $this->entry_id ) : null;
 	}
 
@@ -83,7 +84,6 @@ class Single_Entry {
 							</div><!-- /titlediv -->
 						</div><!-- /post-body-content -->
 						<div id="postbox-container-1" class="postbox-container">
-							<?php $this->render_entry_notes(); ?>
 							<?php $this->render_submission_info( $form_name, $entry_status, $submitted_on ); ?>
 						</div>
 						<div id="postbox-container-2" class="postbox-container">
@@ -96,33 +96,6 @@ class Single_Entry {
 					<br class="clear">
 				</div><!-- /poststuff -->
 			</form>
-		</div>
-		<?php
-	}
-
-	/**
-	 * Render the entry notes for the specific entry.
-	 *
-	 * @since x.x.x
-	 */
-	private function render_entry_notes() {
-		?>
-		<div id="submitdiv" class="postbox ">
-			<div class="postbox-header">
-				<!-- Removed class "hndle ui-sortable-handle" from the below h2 tag to prevent the draggable cursor. --> 
-				<h2><?php esc_html_e( 'Entry Notes', 'sureforms' ); ?></h2>
-				<button id="srfm-add-entry-note" class="srfm-add-entry-note-button">
-				<?php esc_html_e( 'Add Note', 'sureforms' ); ?>
-					<svg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M8 3.33594V12.6693' stroke='black' stroke-width='1.25' stroke-linecap='round' stroke-linejoin='round'/><path d='M3.33337 8H12.6667' stroke='black' stroke-width='1.25' stroke-linecap='round' stroke-linejoin='round'/></svg>
-				</button>
-			</div>
-			<div class="inside">
-				<div class="srfm-entry-note-wrapper">
-					<!-- TODO: Proper implementation for the entry notes section. -->
-					<textarea id="srfm-entry-note" name="srfm_entry_note" rows="5"></textarea>
-					<button type="submit" id="srfm-add-note" data-entry-id=<?php echo esc_html( $this->entry_id ); ?>><?php esc_html_e( 'Submit Note', 'sureforms' ); ?></button>
-				</div>
-			</div>
 		</div>
 		<?php
 	}
@@ -154,14 +127,12 @@ class Single_Entry {
 							<td><b><?php esc_html_e( 'Form Name:', 'sureforms' ); ?></b></td>
 							<td><?php echo esc_attr( $form_name ); ?></td>
 						</tr>
-						<tr style="margin-bottom: 10px;">
-							<td><b><?php esc_html_e( 'User IP:', 'sureforms' ); ?></b></td>
-							<td><a target="_blank" rel="noopener" href="https://ipinfo.io/"><?php echo esc_attr( $this->entry['submission_info']['user_ip'] ); ?></a></td>
-						</tr>
-						<tr style="margin-bottom: 10px;">
-							<td><b><?php esc_html_e( 'URL:', 'sureforms' ); ?></b></td>
-							<td><a target="_blank" rel="noopener" href="https://ipinfo.io/"></a></td>
-						</tr>
+						<?php if ( ! empty( $this->entry['submission_info']['user_ip'] ) ) : ?>
+							<tr style="margin-bottom: 10px;">
+								<td><b><?php esc_html_e( 'User IP:', 'sureforms' ); ?></b></td>
+								<td><a target="_blank" rel="noopener" href="https://ipinfo.io/"><?php echo esc_attr( $this->entry['submission_info']['user_ip'] ); ?></a></td>
+							</tr>
+						<?php endif; ?>
 						<tr style="margin-bottom: 10px;">
 							<td><b><?php esc_html_e( 'Browser:', 'sureforms' ); ?></b></td>
 							<td><?php echo esc_attr( $this->entry['submission_info']['browser_name'] ); ?></td>
@@ -176,7 +147,6 @@ class Single_Entry {
 								<span style="text-transform: capitalize;">
 									<?php echo esc_attr( $entry_status ); ?>
 								</span>
-								<span> | <a href="#" id="erfm-entry-mark-unread" style="font-size: 12px;"><?php esc_html_e( 'Mark as Unread', 'sureforms' ); ?></a></span>
 							</td>
 						</tr>
 						<tr style="margin-bottom: 10px;">
@@ -343,13 +313,6 @@ class Single_Entry {
 												<h4 class="entry-log-title">
 													<?php echo esc_html( $log['title'] ); ?>
 													<?php echo esc_html( gmdate( '\a\t Y-m-d H:i:s', $log['timestamp'] ) ); ?>
-													<div class="entry-log-delete">
-														<button class="delete-log-btn" title="Delete Log" data-entry-id="<?php echo esc_attr( $this->entry_id ); ?>" data-log-index="<?php echo esc_attr( $index ); ?>">
-															<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-																<path d="M12.2837 7.5L11.9952 15M8.00481 15L7.71635 7.5M16.023 4.82547C16.308 4.86851 16.592 4.91456 16.875 4.96358M16.023 4.82547L15.1332 16.3938C15.058 17.3707 14.2434 18.125 13.2637 18.125H6.73631C5.75655 18.125 4.94198 17.3707 4.86683 16.3938L3.97696 4.82547M16.023 4.82547C15.0677 4.6812 14.1013 4.57071 13.125 4.49527M3.125 4.96358C3.40798 4.91456 3.69198 4.86851 3.97696 4.82547M3.97696 4.82547C4.93231 4.6812 5.89874 4.57071 6.875 4.49527M13.125 4.49527V3.73182C13.125 2.74902 12.3661 1.92853 11.3838 1.8971C10.9244 1.8824 10.463 1.875 10 1.875C9.53696 1.875 9.07565 1.8824 8.61618 1.8971C7.63388 1.92853 6.875 2.74902 6.875 3.73182V4.49527M13.125 4.49527C12.0938 4.41558 11.0516 4.375 10 4.375C8.94836 4.375 7.9062 4.41558 6.875 4.49527" stroke="#94A3B8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-															</svg>
-														</button>
-													</div>
 												</h4>
 												<div class="entry-log-messages">
 												<?php foreach ( $log['messages'] as $message ) : ?>

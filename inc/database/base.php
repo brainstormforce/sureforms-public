@@ -652,6 +652,40 @@ abstract class Base {
 	}
 
 	/**
+	 * Get the total number of rows in the table.
+	 *
+	 * @param array<mixed> $where_clauses Optional. An associative array of WHERE clauses for the SQL query.
+	 * @since x.x.x
+	 * @return int The total number of rows in the table.
+	 */
+	public function get_total_count( $where_clauses = [] ) {
+		$wpdb = $this->wpdb;
+
+		$table_name = $this->get_tablename();
+
+		// Start building the query.
+		$query = "SELECT COUNT(*) FROM {$table_name}";
+
+		// If there are WHERE clauses, prepare and append them to the query.
+		$query .= $this->prepare_where_clauses( $where_clauses );
+
+		// Add a semicolon at the end of the query.
+		$query = rtrim( trim( $query ), ';' ) . ';';
+
+		$cached_results = $this->cache_get( $query );
+		if ( $cached_results ) {
+			// Return the cached data if exists.
+			return Helper::get_integer_value( $cached_results );
+		}
+
+		// phpcs:ignore
+		$results = Helper::get_integer_value( $wpdb->get_var( $query ) );
+
+		// Execute the query and return the integer count.
+		return Helper::get_integer_value( $this->cache_set( $query, $results ) );
+	}
+
+	/**
 	 * Prepares WHERE clauses for a SQL query based on the provided conditions.
 	 *
 	 * This method constructs a WHERE statement by iterating through the
@@ -734,7 +768,7 @@ abstract class Base {
 	 *
 	 * @param array<mixed> $data An associative array of data where the key is the column name and the value is the data to process.
 	 *                    Missing values will be replaced with default values specified in the schema.
-	 * @param boolean $skip_defaults Whether or not to skip the defaults values. Pass true if updating the data.
+	 * @param boolean      $skip_defaults Whether or not to skip the defaults values. Pass true if updating the data.
 	 * @since 0.0.10
 	 * @return array<array<mixed>> An associative array containing:
 	 *                - 'data': Prepared data with values encoded according to their data types.
