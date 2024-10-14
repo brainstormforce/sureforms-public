@@ -285,6 +285,7 @@ class Entries_List_Table extends \WP_List_Table {
 	 */
 	protected function column_id( $item ) {
 		$entry_id = esc_attr( $item['ID'] );
+
 		$view_url =
 			wp_nonce_url(
 				add_query_arg(
