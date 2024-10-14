@@ -285,19 +285,18 @@ class Entries_List_Table extends \WP_List_Table {
 	 */
 	protected function column_id( $item ) {
 		$entry_id = esc_attr( $item['ID'] );
-		$view_url = esc_url(
+		$view_url =
 			wp_nonce_url(
 				add_query_arg(
 					[
-						'entry_id' => esc_attr( $item['ID'] ),
+						'entry_id' => $entry_id,
 						'view'     => 'details',
 						'action'   => 'read',
 					],
 					admin_url( 'admin.php?page=sureforms_entries' )
 				),
 				'srfm_entries_action'
-			)
-		);
+			);
 
 		return sprintf(
 			'<strong><a class="row-title" href="%1$s">%2$s%3$s</a></strong>',
