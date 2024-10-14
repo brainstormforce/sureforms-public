@@ -41,10 +41,29 @@ export async function fieldValidation(
 ) {
 	let validateResult = false;
 	let firstErrorInput = null;
+	let scrollElement = null;
 
-	const setFirstErrorInput = ( input ) => {
+	/**
+	 * Additional validation object.
+	 * This object is used to store additional validation data that can be used to validate fields.
+	 */
+	let additionalValidationObject = {};
+
+	/**
+	 * Sets the first error input and the element to scroll to.
+	 * This function is used to identify the first input field that has an error
+	 * and set it as the target for scrolling. It ensures that the user is
+	 * directed to the first error input when validation fails.
+	 *
+	 * @param {HTMLElement} input         - The input element that has the error.
+	 * @param {HTMLElement} element       - The element to scroll to, typically the same as the input or its container.
+	 * @param {Object}      additionalObj - Additional validation object.
+	 */
+	const setFirstErrorInput = ( input, element, additionalObj = {} ) => {
 		if ( ! firstErrorInput ) {
 			firstErrorInput = input;
+			scrollElement = element;
+			additionalValidationObject = additionalObj;
 		}
 	};
 
@@ -101,6 +120,7 @@ export async function fieldValidation(
 		let fieldName = inputField.getAttribute( 'name' );
 		const inputValue = inputField.value;
 		const errorMessage = container.querySelector( '.srfm-error-message' );
+
 		if ( fieldName ) {
 			fieldName = fieldName.replace( /_/g, ' ' );
 		}
@@ -119,7 +139,10 @@ export async function fieldValidation(
 				}
 				validateResult = true;
 				// Set the first error input.
-				setFirstErrorInput( inputField );
+				setFirstErrorInput(
+					inputField,
+					inputField.closest( '.srfm-block' )
+				);
 			} else if ( inputField ) {
 				inputField
 					.closest( '.srfm-block' )
@@ -154,7 +177,10 @@ export async function fieldValidation(
 
 				validateResult = true;
 				// Set the first error input.
-				setFirstErrorInput( inputField );
+				setFirstErrorInput(
+					inputField,
+					inputField.closest( '.srfm-block' )
+				);
 			} else if ( inputField ) {
 				inputField
 					.closest( '.srfm-block' )
@@ -191,8 +217,9 @@ export async function fieldValidation(
 					container.classList.add( 'srfm-error' );
 				}
 				validateResult = true;
+
 				// Set the first error input.
-				setFirstErrorInput( visibleInput );
+				setFirstErrorInput( visibleInput, container );
 			} else if ( errorMessage ) {
 				container.classList.remove( 'srfm-error' );
 			}
@@ -214,7 +241,7 @@ export async function fieldValidation(
 				container.classList.add( 'srfm-error' );
 				validateResult = true;
 				// Set the first error input.
-				setFirstErrorInput( urlInput );
+				setFirstErrorInput( urlInput, container );
 			}
 
 			// remove the error message on input of the url input
@@ -233,7 +260,7 @@ export async function fieldValidation(
 				container.classList.add( 'srfm-error' );
 				validateResult = true;
 				// Set the first error input.
-				setFirstErrorInput( phoneInput );
+				setFirstErrorInput( phoneInput, container );
 			}
 
 			// remove the error message on input of the phone input
@@ -271,7 +298,7 @@ export async function fieldValidation(
 							confirmError.getAttribute( 'data-error-msg' );
 						confirmParent.classList.add( 'srfm-error' );
 						// Set the first error input.
-						setFirstErrorInput( confirmValue );
+						setFirstErrorInput( confirmValue, confirmParent );
 						validateResult = true;
 					} else if ( confirmValue !== inputValue ) {
 						confirmParent.classList.add( 'srfm-error' );
@@ -279,7 +306,7 @@ export async function fieldValidation(
 							'Confirmation Password is not the same';
 
 						// Set the first error input.
-						setFirstErrorInput( confirmValue );
+						setFirstErrorInput( confirmValue, confirmParent );
 						validateResult = true;
 					} else {
 						confirmParent.classList.remove( 'srfm-error' );
@@ -297,9 +324,8 @@ export async function fieldValidation(
 				);
 
 				if ( parent.classList.contains( 'srfm-valid-email-error' ) ) {
-					if ( ! firstErrorInput ) {
-						firstErrorInput = inputField;
-					}
+					// set the first error input.
+					setFirstErrorInput( inputField, parent );
 					validateResult = true;
 				}
 
@@ -324,7 +350,7 @@ export async function fieldValidation(
 						confirmParent.classList.add( 'srfm-error' );
 
 						// Set the first error input.
-						setFirstErrorInput( confirmInput );
+						setFirstErrorInput( confirmInput, confirmParent );
 						validateResult = true;
 					} else if ( confirmValue !== inputValue ) {
 						confirmParent.classList.add( 'srfm-error' );
@@ -332,7 +358,7 @@ export async function fieldValidation(
 							'Confirmation email is not the same';
 
 						// Set the first error input.
-						setFirstErrorInput( confirmInput );
+						setFirstErrorInput( confirmInput, confirmParent );
 						validateResult = true;
 					} else {
 						confirmParent.classList.remove( 'srfm-error' );
@@ -353,7 +379,7 @@ export async function fieldValidation(
 			}
 		}
 
-		//Upload field
+		// Upload field
 		if ( container.classList.contains( 'srfm-upload-block' ) ) {
 			const uploadInput = container.querySelector( '.srfm-input-upload' );
 
@@ -375,7 +401,7 @@ export async function fieldValidation(
 
 				validateResult = true;
 				// Set the first error input.
-				setFirstErrorInput( uploadInput );
+				setFirstErrorInput( uploadInput, container );
 			} else if ( inputField ) {
 				inputField
 					.closest( '.srfm-block' )
@@ -458,7 +484,10 @@ export async function fieldValidation(
 					.classList.add( 'srfm-error' );
 				validateResult = true;
 				// Set the first error input.
-				setFirstErrorInput( container.querySelector( '.srfm-icon' ) );
+				setFirstErrorInput(
+					container.querySelector( '.srfm-icon' ),
+					container
+				);
 			} else {
 				ratingInput
 					.closest( '.srfm-block' )
@@ -492,9 +521,9 @@ export async function fieldValidation(
 				if ( hasError ) {
 					container.classList.add( 'srfm-error' );
 					validateResult = true;
-					if ( ! firstErrorInput ) {
-						firstErrorInput = sliderInput;
-					}
+
+					// Set the first error input.
+					setFirstErrorInput( sliderInput, container );
 				} else {
 					container.classList.remove( 'srfm-error' );
 				}
@@ -515,11 +544,29 @@ export async function fieldValidation(
 			dropdownInputs.forEach( ( dropdownInput ) => {
 				const dropdownRequired =
 					dropdownInput.getAttribute( 'aria-required' );
+				const inputName = dropdownInput.getAttribute( 'name' );
 				if ( dropdownRequired === 'true' && ! dropdownInput.value ) {
 					dropdownInput
 						.closest( '.srfm-block' )
 						.classList.add( 'srfm-error' );
 					validateResult = true;
+
+					/**
+					 * Set the first error input element.
+					 *
+					 * We are retrieving the input element from the third-party library's global `window.srfm` object.
+					 * The input instance is stored within the `srfm` object, where `inputName` corresponds to the specific
+					 * input field. We focus on this input if it exists. If not found, we fallback to a default `dropdownInput`.
+					 */
+					const inputElement =
+						window?.srfm?.[ inputName ] || dropdownInput;
+					setFirstErrorInput(
+						inputElement,
+						dropdownInput.closest( '.srfm-block' ),
+						{
+							shouldDelayOnFocus: true,
+						}
+					);
 				} else {
 					dropdownInput
 						.closest( '.srfm-block' )
@@ -548,9 +595,20 @@ export async function fieldValidation(
 		}
 	}
 
+	/**
+	 * If the validation fails, return validateResult, firstErrorInput and scrollElement
+	 *  validateResult: if validation fails return true || default value is false
+	 *  firstErrorInput: the first input field that has an error
+	 *  scrollElement: the element to scroll to
+	 */
 	return validateResult
-		? [ validateResult, firstErrorInput ]
-		: validateResult;
+		? {
+			validateResult,
+			firstErrorInput,
+			scrollElement,
+			...additionalValidationObject,
+		  }
+		: false;
 }
 
 /**
@@ -620,6 +678,17 @@ function addBlurListener( containerClass, blockClass ) {
 			// Function to validate slider inputs within the slider block
 			if ( containerClass === 'srfm-slider-block' ) {
 				addSliderBlurListener( areaField, areaInput, blockClass );
+			}
+
+			// Function to validate dropdown blur
+			// on tom-select blur event.
+			if ( containerClass === 'srfm-dropdown-block' ) {
+				const blockName = areaField.getAttribute( 'name' );
+				setTimeout( () => {
+					window?.srfm?.[ blockName ].on( 'blur', function () {
+						fieldValidationInit( areaField, blockClass );
+					} );
+				}, 500 );
 			}
 
 			// for all other fields
@@ -798,4 +867,53 @@ const fieldValidationInit = async ( areaField, blockClass ) => {
 	const singleField = true;
 
 	await fieldValidation( formId, ajaxUrl, nonce, formTextarea, singleField );
+};
+
+/**
+ * Scrolls to the first input error and focuses on it if necessary.
+ *
+ * @param {Object}      validationObject                            - The validation object containing error details and settings.
+ * @param {HTMLElement} validationObject.firstErrorInput            - The first input field that has an error.
+ * @param {HTMLElement} [validationObject.scrollElement]            - The element to scroll into view if present.
+ * @param {boolean}     [validationObject.shouldDelayOnFocus=false] - Whether to delay focusing on the input field.
+ */
+export const handleScrollAndFocusOnError = ( validationObject ) => {
+	// If the first error input is available
+	if ( validationObject?.firstErrorInput ) {
+		// If the scroll element exists, smoothly scroll the element into view
+		if ( validationObject?.scrollElement ) {
+			/**
+			 * Scrolls the window to center the specified element in the viewport with a smooth animation.
+			 *
+			 * @param {HTMLElement} validationObject.scrollElement - The element to scroll to.
+			 */
+			const getElementTop =
+				validationObject.scrollElement.getBoundingClientRect().top; // Get element's top position relative to the viewport
+			const getPageYOffset = window.pageYOffset; // Get the current vertical scroll position of the window
+			const getWindowHeight = window.innerHeight; // Get the height of the browser window
+			const getHalfWindowHeight = getWindowHeight / 2; // Calculate half of the window height for centering
+
+			// Calculate the scroll position to align the element in the center of the viewport
+			const calculatedScrollTop =
+				getElementTop + getPageYOffset - getHalfWindowHeight;
+
+			window.scroll( {
+				top: calculatedScrollTop, // Set the calculated top scroll position
+				behavior: 'smooth', // Smooth scrolling animation
+			} );
+		}
+
+		// Check if we should delay the focus on the error input
+		if ( validationObject?.shouldDelayOnFocus ) {
+			// Delay focusing the input by 500ms to allow for the scroll animation to complete
+			setTimeout( () => {
+				validationObject.firstErrorInput.focus( {
+					preventScroll: true,
+				} ); // Focus without scrolling
+			}, 500 );
+		} else {
+			// Immediately focus the error input without scrolling
+			validationObject.firstErrorInput.focus( { preventScroll: true } );
+		}
+	}
 };
