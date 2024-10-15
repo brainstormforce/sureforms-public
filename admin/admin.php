@@ -702,12 +702,13 @@ class Admin {
 
 		$instance = Entries::get_instance();
 
-		$instance->add_log( sprintf( __( 'Entry edited by %s', 'sureforms' ), wp_get_current_user()->user_login ) ); // Init log.
-
-		$form_data = $instance::get( $entry_id )['form_data'];
+		$instance->add_log( sprintf( __( 'Entry edited by %s', 'sureforms' ), wp_get_current_user()->display_name ) ); // Init log.
 
 		$changed = 0;
 		if ( ! empty( $data ) && is_array( $data ) ) {
+
+			$form_data = $instance::get( $entry_id )['form_data'];
+
 			foreach ( $data as $k => $v ) {
 				if ( ! isset( $form_data[ $k ] ) ) {
 					// &#8594; is html entity for arrow -> sign.
@@ -721,7 +722,7 @@ class Admin {
 				}
 
 				// &#8594; is html entity for arrow -> sign.
-				$instance->update_log( $instance->get_last_log_key(), null, sprintf( '%1$s &#8594; %2$s', $form_data[ $k ], $v ) );
+				$instance->update_log( $instance->get_last_log_key(), null, sprintf( '%1$s &#8594; %2$s', "<del>{$form_data[ $k ]}</del>", $v ) );
 				$changed++;
 			}
 		}

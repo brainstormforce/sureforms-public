@@ -102,6 +102,24 @@ class Single_Entry {
 	}
 
 	/**
+	 * Prints entry note item markup.
+	 *
+	 * @param array $note Single note array.
+	 * @since x.x.x
+	 * @return void
+	 */
+	public static function entry_note_item_markup( $note ) {
+		$submitted_by_user = get_user_by( 'ID', absint( $note['submitted_by'] ) )->display_name;
+		?>
+		<div class="entry-note-item">
+			<strong class="entry-log-title"><?php printf( esc_html__( 'Submitted by %s', 'sureforms' ), esc_html( $submitted_by_user ) ); ?></strong> <br/>
+			<small><?php echo esc_html( gmdate( 'Y-m-d H:i:s', $note['timestamp'] ) ); ?></small>
+			<?php echo wp_kses_post( wpautop( $note['note'] ) ) ?>
+		</div>
+		<?php
+	}
+
+	/**
 	 * Render the entry notes for the specific entry.
 	 *
 	 * @since x.x.x
@@ -123,19 +141,13 @@ class Single_Entry {
 						<?php
 						if ( ! empty( $notes ) && is_array( $notes ) ) {
 							foreach ( $notes as $note ) {
-								?>
-								<div>
-									<strong class="entry-log-title"><?php echo esc_html( $note['title'] ); ?></strong> <br/>
-									<small><?php echo esc_html( gmdate( 'Y-m-d H:i:s', $note['timestamp'] ) ); ?></small>
-									<p><?php echo esc_html( $note['note'] ) ?></p>
-								</div>
-								<?php
+								self::entry_note_item_markup( $note );
 							}
 						}
 						?>
 					</div>
 
-					<div class="add-notes-field">
+					<div class="add-notes-field <?php echo ! empty( $notes ) ? 'hidden' : ''; ?>">
 						<textarea id="srfm-entry-note" rows="5"></textarea>
 						<button type="submit" class="button" data-entry-id=<?php echo esc_html( $this->entry_id ); ?>><?php esc_html_e( 'Submit Note', 'sureforms' ); ?></button>
 					</div>

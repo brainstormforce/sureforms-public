@@ -15,8 +15,15 @@
 		const addNoteBtn = document.querySelector( '.srfm-add-entry-note-button' );
 		const entryNotesContainer = document.querySelector( '.srfm-entry-note-wrapper .entry-notes-container' );
 
-		const textarea = document.querySelector('.add-notes-field #srfm-entry-note');
-		const submitNoteBtn = document.querySelector('.add-notes-field button');
+		const notesField = document.querySelector('.add-notes-field');
+		const textarea = notesField.querySelector('#srfm-entry-note');
+		const submitNoteBtn = notesField.querySelector('button');
+
+		addNoteBtn.addEventListener('click', function(e) {
+			e.preventDefault();
+			addNoteBtn.classList.add('hidden');
+			notesField.classList.remove('hidden');
+		});
 
 		submitNoteBtn.addEventListener('click', async function(e) {
 			e.preventDefault();

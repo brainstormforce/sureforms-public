@@ -666,7 +666,7 @@ class Form_Submit {
 
 		if ( is_iterable( $email_notification ) ) {
 			$entries_db_instance = Entries::get_instance();
-			$log_key             = $entries_db_instance->add_log( __( 'Email Notification Initiated', 'sureforms' ) );
+			$log_key             = $entries_db_instance->add_log( __( 'Email notification initiated', 'sureforms' ) );
 
 			foreach ( $email_notification as $notification ) {
 				foreach ( $notification as $item ) {
@@ -711,6 +711,10 @@ class Form_Submit {
 					}
 				}
 			}
+		}
+
+		if ( empty( $emails ) ) {
+			$entries_db_instance->add_log( __( 'No emails were sent', 'sureforms' ) );
 		}
 
 		return [

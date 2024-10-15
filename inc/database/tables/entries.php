@@ -182,11 +182,13 @@ class Entries extends Base {
 	 * @return int|null The key of the newly added log entry, or null if the log could not be added.
 	 */
 	public function add_log( $title, $messages = [] ) {
-		$this->logs[] = [
+		$tog = [
 			'title'     => Helper::get_string_value( trim( $title ) ),
 			'messages'  => Helper::get_array_value( $messages ),
 			'timestamp' => time(),
 		];
+
+		$this->logs = array_merge( [ $tog ], $this->logs );
 
 		return $this->get_last_log_key();
 	}
@@ -247,9 +249,9 @@ class Entries extends Base {
 
 		// Format notes structure.
 		$_note = [
-			'title'     => sprintf( __( 'Submitted by %s', 'sureforms' ), wp_get_current_user()->display_name ),
-			'timestamp' => time(),
-			'note'      => $note,
+			'submitted_by' => get_current_user_id(),
+			'timestamp'    => time(),
+			'note'         => $note,
 		];
 
 		// Merge with old notes and save it to database.

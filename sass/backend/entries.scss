@@ -35,6 +35,22 @@
     gap: 8px;
 }
 
+.entry-notes {
+    .hidden {
+        display: none !important;
+    }
+}
+
+.entry-note-item {
+    &:not(:last-child) {
+        border-bottom: 1px solid #cacaca;
+        margin-bottom: 10px;
+    }
+
+    p {
+        font-style: italic;
+    }
+}
 
 .srfm-add-entry-note-button {
     background: none;
@@ -44,13 +60,9 @@
     justify-content: center;
     gap: 8px;
     cursor: pointer;
-
-    .hidden {
-        display: none;
-    }
 }
 .srfm-entry-note-wrapper {
-    padding: 24px;
+    padding: 12px;
 
     .add-notes-field {
         display: flex;

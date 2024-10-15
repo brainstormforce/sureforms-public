@@ -9,6 +9,7 @@
 
 namespace SRFM\Inc;
 
+use SRFM\Admin\Views\Single_Entry;
 use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Traits\Get_Instance;
 use SRFM\Inc\Helper;
@@ -74,13 +75,7 @@ class Admin_Ajax {
 		$notes = Entries::get( $entry_id )['notes'];
 		if ( ! empty( $notes ) && is_array( $notes ) ) {
 			foreach ( $notes as $note ) {
-				?>
-				<div>
-					<strong class="entry-log-title"><?php echo esc_html( $note['title'] ); ?></strong> <br/>
-					<small><?php echo esc_html( gmdate( 'Y-m-d H:i:s', $note['timestamp'] ) ); ?></small>
-					<p><?php echo esc_html( $note['note'] ) ?></p>
-				</div>
-				<?php
+				Single_Entry::entry_note_item_markup( $note );
 			}
 		}
 		$data = ob_get_clean();
