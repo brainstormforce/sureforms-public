@@ -139,13 +139,13 @@ export const BulkInserterPopup = ( props ) => {
 
 /**
  * BulkInserterWithButton component renders a button that triggers a modal for bulk inserting options.
- * 
- * @param {Object} props - Component props.
- * @param {Array} props.options - The list of options where each option is an object.
- * @param {string} props.titleKey - The key to use to extract titles from each option object.
+ *
+ * @param {Object}   props               - Component props.
+ * @param {Array}    props.options       - The list of options where each option is an object.
+ * @param {string}   props.titleKey      - The key to use to extract titles from each option object.
  * @param {Function} props.insertOptions - A function to handle the insertion of new or updated options.
- * 
- * @returns {JSX.Element} The BulkInserterWithButton component.
+ *
+ * @return {JSX.Element} The BulkInserterWithButton component.
  */
 export const BulkInserterWithButton = ( props ) => {
 	const { options, titleKey, insertOptions } = props;
