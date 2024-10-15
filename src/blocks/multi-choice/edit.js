@@ -34,6 +34,7 @@ import ConditionalLogic from '@Components/conditional-logic';
 import MultiButtonsControl from '@Components/multi-buttons-control';
 import UAGIconPicker from '@Components/icon-picker';
 import SRFMMediaPicker from '@Components/image';
+import SRFMNumberControl from '@Components/number-control';
 import { BulkInserterWithButton } from '@Components/bulk-inserter';
 
 const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
@@ -49,11 +50,13 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 		preview,
 		verticalLayout,
 		optionType,
+		minValue,
+		maxValue,
 	} = attributes;
 
 	const currentFormId = useGetCurrentFormId( clientId );
 	const [ newOption, setNewOption ] = useState( options );
-
+	const [ error, setError ] = useState( false );
 	const blockProps = useBlockProps();
 
 	const deleteOption = ( index ) => {
@@ -191,6 +194,83 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 									} )
 								}
 							/>
+							{ ! singleSelection && options.length > 1 && (
+								<>
+									<SRFMNumberControl
+										label={ __(
+											'Minimum Value',
+											'sureforms'
+										) }
+										displayUnit={ false }
+										data={ {
+											value: minValue,
+											label: 'minValue',
+										} }
+										min={ 1 }
+										max={
+											( maxValue || options.length ) - 1
+										}
+										value={ minValue }
+										onChange={ ( value ) => {
+											if ( value >= maxValue ) {
+												setError( true );
+												setAttributes( {
+													minValue: 0,
+												} );
+											} else {
+												setError( false );
+												setAttributes( {
+													minValue: value,
+												} );
+											}
+										} }
+										showControlHeader={ false }
+									/>
+									<SRFMNumberControl
+										label={ __(
+											'Maximum Value',
+											'sureforms'
+										) }
+										displayUnit={ false }
+										data={ {
+											value: maxValue,
+											label: 'maxValue',
+										} }
+										min={ minValue + 1 || 1 }
+										max={ options.length }
+										value={ maxValue }
+										onChange={ ( value ) => {
+											if ( value <= minValue ) {
+												setError( true );
+												setAttributes( {
+													maxValue:
+														Number( minValue ) + 1,
+												} );
+											} else {
+												setError( false );
+												setAttributes( {
+													maxValue: value,
+												} );
+											}
+										} }
+										showControlHeader={ false }
+									/>
+									{ error && (
+										<p className="srfm-min-max-error-styles">
+											{ __(
+												'Please check the Minimum and Maximum value',
+												'sureforms'
+											) }
+										</p>
+									) }
+									<p className="components-base-control__help">
+										{ __(
+											'Note: Maximum value should always be greater than minimum value',
+											'sureforms'
+										) }
+									</p>
+								</>
+							) }
 							<SelectControl
 								label={ __( 'Choice Width', 'sureforms' ) }
 								value={ choiceWidth }
