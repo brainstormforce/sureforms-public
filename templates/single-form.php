@@ -101,25 +101,6 @@ if ( 'image' === $bg_type ) {
 				<?php endif; ?>
 			}
 			<?php
-			if ( $use_banner_as_page_background ) {
-				// Some special edge case css when banner as page background enabled.
-				?>
-				.single-sureforms_form .srfm-single-page-container.has-form-title .srfm-page-banner {
-					height: 172px;
-				}
-				.single-sureforms_form .srfm-single-page-container .srfm-page-banner {
-					height: 112px;
-					padding-bottom: 60px;
-				}
-				.single-sureforms_form .srfm-single-page-container .srfm-form-wrapper {
-					padding-bottom: 100px;
-					height: 100%;
-				}
-				.single-sureforms_form .srfm-single-page-container .srfm-form-wrapper .srfm-form-container {
-					position: static;
-				}
-				<?php
-			}
 		} else {
 			?>
 			html.srfm-html {
@@ -183,7 +164,7 @@ if ( 'image' === $bg_type ) {
 						'<a href="%1$s" class="srfm-branding" target="_blank">%2$s</a>',
 						esc_url( SRFM_WEBSITE ),
 						/* translators: Here %s is the plugin's name. */
-							sprintf( esc_html__( 'Powered By %s', 'sureforms' ), 'SureForms' )
+							sprintf( esc_html__( 'Crafted with ♡ %s', 'sureforms' ), 'SureForms' )
 					)
 				);
 			}
@@ -208,6 +189,41 @@ if ( 'image' === $bg_type ) {
 				});
 			}());
 		</script>
+		<?php
+	}
+
+	if ( $use_banner_as_page_background ) {
+		/**
+		 * Some special edge case css when banner as page background enabled.
+		 * Also, we have moved it at the bottom of the page to make sure
+		 * it don't gets overridden when our conditional styles loads from wp_enqueue_style.
+		 */
+		?>
+		<style>
+		.single-sureforms_form .srfm-single-page-container.has-form-title .srfm-page-banner {
+			height: 172px;
+		}
+		.single-sureforms_form .srfm-single-page-container .srfm-page-banner {
+			height: 112px;
+			padding-bottom: 60px;
+		}
+		.single-sureforms_form .srfm-single-page-container .srfm-form-wrapper {
+			padding-bottom: 100px;
+			height: 100%;
+		}
+		.single-sureforms_form .srfm-single-page-container .srfm-form-wrapper .srfm-form-container {
+			position: static;
+		}
+
+		/* Branding styles when banner as page bg is enabled. */
+		.single-sureforms_form .srfm-single-page-container .srfm-branding {
+			background: #FFFFFF05;
+			color: #FFFFFF80;
+		}
+		.single-sureforms_form .srfm-single-page-container .srfm-branding:hover {
+			color: #FFFFFFA6;
+		}
+		</style>
 		<?php
 	}
 	?>
