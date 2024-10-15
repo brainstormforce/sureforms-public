@@ -168,7 +168,7 @@ export const BulkInserterWithButton = ( props ) => {
 					setIsModalOpen( true );
 				} }
 			>
-				{ __( 'Bulk Edit', 'sureforms' ) }
+				{ __( 'Bulk Add', 'sureforms' ) }
 			</Button>
 
 			{ isModalOpen && (

@@ -1066,6 +1066,9 @@ $req_err_color: #dc2625;
 			display: flex;
 			padding-right: 10px;
 			margin-right: 10px;
+			> svg > path {
+				fill: #d54407;
+			} 
 		}
 		.srfm-modal-title {
 			h1 {
@@ -1085,7 +1088,7 @@ $req_err_color: #dc2625;
 	.srfm-modal-body {
 		padding: 24px;
 		display: grid;
-		gap: 24px;
+		gap: 12px;
 		background-color: #f1f5f9;
 		.srfm-modal-body-content {
 			padding: 24px;
@@ -1109,6 +1112,7 @@ $req_err_color: #dc2625;
 			align-items: center;
 			gap: 12px;
 			justify-content: flex-end;
+			margin-top: 10px;
 		}
 	}
 }
