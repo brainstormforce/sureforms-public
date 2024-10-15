@@ -34,7 +34,7 @@ import ConditionalLogic from '@Components/conditional-logic';
 import MultiButtonsControl from '@Components/multi-buttons-control';
 import UAGIconPicker from '@Components/icon-picker';
 import SRFMMediaPicker from '@Components/image';
-import BulkInserter from '../components/BulkInserter';
+import { BulkInserterWithButton } from '@Components/bulk-inserter';
 
 const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 	const {
@@ -51,39 +51,8 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 		optionType,
 	} = attributes;
 
-	console.log( 'attributes -> ', attributes );
-
 	const currentFormId = useGetCurrentFormId( clientId );
 	const [ newOption, setNewOption ] = useState( options );
-
-	// // bulk edit code --------------------------
-	const [ isModalOpen, setIsModalOpen ] = useState( false );
-	const closeModal = () => {
-		setIsModalOpen( false );
-	};
-	const bulkEdit = (
-		<>
-			<Button
-				className="sureform-add-option-button"
-				variant="secondary"
-				onClick={ () => {
-					setIsModalOpen( true );
-				} }
-			>
-				{ __( 'Bulk Edit', 'sureforms' ) }
-			</Button>
-			{ isModalOpen && (
-				<BulkInserter
-					closeModal={ closeModal }
-					options={ options }
-					insertOptions={ ( newOptions ) => {
-						console.log( 'newOptions', newOptions );
-					} }
-				/>
-			) }
-		</>
-	);
-	// // bulk edit code end --------------------------
 
 	const blockProps = useBlockProps();
 
@@ -492,7 +461,19 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 								>
 									{ __( 'ADD', 'sureforms' ) }
 								</Button>
-								{ bulkEdit }
+								<BulkInserterWithButton
+									options={ options }
+									titleKey="optionTitle"
+									insertOptions={ (
+										newOptions,
+										closeModal
+									) => {
+										setAttributes( {
+											options: newOptions,
+										} );
+										closeModal();
+									} }
+								/>
 							</div>
 							<span className="srfm-control-label srfm-control__header" />
 							<SRFMTextControl

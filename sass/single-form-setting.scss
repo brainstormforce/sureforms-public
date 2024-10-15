@@ -1030,9 +1030,15 @@ $req_err_color: #dc2625;
 
 // Css for bulk edit modal.
 .components-modal__frame.srfm-bulk-edit-modal {
-	width: 60%;
+	width: 70%;
 	max-height: 80%;
 	border-radius: 8px;
+	max-width: 864px;
+	.srfm-modal-help-text {
+		color: #a4afb7;
+		font-size: 12px;
+		margin: 0;
+	}
 	.components-modal__header {
 		display: none;
 	}

@@ -27,6 +27,7 @@ import { compose } from '@wordpress/compose';
 import { FieldsPreview } from '../FieldsPreview.jsx';
 import ConditionalLogic from '@Components/conditional-logic';
 import UAGIconPicker from '@Components/icon-picker';
+import { BulkInserterWithButton } from '@Components/bulk-inserter';
 
 const Edit = ( { attributes, setAttributes, clientId } ) => {
 	const {
@@ -43,6 +44,33 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
 	const [ newOption, setNewOption ] = useState( '' );
+	// const [ isModalOpen, setIsModalOpen ] = useState( false );
+	// const closeModal = () => setIsModalOpen( false );
+
+	// const bulkEdit = (
+	// 	<>
+	// 		<Button
+	// 			className="sureforms-add-bulk-option-button"
+	// 			variant="secondary"
+	// 			onClick={ () => {
+	// 				setIsModalOpen( true );
+	// 			} }
+	// 		>
+	// 			{ __( 'Bulk Edit', 'sureforms' ) }
+	// 		</Button>
+	// 		{ isModalOpen && (
+	// 			<BulkInserter
+	// 				closeModal={ closeModal }
+	// 				options={ options }
+	// 				insertOptions={ ( newOptions ) => {
+	// 					setAttributes( { options: newOptions } );
+	// 					// Close the modal
+	// 					closeModal();
+	// 				} }
+	// 			/>
+	// 		) }
+	// 	</>
+	// );
 
 	const changeOption = ( value, index ) => {
 		const updatedOptions = options.map( ( item, thisIndex ) => {
@@ -323,6 +351,19 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 								>
 									{ __( 'ADD', 'sureforms' ) }
 								</Button>
+								<BulkInserterWithButton
+									options={ options }
+									titleKey="label"
+									insertOptions={ (
+										newOptions,
+										closeModal
+									) => {
+										setAttributes( {
+											options: newOptions,
+										} );
+										closeModal();
+									} }
+								/>
 							</div>
 							<span className="srfm-control-label srfm-control__header" />
 							<SRFMTextControl

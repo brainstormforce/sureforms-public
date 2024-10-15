@@ -4,15 +4,17 @@ import { Modal, Button } from '@wordpress/components';
 import svgIcons from '@Image/single-form-logo.json';
 import parse from 'html-react-parser';
 
-const BulkInserter = ( props ) => {
-	const { options, closeModal, insertOptions } = props;
+export const BulkInserterPopup = ( props ) => {
+	const { options, titleKey, closeModal, insertOptions } = props;
 
 	// Memoize optionText to avoid recalculating on each render
-	const optionText = useMemo( () => {
-		return options
-			.map( ( option ) => option.optionTitle.trim() )
-			.join( '\n' );
-	}, [ options ] );
+	const optionText = useMemo(
+		() =>
+			options
+				.map( ( option ) => option?.[ titleKey ]?.trim() )
+				.join( '\n' ),
+		[ options ]
+	);
 
 	// Modal icon memoized for performance.
 	const modalIcon = useMemo( () => parse( svgIcons.modalLogo ), [] );
@@ -32,6 +34,9 @@ const BulkInserter = ( props ) => {
 	}, [] );
 
 	const handleBulkInsert = () => {
+		// Keep only those which option.title is repeating in option.title = { // option all properties }
+		const duplicateOptions = [ ...options ];
+
 		const newOptions = tempOptions.split( '\n' ).reduce( ( acc, item ) => {
 			item = item.trim();
 
@@ -40,21 +45,21 @@ const BulkInserter = ( props ) => {
 				return acc;
 			}
 
-			// Avoid adding duplicates
-			if ( acc.some( ( opt ) => opt.optionTitle.trim() === item ) ) {
-				return acc;
-			}
-
-			// Check if item exists in the original options and merge data
-			const existingOption = options.find(
-				( option ) => option.optionTitle.trim() === item
+			// Check if item exists in the duplicateOptions if then get the object and its index and remove it from duplicateOptions
+			const existingOptionIndex = duplicateOptions.findIndex(
+				( option ) => option?.[ titleKey ]?.trim() === item
 			);
 
-			if ( existingOption ) {
+			if ( existingOptionIndex > -1 ) {
+				const existingOption = {
+					...duplicateOptions[ existingOptionIndex ],
+				};
 				acc.push( { ...existingOption } );
+				// Remove the object from duplicateOptions
+				duplicateOptions.splice( existingOptionIndex, 1 );
 			} else {
 				// If item doesn't exist in options, add as a new entry
-				acc.push( { optionTitle: item } );
+				acc.push( { [ titleKey ]: item } );
 			}
 
 			return acc;
@@ -78,10 +83,21 @@ const BulkInserter = ( props ) => {
 						<h1>{ __( 'Bulk Add Options', 'sureforms' ) }</h1>
 					</div>
 				</div>
-				<div className="srfm-modal-header-close-icon">{ wpXIcon }</div>
+				<div
+					className="srfm-modal-header-close-icon"
+					onClick={ closeModal }
+				>
+					{ wpXIcon }
+				</div>
 			</div>
 			<div className="srfm-modal-body" style={ bodyStyle }>
 				<div className="srfm-modal-body-content">
+					<p className="srfm-modal-help-text">
+						{ __(
+							'Enter each option on a new line.',
+							'sureforms'
+						) }
+					</p>
 					<textarea
 						onChange={ ( e ) => setOptions( e.target.value ) }
 						value={ tempOptions }
@@ -89,7 +105,7 @@ const BulkInserter = ( props ) => {
 					></textarea>
 					<div className="srfm-body-footer">
 						<Button isSecondary onClick={ closeModal }>
-							{ __( 'Close', 'sureforms' ) }
+							{ __( 'Cancel', 'sureforms' ) }
 						</Button>
 						<Button isPrimary onClick={ handleBulkInsert }>
 							{ __( 'Insert Options', 'sureforms' ) }
@@ -101,4 +117,34 @@ const BulkInserter = ( props ) => {
 	);
 };
 
-export default BulkInserter;
+export const BulkInserterWithButton = ( props ) => {
+	const { options, titleKey, insertOptions } = props;
+	const [ isModalOpen, setIsModalOpen ] = useState( false );
+	const closeModal = () => setIsModalOpen( false );
+
+	const bulkEdit = (
+		<>
+			<Button
+				className="sureforms-add-bulk-option-button"
+				variant="secondary"
+				onClick={ () => {
+					setIsModalOpen( true );
+				} }
+			>
+				{ __( 'Bulk Edit', 'sureforms' ) }
+			</Button>
+			{ isModalOpen && (
+				<BulkInserterPopup
+					closeModal={ closeModal }
+					titleKey={ titleKey }
+					options={ options }
+					insertOptions={ ( newOptions ) => {
+						insertOptions( newOptions, closeModal );
+					} }
+				/>
+			) }
+		</>
+	);
+
+	return bulkEdit;
+};
