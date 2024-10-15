@@ -733,6 +733,12 @@ class Post_Types {
 								'submission_action' => [
 									'type' => 'string',
 								],
+								'enable_query_params' => [
+									'type' => 'boolean',
+								],
+								'query_params'      => [
+									'type' => 'array',
+								],
 							],
 						],
 					],

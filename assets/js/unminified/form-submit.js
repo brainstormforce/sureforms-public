@@ -236,7 +236,9 @@ async function handleFormSubmission(
 					afterSubmit( formStatus );
 				}
 			} else {
-				redirectToUrl( successUrl );
+				if( formStatus?.redirect_url ) {
+					redirectToUrl( formStatus?.redirect_url );
+				}
 				loader.classList.remove( 'srfm-active' );
 			}
 		} else {

@@ -509,6 +509,7 @@ class Form_Submit {
 					'name'         => $name,
 					'after_submit' => false,
 				],
+				'redirect_url' => Generate_Form_Markup::get_redirect_url( $form_data, $submission_data ),
 			];
 
 			return $response;
@@ -588,6 +589,7 @@ class Form_Submit {
 					'submission_id' => $post_id,
 					'after_submit'  => true,
 				],
+				'redirect_url' => Generate_Form_Markup::get_redirect_url( $form_data, $submission_data ),
 			];
 
 			$modified_message = $this->prepare_submission_data( $submission_data );

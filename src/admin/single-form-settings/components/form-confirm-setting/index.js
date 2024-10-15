@@ -6,7 +6,7 @@ import { __ } from '@wordpress/i18n';
 import Select from 'react-select';
 import { useDebouncedCallback } from 'use-debounce';
 import Editor from '../QuillEditor';
-// import KeyValueUI from '@components/misc/keyValueUI';
+import KeyValueUI from '@Components/misc/keyValueUI';
 
 const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 	const sureforms_keys = useSelect( ( select ) =>
@@ -52,6 +52,33 @@ const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 			}, 500 );
 		}
 	}, [ showSuccess ] );
+
+	const handleQueryParamsChange = ( queryParams ) => {
+		console.log( queryParams );
+		setData({ ...data, 'query_params': queryParams });
+	};
+
+	const handleEnableQueryParams = ( checked ) => {
+		setData({ ...data, 'enable_query_params': checked });
+	};
+
+	const keyValueComponent = () => {
+		return (
+			<KeyValueUI
+				data={ data?.query_params ?? [ { '': '' } ] }
+				enabled={ data?.enable_query_params ?? false }
+				setEnabled={ handleEnableQueryParams }
+				label={ __( 'Add query params', 'sureforms' ) }
+				helpText={ __(
+				'Add key value pair for form fields to send in query params',
+				'sureforms'
+				) }
+				withSmartTags={ true }
+				header={ __( 'Send form data in query params', 'sureforms' ) }
+				handleOnChange={ handleQueryParamsChange }
+			/>
+		);
+	}
 
 	const validateForm = () => {
 		let validation = '';
@@ -265,6 +292,7 @@ const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 							</div>
 						</div>
 						{ data?.confirmation_type === 'different page' && (
+							<>
 							<div className="srfm-modal-option-box">
 								<div className="srfm-modal-label">
 									<label>
@@ -340,24 +368,15 @@ const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 										} ) }
 									/>
 								</div>
-								<KeyValueUI
-									editorData={ {} }
-									dataId={ 'custom_data_filters' }
-									label={ __( 'Add Data Filters', 'sureforms-pro' ) }
-									helpText={ __(
-										'Select if you want to modify the data payload',
-										'sureforms-pro'
-									) }
-									withSmartTags={ true }
-									header={ __( 'Custom Data Filters', 'sureforms-pro' ) }
-									handleOnChange={ handleOnChange }
-								/>
 							</div>
+							{ keyValueComponent() }
+							</>
 						) }
 						{ data?.confirmation_type === 'custom url' && (
-							<div className="srfm-modal-option-box">
-								<div className="srfm-modal-label">
-									<label>
+							<>
+								<div className="srfm-modal-option-box">
+									<div className="srfm-modal-label">
+										<label>
 										{ __( 'Custom URL', 'sureforms' ) }
 										<span className="srfm-validation-error">
 											{ ' ' }
@@ -375,8 +394,10 @@ const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 											custom_url: e.target.value,
 										} );
 									} }
-								/>
-							</div>
+									/>
+								</div>
+								{ keyValueComponent() }
+							</>
 						) }
 						{ canDisplayError && errorMessage && (
 							<div className="srfm-validation-error">
