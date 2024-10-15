@@ -298,6 +298,22 @@ class Base {
 	protected $aria_described_by;
 
 	/**
+	 * Stores the minimum number of selections required.
+	 *
+	 * @var string
+	 * @since x.x.x
+	 */
+	protected $min_selection;
+
+	/**
+	 * Stores the maximum number of selections allowed.
+	 *
+	 * @var string
+	 * @since x.x.x
+	 */
+	protected $max_selection;
+
+	/**
 	 * Setter for the properties of class based on block attributes.
 	 *
 	 * @param array<mixed> $attributes Block attributes.
@@ -331,6 +347,8 @@ class Base {
 				'target' => [],
 			],
 		];
+		$this->min_selection      = isset( $attributes['minValue'] ) ? $attributes['minValue'] : '';
+		$this->max_selection      = isset( $attributes['maxValue'] ) ? $attributes['maxValue'] : '';
 	}
 
 	/**
@@ -407,7 +425,7 @@ class Base {
 	 */
 	protected function set_markup_properties( $input_label = '', $override = false ) {
 		$this->help_markup          = Helper::generate_common_form_markup( $this->form_id, 'help', '', '', $this->block_id, false, $this->help );
-		$this->error_msg_markup     = Helper::generate_common_form_markup( $this->form_id, 'error', '', '', $this->block_id, boolval( $this->required ), '', $this->error_msg, false, '', $override );
+		$this->error_msg_markup     = Helper::generate_common_form_markup( $this->form_id, 'error', '', '', $this->block_id, boolval( $this->required || $this->min_selection || $this->max_selection ), '', $this->error_msg, false, '', $override );
 		$this->label_markup         = Helper::generate_common_form_markup( $this->form_id, 'label', $this->label, $this->slug, $this->block_id . $input_label, boolval( $this->required ) );
 		$this->error_svg            = Helper::fetch_svg( 'error', 'srfm-error-icon' );
 		$this->duplicate_msg_markup = Helper::generate_common_form_markup( $this->form_id, 'error', '', '', $this->block_id, boolval( $this->required ), '', $this->error_msg, false, $this->duplicate_msg, $override );
