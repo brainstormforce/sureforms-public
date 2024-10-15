@@ -44,33 +44,6 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
 	const [ newOption, setNewOption ] = useState( '' );
-	// const [ isModalOpen, setIsModalOpen ] = useState( false );
-	// const closeModal = () => setIsModalOpen( false );
-
-	// const bulkEdit = (
-	// 	<>
-	// 		<Button
-	// 			className="sureforms-add-bulk-option-button"
-	// 			variant="secondary"
-	// 			onClick={ () => {
-	// 				setIsModalOpen( true );
-	// 			} }
-	// 		>
-	// 			{ __( 'Bulk Edit', 'sureforms' ) }
-	// 		</Button>
-	// 		{ isModalOpen && (
-	// 			<BulkInserter
-	// 				closeModal={ closeModal }
-	// 				options={ options }
-	// 				insertOptions={ ( newOptions ) => {
-	// 					setAttributes( { options: newOptions } );
-	// 					// Close the modal
-	// 					closeModal();
-	// 				} }
-	// 			/>
-	// 		) }
-	// 	</>
-	// );
 
 	const changeOption = ( value, index ) => {
 		const updatedOptions = options.map( ( item, thisIndex ) => {
