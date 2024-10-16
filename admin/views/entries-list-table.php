@@ -951,7 +951,7 @@ class Entries_List_Table extends \WP_List_Table {
 				$message = sprintf( _n( '%1$d entry was successfully exported.', '%1$d entries were successfully exported.', $count, 'sureforms' ), $count );
 				break;
 			default:
-				break;
+				return;
 		}
 		echo '<div class="notice notice-success is-dismissible"><p>' . esc_html( $message ) . '</p></div>';
 	}
