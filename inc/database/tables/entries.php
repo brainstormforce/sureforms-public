@@ -417,4 +417,29 @@ class Entries extends Base {
 				return self::get_instance()->get_total_count();
 		}
 	}
+
+	/**
+	 * Get the available months for entries.
+	 *
+	 * @since x.x.x
+	 * @return array<int|string, mixed>
+	 */
+	public static function get_available_months() {
+		$results = self::get_instance()->get_results(
+			[],
+			'DISTINCT DATE_FORMAT(created_at, "%Y%m") as month_value, DATE_FORMAT(created_at, "%M %Y") as month_label',
+			[
+				'ORDER BY month_value ASC',
+			],
+			false
+		);
+
+		$months = [];
+		foreach ( $results as $result ) {
+			if ( is_array( $result ) && isset( $result['month_value'], $result['month_label'] ) ) {
+				$months[ $result['month_value'] ] = $result['month_label'];
+			}
+		}
+		return $months;
+	}
 }

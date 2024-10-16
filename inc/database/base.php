@@ -614,10 +614,11 @@ abstract class Base {
 	 *                               Default is an empty array.
 	 * @param string        $columns Optional. A string specifying which columns to select. Defaults to '*' (all columns).
 	 * @param array<string> $extra_queries Optional. Array of extra queries to append at the end of main query.
+	 * @param boolean       $decode Optional. Whether to decode the results by datatype. Default is true.
 	 * @since 0.0.10
 	 * @return array<mixed> An associative array of results where each element represents a row, or an empty array if no results are found.
 	 */
-	public function get_results( $where_clauses = [], $columns = '*', $extra_queries = [] ) {
+	public function get_results( $where_clauses = [], $columns = '*', $extra_queries = [], $decode = true ) {
 		$wpdb = $this->wpdb;
 
 		$table_name = $this->get_tablename();
@@ -644,7 +645,7 @@ abstract class Base {
 		// phpcs:ignore
 		$results = $wpdb->get_results( $query, ARRAY_A );
 
-		if ( ! empty( $results ) && is_array( $results ) ) {
+		if ( $decode && ! empty( $results ) && is_array( $results ) ) {
 			foreach ( $results as &$result ) {
 				$result = $this->decode_by_datatype( $result );
 			}
