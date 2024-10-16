@@ -54,12 +54,12 @@ const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 	}, [ showSuccess ] );
 
 	const handleQueryParamsChange = ( queryParams ) => {
-		console.log( queryParams );
-		setData({ ...data, 'query_params': queryParams });
+		console.log( 'updating query params', queryParams );
+		setData( { ...data, query_params: queryParams } );
 	};
 
 	const handleEnableQueryParams = ( checked ) => {
-		setData({ ...data, 'enable_query_params': checked });
+		setData( { ...data, enable_query_params: checked } );
 	};
 
 	const keyValueComponent = () => {
@@ -68,17 +68,17 @@ const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 				data={ data?.query_params ?? [ { '': '' } ] }
 				enabled={ data?.enable_query_params ?? false }
 				setEnabled={ handleEnableQueryParams }
-				label={ __( 'Add query params', 'sureforms' ) }
+				label={ __( 'Add Query Parameters', 'sureforms' ) }
 				helpText={ __(
-				'Add key value pair for form fields to send in query params',
-				'sureforms'
+					'Select if you want to add key-value pairs for form fields to include in query parameters',
+					'sureforms'
 				) }
 				withSmartTags={ true }
-				header={ __( 'Send form data in query params', 'sureforms' ) }
+				header={ __( 'Query Parameters', 'sureforms' ) }
 				handleOnChange={ handleQueryParamsChange }
 			/>
 		);
-	}
+	};
 
 	const validateForm = () => {
 		let validation = '';
@@ -293,83 +293,83 @@ const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 						</div>
 						{ data?.confirmation_type === 'different page' && (
 							<>
-							<div className="srfm-modal-option-box">
-								<div className="srfm-modal-label">
-									<label>
-										{ __( 'Select Page', 'sureforms' ) }
-										<span className="srfm-validation-error">
-											{ ' ' }
+								<div className="srfm-modal-option-box">
+									<div className="srfm-modal-label">
+										<label>
+											{ __( 'Select Page', 'sureforms' ) }
+											<span className="srfm-validation-error">
+												{ ' ' }
 											*
-										</span>
-									</label>
-								</div>
-								<div className="srfm-options-wrapper">
-									<Select
-										className="srfm-select-page"
-										value={ pageOptions?.filter(
-											( option ) =>
-												option.value === data?.page_url
-										) }
-										options={ pageOptions }
-										isMulti={ false }
-										onChange={ ( e ) => {
-											setCanDisplayError( true );
-											setErrorMessage( null );
-											setData( {
-												...data,
-												page_url: e.value,
-											} );
-										} }
-										classNamePrefix={ 'srfm-select' }
-										menuPlacement="auto"
-										styles={ {
-											control: (
-												baseStyles,
-												state
-											) => ( {
-												...baseStyles,
-												boxShadow: state.isFocused
-													? '0 0 0 1px #D54406'
-													: '0 1px 2px 0 rgba(13, 19, 30, .1)', // Primary color for option when focused
-												borderColor: state.isFocused
-													? '#D54406'
-													: '#dce0e6', // Primary color for focus
-												'&:hover': {
-													borderColor: '#D54406', // Primary color for hover
-												},
-												'&:active': {
-													borderColor: '#D54406', // Primary color for active
-												},
-												'&:focus-within': {
-													borderColor: '#D54406', // Primary color for focus within
-												},
-											} ),
-											option: ( baseStyles, state ) => ( {
-												...baseStyles,
-												backgroundColor: state.isFocused
-													? '#FFEFE8'
-													: state.isSelected
+											</span>
+										</label>
+									</div>
+									<div className="srfm-options-wrapper">
+										<Select
+											className="srfm-select-page"
+											value={ pageOptions?.filter(
+												( option ) =>
+													option.value === data?.page_url
+											) }
+											options={ pageOptions }
+											isMulti={ false }
+											onChange={ ( e ) => {
+												setCanDisplayError( true );
+												setErrorMessage( null );
+												setData( {
+													...data,
+													page_url: e.value,
+												} );
+											} }
+											classNamePrefix={ 'srfm-select' }
+											menuPlacement="auto"
+											styles={ {
+												control: (
+													baseStyles,
+													state
+												) => ( {
+													...baseStyles,
+													boxShadow: state.isFocused
+														? '0 0 0 1px #D54406'
+														: '0 1px 2px 0 rgba(13, 19, 30, .1)', // Primary color for option when focused
+													borderColor: state.isFocused
 														? '#D54406'
-														: 'white', // Background color for option when focused or selected
-												color: state.isFocused
-													? 'black'
-													: state.isSelected
-														? 'white'
-														: 'black', // Text color for option when focused or selected
-											} ),
-										} }
-										theme={ ( theme ) => ( {
-											...theme,
-											colors: {
-												...theme.colors,
-												primary50: '#FFEFE8',
-												primary: '#D54406',
-											},
-										} ) }
-									/>
+														: '#dce0e6', // Primary color for focus
+													'&:hover': {
+														borderColor: '#D54406', // Primary color for hover
+													},
+													'&:active': {
+														borderColor: '#D54406', // Primary color for active
+													},
+													'&:focus-within': {
+														borderColor: '#D54406', // Primary color for focus within
+													},
+												} ),
+												option: ( baseStyles, state ) => ( {
+													...baseStyles,
+													backgroundColor: state.isFocused
+														? '#FFEFE8'
+														: state.isSelected
+															? '#D54406'
+															: 'white', // Background color for option when focused or selected
+													color: state.isFocused
+														? 'black'
+														: state.isSelected
+															? 'white'
+															: 'black', // Text color for option when focused or selected
+												} ),
+											} }
+											theme={ ( theme ) => ( {
+												...theme,
+												colors: {
+													...theme.colors,
+													primary50: '#FFEFE8',
+													primary: '#D54406',
+												},
+											} ) }
+										/>
+									</div>
 								</div>
-							</div>
-							{ keyValueComponent() }
+								{ keyValueComponent() }
 							</>
 						) }
 						{ data?.confirmation_type === 'custom url' && (
@@ -377,23 +377,23 @@ const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 								<div className="srfm-modal-option-box">
 									<div className="srfm-modal-label">
 										<label>
-										{ __( 'Custom URL', 'sureforms' ) }
-										<span className="srfm-validation-error">
-											{ ' ' }
+											{ __( 'Custom URL', 'sureforms' ) }
+											<span className="srfm-validation-error">
+												{ ' ' }
 											*
-										</span>
-									</label>
-								</div>
-								<input
-									value={ data?.custom_url }
-									className="srfm-modal-input"
-									onChange={ ( e ) => {
-										setCanDisplayError( true );
-										setData( {
-											...data,
-											custom_url: e.target.value,
-										} );
-									} }
+											</span>
+										</label>
+									</div>
+									<input
+										value={ data?.custom_url }
+										className="srfm-modal-input"
+										onChange={ ( e ) => {
+											setCanDisplayError( true );
+											setData( {
+												...data,
+												custom_url: e.target.value,
+											} );
+										} }
 									/>
 								</div>
 								{ keyValueComponent() }

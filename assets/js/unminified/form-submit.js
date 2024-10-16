@@ -236,7 +236,7 @@ async function handleFormSubmission(
 					afterSubmit( formStatus );
 				}
 			} else {
-				if( formStatus?.redirect_url ) {
+				if ( formStatus?.redirect_url ) {
 					redirectToUrl( formStatus?.redirect_url );
 				}
 				loader.classList.remove( 'srfm-active' );

@@ -385,6 +385,7 @@ $req_err_color: #dc2625;
 								background: #fff;
 								box-shadow: none;
 								margin-top: 8px;
+								height: 44px;
 
 								&.with-icon {
 									padding: 10px 24px 10px 12px;
@@ -443,9 +444,7 @@ $req_err_color: #dc2625;
 								}
 
 								.srfm-select-page {
-									min-width: 720px;
 									width: 100%;
-									height: 36px;
 
 									// Hide the box shadow of input inside React Select.
 									.srfm-select__input {

@@ -503,9 +503,9 @@ class Form_Submit {
 			do_action( 'srfm_after_submission_process', $form_data );
 
 			$response = [
-				'success' => true,
-				'message' => Generate_Form_Markup::get_confirmation_markup( $form_data, $submission_data ),
-				'data'    => [
+				'success'      => true,
+				'message'      => Generate_Form_Markup::get_confirmation_markup( $form_data, $submission_data ),
+				'data'         => [
 					'name'         => $name,
 					'after_submit' => false,
 				],
@@ -582,9 +582,9 @@ class Form_Submit {
 			wp_set_object_terms( $post_id, $id, 'sureforms_tax' );
 
 			$response = [
-				'success' => true,
-				'message' => Generate_Form_Markup::get_confirmation_markup( $form_data, $submission_data ),
-				'data'    => [
+				'success'      => true,
+				'message'      => Generate_Form_Markup::get_confirmation_markup( $form_data, $submission_data ),
+				'data'         => [
 					'name'          => $name,
 					'submission_id' => $post_id,
 					'after_submit'  => true,

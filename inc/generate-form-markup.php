@@ -411,6 +411,14 @@ class Generate_Form_Markup {
 
 	}
 
+	/**
+	 * Get redirect url for form incase of different page or custom url is selected.
+	 *
+	 * @param array<mixed> $form_data contains form data.
+	 * @param array<mixed> $submission_data contains submission data.
+	 * @since x.x.x
+	 * @return string|false
+	 */
 	public static function get_redirect_url( $form_data = [], $submission_data = [] ) {
 		$redirect_url = '';
 
@@ -436,21 +444,21 @@ class Generate_Form_Markup {
 			$redirect_url = esc_url( $custom_url );
 		}
 
-		if( empty( $redirect_url ) ) {
+		if ( empty( $redirect_url ) ) {
 			return $redirect_url;
 		}
 
-		if( empty( $confirmation_data['enable_query_params'] ) || true !== $confirmation_data['enable_query_params'] ) {
+		if ( empty( $confirmation_data['enable_query_params'] ) || true !== $confirmation_data['enable_query_params'] ) {
 			return $redirect_url;
 		}
 
-		if( empty( $confirmation_data['query_params'] ) && ! is_array( $confirmation_data['query_params'] ) ) {
+		if ( empty( $confirmation_data['query_params'] ) && ! is_array( $confirmation_data['query_params'] ) ) {
 			return $redirect_url;
 		}
 
 		$query_params = [];
-		foreach( $confirmation_data['query_params'] as $params ) {
-			if( is_array( $params ) && ! empty( array_keys( $params ) ) && ! empty( array_values( $params ) ) ) {
+		foreach ( $confirmation_data['query_params'] as $params ) {
+			if ( is_array( $params ) && ! empty( array_keys( $params ) ) && ! empty( array_values( $params ) ) ) {
 				$query_params[ esc_attr( array_keys( $params )[0] ) ] = esc_attr( array_values( $params )[0] );
 			}
 		}
@@ -458,8 +466,8 @@ class Generate_Form_Markup {
 		$redirect_url = add_query_arg( $query_params, $redirect_url );
 
 		if ( ! empty( $submission_data ) ) {
-			$smart_tags = new Smart_Tags();
-			$redirect_url = $smart_tags->process_smart_tags( $redirect_url, $submission_data, $form_data );
+			$smart_tags   = new Smart_Tags();
+			$redirect_url = html_entity_decode( $smart_tags->process_smart_tags( $redirect_url, $submission_data, $form_data ) );
 		}
 
 		return $redirect_url;
