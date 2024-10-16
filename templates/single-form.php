@@ -150,7 +150,7 @@ if ( $use_banner_as_page_background ) {
 
 				if ( empty( $enable_instant_form ) ) {
 					?>
-					<div class="srfm-form-status-badge"><?php esc_html_e( 'Unpublished', 'sureforms' ); ?></div>
+					<div class="srfm-form-status-badge"><?php esc_html_e( 'Instant Form Disabled', 'sureforms' ); ?></div>
 					<?php
 				}
 				?>
