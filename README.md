@@ -253,7 +253,7 @@ When you use the SureForms, you get a huge library of ready-to-use form template
 
 ## Changelog ##
 ### 0.0.12 ###
-* Fix: The case where AI Form was getting timed out.
+* Fix: AI Form generation was timing out.
 ### 0.0.11 ###
 * New: Added input mask setting for the text field.
 * Improvement: Added support for emojis and special characters in SureForm AI response.
