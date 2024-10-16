@@ -54,7 +54,6 @@ const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 	}, [ showSuccess ] );
 
 	const handleQueryParamsChange = ( queryParams ) => {
-		console.log( 'updating query params', queryParams );
 		setData( { ...data, query_params: queryParams } );
 	};
 

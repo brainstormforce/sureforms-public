@@ -39,16 +39,11 @@ const KeyValueUI = ( {
 	};
 
 	const deleteItem = ( index ) => {
-		console.log( index );
-		// const newData = localData.filter((_, i) => i !== index);
-		// console.log( newData );
 		const tempData = [ ...localData ];
-		console.log( 'tempData before slice', tempData );
 		const newData = [
 			...tempData.slice( 0, index ),
 			...tempData.slice( index + 1 ),
 		];
-		console.log( 'updated data', newData );
 		setLocalData( newData.length ? newData : [ { '': '' } ] );
 		handleOnChange( newData.length ? newData : [ { '': '' } ] );
 	};
