@@ -1,3 +1,6 @@
+.srfm-page-header {
+    margin-left: -20px; // remove the 20px padding added by wordpress to fix the header alignment.
+}
 .status.column-status {
     span {
         text-transform: capitalize;

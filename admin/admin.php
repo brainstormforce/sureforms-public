@@ -398,7 +398,7 @@ class Admin {
 		}
 
 		if ( SRFM_FORMS_POST_TYPE === $current_screen->post_type || 'toplevel_page_sureforms_menu' === $current_screen->base || SRFM_ENTRIES_POST_TYPE === $current_screen->post_type
-		|| 'sureforms_page_sureforms_form_settings' === $current_screen->id
+		|| 'sureforms_page_sureforms_form_settings' === $current_screen->id || 'sureforms_page_sureforms_entries' === $current_screen->id
 		) {
 			$asset_handle = '-dashboard';
 
@@ -434,7 +434,9 @@ class Admin {
 
 		// Enqueue styles for the entries page.
 		if ( 'sureforms_page_sureforms_entries' === $current_screen->id ) {
-			wp_enqueue_style( SRFM_SLUG . '-entries', $css_uri . 'backend/entries' . $file_prefix . '.css', [], SRFM_VER );
+			$asset_handle = '-entries';
+			wp_enqueue_style( SRFM_SLUG . $asset_handle, $css_uri . 'backend/entries' . $file_prefix . '.css', [], SRFM_VER );
+			wp_enqueue_script( SRFM_SLUG . $asset_handle, SRFM_URL . 'assets/build/entries.js', $script_info['dependencies'], SRFM_VER, true );
 		}
 
 		// Admin Submenu Styles.
