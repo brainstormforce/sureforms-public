@@ -30,8 +30,9 @@ function inputFieldMasking() {
 				inputMaskOptions.inputFormat = 'dd/mm/yyyy HH:MM:ss';
 				break;
 			case 'custom-mask':
-				const customMask =
-					inputField.getAttribute( 'data-custom-srfm-mask' );
+				const customMask = inputField.getAttribute(
+					'data-custom-srfm-mask'
+				);
 				if ( customMask.startsWith( 'date:' ) ) {
 					const format = customMask.replace( /^date:\s*/, '' );
 					inputMaskOptions.alias = 'datetime';
