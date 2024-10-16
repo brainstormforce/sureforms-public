@@ -133,7 +133,7 @@ class Entries_List_Table extends \WP_List_Table {
 		$order   = isset( $_GET['order'] ) ? sanitize_text_field( wp_unslash( $_GET['order'] ) ) : 'desc';
 		// phpcs:enable WordPress.Security.NonceVerification.Recommended
 
-		$offset = ( $current_page - 1 ) * $per_page;
+		$offset              = ( $current_page - 1 ) * $per_page;
 		$where_condition     = $this->get_where_conditions( $form_id, $view );
 		$this->data          = Entries::get_all(
 			[
@@ -464,7 +464,8 @@ class Entries_List_Table extends \WP_List_Table {
 	 */
 	protected function display_form_filter() {
 		$forms = $this->get_available_forms();
-		$view = isset( $_GET['view'] ) ? sanitize_text_field( wp_unslash( $_GET['view'] ) ) : 'all';
+		// Added the phpcs ignore nonce verification as no database operations are performed in this function.
+		$view = isset( $_GET['view'] ) ? sanitize_text_field( wp_unslash( $_GET['view'] ) ) : 'all'; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 
 		echo '<input type="hidden" name="view" value="' . esc_attr( $view ) . '" />';
 		echo '<select name="form_filter">';
@@ -489,9 +490,9 @@ class Entries_List_Table extends \WP_List_Table {
 		if ( isset( $_GET['month_filter'] ) && ! isset( $_GET['_wpnonce'] ) || ( isset( $_GET['_wpnonce'] ) && ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'srfm_entries_action' ) ) ) {
 			return;
 		}
-		$view = isset( $_GET['view'] ) ? sanitize_text_field( wp_unslash( $_GET['view'] ) ) : 'all';
+		$view    = isset( $_GET['view'] ) ? sanitize_text_field( wp_unslash( $_GET['view'] ) ) : 'all';
 		$form_id = isset( $_GET['form_filter'] ) ? sanitize_text_field( wp_unslash( $_GET['form_filter'] ) ) : 0;
-		$months = Entries::get_available_months( $this->get_where_conditions( $form_id, $view ) );
+		$months  = Entries::get_available_months( $this->get_where_conditions( $form_id, $view ) );
 
 		// Sort the months in descending order according to key.
 		krsort( $months );
@@ -637,7 +638,7 @@ class Entries_List_Table extends \WP_List_Table {
 						'compare' => '!=',
 						'value'   => 'trash',
 					],
-				]
+				],
 			];
 		}
 
