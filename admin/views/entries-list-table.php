@@ -134,29 +134,7 @@ class Entries_List_Table extends \WP_List_Table {
 		// phpcs:enable WordPress.Security.NonceVerification.Recommended
 
 		$offset = ( $current_page - 1 ) * $per_page;
-		// If view is all, then we need to fetch all entries except the trash.
-		$compare = 'all' === $view ? '!=' : '=';
-		$value   = 'all' === $view ? 'trash' : $view;
-		// Default where clause for all views.
-		$where_condition = [
-			[
-				[
-					'key'     => 'status',
-					'compare' => $compare,
-					'value'   => $value,
-				],
-			],
-		];
-		// If form ID is set, then we need to add the form ID condition to the where clause to fetch entries only for that form.
-		if ( 0 < $form_id ) {
-			$where_condition[] = [
-				[
-					'key'     => 'form_id',
-					'compare' => '=',
-					'value'   => $form_id,
-				],
-			];
-		}
+		$where_condition     = $this->get_where_conditions( $form_id, $view );
 		$this->data          = Entries::get_all(
 			[
 				'limit'   => $per_page,
@@ -166,7 +144,7 @@ class Entries_List_Table extends \WP_List_Table {
 				'order'   => $order,
 			]
 		);
-		$this->entries_count = Entries::get_total_entries_by_status( $view, $form_id );
+		$this->entries_count = Entries::get_total_entries_by_status( $view, $form_id, $where_condition );
 		return $this->data;
 	}
 
@@ -193,7 +171,6 @@ class Entries_List_Table extends \WP_List_Table {
 		$current_page = $this->get_pagenum();
 
 		$data = $this->table_data( $per_page, $current_page, $view, $form_id );
-		$data = $this->filter_entries_data( $data );
 
 		$this->set_pagination_args(
 			[
@@ -487,7 +464,9 @@ class Entries_List_Table extends \WP_List_Table {
 	 */
 	protected function display_form_filter() {
 		$forms = $this->get_available_forms();
+		$view = isset( $_GET['view'] ) ? sanitize_text_field( wp_unslash( $_GET['view'] ) ) : 'all';
 
+		echo '<input type="hidden" name="view" value="' . esc_attr( $view ) . '" />';
 		echo '<select name="form_filter">';
 		echo '<option value="all">' . esc_html__( 'All Form Entries', 'sureforms' ) . '</option>';
 		foreach ( $forms as $form_id => $form_name ) {
@@ -510,7 +489,9 @@ class Entries_List_Table extends \WP_List_Table {
 		if ( isset( $_GET['month_filter'] ) && ! isset( $_GET['_wpnonce'] ) || ( isset( $_GET['_wpnonce'] ) && ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'srfm_entries_action' ) ) ) {
 			return;
 		}
-		$months = Entries::get_available_months();
+		$view = isset( $_GET['view'] ) ? sanitize_text_field( wp_unslash( $_GET['view'] ) ) : 'all';
+		$form_id = isset( $_GET['form_filter'] ) ? sanitize_text_field( wp_unslash( $_GET['form_filter'] ) ) : 0;
+		$months = Entries::get_available_months( $this->get_where_conditions( $form_id, $view ) );
 
 		// Sort the months in descending order according to key.
 		krsort( $months );
@@ -638,58 +619,104 @@ class Entries_List_Table extends \WP_List_Table {
 	}
 
 	/**
-	 * Filter the data according to options applied.
+	 * Return the where conditions to add to the query for filtering entries.
 	 *
-	 * @param array $data The form entries which will be displayed in the table.
+	 * @param int    $form_id The ID of the form to fetch entries for.
+	 * @param string $view The view to fetch entries for.
 	 *
 	 * @since x.x.x
 	 * @return array<mixed>
 	 */
-	private function filter_entries_data( $data ) {
+	private function get_where_conditions( $form_id = 0, $view = 'all' ) {
 		if ( ! isset( $_GET['_wpnonce'] ) || ( isset( $_GET['_wpnonce'] ) && ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'srfm_entries_action' ) ) ) {
-			return $data;
+			// Return the default condition to fetch all entries which are not in trash.
+			return [
+				[
+					[
+						'key'     => 'status',
+						'compare' => '!=',
+						'value'   => 'trash',
+					],
+				]
+			];
+		}
+
+		$where_condition = [];
+
+		// Set the where condition based on the view for populating the month filter dropdown.
+		switch ( $view ) {
+			case 'all':
+				$where_condition[] = [
+					[
+						'key'     => 'status',
+						'compare' => '!=',
+						'value'   => 'trash',
+					],
+				];
+				break;
+			case 'trash':
+			case 'unread':
+				$where_condition[] = [
+					[
+						'key'     => 'status',
+						'compare' => '=',
+						'value'   => $view,
+					],
+				];
+				break;
+			default:
+				break;
 		}
 		// Handle the search according to entry ID.
 		$search_term = isset( $_GET['search_filter'] ) ? sanitize_text_field( wp_unslash( $_GET['search_filter'] ) ) : '';
 
-		// Filter the data based on the form name selected.
-		$form_filter = isset( $_GET['form_filter'] ) ? sanitize_text_field( wp_unslash( $_GET['form_filter'] ) ) : '';
-
 		// Filter data based on the month and year selected.
 		$month_filter = isset( $_GET['month_filter'] ) ? sanitize_text_field( wp_unslash( $_GET['month_filter'] ) ) : '';
 
-		// Apply search filter, currently search is based on entry ID only and not text.
-		if ( ! empty( $search_term ) ) {
-			$data = array_filter(
-				$data,
-				function( $entry ) use ( $search_term ) {
-					return isset( $entry['ID'] ) && strpos( Helper::get_string_value( $entry['ID'] ), $search_term ) !== false;
-				}
-			);
+		// If form ID is set, then we need to add the form ID condition to the where clause to fetch entries only for that form.
+		if ( 0 < $form_id ) {
+			$where_condition[] = [
+				[
+					'key'     => 'form_id',
+					'compare' => '=',
+					'value'   => $form_id,
+				],
+			];
 		}
 
-		// Apply form filter.
-		if ( ! empty( $form_filter ) && 'all' !== $form_filter ) {
-			$data = array_filter(
-				$data,
-				function( $entry ) use ( $form_filter ) {
-					return isset( $entry['form_id'] ) && $entry['form_id'] === $form_filter;
-				}
-			);
+		// Apply search filter, currently search is based on entry ID only and not text.
+		if ( ! empty( $search_term ) ) {
+			$where_condition[] = [
+				[
+					'key'     => 'ID',
+					'compare' => 'LIKE',
+					'value'   => $search_term,
+				],
+			];
 		}
 
 		// Apply month filter.
 		if ( ! empty( $month_filter ) && 'all' !== $month_filter ) {
-			$data = array_filter(
-				$data,
-				function( $entry ) use ( $month_filter ) {
-					$entry_month = ( new \DateTime( $entry['created_at'] ) )->format( 'Ym' ); // Format as 'YYYYMM'.
-					return $entry_month === $month_filter;
-				}
-			);
+			$year       = substr( $month_filter, 0, 4 );
+			$month      = substr( $month_filter, 4, 2 );
+			$start_date = sprintf( '%s-%s-01', $year, $month );
+			$end_date   = gmdate( 'Y-m-t', strtotime( $start_date ) );
+			// Using two conditions to filter the entries based on the start and end date as the base class does not support BETWEEN operator.
+			$where_condition[] = [
+				[
+					'key'     => 'created_at',
+					'compare' => '>=',
+					'value'   => $start_date,
+				],
+				[
+					'key'     => 'created_at',
+					'compare' => '<=',
+					'value'   => $end_date,
+				],
+			];
 		}
 
-		return $data;
+		return $where_condition;
 	}
 
 	/**

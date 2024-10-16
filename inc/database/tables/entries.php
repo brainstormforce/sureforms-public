@@ -338,23 +338,23 @@ class Entries extends Base {
 	/**
 	 * Get the total count of entries by status.
 	 *
-	 * @param string   $status The status of the entries to count.
-	 * @param int|null $form_id The ID of the form to count entries for.
+	 * @param string              $status The status of the entries to count.
+	 * @param int|null            $form_id The ID of the form to count entries for.
+	 * @param array<string,mixed> $where_clause Additional where clause to add to the query.
 	 * @since x.x.x
 	 * @return int The total number of entries with the specified status.
 	 */
-	public static function get_total_entries_by_status( $status = 'all', $form_id = 0 ) {
+	public static function get_total_entries_by_status( $status = 'all', $form_id = 0, $where_clause = [] ) {
 		switch ( $status ) {
 			case 'all':
-				$where_clause = [
+				$where_clause[] =
 					[
 						[
 							'key'     => 'status',
 							'compare' => '!=',
 							'value'   => 'trash',
 						],
-					],
-				];
+					];
 				if ( 0 < $form_id ) {
 					$where_clause[] = [
 						[
@@ -367,7 +367,14 @@ class Entries extends Base {
 				return self::get_instance()->get_total_count( $where_clause );
 			case 'unread':
 			case 'trash':
-				return self::get_instance()->get_total_count( [ 'status' => $status ] );
+				$where_clause[] = [
+					[
+						'key'     => 'status',
+						'compare' => '=',
+						'value'   => $status,
+					],
+				];
+				return self::get_instance()->get_total_count( $where_clause );
 			default:
 				return self::get_instance()->get_total_count();
 		}
@@ -376,12 +383,13 @@ class Entries extends Base {
 	/**
 	 * Get the available months for entries.
 	 *
+	 * @param array<string,mixed> $where_clause Additional where clause to add to the query.
 	 * @since x.x.x
 	 * @return array<int|string, mixed>
 	 */
-	public static function get_available_months() {
+	public static function get_available_months( $where_clause = [] ) {
 		$results = self::get_instance()->get_results(
-			[],
+			$where_clause,
 			'DISTINCT DATE_FORMAT(created_at, "%Y%m") as month_value, DATE_FORMAT(created_at, "%M %Y") as month_label',
 			[
 				'ORDER BY month_value ASC',
