@@ -34,7 +34,7 @@ use SRFM\Inc\Page_Builders\Page_Builders;
 use SRFM\Inc\Rest_Api;
 use SRFM\Inc\AI_Form_Builder\AI_Helper;
 use SRFM\Inc\AI_Form_Builder\AI_Auth;
-use SRFM\Inc\Updator;
+use SRFM\Inc\Updater;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -149,7 +149,8 @@ class Plugin_Loader {
 		Rest_Api::get_instance();
 		AI_Helper::get_instance();
 		AI_Auth::get_instance();
-		Updator::get_instance();
+		Updater::get_instance();
+
 		/**
 		 * The code that runs during plugin activation
 		 */

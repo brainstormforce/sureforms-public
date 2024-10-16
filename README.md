@@ -4,7 +4,7 @@
 **Requires at least:** 6.4  
 **Tested up to:** 6.6.2  
 **Requires PHP:** 7.4  
-**Stable tag:** 0.0.11  
+**Stable tag:** 0.0.12  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -256,6 +256,8 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 ## Changelog ##
 ### x.x.x ###
 * Improvement: Updated the input mask setting to avoid conflicts with other plugins.
+### 0.0.12 ###
+* Fix: AI Form generation was timing out.
 ### 0.0.11 ###
 * New: Added input mask setting for the text field.
 * Improvement: Added support for emojis and special characters in SureForm AI response.
