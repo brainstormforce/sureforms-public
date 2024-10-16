@@ -39,6 +39,12 @@ if ( 'image' === $bg_type ) {
 	$bg_color = $bg_color ? $bg_color : '';
 }
 
+$body_classes = [];
+
+if ( $use_banner_as_page_background ) {
+	$body_classes[] = 'srfm-has-banner-page-bg';
+}
+
 ?>
 <!DOCTYPE html>
 <html class="srfm-html" <?php language_attributes(); ?>>
@@ -101,25 +107,6 @@ if ( 'image' === $bg_type ) {
 				<?php endif; ?>
 			}
 			<?php
-			if ( $use_banner_as_page_background ) {
-				// Some special edge case css when banner as page background enabled.
-				?>
-				.single-sureforms_form .srfm-single-page-container.has-form-title .srfm-page-banner {
-					height: 172px;
-				}
-				.single-sureforms_form .srfm-single-page-container .srfm-page-banner {
-					height: 112px;
-					padding-bottom: 60px;
-				}
-				.single-sureforms_form .srfm-single-page-container .srfm-form-wrapper {
-					padding-bottom: 100px;
-					height: 100%;
-				}
-				.single-sureforms_form .srfm-single-page-container .srfm-form-wrapper .srfm-form-container {
-					position: static;
-				}
-				<?php
-			}
 		} else {
 			?>
 			html.srfm-html {
@@ -142,7 +129,7 @@ if ( 'image' === $bg_type ) {
 	</style>
 </head>
 
-<body <?php body_class(); ?>>
+<body <?php body_class( $body_classes ); ?>>
 	<?php if ( ! $srfm_form_preview ) { ?>
 		<div id="srfm-single-page-container" class="srfm-single-page-container <?php echo ! ! $single_page_form_title ? 'has-form-title' : ''; ?>">
 			<div class="srfm-page-banner">
@@ -163,7 +150,7 @@ if ( 'image' === $bg_type ) {
 
 				if ( empty( $enable_instant_form ) ) {
 					?>
-					<div class="srfm-form-status-badge"><?php esc_html_e( 'Unpublished', 'sureforms' ); ?></div>
+					<div class="srfm-form-status-badge"><?php esc_html_e( 'Instant Form Disabled', 'sureforms' ); ?></div>
 					<?php
 				}
 				?>
@@ -183,7 +170,7 @@ if ( 'image' === $bg_type ) {
 						'<a href="%1$s" class="srfm-branding" target="_blank">%2$s</a>',
 						esc_url( SRFM_WEBSITE ),
 						/* translators: Here %s is the plugin's name. */
-							sprintf( esc_html__( 'Powered By %s', 'sureforms' ), 'SureForms' )
+							sprintf( esc_html__( 'Crafted with ♡ %s', 'sureforms' ), 'SureForms' )
 					)
 				);
 			}
