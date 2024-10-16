@@ -4,7 +4,7 @@ Tags: contact form, custom form, form builder, forms, gutenberg
 Requires at least: 6.4
 Tested up to: 6.6.2
 Requires PHP: 7.4
-Stable tag: 0.0.11
+Stable tag: 0.0.12
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -252,7 +252,7 @@ Yes! You can certainly use SureForms on yours as well as your client’s website
 When you use the SureForms, you get a huge library of ready-to-use form templates that can be used to build your forms fast.
 
 == Changelog ==
-= x.x.x =
+= 0.0.12 =
 * Fix: The case where AI Form was getting timed out.
 = 0.0.11 =
 * New: Added input mask setting for the text field.
