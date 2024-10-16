@@ -47,8 +47,8 @@ const KeyValueUI = ({
 		console.log( index );
         const newData = localData.filter((_, i) => i !== index);
 		console.log( newData );
-        // setLocalData(newData.length ? newData : [{ '': '' }]);
-        handleOnChange(newData);
+        setLocalData(newData.length ? newData : [{ '': '' }]);
+        handleOnChange(newData.length ? newData : [{ '': '' }]);
     };
 
     const updateKey = (index, newKey) => {
