@@ -61,7 +61,12 @@ class Admin {
 	 * @return void
 	 */
 	public function entries_migration_notice() {
-		if ( true === boolval( get_option( 'srfm_dismiss_entries_migration_notice' ) ) ) {
+		if ( get_option( 'srfm_dismiss_entries_migration_notice', false ) ) {
+			return;
+		}
+
+		if ( empty( get_posts( [ 'post_type' => SRFM_ENTRIES_POST_TYPE ] ) ) ) {
+			// Bail if we don't have legacy post type entries.
 			return;
 		}
 
@@ -111,9 +116,9 @@ class Admin {
 		</div>
 		<script>
 			(function() {
-				const dismissNotices = document.querySelectorAll('.is-dismissible.srfm-plugin-notice');
+				window.addEventListener('load', function() {
+					const dismissNotice = document.querySelector('.is-dismissible.srfm-plugin-notice .notice-dismiss');
 
-				dismissNotices.forEach(function(dismissNotice) {
 					dismissNotice.addEventListener('click', function() {
 						fetch('<?php echo esc_url_raw( $ajaxurl ); ?>');
 					});
