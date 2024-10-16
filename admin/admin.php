@@ -66,10 +66,10 @@ class Admin {
 		}
 
 		$ajaxurl = add_query_arg(
-			array(
+			[
 				'action'   => 'sureforms_dismiss_plugin_notice',
-				'security' => wp_create_nonce( 'srfm_notice_dismiss_nonce' )
-			),
+				'security' => wp_create_nonce( 'srfm_notice_dismiss_nonce' ),
+			],
 			admin_url( 'admin-ajax.php' )
 		);
 		?>
@@ -104,8 +104,8 @@ class Admin {
 				</div>
 				<div class="srfm-plugin-notice--content">
 					<h3 class="srfm-plugin-notice--title"><?php esc_html_e( 'SureForms - Important Update Notice', 'sureforms' ); ?></h3>
-					<p class="srfm-plugin-notice--message"><strong><?php esc_html_e( "We're migrating to a custom database to enhance SureForms' performance and features.", 'sureforms' ) ?></strong></p>
-					<p class="srfm-plugin-notice--message"><?php esc_html_e( "This step is necessary and irreversible, so please back up your entries data before updating SureForms to version 0.0.12 because existing entries will be lost. Thank you for your understanding!", 'sureforms' ) ?></p>
+					<p class="srfm-plugin-notice--message"><strong><?php esc_html_e( "We're migrating to a custom database to enhance SureForms' performance and features.", 'sureforms' ); ?></strong></p>
+					<p class="srfm-plugin-notice--message"><?php esc_html_e( 'This step is necessary and irreversible, so please back up your entries data before updating SureForms to version 0.0.12 because existing entries will be lost. Thank you for your understanding!', 'sureforms' ); ?></p>
 				</div>
 			</div>
 		</div>
