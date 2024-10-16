@@ -234,7 +234,7 @@ class Admin {
 		$entries_table = new Entries_List_Table();
 		$entries_table->prepare_items();
 		echo '<div class="wrap"><h1 class="wp-heading-inline">Entries</h1>';
-		if ( 0 >= $entries_table->entries_count ) {
+		if ( 0 >= $entries_table->all_entries_count && 0 >= $entries_table->trash_count ) {
 			$instance = Post_Types::get_instance();
 			$instance->sureforms_render_blank_state( SRFM_ENTRIES_POST_TYPE );
 			$instance->get_blank_state_styles();

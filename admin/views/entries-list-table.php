@@ -41,12 +41,43 @@ class Entries_List_Table extends \WP_List_Table {
 	protected $data = [];
 
 	/**
-	 * Stores the count for the entries data fetched from the database.
+	 * Stores the count for the entries data fetched from the database according to the status.
+	 * It will be used for pagination.
 	 *
 	 * @var int
 	 * @since x.x.x
 	 */
 	public $entries_count;
+
+	/**
+	 * Stores the count for all entries regardles of status.
+	 * It will be used for managing the no entries found page.
+	 *
+	 * @var int
+	 * @since x.x.x
+	 */
+	public $all_entries_count;
+
+	/**
+	 * Stores the count for the trashed entries.
+	 * Used for displaying the no entries found page.
+	 *
+	 * @var int
+	 * @since x.x.x
+	 */
+	public $trash_entries_count;
+
+	/**
+	 * Constructor.
+	 *
+	 * @since x.x.x
+	 * @return void
+	 */
+	public function __construct() {
+		parent::__construct();
+		$this->all_entries_count   = Entries::get_total_entries_by_status( 'all' );
+		$this->trash_entries_count = Entries::get_total_entries_by_status( 'trash' );
+	}
 
 	/**
 	 * Override the parent columns method. Defines the columns to use in your listing table.
@@ -727,11 +758,7 @@ class Entries_List_Table extends \WP_List_Table {
 	 */
 	protected function get_views() {
 		// Get the status count of the entries.
-		$status_count = [
-			'all'    => Entries::get_total_entries_by_status( 'all' ),
-			'unread' => Entries::get_total_entries_by_status( 'unread' ),
-			'trash'  => Entries::get_total_entries_by_status( 'trash' ),
-		];
+		$unread_entries_count = Entries::get_total_entries_by_status( 'unread' );
 
 		// Get the current view (All, Read, Unread, Trash) to highlight the selected one.
 		// Adding the phpcs ignore nonce verification as no complex operations are performed here only the count of the entries is required.
@@ -747,25 +774,25 @@ class Entries_List_Table extends \WP_List_Table {
 				add_query_arg( 'view', 'all', $base_url ),
 				( 'all' === $current_view ) ? 'current' : '',
 				esc_html__( 'All', 'sureforms' ),
-				$status_count['all']
+				$this->all_entries_count
 			),
 			'unread' => sprintf(
 				'<a href="%1$s" class="%2$s">%3$s <span class="count">(%4$d)</span></a>',
 				add_query_arg( 'view', 'unread', $base_url ),
 				( 'unread' === $current_view ) ? 'current' : '',
 				esc_html__( 'Unread', 'sureforms' ),
-				$status_count['unread']
+				$unread_entries_count
 			),
 		];
 
 		// Only add the Trash view if the count is greater than 0.
-		if ( $status_count['trash'] > 0 ) {
+		if ( $this->trash_entries_count > 0 ) {
 			$views['trash'] = sprintf(
 				'<a href="%1$s" class="%2$s">%3$s <span class="count">(%4$d)</span></a>',
 				add_query_arg( 'view', 'trash', $base_url ),
 				( 'trash' === $current_view ) ? 'current' : '',
 				esc_html__( 'Trash', 'sureforms' ),
-				$status_count['trash']
+				$this->trash_entries_count
 			);
 		}
 
