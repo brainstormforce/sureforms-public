@@ -8,6 +8,8 @@
 
 namespace SRFM\Inc\Fields;
 
+use SRFM\Inc\Helper;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
@@ -61,7 +63,7 @@ class Textarea_Markup extends Base {
 
 	/**
 	 * Indicates whether the textarea is a rich text editor.
-	 * 
+	 *
 	 * @var boolean
 	 * @since x.x.x
 	 */
@@ -99,6 +101,14 @@ class Textarea_Markup extends Base {
 	 * @return string|boolean
 	 */
 	public function markup() {
+		// Helper::class_name()
+		$classes = [
+			'srfm-input-' . $this->slug,
+			$this->block_width,
+			$this->class_name,
+			$this->conditional_class,
+		];
+		
 		ob_start(); ?>
 		<div data-block-id="<?php echo esc_attr( $this->block_id ); ?>" class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $this->slug ); ?>-block srf-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?>-block<?php echo esc_attr( $this->block_width ); ?><?php echo esc_attr( $this->class_name ); ?> <?php echo esc_attr( $this->conditional_class ); ?>">
 			<?php echo wp_kses_post( $this->label_markup ); ?>
@@ -112,7 +122,9 @@ class Textarea_Markup extends Base {
 					aria-required="<?php echo esc_attr( $this->aria_require_attr ); ?>" <?php echo wp_kses_post( $this->max_length_attr . '' . $this->rows_attr ); ?> <?php echo wp_kses_post( $this->placeholder_attr ); ?>
 					<?php echo $this->is_richtext ? 'data-is-richtext="true"' : ''; ?>
 					><?php echo esc_html( $this->default ); ?></textarea>
+					<?php if ( $this->is_richtext ) : ?>
 					<div id="quill-<?php echo esc_attr( $this->unique_slug ); ?>"></div>
+					<?php endif; ?>
 			</div>
 			<div class="srfm-error-wrap">
 				<?php echo wp_kses_post( $this->error_msg_markup ); ?>

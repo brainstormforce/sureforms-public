@@ -25,14 +25,38 @@ function initializeTextarea() {
 				// check attribute data-is-richtext="true"' available and should be true.
 				const isRichText = areaField.getAttribute( 'data-is-richtext' );
 				console.log("isRichText:2 ", isRichText);
-
-				// const quill = new Quill('#editor', {
-				// 	theme: 'snow'
-				//   });
 				if( isRichText === 'true' ) {
-					const quillEditor = new Quill("#quill-srfm-textarea-f72a6a0f-lbl-VGV4dGFyZWE", {
-						theme: 'snow'
+					const getQuillId = areaField.getAttribute( 'id' );
+
+					const quillEditor = new Quill(`#quill-${getQuillId}`, {
+						theme: 'snow',
+						modules: {
+							toolbar: {
+								container: [
+									[{'header': [1, 2, 3, 4, 5, 6, false]}],
+									['bold', 'italic', 'underline', 'strike'],
+									[{ list: 'ordered' }, { list: 'bullet' }],
+									['blockquote'],
+									[{ align: [] }],
+									[{ color: []}, { background: [] }],
+									['clean'],  // Remove formatting button
+									['link', 'image'],
+								]
+							}
+						}
 					});
+
+					console.log("quillEditor: ", quillEditor);
+					// Retrieve content as HTML
+					quillEditor.on('text-change', function( delta, oldDelta, source ) {
+
+						const content = quillEditor.root.innerHTML;
+						console.log('Text change:', { delta, oldDelta, source, content });
+					});
+
+					quillEditor.clipboard.dangerouslyPasteHTML('<p>Hello, Quill!</p>');
+
+
 				}
 			}
 		}
