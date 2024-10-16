@@ -4,7 +4,7 @@
  * Manages important update related to the plugin.
  *
  * @package sureforms.
- * @since x.x.x
+ * @since 0.0.12
  */
 
 namespace SRFM\Inc;
@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Updater class.
  *
- * @since x.x.x
+ * @since 0.0.12
  */
 class Updater {
 
@@ -27,7 +27,7 @@ class Updater {
 	/**
 	 * Constructor.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.12
 	 * @return void
 	 */
 	public function __construct() {
@@ -40,7 +40,7 @@ class Updater {
 	 * This function will help us to determine the plugin version and update it.
 	 * Any major change in the option can be handed here on the basis of last plugin version found in the database.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.12
 	 * @return void
 	 */
 	public function init() {
@@ -63,7 +63,7 @@ class Updater {
 	 * this info is fetched from latest available readme from repository.
 	 *
 	 * @param array<mixed> $data Plugin data.
-	 * @since x.x.x
+	 * @since 0.0.12
 	 * @return void
 	 */
 	public function plugin_update_notification( $data ) {
@@ -98,7 +98,7 @@ class Updater {
 	 * Enqueue styles.
 	 * This function will help us to enqueue the styles for the update notice.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.12
 	 * @return void
 	 */
 	public function enqueue_styles() {
