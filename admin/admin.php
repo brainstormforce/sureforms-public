@@ -656,9 +656,15 @@ class Admin {
 			wp_die( esc_html__( 'Nonce verification failed.', 'sureforms' ) );
 		}
 		$action   = isset( $_GET['action'] ) ? sanitize_text_field( wp_unslash( $_GET['action'] ) ) : '';
-		$entry_id = intval( $_GET['entry_id'] );
+		$entry_id = Helper::get_integer_value( sanitize_text_field( wp_unslash( $_GET['entry_id'] ) ) );
 		$view     = isset( $_GET['view'] ) ? sanitize_text_field( wp_unslash( $_GET['view'] ) ) : '';
 		if ( $entry_id > 0 ) {
+			if ( 'read' === $action && 'details' === $view ) {
+				$entry_status = Entries::get( $entry_id )['status'];
+				if ( 'trash' === $entry_status ) {
+					wp_die( esc_html__( 'You cannot view this entry because it is in trash.', 'sureforms' ) );
+				}
+			}
 			Entries_List_Table::handle_entry_status( $entry_id, $action, $view );
 		}
 	}
