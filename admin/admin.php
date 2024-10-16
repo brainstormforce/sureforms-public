@@ -234,7 +234,7 @@ class Admin {
 		$entries_table = new Entries_List_Table();
 		$entries_table->prepare_items();
 		echo '<div class="wrap"><h1 class="wp-heading-inline">Entries</h1>';
-		if ( 0 >= $entries_table->entries_count ) {
+		if ( 0 >= $entries_table->all_entries_count && 0 >= $entries_table->trash_count ) {
 			$instance = Post_Types::get_instance();
 			$instance->sureforms_render_blank_state( SRFM_ENTRIES_POST_TYPE );
 			$instance->get_blank_state_styles();
@@ -656,9 +656,15 @@ class Admin {
 			wp_die( esc_html__( 'Nonce verification failed.', 'sureforms' ) );
 		}
 		$action   = isset( $_GET['action'] ) ? sanitize_text_field( wp_unslash( $_GET['action'] ) ) : '';
-		$entry_id = intval( $_GET['entry_id'] );
+		$entry_id = Helper::get_integer_value( sanitize_text_field( wp_unslash( $_GET['entry_id'] ) ) );
 		$view     = isset( $_GET['view'] ) ? sanitize_text_field( wp_unslash( $_GET['view'] ) ) : '';
 		if ( $entry_id > 0 ) {
+			if ( 'read' === $action && 'details' === $view ) {
+				$entry_status = Entries::get( $entry_id )['status'];
+				if ( 'trash' === $entry_status ) {
+					wp_die( esc_html__( 'You cannot view this entry because it is in trash.', 'sureforms' ) );
+				}
+			}
 			Entries_List_Table::handle_entry_status( $entry_id, $action, $view );
 		}
 	}
