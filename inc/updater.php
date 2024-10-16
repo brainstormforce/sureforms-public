@@ -1,6 +1,6 @@
 <?php
 /**
- * Sureforms updator.
+ * SureForms Updater.
  * Manages important update related to the plugin.
  *
  * @package sureforms.
@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Updator class.
+ * Updater class.
  *
  * @since x.x.x
  */
