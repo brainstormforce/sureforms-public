@@ -267,17 +267,17 @@ class Entries_List_Table extends \WP_List_Table {
 		$entry_id = esc_attr( $item['ID'] );
 
 		$view_url =
-			wp_nonce_url(
-				add_query_arg(
-					[
-						'entry_id' => $entry_id,
-						'view'     => 'details',
-						'action'   => 'read',
-					],
-					admin_url( 'admin.php?page=sureforms_entries' )
-				),
-				'srfm_entries_action'
-			);
+		wp_nonce_url(
+			add_query_arg(
+				[
+					'entry_id' => $entry_id,
+					'view'     => 'details',
+					'action'   => 'read',
+				],
+				admin_url( 'admin.php?page=sureforms_entries' )
+			),
+			'srfm_entries_action'
+		);
 
 		return sprintf(
 			'<strong><a class="row-title" href="%1$s">%2$s%3$s</a></strong>',
@@ -376,28 +376,28 @@ class Entries_List_Table extends \WP_List_Table {
 	 */
 	protected function package_row_actions( $item ) {
 		$view_url  =
-			wp_nonce_url(
-				add_query_arg(
-					[
-						'entry_id' => esc_attr( $item['ID'] ),
-						'view'     => 'details',
-						'action'   => 'read',
-					],
-					admin_url( 'admin.php?page=sureforms_entries' )
-				),
-				'srfm_entries_action'
-			);
+		wp_nonce_url(
+			add_query_arg(
+				[
+					'entry_id' => esc_attr( $item['ID'] ),
+					'view'     => 'details',
+					'action'   => 'read',
+				],
+				admin_url( 'admin.php?page=sureforms_entries' )
+			),
+			'srfm_entries_action'
+		);
 		$trash_url =
-			wp_nonce_url(
-				add_query_arg(
-					[
-						'entry_id' => esc_attr( $item['ID'] ),
-						'action'   => 'trash',
-					],
-					admin_url( 'admin.php?page=sureforms_entries' )
-				),
-				'srfm_entries_action'
-			);
+		wp_nonce_url(
+			add_query_arg(
+				[
+					'entry_id' => esc_attr( $item['ID'] ),
+					'action'   => 'trash',
+				],
+				admin_url( 'admin.php?page=sureforms_entries' )
+			),
+			'srfm_entries_action'
+		);
 
 		$row_actions = [
 			'view'  => sprintf( '<a href="%1$s">%2$s</a>', esc_url( $view_url ), esc_html__( 'View', 'sureforms' ) ),
@@ -411,16 +411,16 @@ class Entries_List_Table extends \WP_List_Table {
 
 			// Add Restore and Delete actions.
 			$restore_url =
-				wp_nonce_url(
-					add_query_arg(
-						[
-							'entry_id' => esc_attr( $item['ID'] ),
-							'action'   => 'restore',
-						],
-						admin_url( 'admin.php?page=sureforms_entries' )
-					),
-					'srfm_entries_action'
-				);
+			wp_nonce_url(
+				add_query_arg(
+					[
+						'entry_id' => esc_attr( $item['ID'] ),
+						'action'   => 'restore',
+					],
+					admin_url( 'admin.php?page=sureforms_entries' )
+				),
+				'srfm_entries_action'
+			);
 
 			$delete_url =
 				wp_nonce_url(
@@ -454,8 +454,12 @@ class Entries_List_Table extends \WP_List_Table {
 			return;
 		}
 		if ( 'top' === $which ) {
-			$this->display_month_filter();
-			$this->display_form_filter();
+			?>
+			<div class="alignleft actions">
+				<?php $this->display_month_filter(); ?>
+				<?php $this->display_form_filter(); ?>
+			</div>
+			<?php
 		}
 	}
 
@@ -567,6 +571,7 @@ class Entries_List_Table extends \WP_List_Table {
 	public function display() {
 		$singular = $this->_args['singular'];
 		$this->views();
+		$this->search_box_markup( esc_html__( 'Search', 'sureforms' ), 'srfm-entries' );
 		$this->display_tablenav( 'top' );
 		$this->screen->render_screen_reader_content( 'heading_list' );
 		?>
