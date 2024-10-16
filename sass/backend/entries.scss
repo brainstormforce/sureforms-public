@@ -71,6 +71,10 @@
 // Remove extra margin from button in mobile view for the search box.
 @media screen and ( max-width: 782px ) {
 	.sureforms-form-search-box {
+		.sureforms-entries-search-box {
+			width: 100%;
+			margin-bottom: 10px;
+		}
 		.button {
 			margin-bottom: 0;
 		}
