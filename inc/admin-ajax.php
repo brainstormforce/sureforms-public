@@ -35,11 +35,28 @@ class Admin_Ajax {
 	 * @since  0.0.1
 	 */
 	public function __construct() {
+		add_action( 'wp_ajax_sureforms_dismiss_plugin_notice', [ $this, 'dismiss_plugin_notice' ] );
 		add_action( 'wp_ajax_sureforms_recommended_plugin_activate', [ $this, 'required_plugin_activate' ] );
 		add_action( 'wp_ajax_sureforms_recommended_plugin_install', 'wp_ajax_install_plugin' );
 		add_action( 'wp_ajax_sureforms_integration', [ $this, 'generate_data_for_suretriggers_integration' ] );
 
 		add_filter( SRFM_SLUG . '_admin_filter', [ $this, 'localize_script_integration' ] );
+	}
+
+	/**
+	 * Dismiss plugin notice on dismiss button click using ajax request.
+	 *
+	 * @since x.x.x
+	 * @return void
+	 */
+	public function dismiss_plugin_notice() {
+		if ( empty( $_GET['security'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['security'] ) ), 'srfm_notice_dismiss_nonce' ) ) {
+			wp_send_json_error();
+		}
+
+		update_option( 'srfm_dismiss_entries_migration_notice', true );
+
+		wp_send_json_success();
 	}
 
 
