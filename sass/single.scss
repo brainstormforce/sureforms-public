@@ -119,4 +119,33 @@
 			}
 		}
 	}
+
+	/**
+	* Some special edge case css when banner as page background enabled.
+	*/
+	&.srfm-has-banner-page-bg {
+		.srfm-single-page-container.has-form-title .srfm-page-banner {
+			height: 172px;
+		}
+		.srfm-single-page-container .srfm-page-banner {
+			height: 112px;
+			padding-bottom: 60px;
+		}
+		.srfm-single-page-container .srfm-form-wrapper {
+			padding-bottom: 100px;
+			height: 100%;
+		}
+		.srfm-single-page-container .srfm-form-wrapper .srfm-form-container {
+			position: static;
+		}
+
+		/* Branding styles when banner as page bg is enabled. */
+		.srfm-single-page-container .srfm-branding {
+			background: #FFFFFF05;
+			color: #FFFFFF80;
+		}
+		.srfm-single-page-container .srfm-branding:hover {
+			color: #FFFFFFA6;
+		}
+	}
 }

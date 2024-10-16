@@ -39,6 +39,12 @@ if ( 'image' === $bg_type ) {
 	$bg_color = $bg_color ? $bg_color : '';
 }
 
+$body_classes = [];
+
+if ( $use_banner_as_page_background ) {
+	$body_classes[] = 'srfm-has-banner-page-bg';
+}
+
 ?>
 <!DOCTYPE html>
 <html class="srfm-html" <?php language_attributes(); ?>>
@@ -123,7 +129,7 @@ if ( 'image' === $bg_type ) {
 	</style>
 </head>
 
-<body <?php body_class(); ?>>
+<body <?php body_class( $body_classes ); ?>>
 	<?php if ( ! $srfm_form_preview ) { ?>
 		<div id="srfm-single-page-container" class="srfm-single-page-container <?php echo ! ! $single_page_form_title ? 'has-form-title' : ''; ?>">
 			<div class="srfm-page-banner">
@@ -189,41 +195,6 @@ if ( 'image' === $bg_type ) {
 				});
 			}());
 		</script>
-		<?php
-	}
-
-	if ( $use_banner_as_page_background ) {
-		/**
-		 * Some special edge case css when banner as page background enabled.
-		 * Also, we have moved it at the bottom of the page to make sure
-		 * it don't gets overridden when our conditional styles loads from wp_enqueue_style.
-		 */
-		?>
-		<style>
-		.single-sureforms_form .srfm-single-page-container.has-form-title .srfm-page-banner {
-			height: 172px;
-		}
-		.single-sureforms_form .srfm-single-page-container .srfm-page-banner {
-			height: 112px;
-			padding-bottom: 60px;
-		}
-		.single-sureforms_form .srfm-single-page-container .srfm-form-wrapper {
-			padding-bottom: 100px;
-			height: 100%;
-		}
-		.single-sureforms_form .srfm-single-page-container .srfm-form-wrapper .srfm-form-container {
-			position: static;
-		}
-
-		/* Branding styles when banner as page bg is enabled. */
-		.single-sureforms_form .srfm-single-page-container .srfm-branding {
-			background: #FFFFFF05;
-			color: #FFFFFF80;
-		}
-		.single-sureforms_form .srfm-single-page-container .srfm-branding:hover {
-			color: #FFFFFFA6;
-		}
-		</style>
 		<?php
 	}
 	?>
