@@ -41,12 +41,43 @@ class Entries_List_Table extends \WP_List_Table {
 	protected $data = [];
 
 	/**
-	 * Stores the count for the entries data fetched from the database.
+	 * Stores the count for the entries data fetched from the database according to the status.
+	 * It will be used for pagination.
 	 *
 	 * @var int
 	 * @since x.x.x
 	 */
 	public $entries_count;
+
+	/**
+	 * Stores the count for all entries regardles of status.
+	 * It will be used for managing the no entries found page.
+	 *
+	 * @var int
+	 * @since x.x.x
+	 */
+	public $all_entries_count;
+
+	/**
+	 * Stores the count for the trashed entries.
+	 * Used for displaying the no entries found page.
+	 *
+	 * @var int
+	 * @since x.x.x
+	 */
+	public $trash_entries_count;
+
+	/**
+	 * Constructor.
+	 *
+	 * @since x.x.x
+	 * @return void
+	 */
+	public function __construct() {
+		parent::__construct();
+		$this->all_entries_count   = Entries::get_total_entries_by_status( 'all' );
+		$this->trash_entries_count = Entries::get_total_entries_by_status( 'trash' );
+	}
 
 	/**
 	 * Override the parent columns method. Defines the columns to use in your listing table.
@@ -89,7 +120,6 @@ class Entries_List_Table extends \WP_List_Table {
 	 */
 	public function get_bulk_actions() {
 		$bulk_actions = [
-			'edit'   => __( 'Edit', 'sureforms' ),
 			'trash'  => __( 'Move to Trash', 'sureforms' ),
 			'read'   => __( 'Mark as Read', 'sureforms' ),
 			'unread' => __( 'Mark as Unread', 'sureforms' ),
@@ -126,38 +156,25 @@ class Entries_List_Table extends \WP_List_Table {
 	 * @return array
 	 */
 	private function table_data( $per_page, $current_page, $view, $form_id = 0 ) {
-		$offset = ( $current_page - 1 ) * $per_page;
-		// If view is all, then we need to fetch all entries except the trash.
-		$compare = 'all' === $view ? '!=' : '=';
-		$value   = 'all' === $view ? 'trash' : $view;
-		// Default where clause for all views.
-		$where_condition = [
-			[
-				[
-					'key'     => 'status',
-					'compare' => $compare,
-					'value'   => $value,
-				],
-			],
-		];
-		// If form ID is set, then we need to add the form ID condition to the where clause to fetch entries only for that form.
-		if ( 0 < $form_id ) {
-			$where_condition[] = [
-				[
-					'key'     => 'form_id',
-					'compare' => '=',
-					'value'   => $form_id,
-				],
-			];
-		}
+		// Disabled the nonce verification due to the sorting functionality, will need custom implementation to display the sortable columns to accommodate nonce check.
+		// phpcs:disable WordPress.Security.NonceVerification.Recommended
+		$orderby = isset( $_GET['orderby'] ) ? sanitize_text_field( wp_unslash( $_GET['orderby'] ) ) : 'created_at';
+		$orderby = 'id' === $orderby ? strtoupper( $orderby ) : $orderby;
+		$order   = isset( $_GET['order'] ) ? sanitize_text_field( wp_unslash( $_GET['order'] ) ) : 'desc';
+		// phpcs:enable WordPress.Security.NonceVerification.Recommended
+
+		$offset              = ( $current_page - 1 ) * $per_page;
+		$where_condition     = $this->get_where_conditions( $form_id, $view );
 		$this->data          = Entries::get_all(
 			[
-				'limit'  => $per_page,
-				'offset' => $offset,
-				'where'  => $where_condition,
+				'limit'   => $per_page,
+				'offset'  => $offset,
+				'where'   => $where_condition,
+				'orderby' => $orderby,
+				'order'   => $order,
 			]
 		);
-		$this->entries_count = Entries::get_total_entries_by_status( $view, $form_id );
+		$this->entries_count = Entries::get_total_entries_by_status( $view, $form_id, $where_condition );
 		return $this->data;
 	}
 
@@ -184,9 +201,6 @@ class Entries_List_Table extends \WP_List_Table {
 		$current_page = $this->get_pagenum();
 
 		$data = $this->table_data( $per_page, $current_page, $view, $form_id );
-		$data = $this->filter_entries_data( $data );
-
-		usort( $data, [ $this, 'sort_data' ] );
 
 		$this->set_pagination_args(
 			[
@@ -253,17 +267,17 @@ class Entries_List_Table extends \WP_List_Table {
 		$entry_id = esc_attr( $item['ID'] );
 
 		$view_url =
-			wp_nonce_url(
-				add_query_arg(
-					[
-						'entry_id' => $entry_id,
-						'view'     => 'details',
-						'action'   => 'read',
-					],
-					admin_url( 'admin.php?page=sureforms_entries' )
-				),
-				'srfm_entries_action'
-			);
+		wp_nonce_url(
+			add_query_arg(
+				[
+					'entry_id' => $entry_id,
+					'view'     => 'details',
+					'action'   => 'read',
+				],
+				admin_url( 'admin.php?page=sureforms_entries' )
+			),
+			'srfm_entries_action'
+		);
 
 		return sprintf(
 			'<strong><a class="row-title" href="%1$s">%2$s%3$s</a></strong>',
@@ -362,28 +376,28 @@ class Entries_List_Table extends \WP_List_Table {
 	 */
 	protected function package_row_actions( $item ) {
 		$view_url  =
-			wp_nonce_url(
-				add_query_arg(
-					[
-						'entry_id' => esc_attr( $item['ID'] ),
-						'view'     => 'details',
-						'action'   => 'read',
-					],
-					admin_url( 'admin.php?page=sureforms_entries' )
-				),
-				'srfm_entries_action'
-			);
+		wp_nonce_url(
+			add_query_arg(
+				[
+					'entry_id' => esc_attr( $item['ID'] ),
+					'view'     => 'details',
+					'action'   => 'read',
+				],
+				admin_url( 'admin.php?page=sureforms_entries' )
+			),
+			'srfm_entries_action'
+		);
 		$trash_url =
-			wp_nonce_url(
-				add_query_arg(
-					[
-						'entry_id' => esc_attr( $item['ID'] ),
-						'action'   => 'trash',
-					],
-					admin_url( 'admin.php?page=sureforms_entries' )
-				),
-				'srfm_entries_action'
-			);
+		wp_nonce_url(
+			add_query_arg(
+				[
+					'entry_id' => esc_attr( $item['ID'] ),
+					'action'   => 'trash',
+				],
+				admin_url( 'admin.php?page=sureforms_entries' )
+			),
+			'srfm_entries_action'
+		);
 
 		$row_actions = [
 			'view'  => sprintf( '<a href="%1$s">%2$s</a>', esc_url( $view_url ), esc_html__( 'View', 'sureforms' ) ),
@@ -397,16 +411,16 @@ class Entries_List_Table extends \WP_List_Table {
 
 			// Add Restore and Delete actions.
 			$restore_url =
-				wp_nonce_url(
-					add_query_arg(
-						[
-							'entry_id' => esc_attr( $item['ID'] ),
-							'action'   => 'restore',
-						],
-						admin_url( 'admin.php?page=sureforms_entries' )
-					),
-					'srfm_entries_action'
-				);
+			wp_nonce_url(
+				add_query_arg(
+					[
+						'entry_id' => esc_attr( $item['ID'] ),
+						'action'   => 'restore',
+					],
+					admin_url( 'admin.php?page=sureforms_entries' )
+				),
+				'srfm_entries_action'
+			);
 
 			$delete_url =
 				wp_nonce_url(
@@ -440,8 +454,12 @@ class Entries_List_Table extends \WP_List_Table {
 			return;
 		}
 		if ( 'top' === $which ) {
-			$this->display_month_filter();
-			$this->display_form_filter();
+			?>
+			<div class="alignleft actions">
+				<?php $this->display_month_filter(); ?>
+				<?php $this->display_form_filter(); ?>
+			</div>
+			<?php
 		}
 	}
 
@@ -480,7 +498,10 @@ class Entries_List_Table extends \WP_List_Table {
 	 */
 	protected function display_form_filter() {
 		$forms = $this->get_available_forms();
+		// Added the phpcs ignore nonce verification as no database operations are performed in this function.
+		$view = isset( $_GET['view'] ) ? sanitize_text_field( wp_unslash( $_GET['view'] ) ) : 'all'; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 
+		echo '<input type="hidden" name="view" value="' . esc_attr( $view ) . '" />';
 		echo '<select name="form_filter">';
 		echo '<option value="all">' . esc_html__( 'All Form Entries', 'sureforms' ) . '</option>';
 		foreach ( $forms as $form_id => $form_name ) {
@@ -503,7 +524,9 @@ class Entries_List_Table extends \WP_List_Table {
 		if ( isset( $_GET['month_filter'] ) && ! isset( $_GET['_wpnonce'] ) || ( isset( $_GET['_wpnonce'] ) && ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'srfm_entries_action' ) ) ) {
 			return;
 		}
-		$months = Entries::get_available_months();
+		$view    = isset( $_GET['view'] ) ? sanitize_text_field( wp_unslash( $_GET['view'] ) ) : 'all';
+		$form_id = isset( $_GET['form_filter'] ) ? sanitize_text_field( wp_unslash( $_GET['form_filter'] ) ) : 0;
+		$months  = Entries::get_available_months( $this->get_where_conditions( $form_id, $view ) );
 
 		// Sort the months in descending order according to key.
 		krsort( $months );
@@ -541,43 +564,6 @@ class Entries_List_Table extends \WP_List_Table {
 	}
 
 	/**
-	 * Allows you to sort the data by the variables set in the $_GET superglobal.
-	 *
-	 * @param array $data1 Data one to compare to.
-	 * @param array $data2 Data two to compare with.
-	 *
-	 * @since x.x.x
-	 * @return mixed
-	 */
-	protected function sort_data( $data1, $data2 ) {
-		$orderby = 'ID';
-		$order   = 'desc';
-
-		// Adding the phpcs ignore nonce verification as no database operations are performed in this function.
-		// phpcs:disable WordPress.Security.NonceVerification.Recommended
-		if ( ! empty( $_GET['orderby'] ) ) {
-			$orderby = sanitize_text_field( wp_unslash( $_GET['orderby'] ) );
-			$orderby = 'id' === $orderby ? strtoupper( $orderby ) : $orderby;
-		}
-
-		if ( ! empty( $_GET['order'] ) ) {
-			$order = sanitize_text_field( wp_unslash( $_GET['order'] ) );
-		}
-		// phpcs:enable WordPress.Security.NonceVerification.Recommended
-
-		if ( 'ID' === $orderby ) {
-			$result = Helper::get_integer_value( $data1[ $orderby ] ) - Helper::get_integer_value( $data2[ $orderby ] );
-		} else {
-			$result = strcmp( $data1[ $orderby ], $data2[ $orderby ] );
-		}
-		if ( 'asc' === $order ) {
-			return $result;
-		}
-
-		return -$result;
-	}
-
-	/**
 	 * Displays the table.
 	 *
 	 * @since x.x.x
@@ -585,6 +571,7 @@ class Entries_List_Table extends \WP_List_Table {
 	public function display() {
 		$singular = $this->_args['singular'];
 		$this->views();
+		$this->search_box_markup( esc_html__( 'Search', 'sureforms' ), 'srfm-entries' );
 		$this->display_tablenav( 'top' );
 		$this->screen->render_screen_reader_content( 'heading_list' );
 		?>
@@ -668,58 +655,104 @@ class Entries_List_Table extends \WP_List_Table {
 	}
 
 	/**
-	 * Filter the data according to options applied.
+	 * Return the where conditions to add to the query for filtering entries.
 	 *
-	 * @param array $data The form entries which will be displayed in the table.
+	 * @param int    $form_id The ID of the form to fetch entries for.
+	 * @param string $view The view to fetch entries for.
 	 *
 	 * @since x.x.x
 	 * @return array<mixed>
 	 */
-	private function filter_entries_data( $data ) {
+	private function get_where_conditions( $form_id = 0, $view = 'all' ) {
 		if ( ! isset( $_GET['_wpnonce'] ) || ( isset( $_GET['_wpnonce'] ) && ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'srfm_entries_action' ) ) ) {
-			return $data;
+			// Return the default condition to fetch all entries which are not in trash.
+			return [
+				[
+					[
+						'key'     => 'status',
+						'compare' => '!=',
+						'value'   => 'trash',
+					],
+				],
+			];
+		}
+
+		$where_condition = [];
+
+		// Set the where condition based on the view for populating the month filter dropdown.
+		switch ( $view ) {
+			case 'all':
+				$where_condition[] = [
+					[
+						'key'     => 'status',
+						'compare' => '!=',
+						'value'   => 'trash',
+					],
+				];
+				break;
+			case 'trash':
+			case 'unread':
+				$where_condition[] = [
+					[
+						'key'     => 'status',
+						'compare' => '=',
+						'value'   => $view,
+					],
+				];
+				break;
+			default:
+				break;
 		}
 		// Handle the search according to entry ID.
 		$search_term = isset( $_GET['search_filter'] ) ? sanitize_text_field( wp_unslash( $_GET['search_filter'] ) ) : '';
 
-		// Filter the data based on the form name selected.
-		$form_filter = isset( $_GET['form_filter'] ) ? sanitize_text_field( wp_unslash( $_GET['form_filter'] ) ) : '';
-
 		// Filter data based on the month and year selected.
 		$month_filter = isset( $_GET['month_filter'] ) ? sanitize_text_field( wp_unslash( $_GET['month_filter'] ) ) : '';
 
-		// Apply search filter, currently search is based on entry ID only and not text.
-		if ( ! empty( $search_term ) ) {
-			$data = array_filter(
-				$data,
-				function( $entry ) use ( $search_term ) {
-					return isset( $entry['ID'] ) && strpos( Helper::get_string_value( $entry['ID'] ), $search_term ) !== false;
-				}
-			);
+		// If form ID is set, then we need to add the form ID condition to the where clause to fetch entries only for that form.
+		if ( 0 < $form_id ) {
+			$where_condition[] = [
+				[
+					'key'     => 'form_id',
+					'compare' => '=',
+					'value'   => $form_id,
+				],
+			];
 		}
 
-		// Apply form filter.
-		if ( ! empty( $form_filter ) && 'all' !== $form_filter ) {
-			$data = array_filter(
-				$data,
-				function( $entry ) use ( $form_filter ) {
-					return isset( $entry['form_id'] ) && $entry['form_id'] === $form_filter;
-				}
-			);
+		// Apply search filter, currently search is based on entry ID only and not text.
+		if ( ! empty( $search_term ) ) {
+			$where_condition[] = [
+				[
+					'key'     => 'ID',
+					'compare' => 'LIKE',
+					'value'   => $search_term,
+				],
+			];
 		}
 
 		// Apply month filter.
 		if ( ! empty( $month_filter ) && 'all' !== $month_filter ) {
-			$data = array_filter(
-				$data,
-				function( $entry ) use ( $month_filter ) {
-					$entry_month = ( new \DateTime( $entry['created_at'] ) )->format( 'Ym' ); // Format as 'YYYYMM'.
-					return $entry_month === $month_filter;
-				}
-			);
+			$year       = substr( $month_filter, 0, 4 );
+			$month      = substr( $month_filter, 4, 2 );
+			$start_date = sprintf( '%s-%s-01', $year, $month );
+			$end_date   = gmdate( 'Y-m-t', strtotime( $start_date ) );
+			// Using two conditions to filter the entries based on the start and end date as the base class does not support BETWEEN operator.
+			$where_condition[] = [
+				[
+					'key'     => 'created_at',
+					'compare' => '>=',
+					'value'   => $start_date,
+				],
+				[
+					'key'     => 'created_at',
+					'compare' => '<=',
+					'value'   => $end_date,
+				],
+			];
 		}
 
-		return $data;
+		return $where_condition;
 	}
 
 	/**
@@ -730,11 +763,7 @@ class Entries_List_Table extends \WP_List_Table {
 	 */
 	protected function get_views() {
 		// Get the status count of the entries.
-		$status_count = [
-			'all'    => Entries::get_total_entries_by_status( 'all' ),
-			'unread' => Entries::get_total_entries_by_status( 'unread' ),
-			'trash'  => Entries::get_total_entries_by_status( 'trash' ),
-		];
+		$unread_entries_count = Entries::get_total_entries_by_status( 'unread' );
 
 		// Get the current view (All, Read, Unread, Trash) to highlight the selected one.
 		// Adding the phpcs ignore nonce verification as no complex operations are performed here only the count of the entries is required.
@@ -750,25 +779,25 @@ class Entries_List_Table extends \WP_List_Table {
 				add_query_arg( 'view', 'all', $base_url ),
 				( 'all' === $current_view ) ? 'current' : '',
 				esc_html__( 'All', 'sureforms' ),
-				$status_count['all']
+				$this->all_entries_count
 			),
 			'unread' => sprintf(
 				'<a href="%1$s" class="%2$s">%3$s <span class="count">(%4$d)</span></a>',
 				add_query_arg( 'view', 'unread', $base_url ),
 				( 'unread' === $current_view ) ? 'current' : '',
 				esc_html__( 'Unread', 'sureforms' ),
-				$status_count['unread']
+				$unread_entries_count
 			),
 		];
 
 		// Only add the Trash view if the count is greater than 0.
-		if ( $status_count['trash'] > 0 ) {
+		if ( $this->trash_entries_count > 0 ) {
 			$views['trash'] = sprintf(
 				'<a href="%1$s" class="%2$s">%3$s <span class="count">(%4$d)</span></a>',
 				add_query_arg( 'view', 'trash', $base_url ),
 				( 'trash' === $current_view ) ? 'current' : '',
 				esc_html__( 'Trash', 'sureforms' ),
-				$status_count['trash']
+				$this->trash_entries_count
 			);
 		}
 
@@ -882,7 +911,6 @@ class Entries_List_Table extends \WP_List_Table {
 			);
 		}
 		wp_safe_redirect( $url );
-		exit;
 	}
 
 	/**
