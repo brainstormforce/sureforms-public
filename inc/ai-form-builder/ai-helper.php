@@ -43,7 +43,7 @@ class AI_Helper {
 				'Content-Type' => 'application/json',
 				'Referer'      => site_url(),
 			],
-			'timeout' => 30, // phpcs:ignore WordPressVIPMinimum.Performance.RemoteRequestTimeout.timeout_timeout -- 30 seconds is required sometime for open ai responses
+			'timeout' => 90, // phpcs:ignore WordPressVIPMinimum.Performance.RemoteRequestTimeout.timeout_timeout -- 30 seconds is required sometime for open ai responses
 		];
 
 		// If the data array was passed, add it to the args.
