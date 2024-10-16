@@ -89,7 +89,6 @@ class Entries_List_Table extends \WP_List_Table {
 	 */
 	public function get_bulk_actions() {
 		$bulk_actions = [
-			'edit'   => __( 'Edit', 'sureforms' ),
 			'trash'  => __( 'Move to Trash', 'sureforms' ),
 			'read'   => __( 'Mark as Read', 'sureforms' ),
 			'unread' => __( 'Mark as Unread', 'sureforms' ),
