@@ -242,7 +242,6 @@ class Admin {
 		}
 		echo '<form method="get">';
 		echo '<input type="hidden" name="page" value="sureforms_entries">';
-		$entries_table->search_box_markup( esc_html__( 'Search', 'sureforms' ), 'srfm-entries' );
 		$entries_table->display();
 		echo '</form>';
 		echo '</div>';
