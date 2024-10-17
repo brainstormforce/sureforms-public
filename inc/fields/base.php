@@ -301,7 +301,7 @@ class Base {
 	 * Stores the minimum number of selections required.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 0.0.13
 	 */
 	protected $min_selection;
 
@@ -309,7 +309,7 @@ class Base {
 	 * Stores the maximum number of selections allowed.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 0.0.13
 	 */
 	protected $max_selection;
 
