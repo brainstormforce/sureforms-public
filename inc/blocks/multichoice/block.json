@@ -29,6 +29,12 @@
 		"singleSelection": {
 			"type": "boolean"
 		},
+    "minValue": {
+      "type": "number"
+    },
+    "maxValue": {
+      "type": "number"
+    },
     "verticalLayout": {
 			"type": "boolean"
 		},

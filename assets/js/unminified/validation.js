@@ -214,6 +214,9 @@ export async function fieldValidation(
 
 			if ( isCheckedRequired === 'true' && ! checkedSelected ) {
 				if ( errorMessage ) {
+					errorMessage.textContent = container
+						.querySelector( '.srfm-error-message' )
+						.getAttribute( 'data-error-msg' );
 					container.classList.add( 'srfm-error' );
 				}
 				validateResult = true;
@@ -546,11 +549,65 @@ export async function fieldValidation(
 					dropdownInput.getAttribute( 'aria-required' );
 				const inputName = dropdownInput.getAttribute( 'name' );
 				if ( dropdownRequired === 'true' && ! dropdownInput.value ) {
+					errorMessage.textContent =
+						errorMessage.getAttribute( 'data-error-msg' );
 					dropdownInput
 						.closest( '.srfm-block' )
 						.classList.add( 'srfm-error' );
 					validateResult = true;
+				} else if ( dropdownInput.value ) {
+					const minSelection =
+						dropdownInput.getAttribute( 'data-min-selection' );
+					const maxSelection =
+						dropdownInput.getAttribute( 'data-max-selection' );
 
+					if ( minSelection || maxSelection ) {
+						// create array from dropdownInput.value
+						const selectedOptions =
+							dropdownInput.value.split( ',' );
+						// If some value is selected but less than minSelection.
+						if (
+							minSelection &&
+							selectedOptions.length < minSelection
+						) {
+							errorMessage.textContent = wp.i18n.sprintf(
+								// translators: %s is the minimum number of selections required.
+								wp.i18n.__(
+									'Minimum %d selections are required',
+									'sureforms'
+								),
+								minSelection
+							);
+							dropdownInput
+								.closest( '.srfm-block' )
+								.classList.add( 'srfm-error' );
+							validateResult = true;
+						} else if (
+							maxSelection &&
+							selectedOptions.length > maxSelection
+						) {
+							// If some value is selected but more than maxSelection.
+							errorMessage.textContent = wp.i18n.sprintf(
+								// translators: %s is the maximum number of selections allowed.
+								wp.i18n.__(
+									'Maximum %d selections are allowed',
+									'sureforms'
+								),
+								maxSelection
+							);
+							dropdownInput
+								.closest( '.srfm-block' )
+								.classList.add( 'srfm-error' );
+							validateResult = true;
+						}
+					}
+				} else {
+					dropdownInput
+						.closest( '.srfm-block' )
+						.classList.remove( 'srfm-error' );
+				}
+
+				if ( validateResult ) {
 					/**
 					 * Set the first error input element.
 					 *
@@ -567,10 +624,6 @@ export async function fieldValidation(
 							shouldDelayOnFocus: true,
 						}
 					);
-				} else {
-					dropdownInput
-						.closest( '.srfm-block' )
-						.classList.remove( 'srfm-error' );
 				}
 
 				// Observe changes in the hidden input's value.
@@ -592,6 +645,69 @@ export async function fieldValidation(
 					attributeFilter: [ 'value' ],
 				} );
 			} );
+		}
+
+		// Validation for minimum and maximum selection for multi choice field
+		if ( container.classList.contains( 'srfm-multi-choice-block' ) ) {
+			const checkedInput = container.querySelectorAll( 'input' );
+			const minSelection =
+				checkedInput[ 0 ].getAttribute( 'data-min-selection' );
+			const maxSelection =
+				checkedInput[ 0 ].getAttribute( 'data-max-selection' );
+			let visibleInput = null;
+			let totalCheckedInput = 0;
+			let errorFound = false;
+
+			for ( let i = 0; i < checkedInput.length; i++ ) {
+				if ( ! visibleInput && checkedInput[ i ].type !== 'hidden' ) {
+					visibleInput = checkedInput[ i ];
+				}
+				if ( checkedInput[ i ].checked ) {
+					totalCheckedInput++;
+				}
+			}
+
+			if ( ( minSelection || maxSelection ) && totalCheckedInput > 0 ) {
+				if (
+					! errorFound &&
+					minSelection > 0 &&
+					( ( isRequired && minSelection > 1 ) || ! isRequired ) &&
+					totalCheckedInput < minSelection
+				) {
+					errorMessage.textContent = wp.i18n.sprintf(
+						// translators: %s is the minimum number of selections required.
+						wp.i18n.__(
+							'Minimum %d selections are required',
+							'sureforms'
+						),
+						minSelection
+					);
+					errorFound = true;
+				}
+				if (
+					! errorFound &&
+					maxSelection > 0 &&
+					totalCheckedInput > maxSelection
+				) {
+					errorMessage.textContent = wp.i18n.sprintf(
+						// translators: %s is the maximum number of selections allowed.
+						wp.i18n.__(
+							'Maximum %d selections are allowed',
+							'sureforms'
+						),
+						maxSelection
+					);
+					errorFound = true;
+				}
+
+				if ( errorFound ) {
+					container.classList.add( 'srfm-error' );
+					setFirstErrorInput( visibleInput, container );
+					validateResult = true;
+				} else if ( ! isRequired ) {
+					container.classList.remove( 'srfm-error' );
+				}
+			}
 		}
 	}
 
@@ -685,7 +801,7 @@ function addBlurListener( containerClass, blockClass ) {
 			if ( containerClass === 'srfm-dropdown-block' ) {
 				const blockName = areaField.getAttribute( 'name' );
 				setTimeout( () => {
-					window?.srfm?.[ blockName ].on( 'blur', function () {
+					window?.srfm?.[ blockName ]?.on( 'blur', function () {
 						fieldValidationInit( areaField, blockClass );
 					} );
 				}, 500 );
