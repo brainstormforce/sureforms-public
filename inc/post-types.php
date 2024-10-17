@@ -8,7 +8,7 @@
 
 namespace SRFM\Inc;
 
-use WP_Query;
+use SRFM\Inc\Database\Tables\Entries;
 use WP_Admin_Bar;
 use SRFM\Inc\Traits\Get_Instance;
 use SRFM\Inc\Generate_Form_Markup;
@@ -190,7 +190,7 @@ class Post_Types {
 					'create_posts' => 'do_not_allow',
 				],
 				'map_meta_cap'        => true,
-				'show_ui'             => true,
+				'show_ui'             => false, // Hide the entries post type from the admin menu.
 				'show_in_menu'        => 'sureforms_menu',
 			]
 		);
@@ -391,7 +391,7 @@ class Post_Types {
 		$screen    = get_current_screen();
 		$screen_id = $screen ? $screen->id : '';
 
-		if ( 'edit-' . SRFM_FORMS_POST_TYPE === $screen_id || 'edit-' . SRFM_ENTRIES_POST_TYPE === $screen_id ) {
+		if ( 'edit-' . SRFM_FORMS_POST_TYPE === $screen_id || 'edit-' . SRFM_ENTRIES_POST_TYPE === $screen_id || 'sureforms_page_sureforms_entries' === $screen_id ) {
 			?>
 		<style>
 			.srfm-page-header {
@@ -934,12 +934,12 @@ class Post_Types {
 					<?php else : ?>
 						<td>
 							<?php
-							    // we need to html_entity_decode the value to display the html content. and check field textarea
-								if ( strpos( $field_name, 'srfm-textarea' ) !== false ) {
-									$value = html_entity_decode( $value );
-								}
-								
-								echo false !== strpos( $value, PHP_EOL ) ? wp_kses_post( wpautop( $value ) ) : wp_kses_post( $value ); 
+								// we need to html_entity_decode the value to display the html content. and check field textarea.
+							if ( strpos( $field_name, 'srfm-textarea' ) !== false ) {
+								$value = html_entity_decode( $value );
+							}
+
+							echo false !== strpos( $value, PHP_EOL ) ? wp_kses_post( wpautop( $value ) ) : wp_kses_post( $value );
 							?>
 						</td>
 					<?php endif; ?>
@@ -1088,12 +1088,11 @@ class Post_Types {
 	 * @since 0.0.1
 	 */
 	public function custom_form_column_data( $column, $post_id ) {
-		$post_id_formatted = strval( $post_id );
 		if ( 'sureforms' === $column ) {
 			ob_start();
 			?>
 			<div class="srfm-shortcode-container">
-				<input id="srfm-shortcode-input-<?php echo esc_attr( strval( $post_id ) ); ?>" class="srfm-shortcode-input" type="text" readonly value="[sureforms id='<?php echo esc_attr( $post_id_formatted ); ?>']" />
+				<input id="srfm-shortcode-input-<?php echo esc_attr( Helper::get_string_value( $post_id ) ); ?>" class="srfm-shortcode-input" type="text" readonly value="[sureforms id='<?php echo esc_attr( Helper::get_string_value( $post_id ) ); ?>']" />
 				<button type="button" class="components-button components-clipboard-button has-icon srfm-shortcode" onclick="handleFormShortcode(this)">
 					<span id="srfm-copy-icon" class="dashicon dashicons dashicons-admin-page"></span>
 				</button>
@@ -1102,40 +1101,25 @@ class Post_Types {
 			ob_end_flush();
 		}
 		if ( 'entries' === $column ) {
-			$entries_url = admin_url( 'edit.php?post_status=all&post_type=' . SRFM_ENTRIES_POST_TYPE . '&sureforms_tax=' . $post_id_formatted . '&filter_action=Filter&paged=1' );
-
-			$taxonomy = 'sureforms_tax';
-
-			$args = [
-				'post_type'      => SRFM_ENTRIES_POST_TYPE,
-				'tax_query' // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query. -- We require tax_query for this function to work.
-				=> [
+			// Entries URL to redirect user based on the form ID.
+			$entries_url = wp_nonce_url(
+				add_query_arg(
 					[
-						'taxonomy' => $taxonomy,
-						'field'    => 'slug',
-						'terms'    => $post_id_formatted,
+						'form_filter' => $post_id,
 					],
-				],
-				'posts_per_page' => 1, // Retrieve only 1 entry to minimize load.
-			];
+					admin_url( 'admin.php?page=sureforms_entries' )
+				),
+				'srfm_entries_action'
+			);
 
-			$key   = 'sureforms_entries_count_' . $post_id_formatted;
-			$query = wp_cache_get( $key );
+			// Get the entry count for the form.
+			$entries_count = Entries::get_total_entries_by_status( 'all', $post_id );
 
-			if ( ! $query ) {
-				$query = new WP_Query( $args );
-				wp_cache_set( $key, $query, '', 3600 );
-			}
-
-			if ( $query instanceof WP_Query ) {
-				$post_count = Helper::get_string_value( $query->found_posts );
-
-				ob_start();
-				?>
-					<p class="srfm-entries-number"><a href="<?php echo esc_url( $entries_url ); ?>"><?php echo esc_html( $post_count ); ?></a></p>
-				<?php
-				ob_end_flush();
-			}
+			ob_start();
+			?>
+				<p class="srfm-entries-number"><a href="<?php echo esc_url( $entries_url ); ?>"><?php echo esc_html( Helper::get_string_value( $entries_count ) ); ?></a></p>
+			<?php
+			ob_end_flush();
 		}
 	}
 

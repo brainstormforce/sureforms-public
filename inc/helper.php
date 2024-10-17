@@ -136,7 +136,6 @@ class Helper {
 				'input'    => 'sanitize_text_field',
 				'number'   => [ __CLASS__, 'sanitize_number' ],
 				'email'    => 'sanitize_email',
-				// 'textarea' => 'sanitize_textarea_field',
 				'textarea' => 'wp_kses_post',
 			]
 		);
@@ -568,6 +567,9 @@ class Helper {
 	public static function map_slug_to_submission_data( $submission_data = [] ) {
 		$mapped_data = [];
 		foreach ( $submission_data as $key => $value ) {
+			if ( false === strpos( $key, '-lbl-' ) ) {
+				continue;
+			}
 			$label                = explode( '-lbl-', $key )[1];
 			$slug                 = implode( '-', array_slice( explode( '-', $label ), 1 ) );
 			$mapped_data[ $slug ] = $value;

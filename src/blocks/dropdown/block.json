@@ -29,13 +29,19 @@
 			"type": "boolean",
 			"default": false
 		},
+    "minValue": {
+      "type": "number"
+    },
+    "maxValue": {
+      "type": "number"
+    },
 		"searchable": {
 			"type": "boolean",
 			"default": true
 		},
 		"options": {
 			"type": "array",
-			"default": [ 
+			"default": [
 				{ "label": "Option 1", "icon": "" },
 				{ "label": "Option 2", "icon": "" }
 			 ]

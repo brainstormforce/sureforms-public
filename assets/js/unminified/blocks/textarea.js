@@ -21,65 +21,76 @@ function initializeTextarea() {
 					}
 				} );
 
-				// Adding quill editor to the textarea.
-				// check attribute data-is-richtext="true"' available and should be true.
+				/**
+				 * Initializes the Quill editor for a textarea if it is marked as a rich text field.
+				 *
+				 * This function checks if the given textarea has the `data-is-richtext` attribute set to "true".
+				 * If the attribute is set to "true", it will call the `addQuillEditor` function to add a Quill editor
+				 * instance to the corresponding textarea.
+				 *
+				 * @param {HTMLElement} areaField - The textarea element to be enhanced with the Quill editor if applicable.
+				 */
 				const isRichText = areaField.getAttribute( 'data-is-richtext' );
+
+				// Check if the textarea is marked as a rich text field
 				if ( isRichText === 'true' ) {
-					const getQuillId = areaField.getAttribute( 'id' );
-
-					// Import the Style Attributors
-					const AlignStyle = Quill.import(
-						'attributors/style/align'
-					); // Import align style
-					const DirectionStyle = Quill.import(
-						'attributors/style/direction'
-					); // Import direction style
-
-					// Register the Attributors for Inline Styles
-					Quill.register( AlignStyle, true ); // Register align style
-					Quill.register( DirectionStyle, true ); // Register direction style
-
-					const quillEditor = new Quill( `#quill-${ getQuillId }`, {
-						theme: 'snow',
-						modules: {
-							toolbar: {
-								container: [
-									[ { header: [ 1, 2, 3, 4, 5, 6, false ] } ],
-									[ 'bold', 'italic', 'underline', 'strike' ],
-									[ { list: 'ordered' }, { list: 'bullet' } ],
-									[ 'blockquote' ],
-									[ { align: [] } ],
-									[ { color: [] }, { background: [] } ],
-									[ 'clean' ], // Remove formatting button
-									[ 'link', 'image' ],
-								],
-							},
-						},
-					} );
-
-					// Retrieve content as HTML
-					quillEditor.on(
-						'text-change',
-						function ( delta, oldDelta, source ) {
-							const content = quillEditor.root.innerHTML;
-							console.log( 'Text change:', {
-								delta,
-								oldDelta,
-								source,
-								content,
-							} );
-
-							// Update the textarea with the new content.
-							areaField.value = content;
-						}
-					);
-
-					quillEditor.clipboard.dangerouslyPasteHTML(
-						'<p>Hello, Quill!</p>'
-					);
+					// Initialize Quill editor on the textarea
+					addQuillEditor( areaField );
 				}
 			}
 		}
 	}
 }
+
+/**
+ * Adds a Quill editor to a given textarea field with inline styles for alignment and direction.
+ *
+ * @param {HTMLElement} areaField - The textarea element that will be enhanced by Quill editor.
+ */
+function addQuillEditor( areaField ) {
+	// Get the ID of the textarea element to use for Quill editor container
+	const getQuillId = areaField.getAttribute( 'id' );
+
+	// Import the Style Attributors for inline styling (align and direction)
+	const AlignStyle = Quill.import( 'attributors/style/align' ); // Import align style attributor
+	const DirectionStyle = Quill.import( 'attributors/style/direction' ); // Import direction style attributor
+
+	// Register the imported Attributors for inline styles
+	Quill.register( AlignStyle, true ); // Register align style
+	Quill.register( DirectionStyle, true ); // Register direction style
+
+	// Initialize Quill editor with a toolbar configuration
+	const quillEditor = new Quill( `#quill-${ getQuillId }`, {
+		theme: 'snow', // Use the 'snow' theme for a sleek look
+		modules: {
+			toolbar: {
+				container: [
+					[ { header: [ 1, 2, 3, 4, 5, 6, false ] } ], // Header levels
+					[ 'bold', 'italic', 'underline', 'strike' ], // Text formatting
+					[ { list: 'ordered' }, { list: 'bullet' } ], // Ordered and bullet lists
+					[ 'blockquote' ], // Blockquote
+					[ { align: [] } ], // Alignment (registered as inline style)
+					[ { color: [] }, { background: [] } ], // Color and background
+					[ 'clean' ], // Remove formatting
+					[ 'link', 'image' ], // Add links and images
+				],
+			},
+		},
+	} );
+
+	// Set default content from the textarea to the Quill editor
+	const quillDefaultContent = areaField.value;
+	quillEditor.clipboard.dangerouslyPasteHTML( quillDefaultContent ); // Populate Quill with initial content
+
+	// Listen for changes in the Quill editor and update the corresponding textarea
+	quillEditor.on( 'text-change', function () {
+		const updatedContent = quillEditor.root.innerHTML;
+		areaField.value = updatedContent; // Sync the Quill editor's content with the textarea
+
+		// Due to we are adding the Quill editor to the textarea, we need to trigger the input event
+		// to ensure the textarea's value is updated in the DOM.
+		areaField.dispatchEvent( new Event( 'input' ) );
+	} );
+}
+
 document.addEventListener( 'DOMContentLoaded', initializeTextarea );

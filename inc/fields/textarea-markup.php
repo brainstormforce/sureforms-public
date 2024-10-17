@@ -113,7 +113,7 @@ class Textarea_Markup extends Base {
 		];
 
 		$classes = Helper::class_name( $classes );
-		
+
 		ob_start(); ?>
 		<div data-block-id="<?php echo esc_attr( $this->block_id ); ?>" class="<?php echo esc_attr( $classes ); ?>">
 			<?php echo wp_kses_post( $this->label_markup ); ?>

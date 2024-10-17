@@ -10,18 +10,32 @@
 				height: unset;
 				// Marking line-height as important specific to textarea to override the bricks styling.
 				line-height: var( --srfm-input-field-line-height ) !important;
+
+				// Add focus css in srfm-richtext div
+				// &:focus{
+				// 	~ .quill-editor-container {
+				// 		background-color: lightyellow; // Example style for the wrapper
+				// 		box-shadow: 0 0 10px rgba(255, 255, 0, 0.5); //
+				// 	}
+				// }
 			}
 
 			&.srfm-richtext {
 				.srfm-input-textarea {
 					display: none;
 				}
-				.quill-editor-container{
-					margin: var(--srfm-input-field-margin);
+				.quill-editor-container {
+					margin: var( --srfm-input-field-margin );
+				}
+				&.srfm-error{
+					.quill-editor-container {
+						border: 1px solid var(--srfm-error-color-border);
+					}
 				}
 
 				.ql-container {
 					min-height: 200px;
+					cursor: text;
 				}
 
 				.ql-picker-options {

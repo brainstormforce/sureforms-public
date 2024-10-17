@@ -241,11 +241,9 @@ class Frontend_Assets {
 
 			// Adding js for the input textarea block.
 			if ( 'textarea' === $block_name ) {
-				// wp_enqueue_script( SRFM_SLUG . '-quill-editor', $js_vendor_uri . 'quill.min.js', [], SRFM_VER, true );
-				https:// cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js
 				wp_enqueue_script( SRFM_SLUG . '-quill-editor', 'https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js', [], SRFM_VER, true );
 				wp_enqueue_script( SRFM_SLUG . '-quill-delta-to-html', 'https://cdn.jsdelivr.net/npm/quill-delta-to-html@0.10.2/dist/browser.js', [], SRFM_VER, true );
-				wp_enqueue_style( SRFM_SLUG . '-quill-editor', 'https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css' );
+				wp_enqueue_style( SRFM_SLUG . '-quill-editor', 'https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css', [], SRFM_VER );
 			}
 		}
 	}
