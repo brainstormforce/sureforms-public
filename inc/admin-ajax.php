@@ -88,7 +88,7 @@ class Admin_Ajax {
 		$entry_ids = array_map( 'absint', explode( ',', $entry_ids ) );
 
 		if ( empty( $entry_ids ) ) {
-			wp_send_json_error();
+			wp_send_json_error( __( 'Entry IDs cannot be empty.', 'sureforms' ) );
 		}
 
 		$recipient = '';
@@ -98,7 +98,7 @@ class Admin_Ajax {
 			$recipient = ! empty( $_POST['recipient'] ) ? sanitize_email( wp_unslash( $_POST['recipient'] ) ) : '';
 
 			if ( ! is_email( $recipient ) ) {
-				wp_send_json_error();
+				wp_send_json_error( __( 'You must provide a valid email for the recipient.', 'sureforms' ) );
 			}
 		}
 
@@ -108,6 +108,8 @@ class Admin_Ajax {
 		$email_notification = get_post_meta( $form_id, '_srfm_email_notification', true );
 
 		$display_name = wp_get_current_user()->display_name;
+
+		$resend_logs = [];
 
 		if ( ! empty( $email_notification ) && is_array( $email_notification ) ) {
 			foreach ( $email_notification as $notification ) {
@@ -120,26 +122,25 @@ class Admin_Ajax {
 				}
 
 				foreach ( $entry_ids as $entry_id ) {
-					$entries_db = new Entries(); // We don't want the same instance here, instead we need to init new object for each entry id here.
+					$entries_db = new Entries();                                                                                                                                                             // We don't want the same instance here, instead we need to init new object for each entry id here.
 					$log_key    = $entries_db->add_log( sprintf( __( 'Resend email notification "%1$s" initiated by %2$s', 'sureforms' ), esc_html( $notification['name'] ), esc_html( $display_name ) ) );
 					$form_data  = $entries_db::get( $entry_id )['form_data'];
 					$parsed     = Form_Submit::parse_email_notification_template( $form_data, $notification );
-					$sent       = wp_mail(
-						$recipient ? $recipient : $parsed['to'], // If user has provided recipient then reroute email to user provided recipient.
-						$parsed['subject'],
-						$parsed['message'],
-						$parsed['headers']
+					$email_to   = $recipient ? $recipient : $parsed['to'];                                                                                                                                   // If user has provided recipient then reroute email to user provided recipient.
+					$sent       = wp_mail( $email_to, $parsed['subject'], $parsed['message'], $parsed['headers'] );
+
+					/* translators: Here, %s is email address. */
+					$log_message = $sent ? sprintf( __( 'Email notification sent to %s', 'sureforms' ), esc_html( $email_to ) ) : sprintf( __( 'Failed sending email notification to %s', 'sureforms' ) );
+
+					$resend_logs[] = array(
+						'sent'     => $sent,
+						'entry_id' => $entry_id,
+						/* translators: Here, %1$s is entry id and %2$s is the log message. */
+						'message'  => sprintf( esc_html__( 'Entry #%1$s - %2$s', 'sureforms' ), esc_html( $entry_id ), esc_html( $log_message ) ),
 					);
 
 					if ( is_int( $log_key ) ) {
-						$entries_db->update_log(
-							$log_key,
-							null,
-							[
-								/* translators: Here, %s is email address. */
-								$sent ? sprintf( __( 'Email notification sent to %s', 'sureforms' ), esc_html( $parsed['to'] ) ) : sprintf( __( 'Failed sending email notification to %s', 'sureforms' ) ),
-							]
-						);
+						$entries_db->update_log( $log_key, null, [ $log_message ] );
 					}
 
 					$entries_db::update(
@@ -152,7 +153,20 @@ class Admin_Ajax {
 			}
 		}
 
-		wp_send_json_success();
+		$message = '<details class="field-group">';
+		$message .= '<summary>' . esc_html__( 'View detail', 'sureforms' ) . '</summary>';
+		$message .= '<ul class="srfm-resend-notification-message">';
+
+		if ( ! empty( $resend_logs ) && is_array( $resend_logs ) ) {
+			foreach ( $resend_logs as $resend_log ) {
+				$message .= '<li>' . $resend_log['message'] . '</li>';
+			}
+		}
+
+		$message .= '</ul>';
+		$message .= '</details>';
+
+		wp_send_json_success( $message );
 	}
 
 	public function save_entry_notes() {

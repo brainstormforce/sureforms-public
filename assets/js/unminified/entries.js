@@ -100,14 +100,20 @@
 		const resendBtn = dialog.querySelector('.srfm-resend-notification');
 		const cancelBtn = dialog.querySelector('.srfm-cancel-resend-notification');
 
+		const inProgressOverlay = dialog.querySelector('.in-progress-overlay');
+
 		// Display modal on trigger button click
 		resendNotificationTriggerBtn.addEventListener('click', function(e) {
 			e.preventDefault();
+			dialog.querySelector('details')?.remove();
 			dialog.showModal();
 		});
 
-		resendBtn?.addEventListener('click',async function(e) {
+		resendBtn?.addEventListener('click', async function(e) {
 			e.preventDefault();
+
+			dialog.querySelector('details')?.remove();
+			inProgressOverlay.classList.remove('hidden');
 
 			const formData = new FormData();
 
@@ -125,15 +131,20 @@
 			} )
 			.then( res => res.json() )
 			.then( ( res ) => {
-				console.log(res);
-			} );
+				if (!res?.success) {
+					alert(res?.data);
+					return;
+				}
+
+				dialog.querySelector('.modal-content')?.insertAdjacentHTML('beforeend', res?.data);
+			} )
+			.finally(() => inProgressOverlay.classList.add('hidden'));
 		});
 
 		cancelBtn.addEventListener('click', function(e) {
 			e.preventDefault();
 			dialog.close();
 		});
-
 	}
 
 	window.addEventListener("load", function() {
