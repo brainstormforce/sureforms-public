@@ -84,5 +84,6 @@ module.exports = {
 		screen: true,
 		SureTriggers: true,
 		Inputmask: true,
+		Quill: true,
 	},
 };

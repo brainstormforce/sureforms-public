@@ -932,7 +932,16 @@ class Post_Types {
 							<td><a target="_blank" href="<?php echo esc_url( $value ); ?>"><?php echo esc_url( $value ); ?></a></td>
 						<?php endif; ?>
 					<?php else : ?>
-						<td><?php echo false !== strpos( $value, PHP_EOL ) ? wp_kses_post( wpautop( $value ) ) : wp_kses_post( $value ); ?></td>
+						<td>
+							<?php
+							    // we need to html_entity_decode the value to display the html content. and check field textarea
+								if ( strpos( $field_name, 'srfm-textarea' ) !== false ) {
+									$value = html_entity_decode( $value );
+								}
+								
+								echo false !== strpos( $value, PHP_EOL ) ? wp_kses_post( wpautop( $value ) ) : wp_kses_post( $value ); 
+							?>
+						</td>
 					<?php endif; ?>
 				</tr>
 				<?php endforeach; ?>

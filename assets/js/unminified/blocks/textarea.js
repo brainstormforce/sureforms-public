@@ -24,39 +24,59 @@ function initializeTextarea() {
 				// Adding quill editor to the textarea.
 				// check attribute data-is-richtext="true"' available and should be true.
 				const isRichText = areaField.getAttribute( 'data-is-richtext' );
-				console.log("isRichText:2 ", isRichText);
-				if( isRichText === 'true' ) {
+				if ( isRichText === 'true' ) {
 					const getQuillId = areaField.getAttribute( 'id' );
 
-					const quillEditor = new Quill(`#quill-${getQuillId}`, {
+					// Import the Style Attributors
+					const AlignStyle = Quill.import(
+						'attributors/style/align'
+					); // Import align style
+					const DirectionStyle = Quill.import(
+						'attributors/style/direction'
+					); // Import direction style
+
+					// Register the Attributors for Inline Styles
+					Quill.register( AlignStyle, true ); // Register align style
+					Quill.register( DirectionStyle, true ); // Register direction style
+
+					const quillEditor = new Quill( `#quill-${ getQuillId }`, {
 						theme: 'snow',
 						modules: {
 							toolbar: {
 								container: [
-									[{'header': [1, 2, 3, 4, 5, 6, false]}],
-									['bold', 'italic', 'underline', 'strike'],
-									[{ list: 'ordered' }, { list: 'bullet' }],
-									['blockquote'],
-									[{ align: [] }],
-									[{ color: []}, { background: [] }],
-									['clean'],  // Remove formatting button
-									['link', 'image'],
-								]
-							}
-						}
-					});
+									[ { header: [ 1, 2, 3, 4, 5, 6, false ] } ],
+									[ 'bold', 'italic', 'underline', 'strike' ],
+									[ { list: 'ordered' }, { list: 'bullet' } ],
+									[ 'blockquote' ],
+									[ { align: [] } ],
+									[ { color: [] }, { background: [] } ],
+									[ 'clean' ], // Remove formatting button
+									[ 'link', 'image' ],
+								],
+							},
+						},
+					} );
 
-					console.log("quillEditor: ", quillEditor);
 					// Retrieve content as HTML
-					quillEditor.on('text-change', function( delta, oldDelta, source ) {
+					quillEditor.on(
+						'text-change',
+						function ( delta, oldDelta, source ) {
+							const content = quillEditor.root.innerHTML;
+							console.log( 'Text change:', {
+								delta,
+								oldDelta,
+								source,
+								content,
+							} );
 
-						const content = quillEditor.root.innerHTML;
-						console.log('Text change:', { delta, oldDelta, source, content });
-					});
+							// Update the textarea with the new content.
+							areaField.value = content;
+						}
+					);
 
-					quillEditor.clipboard.dangerouslyPasteHTML('<p>Hello, Quill!</p>');
-
-
+					quillEditor.clipboard.dangerouslyPasteHTML(
+						'<p>Hello, Quill!</p>'
+					);
 				}
 			}
 		}

@@ -136,7 +136,8 @@ class Helper {
 				'input'    => 'sanitize_text_field',
 				'number'   => [ __CLASS__, 'sanitize_number' ],
 				'email'    => 'sanitize_email',
-				'textarea' => 'sanitize_textarea_field',
+				// 'textarea' => 'sanitize_textarea_field',
+				'textarea' => 'wp_kses_post',
 			]
 		);
 
