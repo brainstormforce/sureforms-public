@@ -235,7 +235,7 @@ class Admin {
 		$entries_table = new Entries_List_Table();
 		$entries_table->prepare_items();
 		echo '<div class="wrap"><h1 class="wp-heading-inline">Entries</h1>';
-		if ( 0 >= $entries_table->entries_count ) {
+		if ( 0 >= $entries_table->all_entries_count && 0 >= $entries_table->trash_count ) {
 			$instance = Post_Types::get_instance();
 			$instance->sureforms_render_blank_state( SRFM_ENTRIES_POST_TYPE );
 			$instance->get_blank_state_styles();
@@ -243,7 +243,6 @@ class Admin {
 		}
 		echo '<form method="get">';
 		echo '<input type="hidden" name="page" value="sureforms_entries">';
-		$entries_table->search_box_markup( esc_html__( 'Search', 'sureforms' ), 'srfm-entries' );
 		$entries_table->display();
 		echo '</form>';
 		echo '</div>';
@@ -399,7 +398,7 @@ class Admin {
 		}
 
 		if ( SRFM_FORMS_POST_TYPE === $current_screen->post_type || 'toplevel_page_sureforms_menu' === $current_screen->base || SRFM_ENTRIES_POST_TYPE === $current_screen->post_type
-		|| 'sureforms_page_sureforms_form_settings' === $current_screen->id
+		|| 'sureforms_page_sureforms_form_settings' === $current_screen->id || 'sureforms_page_sureforms_entries' === $current_screen->id
 		) {
 			$asset_handle = '-dashboard';
 
@@ -435,7 +434,9 @@ class Admin {
 
 		// Enqueue styles for the entries page.
 		if ( 'sureforms_page_sureforms_entries' === $current_screen->id ) {
-			wp_enqueue_style( SRFM_SLUG . '-entries', $css_uri . 'backend/entries' . $file_prefix . '.css', [], SRFM_VER );
+			$asset_handle = '-entries';
+			wp_enqueue_style( SRFM_SLUG . $asset_handle, $css_uri . 'backend/entries' . $file_prefix . '.css', [], SRFM_VER );
+			wp_enqueue_script( SRFM_SLUG . $asset_handle, SRFM_URL . 'assets/build/entries.js', $script_info['dependencies'], SRFM_VER, true );
 			wp_enqueue_script( SRFM_SLUG . '-entries', $js_uri . 'entries' . $file_prefix . '.js', [], SRFM_VER, true );
 			wp_localize_script(
 				SRFM_SLUG . '-entries',
@@ -681,9 +682,15 @@ class Admin {
 			wp_die( esc_html__( 'Nonce verification failed.', 'sureforms' ) );
 		}
 		$action   = isset( $_GET['action'] ) ? sanitize_text_field( wp_unslash( $_GET['action'] ) ) : '';
-		$entry_id = intval( $_GET['entry_id'] );
+		$entry_id = Helper::get_integer_value( sanitize_text_field( wp_unslash( $_GET['entry_id'] ) ) );
 		$view     = isset( $_GET['view'] ) ? sanitize_text_field( wp_unslash( $_GET['view'] ) ) : '';
 		if ( $entry_id > 0 ) {
+			if ( 'read' === $action && 'details' === $view ) {
+				$entry_status = Entries::get( $entry_id )['status'];
+				if ( 'trash' === $entry_status ) {
+					wp_die( esc_html__( 'You cannot view this entry because it is in trash.', 'sureforms' ) );
+				}
+			}
 			Entries_List_Table::handle_entry_status( $entry_id, $action, $view );
 		}
 	}
