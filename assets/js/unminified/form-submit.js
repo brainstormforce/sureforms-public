@@ -1,5 +1,9 @@
 /* eslint-disable no-undef */
-import { fieldValidation, initializeInlineFieldValidation } from './validation';
+import {
+	fieldValidation,
+	initializeInlineFieldValidation,
+	handleScrollAndFocusOnError,
+} from './validation';
 document.addEventListener( 'DOMContentLoaded', function () {
 	initializeInlineFieldValidation();
 
@@ -213,11 +217,14 @@ async function handleFormSubmission(
 			form
 		);
 
-		if ( isValidate ) {
+		/**
+		 * if validation fails, show error message and scroll to the first
+		 */
+		if ( isValidate?.validateResult ) {
 			loader.classList.remove( 'srfm-active' );
-			if ( isValidate[ 1 ] ) {
-				isValidate[ 1 ].focus();
-			}
+
+			// Handle scroll and focus on error field when validation fails.
+			handleScrollAndFocusOnError( isValidate );
 			return;
 		}
 

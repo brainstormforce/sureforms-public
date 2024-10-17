@@ -640,7 +640,15 @@ class Form_Submit {
 				if ( count( $tokens ) > 1 ) {
 					$label = implode( '-', array_slice( $tokens, 1 ) );
 				}
-				$modified_message[ $label ] = html_entity_decode( esc_attr( Helper::get_string_value( $value ) ) );
+
+				$fields = explode( '-', $parts[0] );
+
+				// Since the upload field returns an array of file URLs, we need to implode them with a comma.
+				if ( 'upload' === $fields[1] && ! empty( $value ) && is_array( $value ) ) {
+					$modified_message[ $label ] = urldecode( implode( ', ', $value ) );
+				} else {
+					$modified_message[ $label ] = html_entity_decode( esc_attr( Helper::get_string_value( $value ) ) );
+				}
 			}
 		}
 
