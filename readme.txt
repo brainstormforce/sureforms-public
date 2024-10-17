@@ -255,7 +255,12 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 
 == Changelog ==
 = x.x.x =
-* Improvement: Updated the input mask setting to avoid conflicts with other plugins.
+* New: Migrated entries management to custom tables for improved performance.
+* New: Added icon support for Multi-Choice fields in the AI Form Builder.
+* New: Introduced validation to restrict selections between minimum and maximum limits for Multi-Choice and Dropdown fields.
+* New: Enabled relevant icon suggestions for Multi-Choice fields in AI-generated forms.
+* Improvement: Enhanced input mask settings to prevent conflicts with other plugins.
+* Improvement: Implemented smooth scrolling for seamless navigation of validation errors.
 = 0.0.12 =
 * Fix: AI Form generation was timing out.
 = 0.0.11 =
