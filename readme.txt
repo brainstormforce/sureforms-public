@@ -316,3 +316,8 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 * Fix: Bug fixes.
 = 0.0.1 =
 * Initial release.
+
+== Upgrade Notice ==
+
+= 0.0.13 =
+From version 0.0.13 we're migrating to a custom database to enhance SureForms' performance and features. This step is necessary and irreversible and your current existing entries will be lost. Thank you for your understanding!
