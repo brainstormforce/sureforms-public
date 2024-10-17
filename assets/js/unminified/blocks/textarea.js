@@ -85,7 +85,9 @@ function addQuillEditor( areaField ) {
 	// Listen for changes in the Quill editor and update the corresponding textarea
 	quillEditor.on( 'text-change', function () {
 		const updatedContent = quillEditor.root.innerHTML;
-		areaField.value = updatedContent; // Sync the Quill editor's content with the textarea
+		const lengthOfContent = quillEditor.getLength();
+
+		areaField.value = lengthOfContent > 1 ? updatedContent : ''; // Update the textarea with the Quill content
 
 		// Due to we are adding the Quill editor to the textarea, we need to trigger the input event
 		// to ensure the textarea's value is updated in the DOM.

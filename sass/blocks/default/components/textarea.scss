@@ -27,15 +27,14 @@
 				.quill-editor-container {
 					margin: var( --srfm-input-field-margin );
 				}
-				&.srfm-error{
+				&.srfm-error {
 					.quill-editor-container {
-						border: 1px solid var(--srfm-error-color-border);
+						border: 1px solid var( --srfm-error-color-border );
 					}
 				}
 
-				.ql-container {
+				.ql-editor {
 					min-height: 200px;
-					cursor: text;
 				}
 
 				.ql-picker-options {
