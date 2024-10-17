@@ -62,7 +62,7 @@ class Admin {
 	 */
 	public function entries_migration_notice() {
 		if ( get_option( 'srfm_dismiss_entries_migration_notice', false ) ) {
-			// return;
+			return;
 		}
 
 		if ( empty( get_posts( [ 'post_type' => SRFM_ENTRIES_POST_TYPE ] ) ) ) {
