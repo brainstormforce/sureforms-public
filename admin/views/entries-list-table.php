@@ -442,6 +442,7 @@ class Entries_List_Table extends \WP_List_Table {
 		if ( 'top' === $which ) {
 			$this->display_month_filter();
 			$this->display_form_filter();
+			$this->display_bulk_resend_notification_button();
 		}
 	}
 
@@ -491,6 +492,84 @@ class Entries_List_Table extends \WP_List_Table {
 		}
 		echo '</select>';
 		echo '<input type="submit" name="filter_action" value="Filter" class="button" />';
+	}
+
+	protected function display_bulk_resend_notification_button() {
+		if ( ! isset( $_GET['form_filter'] ) ) {
+			// Do not display resend notification button if a form is not selected.
+			return;
+		}
+
+		?>
+		<button type="button" class="button hidden srfm-resend-notification-trigger-btn"><?php esc_html_e( 'Resend Notification', 'sureforms' ); ?></button>
+		<?php
+		$this->resend_notification_modal( absint( wp_unslash( $_GET['form_filter'] ) ) );
+	}
+
+	protected function resend_notification_modal( $form_id, $entry_ids = [] ) {
+		if ( ! $form_id ) {
+			return;
+		}
+
+		$email_notifications = get_post_meta( $form_id, '_srfm_email_notification', true );
+		?>
+		<dialog id="srfm-resend-notification-modal">
+			<div class="modal-header">
+				<h3><?php esc_html_e( 'Resend Notification', 'sureforms' ); ?></h3>
+			</div>
+			<?php
+			if ( empty( $email_notifications ) ) {
+				?>
+				<div class="modal-body">
+					<p><?php printf( esc_html__( 'No email notifications found for the "%s" form. You can create email notification from the form edit page.', 'sureforms' ), get_the_title( $form_id ) ); ?></p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="button srfm-cancel-resend-notification"><?php esc_html_e( 'Okay', 'sureforms' ); ?></button>
+				</div>
+				<?php
+			} else {
+				?>
+				<div class="modal-body">
+					<div class="field-group">
+						<h4><?php esc_html_e( 'Notification', 'sureforms' ); ?></h4>
+						<select name="email_notification" class="srfm-resend-notification-field">
+							<?php
+							foreach ( $email_notifications as $email_notification ) {
+								?>
+								<option value="<?php echo esc_attr( $email_notification['id'] ); ?>"><?php echo esc_html( $email_notification['name'] ); ?></option>
+								<?php
+							}
+							?>
+						</select>
+					</div>
+
+					<div class="field-group">
+						<h4><?php esc_html_e( 'Send To', 'sureforms' ); ?></h4>
+						<select name="send_to" class="srfm-resend-notification-field">
+							<option value="default"><?php esc_html_e( 'Default', 'sureforms' ); ?></option>
+							<option value="other"><?php esc_html_e( 'Other', 'sureforms' ); ?></option>
+						</select>
+					</div>
+
+					<div class="field-group recipient-field-group hidden">
+						<h4><?php esc_html_e( 'Recipient', 'sureforms' ); ?></h4>
+						<input type="email" name="recipient" class="srfm-resend-notification-field">
+					</div>
+
+					<input type="hidden" name="form_id" value="<?php echo esc_attr( $form_id ); ?>" class="srfm-resend-notification-field">
+
+					<!-- We will populate this field using JS for bulk resend -->
+					<input type="hidden" name="entry_ids" value="<?php echo esc_attr( implode( ',', $entry_ids ) ); ?>" class="srfm-resend-notification-field">
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="button button-primary srfm-resend-notification"><?php esc_html_e( 'Resend Notification', 'sureforms' ); ?></button>
+					<button type="button" class="button srfm-cancel-resend-notification"><?php esc_html_e( 'Cancel', 'sureforms' ); ?></button>
+				</div>
+				<?php
+			}
+			?>
+		</dialog>
+		<?php
 	}
 
 	/**

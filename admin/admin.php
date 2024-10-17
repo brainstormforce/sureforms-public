@@ -442,13 +442,22 @@ class Admin {
 				'srfm_entries',
 				[
 					'entryID' => isset( $_GET['entry_id'] ) ? absint( wp_unslash( $_GET['entry_id'] ) ) : 0,
-					'ajaxURL' => add_query_arg(
-						[
-							'action'   => 'sureforms_save_entry_notes',
-							'security' => wp_create_nonce( '_srfm_entry_notes_nonce' )
-						],
-						admin_url( 'admin-ajax.php' )
-					)
+					'ajaxURLs' => [
+						'saveNotes' => add_query_arg(
+							[
+								'action'   => 'sureforms_save_entry_notes',
+								'security' => wp_create_nonce( '_srfm_entry_notes_nonce' )
+							],
+							admin_url( 'admin-ajax.php' )
+						),
+						'resendNotification' => add_query_arg(
+							[
+								'action'   => 'sureforms_resend_email_notifications',
+								'security' => wp_create_nonce( '_srfm_resend_email_notifications_nonce' )
+							],
+							admin_url( 'admin-ajax.php' )
+						)
+					]
 				]
 			);
 		}

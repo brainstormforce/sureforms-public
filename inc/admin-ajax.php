@@ -37,6 +37,7 @@ class Admin_Ajax {
 	 * @since  0.0.1
 	 */
 	public function __construct() {
+		add_action( 'wp_ajax_sureforms_resend_email_notifications', [ $this, 'resend_email_notifications' ] );
 		add_action( 'wp_ajax_sureforms_recommended_plugin_activate', [ $this, 'required_plugin_activate' ] );
 		add_action( 'wp_ajax_sureforms_recommended_plugin_install', 'wp_ajax_install_plugin' );
 		add_action( 'wp_ajax_sureforms_integration', [ $this, 'generate_data_for_suretriggers_integration' ] );
@@ -46,8 +47,98 @@ class Admin_Ajax {
 		add_filter( SRFM_SLUG . '_admin_filter', [ $this, 'localize_script_integration' ] );
 	}
 
-	public function save_entry_notes() {
+	public function resend_email_notifications() {
+		$response_data = [ 'message' => $this->get_error_msg( 'permission' ) ];
 
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( $response_data );
+		}
+
+		if ( empty( $_POST['entry_ids'] ) && empty( $_POST['form_id'] ) && empty( $_POST['email_notification'] ) ) {
+			$response_data = [ 'message' => $this->get_error_msg( 'invalid' ) ];
+			wp_send_json_error( $response_data );
+		}
+
+		/**
+		 * Nonce verification.
+		 */
+		if ( ! check_ajax_referer( '_srfm_resend_email_notifications_nonce', 'security' ) ) {
+			$response_data = [ 'message' => $this->get_error_msg( 'nonce' ) ];
+			wp_send_json_error( $response_data );
+		}
+
+		$entry_ids = sanitize_text_field( wp_unslash( $_POST['entry_ids'] ) );
+		$entry_ids = array_map( 'absint', explode( ',', $entry_ids ) );
+
+		if ( empty( $entry_ids ) ) {
+			wp_send_json_error();
+		}
+
+		$recipient = '';
+		$send_to   = ! empty( $_POST['send_to'] ) ? sanitize_text_field( wp_unslash( $_POST['send_to'] ) ) : 'default';
+
+		if ( 'other' === $send_to ) {
+			$recipient = ! empty( $_POST['recipient'] ) ? sanitize_email( wp_unslash( $_POST['recipient'] ) ) : '';
+
+			if ( ! is_email( $recipient ) ) {
+				wp_send_json_error();
+			}
+		}
+
+		$form_id               = absint( wp_unslash( $_POST['form_id'] ) );
+		$email_notification_id = absint( wp_unslash( $_POST['email_notification'] ) );
+
+		$email_notification = get_post_meta( $form_id, '_srfm_email_notification', true );
+
+		$display_name = wp_get_current_user()->display_name;
+
+		if ( ! empty( $email_notification ) && is_array( $email_notification ) ) {
+			foreach ( $email_notification as $notification ) {
+				if ( $email_notification_id !== absint( $notification['id'] ) ) {
+					continue;
+				}
+
+				if ( true !== $notification['status'] ) {
+					continue;
+				}
+
+				foreach ( $entry_ids as $entry_id ) {
+					$entries_db = new Entries(); // We don't want the same instance here, instead we need to init new object for each entry id here.
+					$log_key    = $entries_db->add_log( sprintf( __( 'Resend email notification "%1$s" initiated by %2$s', 'sureforms' ), esc_html( $notification['name'] ), esc_html( $display_name ) ) );
+					$form_data  = $entries_db::get( $entry_id )['form_data'];
+					$parsed     = Form_Submit::parse_email_notification_template( $form_data, $notification );
+					$sent       = wp_mail(
+						$recipient ? $recipient : $parsed['to'], // If user has provided recipient then reroute email to user provided recipient.
+						$parsed['subject'],
+						$parsed['message'],
+						$parsed['headers']
+					);
+
+					if ( is_int( $log_key ) ) {
+						$entries_db->update_log(
+							$log_key,
+							null,
+							[
+								/* translators: Here, %s is email address. */
+								$sent ? sprintf( __( 'Email notification sent to %s', 'sureforms' ), esc_html( $parsed['to'] ) ) : sprintf( __( 'Failed sending email notification to %s', 'sureforms' ) ),
+							]
+						);
+					}
+
+					$entries_db::update(
+						$entry_id,
+						[
+							'logs' => $entries_db->get_logs()
+						]
+					);
+				}
+			}
+		}
+
+		wp_send_json_success();
+	}
+
+	public function save_entry_notes() {
 		$response_data = [ 'message' => $this->get_error_msg( 'permission' ) ];
 
 		if ( ! current_user_can( 'manage_options' ) ) {

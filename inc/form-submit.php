@@ -658,6 +658,34 @@ class Form_Submit {
 		return $modified_message;
 	}
 
+	public static function parse_email_notification_template( $submission_data, $item ) {
+		$smart_tags = Smart_Tags::get_instance();
+
+		$from           = Helper::get_string_value( get_option( 'admin_email' ) );
+		$to             = $smart_tags->process_smart_tags( $item['email_to'], $submission_data );
+		$subject        = $smart_tags->process_smart_tags( $item['subject'], $submission_data );
+		$email_body     = $smart_tags->process_smart_tags( $item['email_body'], $submission_data );
+		$email_template = new Email_Template();
+		$message        = $email_template->render( $submission_data, $email_body );
+		$headers        = "
+		From: $from\r\n" .
+		'X-Mailer: PHP/' . phpversion() . "\r\n" .
+		"Content-Type: text/html; charset=utf-8\r\n";
+		if ( isset( $item['email_reply_to'] ) && ! empty( $item['email_reply_to'] ) ) {
+			$headers .= 'Reply-To:' . $smart_tags->process_smart_tags( $item['email_reply_to'], $submission_data ) . "\r\n";
+		} else {
+			$headers .= "Reply-To: $from\r\n";
+		}
+		if ( isset( $item['email_cc'] ) && ! empty( $item['email_cc'] ) ) {
+			$headers .= 'Cc:' . $smart_tags->process_smart_tags( $item['email_cc'], $submission_data ) . "\r\n";
+		}
+		if ( isset( $item['email_bcc'] ) && ! empty( $item['email_bcc'] ) ) {
+			$headers .= 'Bcc:' . $smart_tags->process_smart_tags( $item['email_bcc'], $submission_data ) . "\r\n";
+		}
+
+		return compact( 'to', 'subject', 'message', 'headers' );
+	}
+
 	/**
 	 * Send Email.
 	 *
@@ -668,7 +696,6 @@ class Form_Submit {
 	 */
 	public static function send_email( $id, $submission_data ) {
 		$email_notification = get_post_meta( intval( $id ), '_srfm_email_notification' );
-		$smart_tags         = new Smart_Tags();
 		$is_mail_sent       = false;
 		$emails             = [];
 
@@ -679,43 +706,24 @@ class Form_Submit {
 			foreach ( $email_notification as $notification ) {
 				foreach ( $notification as $item ) {
 					if ( true === $item['status'] ) {
-						$from           = Helper::get_string_value( get_option( 'admin_email' ) );
-						$to             = $smart_tags->process_smart_tags( $item['email_to'], $submission_data );
-						$subject        = $smart_tags->process_smart_tags( $item['subject'], $submission_data );
-						$email_body     = $smart_tags->process_smart_tags( $item['email_body'], $submission_data );
-						$email_template = new Email_Template();
-						$message        = $email_template->render( $submission_data, $email_body );
-						$headers        = "
-						From: $from\r\n" .
-						'X-Mailer: PHP/' . phpversion() . "\r\n" .
-						"Content-Type: text/html; charset=utf-8\r\n";
-						if ( isset( $item['email_reply_to'] ) && ! empty( $item['email_reply_to'] ) ) {
-							$headers .= 'Reply-To:' . $smart_tags->process_smart_tags( $item['email_reply_to'], $submission_data ) . "\r\n";
-						} else {
-							$headers .= "Reply-To: $from\r\n";
-						}
-						if ( isset( $item['email_cc'] ) && ! empty( $item['email_cc'] ) ) {
-							$headers .= 'Cc:' . $smart_tags->process_smart_tags( $item['email_cc'], $submission_data ) . "\r\n";
-						}
-						if ( isset( $item['email_bcc'] ) && ! empty( $item['email_bcc'] ) ) {
-							$headers .= 'Bcc:' . $smart_tags->process_smart_tags( $item['email_bcc'], $submission_data ) . "\r\n";
-						}
 
-						$sent = wp_mail( $to, $subject, $message, $headers );
+						$parsed = self::parse_email_notification_template( $submission_data, $item );
+
+						$sent = wp_mail( $parsed['to'], $parsed['subject'], $parsed['message'], $parsed['headers'] );
 
 						if ( is_int( $log_key ) ) {
 							$entries_db_instance->update_log(
 								$log_key,
 								null,
 								[
-									/* translators: Here, %s is the comma separated emails list. */
-									$sent ? sprintf( __( 'Email notification sent to %s', 'sureforms' ), esc_html( $to ) ) : sprintf( __( 'Failed sending email notification to %s', 'sureforms' ) ),
+									/* translators: Here, %s is email address. */
+									$sent ? sprintf( __( 'Email notification sent to %s', 'sureforms' ), esc_html( $parsed['to'] ) ) : sprintf( __( 'Failed sending email notification to %s', 'sureforms' ) ),
 								]
 							);
 						}
 
 						$is_mail_sent = $sent;
-						$emails[]     = $to;
+						$emails[]     = $parsed['to'];
 					}
 				}
 			}
