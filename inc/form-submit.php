@@ -661,7 +661,7 @@ class Form_Submit {
 	/**
 	 * Parse an email notification template and generate the necessary components for sending an email.
 	 *
-	 * @param array<mixed>        $submission_data An associative array containing submission data to be used in the email template.
+	 * @param array<mixed>         $submission_data An associative array containing submission data to be used in the email template.
 	 * @param array<string,string> $item An associative array containing email settings, such as 'email_to', 'subject', 'email_body', and optional headers like 'email_reply_to', 'email_cc', and 'email_bcc'.
 	 * @since x.x.x
 	 * @return array<string,string> An associative array containing 'to', 'subject', 'message', and 'headers' for the email.
