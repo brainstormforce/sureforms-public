@@ -10,6 +10,7 @@ namespace SRFM\Inc;
 
 use SRFM\Inc\Traits\Get_Instance;
 use SRFM\Inc\Helper;
+use SRFM\Inc\Database\Tables\Entries;
 use WP_REST_Server;
 use WP_Error;
 use WP_REST_Request;
@@ -115,8 +116,10 @@ class Background_Process {
 			);
 		}
 
-		$this->form_id         = Helper::get_integer_value( get_post_meta( $this->submission_id, '_srfm_entry_form_id', true ) );
-		$this->submission_data = Helper::get_array_value( get_post_meta( $this->submission_id, 'srfm_entry_meta', true ) );
+		// Get the entries data for further processing, related to webhooks.
+		$entry_data            = Entries::get( $this->submission_id );
+		$this->form_id         = Helper::get_integer_value( $entry_data['form_id'] );
+		$this->submission_data = Helper::get_array_value( $entry_data['form_data'] );
 
 		if ( ! $this->trigger_after_submission_process() ) {
 			return new \WP_Error(

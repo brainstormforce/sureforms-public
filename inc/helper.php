@@ -8,11 +8,10 @@
 
 namespace SRFM\Inc;
 
+use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Traits\Get_Instance;
 use WP_Error;
-use WP_REST_Request;
 use WP_Post_Type;
-use WP_Query;
 use WP_Post;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -509,34 +508,32 @@ class Helper {
 	public static function get_entries_from_form_ids( $days_old = 0, $sf_form_ids = [] ) {
 
 		$entries = [];
-
+		$days_old_date = (new \DateTime())->modify("-{$days_old} days")->format('Y-m-d H:i:s');
+		
 		foreach ( $sf_form_ids as $form_id ) {
+			// args according to the get_all() function in the Entries class.
+			// TODO: Check for the limit arg.
 			$args = [
-				'post_type'   => 'sureforms_entry',
-				'post_status' => 'publish',
-				'date_query'  => [
+				'where' => [
 					[
-						'before' => $days_old . ' days ago',
-					],
-				],
-				'meta_query' // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query. -- We require meta_query for this function to work.
-				=> [
-					[
-						'key'     => '_srfm_entry_form_id',
-						'value'   => $form_id,
-						'compare' => '=',
+						[
+							'key'     => 'form_id',
+							'value'   => $form_id,
+							'compare' => '=',
+						],
+						[
+							'key'     => 'created_at',
+							'value'   => $days_old_date,
+							'compare' => '<=',
+						]
 					],
 				],
 			];
 
-			$query = new WP_Query( $args );
-
-			// store all the entries in an single array.
-			$entries = array_merge( $entries, $query->posts );
+			// store all the entries in a single array.
+			$entries = array_merge( $entries, Entries::get_all( $args ) );
 		}
-
 		return $entries;
-
 	}
 
 	/**

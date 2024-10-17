@@ -546,46 +546,29 @@ class Form_Submit {
 			$key               = strval( $form_data_keys[5] );
 			$first_field_value = $form_data[ $key ];
 		}
-
-		$new_post = [
-			'post_status' => 'publish',
-			'post_type'   => 'sureforms_entry',
+		$submission_info = [
+			'user_ip'      => $user_ip,
+			'browser_name' => $browser_name,
+			'device_name'  => $device_name,
 		];
-
-		$post_id = wp_insert_post( $new_post );
-
-		$post_title = __( 'Entry #', 'sureforms' ) . $post_id;
-
-		$post_args = [
-			'ID'         => $post_id,
-			'post_title' => $post_title,
+		$entries_data = [
+			'form_id'         => $id,
+			'form_data'       => $submission_data,
+			'submission_info' => $submission_info,
 		];
-
-		wp_update_post( $post_args );
-
-		update_post_meta( $post_id, 'srfm_entry_meta', $submission_data );
-		add_post_meta( $post_id, 'srfm_entry_meta_form_id', $id, true );
-		if ( $post_id ) {
-			$submission_info = [
-				'user_ip'      => $user_ip,
-				'browser_name' => $browser_name,
-				'device_name'  => $device_name,
-			];
-
-			// Giving backward compatibility for Entries Post Type for now. It will be completed replaced with custom database table in next release.
-			$srfm_submission_info[] = $submission_info;
-			update_post_meta( $post_id, '_srfm_submission_info', $srfm_submission_info );
-			update_post_meta( $post_id, 'srfm_entry_meta', $submission_data );
-			update_post_meta( $post_id, '_srfm_entry_form_id', $id );
-
-			wp_set_object_terms( $post_id, $id, 'sureforms_tax' );
+		if ( is_user_logged_in() ) {
+			// If user is logged in then save their user id.
+			$entries_data['user_id'] = get_current_user_id();
+		}
+		$entry_id = Entries::add( $entries_data );
+		if ( $entry_id ) {
 
 			$response = [
 				'success' => true,
 				'message' => Generate_Form_Markup::get_confirmation_markup( $form_data, $submission_data ),
 				'data'    => [
 					'name'          => $name,
-					'submission_id' => $post_id,
+					'submission_id' => $entry_id,
 					'after_submit'  => true,
 				],
 			];
@@ -602,19 +585,6 @@ class Form_Submit {
 			];
 
 			do_action( 'srfm_form_submit', $form_submit_response );
-
-			$entries_data = [
-				'form_id'         => $id,
-				'form_data'       => $submission_data,
-				'submission_info' => $submission_info,
-			];
-
-			if ( is_user_logged_in() ) {
-				// If user is logged in then save their user id.
-				$entries_data['user_id'] = get_current_user_id();
-			}
-
-			Entries::add( $entries_data );
 		} else {
 			$response = [
 				'success' => false,
@@ -757,25 +727,8 @@ class Form_Submit {
 
 		$_POST = array_map( 'wp_unslash', $_POST );
 
-		$taxonomy = 'sureforms_tax';
-
-		$args  = [
-			'post_type' => SRFM_ENTRIES_POST_TYPE,
-			'tax_query'  // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query. -- We require tax_query for this function to work.
-			=> [
-				[
-					'taxonomy' => $taxonomy,
-					'field'    => 'slug',
-					'terms'    => $id,
-				],
-			],
-			'fields'    => 'ids',
-		];
-		$query = new \WP_Query( $args );
-
-		$post_ids = $query->posts;
-
-		wp_reset_postdata();
+		// Get the entry IDs for the particualr form to perform unique field validation.
+		$entry_ids = Entries::get_all_entry_ids_for_form( $id );
 
 		$all_form_entries = [];
 		$keys             = array_keys( $_POST );
@@ -786,10 +739,10 @@ class Form_Submit {
 			$value = isset( $_POST[ $key ] ) ? sanitize_text_field( wp_unslash( $_POST[ $key ] ) ) : '';
 			$key   = str_replace( '_', ' ', $keys[ $i ] );
 
-			foreach ( $post_ids as $post_id ) {
-				$post_id     = Helper::get_integer_value( $post_id );
-				$meta_values = get_post_meta( $post_id, 'srfm_entry_meta', true );
-				if ( is_array( $meta_values ) && isset( $meta_values[ $key ] ) && $meta_values[ $key ] === $value ) {
+			foreach ( $entry_ids as $entry_id ) {
+				$entry_id  = Helper::get_integer_value( $entry_id['ID'] );
+				$form_data = Entries::get_form_data( $entry_id );
+				if ( is_array( $form_data ) && isset( $form_data[ $key ] ) && $form_data[ $key ] === $value ) {
 					$obj = [ $key => 'not unique' ];
 					array_push( $all_form_entries, $obj );
 					break;

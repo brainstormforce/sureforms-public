@@ -405,4 +405,37 @@ class Entries extends Base {
 		}
 		return $months;
 	}
+
+	/**
+	 * Get all the entry ID's for a form.
+	 * The data is used for checking unique field validation.
+	 *
+	 * @param int $form_id The ID of the form to fetch entry IDs for.
+	 * @since x.x.x
+	 * @return array An array of entry IDs.
+	 */
+	public static function get_all_entry_ids_for_form( $form_id ) {
+		return self::get_instance()->get_results(
+			[ 'form_id' => $form_id ],
+			'ID',
+			[
+				'ORDER BY ID DESC',
+			]
+		);
+	}
+
+	/**
+	 * Get the form data for a specific entry.
+	 *
+	 * @param int $entry_id The ID of the entry to get the form data for.
+	 * @since x.x.x
+	 * @return array<string,mixed> An associative array representing the entry's form data.
+	 */
+	public static function get_form_data( $entry_id ) {
+		$result = self::get_instance()->get_results(
+			[ 'ID' => $entry_id ],
+			'form_data'
+		);
+		return isset( $result[0] ) ? Helper::get_array_value( $result[0]['form_data'] ) : [];
+	}
 }
