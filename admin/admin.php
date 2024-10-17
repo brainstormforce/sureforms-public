@@ -58,7 +58,7 @@ class Admin {
 	/**
 	 * Print notice to inform users about entries database migration.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.13
 	 * @return void
 	 */
 	public function entries_migration_notice() {
@@ -294,7 +294,7 @@ class Admin {
 	/**
 	 * Entries page callback.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.13
 	 * @return void
 	 */
 	public function render_entries() {
@@ -739,7 +739,7 @@ class Admin {
 	/**
 	 * Handle entry actions.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.13
 	 * @return void
 	 */
 	public function handle_entry_actions() {

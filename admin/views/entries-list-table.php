@@ -3,7 +3,7 @@
  * SureForms Entries Table Class.
  *
  * @package sureforms.
- * @since x.x.x
+ * @since 0.0.13
  */
 
 namespace SRFM\Admin\Views;
@@ -21,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Check if WP_List_Table class exists and if not, load it.
  *
- * @since x.x.x
+ * @since 0.0.13
  */
 if ( ! class_exists( 'WP_List_Table' ) ) {
 	require_once ABSPATH . 'wp-admin/includes/class-wp-list-table.php';
@@ -36,7 +36,7 @@ class Entries_List_Table extends \WP_List_Table {
 	 * Stores the entries data fetched from database.
 	 *
 	 * @var array<mixed>
-	 * @since x.x.x
+	 * @since 0.0.13
 	 */
 	protected $data = [];
 
@@ -45,7 +45,7 @@ class Entries_List_Table extends \WP_List_Table {
 	 * It will be used for pagination.
 	 *
 	 * @var int
-	 * @since x.x.x
+	 * @since 0.0.13
 	 */
 	public $entries_count;
 
@@ -54,7 +54,7 @@ class Entries_List_Table extends \WP_List_Table {
 	 * It will be used for managing the no entries found page.
 	 *
 	 * @var int
-	 * @since x.x.x
+	 * @since 0.0.13
 	 */
 	public $all_entries_count;
 
@@ -63,14 +63,14 @@ class Entries_List_Table extends \WP_List_Table {
 	 * Used for displaying the no entries found page.
 	 *
 	 * @var int
-	 * @since x.x.x
+	 * @since 0.0.13
 	 */
 	public $trash_entries_count;
 
 	/**
 	 * Constructor.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.13
 	 * @return void
 	 */
 	public function __construct() {
@@ -82,7 +82,7 @@ class Entries_List_Table extends \WP_List_Table {
 	/**
 	 * Override the parent columns method. Defines the columns to use in your listing table.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.13
 	 * @return array
 	 */
 	public function get_columns() {
@@ -101,7 +101,7 @@ class Entries_List_Table extends \WP_List_Table {
 	/**
 	 * Define the sortable columns.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.13
 	 * @return array
 	 */
 	public function get_sortable_columns() {
@@ -115,7 +115,7 @@ class Entries_List_Table extends \WP_List_Table {
 	/**
 	 * Bulk action items.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.13
 	 * @return array $actions Bulk actions.
 	 */
 	public function get_bulk_actions() {
@@ -133,7 +133,7 @@ class Entries_List_Table extends \WP_List_Table {
 	/**
 	 * Message to be displayed when there are no entries.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.13
 	 * @return void
 	 */
 	public function no_items() {
@@ -152,7 +152,7 @@ class Entries_List_Table extends \WP_List_Table {
 	 * @param string   $view The view to fetch the entries count from.
 	 * @param int|null $form_id The ID of the form to fetch entries for.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.13
 	 * @return array
 	 */
 	private function table_data( $per_page, $current_page, $view, $form_id = 0 ) {
@@ -181,7 +181,7 @@ class Entries_List_Table extends \WP_List_Table {
 	/**
 	 * Prepare the items for the table to process.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.13
 	 * @return void
 	 */
 	public function prepare_items() {
@@ -220,7 +220,7 @@ class Entries_List_Table extends \WP_List_Table {
 	 * @param array  $item Column data.
 	 * @param string $column_name Current column name.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.13
 	 * @return mixed
 	 */
 	public function column_default( $item, $column_name ) {
@@ -245,7 +245,7 @@ class Entries_List_Table extends \WP_List_Table {
 	 *
 	 * @param array $item Columns items.
 	 * @return string
-	 * @since x.x.x
+	 * @since 0.0.13
 	 */
 	public function column_cb( $item ) {
 		$entry_id = esc_attr( $item['ID'] );
@@ -260,7 +260,7 @@ class Entries_List_Table extends \WP_List_Table {
 	 *
 	 * @param array $item Column data.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.13
 	 * @return string
 	 */
 	protected function column_id( $item ) {
@@ -292,7 +292,7 @@ class Entries_List_Table extends \WP_List_Table {
 	 *
 	 * @param array $item Column data.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.13
 	 * @return string
 	 */
 	protected function column_form_name( $item ) {
@@ -307,7 +307,7 @@ class Entries_List_Table extends \WP_List_Table {
 	 *
 	 * @param array $item Column data.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.13
 	 * @return string
 	 */
 	protected function column_status( $item ) {
@@ -336,7 +336,7 @@ class Entries_List_Table extends \WP_List_Table {
 	 *
 	 * @param array $item Column data.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.13
 	 * @return string
 	 */
 	protected function column_first_field( $item ) {
@@ -353,7 +353,7 @@ class Entries_List_Table extends \WP_List_Table {
 	 *
 	 * @param array $item Column data.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.13
 	 * @return string
 	 */
 	protected function column_created_at( $item ) {
@@ -371,7 +371,7 @@ class Entries_List_Table extends \WP_List_Table {
 	 *
 	 * @param array $item Column data.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.13
 	 * @return array
 	 */
 	protected function package_row_actions( $item ) {
@@ -446,7 +446,7 @@ class Entries_List_Table extends \WP_List_Table {
 	 *
 	 * @param string $which Which table navigation is it... Is it top or bottom.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.13
 	 * @return void
 	 */
 	protected function extra_tablenav( $which ) {
@@ -469,7 +469,7 @@ class Entries_List_Table extends \WP_List_Table {
 	 *
 	 * @param string $which is it the top or bottom of the table.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.13
 	 * @return void
 	 */
 	protected function display_tablenav( $which ) {
@@ -494,7 +494,7 @@ class Entries_List_Table extends \WP_List_Table {
 	/**
 	 * Display the available form name to filter entries.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.13
 	 * @return void
 	 */
 	protected function display_form_filter() {
@@ -618,7 +618,7 @@ class Entries_List_Table extends \WP_List_Table {
 	/**
 	 * Display the month and year from which the entries are present to filter entries according to time.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.13
 	 * @return void
 	 */
 	protected function display_month_filter() {
@@ -648,7 +648,7 @@ class Entries_List_Table extends \WP_List_Table {
 	 * @param string $text The 'submit' button label.
 	 * @param int    $input_id ID attribute value for the search input field.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.13
 	 * @return void
 	 */
 	public function search_box_markup( $text, $input_id ) {
@@ -667,7 +667,7 @@ class Entries_List_Table extends \WP_List_Table {
 	/**
 	 * Displays the table.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.13
 	 */
 	public function display() {
 		$singular = $this->_args['singular'];
@@ -709,7 +709,7 @@ class Entries_List_Table extends \WP_List_Table {
 	/**
 	 * List of CSS classes for the "WP_List_Table" table element.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.13
 	 * @return array<string>
 	 */
 	protected function get_table_classes() {
@@ -730,7 +730,7 @@ class Entries_List_Table extends \WP_List_Table {
 	/**
 	 * Populate the forms filter dropdown.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.13
 	 * @return array<string>
 	 */
 	private function get_available_forms() {
@@ -761,7 +761,7 @@ class Entries_List_Table extends \WP_List_Table {
 	 * @param int    $form_id The ID of the form to fetch entries for.
 	 * @param string $view The view to fetch entries for.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.13
 	 * @return array<mixed>
 	 */
 	private function get_where_conditions( $form_id = 0, $view = 'all' ) {
@@ -859,7 +859,7 @@ class Entries_List_Table extends \WP_List_Table {
 	/**
 	 * Get the views for the entries table.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.13
 	 * @return array<string,string>
 	 */
 	protected function get_views() {
@@ -908,7 +908,7 @@ class Entries_List_Table extends \WP_List_Table {
 	/**
 	 * Process bulk actions.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.13
 	 * @return void
 	 */
 	public static function process_bulk_actions() {
@@ -947,7 +947,7 @@ class Entries_List_Table extends \WP_List_Table {
 	 *
 	 * @param array $bulk_actions The bulk actions array.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.13
 	 * @return array<string,string>
 	 */
 	private static function get_additional_bulk_actions( $bulk_actions ) {
@@ -964,7 +964,7 @@ class Entries_List_Table extends \WP_List_Table {
 	/**
 	 * Check if the current page is a trash list.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.13
 	 * @return bool
 	 */
 	public static function is_trash_view() {
@@ -978,7 +978,7 @@ class Entries_List_Table extends \WP_List_Table {
 	 * @param string $action The action to perform.
 	 * @param string $view The view to handle redirection.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.13
 	 * @return void
 	 */
 	public static function handle_entry_status( $entry_id, $action, $view = '' ) {
@@ -1017,7 +1017,7 @@ class Entries_List_Table extends \WP_List_Table {
 	/**
 	 * Display admin notice for bulk actions.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.13
 	 * @return void
 	 */
 	public static function display_bulk_action_notice() {
