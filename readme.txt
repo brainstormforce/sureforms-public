@@ -264,6 +264,7 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 * Improvement: Improve Rows and Columns Settings in Textarea field
 * Improvement: Add Name Keyword for Text Field
 * Improvement: Improve Some Form Ideas Prompts While Creating AI Forms 
+* Improvement: Improved Instant Form branding styles and "Unpublished" badge text
 = 0.0.12 =
 * Fix: AI Form generation was timing out.
 = 0.0.11 =
