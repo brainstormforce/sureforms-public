@@ -658,6 +658,14 @@ class Form_Submit {
 		return $modified_message;
 	}
 
+	/**
+	 * Parse an email notification template and generate the necessary components for sending an email.
+	 *
+	 * @param array<mixed>        $submission_data An associative array containing submission data to be used in the email template.
+	 * @param array<string,mixed> $item An associative array containing email settings, such as 'email_to', 'subject', 'email_body', and optional headers like 'email_reply_to', 'email_cc', and 'email_bcc'.
+	 * @since x.x.x
+	 * @return array<string,string> An associative array containing 'to', 'subject', 'message', and 'headers' for the email.
+	 */
 	public static function parse_email_notification_template( $submission_data, $item ) {
 		$smart_tags = Smart_Tags::get_instance();
 

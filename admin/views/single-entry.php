@@ -112,9 +112,15 @@ class Single_Entry {
 		$submitted_by_user = get_user_by( 'ID', absint( $note['submitted_by'] ) )->display_name;
 		?>
 		<div class="entry-note-item">
-			<strong class="entry-log-title"><?php printf( esc_html__( 'Submitted by %s', 'sureforms' ), esc_html( $submitted_by_user ) ); ?></strong> <br/>
+			<strong class="entry-log-title">
+				<?php
+					/* translators: Here %s means the users display name. */
+					printf( esc_html__( 'Submitted by %s', 'sureforms' ), esc_html( $submitted_by_user ) );
+				?>
+			</strong>
+			<br/>
 			<small><?php echo esc_html( gmdate( 'Y-m-d H:i:s', $note['timestamp'] ) ); ?></small>
-			<?php echo wp_kses_post( wpautop( $note['note'] ) ) ?>
+			<?php echo wp_kses_post( wpautop( $note['note'] ) ); ?>
 		</div>
 		<?php
 	}
@@ -239,7 +245,7 @@ class Single_Entry {
 	 * @since x.x.x
 	 */
 	private function render_form_data( $meta_data, $excluded_fields ) {
-		$is_edit_mode = ! empty( $_GET['edit'] ) && sanitize_text_field( wp_unslash( $_GET['edit'] ) );
+		$is_edit_mode = ! empty( $_GET['edit'] ) && sanitize_text_field( wp_unslash( $_GET['edit'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verification is not applicable here due to URL restriction.
 
 		?>
 		<div id="sureform_entry_meta" class="postbox">

@@ -64,6 +64,16 @@ class Admin_Ajax {
 		wp_send_json_success();
 	}
 
+	/**
+	 * Resend email notifications for specified entry IDs and log the results.
+	 *
+	 * This method checks user permissions, validates input, verifies a nonce, and processes the
+	 * resending of email notifications for specified entries. It logs successes and failures for each
+	 * notification sent, returning a summary of the results.
+	 *
+	 * @since x.x.x
+	 * @return void
+	 */
 	public function resend_email_notifications() {
 		$response_data = [ 'message' => $this->get_error_msg( 'permission' ) ];
 
@@ -98,6 +108,7 @@ class Admin_Ajax {
 			$recipient = ! empty( $_POST['recipient'] ) ? sanitize_email( wp_unslash( $_POST['recipient'] ) ) : '';
 
 			if ( ! is_email( $recipient ) ) {
+				// Bail if not a valid email address.
 				wp_send_json_error( __( 'You must provide a valid email for the recipient.', 'sureforms' ) );
 			}
 		}
@@ -113,31 +124,37 @@ class Admin_Ajax {
 
 		if ( ! empty( $email_notification ) && is_array( $email_notification ) ) {
 			foreach ( $email_notification as $notification ) {
-				if ( $email_notification_id !== absint( $notification['id'] ) ) {
+				if ( absint( $notification['id'] ) !== $email_notification_id ) {
 					continue;
 				}
 
 				if ( true !== $notification['status'] ) {
+					// It means email notification is toggled off and we can ignore and move to next step.
 					continue;
 				}
 
 				foreach ( $entry_ids as $entry_id ) {
-					$entries_db = new Entries();                                                                                                                                                             // We don't want the same instance here, instead we need to init new object for each entry id here.
-					$log_key    = $entries_db->add_log( sprintf( __( 'Resend email notification "%1$s" initiated by %2$s', 'sureforms' ), esc_html( $notification['name'] ), esc_html( $display_name ) ) );
-					$form_data  = $entries_db::get( $entry_id )['form_data'];
-					$parsed     = Form_Submit::parse_email_notification_template( $form_data, $notification );
-					$email_to   = $recipient ? $recipient : $parsed['to'];                                                                                                                                   // If user has provided recipient then reroute email to user provided recipient.
-					$sent       = wp_mail( $email_to, $parsed['subject'], $parsed['message'], $parsed['headers'] );
+					// We don't want the same instance here, instead we need to init new object for each entry id here.
+					$entries_db = new Entries();
+
+					/* translators: Here %1$s is email notification label and %2$s is the user display name. */
+					$log_key   = $entries_db->add_log( sprintf( __( 'Resend email notification "%1$s" initiated by %2$s', 'sureforms' ), esc_html( $notification['name'] ), esc_html( $display_name ) ) );
+					$form_data = Helper::get_array_value( $entries_db::get( $entry_id )['form_data'] );
+					$parsed    = Form_Submit::parse_email_notification_template( $form_data, Helper::get_array_value( $notification ) );
+
+					// If user has provided recipient then reroute email to user provided recipient.
+					$email_to = $recipient ? $recipient : $parsed['to'];
+					$sent     = wp_mail( $email_to, $parsed['subject'], $parsed['message'], $parsed['headers'] );
 
 					/* translators: Here, %s is email address. */
 					$log_message = $sent ? sprintf( __( 'Email notification sent to %s', 'sureforms' ), esc_html( $email_to ) ) : sprintf( __( 'Failed sending email notification to %s', 'sureforms' ) );
 
-					$resend_logs[] = array(
+					$resend_logs[] = [
 						'sent'     => $sent,
 						'entry_id' => $entry_id,
 						/* translators: Here, %1$s is entry id and %2$s is the log message. */
-						'message'  => sprintf( esc_html__( 'Entry #%1$s - %2$s', 'sureforms' ), esc_html( $entry_id ), esc_html( $log_message ) ),
-					);
+						'message'  => sprintf( esc_html__( 'Entry #%1$s - %2$s', 'sureforms' ), absint( $entry_id ), esc_html( $log_message ) ),
+					];
 
 					if ( is_int( $log_key ) ) {
 						$entries_db->update_log( $log_key, null, [ $log_message ] );
@@ -146,14 +163,15 @@ class Admin_Ajax {
 					$entries_db::update(
 						$entry_id,
 						[
-							'logs' => $entries_db->get_logs()
+							'logs' => $entries_db->get_logs(),
 						]
 					);
 				}
 			}
 		}
 
-		$message = '<details class="field-group">';
+		// Finally start creating message to display a result log to admin.
+		$message  = '<details class="field-group">';
 		$message .= '<summary>' . esc_html__( 'View detail', 'sureforms' ) . '</summary>';
 		$message .= '<ul class="srfm-resend-notification-message">';
 
@@ -169,6 +187,16 @@ class Admin_Ajax {
 		wp_send_json_success( $message );
 	}
 
+	/**
+	 * Save notes for a specified entry and return the updated notes.
+	 *
+	 * This method checks user permissions, validates input, verifies a nonce,
+	 * and saves the provided note for the specified entry. It then retrieves
+	 * the updated list of notes and sends it back in the response.
+	 *
+	 * @since x.x.x
+	 * @return void
+	 */
 	public function save_entry_notes() {
 		$response_data = [ 'message' => $this->get_error_msg( 'permission' ) ];
 
@@ -189,7 +217,7 @@ class Admin_Ajax {
 			wp_send_json_error( $response_data );
 		}
 
-		$entry_id = sanitize_text_field( wp_unslash( $_POST['entryID'] ) );
+		$entry_id = absint( wp_unslash( $_POST['entryID'] ) );
 
 		Entries::add_note( $entry_id, sanitize_textarea_field( wp_unslash( $_POST['note'] ) ) );
 

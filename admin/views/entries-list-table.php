@@ -515,8 +515,14 @@ class Entries_List_Table extends \WP_List_Table {
 		echo '<input type="submit" name="filter_action" value="Filter" class="button" />';
 	}
 
+	/**
+	 * Display resend notification trigger button.
+	 *
+	 * @since x.x.x
+	 * @return void
+	 */
 	protected function display_bulk_resend_notification_button() {
-		if ( ! isset( $_GET['form_filter'] ) ) {
+		if ( ! isset( $_GET['form_filter'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verification is skipped on purpose.
 			// Do not display resend notification button if a form is not selected.
 			return;
 		}
@@ -524,9 +530,17 @@ class Entries_List_Table extends \WP_List_Table {
 		?>
 		<button type="button" class="button hidden srfm-resend-notification-trigger-btn"><?php esc_html_e( 'Resend Notification', 'sureforms' ); ?></button>
 		<?php
-		$this->resend_notification_modal( absint( wp_unslash( $_GET['form_filter'] ) ) );
+		$this->resend_notification_modal( absint( wp_unslash( $_GET['form_filter'] ) ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verification is skipped on purpose.
 	}
 
+	/**
+	 * Display resend notification modal markup.
+	 *
+	 * @param int        $form_id Form ID.
+	 * @param array<int> $entry_ids An array of entry ids.
+	 * @since x.x.x
+	 * @return void
+	 */
 	protected function resend_notification_modal( $form_id, $entry_ids = [] ) {
 		if ( ! $form_id ) {
 			return;
@@ -545,7 +559,12 @@ class Entries_List_Table extends \WP_List_Table {
 			if ( empty( $email_notifications ) ) {
 				?>
 				<div class="modal-content">
-					<p><?php printf( esc_html__( 'No email notifications found for the "%s" form. You can create email notification from the form edit page.', 'sureforms' ), get_the_title( $form_id ) ); ?></p>
+					<p>
+					<?php
+					/* translators: %s is the form name. */
+					printf( esc_html__( 'No email notifications found for the "%s" form. You can create email notification from the form edit page.', 'sureforms' ), esc_html( get_the_title( $form_id ) ) );
+					?>
+					</p>
 				</div>
 				<div class="modal-actions">
 					<button type="button" class="button srfm-cancel-resend-notification"><?php esc_html_e( 'Okay', 'sureforms' ); ?></button>

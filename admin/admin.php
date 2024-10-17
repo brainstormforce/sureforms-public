@@ -517,23 +517,23 @@ class Admin {
 				SRFM_SLUG . '-entries-admin',
 				'srfm_entries',
 				[
-					'entryID' => isset( $_GET['entry_id'] ) ? absint( wp_unslash( $_GET['entry_id'] ) ) : 0,
+					'entryID'  => isset( $_GET['entry_id'] ) ? absint( wp_unslash( $_GET['entry_id'] ) ) : 0, // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verification is skipped here as we don't get nonce in the URL here and we are not doing database query.
 					'ajaxURLs' => [
-						'saveNotes' => add_query_arg(
+						'saveNotes'          => add_query_arg(
 							[
 								'action'   => 'sureforms_save_entry_notes',
-								'security' => wp_create_nonce( '_srfm_entry_notes_nonce' )
+								'security' => wp_create_nonce( '_srfm_entry_notes_nonce' ),
 							],
 							admin_url( 'admin-ajax.php' )
 						),
 						'resendNotification' => add_query_arg(
 							[
 								'action'   => 'sureforms_resend_email_notifications',
-								'security' => wp_create_nonce( '_srfm_resend_email_notifications_nonce' )
+								'security' => wp_create_nonce( '_srfm_resend_email_notifications_nonce' ),
 							],
 							admin_url( 'admin-ajax.php' )
-						)
-					]
+						),
+					],
 				]
 			);
 		}
@@ -770,6 +770,16 @@ class Admin {
 		}
 	}
 
+	/**
+	 * Save edited entry data and update the corresponding logs.
+	 *
+	 * This method processes the incoming POST request to edit an entry, verifies the nonce,
+	 * sanitizes the data, and logs any changes made to the entry. If no changes are detected,
+	 * it resets the logs.
+	 *
+	 * @since x.x.x
+	 * @return void
+	 */
 	public function save_edit_entry_data() {
 
 		if ( empty( $_POST['srfm-edit-entry-nonce'] ) && empty( $_POST['entry_id'] ) ) {
@@ -779,7 +789,7 @@ class Admin {
 
 		$entry_id = sanitize_text_field( wp_unslash( $_POST['entry_id'] ) );
 
-		if ( ! wp_verify_nonce( $_POST['srfm-edit-entry-nonce'], 'srfm-edit-entry-' . $entry_id ) ) {
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['srfm-edit-entry-nonce'] ) ), 'srfm-edit-entry-' . $entry_id ) ) {
 			return;
 		}
 
@@ -787,10 +797,11 @@ class Admin {
 			return;
 		}
 
-		$data = Helper::sanitize_by_field_type( wp_unslash( $_POST['srfm_edit_entry'] ) );
+		$data = Helper::sanitize_by_field_type( wp_unslash( $_POST['srfm_edit_entry'] ) ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- We are sanitizing using our custom function.
 
 		$instance = Entries::get_instance();
 
+		/* translators: Here %s means the users display name. */
 		$instance->add_log( sprintf( __( 'Entry edited by %s', 'sureforms' ), wp_get_current_user()->display_name ) ); // Init log.
 
 		$changed = 0;

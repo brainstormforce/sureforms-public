@@ -236,6 +236,14 @@ class Entries extends Base {
 		return $this->logs;
 	}
 
+	/**
+	 * Add a note to an existing entry in the database.
+	 *
+	 * @param int    $entry_id The ID of the entry to which the note will be added. Must be a valid, non-empty integer.
+	 * @param string $note The content of the note to be added. It will be trimmed before saving.
+	 * @since x.x.x
+	 * @return bool True on success, false if the entry ID is invalid or the note is empty.
+	 */
 	public static function add_note( $entry_id, $note = '' ) {
 		if ( empty( $entry_id ) ) {
 			return false;
@@ -254,8 +262,8 @@ class Entries extends Base {
 			'note'         => $note,
 		];
 
-		// Merge with old notes and save it to database.
-		self::update(
+		// Merge with old notes and save it to database and return boolean result.
+		return false !== self::update(
 			$entry_id,
 			[
 				'notes' => array_merge( [ $_note ], Helper::get_array_value( self::get( $entry_id )['notes'] ) ),
@@ -306,7 +314,7 @@ class Entries extends Base {
 
 		if ( isset( $data['logs'] ) ) {
 			// Add logs from the current cache at the very last moment so that we don't tax the performance.
-			$data['logs'] = array_merge( $data['logs'], Helper::get_array_value( self::get( $entry_id )['logs'] ) );
+			$data['logs'] = array_merge( Helper::get_array_value( $data['logs'] ), Helper::get_array_value( self::get( $entry_id )['logs'] ) );
 		}
 
 		return self::get_instance()->use_update( $data, [ 'ID' => absint( $entry_id ) ] );
