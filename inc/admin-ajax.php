@@ -172,7 +172,7 @@ class Admin_Ajax {
 
 		// Finally start creating message to display a result log to admin.
 		$message  = '<details class="field-group">';
-		$message .= '<summary>' . esc_html__( 'View detail', 'sureforms' ) . '</summary>';
+		$message .= '<summary>' . esc_html__( 'View details', 'sureforms' ) . '</summary>';
 		$message .= '<ul class="srfm-resend-notification-message">';
 
 		if ( ! empty( $resend_logs ) && is_array( $resend_logs ) ) {
