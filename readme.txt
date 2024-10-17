@@ -255,6 +255,8 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 
 == Changelog ==
 = x.x.x =
+* New: Added support for query parameters in form confirmation.
+= x.x.x =
 * Improvement: Updated the input mask setting to avoid conflicts with other plugins.
 = 0.0.12 =
 * Fix: AI Form generation was timing out.
