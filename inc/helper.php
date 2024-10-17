@@ -954,10 +954,10 @@ class Helper {
 	 * Merge class names from an array into a single string.
 	 *
 	 * @since x.x.x
-	 * @param array $classes Array of class name strings.
+	 * @param string[] $classes Array of class name strings.
 	 * @return string Merged class names, or an empty string if no valid class names are provided.
 	 */
-	public static function class_name( $classes ) {
+	public static function class_name( $classes = [] ) {
 		// Filter out empty or invalid class names.
 		$valid_classes = array_filter(
 			$classes,
@@ -969,5 +969,4 @@ class Helper {
 		// Return the merged class names as a single string.
 		return ! empty( $valid_classes ) ? implode( ' ', $valid_classes ) : '';
 	}
-
 }

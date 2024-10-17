@@ -31,8 +31,8 @@ class Frontend_Assets {
 	 * @var array<string>
 	 */
 	public static $js_assets = [
-		'form-submit' => 'formSubmit.js',
-		'frontend'    => 'frontend.min.js',
+		'form-submit' => 'formSubmit',
+		'frontend'    => 'frontend',
 	];
 
 	/**
@@ -110,7 +110,7 @@ class Frontend_Assets {
 			if ( 'form-submit' === $handle ) {
 				wp_register_script(
 					SRFM_SLUG . '-' . $handle,
-					SRFM_URL . 'assets/build/' . $name,
+					SRFM_URL . 'assets/build/' . $name . '.js',
 					[],
 					SRFM_VER,
 					true
@@ -118,7 +118,7 @@ class Frontend_Assets {
 			} else {
 				wp_register_script(
 					SRFM_SLUG . '-' . $handle,
-					$js_uri . $name,
+					$js_uri . $name . $file_prefix . '.js',
 					[],
 					SRFM_VER,
 					true
@@ -168,11 +168,12 @@ class Frontend_Assets {
 	/**
 	 * Enqueue block scripts
 	 *
-	 * @param string $block_type block name.
+	 * @param string               $block_type block name.
+	 * @param array<string, mixed> $attr Array of block attributes.
 	 * @since 0.0.1
 	 * @return void
 	 */
-	public function enqueue_srfm_script( $block_type ) {
+	public function enqueue_srfm_script( $block_type, $attr ) {
 		$block_name = str_replace( 'srfm/', '', $block_type );
 		// associative array to keep the count of block that requires scripts to work.
 		$script_dep_blocks = [
@@ -240,7 +241,7 @@ class Frontend_Assets {
 			}
 
 			// Adding js for the input textarea block.
-			if ( 'textarea' === $block_name ) {
+			if ( 'textarea' === $block_name && ! empty( $attr['isRichText'] ) ) {
 				wp_enqueue_script( SRFM_SLUG . '-quill-editor', 'https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js', [], SRFM_VER, true );
 				wp_enqueue_style( SRFM_SLUG . '-quill-editor', 'https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css', [], SRFM_VER );
 			}
@@ -257,7 +258,9 @@ class Frontend_Assets {
 	public function generate_render_script( $block_content, $block ) {
 
 		if ( isset( $block['blockName'] ) ) {
-			self::enqueue_srfm_script( $block['blockName'] );
+			$attr = is_array( $block['attrs'] ) ? $block['attrs'] : [];
+
+			self::enqueue_srfm_script( $block['blockName'], $attr );
 		}
 		return $block_content;
 	}
