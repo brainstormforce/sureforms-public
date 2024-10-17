@@ -59,8 +59,10 @@ function addQuillEditor( areaField ) {
 	Quill.register( AlignStyle, true ); // Register align style
 	Quill.register( DirectionStyle, true ); // Register direction style
 
+	const quillId = `quill-${ getQuillId }`;
+
 	// Initialize Quill editor with a toolbar configuration
-	const quillEditor = new Quill( `#quill-${ getQuillId }`, {
+	const quillEditor = new Quill( `#${ quillId }`, {
 		theme: 'snow', // Use the 'snow' theme for a sleek look
 		modules: {
 			toolbar: {
@@ -77,6 +79,9 @@ function addQuillEditor( areaField ) {
 			},
 		},
 	} );
+
+	// Add Quill editor instance to the global window.srfm object for future reference.
+	window?.addGlobalSrfmObject( getQuillId, quillEditor );
 
 	// Set default content from the textarea to the Quill editor
 	const quillDefaultContent = areaField.value;
