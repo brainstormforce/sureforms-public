@@ -87,7 +87,7 @@ export default () => {
 							'sureforms'
 						) }
 						buttonLabel={ __( 'View All Entries', 'sureforms' ) }
-						buttonUrl={ `${ siteUrl }/wp-admin/edit.php?post_type=sureforms_entry` }
+						buttonUrl={ `${ siteUrl }/wp-admin/admin.php?page=sureforms_entries` }
 						btnFilled={ false }
 					/>
 				</ScFlex>

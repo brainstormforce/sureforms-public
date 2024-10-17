@@ -34,6 +34,7 @@ use SRFM\Inc\Page_Builders\Page_Builders;
 use SRFM\Inc\Rest_Api;
 use SRFM\Inc\AI_Form_Builder\AI_Helper;
 use SRFM\Inc\AI_Form_Builder\AI_Auth;
+use SRFM\Inc\Database\Register as DatabaseRegister;
 use SRFM\Inc\Updater;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -150,6 +151,8 @@ class Plugin_Loader {
 		AI_Helper::get_instance();
 		AI_Auth::get_instance();
 		Updater::get_instance();
+
+		DatabaseRegister::init();
 
 		/**
 		 * The code that runs during plugin activation
