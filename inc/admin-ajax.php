@@ -116,7 +116,7 @@ class Admin_Ajax {
 		$form_id               = absint( wp_unslash( $_POST['form_id'] ) );
 		$email_notification_id = absint( wp_unslash( $_POST['email_notification'] ) );
 
-		$email_notification = get_post_meta( $form_id, '_srfm_email_notification', true );
+		$email_notification = Helper::get_array_value( get_post_meta( $form_id, '_srfm_email_notification', true ) );
 
 		$display_name = wp_get_current_user()->display_name;
 
@@ -140,7 +140,7 @@ class Admin_Ajax {
 					/* translators: Here %1$s is email notification label and %2$s is the user display name. */
 					$log_key   = $entries_db->add_log( sprintf( __( 'Resend email notification "%1$s" initiated by %2$s', 'sureforms' ), esc_html( $notification['name'] ), esc_html( $display_name ) ) );
 					$form_data = Helper::get_array_value( $entries_db::get( $entry_id )['form_data'] );
-					$parsed    = Form_Submit::parse_email_notification_template( $form_data, Helper::get_array_value( $notification ) );
+					$parsed    = Form_Submit::parse_email_notification_template( $form_data, $notification );
 
 					// If user has provided recipient then reroute email to user provided recipient.
 					$email_to = $recipient ? $recipient : $parsed['to'];

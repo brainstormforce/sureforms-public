@@ -8690,6 +8690,361 @@ namespace SRFM\Inc\Global_Settings {
         }
     }
 }
+namespace SRFM\Admin\Views {
+    /**
+     * Single entry page.
+     *
+     * @since 0.0.13
+     */
+    class Single_Entry
+    {
+        /**
+         * Initialize the properties.
+         *
+         * @since 0.0.13
+         */
+        public function __construct()
+        {
+        }
+        /**
+         * Render the single entry page if an entry is found.
+         *
+         * @since 0.0.13
+         * @return void
+         */
+        public function render()
+        {
+        }
+        /**
+         * Prints entry note item markup.
+         *
+         * @param array $note Single note array.
+         * @since x.x.x
+         * @return void
+         */
+        public static function entry_note_item_markup($note)
+        {
+        }
+    }
+    /**
+     * Create the entries table using WP_List_Table.
+     */
+    class Entries_List_Table extends \WP_List_Table
+    {
+        /**
+         * Stores the entries data fetched from database.
+         *
+         * @var array<mixed>
+         * @since 0.0.13
+         */
+        protected $data = [];
+        /**
+         * Stores the count for the entries data fetched from the database according to the status.
+         * It will be used for pagination.
+         *
+         * @var int
+         * @since 0.0.13
+         */
+        public $entries_count;
+        /**
+         * Stores the count for all entries regardles of status.
+         * It will be used for managing the no entries found page.
+         *
+         * @var int
+         * @since 0.0.13
+         */
+        public $all_entries_count;
+        /**
+         * Stores the count for the trashed entries.
+         * Used for displaying the no entries found page.
+         *
+         * @var int
+         * @since 0.0.13
+         */
+        public $trash_entries_count;
+        /**
+         * Constructor.
+         *
+         * @since 0.0.13
+         * @return void
+         */
+        public function __construct()
+        {
+        }
+        /**
+         * Override the parent columns method. Defines the columns to use in your listing table.
+         *
+         * @since 0.0.13
+         * @return array
+         */
+        public function get_columns()
+        {
+        }
+        /**
+         * Define the sortable columns.
+         *
+         * @since 0.0.13
+         * @return array
+         */
+        public function get_sortable_columns()
+        {
+        }
+        /**
+         * Bulk action items.
+         *
+         * @since 0.0.13
+         * @return array $actions Bulk actions.
+         */
+        public function get_bulk_actions()
+        {
+        }
+        /**
+         * Message to be displayed when there are no entries.
+         *
+         * @since 0.0.13
+         * @return void
+         */
+        public function no_items()
+        {
+        }
+        /**
+         * Prepare the items for the table to process.
+         *
+         * @since 0.0.13
+         * @return void
+         */
+        public function prepare_items()
+        {
+        }
+        /**
+         * Define what data to show on each column of the table.
+         *
+         * @param array  $item Column data.
+         * @param string $column_name Current column name.
+         *
+         * @since 0.0.13
+         * @return mixed
+         */
+        public function column_default($item, $column_name)
+        {
+        }
+        /**
+         * Callback function for checkbox field.
+         *
+         * @param array $item Columns items.
+         * @return string
+         * @since 0.0.13
+         */
+        public function column_cb($item)
+        {
+        }
+        /**
+         * Define the data for the "id" column and return the markup.
+         *
+         * @param array $item Column data.
+         *
+         * @since 0.0.13
+         * @return string
+         */
+        protected function column_id($item)
+        {
+        }
+        /**
+         * Define the data for the "form name" column and return the markup.
+         *
+         * @param array $item Column data.
+         *
+         * @since 0.0.13
+         * @return string
+         */
+        protected function column_form_name($item)
+        {
+        }
+        /**
+         * Define the data for the "status" column and return the markup.
+         *
+         * @param array $item Column data.
+         *
+         * @since 0.0.13
+         * @return string
+         */
+        protected function column_status($item)
+        {
+        }
+        /**
+         * Define the data for the "first field" column and return the markup.
+         *
+         * @param array $item Column data.
+         *
+         * @since 0.0.13
+         * @return string
+         */
+        protected function column_first_field($item)
+        {
+        }
+        /**
+         * Define the data for the "submitted on" column and return the markup.
+         *
+         * @param array $item Column data.
+         *
+         * @since 0.0.13
+         * @return string
+         */
+        protected function column_created_at($item)
+        {
+        }
+        /**
+         * Returns array of row actions for packages.
+         *
+         * @param array $item Column data.
+         *
+         * @since 0.0.13
+         * @return array
+         */
+        protected function package_row_actions($item)
+        {
+        }
+        /**
+         * Extra controls to be displayed between bulk actions and pagination.
+         *
+         * @param string $which Which table navigation is it... Is it top or bottom.
+         *
+         * @since 0.0.13
+         * @return void
+         */
+        protected function extra_tablenav($which)
+        {
+        }
+        /**
+         * Generates the table navigation above or below the table.
+         *
+         * @param string $which is it the top or bottom of the table.
+         *
+         * @since 0.0.13
+         * @return void
+         */
+        protected function display_tablenav($which)
+        {
+        }
+        /**
+         * Display the available form name to filter entries.
+         *
+         * @since 0.0.13
+         * @return void
+         */
+        protected function display_form_filter()
+        {
+        }
+        /**
+         * Display resend notification trigger button.
+         *
+         * @since x.x.x
+         * @return void
+         */
+        protected function display_bulk_resend_notification_button()
+        {
+        }
+        /**
+         * Display resend notification modal markup.
+         *
+         * @param int        $form_id Form ID.
+         * @param array<int> $entry_ids An array of entry ids.
+         * @since x.x.x
+         * @return void
+         */
+        protected function resend_notification_modal($form_id, $entry_ids = [])
+        {
+        }
+        /**
+         * Display the month and year from which the entries are present to filter entries according to time.
+         *
+         * @since 0.0.13
+         * @return void
+         */
+        protected function display_month_filter()
+        {
+        }
+        /**
+         * Entries table form search input markup.
+         * Currently search is based on entry ID only and not text.
+         *
+         * @param string $text The 'submit' button label.
+         * @param int    $input_id ID attribute value for the search input field.
+         *
+         * @since 0.0.13
+         * @return void
+         */
+        public function search_box_markup($text, $input_id)
+        {
+        }
+        /**
+         * Displays the table.
+         *
+         * @since 0.0.13
+         */
+        public function display()
+        {
+        }
+        /**
+         * List of CSS classes for the "WP_List_Table" table element.
+         *
+         * @since 0.0.13
+         * @return array<string>
+         */
+        protected function get_table_classes()
+        {
+        }
+        /**
+         * Get the views for the entries table.
+         *
+         * @since 0.0.13
+         * @return array<string,string>
+         */
+        protected function get_views()
+        {
+        }
+        /**
+         * Process bulk actions.
+         *
+         * @since 0.0.13
+         * @return void
+         */
+        public static function process_bulk_actions()
+        {
+        }
+        /**
+         * Check if the current page is a trash list.
+         *
+         * @since 0.0.13
+         * @return bool
+         */
+        public static function is_trash_view()
+        {
+        }
+        /**
+         * Common function to update the status of an entry.
+         *
+         * @param int    $entry_id The ID of the entry to update.
+         * @param string $action The action to perform.
+         * @param string $view The view to handle redirection.
+         *
+         * @since 0.0.13
+         * @return void
+         */
+        public static function handle_entry_status($entry_id, $action, $view = '')
+        {
+        }
+        /**
+         * Display admin notice for bulk actions.
+         *
+         * @since 0.0.13
+         * @return void
+         */
+        public static function display_bulk_action_notice()
+        {
+        }
+    }
+}
 namespace SRFM\Inc {
     /**
      * Sureforms Submit Class.
