@@ -107,6 +107,7 @@ class Single_Entry {
 	 * @param string $entry_status The entry status (read/unread).
 	 * @param string $submitted_on The submission date.
 	 * @since 0.0.13
+	 * @return void
 	 */
 	private function render_submission_info( $form_name, $entry_status, $submitted_on ) {
 		$mark_as_unread_url = add_query_arg( 'action', 'unread' );
@@ -180,6 +181,7 @@ class Single_Entry {
 	 * @param array<mixed>  $meta_data The form meta data.
 	 * @param array<string> $excluded_fields Fields to exlude from display.
 	 * @since 0.0.13
+	 * @return void
 	 */
 	private function render_form_data( $meta_data, $excluded_fields ) {
 		?>
@@ -307,6 +309,7 @@ class Single_Entry {
 	 *
 	 * @param array<mixed> $entry_logs Entry logs stored in the database.
 	 * @since 0.0.13
+	 * @return void
 	 */
 	private function render_entry_logs( $entry_logs ) {
 		?>
@@ -347,4 +350,3 @@ class Single_Entry {
 		<?php
 	}
 }
-?>
