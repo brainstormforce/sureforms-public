@@ -257,8 +257,13 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 = x.x.x =
 * New: Display entry logs and change entry status.
 * New: Updated entries UI and functionality from CPT to custom page.
+* New: Icons support for Multi-choice field in AI Form builder 
 * New: Added support to restrict between minimum and maximum selection for Multiple Choice and Dropdown fields.
 * Improvement: Updated the input mask setting to avoid conflicts with other plugins.
+* Improvement: Incorrect Indentation of fields under Automatically Delete Entries Option
+* Improvement: Improve Rows and Columns Settings in Textarea field
+* Improvement: Add Name Keyword for Text Field
+* Improvement: Improve Some Form Ideas Prompts While Creating AI Forms 
 = 0.0.12 =
 * Fix: AI Form generation was timing out.
 = 0.0.11 =
