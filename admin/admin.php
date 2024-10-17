@@ -437,9 +437,9 @@ class Admin {
 			$asset_handle = '-entries';
 			wp_enqueue_style( SRFM_SLUG . $asset_handle, $css_uri . 'backend/entries' . $file_prefix . '.css', [], SRFM_VER );
 			wp_enqueue_script( SRFM_SLUG . $asset_handle, SRFM_URL . 'assets/build/entries.js', $script_info['dependencies'], SRFM_VER, true );
-			wp_enqueue_script( SRFM_SLUG . '-entries', $js_uri . 'entries' . $file_prefix . '.js', [], SRFM_VER, true );
+			wp_enqueue_script( SRFM_SLUG . '-entries-admin', $js_uri . 'entries' . $file_prefix . '.js', [], SRFM_VER, true );
 			wp_localize_script(
-				SRFM_SLUG . '-entries',
+				SRFM_SLUG . '-entries-admin',
 				'srfm_entries',
 				[
 					'entryID' => isset( $_GET['entry_id'] ) ? absint( wp_unslash( $_GET['entry_id'] ) ) : 0,
