@@ -18,14 +18,14 @@ defined( 'ABSPATH' ) || exit;
 /**
  * SureForms Database Tables Register Class
  *
- * @since x.x.x
+ * @since 0.0.13
  */
 class Register {
 
 	/**
 	 * Init database registration.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.13
 	 * @return void
 	 */
 	public static function init() {
@@ -55,7 +55,7 @@ class Register {
 	/**
 	 * Returns an array of instances/objects of our custom tables.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.13
 	 * @return array<string,\SRFM\Inc\Database\Base>
 	 */
 	public static function get_db_tables() {

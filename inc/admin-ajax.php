@@ -46,7 +46,7 @@ class Admin_Ajax {
 	/**
 	 * Dismiss plugin notice on dismiss button click using ajax request.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.13
 	 * @return void
 	 */
 	public function dismiss_plugin_notice() {
