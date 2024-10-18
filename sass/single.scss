@@ -94,8 +94,8 @@
 			bottom: 36px;
 			padding: 4px 16px;
 			margin: 0 auto;
-			color: #1E1E1E80;
-			background: #1E1E1E05;
+			color: #1e1e1e80;
+			background: #1e1e1e05;
 			border-radius: var( --srfm-btn-border-radius, 6px );
 			font-size: 14px;
 			line-height: 20px;
@@ -103,7 +103,7 @@
 			text-decoration: none;
 
 			&:hover {
-				color: #1E1E1EA6;
+				color: #1e1e1ea6;
 				text-decoration: underline;
 			}
 		}
@@ -141,11 +141,11 @@
 
 		/* Branding styles when banner as page bg is enabled. */
 		.srfm-single-page-container .srfm-branding {
-			background: #FFFFFF05;
-			color: #FFFFFF80;
+			background: #ffffff05;
+			color: #ffffff80;
 		}
 		.srfm-single-page-container .srfm-branding:hover {
-			color: #FFFFFFA6;
+			color: #ffffffa6;
 		}
 	}
 }
