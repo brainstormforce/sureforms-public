@@ -144,7 +144,7 @@ class Background_Process {
 		}
 		$form_data                  = $this->submission_data;
 		$form_data['form_id']       = $this->form_id;
-		$form_data['submission_id'] = $this->form_id;
+		$form_data['submission_id'] = $this->submission_id; // Refers to the entry ID.
 		/**
 		 * Hook for enabling background processes.
 		 *
