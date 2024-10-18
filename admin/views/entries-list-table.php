@@ -595,7 +595,7 @@ class Entries_List_Table extends \WP_List_Table {
 					</div>
 
 					<div class="field-group recipient-field-group hidden">
-						<h4><?php esc_html_e( 'Recipient', 'sureforms' ); ?></h4>
+						<h4><?php esc_html_e( 'Recipient Email', 'sureforms' ); ?></h4>
 						<input type="email" name="recipient" class="srfm-resend-notification-field">
 					</div>
 
