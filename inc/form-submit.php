@@ -551,7 +551,7 @@ class Form_Submit {
 			'browser_name' => $browser_name,
 			'device_name'  => $device_name,
 		];
-		$entries_data = [
+		$entries_data    = [
 			'form_id'         => $id,
 			'form_data'       => $submission_data,
 			'submission_info' => $submission_info,
@@ -740,7 +740,7 @@ class Form_Submit {
 			$key   = str_replace( '_', ' ', $keys[ $i ] );
 
 			foreach ( $entry_ids as $entry_id ) {
-				$entry_id  = Helper::get_integer_value( $entry_id['ID'] );
+				$entry_id  = is_array( $entry_id ) ? Helper::get_integer_value( $entry_id['ID'] ) : 0;
 				$form_data = Entries::get_form_data( $entry_id );
 				if ( is_array( $form_data ) && isset( $form_data[ $key ] ) && $form_data[ $key ] === $value ) {
 					$obj = [ $key => 'not unique' ];

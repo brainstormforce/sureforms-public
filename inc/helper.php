@@ -503,16 +503,15 @@ class Helper {
 	 * @param int        $days_old The number of days old the entries should be.
 	 * @param array<int> $sf_form_ids The form ids for which the entries need to be fetched.
 	 * @since 0.0.2
-	 * @return array<int|WP_Post> the entries matching the criteria.
+	 * @return array<mixed> the entries matching the criteria.
 	 */
 	public static function get_entries_from_form_ids( $days_old = 0, $sf_form_ids = [] ) {
 
-		$entries = [];
-		$days_old_date = (new \DateTime())->modify("-{$days_old} days")->format('Y-m-d H:i:s');
-		
+		$entries       = [];
+		$days_old_date = ( new \DateTime() )->modify( "-{$days_old} days" )->format( 'Y-m-d H:i:s' );
+
 		foreach ( $sf_form_ids as $form_id ) {
 			// args according to the get_all() function in the Entries class.
-			// TODO: Check for the limit arg.
 			$args = [
 				'where' => [
 					[
@@ -525,13 +524,13 @@ class Helper {
 							'key'     => 'created_at',
 							'value'   => $days_old_date,
 							'compare' => '<=',
-						]
+						],
 					],
 				],
 			];
 
 			// store all the entries in a single array.
-			$entries = array_merge( $entries, Entries::get_all( $args ) );
+			$entries = array_merge( $entries, Entries::get_all( $args, false ) );
 		}
 		return $entries;
 	}

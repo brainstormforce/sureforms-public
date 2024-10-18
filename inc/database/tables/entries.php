@@ -310,12 +310,13 @@ class Entries extends Base {
 	 *     @type string $orderby  The column by which to order the results. Default is 'created_at'.
 	 *     @type string $order    The direction of the order (ASC or DESC). Default is 'DESC'.
 	 * }
+	 * @param bool                $set_limit Whether to set the limit on the query. Default is true.
 	 *
 	 * @since x.x.x
 	 * @return array<mixed> The results of the query, typically an array of objects or associative arrays.
 	 */
-	public static function get_all( $args = [] ) {
-		$_args = wp_parse_args(
+	public static function get_all( $args = [], $set_limit = true ) {
+		$_args         = wp_parse_args(
 			$args,
 			[
 				'where'   => [],
@@ -325,13 +326,17 @@ class Entries extends Base {
 				'order'   => 'DESC',
 			]
 		);
+		$extra_queries = [
+			sprintf( 'ORDER BY `%1$s` %2$s', Helper::get_string_value( esc_sql( $_args['orderby'] ) ), Helper::get_string_value( esc_sql( $_args['order'] ) ) ),
+		];
+
+		if ( $set_limit ) {
+			$extra_queries[] = sprintf( 'LIMIT %1$d, %2$d', absint( $_args['offset'] ), absint( $_args['limit'] ) );
+		}
 		return self::get_instance()->get_results(
 			$_args['where'],
 			'*',
-			[
-				sprintf( 'ORDER BY `%1$s` %2$s', Helper::get_string_value( esc_sql( $_args['orderby'] ) ), Helper::get_string_value( esc_sql( $_args['order'] ) ) ),
-				sprintf( 'LIMIT %1$d, %2$d', absint( $_args['offset'] ), absint( $_args['limit'] ) ),
-			]
+			$extra_queries
 		);
 	}
 
@@ -412,7 +417,7 @@ class Entries extends Base {
 	 *
 	 * @param int $form_id The ID of the form to fetch entry IDs for.
 	 * @since x.x.x
-	 * @return array An array of entry IDs.
+	 * @return array<mixed> An array of entry IDs.
 	 */
 	public static function get_all_entry_ids_for_form( $form_id ) {
 		return self::get_instance()->get_results(
@@ -436,6 +441,6 @@ class Entries extends Base {
 			[ 'ID' => $entry_id ],
 			'form_data'
 		);
-		return isset( $result[0] ) ? Helper::get_array_value( $result[0]['form_data'] ) : [];
+		return isset( $result[0] ) && is_array( $result[0] ) ? Helper::get_array_value( $result[0]['form_data'] ) : [];
 	}
 }
