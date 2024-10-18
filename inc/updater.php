@@ -31,7 +31,7 @@ class Updater {
 	 * @return void
 	 */
 	public function __construct() {
-		add_action( 'admin_init', [ $this, 'init' ] );
+		add_action( 'admin_init', [ $this, 'init' ], 10 );
 		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_styles' ] );
 		add_action( 'in_plugin_update_message-' . SRFM_BASENAME, [ $this, 'plugin_update_notification' ], 10 );
 	}
@@ -48,7 +48,7 @@ class Updater {
 		$saved_version = get_option( 'srfm-version', false );
 
 		// Update auto saved version number.
-		if ( ! $saved_version || ! is_string( $saved_version ) ) {
+		if ( ! $saved_version || ! is_string( $saved_version ) || version_compare( SRFM_VER, $saved_version, '>' ) ) {
 
 			// Update current version.
 			update_option( 'srfm-version', SRFM_VER );
