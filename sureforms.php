@@ -27,7 +27,6 @@ define( 'SRFM_VER', '0.0.12' );
 define( 'SRFM_SLUG', 'srfm' );
 // ------ ADDITIONAL CONSTANTS ------- //
 define( 'SRFM_FORMS_POST_TYPE', 'sureforms_form' );
-define( 'SRFM_ENTRIES_POST_TYPE', 'sureforms_entry' );
 define( 'SRFM_WEBSITE', 'https://sureforms.com/' );
 define( 'SRFM_AI_MIDDLEWARE', 'https://credits.startertemplates.com/sureforms/' );
 define( 'SRFM_BILLING_PORTAL', 'https://billing.sureforms.com/' );

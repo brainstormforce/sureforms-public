@@ -100,7 +100,7 @@ class Post_Types {
 			);
 		}
 
-		if ( SRFM_ENTRIES_POST_TYPE === $post_type ) {
+		if ( 'sureforms_entries' === $post_type ) {
 
 			$this->get_blank_page_markup(
 				esc_html__( 'No records found', 'sureforms' ),
@@ -247,22 +247,6 @@ class Post_Types {
 		if ( SRFM_FORMS_POST_TYPE === $post_type && 'bottom' === $which ) {
 
 			$counts = (array) wp_count_posts( SRFM_FORMS_POST_TYPE );
-			unset( $counts['auto-draft'] );
-			$count = array_sum( $counts );
-
-			if ( 0 < $count ) {
-				return;
-			}
-
-			$this->sureforms_render_blank_state( $post_type );
-
-			$this->get_blank_state_styles();
-
-		}
-
-		if ( SRFM_ENTRIES_POST_TYPE === $post_type && 'bottom' === $which ) {
-
-			$counts = (array) wp_count_posts( SRFM_ENTRIES_POST_TYPE );
 			unset( $counts['auto-draft'] );
 			$count = array_sum( $counts );
 
