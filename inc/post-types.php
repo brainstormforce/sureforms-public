@@ -271,7 +271,7 @@ class Post_Types {
 		$screen    = get_current_screen();
 		$screen_id = $screen ? $screen->id : '';
 
-		if ( 'edit-' . SRFM_FORMS_POST_TYPE === $screen_id || 'sureforms_page_sureforms_entries' === $screen_id ) {
+		if ( 'edit-' . SRFM_FORMS_POST_TYPE === $screen_id || 'sureforms_page_' . SRFM_ENTRIES === $screen_id ) {
 			?>
 		<style>
 			.srfm-page-header {
