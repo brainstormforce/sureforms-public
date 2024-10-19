@@ -274,7 +274,7 @@ class Admin {
 			__( 'Entries', 'sureforms' ),
 			__( 'Entries', 'sureforms' ),
 			'edit_others_posts',
-			'sureforms_entries',
+			SRFM_ENTRIES,
 			[ $this, 'render_entries' ],
 			3
 		);
