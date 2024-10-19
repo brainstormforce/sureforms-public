@@ -121,12 +121,12 @@ class Entries extends Base {
 			'ID BIGINT(20) UNSIGNED AUTO_INCREMENT PRIMARY KEY',
 			'form_id BIGINT(20) UNSIGNED',
 			'user_id BIGINT(20) UNSIGNED NOT NULL DEFAULT 0',
-			'form_data LONGTEXT', // Note: @since x.x.x -- We have renamed `user_data` column to `form_data`.
+			'form_data LONGTEXT', // Note: @since 0.0.13 -- We have renamed `user_data` column to `form_data`.
 			'logs LONGTEXT',
 			'notes LONGTEXT',
 			'submission_info LONGTEXT',
 			'status VARCHAR(10)',
-			'type VARCHAR(20)', // Note: @since x.x.x -- We have added type column, it will have entry's form type eg quiz, standard etc.
+			'type VARCHAR(20)', // Note: @since 0.0.13 -- We have added type column, it will have entry's form type eg quiz, standard etc.
 			'extras LONGTEXT',
 			'created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP',
 			'updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP',
@@ -141,7 +141,7 @@ class Entries extends Base {
 	 */
 	public function get_new_columns_definition() {
 		return [
-			// Note: @since x.x.x -- We have added new columns `type`, `extras` and `user_id`.
+			// Note: @since 0.0.13 -- We have added new columns `type`, `extras` and `user_id`.
 			'type VARCHAR(20) AFTER status',
 			'extras LONGTEXT AFTER status',
 			'user_id BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 AFTER form_id',
@@ -154,7 +154,7 @@ class Entries extends Base {
 	 */
 	public function get_columns_to_rename() {
 		return [
-			// Note: @since x.x.x -- We have renamed `user_data` column to `form_data`.
+			// Note: @since 0.0.13 -- We have renamed `user_data` column to `form_data`.
 			[
 				'from' => 'user_data',
 				'to'   => 'form_data',
@@ -257,7 +257,7 @@ class Entries extends Base {
 	 *
 	 * @param int                 $entry_id Entry ID.
 	 * @param array<string,mixed> $data     Data to update.
-	 * @since x.x.x
+	 * @since 0.0.13
 	 * @return int|false The number of rows updated, or false on error.
 	 */
 	public static function update( $entry_id, $data = [] ) {
@@ -271,7 +271,7 @@ class Entries extends Base {
 	 * Delete an entry by entry id.
 	 *
 	 * @param int $entry_id Entry ID to delete.
-	 * @since x.x.x
+	 * @since 0.0.13
 	 * @return int|false The number of rows deleted, or false on error.
 	 */
 	public static function delete( $entry_id ) {
@@ -312,7 +312,7 @@ class Entries extends Base {
 	 * }
 	 * @param bool                $set_limit Whether to set the limit on the query. Default is true.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.13
 	 * @return array<mixed> The results of the query, typically an array of objects or associative arrays.
 	 */
 	public static function get_all( $args = [], $set_limit = true ) {
@@ -346,7 +346,7 @@ class Entries extends Base {
 	 * @param string              $status The status of the entries to count.
 	 * @param int|null            $form_id The ID of the form to count entries for.
 	 * @param array<string,mixed> $where_clause Additional where clause to add to the query.
-	 * @since x.x.x
+	 * @since 0.0.13
 	 * @return int The total number of entries with the specified status.
 	 */
 	public static function get_total_entries_by_status( $status = 'all', $form_id = 0, $where_clause = [] ) {
@@ -389,7 +389,7 @@ class Entries extends Base {
 	 * Get the available months for entries.
 	 *
 	 * @param array<string,mixed> $where_clause Additional where clause to add to the query.
-	 * @since x.x.x
+	 * @since 0.0.13
 	 * @return array<int|string, mixed>
 	 */
 	public static function get_available_months( $where_clause = [] ) {

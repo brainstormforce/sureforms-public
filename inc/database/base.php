@@ -54,7 +54,7 @@ abstract class Base {
 	 * Update the table version from child class when any DB upgrade or alteration related changes are made.
 	 *
 	 * @var int
-	 * @since x.x.x
+	 * @since 0.0.13
 	 * @override
 	 */
 	protected $table_version = 1;
@@ -72,7 +72,7 @@ abstract class Base {
 	 * Determines on the basis of the table version.
 	 *
 	 * @var boolean
-	 * @since x.x.x
+	 * @since 0.0.13
 	 */
 	private $db_upgradable;
 
@@ -101,7 +101,7 @@ abstract class Base {
 	/**
 	 * Actions to initialize during object unload.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.13
 	 * @return void
 	 */
 	public function __destruct() {
@@ -123,7 +123,7 @@ abstract class Base {
 	/**
 	 * Current table columns definition to create table. These definitions will be used by the create() method.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.13
 	 * @return array<string>
 	 */
 	abstract public function get_columns_definition();
@@ -132,7 +132,7 @@ abstract class Base {
 	 * Any columns that needs to be added if the current table already exists. These definitions will be used by maybe_add_new_columns() method.
 	 * Override this from child class if needed.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.13
 	 * @return array<string>
 	 * @override
 	 */
@@ -151,7 +151,7 @@ abstract class Base {
 			],
 		]
 	 *
-	 * @since x.x.x
+	 * @since 0.0.13
 	 * @return array<array<string,string>>
 	 */
 	public function get_columns_to_rename() {
@@ -161,7 +161,7 @@ abstract class Base {
 	/**
 	 * Start the database upgrade process.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.13
 	 * @return void
 	 */
 	public function start_db_upgrade() {
@@ -183,7 +183,7 @@ abstract class Base {
 	/**
 	 * Stop the database upgrade process.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.13
 	 * @return boolean Returns true on success.
 	 */
 	public function stop_db_upgrade() {
@@ -204,7 +204,7 @@ abstract class Base {
 	/**
 	 * Check if current table's DB is upgradable or not.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.13
 	 * @return boolean True or false depending if DB is upgradable or not.
 	 */
 	public function is_db_upgradable() {
@@ -328,7 +328,7 @@ abstract class Base {
 	 * Rename the column of the current table conditionally.
 	 *
 	 * @param array<array<string,string>> $rename_columns Array of columns to rename.
-	 * @since x.x.x
+	 * @since 0.0.13
 	 * @return int|bool Boolean true for CREATE, ALTER, TRUNCATE and DROP queries. Number of rows affected/selected for all other queries. Boolean false on error.
 	 */
 	public function maybe_rename_columns( $rename_columns = [] ) {
@@ -388,7 +388,7 @@ abstract class Base {
 	 * Adds the new columns to the current table conditionally.
 	 *
 	 * @param array<string> $new_columns The array of new columns to add. Same as the create method.
-	 * @since x.x.x
+	 * @since 0.0.13
 	 * @return int|bool Boolean true for CREATE, ALTER, TRUNCATE and DROP queries. Number of rows affected/selected for all other queries. Boolean false on error.
 	 */
 	public function maybe_add_new_columns( $new_columns = [] ) {
@@ -466,7 +466,7 @@ abstract class Base {
 	/**
 	 * Returns an array columns of current table.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.13
 	 * @return array<string,array<string,mixed>>
 	 */
 	public function get_columns() {
@@ -494,7 +494,7 @@ abstract class Base {
 	/**
 	 * Returns an array indexes of current table.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.13
 	 * @return array<mixed>
 	 */
 	public function get_indexes() {
@@ -558,7 +558,7 @@ abstract class Base {
 	 *                               Both $where columns and $where values should be "raw".
 	 *                               Sending a null value will create an IS NULL comparison - the corresponding
 	 *                               format will be ignored in this case.
-	 * @since x.x.x
+	 * @since 0.0.13
 	 * @return int|false The number of rows updated, or false on error.
 	 */
 	public function use_update( $data, $where ) { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore -- It is okay. This is our wrapper method.
@@ -592,7 +592,7 @@ abstract class Base {
 	 *                                          A format is one of '%d', '%f', '%s' (integer, float, string).
 	 *                                          If omitted, all values in $data will be treated as strings unless otherwise
 	 *                                          specified in wpdb::$field_types. Default null.
-	 * @since x.x.x
+	 * @since 0.0.13
 	 * @return int|false The number of rows deleted, or false on error.
 	 */
 	public function use_delete( $where, $where_format = null ) {
@@ -657,7 +657,7 @@ abstract class Base {
 	 * Get the total number of rows in the table.
 	 *
 	 * @param array<mixed> $where_clauses Optional. An associative array of WHERE clauses for the SQL query.
-	 * @since x.x.x
+	 * @since 0.0.13
 	 * @return int The total number of rows in the table.
 	 */
 	public function get_total_count( $where_clauses = [] ) {
@@ -708,7 +708,7 @@ abstract class Base {
 	 *     }
 	 * }
 	 *
-	 * @since x.x.x
+	 * @since 0.0.13
 	 * @return string The prepared SQL WHERE clause with placeholders, or an empty string if no clauses were provided.
 	 */
 	protected function prepare_where_clauses( $where_clauses = [] ) {

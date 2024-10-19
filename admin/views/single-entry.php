@@ -2,7 +2,7 @@
 /**
  * SureForms Single Entries Page.
  *
- * @since x.x.x
+ * @since 0.0.13
  * @package sureforms.
  */
 
@@ -21,14 +21,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Single entry page.
  *
- * @since x.x.x
+ * @since 0.0.13
  */
 class Single_Entry {
 	/**
 	 * Stores the entry ID.
 	 *
 	 * @var string|null $entry_id ID for the specific entry.
-	 * @since x.x.x
+	 * @since 0.0.13
 	 */
 	private $entry_id;
 
@@ -36,14 +36,14 @@ class Single_Entry {
 	 * Stores the entry data for the specified entry ID.
 	 *
 	 * @var array<mixed>|null $entry Entry data for the specified entry ID.
-	 * @since x.x.x
+	 * @since 0.0.13
 	 */
 	private $entry;
 
 	/**
 	 * Initialize the properties.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.13
 	 */
 	public function __construct() {
 		if ( isset( $_GET['_wpnonce'] ) && ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'srfm_entries_action' ) ) {
@@ -56,7 +56,7 @@ class Single_Entry {
 	/**
 	 * Render the single entry page if an entry is found.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.13
 	 * @return void
 	 */
 	public function render() {
@@ -106,7 +106,8 @@ class Single_Entry {
 	 * @param string $form_name The form title/name.
 	 * @param string $entry_status The entry status (read/unread).
 	 * @param string $submitted_on The submission date.
-	 * @since x.x.x
+	 * @since 0.0.13
+	 * @return void
 	 */
 	private function render_submission_info( $form_name, $entry_status, $submitted_on ) {
 		$mark_as_unread_url = add_query_arg( 'action', 'unread' );
@@ -179,7 +180,8 @@ class Single_Entry {
 	 *
 	 * @param array<mixed>  $meta_data The form meta data.
 	 * @param array<string> $excluded_fields Fields to exlude from display.
-	 * @since x.x.x
+	 * @since 0.0.13
+	 * @return void
 	 */
 	private function render_form_data( $meta_data, $excluded_fields ) {
 		?>
@@ -306,7 +308,8 @@ class Single_Entry {
 	 * Render the entry logs for a specific entry.
 	 *
 	 * @param array<mixed> $entry_logs Entry logs stored in the database.
-	 * @since x.x.x
+	 * @since 0.0.13
+	 * @return void
 	 */
 	private function render_entry_logs( $entry_logs ) {
 		?>
@@ -347,4 +350,3 @@ class Single_Entry {
 		<?php
 	}
 }
-?>
