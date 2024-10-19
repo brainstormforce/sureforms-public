@@ -147,6 +147,7 @@ module.exports = function ( grunt ) {
 					'!modules/gutenberg/package.json',
 					'!modules/gutenberg/postcss.config.js',
 					'!modules/gutenberg/readme.txt',
+					'!phpinsights.php',
 				],
 				dest: 'sureforms/',
 			},

@@ -64,4 +64,5 @@ scripts
 sass
 src
 unminified
+phpinsights.php
 
