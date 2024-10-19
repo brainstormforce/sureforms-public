@@ -236,7 +236,7 @@ class Admin {
 		echo '<div class="wrap"><h1 class="wp-heading-inline">Entries</h1>';
 		if ( 0 >= $entries_table->all_entries_count && 0 >= $entries_table->trash_count ) {
 			$instance = Post_Types::get_instance();
-			$instance->sureforms_render_blank_state( 'sureforms_entries' );
+			$instance->sureforms_render_blank_state( SRFM_ENTRIES );
 			$instance->get_blank_state_styles();
 			return;
 		}
@@ -640,7 +640,7 @@ class Admin {
 			Entries_List_Table::process_bulk_actions();
 			return;
 		}
-		if ( ! isset( $_GET['page'] ) || 'sureforms_entries' !== $_GET['page'] ) {
+		if ( ! isset( $_GET['page'] ) || SRFM_ENTRIES !== $_GET['page'] ) {
 			return;
 		}
 		if ( ! isset( $_GET['entry_id'] ) || ! isset( $_GET['action'] ) ) {

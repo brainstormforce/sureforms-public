@@ -100,7 +100,7 @@ class Post_Types {
 			);
 		}
 
-		if ( 'sureforms_entries' === $post_type ) {
+		if ( SRFM_ENTRIES === $post_type ) {
 
 			$this->get_blank_page_markup(
 				esc_html__( 'No records found', 'sureforms' ),
