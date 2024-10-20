@@ -18,14 +18,13 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Inline Button Block.
  */
 class Block extends Base {
-
 	/**
 	 * Render the block
 	 *
 	 * @param array<mixed> $attributes Block attributes.
 	 * @param string       $content Post content.
 	 *
-	 * @return string|boolean
+	 * @return string|bool
 	 * @since 0.0.2
 	 */
 	public function render( $attributes, $content = '' ) {

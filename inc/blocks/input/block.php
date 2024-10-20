@@ -18,14 +18,13 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Address Block.
  */
 class Block extends Base {
-
 	/**
 	 * Render the block
 	 *
 	 * @param array<mixed> $attributes Block attributes.
 	 * @param string       $content Post content.
 	 *
-	 * @return string|boolean
+	 * @return string|bool
 	 */
 	public function render( $attributes, $content = '' ) {
 		if ( ! empty( $attributes ) ) {

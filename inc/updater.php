@@ -21,7 +21,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 0.0.12
  */
 class Updater {
-
 	use Get_Instance;
 
 	/**

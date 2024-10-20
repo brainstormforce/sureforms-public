@@ -8,12 +8,11 @@
 
 namespace SRFM\Inc;
 
-use WP_REST_Response;
-use WP_REST_Request;
+use SRFM\Inc\Traits\Get_Instance;
 use WP_Error;
 use WP_Post_Type;
-use SRFM\Inc\Traits\Get_Instance;
-use SRFM\Inc\Helper;
+use WP_REST_Request;
+use WP_REST_Response;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -156,8 +155,8 @@ class Create_New_Form {
 			}
 		}
 
-		$title          = isset( $form_info_obj->template_name ) ? $form_info_obj->template_name : '';
-		$content        = isset( $form_info_obj->form_data ) ? $form_info_obj->form_data : '';
+		$title          = $form_info_obj->template_name ?? '';
+		$content        = $form_info_obj->form_data ?? '';
 		$template_metas = isset( $form_info_obj->template_metas ) ? (array) $form_info_obj->template_metas : [];
 
 		// if post content contains srfm/page-break block, then set _srfm_is_page_break meta to true.
@@ -190,14 +189,12 @@ class Create_New_Form {
 					'id'      => $post_id,
 				]
 			);
-		} else {
+		}
 			wp_send_json_error(
 				[
 					'message' => __( 'Error creating SureForms Form, ', 'sureforms' ),
 				]
 			);
-		}
 	}
-
 
 }

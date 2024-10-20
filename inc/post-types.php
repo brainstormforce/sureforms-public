@@ -9,10 +9,8 @@
 namespace SRFM\Inc;
 
 use SRFM\Inc\Database\Tables\Entries;
-use WP_Admin_Bar;
 use SRFM\Inc\Traits\Get_Instance;
-use SRFM\Inc\Generate_Form_Markup;
-use SRFM\Inc\Helper;
+use WP_Admin_Bar;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -50,7 +48,8 @@ class Post_Types {
 		add_filter( 'bulk_actions-edit-sureforms_form', [ $this, 'register_modify_bulk_actions' ], 99 );
 		add_action( 'admin_notices', [ $this, 'import_form_popup' ] );
 		add_action( 'admin_bar_menu', [ $this, 'remove_admin_bar_menu_item' ], 80, 1 );
-		add_action( 'template_redirect', [ $this, 'srfm_instant_form_redirect' ] );}
+		add_action( 'template_redirect', [ $this, 'srfm_instant_form_redirect' ] );
+	}
 
 	/**
 	 * Add SureForms menu.
@@ -451,10 +450,10 @@ class Post_Types {
 				'show_in_rest'      => true,
 				'type'              => 'string',
 				'single'            => true,
-				'auth_callback'     => function() {
+				'auth_callback'     => static function() {
 					return current_user_can( 'edit_posts' );
 				},
-				'sanitize_callback' => function( $meta_value ) {
+				'sanitize_callback' => static function( $meta_value ) {
 					return wp_kses_post( $meta_value );
 				},
 			]
@@ -470,7 +469,7 @@ class Post_Types {
 					'single'            => true,
 					'type'              => $type,
 					'sanitize_callback' => 'sanitize_text_field',
-					'auth_callback'     => function() {
+					'auth_callback'     => static function() {
 						return current_user_can( 'edit_posts' );
 					},
 				]
@@ -798,7 +797,6 @@ class Post_Types {
 		 * Hook for registering additional Post Meta
 		 */
 		do_action( 'srfm_register_additional_post_meta' );
-
 	}
 
 	/**
@@ -820,7 +818,7 @@ class Post_Types {
 			<tbody>
 				<tr><th><b><?php esc_html_e( 'Fields', 'sureforms' ); ?></b></th><th><b><?php esc_html_e( 'Values', 'sureforms' ); ?></b></th></tr>
 			<?php
-			foreach ( $meta_data as $field_name => $value ) :
+			foreach ( $meta_data as $field_name => $value ) {
 				if ( in_array( $field_name, $excluded_fields, true ) ) {
 					continue;
 				}
@@ -836,7 +834,7 @@ class Post_Types {
 				?>
 				<tr>
 				<td><b><?php echo $label ? esc_html( Helper::decrypt( $label ) ) : ''; ?><b></td>
-					<?php if ( strpos( $field_name, 'srfm-upload' ) !== false ) : ?>
+					<?php if ( strpos( $field_name, 'srfm-upload' ) !== false ) { ?>
 						<style>
 						.file-cards-container {
 							display: flex;
@@ -892,20 +890,20 @@ class Post_Types {
 											$is_image  = in_array( $file_type, [ 'gif', 'png', 'bmp', 'jpg', 'jpeg', 'svg' ], true );
 											?>
 												<div class="file-card">
-												<?php if ( $is_image ) : ?>
+												<?php if ( $is_image ) { ?>
 														<div class="file-card-image">
 															<a target="_blank" href="<?php echo esc_attr( urldecode( $value ) ); ?>">
 																<img src="<?php echo esc_attr( urldecode( $value ) ); ?>" alt="img" />
 															</a>
 														</div>
-													<?php else : ?>
+												<?php } else { ?>
 														<div class="file-card-icon">
 															<?php echo '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16.333V4.667a1.333 1.333 0 011.333-1.333h13.334a1.333 1.333 0 011.333 1.333v11.666a1.333 1.333 0 01-1.333 1.333H5.333A1.333 1.333 0 014 16.333zm8-8h2v6h-2v-6zm-2 8h6v2H10v-2zm-6-6h4v6H4v-6zm0-4h16v2H4V6z"/></svg>'; ?>
 														</div>
 														<div class="file-card-details">
 															<span><?php echo esc_html( strtoupper( $file_type ) ); ?></span>
 														</div>
-													<?php endif; ?>
+												<?php } ?>
 													<div class="file-card-url">
 														<a target="_blank" href="<?php echo esc_attr( urldecode( $value ) ); ?>"><?php echo esc_html__( 'Open', 'sureforms' ); ?></a>
 													</div>
@@ -917,10 +915,10 @@ class Post_Types {
 								?>
 							</div>
 						</td>
-					<?php elseif ( strpos( $field_name, 'srfm-url' ) !== false ) : ?>
-						<?php if ( ! $value ) : ?>
+					<?php } elseif ( strpos( $field_name, 'srfm-url' ) !== false ) { ?>
+						<?php if ( ! $value ) { ?>
 							<td><?php echo ''; ?></td>
-						<?php else : ?>
+						<?php } else { ?>
 							<?php
 							if (
 									substr( $value, 0, 7 ) !== 'http://' &&
@@ -930,17 +928,16 @@ class Post_Types {
 							}
 							?>
 							<td><a target="_blank" href="<?php echo esc_url( $value ); ?>"><?php echo esc_url( $value ); ?></a></td>
-						<?php endif; ?>
-					<?php else : ?>
+						<?php } ?>
+					<?php } else { ?>
 						<td><?php echo false !== strpos( $value, PHP_EOL ) ? wp_kses_post( wpautop( $value ) ) : wp_kses_post( $value ); ?></td>
-					<?php endif; ?>
+					<?php } ?>
 				</tr>
-				<?php endforeach; ?>
+			<?php } ?>
 			</tbody>
 		</table>
 			<?php
 	}
-
 
 	/**
 	 * Add Sureforms entries meta box.
@@ -1044,8 +1041,7 @@ class Post_Types {
 		$post = get_post( $id );
 
 		if ( ! empty( $id ) && $post ) {
-			$content = Generate_Form_Markup::get_form_markup( $id, ! filter_var( $atts['show_title'], FILTER_VALIDATE_BOOLEAN ), '', 'post', true );
-			return $content;
+			return Generate_Form_Markup::get_form_markup( $id, ! filter_var( $atts['show_title'], FILTER_VALIDATE_BOOLEAN ), '', 'post', true );
 		}
 
 		return '';
@@ -1059,7 +1055,7 @@ class Post_Types {
 	 * @since 0.0.1
 	 */
 	public function custom_form_columns( $columns ) {
-		$columns = [
+		return [
 			'cb'        => $columns['cb'],
 			'title'     => $columns['title'],
 			'sureforms' => __( 'Shortcode', 'sureforms' ),
@@ -1067,14 +1063,13 @@ class Post_Types {
 			'author'    => $columns['author'],
 			'date'      => $columns['date'],
 		];
-		return $columns;
 	}
 
 	/**
 	 * Populate custom column with data.
 	 *
-	 * @param string  $column Attributes.
-	 * @param integer $post_id Attributes.
+	 * @param string $column Attributes.
+	 * @param int    $post_id Attributes.
 	 * @return void
 	 * @since 0.0.1
 	 */
@@ -1122,21 +1117,20 @@ class Post_Types {
 	 * @since 0.0.1
 	 */
 	public function custom_entry_columns( $columns ) {
-		$columns = [
+		return [
 			'cb'        => $columns['cb'],
 			'title'     => __( 'First Field', 'sureforms' ),
 			'form_name' => __( 'Form Name', 'sureforms' ),
 			'entry_id'  => __( 'ID', 'sureforms' ),
 			'date'      => __( 'Submitted On', 'sureforms' ),
 		];
-		return $columns;
 	}
 
 	/**
 	 * Populate custom column with data.
 	 *
-	 * @param string  $column Attributes.
-	 * @param integer $post_id Attributes.
+	 * @param string $column Attributes.
+	 * @param int    $post_id Attributes.
 	 * @return void
 	 * @since 0.0.1
 	 */
@@ -1253,24 +1247,6 @@ class Post_Types {
 	}
 
 	/**
-	 * Restrict interference of other plugins with SureForms.
-	 *
-	 * @since 0.0.5
-	 * @return void
-	 */
-	private function restrict_unwanted_insertions() {
-		// Restrict RankMath metaboxes in edit page.
-		add_action( 'cmb2_admin_init', [ $this, 'restrict_data' ] );
-
-		// Restrict Yoast columns.
-		add_filter( 'wpseo_accessible_post_types', [ $this, 'unset_sureforms_post_type' ] );
-		add_filter( 'wpseo_metabox_prio', '__return_false' );
-
-		// Restrict AIOSEO columns.
-		add_filter( 'aioseo_public_post_types', [ $this, 'unset_sureforms_post_type' ] );
-	}
-
-	/**
 	 * Restrict RankMath meta boxes in edit page.
 	 *
 	 * @since 0.0.5
@@ -1288,17 +1264,32 @@ class Post_Types {
 	 * @return array<mixed> $post_types Modified post types.
 	 */
 	public function unset_sureforms_post_type( $post_types ) {
-		$filtered_post_types = array_filter(
+		return array_filter(
 			$post_types,
-			function( $post_type ) {
+			static function( $post_type ) {
 				if ( is_array( $post_type ) && isset( $post_type['name'] ) ) {
 					return SRFM_FORMS_POST_TYPE !== $post_type['name'];
-				} else {
-					return SRFM_FORMS_POST_TYPE !== $post_type;
 				}
+					return SRFM_FORMS_POST_TYPE !== $post_type;
 			}
 		);
+	}
 
-		return $filtered_post_types;
+	/**
+	 * Restrict interference of other plugins with SureForms.
+	 *
+	 * @since 0.0.5
+	 * @return void
+	 */
+	private function restrict_unwanted_insertions() {
+		// Restrict RankMath metaboxes in edit page.
+		add_action( 'cmb2_admin_init', [ $this, 'restrict_data' ] );
+
+		// Restrict Yoast columns.
+		add_filter( 'wpseo_accessible_post_types', [ $this, 'unset_sureforms_post_type' ] );
+		add_filter( 'wpseo_metabox_prio', '__return_false' );
+
+		// Restrict AIOSEO columns.
+		add_filter( 'aioseo_public_post_types', [ $this, 'unset_sureforms_post_type' ] );
 	}
 }

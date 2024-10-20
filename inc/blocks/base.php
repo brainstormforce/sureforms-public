@@ -67,7 +67,6 @@ abstract class Base {
 		return dirname( $fn );
 	}
 
-
 	/**
 	 * Optionally run a function to modify attributes before rendering.
 	 *
@@ -75,7 +74,7 @@ abstract class Base {
 	 * @param string       $content   Post content.
 	 * @param array<mixed> $block Block attributes.
 	 *
-	 * @return boolean|string
+	 * @return bool|string
 	 * @since 0.0.1
 	 */
 	public function pre_render( $attributes, $content, $block ) {
@@ -96,18 +95,6 @@ abstract class Base {
 
 		// render.
 		return $this->render( $attributes, $content );
-	}
-
-	/**
-	 * Run any block middleware before rendering.
-	 *
-	 * @param array<mixed> $attributes Block attributes.
-	 * @param string       $content   Post content.
-	 * @return boolean|\WP_Error;
-	 * @since 0.0.1
-	 */
-	protected function middleware( $attributes, $content ) {
-		return true;
 	}
 
 	/**
@@ -132,6 +119,17 @@ abstract class Base {
 	 */
 	public function render( $attributes, $content ) {
 		return '';
+	}
 
+	/**
+	 * Run any block middleware before rendering.
+	 *
+	 * @param array<mixed> $attributes Block attributes.
+	 * @param string       $content   Post content.
+	 * @return boolean|\WP_Error;
+	 * @since 0.0.1
+	 */
+	protected function middleware( $attributes, $content ) {
+		return true;
 	}
 }

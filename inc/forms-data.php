@@ -8,10 +8,9 @@
 
 namespace SRFM\Inc;
 
-use WP_REST_Response;
-use WP_Error;
 use SRFM\Inc\Traits\Get_Instance;
-use SRFM\Inc\Helper;
+use WP_Error;
+use WP_REST_Response;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.

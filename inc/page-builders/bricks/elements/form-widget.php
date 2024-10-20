@@ -19,7 +19,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  * SureForms Bricks element.
  */
 class Form_Widget extends \Bricks\Element {
-
 	/**
 	 * Element category.
 	 *
@@ -114,7 +113,6 @@ class Form_Widget extends \Bricks\Element {
 			'type'     => 'info',
 			'required' => [ 'form-id', '!=', '' ],
 		];
-
 	}
 
 	/**
@@ -136,7 +134,7 @@ class Form_Widget extends \Bricks\Element {
 	 */
 	public function render() {
 		$settings   = $this->settings;
-		$form_id    = isset( $settings['form-id'] ) ? $settings['form-id'] : '';
+		$form_id    = $settings['form-id'] ?? '';
 		$form_title = isset( $settings['form-title'] );
 
 		if ( $form_id > 0 ) {

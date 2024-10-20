@@ -8,8 +8,8 @@
 
 namespace SRFM\Inc\AI_Form_Builder;
 
-use SRFM\Inc\Traits\Get_Instance;
 use SRFM\Inc\Helper;
+use SRFM\Inc\Traits\Get_Instance;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
@@ -164,7 +164,7 @@ class Field_Mapping {
 							$allowed_types = explode( ',', $allowed_types );
 
 							$types_array = array_map(
-								function( $type ) {
+								static function( $type ) {
 									return [
 										'value' => $type,
 										'label' => $type,

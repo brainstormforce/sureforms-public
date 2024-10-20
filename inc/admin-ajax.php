@@ -10,7 +10,6 @@
 namespace SRFM\Inc;
 
 use SRFM\Inc\Traits\Get_Instance;
-use SRFM\Inc\Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -26,7 +25,6 @@ if ( ! function_exists( 'get_plugins' ) ) {
  * @since 0.0.1
  */
 class Admin_Ajax {
-
 	use Get_Instance;
 
 	/**
@@ -58,7 +56,6 @@ class Admin_Ajax {
 
 		wp_send_json_success();
 	}
-
 
 	/**
 	 * Required Plugin Activate
@@ -96,7 +93,7 @@ class Admin_Ajax {
 			);
 		}
 
-		$plugin_init = ( isset( $_POST['init'] ) ) ? sanitize_text_field( wp_unslash( $_POST['init'] ) ) : '';
+		$plugin_init = isset( $_POST['init'] ) ? sanitize_text_field( wp_unslash( $_POST['init'] ) ) : '';
 
 		$activate = activate_plugin( $plugin_init, '', false, true );
 
@@ -213,11 +210,11 @@ class Admin_Ajax {
 
 		if ( ! isset( $installed_plugins[ $plugin_init_file ] ) ) {
 			return 'Install';
-		} elseif ( is_plugin_active( $plugin_init_file ) ) {
-			return 'Activated';
-		} else {
-			return 'Installed';
 		}
+		if ( is_plugin_active( $plugin_init_file ) ) {
+			return 'Activated';
+		}
+			return 'Installed';
 	}
 
 	/**
@@ -339,7 +336,6 @@ class Admin_Ajax {
 		}
 
 		return $data;
-
 	}
 
 	/**
@@ -379,9 +375,7 @@ class Admin_Ajax {
 
 		if ( ! empty( $dummy_data[ $block_name ] ) ) {
 			return $dummy_data[ $block_name ];
-		} else {
-			return 'Sample data';
 		}
+			return 'Sample data';
 	}
 }
-
