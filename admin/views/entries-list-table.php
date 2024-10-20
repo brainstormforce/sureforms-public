@@ -10,6 +10,7 @@ namespace SRFM\Admin\Views;
 
 use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Helper;
+use SRFM\Inc\Traits\Get_Instance;
 
 /**
  * Exit if accessed directly.
@@ -31,6 +32,7 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
  * Create the entries table using WP_List_Table.
  */
 class Entries_List_Table extends \WP_List_Table {
+	use Get_Instance;
 
 	/**
 	 * Stores the entries data fetched from database.
@@ -518,19 +520,24 @@ class Entries_List_Table extends \WP_List_Table {
 	/**
 	 * Display resend notification trigger button.
 	 *
+	 * @param int|null   $form_id Form ID.
+	 * @param array<int> $entry_ids An array of entry ids.
 	 * @since x.x.x
 	 * @return void
 	 */
-	protected function display_bulk_resend_notification_button() {
-		if ( ! isset( $_GET['form_filter'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verification is skipped on purpose.
-			// Do not display resend notification button if a form is not selected.
+	public function display_bulk_resend_notification_button( $form_id = null, $entry_ids = [] ) {
+		if ( ! $form_id && isset( $_GET['form_filter'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verification is skipped on purpose.
+			$form_id = absint( wp_unslash( $_GET['form_filter'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verification is skipped on purpose.
+		}
+		if ( ! $form_id ) {
+			// Do not display resend notification button if a form is not selected or form_id is not set.
 			return;
 		}
 
 		?>
-		<button type="button" class="button hidden srfm-resend-notification-trigger-btn"><?php esc_html_e( 'Resend Notification', 'sureforms' ); ?></button>
+		<button type="button" class="button <?php echo empty( $entry_ids ) ? 'hidden' : ''; ?> srfm-resend-notification-trigger-btn"><?php esc_html_e( 'Resend Notification', 'sureforms' ); ?></button>
 		<?php
-		$this->resend_notification_modal( absint( wp_unslash( $_GET['form_filter'] ) ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verification is skipped on purpose.
+		$this->resend_notification_modal( $form_id, $entry_ids );
 	}
 
 	/**
@@ -541,7 +548,7 @@ class Entries_List_Table extends \WP_List_Table {
 	 * @since x.x.x
 	 * @return void
 	 */
-	protected function resend_notification_modal( $form_id, $entry_ids = [] ) {
+	public function resend_notification_modal( $form_id, $entry_ids = [] ) {
 		if ( ! $form_id ) {
 			return;
 		}
