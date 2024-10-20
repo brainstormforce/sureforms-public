@@ -256,7 +256,7 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 == Changelog ==
 = x.x.x =
 * New: Added feature to edit entry.
-* New: Added option to bulk resend email notifications.
+* New: Added option to resend email notifications for single and bulk entries.
 * New: Introduced entry notes.
 = 0.0.13 =
 * New: Migrated entries management to custom tables for improved performance.
