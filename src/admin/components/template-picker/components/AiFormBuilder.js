@@ -3,12 +3,12 @@ import { __,
 } from '@wordpress/i18n';
 import { Button } from '@wordpress/components';
 import apiFetch from '@wordpress/api-fetch';
-import { useState, useEffect , useRef} from '@wordpress/element';
+import { useState, useEffect, useRef } from '@wordpress/element';
 import { handleAddNewPost, initiateAuth } from '@Utils/Helpers';
 import {
 	MdArrowForward,
 	MdKeyboardArrowDown,
-	MdKeyboardArrowUp,
+	MdKeyboardArrowUp, MdMic, MdMicOff,
 } from 'react-icons/md';
 import aiFormBuilderPlaceholder from '@Image/ai-form-builder.svg';
 import { CircularProgressBar } from '@tomickigrzegorz/react-circular-progress-bar';
@@ -16,8 +16,7 @@ import Header from './Header.js';
 import LimitReachedPopup from './LimitReachedPopup.js';
 import ErrorPopup from './ErrorPopup.js';
 import { AuthErrorPopup } from './AuthErrorPopup.js';
-import { MdMic, MdMicOff } from 'react-icons/md';
-import toast, { Toaster, ToastBar } from 'react-hot-toast';
+import toast, { Toaster } from 'react-hot-toast';
 
 const AiFormBuilder = () => {
 	const [ message, setMessage ] = useState(
@@ -32,9 +31,8 @@ const AiFormBuilder = () => {
 	const [ showAuthErrorPopup, setShowAuthErrorPopup ] = useState( false );
 	const urlParams = new URLSearchParams( window.location.search );
 	const accessKey = urlParams.get( 'access_key' );
-    const [isListening, setIsListening] = useState(false); // State to manage voice recording
-    const recognitionRef = useRef(null); // To store SpeechRecognition instance
-    const [isSpeechRecognitionSupported, setIsSpeechRecognitionSupported] = useState(false); // To check API support
+	const [ isListening, setIsListening ] = useState( false ); // State to manage voice recording
+	const recognitionRef = useRef( null ); // To store SpeechRecognition instance
 
 	const examplePrompts = [
 		{
@@ -54,53 +52,54 @@ const AiFormBuilder = () => {
 		},
 	];
 
-    const initSpeechRecognition = () => {
-        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    
-        if (!SpeechRecognition) {
-            return null;
-        }
-    
-        const recognition = new SpeechRecognition();
-        recognition.lang = 'en-US'; // Set language to English (change as needed)
-        recognition.interimResults = false; // Only show final results
-        recognition.maxAlternatives = 1; // One alternative result
-        return recognition;
-    };
+	const initSpeechRecognition = () => {
+		const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
-    const toggleListening = () => {
-        if (!recognitionRef.current) {
-            recognitionRef.current = initSpeechRecognition();
-        }
-    
-        if (!recognitionRef.current) return;
-    
-        const recognition = recognitionRef.current;
-    
-        if (isListening) {
-            recognition.stop();
-            setIsListening(false);
-        } else {
-            recognition.start();
-            setIsListening(true);
-    
-            recognition.onresult = (event) => {
-                const speechResult = event.results[0][0].transcript;
-                const textArea = document.querySelector('textarea');
-                textArea.value += speechResult;
-                setCharacterCount(textArea.value.length);
-            };
-    
-            recognition.onerror = () => {
-                recognition.stop();
-                setIsListening(false);
-                toast.error('Speech recognition is not supported in your current browser. Please use Google Chrome / Safari / Edge.',{
-                    duration: 5000,
-                });
-            };
-    
-        }
-    };
+		if ( ! SpeechRecognition ) {
+			return null;
+		}
+
+		const recognition = new SpeechRecognition();
+		recognition.lang = 'en-US'; // Set language to English (change as needed)
+		recognition.interimResults = false; // Only show final results
+		recognition.maxAlternatives = 1; // One alternative result
+		return recognition;
+	};
+
+	const toggleListening = () => {
+		if ( ! recognitionRef.current ) {
+			recognitionRef.current = initSpeechRecognition();
+		}
+
+		if ( ! recognitionRef.current ) {
+			return;
+		}
+
+		const recognition = recognitionRef.current;
+
+		if ( isListening ) {
+			recognition.stop();
+			setIsListening( false );
+		} else {
+			recognition.start();
+			setIsListening( true );
+
+			recognition.onresult = ( event ) => {
+				const speechResult = event.results[ 0 ][ 0 ].transcript;
+				const textArea = document.querySelector( 'textarea' );
+				textArea.value += speechResult;
+				setCharacterCount( textArea.value.length );
+			};
+
+			recognition.onerror = () => {
+				recognition.stop();
+				setIsListening( false );
+				toast.error( 'Speech recognition is not supported in your current browser. Please use Google Chrome / Safari / Edge.', {
+					duration: 5000,
+				} );
+			};
+		}
+	};
 
 	const handleCreateAiForm = async (
 		userCommand,
@@ -276,7 +275,7 @@ const AiFormBuilder = () => {
 
 	return (
 		<>
-        <Toaster position="bottom-right" />
+			<Toaster position="bottom-right" />
 			<Header />
 			<div className="srfm-ts-main-container srfm-content-section">
 				<div className="srfm-ai-builder-container">
@@ -312,44 +311,44 @@ const AiFormBuilder = () => {
 									) }
 								</span>
 							) }
-                            <div
-                            style={{
-                                display: 'flex',
-                                justifyContent: 'space-between',
-                                alignItems: 'center',
-                                gap: '16px',
-                            }}
-                            >
-							<Button
-								onClick={ () =>
-									setShowFormIdeas( ! showFormIdeas )
-								}
-								className="srfm-ai-form-ideas-toggle"
+							<div
+								style={ {
+									display: 'flex',
+									justifyContent: 'space-between',
+									alignItems: 'center',
+									gap: '16px',
+								} }
 							>
-								{ __( 'Some Form Ideas', 'sureforms' ) }
-								{ showFormIdeas ? (
-									<MdKeyboardArrowUp />
-								) : (
-									<MdKeyboardArrowDown />
-								) }
-							</Button>
-                           <Button onClick={toggleListening} className="voice-input-toggle-btn" style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '8px',
-                                backgroundColor: 'transparent',
-                                border: 'none',
-                                cursor: 'pointer',
-                            }}
-                            >
-                                {isListening ? (
-                                    <MdMic color="green" size={20} />
+								<Button
+									onClick={ () =>
+										setShowFormIdeas( ! showFormIdeas )
+									}
+									className="srfm-ai-form-ideas-toggle"
+								>
+									{ __( 'Some Form Ideas', 'sureforms' ) }
+									{ showFormIdeas ? (
+										<MdKeyboardArrowUp />
+									) : (
+										<MdKeyboardArrowDown />
+									) }
+								</Button>
+								<Button onClick={ toggleListening } className="voice-input-toggle-btn" style={ {
+									display: 'flex',
+									alignItems: 'center',
+									gap: '8px',
+									backgroundColor: 'transparent',
+									border: 'none',
+									cursor: 'pointer',
+								} }
+								>
+									{ isListening ? (
+										<MdMic color="green" size={ 20 } />
 
-                                ) : (
-                                    <MdMicOff color="red" size={20} />
-                                )}
-                            </Button>
-                            </div>
+									) : (
+										<MdMicOff color="red" size={ 20 } />
+									) }
+								</Button>
+							</div>
 							{ showFormIdeas && (
 								<div className="srfm-ai-form-ideas-ctn">
 									{ examplePrompts.map( ( prompt, index ) => (
@@ -420,33 +419,33 @@ const AiFormBuilder = () => {
 					</div>
 				</div>
 			</div>
-<div
-                style={{
-                    position: 'fixed',
-                    bottom: '16px',
-                    left: '50%',
-                    transform: 'translateX(-50%)',
-                }}
-            >
-                <Button
-                    onClick={toggleListening}
-                    className="voice-input-toggle-btn"
-                    style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '8px',
-                        backgroundColor: 'transparent',
-                        border: 'none',
-                        cursor: 'pointer',
-                    }}
-                >
-                    {isListening ? (
-                        <MdMic color="green" size={40} />
-                    ) : (
-                        <MdMicOff color="red" size={40} />
-                    )}
-                </Button>
-            </div>
+			<div
+				style={ {
+					position: 'fixed',
+					bottom: '16px',
+					left: '50%',
+					transform: 'translateX(-50%)',
+				} }
+			>
+				<Button
+					onClick={ toggleListening }
+					className="voice-input-toggle-btn"
+					style={ {
+						display: 'flex',
+						alignItems: 'center',
+						gap: '8px',
+						backgroundColor: 'transparent',
+						border: 'none',
+						cursor: 'pointer',
+					} }
+				>
+					{ isListening ? (
+						<MdMic color="green" size={ 40 } />
+					) : (
+						<MdMicOff color="red" size={ 40 } />
+					) }
+				</Button>
+			</div>
 		</>
 	);
 };
