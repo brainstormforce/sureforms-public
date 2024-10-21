@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: SureForms 0.0.13\n"
+"Project-Id-Version: SureForms 1.0.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/sureforms\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-10-17T11:16:49+00:00\n"
+"POT-Creation-Date: 2024-10-21T12:49:29+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.10.0\n"
 "X-Domain: sureforms\n"
@@ -17,8 +17,8 @@ msgstr ""
 #. Plugin Name of the plugin
 #. Author of the plugin
 #: sureforms.php
-#: admin/admin.php:190
-#: admin/admin.php:191
+#: admin/admin.php:198
+#: admin/admin.php:199
 #: inc/gutenberg-hooks.php:109
 #: inc/page-builders/bricks/elements/form-widget.php:66
 #: inc/page-builders/bricks/service-provider.php:55
@@ -44,37 +44,37 @@ msgstr ""
 msgid "https://sureforms.com/"
 msgstr ""
 
-#: admin/admin.php:111
+#: admin/admin.php:119
 msgid "SureForms - Important Update Notice"
 msgstr ""
 
-#: admin/admin.php:112
+#: admin/admin.php:120
 msgid "From version 0.0.13 we're migrating to a custom database to enhance SureForms' performance and features."
 msgstr ""
 
-#: admin/admin.php:113
+#: admin/admin.php:121
 msgid "This step is necessary and irreversible and your current existing entries will be lost. Thank you for your understanding!"
 msgstr ""
 
-#: admin/admin.php:202
-#: admin/admin.php:203
+#: admin/admin.php:210
+#: admin/admin.php:211
 msgid "Dashboard"
 msgstr ""
 
-#: admin/admin.php:220
-#: admin/admin.php:221
-#: admin/admin.php:338
+#: admin/admin.php:228
+#: admin/admin.php:229
+#: admin/admin.php:346
 msgid "Settings"
 msgstr ""
 
-#: admin/admin.php:265
-#: admin/admin.php:266
+#: admin/admin.php:273
+#: admin/admin.php:274
 #: inc/post-types.php:135
 msgid "New Form"
 msgstr ""
 
-#: admin/admin.php:274
-#: admin/admin.php:275
+#: admin/admin.php:282
+#: admin/admin.php:283
 #: inc/global-settings/email-summary.php:106
 #: inc/post-types.php:172
 #: inc/post-types.php:1066
@@ -83,11 +83,11 @@ msgid "Entries"
 msgstr ""
 
 #. Translators: Post Title.
-#: admin/admin.php:409
+#: admin/admin.php:417
 msgid "Edit %1$s"
 msgstr ""
 
-#: admin/admin.php:732
+#: admin/admin.php:741
 #: api/block-patterns.php:111
 #: inc/background-process.php:103
 #: inc/create-new-form.php:129
@@ -100,7 +100,7 @@ msgstr ""
 msgid "Nonce verification failed."
 msgstr ""
 
-#: admin/admin.php:741
+#: admin/admin.php:750
 msgid "You cannot view this entry because it is in trash."
 msgstr ""
 
@@ -139,7 +139,7 @@ msgid "Mark as Read"
 msgstr ""
 
 #: admin/views/entries-list-table.php:125
-#: admin/views/single-entry.php:162
+#: admin/views/single-entry.php:163
 msgid "Mark as Unread"
 msgstr ""
 
@@ -258,70 +258,70 @@ msgstr ""
 msgid "Add title"
 msgstr ""
 
-#: admin/views/single-entry.php:121
+#: admin/views/single-entry.php:122
 msgid "Submission Info"
 msgstr ""
 
-#: admin/views/single-entry.php:128
+#: admin/views/single-entry.php:129
 msgid "Entry:"
 msgstr ""
 
-#: admin/views/single-entry.php:132
+#: admin/views/single-entry.php:133
 #: inc/post-types.php:999
 msgid "Form Name:"
 msgstr ""
 
-#: admin/views/single-entry.php:137
+#: admin/views/single-entry.php:138
 #: inc/post-types.php:1007
 msgid "User IP:"
 msgstr ""
 
-#: admin/views/single-entry.php:142
+#: admin/views/single-entry.php:143
 #: inc/post-types.php:1011
 msgid "Browser:"
 msgstr ""
 
-#: admin/views/single-entry.php:146
+#: admin/views/single-entry.php:147
 #: inc/post-types.php:1015
 msgid "Device:"
 msgstr ""
 
-#: admin/views/single-entry.php:151
+#: admin/views/single-entry.php:152
 msgid "User:"
 msgstr ""
 
-#: admin/views/single-entry.php:156
+#: admin/views/single-entry.php:157
 msgid "Status:"
 msgstr ""
 
-#: admin/views/single-entry.php:167
+#: admin/views/single-entry.php:168
 msgid "Submitted On:"
 msgstr ""
 
-#: admin/views/single-entry.php:189
+#: admin/views/single-entry.php:191
 msgid "Form Data"
 msgstr ""
 
-#: admin/views/single-entry.php:196
+#: admin/views/single-entry.php:198
 #: inc/post-types.php:821
 msgid "Fields"
 msgstr ""
 
-#: admin/views/single-entry.php:197
+#: admin/views/single-entry.php:199
 #: inc/post-types.php:821
 msgid "Values"
 msgstr ""
 
-#: admin/views/single-entry.php:281
+#: admin/views/single-entry.php:283
 #: inc/post-types.php:910
 msgid "Open"
 msgstr ""
 
-#: admin/views/single-entry.php:316
+#: admin/views/single-entry.php:319
 msgid "Entry Logs"
 msgstr ""
 
-#: admin/views/single-entry.php:341
+#: admin/views/single-entry.php:344
 msgid "No logs found for this entry."
 msgstr ""
 
@@ -1019,7 +1019,7 @@ msgstr ""
 msgid "Cookie Value"
 msgstr ""
 
-#: inc/updater.php:78
+#: inc/updater.php:134
 msgid "Heads up!"
 msgstr ""
 
@@ -9029,15 +9029,6 @@ msgstr ""
 
 #: assets/build/dashboard.js:2
 #: assets/build/entries.js:2
-#: assets/build/formEditor.js:172
-#: assets/build/page_header.js:2
-#: assets/build/settings.js:2
-#: assets/build/settings.js:172
-msgid "Pro"
-msgstr ""
-
-#: assets/build/dashboard.js:2
-#: assets/build/entries.js:2
 #: assets/build/page_header.js:2
 #: assets/build/settings.js:2
 msgid "Licensed"
@@ -9104,6 +9095,11 @@ msgstr ""
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:2
 msgid "Upgrade to Pro"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
+msgid "Pro"
 msgstr ""
 
 #: assets/build/formEditor.js:172
