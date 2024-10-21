@@ -54,6 +54,11 @@ class Updater {
 	 * @return bool
 	 */
 	public function needs_db_update() {
+		if ( ! $this->old_version ) {
+			// If old version is empty, it means it is fresh setup. Hence, DB upgrade is not needed.
+			return false;
+		}
+
 		$updater_callbacks = $this->get_updater_callbacks();
 
 		if ( empty( $updater_callbacks ) ) {
@@ -80,10 +85,8 @@ class Updater {
 			return;
 		}
 
-		$updater_callbacks = $this->get_updater_callbacks();
-
 		if ( $this->needs_db_update() ) {
-			foreach ( $updater_callbacks as $updater_version => $updater_callback_functions ) {
+			foreach ( $this->get_updater_callbacks() as $updater_version => $updater_callback_functions ) {
 				if ( ! is_array( $updater_callback_functions ) ) {
 					continue;
 				}
