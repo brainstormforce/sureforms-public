@@ -416,7 +416,7 @@ class Entries extends Base {
 	 * The data is used for checking unique field validation.
 	 *
 	 * @param int $form_id The ID of the form to fetch entry IDs for.
-	 * @since x.x.x
+	 * @since 1.0.0
 	 * @return array<mixed> An array of entry IDs.
 	 */
 	public static function get_all_entry_ids_for_form( $form_id ) {
@@ -433,7 +433,7 @@ class Entries extends Base {
 	 * Get the form data for a specific entry.
 	 *
 	 * @param int $entry_id The ID of the entry to get the form data for.
-	 * @since x.x.x
+	 * @since 1.0.0
 	 * @return array<string,mixed> An associative array representing the entry's form data.
 	 */
 	public static function get_form_data( $entry_id ) {
@@ -448,7 +448,7 @@ class Entries extends Base {
 	 * Get the data for generating entries chart.
 	 *
 	 * @param \WP_REST_Request $request Full details about the request.
-	 * @since x.x.x
+	 * @since 1.0.0
 	 * @return array<mixed>
 	 */
 	public function get_entries_chart_data( $request ) {
