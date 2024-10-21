@@ -340,8 +340,24 @@ class Entries_List_Table extends \WP_List_Table {
 	 * @return string
 	 */
 	protected function column_first_field( $item ) {
-		$first_field = reset( $item['form_data'] );
+		// Get the first field key.
+		$first_key = key( $item['form_data'] );
 
+		// Check if the first field is a textarea.
+		if ( strpos( $first_key, 'srfm-textarea' ) !== false ) {
+			// Strip HTML tags from the textarea value.
+			$first_field = strip_tags( reset( $item['form_data'] ) );
+	
+			// Truncate the textarea value to 15 characters if it's too long.
+			if ( strlen( $first_field ) > 15 ) {
+				$first_field = substr( $first_field, 0, 15 ) . '...';
+			}
+		} else {
+			// Get the first field value directly.
+			$first_field = reset( $item['form_data'] );
+		}
+	
+		// Return the first field value in a paragraph element.
 		return sprintf(
 			'<p>%s</p>',
 			$first_field
