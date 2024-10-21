@@ -68,7 +68,7 @@ class Updater {
 		$versions = array_keys( $updater_callbacks );
 		$latest   = $versions[ count( $versions ) - 1 ];
 
-		return $this->old_version && version_compare( $this->old_version, $latest, '<' );
+		return version_compare( $this->old_version, $latest, '<' );
 	}
 
 	/**
