@@ -80,7 +80,7 @@ class Updater {
 	 * @return void
 	 */
 	public function init() {
-		if ( $this->old_version && version_compare( SRFM_VER, $this->old_version, '=' ) ) {
+		if ( version_compare( SRFM_VER, $this->old_version, '=' ) ) {
 			// Bail early because saved version is already updated and no change detected.
 			return;
 		}

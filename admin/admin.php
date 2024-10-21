@@ -62,9 +62,17 @@ class Admin {
 	 */
 	public function entries_migration_notice() {
 		$dismiss = get_option( 'srfm_dismiss_entries_migration_notice' );
-		if ( 'hide' === $dismiss || ! $dismiss ) {
-			// If we are here then it means user has either dismissed the notice 'hide' or user has a fresh setup.
+		if ( 'hide' === $dismiss ) {
+			// If we are here then it means user has dismissed the notice 'hide'.
 			return;
+		} elseif ( ! $dismiss ) {
+			// If we are here then it means user don't have version saved in the db initially so we need to proceed with notice accordingly.
+			if ( empty( get_posts( [ 'post_type' => 'sureforms_entry' ] ) ) ) {
+				// If we are here then we are certain that this is a fresh setup without legacy entries so we can hide the notice.
+				return;
+			}
+
+			// From below, display notice for those users who are directly upgrading from version before v0.0.12.
 		}
 
 		// Show notice for users coming from a version lower than 0.0.13 and have legacy entries.
