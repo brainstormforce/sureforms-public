@@ -282,7 +282,7 @@ class Admin {
 			__( 'Entries', 'sureforms' ),
 			__( 'Entries', 'sureforms' ),
 			'edit_others_posts',
-			'sureforms_entries',
+			SRFM_ENTRIES,
 			[ $this, 'render_entries' ],
 			3
 		);
@@ -319,7 +319,7 @@ class Admin {
 		echo '<div class="wrap"><h1 class="wp-heading-inline">Entries</h1>';
 		if ( 0 >= $entries_table->all_entries_count && 0 >= $entries_table->trash_count ) {
 			$instance = Post_Types::get_instance();
-			$instance->sureforms_render_blank_state( SRFM_ENTRIES_POST_TYPE );
+			$instance->sureforms_render_blank_state( SRFM_ENTRIES );
 			$instance->get_blank_state_styles();
 			return;
 		}
@@ -426,11 +426,6 @@ class Admin {
 					'title' => 'Forms',
 					'link'  => '',
 				];
-			} elseif ( $current_screen && 'sureforms_entry' === $current_screen->post_type ) {
-				$breadcrumbs[] = [
-					'title' => 'Entries',
-					'link'  => '',
-				];
 			} else {
 				$breadcrumbs[] = [
 					'title' => '',
@@ -480,9 +475,7 @@ class Admin {
 			$localization_data['is_license_active'] = $license_active;
 		}
 
-		if ( SRFM_FORMS_POST_TYPE === $current_screen->post_type || 'toplevel_page_sureforms_menu' === $current_screen->base || SRFM_ENTRIES_POST_TYPE === $current_screen->post_type
-		|| 'sureforms_page_sureforms_form_settings' === $current_screen->id || 'sureforms_page_sureforms_entries' === $current_screen->id
-		) {
+		if ( SRFM_FORMS_POST_TYPE === $current_screen->post_type || 'toplevel_page_sureforms_menu' === $current_screen->base || 'sureforms_page_sureforms_form_settings' === $current_screen->id || 'sureforms_page_' . SRFM_ENTRIES === $current_screen->id ) {
 			$asset_handle = '-dashboard';
 
 			wp_enqueue_style( SRFM_SLUG . $asset_handle . '-font', 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap', [], SRFM_VER );
@@ -516,7 +509,7 @@ class Admin {
 		}
 
 		// Enqueue styles for the entries page.
-		if ( 'sureforms_page_sureforms_entries' === $current_screen->id ) {
+		if ( 'sureforms_page_' . SRFM_ENTRIES === $current_screen->id ) {
 			$asset_handle = '-entries';
 			wp_enqueue_style( SRFM_SLUG . $asset_handle, $css_uri . 'backend/entries' . $file_prefix . '.css', [], SRFM_VER );
 			wp_enqueue_script( SRFM_SLUG . $asset_handle, SRFM_URL . 'assets/build/entries.js', $script_info['dependencies'], SRFM_VER, true );
@@ -525,7 +518,7 @@ class Admin {
 		// Admin Submenu Styles.
 		wp_enqueue_style( SRFM_SLUG . '-admin', $css_uri . 'backend/admin' . $file_prefix . '.css', [], SRFM_VER );
 
-		if ( 'edit-' . SRFM_FORMS_POST_TYPE === $current_screen->id || 'edit-' . SRFM_ENTRIES_POST_TYPE === $current_screen->id ) {
+		if ( 'edit-' . SRFM_FORMS_POST_TYPE === $current_screen->id ) {
 			$asset_handle = 'page_header';
 
 			$script_asset_path = SRFM_DIR . 'assets/build/' . $asset_handle . '.asset.php';
@@ -731,7 +724,7 @@ class Admin {
 			Entries_List_Table::process_bulk_actions();
 			return;
 		}
-		if ( ! isset( $_GET['page'] ) || 'sureforms_entries' !== $_GET['page'] ) {
+		if ( ! isset( $_GET['page'] ) || SRFM_ENTRIES !== $_GET['page'] ) {
 			return;
 		}
 		if ( ! isset( $_GET['entry_id'] ) || ! isset( $_GET['action'] ) ) {

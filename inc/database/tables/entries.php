@@ -310,12 +310,13 @@ class Entries extends Base {
 	 *     @type string $orderby  The column by which to order the results. Default is 'created_at'.
 	 *     @type string $order    The direction of the order (ASC or DESC). Default is 'DESC'.
 	 * }
+	 * @param bool                $set_limit Whether to set the limit on the query. Default is true.
 	 *
 	 * @since 0.0.13
 	 * @return array<mixed> The results of the query, typically an array of objects or associative arrays.
 	 */
-	public static function get_all( $args = [] ) {
-		$_args = wp_parse_args(
+	public static function get_all( $args = [], $set_limit = true ) {
+		$_args         = wp_parse_args(
 			$args,
 			[
 				'where'   => [],
@@ -325,13 +326,17 @@ class Entries extends Base {
 				'order'   => 'DESC',
 			]
 		);
+		$extra_queries = [
+			sprintf( 'ORDER BY `%1$s` %2$s', Helper::get_string_value( esc_sql( $_args['orderby'] ) ), Helper::get_string_value( esc_sql( $_args['order'] ) ) ),
+		];
+
+		if ( $set_limit ) {
+			$extra_queries[] = sprintf( 'LIMIT %1$d, %2$d', absint( $_args['offset'] ), absint( $_args['limit'] ) );
+		}
 		return self::get_instance()->get_results(
 			$_args['where'],
 			'*',
-			[
-				sprintf( 'ORDER BY `%1$s` %2$s', Helper::get_string_value( esc_sql( $_args['orderby'] ) ), Helper::get_string_value( esc_sql( $_args['order'] ) ) ),
-				sprintf( 'LIMIT %1$d, %2$d', absint( $_args['offset'] ), absint( $_args['limit'] ) ),
-			]
+			$extra_queries
 		);
 	}
 
@@ -404,5 +409,78 @@ class Entries extends Base {
 			}
 		}
 		return $months;
+	}
+
+	/**
+	 * Get all the entry ID's for a form.
+	 * The data is used for checking unique field validation.
+	 *
+	 * @param int $form_id The ID of the form to fetch entry IDs for.
+	 * @since 1.0.0
+	 * @return array<mixed> An array of entry IDs.
+	 */
+	public static function get_all_entry_ids_for_form( $form_id ) {
+		return self::get_instance()->get_results(
+			[ 'form_id' => $form_id ],
+			'ID',
+			[
+				'ORDER BY ID DESC',
+			]
+		);
+	}
+
+	/**
+	 * Get the form data for a specific entry.
+	 *
+	 * @param int $entry_id The ID of the entry to get the form data for.
+	 * @since 1.0.0
+	 * @return array<string,mixed> An associative array representing the entry's form data.
+	 */
+	public static function get_form_data( $entry_id ) {
+		$result = self::get_instance()->get_results(
+			[ 'ID' => $entry_id ],
+			'form_data'
+		);
+		return isset( $result[0] ) && is_array( $result[0] ) ? Helper::get_array_value( $result[0]['form_data'] ) : [];
+	}
+
+	/**
+	 * Get the data for generating entries chart.
+	 *
+	 * @param \WP_REST_Request $request Full details about the request.
+	 * @since 1.0.0
+	 * @return array<mixed>
+	 */
+	public function get_entries_chart_data( $request ) {
+		$nonce = Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) );
+
+		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
+			wp_send_json_error( 'Nonce verification failed.' );
+		}
+
+		$params = $request->get_params();
+
+		if ( empty( $params ) ) {
+			wp_send_json_error( 'Invalid Request.' );
+		}
+
+		$after = is_array( $params ) && ! empty( $params['after'] ) ? Helper::get_string_value( $params['after'] ) : '';
+
+		$where = [
+			[
+				[
+					'key'     => 'created_at',
+					'value'   => $after,
+					'compare' => '>=',
+				],
+
+			],
+		];
+
+		return self::get_instance()->get_results(
+			$where,
+			'ID, created_at',
+			[ 'ORDER BY created_at DESC' ]
+		);
 	}
 }

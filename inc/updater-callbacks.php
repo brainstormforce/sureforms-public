@@ -4,7 +4,7 @@
  * Provides static methods for the updater class.
  *
  * @package sureforms.
- * @since x.x.x
+ * @since 1.0.0
  */
 
 namespace SRFM\Inc;
@@ -16,14 +16,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Updater class.
  *
- * @since x.x.x
+ * @since 1.0.0
  */
 class Updater_Callbacks {
 
 	/**
 	 * Update callback method to handle the entries migration admin notice for existing users.
 	 *
-	 * @since x.x.x
+	 * @since 1.0.0
 	 * @return void
 	 */
 	public static function manage_entries_migrate_admin_notice() {
