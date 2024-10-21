@@ -376,6 +376,7 @@ function onSuccess( response ) {
 		}
 	}
 	window.addEventListener( 'resize', handleInstantFormWrapperHeight ); // Handle wrapper height on window resize.
+	window.addEventListener( 'mousemove', handleInstantFormWrapperHeight ); // Recalculate the wrapper height on mouse move.
 
 	window.addEventListener( 'load', function () {
 		handleInstantFormWrapperHeight();
