@@ -28,7 +28,7 @@ class Updater {
 	 * Current DB saved version of SureForms.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 1.0.0
 	 */
 	private $old_version;
 
@@ -50,7 +50,7 @@ class Updater {
 	/**
 	 * Whether or not to call the DB update methods.
 	 *
-	 * @since x.x.x
+	 * @since 1.0.0
 	 * @return bool
 	 */
 	public function needs_db_update() {
@@ -81,7 +81,7 @@ class Updater {
 	 * Any major change in the option can be handed here on the basis of last plugin version found in the database.
 	 *
 	 * @since 0.0.12
-	 * @since x.x.x -- Added db updater callbacks support.
+	 * @since 1.0.0 -- Added db updater callbacks support.
 	 * @return void
 	 */
 	public function init() {
@@ -169,7 +169,7 @@ class Updater {
 	/**
 	 * Returns an array of DB updater callback functions.
 	 *
-	 * @since x.x.x
+	 * @since 1.0.0
 	 * @return array<string,array<callable>>> Array of DB updater callback functions
 	 */
 	public function get_updater_callbacks() {
