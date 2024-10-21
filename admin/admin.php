@@ -61,20 +61,9 @@ class Admin {
 	 * @return void
 	 */
 	public function entries_migration_notice() {
-		if ( get_option( 'srfm_dismiss_entries_migration_notice', false ) ) {
-			return; // User has dismissed the notice, so return early.
-		}
-
-		/**
-		 * If we are here then 'srfm-version' is already updated to latest SRFM_VER constant version.
-		 * So for this reason, we have to write our logic according to it.
-		 * We will not get $srfm_version as false unless there is something wrong with the updater
-		 */
-		$srfm_version       = Helper::get_string_value( get_option( 'srfm-version', false ) );
-		$has_legacy_entries = ! empty( get_posts( [ 'post_type' => SRFM_ENTRIES_POST_TYPE ] ) );
-		$display_notice     = ( version_compare( $srfm_version, '0.0.13', '<' ) && $has_legacy_entries );
-
-		if ( ! $display_notice ) {
+		$dismiss = get_option( 'srfm_dismiss_entries_migration_notice' );
+		if ( 'hide' === $dismiss || ! $dismiss ) {
+			// If we are here then it means user has either dismissed the notice 'hide' or user has a fresh setup.
 			return;
 		}
 
