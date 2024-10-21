@@ -37,16 +37,10 @@ class Post_Types {
 		add_action( 'init', [ $this, 'register_post_metas' ] );
 		add_filter( 'manage_sureforms_form_posts_columns', [ $this, 'custom_form_columns' ] );
 		add_action( 'manage_sureforms_form_posts_custom_column', [ $this, 'custom_form_column_data' ], 10, 2 );
-		add_filter( 'manage_sureforms_entry_posts_columns', [ $this, 'custom_entry_columns' ] );
-		add_action( 'manage_sureforms_entry_posts_custom_column', [ $this, 'custom_entry_column_data' ], 10, 2 );
 		add_shortcode( 'sureforms', [ $this, 'forms_shortcode' ] );
-		add_action( 'add_meta_boxes', [ $this, 'entries_meta_box' ] );
-		add_action( 'restrict_manage_posts', [ $this, 'add_tax_filter' ] );
 		add_action( 'manage_posts_extra_tablenav', [ $this, 'maybe_render_blank_form_state' ] );
 		add_action( 'in_admin_header', [ $this, 'embed_page_header' ] );
-		add_action( 'admin_head', [ $this, 'remove_entries_publishing_actions' ] );
 		add_filter( 'post_row_actions', [ $this, 'modify_entries_list_row_actions' ], 10, 2 );
-		add_filter( 'post_updated_messages', [ $this, 'entries_updated_message' ] );
 		add_filter( 'bulk_actions-edit-sureforms_form', [ $this, 'register_modify_bulk_actions' ], 99 );
 		add_action( 'admin_notices', [ $this, 'import_form_popup' ] );
 		add_action( 'admin_bar_menu', [ $this, 'remove_admin_bar_menu_item' ], 80, 1 );
@@ -106,7 +100,7 @@ class Post_Types {
 			);
 		}
 
-		if ( SRFM_ENTRIES_POST_TYPE === $post_type ) {
+		if ( SRFM_ENTRIES === $post_type ) {
 
 			$this->get_blank_page_markup(
 				esc_html__( 'No records found', 'sureforms' ),
@@ -158,60 +152,6 @@ class Post_Types {
 				'show_in_nav_menus' => true,
 			]
 		);
-
-		$result_labels = [
-			'name'               => _x( 'Entries', 'post type general name', 'sureforms' ),
-			'singular_name'      => _x( 'Entry', 'post type singular name', 'sureforms' ),
-			'menu_name'          => _x( 'Entries', 'admin menu', 'sureforms' ),
-			'name_admin_bar'     => _x( 'Entry', 'add new on admin bar', 'sureforms' ),
-			'add_new'            => _x( 'Add New', 'Entry', 'sureforms' ),
-			'add_new_item'       => __( 'Add New Entry', 'sureforms' ),
-			'new_item'           => __( 'New Entry', 'sureforms' ),
-			'edit_item'          => __( 'View Entry', 'sureforms' ),
-			'view_item'          => __( 'View Entry', 'sureforms' ),
-			'all_items'          => __( 'Entries', 'sureforms' ),
-			'search_items'       => __( 'Search Entries', 'sureforms' ),
-			'parent_item_colon'  => __( 'Parent Entries:', 'sureforms' ),
-			'not_found'          => __( 'No results found.', 'sureforms' ),
-			'not_found_in_trash' => __( 'No results found in Trash.', 'sureforms' ),
-		];
-		register_post_type(
-			SRFM_ENTRIES_POST_TYPE,
-			[
-				'labels'              => $result_labels,
-				'supports'            => [ 'title' ],
-				'public'              => false,
-				'show_in_rest'        => true,
-				'exclude_from_search' => true,
-				'publicly_queryable'  => false,
-				'has_archive'         => true,
-				'capability_type'     => 'post',
-				'capabilities'        => [
-					'create_posts' => 'do_not_allow',
-				],
-				'map_meta_cap'        => true,
-				'show_ui'             => false, // Hide the entries post type from the admin menu.
-				'show_in_menu'        => 'sureforms_menu',
-			]
-		);
-		register_taxonomy(
-			'sureforms_tax',
-			'sureforms_entry',
-			[
-				'label'             => __( 'Form ID', 'sureforms' ),
-				'hierarchical'      => true,
-				'capabilities'      => [
-					'assign_terms' => 'god',
-					'edit_terms'   => 'god',
-					'manage_terms' => 'god',
-				],
-				'public'            => false,
-				'show_in_rest'      => true,
-				'show_admin_column' => false,
-				'show_in_nav_menus' => false,
-				'show_ui'           => false,
-			]
-		);
 		// will be used later.
 		// register_post_status(
 		// 'unread',
@@ -240,47 +180,6 @@ class Post_Types {
 	}
 
 	/**
-	 * Modify post update message for Entry post type.
-	 *
-	 * @param string $messages Post type.
-	 * @return string
-	 * @since  0.0.1
-	 */
-	public function entries_updated_message( $messages ) {
-		global $post_ID;
-
-		$post_type = get_post_type( $post_ID );
-
-		if ( SRFM_ENTRIES_POST_TYPE === $post_type ) {
-			// @phpstan-ignore-next-line -- False positive
-			$messages['post'][1] = __( 'Entry updated.', 'sureforms' );
-		}
-
-		return $messages;
-	}
-
-	/**
-	 * Remove publishing actions from single entries page.
-	 *
-	 * @return void
-	 * @since  0.0.1
-	 */
-	public function remove_entries_publishing_actions() {
-		global $typenow;
-		if ( 'sureforms_entry' === $typenow ) { ?>
-			<style>
-				.misc-pub-post-status {
-					display: none !important;
-				}
-				.misc-pub-visibility {
-					display: none !important;
-				}
-			</style>
-			<?php
-		}
-	}
-
-	/**
 	 * Modify list row actions.
 	 *
 	 * @param array<mixed> $actions An array of row action links.
@@ -290,9 +189,6 @@ class Post_Types {
 	 * @since  0.0.1
 	 */
 	public function modify_entries_list_row_actions( $actions, $post ) {
-		if ( 'sureforms_entry' === $post->post_type ) {
-			$actions['edit'] = '<a href="' . get_edit_post_link( $post->ID ) . '">View</a>';
-		}
 		if ( 'sureforms_form' === $post->post_type ) {
 			$actions['export'] = '<a href="#" onclick="exportForm(' . $post->ID . ')">Export</a>';
 		}
@@ -363,22 +259,6 @@ class Post_Types {
 			$this->get_blank_state_styles();
 
 		}
-
-		if ( SRFM_ENTRIES_POST_TYPE === $post_type && 'bottom' === $which ) {
-
-			$counts = (array) wp_count_posts( SRFM_ENTRIES_POST_TYPE );
-			unset( $counts['auto-draft'] );
-			$count = array_sum( $counts );
-
-			if ( 0 < $count ) {
-				return;
-			}
-
-			$this->sureforms_render_blank_state( $post_type );
-
-			$this->get_blank_state_styles();
-
-		}
 	}
 
 	/**
@@ -391,7 +271,7 @@ class Post_Types {
 		$screen    = get_current_screen();
 		$screen_id = $screen ? $screen->id : '';
 
-		if ( 'edit-' . SRFM_FORMS_POST_TYPE === $screen_id || 'edit-' . SRFM_ENTRIES_POST_TYPE === $screen_id || 'sureforms_page_sureforms_entries' === $screen_id ) {
+		if ( 'edit-' . SRFM_FORMS_POST_TYPE === $screen_id || 'sureforms_page_' . SRFM_ENTRIES === $screen_id ) {
 			?>
 		<style>
 			.srfm-page-header {
@@ -750,48 +630,6 @@ class Post_Types {
 			]
 		);
 
-		// Sureforms entry metas.
-		register_post_meta(
-			'sureforms_entry',
-			'_srfm_submission_info',
-			[
-				'single'        => true,
-				'type'          => 'array',
-				'auth_callback' => '__return_true',
-				'show_in_rest'  => [
-					'schema' => [
-						'type'  => 'array',
-						'items' => [
-							'type'       => 'object',
-							'properties' => [
-								'user_ip'      => [
-									'type' => 'string',
-								],
-								'browser_name' => [
-									'type' => 'string',
-								],
-								'device_name'  => [
-									'type' => 'string',
-								],
-							],
-						],
-					],
-				],
-			]
-		);
-
-		// store form id in entry.
-		register_post_meta(
-			'sureforms_entry',
-			'_srfm_entry_form_id',
-			[
-				'single'        => true,
-				'type'          => 'integer',
-				'auth_callback' => '__return_true',
-				'show_in_rest'  => true,
-			]
-		);
-
 		// conditional logic.
 		do_action( 'srfm_register_conditional_logic_post_meta' );
 		/**
@@ -799,229 +637,6 @@ class Post_Types {
 		 */
 		do_action( 'srfm_register_additional_post_meta' );
 
-	}
-
-	/**
-	 * Sureforms entries meta box callback.
-	 *
-	 * @param \WP_Post $post Template.
-	 * @return void
-	 * @since 0.0.1
-	 */
-	public function sureforms_meta_box_callback( \WP_Post $post ) {
-		$meta_data = get_post_meta( $post->ID, 'srfm_entry_meta', true );
-		if ( ! is_array( $meta_data ) ) {
-			return;
-		}
-		$excluded_fields = [ 'srfm-honeypot-field', 'g-recaptcha-response', 'srfm-sender-email-field' ];
-
-		?>
-		<table class="widefat striped">
-			<tbody>
-				<tr><th><b><?php esc_html_e( 'Fields', 'sureforms' ); ?></b></th><th><b><?php esc_html_e( 'Values', 'sureforms' ); ?></b></th></tr>
-			<?php
-			foreach ( $meta_data as $field_name => $value ) :
-				if ( in_array( $field_name, $excluded_fields, true ) ) {
-					continue;
-				}
-
-				if ( false === str_contains( $field_name, '-lbl-' ) ) {
-					continue;
-				}
-
-				$label = explode( '-lbl-', $field_name )[1];
-				// Getting the encrypted label. we are removing the block slug here.
-				$label = explode( '-', $label )[0];
-
-				?>
-				<tr>
-				<td><b><?php echo $label ? esc_html( Helper::decrypt( $label ) ) : ''; ?><b></td>
-					<?php if ( strpos( $field_name, 'srfm-upload' ) !== false ) : ?>
-						<style>
-						.file-cards-container {
-							display: flex;
-							flex-wrap: wrap;
-							gap: 10px;
-						}
-
-						.file-card {
-							border: 1px solid #ddd;
-							border-radius: 4px;
-							padding: 10px;
-							width: 100px; /* Reduced width */
-							text-align: center;
-							background: #f9f9f9;
-							font-size: 12px; /* Reduced font size for smaller cards */
-						}
-
-						.file-card-image img {
-							max-width: 80px; /* Reduced max width */
-							max-height: 80px; /* Reduced max height */
-							object-fit: cover;
-						}
-
-						.file-card-icon {
-							font-size: 24px; /* Reduced icon size */
-							margin-bottom: 5px;
-						}
-
-						.file-card-details {
-							margin-bottom: 5px;
-							font-weight: bold;
-						}
-
-						.file-card-url a {
-							color: #007bff;
-							text-decoration: none;
-							font-size: 12px; /* Reduced font size */
-						}
-
-						.file-card-url a:hover {
-							text-decoration: underline;
-						}
-						</style>
-						<td>
-							<div class="file-cards-container">
-								<?php
-								$upload_values = $value;
-								if ( ! empty( $upload_values ) && is_array( $upload_values ) ) {
-									foreach ( $upload_values as $value ) {
-											$value = Helper::get_string_value( $value );
-										if ( ! empty( $value ) ) {
-											$file_type = pathinfo( $value, PATHINFO_EXTENSION );
-											$is_image  = in_array( $file_type, [ 'gif', 'png', 'bmp', 'jpg', 'jpeg', 'svg' ], true );
-											?>
-												<div class="file-card">
-												<?php if ( $is_image ) : ?>
-														<div class="file-card-image">
-															<a target="_blank" href="<?php echo esc_attr( urldecode( $value ) ); ?>">
-																<img src="<?php echo esc_attr( urldecode( $value ) ); ?>" alt="img" />
-															</a>
-														</div>
-													<?php else : ?>
-														<div class="file-card-icon">
-															<?php echo '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16.333V4.667a1.333 1.333 0 011.333-1.333h13.334a1.333 1.333 0 011.333 1.333v11.666a1.333 1.333 0 01-1.333 1.333H5.333A1.333 1.333 0 014 16.333zm8-8h2v6h-2v-6zm-2 8h6v2H10v-2zm-6-6h4v6H4v-6zm0-4h16v2H4V6z"/></svg>'; ?>
-														</div>
-														<div class="file-card-details">
-															<span><?php echo esc_html( strtoupper( $file_type ) ); ?></span>
-														</div>
-													<?php endif; ?>
-													<div class="file-card-url">
-														<a target="_blank" href="<?php echo esc_attr( urldecode( $value ) ); ?>"><?php echo esc_html__( 'Open', 'sureforms' ); ?></a>
-													</div>
-												</div>
-											<?php
-										}
-									}
-								}
-								?>
-							</div>
-						</td>
-					<?php elseif ( strpos( $field_name, 'srfm-url' ) !== false ) : ?>
-						<?php if ( ! $value ) : ?>
-							<td><?php echo ''; ?></td>
-						<?php else : ?>
-							<?php
-							if (
-									substr( $value, 0, 7 ) !== 'http://' &&
-									substr( $value, 0, 8 ) !== 'https://'
-								) {
-								$value = 'https://' . $value;
-							}
-							?>
-							<td><a target="_blank" href="<?php echo esc_url( $value ); ?>"><?php echo esc_url( $value ); ?></a></td>
-						<?php endif; ?>
-					<?php else : ?>
-						<td><?php echo false !== strpos( $value, PHP_EOL ) ? wp_kses_post( wpautop( $value ) ) : wp_kses_post( $value ); ?></td>
-					<?php endif; ?>
-				</tr>
-				<?php endforeach; ?>
-			</tbody>
-		</table>
-			<?php
-	}
-
-
-	/**
-	 * Add Sureforms entries meta box.
-	 *
-	 * @return void
-	 * @since 0.0.1
-	 */
-	public function entries_meta_box() {
-		add_meta_box(
-			'sureform_entry_meta',
-			'Form Data',
-			[ $this, 'sureforms_meta_box_callback' ],
-			'sureforms_entry',
-			'normal',
-			'high'
-		);
-		add_meta_box(
-			'sureform_form_name_meta',
-			'Submission Info',
-			[ $this, 'sureforms_form_name_meta_callback' ],
-			'sureforms_entry',
-			'side',
-			'low'
-		);
-	}
-
-	/**
-	 * Sureforms box Form Name meta box callback.
-	 *
-	 * @param \WP_Post $post Template.
-	 * @return void
-	 * @since 0.0.1
-	 */
-	public function sureforms_form_name_meta_callback( \WP_Post $post ) {
-		$post_id  = $post->ID;
-		$taxonomy = 'sureforms_tax';
-		$terms    = wp_get_post_terms( $post_id, $taxonomy );
-		if ( is_array( $terms ) && count( $terms ) > 0 ) {
-			$form_id         = intval( $terms[0]->slug );
-			$form_name       = ! empty( get_the_title( $form_id ) ) ? get_the_title( $form_id ) : 'SureForms Form';
-			$submission_info = get_post_meta( $post_id, '_srfm_submission_info', true );
-			if ( is_array( $submission_info ) && count( $submission_info ) > 0 ) {
-				$user_ip       = $submission_info[0]['user_ip'] ? $submission_info[0]['user_ip'] : '';
-				$browser_name  = $submission_info[0]['browser_name'] ? $submission_info[0]['browser_name'] : '';
-				$device_name   = $submission_info[0]['device_name'] ? $submission_info[0]['device_name'] : '';
-				$entry_form_id = Helper::get_string_value( get_post_meta( $post_id, '_srfm_entry_form_id', true ) );
-			} else {
-				$user_ip       = '';
-				$browser_name  = '';
-				$device_name   = '';
-				$entry_form_id = '';
-			}
-			?>
-			<table style="border-collapse: separate; border-spacing: 5px 5px;">
-			<tr style="margin-bottom: 10px;">
-				<td><b><?php echo esc_html( __( 'Form Name:', 'sureforms' ) ); ?></b></td>
-				<td><?php echo esc_html( $form_name ); ?></td>
-			</tr>
-			<tr style="margin-bottom: 10px;">
-				<td><b><?php echo esc_html( __( 'Form ID:', 'sureforms' ) ); ?></b></td>
-				<td><?php echo esc_html( $entry_form_id ); ?></td>
-			</tr>
-			<tr style="margin-bottom: 10px;">
-				<td><b><?php echo esc_html( __( 'User IP:', 'sureforms' ) ); ?></b></td>
-				<td><a target="_blank" rel="noopener" href="https://ipinfo.io/<?php echo esc_html( $user_ip ); ?>"><?php echo esc_html( $user_ip ); ?></a></td>
-			</tr>
-			<tr style="margin-bottom: 10px;">
-				<td><b><?php echo esc_html( __( 'Browser:', 'sureforms' ) ); ?></b></td>
-				<td><?php echo esc_html( $browser_name ); ?></td>
-			</tr>
-			<tr style="margin-bottom: 10px;">
-				<td><b><?php echo esc_html( __( 'Device:', 'sureforms' ) ); ?></b></td>
-				<td><?php echo esc_html( $device_name ); ?></td>
-			</tr>
-			</table>
-			<?php
-		} else {
-			?>
-			<p><?php echo esc_html__( 'SureForms Form', 'sureforms' ); ?></p>
-			<?php
-		}
 	}
 
 	/**
@@ -1111,88 +726,6 @@ class Post_Types {
 				<p class="srfm-entries-number"><a href="<?php echo esc_url( $entries_url ); ?>"><?php echo esc_html( Helper::get_string_value( $entries_count ) ); ?></a></p>
 			<?php
 			ob_end_flush();
-		}
-	}
-
-	/**
-	 * Add custom column header.
-	 *
-	 * @param array<mixed> $columns Attributes.
-	 * @return array<mixed> $columns Post Content.
-	 * @since 0.0.1
-	 */
-	public function custom_entry_columns( $columns ) {
-		$columns = [
-			'cb'        => $columns['cb'],
-			'title'     => __( 'First Field', 'sureforms' ),
-			'form_name' => __( 'Form Name', 'sureforms' ),
-			'entry_id'  => __( 'ID', 'sureforms' ),
-			'date'      => __( 'Submitted On', 'sureforms' ),
-		];
-		return $columns;
-	}
-
-	/**
-	 * Populate custom column with data.
-	 *
-	 * @param string  $column Attributes.
-	 * @param integer $post_id Attributes.
-	 * @return void
-	 * @since 0.0.1
-	 */
-	public function custom_entry_column_data( $column, $post_id ) {
-		if ( 'entry_id' === $column ) {
-			$entry_id = strval( $post_id );
-			echo '<p>#' . esc_html( $entry_id ) . '</p>';
-		}
-		if ( 'form_name' === $column ) {
-			$taxonomy = 'sureforms_tax';
-			$terms    = wp_get_post_terms( $post_id, $taxonomy );
-
-			if ( is_array( $terms ) && count( $terms ) > 0 ) {
-				$form_id   = intval( $terms[0]->slug );
-				$form_name = ! empty( get_the_title( $form_id ) ) ? get_the_title( $form_id ) : 'SureForms Form';
-				echo '<p>' . esc_html( $form_name . ' #' . $form_id ) . '</p>';
-			} else {
-				?>
-				<p><?php echo esc_html__( 'SureForms Form', 'sureforms' ); ?></p>
-				<?php
-			}
-		}
-	}
-
-	/**
-	 * Add SureForms taxonomy filter.
-	 *
-	 * @return void
-	 * @since 0.0.1
-	 */
-	public function add_tax_filter() {
-		$screen = get_current_screen();
-
-		if ( ! is_null( $screen ) && 'edit-sureforms_entry' === $screen->id ) {
-			$forms = get_posts(
-				[
-					'post_type'      => SRFM_FORMS_POST_TYPE,
-					'posts_per_page' => -1,
-					'orderby'        => 'title',
-					'order'          => 'ASC',
-				]
-			);
-
-			if ( ! empty( $forms ) ) {
-				$selected = isset( $_GET['sureforms_tax'] ) ? sanitize_key( wp_unslash( $_GET['sureforms_tax'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce Verification is not needed in this case. We are not getting the nonce value.
-				echo '<select name="sureforms_tax" id="srfm-tax-filter">';
-				echo '<option value="">' . esc_html__( ' All Form Entries', 'sureforms' ) . '</option>';
-
-				foreach ( $forms as $form ) {
-					$selected_attr = selected( $selected, $form->ID, false );
-					echo '<option value="' . esc_attr( strval( $form->ID ) ) . '" ' . esc_attr( $selected_attr ) . '>' . esc_html( $form->post_title ) . '</option>';
-				}
-
-				echo '</select>';
-
-			}
 		}
 	}
 
