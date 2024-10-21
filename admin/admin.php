@@ -56,7 +56,7 @@ class Admin {
 
 	/**
 	 * Print notice to inform users about entries database migration.
-	 * TODO - Remove this notice after three major releases.
+	 * phpcs:ignore -- TODO - Remove this notice after three major releases.
 	 *
 	 * @since 0.0.13
 	 * @return void
