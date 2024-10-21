@@ -1113,6 +1113,25 @@ $req_err_color: #dc2625;
 			gap: 12px;
 			justify-content: flex-end;
 			margin-top: 10px;
+			.srfm-cancel-button,
+			.srfm-insert-button{
+				border-radius: 6px;
+				padding: 10px;
+				font-size: 14px;
+				font-weight: 600;
+				line-height: 20px;
+			}
+			.srfm-cancel-button{
+				background-color: var(--sc-button-default-background-color, var(--sc-color-white));
+				border-color: var(--sc-button-default-border-color, var(--sc-color-gray-300));
+				color: var(--sc-button-default-color, var(--sc-color-gray-600));
+			}
+
+			.srfm-insert-button{
+				background-color: var(--primary-background);
+				border-color: var(--primary-background);
+				color: var(--primary-color);
+			}
 		}
 	}
 }
