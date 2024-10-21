@@ -56,19 +56,27 @@ class Admin {
 
 	/**
 	 * Print notice to inform users about entries database migration.
+	 * phpcs:ignore -- TODO - Remove this notice after three major releases.
 	 *
 	 * @since 0.0.13
 	 * @return void
 	 */
 	public function entries_migration_notice() {
-		if ( get_option( 'srfm_dismiss_entries_migration_notice', false ) ) {
+		$dismiss = get_option( 'srfm_dismiss_entries_migration_notice' );
+		if ( 'hide' === $dismiss ) {
+			// If we are here then it means user has dismissed the notice 'hide'.
 			return;
+		} elseif ( ! $dismiss ) {
+			// If we are here then it means user don't have version saved in the db initially so we need to proceed with notice accordingly.
+			if ( empty( get_posts( [ 'post_type' => 'sureforms_entry' ] ) ) ) {
+				// If we are here then we are certain that this is a fresh setup without legacy entries so we can hide the notice.
+				return;
+			}
+
+			// From below, display notice for those users who are directly upgrading from version before v0.0.12.
 		}
 
-		if ( empty( get_posts( [ 'post_type' => SRFM_ENTRIES_POST_TYPE ] ) ) ) {
-			// Bail if we don't have legacy post type entries.
-			return;
-		}
+		// Show notice for users coming from a version lower than 0.0.13 and have legacy entries.
 
 		$ajaxurl = add_query_arg(
 			[
@@ -457,6 +465,7 @@ class Admin {
 			'global_settings_nonce'   => current_user_can( 'manage_options' ) ? wp_create_nonce( 'wp_rest' ) : '',
 			'is_pro_active'           => defined( 'SRFM_PRO_VER' ),
 			'pro_plugin_version'      => defined( 'SRFM_PRO_VER' ) ? SRFM_PRO_VER : '',
+			'pro_plugin_name'         => defined( 'SRFM_PRO_VER' ) && defined( 'SRFM_PRO_PRODUCT' ) ? SRFM_PRO_PRODUCT : 'SureForms Pro',
 			'sureforms_pricing_page'  => $this->get_sureforms_website_url( 'pricing' ),
 			'field_spacing_vars'      => Helper::get_css_vars(),
 		];
