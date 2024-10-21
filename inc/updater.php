@@ -42,7 +42,7 @@ class Updater {
 		// Get auto saved version number.
 		$this->old_version = Helper::get_string_value( get_option( 'srfm-version', '' ) );
 
-		add_action( is_admin() ? 'admin_init' : 'wp', [ $this, 'init' ], 10 );
+		add_action( 'init', [ $this, 'init' ], 10 );
 		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_styles' ] );
 		add_action( 'in_plugin_update_message-' . SRFM_BASENAME, [ $this, 'plugin_update_notification' ], 10 );
 	}
@@ -55,7 +55,12 @@ class Updater {
 	 */
 	public function needs_db_update() {
 		if ( ! $this->old_version ) {
-			// If old version is empty, it means it is fresh setup. Hence, DB upgrade is not needed.
+			if ( ! empty( get_posts( [ 'post_type' => SRFM_FORMS_POST_TYPE ] ) ) ) {
+				// Run db update if users have forms created. Edge case for the users directly updating from v0.0.10 or below.
+				return true;
+			}
+
+			// If old version is empty and no forms are created, it means it is fresh setup. Hence, DB upgrade is not needed.
 			return false;
 		}
 
@@ -91,7 +96,7 @@ class Updater {
 					continue;
 				}
 
-				if ( ! version_compare( $this->old_version, $updater_version, '<' ) ) {
+				if ( $this->old_version && ! version_compare( $this->old_version, $updater_version, '<' ) ) {
 					// Skip as SRFM saved version is not less than updaters version so db upgrade is not needed here.
 					continue;
 				}
