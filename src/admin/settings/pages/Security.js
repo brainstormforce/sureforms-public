@@ -197,7 +197,7 @@ const SecurityPage = ( {
 																			);
 																		} }
 																		placeholder={ __(
-																			'Enter your site key here',
+																			'Enter your secret key here',
 																			'sureforms'
 																		) }
 																	/>
@@ -250,7 +250,7 @@ const SecurityPage = ( {
 																			);
 																		} }
 																		placeholder={ __(
-																			'Enter your site key here',
+																			'Enter your secret key here',
 																			'sureforms'
 																		) }
 																	/>
@@ -303,7 +303,7 @@ const SecurityPage = ( {
 																			);
 																		} }
 																		placeholder={ __(
-																			'Enter your site key here',
+																			'Enter your secret key here',
 																			'sureforms'
 																		) }
 																	/>
@@ -474,7 +474,7 @@ const SecurityPage = ( {
 													);
 												} }
 												placeholder={ __(
-													'Enter your site key here',
+													'Enter your secret key here',
 													'sureforms'
 												) }
 											/>
