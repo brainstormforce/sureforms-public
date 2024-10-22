@@ -12,6 +12,8 @@ const SecurityPage = ( {
 		return false;
 	};
 
+	const sureformsURL = 'https://sureforms.com';
+
 	const buttonData = [
 		{ mode: 'auto', label: __( 'Auto', 'sureforms' ) },
 		{ mode: 'light', label: __( 'Light', 'sureforms' ) },
@@ -62,7 +64,7 @@ const SecurityPage = ( {
 														'sureforms'
 													)
 												}
-												<ExternalLink href="#" target="_blank" rel="noreferrer" className="srfm-block-url" >
+												<ExternalLink href={ `${ sureformsURL }/docs/enable-google-recaptcha/` } target="_blank" rel="noreferrer" className="srfm-block-url" >
 													{
 														__(
 															'Learn more', 'sureforms'
@@ -333,7 +335,7 @@ const SecurityPage = ( {
 													)
 												}
 
-												<ExternalLink href="#" target="_blank" rel="noreferrer" className="srfm-block-url" >
+												<ExternalLink href={ `${ sureformsURL }/docs/cloudflare-turnstile/` } target="_blank" rel="noreferrer" className="srfm-block-url" >
 													{
 														__(
 															'Learn more', 'sureforms'
@@ -498,7 +500,7 @@ const SecurityPage = ( {
 														'sureforms'
 													)
 												}
-												<ExternalLink href="#" target="_blank" rel="noreferrer" className="srfm-block-url" >
+												<ExternalLink href={ `${ sureformsURL }/docs/hcaptcha/` } target="_blank" rel="noreferrer" className="srfm-block-url" >
 													{
 														__(
 															'Learn more', 'sureforms'
