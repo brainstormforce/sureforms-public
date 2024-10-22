@@ -58,6 +58,8 @@
 	}
 
 	.srfm-textarea-quill {
+		margin: var( --srfm-input-field-margin );
+
 		.ql-container.ql-snow {
 			border-top: none;
 		}
