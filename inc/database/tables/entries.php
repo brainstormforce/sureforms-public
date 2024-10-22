@@ -464,7 +464,7 @@ class Entries extends Base {
 			wp_send_json_error( 'Invalid Request.' );
 		}
 
-		$after = is_array( $params ) && ! empty( $params['after'] ) ? Helper::get_string_value( $params['after'] ) : '';
+		$after = is_array( $params ) && ! empty( $params['after'] ) ? sanitize_text_field( Helper::get_string_value( $params['after'] ) ) : '';
 
 		$where = [
 			[
