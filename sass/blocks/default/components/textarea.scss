@@ -10,20 +10,12 @@
 				height: unset;
 				// Marking line-height as important specific to textarea to override the bricks styling.
 				line-height: var( --srfm-input-field-line-height ) !important;
-
-				// Add focus css in srfm-richtext div
-				// &:focus{
-				// 	~ .quill-editor-container {
-				// 		background-color: lightyellow; // Example style for the wrapper
-				// 		box-shadow: 0 0 10px rgba(255, 255, 0, 0.5); //
-				// 	}
-				// }
 			}
 
 			&.srfm-richtext {
-				// .srfm-input-textarea {
-				// 	display: none;
-				// }
+				.srfm-input-textarea {
+					display: none;
+				}
 				.quill-editor-container {
 					margin: var( --srfm-input-field-margin );
 				}

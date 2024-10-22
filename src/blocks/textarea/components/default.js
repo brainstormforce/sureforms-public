@@ -19,6 +19,8 @@ export const TextareaComponent = ( { attributes, blockID, setAttributes } ) => {
 	const isRequired = required ? ' srfm-required' : '';
 	const slug = 'textarea';
 
+	const quillId = `quill-id-${ blockID }`;
+
 	return (
 		<>
 			<RichText
@@ -40,11 +42,11 @@ export const TextareaComponent = ( { attributes, blockID, setAttributes } ) => {
 			<div className="srfm-block-wrap">
 				{ isRichText ? (
 					<div className="srfm-textarea-quill">
-						<QuillToolbar />
+						<QuillToolbar id={ quillId } />
 						<ReactQuill
 							formats={ formats }
 							value={ defaultValue }
-							modules={ modules }
+							modules={ modules( quillId ) }
 						/>
 					</div>
 				) : (

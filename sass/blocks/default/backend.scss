@@ -58,6 +58,9 @@
 	}
 
 	.srfm-textarea-quill {
+		.ql-container.ql-snow {
+			border-top: none;
+		}
 		.ql-editor {
 			min-height: 200px;
 		}

@@ -197,7 +197,7 @@ class Frontend_Assets {
 			$script_dep_blocks[ $block_name ] += 1;
 			$js_uri                            = SRFM_URL . 'assets/js/' . $dir_name . '/blocks/';
 			$js_vendor_uri                     = SRFM_URL . 'assets/js/minified/deps/';
-
+			$css_vendor_uri                    = SRFM_URL . 'assets/css/minified/deps/';
 			if ( 'phone' === $block_name
 			) {
 				wp_enqueue_script( SRFM_SLUG . "-{$block_name}-intl-input-deps", $js_vendor_uri . 'intl/intTelInput.min.js', [], SRFM_VER, true );
@@ -242,8 +242,9 @@ class Frontend_Assets {
 
 			// Adding js for the input textarea block.
 			if ( 'textarea' === $block_name && ! empty( $attr['isRichText'] ) ) {
-				wp_enqueue_script( SRFM_SLUG . '-quill-editor', 'https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js', [], SRFM_VER, true );
-				wp_enqueue_style( SRFM_SLUG . '-quill-editor', 'https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css', [], SRFM_VER );
+				wp_enqueue_script( SRFM_SLUG . '-quill-editor', $js_vendor_uri . '/quill.min.js', [], SRFM_VER, true );
+
+				wp_enqueue_style( SRFM_SLUG . '-quill-editor', $css_vendor_uri . 'quill/quill.snow.css', [], SRFM_VER );
 			}
 		}
 	}
