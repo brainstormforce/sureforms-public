@@ -108,6 +108,7 @@ const SelectForm = ( {
 						} }
 						onClick={ toggle }
 						placeholder={ __( 'Select a Form', 'sureforms' ) }
+						autoComplete='off'
 					/>
 				</div>
 				<div
