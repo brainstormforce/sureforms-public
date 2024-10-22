@@ -74,7 +74,7 @@ function addQuillEditor( areaField ) {
 					[ { align: [] } ], // Alignment (registered as inline style)
 					[ { color: [] }, { background: [] } ], // Color and background
 					[ 'clean' ], // Remove formatting
-					[ 'link', 'image' ], // Add links and images
+					[ 'link' ], // Add links and images
 				],
 			},
 		},

@@ -57,6 +57,12 @@
 		height: unset !important;
 	}
 
+	.srfm-textarea-quill {
+		.ql-editor {
+			min-height: 200px;
+		}
+	}
+
 	// Address block styles.
 	.srfm-address-block-wrap {
 		.srfm-block-wrap {

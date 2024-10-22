@@ -68,6 +68,11 @@
 .sureform-add-new-form {
 	margin: 10% 0;
 }
+
+.sureform_entry_meta_textarea {
+	max-width: 500px;
+}
+
 // Remove extra margin from button in mobile view for the search box.
 @media screen and ( max-width: 782px ) {
 	.sureforms-form-search-box {

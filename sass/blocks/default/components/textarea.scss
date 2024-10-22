@@ -21,9 +21,9 @@
 			}
 
 			&.srfm-richtext {
-				.srfm-input-textarea {
-					display: none;
-				}
+				// .srfm-input-textarea {
+				// 	display: none;
+				// }
 				.quill-editor-container {
 					margin: var( --srfm-input-field-margin );
 				}
@@ -35,6 +35,7 @@
 
 				.ql-editor {
 					min-height: 200px;
+					transition: 0.5s all ease;
 				}
 
 				.ql-picker-options {

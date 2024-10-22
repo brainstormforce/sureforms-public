@@ -292,10 +292,11 @@ class Single_Entry {
 										</td>
 								<?php elseif ( false !== strpos( $field_name, 'srfm-url' ) ) : ?>
 									<td><a target="_blank" href="<?php echo esc_url( $value ); ?>"><?php echo esc_url( $value ); ?></a></td>
-								<?php else : 
+									<?php
+								else :
 									// we need to html_entity_decode the value to display the html content. and check field textarea.
 									if ( strpos( $field_name, 'srfm-textarea' ) !== false ) {
-										$value = "<div class='sureform_entry_meta_textarea'>" . html_entity_decode( $value ) . "</div>";
+										$value = "<div class='sureform_entry_meta_textarea'>" . html_entity_decode( $value ) . '</div>';
 									}
 									?>
 									<td><?php echo false !== strpos( $value, PHP_EOL ) ? wp_kses_post( wpautop( $value ) ) : wp_kses_post( $value ); ?></td>

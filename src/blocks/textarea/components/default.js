@@ -1,6 +1,8 @@
 import { RichText } from '@wordpress/block-editor';
 import { decodeHtmlEntities } from '@Blocks/util';
 import HelpText from '@Components/misc/HelpText';
+import ReactQuill from 'react-quill';
+import { QuillToolbar, modules, formats } from './utils';
 
 export const TextareaComponent = ( { attributes, blockID, setAttributes } ) => {
 	const {
@@ -12,9 +14,11 @@ export const TextareaComponent = ( { attributes, blockID, setAttributes } ) => {
 		rows,
 		cols,
 		help,
+		isRichText,
 	} = attributes;
 	const isRequired = required ? ' srfm-required' : '';
 	const slug = 'textarea';
+
 	return (
 		<>
 			<RichText
@@ -34,16 +38,27 @@ export const TextareaComponent = ( { attributes, blockID, setAttributes } ) => {
 				block_id={ blockID }
 			/>
 			<div className="srfm-block-wrap">
-				<textarea
-					required={ required }
-					label={ label }
-					placeholder={ placeholder }
-					value={ defaultValue }
-					rows={ rows }
-					cols={ cols }
-					maxLength={ maxLength }
-					className={ `srfm-input-common srfm-input-${ slug }` }
-				></textarea>
+				{ isRichText ? (
+					<div className="srfm-textarea-quill">
+						<QuillToolbar />
+						<ReactQuill
+							formats={ formats }
+							value={ defaultValue }
+							modules={ modules }
+						/>
+					</div>
+				) : (
+					<textarea
+						required={ required }
+						label={ label }
+						placeholder={ placeholder }
+						value={ defaultValue }
+						rows={ rows }
+						cols={ cols }
+						maxLength={ maxLength }
+						className={ `srfm-input-common srfm-input-${ slug }` }
+					></textarea>
+				) }
 			</div>
 		</>
 	);

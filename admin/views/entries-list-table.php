@@ -346,17 +346,23 @@ class Entries_List_Table extends \WP_List_Table {
 		// Check if the first field is a textarea.
 		if ( strpos( $first_key, 'srfm-textarea' ) !== false ) {
 			// Strip HTML tags from the textarea value.
-			$first_field = strip_tags( reset( $item['form_data'] ) );
-	
+			// Regular expression to match HTML tags.
+			$regex = '/<[^>]*>/';
+
+			$decode_html_content = html_entity_decode( reset( $item['form_data'] ) );
+
+			// Replace HTML tags with empty string.
+			$first_field = preg_replace( $regex, '', $decode_html_content );
+
 			// Truncate the textarea value to 15 characters if it's too long.
-			if ( strlen( $first_field ) > 15 ) {
-				$first_field = substr( $first_field, 0, 15 ) . '...';
+			if ( strlen( $first_field ) > 12 ) {
+				$first_field = substr( $first_field, 0, 12 ) . '...';
 			}
 		} else {
 			// Get the first field value directly.
 			$first_field = reset( $item['form_data'] );
 		}
-	
+
 		// Return the first field value in a paragraph element.
 		return sprintf(
 			'<p>%s</p>',
