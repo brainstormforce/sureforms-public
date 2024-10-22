@@ -43,6 +43,10 @@ $body_classes = [];
 
 if ( $use_banner_as_page_background ) {
 	$body_classes[] = 'srfm-has-banner-page-bg';
+
+	if ( 'image' === $cover_type && ! empty( $srfm_cover_image_url ) ) {
+		$body_classes[] = 'srfm-has-cover-img';
+	}
 }
 
 ?>

@@ -1,10 +1,10 @@
-=== SureForms – Drag and Drop Form Builder for WordPress [BETA] ===
+=== SureForms – Drag and Drop Form Builder for WordPress ===
 Contributors: brainstormforce
 Tags: contact form, custom form, form builder, forms, gutenberg
 Requires at least: 6.4
 Tested up to: 6.6.2
 Requires PHP: 7.4
-Stable tag: 0.0.13
+Stable tag: 1.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -254,67 +254,8 @@ Yes! You can certainly use SureForms on yours as well as your client’s website
 When you use SureForms, you get an easy-to-use AI-powered form builder that can be used to build your forms fast.
 
 == Changelog ==
-= 0.0.13 =
-* New: Migrated entries management to custom tables for improved performance.
-* New: Introduced validation to restrict selections between minimum and maximum limits for Multi-Choice and Dropdown fields.
-* Improvement: Enhanced input mask settings to prevent conflicts with other plugins.
-* Improvement: Implemented smooth scrolling for seamless navigation of validation errors.
-= 0.0.12 =
-* Fix: AI Form generation was timing out.
-= 0.0.11 =
-* New: Added input mask setting for the text field.
-* Improvement: Added support for emojis and special characters in SureForm AI response.
-* Improvement: Dropdown and Multiple Choice field add option by pressing enter key.
-* Improvement: Load frontend assets only when SureForms is present on the page.
-* Improvement: Webhook settings fields UX Improvements.
-* Fix: Fixed the missing form submission information.
-* Fix: Help text not updating from editor for textarea field.
-* Fix: Thank you message not showing properly for long forms.
-= 0.0.10 =
-* New: Added a new custom table for the entries to improve performance.
-* Improvement: Added help text for the Email field.
-* Improvement: Improved UX of the Phone Number and Dropdown fields.
-* Improvement: Improved field spacing between fields.
-* Improvement: Added Site Logo option in Instant Form settings.
-* Improvement: Added support for the Gutenberg editor when the Classic Editor plugin is enabled.
-* Fix: Fixed Dropdown and Phone Number field previews in Bricks and Elementor editors.
-* Fix: Submit button on newly created form does not display in live preview mode.
-* Fix: Fixed error codes in AI Form Builder.
-= 0.0.9 =
-* Fix: Resolved Instant Form background size issue.
-= 0.0.8 =
-* New: Build forms using SureForms AI.
-* New: SureTriggers integration.
-* Improvement: Added Instant Form styling options.
-* Improvement: Removed the option to create forms using templates.
-* Improvement: Added Text, Dropdown, and Phone Number field styling for dark themes.
-* Fix: Resolved a few UI issues in Firefox and Safari browsers.
-* Fix: Resolved Custom Button positioning issue with reCAPTCHA.
-* Fix: Resolved a few other minor issues.
-= 0.0.7 =
-* New: Improved styling of fields on the front-end and in the form editor.
-* Improvement: Added Primary, Text, and Text on Primary color options.
-* Improvement: Added field spacing options of Small, Medium, and Large.
-* Improvement: Removed Show Labels and Show Asterisk settings and added an option to use labels as placeholders. Removed the placeholder setting from all fields that supported it previously.
-* Fix: Removed Paragraph block and added custom appender for adding fields to a form.
-* Fix: Resolved a few other minor issues.
-= 0.0.6 =
-* New: Added Support for Core Paragraph Block.
-* Improvement: Added compatibility for WordPress 6.6.
-* Improvement: Multiple Accessibility Improvements.
-= 0.0.5 =
-* New: Added Support for hCaptcha.
-* New: SureForms widget for Elementor.
-* New: SureForms element for Bricks Builder.
-* Fix: Multiple Bug Fixes and Improvements.
-= 0.0.4 =
-* New: Added support for Cloudflare Turnstile.
-* Fix: Multiple bug fixes and UI enhancement.
-= 0.0.2 =
-* Improvement: Added smart tag feature.
-* Fix: Bug fixes.
-= 0.0.1 =
-* Initial release.
+= 1.0.0 - 22nd October 2024 =
+* Initial release
 
 == Upgrade Notice ==
 

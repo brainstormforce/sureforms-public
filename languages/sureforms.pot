@@ -2,23 +2,22 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: SureForms 0.0.13\n"
+"Project-Id-Version: SureForms 1.0.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/sureforms\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-10-17T11:16:49+00:00\n"
+"POT-Creation-Date: 2024-10-22T10:43:19+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"X-Generator: WP-CLI 2.10.0\n"
+"X-Generator: WP-CLI 2.9.0\n"
 "X-Domain: sureforms\n"
 
 #. Plugin Name of the plugin
 #. Author of the plugin
-#: sureforms.php
-#: admin/admin.php:190
-#: admin/admin.php:191
+#: admin/admin.php:198
+#: admin/admin.php:199
 #: inc/gutenberg-hooks.php:109
 #: inc/page-builders/bricks/elements/form-widget.php:66
 #: inc/page-builders/bricks/service-provider.php:55
@@ -30,88 +29,82 @@ msgid "SureForms"
 msgstr ""
 
 #. Plugin URI of the plugin
-#: sureforms.php
 msgid "https://sureforms.com"
 msgstr ""
 
 #. Description of the plugin
-#: sureforms.php
 msgid "A simple yet powerful way to create modern forms for your website."
 msgstr ""
 
 #. Author URI of the plugin
-#: sureforms.php
 msgid "https://sureforms.com/"
 msgstr ""
 
-#: admin/admin.php:111
+#: admin/admin.php:119
 msgid "SureForms - Important Update Notice"
 msgstr ""
 
-#: admin/admin.php:112
+#: admin/admin.php:120
 msgid "From version 0.0.13 we're migrating to a custom database to enhance SureForms' performance and features."
 msgstr ""
 
-#: admin/admin.php:113
+#: admin/admin.php:121
 msgid "This step is necessary and irreversible and your current existing entries will be lost. Thank you for your understanding!"
 msgstr ""
 
-#: admin/admin.php:202
-#: admin/admin.php:203
+#: admin/admin.php:210
+#: admin/admin.php:211
 msgid "Dashboard"
 msgstr ""
 
-#: admin/admin.php:220
-#: admin/admin.php:221
-#: admin/admin.php:338
+#: admin/admin.php:228
+#: admin/admin.php:229
+#: admin/admin.php:346
 msgid "Settings"
 msgstr ""
 
-#: admin/admin.php:265
-#: admin/admin.php:266
-#: inc/post-types.php:135
+#: admin/admin.php:273
+#: admin/admin.php:274
+#: inc/post-types.php:129
 msgid "New Form"
 msgstr ""
 
-#: admin/admin.php:274
-#: admin/admin.php:275
-#: inc/global-settings/email-summary.php:106
-#: inc/post-types.php:172
-#: inc/post-types.php:1066
+#: admin/admin.php:282
+#: admin/admin.php:283
+#: inc/global-settings/email-summary.php:107
+#: inc/post-types.php:681
 #: assets/build/dashboard.js:2
 msgid "Entries"
 msgstr ""
 
 #. Translators: Post Title.
-#: admin/admin.php:409
+#: admin/admin.php:417
 msgid "Edit %1$s"
 msgstr ""
 
-#: admin/admin.php:732
+#: admin/admin.php:734
 #: api/block-patterns.php:111
-#: inc/background-process.php:103
+#: inc/background-process.php:104
 #: inc/create-new-form.php:129
 #: inc/export.php:119
 #: inc/form-submit.php:207
 #: inc/forms-data.php:89
 #: inc/global-settings/global-settings.php:87
 #: inc/global-settings/global-settings.php:264
-#: inc/rest-api.php:136
+#: inc/rest-api.php:142
 msgid "Nonce verification failed."
 msgstr ""
 
-#: admin/admin.php:741
+#: admin/admin.php:743
 msgid "You cannot view this entry because it is in trash."
 msgstr ""
 
 #: admin/views/entries-list-table.php:91
-#: inc/post-types.php:1129
 msgid "ID"
 msgstr ""
 
 #: admin/views/entries-list-table.php:92
-#: inc/global-settings/email-summary.php:105
-#: inc/post-types.php:1128
+#: inc/global-settings/email-summary.php:106
 msgid "Form Name"
 msgstr ""
 
@@ -121,12 +114,10 @@ msgid "Status"
 msgstr ""
 
 #: admin/views/entries-list-table.php:94
-#: inc/post-types.php:1127
 msgid "First Field"
 msgstr ""
 
 #: admin/views/entries-list-table.php:95
-#: inc/post-types.php:1130
 msgid "Submitted On"
 msgstr ""
 
@@ -139,7 +130,7 @@ msgid "Mark as Read"
 msgstr ""
 
 #: admin/views/entries-list-table.php:125
-#: admin/views/single-entry.php:162
+#: admin/views/single-entry.php:163
 msgid "Mark as Unread"
 msgstr ""
 
@@ -148,7 +139,6 @@ msgid "No entries found."
 msgstr ""
 
 #: admin/views/entries-list-table.php:285
-#: inc/form-submit.php:557
 msgid "Entry #"
 msgstr ""
 
@@ -249,8 +239,6 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: admin/views/single-entry.php:74
-#: inc/post-types.php:170
-#: inc/post-types.php:171
 msgid "View Entry"
 msgstr ""
 
@@ -258,70 +246,63 @@ msgstr ""
 msgid "Add title"
 msgstr ""
 
-#: admin/views/single-entry.php:121
+#: admin/views/single-entry.php:122
 msgid "Submission Info"
 msgstr ""
 
-#: admin/views/single-entry.php:128
+#: admin/views/single-entry.php:129
 msgid "Entry:"
 msgstr ""
 
-#: admin/views/single-entry.php:132
-#: inc/post-types.php:999
+#: admin/views/single-entry.php:133
 msgid "Form Name:"
 msgstr ""
 
-#: admin/views/single-entry.php:137
-#: inc/post-types.php:1007
+#: admin/views/single-entry.php:138
 msgid "User IP:"
 msgstr ""
 
-#: admin/views/single-entry.php:142
-#: inc/post-types.php:1011
+#: admin/views/single-entry.php:143
 msgid "Browser:"
 msgstr ""
 
-#: admin/views/single-entry.php:146
-#: inc/post-types.php:1015
+#: admin/views/single-entry.php:147
 msgid "Device:"
 msgstr ""
 
-#: admin/views/single-entry.php:151
+#: admin/views/single-entry.php:152
 msgid "User:"
 msgstr ""
 
-#: admin/views/single-entry.php:156
+#: admin/views/single-entry.php:157
 msgid "Status:"
 msgstr ""
 
-#: admin/views/single-entry.php:167
+#: admin/views/single-entry.php:168
 msgid "Submitted On:"
 msgstr ""
 
-#: admin/views/single-entry.php:189
+#: admin/views/single-entry.php:191
 msgid "Form Data"
 msgstr ""
 
-#: admin/views/single-entry.php:196
-#: inc/post-types.php:821
+#: admin/views/single-entry.php:198
 msgid "Fields"
 msgstr ""
 
-#: admin/views/single-entry.php:197
-#: inc/post-types.php:821
+#: admin/views/single-entry.php:199
 msgid "Values"
 msgstr ""
 
-#: admin/views/single-entry.php:281
-#: inc/post-types.php:910
+#: admin/views/single-entry.php:283
 msgid "Open"
 msgstr ""
 
-#: admin/views/single-entry.php:316
+#: admin/views/single-entry.php:319
 msgid "Entry Logs"
 msgstr ""
 
-#: admin/views/single-entry.php:341
+#: admin/views/single-entry.php:344
 msgid "No logs found for this entry."
 msgstr ""
 
@@ -510,11 +491,11 @@ msgstr ""
 msgid "Unknown Error"
 msgstr ""
 
-#: inc/background-process.php:113
+#: inc/background-process.php:114
 msgid "Submission id missing."
 msgstr ""
 
-#: inc/background-process.php:124
+#: inc/background-process.php:127
 msgid "Something went wrong. We haved logged the error for further investigation"
 msgstr ""
 
@@ -638,21 +619,21 @@ msgstr ""
 msgid "Form Id is missing."
 msgstr ""
 
-#: inc/form-submit.php:621
+#: inc/form-submit.php:591
 msgid "Error submitting form"
 msgstr ""
 
-#: inc/form-submit.php:677
+#: inc/form-submit.php:647
 msgid "Email Notification Initiated"
 msgstr ""
 
 #. translators: Here, %s is the comma separated emails list.
-#: inc/form-submit.php:712
+#: inc/form-submit.php:682
 msgid "Email notification sent to %s"
 msgstr ""
 
 #. translators: Here, %s is the comma separated emails list.
-#: inc/form-submit.php:712
+#: inc/form-submit.php:682
 msgid "Failed sending email notification to %s"
 msgstr ""
 
@@ -664,28 +645,28 @@ msgstr ""
 msgid "There was an error trying to submit your form. Please try again."
 msgstr ""
 
-#: inc/global-settings/email-summary.php:79
+#: inc/global-settings/email-summary.php:80
 msgid "Test Email Sent Successfully."
 msgstr ""
 
-#: inc/global-settings/email-summary.php:100
+#: inc/global-settings/email-summary.php:101
 msgid "Hello"
 msgstr ""
 
-#: inc/global-settings/email-summary.php:101
+#: inc/global-settings/email-summary.php:102
 msgid "Let's see how your forms performed in the last week"
 msgstr ""
 
-#: inc/global-settings/email-summary.php:154
-#: inc/post-types.php:142
+#: inc/global-settings/email-summary.php:148
+#: inc/post-types.php:136
 msgid "No forms found."
 msgstr ""
 
-#: inc/global-settings/email-summary.php:186
+#: inc/global-settings/email-summary.php:180
 msgid "SureForms Email Summary - "
 msgstr ""
 
-#: inc/global-settings/email-summary.php:211
+#: inc/global-settings/email-summary.php:205
 msgid "Monday"
 msgstr ""
 
@@ -702,15 +683,15 @@ msgstr ""
 msgid "Advanced Fields"
 msgstr ""
 
-#: inc/helper.php:45
+#: inc/helper.php:44
 msgid "This field is required."
 msgstr ""
 
-#: inc/helper.php:46
+#: inc/helper.php:45
 msgid "Value needs to be unique."
 msgstr ""
 
-#: inc/helper.php:476
+#: inc/helper.php:475
 msgid "Sorry, you are not allowed to perform this action."
 msgstr ""
 
@@ -752,7 +733,7 @@ msgid "Hide"
 msgstr ""
 
 #: inc/page-builders/elementor/form-widget.php:175
-#: inc/post-types.php:136
+#: inc/post-types.php:130
 #: assets/build/blocks.js:2
 msgid "Edit Form"
 msgstr ""
@@ -770,174 +751,102 @@ msgstr ""
 msgid "Create"
 msgstr ""
 
-#: inc/post-types.php:94
+#: inc/post-types.php:88
 #: assets/js/unminified/export.js:140
 msgid "Import Form"
 msgstr ""
 
-#: inc/post-types.php:97
+#: inc/post-types.php:91
 msgid "Let’s build your first form"
 msgstr ""
 
-#: inc/post-types.php:98
+#: inc/post-types.php:92
 msgid "Craft beautiful and functional forms in minutes"
 msgstr ""
 
-#: inc/post-types.php:103
-#: inc/post-types.php:134
+#: inc/post-types.php:97
+#: inc/post-types.php:128
 #: assets/build/templatePicker.js:2
 msgid "Add New Form"
 msgstr ""
 
-#: inc/post-types.php:112
+#: inc/post-types.php:106
 msgid "No records found"
 msgstr ""
 
-#: inc/post-types.php:113
+#: inc/post-types.php:107
 msgid "This is where your form entries will appear"
 msgstr ""
 
-#: inc/post-types.php:130
+#: inc/post-types.php:124
 msgctxt "post type general name"
 msgid "Forms"
 msgstr ""
 
-#: inc/post-types.php:131
+#: inc/post-types.php:125
 msgctxt "post type singular name"
 msgid "Form"
 msgstr ""
 
-#: inc/post-types.php:132
+#: inc/post-types.php:126
 msgctxt "admin menu"
 msgid "Forms"
 msgstr ""
 
-#: inc/post-types.php:133
+#: inc/post-types.php:127
 msgctxt "form"
 msgid "Add New"
 msgstr ""
 
-#: inc/post-types.php:137
+#: inc/post-types.php:131
 msgid "View Form"
 msgstr ""
 
-#: inc/post-types.php:138
+#: inc/post-types.php:132
 msgid "View Forms"
 msgstr ""
 
-#: inc/post-types.php:139
+#: inc/post-types.php:133
 msgid "Forms"
 msgstr ""
 
-#: inc/post-types.php:140
+#: inc/post-types.php:134
 msgid "Search Forms"
 msgstr ""
 
-#: inc/post-types.php:141
+#: inc/post-types.php:135
 msgid "Parent Forms:"
 msgstr ""
 
-#: inc/post-types.php:143
+#: inc/post-types.php:137
 msgid "No forms found in Trash."
 msgstr ""
 
-#: inc/post-types.php:144
+#: inc/post-types.php:138
 msgid "Form published."
 msgstr ""
 
-#: inc/post-types.php:145
+#: inc/post-types.php:139
 msgid "Form updated."
 msgstr ""
 
-#: inc/post-types.php:163
-msgctxt "post type general name"
-msgid "Entries"
-msgstr ""
-
-#: inc/post-types.php:164
-msgctxt "post type singular name"
-msgid "Entry"
-msgstr ""
-
-#: inc/post-types.php:165
-msgctxt "admin menu"
-msgid "Entries"
-msgstr ""
-
-#: inc/post-types.php:166
-msgctxt "add new on admin bar"
-msgid "Entry"
-msgstr ""
-
-#: inc/post-types.php:167
-msgctxt "Entry"
-msgid "Add New"
-msgstr ""
-
-#: inc/post-types.php:168
-msgid "Add New Entry"
-msgstr ""
-
-#: inc/post-types.php:169
-msgid "New Entry"
-msgstr ""
-
-#: inc/post-types.php:173
-msgid "Search Entries"
-msgstr ""
-
-#: inc/post-types.php:174
-msgid "Parent Entries:"
-msgstr ""
-
-#: inc/post-types.php:175
-#: assets/build/formEditor.js:2
-#: modules/quick-action-sidebar/components/Modal.js:174
-msgid "No results found."
-msgstr ""
-
-#: inc/post-types.php:176
-msgid "No results found in Trash."
-msgstr ""
-
-#: inc/post-types.php:201
-msgid "Form ID"
-msgstr ""
-
-#: inc/post-types.php:256
-msgid "Entry updated."
-msgstr ""
-
-#: inc/post-types.php:324
+#: inc/post-types.php:220
 msgid "Export"
 msgstr ""
 
-#: inc/post-types.php:1003
-msgid "Form ID:"
-msgstr ""
-
-#: inc/post-types.php:1022
-#: inc/post-types.php:1158
-msgid "SureForms Form"
-msgstr ""
-
-#: inc/post-types.php:1065
+#: inc/post-types.php:680
 msgid "Shortcode"
 msgstr ""
 
-#: inc/post-types.php:1186
-msgid " All Form Entries"
-msgstr ""
-
-#: inc/post-types.php:1212
+#: inc/post-types.php:745
 msgid "Please choose the SureForms export file (.json) that you wish to import."
 msgstr ""
 
-#: inc/post-types.php:1217
+#: inc/post-types.php:750
 msgid "There is some error in json file, please export the SureForms Forms again."
 msgstr ""
 
-#: inc/rest-api.php:144
+#: inc/rest-api.php:150
 msgid "Invalid request. Form ID missing."
 msgstr ""
 
@@ -1019,7 +928,7 @@ msgstr ""
 msgid "Cookie Value"
 msgstr ""
 
-#: inc/updater.php:78
+#: inc/updater.php:134
 msgid "Heads up!"
 msgstr ""
 
@@ -8456,20 +8365,20 @@ msgstr ""
 msgid "Support"
 msgstr ""
 
-#: templates/single-form.php:139
+#: templates/single-form.php:143
 msgid "Link to homepage"
 msgstr ""
 
-#: templates/single-form.php:140
+#: templates/single-form.php:144
 msgid "Instant form site logo"
 msgstr ""
 
-#: templates/single-form.php:153
+#: templates/single-form.php:157
 msgid "Instant Form Disabled"
 msgstr ""
 
 #. translators: Here %s is the plugin's name.
-#: templates/single-form.php:173
+#: templates/single-form.php:177
 msgid "Crafted with ♡ %s"
 msgstr ""
 
@@ -8510,7 +8419,7 @@ msgid "Show Form Title on this Page"
 msgstr ""
 
 #: assets/build/blocks.js:2
-msgid "Note: For Editing the SureForm, please check the SureForms Editor - "
+msgid "Note: For editing SureForms, please refer to the SureForms Editor - "
 msgstr ""
 
 #: assets/build/blocks.js:2
@@ -9029,15 +8938,6 @@ msgstr ""
 
 #: assets/build/dashboard.js:2
 #: assets/build/entries.js:2
-#: assets/build/formEditor.js:172
-#: assets/build/page_header.js:2
-#: assets/build/settings.js:2
-#: assets/build/settings.js:172
-msgid "Pro"
-msgstr ""
-
-#: assets/build/dashboard.js:2
-#: assets/build/entries.js:2
 #: assets/build/page_header.js:2
 #: assets/build/settings.js:2
 msgid "Licensed"
@@ -9087,6 +8987,11 @@ msgid "Already Present in Quick Action Bar"
 msgstr ""
 
 #: assets/build/formEditor.js:2
+#: modules/quick-action-sidebar/components/Modal.js:174
+msgid "No results found."
+msgstr ""
+
+#: assets/build/formEditor.js:2
 #: modules/gutenberg/build/blocks.js:11
 msgid "data object is empty"
 msgstr ""
@@ -9103,7 +9008,12 @@ msgstr ""
 
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:2
-msgid "Upgrade to Pro"
+msgid "Upgrade"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
+msgid "Pro"
 msgstr ""
 
 #: assets/build/formEditor.js:172
@@ -9699,7 +9609,7 @@ msgid "Want More?"
 msgstr ""
 
 #: assets/build/settings.js:2
-msgid "Unlock revenue boosting features when you upgrade to Pro"
+msgid "Unlock revenue boosting features when you upgrade."
 msgstr ""
 
 #: assets/build/settings.js:172
@@ -9824,6 +9734,10 @@ msgid "Secret Key"
 msgstr ""
 
 #: assets/build/settings.js:172
+msgid "Enter your secret key here"
+msgstr ""
+
+#: assets/build/settings.js:172
 msgid "Cloudflare Turnstile"
 msgstr ""
 
@@ -9837,10 +9751,6 @@ msgstr ""
 
 #: assets/build/settings.js:172
 msgid "To enable hCAPTCHA, please add your site key and secret key. Configure these settings within the individual form. "
-msgstr ""
-
-#: assets/build/settings.js:172
-msgid "Enter your secret key here"
 msgstr ""
 
 #: assets/build/settings.js:172
