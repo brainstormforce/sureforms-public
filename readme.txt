@@ -254,6 +254,8 @@ Yes! You can certainly use SureForms on yours as well as your client’s website
 When you use SureForms, you get an easy-to-use AI-powered form builder that can be used to build your forms fast.
 
 == Changelog ==
+= x.x.x =
+* Fix: Styling is not getting loaded of certain blocks in Elementor and Bricks.
 = 1.0.0 - 22nd October 2024 =
 * Initial release
 
