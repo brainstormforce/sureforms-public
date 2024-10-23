@@ -8,7 +8,7 @@ const UpgradeToProButton = ( props ) => {
 	};
 	return (
 		<button onClick={ handleClick } { ...props }>
-			{ __( 'Upgrade to Pro', 'sureforms' ) }
+			{ __( 'Upgrade', 'sureforms' ) }
 		</button>
 	);
 };

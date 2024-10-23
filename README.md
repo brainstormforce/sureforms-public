@@ -1,10 +1,10 @@
-# SureForms – Drag and Drop Form Builder for WordPress [BETA] #
+# SureForms – Drag and Drop Form Builder for WordPress #
 **Contributors:** [brainstormforce](https://profiles.wordpress.org/brainstormforce/)  
 **Tags:** contact form, custom form, form builder, forms, gutenberg  
 **Requires at least:** 6.4  
 **Tested up to:** 6.6.2  
 **Requires PHP:** 7.4  
-**Stable tag:** 0.0.11  
+**Stable tag:** 1.0.0  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -27,6 +27,7 @@ We're taking a fresh approach by harnessing the power of WordPress's native drag
 Our goal is to provide our customers with a seamless and intuitive form-building experience, eliminating the need to learn a whole new interface.
 
 We recognize the importance of good design and user experience, especially when it comes to forms.
+
 After all, the ultimate aim of most websites is to get those forms filled out.
 
 "Unfortunately, many website owners struggle to design forms that match the overall website aesthetics and user experience."
@@ -46,6 +47,7 @@ That's why we're committed to delivering stunning, modern-looking forms right ou
 With SureForms, our customers can expect a delightful range of pre-made form styling that will make their forms look amazing from the very start. And if they want to infuse their personal touch, customizing the styling should be a breeze, whether it's through easy-to-use settings or diving into CSS.
 
 We're here to empower our customers to create forms that not only function flawlessly but also captivate their audience. Say goodbye to the mundane and hello to a whole new level of form-building experience.
+
 With SureForms, let's revolutionize the way people create and design forms for their websites.
 
 ### HOW IT WORKS ❓
@@ -99,7 +101,7 @@ Publish forms instantly as a URL that can be easily shared across the web, via e
 
 #### Multi-Column Layouts
 
-Arrange input fields into multiple columns to create a sleek and efficient form layout. This approach enhances the form's appearance, making it appear more condensed and visually appealing, thereby reducing the likelihood of users abandoning the form. Place input fields in one to four columns to customize the layout according to your preferences.
+Arrange input fields into multiple columns to create a sleek and efficient form layout. This approach enhances the form's appearance, making it appear more condensed and visually appealing, thereby reducing the likelihood of users abandoning the form. Place input fields in multiple columns to customize the layout according to your preferences.
 
 #### Input Fields
 
@@ -206,7 +208,7 @@ There is no limit to the types of businesses and organizations that can benefit 
 
 ### BRANDING GUIDELINE
 
-#### SureForms® is a registered trademark. Please use the following format when mentioning the SureForms anywhere:
+#### SureForms® is a registered trademark. Please use the following format when mentioning SureForms anywhere:
 
 * SureForms [correct]
 * Sure Forms [incorrect]
@@ -240,69 +242,22 @@ To improve the user experience, SureForms may use the following 3rd party servic
 ### Do I need coding skills to create forms using SureForms? ###
 No, you don’t need any coding skills to create forms with SureForms! SureForms offers a user-friendly interface and a visual block builder, allowing you to create forms by dragging and dropping the form fields. This means that you can create forms without having to write any code or have any technical expertise.
 Whether you’re a small business owner, a freelancer, or just someone who wants to create beautiful responsive forms, SureForms makes it easy to create forms without any coding skills.
-### What are the requirements to use the SureForms? ###
+### What are the requirements to use SureForms? ###
 You only need to have the latest version of WordPress on your website, to begin with. SureForms is basically a plugin like any other WordPress plugin. Therefore, the latest WordPress installation along with a theme is enough to begin with.
-### Can I use the SureForms along with a Page Builder? ###
-The basic need of the SureForms is the latest WordPress version. We have also made it compatible with all major page builders and therefore, it won’t interfere in their working. Should you need help, you can [get in touch with us.](https://support.brainstormforce.com/?utm_source=wp-repo&utm_medium=link&utm_campaign=readme)
-### Will the SureForms slow down my website? ###
+### Can I use SureForms along with a Page Builder? ###
+SureForms needs the latest WordPress version. We have also made it compatible with all major page builders and therefore, it won’t interfere in their working.
+### Will SureForms slow down my website? ###
 Absolutely not! SureForms is built with ease and performance in mind. Its module architecture and the clean code keep it lightweight and fast. Therefore, it will not affect your website speed and performance in any way.
-### Can I use the SureForms on client websites? ###
+### Can I use SureForms on client websites? ###
 Yes! You can certainly use SureForms on yours as well as your client’s websites.
-### What more do I get with the SureForms? ###
-When you use the SureForms, you get a huge library of ready-to-use form templates that can be used to build your forms fast.
+### What more do I get with SureForms? ###
+When you use SureForms, you get an easy-to-use AI-powered form builder that can be used to build your forms fast.
 
 ## Changelog ##
-### 0.0.11 ###
-* New: Added input mask setting for the text field.
-* Improvement: Added support for emojis and special characters in SureForm AI response.
-* Improvement: Dropdown and Multiple Choice field add option by pressing enter key.
-* Improvement: Load frontend assets only when SureForms is present on the page.
-* Improvement: Webhook settings fields UX Improvements.
-* Fix: Fixed the missing form submission information.
-* Fix: Help text not updating from editor for textarea field.
-* Fix: Thank you message not showing properly for long forms.
-### 0.0.10 ###
-* New: Added a new custom table for the entries to improve performance.
-* Improvement: Added help text for the Email field.
-* Improvement: Improved UX of the Phone Number and Dropdown fields.
-* Improvement: Improved field spacing between fields.
-* Improvement: Added Site Logo option in Instant Form settings.
-* Improvement: Added support for the Gutenberg editor when the Classic Editor plugin is enabled.
-* Fix: Fixed Dropdown and Phone Number field previews in Bricks and Elementor editors.
-* Fix: Submit button on newly created form does not display in live preview mode.
-* Fix: Fixed error codes in AI Form Builder.
-### 0.0.9 ###
-* Fix: Resolved Instant Form background size issue.
-### 0.0.8 ###
-* New: Build forms using SureForms AI.
-* New: SureTriggers integration.
-* Improvement: Added Instant Form styling options.
-* Improvement: Removed the option to create forms using templates.
-* Improvement: Added Text, Dropdown, and Phone Number field styling for dark themes.
-* Fix: Resolved a few UI issues in Firefox and Safari browsers.
-* Fix: Resolved Custom Button positioning issue with reCAPTCHA.
-* Fix: Resolved a few other minor issues.
-### 0.0.7 ###
-* New: Improved styling of fields on the front-end and in the form editor.
-* Improvement: Added Primary, Text, and Text on Primary color options.
-* Improvement: Added field spacing options of Small, Medium, and Large.
-* Improvement: Removed Show Labels and Show Asterisk settings and added an option to use labels as placeholders. Removed the placeholder setting from all fields that supported it previously.
-* Fix: Removed Paragraph block and added custom appender for adding fields to a form.
-* Fix: Resolved a few other minor issues.
-### 0.0.6 ###
-* New: Added Support for Core Paragraph Block.
-* Improvement: Added compatibility for WordPress 6.6.
-* Improvement: Multiple Accessibility Improvements.
-### 0.0.5 ###
-* New: Added Support for hCaptcha.
-* New: SureForms widget for Elementor.
-* New: SureForms element for Bricks Builder.
-* Fix: Multiple Bug Fixes and Improvements.
-### 0.0.4 ###
-* New: Added support for Cloudflare Turnstile.
-* Fix: Multiple bug fixes and UI enhancement.
-### 0.0.2 ###
-* Improvement: Added smart tag feature.
-* Fix: Bug fixes.
-### 0.0.1 ###
-* Initial release.
+### 1.0.0 - 22nd October 2024 ###
+* Initial release
+
+## Upgrade Notice ##
+
+### 0.0.13 ###
+From version 0.0.13 we're migrating to a custom database to enhance SureForms' performance and features. This step is necessary and irreversible and your current existing entries will be lost. Thank you for your understanding!

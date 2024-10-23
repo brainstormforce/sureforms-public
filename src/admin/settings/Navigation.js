@@ -87,7 +87,7 @@ const Navigation = () => {
 						</div>
 						<div className="srfm-notice-body">
 							{ __(
-								'Unlock revenue boosting features when you upgrade to Pro',
+								'Unlock revenue boosting features when you upgrade.',
 								'sureforms'
 							) }
 						</div>

@@ -109,6 +109,28 @@ class Multichoice_Markup extends Base {
 	}
 
 	/**
+	 * Data attribute markup for min and max value
+	 *
+	 * @since 0.0.13
+	 * @return string
+	 */
+	protected function data_attribute_markup() {
+		$data_attr = '';
+		if ( $this->single_selection ) {
+			return '';
+		}
+
+		if ( $this->min_selection ) {
+			$data_attr .= 'data-min-selection="' . esc_attr( $this->min_selection ) . '"';
+		}
+		if ( $this->max_selection ) {
+			$data_attr .= 'data-max-selection="' . esc_attr( $this->max_selection ) . '"';
+		}
+
+		return $data_attr;
+	}
+
+	/**
 	 * Render the sureforms Multichoice classic styling
 	 *
 	 * @since 0.0.2
@@ -120,7 +142,7 @@ class Multichoice_Markup extends Base {
 		ob_start(); ?>
 		<div data-block-id="<?php echo esc_attr( $this->block_id ); ?>" class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $this->type_attr ); ?>-mode srfm-<?php echo esc_attr( $this->slug ); ?>-block srf-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?>-block<?php echo wp_kses_post( $this->block_width ); ?><?php echo esc_attr( $this->class_name ); ?> <?php echo esc_attr( $this->conditional_class ); ?>">
 			<fieldset>
-				<input class="srfm-input-<?php echo esc_attr( $this->slug ); ?>-hidden" aria-required="<?php echo esc_attr( $this->aria_require_attr ); ?>" name="srfm-input-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?><?php echo esc_attr( $this->field_name ); ?>" type="hidden" value=""/>
+				<input class="srfm-input-<?php echo esc_attr( $this->slug ); ?>-hidden" aria-required="<?php echo esc_attr( $this->aria_require_attr ); ?>" <?php echo wp_kses_post( $this->data_attribute_markup() ); ?> name="srfm-input-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?><?php echo esc_attr( $this->field_name ); ?>" type="hidden" value=""/>
 				<legend><?php echo wp_kses_post( $this->label_markup ); ?></legend>
 				<?php echo wp_kses_post( $this->help_markup ); ?>
 					<?php if ( is_array( $this->options ) ) { ?>
