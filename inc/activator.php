@@ -31,8 +31,6 @@ class Activator {
 	 * @return void
 	 */
 	public static function activate() {
-		self::create_tables();
-
 		$email_summary_options = get_option( 'srfm_email_summary_settings_options' );
 		$enable_email_summary  = is_array( $email_summary_options ) ? $email_summary_options['srfm_email_summary'] : '';
 
@@ -49,29 +47,5 @@ class Activator {
 
 		update_option( '__srfm_do_redirect', true );
 
-	}
-
-	/**
-	 * Create necessary table tables on plugin activation.
-	 *
-	 * @since 0.0.10
-	 * @return void
-	 */
-	protected static function create_tables() {
-		Entries::get_instance()->create(
-			[
-				'ID BIGINT(20) UNSIGNED AUTO_INCREMENT PRIMARY KEY',
-				'form_id BIGINT(20) UNSIGNED',
-				'user_data LONGTEXT',
-				'logs LONGTEXT',
-				'notes LONGTEXT',
-				'submission_info LONGTEXT',
-				'status VARCHAR(10)',
-				'created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP',
-				'updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP',
-				'INDEX idx_form_id (form_id)', // Indexing for the performance improvements.
-				'INDEX idx_form_id_created_at_status (form_id, created_at, status)', // Composite index for performance improvements.
-			]
-		);
 	}
 }
