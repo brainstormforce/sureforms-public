@@ -255,6 +255,7 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 
 == Changelog ==
 = x.x.x =
+* Fix: GDPR & Checkbox - labels editable across Chrome, Firefox, Safari, and Arc.
 * Fix: Styling is not getting loaded of certain blocks in Elementor and Bricks.
 = 1.0.0 - 22nd October 2024 =
 * Initial release
