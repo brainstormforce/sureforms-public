@@ -12,6 +12,7 @@ use Elementor\Widget_Base;
 use Elementor\Plugin;
 use SRFM\Inc\Helper;
 use SRFM\Inc\Page_Builders\Page_Builders;
+use Spec_Gb_Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -234,7 +235,16 @@ class Form_Widget extends Widget_Base {
 		}
 
 		$show_form_title = 'true' === $settings['srfm_show_form_title'];
+		// get spectra blocks and add css and js.
+		$blocks = parse_blocks( get_post_field( 'post_content', $settings['srfm_form_block'] ) );
+		$styles = Spec_Gb_Helper::get_instance()->get_assets( $blocks );
+
+		// phpcs:ignore -- WordPress.Security.EscapeOutput.OutputNotEscaped - Escaping not required.
 		echo do_shortcode( '[sureforms id="' . $settings['srfm_form_block'] . '" show_title="' . ! $show_form_title . '"]' );
+		// phpcs:ignore -- WordPress.Security.EscapeOutput.OutputNotEscaped - Escaping not required.
+		echo '<style>' . $styles['css'] . '</style>';
+		// phpcs:ignore -- WordPress.Security.EscapeOutput.OutputNotEscaped - Escaping not required.
+		echo '<script>' . $styles['js'] . '</script>';
 	}
 
 }
