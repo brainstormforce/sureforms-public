@@ -14,15 +14,6 @@
 
 		.conditional-logic {
 			display: none;
-			&.move-up-to-down {
-				animation: moveUpToDown 500ms linear forwards;
-				z-index: 1;
-			}
-
-			&.move-down-to-up {
-				animation: moveDownToUp 500ms linear forwards;
-			}
-
 			&.show-element {
 				display: block;
 			}
@@ -107,29 +98,5 @@
 				display: none;
 			}
 		}
-	}
-}
-
-@keyframes moveUpToDown {
-	0% {
-		opacity: 0;
-		max-height: 0;
-	}
-
-	100% {
-		opacity: 1;
-		max-height: 500px;
-	}
-}
-
-@keyframes moveDownToUp {
-	0% {
-		opacity: 1;
-		max-height: 500px;
-	}
-
-	100% {
-		opacity: 0;
-		max-height: 0;
 	}
 }
