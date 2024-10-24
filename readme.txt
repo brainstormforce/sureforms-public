@@ -258,6 +258,7 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 * Fix: GDPR & Checkbox - labels editable across Chrome, Firefox, Safari, and Arc.
 * Fix: Styling is not getting loaded of certain blocks in Elementor and Bricks.
 * Fix: Hide v3 recaptcha container from frontend.
+* Fix: Blocks not displaying on new posts/pages due to allowed_block_types_all
 = 1.0.0 - 22nd October 2024 =
 * Initial release
 
