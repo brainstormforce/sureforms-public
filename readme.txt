@@ -4,7 +4,7 @@ Tags: contact form, custom form, form builder, forms, gutenberg
 Requires at least: 6.4
 Tested up to: 6.6.2
 Requires PHP: 7.4
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -254,11 +254,11 @@ Yes! You can certainly use SureForms on yours as well as your client’s website
 When you use SureForms, you get an easy-to-use AI-powered form builder that can be used to build your forms fast.
 
 == Changelog ==
-= x.x.x =
-* Fix: GDPR & Checkbox - labels editable across Chrome, Firefox, Safari, and Arc.
-* Fix: Styling is not getting loaded of certain blocks in Elementor and Bricks.
-* Fix: Hide v3 recaptcha container from frontend.
-* Fix: Blocks not displaying on new posts/pages due to allowed_block_types_all
+= 1.0.1 - 24th October 2024 =
+* Fix: Extra space from the v3 reCAPTCHA container has been removed.
+* Fix: GDPR and checkbox labels are now editable across Chrome, Firefox, Safari, Arc etc.
+* Fix: Gutenberg blocks now display correctly for posts, pages, and custom post types (CPT).
+* Fix: Styling issues resolved for specific blocks in Elementor and Bricks.
 = 1.0.0 - 22nd October 2024 =
 * Initial release
 
