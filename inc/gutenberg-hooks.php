@@ -91,6 +91,9 @@ class Gutenberg_Hooks {
 			$allow_block_types = apply_filters( 'srfm_allowed_block_types', $allow_block_types, $editor_context );
 			return $allow_block_types;
 		}
+
+		// Return the default $allowed_block_types value.
+		return $allowed_block_types;
 	}
 
 	/**
