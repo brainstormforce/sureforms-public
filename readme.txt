@@ -254,7 +254,7 @@ Yes! You can certainly use SureForms on yours as well as your client’s website
 When you use SureForms, you get an easy-to-use AI-powered form builder that can be used to build your forms fast.
 
 == Changelog ==
-= 1.0.1 - 24nd October 2024 =
+= 1.0.1 - 24th October 2024 =
 * Fix: GDPR & Checkbox - labels editable across Chrome, Firefox, Safari, and Arc.
 * Fix: Styling is not getting loaded of certain blocks in Elementor and Bricks.
 * Fix: Hide v3 recaptcha container from frontend.
