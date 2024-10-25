@@ -8,7 +8,7 @@ import { handleAddNewPost, initiateAuth } from '@Utils/Helpers';
 import {
 	MdArrowForward,
 	MdKeyboardArrowDown,
-	MdKeyboardArrowUp, MdMic, MdMicOff,
+	MdKeyboardArrowUp,
 } from 'react-icons/md';
 import aiFormBuilderPlaceholder from '@Image/ai-form-builder.svg';
 import { CircularProgressBar } from '@tomickigrzegorz/react-circular-progress-bar';
@@ -54,23 +54,23 @@ const AiFormBuilder = () => {
 
 	const initSpeechRecognition = () => {
 		const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-
 		if ( ! SpeechRecognition ) {
 			return null;
 		}
-
 		const recognition = new SpeechRecognition();
-		recognition.lang = 'en-US'; // Set language to English (change as needed)
+		recognition.lang = 'en-US'; // Set language to English
 		recognition.interimResults = false; // Only show final results
 		recognition.maxAlternatives = 1; // One alternative result
 		return recognition;
 	};
 
 	const toggleListening = () => {
+		// initialize SpeechRecognition instance if not already initialized
 		if ( ! recognitionRef.current ) {
 			recognitionRef.current = initSpeechRecognition();
 		}
 
+		// if SpeechRecognition is not supported, show error message
 		if ( ! recognitionRef.current ) {
 			return;
 		}
@@ -78,23 +78,23 @@ const AiFormBuilder = () => {
 		const recognition = recognitionRef.current;
 
 		if ( isListening ) {
+			// Stop recording if already started
 			recognition.stop();
 			setIsListening( false );
 		} else {
+			// Start recording if not started
 			recognition.start();
 			setIsListening( true );
-
 			recognition.onresult = ( event ) => {
 				const speechResult = event.results[ 0 ][ 0 ].transcript;
 				const textArea = document.querySelector( 'textarea' );
 				textArea.value += speechResult;
 				setCharacterCount( textArea.value.length );
 			};
-
 			recognition.onerror = () => {
 				recognition.stop();
 				setIsListening( false );
-				toast.error( 'Speech recognition is not supported in your current browser. Please use Google Chrome / Safari / Edge.', {
+				toast.error( 'Speech recognition is not supported in your current browser. Please use Google Chrome / Safari.', {
 					duration: 5000,
 				} );
 			};
@@ -332,22 +332,50 @@ const AiFormBuilder = () => {
 										<MdKeyboardArrowDown />
 									) }
 								</Button>
-								<Button onClick={ toggleListening } className="voice-input-toggle-btn" style={ {
-									display: 'flex',
-									alignItems: 'center',
-									gap: '8px',
-									backgroundColor: 'transparent',
-									border: 'none',
-									cursor: 'pointer',
-								} }
+								<Button
+									onClick={ toggleListening }
+									className="srfm-ai-voice-input-toggle-btn"
+									style={ {
+										background: isListening ? '#F0FDF4' : '#D544071A',
+										border: isListening ? '0.5px solid #BBF7D0' : '0.5px solid #D544074D',
+									} }
 								>
 									{ isListening ? (
-										<MdMic color="green" size={ 20 } />
-
+										<>
+											<svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+												<path
+													d="M6 1C5.60218 1 5.22064 1.15804 4.93934 1.43934C4.65804 1.72064 4.5 2.10218 4.5 2.5V6C4.5 6.39782 4.65804 6.77936 4.93934 7.06066C5.22064 7.34196 5.60218 7.5 6 7.5C6.39782 7.5 6.77936 7.34196 7.06066 7.06066C7.34196 6.77936 7.5 6.39782 7.5 6V2.5C7.5 2.10218 7.34196 1.72064 7.06066 1.43934C6.77936 1.15804 6.39782 1 6 1Z"
+													stroke="#15803D"
+													strokeLinecap="round"
+													strokeLinejoin="round"
+												/>
+												<path d="M9.5 5V6C9.5 6.92826 9.13125 7.8185 8.47487 8.47487C7.8185 9.13125 6.92826 9.5 6 9.5C5.07174 9.5 4.1815 9.13125 3.52513 8.47487C2.86875 7.8185 2.5 6.92826 2.5 6V5" stroke="#15803D" strokeLinecap="round" strokeLinejoin="round" />
+												<path d="M6 9.5V11" stroke="#15803D" strokeLinecap="round" strokeLinejoin="round" />
+											</svg>
+											<span className="srfm-ai-voice-input-text" style={ { color: '#15803D' } }>{ __( 'Listening', 'sureforms' ) }</span>
+										</>
 									) : (
-										<MdMicOff color="red" size={ 20 } />
+										<>
+											<svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+												<g clipPath="url(#clip0_15859_8426)">
+													<path d="M1 1L11 11" stroke="#D54407" strokeLinecap="round" strokeLinejoin="round" />
+													<path d="M9.44482 6.615C9.48093 6.41198 9.49934 6.20621 9.49982 6V5" stroke="#D54407" strokeLinecap="round" strokeLinejoin="round" />
+													<path d="M2.49988 5V6C2.48971 6.69958 2.68944 7.38616 3.0733 7.97112C3.45716 8.55607 4.00752 9.01256 4.65336 9.28166C5.2992 9.55076 6.01086 9.62012 6.69651 9.48079C7.38215 9.34146 8.0103 8.99983 8.49988 8.5" stroke="#D54407" strokeLinecap="round" strokeLinejoin="round" />
+													<path d="M7.50016 4.66878V2.49878C7.49813 2.16196 7.3828 1.83563 7.17274 1.57234C6.96268 1.30904 6.67012 1.12411 6.34217 1.04732C6.01422 0.970527 5.66996 1.00635 5.36485 1.14901C5.05973 1.29167 4.81151 1.53288 4.66016 1.83378" stroke="#D54407" strokeLinecap="round" strokeLinejoin="round" />
+													<path d="M4.5 4.5V6C4.50026 6.29648 4.58838 6.58623 4.75322 6.83266C4.91806 7.0791 5.15223 7.27115 5.42615 7.38457C5.70008 7.498 6.00147 7.5277 6.29227 7.46993C6.58307 7.41216 6.85023 7.26951 7.06 7.06" stroke="#D54407" strokeLinecap="round" strokeLinejoin="round" />
+													<path d="M6 9.5V11" stroke="#D54407" strokeLinecap="round" strokeLinejoin="round" />
+												</g>
+												<defs>
+													<clipPath id="clip0_15859_8426">
+														<rect width="12" height="12" fill="white" />
+													</clipPath>
+												</defs>
+											</svg>
+											<span className="srfm-ai-voice-input-text" style={ { color: '#D54407' } }>{ __( 'Voice Input', 'sureforms' ) }</span>
+										</>
 									) }
 								</Button>
+
 							</div>
 							{ showFormIdeas && (
 								<div className="srfm-ai-form-ideas-ctn">
@@ -418,33 +446,6 @@ const AiFormBuilder = () => {
 						</div>
 					</div>
 				</div>
-			</div>
-			<div
-				style={ {
-					position: 'fixed',
-					bottom: '16px',
-					left: '50%',
-					transform: 'translateX(-50%)',
-				} }
-			>
-				<Button
-					onClick={ toggleListening }
-					className="voice-input-toggle-btn"
-					style={ {
-						display: 'flex',
-						alignItems: 'center',
-						gap: '8px',
-						backgroundColor: 'transparent',
-						border: 'none',
-						cursor: 'pointer',
-					} }
-				>
-					{ isListening ? (
-						<MdMic color="green" size={ 40 } />
-					) : (
-						<MdMicOff color="red" size={ 40 } />
-					) }
-				</Button>
 			</div>
 		</>
 	);
