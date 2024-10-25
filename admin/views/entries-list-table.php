@@ -959,7 +959,7 @@ class Entries_List_Table extends \WP_List_Table {
 
 	/**
 	 * Delete the entry files when an entry is deleted.
-	 * 
+	 *
 	 * @param int $entry_id The ID of the entry to delete files for.
 	 * @since x.x.x
 	 * @return void
