@@ -61,6 +61,7 @@ const AiFormBuilder = () => {
 		recognition.lang = 'en-US'; // Set language to English
 		recognition.interimResults = false; // Only show final results
 		recognition.maxAlternatives = 1; // One alternative result
+		recognition.continuous = true; // Keep recording until stopped
 		return recognition;
 	};
 
@@ -86,7 +87,8 @@ const AiFormBuilder = () => {
 			recognition.start();
 			setIsListening( true );
 			recognition.onresult = ( event ) => {
-				const speechResult = event.results[ 0 ][ 0 ].transcript;
+				// keep on appending the result to the textarea
+				const speechResult = event.results[ event.results.length - 1 ][ 0 ].transcript;
 				const textArea = document.querySelector( 'textarea' );
 				textArea.value += speechResult;
 				setCharacterCount( textArea.value.length );
