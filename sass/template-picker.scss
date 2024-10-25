@@ -440,6 +440,13 @@ $sidebar_width: 290px;
 					color: #cd1a1a;
 				}
 
+				.srfm-ai-voice-input-ctn {
+					display: flex;
+					justify-content: space-between;
+					align-items: center;
+					gap: 16px;
+				}
+
 				.srfm-ai-voice-input-toggle-btn {
 					display: flex;
 					justify-content: center;

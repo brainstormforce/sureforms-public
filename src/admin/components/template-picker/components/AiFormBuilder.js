@@ -312,12 +312,7 @@ const AiFormBuilder = () => {
 								</span>
 							) }
 							<div
-								style={ {
-									display: 'flex',
-									justifyContent: 'space-between',
-									alignItems: 'center',
-									gap: '16px',
-								} }
+								className="srfm-ai-voice-input-ctn"
 							>
 								<Button
 									onClick={ () =>
