@@ -973,7 +973,7 @@ class Entries_List_Table extends \WP_List_Table {
 		if ( empty( $meta_data ) ) {
 			return;
 		}
-		$upload_dir = wp_upload_dir();
+		$upload_dir = wp_get_upload_dir();
 		foreach ( $meta_data as $field_name => $value ) {
 			if ( false !== strpos( $field_name, 'srfm-upload' ) && is_array( $value ) ) {
 				foreach ( $value as $file_url ) {
