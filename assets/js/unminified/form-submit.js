@@ -230,6 +230,11 @@ async function handleFormSubmission(
 
 		const formStatus = await submitFormData( form );
 		if ( formStatus?.success ) {
+			/**
+			 * Emit a function to signal the successful submission of a form.
+			 */
+			emitFormSubmitSuccess( { ...formStatus, formId } );
+
 			if ( submitType === 'same page' ) {
 				showSuccessMessage(
 					successContainer,
@@ -363,6 +368,32 @@ function onloadCallback() {
 		}
 	} );
 }
+
+/**
+ * Emits a custom event to signal the successful submission of a form.
+ * 
+ * This function creates and dispatches a custom event, `srfm_form_submission_success`,
+ * to notify other parts of the application that a form has been successfully submitted. 
+ * It includes form-specific details, such as the form data.
+ * 
+ * Custom Event: `srfm_form_submission_success`
+ * - Dispatched event signaling a form submission success.
+ * - Event payload (`detail`) includes: form data.
+ * 
+ * @param {Object} formStatus - An object representing the status of the form submission.
+ */
+function emitFormSubmitSuccess(formStatus) {
+	// Create a custom event with form details.
+	const srfmFormSubmissionSuccessEvent = new CustomEvent('srfm_form_submission_success', {
+		detail: {
+			formId: `srfm-form-${formStatus.formId}`,
+		},
+	});
+	
+	// Dispatch the custom event.
+	document.dispatchEvent(srfmFormSubmissionSuccessEvent);
+}
+
 
 // directly assign onloadCallback into the global space:
 window.onloadCallback = onloadCallback;
