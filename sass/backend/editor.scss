@@ -545,6 +545,15 @@ body.post-type-sureforms_form {
 		box-shadow: none !important;
 		cursor: pointer;
 	}
+
+	/* 
+	* Allow pointer events for elements with the attribute content-editable set to "true".
+	* This is crucial because some elements may inherit pointer-events: none from their parent,
+	* which can lead to issues in certain browsers, such as Firefox, preventing user interaction.
+	*/
+	label[contenteditable="true"] {
+		pointer-events: auto;
+	}
 }
 
 // TODO: Adding style fot the temprary hide spectra QAB.

@@ -2,41 +2,45 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: SureForms 1.0.0\n"
+"Project-Id-Version: SureForms 1.0.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/sureforms\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-10-21T16:15:34+00:00\n"
+"POT-Creation-Date: 2024-10-24T11:08:09+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"X-Generator: WP-CLI 2.9.0\n"
+"X-Generator: WP-CLI 2.10.0\n"
 "X-Domain: sureforms\n"
 
 #. Plugin Name of the plugin
 #. Author of the plugin
+#: sureforms.php
 #: admin/admin.php:198
 #: admin/admin.php:199
-#: inc/gutenberg-hooks.php:109
-#: inc/page-builders/bricks/elements/form-widget.php:66
+#: inc/gutenberg-hooks.php:112
+#: inc/page-builders/bricks/elements/form-widget.php:67
 #: inc/page-builders/bricks/service-provider.php:55
-#: inc/page-builders/elementor/form-widget.php:94
-#: inc/page-builders/elementor/form-widget.php:144
+#: inc/page-builders/elementor/form-widget.php:95
+#: inc/page-builders/elementor/form-widget.php:145
 #: inc/page-builders/elementor/service-provider.php:72
 #: assets/build/formEditor.js:172
 msgid "SureForms"
 msgstr ""
 
 #. Plugin URI of the plugin
+#: sureforms.php
 msgid "https://sureforms.com"
 msgstr ""
 
 #. Description of the plugin
+#: sureforms.php
 msgid "A simple yet powerful way to create modern forms for your website."
 msgstr ""
 
 #. Author URI of the plugin
+#: sureforms.php
 msgid "https://sureforms.com/"
 msgstr ""
 
@@ -144,7 +148,7 @@ msgstr ""
 
 #. translators: %1$s is the word "form", %2$d is the form ID.
 #: admin/views/entries-list-table.php:301
-#: inc/page-builders/bricks/elements/form-widget.php:96
+#: inc/page-builders/bricks/elements/form-widget.php:97
 #: assets/build/dashboard.js:2
 msgid "Form"
 msgstr ""
@@ -674,11 +678,11 @@ msgstr ""
 msgid "Settings Saved Successfully."
 msgstr ""
 
-#: inc/gutenberg-hooks.php:107
+#: inc/gutenberg-hooks.php:110
 msgid "General Fields"
 msgstr ""
 
-#: inc/gutenberg-hooks.php:119
+#: inc/gutenberg-hooks.php:122
 #: assets/build/formEditor.js:172
 msgid "Advanced Fields"
 msgstr ""
@@ -695,59 +699,59 @@ msgstr ""
 msgid "Sorry, you are not allowed to perform this action."
 msgstr ""
 
-#: inc/page-builders/bricks/elements/form-widget.php:99
-#: inc/page-builders/elementor/form-widget.php:151
+#: inc/page-builders/bricks/elements/form-widget.php:100
+#: inc/page-builders/elementor/form-widget.php:152
 msgid "Select Form"
 msgstr ""
 
-#: inc/page-builders/bricks/elements/form-widget.php:105
+#: inc/page-builders/bricks/elements/form-widget.php:106
 msgid "Show Form Title"
 msgstr ""
 
-#: inc/page-builders/bricks/elements/form-widget.php:107
+#: inc/page-builders/bricks/elements/form-widget.php:108
 msgid "Enable this to show form title."
 msgstr ""
 
-#: inc/page-builders/bricks/elements/form-widget.php:113
-#: inc/page-builders/elementor/form-widget.php:199
+#: inc/page-builders/bricks/elements/form-widget.php:114
+#: inc/page-builders/elementor/form-widget.php:200
 msgid "Form submission will be possible on the frontend."
 msgstr ""
 
-#: inc/page-builders/bricks/elements/form-widget.php:152
-#: inc/page-builders/elementor/form-widget.php:227
+#: inc/page-builders/bricks/elements/form-widget.php:159
+#: inc/page-builders/elementor/form-widget.php:228
 msgid "Select the form that you wish to add here."
 msgstr ""
 
-#: inc/page-builders/elementor/form-widget.php:161
+#: inc/page-builders/elementor/form-widget.php:162
 #: assets/build/blocks.js:2
 #: assets/build/formEditor.js:172
 msgid "Form Title"
 msgstr ""
 
-#: inc/page-builders/elementor/form-widget.php:163
+#: inc/page-builders/elementor/form-widget.php:164
 msgid "Show"
 msgstr ""
 
-#: inc/page-builders/elementor/form-widget.php:164
+#: inc/page-builders/elementor/form-widget.php:165
 msgid "Hide"
 msgstr ""
 
-#: inc/page-builders/elementor/form-widget.php:175
+#: inc/page-builders/elementor/form-widget.php:176
 #: inc/post-types.php:130
 #: assets/build/blocks.js:2
 msgid "Edit Form"
 msgstr ""
 
-#: inc/page-builders/elementor/form-widget.php:178
+#: inc/page-builders/elementor/form-widget.php:179
 msgid "Edit"
 msgstr ""
 
-#: inc/page-builders/elementor/form-widget.php:189
+#: inc/page-builders/elementor/form-widget.php:190
 #: assets/build/dashboard.js:2
 msgid "Create New Form"
 msgstr ""
 
-#: inc/page-builders/elementor/form-widget.php:191
+#: inc/page-builders/elementor/form-widget.php:192
 msgid "Create"
 msgstr ""
 
@@ -8365,20 +8369,20 @@ msgstr ""
 msgid "Support"
 msgstr ""
 
-#: templates/single-form.php:139
+#: templates/single-form.php:143
 msgid "Link to homepage"
 msgstr ""
 
-#: templates/single-form.php:140
+#: templates/single-form.php:144
 msgid "Instant form site logo"
 msgstr ""
 
-#: templates/single-form.php:153
+#: templates/single-form.php:157
 msgid "Instant Form Disabled"
 msgstr ""
 
 #. translators: Here %s is the plugin's name.
-#: templates/single-form.php:173
+#: templates/single-form.php:177
 msgid "Crafted with ♡ %s"
 msgstr ""
 
@@ -8419,7 +8423,7 @@ msgid "Show Form Title on this Page"
 msgstr ""
 
 #: assets/build/blocks.js:2
-msgid "Note: For Editing the SureForm, please check the SureForms Editor - "
+msgid "Note: For editing SureForms, please refer to the SureForms Editor - "
 msgstr ""
 
 #: assets/build/blocks.js:2
@@ -8938,15 +8942,6 @@ msgstr ""
 
 #: assets/build/dashboard.js:2
 #: assets/build/entries.js:2
-#: assets/build/formEditor.js:172
-#: assets/build/page_header.js:2
-#: assets/build/settings.js:2
-#: assets/build/settings.js:172
-msgid "Pro"
-msgstr ""
-
-#: assets/build/dashboard.js:2
-#: assets/build/entries.js:2
 #: assets/build/page_header.js:2
 #: assets/build/settings.js:2
 msgid "Licensed"
@@ -9017,7 +9012,12 @@ msgstr ""
 
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:2
-msgid "Upgrade to Pro"
+msgid "Upgrade"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
+msgid "Pro"
 msgstr ""
 
 #: assets/build/formEditor.js:172
@@ -9613,7 +9613,7 @@ msgid "Want More?"
 msgstr ""
 
 #: assets/build/settings.js:2
-msgid "Unlock revenue boosting features when you upgrade to Pro"
+msgid "Unlock revenue boosting features when you upgrade."
 msgstr ""
 
 #: assets/build/settings.js:172
@@ -9738,6 +9738,10 @@ msgid "Secret Key"
 msgstr ""
 
 #: assets/build/settings.js:172
+msgid "Enter your secret key here"
+msgstr ""
+
+#: assets/build/settings.js:172
 msgid "Cloudflare Turnstile"
 msgstr ""
 
@@ -9751,10 +9755,6 @@ msgstr ""
 
 #: assets/build/settings.js:172
 msgid "To enable hCAPTCHA, please add your site key and secret key. Configure these settings within the individual form. "
-msgstr ""
-
-#: assets/build/settings.js:172
-msgid "Enter your secret key here"
 msgstr ""
 
 #: assets/build/settings.js:172
