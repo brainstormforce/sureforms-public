@@ -891,6 +891,7 @@ class Entries_List_Table extends \WP_List_Table {
 				Entries::update( $entry_id, [ 'status' => $action ] );
 				break;
 			case 'delete':
+				do_action( 'srfm_delete_entry_files', $entry_id );
 				Entries::delete( $entry_id );
 				break;
 			default:
