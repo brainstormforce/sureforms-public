@@ -94,6 +94,7 @@ const AiFormBuilder = () => {
 			recognition.onerror = () => {
 				recognition.stop();
 				setIsListening( false );
+				toast.dismiss();
 				toast.error( 'Speech recognition is not supported in your current browser. Please use Google Chrome / Safari.', {
 					duration: 5000,
 				} );
