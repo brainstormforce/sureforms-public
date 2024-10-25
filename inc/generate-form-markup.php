@@ -466,8 +466,10 @@ class Generate_Form_Markup {
 		$redirect_url = add_query_arg( $query_params, $redirect_url );
 
 		if ( ! empty( $submission_data ) ) {
-			$smart_tags   = new Smart_Tags();
-			$redirect_url = html_entity_decode( $smart_tags->process_smart_tags( $redirect_url, $submission_data, $form_data ) );
+			$smart_tags = new Smart_Tags();
+			// Adding upload_format_type = 'raw' to retrieve urls as comma separated values.
+			$form_data['upload_format_type'] = 'raw';
+			$redirect_url                    = html_entity_decode( $smart_tags->process_smart_tags( $redirect_url, $submission_data, $form_data ) );
 		}
 
 		return $redirect_url;
