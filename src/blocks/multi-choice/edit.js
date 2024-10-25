@@ -35,6 +35,7 @@ import MultiButtonsControl from '@Components/multi-buttons-control';
 import UAGIconPicker from '@Components/icon-picker';
 import SRFMMediaPicker from '@Components/image';
 import SRFMNumberControl from '@Components/number-control';
+import { BulkInserterWithButton } from '@Components/bulk-inserter';
 
 const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 	const {
@@ -52,6 +53,7 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 		minValue,
 		maxValue,
 	} = attributes;
+
 	const currentFormId = useGetCurrentFormId( clientId );
 	const [ newOption, setNewOption ] = useState( options );
 	const [ error, setError ] = useState( false );
@@ -539,6 +541,19 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 								>
 									{ __( 'ADD', 'sureforms' ) }
 								</Button>
+								<BulkInserterWithButton
+									options={ options }
+									titleKey="optionTitle"
+									insertOptions={ (
+										newOptions,
+										closeModal
+									) => {
+										setAttributes( {
+											options: newOptions,
+										} );
+										closeModal();
+									} }
+								/>
 							</div>
 							<span className="srfm-control-label srfm-control__header" />
 							<SRFMTextControl
