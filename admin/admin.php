@@ -52,7 +52,6 @@ class Admin {
 		add_action( 'admin_init', [ $this, 'handle_entry_actions' ] );
 		add_action( 'admin_notices', [ $this, 'entries_migration_notice' ] );
 		add_action( 'admin_notices', [ Entries_List_Table::class, 'display_bulk_action_notice' ] );
-		add_action( 'srfm_delete_entry_files', [ $this, 'delete_entry_files' ] );
 	}
 
 	/**
@@ -745,40 +744,6 @@ class Admin {
 				}
 			}
 			Entries_List_Table::handle_entry_status( $entry_id, $action, $view );
-		}
-	}
-
-	/**
-	 * Delete files associated with an entry.
-	 * 
-	 * @param int $entry_id Entry ID.
-	 * @since x.x.x
-	 * @return void
-	 */
-	public static function delete_entry_files( $entry_id ) {
-		if ( ! $entry_id ) {
-			return;
-		}
-		$meta_data = Entries::get_form_data( $entry_id );
-		if ( empty( $meta_data ) ) {
-			return;
-		}
-		$upload_dir = wp_upload_dir();
-		foreach ( $meta_data as $field_name => $value ) {
-			if ( false !== strpos( $field_name, 'srfm-upload' ) ) {
-				$upload_values = $value;
-				foreach ( $upload_values as $file_url ) {
-					$file_url = Helper::get_string_value( $file_url );
-					if ( ! empty( $file_url ) ) {
-						$file_path = str_replace( get_site_url(), ABSPATH, $file_url );
-						$file_path = urldecode( $file_path );
-						$file_path = str_replace( $upload_dir['baseurl'], $upload_dir['basedir'], $file_path );
-						if ( file_exists( $file_path ) ) {
-							unlink( $file_path );
-						}
-					}
-				}
-			}
 		}
 	}
 
