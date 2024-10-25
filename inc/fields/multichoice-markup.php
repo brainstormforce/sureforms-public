@@ -111,7 +111,7 @@ class Multichoice_Markup extends Base {
 	/**
 	 * Data attribute markup for min and max value
 	 *
-	 * @since x.x.x
+	 * @since 0.0.13
 	 * @return string
 	 */
 	protected function data_attribute_markup() {
