@@ -10,7 +10,7 @@ namespace SRFM\Admin\Views;
 
 use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Helper;
-
+use SRFM\Admin\Views\Entries_List_Table;
 /**
  * Exit if accessed directly.
  */
@@ -86,6 +86,7 @@ class Single_Entry {
 						<div id="postbox-container-1" class="postbox-container">
 							<?php $this->render_entry_notes(); ?>
 							<?php $this->render_submission_info( $form_name, $entry_status, $submitted_on ); ?>
+							<?php Entries_List_Table::get_instance()->display_bulk_resend_notification_button( $this->entry['form_id'], [ $this->entry_id ] ); ?>
 						</div>
 						<div id="postbox-container-2" class="postbox-container">
 							<?php $this->render_form_data( $meta_data, $excluded_fields ); ?>
