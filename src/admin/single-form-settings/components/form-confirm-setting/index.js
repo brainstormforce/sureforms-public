@@ -204,7 +204,6 @@ const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 								</label>
 							</div>
 						</div>
-						{ /* sub options for redirect */ }
 						{ [ 'different page', 'custom url' ].includes( data?.confirmation_type ) && (
 							<div className="srfm-modal-option-box">
 								<div className="srfm-modal-label">
