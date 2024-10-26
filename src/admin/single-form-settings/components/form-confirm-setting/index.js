@@ -186,83 +186,66 @@ const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 										{ __( 'Success Message', 'sureforms' ) }
 									</div>
 								</label>
-								<label
-									className="srfm-option-label"
-									htmlFor="confirm-type-2"
-								>
-									<div
-										className={ `srfm-option ${ data?.confirmation_type ===
-										'different page'
-											? 'srfm-active-conf-type'
-											: ''
-										}` }
-									>
+								<label className="srfm-option-label" htmlFor="confirm-type-2">
+									<div className={ `srfm-option ${ [ 'different page', 'custom url' ].includes( data?.confirmation_type ) ? 'srfm-active-conf-type' : '' }` }>
 										<input
 											className="srfm-option-input"
-											value="different page"
-											checked={
-												data?.confirmation_type ===
-											'different page'
-											}
-											onChange={ ( e ) => {
-												setErrorMessage( null );
-												setData( {
-													...data,
-													confirmation_type:
-													e.target.value,
-												} );
-											}
-											}
+											value="redirect"
+											checked={ [ 'different page', 'custom url' ].includes( data?.confirmation_type ) }
+											onChange={ () => {
+												setData( { ...data, confirmation_type: 'different page' } );
+											} }
 											type="radio"
 											id="confirm-type-2"
 											name="confirm-type"
 										/>
-
-										{ __(
-											'Redirect to Page',
-											'sureforms'
-										) }
-									</div>
-								</label>
-								<label
-									className="srfm-option-label"
-									htmlFor="confirm-type-3"
-								>
-									<div
-										className={ `srfm-option ${ data?.confirmation_type === 'custom url'
-											? 'srfm-active-conf-type'
-											: ''
-										}` }
-									>
-										<input
-											className="srfm-option-input"
-											value="custom url"
-											checked={
-												data?.confirmation_type ===
-											'custom url'
-											}
-											onChange={ ( e ) => {
-												setErrorMessage( null );
-												setData( {
-													...data,
-													confirmation_type:
-													e.target.value,
-												} );
-											}
-											}
-											type="radio"
-											id="confirm-type-3"
-											name="confirm-type"
-										/>
-
-										{ __(
-											'Redirect to Custom URL',
-											'sureforms'
-										) }
+										{ __( 'Redirect', 'sureforms' ) }
 									</div>
 								</label>
 							</div>
 						</div>
+						{ /* sub options for redirect */ }
+						{ [ 'different page', 'custom url' ].includes( data?.confirmation_type ) && (
+							<div className="srfm-modal-option-box">
+								<div className="srfm-modal-label">
+									{ __( 'Redirect to', 'sureforms' ) }
+								</div>
+								<div className="srfm-options-wrapper">
+									<label className="srfm-option-label" htmlFor="confirm-type-redirect-page">
+										<div className={ `srfm-option ${ data?.confirmation_type === 'redirect page' ? 'srfm-active-conf-type' : '' }` }>
+											<input
+												className="srfm-option-input"
+												value="different page"
+												checked={ data?.confirmation_type === 'different page' }
+												onChange={ ( e ) => {
+													setData( { ...data, confirmation_type: e.target.value } );
+												} }
+												type="radio"
+												id="confirm-type-redirect-page"
+												name="redirect-type"
+											/>
+											{ __( 'Page', 'sureforms' ) }
+										</div>
+									</label>
+									<label className="srfm-option-label" htmlFor="confirm-type-custom-url" >
+										<div className={ `srfm-option ${ data?.confirmation_type === 'custom url' ? 'srfm-active-conf-type' : '' }` }>
+											<input
+												className="srfm-option-input"
+												value="custom url"
+												checked={ data?.confirmation_type === 'custom url' }
+												onChange={ ( e ) => {
+													setData( { ...data, confirmation_type: e.target.value } );
+												} }
+												type="radio"
+												id="confirm-type-custom-url"
+												name="redirect-type"
+											/>
+											{ __( 'Custom URL', 'sureforms' ) }
+										</div>
+									</label>
+								</div>
+							</div>
+						) }
 						{ data?.confirmation_type === 'different page' && (
 							<div className="srfm-modal-option-box">
 								<div className="srfm-modal-label">
