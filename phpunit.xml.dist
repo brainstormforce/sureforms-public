@@ -13,4 +13,14 @@
 			<exclude>./tests/test-sample.php</exclude>
 		</testsuite>
 	</testsuites>
+
+	<coverage processUncoveredFiles="true">
+        <include>
+            <directory suffix=".php">./inc/helper.php</directory>
+        </include>
+        <report>
+            <html outputDirectory="./coverage-report" />
+            <text showUncoveredFiles="true" />
+        </report>
+    </coverage>
 </phpunit>

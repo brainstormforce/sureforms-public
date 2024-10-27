@@ -42,3 +42,4 @@ assets/js/minified/*
 .dccache
 
 .phpunit.result.cache
+coverage-report

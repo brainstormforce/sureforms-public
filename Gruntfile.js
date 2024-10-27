@@ -136,6 +136,7 @@ module.exports = function ( grunt ) {
 					'!bin/**',
 					'!artifact/**',
 					'!sass/**',
+					'!coverage-report/**',
 					'!assets/css/unminified/**',
 					'!assets/js/unminified/**',
 					'!src/**',
