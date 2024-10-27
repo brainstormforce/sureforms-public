@@ -40,3 +40,5 @@ assets/js/minified/*
 .DS_Store
 
 .dccache
+
+.phpunit.result.cache
