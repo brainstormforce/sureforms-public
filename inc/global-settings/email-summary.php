@@ -9,11 +9,11 @@
 namespace SRFM\Inc\Global_Settings;
 
 use SRFM\Inc\Database\Tables\Entries;
-use WP_REST_Response;
-use WP_REST_Request;
-use WP_Query;
-use SRFM\Inc\Traits\Get_Instance;
 use SRFM\Inc\Helper;
+use SRFM\Inc\Traits\Get_Instance;
+use WP_Query;
+use WP_REST_Request;
+use WP_REST_Response;
 
 /**
  * Email Summary Class.

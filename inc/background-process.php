@@ -8,9 +8,8 @@
 
 namespace SRFM\Inc;
 
-use SRFM\Inc\Traits\Get_Instance;
-use SRFM\Inc\Helper;
 use SRFM\Inc\Database\Tables\Entries;
+use SRFM\Inc\Traits\Get_Instance;
 use WP_REST_Server;
 
 if ( ! defined( 'ABSPATH' ) ) {

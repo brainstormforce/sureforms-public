@@ -65,7 +65,8 @@ class Admin {
 		if ( 'hide' === $dismiss ) {
 			// If we are here then it means user has dismissed the notice 'hide'.
 			return;
-		} elseif ( ! $dismiss ) {
+		}
+		if ( ! $dismiss ) {
 			// If we are here then it means user don't have version saved in the db initially so we need to proceed with notice accordingly.
 			if ( empty( get_posts( [ 'post_type' => 'sureforms_entry' ] ) ) ) {
 				// If we are here then we are certain that this is a fresh setup without legacy entries so we can hide the notice.

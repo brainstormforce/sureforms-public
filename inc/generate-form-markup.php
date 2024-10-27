@@ -427,9 +427,9 @@ class Generate_Form_Markup {
 
 		$confirmation_data = is_array( $form_confirmation[0] ) && isset( $form_confirmation[0][0] ) ? $form_confirmation[0][0] : null;
 
-		$page_url          = isset( $confirmation_data['page_url'] ) ? $confirmation_data['page_url'] : '';
-		$custom_url        = isset( $confirmation_data['custom_url'] ) ? $confirmation_data['custom_url'] : '';
-		$confirmation_type = isset( $confirmation_data['confirmation_type'] ) ? $confirmation_data['confirmation_type'] : '';
+		$page_url          = $confirmation_data['page_url'] ?? '';
+		$custom_url        = $confirmation_data['custom_url'] ?? '';
+		$confirmation_type = $confirmation_data['confirmation_type'] ?? '';
 		if ( 'different page' === $confirmation_type ) {
 			$redirect_url = esc_url( $page_url );
 		} elseif ( 'custom url' === $confirmation_type ) {

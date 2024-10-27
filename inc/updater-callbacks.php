@@ -19,7 +19,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 1.0.0
  */
 class Updater_Callbacks {
-
 	/**
 	 * Update callback method to handle the entries migration admin notice for existing users.
 	 *

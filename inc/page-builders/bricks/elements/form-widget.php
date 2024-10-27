@@ -8,9 +8,9 @@
 
 namespace SRFM\Inc\Page_Builders\Bricks\Elements;
 
+use Spec_Gb_Helper;
 use SRFM\Inc\Helper;
 use SRFM\Inc\Page_Builders\Page_Builders;
-use Spec_Gb_Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
