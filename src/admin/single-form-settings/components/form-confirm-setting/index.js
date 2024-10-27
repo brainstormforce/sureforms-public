@@ -3,9 +3,9 @@ import { useDispatch, useSelect } from '@wordpress/data';
 import { store as editorStore } from '@wordpress/editor';
 import { useEffect, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
-import Select from 'react-select';
 import { useDebouncedCallback } from 'use-debounce';
-import Editor from '../QuillEditor';
+import { applyFilters } from '@wordpress/hooks';
+import DefaultConfirmationTypes from './DefaultConfirmationTypes';
 
 const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 	const sureforms_keys = useSelect( ( select ) =>
@@ -17,7 +17,6 @@ const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 	const [ pageOptions, setPageOptions ] = useState( [] );
 	const [ errorMessage, setErrorMessage ] = useState( null );
 	const [ showSuccess, setShowSuccess ] = useState( null );
-	const [ canDisplayError, setCanDisplayError ] = useState( false );
 
 	const handleSaveChanges = () => {
 		const validationStatus = validateForm();
@@ -92,9 +91,6 @@ const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 		}
 		return validation;
 	};
-	const handleEditorChange = ( newContent ) => {
-		setData( { ...data, message: newContent } );
-	};
 
 	function updateMeta( option, value ) {
 		const option_array = {};
@@ -128,10 +124,36 @@ const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 		}
 	}, [] );
 
-	useEffect( () => {
-		// Do not display pre-validation message right after changing tabs or confirmation type.
-		setCanDisplayError( false );
-	}, [ data?.confirmation_type ] );
+	// Added filter so that the additional confirmation types can be added.
+	const confirmationTypeInputs = applyFilters( 'srfm.formConfirmation.confirmationType.inputs', [
+		{
+			label: __( 'Success Message', 'sureforms' ),
+			value: 'same page',
+			component: <DefaultConfirmationTypes data={ data } setData={ setData } pageOptions={ pageOptions } errorMessage={ errorMessage } setErrorMessage={ setErrorMessage } />,
+		},
+		{
+			label: __( 'Redirect', 'sureforms' ),
+			value: 'different page',
+			subOptionLabel: __( 'Redirect to', 'sureforms' ),
+			subOptions: [
+				{
+					label: __( 'Page', 'sureforms' ),
+					value: 'different page',
+				},
+				{
+					label: __( 'Custom URL', 'sureforms' ),
+					value: 'custom url',
+				},
+			],
+			component: <DefaultConfirmationTypes data={ data } setData={ setData } pageOptions={ pageOptions } errorMessage={ errorMessage } setErrorMessage={ setErrorMessage } />,
+		},
+	] );
+
+	// Find the selected confirmation type and sub type (if any).
+	const confirmationOption = confirmationTypeInputs.find( ( option ) =>
+		option.value === data?.confirmation_type ||
+		option.subOptions?.some( ( subOption ) => subOption.value === data?.confirmation_type )
+	);
 
 	return (
 		<div className="srfm-modal-content">
@@ -154,305 +176,79 @@ const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 								</label>
 							</div>
 							<div className="srfm-options-wrapper">
-								<label
-									className="srfm-option-label"
-									htmlFor="confirm-type-1"
-								>
-									<div
-										className={ `srfm-option ${ data?.confirmation_type === 'same page'
-											? 'srfm-active-conf-type'
-											: ''
-										}` }
-									>
-										<input
-											className="srfm-option-input"
-											value="same page"
-											checked={
-												data?.confirmation_type ===
-											'same page'
-											}
-											onChange={ ( e ) =>
-												setData( {
-													...data,
-													confirmation_type:
-													e.target.value,
-												} )
-											}
-											type="radio"
-											id="confirm-type-1"
-											name="confirm-type"
-										/>
-
-										{ __( 'Success Message', 'sureforms' ) }
-									</div>
-								</label>
-								<label className="srfm-option-label" htmlFor="confirm-type-2">
-									<div className={ `srfm-option ${ [ 'different page', 'custom url' ].includes( data?.confirmation_type ) ? 'srfm-active-conf-type' : '' }` }>
-										<input
-											className="srfm-option-input"
-											value="redirect"
-											checked={ [ 'different page', 'custom url' ].includes( data?.confirmation_type ) }
-											onChange={ () => {
-												setData( { ...data, confirmation_type: 'different page' } );
-											} }
-											type="radio"
-											id="confirm-type-2"
-											name="confirm-type"
-										/>
-										{ __( 'Redirect', 'sureforms' ) }
-									</div>
-								</label>
+								{
+									confirmationTypeInputs.map( ( option, index ) => {
+										// isActive is a boolean value that is true if the current option is selected.
+										// The array includes is used to check if the current option selected is under the redirect tab without modifying the original code.
+										const isActive = [ 'different page', 'custom url' ].includes( data?.confirmation_type ) ? [ 'different page', 'custom url' ].includes( option.value ) : data?.confirmation_type === option.value;
+										return (
+											<label
+												className="srfm-option-label"
+												htmlFor={ `confirm-type-${ index }` }
+												key={ index }
+											>
+												<div
+													className={ `srfm-option ${ isActive ? 'srfm-active-conf-type' : '' }` }
+												>
+													<input
+														className="srfm-option-input"
+														value={ option.value }
+														checked={ isActive }
+														onChange={ ( e ) => setData( { ...data, confirmation_type: e.target.value } ) }
+														type="radio"
+														id={ `confirm-type-${ index }` }
+														name="confirm-type"
+													/>
+													{ option.label }
+												</div>
+											</label>
+										);
+									} )
+								}
 							</div>
 						</div>
-						{ [ 'different page', 'custom url' ].includes( data?.confirmation_type ) && (
-							<div className="srfm-modal-option-box">
-								<div className="srfm-modal-label">
-									{ __( 'Redirect to', 'sureforms' ) }
-								</div>
-								<div className="srfm-options-wrapper">
-									<label className="srfm-option-label" htmlFor="confirm-type-redirect-page">
-										<div className={ `srfm-option ${ data?.confirmation_type === 'redirect page' ? 'srfm-active-conf-type' : '' }` }>
-											<input
-												className="srfm-option-input"
-												value="different page"
-												checked={ data?.confirmation_type === 'different page' }
-												onChange={ ( e ) => {
-													setData( { ...data, confirmation_type: e.target.value } );
-												} }
-												type="radio"
-												id="confirm-type-redirect-page"
-												name="redirect-type"
-											/>
-											{ __( 'Page', 'sureforms' ) }
-										</div>
-									</label>
-									<label className="srfm-option-label" htmlFor="confirm-type-custom-url" >
-										<div className={ `srfm-option ${ data?.confirmation_type === 'custom url' ? 'srfm-active-conf-type' : '' }` }>
-											<input
-												className="srfm-option-input"
-												value="custom url"
-												checked={ data?.confirmation_type === 'custom url' }
-												onChange={ ( e ) => {
-													setData( { ...data, confirmation_type: e.target.value } );
-												} }
-												type="radio"
-												id="confirm-type-custom-url"
-												name="redirect-type"
-											/>
-											{ __( 'Custom URL', 'sureforms' ) }
-										</div>
-									</label>
-								</div>
-							</div>
-						) }
-						{ data?.confirmation_type === 'different page' && (
-							<div className="srfm-modal-option-box">
-								<div className="srfm-modal-label">
-									<label>
-										{ __( 'Select Page', 'sureforms' ) }
-										<span className="srfm-validation-error">
-											{ ' ' }
-											*
-										</span>
-									</label>
-								</div>
-								<div className="srfm-options-wrapper">
-									<Select
-										className="srfm-select-page"
-										value={ pageOptions?.filter(
-											( option ) =>
-												option.value === data?.page_url
-										) }
-										options={ pageOptions }
-										isMulti={ false }
-										onChange={ ( e ) => {
-											setCanDisplayError( true );
-											setErrorMessage( null );
-											setData( {
-												...data,
-												page_url: e.value,
-											} );
-										} }
-										classNamePrefix={ 'srfm-select' }
-										menuPlacement="auto"
-										styles={ {
-											control: (
-												baseStyles,
-												state
-											) => ( {
-												...baseStyles,
-												boxShadow: state.isFocused
-													? '0 0 0 1px #D54406'
-													: '0 1px 2px 0 rgba(13, 19, 30, .1)', // Primary color for option when focused
-												borderColor: state.isFocused
-													? '#D54406'
-													: '#dce0e6', // Primary color for focus
-												'&:hover': {
-													borderColor: '#D54406', // Primary color for hover
-												},
-												'&:active': {
-													borderColor: '#D54406', // Primary color for active
-												},
-												'&:focus-within': {
-													borderColor: '#D54406', // Primary color for focus within
-												},
-											} ),
-											option: ( baseStyles, state ) => ( {
-												...baseStyles,
-												backgroundColor: state.isFocused
-													? '#FFEFE8'
-													: state.isSelected
-														? '#D54406'
-														: 'white', // Background color for option when focused or selected
-												color: state.isFocused
-													? 'black'
-													: state.isSelected
-														? 'white'
-														: 'black', // Text color for option when focused or selected
-											} ),
-										} }
-										theme={ ( theme ) => ( {
-											...theme,
-											colors: {
-												...theme.colors,
-												primary50: '#FFEFE8',
-												primary: '#D54406',
-											},
-										} ) }
-									/>
-								</div>
-							</div>
-						) }
-						{ data?.confirmation_type === 'custom url' && (
-							<div className="srfm-modal-option-box">
-								<div className="srfm-modal-label">
-									<label>
-										{ __( 'Custom URL', 'sureforms' ) }
-										<span className="srfm-validation-error">
-											{ ' ' }
-											*
-										</span>
-									</label>
-								</div>
-								<input
-									value={ data?.custom_url }
-									className="srfm-modal-input"
-									onChange={ ( e ) => {
-										setCanDisplayError( true );
-										setData( {
-											...data,
-											custom_url: e.target.value,
-										} );
-									} }
-								/>
-							</div>
-						) }
-						{ canDisplayError && errorMessage && (
-							<div className="srfm-validation-error">
-								{ errorMessage }
-							</div>
-						) }
-						{ data?.confirmation_type === 'same page' && (
-							<div className="srfm-modal-area-box">
-								<div className="srfm-modal-area-header">
-									<div className="srfm-modal-area-header-text">
-										<p>
-											{ __(
-												'Confirmation Message',
-												'sureforms'
-											) }
-										</p>
+						{
+							confirmationOption?.subOptionLabel && (
+								<div className="srfm-modal-option-box">
+									<div className="srfm-modal-label">
+										<label>
+											{ confirmationOption?.subOptionLabel }
+										</label>
+									</div>
+									<div className="srfm-options-wrapper">
+										{
+										// render the suboptions based on the selected confirmation type.
+											confirmationOption?.subOptions?.map( ( subOption, index ) => (
+												<label
+													className="srfm-option-label"
+													htmlFor={ `suboptions-type-${ index }` }
+													key={ index }
+												>
+													<div
+														className={ `srfm-option ${ data?.confirmation_type === subOption.value ? 'srfm-active-conf-type' : '' }` }
+													>
+														<input
+															className="srfm-option-input"
+															value={ subOption.value }
+															checked={ data?.confirmation_type === subOption.value }
+															onChange={ ( e ) => setData( { ...data, confirmation_type: e.target.value } ) }
+															type="radio"
+															id={ `suboptions-type-${ index }` }
+															name="suboptions-type"
+														/>
+														{ subOption.label }
+													</div>
+												</label>
+											) )
+										}
 									</div>
 								</div>
-								<div className="srfm-editor-wrap">
-									<Editor
-										handleContentChange={
-											handleEditorChange
-										}
-										content={ data?.message }
-									/>
-								</div>
-							</div>
-						) }
-						{ data?.confirmation_type === 'same page' && (
-							<div className="srfm-modal-option-box">
-								<div className="srfm-modal-label">
-									<label>
-										{ __(
-											'After Form Submission',
-											'sureforms'
-										) }
-									</label>
-								</div>
-								<div className="srfm-options-wrapper">
-									<label
-										className="srfm-option-label"
-										htmlFor="submission-type-1"
-									>
-										<div
-											className={ `srfm-option ${ data?.submission_action ===
-											'hide form'
-												? 'srfm-active-after-submit'
-												: ''
-											}` }
-										>
-											<input
-												className="srfm-option-input"
-												type="radio"
-												value="hide form"
-												checked={
-													data?.submission_action ===
-												'hide form'
-												}
-												onChange={ ( e ) =>
-													setData( {
-														...data,
-														submission_action:
-														e.target.value,
-													} )
-												}
-												id="submission-type-1"
-												name="submission-type"
-											/>
-
-											{ __( 'Hide Form', 'sureforms' ) }
-										</div>
-									</label>
-									<label
-										className="srfm-option-label"
-										htmlFor="submission-type-2"
-									>
-										<div
-											className={ `srfm-option ${ data?.submission_action ===
-											'reset form'
-												? 'srfm-active-after-submit'
-												: ''
-											}` }
-										>
-											<input
-												className="srfm-option-input"
-												type="radio"
-												value="reset form"
-												checked={
-													data?.submission_action ===
-												'reset form'
-												}
-												onChange={ ( e ) =>
-													setData( {
-														...data,
-														submission_action:
-														e.target.value,
-													} )
-												}
-												id="submission-type-2"
-												name="submission-type"
-											/>
-											{ __( 'Reset Form', 'sureforms' ) }
-										</div>
-									</label>
-								</div>
-							</div>
-						) }
+							)
+						}
+						{
+							// Render the associated component based on the selected confirmation type.
+							confirmationOption?.component
+						}
 					</div>
 				</div>
 			</div>
