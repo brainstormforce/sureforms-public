@@ -17,7 +17,7 @@ export default ( { loading, className } ) => {
 				const formattedDate = oneMonthAgo.toISOString();
 
 				// Define the REST API endpoint to fetch posts.
-				const endpoint = `/wp/v2/sureforms_entry?per_page=-1&after=${ formattedDate }`;
+				const endpoint = `sureforms/v1/entries-chart-data?&after=${ formattedDate }`;
 
 				const response = await apiFetch( { path: endpoint } );
 
@@ -25,7 +25,7 @@ export default ( { loading, className } ) => {
 				const postsData = {};
 
 				response.forEach( ( post ) => {
-					const postDate = new Date( post.date ).toLocaleDateString();
+					const postDate = new Date( post.created_at ).toLocaleDateString();
 
 					if ( ! postsData[ postDate ] ) {
 						postsData[ postDate ] = 1;

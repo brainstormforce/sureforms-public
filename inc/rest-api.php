@@ -11,7 +11,7 @@ use SRFM\Inc\AI_Form_Builder\AI_Auth;
 use SRFM\Inc\AI_Form_Builder\AI_Form_Builder;
 use SRFM\Inc\AI_Form_Builder\Field_Mapping;
 use SRFM\Inc\Traits\Get_Instance;
-
+use SRFM\Inc\Database\Tables\Entries;
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
@@ -150,6 +150,12 @@ class Rest_Api {
 			'handle-access-key'    => [
 				'methods'             => 'POST',
 				'callback'            => [ AI_Auth::get_instance(), 'handle_access_key' ],
+				'permission_callback' => [ $this, 'can_edit_posts' ],
+			],
+			// This route is to get the form submissions for the last 30 days.
+			'entries-chart-data'   => [
+				'methods'             => 'GET',
+				'callback'            => [ Entries::get_instance(), 'get_entries_chart_data' ],
 				'permission_callback' => [ $this, 'can_edit_posts' ],
 			],
 		];

@@ -341,8 +341,14 @@ class Smart_Tags {
 			if ( $slug === $target_slug ) {
 					// if $submission_item_value is an array, make a tag for each item.
 				if ( 0 === strpos( $block_type, 'srfm-upload' ) && is_array( $submission_item_value ) ) {
-					foreach ( $submission_item_value as $value ) {
-						$replacement_data .= '<a href=' . urldecode( $value ) . ' target="_blank">' . __( 'View', 'sureforms' ) . '</a><br>';
+					// Implemented key upload_format_type to determine what to return for urls.
+					// for raw urls are return as comma separated strings.
+					if ( ! empty( $form_data['upload_format_type'] ) && 'raw' === $form_data['upload_format_type'] ) {
+						$replacement_data = urldecode( implode( ', ', $submission_item_value ) );
+					} else {
+						foreach ( $submission_item_value as $value ) {
+							$replacement_data .= '<a href=' . urldecode( $value ) . ' target="_blank">' . __( 'View', 'sureforms' ) . '</a><br>';
+						}
 					}
 				} else {
 					$replacement_data .= $submission_item_value;

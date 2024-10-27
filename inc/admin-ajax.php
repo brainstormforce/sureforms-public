@@ -52,7 +52,7 @@ class Admin_Ajax {
 			wp_send_json_error();
 		}
 
-		update_option( 'srfm_dismiss_entries_migration_notice', true );
+		update_option( 'srfm_dismiss_entries_migration_notice', 'hide' );
 
 		wp_send_json_success();
 	}

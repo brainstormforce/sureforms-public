@@ -169,7 +169,7 @@ class Inlinebutton_Markup extends Base {
 		ob_start(); ?>
 			<?php if ( ! $this->is_page_break ) { ?>
 				<?php if ( $this->captcha_security_type && 'none' !== $this->captcha_security_type ) { ?>
-			<div class="srfm-captcha-container">
+			<div class="srfm-captcha-container <?php echo esc_attr( 'v3-reCAPTCHA' === $this->recaptcha_version || 'v2-invisible' === $this->recaptcha_version ? 'srfm-display-none' : '' ); ?>">
 					<?php if ( 'g-recaptcha' === $this->captcha_security_type && 'v2-checkbox' === $this->recaptcha_version ) { ?>
 						<?php echo "<div class='g-recaptcha' data-callback='onSuccess' recaptcha-type='" . esc_attr( $this->recaptcha_version ) . "' data-sitekey='" . esc_attr( strval( $this->google_captcha_site_key ) ) . "'></div>"; ?>
 					<?php } ?>

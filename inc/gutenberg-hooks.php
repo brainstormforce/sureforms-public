@@ -59,7 +59,7 @@ class Gutenberg_Hooks {
 	 *
 	 * @param bool|array<string>       $allowed_block_types Array of block types.
 	 * @param \WP_Block_Editor_Context $editor_context The current block editor context.
-	 * @return array<mixed>|void
+	 * @return array<mixed>|bool
 	 * @since 0.0.1
 	 */
 	public function disable_forms_wrapper_block( $allowed_block_types, $editor_context ) {
@@ -85,6 +85,9 @@ class Gutenberg_Hooks {
 			// Apply a filter to the $allow_block_types types array.
 			return apply_filters( 'srfm_allowed_block_types', $allow_block_types, $editor_context );
 		}
+
+		// Return the default $allowed_block_types value.
+		return $allowed_block_types;
 	}
 
 	/**

@@ -488,7 +488,7 @@ abstract class Base {
 	 *                       If omitted, all values in `$data` will be treated as strings unless otherwise
 	 *                       specified in wpdb::$field_types. Default null.
 	 * @since 0.0.10
-	 * @return int|false The number of rows inserted, or false on error.
+	 * @return int|false The id of the inserted entry, or false on error.
 	 */
 	public function use_insert( $data, $format = null ) {
 		$prepared_data = $this->prepare_data( $data );
@@ -502,7 +502,8 @@ abstract class Base {
 			$format = $prepared_data['format'];
 		}
 
-		return $this->wpdb->insert( $this->get_tablename(), $prepared_data['data'], $format );
+		$result = $this->wpdb->insert( $this->get_tablename(), $prepared_data['data'], $format );
+		return $result ? $this->wpdb->insert_id : false;
 	}
 
 	/**
