@@ -150,7 +150,7 @@ class Field_Mapping {
 						if ( ! empty( $merged_attributes['showText'] ) ) {
 							foreach ( $question['tooltipValues'] as $tooltips ) {
 								$i = 0;
-								foreach ( $tooltips as $key => $value ) {
+								foreach ( $tooltips as $value ) {
 									$merged_attributes['ratingText'][ $i ] = ! empty( $value ) ? sanitize_text_field( $value ) : '';
 									$i++;
 								}

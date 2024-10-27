@@ -79,8 +79,6 @@ class Email_Template {
 	 * @return string|false footer tags.
 	 */
 	public function get_footer() {
-		// Translators: Site URL.
-		$site_link = sprintf( __( '<a href=%1$s>%2$s</a>', 'sureforms' ), home_url( '/' ), get_bloginfo( 'name' ) );
 		ob_start();
 		?>
 																				</div>

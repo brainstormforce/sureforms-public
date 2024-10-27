@@ -13,7 +13,6 @@ use SRFM\Inc\Email\Email_Template;
 use SRFM\Inc\Lib\Browser\Browser;
 use SRFM\Inc\Traits\Get_Instance;
 use WP_Error;
-use WP_REST_Request;
 use WP_REST_Server;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -75,10 +74,9 @@ class Form_Submit {
 	 * Check whether a given request has permission access route.
 	 *
 	 * @since 0.0.1
-	 * @param  WP_REST_Request $request Full details about the request.
 	 * @return WP_Error|bool
 	 */
-	public function permissions_check( $request ) {
+	public function permissions_check() {
 		if ( ! current_user_can( 'manage_options' ) ) {
 			return new WP_Error( 'rest_forbidden', __( 'Sorry, you cannot access this route', 'sureforms' ), [ 'status' => rest_authorization_required_code() ] );
 		}
@@ -463,14 +461,12 @@ class Form_Submit {
 			}
 		}
 
-		$name         = sanitize_text_field( get_the_title( intval( $id ) ) );
-		$send_email   = $this->send_email( $id, $submission_data );
-		$is_mail_sent = false;
-		$emails       = [];
+		$name       = sanitize_text_field( get_the_title( intval( $id ) ) );
+		$send_email = $this->send_email( $id, $submission_data );
+		$emails     = [];
 
 		if ( $send_email ) {
-			$emails       = $send_email['emails'];
-			$is_mail_sent = $send_email['success'];
+			$emails = $send_email['emails'];
 		}
 
 		// Check if GDPR is enabled and do not store entries is enabled.
@@ -525,21 +521,9 @@ class Form_Submit {
 			$device_name  = sanitize_text_field( $browser->getPlatform() );
 		}
 
-		$form_markup  = get_the_content( null, false, Helper::get_integer_value( $form_data['form-id'] ) );
-		$sender_email = '';
-		$pattern      = '/"label":"(.*?)"/';
+		$form_markup = get_the_content( null, false, Helper::get_integer_value( $form_data['form-id'] ) );
+		$pattern     = '/"label":"(.*?)"/';
 		preg_match_all( $pattern, $form_markup, $matches );
-		$labels = $matches[1];
-
-		$honeypot = is_array( $global_setting_options ) && isset( $global_setting_options['srfm_honeypot'] ) ? $global_setting_options['srfm_honeypot'] : '';
-
-		$key               = strval( $form_data_keys[4] );
-		$first_field_value = $form_data[ $key ];
-
-		if ( $honeypot ) {
-			$key               = strval( $form_data_keys[5] );
-			$first_field_value = $form_data[ $key ];
-		}
 		$submission_info = [
 			'user_ip'      => $user_ip,
 			'browser_name' => $browser_name,
@@ -650,10 +634,7 @@ class Form_Submit {
 						$email_body     = $smart_tags->process_smart_tags( $item['email_body'], $submission_data );
 						$email_template = new Email_Template();
 						$message        = $email_template->render( $submission_data, $email_body );
-						$headers        = "
-						From: {$from}\r\n" .
-						'X-Mailer: PHP/' . phpversion() . "\r\n" .
-						"Content-Type: text/html; charset=utf-8\r\n";
+						$headers        = "From: {$from}\r\nX-Mailer: PHP/" . phpversion() . "\r\nContent-Type: text/html; charset=utf-8\r\n";
 						if ( isset( $item['email_reply_to'] ) && ! empty( $item['email_reply_to'] ) ) {
 							$headers .= 'Reply-To:' . $smart_tags->process_smart_tags( $item['email_reply_to'], $submission_data ) . "\r\n";
 						} else {

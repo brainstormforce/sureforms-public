@@ -75,7 +75,7 @@ class Background_Process {
 				'args'                => [
 					'submission_id' => [
 						'required'          => true,
-						'validate_callback' => static function( $param, $request, $key ) {
+						'validate_callback' => static function( $param ) {
 							return is_integer( Helper::get_integer_value( $param ) ) && 0 < $param;
 						},
 					],

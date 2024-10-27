@@ -497,7 +497,7 @@ abstract class Base {
 			/**
 			 * Use formats from schema if not provided explicitly.
 			 *
-			 * @var array<string>|string|null
+			 * @var array<string>|string|null $format Format specifier for the data.
 			 */
 			$format = $prepared_data['format'];
 		}
@@ -527,7 +527,7 @@ abstract class Base {
 		/**
 		 * Data format specifier.
 		 *
-		 * @var array<string>|string|null
+		 * @var array<string>|string|null $format Format specifier for the data.
 		 */
 		$format = $prepared_data['format'];
 
