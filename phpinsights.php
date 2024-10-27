@@ -56,7 +56,7 @@ return [
 	*/
 
 	'exclude'      => [
-		'assets/*',
+		'assets',
 		'modules',
 		'tests/*',
 		'inc/lib',
@@ -220,6 +220,17 @@ return [
 		 * This rule conflicts with wpcs comment rules
 		 */
 		PhpCsFixer\Fixer\Comment\NoTrailingWhitespaceInCommentFixer::class,
+
+
+		/**
+		 * Since we define global constant
+		 */
+		NunoMaduro\PhpInsights\Domain\Insights\ForbiddenDefineGlobalConstants::class,
+
+		/**
+		 * As we use traits.
+		 */
+		NunoMaduro\PhpInsights\Domain\Insights\ForbiddenTraits::class,
 	],
 
 	'config'       => [],
