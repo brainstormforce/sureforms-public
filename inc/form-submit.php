@@ -577,14 +577,17 @@ class Form_Submit {
 
 			$modified_message = $this->prepare_submission_data( $submission_data );
 
-			$form_submit_response = [
-				'success'   => true,
-				'form_id'   => $id ? intval( $id ) : '',
-				'to_emails' => $emails,
-				'form_name' => $name ? esc_attr( $name ) : '',
-				'message'   => Generate_Form_Markup::get_confirmation_markup( $form_data, $submission_data ),
-				'data'      => $modified_message,
-			];
+			$form_submit_response = apply_filters(
+				'srfm_form_submit_response',
+				[
+					'success'   => true,
+					'form_id'   => $id ? intval( $id ) : '',
+					'to_emails' => $emails,
+					'form_name' => $name ? esc_attr( $name ) : '',
+					'message'   => Generate_Form_Markup::get_confirmation_markup( $form_data, $submission_data ),
+					'data'      => $modified_message,
+				]
+			);
 
 			do_action( 'srfm_form_submit', $form_submit_response );
 		} else {
