@@ -155,6 +155,12 @@ const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 		option.subOptions?.some( ( subOption ) => subOption.value === data?.confirmation_type )
 	);
 
+	// Check if the option or any of its sub-options matches the confirmation type.
+	const isOptionActive = ( option, confirmationType ) => {
+		return option.value === confirmationType ||
+			option.subOptions?.some( ( subOption ) => subOption.value === confirmationType );
+	};
+
 	return (
 		<div className="srfm-modal-content">
 			<div className="srfm-modal-inner-content">
@@ -178,9 +184,7 @@ const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 							<div className="srfm-options-wrapper">
 								{
 									confirmationTypeInputs.map( ( option, index ) => {
-										// isActive is a boolean value that is true if the current option is selected.
-										// The array includes is used to check if the current option selected is under the redirect tab without modifying the original code.
-										const isActive = [ 'different page', 'custom url' ].includes( data?.confirmation_type ) ? [ 'different page', 'custom url' ].includes( option.value ) : data?.confirmation_type === option.value;
+										const isActive = isOptionActive( option, data?.confirmation_type );
 										return (
 											<label
 												className="srfm-option-label"
