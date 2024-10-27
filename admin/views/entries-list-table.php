@@ -969,25 +969,27 @@ class Entries_List_Table extends \WP_List_Table {
 			return;
 		}
 		// Get the entry data to get the file URLs.
-		$meta_data = Entries::get_form_data( $entry_id );
-		if ( empty( $meta_data ) ) {
+		$form_data = Entries::get_form_data( $entry_id );
+		if ( empty( $form_data ) ) {
 			return;
 		}
 		$upload_dir = wp_get_upload_dir();
-		foreach ( $meta_data as $field_name => $value ) {
-			if ( false !== strpos( $field_name, 'srfm-upload' ) && is_array( $value ) ) {
-				foreach ( $value as $file_url ) {
-					// If the file URL is empty, skip to the next iteration.
-					if ( empty( $file_url ) ) {
-						continue;
-					}
-					// Get the file path from the file URL.
-					$file_path = str_replace( $upload_dir['baseurl'], $upload_dir['basedir'], urldecode( $file_url ) );
+		foreach ( $form_data as $field_name => $value ) {
+			// Continue to the next iteration if the field name does not contain 'srfm-upload' and value is not an array.
+			if ( false === strpos( $field_name, 'srfm-upload' ) && ! is_array( $value ) ) {
+				continue;
+			}
+			foreach ( $value as $file_url ) {
+				// If the file URL is empty, skip to the next iteration.
+				if ( empty( $file_url ) ) {
+					continue;
+				}
+				// Get the file path from the file URL.
+				$file_path = str_replace( $upload_dir['baseurl'], $upload_dir['basedir'], urldecode( $file_url ) );
 
-					// Delete the file if it exists.
-					if ( file_exists( $file_path ) ) {
-						unlink( $file_path );
-					}
+				// Delete the file if it exists.
+				if ( file_exists( $file_path ) ) {
+					unlink( $file_path );
 				}
 			}
 		}
