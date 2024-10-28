@@ -257,7 +257,7 @@ class Admin_Ajax {
 		}
 
 		$form_name = ! empty( $form->post_title ) ? $form->post_title : 'SureForms id: ' . $form_id;
-		$api_url   = apply_filters( 'suretriggers_get_iframe_url', SRFM_SURETRIGGERS_INTERGATION_BASE_URL );
+		$api_url   = apply_filters( 'suretriggers_get_iframe_url', SRFM_SURETRIGGERS_INTEGRATION_BASE_URL );
 
 		// This is the format of data required by SureTriggers for adding iframe in target id.
 		$body = [
