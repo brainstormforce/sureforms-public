@@ -156,7 +156,7 @@ const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 		{
 			label: __( 'Success Message', 'sureforms' ),
 			value: 'same page',
-			component: <DefaultConfirmationTypes data={ data } setData={ setData } pageOptions={ pageOptions } errorMessage={ errorMessage } setErrorMessage={ setErrorMessage } />,
+			component: <DefaultConfirmationTypes data={ data } setData={ setData } pageOptions={ pageOptions } errorMessage={ errorMessage } setErrorMessage={ setErrorMessage } keyValueComponent={ keyValueComponent } />,
 		},
 		{
 			label: __( 'Redirect', 'sureforms' ),
@@ -172,7 +172,7 @@ const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 					value: 'custom url',
 				},
 			],
-			component: <DefaultConfirmationTypes data={ data } setData={ setData } pageOptions={ pageOptions } errorMessage={ errorMessage } setErrorMessage={ setErrorMessage } />,
+			component: <DefaultConfirmationTypes data={ data } setData={ setData } pageOptions={ pageOptions } errorMessage={ errorMessage } setErrorMessage={ setErrorMessage } keyValueComponent={ keyValueComponent } />,
 		},
 	] );
 
