@@ -162,9 +162,11 @@ const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 	};
 
 	// Set the default confirmation type if the selected option is no longer available.
-	if ( ! confirmationOption ) {
-		setData( { ...data, confirmation_type: 'same page' } );
-	}
+	useEffect( () => {
+		if ( ! confirmationOption && data?.confirmation_type ) {
+			setData( { ...data, confirmation_type: 'same page' } );
+		}
+	}, [ data ] );
 
 	return (
 		<div className="srfm-modal-content">
