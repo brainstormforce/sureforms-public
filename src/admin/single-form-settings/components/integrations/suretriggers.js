@@ -16,7 +16,7 @@ const Suretriggers = ( { setSelectedTab } ) => {
 				<div className="srfm-modal-inner-heading">
 					<div onClick={ () => setSelectedTab( 'integrations' ) } className="srfm-modal-inner-heading-text srfm-modal-inner-heading-back-button">
 						<span className="srfm-back-btn">{ backArrow }</span>
-						<h4>{ __( 'Integrations', 'sureforms-pro' ) }</h4>
+						<h4>{ __( 'Integrations', 'sureforms' ) }</h4>
 					</div>
 				</div>
 				<div className="srfm-modal-inner-box" style={ { height: '100%' } }>
