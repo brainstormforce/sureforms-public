@@ -103,6 +103,7 @@ const Editor = ( {
 	return (
 		<>
 			<SmartTagList
+				tagFor='formSettings.quillEditor'
 				icon={ dropdownIcon }
 				text={ __( 'Add Shortcode', 'sureforms' ) }
 				cssClass={ 'srfm-editor-dropdown' }

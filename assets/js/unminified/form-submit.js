@@ -183,6 +183,17 @@ function showSuccessMessage(
 	container.classList.add( 'srfm-active' );
 	window?.srfm?.handleInstantFormWrapperHeight();
 	form.parentElement.scrollIntoView( { behavior: 'smooth' } );
+
+	// Create and dispatch a custom event
+	const event = new CustomEvent('SRFM_Form_Success_Message', {
+		detail: {
+			form: form,
+			element: element,
+			message: message,
+		}
+	});
+
+	document.dispatchEvent(event);
 }
 
 function redirectToUrl( url ) {
@@ -243,7 +254,9 @@ async function handleFormSubmission(
 					afterSubmit( formStatus );
 				}
 			} else {
-				redirectToUrl( successUrl );
+				if ( formStatus?.redirect_url ) {
+					redirectToUrl( formStatus?.redirect_url );
+				}
 				loader.classList.remove( 'srfm-active' );
 			}
 		} else {

@@ -6,6 +6,7 @@ import { __ } from '@wordpress/i18n';
 import { useDebouncedCallback } from 'use-debounce';
 import { applyFilters } from '@wordpress/hooks';
 import DefaultConfirmationTypes from './DefaultConfirmationTypes';
+import KeyValueUI from '@Components/misc/keyValueUI';
 
 const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 	const sureforms_keys = useSelect( ( select ) =>
@@ -50,6 +51,32 @@ const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 			}, 500 );
 		}
 	}, [ showSuccess ] );
+
+	const handleQueryParamsChange = ( queryParams ) => {
+		setData( { ...data, query_params: queryParams } );
+	};
+
+	const handleEnableQueryParams = ( checked ) => {
+		setData( { ...data, enable_query_params: checked } );
+	};
+
+	const keyValueComponent = () => {
+		return (
+			<KeyValueUI
+				data={ data?.query_params ?? [ { '': '' } ] }
+				enabled={ data?.enable_query_params ?? false }
+				setEnabled={ handleEnableQueryParams }
+				label={ __( 'Add Query Parameters', 'sureforms' ) }
+				helpText={ __(
+					'Select if you want to add key-value pairs for form fields to include in query parameters',
+					'sureforms'
+				) }
+				withSmartTags={ true }
+				header={ __( 'Query Parameters', 'sureforms' ) }
+				handleOnChange={ handleQueryParamsChange }
+			/>
+		);
+	};
 
 	const validateForm = () => {
 		let validation = '';
