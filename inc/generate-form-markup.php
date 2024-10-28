@@ -281,7 +281,7 @@ class Generate_Form_Markup {
 				?>
 				<?php if ( 0 !== $block_count && ! $is_inline_button || $is_page_break ) : ?>
 					<?php if ( ! empty( $security_type ) && 'none' !== $security_type ) : ?>
-					<div class="srfm-captcha-container">
+						<div class="srfm-captcha-container <?php echo esc_attr( 'v3-reCAPTCHA' === $recaptcha_version || 'v2-invisible' === $recaptcha_version ? 'srfm-display-none' : '' ); ?>">
 						<?php if ( is_string( $google_captcha_site_key ) && ! empty( $google_captcha_site_key ) && 'g-recaptcha' === $security_type ) : ?>
 
 							<?php if ( 'v2-checkbox' === $recaptcha_version ) : ?>
@@ -409,5 +409,69 @@ class Generate_Form_Markup {
 
 		return $confirmation_message;
 
+	}
+
+	/**
+	 * Get redirect url for form incase of different page or custom url is selected.
+	 *
+	 * @param array<mixed> $form_data contains form data.
+	 * @param array<mixed> $submission_data contains submission data.
+	 * @since x.x.x
+	 * @return string|false
+	 */
+	public static function get_redirect_url( $form_data = [], $submission_data = [] ) {
+		$redirect_url = '';
+
+		if ( empty( $form_data ) ) {
+			return $redirect_url;
+		}
+
+		$form_confirmation = isset( $form_data['form-id'] ) ?
+			get_post_meta( Helper::get_integer_value( $form_data['form-id'] ), '_srfm_form_confirmation' ) : null;
+
+		if ( ! is_array( $form_confirmation ) ) {
+			return $redirect_url;
+		}
+
+		$confirmation_data = is_array( $form_confirmation[0] ) && isset( $form_confirmation[0][0] ) ? $form_confirmation[0][0] : null;
+
+		$page_url          = isset( $confirmation_data['page_url'] ) ? $confirmation_data['page_url'] : '';
+		$custom_url        = isset( $confirmation_data['custom_url'] ) ? $confirmation_data['custom_url'] : '';
+		$confirmation_type = isset( $confirmation_data['confirmation_type'] ) ? $confirmation_data['confirmation_type'] : '';
+		if ( 'different page' === $confirmation_type ) {
+			$redirect_url = esc_url( $page_url );
+		} elseif ( 'custom url' === $confirmation_type ) {
+			$redirect_url = esc_url( $custom_url );
+		}
+
+		if ( empty( $redirect_url ) ) {
+			return $redirect_url;
+		}
+
+		if ( empty( $confirmation_data['enable_query_params'] ) || true !== $confirmation_data['enable_query_params'] ) {
+			return $redirect_url;
+		}
+
+		if ( empty( $confirmation_data['query_params'] ) && ! is_array( $confirmation_data['query_params'] ) ) {
+			return $redirect_url;
+		}
+
+		$query_params = [];
+		foreach ( $confirmation_data['query_params'] as $params ) {
+			if ( is_array( $params ) && ! empty( array_keys( $params ) ) && ! empty( array_values( $params ) ) ) {
+				$query_params[ esc_attr( array_keys( $params )[0] ) ] = esc_attr( array_values( $params )[0] );
+			}
+		}
+
+		$redirect_url = add_query_arg( $query_params, $redirect_url );
+
+		if ( ! empty( $submission_data ) ) {
+			$smart_tags = new Smart_Tags();
+			// Adding upload_format_type = 'raw' to retrieve urls as comma separated values.
+			$form_data['upload_format_type'] = 'raw';
+			$redirect_url                    = html_entity_decode( $smart_tags->process_smart_tags( $redirect_url, $submission_data, $form_data ) );
+		}
+
+		return $redirect_url;
 	}
 }

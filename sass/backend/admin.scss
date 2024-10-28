@@ -140,6 +140,15 @@ $placeholder_color: #9ca3af;
 		flex-direction: row;
 	}
 
+	&.srfm-flex-width-100 {
+		width: 100%;
+
+		.srfm-flex-2 {
+			flex: 2;
+			position: relative;
+		}
+	}
+
 	&.srfm-gap-normal {
 		gap: 16px;
 	}

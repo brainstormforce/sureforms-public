@@ -10,6 +10,7 @@ namespace SRFM\Inc\Page_Builders\Bricks\Elements;
 
 use SRFM\Inc\Helper;
 use SRFM\Inc\Page_Builders\Page_Builders;
+use Spec_Gb_Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -138,11 +139,17 @@ class Form_Widget extends \Bricks\Element {
 		$settings   = $this->settings;
 		$form_id    = isset( $settings['form-id'] ) ? $settings['form-id'] : '';
 		$form_title = isset( $settings['form-title'] );
+		// get spectra blocks and add css and js.
+		$blocks = parse_blocks( get_post_field( 'post_content', $form_id ) );
+		$styles = Spec_Gb_Helper::get_instance()->get_assets( $blocks );
 
 		if ( $form_id > 0 ) {
 			// phpcs:ignore -- WordPress.Security.EscapeOutput.OutputNotEscaped - Escaping not required.
-			echo '<div ' . $this->render_attributes( '_root' ) . '>' . do_shortcode( sprintf( '[sureforms id="%s" show_title="%s"]', $form_id, ! $form_title ) ) . '</div>';
-			// phpcs:ignoreEnd
+			echo '<div ' . $this->render_attributes( '_root' ) . '>' . do_shortcode( sprintf( '[sureforms id="%s" show_title="%s"]', $form_id, ! $form_title ) );
+			// phpcs:ignore -- WordPress.Security.EscapeOutput.OutputNotEscaped - Escaping not required.
+			echo '<style>' . $styles['css'] . '</style>';
+			// phpcs:ignore -- WordPress.Security.EscapeOutput.OutputNotEscaped - Escaping not required.
+			echo '<script>' . $styles['js'] . '</script></div>';
 		} else {
 			// Show placeholder when no form is selected.
 			// phpcs:ignore -- WordPress.Security.EscapeOutput.OutputNotEscaped - Escaping not required.

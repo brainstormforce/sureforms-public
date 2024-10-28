@@ -503,12 +503,13 @@ class Form_Submit {
 			do_action( 'srfm_after_submission_process', $form_data );
 
 			$response = [
-				'success' => true,
-				'message' => Generate_Form_Markup::get_confirmation_markup( $form_data, $submission_data ),
-				'data'    => [
+				'success'      => true,
+				'message'      => Generate_Form_Markup::get_confirmation_markup( $form_data, $submission_data ),
+				'data'         => [
 					'name'         => $name,
 					'after_submit' => false,
 				],
+				'redirect_url' => Generate_Form_Markup::get_redirect_url( $form_data, $submission_data ),
 			];
 
 			return $response;
@@ -564,13 +565,14 @@ class Form_Submit {
 		if ( $entry_id ) {
 
 			$response = [
-				'success' => true,
-				'message' => Generate_Form_Markup::get_confirmation_markup( $form_data, $submission_data ),
-				'data'    => [
+				'success'      => true,
+				'message'      => Generate_Form_Markup::get_confirmation_markup( $form_data, $submission_data ),
+				'data'         => [
 					'name'          => $name,
 					'submission_id' => $entry_id,
 					'after_submit'  => true,
 				],
+				'redirect_url' => Generate_Form_Markup::get_redirect_url( $form_data, $submission_data ),
 			];
 
 			$modified_message = $this->prepare_submission_data( $submission_data );
