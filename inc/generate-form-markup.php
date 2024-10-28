@@ -414,7 +414,7 @@ class Generate_Form_Markup {
 		$smart_tags           = new Smart_Tags();
 		$confirmation_message = $smart_tags->process_smart_tags( $confirmation_data['message'], $submission_data, $form_data );
 
-		return $confirmation_message;
+		return apply_filters( 'srfm_after_submit_confirmation_message', $confirmation_message );
 
 	}
 
@@ -479,6 +479,6 @@ class Generate_Form_Markup {
 			$redirect_url                    = html_entity_decode( $smart_tags->process_smart_tags( $redirect_url, $submission_data, $form_data ) );
 		}
 
-		return $redirect_url;
+		return apply_filters( 'srfm_after_submit_redirect_url', $redirect_url );
 	}
 }
