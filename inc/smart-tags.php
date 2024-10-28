@@ -137,7 +137,7 @@ class Smart_Tags {
 		$get_smart_tag_list = self::smart_tag_list();
 
 		foreach ( $matches[0] as $tag ) {
-			$is_valid_tag       = isset( $get_smart_tag_list[ $tag ] ) ||
+			$is_valid_tag = isset( $get_smart_tag_list[ $tag ] ) ||
 			strpos( $tag, 'get_input:' ) === 0 ||
 			strpos( $tag, 'get_cookie:' ) === 0 ||
 			0 === strpos( $tag, '{form:' );
