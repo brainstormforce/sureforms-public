@@ -161,6 +161,11 @@ const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 			option.subOptions?.some( ( subOption ) => subOption.value === confirmationType );
 	};
 
+	// Set the default confirmation type if the selected option is no longer available.
+	if ( ! confirmationOption ) {
+		setData( { ...data, confirmation_type: 'same page' } );
+	}
+
 	return (
 		<div className="srfm-modal-content">
 			<div className="srfm-modal-inner-content">
