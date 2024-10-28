@@ -8,7 +8,7 @@ export default () => {
 			xmlns="http://www.w3.org/2000/svg"
 		>
 			<g clipPath="url(#clip0_15961_16935)">
-				<rect width="24" height="24" fill="#030712" />
+				<rect width="24" height="24" fill="evenodd"/>
 				<path
 					d="M6.85742 5.14258H17.1431V8.57115H8.57171L6.85742 10.2854V8.57115V5.14258Z"
 					fill="white"
