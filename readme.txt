@@ -257,6 +257,9 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 = x.x.x =
 * New: Added support for query parameters in form confirmation.
 * Improvement: Merged the form confirmation redirect settings.
+* Improvement: Added filters for confirmation message and redirect url.
+* Fix: Blank entries screen displays after all entries are moved to trash.
+* Fix: Remove uploaded files when an entry is permanently deleted.
 = 1.0.1 - 24th October 2024 =
 * Fix: Extra space from the v3 reCAPTCHA container has been removed.
 * Fix: GDPR and checkbox labels are now editable across Chrome, Firefox, Safari, Arc etc.
