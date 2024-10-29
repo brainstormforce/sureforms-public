@@ -231,7 +231,7 @@ class Frontend_Assets {
 			}
 
 			if ( 'dropdown' !== $block_name ) {
-				wp_enqueue_script( SRFM_SLUG . "-{$block_name}", $js_uri . $block_name . $file_prefix . '.js', [], SRFM_VER, true );
+				wp_enqueue_script( SRFM_SLUG . "-{$block_name}", $js_uri . $block_name . $file_prefix . '.js', [ 'wp-a11y' ], SRFM_VER, true );
 			}
 
 			if ( 'input' === $block_name ) {
