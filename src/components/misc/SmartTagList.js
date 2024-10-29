@@ -17,16 +17,17 @@ export default function SmartTagList( {
 	const verticalDotIcon = parse( svgIcons.verticalDot );
 	const controls = [];
 
-	applyFilters( 'srfm.smartTagList.tagsArray', tagsArray, tagFor )
-	.forEach( ( tagsArrayItem ) => {
-		controls.push(
-			generateDropDownOptions(
-				setTargetData,
-				tagsArrayItem.tags,
-				tagsArrayItem.label
-			)
-		)
-	} );
+	applyFilters( 'srfm.smartTagList.tagsArray', tagsArray, tagFor ).forEach(
+		( tagsArrayItem ) => {
+			controls.push(
+				generateDropDownOptions(
+					setTargetData,
+					tagsArrayItem.tags,
+					tagsArrayItem.label
+				)
+			);
+		}
+	);
 
 	return (
 		<DropdownMenu

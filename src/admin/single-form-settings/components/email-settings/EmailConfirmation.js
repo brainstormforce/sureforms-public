@@ -154,7 +154,7 @@ const EmailConfirmation = ( props ) => {
 							/>
 							<p className="components-base-control__help">{ emailHelpText }</p>
 							<SmartTagList
-								tagFor='emailConfirmation.sendEmailTo'
+								tagFor="emailConfirmation.sendEmailTo"
 								tagsArray={ [
 									{
 										tags: formEmailSmartTags,
@@ -197,7 +197,7 @@ const EmailConfirmation = ( props ) => {
 							/>
 
 							<SmartTagList
-								tagFor='emailConfirmation.Subject'
+								tagFor="emailConfirmation.Subject"
 								tagsArray={ [
 									{
 										tags: formSmartTags,
@@ -280,7 +280,7 @@ const EmailConfirmation = ( props ) => {
 									/>
 									<p className="components-base-control__help">{ emailHelpText }</p>
 									<SmartTagList
-										tagFor='emailConfirmation.CC'
+										tagFor="emailConfirmation.CC"
 										tagsArray={ [
 											{
 												tags: formEmailSmartTags,
@@ -330,7 +330,7 @@ const EmailConfirmation = ( props ) => {
 									/>
 									<p className="components-base-control__help">{ emailHelpText }</p>
 									<SmartTagList
-										tagFor='emailConfirmation.BCC'
+										tagFor="emailConfirmation.BCC"
 										tagsArray={ [
 											{
 												tags: formEmailSmartTags,
@@ -376,7 +376,7 @@ const EmailConfirmation = ( props ) => {
 								/>
 								<p className="components-base-control__help">{ emailHelpText }</p>
 								<SmartTagList
-									tagFor='emailConfirmation.replyTo'
+									tagFor="emailConfirmation.replyTo"
 									tagsArray={ [
 										{
 											tags: formEmailSmartTags,

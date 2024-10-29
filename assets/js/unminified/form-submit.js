@@ -185,15 +185,15 @@ function showSuccessMessage(
 	form.parentElement.scrollIntoView( { behavior: 'smooth' } );
 
 	// Create and dispatch a custom event
-	const event = new CustomEvent('SRFM_Form_Success_Message', {
+	const event = new CustomEvent( 'SRFM_Form_Success_Message', {
 		detail: {
-			form: form,
-			element: element,
-			message: message,
-		}
-	});
+			form,
+			element,
+			message,
+		},
+	} );
 
-	document.dispatchEvent(event);
+	document.dispatchEvent( event );
 }
 
 function redirectToUrl( url ) {
