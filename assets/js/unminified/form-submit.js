@@ -168,32 +168,37 @@ function showSuccessMessage(
 	element,
 	message,
 	form,
-	afterSubmission
+	afterSubmission,
+	submitType
 ) {
+	// Create and dispatch a custom event
+	const event = new CustomEvent( 'SRFM_Form_Success_Message', {
+		cancelable: true,
+		detail: {
+			form,
+			element,
+			message,
+			submitType,
+			container,
+		},
+	} );
+
+	if ( ! document.dispatchEvent( event ) ) {
+		return; // Stop further execution if event.preventDefault() was called.
+	}
 	if ( afterSubmission === 'hide form' ) {
 		form.style.opacity = 1;
 		form.style.display = 'none';
 		setTimeout( () => {
 			element.style.opacity = 1;
 		}, 500 );
-	} else {
+	} else if ( afterSubmission === 'reset form' ) {
 		form.reset();
 	}
 	element.innerHTML = message;
 	container.classList.add( 'srfm-active' );
 	window?.srfm?.handleInstantFormWrapperHeight();
 	form.parentElement.scrollIntoView( { behavior: 'smooth' } );
-
-	// Create and dispatch a custom event
-	const event = new CustomEvent( 'SRFM_Form_Success_Message', {
-		detail: {
-			form,
-			element,
-			message,
-		},
-	} );
-
-	document.dispatchEvent( event );
 }
 
 function redirectToUrl( url ) {
@@ -241,13 +246,14 @@ async function handleFormSubmission(
 
 		const formStatus = await submitFormData( form );
 		if ( formStatus?.success ) {
-			if ( submitType === 'same page' ) {
+			if ( submitType === 'same page' || ! formStatus?.redirect_url ) {
 				showSuccessMessage(
 					successContainer,
 					successElement,
 					formStatus?.message ?? '',
 					form,
-					afterSubmission
+					afterSubmission,
+					submitType
 				);
 				loader.classList.remove( 'srfm-active' );
 				if ( formStatus?.data?.after_submit ) {
