@@ -32,19 +32,19 @@ const AiFormBuilder = () => {
 	const accessKey = urlParams.get( 'access_key' );
 	const examplePrompts = [
 		{
-			title: 'Create simple contact form',
+			title: __( 'Create simple contact form', 'sureforms' ),
 		},
 		{
-			title: 'Create a lead generation form',
+			title: __( 'Create a lead generation form', 'sureforms' ),
 		},
 		{
-			title: 'Generate a user feedback form',
+			title: __( 'Generate a user feedback form', 'sureforms' ),
 		},
 		{
-			title: 'Create a job application form',
+			title: __( 'Create a job application form', 'sureforms' ),
 		},
 		{
-			title: 'Make an event registration form',
+			title: __( 'Make an event registration form', 'sureforms' ),
 		},
 	];
 
@@ -56,7 +56,7 @@ const AiFormBuilder = () => {
 		setPercentBuild( 0 );
 		// Check if the user has permission to create posts.
 		if ( '1' !== srfm_admin.capability ) {
-			console.error( 'User does not have permission to create posts' );
+			console.error( __( 'User does not have permission to create posts', 'sureforms' ) );
 			return;
 		}
 
@@ -124,7 +124,7 @@ const AiFormBuilder = () => {
 			} else {
 				setShowFormCreationErr( true );
 				console.error(
-					'Error creating sureforms form using AI: ',
+					__( 'Error creating sureforms form using AI: ', 'sureforms' ),
 					response.message
 				);
 				return;
@@ -161,7 +161,7 @@ const AiFormBuilder = () => {
 				`/wp-admin/admin.php?page=add-new-form&method=ai`;
 		} else {
 			setShowAuthErrorPopup( true );
-			console.error( 'Error handling access key: ', response.message );
+			console.error( __( 'Error handling access key: ', 'sureforms' ), response.message );
 		}
 	};
 

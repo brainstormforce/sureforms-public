@@ -40,7 +40,10 @@ function initializePhoneField() {
 			if ( phoneNumberValue && ! iti.isValidNumber() ) {
 				parentBlock.classList.add( 'srfm-phone-error' );
 				parentBlock.classList.add( 'srfm-error' );
-				errorMessage.textContent = 'Please enter a valid phone number.';
+				errorMessage.textContent = wp.i18n.__(
+					'Please enter a valid phone number.',
+					'sureforms'
+				);
 			} else {
 				parentBlock.classList.remove( 'srfm-phone-error' );
 				parentBlock.classList.remove( 'srfm-error' );

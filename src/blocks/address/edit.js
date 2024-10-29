@@ -48,43 +48,42 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 		[
 			'srfm/input',
 			{
-				label: 'Address Line 1',
+				label: __( 'Address Line 1', 'sureforms' ),
 				fieldWidth: 50,
 			},
 		],
 		[
 			'srfm/input',
 			{
-				label: 'Address Line 2',
+				label: __( 'Address Line 2', 'sureforms' ),
 				fieldWidth: 50,
 			},
 		],
 		[
 			'srfm/input',
 			{
-				label: 'City',
+				label: __( 'City', 'sureforms' ),
 				fieldWidth: 50,
 			},
 		],
 		[
 			'srfm/input',
 			{
-				label: 'State',
+				label: __( 'State', 'sureforms' ),
 				fieldWidth: 50,
 			},
 		],
 		[
 			'srfm/input',
 			{
-				label: 'Postal Code',
+				label: __( 'Postal Code', 'sureforms' ),
 				fieldWidth: 50,
 			},
 		],
 		[
 			'srfm/dropdown',
 			{
-				label: 'Country',
-
+				label: __( 'Country', 'sureforms' ),
 				options: [
 					...countries.map( ( country ) => {
 						return { label: country.name, icon: '' };

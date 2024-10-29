@@ -153,7 +153,7 @@ const Component = ( { path } ) => {
 				}
 				setLoading( false );
 			} catch ( error ) {
-				console.error( 'Error fetching data:', error );
+				console.error( __( 'Error fetching data:', 'sureforms' ), error );
 			}
 		};
 

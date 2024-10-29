@@ -911,8 +911,10 @@ function addEmailBlurListener( areaInput, blockClass ) {
 
 				if ( originalEmailValue !== emailField.value ) {
 					confirmErrorContainer.style.display = 'block';
-					confirmErrorContainer.textContent =
-						'Confirmation email is not the same';
+					confirmErrorContainer.textContent = wp.i18n.__(
+						'Confirmation email is not the same',
+						'sureforms'
+					);
 					parentBlock.classList.add( 'srfm-error' );
 					return;
 				}
@@ -927,7 +929,10 @@ function addEmailBlurListener( areaInput, blockClass ) {
 					'srfm-valid-email-error'
 				);
 				errorContainer.style.display = 'block';
-				errorContainer.innerHTML = 'Please enter a valid email address';
+				errorContainer.innerHTML = wp.i18n.__(
+					'Please enter a valid email address',
+					'sureforms'
+				);
 			} else {
 				errorContainer.style.display = 'none';
 				inputBlock.parentElement.classList.remove(

@@ -28,7 +28,10 @@ function initializeURL() {
 						urlFiledContainer.classList.add( 'srfm-error' );
 						urlFiledContainer.classList.add( 'srfm-url-error' );
 						validUrlMessage.style.display = 'block';
-						validUrlMessage.innerText = 'Please enter a valid URL.';
+						validUrlMessage.innerText = wp.i18n.__(
+							'Please enter a valid URL.',
+							'sureforms'
+						);
 					}
 				} );
 			}

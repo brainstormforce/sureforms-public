@@ -177,7 +177,7 @@ function AdvancedSettings( props ) {
 					}
 				}
 			} catch ( error ) {
-				console.error( 'Error fetching data:', error );
+				console.error( __( 'Error fetching data:', 'sureforms' ), error );
 			}
 		};
 
@@ -258,7 +258,7 @@ function AdvancedSettings( props ) {
 							) }
 							value={ sureformsKeys._srfm_form_recaptcha }
 							options={ [
-								{ label: 'None', value: 'none' },
+								{ label: __( 'None', 'sureforms' ), value: 'none' },
 								{
 									label: __(
 										'reCAPTCHA v2 Checkbox',

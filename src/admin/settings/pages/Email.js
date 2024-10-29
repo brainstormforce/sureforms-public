@@ -16,13 +16,13 @@ const EmailPage = ( { loading, emailTabOptions, updateGlobalSettings } ) => {
 		const [ sendingTestEmail, setSendingTestEmail ] = useState( false );
 
 		const days = [
-			{ label: 'Monday', value: 'Monday' },
-			{ label: 'Tuesday', value: 'Tuesday' },
-			{ label: 'Wednesday', value: 'Wednesday' },
-			{ label: 'Thursday', value: 'Thursday' },
-			{ label: 'Friday', value: 'Friday' },
-			{ label: 'Saturday', value: 'Saturday' },
-			{ label: 'Sunday', value: 'Sunday' },
+			{ label: __( 'Monday', 'sureforms' ), value: 'Monday' },
+			{ label: __( 'Tuesday', 'sureforms' ), value: 'Tuesday' },
+			{ label: __( 'Wednesday', 'sureforms' ), value: 'Wednesday' },
+			{ label: __( 'Thursday', 'sureforms' ), value: 'Thursday' },
+			{ label: __( 'Friday', 'sureforms' ), value: 'Friday' },
+			{ label: __( 'Saturday', 'sureforms' ), value: 'Saturday' },
+			{ label: __( 'Sunday', 'sureforms' ), value: 'Sunday' },
 		];
 
 		return (
@@ -101,7 +101,7 @@ const EmailPage = ( { loading, emailTabOptions, updateGlobalSettings } ) => {
 									} );
 								} catch ( error ) {
 									console.error(
-										'Error Sending Test Email Summary:',
+										__( 'Error Sending Test Email Summary:', 'sureforms' ),
 										error
 									);
 								}
