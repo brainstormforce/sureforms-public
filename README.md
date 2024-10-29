@@ -255,7 +255,8 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 
 ## Changelog ##
 ### x.x.x ###
-* Improvement: Emit custom event srfm_form_submission_success on successful form submission
+* Improvement: Emit custom event srfm_form_submission_success on successful form submission.
+* Improvement: Added translation support for hardcoded UI text to improve localization.
 * Fix: Blank entries screen displays after all entries are moved to trash.
 * Fix: Remove uploaded files when an entry is permanently deleted.
 ### 1.0.1 - 24th October 2024 ###
