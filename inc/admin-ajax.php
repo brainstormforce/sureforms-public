@@ -228,15 +228,15 @@ class Admin_Ajax {
 	 */
 	public function generate_data_for_suretriggers_integration() {
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_send_json_error( [ 'message' => 'You do not have permission to access this page.' ] );
+			wp_send_json_error( [ 'message' => __( 'You do not have permission to access this page.', 'sureforms' ) ] );
 		}
 
 		if ( ! check_ajax_referer( 'suretriggers_nonce', 'security', false ) ) {
-			wp_send_json_error( [ 'message' => 'Invalid nonce.' ] );
+			wp_send_json_error( [ 'message' => __( 'Invalid nonce.', 'sureforms' ) ] );
 		}
 
 		if ( empty( $_POST['formId'] ) ) {
-			wp_send_json_error( [ 'message' => 'Form ID is required.' ] );
+			wp_send_json_error( [ 'message' => __( 'Form ID is required.', 'sureforms' ) ] );
 		}
 
 		$suretriggers_data = get_option( 'suretrigger_options', [] );
@@ -244,7 +244,7 @@ class Admin_Ajax {
 			wp_send_json_error(
 				[
 					'code'    => 'invalid_secret_key',
-					'message' => 'SureTriggers is not configured properly.',
+					'message' => __( 'SureTriggers is not configured properly.', 'sureforms' ),
 				]
 			);
 		}
@@ -256,7 +256,8 @@ class Admin_Ajax {
 			wp_send_json_error( [ 'message' => __( 'Invalid form ID.', 'sureforms' ) ] );
 		}
 
-		$form_name = ! empty( $form->post_title ) ? $form->post_title : 'SureForms id: ' . $form_id;
+		// Translators: %s: Form ID.
+		$form_name = ! empty( $form->post_title ) ? $form->post_title : sprintf( __( 'SureForms id: %s', 'sureforms' ), $form_id );
 		$api_url   = apply_filters( 'suretriggers_get_iframe_url', SRFM_SURETRIGGERS_INTERGATION_BASE_URL );
 
 		// This is the format of data required by SureTriggers for adding iframe in target id.
@@ -266,9 +267,9 @@ class Admin_Ajax {
 			'embedded_identifier' => $form_id,
 			'target'              => 'suretriggers-iframe-wrapper', // div where we want SureTriggers to add iframe should have this target id.
 			'event'               => [
-				'label'       => 'Form Submitted',
+				'label'       => __( 'Form Submitted', 'sureforms' ),
 				'value'       => 'sureforms_form_submitted',
-				'description' => 'Runs when a form is submitted',
+				'description' => __( 'Runs when a form is submitted', 'sureforms' ),
 			],
 			'summary'             => $form_name,
 			'selected_options'    => [
@@ -351,26 +352,26 @@ class Admin_Ajax {
 	 */
 	public function get_sample_data( $block_name ) {
 		if ( empty( $block_name ) ) {
-			return 'Sample data';
+			return __( 'Sample data', 'sureforms' );
 		}
 
 		$dummy_data = [
-			'srfm/input'            => 'Sample input data',
+			'srfm/input'            => __( 'Sample input data', 'sureforms' ),
 			'srfm/email'            => 'noreply@sureforms.com',
-			'srfm/textarea'         => 'Sample textarea data',
+			'srfm/textarea'         => __( 'Sample textarea data', 'sureforms' ),
 			'srfm/number'           => 123,
 			'srfm/checkbox'         => 'checkbox value',
 			'srfm/gdpr'             => 'GDPR value',
 			'srfm/phone'            => '1234567890',
-			'srfm/address'          => 'Address data',
-			'srfm/address-compact'  => 'Address data',
-			'srfm/dropdown'         => 'Selected dropdown option',
-			'srfm/multi-choice'     => 'Selected Multichoice option',
-			'srfm/radio'            => 'Selected radio option',
-			'srfm/submit'           => 'Submit',
+			'srfm/address'          => __( 'Address data', 'sureforms' ),
+			'srfm/address-compact'  => __( 'Address data', 'sureforms' ),
+			'srfm/dropdown'         => __( 'Selected dropdown option', 'sureforms' ),
+			'srfm/multi-choice'     => __( 'Selected Multichoice option', 'sureforms' ),
+			'srfm/radio'            => __( 'Selected radio option', 'sureforms' ),
+			'srfm/submit'           => __( 'Submit', 'sureforms' ),
 			'srfm/url'              => 'https://example.com',
 			'srfm/date-time-picker' => '2022-01-01 12:00:00',
-			'srfm/hidden'           => 'Hidden Value',
+			'srfm/hidden'           => __( 'Hidden Value', 'sureforms' ),
 			'srfm/slider'           => 50,
 			'srfm/password'         => 'DummyPassword123',
 			'srfm/rating'           => 4,
@@ -380,7 +381,7 @@ class Admin_Ajax {
 		if ( ! empty( $dummy_data[ $block_name ] ) ) {
 			return $dummy_data[ $block_name ];
 		} else {
-			return 'Sample data';
+			return __( 'Sample data', 'sureforms' );
 		}
 	}
 }

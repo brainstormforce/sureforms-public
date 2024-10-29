@@ -114,7 +114,7 @@ class Global_Settings {
 		}
 
 		if ( ! $is_option_saved ) {
-			return new WP_Error( 'Error Saving Settings!', 'Global Settings' );
+			return new WP_Error( __( 'Error Saving Settings!', 'sureforms' ), __( 'Global Settings', 'sureforms' ) );
 		} else {
 			return new WP_REST_Response(
 				[
@@ -189,7 +189,7 @@ class Global_Settings {
 
 		$srfm_email_summary   = isset( $setting_options['srfm_email_summary'] ) ? $setting_options['srfm_email_summary'] : false;
 		$srfm_email_sent_to   = isset( $setting_options['srfm_email_sent_to'] ) ? $setting_options['srfm_email_sent_to'] : get_option( 'admin_email' );
-		$srfm_schedule_report = isset( $setting_options['srfm_schedule_report'] ) ? $setting_options['srfm_schedule_report'] : 'Monday';
+		$srfm_schedule_report = isset( $setting_options['srfm_schedule_report'] ) ? $setting_options['srfm_schedule_report'] : __( 'Monday', 'sureforms' );
 
 		Events_Scheduler::unschedule_events( 'srfm_weekly_scheduled_events' );
 
@@ -288,7 +288,7 @@ class Global_Settings {
 			$global_setting_options['srfm_email_summary_settings_options'] = [
 				'srfm_email_summary'   => false,
 				'srfm_email_sent_to'   => get_option( 'admin_email' ),
-				'srfm_schedule_report' => 'Monday',
+				'srfm_schedule_report' => __( 'Monday', 'sureforms' ),
 			];
 		}
 		if ( empty( $global_setting_options['srfm_security_settings_options'] ) ) {

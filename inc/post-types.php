@@ -190,7 +190,7 @@ class Post_Types {
 	 */
 	public function modify_entries_list_row_actions( $actions, $post ) {
 		if ( 'sureforms_form' === $post->post_type ) {
-			$actions['export'] = '<a href="#" onclick="exportForm(' . $post->ID . ')">Export</a>';
+			$actions['export'] = '<a href="#" onclick="exportForm(' . $post->ID . ')">' . __( 'Export', 'sureforms' ) . '</a>';
 		}
 
 		return $actions;
@@ -524,12 +524,12 @@ class Post_Types {
 						'id'             => 1,
 						'status'         => true,
 						'is_raw_format'  => false,
-						'name'           => 'Admin Notification Email',
+						'name'           => __( 'Admin Notification Email', 'sureforms' ),
 						'email_to'       => '{admin_email}',
 						'email_reply_to' => '{admin_email}',
 						'email_cc'       => '{admin_email}',
 						'email_bcc'      => '{admin_email}',
-						'subject'        => 'New Form Submission',
+						'subject'        => __( 'New Form Submission', 'sureforms' ),
 						'email_body'     => '{all_data}',
 					],
 				],
