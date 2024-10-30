@@ -174,7 +174,7 @@ class Global_Settings {
 			'srfm_dropdown_block_required_text'     => $setting_options['srfm_dropdown_block_required_text'],
 		];
 
-		return update_option( 'get_default_dynamic_block_option', apply_filters( 'srfm_general_dynamic_options_to_save', $options_names, $setting_options ) );
+		return update_option( 'srfm_default_dynamic_block_option', apply_filters( 'srfm_general_dynamic_options_to_save', $options_names, $setting_options ) );
 
 	}
 
