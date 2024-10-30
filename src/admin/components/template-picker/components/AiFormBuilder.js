@@ -93,18 +93,18 @@ const AiFormBuilder = () => {
 				textArea.value += speechResult;
 				setCharacterCount( textArea.value.length );
 			};
-			recognition.onerror = (e) => {
+			recognition.onerror = ( e ) => {
 				recognition.stop();
 				setIsListening( false );
 				toast.dismiss();
 
-				if (e.error === 'not-allowed') {
+				if ( e.error === 'not-allowed' ) {
 					toast.error( 'Please allow microphone access to use voice input.', {
 						duration: 5000,
 					} );
 					return;
 				}
-				
+
 				toast.error( 'Speech recognition is not supported in your current browser. Please use Google Chrome / Safari.', {
 					duration: 5000,
 				} );
