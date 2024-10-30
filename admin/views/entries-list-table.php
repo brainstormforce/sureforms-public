@@ -961,7 +961,7 @@ class Entries_List_Table extends \WP_List_Table {
 	 * Delete the entry files when an entry is deleted.
 	 *
 	 * @param int $entry_id The ID of the entry to delete files for.
-	 * @since x.x.x
+	 * @since 1.0.2
 	 * @return void
 	 */
 	public static function delete_entry_files( $entry_id ) {
