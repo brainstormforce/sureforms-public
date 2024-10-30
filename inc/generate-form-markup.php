@@ -234,7 +234,14 @@ class Generate_Form_Markup {
 					foreach ( $selected_size as $variable => $value ) {
 						echo esc_html( Helper::get_string_value( $variable ) ) . ': ' . esc_html( Helper::get_string_value( $value ) ) . ';';
 					}
-					do_action( 'srfm_form_css_variables', $id, $primary_color_var, $help_color_var );
+					do_action(
+						'srfm_form_css_variables',
+						[
+							'id'            => $id,
+							'primary_color' => $primary_color_var,
+							'help_color'    => $help_color_var,
+						]
+					);
 					// echo custom css on page/post.
 					if ( 'sureforms_form' !== $current_post_type ) :
 						echo wp_kses_post( $custom_css );
@@ -407,7 +414,7 @@ class Generate_Form_Markup {
 		$smart_tags           = new Smart_Tags();
 		$confirmation_message = $smart_tags->process_smart_tags( $confirmation_data['message'], $submission_data, $form_data );
 
-		return $confirmation_message;
+		return apply_filters( 'srfm_after_submit_confirmation_message', $confirmation_message );
 
 	}
 
@@ -416,7 +423,7 @@ class Generate_Form_Markup {
 	 *
 	 * @param array<mixed> $form_data contains form data.
 	 * @param array<mixed> $submission_data contains submission data.
-	 * @since x.x.x
+	 * @since 1.0.2
 	 * @return string|false
 	 */
 	public static function get_redirect_url( $form_data = [], $submission_data = [] ) {
@@ -472,6 +479,6 @@ class Generate_Form_Markup {
 			$redirect_url                    = html_entity_decode( $smart_tags->process_smart_tags( $redirect_url, $submission_data, $form_data ) );
 		}
 
-		return $redirect_url;
+		return apply_filters( 'srfm_after_submit_redirect_url', $redirect_url );
 	}
 }

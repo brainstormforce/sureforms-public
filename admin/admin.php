@@ -50,90 +50,7 @@ class Admin {
 
 		// Handle entry actions.
 		add_action( 'admin_init', [ $this, 'handle_entry_actions' ] );
-		add_action( 'admin_notices', [ $this, 'entries_migration_notice' ] );
 		add_action( 'admin_notices', [ Entries_List_Table::class, 'display_bulk_action_notice' ] );
-	}
-
-	/**
-	 * Print notice to inform users about entries database migration.
-	 * phpcs:ignore -- TODO - Remove this notice after three major releases.
-	 *
-	 * @since 0.0.13
-	 * @return void
-	 */
-	public function entries_migration_notice() {
-		$dismiss = get_option( 'srfm_dismiss_entries_migration_notice' );
-		if ( 'hide' === $dismiss ) {
-			// If we are here then it means user has dismissed the notice 'hide'.
-			return;
-		} elseif ( ! $dismiss ) {
-			// If we are here then it means user don't have version saved in the db initially so we need to proceed with notice accordingly.
-			if ( empty( get_posts( [ 'post_type' => 'sureforms_entry' ] ) ) ) {
-				// If we are here then we are certain that this is a fresh setup without legacy entries so we can hide the notice.
-				return;
-			}
-
-			// From below, display notice for those users who are directly upgrading from version before v0.0.12.
-		}
-
-		// Show notice for users coming from a version lower than 0.0.13 and have legacy entries.
-
-		$ajaxurl = add_query_arg(
-			[
-				'action'   => 'sureforms_dismiss_plugin_notice',
-				'security' => wp_create_nonce( 'srfm_notice_dismiss_nonce' ),
-			],
-			admin_url( 'admin-ajax.php' )
-		);
-		?>
-		<!-- Adding this internal style to maintain notice styling without worrying about conditional loading of the css files. -->
-		<style>
-		.srfm-plugin-notice-container {
-			display: flex;
-			align-items: center;
-			gap: 20px;
-			padding: 10px 0;
-		}
-		.srfm-plugin-notice--logo svg {
-			width: 60px;
-			height: 60px;
-		}
-		.srfm-plugin-notice--content .srfm-plugin-notice--title {
-			margin: 0;
-			font-size: 20px;
-			line-height: 1.5;
-		}
-		.srfm-plugin-notice--content .srfm-plugin-notice--message {
-			margin-top: 4px;
-			padding: 0;
-		}
-		</style>
-		<div class="notice notice-warning is-dismissible srfm-plugin-notice">
-			<div class="srfm-plugin-notice-container">
-				<div class="srfm-plugin-notice--logo">
-					<svg width="500" height="500" viewBox="0 0 500 500" fill="none" xmlns="http://www.w3.org/2000/svg">
-						<path fill-rule="evenodd" clip-rule="evenodd" d="M250 500C388.072 500 500 388.071 500 250C500 111.929 388.072 0 250 0C111.929 0 0 111.929 0 250C0 388.071 111.929 500 250 500ZM251.076 125C231.002 125 203.224 136.48 189.028 150.641L150.477 189.103H342.635L406.887 125H251.076ZM310.648 349.359C296.454 363.52 268.673 375 248.599 375H92.7892L157.043 310.897H349.199L310.648 349.359ZM373.1 221.154H118.42L106.39 233.173C77.9043 258.814 86.3526 278.846 126.246 278.846H381.615L393.649 266.827C421.859 241.336 412.993 221.154 373.1 221.154Z" fill="#D54407"/>
-					</svg>
-				</div>
-				<div class="srfm-plugin-notice--content">
-					<h3 class="srfm-plugin-notice--title"><?php esc_html_e( 'SureForms - Important Update Notice', 'sureforms' ); ?></h3>
-					<p class="srfm-plugin-notice--message"><strong><?php esc_html_e( "From version 0.0.13 we're migrating to a custom database to enhance SureForms' performance and features.", 'sureforms' ); ?></strong></p>
-					<p class="srfm-plugin-notice--message"><?php esc_html_e( 'This step is necessary and irreversible and your current existing entries will be lost. Thank you for your understanding!', 'sureforms' ); ?></p>
-				</div>
-			</div>
-		</div>
-		<script>
-			(function() {
-				window.addEventListener('load', function() {
-					const dismissNotice = document.querySelector('.is-dismissible.srfm-plugin-notice .notice-dismiss');
-
-					dismissNotice.addEventListener('click', function() {
-						fetch('<?php echo esc_url_raw( $ajaxurl ); ?>');
-					});
-				});
-			}());
-		</script>
-		<?php
 	}
 
 	/**
@@ -317,7 +234,7 @@ class Admin {
 		$entries_table = new Entries_List_Table();
 		$entries_table->prepare_items();
 		echo '<div class="wrap"><h1 class="wp-heading-inline">Entries</h1>';
-		if ( 0 >= $entries_table->all_entries_count && 0 >= $entries_table->trash_count ) {
+		if ( empty( $entries_table->all_entries_count ) && empty( $entries_table->trash_entries_count ) ) {
 			$instance = Post_Types::get_instance();
 			$instance->sureforms_render_blank_state( SRFM_ENTRIES );
 			$instance->get_blank_state_styles();
@@ -661,7 +578,7 @@ class Admin {
 		 * This script loads suretriggers iframe in Intergations tab.
 		 */
 		if ( SRFM_FORMS_POST_TYPE === $current_screen->post_type ) {
-			wp_enqueue_script( SRFM_SLUG . '-suretriggers-integration', SRFM_SURETRIGGERS_INTERGATION_BASE_URL . 'js/v2/embed.js', [], SRFM_VER, true );
+			wp_enqueue_script( SRFM_SLUG . '-suretriggers-integration', SRFM_SURETRIGGERS_INTEGRATION_BASE_URL . 'js/v2/embed.js', [], SRFM_VER, true );
 		}
 	}
 
