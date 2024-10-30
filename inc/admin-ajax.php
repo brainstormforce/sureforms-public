@@ -33,28 +33,11 @@ class Admin_Ajax {
 	 * @since  0.0.1
 	 */
 	public function __construct() {
-		add_action( 'wp_ajax_sureforms_dismiss_plugin_notice', [ $this, 'dismiss_plugin_notice' ] );
 		add_action( 'wp_ajax_sureforms_recommended_plugin_activate', [ $this, 'required_plugin_activate' ] );
 		add_action( 'wp_ajax_sureforms_recommended_plugin_install', 'wp_ajax_install_plugin' );
 		add_action( 'wp_ajax_sureforms_integration', [ $this, 'generate_data_for_suretriggers_integration' ] );
 
 		add_filter( SRFM_SLUG . '_admin_filter', [ $this, 'localize_script_integration' ] );
-	}
-
-	/**
-	 * Dismiss plugin notice on dismiss button click using ajax request.
-	 *
-	 * @since 0.0.13
-	 * @return void
-	 */
-	public function dismiss_plugin_notice() {
-		if ( empty( $_GET['security'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['security'] ) ), 'srfm_notice_dismiss_nonce' ) ) {
-			wp_send_json_error();
-		}
-
-		update_option( 'srfm_dismiss_entries_migration_notice', 'hide' );
-
-		wp_send_json_success();
 	}
 
 	/**
@@ -254,7 +237,7 @@ class Admin_Ajax {
 		}
 
 		$form_name = ! empty( $form->post_title ) ? $form->post_title : 'SureForms id: ' . $form_id;
-		$api_url   = apply_filters( 'suretriggers_get_iframe_url', SRFM_SURETRIGGERS_INTERGATION_BASE_URL );
+		$api_url   = apply_filters( 'suretriggers_get_iframe_url', SRFM_SURETRIGGERS_INTEGRATION_BASE_URL );
 
 		// This is the format of data required by SureTriggers for adding iframe in target id.
 		$body = [
@@ -288,7 +271,7 @@ class Admin_Ajax {
 		wp_send_json_success(
 			[
 				'message' => 'success',
-				'data'    => $body,
+				'data'    => apply_filters( 'srfm_suretriggers_integration_data_filter', $body, $form_id ),
 			]
 		);
 	}
