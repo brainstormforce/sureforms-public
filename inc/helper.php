@@ -430,7 +430,7 @@ class Helper {
 	 */
 	public static function get_default_dynamic_block_option( $key ) {
 		$default_dynamic_values = self::default_dynamic_block_option();
-		$option                 = get_option( 'get_default_dynamic_block_option', $default_dynamic_values );
+		$option                 = get_option( 'srfm_default_dynamic_block_option', $default_dynamic_values );
 
 		if ( is_array( $option ) && array_key_exists( $key, $option ) ) {
 			return $option[ $key ];

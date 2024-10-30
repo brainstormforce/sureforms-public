@@ -318,59 +318,6 @@ class Entries_List_Table extends \WP_List_Table {
 	}
 
 	/**
-	 * Check if the current page is a trash list.
-	 *
-	 * @since 0.0.13
-	 * @return bool
-	 */
-	public static function is_trash_view() {
-		return isset( $_GET['view'] ) && 'trash' === sanitize_text_field( wp_unslash( $_GET['view'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-	}
-
-	/**
-	 * Common function to update the status of an entry.
-	 *
-	 * @param int    $entry_id The ID of the entry to update.
-	 * @param string $action The action to perform.
-	 * @param string $view The view to handle redirection.
-	 *
-	 * @since 0.0.13
-	 * @return void
-	 */
-	public static function handle_entry_status( $entry_id, $action, $view = '' ) {
-		switch ( $action ) {
-			case 'restore':
-				Entries::update( $entry_id, [ 'status' => 'unread' ] );
-				break;
-			case 'unread':
-			case 'read':
-			case 'trash':
-				Entries::update( $entry_id, [ 'status' => $action ] );
-				break;
-			case 'delete':
-				Entries::delete( $entry_id );
-				break;
-			default:
-				break;
-		}
-		$url = wp_nonce_url(
-			admin_url( 'admin.php?page=sureforms_entries' ),
-			'srfm_entries_action'
-		);
-		// Redirect to appropriate page after action is performed.
-		if ( 'details' === $view ) {
-			$url = add_query_arg(
-				[
-					'entry_id' => $entry_id,
-					'view'     => 'details',
-				],
-				$url
-			);
-		}
-		wp_safe_redirect( $url );
-	}
-
-	/**
 	 * Display admin notice for bulk actions.
 	 *
 	 * @since 0.0.13
@@ -411,6 +358,98 @@ class Entries_List_Table extends \WP_List_Table {
 				return;
 		}
 		echo '<div class="notice notice-success is-dismissible"><p>' . esc_html( $message ) . '</p></div>';
+	}
+
+	/**
+	 * Check if the current page is a trash list.
+	 *
+	 * @since 0.0.13
+	 * @return bool
+	 */
+	public static function is_trash_view() {
+		return isset( $_GET['view'] ) && 'trash' === sanitize_text_field( wp_unslash( $_GET['view'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+	}
+
+	/**
+	 * Common function to update the status of an entry.
+	 *
+	 * @param int    $entry_id The ID of the entry to update.
+	 * @param string $action The action to perform.
+	 * @param string $view The view to handle redirection.
+	 *
+	 * @since 0.0.13
+	 * @return void
+	 */
+	public static function handle_entry_status( $entry_id, $action, $view = '' ) {
+		switch ( $action ) {
+			case 'restore':
+				Entries::update( $entry_id, [ 'status' => 'unread' ] );
+				break;
+			case 'unread':
+			case 'read':
+			case 'trash':
+				Entries::update( $entry_id, [ 'status' => $action ] );
+				break;
+			case 'delete':
+				self::delete_entry_files( $entry_id );
+				Entries::delete( $entry_id );
+				break;
+			default:
+				break;
+		}
+		$url = wp_nonce_url(
+			admin_url( 'admin.php?page=sureforms_entries' ),
+			'srfm_entries_action'
+		);
+		// Redirect to appropriate page after action is performed.
+		if ( 'details' === $view ) {
+			$url = add_query_arg(
+				[
+					'entry_id' => $entry_id,
+					'view'     => 'details',
+				],
+				$url
+			);
+		}
+		wp_safe_redirect( $url );
+	}
+
+	/**
+	 * Delete the entry files when an entry is deleted.
+	 *
+	 * @param int $entry_id The ID of the entry to delete files for.
+	 * @since 1.0.2
+	 * @return void
+	 */
+	public static function delete_entry_files( $entry_id ) {
+		if ( ! $entry_id ) {
+			return;
+		}
+		// Get the entry data to get the file URLs.
+		$form_data = Entries::get_form_data( $entry_id );
+		if ( empty( $form_data ) ) {
+			return;
+		}
+		$upload_dir = wp_get_upload_dir();
+		foreach ( $form_data as $field_name => $value ) {
+			// Continue to the next iteration if the field name does not contain 'srfm-upload' and value is not an array.
+			if ( false === strpos( $field_name, 'srfm-upload' ) && ! is_array( $value ) ) {
+				continue;
+			}
+			foreach ( $value as $file_url ) {
+				// If the file URL is empty, skip to the next iteration.
+				if ( empty( $file_url ) ) {
+					continue;
+				}
+				// Get the file path from the file URL.
+				$file_path = str_replace( $upload_dir['baseurl'], $upload_dir['basedir'], urldecode( $file_url ) );
+
+				// Delete the file if it exists.
+				if ( file_exists( $file_path ) ) {
+					unlink( $file_path );
+				}
+			}
+		}
 	}
 
 	/**
