@@ -124,7 +124,7 @@ const AiFormBuilder = () => {
 			} else {
 				setShowFormCreationErr( true );
 				console.error(
-					__( 'Error creating sureforms form using AI: ', 'sureforms' ),
+					'Error creating sureforms form using AI: ',
 					response.message
 				);
 				return;
@@ -161,7 +161,7 @@ const AiFormBuilder = () => {
 				`/wp-admin/admin.php?page=add-new-form&method=ai`;
 		} else {
 			setShowAuthErrorPopup( true );
-			console.error( __( 'Error handling access key: ', 'sureforms' ), response.message );
+			console.error( 'Error handling access key: ', response.message );
 		}
 	};
 
