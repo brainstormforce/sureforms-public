@@ -258,6 +258,7 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 * New: Support for query parameters in form confirmation.
 * New: Updated plugin branding.
 * Improvement: Added filters for confirmation messages and redirect URLs.
+* Improvement: Bulk edit options added for the dropdown and multichoice field.
 * Improvement: Emits custom event srfm_form_submission_success on successful form submission.
 * Improvement: Merged form confirmation redirect settings.
 * Fix: Blank entries screen no longer displays after moving all entries to trash.
