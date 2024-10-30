@@ -56,7 +56,7 @@ const AiFormBuilder = () => {
 		setPercentBuild( 0 );
 		// Check if the user has permission to create posts.
 		if ( '1' !== srfm_admin.capability ) {
-			console.error( __( 'User does not have permission to create posts', 'sureforms' ) );
+			console.error( 'User does not have permission to create posts' );
 			return;
 		}
 

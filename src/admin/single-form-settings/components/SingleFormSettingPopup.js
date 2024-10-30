@@ -112,11 +112,11 @@ const SingleFormSettingsPopup = ( props ) => {
 			getServerGeneratedBlockSlugs( getCurrentPostId(), getEditedPostContent() )
 				.then( ( response ) => {
 					if ( true !== response?.success ) {
-						return console.error( __( 'Unable to fetch saved blocks:', 'sureforms' ), response?.data );
+						return console.error( 'Unable to fetch saved blocks: ', response?.data );
 					}
 					setBlockSlugs( response.data );
 				} ).catch( ( err ) => {
-					console.error( __( 'Unable to fetch saved blocks:', 'sureforms' ), err );
+					console.error( 'Unable to fetch saved blocks: ', err );
 				} );
 		}
 	}, [ selectedTab ] );

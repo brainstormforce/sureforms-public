@@ -101,7 +101,7 @@ const EmailPage = ( { loading, emailTabOptions, updateGlobalSettings } ) => {
 									} );
 								} catch ( error ) {
 									console.error(
-										__( 'Error Sending Test Email Summary:', 'sureforms' ),
+										'Error Sending Test Email Summary:',
 										error
 									);
 								}
