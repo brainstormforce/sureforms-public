@@ -254,7 +254,7 @@ Yes! You can certainly use SureForms on yours as well as your client’s website
 When you use SureForms, you get an easy-to-use AI-powered form builder that can be used to build your forms fast.
 
 == Changelog ==
-= 1.0.2 - 30th October 2024  =
+= 1.0.2 - 31st October 2024  =
 * New: Added support for query parameters in form confirmation.
 * Improvement: Merged the form confirmation redirect settings.
 * Improvement: Added filters for confirmation message and redirect url.
