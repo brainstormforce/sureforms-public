@@ -169,7 +169,8 @@ function showSuccessMessage(
 	message,
 	form,
 	afterSubmission,
-	submitType
+	submitType,
+	loader
 ) {
 	// Create and dispatch a custom event
 	const event = new CustomEvent( 'SRFM_Form_Success_Message', {
@@ -180,6 +181,7 @@ function showSuccessMessage(
 			message,
 			submitType,
 			container,
+			loader,
 		},
 	} );
 
@@ -246,7 +248,7 @@ async function handleFormSubmission(
 
 		const formStatus = await submitFormData( form );
 		if ( formStatus?.success ) {
-			if ( submitType === 'same page' || ! formStatus?.redirect_url ) {
+			if ( submitType === 'same page' ) {
 				showSuccessMessage(
 					successContainer,
 					successElement,
@@ -259,6 +261,18 @@ async function handleFormSubmission(
 				if ( formStatus?.data?.after_submit ) {
 					afterSubmit( formStatus );
 				}
+			} else if (
+				! [ 'different page', 'custom url' ].includes( submitType )
+			) {
+				showSuccessMessage(
+					successContainer,
+					successElement,
+					formStatus?.message ?? '',
+					form,
+					afterSubmission,
+					submitType,
+					loader
+				);
 			} else {
 				if ( formStatus?.redirect_url ) {
 					redirectToUrl( formStatus?.redirect_url );
