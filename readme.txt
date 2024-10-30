@@ -256,6 +256,7 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 == Changelog ==
 = x.x.x =
 * New: Added support for query parameters in form confirmation.
+* Improvement: Merged the form confirmation redirect settings.
 * Improvement: Added filters for confirmation message and redirect url.
 * Improvement: Emit custom event srfm_form_submission_success on successful form submission
 * Fix: Blank entries screen displays after all entries are moved to trash.
