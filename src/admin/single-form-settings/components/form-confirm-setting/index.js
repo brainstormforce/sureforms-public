@@ -6,7 +6,7 @@ import { __ } from '@wordpress/i18n';
 import { useDebouncedCallback } from 'use-debounce';
 import { applyFilters } from '@wordpress/hooks';
 import DefaultConfirmationTypes from './DefaultConfirmationTypes';
-import KeyValueUI from '@Components/misc/keyValueUI';
+import KeyValueUI from '@Components/misc/KeyValueUI';
 
 const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 	const sureforms_keys = useSelect( ( select ) =>
