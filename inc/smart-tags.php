@@ -138,8 +138,8 @@ class Smart_Tags {
 
 		foreach ( $matches[0] as $tag ) {
 			$is_valid_tag = isset( $get_smart_tag_list[ $tag ] ) ||
-			strpos( $tag, 'get_input:' ) === 0 ||
-			strpos( $tag, 'get_cookie:' ) === 0 ||
+			strpos( $tag, 'get_input:' ) ||
+			strpos( $tag, 'get_cookie:' ) ||
 			0 === strpos( $tag, '{form:' );
 
 			if ( ! $is_valid_tag ) {
@@ -207,7 +207,7 @@ class Smart_Tags {
 				return self::parse_post_props( $tag );
 
 			default:
-				if ( strpos( $tag, 'get_input:' ) === 0 || strpos( $tag, 'get_cookie:' ) === 0 ) {
+				if ( strpos( $tag, 'get_input:' ) || strpos( $tag, 'get_cookie:' ) ) {
 					return self::parse_request_param( $tag );
 				}
 
