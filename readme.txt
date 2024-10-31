@@ -4,7 +4,7 @@ Tags: contact form, custom form, form builder, forms, gutenberg
 Requires at least: 6.4
 Tested up to: 6.6.2
 Requires PHP: 7.4
-Stable tag: 1.0.1
+Stable tag: 1.0.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -254,11 +254,16 @@ Yes! You can certainly use SureForms on yours as well as your client’s website
 When you use SureForms, you get an easy-to-use AI-powered form builder that can be used to build your forms fast.
 
 == Changelog ==
-= x.x.x =
-* Improvement: Emit custom event srfm_form_submission_success on successful form submission
-* Fix: Blank entries screen displays after all entries are moved to trash.
-* Fix: Remove uploaded files when an entry is permanently deleted.
+= 1.0.2 - 31st October 2024  =
+* New: Support for query parameters in form confirmation.
+* New: Updated plugin branding.
+* Improvement: Added filters for confirmation messages and redirect URLs.
+* Improvement: Bulk edit options added for the dropdown and multichoice field.
+* Improvement: Emits custom event srfm_form_submission_success on successful form submission.
+* Improvement: Merged form confirmation redirect settings.
+* Fix: Blank entries screen no longer displays after moving all entries to trash.
 * Fix: Resolved PHP fatal error caused by incorrect argument count in form submission.
+* Fix: Uploaded files are now removed when an entry is permanently deleted.
 = 1.0.1 - 24th October 2024 =
 * Fix: Extra space from the v3 reCAPTCHA container has been removed.
 * Fix: GDPR and checkbox labels are now editable across Chrome, Firefox, Safari, Arc etc.

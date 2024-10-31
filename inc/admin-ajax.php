@@ -211,23 +211,22 @@ class Admin_Ajax {
 	 */
 	public function generate_data_for_suretriggers_integration() {
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_send_json_error( [ 'message' => 'You do not have permission to access this page.' ] );
+			wp_send_json_error( [ 'message' => __( 'You do not have permission to access this page.', 'sureforms' ) ] );
 		}
 
 		if ( ! check_ajax_referer( 'suretriggers_nonce', 'security', false ) ) {
-			wp_send_json_error( [ 'message' => 'Invalid nonce.' ] );
+			wp_send_json_error( [ 'message' => __( 'Invalid nonce.', 'sureforms' ) ] );
 		}
 
 		if ( empty( $_POST['formId'] ) ) {
-			wp_send_json_error( [ 'message' => 'Form ID is required.' ] );
+			wp_send_json_error( [ 'message' => __( 'Form ID is required.', 'sureforms' ) ] );
 		}
 
-		$suretriggers_data = get_option( 'suretrigger_options', [] );
-		if ( ! is_array( $suretriggers_data ) || empty( $suretriggers_data['secret_key'] ) || ! is_string( $suretriggers_data['secret_key'] ) ) {
+		if ( ! Helper::is_suretriggers_ready() ) {
 			wp_send_json_error(
 				[
 					'code'    => 'invalid_secret_key',
-					'message' => 'SureTriggers is not configured properly.',
+					'message' => __( 'SureTriggers is not configured properly.', 'sureforms' ),
 				]
 			);
 		}
@@ -240,7 +239,7 @@ class Admin_Ajax {
 		}
 
 		$form_name = ! empty( $form->post_title ) ? $form->post_title : 'SureForms id: ' . $form_id;
-		$api_url   = apply_filters( 'suretriggers_get_iframe_url', SRFM_SURETRIGGERS_INTERGATION_BASE_URL );
+		$api_url   = apply_filters( 'suretriggers_get_iframe_url', SRFM_SURETRIGGERS_INTEGRATION_BASE_URL );
 
 		// This is the format of data required by SureTriggers for adding iframe in target id.
 		$body = [
@@ -274,7 +273,7 @@ class Admin_Ajax {
 		wp_send_json_success(
 			[
 				'message' => 'success',
-				'data'    => $body,
+				'data'    => apply_filters( 'srfm_suretriggers_integration_data_filter', $body, $form_id ),
 			]
 		);
 	}
