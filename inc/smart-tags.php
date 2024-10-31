@@ -138,8 +138,8 @@ class Smart_Tags {
 
 		foreach ( $matches[0] as $tag ) {
 			$is_valid_tag = isset( $get_smart_tag_list[ $tag ] ) ||
-			strpos( $tag, '{get_input:' ) === 0 ||
-			strpos( $tag, '{get_cookie:' ) === 0 ||
+			strpos( $tag, 'get_input:' ) ||
+			strpos( $tag, 'get_cookie:' ) ||
 			0 === strpos( $tag, '{form:' );
 
 			if ( ! $is_valid_tag ) {
@@ -207,7 +207,7 @@ class Smart_Tags {
 				return self::parse_post_props( $tag );
 
 			default:
-				if ( strpos( $tag, '{get_input:' ) === 0 || strpos( $tag, '{get_cookie:' ) === 0 ) {
+				if ( strpos( $tag, 'get_input:' ) === 0 || strpos( $tag, 'get_cookie:' ) === 0 ) {
 					return self::parse_request_param( $tag );
 				}
 
@@ -390,7 +390,7 @@ class Smart_Tags {
 
 		$param = str_replace( '}', '', $param );
 
-		if ( $param && strpos( $value, '{get_input:' ) !== false ) {
+		if ( $param && strpos( $value, 'get_input:' ) !== false ) {
 			$var = '';
 			if ( isset( $_SERVER['QUERY_STRING'] ) ) {
 				$var = Helper::get_string_value( filter_var( wp_unslash( $_SERVER['QUERY_STRING'] ), FILTER_SANITIZE_URL ) );
@@ -399,7 +399,7 @@ class Smart_Tags {
 			return isset( $parameters[ $param ] ) ? sanitize_text_field( Helper::get_string_value( $parameters[ $param ] ) ) : '';
 		}
 
-		if ( $param && strpos( $value, '{get_cookie:' ) !== false ) {
+		if ( $param && strpos( $value, 'get_cookie:' ) !== false ) {
 			return isset( $_COOKIE[ $param ] ) ? sanitize_text_field( wp_unslash( $_COOKIE[ $param ] ) ) : '';
 		}
 
