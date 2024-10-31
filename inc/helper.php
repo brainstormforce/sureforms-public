@@ -946,4 +946,24 @@ class Helper {
 		return wp_json_encode( $data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE );
 	}
 
+	/**
+	 * Returns true if SureTriggers plugin is ready for the custom app.
+	 *
+	 * @since x.x.x
+	 * @return bool Returns true if SureTriggers plugin is ready for the custom app.
+	 */
+	public static function is_suretriggers_ready() {
+		if ( ! defined( 'SURE_TRIGGERS_FILE' ) ) {
+			// Probably plugin is de-activated or not installed at all.
+			return false;
+		}
+
+		$suretriggers_data = get_option( 'suretrigger_options', [] );
+		if ( ! is_array( $suretriggers_data ) || empty( $suretriggers_data['secret_key'] ) || ! is_string( $suretriggers_data['secret_key'] ) ) {
+			// SureTriggers is not authenticated yet.
+			return false;
+		}
+
+		return true;
+	}
 }
