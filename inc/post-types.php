@@ -595,23 +595,29 @@ class Post_Types {
 						'items' => [
 							'type'       => 'object',
 							'properties' => [
-								'id'                => [
+								'id'                  => [
 									'type' => 'integer',
 								],
-								'confirmation_type' => [
+								'confirmation_type'   => [
 									'type' => 'string',
 								],
-								'page_url'          => [
+								'page_url'            => [
 									'type' => 'string',
 								],
-								'custom_url'        => [
+								'custom_url'          => [
 									'type' => 'string',
 								],
-								'message'           => [
+								'message'             => [
 									'type' => 'string',
 								],
-								'submission_action' => [
+								'submission_action'   => [
 									'type' => 'string',
+								],
+								'enable_query_params' => [
+									'type' => 'boolean',
+								],
+								'query_params'        => [
+									'type' => 'array',
 								],
 							],
 						],

@@ -891,6 +891,7 @@ class Entries_List_Table extends \WP_List_Table {
 				Entries::update( $entry_id, [ 'status' => $action ] );
 				break;
 			case 'delete':
+				self::delete_entry_files( $entry_id );
 				Entries::delete( $entry_id );
 				break;
 			default:
@@ -954,5 +955,43 @@ class Entries_List_Table extends \WP_List_Table {
 				return;
 		}
 		echo '<div class="notice notice-success is-dismissible"><p>' . esc_html( $message ) . '</p></div>';
+	}
+
+	/**
+	 * Delete the entry files when an entry is deleted.
+	 *
+	 * @param int $entry_id The ID of the entry to delete files for.
+	 * @since 1.0.2
+	 * @return void
+	 */
+	public static function delete_entry_files( $entry_id ) {
+		if ( ! $entry_id ) {
+			return;
+		}
+		// Get the entry data to get the file URLs.
+		$form_data = Entries::get_form_data( $entry_id );
+		if ( empty( $form_data ) ) {
+			return;
+		}
+		$upload_dir = wp_get_upload_dir();
+		foreach ( $form_data as $field_name => $value ) {
+			// Continue to the next iteration if the field name does not contain 'srfm-upload' and value is not an array.
+			if ( false === strpos( $field_name, 'srfm-upload' ) && ! is_array( $value ) ) {
+				continue;
+			}
+			foreach ( $value as $file_url ) {
+				// If the file URL is empty, skip to the next iteration.
+				if ( empty( $file_url ) ) {
+					continue;
+				}
+				// Get the file path from the file URL.
+				$file_path = str_replace( $upload_dir['baseurl'], $upload_dir['basedir'], urldecode( $file_url ) );
+
+				// Delete the file if it exists.
+				if ( file_exists( $file_path ) ) {
+					unlink( $file_path );
+				}
+			}
+		}
 	}
 }

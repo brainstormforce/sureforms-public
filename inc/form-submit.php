@@ -503,12 +503,13 @@ class Form_Submit {
 			do_action( 'srfm_after_submission_process', $form_data );
 
 			$response = [
-				'success' => true,
-				'message' => Generate_Form_Markup::get_confirmation_markup( $form_data, $submission_data ),
-				'data'    => [
+				'success'      => true,
+				'message'      => Generate_Form_Markup::get_confirmation_markup( $form_data, $submission_data ),
+				'data'         => [
 					'name'         => $name,
 					'after_submit' => false,
 				],
+				'redirect_url' => Generate_Form_Markup::get_redirect_url( $form_data, $submission_data ),
 			];
 
 			return $response;
@@ -564,25 +565,29 @@ class Form_Submit {
 		if ( $entry_id ) {
 
 			$response = [
-				'success' => true,
-				'message' => Generate_Form_Markup::get_confirmation_markup( $form_data, $submission_data ),
-				'data'    => [
+				'success'      => true,
+				'message'      => Generate_Form_Markup::get_confirmation_markup( $form_data, $submission_data ),
+				'data'         => [
 					'name'          => $name,
 					'submission_id' => $entry_id,
 					'after_submit'  => true,
 				],
+				'redirect_url' => Generate_Form_Markup::get_redirect_url( $form_data, $submission_data ),
 			];
 
 			$modified_message = $this->prepare_submission_data( $submission_data );
 
-			$form_submit_response = [
-				'success'   => true,
-				'form_id'   => $id ? intval( $id ) : '',
-				'to_emails' => $emails,
-				'form_name' => $name ? esc_attr( $name ) : '',
-				'message'   => Generate_Form_Markup::get_confirmation_markup( $form_data, $submission_data ),
-				'data'      => $modified_message,
-			];
+			$form_submit_response = apply_filters(
+				'srfm_form_submit_response',
+				[
+					'success'   => true,
+					'form_id'   => $id ? intval( $id ) : '',
+					'to_emails' => $emails,
+					'form_name' => $name ? esc_attr( $name ) : '',
+					'message'   => Generate_Form_Markup::get_confirmation_markup( $form_data, $submission_data ),
+					'data'      => $modified_message,
+				]
+			);
 
 			do_action( 'srfm_form_submit', $form_submit_response );
 		} else {
@@ -679,7 +684,7 @@ class Form_Submit {
 								null,
 								[
 									/* translators: Here, %s is the comma separated emails list. */
-									$sent ? sprintf( __( 'Email notification sent to %s', 'sureforms' ), esc_html( $to ) ) : sprintf( __( 'Failed sending email notification to %s', 'sureforms' ) ),
+									$sent ? sprintf( __( 'Email notification sent to %s', 'sureforms' ), esc_html( $to ) ) : sprintf( __( 'Failed sending email notification to %s', 'sureforms' ), esc_html( $to ) ),
 								]
 							);
 						}

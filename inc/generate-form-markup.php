@@ -234,7 +234,14 @@ class Generate_Form_Markup {
 					foreach ( $selected_size as $variable => $value ) {
 						echo esc_html( Helper::get_string_value( $variable ) ) . ': ' . esc_html( Helper::get_string_value( $value ) ) . ';';
 					}
-					do_action( 'srfm_form_css_variables', $id, $primary_color_var, $help_color_var );
+					do_action(
+						'srfm_form_css_variables',
+						[
+							'id'            => $id,
+							'primary_color' => $primary_color_var,
+							'help_color'    => $help_color_var,
+						]
+					);
 					// echo custom css on page/post.
 					if ( 'sureforms_form' !== $current_post_type ) :
 						echo wp_kses_post( $custom_css );
@@ -407,7 +414,71 @@ class Generate_Form_Markup {
 		$smart_tags           = new Smart_Tags();
 		$confirmation_message = $smart_tags->process_smart_tags( $confirmation_data['message'], $submission_data, $form_data );
 
-		return $confirmation_message;
+		return apply_filters( 'srfm_after_submit_confirmation_message', $confirmation_message );
 
+	}
+
+	/**
+	 * Get redirect url for form incase of different page or custom url is selected.
+	 *
+	 * @param array<mixed> $form_data contains form data.
+	 * @param array<mixed> $submission_data contains submission data.
+	 * @since 1.0.2
+	 * @return string|false
+	 */
+	public static function get_redirect_url( $form_data = [], $submission_data = [] ) {
+		$redirect_url = '';
+
+		if ( empty( $form_data ) ) {
+			return $redirect_url;
+		}
+
+		$form_confirmation = isset( $form_data['form-id'] ) ?
+			get_post_meta( Helper::get_integer_value( $form_data['form-id'] ), '_srfm_form_confirmation' ) : null;
+
+		if ( ! is_array( $form_confirmation ) ) {
+			return $redirect_url;
+		}
+
+		$confirmation_data = is_array( $form_confirmation[0] ) && isset( $form_confirmation[0][0] ) ? $form_confirmation[0][0] : null;
+
+		$page_url          = isset( $confirmation_data['page_url'] ) ? $confirmation_data['page_url'] : '';
+		$custom_url        = isset( $confirmation_data['custom_url'] ) ? $confirmation_data['custom_url'] : '';
+		$confirmation_type = isset( $confirmation_data['confirmation_type'] ) ? $confirmation_data['confirmation_type'] : '';
+		if ( 'different page' === $confirmation_type ) {
+			$redirect_url = esc_url( $page_url );
+		} elseif ( 'custom url' === $confirmation_type ) {
+			$redirect_url = esc_url( $custom_url );
+		}
+
+		if ( empty( $redirect_url ) ) {
+			return $redirect_url;
+		}
+
+		if ( empty( $confirmation_data['enable_query_params'] ) || true !== $confirmation_data['enable_query_params'] ) {
+			return $redirect_url;
+		}
+
+		if ( empty( $confirmation_data['query_params'] ) && ! is_array( $confirmation_data['query_params'] ) ) {
+			return $redirect_url;
+		}
+
+		$query_params = [];
+		foreach ( $confirmation_data['query_params'] as $params ) {
+			if ( is_array( $params ) && ! empty( array_keys( $params ) ) && ! empty( array_values( $params ) ) ) {
+				$query_params[ esc_attr( array_keys( $params )[0] ) ] = esc_attr( array_values( $params )[0] );
+			}
+		}
+
+		$redirect_url = add_query_arg( $query_params, $redirect_url );
+
+		if ( ! empty( $submission_data ) ) {
+			$smart_tags = new Smart_Tags();
+			// Adding upload_format_type = 'raw' to retrieve urls as comma separated values.
+			$form_data['upload_format_type'] = 'raw';
+			$redirect_url                    = html_entity_decode( $smart_tags->process_smart_tags( $redirect_url, $submission_data, $form_data ) );
+		}
+
+		return apply_filters( 'srfm_after_submit_redirect_url', $redirect_url );
 	}
 }
