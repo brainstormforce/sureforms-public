@@ -3,7 +3,7 @@ import { useDispatch, useSelect } from '@wordpress/data';
 import { store as editorStore } from '@wordpress/editor';
 import { useEffect, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
-import KeyValueUI from '@Components/misc/KeyValueUI';
+import ComponentKeyValueUI from '@Components/misc/ComponentKeyValueUI';
 import { useDebouncedCallback } from 'use-debounce';
 import { applyFilters } from '@wordpress/hooks';
 import DefaultConfirmationTypes from './DefaultConfirmationTypes';
@@ -62,7 +62,7 @@ const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 
 	const keyValueComponent = () => {
 		return (
-			<KeyValueUI
+			<ComponentKeyValueUI
 				data={ data?.query_params ?? [ { '': '' } ] }
 				enabled={ data?.enable_query_params ?? false }
 				setEnabled={ handleEnableQueryParams }
