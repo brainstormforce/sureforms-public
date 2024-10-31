@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - next-release
     paths:
       # Release happens only if the version number in main file is updated.
       - 'sureforms.php'
