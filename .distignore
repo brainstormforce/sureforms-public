@@ -64,5 +64,6 @@ scripts
 sass
 src
 unminified
+coverage-report
 phpinsights.php
 

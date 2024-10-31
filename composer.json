@@ -25,6 +25,7 @@
 		"format": "vendor/bin/phpcbf",
 		"lint": "vendor/bin/phpcs",
 		"test": "vendor/bin/phpunit",
+    "test:coverage": "XDEBUG_MODE=coverage vendor/bin/phpunit --debug --coverage-text",
 		"phpstan": "vendor/bin/phpstan --memory-limit=2048M analyse",
     "insights": "vendor/bin/phpinsights",
     "insights:fix": "vendor/bin/phpinsights --fix",
