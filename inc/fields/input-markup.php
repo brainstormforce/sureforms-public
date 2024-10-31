@@ -18,7 +18,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 0.0.1
  */
 class Input_Markup extends Base {
-
 	/**
 	 * Maximum length of text allowed for an input field.
 	 *
@@ -50,9 +49,9 @@ class Input_Markup extends Base {
 	 */
 	public function __construct( $attributes ) {
 		$this->slug              = 'input';
-		$this->max_text_length   = isset( $attributes['textLength'] ) ? $attributes['textLength'] : '';
-		$this->input_mask        = isset( $attributes['inputMask'] ) ? $attributes['inputMask'] : '';
-		$this->custom_input_mask = ( 'custom-mask' === $this->input_mask && isset( $attributes['customInputMask'] ) ) ? $attributes['customInputMask'] : '';
+		$this->max_text_length   = $attributes['textLength'] ?? '';
+		$this->input_mask        = $attributes['inputMask'] ?? '';
+		$this->custom_input_mask = 'custom-mask' === $this->input_mask && isset( $attributes['customInputMask'] ) ? $attributes['customInputMask'] : '';
 		$this->set_properties( $attributes );
 		$this->set_input_label( __( 'Text Field', 'sureforms' ) );
 		$this->set_error_msg( $attributes, 'srfm_input_block_required_text' );
@@ -68,7 +67,7 @@ class Input_Markup extends Base {
 	 * Render input markup
 	 *
 	 * @since 0.0.2
-	 * @return string|boolean
+	 * @return string|bool
 	 */
 	public function markup() {
 		ob_start(); ?>
