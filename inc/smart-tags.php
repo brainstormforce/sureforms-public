@@ -207,7 +207,7 @@ class Smart_Tags {
 				return self::parse_post_props( $tag );
 
 			default:
-				if ( strpos( $tag, 'get_input:' ) === 0 || strpos( $tag, 'get_cookie:' ) === 0 ) {
+				if ( strpos( $tag, 'get_input:' ) || strpos( $tag, 'get_cookie:' ) ) {
 					return self::parse_request_param( $tag );
 				}
 
