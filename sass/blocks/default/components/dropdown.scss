@@ -143,6 +143,10 @@
 							align-items: center;
 							color: var( --srfm-color-input-text );
 						}
+						// Display the clear button when it is in focus.
+						.clear-button:focus {
+							opacity: 1;
+						}
 					}
 
 					// Dropdown menu stylings.

@@ -256,6 +256,7 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 == Changelog ==
 = x.x.x =
 * Improvement: Emit custom event srfm_form_submission_success on successful form submission
+* Improvement: Dropdown clear button accessibility fixes.
 * Fix: Blank entries screen displays after all entries are moved to trash.
 * Fix: Remove uploaded files when an entry is permanently deleted.
 * Fix: Resolved PHP fatal error caused by incorrect argument count in form submission.

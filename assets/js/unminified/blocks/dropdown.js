@@ -93,10 +93,18 @@ function initializeDropdown() {
 			const clearButton =
 				dropdownWrapper.querySelector( '.clear-button' );
 			clearButton.innerHTML = clearSVG;
+			clearButton.setAttribute( 'aria-label', 'Clear Selection' );
+			clearButton.setAttribute( 'tabindex', '0' );
 			const dropdownIconDiv = document.createElement( 'div' );
 			dropdownIconDiv.classList.add( 'ts-dropdown-icon' );
 			dropdownIconDiv.innerHTML = dropdownSVG;
 			dropdownWrapper.appendChild( dropdownIconDiv );
+
+			clearButton.addEventListener( 'keydown', ( e ) => {
+				if ( e.key === ' ' || e.key === 'Enter' ) {
+					tomInputInstance.clear();
+				}
+			} );
 
 			// Add placeholder to the dropdown when Search is disabled.
 			if ( config.controlInput === null ) {
