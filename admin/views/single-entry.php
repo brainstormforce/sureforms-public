@@ -72,7 +72,7 @@ class Single_Entry {
 		?>
 		<div class="wrap">
 			<h1 class="wp-heading-inline"><?php esc_html_e( 'View Entry', 'sureforms' ); ?></h1>
-			<form method="get" id="get"> <!-- check for nonce, referrer, etc. --> 
+			<form method="get" id="get"> <!-- check for nonce, referrer, etc. -->
 				<div id="poststuff">
 					<div id="post-body" class="metabox-holder columns-2">
 						<div id="post-body-content">
@@ -323,7 +323,7 @@ class Single_Entry {
 				<table class="widefat striped entry-logs-table">
 					<tbody>
 						<?php if ( ! empty( $entry_logs ) ) { ?>
-								<?php foreach ( $entry_logs as $index => $log ) { ?>
+								<?php foreach ( $entry_logs as $log ) { ?>
 									<tr>
 										<td class="entry-log-container">
 											<div class="entry-log">

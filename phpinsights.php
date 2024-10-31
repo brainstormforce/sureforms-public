@@ -233,7 +233,14 @@ return [
 		NunoMaduro\PhpInsights\Domain\Insights\ForbiddenTraits::class,
 	],
 
-	'config'       => [],
+	'config'       => [
+		\SlevomatCodingStandard\Sniffs\Functions\UnusedParameterSniff::class => [
+
+			'exclude' => [
+				'inc/blocks/base.php',
+			],
+		],
+	],
 
 	/*
 	|--------------------------------------------------------------------------

@@ -11,7 +11,6 @@ namespace SRFM\Inc;
 use SRFM\Inc\Traits\Get_Instance;
 use WP_Error;
 use WP_Post_Type;
-use WP_REST_Request;
 use WP_REST_Response;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -56,11 +55,10 @@ class Create_New_Form {
 	/**
 	 * Checks whether a given request has permission to create new forms.
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
 	 * @return true|WP_Error True if the request has read access, WP_Error object otherwise.
 	 * @since 0.0.1
 	 */
-	public function get_items_permissions_check( $request ) {
+	public function get_items_permissions_check() {
 		if ( current_user_can( 'edit_posts' ) ) {
 			return true;
 		}

@@ -364,10 +364,6 @@ class Generate_Form_Markup {
 				<div aria-live="polite" aria-atomic="true" role="alert" id="srfm-success-message-page-<?php echo esc_attr( Helper::get_string_value( $id ) ); ?>" class="srfm-success-box-description"></div>
 			</div>
 			<?php
-			$page_url  = isset( $_SERVER['REQUEST_URI'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '';
-			$path      = Helper::get_string_value( wp_parse_url( $page_url, PHP_URL_PATH ) );
-			$segments  = explode( '/', $path );
-			$form_path = $segments[1] ?? '';
 		}
 		?>
 			</div>

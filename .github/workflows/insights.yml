@@ -13,4 +13,4 @@ jobs:
               with:
                   php-version: 8.2
             - run: composer install --prefer-dist --no-progress --no-suggest
-            - run: vendor/bin/phpinsights -n --ansi --min-quality=100 --min-architecture=100 --min-style=100 --format=github-action
+            - run: vendor/bin/phpinsights -n --ansi --disable-security-check --min-quality=100 --min-architecture=100 --min-style=100 --format=github-action

@@ -71,6 +71,7 @@ class Block_Patterns extends WP_REST_Controller {
 	 * @since 0.0.1
 	 */
 	public function get_items_permissions_check( $request ) {
+		unset( $request );
 		if ( current_user_can( 'edit_posts' ) ) {
 			return true;
 		}

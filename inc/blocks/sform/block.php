@@ -23,11 +23,10 @@ class Block extends Base {
 	 * Render the block.
 	 *
 	 * @param array<mixed> $attributes Block attributes.
-	 * @param string       $content Post content.
 	 *
 	 * @return string|false
 	 */
-	public function render( $attributes, $content = '' ) {
+	public function render( $attributes ) {
 		$id = isset( $attributes['id'] ) ? Helper::get_integer_value( $attributes['id'] ) : '';
 
 		if ( empty( $id ) ) {

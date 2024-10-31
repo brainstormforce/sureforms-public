@@ -203,8 +203,6 @@ class Gutenberg_Hooks {
 			];
 		wp_enqueue_script( SRFM_SLUG . $all_screen_blocks, SRFM_URL . 'assets/build/blocks.js', $blocks_info['dependencies'], SRFM_VER, true );
 
-		$plugin_path = 'sureforms-pro/sureforms-pro.php';
-
 		wp_localize_script(
 			SRFM_SLUG . $all_screen_blocks,
 			SRFM_SLUG . '_block_data',

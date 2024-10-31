@@ -245,7 +245,6 @@ class Plugin_Loader {
 		/**
 		 * Language Locale for plugin
 		 *
-		 * @var string $get_locale The locale to use.
 		 * Uses get_user_locale()` in WordPress 4.7 or greater,
 		 * otherwise uses `get_locale()`.
 		 */
