@@ -211,22 +211,22 @@ class Admin_Ajax {
 	 */
 	public function generate_data_for_suretriggers_integration() {
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_send_json_error( [ 'message' => 'You do not have permission to access this page.' ] );
+			wp_send_json_error( [ 'message' => __( 'You do not have permission to access this page.', 'sureforms' ) ] );
 		}
 
 		if ( ! check_ajax_referer( 'suretriggers_nonce', 'security', false ) ) {
-			wp_send_json_error( [ 'message' => 'Invalid nonce.' ] );
+			wp_send_json_error( [ 'message' => __( 'Invalid nonce.', 'sureforms' ) ] );
 		}
 
 		if ( empty( $_POST['formId'] ) ) {
-			wp_send_json_error( [ 'message' => 'Form ID is required.' ] );
+			wp_send_json_error( [ 'message' => __( 'Form ID is required.', 'sureforms' ) ] );
 		}
 
 		if ( ! Helper::is_suretriggers_ready() ) {
 			wp_send_json_error(
 				[
 					'code'    => 'invalid_secret_key',
-					'message' => 'SureTriggers is not configured properly.',
+					'message' => __( 'SureTriggers is not configured properly.', 'sureforms' ),
 				]
 			);
 		}
