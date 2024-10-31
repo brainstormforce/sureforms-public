@@ -31,15 +31,6 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
  * Create the entries table using WP_List_Table.
  */
 class Entries_List_Table extends \WP_List_Table {
-
-	/**
-	 * Stores the entries data fetched from database.
-	 *
-	 * @var array<mixed>
-	 * @since 0.0.13
-	 */
-	protected $data = [];
-
 	/**
 	 * Stores the count for the entries data fetched from the database according to the status.
 	 * It will be used for pagination.
@@ -66,6 +57,13 @@ class Entries_List_Table extends \WP_List_Table {
 	 * @since 0.0.13
 	 */
 	public $trash_entries_count;
+	/**
+	 * Stores the entries data fetched from database.
+	 *
+	 * @var array<mixed>
+	 * @since 0.0.13
+	 */
+	protected $data = [];
 
 	/**
 	 * Constructor.
@@ -86,7 +84,7 @@ class Entries_List_Table extends \WP_List_Table {
 	 * @return array
 	 */
 	public function get_columns() {
-		$columns = [
+		return [
 			'cb'          => '<input type="checkbox" />',
 			'id'          => __( 'ID', 'sureforms' ),
 			'form_name'   => __( 'Form Name', 'sureforms' ),
@@ -94,8 +92,6 @@ class Entries_List_Table extends \WP_List_Table {
 			'first_field' => __( 'First Field', 'sureforms' ),
 			'created_at'  => __( 'Submitted On', 'sureforms' ),
 		];
-
-		return $columns;
 	}
 
 	/**
@@ -125,9 +121,7 @@ class Entries_List_Table extends \WP_List_Table {
 			'unread' => __( 'Mark as Unread', 'sureforms' ),
 		];
 
-		$bulk_actions = $this->get_additional_bulk_actions( $bulk_actions );
-
-		return $bulk_actions;
+		return $this->get_additional_bulk_actions( $bulk_actions );
 	}
 
 	/**
@@ -142,40 +136,6 @@ class Entries_List_Table extends \WP_List_Table {
 			'<div class="sureforms-no-entries-found">%1$s</div>',
 			esc_html__( 'No entries found.', 'sureforms' )
 		);
-	}
-
-	/**
-	 * Get the entries data.
-	 *
-	 * @param int      $per_page Number of entries to fetch per page.
-	 * @param int      $current_page Current page number.
-	 * @param string   $view The view to fetch the entries count from.
-	 * @param int|null $form_id The ID of the form to fetch entries for.
-	 *
-	 * @since 0.0.13
-	 * @return array
-	 */
-	private function table_data( $per_page, $current_page, $view, $form_id = 0 ) {
-		// Disabled the nonce verification due to the sorting functionality, will need custom implementation to display the sortable columns to accommodate nonce check.
-		// phpcs:disable WordPress.Security.NonceVerification.Recommended
-		$orderby = isset( $_GET['orderby'] ) ? sanitize_text_field( wp_unslash( $_GET['orderby'] ) ) : 'created_at';
-		$orderby = 'id' === $orderby ? strtoupper( $orderby ) : $orderby;
-		$order   = isset( $_GET['order'] ) ? sanitize_text_field( wp_unslash( $_GET['order'] ) ) : 'desc';
-		// phpcs:enable WordPress.Security.NonceVerification.Recommended
-
-		$offset              = ( $current_page - 1 ) * $per_page;
-		$where_condition     = $this->get_where_conditions( $form_id, $view );
-		$this->data          = Entries::get_all(
-			[
-				'limit'   => $per_page,
-				'offset'  => $offset,
-				'where'   => $where_condition,
-				'orderby' => $orderby,
-				'order'   => $order,
-			]
-		);
-		$this->entries_count = Entries::get_total_entries_by_status( $view, $form_id, $where_condition );
-		return $this->data;
 	}
 
 	/**
@@ -253,6 +213,243 @@ class Entries_List_Table extends \WP_List_Table {
 			'<input type="checkbox" name="entry[]" value="%s" />',
 			$entry_id
 		);
+	}
+
+	/**
+	 * Entries table form search input markup.
+	 * Currently search is based on entry ID only and not text.
+	 *
+	 * @param string $text The 'submit' button label.
+	 * @param int    $input_id ID attribute value for the search input field.
+	 *
+	 * @since 0.0.13
+	 * @return void
+	 */
+	public function search_box_markup( $text, $input_id ) {
+		$input_id .= '-search-input';
+		?>
+		<p class="search-box sureforms-form-search-box">
+			<label class="screen-reader-text" for="<?php echo esc_attr( $input_id ); ?>">
+				<?php echo esc_html( $text ); ?>:
+			</label>
+			<input type="search" name="search_filter" class="sureforms-entries-search-box" id="<?php echo esc_attr( $input_id ); ?>">
+			<button type="submit" class="button" id="search-submit"><?php echo esc_html( $text ); ?></button>
+		</p>
+		<?php
+	}
+
+	/**
+	 * Displays the table.
+	 *
+	 * @since 0.0.13
+	 */
+	public function display() {
+		$singular = $this->_args['singular'];
+		$this->views();
+		$this->search_box_markup( esc_html__( 'Search', 'sureforms' ), 'srfm-entries' );
+		$this->display_tablenav( 'top' );
+		$this->screen->render_screen_reader_content( 'heading_list' );
+		?>
+		<div class="sureforms-table-container">
+			<table class="wp-list-table <?php echo esc_attr( implode( ' ', $this->get_table_classes() ) ); ?>">
+				<?php $this->print_table_description(); ?>
+				<thead>
+				<tr>
+					<?php $this->print_column_headers(); ?>
+				</tr>
+				</thead>
+
+				<tbody id="the-list"
+					<?php
+					if ( $singular ) {
+						echo ' data-wp-lists="list:' . esc_attr( $singular ) . '"';
+					}
+					?>
+				>
+				<?php $this->display_rows_or_placeholder(); ?>
+				</tbody>
+
+				<tfoot>
+				<tr>
+					<?php $this->print_column_headers(); ?>
+				</tr>
+				</tfoot>
+			</table>
+		</div>
+		<?php
+		$this->display_tablenav( 'bottom' );
+	}
+
+	/**
+	 * Process bulk actions.
+	 *
+	 * @since 0.0.13
+	 * @return void
+	 */
+	public static function process_bulk_actions() {
+		if ( ! isset( $_GET['_wpnonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'srfm_entries_action' ) ) {
+			return;
+		}
+
+		// Get the selected entry IDs.
+		$entry_ids = isset( $_GET['entry'] ) ? array_map( 'sanitize_text_field', wp_unslash( $_GET['entry'] ) ) : [];
+
+		// If there are entry IDs selected, process the bulk action.
+		if ( ! empty( $entry_ids ) ) {
+			$action = isset( $_GET['action'] ) ? sanitize_text_field( wp_unslash( $_GET['action'] ) ) : '';
+
+			// Update the status of each selected entry.
+			foreach ( $entry_ids as $entry_id ) {
+				self::handle_entry_status( Helper::get_integer_value( $entry_id ), $action );
+			}
+
+			set_transient(
+				'srfm_bulk_action_message',
+				[
+					'action' => $action,
+					'count'  => count( $entry_ids ),
+				],
+				30
+			); // Transient expires in 30 seconds.
+			// Redirect to prevent form resubmission.
+			wp_safe_redirect( admin_url( 'admin.php?page=sureforms_entries' ) );
+			exit;
+		}
+	}
+
+	/**
+	 * Display admin notice for bulk actions.
+	 *
+	 * @since 0.0.13
+	 * @return void
+	 */
+	public static function display_bulk_action_notice() {
+		$bulk_action_message = get_transient( 'srfm_bulk_action_message' );
+		if ( ! $bulk_action_message ) {
+			return;
+		}
+		// Manually delete the transient after retrieval to prevent it from being displayed again after page reload.
+		delete_transient( 'srfm_bulk_action_message' );
+		$action = $bulk_action_message['action'];
+		$count  = $bulk_action_message['count'];
+		switch ( $action ) {
+			case 'read':
+			case 'unread':
+				// translators: %1$d refers to the number of entries, %2$s refers to the status (read or unread).
+				$message = sprintf( _n( '%1$d entry was successfully marked as %2$s.', '%1$d entries were successfully marked as %2$s.', $count, 'sureforms' ), $count, $action );
+				break;
+			case 'trash':
+				// translators: %1$d refers to the number of entries, %2$s refers to the action (trash).
+				$message = sprintf( _n( '%1$d entry was successfully moved to trash.', '%1$d entries were successfully moved to trash.', $count, 'sureforms' ), $count );
+				break;
+			case 'restore':
+				// translators: %1$d refers to the number of entries, %2$s refers to the action (restore).
+				$message = sprintf( _n( '%1$d entry was successfully restored.', '%1$d entries were successfully restored.', $count, 'sureforms' ), $count );
+				break;
+			case 'delete':
+				// translators: %1$d refers to the number of entries, %2$s refers to the action (delete).
+				$message = sprintf( _n( '%1$d entry was permanently deleted.', '%1$d entries were permanently deleted.', $count, 'sureforms' ), $count );
+				break;
+			case 'export':
+				// translators: %1$d refers to the number of entries, %2$s refers to the action (export).
+				$message = sprintf( _n( '%1$d entry was successfully exported.', '%1$d entries were successfully exported.', $count, 'sureforms' ), $count );
+				break;
+			default:
+				return;
+		}
+		echo '<div class="notice notice-success is-dismissible"><p>' . esc_html( $message ) . '</p></div>';
+	}
+
+	/**
+	 * Check if the current page is a trash list.
+	 *
+	 * @since 0.0.13
+	 * @return bool
+	 */
+	public static function is_trash_view() {
+		return isset( $_GET['view'] ) && 'trash' === sanitize_text_field( wp_unslash( $_GET['view'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+	}
+
+	/**
+	 * Common function to update the status of an entry.
+	 *
+	 * @param int    $entry_id The ID of the entry to update.
+	 * @param string $action The action to perform.
+	 * @param string $view The view to handle redirection.
+	 *
+	 * @since 0.0.13
+	 * @return void
+	 */
+	public static function handle_entry_status( $entry_id, $action, $view = '' ) {
+		switch ( $action ) {
+			case 'restore':
+				Entries::update( $entry_id, [ 'status' => 'unread' ] );
+				break;
+			case 'unread':
+			case 'read':
+			case 'trash':
+				Entries::update( $entry_id, [ 'status' => $action ] );
+				break;
+			case 'delete':
+				self::delete_entry_files( $entry_id );
+				Entries::delete( $entry_id );
+				break;
+			default:
+				break;
+		}
+		$url = wp_nonce_url(
+			admin_url( 'admin.php?page=sureforms_entries' ),
+			'srfm_entries_action'
+		);
+		// Redirect to appropriate page after action is performed.
+		if ( 'details' === $view ) {
+			$url = add_query_arg(
+				[
+					'entry_id' => $entry_id,
+					'view'     => 'details',
+				],
+				$url
+			);
+		}
+		wp_safe_redirect( $url );
+	}
+
+	/**
+	 * Delete the entry files when an entry is deleted.
+	 *
+	 * @param int $entry_id The ID of the entry to delete files for.
+	 * @since 1.0.2
+	 * @return void
+	 */
+	public static function delete_entry_files( $entry_id ) {
+		if ( ! $entry_id ) {
+			return;
+		}
+		// Get the entry data to get the file URLs.
+		$form_data = Entries::get_form_data( $entry_id );
+		if ( empty( $form_data ) ) {
+			return;
+		}
+		$upload_dir = wp_get_upload_dir();
+		foreach ( $form_data as $field_name => $value ) {
+			// Continue to the next iteration if the field name does not contain 'srfm-upload' and value is not an array.
+			if ( false === strpos( $field_name, 'srfm-upload' ) && ! is_array( $value ) ) {
+				continue;
+			}
+			foreach ( $value as $file_url ) {
+				// If the file URL is empty, skip to the next iteration.
+				if ( empty( $file_url ) ) {
+					continue;
+				}
+				// Get the file path from the file URL.
+				$file_path = str_replace( $upload_dir['baseurl'], $upload_dir['basedir'], urldecode( $file_url ) );
+
+				// Delete the file if it exists.
+				if ( file_exists( $file_path ) ) {
+					unlink( $file_path );
+				}
+			}
+		}
 	}
 
 	/**
@@ -477,12 +674,12 @@ class Entries_List_Table extends \WP_List_Table {
 		}
 		?>
 		<div class="tablenav <?php echo esc_attr( $which ); ?>">
-			<?php if ( $this->has_items() ) : ?>
+			<?php if ( $this->has_items() ) { ?>
 				<div class="alignleft actions bulkactions">
 					<?php $this->bulk_actions( $which ); ?>
 				</div>
 				<?php
-			endif;
+			}
 			$this->extra_tablenav( $which );
 			$this->pagination( $which );
 			?>
@@ -507,7 +704,7 @@ class Entries_List_Table extends \WP_List_Table {
 		foreach ( $forms as $form_id => $form_name ) {
 			// Adding the phpcs ignore nonce verification as no database operations are performed in this function.
 			// phpcs:ignore WordPress.Security.NonceVerification.Recommended
-			$selected = ( isset( $_GET['form_filter'] ) && Helper::get_integer_value( sanitize_text_field( wp_unslash( $_GET['form_filter'] ) ) ) === $form_id ) ? ' selected="selected"' : '';
+			$selected = isset( $_GET['form_filter'] ) && Helper::get_integer_value( sanitize_text_field( wp_unslash( $_GET['form_filter'] ) ) ) === $form_id ? ' selected="selected"' : '';
 			printf( '<option value="%s"%s>%s</option>', esc_attr( $form_id ), esc_attr( $selected ), esc_html( $form_name ) );
 		}
 		echo '</select>';
@@ -534,75 +731,10 @@ class Entries_List_Table extends \WP_List_Table {
 		echo '<select name="month_filter">';
 		echo '<option value="all">' . esc_html__( 'All Dates', 'sureforms' ) . '</option>';
 		foreach ( $months as $month_value => $month_label ) {
-			$selected = ( isset( $_GET['month_filter'] ) && Helper::get_string_value( $month_value ) === sanitize_text_field( wp_unslash( $_GET['month_filter'] ) ) ) ? ' selected="selected"' : '';
+			$selected = isset( $_GET['month_filter'] ) && Helper::get_string_value( $month_value ) === sanitize_text_field( wp_unslash( $_GET['month_filter'] ) ) ? ' selected="selected"' : '';
 			printf( '<option value="%s"%s>%s</option>', esc_attr( $month_value ), esc_attr( $selected ), esc_html( $month_label ) );
 		}
 		echo '</select>';
-	}
-
-	/**
-	 * Entries table form search input markup.
-	 * Currently search is based on entry ID only and not text.
-	 *
-	 * @param string $text The 'submit' button label.
-	 * @param int    $input_id ID attribute value for the search input field.
-	 *
-	 * @since 0.0.13
-	 * @return void
-	 */
-	public function search_box_markup( $text, $input_id ) {
-		$input_id .= '-search-input';
-		?>
-		<p class="search-box sureforms-form-search-box">
-			<label class="screen-reader-text" for="<?php echo esc_attr( $input_id ); ?>">
-				<?php echo esc_html( $text ); ?>:
-			</label>
-			<input type="search" name="search_filter" class="sureforms-entries-search-box" id="<?php echo esc_attr( $input_id ); ?>">
-			<button type="submit" class="button" id="search-submit"><?php echo esc_html( $text ); ?></button>
-		</p>
-		<?php
-	}
-
-	/**
-	 * Displays the table.
-	 *
-	 * @since 0.0.13
-	 */
-	public function display() {
-		$singular = $this->_args['singular'];
-		$this->views();
-		$this->search_box_markup( esc_html__( 'Search', 'sureforms' ), 'srfm-entries' );
-		$this->display_tablenav( 'top' );
-		$this->screen->render_screen_reader_content( 'heading_list' );
-		?>
-		<div class="sureforms-table-container">
-			<table class="wp-list-table <?php echo esc_attr( implode( ' ', $this->get_table_classes() ) ); ?>">
-				<?php $this->print_table_description(); ?>
-				<thead>
-				<tr>
-					<?php $this->print_column_headers(); ?>
-				</tr>
-				</thead>
-
-				<tbody id="the-list"
-					<?php
-					if ( $singular ) {
-						echo ' data-wp-lists="list:' . esc_attr( $singular ) . '"';
-					}
-					?>
-				>
-				<?php $this->display_rows_or_placeholder(); ?>
-				</tbody>
-
-				<tfoot>
-				<tr>
-					<?php $this->print_column_headers(); ?>
-				</tr>
-				</tfoot>
-			</table>
-		</div>
-		<?php
-		$this->display_tablenav( 'bottom' );
 	}
 
 	/**
@@ -624,6 +756,89 @@ class Entries_List_Table extends \WP_List_Table {
 		$classes[]     = "has-{$columns_class}-columns";
 
 		return $classes;
+	}
+
+	/**
+	 * Get the views for the entries table.
+	 *
+	 * @since 0.0.13
+	 * @return array<string,string>
+	 */
+	protected function get_views() {
+		// Get the status count of the entries.
+		$unread_entries_count = Entries::get_total_entries_by_status( 'unread' );
+
+		// Get the current view (All, Read, Unread, Trash) to highlight the selected one.
+		// Adding the phpcs ignore nonce verification as no complex operations are performed here only the count of the entries is required.
+		$current_view = isset( $_GET['view'] ) ? sanitize_text_field( wp_unslash( $_GET['view'] ) ) : 'all'; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+
+		// Define the base URL for the views (without query parameters).
+		$base_url = wp_nonce_url( admin_url( 'admin.php?page=sureforms_entries' ), 'srfm_entries_action' );
+
+		// Create the array of view links.
+		$views = [
+			'all'    => sprintf(
+				'<a href="%1$s" class="%2$s">%3$s <span class="count">(%4$d)</span></a>',
+				add_query_arg( 'view', 'all', $base_url ),
+				'all' === $current_view ? 'current' : '',
+				esc_html__( 'All', 'sureforms' ),
+				$this->all_entries_count
+			),
+			'unread' => sprintf(
+				'<a href="%1$s" class="%2$s">%3$s <span class="count">(%4$d)</span></a>',
+				add_query_arg( 'view', 'unread', $base_url ),
+				'unread' === $current_view ? 'current' : '',
+				esc_html__( 'Unread', 'sureforms' ),
+				$unread_entries_count
+			),
+		];
+
+		// Only add the Trash view if the count is greater than 0.
+		if ( $this->trash_entries_count > 0 ) {
+			$views['trash'] = sprintf(
+				'<a href="%1$s" class="%2$s">%3$s <span class="count">(%4$d)</span></a>',
+				add_query_arg( 'view', 'trash', $base_url ),
+				'trash' === $current_view ? 'current' : '',
+				esc_html__( 'Trash', 'sureforms' ),
+				$this->trash_entries_count
+			);
+		}
+
+		return $views;
+	}
+
+	/**
+	 * Get the entries data.
+	 *
+	 * @param int      $per_page Number of entries to fetch per page.
+	 * @param int      $current_page Current page number.
+	 * @param string   $view The view to fetch the entries count from.
+	 * @param int|null $form_id The ID of the form to fetch entries for.
+	 *
+	 * @since 0.0.13
+	 * @return array
+	 */
+	private function table_data( $per_page, $current_page, $view, $form_id = 0 ) {
+		// Disabled the nonce verification due to the sorting functionality, will need custom implementation to display the sortable columns to accommodate nonce check.
+		// phpcs:disable WordPress.Security.NonceVerification.Recommended
+		$orderby = isset( $_GET['orderby'] ) ? sanitize_text_field( wp_unslash( $_GET['orderby'] ) ) : 'created_at';
+		$orderby = 'id' === $orderby ? strtoupper( $orderby ) : $orderby;
+		$order   = isset( $_GET['order'] ) ? sanitize_text_field( wp_unslash( $_GET['order'] ) ) : 'desc';
+		// phpcs:enable WordPress.Security.NonceVerification.Recommended
+
+		$offset              = ( $current_page - 1 ) * $per_page;
+		$where_condition     = $this->get_where_conditions( $form_id, $view );
+		$this->data          = Entries::get_all(
+			[
+				'limit'   => $per_page,
+				'offset'  => $offset,
+				'where'   => $where_condition,
+				'orderby' => $orderby,
+				'order'   => $order,
+			]
+		);
+		$this->entries_count = Entries::get_total_entries_by_status( $view, $form_id, $where_condition );
+		return $this->data;
 	}
 
 	/**
@@ -756,92 +971,6 @@ class Entries_List_Table extends \WP_List_Table {
 	}
 
 	/**
-	 * Get the views for the entries table.
-	 *
-	 * @since 0.0.13
-	 * @return array<string,string>
-	 */
-	protected function get_views() {
-		// Get the status count of the entries.
-		$unread_entries_count = Entries::get_total_entries_by_status( 'unread' );
-
-		// Get the current view (All, Read, Unread, Trash) to highlight the selected one.
-		// Adding the phpcs ignore nonce verification as no complex operations are performed here only the count of the entries is required.
-		$current_view = isset( $_GET['view'] ) ? sanitize_text_field( wp_unslash( $_GET['view'] ) ) : 'all'; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-
-		// Define the base URL for the views (without query parameters).
-		$base_url = wp_nonce_url( admin_url( 'admin.php?page=sureforms_entries' ), 'srfm_entries_action' );
-
-		// Create the array of view links.
-		$views = [
-			'all'    => sprintf(
-				'<a href="%1$s" class="%2$s">%3$s <span class="count">(%4$d)</span></a>',
-				add_query_arg( 'view', 'all', $base_url ),
-				( 'all' === $current_view ) ? 'current' : '',
-				esc_html__( 'All', 'sureforms' ),
-				$this->all_entries_count
-			),
-			'unread' => sprintf(
-				'<a href="%1$s" class="%2$s">%3$s <span class="count">(%4$d)</span></a>',
-				add_query_arg( 'view', 'unread', $base_url ),
-				( 'unread' === $current_view ) ? 'current' : '',
-				esc_html__( 'Unread', 'sureforms' ),
-				$unread_entries_count
-			),
-		];
-
-		// Only add the Trash view if the count is greater than 0.
-		if ( $this->trash_entries_count > 0 ) {
-			$views['trash'] = sprintf(
-				'<a href="%1$s" class="%2$s">%3$s <span class="count">(%4$d)</span></a>',
-				add_query_arg( 'view', 'trash', $base_url ),
-				( 'trash' === $current_view ) ? 'current' : '',
-				esc_html__( 'Trash', 'sureforms' ),
-				$this->trash_entries_count
-			);
-		}
-
-		return $views;
-	}
-
-	/**
-	 * Process bulk actions.
-	 *
-	 * @since 0.0.13
-	 * @return void
-	 */
-	public static function process_bulk_actions() {
-		if ( ! isset( $_GET['_wpnonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'srfm_entries_action' ) ) {
-			return;
-		}
-
-		// Get the selected entry IDs.
-		$entry_ids = isset( $_GET['entry'] ) ? array_map( 'sanitize_text_field', wp_unslash( $_GET['entry'] ) ) : [];
-
-		// If there are entry IDs selected, process the bulk action.
-		if ( ! empty( $entry_ids ) ) {
-			$action = isset( $_GET['action'] ) ? sanitize_text_field( wp_unslash( $_GET['action'] ) ) : '';
-
-			// Update the status of each selected entry.
-			foreach ( $entry_ids as $entry_id ) {
-				self::handle_entry_status( Helper::get_integer_value( $entry_id ), $action );
-			}
-
-			set_transient(
-				'srfm_bulk_action_message',
-				[
-					'action' => $action,
-					'count'  => count( $entry_ids ),
-				],
-				30
-			); // Transient expires in 30 seconds.
-			// Redirect to prevent form resubmission.
-			wp_safe_redirect( admin_url( 'admin.php?page=sureforms_entries' ) );
-			exit;
-		}
-	}
-
-	/**
 	 * Get additional bulk actions like restore and delete for the trash view.
 	 *
 	 * @param array $bulk_actions The bulk actions array.
@@ -853,145 +982,9 @@ class Entries_List_Table extends \WP_List_Table {
 		if ( ! self::is_trash_view() ) {
 			return $bulk_actions;
 		}
-		$bulk_actions = [
+		return [
 			'restore' => __( 'Restore', 'sureforms' ),
 			'delete'  => __( 'Delete Permanently', 'sureforms' ),
 		];
-		return $bulk_actions;
-	}
-
-	/**
-	 * Check if the current page is a trash list.
-	 *
-	 * @since 0.0.13
-	 * @return bool
-	 */
-	public static function is_trash_view() {
-		return isset( $_GET['view'] ) && 'trash' === sanitize_text_field( wp_unslash( $_GET['view'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-	}
-
-	/**
-	 * Common function to update the status of an entry.
-	 *
-	 * @param int    $entry_id The ID of the entry to update.
-	 * @param string $action The action to perform.
-	 * @param string $view The view to handle redirection.
-	 *
-	 * @since 0.0.13
-	 * @return void
-	 */
-	public static function handle_entry_status( $entry_id, $action, $view = '' ) {
-		switch ( $action ) {
-			case 'restore':
-				Entries::update( $entry_id, [ 'status' => 'unread' ] );
-				break;
-			case 'unread':
-			case 'read':
-			case 'trash':
-				Entries::update( $entry_id, [ 'status' => $action ] );
-				break;
-			case 'delete':
-				self::delete_entry_files( $entry_id );
-				Entries::delete( $entry_id );
-				break;
-			default:
-				break;
-		}
-		$url = wp_nonce_url(
-			admin_url( 'admin.php?page=sureforms_entries' ),
-			'srfm_entries_action'
-		);
-		// Redirect to appropriate page after action is performed.
-		if ( 'details' === $view ) {
-			$url = add_query_arg(
-				[
-					'entry_id' => $entry_id,
-					'view'     => 'details',
-				],
-				$url
-			);
-		}
-		wp_safe_redirect( $url );
-	}
-
-	/**
-	 * Display admin notice for bulk actions.
-	 *
-	 * @since 0.0.13
-	 * @return void
-	 */
-	public static function display_bulk_action_notice() {
-		$bulk_action_message = get_transient( 'srfm_bulk_action_message' );
-		if ( ! $bulk_action_message ) {
-			return;
-		}
-		// Manually delete the transient after retrieval to prevent it from being displayed again after page reload.
-		delete_transient( 'srfm_bulk_action_message' );
-		$action = $bulk_action_message['action'];
-		$count  = $bulk_action_message['count'];
-		switch ( $action ) {
-			case 'read':
-			case 'unread':
-				// translators: %1$d refers to the number of entries, %2$s refers to the status (read or unread).
-				$message = sprintf( _n( '%1$d entry was successfully marked as %2$s.', '%1$d entries were successfully marked as %2$s.', $count, 'sureforms' ), $count, $action );
-				break;
-			case 'trash':
-				// translators: %1$d refers to the number of entries, %2$s refers to the action (trash).
-				$message = sprintf( _n( '%1$d entry was successfully moved to trash.', '%1$d entries were successfully moved to trash.', $count, 'sureforms' ), $count );
-				break;
-			case 'restore':
-				// translators: %1$d refers to the number of entries, %2$s refers to the action (restore).
-				$message = sprintf( _n( '%1$d entry was successfully restored.', '%1$d entries were successfully restored.', $count, 'sureforms' ), $count );
-				break;
-			case 'delete':
-				// translators: %1$d refers to the number of entries, %2$s refers to the action (delete).
-				$message = sprintf( _n( '%1$d entry was permanently deleted.', '%1$d entries were permanently deleted.', $count, 'sureforms' ), $count );
-				break;
-			case 'export':
-				// translators: %1$d refers to the number of entries, %2$s refers to the action (export).
-				$message = sprintf( _n( '%1$d entry was successfully exported.', '%1$d entries were successfully exported.', $count, 'sureforms' ), $count );
-				break;
-			default:
-				return;
-		}
-		echo '<div class="notice notice-success is-dismissible"><p>' . esc_html( $message ) . '</p></div>';
-	}
-
-	/**
-	 * Delete the entry files when an entry is deleted.
-	 *
-	 * @param int $entry_id The ID of the entry to delete files for.
-	 * @since 1.0.2
-	 * @return void
-	 */
-	public static function delete_entry_files( $entry_id ) {
-		if ( ! $entry_id ) {
-			return;
-		}
-		// Get the entry data to get the file URLs.
-		$form_data = Entries::get_form_data( $entry_id );
-		if ( empty( $form_data ) ) {
-			return;
-		}
-		$upload_dir = wp_get_upload_dir();
-		foreach ( $form_data as $field_name => $value ) {
-			// Continue to the next iteration if the field name does not contain 'srfm-upload' and value is not an array.
-			if ( false === strpos( $field_name, 'srfm-upload' ) && ! is_array( $value ) ) {
-				continue;
-			}
-			foreach ( $value as $file_url ) {
-				// If the file URL is empty, skip to the next iteration.
-				if ( empty( $file_url ) ) {
-					continue;
-				}
-				// Get the file path from the file URL.
-				$file_path = str_replace( $upload_dir['baseurl'], $upload_dir['basedir'], urldecode( $file_url ) );
-
-				// Delete the file if it exists.
-				if ( file_exists( $file_path ) ) {
-					unlink( $file_path );
-				}
-			}
-		}
 	}
 }

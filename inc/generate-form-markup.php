@@ -8,12 +8,7 @@
 
 namespace SRFM\Inc;
 
-use WP_REST_Response;
-use WP_Error;
 use SRFM\Inc\Traits\Get_Instance;
-use SRFM\Inc\Helper;
-use SRFM\Inc\Smart_Tags;
-use SRFM\Inc\Frontend_Assets;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -58,10 +53,10 @@ class Generate_Form_Markup {
 	 * Handle Form status
 	 *
 	 * @param int|string $id Contains form ID.
-	 * @param boolean    $show_title_current_page Boolean to show/hide form title.
+	 * @param bool       $show_title_current_page Boolean to show/hide form title.
 	 * @param string     $sf_classname additional class_name.
 	 * @param string     $post_type Contains post type.
-	 * @param boolean    $do_blocks Boolean to enable/disable parsing dynamic blocks.
+	 * @param bool       $do_blocks Boolean to enable/disable parsing dynamic blocks.
 	 *
 	 * @return string|false
 	 * @since 0.0.1
@@ -118,10 +113,10 @@ class Generate_Form_Markup {
 			$success_url              = '';
 			if ( is_array( $form_confirmation ) && isset( $form_confirmation[0][0] ) ) {
 				$confirmation_data = $form_confirmation[0][0];
-				$page_url          = isset( $confirmation_data['page_url'] ) ? $confirmation_data['page_url'] : '';
-				$custom_url        = isset( $confirmation_data['custom_url'] ) ? $confirmation_data['custom_url'] : '';
-				$confirmation_type = isset( $confirmation_data['confirmation_type'] ) ? $confirmation_data['confirmation_type'] : '';
-				$submission_action = isset( $confirmation_data['submission_action'] ) ? $confirmation_data['submission_action'] : '';
+				$page_url          = $confirmation_data['page_url'] ?? '';
+				$custom_url        = $confirmation_data['custom_url'] ?? '';
+				$confirmation_type = $confirmation_data['confirmation_type'] ?? '';
+				$submission_action = $confirmation_data['submission_action'] ?? '';
 				$success_url       = '';
 				if ( 'different page' === $confirmation_type ) {
 					$success_url = $page_url;
@@ -154,24 +149,24 @@ class Generate_Form_Markup {
 			}
 
 			if ( is_array( $global_setting_options ) && 'cf-turnstile' === $security_type ) {
-				$srfm_cf_turnstile_site_key = isset( $global_setting_options['srfm_cf_turnstile_site_key'] ) ? $global_setting_options['srfm_cf_turnstile_site_key'] : '';
-				$srfm_cf_appearance_mode    = isset( $global_setting_options['srfm_cf_appearance_mode'] ) ? $global_setting_options['srfm_cf_appearance_mode'] : 'auto';
+				$srfm_cf_turnstile_site_key = $global_setting_options['srfm_cf_turnstile_site_key'] ?? '';
+				$srfm_cf_appearance_mode    = $global_setting_options['srfm_cf_appearance_mode'] ?? 'auto';
 			}
 
 			if ( is_array( $global_setting_options ) && 'hcaptcha' === $security_type ) {
-				$srfm_hcaptcha_site_key = isset( $global_setting_options['srfm_hcaptcha_site_key'] ) ? $global_setting_options['srfm_hcaptcha_site_key'] : '';
+				$srfm_hcaptcha_site_key = $global_setting_options['srfm_hcaptcha_site_key'] ?? '';
 			}
 
 			if ( is_array( $global_setting_options ) && 'g-recaptcha' === $security_type ) {
 				switch ( $recaptcha_version ) {
 					case 'v2-checkbox':
-						$google_captcha_site_key = isset( $global_setting_options['srfm_v2_checkbox_site_key'] ) ? $global_setting_options['srfm_v2_checkbox_site_key'] : '';
+						$google_captcha_site_key = $global_setting_options['srfm_v2_checkbox_site_key'] ?? '';
 						break;
 					case 'v2-invisible':
-						$google_captcha_site_key = isset( $global_setting_options['srfm_v2_invisible_site_key'] ) ? $global_setting_options['srfm_v2_invisible_site_key'] : '';
+						$google_captcha_site_key = $global_setting_options['srfm_v2_invisible_site_key'] ?? '';
 						break;
 					case 'v3-reCAPTCHA':
-						$google_captcha_site_key = isset( $global_setting_options['srfm_v3_site_key'] ) ? $global_setting_options['srfm_v3_site_key'] : '';
+						$google_captcha_site_key = $global_setting_options['srfm_v3_site_key'] ?? '';
 						break;
 					default:
 						break;
@@ -243,9 +238,9 @@ class Generate_Form_Markup {
 						]
 					);
 					// echo custom css on page/post.
-					if ( 'sureforms_form' !== $current_post_type ) :
+					if ( 'sureforms_form' !== $current_post_type ) {
 						echo wp_kses_post( $custom_css );
-					endif;
+					}
 					?>
 				}
 			</style>
@@ -273,9 +268,9 @@ class Generate_Form_Markup {
 				<input type="hidden" value="<?php echo esc_attr( Helper::get_string_value( $id ) ); ?>" name="form-id">
 				<input type="hidden" value="" name="srfm-sender-email-field" id="srfm-sender-email">
 				<input type="hidden" value="<?php echo esc_attr( Helper::get_string_value( $is_page_break ) ); ?>" id="srfm-page-break">
-				<?php if ( $honeypot_spam ) : ?>
+				<?php if ( $honeypot_spam ) { ?>
 					<input type="hidden" value="" name="srfm-honeypot-field">
-				<?php endif; ?>
+				<?php } ?>
 				<?php
 
 				if ( $is_page_break ) {
@@ -286,33 +281,33 @@ class Generate_Form_Markup {
 					// phpcs:ignoreEnd
 				}
 				?>
-				<?php if ( 0 !== $block_count && ! $is_inline_button || $is_page_break ) : ?>
-					<?php if ( ! empty( $security_type ) && 'none' !== $security_type ) : ?>
+				<?php if ( 0 !== $block_count && ! $is_inline_button || $is_page_break ) { ?>
+					<?php if ( ! empty( $security_type ) && 'none' !== $security_type ) { ?>
 						<div class="srfm-captcha-container <?php echo esc_attr( 'v3-reCAPTCHA' === $recaptcha_version || 'v2-invisible' === $recaptcha_version ? 'srfm-display-none' : '' ); ?>">
-						<?php if ( is_string( $google_captcha_site_key ) && ! empty( $google_captcha_site_key ) && 'g-recaptcha' === $security_type ) : ?>
+						<?php if ( is_string( $google_captcha_site_key ) && ! empty( $google_captcha_site_key ) && 'g-recaptcha' === $security_type ) { ?>
 
-							<?php if ( 'v2-checkbox' === $recaptcha_version ) : ?>
+							<?php if ( 'v2-checkbox' === $recaptcha_version ) { ?>
 								<?php
 								wp_enqueue_script( 'google-recaptcha', 'https://www.google.com/recaptcha/api.js', [], SRFM_VER, true );
 								?>
 							<div class='g-recaptcha' data-callback="onSuccess" recaptcha-type="<?php echo esc_attr( $recaptcha_version ); ?>" data-sitekey="<?php echo esc_attr( strval( $google_captcha_site_key ) ); ?>" ></div>
-						<?php endif; ?>
+							<?php } ?>
 
-							<?php if ( 'v2-invisible' === $recaptcha_version ) : ?>
+							<?php if ( 'v2-invisible' === $recaptcha_version ) { ?>
 								<?php
 								wp_enqueue_script( 'google-recaptcha-invisible', 'https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit', [ SRFM_SLUG . '-form-submit' ], SRFM_VER, true );
 								?>
 							<div class='g-recaptcha' recaptcha-type="<?php echo esc_attr( $recaptcha_version ); ?>" data-sitekey="<?php echo esc_attr( $google_captcha_site_key ); ?>" data-size="invisible"></div>
-						<?php endif; ?>
+							<?php } ?>
 
-							<?php if ( 'v3-reCAPTCHA' === $recaptcha_version ) : ?>
+							<?php if ( 'v3-reCAPTCHA' === $recaptcha_version ) { ?>
 								<?php wp_enqueue_script( 'srfm-google-recaptchaV3', 'https://www.google.com/recaptcha/api.js?render=' . esc_js( $google_captcha_site_key ), [], SRFM_VER, true ); ?>
-						<?php endif; ?>
+							<?php } ?>
 
-					<?php endif; ?>
+						<?php } ?>
 						<?php
 
-						if ( 'cf-turnstile' === $security_type ) :
+						if ( 'cf-turnstile' === $security_type ) {
 							// Cloudflare Turnstile script.
 							wp_enqueue_script( // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
 								SRFM_SLUG . '-cf-turnstile',
@@ -327,19 +322,19 @@ class Generate_Form_Markup {
 							?>
 						<div id="srfm-cf-sitekey" class="cf-turnstile" data-callback="onSuccess" data-theme="<?php echo esc_attr( $srfm_cf_appearance_mode ); ?>" data-sitekey="<?php echo esc_attr( $srfm_cf_turnstile_site_key ); ?>"></div>
 							<?php
-					endif;
+						}
 
-						if ( 'hcaptcha' === $security_type ) :
+						if ( 'hcaptcha' === $security_type ) {
 							// hCaptcha script.
 							wp_enqueue_script( 'hcaptcha', 'https://js.hcaptcha.com/1/api.js', [], null, [ 'strategy' => 'defer' ] ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
 							?>
 						<div id="srfm-hcaptcha-sitekey" data-callback="onSuccess" class="h-captcha" data-sitekey="<?php echo esc_attr( $srfm_hcaptcha_site_key ); ?>"></div>
 							<?php
-					endif;
+						}
 						?>
 						<div class="srfm-validation-error" id="captcha-error" style="display: none;"><?php echo esc_attr__( 'Please verify that you are not a robot.', 'sureforms' ); ?></div>
 					</div>
-					<?php endif; ?>
+					<?php } ?>
 
 					<?php
 					if ( $is_page_break ) {
@@ -350,10 +345,10 @@ class Generate_Form_Markup {
 					<div class="srfm-submit-container <?php echo esc_attr( $is_page_break ? 'hide' : '' ); ?>">
 						<div style="width: <?php echo esc_attr( $full ? '100%;' : ';' ); ?> text-align: <?php echo esc_attr( $submit_button_alignment ? $submit_button_alignment : 'left' ); ?>" class="wp-block-button">
 						<button style="width:<?php echo esc_attr( $full ? '100%;' : '' ); ?>" id="srfm-submit-btn"class="<?php echo esc_attr( '1' === $btn_from_theme ? 'wp-block-button__link' : 'srfm-btn-frontend srfm-button srfm-submit-button' ); ?><?php echo 'v3-reCAPTCHA' === $recaptcha_version ? ' g-recaptcha' : ''; ?>"
-						<?php if ( 'v3-reCAPTCHA' === $recaptcha_version ) : ?>
+						<?php if ( 'v3-reCAPTCHA' === $recaptcha_version ) { ?>
 							recaptcha-type="<?php echo esc_attr( $recaptcha_version ); ?>"
 							data-sitekey="<?php echo esc_attr( $google_captcha_site_key ); ?>"
-						<?php endif; ?>
+						<?php } ?>
 						>
 							<div class="srfm-submit-wrap">
 								<?php echo esc_html( $button_text ); ?>
@@ -362,17 +357,13 @@ class Generate_Form_Markup {
 						</button>
 						</div>
 					</div>
-				<?php endif; ?>
+				<?php } ?>
 				<p id="srfm-error-message" class="srfm-error-message" hidden="true"><?php echo esc_html__( 'There was an error trying to submit your form. Please try again.', 'sureforms' ); ?></p>
 			</form>
 			<div class="srfm-single-form srfm-success-box in-page">
 				<div aria-live="polite" aria-atomic="true" role="alert" id="srfm-success-message-page-<?php echo esc_attr( Helper::get_string_value( $id ) ); ?>" class="srfm-success-box-description"></div>
 			</div>
 			<?php
-			$page_url  = isset( $_SERVER['REQUEST_URI'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '';
-			$path      = Helper::get_string_value( wp_parse_url( $page_url, PHP_URL_PATH ) );
-			$segments  = explode( '/', $path );
-			$form_path = isset( $segments[1] ) ? $segments[1] : '';
 		}
 		?>
 			</div>
@@ -415,7 +406,6 @@ class Generate_Form_Markup {
 		$confirmation_message = $smart_tags->process_smart_tags( $confirmation_data['message'], $submission_data, $form_data );
 
 		return apply_filters( 'srfm_after_submit_confirmation_message', $confirmation_message );
-
 	}
 
 	/**
@@ -442,9 +432,9 @@ class Generate_Form_Markup {
 
 		$confirmation_data = is_array( $form_confirmation[0] ) && isset( $form_confirmation[0][0] ) ? $form_confirmation[0][0] : null;
 
-		$page_url          = isset( $confirmation_data['page_url'] ) ? $confirmation_data['page_url'] : '';
-		$custom_url        = isset( $confirmation_data['custom_url'] ) ? $confirmation_data['custom_url'] : '';
-		$confirmation_type = isset( $confirmation_data['confirmation_type'] ) ? $confirmation_data['confirmation_type'] : '';
+		$page_url          = $confirmation_data['page_url'] ?? '';
+		$custom_url        = $confirmation_data['custom_url'] ?? '';
+		$confirmation_type = $confirmation_data['confirmation_type'] ?? '';
 		if ( 'different page' === $confirmation_type ) {
 			$redirect_url = esc_url( $page_url );
 		} elseif ( 'custom url' === $confirmation_type ) {

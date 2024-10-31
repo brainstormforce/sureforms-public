@@ -7,9 +7,8 @@
 
 namespace SRFM\Inc\Email;
 
-use SRFM\Inc\Traits\Get_Instance;
 use SRFM\Inc\Helper;
-
+use SRFM\Inc\Traits\Get_Instance;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -21,7 +20,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 0.0.1
  */
 class Email_Template {
-
 	use Get_Instance;
 
 	/**
@@ -31,7 +29,6 @@ class Email_Template {
 	 * @return void
 	 */
 	public function __construct() {
-
 	}
 
 	/**
@@ -82,8 +79,6 @@ class Email_Template {
 	 * @return string|false footer tags.
 	 */
 	public function get_footer() {
-		// Translators: Site URL.
-		$site_link = sprintf( __( '<a href=%1$s>%2$s</a>', 'sureforms' ), home_url( '/' ), get_bloginfo( 'name' ) );
 		ob_start();
 		?>
 																				</div>
@@ -187,8 +182,7 @@ class Email_Template {
 				$current_table_data = $table_data ? $table_data : ''; // This is done as str_replace expects array|string but ob_get_clean() returns string|false.
 			$message                = str_replace( '{all_data}', $current_table_data, $message );
 		}
-		$message .= $this->get_footer();
-		return $message;
+		return $message . $this->get_footer();
 	}
 
 }

@@ -8,8 +8,8 @@
 
 namespace SRFM\Inc;
 
-use SRFM\Inc\Traits\Get_Instance;
 use SRFM\Inc\Lib\Browser\Browser;
+use SRFM\Inc\Traits\Get_Instance;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -138,8 +138,8 @@ class Smart_Tags {
 
 		foreach ( $matches[0] as $tag ) {
 			$is_valid_tag = isset( $get_smart_tag_list[ $tag ] ) ||
-			strpos( $tag, 'get_input:' ) === 0 ||
-			strpos( $tag, 'get_cookie:' ) === 0 ||
+			strpos( $tag, 'get_input:' ) ||
+			strpos( $tag, 'get_cookie:' ) ||
 			0 === strpos( $tag, '{form:' );
 
 			if ( ! $is_valid_tag ) {
@@ -207,7 +207,7 @@ class Smart_Tags {
 				return self::parse_post_props( $tag );
 
 			default:
-				if ( strpos( $tag, 'get_input:' ) === 0 || strpos( $tag, 'get_cookie:' ) === 0 ) {
+				if ( strpos( $tag, 'get_input:' ) || strpos( $tag, 'get_cookie:' ) ) {
 					return self::parse_request_param( $tag );
 				}
 
@@ -244,130 +244,6 @@ class Smart_Tags {
 
 		return apply_filters( 'srfm_get_the_ip', $ip );
 	}
-
-	/**
-	 * Parse Date Properties.
-	 *
-	 * @param string $value date tag.
-	 * @since  0.0.1
-	 * @return string
-	 */
-	private static function parse_date( $value ) {
-
-		$format = '';
-
-		if ( '{date_mdy}' === $value ) {
-			$format = 'm/d/Y';
-		}
-
-		if ( '{date_dmy}' === $value ) {
-			$format = 'd/m/Y';
-		}
-
-		$date = gmdate( $format, Helper::get_integer_value( strtotime( current_time( 'mysql' ) ) ) );
-		return $date ? $date : '';
-	}
-
-
-	/**
-	 * Parse user properties.
-	 *
-	 * @param string $value user tag.
-	 * @since  0.0.1
-	 * @return mixed
-	 */
-	private static function parse_user_props( $value ) {
-		$user = wp_get_current_user();
-
-		$user_info = get_user_meta( $user->ID );
-
-		if ( ! $user_info ) {
-			return '';
-		}
-
-		if ( '{user_id}' === $value ) {
-			return ( null !== $user->ID ) ? $user->ID : '';
-		}
-
-		if ( '{user_display_name}' === $value ) {
-			return isset( $user->data->display_name ) ? $user->data->display_name : '';
-		}
-
-		if ( '{user_first_name}' === $value ) {
-			return ( is_array( $user_info ) && isset( $user_info['first_name'][0] ) ) ? $user_info['first_name'][0] : '';
-		}
-
-		if ( '{user_last_name}' === $value ) {
-			return ( is_array( $user_info ) && isset( $user_info['last_name'][0] ) ) ? $user_info['last_name'][0] : '';
-		}
-
-		if ( '{user_email}' === $value ) {
-			return isset( $user->data->user_email ) ? $user->data->user_email : '';
-		}
-
-		if ( '{user_login}' === $value ) {
-			return isset( $user->data->user_login ) ? $user->data->user_login : '';
-		}
-
-		return '';
-
-	}
-
-	/**
-	 * Parse Post properties.
-	 *
-	 * @param string $value post tag.
-	 * @since  0.0.1
-	 * @return string
-	 */
-	private static function parse_post_props( $value ) {
-		global $post;
-
-		if ( ! $post ) {
-			return '';
-		}
-
-		if ( '{embed_post_url}' === $value && isset( $_SERVER['REQUEST_URI'] ) ) {
-			$request_uri = sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) );
-			return esc_url( site_url( $request_uri ) );
-		}
-
-		if ( '{embed_post_title}' === $value ) {
-			$value = 'post_title';
-		}
-
-		if ( '{embed_post_id}' === $value ) {
-			$value = 'ID';
-		}
-
-		if ( property_exists( $post, $value ) ) {
-			return $post->{$value};
-		}
-
-		return '';
-	}
-
-	/**
-	 * Parse browser/user-agent properties.
-	 *
-	 * @param string $value browser tag.
-	 * @since  0.0.1
-	 * @return string
-	 */
-	private static function parse_browser_props( $value ) {
-		$browser = new Browser();
-
-		if ( '{browser_name}' === $value ) {
-			return sanitize_text_field( $browser->getBrowser() );
-		}
-
-		if ( '{browser_platform}' === $value ) {
-			return sanitize_text_field( $browser->getPlatform() );
-		}
-
-		return '';
-	}
-
 
 	/**
 	 * Parse Request Query properties.
@@ -453,5 +329,126 @@ class Smart_Tags {
 			}
 		}
 		return $replacement_data;
+	}
+
+	/**
+	 * Parse Date Properties.
+	 *
+	 * @param string $value date tag.
+	 * @since  0.0.1
+	 * @return string
+	 */
+	private static function parse_date( $value ) {
+
+		$format = '';
+
+		if ( '{date_mdy}' === $value ) {
+			$format = 'm/d/Y';
+		}
+
+		if ( '{date_dmy}' === $value ) {
+			$format = 'd/m/Y';
+		}
+
+		$date = gmdate( $format, Helper::get_integer_value( strtotime( current_time( 'mysql' ) ) ) );
+		return $date ? $date : '';
+	}
+
+	/**
+	 * Parse user properties.
+	 *
+	 * @param string $value user tag.
+	 * @since  0.0.1
+	 * @return mixed
+	 */
+	private static function parse_user_props( $value ) {
+		$user = wp_get_current_user();
+
+		$user_info = get_user_meta( $user->ID );
+
+		if ( ! $user_info ) {
+			return '';
+		}
+
+		if ( '{user_id}' === $value ) {
+			return null !== $user->ID ? $user->ID : '';
+		}
+
+		if ( '{user_display_name}' === $value ) {
+			return $user->data->display_name ?? '';
+		}
+
+		if ( '{user_first_name}' === $value ) {
+			return is_array( $user_info ) && isset( $user_info['first_name'][0] ) ? $user_info['first_name'][0] : '';
+		}
+
+		if ( '{user_last_name}' === $value ) {
+			return is_array( $user_info ) && isset( $user_info['last_name'][0] ) ? $user_info['last_name'][0] : '';
+		}
+
+		if ( '{user_email}' === $value ) {
+			return $user->data->user_email ?? '';
+		}
+
+		if ( '{user_login}' === $value ) {
+			return $user->data->user_login ?? '';
+		}
+
+		return '';
+	}
+
+	/**
+	 * Parse Post properties.
+	 *
+	 * @param string $value post tag.
+	 * @since  0.0.1
+	 * @return string
+	 */
+	private static function parse_post_props( $value ) {
+		global $post;
+
+		if ( ! $post ) {
+			return '';
+		}
+
+		if ( '{embed_post_url}' === $value && isset( $_SERVER['REQUEST_URI'] ) ) {
+			$request_uri = sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) );
+			return esc_url( site_url( $request_uri ) );
+		}
+
+		if ( '{embed_post_title}' === $value ) {
+			$value = 'post_title';
+		}
+
+		if ( '{embed_post_id}' === $value ) {
+			$value = 'ID';
+		}
+
+		if ( property_exists( $post, $value ) ) {
+			return $post->{$value};
+		}
+
+		return '';
+	}
+
+	/**
+	 * Parse browser/user-agent properties.
+	 *
+	 * @param string $value browser tag.
+	 * @since  0.0.1
+	 * @return string
+	 */
+	private static function parse_browser_props( $value ) {
+		$browser = new Browser();
+
+		if ( '{browser_name}' === $value ) {
+			return sanitize_text_field( $browser->getBrowser() );
+		}
+
+		if ( '{browser_platform}' === $value ) {
+			return sanitize_text_field( $browser->getPlatform() );
+		}
+
+		return '';
 	}
 }

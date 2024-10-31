@@ -8,33 +8,33 @@
 
 namespace SRFM;
 
-use SRFM\Inc\Post_Types;
-use SRFM\Inc\Form_Submit;
-use SRFM\Inc\Gutenberg_Hooks;
-use SRFM\API\Block_Patterns;
-use SRFM\Inc\Forms_Data;
 use SRFM\Admin\Admin;
-use SRFM\Inc\Blocks\Register;
-use SRFM\Inc\Frontend_Assets;
-use SRFM\Inc\Helper;
+use SRFM\API\Block_Patterns;
 use SRFM\Inc\Activator;
 use SRFM\Inc\Admin_Ajax;
-use SRFM\Inc\Export;
-use SRFM\Inc\Smart_Tags;
-use SRFM\Inc\Generate_Form_Markup;
-use SRFM\Inc\Create_New_Form;
-use SRFM\Inc\Global_Settings\Global_Settings;
-use SRFM\Inc\Global_Settings\Email_Summary;
-use SRFM\Inc\Single_Form_Settings\Compliance_Settings;
-use SRFM\Inc\Events_Scheduler;
+use SRFM\Inc\AI_Form_Builder\AI_Auth;
 use SRFM\Inc\AI_Form_Builder\AI_Form_Builder;
+use SRFM\Inc\AI_Form_Builder\AI_Helper;
 use SRFM\Inc\AI_Form_Builder\Field_Mapping;
 use SRFM\Inc\Background_Process;
-use SRFM\Inc\Page_Builders\Page_Builders;
-use SRFM\Inc\Rest_Api;
-use SRFM\Inc\AI_Form_Builder\AI_Helper;
-use SRFM\Inc\AI_Form_Builder\AI_Auth;
+use SRFM\Inc\Blocks\Register;
+use SRFM\Inc\Create_New_Form;
 use SRFM\Inc\Database\Register as DatabaseRegister;
+use SRFM\Inc\Events_Scheduler;
+use SRFM\Inc\Export;
+use SRFM\Inc\Form_Submit;
+use SRFM\Inc\Forms_Data;
+use SRFM\Inc\Frontend_Assets;
+use SRFM\Inc\Generate_Form_Markup;
+use SRFM\Inc\Global_Settings\Email_Summary;
+use SRFM\Inc\Global_Settings\Global_Settings;
+use SRFM\Inc\Gutenberg_Hooks;
+use SRFM\Inc\Helper;
+use SRFM\Inc\Page_Builders\Page_Builders;
+use SRFM\Inc\Post_Types;
+use SRFM\Inc\Rest_Api;
+use SRFM\Inc\Single_Form_Settings\Compliance_Settings;
+use SRFM\Inc\Smart_Tags;
 use SRFM\Inc\Updater;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -47,7 +47,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 0.0.1
  */
 class Plugin_Loader {
-
 	/**
 	 * Instance
 	 *
@@ -56,6 +55,70 @@ class Plugin_Loader {
 	 * @since 0.0.1
 	 */
 	private static $instance = null;
+
+	/**
+	 * Constructor
+	 *
+	 * @since 0.0.1
+	 */
+	public function __construct() {
+		// Load the action scheduler before plugin loads.
+		require_once SRFM_DIR . 'inc/lib/action-scheduler/action-scheduler.php';
+
+		spl_autoload_register( [ $this, 'autoload' ] );
+
+		add_action( 'plugins_loaded', [ $this, 'load_textdomain' ] );
+		add_action( 'plugins_loaded', [ $this, 'load_plugin' ], 99 );
+		add_action( 'init', [ $this, 'load_classes' ] );
+		add_action( 'admin_init', [ $this, 'activation_redirect' ] );
+		Post_Types::get_instance();
+		Form_Submit::get_instance();
+		Block_Patterns::get_instance();
+		Gutenberg_Hooks::get_instance();
+		Register::get_instance();
+		Frontend_Assets::get_instance();
+		Helper::get_instance();
+		Activator::get_instance();
+		Admin_Ajax::get_instance();
+		Forms_Data::get_instance();
+		Export::get_instance();
+		Smart_Tags::get_instance();
+		Generate_Form_Markup::get_instance();
+		Create_New_Form::get_instance();
+		Global_Settings::get_instance();
+		Email_Summary::get_instance();
+		Compliance_Settings::get_instance();
+		Events_Scheduler::get_instance();
+		AI_Form_Builder::get_instance();
+		Field_Mapping::get_instance();
+		Background_Process::get_instance();
+		Page_Builders::get_instance();
+		Rest_Api::get_instance();
+		AI_Helper::get_instance();
+		AI_Auth::get_instance();
+		Updater::get_instance();
+
+		DatabaseRegister::init();
+
+		/**
+		 * The code that runs during plugin activation
+		 */
+		register_activation_hook(
+			SRFM_FILE,
+			static function () {
+				Activator::activate();
+			}
+		);
+
+		register_deactivation_hook(
+			SRFM_FILE,
+			static function () {
+				update_option( '__sureforms_do_redirect', false );
+				Events_Scheduler::unschedule_events( 'srfm_weekly_scheduled_events' );
+				Events_Scheduler::unschedule_events( 'srfm_daily_scheduled_action' );
+			}
+		);
+	}
 
 	/**
 	 * Initiator
@@ -107,71 +170,6 @@ class Plugin_Loader {
 				require_once $file;
 			}
 		}
-
-	}
-
-	/**
-	 * Constructor
-	 *
-	 * @since 0.0.1
-	 */
-	public function __construct() {
-		// Load the action scheduler before plugin loads.
-		require_once SRFM_DIR . 'inc/lib/action-scheduler/action-scheduler.php';
-
-		spl_autoload_register( [ $this, 'autoload' ] );
-
-		add_action( 'plugins_loaded', [ $this, 'load_textdomain' ] );
-		add_action( 'plugins_loaded', [ $this, 'load_plugin' ], 99 );
-		add_action( 'init', [ $this, 'load_classes' ] );
-		add_action( 'admin_init', [ $this, 'activation_redirect' ] );
-		Post_Types::get_instance();
-		Form_Submit::get_instance();
-		Block_Patterns::get_instance();
-		Gutenberg_Hooks::get_instance();
-		Register::get_instance();
-		Frontend_Assets::get_instance();
-		Helper::get_instance();
-		Activator::get_instance();
-		Admin_Ajax::get_instance();
-		Forms_Data::get_instance();
-		Export::get_instance();
-		Smart_Tags::get_instance();
-		Generate_Form_Markup::get_instance();
-		Create_New_Form::get_instance();
-		Global_Settings::get_instance();
-		Email_Summary::get_instance();
-		Compliance_Settings::get_instance();
-		Events_Scheduler::get_instance();
-		AI_Form_Builder::get_instance();
-		Field_Mapping::get_instance();
-		Background_Process::get_instance();
-		Page_Builders::get_instance();
-		Rest_Api::get_instance();
-		AI_Helper::get_instance();
-		AI_Auth::get_instance();
-		Updater::get_instance();
-
-		DatabaseRegister::init();
-
-		/**
-		 * The code that runs during plugin activation
-		 */
-		register_activation_hook(
-			SRFM_FILE,
-			function () {
-				Activator::activate();
-			}
-		);
-
-		register_deactivation_hook(
-			SRFM_FILE,
-			function () {
-				update_option( '__sureforms_do_redirect', false );
-				Events_Scheduler::unschedule_events( 'srfm_weekly_scheduled_events' );
-				Events_Scheduler::unschedule_events( 'srfm_daily_scheduled_action' );
-			}
-		);
 	}
 
 	/**
@@ -198,7 +196,7 @@ class Plugin_Loader {
 						admin_url( 'admin.php' )
 					)
 				);
-				exit();
+				exit;
 			}
 		}
 	}
@@ -247,7 +245,6 @@ class Plugin_Loader {
 		/**
 		 * Language Locale for plugin
 		 *
-		 * @var string $get_locale The locale to use.
 		 * Uses get_user_locale()` in WordPress 4.7 or greater,
 		 * otherwise uses `get_locale()`.
 		 */
@@ -269,7 +266,6 @@ class Plugin_Loader {
 			load_plugin_textdomain( 'sureforms', false, $lang_dir );
 		}
 	}
-
 
 	/**
 	 * Loads plugin files.
@@ -293,8 +289,6 @@ class Plugin_Loader {
 		include_once SRFM_DIR . 'modules/gutenberg/classes/class-spec-block-loader.php';
 	}
 }
-
-
 
 /**
  * Kicking this off by calling 'get_instance()' method

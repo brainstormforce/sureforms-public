@@ -18,7 +18,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 0.0.2
  */
 class GDPR_Markup extends Base {
-
 	/**
 	 * Initialize the properties based on block attributes.
 	 *
@@ -40,7 +39,7 @@ class GDPR_Markup extends Base {
 	 * Render the sureforms GDPR classic styling
 	 *
 	 * @since 0.0.2
-	 * @return string|boolean
+	 * @return string|bool
 	 */
 	public function markup() {
 		$label_random_id = 'srfm-' . $this->slug . '-' . wp_rand();

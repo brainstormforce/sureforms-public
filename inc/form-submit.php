@@ -9,15 +9,11 @@
 namespace SRFM\Inc;
 
 use SRFM\Inc\Database\Tables\Entries;
-use SRFM\Inc\Traits\Get_Instance;
-use SRFM\Inc\Helper;
 use SRFM\Inc\Email\Email_Template;
-use SRFM\Inc\Smart_Tags;
-use SRFM\Inc\Generate_Form_Markup;
-use WP_REST_Server;
 use SRFM\Inc\Lib\Browser\Browser;
+use SRFM\Inc\Traits\Get_Instance;
 use WP_Error;
-use WP_REST_Request;
+use WP_REST_Server;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -78,10 +74,9 @@ class Form_Submit {
 	 * Check whether a given request has permission access route.
 	 *
 	 * @since 0.0.1
-	 * @param  WP_REST_Request $request Full details about the request.
-	 * @return WP_Error|boolean
+	 * @return WP_Error|bool
 	 */
-	public function permissions_check( $request ) {
+	public function permissions_check() {
 		if ( ! current_user_can( 'manage_options' ) ) {
 			return new WP_Error( 'rest_forbidden', __( 'Sorry, you cannot access this route', 'sureforms' ), [ 'status' => rest_authorization_required_code() ] );
 		}
@@ -188,7 +183,6 @@ class Form_Submit {
 
 		return json_decode( wp_remote_retrieve_body( $response ), true );
 	}
-
 
 	/**
 	 * Handle Form Submission
@@ -307,13 +301,13 @@ class Form_Submit {
 			$gb_general_settinionsgs_opt = get_option( 'srfm_general_settings_options' );
 			$srfm_ip_log                 = is_array( $gb_general_settinionsgs_opt ) && isset( $gb_general_settinionsgs_opt['srfm_ip_log'] ) ? $gb_general_settinionsgs_opt['srfm_ip_log'] : '';
 
-			$remote_ip = ( $gdpr ) || ( ! $srfm_ip_log ) ? '' : ( isset( $_SERVER['REMOTE_ADDR'] ) ? filter_var( wp_unslash( $_SERVER['REMOTE_ADDR'] ), FILTER_VALIDATE_IP ) : '' );
+			$remote_ip = $gdpr || ( ! $srfm_ip_log ) ? '' : ( isset( $_SERVER['REMOTE_ADDR'] ) ? filter_var( wp_unslash( $_SERVER['REMOTE_ADDR'] ), FILTER_VALIDATE_IP ) : '' );
 
 			$turnstile_validation_result = self::validate_turnstile_token( $srfm_cf_turnstile_secret_key, $cf_response, $remote_ip );
 
 			// If the cloudflare validation fails, return an error.
 			if ( is_array( $turnstile_validation_result ) && isset( $turnstile_validation_result['success'] ) && false === $turnstile_validation_result['success'] ) {
-				$error_message = isset( $turnstile_validation_result['error'] ) ? $turnstile_validation_result['error'] : 'Cloudflare Turnstile validation failed.';
+				$error_message = $turnstile_validation_result['error'] ?? 'Cloudflare Turnstile validation failed.';
 				return new \WP_Error( 'cf_turnstile_error', $error_message, [ 'status' => 403 ] );
 			}
 		}
@@ -334,12 +328,12 @@ class Form_Submit {
 			$gb_general_settings_options = get_option( 'srfm_general_settings_options' );
 			$srfm_ip_log                 = is_array( $gb_general_settings_options ) && isset( $gb_general_settings_options['srfm_ip_log'] ) ? $gb_general_settings_options['srfm_ip_log'] : '';
 
-			$remote_ip                  = ( $gdpr ) || ( ! $srfm_ip_log ) ? '' : ( isset( $_SERVER['REMOTE_ADDR'] ) ? filter_var( wp_unslash( $_SERVER['REMOTE_ADDR'] ), FILTER_VALIDATE_IP ) : '' );
+			$remote_ip                  = $gdpr || ( ! $srfm_ip_log ) ? '' : ( isset( $_SERVER['REMOTE_ADDR'] ) ? filter_var( wp_unslash( $_SERVER['REMOTE_ADDR'] ), FILTER_VALIDATE_IP ) : '' );
 			$hcaptcha_validation_result = self::validate_hcaptcha_token( $srfm_hcaptcha_secret_key, $hcaptcha_response, $remote_ip );
 
 			// If the hcaptcha validation fails, return an error.
 			if ( is_array( $hcaptcha_validation_result ) && isset( $hcaptcha_validation_result['success'] ) && false === $hcaptcha_validation_result['success'] ) {
-				$error_message = isset( $hcaptcha_validation_result['error'] ) ? $hcaptcha_validation_result['error'] : 'hCaptcha validation failed.';
+				$error_message = $hcaptcha_validation_result['error'] ?? 'hCaptcha validation failed.';
 				return new \WP_Error( 'hcaptcha_error', $error_message, [ 'status' => 403 ] );
 			}
 		}
@@ -367,13 +361,14 @@ class Form_Submit {
 				}
 				if ( isset( $sureforms_captcha_data['success'] ) && true === $sureforms_captcha_data['success'] ) {
 					return rest_ensure_response( $this->handle_form_entry( $form_data ) );
-				} else {
-					return new \WP_Error( 'recaptcha_error', 'reCAPTCHA error.', [ 'status' => 403 ] );
 				}
-			} else {
-				return rest_ensure_response( $this->handle_form_entry( $form_data ) );
+					return new \WP_Error( 'recaptcha_error', 'reCAPTCHA error.', [ 'status' => 403 ] );
+
 			}
-		} elseif ( ! isset( $form_data['srfm-honeypot-field'] ) ) {
+				return rest_ensure_response( $this->handle_form_entry( $form_data ) );
+
+		}
+		if ( ! isset( $form_data['srfm-honeypot-field'] ) ) {
 			if ( ! empty( $google_captcha_secret_key ) ) {
 				if ( isset( $form_data['sureforms_form_submit'] ) ) {
 					$secret_key       = $google_captcha_secret_key;
@@ -396,16 +391,14 @@ class Form_Submit {
 				}
 				if ( true === $sureforms_captcha_data['success'] ) {
 					return rest_ensure_response( $this->handle_form_entry( $form_data ) );
-				} else {
-					return new \WP_Error( 'recaptcha_error', 'reCAPTCHA error.', [ 'status' => 403 ] );
 				}
-			} else {
-				return rest_ensure_response( $this->handle_form_entry( $form_data ) );
-			}
-		} else {
-			return new \WP_Error( 'spam_detected', 'Spam Detected', [ 'status' => 403 ] );
-		}
+					return new \WP_Error( 'recaptcha_error', 'reCAPTCHA error.', [ 'status' => 403 ] );
 
+			}
+				return rest_ensure_response( $this->handle_form_entry( $form_data ) );
+
+		}
+			return new \WP_Error( 'spam_detected', 'Spam Detected', [ 'status' => 403 ] );
 	}
 
 	/**
@@ -439,8 +432,8 @@ class Form_Submit {
 		$do_not_store_entries = '';
 
 		if ( is_array( $compliance ) && is_array( $compliance[0] ) ) {
-			$gdpr                 = isset( $compliance[0]['gdpr'] ) ? $compliance[0]['gdpr'] : '';
-			$do_not_store_entries = isset( $compliance[0]['do_not_store_entries'] ) ? $compliance[0]['do_not_store_entries'] : '';
+			$gdpr                 = $compliance[0]['gdpr'] ?? '';
+			$do_not_store_entries = $compliance[0]['do_not_store_entries'] ?? '';
 		}
 
 		$submission_data = [];
@@ -458,7 +451,7 @@ class Form_Submit {
 			if ( is_array( $value ) ) {
 				$submission_data[ $field_name ] =
 					array_map(
-						function ( $val ) {
+						static function ( $val ) {
 							return rawurlencode( $val );
 						},
 						$value
@@ -468,14 +461,12 @@ class Form_Submit {
 			}
 		}
 
-		$name         = sanitize_text_field( get_the_title( intval( $id ) ) );
-		$send_email   = $this->send_email( $id, $submission_data );
-		$is_mail_sent = false;
-		$emails       = [];
+		$name       = sanitize_text_field( get_the_title( intval( $id ) ) );
+		$send_email = $this->send_email( $id, $submission_data );
+		$emails     = [];
 
 		if ( $send_email ) {
-			$emails       = $send_email['emails'];
-			$is_mail_sent = $send_email['success'];
+			$emails = $send_email['emails'];
 		}
 
 		// Check if GDPR is enabled and do not store entries is enabled.
@@ -502,7 +493,7 @@ class Form_Submit {
 			 */
 			do_action( 'srfm_after_submission_process', $form_data );
 
-			$response = [
+			return [
 				'success'      => true,
 				'message'      => Generate_Form_Markup::get_confirmation_markup( $form_data, $submission_data ),
 				'data'         => [
@@ -511,8 +502,6 @@ class Form_Submit {
 				],
 				'redirect_url' => Generate_Form_Markup::get_redirect_url( $form_data, $submission_data ),
 			];
-
-			return $response;
 
 		}
 
@@ -526,27 +515,15 @@ class Form_Submit {
 		if ( ! $gdpr ) {
 			$srfm_ip_log = is_array( $global_setting_options ) && isset( $global_setting_options['srfm_ip_log'] ) ? $global_setting_options['srfm_ip_log'] : '';
 
-			$user_ip      = ( $srfm_ip_log && isset( $_SERVER['REMOTE_ADDR'] ) ) ? filter_var( wp_unslash( $_SERVER['REMOTE_ADDR'] ), FILTER_VALIDATE_IP ) : '';
+			$user_ip      = $srfm_ip_log && isset( $_SERVER['REMOTE_ADDR'] ) ? filter_var( wp_unslash( $_SERVER['REMOTE_ADDR'] ), FILTER_VALIDATE_IP ) : '';
 			$browser      = new Browser();
 			$browser_name = sanitize_text_field( $browser->getBrowser() );
 			$device_name  = sanitize_text_field( $browser->getPlatform() );
 		}
 
-		$form_markup  = get_the_content( null, false, Helper::get_integer_value( $form_data['form-id'] ) );
-		$sender_email = '';
-		$pattern      = '/"label":"(.*?)"/';
+		$form_markup = get_the_content( null, false, Helper::get_integer_value( $form_data['form-id'] ) );
+		$pattern     = '/"label":"(.*?)"/';
 		preg_match_all( $pattern, $form_markup, $matches );
-		$labels = $matches[1];
-
-		$honeypot = is_array( $global_setting_options ) && isset( $global_setting_options['srfm_honeypot'] ) ? $global_setting_options['srfm_honeypot'] : '';
-
-		$key               = strval( $form_data_keys[4] );
-		$first_field_value = $form_data[ $key ];
-
-		if ( $honeypot ) {
-			$key               = strval( $form_data_keys[5] );
-			$first_field_value = $form_data[ $key ];
-		}
 		$submission_info = [
 			'user_ip'      => $user_ip,
 			'browser_name' => $browser_name,
@@ -660,14 +637,11 @@ class Form_Submit {
 						$email_body     = $smart_tags->process_smart_tags( $item['email_body'], $submission_data );
 						$email_template = new Email_Template();
 						$message        = $email_template->render( $submission_data, $email_body );
-						$headers        = "
-						From: $from\r\n" .
-						'X-Mailer: PHP/' . phpversion() . "\r\n" .
-						"Content-Type: text/html; charset=utf-8\r\n";
+						$headers        = "From: {$from}\r\nX-Mailer: PHP/" . phpversion() . "\r\nContent-Type: text/html; charset=utf-8\r\n";
 						if ( isset( $item['email_reply_to'] ) && ! empty( $item['email_reply_to'] ) ) {
 							$headers .= 'Reply-To:' . $smart_tags->process_smart_tags( $item['email_reply_to'], $submission_data ) . "\r\n";
 						} else {
-							$headers .= "Reply-To: $from\r\n";
+							$headers .= "Reply-To: {$from}\r\n";
 						}
 						if ( isset( $item['email_cc'] ) && ! empty( $item['email_cc'] ) ) {
 							$headers .= 'Cc:' . $smart_tags->process_smart_tags( $item['email_cc'], $submission_data ) . "\r\n";
@@ -700,7 +674,6 @@ class Form_Submit {
 			'success' => $is_mail_sent,
 			'emails'  => $emails,
 		];
-
 	}
 
 	/**
@@ -761,7 +734,6 @@ class Form_Submit {
 
 		wp_send_json( $results );
 	}
-
 
 	/**
 	 * Function to save allowed block data.

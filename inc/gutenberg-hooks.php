@@ -7,10 +7,7 @@
 
 namespace SRFM\Inc;
 
-use Spec_Gb_Helper;
 use SRFM\Inc\Traits\Get_Instance;
-use SRFM\Inc\Smart_Tags;
-use SRFM\Inc\Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -22,15 +19,13 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 0.0.1
  */
 class Gutenberg_Hooks {
-
+	use Get_Instance;
 	/**
 	 * Block patterns to register.
 	 *
 	 * @var array<mixed>
 	 */
 	protected $patterns = [];
-
-	use Get_Instance;
 
 	/**
 	 * Class constructor.
@@ -62,7 +57,7 @@ class Gutenberg_Hooks {
 	/**
 	 * Disable Sureforms_Form Block and allowed only sureforms block inside Sureform CPT editor.
 	 *
-	 * @param bool|string[]            $allowed_block_types Array of block types.
+	 * @param bool|array<string>       $allowed_block_types Array of block types.
 	 * @param \WP_Block_Editor_Context $editor_context The current block editor context.
 	 * @return array<mixed>|bool
 	 * @since 0.0.1
@@ -88,8 +83,7 @@ class Gutenberg_Hooks {
 				'srfm/inline-button',
 			];
 			// Apply a filter to the $allow_block_types types array.
-			$allow_block_types = apply_filters( 'srfm_allowed_block_types', $allow_block_types, $editor_context );
-			return $allow_block_types;
+			return apply_filters( 'srfm_allowed_block_types', $allow_block_types, $editor_context );
 		}
 
 		// Return the default $allowed_block_types value.
@@ -126,7 +120,6 @@ class Gutenberg_Hooks {
 		return array_merge( $custom_categories, $categories );
 	}
 
-
 	/**
 	 * Register our block patterns.
 	 *
@@ -148,26 +141,6 @@ class Gutenberg_Hooks {
 			}
 		}
 	}
-
-	/**
-	 * Register block pattern from the specified directory.
-	 *
-	 * @param string|mixed $block_pattern The block pattern name.
-	 * @param string       $directory The directory path.
-	 * @since 0.0.2
-	 * @return bool True if the block pattern was registered, false otherwise.
-	 */
-	private function register_block_pattern_from_directory( $block_pattern, $directory ) {
-		$pattern_file = $directory . $block_pattern . '.php';
-
-		if ( is_readable( $pattern_file ) ) {
-			register_block_pattern( 'srfm/' . $block_pattern, require $pattern_file );
-			return true;
-		}
-
-		return false;
-	}
-
 
 	/**
 	 * Add Form Editor Scripts.
@@ -229,8 +202,6 @@ class Gutenberg_Hooks {
 				'version'      => SRFM_VER,
 			];
 		wp_enqueue_script( SRFM_SLUG . $all_screen_blocks, SRFM_URL . 'assets/build/blocks.js', $blocks_info['dependencies'], SRFM_VER, true );
-
-		$plugin_path = 'sureforms-pro/sureforms-pro.php';
 
 		wp_localize_script(
 			SRFM_SLUG . $all_screen_blocks,
@@ -310,7 +281,7 @@ class Gutenberg_Hooks {
 		 */
 		$slugs = [];
 
-		list( $blocks, $slugs, $updated ) = Helper::process_blocks( $blocks, $slugs, $updated );
+		[ $blocks, $slugs, $updated ] = Helper::process_blocks( $blocks, $slugs, $updated );
 
 		if ( ! $updated ) {
 			return;
@@ -324,6 +295,25 @@ class Gutenberg_Hooks {
 				'post_content' => $post_content,
 			]
 		);
+	}
+
+	/**
+	 * Register block pattern from the specified directory.
+	 *
+	 * @param string|mixed $block_pattern The block pattern name.
+	 * @param string       $directory The directory path.
+	 * @since 0.0.2
+	 * @return bool True if the block pattern was registered, false otherwise.
+	 */
+	private function register_block_pattern_from_directory( $block_pattern, $directory ) {
+		$pattern_file = $directory . $block_pattern . '.php';
+
+		if ( is_readable( $pattern_file ) ) {
+			register_block_pattern( 'srfm/' . $block_pattern, require $pattern_file );
+			return true;
+		}
+
+		return false;
 	}
 
 }

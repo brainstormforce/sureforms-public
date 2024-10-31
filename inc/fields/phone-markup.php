@@ -18,7 +18,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 0.0.1
  */
 class Phone_Markup extends Base {
-
 	/**
 	 * Stores the boolean string indicating if the country should be automatically determined.
 	 *
@@ -38,7 +37,7 @@ class Phone_Markup extends Base {
 		$this->set_input_label( __( 'Phone', 'sureforms' ) );
 		$this->set_error_msg( $attributes, 'srfm_phone_block_required_text' );
 		$this->slug         = 'phone';
-		$this->auto_country = isset( $attributes['autoCountry'] ) ? $attributes['autoCountry'] : '';
+		$this->auto_country = $attributes['autoCountry'] ?? '';
 		$this->set_unique_slug();
 		$this->set_field_name( $this->unique_slug );
 		$this->set_markup_properties( $this->input_label, true );
@@ -50,7 +49,7 @@ class Phone_Markup extends Base {
 	 * Render the sureforms phone classic styling
 	 *
 	 * @since 0.0.2
-	 * @return string|boolean
+	 * @return string|bool
 	 */
 	public function markup() {
 		ob_start(); ?>
