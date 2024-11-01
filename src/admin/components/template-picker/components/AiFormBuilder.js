@@ -231,13 +231,13 @@ const AiFormBuilder = () => {
 
 	// Stops voice input if typing begins
 	const handleTyping = () => {
-		if (isListening && recognitionRef.current) {
+		if ( isListening && recognitionRef.current ) {
 			recognitionRef.current.stop();
-			setIsListening(false);
+			setIsListening( false );
 		}
-		setShowEmptyError(false);
+		setShowEmptyError( false );
 	};
-	
+
 	// Handle access key on component mount
 	useEffect( () => {
 		if ( accessKey ) {
@@ -322,7 +322,7 @@ const AiFormBuilder = () => {
 									setShowEmptyError( false );
 									setCharacterCount( e.target.value.length );
 								} }
-								onInput={handleTyping}
+								onInput={ handleTyping }
 							/>
 							{ showEmptyError && (
 								<span className="srfm-ai-builder-textarea-error">
