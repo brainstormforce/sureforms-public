@@ -99,13 +99,13 @@ const AiFormBuilder = () => {
 				toast.dismiss();
 
 				if ( e.error === 'not-allowed' ) {
-					toast.error(__('Please allow microphone access to use voice input.', 'sureforms'), {
+					toast.error( __( 'Please allow microphone access to use voice input.', 'sureforms' ), {
 						duration: 5000,
-					});
+					} );
 					return;
 				}
 
-				toast.error( __('Speech recognition is not supported in your current browser. Please use Google Chrome / Safari.', 'sureforms'), {
+				toast.error( __( 'Speech recognition is not supported in your current browser. Please use Google Chrome / Safari.', 'sureforms' ), {
 					duration: 5000,
 				} );
 			};
