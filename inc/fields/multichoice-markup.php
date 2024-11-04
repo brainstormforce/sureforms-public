@@ -123,7 +123,9 @@ class Multichoice_Markup extends Base {
 				<legend><?php echo wp_kses_post( $this->label_markup ); ?></legend>
 				<?php echo wp_kses_post( $this->help_markup ); ?>
 					<?php if ( is_array( $this->options ) ) { ?>
-						<div class="srfm-block-wrap <?php echo esc_attr( $this->choice_width_attr ); ?> <?php echo $this->vertical_layout ? 'srfm-vertical-layout' : ''; ?>">
+						<div role="radiogroup" 
+	  aria-labelledby="srfm-multi-choice-afe76ee9 srfm-description-afe76ee9" 
+	  tabindex="0" class="srfm-block-wrap <?php echo esc_attr( $this->choice_width_attr ); ?> <?php echo $this->vertical_layout ? 'srfm-vertical-layout' : ''; ?>">
 							<?php foreach ( $this->options as $i => $option ) { ?>
 								<label class="srfm-<?php echo esc_attr( $this->slug ); ?>-single">
 									<input type="<?php echo esc_attr( $this->type_attr ); ?>" id="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id . '-' . $i ); ?>" class="srfm-input-<?php echo esc_attr( $this->slug ); ?>-single" <?php echo wp_kses_post( $this->name_attr ); ?>/>
