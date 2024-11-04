@@ -114,13 +114,12 @@ class Global_Settings {
 
 		if ( ! $is_option_saved ) {
 			return new WP_Error( __( 'Error Saving Settings!', 'sureforms' ), __( 'Global Settings', 'sureforms' ) );
-		} else {
-			return new WP_REST_Response(
-				[
-					'data' => __( 'Settings Saved Successfully.', 'sureforms' ),
-				]
-			);
 		}
+		return new WP_REST_Response(
+			[
+				'data' => __( 'Settings Saved Successfully.', 'sureforms' ),
+			]
+		);
 	}
 
 	/**
