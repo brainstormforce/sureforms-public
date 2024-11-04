@@ -357,8 +357,10 @@ export async function fieldValidation(
 						validateResult = true;
 					} else if ( confirmValue !== inputValue ) {
 						confirmParent.classList.add( 'srfm-error' );
-						confirmError.textContent =
-							'Confirmation email is not the same';
+						confirmError.textContent = wp.i18n.__(
+							'Confirmation email is not the same',
+							'sureforms'
+						);
 
 						// Set the first error input.
 						setFirstErrorInput( confirmInput, confirmParent );
