@@ -43,7 +43,7 @@ jobs:
       - name: Run Playwright tests
         run: npx playwright test --reporter=line --shard=${{ matrix.shard }}/${{ strategy.job-total }}
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: playwright-report
