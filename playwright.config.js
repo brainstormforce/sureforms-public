@@ -44,6 +44,7 @@ module.exports = defineConfig({
 		baseURL: 'http://localhost:8888/',
 		headless: true,
 		ignoreHTTPSErrors: true,
+		browserName: 'chromium',
 	},
 	/* Configure projects for major browsers */
 	projects: [

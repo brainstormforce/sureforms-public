@@ -29,6 +29,7 @@
 		"env": "wp-env",
 		"env:clean": "wp-env clean all",
 		"play:start": "wp-env start",
+		"play:stop": "wp-env stop",
 		"play:up:gh": "npm run play:start && npm run env:clean",
 		"play:up": "npm run play:start",
 		"play:install": "npm i -D @playwright/test",

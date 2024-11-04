@@ -51,5 +51,5 @@ jobs:
           retention-days: 30
 
       - name: Stop Docker environment
-        run: npm run env:stop
+        run: npm run play:stop
         if: always()
