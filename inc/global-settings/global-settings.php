@@ -36,9 +36,9 @@ class Global_Settings {
 	 *
 	 * @since  0.0.1
 	 */
-public function __construct() {
-	add_action( 'rest_api_init', [ $this, 'register_custom_endpoint' ] );
-}
+	public function __construct() {
+		add_action( 'rest_api_init', [ $this, 'register_custom_endpoint' ] );
+	}
 
 	/**
 	 * Add custom API Route submit-form
@@ -46,27 +46,27 @@ public function __construct() {
 	 * @return void
 	 * @since 0.0.1
 	 */
-public function register_custom_endpoint() {
-	$sureforms_helper = new Helper();
-	register_rest_route(
-		$this->namespace,
-		'/srfm-global-settings',
-		[
-			'methods'             => WP_REST_Server::EDITABLE,
-			'callback'            => [ $this, 'srfm_save_global_settings' ],
-			'permission_callback' => [ $sureforms_helper, 'get_items_permissions_check' ],
-		]
-	);
-	register_rest_route(
-		$this->namespace,
-		'/srfm-global-settings',
-		[
-			'methods'             => WP_REST_Server::READABLE,
-			'callback'            => [ $this, 'srfm_get_general_settings' ],
-			'permission_callback' => [ $sureforms_helper, 'get_items_permissions_check' ],
-		]
-	);
-}
+	public function register_custom_endpoint() {
+		$sureforms_helper = new Helper();
+		register_rest_route(
+			$this->namespace,
+			'/srfm-global-settings',
+			[
+				'methods'             => WP_REST_Server::EDITABLE,
+				'callback'            => [ $this, 'srfm_save_global_settings' ],
+				'permission_callback' => [ $sureforms_helper, 'get_items_permissions_check' ],
+			]
+		);
+		register_rest_route(
+			$this->namespace,
+			'/srfm-global-settings',
+			[
+				'methods'             => WP_REST_Server::READABLE,
+				'callback'            => [ $this, 'srfm_get_general_settings' ],
+				'permission_callback' => [ $sureforms_helper, 'get_items_permissions_check' ],
+			]
+		);
+	}
 
 	/**
 	 * Save global settings options.
