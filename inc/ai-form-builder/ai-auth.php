@@ -8,8 +8,8 @@
 
 namespace SRFM\Inc\AI_Form_Builder;
 
-use SRFM\Inc\Traits\Get_Instance;
 use SRFM\Inc\Helper;
+use SRFM\Inc\Traits\Get_Instance;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
@@ -64,7 +64,6 @@ class AI_Auth {
 
 		// Send the token data to the frontend for redirection.
 		wp_send_json_success( SRFM_BILLING_PORTAL . 'auth/?token=' . base64_encode( $encoded_token_data ) );  // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
-
 	}
 
 	/**
@@ -124,7 +123,7 @@ class AI_Auth {
 		}
 
 		// split the key and encrypted data.
-		list($key, $encrypted) = explode( '::', $decoded_data, 2 );
+		[$key, $encrypted] = explode( '::', $decoded_data, 2 );
 
 		// Decrypt the data using the key.
 		$decrypted = openssl_decrypt( $encrypted, $method, $key, 0, $key );

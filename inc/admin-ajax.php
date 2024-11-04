@@ -10,7 +10,6 @@
 namespace SRFM\Inc;
 
 use SRFM\Inc\Traits\Get_Instance;
-use SRFM\Inc\Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -26,7 +25,6 @@ if ( ! function_exists( 'get_plugins' ) ) {
  * @since 0.0.1
  */
 class Admin_Ajax {
-
 	use Get_Instance;
 
 	/**
@@ -35,30 +33,12 @@ class Admin_Ajax {
 	 * @since  0.0.1
 	 */
 	public function __construct() {
-		add_action( 'wp_ajax_sureforms_dismiss_plugin_notice', [ $this, 'dismiss_plugin_notice' ] );
 		add_action( 'wp_ajax_sureforms_recommended_plugin_activate', [ $this, 'required_plugin_activate' ] );
 		add_action( 'wp_ajax_sureforms_recommended_plugin_install', 'wp_ajax_install_plugin' );
 		add_action( 'wp_ajax_sureforms_integration', [ $this, 'generate_data_for_suretriggers_integration' ] );
 
 		add_filter( SRFM_SLUG . '_admin_filter', [ $this, 'localize_script_integration' ] );
 	}
-
-	/**
-	 * Dismiss plugin notice on dismiss button click using ajax request.
-	 *
-	 * @since 0.0.13
-	 * @return void
-	 */
-	public function dismiss_plugin_notice() {
-		if ( empty( $_GET['security'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['security'] ) ), 'srfm_notice_dismiss_nonce' ) ) {
-			wp_send_json_error();
-		}
-
-		update_option( 'srfm_dismiss_entries_migration_notice', 'hide' );
-
-		wp_send_json_success();
-	}
-
 
 	/**
 	 * Required Plugin Activate
@@ -96,7 +76,7 @@ class Admin_Ajax {
 			);
 		}
 
-		$plugin_init = ( isset( $_POST['init'] ) ) ? sanitize_text_field( wp_unslash( $_POST['init'] ) ) : '';
+		$plugin_init = isset( $_POST['init'] ) ? sanitize_text_field( wp_unslash( $_POST['init'] ) ) : '';
 
 		$activate = activate_plugin( $plugin_init, '', false, true );
 
@@ -213,11 +193,11 @@ class Admin_Ajax {
 
 		if ( ! isset( $installed_plugins[ $plugin_init_file ] ) ) {
 			return 'Install';
-		} elseif ( is_plugin_active( $plugin_init_file ) ) {
-			return 'Activated';
-		} else {
-			return 'Installed';
 		}
+		if ( is_plugin_active( $plugin_init_file ) ) {
+			return 'Activated';
+		}
+			return 'Installed';
 	}
 
 	/**
@@ -239,8 +219,7 @@ class Admin_Ajax {
 			wp_send_json_error( [ 'message' => __( 'Form ID is required.', 'sureforms' ) ] );
 		}
 
-		$suretriggers_data = get_option( 'suretrigger_options', [] );
-		if ( ! is_array( $suretriggers_data ) || empty( $suretriggers_data['secret_key'] ) || ! is_string( $suretriggers_data['secret_key'] ) ) {
+		if ( ! Helper::is_suretriggers_ready() ) {
 			wp_send_json_error(
 				[
 					'code'    => 'invalid_secret_key',
@@ -258,7 +237,7 @@ class Admin_Ajax {
 
 		// Translators: %s: Form ID.
 		$form_name = ! empty( $form->post_title ) ? $form->post_title : sprintf( __( 'SureForms id: %s', 'sureforms' ), $form_id );
-		$api_url   = apply_filters( 'suretriggers_get_iframe_url', SRFM_SURETRIGGERS_INTERGATION_BASE_URL );
+		$api_url   = apply_filters( 'suretriggers_get_iframe_url', SRFM_SURETRIGGERS_INTEGRATION_BASE_URL );
 
 		// This is the format of data required by SureTriggers for adding iframe in target id.
 		$body = [
@@ -292,7 +271,7 @@ class Admin_Ajax {
 		wp_send_json_success(
 			[
 				'message' => 'success',
-				'data'    => $body,
+				'data'    => apply_filters( 'srfm_suretriggers_integration_data_filter', $body, $form_id ),
 			]
 		);
 	}
@@ -340,7 +319,6 @@ class Admin_Ajax {
 		}
 
 		return $data;
-
 	}
 
 	/**
@@ -380,9 +358,7 @@ class Admin_Ajax {
 
 		if ( ! empty( $dummy_data[ $block_name ] ) ) {
 			return $dummy_data[ $block_name ];
-		} else {
-			return __( 'Sample data', 'sureforms' );
 		}
+			return __( 'Sample data', 'sureforms' );
 	}
 }
-

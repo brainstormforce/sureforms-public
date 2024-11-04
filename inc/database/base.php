@@ -21,7 +21,6 @@ defined( 'ABSPATH' ) || exit;
  * @since 0.0.10
  */
 abstract class Base {
-
 	/**
 	 * WordPress Database class instance.
 	 *
@@ -71,7 +70,7 @@ abstract class Base {
 	 * Whether or not the current database table is upgradable.
 	 * Determines on the basis of the table version.
 	 *
-	 * @var boolean
+	 * @var bool
 	 * @since 0.0.13
 	 */
 	private $db_upgradable;
@@ -144,12 +143,12 @@ abstract class Base {
 	 * Array of columns that needs to be renamed to new column name. It will be used by maybe_rename_columns() method.
 	 * Format:
 	 * [
-			[
-				'from' => 'old_column_name',
-				'to'   => 'new_column_name',
-				'type' => 'column type definition eg: LONGTEXT', // Optional.
-			],
-		]
+	 * [
+	 * 'from' => 'old_column_name',
+	 * 'to'   => 'new_column_name',
+	 * 'type' => 'column type definition eg: LONGTEXT', // Optional.
+	 * ],
+	 * ]
 	 *
 	 * @since 0.0.13
 	 * @return array<array<string,string>>
@@ -184,7 +183,7 @@ abstract class Base {
 	 * Stop the database upgrade process.
 	 *
 	 * @since 0.0.13
-	 * @return boolean Returns true on success.
+	 * @return bool Returns true on success.
 	 */
 	public function stop_db_upgrade() {
 		if ( ! $this->db_upgradable ) {
@@ -205,7 +204,7 @@ abstract class Base {
 	 * Check if current table's DB is upgradable or not.
 	 *
 	 * @since 0.0.13
-	 * @return boolean True or false depending if DB is upgradable or not.
+	 * @return bool True or false depending if DB is upgradable or not.
 	 */
 	public function is_db_upgradable() {
 		return $this->db_upgradable;
@@ -219,45 +218,6 @@ abstract class Base {
 	 */
 	public function get_tablename() {
 		return $this->table_name;
-	}
-
-	/**
-	 * Retrieve a cached value by its key.
-	 *
-	 * @param string $key The cache key.
-	 * @since 0.0.10
-	 * @return mixed|null The cached value if it exists, or null if the key does not exist in the cache.
-	 */
-	protected function cache_get( $key ) {
-		$key = md5( $key );
-		if ( ! isset( $this->caches[ $key ] ) ) {
-			return null;
-		}
-		return $this->caches[ $key ];
-	}
-
-	/**
-	 * Store a value in the cache with the specified key.
-	 *
-	 * @param string $key The cache key.
-	 * @param mixed  $value The value to store in the cache.
-	 * @since 0.0.10
-	 * @return mixed The stored value.
-	 */
-	protected function cache_set( $key, $value ) {
-		$key                  = md5( $key );
-		$this->caches[ $key ] = $value;
-		return $value;
-	}
-
-	/**
-	 * Reset the cache by clearing all stored values.
-	 *
-	 * @since 0.0.10
-	 * @return void
-	 */
-	protected function cache_reset() {
-		$this->caches = [];
 	}
 
 	/**
@@ -439,7 +399,7 @@ abstract class Base {
 
 		if ( $alter_queries ) {
 			$query = $wpdb->prepare(
-				"ALTER TABLE %1s %2s", // phpcs:ignore -- We don't want to quote the value strings for the query.
+				'ALTER TABLE %1s %2s', // phpcs:ignore -- We don't want to quote the value strings for the query.
 				$this->get_tablename(),
 				implode( ', ', $alter_queries )
 			);
@@ -500,7 +460,7 @@ abstract class Base {
 	public function get_indexes() {
 		$wpdb = $this->wpdb;
 
-		$indexes = $wpdb->get_results( $wpdb->prepare( "SHOW INDEX FROM %1s", $this->get_tablename() ), ARRAY_A ); // phpcs:ignore -- We don't need quote here so this is fine.
+		$indexes = $wpdb->get_results( $wpdb->prepare( 'SHOW INDEX FROM %1s', $this->get_tablename() ), ARRAY_A ); // phpcs:ignore -- We don't need quote here so this is fine.
 
 		if ( empty( $indexes ) ) {
 			return [];
@@ -537,7 +497,7 @@ abstract class Base {
 			/**
 			 * Use formats from schema if not provided explicitly.
 			 *
-			 * @var array<string>|string|null
+			 * @var array<string>|string|null $format Format specifier for the data.
 			 */
 			$format = $prepared_data['format'];
 		}
@@ -567,7 +527,7 @@ abstract class Base {
 		/**
 		 * Data format specifier.
 		 *
-		 * @var array<string>|string|null
+		 * @var array<string>|string|null $format Format specifier for the data.
 		 */
 		$format = $prepared_data['format'];
 
@@ -582,16 +542,16 @@ abstract class Base {
 	/**
 	 * Delete a row data of current table. Basically, a wrapper method for wpdb::delete.
 	 *
-	 * @param array<string,mixed> $where        A named array of WHERE clauses (in column => value pairs).
-	 *                            Multiple clauses will be joined with ANDs.
-	 *                            Both $where columns and $where values should be "raw".
-	 *                            Sending a null value will create an IS NULL comparison - the corresponding
-	 *                            format will be ignored in this case.
-	 * @param string[]|string     $where_format Optional. An array of formats to be mapped to each of the values in $where.
-	 *                                          If string, that format will be used for all of the items in $where.
-	 *                                          A format is one of '%d', '%f', '%s' (integer, float, string).
-	 *                                          If omitted, all values in $data will be treated as strings unless otherwise
-	 *                                          specified in wpdb::$field_types. Default null.
+	 * @param array<string,mixed>  $where        A named array of WHERE clauses (in column => value pairs).
+	 *                             Multiple clauses will be joined with ANDs.
+	 *                             Both $where columns and $where values should be "raw".
+	 *                             Sending a null value will create an IS NULL comparison - the corresponding
+	 *                             format will be ignored in this case.
+	 * @param array<string>|string $where_format Optional. An array of formats to be mapped to each of the values in $where.
+	 *                                      If string, that format will be used for all of the items in $where.
+	 *                                      A format is one of '%d', '%f', '%s' (integer, float, string).
+	 *                                      If omitted, all values in $data will be treated as strings unless otherwise
+	 *                                      specified in wpdb::$field_types. Default null.
 	 * @since 0.0.13
 	 * @return int|false The number of rows deleted, or false on error.
 	 */
@@ -612,7 +572,7 @@ abstract class Base {
 	 *                               Default is an empty array.
 	 * @param string        $columns Optional. A string specifying which columns to select. Defaults to '*' (all columns).
 	 * @param array<string> $extra_queries Optional. Array of extra queries to append at the end of main query.
-	 * @param boolean       $decode Optional. Whether to decode the results by datatype. Default is true.
+	 * @param bool          $decode Optional. Whether to decode the results by datatype. Default is true.
 	 * @since 0.0.10
 	 * @return array<mixed> An associative array of results where each element represents a row, or an empty array if no results are found.
 	 */
@@ -685,6 +645,45 @@ abstract class Base {
 
 		// Execute the query and return the integer count.
 		return Helper::get_integer_value( $this->cache_set( $query, $results ) );
+	}
+
+	/**
+	 * Retrieve a cached value by its key.
+	 *
+	 * @param string $key The cache key.
+	 * @since 0.0.10
+	 * @return mixed|null The cached value if it exists, or null if the key does not exist in the cache.
+	 */
+	protected function cache_get( $key ) {
+		$key = md5( $key );
+		if ( ! isset( $this->caches[ $key ] ) ) {
+			return null;
+		}
+		return $this->caches[ $key ];
+	}
+
+	/**
+	 * Store a value in the cache with the specified key.
+	 *
+	 * @param string $key The cache key.
+	 * @param mixed  $value The value to store in the cache.
+	 * @since 0.0.10
+	 * @return mixed The stored value.
+	 */
+	protected function cache_set( $key, $value ) {
+		$key                  = md5( $key );
+		$this->caches[ $key ] = $value;
+		return $value;
+	}
+
+	/**
+	 * Reset the cache by clearing all stored values.
+	 *
+	 * @since 0.0.10
+	 * @return void
+	 */
+	protected function cache_reset() {
+		$this->caches = [];
 	}
 
 	/**
@@ -770,7 +769,7 @@ abstract class Base {
 	 *
 	 * @param array<mixed> $data An associative array of data where the key is the column name and the value is the data to process.
 	 *                    Missing values will be replaced with default values specified in the schema.
-	 * @param boolean      $skip_defaults Whether or not to skip the defaults values. Pass true if updating the data.
+	 * @param bool         $skip_defaults Whether or not to skip the defaults values. Pass true if updating the data.
 	 * @since 0.0.10
 	 * @return array<array<mixed>> An associative array containing:
 	 *                - 'data': Prepared data with values encoded according to their data types.

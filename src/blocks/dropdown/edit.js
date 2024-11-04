@@ -28,6 +28,7 @@ import { FieldsPreview } from '../FieldsPreview.jsx';
 import ConditionalLogic from '@Components/conditional-logic';
 import UAGIconPicker from '@Components/icon-picker';
 import SRFMNumberControl from '@Components/number-control';
+import { BulkInserterWithButton } from '@Components/bulk-inserter';
 
 const Edit = ( { attributes, setAttributes, clientId } ) => {
 	const {
@@ -404,6 +405,19 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 								>
 									{ __( 'ADD', 'sureforms' ) }
 								</Button>
+								<BulkInserterWithButton
+									options={ options }
+									titleKey="label"
+									insertOptions={ (
+										newOptions,
+										closeModal
+									) => {
+										setAttributes( {
+											options: newOptions,
+										} );
+										closeModal();
+									} }
+								/>
 							</div>
 							<span className="srfm-control-label srfm-control__header" />
 							<SRFMTextControl

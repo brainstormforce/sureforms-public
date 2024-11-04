@@ -21,7 +21,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 0.0.1
  */
 class Frontend_Assets {
-
 	use Get_Instance;
 
 	/**
@@ -58,7 +57,6 @@ class Frontend_Assets {
 		'tom-select'     => 'tom-select',
 		'intl-tel-input' => 'intl/intlTelInput.min',
 	];
-
 
 	/**
 	 * Constructor

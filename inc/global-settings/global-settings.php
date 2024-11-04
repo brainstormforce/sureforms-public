@@ -8,14 +8,13 @@
 
 namespace SRFM\Inc\Global_Settings;
 
-use SRFM\Inc\Global_Settings\Email_Summary;
 use SRFM\Inc\Events_Scheduler;
-use SRFM\Inc\Traits\Get_Instance;
 use SRFM\Inc\Helper;
-use WP_REST_Server;
-use WP_REST_Response;
-use WP_REST_Request;
+use SRFM\Inc\Traits\Get_Instance;
 use WP_Error;
+use WP_REST_Request;
+use WP_REST_Response;
+use WP_REST_Server;
 
 /**
  * Sureforms Global Settings.
@@ -37,9 +36,9 @@ class Global_Settings {
 	 *
 	 * @since  0.0.1
 	 */
-	public function __construct() {
-		add_action( 'rest_api_init', [ $this, 'register_custom_endpoint' ] );
-	}
+public function __construct() {
+	add_action( 'rest_api_init', [ $this, 'register_custom_endpoint' ] );
+}
 
 	/**
 	 * Add custom API Route submit-form
@@ -47,27 +46,27 @@ class Global_Settings {
 	 * @return void
 	 * @since 0.0.1
 	 */
-	public function register_custom_endpoint() {
-		$sureforms_helper = new Helper();
-		register_rest_route(
-			$this->namespace,
-			'/srfm-global-settings',
-			[
-				'methods'             => WP_REST_Server::EDITABLE,
-				'callback'            => [ $this, 'srfm_save_global_settings' ],
-				'permission_callback' => [ $sureforms_helper, 'get_items_permissions_check' ],
-			]
-		);
-		register_rest_route(
-			$this->namespace,
-			'/srfm-global-settings',
-			[
-				'methods'             => WP_REST_Server::READABLE,
-				'callback'            => [ $this, 'srfm_get_general_settings' ],
-				'permission_callback' => [ $sureforms_helper, 'get_items_permissions_check' ],
-			]
-		);
-	}
+public function register_custom_endpoint() {
+	$sureforms_helper = new Helper();
+	register_rest_route(
+		$this->namespace,
+		'/srfm-global-settings',
+		[
+			'methods'             => WP_REST_Server::EDITABLE,
+			'callback'            => [ $this, 'srfm_save_global_settings' ],
+			'permission_callback' => [ $sureforms_helper, 'get_items_permissions_check' ],
+		]
+	);
+	register_rest_route(
+		$this->namespace,
+		'/srfm-global-settings',
+		[
+			'methods'             => WP_REST_Server::READABLE,
+			'callback'            => [ $this, 'srfm_get_general_settings' ],
+			'permission_callback' => [ $sureforms_helper, 'get_items_permissions_check' ],
+		]
+	);
+}
 
 	/**
 	 * Save global settings options.
@@ -133,9 +132,9 @@ class Global_Settings {
 	 */
 	public static function srfm_save_general_settings( $setting_options ) {
 
-		$srfm_ip_log         = isset( $setting_options['srfm_ip_log'] ) ? $setting_options['srfm_ip_log'] : false;
-		$srfm_honeypot       = isset( $setting_options['srfm_honeypot'] ) ? $setting_options['srfm_honeypot'] : false;
-		$srfm_form_analytics = isset( $setting_options['srfm_form_analytics'] ) ? $setting_options['srfm_form_analytics'] : false;
+		$srfm_ip_log         = $setting_options['srfm_ip_log'] ?? false;
+		$srfm_honeypot       = $setting_options['srfm_honeypot'] ?? false;
+		$srfm_form_analytics = $setting_options['srfm_form_analytics'] ?? false;
 
 		return update_option(
 			'srfm_general_settings_options',
@@ -145,7 +144,6 @@ class Global_Settings {
 				'srfm_form_analytics' => $srfm_form_analytics,
 			]
 		);
-
 	}
 
 	/**
@@ -174,8 +172,7 @@ class Global_Settings {
 			'srfm_dropdown_block_required_text'     => $setting_options['srfm_dropdown_block_required_text'],
 		];
 
-		return update_option( 'get_default_dynamic_block_option', apply_filters( 'srfm_general_dynamic_options_to_save', $options_names, $setting_options ) );
-
+		return update_option( 'srfm_default_dynamic_block_option', apply_filters( 'srfm_general_dynamic_options_to_save', $options_names, $setting_options ) );
 	}
 
 	/**
@@ -187,9 +184,9 @@ class Global_Settings {
 	 */
 	public static function srfm_save_email_summary_settings( $setting_options ) {
 
-		$srfm_email_summary   = isset( $setting_options['srfm_email_summary'] ) ? $setting_options['srfm_email_summary'] : false;
-		$srfm_email_sent_to   = isset( $setting_options['srfm_email_sent_to'] ) ? $setting_options['srfm_email_sent_to'] : get_option( 'admin_email' );
-		$srfm_schedule_report = isset( $setting_options['srfm_schedule_report'] ) ? $setting_options['srfm_schedule_report'] : __( 'Monday', 'sureforms' );
+		$srfm_email_summary   = $setting_options['srfm_email_summary'] ?? false;
+		$srfm_email_sent_to   = $setting_options['srfm_email_sent_to'] ?? get_option( 'admin_email' );
+		$srfm_schedule_report = $setting_options['srfm_schedule_report'] ?? __( 'Monday', 'sureforms' );
 
 		Events_Scheduler::unschedule_events( 'srfm_weekly_scheduled_events' );
 
@@ -216,15 +213,15 @@ class Global_Settings {
 	 */
 	public static function srfm_save_security_settings( $setting_options ) {
 
-		$srfm_v2_checkbox_site_key    = isset( $setting_options['srfm_v2_checkbox_site_key'] ) ? $setting_options['srfm_v2_checkbox_site_key'] : '';
-		$srfm_v2_checkbox_secret_key  = isset( $setting_options['srfm_v2_checkbox_secret_key'] ) ? $setting_options['srfm_v2_checkbox_secret_key'] : '';
-		$srfm_v2_invisible_site_key   = isset( $setting_options['srfm_v2_invisible_site_key'] ) ? $setting_options['srfm_v2_invisible_site_key'] : '';
-		$srfm_v2_invisible_secret_key = isset( $setting_options['srfm_v2_invisible_secret_key'] ) ? $setting_options['srfm_v2_invisible_secret_key'] : '';
-		$srfm_v3_site_key             = isset( $setting_options['srfm_v3_site_key'] ) ? $setting_options['srfm_v3_site_key'] : '';
-		$srfm_v3_secret_key           = isset( $setting_options['srfm_v3_secret_key'] ) ? $setting_options['srfm_v3_secret_key'] : '';
-		$srfm_cf_appearance_mode      = isset( $setting_options['srfm_cf_appearance_mode'] ) ? $setting_options['srfm_cf_appearance_mode'] : 'auto';
-		$srfm_cf_turnstile_site_key   = isset( $setting_options['srfm_cf_turnstile_site_key'] ) ? $setting_options['srfm_cf_turnstile_site_key'] : '';
-		$srfm_cf_turnstile_secret_key = isset( $setting_options['srfm_cf_turnstile_secret_key'] ) ? $setting_options['srfm_cf_turnstile_secret_key'] : '';
+		$srfm_v2_checkbox_site_key    = $setting_options['srfm_v2_checkbox_site_key'] ?? '';
+		$srfm_v2_checkbox_secret_key  = $setting_options['srfm_v2_checkbox_secret_key'] ?? '';
+		$srfm_v2_invisible_site_key   = $setting_options['srfm_v2_invisible_site_key'] ?? '';
+		$srfm_v2_invisible_secret_key = $setting_options['srfm_v2_invisible_secret_key'] ?? '';
+		$srfm_v3_site_key             = $setting_options['srfm_v3_site_key'] ?? '';
+		$srfm_v3_secret_key           = $setting_options['srfm_v3_secret_key'] ?? '';
+		$srfm_cf_appearance_mode      = $setting_options['srfm_cf_appearance_mode'] ?? 'auto';
+		$srfm_cf_turnstile_site_key   = $setting_options['srfm_cf_turnstile_site_key'] ?? '';
+		$srfm_cf_turnstile_secret_key = $setting_options['srfm_cf_turnstile_secret_key'] ?? '';
 		$srfm_hcaptcha_site_key       = ! empty( $setting_options['srfm_hcaptcha_site_key'] ) ? $setting_options['srfm_hcaptcha_site_key'] : '';
 		$srfm_hcaptcha_secret_key     = ! empty( $setting_options['srfm_hcaptcha_secret_key'] ) ? $setting_options['srfm_hcaptcha_secret_key'] : '';
 
@@ -244,7 +241,6 @@ class Global_Settings {
 				'srfm_hcaptcha_secret_key'     => $srfm_hcaptcha_secret_key,
 			]
 		);
-
 	}
 
 	/**
