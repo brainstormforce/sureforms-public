@@ -1,5 +1,5 @@
 // @ts-check
-const { defineConfig, devices } = require('@playwright/test');
+const { defineConfig, devices } = require( '@playwright/test' );
 
 /**
  * Read environment variables from file.
@@ -10,7 +10,7 @@ const { defineConfig, devices } = require('@playwright/test');
 /**
  * @see https://playwright.dev/docs/test-configuration
  */
-module.exports = defineConfig({
+module.exports = defineConfig( {
 	testDir: './tests/play/specs',
 	/* Fail the build on CI if you accidentally left test.only in the source code. */
 	forbidOnly: !! process.env.CI,
@@ -59,5 +59,5 @@ module.exports = defineConfig({
 			grep: /@firefox/,
 			grepInvert: /-firefox/,
 		},
-	]
-});
+	],
+} );
