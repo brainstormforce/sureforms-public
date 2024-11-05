@@ -57,7 +57,7 @@ class Checkbox_Markup extends Base {
 						</span>
 						<span class="srfm-span-wrap srfm-block-label"><?php echo wp_kses( $this->label, $this->allowed_tags ); ?>
 						<?php if ( $this->required ) { ?>
-							<span class="srfm-required"> *</span>
+							<span class="srfm-required" aria-label="<?php echo esc_html__( 'Required', 'sureforms' ); ?>"> *</span>
 						<?php } ?>
 						</span>
 					</label>
