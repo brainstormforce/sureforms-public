@@ -255,7 +255,7 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 
 == Changelog ==
 = x.x.x =
-* Improvement: Refined screen reader to announce only field labels, required status, descriptions, and visible error messages for a clearer user experience.
+* Improvement: Optimized screen reader announcements for field labels, required status, descriptions, and errors.
 = 1.0.2 - 31st October 2024  =
 * New: Support for query parameters in form confirmation.
 * New: Updated plugin branding.
