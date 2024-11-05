@@ -20,7 +20,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 0.0.1
  */
 class Email_Markup extends Base {
-
 	/**
 	 * Flag indicating whether email confirmation is required.
 	 *
@@ -73,7 +72,7 @@ class Email_Markup extends Base {
 		$this->set_error_msg( $attributes, 'srfm_email_block_required_text' );
 		$this->set_duplicate_msg( $attributes, 'srfm_email_block_unique_text' );
 		$this->slug                         = 'email';
-		$this->is_confirm_email             = isset( $attributes['isConfirmEmail'] ) ? $attributes['isConfirmEmail'] : false;
+		$this->is_confirm_email             = $attributes['isConfirmEmail'] ?? false;
 		$this->input_confirm_label_fallback = __( 'Confirm ', 'sureforms' ) . $this->input_label_fallback;
 		$this->input_confirm_label          = '-lbl-' . Helper::encrypt( $this->input_confirm_label_fallback );
 		$this->unique_confirm_slug          = 'srfm-' . $this->slug . '-confirm-' . $this->block_id . $this->input_confirm_label;
@@ -90,7 +89,7 @@ class Email_Markup extends Base {
 	 * Render the sureforms email classic styling
 	 *
 	 * @since 0.0.2
-	 * @return string|boolean
+	 * @return string|bool
 	 */
 	public function markup() {
 		ob_start(); ?>

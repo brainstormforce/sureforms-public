@@ -4,7 +4,7 @@ Tags: contact form, custom form, form builder, forms, gutenberg
 Requires at least: 6.4
 Tested up to: 6.6.2
 Requires PHP: 7.4
-Stable tag: 1.0.1
+Stable tag: 1.0.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -36,7 +36,7 @@ SureForms addresses several pain points commonly experienced by website owners:
 
  - **Complex Form Building**: Form builders often have steep learning curves, convoluted interfaces, or limited customization options. SureForms aims to simplify the form-building process, providing a user-friendly interface and intuitive drag-and-drop functionality using WordPress's native block editor.
  - **Design Limitations**: Designers face challenges in creating visually appealing forms. Form builders require designers to spend hours trying to figure out settings and options just to get the form look right. Or write custom CSS. SureForms eliminates these limitations by providing modern styling right out-of-the-box, allowing designers to create stunning forms that seamlessly integrate with their design vision.
- - **Lack of Mobile Friendliness and Accessibility**: Building forms that are mobile-friendly and accessible to all users can be a challenge. SureForms priorities mobile-first design and accessibility standards, ensuring that forms created with the plugin are responsive and inclusive, providing a positive user experience across different devices and for users with disabilities.
+ - **Lack of Mobile Friendliness**: Building forms that are mobile-friendly can be a challenge. SureForms priorities mobile-first design, ensuring that forms created with the plugin are responsive, providing a positive user experience across different devices.
 
 In response to these pain points, we set out to create SureForms. Our goal is to provide a fresh and innovative form builder that leverages the power of native WordPress drag-and-drop builder, delivering a seamless and intuitive form-building experience.
 
@@ -91,9 +91,9 @@ SureForms empowers users to build custom forms effortlessly using AI. Whether yo
 
 SureForms caters to users who may not possess extensive coding knowledge. It offers a range of advanced form features, such as conditional logic, multi-step forms, dynamic data handling, and query parameters, all accessible through an intuitive, no-code interface. This empowers users of all levels to create sophisticated and interactive forms without the need for custom coding.
 
-#### Mobile-First and Accessible Design
+#### Mobile-First
 
-SureForms recognizes the importance of mobile responsiveness and accessibility. The forms created with SureForms are designed with a mobile-first approach, ensuring they look and function flawlessly on various devices. Moreover, SureForms adheres to accessibility standards, enabling users of all abilities to interact with the forms easily.
+SureForms recognizes the importance of mobile responsiveness. The forms created with SureForms are designed with a mobile-first approach, ensuring they look and function flawlessly on various devices.
 
 #### Instant Forms
 
@@ -254,6 +254,16 @@ Yes! You can certainly use SureForms on yours as well as your client’s website
 When you use SureForms, you get an easy-to-use AI-powered form builder that can be used to build your forms fast.
 
 == Changelog ==
+= 1.0.2 - 31st October 2024  =
+* New: Support for query parameters in form confirmation.
+* New: Updated plugin branding.
+* Improvement: Added filters for confirmation messages and redirect URLs.
+* Improvement: Bulk edit options added for the dropdown and multichoice field.
+* Improvement: Emits custom event srfm_form_submission_success on successful form submission.
+* Improvement: Merged form confirmation redirect settings.
+* Fix: Blank entries screen no longer displays after moving all entries to trash.
+* Fix: Resolved PHP fatal error caused by incorrect argument count in form submission.
+* Fix: Uploaded files are now removed when an entry is permanently deleted.
 = 1.0.1 - 24th October 2024 =
 * Fix: Extra space from the v3 reCAPTCHA container has been removed.
 * Fix: GDPR and checkbox labels are now editable across Chrome, Firefox, Safari, Arc etc.
