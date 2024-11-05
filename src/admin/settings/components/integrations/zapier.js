@@ -21,7 +21,7 @@ const Zapier = () => {
 							{ __( 'Zapier', 'sureforms' ) }
 						</div>
 						<p className="srfm-integration-description">
-							{ __( 'Broadcast your SureForms submission to Zapier', 'sureforms' ) }
+							{ __( 'SureForms and Zapier Integration allows you to connect your WordPress forms with a number of web apps.', 'sureforms' ) }
 						</p>
 					</div>
 				</div>
