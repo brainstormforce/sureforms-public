@@ -9,10 +9,8 @@
 namespace SRFM\Inc;
 
 use SRFM\Inc\Database\Tables\Entries;
-use WP_Admin_Bar;
 use SRFM\Inc\Traits\Get_Instance;
-use SRFM\Inc\Generate_Form_Markup;
-use SRFM\Inc\Helper;
+use WP_Admin_Bar;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -44,7 +42,8 @@ class Post_Types {
 		add_filter( 'bulk_actions-edit-sureforms_form', [ $this, 'register_modify_bulk_actions' ], 99 );
 		add_action( 'admin_notices', [ $this, 'import_form_popup' ] );
 		add_action( 'admin_bar_menu', [ $this, 'remove_admin_bar_menu_item' ], 80, 1 );
-		add_action( 'template_redirect', [ $this, 'srfm_instant_form_redirect' ] );}
+		add_action( 'template_redirect', [ $this, 'srfm_instant_form_redirect' ] );
+	}
 
 	/**
 	 * Add SureForms menu.
@@ -331,10 +330,10 @@ class Post_Types {
 				'show_in_rest'      => true,
 				'type'              => 'string',
 				'single'            => true,
-				'auth_callback'     => function() {
+				'auth_callback'     => static function() {
 					return current_user_can( 'edit_posts' );
 				},
-				'sanitize_callback' => function( $meta_value ) {
+				'sanitize_callback' => static function( $meta_value ) {
 					return wp_kses_post( $meta_value );
 				},
 			]
@@ -350,7 +349,7 @@ class Post_Types {
 					'single'            => true,
 					'type'              => $type,
 					'sanitize_callback' => 'sanitize_text_field',
-					'auth_callback'     => function() {
+					'auth_callback'     => static function() {
 						return current_user_can( 'edit_posts' );
 					},
 				]
@@ -642,7 +641,6 @@ class Post_Types {
 		 * Hook for registering additional Post Meta
 		 */
 		do_action( 'srfm_register_additional_post_meta' );
-
 	}
 
 	/**
@@ -665,8 +663,7 @@ class Post_Types {
 		$post = get_post( $id );
 
 		if ( ! empty( $id ) && $post ) {
-			$content = Generate_Form_Markup::get_form_markup( $id, ! filter_var( $atts['show_title'], FILTER_VALIDATE_BOOLEAN ), '', 'post', true );
-			return $content;
+			return Generate_Form_Markup::get_form_markup( $id, ! filter_var( $atts['show_title'], FILTER_VALIDATE_BOOLEAN ), '', 'post', true );
 		}
 
 		return '';
@@ -680,7 +677,7 @@ class Post_Types {
 	 * @since 0.0.1
 	 */
 	public function custom_form_columns( $columns ) {
-		$columns = [
+		return [
 			'cb'        => $columns['cb'],
 			'title'     => $columns['title'],
 			'sureforms' => __( 'Shortcode', 'sureforms' ),
@@ -688,14 +685,13 @@ class Post_Types {
 			'author'    => $columns['author'],
 			'date'      => $columns['date'],
 		];
-		return $columns;
 	}
 
 	/**
 	 * Populate custom column with data.
 	 *
-	 * @param string  $column Attributes.
-	 * @param integer $post_id Attributes.
+	 * @param string $column Attributes.
+	 * @param int    $post_id Attributes.
 	 * @return void
 	 * @since 0.0.1
 	 */
@@ -792,24 +788,6 @@ class Post_Types {
 	}
 
 	/**
-	 * Restrict interference of other plugins with SureForms.
-	 *
-	 * @since 0.0.5
-	 * @return void
-	 */
-	private function restrict_unwanted_insertions() {
-		// Restrict RankMath metaboxes in edit page.
-		add_action( 'cmb2_admin_init', [ $this, 'restrict_data' ] );
-
-		// Restrict Yoast columns.
-		add_filter( 'wpseo_accessible_post_types', [ $this, 'unset_sureforms_post_type' ] );
-		add_filter( 'wpseo_metabox_prio', '__return_false' );
-
-		// Restrict AIOSEO columns.
-		add_filter( 'aioseo_public_post_types', [ $this, 'unset_sureforms_post_type' ] );
-	}
-
-	/**
 	 * Restrict RankMath meta boxes in edit page.
 	 *
 	 * @since 0.0.5
@@ -827,17 +805,32 @@ class Post_Types {
 	 * @return array<mixed> $post_types Modified post types.
 	 */
 	public function unset_sureforms_post_type( $post_types ) {
-		$filtered_post_types = array_filter(
+		return array_filter(
 			$post_types,
-			function( $post_type ) {
+			static function( $post_type ) {
 				if ( is_array( $post_type ) && isset( $post_type['name'] ) ) {
 					return SRFM_FORMS_POST_TYPE !== $post_type['name'];
-				} else {
-					return SRFM_FORMS_POST_TYPE !== $post_type;
 				}
+					return SRFM_FORMS_POST_TYPE !== $post_type;
 			}
 		);
+	}
 
-		return $filtered_post_types;
+	/**
+	 * Restrict interference of other plugins with SureForms.
+	 *
+	 * @since 0.0.5
+	 * @return void
+	 */
+	private function restrict_unwanted_insertions() {
+		// Restrict RankMath metaboxes in edit page.
+		add_action( 'cmb2_admin_init', [ $this, 'restrict_data' ] );
+
+		// Restrict Yoast columns.
+		add_filter( 'wpseo_accessible_post_types', [ $this, 'unset_sureforms_post_type' ] );
+		add_filter( 'wpseo_metabox_prio', '__return_false' );
+
+		// Restrict AIOSEO columns.
+		add_filter( 'aioseo_public_post_types', [ $this, 'unset_sureforms_post_type' ] );
 	}
 }

@@ -8,8 +8,8 @@
 
 namespace SRFM\Inc\AI_Form_Builder;
 
-use SRFM\Inc\Traits\Get_Instance;
 use SRFM\Inc\Helper;
+use SRFM\Inc\Traits\Get_Instance;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
@@ -150,7 +150,7 @@ class Field_Mapping {
 						if ( ! empty( $merged_attributes['showText'] ) ) {
 							foreach ( $question['tooltipValues'] as $tooltips ) {
 								$i = 0;
-								foreach ( $tooltips as $key => $value ) {
+								foreach ( $tooltips as $value ) {
 									$merged_attributes['ratingText'][ $i ] = ! empty( $value ) ? sanitize_text_field( $value ) : '';
 									$i++;
 								}
@@ -164,7 +164,7 @@ class Field_Mapping {
 							$allowed_types = explode( ',', $allowed_types );
 
 							$types_array = array_map(
-								function( $type ) {
+								static function( $type ) {
 									return [
 										'value' => $type,
 										'label' => $type,

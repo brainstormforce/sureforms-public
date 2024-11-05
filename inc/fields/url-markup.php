@@ -40,7 +40,7 @@ class Url_Markup extends Base {
 	 * Render the sureforms url classic styling
 	 *
 	 * @since 0.0.2
-	 * @return string|boolean
+	 * @return string|bool
 	 */
 	public function markup() {
 		ob_start(); ?>
@@ -61,4 +61,3 @@ class Url_Markup extends Base {
 		return ob_get_clean();
 	}
 }
-
