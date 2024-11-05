@@ -18,8 +18,8 @@
   <ini name="error_reporting" value="E_ALL &#38; ~E_DEPRECATED" />
 
 
-	<!-- PHP 5.6 and higher. -->
-    <config name="testVersion" value="5.6-"/>
+	<!-- PHP 7.4 and higher. -->
+    <config name="testVersion" value="7.4-"/>
 	<!-- Arguments - extension, parallel, colors, show porgress, Show sniff codes in all reports -->
 	<arg name="extensions" value="php"/>
 	<arg name="parallel" value="20"/>
@@ -31,7 +31,7 @@
 	<rule ref="WordPress-Extra" />
 	<!-- <rule ref="WordPress-VIP-Go"/> -->
 	<rule ref="PHPCompatibilityWP"/>
-	<rule ref="Generic.Commenting.Todo"/>
+  <exclude name="Generic.Commenting.Todo.TaskFound" />
  	 <rule ref="WordPress-Core">
 	    <exclude name="WordPress.Files.FileName.InvalidClassFileName" />
     </rule>

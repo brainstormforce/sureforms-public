@@ -21,7 +21,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 0.0.12
  */
 class Updater {
-
 	use Get_Instance;
 
 	/**
@@ -174,9 +173,6 @@ class Updater {
 	 */
 	public function get_updater_callbacks() {
 		return [
-			'1.0.0' => [
-				'SRFM\Inc\Updater_Callbacks::manage_entries_migrate_admin_notice',
-			],
 			'1.0.2' => [
 				'SRFM\Inc\Updater_Callbacks::manage_default_dynamic_options',
 			],

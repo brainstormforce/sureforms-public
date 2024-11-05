@@ -72,7 +72,7 @@ class Single_Entry {
 		?>
 		<div class="wrap">
 			<h1 class="wp-heading-inline"><?php esc_html_e( 'View Entry', 'sureforms' ); ?></h1>
-			<form method="get" id="get"> <!-- check for nonce, referrer, etc. --> 
+			<form method="get" id="get"> <!-- check for nonce, referrer, etc. -->
 				<div id="poststuff">
 					<div id="post-body" class="metabox-holder columns-2">
 						<div id="post-body-content">
@@ -133,12 +133,12 @@ class Single_Entry {
 							<td><b><?php esc_html_e( 'Form Name:', 'sureforms' ); ?></b></td>
 							<td><a target="_blank" rel="noopener" href="<?php the_permalink( $this->entry['form_id'] ); ?>"><?php echo esc_attr( $form_name ); ?></a></td>
 						</tr>
-						<?php if ( ! empty( $this->entry['submission_info']['user_ip'] ) ) : ?>
+						<?php if ( ! empty( $this->entry['submission_info']['user_ip'] ) ) { ?>
 							<tr style="margin-bottom: 10px;">
 								<td><b><?php esc_html_e( 'User IP:', 'sureforms' ); ?></b></td>
 								<td><a target="_blank" rel="noopener" href="https://ipinfo.io/"><?php echo esc_attr( $this->entry['submission_info']['user_ip'] ); ?></a></td>
 							</tr>
-						<?php endif; ?>
+						<?php } ?>
 						<tr style="margin-bottom: 10px;">
 							<td><b><?php esc_html_e( 'Browser:', 'sureforms' ); ?></b></td>
 							<td><?php echo esc_attr( $this->entry['submission_info']['browser_name'] ); ?></td>
@@ -147,21 +147,21 @@ class Single_Entry {
 							<td><b><?php esc_html_e( 'Device:', 'sureforms' ); ?></b></td>
 							<td><?php echo esc_attr( $this->entry['submission_info']['device_name'] ); ?></td>
 						</tr>
-						<?php if ( 0 !== $user_id ) : ?>
+						<?php if ( 0 !== $user_id ) { ?>
 							<tr style="margin-bottom: 10px;">
 								<td><b><?php esc_html_e( 'User:', 'sureforms' ); ?></b></td>
 								<td><a target="_blank" rel="noopener" href="<?php echo esc_url( $user_profile_url ); ?>"><?php echo esc_attr( $user_name ); ?></a></td>
 							</tr>
-						<?php endif; ?>
+						<?php } ?>
 						<tr style="margin-bottom: 10px;">
 							<td><b><?php esc_html_e( 'Status:', 'sureforms' ); ?></b></td>
 							<td>
 								<span style="text-transform: capitalize;">
 									<?php echo esc_attr( $entry_status ); ?>
 								</span>
-								<?php if ( 'read' === $entry_status ) : ?>
+								<?php if ( 'read' === $entry_status ) { ?>
 									<span> | <a href="<?php echo esc_url( $mark_as_unread_url ); ?>" id="srfm-entry-mark-unread" style="font-size: 12px;"><?php esc_html_e( 'Mark as Unread', 'sureforms' ); ?></a></span>
-								<?php endif; ?>
+								<?php } ?>
 							</td>
 						</tr>
 						<tr style="margin-bottom: 10px;">
@@ -199,7 +199,7 @@ class Single_Entry {
 							<th><b><?php esc_html_e( 'Values', 'sureforms' ); ?></b></th>
 						</tr>
 					<?php
-					foreach ( $meta_data as $field_name => $value ) :
+					foreach ( $meta_data as $field_name => $value ) {
 						if ( in_array( $field_name, $excluded_fields, true ) ) {
 							continue;
 						}
@@ -213,7 +213,7 @@ class Single_Entry {
 						<tr>
 							<td><b><?php echo $label ? esc_html( Helper::decrypt( $label ) ) : ''; ?></b></td>
 							<?php
-							if ( false !== strpos( $field_name, 'srfm-upload' ) ) :
+							if ( false !== strpos( $field_name, 'srfm-upload' ) ) {
 								?>
 										<style>
 											.file-cards-container {
@@ -264,13 +264,13 @@ class Single_Entry {
 														$is_image  = in_array( $file_type, [ 'gif', 'png', 'bmp', 'jpg', 'jpeg', 'svg' ], true );
 														?>
 																<div class="file-card">
-															<?php if ( $is_image ) : ?>
+															<?php if ( $is_image ) { ?>
 																		<div class="file-card-image">
 																			<a target="_blank" href="<?php echo esc_attr( urldecode( $file_url ) ); ?>">
 																				<img src="<?php echo esc_attr( urldecode( $file_url ) ); ?>" alt="img" />
 																			</a>
 																		</div>
-																	<?php else : ?>
+															<?php } else { ?>
 																		<div class="file-card-icon">
 																			<?php // Display a file icon for non-image files. ?>
 																			<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16.333V4.667a1.333 1.333 0 011.333-1.333h13.334a1.333 1.333 0 011.333 1.333v11.666a1.333 1.333 0 01-1.333 1.333H5.333A1.333 1.333 0 014 16.333zm8-8h2v6h-2v-6zm-2 8h6v2H10v-2zm-6-6h4v6H4v-6zm0-4h16v2H4V6z"/></svg>
@@ -278,7 +278,7 @@ class Single_Entry {
 																		<div class="file-card-details">
 																			<span><?php echo esc_html( strtoupper( $file_type ) ); ?></span>
 																		</div>
-																	<?php endif; ?>
+															<?php } ?>
 																	<div class="file-card-url">
 																		<a target="_blank" href="<?php echo esc_attr( urldecode( $file_url ) ); ?>"><?php echo esc_html__( 'Open', 'sureforms' ); ?></a>
 																	</div>
@@ -290,13 +290,13 @@ class Single_Entry {
 											?>
 											</div>
 										</td>
-								<?php elseif ( false !== strpos( $field_name, 'srfm-url' ) ) : ?>
+							<?php } elseif ( false !== strpos( $field_name, 'srfm-url' ) ) { ?>
 									<td><a target="_blank" href="<?php echo esc_url( $value ); ?>"><?php echo esc_url( $value ); ?></a></td>
-								<?php else : ?>
+							<?php } else { ?>
 									<td><?php echo false !== strpos( $value, PHP_EOL ) ? wp_kses_post( wpautop( $value ) ) : wp_kses_post( $value ); ?></td>
-								<?php endif; ?>
+							<?php } ?>
 							</tr>
-							<?php endforeach; ?>
+					<?php } ?>
 					</tbody>
 				</table>
 			</div>
@@ -322,8 +322,8 @@ class Single_Entry {
 			<div class="inside">
 				<table class="widefat striped entry-logs-table">
 					<tbody>
-						<?php if ( ! empty( $entry_logs ) ) : ?>
-								<?php foreach ( $entry_logs as $index => $log ) : ?>
+						<?php if ( ! empty( $entry_logs ) ) { ?>
+								<?php foreach ( $entry_logs as $log ) { ?>
 									<tr>
 										<td class="entry-log-container">
 											<div class="entry-log">
@@ -332,17 +332,17 @@ class Single_Entry {
 													<?php echo esc_html( gmdate( '\a\t Y-m-d H:i:s', $log['timestamp'] ) ); ?>
 												</h4>
 												<div class="entry-log-messages">
-												<?php foreach ( $log['messages'] as $message ) : ?>
+												<?php foreach ( $log['messages'] as $message ) { ?>
 													<p><?php echo esc_html( $message ); ?></p>
-												<?php endforeach; ?>
+												<?php } ?>
 												</div>
 											</div>
 										</td>
 									</tr>
-								<?php endforeach; ?>
-						<?php else : ?>
+								<?php } ?>
+						<?php } else { ?>
 							<p><?php esc_html_e( 'No logs found for this entry.', 'sureforms' ); ?></p>
-						<?php endif; ?>
+						<?php } ?>
 					</tbody>
 				</table>
 			</div>

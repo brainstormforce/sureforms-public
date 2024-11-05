@@ -18,7 +18,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 0.0.1
  */
 class Number_Markup extends Base {
-
 	/**
 	 * Minimum value allowed for the input field.
 	 *
@@ -76,9 +75,9 @@ class Number_Markup extends Base {
 	public function __construct( $attributes ) {
 		$this->set_properties( $attributes );
 		$this->slug           = 'number';
-		$this->min_value      = isset( $attributes['minValue'] ) ? $attributes['minValue'] : '';
-		$this->max_value      = isset( $attributes['maxValue'] ) ? $attributes['maxValue'] : '';
-		$this->format_type    = isset( $attributes['formatType'] ) ? $attributes['formatType'] : '';
+		$this->min_value      = $attributes['minValue'] ?? '';
+		$this->max_value      = $attributes['maxValue'] ?? '';
+		$this->format_type    = $attributes['formatType'] ?? '';
 		$this->format_attr    = $this->format_type ? ' format-type="' . $this->format_type . '" ' : '';
 		$this->min_value_attr = $this->min_value ? ' min="' . $this->min_value . '" ' : '';
 		$this->max_value_attr = $this->max_value ? ' max="' . $this->max_value . '" ' : '';
@@ -95,7 +94,7 @@ class Number_Markup extends Base {
 	 * Render the sureforms number classic styling
 	 *
 	 * @since 0.0.2
-	 * @return string|boolean
+	 * @return string|bool
 	 */
 	public function markup() {
 		ob_start(); ?>

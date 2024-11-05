@@ -7,11 +7,12 @@
 
 namespace SRFM\Inc;
 
-use SRFM\Inc\Traits\Get_Instance;
+use SRFM\Inc\AI_Form_Builder\AI_Auth;
 use SRFM\Inc\AI_Form_Builder\AI_Form_Builder;
 use SRFM\Inc\AI_Form_Builder\Field_Mapping;
-use SRFM\Inc\AI_Form_Builder\AI_Auth;
 use SRFM\Inc\Database\Tables\Entries;
+use SRFM\Inc\Traits\Get_Instance;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
@@ -22,7 +23,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 0.0.7
  */
 class Rest_Api {
-
 	use Get_Instance;
 
 	/**
@@ -65,6 +65,51 @@ class Rest_Api {
 	 */
 	public function can_edit_posts() {
 		return current_user_can( 'edit_posts' );
+	}
+
+	/**
+	 * Checks whether the value is boolean or not.
+	 *
+	 * @param mixed $value value to be checked.
+	 * @since 0.0.8
+	 * @return bool
+	 */
+	public function sanitize_boolean_field( $value ) {
+		return filter_var( $value, FILTER_VALIDATE_BOOLEAN );
+	}
+
+	/**
+	 * Generate the block slugs as per the request by parsing the post content.
+	 *
+	 * @param  \WP_REST_Request $request Full details about the request.
+	 * @since 0.0.7
+	 * @return void
+	 */
+	public function generate_block_slugs_by_content( $request ) {
+		$nonce = Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) );
+
+		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
+			wp_send_json_error( __( 'Nonce verification failed.', 'sureforms' ) );
+		}
+
+		$slugs   = [];
+		$updated = false;
+		$params  = $request->get_params();
+
+		if ( empty( $params['formID'] ) ) {
+			wp_send_json_error( __( 'Invalid request. Form ID missing.', 'sureforms' ) );
+		}
+
+		$form    = get_post( absint( $params['formID'] ) );
+		$content = ! empty( $params['content'] ) ? wp_kses_post( $params['content'] ) : '';
+
+		if ( ! is_null( $form ) ) {
+			Helper::process_blocks( parse_blocks( $form->post_content ), $slugs, $updated );
+		}
+
+		Helper::process_blocks( parse_blocks( $content ), $slugs, $updated, '', true );
+
+		wp_send_json_success( $slugs );
 	}
 
 	/**
@@ -115,50 +160,5 @@ class Rest_Api {
 				'permission_callback' => [ $this, 'can_edit_posts' ],
 			],
 		];
-	}
-
-	/**
-	 * Checks whether the value is boolean or not.
-	 *
-	 * @param mixed $value value to be checked.
-	 * @since 0.0.8
-	 * @return boolean
-	 */
-	public function sanitize_boolean_field( $value ) {
-		return filter_var( $value, FILTER_VALIDATE_BOOLEAN );
-	}
-
-	/**
-	 * Generate the block slugs as per the request by parsing the post content.
-	 *
-	 * @param  \WP_REST_Request $request Full details about the request.
-	 * @since 0.0.7
-	 * @return void
-	 */
-	public function generate_block_slugs_by_content( $request ) {
-		$nonce = Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) );
-
-		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
-			wp_send_json_error( __( 'Nonce verification failed.', 'sureforms' ) );
-		}
-
-		$slugs   = [];
-		$updated = false;
-		$params  = $request->get_params();
-
-		if ( empty( $params['formID'] ) ) {
-			wp_send_json_error( __( 'Invalid request. Form ID missing.', 'sureforms' ) );
-		}
-
-		$form    = get_post( absint( $params['formID'] ) );
-		$content = ! empty( $params['content'] ) ? wp_kses_post( $params['content'] ) : '';
-
-		if ( ! is_null( $form ) ) {
-			Helper::process_blocks( parse_blocks( $form->post_content ), $slugs, $updated );
-		}
-
-		Helper::process_blocks( parse_blocks( $content ), $slugs, $updated, '', true );
-
-		wp_send_json_success( $slugs );
 	}
 }

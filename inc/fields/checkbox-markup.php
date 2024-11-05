@@ -18,7 +18,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 0.0.1
  */
 class Checkbox_Markup extends Base {
-
 	/**
 	 * Initialize the properties based on block attributes.
 	 *
@@ -38,7 +37,7 @@ class Checkbox_Markup extends Base {
 	 * Render the sureforms checkbox classic styling
 	 *
 	 * @since 0.0.2
-	 * @return string|boolean
+	 * @return string|bool
 	 */
 	public function markup() {
 
@@ -76,7 +75,6 @@ class Checkbox_Markup extends Base {
 		<?php
 
 		return ob_get_clean();
-
 	}
 
 }
