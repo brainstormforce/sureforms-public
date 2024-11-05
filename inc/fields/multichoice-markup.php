@@ -116,16 +116,19 @@ class Multichoice_Markup extends Base {
 	public function markup() {
 		$check_svg     = Helper::fetch_svg( $this->svg_type . '-checked', 'srfm-' . $this->slug . '-icon' );
 		$unchecked_svg = Helper::fetch_svg( $this->svg_type . '-unchecked', 'srfm-' . $this->slug . '-icon-unchecked' );
+		$legend_id = 'srfm-legend-' . $this->block_id;
+		$description_id = 'srfm-description-' . $this->block_id;
+		$area_labelledby = $legend_id . ' ' . $description_id;
+		$area_labelledby = $this->aria_require_attr ? $area_labelledby . ' srfm-error-' . $this->block_id : $area_labelledby;
+
 		ob_start(); ?>
 		<div data-block-id="<?php echo esc_attr( $this->block_id ); ?>" class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $this->type_attr ); ?>-mode srfm-<?php echo esc_attr( $this->slug ); ?>-block srf-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?>-block<?php echo wp_kses_post( $this->block_width ); ?><?php echo esc_attr( $this->class_name ); ?> <?php echo esc_attr( $this->conditional_class ); ?>">
 			<fieldset>
 				<input class="srfm-input-<?php echo esc_attr( $this->slug ); ?>-hidden" aria-required="<?php echo esc_attr( $this->aria_require_attr ); ?>" <?php echo wp_kses_post( $this->data_attribute_markup() ); ?> name="srfm-input-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?><?php echo esc_attr( $this->field_name ); ?>" type="hidden" value=""/>
-				<legend><?php echo wp_kses_post( $this->label_markup ); ?></legend>
+				<legend id="<? esc_attr( $legend_id ) ?>" class="srfm-block-legend"><?php echo wp_kses_post( $this->label_markup ); ?></legend>
 				<?php echo wp_kses_post( $this->help_markup ); ?>
 					<?php if ( is_array( $this->options ) ) { ?>
-						<div role="radiogroup" 
-	  aria-labelledby="srfm-multi-choice-afe76ee9 srfm-description-afe76ee9" 
-	  tabindex="0" class="srfm-block-wrap <?php echo esc_attr( $this->choice_width_attr ); ?> <?php echo $this->vertical_layout ? 'srfm-vertical-layout' : ''; ?>">
+						<div role="radiogroup" aria-required="<?php echo esc_attr( $this->aria_require_attr ); ?>" aria-labelledby="<?php echo esc_attr( $area_labelledby ); ?>" tabindex="0" class="srfm-block-wrap <?php echo esc_attr( $this->choice_width_attr ); ?> <?php echo $this->vertical_layout ? 'srfm-vertical-layout' : ''; ?>">
 							<?php foreach ( $this->options as $i => $option ) { ?>
 								<label class="srfm-<?php echo esc_attr( $this->slug ); ?>-single">
 									<input type="<?php echo esc_attr( $this->type_attr ); ?>" id="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id . '-' . $i ); ?>" class="srfm-input-<?php echo esc_attr( $this->slug ); ?>-single" <?php echo wp_kses_post( $this->name_attr ); ?>/>

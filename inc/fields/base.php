@@ -437,7 +437,7 @@ class Base {
 		$this->help_markup      = Helper::generate_common_form_markup( $this->form_id, 'help', '', '', $this->block_id, false, $this->help );
 		$this->error_msg_markup = Helper::generate_common_form_markup( $this->form_id, 'error', '', '', $this->block_id, boolval( $this->required || $this->min_selection || $this->max_selection ), '', $this->error_msg, false, '', $override );
 
-		if ( 'multi-choice' === $this->slug ) {
+		if ( in_array( $this->slug, ['multi-choice', 'dropdown'] ) ) {
 			$this->label_markup = Helper::generate_common_form_markup( $this->form_id, 'label_text', $this->label, $this->slug, $this->block_id . $input_label, boolval( $this->required ) );
 		} else {
 			$this->label_markup = Helper::generate_common_form_markup( $this->form_id, 'label', $this->label, $this->slug, $this->block_id . $input_label, boolval( $this->required ) );
