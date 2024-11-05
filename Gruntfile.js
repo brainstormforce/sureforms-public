@@ -149,7 +149,7 @@ module.exports = function ( grunt ) {
 					'!modules/gutenberg/postcss.config.js',
 					'!modules/gutenberg/readme.txt',
 					'!phpinsights.php',
-					'!playwright-setup/**'
+					'!playwright-setup/**',
 				],
 				dest: 'sureforms/',
 			},
