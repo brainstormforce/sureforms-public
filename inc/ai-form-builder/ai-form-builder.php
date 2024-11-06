@@ -8,8 +8,8 @@
 
 namespace SRFM\Inc\AI_Form_Builder;
 
-use SRFM\Inc\Traits\Get_Instance;
 use SRFM\Inc\Helper;
+use SRFM\Inc\Traits\Get_Instance;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {

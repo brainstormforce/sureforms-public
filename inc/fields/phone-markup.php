@@ -18,7 +18,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 0.0.1
  */
 class Phone_Markup extends Base {
-
 	/**
 	 * Stores the boolean string indicating if the country should be automatically determined.
 	 *
@@ -38,7 +37,7 @@ class Phone_Markup extends Base {
 		$this->set_input_label( __( 'Phone', 'sureforms' ) );
 		$this->set_error_msg( $attributes, 'srfm_phone_block_required_text' );
 		$this->slug         = 'phone';
-		$this->auto_country = isset( $attributes['autoCountry'] ) ? $attributes['autoCountry'] : '';
+		$this->auto_country = $attributes['autoCountry'] ?? '';
 		$this->set_unique_slug();
 		$this->set_field_name( $this->unique_slug );
 		$this->set_markup_properties( $this->input_label, true );
@@ -50,7 +49,7 @@ class Phone_Markup extends Base {
 	 * Render the sureforms phone classic styling
 	 *
 	 * @since 0.0.2
-	 * @return string|boolean
+	 * @return string|bool
 	 */
 	public function markup() {
 		ob_start(); ?>
@@ -60,7 +59,7 @@ class Phone_Markup extends Base {
 			<div class="srfm-block-wrap">
 				<input type="tel" class="srfm-input-common srfm-input-<?php echo esc_attr( $this->slug ); ?>" name="<?php echo esc_attr( $this->field_name ); ?>" id="<?php echo esc_attr( $this->unique_slug ); ?>"
 				<?php echo ! empty( $this->aria_described_by ) ? "aria-describedby='" . esc_attr( trim( $this->aria_described_by ) ) . "'" : ''; ?>
-				aria-required="<?php echo esc_attr( $this->aria_require_attr ); ?>" auto-country="<?php echo esc_attr( $this->auto_country ? 'true' : 'false' ); ?>" value="" <?php echo wp_kses_post( $this->placeholder_attr ); ?>>
+				data-required="<?php echo esc_attr( $this->data_require_attr ); ?>" auto-country="<?php echo esc_attr( $this->auto_country ? 'true' : 'false' ); ?>" value="" <?php echo wp_kses_post( $this->placeholder_attr ); ?>>
 			</div>
 			<div class="srfm-error-wrap">
 				<?php echo wp_kses_post( $this->error_msg_markup ); ?>

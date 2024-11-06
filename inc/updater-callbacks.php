@@ -19,7 +19,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 1.0.0
  */
 class Updater_Callbacks {
-
 	/**
 	 * Update callback method to handle the default dynamic block options in the global settings.
 	 *

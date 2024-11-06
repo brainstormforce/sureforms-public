@@ -7,13 +7,13 @@
 
 namespace SRFM\Admin;
 
-use SRFM\Inc\Traits\Get_Instance;
-use SRFM\Inc\AI_Form_Builder\AI_Helper;
-use SRFM\Inc\Helper;
-use SRFM\Admin\Views\Single_Entry;
 use SRFM\Admin\Views\Entries_List_Table;
-use SRFM\Inc\Post_Types;
+use SRFM\Admin\Views\Single_Entry;
+use SRFM\Inc\AI_Form_Builder\AI_Helper;
 use SRFM\Inc\Database\Tables\Entries;
+use SRFM\Inc\Helper;
+use SRFM\Inc\Post_Types;
+use SRFM\Inc\Traits\Get_Instance;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -24,7 +24,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 0.0.1
  */
 class Admin {
-
 	use Get_Instance;
 
 	/**
@@ -73,7 +72,6 @@ class Admin {
 		}
 	}
 
-
 	/**
 	 * Sureforms editor header styles.
 	 *
@@ -116,7 +114,8 @@ class Admin {
 			__( 'SureForms', 'sureforms' ),
 			'edit_others_posts',
 			$menu_slug,
-			function () {},
+			static function () {
+			},
 			'data:image/svg+xml;base64,' . base64_encode( $logo ), // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
 			30
 		);
@@ -354,7 +353,6 @@ class Admin {
 		return $breadcrumbs;
 	}
 
-
 	/**
 	 * Enqueue Admin Scripts.
 	 *
@@ -478,7 +476,7 @@ class Admin {
 					'srfm_export_nonce'    => wp_create_nonce( 'export_form_nonce' ),
 					'site_url'             => get_site_url(),
 					'srfm_import_endpoint' => '/wp-json/sureforms/v1/sureforms_import',
-					'import_form_nonce'    => ( current_user_can( 'edit_posts' ) ) ? wp_create_nonce( 'wp_rest' ) : '',
+					'import_form_nonce'    => current_user_can( 'edit_posts' ) ? wp_create_nonce( 'wp_rest' ) : '',
 				]
 			);
 
@@ -593,7 +591,6 @@ class Admin {
 		$classes            .= ' ' . $theme_builder_class . ' ';
 
 		return $classes;
-
 	}
 
 	/**

@@ -21,7 +21,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 0.0.1
  */
 class Multichoice_Markup extends Base {
-
 	/**
 	 * Flag indicating if only a single selection is allowed.
 	 *
@@ -97,9 +96,9 @@ class Multichoice_Markup extends Base {
 		$this->set_input_label( __( 'Multi Choice', 'sureforms' ) );
 		$this->set_error_msg( $attributes, 'srfm_multi_choice_block_required_text' );
 		$this->slug              = 'multi-choice';
-		$this->single_selection  = isset( $attributes['singleSelection'] ) ? $attributes['singleSelection'] : false;
-		$this->choice_width      = isset( $attributes['choiceWidth'] ) ? $attributes['choiceWidth'] : '';
-		$this->vertical_layout   = isset( $attributes['verticalLayout'] ) ? $attributes['verticalLayout'] : false;
+		$this->single_selection  = $attributes['singleSelection'] ?? false;
+		$this->choice_width      = $attributes['choiceWidth'] ?? '';
+		$this->vertical_layout   = $attributes['verticalLayout'] ?? false;
 		$this->option_type       = ! empty( $attributes['optionType'] ) && in_array( $attributes['optionType'], [ 'icon', 'image' ], true ) ? $attributes['optionType'] : 'icon';
 		$this->type_attr         = $this->single_selection ? 'radio' : 'checkbox';
 		$this->svg_type          = $this->single_selection ? 'circle' : 'square';
@@ -109,32 +108,10 @@ class Multichoice_Markup extends Base {
 	}
 
 	/**
-	 * Data attribute markup for min and max value
-	 *
-	 * @since 0.0.13
-	 * @return string
-	 */
-	protected function data_attribute_markup() {
-		$data_attr = '';
-		if ( $this->single_selection ) {
-			return '';
-		}
-
-		if ( $this->min_selection ) {
-			$data_attr .= 'data-min-selection="' . esc_attr( $this->min_selection ) . '"';
-		}
-		if ( $this->max_selection ) {
-			$data_attr .= 'data-max-selection="' . esc_attr( $this->max_selection ) . '"';
-		}
-
-		return $data_attr;
-	}
-
-	/**
 	 * Render the sureforms Multichoice classic styling
 	 *
 	 * @since 0.0.2
-	 * @return string|boolean
+	 * @return string|bool
 	 */
 	public function markup() {
 		$check_svg     = Helper::fetch_svg( $this->svg_type . '-checked', 'srfm-' . $this->slug . '-icon' );
@@ -142,11 +119,11 @@ class Multichoice_Markup extends Base {
 		ob_start(); ?>
 		<div data-block-id="<?php echo esc_attr( $this->block_id ); ?>" class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $this->type_attr ); ?>-mode srfm-<?php echo esc_attr( $this->slug ); ?>-block srf-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?>-block<?php echo wp_kses_post( $this->block_width ); ?><?php echo esc_attr( $this->class_name ); ?> <?php echo esc_attr( $this->conditional_class ); ?>">
 			<fieldset>
-				<input class="srfm-input-<?php echo esc_attr( $this->slug ); ?>-hidden" aria-required="<?php echo esc_attr( $this->aria_require_attr ); ?>" <?php echo wp_kses_post( $this->data_attribute_markup() ); ?> name="srfm-input-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?><?php echo esc_attr( $this->field_name ); ?>" type="hidden" value=""/>
+				<input class="srfm-input-<?php echo esc_attr( $this->slug ); ?>-hidden" data-required="<?php echo esc_attr( $this->data_require_attr ); ?>" <?php echo wp_kses_post( $this->data_attribute_markup() ); ?> name="srfm-input-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?><?php echo esc_attr( $this->field_name ); ?>" type="hidden" value=""/>
 				<legend><?php echo wp_kses_post( $this->label_markup ); ?></legend>
 				<?php echo wp_kses_post( $this->help_markup ); ?>
 					<?php if ( is_array( $this->options ) ) { ?>
-						<div class="srfm-block-wrap <?php echo esc_attr( $this->choice_width_attr ); ?> <?php echo( $this->vertical_layout ? 'srfm-vertical-layout' : '' ); ?>">
+						<div class="srfm-block-wrap <?php echo esc_attr( $this->choice_width_attr ); ?> <?php echo $this->vertical_layout ? 'srfm-vertical-layout' : ''; ?>">
 							<?php foreach ( $this->options as $i => $option ) { ?>
 								<label class="srfm-<?php echo esc_attr( $this->slug ); ?>-single">
 									<input type="<?php echo esc_attr( $this->type_attr ); ?>" id="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id . '-' . $i ); ?>" class="srfm-input-<?php echo esc_attr( $this->slug ); ?>-single" <?php echo wp_kses_post( $this->name_attr ); ?>/>
@@ -174,6 +151,27 @@ class Multichoice_Markup extends Base {
 		</div>
 		<?php
 		return ob_get_clean();
+	}
 
+	/**
+	 * Data attribute markup for min and max value
+	 *
+	 * @since 0.0.13
+	 * @return string
+	 */
+	protected function data_attribute_markup() {
+		$data_attr = '';
+		if ( $this->single_selection ) {
+			return '';
+		}
+
+		if ( $this->min_selection ) {
+			$data_attr .= 'data-min-selection="' . esc_attr( $this->min_selection ) . '"';
+		}
+		if ( $this->max_selection ) {
+			$data_attr .= 'data-max-selection="' . esc_attr( $this->max_selection ) . '"';
+		}
+
+		return $data_attr;
 	}
 }
