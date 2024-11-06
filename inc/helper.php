@@ -940,7 +940,7 @@ class Helper {
 	/**
 	 * Returns true if SureTriggers plugin is ready for the custom app.
 	 *
-	 * @since x.x.x
+	 * @since 1.0.3
 	 * @return bool Returns true if SureTriggers plugin is ready for the custom app.
 	 */
 	public static function is_suretriggers_ready() {
