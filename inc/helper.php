@@ -252,7 +252,7 @@ class Helper {
 				$markup = $label && '1' === $show_labels_as_placeholder ? $label . ( $required ? ' *' : '' ) : '';
 				break;
 			case 'label_text':
-				$markup = $label ? htmlspecialchars_decode( esc_html( $label ) ) . ( $required ? '<span class="srfm-required" aria-label=",' . __( 'Required', 'sureforms' ) . ',"><span aria-hidden="true"> *</span></span>' : '' ) . '</label>' : '';
+				$markup = $label ? htmlspecialchars_decode( esc_html( $label ) ) . ( $required ? '<span class="srfm-required" aria-label=",' . esc_attr__( 'Required', 'sureforms' ) . ',"><span aria-hidden="true"> *</span></span>' : '' ) . '</label>' : '';
 				break;
 			default:
 				$markup = '';
