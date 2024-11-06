@@ -66,4 +66,5 @@ src
 unminified
 coverage-report
 phpinsights.php
+playwright-report
 
