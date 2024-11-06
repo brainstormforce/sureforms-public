@@ -4,25 +4,25 @@ import Zapier from '../components/integrations/zapier';
 
 const IntegrationsPage = ( { loading } ) => {
 	return (
-<>
-		<div className="srfm-card-container">
-			<div className="srfm-card-content">
-				<ContentCard
-					loading={ loading }
-					content={ <Webhooks /> }
-				/>
+		<>
+			<div className="srfm-card-container">
+				<div className="srfm-card-content">
+					<ContentCard
+						loading={ loading }
+						content={ <Webhooks /> }
+					/>
+				</div>
+
 			</div>
-			
-		</div>
-		<div className="srfm-card-container">
-			<div className="srfm-card-content">
-				<ContentCard
-					loading={ loading }
-					content={ <Zapier /> }
-				/>
+			<div className="srfm-card-container">
+				<div className="srfm-card-content">
+					<ContentCard
+						loading={ loading }
+						content={ <Zapier /> }
+					/>
+				</div>
+
 			</div>
-			
-		</div>
 		</>
 	);
 };

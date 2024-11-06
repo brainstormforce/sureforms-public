@@ -4,8 +4,7 @@ import ZapierIcon from '@Image/zapier.js';
 import UpgradeToProButton from '@Admin/components/UpgradeToProButton';
 
 const Zapier = () => {
-    
-    const showZapDetails = false;
+	const showZapDetails = false;
 	const zapierDetails = applyFilters(
 		'srfm.global_settings.integrations.zapier',
 		showZapDetails
@@ -15,7 +14,7 @@ const Zapier = () => {
 		<>
 			<div className="srfm-integration-content">
 				<div className="srfm-integration-content-inner">
-                    <ZapierIcon />
+					<ZapierIcon />
 					<div>
 						<div className="srfm-integration-title">
 							{ __( 'Zapier', 'sureforms' ) }
@@ -27,10 +26,10 @@ const Zapier = () => {
 				</div>
 			</div>
 			<div className="srfm-integration-cta">
-                { false === zapierDetails ? <UpgradeToProButton className="srfm-button-secondary srfm-button-xs" /> : zapierDetails }
+				{ false === zapierDetails ? <UpgradeToProButton className="srfm-button-secondary srfm-button-xs" /> : zapierDetails }
 				<div className="srfm-pro-badge">
 					{ __( 'Pro', 'sureforms' ) }
-                </div>
+				</div>
 			</div>
 		</> );
 };
