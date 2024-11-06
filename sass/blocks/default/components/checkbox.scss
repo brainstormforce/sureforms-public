@@ -14,13 +14,11 @@
 				&:focus {
 					+ {
 						.srfm-cbx {
-							span {
-								&:first-child:not( .srfm-required ) {
-									border-color: var( --srfm-color-scheme-primary );
-									box-shadow: 0px 0px 0px 3px var( --srfm-color-input-border-focus-glow );
-									svg {
-										stroke-dashoffset: 0;
-									}
+							> span:first-child {
+								border-color: var( --srfm-color-scheme-primary );
+								box-shadow: 0px 0px 0px 3px var( --srfm-color-input-border-focus-glow );
+								svg {
+									stroke-dashoffset: 0;
 								}
 							}
 						}
@@ -30,10 +28,8 @@
 				&:hover {
 					+ {
 						.srfm-cbx {
-							span {
-								&:first-child:not( .srfm-required ) {
-									border-color: var( --srfm-color-input-border-hover );
-								}
+							> span:first-child {
+								border-color: var( --srfm-color-input-border-hover );
 							}
 						}
 					}

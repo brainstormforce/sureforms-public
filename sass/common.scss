@@ -247,14 +247,12 @@ button.srfm-toolbar-width-setting-button {
 				&:checked {
 					+ {
 						.srfm-cbx {
-							span {
-								&:first-child:not( .srfm-required ) {
-									background: var( --srfm-color-scheme-primary );
-									border-color: var( --srfm-color-scheme-primary );
-									svg {
-										opacity: 1;
-										stroke-dashoffset: 0;
-									}
+							> span.srfm-span-wrap:first-child{
+								background: var( --srfm-color-scheme-primary );
+								border-color: var( --srfm-color-scheme-primary );
+								svg {
+									opacity: 1;
+									stroke-dashoffset: 0;
 								}
 							}
 						}
