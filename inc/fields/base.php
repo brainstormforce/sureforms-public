@@ -100,10 +100,10 @@ class Base {
 	/**
 	 * Indicates whether the attribute should be set to true or false.
 	 *
-	 * @var string $aria_require_attr Value of the aria-required attribute.
+	 * @var string $data_require_attr Value of the data-required attribute.
 	 * @since 0.0.2
 	 */
-	protected $aria_require_attr;
+	protected $data_require_attr;
 
 	/**
 	 * Dynamically sets the CSS class for block width based on the field width.
@@ -345,7 +345,7 @@ class Base {
 		$this->options            = $attributes['options'] ?? '';
 		$this->is_unique          = $attributes['isUnique'] ?? false;
 		$this->conditional_class  = apply_filters( 'srfm_conditional_logic_classes', $this->form_id, $this->block_id );
-		$this->aria_require_attr  = $this->required ? 'true' : 'false';
+		$this->data_require_attr  = $this->required ? 'true' : 'false';
 		$this->block_width        = $this->field_width ? ' srfm-block-width-' . str_replace( '.', '-', $this->field_width ) : '';
 		$this->placeholder_attr   = $this->placeholder ? ' placeholder="' . $this->placeholder . '" ' : '';
 		$this->default_value_attr = $this->default ? ' value="' . $this->default . '" ' : '';
