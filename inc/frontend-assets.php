@@ -76,11 +76,12 @@ class Frontend_Assets {
 	 * @since 0.0.1
 	 */
 	public function register_scripts() {
-		$file_prefix = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? '' : '.min';
-		$dir_name    = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? 'unminified' : 'minified';
-		$js_uri      = SRFM_URL . 'assets/js/' . $dir_name . '/';
-		$css_uri     = SRFM_URL . 'assets/css/' . $dir_name . '/';
-		$css_vendor  = SRFM_URL . 'assets/css/minified/deps/';
+		$file_prefix    = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? '' : '.min';
+		$js_file_prefix = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? '' : '.min';
+		$dir_name       = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? 'unminified' : 'minified';
+		$js_uri         = SRFM_URL . 'assets/js/' . $dir_name . '/';
+		$css_uri        = SRFM_URL . 'assets/css/' . $dir_name . '/';
+		$css_vendor     = SRFM_URL . 'assets/css/minified/deps/';
 
 		/* RTL */
 		if ( is_rtl() ) {
@@ -116,7 +117,7 @@ class Frontend_Assets {
 			} else {
 				wp_register_script(
 					SRFM_SLUG . '-' . $handle,
-					$js_uri . $name . $file_prefix . '.js',
+					$js_uri . $name . $js_file_prefix . '.js',
 					[],
 					SRFM_VER,
 					true
