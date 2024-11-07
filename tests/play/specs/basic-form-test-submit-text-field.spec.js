@@ -11,8 +11,15 @@ test('create a form with field to check submit', async ({ page }) => {
   await page.goto('/wp-admin/admin.php?page=sureforms_menu');
   await page.getByRole('button', { name: 'Create New Form →' }).first().click();
   await page.getByRole('link', { name: 'Build From Scratch' }).click();
+    // Check if "Welcome to the Block Editor" is visible and close if it is
+    const welcomeMessageVisible = await page.locator('text=Welcome to the Block Editor').isVisible();
+    if (welcomeMessageVisible) {
+      await page.getByLabel('Close', { exact: true }).click();
+    }
+  
   await page.locator('#draggable-box__srfm--input div').first().click();
-  await page.getByRole('option', { name: 'Text', exact: true }).click();
+  //await page.getByRole('option', { name: 'Text Field', exact: true }).click();
+  await page.getByText('Text FieldSubmit').click();
   await page.getByRole('button', { name: 'Publish', exact: true }).click();
   await page.getByLabel('Editor publish').getByRole('button', { name: 'Publish', exact: true }).click();
   await page.getByLabel('Editor publish').getByRole('link', { name: 'View Form' }).click();
