@@ -11,7 +11,7 @@ test('create a form with field to check submit', async ({ page }) => {
   await page.goto('/wp-admin/admin.php?page=sureforms_menu');
   await page.getByRole('button', { name: 'Create New Form →' }).first().click();
   await page.getByRole('link', { name: 'Build From Scratch' }).click();
-  await page.getByLabel('Toggle block inserter').click();
+  await page.locator('#draggable-box__srfm--input div').first().click();
   await page.getByRole('option', { name: 'Text', exact: true }).click();
   await page.getByRole('button', { name: 'Publish', exact: true }).click();
   await page.getByLabel('Editor publish').getByRole('button', { name: 'Publish', exact: true }).click();
