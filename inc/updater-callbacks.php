@@ -9,8 +9,6 @@
 
 namespace SRFM\Inc;
 
-use SRFM\Inc\Helper;
-
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
