@@ -47,7 +47,7 @@ class Updater_Callbacks {
 
 		if ( ! empty( $previous_options ) && is_array( $previous_options ) ) {
 			// get default options values.
-			$default_options  = Helper::default_dynamic_block_option();
+			$default_options = Helper::default_dynamic_block_option();
 			// merge previous options with default options after filtering empty values.
 			$previous_options = array_merge( $default_options, array_filter( $previous_options ) );
 			// update the options.
