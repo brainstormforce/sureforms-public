@@ -30,7 +30,7 @@ class GDPR_Markup extends Base {
 		$this->set_error_msg( $attributes, 'srfm_gdpr_block_required_text' );
 		$this->slug              = 'gdpr';
 		$this->required          = true;
-		$this->aria_require_attr = 'true';
+		$this->data_require_attr = 'true';
 		$this->set_markup_properties();
 		$this->set_aria_described_by();
 	}
@@ -48,7 +48,7 @@ class GDPR_Markup extends Base {
 				<div class="srfm-block-wrap">
 					<input class="srfm-input-common screen-reader-text srfm-input-<?php echo esc_attr( $this->slug ); ?>" id="<?php echo esc_attr( $label_random_id ); ?>" name="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?><?php echo esc_attr( $this->field_name ); ?>"
 					<?php echo ! empty( $this->aria_described_by ) ? "aria-describedby='" . esc_attr( trim( $this->aria_described_by ) ) . "'" : ''; ?>
-					aria-required="<?php echo esc_attr( $this->aria_require_attr ); ?>" type="checkbox" <?php echo esc_attr( $this->checked_attr ); ?>/>
+					data-required="<?php echo esc_attr( $this->data_require_attr ); ?>" type="checkbox" <?php echo esc_attr( $this->checked_attr ); ?>/>
 					<label class="srfm-cbx" for="<?php echo esc_attr( $label_random_id ); ?>">
 						<span class="srfm-span-wrap">
 							<svg class="srfm-check-icon" width="12px" height="10px">
@@ -56,7 +56,7 @@ class GDPR_Markup extends Base {
 							</svg>
 						</span>
 						<span class="srfm-span-wrap srfm-block-label"><?php echo wp_kses( $this->label, $this->allowed_tags ); ?>
-							<span class="srfm-required"> *</span></span>
+							<span class="srfm-required" aria-label="<?php echo esc_html__( 'Required', 'sureforms' ); ?>"><span aria-hidden="true"> *</span></span></span>
 					</label>
 					<svg class="srfm-inline-svg">
 						<symbol id="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?>-check" viewbox="0 0 12 10">

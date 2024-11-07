@@ -237,7 +237,7 @@ class Helper {
 
 		switch ( $type ) {
 			case 'label':
-				$markup = $label ? '<label for="srfm-' . $slug . '-' . esc_attr( $block_id ) . '" class="srfm-block-label">' . htmlspecialchars_decode( esc_html( $label ) ) . ( $required ? '<span class="srfm-required"> *</span>' : '' ) . '</label>' : '';
+				$markup = $label ? '<label for="srfm-' . $slug . '-' . esc_attr( $block_id ) . '" class="srfm-block-label">' . htmlspecialchars_decode( esc_html( $label ) ) . ( $required ? '<span class="srfm-required" aria-label="' . esc_attr__( 'Required', 'sureforms' ) . '"><span aria-hidden="true"> *</span></span>' : '' ) . '</label>' : '';
 				break;
 			case 'help':
 				$markup = $help ? '<div class="srfm-description" id="srfm-description-' . esc_attr( $block_id ) . '">' . htmlspecialchars_decode( esc_html( $help ) ) . '</div>' : '';
@@ -937,7 +937,7 @@ class Helper {
 	/**
 	 * Returns true if SureTriggers plugin is ready for the custom app.
 	 *
-	 * @since x.x.x
+	 * @since 1.0.3
 	 * @return bool Returns true if SureTriggers plugin is ready for the custom app.
 	 */
 	public static function is_suretriggers_ready() {
