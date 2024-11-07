@@ -19,6 +19,7 @@ sureforms/
 .eslintcache
 
 artifact/
+artifacts/
 
 assets/build/
 
@@ -43,3 +44,6 @@ assets/js/minified/*
 
 .phpunit.result.cache
 coverage-report
+
+# playwright
+tests/play/test-results/*
