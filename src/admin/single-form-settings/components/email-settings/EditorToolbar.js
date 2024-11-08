@@ -50,6 +50,9 @@ function imageHandler() {
 					'aria-hidden': 'true',
 				} );
 			};
+			reader.onerror = () => {
+				console.error( 'Error while reading the file.' );
+			};
 			reader.readAsDataURL( file );
 		} else {
 			console.warn( 'You could only upload images.' );
