@@ -99,7 +99,8 @@ const SecurityPage = ( {
 											<div
 												className="components-base-control srfm-components-input-control css-qy3gpb ej5x27r4"
 												style={ {
-													marginBottom: '0',
+													marginBottom: '.43em',
+													fontWeight: '500',
 												} }
 											>
 												<div className="components-base-control__field">
@@ -367,7 +368,10 @@ const SecurityPage = ( {
 											</div>
 										</div>
 										<div className="srfm-sub-section-content">
-											<div className="components-base-control srfm-components-input-control css-qy3gpb ej5x27r4">
+											<div className="components-base-control srfm-components-input-control css-qy3gpb ej5x27r4" 	style={ {
+												marginBottom: '.43em',
+												fontWeight: '500',
+											} }>
 												<div className="components-base-control__field css-1t5ousf ej5x27r3">
 													<label
 														className="components-base-control__label css-1v57ksj ej5x27r2"
@@ -378,61 +382,62 @@ const SecurityPage = ( {
 															'sureforms'
 														) }
 													</label>
-													<div className="srfm-style-2-tabs">
-														<div
-															role="tablist"
-															aria-orientation="horizontal"
-															className="components-tab-panel__tabs"
-														>
-															{ buttonData.map(
-																(
-																	button,
-																	index
-																) => (
-																	<button
-																		key={
-																			index
-																		}
-																		type="button"
-																		aria-selected={
-																			button.mode ===
+
+												</div>
+												<div className="srfm-style-2-tabs">
+													<div
+														role="tablist"
+														aria-orientation="horizontal"
+														className="components-tab-panel__tabs"
+													>
+														{ buttonData.map(
+															(
+																button,
+																index
+															) => (
+																<button
+																	key={
+																		index
+																	}
+																	type="button"
+																	aria-selected={
+																		button.mode ===
 																			securitytabOptions.srfm_cf_appearance_mode
-																		}
-																		id={ `tab-panel-2-${ button.mode }` }
-																		role="tab"
-																		aria-controls={ `tab-panel-2-${ button.mode }-view` }
-																		className={ `components-button components-tab-panel__tabs-item srfm-captcha-tab-${
-																			index +
+																	}
+																	id={ `tab-panel-2-${ button.mode }` }
+																	role="tab"
+																	aria-controls={ `tab-panel-2-${ button.mode }-view` }
+																	className={ `components-button components-tab-panel__tabs-item srfm-captcha-tab-${
+																		index +
 																			1
-																		} ${
-																			button.mode ===
+																	} ${
+																		button.mode ===
 																			securitytabOptions.srfm_cf_appearance_mode
-																				? 'active-tab'
-																				: ''
-																		}` }
-																		onClick={ () => {
-																			updateGlobalSettings(
-																				'srfm_cf_appearance_mode',
-																				button.mode,
-																				'security-settings'
-																			);
-																		} }
-																	>
-																		{
-																			button.label
-																		}
-																	</button>
-																)
-															) }
-														</div>
-														<div
-															id={ `tab-panel-2-${ securitytabOptions.srfm_cf_appearance_mode }-view` }
-															role="tabpanel"
-															aria-labelledby={ `tab-panel-2-${ securitytabOptions.srfm_cf_appearance_mode }` }
-															className="components-tab-panel__tab-content"
-															tabIndex="0"
-														></div>
+																			? 'active-tab'
+																			: ''
+																	}` }
+																	onClick={ () => {
+																		updateGlobalSettings(
+																			'srfm_cf_appearance_mode',
+																			button.mode,
+																			'security-settings'
+																		);
+																	} }
+																>
+																	{
+																		button.label
+																	}
+																</button>
+															)
+														) }
 													</div>
+													<div
+														id={ `tab-panel-2-${ securitytabOptions.srfm_cf_appearance_mode }-view` }
+														role="tabpanel"
+														aria-labelledby={ `tab-panel-2-${ securitytabOptions.srfm_cf_appearance_mode }` }
+														className="components-tab-panel__tab-content"
+														tabIndex="0"
+													></div>
 												</div>
 											</div>
 
