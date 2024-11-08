@@ -675,12 +675,12 @@ class Admin {
 		if ( ! is_plugin_active( $plugin_file ) || ! defined( 'SRFM_PRO_VER' ) ) {
 			return;
 		}
+
 		if ( version_compare( SRFM_PRO_VER, SRFM_RECOMMENDED_PRO_VER, '>=' ) ) {
 			return;
 		}
-		$screen = get_current_screen();
 
-		if ( empty( $screen ) ) {
+		if ( empty( get_current_screen() ) ) {
 			return;
 		}
 
