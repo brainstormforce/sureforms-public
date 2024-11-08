@@ -676,7 +676,7 @@ class Admin {
 			return;
 		}
 
-		if ( version_compare( SRFM_PRO_VER, SRFM_RECOMMENDED_PRO_VER, '>=' ) ) {
+		if ( version_compare( SRFM_PRO_VER, SRFM_PRO_RECOMMENDED_VER, '>=' ) ) {
 			return;
 		}
 
@@ -692,7 +692,7 @@ class Admin {
 			// translators: %1$s: SureForms version, %2$s: SureForms Pro version.
 			esc_html__( 'SureForms %1$s requires minimum SureForms Pro %2$s to work properly. Please update now.', 'sureforms' ),
 			esc_html( SRFM_VER ),
-			esc_html( SRFM_RECOMMENDED_PRO_VER )
+			esc_html( SRFM_PRO_RECOMMENDED_VER )
 		) . '</p>';
 
 		// Phpcs ignore comment is required as $message variable is already escaped.
