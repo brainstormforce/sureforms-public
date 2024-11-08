@@ -46,6 +46,7 @@ class Admin {
 		add_action( 'uag_enable_quick_action_sidebar', [ $this, 'restrict_spectra_quick_action_bar' ] );
 
 		add_action( 'current_screen', [ $this, 'enable_gutenberg_for_sureforms' ], 100 );
+		add_action( 'admin_notices', [ $this, 'srfm_pro_version_compatibility' ] );
 
 		// Handle entry actions.
 		add_action( 'admin_init', [ $this, 'handle_entry_actions' ] );
@@ -659,6 +660,46 @@ class Admin {
 			}
 			Entries_List_Table::handle_entry_status( $entry_id, $action, $view );
 		}
+	}
+
+	/**
+	 * Admin Notice Callback if sureforms pro is out of date.
+	 *
+	 * Hooked - admin_notices
+	 *
+	 * @return void
+	 * @since x.x.x
+	 */
+	public function srfm_pro_version_compatibility() {
+		if ( ! defined( 'SRFM_PRO_VER' ) ) {
+			return;
+		}
+		if ( version_compare( SRFM_PRO_VER, SRFM_RECOMMENDED_PRO_VER, '>=' ) ) {
+			return;
+		}
+		$screen = get_current_screen();
+
+		if ( empty( $screen ) ) {
+			return;
+		}
+
+		if ( ! current_user_can( 'update_plugins' ) ) {
+			return;
+		}
+
+		$file_path = 'sureforms-pro/sureforms-pro.php';
+
+		$upgrade_link = wp_nonce_url( self_admin_url( 'update.php?action=upgrade-plugin&plugin=' ) . $file_path, 'upgrade-plugin_' . $file_path );
+		$message      = '<p>' . sprintf(
+			// translators: %1$s: SureForms version, %2$s: SureForms Pro version.
+			esc_html__( 'SureForms %1$s requires minimum SureForms Pro %2$s to work properly. Please update now.', 'sureforms' ),
+			esc_html( SRFM_VER ),
+			esc_html( SRFM_RECOMMENDED_PRO_VER )
+		) . '</p>';
+		$message .= '<p>' . sprintf( '<a href="%s" class="button-primary">%s</a>', $upgrade_link, esc_html__( 'Update SureForms Pro', 'sureforms' ) ) . '</p>';
+
+		// Phpcs ignore comment is required as $message variable is already escaped.
+		echo '<div class="error">' . $message . '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
 
 }
