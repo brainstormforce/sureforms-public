@@ -688,14 +688,12 @@ class Admin {
 			return;
 		}
 
-		$upgrade_link = wp_nonce_url( self_admin_url( 'update.php?action=upgrade-plugin&plugin=' ) . $plugin_file, 'upgrade-plugin_' . $plugin_file );
-		$message      = '<p>' . sprintf(
+		$message = '<p>' . sprintf(
 			// translators: %1$s: SureForms version, %2$s: SureForms Pro version.
 			esc_html__( 'SureForms %1$s requires minimum SureForms Pro %2$s to work properly. Please update now.', 'sureforms' ),
 			esc_html( SRFM_VER ),
 			esc_html( SRFM_RECOMMENDED_PRO_VER )
 		) . '</p>';
-		$message .= '<p>' . sprintf( '<a href="%s" class="button-primary">%s</a>', $upgrade_link, esc_html__( 'Update SureForms Pro', 'sureforms' ) ) . '</p>';
 
 		// Phpcs ignore comment is required as $message variable is already escaped.
 		echo '<div class="error">' . $message . '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
