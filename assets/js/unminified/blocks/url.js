@@ -1,5 +1,5 @@
 // Toggle "srfm-error" class on the input field based on validation result.
-function toggleErrorClass( container, hasError ){
+function toggleErrorState( container, hasError ){
 	if ( hasError ) {
 		container.classList.add( 'srfm-error' );
 	} else {
@@ -32,11 +32,11 @@ function initializeURL() {
 					if ( isValidUrl ) {
 						validUrlMessage.style.display = 'none';
 						// urlFiledContainer.classList.remove( 'srfm-error' );
-						toggleErrorClass( urlFiledContainer, false );
+						toggleErrorState( urlFiledContainer, false );
 						urlFiledContainer.classList.remove( 'srfm-url-error' );
 					} else {
 						// urlFiledContainer.classList.add( 'srfm-error' );
-						toggleErrorClass( urlFiledContainer, true );
+						toggleErrorState( urlFiledContainer, true );
 						urlFiledContainer.classList.add( 'srfm-url-error' );
 						validUrlMessage.style.display = 'block';
 						validUrlMessage.innerText = 'Please enter a valid URL.';
