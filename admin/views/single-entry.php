@@ -211,7 +211,7 @@ class Single_Entry {
 						$label = explode( '-', $label )[0];
 						?>
 						<tr>
-							<td><b><?php echo $label ? esc_html( Helper::decrypt( $label ) ) : ''; ?></b></td>
+							<td><b><?php echo $label ? wp_kses_post( html_entity_decode( Helper::decrypt( $label ) ) ) : ''; ?></b></td>
 							<?php
 							if ( false !== strpos( $field_name, 'srfm-upload' ) ) {
 								?>
