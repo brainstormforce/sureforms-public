@@ -671,7 +671,8 @@ class Admin {
 	 * @since x.x.x
 	 */
 	public function srfm_pro_version_compatibility() {
-		if ( ! defined( 'SRFM_PRO_VER' ) ) {
+		$plugin_file = 'sureforms-pro/sureforms-pro.php';
+		if ( ! is_plugin_active( $plugin_file ) || ! defined( 'SRFM_PRO_VER' ) ) {
 			return;
 		}
 		if ( version_compare( SRFM_PRO_VER, SRFM_RECOMMENDED_PRO_VER, '>=' ) ) {
@@ -687,9 +688,7 @@ class Admin {
 			return;
 		}
 
-		$file_path = 'sureforms-pro/sureforms-pro.php';
-
-		$upgrade_link = wp_nonce_url( self_admin_url( 'update.php?action=upgrade-plugin&plugin=' ) . $file_path, 'upgrade-plugin_' . $file_path );
+		$upgrade_link = wp_nonce_url( self_admin_url( 'update.php?action=upgrade-plugin&plugin=' ) . $plugin_file, 'upgrade-plugin_' . $plugin_file );
 		$message      = '<p>' . sprintf(
 			// translators: %1$s: SureForms version, %2$s: SureForms Pro version.
 			esc_html__( 'SureForms %1$s requires minimum SureForms Pro %2$s to work properly. Please update now.', 'sureforms' ),
