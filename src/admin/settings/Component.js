@@ -52,7 +52,7 @@ const Component = ( { path } ) => {
 		'srfm_general_settings_options',
 		'srfm_email_summary_settings_options',
 		'srfm_security_settings_options',
-		'get_default_dynamic_block_option',
+		'srfm_default_dynamic_block_option',
 	];
 
 	// set page title and icon based on the path.
@@ -143,12 +143,12 @@ const Component = ( { path } ) => {
 					} );
 				}
 
-				if ( data.get_default_dynamic_block_option ) {
+				if ( data.srfm_default_dynamic_block_option ) {
 					setDynamicBlockOptions( {
-						...data.get_default_dynamic_block_option,
+						...data.srfm_default_dynamic_block_option,
 					} );
 					setPreDynamicBlockOptions( {
-						...data.get_default_dynamic_block_option,
+						...data.srfm_default_dynamic_block_option,
 					} );
 				}
 				setLoading( false );

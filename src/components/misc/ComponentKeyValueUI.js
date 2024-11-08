@@ -5,7 +5,7 @@ import parse from 'html-react-parser';
 import SmartTagList from '@Components/misc/SmartTagList';
 import svgIcons from '@Image/single-form-logo.json';
 
-const KeyValueUI = ( {
+const ComponentKeyValueUI = ( {
 	data,
 	label,
 	helpText,
@@ -175,4 +175,4 @@ const TextControl = ( {
 	);
 };
 
-export default KeyValueUI;
+export default ComponentKeyValueUI;
