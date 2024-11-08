@@ -32,6 +32,15 @@ async function getUniqueValidationData( checkData, formId, ajaxUrl, nonce ) {
 	}
 }
 
+// Toggle "srfm-error" class on the input field based on validation result.
+function toggleErrorClass( container, hasError ){
+	if ( hasError ) {
+		container.classList.add( 'srfm-error' );
+	} else {
+		container.classList.remove( 'srfm-error' );
+	}
+};
+
 export async function fieldValidation(
 	formId,
 	ajaxUrl,
@@ -129,9 +138,10 @@ export async function fieldValidation(
 		if ( isRequired && inputField.type !== 'hidden' ) {
 			if ( isRequired === 'true' && ! inputValue ) {
 				if ( inputField ) {
-					inputField
-						.closest( '.srfm-block' )
-						.classList.add( 'srfm-error' );
+					// inputField
+					// 	.closest( '.srfm-block' )
+					// 	.classList.add( 'srfm-error' );
+					toggleErrorClass( inputField.closest( '.srfm-block' ), true );
 				}
 				if ( errorMessage ) {
 					errorMessage.textContent =
@@ -144,16 +154,18 @@ export async function fieldValidation(
 					inputField.closest( '.srfm-block' )
 				);
 			} else if ( inputField ) {
-				inputField
-					.closest( '.srfm-block' )
-					.classList.remove( 'srfm-error' );
+				// inputField
+				// 	.closest( '.srfm-block' )
+				// 	.classList.remove( 'srfm-error' );
+				toggleErrorClass( inputField.closest( '.srfm-block' ), false );
 			}
 
 			// remove the error message on input of the input
 			inputField.addEventListener( 'input', () => {
-				inputField
-					.closest( '.srfm-block' )
-					.classList.remove( 'srfm-error' );
+				// inputField
+				// 	.closest( '.srfm-block' )
+				// 	.classList.remove( 'srfm-error' );
+				toggleErrorClass( inputField.closest( '.srfm-block' ), false );
 			} );
 		}
 
@@ -165,9 +177,10 @@ export async function fieldValidation(
 
 			if ( hasDuplicate ) {
 				if ( inputField ) {
-					inputField
-						.closest( '.srfm-block' )
-						.classList.add( 'srfm-error' );
+					// inputField
+					// 	.closest( '.srfm-block' )
+					// 	.classList.add( 'srfm-error' );
+					toggleErrorClass( inputField.closest( '.srfm-block' ), true );
 				}
 
 				errorMessage.style.display = 'block';
@@ -182,9 +195,10 @@ export async function fieldValidation(
 					inputField.closest( '.srfm-block' )
 				);
 			} else if ( inputField ) {
-				inputField
-					.closest( '.srfm-block' )
-					.classList.remove( 'srfm-error' );
+				// inputField
+				// 	.closest( '.srfm-block' )
+				// 	.classList.remove( 'srfm-error' );
+				toggleErrorClass( inputField.closest( '.srfm-block' ), false );
 
 				errorMessage.style.display = 'none';
 			}
@@ -217,20 +231,23 @@ export async function fieldValidation(
 					errorMessage.textContent = container
 						.querySelector( '.srfm-error-message' )
 						.getAttribute( 'data-error-msg' );
-					container.classList.add( 'srfm-error' );
+					// container.classList.add( 'srfm-error' );
+					toggleErrorClass( container, true );
 				}
 				validateResult = true;
 
 				// Set the first error input.
 				setFirstErrorInput( visibleInput, container );
 			} else if ( errorMessage ) {
-				container.classList.remove( 'srfm-error' );
+				// container.classList.remove( 'srfm-error' );
+				toggleErrorClass( container, false );
 			}
 
 			// also remove the error message on input of the input
 			checkedInput.forEach( ( input ) => {
 				input.addEventListener( 'input', () => {
-					container.classList.remove( 'srfm-error' );
+					// container.classList.remove( 'srfm-error' );
+					toggleErrorClass( container, false );
 				} );
 			} );
 		}
@@ -241,7 +258,8 @@ export async function fieldValidation(
 			const urlError = container.classList.contains( 'srfm-url-error' );
 
 			if ( urlError ) {
-				container.classList.add( 'srfm-error' );
+				// container.classList.add( 'srfm-error' );
+				toggleErrorClass( container, true );
 				validateResult = true;
 				// Set the first error input.
 				setFirstErrorInput( urlInput, container );
@@ -249,7 +267,8 @@ export async function fieldValidation(
 
 			// remove the error message on input of the url input
 			urlInput.addEventListener( 'input', () => {
-				container.classList.remove( 'srfm-error' );
+				// container.classList.remove( 'srfm-error' );
+				toggleErrorClass( container, false );
 			} );
 		}
 
@@ -260,7 +279,8 @@ export async function fieldValidation(
 				container.classList.contains( 'srfm-phone-error' );
 
 			if ( isIntelError ) {
-				container.classList.add( 'srfm-error' );
+				// container.classList.add( 'srfm-error' );
+				toggleErrorClass( container, true );
 				validateResult = true;
 				// Set the first error input.
 				setFirstErrorInput( phoneInput, container );
@@ -270,7 +290,8 @@ export async function fieldValidation(
 			const phoneInputs = container.querySelectorAll( 'input' );
 			phoneInputs.forEach( ( input ) => {
 				input.addEventListener( 'input', () => {
-					container.classList.remove( 'srfm-error' );
+					// container.classList.remove( 'srfm-error' );
+					toggleErrorClass( container, false );
 				} );
 			} );
 		}
@@ -299,12 +320,14 @@ export async function fieldValidation(
 					) {
 						confirmError.textContent =
 							confirmError.getAttribute( 'data-error-msg' );
-						confirmParent.classList.add( 'srfm-error' );
+						// confirmParent.classList.add( 'srfm-error' );
+						toggleErrorClass( confirmParent, true );
 						// Set the first error input.
 						setFirstErrorInput( confirmValue, confirmParent );
 						validateResult = true;
 					} else if ( confirmValue !== inputValue ) {
-						confirmParent.classList.add( 'srfm-error' );
+						// confirmParent.classList.add( 'srfm-error' );
+						toggleErrorClass( confirmParent, true );
 						confirmError.textContent =
 							'Confirmation Password is not the same';
 
@@ -312,7 +335,8 @@ export async function fieldValidation(
 						setFirstErrorInput( confirmValue, confirmParent );
 						validateResult = true;
 					} else {
-						confirmParent.classList.remove( 'srfm-error' );
+						// confirmParent.classList.remove( 'srfm-error' );
+						toggleErrorClass( confirmParent, false );
 					}
 				}
 			}
@@ -350,13 +374,15 @@ export async function fieldValidation(
 					) {
 						confirmError.textContent =
 							confirmError.getAttribute( 'data-error-msg' );
-						confirmParent.classList.add( 'srfm-error' );
+						// confirmParent.classList.add( 'srfm-error' );
+						toggleErrorClass( confirmParent, true );
 
 						// Set the first error input.
 						setFirstErrorInput( confirmInput, confirmParent );
 						validateResult = true;
 					} else if ( confirmValue !== inputValue ) {
-						confirmParent.classList.add( 'srfm-error' );
+						// confirmParent.classList.add( 'srfm-error' );
+						toggleErrorClass( confirmParent, true );
 						confirmError.textContent =
 							'Confirmation email is not the same';
 
@@ -364,12 +390,14 @@ export async function fieldValidation(
 						setFirstErrorInput( confirmInput, confirmParent );
 						validateResult = true;
 					} else {
-						confirmParent.classList.remove( 'srfm-error' );
+						// confirmParent.classList.remove( 'srfm-error' );
+						toggleErrorClass( confirmParent, false );
 					}
 
 					// remove the error message on input of the email confirm field
 					confirmInput.addEventListener( 'input', () => {
-						confirmParent.classList.remove( 'srfm-error' );
+						// confirmParent.classList.remove( 'srfm-error' );
+						toggleErrorClass( confirmParent, false );
 					} );
 				}
 
@@ -377,7 +405,8 @@ export async function fieldValidation(
 				const allInputFields =
 					parent.querySelector( '.srfm-input-email' );
 				allInputFields.addEventListener( 'input', () => {
-					parent.classList.remove( 'srfm-error' );
+					// parent.classList.remove( 'srfm-error' );
+					toggleErrorClass( parent, false );
 				} );
 			}
 		}
@@ -397,26 +426,29 @@ export async function fieldValidation(
 				}
 
 				if ( inputField ) {
-					inputField
-						.closest( '.srfm-block' )
-						.classList.add( 'srfm-error' );
+					// inputField
+					// 	.closest( '.srfm-block' )
+					// 	.classList.add( 'srfm-error' );
+					toggleErrorClass( inputField.closest( '.srfm-block' ), true );
 				}
 
 				validateResult = true;
 				// Set the first error input.
 				setFirstErrorInput( uploadInput, container );
 			} else if ( inputField ) {
-				inputField
-					.closest( '.srfm-block' )
-					.classList.remove( 'srfm-error' );
+				// inputField
+				// 	.closest( '.srfm-block' )
+				// 	.classList.remove( 'srfm-error' );
+				toggleErrorClass( inputField.closest( '.srfm-block' ), false );
 			}
 
 			// remove srfm-error class when file is selected
 			uploadInput.addEventListener( 'input', () => {
 				if ( inputField ) {
-					inputField
-						.closest( '.srfm-block' )
-						.classList.remove( 'srfm-error' );
+					// inputField
+					// 	.closest( '.srfm-block' )
+					// 	.classList.remove( 'srfm-error' );
+					toggleErrorClass( inputField.closest( '.srfm-block' ), false );
 				}
 			} );
 		}
@@ -443,16 +475,18 @@ export async function fieldValidation(
 						min !== '' &&
 						Number( normalizedInputValue ) < Number( min )
 					) {
-						inputField
-							.closest( '.srfm-block' )
-							.classList.add( 'srfm-error' );
+						// inputField
+						// 	.closest( '.srfm-block' )
+						// 	.classList.add( 'srfm-error' );
+						toggleErrorClass( inputField.closest( '.srfm-block' ), true );
 						if ( errorMessage ) {
 							errorMessage.textContent = `Minimum value is ${ min }`;
 						}
 					} else {
-						inputField
-							.closest( '.srfm-block' )
-							.classList.remove( 'srfm-error' );
+						// inputField
+						// 	.closest( '.srfm-block' )
+						// 	.classList.remove( 'srfm-error' );
+						toggleErrorClass( inputField.closest( '.srfm-block' ), false );
 					}
 				}
 
@@ -461,17 +495,19 @@ export async function fieldValidation(
 						max !== '' &&
 						Number( normalizedInputValue ) > Number( max )
 					) {
-						inputField
-							.closest( '.srfm-block' )
-							.classList.add( 'srfm-error' );
+						// inputField
+						// 	.closest( '.srfm-block' )
+						// 	.classList.add( 'srfm-error' );
+						toggleErrorClass( inputField.closest( '.srfm-block' ), true );
 
 						if ( errorMessage ) {
 							errorMessage.textContent = `Maximum value is ${ max }`;
 						}
 					} else {
-						inputField
-							.closest( '.srfm-block' )
-							.classList.remove( 'srfm-error' );
+						// inputField
+						// 	.closest( '.srfm-block' )
+						// 	.classList.remove( 'srfm-error' );
+						toggleErrorClass( inputField.closest( '.srfm-block' ), false );
 					}
 				}
 			}
@@ -482,9 +518,10 @@ export async function fieldValidation(
 			const ratingInput = container.querySelector( '.srfm-input-rating' );
 			const ratingRequired = ratingInput.getAttribute( 'data-required' );
 			if ( ratingRequired === 'true' && ! ratingInput.value ) {
-				ratingInput
-					.closest( '.srfm-block' )
-					.classList.add( 'srfm-error' );
+				// ratingInput
+				// 	.closest( '.srfm-block' )
+				// 	.classList.add( 'srfm-error' );
+				toggleErrorClass( ratingInput.closest( '.srfm-block' ), true );
 				validateResult = true;
 				// Set the first error input.
 				setFirstErrorInput(
@@ -492,9 +529,10 @@ export async function fieldValidation(
 					container
 				);
 			} else {
-				ratingInput
-					.closest( '.srfm-block' )
-					.classList.remove( 'srfm-error' );
+				// ratingInput
+				// 	.closest( '.srfm-block' )
+				// 	.classList.remove( 'srfm-error' );
+				toggleErrorClass( ratingInput.closest( '.srfm-block' ), false );
 			}
 		}
 
@@ -522,13 +560,15 @@ export async function fieldValidation(
 				}
 
 				if ( hasError ) {
-					container.classList.add( 'srfm-error' );
+					// container.classList.add( 'srfm-error' );
+					toggleErrorClass( container, true );
 					validateResult = true;
 
 					// Set the first error input.
 					setFirstErrorInput( sliderInput, container );
 				} else {
-					container.classList.remove( 'srfm-error' );
+					// container.classList.remove( 'srfm-error' );
+					toggleErrorClass( container, false );
 				}
 			}
 		}
@@ -551,9 +591,10 @@ export async function fieldValidation(
 				if ( dropdownRequired === 'true' && ! dropdownInput.value ) {
 					errorMessage.textContent =
 						errorMessage.getAttribute( 'data-error-msg' );
-					dropdownInput
-						.closest( '.srfm-block' )
-						.classList.add( 'srfm-error' );
+					// dropdownInput
+					// 	.closest( '.srfm-block' )
+					// 	.classList.add( 'srfm-error' );
+					toggleErrorClass( dropdownInput.closest( '.srfm-block' ), true );
 					validateResult = true;
 				} else if ( dropdownInput.value ) {
 					const minSelection =
@@ -578,9 +619,10 @@ export async function fieldValidation(
 								),
 								minSelection
 							);
-							dropdownInput
-								.closest( '.srfm-block' )
-								.classList.add( 'srfm-error' );
+							// dropdownInput
+							// 	.closest( '.srfm-block' )
+							// 	.classList.add( 'srfm-error' );
+							toggleErrorClass( dropdownInput.closest( '.srfm-block' ), true );
 							validateResult = true;
 						} else if (
 							maxSelection &&
@@ -595,16 +637,18 @@ export async function fieldValidation(
 								),
 								maxSelection
 							);
-							dropdownInput
-								.closest( '.srfm-block' )
-								.classList.add( 'srfm-error' );
+							// dropdownInput
+							// 	.closest( '.srfm-block' )
+							// 	.classList.add( 'srfm-error' );
+							toggleErrorClass( dropdownInput.closest( '.srfm-block' ), true );
 							validateResult = true;
 						}
 					}
 				} else {
-					dropdownInput
-						.closest( '.srfm-block' )
-						.classList.remove( 'srfm-error' );
+					// dropdownInput
+					// 	.closest( '.srfm-block' )
+					// 	.classList.remove( 'srfm-error' );
+					toggleErrorClass( dropdownInput.closest( '.srfm-block' ), false );
 				}
 
 				if ( validateResult ) {
@@ -629,13 +673,15 @@ export async function fieldValidation(
 				// Observe changes in the hidden input's value.
 				const dropdownObserver = new MutationObserver( () => {
 					if ( dropdownInput.value ) {
-						dropdownInput
-							.closest( '.srfm-block' )
-							.classList.remove( 'srfm-error' );
+						// dropdownInput
+						// 	.closest( '.srfm-block' )
+						// 	.classList.remove( 'srfm-error' );
+						toggleErrorClass( dropdownInput.closest( '.srfm-block' ), false );
 					} else if ( dropdownRequired === 'true' ) {
-						dropdownInput
-							.closest( '.srfm-block' )
-							.classList.add( 'srfm-error' );
+						// dropdownInput
+						// 	.closest( '.srfm-block' )
+						// 	.classList.add( 'srfm-error' );
+						toggleErrorClass( dropdownInput.closest( '.srfm-block' ), true );
 					}
 				} );
 
@@ -701,11 +747,13 @@ export async function fieldValidation(
 				}
 
 				if ( errorFound ) {
-					container.classList.add( 'srfm-error' );
+					// container.classList.add( 'srfm-error' );
+					toggleErrorClass( container, true );
 					setFirstErrorInput( visibleInput, container );
 					validateResult = true;
 				} else if ( ! isRequired ) {
-					container.classList.remove( 'srfm-error' );
+					// container.classList.remove( 'srfm-error' );
+					toggleErrorClass( container, false );
 				}
 			}
 		}
@@ -913,10 +961,12 @@ function addEmailBlurListener( areaInput, blockClass ) {
 					confirmErrorContainer.style.display = 'block';
 					confirmErrorContainer.textContent =
 						'Confirmation email is not the same';
-					parentBlock.classList.add( 'srfm-error' );
+					// parentBlock.classList.add( 'srfm-error' );
+					toggleErrorClass( parentBlock, true );
 					return;
 				}
-				parentBlock.classList.remove( 'srfm-error' );
+				// parentBlock.classList.remove( 'srfm-error' );
+				toggleErrorClass( parentBlock, false );
 				confirmErrorContainer.textContent = '';
 				confirmErrorContainer.style.display = 'none';
 			}

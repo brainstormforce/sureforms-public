@@ -1,3 +1,12 @@
+// Toggle "srfm-error" class on the input field based on validation result.
+function toggleErrorClass( container, hasError ){
+	if ( hasError ) {
+		container.classList.add( 'srfm-error' );
+	} else {
+		container.classList.remove( 'srfm-error' );
+	}
+};
+
 function initializePhoneField() {
 	const phone = document.querySelectorAll( '.srfm-phone-block' );
 
@@ -39,11 +48,13 @@ function initializePhoneField() {
 
 			if ( phoneNumberValue && ! iti.isValidNumber() ) {
 				parentBlock.classList.add( 'srfm-phone-error' );
-				parentBlock.classList.add( 'srfm-error' );
+				// parentBlock.classList.add( 'srfm-error' );
+				toggleErrorClass( parentBlock, true );
 				errorMessage.textContent = 'Please enter a valid phone number.';
 			} else {
 				parentBlock.classList.remove( 'srfm-phone-error' );
-				parentBlock.classList.remove( 'srfm-error' );
+				// parentBlock.classList.remove( 'srfm-error' );
+				toggleErrorClass( parentBlock, false );
 				iti.hiddenInput.value = iti.getNumber();
 			}
 		};
