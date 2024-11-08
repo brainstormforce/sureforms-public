@@ -439,6 +439,32 @@ $sidebar_width: 290px;
 					padding: 0;
 					color: #cd1a1a;
 				}
+
+				.srfm-ai-voice-input-ctn {
+					display: flex;
+					justify-content: space-between;
+					align-items: center;
+					gap: 16px;
+				}
+
+				.srfm-ai-voice-input-toggle-btn {
+					display: flex;
+					justify-content: center;
+					align-items: center;
+					gap: 2px;
+					cursor: pointer;
+					width: 97px;
+					height: 24px;
+					padding: 4px 6px;
+					border-radius: 9999px;
+				}
+
+				.srfm-ai-voice-input-text {
+					font-size: 12px;
+					font-weight: 500;
+					line-height: 16px;
+					text-align: center;
+				}
 			}
 
 			.srfm-ai-form-ideas-toggle {
