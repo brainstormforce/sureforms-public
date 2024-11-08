@@ -1,13 +1,10 @@
 #!/bin/bash
-
 echo "Our docker file"
-echo "Setup Astra theme"
-wp theme activate astra
+echo "Install Astra"
 
-# echo "Activate <your-extension>"
-# wp plugin activate your-extension
+wp theme install astra --activate
 
 echo "Rewrite permalinks..."
-wp rewrite structure /%postname%/ --hard --quiet
+wp rewrite structure /%postname%/
 
 echo "Success! Your E2E Test Environment is now ready."
