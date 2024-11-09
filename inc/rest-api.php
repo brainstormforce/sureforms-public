@@ -147,7 +147,7 @@ class Rest_Api {
 
 		return Entries::get_instance()->get_results(
 			$where,
-			'ID, created_at',
+			'created_at',
 			[ 'ORDER BY created_at DESC' ]
 		);
 	}
