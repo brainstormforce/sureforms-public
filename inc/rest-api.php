@@ -129,7 +129,7 @@ class Rest_Api {
 		$params = $request->get_params();
 
 		if ( empty( $params ) ) {
-			wp_send_json_error( 'Invalid Request.' );
+			wp_send_json_error( 'Request could not be processed.' );
 		}
 
 		$after = is_array( $params ) && ! empty( $params['after'] ) ? sanitize_text_field( Helper::get_string_value( $params['after'] ) ) : '';
