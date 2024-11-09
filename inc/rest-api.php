@@ -12,7 +12,6 @@ use SRFM\Inc\AI_Form_Builder\AI_Form_Builder;
 use SRFM\Inc\AI_Form_Builder\Field_Mapping;
 use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Traits\Get_Instance;
-use SRFM\Inc\Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -114,6 +113,46 @@ class Rest_Api {
 	}
 
 	/**
+	 * Get the data for generating entries chart.
+	 *
+	 * @param \WP_REST_Request $request Full details about the request.
+	 * @since 1.0.0
+	 * @return array<mixed>
+	 */
+	public function get_entries_chart_data( $request ) {
+		$nonce = Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) );
+
+		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
+			wp_send_json_error( 'Nonce verification failed.' );
+		}
+
+		$params = $request->get_params();
+
+		if ( empty( $params ) ) {
+			wp_send_json_error( 'Invalid Request.' );
+		}
+
+		$after = is_array( $params ) && ! empty( $params['after'] ) ? sanitize_text_field( Helper::get_string_value( $params['after'] ) ) : '';
+
+		$where = [
+			[
+				[
+					'key'     => 'created_at',
+					'value'   => $after,
+					'compare' => '>=',
+				],
+
+			],
+		];
+
+		return Entries::get_instance()->get_results(
+			$where,
+			'ID, created_at',
+			[ 'ORDER BY created_at DESC' ]
+		);
+	}
+
+	/**
 	 * Get endpoints
 	 *
 	 * @since 0.0.7
@@ -161,45 +200,5 @@ class Rest_Api {
 				'permission_callback' => [ $this, 'can_edit_posts' ],
 			],
 		];
-	}
-
-	/**
-	 * Get the data for generating entries chart.
-	 *
-	 * @param \WP_REST_Request $request Full details about the request.
-	 * @since 1.0.0
-	 * @return array<mixed>
-	 */
-	public function get_entries_chart_data( $request ) {
-		$nonce = Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) );
-
-		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
-			wp_send_json_error( 'Nonce verification failed.' );
-		}
-
-		$params = $request->get_params();
-
-		if ( empty( $params ) ) {
-			wp_send_json_error( 'Invalid Request.' );
-		}
-
-		$after = is_array( $params ) && ! empty( $params['after'] ) ? sanitize_text_field( Helper::get_string_value( $params['after'] ) ) : '';
-
-		$where = [
-			[
-				[
-					'key'     => 'created_at',
-					'value'   => $after,
-					'compare' => '>=',
-				],
-
-			],
-		];
-
-		return Entries::get_instance()->get_results(
-			$where,
-			'ID, created_at',
-			[ 'ORDER BY created_at DESC' ]
-		);
 	}
 }
