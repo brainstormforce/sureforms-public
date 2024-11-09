@@ -255,6 +255,7 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 
 == Changelog ==
 = x.x.x =
+* Improvement: Refactored dashboard entries chart logic.
 * Fix: Labels are not processing html tags correctly in email and entries.
 = 1.0.3 - 6th November 2024 =
 * Improvement: Optimized screen reader announcements for field labels, required status and descriptions.
