@@ -76,12 +76,12 @@ class Frontend_Assets {
 	 * @since 0.0.1
 	 */
 	public function register_scripts() {
-		$file_prefix    = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? '' : '.min';
-		$dir_name       = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? 'unminified' : 'minified';
-		$js_uri         = SRFM_URL . 'assets/js/' . $dir_name . '/';
-		$css_uri        = SRFM_URL . 'assets/css/' . $dir_name . '/';
-		$css_vendor     = SRFM_URL . 'assets/css/minified/deps/';
-		$rtl			= is_rtl() ? '-rtl' : '';
+		$file_prefix = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? '' : '.min';
+		$dir_name    = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? 'unminified' : 'minified';
+		$js_uri      = SRFM_URL . 'assets/js/' . $dir_name . '/';
+		$css_uri     = SRFM_URL . 'assets/css/' . $dir_name . '/';
+		$css_vendor  = SRFM_URL . 'assets/css/minified/deps/';
+		$rtl         = is_rtl() ? '-rtl' : '';
 
 		$security_setting_options = get_option( 'srfm_security_settings_options' );
 		$is_set_v2_site_key       = false;
