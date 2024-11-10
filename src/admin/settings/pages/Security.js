@@ -21,11 +21,9 @@ const SecurityPage = ( {
 	];
 
 	const captchaContent = () => {
-
 		const is_ver_lower_than_6_7 = srfm_admin?.is_ver_lower_than_6_7;
 
 		console.log( 'is_ver_lower_than_6_7', is_ver_lower_than_6_7 );
-		
 
 		return (
 			<>
@@ -104,10 +102,10 @@ const SecurityPage = ( {
 										<div className="srfm-sub-section-content">
 											<div
 												className="components-base-control srfm-components-input-control css-qy3gpb ej5x27r4"
-												style={{
+												style={ {
 													marginBottom: is_ver_lower_than_6_7 ? '0' : '.43em',
 													fontWeight: is_ver_lower_than_6_7 ? 'normal' : '500',
-												}}
+												} }
 											>
 												<div className="components-base-control__field">
 													<label
@@ -374,14 +372,14 @@ const SecurityPage = ( {
 											</div>
 										</div>
 										<div className="srfm-sub-section-content">
-											<div className="components-base-control srfm-components-input-control css-qy3gpb ej5x27r4" style={{
+											<div className="components-base-control srfm-components-input-control css-qy3gpb ej5x27r4" style={ {
+												marginBottom: is_ver_lower_than_6_7 ? '0' : '.43em',
+												fontWeight: is_ver_lower_than_6_7 ? 'normal' : '500',
+											} }>
+												<div className="components-base-control__field ej5x27r3"style={ {
 													marginBottom: is_ver_lower_than_6_7 ? '0' : '.43em',
 													fontWeight: is_ver_lower_than_6_7 ? 'normal' : '500',
-												}}>
-												<div className="components-base-control__field ej5x27r3"style={{
-													marginBottom: is_ver_lower_than_6_7 ? '0' : '.43em',
-													fontWeight: is_ver_lower_than_6_7 ? 'normal' : '500',
-												}}>
+												} }>
 													<label
 														className="components-base-control__label css-1v57ksj ej5x27r2"
 														htmlFor="inspector-text-control-2"
