@@ -296,7 +296,7 @@ class Admin {
 			wp_enqueue_style( SRFM_SLUG . '-reactQuill', $vendor_css_uri . 'quill/quill.snow.css', [], SRFM_VER );
 			wp_enqueue_style( SRFM_SLUG . '-single-form-modal', $css_uri . 'single-form-setting' . $file_prefix . '.css', [], SRFM_VER );
 
-			// if version if lower than 6.6.2 then add compatibility css.
+			// if version is equal to or lower than 6.6.2 then add compatibility css.
 			if ( version_compare( $wp_version, '6.6.2', '<=' ) ) {
 				$srfm_inline_css = '.srfm-settings-modal .srfm-setting-modal-container .components-toggle-control .components-base-control__help{
 					margin-left: 4em;
@@ -433,7 +433,7 @@ class Admin {
 		if ( 'sureforms_page_sureforms_form_settings' === $current_screen->id ) {
 			wp_enqueue_style( SRFM_SLUG . '-settings', $css_uri . 'backend/settings' . $file_prefix . '.css', [], SRFM_VER );
 
-			// if version if lower than 6.6.2 then add compatibility css.
+			// if version is equal to or lower than 6.6.2 then add compatibility css.
 			if ( version_compare( $wp_version, '6.6.2', '<=' ) ) {
 				$srfm_inline_css = '
 				.srfm-settings-page-container
