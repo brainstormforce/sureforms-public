@@ -188,7 +188,11 @@ class Smart_Tags {
 					$id   = (int) sanitize_text_field( $form_data['form-id'] );
 					$post = get_post( $id );
 
-					return $post->post_title ?? '';
+					if ( $post instanceof \WP_Post ) {
+						return esc_html( $post->post_title ) ?? '';
+					}
+
+					return '';
 				}
 
 				return '';
