@@ -28,10 +28,7 @@ function initializeURL() {
 						urlFiledContainer.classList.add( 'srfm-error' );
 						urlFiledContainer.classList.add( 'srfm-url-error' );
 						validUrlMessage.style.display = 'block';
-						validUrlMessage.innerText = wp.i18n.__(
-							'Please enter a valid URL.',
-							'sureforms'
-						);
+						validUrlMessage.innerText = window?.srfm_submit?.messages?.valid_url;
 					}
 				} );
 			}

@@ -1,3 +1,8 @@
+function srfmSprintfString( str, ...args ) {
+	let i = 0;
+	return str.replace( /%s/g, () => args[ i++ ] );
+}
+
 async function getUniqueValidationData( checkData, formId, ajaxUrl, nonce ) {
 	let queryString =
 		'action=validation_ajax_action&nonce=' +
@@ -305,8 +310,7 @@ export async function fieldValidation(
 						validateResult = true;
 					} else if ( confirmValue !== inputValue ) {
 						confirmParent.classList.add( 'srfm-error' );
-						confirmError.textContent =
-							'Confirmation Password is not the same';
+						confirmError.textContent = window?.srfm_submit?.messages?.confirm_password_same;
 
 						// Set the first error input.
 						setFirstErrorInput( confirmValue, confirmParent );
@@ -357,10 +361,7 @@ export async function fieldValidation(
 						validateResult = true;
 					} else if ( confirmValue !== inputValue ) {
 						confirmParent.classList.add( 'srfm-error' );
-						confirmError.textContent = wp.i18n.__(
-							'Confirmation email is not the same',
-							'sureforms'
-						);
+						confirmError.textContent = window?.srfm_submit?.messages?.confirm_email_same;
 
 						// Set the first error input.
 						setFirstErrorInput( confirmInput, confirmParent );
@@ -449,7 +450,7 @@ export async function fieldValidation(
 							.closest( '.srfm-block' )
 							.classList.add( 'srfm-error' );
 						if ( errorMessage ) {
-							errorMessage.textContent = `Minimum value is ${ min }`;
+							errorMessage.textContent = srfmSprintfString( window?.srfm_submit?.messages?.confirm_password_same, min );
 						}
 					} else {
 						inputField
@@ -468,7 +469,7 @@ export async function fieldValidation(
 							.classList.add( 'srfm-error' );
 
 						if ( errorMessage ) {
-							errorMessage.textContent = `Maximum value is ${ max }`;
+							errorMessage.textContent = srfmSprintfString( window?.srfm_submit?.messages?.confirm_password_same, max );
 						}
 					} else {
 						inputField
@@ -572,14 +573,7 @@ export async function fieldValidation(
 							minSelection &&
 							selectedOptions.length < minSelection
 						) {
-							errorMessage.textContent = wp.i18n.sprintf(
-								// translators: %s is the minimum number of selections required.
-								wp.i18n.__(
-									'Minimum %d selections are required',
-									'sureforms'
-								),
-								minSelection
-							);
+							errorMessage.textContent = srfmSprintfString( window?.srfm_submit?.messages?.min_selections, minSelection );
 							dropdownInput
 								.closest( '.srfm-block' )
 								.classList.add( 'srfm-error' );
@@ -589,14 +583,7 @@ export async function fieldValidation(
 							selectedOptions.length > maxSelection
 						) {
 							// If some value is selected but more than maxSelection.
-							errorMessage.textContent = wp.i18n.sprintf(
-								// translators: %s is the maximum number of selections allowed.
-								wp.i18n.__(
-									'Maximum %d selections are allowed',
-									'sureforms'
-								),
-								maxSelection
-							);
+							errorMessage.textContent = srfmSprintfString( window?.srfm_submit?.messages?.max_selections, maxSelection );
 							dropdownInput
 								.closest( '.srfm-block' )
 								.classList.add( 'srfm-error' );
@@ -676,14 +663,7 @@ export async function fieldValidation(
 					( ( isRequired && minSelection > 1 ) || ! isRequired ) &&
 					totalCheckedInput < minSelection
 				) {
-					errorMessage.textContent = wp.i18n.sprintf(
-						// translators: %s is the minimum number of selections required.
-						wp.i18n.__(
-							'Minimum %d selections are required',
-							'sureforms'
-						),
-						minSelection
-					);
+					errorMessage.textContent = srfmSprintfString( window?.srfm_submit?.messages?.min_selections, minSelection );
 					errorFound = true;
 				}
 				if (
@@ -691,14 +671,7 @@ export async function fieldValidation(
 					maxSelection > 0 &&
 					totalCheckedInput > maxSelection
 				) {
-					errorMessage.textContent = wp.i18n.sprintf(
-						// translators: %s is the maximum number of selections allowed.
-						wp.i18n.__(
-							'Maximum %d selections are allowed',
-							'sureforms'
-						),
-						maxSelection
-					);
+					errorMessage.textContent = srfmSprintfString( window?.srfm_submit?.messages?.max_selections, maxSelection );
 					errorFound = true;
 				}
 
@@ -913,10 +886,7 @@ function addEmailBlurListener( areaInput, blockClass ) {
 
 				if ( originalEmailValue !== emailField.value ) {
 					confirmErrorContainer.style.display = 'block';
-					confirmErrorContainer.textContent = wp.i18n.__(
-						'Confirmation email is not the same',
-						'sureforms'
-					);
+					confirmErrorContainer.textContent = window?.srfm_submit?.messages?.confirm_email_same;
 					parentBlock.classList.add( 'srfm-error' );
 					return;
 				}
@@ -931,10 +901,7 @@ function addEmailBlurListener( areaInput, blockClass ) {
 					'srfm-valid-email-error'
 				);
 				errorContainer.style.display = 'block';
-				errorContainer.innerHTML = wp.i18n.__(
-					'Please enter a valid email address',
-					'sureforms'
-				);
+				errorContainer.innerHTML = window?.srfm_submit?.messages?.valid_email;
 			} else {
 				errorContainer.style.display = 'none';
 				inputBlock.parentElement.classList.remove(

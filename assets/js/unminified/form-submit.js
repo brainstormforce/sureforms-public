@@ -156,13 +156,7 @@ async function afterSubmit( formStatus ) {
 		);
 
 		if ( ! response.ok ) {
-			throw new Error(
-				wp.i18n.sprintf(
-					// translators: %s is the minimum number of selections required.
-					wp.i18n.__( 'HTTP error! Status: %d', 'sureforms' ),
-					response.status
-				)
-			);
+			throw new Error( `HTTP error! Status: ${ response.status }` );
 		}
 	} catch ( error ) {
 		console.error( error );
