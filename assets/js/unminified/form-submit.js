@@ -173,7 +173,7 @@ function showSuccessMessage(
 	loader
 ) {
 	// Create and dispatch a custom event
-	const event = new CustomEvent( 'SRFM_Form_Success_Message', {
+	const event = new CustomEvent( 'srfm_on_show_success_message', {
 		cancelable: true,
 		detail: {
 			form,
