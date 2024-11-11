@@ -23,8 +23,6 @@ const SecurityPage = ( {
 	const captchaContent = () => {
 		const is_ver_lower_than_6_7 = srfm_admin?.is_ver_lower_than_6_7;
 
-		console.log( 'is_ver_lower_than_6_7', is_ver_lower_than_6_7 );
-
 		return (
 			<>
 				<TabPanel
