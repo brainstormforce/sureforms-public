@@ -310,7 +310,8 @@ export async function fieldValidation(
 						validateResult = true;
 					} else if ( confirmValue !== inputValue ) {
 						confirmParent.classList.add( 'srfm-error' );
-						confirmError.textContent = window?.srfm_submit?.messages?.confirm_password_same;
+						confirmError.textContent =
+							window?.srfm_submit?.messages?.confirm_password_same;
 
 						// Set the first error input.
 						setFirstErrorInput( confirmValue, confirmParent );
@@ -361,7 +362,8 @@ export async function fieldValidation(
 						validateResult = true;
 					} else if ( confirmValue !== inputValue ) {
 						confirmParent.classList.add( 'srfm-error' );
-						confirmError.textContent = window?.srfm_submit?.messages?.confirm_email_same;
+						confirmError.textContent =
+							window?.srfm_submit?.messages?.confirm_email_same;
 
 						// Set the first error input.
 						setFirstErrorInput( confirmInput, confirmParent );
@@ -450,7 +452,10 @@ export async function fieldValidation(
 							.closest( '.srfm-block' )
 							.classList.add( 'srfm-error' );
 						if ( errorMessage ) {
-							errorMessage.textContent = srfmSprintfString( window?.srfm_submit?.messages?.confirm_password_same, min );
+							errorMessage.textContent = srfmSprintfString(
+								window?.srfm_submit?.messages?.input_min_value,
+								min
+							);
 						}
 					} else {
 						inputField
@@ -469,7 +474,10 @@ export async function fieldValidation(
 							.classList.add( 'srfm-error' );
 
 						if ( errorMessage ) {
-							errorMessage.textContent = srfmSprintfString( window?.srfm_submit?.messages?.confirm_password_same, max );
+							errorMessage.textContent = srfmSprintfString(
+								window?.srfm_submit?.messages?.input_max_value,
+								max
+							);
 						}
 					} else {
 						inputField
@@ -573,7 +581,11 @@ export async function fieldValidation(
 							minSelection &&
 							selectedOptions.length < minSelection
 						) {
-							errorMessage.textContent = srfmSprintfString( window?.srfm_submit?.messages?.min_selections, minSelection );
+							errorMessage.textContent = srfmSprintfString(
+								window?.srfm_submit?.messages
+									?.dropdown_min_selections,
+								minSelection
+							);
 							dropdownInput
 								.closest( '.srfm-block' )
 								.classList.add( 'srfm-error' );
@@ -583,7 +595,11 @@ export async function fieldValidation(
 							selectedOptions.length > maxSelection
 						) {
 							// If some value is selected but more than maxSelection.
-							errorMessage.textContent = srfmSprintfString( window?.srfm_submit?.messages?.max_selections, maxSelection );
+							errorMessage.textContent = srfmSprintfString(
+								window?.srfm_submit?.messages
+									?.dropdown_max_selections,
+								maxSelection
+							);
 							dropdownInput
 								.closest( '.srfm-block' )
 								.classList.add( 'srfm-error' );
@@ -663,7 +679,10 @@ export async function fieldValidation(
 					( ( isRequired && minSelection > 1 ) || ! isRequired ) &&
 					totalCheckedInput < minSelection
 				) {
-					errorMessage.textContent = srfmSprintfString( window?.srfm_submit?.messages?.min_selections, minSelection );
+					errorMessage.textContent = srfmSprintfString(
+						window?.srfm_submit?.messages?.min_selections,
+						minSelection
+					);
 					errorFound = true;
 				}
 				if (
@@ -671,7 +690,10 @@ export async function fieldValidation(
 					maxSelection > 0 &&
 					totalCheckedInput > maxSelection
 				) {
-					errorMessage.textContent = srfmSprintfString( window?.srfm_submit?.messages?.max_selections, maxSelection );
+					errorMessage.textContent = srfmSprintfString(
+						window?.srfm_submit?.messages?.max_selections,
+						maxSelection
+					);
 					errorFound = true;
 				}
 
@@ -886,7 +908,8 @@ function addEmailBlurListener( areaInput, blockClass ) {
 
 				if ( originalEmailValue !== emailField.value ) {
 					confirmErrorContainer.style.display = 'block';
-					confirmErrorContainer.textContent = window?.srfm_submit?.messages?.confirm_email_same;
+					confirmErrorContainer.textContent =
+						window?.srfm_submit?.messages?.confirm_email_same;
 					parentBlock.classList.add( 'srfm-error' );
 					return;
 				}
@@ -901,7 +924,8 @@ function addEmailBlurListener( areaInput, blockClass ) {
 					'srfm-valid-email-error'
 				);
 				errorContainer.style.display = 'block';
-				errorContainer.innerHTML = window?.srfm_submit?.messages?.valid_email;
+				errorContainer.innerHTML =
+					window?.srfm_submit?.messages?.valid_email;
 			} else {
 				errorContainer.style.display = 'none';
 				inputBlock.parentElement.classList.remove(
