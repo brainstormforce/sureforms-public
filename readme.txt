@@ -255,6 +255,7 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 
 == Changelog ==
 = x.x.x = 
+* Fix: Labels are not processing html tags correctly in email and entries.
 * Improvement: Enhanced accessibility for error states by adding dynamic screen reader support to error messages in form validation.
 = 1.0.3 - 6th November 2024 =
 * Improvement: Optimized screen reader announcements for field labels, required status and descriptions.
