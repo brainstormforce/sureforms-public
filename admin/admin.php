@@ -672,7 +672,7 @@ class Admin {
 	 */
 	public function srfm_pro_version_compatibility() {
 		$plugin_file = 'sureforms-pro/sureforms-pro.php';
-		if ( ! is_plugin_active( $plugin_file ) || ! defined( 'SRFM_PRO_VER' ) ) {
+		if ( ! is_plugin_active( $plugin_file ) || ! defined( 'SRFM_PRO_VER' ) || ! defined( 'SRFM_PRO_PRODUCT' ) ) {
 			return;
 		}
 
@@ -690,8 +690,9 @@ class Admin {
 
 		$message = '<p>' . sprintf(
 			// translators: %1$s: SureForms version, %2$s: SureForms Pro version.
-			esc_html__( 'SureForms %1$s requires minimum SureForms Pro %2$s to work properly. Please update now.', 'sureforms' ),
+			esc_html__( 'SureForms %1$s requires minimum %2$s %3$s to work properly. Please update now.', 'sureforms' ),
 			esc_html( SRFM_VER ),
+			esc_html( SRFM_PRO_PRODUCT ),
 			esc_html( SRFM_PRO_RECOMMENDED_VER )
 		) . '</p>';
 
