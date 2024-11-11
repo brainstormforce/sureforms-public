@@ -123,13 +123,13 @@ class Rest_Api {
 		$nonce = Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) );
 
 		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
-			wp_send_json_error( 'Nonce verification failed.' );
+			wp_send_json_error( __( 'Nonce verification failed.', 'sureforms' ) );
 		}
 
 		$params = $request->get_params();
 
 		if ( empty( $params ) ) {
-			wp_send_json_error( 'Request could not be processed.' );
+			wp_send_json_error( __( 'Request could not be processed.', 'sureforms' ) );
 		}
 
 		$after = is_array( $params ) && ! empty( $params['after'] ) ? sanitize_text_field( Helper::get_string_value( $params['after'] ) ) : '';
