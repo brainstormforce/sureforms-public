@@ -255,6 +255,7 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 
 == Changelog ==
 = x.x.x =
+* New: Adding a smart tag {form_title} which prints Form Title.
 * New: Voice input for AI Form Builder.
 * Improvement: Increased number of entries per page and form redirect link.
 = 1.0.3 - 6th November 2024 =
