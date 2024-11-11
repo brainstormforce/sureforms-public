@@ -134,6 +134,10 @@ class Rest_Api {
 
 		$after = is_array( $params ) && ! empty( $params['after'] ) ? sanitize_text_field( Helper::get_string_value( $params['after'] ) ) : '';
 
+		if ( empty( $after ) ) {
+			wp_send_json_error( __( 'Invalid date.', 'sureforms' ) );
+		}
+
 		$where = [
 			[
 				[
