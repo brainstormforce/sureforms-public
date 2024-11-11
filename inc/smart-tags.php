@@ -191,8 +191,6 @@ class Smart_Tags {
 					if ( $post instanceof \WP_Post ) {
 						return esc_html( $post->post_title ) ?? '';
 					}
-
-					return '';
 				}
 
 				return '';
