@@ -4,7 +4,7 @@ Tags: contact form, custom form, form builder, forms, gutenberg
 Requires at least: 6.4
 Tested up to: 6.6.2
 Requires PHP: 7.4
-Stable tag: 1.0.2
+Stable tag: 1.0.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -255,7 +255,10 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 
 == Changelog ==
 = x.x.x =
+* Fix: Labels are not processing html tags correctly in email and entries.
 * Improvement: Added translation support for hardcoded UI text to improve localization.
+= 1.0.3 - 6th November 2024 =
+* Improvement: Optimized screen reader announcements for field labels, required status and descriptions.
 = 1.0.2 - 31st October 2024  =
 * New: Support for query parameters in form confirmation.
 * New: Updated plugin branding.

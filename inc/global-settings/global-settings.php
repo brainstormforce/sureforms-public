@@ -276,8 +276,8 @@ class Global_Settings {
 				'srfm_form_analytics' => false,
 			];
 		}
-		if ( empty( $global_setting_options['get_default_dynamic_block_option'] ) ) {
-			$global_setting_options['get_default_dynamic_block_option'] = Helper::default_dynamic_block_option();
+		if ( empty( $global_setting_options['srfm_default_dynamic_block_option'] ) ) {
+			$global_setting_options['srfm_default_dynamic_block_option'] = Helper::default_dynamic_block_option();
 		}
 		if ( empty( $global_setting_options['srfm_email_summary_settings_options'] ) ) {
 			$global_setting_options['srfm_email_summary_settings_options'] = [

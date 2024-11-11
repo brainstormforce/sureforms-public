@@ -115,7 +115,7 @@ export async function fieldValidation(
 			continue;
 		}
 		const inputField = container.querySelector( 'input, textarea, select' );
-		const isRequired = inputField.getAttribute( 'aria-required' );
+		const isRequired = inputField.getAttribute( 'data-required' );
 		const isUnique = inputField.getAttribute( 'data-unique' );
 		let fieldName = inputField.getAttribute( 'name' );
 		const inputValue = inputField.value;
@@ -198,7 +198,7 @@ export async function fieldValidation(
 		) {
 			const checkedInput = container.querySelectorAll( 'input' );
 			const isCheckedRequired =
-				checkedInput[ 0 ].getAttribute( 'aria-required' );
+				checkedInput[ 0 ].getAttribute( 'data-required' );
 			let checkedSelected = false;
 			let visibleInput = null;
 
@@ -389,7 +389,7 @@ export async function fieldValidation(
 			const uploadInput = container.querySelector( '.srfm-input-upload' );
 
 			const isUploadRequired =
-				uploadInput.getAttribute( 'aria-required' );
+				uploadInput.getAttribute( 'data-required' );
 			if ( 'true' === isUploadRequired && ! uploadInput.value ) {
 				if ( 'true' === isUploadRequired ) {
 					if ( errorMessage ) {
@@ -482,7 +482,7 @@ export async function fieldValidation(
 		//rating field
 		if ( container.classList.contains( 'srfm-rating-block' ) ) {
 			const ratingInput = container.querySelector( '.srfm-input-rating' );
-			const ratingRequired = ratingInput.getAttribute( 'aria-required' );
+			const ratingRequired = ratingInput.getAttribute( 'data-required' );
 			if ( ratingRequired === 'true' && ! ratingInput.value ) {
 				ratingInput
 					.closest( '.srfm-block' )
@@ -548,7 +548,7 @@ export async function fieldValidation(
 
 			dropdownInputs.forEach( ( dropdownInput ) => {
 				const dropdownRequired =
-					dropdownInput.getAttribute( 'aria-required' );
+					dropdownInput.getAttribute( 'data-required' );
 				const inputName = dropdownInput.getAttribute( 'name' );
 				if ( dropdownRequired === 'true' && ! dropdownInput.value ) {
 					errorMessage.textContent =
