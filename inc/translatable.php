@@ -22,7 +22,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since x.x.x
  */
 class Translatable {
-
 	/**
 	 * Retrieve default frontend validation messages.
 	 *
