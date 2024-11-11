@@ -528,7 +528,7 @@ class Post_Types {
 						'email_reply_to' => '{admin_email}',
 						'email_cc'       => '{admin_email}',
 						'email_bcc'      => '{admin_email}',
-						'subject'        => 'New Form Submission',
+						'subject'        => 'New Form Submission - {form_title}',
 						'email_body'     => '{all_data}',
 					],
 				],
