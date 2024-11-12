@@ -2,7 +2,7 @@
 **Contributors:** [brainstormforce](https://profiles.wordpress.org/brainstormforce/)  
 **Tags:** contact form, custom form, form builder, forms, gutenberg  
 **Requires at least:** 6.4  
-**Tested up to:** 6.6.2  
+**Tested up to:** 6.7  
 **Requires PHP:** 7.4  
 **Stable tag:** 1.0.4  
 **License:** GPLv2 or later  
