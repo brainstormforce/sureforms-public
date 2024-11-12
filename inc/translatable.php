@@ -32,7 +32,7 @@ class Translatable {
 	 * @return array<string, string> Associative array of translated validation messages for frontend use.
 	 */
 	public static function get_frontend_validation_messages() {
-		return [
+		$translatable_array = [
 			'valid_phone_number'      => __( 'Please enter a valid phone number.', 'sureforms' ),
 			'valid_url'               => __( 'Please enter a valid URL.', 'sureforms' ),
 			'confirm_email_same'      => __( 'Confirmation email does not match.', 'sureforms' ),
@@ -51,5 +51,7 @@ class Translatable {
 			/* translators: %s represents the maximum number of selections allowed */
 			'dropdown_max_selections' => __( 'Maximum %s selections are allowed', 'sureforms' ),
 		];
+
+        return apply_filters( 'srfm_frontend_validation_messages', $translatable_array );
 	}
 }
