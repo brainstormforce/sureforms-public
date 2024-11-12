@@ -255,11 +255,11 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 
 == Changelog ==
 = 1.0.4 - 12th November 2024 =
-* New: Voice input for AI Form Builder.
-* Improvement: Added SureForms Pro version compatibility check.
-* Improvement: Increased number of entries per page and form redirect link.
-* Fix: Labels are not processing html tags correctly in email and entries.
-* Fix: Compatibility with WordPress 6.7
+* New: Voice input added for AI Form Builder.
+* Improvement: Added compatibility check for SureForms Pro version.
+* Improvement: Increased entries per page and updated form redirect link.
+* Fix: Ensured compatibility with WordPress 6.7.
+* Fix: Labels now process HTML tags correctly in emails and entries.
 = 1.0.3 - 6th November 2024 =
 * Improvement: Optimized screen reader announcements for field labels, required status and descriptions.
 = 1.0.2 - 31st October 2024  =
