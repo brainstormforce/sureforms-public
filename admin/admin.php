@@ -691,12 +691,13 @@ class Admin {
 		$pro_plugin_name     = defined( 'SRFM_PRO_PRODUCT' ) ? SRFM_PRO_PRODUCT : 'SureForms Pro';
 		$srfm_billing_portal = defined( 'SRFM_BILLING_PORTAL' ) ? SRFM_BILLING_PORTAL : 'https://billing.sureforms.com/';
 		$message             = '<p>' . sprintf(
-			// translators: %1$s: SureForms version, %2$s: SureForms Pro Plugin Name, %3$s: SureForms Pro Version, %4$s: Update link.
-			esc_html__( 'SureForms %1$s requires minimum %2$s %3$s to work properly. Please update from %4$s.', 'sureforms' ),
+			// translators: %1$s: SureForms version, %2$s: SureForms Pro Plugin Name, %3$s: SureForms Pro Version, %4$s: Anchor tag open, %5$s: Closing anchor tag.
+			esc_html__( 'SureForms %1$s requires minimum %2$s %3$s to work properly. Please update from %4$s here%5$s.', 'sureforms' ),
 			esc_html( SRFM_VER ),
 			esc_html( $pro_plugin_name ),
 			esc_html( SRFM_PRO_RECOMMENDED_VER ),
-			'<a href="' . esc_url( $srfm_billing_portal ) . '" target="_blank">' . esc_html__( 'here', 'sureforms' ) . '</a>'
+			'<a href="' . esc_url( $srfm_billing_portal ) . '" target="_blank">',
+			'</a>'
 		) . '</p>';
 
 		// Phpcs ignore comment is required as $message variable is already escaped.
