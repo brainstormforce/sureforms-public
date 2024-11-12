@@ -268,7 +268,7 @@ class Single_Entry {
 															<?php if ( $is_image ) { ?>
 																		<div class="file-card-image">
 																			<a target="_blank" href="<?php echo esc_attr( urldecode( $file_url ) ); ?>">
-																				<img src="<?php echo esc_attr( urldecode( $file_url ) ); ?>" alt="<?php esc_html_e( 'Image', 'sureforms' ); ?>" />
+																				<img src="<?php echo esc_attr( urldecode( $file_url ) ); ?>" alt="<?php esc_attr_e( 'Image', 'sureforms' ); ?>" />
 																			</a>
 																		</div>
 															<?php } else { ?>
