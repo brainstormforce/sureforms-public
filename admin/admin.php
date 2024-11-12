@@ -275,6 +275,7 @@ class Admin {
 	 */
 	public function enqueue_styles() {
 		$current_screen = get_current_screen();
+		global $wp_version;
 
 		$file_prefix = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? '' : '.min';
 		$dir_name    = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? 'unminified' : 'minified';
@@ -295,6 +296,14 @@ class Admin {
 			wp_enqueue_style( SRFM_SLUG . '-common', $css_uri . 'common' . $file_prefix . '.css', [], SRFM_VER );
 			wp_enqueue_style( SRFM_SLUG . '-reactQuill', $vendor_css_uri . 'quill/quill.snow.css', [], SRFM_VER );
 			wp_enqueue_style( SRFM_SLUG . '-single-form-modal', $css_uri . 'single-form-setting' . $file_prefix . '.css', [], SRFM_VER );
+
+			// if version is equal to or lower than 6.6.2 then add compatibility css.
+			if ( version_compare( $wp_version, '6.6.2', '<=' ) ) {
+				$srfm_inline_css = '.srfm-settings-modal .srfm-setting-modal-container .components-toggle-control .components-base-control__help{
+					margin-left: 4em;
+				}';
+				wp_add_inline_style( SRFM_SLUG . '-single-form-modal', $srfm_inline_css );
+			}
 		}
 
 		wp_enqueue_style( SRFM_SLUG . '-form-selector', $css_uri . 'srfm-form-selector' . $file_prefix . '.css', [], SRFM_VER );
@@ -362,6 +371,7 @@ class Admin {
 	 */
 	public function enqueue_scripts() {
 		$current_screen = get_current_screen();
+		global $wp_version;
 
 		$file_prefix  = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? '' : '.min';
 			$dir_name = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? 'unminified' : 'minified';
@@ -384,6 +394,7 @@ class Admin {
 			'pro_plugin_name'         => defined( 'SRFM_PRO_VER' ) && defined( 'SRFM_PRO_PRODUCT' ) ? SRFM_PRO_PRODUCT : 'SureForms Pro',
 			'sureforms_pricing_page'  => $this->get_sureforms_website_url( 'pricing' ),
 			'field_spacing_vars'      => Helper::get_css_vars(),
+			'is_ver_lower_than_6_7'   => version_compare( $wp_version, '6.6.2', '<=' ),
 		];
 
 		if ( class_exists( 'SRFM_PRO\Admin\Licensing' ) ) {
@@ -422,6 +433,20 @@ class Admin {
 
 		if ( 'sureforms_page_sureforms_form_settings' === $current_screen->id ) {
 			wp_enqueue_style( SRFM_SLUG . '-settings', $css_uri . 'backend/settings' . $file_prefix . '.css', [], SRFM_VER );
+
+			// if version is equal to or lower than 6.6.2 then add compatibility css.
+			if ( version_compare( $wp_version, '6.6.2', '<=' ) ) {
+				$srfm_inline_css = '
+				.srfm-settings-page-container
+					.components-toggle-control {
+						.components-base-control__help{
+							margin-left: 4em;
+						}
+					}
+				}
+				';
+				wp_add_inline_style( SRFM_SLUG . '-settings', $srfm_inline_css );
+			}
 		}
 
 		// Enqueue styles for the entries page.

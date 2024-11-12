@@ -139,11 +139,11 @@ class Email_Template {
 
 						$label       = explode( '-lbl-', $field_name )[1];
 						$label       = explode( '-', $label )[0];
-						$field_label = $label ? esc_html( Helper::decrypt( $label ) ) : '';
+						$field_label = $label ? Helper::decrypt( $label ) : '';
 						?>
 					<tr class="field-label">
 						<th style="font-weight: 500;font-size: 14px;color: #1E293B;padding: 8px 16px;background-color: #F1F5F9;text-align: left;">
-							<strong><?php echo esc_html( $field_label ); ?><?php echo esc_html__( ':', 'sureforms' ); ?><strong/>
+							<strong><?php echo wp_kses_post( html_entity_decode( $field_label ) ); ?>:<strong/>
 						</th>
 					</tr>
 					<tr class="field-value">
