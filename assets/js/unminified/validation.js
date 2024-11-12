@@ -1,3 +1,18 @@
+/**
+ * Replaces all occurrences of the "%s" placeholder in a string with provided arguments, in sequence.
+ *
+ * This function simulates a simplified `sprintf`-style formatting, where each "%s" placeholder
+ * in the `str` parameter is replaced with corresponding values from `args`, based on order.
+ *
+ * @param {string}    str  - The string containing "%s" placeholders to be replaced.
+ * @param {...string} args - Values to replace each "%s" placeholder in the string.
+ *                         Each "%s" is replaced by the next item in `args`.
+ * @return {string} The formatted string with all "%s" placeholders replaced by corresponding `args` values.
+ *
+ * @example
+ * srfmSprintfString('Hello, %s! You have %s new messages.', 'Alice', 5);
+ * // Returns: 'Hello, Alice! You have 5 new messages.'
+ */
 function srfmSprintfString( str, ...args ) {
 	let i = 0;
 	return str.replace( /%s/g, () => args[ i++ ] );

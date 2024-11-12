@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-11-11T18:45:20+00:00\n"
+"POT-Creation-Date: 2024-11-12T08:13:17+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.9.0\n"
 "X-Domain: sureforms\n"
@@ -489,7 +489,6 @@ msgid "Selected radio option"
 msgstr ""
 
 #: inc/admin-ajax.php:349
-#: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 msgid "Submit"
 msgstr ""
@@ -813,7 +812,6 @@ msgstr ""
 #: inc/global-settings/email-summary.php:206
 #: inc/global-settings/global-settings.php:188
 #: inc/global-settings/global-settings.php:286
-#: assets/build/settings.js:172
 msgid "Monday"
 msgstr ""
 
@@ -1097,43 +1095,43 @@ msgstr ""
 msgid "Cookie Value"
 msgstr ""
 
-#: inc/translatable.php:37
+#: inc/translatable.php:36
 msgid "Please enter a valid phone number."
 msgstr ""
 
-#: inc/translatable.php:38
+#: inc/translatable.php:37
 msgid "Please enter a valid URL."
 msgstr ""
 
-#: inc/translatable.php:39
+#: inc/translatable.php:38
 msgid "Confirmation email does not match."
 msgstr ""
 
-#: inc/translatable.php:40
+#: inc/translatable.php:39
 msgid "Please enter a valid email address."
 msgstr ""
 
-#: inc/translatable.php:41
+#: inc/translatable.php:40
 msgid "Confirmation password does not match."
 msgstr ""
 
 #. translators: %s represents the minimum acceptable value
-#: inc/translatable.php:44
+#: inc/translatable.php:43
 msgid "Minimum value is %s"
 msgstr ""
 
 #. translators: %s represents the maximum acceptable value
-#: inc/translatable.php:47
+#: inc/translatable.php:46
 msgid "Maximum value is %s"
 msgstr ""
 
 #. translators: %s represents the minimum number of selections required
-#: inc/translatable.php:50
+#: inc/translatable.php:49
 msgid "Minimum %s selections are required"
 msgstr ""
 
 #. translators: %s represents the maximum number of selections allowed
-#: inc/translatable.php:53
+#: inc/translatable.php:52
 msgid "Maximum %s selections are allowed"
 msgstr ""
 
@@ -2650,7 +2648,6 @@ msgid "Circle Xmark"
 msgstr ""
 
 #: modules/gutenberg/icons/icons-v6-0.php:4355
-#: assets/build/blocks.js:172
 msgid "City"
 msgstr ""
 
@@ -8663,21 +8660,6 @@ msgstr ""
 msgid "Select Shortcodes"
 msgstr ""
 
-#: assets/build/blocks.js:172
-#: assets/build/formEditor.js:172
-msgid "Page Break Label"
-msgstr ""
-
-#: assets/build/blocks.js:172
-#: assets/build/formEditor.js:172
-msgid "Next"
-msgstr ""
-
-#: assets/build/blocks.js:172
-#: assets/build/formEditor.js:172
-msgid "Back"
-msgstr ""
-
 #. translators: abbreviation for units
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
@@ -9071,26 +9053,6 @@ msgid "Enable Search"
 msgstr ""
 
 #: assets/build/blocks.js:172
-msgid "Address Line 1"
-msgstr ""
-
-#: assets/build/blocks.js:172
-msgid "Address Line 2"
-msgstr ""
-
-#: assets/build/blocks.js:172
-msgid "State"
-msgstr ""
-
-#: assets/build/blocks.js:172
-msgid "Postal Code"
-msgstr ""
-
-#: assets/build/blocks.js:172
-msgid "Country"
-msgstr ""
-
-#: assets/build/blocks.js:172
 msgid "%s Width"
 msgstr ""
 
@@ -9173,10 +9135,6 @@ msgstr ""
 
 #: assets/build/dashboard.js:2
 msgid "Submit a Review"
-msgstr ""
-
-#: assets/build/dashboard.js:2
-msgid "Overview"
 msgstr ""
 
 #: assets/build/dashboard.js:2
@@ -9589,18 +9547,6 @@ msgid "Progress Indicator"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-msgid "Progress Bar"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-msgid "Connector"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-msgid "Steps"
-msgstr ""
-
-#: assets/build/formEditor.js:172
 msgid "Next Button Text"
 msgstr ""
 
@@ -9779,22 +9725,6 @@ msgid "Customize with SureForms"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-msgid "Page break"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-msgid "Previous"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-msgid "Thank you"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-msgid "Form submitted successfully!"
-msgstr ""
-
-#: assets/build/formEditor.js:172
 msgid "Instant Form"
 msgstr ""
 
@@ -9879,6 +9809,14 @@ msgstr ""
 msgid "Paste this shortcode on the page or post to render this form."
 msgstr ""
 
+#: assets/build/formSubmit.js:2
+msgid "Minimum %d selections are required"
+msgstr ""
+
+#: assets/build/formSubmit.js:2
+msgid "Maximum %d selections are allowed"
+msgstr ""
+
 #: assets/build/settings.js:2
 #: assets/build/settings.js:172
 msgid "Validations"
@@ -9930,30 +9868,6 @@ msgstr ""
 
 #: assets/build/settings.js:172
 msgid "Email Summaries"
-msgstr ""
-
-#: assets/build/settings.js:172
-msgid "Tuesday"
-msgstr ""
-
-#: assets/build/settings.js:172
-msgid "Wednesday"
-msgstr ""
-
-#: assets/build/settings.js:172
-msgid "Thursday"
-msgstr ""
-
-#: assets/build/settings.js:172
-msgid "Friday"
-msgstr ""
-
-#: assets/build/settings.js:172
-msgid "Saturday"
-msgstr ""
-
-#: assets/build/settings.js:172
-msgid "Sunday"
 msgstr ""
 
 #: assets/build/settings.js:172
@@ -10127,10 +10041,6 @@ msgid "Please check your username and password for the account, and try to recon
 msgstr ""
 
 #: assets/build/templatePicker.js:172
-msgid "Contact Support"
-msgstr ""
-
-#: assets/build/templatePicker.js:172
 msgid "Click Here to Retry"
 msgstr ""
 
@@ -10140,26 +10050,6 @@ msgstr ""
 
 #: assets/build/templatePicker.js:172
 msgid "Connecting with AI…"
-msgstr ""
-
-#: assets/build/templatePicker.js:172
-msgid "Create simple contact form"
-msgstr ""
-
-#: assets/build/templatePicker.js:172
-msgid "Create a lead generation form"
-msgstr ""
-
-#: assets/build/templatePicker.js:172
-msgid "Generate a user feedback form"
-msgstr ""
-
-#: assets/build/templatePicker.js:172
-msgid "Create a job application form"
-msgstr ""
-
-#: assets/build/templatePicker.js:172
-msgid "Make an event registration form"
 msgstr ""
 
 #: assets/build/templatePicker.js:172
