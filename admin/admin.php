@@ -717,7 +717,7 @@ class Admin {
 		$srfm_billing_portal = defined( 'SRFM_BILLING_PORTAL' ) ? SRFM_BILLING_PORTAL : 'https://billing.sureforms.com/';
 		$message             = '<p>' . sprintf(
 			// translators: %1$s: SureForms version, %2$s: SureForms Pro Plugin Name, %3$s: SureForms Pro Version, %4$s: Anchor tag open, %5$s: Closing anchor tag.
-			esc_html__( 'SureForms %1$s requires minimum %2$s %3$s to work properly. Please update from %4$s here%5$s.', 'sureforms' ),
+			esc_html__( 'SureForms %1$s requires minimum %2$s %3$s to work properly. Download the latest ZIP from %4$s here%5$s.', 'sureforms' ),
 			esc_html( SRFM_VER ),
 			esc_html( $pro_plugin_name ),
 			esc_html( SRFM_PRO_RECOMMENDED_VER ),
