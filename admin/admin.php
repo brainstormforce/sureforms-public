@@ -693,7 +693,7 @@ class Admin {
 	 * Hooked - admin_notices
 	 *
 	 * @return void
-	 * @since x.x.x
+	 * @since 1.0.4
 	 */
 	public function srfm_pro_version_compatibility() {
 		$plugin_file = 'sureforms-pro/sureforms-pro.php';
