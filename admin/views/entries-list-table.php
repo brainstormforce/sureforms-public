@@ -157,7 +157,7 @@ class Entries_List_Table extends \WP_List_Table {
 		$sortable = $this->get_sortable_columns();
 		$hidden   = [];
 
-		$per_page     = 10;
+		$per_page     = 20;
 		$current_page = $this->get_pagenum();
 
 		$data = $this->table_data( $per_page, $current_page, $view, $form_id );
@@ -496,7 +496,7 @@ class Entries_List_Table extends \WP_List_Table {
 		$form_name = get_the_title( $item['form_id'] );
 		// translators: %1$s is the word "form", %2$d is the form ID.
 		$form_name = ! empty( $form_name ) ? $form_name : sprintf( 'SureForms %1$s #%2$d', esc_html__( 'Form', 'sureforms' ), Helper::get_integer_value( $item['form_id'] ) );
-		return sprintf( '<strong><a class="row-title" href="%1$s" target="_blank">%2$s</a></strong>', get_edit_post_link( $item['form_id'] ), esc_html( $form_name ) );
+		return sprintf( '<strong><a class="row-title" href="%1$s" target="_blank">%2$s</a></strong>', get_the_permalink( $item['form_id'] ), esc_html( $form_name ) );
 	}
 
 	/**
