@@ -52,6 +52,6 @@ class Translatable {
 			'dropdown_max_selections' => __( 'Maximum %s selections are allowed', 'sureforms' ),
 		];
 
-        return apply_filters( 'srfm_frontend_validation_messages', $translatable_array );
+		return apply_filters( 'srfm_frontend_validation_messages', $translatable_array );
 	}
 }
