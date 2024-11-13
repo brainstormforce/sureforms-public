@@ -38,7 +38,7 @@ class Updater_Callbacks {
 	/**
 	 * Update callback method to handle the default dynamic block options in the global settings.
 	 *
-	 * @since x.x.x
+	 * @since 1.0.4
 	 * @return void
 	 */
 	public static function manage_empty_default_dynamic_options() {

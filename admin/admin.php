@@ -46,6 +46,7 @@ class Admin {
 		add_action( 'uag_enable_quick_action_sidebar', [ $this, 'restrict_spectra_quick_action_bar' ] );
 
 		add_action( 'current_screen', [ $this, 'enable_gutenberg_for_sureforms' ], 100 );
+		add_action( 'admin_notices', [ $this, 'srfm_pro_version_compatibility' ] );
 
 		// Handle entry actions.
 		add_action( 'admin_init', [ $this, 'handle_entry_actions' ] );
@@ -274,6 +275,7 @@ class Admin {
 	 */
 	public function enqueue_styles() {
 		$current_screen = get_current_screen();
+		global $wp_version;
 
 		$file_prefix = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? '' : '.min';
 		$dir_name    = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? 'unminified' : 'minified';
@@ -294,6 +296,14 @@ class Admin {
 			wp_enqueue_style( SRFM_SLUG . '-common', $css_uri . 'common' . $file_prefix . '.css', [], SRFM_VER );
 			wp_enqueue_style( SRFM_SLUG . '-reactQuill', $vendor_css_uri . 'quill/quill.snow.css', [], SRFM_VER );
 			wp_enqueue_style( SRFM_SLUG . '-single-form-modal', $css_uri . 'single-form-setting' . $file_prefix . '.css', [], SRFM_VER );
+
+			// if version is equal to or lower than 6.6.2 then add compatibility css.
+			if ( version_compare( $wp_version, '6.6.2', '<=' ) ) {
+				$srfm_inline_css = '.srfm-settings-modal .srfm-setting-modal-container .components-toggle-control .components-base-control__help{
+					margin-left: 4em;
+				}';
+				wp_add_inline_style( SRFM_SLUG . '-single-form-modal', $srfm_inline_css );
+			}
 		}
 
 		wp_enqueue_style( SRFM_SLUG . '-form-selector', $css_uri . 'srfm-form-selector' . $file_prefix . '.css', [], SRFM_VER );
@@ -361,6 +371,7 @@ class Admin {
 	 */
 	public function enqueue_scripts() {
 		$current_screen = get_current_screen();
+		global $wp_version;
 
 		$file_prefix  = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? '' : '.min';
 			$dir_name = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? 'unminified' : 'minified';
@@ -383,6 +394,7 @@ class Admin {
 			'pro_plugin_name'         => defined( 'SRFM_PRO_VER' ) && defined( 'SRFM_PRO_PRODUCT' ) ? SRFM_PRO_PRODUCT : 'SureForms Pro',
 			'sureforms_pricing_page'  => $this->get_sureforms_website_url( 'pricing' ),
 			'field_spacing_vars'      => Helper::get_css_vars(),
+			'is_ver_lower_than_6_7'   => version_compare( $wp_version, '6.6.2', '<=' ),
 		];
 
 		if ( class_exists( 'SRFM_PRO\Admin\Licensing' ) ) {
@@ -421,6 +433,20 @@ class Admin {
 
 		if ( 'sureforms_page_sureforms_form_settings' === $current_screen->id ) {
 			wp_enqueue_style( SRFM_SLUG . '-settings', $css_uri . 'backend/settings' . $file_prefix . '.css', [], SRFM_VER );
+
+			// if version is equal to or lower than 6.6.2 then add compatibility css.
+			if ( version_compare( $wp_version, '6.6.2', '<=' ) ) {
+				$srfm_inline_css = '
+				.srfm-settings-page-container
+					.components-toggle-control {
+						.components-base-control__help{
+							margin-left: 4em;
+						}
+					}
+				}
+				';
+				wp_add_inline_style( SRFM_SLUG . '-settings', $srfm_inline_css );
+			}
 		}
 
 		// Enqueue styles for the entries page.
@@ -659,6 +685,48 @@ class Admin {
 			}
 			Entries_List_Table::handle_entry_status( $entry_id, $action, $view );
 		}
+	}
+
+	/**
+	 * Admin Notice Callback if sureforms pro is out of date.
+	 *
+	 * Hooked - admin_notices
+	 *
+	 * @return void
+	 * @since 1.0.4
+	 */
+	public function srfm_pro_version_compatibility() {
+		$plugin_file = 'sureforms-pro/sureforms-pro.php';
+		if ( ! is_plugin_active( $plugin_file ) || ! defined( 'SRFM_PRO_VER' ) ) {
+			return;
+		}
+
+		if ( version_compare( SRFM_PRO_VER, SRFM_PRO_RECOMMENDED_VER, '>=' ) ) {
+			return;
+		}
+
+		if ( empty( get_current_screen() ) ) {
+			return;
+		}
+
+		if ( ! current_user_can( 'update_plugins' ) ) {
+			return;
+		}
+
+		$pro_plugin_name     = defined( 'SRFM_PRO_PRODUCT' ) ? SRFM_PRO_PRODUCT : 'SureForms Pro';
+		$srfm_billing_portal = defined( 'SRFM_BILLING_PORTAL' ) ? SRFM_BILLING_PORTAL : 'https://billing.sureforms.com/';
+		$message             = '<p>' . sprintf(
+			// translators: %1$s: SureForms version, %2$s: SureForms Pro Plugin Name, %3$s: SureForms Pro Version, %4$s: Anchor tag open, %5$s: Closing anchor tag.
+			esc_html__( 'SureForms %1$s requires minimum %2$s %3$s to work properly. Download the latest ZIP from %4$s here%5$s.', 'sureforms' ),
+			esc_html( SRFM_VER ),
+			esc_html( $pro_plugin_name ),
+			esc_html( SRFM_PRO_RECOMMENDED_VER ),
+			'<a href="' . esc_url( $srfm_billing_portal ) . '" target="_blank">',
+			'</a>'
+		) . '</p>';
+
+		// Phpcs ignore comment is required as $message variable is already escaped.
+		echo '<div class="error">' . $message . '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
 
 }
