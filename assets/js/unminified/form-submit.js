@@ -228,6 +228,24 @@ async function handleFormSubmission(
 	try {
 		loader.classList.add( 'srfm-active' );
 
+		// Create and dispatch a custom event
+		const event = new CustomEvent( 'srfm_on_trigger_form_submission', {
+			cancelable: true,
+			detail: {
+				form,
+				loader,
+				formId,
+				submitType,
+				successElement,
+				successContainer,
+			},
+		} );
+
+		if ( ! document.dispatchEvent( event ) ) {
+			loader.classList.remove( 'srfm-active' );
+			return;  // Stop further execution if event.preventDefault() was called.
+		}
+
 		const isValidate = await fieldValidation(
 			formId,
 			ajaxUrl,
@@ -290,6 +308,24 @@ async function handleFormSubmission(
 			loader.classList.remove( 'srfm-active' );
 		}
 	} catch ( error ) {
+		// Create and dispatch a custom event
+		const event = new CustomEvent(
+			'srfm_on_trigger_form_submission_failure',
+			{
+				detail: {
+					form,
+					error,
+					loader,
+					formId,
+					submitType,
+					successElement,
+					successContainer,
+				},
+			}
+		);
+
+		document.dispatchEvent( event );
+
 		loader.classList.remove( 'srfm-active' );
 		showErrorMessage( errorElement );
 	}
