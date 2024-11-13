@@ -464,6 +464,11 @@ $background_color: #f1f5f9;
 						border: #d54407;
 					}
 
+					// change the toggle switch border color.
+					.components-form-toggle .components-form-toggle__track {
+						border: 1px solid #1e1e1e;
+					}
+
 					.components-form-toggle.is-checked .components-form-toggle__track {
 					}
 
@@ -476,7 +481,6 @@ $background_color: #f1f5f9;
 					.components-base-control__help {
 						font-size: 0.6em;
 						margin-top: 0.2em;
-						margin-left: 4em;
 						color: $help_color;
 					}
 				}
