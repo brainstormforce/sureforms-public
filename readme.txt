@@ -256,6 +256,7 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 == Changelog ==
 = x.x.x =
 * Improvement: Added translation support for hardcoded UI text to improve localization.
+* Improvement: Added string translation support for backend React components and other JavaScript files.
 = 1.0.4 - 12th November 2024 =
 * New: Voice input added for AI Form Builder.
 * Improvement: Added compatibility check for SureForms Pro version.

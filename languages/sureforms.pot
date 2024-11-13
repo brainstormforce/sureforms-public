@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-11-12T17:41:18+00:00\n"
+"POT-Creation-Date: 2024-11-13T06:11:16+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.9.0\n"
 "X-Domain: sureforms\n"
@@ -71,7 +71,7 @@ msgstr ""
 msgid "Edit %1$s"
 msgstr ""
 
-#: admin/admin.php:674
+#: admin/admin.php:704
 #: api/block-patterns.php:110
 #: inc/ai-form-builder/ai-auth.php:45
 #: inc/ai-form-builder/ai-auth.php:81
@@ -90,12 +90,12 @@ msgstr ""
 msgid "Nonce verification failed."
 msgstr ""
 
-#: admin/admin.php:683
+#: admin/admin.php:713
 msgid "You cannot view this entry because it is in trash."
 msgstr ""
 
 #. translators: %1$s: SureForms version, %2$s: SureForms Pro Plugin Name, %3$s: SureForms Pro Version, %4$s: Anchor tag open, %5$s: Closing anchor tag.
-#: admin/admin.php:720
+#: admin/admin.php:750
 msgid "SureForms %1$s requires minimum %2$s %3$s to work properly. Download the latest ZIP from %4$s here%5$s."
 msgstr ""
 
@@ -10201,6 +10201,22 @@ msgstr ""
 
 #: assets/build/templatePicker.js:172
 msgid "Some Form Ideas"
+msgstr ""
+
+#: assets/build/templatePicker.js:172
+msgid "Speech recognition is not supported in your current browser. Please use Google Chrome / Safari."
+msgstr ""
+
+#: assets/build/templatePicker.js:172
+msgid "Please allow microphone access to use voice input."
+msgstr ""
+
+#: assets/build/templatePicker.js:172
+msgid "Listening"
+msgstr ""
+
+#: assets/build/templatePicker.js:172
+msgid "Voice Input"
 msgstr ""
 
 #: assets/build/templatePicker.js:172
