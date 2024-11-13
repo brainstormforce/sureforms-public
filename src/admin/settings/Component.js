@@ -312,6 +312,13 @@ const Component = ( { path } ) => {
 					loading,
 					toast
 				) }
+				{ applyFilters(
+				'srfm.settings.page.content.zapier',
+				'',
+				path,
+				loading,
+				toast
+				) }
 			</div>
 		</>
 	);
