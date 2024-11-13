@@ -68,7 +68,7 @@ class Plugin_Loader {
 		spl_autoload_register( [ $this, 'autoload' ] );
 
 		add_action( 'plugins_loaded', [ $this, 'load_textdomain' ] );
-		add_action( 'plugins_loaded', [ $this, 'load_plugin', 99 ] );
+		add_action( 'plugins_loaded', [ $this, 'load_plugin' ], 99 );
 		add_action( 'init', [ $this, 'load_classes' ] );
 		add_action( 'admin_init', [ $this, 'activation_redirect' ] );
 
