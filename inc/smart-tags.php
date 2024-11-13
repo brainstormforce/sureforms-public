@@ -185,7 +185,7 @@ class Smart_Tags {
 
 			case '{form_title}':
 				if ( ! empty( $form_data ) && is_array( $form_data ) && ! empty( $form_data['form-id'] ) ) {
-					$id   = (int) sanitize_text_field( $form_data['form-id'] );
+					$id   = absint( $form_data['form-id'] );
 					$post = get_post( $id );
 
 					if ( $post instanceof \WP_Post ) {
