@@ -193,8 +193,7 @@ class Frontend_Assets {
 
 			if ( 'phone' === $block_name
 			) {
-				wp_enqueue_script( SRFM_SLUG . "-{$block_name}-intl-input-deps", $js_vendor_uri . 'intl/intTelInput.min.js', [], SRFM_VER, true );
-				wp_enqueue_script( SRFM_SLUG . "-{$block_name}-intl-utils-deps", $js_vendor_uri . 'intl/intTelUtils.min.js', [], SRFM_VER, true );
+				wp_enqueue_script( SRFM_SLUG . "-{$block_name}-intl-input-deps", $js_vendor_uri . 'intl/intTelInputWithUtils.min.js', [], SRFM_VER, true );
 			}
 
 			if ( 'dropdown' === $block_name ) {
@@ -226,6 +225,17 @@ class Frontend_Assets {
 
 			if ( 'dropdown' !== $block_name ) {
 				wp_enqueue_script( SRFM_SLUG . "-{$block_name}", $js_uri . $block_name . $file_prefix . '.js', [], SRFM_VER, true );
+
+				if ( 'phone' === $block_name ) {
+					// localize rtl for the phone block.
+					wp_localize_script(
+						SRFM_SLUG . "-{$block_name}",
+						'srfm_phone_data',
+						[
+							'is_rtl' => is_rtl(),
+						]
+					);
+				}
 			}
 
 			if ( 'input' === $block_name ) {

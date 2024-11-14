@@ -7,10 +7,13 @@ function initializePhoneField() {
 		const isAutoCountry = phoneNumber.getAttribute( 'auto-country' );
 		const phoneFieldName = phoneNumber.getAttribute( 'name' );
 		const itlOptions = {
-			utilsScript: '../scripts/int-tel-input/utils.js',
 			autoPlaceholder: 'off',
 			separateDialCode: true,
-			hiddenInput: phoneFieldName,
+			hiddenInput: () => ( {
+				phone: phoneFieldName,
+			} ),
+			countrySearch: false,
+			initialCountry: 'us',
 		};
 
 		if ( isAutoCountry === 'true' ) {
@@ -30,6 +33,16 @@ function initializePhoneField() {
 		}
 
 		const iti = window.intlTelInput( phoneNumber, itlOptions );
+
+		// handle padding based on the direction of the page
+		const selectedCountry = element.querySelector(
+			'.iti__selected-country-primary'
+		);
+		if ( srfm_phone_data?.is_rtl ) {
+			selectedCountry.style.paddingLeft = '0';
+		} else {
+			selectedCountry.style.paddingRight = '0';
+		}
 
 		const updatePhoneNumber = () => {
 			const phoneNumberValue = phoneNumber?.value
