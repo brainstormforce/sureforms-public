@@ -225,6 +225,17 @@ class Frontend_Assets {
 
 			if ( 'dropdown' !== $block_name ) {
 				wp_enqueue_script( SRFM_SLUG . "-{$block_name}", $js_uri . $block_name . $file_prefix . '.js', [], SRFM_VER, true );
+
+				if ( 'phone' === $block_name ) {
+					// localize rtl
+					wp_localize_script(
+						SRFM_SLUG . "-{$block_name}",
+						'srfm_phone_data',
+						[
+							'is_rtl' => is_rtl(),
+						]
+					);
+				}
 			}
 
 			if ( 'input' === $block_name ) {

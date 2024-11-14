@@ -38,7 +38,7 @@ function initializePhoneField() {
 		const selectedCountry = element.querySelector(
 			'.iti__selected-country-primary'
 		);
-		if ( getComputedStyle( document.body ).direction === 'rtl' ) {
+		if ( srfm_phone_data?.is_rtl ) {
 			selectedCountry.style.paddingLeft = '0';
 		} else {
 			selectedCountry.style.paddingRight = '0';
