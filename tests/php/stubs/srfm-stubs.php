@@ -10448,6 +10448,7 @@ namespace {
     // ------ ADDITIONAL CONSTANTS ------- //
     \define('SRFM_FORMS_POST_TYPE', 'sureforms_form');
     \define('SRFM_ENTRIES', 'sureforms_entries');
+    \define('SRFM_PRO_RECOMMENDED_VER', '');
     /**
      * Filesystem class
      *
