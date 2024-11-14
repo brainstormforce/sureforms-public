@@ -21,8 +21,15 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 0.0.12
  */
 class Updater {
-
 	use Get_Instance;
+
+	/**
+	 * Current DB saved version of SureForms.
+	 *
+	 * @var string
+	 * @since 1.0.0
+	 */
+	private $old_version;
 
 	/**
 	 * Constructor.
@@ -31,9 +38,41 @@ class Updater {
 	 * @return void
 	 */
 	public function __construct() {
-		add_action( 'admin_init', [ $this, 'init' ] );
+		// Get auto saved version number.
+		$this->old_version = Helper::get_string_value( get_option( 'srfm-version', '' ) );
+
+		add_action( 'init', [ $this, 'init' ], 10 );
 		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_styles' ] );
 		add_action( 'in_plugin_update_message-' . SRFM_BASENAME, [ $this, 'plugin_update_notification' ], 10 );
+	}
+
+	/**
+	 * Whether or not to call the DB update methods.
+	 *
+	 * @since 1.0.0
+	 * @return bool
+	 */
+	public function needs_db_update() {
+		if ( ! $this->old_version ) {
+			if ( ! empty( get_posts( [ 'post_type' => SRFM_FORMS_POST_TYPE ] ) ) ) {
+				// Run db update if users have forms created. Edge case for the users directly updating from v0.0.10 or below.
+				return true;
+			}
+
+			// If old version is empty and no forms are created, it means it is fresh setup. Hence, DB upgrade is not needed.
+			return false;
+		}
+
+		$updater_callbacks = $this->get_updater_callbacks();
+
+		if ( empty( $updater_callbacks ) ) {
+			return false;
+		}
+
+		$versions = array_keys( $updater_callbacks );
+		$latest   = $versions[ count( $versions ) - 1 ];
+
+		return version_compare( $this->old_version, $latest, '<' );
 	}
 
 	/**
@@ -41,19 +80,35 @@ class Updater {
 	 * Any major change in the option can be handed here on the basis of last plugin version found in the database.
 	 *
 	 * @since 0.0.12
+	 * @since 1.0.0 -- Added db updater callbacks support.
 	 * @return void
 	 */
 	public function init() {
-		// Get auto saved version number.
-		$saved_version = get_option( 'srfm-version', false );
-
-		// Update auto saved version number.
-		if ( ! $saved_version || ! is_string( $saved_version ) ) {
-
-			// Update current version.
-			update_option( 'srfm-version', SRFM_VER );
+		if ( version_compare( SRFM_VER, $this->old_version, '=' ) ) {
+			// Bail early because saved version is already updated and no change detected.
 			return;
 		}
+
+		if ( $this->needs_db_update() ) {
+			foreach ( $this->get_updater_callbacks() as $updater_version => $updater_callback_functions ) {
+				if ( ! is_array( $updater_callback_functions ) ) {
+					continue;
+				}
+
+				if ( $this->old_version && ! version_compare( $this->old_version, $updater_version, '<' ) ) {
+					// Skip as SRFM saved version is not less than updaters version so db upgrade is not needed here.
+					continue;
+				}
+
+				foreach ( $updater_callback_functions as $updater_callback_function ) {
+					call_user_func( $updater_callback_function, $this->old_version );
+				}
+			}
+		}
+
+		// Finally update cache and DB with current version.
+		$this->old_version = SRFM_VER;
+		update_option( 'srfm-version', $this->old_version );
 	}
 
 	/**
@@ -108,6 +163,23 @@ class Updater {
 			return;
 		}
 		wp_enqueue_style( 'srfm-update-notice', SRFM_URL . 'admin/assets/css/update-notice.css', [], SRFM_VER );
+	}
+
+	/**
+	 * Returns an array of DB updater callback functions.
+	 *
+	 * @since 1.0.0
+	 * @return array<string,array<callable>>> Array of DB updater callback functions
+	 */
+	public function get_updater_callbacks() {
+		return [
+			'1.0.2' => [
+				'SRFM\Inc\Updater_Callbacks::manage_default_dynamic_options',
+			],
+			'1.0.4' => [
+				'SRFM\Inc\Updater_Callbacks::manage_empty_default_dynamic_options',
+			],
+		];
 	}
 
 }

@@ -109,7 +109,6 @@ class AI_Helper {
 		}
 
 		return $current_usage_details;
-
 	}
 
 	/**
@@ -155,27 +154,6 @@ class AI_Helper {
 	}
 
 	/**
-	 * Get the User Token.
-	 *
-	 * @since 0.0.8
-	 * @return string The User Token.
-	 */
-	private static function get_user_token() {
-		// if the license is active then use the license key as the token.
-		if ( defined( 'SRFM_PRO_VER' ) ) {
-			$license_key = self::get_license_key();
-			if ( ! empty( $license_key ) ) {
-				return $license_key;
-			}
-		}
-
-		$user_email = get_option( 'srfm_ai_auth_user_email' );
-
-		// if the license is not active then use the user email/site url as the token.
-		return ! empty( $user_email ) && is_array( $user_email ) ? $user_email['user_email'] : site_url();
-	}
-
-	/**
 	 * Get the Error Message.
 	 *
 	 * @param array<string,mixed>|array<int|string,mixed>|\WP_Error $response The response from the SureForms API server.
@@ -183,7 +161,7 @@ class AI_Helper {
 	 * @return array<string, mixed> The Error Message.
 	 */
 	public static function get_error_message( $response ) {
-		$errors = isset( $response->errors ) ? $response->errors : [];
+		$errors = $response->errors ?? [];
 
 		if ( empty( $errors )
 		&& is_array( $response ) && isset( $response['body'] ) && is_string( $response['body'] )
@@ -233,7 +211,43 @@ class AI_Helper {
 			'title'   => $title,
 			'message' => $message,
 		];
+	}
 
+	/**
+	 * Check if the SureForms Pro license is active.
+	 *
+	 * @since 0.0.10
+	 * @return bool|string True if the SureForms Pro license is active, false otherwise.
+	 */
+	public static function is_pro_license_active() {
+		$licensing = self::get_licensing_instance();
+		if ( ! $licensing || ! method_exists( $licensing, 'is_license_active' )
+		) {
+			return '';
+		}
+		// Check if the SureForms Pro license is active.
+		return $licensing->is_license_active();
+	}
+
+	/**
+	 * Get the User Token.
+	 *
+	 * @since 0.0.8
+	 * @return string The User Token.
+	 */
+	private static function get_user_token() {
+		// if the license is active then use the license key as the token.
+		if ( defined( 'SRFM_PRO_VER' ) ) {
+			$license_key = self::get_license_key();
+			if ( ! empty( $license_key ) ) {
+				return $license_key;
+			}
+		}
+
+		$user_email = get_option( 'srfm_ai_auth_user_email' );
+
+		// if the license is not active then use the user email/site url as the token.
+		return ! empty( $user_email ) && is_array( $user_email ) ? $user_email['user_email'] : site_url();
 	}
 
 	/**
@@ -265,24 +279,7 @@ class AI_Helper {
 		$is_license_active = self::is_pro_license_active();
 		// If the license is active, get the license key.
 		$license_setup = $licensing->licensing_setup();
-		$license_key   = ( ! empty( $is_license_active ) && is_object( $license_setup ) && method_exists( $license_setup, 'settings' ) ) ? $license_setup->settings()->license_key : '';
-				return $license_key;
-	}
-
-	/**
-	 * Check if the SureForms Pro license is active.
-	 *
-	 * @since 0.0.10
-	 * @return bool|string True if the SureForms Pro license is active, false otherwise.
-	 */
-	public static function is_pro_license_active() {
-		$licensing = self::get_licensing_instance();
-		if ( ! $licensing || ! method_exists( $licensing, 'is_license_active' )
-		) {
-			return '';
-		}
-		// Check if the SureForms Pro license is active.
-		return $licensing->is_license_active();
+		return ! empty( $is_license_active ) && is_object( $license_setup ) && method_exists( $license_setup, 'settings' ) ? $license_setup->settings()->license_key : '';
 	}
 
 }

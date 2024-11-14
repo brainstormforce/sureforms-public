@@ -109,35 +109,6 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 							title={ __( 'Attributes', 'sureforms' ) }
 							initialOpen={ true }
 						>
-							<SRFMSelectControl
-								label={ __( 'Number Format', 'sureforms' ) }
-								data={ {
-									value: formatType,
-									label: 'formatType',
-								} }
-								setAttributes={ ( value ) => {
-									setAttributes( value );
-									setAttributes( {
-										defaultValue: '',
-									} );
-								} }
-								options={ [
-									{
-										label: __(
-											'US Style (Eg: 9,999.99)',
-											'sureforms'
-										),
-										value: 'us-style',
-									},
-									{
-										label: __(
-											'EU Style (Eg: 9.999,99)',
-											'sureforms'
-										),
-										value: 'eu-style',
-									},
-								] }
-							/>
 							<SRFMTextControl
 								label={ __( 'Default Value', 'sureforms' ) }
 								displayUnit={ false }
@@ -177,6 +148,35 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 									} }
 								/>
 							) }
+							<SRFMSelectControl
+								label={ __( 'Number Format', 'sureforms' ) }
+								data={ {
+									value: formatType,
+									label: 'formatType',
+								} }
+								setAttributes={ ( value ) => {
+									setAttributes( value );
+									setAttributes( {
+										defaultValue: '',
+									} );
+								} }
+								options={ [
+									{
+										label: __(
+											'US Style (Eg: 9,999.99)',
+											'sureforms'
+										),
+										value: 'us-style',
+									},
+									{
+										label: __(
+											'EU Style (Eg: 9.999,99)',
+											'sureforms'
+										),
+										value: 'eu-style',
+									},
+								] }
+							/>
 							<SRFMNumberControl
 								label={ __( 'Minimum Value', 'sureforms' ) }
 								displayUnit={ false }

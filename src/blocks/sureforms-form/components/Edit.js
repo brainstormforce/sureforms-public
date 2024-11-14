@@ -156,7 +156,7 @@ export default ( { attributes, setAttributes } ) => {
 						<PanelRow>
 							<p className="srfm-form-notice">
 								{ __(
-									'Note: For Editing the SureForm, please check the SureForms Editor - ',
+									'Note: For editing SureForms, please refer to the SureForms Editor - ',
 									'sureforms'
 								) }
 								<ExternalLink

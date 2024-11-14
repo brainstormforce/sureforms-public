@@ -121,12 +121,12 @@ class Entries extends Base {
 			'ID BIGINT(20) UNSIGNED AUTO_INCREMENT PRIMARY KEY',
 			'form_id BIGINT(20) UNSIGNED',
 			'user_id BIGINT(20) UNSIGNED NOT NULL DEFAULT 0',
-			'form_data LONGTEXT', // Note: @since x.x.x -- We have renamed `user_data` column to `form_data`.
+			'form_data LONGTEXT', // Note: @since 0.0.13 -- We have renamed `user_data` column to `form_data`.
 			'logs LONGTEXT',
 			'notes LONGTEXT',
 			'submission_info LONGTEXT',
 			'status VARCHAR(10)',
-			'type VARCHAR(20)', // Note: @since x.x.x -- We have added type column, it will have entry's form type eg quiz, standard etc.
+			'type VARCHAR(20)', // Note: @since 0.0.13 -- We have added type column, it will have entry's form type eg quiz, standard etc.
 			'extras LONGTEXT',
 			'created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP',
 			'updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP',
@@ -141,7 +141,7 @@ class Entries extends Base {
 	 */
 	public function get_new_columns_definition() {
 		return [
-			// Note: @since x.x.x -- We have added new columns `type`, `extras` and `user_id`.
+			// Note: @since 0.0.13 -- We have added new columns `type`, `extras` and `user_id`.
 			'type VARCHAR(20) AFTER status',
 			'extras LONGTEXT AFTER status',
 			'user_id BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 AFTER form_id',
@@ -154,7 +154,7 @@ class Entries extends Base {
 	 */
 	public function get_columns_to_rename() {
 		return [
-			// Note: @since x.x.x -- We have renamed `user_data` column to `form_data`.
+			// Note: @since 0.0.13 -- We have renamed `user_data` column to `form_data`.
 			[
 				'from' => 'user_data',
 				'to'   => 'form_data',
@@ -176,8 +176,8 @@ class Entries extends Base {
 	/**
 	 * Add a new log entry.
 	 *
-	 * @param string   $title The title of the log entry.
-	 * @param string[] $messages Optional. An array of messages to include in the log entry. Default is an empty array.
+	 * @param string        $title The title of the log entry.
+	 * @param array<string> $messages Optional. An array of messages to include in the log entry. Default is an empty array.
 	 * @since 0.0.10
 	 * @return int|null The key of the newly added log entry, or null if the log could not be added.
 	 */
@@ -194,9 +194,9 @@ class Entries extends Base {
 	/**
 	 * Update an existing log entry.
 	 *
-	 * @param int         $log_key The key of the log entry to update.
-	 * @param string|null $title Optional. The new title for the log entry. If null, the title will not be changed.
-	 * @param string[]    $messages Optional. An array of new messages to add to the log entry.
+	 * @param int           $log_key The key of the log entry to update.
+	 * @param string|null   $title Optional. The new title for the log entry. If null, the title will not be changed.
+	 * @param array<string> $messages Optional. An array of new messages to add to the log entry.
 	 * @since 0.0.10
 	 * @return int|null The key of the updated log entry, or null if the log entry does not exist.
 	 */
@@ -257,7 +257,7 @@ class Entries extends Base {
 	 *
 	 * @param int                 $entry_id Entry ID.
 	 * @param array<string,mixed> $data     Data to update.
-	 * @since x.x.x
+	 * @since 0.0.13
 	 * @return int|false The number of rows updated, or false on error.
 	 */
 	public static function update( $entry_id, $data = [] ) {
@@ -271,7 +271,7 @@ class Entries extends Base {
 	 * Delete an entry by entry id.
 	 *
 	 * @param int $entry_id Entry ID to delete.
-	 * @since x.x.x
+	 * @since 0.0.13
 	 * @return int|false The number of rows deleted, or false on error.
 	 */
 	public static function delete( $entry_id ) {
@@ -310,12 +310,13 @@ class Entries extends Base {
 	 *     @type string $orderby  The column by which to order the results. Default is 'created_at'.
 	 *     @type string $order    The direction of the order (ASC or DESC). Default is 'DESC'.
 	 * }
+	 * @param bool                $set_limit Whether to set the limit on the query. Default is true.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.13
 	 * @return array<mixed> The results of the query, typically an array of objects or associative arrays.
 	 */
-	public static function get_all( $args = [] ) {
-		$_args = wp_parse_args(
+	public static function get_all( $args = [], $set_limit = true ) {
+		$_args         = wp_parse_args(
 			$args,
 			[
 				'where'   => [],
@@ -325,13 +326,17 @@ class Entries extends Base {
 				'order'   => 'DESC',
 			]
 		);
+		$extra_queries = [
+			sprintf( 'ORDER BY `%1$s` %2$s', Helper::get_string_value( esc_sql( $_args['orderby'] ) ), Helper::get_string_value( esc_sql( $_args['order'] ) ) ),
+		];
+
+		if ( $set_limit ) {
+			$extra_queries[] = sprintf( 'LIMIT %1$d, %2$d', absint( $_args['offset'] ), absint( $_args['limit'] ) );
+		}
 		return self::get_instance()->get_results(
 			$_args['where'],
 			'*',
-			[
-				sprintf( 'ORDER BY `%1$s` %2$s', Helper::get_string_value( esc_sql( $_args['orderby'] ) ), Helper::get_string_value( esc_sql( $_args['order'] ) ) ),
-				sprintf( 'LIMIT %1$d, %2$d', absint( $_args['offset'] ), absint( $_args['limit'] ) ),
-			]
+			$extra_queries
 		);
 	}
 
@@ -341,7 +346,7 @@ class Entries extends Base {
 	 * @param string              $status The status of the entries to count.
 	 * @param int|null            $form_id The ID of the form to count entries for.
 	 * @param array<string,mixed> $where_clause Additional where clause to add to the query.
-	 * @since x.x.x
+	 * @since 0.0.13
 	 * @return int The total number of entries with the specified status.
 	 */
 	public static function get_total_entries_by_status( $status = 'all', $form_id = 0, $where_clause = [] ) {
@@ -384,7 +389,7 @@ class Entries extends Base {
 	 * Get the available months for entries.
 	 *
 	 * @param array<string,mixed> $where_clause Additional where clause to add to the query.
-	 * @since x.x.x
+	 * @since 0.0.13
 	 * @return array<int|string, mixed>
 	 */
 	public static function get_available_months( $where_clause = [] ) {
@@ -404,5 +409,78 @@ class Entries extends Base {
 			}
 		}
 		return $months;
+	}
+
+	/**
+	 * Get all the entry ID's for a form.
+	 * The data is used for checking unique field validation.
+	 *
+	 * @param int $form_id The ID of the form to fetch entry IDs for.
+	 * @since 1.0.0
+	 * @return array<mixed> An array of entry IDs.
+	 */
+	public static function get_all_entry_ids_for_form( $form_id ) {
+		return self::get_instance()->get_results(
+			[ 'form_id' => $form_id ],
+			'ID',
+			[
+				'ORDER BY ID DESC',
+			]
+		);
+	}
+
+	/**
+	 * Get the form data for a specific entry.
+	 *
+	 * @param int $entry_id The ID of the entry to get the form data for.
+	 * @since 1.0.0
+	 * @return array<string,mixed> An associative array representing the entry's form data.
+	 */
+	public static function get_form_data( $entry_id ) {
+		$result = self::get_instance()->get_results(
+			[ 'ID' => $entry_id ],
+			'form_data'
+		);
+		return isset( $result[0] ) && is_array( $result[0] ) ? Helper::get_array_value( $result[0]['form_data'] ) : [];
+	}
+
+	/**
+	 * Get the data for generating entries chart.
+	 *
+	 * @param \WP_REST_Request $request Full details about the request.
+	 * @since 1.0.0
+	 * @return array<mixed>
+	 */
+	public function get_entries_chart_data( $request ) {
+		$nonce = Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) );
+
+		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
+			wp_send_json_error( 'Nonce verification failed.' );
+		}
+
+		$params = $request->get_params();
+
+		if ( empty( $params ) ) {
+			wp_send_json_error( 'Invalid Request.' );
+		}
+
+		$after = is_array( $params ) && ! empty( $params['after'] ) ? sanitize_text_field( Helper::get_string_value( $params['after'] ) ) : '';
+
+		$where = [
+			[
+				[
+					'key'     => 'created_at',
+					'value'   => $after,
+					'compare' => '>=',
+				],
+
+			],
+		];
+
+		return self::get_instance()->get_results(
+			$where,
+			'ID, created_at',
+			[ 'ORDER BY created_at DESC' ]
+		);
 	}
 }

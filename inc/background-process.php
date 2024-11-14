@@ -8,11 +8,9 @@
 
 namespace SRFM\Inc;
 
+use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Traits\Get_Instance;
-use SRFM\Inc\Helper;
 use WP_REST_Server;
-use WP_Error;
-use WP_REST_Request;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -77,7 +75,7 @@ class Background_Process {
 				'args'                => [
 					'submission_id' => [
 						'required'          => true,
-						'validate_callback' => function( $param, $request, $key ) {
+						'validate_callback' => static function( $param ) {
 							return is_integer( Helper::get_integer_value( $param ) ) && 0 < $param;
 						},
 					],
@@ -115,8 +113,10 @@ class Background_Process {
 			);
 		}
 
-		$this->form_id         = Helper::get_integer_value( get_post_meta( $this->submission_id, '_srfm_entry_form_id', true ) );
-		$this->submission_data = Helper::get_array_value( get_post_meta( $this->submission_id, 'srfm_entry_meta', true ) );
+		// Get the entries data for further processing, related to webhooks.
+		$entry_data            = Entries::get( $this->submission_id );
+		$this->form_id         = Helper::get_integer_value( $entry_data['form_id'] );
+		$this->submission_data = Helper::get_array_value( $entry_data['form_data'] );
 
 		if ( ! $this->trigger_after_submission_process() ) {
 			return new \WP_Error(
@@ -124,7 +124,7 @@ class Background_Process {
 				__( 'Something went wrong. We haved logged the error for further investigation', 'sureforms' ),
 				[ 'status' => 403 ]
 			);
-		};
+		}
 
 		return new \WP_REST_Response( [] );
 	}
@@ -141,7 +141,7 @@ class Background_Process {
 		}
 		$form_data                  = $this->submission_data;
 		$form_data['form_id']       = $this->form_id;
-		$form_data['submission_id'] = $this->form_id;
+		$form_data['submission_id'] = $this->submission_id; // Refers to the entry ID.
 		/**
 		 * Hook for enabling background processes.
 		 *

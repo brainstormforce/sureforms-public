@@ -385,6 +385,7 @@ $req_err_color: #dc2625;
 								background: #fff;
 								box-shadow: none;
 								margin-top: 8px;
+								height: 44px;
 
 								&.with-icon {
 									padding: 10px 24px 10px 12px;
@@ -443,9 +444,7 @@ $req_err_color: #dc2625;
 								}
 
 								.srfm-select-page {
-									min-width: 720px;
 									width: 100%;
-									height: 36px;
 
 									// Hide the box shadow of input inside React Select.
 									.srfm-select__input {
@@ -856,6 +855,11 @@ $req_err_color: #dc2625;
 
 			// Toggle control.
 			&.components-toggle-control {
+				// change the toggle switch border color.
+				.components-form-toggle .components-form-toggle__track {
+					border: 1px solid #1e1e1e;
+				}
+
 				.components-form-toggle.is-checked .components-form-toggle__track {
 					background-color: $primary_color;
 					box-shadow: none;
@@ -870,7 +874,6 @@ $req_err_color: #dc2625;
 				.components-base-control__help {
 					font-size: 0.6em;
 					margin-top: 0.2em;
-					margin-left: 4em;
 					color: $help_color;
 				}
 			}
@@ -881,6 +884,11 @@ $req_err_color: #dc2625;
 
 			.components-form-toggle.is-checked .components-form-toggle__track {
 				border: #d54407;
+			}
+
+			// Change the font size of the checkbox control to make check mark in center.
+			.components-checkbox-control__input-container {
+				font-size: 13px;
 			}
 
 			.components-checkbox-control__input[type="checkbox"]:checked {
@@ -968,7 +976,8 @@ $req_err_color: #dc2625;
 
 .components-popover__fallback-container {
 	.components-dropdown-menu__menu[aria-label="Select Shortcodes"] {
-		.components-button.components-dropdown-menu__menu-item:disabled {
+		.components-button:disabled, .components-button[aria-disabled=true] {
+			color: #000000;
 			opacity: 1;
 			font-weight: bolder;
 		}
@@ -1022,6 +1031,116 @@ $req_err_color: #dc2625;
 			&.srfm-confirm-btn {
 				background-color: #ef4444;
 				border-color: #ef4444;
+				color: #fff;
+			}
+		}
+	}
+}
+
+// Css for bulk edit modal.
+.components-modal__frame.srfm-bulk-edit-modal {
+	width: 70%;
+	max-height: 80%;
+	border-radius: 8px;
+	max-width: 864px;
+	.srfm-modal-help-text {
+		color: #a4afb7;
+		font-size: 12px;
+		margin: 0;
+	}
+	.components-modal__header {
+		display: none;
+	}
+	.components-modal__content {
+		margin: 0;
+		padding: 0;
+	}
+
+	.srfm-modal-header {
+		border-bottom: 1px solid #e5e7eb;
+		display: flex;
+		padding: 20px;
+		align-items: center;
+		justify-content: space-between;
+		position: fixed;
+		width: 100%;
+		background-color: #fff;
+		.srfm-modal-header-content {
+			display: flex;
+			align-items: center;
+		}
+		.srfm-modal-logo {
+			border-right: 1px solid #d0d5dd;
+			line-height: 1;
+			display: flex;
+			padding-right: 10px;
+			margin-right: 10px;
+			> svg > path {
+				fill: #d54407;
+			}
+		}
+		.srfm-modal-title {
+			h1 {
+				font-size: 14px;
+				font-weight: 600;
+				color: #111827;
+				line-height: 1.4;
+				margin: 0;
+			}
+		}
+		.srfm-modal-header-close-icon {
+			display: flex;
+			cursor: pointer;
+		}
+	}
+
+	.srfm-modal-body {
+		padding: 24px;
+		display: grid;
+		background-color: #f1f5f9;
+		.srfm-modal-body-content {
+			padding: 24px;
+			background-color: #fff;
+			border-radius: 8px;
+			display: grid;
+			gap: 10px;
+		}
+		.srfm-bulk-edit-textarea {
+			min-height: 130px;
+			border: 1px solid #dadbdd;
+			border-radius: 8px;
+			color: #606266;
+			line-height: 1.5;
+			padding: 5px 15px;
+			resize: vertical;
+			width: 100%;
+			max-height: 350px;
+		}
+		.srfm-body-footer {
+			display: flex;
+			align-items: center;
+			gap: 12px;
+			justify-content: flex-end;
+			margin-top: 10px;
+			.srfm-cancel-button,
+			.srfm-insert-button {
+				border-radius: 6px;
+				padding: 10px;
+				font-size: 14px;
+				font-weight: 600;
+				line-height: 20px;
+			}
+			.srfm-cancel-button {
+				background-color: #fff;
+				border-color: #dce0e6;
+				color: #4b5563;
+				box-shadow: 0 1px 2px #0d131e1a;
+				border: 1px solid #dce0e6;
+			}
+
+			.srfm-insert-button {
+				background-color: #007cba;
+				border-color: #007cba;
 				color: #fff;
 			}
 		}

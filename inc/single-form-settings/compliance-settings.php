@@ -8,8 +8,9 @@
 
 namespace SRFM\Inc\Single_Form_Settings;
 
-use SRFM\Inc\Traits\Get_Instance;
+use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Helper;
+use SRFM\Inc\Traits\Get_Instance;
 
 /**
  * SureForms single form settings - Compliance settings.
@@ -75,7 +76,6 @@ class Compliance_Settings {
 				self::delete_old_entries( $days_old, $form_id );
 			}
 		}
-
 	}
 
 	/**
@@ -94,8 +94,8 @@ class Compliance_Settings {
 		}
 
 		foreach ( $entries as $entry ) {
-			$entry_id = isset( $entry->ID ) ? $entry->ID : 0;
-			wp_delete_post( $entry_id, true );
+			$entry_id = isset( $entry['ID'] ) ? Helper::get_integer_value( $entry['ID'] ) : 0;
+			Entries::delete( $entry_id );
 		}
 	}
 

@@ -7993,27 +7993,6 @@ namespace SRFM\Inc\Blocks {
         {
         }
         /**
-         * Run any block middleware before rendering.
-         *
-         * @param array<mixed> $attributes Block attributes.
-         * @param string       $content   Post content.
-         * @return boolean|\WP_Error;
-         * @since 0.0.1
-         */
-        protected function middleware($attributes, $content)
-        {
-        }
-        /**
-         * Allows filtering of attributes before rendering.
-         *
-         * @param array<mixed> $attributes Block attributes.
-         * @return array<mixed> $attributes
-         * @since 0.0.1
-         */
-        public function get_attributes($attributes)
-        {
-        }
-        /**
          * Render the block
          *
          * @param array<mixed> $attributes Block attributes.
@@ -8940,35 +8919,6 @@ namespace SRFM\Inc {
         {
         }
         /**
-         * Sureforms entries meta box callback.
-         *
-         * @param \WP_Post $post Template.
-         * @return void
-         * @since 0.0.1
-         */
-        public function sureforms_meta_box_callback(\WP_Post $post)
-        {
-        }
-        /**
-         * Add Sureforms entries meta box.
-         *
-         * @return void
-         * @since 0.0.1
-         */
-        public function entries_meta_box()
-        {
-        }
-        /**
-         * Sureforms box Form Name meta box callback.
-         *
-         * @param \WP_Post $post Template.
-         * @return void
-         * @since 0.0.1
-         */
-        public function sureforms_form_name_meta_callback(\WP_Post $post)
-        {
-        }
-        /**
          * Custom Shortcode.
          *
          * @param array<mixed> $atts Attributes.
@@ -8997,36 +8947,6 @@ namespace SRFM\Inc {
          * @since 0.0.1
          */
         public function custom_form_column_data($column, $post_id)
-        {
-        }
-        /**
-         * Add custom column header.
-         *
-         * @param array<mixed> $columns Attributes.
-         * @return array<mixed> $columns Post Content.
-         * @since 0.0.1
-         */
-        public function custom_entry_columns($columns)
-        {
-        }
-        /**
-         * Populate custom column with data.
-         *
-         * @param string  $column Attributes.
-         * @param integer $post_id Attributes.
-         * @return void
-         * @since 0.0.1
-         */
-        public function custom_entry_column_data($column, $post_id)
-        {
-        }
-        /**
-         * Add SureForms taxonomy filter.
-         *
-         * @return void
-         * @since 0.0.1
-         */
-        public function add_tax_filter()
         {
         }
         /**
@@ -10527,7 +10447,8 @@ namespace {
     \define('SRFM_SLUG', 'srfm');
     // ------ ADDITIONAL CONSTANTS ------- //
     \define('SRFM_FORMS_POST_TYPE', 'sureforms_form');
-    \define('SRFM_ENTRIES_POST_TYPE', 'sureforms_entry');
+    \define('SRFM_ENTRIES', 'sureforms_entries');
+    \define('SRFM_PRO_RECOMMENDED_VER', '');
     /**
      * Filesystem class
      *

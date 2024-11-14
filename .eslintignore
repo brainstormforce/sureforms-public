@@ -5,3 +5,4 @@ vendor
 *.min.js
 restriction-build
 licensing-sdk
+coverage-report

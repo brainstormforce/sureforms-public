@@ -8,11 +8,12 @@
 
 namespace SRFM\Inc\Global_Settings;
 
-use WP_REST_Response;
-use WP_REST_Request;
-use WP_Query;
-use SRFM\Inc\Traits\Get_Instance;
+use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Helper;
+use SRFM\Inc\Traits\Get_Instance;
+use WP_Query;
+use WP_REST_Request;
+use WP_REST_Response;
 
 /**
  * Email Summary Class.
@@ -114,31 +115,24 @@ class Email_Summary {
 				$query->the_post();
 				global $post;
 
-				$post_id_formatted = strval( $post->ID );
-
 				$previous_week_start = gmdate( 'Y-m-d', strtotime( '-1 week last monday' ) );
 				$previous_week_end   = gmdate( 'Y-m-d', strtotime( '-1 week next sunday' ) );
 
-				$taxonomy      = 'sureforms_tax';
-				$entries_args  = [
-					'post_type'  => SRFM_ENTRIES_POST_TYPE,
-					'tax_query'  => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query. --We require tax_query for this function to work.
+				$entries_args = [
+					'where' => [
 						[
-							'taxonomy' => $taxonomy,
-							'field'    => 'slug',
-							'terms'    => $post_id_formatted,
+							'key'     => 'created_at',
+							'value'   => $previous_week_start,
+							'compare' => '>=',
 						],
-					],
-					'date_query' => [
 						[
-							'after'     => $previous_week_start,
-							'before'    => $previous_week_end,
-							'inclusive' => true,
+							'key'     => 'created_at',
+							'value'   => $previous_week_end,
+							'compare' => '<=',
 						],
 					],
 				];
-				$entries_query = new WP_Query( $entries_args );
-				$entry_count   = $entries_query->post_count;
+				$entry_count  = Entries::get_total_entries_by_status( 'all', Helper::get_integer_value( $post->ID ), $entries_args );
 
 				$bg_color = 0 === $row_index % 2 ? '#ffffff' : '#f2f2f2;';
 
@@ -221,7 +215,7 @@ class Email_Summary {
 			$time = '09:00:00';
 		}
 
-		$next_day_user_timezone = Helper::get_integer_value( strtotime( "next $day $time", $current_time_user_timezone ) );
+		$next_day_user_timezone = Helper::get_integer_value( strtotime( "next {$day} {$time}", $current_time_user_timezone ) );
 
 		$scheduled_time = Helper::get_integer_value( strtotime( gmdate( 'Y-m-d H:i:s', $next_day_user_timezone ) ) );
 

@@ -18,7 +18,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 0.0.1
  */
 class Address_Markup extends Base {
-
 	/**
 	 * Initialize the properties based on block attributes.
 	 *
@@ -37,7 +36,7 @@ class Address_Markup extends Base {
 	 *
 	 * @param string $content inner block content.
 	 * @since 0.0.2
-	 * @return string|boolean
+	 * @return string|bool
 	 */
 	public function markup( $content = '' ) {
 		ob_start(); ?>

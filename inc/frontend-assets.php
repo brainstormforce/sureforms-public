@@ -21,7 +21,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 0.0.1
  */
 class Frontend_Assets {
-
 	use Get_Instance;
 
 	/**
@@ -31,8 +30,8 @@ class Frontend_Assets {
 	 * @var array<string>
 	 */
 	public static $js_assets = [
-		'form-submit' => 'formSubmit.js',
-		'frontend'    => 'frontend.min.js',
+		'form-submit' => 'formSubmit',
+		'frontend'    => 'frontend',
 	];
 
 	/**
@@ -58,7 +57,6 @@ class Frontend_Assets {
 		'tom-select'     => 'tom-select',
 		'intl-tel-input' => 'intl/intlTelInput.min',
 	];
-
 
 	/**
 	 * Constructor
@@ -110,7 +108,7 @@ class Frontend_Assets {
 			if ( 'form-submit' === $handle ) {
 				wp_register_script(
 					SRFM_SLUG . '-' . $handle,
-					SRFM_URL . 'assets/build/' . $name,
+					SRFM_URL . 'assets/build/' . $name . '.js',
 					[],
 					SRFM_VER,
 					true
@@ -118,7 +116,7 @@ class Frontend_Assets {
 			} else {
 				wp_register_script(
 					SRFM_SLUG . '-' . $handle,
-					$js_uri . $name,
+					$js_uri . $name . $file_prefix . '.js',
 					[],
 					SRFM_VER,
 					true

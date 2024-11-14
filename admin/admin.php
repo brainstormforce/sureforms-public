@@ -7,13 +7,13 @@
 
 namespace SRFM\Admin;
 
-use SRFM\Inc\Traits\Get_Instance;
-use SRFM\Inc\AI_Form_Builder\AI_Helper;
-use SRFM\Inc\Helper;
-use SRFM\Admin\Views\Single_Entry;
 use SRFM\Admin\Views\Entries_List_Table;
-use SRFM\Inc\Post_Types;
+use SRFM\Admin\Views\Single_Entry;
+use SRFM\Inc\AI_Form_Builder\AI_Helper;
 use SRFM\Inc\Database\Tables\Entries;
+use SRFM\Inc\Helper;
+use SRFM\Inc\Post_Types;
+use SRFM\Inc\Traits\Get_Instance;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -24,7 +24,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 0.0.1
  */
 class Admin {
-
 	use Get_Instance;
 
 	/**
@@ -47,85 +46,11 @@ class Admin {
 		add_action( 'uag_enable_quick_action_sidebar', [ $this, 'restrict_spectra_quick_action_bar' ] );
 
 		add_action( 'current_screen', [ $this, 'enable_gutenberg_for_sureforms' ], 100 );
+		add_action( 'admin_notices', [ $this, 'srfm_pro_version_compatibility' ] );
 
 		// Handle entry actions.
 		add_action( 'admin_init', [ $this, 'handle_entry_actions' ] );
-		add_action( 'admin_notices', [ $this, 'entries_migration_notice' ] );
 		add_action( 'admin_notices', [ Entries_List_Table::class, 'display_bulk_action_notice' ] );
-	}
-
-	/**
-	 * Print notice to inform users about entries database migration.
-	 *
-	 * @since x.x.x
-	 * @return void
-	 */
-	public function entries_migration_notice() {
-		if ( get_option( 'srfm_dismiss_entries_migration_notice', false ) ) {
-			return;
-		}
-
-		if ( empty( get_posts( [ 'post_type' => SRFM_ENTRIES_POST_TYPE ] ) ) ) {
-			// Bail if we don't have legacy post type entries.
-			return;
-		}
-
-		$ajaxurl = add_query_arg(
-			[
-				'action'   => 'sureforms_dismiss_plugin_notice',
-				'security' => wp_create_nonce( 'srfm_notice_dismiss_nonce' ),
-			],
-			admin_url( 'admin-ajax.php' )
-		);
-		?>
-		<!-- Adding this internal style to maintain notice styling without worrying about conditional loading of the css files. -->
-		<style>
-		.srfm-plugin-notice-container {
-			display: flex;
-			align-items: center;
-			gap: 20px;
-			padding: 10px 0;
-		}
-		.srfm-plugin-notice--logo svg {
-			width: 60px;
-			height: 60px;
-		}
-		.srfm-plugin-notice--content .srfm-plugin-notice--title {
-			margin: 0;
-			font-size: 20px;
-			line-height: 1.5;
-		}
-		.srfm-plugin-notice--content .srfm-plugin-notice--message {
-			margin-top: 4px;
-			padding: 0;
-		}
-		</style>
-		<div class="notice notice-warning is-dismissible srfm-plugin-notice">
-			<div class="srfm-plugin-notice-container">
-				<div class="srfm-plugin-notice--logo">
-					<svg width="500" height="500" viewBox="0 0 500 500" fill="none" xmlns="http://www.w3.org/2000/svg">
-						<path fill-rule="evenodd" clip-rule="evenodd" d="M250 500C388.072 500 500 388.071 500 250C500 111.929 388.072 0 250 0C111.929 0 0 111.929 0 250C0 388.071 111.929 500 250 500ZM251.076 125C231.002 125 203.224 136.48 189.028 150.641L150.477 189.103H342.635L406.887 125H251.076ZM310.648 349.359C296.454 363.52 268.673 375 248.599 375H92.7892L157.043 310.897H349.199L310.648 349.359ZM373.1 221.154H118.42L106.39 233.173C77.9043 258.814 86.3526 278.846 126.246 278.846H381.615L393.649 266.827C421.859 241.336 412.993 221.154 373.1 221.154Z" fill="#D54407"/>
-					</svg>
-				</div>
-				<div class="srfm-plugin-notice--content">
-					<h3 class="srfm-plugin-notice--title"><?php esc_html_e( 'SureForms - Important Update Notice', 'sureforms' ); ?></h3>
-					<p class="srfm-plugin-notice--message"><strong><?php esc_html_e( "From version 0.0.13 we're migrating to a custom database to enhance SureForms' performance and features.", 'sureforms' ); ?></strong></p>
-					<p class="srfm-plugin-notice--message"><?php esc_html_e( 'This step is necessary and irreversible and your current existing entries will be lost. Thank you for your understanding!', 'sureforms' ); ?></p>
-				</div>
-			</div>
-		</div>
-		<script>
-			(function() {
-				window.addEventListener('load', function() {
-					const dismissNotice = document.querySelector('.is-dismissible.srfm-plugin-notice .notice-dismiss');
-
-					dismissNotice.addEventListener('click', function() {
-						fetch('<?php echo esc_url_raw( $ajaxurl ); ?>');
-					});
-				});
-			}());
-		</script>
-		<?php
 	}
 
 	/**
@@ -147,7 +72,6 @@ class Admin {
 			add_filter( 'gutenberg_can_edit_post_type', '__return_true', 110 );
 		}
 	}
-
 
 	/**
 	 * Sureforms editor header styles.
@@ -191,7 +115,8 @@ class Admin {
 			__( 'SureForms', 'sureforms' ),
 			'edit_others_posts',
 			$menu_slug,
-			function () {},
+			static function () {
+			},
 			'data:image/svg+xml;base64,' . base64_encode( $logo ), // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
 			30
 		);
@@ -274,7 +199,7 @@ class Admin {
 			__( 'Entries', 'sureforms' ),
 			__( 'Entries', 'sureforms' ),
 			'edit_others_posts',
-			'sureforms_entries',
+			SRFM_ENTRIES,
 			[ $this, 'render_entries' ],
 			3
 		);
@@ -293,7 +218,7 @@ class Admin {
 	/**
 	 * Entries page callback.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.13
 	 * @return void
 	 */
 	public function render_entries() {
@@ -309,9 +234,9 @@ class Admin {
 		$entries_table = new Entries_List_Table();
 		$entries_table->prepare_items();
 		echo '<div class="wrap"><h1 class="wp-heading-inline">Entries</h1>';
-		if ( 0 >= $entries_table->all_entries_count && 0 >= $entries_table->trash_count ) {
+		if ( empty( $entries_table->all_entries_count ) && empty( $entries_table->trash_entries_count ) ) {
 			$instance = Post_Types::get_instance();
-			$instance->sureforms_render_blank_state( SRFM_ENTRIES_POST_TYPE );
+			$instance->sureforms_render_blank_state( SRFM_ENTRIES );
 			$instance->get_blank_state_styles();
 			return;
 		}
@@ -350,6 +275,7 @@ class Admin {
 	 */
 	public function enqueue_styles() {
 		$current_screen = get_current_screen();
+		global $wp_version;
 
 		$file_prefix = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? '' : '.min';
 		$dir_name    = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? 'unminified' : 'minified';
@@ -370,6 +296,14 @@ class Admin {
 			wp_enqueue_style( SRFM_SLUG . '-common', $css_uri . 'common' . $file_prefix . '.css', [], SRFM_VER );
 			wp_enqueue_style( SRFM_SLUG . '-reactQuill', $vendor_css_uri . 'quill/quill.snow.css', [], SRFM_VER );
 			wp_enqueue_style( SRFM_SLUG . '-single-form-modal', $css_uri . 'single-form-setting' . $file_prefix . '.css', [], SRFM_VER );
+
+			// if version is equal to or lower than 6.6.2 then add compatibility css.
+			if ( version_compare( $wp_version, '6.6.2', '<=' ) ) {
+				$srfm_inline_css = '.srfm-settings-modal .srfm-setting-modal-container .components-toggle-control .components-base-control__help{
+					margin-left: 4em;
+				}';
+				wp_add_inline_style( SRFM_SLUG . '-single-form-modal', $srfm_inline_css );
+			}
 		}
 
 		wp_enqueue_style( SRFM_SLUG . '-form-selector', $css_uri . 'srfm-form-selector' . $file_prefix . '.css', [], SRFM_VER );
@@ -418,11 +352,6 @@ class Admin {
 					'title' => 'Forms',
 					'link'  => '',
 				];
-			} elseif ( $current_screen && 'sureforms_entry' === $current_screen->post_type ) {
-				$breadcrumbs[] = [
-					'title' => 'Entries',
-					'link'  => '',
-				];
 			} else {
 				$breadcrumbs[] = [
 					'title' => '',
@@ -434,7 +363,6 @@ class Admin {
 		return $breadcrumbs;
 	}
 
-
 	/**
 	 * Enqueue Admin Scripts.
 	 *
@@ -443,6 +371,7 @@ class Admin {
 	 */
 	public function enqueue_scripts() {
 		$current_screen = get_current_screen();
+		global $wp_version;
 
 		$file_prefix  = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? '' : '.min';
 			$dir_name = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? 'unminified' : 'minified';
@@ -462,8 +391,10 @@ class Admin {
 			'global_settings_nonce'   => current_user_can( 'manage_options' ) ? wp_create_nonce( 'wp_rest' ) : '',
 			'is_pro_active'           => defined( 'SRFM_PRO_VER' ),
 			'pro_plugin_version'      => defined( 'SRFM_PRO_VER' ) ? SRFM_PRO_VER : '',
+			'pro_plugin_name'         => defined( 'SRFM_PRO_VER' ) && defined( 'SRFM_PRO_PRODUCT' ) ? SRFM_PRO_PRODUCT : 'SureForms Pro',
 			'sureforms_pricing_page'  => $this->get_sureforms_website_url( 'pricing' ),
 			'field_spacing_vars'      => Helper::get_css_vars(),
+			'is_ver_lower_than_6_7'   => version_compare( $wp_version, '6.6.2', '<=' ),
 		];
 
 		if ( class_exists( 'SRFM_PRO\Admin\Licensing' ) ) {
@@ -471,9 +402,7 @@ class Admin {
 			$localization_data['is_license_active'] = $license_active;
 		}
 
-		if ( SRFM_FORMS_POST_TYPE === $current_screen->post_type || 'toplevel_page_sureforms_menu' === $current_screen->base || SRFM_ENTRIES_POST_TYPE === $current_screen->post_type
-		|| 'sureforms_page_sureforms_form_settings' === $current_screen->id || 'sureforms_page_sureforms_entries' === $current_screen->id
-		) {
+		if ( SRFM_FORMS_POST_TYPE === $current_screen->post_type || 'toplevel_page_sureforms_menu' === $current_screen->base || 'sureforms_page_sureforms_form_settings' === $current_screen->id || 'sureforms_page_' . SRFM_ENTRIES === $current_screen->id ) {
 			$asset_handle = '-dashboard';
 
 			wp_enqueue_style( SRFM_SLUG . $asset_handle . '-font', 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap', [], SRFM_VER );
@@ -504,10 +433,24 @@ class Admin {
 
 		if ( 'sureforms_page_sureforms_form_settings' === $current_screen->id ) {
 			wp_enqueue_style( SRFM_SLUG . '-settings', $css_uri . 'backend/settings' . $file_prefix . '.css', [], SRFM_VER );
+
+			// if version is equal to or lower than 6.6.2 then add compatibility css.
+			if ( version_compare( $wp_version, '6.6.2', '<=' ) ) {
+				$srfm_inline_css = '
+				.srfm-settings-page-container
+					.components-toggle-control {
+						.components-base-control__help{
+							margin-left: 4em;
+						}
+					}
+				}
+				';
+				wp_add_inline_style( SRFM_SLUG . '-settings', $srfm_inline_css );
+			}
 		}
 
 		// Enqueue styles for the entries page.
-		if ( 'sureforms_page_sureforms_entries' === $current_screen->id ) {
+		if ( 'sureforms_page_' . SRFM_ENTRIES === $current_screen->id ) {
 			$asset_handle = '-entries';
 			wp_enqueue_style( SRFM_SLUG . $asset_handle, $css_uri . 'backend/entries' . $file_prefix . '.css', [], SRFM_VER );
 			wp_enqueue_script( SRFM_SLUG . $asset_handle, SRFM_URL . 'assets/build/entries.js', $script_info['dependencies'], SRFM_VER, true );
@@ -516,7 +459,7 @@ class Admin {
 		// Admin Submenu Styles.
 		wp_enqueue_style( SRFM_SLUG . '-admin', $css_uri . 'backend/admin' . $file_prefix . '.css', [], SRFM_VER );
 
-		if ( 'edit-' . SRFM_FORMS_POST_TYPE === $current_screen->id || 'edit-' . SRFM_ENTRIES_POST_TYPE === $current_screen->id ) {
+		if ( 'edit-' . SRFM_FORMS_POST_TYPE === $current_screen->id ) {
 			$asset_handle = 'page_header';
 
 			$script_asset_path = SRFM_DIR . 'assets/build/' . $asset_handle . '.asset.php';
@@ -559,7 +502,7 @@ class Admin {
 					'srfm_export_nonce'    => wp_create_nonce( 'export_form_nonce' ),
 					'site_url'             => get_site_url(),
 					'srfm_import_endpoint' => '/wp-json/sureforms/v1/sureforms_import',
-					'import_form_nonce'    => ( current_user_can( 'edit_posts' ) ) ? wp_create_nonce( 'wp_rest' ) : '',
+					'import_form_nonce'    => current_user_can( 'edit_posts' ) ? wp_create_nonce( 'wp_rest' ) : '',
 				]
 			);
 
@@ -659,7 +602,7 @@ class Admin {
 		 * This script loads suretriggers iframe in Intergations tab.
 		 */
 		if ( SRFM_FORMS_POST_TYPE === $current_screen->post_type ) {
-			wp_enqueue_script( SRFM_SLUG . '-suretriggers-integration', SRFM_SURETRIGGERS_INTERGATION_BASE_URL . 'js/v2/embed.js', [], SRFM_VER, true );
+			wp_enqueue_script( SRFM_SLUG . '-suretriggers-integration', SRFM_SURETRIGGERS_INTEGRATION_BASE_URL . 'js/v2/embed.js', [], SRFM_VER, true );
 		}
 	}
 
@@ -674,7 +617,6 @@ class Admin {
 		$classes            .= ' ' . $theme_builder_class . ' ';
 
 		return $classes;
-
 	}
 
 	/**
@@ -714,7 +656,7 @@ class Admin {
 	/**
 	 * Handle entry actions.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.13
 	 * @return void
 	 */
 	public function handle_entry_actions() {
@@ -722,7 +664,7 @@ class Admin {
 			Entries_List_Table::process_bulk_actions();
 			return;
 		}
-		if ( ! isset( $_GET['page'] ) || 'sureforms_entries' !== $_GET['page'] ) {
+		if ( ! isset( $_GET['page'] ) || SRFM_ENTRIES !== $_GET['page'] ) {
 			return;
 		}
 		if ( ! isset( $_GET['entry_id'] ) || ! isset( $_GET['action'] ) ) {
@@ -743,6 +685,48 @@ class Admin {
 			}
 			Entries_List_Table::handle_entry_status( $entry_id, $action, $view );
 		}
+	}
+
+	/**
+	 * Admin Notice Callback if sureforms pro is out of date.
+	 *
+	 * Hooked - admin_notices
+	 *
+	 * @return void
+	 * @since 1.0.4
+	 */
+	public function srfm_pro_version_compatibility() {
+		$plugin_file = 'sureforms-pro/sureforms-pro.php';
+		if ( ! is_plugin_active( $plugin_file ) || ! defined( 'SRFM_PRO_VER' ) ) {
+			return;
+		}
+
+		if ( version_compare( SRFM_PRO_VER, SRFM_PRO_RECOMMENDED_VER, '>=' ) ) {
+			return;
+		}
+
+		if ( empty( get_current_screen() ) ) {
+			return;
+		}
+
+		if ( ! current_user_can( 'update_plugins' ) ) {
+			return;
+		}
+
+		$pro_plugin_name     = defined( 'SRFM_PRO_PRODUCT' ) ? SRFM_PRO_PRODUCT : 'SureForms Pro';
+		$srfm_billing_portal = defined( 'SRFM_BILLING_PORTAL' ) ? SRFM_BILLING_PORTAL : 'https://billing.sureforms.com/';
+		$message             = '<p>' . sprintf(
+			// translators: %1$s: SureForms version, %2$s: SureForms Pro Plugin Name, %3$s: SureForms Pro Version, %4$s: Anchor tag open, %5$s: Closing anchor tag.
+			esc_html__( 'SureForms %1$s requires minimum %2$s %3$s to work properly. Download the latest ZIP from %4$s here%5$s.', 'sureforms' ),
+			esc_html( SRFM_VER ),
+			esc_html( $pro_plugin_name ),
+			esc_html( SRFM_PRO_RECOMMENDED_VER ),
+			'<a href="' . esc_url( $srfm_billing_portal ) . '" target="_blank">',
+			'</a>'
+		) . '</p>';
+
+		// Phpcs ignore comment is required as $message variable is already escaped.
+		echo '<div class="error">' . $message . '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
 
 }

@@ -21,7 +21,6 @@ defined( 'ABSPATH' ) || exit;
  * @since 0.0.10
  */
 abstract class Base {
-
 	/**
 	 * WordPress Database class instance.
 	 *
@@ -54,7 +53,7 @@ abstract class Base {
 	 * Update the table version from child class when any DB upgrade or alteration related changes are made.
 	 *
 	 * @var int
-	 * @since x.x.x
+	 * @since 0.0.13
 	 * @override
 	 */
 	protected $table_version = 1;
@@ -71,8 +70,8 @@ abstract class Base {
 	 * Whether or not the current database table is upgradable.
 	 * Determines on the basis of the table version.
 	 *
-	 * @var boolean
-	 * @since x.x.x
+	 * @var bool
+	 * @since 0.0.13
 	 */
 	private $db_upgradable;
 
@@ -101,7 +100,7 @@ abstract class Base {
 	/**
 	 * Actions to initialize during object unload.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.13
 	 * @return void
 	 */
 	public function __destruct() {
@@ -123,7 +122,7 @@ abstract class Base {
 	/**
 	 * Current table columns definition to create table. These definitions will be used by the create() method.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.13
 	 * @return array<string>
 	 */
 	abstract public function get_columns_definition();
@@ -132,7 +131,7 @@ abstract class Base {
 	 * Any columns that needs to be added if the current table already exists. These definitions will be used by maybe_add_new_columns() method.
 	 * Override this from child class if needed.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.13
 	 * @return array<string>
 	 * @override
 	 */
@@ -144,14 +143,14 @@ abstract class Base {
 	 * Array of columns that needs to be renamed to new column name. It will be used by maybe_rename_columns() method.
 	 * Format:
 	 * [
-			[
-				'from' => 'old_column_name',
-				'to'   => 'new_column_name',
-				'type' => 'column type definition eg: LONGTEXT', // Optional.
-			],
-		]
+	 * [
+	 * 'from' => 'old_column_name',
+	 * 'to'   => 'new_column_name',
+	 * 'type' => 'column type definition eg: LONGTEXT', // Optional.
+	 * ],
+	 * ]
 	 *
-	 * @since x.x.x
+	 * @since 0.0.13
 	 * @return array<array<string,string>>
 	 */
 	public function get_columns_to_rename() {
@@ -161,7 +160,7 @@ abstract class Base {
 	/**
 	 * Start the database upgrade process.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.13
 	 * @return void
 	 */
 	public function start_db_upgrade() {
@@ -183,8 +182,8 @@ abstract class Base {
 	/**
 	 * Stop the database upgrade process.
 	 *
-	 * @since x.x.x
-	 * @return boolean Returns true on success.
+	 * @since 0.0.13
+	 * @return bool Returns true on success.
 	 */
 	public function stop_db_upgrade() {
 		if ( ! $this->db_upgradable ) {
@@ -204,8 +203,8 @@ abstract class Base {
 	/**
 	 * Check if current table's DB is upgradable or not.
 	 *
-	 * @since x.x.x
-	 * @return boolean True or false depending if DB is upgradable or not.
+	 * @since 0.0.13
+	 * @return bool True or false depending if DB is upgradable or not.
 	 */
 	public function is_db_upgradable() {
 		return $this->db_upgradable;
@@ -219,45 +218,6 @@ abstract class Base {
 	 */
 	public function get_tablename() {
 		return $this->table_name;
-	}
-
-	/**
-	 * Retrieve a cached value by its key.
-	 *
-	 * @param string $key The cache key.
-	 * @since 0.0.10
-	 * @return mixed|null The cached value if it exists, or null if the key does not exist in the cache.
-	 */
-	protected function cache_get( $key ) {
-		$key = md5( $key );
-		if ( ! isset( $this->caches[ $key ] ) ) {
-			return null;
-		}
-		return $this->caches[ $key ];
-	}
-
-	/**
-	 * Store a value in the cache with the specified key.
-	 *
-	 * @param string $key The cache key.
-	 * @param mixed  $value The value to store in the cache.
-	 * @since 0.0.10
-	 * @return mixed The stored value.
-	 */
-	protected function cache_set( $key, $value ) {
-		$key                  = md5( $key );
-		$this->caches[ $key ] = $value;
-		return $value;
-	}
-
-	/**
-	 * Reset the cache by clearing all stored values.
-	 *
-	 * @since 0.0.10
-	 * @return void
-	 */
-	protected function cache_reset() {
-		$this->caches = [];
 	}
 
 	/**
@@ -328,7 +288,7 @@ abstract class Base {
 	 * Rename the column of the current table conditionally.
 	 *
 	 * @param array<array<string,string>> $rename_columns Array of columns to rename.
-	 * @since x.x.x
+	 * @since 0.0.13
 	 * @return int|bool Boolean true for CREATE, ALTER, TRUNCATE and DROP queries. Number of rows affected/selected for all other queries. Boolean false on error.
 	 */
 	public function maybe_rename_columns( $rename_columns = [] ) {
@@ -388,7 +348,7 @@ abstract class Base {
 	 * Adds the new columns to the current table conditionally.
 	 *
 	 * @param array<string> $new_columns The array of new columns to add. Same as the create method.
-	 * @since x.x.x
+	 * @since 0.0.13
 	 * @return int|bool Boolean true for CREATE, ALTER, TRUNCATE and DROP queries. Number of rows affected/selected for all other queries. Boolean false on error.
 	 */
 	public function maybe_add_new_columns( $new_columns = [] ) {
@@ -439,7 +399,7 @@ abstract class Base {
 
 		if ( $alter_queries ) {
 			$query = $wpdb->prepare(
-				"ALTER TABLE %1s %2s", // phpcs:ignore -- We don't want to quote the value strings for the query.
+				'ALTER TABLE %1s %2s', // phpcs:ignore -- We don't want to quote the value strings for the query.
 				$this->get_tablename(),
 				implode( ', ', $alter_queries )
 			);
@@ -466,7 +426,7 @@ abstract class Base {
 	/**
 	 * Returns an array columns of current table.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.13
 	 * @return array<string,array<string,mixed>>
 	 */
 	public function get_columns() {
@@ -494,13 +454,13 @@ abstract class Base {
 	/**
 	 * Returns an array indexes of current table.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.13
 	 * @return array<mixed>
 	 */
 	public function get_indexes() {
 		$wpdb = $this->wpdb;
 
-		$indexes = $wpdb->get_results( $wpdb->prepare( "SHOW INDEX FROM %1s", $this->get_tablename() ), ARRAY_A ); // phpcs:ignore -- We don't need quote here so this is fine.
+		$indexes = $wpdb->get_results( $wpdb->prepare( 'SHOW INDEX FROM %1s', $this->get_tablename() ), ARRAY_A ); // phpcs:ignore -- We don't need quote here so this is fine.
 
 		if ( empty( $indexes ) ) {
 			return [];
@@ -528,7 +488,7 @@ abstract class Base {
 	 *                       If omitted, all values in `$data` will be treated as strings unless otherwise
 	 *                       specified in wpdb::$field_types. Default null.
 	 * @since 0.0.10
-	 * @return int|false The number of rows inserted, or false on error.
+	 * @return int|false The id of the inserted entry, or false on error.
 	 */
 	public function use_insert( $data, $format = null ) {
 		$prepared_data = $this->prepare_data( $data );
@@ -537,12 +497,13 @@ abstract class Base {
 			/**
 			 * Use formats from schema if not provided explicitly.
 			 *
-			 * @var array<string>|string|null
+			 * @var array<string>|string|null $format Format specifier for the data.
 			 */
 			$format = $prepared_data['format'];
 		}
 
-		return $this->wpdb->insert( $this->get_tablename(), $prepared_data['data'], $format );
+		$result = $this->wpdb->insert( $this->get_tablename(), $prepared_data['data'], $format );
+		return $result ? $this->wpdb->insert_id : false;
 	}
 
 	/**
@@ -557,7 +518,7 @@ abstract class Base {
 	 *                               Both $where columns and $where values should be "raw".
 	 *                               Sending a null value will create an IS NULL comparison - the corresponding
 	 *                               format will be ignored in this case.
-	 * @since x.x.x
+	 * @since 0.0.13
 	 * @return int|false The number of rows updated, or false on error.
 	 */
 	public function use_update( $data, $where ) { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore -- It is okay. This is our wrapper method.
@@ -566,7 +527,7 @@ abstract class Base {
 		/**
 		 * Data format specifier.
 		 *
-		 * @var array<string>|string|null
+		 * @var array<string>|string|null $format Format specifier for the data.
 		 */
 		$format = $prepared_data['format'];
 
@@ -581,17 +542,17 @@ abstract class Base {
 	/**
 	 * Delete a row data of current table. Basically, a wrapper method for wpdb::delete.
 	 *
-	 * @param array<string,mixed> $where        A named array of WHERE clauses (in column => value pairs).
-	 *                            Multiple clauses will be joined with ANDs.
-	 *                            Both $where columns and $where values should be "raw".
-	 *                            Sending a null value will create an IS NULL comparison - the corresponding
-	 *                            format will be ignored in this case.
-	 * @param string[]|string     $where_format Optional. An array of formats to be mapped to each of the values in $where.
-	 *                                          If string, that format will be used for all of the items in $where.
-	 *                                          A format is one of '%d', '%f', '%s' (integer, float, string).
-	 *                                          If omitted, all values in $data will be treated as strings unless otherwise
-	 *                                          specified in wpdb::$field_types. Default null.
-	 * @since x.x.x
+	 * @param array<string,mixed>  $where        A named array of WHERE clauses (in column => value pairs).
+	 *                             Multiple clauses will be joined with ANDs.
+	 *                             Both $where columns and $where values should be "raw".
+	 *                             Sending a null value will create an IS NULL comparison - the corresponding
+	 *                             format will be ignored in this case.
+	 * @param array<string>|string $where_format Optional. An array of formats to be mapped to each of the values in $where.
+	 *                                      If string, that format will be used for all of the items in $where.
+	 *                                      A format is one of '%d', '%f', '%s' (integer, float, string).
+	 *                                      If omitted, all values in $data will be treated as strings unless otherwise
+	 *                                      specified in wpdb::$field_types. Default null.
+	 * @since 0.0.13
 	 * @return int|false The number of rows deleted, or false on error.
 	 */
 	public function use_delete( $where, $where_format = null ) {
@@ -611,7 +572,7 @@ abstract class Base {
 	 *                               Default is an empty array.
 	 * @param string        $columns Optional. A string specifying which columns to select. Defaults to '*' (all columns).
 	 * @param array<string> $extra_queries Optional. Array of extra queries to append at the end of main query.
-	 * @param boolean       $decode Optional. Whether to decode the results by datatype. Default is true.
+	 * @param bool          $decode Optional. Whether to decode the results by datatype. Default is true.
 	 * @since 0.0.10
 	 * @return array<mixed> An associative array of results where each element represents a row, or an empty array if no results are found.
 	 */
@@ -656,7 +617,7 @@ abstract class Base {
 	 * Get the total number of rows in the table.
 	 *
 	 * @param array<mixed> $where_clauses Optional. An associative array of WHERE clauses for the SQL query.
-	 * @since x.x.x
+	 * @since 0.0.13
 	 * @return int The total number of rows in the table.
 	 */
 	public function get_total_count( $where_clauses = [] ) {
@@ -687,6 +648,45 @@ abstract class Base {
 	}
 
 	/**
+	 * Retrieve a cached value by its key.
+	 *
+	 * @param string $key The cache key.
+	 * @since 0.0.10
+	 * @return mixed|null The cached value if it exists, or null if the key does not exist in the cache.
+	 */
+	protected function cache_get( $key ) {
+		$key = md5( $key );
+		if ( ! isset( $this->caches[ $key ] ) ) {
+			return null;
+		}
+		return $this->caches[ $key ];
+	}
+
+	/**
+	 * Store a value in the cache with the specified key.
+	 *
+	 * @param string $key The cache key.
+	 * @param mixed  $value The value to store in the cache.
+	 * @since 0.0.10
+	 * @return mixed The stored value.
+	 */
+	protected function cache_set( $key, $value ) {
+		$key                  = md5( $key );
+		$this->caches[ $key ] = $value;
+		return $value;
+	}
+
+	/**
+	 * Reset the cache by clearing all stored values.
+	 *
+	 * @since 0.0.10
+	 * @return void
+	 */
+	protected function cache_reset() {
+		$this->caches = [];
+	}
+
+	/**
 	 * Prepares WHERE clauses for a SQL query based on the provided conditions.
 	 *
 	 * This method constructs a WHERE statement by iterating through the
@@ -707,7 +707,7 @@ abstract class Base {
 	 *     }
 	 * }
 	 *
-	 * @since x.x.x
+	 * @since 0.0.13
 	 * @return string The prepared SQL WHERE clause with placeholders, or an empty string if no clauses were provided.
 	 */
 	protected function prepare_where_clauses( $where_clauses = [] ) {
@@ -769,7 +769,7 @@ abstract class Base {
 	 *
 	 * @param array<mixed> $data An associative array of data where the key is the column name and the value is the data to process.
 	 *                    Missing values will be replaced with default values specified in the schema.
-	 * @param boolean      $skip_defaults Whether or not to skip the defaults values. Pass true if updating the data.
+	 * @param bool         $skip_defaults Whether or not to skip the defaults values. Pass true if updating the data.
 	 * @since 0.0.10
 	 * @return array<array<mixed>> An associative array containing:
 	 *                - 'data': Prepared data with values encoded according to their data types.

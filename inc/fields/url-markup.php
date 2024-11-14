@@ -40,7 +40,7 @@ class Url_Markup extends Base {
 	 * Render the sureforms url classic styling
 	 *
 	 * @since 0.0.2
-	 * @return string|boolean
+	 * @return string|bool
 	 */
 	public function markup() {
 		ob_start(); ?>
@@ -50,7 +50,7 @@ class Url_Markup extends Base {
 				<div class="srfm-block-wrap">
 					<input class="srfm-input-common srfm-input-<?php echo esc_attr( $this->slug ); ?>" type="text" name="<?php echo esc_attr( $this->field_name ); ?>" id="<?php echo esc_attr( $this->unique_slug ); ?>"
 					<?php echo ! empty( $this->aria_described_by ) ? "aria-describedby='" . esc_attr( trim( $this->aria_described_by ) ) . "'" : ''; ?>
-					aria-required="<?php echo esc_attr( $this->aria_require_attr ); ?>" <?php echo wp_kses_post( $this->default_value_attr ); ?> <?php echo wp_kses_post( $this->placeholder_attr ); ?>/>
+					data-required="<?php echo esc_attr( $this->data_require_attr ); ?>" <?php echo wp_kses_post( $this->default_value_attr ); ?> <?php echo wp_kses_post( $this->placeholder_attr ); ?>/>
 					<?php echo $this->error_svg; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Ignored to render svg ?>
 				</div>
 				<div class="srfm-error-wrap">
@@ -61,4 +61,3 @@ class Url_Markup extends Base {
 		return ob_get_clean();
 	}
 }
-

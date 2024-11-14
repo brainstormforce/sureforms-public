@@ -8,12 +8,11 @@
 
 namespace SRFM\Inc;
 
+use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Traits\Get_Instance;
 use WP_Error;
-use WP_REST_Request;
-use WP_Post_Type;
-use WP_Query;
 use WP_Post;
+use WP_Post_Type;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -47,7 +46,6 @@ class Helper {
 		];
 	}
 
-
 	/**
 	 * Checks if current value is string or else returns default value
 	 *
@@ -59,13 +57,14 @@ class Helper {
 	public static function get_string_value( $data ) {
 		if ( is_scalar( $data ) ) {
 			return (string) $data;
-		} elseif ( is_object( $data ) && method_exists( $data, '__toString' ) ) {
+		}
+		if ( is_object( $data ) && method_exists( $data, '__toString' ) ) {
 			return $data->__toString();
-		} elseif ( is_null( $data ) ) {
-			return '';
-		} else {
+		}
+		if ( is_null( $data ) ) {
 			return '';
 		}
+			return '';
 	}
 	/**
 	 * Checks if current value is number or else returns default value
@@ -79,12 +78,12 @@ class Helper {
 	public static function get_integer_value( $value, $base = 10 ) {
 		if ( is_numeric( $value ) ) {
 			return (int) $value;
-		} elseif ( is_string( $value ) ) {
+		}
+		if ( is_string( $value ) ) {
 			$trimmed_value = trim( $value );
 			return intval( $trimmed_value, $base );
-		} else {
-			return 0;
 		}
+			return 0;
 	}
 
 	/**
@@ -98,11 +97,11 @@ class Helper {
 	public static function get_array_value( $data ) {
 		if ( is_array( $data ) ) {
 			return $data;
-		} elseif ( is_null( $data ) ) {
-			return [];
-		} else {
-			return (array) $data;
 		}
+		if ( is_null( $data ) ) {
+			return [];
+		}
+			return (array) $data;
 	}
 
 	/**
@@ -134,14 +133,13 @@ class Helper {
 			[
 				'url'      => 'esc_url_raw',
 				'input'    => 'sanitize_text_field',
-				'number'   => [ __CLASS__, 'sanitize_number' ],
+				'number'   => [ self::class, 'sanitize_number' ],
 				'email'    => 'sanitize_email',
 				'textarea' => 'sanitize_textarea_field',
 			]
 		);
 
-		return isset( $callbacks[ $field_type ] ) ? $callbacks[ $field_type ] : 'sanitize_text_field';
-
+		return $callbacks[ $field_type ] ?? 'sanitize_text_field';
 	}
 
 	/**
@@ -153,7 +151,7 @@ class Helper {
 	 *
 	 * @param mixed $value The value to be sanitized.
 	 * @since 0.0.6
-	 * @return integer|float|string The sanitized value.
+	 * @return int|float|string The sanitized value.
 	 */
 	public static function sanitize_number( $value ) {
 		if ( ! is_numeric( $value ) ) {
@@ -188,7 +186,6 @@ class Helper {
 		}
 
 		return $result;
-
 	}
 
 	/**
@@ -240,10 +237,10 @@ class Helper {
 
 		switch ( $type ) {
 			case 'label':
-				$markup = $label ? '<label for="srfm-' . $slug . '-' . esc_attr( $block_id ) . '" class="srfm-block-label">' . htmlspecialchars_decode( esc_html( $label ) ) . ( $required ? '<span class="srfm-required"> *</span>' : '' ) . '</label>' : '';
+				$markup = $label ? '<label for="srfm-' . $slug . '-' . esc_attr( $block_id ) . '" class="srfm-block-label">' . htmlspecialchars_decode( esc_html( $label ) ) . ( $required ? '<span class="srfm-required" aria-label="' . esc_attr__( 'Required', 'sureforms' ) . '"><span aria-hidden="true"> *</span></span>' : '' ) . '</label>' : '';
 				break;
 			case 'help':
-				$markup = $help ? '<div class="srfm-description" id="srfm-description-' . esc_attr( $block_id ) . '">' . esc_html( $help ) . '</div>' : '';
+				$markup = $help ? '<div class="srfm-description" id="srfm-description-' . esc_attr( $block_id ) . '">' . wp_kses_post( htmlspecialchars_decode( $help ) ) . '</div>' : '';
 				break;
 			case 'error':
 				$markup = $required || $override ? '<div class="srfm-error-message" id="srfm-error-' . esc_attr( $block_id ) . '" data-error-msg="' . esc_attr( $error_msg ) . '"' . $duplicate_msg . '>' . esc_html( $error_msg ) . '</div>' : '';
@@ -260,7 +257,6 @@ class Helper {
 
 		return $markup;
 	}
-
 
 	/**
 	 * Get an SVG Icon
@@ -283,12 +279,11 @@ class Helper {
 			self::$srfm_svgs = apply_filters( 'srfm_svg_icons', self::$srfm_svgs );
 		}
 
-		$output .= isset( self::$srfm_svgs[ $icon ] ) ? self::$srfm_svgs[ $icon ] : '';
+		$output .= self::$srfm_svgs[ $icon ] ?? '';
 		$output .= '</span>';
 
 		return $output;
 	}
-
 
 	/**
 	 * Encrypt data using base64.
@@ -305,8 +300,7 @@ class Helper {
 
 		// Encrypt the input and return it.
 		$base_64 = base64_encode( $input ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
-		$encode  = rtrim( $base_64, '=' );
-		return $encode;
+		return rtrim( $base_64, '=' );
 	}
 
 	/**
@@ -324,8 +318,7 @@ class Helper {
 
 		// Decrypt the input and return it.
 		$base_64 = $input . str_repeat( '=', strlen( $input ) % 4 );
-		$decode  = base64_decode( $base_64 ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_decode
-		return $decode;
+		return base64_decode( $base_64 ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_decode
 	}
 
 	/**
@@ -361,8 +354,7 @@ class Helper {
 			return self::get_string_value( $srfm_live_mode_data[ $key ] );
 		}
 
-		$meta_value = get_post_meta( self::get_integer_value( $post_id ), $key, $single ) ? self::get_string_value( get_post_meta( self::get_integer_value( $post_id ), $key, $single ) ) : self::get_string_value( $default );
-		return $meta_value;
+		return get_post_meta( self::get_integer_value( $post_id ), $key, $single ) ? self::get_string_value( get_post_meta( self::get_integer_value( $post_id ), $key, $single ) ) : self::get_string_value( $default );
 	}
 
 	/**
@@ -371,7 +363,7 @@ class Helper {
 	 * @param int|string $post_id Post ID.
 	 * @param string     $key The meta key to retrieve.
 	 * @param mixed      $default Default value.
-	 * @param boolean    $single Optional. Whether to return a single value.
+	 * @param bool       $single Optional. Whether to return a single value.
 	 * @since 0.0.8
 	 * @return mixed Meta value.
 	 */
@@ -391,19 +383,18 @@ class Helper {
 
 		return $srfm_live_mode_data ? array_map(
 			// Normalize falsy values.
-			function( $live_data ) {
+			static function( $live_data ) {
 				return 'false' === $live_data ? false : $live_data;
 			},
 			$srfm_live_mode_data
 		) : [];
 	}
 
-
 	/**
 	 * Default dynamic block value.
 	 *
 	 * @since 0.0.1
-	 * @return string[] Meta value.
+	 * @return array<string> Meta value.
 	 */
 	public static function default_dynamic_block_option() {
 
@@ -428,7 +419,6 @@ class Helper {
 		];
 
 		return apply_filters( 'srfm_default_dynamic_block_option', $default_values, $common_err_msg );
-
 	}
 
 	/**
@@ -440,13 +430,12 @@ class Helper {
 	 */
 	public static function get_default_dynamic_block_option( $key ) {
 		$default_dynamic_values = self::default_dynamic_block_option();
-		$option                 = get_option( 'get_default_dynamic_block_option', $default_dynamic_values );
+		$option                 = get_option( 'srfm_default_dynamic_block_option', $default_dynamic_values );
 
 		if ( is_array( $option ) && array_key_exists( $key, $option ) ) {
 			return $option[ $key ];
-		} else {
-			return '';
 		}
+			return '';
 	}
 
 	/**
@@ -504,39 +493,36 @@ class Helper {
 	 * @param int        $days_old The number of days old the entries should be.
 	 * @param array<int> $sf_form_ids The form ids for which the entries need to be fetched.
 	 * @since 0.0.2
-	 * @return array<int|WP_Post> the entries matching the criteria.
+	 * @return array<mixed> the entries matching the criteria.
 	 */
 	public static function get_entries_from_form_ids( $days_old = 0, $sf_form_ids = [] ) {
 
-		$entries = [];
+		$entries       = [];
+		$days_old_date = ( new \DateTime() )->modify( "-{$days_old} days" )->format( 'Y-m-d H:i:s' );
 
 		foreach ( $sf_form_ids as $form_id ) {
+			// args according to the get_all() function in the Entries class.
 			$args = [
-				'post_type'   => 'sureforms_entry',
-				'post_status' => 'publish',
-				'date_query'  => [
+				'where' => [
 					[
-						'before' => $days_old . ' days ago',
-					],
-				],
-				'meta_query' // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query. -- We require meta_query for this function to work.
-				=> [
-					[
-						'key'     => '_srfm_entry_form_id',
-						'value'   => $form_id,
-						'compare' => '=',
+						[
+							'key'     => 'form_id',
+							'value'   => $form_id,
+							'compare' => '=',
+						],
+						[
+							'key'     => 'created_at',
+							'value'   => $days_old_date,
+							'compare' => '<=',
+						],
 					],
 				],
 			];
 
-			$query = new WP_Query( $args );
-
-			// store all the entries in an single array.
-			$entries = array_merge( $entries, $query->posts );
+			// store all the entries in a single array.
+			$entries = array_merge( $entries, Entries::get_all( $args, false ) );
 		}
-
 		return $entries;
-
 	}
 
 	/**
@@ -639,12 +625,12 @@ class Helper {
 	 */
 	public static function get_css_vars( $field_spacing = null ) {
 		/**
-		* $sizes - Field Spacing Sizes Variables.
-		* The array contains the CSS variables for different field spacing sizes.
-		* Each key corresponds to the field spacing size, and the value is an array of CSS variables.
-		*
-		* For future variables depending on the field spacing size, add the variable to the array respectively.
-		*/
+		 * $sizes - Field Spacing Sizes Variables.
+		 * The array contains the CSS variables for different field spacing sizes.
+		 * Each key corresponds to the field spacing size, and the value is an array of CSS variables.
+		 *
+		 * For future variables depending on the field spacing size, add the variable to the array respectively.
+		 */
 		$sizes = apply_filters(
 			'srfm_css_vars_sizes',
 			[
@@ -828,7 +814,7 @@ class Helper {
 	 * @param array<string>              $slugs The array of existing slugs.
 	 * @param bool                       $updated The array of existing slugs.
 	 * @param string                     $prefix The array of existing slugs.
-	 * @param boolean                    $skip_checking_existing_slug Skips the checking of existing slug if passed true. More information documented inside this function.
+	 * @param bool                       $skip_checking_existing_slug Skips the checking of existing slug if passed true. More information documented inside this function.
 	 * @since 0.0.10
 	 * @return array{array<array<array<mixed>>>,array<string>,bool}
 	 */
@@ -881,7 +867,7 @@ class Helper {
 				$updated                              = true;
 				if ( is_array( $block['innerBlocks'] ) && ! empty( $block['innerBlocks'] ) ) {
 
-					list( $blocks[ $index ]['innerBlocks'], $slugs, $updated ) = self::process_blocks( $block['innerBlocks'], $slugs, $updated, $blocks[ $index ]['attrs']['slug'] );
+					[ $blocks[ $index ]['innerBlocks'], $slugs, $updated ] = self::process_blocks( $block['innerBlocks'], $slugs, $updated, $blocks[ $index ]['attrs']['slug'] );
 
 				}
 			}
@@ -909,9 +895,7 @@ class Helper {
 			$slug = $prefix . '-' . $slug;
 		}
 
-		$slug = self::generate_slug( $slug, $slugs );
-
-		return $slug;
+		return self::generate_slug( $slug, $slugs );
 	}
 
 	/**
@@ -950,4 +934,24 @@ class Helper {
 		return wp_json_encode( $data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE );
 	}
 
+	/**
+	 * Returns true if SureTriggers plugin is ready for the custom app.
+	 *
+	 * @since 1.0.3
+	 * @return bool Returns true if SureTriggers plugin is ready for the custom app.
+	 */
+	public static function is_suretriggers_ready() {
+		if ( ! defined( 'SURE_TRIGGERS_FILE' ) ) {
+			// Probably plugin is de-activated or not installed at all.
+			return false;
+		}
+
+		$suretriggers_data = get_option( 'suretrigger_options', [] );
+		if ( ! is_array( $suretriggers_data ) || empty( $suretriggers_data['secret_key'] ) || ! is_string( $suretriggers_data['secret_key'] ) ) {
+			// SureTriggers is not authenticated yet.
+			return false;
+		}
+
+		return true;
+	}
 }
