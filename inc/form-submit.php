@@ -461,6 +461,18 @@ class Form_Submit {
 			}
 		}
 
+		$modified_message = $this->prepare_submission_data( $submission_data );
+
+		$form_before_submission_data = [
+			'form_id' => $id ? intval( $id ) : '',
+			'data'    => $modified_message,
+		];
+
+		/**
+		 * Fires before submission process starts.
+		 */
+		do_action( 'srfm_before_submission', $form_before_submission_data );
+
 		$name       = sanitize_text_field( get_the_title( intval( $id ) ) );
 		$send_email = $this->send_email( $id, $submission_data, $form_data );
 		$emails     = [];
@@ -472,8 +484,6 @@ class Form_Submit {
 		// Check if GDPR is enabled and do not store entries is enabled.
 		// If so, send email and do not store entries.
 		if ( $gdpr && $do_not_store_entries ) {
-
-			$modified_message = $this->prepare_submission_data( $submission_data );
 
 			$form_submit_response = [
 				'success'   => true,
@@ -551,8 +561,6 @@ class Form_Submit {
 				],
 				'redirect_url' => Generate_Form_Markup::get_redirect_url( $form_data, $submission_data ),
 			];
-
-			$modified_message = $this->prepare_submission_data( $submission_data );
 
 			$form_submit_response = apply_filters(
 				'srfm_form_submit_response',

@@ -257,6 +257,7 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 = x.x.x =
 * New: Added a smart tag {form_title} that dynamically inserts the form's title.
 * New: Voice input for AI Form Builder.
+* Improvement: Added action which fires before form submission.
 * Improvement: Increased number of entries per page and form redirect link.
 * Fix: Multi Choice block images get cut-off on the Front-End.
 * Fix: Labels are not processing html tags correctly in email and entries.
