@@ -11,15 +11,16 @@ import dropdownAttributes from '@Blocks/dropdown/block.json';
 import gdprAttributes from '@Blocks/gdpr/block.json';
 import inlineButton from '@Blocks/inline-button/block.json';
 import { getDefaultMessage } from '@Blocks/util';
+import { __ } from '@wordpress/i18n';
 
 const defaultKeys = {
 	// General Tab
 	// Submit button
-	_srfm_submit_button_text: { default: 'Submit' },
+	_srfm_submit_button_text: { default: __( 'Submit', 'sureforms' ) },
 	// Page Break
-	first_page_label: { default: 'Page Break Label' },
-	next_button_text: { default: 'Next' },
-	back_button_text: { default: 'Back' },
+	first_page_label: { default: __( 'Page Break Label', 'sureforms' ) },
+	next_button_text: { default: __( 'Next', 'sureforms' ) },
+	back_button_text: { default: __( 'Back', 'sureforms' ) },
 	// Style Tab
 	// Form Container
 	primary_color: { default: '#0C78FB' },

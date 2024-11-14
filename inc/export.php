@@ -58,7 +58,7 @@ class Export {
 	 */
 	public function handle_export_form() {
 		if ( isset( $_POST['nonce'] ) && ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'export_form_nonce' ) ) {
-			$error_message = 'Nonce verification failed.';
+			$error_message = __( 'Nonce verification failed.', 'sureforms' );
 
 			$error_data = [
 				'error' => $error_message,

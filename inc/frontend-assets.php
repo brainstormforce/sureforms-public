@@ -126,6 +126,7 @@ class Frontend_Assets {
 			[
 				'site_url' => site_url(),
 				'nonce'    => wp_create_nonce( 'wp_rest' ),
+				'messages' => Translatable::get_frontend_validation_messages(),
 			]
 		);
 	}
@@ -211,15 +212,6 @@ class Frontend_Assets {
 					],
 					SRFM_VER,
 					true
-				);
-
-				wp_localize_script(
-					SRFM_SLUG . '-form-submit',
-					SRFM_SLUG . '_submit',
-					[
-						'site_url' => site_url(),
-						'nonce'    => wp_create_nonce( 'wp_rest' ),
-					]
 				);
 			}
 
