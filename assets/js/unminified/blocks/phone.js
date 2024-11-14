@@ -9,9 +9,11 @@ function initializePhoneField() {
 		const itlOptions = {
 			autoPlaceholder: 'off',
 			separateDialCode: true,
-			hiddenInput: () => ({ phone: "full_phone", country: "country_code" }),
+			hiddenInput: () => ( {
+				phone: phoneFieldName,
+			} ),
 			countrySearch: false,
-			initialCountry: "us",
+			initialCountry: 'us',
 		};
 
 		if ( isAutoCountry === 'true' ) {
@@ -33,7 +35,9 @@ function initializePhoneField() {
 		const iti = window.intlTelInput( phoneNumber, itlOptions );
 
 		// handle padding based on the direction of the page
-		const selectedCountry = element.querySelector( '.iti__selected-country-primary' );
+		const selectedCountry = element.querySelector(
+			'.iti__selected-country-primary'
+		);
 		if ( getComputedStyle( document.body ).direction === 'rtl' ) {
 			selectedCountry.style.paddingLeft = '0';
 		} else {
