@@ -227,7 +227,7 @@ class Frontend_Assets {
 				wp_enqueue_script( SRFM_SLUG . "-{$block_name}", $js_uri . $block_name . $file_prefix . '.js', [], SRFM_VER, true );
 
 				if ( 'phone' === $block_name ) {
-					// localize rtl
+					// localize rtl for the phone block.
 					wp_localize_script(
 						SRFM_SLUG . "-{$block_name}",
 						'srfm_phone_data',
