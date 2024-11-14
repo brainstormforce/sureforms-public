@@ -463,10 +463,15 @@ class Form_Submit {
 
 		$modified_message = $this->prepare_submission_data( $submission_data );
 
+		$form_before_submission_data = [
+			'form_id' => $id ? intval( $id ) : '',
+			'data'    => $modified_message,
+		];
+
 		/**
 		 * Fires before submission process starts.
 		 */
-		do_action( 'srfm_before_submission', $modified_message, $id );
+		do_action( 'srfm_before_submission', $form_before_submission_data );
 
 		$name       = sanitize_text_field( get_the_title( intval( $id ) ) );
 		$send_email = $this->send_email( $id, $submission_data, $form_data );
