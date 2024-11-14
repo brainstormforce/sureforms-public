@@ -176,6 +176,9 @@ class Updater {
 			'1.0.2' => [
 				'SRFM\Inc\Updater_Callbacks::manage_default_dynamic_options',
 			],
+			'1.0.4' => [
+				'SRFM\Inc\Updater_Callbacks::manage_empty_default_dynamic_options',
+			],
 		];
 	}
 
