@@ -189,7 +189,7 @@ class Post_Types {
 	 */
 	public function modify_entries_list_row_actions( $actions, $post ) {
 		if ( 'sureforms_form' === $post->post_type ) {
-			$actions['export'] = '<a href="#" onclick="exportForm(' . $post->ID . ')">Export</a>';
+			$actions['export'] = '<a href="#" onclick="exportForm(' . $post->ID . ')">' . __( 'Export', 'sureforms' ) . '</a>';
 		}
 
 		return $actions;
@@ -523,12 +523,12 @@ class Post_Types {
 						'id'             => 1,
 						'status'         => true,
 						'is_raw_format'  => false,
-						'name'           => 'Admin Notification Email',
+						'name'           => __( 'Admin Notification Email', 'sureforms' ),
 						'email_to'       => '{admin_email}',
 						'email_reply_to' => '{admin_email}',
 						'email_cc'       => '{admin_email}',
 						'email_bcc'      => '{admin_email}',
-						'subject'        => 'New Form Submission',
+						'subject'        => __( 'New Form Submission', 'sureforms' ),
 						'email_body'     => '{all_data}',
 					],
 				],
@@ -747,7 +747,7 @@ class Post_Types {
 					<p class="srfm-import-help"><?php echo esc_html__( 'Please choose the SureForms export file (.json) that you wish to import.', 'sureforms' ); ?></p>
 					<form method="post" enctype="multipart/form-data" class="srfm-import-form">
 						<input type="file" id="srfm-import-file" onchange="handleFileChange(event)" name="import form" accept=".json">
-						<input type="submit" name="import-form-submit" id="import-form-submit" class="srfm-import-button" value="Import Now" disabled>
+						<input type="submit" name="import-form-submit" id="import-form-submit" class="srfm-import-button" value="<?php esc_attr_e( 'Import Now', 'sureforms' ); ?>" disabled>
 					</form>
 					<p id="srfm-import-error"><?php echo esc_html__( 'There is some error in json file, please export the SureForms Forms again.', 'sureforms' ); ?></p>
 				</div>

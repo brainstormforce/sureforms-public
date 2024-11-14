@@ -63,9 +63,10 @@ class Single_Entry {
 		if ( ! $this->entry ) {
 			return;
 		}
-		$entry_status    = $this->entry['status'];
-		$submitted_on    = gmdate( 'Y/m/d \a\t g:i a', strtotime( $this->entry['created_at'] ) );
-		$form_name       = ! empty( get_the_title( $this->entry['form_id'] ) ) ? get_the_title( $this->entry['form_id'] ) : 'SureForms Form #' . intval( $this->entry['form_id'] );
+		$entry_status = $this->entry['status'];
+		$submitted_on = gmdate( 'Y/m/d \a\t g:i a', strtotime( $this->entry['created_at'] ) );
+		// Translators: %d is the form ID.
+		$form_name       = ! empty( get_the_title( $this->entry['form_id'] ) ) ? get_the_title( $this->entry['form_id'] ) : sprintf( esc_html__( 'SureForms Form #%d', 'sureforms' ), intval( $this->entry['form_id'] ) );
 		$meta_data       = $this->entry['form_data'];
 		$excluded_fields = [ 'srfm-honeypot-field', 'g-recaptcha-response', 'srfm-sender-email-field' ];
 		$entry_logs      = $this->entry['logs'];
@@ -267,7 +268,7 @@ class Single_Entry {
 															<?php if ( $is_image ) { ?>
 																		<div class="file-card-image">
 																			<a target="_blank" href="<?php echo esc_attr( urldecode( $file_url ) ); ?>">
-																				<img src="<?php echo esc_attr( urldecode( $file_url ) ); ?>" alt="img" />
+																				<img src="<?php echo esc_attr( urldecode( $file_url ) ); ?>" alt="<?php esc_attr_e( 'Image', 'sureforms' ); ?>" />
 																			</a>
 																		</div>
 															<?php } else { ?>

@@ -182,6 +182,8 @@ class Gutenberg_Hooks {
 				'admin_email' => get_option( 'admin_email' ),
 			]
 		);
+
+		Helper::register_script_translations( SRFM_SLUG . $form_editor_script );
 	}
 
 	/**
@@ -202,6 +204,8 @@ class Gutenberg_Hooks {
 				'version'      => SRFM_VER,
 			];
 		wp_enqueue_script( SRFM_SLUG . $all_screen_blocks, SRFM_URL . 'assets/build/blocks.js', $blocks_info['dependencies'], SRFM_VER, true );
+
+		Helper::register_script_translations( SRFM_SLUG . $all_screen_blocks );
 
 		wp_localize_script(
 			SRFM_SLUG . $all_screen_blocks,
