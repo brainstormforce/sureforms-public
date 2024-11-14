@@ -211,3 +211,23 @@
 		}
 	}
 }
+
+html[dir="rtl"] {
+	.srfm-form-container {
+		.srfm-form {
+			.srfm-block {
+				.srfm-dropdown-common-wrap {
+					.srfm-dropdown-common {
+						// In case of multiple selection, display the selected options as badges.
+						&.multi {
+							&.has-items .ts-control {
+								// padding: var( --srfm-dropdown-multiselect-padding ) !important; // Override the default padding.
+								padding: 8px !important; // Override the default padding.
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
