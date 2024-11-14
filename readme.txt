@@ -255,6 +255,7 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 
 == Changelog ==
 = x.x.x =
+* Improvement: Updated intl-tel-input version to 24.7.0
 * Fix: RTL fix for all the blocks.
 * Fix: Labels are not processing html tags correctly in email and entries.
 = 1.0.4 - 12th November 2024 =

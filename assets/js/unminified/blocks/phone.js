@@ -7,8 +7,6 @@ function initializePhoneField() {
 		const isAutoCountry = phoneNumber.getAttribute( 'auto-country' );
 		const phoneFieldName = phoneNumber.getAttribute( 'name' );
 		const itlOptions = {
-			// loadUtilsOnInit: '../../minified/deps/intl/utils.js',
-			loadUtilsOnInit: 'https://cdn.jsdelivr.net/npm/intl-tel-input@24.7.0/build/js/utils.js',
 			autoPlaceholder: 'off',
 			separateDialCode: true,
 			hiddenInput: () => ({ phone: "full_phone", country: "country_code" }),
