@@ -111,7 +111,7 @@ class Field_Mapping {
 					}
 					if ( 'multi-choice' === $question['fieldType'] ) {
 
-						// if any icon are same then remove the icon from the options using array_unique.
+						// if any icon are same then remove the icon from the icons using array_unique.
 						$icons        = array_column( $question['fieldOptions'], 'icon' );
 						$unique_icons = array_unique( $icons );
 						if ( count( $unique_icons ) === 1 ) {
@@ -126,9 +126,16 @@ class Field_Mapping {
 							$merged_attributes['options'] = $question['fieldOptions'];
 						}
 
-						// if every option has an icon then set the verticalLayout to true.
-						if ( count( $icons ) === count( array_filter( $icons ) ) ) {
-							$merged_attributes['verticalLayout'] = true;
+						// if every $merged_attributes['options'] has an icon then set the verticalLayout to true.
+						if ( isset( $merged_attributes['options'] ) && is_array( $merged_attributes['options'] ) ) {
+							foreach ( $merged_attributes['options'] as $option ) {
+								if ( ! empty( $option['icon'] ) ) {
+									$merged_attributes['verticalLayout'] = true;
+								} else {
+									$merged_attributes['verticalLayout'] = false;
+									break;
+								}
+							}
 						}
 
 						if ( ! empty( $question['singleSelection'] ) ) {
