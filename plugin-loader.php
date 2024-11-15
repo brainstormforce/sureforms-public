@@ -62,6 +62,9 @@ class Plugin_Loader {
 	 * @since 0.0.1
 	 */
 	public function __construct() {
+		if ( ! defined( 'SRFM_DIR' ) || ! defined( 'SRFM_FILE' ) ) {
+			return;
+		}
 		// Load the action scheduler before plugin loads.
 		require_once SRFM_DIR . 'inc/lib/action-scheduler/action-scheduler.php';
 
