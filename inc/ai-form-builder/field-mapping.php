@@ -111,38 +111,35 @@ class Field_Mapping {
 					}
 					if ( 'multi-choice' === $question['fieldType'] ) {
 
-						// if any icon are same then remove the icon from the icons using array_unique.
+						// Remove duplicate icons and clear icons if all are the same.
 						$icons        = array_column( $question['fieldOptions'], 'icon' );
 						$unique_icons = array_unique( $icons );
 						if ( count( $unique_icons ) === 1 ) {
-							foreach ( $question['fieldOptions'] as $key => $option ) {
-								$question['fieldOptions'][ $key ]['icon'] = '';
+							foreach ( $question['fieldOptions'] as &$option ) {
+								$option['icon'] = '';
 							}
 						}
 
-						if ( ! empty( $question['fieldOptions'] ) && is_array( $question['fieldOptions'] )
-						&& ! empty( $question['fieldOptions'][0]['optionTitle'] )
-						) {
+						// Set options if they are valid.
+						if ( ! empty( $question['fieldOptions'][0]['optionTitle'] ) ) {
 							$merged_attributes['options'] = $question['fieldOptions'];
 						}
 
-						// if every $merged_attributes['options'] has an icon then set the verticalLayout to true.
-						if ( isset( $merged_attributes['options'] ) && is_array( $merged_attributes['options'] ) ) {
-							foreach ( $merged_attributes['options'] as $option ) {
-								if ( ! empty( $option['icon'] ) ) {
-									$merged_attributes['verticalLayout'] = true;
-								} else {
-									$merged_attributes['verticalLayout'] = false;
-									break;
-								}
-							}
+						// Determine vertical layout based on icons.
+						if ( ! empty( $merged_attributes['options'] ) ) {
+							$merged_attributes['verticalLayout'] = array_reduce(
+								$merged_attributes['options'],
+								static fn( $carry, $option ) => $carry && ! empty( $option['icon'] ),
+								true
+							);
 						}
 
-						if ( ! empty( $question['singleSelection'] ) ) {
+						// Set single selection if provided.
+						if ( isset( $question['singleSelection'] ) ) {
 							$merged_attributes['singleSelection'] = filter_var( $question['singleSelection'], FILTER_VALIDATE_BOOLEAN );
 						}
 
-						// if number of options is a multiple of 3 then set the choiceWidth to 33.3.
+						// Set choiceWidth for options divisible by 3.
 						if ( ! empty( $merged_attributes['options'] ) && count( $merged_attributes['options'] ) % 3 === 0 ) {
 							$merged_attributes['choiceWidth'] = 33.33;
 						}
