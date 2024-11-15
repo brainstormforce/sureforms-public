@@ -151,6 +151,15 @@ class Plugin_Loader {
 	 * @since 0.0.1
 	 */
 	public function activation_redirect() {
+		// Avoid redirection in case of WP_CLI calls.
+		if ( defined( 'WP_CLI' ) && \WP_CLI ) {
+			return;
+		}
+
+		// Avoid redirection in case of ajax calls.
+		if ( wp_doing_ajax() ) {
+			return;
+		}
 
 		$do_redirect = apply_filters( 'srfm_enable_redirect_activation', get_option( '__srfm_do_redirect' ) );
 
