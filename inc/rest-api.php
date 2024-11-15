@@ -113,6 +113,50 @@ class Rest_Api {
 	}
 
 	/**
+	 * Get the data for generating entries chart.
+	 *
+	 * @param \WP_REST_Request $request Full details about the request.
+	 * @since 1.0.0
+	 * @return array<mixed>
+	 */
+	public function get_entries_chart_data( $request ) {
+		$nonce = Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) );
+
+		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
+			wp_send_json_error( __( 'Nonce verification failed.', 'sureforms' ) );
+		}
+
+		$params = $request->get_params();
+
+		if ( empty( $params ) ) {
+			wp_send_json_error( __( 'Request could not be processed.', 'sureforms' ) );
+		}
+
+		$after = is_array( $params ) && ! empty( $params['after'] ) ? sanitize_text_field( Helper::get_string_value( $params['after'] ) ) : '';
+
+		if ( empty( $after ) ) {
+			wp_send_json_error( __( 'Invalid date.', 'sureforms' ) );
+		}
+
+		$where = [
+			[
+				[
+					'key'     => 'created_at',
+					'value'   => $after,
+					'compare' => '>=',
+				],
+
+			],
+		];
+
+		return Entries::get_instance()->get_results(
+			$where,
+			'created_at',
+			[ 'ORDER BY created_at DESC' ]
+		);
+	}
+
+	/**
 	 * Get endpoints
 	 *
 	 * @since 0.0.7
@@ -156,7 +200,7 @@ class Rest_Api {
 			// This route is to get the form submissions for the last 30 days.
 			'entries-chart-data'   => [
 				'methods'             => 'GET',
-				'callback'            => [ Entries::get_instance(), 'get_entries_chart_data' ],
+				'callback'            => [ $this, 'get_entries_chart_data' ],
 				'permission_callback' => [ $this, 'can_edit_posts' ],
 			],
 		];

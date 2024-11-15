@@ -233,7 +233,7 @@ class Admin {
 		// Render all entries view.
 		$entries_table = new Entries_List_Table();
 		$entries_table->prepare_items();
-		echo '<div class="wrap"><h1 class="wp-heading-inline">Entries</h1>';
+		echo '<div class="wrap"><h1 class="wp-heading-inline">' . esc_html__( 'Entries', 'sureforms' ) . '</h1>';
 		if ( empty( $entries_table->all_entries_count ) && empty( $entries_table->trash_entries_count ) ) {
 			$instance = Post_Types::get_instance();
 			$instance->sureforms_render_blank_state( SRFM_ENTRIES );
@@ -378,6 +378,11 @@ class Admin {
 			$js_uri   = SRFM_URL . 'assets/js/' . $dir_name . '/';
 			$css_uri  = SRFM_URL . 'assets/css/' . $dir_name . '/';
 
+		/**
+		 * List of the handles in which we need to add translation compatibility.
+		 */
+		$script_translations_handlers = [];
+
 			/* RTL */
 		if ( is_rtl() ) {
 			$file_prefix .= '-rtl';
@@ -418,6 +423,8 @@ class Admin {
 
 			wp_localize_script( SRFM_SLUG . $asset_handle, 'scIcons', [ 'path' => SRFM_URL . 'assets/build/icon-assets' ] );
 
+			$script_translations_handlers[] = SRFM_SLUG . $asset_handle;
+
 			$localization_data['security_settings_url'] = admin_url( '/admin.php?page=sureforms_form_settings&tab=security-settings' );
 			wp_localize_script(
 				SRFM_SLUG . $asset_handle,
@@ -454,6 +461,8 @@ class Admin {
 			$asset_handle = '-entries';
 			wp_enqueue_style( SRFM_SLUG . $asset_handle, $css_uri . 'backend/entries' . $file_prefix . '.css', [], SRFM_VER );
 			wp_enqueue_script( SRFM_SLUG . $asset_handle, SRFM_URL . 'assets/build/entries.js', $script_info['dependencies'], SRFM_VER, true );
+
+			$script_translations_handlers[] = SRFM_SLUG . $asset_handle;
 		}
 
 		// Admin Submenu Styles.
@@ -471,6 +480,8 @@ class Admin {
 			];
 			wp_enqueue_script( SRFM_SLUG . '-form-page-header', SRFM_URL . 'assets/build/' . $asset_handle . '.js', $script_info['dependencies'], SRFM_VER, true );
 			wp_enqueue_style( SRFM_SLUG . '-form-archive-styles', $css_uri . 'form-archive-styles' . $file_prefix . '.css', [], SRFM_VER );
+
+			$script_translations_handlers[] = SRFM_SLUG . '-form-page-header';
 		}
 		if ( 'sureforms_page_' . SRFM_FORMS_POST_TYPE . '_settings' === $current_screen->base ) {
 			$asset_handle = 'settings';
@@ -490,6 +501,8 @@ class Admin {
 				SRFM_SLUG . '_admin',
 				$localization_data
 			);
+
+			$script_translations_handlers[] = SRFM_SLUG . '-settings';
 		}
 		if ( 'edit-' . SRFM_FORMS_POST_TYPE === $current_screen->id ) {
 			wp_enqueue_script( SRFM_SLUG . '-form-archive', $js_uri . 'form-archive' . $file_prefix . '.js', [], SRFM_VER, true );
@@ -515,6 +528,9 @@ class Admin {
 				]
 			);
 
+			$script_translations_handlers[] = SRFM_SLUG . '-form-archive';
+			$script_translations_handlers[] = SRFM_SLUG . '-export';
+			$script_translations_handlers[] = SRFM_SLUG . '-backend';
 		}
 
 		if ( 'sureforms_page_add-new-form' === $current_screen->id ) {
@@ -560,6 +576,8 @@ class Admin {
 					'pricing_page_url'             => $this->get_sureforms_website_url( 'pricing' ),
 				]
 			);
+
+			$script_translations_handlers[] = SRFM_SLUG . '-template-picker';
 		}
 		// Quick action sidebar.
 		$default_allowed_quick_sidebar_blocks = apply_filters(
@@ -597,12 +615,24 @@ class Admin {
 			]
 		);
 
+		$script_translations_handlers[] = SRFM_SLUG . '-quick-action-siderbar';
+
 		/**
 		 * Enqueuing SureTriggers Integration script.
 		 * This script loads suretriggers iframe in Intergations tab.
 		 */
 		if ( SRFM_FORMS_POST_TYPE === $current_screen->post_type ) {
 			wp_enqueue_script( SRFM_SLUG . '-suretriggers-integration', SRFM_SURETRIGGERS_INTEGRATION_BASE_URL . 'js/v2/embed.js', [], SRFM_VER, true );
+		}
+
+		// Check $script_translations_handlers is not empty before calling the function.
+		if ( ! empty( $script_translations_handlers ) ) {
+			// Remove duplicates values from the array.
+			$script_translations_handlers = array_unique( $script_translations_handlers );
+
+			foreach ( $script_translations_handlers as $script_handle ) {
+				Helper::register_script_translations( $script_handle );
+			}
 		}
 	}
 

@@ -255,6 +255,9 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 
 == Changelog ==
 = x.x.x =
+* Improvement: Added translation support for hardcoded UI text to improve localization.
+* Improvement: Refactored dashboard entries chart logic.
+* Improvement: Form confirmation message accessibility enhancements.
 * Fix: Multi Choice block images get cut-off on the Front-End.
 * Fix: Labels are not processing html tags correctly in email and entries.
 = 1.0.4 - 12th November 2024 =

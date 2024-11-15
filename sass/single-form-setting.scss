@@ -976,7 +976,8 @@ $req_err_color: #dc2625;
 
 .components-popover__fallback-container {
 	.components-dropdown-menu__menu[aria-label="Select Shortcodes"] {
-		.components-button:disabled, .components-button[aria-disabled=true] {
+		.components-button:disabled,
+		.components-button[aria-disabled="true"] {
 			color: #000000;
 			opacity: 1;
 			font-weight: bolder;
