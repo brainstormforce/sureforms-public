@@ -567,3 +567,10 @@ body.post-type-sureforms_form {
 		display: none !important;
 	}
 }
+
+
+html[dir="rtl"] body.post-type-sureforms_form {
+	.srfm-submit-btn-container {
+		max-width: calc(620px - 20em);
+	}
+}

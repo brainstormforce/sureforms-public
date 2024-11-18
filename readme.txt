@@ -261,6 +261,7 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 * Improvement: Refactored dashboard entries chart logic.
 * Improvement: Form confirmation message accessibility enhancements.
 * Fix: Multi Choice block images get cut-off on the Front-End.
+* Fix: RTL fix for all the blocks.
 = 1.0.4 - 12th November 2024 =
 * New: Voice input added for AI Form Builder.
 * Improvement: Added compatibility check for SureForms Pro version.
