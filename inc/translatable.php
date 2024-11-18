@@ -3,7 +3,7 @@
  * Translatable Class file for Sureforms.
  *
  * @package Sureforms
- * @since x.x.x
+ * @since 1.0.5
  */
 
 namespace SRFM\Inc;
@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * frontend validation messages, used in the Sureforms plugin. This class enables dynamic and
  * reusable translated strings to enhance user experience across different languages.
  *
- * @since x.x.x
+ * @since 1.0.5
  */
 class Translatable {
 	/**
@@ -28,7 +28,7 @@ class Translatable {
 	 * Returns an array of validation messages, each identified by a unique key. Messages are
 	 * translated for frontend display, with placeholders included for dynamically populated values.
 	 *
-	 * @since x.x.x
+	 * @since 1.0.5
 	 * @return array<string, string> Associative array of translated validation messages for frontend use.
 	 */
 	public static function get_frontend_validation_messages() {

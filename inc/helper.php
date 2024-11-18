@@ -965,7 +965,7 @@ class Helper {
 	 * @param string $domain Optional. The text domain for translations. Default is 'sureforms'.
 	 * @param string $path   Optional. The path to the translation files. Default is the 'languages' folder in the SureForms directory.
 	 *
-	 * @since x.x.x
+	 * @since 1.0.5
 	 * @return void
 	 */
 	public static function register_script_translations( $handle, $domain = 'sureforms', $path = SRFM_DIR . 'languages' ) {
