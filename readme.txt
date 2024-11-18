@@ -255,13 +255,13 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 
 == Changelog ==
 = 1.0.5 - 19th November 2024 =
-New: Introduced the {form_title} smart tag to dynamically insert the form's title.
-Improvement: Added an action triggered before form submission.
-Improvement: Enabled translation support for hardcoded UI text to enhance localization.
-Improvement: Improved accessibility of form confirmation messages.
-Improvement: Refactored logic for the dashboard entries chart.
-Fix: Resolved issue where multichoice field images were cut off on the front end.
-Fix: Corrected RTL alignment for all blocks.
+* New: Introduced the {form_title} smart tag to dynamically insert the form's title.
+* Improvement: Added an action triggered before form submission.
+* Improvement: Enabled translation support for hardcoded UI text to enhance localization.
+* Improvement: Improved accessibility of form confirmation messages.
+* Improvement: Refactored logic for the dashboard entries chart.
+* Fix: Resolved issue where multichoice field images were cut off on the front end.
+* Fix: Corrected RTL alignment for all blocks.
 = 1.0.4 - 12th November 2024 =
 * New: Voice input added for AI Form Builder.
 * Improvement: Added compatibility check for SureForms Pro version.
