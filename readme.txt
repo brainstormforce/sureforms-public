@@ -255,6 +255,7 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 
 == Changelog ==
 = x.x.x =
+* Fix: RTL fix for all the blocks.
 * Improvement: Added translation support for hardcoded UI text to improve localization.
 * Improvement: Refactored dashboard entries chart logic.
 * Improvement: Form confirmation message accessibility enhancements.
