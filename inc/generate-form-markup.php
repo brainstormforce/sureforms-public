@@ -130,8 +130,8 @@ class Generate_Form_Markup {
 			$submit_button_alignment = $form_styling['submit_button_alignment'];
 
 			$temp_submit_btn_alignment = '';
-			if ( empty( $submit_button_alignment ) || 'left' === $submit_button_alignment || 'right' === $submit_button_alignment ) {
-				$temp_submit_btn_alignment = is_rtl() ? 'right' : 'left';
+			if ( is_rtl() && ( empty( $submit_button_alignment ) || 'left' === $submit_button_alignment || 'right' === $submit_button_alignment ) ) {
+				$temp_submit_btn_alignment = 'left' === $submit_button_alignment ? 'right' : 'left';
 				$submit_button_alignment   = $temp_submit_btn_alignment;
 			}
 
