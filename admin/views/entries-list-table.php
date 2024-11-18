@@ -119,6 +119,7 @@ class Entries_List_Table extends \WP_List_Table {
 			'trash'  => __( 'Move to Trash', 'sureforms' ),
 			'read'   => __( 'Mark as Read', 'sureforms' ),
 			'unread' => __( 'Mark as Unread', 'sureforms' ),
+			'export' => __( 'Export', 'sureforms' ),
 		];
 
 		return $this->get_additional_bulk_actions( $bulk_actions );
@@ -292,15 +293,82 @@ class Entries_List_Table extends \WP_List_Table {
 		}
 
 		// Get the selected entry IDs.
-		$entry_ids = isset( $_GET['entry'] ) ? array_map( 'sanitize_text_field', wp_unslash( $_GET['entry'] ) ) : [];
+		$entry_ids = isset( $_GET['entry'] ) ? array_map( 'absint', wp_unslash( $_GET['entry'] ) ) : [];
 
 		// If there are entry IDs selected, process the bulk action.
 		if ( ! empty( $entry_ids ) ) {
 			$action = isset( $_GET['action'] ) ? sanitize_text_field( wp_unslash( $_GET['action'] ) ) : '';
 
-			// Update the status of each selected entry.
-			foreach ( $entry_ids as $entry_id ) {
-				self::handle_entry_status( Helper::get_integer_value( $entry_id ), $action );
+			if ( 'export' === $action && ! empty( $_GET['form_filter'] ) ) {
+				global $wpdb;
+
+				$results = $wpdb->get_results(
+					$wpdb->prepare(
+						'SELECT * FROM %i WHERE ID IN (%1s) AND form_id=%d',
+						Entries::get_instance()->get_tablename(),
+						implode( ', ', $entry_ids ),
+						absint( wp_unslash( $_GET['form_filter'] ) )
+					),
+					ARRAY_A
+				);
+
+				if ( ! empty( $results ) && is_array( $results ) ) {
+
+					$filename = tempnam( get_temp_dir(), 'srfm' );
+					$stream = fopen( $filename, 'wb' );
+
+					foreach ( $results as $index => $result ) {
+						if ( empty( $result['form_data'] ) ) {
+							// Probably invalid submission.
+							continue;
+						}
+
+						$form_data = Helper::get_array_value( json_decode( $result['form_data'] ) );
+
+						if ( ! empty( $form_data ) && is_array( $form_data ) ) {
+							if ( 0 === $index ) {
+								$labels = array_merge(
+									[
+										__( 'Entry ID', 'sureforms' ),
+									],
+									array_map(
+										array( Helper::class, 'get_field_label_from_key' ),
+										array_keys( $form_data )
+									)
+								);
+
+								fputcsv( $stream, $labels );
+							}
+
+							$values = array_merge(
+								[
+									$result['ID'],
+								],
+								array_values( $form_data )
+							);
+
+							fputcsv( $stream, $values );
+						}
+					}
+
+					fclose( $stream );
+
+					$csv_filename = 'srfm-entries-export-' . sanitize_title( get_the_title( absint( wp_unslash( $_GET['form_filter'] ) ) ) ) . '.csv';
+
+					header( 'Content-Type: application/zip' );
+					header( "Content-disposition: attachment; filename=\"{$csv_filename}\"" );
+					header( 'Content-Length: ' . filesize( $filename ) );
+
+					// Output the zip file.
+					readfile( $filename );  // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_read_readfile -- We are not using WP_Filesystem here as we need readfile functionality.
+					unlink( $filename ); // Clean up the temporary zip file.
+					exit;
+				}
+			} else {
+				// Update the status of each selected entry.
+				foreach ( $entry_ids as $entry_id ) {
+					self::handle_entry_status( Helper::get_integer_value( $entry_id ), $action );
+				}
 			}
 
 			set_transient(

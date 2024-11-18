@@ -121,6 +121,25 @@ class Helper {
 	}
 
 	/**
+	 * Extracts the field label from the dynamic field key ( or field slug ).
+	 *
+	 * @param string $field_key Dynamic field key.
+	 * @since x.x.x
+	 * @return string Extracted field label.
+	 */
+	public static function get_field_label_from_key( $field_key ) {
+		if ( false === strpos( $field_key, '-lbl-' ) ) {
+			return '';
+		}
+
+		$label = explode( '-lbl-', $field_key )[1];
+		// Getting the encrypted label. we are removing the block slug here.
+		$label = explode( '-', $label )[0];
+
+		return $label ? html_entity_decode( self::decrypt( $label ) ) : '';
+	}
+
+	/**
 	 * Returns the proper sanitize callback functions according to the field type.
 	 *
 	 * @param string $field_type HTML field type.
