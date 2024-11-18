@@ -418,6 +418,8 @@ class Helper {
 			'srfm_rating_block_required_text'       => $common_err_msg['required'],
 		];
 
+		$default_values = array_merge( $default_values, Translatable::dynamic_validation_messages() );
+
 		return apply_filters( 'srfm_default_dynamic_block_option', $default_values, $common_err_msg );
 	}
 

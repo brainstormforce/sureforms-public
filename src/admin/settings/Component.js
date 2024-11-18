@@ -236,6 +236,9 @@ const Component = ( { path } ) => {
 				srfm_tab: tab,
 				[ setting ]: value,
 			};
+
+			console.log( "updatedTabOptions", updatedTabOptions );
+
 			setDynamicBlockOptions( updatedTabOptions );
 		} else {
 			return;

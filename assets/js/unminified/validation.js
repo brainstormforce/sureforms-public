@@ -330,7 +330,7 @@ export async function fieldValidation(
 					} else if ( confirmValue !== inputValue ) {
 						confirmParent.classList.add( 'srfm-error' );
 						confirmError.textContent =
-							window?.srfm_submit?.messages?.confirm_password_same;
+							window?.srfm_submit?.messages?.srfm_confirm_password_same;
 
 						// Set the first error input.
 						setFirstErrorInput( confirmValue, confirmParent );
@@ -382,7 +382,7 @@ export async function fieldValidation(
 					} else if ( confirmValue !== inputValue ) {
 						confirmParent.classList.add( 'srfm-error' );
 						confirmError.textContent =
-							window?.srfm_submit?.messages?.confirm_email_same;
+							window?.srfm_submit?.messages?.srfm_confirm_email_same;
 
 						// Set the first error input.
 						setFirstErrorInput( confirmInput, confirmParent );
@@ -472,7 +472,7 @@ export async function fieldValidation(
 							.classList.add( 'srfm-error' );
 						if ( errorMessage ) {
 							errorMessage.textContent = srfmSprintfString(
-								window?.srfm_submit?.messages?.input_min_value,
+								window?.srfm_submit?.messages?.srfm_input_min_value,
 								min
 							);
 						}
@@ -494,7 +494,7 @@ export async function fieldValidation(
 
 						if ( errorMessage ) {
 							errorMessage.textContent = srfmSprintfString(
-								window?.srfm_submit?.messages?.input_max_value,
+								window?.srfm_submit?.messages?.srfm_input_max_value,
 								max
 							);
 						}
@@ -602,7 +602,7 @@ export async function fieldValidation(
 						) {
 							errorMessage.textContent = srfmSprintfString(
 								window?.srfm_submit?.messages
-									?.dropdown_min_selections,
+									?.srfm_dropdown_min_selections,
 								minSelection
 							);
 							dropdownInput
@@ -616,7 +616,7 @@ export async function fieldValidation(
 							// If some value is selected but more than maxSelection.
 							errorMessage.textContent = srfmSprintfString(
 								window?.srfm_submit?.messages
-									?.dropdown_max_selections,
+									?.srfm_dropdown_max_selections,
 								maxSelection
 							);
 							dropdownInput
@@ -928,7 +928,7 @@ function addEmailBlurListener( areaInput, blockClass ) {
 				if ( originalEmailValue !== emailField.value ) {
 					confirmErrorContainer.style.display = 'block';
 					confirmErrorContainer.textContent =
-						window?.srfm_submit?.messages?.confirm_email_same;
+						window?.srfm_submit?.messages?.srfm_confirm_email_same;
 					parentBlock.classList.add( 'srfm-error' );
 					return;
 				}
@@ -944,7 +944,7 @@ function addEmailBlurListener( areaInput, blockClass ) {
 				);
 				errorContainer.style.display = 'block';
 				errorContainer.innerHTML =
-					window?.srfm_submit?.messages?.valid_email;
+					window?.srfm_submit?.messages?.srfm_valid_email;
 			} else {
 				errorContainer.style.display = 'none';
 				inputBlock.parentElement.classList.remove(
