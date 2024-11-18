@@ -262,6 +262,7 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 * Improvement: Refactored logic for the dashboard entries chart.
 * Fix: Resolved issue where multichoice field images were cut off on the front end.
 * Fix: Corrected RTL alignment for all blocks.
+* Improvement: Hidden conditional fields no longer save values when disabled, but retain user input on the frontend.
 = 1.0.4 - 12th November 2024 =
 * New: Voice input added for AI Form Builder.
 * Improvement: Added compatibility check for SureForms Pro version.
