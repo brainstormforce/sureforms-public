@@ -259,7 +259,7 @@ async function handleFormSubmission(
 
 		if ( ! document.dispatchEvent( event ) ) {
 			loader.classList.remove( 'srfm-active' );
-			return;  // Stop further execution if event.preventDefault() was called.
+			return; // Stop further execution if event.preventDefault() was called.
 		}
 
 		const isValidate = await fieldValidation(
