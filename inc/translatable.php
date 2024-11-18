@@ -37,7 +37,7 @@ class Translatable {
 		return apply_filters( 'srfm_frontend_validation_messages', $translatable_array );
 	}
 
-	public static function dynamic_validation_messages( $is_localize = false ) {
+	public static function dynamic_validation_messages() {
 		$translatable_array = [
 			'srfm_valid_phone_number'      => __( 'Please enter a valid phone number.', 'sureforms' ),
 			'srfm_valid_url'               => __( 'Please enter a valid URL.', 'sureforms' ),
