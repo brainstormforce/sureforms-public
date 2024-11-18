@@ -12,7 +12,7 @@ function initializePhoneField() {
 			hiddenInput: () => ( {
 				phone: phoneFieldName,
 			} ),
-			countrySearch: false,
+			countrySearch: true,
 			initialCountry: 'us',
 		};
 
