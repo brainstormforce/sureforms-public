@@ -260,6 +260,7 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 * Improvement: Enabled translation support for hardcoded UI text to enhance localization.
 * Improvement: Improved accessibility of form confirmation messages.
 * Improvement: Refactored logic for the dashboard entries chart.
+* Improvement: Values of fields hidden by conditional logic no longer get saved in the entry.
 * Fix: Resolved issue where multichoice field images were cut off on the front end.
 * Fix: Corrected RTL alignment for all blocks.
 = 1.0.4 - 12th November 2024 =
