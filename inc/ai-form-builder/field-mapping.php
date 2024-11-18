@@ -167,7 +167,7 @@ class Field_Mapping {
 								static function( $type ) {
 									return [
 										'value' => trim( $type ),
-										'label' => trim( $$type ),
+										'label' => trim( $type ),
 									];
 								},
 								$allowed_types
