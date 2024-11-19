@@ -237,8 +237,6 @@ const Component = ( { path } ) => {
 				[ setting ]: value,
 			};
 
-			console.log( "updatedTabOptions", updatedTabOptions );
-
 			setDynamicBlockOptions( updatedTabOptions );
 		} else {
 			return;
