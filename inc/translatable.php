@@ -37,6 +37,12 @@ class Translatable {
 		return apply_filters( 'srfm_frontend_validation_messages', $translatable_array );
 	}
 
+	/**
+	 * Retrieve default dynamic validation messages.
+	 *
+	 * @since x.x.x
+	 * @return array<string, string> Associative array of translated validation messages for dynamic use.
+	 */
 	public static function dynamic_validation_messages() {
 		$translatable_array = [
 			'srfm_valid_phone_number'      => __( 'Please enter a valid phone number.', 'sureforms' ),
@@ -61,7 +67,7 @@ class Translatable {
 		$filtered_array = apply_filters( 'srfm_dynamic_validation_messages', $translatable_array );
 
 		$dynamic_options = get_option( 'srfm_default_dynamic_block_option', [] );
-		if ( ! empty( $dynamic_options ) ) {
+		if ( ! empty( $dynamic_options ) && is_array( $dynamic_options ) ) {
 			foreach ( $dynamic_options as $key => $value ) {
 				if ( isset( $filtered_array[ $key ] ) ) {
 					$filtered_array[ $key ] = $value;
