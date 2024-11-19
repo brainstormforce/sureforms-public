@@ -44,6 +44,7 @@
 						visibility: hidden;
 						height: 16px;
 						width: 16px;
+						left: auto;
 						right: var( --srfm-dropdown-padding-right-icon );
 					}
 
@@ -205,6 +206,26 @@
 					margin: var( --srfm-input-field-margin );
 					width: 100%;
 					font-size: 0.7em;
+				}
+			}
+		}
+	}
+}
+
+html[dir="rtl"] {
+	.srfm-form-container {
+		.srfm-form {
+			.srfm-block {
+				.srfm-dropdown-common-wrap {
+					.srfm-dropdown-common {
+						// In case of multiple selection, display the selected options as badges.
+						&.multi {
+							&.has-items .ts-control {
+								// padding: var( --srfm-dropdown-multiselect-padding ) !important; // Override the default padding.
+								padding: 8px !important; // Override the default padding.
+							}
+						}
+					}
 				}
 			}
 		}

@@ -129,11 +129,7 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 
 	// This function adds url of media chosen by user to an option.
 	const onSelectImage = ( media, index ) => {
-		const url = media?.sizes?.thumbnail?.url
-			? media?.sizes?.thumbnail?.url
-			: media?.url
-				? media.url
-				: '';
+		const url = media?.url ? media.url : '';
 		changeOption( { image: url }, index );
 	};
 

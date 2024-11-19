@@ -30,6 +30,55 @@ function redoChange() {
 	this.quill.history.redo();
 }
 
+// Custom image handler to add attributes to the image tag.
+function imageHandler() {
+	const input = document.createElement( 'input' );
+	input.setAttribute( 'type', 'file' );
+	input.setAttribute( 'accept', 'image/*' );
+	input.click();
+
+	input.onchange = ( e ) => {
+		const file = e.target.files[ 0 ];
+		if ( /^image\//.test( file.type ) ) {
+			const reader = new FileReader();
+			reader.onload = () => {
+				const base64Image = reader.result;
+				const range = this.quill.getSelection();
+				this.quill.insertEmbed( range.index, 'image', {
+					src: base64Image,
+					alt: '',
+					'aria-hidden': 'true',
+				} );
+			};
+			reader.onerror = () => {
+				console.error( 'Error while reading the file.' );
+			};
+			reader.readAsDataURL( file );
+		} else {
+			console.warn( 'You could only upload images.' );
+		}
+	};
+}
+
+// Custom matcher for the clipboard module for image tag.
+function imageAttributeMatcher( node, delta ) {
+	if ( node.tagName !== 'IMG' ) {
+		return delta;
+	}
+	if ( delta.ops ) {
+		// The delta object contains one image per delta object which is the first element of the ops array.
+		const insert = delta.ops[ 0 ].insert;
+		if ( typeof insert === 'object' && insert.image ) {
+			insert.image = {
+				src: node.getAttribute( 'src' ),
+				alt: node.getAttribute( 'alt' ),
+				'aria-hidden': node.getAttribute( 'aria-hidden' ),
+			};
+		}
+	}
+	return delta;
+}
+
 // Modules object for setting up the Quill editor
 export const modules = {
 	toolbar: {
@@ -37,6 +86,7 @@ export const modules = {
 		handlers: {
 			undo: undoChange,
 			redo: redoChange,
+			image: imageHandler,
 		},
 	},
 	history: {
@@ -46,6 +96,9 @@ export const modules = {
 	},
 	clipboard: {
 		matchVisual: false,
+		matchers: [
+			[ 'img', imageAttributeMatcher ],
+		],
 	},
 };
 

@@ -247,7 +247,7 @@ button.srfm-toolbar-width-setting-button {
 				&:checked {
 					+ {
 						.srfm-cbx {
-							> span.srfm-span-wrap:first-child{
+							> span.srfm-span-wrap:first-child {
 								background: var( --srfm-color-scheme-primary );
 								border-color: var( --srfm-color-scheme-primary );
 								svg {

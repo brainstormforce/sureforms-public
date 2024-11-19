@@ -855,6 +855,11 @@ $req_err_color: #dc2625;
 
 			// Toggle control.
 			&.components-toggle-control {
+				// change the toggle switch border color.
+				.components-form-toggle .components-form-toggle__track {
+					border: 1px solid #1e1e1e;
+				}
+
 				.components-form-toggle.is-checked .components-form-toggle__track {
 					background-color: $primary_color;
 					box-shadow: none;
@@ -869,7 +874,6 @@ $req_err_color: #dc2625;
 				.components-base-control__help {
 					font-size: 0.6em;
 					margin-top: 0.2em;
-					margin-left: 4em;
 					color: $help_color;
 				}
 			}
@@ -880,6 +884,11 @@ $req_err_color: #dc2625;
 
 			.components-form-toggle.is-checked .components-form-toggle__track {
 				border: #d54407;
+			}
+
+			// Change the font size of the checkbox control to make check mark in center.
+			.components-checkbox-control__input-container {
+				font-size: 13px;
 			}
 
 			.components-checkbox-control__input[type="checkbox"]:checked {
@@ -967,7 +976,9 @@ $req_err_color: #dc2625;
 
 .components-popover__fallback-container {
 	.components-dropdown-menu__menu[aria-label="Select Shortcodes"] {
-		.components-button.components-dropdown-menu__menu-item:disabled {
+		.components-button:disabled,
+		.components-button[aria-disabled="true"] {
+			color: #000000;
 			opacity: 1;
 			font-weight: bolder;
 		}
