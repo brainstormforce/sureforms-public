@@ -36,19 +36,19 @@ const AiFormBuilder = () => {
 
 	const examplePrompts = [
 		{
-			title: 'Create simple contact form',
+			title: __( 'Create simple contact form', 'sureforms' ),
 		},
 		{
-			title: 'Create a lead generation form',
+			title: __( 'Create a lead generation form', 'sureforms' ),
 		},
 		{
-			title: 'Generate a user feedback form',
+			title: __( 'Generate a user feedback form', 'sureforms' ),
 		},
 		{
-			title: 'Create a job application form',
+			title: __( 'Create a job application form', 'sureforms' ),
 		},
 		{
-			title: 'Make an event registration form',
+			title: __( 'Make an event registration form', 'sureforms' ),
 		},
 	];
 

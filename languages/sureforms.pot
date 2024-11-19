@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: SureForms 1.0.4\n"
+"Project-Id-Version: SureForms 1.0.5\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/sureforms\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-11-12T10:22:59+00:00\n"
+"POT-Creation-Date: 2024-11-18T05:21:34+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.10.0\n"
 "X-Domain: sureforms\n"
@@ -63,6 +63,7 @@ msgstr ""
 
 #: admin/admin.php:199
 #: admin/admin.php:200
+#: admin/admin.php:236
 #: inc/global-settings/email-summary.php:107
 #: inc/post-types.php:684
 #: assets/build/dashboard.js:2
@@ -74,26 +75,32 @@ msgstr ""
 msgid "Edit %1$s"
 msgstr ""
 
-#: admin/admin.php:674
+#: admin/admin.php:704
 #: api/block-patterns.php:110
+#: inc/ai-form-builder/ai-auth.php:45
+#: inc/ai-form-builder/ai-auth.php:81
+#: inc/ai-form-builder/ai-auth.php:145
 #: inc/background-process.php:101
 #: inc/create-new-form.php:126
+#: inc/export.php:61
 #: inc/export.php:117
 #: inc/form-submit.php:201
+#: inc/form-submit.php:696
 #: inc/forms-data.php:87
 #: inc/global-settings/global-settings.php:86
 #: inc/global-settings/global-settings.php:259
 #: inc/rest-api.php:92
+#: inc/rest-api.php:126
 msgid "Nonce verification failed."
 msgstr ""
 
-#: admin/admin.php:683
+#: admin/admin.php:713
 msgid "You cannot view this entry because it is in trash."
 msgstr ""
 
 #. translators: %1$s: SureForms version, %2$s: SureForms Pro Plugin Name, %3$s: SureForms Pro Version, %4$s: Anchor tag open, %5$s: Closing anchor tag.
-#: admin/admin.php:720
-msgid "SureForms %1$s requires minimum %2$s %3$s to work properly. Please update from %4$s here%5$s."
+#: admin/admin.php:750
+msgid "SureForms %1$s requires minimum %2$s %3$s to work properly. Download the latest ZIP from %4$s here%5$s."
 msgstr ""
 
 #: admin/views/entries-list-table.php:89
@@ -127,7 +134,7 @@ msgid "Mark as Read"
 msgstr ""
 
 #: admin/views/entries-list-table.php:121
-#: admin/views/single-entry.php:163
+#: admin/views/single-entry.php:164
 msgid "Mark as Unread"
 msgstr ""
 
@@ -209,7 +216,7 @@ msgstr ""
 
 #: admin/views/entries-list-table.php:600
 #: inc/email/email-template.php:157
-#: inc/smart-tags.php:322
+#: inc/smart-tags.php:338
 msgid "View"
 msgstr ""
 
@@ -235,71 +242,88 @@ msgstr ""
 msgid "All"
 msgstr ""
 
-#: admin/views/single-entry.php:74
+#. Translators: %d is the form ID.
+#: admin/views/single-entry.php:69
+msgid "SureForms Form #%d"
+msgstr ""
+
+#: admin/views/single-entry.php:75
 msgid "View Entry"
 msgstr ""
 
-#: admin/views/single-entry.php:81
+#: admin/views/single-entry.php:82
 msgid "Add title"
 msgstr ""
 
-#: admin/views/single-entry.php:122
+#: admin/views/single-entry.php:123
 msgid "Submission Info"
 msgstr ""
 
-#: admin/views/single-entry.php:129
+#: admin/views/single-entry.php:130
 msgid "Entry:"
 msgstr ""
 
-#: admin/views/single-entry.php:133
+#: admin/views/single-entry.php:134
 msgid "Form Name:"
 msgstr ""
 
-#: admin/views/single-entry.php:138
+#: admin/views/single-entry.php:139
 msgid "User IP:"
 msgstr ""
 
-#: admin/views/single-entry.php:143
+#: admin/views/single-entry.php:144
 msgid "Browser:"
 msgstr ""
 
-#: admin/views/single-entry.php:147
+#: admin/views/single-entry.php:148
 msgid "Device:"
 msgstr ""
 
-#: admin/views/single-entry.php:152
+#: admin/views/single-entry.php:153
 msgid "User:"
 msgstr ""
 
-#: admin/views/single-entry.php:157
+#: admin/views/single-entry.php:158
 msgid "Status:"
 msgstr ""
 
-#: admin/views/single-entry.php:168
+#: admin/views/single-entry.php:169
 msgid "Submitted On:"
 msgstr ""
 
-#: admin/views/single-entry.php:191
+#: admin/views/single-entry.php:192
 msgid "Form Data"
 msgstr ""
 
-#: admin/views/single-entry.php:198
+#: admin/views/single-entry.php:199
 msgid "Fields"
 msgstr ""
 
-#: admin/views/single-entry.php:199
+#: admin/views/single-entry.php:200
 msgid "Values"
 msgstr ""
 
-#: admin/views/single-entry.php:283
+#: admin/views/single-entry.php:271
+#: modules/gutenberg/classes/class-spec-block-config.php:562
+#: modules/gutenberg/icons/icons-v6-1.php:5470
+#: assets/build/blocks.js:172
+#: assets/build/formEditor.js:172
+#: modules/gutenberg/build/blocks-placeholder.js:11
+#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:17
+msgid "Image"
+msgstr ""
+
+#: admin/views/single-entry.php:284
 msgid "Open"
 msgstr ""
 
-#: admin/views/single-entry.php:319
+#: admin/views/single-entry.php:320
 msgid "Entry Logs"
 msgstr ""
 
-#: admin/views/single-entry.php:344
+#: admin/views/single-entry.php:345
 msgid "No logs found for this entry."
 msgstr ""
 
@@ -426,7 +450,85 @@ msgid "SureTriggers is not configured properly."
 msgstr ""
 
 #: inc/admin-ajax.php:235
+#: inc/form-submit.php:708
 msgid "Invalid form ID."
+msgstr ""
+
+#. Translators: %s: Form ID.
+#: inc/admin-ajax.php:239
+msgid "SureForms id: %s"
+msgstr ""
+
+#: inc/admin-ajax.php:249
+msgid "Form Submitted"
+msgstr ""
+
+#: inc/admin-ajax.php:251
+msgid "Runs when a form is submitted"
+msgstr ""
+
+#: inc/admin-ajax.php:333
+#: inc/admin-ajax.php:362
+msgid "Sample data"
+msgstr ""
+
+#: inc/admin-ajax.php:337
+msgid "Sample input data"
+msgstr ""
+
+#: inc/admin-ajax.php:339
+msgid "Sample textarea data"
+msgstr ""
+
+#: inc/admin-ajax.php:344
+#: inc/admin-ajax.php:345
+msgid "Address data"
+msgstr ""
+
+#: inc/admin-ajax.php:346
+msgid "Selected dropdown option"
+msgstr ""
+
+#: inc/admin-ajax.php:347
+msgid "Selected Multichoice option"
+msgstr ""
+
+#: inc/admin-ajax.php:348
+msgid "Selected radio option"
+msgstr ""
+
+#: inc/admin-ajax.php:349
+#: assets/build/blocks.js:172
+#: assets/build/formEditor.js:172
+msgid "Submit"
+msgstr ""
+
+#: inc/admin-ajax.php:352
+msgid "Hidden Value"
+msgstr ""
+
+#: inc/ai-form-builder/ai-auth.php:62
+msgid "Failed to encode the token data."
+msgstr ""
+
+#: inc/ai-form-builder/ai-auth.php:88
+msgid "Error processing Access Key."
+msgstr ""
+
+#: inc/ai-form-builder/ai-auth.php:103
+msgid "No access key provided."
+msgstr ""
+
+#: inc/ai-form-builder/ai-auth.php:133
+msgid "Failed to decrypt the access key."
+msgstr ""
+
+#: inc/ai-form-builder/ai-auth.php:140
+msgid "Failed to json decode the decrypted data."
+msgstr ""
+
+#: inc/ai-form-builder/ai-auth.php:150
+msgid "No user email found in the decrypted data."
 msgstr ""
 
 #: inc/ai-form-builder/ai-form-builder.php:39
@@ -618,6 +720,22 @@ msgstr ""
 msgid "Sorry, you cannot access this route"
 msgstr ""
 
+#: inc/form-submit.php:99
+msgid "Cloudflare Turnstile secret key is invalid."
+msgstr ""
+
+#: inc/form-submit.php:106
+msgid "Cloudflare Turnstile response is missing."
+msgstr ""
+
+#: inc/form-submit.php:150
+msgid "hCaptcha secret key is invalid."
+msgstr ""
+
+#: inc/form-submit.php:157
+msgid "hCaptcha response is missing."
+msgstr ""
+
 #: inc/form-submit.php:210
 msgid "Form data is not found."
 msgstr ""
@@ -630,21 +748,40 @@ msgstr ""
 msgid "Form Id is missing."
 msgstr ""
 
-#: inc/form-submit.php:573
+#: inc/form-submit.php:310
+msgid "Cloudflare Turnstile validation failed."
+msgstr ""
+
+#: inc/form-submit.php:336
+msgid "hCaptcha validation failed."
+msgstr ""
+
+#: inc/form-submit.php:360
+#: inc/form-submit.php:365
+#: inc/form-submit.php:390
+#: inc/form-submit.php:395
+msgid "reCAPTCHA error."
+msgstr ""
+
+#: inc/form-submit.php:401
+msgid "Spam Detected"
+msgstr ""
+
+#: inc/form-submit.php:581
 msgid "Error submitting form"
 msgstr ""
 
-#: inc/form-submit.php:629
+#: inc/form-submit.php:638
 msgid "Email Notification Initiated"
 msgstr ""
 
 #. translators: Here, %s is the comma separated emails list.
-#: inc/form-submit.php:661
+#: inc/form-submit.php:670
 msgid "Email notification sent to %s"
 msgstr ""
 
 #. translators: Here, %s is the comma separated emails list.
-#: inc/form-submit.php:661
+#: inc/form-submit.php:670
 msgid "Failed sending email notification to %s"
 msgstr ""
 
@@ -673,12 +810,25 @@ msgstr ""
 msgid "No forms found."
 msgstr ""
 
-#: inc/global-settings/email-summary.php:180
-msgid "SureForms Email Summary - "
+#. Translators: %s: Site Title.
+#: inc/global-settings/email-summary.php:181
+msgid "SureForms Email Summary - %s"
 msgstr ""
 
-#: inc/global-settings/email-summary.php:205
+#: inc/global-settings/email-summary.php:206
+#: inc/global-settings/global-settings.php:188
+#: inc/global-settings/global-settings.php:286
+#: assets/build/settings.js:172
 msgid "Monday"
+msgstr ""
+
+#: inc/global-settings/global-settings.php:116
+msgid "Error Saving Settings!"
+msgstr ""
+
+#: inc/global-settings/global-settings.php:116
+#: assets/build/formEditor.js:172
+msgid "Global Settings"
 msgstr ""
 
 #: inc/global-settings/global-settings.php:120
@@ -730,6 +880,7 @@ msgid "Select the form that you wish to add here."
 msgstr ""
 
 #: inc/page-builders/elementor/form-widget.php:160
+#: inc/smart-tags.php:86
 #: assets/build/blocks.js:2
 #: assets/build/formEditor.js:172
 msgid "Form Title"
@@ -841,8 +992,18 @@ msgstr ""
 msgid "Form updated."
 msgstr ""
 
+#: inc/post-types.php:192
 #: inc/post-types.php:219
 msgid "Export"
+msgstr ""
+
+#: inc/post-types.php:526
+msgid "Admin Notification Email"
+msgstr ""
+
+#. translators: %s: Form title smart tag
+#: inc/post-types.php:531
+msgid "New Form Submission - %s"
 msgstr ""
 
 #: inc/post-types.php:683
@@ -853,6 +1014,10 @@ msgstr ""
 msgid "Please choose the SureForms export file (.json) that you wish to import."
 msgstr ""
 
+#: inc/post-types.php:750
+msgid "Import Now"
+msgstr ""
+
 #: inc/post-types.php:752
 msgid "There is some error in json file, please export the SureForms Forms again."
 msgstr ""
@@ -861,82 +1026,130 @@ msgstr ""
 msgid "Invalid request. Form ID missing."
 msgstr ""
 
-#: inc/smart-tags.php:80
-msgid "Site URL"
+#: inc/rest-api.php:132
+msgid "Request could not be processed."
 msgstr ""
 
-#: inc/smart-tags.php:81
-#: inc/smart-tags.php:111
-msgid "Admin Email"
-msgstr ""
-
-#: inc/smart-tags.php:82
-msgid "Site Title"
+#: inc/rest-api.php:138
+msgid "Invalid date."
 msgstr ""
 
 #: inc/smart-tags.php:83
-msgid "IP Address"
+msgid "Site URL"
 msgstr ""
 
 #: inc/smart-tags.php:84
-msgid "HTTP Referer URL"
+#: inc/smart-tags.php:115
+msgid "Admin Email"
 msgstr ""
 
 #: inc/smart-tags.php:85
-msgid "Date (mm/dd/yyyy)"
-msgstr ""
-
-#: inc/smart-tags.php:86
-msgid "Date (dd/mm/yyyy)"
+msgid "Site Title"
 msgstr ""
 
 #: inc/smart-tags.php:87
-msgid "User ID"
+msgid "IP Address"
 msgstr ""
 
 #: inc/smart-tags.php:88
-msgid "User Display Name"
+msgid "HTTP Referer URL"
 msgstr ""
 
 #: inc/smart-tags.php:89
-msgid "User First Name"
+msgid "Date (mm/dd/yyyy)"
 msgstr ""
 
 #: inc/smart-tags.php:90
-msgid "User Last Name"
+msgid "Date (dd/mm/yyyy)"
 msgstr ""
 
 #: inc/smart-tags.php:91
-#: inc/smart-tags.php:112
-msgid "User Email"
+msgid "User ID"
 msgstr ""
 
 #: inc/smart-tags.php:92
-msgid "User Username"
+msgid "User Display Name"
 msgstr ""
 
 #: inc/smart-tags.php:93
-msgid "Browser Name"
+msgid "User First Name"
 msgstr ""
 
 #: inc/smart-tags.php:94
-msgid "Browser Platform"
+msgid "User Last Name"
 msgstr ""
 
 #: inc/smart-tags.php:95
-msgid "Embedded Post/Page ID"
+#: inc/smart-tags.php:116
+msgid "User Email"
 msgstr ""
 
 #: inc/smart-tags.php:96
-msgid "Embedded Post/Page Title"
+msgid "User Username"
 msgstr ""
 
 #: inc/smart-tags.php:97
-msgid "Populate by GET Param"
+msgid "Browser Name"
 msgstr ""
 
 #: inc/smart-tags.php:98
+msgid "Browser Platform"
+msgstr ""
+
+#: inc/smart-tags.php:99
+msgid "Embedded Post/Page ID"
+msgstr ""
+
+#: inc/smart-tags.php:100
+msgid "Embedded Post/Page Title"
+msgstr ""
+
+#: inc/smart-tags.php:101
+msgid "Populate by GET Param"
+msgstr ""
+
+#: inc/smart-tags.php:102
 msgid "Cookie Value"
+msgstr ""
+
+#: inc/translatable.php:36
+msgid "Please enter a valid phone number."
+msgstr ""
+
+#: inc/translatable.php:37
+msgid "Please enter a valid URL."
+msgstr ""
+
+#: inc/translatable.php:38
+msgid "Confirmation email does not match."
+msgstr ""
+
+#: inc/translatable.php:39
+msgid "Please enter a valid email address."
+msgstr ""
+
+#: inc/translatable.php:40
+msgid "Confirmation password does not match."
+msgstr ""
+
+#. translators: %s represents the minimum acceptable value
+#: inc/translatable.php:43
+msgid "Minimum value is %s"
+msgstr ""
+
+#. translators: %s represents the maximum acceptable value
+#: inc/translatable.php:46
+msgid "Maximum value is %s"
+msgstr ""
+
+#. translators: %s represents the minimum number of selections required
+#: inc/translatable.php:49
+msgid "Minimum %s selections are required"
+msgstr ""
+
+#. translators: %s represents the maximum number of selections allowed
+#: inc/translatable.php:52
+msgid "Maximum %s selections are allowed"
 msgstr ""
 
 #: inc/updater.php:133
@@ -948,17 +1161,6 @@ msgstr ""
 #: modules/gutenberg/build/blocks.js:11
 #: modules/gutenberg/build/blocks.js:15
 msgid "Separator"
-msgstr ""
-
-#: modules/gutenberg/classes/class-spec-block-config.php:562
-#: modules/gutenberg/icons/icons-v6-1.php:5470
-#: assets/build/blocks.js:172
-#: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks-placeholder.js:11
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:15
-#: modules/gutenberg/build/blocks.js:17
-msgid "Image"
 msgstr ""
 
 #: modules/gutenberg/classes/class-spec-block-config.php:574
@@ -2463,6 +2665,7 @@ msgid "Circle Xmark"
 msgstr ""
 
 #: modules/gutenberg/icons/icons-v6-0.php:4355
+#: assets/build/blocks.js:172
 msgid "City"
 msgstr ""
 
@@ -8475,6 +8678,21 @@ msgstr ""
 msgid "Select Shortcodes"
 msgstr ""
 
+#: assets/build/blocks.js:172
+#: assets/build/formEditor.js:172
+msgid "Page Break Label"
+msgstr ""
+
+#: assets/build/blocks.js:172
+#: assets/build/formEditor.js:172
+msgid "Next"
+msgstr ""
+
+#: assets/build/blocks.js:172
+#: assets/build/formEditor.js:172
+msgid "Back"
+msgstr ""
+
 #. translators: abbreviation for units
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
@@ -8868,6 +9086,26 @@ msgid "Enable Search"
 msgstr ""
 
 #: assets/build/blocks.js:172
+msgid "Address Line 1"
+msgstr ""
+
+#: assets/build/blocks.js:172
+msgid "Address Line 2"
+msgstr ""
+
+#: assets/build/blocks.js:172
+msgid "State"
+msgstr ""
+
+#: assets/build/blocks.js:172
+msgid "Postal Code"
+msgstr ""
+
+#: assets/build/blocks.js:172
+msgid "Country"
+msgstr ""
+
+#: assets/build/blocks.js:172
 msgid "%s Width"
 msgstr ""
 
@@ -8950,6 +9188,10 @@ msgstr ""
 
 #: assets/build/dashboard.js:2
 msgid "Submit a Review"
+msgstr ""
+
+#: assets/build/dashboard.js:2
+msgid "Overview"
 msgstr ""
 
 #: assets/build/dashboard.js:2
@@ -9362,6 +9604,18 @@ msgid "Progress Indicator"
 msgstr ""
 
 #: assets/build/formEditor.js:172
+msgid "Progress Bar"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+msgid "Connector"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+msgid "Steps"
+msgstr ""
+
+#: assets/build/formEditor.js:172
 msgid "Next Button Text"
 msgstr ""
 
@@ -9496,10 +9750,6 @@ msgid "Please configure the API keys correctly in the "
 msgstr ""
 
 #: assets/build/formEditor.js:172
-msgid "Global Settings"
-msgstr ""
-
-#: assets/build/formEditor.js:172
 msgid "Additional CSS Class(es)"
 msgstr ""
 
@@ -9541,6 +9791,22 @@ msgstr ""
 
 #: assets/build/formEditor.js:172
 msgid "Customize with SureForms"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+msgid "Page break"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+msgid "Previous"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+msgid "Thank you"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+msgid "Form submitted successfully!"
 msgstr ""
 
 #: assets/build/formEditor.js:172
@@ -9613,10 +9879,6 @@ msgid "Learn more."
 msgstr ""
 
 #: assets/build/formEditor.js:172
-msgid "Submit"
-msgstr ""
-
-#: assets/build/formEditor.js:172
 msgid "SureForms Description"
 msgstr ""
 
@@ -9630,20 +9892,6 @@ msgstr ""
 
 #: assets/build/formEditor.js:172
 msgid "Paste this shortcode on the page or post to render this form."
-msgstr ""
-
-#. translators: %s is the minimum number of selections required.
-#: assets/build/formSubmit.js:2
-#: assets/js/unminified/validation.js:575
-#: assets/js/unminified/validation.js:679
-msgid "Minimum %d selections are required"
-msgstr ""
-
-#. translators: %s is the maximum number of selections allowed.
-#: assets/build/formSubmit.js:2
-#: assets/js/unminified/validation.js:592
-#: assets/js/unminified/validation.js:694
-msgid "Maximum %d selections are allowed"
 msgstr ""
 
 #: assets/build/settings.js:2
@@ -9697,6 +9945,30 @@ msgstr ""
 
 #: assets/build/settings.js:172
 msgid "Email Summaries"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Tuesday"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Wednesday"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Thursday"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Friday"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Saturday"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Sunday"
 msgstr ""
 
 #: assets/build/settings.js:172
@@ -9870,6 +10142,10 @@ msgid "Please check your username and password for the account, and try to recon
 msgstr ""
 
 #: assets/build/templatePicker.js:172
+msgid "Contact Support"
+msgstr ""
+
+#: assets/build/templatePicker.js:172
 msgid "Click Here to Retry"
 msgstr ""
 
@@ -9879,6 +10155,26 @@ msgstr ""
 
 #: assets/build/templatePicker.js:172
 msgid "Connecting with AI…"
+msgstr ""
+
+#: assets/build/templatePicker.js:172
+msgid "Create simple contact form"
+msgstr ""
+
+#: assets/build/templatePicker.js:172
+msgid "Create a lead generation form"
+msgstr ""
+
+#: assets/build/templatePicker.js:172
+msgid "Generate a user feedback form"
+msgstr ""
+
+#: assets/build/templatePicker.js:172
+msgid "Create a job application form"
+msgstr ""
+
+#: assets/build/templatePicker.js:172
+msgid "Make an event registration form"
 msgstr ""
 
 #: assets/build/templatePicker.js:172

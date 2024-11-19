@@ -81,11 +81,8 @@ class Frontend_Assets {
 		$js_uri      = SRFM_URL . 'assets/js/' . $dir_name . '/';
 		$css_uri     = SRFM_URL . 'assets/css/' . $dir_name . '/';
 		$css_vendor  = SRFM_URL . 'assets/css/minified/deps/';
-
-		/* RTL */
-		if ( is_rtl() ) {
-			$file_prefix .= '-rtl';
-		}
+		$is_rtl      = is_rtl();
+		$rtl         = $is_rtl ? '-rtl' : '';
 
 		$security_setting_options = get_option( 'srfm_security_settings_options' );
 		$is_set_v2_site_key       = false;
@@ -95,7 +92,7 @@ class Frontend_Assets {
 
 		// Styles based on meta style.
 		foreach ( self::$css_assets as $handle => $path ) {
-			wp_register_style( SRFM_SLUG . '-' . $handle, $css_uri . $path . $file_prefix . '.css', [], SRFM_VER );
+			wp_register_style( SRFM_SLUG . '-' . $handle, $css_uri . $path . $file_prefix . $rtl . '.css', [], SRFM_VER );
 		}
 
 		// External styles.
@@ -130,6 +127,8 @@ class Frontend_Assets {
 			[
 				'site_url' => site_url(),
 				'nonce'    => wp_create_nonce( 'wp_rest' ),
+				'messages' => Translatable::get_frontend_validation_messages(),
+				'is_rtl'   => $is_rtl,
 			]
 		);
 	}
@@ -197,8 +196,7 @@ class Frontend_Assets {
 
 			if ( 'phone' === $block_name
 			) {
-				wp_enqueue_script( SRFM_SLUG . "-{$block_name}-intl-input-deps", $js_vendor_uri . 'intl/intTelInput.min.js', [], SRFM_VER, true );
-				wp_enqueue_script( SRFM_SLUG . "-{$block_name}-intl-utils-deps", $js_vendor_uri . 'intl/intTelUtils.min.js', [], SRFM_VER, true );
+				wp_enqueue_script( SRFM_SLUG . "-{$block_name}-intl-input-deps", $js_vendor_uri . 'intl/intTelInputWithUtils.min.js', [], SRFM_VER, true );
 			}
 
 			if ( 'dropdown' === $block_name ) {
@@ -216,15 +214,6 @@ class Frontend_Assets {
 					],
 					SRFM_VER,
 					true
-				);
-
-				wp_localize_script(
-					SRFM_SLUG . '-form-submit',
-					SRFM_SLUG . '_submit',
-					[
-						'site_url' => site_url(),
-						'nonce'    => wp_create_nonce( 'wp_rest' ),
-					]
 				);
 			}
 

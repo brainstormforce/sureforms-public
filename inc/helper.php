@@ -954,4 +954,21 @@ class Helper {
 
 		return true;
 	}
+
+	/**
+	 * Registers script translations for a specific handle.
+	 *
+	 * This function sets the script translations for a given script handle, allowing
+	 * localization of JavaScript strings using the specified text domain and path.
+	 *
+	 * @param string $handle The script handle to apply translations to.
+	 * @param string $domain Optional. The text domain for translations. Default is 'sureforms'.
+	 * @param string $path   Optional. The path to the translation files. Default is the 'languages' folder in the SureForms directory.
+	 *
+	 * @since 1.0.5
+	 * @return void
+	 */
+	public static function register_script_translations( $handle, $domain = 'sureforms', $path = SRFM_DIR . 'languages' ) {
+		wp_set_script_translations( $handle, $domain, $path );
+	}
 }

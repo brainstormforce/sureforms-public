@@ -96,14 +96,14 @@ class Form_Submit {
 		if ( empty( $secret_key ) || ! is_string( $secret_key ) ) {
 			return [
 				'success' => false,
-				'error'   => 'Cloudflare Turnstile secret key is invalid.',
+				'error'   => __( 'Cloudflare Turnstile secret key is invalid.', 'sureforms' ),
 			];
 		}
 
 		if ( empty( $response ) ) {
 			return [
 				'success' => false,
-				'error'   => 'Cloudflare Turnstile response is missing.',
+				'error'   => __( 'Cloudflare Turnstile response is missing.', 'sureforms' ),
 			];
 		}
 
@@ -147,14 +147,14 @@ class Form_Submit {
 		if ( empty( $secret_key ) || ! is_string( $secret_key ) ) {
 			return [
 				'success' => false,
-				'error'   => 'hCaptcha secret key is invalid.',
+				'error'   => __( 'hCaptcha secret key is invalid.', 'sureforms' ),
 			];
 		}
 
 		if ( empty( $response ) ) {
 			return [
 				'success' => false,
-				'error'   => 'hCaptcha response is missing.',
+				'error'   => __( 'hCaptcha response is missing.', 'sureforms' ),
 			];
 		}
 
@@ -307,7 +307,7 @@ class Form_Submit {
 
 			// If the cloudflare validation fails, return an error.
 			if ( is_array( $turnstile_validation_result ) && isset( $turnstile_validation_result['success'] ) && false === $turnstile_validation_result['success'] ) {
-				$error_message = $turnstile_validation_result['error'] ?? 'Cloudflare Turnstile validation failed.';
+				$error_message = $turnstile_validation_result['error'] ?? __( 'Cloudflare Turnstile validation failed.', 'sureforms' );
 				return new \WP_Error( 'cf_turnstile_error', $error_message, [ 'status' => 403 ] );
 			}
 		}
@@ -333,7 +333,7 @@ class Form_Submit {
 
 			// If the hcaptcha validation fails, return an error.
 			if ( is_array( $hcaptcha_validation_result ) && isset( $hcaptcha_validation_result['success'] ) && false === $hcaptcha_validation_result['success'] ) {
-				$error_message = $hcaptcha_validation_result['error'] ?? 'hCaptcha validation failed.';
+				$error_message = $hcaptcha_validation_result['error'] ?? __( 'hCaptcha validation failed.', 'sureforms' );
 				return new \WP_Error( 'hcaptcha_error', $error_message, [ 'status' => 403 ] );
 			}
 		}
@@ -357,12 +357,12 @@ class Form_Submit {
 					$sureforms_captcha_data = $data;
 
 				} else {
-					return new \WP_Error( 'recaptcha_error', 'reCAPTCHA error.', [ 'status' => 403 ] );
+					return new \WP_Error( 'recaptcha_error', __( 'reCAPTCHA error.', 'sureforms' ), [ 'status' => 403 ] );
 				}
 				if ( isset( $sureforms_captcha_data['success'] ) && true === $sureforms_captcha_data['success'] ) {
 					return rest_ensure_response( $this->handle_form_entry( $form_data ) );
 				}
-					return new \WP_Error( 'recaptcha_error', 'reCAPTCHA error.', [ 'status' => 403 ] );
+					return new \WP_Error( 'recaptcha_error', __( 'reCAPTCHA error.', 'sureforms' ), [ 'status' => 403 ] );
 
 			}
 				return rest_ensure_response( $this->handle_form_entry( $form_data ) );
@@ -387,18 +387,18 @@ class Form_Submit {
 					$sureforms_captcha_data = $data;
 
 				} else {
-					return new \WP_Error( 'recaptcha_error', 'reCAPTCHA error.', [ 'status' => 403 ] );
+					return new \WP_Error( 'recaptcha_error', __( 'reCAPTCHA error.', 'sureforms' ), [ 'status' => 403 ] );
 				}
 				if ( true === $sureforms_captcha_data['success'] ) {
 					return rest_ensure_response( $this->handle_form_entry( $form_data ) );
 				}
-					return new \WP_Error( 'recaptcha_error', 'reCAPTCHA error.', [ 'status' => 403 ] );
+					return new \WP_Error( 'recaptcha_error', __( 'reCAPTCHA error.', 'sureforms' ), [ 'status' => 403 ] );
 
 			}
 				return rest_ensure_response( $this->handle_form_entry( $form_data ) );
 
 		}
-			return new \WP_Error( 'spam_detected', 'Spam Detected', [ 'status' => 403 ] );
+			return new \WP_Error( 'spam_detected', __( 'Spam Detected', 'sureforms' ), [ 'status' => 403 ] );
 	}
 
 	/**
@@ -461,8 +461,20 @@ class Form_Submit {
 			}
 		}
 
+		$modified_message = $this->prepare_submission_data( $submission_data );
+
+		$form_before_submission_data = [
+			'form_id' => $id ? intval( $id ) : '',
+			'data'    => $modified_message,
+		];
+
+		/**
+		 * Fires before submission process starts.
+		 */
+		do_action( 'srfm_before_submission', $form_before_submission_data );
+
 		$name       = sanitize_text_field( get_the_title( intval( $id ) ) );
-		$send_email = $this->send_email( $id, $submission_data );
+		$send_email = $this->send_email( $id, $submission_data, $form_data );
 		$emails     = [];
 
 		if ( $send_email ) {
@@ -472,8 +484,6 @@ class Form_Submit {
 		// Check if GDPR is enabled and do not store entries is enabled.
 		// If so, send email and do not store entries.
 		if ( $gdpr && $do_not_store_entries ) {
-
-			$modified_message = $this->prepare_submission_data( $submission_data );
 
 			$form_submit_response = [
 				'success'   => true,
@@ -552,8 +562,6 @@ class Form_Submit {
 				'redirect_url' => Generate_Form_Markup::get_redirect_url( $form_data, $submission_data ),
 			];
 
-			$modified_message = $this->prepare_submission_data( $submission_data );
-
 			$form_submit_response = apply_filters(
 				'srfm_form_submit_response',
 				[
@@ -613,12 +621,13 @@ class Form_Submit {
 	/**
 	 * Send Email.
 	 *
-	 * @param string       $id Form ID.
-	 * @param array<mixed> $submission_data Submission data.
+	 * @param string        $id Form ID.
+	 * @param array<mixed>  $submission_data Submission data.
+	 * @param array<string> $form_data Request object or array containing form data.
 	 * @since 0.0.1
 	 * @return array<mixed> Array containing the response data.
 	 */
-	public static function send_email( $id, $submission_data ) {
+	public static function send_email( $id, $submission_data, $form_data = [] ) {
 		$email_notification = get_post_meta( intval( $id ), '_srfm_email_notification' );
 		$smart_tags         = new Smart_Tags();
 		$is_mail_sent       = false;
@@ -633,8 +642,8 @@ class Form_Submit {
 					if ( true === $item['status'] ) {
 						$from           = Helper::get_string_value( get_option( 'admin_email' ) );
 						$to             = $smart_tags->process_smart_tags( $item['email_to'], $submission_data );
-						$subject        = $smart_tags->process_smart_tags( $item['subject'], $submission_data );
-						$email_body     = $smart_tags->process_smart_tags( $item['email_body'], $submission_data );
+						$subject        = $smart_tags->process_smart_tags( $item['subject'], $submission_data, $form_data );
+						$email_body     = $smart_tags->process_smart_tags( $item['email_body'], $submission_data, $form_data );
 						$email_template = new Email_Template();
 						$message        = $email_template->render( $submission_data, $email_body );
 						$headers        = "From: {$from}\r\nX-Mailer: PHP/" . phpversion() . "\r\nContent-Type: text/html; charset=utf-8\r\n";
@@ -684,7 +693,7 @@ class Form_Submit {
 	 */
 	public function field_unique_validation() {
 		if ( isset( $_POST['nonce'] ) && ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['nonce'] ) ), 'unique_validation_nonce' ) ) {
-			$error_message = 'Nonce verification failed.';
+			$error_message = __( 'Nonce verification failed.', 'sureforms' );
 			$error_data    = [
 				'error' => $error_message,
 			];
@@ -696,7 +705,7 @@ class Form_Submit {
 		$meta_value = $id;
 
 		if ( ! $meta_value ) {
-			$error_message = 'Invalid form ID.';
+			$error_message = __( 'Invalid form ID.', 'sureforms' );
 			$error_data    = [
 				'error' => $error_message,
 			];
