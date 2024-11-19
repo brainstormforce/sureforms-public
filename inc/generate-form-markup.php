@@ -127,9 +127,9 @@ class Generate_Form_Markup {
 
 			// Submit button.
 			$button_text             = Helper::get_meta_value( $id, '_srfm_submit_button_text' );
-			$submit_button_alignment = $form_styling['submit_button_alignment'];
+			$submit_button_alignment = ! empty( $form_styling['submit_button_alignment'] ) ? $form_styling['submit_button_alignment'] : 'left';
 
-			if ( is_rtl() && ( empty( $submit_button_alignment ) || 'left' === $submit_button_alignment || 'right' === $submit_button_alignment ) ) {
+			if ( is_rtl() && ( 'left' === $submit_button_alignment || 'right' === $submit_button_alignment ) ) {
 				$submit_button_alignment = 'right' === $submit_button_alignment ? 'left' : 'right';
 			}
 
