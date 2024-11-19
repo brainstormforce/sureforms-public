@@ -472,7 +472,8 @@ export async function fieldValidation(
 							.classList.add( 'srfm-error' );
 						if ( errorMessage ) {
 							errorMessage.textContent = srfmSprintfString(
-								window?.srfm_submit?.messages?.srfm_input_min_value,
+								window?.srfm_submit?.messages
+									?.srfm_input_min_value,
 								min
 							);
 						}
@@ -494,7 +495,8 @@ export async function fieldValidation(
 
 						if ( errorMessage ) {
 							errorMessage.textContent = srfmSprintfString(
-								window?.srfm_submit?.messages?.srfm_input_max_value,
+								window?.srfm_submit?.messages
+									?.srfm_input_max_value,
 								max
 							);
 						}
