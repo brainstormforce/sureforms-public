@@ -113,8 +113,9 @@ class Field_Mapping {
 
 						// Remove duplicate icons and clear icons if all are the same.
 						$icons        = array_column( $question['fieldOptions'], 'icon' );
+						$options      = array_column( $question['fieldOptions'], 'optionTitle' );
 						$unique_icons = array_unique( $icons );
-						if ( count( $unique_icons ) === 1 ) {
+						if ( count( $unique_icons ) === 1 || count( $options ) !== count( $icons ) ) {
 							foreach ( $question['fieldOptions'] as &$option ) {
 								$option['icon'] = '';
 							}
