@@ -177,7 +177,8 @@ class Email_Summary {
 
 		$site_title = get_bloginfo( 'name' );
 
-		$subject = __( 'SureForms Email Summary - ', 'sureforms' ) . $site_title;
+		// Translators: %s: Site Title.
+		$subject = sprintf( __( 'SureForms Email Summary - %s', 'sureforms' ), $site_title );
 		$message = $entries_count_table;
 		$headers = [
 			'Content-Type: text/html; charset=UTF-8',

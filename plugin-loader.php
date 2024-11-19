@@ -62,6 +62,9 @@ class Plugin_Loader {
 	 * @since 0.0.1
 	 */
 	public function __construct() {
+		if ( ! defined( 'SRFM_DIR' ) || ! defined( 'SRFM_FILE' ) ) {
+			return;
+		}
 		// Load the action scheduler before plugin loads.
 		require_once SRFM_DIR . 'inc/lib/action-scheduler/action-scheduler.php';
 
@@ -71,34 +74,6 @@ class Plugin_Loader {
 		add_action( 'plugins_loaded', [ $this, 'load_plugin' ], 99 );
 		add_action( 'init', [ $this, 'load_classes' ] );
 		add_action( 'admin_init', [ $this, 'activation_redirect' ] );
-		Post_Types::get_instance();
-		Form_Submit::get_instance();
-		Block_Patterns::get_instance();
-		Gutenberg_Hooks::get_instance();
-		Register::get_instance();
-		Frontend_Assets::get_instance();
-		Helper::get_instance();
-		Activator::get_instance();
-		Admin_Ajax::get_instance();
-		Forms_Data::get_instance();
-		Export::get_instance();
-		Smart_Tags::get_instance();
-		Generate_Form_Markup::get_instance();
-		Create_New_Form::get_instance();
-		Global_Settings::get_instance();
-		Email_Summary::get_instance();
-		Compliance_Settings::get_instance();
-		Events_Scheduler::get_instance();
-		AI_Form_Builder::get_instance();
-		Field_Mapping::get_instance();
-		Background_Process::get_instance();
-		Page_Builders::get_instance();
-		Rest_Api::get_instance();
-		AI_Helper::get_instance();
-		AI_Auth::get_instance();
-		Updater::get_instance();
-
-		DatabaseRegister::init();
 
 		/**
 		 * The code that runs during plugin activation
@@ -179,6 +154,15 @@ class Plugin_Loader {
 	 * @since 0.0.1
 	 */
 	public function activation_redirect() {
+		// Avoid redirection in case of WP_CLI calls.
+		if ( defined( 'WP_CLI' ) && \WP_CLI ) {
+			return;
+		}
+
+		// Avoid redirection in case of ajax calls.
+		if ( wp_doing_ajax() ) {
+			return;
+		}
 
 		$do_redirect = apply_filters( 'srfm_enable_redirect_activation', get_option( '__srfm_do_redirect' ) );
 
@@ -208,6 +192,8 @@ class Plugin_Loader {
 	 * @since 0.0.1
 	 */
 	public function load_classes() {
+		$this->load_core_files();
+		Register::get_instance();
 		if ( is_admin() ) {
 			Admin::get_instance();
 		}
@@ -275,7 +261,32 @@ class Plugin_Loader {
 	 * @return void
 	 */
 	public function load_plugin() {
-		$this->load_core_files();
+		Post_Types::get_instance();
+		Form_Submit::get_instance();
+		Block_Patterns::get_instance();
+		Gutenberg_Hooks::get_instance();
+		Frontend_Assets::get_instance();
+		Helper::get_instance();
+		Activator::get_instance();
+		Admin_Ajax::get_instance();
+		Forms_Data::get_instance();
+		Export::get_instance();
+		Smart_Tags::get_instance();
+		Generate_Form_Markup::get_instance();
+		Create_New_Form::get_instance();
+		Global_Settings::get_instance();
+		Email_Summary::get_instance();
+		Compliance_Settings::get_instance();
+		Events_Scheduler::get_instance();
+		AI_Form_Builder::get_instance();
+		Field_Mapping::get_instance();
+		Background_Process::get_instance();
+		Page_Builders::get_instance();
+		Rest_Api::get_instance();
+		AI_Helper::get_instance();
+		AI_Auth::get_instance();
+		Updater::get_instance();
+		DatabaseRegister::init();
 	}
 
 	/**

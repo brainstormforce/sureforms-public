@@ -147,6 +147,11 @@ body.post-type-sureforms_form {
 	.edit-post-sidebar__panel,
 	.editor-sidebar__panel {
 		margin-top: 1px;
+
+		// change the toggle switch border color.
+		.components-form-toggle .components-form-toggle__track {
+			border: 1px solid #1e1e1e;
+		}
 	}
 
 	.srfm-single-form-settings-description {
@@ -476,7 +481,6 @@ body.post-type-sureforms_form {
 			position: absolute;
 			transform: translateX( var( --srfm-submit-alignment-backend ) );
 			right: var( --srfm-submit-alignment-backend );
-			transform: translateX( var( --srfm-submit-alignment-backend ) );
 			max-width: var( --srfm-submit-width-backend );
 			width: 100%;
 
@@ -560,5 +564,15 @@ body.post-type-sureforms_form {
 body.post-type-sureforms_form {
 	.spectra-ee-quick-access-container {
 		display: none !important;
+	}
+}
+
+html[dir="rtl"] body.post-type-sureforms_form {
+	.srfm-submit-btn-container {
+		.srfm-button {
+			// New variable is required as the value was getting evaluated to positive (-1 * -1) if used directly in translateX().
+			--srfm-submit-alignment-backend-rtl: calc( -1 * ( var( --srfm-submit-alignment-backend ) ) );
+			transform: translateX( var( --srfm-submit-alignment-backend-rtl ) );
+		}
 	}
 }
