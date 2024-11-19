@@ -461,8 +461,20 @@ class Form_Submit {
 			}
 		}
 
+		$modified_message = $this->prepare_submission_data( $submission_data );
+
+		$form_before_submission_data = [
+			'form_id' => $id ? intval( $id ) : '',
+			'data'    => $modified_message,
+		];
+
+		/**
+		 * Fires before submission process starts.
+		 */
+		do_action( 'srfm_before_submission', $form_before_submission_data );
+
 		$name       = sanitize_text_field( get_the_title( intval( $id ) ) );
-		$send_email = $this->send_email( $id, $submission_data );
+		$send_email = $this->send_email( $id, $submission_data, $form_data );
 		$emails     = [];
 
 		if ( $send_email ) {
@@ -472,8 +484,6 @@ class Form_Submit {
 		// Check if GDPR is enabled and do not store entries is enabled.
 		// If so, send email and do not store entries.
 		if ( $gdpr && $do_not_store_entries ) {
-
-			$modified_message = $this->prepare_submission_data( $submission_data );
 
 			$form_submit_response = [
 				'success'   => true,
@@ -552,8 +562,6 @@ class Form_Submit {
 				'redirect_url' => Generate_Form_Markup::get_redirect_url( $form_data, $submission_data ),
 			];
 
-			$modified_message = $this->prepare_submission_data( $submission_data );
-
 			$form_submit_response = apply_filters(
 				'srfm_form_submit_response',
 				[
@@ -613,12 +621,13 @@ class Form_Submit {
 	/**
 	 * Send Email.
 	 *
-	 * @param string       $id Form ID.
-	 * @param array<mixed> $submission_data Submission data.
+	 * @param string        $id Form ID.
+	 * @param array<mixed>  $submission_data Submission data.
+	 * @param array<string> $form_data Request object or array containing form data.
 	 * @since 0.0.1
 	 * @return array<mixed> Array containing the response data.
 	 */
-	public static function send_email( $id, $submission_data ) {
+	public static function send_email( $id, $submission_data, $form_data = [] ) {
 		$email_notification = get_post_meta( intval( $id ), '_srfm_email_notification' );
 		$smart_tags         = new Smart_Tags();
 		$is_mail_sent       = false;
@@ -633,8 +642,8 @@ class Form_Submit {
 					if ( true === $item['status'] ) {
 						$from           = Helper::get_string_value( get_option( 'admin_email' ) );
 						$to             = $smart_tags->process_smart_tags( $item['email_to'], $submission_data );
-						$subject        = $smart_tags->process_smart_tags( $item['subject'], $submission_data );
-						$email_body     = $smart_tags->process_smart_tags( $item['email_body'], $submission_data );
+						$subject        = $smart_tags->process_smart_tags( $item['subject'], $submission_data, $form_data );
+						$email_body     = $smart_tags->process_smart_tags( $item['email_body'], $submission_data, $form_data );
 						$email_template = new Email_Template();
 						$message        = $email_template->render( $submission_data, $email_body );
 						$headers        = "From: {$from}\r\nX-Mailer: PHP/" . phpversion() . "\r\nContent-Type: text/html; charset=utf-8\r\n";
