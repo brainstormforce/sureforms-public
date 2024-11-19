@@ -81,7 +81,7 @@ class Frontend_Assets {
 		$js_uri      = SRFM_URL . 'assets/js/' . $dir_name . '/';
 		$css_uri     = SRFM_URL . 'assets/css/' . $dir_name . '/';
 		$css_vendor  = SRFM_URL . 'assets/css/minified/deps/';
-		$is_rtl	     = is_rtl();
+		$is_rtl      = is_rtl();
 		$rtl         = $is_rtl ? '-rtl' : '';
 
 		$security_setting_options = get_option( 'srfm_security_settings_options' );
