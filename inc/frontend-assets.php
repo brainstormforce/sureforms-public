@@ -81,7 +81,8 @@ class Frontend_Assets {
 		$js_uri      = SRFM_URL . 'assets/js/' . $dir_name . '/';
 		$css_uri     = SRFM_URL . 'assets/css/' . $dir_name . '/';
 		$css_vendor  = SRFM_URL . 'assets/css/minified/deps/';
-		$rtl         = is_rtl() ? '-rtl' : '';
+		$is_rtl	     = is_rtl();
+		$rtl         = $is_rtl ? '-rtl' : '';
 
 		$security_setting_options = get_option( 'srfm_security_settings_options' );
 		$is_set_v2_site_key       = false;
@@ -127,6 +128,7 @@ class Frontend_Assets {
 				'site_url' => site_url(),
 				'nonce'    => wp_create_nonce( 'wp_rest' ),
 				'messages' => Translatable::get_frontend_validation_messages(),
+				'is_rtl'   => $is_rtl,
 			]
 		);
 	}
@@ -217,17 +219,6 @@ class Frontend_Assets {
 
 			if ( 'dropdown' !== $block_name ) {
 				wp_enqueue_script( SRFM_SLUG . "-{$block_name}", $js_uri . $block_name . $file_prefix . '.js', [], SRFM_VER, true );
-
-				if ( 'phone' === $block_name ) {
-					// localize rtl for the phone block.
-					wp_localize_script(
-						SRFM_SLUG . "-{$block_name}",
-						'srfm_phone_data',
-						[
-							'is_rtl' => is_rtl(),
-						]
-					);
-				}
 			}
 
 			if ( 'input' === $block_name ) {
