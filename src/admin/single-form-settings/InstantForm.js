@@ -324,7 +324,6 @@ const InstantFormComponent = () => {
 								checked={ true === enable_instant_form }
 								onChange={ () => onHandleChange( 'enable_instant_form', ! enable_instant_form ) }
 							/>
-	
 							<ConversationalFormSettings />
 
 							<InstantFormToggle
