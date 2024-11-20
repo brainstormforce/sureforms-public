@@ -92,19 +92,20 @@ function initializeDropdown() {
 
 			const clearButton =
 				dropdownWrapper.querySelector( '.clear-button' );
-			clearButton?.innerHTML = clearSVG;
-			clearButton?.setAttribute( 'tabindex', '0' );
+			if ( clearButton ) {
+				clearButton.innerHTML = clearSVG;
+				clearButton.setAttribute( 'tabindex', '0' );
+				clearButton.addEventListener( 'keydown', ( e ) => {
+					if ( e.key === ' ' || e.key === 'Enter' ) {
+						e.preventDefault();
+						tomInputInstance.clear();
+					}
+				} );
+			}
 			const dropdownIconDiv = document.createElement( 'div' );
 			dropdownIconDiv.classList.add( 'ts-dropdown-icon' );
 			dropdownIconDiv.innerHTML = dropdownSVG;
 			dropdownWrapper.appendChild( dropdownIconDiv );
-
-			clearButton?.addEventListener( 'keydown', ( e ) => {
-				if ( e.key === ' ' || e.key === 'Enter' ) {
-					e.preventDefault();
-					tomInputInstance.clear();
-				}
-			} );
 
 			// Add placeholder to the dropdown when Search is disabled.
 			if ( config.controlInput === null ) {
