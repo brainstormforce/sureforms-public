@@ -336,7 +336,7 @@ class Entries_List_Table extends \WP_List_Table {
 					unlink( $temp_zip ); // Remove if temp export zip file already exists.
 				}
 
-				if ( $zip->open( $temp_zip, \ZipArchive::CREATE ) ) {
+				if ( ! $zip->open( $temp_zip, \ZipArchive::CREATE ) ) {
 					set_transient(
 						'srfm_bulk_action_message',
 						[
@@ -402,7 +402,28 @@ class Entries_List_Table extends \WP_List_Table {
 								fputcsv( $stream, $labels );
 							}
 
-							$values = array_values( $form_data );
+							$values = [];
+
+							/**
+							 * Lets normalize field values for the CSV file.
+							 * 1. First check if $field_value is array or not.
+							 * 2. If it is not array then assign it as it is.
+							 * 3. If it is array then first check if it is from upload field value. Process the upload file urls and convert array into comma separated string.
+							 * 4. If it is not upload field value then convert array into comma separated string.
+							 */
+							foreach ( $form_data as $field_name => $field_value ) {
+								if ( ! is_array( $field_value ) ) {
+									$values[ $field_name ] = $field_value;
+								} else {
+									if ( false !== strpos( $field_name, 'srfm-upload' ) ) {
+										// Decode the URLs, then create a comma separated string.
+										$values[ $field_name ] = implode( ', ', array_map( 'urldecode', $field_value ) );
+									} else {
+										$values[ $field_name ] = implode( ', ', $field_value );
+									}
+								}
+							}
+
 							fputcsv( $stream, $values );
 						}
 
@@ -444,7 +465,7 @@ class Entries_List_Table extends \WP_List_Table {
 					exit;
 				}
 
-				if ( $zip->close() ) {
+				if ( ! $zip->close() ) {
 					set_transient(
 						'srfm_bulk_action_message',
 						[
@@ -468,12 +489,11 @@ class Entries_List_Table extends \WP_List_Table {
 				readfile( $temp_zip );  // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_read_readfile -- We are not using WP_Filesystem here as we need readfile functionality.
 				unlink( $temp_zip ); // Clean up the temporary zip file.
 				exit;
-			} else {
+			}
 				// Update the status of each selected entry.
 				foreach ( $entry_ids as $entry_id ) {
 					self::handle_entry_status( Helper::get_integer_value( $entry_id ), $action );
 				}
-			}
 
 			set_transient(
 				'srfm_bulk_action_message',
@@ -503,9 +523,9 @@ class Entries_List_Table extends \WP_List_Table {
 		// Manually delete the transient after retrieval to prevent it from being displayed again after page reload.
 		delete_transient( 'srfm_bulk_action_message' );
 		$action  = $bulk_action_message['action'];
-		$count   = isset( $bulk_action_message['count'] ) ? $bulk_action_message['count'] : 0;
-		$message = isset( $bulk_action_message['message'] ) ? $bulk_action_message['message'] : '';
-		$type    = isset( $bulk_action_message['type'] ) ? $bulk_action_message['type'] : 'success';
+		$count   = $bulk_action_message['count'] ?? 0;
+		$message = $bulk_action_message['message'] ?? '';
+		$type    = $bulk_action_message['type'] ?? 'success';
 
 		if ( ! $message && $count ) {
 			// If we don't have $message added manually, and have $count then lets create message according to the action as default.
