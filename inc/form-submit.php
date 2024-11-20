@@ -501,6 +501,7 @@ class Form_Submit {
 			 *
 			 * @param array $form_data form data related to submission.
 			 */
+			$form_data['form_id'] = $id ? intval( $id ) : '';
 			do_action( 'srfm_after_submission_process', $form_data );
 
 			return [

@@ -279,10 +279,12 @@ async function handleFormSubmission(
 					submitType
 				);
 				loader.classList.remove( 'srfm-active' );
-				if ( formStatus?.data?.after_submit ) {
-					afterSubmit( formStatus );
-				}
 			} else if (
+				/**
+				 * This condition is similar to above one but we are using this for custom-app
+				 * here we are not removing 'srfm-active' class from loader
+				 * and sending loader as an extra parameter
+				 */
 				! [ 'different page', 'custom url' ].includes( submitType )
 			) {
 				showSuccessMessage(
@@ -299,6 +301,10 @@ async function handleFormSubmission(
 					redirectToUrl( formStatus?.redirect_url );
 				}
 				loader.classList.remove( 'srfm-active' );
+			}
+			// Moving afterSubmit action out of specific method so it should work for all submission mode
+			if ( formStatus?.data?.after_submit ) {
+				afterSubmit( formStatus );
 			}
 		} else {
 			loader.classList.remove( 'srfm-active' );
