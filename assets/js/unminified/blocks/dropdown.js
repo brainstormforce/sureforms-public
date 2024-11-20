@@ -92,14 +92,14 @@ function initializeDropdown() {
 
 			const clearButton =
 				dropdownWrapper.querySelector( '.clear-button' );
-			clearButton.innerHTML = clearSVG;
-			clearButton.setAttribute( 'tabindex', '0' );
+			clearButton?.innerHTML = clearSVG;
+			clearButton?.setAttribute( 'tabindex', '0' );
 			const dropdownIconDiv = document.createElement( 'div' );
 			dropdownIconDiv.classList.add( 'ts-dropdown-icon' );
 			dropdownIconDiv.innerHTML = dropdownSVG;
 			dropdownWrapper.appendChild( dropdownIconDiv );
 
-			clearButton.addEventListener( 'keydown', ( e ) => {
+			clearButton?.addEventListener( 'keydown', ( e ) => {
 				if ( e.key === ' ' || e.key === 'Enter' ) {
 					e.preventDefault();
 					tomInputInstance.clear();
