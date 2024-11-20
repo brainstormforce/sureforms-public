@@ -114,12 +114,12 @@ class Multichoice_Markup extends Base {
 	 * @return string|bool
 	 */
 	public function markup() {
-		$check_svg     = Helper::fetch_svg( $this->svg_type . '-checked', 'srfm-' . $this->slug . '-icon' );
-		$unchecked_svg = Helper::fetch_svg( $this->svg_type . '-unchecked', 'srfm-' . $this->slug . '-icon-unchecked' );
+		$check_svg     = Helper::fetch_svg( $this->svg_type . '-checked', 'srfm-' . $this->slug . '-icon', 'aria-hidden="true"' );
+		$unchecked_svg = Helper::fetch_svg( $this->svg_type . '-unchecked', 'srfm-' . $this->slug . '-icon-unchecked', 'aria-hidden="true"' );
 
 		ob_start(); ?>
 		<div data-block-id="<?php echo esc_attr( $this->block_id ); ?>" class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $this->type_attr ); ?>-mode srfm-<?php echo esc_attr( $this->slug ); ?>-block srf-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?>-block<?php echo wp_kses_post( $this->block_width ); ?><?php echo esc_attr( $this->class_name ); ?> <?php echo esc_attr( $this->conditional_class ); ?>">
-			<fieldset role="<?php echo esc_attr( $this->type_attr ); ?>" aria-checked="false" tabindex="0">
+			<fieldset>
 				<input class="srfm-input-<?php echo esc_attr( $this->slug ); ?>-hidden" data-required="<?php echo esc_attr( $this->data_require_attr ); ?>" <?php echo wp_kses_post( $this->data_attribute_markup() ); ?> name="srfm-input-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?><?php echo esc_attr( $this->field_name ); ?>" type="hidden" value=""/>
 				<legend class="srfm-block-legend">
 					<?php echo wp_kses_post( $this->label_markup ); ?>
@@ -133,11 +133,11 @@ class Multichoice_Markup extends Base {
 									<div class="srfm-block-content-wrap">
 										<div class="srfm-option-container">
 											<?php if ( 'icon' === $this->option_type && ! empty( $option['icon'] ) ) { ?>
-											<span class="srfm-option-icon">
+											<span class="srfm-option-icon" aria-hidden="true">
 												<?php Spec_Gb_Helper::render_svg_html( $option['icon'] ); ?>
 											</span>
 											<?php } elseif ( 'image' === $this->option_type && ! empty( $option['image'] ) ) { ?>
-											<span class="srfm-option-image">
+											<span class="srfm-option-image" aria-hidden="true">
 												<img src="<?php echo esc_url( $option['image'] ); ?>"/>
 											</span>
 											<?php } ?>
