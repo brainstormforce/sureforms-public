@@ -100,10 +100,10 @@ class Base {
 	/**
 	 * Indicates whether the attribute should be set to true or false.
 	 *
-	 * @var string $aria_require_attr Value of the aria-required attribute.
+	 * @var string $data_require_attr Value of the data-required attribute.
 	 * @since 0.0.2
 	 */
-	protected $aria_require_attr;
+	protected $data_require_attr;
 
 	/**
 	 * Dynamically sets the CSS class for block width based on the field width.
@@ -314,6 +314,16 @@ class Base {
 	protected $max_selection;
 
 	/**
+	 * Render the sureforms default
+	 *
+	 * @since 0.0.2
+	 * @return string|bool
+	 */
+	public function markup() {
+		return '';
+	}
+
+	/**
 	 * Setter for the properties of class based on block attributes.
 	 *
 	 * @param array<mixed> $attributes Block attributes.
@@ -321,21 +331,21 @@ class Base {
 	 * @return void
 	 */
 	protected function set_properties( $attributes ) {
-		$this->required           = isset( $attributes['required'] ) ? $attributes['required'] : false;
-		$this->field_width        = isset( $attributes['fieldWidth'] ) ? $attributes['fieldWidth'] : '';
-		$this->label              = isset( $attributes['label'] ) ? $attributes['label'] : '';
-		$this->help               = isset( $attributes['help'] ) ? $attributes['help'] : '';
+		$this->required           = $attributes['required'] ?? false;
+		$this->field_width        = $attributes['fieldWidth'] ?? '';
+		$this->label              = $attributes['label'] ?? '';
+		$this->help               = $attributes['help'] ?? '';
 		$this->block_id           = isset( $attributes['block_id'] ) ? Helper::get_string_value( $attributes['block_id'] ) : '';
 		$this->form_id            = isset( $attributes['formId'] ) ? Helper::get_string_value( $attributes['formId'] ) : '';
-		$this->block_slug         = isset( $attributes['slug'] ) ? $attributes['slug'] : '';
+		$this->block_slug         = $attributes['slug'] ?? '';
 		$this->class_name         = isset( $attributes['className'] ) ? ' ' . $attributes['className'] : '';
-		$this->placeholder        = isset( $attributes['placeholder'] ) ? $attributes['placeholder'] : '';
-		$this->default            = isset( $attributes['defaultValue'] ) ? $attributes['defaultValue'] : '';
-		$this->checked            = isset( $attributes['checked'] ) ? $attributes['checked'] : '';
-		$this->options            = isset( $attributes['options'] ) ? $attributes['options'] : '';
-		$this->is_unique          = isset( $attributes['isUnique'] ) ? $attributes['isUnique'] : false;
+		$this->placeholder        = $attributes['placeholder'] ?? '';
+		$this->default            = $attributes['defaultValue'] ?? '';
+		$this->checked            = $attributes['checked'] ?? '';
+		$this->options            = $attributes['options'] ?? '';
+		$this->is_unique          = $attributes['isUnique'] ?? false;
 		$this->conditional_class  = apply_filters( 'srfm_conditional_logic_classes', $this->form_id, $this->block_id );
-		$this->aria_require_attr  = $this->required ? 'true' : 'false';
+		$this->data_require_attr  = $this->required ? 'true' : 'false';
 		$this->block_width        = $this->field_width ? ' srfm-block-width-' . str_replace( '.', '-', $this->field_width ) : '';
 		$this->placeholder_attr   = $this->placeholder ? ' placeholder="' . $this->placeholder . '" ' : '';
 		$this->default_value_attr = $this->default ? ' value="' . $this->default . '" ' : '';
@@ -347,8 +357,8 @@ class Base {
 				'target' => [],
 			],
 		];
-		$this->min_selection      = isset( $attributes['minValue'] ) ? $attributes['minValue'] : '';
-		$this->max_selection      = isset( $attributes['maxValue'] ) ? $attributes['maxValue'] : '';
+		$this->min_selection      = $attributes['minValue'] ?? '';
+		$this->max_selection      = $attributes['maxValue'] ?? '';
 	}
 
 	/**
@@ -386,7 +396,7 @@ class Base {
 	 */
 	protected function set_error_msg( $attributes, $key = '' ) {
 		if ( empty( $key ) ) {
-			$this->error_msg = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
+			$this->error_msg = $attributes['errorMsg'] ?? '';
 		} else {
 			$this->error_msg = isset( $attributes['errorMsg'] ) && $attributes['errorMsg'] ? $attributes['errorMsg'] : Helper::get_default_dynamic_block_option( $key );
 		}
@@ -457,15 +467,5 @@ class Base {
 	protected function set_aria_described_by() {
 		$this->aria_described_by .= ! empty( $this->help ) ? ' srfm-description-' . $this->block_id : '';
 		$this->aria_described_by .= ! empty( $this->required ) ? ' srfm-error-' . $this->block_id : '';
-	}
-
-	/**
-	 * Render the sureforms default
-	 *
-	 * @since 0.0.2
-	 * @return string|boolean
-	 */
-	public function markup() {
-		return '';
 	}
 }

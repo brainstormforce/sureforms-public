@@ -18,7 +18,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 0.0.1
  */
 class Checkbox_Markup extends Base {
-
 	/**
 	 * Initialize the properties based on block attributes.
 	 *
@@ -38,7 +37,7 @@ class Checkbox_Markup extends Base {
 	 * Render the sureforms checkbox classic styling
 	 *
 	 * @since 0.0.2
-	 * @return string|boolean
+	 * @return string|bool
 	 */
 	public function markup() {
 
@@ -49,7 +48,7 @@ class Checkbox_Markup extends Base {
 				<div class="srfm-block-wrap">
 					<input class="srfm-input-common screen-reader-text srfm-input-<?php echo esc_attr( $this->slug ); ?>" id="<?php echo esc_attr( $label_random_id ); ?>"
 					<?php echo ! empty( $this->aria_described_by ) ? "aria-describedby='" . esc_attr( trim( $this->aria_described_by ) ) . "'" : ''; ?>
-					name="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?><?php echo esc_attr( $this->field_name ); ?>" aria-required="<?php echo esc_attr( $this->aria_require_attr ); ?>" type="checkbox" <?php echo esc_attr( $this->checked_attr ); ?>/>
+					name="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?><?php echo esc_attr( $this->field_name ); ?>" data-required="<?php echo esc_attr( $this->data_require_attr ); ?>" type="checkbox" <?php echo esc_attr( $this->checked_attr ); ?>/>
 					<label class="srfm-cbx" for="<?php echo esc_attr( $label_random_id ); ?>">
 						<span class="srfm-span-wrap">
 							<svg class="srfm-check-icon" width="12px" height="10px">
@@ -58,7 +57,7 @@ class Checkbox_Markup extends Base {
 						</span>
 						<span class="srfm-span-wrap srfm-block-label"><?php echo wp_kses( $this->label, $this->allowed_tags ); ?>
 						<?php if ( $this->required ) { ?>
-							<span class="srfm-required"> *</span>
+							<span class="srfm-required" aria-label="<?php echo esc_html__( 'Required', 'sureforms' ); ?>"><span aria-hidden="true"> *</span></span>
 						<?php } ?>
 						</span>
 					</label>
@@ -76,7 +75,6 @@ class Checkbox_Markup extends Base {
 		<?php
 
 		return ob_get_clean();
-
 	}
 
 }

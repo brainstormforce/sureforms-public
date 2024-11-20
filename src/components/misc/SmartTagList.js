@@ -1,4 +1,5 @@
 import { DropdownMenu } from '@wordpress/components';
+import { applyFilters } from '@wordpress/hooks';
 import { generateDropDownOptions } from '@Utils/Helpers';
 import svgIcons from '@Image/single-form-logo.json';
 import parse from 'html-react-parser';
@@ -8,20 +9,24 @@ export default function SmartTagList( {
 	icon,
 	label,
 	text,
+	tagFor,
 	cssClass,
 	tagsArray,
 	setTargetData,
 } ) {
 	const verticalDotIcon = parse( svgIcons.verticalDot );
 	const controls = [];
-	tagsArray.map( ( tagsArrayItem ) =>
-		controls.push(
-			generateDropDownOptions(
-				setTargetData,
-				tagsArrayItem.tags,
-				tagsArrayItem.label
-			)
-		)
+
+	applyFilters( 'srfm.smartTagList.tagsArray', tagsArray, tagFor ).forEach(
+		( tagsArrayItem ) => {
+			controls.push(
+				generateDropDownOptions(
+					setTargetData,
+					tagsArrayItem.tags,
+					tagsArrayItem.label
+				)
+			);
+		}
 	);
 
 	return (

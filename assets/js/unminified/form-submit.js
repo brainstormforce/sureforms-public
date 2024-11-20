@@ -115,13 +115,29 @@ async function submitFormData( form ) {
 	const formData = new FormData( form );
 	const filteredFormData = new FormData();
 
-	for ( const [ key, value ] of formData.entries() ) {
-		if (
-			! key.includes( 'srfm-email-confirm' ) &&
-			! key.includes( 'srfm-password-confirm' )
-		) {
-			filteredFormData.append( key, value );
+	// Define keys to exclude from filtered form data
+	const blockTheseKeys = [ 'srfm-email-confirm', 'srfm-password-confirm' ];
+
+	// Iterate over each entry in formData.
+	for ( let [ key, value ] of formData.entries() ) {
+		// Skip keys listed in blockTheseKeys array
+		if ( blockTheseKeys.includes( key ) ) {
+			continue;
 		}
+
+		if ( value !== '' ) {
+			// Retrieve input element by key name and find closest `.srfm-block-single` parent
+			const inputElement = form.querySelector( `[name="${ key }"]` );
+			const parentBlock = inputElement?.closest( '.srfm-block-single' );
+
+			// If parent has `.hide-element` class, reset value to empty string
+			if ( parentBlock?.classList.contains( 'hide-element' ) ) {
+				value = '';
+			}
+		}
+
+		// Append the (possibly modified) key-value pair to filteredFormData
+		filteredFormData.append( key, value );
 	}
 
 	return await fetch( `${ site_url }/wp-json/sureforms/v1/submit-form`, {
@@ -168,15 +184,33 @@ function showSuccessMessage(
 	element,
 	message,
 	form,
-	afterSubmission
+	afterSubmission,
+	submitType,
+	loader
 ) {
+	// Create and dispatch a custom event
+	const event = new CustomEvent( 'SRFM_Form_Success_Message', {
+		cancelable: true,
+		detail: {
+			form,
+			element,
+			message,
+			submitType,
+			container,
+			loader,
+		},
+	} );
+
+	if ( ! document.dispatchEvent( event ) ) {
+		return; // Stop further execution if event.preventDefault() was called.
+	}
 	if ( afterSubmission === 'hide form' ) {
 		form.style.opacity = 1;
 		form.style.display = 'none';
 		setTimeout( () => {
 			element.style.opacity = 1;
 		}, 500 );
-	} else {
+	} else if ( afterSubmission === 'reset form' ) {
 		form.reset();
 	}
 	element.innerHTML = message;
@@ -241,14 +275,29 @@ async function handleFormSubmission(
 					successElement,
 					formStatus?.message ?? '',
 					form,
-					afterSubmission
+					afterSubmission,
+					submitType
 				);
 				loader.classList.remove( 'srfm-active' );
 				if ( formStatus?.data?.after_submit ) {
 					afterSubmit( formStatus );
 				}
+			} else if (
+				! [ 'different page', 'custom url' ].includes( submitType )
+			) {
+				showSuccessMessage(
+					successContainer,
+					successElement,
+					formStatus?.message ?? '',
+					form,
+					afterSubmission,
+					submitType,
+					loader
+				);
 			} else {
-				redirectToUrl( successUrl );
+				if ( formStatus?.redirect_url ) {
+					redirectToUrl( formStatus?.redirect_url );
+				}
 				loader.classList.remove( 'srfm-active' );
 			}
 		} else {

@@ -2,9 +2,9 @@
 Contributors: brainstormforce
 Tags: contact form, custom form, form builder, forms, gutenberg
 Requires at least: 6.4
-Tested up to: 6.6.2
+Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.0.1
+Stable tag: 1.0.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -255,11 +255,34 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 
 == Changelog ==
 = x.x.x =
-* Improvement: Emit custom event srfm_form_submission_success on successful form submission
-* Improvement: Dropdown clear button accessibility fixes.
-* Fix: Blank entries screen displays after all entries are moved to trash.
-* Fix: Remove uploaded files when an entry is permanently deleted.
+* Improvement: Dropdown clear button keyboard accessibility fixes.
+= 1.0.5 - 19th November 2024 =
+* New: Introduced the {form_title} smart tag to dynamically insert the form's title.
+* Improvement: Added an action triggered before form submission.
+* Improvement: Enabled translation support for hardcoded UI text to enhance localization.
+* Improvement: Improved accessibility of form confirmation messages.
+* Improvement: Refactored logic for the dashboard entries chart.
+* Improvement: Values of fields hidden by conditional logic no longer get saved in the entry.
+* Fix: Resolved issue where multichoice field images were cut off on the front end.
+* Fix: Corrected RTL alignment for all blocks.
+= 1.0.4 - 12th November 2024 =
+* New: Voice input added for AI Form Builder.
+* Improvement: Added compatibility check for SureForms Pro version.
+* Improvement: Increased entries per page and updated form redirect link.
+* Fix: Ensured compatibility with WordPress 6.7.
+* Fix: Labels now process HTML tags correctly in emails and entries.
+= 1.0.3 - 6th November 2024 =
+* Improvement: Optimized screen reader announcements for field labels, required status and descriptions.
+= 1.0.2 - 31st October 2024  =
+* New: Support for query parameters in form confirmation.
+* New: Updated plugin branding.
+* Improvement: Added filters for confirmation messages and redirect URLs.
+* Improvement: Bulk edit options added for the dropdown and multichoice field.
+* Improvement: Emits custom event srfm_form_submission_success on successful form submission.
+* Improvement: Merged form confirmation redirect settings.
+* Fix: Blank entries screen no longer displays after moving all entries to trash.
 * Fix: Resolved PHP fatal error caused by incorrect argument count in form submission.
+* Fix: Uploaded files are now removed when an entry is permanently deleted.
 = 1.0.1 - 24th October 2024 =
 * Fix: Extra space from the v3 reCAPTCHA container has been removed.
 * Fix: GDPR and checkbox labels are now editable across Chrome, Firefox, Safari, Arc etc.

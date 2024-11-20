@@ -8,22 +8,20 @@
 
 namespace SRFM\Inc\Page_Builders\Elementor;
 
-use Elementor\Widget_Base;
 use Elementor\Plugin;
+use Elementor\Widget_Base;
+use Spec_Gb_Helper;
 use SRFM\Inc\Helper;
 use SRFM\Inc\Page_Builders\Page_Builders;
-use Spec_Gb_Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
 /**
- *
  * SureForms widget that displays a form.
  */
 class Form_Widget extends Widget_Base {
-
 	/**
 	 * Whether we are in the preview mode.
 	 *

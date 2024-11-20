@@ -101,14 +101,14 @@ if ( $use_banner_as_page_background ) {
 			}
 			?>
 			<?php echo esc_html( $selector ); ?> {
-				<?php if ( 'image' === $cover_type && ! empty( $srfm_cover_image_url ) ) : ?>
+				<?php if ( 'image' === $cover_type && ! empty( $srfm_cover_image_url ) ) { ?>
 					background-image: url(<?php echo esc_attr( $srfm_cover_image_url ); ?> );
 					background-position: center;
 					background-repeat: no-repeat;
 					background-size: cover;
-				<?php else : ?>
+				<?php } else { ?>
 					background-color: <?php echo esc_attr( $cover_color ); ?>;
-				<?php endif; ?>
+				<?php } ?>
 			}
 			<?php
 		} else {
@@ -135,7 +135,7 @@ if ( $use_banner_as_page_background ) {
 
 <body <?php body_class( $body_classes ); ?>>
 	<?php if ( ! $srfm_form_preview ) { ?>
-		<div id="srfm-single-page-container" class="srfm-single-page-container <?php echo ! ! $single_page_form_title ? 'has-form-title' : ''; ?>">
+		<div id="srfm-single-page-container" class="srfm-single-page-container <?php echo (bool) $single_page_form_title ? 'has-form-title' : ''; ?>">
 			<div class="srfm-page-banner">
 				<?php
 				if ( ! empty( $site_logo ) ) {

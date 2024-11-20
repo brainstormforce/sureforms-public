@@ -7993,27 +7993,6 @@ namespace SRFM\Inc\Blocks {
         {
         }
         /**
-         * Run any block middleware before rendering.
-         *
-         * @param array<mixed> $attributes Block attributes.
-         * @param string       $content   Post content.
-         * @return boolean|\WP_Error;
-         * @since 0.0.1
-         */
-        protected function middleware($attributes, $content)
-        {
-        }
-        /**
-         * Allows filtering of attributes before rendering.
-         *
-         * @param array<mixed> $attributes Block attributes.
-         * @return array<mixed> $attributes
-         * @since 0.0.1
-         */
-        public function get_attributes($attributes)
-        {
-        }
-        /**
          * Render the block
          *
          * @param array<mixed> $attributes Block attributes.
@@ -10469,6 +10448,7 @@ namespace {
     // ------ ADDITIONAL CONSTANTS ------- //
     \define('SRFM_FORMS_POST_TYPE', 'sureforms_form');
     \define('SRFM_ENTRIES', 'sureforms_entries');
+    \define('SRFM_PRO_RECOMMENDED_VER', '');
     /**
      * Filesystem class
      *
