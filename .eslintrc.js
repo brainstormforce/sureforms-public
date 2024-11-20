@@ -85,5 +85,6 @@ module.exports = {
 		SureTriggers: true,
 		Inputmask: true,
 		FileReader: true,
+		srfm_submit: true,
 	},
 };

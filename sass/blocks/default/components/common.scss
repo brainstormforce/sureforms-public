@@ -14,6 +14,7 @@
 
 		.conditional-logic {
 			display: none;
+			// This is for the compatibility of sureforms-pro version 1.0.3 and below and will be removed in future versions.
 			&.move-up-to-down {
 				animation: moveUpToDown 500ms linear forwards;
 				z-index: 1;
@@ -22,6 +23,7 @@
 			&.move-down-to-up {
 				animation: moveDownToUp 500ms linear forwards;
 			}
+			// Compatibility code ends here.
 
 			&.show-element {
 				display: block;
@@ -109,7 +111,9 @@
 		}
 	}
 }
-
+/**
+ * Below code (moveUpToDown/moveDownToUp) is just for the compatibility of sureforms-pro version 1.0.3 and below and will be removed in future versions.
+ */
 @keyframes moveUpToDown {
 	0% {
 		opacity: 0;
@@ -133,3 +137,4 @@
 		max-height: 0;
 	}
 }
+// Compatibility code ends here.

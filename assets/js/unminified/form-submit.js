@@ -115,13 +115,29 @@ async function submitFormData( form ) {
 	const formData = new FormData( form );
 	const filteredFormData = new FormData();
 
-	for ( const [ key, value ] of formData.entries() ) {
-		if (
-			! key.includes( 'srfm-email-confirm' ) &&
-			! key.includes( 'srfm-password-confirm' )
-		) {
-			filteredFormData.append( key, value );
+	// Define keys to exclude from filtered form data
+	const blockTheseKeys = [ 'srfm-email-confirm', 'srfm-password-confirm' ];
+
+	// Iterate over each entry in formData.
+	for ( let [ key, value ] of formData.entries() ) {
+		// Skip keys listed in blockTheseKeys array
+		if ( blockTheseKeys.includes( key ) ) {
+			continue;
 		}
+
+		if ( value !== '' ) {
+			// Retrieve input element by key name and find closest `.srfm-block-single` parent
+			const inputElement = form.querySelector( `[name="${ key }"]` );
+			const parentBlock = inputElement?.closest( '.srfm-block-single' );
+
+			// If parent has `.hide-element` class, reset value to empty string
+			if ( parentBlock?.classList.contains( 'hide-element' ) ) {
+				value = '';
+			}
+		}
+
+		// Append the (possibly modified) key-value pair to filteredFormData
+		filteredFormData.append( key, value );
 	}
 
 	return await fetch( `${ site_url }/wp-json/sureforms/v1/submit-form`, {
@@ -263,10 +279,12 @@ async function handleFormSubmission(
 					submitType
 				);
 				loader.classList.remove( 'srfm-active' );
-				if ( formStatus?.data?.after_submit ) {
-					afterSubmit( formStatus );
-				}
 			} else if (
+				/**
+				 * This condition is similar to above one but we are using this for custom-app
+				 * here we are not removing 'srfm-active' class from loader
+				 * and sending loader as an extra parameter
+				 */
 				! [ 'different page', 'custom url' ].includes( submitType )
 			) {
 				showSuccessMessage(
@@ -283,6 +301,10 @@ async function handleFormSubmission(
 					redirectToUrl( formStatus?.redirect_url );
 				}
 				loader.classList.remove( 'srfm-active' );
+			}
+			// Moving afterSubmit action out of specific method so it should work for all submission mode
+			if ( formStatus?.data?.after_submit ) {
+				afterSubmit( formStatus );
 			}
 		} else {
 			loader.classList.remove( 'srfm-active' );

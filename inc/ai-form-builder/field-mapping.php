@@ -199,8 +199,8 @@ class Field_Mapping {
 							$types_array = array_map(
 								static function( $type ) {
 									return [
-										'value' => $type,
-										'label' => $type,
+										'value' => trim( $type ),
+										'label' => trim( $type ),
 									];
 								},
 								$allowed_types
