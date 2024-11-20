@@ -91,7 +91,9 @@
 				background-color: var( --srfm-dropdown-option-background-hover );
 			}
 
-			&.iti__active {
+			// Removed the iti__active class since it was no longer used.
+			// Added the styles for iti__active into iti__highlight.
+			&.iti__country.iti__highlight {
 				background-color: var( --srfm-dropdown-option-background-selected );
 				&::after {
 					@include srfm-check-mark;

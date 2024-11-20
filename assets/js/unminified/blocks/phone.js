@@ -94,7 +94,7 @@ function itiContainerClass( element ) {
 		return;
 	}
 	const id = element.closest( 'form' ).getAttribute( 'form-id' );
-	const flagContainer = element.querySelector( '.iti__selected-flag' );
+	const flagContainer = element.querySelector( '.iti__selected-country' );
 	flagContainer.addEventListener( 'click', () => {
 		const itiContainerMobile = document.querySelector( '.iti--container' );
 		itiContainerMobile?.classList.add( `srfm-form-container-${ id }` );
