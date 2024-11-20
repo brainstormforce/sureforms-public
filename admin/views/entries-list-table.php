@@ -299,23 +299,91 @@ class Entries_List_Table extends \WP_List_Table {
 		if ( ! empty( $entry_ids ) ) {
 			$action = isset( $_GET['action'] ) ? sanitize_text_field( wp_unslash( $_GET['action'] ) ) : '';
 
-			if ( 'export' === $action && ! empty( $_GET['form_filter'] ) ) {
+			if ( 'export' === $action ) {
+				if ( ! class_exists( 'ZipArchive' ) ) {
+					set_transient(
+						'srfm_bulk_action_message',
+						[
+							'action'  => $action,
+							'message' => __( 'Entries export failed. Your server does not support the ZipArchive library.', 'sureforms' ),
+							'type'    => 'error',
+						],
+						30 // Transient expires in 30 seconds.
+					);
+					// Redirect to prevent form resubmission.
+					wp_safe_redirect( admin_url( 'admin.php?page=sureforms_entries' ) );
+					exit;
+				}
+
 				global $wpdb;
 
-				$results = $wpdb->get_results(
+				// Get an array of form ids based on the entry ids.
+				$form_ids = $wpdb->get_results( // phpcs:ignore -- Using database call directly because we need latest data from database.
 					$wpdb->prepare(
-						'SELECT * FROM %i WHERE ID IN (%1s) AND form_id=%d',
+						'SELECT DISTINCT form_id FROM %1s WHERE ID IN (%2s)', // phpcs:ignore -- It is okay to use complex placeholders as we don't want values to be quoted.
 						Entries::get_instance()->get_tablename(),
 						implode( ', ', $entry_ids ),
-						absint( wp_unslash( $_GET['form_filter'] ) )
 					),
 					ARRAY_A
 				);
+				$form_ids = array_map( 'absint', array_column( $form_ids, 'form_id' ) ); // Flatten the array.
 
-				if ( ! empty( $results ) && is_array( $results ) ) {
+				$temp_dir = wp_normalize_path( trailingslashit( get_temp_dir() ) ); // Normalize the path to make it consistent between windows and linux system.
+				$temp_zip = $temp_dir . 'srfm-entries-export.zip'; // Create a temporary file for the ZIP archive.
+				$zip      = new \ZipArchive();
 
-					$filename = tempnam( get_temp_dir(), 'srfm' );
-					$stream = fopen( $filename, 'wb' );
+				if ( file_exists( $temp_zip ) ) {
+					unlink( $temp_zip ); // Remove if temp export zip file already exists.
+				}
+
+				if ( $zip->open( $temp_zip, \ZipArchive::CREATE ) ) {
+					set_transient(
+						'srfm_bulk_action_message',
+						[
+							'action'  => $action,
+							'message' => __( 'Entries export failed. Unable to create the ZIP file.', 'sureforms' ),
+							'type'    => 'error',
+						],
+						30 // Transient expires in 30 seconds.
+					);
+					// Redirect to prevent form resubmission.
+					wp_safe_redirect( admin_url( 'admin.php?page=sureforms_entries' ) );
+					exit;
+				}
+
+				$success = 0;
+
+				foreach ( $form_ids as $form_id ) {
+					// Query the entries on the basis of current form ID.
+					$results = $wpdb->get_results( // phpcs:ignore -- Using database call directly because we need latest data from database.
+						$wpdb->prepare(
+							'SELECT * FROM %1s WHERE ID IN (%2s) AND form_id=%d', // phpcs:ignore -- It is okay to use complex placeholders as we don't want values to be quoted.
+							Entries::get_instance()->get_tablename(),
+							implode( ', ', $entry_ids ),
+							$form_id
+						),
+						ARRAY_A
+					);
+
+					if ( empty( $results ) ) {
+						continue;
+					}
+
+					$sanitized_form_title = sanitize_title( get_the_title( $form_id ) );
+
+					$csv_filename = 'srfm-entries-' . $sanitized_form_title . '.csv';
+					$csv_filepath = $temp_dir . $csv_filename;
+
+					if ( file_exists( $csv_filepath ) ) {
+						// Remove if temp export csv file already exists.
+						unlink( $csv_filepath );
+					}
+
+					$stream = fopen( $csv_filepath, 'wb' ); // phpcs:ignore -- Using fopen to decrease the memory use.
+
+					if ( ! is_resource( $stream ) ) {
+						continue;
+					}
 
 					foreach ( $results as $index => $result ) {
 						if ( empty( $result['form_data'] ) ) {
@@ -323,47 +391,83 @@ class Entries_List_Table extends \WP_List_Table {
 							continue;
 						}
 
-						$form_data = Helper::get_array_value( json_decode( $result['form_data'] ) );
+						$form_data = Helper::get_array_value( json_decode( $result['form_data'], true ) );
 
 						if ( ! empty( $form_data ) && is_array( $form_data ) ) {
 							if ( 0 === $index ) {
-								$labels = array_merge(
-									[
-										__( 'Entry ID', 'sureforms' ),
-									],
-									array_map(
-										array( Helper::class, 'get_field_label_from_key' ),
-										array_keys( $form_data )
-									)
+								$labels = array_map(
+									[ Helper::class, 'get_field_label_from_key' ],
+									array_keys( $form_data )
 								);
-
 								fputcsv( $stream, $labels );
 							}
 
-							$values = array_merge(
-								[
-									$result['ID'],
-								],
-								array_values( $form_data )
-							);
-
+							$values = array_values( $form_data );
 							fputcsv( $stream, $values );
 						}
+
+						$form_data = []; // Reset form data.
 					}
 
-					fclose( $stream );
+					fclose( $stream ); // phpcs:ignore -- Using fclose as we have used fopen above to decrease the memory use.
 
-					$csv_filename = 'srfm-entries-export-' . sanitize_title( get_the_title( absint( wp_unslash( $_GET['form_filter'] ) ) ) ) . '.csv';
+					// Make sure we don't create empty csv files inside zip.
+					if ( ! filesize( $csv_filepath ) ) {
+						$stream       = false; // Clean up memory.
+						$csv_filepath = ''; // Reset path.
+						$csv_filename = ''; // Reset filename.
+						continue;
+					}
 
-					header( 'Content-Type: application/zip' );
-					header( "Content-disposition: attachment; filename=\"{$csv_filename}\"" );
-					header( 'Content-Length: ' . filesize( $filename ) );
+					// Add file to the zip.
+					if ( $zip->addFile( $csv_filepath, $csv_filename ) ) {
+						$success++;
+					}
 
-					// Output the zip file.
-					readfile( $filename );  // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_read_readfile -- We are not using WP_Filesystem here as we need readfile functionality.
-					unlink( $filename ); // Clean up the temporary zip file.
+					$stream       = false; // Clean up memory.
+					$csv_filepath = ''; // Reset path.
+					$csv_filename = ''; // Reset filename.
+				}
+
+				if ( 0 === $success ) {
+					set_transient(
+						'srfm_bulk_action_message',
+						[
+							'action'  => $action,
+							'message' => __( 'Entries export failed.', 'sureforms' ),
+							'type'    => 'error',
+						],
+						30 // Transient expires in 30 seconds.
+					);
+					// Redirect to prevent form resubmission.
+					wp_safe_redirect( admin_url( 'admin.php?page=sureforms_entries' ) );
 					exit;
 				}
+
+				if ( $zip->close() ) {
+					set_transient(
+						'srfm_bulk_action_message',
+						[
+							'action'  => $action,
+							'message' => __( 'Entries export failed. Problem occured while closing the ZIP file.', 'sureforms' ),
+							'type'    => 'error',
+						],
+						30 // Transient expires in 30 seconds.
+					);
+					// Redirect to prevent form resubmission.
+					wp_safe_redirect( admin_url( 'admin.php?page=sureforms_entries' ) );
+					exit;
+				}
+
+				// Set headers to download the zip.
+				header( 'Content-Type: application/zip' );
+				header( sprintf( 'Content-disposition: attachment; filename="srfm-entries-export-%s.zip"', time() ) ); // Set filename header suffixed with timestamp.
+				header( 'Content-Length: ' . filesize( $temp_zip ) );
+
+				// Output the zip file.
+				readfile( $temp_zip );  // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_read_readfile -- We are not using WP_Filesystem here as we need readfile functionality.
+				unlink( $temp_zip ); // Clean up the temporary zip file.
+				exit;
 			} else {
 				// Update the status of each selected entry.
 				foreach ( $entry_ids as $entry_id ) {
@@ -398,34 +502,41 @@ class Entries_List_Table extends \WP_List_Table {
 		}
 		// Manually delete the transient after retrieval to prevent it from being displayed again after page reload.
 		delete_transient( 'srfm_bulk_action_message' );
-		$action = $bulk_action_message['action'];
-		$count  = $bulk_action_message['count'];
-		switch ( $action ) {
-			case 'read':
-			case 'unread':
-				// translators: %1$d refers to the number of entries, %2$s refers to the status (read or unread).
-				$message = sprintf( _n( '%1$d entry was successfully marked as %2$s.', '%1$d entries were successfully marked as %2$s.', $count, 'sureforms' ), $count, $action );
-				break;
-			case 'trash':
-				// translators: %1$d refers to the number of entries, %2$s refers to the action (trash).
-				$message = sprintf( _n( '%1$d entry was successfully moved to trash.', '%1$d entries were successfully moved to trash.', $count, 'sureforms' ), $count );
-				break;
-			case 'restore':
-				// translators: %1$d refers to the number of entries, %2$s refers to the action (restore).
-				$message = sprintf( _n( '%1$d entry was successfully restored.', '%1$d entries were successfully restored.', $count, 'sureforms' ), $count );
-				break;
-			case 'delete':
-				// translators: %1$d refers to the number of entries, %2$s refers to the action (delete).
-				$message = sprintf( _n( '%1$d entry was permanently deleted.', '%1$d entries were permanently deleted.', $count, 'sureforms' ), $count );
-				break;
-			case 'export':
-				// translators: %1$d refers to the number of entries, %2$s refers to the action (export).
-				$message = sprintf( _n( '%1$d entry was successfully exported.', '%1$d entries were successfully exported.', $count, 'sureforms' ), $count );
-				break;
-			default:
-				return;
+		$action  = $bulk_action_message['action'];
+		$count   = isset( $bulk_action_message['count'] ) ? $bulk_action_message['count'] : 0;
+		$message = isset( $bulk_action_message['message'] ) ? $bulk_action_message['message'] : '';
+		$type    = isset( $bulk_action_message['type'] ) ? $bulk_action_message['type'] : 'success';
+
+		if ( ! $message && $count ) {
+			// If we don't have $message added manually, and have $count then lets create message according to the action as default.
+			switch ( $action ) {
+				case 'read':
+				case 'unread':
+					// translators: %1$d refers to the number of entries, %2$s refers to the status (read or unread).
+					$message = sprintf( _n( '%1$d entry was successfully marked as %2$s.', '%1$d entries were successfully marked as %2$s.', $count, 'sureforms' ), $count, $action );
+					break;
+				case 'trash':
+					// translators: %1$d refers to the number of entries, %2$s refers to the action (trash).
+					$message = sprintf( _n( '%1$d entry was successfully moved to trash.', '%1$d entries were successfully moved to trash.', $count, 'sureforms' ), $count );
+					break;
+				case 'restore':
+					// translators: %1$d refers to the number of entries, %2$s refers to the action (restore).
+					$message = sprintf( _n( '%1$d entry was successfully restored.', '%1$d entries were successfully restored.', $count, 'sureforms' ), $count );
+					break;
+				case 'delete':
+					// translators: %1$d refers to the number of entries, %2$s refers to the action (delete).
+					$message = sprintf( _n( '%1$d entry was permanently deleted.', '%1$d entries were permanently deleted.', $count, 'sureforms' ), $count );
+					break;
+				case 'export':
+					// translators: %1$d refers to the number of entries, %2$s refers to the action (export).
+					$message = sprintf( _n( '%1$d entry was successfully exported.', '%1$d entries were successfully exported.', $count, 'sureforms' ), $count );
+					break;
+				default:
+					return;
+			}
 		}
-		echo '<div class="notice notice-success is-dismissible"><p>' . esc_html( $message ) . '</p></div>';
+
+		echo '<div class="notice notice-' . esc_attr( $type ) . ' is-dismissible"><p>' . esc_html( $message ) . '</p></div>';
 	}
 
 	/**
