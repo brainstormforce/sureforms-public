@@ -192,7 +192,7 @@ class Plugin_Loader {
 	 * @since 0.0.1
 	 */
 	public function load_classes() {
-		$this->load_core_files();
+
 		Register::get_instance();
 		if ( is_admin() ) {
 			Admin::get_instance();
@@ -261,6 +261,7 @@ class Plugin_Loader {
 	 * @return void
 	 */
 	public function load_plugin() {
+		$this->load_core_files();
 		Post_Types::get_instance();
 		Form_Submit::get_instance();
 		Block_Patterns::get_instance();
