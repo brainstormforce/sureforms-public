@@ -4,7 +4,7 @@ Tags: contact form, custom form, form builder, forms, gutenberg
 Requires at least: 6.4
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.0.5
+Stable tag: 1.0.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -254,6 +254,9 @@ Yes! You can certainly use SureForms on yours as well as your client’s website
 When you use SureForms, you get an easy-to-use AI-powered form builder that can be used to build your forms fast.
 
 == Changelog ==
+= 1.0.6 - 20th November 2024 =
+* Fix: Fixed Webhook functionality for GDPR-enabled forms and other submission options.
+* Fix: Resolved an issue where Icon, Heading, Image, and Separator fields were not displaying on the front end.
 = 1.0.5 - 19th November 2024 =
 * New: Introduced the {form_title} smart tag to dynamically insert the form's title.
 * Improvement: Added an action triggered before form submission.

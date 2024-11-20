@@ -192,7 +192,7 @@ class Plugin_Loader {
 	 * @since 0.0.1
 	 */
 	public function load_classes() {
-		$this->load_core_files();
+
 		Register::get_instance();
 		if ( is_admin() ) {
 			Admin::get_instance();
@@ -287,6 +287,15 @@ class Plugin_Loader {
 		AI_Auth::get_instance();
 		Updater::get_instance();
 		DatabaseRegister::init();
+
+		/**
+		 * Load core files necessary for the Spectra block.
+		 * This method is called in the Spectra block loader to ensure core files are loaded during the 'plugins_loaded' action.
+		 *
+		 * Note: This code is added at the bottom to ensure the form block is loaded first,
+		 * followed by the Spectra blocks such as heading, image, and icon blocks.
+		 */
+		$this->load_core_files();
 	}
 
 	/**
