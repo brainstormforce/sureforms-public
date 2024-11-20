@@ -84,8 +84,8 @@ function initializeDropdown() {
 			window?.addGlobalSrfmObject( inputName, tomInputInstance );
 
 			// Clear Icon and Dropdown Arrow SVGs.
-			const clearSVG = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 4L4 12" stroke="currentColor" stroke-opacity="0.65" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 4L12 12" stroke="currentColor" stroke-opacity="0.65" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
-			const dropdownSVG = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-opacity="0.65" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" /></svg>`;
+			const clearSVG = `<svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 4L4 12" stroke="currentColor" stroke-opacity="0.65" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 4L12 12" stroke="currentColor" stroke-opacity="0.65" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+			const dropdownSVG = `<svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-opacity="0.65" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" /></svg>`;
 			const dropdownWrapper = element
 				.closest( '.srfm-dropdown-block' )
 				.querySelector( '.ts-control' );
@@ -94,7 +94,12 @@ function initializeDropdown() {
 				dropdownWrapper.querySelector( '.clear-button' );
 			if ( clearButton ) {
 				clearButton.innerHTML = clearSVG;
+				// Adding the tabindex to the clear button for keyboard accessibility (tab navigation).
 				clearButton.setAttribute( 'tabindex', '0' );
+				/**
+				 * Clear the selected options when the clear button is clicked using keyboard.
+				 * The clear() method removes all selected options from the control and is available in the TomSelect instance.
+				 */
 				clearButton.addEventListener( 'keydown', ( e ) => {
 					if ( e.key === ' ' || e.key === 'Enter' ) {
 						e.preventDefault();
