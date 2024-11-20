@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: SureForms 1.0.5\n"
+"Project-Id-Version: SureForms 1.0.6\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/sureforms\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-11-18T05:21:34+00:00\n"
+"POT-Creation-Date: 2024-11-20T08:23:36+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.10.0\n"
 "X-Domain: sureforms\n"
@@ -85,7 +85,7 @@ msgstr ""
 #: inc/export.php:61
 #: inc/export.php:117
 #: inc/form-submit.php:201
-#: inc/form-submit.php:696
+#: inc/form-submit.php:697
 #: inc/forms-data.php:87
 #: inc/global-settings/global-settings.php:86
 #: inc/global-settings/global-settings.php:259
@@ -450,7 +450,7 @@ msgid "SureTriggers is not configured properly."
 msgstr ""
 
 #: inc/admin-ajax.php:235
-#: inc/form-submit.php:708
+#: inc/form-submit.php:709
 msgid "Invalid form ID."
 msgstr ""
 
@@ -687,7 +687,7 @@ msgid "I consent to have this website store my submitted information so they can
 msgstr ""
 
 #: inc/fields/inlinebutton-markup.php:182
-#: inc/generate-form-markup.php:335
+#: inc/generate-form-markup.php:340
 msgid "Please verify that you are not a robot."
 msgstr ""
 
@@ -767,21 +767,21 @@ msgstr ""
 msgid "Spam Detected"
 msgstr ""
 
-#: inc/form-submit.php:581
+#: inc/form-submit.php:582
 msgid "Error submitting form"
 msgstr ""
 
-#: inc/form-submit.php:638
+#: inc/form-submit.php:639
 msgid "Email Notification Initiated"
 msgstr ""
 
 #. translators: Here, %s is the comma separated emails list.
-#: inc/form-submit.php:670
+#: inc/form-submit.php:671
 msgid "Email notification sent to %s"
 msgstr ""
 
 #. translators: Here, %s is the comma separated emails list.
-#: inc/form-submit.php:670
+#: inc/form-submit.php:671
 msgid "Failed sending email notification to %s"
 msgstr ""
 
@@ -789,7 +789,7 @@ msgstr ""
 msgid "Sorry, you are not allowed to view the form."
 msgstr ""
 
-#: inc/generate-form-markup.php:361
+#: inc/generate-form-markup.php:366
 msgid "There was an error trying to submit your form. Please try again."
 msgstr ""
 
