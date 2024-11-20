@@ -5,7 +5,7 @@
  * Description: A simple yet powerful way to create modern forms for your website.
  * Author: SureForms
  * Author URI: https://sureforms.com/
- * Version: 1.0.5
+ * Version: 1.0.6
  * License: GPLv2 or later
  * Text Domain: sureforms
  *
@@ -23,7 +23,7 @@ define( 'SRFM_FILE', __FILE__ );
 define( 'SRFM_BASENAME', plugin_basename( SRFM_FILE ) );
 define( 'SRFM_DIR', plugin_dir_path( SRFM_FILE ) );
 define( 'SRFM_URL', plugins_url( '/', SRFM_FILE ) );
-define( 'SRFM_VER', '1.0.5' );
+define( 'SRFM_VER', '1.0.6' );
 define( 'SRFM_SLUG', 'srfm' );
 // ------ ADDITIONAL CONSTANTS ------- //
 define( 'SRFM_FORMS_POST_TYPE', 'sureforms_form' );
