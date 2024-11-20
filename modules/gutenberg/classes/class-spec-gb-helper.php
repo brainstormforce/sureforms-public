@@ -149,7 +149,7 @@ if ( ! class_exists( 'Spec_Gb_Helper' ) ) {
 		/**
 		 * Initialize block attributes.
 		 *
-		 * @since x.x.x
+		 * @since 1.0.6
 		 * @return void
 		 */
 		public static function init_block_attributes() {
