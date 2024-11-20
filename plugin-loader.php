@@ -290,6 +290,9 @@ class Plugin_Loader {
 		/**
 		 * Load core files necessary for the plugin.
 		 * This method is called in the plugin loader to ensure core files are loaded during the 'plugins_loaded' action.
+		 *
+		 * Note: This code is added at the bottom to ensure the form block is loaded first,
+		 * followed by the Spectra blocks such as heading, image, and icon blocks.
 		 */
 		$this->load_core_files();
 	}
