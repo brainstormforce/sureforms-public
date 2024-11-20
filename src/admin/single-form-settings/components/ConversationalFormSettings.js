@@ -4,10 +4,10 @@ import { ExternalLink } from '@wordpress/components';
 import { applyFilters } from '@wordpress/hooks';
 
 const ConversationalFormSettings = () => {
-	const showSwitch = false;
+	const showComponent = false;
 	const switchConversationalForms = applyFilters(
 		'srfm.instant_form_settings.conversational_forms',
-		showSwitch
+		showComponent
 	);
 
 	return (
