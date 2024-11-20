@@ -93,6 +93,7 @@ function initializeDropdown() {
 			const clearButton =
 				dropdownWrapper.querySelector( '.clear-button' );
 			if ( clearButton ) {
+				// Replace the default clear icon with the custom clear SVG.
 				clearButton.innerHTML = clearSVG;
 				// Adding the tabindex to the clear button for keyboard accessibility (tab navigation).
 				clearButton.setAttribute( 'tabindex', '0' );
