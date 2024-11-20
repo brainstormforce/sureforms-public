@@ -1,5 +1,5 @@
 // config.spec.js
-const { test, expect} = require( '@playwright/test' );
+const { test } = require( '@playwright/test' );
 
 // Export a function that logs in as an admin
 async function loginAsAdmin( page ) {
