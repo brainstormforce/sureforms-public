@@ -84,7 +84,7 @@ module.exports = {
 		screen: true,
 		SureTriggers: true,
 		Inputmask: true,
-		srfm_phone_data: true,
 		FileReader: true,
+		srfm_submit: true,
 	},
 };
