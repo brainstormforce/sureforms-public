@@ -261,6 +261,10 @@ class Plugin_Loader {
 	 * @return void
 	 */
 	public function load_plugin() {
+		/**
+		 * Load core files necessary for the plugin.
+		 * This method is called in the plugin loader to ensure core files are loaded during the 'plugins_loaded' action.
+		 */
 		$this->load_core_files();
 		Post_Types::get_instance();
 		Form_Submit::get_instance();
