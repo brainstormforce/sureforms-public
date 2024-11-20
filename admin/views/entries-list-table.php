@@ -412,10 +412,15 @@ class Entries_List_Table extends \WP_List_Table {
 							foreach ( $form_data as $field_name => $field_value ) {
 								if ( false !== strpos( $field_name, 'srfm-upload' ) ) {
 									// Decode the URLs, then create a comma separated string.
-									$_value =  implode( ', ', array_map( 'urldecode', $field_value ) );
+									$_value = implode( ', ', array_map( 'urldecode', $field_value ) );
 								} else {
-									$_value =  is_array( $field_value ) ? implode( ', ', $field_value ) : $field_value;
+									$_value = is_array( $field_value ) ? implode( ', ', $field_value ) : $field_value;
 								}
+
+								// Add double quote at the starting and ending so that results don't alter when viewed in excel.
+								// This helps in scenerios such as phone number with country code: +977123-123
+								// If we let +977123-123 without quote eg: "+977123-123" then excel will calculate +977123-123 thinking maths expression.
+								$values[] = $_value ? '"' . trim( $_value, '"' ) . '"' : '';
 							}
 
 							fputcsv( $stream, $values );
