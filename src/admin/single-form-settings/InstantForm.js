@@ -324,7 +324,6 @@ const InstantFormComponent = () => {
 								checked={ true === enable_instant_form }
 								onChange={ () => onHandleChange( 'enable_instant_form', ! enable_instant_form ) }
 							/>
-							<ConversationalFormSettings />
 
 							<InstantFormToggle
 								label={ __( 'Enable Preview', 'sureforms' ) }
@@ -337,6 +336,8 @@ const InstantFormComponent = () => {
 								checked={ true === single_page_form_title }
 								onChange={ () => onHandleChange( 'single_page_form_title', ! single_page_form_title ) }
 							/>
+
+							<ConversationalFormSettings />
 						</div>
 
 						<div className="srfm-instant-form-settings-separator" />
