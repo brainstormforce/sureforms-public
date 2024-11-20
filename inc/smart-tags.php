@@ -43,13 +43,16 @@ class Smart_Tags {
 	public function render_form( $block_content, $block ) {
 		$id = get_the_id();
 
+		// Simulating $form_data required form some of the smart tags.
+		$form_data = [ 'form-id' => $id ];
+
 		if ( self::check_form_by_id( $id ) ) {
-			return self::process_smart_tags( $block_content );
+			return self::process_smart_tags( $block_content, null, $form_data );
 		}
 
 		if ( isset( $block['blockName'] ) && ( 'srfm/form' === $block['blockName'] ) ) {
 			if ( isset( $block['attrs']['id'] ) && $block['attrs']['id'] ) {
-				return self::process_smart_tags( $block_content );
+				return self::process_smart_tags( $block_content, null, $form_data );
 			}
 		}
 
@@ -80,6 +83,7 @@ class Smart_Tags {
 				'{site_url}'               => __( 'Site URL', 'sureforms' ),
 				'{admin_email}'            => __( 'Admin Email', 'sureforms' ),
 				'{site_title}'             => __( 'Site Title', 'sureforms' ),
+				'{form_title}'             => __( 'Form Title', 'sureforms' ),
 				'{ip}'                     => __( 'IP Address', 'sureforms' ),
 				'{http_referer}'           => __( 'HTTP Referer URL', 'sureforms' ),
 				'{date_mdy}'               => __( 'Date (mm/dd/yyyy)', 'sureforms' ),
@@ -178,6 +182,18 @@ class Smart_Tags {
 
 			case '{site_title}':
 				return get_option( 'blogname' );
+
+			case '{form_title}':
+				if ( ! empty( $form_data ) && is_array( $form_data ) && ! empty( $form_data['form-id'] ) ) {
+					$id   = absint( $form_data['form-id'] );
+					$post = get_post( $id );
+
+					if ( $post instanceof \WP_Post ) {
+						return esc_html( $post->post_title ) ?? '';
+					}
+				}
+
+				return '';
 
 			case '{http_referer}':
 				return wp_get_referer();
