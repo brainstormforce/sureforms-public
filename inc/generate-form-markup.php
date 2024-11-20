@@ -127,12 +127,17 @@ class Generate_Form_Markup {
 
 			// Submit button.
 			$button_text             = Helper::get_meta_value( $id, '_srfm_submit_button_text' );
-			$submit_button_alignment = $form_styling['submit_button_alignment'];
-			$btn_from_theme          = Helper::get_meta_value( $id, '_srfm_inherit_theme_button' );
-			$is_inline_button        = Helper::get_meta_value( $id, '_srfm_is_inline_button' );
-			$security_type           = Helper::get_meta_value( $id, '_srfm_captcha_security_type' );
-			$form_custom_css_meta    = Helper::get_meta_value( $id, '_srfm_form_custom_css' );
-			$custom_css              = ! empty( $form_custom_css_meta ) && is_string( $form_custom_css_meta ) ? $form_custom_css_meta : '';
+			$submit_button_alignment = ! empty( $form_styling['submit_button_alignment'] ) ? $form_styling['submit_button_alignment'] : 'left';
+
+			if ( is_rtl() && ( 'left' === $submit_button_alignment || 'right' === $submit_button_alignment ) ) {
+				$submit_button_alignment = 'right' === $submit_button_alignment ? 'left' : 'right';
+			}
+
+			$btn_from_theme       = Helper::get_meta_value( $id, '_srfm_inherit_theme_button' );
+			$is_inline_button     = Helper::get_meta_value( $id, '_srfm_is_inline_button' );
+			$security_type        = Helper::get_meta_value( $id, '_srfm_captcha_security_type' );
+			$form_custom_css_meta = Helper::get_meta_value( $id, '_srfm_form_custom_css' );
+			$custom_css           = ! empty( $form_custom_css_meta ) && is_string( $form_custom_css_meta ) ? $form_custom_css_meta : '';
 
 			$full                       = 'justify' === $submit_button_alignment ? true : false;
 			$recaptcha_version          = 'g-recaptcha' === $security_type ? Helper::get_meta_value( $id, '_srfm_form_recaptcha' ) : '';
@@ -343,7 +348,7 @@ class Generate_Form_Markup {
 					?>
 
 					<div class="srfm-submit-container <?php echo esc_attr( $is_page_break ? 'hide' : '' ); ?>">
-						<div style="width: <?php echo esc_attr( $full ? '100%;' : ';' ); ?> text-align: <?php echo esc_attr( $submit_button_alignment ? $submit_button_alignment : 'left' ); ?>" class="wp-block-button">
+						<div style="width: <?php echo esc_attr( $full ? '100%' : '' ); ?>; text-align: <?php echo esc_attr( $submit_button_alignment ); ?>" class="wp-block-button">
 						<button style="width:<?php echo esc_attr( $full ? '100%;' : '' ); ?>" id="srfm-submit-btn"class="<?php echo esc_attr( '1' === $btn_from_theme ? 'wp-block-button__link' : 'srfm-btn-frontend srfm-button srfm-submit-button' ); ?><?php echo 'v3-reCAPTCHA' === $recaptcha_version ? ' g-recaptcha' : ''; ?>"
 						<?php if ( 'v3-reCAPTCHA' === $recaptcha_version ) { ?>
 							recaptcha-type="<?php echo esc_attr( $recaptcha_version ); ?>"

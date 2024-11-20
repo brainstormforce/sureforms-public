@@ -115,13 +115,29 @@ async function submitFormData( form ) {
 	const formData = new FormData( form );
 	const filteredFormData = new FormData();
 
-	for ( const [ key, value ] of formData.entries() ) {
-		if (
-			! key.includes( 'srfm-email-confirm' ) &&
-			! key.includes( 'srfm-password-confirm' )
-		) {
-			filteredFormData.append( key, value );
+	// Define keys to exclude from filtered form data
+	const blockTheseKeys = [ 'srfm-email-confirm', 'srfm-password-confirm' ];
+
+	// Iterate over each entry in formData.
+	for ( let [ key, value ] of formData.entries() ) {
+		// Skip keys listed in blockTheseKeys array
+		if ( blockTheseKeys.includes( key ) ) {
+			continue;
 		}
+
+		if ( value !== '' ) {
+			// Retrieve input element by key name and find closest `.srfm-block-single` parent
+			const inputElement = form.querySelector( `[name="${ key }"]` );
+			const parentBlock = inputElement?.closest( '.srfm-block-single' );
+
+			// If parent has `.hide-element` class, reset value to empty string
+			if ( parentBlock?.classList.contains( 'hide-element' ) ) {
+				value = '';
+			}
+		}
+
+		// Append the (possibly modified) key-value pair to filteredFormData
+		filteredFormData.append( key, value );
 	}
 
 	return await fetch( `${ site_url }/wp-json/sureforms/v1/submit-form`, {

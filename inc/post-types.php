@@ -528,7 +528,7 @@ class Post_Types {
 						'email_reply_to' => '{admin_email}',
 						'email_cc'       => '{admin_email}',
 						'email_bcc'      => '{admin_email}',
-						'subject'        => __( 'New Form Submission', 'sureforms' ),
+						'subject'        => sprintf( /* translators: %s: Form title smart tag */ __( 'New Form Submission - %s', 'sureforms' ), '{form_title}' ),
 						'email_body'     => '{all_data}',
 					],
 				],
