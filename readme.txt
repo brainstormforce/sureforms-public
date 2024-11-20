@@ -255,8 +255,8 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 
 == Changelog ==
 = 1.0.6 - 20th November 2024 =
-* Fix: Resolved an issue where Icon, Heading, Image, and Separator fields were not displaying on the front end.
 * Fix: Fixed Webhook functionality for GDPR-enabled forms and other submission options.
+* Fix: Resolved an issue where Icon, Heading, Image, and Separator fields were not displaying on the front end.
 = 1.0.5 - 19th November 2024 =
 * New: Introduced the {form_title} smart tag to dynamically insert the form's title.
 * Improvement: Added an action triggered before form submission.
