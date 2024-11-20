@@ -329,6 +329,22 @@ class Entries_List_Table extends \WP_List_Table {
 				$form_ids = array_map( 'absint', array_column( $form_ids, 'form_id' ) ); // Flatten the array.
 
 				$temp_dir = wp_normalize_path( trailingslashit( get_temp_dir() ) ); // Normalize the path to make it consistent between windows and linux system.
+
+				if ( ! wp_is_writable( $temp_dir ) ) {
+					set_transient(
+						'srfm_bulk_action_message',
+						[
+							'action'  => $action,
+							'message' => __( 'Entries export failed. You have file permission issue. Temporary directory is not writable.', 'sureforms' ),
+							'type'    => 'error',
+						],
+						30 // Transient expires in 30 seconds.
+					);
+					// Redirect to prevent form resubmission.
+					wp_safe_redirect( admin_url( 'admin.php?page=sureforms_entries' ) );
+					exit;
+				}
+
 				$temp_zip = $temp_dir . 'srfm-entries-export.zip'; // Create a temporary file for the ZIP archive.
 				$zip      = new \ZipArchive();
 
@@ -351,7 +367,8 @@ class Entries_List_Table extends \WP_List_Table {
 					exit;
 				}
 
-				$success = 0;
+				$success   = 0;
+				$csv_files = [];  // Array of csv files to delete after zip file is closed.
 
 				foreach ( $form_ids as $form_id ) {
 					// Query the entries on the basis of current form ID.
@@ -385,6 +402,8 @@ class Entries_List_Table extends \WP_List_Table {
 						continue;
 					}
 
+					$csv_files[] = $csv_filepath;
+
 					foreach ( $results as $index => $result ) {
 						if ( empty( $result['form_data'] ) ) {
 							// Probably invalid submission.
@@ -395,14 +414,17 @@ class Entries_List_Table extends \WP_List_Table {
 
 						if ( ! empty( $form_data ) && is_array( $form_data ) ) {
 							if ( 0 === $index ) {
-								$labels = array_map(
-									[ Helper::class, 'get_field_label_from_key' ],
-									array_keys( $form_data )
+								$labels = array_merge(
+									[ __( 'ID', 'sureforms' ) ],
+									array_map(
+										[ Helper::class, 'get_field_label_from_key' ],
+										array_keys( $form_data )
+									)
 								);
 								fputcsv( $stream, $labels );
 							}
 
-							$values = [];
+							$values = [ '#' . absint( $result['ID'] ) ]; // Add entry id for first element.
 
 							/**
 							 * Lets normalize field values for the CSV file.
@@ -487,6 +509,16 @@ class Entries_List_Table extends \WP_List_Table {
 				// Output the zip file.
 				readfile( $temp_zip );  // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_read_readfile -- We are not using WP_Filesystem here as we need readfile functionality.
 				unlink( $temp_zip ); // Clean up the temporary zip file.
+
+				if ( ! empty( $csv_files ) && is_array( $csv_files ) ) {
+					foreach ( $csv_files as $csv_file ) {
+						if ( file_exists( $csv_file ) ) {
+							// Clean any remaining temporary csv files after zip is exported.
+							// Doing this keeps us safe from taking unnecessary server space.
+							unlink( $csv_file );
+						}
+					}
+				}
 				exit;
 			}
 
