@@ -406,21 +406,15 @@ class Entries_List_Table extends \WP_List_Table {
 
 							/**
 							 * Lets normalize field values for the CSV file.
-							 * 1. First check if $field_value is array or not.
-							 * 2. If it is not array then assign it as it is.
-							 * 3. If it is array then first check if it is from upload field value. Process the upload file urls and convert array into comma separated string.
-							 * 4. If it is not upload field value then convert array into comma separated string.
+							 * 1. If it is array then first check if it is from upload field value. Process the upload file urls and convert array into comma separated string.
+							 * 2. If it is not upload field value then convert array into comma separated string.
 							 */
 							foreach ( $form_data as $field_name => $field_value ) {
-								if ( ! is_array( $field_value ) ) {
-									$values[ $field_name ] = $field_value;
+								if ( false !== strpos( $field_name, 'srfm-upload' ) ) {
+									// Decode the URLs, then create a comma separated string.
+									$_value =  implode( ', ', array_map( 'urldecode', $field_value ) );
 								} else {
-									if ( false !== strpos( $field_name, 'srfm-upload' ) ) {
-										// Decode the URLs, then create a comma separated string.
-										$values[ $field_name ] = implode( ', ', array_map( 'urldecode', $field_value ) );
-									} else {
-										$values[ $field_name ] = implode( ', ', $field_value );
-									}
+									$_value =  is_array( $field_value ) ? implode( ', ', $field_value ) : $field_value;
 								}
 							}
 
@@ -490,10 +484,11 @@ class Entries_List_Table extends \WP_List_Table {
 				unlink( $temp_zip ); // Clean up the temporary zip file.
 				exit;
 			}
-				// Update the status of each selected entry.
-				foreach ( $entry_ids as $entry_id ) {
-					self::handle_entry_status( Helper::get_integer_value( $entry_id ), $action );
-				}
+
+			// Update the status of each selected entry.
+			foreach ( $entry_ids as $entry_id ) {
+				self::handle_entry_status( Helper::get_integer_value( $entry_id ), $action );
+			}
 
 			set_transient(
 				'srfm_bulk_action_message',
