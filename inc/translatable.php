@@ -36,8 +36,11 @@ class Translatable {
 
 		/**
 		 * Filter for frontend validation messages.
+		 *
 		 * This filter allows developers to add or modify the default validation messages.
 		 * Primarily intended for enabling custom validation messages and supporting pro functionality.
+		 *
+		 * @internal This filter is primarily used for internal purposes and pro functionality.
 		 */
 		return apply_filters( 'srfm_frontend_validation_messages', $translatable_array );
 	}
@@ -75,6 +78,8 @@ class Translatable {
 		 * The `srfm_dynamic_validation_messages` filter allows developers to add or modify
 		 * the default dynamic validation messages.
 		 * This is primarily intended for enabling custom validation messages and supporting pro functionality.
+		 *
+		 * @internal This filter is primarily used for internal purposes and pro functionality.
 		 */
 		$filtered_array = apply_filters( 'srfm_dynamic_validation_messages', $translatable_array );
 
