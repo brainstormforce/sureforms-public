@@ -255,6 +255,7 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 
 == Changelog ==
 = x.x.x =
+* Improvement: Enhanced accessibility for error states by adding dynamic screen reader support to error messages in form validation.
 * Improvement: Improved screen reader accessibility to announce the block labels and help text.
 = 1.0.6 - 20th November 2024 =
 * Fix: Fixed Webhook functionality for GDPR-enabled forms and other submission options.
