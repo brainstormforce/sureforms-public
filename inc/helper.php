@@ -249,7 +249,7 @@ class Helper {
 				$markup = $is_unique ? '<div class="srfm-error">' . esc_html( $duplicate_msg ) . '</div>' : '';
 				break;
 			case 'placeholder':
-				$markup = $label && '1' === $show_labels_as_placeholder ? $label . ( $required ? ' *' : '' ) : '';
+				$markup = $label && '1' === $show_labels_as_placeholder ? htmlspecialchars_decode( esc_html( $label ) ) . ( $required ? ' *' : '' ) : '';
 				break;
 			case 'label_text':
 				$markup = $label ? htmlspecialchars_decode( esc_html( $label ) ) . ( $required ? '<span class="srfm-required" aria-label=",' . esc_attr__( 'Required', 'sureforms' ) . ',"><span aria-hidden="true"> *</span></span>' : '' ) . '</label>' : '';
