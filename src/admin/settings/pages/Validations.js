@@ -50,7 +50,7 @@ const ValidationsPage = ( {
 							value={ dynamicBlockOptions?.[ field.key ] || '' }
 							onChange={ ( value ) => {
 								updateGlobalSettings(
-									field,
+									field.key,
 									value,
 									'general-settings-dynamic-opt'
 								);
