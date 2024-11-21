@@ -102,6 +102,12 @@
 			&.iti__highlight {
 				background-color: var( --srfm-dropdown-option-background-hover );
 			}
+			&.iti__active {
+				background-color: var( --srfm-dropdown-option-background-selected );
+				&::after {
+					@include srfm-check-mark;
+				}
+			}
 		}
 	}
 }

@@ -65,6 +65,29 @@ function initializePhoneField() {
 		if ( phoneNumber ) {
 			phoneNumber.addEventListener( 'change', updatePhoneNumber );
 			phoneNumber.addEventListener( 'countrychange', updatePhoneNumber );
+			// Add iti__active class to the selected country in the dropdown and scroll to the selected country.
+			phoneNumber.addEventListener( 'open:countrydropdown', () => {
+				const dropdownList =
+					document.querySelector( '.iti__country-list' );
+				const selectedCountryData = iti.getSelectedCountryData();
+				if ( selectedCountryData ) {
+					const allCountries =
+						dropdownList.querySelectorAll( '.iti__country' );
+					allCountries.forEach( ( country ) => {
+						country.classList.remove( 'iti__active' );
+					} );
+					const activeCountry = dropdownList.querySelector(
+						`.iti__country[data-country-code="${ selectedCountryData.iso2 }"]`
+					);
+					if ( activeCountry ) {
+						activeCountry.classList.add( 'iti__active' );
+						activeCountry.scrollIntoView( {
+							block: 'nearest',
+							behavior: 'instant',
+						} );
+					}
+				}
+			} );
 		}
 
 		itiContainerClass( element );
