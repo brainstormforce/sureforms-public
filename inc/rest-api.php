@@ -112,6 +112,50 @@ class Rest_Api {
 	}
 
 	/**
+	 * Get the data for generating entries chart.
+	 *
+	 * @param \WP_REST_Request $request Full details about the request.
+	 * @since 1.0.0
+	 * @return array<mixed>
+	 */
+	public function get_entries_chart_data( $request ) {
+		$nonce = Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) );
+
+		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
+			wp_send_json_error( __( 'Nonce verification failed.', 'sureforms' ) );
+		}
+
+		$params = $request->get_params();
+
+		if ( empty( $params ) ) {
+			wp_send_json_error( __( 'Request could not be processed.', 'sureforms' ) );
+		}
+
+		$after = is_array( $params ) && ! empty( $params['after'] ) ? sanitize_text_field( Helper::get_string_value( $params['after'] ) ) : '';
+
+		if ( empty( $after ) ) {
+			wp_send_json_error( __( 'Invalid date.', 'sureforms' ) );
+		}
+
+		$where = [
+			[
+				[
+					'key'     => 'created_at',
+					'value'   => $after,
+					'compare' => '>=',
+				],
+
+			],
+		];
+
+		return Entries::get_instance()->get_results(
+			$where,
+			'created_at',
+			[ 'ORDER BY created_at DESC' ]
+		);
+	}
+
+	/**
 	 * Get endpoints
 	 *
 	 * @since 0.0.7
@@ -121,40 +165,46 @@ class Rest_Api {
 		return apply_filters(
 			'srfm_rest_api_endpoints',
 			[
-				'generate-block-slugs' => [
-					'methods'             => 'POST',
-					'callback'            => [ $this, 'generate_block_slugs_by_content' ],
-					'permission_callback' => [ $this, 'can_edit_posts' ],
-				],
-				'generate-form'        => [
-					'methods'             => 'POST',
-					'callback'            => [ AI_Form_Builder::get_instance(), 'generate_ai_form' ],
-					'permission_callback' => [ $this, 'can_edit_posts' ],
-					'args'                => [
-						'use_system_message' => [
-							'sanitize_callback' => [ $this, 'sanitize_boolean_field' ],
-						],
+			'generate-block-slugs' => [
+				'methods'             => 'POST',
+				'callback'            => [ $this, 'generate_block_slugs_by_content' ],
+				'permission_callback' => [ $this, 'can_edit_posts' ],
+			],
+			'generate-form'        => [
+				'methods'             => 'POST',
+				'callback'            => [ AI_Form_Builder::get_instance(), 'generate_ai_form' ],
+				'permission_callback' => [ $this, 'can_edit_posts' ],
+				'args'                => [
+					'use_system_message' => [
+						'sanitize_callback' => [ $this, 'sanitize_boolean_field' ],
 					],
 				],
-				// This route is used to map the AI response to SureForms fields markup.
-				'map-fields'           => [
-					'methods'             => 'POST',
-					'callback'            => [ Field_Mapping::get_instance(), 'generate_gutenberg_fields_from_questions' ],
-					'permission_callback' => [ $this, 'can_edit_posts' ],
-				],
-				// This route is used to initiate auth process when user tries to authenticate on billing portal.
-				'initiate-auth'        => [
-					'methods'             => 'GET',
-					'callback'            => [ AI_Auth::get_instance(), 'get_auth_url' ],
-					'permission_callback' => [ $this, 'can_edit_posts' ],
-				],
-				// This route is to used to decrypt the access key and save it in the database.
-				'handle-access-key'    => [
-					'methods'             => 'POST',
-					'callback'            => [ AI_Auth::get_instance(), 'handle_access_key' ],
-					'permission_callback' => [ $this, 'can_edit_posts' ],
-				],
-			]
+			],
+			// This route is used to map the AI response to SureForms fields markup.
+			'map-fields'           => [
+				'methods'             => 'POST',
+				'callback'            => [ Field_Mapping::get_instance(), 'generate_gutenberg_fields_from_questions' ],
+				'permission_callback' => [ $this, 'can_edit_posts' ],
+			],
+			// This route is used to initiate auth process when user tries to authenticate on billing portal.
+			'initiate-auth'        => [
+				'methods'             => 'GET',
+				'callback'            => [ AI_Auth::get_instance(), 'get_auth_url' ],
+				'permission_callback' => [ $this, 'can_edit_posts' ],
+			],
+			// This route is to used to decrypt the access key and save it in the database.
+			'handle-access-key'    => [
+				'methods'             => 'POST',
+				'callback'            => [ AI_Auth::get_instance(), 'handle_access_key' ],
+				'permission_callback' => [ $this, 'can_edit_posts' ],
+			],
+			// This route is to get the form submissions for the last 30 days.
+			'entries-chart-data'   => [
+				'methods'             => 'GET',
+				'callback'            => [ $this, 'get_entries_chart_data' ],
+				'permission_callback' => [ $this, 'can_edit_posts' ],
+			],
+		]
 		);
 	}
 }

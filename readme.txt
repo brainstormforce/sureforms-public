@@ -4,7 +4,7 @@ Tags: contact form, custom form, form builder, forms, gutenberg
 Requires at least: 6.4
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.0.4
+Stable tag: 1.0.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -256,6 +256,18 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 == Changelog ==
 = x.x.x =
 * New: Zapier integration added.
+= 1.0.6 - 20th November 2024 =
+* Fix: Fixed Webhook functionality for GDPR-enabled forms and other submission options.
+* Fix: Resolved an issue where Icon, Heading, Image, and Separator fields were not displaying on the front end.
+= 1.0.5 - 19th November 2024 =
+* New: Introduced the {form_title} smart tag to dynamically insert the form's title.
+* Improvement: Added an action triggered before form submission.
+* Improvement: Enabled translation support for hardcoded UI text to enhance localization.
+* Improvement: Improved accessibility of form confirmation messages.
+* Improvement: Refactored logic for the dashboard entries chart.
+* Improvement: Values of fields hidden by conditional logic no longer get saved in the entry.
+* Fix: Resolved issue where multichoice field images were cut off on the front end.
+* Fix: Corrected RTL alignment for all blocks.
 = 1.0.4 - 12th November 2024 =
 * New: Voice input added for AI Form Builder.
 * Improvement: Added compatibility check for SureForms Pro version.

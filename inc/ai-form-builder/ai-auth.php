@@ -42,7 +42,7 @@ class AI_Auth {
 		$nonce = Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) );
 
 		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
-			wp_send_json_error( 'Nonce verification failed.' );
+			wp_send_json_error( __( 'Nonce verification failed.', 'sureforms' ) );
 		}
 
 		// Generate a random key of 16 characters.
@@ -59,7 +59,7 @@ class AI_Auth {
 		$encoded_token_data = wp_json_encode( $token_data );
 
 		if ( empty( $encoded_token_data ) ) {
-			wp_send_json_error( [ 'message' => 'Failed to encode the token data.' ] );
+			wp_send_json_error( [ 'message' => __( 'Failed to encode the token data.', 'sureforms' ) ] );
 		}
 
 		// Send the token data to the frontend for redirection.
@@ -78,14 +78,14 @@ class AI_Auth {
 		$nonce = Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) );
 
 		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
-			wp_send_json_error( 'Nonce verification failed.' );
+			wp_send_json_error( __( 'Nonce verification failed.', 'sureforms' ) );
 		}
 
 		// get body data.
 		$body = json_decode( $request->get_body(), true );
 
 		if ( empty( $body ) ) {
-			wp_send_json_error( [ 'message' => 'Error processing Access Key.' ] );
+			wp_send_json_error( [ 'message' => __( 'Error processing Access Key.', 'sureforms' ) ] );
 		}
 
 		// get access key.
@@ -100,7 +100,7 @@ class AI_Auth {
 				$this->key
 			);
 		} else {
-			wp_send_json_error( [ 'message' => 'No access key provided.' ] );
+			wp_send_json_error( [ 'message' => __( 'No access key provided.', 'sureforms' ) ] );
 		}
 	}
 
@@ -130,24 +130,24 @@ class AI_Auth {
 
 		// if the decryption returns false then send error.
 		if ( empty( $decrypted ) ) {
-			wp_send_json_error( [ 'message' => 'Failed to decrypt the access key.' ] );
+			wp_send_json_error( [ 'message' => __( 'Failed to decrypt the access key.', 'sureforms' ) ] );
 		}
 
 		// json decode the decrypted data.
 		$decrypted_data_array = json_decode( $decrypted, true );
 
 		if ( ! is_array( $decrypted_data_array ) || empty( $decrypted_data_array ) ) {
-			wp_send_json_error( [ 'message' => 'Failed to json decode the decrypted data.' ] );
+			wp_send_json_error( [ 'message' => __( 'Failed to json decode the decrypted data.', 'sureforms' ) ] );
 		}
 
 		// verify the nonce that comes in $encrypted_email_array.
 		if ( ! empty( $decrypted_data_array['nonce'] ) && ! wp_verify_nonce( $decrypted_data_array['nonce'], 'ai_auth_nonce' ) ) {
-			wp_send_json_error( [ 'message' => 'Nonce verification failed.' ] );
+			wp_send_json_error( [ 'message' => __( 'Nonce verification failed.', 'sureforms' ) ] );
 		}
 
 		// check if the user email is present in the decrypted data.
 		if ( empty( $decrypted_data_array['user_email'] ) ) {
-			wp_send_json_error( [ 'message' => 'No user email found in the decrypted data.' ] );
+			wp_send_json_error( [ 'message' => __( 'No user email found in the decrypted data.', 'sureforms' ) ] );
 		}
 
 		// remove the nonce from the decrypted data before saving it to the options.
