@@ -34,6 +34,11 @@ class Translatable {
 	public static function get_frontend_validation_messages() {
 		$translatable_array = self::dynamic_validation_messages();
 
+		/**
+		 * Filter for frontend validation messages.
+		 * This filter allows developers to add or modify the default validation messages.
+		 * Primarily intended for enabling custom validation messages and supporting pro functionality.
+		 */
 		return apply_filters( 'srfm_frontend_validation_messages', $translatable_array );
 	}
 
@@ -64,6 +69,13 @@ class Translatable {
 			'srfm_dropdown_max_selections' => __( 'Maximum %s selections are allowed', 'sureforms' ),
 		];
 
+		/**
+		 * Filter for dynamic validation messages.
+		 *
+		 * The `srfm_dynamic_validation_messages` filter allows developers to add or modify
+		 * the default dynamic validation messages.
+		 * This is primarily intended for enabling custom validation messages and supporting pro functionality.
+		 */
 		$filtered_array = apply_filters( 'srfm_dynamic_validation_messages', $translatable_array );
 
 		$dynamic_options = get_option( 'srfm_default_dynamic_block_option', [] );
