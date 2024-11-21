@@ -14,17 +14,15 @@ const ConversationalFormSettings = () => {
 		<>
 			{ false === switchConversationalForms
 				? <div
-					style={ {
-						display: 'flex',
-						flexDirection: 'column',
-						gap: '8px',
-					} }>
+					className='srfm-conversational-form-settings-ctn'
+					>
 					<div
 						style={ {
 							display: 'flex',
 							justifyContent: 'space-between',
 							alignItems: 'center',
 						} }
+						className='srfm-conversational-form-settings-'
 					>
 						<span> { __( 'Conversational Layout', 'sureforms' ) } </span>
 						<span

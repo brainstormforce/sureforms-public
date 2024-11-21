@@ -559,6 +559,17 @@ body.post-type-sureforms_form {
 	label[contenteditable="true"] {
 		pointer-events: auto;
 	}
+
+	/*
+	* Conversational Form Settings Styles
+	*/
+	.srfm-conversational-form-settings-ctn{
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+		justify-content: space-between;
+		align-items: center;
+	}
 }
 
 // TODO: Adding style fot the temprary hide spectra QAB.
