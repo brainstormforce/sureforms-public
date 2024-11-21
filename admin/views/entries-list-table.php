@@ -579,10 +579,6 @@ class Entries_List_Table extends \WP_List_Table {
 					// translators: %1$d refers to the number of entries, %2$s refers to the action (delete).
 					$message = sprintf( _n( '%1$d entry was permanently deleted.', '%1$d entries were permanently deleted.', $count, 'sureforms' ), $count );
 					break;
-				case 'export':
-					// translators: %1$d refers to the number of entries, %2$s refers to the action (export).
-					$message = sprintf( _n( '%1$d entry was successfully exported.', '%1$d entries were successfully exported.', $count, 'sureforms' ), $count );
-					break;
 				default:
 					return;
 			}
