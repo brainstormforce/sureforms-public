@@ -133,11 +133,27 @@ if ( ! class_exists( 'Spec_Gb_Helper' ) ) {
 			require SRFM_DIR . 'modules/gutenberg/classes/class-spec-block-helper.php';
 			require SRFM_DIR . 'modules/gutenberg/classes/class-spec-block-js.php';
 
-			self::$block_list = Spec_Block_Config::get_block_attributes();
+			/**
+			 * Introduce this action to execute Spec_Block_Config::get_block_attributes().
+			 * This is necessary because translation functions are called within it.
+			 * WordPress 6.7 introduced warnings when hook execution order is incorrect,
+			 * which can lead to notices. This action ensures proper hook sequence.
+			 */
+			add_action( 'init', [ $this, 'init_block_attributes' ] );
 
 			add_action( 'wp', [ $this, 'wp_actions' ], 10 );
 
 			add_filter( 'render_block', [ $this, 'generate_render_styles' ], 10, 2 );
+		}
+
+		/**
+		 * Initialize block attributes.
+		 *
+		 * @since 1.0.6
+		 * @return void
+		 */
+		public static function init_block_attributes() {
+			self::$block_list = Spec_Block_Config::get_block_attributes();
 		}
 
 		/**
