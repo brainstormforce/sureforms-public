@@ -300,33 +300,9 @@ class Entries_List_Table extends \WP_List_Table {
 			$action = isset( $_GET['action'] ) ? sanitize_text_field( wp_unslash( $_GET['action'] ) ) : '';
 
 			if ( 'export' === $action ) {
-				if ( ! class_exists( 'ZipArchive' ) ) {
-					set_transient(
-						'srfm_bulk_action_message',
-						[
-							'action'  => $action,
-							'message' => __( 'Entries export failed. Your server does not support the ZipArchive library.', 'sureforms' ),
-							'type'    => 'error',
-						],
-						30 // Transient expires in 30 seconds.
-					);
-					// Redirect to prevent form resubmission.
-					wp_safe_redirect( admin_url( 'admin.php?page=sureforms_entries' ) );
-					exit;
-				}
-
-				global $wpdb;
-
 				// Get an array of form ids based on the entry ids.
-				$form_ids = $wpdb->get_results( // phpcs:ignore -- Using database call directly because we need latest data from database.
-					$wpdb->prepare(
-						'SELECT DISTINCT form_id FROM %1s WHERE ID IN (%2s)', // phpcs:ignore -- It is okay to use complex placeholders as we don't want values to be quoted.
-						Entries::get_instance()->get_tablename(),
-						implode( ', ', $entry_ids ),
-					),
-					ARRAY_A
-				);
-				$form_ids = array_map( 'absint', array_column( $form_ids, 'form_id' ) ); // Flatten the array.
+				$form_ids       = Entries::get_form_ids_by_entries( $entry_ids );
+				$is_single_form = count( $form_ids ) === 1;
 
 				$temp_dir = wp_normalize_path( trailingslashit( get_temp_dir() ) ); // Normalize the path to make it consistent between windows and linux system.
 
@@ -345,41 +321,71 @@ class Entries_List_Table extends \WP_List_Table {
 					exit;
 				}
 
-				$temp_zip = $temp_dir . 'srfm-entries-export.zip'; // Create a temporary file for the ZIP archive.
-				$zip      = new \ZipArchive();
+				// Only process for ZIP files if we have multiple forms.
+				if ( ! $is_single_form ) {
+					// Check for ZipArchive class if we are processing multiple forms.
+					if ( ! class_exists( 'ZipArchive' ) ) {
+						set_transient(
+							'srfm_bulk_action_message',
+							[
+								'action'  => $action,
+								'message' => __( 'Entries export failed. Your server does not support the ZipArchive library.', 'sureforms' ),
+								'type'    => 'error',
+							],
+							30 // Transient expires in 30 seconds.
+						);
+						// Redirect to prevent form resubmission.
+						wp_safe_redirect( admin_url( 'admin.php?page=sureforms_entries' ) );
+						exit;
+					}
 
-				if ( file_exists( $temp_zip ) ) {
-					unlink( $temp_zip ); // Remove if temp export zip file already exists.
-				}
+					$temp_zip = $temp_dir . 'srfm-entries-export.zip'; // Create a temporary file for the ZIP archive.
+					$zip      = new \ZipArchive();
 
-				if ( ! $zip->open( $temp_zip, \ZipArchive::CREATE ) ) {
-					set_transient(
-						'srfm_bulk_action_message',
-						[
-							'action'  => $action,
-							'message' => __( 'Entries export failed. Unable to create the ZIP file.', 'sureforms' ),
-							'type'    => 'error',
-						],
-						30 // Transient expires in 30 seconds.
-					);
-					// Redirect to prevent form resubmission.
-					wp_safe_redirect( admin_url( 'admin.php?page=sureforms_entries' ) );
-					exit;
+					if ( file_exists( $temp_zip ) ) {
+						unlink( $temp_zip ); // Remove if temp export zip file already exists.
+					}
+
+					if ( ! $zip->open( $temp_zip, \ZipArchive::CREATE ) ) {
+						set_transient(
+							'srfm_bulk_action_message',
+							[
+								'action'  => $action,
+								'message' => __( 'Entries export failed. Unable to create the ZIP file.', 'sureforms' ),
+								'type'    => 'error',
+							],
+							30 // Transient expires in 30 seconds.
+						);
+						// Redirect to prevent form resubmission.
+						wp_safe_redirect( admin_url( 'admin.php?page=sureforms_entries' ) );
+						exit;
+					}
 				}
 
 				$success   = 0;
 				$csv_files = [];  // Array of csv files to delete after zip file is closed.
 
 				foreach ( $form_ids as $form_id ) {
-					// Query the entries on the basis of current form ID.
-					$results = $wpdb->get_results( // phpcs:ignore -- Using database call directly because we need latest data from database.
-						$wpdb->prepare(
-							'SELECT * FROM %1s WHERE ID IN (%2s) AND form_id=%d', // phpcs:ignore -- It is okay to use complex placeholders as we don't want values to be quoted.
-							Entries::get_instance()->get_tablename(),
-							implode( ', ', $entry_ids ),
-							$form_id
-						),
-						ARRAY_A
+					// SELECT * FROM %1s WHERE ID IN (%2s) AND form_id=%d.
+					$results = Entries::get_all(
+						[
+							'where'   => [
+								[
+									[
+										'key'     => 'ID',
+										'compare' => 'IN',
+										'value'   => $entry_ids,
+									],
+									[
+										'key'     => 'form_id',
+										'compare' => '=',
+										'value'   => $form_id,
+									],
+								],
+							],
+							'columns' => 'ID, form_data', // Query only needed columns for the performance.
+						],
+						false
 					);
 
 					if ( empty( $results ) ) {
@@ -410,7 +416,7 @@ class Entries_List_Table extends \WP_List_Table {
 							continue;
 						}
 
-						$form_data = Helper::get_array_value( json_decode( $result['form_data'], true ) );
+						$form_data = $result['form_data'];
 
 						if ( ! empty( $form_data ) && is_array( $form_data ) ) {
 							if ( 0 === $index ) {
@@ -453,6 +459,19 @@ class Entries_List_Table extends \WP_List_Table {
 
 					fclose( $stream ); // phpcs:ignore -- Using fclose as we have used fopen above to decrease the memory use.
 
+					// If we are only exporting single form, than create a single csv file rather than a zip file.
+					if ( $is_single_form ) {
+						// Set headers to download the single csv file.
+						header( 'Content-Type: text/csv' );
+						header( sprintf( 'Content-disposition: attachment; filename="%s"', $csv_filename ) ); // Set filename header.
+						header( 'Content-Length: ' . filesize( $csv_filepath ) );
+
+						// Output the zip file.
+						readfile( $csv_filepath );  // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_read_readfile -- We are not using WP_Filesystem here as we need readfile functionality.
+						unlink( $csv_filepath ); // Clean up the temporary zip file.
+						exit; // Exit and don't proceed further because it is a single form.
+					}
+
 					// Make sure we don't create empty csv files inside zip.
 					if ( ! filesize( $csv_filepath ) ) {
 						$stream       = false; // Clean up memory.
@@ -461,8 +480,8 @@ class Entries_List_Table extends \WP_List_Table {
 						continue;
 					}
 
-					// Add file to the zip.
-					if ( $zip->addFile( $csv_filepath, $csv_filename ) ) {
+					// Add file to the zip if we are processing more than one form.
+					if ( ! $is_single_form && $zip->addFile( $csv_filepath, $csv_filename ) ) {
 						$success++;
 					}
 
