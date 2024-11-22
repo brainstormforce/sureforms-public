@@ -9,7 +9,6 @@ async function loginAsAdmin( page ) {
 	await page.click( '#wp-submit' );
 	await page.goto( '/wp-admin' );
 }
-
 test.afterEach( async ( { page } ) => {
 	// Close the page after the test completes
 	await page.close();
