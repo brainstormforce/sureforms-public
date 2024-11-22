@@ -294,7 +294,7 @@ class Entries_List_Table extends \WP_List_Table {
 
 		$action = sanitize_text_field( wp_unslash( ( new self() )->current_action() ) );
 
-		if ( !$action ) {
+		if ( ! $action ) {
 			return;
 		}
 
