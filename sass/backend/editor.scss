@@ -563,12 +563,37 @@ body.post-type-sureforms_form {
 	/*
 	* Conversational Form Settings Styles
 	*/
-	.srfm-conversational-form-settings-ctn{
+	.srfm-conversational-placeholder-label-ctn {
 		display: flex;
-		flex-direction: column;
 		gap: 8px;
-		justify-content: space-between;
-		align-items: center;
+
+		.srfm-conversational-placeholder-label {
+			min-width: 16px;
+			max-height: 16px;
+			padding: 2px;
+			gap: 2px;
+			border-radius: 4px;
+			background: #1f2937;
+			color: #fff;
+			border: 0.5px solid #374151;
+			font-size: 9px;
+			font-weight: 600;
+			line-height: normal;
+			text-align: center;
+		}
+	}
+
+	.srfm-conversational-placeholder-help-text {
+		margin-top: -10px;
+		padding: 4px;
+		border-radius: 6px;
+		background: #f0f9ff;
+		color: #1e293b;
+		border: 0.5px solid #bae6fd;
+		font-size: 13px;
+		font-weight: 400;
+		line-height: 20px;
+		text-align: left;
 	}
 }
 
@@ -579,9 +604,8 @@ body.post-type-sureforms_form {
 	}
 }
 
-
 html[dir="rtl"] body.post-type-sureforms_form {
 	.srfm-submit-btn-container {
-		max-width: calc(620px - 20em);
+		max-width: calc( 620px - 20em );
 	}
 }
