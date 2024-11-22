@@ -38,9 +38,66 @@ const ValidationsPage = ( {
 			]
 		);
 
+		/**
+		 * This component ensures backward compatibility with the Pro version.
+		 * 
+		 * @compatibility Pro Version 1.1.0 - This component is designed to maintain compatibility 
+		 * with the Pro version starting from 1.1.0. It addresses certain fields dynamically.
+		 * 
+		 * @note Future Deprecation: This component is planned for removal in 3-4 versions after 
+		 * Pro version 1.1.0 as it will no longer be necessary.
+		 * 
+		 * @version 1.1.0 Introduced for compatibility with Pro-specific features.
+		 */
+		const handleProCompatibilityInput = ( field ) => {
+			let fieldLabel = field
+						.replace( 'srfm_', '' )
+						.replace( /_/g, ' ' );
+					fieldLabel = fieldLabel.replace( /text/g, '' );
+					fieldLabel = fieldLabel
+						.split( ' ' )
+						.map(
+							( word ) =>
+								word.charAt( 0 ).toUpperCase() + word.slice( 1 )
+						)
+						.join( ' ' );
+					return (
+						<TextControl
+							key={ field }
+							label={ `${
+								( fieldLabel === 'Area Block Required '
+									? __(
+										'Textarea Block Required',
+										'sureforms'
+									)
+									: fieldLabel === 'Url Block Required '
+										? __( 'URL Block Required', 'sureforms' )
+										: fieldLabel ) +
+								__( ' Error Message', 'sureforms' )
+							}` }
+							type="text"
+							className="srfm-components-input-control"
+							value={ dynamicBlockOptions[ field ] }
+							onChange={ ( value ) => {
+								updateGlobalSettings(
+									field,
+									value,
+									'general-settings-dynamic-opt'
+								);
+							} }
+						/>
+					);
+		}
+
 		return (
 			<>
 				{ validationFields.map( ( field ) => {
+					// Ensure compatibility for validation fields in Pro version.
+					// If the key is not available in dynamicBlockOptions, treat it as a Pro-specific field.
+					if ( ! field?.key ) {
+						return handleProCompatibilityInput( field );
+					}
+
 					return (
 						<TextControl
 							key={ field.key }
