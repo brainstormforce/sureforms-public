@@ -288,6 +288,10 @@ class Entries_List_Table extends \WP_List_Table {
 	 * @return void
 	 */
 	public static function process_bulk_actions() {
+		if ( ! isset( $_GET['action'] ) ) {
+			return;
+		}
+
 		if ( ! isset( $_GET['_wpnonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'srfm_entries_action' ) ) {
 			return;
 		}
@@ -303,13 +307,32 @@ class Entries_List_Table extends \WP_List_Table {
 
 		if ( 'export' === $action ) {
 			if ( ! $entry_ids ) {
-				$all_entry_ids = Entries::get_all(
-					[
-						'columns' => 'ID',
-					],
-					false
-				);
-				$entry_ids     = array_map( 'absint', array_column( $all_entry_ids, 'ID' ) );
+				// If we are here then user has not selected entries so handle all entries export accordingly.
+				if ( ! empty( $_GET['form_filter'] ) && 'all' !== $_GET['form_filter'] ) {
+					/**
+					 * If we are here then user has filtered the entries by form first
+					 * then selected export as bulk action without selecting any entries manually.
+					 */
+					$all_entry_ids = Entries::get_all_entry_ids_for_form( absint( wp_unslash( $_GET['form_filter'] ) ) );
+				} else {
+					// Export all the available ( but not trashed ) entries.
+					$all_entry_ids = Entries::get_all(
+						[
+							'where'   => [
+								[
+									[
+										'key'     => 'status',
+										'compare' => '!=',
+										'value'   => 'trash',
+									],
+								],
+							],
+							'columns' => 'ID',
+						],
+						false
+					);
+				}
+				$entry_ids = array_map( 'absint', array_column( $all_entry_ids, 'ID' ) );
 			}
 
 			// Get an array of form ids based on the entry ids.
