@@ -39,55 +39,55 @@ const ValidationsPage = ( {
 		);
 
 		/**
-		 * This component ensures backward compatibility with the Pro version.
-		 * 
-		 * @compatibility Pro Version 1.1.0 - This component is designed to maintain compatibility 
-		 * with the Pro version starting from 1.1.0. It addresses certain fields dynamically.
-		 * 
-		 * @note Future Deprecation: This component is planned for removal in 3-4 versions after 
-		 * Pro version 1.1.0 as it will no longer be necessary.
-		 * 
-		 * @version 1.1.0 Introduced for compatibility with Pro-specific features.
+		 * Ensures backward compatibility with the Pro version of the software.
+		 *
+		 * This component is designed to dynamically address certain fields introduced in Pro Version 1.1.0.
+		 * It ensures compatibility with features introduced in that version. Note that this component is
+		 * planned for deprecation in 3-4 versions after Pro Version 1.1.0.
+		 *
+		 * @param {string} field - The field key being processed.
+		 * @since 1.1.0
+		 * @deprecated Planned for removal in future versions after Pro 1.1.0.
 		 */
 		const handleProCompatibilityInput = ( field ) => {
 			let fieldLabel = field
-						.replace( 'srfm_', '' )
-						.replace( /_/g, ' ' );
-					fieldLabel = fieldLabel.replace( /text/g, '' );
-					fieldLabel = fieldLabel
-						.split( ' ' )
-						.map(
-							( word ) =>
-								word.charAt( 0 ).toUpperCase() + word.slice( 1 )
-						)
-						.join( ' ' );
-					return (
-						<TextControl
-							key={ field }
-							label={ `${
-								( fieldLabel === 'Area Block Required '
-									? __(
-										'Textarea Block Required',
-										'sureforms'
-									)
-									: fieldLabel === 'Url Block Required '
-										? __( 'URL Block Required', 'sureforms' )
-										: fieldLabel ) +
+				.replace( 'srfm_', '' )
+				.replace( /_/g, ' ' );
+			fieldLabel = fieldLabel.replace( /text/g, '' );
+			fieldLabel = fieldLabel
+				.split( ' ' )
+				.map(
+					( word ) =>
+						word.charAt( 0 ).toUpperCase() + word.slice( 1 )
+				)
+				.join( ' ' );
+			return (
+				<TextControl
+					key={ field }
+					label={ `${
+						( fieldLabel === 'Area Block Required '
+							? __(
+								'Textarea Block Required',
+								'sureforms'
+							)
+							: fieldLabel === 'Url Block Required '
+								? __( 'URL Block Required', 'sureforms' )
+								: fieldLabel ) +
 								__( ' Error Message', 'sureforms' )
-							}` }
-							type="text"
-							className="srfm-components-input-control"
-							value={ dynamicBlockOptions[ field ] }
-							onChange={ ( value ) => {
-								updateGlobalSettings(
-									field,
-									value,
-									'general-settings-dynamic-opt'
-								);
-							} }
-						/>
-					);
-		}
+					}` }
+					type="text"
+					className="srfm-components-input-control"
+					value={ dynamicBlockOptions[ field ] }
+					onChange={ ( value ) => {
+						updateGlobalSettings(
+							field,
+							value,
+							'general-settings-dynamic-opt'
+						);
+					} }
+				/>
+			);
+		};
 
 		return (
 			<>
