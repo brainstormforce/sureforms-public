@@ -255,6 +255,7 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 
 == Changelog ==
 = x.x.x =
+* New: Support for icons using AI in multiple choice fields.
 * New: Added an option to export entries in CSV format.
 = 1.0.6 - 20th November 2024 =
 * Fix: Fixed Webhook functionality for GDPR-enabled forms and other submission options.
