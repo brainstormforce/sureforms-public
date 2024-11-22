@@ -3,7 +3,7 @@ import { ExternalLink, FormToggle } from '@wordpress/components';
 import { applyFilters } from '@wordpress/hooks';
 
 const ConversationalFormSettings = () => {
-	const showCoversationalFormSettings= false;
+	const showCoversationalFormSettings = false;
 	const conversationalFormSettings = applyFilters(
 		'srfm.instant_form_settings.conversational_forms',
 		showCoversationalFormSettings
