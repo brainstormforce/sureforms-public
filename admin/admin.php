@@ -407,7 +407,13 @@ class Admin {
 			$localization_data['is_license_active'] = $license_active;
 		}
 
-		if ( SRFM_FORMS_POST_TYPE === $current_screen->post_type || 'toplevel_page_sureforms_menu' === $current_screen->base || 'sureforms_page_sureforms_form_settings' === $current_screen->id || 'sureforms_page_' . SRFM_ENTRIES === $current_screen->id ) {
+		$is_screen_sureforms_menu          = Helper::validate_request_context( 'sureforms_menu', 'page' );
+		$is_screen_add_new_form            = Helper::validate_request_context( 'add-new-form', 'page' );
+		$is_screen_sureforms_form_settings = Helper::validate_request_context( 'sureforms_form_settings', 'page' );
+		$is_screen_sureforms_entries       = Helper::validate_request_context( SRFM_ENTRIES, 'page' );
+		$is_post_type_sureforms_form       = $current_screen->post_type === SRFM_FORMS_POST_TYPE;
+
+		if ( $is_screen_sureforms_menu || $is_post_type_sureforms_form || $is_screen_add_new_form || $is_screen_sureforms_form_settings || $is_screen_sureforms_entries ) {
 			$asset_handle = '-dashboard';
 
 			wp_enqueue_style( SRFM_SLUG . $asset_handle . '-font', 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap', [], SRFM_VER );
@@ -438,7 +444,7 @@ class Admin {
 
 		}
 
-		if ( 'sureforms_page_sureforms_form_settings' === $current_screen->id ) {
+		if ( $is_screen_sureforms_form_settings ) {
 			wp_enqueue_style( SRFM_SLUG . '-settings', $css_uri . 'backend/settings' . $file_prefix . '.css', [], SRFM_VER );
 
 			// if version is equal to or lower than 6.6.2 then add compatibility css.
@@ -457,7 +463,7 @@ class Admin {
 		}
 
 		// Enqueue styles for the entries page.
-		if ( 'sureforms_page_' . SRFM_ENTRIES === $current_screen->id ) {
+		if ( $is_screen_sureforms_entries ) {
 			$asset_handle = '-entries';
 			wp_enqueue_style( SRFM_SLUG . $asset_handle, $css_uri . 'backend/entries' . $file_prefix . '.css', [], SRFM_VER );
 			wp_enqueue_script( SRFM_SLUG . $asset_handle, SRFM_URL . 'assets/build/entries.js', $script_info['dependencies'], SRFM_VER, true );
@@ -483,7 +489,8 @@ class Admin {
 
 			$script_translations_handlers[] = SRFM_SLUG . '-form-page-header';
 		}
-		if ( 'sureforms_page_' . SRFM_FORMS_POST_TYPE . '_settings' === $current_screen->base ) {
+
+		if ( $is_screen_sureforms_form_settings ) {
 			$asset_handle = 'settings';
 
 			$script_asset_path = SRFM_DIR . 'assets/build/' . $asset_handle . '.asset.php';
@@ -533,8 +540,7 @@ class Admin {
 			$script_translations_handlers[] = SRFM_SLUG . '-backend';
 		}
 
-		if ( 'sureforms_page_add-new-form' === $current_screen->id ) {
-
+		if ( $is_screen_add_new_form ) {
 			$file_prefix = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? '' : '.min';
 			$dir_name    = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? 'unminified' : 'minified';
 
@@ -621,7 +627,7 @@ class Admin {
 		 * Enqueuing SureTriggers Integration script.
 		 * This script loads suretriggers iframe in Intergations tab.
 		 */
-		if ( SRFM_FORMS_POST_TYPE === $current_screen->post_type ) {
+		if ( $is_post_type_sureforms_form ) {
 			wp_enqueue_script( SRFM_SLUG . '-suretriggers-integration', SRFM_SURETRIGGERS_INTEGRATION_BASE_URL . 'js/v2/embed.js', [], SRFM_VER, true );
 		}
 

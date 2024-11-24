@@ -971,4 +971,35 @@ class Helper {
 	public static function register_script_translations( $handle, $domain = 'sureforms', $path = SRFM_DIR . 'languages' ) {
 		wp_set_script_translations( $handle, $domain, $path );
 	}
+
+	/**
+	 * Validates whether the specified conditions or a single key-value pair exist in the request context.
+	 *
+	 * - If `$conditions` is provided as an array, it will validate all key-value pairs in `$conditions`
+	 *   against the `$_REQUEST` superglobal.
+	 * - If `$conditions` is empty, it validates a single key-value pair from `$key` and `$value`.
+	 *
+	 * @param string                $value      The expected value to match in the request if `$conditions` is not used.
+	 * @param string                $key        The key to check for in the request if `$conditions` is not used.
+	 * @param array<string, string> $conditions An optional associative array of key-value pairs to validate.
+	 * @since x.x.x
+	 * @return bool Returns true if all conditions are met or the single key-value pair is valid, otherwise false.
+	 */
+	public static function validate_request_context( $value, $key = 'post_type', array $conditions = [] ) {
+		// If conditions are provided, validate all key-value pairs in the conditions array.
+		if ( ! empty( $conditions ) ) {
+			foreach ( $conditions as $condition_key => $condition_value ) {
+				// Check if each key-value pair exists and matches in $_REQUEST.
+				if ( ! isset( $_REQUEST[ $condition_key ] ) || $_REQUEST[ $condition_key ] !== $condition_value ) {
+					// Return false if any condition is not satisfied.
+					return false;
+				}
+			}
+			// Return true if all conditions are satisfied.
+			return true;
+		}
+
+		// Validate a single key-value pair when no conditions are provided.
+		return isset( $_REQUEST[ $key ] ) && $_REQUEST[ $key ] === $value;
+	}
 }
