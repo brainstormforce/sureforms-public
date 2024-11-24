@@ -227,13 +227,14 @@ class Entries_List_Table extends \WP_List_Table {
 	 * @return void
 	 */
 	public function search_box_markup( $text, $input_id ) {
-		$input_id .= '-search-input';
+		$input_id   .= '-search-input';
+		$search_term = ! empty( $_GET['search_filter'] ) ? sanitize_text_field( wp_unslash( $_GET['search_filter'] ) ) : ''; // phpcs:ignore -- Nonce verification is not required here as we are not doing any database work.
 		?>
 		<p class="search-box sureforms-form-search-box">
 			<label class="screen-reader-text" for="<?php echo esc_attr( $input_id ); ?>">
 				<?php echo esc_html( $text ); ?>:
 			</label>
-			<input type="search" name="search_filter" class="sureforms-entries-search-box" id="<?php echo esc_attr( $input_id ); ?>">
+			<input type="search" name="search_filter" value="<?php echo esc_attr( $search_term ); ?>" class="sureforms-entries-search-box" id="<?php echo esc_attr( $input_id ); ?>">
 			<button type="submit" class="button" id="search-submit"><?php echo esc_html( $text ); ?></button>
 		</p>
 		<?php
@@ -314,6 +315,23 @@ class Entries_List_Table extends \WP_List_Table {
 					 * then selected export as bulk action without selecting any entries manually.
 					 */
 					$all_entry_ids = Entries::get_all_entry_ids_for_form( absint( wp_unslash( $_GET['form_filter'] ) ) );
+				} elseif ( ! empty( $_GET['search_filter'] ) ) {
+					// Export all the available ( but not trashed ) entries.
+					$all_entry_ids = Entries::get_all(
+						[
+							'where'   => [
+								[
+									[
+										'key'     => 'ID',
+										'compare' => 'LIKE',
+										'value'   => sanitize_text_field( wp_unslash( $_GET['search_filter'] ) ),
+									],
+								],
+							],
+							'columns' => 'ID',
+						],
+						false
+					);
 				} else {
 					// Export all the available ( but not trashed ) entries.
 					$all_entry_ids = Entries::get_all(
@@ -428,6 +446,7 @@ class Entries_List_Table extends \WP_List_Table {
 				}
 
 				$sanitized_form_title = sanitize_title( get_the_title( $form_id ) );
+				$sanitized_form_title = ! empty( $sanitized_form_title ) ? $sanitized_form_title : "srfm-entries-{$form_id}"; // Just incase if we have some unnamed forms.
 
 				$csv_filename = 'srfm-entries-' . $sanitized_form_title . '.csv';
 				$csv_filepath = $temp_dir . $csv_filename;
@@ -557,7 +576,7 @@ class Entries_List_Table extends \WP_List_Table {
 
 			// Set headers to download the zip.
 			header( 'Content-Type: application/zip' );
-			header( sprintf( 'Content-disposition: attachment; filename="srfm-entries-export-%s.zip"', time() ) ); // Set filename header suffixed with timestamp.
+			header( 'Content-disposition: attachment; filename="SureForms Entries.zip"' ); // Set filename header.
 			header( 'Content-Length: ' . filesize( $temp_zip ) );
 
 			// Output the zip file.
