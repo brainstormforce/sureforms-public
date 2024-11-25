@@ -256,6 +256,8 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 == Changelog ==
 = x.x.x =
 * Fix: Resolved an issue where settings pages were not visible when the plugin title was translated.
+* Improvement: Added search option for phone number country code list.
+* Improvement: Dropdown clear button keyboard accessibility fixes.
 = 1.0.6 - 20th November 2024 =
 * Fix: Fixed Webhook functionality for GDPR-enabled forms and other submission options.
 * Fix: Resolved an issue where Icon, Heading, Image, and Separator fields were not displaying on the front end.

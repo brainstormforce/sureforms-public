@@ -60,11 +60,23 @@
 }
 
 .iti {
+	.iti__dropdown-content {
+		border: none !important;
+		margin-top: var( --srfm-dropdown-gap-between-input-menu );
+		background-color: var( --srfm-expandable-menu-background );
+		border-radius: var( --srfm-input-field-border-radius );
+		.iti__search-input {
+			color: var( --srfm-dropdown-option-text-color );
+			background-color: var( --srfm-expandable-menu-background );
+			border: none;
+		}
+	}
 	.iti__country-list {
 		display: block;
 		opacity: 1;
 		line-height: var( --srfm-input-field-line-height );
 		@include srfm-dropdown-styles;
+		margin-top: 0;
 
 		.iti__country {
 			padding: var( --srfm-dropdown-option-padding );
@@ -90,7 +102,6 @@
 			&.iti__highlight {
 				background-color: var( --srfm-dropdown-option-background-hover );
 			}
-
 			&.iti__active {
 				background-color: var( --srfm-dropdown-option-background-selected );
 				&::after {
