@@ -49,6 +49,7 @@ const isProActive = srfm_admin.is_pro_active;
 
 const Navigation = () => {
 	const activatedTab = useQuery();
+	const addActiveClass = false;
 
 	return (
 		<div
@@ -70,7 +71,7 @@ const Navigation = () => {
 								activatedTab.get( 'tab' ) === item.slug ||
 								applyFilters(
 									'srfm.settings.nav.addActiveClass',
-									'sureforms-pro/zapier',
+									addActiveClass,
 									item.name,
 									activatedTab.get( 'tab' )
 								)

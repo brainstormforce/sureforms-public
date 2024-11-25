@@ -307,14 +307,7 @@ const Component = ( { path } ) => {
 				) }
 				{ applyFilters(
 					'srfm.settings.page.content',
-					'',
-					path,
-					loading,
-					toast
-				) }
-				{ applyFilters(
-					'srfm.settings.page.content.zapier',
-					'',
+					[],
 					path,
 					loading,
 					toast
