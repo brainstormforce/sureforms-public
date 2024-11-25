@@ -989,8 +989,7 @@ class Helper {
 		// If conditions are provided, validate all key-value pairs in the conditions array.
 		if ( ! empty( $conditions ) ) {
 			foreach ( $conditions as $condition_key => $condition_value ) {
-				// Check if each key-value pair exists and matches in $_REQUEST.
-				if ( ! isset( $_REQUEST[ $condition_key ] ) || $_REQUEST[ $condition_key ] !== $condition_value ) {
+				if ( ! isset( $_REQUEST[ $condition_key ] ) || $_REQUEST[ $condition_key ] !== $condition_value ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- This is a controlled comparison of request values.
 					// Return false if any condition is not satisfied.
 					return false;
 				}
@@ -1000,6 +999,6 @@ class Helper {
 		}
 
 		// Validate a single key-value pair when no conditions are provided.
-		return isset( $_REQUEST[ $key ] ) && $_REQUEST[ $key ] === $value;
+		return isset( $_REQUEST[ $key ] ) && $_REQUEST[ $key ] === $value; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Input is validated via strict comparison.
 	}
 }
