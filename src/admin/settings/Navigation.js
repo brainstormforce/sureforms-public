@@ -67,7 +67,13 @@ const Navigation = () => {
 							} }
 							key={ item.name }
 							className={ `srfm-settings-sidebar-category ${
-								activatedTab.get( 'tab' ) === item.slug || ( item.name === 'Integrations' && activatedTab.get( 'tab' ) === 'zapier-integration' )
+								activatedTab.get( 'tab' ) === item.slug ||
+								applyFilters(
+									'srfm.settings.nav.addActiveClass',
+									'sureforms-pro/zapier',
+									item.name,
+									activatedTab.get( 'tab' )
+								)
 									? 'active'
 									: ''
 							}` }
