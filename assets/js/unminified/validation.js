@@ -138,7 +138,13 @@ export async function fieldValidation(
 		if ( currentFormId !== formId ) {
 			continue;
 		}
-		const inputField = container.querySelector( 'input, textarea, select' );
+		let inputField;
+		// If not phone number field then use default assignment for inputField, else assign the phone input.
+		if ( ! container.classList.contains( 'srfm-phone-block' ) ) {
+			inputField = container.querySelector( 'input, textarea, select' );
+		} else {
+			inputField = container.querySelector( '.srfm-input-phone' );
+		}
 		const isRequired = inputField.getAttribute( 'data-required' );
 		const isUnique = inputField.getAttribute( 'data-unique' );
 		let fieldName = inputField.getAttribute( 'name' );
@@ -821,6 +827,11 @@ function addBlurListener( containerClass, blockClass ) {
 						fieldValidationInit( areaField, blockClass );
 					} );
 				}, 500 );
+			}
+
+			// First input element is search for intl-tel-input, reassigning it with phone number input.
+			if ( containerClass === 'srfm-phone-block' ) {
+				areaField = areaInput.querySelector( '.srfm-input-phone' );
 			}
 
 			// for all other fields
