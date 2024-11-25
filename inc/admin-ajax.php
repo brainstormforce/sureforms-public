@@ -123,7 +123,7 @@ class Admin_Ajax {
 	 * @since 0.0.1
 	 */
 	public function localize_script_integration( $values ) {
-		$is_screen_sureforms_menu          = Helper::validate_request_context( 'sureforms_menu', 'page' );
+		$is_screen_sureforms_menu = Helper::validate_request_context( 'sureforms_menu', 'page' );
 		return array_merge(
 			$values,
 			[

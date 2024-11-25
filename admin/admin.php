@@ -40,7 +40,7 @@ class Admin {
 		add_filter( 'plugin_action_links', [ $this, 'add_settings_link' ], 10, 2 );
 		add_action( 'enqueue_block_assets', [ $this, 'enqueue_styles' ] );
 		add_action( 'admin_head', [ $this, 'enqueue_header_styles' ] );
-		add_action( 'admin_body_class', [ $this, 'admin_template_picker_body_class' ] );
+		add_filter( 'admin_body_class', [ $this, 'admin_template_picker_body_class' ] );
 
 		// this action is used to restrict Spectra's quick action bar on SureForms CPTS.
 		add_action( 'uag_enable_quick_action_sidebar', [ $this, 'restrict_spectra_quick_action_bar' ] );
@@ -411,7 +411,7 @@ class Admin {
 		$is_screen_add_new_form            = Helper::validate_request_context( 'add-new-form', 'page' );
 		$is_screen_sureforms_form_settings = Helper::validate_request_context( 'sureforms_form_settings', 'page' );
 		$is_screen_sureforms_entries       = Helper::validate_request_context( SRFM_ENTRIES, 'page' );
-		$is_post_type_sureforms_form       = $current_screen->post_type === SRFM_FORMS_POST_TYPE;
+		$is_post_type_sureforms_form       = SRFM_FORMS_POST_TYPE === $current_screen->post_type;
 
 		if ( $is_screen_sureforms_menu || $is_post_type_sureforms_form || $is_screen_add_new_form || $is_screen_sureforms_form_settings || $is_screen_sureforms_entries ) {
 			$asset_handle = '-dashboard';
@@ -644,14 +644,32 @@ class Admin {
 
 	/**
 	 * Form Template Picker Admin Body Classes
+	 * WordPress sometimes translates class names in the admin body tag, which can result in
+	 * incorrect or missing class names when rendering the admin pages. This function ensures
+	 * that essential class names are manually added to the body tag to maintain proper functionality.
 	 *
 	 * @since 0.0.1
 	 * @param string $classes Space separated class string.
 	 */
 	public function admin_template_picker_body_class( $classes = '' ) {
-		$theme_builder_class = isset( $_GET['page'] ) && 'add-new-form' === $_GET['page'] ? 'srfm-template-picker' : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Fetching a $_GET value, no nonce available to validate.
-		$classes            .= ' ' . $theme_builder_class . ' ';
+		// Define an associative array of class names and their corresponding conditions.
+		// Each condition checks whether a specific request context matches.
+		$srfm_classes = [
+			'sureforms_page_sureforms_entries'       => Helper::validate_request_context( SRFM_ENTRIES, 'page' ),
+			'sureforms_page_sureforms_form_settings' => Helper::validate_request_context( 'sureforms_form_settings', 'page' ),
+			'srfm-template-picker'                   => Helper::validate_request_context( 'add-new-form', 'page' ),
+		];
 
+		// Loop through the defined classes and conditions.
+		foreach ( $srfm_classes as $class => $condition ) {
+			// Check if the condition evaluates to true.
+			if ( $condition ) {
+				// Append the class to the existing classes string, followed by a space.
+				$classes .= $class . ' ';
+			}
+		}
+
+		// Return the updated list of classes.
 		return $classes;
 	}
 
