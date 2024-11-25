@@ -255,7 +255,7 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 
 == Changelog ==
 = x.x.x =
-* Improvement: Enhanced accessibility for error states by adding dynamic screen reader support to error messages in form validation.
+* Improvement: Improved screen reader announcement for the validation messages.
 * Improvement: Improved screen reader accessibility to announce the block labels and help text.
 * Improvement: Added search option for phone number country code list.
 * Improvement: Dropdown clear button keyboard accessibility fixes.
