@@ -882,12 +882,10 @@ function addBlurListener( containerClass, blockClass ) {
 function addRatingBlurListener( areaField, areaInput, blockClass ) {
 	areaField = areaInput.querySelectorAll( '.srfm-icon' );
 
-	areaField.forEach( ( field, index ) => {
-		if ( index === areaField.length - 1 ) {
-			field.addEventListener( 'blur', async function () {
-				fieldValidationInit( field, blockClass );
-			} );
-		}
+	areaField.forEach( ( field ) => {
+		field.addEventListener( 'blur', async function () {
+			fieldValidationInit( field, blockClass );
+		} );
 	} );
 }
 
