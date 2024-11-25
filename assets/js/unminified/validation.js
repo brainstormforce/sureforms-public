@@ -829,7 +829,7 @@ function addBlurListener( containerClass, blockClass ) {
 				}, 500 );
 			}
 
-			// First input element is search for intl-tel-input, reassigning it with phone number input.
+			// First input element is search for phone number block so reassigning it with phone number input for proper validation.
 			if ( containerClass === 'srfm-phone-block' ) {
 				areaField = areaInput.querySelector( '.srfm-input-phone' );
 			}
