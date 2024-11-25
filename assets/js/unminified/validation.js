@@ -139,11 +139,20 @@ export async function fieldValidation(
 			continue;
 		}
 		let inputField;
-		// If not phone number field then use default assignment for inputField, else assign the phone input.
-		if ( ! container.classList.contains( 'srfm-phone-block' ) ) {
-			inputField = container.querySelector( 'input, textarea, select' );
-		} else {
-			inputField = container.querySelector( '.srfm-input-phone' );
+		switch ( true ) {
+			// Case 1: If the container corresponds to a phone number field.
+			// This is because phone number containers have multiple inputs inside them,
+			// and we specifically need to target the phone input using the class '.srfm-input-phone'.
+			case container.classList.contains( 'srfm-phone-block' ):
+				inputField = container.querySelector( '.srfm-input-phone' );
+				break;
+			// Default Case: For all other containers, select a general input element.
+			// This handles standard input types such as text, textarea, or select.
+			default:
+				inputField = container.querySelector(
+					'input, textarea, select'
+				);
+				break;
 		}
 		const isRequired = inputField.getAttribute( 'data-required' );
 		const isUnique = inputField.getAttribute( 'data-unique' );
