@@ -139,6 +139,7 @@ export async function fieldValidation(
 			continue;
 		}
 		let inputField;
+		// Determine the inputField based on the container's class.
 		switch ( true ) {
 			// Case 1: If the container corresponds to a phone number field.
 			// This is because phone number containers have multiple inputs inside them,
