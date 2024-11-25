@@ -946,7 +946,7 @@ function addEmailBlurListener( areaInput, blockClass ) {
 				errorContainer.innerHTML =
 					window?.srfm_submit?.messages?.valid_email;
 				errorContainer.id =
-					errorContainer.getAttribute( 'data-temp-id' );
+					errorContainer.getAttribute( 'data-srfm-id' );
 			} else {
 				errorContainer.style.display = 'none';
 				inputBlock.parentElement.classList.remove(

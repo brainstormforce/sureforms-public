@@ -35,7 +35,7 @@ window.addGlobalSrfmObject = addGlobalSrfmObject;
  *
  *                                Description:
  *                                - When `hasError` is true, the function adds the "srfm-error" class to the container, enabling styling for invalid fields.
- *                                - If an error message element with the `data-temp-id` attribute exists as a child of the container,
+ *                                - If an error message element with the `data-srfm-id` attribute exists as a child of the container,
  *                                this function assigns its value as the `id` attribute to allow screen readers to announce the error when visible.
  *                                - Conversely, if `hasError` is false, the function removes both the "srfm-error" class and `id` attribute from the
  *                                error message element, making it hidden from screen readers when the field is valid.
@@ -52,9 +52,9 @@ function toggleErrorState( container, hasError ) {
 	// Manage the error message's `id` attribute for screen reader accessibility
 	const errorMessage = container.querySelector( '.srfm-error-message' );
 	if ( errorMessage ) {
-		if ( hasError && errorMessage.hasAttribute( 'data-temp-id' ) ) {
-			// Set the `id` to `data-temp-id` value to allow screen readers to announce the error message
-			errorMessage.id = errorMessage.getAttribute( 'data-temp-id' );
+		if ( hasError && errorMessage.hasAttribute( 'data-srfm-id' ) ) {
+			// Set the `id` to `data-srfm-id` value to allow screen readers to announce the error message
+			errorMessage.id = errorMessage.getAttribute( 'data-srfm-id' );
 		} else {
 			// Remove the `id` when the field is valid, hiding the message from screen readers
 			errorMessage.removeAttribute( 'id' );
