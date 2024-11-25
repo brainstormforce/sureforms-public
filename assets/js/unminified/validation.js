@@ -981,11 +981,14 @@ function addEmailBlurListener( areaInput, blockClass ) {
 				errorContainer.style.display = 'block';
 				errorContainer.innerHTML =
 					window?.srfm_submit?.messages?.valid_email;
+				errorContainer.id =
+					errorContainer.getAttribute( 'data-temp-id' );
 			} else {
 				errorContainer.style.display = 'none';
 				inputBlock.parentElement.classList.remove(
 					'srfm-valid-email-error'
 				);
+				errorContainer.removeAttribute( 'id' );
 			}
 		} );
 	} );
