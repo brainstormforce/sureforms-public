@@ -7,6 +7,9 @@ function initializeDropdown() {
 		if ( element ) {
 			let additionalConfig = {};
 			const inputName = element.getAttribute( 'name' );
+			const blockID = element
+				.closest( '.srfm-dropdown-block' )
+				.getAttribute( 'data-block-id' );
 
 			if ( element.getAttribute( 'data-multiple' ) === 'true' ) {
 				additionalConfig = {
@@ -55,9 +58,9 @@ function initializeDropdown() {
 				...additionalConfig,
 				render: {
 					option( data, escape ) {
-						return `<div>${ data.icon } <span>${ escape(
-							data.text
-						) }</span></div>`;
+						return `<div aria-describedby=srfm-error-${ blockID }>${
+							data.icon
+						} <span>${ escape( data.text ) }</span></div>`;
 					},
 					item( item, escape ) {
 						return `<div>${ item.icon } ${ escape(
