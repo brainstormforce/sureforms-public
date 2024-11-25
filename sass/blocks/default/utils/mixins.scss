@@ -256,7 +256,7 @@
 
 @mixin srfm-dropdown-styles {
 	background: var( --srfm-expandable-menu-background );
-	font-size: var( --srfm-dropdown-font-size );
+	font-size: var( --srfm-dropdown-font-size ) !important;
 	font-weight: var( --srfm-dropdown-font-weight );
 	padding: var( --srfm-dropdown-menu-padding );
 	margin-top: var( --srfm-dropdown-gap-between-input-menu );
