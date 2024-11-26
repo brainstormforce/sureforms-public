@@ -13,6 +13,7 @@ import { cleanForSlug } from '@wordpress/url';
 import parse from 'html-react-parser';
 import { createRoot } from 'react-dom/client';
 import ConversationalFormSettings from './components/ConversationalFormSettings';
+import { applyFilters } from '@wordpress/hooks';
 
 let live_mode_prev_srfm_instant_form_settings = {};
 
@@ -286,6 +287,9 @@ const InstantFormComponent = () => {
 		} );
 	};
 
+	// apply filters to hide some of the form settings.
+	const showInstantFormStylingGroup = applyFilters( 'srfm.showInstantFormStylingGroup', true );
+
 	return (
 		<>
 			<button ref={ setPopoverAnchor } onClick={ () => setOpenPopover( ! openPopover ) } className="srfm-instant-form-button">
@@ -342,7 +346,7 @@ const InstantFormComponent = () => {
 
 						<div className="srfm-instant-form-settings-separator" />
 
-						<div className="srfm-instant-form-settings-group">
+						{ showInstantFormStylingGroup && <div className="srfm-instant-form-settings-group">
 							<div className="srfm-instant-form-settings">
 								<label>{ __( 'Site Logo', 'sureforms' ) }</label>
 								<SRFMMediaPicker
@@ -406,7 +410,7 @@ const InstantFormComponent = () => {
 									</div>
 								)
 							}
-						</div>
+						</div> }
 
 						<div className="srfm-instant-form-settings-separator" />
 
