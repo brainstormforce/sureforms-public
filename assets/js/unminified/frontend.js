@@ -85,7 +85,7 @@ function onSuccess( response ) {
 	 * Returns translation ready localized string as per the the key.
 	 *
 	 * @param {string} key Translation key
-	 * @since x.x.x
+	 * @since 1.1.0
 	 */
 	function getTranslatableString( key ) {
 		return window?.srfm_submit?.messages?.[ key ] || '';
