@@ -84,31 +84,41 @@ class Updater {
 	 * @return void
 	 */
 	public function init() {
-		if ( version_compare( SRFM_VER, $this->old_version, '=' ) ) {
-			// Bail early because saved version is already updated and no change detected.
-			return;
-		}
+		// Bail early because saved version is already updated and no change detected.
+		if ( ! version_compare( SRFM_VER, $this->old_version, '=' ) ) {
 
-		if ( $this->needs_db_update() ) {
-			foreach ( $this->get_updater_callbacks() as $updater_version => $updater_callback_functions ) {
-				if ( ! is_array( $updater_callback_functions ) ) {
-					continue;
-				}
+			if ( $this->needs_db_update() ) {
+				foreach ( $this->get_updater_callbacks() as $updater_version => $updater_callback_functions ) {
+					if ( ! is_array( $updater_callback_functions ) ) {
+						continue;
+					}
 
-				if ( $this->old_version && ! version_compare( $this->old_version, $updater_version, '<' ) ) {
-					// Skip as SRFM saved version is not less than updaters version so db upgrade is not needed here.
-					continue;
-				}
+					if ( $this->old_version && ! version_compare( $this->old_version, $updater_version, '<' ) ) {
+						// Skip as SRFM saved version is not less than updaters version so db upgrade is not needed here.
+						continue;
+					}
 
-				foreach ( $updater_callback_functions as $updater_callback_function ) {
-					call_user_func( $updater_callback_function, $this->old_version );
+					foreach ( $updater_callback_functions as $updater_callback_function ) {
+						call_user_func( $updater_callback_function, $this->old_version );
+					}
 				}
 			}
+
+			// Finally update cache and DB with current version.
+			$this->old_version = SRFM_VER;
+			update_option( 'srfm-version', $this->old_version );
 		}
 
-		// Finally update cache and DB with current version.
-		$this->old_version = SRFM_VER;
-		update_option( 'srfm-version', $this->old_version );
+		/**
+		 * Triggered after the updater initialization process is complete.
+		 *
+		 * This action is particularly important for the Pro version, as it ensures
+		 * that Pro-specific processes or actions are executed only after the free
+		 * version's update process has been finalized.
+		 *
+		 * @since x.x.x
+		 */
+		do_action( 'srfm_after_updater_init' );
 	}
 
 	/**
@@ -184,5 +194,4 @@ class Updater {
 			],
 		];
 	}
-
 }
