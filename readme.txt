@@ -255,9 +255,9 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 
 == Changelog ==
 = 1.1.0 - 27th November 2024 =
-* New: Support for icons using AI in multiple choice fields.
+* New: Support for generating multiple choice fields with icons while creating forms with AI.
 * Improvement: Added search option for phone number country code list.
-* Improvement: Dropdown clear button keyboard accessibility fixes.
+* Improvement: Accessibility fixes for using the Dropdown field's clear button with keyboard.
 = 1.0.6 - 20th November 2024 =
 * Fix: Fixed Webhook functionality for GDPR-enabled forms and other submission options.
 * Fix: Resolved an issue where Icon, Heading, Image, and Separator fields were not displaying on the front end.
