@@ -255,7 +255,7 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 
 == Changelog ==
 = x.x.x =
-* Improvement: Updated CSS to ensure proper focus borders for checkbox and GDPR fields when navigating with a screen reader.
+* Improvement: Updated stylings to ensure proper focus borders for checkbox and GDPR fields when navigating with a screen reader.
 * Improvement: Added search option for phone number country code list.
 * Improvement: Dropdown clear button keyboard accessibility fixes.
 = 1.0.6 - 20th November 2024 =
