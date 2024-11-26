@@ -346,73 +346,78 @@ const InstantFormComponent = () => {
 
 						<div className="srfm-instant-form-settings-separator" />
 
-						{ showInstantFormStylingGroup && <div className="srfm-instant-form-settings-group">
-							<div className="srfm-instant-form-settings">
-								<label>{ __( 'Site Logo', 'sureforms' ) }</label>
-								<SRFMMediaPicker
-									label={ '' }
-									onModalClose={ () => setHidePopover( false ) }
-									onSelectImage={ ( media ) => onImageSelect( 'site_logo', media ) }
-									backgroundImage={ site_logo }
-									onRemoveImage={ () => onHandleChange( 'site_logo', '' ) }
-									isFormSpecific={ true }
-								/>
-							</div>
-
-							<div className="srfm-instant-form-settings">
-								<label>{ __( 'Banner Background', 'sureforms' ) }</label>
-								<MultiButtonsControl
-									data={ {
-										value: cover_type,
-										label: 'cover_type',
-									} }
-									options={ [
-										{
-											value: 'color',
-											label: __( 'Color', 'sureforms' ),
-										},
-										{
-											value: 'image',
-											label: __( 'Image', 'sureforms' ),
-										},
-									] }
-									showIcons={ false }
-									onChange={ ( value ) => onHandleChange( 'cover_type', value ) }
-								/>
-							</div>
-
-							{
-								'image' === cover_type ? (
+						{
+						 showInstantFormStylingGroup && 
+							<>
+								<div className="srfm-instant-form-settings-group">
 									<div className="srfm-instant-form-settings">
-										<label>{ __( 'Upload Image', 'sureforms' ) }</label>
+										<label>{ __( 'Site Logo', 'sureforms' ) }</label>
 										<SRFMMediaPicker
 											label={ '' }
 											onModalClose={ () => setHidePopover( false ) }
-											onSelectImage={ ( media ) => onImageSelect( 'cover_image', media ) }
-											backgroundImage={ cover_image }
-											onRemoveImage={ () => onHandleChange( 'cover_image', '' ) }
+											onSelectImage={ ( media ) => onImageSelect( 'site_logo', media ) }
+											backgroundImage={ site_logo }
+											onRemoveImage={ () => onHandleChange( 'site_logo', '' ) }
 											isFormSpecific={ true }
 										/>
 									</div>
-								) : (
-									<div className="srfm-instant-form-settings srfm-instant-form-settings-inline">
-										<label>{ __( 'Background Color', 'sureforms' ) }</label>
-										<AdvancedPopColorControl
-											colorValue={ cover_color }
-											data={ {
-												value: cover_color,
-												label: 'cover_color',
-											} }
-											onColorChange={ ( colorValue ) => onHandleChange( 'cover_color', colorValue ) }
-											value={ cover_color }
-											isFormSpecific={ true }
-										/>
-									</div>
-								)
-							}
-						</div> }
 
-						<div className="srfm-instant-form-settings-separator" />
+									<div className="srfm-instant-form-settings">
+										<label>{ __( 'Banner Background', 'sureforms' ) }</label>
+										<MultiButtonsControl
+											data={ {
+												value: cover_type,
+												label: 'cover_type',
+											} }
+											options={ [
+												{
+													value: 'color',
+													label: __( 'Color', 'sureforms' ),
+												},
+												{
+													value: 'image',
+													label: __( 'Image', 'sureforms' ),
+												},
+											] }
+											showIcons={ false }
+											onChange={ ( value ) => onHandleChange( 'cover_type', value ) }
+										/>
+									</div>
+
+									{
+										'image' === cover_type ? (
+											<div className="srfm-instant-form-settings">
+												<label>{ __( 'Upload Image', 'sureforms' ) }</label>
+												<SRFMMediaPicker
+													label={ '' }
+													onModalClose={ () => setHidePopover( false ) }
+													onSelectImage={ ( media ) => onImageSelect( 'cover_image', media ) }
+													backgroundImage={ cover_image }
+													onRemoveImage={ () => onHandleChange( 'cover_image', '' ) }
+													isFormSpecific={ true }
+												/>
+											</div>
+										) : (
+											<div className="srfm-instant-form-settings srfm-instant-form-settings-inline">
+												<label>{ __( 'Background Color', 'sureforms' ) }</label>
+												<AdvancedPopColorControl
+													colorValue={ cover_color }
+													data={ {
+														value: cover_color,
+														label: 'cover_color',
+													} }
+													onColorChange={ ( colorValue ) => onHandleChange( 'cover_color', colorValue ) }
+													value={ cover_color }
+													isFormSpecific={ true }
+												/>
+											</div>
+										)
+									}
+								</div> 
+
+								<div className="srfm-instant-form-settings-separator" />
+							</>
+						}
 
 						<div className="srfm-instant-form-settings-group">
 							<InstantFormToggle
