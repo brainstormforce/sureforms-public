@@ -72,6 +72,11 @@ class Updater_Callbacks {
 					$previous_options[ $key ] = $value;
 				}
 			}
+		} else {
+			$previous_options = Helper::default_dynamic_block_option();
 		}
+
+		// update the options.
+		update_option( 'srfm_default_dynamic_block_option', $previous_options );
 	}
 }
