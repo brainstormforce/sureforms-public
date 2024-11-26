@@ -79,7 +79,7 @@ class Translatable {
 
 	/**
 	 * Dynamic messages array
-	 * 
+	 *
 	 * @since x.x.x
 	 * @return array<string, string> Associative array of translated dynamic messages.
 	 */
