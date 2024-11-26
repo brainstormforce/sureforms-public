@@ -371,6 +371,10 @@ body.post-type-sureforms_form {
 		.srfm-header-title-input {
 			width: 100%;
 			max-width: 500px;
+
+			.components-base-control__field {
+				margin-top: 0;
+			}
 		}
 
 		.components-text-control__input {
