@@ -341,14 +341,12 @@ const InstantFormComponent = () => {
 								onChange={ () => onHandleChange( 'single_page_form_title', ! single_page_form_title ) }
 							/>
 
-							<ConversationalFormSettings />
+							<ConversationalFormSettings setHidePopover={setHidePopover} />
 						</div>
 
 						<div className="srfm-instant-form-settings-separator" />
 
-						{
-						 showInstantFormStylingGroup && 
-							<>
+						
 								<div className="srfm-instant-form-settings-group">
 									<div className="srfm-instant-form-settings">
 										<label>{ __( 'Site Logo', 'sureforms' ) }</label>
@@ -416,9 +414,11 @@ const InstantFormComponent = () => {
 								</div> 
 
 								<div className="srfm-instant-form-settings-separator" />
-							</>
-						}
+						
 
+						{
+						 showInstantFormStylingGroup && 
+							<>
 						<div className="srfm-instant-form-settings-group">
 							<InstantFormToggle
 								label={ __( 'Use banner as page background', 'sureforms' ) }
@@ -495,7 +495,8 @@ const InstantFormComponent = () => {
 								/>
 							</div>
 						</div>
-
+						</>
+						}
 						<div className="srfm-instant-form-settings-separator" />
 
 						<div className="srfm-instant-form-settings-group">
