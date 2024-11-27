@@ -33,6 +33,8 @@ function initializePhoneField() {
 		}
 
 		const iti = window.intlTelInput( phoneNumber, itlOptions );
+		const countriesData =
+			iti?.countryList.querySelectorAll( '.iti__country' );
 
 		// handle padding based on the direction of the page
 		const selectedCountry = element.querySelector(
@@ -67,16 +69,12 @@ function initializePhoneField() {
 			phoneNumber.addEventListener( 'countrychange', updatePhoneNumber );
 			// Add iti__active class to the selected country in the dropdown and scroll to the selected country.
 			phoneNumber.addEventListener( 'open:countrydropdown', () => {
-				const dropdownList =
-					document.querySelector( '.iti__country-list' );
 				const selectedCountryData = iti.getSelectedCountryData();
 				if ( selectedCountryData ) {
-					const allCountries =
-						dropdownList.querySelectorAll( '.iti__country' );
-					allCountries.forEach( ( country ) => {
+					countriesData.forEach( ( country ) => {
 						country.classList.remove( 'iti__active' );
 					} );
-					const activeCountry = dropdownList.querySelector(
+					const activeCountry = iti?.countryList.querySelector(
 						`.iti__country[data-country-code="${ selectedCountryData.iso2 }"]`
 					);
 					if ( activeCountry ) {
