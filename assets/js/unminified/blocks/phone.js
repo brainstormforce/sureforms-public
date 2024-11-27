@@ -72,7 +72,9 @@ function initializePhoneField() {
 				const selectedCountryData = iti.getSelectedCountryData();
 				if ( selectedCountryData ) {
 					countriesData.forEach( ( country ) => {
-						country.classList.remove( 'iti__active' );
+						if ( country.classList.contains( 'iti__active' ) ) {
+							country.classList.remove( 'iti__active' );
+						}
 					} );
 					const activeCountry = iti?.countryList.querySelector(
 						`.iti__country[data-country-code="${ selectedCountryData.iso2 }"]`
