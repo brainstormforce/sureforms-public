@@ -2,7 +2,7 @@ import { __ } from '@wordpress/i18n';
 import { ExternalLink, FormToggle } from '@wordpress/components';
 import { applyFilters } from '@wordpress/hooks';
 
-const ConversationalFormSettings = ({setHidePopover}) => {
+const ConversationalFormSettings = ( { setHidePopover } ) => {
 	const showCoversationalFormSettings = false;
 	const conversationalFormSettings = applyFilters(
 		'srfm.instant_form_settings.conversational_forms',
