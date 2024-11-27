@@ -124,6 +124,12 @@
 	* Some special edge case css when banner as page background enabled.
 	*/
 	&.srfm-has-banner-page-bg {
+		&.srfm-has-cover-img {
+			@media ( min-width: 1025px ) {
+				min-height: 100vh;
+			}
+		}
+
 		.srfm-single-page-container.has-form-title .srfm-page-banner {
 			height: 172px;
 		}

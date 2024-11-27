@@ -1,3 +1,27 @@
+/**
+ * Replaces "%s" or "%1$s", "%2$s", etc., placeholders in a string with provided arguments, in sequence.
+ *
+ * This function provides basic `sprintf`-style formatting, where each "%s" or "%n$s" placeholder in
+ * the `str` parameter is replaced with corresponding values from `args`.
+ *
+ * @param {string}    str  - The string containing "%s" or "%n$s" placeholders to be replaced.
+ * @param {...string} args - Values to replace each "%s" or "%n$s" placeholder in the string.
+ *                         Each placeholder is replaced by the respective item in `args`.
+ * @return {string} The formatted string with all placeholders replaced by corresponding `args` values.
+ *
+ * @example
+ * srfmSprintfString('Page %1$s of %2$s', 5, 10);
+ * // Returns: 'Page 5 of 10'
+ */
+function srfmSprintfString( str, ...args ) {
+	let i = 0; // Initialize sequential index for unnumbered %s placeholders.
+	return str.replace( /%(\d+\$)?s/g, ( match, index ) => {
+		// If there's an index, use it (subtract 1 to make it 0-based); otherwise, use next sequential index
+		const argIndex = index ? parseInt( index ) - 1 : i++;
+		return args[ argIndex ] !== undefined ? args[ argIndex ] : match;
+	} );
+}
+
 async function getUniqueValidationData( checkData, formId, ajaxUrl, nonce ) {
 	let queryString =
 		'action=validation_ajax_action&nonce=' +
@@ -114,8 +138,24 @@ export async function fieldValidation(
 		if ( currentFormId !== formId ) {
 			continue;
 		}
-		const inputField = container.querySelector( 'input, textarea, select' );
-		const isRequired = inputField.getAttribute( 'aria-required' );
+		let inputField;
+		// Determine the inputField based on the container's class.
+		switch ( true ) {
+			// Case 1: If the container corresponds to a phone number field.
+			// This is because phone number containers have multiple inputs inside them,
+			// and we specifically need to target the phone input using the class '.srfm-input-phone'.
+			case container.classList.contains( 'srfm-phone-block' ):
+				inputField = container.querySelector( '.srfm-input-phone' );
+				break;
+			// Default Case: For all other containers, select a general input element.
+			// This handles standard input types such as text, textarea, or select.
+			default:
+				inputField = container.querySelector(
+					'input, textarea, select'
+				);
+				break;
+		}
+		const isRequired = inputField.getAttribute( 'data-required' );
 		const isUnique = inputField.getAttribute( 'data-unique' );
 		let fieldName = inputField.getAttribute( 'name' );
 		const inputValue = inputField.value;
@@ -198,7 +238,7 @@ export async function fieldValidation(
 		) {
 			const checkedInput = container.querySelectorAll( 'input' );
 			const isCheckedRequired =
-				checkedInput[ 0 ].getAttribute( 'aria-required' );
+				checkedInput[ 0 ].getAttribute( 'data-required' );
 			let checkedSelected = false;
 			let visibleInput = null;
 
@@ -306,7 +346,7 @@ export async function fieldValidation(
 					} else if ( confirmValue !== inputValue ) {
 						confirmParent.classList.add( 'srfm-error' );
 						confirmError.textContent =
-							'Confirmation Password is not the same';
+							window?.srfm_submit?.messages?.confirm_password_same;
 
 						// Set the first error input.
 						setFirstErrorInput( confirmValue, confirmParent );
@@ -358,7 +398,7 @@ export async function fieldValidation(
 					} else if ( confirmValue !== inputValue ) {
 						confirmParent.classList.add( 'srfm-error' );
 						confirmError.textContent =
-							'Confirmation email is not the same';
+							window?.srfm_submit?.messages?.confirm_email_same;
 
 						// Set the first error input.
 						setFirstErrorInput( confirmInput, confirmParent );
@@ -387,7 +427,7 @@ export async function fieldValidation(
 			const uploadInput = container.querySelector( '.srfm-input-upload' );
 
 			const isUploadRequired =
-				uploadInput.getAttribute( 'aria-required' );
+				uploadInput.getAttribute( 'data-required' );
 			if ( 'true' === isUploadRequired && ! uploadInput.value ) {
 				if ( 'true' === isUploadRequired ) {
 					if ( errorMessage ) {
@@ -447,7 +487,10 @@ export async function fieldValidation(
 							.closest( '.srfm-block' )
 							.classList.add( 'srfm-error' );
 						if ( errorMessage ) {
-							errorMessage.textContent = `Minimum value is ${ min }`;
+							errorMessage.textContent = srfmSprintfString(
+								window?.srfm_submit?.messages?.input_min_value,
+								min
+							);
 						}
 					} else {
 						inputField
@@ -466,7 +509,10 @@ export async function fieldValidation(
 							.classList.add( 'srfm-error' );
 
 						if ( errorMessage ) {
-							errorMessage.textContent = `Maximum value is ${ max }`;
+							errorMessage.textContent = srfmSprintfString(
+								window?.srfm_submit?.messages?.input_max_value,
+								max
+							);
 						}
 					} else {
 						inputField
@@ -480,7 +526,7 @@ export async function fieldValidation(
 		//rating field
 		if ( container.classList.contains( 'srfm-rating-block' ) ) {
 			const ratingInput = container.querySelector( '.srfm-input-rating' );
-			const ratingRequired = ratingInput.getAttribute( 'aria-required' );
+			const ratingRequired = ratingInput.getAttribute( 'data-required' );
 			if ( ratingRequired === 'true' && ! ratingInput.value ) {
 				ratingInput
 					.closest( '.srfm-block' )
@@ -546,7 +592,7 @@ export async function fieldValidation(
 
 			dropdownInputs.forEach( ( dropdownInput ) => {
 				const dropdownRequired =
-					dropdownInput.getAttribute( 'aria-required' );
+					dropdownInput.getAttribute( 'data-required' );
 				const inputName = dropdownInput.getAttribute( 'name' );
 				if ( dropdownRequired === 'true' && ! dropdownInput.value ) {
 					errorMessage.textContent =
@@ -570,12 +616,9 @@ export async function fieldValidation(
 							minSelection &&
 							selectedOptions.length < minSelection
 						) {
-							errorMessage.textContent = wp.i18n.sprintf(
-								// translators: %s is the minimum number of selections required.
-								wp.i18n.__(
-									'Minimum %d selections are required',
-									'sureforms'
-								),
+							errorMessage.textContent = srfmSprintfString(
+								window?.srfm_submit?.messages
+									?.dropdown_min_selections,
 								minSelection
 							);
 							dropdownInput
@@ -587,12 +630,9 @@ export async function fieldValidation(
 							selectedOptions.length > maxSelection
 						) {
 							// If some value is selected but more than maxSelection.
-							errorMessage.textContent = wp.i18n.sprintf(
-								// translators: %s is the maximum number of selections allowed.
-								wp.i18n.__(
-									'Maximum %d selections are allowed',
-									'sureforms'
-								),
+							errorMessage.textContent = srfmSprintfString(
+								window?.srfm_submit?.messages
+									?.dropdown_max_selections,
 								maxSelection
 							);
 							dropdownInput
@@ -674,12 +714,8 @@ export async function fieldValidation(
 					( ( isRequired && minSelection > 1 ) || ! isRequired ) &&
 					totalCheckedInput < minSelection
 				) {
-					errorMessage.textContent = wp.i18n.sprintf(
-						// translators: %s is the minimum number of selections required.
-						wp.i18n.__(
-							'Minimum %d selections are required',
-							'sureforms'
-						),
+					errorMessage.textContent = srfmSprintfString(
+						window?.srfm_submit?.messages?.min_selections,
 						minSelection
 					);
 					errorFound = true;
@@ -689,12 +725,8 @@ export async function fieldValidation(
 					maxSelection > 0 &&
 					totalCheckedInput > maxSelection
 				) {
-					errorMessage.textContent = wp.i18n.sprintf(
-						// translators: %s is the maximum number of selections allowed.
-						wp.i18n.__(
-							'Maximum %d selections are allowed',
-							'sureforms'
-						),
+					errorMessage.textContent = srfmSprintfString(
+						window?.srfm_submit?.messages?.max_selections,
 						maxSelection
 					);
 					errorFound = true;
@@ -807,6 +839,11 @@ function addBlurListener( containerClass, blockClass ) {
 				}, 500 );
 			}
 
+			// First input element is search for phone number block so reassigning it with phone number input for proper validation.
+			if ( containerClass === 'srfm-phone-block' ) {
+				areaField = areaInput.querySelector( '.srfm-input-phone' );
+			}
+
 			// for all other fields
 			if ( areaField ) {
 				areaField.addEventListener( 'blur', async function () {
@@ -912,7 +949,7 @@ function addEmailBlurListener( areaInput, blockClass ) {
 				if ( originalEmailValue !== emailField.value ) {
 					confirmErrorContainer.style.display = 'block';
 					confirmErrorContainer.textContent =
-						'Confirmation email is not the same';
+						window?.srfm_submit?.messages?.confirm_email_same;
 					parentBlock.classList.add( 'srfm-error' );
 					return;
 				}
@@ -927,7 +964,8 @@ function addEmailBlurListener( areaInput, blockClass ) {
 					'srfm-valid-email-error'
 				);
 				errorContainer.style.display = 'block';
-				errorContainer.innerHTML = 'Please enter a valid email address';
+				errorContainer.innerHTML =
+					window?.srfm_submit?.messages?.valid_email;
 			} else {
 				errorContainer.style.display = 'none';
 				inputBlock.parentElement.classList.remove(

@@ -176,8 +176,8 @@ class Entries extends Base {
 	/**
 	 * Add a new log entry.
 	 *
-	 * @param string   $title The title of the log entry.
-	 * @param string[] $messages Optional. An array of messages to include in the log entry. Default is an empty array.
+	 * @param string        $title The title of the log entry.
+	 * @param array<string> $messages Optional. An array of messages to include in the log entry. Default is an empty array.
 	 * @since 0.0.10
 	 * @return int|null The key of the newly added log entry, or null if the log could not be added.
 	 */
@@ -196,9 +196,9 @@ class Entries extends Base {
 	/**
 	 * Update an existing log entry.
 	 *
-	 * @param int         $log_key The key of the log entry to update.
-	 * @param string|null $title Optional. The new title for the log entry. If null, the title will not be changed.
-	 * @param string[]    $messages Optional. An array of new messages to add to the log entry.
+	 * @param int           $log_key The key of the log entry to update.
+	 * @param string|null   $title Optional. The new title for the log entry. If null, the title will not be changed.
+	 * @param array<string> $messages Optional. An array of new messages to add to the log entry.
 	 * @since 0.0.10
 	 * @return int|null The key of the updated log entry, or null if the log entry does not exist.
 	 */
@@ -469,7 +469,7 @@ class Entries extends Base {
 	 * The data is used for checking unique field validation.
 	 *
 	 * @param int $form_id The ID of the form to fetch entry IDs for.
-	 * @since x.x.x
+	 * @since 1.0.0
 	 * @return array<mixed> An array of entry IDs.
 	 */
 	public static function get_all_entry_ids_for_form( $form_id ) {
@@ -486,7 +486,7 @@ class Entries extends Base {
 	 * Get the form data for a specific entry.
 	 *
 	 * @param int $entry_id The ID of the entry to get the form data for.
-	 * @since x.x.x
+	 * @since 1.0.0
 	 * @return array<string,mixed> An associative array representing the entry's form data.
 	 */
 	public static function get_form_data( $entry_id ) {
@@ -495,45 +495,5 @@ class Entries extends Base {
 			'form_data'
 		);
 		return isset( $result[0] ) && is_array( $result[0] ) ? Helper::get_array_value( $result[0]['form_data'] ) : [];
-	}
-
-	/**
-	 * Get the data for generating entries chart.
-	 *
-	 * @param \WP_REST_Request $request Full details about the request.
-	 * @since x.x.x
-	 * @return array<mixed>
-	 */
-	public function get_entries_chart_data( $request ) {
-		$nonce = Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) );
-
-		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
-			wp_send_json_error( 'Nonce verification failed.' );
-		}
-
-		$params = $request->get_params();
-
-		if ( empty( $params ) ) {
-			wp_send_json_error( 'Invalid Request.' );
-		}
-
-		$after = is_array( $params ) && ! empty( $params['after'] ) ? Helper::get_string_value( $params['after'] ) : '';
-
-		$where = [
-			[
-				[
-					'key'     => 'created_at',
-					'value'   => $after,
-					'compare' => '>=',
-				],
-
-			],
-		];
-
-		return self::get_instance()->get_results(
-			$where,
-			'ID, created_at',
-			[ 'ORDER BY created_at DESC' ]
-		);
 	}
 }

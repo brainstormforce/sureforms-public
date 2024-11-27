@@ -97,25 +97,6 @@
 		}
 
 		.srfm-block {
-			&.srfm-phone-block {
-				.iti__country-list {
-					display: block;
-					border: var( --srfm-border ) solid var( --srfm-border-color );
-					border-radius: var( --srfm-border-radius );
-					transform: translateY( 0 );
-					opacity: 1;
-					transition: 0.2s cubic-bezier( 0.5, 0, 0, 1.25 ), opacity 0.15s ease-out;
-					font-size: 0.8em;
-
-					&.iti__hide {
-						display: block;
-						transform: translateY( 1em );
-						opacity: 0;
-						visibility: hidden;
-					}
-				}
-			}
-
 			.srfm-error-message {
 				display: none;
 			}
@@ -184,5 +165,9 @@
 			line-height: 26px;
 			color: var( --srfm-body-input-color );
 		}
+	}
+
+	.srfm-display-none {
+		display: none;
 	}
 }

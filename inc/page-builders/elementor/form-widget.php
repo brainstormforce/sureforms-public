@@ -8,8 +8,9 @@
 
 namespace SRFM\Inc\Page_Builders\Elementor;
 
-use Elementor\Widget_Base;
 use Elementor\Plugin;
+use Elementor\Widget_Base;
+use Spec_Gb_Helper;
 use SRFM\Inc\Helper;
 use SRFM\Inc\Page_Builders\Page_Builders;
 
@@ -18,11 +19,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- *
  * SureForms widget that displays a form.
  */
 class Form_Widget extends Widget_Base {
-
 	/**
 	 * Whether we are in the preview mode.
 	 *
@@ -234,7 +233,16 @@ class Form_Widget extends Widget_Base {
 		}
 
 		$show_form_title = 'true' === $settings['srfm_show_form_title'];
+		// get spectra blocks and add css and js.
+		$blocks = parse_blocks( get_post_field( 'post_content', $settings['srfm_form_block'] ) );
+		$styles = Spec_Gb_Helper::get_instance()->get_assets( $blocks );
+
+		// phpcs:ignore -- WordPress.Security.EscapeOutput.OutputNotEscaped - Escaping not required.
 		echo do_shortcode( '[sureforms id="' . $settings['srfm_form_block'] . '" show_title="' . ! $show_form_title . '"]' );
+		// phpcs:ignore -- WordPress.Security.EscapeOutput.OutputNotEscaped - Escaping not required.
+		echo '<style>' . $styles['css'] . '</style>';
+		// phpcs:ignore -- WordPress.Security.EscapeOutput.OutputNotEscaped - Escaping not required.
+		echo '<script>' . $styles['js'] . '</script>';
 	}
 
 }

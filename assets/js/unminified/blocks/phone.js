@@ -7,10 +7,13 @@ function initializePhoneField() {
 		const isAutoCountry = phoneNumber.getAttribute( 'auto-country' );
 		const phoneFieldName = phoneNumber.getAttribute( 'name' );
 		const itlOptions = {
-			utilsScript: '../scripts/int-tel-input/utils.js',
 			autoPlaceholder: 'off',
 			separateDialCode: true,
-			hiddenInput: phoneFieldName,
+			hiddenInput: () => ( {
+				phone: phoneFieldName,
+			} ),
+			countrySearch: true,
+			initialCountry: 'us',
 		};
 
 		if ( isAutoCountry === 'true' ) {
@@ -31,6 +34,16 @@ function initializePhoneField() {
 
 		const iti = window.intlTelInput( phoneNumber, itlOptions );
 
+		// handle padding based on the direction of the page
+		const selectedCountry = element.querySelector(
+			'.iti__selected-country-primary'
+		);
+		if ( srfm_submit?.is_rtl ) {
+			selectedCountry.style.paddingLeft = '0';
+		} else {
+			selectedCountry.style.paddingRight = '0';
+		}
+
 		const updatePhoneNumber = () => {
 			const phoneNumberValue = phoneNumber?.value
 				? phoneNumber?.value.trim()
@@ -40,7 +53,8 @@ function initializePhoneField() {
 			if ( phoneNumberValue && ! iti.isValidNumber() ) {
 				parentBlock.classList.add( 'srfm-phone-error' );
 				parentBlock.classList.add( 'srfm-error' );
-				errorMessage.textContent = 'Please enter a valid phone number.';
+				errorMessage.textContent =
+					window?.srfm_submit?.messages?.valid_phone_number;
 			} else {
 				parentBlock.classList.remove( 'srfm-phone-error' );
 				parentBlock.classList.remove( 'srfm-error' );
@@ -51,6 +65,29 @@ function initializePhoneField() {
 		if ( phoneNumber ) {
 			phoneNumber.addEventListener( 'change', updatePhoneNumber );
 			phoneNumber.addEventListener( 'countrychange', updatePhoneNumber );
+			// Add iti__active class to the selected country in the dropdown and scroll to the selected country.
+			phoneNumber.addEventListener( 'open:countrydropdown', () => {
+				const dropdownList =
+					document.querySelector( '.iti__country-list' );
+				const selectedCountryData = iti.getSelectedCountryData();
+				if ( selectedCountryData ) {
+					const allCountries =
+						dropdownList.querySelectorAll( '.iti__country' );
+					allCountries.forEach( ( country ) => {
+						country.classList.remove( 'iti__active' );
+					} );
+					const activeCountry = dropdownList.querySelector(
+						`.iti__country[data-country-code="${ selectedCountryData.iso2 }"]`
+					);
+					if ( activeCountry ) {
+						activeCountry.classList.add( 'iti__active' );
+						activeCountry.scrollIntoView( {
+							block: 'nearest',
+							behavior: 'instant',
+						} );
+					}
+				}
+			} );
 		}
 
 		itiContainerClass( element );
@@ -80,7 +117,7 @@ function itiContainerClass( element ) {
 		return;
 	}
 	const id = element.closest( 'form' ).getAttribute( 'form-id' );
-	const flagContainer = element.querySelector( '.iti__selected-flag' );
+	const flagContainer = element.querySelector( '.iti__selected-country' );
 	flagContainer.addEventListener( 'click', () => {
 		const itiContainerMobile = document.querySelector( '.iti--container' );
 		itiContainerMobile?.classList.add( `srfm-form-container-${ id }` );

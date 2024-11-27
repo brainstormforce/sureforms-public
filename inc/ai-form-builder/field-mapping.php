@@ -8,8 +8,8 @@
 
 namespace SRFM\Inc\AI_Form_Builder;
 
-use SRFM\Inc\Traits\Get_Instance;
 use SRFM\Inc\Helper;
+use SRFM\Inc\Traits\Get_Instance;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
@@ -101,15 +101,48 @@ class Field_Mapping {
 					! empty( $question['fieldOptions'][0]['label'] )
 					) {
 						$merged_attributes['options'] = $question['fieldOptions'];
+
+						// remove icon from options for the dropdown field.
+						foreach ( $merged_attributes['options'] as $key => $option ) {
+							if ( ! empty( $merged_attributes['options'][ $key ]['icon'] ) ) {
+								$merged_attributes['options'][ $key ]['icon'] = '';
+							}
+						}
 					}
 					if ( 'multi-choice' === $question['fieldType'] ) {
-						if ( ! empty( $question['fieldOptions'] ) && is_array( $question['fieldOptions'] )
-						&& ! empty( $question['fieldOptions'][0]['optionTitle'] )
-						) {
+
+						// Remove duplicate icons and clear icons if all are the same.
+						$icons        = array_column( $question['fieldOptions'], 'icon' );
+						$options      = array_column( $question['fieldOptions'], 'optionTitle' );
+						$unique_icons = array_unique( $icons );
+						if ( count( $unique_icons ) === 1 || count( $options ) !== count( $icons ) ) {
+							foreach ( $question['fieldOptions'] as &$option ) {
+								$option['icon'] = '';
+							}
+						}
+
+						// Set options if they are valid.
+						if ( ! empty( $question['fieldOptions'][0]['optionTitle'] ) ) {
 							$merged_attributes['options'] = $question['fieldOptions'];
 						}
-						if ( ! empty( $question['singleSelection'] ) ) {
+
+						// Determine vertical layout based on icons.
+						if ( ! empty( $merged_attributes['options'] ) ) {
+							$merged_attributes['verticalLayout'] = array_reduce(
+								$merged_attributes['options'],
+								static fn( $carry, $option ) => $carry && ! empty( $option['icon'] ),
+								true
+							);
+						}
+
+						// Set single selection if provided.
+						if ( isset( $question['singleSelection'] ) ) {
 							$merged_attributes['singleSelection'] = filter_var( $question['singleSelection'], FILTER_VALIDATE_BOOLEAN );
+						}
+
+						// Set choiceWidth for options divisible by 3.
+						if ( ! empty( $merged_attributes['options'] ) && count( $merged_attributes['options'] ) % 3 === 0 ) {
+							$merged_attributes['choiceWidth'] = 33.33;
 						}
 					}
 					if ( 'phone' === $question['fieldType'] ) {
@@ -150,7 +183,7 @@ class Field_Mapping {
 						if ( ! empty( $merged_attributes['showText'] ) ) {
 							foreach ( $question['tooltipValues'] as $tooltips ) {
 								$i = 0;
-								foreach ( $tooltips as $key => $value ) {
+								foreach ( $tooltips as $value ) {
 									$merged_attributes['ratingText'][ $i ] = ! empty( $value ) ? sanitize_text_field( $value ) : '';
 									$i++;
 								}
@@ -164,10 +197,10 @@ class Field_Mapping {
 							$allowed_types = explode( ',', $allowed_types );
 
 							$types_array = array_map(
-								function( $type ) {
+								static function( $type ) {
 									return [
-										'value' => $type,
-										'label' => $type,
+										'value' => trim( $type ),
+										'label' => trim( $type ),
 									];
 								},
 								$allowed_types

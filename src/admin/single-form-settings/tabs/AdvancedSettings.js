@@ -258,7 +258,7 @@ function AdvancedSettings( props ) {
 							) }
 							value={ sureformsKeys._srfm_form_recaptcha }
 							options={ [
-								{ label: 'None', value: 'none' },
+								{ label: __( 'None', 'sureforms' ), value: 'none' },
 								{
 									label: __(
 										'reCAPTCHA v2 Checkbox',

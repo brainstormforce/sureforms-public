@@ -100,9 +100,38 @@ const Editor = ( {
 	// Add inline style instead of classes.
 	Quill.register( Quill.import( 'attributors/style/align' ), true );
 
+	/**
+	 * Custom Image Blot to add attributes to the image tag.
+	 * This is required because the default image blot does not allow us to add attributes to the image tag.
+	 *
+	 * Blot - A piece of content that is inserted into the editor.
+	 * Embed - A type of blot that represents an embedded object in the editor (For example, an image).
+	 */
+	const Embed = Quill.import( 'blots/embed' );
+	class CustomImageBlot extends Embed {
+		static create( value ) {
+			const node = super.create();
+			node.setAttribute( 'src', value.src );
+			node.setAttribute( 'alt', '' );
+			node.setAttribute( 'aria-hidden', 'true' );
+			return node;
+		}
+		static value( node ) {
+			return {
+				src: node.getAttribute( 'src' ),
+				alt: node.getAttribute( 'alt' ),
+				'aria-hidden': node.getAttribute( 'aria-hidden' ),
+			};
+		}
+	}
+	CustomImageBlot.blotName = 'image';
+	CustomImageBlot.tagName = 'img';
+	Quill.register( CustomImageBlot );
+
 	return (
 		<>
 			<SmartTagList
+				tagFor="formSettings.quillEditor"
 				icon={ dropdownIcon }
 				text={ __( 'Add Shortcode', 'sureforms' ) }
 				cssClass={ 'srfm-editor-dropdown' }

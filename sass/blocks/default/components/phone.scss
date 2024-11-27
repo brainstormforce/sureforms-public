@@ -4,35 +4,40 @@
 			.iti {
 				width: 100%;
 
-				.iti__flag-container {
+				.iti__selected-country {
+					background: none !important;
+					padding-top: 10px;
+					padding-bottom: 10px;
+					gap: 4px; // Fixed gap between the flag and the country code.
+
+					&:focus {
+						background: none !important;
+						outline: none;
+						border: var( --srfm-color-scheme-primary ) solid 1px;
+						// The border radius is reduced by 1px to eliminate any gaps remaining from the input element border.
+						border-top-left-radius: calc( var( --srfm-input-field-border-radius ) - 1px );
+						border-bottom-left-radius: calc( var( --srfm-input-field-border-radius ) - 1px );
+					}
+				}
+
+				.iti__country-container {
 					// Setting the line height to normal aligns the country code with the phone number regardless of the browser.
 					line-height: normal;
 					margin: var( --srfm-input-field-margin );
-					.iti__country-list {
-						top: 100%;
-						bottom: auto; // Prevent the dropdown menu from shrinking.
-						width: 310px;
-						transition: 0.2s ease-out;
+					.iti__dropdown-content {
+						width: 310px !important;
+						.iti__country-list {
+							top: 100%;
+							bottom: auto; // Prevent the dropdown menu from shrinking.
+							width: 100%;
+							transition: 0.2s ease-out;
 
-						&.iti__hide {
-							display: block;
-							transform: translateY( 1em );
-							opacity: 0;
-							visibility: hidden;
-						}
-					}
-					.iti__selected-flag {
-						background-color: inherit !important;
-						padding-top: 10px;
-						padding-bottom: 10px;
-						gap: 4px; // Fixed gap between the flag and the country code.
-
-						&:focus-visible {
-							outline: none;
-							border: var( --srfm-color-scheme-primary ) solid 1px;
-							// The border radius is reduced by 1px to eliminate any gaps remaining from the input element border.
-							border-top-left-radius: calc( var( --srfm-input-field-border-radius ) - 1px );
-							border-bottom-left-radius: calc( var( --srfm-input-field-border-radius ) - 1px );
+							&.iti__hide {
+								display: block;
+								transform: translateY( 1em );
+								opacity: 0;
+								visibility: hidden;
+							}
 						}
 					}
 					.iti__selected-dial-code {
@@ -55,11 +60,23 @@
 }
 
 .iti {
+	.iti__dropdown-content {
+		border: none !important;
+		margin-top: var( --srfm-dropdown-gap-between-input-menu );
+		background-color: var( --srfm-expandable-menu-background );
+		border-radius: var( --srfm-input-field-border-radius );
+		.iti__search-input {
+			color: var( --srfm-dropdown-option-text-color );
+			background-color: var( --srfm-expandable-menu-background );
+			border: none;
+		}
+	}
 	.iti__country-list {
 		display: block;
 		opacity: 1;
 		line-height: var( --srfm-input-field-line-height );
 		@include srfm-dropdown-styles;
+		margin-top: 0;
 
 		.iti__country {
 			padding: var( --srfm-dropdown-option-padding );
@@ -85,7 +102,6 @@
 			&.iti__highlight {
 				background-color: var( --srfm-dropdown-option-background-hover );
 			}
-
 			&.iti__active {
 				background-color: var( --srfm-dropdown-option-background-selected );
 				&::after {

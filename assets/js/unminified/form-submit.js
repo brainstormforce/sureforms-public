@@ -115,13 +115,29 @@ async function submitFormData( form ) {
 	const formData = new FormData( form );
 	const filteredFormData = new FormData();
 
-	for ( const [ key, value ] of formData.entries() ) {
-		if (
-			! key.includes( 'srfm-email-confirm' ) &&
-			! key.includes( 'srfm-password-confirm' )
-		) {
-			filteredFormData.append( key, value );
+	// Define keys to exclude from filtered form data
+	const blockTheseKeys = [ 'srfm-email-confirm', 'srfm-password-confirm' ];
+
+	// Iterate over each entry in formData.
+	for ( let [ key, value ] of formData.entries() ) {
+		// Skip keys listed in blockTheseKeys array
+		if ( blockTheseKeys.includes( key ) ) {
+			continue;
 		}
+
+		if ( value !== '' ) {
+			// Retrieve input element by key name and find closest `.srfm-block-single` parent
+			const inputElement = form.querySelector( `[name="${ key }"]` );
+			const parentBlock = inputElement?.closest( '.srfm-block-single' );
+
+			// If parent has `.hide-element` class, reset value to empty string
+			if ( parentBlock?.classList.contains( 'hide-element' ) ) {
+				value = '';
+			}
+		}
+
+		// Append the (possibly modified) key-value pair to filteredFormData
+		filteredFormData.append( key, value );
 	}
 
 	return await fetch( `${ site_url }/wp-json/sureforms/v1/submit-form`, {
@@ -168,15 +184,33 @@ function showSuccessMessage(
 	element,
 	message,
 	form,
-	afterSubmission
+	afterSubmission,
+	submitType,
+	loader
 ) {
+	// Create and dispatch a custom event
+	const event = new CustomEvent( 'srfm_on_show_success_message', {
+		cancelable: true,
+		detail: {
+			form,
+			element,
+			message,
+			submitType,
+			container,
+			loader,
+		},
+	} );
+
+	if ( ! document.dispatchEvent( event ) ) {
+		return; // Stop further execution if event.preventDefault() was called.
+	}
 	if ( afterSubmission === 'hide form' ) {
 		form.style.opacity = 1;
 		form.style.display = 'none';
 		setTimeout( () => {
 			element.style.opacity = 1;
 		}, 500 );
-	} else {
+	} else if ( afterSubmission === 'reset form' ) {
 		form.reset();
 	}
 	element.innerHTML = message;
@@ -210,6 +244,24 @@ async function handleFormSubmission(
 	try {
 		loader.classList.add( 'srfm-active' );
 
+		// Create and dispatch a custom event
+		const event = new CustomEvent( 'srfm_on_trigger_form_submission', {
+			cancelable: true,
+			detail: {
+				form,
+				loader,
+				formId,
+				submitType,
+				successElement,
+				successContainer,
+			},
+		} );
+
+		if ( ! document.dispatchEvent( event ) ) {
+			loader.classList.remove( 'srfm-active' );
+			return; // Stop further execution if event.preventDefault() was called.
+		}
+
 		const isValidate = await fieldValidation(
 			formId,
 			ajaxUrl,
@@ -230,21 +282,47 @@ async function handleFormSubmission(
 
 		const formStatus = await submitFormData( form );
 		if ( formStatus?.success ) {
+			/**
+			 * Emit a function to signal the successful submission of a form.
+			 */
+			emitFormSubmitSuccess( { ...formStatus, formId } );
+
 			if ( submitType === 'same page' ) {
 				showSuccessMessage(
 					successContainer,
 					successElement,
 					formStatus?.message ?? '',
 					form,
-					afterSubmission
+					afterSubmission,
+					submitType
 				);
 				loader.classList.remove( 'srfm-active' );
-				if ( formStatus?.data?.after_submit ) {
-					afterSubmit( formStatus );
-				}
+			} else if (
+				/**
+				 * This condition is similar to above one but we are using this for custom-app
+				 * here we are not removing 'srfm-active' class from loader
+				 * and sending loader as an extra parameter
+				 */
+				! [ 'different page', 'custom url' ].includes( submitType )
+			) {
+				showSuccessMessage(
+					successContainer,
+					successElement,
+					formStatus?.message ?? '',
+					form,
+					afterSubmission,
+					submitType,
+					loader
+				);
 			} else {
-				redirectToUrl( successUrl );
+				if ( formStatus?.redirect_url ) {
+					redirectToUrl( formStatus?.redirect_url );
+				}
 				loader.classList.remove( 'srfm-active' );
+			}
+			// Moving afterSubmit action out of specific method so it should work for all submission mode
+			if ( formStatus?.data?.after_submit ) {
+				afterSubmit( formStatus );
 			}
 		} else {
 			loader.classList.remove( 'srfm-active' );
@@ -252,6 +330,24 @@ async function handleFormSubmission(
 			loader.classList.remove( 'srfm-active' );
 		}
 	} catch ( error ) {
+		// Create and dispatch a custom event
+		const event = new CustomEvent(
+			'srfm_on_trigger_form_submission_failure',
+			{
+				detail: {
+					form,
+					error,
+					loader,
+					formId,
+					submitType,
+					successElement,
+					successContainer,
+				},
+			}
+		);
+
+		document.dispatchEvent( event );
+
 		loader.classList.remove( 'srfm-active' );
 		showErrorMessage( errorElement );
 	}
@@ -362,6 +458,34 @@ function onloadCallback() {
 			} );
 		}
 	} );
+}
+
+/**
+ * Emits a custom event to signal the successful submission of a form.
+ *
+ * This function creates and dispatches a custom event, `srfm_form_submission_success`,
+ * to notify other parts of the application that a form has been successfully submitted.
+ * It includes form-specific details, such as the form data.
+ *
+ * Custom Event: `srfm_form_submission_success`
+ * - Dispatched event signaling a form submission success.
+ * - Event payload (`detail`) includes: form data.
+ *
+ * @param {Object} formStatus - An object representing the status of the form submission.
+ */
+function emitFormSubmitSuccess( formStatus ) {
+	// Create a custom event with form details.
+	const srfmFormSubmissionSuccessEvent = new CustomEvent(
+		'srfm_form_submission_success',
+		{
+			detail: {
+				formId: `srfm-form-${ formStatus.formId }`,
+			},
+		}
+	);
+
+	// Dispatch the custom event.
+	document.dispatchEvent( srfmFormSubmissionSuccessEvent );
 }
 
 // directly assign onloadCallback into the global space:

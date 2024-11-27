@@ -21,14 +21,13 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 0.0.12
  */
 class Updater {
-
 	use Get_Instance;
 
 	/**
 	 * Current DB saved version of SureForms.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 1.0.0
 	 */
 	private $old_version;
 
@@ -50,7 +49,7 @@ class Updater {
 	/**
 	 * Whether or not to call the DB update methods.
 	 *
-	 * @since x.x.x
+	 * @since 1.0.0
 	 * @return bool
 	 */
 	public function needs_db_update() {
@@ -81,7 +80,7 @@ class Updater {
 	 * Any major change in the option can be handed here on the basis of last plugin version found in the database.
 	 *
 	 * @since 0.0.12
-	 * @since x.x.x -- Added db updater callbacks support.
+	 * @since 1.0.0 -- Added db updater callbacks support.
 	 * @return void
 	 */
 	public function init() {
@@ -169,13 +168,16 @@ class Updater {
 	/**
 	 * Returns an array of DB updater callback functions.
 	 *
-	 * @since x.x.x
+	 * @since 1.0.0
 	 * @return array<string,array<callable>>> Array of DB updater callback functions
 	 */
 	public function get_updater_callbacks() {
 		return [
-			'1.0.0' => [
-				'SRFM\Inc\Updater_Callbacks::manage_entries_migrate_admin_notice',
+			'1.0.2' => [
+				'SRFM\Inc\Updater_Callbacks::manage_default_dynamic_options',
+			],
+			'1.0.4' => [
+				'SRFM\Inc\Updater_Callbacks::manage_empty_default_dynamic_options',
 			],
 		];
 	}
