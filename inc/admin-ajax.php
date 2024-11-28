@@ -56,30 +56,26 @@ class Admin_Ajax {
 	 * @return void
 	 */
 	public function resend_email_notifications() {
-		$response_data = [ 'message' => $this->get_error_msg( 'permission' ) ];
-
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_send_json_error( $response_data );
+			wp_send_json_error( $this->resend_email_notifications_alert( $this->get_error_msg( 'permission' ), false ) );
 		}
 
 		if ( empty( $_POST['entry_ids'] ) && empty( $_POST['form_id'] ) && empty( $_POST['email_notification'] ) ) {
-			$response_data = [ 'message' => $this->get_error_msg( 'invalid' ) ];
-			wp_send_json_error( $response_data );
+			wp_send_json_error( $this->resend_email_notifications_alert( $this->get_error_msg( 'invalid' ), false ) );
 		}
 
 		/**
 		 * Nonce verification.
 		 */
 		if ( ! check_ajax_referer( '_srfm_resend_email_notifications_nonce', 'security' ) ) {
-			$response_data = [ 'message' => $this->get_error_msg( 'nonce' ) ];
-			wp_send_json_error( $response_data );
+			wp_send_json_error( $this->resend_email_notifications_alert( $this->get_error_msg( 'nonce' ), false ) );
 		}
 
 		$entry_ids = sanitize_text_field( wp_unslash( $_POST['entry_ids'] ) );
 		$entry_ids = array_map( 'absint', explode( ',', $entry_ids ) );
 
 		if ( empty( $entry_ids ) ) {
-			wp_send_json_error( __( 'Entry IDs cannot be empty.', 'sureforms' ) );
+			wp_send_json_error( $this->resend_email_notifications_alert( __( 'Entry IDs cannot be empty.', 'sureforms' ), false ) );
 		}
 
 		$recipient = '';
@@ -90,7 +86,7 @@ class Admin_Ajax {
 
 			if ( ! is_email( $recipient ) ) {
 				// Bail if not a valid email address.
-				wp_send_json_error( __( 'You must provide a valid email for the recipient.', 'sureforms' ) );
+				wp_send_json_error( $this->resend_email_notifications_alert( __( 'You must provide a valid email for the recipient.', 'sureforms' ), false ) );
 			}
 		}
 
@@ -100,8 +96,6 @@ class Admin_Ajax {
 		$email_notification = Helper::get_array_value( get_post_meta( $form_id, '_srfm_email_notification', true ) );
 
 		$display_name = wp_get_current_user()->display_name;
-
-		$resend_logs = [];
 
 		if ( ! empty( $email_notification ) && is_array( $email_notification ) ) {
 			foreach ( $email_notification as $notification ) {
@@ -130,13 +124,6 @@ class Admin_Ajax {
 					/* translators: Here, %s is email address. */
 					$log_message = $sent ? sprintf( __( 'Email notification sent to %s', 'sureforms' ), esc_html( $email_to ) ) : sprintf( __( 'Failed sending email notification to %s', 'sureforms' ) );
 
-					$resend_logs[] = [
-						'sent'     => $sent,
-						'entry_id' => $entry_id,
-						/* translators: Here, %1$s is entry id and %2$s is the log message. */
-						'message'  => sprintf( esc_html__( 'Entry #%1$s - %2$s', 'sureforms' ), absint( $entry_id ), esc_html( $log_message ) ),
-					];
-
 					if ( is_int( $log_key ) ) {
 						$entries_db->update_log( $log_key, null, [ $log_message ] );
 					}
@@ -151,21 +138,61 @@ class Admin_Ajax {
 			}
 		}
 
-		// Finally start creating message to display a result log to admin.
-		$message  = '<details class="field-group">';
-		$message .= '<summary>' . esc_html__( 'View details', 'sureforms' ) . '</summary>';
-		$message .= '<ul class="srfm-resend-notification-message">';
+		wp_send_json_success( $this->resend_email_notifications_alert( __( 'The notification was sent successfully to the recipients.', 'sureforms' ) ) );
+	}
 
-		if ( ! empty( $resend_logs ) && is_array( $resend_logs ) ) {
-			foreach ( $resend_logs as $resend_log ) {
-				$message .= '<li>' . $resend_log['message'] . '</li>';
-			}
-		}
-
-		$message .= '</ul>';
-		$message .= '</details>';
-
-		wp_send_json_success( $message );
+	/**
+	 * Returns resend email notification alert content.
+	 *
+	 * @param string  $message Message to print in the alert box.
+	 * @param boolean $is_success Whether or not is resend email succeed.
+	 * @return string Email notification alert box html content with message.
+	 */
+	protected function resend_email_notifications_alert( $message, $is_success = true ) {
+		ob_start();
+		?>
+		<div class="srfm-resend-notification-message">
+			<div class="icon">
+				<?php
+				if ( $is_success ) {
+					?>
+					<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<g clip-path="url(#clip0_16958_8537)">
+						<path d="M10.0003 18.3307C14.6028 18.3307 18.3337 14.5999 18.3337 9.9974C18.3337 5.3949 14.6028 1.66406 10.0003 1.66406C5.39783 1.66406 1.66699 5.3949 1.66699 9.9974C1.66699 14.5999 5.39783 18.3307 10.0003 18.3307Z" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+						<path d="M7.5 10.0026L9.16667 11.6693L12.5 8.33594" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+						</g>
+						<defs>
+						<clipPath id="clip0_16958_8537">
+						<rect width="20" height="20" fill="white"/>
+						</clipPath>
+						</defs>
+					</svg>
+					<?php
+				} else {
+					?>
+					<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<path d="M12.0003 8.9975V12.7475M2.69702 16.1231C1.83163 17.6231 2.9142 19.4975 4.64593 19.4975H19.3546C21.0863 19.4975 22.1689 17.6231 21.3035 16.1231L13.9492 3.37562C13.0833 1.87479 10.9172 1.87479 10.0513 3.37562L2.69702 16.1231ZM12.0003 15.7475H12.0078V15.755H12.0003V15.7475Z" stroke="#EF4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+					</svg>
+					<?php
+				}
+				?>
+			</div>
+			<div class="message">
+				<?php
+				echo $is_success ? '<h4>' . esc_html__( 'Notification Sent', 'sureforms' ) . '</h4>' : '<h4>' . esc_html__( 'Error', 'sureforms' ) . '</h4>';
+				echo '<p>' . esc_html( $message ) . '</p>';
+				?>
+			</div>
+			<button type="button" class="close">
+				<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+					<path d="M14 6L6 14" stroke="#6B7280" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+					<path d="M6 6L14 14" stroke="#6B7280" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+				</svg>
+			</button>
+		</div>
+		<?php
+		$content = ob_get_clean();
+		return is_string( $content ) ? $content : '';
 	}
 
 	/**

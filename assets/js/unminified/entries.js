@@ -138,6 +138,40 @@
 			}
 		}
 
+		let resendNotificationMsgTimeOut = 0;
+
+		/**
+		 * Handle the resend notification message box.
+		 *
+		 * @param {Object} response Response from server.
+		 */
+		function handleResendNotificationMessage( response ) {
+			const wpBodyContent = document.getElementById( 'wpbody-content' );
+			wpBodyContent.insertAdjacentHTML( 'beforeend', response.data );
+
+			wpBodyContent
+				.querySelector( '.srfm-resend-notification-message .close' )
+				?.addEventListener( 'click', function () {
+					document
+						.querySelector( '.srfm-resend-notification-message' )
+						?.remove();
+				} );
+
+			// Clear previous running timeout (if any).
+			clearTimeout( resendNotificationMsgTimeOut );
+
+			// Auto close notification after 3 seconds.
+			resendNotificationMsgTimeOut = setTimeout(
+				() =>
+					document
+						.querySelector( '.srfm-resend-notification-message' )
+						?.remove(),
+				5000
+			);
+
+			dialog.close();
+		}
+
 		// Hide/show recipient field.
 		const recipientFieldGroup = dialog.querySelector(
 			'.recipient-field-group'
@@ -174,7 +208,9 @@
 		 */
 		resendNotificationTriggerBtn.addEventListener( 'click', function ( e ) {
 			e.preventDefault();
-			dialog.querySelector( 'details' )?.remove();
+			document
+				.querySelector( '.srfm-resend-notification-message' )
+				?.remove();
 			dialog.showModal();
 		} );
 
@@ -188,7 +224,9 @@
 		resendBtn?.addEventListener( 'click', async function ( e ) {
 			e.preventDefault();
 
-			dialog.querySelector( 'details' )?.remove();
+			document
+				.querySelector( '.srfm-resend-notification-message' )
+				?.remove();
 			inProgressOverlay.classList.remove( 'hidden' );
 
 			const formData = new FormData();
@@ -211,16 +249,7 @@
 				body: formData,
 			} )
 				.then( ( res ) => res.json() )
-				.then( ( res ) => {
-					if ( ! res?.success ) {
-						alert( res?.data );
-						return;
-					}
-
-					dialog
-						.querySelector( '.modal-content' )
-						?.insertAdjacentHTML( 'beforeend', res?.data );
-				} )
+				.then( handleResendNotificationMessage )
 				.finally( () => inProgressOverlay.classList.add( 'hidden' ) );
 		} );
 
