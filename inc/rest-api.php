@@ -163,6 +163,11 @@ class Rest_Api {
 	 * @return array<array<mixed>>
 	 */
 	private function get_endpoints() {
+		/*
+		 * @internal This filter is used to add custom endpoints.
+		 * @since x.x.x
+		 * @param array<array<mixed>> $endpoints Endpoints.
+		 */
 		return apply_filters(
 			'srfm_rest_api_endpoints',
 			[

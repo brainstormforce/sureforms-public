@@ -4,10 +4,9 @@ import ZapierIcon from '@Image/zapier.js';
 import UpgradeToProButton from '@Admin/components/UpgradeToProButton';
 
 const Zapier = () => {
-	const showZapDetails = false;
 	const zapierDetails = applyFilters(
 		'srfm.global_settings.integrations.zapier',
-		showZapDetails
+		false
 	);
 
 	return (
