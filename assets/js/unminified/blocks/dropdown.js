@@ -33,14 +33,20 @@ function initializeDropdown() {
 				 * If the error container is present, assign it to the aria-describedby attribute.
 				 * This will ensure that when there is a error, it will be announced by the screen reader
 				 * when the field is in focus state.
-				 * 
+				 *
 				 * If there are selected options, announce them on field focus.
 				 */
 				onFocus() {
 					if ( errorContainerID ) {
-						tomInputInstance.control_input.setAttribute( 'aria-describedby', errorContainerID );
+						tomInputInstance.control_input.setAttribute(
+							'aria-describedby',
+							errorContainerID
+						);
 					}
-					if ( tomInputInstance.hasOptions && tomInputInstance.items ) {
+					if (
+						tomInputInstance.hasOptions &&
+						tomInputInstance.items
+					) {
 						wp.a11y.speak( tomInputInstance.items.toString() );
 					}
 				},
@@ -89,12 +95,15 @@ function initializeDropdown() {
 				 * When dropdown is opened, set the role for the options to `menuitem`
 				 * for enhanced accessibility experience by proper announcement of the
 				 * dropdown options.
-				 * 
+				 *
 				 * Default role `option` is added to the options which was causing issues
 				 * with the announcement.
 				 */
 				onDropdownOpen() {
-					const options = tomInputInstance.dropdown_content.querySelectorAll( '.option' );
+					const options =
+						tomInputInstance.dropdown_content.querySelectorAll(
+							'.option'
+						);
 					options.forEach( ( option ) => {
 						if ( option.getAttribute( 'role' ) === 'option' ) {
 							option.setAttribute( 'role', 'menuitem' );
@@ -118,21 +127,30 @@ function initializeDropdown() {
 			/**
 			 * `keydown` & `click` event listeners to open the dropdown menu programmatically
 			 * since we set the `openOnFocus` option to false for the dropdown.
-			 * 
+			 *
 			 * `keydown` event listener - When user presses Space key then open the dropdown menu if
 			 * it is not active.
-			 * 
+			 *
 			 * `click` event listener - When the user clicks on the input, open the dropdown menu if
 			 * it is not active.
 			 */
 			tomInputInstance.control.addEventListener( 'keydown', ( e ) => {
-				if ( e.key === ' ' && ! tomInputInstance.wrapper.classList.contains( 'dropdown-active' ) ) {
+				if (
+					e.key === ' ' &&
+					! tomInputInstance.wrapper.classList.contains(
+						'dropdown-active'
+					)
+				) {
 					e.preventDefault();
 					tomInputInstance.open();
 				}
 			} );
 			tomInputInstance.control.addEventListener( 'click', () => {
-				if ( ! tomInputInstance.wrapper.classList.contains( 'dropdown-active' ) ) {
+				if (
+					! tomInputInstance.wrapper.classList.contains(
+						'dropdown-active'
+					)
+				) {
 					tomInputInstance.open();
 				}
 			} );
