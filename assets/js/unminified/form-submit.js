@@ -110,7 +110,7 @@ document.addEventListener( 'DOMContentLoaded', function () {
 } );
 
 async function submitFormData( form ) {
-	const site_url = srfm_submit.site_url;
+	const rest_url = srfm_submit.rest_url;
 
 	const formData = new FormData( form );
 	const filteredFormData = new FormData();
@@ -140,7 +140,7 @@ async function submitFormData( form ) {
 		filteredFormData.append( key, value );
 	}
 
-	return await fetch( `${ site_url }/wp-json/sureforms/v1/submit-form`, {
+	return await fetch( `${ rest_url }/v1/submit-form`, {
 		method: 'POST',
 		headers: {
 			'X-WP-Nonce': srfm_submit.nonce,
@@ -158,12 +158,12 @@ async function submitFormData( form ) {
 }
 
 async function afterSubmit( formStatus ) {
-	const site_url = window.srfm_submit.site_url;
+	const rest_url = window.srfm_submit.rest_url;
 	const submissionId = formStatus.data.submission_id;
 
 	try {
 		const response = await fetch(
-			`${ site_url }/wp-json/sureforms/v1/after-submission/${ submissionId }`,
+			`${ rest_url }/v1/after-submission/${ submissionId }`,
 			{
 				headers: {
 					'X-WP-Nonce': window.srfm_submit.nonce,
