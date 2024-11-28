@@ -637,10 +637,9 @@ class Form_Submit {
 		$email_body     = $smart_tags->process_smart_tags( $item['email_body'], $submission_data, $form_data );
 		$email_template = new Email_Template();
 		$message        = $email_template->render( $submission_data, $email_body );
-		$headers        = "
-		From: {$from}\r\n" .
-		'X-Mailer: PHP/' . phpversion() . "\r\n" .
-		"Content-Type: text/html; charset=utf-8\r\n";
+		$headers        = "From: {$from}\r\n";
+		$headers       .= 'X-Mailer: PHP/' . phpversion() . "\r\n";
+		$headers       .= "Content-Type: text/html; charset=utf-8\r\n";
 		if ( isset( $item['email_reply_to'] ) && ! empty( $item['email_reply_to'] ) ) {
 			$headers .= 'Reply-To:' . $smart_tags->process_smart_tags( $item['email_reply_to'], $submission_data ) . "\r\n";
 		} else {
