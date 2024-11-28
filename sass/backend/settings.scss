@@ -41,6 +41,11 @@ $background_color: #f1f5f9;
 		top: 135px !important;
 		font-size: 0.7em;
 	}
+
+	// counter css for the margin added by zip-images library when UAGB or Starter Templates plugin is active.
+	.components-base-control__field {
+		margin-top: 0;
+	}
 }
 
 .srfm-settings-wrap {
