@@ -258,7 +258,7 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 * New: Added feature to edit entry.
 * New: Added option to resend email notifications for single and bulk entries.
 * New: Introduced entry notes.
-= 1.1.0 - 27th November 2024 =
+= 1.1.0 - 28th November 2024 =
 * New: Support for generating multiple choice fields with icons while creating forms with AI.
 * Improvement: Added search option for phone number country code list.
 * Improvement: Accessibility fixes for using the Dropdown field's clear button with keyboard.
