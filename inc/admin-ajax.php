@@ -512,8 +512,8 @@ class Admin_Ajax {
 	/**
 	 * Returns resend email notification alert content.
 	 *
-	 * @param string  $message Message to print in the alert box.
-	 * @param bool $is_success Whether or not is resend email succeed.
+	 * @param string $message Message to print in the alert box.
+	 * @param bool   $is_success Whether or not is resend email succeed.
 	 * @return string Email notification alert box html content with message.
 	 */
 	protected function resend_email_notifications_alert( $message, $is_success = true ) {
