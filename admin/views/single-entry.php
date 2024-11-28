@@ -10,7 +10,7 @@ namespace SRFM\Admin\Views;
 
 use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Helper;
-use SRFM\Admin\Views\Entries_List_Table;
+
 /**
  * Exit if accessed directly.
  */
