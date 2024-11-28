@@ -244,24 +244,6 @@ async function handleFormSubmission(
 	try {
 		loader.classList.add( 'srfm-active' );
 
-		// Create and dispatch a custom event
-		const event = new CustomEvent( 'srfm_on_trigger_form_submission', {
-			cancelable: true,
-			detail: {
-				form,
-				loader,
-				formId,
-				submitType,
-				successElement,
-				successContainer,
-			},
-		} );
-
-		if ( ! document.dispatchEvent( event ) ) {
-			loader.classList.remove( 'srfm-active' );
-			return; // Stop further execution if event.preventDefault() was called.
-		}
-
 		const isValidate = await fieldValidation(
 			formId,
 			ajaxUrl,
@@ -278,6 +260,24 @@ async function handleFormSubmission(
 			// Handle scroll and focus on error field when validation fails.
 			handleScrollAndFocusOnError( isValidate );
 			return;
+		}
+
+		// Create and dispatch a custom event
+		const event = new CustomEvent( 'srfm_on_trigger_form_submission', {
+			cancelable: true,
+			detail: {
+				form,
+				loader,
+				formId,
+				submitType,
+				successElement,
+				successContainer,
+			},
+		} );
+
+		if ( ! document.dispatchEvent( event ) ) {
+			loader.classList.remove( 'srfm-active' );
+			return; // Stop further execution if event.preventDefault() was called.
 		}
 
 		const formStatus = await submitFormData( form );
