@@ -16,6 +16,8 @@ $srfm_custom_post_id = absint( get_the_ID() );
 $srfm_form_preview   = isset( $_GET['form_preview'] ) ? boolval( sanitize_text_field( wp_unslash( $_GET['form_preview'] ) ) ) : false;  // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 $srfm_live_mode_data = Helper::get_instant_form_live_data();
 
+$srfm_editing_entry_id = Helper::get_current_editing_entry_id();
+
 $instant_form_settings         = ! empty( $srfm_live_mode_data ) ? $srfm_live_mode_data : Helper::get_array_value( Helper::get_post_meta( $srfm_custom_post_id, '_srfm_instant_form_settings' ) );
 $site_logo                     = $instant_form_settings['site_logo'];
 $bg_type                       = $instant_form_settings['bg_type'];
@@ -152,7 +154,11 @@ if ( $use_banner_as_page_background ) {
 					<?php
 				}
 
-				if ( empty( $enable_instant_form ) ) {
+				if ( $srfm_editing_entry_id > 0 ) {
+					?>
+					<div class="srfm-form-status-badge"><?php printf( __( 'Editing Entry %s', 'sureforms' ), '#' . $srfm_editing_entry_id ); ?></div>
+					<?php
+				} elseif ( empty( $enable_instant_form ) ) {
 					?>
 					<div class="srfm-form-status-badge"><?php esc_html_e( 'Instant Form Disabled', 'sureforms' ); ?></div>
 					<?php
