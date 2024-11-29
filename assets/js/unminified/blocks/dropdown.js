@@ -50,7 +50,7 @@ function initializeDropdown() {
 					handleInputState( element );
 					this.setTextboxValue( '' ); // Clear the dropdown search input.
 					this.lastQuery = null; // Clears the internal search query.
-					this.refreshOptions( false ); // Removes the highlight from options based on the search.
+					this.refreshOptions( false ); // Removes the highlight from options based on the search without a full reload.
 				},
 				onItemRemove() {
 					handleInputState( element );
