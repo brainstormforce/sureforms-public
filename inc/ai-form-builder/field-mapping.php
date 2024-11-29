@@ -101,15 +101,48 @@ class Field_Mapping {
 					! empty( $question['fieldOptions'][0]['label'] )
 					) {
 						$merged_attributes['options'] = $question['fieldOptions'];
+
+						// remove icon from options for the dropdown field.
+						foreach ( $merged_attributes['options'] as $key => $option ) {
+							if ( ! empty( $merged_attributes['options'][ $key ]['icon'] ) ) {
+								$merged_attributes['options'][ $key ]['icon'] = '';
+							}
+						}
 					}
 					if ( 'multi-choice' === $question['fieldType'] ) {
-						if ( ! empty( $question['fieldOptions'] ) && is_array( $question['fieldOptions'] )
-						&& ! empty( $question['fieldOptions'][0]['optionTitle'] )
-						) {
+
+						// Remove duplicate icons and clear icons if all are the same.
+						$icons        = array_column( $question['fieldOptions'], 'icon' );
+						$options      = array_column( $question['fieldOptions'], 'optionTitle' );
+						$unique_icons = array_unique( $icons );
+						if ( count( $unique_icons ) === 1 || count( $options ) !== count( $icons ) ) {
+							foreach ( $question['fieldOptions'] as &$option ) {
+								$option['icon'] = '';
+							}
+						}
+
+						// Set options if they are valid.
+						if ( ! empty( $question['fieldOptions'][0]['optionTitle'] ) ) {
 							$merged_attributes['options'] = $question['fieldOptions'];
 						}
-						if ( ! empty( $question['singleSelection'] ) ) {
+
+						// Determine vertical layout based on icons.
+						if ( ! empty( $merged_attributes['options'] ) ) {
+							$merged_attributes['verticalLayout'] = array_reduce(
+								$merged_attributes['options'],
+								static fn( $carry, $option ) => $carry && ! empty( $option['icon'] ),
+								true
+							);
+						}
+
+						// Set single selection if provided.
+						if ( isset( $question['singleSelection'] ) ) {
 							$merged_attributes['singleSelection'] = filter_var( $question['singleSelection'], FILTER_VALIDATE_BOOLEAN );
+						}
+
+						// Set choiceWidth for options divisible by 3.
+						if ( ! empty( $merged_attributes['options'] ) && count( $merged_attributes['options'] ) % 3 === 0 ) {
+							$merged_attributes['choiceWidth'] = 33.33;
 						}
 					}
 					if ( 'phone' === $question['fieldType'] ) {
