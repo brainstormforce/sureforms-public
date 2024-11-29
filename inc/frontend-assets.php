@@ -106,7 +106,7 @@ class Frontend_Assets {
 				wp_register_script(
 					SRFM_SLUG . '-' . $handle,
 					SRFM_URL . 'assets/build/' . $name . '.js',
-					[],
+					[ 'wp-api-fetch' ],
 					SRFM_VER,
 					true
 				);
@@ -125,7 +125,7 @@ class Frontend_Assets {
 			SRFM_SLUG . '-form-submit',
 			SRFM_SLUG . '_submit',
 			[
-				'rest_url' => rest_url( 'sureforms' ),
+				'site_url' => site_url(),
 				'nonce'    => wp_create_nonce( 'wp_rest' ),
 				'messages' => Translatable::get_frontend_validation_messages(),
 				'is_rtl'   => $is_rtl,
