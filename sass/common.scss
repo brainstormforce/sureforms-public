@@ -243,10 +243,8 @@ button.srfm-toolbar-width-setting-button {
 			.srfm-input-checkbox,
 			.srfm-input-gdpr {
 				position: absolute;
-				height: auto !important; // Setting height to auto with !important to override the existing height being set for the input in checkbox stylings.
-				width: auto;
-				margin: 0;
-				left: 0; // Keeping left: 0 to override the screen-reader-text class so the focus border does not appear misaligned.
+				left: 0;
+				top: 0;
 
 				&:checked {
 					+ {
