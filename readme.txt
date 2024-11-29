@@ -255,9 +255,9 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 
 == Changelog ==
 = x.x.x =
-* Fix: Resolved an issue where the MAC screen reader stopped reading form fields, pausing at the Dropdown field.
 * Improvement: Improved screen reader announcement for the validation messages.
 * Improvement: Improved screen reader accessibility to announce the block labels and help text.
+* Fix: Resolved an issue where the MAC screen reader stopped reading form fields, pausing at the Dropdown field.
 = 1.1.0 - 28th November 2024 =
 * New: Support for generating multiple choice fields with icons while creating forms with AI.
 * Improvement: Added search option for phone number country code list.
