@@ -10,7 +10,7 @@ namespace SRFM\Admin\Views;
 
 use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Helper;
-use SRFM\Admin\Views\Entries_List_Table;
+
 /**
  * Exit if accessed directly.
  */
@@ -77,11 +77,11 @@ class Single_Entry {
 			<?php
 			if ( $this->is_edit_mode() ) {
 				$instant_form_edit_mode_url = add_query_arg(
-					array(
+					[
 						'nonce'      => wp_create_nonce( 'srfm-edit-entry' ),
 						'entry_id'   => $this->entry_id,
 						'edit_entry' => true,
-					),
+					],
 					get_the_permalink( $this->entry['form_id'] )
 				);
 				?>
