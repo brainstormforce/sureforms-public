@@ -146,6 +146,19 @@ function onSuccess( response ) {
  */
 ( function () {
 	/**
+	 * Returns translation ready localized string as per the the key.
+	 *
+	 * @param {string} key Translation key
+	 * @since 1.1.0
+	 */
+	function getTranslatableString( key ) {
+		return window?.srfm_submit?.messages?.[ key ] || '';
+	}
+
+	// Add 'getTranslatableString' to global scope under srfm object.
+	addGlobalSrfmObject( 'getTranslatableString', getTranslatableString );
+
+	/**
 	 * Retrieves the computed background color of a given HTML element.
 	 *
 	 * This function uses the `window.getComputedStyle` method to obtain the computed style of the specified
