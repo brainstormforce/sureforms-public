@@ -66,14 +66,14 @@
 		border-radius: var( --srfm-input-field-border-radius );
 		border: 1px solid var( --srfm-dropdown-menu-border-color ) !important;
 		.iti__search-input {
-			color: var( --srfm-dropdown-option-text-color );
+			color: var( --srfm-color-input-text );
 			background-color: var( --srfm-expandable-menu-background );
-			border: none;
-			border-bottom: 0.5px solid var( --srfm-dropdown-menu-border-color );
+			border: none; // Remove the dotted border from the search input.
+			border-bottom: 0.5px solid var( --srfm-dropdown-menu-border-color ); // Add bottom border for the search input.
 			padding: var( --srfm-input-field-padding );
 			outline: none;
 			font-size: var( --srfm-dropdown-font-size ) !important;
-			border-radius: var( --srfm-input-field-border-radius ) var( --srfm-input-field-border-radius ) 0 0;
+			border-radius: var( --srfm-input-field-border-radius ) var( --srfm-input-field-border-radius ) 0 0; // Keep the bottom border as 0.
 		}
 	}
 	.iti__country-list {
