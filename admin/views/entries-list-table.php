@@ -540,7 +540,7 @@ class Entries_List_Table extends \WP_List_Table {
 	 * @return string
 	 */
 	protected function column_first_field( $item ) {
-		$excluded_fields = [ 'srfm-honeypot-field', 'g-recaptcha-response', 'srfm-sender-email-field', 'form-id' ];
+		$excluded_fields = Helper::get_excluded_fields();
 		$form_data       = array_diff_key( $item['form_data'], array_flip( $excluded_fields ) );
 		$first_field     = reset( $form_data );
 
