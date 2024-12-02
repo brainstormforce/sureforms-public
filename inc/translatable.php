@@ -50,6 +50,12 @@ class Translatable {
 
 			/* translators: %s represents the maximum number of selections allowed */
 			'dropdown_max_selections' => __( 'Maximum %s selections are allowed', 'sureforms' ),
+
+			/* translators: %s represents the minimum number of characters required */
+			'multi_choice_min_selections' => __( 'Minimum %s selections are required', 'sureforms' ),
+
+			/* translators: %s represents the maximum number of characters allowed */
+			'multi_choice_max_selections' => __( 'Maximum %s selections are allowed', 'sureforms' ),
 		];
 
 		return apply_filters( 'srfm_frontend_validation_messages', $translatable_array );
