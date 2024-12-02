@@ -254,6 +254,8 @@ Yes! You can certainly use SureForms on yours as well as your client’s website
 When you use SureForms, you get an easy-to-use AI-powered form builder that can be used to build your forms fast.
 
 == Changelog ==
+= x.x.x = 
+* Fix: Resolved sprintf error by adding separate validation for multichoice fields to handle minimum and maximum selections.
 = 1.1.0 - 28th November 2024 =
 * New: Support for generating multiple choice fields with icons while creating forms with AI.
 * Improvement: Added search option for phone number country code list.
