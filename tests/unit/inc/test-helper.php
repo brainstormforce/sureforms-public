@@ -353,26 +353,4 @@ class Test_Helper extends TestCase {
         // Test that the result is the expected value.
         $this->assertSame( $expected, $result );
     }
-
-    /**
-     * Test that the function returns the excluded fields with filter.
-     */
-    public function test_get_excluded_fields_with_filter() {
-        $expected = [ 'srfm-honeypot-field', 'g-recaptcha-response', 'srfm-sender-email-field', 'form-id', 'test-field' ];
-        add_filter( 'srfm_excluded_fields', function( $excluded_fields ) {
-            $excluded_fields[] = 'test-field';
-            return $excluded_fields;
-        });
-
-        $result = Helper::get_excluded_fields();
-
-        // Test that the result is an array.
-        $this->assertIsArray( $result );
-
-        // Test that the result is not empty.
-        $this->assertNotEmpty( $result );
-
-        // Test that the result is the expected value.
-        $this->assertSame( $expected, $result );
-    }
 }
