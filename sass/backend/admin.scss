@@ -308,3 +308,11 @@ $placeholder_color: #9ca3af;
 		box-sizing: border-box;
 	}
 }
+
+// css for whats-new
+.srfm_whats_new_flyout {
+	.whats-new-rss-flyout-contents {
+		top: 32px !important;
+		height: calc( 100% - 32px );
+	}
+}
