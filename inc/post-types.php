@@ -773,6 +773,11 @@ class Post_Types {
 			return;
 		}
 
+		if ( Helper::get_current_editing_entry_id() > 0 ) {
+			// Override if we are currently editing entry.
+			return;
+		}
+
 		$form_preview = '';
 
 		$form_preview_attr = isset( $_GET['preview'] ) ? sanitize_text_field( wp_unslash( $_GET['preview'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verification is not needed here.

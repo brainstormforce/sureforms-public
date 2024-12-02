@@ -72,33 +72,78 @@ class Single_Entry {
 		$entry_logs      = $this->entry['logs'];
 		?>
 		<div class="wrap">
-			<h1 class="wp-heading-inline"><?php esc_html_e( 'View Entry', 'sureforms' ); ?></h1>
-			<form method="post" action="<?php echo esc_url( admin_url( "admin.php?page=sureforms_entries&entry_id={$this->entry_id}&view=details" ) ); ?>"> <!-- check for nonce, referrer, etc. -->
-				<div id="poststuff">
-					<div id="post-body" class="metabox-holder columns-2">
-						<div id="post-body-content">
-							<div id="titlediv">
-								<div id="titlewrap">
-									<label class="screen-reader-text" id="title-prompt-text" for="title"><?php esc_html_e( 'Add title', 'sureforms' ); ?></label>
-									<input type="text" name="post_title" size="30" value="Entry #<?php echo esc_attr( $this->entry_id ); ?>" id="title" spellcheck="true" autocomplete="off" readonly>
-								</div>
-							</div><!-- /titlediv -->
-						</div><!-- /post-body-content -->
-						<div id="postbox-container-1" class="postbox-container">
-							<?php $this->render_entry_notes(); ?>
-							<?php $this->render_submission_info( $form_name, $entry_status, $submitted_on ); ?>
-							<?php Entries_List_Table::get_instance()->display_bulk_resend_notification_button( $this->entry['form_id'], [ $this->entry_id ] ); ?>
-						</div>
-						<div id="postbox-container-2" class="postbox-container">
-							<?php $this->render_form_data( $meta_data, $excluded_fields ); ?>
-						</div>
-						<div id="postbox-container-3" class="postbox-container">
-							<?php $this->render_entry_logs( $entry_logs ); ?>
-						</div>
-					</div><!-- /post-body -->
-					<br class="clear">
-				</div><!-- /poststuff -->
-			</form>
+			<h1 class="wp-heading-inline">Entry #<?php echo esc_attr( $this->entry_id ); ?></h1>
+
+			<?php
+			if ( $this->is_edit_mode() ) {
+				$instant_form_edit_mode_url = add_query_arg(
+					[
+						'nonce'      => wp_create_nonce( 'srfm-edit-entry' ),
+						'entry_id'   => $this->entry_id,
+						'edit_entry' => true,
+					],
+					get_the_permalink( $this->entry['form_id'] )
+				);
+				?>
+				<div id="poststuff" class="srfm-entry-edit-iframe-container">
+					<iframe id="srfm-entry-edit-iframe" style="width:100%;height:100vh;border:1px solid;" src="<?php echo esc_url( $instant_form_edit_mode_url ); ?>"></iframe>
+				</div>
+				<script>
+					const formData = <?php echo wp_json_encode( $meta_data ); ?>;
+					const iframe = document.getElementById('srfm-entry-edit-iframe');
+					iframe.addEventListener("load", function() {
+						const iframeDocument = iframe.contentWindow.document;
+
+						Object.keys(formData).map(function(fieldName) {
+							if ( 'undefined' === typeof iframeDocument.getElementsByName(fieldName)[0] ) {
+								return;
+							}
+
+							if ( fieldName.indexOf('srfm-textarea') !== -1 ) {
+								iframeDocument.getElementsByName(fieldName)[0].innerHTML = formData[fieldName];
+							} else {
+								iframeDocument.getElementsByName(fieldName)[0].setAttribute('value', formData[fieldName]);
+							}
+						});
+
+						iframeDocument.querySelector('form')
+						.innerHTML += '<input type="hidden" name="srfm-editing-entry" value="<?php echo esc_attr( $this->entry_id ); ?>">'
+
+						iframeDocument.addEventListener('srfm_on_show_success_message', (e) => {
+							// Get the current URL
+							const url = new URL(window.location.href);
+
+							// Remove the "edit" parameter
+							url.searchParams.delete('edit');
+
+							window.location.href = url;
+						});
+					});
+				</script>
+				<?php
+			} else {
+				?>
+				<form method="post" action="<?php echo esc_url( admin_url( "admin.php?page=sureforms_entries&entry_id={$this->entry_id}&view=details" ) ); ?>"> <!-- check for nonce, referrer, etc. -->
+					<div id="poststuff">
+						<div id="post-body" class="metabox-holder columns-2">
+							<div id="postbox-container-1" class="postbox-container">
+								<?php $this->render_entry_notes(); ?>
+								<?php $this->render_submission_info( $form_name, $entry_status, $submitted_on ); ?>
+								<?php Entries_List_Table::get_instance()->display_bulk_resend_notification_button( $this->entry['form_id'], [ $this->entry_id ] ); ?>
+							</div>
+							<div id="postbox-container-2" class="postbox-container">
+								<?php $this->render_form_data( $meta_data, $excluded_fields ); ?>
+							</div>
+							<div id="postbox-container-3" class="postbox-container">
+								<?php $this->render_entry_logs( $entry_logs ); ?>
+							</div>
+						</div><!-- /post-body -->
+						<br class="clear">
+					</div><!-- /poststuff -->
+				</form>
+				<?php
+			}
+			?>
 		</div>
 		<?php
 	}
@@ -240,6 +285,10 @@ class Single_Entry {
 		<?php
 	}
 
+	private function is_edit_mode() {
+		return ! empty( $_GET['edit'] ) && sanitize_text_field( wp_unslash( $_GET['edit'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verification is not applicable here due to URL restriction.
+	}
+
 	/**
 	 * Render the form data for a specific entry.
 	 *
@@ -249,15 +298,13 @@ class Single_Entry {
 	 * @return void
 	 */
 	private function render_form_data( $meta_data, $excluded_fields ) {
-		$is_edit_mode = ! empty( $_GET['edit'] ) && sanitize_text_field( wp_unslash( $_GET['edit'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verification is not applicable here due to URL restriction.
-
 		?>
 		<div id="sureform_entry_meta" class="postbox">
 			<div class="postbox-header">
 				<!-- Removed "hndle ui-sortable-handle" class from h2 to remove the draggable stylings. -->
 				<h2><?php esc_html_e( 'Form Data', 'sureforms' ); ?></h2>
 				<?php
-				if ( $is_edit_mode ) {
+				if ( $this->is_edit_mode() ) {
 					wp_nonce_field( 'srfm-edit-entry-' . $this->entry_id, 'srfm-edit-entry-nonce' );
 					?>
 					<input type="hidden" name="entry_id" value="<?php echo esc_attr( $this->entry_id ); ?>">

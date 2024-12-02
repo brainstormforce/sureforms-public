@@ -391,6 +391,24 @@ class Helper {
 	}
 
 	/**
+	 * Returns Entry ID of current editing entry.
+	 *
+	 * @return int
+	 */
+	public static function get_current_editing_entry_id() {
+		if (
+			! empty( $_GET['nonce'] ) &&
+			wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['nonce'] ) ), 'srfm-edit-entry' ) &&
+			! empty( $_GET['edit_entry'] ) &&
+			! empty( $_GET['entry_id'] )
+		) {
+			return absint( wp_unslash( $_GET['entry_id'] ) );
+		}
+
+		return 0;
+	}
+
+	/**
 	 * Default dynamic block value.
 	 *
 	 * @since 0.0.1
