@@ -288,6 +288,7 @@ class Single_Entry {
 	/**
 	 * Private method to determine if current mode is edit mode.
 	 *
+	 * @since x.x.x
 	 * @return bool
 	 */
 	private function is_edit_mode() {
