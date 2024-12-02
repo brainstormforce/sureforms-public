@@ -177,6 +177,8 @@ class Global_Settings {
 			'srfm_input_max_value',
 			'srfm_dropdown_min_selections',
 			'srfm_dropdown_max_selections',
+			'srfm_multi_choice_min_selections',
+			'srfm_multi_choice_max_selections',
 		];
 
 		$options_names = [];

@@ -717,7 +717,7 @@ export async function fieldValidation(
 					totalCheckedInput < minSelection
 				) {
 					errorMessage.textContent = srfmSprintfString(
-						window?.srfm_submit?.messages?.min_selections,
+						window?.srfm_submit?.messages?.srfm_multi_choice_min_selections,
 						minSelection
 					);
 					errorFound = true;
@@ -728,7 +728,7 @@ export async function fieldValidation(
 					totalCheckedInput > maxSelection
 				) {
 					errorMessage.textContent = srfmSprintfString(
-						window?.srfm_submit?.messages?.max_selections,
+						window?.srfm_submit?.messages?.srfm_multi_choice_max_selections,
 						maxSelection
 					);
 					errorFound = true;

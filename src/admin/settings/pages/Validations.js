@@ -35,6 +35,8 @@ const ValidationsPage = ( {
 				{ key: 'srfm_input_max_value', label: __( 'Input Max Value Error Message', 'sureforms' ) },
 				{ key: 'srfm_dropdown_min_selections', label: __( 'Dropdown Min Selections Error Message', 'sureforms' ) },
 				{ key: 'srfm_dropdown_max_selections', label: __( 'Dropdown Max Selections Error Message', 'sureforms' ) },
+				{ key: 'srfm_multi_choice_min_selections', label: __( 'Multi Choice Min Selections Error Message', 'sureforms' ) },
+				{ key: 'srfm_multi_choice_max_selections', label: __( 'Multi Choice Max Selections Error Message', 'sureforms' ) },
 			]
 		);
 
