@@ -14,6 +14,26 @@ use SRFM\Inc\Helper;
  *
  */
 class Test_Helper extends TestCase {
+    /**
+     * Set up the test environment.
+     *
+     * This method is called before each test. It backs up the original $_REQUEST superglobal.
+     */
+    protected function setUp(): void {
+        // Backup the original $_REQUEST superglobal
+        $this->originalRequest = $_REQUEST;
+    }
+
+    /**
+     * Tear down the test environment.
+     *
+     * This method is called after each test. It restores the original $_REQUEST superglobal.
+     */
+    protected function tearDown(): void {
+        // Restore the original $_REQUEST superglobal
+        $_REQUEST = $this->originalRequest;
+    }
+
 	/**
 	 * Test get_common_err_msg returns expected array structure
 	 */
@@ -88,7 +108,7 @@ class Test_Helper extends TestCase {
 		switch_to_locale($current_locale);
 	}
 
-	    /**
+	/**
      * Test scalar values are converted to strings
      *
      * @dataProvider provideScalarValues
@@ -335,5 +355,90 @@ class Test_Helper extends TestCase {
             'array' => [['test']],
             'object' => [new stdClass()],
         ];
+    }
+
+    /**
+     * Test validate_request_context with a single key-value pair that is valid.
+     *
+     * This test sets $_REQUEST to contain a single key-value pair and checks if
+     * validate_request_context returns true when the key-value pair matches.
+     */
+    public function test_validate_request_context_single_key_value_pair_valid() {
+        $_REQUEST = [
+            'post_type' => 'post'
+        ];
+
+        $result = Helper::validate_request_context('post', 'post_type');
+        $this->assertTrue($result);
+    }
+
+    /**
+     * Test validate_request_context with a single key-value pair that is invalid.
+     *
+     * This test sets $_REQUEST to contain a single key-value pair and checks if
+     * validate_request_context returns false when the key-value pair does not match.
+     */
+    public function test_validate_request_context_single_key_value_pair_invalid() {
+        $_REQUEST = [
+            'post_type' => 'page'
+        ];
+
+        $result = Helper::validate_request_context('post', 'post_type');
+        $this->assertFalse($result);
+    }
+
+    /**
+     * Test validate_request_context with multiple conditions that are valid.
+     *
+     * This test sets $_REQUEST to contain multiple key-value pairs and checks if
+     * validate_request_context returns true when all conditions match.
+     */
+    public function test_validate_request_context_multiple_conditions_valid() {
+        $_REQUEST = [
+            'post_type' => 'post',
+            'status' => 'publish'
+        ];
+
+        $conditions = [
+            'post_type' => 'post',
+            'status' => 'publish'
+        ];
+
+        $result = Helper::validate_request_context('', '', $conditions);
+        $this->assertTrue($result);
+    }
+
+    /**
+     * Test validate_request_context with multiple conditions that are invalid.
+     *
+     * This test sets $_REQUEST to contain multiple key-value pairs and checks if
+     * validate_request_context returns false when not all conditions match.
+     */
+    public function test_validate_request_context_multiple_conditions_invalid() {
+        $_REQUEST = [
+            'post_type' => 'post',
+            'status' => 'draft'
+        ];
+
+        $conditions = [
+            'post_type' => 'post',
+            'status' => 'publish'
+        ];
+
+        $result = Helper::validate_request_context('', '', $conditions);
+        $this->assertFalse($result);
+    }
+
+    /**
+     * Test validate_request_context with empty conditions.
+     *
+     * This test sets $_REQUEST to be empty and checks if validate_request_context
+     * returns false when there are no conditions to match.
+     */
+    public function test_validate_request_context_empty_conditions() {
+        $_REQUEST = [];
+
+        $result = Helper::validate_request_context('post', 'post_type');
+        $this->assertFalse($result);
     }
 }
