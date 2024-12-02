@@ -285,6 +285,12 @@ class Single_Entry {
 		<?php
 	}
 
+	/**
+	 * Private method to determine if current mode is edit mode.
+	 *
+	 * @since x.x.x
+	 * @return bool
+	 */
 	private function is_edit_mode() {
 		return ! empty( $_GET['edit'] ) && sanitize_text_field( wp_unslash( $_GET['edit'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verification is not applicable here due to URL restriction.
 	}

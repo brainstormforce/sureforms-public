@@ -156,7 +156,12 @@ if ( $use_banner_as_page_background ) {
 
 				if ( $srfm_editing_entry_id > 0 ) {
 					?>
-					<div class="srfm-form-status-badge"><?php printf( __( 'Editing Entry %s', 'sureforms' ), '#' . $srfm_editing_entry_id ); ?></div>
+					<div class="srfm-form-status-badge">
+						<?php
+						/* Translators: %s is the editing entry ID. */
+						printf( esc_html__( 'Editing Entry %s', 'sureforms' ), '#' . esc_html( $srfm_editing_entry_id ) );
+						?>
+					</div>
 					<?php
 				} elseif ( empty( $enable_instant_form ) ) {
 					?>
