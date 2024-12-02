@@ -61,7 +61,7 @@ class Updater_Callbacks {
 	 * @since x.x.x
 	 * @return void
 	 */
-	public static function manage_empty_default_dynamic_options_1_1_1() {
+	public static function manage_empty_global_dynamic_options() {
 		$previous_options = get_option( 'srfm_default_dynamic_block_option' );
 		$new_options      = Translatable::dynamic_messages();
 
