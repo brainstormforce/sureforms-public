@@ -14,26 +14,6 @@ use SRFM\Inc\Helper;
  *
  */
 class Test_Helper extends TestCase {
-    /**
-     * Set up the test environment.
-     *
-     * This method is called before each test. It backs up the original $_REQUEST superglobal.
-     */
-    protected function setUp(): void {
-        // Backup the original $_REQUEST superglobal
-        $this->originalRequest = $_REQUEST;
-    }
-
-    /**
-     * Tear down the test environment.
-     *
-     * This method is called after each test. It restores the original $_REQUEST superglobal.
-     */
-    protected function tearDown(): void {
-        // Restore the original $_REQUEST superglobal
-        $_REQUEST = $this->originalRequest;
-    }
-
 	/**
 	 * Test get_common_err_msg returns expected array structure
 	 */
