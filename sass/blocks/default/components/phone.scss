@@ -1,18 +1,6 @@
 .srfm-form-container {
 	.srfm-form {
 		.srfm-phone-block {
-			&.srfm-error {
-				.srfm-error-message {
-					/**
-					 * When the unique validation is triggered and resolved,
-					 * triggering the invalid validation and then the required validation
-					 * will not display the error message due to inline display: none.
-					 *
-					 * Added the !important attribute to override the inline style.
-					 */
-					display: block !important;
-				}
-			}
 			.iti {
 				width: 100%;
 

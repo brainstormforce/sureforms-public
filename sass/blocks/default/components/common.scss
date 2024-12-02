@@ -61,7 +61,14 @@
 				}
 
 				.srfm-error-message {
-					display: block;
+					/**
+					 * When the unique validation is turned on for a field,
+					 * if the value is unique, it will set display: none to the error message.
+					 * due to which the required and invalid validation error message will not be visible.
+					 *
+					 * Added the !important attribute to override the inline style.
+					 */
+					display: block !important;
 				}
 			}
 			.srfm-input-common {
