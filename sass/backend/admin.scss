@@ -314,5 +314,15 @@ $placeholder_color: #9ca3af;
 	.whats-new-rss-flyout-contents {
 		top: 32px !important;
 		height: calc( 100% - 32px );
+
+		@media screen and (max-width: 782px) {
+			top: 48px !important;
+			height: calc( 100% - 48px );
+		}
+
+		@media screen and (max-width: 600px) {
+			top: 0;
+			height: 100%;
+		}
 	}
 }
