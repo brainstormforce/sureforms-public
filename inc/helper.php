@@ -998,6 +998,11 @@ class Helper {
 			return true;
 		}
 
+		// Validate $value and $key when no conditions are provided.
+		if ( empty( $key ) || empty( $value ) ) {
+			return false;
+		}
+
 		// Validate a single key-value pair when no conditions are provided.
 		return isset( $_REQUEST[ $key ] ) && $_REQUEST[ $key ] === $value; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Input is validated via strict comparison.
 	}

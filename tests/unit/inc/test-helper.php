@@ -338,87 +338,65 @@ class Test_Helper extends TestCase {
     }
 
     /**
-     * Test validate_request_context with a single key-value pair that is valid.
-     *
-     * This test sets $_REQUEST to contain a single key-value pair and checks if
-     * validate_request_context returns true when the key-value pair matches.
-     */
-    public function test_validate_request_context_single_key_value_pair_valid() {
+    * Test validate_request_context method.
+    *
+    * This method tests various scenarios for the validate_request_context function, 
+    * including single key-value pair validations and multiple condition validations. 
+    * It covers the following cases:
+    * 
+    * - A single key-value pair that matches (valid).
+    * - A single key-value pair that does not match (invalid).
+    * - Multiple conditions where all conditions match (valid).
+    * - Multiple conditions where at least one condition does not match (invalid).
+    * - Empty conditions with no matching request values.
+    * 
+    * Each case ensures that the function behaves as expected in different scenarios
+    * by asserting the returned boolean value.
+    *
+    * @return void
+    */
+    public function test_validate_request_context() {
+        // Case 1: Single key-value pair that is valid.
         $_REQUEST = [
             'post_type' => 'post'
         ];
-
         $result = Helper::validate_request_context('post', 'post_type');
-        $this->assertTrue($result);
-    }
+        $this->assertTrue($result, 'Failed: Single key-value pair valid case');
 
-    /**
-     * Test validate_request_context with a single key-value pair that is invalid.
-     *
-     * This test sets $_REQUEST to contain a single key-value pair and checks if
-     * validate_request_context returns false when the key-value pair does not match.
-     */
-    public function test_validate_request_context_single_key_value_pair_invalid() {
+        // Case 2: Single key-value pair that is invalid.
         $_REQUEST = [
             'post_type' => 'page'
         ];
-
         $result = Helper::validate_request_context('post', 'post_type');
-        $this->assertFalse($result);
-    }
+        $this->assertFalse($result, 'Failed: Single key-value pair invalid case');
 
-    /**
-     * Test validate_request_context with multiple conditions that are valid.
-     *
-     * This test sets $_REQUEST to contain multiple key-value pairs and checks if
-     * validate_request_context returns true when all conditions match.
-     */
-    public function test_validate_request_context_multiple_conditions_valid() {
+        // Case 3: Multiple conditions that are valid.
         $_REQUEST = [
             'post_type' => 'post',
             'status' => 'publish'
         ];
-
         $conditions = [
             'post_type' => 'post',
             'status' => 'publish'
         ];
-
         $result = Helper::validate_request_context('', '', $conditions);
-        $this->assertTrue($result);
-    }
+        $this->assertTrue($result, 'Failed: Multiple conditions valid case');
 
-    /**
-     * Test validate_request_context with multiple conditions that are invalid.
-     *
-     * This test sets $_REQUEST to contain multiple key-value pairs and checks if
-     * validate_request_context returns false when not all conditions match.
-     */
-    public function test_validate_request_context_multiple_conditions_invalid() {
+        // Case 4: Multiple conditions that are invalid.
         $_REQUEST = [
             'post_type' => 'post',
             'status' => 'draft'
         ];
-
         $conditions = [
             'post_type' => 'post',
             'status' => 'publish'
         ];
-
         $result = Helper::validate_request_context('', '', $conditions);
-        $this->assertFalse($result);
-    }
+        $this->assertFalse($result, 'Failed: Multiple conditions invalid case');
 
-    /**
-     * Test validate_request_context with empty conditions.
-     *
-     * This test sets $_REQUEST to be empty and checks if validate_request_context
-     * returns false when there are no conditions to match.
-     */
-    public function test_validate_request_context_empty_conditions() {
+        // Case 5: Empty conditions with no matching request values.
         $_REQUEST = [];
-
         $result = Helper::validate_request_context('post', 'post_type');
-        $this->assertFalse($result);
+        $this->assertFalse($result, 'Failed: Empty conditions case');
     }
 }
