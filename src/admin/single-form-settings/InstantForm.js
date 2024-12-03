@@ -290,11 +290,11 @@ const InstantFormComponent = () => {
 		} );
 	};
 
-	// apply filters to show/hide instant form site logo group.
-	const showInstantFormSiteLogoGroup = applyFilters( 'srfm.showInstantFormSiteLogoGroup', true );
-
-	// apply filters to show/hide instant form styling group.
-	const showInstantFormStylingGroup = applyFilters( 'srfm.showInstantFormStylingGroup', true );
+	// apply filters to show/hide instant form components.
+	const { showInstantFormSiteLogoGroup, showInstantFormStylingGroup } = applyFilters( 'srfm.instantFormComponent', {
+		showInstantFormSiteLogoGroup: true,
+		showInstantFormStylingGroup: true,
+	} );
 
 	return (
 		<>
