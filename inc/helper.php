@@ -1006,4 +1006,19 @@ class Helper {
 		// Validate a single key-value pair when no conditions are provided.
 		return isset( $_REQUEST[ $key ] ) && $_REQUEST[ $key ] === $value; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Input is validated via strict comparison.
 	}
+	
+	/**
+	 * Retrieve the list of excluded fields for form data processing.
+	 *
+	 * This method returns an array of field keys that should be excluded when
+	 * processing form data.
+	 *
+	 * @since x.x.x
+	 * @return array<string> Returns the string array of excluded fields.
+	 */
+	public static function get_excluded_fields() {
+		$excluded_fields = [ 'srfm-honeypot-field', 'g-recaptcha-response', 'srfm-sender-email-field', 'form-id' ];
+
+		return apply_filters( 'srfm_excluded_fields', $excluded_fields );
+	}
 }
