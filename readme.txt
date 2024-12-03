@@ -255,6 +255,8 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 
 == Changelog ==
 = x.x.x =
+* New: Support for icons using AI in multiple choice fields.
+* New: Added an option to export entries in CSV format.
 * Improvement: Added Whats New notifier.
 * Improvement: Updated the design of the phone field search input.
 = 1.1.0 - 28th November 2024 =

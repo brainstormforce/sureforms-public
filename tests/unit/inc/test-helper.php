@@ -14,6 +14,17 @@ use SRFM\Inc\Helper;
  *
  */
 class Test_Helper extends TestCase {
+    /**
+     * Test if get_field_label_from_key is converting field key to label properly.
+     */
+    public function test_get_field_label_from_key() {
+        $field_key = 'srfm-input-fe439fd2-lbl-RnVsbCBOYW1l-full-name';
+
+        $result = Helper::get_field_label_from_key( $field_key );
+
+        $this->assertEquals( 'Full Name', $result );
+    }
+
 	/**
 	 * Test get_common_err_msg returns expected array structure
 	 */

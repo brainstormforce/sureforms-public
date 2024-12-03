@@ -690,10 +690,8 @@ class Admin {
 	 * @return void
 	 */
 	public function handle_entry_actions() {
-		if ( isset( $_GET['entry'] ) && isset( $_GET['action'] ) ) {
-			Entries_List_Table::process_bulk_actions();
-			return;
-		}
+		Entries_List_Table::process_bulk_actions();
+
 		if ( ! isset( $_GET['page'] ) || SRFM_ENTRIES !== $_GET['page'] ) {
 			return;
 		}
