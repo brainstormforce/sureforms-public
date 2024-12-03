@@ -255,6 +255,7 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 
 == Changelog ==
 = x.x.x = 
+* Improvement: Added support to include the Entry ID in SureTrigger workflows, enhancing integration capabilities.
 * Fix: Resolved sprintf error by adding separate validation for multichoice fields to handle minimum and maximum selections.
 * Fix: Resolved an issue where the dropdown search query was not cleared after selecting an option.
 = 1.1.0 - 28th November 2024 =
