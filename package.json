@@ -1,6 +1,6 @@
 {
 	"name": "sureforms",
-	"version": "1.0.6",
+	"version": "1.1.0",
 	"description": "A simple yet powerful way to add forms to your website.",
 	"main": "index.js",
 	"scripts": {
@@ -30,8 +30,8 @@
 		"env:clean": "wp-env clean all",
 		"play:start": "wp-env start",
 		"play:stop": "wp-env stop",
-		"play:up:gh": "npm run play:start && npm run env:clean",
-		"play:up": "npm run play:start",
+		"play:up:gh": "npm run play:start -- --update && npm run env:clean && wp-env run cli bash /var/www/html/wp-content/plugins/sureforms/tests/docker/initial-setup.sh",
+		"play:up": "npm run play:start -- --update && wp-env run cli bash /var/www/html/wp-content/plugins/sureforms/tests/docker/initial-setup.sh",
 		"play:install": "npm i -D @playwright/test",
 		"play:run:interactive": "npx playwright test --headed",
 		"play:run": "npx playwright test"

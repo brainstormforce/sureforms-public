@@ -2,9 +2,9 @@
 Contributors: brainstormforce
 Tags: contact form, custom form, form builder, forms, gutenberg
 Requires at least: 6.4
-Tested up to: 6.7
+Tested up to: 6.7.1
 Requires PHP: 7.4
-Stable tag: 1.0.6
+Stable tag: 1.1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -257,6 +257,12 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 = x.x.x =
 * New: Support for icons using AI in multiple choice fields.
 * New: Added an option to export entries in CSV format.
+* Improvement: Added Whats New notifier.
+* Improvement: Updated the design of the phone field search input.
+= 1.1.0 - 28th November 2024 =
+* New: Support for generating multiple choice fields with icons while creating forms with AI.
+* Improvement: Added search option for phone number country code list.
+* Improvement: Accessibility fixes for using the Dropdown field's clear button with keyboard.
 = 1.0.6 - 20th November 2024 =
 * Fix: Fixed Webhook functionality for GDPR-enabled forms and other submission options.
 * Fix: Resolved an issue where Icon, Heading, Image, and Separator fields were not displaying on the front end.
