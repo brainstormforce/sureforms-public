@@ -35,7 +35,7 @@ function findDifferentKeyValue( obj1, obj2 ) {
 }
 
 const InstantFormComponent = () => {
-	const { _srfm_submit_button_text, _srfm_instant_form_settings } = select( editorStore ).getEditedPostAttribute( 'meta' );
+	const { _srfm_submit_button_text, _srfm_instant_form_settings, _srfm_conversational_form_settings } = select( editorStore ).getEditedPostAttribute( 'meta' );
 
 	const {
 		// Form background color / image.
@@ -163,6 +163,9 @@ const InstantFormComponent = () => {
 	/**
 	 * Manage live preview mode.
 	 */
+	const instantFormPreviewDependents = [ isLiveMode, _srfm_instant_form_settings, _srfm_conversational_form_settings ];
+	// applyFilters( 'srfm.instantFormPreviewDependents', instantFormPreviewDependents );
+	
 	useEffect( () => {
 		const contentArea = document.querySelector( '#editor .interface-interface-skeleton__editor' );
 
@@ -218,8 +221,8 @@ const InstantFormComponent = () => {
 			iframe.src = getIframePreviewURL( currentPost.link );
 		}
 
-		live_mode_prev_srfm_instant_form_settings = _srfm_instant_form_settings;
-	}, [ isLiveMode, _srfm_instant_form_settings ] );
+		live_mode_prev_srfm_instant_form_settings = {..._srfm_instant_form_settings, ..._srfm_conversational_form_settings };
+	}, [...instantFormPreviewDependents] );
 
 	const onHandleChange = ( key, value ) => {
 		if ( _srfm_instant_form_settings?.[ key ] === value ) {

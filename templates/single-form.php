@@ -133,76 +133,85 @@ if ( $use_banner_as_page_background ) {
 	</style>
 </head>
 
-<body <?php body_class( $body_classes ); ?>>
-	<?php if ( ! $srfm_form_preview ) { ?>
-		<div id="srfm-single-page-container" class="srfm-single-page-container <?php echo (bool) $single_page_form_title ? 'has-form-title' : ''; ?>">
-			<div class="srfm-page-banner">
-				<?php
-				if ( ! empty( $site_logo ) ) {
-					?>
-					<a href="<?php echo esc_url( home_url() ); ?>" aria-label="<?php esc_attr_e( 'Link to homepage', 'sureforms' ); ?>">
-						<img class="srfm-site-logo" src="<?php echo esc_url( $site_logo ); ?>" alt="<?php esc_attr_e( 'Instant form site logo', 'sureforms' ); ?>">
-					</a>
-					<?php
-				}
-
-				if ( ! empty( $single_page_form_title ) ) {
-					?>
-					<h1 class="srfm-single-banner-title"><?php echo esc_html( get_the_title() ); ?></h1>
-					<?php
-				}
-
-				if ( empty( $enable_instant_form ) ) {
-					?>
-					<div class="srfm-form-status-badge"><?php esc_html_e( 'Instant Form Disabled', 'sureforms' ); ?></div>
-					<?php
-				}
-				?>
-			</div>
-			<div class="srfm-form-wrapper">
-				<?php
-				// phpcs:ignore
-				echo Generate_Form_Markup::get_form_markup( $srfm_custom_post_id, false, '', 'sureforms_form' );
-				// phpcs:ignoreEnd
-				?>
-			</div>
-			<?php
-			if ( ! defined( 'SRFM_PRO_VER' ) ) {
-				// Display SureForms branding if SureForms Pro is not activated.
-				echo wp_kses_post(
-					sprintf(
-						'<a href="%1$s" class="srfm-branding" target="_blank">%2$s</a>',
-						esc_url( SRFM_WEBSITE ),
-						/* translators: Here %s is the plugin's name. */
-							sprintf( esc_html__( 'Crafted with ♡ %s', 'sureforms' ), 'SureForms' )
-					)
-				);
-			}
-			?>
-		</div>
-	<?php } else { ?>
-		<?php
-		show_admin_bar( false );
-		// phpcs:ignore
-		echo Generate_Form_Markup::get_form_markup( $srfm_custom_post_id, false, 'sureforms_form' );
-		// phpcs:ignoreEnd
-	}
-
-	wp_footer();
-
-	if ( $srfm_live_mode_data ) {
-		?>
-		<script>
-			(function() {
-				document.addEventListener('DOMContentLoaded', function() {
-					document.querySelector('html').style.opacity = 1;
-				});
-			}());
-		</script>
-		<?php
-	}
+	<?php 
+		// Filter to use custom body content on the Instant Form page.
+		if ( ! apply_filters( 'srfm_do_not_use_default_body', false, $srfm_custom_post_id ) ) {
 	?>
-</body>
+		<body <?php body_class( $body_classes ); ?>>
+			<?php if ( ! $srfm_form_preview ) { ?>
+				<div id="srfm-single-page-container" class="srfm-single-page-container <?php echo (bool) $single_page_form_title ? 'has-form-title' : ''; ?>">
+					<div class="srfm-page-banner">
+						<?php
+						if ( ! empty( $site_logo ) ) {
+							?>
+							<a href="<?php echo esc_url( home_url() ); ?>" aria-label="<?php esc_attr_e( 'Link to homepage', 'sureforms' ); ?>">
+								<img class="srfm-site-logo" src="<?php echo esc_url( $site_logo ); ?>" alt="<?php esc_attr_e( 'Instant form site logo', 'sureforms' ); ?>">
+							</a>
+							<?php
+						}
+
+						if ( ! empty( $single_page_form_title ) ) {
+							?>
+							<h1 class="srfm-single-banner-title"><?php echo esc_html( get_the_title() ); ?></h1>
+							<?php
+						}
+
+						if ( empty( $enable_instant_form ) ) {
+							?>
+							<div class="srfm-form-status-badge"><?php esc_html_e( 'Instant Form Disabled', 'sureforms' ); ?></div>
+							<?php
+						}
+						?>
+					</div>
+					<div class="srfm-form-wrapper">
+						<?php
+						// phpcs:ignore
+						echo Generate_Form_Markup::get_form_markup( $srfm_custom_post_id, false, '', 'sureforms_form' );
+						// phpcs:ignoreEnd
+						?>
+					</div>
+					<?php
+					if ( ! defined( 'SRFM_PRO_VER' ) ) {
+						// Display SureForms branding if SureForms Pro is not activated.
+						echo wp_kses_post(
+							sprintf(
+								'<a href="%1$s" class="srfm-branding" target="_blank">%2$s</a>',
+								esc_url( SRFM_WEBSITE ),
+								/* translators: Here %s is the plugin's name. */
+									sprintf( esc_html__( 'Crafted with ♡ %s', 'sureforms' ), 'SureForms' )
+							)
+						);
+					}
+					?>
+				</div>
+			<?php } else { ?>
+				<?php
+				show_admin_bar( false );
+				// phpcs:ignore
+				echo Generate_Form_Markup::get_form_markup( $srfm_custom_post_id, false, 'sureforms_form' );
+				// phpcs:ignoreEnd
+			}
+			wp_footer();
+			?>
+		</body>
+	<?php
+		} else {
+			// Action to load custom body content on the Instant Form page.
+			do_action( 'srfm_load_alternate_instant_form_body', $srfm_custom_post_id, $srfm_form_preview, $instant_form_settings, $body_classes, $srfm_live_mode_data );
+		} 
+
+		if ( $srfm_live_mode_data ) {
+			?>
+			<script>
+				(function() {
+					document.addEventListener('DOMContentLoaded', function() {
+						document.querySelector('html').style.opacity = 1;
+					});
+				}());
+			</script>
+			<?php
+		}
+	?>
 
 </html>
 <?php
