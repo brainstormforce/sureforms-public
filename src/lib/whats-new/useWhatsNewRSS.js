@@ -256,7 +256,7 @@ var WhatsNewRSS = /** @class */ (function () {
      * @returns {string}
      */
     WhatsNewRSS.prototype.getID = function () {
-        return this.ID;
+        return this.ID+'-sureforms';
     };
     /**
      * Checks and counts new notification for the notification badge.
