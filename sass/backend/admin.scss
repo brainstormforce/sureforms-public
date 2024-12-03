@@ -311,6 +311,7 @@ $placeholder_color: #9ca3af;
 
 // css for whats-new
 .srfm_whats_new_flyout {
+
 	.whats-new-rss-flyout-contents {
 		top: 32px !important;
 		height: calc( 100% - 32px );
@@ -323,6 +324,10 @@ $placeholder_color: #9ca3af;
 		@media screen and (max-width: 600px) {
 			top: 0;
 			height: 100%;
+		}
+
+		.whats-new-rss-flyout-inner-header{
+			padding: 18px 20px 18px 24px !important;
 		}
 	}
 }

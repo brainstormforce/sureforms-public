@@ -10,6 +10,7 @@ import Logo from '../dashboard/templates/Logo';
 import useWhatsNewRSS from '../../lib/whats-new/useWhatsNewRSS';
 
 export default () => {
+	const [ showNotifications, setShowNotifications ] = useState( false );
 	const [ isLicenseActive, setIsLicenseActive ] = useState( srfm_admin?.is_license_active || false );
 
 	const currentPage = new URL( window.location.href ).searchParams.get( 'page' );
@@ -37,7 +38,14 @@ export default () => {
 		flyout: {
 			title: __( "What's New?", 'sureforms' ),
 			className: 'srfm_whats_new_flyout',
+			onOpen: () => {
+				setShowNotifications( true );
+			},
+			onClose: () => {
+				setShowNotifications( false );
+			},
 		},
+
 	} );
 
 	return (
@@ -47,7 +55,11 @@ export default () => {
 					position: sticky;
 					background-color: rgba( 255, 255, 255, 0.75 );
 					backdrop-filter: blur( 5px );
-					top: 0;
+					top: ${ showNotifications &&
+					'toplevel_page_sureforms_menu' !==
+						srfm_admin.current_screen_id
+						? '0'
+						: '32px' };
 					width: 100%;
 					z-index: 4;
 					@media screen and ( max-width: 782px ) {
