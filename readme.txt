@@ -254,8 +254,10 @@ Yes! You can certainly use SureForms on yours as well as your client’s website
 When you use SureForms, you get an easy-to-use AI-powered form builder that can be used to build your forms fast.
 
 == Changelog ==
-= x.x.x =
-* Improvement: Updated the design of the phone field search input.
+= x.x.x = 
+* Improvement: Updated the SureForms Gutenberg block to API v3 for compatibility with the WordPress 6.7 zoom feature.
+* Fix: Resolved sprintf error by adding separate validation for multichoice fields to handle minimum and maximum selections.
+* Fix: Resolved an issue where the dropdown search query was not cleared after selecting an option.
 = 1.1.0 - 28th November 2024 =
 * New: Support for generating multiple choice fields with icons while creating forms with AI.
 * Improvement: Added search option for phone number country code list.
