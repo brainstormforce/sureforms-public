@@ -336,4 +336,21 @@ class Test_Helper extends TestCase {
             'object' => [new stdClass()],
         ];
     }
+
+    /**
+     * Test that the function returns the default excluded fields.
+     */
+    public function test_get_excluded_fields_default() {
+        $expected = [ 'srfm-honeypot-field', 'g-recaptcha-response', 'srfm-sender-email-field', 'form-id' ];
+        $result = Helper::get_excluded_fields();
+
+        // Test that the result is an array.
+        $this->assertIsArray( $result );
+
+        // Test that the result is not empty.
+        $this->assertNotEmpty( $result );
+
+        // Test that the result is the expected value.
+        $this->assertSame( $expected, $result );
+    }
 }
