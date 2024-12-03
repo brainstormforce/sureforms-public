@@ -254,7 +254,8 @@ Yes! You can certainly use SureForms on yours as well as your client’s website
 When you use SureForms, you get an easy-to-use AI-powered form builder that can be used to build your forms fast.
 
 == Changelog ==
-= x.x.x = 
+= x.x.x =
+* Fix: Entries first field was empty with Honeypot Security and improved form submission logic.
 * Fix: Resolved sprintf error by adding separate validation for multichoice fields to handle minimum and maximum selections.
 * Fix: Resolved an issue where the dropdown search query was not cleared after selecting an option.
 = 1.1.0 - 28th November 2024 =
