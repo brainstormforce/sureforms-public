@@ -777,7 +777,7 @@ class Admin {
 		if ( 'unlicensed' === $srfm_pro_license_status ) {
 			$message = '<p>' . sprintf(
 				// translators: %1$s: Opening anchor tag with URL, %2$s: Closing anchor tag, %3$s: SureForms Pro Plugin Name.
-				esc_html__( 'Please %1$sactivate%2$s your copy of %3$s to get update notifications, access to support features & other resources!', 'sureforms' ),
+				esc_html__( 'Please %1$sactivate%2$s your copy of %3$s to get new features, access support, receive update notifications, and more.', 'sureforms' ),
 				'<a href="' . esc_url( $url ) . '">',
 				'</a>',
 				'<i>' . esc_html( $pro_plugin_name ) . '</i>'
