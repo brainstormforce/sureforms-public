@@ -499,10 +499,7 @@ class Entries_List_Table extends \WP_List_Table {
 								$_value = is_array( $field_value ) ? implode( ', ', $field_value ) : $field_value;
 							}
 
-							// Add double quote at the starting and ending so that results don't alter when viewed in excel.
-							// This helps in scenerios such as phone number with country code: +977123-123
-							// If we let +977123-123 without quote eg: "+977123-123" then excel will calculate +977123-123 thinking maths expression.
-							$values[] = $_value ? '"' . trim( $_value, '"' ) . '"' : '';
+							$values[] = $_value ? $_value : '';
 						}
 
 						fputcsv( $stream, $values );
@@ -833,13 +830,18 @@ class Entries_List_Table extends \WP_List_Table {
 	/**
 	 * Define the data for the "first field" column and return the markup.
 	 *
+	 * It excludes certain fields from the form data (honeypot, reCAPTCHA, sender email,
+	 * and form ID) before determining the first non-excluded field value to display.
+	 *
 	 * @param array $item Column data.
 	 *
 	 * @since 0.0.13
 	 * @return string
 	 */
 	protected function column_first_field( $item ) {
-		$first_field = reset( $item['form_data'] );
+		$excluded_fields = Helper::get_excluded_fields();
+		$form_data       = array_diff_key( $item['form_data'], array_flip( $excluded_fields ) );
+		$first_field     = reset( $form_data );
 
 		return sprintf(
 			'<p>%s</p>',
