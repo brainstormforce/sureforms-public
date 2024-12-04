@@ -762,6 +762,11 @@ class Admin {
 		}
 
 		$srfm_pro_license_status = get_option( 'srfm_pro_license_status', '' );
+		if ( empty( $srfm_pro_license_status ) && class_exists( 'SRFM_PRO\Admin\Licensing' ) ) {
+			$srfm_pro_license_status = \SRFM_PRO\Admin\Licensing::is_license_active() ? 'licensed' : 'unlicensed';
+			update_option( 'srfm_pro_license_status', $srfm_pro_license_status );
+		}
+
 		$pro_plugin_name = defined( 'SRFM_PRO_PRODUCT' ) ? SRFM_PRO_PRODUCT : 'SureForms Pro';
 		$message         = '';
 		$url             = admin_url( 'admin.php?page=sureforms_form_settings&tab=account-settings' );
