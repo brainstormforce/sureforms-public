@@ -258,6 +258,7 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 * New: Support for icons using AI in multiple choice fields.
 * New: Added an option to export entries in CSV format.
 * Improvement: Added Whats New notifier.
+* Improvement: Improved the update notice and included license content.
 * Improvement: Updated the design of the phone field search input.
 = 1.1.0 - 28th November 2024 =
 * New: Support for generating multiple choice fields with icons while creating forms with AI.
