@@ -781,9 +781,10 @@ class Admin {
 		$url             = admin_url( 'admin.php?page=sureforms_form_settings&tab=account-settings' );
 		if ( 'unlicensed' === $this->srfm_pro_license_status ) {
 			$message = '<p>' . sprintf(
-				// translators: %1$s: Anchor tag with URL and text, %2$s: SureForms Pro Plugin Name.
-				esc_html__( 'Please %1$s your copy of %2$s to get update notifications, access to support features & other resources!', 'sureforms' ),
-				'<a href="' . esc_url( $url ) . '">' . esc_html__( 'activate', 'sureforms' ) . '</a>',
+				// translators: %1$s: Opening anchor tag with URL, %2$s: Closing anchor tag, %3$s: SureForms Pro Plugin Name.
+				esc_html__( 'Please %1$sactivate%2$s your copy of %3$s to get update notifications, access to support features & other resources!', 'sureforms' ),
+				'<a href="' . esc_url( $url ) . '">',
+				'</a>',
 				'<i>' . esc_html( $pro_plugin_name ) . '</i>'
 			) . '</p>';
 		}
