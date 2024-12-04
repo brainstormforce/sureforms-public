@@ -4,7 +4,7 @@
 **Requires at least:** 6.4  
 **Tested up to:** 6.7.1  
 **Requires PHP:** 7.4  
-**Stable tag:** 1.1.0  
+**Stable tag:** 1.1.1  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -254,7 +254,11 @@ Yes! You can certainly use SureForms on yours as well as your client’s website
 When you use SureForms, you get an easy-to-use AI-powered form builder that can be used to build your forms fast.
 
 ## Changelog ##
-### x.x.x ###
+### 1.1.1 - 4th December 2024 ###
+* New: Support for icons using AI in multiple choice fields.
+* New: Added an option to export entries in CSV format.
+* Improvement: Added Whats New notifier.
+* Improvement: Updated the design of the phone field search input.
 * Improvement: Updated the SureForms Gutenberg block to API v3 providing compatibility with the WordPress zoom feature.
 * Fix: Resolved an issue where settings pages were not visible when the plugin title was translated.
 * Fix: Form submission was failing for websites where wordpress was installed in different directory than root.
