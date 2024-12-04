@@ -435,7 +435,7 @@ class Entries extends Base {
 	 * This method retrieves the distinct form IDs that are linked to the provided entry IDs.
 	 *
 	 * @param array<int> $entry_ids An array of entry IDs to fetch associated form IDs for.
-	 * @since x.x.x
+	 * @since 1.1.1
 	 * @return array<int> An array of form IDs.
 	 */
 	public static function get_form_ids_by_entries( $entry_ids ) {
