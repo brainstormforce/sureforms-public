@@ -405,6 +405,11 @@ class Admin {
 		if ( class_exists( 'SRFM_PRO\Admin\Licensing' ) ) {
 			$license_active                         = \SRFM_PRO\Admin\Licensing::is_license_active();
 			$localization_data['is_license_active'] = $license_active;
+
+			// Backward Compatibility: Set the license status if it is not set. which will cover the case for users who already have an activated license.
+			if ( ! get_option( 'srfm_pro_license_status' ) ) {
+				update_option( 'srfm_pro_license_status', $license_active ? 'licensed' : 'unlicensed' );
+			}
 		}
 
 		$is_screen_sureforms_menu          = Helper::validate_request_context( 'sureforms_menu', 'page' );
@@ -761,10 +766,12 @@ class Admin {
 			return;
 		}
 
+		$srfm_pro_license_status = get_option( 'srfm_pro_license_status' );
+
 		$pro_plugin_name = defined( 'SRFM_PRO_PRODUCT' ) ? SRFM_PRO_PRODUCT : 'SureForms Pro';
 		$message         = '';
 		$url             = get_site_url() . '/wp-admin/admin.php?page=sureforms_form_settings&tab=account-settings';
-		if ( class_exists( 'SRFM_PRO\Admin\Licensing' ) && ! \SRFM_PRO\Admin\Licensing::is_license_active() ) {
+		if ( 'unlicensed' === $srfm_pro_license_status ) {
 			$message = '<p>' . sprintf(
 				// translators: %1$s: Opening anchor tag with URL, %2$s: Closing anchor tag, %3$s: SureForms Pro Plugin Name.
 				esc_html__( 'Please %1$sactivate%2$s your copy of %3$s to get update notifications, access to support features & other resources!', 'sureforms' ),
@@ -784,8 +791,10 @@ class Admin {
 			) . '</p>';
 		}
 
-		// Phpcs ignore comment is required as $message variable is already escaped.
-		echo '<div class="notice notice-warning">' . $message . '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		if ( ! empty( $message ) ) {
+			// Phpcs ignore comment is required as $message variable is already escaped.
+			echo '<div class="notice notice-warning">' . $message . '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		}
 	}
 
 }
