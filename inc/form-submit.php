@@ -441,8 +441,17 @@ class Form_Submit {
 		$form_data_keys  = array_keys( $form_data );
 		$form_data_count = count( $form_data );
 
-		for ( $i = 4; $i < $form_data_count; $i++ ) {
-			$key   = strval( $form_data_keys[ $i ] );
+		for ( $i = 0; $i < $form_data_count; $i++ ) {
+			$key = strval( $form_data_keys[ $i ] );
+
+			/**
+			 * This will allow to pass only sureforms fields
+			 * checking -lbl- as thats mandatory for in key of sureforms fields.
+			 */
+			if ( false === str_contains( $key, '-lbl-' ) ) {
+				continue;
+			}
+
 			$value = $form_data[ $key ];
 
 			$field_name = htmlspecialchars( str_replace( '_', ' ', $key ) );

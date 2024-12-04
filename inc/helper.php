@@ -971,4 +971,19 @@ class Helper {
 	public static function register_script_translations( $handle, $domain = 'sureforms', $path = SRFM_DIR . 'languages' ) {
 		wp_set_script_translations( $handle, $domain, $path );
 	}
+
+	/**
+	 * Retrieve the list of excluded fields for form data processing.
+	 *
+	 * This method returns an array of field keys that should be excluded when
+	 * processing form data.
+	 *
+	 * @since x.x.x
+	 * @return array<string> Returns the string array of excluded fields.
+	 */
+	public static function get_excluded_fields() {
+		$excluded_fields = [ 'srfm-honeypot-field', 'g-recaptcha-response', 'srfm-sender-email-field', 'form-id' ];
+
+		return apply_filters( 'srfm_excluded_fields', $excluded_fields );
+	}
 }
