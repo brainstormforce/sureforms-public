@@ -40,7 +40,7 @@ class Admin {
 		add_filter( 'plugin_action_links', [ $this, 'add_settings_link' ], 10, 2 );
 		add_action( 'enqueue_block_assets', [ $this, 'enqueue_styles' ] );
 		add_action( 'admin_head', [ $this, 'enqueue_header_styles' ] );
-		add_action( 'admin_body_class', [ $this, 'admin_template_picker_body_class' ] );
+		add_filter( 'admin_body_class', [ $this, 'admin_template_picker_body_class' ] );
 
 		// this action is used to restrict Spectra's quick action bar on SureForms CPTS.
 		add_action( 'uag_enable_quick_action_sidebar', [ $this, 'restrict_spectra_quick_action_bar' ] );
@@ -402,7 +402,13 @@ class Admin {
 			'is_ver_lower_than_6_7'   => version_compare( $wp_version, '6.6.2', '<=' ),
 		];
 
-		if ( SRFM_FORMS_POST_TYPE === $current_screen->post_type || 'toplevel_page_sureforms_menu' === $current_screen->base || 'sureforms_page_sureforms_form_settings' === $current_screen->id || 'sureforms_page_' . SRFM_ENTRIES === $current_screen->id ) {
+		$is_screen_sureforms_menu          = Helper::validate_request_context( 'sureforms_menu', 'page' );
+		$is_screen_add_new_form            = Helper::validate_request_context( 'add-new-form', 'page' );
+		$is_screen_sureforms_form_settings = Helper::validate_request_context( 'sureforms_form_settings', 'page' );
+		$is_screen_sureforms_entries       = Helper::validate_request_context( SRFM_ENTRIES, 'page' );
+		$is_post_type_sureforms_form       = SRFM_FORMS_POST_TYPE === $current_screen->post_type;
+
+		if ( $is_screen_sureforms_menu || $is_post_type_sureforms_form || $is_screen_add_new_form || $is_screen_sureforms_form_settings || $is_screen_sureforms_entries ) {
 			$asset_handle = '-dashboard';
 
 			wp_enqueue_style( SRFM_SLUG . $asset_handle . '-font', 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap', [], SRFM_VER );
@@ -438,7 +444,7 @@ class Admin {
 
 		}
 
-		if ( 'sureforms_page_sureforms_form_settings' === $current_screen->id ) {
+		if ( $is_screen_sureforms_form_settings ) {
 			wp_enqueue_style( SRFM_SLUG . '-settings', $css_uri . 'backend/settings' . $file_prefix . '.css', [], SRFM_VER );
 
 			// if version is equal to or lower than 6.6.2 then add compatibility css.
@@ -457,7 +463,7 @@ class Admin {
 		}
 
 		// Enqueue styles for the entries page.
-		if ( 'sureforms_page_' . SRFM_ENTRIES === $current_screen->id ) {
+		if ( $is_screen_sureforms_entries ) {
 			$asset_handle = '-entries';
 			wp_enqueue_style( SRFM_SLUG . $asset_handle, $css_uri . 'backend/entries' . $file_prefix . '.css', [], SRFM_VER );
 			wp_enqueue_script( SRFM_SLUG . $asset_handle, SRFM_URL . 'assets/build/entries.js', $script_info['dependencies'], SRFM_VER, true );
@@ -483,7 +489,8 @@ class Admin {
 
 			$script_translations_handlers[] = SRFM_SLUG . '-form-page-header';
 		}
-		if ( 'sureforms_page_' . SRFM_FORMS_POST_TYPE . '_settings' === $current_screen->base ) {
+
+		if ( $is_screen_sureforms_form_settings ) {
 			$asset_handle = 'settings';
 
 			$script_asset_path = SRFM_DIR . 'assets/build/' . $asset_handle . '.asset.php';
@@ -533,8 +540,7 @@ class Admin {
 			$script_translations_handlers[] = SRFM_SLUG . '-backend';
 		}
 
-		if ( 'sureforms_page_add-new-form' === $current_screen->id ) {
-
+		if ( $is_screen_add_new_form ) {
 			$file_prefix = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? '' : '.min';
 			$dir_name    = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? 'unminified' : 'minified';
 
@@ -621,7 +627,7 @@ class Admin {
 		 * Enqueuing SureTriggers Integration script.
 		 * This script loads suretriggers iframe in Intergations tab.
 		 */
-		if ( SRFM_FORMS_POST_TYPE === $current_screen->post_type ) {
+		if ( $is_post_type_sureforms_form ) {
 			wp_enqueue_script( SRFM_SLUG . '-suretriggers-integration', SRFM_SURETRIGGERS_INTEGRATION_BASE_URL . 'js/v2/embed.js', [], SRFM_VER, true );
 		}
 
@@ -638,14 +644,32 @@ class Admin {
 
 	/**
 	 * Form Template Picker Admin Body Classes
+	 * WordPress sometimes translates class names in the admin body tag, which can result in
+	 * incorrect or missing class names when rendering the admin pages. This function ensures
+	 * that essential class names are manually added to the body tag to maintain proper functionality.
 	 *
 	 * @since 0.0.1
 	 * @param string $classes Space separated class string.
 	 */
 	public function admin_template_picker_body_class( $classes = '' ) {
-		$theme_builder_class = isset( $_GET['page'] ) && 'add-new-form' === $_GET['page'] ? 'srfm-template-picker' : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Fetching a $_GET value, no nonce available to validate.
-		$classes            .= ' ' . $theme_builder_class . ' ';
+		// Define an associative array of class names and their corresponding conditions.
+		// Each condition checks whether a specific request context matches.
+		$srfm_classes = [
+			'sureforms_page_sureforms_entries'       => Helper::validate_request_context( SRFM_ENTRIES, 'page' ),
+			'sureforms_page_sureforms_form_settings' => Helper::validate_request_context( 'sureforms_form_settings', 'page' ),
+			'srfm-template-picker'                   => Helper::validate_request_context( 'add-new-form', 'page' ),
+		];
 
+		// Loop through the defined classes and conditions.
+		foreach ( $srfm_classes as $class => $condition ) {
+			// Check if the condition evaluates to true.
+			if ( $condition ) {
+				// Append the class to the existing classes string, followed by a space.
+				$classes .= $class . ' ';
+			}
+		}
+
+		// Return the updated list of classes.
 		return $classes;
 	}
 
