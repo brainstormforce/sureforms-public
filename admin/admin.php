@@ -27,14 +27,6 @@ class Admin {
 	use Get_Instance;
 
 	/**
-	 * SureForms License Status.
-	 *
-	 * @var string
-	 * @since x.x.x
-	 */
-	private $srfm_pro_license_status;
-
-	/**
 	 * Class constructor.
 	 *
 	 * @return void
@@ -413,13 +405,6 @@ class Admin {
 		if ( class_exists( 'SRFM_PRO\Admin\Licensing' ) ) {
 			$license_active                         = \SRFM_PRO\Admin\Licensing::is_license_active();
 			$localization_data['is_license_active'] = $license_active;
-
-			// Backward Compatibility: Set the license status if it is not set. which will cover the case for users who already have an activated license.
-			$this->srfm_pro_license_status = get_option( 'srfm_pro_license_status', '' );
-			if ( ! $this->srfm_pro_license_status ) {
-				$this->srfm_pro_license_status = $license_active ? 'licensed' : 'unlicensed';
-				update_option( 'srfm_pro_license_status', $this->srfm_pro_license_status );
-			}
 		}
 
 		$is_screen_sureforms_menu          = Helper::validate_request_context( 'sureforms_menu', 'page' );
@@ -776,10 +761,11 @@ class Admin {
 			return;
 		}
 
+		$srfm_pro_license_status = get_option( 'srfm_pro_license_status', '' );
 		$pro_plugin_name = defined( 'SRFM_PRO_PRODUCT' ) ? SRFM_PRO_PRODUCT : 'SureForms Pro';
 		$message         = '';
 		$url             = admin_url( 'admin.php?page=sureforms_form_settings&tab=account-settings' );
-		if ( 'unlicensed' === $this->srfm_pro_license_status ) {
+		if ( 'unlicensed' === $srfm_pro_license_status ) {
 			$message = '<p>' . sprintf(
 				// translators: %1$s: Opening anchor tag with URL, %2$s: Closing anchor tag, %3$s: SureForms Pro Plugin Name.
 				esc_html__( 'Please %1$sactivate%2$s your copy of %3$s to get update notifications, access to support features & other resources!', 'sureforms' ),
