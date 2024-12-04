@@ -499,10 +499,7 @@ class Entries_List_Table extends \WP_List_Table {
 								$_value = is_array( $field_value ) ? implode( ', ', $field_value ) : $field_value;
 							}
 
-							// Add double quote at the starting and ending so that results don't alter when viewed in excel.
-							// This helps in scenerios such as phone number with country code: +977123-123
-							// If we let +977123-123 without quote eg: "+977123-123" then excel will calculate +977123-123 thinking maths expression.
-							$values[] = $_value ? '"' . trim( $_value, '"' ) . '"' : '';
+							$values[] = $_value ? $_value : '';
 						}
 
 						fputcsv( $stream, $values );
