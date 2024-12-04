@@ -255,6 +255,7 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 
 ## Changelog ##
 ### x.x.x ###
+* Improvement: Updated the SureForms Gutenberg block to API v3 providing compatibility with the WordPress zoom feature.
 * Fix: Resolved an issue where settings pages were not visible when the plugin title was translated.
 * Fix: Form submission was failing for websites where wordpress was installed in different directory than root.
 * Fix: Entries first field was empty with Honeypot Security and improved form submission logic.

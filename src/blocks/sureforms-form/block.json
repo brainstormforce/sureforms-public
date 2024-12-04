@@ -1,6 +1,6 @@
 {
 	"$schema": "https://json.schemastore.org/block.json",
-	"apiVersion": 2,
+	"apiVersion": 3,
 	"name": "srfm/form",
 	"title": "Form",
 	"description": "Collect and Manage data effortlessly with customizable SureForms.",
