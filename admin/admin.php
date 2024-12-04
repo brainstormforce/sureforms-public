@@ -729,10 +729,6 @@ class Admin {
 			return;
 		}
 
-		if ( version_compare( SRFM_PRO_VER, SRFM_PRO_RECOMMENDED_VER, '>=' ) ) {
-			return;
-		}
-
 		if ( empty( get_current_screen() ) ) {
 			return;
 		}
@@ -741,20 +737,31 @@ class Admin {
 			return;
 		}
 
-		$pro_plugin_name     = defined( 'SRFM_PRO_PRODUCT' ) ? SRFM_PRO_PRODUCT : 'SureForms Pro';
-		$srfm_billing_portal = defined( 'SRFM_BILLING_PORTAL' ) ? SRFM_BILLING_PORTAL : 'https://billing.sureforms.com/';
-		$message             = '<p>' . sprintf(
-			// translators: %1$s: SureForms version, %2$s: SureForms Pro Plugin Name, %3$s: SureForms Pro Version, %4$s: Anchor tag open, %5$s: Closing anchor tag.
-			esc_html__( 'SureForms %1$s requires minimum %2$s %3$s to work properly. Download the latest ZIP from %4$s here%5$s.', 'sureforms' ),
-			esc_html( SRFM_VER ),
-			esc_html( $pro_plugin_name ),
-			esc_html( SRFM_PRO_RECOMMENDED_VER ),
-			'<a href="' . esc_url( $srfm_billing_portal ) . '" target="_blank">',
-			'</a>'
-		) . '</p>';
+		$pro_plugin_name = defined( 'SRFM_PRO_PRODUCT' ) ? SRFM_PRO_PRODUCT : 'SureForms Pro';
+		$message         = '';
+		$url             = get_site_url() . '/wp-admin/admin.php?page=sureforms_form_settings&tab=account-settings';
+		if ( class_exists( 'SRFM_PRO\Admin\Licensing' ) && ! \SRFM_PRO\Admin\Licensing::is_license_active() ) {
+			$message = '<p>' . sprintf(
+				// translators: %1$s: Opening anchor tag with URL, %2$s: Closing anchor tag, %3$s: SureForms Pro Plugin Name.
+				esc_html__( 'Please %1$sactivate%2$s your copy of %3$s to get update notifications, access to support features & other resources!', 'sureforms' ),
+				'<a href="' . esc_url( $url ) . '">',
+				'</a>',
+				'<i>' . esc_html( $pro_plugin_name ) . '</i>'
+			) . '</p>';
+		}
+
+		if ( ! version_compare( SRFM_PRO_VER, SRFM_PRO_RECOMMENDED_VER, '>=' ) ) {
+			$message .= '<p>' . sprintf(
+				// translators: %1$s: SureForms version, %2$s: SureForms Pro Plugin Name, %3$s: SureForms Pro Version, %4$s: Anchor tag open, %5$s: Closing anchor tag.
+				esc_html__( 'SureForms %1$s requires minimum %2$s %3$s to work properly. Please update to the latest version.', 'sureforms' ),
+				esc_html( SRFM_VER ),
+				esc_html( $pro_plugin_name ),
+				esc_html( SRFM_PRO_RECOMMENDED_VER ),
+			) . '</p>';
+		}
 
 		// Phpcs ignore comment is required as $message variable is already escaped.
-		echo '<div class="error">' . $message . '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo '<div class="notice notice-warning">' . $message . '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
 
 }
