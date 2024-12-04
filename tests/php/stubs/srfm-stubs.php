@@ -8508,6 +8508,18 @@ namespace SRFM\Inc {
         public static function get_array_value($data)
         {
         }
+        /**
+	     * Retrieve the list of excluded fields for form data processing.
+	     *
+	     * This method returns an array of field keys that should be excluded when
+	     * processing form data.
+	     *
+	     * @since x.x.x
+	     * @return array<string> Returns the string array of excluded fields.
+	     */
+	    public static function get_excluded_fields()
+        {
+	    }
     }
 }
 namespace SRFM\Inc\Global_Settings {

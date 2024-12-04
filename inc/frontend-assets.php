@@ -106,7 +106,7 @@ class Frontend_Assets {
 				wp_register_script(
 					SRFM_SLUG . '-' . $handle,
 					SRFM_URL . 'assets/build/' . $name . '.js',
-					[],
+					[ 'wp-api-fetch' ],
 					SRFM_VER,
 					true
 				);
