@@ -123,6 +123,7 @@ class Admin_Ajax {
 	 * @since 0.0.1
 	 */
 	public function localize_script_integration( $values ) {
+		$is_screen_sureforms_menu = Helper::validate_request_context( 'sureforms_menu', 'page' );
 		return array_merge(
 			$values,
 			[
@@ -136,7 +137,7 @@ class Admin_Ajax {
 				'plugin_installing_text' => __( 'Installing...', 'sureforms' ),
 				'plugin_installed_text'  => __( 'Installed', 'sureforms' ),
 				'isRTL'                  => is_rtl(),
-				'current_screen_id'      => get_current_screen() ? get_current_screen()->id : '',
+				'current_screen_id'      => $is_screen_sureforms_menu ? 'sureforms_menu' : '',
 				'form_id'                => get_post() ? get_post()->ID : '',
 				'suretriggers_nonce'     => wp_create_nonce( 'suretriggers_nonce' ),
 			]

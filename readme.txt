@@ -254,8 +254,12 @@ Yes! You can certainly use SureForms on yours as well as your client’s website
 When you use SureForms, you get an easy-to-use AI-powered form builder that can be used to build your forms fast.
 
 == Changelog ==
-= x.x.x = 
+= x.x.x =
+* Improvement: Updated the SureForms Gutenberg block to API v3 providing compatibility with the WordPress zoom feature.
 * Improvement: Added support to include the Entry ID in SureTrigger workflows, enhancing integration capabilities.
+* Fix: Resolved an issue where settings pages were not visible when the plugin title was translated.
+* Fix: Form submission was failing for websites where wordpress was installed in different directory than root.
+* Fix: Entries first field was empty with Honeypot Security and improved form submission logic.
 * Fix: Resolved sprintf error by adding separate validation for multichoice fields to handle minimum and maximum selections.
 * Fix: Resolved an issue where the dropdown search query was not cleared after selecting an option.
 = 1.1.0 - 28th November 2024 =
