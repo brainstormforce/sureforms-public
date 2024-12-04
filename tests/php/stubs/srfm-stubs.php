@@ -8514,7 +8514,7 @@ namespace SRFM\Inc {
 	     * This method returns an array of field keys that should be excluded when
 	     * processing form data.
 	     *
-	     * @since x.x.x
+	     * @since 1.1.1
 	     * @return array<string> Returns the string array of excluded fields.
 	     */
 	    public static function get_excluded_fields()

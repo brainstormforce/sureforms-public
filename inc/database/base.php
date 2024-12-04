@@ -707,7 +707,7 @@ abstract class Base {
 	 *     }
 	 * }
 	 *
-	 * @since x.x.x -- Added support for "IN" compare.
+	 * @since 1.1.1 -- Added support for "IN" compare.
 	 * @since 0.0.13
 	 * @return string The prepared SQL WHERE clause with placeholders, or an empty string if no clauses were provided.
 	 */

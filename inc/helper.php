@@ -124,7 +124,7 @@ class Helper {
 	 * Extracts the field label from the dynamic field key ( or field slug ).
 	 *
 	 * @param string $field_key Dynamic field key.
-	 * @since x.x.x
+	 * @since 1.1.1
 	 * @return string Extracted field label.
 	 */
 	public static function get_field_label_from_key( $field_key ) {
@@ -1001,7 +1001,7 @@ class Helper {
 	 * @param string                $value      The expected value to match in the request if `$conditions` is not used.
 	 * @param string                $key        The key to check for in the request if `$conditions` is not used.
 	 * @param array<string, string> $conditions An optional associative array of key-value pairs to validate.
-	 * @since x.x.x
+	 * @since 1.1.1
 	 * @return bool Returns true if all conditions are met or the single key-value pair is valid, otherwise false.
 	 */
 	public static function validate_request_context( $value, $key = 'post_type', array $conditions = [] ) {
@@ -1032,7 +1032,7 @@ class Helper {
 	 * This method returns an array of field keys that should be excluded when
 	 * processing form data.
 	 *
-	 * @since x.x.x
+	 * @since 1.1.1
 	 * @return array<string> Returns the string array of excluded fields.
 	 */
 	public static function get_excluded_fields() {

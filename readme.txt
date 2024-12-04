@@ -4,7 +4,7 @@ Tags: contact form, custom form, form builder, forms, gutenberg
 Requires at least: 6.4
 Tested up to: 6.7.1
 Requires PHP: 7.4
-Stable tag: 1.1.0
+Stable tag: 1.1.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -254,17 +254,16 @@ Yes! You can certainly use SureForms on yours as well as your client’s website
 When you use SureForms, you get an easy-to-use AI-powered form builder that can be used to build your forms fast.
 
 == Changelog ==
-= x.x.x =
-* New: Support for icons using AI in multiple choice fields.
+= 1.1.1 - 5th December 2024 =
 * New: Added an option to export entries in CSV format.
-* Improvement: Added Whats New notifier.
-* Improvement: Updated the design of the phone field search input.
-* Improvement: Updated the SureForms Gutenberg block to API v3 providing compatibility with the WordPress zoom feature.
-* Fix: Resolved an issue where settings pages were not visible when the plugin title was translated.
-* Fix: Form submission was failing for websites where wordpress was installed in different directory than root.
-* Fix: Entries first field was empty with Honeypot Security and improved form submission logic.
-* Fix: Resolved sprintf error by adding separate validation for multichoice fields to handle minimum and maximum selections.
-* Fix: Resolved an issue where the dropdown search query was not cleared after selecting an option.
+* Improvement: Introduced a "What's New" notifier for updates.
+* Improvement: Redesigned the phone field search input for a better user experience.
+* Improvement: Updated the SureForms Gutenberg block to API v3 for compatibility with the WordPress zoom feature.
+* Fix: Addressed empty entries in the first field when using Honeypot Security and refined form submission logic.
+* Fix: Fixed form submission failures on sites with WordPress installed in a non-root directory.
+* Fix: Resolved an error with validation for Multi-Choice fields handling minimum and maximum selections.
+* Fix: Resolved an issue where settings pages were hidden when the plugin title was translated.
+* Fix: Fixed an issue where the dropdown search query wasn't cleared after selecting an option.
 = 1.1.0 - 28th November 2024 =
 * New: Support for generating multiple choice fields with icons while creating forms with AI.
 * Improvement: Added search option for phone number country code list.
