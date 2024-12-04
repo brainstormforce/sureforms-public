@@ -33,6 +33,7 @@ export default () => {
 	}, [] );
 
 	useWhatsNewRSS( {
+		uniqueKey: 'sureforms',
 		rssFeedURL: 'https://sureforms.com/whats-new/feed/',
 		selector: '#srfm_whats_new',
 		flyout: {
