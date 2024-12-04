@@ -1,8 +1,8 @@
 /**
  * === Whats New RSS ===
  *
- * Version: 1.0.6
- * Generated on: 25th June, 2024
+ * Version: 1.0.7
+ * Generated on: 4th December, 2024
  * Documentation: https://github.com/brainstormforce/whats-new-rss/blob/master/README.md
  */
 
@@ -28,8 +28,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 var __generator = (this && this.__generator) || function (thisArg, body) {
-    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
-    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g = Object.create((typeof Iterator === "function" ? Iterator : Object).prototype);
+    return g.next = verb(0), g["throw"] = verb(1), g["return"] = verb(2), typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
     function verb(n) { return function (v) { return step([n, v]); }; }
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
@@ -57,12 +57,14 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var WhatsNewRSSDefaultArgs = {
     rssFeedURL: '',
     selector: '',
+    uniqueKey: '',
     loaderIcon: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 100 100\" preserveAspectRatio=\"xMidYMid\">\n\t<circle cx=\"50\" cy=\"50\" fill=\"none\" stroke=\"#9f9f9f\" stroke-width=\"10\" r=\"35\" stroke-dasharray=\"164.93361431346415 56.97787143782138\">\n\t\t<animateTransform attributeName=\"transform\" type=\"rotate\" repeatCount=\"indefinite\" dur=\"1s\" values=\"0 50 50;360 50 50\" keyTimes=\"0;1\"></animateTransform>\n\t</circle>\n\t</svg>",
     viewAll: {
         link: '',
         label: 'View All',
     },
     triggerButton: {
+        label: '',
         icon: "<svg width=\"20\" height=\"20\" viewBox=\"0 0 20 20\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M8.61703 13.1998C8.04294 13.1503 7.46192 13.125 6.875 13.125H6.25C4.17893 13.125 2.5 11.4461 2.5 9.375C2.5 7.30393 4.17893 5.625 6.25 5.625H6.875C7.46192 5.625 8.04294 5.59972 8.61703 5.55018M8.61703 13.1998C8.82774 14.0012 9.1031 14.7764 9.43719 15.5195C9.64341 15.9782 9.48685 16.5273 9.05134 16.7787L8.50441 17.0945C8.04492 17.3598 7.45466 17.1921 7.23201 16.7106C6.70983 15.5811 6.30451 14.3866 6.03155 13.1425M8.61703 13.1998C8.29598 11.9787 8.125 10.6968 8.125 9.375C8.125 8.05316 8.29598 6.77125 8.61703 5.55018M8.61703 13.1998C11.25 13.427 13.737 14.1643 15.9789 15.3124M8.61703 5.55018C11.25 5.323 13.737 4.58569 15.9789 3.43757M15.9789 3.43757C15.8808 3.12162 15.7751 2.80903 15.662 2.5M15.9789 3.43757C16.4247 4.87356 16.7131 6.37885 16.8238 7.93326M15.9789 15.3124C15.8808 15.6284 15.7751 15.941 15.662 16.25M15.9789 15.3124C16.4247 13.8764 16.7131 12.3711 16.8238 10.8167M16.8238 7.93326C17.237 8.2772 17.5 8.79539 17.5 9.375C17.5 9.95461 17.237 10.4728 16.8238 10.8167M16.8238 7.93326C16.8578 8.40942 16.875 8.8902 16.875 9.375C16.875 9.8598 16.8578 10.3406 16.8238 10.8167\" stroke=\"#94A3B8\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>",
         beforeBtn: '',
         afterBtn: '',
@@ -151,7 +153,7 @@ var WhatsNewRSS = /** @class */ (function () {
      * @param {ConstructorArgs} args
      */
     WhatsNewRSS.prototype.validateArgs = function (args) {
-        ["rssFeedURL", "selector"].map(function (requiredArg) {
+        ["rssFeedURL", "selector", "uniqueKey"].forEach(function (requiredArg) {
             if (!args[requiredArg]) {
                 throw new Error("".concat(requiredArg, " is a required argument. It cannot be empty or undefined."));
             }
@@ -209,7 +211,7 @@ var WhatsNewRSS = /** @class */ (function () {
      * Creates unique ID for current instance, that can be used by the library elements.
      */
     WhatsNewRSS.prototype.setID = function () {
-        var data = [this.getArgs().selector];
+        var data = [this.getArgs().selector, this.getArgs().uniqueKey];
         var rssFeedURL = this.getArgs().rssFeedURL;
         if (Array.isArray(rssFeedURL)) {
             rssFeedURL.forEach(function (_rssFeedURL) {
@@ -219,7 +221,7 @@ var WhatsNewRSS = /** @class */ (function () {
         else {
             data.push(rssFeedURL);
         }
-        this.ID = btoa(data.join('-')).slice(-12).replace(/=/g, '');
+        this.ID = btoa(data.join('-')).slice(-12).replace(/=/g, '') + '-' + this.getArgs().uniqueKey;
     };
     /**
      * Whether or not multiple feed urls is provided or not.
@@ -256,7 +258,7 @@ var WhatsNewRSS = /** @class */ (function () {
      * @returns {string}
      */
     WhatsNewRSS.prototype.getID = function () {
-        return this.ID+'-sureforms';
+        return this.ID;
     };
     /**
      * Checks and counts new notification for the notification badge.
@@ -266,34 +268,32 @@ var WhatsNewRSS = /** @class */ (function () {
             var _this = this;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, Promise.all(this.getRSSFeedURLs().map(function (_a) {
-                            var key = _a.key;
-                            return __awaiter(_this, void 0, void 0, function () {
-                                var lastPostUnixTime;
-                                return __generator(this, function (_b) {
-                                    switch (_b.label) {
-                                        case 0:
-                                            lastPostUnixTime = 0;
-                                            if (!('function' === typeof this.getArgs().notification.getLastPostUnixTime)) return [3 /*break*/, 2];
-                                            return [4 /*yield*/, this.getArgs().notification.getLastPostUnixTime(key, this)];
-                                        case 1:
-                                            lastPostUnixTime = _b.sent();
-                                            return [3 /*break*/, 3];
-                                        case 2:
-                                            lastPostUnixTime = WhatsNewRSSCacheUtils.getLastPostUnixTime(key);
-                                            _b.label = 3;
-                                        case 3:
-                                            if (this.isMultiFeedRSS()) {
-                                                this.multiLastPostUnixTime[key] = +lastPostUnixTime;
-                                            }
-                                            else {
-                                                this.lastPostUnixTime = +lastPostUnixTime;
-                                            }
-                                            return [2 /*return*/];
-                                    }
-                                });
+                    case 0: return [4 /*yield*/, Promise.all(this.getRSSFeedURLs().map(function (_a) { return __awaiter(_this, [_a], void 0, function (_b) {
+                            var lastPostUnixTime;
+                            var key = _b.key;
+                            return __generator(this, function (_c) {
+                                switch (_c.label) {
+                                    case 0:
+                                        lastPostUnixTime = 0;
+                                        if (!('function' === typeof this.getArgs().notification.getLastPostUnixTime)) return [3 /*break*/, 2];
+                                        return [4 /*yield*/, this.getArgs().notification.getLastPostUnixTime(key, this)];
+                                    case 1:
+                                        lastPostUnixTime = _c.sent();
+                                        return [3 /*break*/, 3];
+                                    case 2:
+                                        lastPostUnixTime = WhatsNewRSSCacheUtils.getLastPostUnixTime(key);
+                                        _c.label = 3;
+                                    case 3:
+                                        if (this.isMultiFeedRSS()) {
+                                            this.multiLastPostUnixTime[key] = +lastPostUnixTime;
+                                        }
+                                        else {
+                                            this.lastPostUnixTime = +lastPostUnixTime;
+                                        }
+                                        return [2 /*return*/];
+                                }
                             });
-                        }))];
+                        }); }))];
                     case 1:
                         _a.sent();
                         return [4 /*yield*/, this.RSS_Fetch_Instance.fetchData()
@@ -321,7 +321,8 @@ var WhatsNewRSS = /** @class */ (function () {
                                         _this.RSS_View_Instance.setNotification(_this.notificationsCount);
                                     }
                                 });
-                            })];
+                            })
+                                .catch(console.error)];
                     case 2:
                         _a.sent();
                         return [2 /*return*/];
@@ -396,7 +397,8 @@ var WhatsNewRSS = /** @class */ (function () {
                         }
                     }
                 }
-            });
+            })
+                .catch(console.error);
         };
         /**
          * Open flyout on trigger button click.
@@ -411,7 +413,8 @@ var WhatsNewRSS = /** @class */ (function () {
             document.body.classList.add('whats-new-rss-is-active');
             _this.getArgs().flyout.onOpen(_this);
             if (!_this.isMultiFeedRSS()) {
-                return injectContents(null);
+                injectContents(null);
+                return;
             }
             var navBtns = multiFeedNav.querySelectorAll('button');
             navBtns.forEach(function (navBtn) {
@@ -433,7 +436,8 @@ var WhatsNewRSS = /** @class */ (function () {
                             }
                         }
                         _this.multiHasNewFeeds[currentFeedKey] = false;
-                    });
+                    })
+                        .catch(console.error);
                     navBtns.forEach(function (navBtn) {
                         navBtn.classList.remove('selected');
                         var feedKey = navBtn.dataset.feedKey;
@@ -681,7 +685,14 @@ var WhatsNewRSSView = /** @class */ (function () {
         }
     };
     WhatsNewRSSView.prototype.createTriggerButton = function () {
-        var button = "\n\t\t".concat(this.RSS.getArgs().triggerButton.beforeBtn, "\n\t\t<a class=\"whats-new-rss-trigger-button\" id=\"").concat(this.getTriggerButtonID(), "\">\n\t\t\t").concat(this.RSS.getArgs().triggerButton.icon, "\n\t\t\t<div class=\"whats-new-rss-notification-badge hide\">0</div>\n\t\t</a>\n\t\t").concat(this.RSS.getArgs().triggerButton.afterBtn, "\n\t\t");
+        var button = '';
+        var label = this.RSS.getArgs().triggerButton.label;
+        if (!!label) {
+            button = "\n\t\t\t".concat(this.RSS.getArgs().triggerButton.beforeBtn, "\n\t\t\t<a class=\"whats-new-rss-trigger-button has-label\" id=\"").concat(this.getTriggerButtonID(), "\">\n\t\t\t\t<div class=\"icon-badge\">\n\t\t\t\t\t").concat(this.RSS.getArgs().triggerButton.icon, "\n\t\t\t\t\t<div class=\"whats-new-rss-notification-badge hide\">0</div>\n\t\t\t\t</div>\n\t\t\t\t").concat(label, "\n\t\t\t</a>\n\t\t\t").concat(this.RSS.getArgs().triggerButton.afterBtn, "\n\t\t\t");
+        }
+        else {
+            button = "\n\t\t\t".concat(this.RSS.getArgs().triggerButton.beforeBtn, "\n\t\t\t<a class=\"whats-new-rss-trigger-button\" id=\"").concat(this.getTriggerButtonID(), "\">\n\t\t\t\t").concat(this.RSS.getArgs().triggerButton.icon, "\n\t\t\t\t<div class=\"whats-new-rss-notification-badge hide\">0</div>\n\t\t\t</a>\n\t\t\t").concat(this.RSS.getArgs().triggerButton.afterBtn, "\n\t\t\t");
+        }
         this.RSS.getElement().innerHTML += button;
     };
     WhatsNewRSSView.prototype.createFlyOut = function () {
@@ -819,7 +830,7 @@ var WhatsNewRSSView = /** @class */ (function () {
 }());
 
 async function getCSS() {
-    return `.whats-new-rss-is-active{overflow:hidden}.whats-new-rss-trigger-button{display:flex;align-items:center;position:relative;width:auto;padding:5px;cursor:pointer}.whats-new-rss-trigger-button .whats-new-rss-notification-badge{position:absolute;top:-8px;right:-5px;width:20px;font-size:10px;line-height:20px;text-align:center;border-radius:10px;color:#fff;background:red;transition:transform .2s ease-in-out}.whats-new-rss-trigger-button .whats-new-rss-notification-badge.is-multi-feed{top:-2px;right:-2px;font-size:0;width:10px;height:10px}.whats-new-rss-trigger-button .whats-new-rss-notification-badge.hide{display:none}.whats-new-rss-trigger-button:hover .whats-new-rss-notification-badge{transform:scale(1.2)}.whats-new-rss-flyout{position:fixed;top:0;right:0;bottom:0;width:100%;z-index:99999;transition:visibility .3s ease-in-out;font-family:Arial,Helvetica,sans-serif}.whats-new-rss-flyout .lightbox-trigger,.whats-new-rss-flyout.hidden{display:none}.whats-new-rss-flyout.is-loading .whats-new-rss-flyout-inner-header__loading-icon{display:block;margin:auto}.whats-new-rss-flyout.is-loading .whats-new-rss-flyout-inner-header__loading-icon svg{display:block;background:0 0;width:25px;height:25px}.whats-new-rss-flyout .whats-new-rss-flyout-contents{position:fixed;display:flex;right:0;width:30%;height:100%;flex-direction:column;background-color:#fff;transition:transform .3s ease-in-out;z-index:9999}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-flyout-inner-header{display:flex;justify-content:space-between;align-items:center;padding:16px 20px 16px 24px;border-bottom:1px solid #ccc}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-flyout-inner-header button{border:none;background:0 0;font-size:30px;cursor:pointer;color:#94a3b8;padding:0;margin:0;box-shadow:none}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-flyout-inner-header .whats-new-rss-flyout-inner-header__title-icon-wrapper{display:flex;gap:10px}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-flyout-inner-header .whats-new-rss-flyout-inner-header__title-icon-wrapper h3{margin:0;padding:0;color:#0f172a;font-weight:600;font-size:16px;line-height:24px}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-multi-feed-nav{display:flex;padding:0 30px;border-bottom:1px solid #ccc;gap:2em;overflow:auto;white-space:nowrap}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-multi-feed-nav button{position:relative;background:0 0;color:inherit;padding:15px 0;border-bottom:2px solid transparent}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-multi-feed-nav button:focus,.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-multi-feed-nav button:hover{border-color:inherit}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-multi-feed-nav button.selected{border-color:#5d5d5d}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-multi-feed-nav button .new-notification-count{position:absolute;top:0;right:-10px;width:20px;font-size:10px;line-height:20px;text-align:center;border-radius:10px;color:#fff;background:red}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-flyout-inner-content{flex:1;overflow-y:auto}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-flyout-inner-content .skeleton-container{margin:30px}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-flyout-inner-content .whats-new-rss-flyout-inner-content-item{border-bottom:1px solid #d8dfe9;padding:30px 24px;color:#475569;font-weight:400;font-size:14px;line-height:20px;display:flex;flex-direction:column;gap:13px}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-flyout-inner-content .whats-new-rss-flyout-inner-content-item>*{margin:0}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-flyout-inner-content .whats-new-rss-flyout-inner-content-item.skeleton-row{height:25vh;margin:40px 0;background:linear-gradient(90deg,#eee 25%,#ddd 50%,#eee 75%);background-size:200% 100%;animation:shimmer 1.5s infinite}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-flyout-inner-content .whats-new-rss-flyout-inner-content-item.rss-new-post{position:relative}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-flyout-inner-content .whats-new-rss-flyout-inner-content-item.rss-new-post .new-post-badge{background:#ff3d3d;border-radius:5px;position:absolute;right:45px;padding:0 5px;color:#fff}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-flyout-inner-content .whats-new-rss-flyout-inner-content-item .rss-content-header{display:flex;flex-direction:column;gap:15px;padding:0 0 8px 0}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-flyout-inner-content .whats-new-rss-flyout-inner-content-item .rss-content-header p{color:#94a3b8;margin:0;padding:0;font-weight:600;font-size:14px;line-height:16px}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-flyout-inner-content .whats-new-rss-flyout-inner-content-item .rss-content-header h2{margin:0;color:#0f172a;font-weight:700;line-height:28px;font-size:20px}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-flyout-inner-content .whats-new-rss-flyout-inner-content-item h2{font-weight:700;font-size:18px;line-height:24px}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-flyout-inner-content .whats-new-rss-flyout-inner-content-item h3{font-weight:700;font-size:16px;line-height:22px;margin-top:12px}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-flyout-inner-content .whats-new-rss-flyout-inner-content-item h4{font-weight:700;font-size:15px;line-height:20px;margin-top:12px}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-flyout-inner-content .whats-new-rss-flyout-inner-content-item h5{font-weight:700;font-size:14px;line-height:18px}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-flyout-inner-content .whats-new-rss-flyout-inner-content-item h6{font-weight:700;font-size:13px;line-height:16px}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-flyout-inner-content .whats-new-rss-flyout-inner-content-item p{padding:0;font-size:14px}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-flyout-inner-content .whats-new-rss-flyout-inner-content-item p:last-child{margin-bottom:0;padding-bottom:0}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-flyout-inner-content .whats-new-rss-flyout-inner-content-item a{color:#1170ff;text-decoration:none}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-flyout-inner-content .whats-new-rss-flyout-inner-content-item figure{margin:10px 0}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-flyout-inner-content .whats-new-rss-flyout-inner-content-item figure.wp-block-embed.is-type-video{position:relative;width:100%;height:0;padding-bottom:56.25%}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-flyout-inner-content .whats-new-rss-flyout-inner-content-item figure iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:0}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-flyout-inner-content .whats-new-rss-flyout-inner-content-item img{box-sizing:border-box;height:auto;max-width:100%;vertical-align:bottom}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-flyout-inner-content .whats-new-rss-flyout-inner-content-item video{vertical-align:middle;width:100%}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-flyout-inner-content .whats-new-rss-flyout-inner-content-item strong{font-weight:600}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-flyout-inner-content .whats-new-rss-flyout-inner-content-item ol,.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-flyout-inner-content .whats-new-rss-flyout-inner-content-item ul{padding-inline-start:20px}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-flyout-inner-content .whats-new-rss-flyout-inner-content-item ol li,.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-flyout-inner-content .whats-new-rss-flyout-inner-content-item ul li{margin-bottom:5px}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-flyout-inner-content .whats-new-rss-flyout-inner-content-item ul{list-style-type:disc}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-flyout-inner-content .whats-new-rss-flyout-inner-content-item ol{list-style-type:decimal}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-sub-version-details{line-height:20px;font-size:.9em;margin:10px 0;background:#f9fafb}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-sub-version-details summary{display:flex;justify-content:space-between;cursor:pointer;padding:20px 15px;height:1em;line-height:20px;font-weight:800}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-sub-version-details summary::after{content:'⌃';font-size:20px;transform:rotateX(180deg);font-weight:800}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-sub-version-details summary .text-see-more{display:block}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-sub-version-details summary .text-see-less{display:none}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-sub-version-details[open] summary{border-bottom:1px solid #e2e8f0}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-sub-version-details[open] summary::after{transform:rotateX(45deg)}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-sub-version-details[open] summary .text-see-more{display:none}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-sub-version-details[open] summary .text-see-less{display:block}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-sub-version-details .sub-version-item{position:relative;padding:1em;border-bottom:1px solid #e2e8f0}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-sub-version-details .sub-version-item .sub-version-header{display:flex;justify-content:space-between}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-sub-version-details .sub-version-item .sub-version-content{margin-top:1em}.whats-new-rss-flyout .whats-new-rss-flyout-overlay{position:fixed;top:0;right:0;bottom:0;left:0;background:rgba(0,0,0,.5);transition:all .3s ease-in-out}.whats-new-rss-flyout.closed{visibility:hidden}.whats-new-rss-flyout.closed .whats-new-rss-flyout-overlay{opacity:0;visibility:hidden}.whats-new-rss-flyout.closed .whats-new-rss-flyout-contents{transform:translateX(100%)}.whats-new-rss-flyout .whats-new-rss-flyout-inner-header__loading-icon{display:none}@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}@media screen and (max-width:1024px){.whats-new-rss-flyout .whats-new-rss-flyout-contents{width:40%}}@media screen and (max-width:768px){.whats-new-rss-flyout .whats-new-rss-flyout-contents{width:85%}}`;
+    return `.whats-new-rss-is-active{overflow:hidden}.whats-new-rss-trigger-button{display:flex;align-items:center;position:relative;width:auto;padding:5px;cursor:pointer}.whats-new-rss-trigger-button.has-label{align-items:end;gap:10px}.whats-new-rss-trigger-button.has-label .icon-badge{position:relative;line-height:1}.whats-new-rss-trigger-button.has-label .icon-badge .whats-new-rss-notification-badge{top:-12px;right:-10px}.whats-new-rss-trigger-button .whats-new-rss-notification-badge{position:absolute;top:-8px;right:-5px;width:20px;font-size:10px;line-height:20px;text-align:center;border-radius:10px;color:#fff;background:red;transition:transform .2s ease-in-out}.whats-new-rss-trigger-button .whats-new-rss-notification-badge.is-multi-feed{top:-2px;right:-2px;font-size:0;width:10px;height:10px}.whats-new-rss-trigger-button .whats-new-rss-notification-badge.hide{display:none}.whats-new-rss-trigger-button:hover .whats-new-rss-notification-badge{transform:scale(1.2)}.whats-new-rss-flyout{position:fixed;top:0;right:0;bottom:0;width:100%;z-index:99999;transition:visibility .3s ease-in-out;font-family:Arial,Helvetica,sans-serif}.whats-new-rss-flyout .lightbox-trigger,.whats-new-rss-flyout.hidden{display:none}.whats-new-rss-flyout.is-loading .whats-new-rss-flyout-inner-header__loading-icon{display:block;margin:auto}.whats-new-rss-flyout.is-loading .whats-new-rss-flyout-inner-header__loading-icon svg{display:block;background:0 0;width:25px;height:25px}.whats-new-rss-flyout .whats-new-rss-flyout-contents{position:fixed;display:flex;right:0;width:30%;height:100%;flex-direction:column;background-color:#fff;transition:transform .3s ease-in-out;z-index:9999}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-flyout-inner-header{display:flex;justify-content:space-between;align-items:center;padding:16px 20px 16px 24px;border-bottom:1px solid #ccc}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-flyout-inner-header button{border:none;background:0 0;font-size:30px;cursor:pointer;color:#94a3b8;padding:0;margin:0;box-shadow:none}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-flyout-inner-header .whats-new-rss-flyout-inner-header__title-icon-wrapper{display:flex;gap:10px}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-flyout-inner-header .whats-new-rss-flyout-inner-header__title-icon-wrapper h3{margin:0;padding:0;color:#0f172a;font-weight:600;font-size:16px;line-height:24px}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-multi-feed-nav{display:flex;padding:0 30px;border-bottom:1px solid #ccc;gap:2em;overflow:auto;white-space:nowrap}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-multi-feed-nav button{position:relative;background:0 0;color:inherit;padding:15px 0;border-bottom:2px solid transparent}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-multi-feed-nav button:focus,.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-multi-feed-nav button:hover{border-color:inherit}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-multi-feed-nav button.selected{border-color:#5d5d5d}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-multi-feed-nav button .new-notification-count{position:absolute;top:0;right:-10px;width:20px;font-size:10px;line-height:20px;text-align:center;border-radius:10px;color:#fff;background:red}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-flyout-inner-content{flex:1;overflow-y:auto}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-flyout-inner-content .skeleton-container{margin:30px}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-flyout-inner-content .whats-new-rss-flyout-inner-content-item{border-bottom:1px solid #d8dfe9;padding:30px 24px;color:#475569;font-weight:400;font-size:14px;line-height:20px;display:flex;flex-direction:column;gap:13px}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-flyout-inner-content .whats-new-rss-flyout-inner-content-item>*{margin:0}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-flyout-inner-content .whats-new-rss-flyout-inner-content-item.skeleton-row{height:25vh;margin:40px 0;background:linear-gradient(90deg,#eee 25%,#ddd 50%,#eee 75%);background-size:200% 100%;animation:shimmer 1.5s infinite}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-flyout-inner-content .whats-new-rss-flyout-inner-content-item.rss-new-post{position:relative}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-flyout-inner-content .whats-new-rss-flyout-inner-content-item.rss-new-post .new-post-badge{background:#ff3d3d;border-radius:5px;position:absolute;right:45px;padding:0 5px;color:#fff}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-flyout-inner-content .whats-new-rss-flyout-inner-content-item .rss-content-header{display:flex;flex-direction:column;gap:15px;padding:0 0 8px 0}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-flyout-inner-content .whats-new-rss-flyout-inner-content-item .rss-content-header p{color:#94a3b8;margin:0;padding:0;font-weight:600;font-size:14px;line-height:16px}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-flyout-inner-content .whats-new-rss-flyout-inner-content-item .rss-content-header h2{margin:0;color:#0f172a;font-weight:700;line-height:28px;font-size:20px}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-flyout-inner-content .whats-new-rss-flyout-inner-content-item h2{font-weight:700;font-size:18px;line-height:24px}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-flyout-inner-content .whats-new-rss-flyout-inner-content-item h3{font-weight:700;font-size:16px;line-height:22px;margin-top:12px}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-flyout-inner-content .whats-new-rss-flyout-inner-content-item h4{font-weight:700;font-size:15px;line-height:20px;margin-top:12px}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-flyout-inner-content .whats-new-rss-flyout-inner-content-item h5{font-weight:700;font-size:14px;line-height:18px}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-flyout-inner-content .whats-new-rss-flyout-inner-content-item h6{font-weight:700;font-size:13px;line-height:16px}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-flyout-inner-content .whats-new-rss-flyout-inner-content-item p{padding:0;font-size:14px}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-flyout-inner-content .whats-new-rss-flyout-inner-content-item p:last-child{margin-bottom:0;padding-bottom:0}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-flyout-inner-content .whats-new-rss-flyout-inner-content-item a{color:#1170ff;text-decoration:none}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-flyout-inner-content .whats-new-rss-flyout-inner-content-item figure{margin:10px 0}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-flyout-inner-content .whats-new-rss-flyout-inner-content-item figure.wp-block-embed.is-type-video{position:relative;width:100%;height:0;padding-bottom:56.25%}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-flyout-inner-content .whats-new-rss-flyout-inner-content-item figure iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:0}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-flyout-inner-content .whats-new-rss-flyout-inner-content-item img{box-sizing:border-box;height:auto;max-width:100%;vertical-align:bottom}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-flyout-inner-content .whats-new-rss-flyout-inner-content-item video{vertical-align:middle;width:100%}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-flyout-inner-content .whats-new-rss-flyout-inner-content-item strong{font-weight:600}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-flyout-inner-content .whats-new-rss-flyout-inner-content-item ol,.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-flyout-inner-content .whats-new-rss-flyout-inner-content-item ul{padding-inline-start:20px}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-flyout-inner-content .whats-new-rss-flyout-inner-content-item ol li,.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-flyout-inner-content .whats-new-rss-flyout-inner-content-item ul li{margin-bottom:5px}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-flyout-inner-content .whats-new-rss-flyout-inner-content-item ul{list-style-type:disc}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-flyout-inner-content .whats-new-rss-flyout-inner-content-item ol{list-style-type:decimal}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-sub-version-details{line-height:20px;font-size:.9em;margin:10px 0;background:#f9fafb}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-sub-version-details summary{display:flex;justify-content:space-between;cursor:pointer;padding:20px 15px;height:1em;line-height:20px;font-weight:800}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-sub-version-details summary::after{content:"⌃";font-size:20px;transform:rotateX(180deg);font-weight:800}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-sub-version-details summary .text-see-more{display:block}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-sub-version-details summary .text-see-less{display:none}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-sub-version-details[open] summary{border-bottom:1px solid #e2e8f0}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-sub-version-details[open] summary::after{transform:rotateX(45deg)}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-sub-version-details[open] summary .text-see-more{display:none}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-sub-version-details[open] summary .text-see-less{display:block}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-sub-version-details .sub-version-item{position:relative;padding:1em;border-bottom:1px solid #e2e8f0}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-sub-version-details .sub-version-item .sub-version-header{display:flex;justify-content:space-between}.whats-new-rss-flyout .whats-new-rss-flyout-contents .whats-new-rss-sub-version-details .sub-version-item .sub-version-content{margin-top:1em}.whats-new-rss-flyout .whats-new-rss-flyout-overlay{position:fixed;top:0;right:0;bottom:0;left:0;background:rgba(0,0,0,.5);transition:all .3s ease-in-out}.whats-new-rss-flyout.closed{visibility:hidden}.whats-new-rss-flyout.closed .whats-new-rss-flyout-overlay{opacity:0;visibility:hidden}.whats-new-rss-flyout.closed .whats-new-rss-flyout-contents{transform:translateX(100%)}.whats-new-rss-flyout .whats-new-rss-flyout-inner-header__loading-icon{display:none}@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}@media screen and (max-width:1024px){.whats-new-rss-flyout .whats-new-rss-flyout-contents{width:40%}}@media screen and (max-width:768px){.whats-new-rss-flyout .whats-new-rss-flyout-contents{width:85%}}`;
 }
 
 async function addStyleIfNotExists() {
