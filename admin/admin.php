@@ -762,6 +762,10 @@ class Admin {
 		}
 
 		$srfm_pro_license_status = get_option( 'srfm_pro_license_status', '' );
+		/**
+		 * If the license status is not set then get the license status and update the option accordingly.
+		 * This will be executed only once. Subsequently, the option status is updated by the licensing class on license activation or deactivation.
+		*/
 		if ( empty( $srfm_pro_license_status ) && class_exists( 'SRFM_PRO\Admin\Licensing' ) ) {
 			$srfm_pro_license_status = \SRFM_PRO\Admin\Licensing::is_license_active() ? 'licensed' : 'unlicensed';
 			update_option( 'srfm_pro_license_status', $srfm_pro_license_status );
