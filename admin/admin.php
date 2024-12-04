@@ -402,11 +402,6 @@ class Admin {
 			'is_ver_lower_than_6_7'   => version_compare( $wp_version, '6.6.2', '<=' ),
 		];
 
-		if ( class_exists( 'SRFM_PRO\Admin\Licensing' ) ) {
-			$license_active                         = \SRFM_PRO\Admin\Licensing::is_license_active();
-			$localization_data['is_license_active'] = $license_active;
-		}
-
 		$is_screen_sureforms_menu          = Helper::validate_request_context( 'sureforms_menu', 'page' );
 		$is_screen_add_new_form            = Helper::validate_request_context( 'add-new-form', 'page' );
 		$is_screen_sureforms_form_settings = Helper::validate_request_context( 'sureforms_form_settings', 'page' );
@@ -430,6 +425,11 @@ class Admin {
 			wp_localize_script( SRFM_SLUG . $asset_handle, 'scIcons', [ 'path' => SRFM_URL . 'assets/build/icon-assets' ] );
 
 			$script_translations_handlers[] = SRFM_SLUG . $asset_handle;
+
+			if ( class_exists( 'SRFM_PRO\Admin\Licensing' ) ) {
+				$license_active                         = \SRFM_PRO\Admin\Licensing::is_license_active();
+				$localization_data['is_license_active'] = $license_active;
+			}
 
 			$localization_data['security_settings_url'] = admin_url( '/admin.php?page=sureforms_form_settings&tab=security-settings' );
 			wp_localize_script(
