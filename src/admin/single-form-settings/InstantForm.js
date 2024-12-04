@@ -13,6 +13,7 @@ import { cleanForSlug } from '@wordpress/url';
 import parse from 'html-react-parser';
 import { createRoot } from 'react-dom/client';
 import ConversationalFormSettings from './components/ConversationalFormSettings';
+import { applyFilters } from '@wordpress/hooks';
 
 let live_mode_prev_srfm_instant_form_settings = {};
 
@@ -286,6 +287,12 @@ const InstantFormComponent = () => {
 		} );
 	};
 
+	// apply filters to show/hide instant form components.
+	const { showInstantFormSiteLogoGroup, showInstantFormStylingGroup } = applyFilters( 'srfm.instantFormComponent', {
+		showInstantFormSiteLogoGroup: true,
+		showInstantFormStylingGroup: true,
+	} );
+
 	return (
 		<>
 			<button ref={ setPopoverAnchor } onClick={ () => setOpenPopover( ! openPopover ) } className="srfm-instant-form-button">
@@ -337,157 +344,165 @@ const InstantFormComponent = () => {
 								onChange={ () => onHandleChange( 'single_page_form_title', ! single_page_form_title ) }
 							/>
 
-							<ConversationalFormSettings />
+							<ConversationalFormSettings setHidePopover={ setHidePopover } />
 						</div>
 
 						<div className="srfm-instant-form-settings-separator" />
 
-						<div className="srfm-instant-form-settings-group">
-							<div className="srfm-instant-form-settings">
-								<label>{ __( 'Site Logo', 'sureforms' ) }</label>
-								<SRFMMediaPicker
-									label={ '' }
-									onModalClose={ () => setHidePopover( false ) }
-									onSelectImage={ ( media ) => onImageSelect( 'site_logo', media ) }
-									backgroundImage={ site_logo }
-									onRemoveImage={ () => onHandleChange( 'site_logo', '' ) }
-									isFormSpecific={ true }
-								/>
-							</div>
-
-							<div className="srfm-instant-form-settings">
-								<label>{ __( 'Banner Background', 'sureforms' ) }</label>
-								<MultiButtonsControl
-									data={ {
-										value: cover_type,
-										label: 'cover_type',
-									} }
-									options={ [
-										{
-											value: 'color',
-											label: __( 'Color', 'sureforms' ),
-										},
-										{
-											value: 'image',
-											label: __( 'Image', 'sureforms' ),
-										},
-									] }
-									showIcons={ false }
-									onChange={ ( value ) => onHandleChange( 'cover_type', value ) }
-								/>
-							</div>
-
-							{
-								'image' === cover_type ? (
+						{
+						 showInstantFormSiteLogoGroup &&
+							<>
+								<div className="srfm-instant-form-settings-group">
 									<div className="srfm-instant-form-settings">
-										<label>{ __( 'Upload Image', 'sureforms' ) }</label>
+										<label>{ __( 'Site Logo', 'sureforms' ) }</label>
 										<SRFMMediaPicker
 											label={ '' }
 											onModalClose={ () => setHidePopover( false ) }
-											onSelectImage={ ( media ) => onImageSelect( 'cover_image', media ) }
-											backgroundImage={ cover_image }
-											onRemoveImage={ () => onHandleChange( 'cover_image', '' ) }
+											onSelectImage={ ( media ) => onImageSelect( 'site_logo', media ) }
+											backgroundImage={ site_logo }
+											onRemoveImage={ () => onHandleChange( 'site_logo', '' ) }
 											isFormSpecific={ true }
 										/>
 									</div>
-								) : (
-									<div className="srfm-instant-form-settings srfm-instant-form-settings-inline">
-										<label>{ __( 'Background Color', 'sureforms' ) }</label>
-										<AdvancedPopColorControl
-											colorValue={ cover_color }
-											data={ {
-												value: cover_color,
-												label: 'cover_color',
-											} }
-											onColorChange={ ( colorValue ) => onHandleChange( 'cover_color', colorValue ) }
-											value={ cover_color }
-											isFormSpecific={ true }
-										/>
-									</div>
-								)
-							}
-						</div>
 
-						<div className="srfm-instant-form-settings-separator" />
-
-						<div className="srfm-instant-form-settings-group">
-							<InstantFormToggle
-								label={ __( 'Use banner as page background', 'sureforms' ) }
-								checked={ true === use_banner_as_page_background }
-								onChange={ () => onHandleChange( 'use_banner_as_page_background', ! use_banner_as_page_background ) }
-							/>
-
-							<div className="srfm-instant-form-settings">
-								<label>{ __( 'Form Background', 'sureforms' ) }</label>
-								<MultiButtonsControl
-									data={ {
-										value: bg_type,
-										label: 'bg_type',
-									} }
-									options={ [
-										{
-											value: 'color',
-											label: __( 'Color', 'sureforms' ),
-										},
-										{
-											value: 'image',
-											label: __( 'Image', 'sureforms' ),
-										},
-									] }
-									showIcons={ false }
-									onChange={ ( value ) => onHandleChange( 'bg_type', value ) }
-								/>
-							</div>
-
-							{
-								'image' === bg_type ? (
 									<div className="srfm-instant-form-settings">
-										<label>{ __( 'Upload Image', 'sureforms' ) }</label>
-										<SRFMMediaPicker
-											label={ '' }
-											onModalClose={ () => setHidePopover( false ) }
-											onSelectImage={ ( imageURL ) => onImageSelect( 'bg_image', imageURL ) }
-											backgroundImage={ bg_image }
-											onRemoveImage={ () => onHandleChange( 'bg_image', '' ) }
-											isFormSpecific={ true }
-										/>
-									</div>
-								) : (
-									<div className="srfm-instant-form-settings srfm-instant-form-settings-inline">
-										<label>{ __( 'Background Color', 'sureforms' ) }</label>
-										<AdvancedPopColorControl
-											colorValue={ bg_color }
+										<label>{ __( 'Banner Background', 'sureforms' ) }</label>
+										<MultiButtonsControl
 											data={ {
-												value: bg_color,
-												label: 'bg_color',
+												value: cover_type,
+												label: 'cover_type',
 											} }
-											onColorChange={ ( colorValue ) => onHandleChange( 'bg_color', colorValue ) }
-											value={ bg_color }
-											isFormSpecific={ true }
+											options={ [
+												{
+													value: 'color',
+													label: __( 'Color', 'sureforms' ),
+												},
+												{
+													value: 'image',
+													label: __( 'Image', 'sureforms' ),
+												},
+											] }
+											showIcons={ false }
+											onChange={ ( value ) => onHandleChange( 'cover_type', value ) }
 										/>
 									</div>
-								)
-							}
 
-							<div className="srfm-instant-form-settings">
-								<Range
-									label={ __( 'Form Width', 'sureforms' ) }
-									data={ {
-										value: form_container_width,
-										label: 'form_container_width',
-									} }
-									value={ form_container_width }
-									min={ 560 }
-									max={ 1000 }
-									displayUnit={ false }
-									responsive={ false }
-									isFormSpecific={ true }
-									onChange={ ( value ) => onHandleChange( 'form_container_width', value ) }
-								/>
-							</div>
-						</div>
+									{
+										'image' === cover_type ? (
+											<div className="srfm-instant-form-settings">
+												<label>{ __( 'Upload Image', 'sureforms' ) }</label>
+												<SRFMMediaPicker
+													label={ '' }
+													onModalClose={ () => setHidePopover( false ) }
+													onSelectImage={ ( media ) => onImageSelect( 'cover_image', media ) }
+													backgroundImage={ cover_image }
+													onRemoveImage={ () => onHandleChange( 'cover_image', '' ) }
+													isFormSpecific={ true }
+												/>
+											</div>
+										) : (
+											<div className="srfm-instant-form-settings srfm-instant-form-settings-inline">
+												<label>{ __( 'Background Color', 'sureforms' ) }</label>
+												<AdvancedPopColorControl
+													colorValue={ cover_color }
+													data={ {
+														value: cover_color,
+														label: 'cover_color',
+													} }
+													onColorChange={ ( colorValue ) => onHandleChange( 'cover_color', colorValue ) }
+													value={ cover_color }
+													isFormSpecific={ true }
+												/>
+											</div>
+										)
+									}
+								</div>
+								<div className="srfm-instant-form-settings-separator" />
+							</>
+						}
 
-						<div className="srfm-instant-form-settings-separator" />
+						{
+						 showInstantFormStylingGroup &&
+							<>
+								<div className="srfm-instant-form-settings-group">
+									<InstantFormToggle
+										label={ __( 'Use banner as page background', 'sureforms' ) }
+										checked={ true === use_banner_as_page_background }
+										onChange={ () => onHandleChange( 'use_banner_as_page_background', ! use_banner_as_page_background ) }
+									/>
+
+									<div className="srfm-instant-form-settings">
+										<label>{ __( 'Form Background', 'sureforms' ) }</label>
+										<MultiButtonsControl
+											data={ {
+												value: bg_type,
+												label: 'bg_type',
+											} }
+											options={ [
+												{
+													value: 'color',
+													label: __( 'Color', 'sureforms' ),
+												},
+												{
+													value: 'image',
+													label: __( 'Image', 'sureforms' ),
+												},
+											] }
+											showIcons={ false }
+											onChange={ ( value ) => onHandleChange( 'bg_type', value ) }
+										/>
+									</div>
+
+									{
+										'image' === bg_type ? (
+											<div className="srfm-instant-form-settings">
+												<label>{ __( 'Upload Image', 'sureforms' ) }</label>
+												<SRFMMediaPicker
+													label={ '' }
+													onModalClose={ () => setHidePopover( false ) }
+													onSelectImage={ ( imageURL ) => onImageSelect( 'bg_image', imageURL ) }
+													backgroundImage={ bg_image }
+													onRemoveImage={ () => onHandleChange( 'bg_image', '' ) }
+													isFormSpecific={ true }
+												/>
+											</div>
+										) : (
+											<div className="srfm-instant-form-settings srfm-instant-form-settings-inline">
+												<label>{ __( 'Background Color', 'sureforms' ) }</label>
+												<AdvancedPopColorControl
+													colorValue={ bg_color }
+													data={ {
+														value: bg_color,
+														label: 'bg_color',
+													} }
+													onColorChange={ ( colorValue ) => onHandleChange( 'bg_color', colorValue ) }
+													value={ bg_color }
+													isFormSpecific={ true }
+												/>
+											</div>
+										)
+									}
+
+									<div className="srfm-instant-form-settings">
+										<Range
+											label={ __( 'Form Width', 'sureforms' ) }
+											data={ {
+												value: form_container_width,
+												label: 'form_container_width',
+											} }
+											value={ form_container_width }
+											min={ 560 }
+											max={ 1000 }
+											displayUnit={ false }
+											responsive={ false }
+											isFormSpecific={ true }
+											onChange={ ( value ) => onHandleChange( 'form_container_width', value ) }
+										/>
+									</div>
+								</div>
+								<div className="srfm-instant-form-settings-separator" />
+							</>
+						}
 
 						<div className="srfm-instant-form-settings-group">
 							<div className="srfm-instant-form-settings">
