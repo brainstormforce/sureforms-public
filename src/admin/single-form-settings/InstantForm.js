@@ -12,6 +12,7 @@ import { __ } from '@wordpress/i18n';
 import { cleanForSlug } from '@wordpress/url';
 import parse from 'html-react-parser';
 import { createRoot } from 'react-dom/client';
+import ConversationalFormSettings from './components/ConversationalFormSettings';
 
 let live_mode_prev_srfm_instant_form_settings = {};
 
@@ -335,6 +336,8 @@ const InstantFormComponent = () => {
 								checked={ true === single_page_form_title }
 								onChange={ () => onHandleChange( 'single_page_form_title', ! single_page_form_title ) }
 							/>
+
+							<ConversationalFormSettings />
 						</div>
 
 						<div className="srfm-instant-form-settings-separator" />
@@ -563,7 +566,7 @@ const InstantFormComponent = () => {
 	);
 };
 
-const InstantFormToggle = ( props ) => {
+export const InstantFormToggle = ( props ) => {
 	const toggleID = useId();
 
 	return (

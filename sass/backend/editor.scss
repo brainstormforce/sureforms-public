@@ -558,6 +558,42 @@ body.post-type-sureforms_form {
 	label[contenteditable="true"] {
 		pointer-events: auto;
 	}
+
+	/*
+	* Conversational Form Settings Styles
+	*/
+	.srfm-conversational-placeholder-label-ctn {
+		display: flex;
+		gap: 8px;
+
+		.srfm-conversational-placeholder-label {
+			min-width: 16px;
+			max-height: 16px;
+			padding: 2px;
+			gap: 2px;
+			border-radius: 4px;
+			background: #1f2937;
+			color: #fff;
+			border: 0.5px solid #374151;
+			font-size: 9px;
+			font-weight: 600;
+			line-height: normal;
+			text-align: center;
+		}
+	}
+
+	.srfm-conversational-placeholder-help-text {
+		margin-top: -10px;
+		padding: 4px;
+		border-radius: 6px;
+		background: #f0f9ff;
+		color: #1e293b;
+		border: 0.5px solid #bae6fd;
+		font-size: 13px;
+		font-weight: 400;
+		line-height: 20px;
+		text-align: left;
+	}
 }
 
 // TODO: Adding style fot the temprary hide spectra QAB.
