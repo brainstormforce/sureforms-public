@@ -26,21 +26,6 @@ const GeneralPage = ( {
 						)
 					}
 				/>
-				<ToggleControl
-					label={ __( 'Enable Honeypot Security', 'sureforms' ) }
-					help={ __(
-						'Enable Honeypot Security for better spam protection',
-						'sureforms'
-					) }
-					checked={ generalTabOptions.srfm_honeypot }
-					onChange={ ( value ) =>
-						updateGlobalSettings(
-							'srfm_honeypot',
-							value,
-							'general-settings'
-						)
-					}
-				/>
 				{ /* Will be implemented later */ }
 				{ /* <ToggleControl
 					label={ __( 'Enable Form Analytics', 'sureforms' ) }

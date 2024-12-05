@@ -298,6 +298,7 @@ const Component = ( { path } ) => {
 					<SecurityPage
 						loading={ loading }
 						securitytabOptions={ securitytabOptions }
+						generalTabOptions={ generalTabOptions }
 						updateGlobalSettings={ updateGlobalSettings }
 					/>
 				) }
