@@ -258,6 +258,7 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 * New: Added an option to export entries in CSV format.
 * Improvement: Introduced a "What's New" notifier for updates.
 * Improvement: Redesigned the phone field search input for a better user experience.
+* Improvement: Refined the update notification and added a license notification.
 * Improvement: Updated the SureForms Gutenberg block to API v3 for compatibility with the WordPress zoom feature.
 * Fix: Addressed empty entries in the first field when using Honeypot Security and refined form submission logic.
 * Fix: Fixed form submission failures on sites with WordPress installed in a non-root directory.
