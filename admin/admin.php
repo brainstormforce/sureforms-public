@@ -429,6 +429,13 @@ class Admin {
 			if ( class_exists( 'SRFM_PRO\Admin\Licensing' ) ) {
 				$license_active                         = \SRFM_PRO\Admin\Licensing::is_license_active();
 				$localization_data['is_license_active'] = $license_active;
+
+				// Updating current licensing status.
+				$srfm_pro_license_status = get_option( 'srfm_pro_license_status', '' );
+				$current_license_status  = $license_active ? 'licensed' : 'unlicensed';
+				if ( $current_license_status !== $srfm_pro_license_status ) {
+					update_option( 'srfm_pro_license_status', $current_license_status );
+				}
 			}
 
 			$localization_data['security_settings_url'] = admin_url( '/admin.php?page=sureforms_form_settings&tab=security-settings' );
