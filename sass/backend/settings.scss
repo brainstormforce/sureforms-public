@@ -409,11 +409,26 @@ $background_color: #f1f5f9;
 					}
 				}
 
-				.srfm-email-test-btn {
+				.srfm-email-input-wrapper {
 					display: flex;
-					gap: 8px;
-					justify-content: center;
+					flex-direction: row;
 					align-items: center;
+					gap: 8px;
+					
+					.srfm-components-input-control {
+						flex: 1;
+						.components-base-control__field {
+							margin-bottom: 0;
+						}
+					}
+					.srfm-email-test-btn {
+						display: flex;
+						gap: 8px;
+						justify-content: center;
+						align-items: center;
+						height: 40px;
+					}
+
 				}
 			}
 

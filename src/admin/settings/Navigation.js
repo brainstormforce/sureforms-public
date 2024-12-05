@@ -29,11 +29,6 @@ export const navigation = applyFilters( 'srfm.settings.navigation', [
 		icon: <MdWarningAmber size={ 20 } color="#0f172a" />,
 	},
 	{
-		name: __( 'Email', 'sureforms' ),
-		slug: 'email-settings',
-		icon: <MdOutlineMail size={ 20 } color="#0f172a" />,
-	},
-	{
 		name: __( 'Spam Protection', 'sureforms' ),
 		slug: 'security-settings',
 		icon: <MdOutlineSecurity size={ 20 } color="#0f172a" />,

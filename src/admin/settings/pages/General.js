@@ -1,14 +1,130 @@
 import { __ } from '@wordpress/i18n';
-import { ToggleControl } from '@wordpress/components';
+import { 
+	ToggleControl,
+	SelectControl,
+	TextControl,
+	Spinner,
+} from '@wordpress/components';
+
+import { useState } from '@wordpress/element';
+import apiFetch from '@wordpress/api-fetch';
+import toast from 'react-hot-toast';
 
 import ContentSection from '../components/ContentSection';
 
 const GeneralPage = ( {
 	loading,
 	generalTabOptions,
+	emailTabOptions,
 	updateGlobalSettings,
 } ) => {
-	const miscellaneousContent = () => {
+	const EmailSummariesContent = () => {
+		const [ sendingTestEmail, setSendingTestEmail ] = useState( false );
+
+		const days = [
+			{ label: __( 'Monday', 'sureforms' ), value: 'Monday' },
+			{ label: __( 'Tuesday', 'sureforms' ), value: 'Tuesday' },
+			{ label: __( 'Wednesday', 'sureforms' ), value: 'Wednesday' },
+			{ label: __( 'Thursday', 'sureforms' ), value: 'Thursday' },
+			{ label: __( 'Friday', 'sureforms' ), value: 'Friday' },
+			{ label: __( 'Saturday', 'sureforms' ), value: 'Saturday' },
+			{ label: __( 'Sunday', 'sureforms' ), value: 'Sunday' },
+		];
+
+		return (
+			<>
+				<ToggleControl
+					label={ __( 'Enable Email Summaries ', 'sureforms' ) }
+					checked={ emailTabOptions.srfm_email_summary }
+					onChange={ ( value ) =>
+						updateGlobalSettings(
+							'srfm_email_summary',
+							value,
+							'email-settings' // TODO: verify settings migration.
+						)
+					}
+				/>
+				{ emailTabOptions.srfm_email_summary && (
+					<>
+						<div className='srfm-email-input-wrapper'>
+							<TextControl
+								label={ __( 'Send Email To', 'sureforms' ) }
+								type="text"
+								className="srfm-components-input-control"
+								value={ emailTabOptions.srfm_email_sent_to }
+								onChange={ ( value ) =>
+									updateGlobalSettings(
+										'srfm_email_sent_to',
+										value,
+										'email-settings'
+									)
+								}
+							/>
+							<button
+								className="srfm-button-secondary srfm-button-xs srfm-email-test-btn"
+								onClick={ async () => {
+									if ( sendingTestEmail ) {
+										return;
+									}
+
+									setSendingTestEmail( true );
+									try {
+										await apiFetch( {
+											path: '/sureforms/v1/send-test-email-summary',
+											method: 'POST',
+											data: {
+												srfm_email_sent_to:
+													emailTabOptions.srfm_email_sent_to,
+											},
+										} ).then( ( response ) => {
+											setSendingTestEmail( false );
+											toast.dismiss();
+											toast.success( response?.data, {
+												duration: 1500,
+											} );
+											setTimeout( () => {
+												toast.dismiss();
+											}, 1500 );
+										} );
+									} catch ( error ) {
+										console.error(
+											'Error Sending Test Email Summary:',
+											error
+										);
+									}
+								} }
+							>
+								{ __( 'Test Email', 'sureforms' ) }
+								{ sendingTestEmail && (
+									<Spinner
+										style={ {
+											margin: '0',
+											color: '#d54407',
+										} }
+									/>
+								) }
+							</button>
+						</div>
+						<SelectControl
+							label={ __( 'Schedule Reports', 'sureforms' ) }
+							value={ emailTabOptions.srfm_schedule_report }
+							className="srfm-components-select-control"
+							onChange={ ( value ) =>
+								updateGlobalSettings(
+									'srfm_schedule_report',
+									value,
+									'email-settings' // TODO: verify settings migration.
+								)
+							}
+							options={ days }
+						/>
+					</>
+				) }
+			</>
+		);
+	};
+
+	const IPLoggingContent = () => {
 		return (
 			<>
 				<ToggleControl
@@ -47,11 +163,18 @@ const GeneralPage = ( {
 	};
 
 	return (
-		<ContentSection
-			loading={ loading }
-			title={ __( 'Miscellaneous', 'sureforms' ) }
-			content={ miscellaneousContent() }
-		/>
+		<>
+			<ContentSection
+				loading={ loading }
+				title={ __( 'Email Summaries', 'sureforms' ) }
+				content={ EmailSummariesContent() }
+			/>
+			<ContentSection
+				loading={ loading }
+				title={ __( 'IP Logging', 'sureforms' ) }
+				content={ IPLoggingContent() }
+			/>
+		</>
 	);
 };
 
