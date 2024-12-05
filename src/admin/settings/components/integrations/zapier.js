@@ -17,7 +17,7 @@ const Zapier = () => {
 						<img src={ ZapierIcon } style={ {
 							width: '50px',
 							height: '50px',
-						} } alt="Zapier" />
+						} } alt={ __( 'Zapier', 'sureforms' ) } />
 					</div>
 					<div>
 						<div className="srfm-integration-title">
