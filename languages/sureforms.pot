@@ -2,16 +2,16 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: SureForms 1.1.0\n"
+"Project-Id-Version: SureForms 1.1.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/sureforms\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-11-26T10:04:47+00:00\n"
+"POT-Creation-Date: 2024-12-05T12:07:51+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"X-Generator: WP-CLI 2.10.0\n"
+"X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: sureforms\n"
 
 #. Plugin Name of the plugin
@@ -65,7 +65,7 @@ msgstr ""
 #: admin/admin.php:200
 #: admin/admin.php:236
 #: inc/global-settings/email-summary.php:107
-#: inc/post-types.php:684
+#: inc/post-types.php:686
 #: assets/build/dashboard.js:2
 msgid "Entries"
 msgstr ""
@@ -75,7 +75,7 @@ msgstr ""
 msgid "Edit %1$s"
 msgstr ""
 
-#: admin/admin.php:704
+#: admin/admin.php:733
 #: api/block-patterns.php:110
 #: inc/ai-form-builder/ai-auth.php:45
 #: inc/ai-form-builder/ai-auth.php:81
@@ -85,7 +85,7 @@ msgstr ""
 #: inc/export.php:61
 #: inc/export.php:117
 #: inc/form-submit.php:201
-#: inc/form-submit.php:697
+#: inc/form-submit.php:706
 #: inc/forms-data.php:87
 #: inc/global-settings/global-settings.php:86
 #: inc/global-settings/global-settings.php:259
@@ -94,16 +94,22 @@ msgstr ""
 msgid "Nonce verification failed."
 msgstr ""
 
-#: admin/admin.php:713
+#: admin/admin.php:742
 msgid "You cannot view this entry because it is in trash."
 msgstr ""
 
+#. translators: %1$s: Opening anchor tag with URL, %2$s: Closing anchor tag, %3$s: SureForms Pro Plugin Name.
+#: admin/admin.php:787
+msgid "Please %1$sactivate%2$s your copy of %3$s to get new features, access support, receive update notifications, and more."
+msgstr ""
+
 #. translators: %1$s: SureForms version, %2$s: SureForms Pro Plugin Name, %3$s: SureForms Pro Version, %4$s: Anchor tag open, %5$s: Closing anchor tag.
-#: admin/admin.php:750
-msgid "SureForms %1$s requires minimum %2$s %3$s to work properly. Download the latest ZIP from %4$s here%5$s."
+#: admin/admin.php:797
+msgid "SureForms %1$s requires minimum %2$s %3$s to work properly. Please update to the latest version."
 msgstr ""
 
 #: admin/views/entries-list-table.php:89
+#: admin/views/entries-list-table.php:478
 msgid "ID"
 msgstr ""
 
@@ -138,107 +144,126 @@ msgstr ""
 msgid "Mark as Unread"
 msgstr ""
 
-#: admin/views/entries-list-table.php:137
+#: admin/views/entries-list-table.php:122
+#: inc/post-types.php:192
+#: inc/post-types.php:219
+msgid "Export"
+msgstr ""
+
+#: admin/views/entries-list-table.php:138
 msgid "No entries found."
 msgstr ""
 
-#: admin/views/entries-list-table.php:249
+#: admin/views/entries-list-table.php:251
 #: assets/build/blocks.js:172
 #: modules/gutenberg/build/blocks.js:7
 msgid "Search"
 msgstr ""
 
+#: admin/views/entries-list-table.php:367
+msgid "Entries export failed. You have file permission issue. Temporary directory is not writable."
+msgstr ""
+
+#: admin/views/entries-list-table.php:385
+msgid "Entries export failed. Your server does not support the ZipArchive library."
+msgstr ""
+
+#: admin/views/entries-list-table.php:407
+msgid "Entries export failed. Unable to create the ZIP file."
+msgstr ""
+
+#: admin/views/entries-list-table.php:549
+msgid "Entries export failed."
+msgstr ""
+
+#: admin/views/entries-list-table.php:564
+msgid "Entries export failed. Problem occured while closing the ZIP file."
+msgstr ""
+
 #. translators: %1$d refers to the number of entries, %2$s refers to the status (read or unread).
-#: admin/views/entries-list-table.php:339
+#: admin/views/entries-list-table.php:640
 msgid "%1$d entry was successfully marked as %2$s."
 msgid_plural "%1$d entries were successfully marked as %2$s."
 msgstr[0] ""
 msgstr[1] ""
 
 #. translators: %1$d refers to the number of entries, %2$s refers to the action (trash).
-#: admin/views/entries-list-table.php:343
+#: admin/views/entries-list-table.php:644
 msgid "%1$d entry was successfully moved to trash."
 msgid_plural "%1$d entries were successfully moved to trash."
 msgstr[0] ""
 msgstr[1] ""
 
 #. translators: %1$d refers to the number of entries, %2$s refers to the action (restore).
-#: admin/views/entries-list-table.php:347
+#: admin/views/entries-list-table.php:648
 msgid "%1$d entry was successfully restored."
 msgid_plural "%1$d entries were successfully restored."
 msgstr[0] ""
 msgstr[1] ""
 
 #. translators: %1$d refers to the number of entries, %2$s refers to the action (delete).
-#: admin/views/entries-list-table.php:351
+#: admin/views/entries-list-table.php:652
 msgid "%1$d entry was permanently deleted."
 msgid_plural "%1$d entries were permanently deleted."
 msgstr[0] ""
 msgstr[1] ""
 
-#. translators: %1$d refers to the number of entries, %2$s refers to the action (export).
-#: admin/views/entries-list-table.php:355
-msgid "%1$d entry was successfully exported."
-msgid_plural "%1$d entries were successfully exported."
-msgstr[0] ""
-msgstr[1] ""
-
-#: admin/views/entries-list-table.php:482
+#: admin/views/entries-list-table.php:781
 msgid "Entry #"
 msgstr ""
 
 #. translators: %1$s is the word "form", %2$d is the form ID.
-#: admin/views/entries-list-table.php:498
+#: admin/views/entries-list-table.php:797
 #: inc/page-builders/bricks/elements/form-widget.php:96
 #: assets/build/dashboard.js:2
 msgid "Form"
 msgstr ""
 
-#: admin/views/entries-list-table.php:514
+#: admin/views/entries-list-table.php:813
 msgid "Read"
 msgstr ""
 
-#: admin/views/entries-list-table.php:517
-#: admin/views/entries-list-table.php:791
+#: admin/views/entries-list-table.php:816
+#: admin/views/entries-list-table.php:1123
 msgid "Unread"
 msgstr ""
 
-#: admin/views/entries-list-table.php:520
-#: admin/views/entries-list-table.php:601
-#: admin/views/entries-list-table.php:802
+#: admin/views/entries-list-table.php:819
+#: admin/views/entries-list-table.php:905
+#: admin/views/entries-list-table.php:1134
 #: modules/gutenberg/icons/icons-v6-3.php:2916
 msgid "Trash"
 msgstr ""
 
-#: admin/views/entries-list-table.php:561
+#: admin/views/entries-list-table.php:865
 msgid "Published"
 msgstr ""
 
-#: admin/views/entries-list-table.php:600
+#: admin/views/entries-list-table.php:904
 #: inc/email/email-template.php:157
 #: inc/smart-tags.php:338
 msgid "View"
 msgstr ""
 
-#: admin/views/entries-list-table.php:634
-#: admin/views/entries-list-table.php:986
+#: admin/views/entries-list-table.php:938
+#: admin/views/entries-list-table.php:1318
 msgid "Restore"
 msgstr ""
 
-#: admin/views/entries-list-table.php:635
-#: admin/views/entries-list-table.php:987
+#: admin/views/entries-list-table.php:939
+#: admin/views/entries-list-table.php:1319
 msgid "Delete Permanently"
 msgstr ""
 
-#: admin/views/entries-list-table.php:703
+#: admin/views/entries-list-table.php:1035
 msgid "All Form Entries"
 msgstr ""
 
-#: admin/views/entries-list-table.php:732
+#: admin/views/entries-list-table.php:1064
 msgid "All Dates"
 msgstr ""
 
-#: admin/views/entries-list-table.php:784
+#: admin/views/entries-list-table.php:1116
 msgid "All"
 msgstr ""
 
@@ -399,111 +424,111 @@ msgstr ""
 msgid "Plugin Successfully Activated"
 msgstr ""
 
-#: inc/admin-ajax.php:132
+#: inc/admin-ajax.php:133
 msgid "Activating..."
 msgstr ""
 
-#: inc/admin-ajax.php:133
+#: inc/admin-ajax.php:134
 msgid "Activated"
 msgstr ""
 
-#: inc/admin-ajax.php:134
+#: inc/admin-ajax.php:135
 #: assets/build/formEditor.js:172
 msgid "Activate"
 msgstr ""
 
-#: inc/admin-ajax.php:136
+#: inc/admin-ajax.php:137
 msgid "Installing..."
 msgstr ""
 
-#: inc/admin-ajax.php:137
+#: inc/admin-ajax.php:138
 msgid "Installed"
 msgstr ""
 
-#: inc/admin-ajax.php:158
+#: inc/admin-ajax.php:159
 #: assets/build/formEditor.js:172
 msgid "SureTriggers"
 msgstr ""
 
-#: inc/admin-ajax.php:159
+#: inc/admin-ajax.php:160
 msgid "Connect SureForms to hundreds of apps, CRMs and tools such as Slack, Mailchimp, etc."
 msgstr ""
 
-#: inc/admin-ajax.php:160
+#: inc/admin-ajax.php:161
 msgid "SureTriggers is a powerful automation platform that helps you connect your various plugins and apps together. It allows you to automate repetitive tasks, so you can focus on more important work."
 msgstr ""
 
-#: inc/admin-ajax.php:211
+#: inc/admin-ajax.php:212
 msgid "You do not have permission to access this page."
 msgstr ""
 
-#: inc/admin-ajax.php:215
+#: inc/admin-ajax.php:216
 msgid "Invalid nonce."
 msgstr ""
 
-#: inc/admin-ajax.php:219
+#: inc/admin-ajax.php:220
 msgid "Form ID is required."
 msgstr ""
 
-#: inc/admin-ajax.php:226
+#: inc/admin-ajax.php:227
 msgid "SureTriggers is not configured properly."
 msgstr ""
 
-#: inc/admin-ajax.php:235
-#: inc/form-submit.php:709
+#: inc/admin-ajax.php:236
+#: inc/form-submit.php:718
 msgid "Invalid form ID."
 msgstr ""
 
 #. Translators: %s: Form ID.
-#: inc/admin-ajax.php:239
+#: inc/admin-ajax.php:240
 msgid "SureForms id: %s"
 msgstr ""
 
-#: inc/admin-ajax.php:249
+#: inc/admin-ajax.php:250
 msgid "Form Submitted"
 msgstr ""
 
-#: inc/admin-ajax.php:251
+#: inc/admin-ajax.php:252
 msgid "Runs when a form is submitted"
 msgstr ""
 
-#: inc/admin-ajax.php:333
-#: inc/admin-ajax.php:362
+#: inc/admin-ajax.php:334
+#: inc/admin-ajax.php:363
 msgid "Sample data"
 msgstr ""
 
-#: inc/admin-ajax.php:337
+#: inc/admin-ajax.php:338
 msgid "Sample input data"
 msgstr ""
 
-#: inc/admin-ajax.php:339
+#: inc/admin-ajax.php:340
 msgid "Sample textarea data"
 msgstr ""
 
-#: inc/admin-ajax.php:344
 #: inc/admin-ajax.php:345
+#: inc/admin-ajax.php:346
 msgid "Address data"
 msgstr ""
 
-#: inc/admin-ajax.php:346
+#: inc/admin-ajax.php:347
 msgid "Selected dropdown option"
 msgstr ""
 
-#: inc/admin-ajax.php:347
+#: inc/admin-ajax.php:348
 msgid "Selected Multichoice option"
 msgstr ""
 
-#: inc/admin-ajax.php:348
+#: inc/admin-ajax.php:349
 msgid "Selected radio option"
 msgstr ""
 
-#: inc/admin-ajax.php:349
+#: inc/admin-ajax.php:350
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 msgid "Submit"
 msgstr ""
 
-#: inc/admin-ajax.php:352
+#: inc/admin-ajax.php:353
 msgid "Hidden Value"
 msgstr ""
 
@@ -655,7 +680,7 @@ msgstr ""
 
 #: inc/fields/checkbox-markup.php:60
 #: inc/fields/gdpr-markup.php:59
-#: inc/helper.php:240
+#: inc/helper.php:259
 #: assets/build/blocks.js:172
 msgid "Required"
 msgstr ""
@@ -767,21 +792,21 @@ msgstr ""
 msgid "Spam Detected"
 msgstr ""
 
-#: inc/form-submit.php:582
+#: inc/form-submit.php:591
 msgid "Error submitting form"
 msgstr ""
 
-#: inc/form-submit.php:639
+#: inc/form-submit.php:648
 msgid "Email Notification Initiated"
 msgstr ""
 
 #. translators: Here, %s is the comma separated emails list.
-#: inc/form-submit.php:671
+#: inc/form-submit.php:680
 msgid "Email notification sent to %s"
 msgstr ""
 
 #. translators: Here, %s is the comma separated emails list.
-#: inc/form-submit.php:671
+#: inc/form-submit.php:680
 msgid "Failed sending email notification to %s"
 msgstr ""
 
@@ -852,7 +877,7 @@ msgstr ""
 msgid "Value needs to be unique."
 msgstr ""
 
-#: inc/helper.php:465
+#: inc/helper.php:484
 msgid "Sorry, you are not allowed to perform this action."
 msgstr ""
 
@@ -992,33 +1017,28 @@ msgstr ""
 msgid "Form updated."
 msgstr ""
 
-#: inc/post-types.php:192
-#: inc/post-types.php:219
-msgid "Export"
-msgstr ""
-
-#: inc/post-types.php:526
+#: inc/post-types.php:528
 msgid "Admin Notification Email"
 msgstr ""
 
 #. translators: %s: Form title smart tag
-#: inc/post-types.php:531
+#: inc/post-types.php:533
 msgid "New Form Submission - %s"
 msgstr ""
 
-#: inc/post-types.php:683
+#: inc/post-types.php:685
 msgid "Shortcode"
 msgstr ""
 
-#: inc/post-types.php:747
+#: inc/post-types.php:749
 msgid "Please choose the SureForms export file (.json) that you wish to import."
 msgstr ""
 
-#: inc/post-types.php:750
+#: inc/post-types.php:752
 msgid "Import Now"
 msgstr ""
 
-#: inc/post-types.php:752
+#: inc/post-types.php:754
 msgid "There is some error in json file, please export the SureForms Forms again."
 msgstr ""
 
@@ -1143,12 +1163,16 @@ msgid "Maximum value is %s"
 msgstr ""
 
 #. translators: %s represents the minimum number of selections required
+#. translators: %s represents the minimum number of characters required
 #: inc/translatable.php:49
+#: inc/translatable.php:55
 msgid "Minimum %s selections are required"
 msgstr ""
 
 #. translators: %s represents the maximum number of selections allowed
+#. translators: %s represents the maximum number of characters allowed
 #: inc/translatable.php:52
+#: inc/translatable.php:58
 msgid "Maximum %s selections are allowed"
 msgstr ""
 
@@ -9198,6 +9222,13 @@ msgstr ""
 #: assets/build/entries.js:2
 #: assets/build/page_header.js:2
 #: assets/build/settings.js:2
+msgid "What's New?"
+msgstr ""
+
+#: assets/build/dashboard.js:2
+#: assets/build/entries.js:2
+#: assets/build/page_header.js:2
+#: assets/build/settings.js:2
 msgid "Core"
 msgstr ""
 
@@ -9213,20 +9244,6 @@ msgstr ""
 #: assets/build/page_header.js:2
 #: assets/build/settings.js:2
 msgid "Unlicensed"
-msgstr ""
-
-#: assets/build/dashboard.js:2
-#: assets/build/entries.js:2
-#: assets/build/page_header.js:2
-#: assets/build/settings.js:2
-msgid "Notifications"
-msgstr ""
-
-#: assets/build/dashboard.js:2
-#: assets/build/entries.js:2
-#: assets/build/page_header.js:2
-#: assets/build/settings.js:2
-msgid "All caught up!! Check back for new notifications later."
 msgstr ""
 
 #. translators: abbreviation for units

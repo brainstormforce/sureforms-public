@@ -320,6 +320,7 @@ class Entries extends Base {
 			$args,
 			[
 				'where'   => [],
+				'columns' => '*',
 				'limit'   => 10,
 				'offset'  => 0,
 				'orderby' => 'created_at',
@@ -335,7 +336,7 @@ class Entries extends Base {
 		}
 		return self::get_instance()->get_results(
 			$_args['where'],
-			'*',
+			$_args['columns'],
 			$extra_queries
 		);
 	}
@@ -427,6 +428,35 @@ class Entries extends Base {
 				'ORDER BY ID DESC',
 			]
 		);
+	}
+
+	/**
+	 * Get form IDs associated with a list of entry IDs.
+	 * This method retrieves the distinct form IDs that are linked to the provided entry IDs.
+	 *
+	 * @param array<int> $entry_ids An array of entry IDs to fetch associated form IDs for.
+	 * @since 1.1.1
+	 * @return array<int> An array of form IDs.
+	 */
+	public static function get_form_ids_by_entries( $entry_ids ) {
+		if ( empty( $entry_ids ) && ! is_array( $entry_ids ) ) {
+			return [];
+		}
+
+		$results = self::get_instance()->get_results(
+			[
+				[
+					[
+						'key'     => 'ID',
+						'compare' => 'IN',
+						'value'   => $entry_ids,
+					],
+				],
+			],
+			'DISTINCT form_id'
+		);
+
+		return array_map( 'absint', array_column( $results, 'form_id' ) );  // Flatten the array.
 	}
 
 	/**
