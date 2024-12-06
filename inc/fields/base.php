@@ -314,6 +314,15 @@ class Base {
 	protected $max_selection;
 
 	/**
+	 * Whether or not block is render in editing mode.
+	 * If it is true, then block is currently rendered in edit entry.
+	 *
+	 * @var bool
+	 * @since x.x.x
+	 */
+	protected $is_editing = false;
+
+	/**
 	 * Render the sureforms default
 	 *
 	 * @since 0.0.2
@@ -359,6 +368,8 @@ class Base {
 		];
 		$this->min_selection      = $attributes['minValue'] ?? '';
 		$this->max_selection      = $attributes['maxValue'] ?? '';
+
+		$this->is_editing = isset( $attributes['isEditing'] ) ? true : false;
 	}
 
 	/**

@@ -236,7 +236,33 @@
 		} );
 	}
 
+	function handleEditEntry() {
+		const dialog = document.getElementById('srfm-edit-entry-modal');
+
+		if (! dialog) {
+			return;
+		}
+
+		const editEntryBtn = document.querySelector( '.button.srfm-edit-entry' );
+		const cancelBtn = document.querySelector('.srfm-cancel-entry-btn');
+
+		editEntryBtn.addEventListener('click', function(e) {
+			e.preventDefault();
+			dialog.showModal();
+
+			document.body.style.overflow = 'hidden';
+		});
+
+		cancelBtn.addEventListener( 'click', function(e) {
+			e.preventDefault();
+			dialog.close();
+
+			document.body.style.overflow = 'scroll';
+		} );
+	}
+
 	window.addEventListener( 'load', function () {
+		handleEditEntry();
 		handleEntryNotes();
 		handleEntryResendNotification();
 	} );

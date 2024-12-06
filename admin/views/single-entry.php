@@ -10,6 +10,8 @@ namespace SRFM\Admin\Views;
 
 use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Helper;
+use SRFM\Admin\Views\Entries_List_Table;
+use SRFM\Inc\Generate_Form_Markup;
 
 /**
  * Exit if accessed directly.
@@ -53,6 +55,42 @@ class Single_Entry {
 		$this->entry    = $this->entry_id ? Entries::get( $this->entry_id ) : null;
 	}
 
+	protected function prepare_blocks_for_editing() {
+		$parsed = parse_blocks( get_post( absint( $this->entry['form_id'] ) )->post_content );
+		$blocks = array_map( function($block)  {
+			if ( ! $block['blockName'] ) {
+				return null;
+			}
+
+			$meta_data = $this->entry['form_data'];
+
+			$attrs = [];
+
+			foreach ( $meta_data as $field_name => $value ) {
+				if ( false !== strpos( $field_name, "-{$block['attrs']['block_id']}-" ) ) {
+					$attrs = array(
+						'fieldName'    => $field_name,
+						'defaultValue' => $value,
+					);
+					break;
+				}
+			}
+
+			if ( empty( $attrs ) ) {
+				return null;
+			}
+
+			$block['attrs']['entryID']      = $this->entry_id;
+			$block['attrs']['isEditing']    = true;
+			$block['attrs']['fieldName']    = $attrs['fieldName'];
+			$block['attrs']['defaultValue'] = $attrs['defaultValue'];
+
+			return $block;
+		}, _flatten_blocks( $parsed ) );
+
+		return array_filter( $blocks, 'is_array' );
+	}
+
 	/**
 	 * Render the single entry page if an entry is found.
 	 *
@@ -70,80 +108,54 @@ class Single_Entry {
 		$meta_data       = $this->entry['form_data'];
 		$excluded_fields = [ 'srfm-honeypot-field', 'g-recaptcha-response', 'srfm-sender-email-field' ];
 		$entry_logs      = $this->entry['logs'];
+
+		$blocks = $this->prepare_blocks_for_editing();
+
 		?>
 		<div class="wrap">
 			<h1 class="wp-heading-inline">Entry #<?php echo esc_attr( $this->entry_id ); ?></h1>
 
-			<?php
-			if ( $this->is_edit_mode() ) {
-				$instant_form_edit_mode_url = add_query_arg(
-					[
-						'nonce'      => wp_create_nonce( 'srfm-edit-entry' ),
-						'entry_id'   => $this->entry_id,
-						'edit_entry' => true,
-					],
-					get_the_permalink( $this->entry['form_id'] )
-				);
-				?>
-				<div id="poststuff" class="srfm-entry-edit-iframe-container">
-					<iframe id="srfm-entry-edit-iframe" style="width:100%;height:100vh;border:1px solid;" src="<?php echo esc_url( $instant_form_edit_mode_url ); ?>"></iframe>
+			<form method="post" action="<?php echo esc_url( admin_url( "admin.php?page=sureforms_entries&entry_id={$this->entry_id}&view=details" ) ); ?>"> <!-- check for nonce, referrer, etc. -->
+				<div id="poststuff">
+					<div id="post-body" class="metabox-holder columns-2">
+						<div id="postbox-container-1" class="postbox-container">
+							<?php $this->render_entry_notes(); ?>
+							<?php $this->render_submission_info( $form_name, $entry_status, $submitted_on ); ?>
+							<?php Entries_List_Table::get_instance()->display_bulk_resend_notification_button( $this->entry['form_id'], [ $this->entry_id ] ); ?>
+						</div>
+						<div id="postbox-container-2" class="postbox-container">
+							<?php $this->render_form_data( $meta_data, $excluded_fields ); ?>
+						</div>
+						<div id="postbox-container-3" class="postbox-container">
+							<?php $this->render_entry_logs( $entry_logs ); ?>
+						</div>
+					</div><!-- /post-body -->
+					<br class="clear">
 				</div>
-				<script>
-					const formData = <?php echo wp_json_encode( $meta_data ); ?>;
-					const iframe = document.getElementById('srfm-entry-edit-iframe');
-					iframe.addEventListener("load", function() {
-						const iframeDocument = iframe.contentWindow.document;
-
-						Object.keys(formData).map(function(fieldName) {
-							if ( 'undefined' === typeof iframeDocument.getElementsByName(fieldName)[0] ) {
-								return;
+				<!-- /poststuff -->
+				<dialog id="srfm-edit-entry-modal">
+					<div class="srfm-edit-entry-modal-container">
+						<div class="edit-entry-header">
+							<h2><?php esc_html_e( 'Edit Entry Data', 'sureforms' ); ?></h2>
+						</div>
+						<div class="edit-entry-content">
+							<?php
+							if ( ! empty( $blocks ) && is_array( $blocks ) ) {
+								foreach ( $blocks as $block ) {
+									echo render_block( $block );
+								}
 							}
-
-							if ( fieldName.indexOf('srfm-textarea') !== -1 ) {
-								iframeDocument.getElementsByName(fieldName)[0].innerHTML = formData[fieldName];
-							} else {
-								iframeDocument.getElementsByName(fieldName)[0].setAttribute('value', formData[fieldName]);
-							}
-						});
-
-						iframeDocument.querySelector('form')
-						.innerHTML += '<input type="hidden" name="srfm-editing-entry" value="<?php echo esc_attr( $this->entry_id ); ?>">'
-
-						iframeDocument.addEventListener('srfm_on_show_success_message', (e) => {
-							// Get the current URL
-							const url = new URL(window.location.href);
-
-							// Remove the "edit" parameter
-							url.searchParams.delete('edit');
-
-							window.location.href = url;
-						});
-					});
-				</script>
-				<?php
-			} else {
-				?>
-				<form method="post" action="<?php echo esc_url( admin_url( "admin.php?page=sureforms_entries&entry_id={$this->entry_id}&view=details" ) ); ?>"> <!-- check for nonce, referrer, etc. -->
-					<div id="poststuff">
-						<div id="post-body" class="metabox-holder columns-2">
-							<div id="postbox-container-1" class="postbox-container">
-								<?php $this->render_entry_notes(); ?>
-								<?php $this->render_submission_info( $form_name, $entry_status, $submitted_on ); ?>
-								<?php Entries_List_Table::get_instance()->display_bulk_resend_notification_button( $this->entry['form_id'], [ $this->entry_id ] ); ?>
-							</div>
-							<div id="postbox-container-2" class="postbox-container">
-								<?php $this->render_form_data( $meta_data, $excluded_fields ); ?>
-							</div>
-							<div id="postbox-container-3" class="postbox-container">
-								<?php $this->render_entry_logs( $entry_logs ); ?>
-							</div>
-						</div><!-- /post-body -->
-						<br class="clear">
-					</div><!-- /poststuff -->
-				</form>
-				<?php
-			}
-			?>
+							?>
+						</div>
+						<div class="edit-entry-footer">
+							<?php wp_nonce_field( 'srfm-edit-entry-' . $this->entry_id, 'srfm-edit-entry-nonce' ); ?>
+							<input type="hidden" name="entry_id" value="<?php echo esc_attr( $this->entry_id ); ?>">
+							<input class="button button-primary srfm-update-entry-btn" type="submit" value="<?php esc_attr_e( 'Update Entry', 'sureforms' ); ?>">
+							<button type="button" class="button srfm-cancel-entry-btn"><?php esc_html_e( 'Cancel', 'sureforms' ); ?></button>
+						</div>
+					</div>
+				</dialog>
+			</form>
 		</div>
 		<?php
 	}
@@ -285,10 +297,6 @@ class Single_Entry {
 		<?php
 	}
 
-	private function is_edit_mode() {
-		return ! empty( $_GET['edit'] ) && sanitize_text_field( wp_unslash( $_GET['edit'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verification is not applicable here due to URL restriction.
-	}
-
 	/**
 	 * Render the form data for a specific entry.
 	 *
@@ -303,24 +311,12 @@ class Single_Entry {
 			<div class="postbox-header">
 				<!-- Removed "hndle ui-sortable-handle" class from h2 to remove the draggable stylings. -->
 				<h2><?php esc_html_e( 'Form Data', 'sureforms' ); ?></h2>
-				<?php
-				if ( $this->is_edit_mode() ) {
-					wp_nonce_field( 'srfm-edit-entry-' . $this->entry_id, 'srfm-edit-entry-nonce' );
-					?>
-					<input type="hidden" name="entry_id" value="<?php echo esc_attr( $this->entry_id ); ?>">
-					<input class="button srfm-edit-entry" type="submit" value="<?php esc_attr_e( 'Save', 'sureforms' ); ?>">
-					<?php
-				} else {
-					?>
-					<a href="<?php echo esc_url( add_query_arg( 'edit', true ) ); ?>" class="button srfm-edit-entry" type="button">
-						<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-							<path d="M11.2411 2.99111L12.3661 1.86612C12.8543 1.37796 13.6457 1.37796 14.1339 1.86612C14.622 2.35427 14.622 3.14573 14.1339 3.63388L7.05479 10.713C6.70234 11.0654 6.26762 11.3245 5.78993 11.4668L4 12L4.53319 10.2101C4.67548 9.73239 4.93456 9.29767 5.28701 8.94522L11.2411 2.99111ZM11.2411 2.99111L13 4.74999M12 9.33333V12.5C12 13.3284 11.3284 14 10.5 14H3.5C2.67157 14 2 13.3284 2 12.5V5.49999C2 4.67157 2.67157 3.99999 3.5 3.99999H6.66667" stroke="#2271b1" stroke-linecap="round" stroke-linejoin="round"/>
-						</svg>
-						<?php esc_html_e( 'Edit', 'sureforms' ); ?>
-					</a>
-					<?php
-				}
-				?>
+				<button class="button srfm-edit-entry" type="button">
+					<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<path d="M11.2411 2.99111L12.3661 1.86612C12.8543 1.37796 13.6457 1.37796 14.1339 1.86612C14.622 2.35427 14.622 3.14573 14.1339 3.63388L7.05479 10.713C6.70234 11.0654 6.26762 11.3245 5.78993 11.4668L4 12L4.53319 10.2101C4.67548 9.73239 4.93456 9.29767 5.28701 8.94522L11.2411 2.99111ZM11.2411 2.99111L13 4.74999M12 9.33333V12.5C12 13.3284 11.3284 14 10.5 14H3.5C2.67157 14 2 13.3284 2 12.5V5.49999C2 4.67157 2.67157 3.99999 3.5 3.99999H6.66667" stroke="#2271b1" stroke-linecap="round" stroke-linejoin="round"/>
+					</svg>
+					<?php esc_html_e( 'Edit', 'sureforms' ); ?>
+				</button>
 			</div>
 			<div class="inside">
 				<table class="widefat striped">
@@ -464,7 +460,7 @@ class Single_Entry {
 												</h4>
 												<div class="entry-log-messages">
 												<?php foreach ( $log['messages'] as $message ) { ?>
-													<p><?php echo esc_html( $message ); ?></p>
+													<p><?php echo wp_kses_post( $message ); ?></p>
 												<?php } ?>
 												</div>
 											</div>

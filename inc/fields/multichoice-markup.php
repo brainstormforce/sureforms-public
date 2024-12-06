@@ -126,7 +126,7 @@ class Multichoice_Markup extends Base {
 						<div class="srfm-block-wrap <?php echo esc_attr( $this->choice_width_attr ); ?> <?php echo $this->vertical_layout ? 'srfm-vertical-layout' : ''; ?>">
 							<?php foreach ( $this->options as $i => $option ) { ?>
 								<label class="srfm-<?php echo esc_attr( $this->slug ); ?>-single">
-									<input type="<?php echo esc_attr( $this->type_attr ); ?>" id="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id . '-' . $i ); ?>" class="srfm-input-<?php echo esc_attr( $this->slug ); ?>-single" <?php echo wp_kses_post( $this->name_attr ); ?>/>
+									<input <?php checked( true, in_array( $option['optionTitle'], explode( ',', $this->default ), true ) ) ?> type="<?php echo esc_attr( $this->type_attr ); ?>" id="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id . '-' . $i ); ?>" class="srfm-input-<?php echo esc_attr( $this->slug ); ?>-single" <?php echo wp_kses_post( $this->name_attr ); ?>/>
 									<div class="srfm-block-content-wrap">
 										<div class="srfm-option-container">
 											<?php if ( 'icon' === $this->option_type && ! empty( $option['icon'] ) ) { ?>

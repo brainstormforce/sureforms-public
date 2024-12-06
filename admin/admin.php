@@ -49,6 +49,7 @@ class Admin {
 		add_action( 'admin_notices', [ $this, 'srfm_pro_version_compatibility' ] );
 
 		// Handle entry actions.
+		add_action( 'admin_init', [ $this, 'save_edit_entry_data' ] );
 		add_action( 'admin_init', [ $this, 'handle_entry_actions' ] );
 		add_action( 'admin_notices', [ Entries_List_Table::class, 'display_bulk_action_notice' ] );
 	}
@@ -764,11 +765,7 @@ class Admin {
 			return;
 		}
 
-		if ( empty( $_POST['srfm_edit_entry'] ) ) {
-			return;
-		}
-
-		$data = Helper::sanitize_by_field_type( wp_unslash( $_POST['srfm_edit_entry'] ) ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- We are sanitizing using our custom function.
+		$data = Helper::sanitize_by_field_type( wp_unslash( $_POST ) ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- We are sanitizing using our custom function.
 
 		$instance = Entries::get_instance();
 
@@ -776,11 +773,18 @@ class Admin {
 		$instance->add_log( sprintf( __( 'Entry edited by %s', 'sureforms' ), wp_get_current_user()->display_name ) ); // Init log.
 
 		$changed = 0;
+		$edited  = [];
 		if ( ! empty( $data ) && is_array( $data ) ) {
 
 			$form_data = $instance::get( $entry_id )['form_data'];
 
 			foreach ( $data as $k => $v ) {
+				if ( ! array_key_exists( $k, $form_data ) ) {
+					continue;
+				}
+
+				$edited[ $k ] = $v;
+
 				if ( ! isset( $form_data[ $k ] ) ) {
 					// &#8594; is html entity for arrow -> sign.
 					$instance->update_log( $instance->get_last_log_key(), null, '"" &#8594; ' . $v );
@@ -802,11 +806,11 @@ class Admin {
 			// Reset logs to zero if no valid changes are made.
 			$instance->reset_logs();
 		}
-
+$edited;
 		$instance::update(
 			$entry_id,
 			[
-				'form_data' => $data,
+				'form_data' => $edited,
 				'logs'      => $instance->get_logs(),
 			]
 		);
