@@ -40,7 +40,7 @@ const GeneralPage = ( {
 						updateGlobalSettings(
 							'srfm_email_summary',
 							value,
-							'email-settings' // TODO: verify settings migration.
+							'email-settings'
 						)
 					}
 				/>
@@ -113,7 +113,7 @@ const GeneralPage = ( {
 								updateGlobalSettings(
 									'srfm_schedule_report',
 									value,
-									'email-settings' // TODO: verify settings migration.
+									'email-settings'
 								)
 							}
 							options={ days }

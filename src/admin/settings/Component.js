@@ -276,7 +276,7 @@ const Component = ( { path } ) => {
 				{ 'general-settings' === path && (
 					<GeneralPage
 						loading={ loading }
-						emailTabOptions={ emailTabOptions } // TODO: Verify settings migration.
+						emailTabOptions={ emailTabOptions }
 						generalTabOptions={ generalTabOptions }
 						updateGlobalSettings={ updateGlobalSettings }
 					/>
