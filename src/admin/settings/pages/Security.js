@@ -6,7 +6,6 @@ import ContentSection from '../components/ContentSection';
 const SecurityPage = ( {
 	loading,
 	securitytabOptions,
-	generalTabOptions, // TODO: Verify migration of honeypot option from general to security.
 	updateGlobalSettings,
 } ) => {
 	const onSelect = () => {
@@ -613,12 +612,12 @@ const SecurityPage = ( {
 													'Enable Honeypot Security for better spam protection',
 													'sureforms'
 												) }
-												checked={ generalTabOptions.srfm_honeypot } // TODO: Verify migration of honeypot option from general to security.
+												checked={ securitytabOptions.srfm_honeypot }
 												onChange={ ( value ) =>
 													updateGlobalSettings(
 														'srfm_honeypot',
 														value,
-														'general-settings'
+														'security-settings'
 													)
 												}
 											/>
