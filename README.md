@@ -256,14 +256,14 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 ## Changelog ##
 ### 1.1.1 - 5th December 2024 ###
 * New: Added an option to export entries in CSV format.
-* Improvement: Introduced a "What's New" notifier for updates.
-* Improvement: Redesigned the phone field search input for a better user experience.
+* Improvement: Introduced a "What's New" notifier to highlight updates.
+* Improvement: Redesigned the search input for the Phone Number field to enhance user experience.
 * Improvement: Updated the SureForms Gutenberg block to API v3 for compatibility with the WordPress zoom feature.
-* Fix: Addressed empty entries in the first field when using Honeypot Security and refined form submission logic.
+* Fix: Addressed an issue where the first field was left empty when using Honeypot Security, and refined the form submission logic.
 * Fix: Fixed form submission failures on sites with WordPress installed in a non-root directory.
-* Fix: Resolved an error with validation for Multi-Choice fields handling minimum and maximum selections.
-* Fix: Resolved an issue where settings pages were hidden when the plugin title was translated.
-* Fix: Fixed an issue where the dropdown search query wasn't cleared after selecting an option.
+* Fix: Fixed an issue where settings pages were hidden when the plugin title was translated.
+* Fix: Resolved a validation error in the Multiple Choice field for minimum and maximum selections.
+* Fix: Resolved an issue where the dropdown search query wasn't cleared after selecting an option.
 ### 1.1.0 - 28th November 2024 ###
 * New: Support for generating multiple choice fields with icons while creating forms with AI.
 * Improvement: Added search option for phone number country code list.
