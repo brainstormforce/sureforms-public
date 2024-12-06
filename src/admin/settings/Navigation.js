@@ -7,7 +7,6 @@ import { applyFilters } from '@wordpress/hooks';
 import {
 	MdSettings,
 	MdWarningAmber,
-	MdOutlineMail,
 	MdOutlineSecurity,
 	MdOutlineDashboardCustomize,
 } from 'react-icons/md';

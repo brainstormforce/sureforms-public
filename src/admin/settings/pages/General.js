@@ -1,5 +1,5 @@
 import { __ } from '@wordpress/i18n';
-import { 
+import {
 	ToggleControl,
 	SelectControl,
 	TextControl,
@@ -46,7 +46,7 @@ const GeneralPage = ( {
 				/>
 				{ emailTabOptions.srfm_email_summary && (
 					<>
-						<div className='srfm-email-input-wrapper'>
+						<div className="srfm-email-input-wrapper">
 							<TextControl
 								label={ __( 'Send Email To', 'sureforms' ) }
 								type="text"

@@ -8,7 +8,6 @@ import toast, { Toaster, ToastBar } from 'react-hot-toast';
 import { navigation } from './Navigation';
 import GeneralPage from './pages/General';
 import ValidationsPage from './pages/Validations';
-import EmailPage from './pages/Email';
 import SecurityPage from './pages/Security';
 import IntegrationPage from './pages/Integrations';
 import { applyFilters } from '@wordpress/hooks';
