@@ -218,7 +218,7 @@ const InstantFormComponent = () => {
 			iframe.src = getIframePreviewURL( currentPost.link );
 		}
 
-		live_mode_prev_srfm_instant_form_settings = _srfm_instant_form_settings
+		live_mode_prev_srfm_instant_form_settings = _srfm_instant_form_settings;
 	}, [ isLiveMode, _srfm_instant_form_settings ] );
 
 	const onHandleChange = ( key, value ) => {
