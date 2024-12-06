@@ -57,7 +57,7 @@ class Updater_Callbacks {
 
 	/**
 	 * Update callback method to handle the honeypot option in the global settings.
-	 * 
+	 *
 	 * @since x.x.x
 	 * @return void
 	 */
@@ -66,12 +66,13 @@ class Updater_Callbacks {
 		$general_options = get_option( 'srfm_general_settings_options' );
 		if ( ! empty( $general_options ) && is_array( $general_options ) && isset( $general_options['srfm_honeypot'] ) ) {
 			// Retrieve the security settings options.
-			$security_options = get_option( 'srfm_security_settings_options', [] );
-			// Set the honeypot setting in the security options.
-			$security_options['srfm_honeypot'] = $general_options['srfm_honeypot'];
-			// Update the security options.
-			update_option( 'srfm_security_settings_options', $security_options );
-
+			$security_options = get_option( 'srfm_security_settings_options' );
+			if ( is_array( $security_options ) ) {
+				// Set the honeypot setting in the security options.
+				$security_options['srfm_honeypot'] = $general_options['srfm_honeypot'];
+				// Update the security options.
+				update_option( 'srfm_security_settings_options', $security_options );
+			}
 			// Remove the honeypot setting from the general options and update it.
 			unset( $general_options['srfm_honeypot'] );
 			update_option( 'srfm_general_settings_options', $general_options );
