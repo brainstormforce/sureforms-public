@@ -402,11 +402,6 @@ class Admin {
 			'is_ver_lower_than_6_7'   => version_compare( $wp_version, '6.6.2', '<=' ),
 		];
 
-		if ( class_exists( 'SRFM_PRO\Admin\Licensing' ) ) {
-			$license_active                         = \SRFM_PRO\Admin\Licensing::is_license_active();
-			$localization_data['is_license_active'] = $license_active;
-		}
-
 		$is_screen_sureforms_menu          = Helper::validate_request_context( 'sureforms_menu', 'page' );
 		$is_screen_add_new_form            = Helper::validate_request_context( 'add-new-form', 'page' );
 		$is_screen_sureforms_form_settings = Helper::validate_request_context( 'sureforms_form_settings', 'page' );
@@ -430,6 +425,18 @@ class Admin {
 			wp_localize_script( SRFM_SLUG . $asset_handle, 'scIcons', [ 'path' => SRFM_URL . 'assets/build/icon-assets' ] );
 
 			$script_translations_handlers[] = SRFM_SLUG . $asset_handle;
+
+			if ( class_exists( 'SRFM_PRO\Admin\Licensing' ) ) {
+				$license_active                         = \SRFM_PRO\Admin\Licensing::is_license_active();
+				$localization_data['is_license_active'] = $license_active;
+
+				// Updating current licensing status.
+				$srfm_pro_license_status = get_option( 'srfm_pro_license_status', '' );
+				$current_license_status  = $license_active ? 'licensed' : 'unlicensed';
+				if ( $current_license_status !== $srfm_pro_license_status ) {
+					update_option( 'srfm_pro_license_status', $current_license_status );
+				}
+			}
 
 			$localization_data['security_settings_url'] = admin_url( '/admin.php?page=sureforms_form_settings&tab=security-settings' );
 			wp_localize_script(
@@ -714,10 +721,8 @@ class Admin {
 	 * @return void
 	 */
 	public function handle_entry_actions() {
-		if ( isset( $_GET['entry'] ) && isset( $_GET['action'] ) ) {
-			Entries_List_Table::process_bulk_actions();
-			return;
-		}
+		Entries_List_Table::process_bulk_actions();
+
 		if ( ! isset( $_GET['page'] ) || SRFM_ENTRIES !== $_GET['page'] ) {
 			return;
 		}
@@ -755,10 +760,6 @@ class Admin {
 			return;
 		}
 
-		if ( version_compare( SRFM_PRO_VER, SRFM_PRO_RECOMMENDED_VER, '>=' ) ) {
-			return;
-		}
-
 		if ( empty( get_current_screen() ) ) {
 			return;
 		}
@@ -767,20 +768,43 @@ class Admin {
 			return;
 		}
 
-		$pro_plugin_name     = defined( 'SRFM_PRO_PRODUCT' ) ? SRFM_PRO_PRODUCT : 'SureForms Pro';
-		$srfm_billing_portal = defined( 'SRFM_BILLING_PORTAL' ) ? SRFM_BILLING_PORTAL : 'https://billing.sureforms.com/';
-		$message             = '<p>' . sprintf(
-			// translators: %1$s: SureForms version, %2$s: SureForms Pro Plugin Name, %3$s: SureForms Pro Version, %4$s: Anchor tag open, %5$s: Closing anchor tag.
-			esc_html__( 'SureForms %1$s requires minimum %2$s %3$s to work properly. Download the latest ZIP from %4$s here%5$s.', 'sureforms' ),
-			esc_html( SRFM_VER ),
-			esc_html( $pro_plugin_name ),
-			esc_html( SRFM_PRO_RECOMMENDED_VER ),
-			'<a href="' . esc_url( $srfm_billing_portal ) . '" target="_blank">',
-			'</a>'
-		) . '</p>';
+		$srfm_pro_license_status = get_option( 'srfm_pro_license_status', '' );
+		/**
+		 * If the license status is not set then get the license status and update the option accordingly.
+		 * This will be executed only once. Subsequently, the option status is updated by the licensing class on license activation or deactivation.
+		 */
+		if ( empty( $srfm_pro_license_status ) && class_exists( 'SRFM_PRO\Admin\Licensing' ) ) {
+			$srfm_pro_license_status = \SRFM_PRO\Admin\Licensing::is_license_active() ? 'licensed' : 'unlicensed';
+			update_option( 'srfm_pro_license_status', $srfm_pro_license_status );
+		}
 
-		// Phpcs ignore comment is required as $message variable is already escaped.
-		echo '<div class="error">' . $message . '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		$pro_plugin_name = defined( 'SRFM_PRO_PRODUCT' ) ? SRFM_PRO_PRODUCT : 'SureForms Pro';
+		$message         = '';
+		$url             = admin_url( 'admin.php?page=sureforms_form_settings&tab=account-settings' );
+		if ( 'unlicensed' === $srfm_pro_license_status ) {
+			$message = '<p>' . sprintf(
+				// translators: %1$s: Opening anchor tag with URL, %2$s: Closing anchor tag, %3$s: SureForms Pro Plugin Name.
+				esc_html__( 'Please %1$sactivate%2$s your copy of %3$s to get new features, access support, receive update notifications, and more.', 'sureforms' ),
+				'<a href="' . esc_url( $url ) . '">',
+				'</a>',
+				'<i>' . esc_html( $pro_plugin_name ) . '</i>'
+			) . '</p>';
+		}
+
+		if ( ! version_compare( SRFM_PRO_VER, SRFM_PRO_RECOMMENDED_VER, '>=' ) ) {
+			$message .= '<p>' . sprintf(
+				// translators: %1$s: SureForms version, %2$s: SureForms Pro Plugin Name, %3$s: SureForms Pro Version, %4$s: Anchor tag open, %5$s: Closing anchor tag.
+				esc_html__( 'SureForms %1$s requires minimum %2$s %3$s to work properly. Please update to the latest version.', 'sureforms' ),
+				esc_html( SRFM_VER ),
+				esc_html( $pro_plugin_name ),
+				esc_html( SRFM_PRO_RECOMMENDED_VER ),
+			) . '</p>';
+		}
+
+		if ( ! empty( $message ) ) {
+			// Phpcs ignore comment is required as $message variable is already escaped.
+			echo '<div class="notice notice-warning">' . $message . '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		}
 	}
 
 }
