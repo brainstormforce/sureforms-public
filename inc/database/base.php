@@ -707,6 +707,7 @@ abstract class Base {
 	 *     }
 	 * }
 	 *
+	 * @since 1.1.1 -- Added support for "IN" compare.
 	 * @since 0.0.13
 	 * @return string The prepared SQL WHERE clause with placeholders, or an empty string if no clauses were provided.
 	 */
@@ -730,12 +731,24 @@ abstract class Base {
 				if ( is_int( $key ) ) {
 					foreach ( $value as $_key => $_value ) {
 						if ( is_int( $_key ) ) {
-							if ( 'LIKE' === $_value['compare'] ) {
-								$where .= ' ' . $_value['key'] . ' ' . $_value['compare'] . ' "%%' . $this->get_format_by_datatype( Helper::get_string_value( $schema[ $_value['key'] ]['type'] ) ) . '%%" ' . $relation;
-							} else {
-								$where .= ' ' . $_value['key'] . ' ' . $_value['compare'] . ' ' . $this->get_format_by_datatype( Helper::get_string_value( $schema[ $_value['key'] ]['type'] ) ) . ' ' . $relation;
+							switch ( $_value['compare'] ) {
+								case 'LIKE':
+									$where   .= ' ' . $_value['key'] . ' ' . $_value['compare'] . ' "%%' . $this->get_format_by_datatype( Helper::get_string_value( $schema[ $_value['key'] ]['type'] ) ) . '%%" ' . $relation;
+									$values[] = $_value['value'];
+									break;
+
+								case 'IN':
+									// Based on the number of values and datatype, it will create WHERE clause for $wpdb::prepare method. Eg: for ID with three values column: ID IN (%d, %d, %d).
+									$datatype = $this->get_format_by_datatype( Helper::get_string_value( $schema[ $_value['key'] ]['type'] ) );
+									$where   .= ' ' . $_value['key'] . ' ' . $_value['compare'] . ' (' . implode( ', ', array_fill( 0, count( $_value['value'] ), $datatype ) ) . ') ' . $relation;
+									$values   = array_merge( $values, $_value['value'] );
+									break;
+
+								default:
+									$where   .= ' ' . $_value['key'] . ' ' . $_value['compare'] . ' ' . $this->get_format_by_datatype( Helper::get_string_value( $schema[ $_value['key'] ]['type'] ) ) . ' ' . $relation;
+									$values[] = $_value['value'];
+									break;
 							}
-							$values[] = $_value['value'];
 						}
 					}
 					continue;
