@@ -228,6 +228,17 @@
 			display: none;
 		}
 
+		.srfm-multi-choice-block .srfm-block-wrap {
+			display: flex;
+			justify-content: space-between;
+
+			.srfm-multi-choice-single {
+				display: flex;
+				align-items: center;
+				gap: 6px;
+				cursor: pointer;
+			}
+		}
 	}
 
 	.edit-entry-footer {

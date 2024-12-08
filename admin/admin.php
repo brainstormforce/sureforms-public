@@ -783,7 +783,7 @@ class Admin {
 	 */
 	public function save_edit_entry_data() {
 
-		if ( empty( $_POST['srfm-edit-entry-nonce'] ) && empty( $_POST['entry_id'] ) ) {
+		if ( empty( $_POST['srfm-edit-entry-nonce'] ) || empty( $_POST['entry_id'] ) ) {
 			// Bail early if we don't have nonce key or entry id key.
 			return;
 		}

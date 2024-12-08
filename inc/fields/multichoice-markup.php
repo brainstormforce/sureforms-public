@@ -146,7 +146,13 @@ class Multichoice_Markup extends Base {
 							<?php } ?>
 						</div>
 					<?php } ?>
-				<div class="srfm-error-wrap"><?php echo wp_kses_post( $this->error_msg_markup ); ?></div>
+					<?php
+					if ( ! $this->is_editing ) {
+						?>
+						<div class="srfm-error-wrap"><?php echo wp_kses_post( $this->error_msg_markup ); ?></div>
+						<?php
+					}
+					?>
 			</fieldset>
 		</div>
 		<?php

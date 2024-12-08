@@ -61,9 +61,15 @@ class Phone_Markup extends Base {
 				<?php echo ! empty( $this->aria_described_by ) ? "aria-describedby='" . esc_attr( trim( $this->aria_described_by ) ) . "'" : ''; ?>
 				data-required="<?php echo esc_attr( $this->data_require_attr ); ?>" auto-country="<?php echo esc_attr( $this->auto_country ? 'true' : 'false' ); ?>" value="<?php echo esc_attr( $this->default ); ?>" <?php echo wp_kses_post( $this->placeholder_attr ); ?>>
 			</div>
-			<div class="srfm-error-wrap">
-				<?php echo wp_kses_post( $this->error_msg_markup ); ?>
-			</div>
+			<?php
+			if ( ! $this->is_editing ) {
+				?>
+				<div class="srfm-error-wrap">
+					<?php echo wp_kses_post( $this->error_msg_markup ); ?>
+				</div>
+				<?php
+			}
+			?>
 		</div>
 		<?php
 		return ob_get_clean();

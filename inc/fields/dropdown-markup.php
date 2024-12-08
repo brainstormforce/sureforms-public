@@ -96,9 +96,15 @@ class Dropdown_Markup extends Base {
 					</select>
 					<?php } ?>
 					</div>
-					<div class="srfm-error-wrap">
-						<?php echo wp_kses_post( $this->error_msg_markup ); ?>
-					</div>
+					<?php
+					if ( ! $this->is_editing ) {
+						?>
+						<div class="srfm-error-wrap">
+							<?php echo wp_kses_post( $this->error_msg_markup ); ?>
+						</div>
+						<?php
+					}
+					?>
 				</fieldset>
 			</div>
 		<?php
