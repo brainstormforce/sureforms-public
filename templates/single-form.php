@@ -133,12 +133,12 @@ if ( $use_banner_as_page_background ) {
 	</style>
 </head>
 
-	<?php 
+	<?php
 		// Filter to use custom body content on the Instant Form page.
-		if ( ! apply_filters( 'srfm_do_not_use_default_body', false, $instant_form_settings ) ) {
-	?>
+	if ( ! apply_filters( 'srfm_do_not_use_default_body', false, $instant_form_settings ) ) {
+		?>
 		<body <?php body_class( $body_classes ); ?>>
-			<?php if ( ! $srfm_form_preview ) { ?>
+		<?php if ( ! $srfm_form_preview ) { ?>
 				<div id="srfm-single-page-container" class="srfm-single-page-container <?php echo (bool) $single_page_form_title ? 'has-form-title' : ''; ?>">
 					<div class="srfm-page-banner">
 						<?php
@@ -184,24 +184,24 @@ if ( $use_banner_as_page_background ) {
 					}
 					?>
 				</div>
-			<?php } else { ?>
+        <?php } else { ?>
 				<?php
 				show_admin_bar( false );
 				// phpcs:ignore
 				echo Generate_Form_Markup::get_form_markup( $srfm_custom_post_id, false, 'sureforms_form' );
 				// phpcs:ignoreEnd
-			}
+        }
 			wp_footer();
 			?>
 		</body>
-	<?php
-		} else {
-			// Action to load custom body content on the Instant Form page.
-			do_action( 'srfm_load_alternate_instant_form_body', $srfm_custom_post_id, $srfm_form_preview, $instant_form_settings, $body_classes, $srfm_live_mode_data );
-		} 
+		<?php
+	} else {
+		// Action to load custom body content on the Instant Form page.
+		do_action( 'srfm_load_alternate_instant_form_body', $srfm_custom_post_id, $srfm_form_preview, $instant_form_settings, $body_classes, $srfm_live_mode_data );
+	}
 
-		if ( $srfm_live_mode_data ) {
-			?>
+	if ( $srfm_live_mode_data ) {
+		?>
 			<script>
 				(function() {
 					document.addEventListener('DOMContentLoaded', function() {
@@ -209,8 +209,8 @@ if ( $use_banner_as_page_background ) {
 					});
 				}());
 			</script>
-			<?php
-		}
+		<?php
+	}
 	?>
 
 </html>
