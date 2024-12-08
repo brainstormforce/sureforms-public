@@ -184,15 +184,15 @@ if ( $use_banner_as_page_background ) {
 					}
 					?>
 				</div>
-        <?php } else { ?>
+		<?php } else { ?>
 				<?php
 				show_admin_bar( false );
 				// phpcs:ignore
 				echo Generate_Form_Markup::get_form_markup( $srfm_custom_post_id, false, 'sureforms_form' );
 				// phpcs:ignoreEnd
-        }
+		}
 			wp_footer();
-			?>
+		?>
 		</body>
 		<?php
 	} else {
