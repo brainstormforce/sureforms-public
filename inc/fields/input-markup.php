@@ -79,9 +79,15 @@ class Input_Markup extends Base {
 					<?php echo ! empty( $this->aria_described_by ) ? "aria-describedby='" . esc_attr( trim( $this->aria_described_by ) ) . "'" : ''; ?>
 					data-required="<?php echo esc_attr( strval( $this->data_require_attr ) ); ?>" data-unique="<?php echo esc_attr( $this->aria_unique ); ?>" maxlength="<?php echo esc_attr( $this->max_text_length ); ?>" value="<?php echo esc_attr( $this->default ); ?>" <?php echo wp_kses_post( $this->placeholder_attr ); ?> data-srfm-mask="<?php echo esc_attr( $this->input_mask ); ?>" <?php echo ! empty( $this->custom_input_mask ) ? 'data-custom-srfm-mask="' . esc_attr( $this->custom_input_mask ) . '"' : ''; ?> />
 				</div>
-				<div class="srfm-error-wrap">
-					<?php echo wp_kses_post( $this->duplicate_msg_markup ); ?>
-				</div>
+				<?php
+				if ( ! $this->is_editing ) {
+					?>
+					<div class="srfm-error-wrap">
+						<?php echo wp_kses_post( $this->duplicate_msg_markup ); ?>
+					</div>
+					<?php
+				}
+				?>
 			</div>
 		<?php
 		return ob_get_clean();

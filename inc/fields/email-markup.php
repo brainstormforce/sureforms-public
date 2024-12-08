@@ -126,9 +126,15 @@ class Email_Markup extends Base {
 							data-required="<?php echo esc_attr( $this->data_require_attr ); ?>" <?php echo wp_kses_post( $this->default_value_attr ); ?> <?php echo wp_kses_post( $this->placeholder_attr ); ?>  />
 						<?php echo $this->error_svg; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Ignored to render svg ?>
 						</div>
-						<div class="srfm-error-wrap">
-						<?php echo wp_kses_post( $this->error_msg_markup ); ?>
-						</div>
+						<?php
+						if ( ! $this->is_editing ) {
+							?>
+							<div class="srfm-error-wrap">
+							<?php echo wp_kses_post( $this->error_msg_markup ); ?>
+							</div>
+							<?php
+						}
+						?>
 					</div>
 				<?php } ?>
 			</div>
