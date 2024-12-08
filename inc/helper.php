@@ -121,6 +121,25 @@ class Helper {
 	}
 
 	/**
+	 * Extracts the field label from the dynamic field key ( or field slug ).
+	 *
+	 * @param string $field_key Dynamic field key.
+	 * @since 1.1.1
+	 * @return string Extracted field label.
+	 */
+	public static function get_field_label_from_key( $field_key ) {
+		if ( false === strpos( $field_key, '-lbl-' ) ) {
+			return '';
+		}
+
+		$label = explode( '-lbl-', $field_key )[1];
+		// Getting the encrypted label. we are removing the block slug here.
+		$label = explode( '-', $label )[0];
+
+		return $label ? html_entity_decode( self::decrypt( $label ) ) : '';
+	}
+
+	/**
 	 * Returns the proper sanitize callback functions according to the field type.
 	 *
 	 * @param string $field_type HTML field type.
@@ -970,5 +989,55 @@ class Helper {
 	 */
 	public static function register_script_translations( $handle, $domain = 'sureforms', $path = SRFM_DIR . 'languages' ) {
 		wp_set_script_translations( $handle, $domain, $path );
+	}
+
+	/**
+	 * Validates whether the specified conditions or a single key-value pair exist in the request context.
+	 *
+	 * - If `$conditions` is provided as an array, it will validate all key-value pairs in `$conditions`
+	 *   against the `$_REQUEST` superglobal.
+	 * - If `$conditions` is empty, it validates a single key-value pair from `$key` and `$value`.
+	 *
+	 * @param string                $value      The expected value to match in the request if `$conditions` is not used.
+	 * @param string                $key        The key to check for in the request if `$conditions` is not used.
+	 * @param array<string, string> $conditions An optional associative array of key-value pairs to validate.
+	 * @since 1.1.1
+	 * @return bool Returns true if all conditions are met or the single key-value pair is valid, otherwise false.
+	 */
+	public static function validate_request_context( $value, $key = 'post_type', array $conditions = [] ) {
+		// If conditions are provided, validate all key-value pairs in the conditions array.
+		if ( ! empty( $conditions ) ) {
+			foreach ( $conditions as $condition_key => $condition_value ) {
+				if ( ! isset( $_REQUEST[ $condition_key ] ) || $_REQUEST[ $condition_key ] !== $condition_value ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- This is a controlled comparison of request values.
+					// Return false if any condition is not satisfied.
+					return false;
+				}
+			}
+			// Return true if all conditions are satisfied.
+			return true;
+		}
+
+		// Validate $value and $key when no conditions are provided.
+		if ( empty( $key ) || empty( $value ) ) {
+			return false;
+		}
+
+		// Validate a single key-value pair when no conditions are provided.
+		return isset( $_REQUEST[ $key ] ) && $_REQUEST[ $key ] === $value; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Input is validated via strict comparison.
+	}
+
+	/**
+	 * Retrieve the list of excluded fields for form data processing.
+	 *
+	 * This method returns an array of field keys that should be excluded when
+	 * processing form data.
+	 *
+	 * @since 1.1.1
+	 * @return array<string> Returns the string array of excluded fields.
+	 */
+	public static function get_excluded_fields() {
+		$excluded_fields = [ 'srfm-honeypot-field', 'g-recaptcha-response', 'srfm-sender-email-field', 'form-id' ];
+
+		return apply_filters( 'srfm_excluded_fields', $excluded_fields );
 	}
 }
