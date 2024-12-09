@@ -667,13 +667,20 @@ class Admin {
 			'srfm-template-picker'                   => Helper::validate_request_context( 'add-new-form', 'page' ),
 		];
 
+		$add_srfm_classes = '';
+
 		// Loop through the defined classes and conditions.
 		foreach ( $srfm_classes as $class => $condition ) {
 			// Check if the condition evaluates to true.
 			if ( $condition ) {
 				// Append the class to the existing classes string, followed by a space.
-				$classes .= $class . ' ';
+				$add_srfm_classes .= $class . ' ';
 			}
+		}
+
+		// Append the new classes to the existing classes string.
+		if ( ! empty( $add_srfm_classes ) ) {
+			$classes .= ' ' . $add_srfm_classes;
 		}
 
 		// Return the updated list of classes.
