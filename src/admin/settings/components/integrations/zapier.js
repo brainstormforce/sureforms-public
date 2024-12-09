@@ -1,6 +1,6 @@
 import { applyFilters } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
-import ZapierIcon from '@Image/zapier.png';
+import ZapierIcon from '@Image/zapier.jpeg';
 import UpgradeToProButton from '@Admin/components/UpgradeToProButton';
 
 const Zapier = () => {
@@ -16,6 +16,7 @@ const Zapier = () => {
 					<div className="srfm-integration-icon">
 						<img src={ ZapierIcon } style={ {
 							width: '50px',
+							borderRadius: '10px',
 							height: '50px',
 						} } alt={ __( 'Zapier', 'sureforms' ) } />
 					</div>
