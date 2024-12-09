@@ -182,13 +182,13 @@ class Entries extends Base {
 	 * @return int|null The key of the newly added log entry, or null if the log could not be added.
 	 */
 	public function add_log( $title, $messages = [] ) {
-		$tog = [
+		$log = [
 			'title'     => Helper::get_string_value( trim( $title ) ),
 			'messages'  => Helper::get_array_value( $messages ),
 			'timestamp' => time(),
 		];
 
-		$this->logs = array_merge( [ $tog ], $this->logs );
+		$this->logs = array_merge( [ $log ], $this->logs );
 
 		return $this->get_last_log_key();
 	}

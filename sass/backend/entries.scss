@@ -1,3 +1,32 @@
+
+.in-progress-overlay {
+	position: absolute;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	background: #fff;
+	opacity: 0.8;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	&.hidden {
+		display: none;
+	}
+
+	svg {
+		.spinner_z9k8 {
+			transform-origin: center;
+			animation: srfm_svg_spinner 0.75s infinite linear;
+		}
+		@keyframes srfm_svg_spinner {
+			100% {
+				transform: rotate( 360deg );
+			}
+		}
+	}
+}
+
 .srfm-resend-notification-message {
 	display: flex;
 	gap: 8px;
@@ -46,6 +75,24 @@
 	}
 }
 
+.srfm-entry-logs {
+	.in-progress-overlay {
+		z-index: 999;
+		justify-content: center;
+	}
+
+	.entry-logs-navigation-btn.disabled {
+		pointer-events: none;
+		opacity: 0.6;
+	}
+}
+
+.entry-notes {
+	.in-progress-overlay {
+		z-index: 999;
+	}
+}
+
 #srfm-resend-notification-modal {
 	position: relative;
 	padding: 0px;
@@ -56,34 +103,6 @@
 
 	&::backdrop {
 		background: #0f172ad9;
-	}
-
-	.in-progress-overlay {
-		position: absolute;
-		top: 0;
-		width: 100%;
-		height: 100%;
-		background: #fff;
-		opacity: 0.8;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-
-		&.hidden {
-			display: none;
-		}
-
-		svg {
-			.spinner_z9k8 {
-				transform-origin: center;
-				animation: srfm_svg_spinner 0.75s infinite linear;
-			}
-			@keyframes srfm_svg_spinner {
-				100% {
-					transform: rotate( 360deg );
-				}
-			}
-		}
 	}
 
 	.modal-title {

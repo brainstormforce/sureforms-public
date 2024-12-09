@@ -491,6 +491,20 @@ class Admin {
 							],
 							admin_url( 'admin-ajax.php' )
 						),
+						'navigateNotes' => add_query_arg(
+							[
+								'action'   => 'sureforms_navigate_entry_notes',
+								'security' => wp_create_nonce( '_srfm_navigate_entry_notes_nonce' ),
+							],
+							admin_url( 'admin-ajax.php' )
+						),
+						'navigateLogs' => add_query_arg(
+							[
+								'action'   => 'sureforms_navigate_entry_logs',
+								'security' => wp_create_nonce( '_srfm_navigate_entry_logs_nonce' ),
+							],
+							admin_url( 'admin-ajax.php' )
+						),
 						'resendNotification' => add_query_arg(
 							[
 								'action'   => 'sureforms_resend_email_notifications',

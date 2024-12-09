@@ -61,6 +61,48 @@
 					textarea.value = '';
 				} );
 		} );
+
+		const navigateNotes = () => {
+			let lastResponse = {};
+			const spinner = entryNotes.querySelector('.in-progress-overlay');
+			const notesContainer = entryNotes.querySelector('.entry-notes-container');
+			const navBtns = document.querySelectorAll('.entry-notes-nav-btn');
+
+			const fetchMarkup = async (type = false) => {
+				spinner.classList.remove('hidden');
+
+				const formData = new FormData();
+
+				formData.append( 'type',  type );
+				formData.append( 'entryID', srfm_entries.entryID );
+
+				Object.keys(lastResponse).forEach((responseKey) => {
+					formData.append( responseKey, lastResponse[responseKey] );
+				});
+
+				await fetch( srfm_entries.ajaxURLs.navigateNotes, {
+					method: 'POST',
+					body: formData,
+				} )
+				.then( ( res ) => res.json() )
+				.then( ( res ) => {
+					if ( ! res?.success ) {
+						return;
+					}
+
+					notesContainer.innerHTML = res?.data?.markup;
+					lastResponse = res?.data || {};
+				} )
+				.finally(() => {
+					spinner.classList.add( 'hidden' );
+				});
+			}
+
+			// Fetch logs on first page load.
+			fetchMarkup();
+		}
+
+		navigateNotes();
 	}
 
 	/**
@@ -290,9 +332,99 @@
 		} );
 	}
 
+	function handleLogsNavigation() {
+		let lastResponse = {};
+		let lastPayload = {};
+		const spinner = document.querySelector('.srfm-entry-logs .in-progress-overlay');
+		const logsWrapper = document.querySelector('.srfm-entry-logs .inside');
+		const navBtns = document.querySelectorAll('.entry-logs-navigation-btn');
+
+		const fetchMarkup = async (args = {}) => {
+			spinner.classList.remove('hidden');
+
+			const formData = new FormData();
+
+			formData.append( 'entryID', srfm_entries.entryID );
+
+			// Use last response as payload.
+			Object.keys(lastResponse).forEach((responseKey) => {
+				if ( 'markup' === responseKey ) {
+					return;
+				}
+				formData.append( responseKey, lastResponse[responseKey] );
+			});
+
+			// If any additional arguments provided.
+			Object.keys(args).forEach((argKey) => {
+				formData.append( argKey, args[argKey] );
+			});
+
+			lastPayload = lastResponse;
+
+			await fetch( srfm_entries.ajaxURLs.navigateLogs, {
+				method: 'POST',
+				body: formData,
+			} )
+			.then( ( res ) => res.json() )
+			.then( ( res ) => {
+				if ( ! res?.success ) {
+					return;
+				}
+				lastResponse = res?.data || {};
+
+				logsWrapper.innerHTML = lastResponse?.markup;
+
+				const deleteBtns = document.querySelectorAll('.btn-delete-log');
+
+				deleteBtns.forEach((deleteBtn) => {
+					deleteBtn.addEventListener('click', function(e) {
+						e.preventDefault();
+
+						fetchMarkup({
+							deleteLog: this.getAttribute('data-log-key'),
+							...lastPayload
+						});
+					});
+				});
+
+				if ( false === lastResponse?.nextPage ) {
+					document.querySelector('.entry-logs-navigation-btn[data-type="next"]')
+					.classList.add('disabled');
+				} else {
+					document.querySelector('.entry-logs-navigation-btn[data-type="next"]')
+					.classList.remove('disabled');
+				}
+
+				if ( false === lastResponse?.prevPage ) {
+					document.querySelector('.entry-logs-navigation-btn[data-type="prev"]')
+					.classList.add('disabled');
+				} else {
+					document.querySelector('.entry-logs-navigation-btn[data-type="prev"]')
+					.classList.remove('disabled');
+				}
+			} )
+			.finally(() => {
+				spinner.classList.add( 'hidden' );
+			});
+		}
+
+		// Fetch logs on first page load.
+		fetchMarkup();
+
+		navBtns.forEach((navBtn) => {
+			navBtn.addEventListener('click', function(e) {
+				e.preventDefault();
+				fetchMarkup({
+					type: this.getAttribute('data-type')
+				});
+			});
+		});
+	}
+
 	window.addEventListener( 'load', function () {
 		handleEditEntry();
 		handleEntryNotes();
+		handleLogsNavigation();
 		handleEntryResendNotification();
 	} );
 }() );

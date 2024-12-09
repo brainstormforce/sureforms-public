@@ -41,6 +41,8 @@ class Admin_Ajax {
 		add_action( 'wp_ajax_sureforms_integration', [ $this, 'generate_data_for_suretriggers_integration' ] );
 
 		add_action( 'wp_ajax_sureforms_save_entry_notes', [ $this, 'save_entry_notes' ] );
+		add_action( 'wp_ajax_sureforms_navigate_entry_notes', [ $this, 'navigate_entry_notes' ] );
+		add_action( 'wp_ajax_sureforms_navigate_entry_logs', [ $this, 'navigate_entry_logs' ] );
 
 		add_filter( SRFM_SLUG . '_admin_filter', [ $this, 'localize_script_integration' ] );
 	}
@@ -185,6 +187,145 @@ class Admin_Ajax {
 		$data = ob_get_clean();
 
 		wp_send_json_success( $data );
+	}
+
+	public function navigate_entry_notes() {
+		$response_data = [ 'message' => $this->get_error_msg( 'permission' ) ];
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( $response_data );
+		}
+
+		if ( empty( $_POST['entryID'] ) ) {
+			$response_data = [ 'message' => $this->get_error_msg( 'invalid' ) ];
+			wp_send_json_error( $response_data );
+		}
+
+		/**
+		 * Nonce verification.
+		 */
+		if ( ! check_ajax_referer( '_srfm_navigate_entry_notes_nonce', 'security' ) ) {
+			$response_data = [ 'message' => $this->get_error_msg( 'nonce' ) ];
+			wp_send_json_error( $response_data );
+		}
+
+		$notes_per_page = 3;
+		$entry_id      = absint( wp_unslash( $_POST['entryID'] ) );
+		$entry         = Entries::get( $entry_id );
+		$type          = ! empty( $_POST['type'] ) ? sanitize_text_field( wp_unslash( $_POST['type'] ) ) : 'next';
+
+		if ( 'next' === $type ) {
+			$current_page = isset( $_POST['nextPage'] ) ? absint( wp_unslash( $_POST['nextPage'] ) ) : 1;
+		} else {
+			$current_page = isset( $_POST['prevPage'] ) ? absint( wp_unslash( $_POST['prevPage'] ) ) : 1;
+		}
+
+		$notes        = ! empty( $entry['notes'] ) ? Helper::get_array_value( $entry['notes'] ) : [];
+		$total_notes  = count( $notes );
+		$total_pages = (int) ceil( $total_notes / $notes_per_page );
+
+		// Ensure current page is within bounds
+		$current_page = max( 1, min( $total_pages, $current_page ) );
+
+		// Calculate the offset for slicing
+		$offset = ( $current_page - 1 ) * $notes_per_page;
+
+		// Get the items for the current page
+		$entry_notes = array_slice( $notes, $offset, $notes_per_page, true );
+
+		// Determine the next and previous page numbers
+		$next_page = $current_page < $total_pages ? $current_page + 1 : false;
+		$prev_page = $current_page > 1 ? $current_page - 1 : false;
+
+		ob_start();
+		if ( ! empty( $entry_notes ) && is_array( $entry_notes ) ) {
+			foreach ( $entry_notes as $entry_note ) {
+				Single_Entry::entry_note_item_markup( $entry_note );
+			}
+		}
+		$markup = ob_get_clean();
+
+		wp_send_json_success( [
+			'markup'      => $markup,
+			'totalPages'  => $total_pages,
+			'currentPage' => $current_page,
+			'nextPage'    => $next_page,
+			'prevPage'    => $prev_page,
+		] );
+	}
+
+	public function navigate_entry_logs() {
+		$response_data = [ 'message' => $this->get_error_msg( 'permission' ) ];
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( $response_data );
+		}
+
+		if ( empty( $_POST['entryID'] ) ) {
+			$response_data = [ 'message' => $this->get_error_msg( 'invalid' ) ];
+			wp_send_json_error( $response_data );
+		}
+
+		/**
+		 * Nonce verification.
+		 */
+		if ( ! check_ajax_referer( '_srfm_navigate_entry_logs_nonce', 'security' ) ) {
+			$response_data = [ 'message' => $this->get_error_msg( 'nonce' ) ];
+			wp_send_json_error( $response_data );
+		}
+
+		$logs_per_page = 5;
+		$entry_id      = absint( wp_unslash( $_POST['entryID'] ) );
+		$entry         = Entries::get( $entry_id );
+		$logs          = ! empty( $entry['logs'] ) ? Helper::get_array_value( $entry['logs'] ) : [];
+
+		$type      = ! empty( $_POST['type'] ) ? sanitize_text_field( wp_unslash( $_POST['type'] ) ) : 'next';
+		$deleteLog = isset( $_POST['deleteLog'] ) ? absint( wp_unslash( $_POST['deleteLog'] ) ) : false;
+
+		if ( 'next' === $type ) {
+			$current_page = isset( $_POST['nextPage'] ) ? absint( wp_unslash( $_POST['nextPage'] ) ) : 1;
+		} else {
+			$current_page = isset( $_POST['prevPage'] ) ? absint( wp_unslash( $_POST['prevPage'] ) ) : 1;
+		}
+
+		if ( false !== $deleteLog && isset( $logs[ $deleteLog ] ) ) {
+			unset( $logs[ $deleteLog ] );
+			$logs = array_values( $logs );
+
+			Entries::get_instance()->use_update( [
+				'logs' => $logs
+			], [ 'ID' => absint( $entry_id ) ] );
+
+			$current_page = $current_page - 1;
+		}
+
+		$total_logs  = count( $logs );
+		$total_pages = (int) ceil( $total_logs / $logs_per_page );
+
+		// Ensure current page is within bounds
+		$current_page = max( 1, min( $total_pages, $current_page ) );
+
+		// Calculate the offset for slicing
+		$offset = ( $current_page - 1 ) * $logs_per_page;
+
+		// Get the items for the current page
+		$entry_logs = array_slice( $logs, $offset, $logs_per_page, true );
+
+		// Determine the next and previous page numbers
+		$next_page = $current_page < $total_pages ? $current_page + 1 : false;
+		$prev_page = $current_page > 1 ? $current_page - 1 : false;
+
+		ob_start();
+		Single_Entry::entry_logs_table_markup( $entry_logs );
+		$markup = ob_get_clean();
+
+		wp_send_json_success( [
+			'markup'      => $markup,
+			'totalPages'  => $total_pages,
+			'currentPage' => $current_page,
+			'nextPage'    => $next_page,
+			'prevPage'    => $prev_page,
+		] );
 	}
 
 	/**
