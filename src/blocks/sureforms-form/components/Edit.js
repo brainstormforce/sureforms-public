@@ -149,6 +149,7 @@ export default ( { attributes, setAttributes } ) => {
 								onChange={ ( value ) => {
 									setTitle( value );
 								} }
+								className="srfm-form-page-title-input-wrapper"
 							/>
 						</PanelRow>
 					) }
