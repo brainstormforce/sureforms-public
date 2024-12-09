@@ -36,6 +36,7 @@ class Phone_Markup extends Base {
 		$this->set_properties( $attributes );
 		$this->set_input_label( __( 'Phone', 'sureforms' ) );
 		$this->set_error_msg( $attributes, 'srfm_phone_block_required_text' );
+		$this->set_duplicate_msg( $attributes, 'srfm_phone_block_unique_text' );
 		$this->slug         = 'phone';
 		$this->auto_country = $attributes['autoCountry'] ?? '';
 		$this->set_unique_slug();
@@ -59,10 +60,10 @@ class Phone_Markup extends Base {
 			<div class="srfm-block-wrap">
 				<input type="tel" class="srfm-input-common srfm-input-<?php echo esc_attr( $this->slug ); ?>" name="<?php echo esc_attr( $this->field_name ); ?>" id="<?php echo esc_attr( $this->unique_slug ); ?>"
 				<?php echo ! empty( $this->aria_described_by ) ? "aria-describedby='" . esc_attr( trim( $this->aria_described_by ) ) . "'" : ''; ?>
-				data-required="<?php echo esc_attr( $this->data_require_attr ); ?>" auto-country="<?php echo esc_attr( $this->auto_country ? 'true' : 'false' ); ?>" value="" <?php echo wp_kses_post( $this->placeholder_attr ); ?>>
+				data-required="<?php echo esc_attr( $this->data_require_attr ); ?>" auto-country="<?php echo esc_attr( $this->auto_country ? 'true' : 'false' ); ?>" value="" <?php echo wp_kses_post( $this->placeholder_attr ); ?> data-unique="<?php echo esc_attr( $this->aria_unique ); ?>">
 			</div>
 			<div class="srfm-error-wrap">
-				<?php echo wp_kses_post( $this->error_msg_markup ); ?>
+				<?php echo wp_kses_post( $this->duplicate_msg_markup ); ?>
 			</div>
 		</div>
 		<?php
