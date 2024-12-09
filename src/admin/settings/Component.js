@@ -261,7 +261,7 @@ const Component = ( { path } ) => {
 					/>
 				) }
 			</Toaster>
-			<div className="srfm-page-heading">
+			{ pageIcon && pageTitle && <div className="srfm-page-heading">
 				<div className="srfm-page-icon">{ pageIcon }</div>
 				<h4
 					style={ {
@@ -271,7 +271,7 @@ const Component = ( { path } ) => {
 				>
 					{ pageTitle }
 				</h4>
-			</div>
+			</div> }
 			<div className="srfm-page-content">
 				{ 'general-settings' === path && (
 					<GeneralPage
