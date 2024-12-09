@@ -256,6 +256,9 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 == Changelog ==
 = x.x.x =
 * New: Zapier integration added.
+* Improvement: Added support to include the Entry ID in SureTrigger workflows, enhancing integration capabilities.
+* Improvement: Updated stylings to ensure proper focus borders for checkbox and GDPR fields when navigating with a screen reader.
+* Fix: Resolved an issue with phone number unique validation not triggering correctly.
 = 1.1.1 - 5th December 2024 =
 * New: Added an option to export entries in CSV format.
 * Improvement: Introduced a "What's New" notifier to highlight updates.
