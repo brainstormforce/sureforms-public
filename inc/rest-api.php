@@ -165,7 +165,7 @@ class Rest_Api {
 	private function get_endpoints() {
 		/*
 		 * @internal This filter is used to add custom endpoints.
-		 * @since x.x.x
+		 * @since 1.2.0
 		 * @param array<array<mixed>> $endpoints Endpoints.
 		 */
 		return apply_filters(
