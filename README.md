@@ -254,6 +254,8 @@ Yes! You can certainly use SureForms on yours as well as your client’s website
 When you use SureForms, you get an easy-to-use AI-powered form builder that can be used to build your forms fast.
 
 ## Changelog ##
+### x.x.x ###
+* Improvement: Added support to include the Entry ID in SureTrigger workflows, enhancing integration capabilities.
 ### 1.1.1 - 5th December 2024 ###
 * New: Added an option to export entries in CSV format.
 * Improvement: Introduced a "What's New" notifier to highlight updates.
