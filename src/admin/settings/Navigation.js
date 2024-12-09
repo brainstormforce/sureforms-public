@@ -49,6 +49,7 @@ const isProActive = srfm_admin.is_pro_active;
 
 const Navigation = () => {
 	const activatedTab = useQuery();
+	const addActiveClass = false;
 
 	return (
 		<div
@@ -67,7 +68,13 @@ const Navigation = () => {
 							} }
 							key={ item.name }
 							className={ `srfm-settings-sidebar-category ${
-								activatedTab.get( 'tab' ) === item.slug
+								activatedTab.get( 'tab' ) === item.slug ||
+								applyFilters(
+									'srfm.settings.nav.addActiveClass',
+									addActiveClass,
+									item.name,
+									activatedTab.get( 'tab' )
+								)
 									? 'active'
 									: ''
 							}` }
