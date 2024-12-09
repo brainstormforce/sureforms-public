@@ -674,7 +674,7 @@ class Admin {
 			// Check if the condition evaluates to true.
 			if ( $condition ) {
 				// Append the class to the existing classes string, followed by a space.
-				$add_srfm_classes .= $class . ' ';
+				$add_srfm_classes .= empty( $add_srfm_classes ) ? $class : ' ' . $class;
 			}
 		}
 
