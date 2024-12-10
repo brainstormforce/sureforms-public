@@ -697,7 +697,7 @@ class Form_Submit {
 								null,
 								[
 									/* translators: Here, %s is email address. */
-									$sent ? sprintf( __( 'Email notification sent to %s', 'sureforms' ), esc_html( $parsed['to'] ) ) : sprintf( __( 'Failed sending email notification to %s', 'sureforms' ) ),
+									$sent ? sprintf( __( 'Email notification sent to %s', 'sureforms' ), esc_html( $parsed['to'] ) ) : sprintf( __( 'Failed sending email notification to %s', 'sureforms' ), esc_html( $parsed['to'] ) )
 								]
 							);
 						}
