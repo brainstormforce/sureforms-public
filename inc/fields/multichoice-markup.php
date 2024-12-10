@@ -135,7 +135,7 @@ class Multichoice_Markup extends Base {
 									<?php
 									if ( $this->is_editing ) {
 										?>
-										<input value="<?php echo esc_attr( $option['optionTitle'] ); ?>" <?php checked( true, in_array( $option['optionTitle'], explode( ',', $this->default ), true ) ) ?> type="<?php echo esc_attr( $this->type_attr ); ?>" id="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id . '-' . $i ); ?>" class="srfm-input-<?php echo esc_attr( $this->slug ); ?>-single" name="<?php echo $this->single_selection ? esc_attr( "srfm-input-{$this->slug}-{$this->block_id}{$this->field_name}" ) : esc_attr( "srfm-input-{$this->slug}-{$this->block_id}{$this->field_name}[]" ); ?>" />
+										<input value="<?php echo esc_attr( $option['optionTitle'] ); ?>" <?php checked( true, in_array( $option['optionTitle'], explode( ',', $this->default ), true ) ); ?> type="<?php echo esc_attr( $this->type_attr ); ?>" id="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id . '-' . $i ); ?>" class="srfm-input-<?php echo esc_attr( $this->slug ); ?>-single" name="<?php echo $this->single_selection ? esc_attr( "srfm-input-{$this->slug}-{$this->block_id}{$this->field_name}" ) : esc_attr( "srfm-input-{$this->slug}-{$this->block_id}{$this->field_name}[]" ); ?>" />
 										<?php
 									} else {
 										?>
