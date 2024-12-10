@@ -242,7 +242,9 @@ button.srfm-toolbar-width-setting-button {
 
 			.srfm-input-checkbox,
 			.srfm-input-gdpr {
-				position: fixed; // Changing the position from absolute to fixed solves the page jump issue without affecting the UI.
+				position: absolute;
+				left: 0;
+				top: 0;
 
 				&:checked {
 					+ {

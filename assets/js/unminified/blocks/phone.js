@@ -69,12 +69,26 @@ function initializePhoneField() {
 				parentBlock.classList.add( 'srfm-error' );
 				errorMessage.textContent =
 					window?.srfm_submit?.messages?.valid_phone_number;
+				/**
+				 * Set the phone number input value to the hidden input even if the phone number is not valid,
+				 * so that the unique validation can be overridden and invalid/required validation messages will be visible.
+				 */
+				iti.hiddenInput.value = iti.telInput.value;
 			} else {
 				parentBlock.classList.remove( 'srfm-phone-error' );
 				parentBlock.classList.remove( 'srfm-error' );
 				iti.hiddenInput.value = iti.getNumber();
 			}
 		};
+		/**
+		 * Set the data-unique parameter to the hidden input field based on the data-unique
+		 * parameter of the phone input field.
+		 * The ajax validation will use the hidden input value to check for uniqueness.
+		 */
+		const uniqueAttr = iti.telInput.getAttribute( 'data-unique' );
+		if ( uniqueAttr ) {
+			iti.hiddenInput.setAttribute( 'data-unique', `${ uniqueAttr }` );
+		}
 
 		if ( phoneNumber ) {
 			phoneNumber.addEventListener( 'change', updatePhoneNumber );
