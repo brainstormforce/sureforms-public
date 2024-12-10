@@ -258,6 +258,7 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 * New: Added feature to edit entry.
 * New: Added option to resend email notifications for single and bulk entries.
 * New: Introduced entry notes.
+* Improvement: Added navigation controls and delete buttons to the logs interface for improved usability and easier management of entry logs.
 = 1.1.1 - 5th December 2024 =
 * New: Added an option to export entries in CSV format.
 * Improvement: Introduced a "What's New" notifier to highlight updates.

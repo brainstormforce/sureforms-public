@@ -192,6 +192,7 @@ class Single_Entry {
 	/**
 	 * Prepares the form blocks for entry editing mode.
 	 *
+	 * @since x.x.x
 	 * @return array
 	 */
 	protected function prepare_blocks_for_editing() {
@@ -499,6 +500,7 @@ class Single_Entry {
 	 * Render the entry logs for a specific entry.
 	 *
 	 * @since 0.0.13
+	 * @since x.x.x - Removed $entry_logs parameter.
 	 * @return void
 	 */
 	private function render_entry_logs() {
