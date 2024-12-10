@@ -8,9 +8,9 @@
 
 namespace SRFM\Admin\Views;
 
-use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Helper;
 use SRFM\Inc\Traits\Get_Instance;
+use SRFM\Inc\Database\Tables\Entries;
 
 /**
  * Exit if accessed directly.

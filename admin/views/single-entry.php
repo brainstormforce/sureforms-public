@@ -8,10 +8,9 @@
 
 namespace SRFM\Admin\Views;
 
-use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Helper;
+use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Admin\Views\Entries_List_Table;
-use SRFM\Inc\Generate_Form_Markup;
 
 /**
  * Exit if accessed directly.
@@ -53,50 +52,6 @@ class Single_Entry {
 		}
 		$this->entry_id = isset( $_GET['entry_id'] ) ? intval( sanitize_text_field( wp_unslash( $_GET['entry_id'] ) ) ) : null;
 		$this->entry    = $this->entry_id ? Entries::get( $this->entry_id ) : null;
-	}
-
-	/**
-	 * Prepares the form blocks for entry editing mode.
-	 *
-	 * @return array
-	 */
-	protected function prepare_blocks_for_editing() {
-		$parsed = parse_blocks( get_post( absint( $this->entry['form_id'] ) )->post_content );
-		$blocks = array_map(
-			function( $block ) {
-				if ( ! $block['blockName'] ) {
-					return null;
-				}
-
-				$meta_data = $this->entry['form_data'];
-
-				$attrs = [];
-
-				foreach ( $meta_data as $field_name => $value ) {
-					if ( false !== strpos( $field_name, "-{$block['attrs']['block_id']}-" ) ) {
-						$attrs = [
-							'fieldName'    => $field_name,
-							'defaultValue' => $value,
-						];
-						break;
-					}
-				}
-
-				if ( empty( $attrs ) ) {
-					return null;
-				}
-
-				$block['attrs']['entryID']      = $this->entry_id;
-				$block['attrs']['isEditing']    = true;
-				$block['attrs']['fieldName']    = $attrs['fieldName'];
-				$block['attrs']['defaultValue'] = $attrs['defaultValue'];
-
-				return $block;
-			},
-			_flatten_blocks( $parsed )
-		);
-
-		return array_filter( $blocks, 'is_array' );
 	}
 
 	/**
@@ -165,6 +120,50 @@ class Single_Entry {
 			</form>
 		</div>
 		<?php
+	}
+
+	/**
+	 * Prepares the form blocks for entry editing mode.
+	 *
+	 * @return array
+	 */
+	protected function prepare_blocks_for_editing() {
+		$parsed = parse_blocks( get_post( absint( $this->entry['form_id'] ) )->post_content );
+		$blocks = array_map(
+			function( $block ) {
+				if ( ! $block['blockName'] ) {
+					return null;
+				}
+
+				$meta_data = $this->entry['form_data'];
+
+				$attrs = [];
+
+				foreach ( $meta_data as $field_name => $value ) {
+					if ( false !== strpos( $field_name, "-{$block['attrs']['block_id']}-" ) ) {
+						$attrs = [
+							'fieldName'    => $field_name,
+							'defaultValue' => $value,
+						];
+						break;
+					}
+				}
+
+				if ( empty( $attrs ) ) {
+					return null;
+				}
+
+				$block['attrs']['entryID']      = $this->entry_id;
+				$block['attrs']['isEditing']    = true;
+				$block['attrs']['fieldName']    = $attrs['fieldName'];
+				$block['attrs']['defaultValue'] = $attrs['defaultValue'];
+
+				return $block;
+			},
+			_flatten_blocks( $parsed )
+		);
+
+		return array_filter( $blocks, 'is_array' );
 	}
 
 	/**
