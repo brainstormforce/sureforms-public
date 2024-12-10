@@ -491,14 +491,14 @@ class Admin {
 							],
 							admin_url( 'admin-ajax.php' )
 						),
-						'navigateNotes' => add_query_arg(
+						'navigateNotes'      => add_query_arg(
 							[
 								'action'   => 'sureforms_navigate_entry_notes',
 								'security' => wp_create_nonce( '_srfm_navigate_entry_notes_nonce' ),
 							],
 							admin_url( 'admin-ajax.php' )
 						),
-						'navigateLogs' => add_query_arg(
+						'navigateLogs'       => add_query_arg(
 							[
 								'action'   => 'sureforms_navigate_entry_logs',
 								'security' => wp_create_nonce( '_srfm_navigate_entry_logs_nonce' ),
@@ -849,7 +849,7 @@ class Admin {
 			// Reset logs to zero if no valid changes are made.
 			$instance->reset_logs();
 		}
-$edited;
+		$edited;
 		$instance::update(
 			$entry_id,
 			[

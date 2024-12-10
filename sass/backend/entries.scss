@@ -1,4 +1,3 @@
-
 .in-progress-overlay {
 	position: absolute;
 	top: 0;
@@ -75,15 +74,68 @@
 	}
 }
 
+.entry-navigation-btn-wrapper {
+	padding: 8px 12px;
+	display: flex;
+	justify-content: right;
+	gap: 8px;
+	border-top: 1px solid #e5e7eb;
+
+	.entry-navigation-btn {
+		padding: 4px;
+		border: none;
+		background: 0 0;
+		cursor: pointer;
+		font-weight: 600;
+		font-size: 12px;
+		line-height: 16px;
+		color: #111827;
+		display: flex;
+
+		svg {
+			path {
+				stroke: #111827;
+			}
+		}
+
+		&.disabled {
+			pointer-events: none;
+			color: #bdc1c7;
+
+			svg {
+				path {
+					stroke: #bdc1c7;
+				}
+			}
+		}
+	}
+}
+
 .srfm-entry-logs {
 	.in-progress-overlay {
 		z-index: 999;
 		justify-content: center;
 	}
 
-	.entry-logs-navigation-btn.disabled {
-		pointer-events: none;
-		opacity: 0.6;
+	.inside {
+		margin: 0;
+		padding: 0;
+
+		.entry-logs-table {
+			width: 100%;
+		}
+	}
+
+	.entry-log {
+		display: flex;
+		justify-content: space-between;
+		align-items: flex-start;
+
+		.btn-delete-log {
+			background: none;
+			border: none;
+			cursor: pointer;
+		}
 	}
 }
 
@@ -186,7 +238,7 @@
 	padding: 32px;
 	position: relative;
 	border-radius: 6px;
-	box-shadow: 0px 8px 5px -8px #50505026, -2px -2px 2px 0px #32323208, 2px 2px 2px 0px #3232320A, 0px 0px 0px 0.5px #0000001A;
+	box-shadow: 0px 8px 5px -8px #50505026, -2px -2px 2px 0px #32323208, 2px 2px 2px 0px #3232320a, 0px 0px 0px 0.5px #0000001a;
 	border: 0;
 
 	.srfm-edit-entry-modal-container {
@@ -226,11 +278,11 @@
 			font-weight: 500;
 			line-height: 20px;
 			text-align: left;
-			color: #0F172A;
+			color: #0f172a;
 		}
 
 		.srfm-input-common {
-			&:not([type="checkbox"]) {
+			&:not( [type="checkbox"] ) {
 				width: 100%;
 				max-width: 100%;
 				margin: 0;
@@ -268,7 +320,7 @@
 			cursor: pointer;
 			padding: 10px 18px 10px 18px;
 			border-radius: 6px;
-			box-shadow: 0px 1px 2px 0px #0000000D;
+			box-shadow: 0px 1px 2px 0px #0000000d;
 			font-size: 14px;
 			font-weight: 500;
 			line-height: 20px;
@@ -279,11 +331,11 @@
 			cursor: pointer;
 			padding: 10px 18px;
 			border-radius: 6px;
-			box-shadow: 0px 1px 2px 0px #0000000D;
+			box-shadow: 0px 1px 2px 0px #0000000d;
 			font-size: 14px;
 			font-weight: 500;
 			line-height: 20px;
-			background: #FFFFFF;
+			background: #ffffff;
 		}
 	}
 }

@@ -189,6 +189,12 @@ class Admin_Ajax {
 		wp_send_json_success( $data );
 	}
 
+	/**
+	 * Ajax callback to provide entry notes navigation response.
+	 *
+	 * @since x.x.x
+	 * @return void
+	 */
 	public function navigate_entry_notes() {
 		$response_data = [ 'message' => $this->get_error_msg( 'permission' ) ];
 
@@ -210,9 +216,9 @@ class Admin_Ajax {
 		}
 
 		$notes_per_page = 3;
-		$entry_id      = absint( wp_unslash( $_POST['entryID'] ) );
-		$entry         = Entries::get( $entry_id );
-		$type          = ! empty( $_POST['type'] ) ? sanitize_text_field( wp_unslash( $_POST['type'] ) ) : 'next';
+		$entry_id       = absint( wp_unslash( $_POST['entryID'] ) );
+		$entry          = Entries::get( $entry_id );
+		$type           = ! empty( $_POST['type'] ) ? sanitize_text_field( wp_unslash( $_POST['type'] ) ) : 'next';
 
 		if ( 'next' === $type ) {
 			$current_page = isset( $_POST['nextPage'] ) ? absint( wp_unslash( $_POST['nextPage'] ) ) : 1;
@@ -220,20 +226,20 @@ class Admin_Ajax {
 			$current_page = isset( $_POST['prevPage'] ) ? absint( wp_unslash( $_POST['prevPage'] ) ) : 1;
 		}
 
-		$notes        = ! empty( $entry['notes'] ) ? Helper::get_array_value( $entry['notes'] ) : [];
-		$total_notes  = count( $notes );
+		$notes       = ! empty( $entry['notes'] ) ? Helper::get_array_value( $entry['notes'] ) : [];
+		$total_notes = count( $notes );
 		$total_pages = (int) ceil( $total_notes / $notes_per_page );
 
-		// Ensure current page is within bounds
+		// Ensure current page is within bounds.
 		$current_page = max( 1, min( $total_pages, $current_page ) );
 
-		// Calculate the offset for slicing
+		// Calculate the offset for slicing.
 		$offset = ( $current_page - 1 ) * $notes_per_page;
 
-		// Get the items for the current page
+		// Get the items for the current page.
 		$entry_notes = array_slice( $notes, $offset, $notes_per_page, true );
 
-		// Determine the next and previous page numbers
+		// Determine the next and previous page numbers.
 		$next_page = $current_page < $total_pages ? $current_page + 1 : false;
 		$prev_page = $current_page > 1 ? $current_page - 1 : false;
 
@@ -245,15 +251,23 @@ class Admin_Ajax {
 		}
 		$markup = ob_get_clean();
 
-		wp_send_json_success( [
-			'markup'      => $markup,
-			'totalPages'  => $total_pages,
-			'currentPage' => $current_page,
-			'nextPage'    => $next_page,
-			'prevPage'    => $prev_page,
-		] );
+		wp_send_json_success(
+			[
+				'markup'      => $markup,
+				'totalPages'  => $total_pages,
+				'currentPage' => $current_page,
+				'nextPage'    => $next_page,
+				'prevPage'    => $prev_page,
+			]
+		);
 	}
 
+	/**
+	 * Ajax callback to provide entry logs navigation response.
+	 *
+	 * @since x.x.x
+	 * @return void
+	 */
 	public function navigate_entry_logs() {
 		$response_data = [ 'message' => $this->get_error_msg( 'permission' ) ];
 
@@ -274,13 +288,13 @@ class Admin_Ajax {
 			wp_send_json_error( $response_data );
 		}
 
-		$logs_per_page = 5;
+		$logs_per_page = 3;
 		$entry_id      = absint( wp_unslash( $_POST['entryID'] ) );
 		$entry         = Entries::get( $entry_id );
 		$logs          = ! empty( $entry['logs'] ) ? Helper::get_array_value( $entry['logs'] ) : [];
 
-		$type      = ! empty( $_POST['type'] ) ? sanitize_text_field( wp_unslash( $_POST['type'] ) ) : 'next';
-		$deleteLog = isset( $_POST['deleteLog'] ) ? absint( wp_unslash( $_POST['deleteLog'] ) ) : false;
+		$type       = ! empty( $_POST['type'] ) ? sanitize_text_field( wp_unslash( $_POST['type'] ) ) : 'next';
+		$delete_log = isset( $_POST['deleteLog'] ) ? absint( wp_unslash( $_POST['deleteLog'] ) ) : false; // Log key-ID to delete.
 
 		if ( 'next' === $type ) {
 			$current_page = isset( $_POST['nextPage'] ) ? absint( wp_unslash( $_POST['nextPage'] ) ) : 1;
@@ -288,30 +302,31 @@ class Admin_Ajax {
 			$current_page = isset( $_POST['prevPage'] ) ? absint( wp_unslash( $_POST['prevPage'] ) ) : 1;
 		}
 
-		if ( false !== $deleteLog && isset( $logs[ $deleteLog ] ) ) {
-			unset( $logs[ $deleteLog ] );
+		if ( false !== $delete_log && isset( $logs[ $delete_log ] ) ) {
+			unset( $logs[ $delete_log ] );
 			$logs = array_values( $logs );
 
-			Entries::get_instance()->use_update( [
-				'logs' => $logs
-			], [ 'ID' => absint( $entry_id ) ] );
+			Entries::get_instance()->use_update(
+				[ 'logs' => $logs ],
+				[ 'ID' => absint( $entry_id ) ]
+			);
 
-			$current_page = $current_page - 1;
+			--$current_page;
 		}
 
 		$total_logs  = count( $logs );
 		$total_pages = (int) ceil( $total_logs / $logs_per_page );
 
-		// Ensure current page is within bounds
+		// Ensure current page is within bounds.
 		$current_page = max( 1, min( $total_pages, $current_page ) );
 
-		// Calculate the offset for slicing
+		// Calculate the offset for slicing.
 		$offset = ( $current_page - 1 ) * $logs_per_page;
 
-		// Get the items for the current page
+		// Get the items for the current page.
 		$entry_logs = array_slice( $logs, $offset, $logs_per_page, true );
 
-		// Determine the next and previous page numbers
+		// Determine the next and previous page numbers.
 		$next_page = $current_page < $total_pages ? $current_page + 1 : false;
 		$prev_page = $current_page > 1 ? $current_page - 1 : false;
 
@@ -319,13 +334,15 @@ class Admin_Ajax {
 		Single_Entry::entry_logs_table_markup( $entry_logs );
 		$markup = ob_get_clean();
 
-		wp_send_json_success( [
-			'markup'      => $markup,
-			'totalPages'  => $total_pages,
-			'currentPage' => $current_page,
-			'nextPage'    => $next_page,
-			'prevPage'    => $prev_page,
-		] );
+		wp_send_json_success(
+			[
+				'markup'      => $markup,
+				'totalPages'  => $total_pages,
+				'currentPage' => $current_page,
+				'nextPage'    => $next_page,
+				'prevPage'    => $prev_page,
+			]
+		);
 	}
 
 	/**

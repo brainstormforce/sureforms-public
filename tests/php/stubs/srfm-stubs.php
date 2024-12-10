@@ -8716,6 +8716,16 @@ namespace SRFM\Admin\Views {
         public static function entry_note_item_markup($note)
         {
         }
+        /**
+         * Provides table markup for the entry logs.
+         *
+         * @param array<mixed> $entry_logs Entry logs stored in the database.
+         * @since x.x.x
+         * @return void
+         */
+        public static function entry_logs_table_markup($entry_logs)
+        {
+        }
     }
     /**
      * Create the entries table using WP_List_Table.

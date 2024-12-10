@@ -55,38 +55,46 @@ class Single_Entry {
 		$this->entry    = $this->entry_id ? Entries::get( $this->entry_id ) : null;
 	}
 
+	/**
+	 * Prepares the form blocks for entry editing mode.
+	 *
+	 * @return array
+	 */
 	protected function prepare_blocks_for_editing() {
 		$parsed = parse_blocks( get_post( absint( $this->entry['form_id'] ) )->post_content );
-		$blocks = array_map( function($block)  {
-			if ( ! $block['blockName'] ) {
-				return null;
-			}
-
-			$meta_data = $this->entry['form_data'];
-
-			$attrs = [];
-
-			foreach ( $meta_data as $field_name => $value ) {
-				if ( false !== strpos( $field_name, "-{$block['attrs']['block_id']}-" ) ) {
-					$attrs = array(
-						'fieldName'    => $field_name,
-						'defaultValue' => $value,
-					);
-					break;
+		$blocks = array_map(
+			function( $block ) {
+				if ( ! $block['blockName'] ) {
+					return null;
 				}
-			}
 
-			if ( empty( $attrs ) ) {
-				return null;
-			}
+				$meta_data = $this->entry['form_data'];
 
-			$block['attrs']['entryID']      = $this->entry_id;
-			$block['attrs']['isEditing']    = true;
-			$block['attrs']['fieldName']    = $attrs['fieldName'];
-			$block['attrs']['defaultValue'] = $attrs['defaultValue'];
+				$attrs = [];
 
-			return $block;
-		}, _flatten_blocks( $parsed ) );
+				foreach ( $meta_data as $field_name => $value ) {
+					if ( false !== strpos( $field_name, "-{$block['attrs']['block_id']}-" ) ) {
+						$attrs = [
+							'fieldName'    => $field_name,
+							'defaultValue' => $value,
+						];
+						break;
+					}
+				}
+
+				if ( empty( $attrs ) ) {
+					return null;
+				}
+
+				$block['attrs']['entryID']      = $this->entry_id;
+				$block['attrs']['isEditing']    = true;
+				$block['attrs']['fieldName']    = $attrs['fieldName'];
+				$block['attrs']['defaultValue'] = $attrs['defaultValue'];
+
+				return $block;
+			},
+			_flatten_blocks( $parsed )
+		);
 
 		return array_filter( $blocks, 'is_array' );
 	}
@@ -107,7 +115,6 @@ class Single_Entry {
 		$form_name       = ! empty( get_the_title( $this->entry['form_id'] ) ) ? get_the_title( $this->entry['form_id'] ) : sprintf( esc_html__( 'SureForms Form #%d', 'sureforms' ), intval( $this->entry['form_id'] ) );
 		$meta_data       = $this->entry['form_data'];
 		$excluded_fields = [ 'srfm-honeypot-field', 'g-recaptcha-response', 'srfm-sender-email-field' ];
-		$entry_logs      = $this->entry['logs'];
 
 		$blocks = $this->prepare_blocks_for_editing();
 
@@ -142,7 +149,7 @@ class Single_Entry {
 							<?php
 							if ( ! empty( $blocks ) && is_array( $blocks ) ) {
 								foreach ( $blocks as $block ) {
-									echo render_block( $block );
+									echo render_block( $block ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- We need to print the form blocks markup.
 								}
 							}
 							?>
@@ -208,17 +215,30 @@ class Single_Entry {
 					<div class="entry-notes-container">
 						<?php // We will populate this div using AJAX. ?>
 					</div>
-
-					<div class="entry-notes-nav-btns-wrapper">
-						<button type="button" class="entry-notes-nav-btn" data-type="prev">Previous</button>
-						<button type="button" class="entry-notes-nav-btn" data-type="next">Next</button>
-					</div>
-
 					<div class="add-notes-field <?php echo ! empty( $notes ) ? 'hidden' : ''; ?>">
 						<textarea id="srfm-entry-note" rows="5"></textarea>
 						<button type="submit" class="button" data-entry-id=<?php echo esc_html( $this->entry_id ); ?>><?php esc_html_e( 'Submit Note', 'sureforms' ); ?></button>
 					</div>
 				</div>
+			</div>
+
+			<div class="entry-navigation-btn-wrapper">
+				<button type="button" class="entry-navigation-btn entry-notes-nav-btn" data-type="prev">
+					<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<path d="M10 12L6 8L10 4" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+					</svg>
+					<span>
+						<?php esc_html_e( 'Previous', 'sureforms' ); ?>
+					</span>
+				</button>
+				<button type="button" class="entry-navigation-btn entry-notes-nav-btn" data-type="next">
+					<span>
+						<?php esc_html_e( 'Next', 'sureforms' ); ?>
+					</span>
+					<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<path d="M6 12L10 8L6 4" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+					</svg>
+				</button>
 			</div>
 		</div>
 		<?php
@@ -453,9 +473,23 @@ class Single_Entry {
 			<div class="inside">
 				<?php // We will populate this div using AJAX. ?>
 			</div>
-			<div class="postbox-footer">
-				<button type="button" class="entry-logs-navigation-btn" data-type="prev">Previous</button>
-				<button type="button" class="entry-logs-navigation-btn" data-type="next">Next</button>
+			<div class="entry-navigation-btn-wrapper">
+				<button type="button" class="entry-navigation-btn entry-logs-navigation-btn" data-type="prev">
+					<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<path d="M10 12L6 8L10 4" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+					</svg>
+					<span>
+						<?php esc_html_e( 'Previous', 'sureforms' ); ?>
+					</span>
+				</button>
+				<button type="button" class="entry-navigation-btn entry-logs-navigation-btn" data-type="next">
+					<span>
+						<?php esc_html_e( 'Next', 'sureforms' ); ?>
+					</span>
+					<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<path d="M6 12L10 8L6 4" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+					</svg>
+				</button>
 			</div>
 		</div>
 		<?php
@@ -470,7 +504,7 @@ class Single_Entry {
 	 */
 	public static function entry_logs_table_markup( $entry_logs ) {
 		?>
-		<table class="widefat striped entry-logs-table">
+		<table class="entry-logs-table">
 			<tbody>
 				<?php if ( ! empty( $entry_logs ) ) { ?>
 						<?php foreach ( $entry_logs as $key => $log ) { ?>
