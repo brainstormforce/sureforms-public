@@ -439,7 +439,8 @@ class Admin {
 				}
 			}
 
-			$localization_data['security_settings_url'] = admin_url( '/admin.php?page=sureforms_form_settings&tab=security-settings' );
+			$localization_data['security_settings_url']    = admin_url( '/admin.php?page=sureforms_form_settings&tab=security-settings' );
+			$localization_data['integration_settings_url'] = admin_url( '/admin.php?page=sureforms_form_settings&tab=integration-settings' );
 			wp_localize_script(
 				SRFM_SLUG . $asset_handle,
 				SRFM_SLUG . '_admin',
@@ -706,13 +707,20 @@ class Admin {
 			'srfm-template-picker'                   => Helper::validate_request_context( 'add-new-form', 'page' ),
 		];
 
+		$add_srfm_classes = '';
+
 		// Loop through the defined classes and conditions.
 		foreach ( $srfm_classes as $class => $condition ) {
 			// Check if the condition evaluates to true.
 			if ( $condition ) {
 				// Append the class to the existing classes string, followed by a space.
-				$classes .= $class . ' ';
+				$add_srfm_classes .= empty( $add_srfm_classes ) ? $class : ' ' . $class;
 			}
+		}
+
+		// Append the new classes to the existing classes string.
+		if ( ! empty( $add_srfm_classes ) ) {
+			$classes .= ' ' . $add_srfm_classes;
 		}
 
 		// Return the updated list of classes.
@@ -826,21 +834,21 @@ class Admin {
 					continue;
 				}
 
-				$edited[ $k ] = $v;
+				$edited[ $k ] = is_array( $v ) ? implode( ',', $v ) : $v;
 
 				if ( ! isset( $form_data[ $k ] ) ) {
 					// &#8594; is html entity for arrow -> sign.
-					$instance->update_log( $instance->get_last_log_key(), null, '"" &#8594; ' . $v );
+					$instance->update_log( $instance->get_last_log_key(), null, '"" &#8594; ' . $edited[ $k ] );
 					$changed++;
 					continue;
 				}
 
-				if ( $form_data[ $k ] === $v ) {
+				if ( $form_data[ $k ] === $edited[ $k ] ) {
 					continue;
 				}
 
 				// &#8594; is html entity for arrow -> sign.
-				$instance->update_log( $instance->get_last_log_key(), null, sprintf( '%1$s &#8594; %2$s', "<del>{$form_data[ $k ]}</del>", $v ) );
+				$instance->update_log( $instance->get_last_log_key(), null, sprintf( '%1$s &#8594; %2$s', "<del>{$form_data[ $k ]}</del>", $edited[ $k ] ) );
 				$changed++;
 			}
 		}
@@ -849,7 +857,7 @@ class Admin {
 			// Reset logs to zero if no valid changes are made.
 			$instance->reset_logs();
 		}
-		$edited;
+
 		$instance::update(
 			$entry_id,
 			[

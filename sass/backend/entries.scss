@@ -266,6 +266,15 @@
 		flex-direction: column;
 		gap: 32px;
 
+		.srfm-option-container {
+			p {
+				margin: 0;
+			}
+			.srfm-option-image img {
+				width: 40px;
+			}
+		}
+
 		.srfm-block-single,
 		.srfm-email-block {
 			display: flex;

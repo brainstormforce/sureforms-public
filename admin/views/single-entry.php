@@ -104,6 +104,7 @@ class Single_Entry {
 							if ( ! empty( $blocks ) && is_array( $blocks ) ) {
 								foreach ( $blocks as $block ) {
 									echo render_block( $block ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- We need to print the form blocks markup.
+									echo render_block( $block ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- We need to print the form blocks markup.
 								}
 							}
 							?>

@@ -2,16 +2,16 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: SureForms 1.1.1\n"
+"Project-Id-Version: SureForms 1.2.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/sureforms\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-12-05T12:07:51+00:00\n"
+"POT-Creation-Date: 2024-12-09T13:33:44+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"X-Generator: WP-CLI 2.11.0\n"
+"X-Generator: WP-CLI 2.10.0\n"
 "X-Domain: sureforms\n"
 
 #. Plugin Name of the plugin
@@ -75,7 +75,7 @@ msgstr ""
 msgid "Edit %1$s"
 msgstr ""
 
-#: admin/admin.php:733
+#: admin/admin.php:741
 #: api/block-patterns.php:110
 #: inc/ai-form-builder/ai-auth.php:45
 #: inc/ai-form-builder/ai-auth.php:81
@@ -85,7 +85,7 @@ msgstr ""
 #: inc/export.php:61
 #: inc/export.php:117
 #: inc/form-submit.php:201
-#: inc/form-submit.php:706
+#: inc/form-submit.php:707
 #: inc/forms-data.php:87
 #: inc/global-settings/global-settings.php:86
 #: inc/global-settings/global-settings.php:259
@@ -94,17 +94,17 @@ msgstr ""
 msgid "Nonce verification failed."
 msgstr ""
 
-#: admin/admin.php:742
+#: admin/admin.php:750
 msgid "You cannot view this entry because it is in trash."
 msgstr ""
 
 #. translators: %1$s: Opening anchor tag with URL, %2$s: Closing anchor tag, %3$s: SureForms Pro Plugin Name.
-#: admin/admin.php:787
+#: admin/admin.php:795
 msgid "Please %1$sactivate%2$s your copy of %3$s to get new features, access support, receive update notifications, and more."
 msgstr ""
 
 #. translators: %1$s: SureForms version, %2$s: SureForms Pro Plugin Name, %3$s: SureForms Pro Version, %4$s: Anchor tag open, %5$s: Closing anchor tag.
-#: admin/admin.php:797
+#: admin/admin.php:805
 msgid "SureForms %1$s requires minimum %2$s %3$s to work properly. Please update to the latest version."
 msgstr ""
 
@@ -475,7 +475,7 @@ msgid "SureTriggers is not configured properly."
 msgstr ""
 
 #: inc/admin-ajax.php:236
-#: inc/form-submit.php:718
+#: inc/form-submit.php:719
 msgid "Invalid form ID."
 msgstr ""
 
@@ -492,43 +492,43 @@ msgstr ""
 msgid "Runs when a form is submitted"
 msgstr ""
 
-#: inc/admin-ajax.php:334
-#: inc/admin-ajax.php:363
+#: inc/admin-ajax.php:344
+#: inc/admin-ajax.php:373
 msgid "Sample data"
 msgstr ""
 
-#: inc/admin-ajax.php:338
+#: inc/admin-ajax.php:348
 msgid "Sample input data"
 msgstr ""
 
-#: inc/admin-ajax.php:340
+#: inc/admin-ajax.php:350
 msgid "Sample textarea data"
 msgstr ""
 
-#: inc/admin-ajax.php:345
-#: inc/admin-ajax.php:346
+#: inc/admin-ajax.php:355
+#: inc/admin-ajax.php:356
 msgid "Address data"
 msgstr ""
 
-#: inc/admin-ajax.php:347
+#: inc/admin-ajax.php:357
 msgid "Selected dropdown option"
 msgstr ""
 
-#: inc/admin-ajax.php:348
+#: inc/admin-ajax.php:358
 msgid "Selected Multichoice option"
 msgstr ""
 
-#: inc/admin-ajax.php:349
+#: inc/admin-ajax.php:359
 msgid "Selected radio option"
 msgstr ""
 
-#: inc/admin-ajax.php:350
+#: inc/admin-ajax.php:360
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 msgid "Submit"
 msgstr ""
 
-#: inc/admin-ajax.php:353
+#: inc/admin-ajax.php:363
 msgid "Hidden Value"
 msgstr ""
 
@@ -792,21 +792,21 @@ msgstr ""
 msgid "Spam Detected"
 msgstr ""
 
-#: inc/form-submit.php:591
+#: inc/form-submit.php:592
 msgid "Error submitting form"
 msgstr ""
 
-#: inc/form-submit.php:648
+#: inc/form-submit.php:649
 msgid "Email Notification Initiated"
 msgstr ""
 
 #. translators: Here, %s is the comma separated emails list.
-#: inc/form-submit.php:680
+#: inc/form-submit.php:681
 msgid "Email notification sent to %s"
 msgstr ""
 
 #. translators: Here, %s is the comma separated emails list.
-#: inc/form-submit.php:680
+#: inc/form-submit.php:681
 msgid "Failed sending email notification to %s"
 msgstr ""
 
@@ -9295,7 +9295,7 @@ msgstr ""
 
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
-msgid "Pro"
+msgid "Starter"
 msgstr ""
 
 #: assets/build/formEditor.js:172
@@ -10095,6 +10095,18 @@ msgstr ""
 
 #: assets/build/settings.js:172
 msgid "Broadcast your SureForms submission to any web API endpoint with the powerful webhook module."
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Zapier"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "SureForms and Zapier Integration allows you to connect your WordPress forms with a number of web apps."
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Pro"
 msgstr ""
 
 #: assets/build/settings.js:172
