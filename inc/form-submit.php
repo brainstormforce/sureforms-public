@@ -426,13 +426,6 @@ class Form_Submit {
 
 		$id = sanitize_text_field( $form_data['form-id'] );
 
-		$entry_id = 0;
-
-		if ( ! empty( $form_data['srfm-editing-entry'] ) ) {
-			$entry_id = absint( wp_unslash( $form_data['srfm-editing-entry'] ) );
-			unset( $form_data['srfm-editing-entry'] ); // Remove so that we don't save it in the database.
-		}
-
 		// Get the compliance settings.
 		$compliance           = get_post_meta( Helper::get_integer_value( $id ), '_srfm_compliance', true );
 		$gdpr                 = '';
@@ -565,11 +558,7 @@ class Form_Submit {
 			// If user is logged in then save their user id.
 			$entries_data['user_id'] = get_current_user_id();
 		}
-		if ( $entry_id ) {
-			Entries::update( $entry_id, $entries_data );
-		} else {
-			$entry_id = Entries::add( $entries_data );
-		}
+		$entry_id = Entries::add( $entries_data );
 		if ( $entry_id ) {
 
 			$response = [

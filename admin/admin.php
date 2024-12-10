@@ -820,21 +820,21 @@ class Admin {
 					continue;
 				}
 
-				$edited[ $k ] = $v;
+				$edited[ $k ] = is_array( $v ) ? implode( ',', $v ) : $v;
 
 				if ( ! isset( $form_data[ $k ] ) ) {
 					// &#8594; is html entity for arrow -> sign.
-					$instance->update_log( $instance->get_last_log_key(), null, '"" &#8594; ' . $v );
+					$instance->update_log( $instance->get_last_log_key(), null, '"" &#8594; ' . $edited[ $k ] );
 					$changed++;
 					continue;
 				}
 
-				if ( $form_data[ $k ] === $v ) {
+				if ( $form_data[ $k ] === $edited[ $k ] ) {
 					continue;
 				}
 
 				// &#8594; is html entity for arrow -> sign.
-				$instance->update_log( $instance->get_last_log_key(), null, sprintf( '%1$s &#8594; %2$s', "<del>{$form_data[ $k ]}</del>", $v ) );
+				$instance->update_log( $instance->get_last_log_key(), null, sprintf( '%1$s &#8594; %2$s', "<del>{$form_data[ $k ]}</del>", $edited[ $k ] ) );
 				$changed++;
 			}
 		}
@@ -843,7 +843,7 @@ class Admin {
 			// Reset logs to zero if no valid changes are made.
 			$instance->reset_logs();
 		}
-$edited;
+
 		$instance::update(
 			$entry_id,
 			[
