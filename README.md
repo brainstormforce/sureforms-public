@@ -4,7 +4,7 @@
 **Requires at least:** 6.4  
 **Tested up to:** 6.7.1  
 **Requires PHP:** 7.4  
-**Stable tag:** 1.1.1  
+**Stable tag:** 1.2.0  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -254,6 +254,12 @@ Yes! You can certainly use SureForms on yours as well as your client’s website
 When you use SureForms, you get an easy-to-use AI-powered form builder that can be used to build your forms fast.
 
 ## Changelog ##
+### 1.2.0 - 10th December 2024 ###
+* New: Zapier integration added.
+* Improvement: Added support to include the Entry ID in SureTrigger workflows, enhancing integration capabilities.
+* Improvement: Updated stylings to ensure proper focus borders for checkbox and GDPR fields when navigating with a screen reader.
+* Fix: Resolved Conflict with WP Code Plugin.
+* Fix: Resolved an issue with phone number unique validation not triggering correctly.
 ### 1.1.1 - 5th December 2024 ###
 * New: Added an option to export entries in CSV format.
 * Improvement: Introduced a "What's New" notifier to highlight updates.
