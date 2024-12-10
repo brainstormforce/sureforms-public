@@ -124,7 +124,7 @@ class Admin_Ajax {
 					$sent     = wp_mail( $email_to, $parsed['subject'], $parsed['message'], $parsed['headers'] );
 
 					/* translators: Here, %s is email address. */
-					$log_message = $sent ? sprintf( __( 'Email notification sent to %s', 'sureforms' ), esc_html( $email_to ) ) : sprintf( __( 'Failed sending email notification to %s', 'sureforms' ) );
+					$log_message = $sent ? sprintf( __( 'Email notification sent to %s', 'sureforms' ), esc_html( $email_to ) ) : sprintf( __( 'Failed sending email notification to %s', 'sureforms' ), esc_html( $email_to ) );
 
 					if ( is_int( $log_key ) ) {
 						$entries_db->update_log( $log_key, null, [ $log_message ] );
