@@ -31,12 +31,15 @@ $use_banner_as_page_background = $instant_form_settings['use_banner_as_page_back
 
 $srfm_cover_image_url = $cover_image ? rawurldecode( strval( $cover_image ) ) : '';
 
-if ( 'image' === $bg_type ) {
-	$bg_image = $bg_image ? 'url(' . $bg_image . ')' : '';
-	$bg_color = '#ffffff';
-} else {
-	$bg_image = 'none';
-	$bg_color = $bg_color ? $bg_color : '';
+// Filter to use custom bg image and color combination on the Instant Form page.
+if ( ! apply_filters( 'srfm_do_not_use_default_body', false, $instant_form_settings ) ) {
+	if ( 'image' === $bg_type ) {
+		$bg_image = $bg_image ? 'url(' . $bg_image . ')' : '';
+		$bg_color = '#ffffff';
+	} else {
+		$bg_image = 'none';
+		$bg_color = $bg_color ? $bg_color : '';
+	}
 }
 
 $body_classes = [];
@@ -197,7 +200,7 @@ if ( $use_banner_as_page_background ) {
 		<?php
 	} else {
 		// Action to load custom body content on the Instant Form page.
-		do_action( 'srfm_load_alternate_instant_form_body', $srfm_custom_post_id, $srfm_form_preview, $instant_form_settings, $body_classes, $srfm_live_mode_data );
+		do_action( 'srfm_load_alternate_instant_form_body', $srfm_custom_post_id, $instant_form_settings, $body_classes );
 	}
 
 	if ( $srfm_live_mode_data ) {
