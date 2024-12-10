@@ -255,17 +255,11 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 
 == Changelog ==
 = x.x.x =
-* Improvement: Updated the SureForms Gutenberg block to API v3 providing compatibility with the WordPress zoom feature.
 * Improvement: Added support to include the Entry ID in SureTrigger workflows, enhancing integration capabilities.
 * Improvement: Updated stylings to ensure proper focus borders for checkbox and GDPR fields when navigating with a screen reader.
-* Fix: Resolved an issue where settings pages were not visible when the plugin title was translated.
-* Fix: Form submission was failing for websites where wordpress was installed in different directory than root.
-* Fix: Entries first field was empty with Honeypot Security and improved form submission logic.
-* Fix: Resolved sprintf error by adding separate validation for multichoice fields to handle minimum and maximum selections.
-* Fix: Resolved an issue where the dropdown search query was not cleared after selecting an option.
-* Fix: Resolved an issue where phone words were not accepted.
 * Fix: Resolved Conflict with WP Code Plugin.
 * Fix: Resolved an issue with phone number unique validation not triggering correctly.
+* Fix: Resolved an issue where phone words were not accepted.
 = 1.1.1 - 5th December 2024 =
 * New: Added an option to export entries in CSV format.
 * Improvement: Introduced a "What's New" notifier to highlight updates.
