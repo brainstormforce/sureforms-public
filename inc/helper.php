@@ -975,6 +975,43 @@ class Helper {
 	}
 
 	/**
+	 * Helper method to paginate the provided array data.
+	 *
+	 * @param array $array Array item to paginate
+	 * @param int $current_page Current page number.
+	 * @param int $items_per_page Total items to return per pagination.
+	 * @since x.x.x
+	 * @return array
+	 */
+	public static function paginate_array( $array, $current_page, $items_per_page = 3 ) {
+		$total_items = count( $array );
+		$total_pages = (int) ceil( $total_items / $items_per_page );
+
+		// Ensure current page is within bounds.
+		$current_page = max( 1, min( $total_pages, $current_page ) );
+
+		// Calculate the offset for slicing.
+		$offset = ( $current_page - 1 ) * $items_per_page;
+
+		// Get the items for the current page.
+		$items = array_slice( $array, $offset, $items_per_page, true );
+
+		// Determine the next and previous page numbers.
+		$next_page = $current_page < $total_pages ? $current_page + 1 : false;
+		$prev_page = $current_page > 1 ? $current_page - 1 : false;
+
+		return compact(
+			'items',
+			'offset',
+			'next_page',
+			'prev_page',
+			'total_items',
+			'total_pages',
+			'current_page',
+		);
+	}
+
+	/**
 	 * Registers script translations for a specific handle.
 	 *
 	 * This function sets the script translations for a given script handle, allowing

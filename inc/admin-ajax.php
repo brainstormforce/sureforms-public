@@ -226,22 +226,11 @@ class Admin_Ajax {
 			$current_page = isset( $_POST['prevPage'] ) ? absint( wp_unslash( $_POST['prevPage'] ) ) : 1;
 		}
 
-		$notes       = ! empty( $entry['notes'] ) ? Helper::get_array_value( $entry['notes'] ) : [];
-		$total_notes = count( $notes );
-		$total_pages = (int) ceil( $total_notes / $notes_per_page );
-
-		// Ensure current page is within bounds.
-		$current_page = max( 1, min( $total_pages, $current_page ) );
-
-		// Calculate the offset for slicing.
-		$offset = ( $current_page - 1 ) * $notes_per_page;
+		$notes          = ! empty( $entry['notes'] ) ? Helper::get_array_value( $entry['notes'] ) : [];
+		$paginate_notes = Helper::paginate_array( $notes, $current_page );
 
 		// Get the items for the current page.
-		$entry_notes = array_slice( $notes, $offset, $notes_per_page, true );
-
-		// Determine the next and previous page numbers.
-		$next_page = $current_page < $total_pages ? $current_page + 1 : false;
-		$prev_page = $current_page > 1 ? $current_page - 1 : false;
+		$entry_notes = $paginate_notes['items'];
 
 		ob_start();
 		if ( ! empty( $entry_notes ) && is_array( $entry_notes ) ) {
@@ -254,10 +243,10 @@ class Admin_Ajax {
 		wp_send_json_success(
 			[
 				'markup'      => $markup,
-				'totalPages'  => $total_pages,
-				'currentPage' => $current_page,
-				'nextPage'    => $next_page,
-				'prevPage'    => $prev_page,
+				'totalPages'  => $paginate_notes['total_pages'],
+				'currentPage' => $paginate_notes['current_page'],
+				'nextPage'    => $paginate_notes['next_page'],
+				'prevPage'    => $paginate_notes['prev_page'],
 			]
 		);
 	}
@@ -314,33 +303,19 @@ class Admin_Ajax {
 			--$current_page;
 		}
 
-		$total_logs  = count( $logs );
-		$total_pages = (int) ceil( $total_logs / $logs_per_page );
-
-		// Ensure current page is within bounds.
-		$current_page = max( 1, min( $total_pages, $current_page ) );
-
-		// Calculate the offset for slicing.
-		$offset = ( $current_page - 1 ) * $logs_per_page;
-
-		// Get the items for the current page.
-		$entry_logs = array_slice( $logs, $offset, $logs_per_page, true );
-
-		// Determine the next and previous page numbers.
-		$next_page = $current_page < $total_pages ? $current_page + 1 : false;
-		$prev_page = $current_page > 1 ? $current_page - 1 : false;
+		$paginate_logs = Helper::paginate_array( $logs, $current_page );
 
 		ob_start();
-		Single_Entry::entry_logs_table_markup( $entry_logs );
+		Single_Entry::entry_logs_table_markup( $paginate_logs['items'] );
 		$markup = ob_get_clean();
 
 		wp_send_json_success(
 			[
 				'markup'      => $markup,
-				'totalPages'  => $total_pages,
-				'currentPage' => $current_page,
-				'nextPage'    => $next_page,
-				'prevPage'    => $prev_page,
+				'totalPages'  => $paginate_logs['total_pages'],
+				'currentPage' => $paginate_logs['current_page'],
+				'nextPage'    => $paginate_logs['next_page'],
+				'prevPage'    => $paginate_logs['prev_page'],
 			]
 		);
 	}
