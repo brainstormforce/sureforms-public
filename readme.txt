@@ -258,12 +258,12 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 * New: Added feature to edit entry.
 * New: Added option to resend email notifications for single and bulk entries.
 * New: Introduced entry notes.
-= 1.2.0 - 10th December 2024 =
-* New: Zapier integration added.
-* Improvement: Added support to include the Entry ID in SureTrigger workflows, enhancing integration capabilities.
-* Improvement: Updated stylings to ensure proper focus borders for checkbox and GDPR fields when navigating with a screen reader.
-* Fix: Resolved Conflict with WP Code Plugin.
-* Fix: Resolved an issue with phone number unique validation not triggering correctly.
+= 1.2.0 - 11th December 2024 =
+* New: Added Zapier integration for SureForms Pro.
+* Improvement: Added support for including the Entry ID in SureTriggers' workflows, enhancing integration capabilities.
+* Improvement: Updated styling to ensure proper focus borders for the Checkbox and GDPR fields when navigating with a screen reader.
+* Fix: Resolved a conflict with the WPCode Plugin.
+* Fix: Fixed an issue where the Phone Number field unique validation wasn't triggering correctly.
 = 1.1.1 - 5th December 2024 =
 * New: Added an option to export entries in CSV format.
 * Improvement: Introduced a "What's New" notifier to highlight updates.
