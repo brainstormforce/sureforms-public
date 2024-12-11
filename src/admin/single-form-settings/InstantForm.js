@@ -296,9 +296,10 @@ const InstantFormComponent = () => {
 	};
 
 	// apply filters to show/hide instant form components.
-	const { showInstantFormSiteLogoGroup, showInstantFormStylingGroup } = applyFilters( 'srfm.instantFormComponent', {
+	const { showInstantFormSiteLogoGroup, showInstantFormStylingGroup, showInstantFormTitleSetting } = applyFilters( 'srfm.instantFormComponent', {
 		showInstantFormSiteLogoGroup: true,
 		showInstantFormStylingGroup: true,
+		showInstantFormTitleSetting: true,
 	} );
 
 	return (
@@ -346,13 +347,17 @@ const InstantFormComponent = () => {
 								onChange={ () => setIsLiveMode( ! isLiveMode ) }
 							/>
 
-							<InstantFormToggle
-								label={ __( 'Show Title', 'sureforms' ) }
-								checked={ true === single_page_form_title }
-								onChange={ () => onHandleChange( 'single_page_form_title', ! single_page_form_title ) }
-							/>
-
 							<ConversationalFormSettingsPreview setHidePopover={ setHidePopover } />
+
+							{
+								showInstantFormTitleSetting &&
+								<InstantFormToggle
+									label={ __( 'Show Title', 'sureforms' ) }
+									checked={ true === single_page_form_title }
+									onChange={ () => onHandleChange( 'single_page_form_title', ! single_page_form_title ) }
+								/>
+							}
+
 						</div>
 
 						<div className="srfm-instant-form-settings-separator" />
