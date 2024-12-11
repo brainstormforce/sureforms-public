@@ -438,7 +438,8 @@ class Admin {
 				}
 			}
 
-			$localization_data['security_settings_url'] = admin_url( '/admin.php?page=sureforms_form_settings&tab=security-settings' );
+			$localization_data['security_settings_url']    = admin_url( '/admin.php?page=sureforms_form_settings&tab=security-settings' );
+			$localization_data['integration_settings_url'] = admin_url( '/admin.php?page=sureforms_form_settings&tab=integration-settings' );
 			wp_localize_script(
 				SRFM_SLUG . $asset_handle,
 				SRFM_SLUG . '_admin',
@@ -667,13 +668,20 @@ class Admin {
 			'srfm-template-picker'                   => Helper::validate_request_context( 'add-new-form', 'page' ),
 		];
 
+		$add_srfm_classes = '';
+
 		// Loop through the defined classes and conditions.
 		foreach ( $srfm_classes as $class => $condition ) {
 			// Check if the condition evaluates to true.
 			if ( $condition ) {
 				// Append the class to the existing classes string, followed by a space.
-				$classes .= $class . ' ';
+				$add_srfm_classes .= empty( $add_srfm_classes ) ? $class : ' ' . $class;
 			}
+		}
+
+		// Append the new classes to the existing classes string.
+		if ( ! empty( $add_srfm_classes ) ) {
+			$classes .= ' ' . $add_srfm_classes;
 		}
 
 		// Return the updated list of classes.
