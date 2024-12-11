@@ -8,7 +8,7 @@ permissions: write-all
 
 jobs:
   CHECK_SHORTCODE:
-    if: ${{ github.event.action == 'edited' || contains(github.event.pull_request.body, '[BSF-PR-SUMMARY]') }}
+    if: ${{ github.event.action == 'edited' || contains(github.event.pull_request.body, '[BSF-PR-SUMMARY]') && !contains(join(github.event.pull_request.labels.*.name, ','), 'Release PR') }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -25,6 +25,7 @@ jobs:
           EXCLUDE_PATHS: "node_modules/,vendor/"
 
   CODE_REVIEW:
+    if: ${{ !contains(join(github.event.pull_request.labels.*.name, ','), 'Release PR') }}
     needs: CHECK_SHORTCODE
     runs-on: ubuntu-latest
     steps:

@@ -110,15 +110,13 @@ document.addEventListener( 'DOMContentLoaded', function () {
 } );
 
 async function submitFormData( form ) {
-	const site_url = srfm_submit.site_url;
-
 	const formData = new FormData( form );
 	const filteredFormData = new FormData();
 
 	// Define keys to exclude from filtered form data
 	const blockTheseKeys = [ 'srfm-email-confirm', 'srfm-password-confirm' ];
 
-	// Iterate over each entry in formData.
+	// Iterate over each entry in formData
 	for ( let [ key, value ] of formData.entries() ) {
 		// Skip keys listed in blockTheseKeys array
 		if ( blockTheseKeys.includes( key ) ) {
@@ -140,40 +138,25 @@ async function submitFormData( form ) {
 		filteredFormData.append( key, value );
 	}
 
-	return await fetch( `${ site_url }/wp-json/sureforms/v1/submit-form`, {
-		method: 'POST',
-		headers: {
-			'X-WP-Nonce': srfm_submit.nonce,
-		},
-		body: filteredFormData,
-	} )
-		.then( ( response ) => {
-			if ( response.ok ) {
-				return response.json();
-			}
-		} )
-		.catch( ( e ) => {
-			console.log( e );
+	try {
+		return await wp.apiFetch( {
+			path: 'sureforms/v1/submit-form',
+			method: 'POST',
+			body: filteredFormData,
 		} );
+	} catch ( e ) {
+		console.log( e );
+	}
 }
 
 async function afterSubmit( formStatus ) {
-	const site_url = window.srfm_submit.site_url;
 	const submissionId = formStatus.data.submission_id;
 
 	try {
-		const response = await fetch(
-			`${ site_url }/wp-json/sureforms/v1/after-submission/${ submissionId }`,
-			{
-				headers: {
-					'X-WP-Nonce': window.srfm_submit.nonce,
-				},
-			}
-		);
-
-		if ( ! response.ok ) {
-			throw new Error( `HTTP error! Status: ${ response.status }` );
-		}
+		await wp.apiFetch( {
+			path: `/sureforms/v1/after-submission/${ submissionId }`,
+			method: 'GET',
+		} );
 	} catch ( error ) {
 		console.error( error );
 	}
@@ -189,7 +172,7 @@ function showSuccessMessage(
 	loader
 ) {
 	// Create and dispatch a custom event
-	const event = new CustomEvent( 'SRFM_Form_Success_Message', {
+	const event = new CustomEvent( 'srfm_on_show_success_message', {
 		cancelable: true,
 		detail: {
 			form,
@@ -262,6 +245,24 @@ async function handleFormSubmission(
 			return;
 		}
 
+		// Create and dispatch a custom event
+		const event = new CustomEvent( 'srfm_on_trigger_form_submission', {
+			cancelable: true,
+			detail: {
+				form,
+				loader,
+				formId,
+				submitType,
+				successElement,
+				successContainer,
+			},
+		} );
+
+		if ( ! document.dispatchEvent( event ) ) {
+			loader.classList.remove( 'srfm-active' );
+			return; // Stop further execution if event.preventDefault() was called.
+		}
+
 		const formStatus = await submitFormData( form );
 		if ( formStatus?.success ) {
 			/**
@@ -312,6 +313,24 @@ async function handleFormSubmission(
 			loader.classList.remove( 'srfm-active' );
 		}
 	} catch ( error ) {
+		// Create and dispatch a custom event
+		const event = new CustomEvent(
+			'srfm_on_trigger_form_submission_failure',
+			{
+				detail: {
+					form,
+					error,
+					loader,
+					formId,
+					submitType,
+					successElement,
+					successContainer,
+				},
+			}
+		);
+
+		document.dispatchEvent( event );
+
 		loader.classList.remove( 'srfm-active' );
 		showErrorMessage( errorElement );
 	}

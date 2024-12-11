@@ -138,11 +138,36 @@ export async function fieldValidation(
 		if ( currentFormId !== formId ) {
 			continue;
 		}
-		const inputField = container.querySelector( 'input, textarea, select' );
+		let inputField;
+		let inputValue;
+		// Determine the inputField and inputValue based on the container's class.
+		switch ( true ) {
+			/**
+			 * Case 1: If the container corresponds to a phone number field.
+			 * This is because phone number containers have multiple inputs inside them,
+			 * and we specifically need to target the phone input using the class '.srfm-input-phone'.
+			 * Set the inputValue as the value of the phone number hidden input which is the next sibling
+			 * of the phone input. This is because the complete phone number with country code is stored in the hidden input.
+			 */
+			case container.classList.contains( 'srfm-phone-block' ):
+				inputField = container.querySelector( '.srfm-input-phone' );
+				inputValue = inputField?.nextElementSibling?.value;
+				break;
+			/**
+			 * Default Case: For all other containers, select a general input element.
+			 * This handles standard input types such as text, textarea, or select.
+			 * Set the inputValue as the value of the input element.
+			 */
+			default:
+				inputField = container.querySelector(
+					'input, textarea, select'
+				);
+				inputValue = inputField.value;
+				break;
+		}
 		const isRequired = inputField.getAttribute( 'data-required' );
 		const isUnique = inputField.getAttribute( 'data-unique' );
 		let fieldName = inputField.getAttribute( 'name' );
-		const inputValue = inputField.value;
 		const errorMessage = container.querySelector( '.srfm-error-message' );
 
 		if ( fieldName ) {
@@ -699,7 +724,8 @@ export async function fieldValidation(
 					totalCheckedInput < minSelection
 				) {
 					errorMessage.textContent = srfmSprintfString(
-						window?.srfm_submit?.messages?.min_selections,
+						window?.srfm_submit?.messages
+							?.multi_choice_min_selections,
 						minSelection
 					);
 					errorFound = true;
@@ -710,7 +736,8 @@ export async function fieldValidation(
 					totalCheckedInput > maxSelection
 				) {
 					errorMessage.textContent = srfmSprintfString(
-						window?.srfm_submit?.messages?.max_selections,
+						window?.srfm_submit?.messages
+							?.multi_choice_max_selections,
 						maxSelection
 					);
 					errorFound = true;
@@ -821,6 +848,11 @@ function addBlurListener( containerClass, blockClass ) {
 						fieldValidationInit( areaField, blockClass );
 					} );
 				}, 500 );
+			}
+
+			// First input element is search for phone number block so reassigning it with phone number input for proper validation.
+			if ( containerClass === 'srfm-phone-block' ) {
+				areaField = areaInput.querySelector( '.srfm-input-phone' );
 			}
 
 			// for all other fields

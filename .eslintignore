@@ -6,3 +6,6 @@ vendor
 restriction-build
 licensing-sdk
 coverage-report
+playwright-report
+tests
+src/lib/*
