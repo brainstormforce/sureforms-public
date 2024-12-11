@@ -215,7 +215,6 @@ class Admin_Ajax {
 			wp_send_json_error( $response_data );
 		}
 
-		$notes_per_page = 3;
 		$entry_id       = absint( wp_unslash( $_POST['entryID'] ) );
 		$entry          = Entries::get( $entry_id );
 		$type           = ! empty( $_POST['type'] ) ? sanitize_text_field( wp_unslash( $_POST['type'] ) ) : 'next';
