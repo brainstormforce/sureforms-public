@@ -30,12 +30,12 @@ const ValidationsPage = ( {
 				{ key: 'srfm_valid_url', label: __( 'Invalid URL Error Message', 'sureforms' ) },
 				{ key: 'srfm_confirm_email_same', label: __( 'Set Confirmation Email Mismatch Message', 'sureforms' ) },
 				{ key: 'srfm_valid_email', label: __( 'Invalid Email Error Message', 'sureforms' ) },
-				{ key: 'srfm_input_min_value', label: __( 'Input Min Value Error Message', 'sureforms' ) },
-				{ key: 'srfm_input_max_value', label: __( 'Input Max Value Error Message', 'sureforms' ) },
-				{ key: 'srfm_dropdown_min_selections', label: __( 'Dropdown Min Selections Error Message', 'sureforms' ) },
-				{ key: 'srfm_dropdown_max_selections', label: __( 'Dropdown Max Selections Error Message', 'sureforms' ) },
-				{ key: 'srfm_multi_choice_min_selections', label: __( 'Multiple Choice Min Selections Error Message', 'sureforms' ) },
-				{ key: 'srfm_multi_choice_max_selections', label: __( 'Multiple Choice Max Selections Error Message', 'sureforms' ) },
+				{ key: 'srfm_input_min_value', label: __( 'Input Min Value Error Message', 'sureforms' ), description: __( 'The %s placeholder in the error message dynamically represents the minimum allowed value for the input. For example, if the minimum value is 10, the message will appear as: “Minimum value is 10.”', 'sureforms' ) },
+				{ key: 'srfm_input_max_value', label: __( 'Input Max Value Error Message', 'sureforms' ), description: __( 'The %s placeholder in the error message dynamically represents the maximum allowed value for the input. For example, if the maximum value is 100, the message will appear as: “Maximum value is 100.”', 'sureforms' ) },
+				{ key: 'srfm_dropdown_min_selections', label: __( 'Dropdown Min Selections Error Message', 'sureforms' ), description: __( 'The %s placeholder in the error message dynamically represents the minimum number of options a user must select. For example, if the minimum is 2 selections, the message will appear as: “Minimum 2 selections are required.”', 'sureforms' ) },
+				{ key: 'srfm_dropdown_max_selections', label: __( 'Dropdown Max Selections Error Message', 'sureforms' ), description: __( 'The %s placeholder in the error message dynamically represents the maximum number of options a user can select. For example, if the maximum is 4 selections, the message will appear as: “Maximum 4 selections are allowed.”', 'sureforms' ) },
+				{ key: 'srfm_multi_choice_min_selections', label: __( 'Multiple Choice Min Selections Error Message', 'sureforms' ), description: __( 'The %s placeholder in the error message dynamically represents the minimum number of choices a user must select. For example, if the minimum is 1 selection, the message will appear as: “Minimum 1 selection is required.”', 'sureforms' ) },
+				{ key: 'srfm_multi_choice_max_selections', label: __( 'Multiple Choice Max Selections Error Message', 'sureforms' ), description: __( 'The %s placeholder in the error message dynamically represents the maximum number of choices a user can select. For example, if the maximum is 3 selections, the message will appear as: “Maximum 3 selections are allowed.”', 'sureforms' ) },
 			]
 		);
 
@@ -113,6 +113,7 @@ const ValidationsPage = ( {
 									'general-settings-dynamic-opt'
 								);
 							} }
+							help={ field?.description || 'This is help text.' }
 						/>
 					);
 				} ) }
