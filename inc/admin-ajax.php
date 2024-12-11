@@ -215,9 +215,9 @@ class Admin_Ajax {
 			wp_send_json_error( $response_data );
 		}
 
-		$entry_id       = absint( wp_unslash( $_POST['entryID'] ) );
-		$entry          = Entries::get( $entry_id );
-		$type           = ! empty( $_POST['type'] ) ? sanitize_text_field( wp_unslash( $_POST['type'] ) ) : 'next';
+		$entry_id = absint( wp_unslash( $_POST['entryID'] ) );
+		$entry    = Entries::get( $entry_id );
+		$type     = ! empty( $_POST['type'] ) ? sanitize_text_field( wp_unslash( $_POST['type'] ) ) : 'next';
 
 		if ( 'next' === $type ) {
 			$current_page = isset( $_POST['nextPage'] ) ? absint( wp_unslash( $_POST['nextPage'] ) ) : 1;
