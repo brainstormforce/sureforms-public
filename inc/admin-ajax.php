@@ -277,10 +277,9 @@ class Admin_Ajax {
 			wp_send_json_error( $response_data );
 		}
 
-		$logs_per_page = 3;
-		$entry_id      = absint( wp_unslash( $_POST['entryID'] ) );
-		$entry         = Entries::get( $entry_id );
-		$logs          = ! empty( $entry['logs'] ) ? Helper::get_array_value( $entry['logs'] ) : [];
+		$entry_id = absint( wp_unslash( $_POST['entryID'] ) );
+		$entry    = Entries::get( $entry_id );
+		$logs     = ! empty( $entry['logs'] ) ? Helper::get_array_value( $entry['logs'] ) : [];
 
 		$type       = ! empty( $_POST['type'] ) ? sanitize_text_field( wp_unslash( $_POST['type'] ) ) : 'next';
 		$delete_log = isset( $_POST['deleteLog'] ) ? absint( wp_unslash( $_POST['deleteLog'] ) ) : false; // Log key-ID to delete.
@@ -306,7 +305,7 @@ class Admin_Ajax {
 		$paginate_logs = Helper::paginate_array( $logs, $current_page );
 
 		ob_start();
-		Single_Entry::entry_logs_table_markup( $paginate_logs['items'] );
+		Single_Entry::entry_logs_table_markup( Helper::get_array_value( $paginate_logs['items'] ) );
 		$markup = ob_get_clean();
 
 		wp_send_json_success(

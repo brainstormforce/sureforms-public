@@ -977,15 +977,15 @@ class Helper {
 	/**
 	 * Helper method to paginate the provided array data.
 	 *
-	 * @param array $array Array item to paginate
-	 * @param int $current_page Current page number.
-	 * @param int $items_per_page Total items to return per pagination.
+	 * @param array<mixed> $array Array item to paginate
+	 * @param int   $current_page Current page number.
+	 * @param int   $items_per_page Total items to return per pagination.
 	 * @since x.x.x
-	 * @return array
+	 * @return array<mixed>
 	 */
 	public static function paginate_array( $array, $current_page, $items_per_page = 3 ) {
 		$total_items = count( $array );
-		$total_pages = (int) ceil( $total_items / $items_per_page );
+		$total_pages = self::get_integer_value( ceil( $total_items / $items_per_page ) );
 
 		// Ensure current page is within bounds.
 		$current_page = max( 1, min( $total_pages, $current_page ) );
