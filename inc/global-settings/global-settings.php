@@ -172,7 +172,6 @@ class Global_Settings {
 			'srfm_valid_url',
 			'srfm_confirm_email_same',
 			'srfm_valid_email',
-			'srfm_confirm_password_same',
 			'srfm_input_min_value',
 			'srfm_input_max_value',
 			'srfm_dropdown_min_selections',

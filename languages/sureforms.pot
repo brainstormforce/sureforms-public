@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-12-09T13:33:44+00:00\n"
+"POT-Creation-Date: 2024-12-11T08:11:48+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.10.0\n"
 "X-Domain: sureforms\n"
@@ -88,7 +88,7 @@ msgstr ""
 #: inc/form-submit.php:707
 #: inc/forms-data.php:87
 #: inc/global-settings/global-settings.php:86
-#: inc/global-settings/global-settings.php:259
+#: inc/global-settings/global-settings.php:276
 #: inc/rest-api.php:92
 #: inc/rest-api.php:126
 msgid "Nonce verification failed."
@@ -841,8 +841,8 @@ msgid "SureForms Email Summary - %s"
 msgstr ""
 
 #: inc/global-settings/email-summary.php:206
-#: inc/global-settings/global-settings.php:188
-#: inc/global-settings/global-settings.php:286
+#: inc/global-settings/global-settings.php:205
+#: inc/global-settings/global-settings.php:303
 #: assets/build/settings.js:172
 msgid "Monday"
 msgstr ""
@@ -877,7 +877,7 @@ msgstr ""
 msgid "Value needs to be unique."
 msgstr ""
 
-#: inc/helper.php:484
+#: inc/helper.php:486
 msgid "Sorry, you are not allowed to perform this action."
 msgstr ""
 
@@ -1132,51 +1132,47 @@ msgstr ""
 msgid "Cookie Value"
 msgstr ""
 
-#: inc/translatable.php:36
+#: inc/translatable.php:88
 msgid "Please enter a valid phone number."
 msgstr ""
 
-#: inc/translatable.php:37
+#: inc/translatable.php:89
 msgid "Please enter a valid URL."
 msgstr ""
 
-#: inc/translatable.php:38
+#: inc/translatable.php:90
 msgid "Confirmation email does not match."
 msgstr ""
 
-#: inc/translatable.php:39
+#: inc/translatable.php:91
 msgid "Please enter a valid email address."
 msgstr ""
 
-#: inc/translatable.php:40
-msgid "Confirmation password does not match."
-msgstr ""
-
 #. translators: %s represents the minimum acceptable value
-#: inc/translatable.php:43
+#: inc/translatable.php:99
 msgid "Minimum value is %s"
 msgstr ""
 
 #. translators: %s represents the maximum acceptable value
-#: inc/translatable.php:46
+#: inc/translatable.php:102
 msgid "Maximum value is %s"
 msgstr ""
 
 #. translators: %s represents the minimum number of selections required
 #. translators: %s represents the minimum number of characters required
-#: inc/translatable.php:49
-#: inc/translatable.php:55
+#: inc/translatable.php:105
+#: inc/translatable.php:111
 msgid "Minimum %s selections are required"
 msgstr ""
 
 #. translators: %s represents the maximum number of selections allowed
 #. translators: %s represents the maximum number of characters allowed
-#: inc/translatable.php:52
-#: inc/translatable.php:58
+#: inc/translatable.php:108
+#: inc/translatable.php:114
 msgid "Maximum %s selections are allowed"
 msgstr ""
 
-#: inc/updater.php:133
+#: inc/updater.php:137
 msgid "Heads up!"
 msgstr ""
 
@@ -9946,6 +9942,98 @@ msgstr ""
 
 #: assets/build/settings.js:172
 msgid "Enable Honeypot Security for better spam protection"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "URL Block Required Error Message"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Input Block Required Error Message"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Input Block Unique Error Message"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Address Block Required Error Message"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Phone Block Required Error Message"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Phone Block Unique Error Message"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Number Block Required Error Message"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Textarea Block Required Error Message"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Multiple Choice Block Required Error Message"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Checkbox Block Required Error Message"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Email Block Required Error Message"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Email Block Unique Error Message"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Dropdown Block Required Error Message"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Invalid Phone Number Error Message"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Invalid URL Error Message"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Set Confirmation Email Mismatch Message"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Invalid Email Error Message"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Input Min Value Error Message"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Input Max Value Error Message"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Dropdown Min Selections Error Message"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Dropdown Max Selections Error Message"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Multiple Choice Min Selections Error Message"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Multiple Choice Max Selections Error Message"
 msgstr ""
 
 #: assets/build/settings.js:172
