@@ -199,7 +199,7 @@ if ( $use_banner_as_page_background ) {
 		</body>
 		<?php
 	}
-	
+
 	// Action to load custom body content on the Instant Form page.
 	do_action( 'srfm_after_instant_form_body', $srfm_custom_post_id, $instant_form_settings, $body_classes, $srfm_live_mode_data );
 
