@@ -28,7 +28,7 @@ const Webhooks = () => {
 			<div className="srfm-integration-cta">
 				{ false === switchWebhook ? <UpgradeToProButton className="srfm-button-secondary srfm-button-xs" /> : switchWebhook }
 				<div className="srfm-pro-badge">
-					{ __( 'Pro', 'sureforms' ) }</div>
+					{ __( 'Starter', 'sureforms' ) }</div>
 			</div>
 		</> );
 };

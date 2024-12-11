@@ -174,7 +174,13 @@ const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 			],
 			component: <DefaultConfirmationTypes data={ data } setData={ setData } pageOptions={ pageOptions } errorMessage={ errorMessage } setErrorMessage={ setErrorMessage } keyValueComponent={ keyValueComponent } />,
 		},
-	] );
+	], {
+		data,
+		setData,
+		errorMessage,
+		setErrorMessage,
+	}
+	);
 
 	// Find the selected confirmation type and sub type (if any).
 	const confirmationOption = confirmationTypeInputs.find( ( option ) =>

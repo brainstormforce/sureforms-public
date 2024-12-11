@@ -371,6 +371,10 @@ body.post-type-sureforms_form {
 		.srfm-header-title-input {
 			width: 100%;
 			max-width: 500px;
+
+			.components-base-control__field {
+				margin-top: 0;
+			}
 		}
 
 		.components-text-control__input {
@@ -605,6 +609,7 @@ body.post-type-sureforms_form {
 
 html[dir="rtl"] body.post-type-sureforms_form {
 	.srfm-submit-btn-container {
+		max-width: calc( 620px - 20em );
 		.srfm-button {
 			// New variable is required as the value was getting evaluated to positive (-1 * -1) if used directly in translateX().
 			--srfm-submit-alignment-backend-rtl: calc( -1 * ( var( --srfm-submit-alignment-backend ) ) );

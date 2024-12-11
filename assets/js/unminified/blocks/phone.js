@@ -12,7 +12,7 @@ function initializePhoneField() {
 			hiddenInput: () => ( {
 				phone: phoneFieldName,
 			} ),
-			countrySearch: false,
+			countrySearch: true,
 			initialCountry: 'us',
 		};
 
@@ -33,6 +33,8 @@ function initializePhoneField() {
 		}
 
 		const iti = window.intlTelInput( phoneNumber, itlOptions );
+		const countriesData =
+			iti?.countryList.querySelectorAll( '.iti__country' );
 
 		// handle padding based on the direction of the page
 		const selectedCountry = element.querySelector(
@@ -55,16 +57,51 @@ function initializePhoneField() {
 				parentBlock.classList.add( 'srfm-error' );
 				errorMessage.textContent =
 					window?.srfm_submit?.messages?.valid_phone_number;
+				/**
+				 * Set the phone number input value to the hidden input even if the phone number is not valid,
+				 * so that the unique validation can be overridden and invalid/required validation messages will be visible.
+				 */
+				iti.hiddenInput.value = iti.telInput.value;
 			} else {
 				parentBlock.classList.remove( 'srfm-phone-error' );
 				parentBlock.classList.remove( 'srfm-error' );
 				iti.hiddenInput.value = iti.getNumber();
 			}
 		};
+		/**
+		 * Set the data-unique parameter to the hidden input field based on the data-unique
+		 * parameter of the phone input field.
+		 * The ajax validation will use the hidden input value to check for uniqueness.
+		 */
+		const uniqueAttr = iti.telInput.getAttribute( 'data-unique' );
+		if ( uniqueAttr ) {
+			iti.hiddenInput.setAttribute( 'data-unique', `${ uniqueAttr }` );
+		}
 
 		if ( phoneNumber ) {
 			phoneNumber.addEventListener( 'change', updatePhoneNumber );
 			phoneNumber.addEventListener( 'countrychange', updatePhoneNumber );
+			// Add iti__active class to the selected country in the dropdown and scroll to the selected country.
+			phoneNumber.addEventListener( 'open:countrydropdown', () => {
+				const selectedCountryData = iti.getSelectedCountryData();
+				if ( selectedCountryData ) {
+					countriesData.forEach( ( country ) => {
+						if ( country.classList.contains( 'iti__active' ) ) {
+							country.classList.remove( 'iti__active' );
+						}
+					} );
+					const activeCountry = iti?.countryList.querySelector(
+						`.iti__country[data-country-code="${ selectedCountryData.iso2 }"]`
+					);
+					if ( activeCountry ) {
+						activeCountry.classList.add( 'iti__active' );
+						activeCountry.scrollIntoView( {
+							block: 'nearest',
+							behavior: 'instant',
+						} );
+					}
+				}
+			} );
 		}
 
 		itiContainerClass( element );
@@ -94,7 +131,7 @@ function itiContainerClass( element ) {
 		return;
 	}
 	const id = element.closest( 'form' ).getAttribute( 'form-id' );
-	const flagContainer = element.querySelector( '.iti__selected-flag' );
+	const flagContainer = element.querySelector( '.iti__selected-country' );
 	flagContainer.addEventListener( 'click', () => {
 		const itiContainerMobile = document.querySelector( '.iti--container' );
 		itiContainerMobile?.classList.add( `srfm-form-container-${ id }` );

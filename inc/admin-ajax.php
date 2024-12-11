@@ -123,6 +123,7 @@ class Admin_Ajax {
 	 * @since 0.0.1
 	 */
 	public function localize_script_integration( $values ) {
+		$is_screen_sureforms_menu = Helper::validate_request_context( 'sureforms_menu', 'page' );
 		return array_merge(
 			$values,
 			[
@@ -136,7 +137,7 @@ class Admin_Ajax {
 				'plugin_installing_text' => __( 'Installing...', 'sureforms' ),
 				'plugin_installed_text'  => __( 'Installed', 'sureforms' ),
 				'isRTL'                  => is_rtl(),
-				'current_screen_id'      => get_current_screen() ? get_current_screen()->id : '',
+				'current_screen_id'      => $is_screen_sureforms_menu ? 'sureforms_menu' : '',
 				'form_id'                => get_post() ? get_post()->ID : '',
 				'suretriggers_nonce'     => wp_create_nonce( 'suretriggers_nonce' ),
 			]
@@ -267,6 +268,16 @@ class Admin_Ajax {
 				'data'      => $this->get_form_fields( $form_id ),
 			],
 		];
+
+		// Adding entry_id in body sample response if do_not_store_entries is not enabled.
+		$compliance           = get_post_meta( $form_id, '_srfm_compliance', true );
+		$do_not_store_entries = is_array( $compliance ) && isset( $compliance[0]['do_not_store_entries'] )
+		? $compliance[0]['do_not_store_entries']
+		: null;
+
+		if ( ! $do_not_store_entries ) {
+			$body['sample_response']['entry_id'] = 12;
+		}
 
 		wp_send_json_success(
 			[
