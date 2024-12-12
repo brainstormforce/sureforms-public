@@ -829,6 +829,11 @@ class Admin {
 	 * @return void
 	 */
 	public function display_srfm_rating_notice() {
+		// Allow the notice to be disabled and exit early if it is.
+		if ( ! apply_filters( 'srfm_show_rating_notice', true ) ) {
+			return;
+		}
+
 		$image_path = plugin_dir_url( __FILE__ ) . 'assets/images/sureforms.png';
 
 		if ( ! defined( WEEK_IN_SECONDS ) ) {
