@@ -22,7 +22,16 @@ $placeholder_color: #9ca3af;
 		}
 	}
 }
+// TODO: Check the RTL case.
+[data-id="nps-survey-sureforms"] > .nps-survey-wrapper > div {
+	right: 8px !important;
+	bottom: 8px !important;
+}
 
+[data-id="nps-survey-sureforms"] > .nps-survey-wrapper > div button[type="submit"],
+[data-id="nps-survey-sureforms"] > .nps-survey-wrapper > div .bg-nps-button-background {
+	background-color: #D54407;
+}
 /* Clear to evenly position the next list items after the separator */
 #toplevel_page_sureforms_menu .wp-submenu li {
 	clear: both;
