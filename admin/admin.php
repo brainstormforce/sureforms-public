@@ -7,6 +7,7 @@
 
 namespace SRFM\Admin;
 
+use Astra_Notices;
 use SRFM\Admin\Views\Entries_List_Table;
 use SRFM\Admin\Views\Single_Entry;
 use SRFM\Inc\AI_Form_Builder\AI_Helper;
@@ -14,7 +15,6 @@ use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Helper;
 use SRFM\Inc\Post_Types;
 use SRFM\Inc\Traits\Get_Instance;
-use Astra_Notices;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -824,12 +824,12 @@ class Admin {
 
 	/**
 	 * Display a notice to the user about providing a review.
-	 * 
+	 *
 	 * @since x.x.x
 	 * @return void
 	 */
 	public function display_srfm_rating_notice() {
-		$image_path = plugin_dir_url(__FILE__) . 'assets/images/sureforms.png';
+		$image_path = plugin_dir_url( __FILE__ ) . 'assets/images/sureforms.png';
 
 		if ( ! defined( WEEK_IN_SECONDS ) ) {
 			define( 'WEEK_IN_SECONDS', 604800 );
@@ -837,9 +837,9 @@ class Admin {
 
 		Astra_Notices::add_notice(
 			[
-				'id'                         => 'srfm-plugin-review-notice',
-				'type'                       => '',
-				'message'                    => sprintf(
+				'id'                  => 'srfm-plugin-review-notice',
+				'type'                => '',
+				'message'             => sprintf(
 					'<div class="notice-image">
 						<img src="%1$s" class="custom-logo" alt="SureForms" itemprop="logo">
 					</div>
@@ -871,8 +871,8 @@ class Admin {
 					esc_html__( 'Nope, maybe later', 'sureforms' ),
 					esc_html__( 'I already did', 'sureforms' )
 				),
-				'repeat-notice-after'        => WEEK_IN_SECONDS,
-				'show_if'                    => $this->maybeDisplayRatingNotice(),
+				'repeat-notice-after' => WEEK_IN_SECONDS,
+				'show_if'             => $this->maybe_display_rating_notice(),
 			]
 		);
 	}
@@ -880,15 +880,15 @@ class Admin {
 	/**
 	 * Callback for displaying the rating notice conditionally,
 	 * passed to the 'show_if' parameter of the add_notice method.
-	 * 
+	 *
 	 * If user has more than 3 published forms or entries then show the notice.
-	 * 
+	 *
 	 * @since x.x.x
 	 * @return bool
 	 */
-	public function maybeDisplayRatingNotice() {
+	public function maybe_display_rating_notice() {
 		$entries_count = Entries::get_total_entries_by_status( '' );
-		$form_count	   = wp_count_posts( SRFM_FORMS_POST_TYPE );
+		$form_count    = wp_count_posts( SRFM_FORMS_POST_TYPE );
 
 		if ( $entries_count >= 3 || $form_count->publish >= 3 ) {
 			return true;
