@@ -367,7 +367,7 @@
 		const editEntryBtn = document.querySelector(
 			'.button.srfm-edit-entry'
 		);
-		const cancelBtn = document.querySelector( '.srfm-cancel-entry-btn' );
+		const cancelBtns = document.querySelectorAll( '.srfm-cancel-entry-btn' );
 
 		editEntryBtn.addEventListener( 'click', function ( e ) {
 			e.preventDefault();
@@ -376,12 +376,14 @@
 			document.body.style.overflow = 'hidden';
 		} );
 
-		cancelBtn.addEventListener( 'click', function ( e ) {
-			e.preventDefault();
-			dialog.close();
+		cancelBtns.forEach((cancelBtn) => {
+			cancelBtn.addEventListener( 'click', function ( e ) {
+				e.preventDefault();
+				dialog.close();
 
-			document.body.style.overflow = 'scroll';
-		} );
+				document.body.style.overflow = 'scroll';
+			} );
+		});
 	}
 
 	function handleLogsNavigation() {

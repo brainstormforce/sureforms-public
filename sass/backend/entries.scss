@@ -273,6 +273,10 @@
 	box-shadow: 0px 8px 5px -8px #50505026, -2px -2px 2px 0px #32323208, 2px 2px 2px 0px #3232320a, 0px 0px 0px 0.5px #0000001a;
 	border: 0;
 
+	&::backdrop {
+		background: #0f172ad9;
+	}
+
 	.srfm-edit-entry-modal-container {
 		width: 650px;
 		padding: 0;
@@ -284,6 +288,8 @@
 	}
 
 	.edit-entry-header {
+		display: flex;
+		justify-content: space-between;
 		h2 {
 			margin: 0;
 			padding: 0;
@@ -291,12 +297,20 @@
 			font-weight: 600;
 			line-height: 28px;
 		}
+		.srfm-cancel-entry-btn {
+			background: none;
+			border: none;
+			cursor: pointer;
+			margin: 0;
+			padding: 0;
+		}
 	}
 
 	.edit-entry-content {
-		display: flex;
-		flex-direction: column;
-		gap: 32px;
+		.srfm-block-single {
+			padding: 16px 0;
+			border-bottom: 1px dashed #cacaca;
+		}
 
 		.srfm-block-wrap {
 			margin-top: 6px;
@@ -307,6 +321,10 @@
 		}
 		.srfm-error-wrap {
 			display: none;
+		}
+
+		input[type="checkbox"] {
+			margin: 0;
 		}
 
 		select, .srfm-input-common:not( [type="checkbox"] ) {
@@ -322,6 +340,14 @@
 			line-height: 20px;
 			text-align: left;
 			color: #0f172a;
+		}
+
+		>:first-child {
+			padding-top: 0;
+		}
+		>:last-child {
+			border-bottom: 0;
+			padding-bottom: 0;
 		}
 	}
 

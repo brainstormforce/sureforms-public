@@ -98,6 +98,11 @@ class Single_Entry {
 					<div class="srfm-edit-entry-modal-container">
 						<div class="edit-entry-header">
 							<h2><?php esc_html_e( 'Edit Entry Data', 'sureforms' ); ?></h2>
+							<button type="button" class="srfm-cancel-entry-btn">
+								<svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+									<path fill-rule="evenodd" clip-rule="evenodd" d="M5.46967 5.83686C5.76256 5.54396 6.23744 5.54396 6.53033 5.83686L12 11.3065L17.4697 5.83686C17.7626 5.54396 18.2374 5.54397 18.5303 5.83686C18.8232 6.12975 18.8232 6.60463 18.5303 6.89752L13.0607 12.3672L18.5303 17.8369C18.8232 18.1298 18.8232 18.6046 18.5303 18.8975C18.2374 19.1904 17.7626 19.1904 17.4697 18.8975L12 13.4278L6.53033 18.8975C6.23744 19.1904 5.76256 19.1904 5.46967 18.8975C5.17678 18.6046 5.17678 18.1298 5.46967 17.8369L10.9393 12.3672L5.46967 6.89752C5.17678 6.60462 5.17678 6.12975 5.46967 5.83686Z" fill="#94A3B8"/>
+								</svg>
+							</button>
 						</div>
 						<div class="edit-entry-content">
 							<?php

@@ -166,6 +166,24 @@ class Multichoice_Markup extends Base {
 			</fieldset>
 		</div>
 		<?php
+		if ( $this->is_editing ) {
+			?>
+			<style>
+				.srfm-multi-choice-block .srfm-block-wrap {
+					display: flex;
+					justify-content: space-between;
+				}
+				.srfm-multi-choice-block .srfm-block-wrap label {
+					display: flex;
+					align-items: center;
+					gap: 5px;
+				}
+				.srfm-multi-choice-block .srfm-block-wrap label p {
+					margin: 0;
+				}
+			</style>
+			<?php
+		}
 		return ob_get_clean();
 	}
 
