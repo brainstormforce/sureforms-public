@@ -14,9 +14,14 @@ use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Helper;
 use SRFM\Inc\Post_Types;
 use SRFM\Inc\Traits\Get_Instance;
+use Astra_Notices;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
+}
+
+if ( ! class_exists( 'Astra_Notices' ) ) {
+	require_once SRFM_DIR . 'inc/lib/astra-notices/astra-notices.php';
 }
 /**
  * Admin handler class.
@@ -51,6 +56,8 @@ class Admin {
 		// Handle entry actions.
 		add_action( 'admin_init', [ $this, 'handle_entry_actions' ] );
 		add_action( 'admin_notices', [ Entries_List_Table::class, 'display_bulk_action_notice' ] );
+
+		add_action( 'admin_notices', [ $this, 'display_srfm_rating_notice' ] );
 	}
 
 	/**
@@ -813,6 +820,80 @@ class Admin {
 			// Phpcs ignore comment is required as $message variable is already escaped.
 			echo '<div class="notice notice-warning">' . $message . '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		}
+	}
+
+	/**
+	 * Display a notice to the user about providing a review.
+	 * 
+	 * @since x.x.x
+	 * @return void
+	 */
+	public function display_srfm_rating_notice() {
+		$image_path = plugin_dir_url(__FILE__) . 'assets/images/sureforms.png';
+
+		if ( ! defined( WEEK_IN_SECONDS ) ) {
+			define( 'WEEK_IN_SECONDS', 604800 );
+		}
+
+		Astra_Notices::add_notice(
+			[
+				'id'                         => 'srfm-plugin-review-notice',
+				'type'                       => '',
+				'message'                    => sprintf(
+					'<div class="notice-image">
+						<img src="%1$s" class="custom-logo" alt="SureForms" itemprop="logo">
+					</div>
+					<div class="notice-content">
+						<div class="notice-heading">
+							%2$s
+						</div>
+						%3$s<br />
+						<div class="astra-review-notice-container">
+							<a href="%4$s" class="astra-notice-close button-primary" target="_blank">
+							%5$s
+							</a>
+						<span class="dashicons dashicons-calendar"></span>
+							<a href="#" data-repeat-notice-after="%6$s" class="astra-notice-close">
+							%7$s
+							</a>
+						<span class="dashicons dashicons-smiley"></span>
+							<a href="#" class="astra-notice-close">
+							%8$s
+							</a>
+						</div>
+					</div>',
+					$image_path,
+					esc_html__( 'Amazing! SureForms is powering your forms and submissions - let\'s keep growing together!', 'sureforms' ),
+					esc_html__( 'Would you please mind sharing your views and give it a 5 star rating on the WordPress repository?', 'sureforms' ),
+					'https://wordpress.org/support/plugin/sureforms/reviews/?filter=5#new-post',
+					esc_html__( 'Ok, you deserve it', 'sureforms' ),
+					WEEK_IN_SECONDS,
+					esc_html__( 'Nope, maybe later', 'sureforms' ),
+					esc_html__( 'I already did', 'sureforms' )
+				),
+				'repeat-notice-after'        => WEEK_IN_SECONDS,
+				'show_if'                    => $this->maybeDisplayRatingNotice(),
+			]
+		);
+	}
+
+	/**
+	 * Callback for displaying the rating notice conditionally,
+	 * passed to the 'show_if' parameter of the add_notice method.
+	 * 
+	 * If user has more than 3 published forms or entries then show the notice.
+	 * 
+	 * @since x.x.x
+	 * @return bool
+	 */
+	public function maybeDisplayRatingNotice() {
+		$entries_count = Entries::get_total_entries_by_status( '' );
+		$form_count	   = wp_count_posts( SRFM_FORMS_POST_TYPE );
+
+		if ( $entries_count >= 3 || $form_count->publish >= 3 ) {
+			return true;
+		}
+		return false;
 	}
 
 }
