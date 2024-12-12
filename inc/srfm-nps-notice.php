@@ -88,7 +88,7 @@ if ( ! class_exists( 'SRFM_NPS_Notice' ) ) :
 					'display_after'    => 0,
 					'plugin_slug'      => 'srfm',
 					'message'          => [
-						'logo'                  => esc_url( plugin_dir_url( __DIR__ ) . 'images/sureforms-logo.png' ),
+						'logo'                  => esc_url( plugin_dir_url( __DIR__ ) . 'admin/assets/sureforms-logo.png' ),
 						'plugin_name'           => __( 'SureForms', 'sureforms' ),
 						'nps_rating_message'    => __( 'How likely are you to recommend SureForms to your friends or colleagues?', 'sureforms' ),
 						'feedback_title'        => __( 'Thanks a lot for your feedback! 😍', 'sureforms' ),
