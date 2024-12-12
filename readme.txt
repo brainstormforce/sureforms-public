@@ -4,7 +4,7 @@ Tags: contact form, custom form, form builder, forms, gutenberg
 Requires at least: 6.4
 Tested up to: 6.7.1
 Requires PHP: 7.4
-Stable tag: 1.1.1
+Stable tag: 1.2.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -260,6 +260,12 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 * Fix: Resolved Conflict with WP Code Plugin.
 * Fix: Resolved an issue with phone number unique validation not triggering correctly.
 * Fix: Resolved an issue where phone words were not accepted.
+= 1.2.0 - 11th December 2024 =
+* New: Added Zapier integration for SureForms Pro.
+* Improvement: Added support for including the Entry ID in SureTriggers' workflows, enhancing integration capabilities.
+* Improvement: Updated styling to ensure proper focus borders for the Checkbox and GDPR fields when navigating with a screen reader.
+* Fix: Resolved a conflict with the WPCode Plugin.
+* Fix: Fixed an issue where the Phone Number field unique validation wasn't triggering correctly.
 = 1.1.1 - 5th December 2024 =
 * New: Added an option to export entries in CSV format.
 * Improvement: Introduced a "What's New" notifier to highlight updates.
