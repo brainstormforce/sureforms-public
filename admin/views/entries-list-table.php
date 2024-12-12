@@ -312,7 +312,7 @@ class Entries_List_Table extends \WP_List_Table {
 
 				$filter_form_id = ! empty( $_GET['form_filter'] ) && 'all' !== $_GET['form_filter'] ? absint( wp_unslash( $_GET['form_filter'] ) ) : 0;
 
-				if ( ! empty( $_GET['month_filter'] ) ) {
+				if ( ! empty( $_GET['month_filter'] ) && 'all' !== $_GET['month_filter'] ) {
 					/**
 					 * If we are here then user has filtered the entries by month first
 					 * then selected export as bulk action without selecting any entries manually.
@@ -322,7 +322,8 @@ class Entries_List_Table extends \WP_List_Table {
 						[
 							'where'   => $where_condition,
 							'columns' => 'ID',
-						]
+						],
+						false
 					);
 				} elseif ( $filter_form_id > 0 ) {
 					/**
