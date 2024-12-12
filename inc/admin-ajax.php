@@ -196,26 +196,15 @@ class Admin_Ajax {
 	 * @return void
 	 */
 	public function navigate_entry_notes() {
-		$response_data = [ 'message' => $this->get_error_msg( 'permission' ) ];
-
-		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_send_json_error( $response_data );
-		}
-
-		if ( empty( $_POST['entryID'] ) ) {
-			$response_data = [ 'message' => $this->get_error_msg( 'invalid' ) ];
-			wp_send_json_error( $response_data );
-		}
-
 		/**
 		 * Nonce verification.
+		 * Need to add this code separately to suppress nonce verification phpcs error below.
 		 */
 		if ( ! check_ajax_referer( '_srfm_navigate_entry_notes_nonce', 'security' ) ) {
-			$response_data = [ 'message' => $this->get_error_msg( 'nonce' ) ];
-			wp_send_json_error( $response_data );
+			wp_send_json_error( [ 'message' => $this->get_error_msg( 'nonce' ) ] );
 		}
 
-		$entry_id = absint( wp_unslash( $_POST['entryID'] ) );
+		$entry_id = $this->validate_navigation_req();
 		$entry    = Entries::get( $entry_id );
 		$type     = ! empty( $_POST['type'] ) ? sanitize_text_field( wp_unslash( $_POST['type'] ) ) : 'next';
 
@@ -226,7 +215,7 @@ class Admin_Ajax {
 		}
 
 		$notes          = ! empty( $entry['notes'] ) ? Helper::get_array_value( $entry['notes'] ) : [];
-		$paginate_notes = Helper::paginate_array( $notes, $current_page );
+		$paginate_notes = Single_Entry::paginate_array( $notes, $current_page );
 
 		// Get the items for the current page.
 		$entry_notes = $paginate_notes['items'];
@@ -257,26 +246,15 @@ class Admin_Ajax {
 	 * @return void
 	 */
 	public function navigate_entry_logs() {
-		$response_data = [ 'message' => $this->get_error_msg( 'permission' ) ];
-
-		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_send_json_error( $response_data );
-		}
-
-		if ( empty( $_POST['entryID'] ) ) {
-			$response_data = [ 'message' => $this->get_error_msg( 'invalid' ) ];
-			wp_send_json_error( $response_data );
-		}
-
 		/**
 		 * Nonce verification.
+		 * Need to add this code separately to suppress nonce verification phpcs error below.
 		 */
 		if ( ! check_ajax_referer( '_srfm_navigate_entry_logs_nonce', 'security' ) ) {
-			$response_data = [ 'message' => $this->get_error_msg( 'nonce' ) ];
-			wp_send_json_error( $response_data );
+			wp_send_json_error( [ 'message' => $this->get_error_msg( 'nonce' ) ] );
 		}
 
-		$entry_id = absint( wp_unslash( $_POST['entryID'] ) );
+		$entry_id = $this->validate_navigation_req();
 		$entry    = Entries::get( $entry_id );
 		$logs     = ! empty( $entry['logs'] ) ? Helper::get_array_value( $entry['logs'] ) : [];
 
@@ -301,7 +279,7 @@ class Admin_Ajax {
 			--$current_page;
 		}
 
-		$paginate_logs = Helper::paginate_array( $logs, $current_page );
+		$paginate_logs = Single_Entry::paginate_array( $logs, $current_page );
 
 		ob_start();
 		Single_Entry::entry_logs_table_markup( Helper::get_array_value( $paginate_logs['items'] ) );
@@ -704,5 +682,23 @@ class Admin_Ajax {
 		<?php
 		$content = ob_get_clean();
 		return is_string( $content ) ? $content : '';
+	}
+
+	/**
+	 * Validates the ajax requests for the navigation functionalities.
+	 *
+	 * @since x.x.x
+	 * @return int Returns entry id if only we are receiving a valid request.
+	 */
+	private function validate_navigation_req() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( [ 'message' => $this->get_error_msg( 'permission' ) ] );
+		}
+
+		if ( empty( $_POST['entryID'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing -- We are checking nonce in the necessary methods.
+			wp_send_json_error( [ 'message' => $this->get_error_msg( 'invalid' ) ] );
+		}
+
+		return absint( wp_unslash( $_POST['entryID'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing -- We are checking nonce in the necessary methods.
 	}
 }
