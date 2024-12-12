@@ -179,6 +179,9 @@ class Updater {
 			'1.0.4' => [
 				'SRFM\Inc\Updater_Callbacks::manage_empty_default_dynamic_options',
 			],
+			'x.x.x' => [
+				'SRFM\Inc\Updater_Callbacks::manage_honeypot_option',
+			],
 		];
 	}
 

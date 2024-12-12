@@ -256,6 +256,7 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 == Changelog ==
 = x.x.x =
 * New: Introduced plugin rating notice.
+* Improvement: Revamped the General and Spam Protection settings within the Global Settings for improved user experience.
 = 1.2.0 - 11th December 2024 =
 * New: Added Zapier integration for SureForms Pro.
 * Improvement: Added support for including the Entry ID in SureTriggers' workflows, enhancing integration capabilities.

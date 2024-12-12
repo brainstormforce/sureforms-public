@@ -7,7 +7,6 @@ import { applyFilters } from '@wordpress/hooks';
 import {
 	MdSettings,
 	MdWarningAmber,
-	MdOutlineMail,
 	MdOutlineSecurity,
 	MdOutlineDashboardCustomize,
 } from 'react-icons/md';
@@ -27,11 +26,6 @@ export const navigation = applyFilters( 'srfm.settings.navigation', [
 		name: __( 'Validations', 'sureforms' ),
 		slug: 'validation-settings',
 		icon: <MdWarningAmber size={ 20 } color="#0f172a" />,
-	},
-	{
-		name: __( 'Email', 'sureforms' ),
-		slug: 'email-settings',
-		icon: <MdOutlineMail size={ 20 } color="#0f172a" />,
 	},
 	{
 		name: __( 'Spam Protection', 'sureforms' ),

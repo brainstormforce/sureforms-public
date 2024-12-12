@@ -1,5 +1,5 @@
 import { __ } from '@wordpress/i18n';
-import { TextControl, TabPanel, ExternalLink } from '@wordpress/components';
+import { TextControl, TabPanel, ExternalLink, ToggleControl } from '@wordpress/components';
 
 import ContentSection from '../components/ContentSection';
 
@@ -44,6 +44,11 @@ const SecurityPage = ( {
 							name: 'srfm-captcha-tab-3',
 							title: __( 'hCaptcha', 'sureforms' ),
 							className: 'srfm-captcha-tab-3',
+						},
+						{
+							name: 'srfm-honeypot-tab-4',
+							title: __( 'Honeypot', 'sureforms' ),
+							className: 'srfm-honeypot-tab-4',
 						},
 					] }
 				>
@@ -585,6 +590,36 @@ const SecurityPage = ( {
 													'Enter your secret key here',
 													'sureforms'
 												) }
+											/>
+										</div>
+									</>
+								);
+							case 'srfm-honeypot-tab-4':
+								return (
+									<>
+										<div className="srfm-sub-section-heading">
+											<h2>
+												{ __(
+													'Honeypot',
+													'sureforms'
+												) }
+											</h2>
+										</div>
+										<div className="srfm-sub-section-content">
+											<ToggleControl
+												label={ __( 'Enable Honeypot Security', 'sureforms' ) }
+												help={ __(
+													'Enable Honeypot Security for better spam protection',
+													'sureforms'
+												) }
+												checked={ securitytabOptions.srfm_honeypot }
+												onChange={ ( value ) =>
+													updateGlobalSettings(
+														'srfm_honeypot',
+														value,
+														'security-settings'
+													)
+												}
 											/>
 										</div>
 									</>
