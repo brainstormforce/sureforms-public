@@ -4,8 +4,61 @@
 		"Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
 		"This file is @generated automatically"
 	],
-	"content-hash": "b30aa46f4019ba14dbc103a4d6d7247c",
+	"content-hash": "a96630f690e6d20924df4bba75703afb",
 	"packages": [
+		{
+			"name": "brainstormforce/nps-survey",
+			"version": "1.0.2",
+			"source": {
+				"type": "git",
+				"url": "git@github.com:brainstormforce/nps-survey.git",
+				"reference": "1d3c312209db4cdb51a04b6af6a003c5d9ab2b2d"
+			},
+			"dist": {
+				"type": "zip",
+				"url": "https://api.github.com/repos/brainstormforce/nps-survey/zipball/1d3c312209db4cdb51a04b6af6a003c5d9ab2b2d",
+				"reference": "1d3c312209db4cdb51a04b6af6a003c5d9ab2b2d",
+				"shasum": ""
+			},
+			"require-dev": {
+				"automattic/vipwpcs": "^2.3",
+				"dealerdirect/phpcodesniffer-composer-installer": "^0.7.1",
+				"php-stubs/generator": "^0.8.2",
+				"php-stubs/wordpress-stubs": "^6.1",
+				"phpcompatibility/php-compatibility": "^9.3",
+				"phpstan/phpstan": "^1.9",
+				"squizlabs/php_codesniffer": "^3.5",
+				"szepeviktor/phpstan-wordpress": "^1.1",
+				"wp-coding-standards/wpcs": "^2.2"
+			},
+			"type": "wordpress-plugin",
+			"scripts": {
+				"format": [
+					"vendor/bin/phpcbf"
+				],
+				"lint": [
+					"vendor/bin/phpcs"
+				],
+				"test": [
+					"vendor/bin/phpunit"
+				],
+				"phpstan": [
+					"vendor/bin/phpstan --memory-limit=2048M analyse"
+				],
+				"gen-stubs": [
+					"vendor/bin/generate-stubs artifact/phpstan/nps-survey/ --out=tests/php/stubs/nps-survey-stubs.php && rm -rf artifact/phpstan"
+				],
+				"update-stubs": [
+					"rm -f tests/php/stubs/nps-survey-stubs.php && bash bin/build-folder-phpstan.sh && composer gen-stubs"
+				]
+			},
+			"description": "NPS Survey Plugin",
+			"support": {
+				"source": "https://github.com/brainstormforce/nps-survey/tree/1.0.2",
+				"issues": "https://github.com/brainstormforce/nps-survey/issues"
+			},
+			"time": "2024-09-30T09:50:05+00:00"
+		},
 		{
 			"name": "composer/ca-bundle",
 			"version": "1.4.1",
