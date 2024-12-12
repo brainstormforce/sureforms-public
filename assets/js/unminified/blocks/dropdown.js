@@ -52,6 +52,9 @@ function initializeDropdown() {
 				// Handle the input state when an item is added or removed.
 				onItemAdd() {
 					handleInputState( element );
+					this.setTextboxValue( '' ); // Clear the dropdown search input.
+					this.lastQuery = null; // Clears the internal search query.
+					this.refreshOptions( false ); // Removes the highlight from options based on the search without a full reload.
 				},
 				onItemRemove() {
 					handleInputState( element );

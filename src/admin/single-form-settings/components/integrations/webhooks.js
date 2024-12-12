@@ -16,7 +16,7 @@ const WebhooksCard = ( { setSelectedTab } ) => {
 					<div className="srfm-modal-card-wrapper">
 						<WebhookIconNew />
 						<div className="srfm-pro-badge">
-							{ __( 'Pro', 'sureforms' ) }
+							{ __( 'Starter', 'sureforms' ) }
 						</div>
 					</div>
 

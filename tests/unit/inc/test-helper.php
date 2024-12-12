@@ -14,6 +14,17 @@ use SRFM\Inc\Helper;
  *
  */
 class Test_Helper extends TestCase {
+    /**
+     * Test if get_field_label_from_key is converting field key to label properly.
+     */
+    public function test_get_field_label_from_key() {
+        $field_key = 'srfm-input-fe439fd2-lbl-RnVsbCBOYW1l-full-name';
+
+        $result = Helper::get_field_label_from_key( $field_key );
+
+        $this->assertEquals( 'Full Name', $result );
+    }
+
 	/**
 	 * Test get_common_err_msg returns expected array structure
 	 */
@@ -88,7 +99,7 @@ class Test_Helper extends TestCase {
 		switch_to_locale($current_locale);
 	}
 
-	    /**
+	/**
      * Test scalar values are converted to strings
      *
      * @dataProvider provideScalarValues
@@ -335,5 +346,85 @@ class Test_Helper extends TestCase {
             'array' => [['test']],
             'object' => [new stdClass()],
         ];
+    }
+
+    /**
+    * Test validate_request_context method.
+    *
+    * This method tests various scenarios for the validate_request_context function, 
+    * including single key-value pair validations and multiple condition validations. 
+    * It covers the following cases:
+    * 
+    * - A single key-value pair that matches (valid).
+    * - A single key-value pair that does not match (invalid).
+    * - Multiple conditions where all conditions match (valid).
+    * - Multiple conditions where at least one condition does not match (invalid).
+    * - Empty conditions with no matching request values.
+    * 
+    * Each case ensures that the function behaves as expected in different scenarios
+    * by asserting the returned boolean value.
+    *
+    * @return void
+    */
+    public function test_validate_request_context() {
+        // Case 1: Single key-value pair that is valid.
+        $_REQUEST = [
+            'post_type' => 'post'
+        ];
+        $result = Helper::validate_request_context('post', 'post_type');
+        $this->assertTrue($result, 'Failed: Single key-value pair valid case');
+
+        // Case 2: Single key-value pair that is invalid.
+        $_REQUEST = [
+            'post_type' => 'page'
+        ];
+        $result = Helper::validate_request_context('post', 'post_type');
+        $this->assertFalse($result, 'Failed: Single key-value pair invalid case');
+
+        // Case 3: Multiple conditions that are valid.
+        $_REQUEST = [
+            'post_type' => 'post',
+            'status' => 'publish'
+        ];
+        $conditions = [
+            'post_type' => 'post',
+            'status' => 'publish'
+        ];
+        $result = Helper::validate_request_context('', '', $conditions);
+        $this->assertTrue($result, 'Failed: Multiple conditions valid case');
+
+        // Case 4: Multiple conditions that are invalid.
+        $_REQUEST = [
+            'post_type' => 'post',
+            'status' => 'draft'
+        ];
+        $conditions = [
+            'post_type' => 'post',
+            'status' => 'publish'
+        ];
+        $result = Helper::validate_request_context('', '', $conditions);
+        $this->assertFalse($result, 'Failed: Multiple conditions invalid case');
+
+        // Case 5: Empty conditions with no matching request values.
+        $_REQUEST = [];
+        $result = Helper::validate_request_context('post', 'post_type');
+        $this->assertFalse($result, 'Failed: Empty conditions case');
+    }
+
+    /**
+     * Test that the function returns the default excluded fields.
+     */
+    public function test_get_excluded_fields_default() {
+        $expected = [ 'srfm-honeypot-field', 'g-recaptcha-response', 'srfm-sender-email-field', 'form-id' ];
+        $result = Helper::get_excluded_fields();
+
+        // Test that the result is an array.
+        $this->assertIsArray( $result );
+
+        // Test that the result is not empty.
+        $this->assertNotEmpty( $result );
+
+        // Test that the result is the expected value.
+        $this->assertSame( $expected, $result );
     }
 }
