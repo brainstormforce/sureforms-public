@@ -111,14 +111,23 @@
 	}
 }
 
-.srfm-entry-logs {
+.sureforms_page_sureforms_entries {
+	#poststuff .postbox-container {
+		width: 90%;
+	}
+	#post-body.columns-2 #postbox-container-1 {
+		width: 39%;
+	}
+}
+
+.postbox.srfm-entry-logs {
 	.in-progress-overlay {
 		z-index: 999;
 		justify-content: center;
 	}
 
 	.inside {
-		margin: 0;
+		margin: 0 !important;
 		padding: 0;
 
 		.no-logs-found {
@@ -132,12 +141,19 @@
 
 			.entry-log-container {
 				padding: 16px;
-			}
-			.entry-log-title {
-				display: flex;
-				justify-content: space-between;
-				align-items: center;
-				margin: 0;
+
+				.entry-log-title {
+					display: flex;
+					justify-content: space-between;
+					align-items: center;
+					margin: 0;
+				}
+
+				.entry-log-messages {
+					p {
+						margin-top: 6px;
+					}
+				}
 			}
 		}
 	}
@@ -258,7 +274,7 @@
 	border: 0;
 
 	.srfm-edit-entry-modal-container {
-		width: 900px;
+		width: 650px;
 		padding: 0;
 		margin: 0;
 		gap: 32px;
@@ -282,20 +298,22 @@
 		flex-direction: column;
 		gap: 32px;
 
-		.srfm-option-container {
-			p {
-				margin: 0;
-			}
-			.srfm-option-image img {
-				width: 40px;
-			}
+		.srfm-block-wrap {
+			margin-top: 6px;
 		}
 
-		.srfm-block-single,
-		.srfm-email-block {
-			display: flex;
-			flex-direction: column;
-			gap: 8px;
+		.srfm-icon {
+			display: none;
+		}
+		.srfm-error-wrap {
+			display: none;
+		}
+
+		select, .srfm-input-common:not( [type="checkbox"] ) {
+			width: 100%;
+			max-width: 100%;
+			margin: 0;
+			padding: 8px 12px;
 		}
 
 		.srfm-block-label {
@@ -304,36 +322,6 @@
 			line-height: 20px;
 			text-align: left;
 			color: #0f172a;
-		}
-
-		.srfm-input-common {
-			&:not( [type="checkbox"] ) {
-				width: 100%;
-				max-width: 100%;
-				margin: 0;
-			}
-		}
-
-		select {
-			width: 100%;
-			max-width: 100%;
-			margin: 0;
-		}
-
-		.srfm-icon {
-			display: none;
-		}
-
-		.srfm-multi-choice-block .srfm-block-wrap {
-			display: flex;
-			justify-content: space-between;
-
-			.srfm-multi-choice-single {
-				display: flex;
-				align-items: center;
-				gap: 6px;
-				cursor: pointer;
-			}
 		}
 	}
 
@@ -396,7 +384,7 @@
 }
 
 .button.srfm-edit-entry {
-	margin: 6px 12px;
+	margin: 0 12px;
 	display: flex;
 	align-items: center;
 	gap: 8px;
@@ -416,6 +404,7 @@
 
 	p {
 		font-style: italic;
+		margin-top: 6px;
 	}
 }
 
@@ -437,12 +426,15 @@
 		flex-direction: column;
 		justify-content: center;
 
-		#srfm-add-note {
-			width: fit-content;
-			border-radius: 6px;
+		button.button#srfm-add-note {
+			width: 116px;
 			padding: 8px 16px;
-			background: none;
-			cursor: pointer;
+			border-radius: 6px;
+			border: 1px solid;
+			box-shadow: 0px 1px 2px 0px #0000000D;
+			font-size: 14px;
+			font-weight: 500;
+			line-height: 20px;
 		}
 	}
 }
@@ -451,6 +443,15 @@
 }
 .sureform-add-new-form {
 	margin: 10% 0;
+}
+#sureform_form_name_meta {
+	.inside {
+		tbody {
+			tr {
+				margin-bottom: 16px !important;
+			}
+		}
+	}
 }
 // Remove extra margin from button in mobile view for the search box.
 @media screen and ( max-width: 782px ) {

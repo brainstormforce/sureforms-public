@@ -197,7 +197,7 @@ class Single_Entry {
 			return; // Bail early if entry not found.
 		}
 		?>
-		<table class="entry-logs-table">
+		<table class="striped entry-logs-table">
 			<tbody>
 				<?php foreach ( $entry_logs as $key => $log ) { ?>
 					<tr>
@@ -299,7 +299,7 @@ class Single_Entry {
 					</div>
 					<div class="add-notes-field <?php echo ! empty( $notes ) ? 'hidden' : ''; ?>">
 						<textarea id="srfm-entry-note" rows="5"></textarea>
-						<button type="submit" class="button" data-entry-id=<?php echo esc_html( $this->entry_id ); ?>><?php esc_html_e( 'Submit Note', 'sureforms' ); ?></button>
+						<button id="srfm-add-note" type="submit" class="button" data-entry-id=<?php echo esc_html( $this->entry_id ); ?>><?php esc_html_e( 'Submit Note', 'sureforms' ); ?></button>
 					</div>
 				</div>
 			</div>
@@ -351,35 +351,35 @@ class Single_Entry {
 				<table style="border-collapse: separate; border-spacing: 5px 5px;">
 					<tbody>
 						<!-- TODO: Add Type and User info. -->
-						<tr style="margin-bottom: 10px;">
+						<tr>
 							<td><b><?php esc_html_e( 'Entry:', 'sureforms' ); ?></b></td>
 							<td>#<?php echo esc_attr( $this->entry_id ); ?></td>
 						</tr>
-						<tr style="margin-bottom: 10px;">
+						<tr>
 							<td><b><?php esc_html_e( 'Form Name:', 'sureforms' ); ?></b></td>
 							<td><a target="_blank" rel="noopener" href="<?php the_permalink( $this->entry['form_id'] ); ?>"><?php echo esc_attr( $form_name ); ?></a></td>
 						</tr>
 						<?php if ( ! empty( $this->entry['submission_info']['user_ip'] ) ) { ?>
-							<tr style="margin-bottom: 10px;">
+							<tr>
 								<td><b><?php esc_html_e( 'User IP:', 'sureforms' ); ?></b></td>
 								<td><a target="_blank" rel="noopener" href="https://ipinfo.io/"><?php echo esc_attr( $this->entry['submission_info']['user_ip'] ); ?></a></td>
 							</tr>
 						<?php } ?>
-						<tr style="margin-bottom: 10px;">
+						<tr>
 							<td><b><?php esc_html_e( 'Browser:', 'sureforms' ); ?></b></td>
 							<td><?php echo esc_attr( $this->entry['submission_info']['browser_name'] ); ?></td>
 						</tr>
-						<tr style="margin-bottom: 10px;">
+						<tr>
 							<td><b><?php esc_html_e( 'Device:', 'sureforms' ); ?></b></td>
 							<td><?php echo esc_attr( $this->entry['submission_info']['device_name'] ); ?></td>
 						</tr>
 						<?php if ( 0 !== $user_id ) { ?>
-							<tr style="margin-bottom: 10px;">
+							<tr>
 								<td><b><?php esc_html_e( 'User:', 'sureforms' ); ?></b></td>
 								<td><a target="_blank" rel="noopener" href="<?php echo esc_url( $user_profile_url ); ?>"><?php echo esc_attr( $user_name ); ?></a></td>
 							</tr>
 						<?php } ?>
-						<tr style="margin-bottom: 10px;">
+						<tr>
 							<td><b><?php esc_html_e( 'Status:', 'sureforms' ); ?></b></td>
 							<td>
 								<span style="text-transform: capitalize;">
@@ -390,7 +390,7 @@ class Single_Entry {
 								<?php } ?>
 							</td>
 						</tr>
-						<tr style="margin-bottom: 10px;">
+						<tr>
 							<td><b><?php esc_html_e( 'Submitted On:', 'sureforms' ); ?></b></td>
 							<td><?php echo esc_attr( $submitted_on ); ?></td>
 						</tr>
@@ -415,7 +415,7 @@ class Single_Entry {
 			<div class="postbox-header">
 				<!-- Removed "hndle ui-sortable-handle" class from h2 to remove the draggable stylings. -->
 				<h2><?php esc_html_e( 'Form Data', 'sureforms' ); ?></h2>
-				<button class="button srfm-edit-entry" type="button">
+				<button class="button button-link srfm-edit-entry" type="button">
 					<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 						<path d="M11.2411 2.99111L12.3661 1.86612C12.8543 1.37796 13.6457 1.37796 14.1339 1.86612C14.622 2.35427 14.622 3.14573 14.1339 3.63388L7.05479 10.713C6.70234 11.0654 6.26762 11.3245 5.78993 11.4668L4 12L4.53319 10.2101C4.67548 9.73239 4.93456 9.29767 5.28701 8.94522L11.2411 2.99111ZM11.2411 2.99111L13 4.74999M12 9.33333V12.5C12 13.3284 11.3284 14 10.5 14H3.5C2.67157 14 2 13.3284 2 12.5V5.49999C2 4.67157 2.67157 3.99999 3.5 3.99999H6.66667" stroke="#2271b1" stroke-linecap="round" stroke-linejoin="round"/>
 					</svg>

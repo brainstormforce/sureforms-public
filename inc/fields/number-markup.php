@@ -107,15 +107,9 @@ class Number_Markup extends Base {
 					data-required="<?php echo esc_attr( $this->data_require_attr ); ?>" <?php echo wp_kses_post( $this->placeholder_attr . '' . $this->default_value_attr . '' . $this->format_attr . '' . $this->min_value_attr . '' . $this->max_value_attr ); ?> />
 					<?php echo $this->error_svg; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Ignored to render svg ?>
 				</div>
-				<?php
-				if ( ! $this->is_editing ) {
-					?>
-					<div class="srfm-error-wrap">
-						<?php echo wp_kses_post( $this->error_msg_markup ); ?>
-					</div>
-					<?php
-				}
-				?>
+				<div class="srfm-error-wrap">
+					<?php echo wp_kses_post( $this->error_msg_markup ); ?>
+				</div>
 			</div>
 		<?php
 		return ob_get_clean();
