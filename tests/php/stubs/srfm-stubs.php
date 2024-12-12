@@ -8706,6 +8706,18 @@ namespace SRFM\Admin\Views {
         public function render()
         {
         }
+		/**
+         * Helper method to paginate the provided array data.
+         *
+         * @param array<mixed> $array Array item to paginate.
+         * @param int          $current_page Current page number.
+         * @param int          $items_per_page Total items to return per pagination.
+         * @since x.x.x
+         * @return array<mixed>
+         */
+        public static function paginate_array($array, $current_page, $items_per_page = 3)
+        {
+        }
         /**
          * Prints entry note item markup.
          *
@@ -8714,6 +8726,16 @@ namespace SRFM\Admin\Views {
          * @return void
          */
         public static function entry_note_item_markup($note)
+        {
+        }
+        /**
+         * Provides table markup for the entry logs.
+         *
+         * @param array<mixed> $entry_logs Entry logs stored in the database.
+         * @since x.x.x
+         * @return void
+         */
+        public static function entry_logs_table_markup($entry_logs)
         {
         }
     }

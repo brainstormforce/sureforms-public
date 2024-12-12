@@ -41,6 +41,8 @@ class Admin_Ajax {
 		add_action( 'wp_ajax_sureforms_integration', [ $this, 'generate_data_for_suretriggers_integration' ] );
 
 		add_action( 'wp_ajax_sureforms_save_entry_notes', [ $this, 'save_entry_notes' ] );
+		add_action( 'wp_ajax_sureforms_navigate_entry_notes', [ $this, 'navigate_entry_notes' ] );
+		add_action( 'wp_ajax_sureforms_navigate_entry_logs', [ $this, 'navigate_entry_logs' ] );
 
 		add_filter( SRFM_SLUG . '_admin_filter', [ $this, 'localize_script_integration' ] );
 	}
@@ -185,6 +187,113 @@ class Admin_Ajax {
 		$data = ob_get_clean();
 
 		wp_send_json_success( $data );
+	}
+
+	/**
+	 * Ajax callback to provide entry notes navigation response.
+	 *
+	 * @since x.x.x
+	 * @return void
+	 */
+	public function navigate_entry_notes() {
+		/**
+		 * Nonce verification.
+		 * Need to add this code separately to suppress nonce verification phpcs error below.
+		 */
+		if ( ! check_ajax_referer( '_srfm_navigate_entry_notes_nonce', 'security' ) ) {
+			wp_send_json_error( [ 'message' => $this->get_error_msg( 'nonce' ) ] );
+		}
+
+		$entry_id = $this->validate_navigation_req();
+		$entry    = Entries::get( $entry_id );
+		$type     = ! empty( $_POST['type'] ) ? sanitize_text_field( wp_unslash( $_POST['type'] ) ) : 'next';
+
+		if ( 'next' === $type ) {
+			$current_page = isset( $_POST['nextPage'] ) ? absint( wp_unslash( $_POST['nextPage'] ) ) : 1;
+		} else {
+			$current_page = isset( $_POST['prevPage'] ) ? absint( wp_unslash( $_POST['prevPage'] ) ) : 1;
+		}
+
+		$notes          = ! empty( $entry['notes'] ) ? Helper::get_array_value( $entry['notes'] ) : [];
+		$paginate_notes = Single_Entry::paginate_array( $notes, $current_page );
+
+		// Get the items for the current page.
+		$entry_notes = $paginate_notes['items'];
+
+		ob_start();
+		if ( ! empty( $entry_notes ) && is_array( $entry_notes ) ) {
+			foreach ( $entry_notes as $entry_note ) {
+				Single_Entry::entry_note_item_markup( $entry_note );
+			}
+		}
+		$markup = ob_get_clean();
+
+		wp_send_json_success(
+			[
+				'markup'      => $markup,
+				'totalPages'  => $paginate_notes['total_pages'],
+				'currentPage' => $paginate_notes['current_page'],
+				'nextPage'    => $paginate_notes['next_page'],
+				'prevPage'    => $paginate_notes['prev_page'],
+			]
+		);
+	}
+
+	/**
+	 * Ajax callback to provide entry logs navigation response.
+	 *
+	 * @since x.x.x
+	 * @return void
+	 */
+	public function navigate_entry_logs() {
+		/**
+		 * Nonce verification.
+		 * Need to add this code separately to suppress nonce verification phpcs error below.
+		 */
+		if ( ! check_ajax_referer( '_srfm_navigate_entry_logs_nonce', 'security' ) ) {
+			wp_send_json_error( [ 'message' => $this->get_error_msg( 'nonce' ) ] );
+		}
+
+		$entry_id = $this->validate_navigation_req();
+		$entry    = Entries::get( $entry_id );
+		$logs     = ! empty( $entry['logs'] ) ? Helper::get_array_value( $entry['logs'] ) : [];
+
+		$type       = ! empty( $_POST['type'] ) ? sanitize_text_field( wp_unslash( $_POST['type'] ) ) : 'next';
+		$delete_log = isset( $_POST['deleteLog'] ) ? absint( wp_unslash( $_POST['deleteLog'] ) ) : false; // Log key-ID to delete.
+
+		if ( 'next' === $type ) {
+			$current_page = isset( $_POST['nextPage'] ) ? absint( wp_unslash( $_POST['nextPage'] ) ) : 1;
+		} else {
+			$current_page = isset( $_POST['prevPage'] ) ? absint( wp_unslash( $_POST['prevPage'] ) ) : 1;
+		}
+
+		if ( false !== $delete_log && isset( $logs[ $delete_log ] ) ) {
+			unset( $logs[ $delete_log ] );
+			$logs = array_values( $logs );
+
+			Entries::get_instance()->use_update(
+				[ 'logs' => $logs ],
+				[ 'ID' => absint( $entry_id ) ]
+			);
+
+			--$current_page;
+		}
+
+		$paginate_logs = Single_Entry::paginate_array( $logs, $current_page );
+
+		ob_start();
+		Single_Entry::entry_logs_table_markup( Helper::get_array_value( $paginate_logs['items'] ) );
+		$markup = ob_get_clean();
+
+		wp_send_json_success(
+			[
+				'markup'      => $markup,
+				'totalPages'  => $paginate_logs['total_pages'],
+				'currentPage' => $paginate_logs['current_page'],
+				'nextPage'    => $paginate_logs['next_page'],
+				'prevPage'    => $paginate_logs['prev_page'],
+			]
+		);
 	}
 
 	/**
@@ -573,5 +682,23 @@ class Admin_Ajax {
 		<?php
 		$content = ob_get_clean();
 		return is_string( $content ) ? $content : '';
+	}
+
+	/**
+	 * Validates the ajax requests for the navigation functionalities.
+	 *
+	 * @since x.x.x
+	 * @return int Returns entry id if only we are receiving a valid request.
+	 */
+	private function validate_navigation_req() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( [ 'message' => $this->get_error_msg( 'permission' ) ] );
+		}
+
+		if ( empty( $_POST['entryID'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing -- We are checking nonce in the necessary methods.
+			wp_send_json_error( [ 'message' => $this->get_error_msg( 'invalid' ) ] );
+		}
+
+		return absint( wp_unslash( $_POST['entryID'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing -- We are checking nonce in the necessary methods.
 	}
 }

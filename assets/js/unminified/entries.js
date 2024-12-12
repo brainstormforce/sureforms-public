@@ -15,13 +15,99 @@
 		const addNoteBtn = document.querySelector(
 			'.srfm-add-entry-note-button'
 		);
-		const entryNotesContainer = document.querySelector(
+		const notesContainer = document.querySelector(
 			'.srfm-entry-note-wrapper .entry-notes-container'
 		);
 
 		const notesField = document.querySelector( '.add-notes-field' );
 		const textarea = notesField.querySelector( '#srfm-entry-note' );
 		const submitNoteBtn = notesField.querySelector( 'button' );
+		const spinner = entryNotes.querySelector( '.in-progress-overlay' );
+
+		// Function to handle notes navigation work.
+		const navigateNotes = () => {
+			let lastResponse = {};
+			const navBtns = document.querySelectorAll( '.entry-notes-nav-btn' );
+
+			const fetchMarkup = async ( args = {} ) => {
+				spinner.classList.remove( 'hidden' );
+
+				const formData = new FormData();
+
+				formData.append( 'entryID', srfm_entries.entryID );
+
+				// Use last response as payload.
+				Object.keys( lastResponse ).forEach( ( responseKey ) => {
+					if ( 'markup' === responseKey ) {
+						return;
+					}
+					formData.append( responseKey, lastResponse[ responseKey ] );
+				} );
+
+				// If any additional arguments provided.
+				Object.keys( args ).forEach( ( argKey ) => {
+					formData.append( argKey, args[ argKey ] );
+				} );
+
+				await fetch( srfm_entries.ajaxURLs.navigateNotes, {
+					method: 'POST',
+					body: formData,
+				} )
+					.then( ( res ) => res.json() )
+					.then( ( res ) => {
+						if ( ! res?.success ) {
+							return;
+						}
+
+						notesContainer.innerHTML = res?.data?.markup;
+						lastResponse = res?.data || {};
+
+						if ( false === lastResponse?.nextPage ) {
+							document
+								.querySelector(
+									'.entry-notes-nav-btn[data-type="next"]'
+								)
+								.classList.add( 'disabled' );
+						} else {
+							document
+								.querySelector(
+									'.entry-notes-nav-btn[data-type="next"]'
+								)
+								.classList.remove( 'disabled' );
+						}
+
+						if ( false === lastResponse?.prevPage ) {
+							document
+								.querySelector(
+									'.entry-notes-nav-btn[data-type="prev"]'
+								)
+								.classList.add( 'disabled' );
+						} else {
+							document
+								.querySelector(
+									'.entry-notes-nav-btn[data-type="prev"]'
+								)
+								.classList.remove( 'disabled' );
+						}
+					} )
+					.finally( () => {
+						spinner.classList.add( 'hidden' );
+					} );
+			};
+
+			// Fetch logs on first page load.
+			fetchMarkup();
+
+			navBtns.forEach( ( navBtn ) => {
+				navBtn.addEventListener( 'click', function ( e ) {
+					e.preventDefault();
+
+					fetchMarkup( {
+						type: this.getAttribute( 'data-type' ),
+					} );
+				} );
+			} );
+		};
 
 		/**
 		 * Handles the click event for the add note button,
@@ -46,6 +132,8 @@
 		submitNoteBtn.addEventListener( 'click', async function ( e ) {
 			e.preventDefault();
 
+			spinner.classList.remove( 'hidden' );
+
 			const formData = new FormData();
 
 			formData.append( 'note', textarea.value );
@@ -56,11 +144,15 @@
 				body: formData,
 			} )
 				.then( ( res ) => res.json() )
-				.then( ( res ) => {
-					entryNotesContainer.innerHTML = res.data;
+				.then( () => {
 					textarea.value = '';
+
+					// Refetch notes on submit.
+					navigateNotes();
 				} );
 		} );
+
+		navigateNotes();
 	}
 
 	/**
@@ -292,9 +384,128 @@
 		} );
 	}
 
+	function handleLogsNavigation() {
+		let lastResponse = {};
+		let lastPayload = {};
+		const spinner = document.querySelector(
+			'.srfm-entry-logs .in-progress-overlay'
+		);
+		const logsWrapper = document.querySelector(
+			'.srfm-entry-logs .inside'
+		);
+		const navBtns = document.querySelectorAll(
+			'.entry-logs-navigation-btn'
+		);
+
+		const fetchMarkup = async ( args = {} ) => {
+			spinner.classList.remove( 'hidden' );
+
+			const formData = new FormData();
+
+			formData.append( 'entryID', srfm_entries.entryID );
+
+			// Use last response as payload.
+			Object.keys( lastResponse ).forEach( ( responseKey ) => {
+				if ( 'markup' === responseKey ) {
+					return;
+				}
+				formData.append( responseKey, lastResponse[ responseKey ] );
+			} );
+
+			// If any additional arguments provided.
+			Object.keys( args ).forEach( ( argKey ) => {
+				formData.append( argKey, args[ argKey ] );
+			} );
+
+			lastPayload = lastResponse;
+
+			await fetch( srfm_entries.ajaxURLs.navigateLogs, {
+				method: 'POST',
+				body: formData,
+			} )
+				.then( ( res ) => res.json() )
+				.then( ( res ) => {
+					if ( ! res?.success ) {
+						return;
+					}
+					lastResponse = res?.data || {};
+
+					logsWrapper.innerHTML = lastResponse?.markup;
+
+					const deleteBtns =
+						document.querySelectorAll( '.btn-delete-log' );
+
+					deleteBtns.forEach( ( deleteBtn ) => {
+						deleteBtn.addEventListener( 'click', function ( e ) {
+							e.preventDefault();
+
+							if (
+								confirm(
+									wp.i18n.__(
+										'Are you sure you want to delete this log?',
+										'sureforms'
+									)
+								)
+							) {
+								fetchMarkup( {
+									deleteLog:
+										this.getAttribute( 'data-log-key' ),
+									...lastPayload,
+								} );
+							}
+						} );
+					} );
+
+					if ( false === lastResponse?.nextPage ) {
+						document
+							.querySelector(
+								'.entry-logs-navigation-btn[data-type="next"]'
+							)
+							.classList.add( 'disabled' );
+					} else {
+						document
+							.querySelector(
+								'.entry-logs-navigation-btn[data-type="next"]'
+							)
+							.classList.remove( 'disabled' );
+					}
+
+					if ( false === lastResponse?.prevPage ) {
+						document
+							.querySelector(
+								'.entry-logs-navigation-btn[data-type="prev"]'
+							)
+							.classList.add( 'disabled' );
+					} else {
+						document
+							.querySelector(
+								'.entry-logs-navigation-btn[data-type="prev"]'
+							)
+							.classList.remove( 'disabled' );
+					}
+				} )
+				.finally( () => {
+					spinner.classList.add( 'hidden' );
+				} );
+		};
+
+		// Fetch logs on first page load.
+		fetchMarkup();
+
+		navBtns.forEach( ( navBtn ) => {
+			navBtn.addEventListener( 'click', function ( e ) {
+				e.preventDefault();
+				fetchMarkup( {
+					type: this.getAttribute( 'data-type' ),
+				} );
+			} );
+		} );
+	}
+
 	window.addEventListener( 'load', function () {
 		handleEditEntry();
 		handleEntryNotes();
+		handleLogsNavigation();
 		handleEntryResendNotification();
 	} );
 }() );
