@@ -258,6 +258,9 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 * Improvement: Improved screen reader announcement for the validation messages.
 * Improvement: Improved screen reader accessibility to announce the block labels and help text.
 * Fix: Resolved an issue where the MAC screen reader stopped reading form fields, pausing at the Dropdown field.
+* Improvement: Made global validation messages dynamic for better adaptability.
+* Improvement: Added translation compatibility for validation message input labels in admin settings.
+* Fix: Addressed compatibility issue between the date filter and entries export functionality.
 * Fix: Resolved an issue where phone words were not accepted.
 = 1.2.0 - 11th December 2024 =
 * New: Added Zapier integration for SureForms Pro.

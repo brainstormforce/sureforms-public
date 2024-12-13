@@ -68,7 +68,7 @@ function initializePhoneField() {
 				parentBlock.classList.add( 'srfm-phone-error' );
 				window?.srfm?.toggleErrorState( parentBlock, true );
 				errorMessage.textContent =
-					window?.srfm_submit?.messages?.valid_phone_number;
+					window?.srfm_submit?.messages?.srfm_valid_phone_number;
 				/**
 				 * Set the phone number input value to the hidden input even if the phone number is not valid,
 				 * so that the unique validation can be overridden and invalid/required validation messages will be visible.
