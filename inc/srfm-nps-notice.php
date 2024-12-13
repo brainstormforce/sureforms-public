@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! class_exists( 'SRFM_NPS_Notice' ) ) :
+if ( ! class_exists( 'SRFM_NPS_Notice' ) ) {
 
 	/**
 	 * Class SRFM_NPS_Notice
@@ -32,28 +32,28 @@ if ( ! class_exists( 'SRFM_NPS_Notice' ) ) :
 			add_action( 'admin_footer', [ $this, 'show_nps_notice' ], 999 );
 
 			// Display the NPS survey only on SureForms pages.
-			add_filter( 
-				'srfm_nps_survey_allowed_screens', 
-				function ( $screens ) {
+			add_filter(
+				'srfm_nps_survey_allowed_screens',
+				static function ( $screens ) {
 					return [
 						'toplevel_page_sureforms_menu',
 						'sureforms_page_sureforms_form_settings',
 						'sureforms_page_sureforms_entries',
 						'sureforms_page_add-new-form',
 					];
-				} 
+				}
 			);
 		}
 
 		/**
 		 * Count the number of published forms and number form submissions.
 		 * Return whether the NPS survey should be shown or not.
-		 * 
+		 *
 		 * @since x.x.x
 		 * @return bool
 		 */
 		public function maybe_display_nps_survey() {
-			$form_count = wp_count_posts( SRFM_FORMS_POST_TYPE )->publish; // Get the number of published forms.
+			$form_count    = wp_count_posts( SRFM_FORMS_POST_TYPE )->publish; // Get the number of published forms.
 			$entries_count = Entries::get_total_entries_by_status( '' ); // Get the number of form submissions.
 
 			// Show the NPS survey if there are at least 3 published forms or 3 form submissions.
@@ -114,4 +114,4 @@ if ( ! class_exists( 'SRFM_NPS_Notice' ) ) :
 	 */
 	SRFM_NPS_Notice::get_instance();
 
-endif;
+}
