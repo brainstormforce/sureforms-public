@@ -46,14 +46,6 @@
 		}
 	},
 	"require": {
-		"wp-cli/wp-cli-bundle": "^2.10",
-		"brainstormforce/nps-survey": "^1"
-	},
-	"repositories": [
-		{
-			"name": "brainstormforce/nps-survey",
-			"type": "vcs",
-			"url": "git@github.com:brainstormforce/nps-survey.git"
-		}
-	]
+		"wp-cli/wp-cli-bundle": "^2.10"
+	}
 }
