@@ -289,7 +289,7 @@ class Generate_Form_Markup {
 				}
 				$hide_submit_button = apply_filters( 'srfm_hide_default_submit_button', false, [] );
 				?>
-				<?php if ( 0 !== $block_count && ! $hide_submit_button && ! $is_inline_button || $is_page_break 
+				<?php if ( 0 !== $block_count  && ! $is_inline_button || $is_page_break 
 					
 				) { ?>
 					<?php if ( ! empty( $security_type ) && 'none' !== $security_type ) { ?>
