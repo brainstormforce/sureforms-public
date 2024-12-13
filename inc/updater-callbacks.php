@@ -78,4 +78,30 @@ class Updater_Callbacks {
 			update_option( 'srfm_general_settings_options', $general_options );
 		}
 	}
+
+
+	/**
+	 * Update callback method to handle the default dynamic block options in the global settings.
+	 *
+	 * @since x.x.x
+	 * @return void
+	 */
+	public static function manage_empty_global_dynamic_options() {
+		$previous_options = get_option( 'srfm_default_dynamic_block_option' );
+		$new_options      = Translatable::dynamic_messages();
+
+		if ( ! empty( $previous_options ) && is_array( $previous_options ) ) {
+			// Iterate and update the options.
+			foreach ( $new_options as $key => $value ) {
+				if ( ! isset( $previous_options[ $key ] ) ) {
+					$previous_options[ $key ] = $value;
+				}
+			}
+		} else {
+			$previous_options = Helper::default_dynamic_block_option();
+		}
+
+		// update the options.
+		update_option( 'srfm_default_dynamic_block_option', $previous_options );
+	}
 }
