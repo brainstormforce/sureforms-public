@@ -1227,7 +1227,7 @@ msgstr ""
 
 #: modules/gutenberg/icons/icons-v6-0.php:256
 msgid "Airbnb"
-msgstr ""
+msgstr "Airbnb"
 
 #: modules/gutenberg/icons/icons-v6-0.php:267
 msgid "Algolia"
@@ -2842,7 +2842,7 @@ msgstr "Opmerking Slash"
 
 #: modules/gutenberg/icons/icons-v6-0.php:4880
 msgid "Comment Sms"
-msgstr ""
+msgstr "Opmerking Sms"
 
 #: modules/gutenberg/icons/icons-v6-0.php:4896
 msgid "Comments"
@@ -4152,7 +4152,7 @@ msgstr "Git Alt"
 
 #: modules/gutenberg/icons/icons-v6-1.php:3450
 msgid "GitHub"
-msgstr ""
+msgstr "GitHub"
 
 #: modules/gutenberg/icons/icons-v6-1.php:3461
 msgid "Alternate GitHub"
@@ -4164,7 +4164,7 @@ msgstr ""
 
 #: modules/gutenberg/icons/icons-v6-1.php:3494
 msgid "GitLab"
-msgstr ""
+msgstr "GitLab"
 
 #: modules/gutenberg/icons/icons-v6-1.php:3505
 msgid "Gitter"
@@ -6085,7 +6085,7 @@ msgstr "Persoon die naar links loopt in een lus"
 
 #: modules/gutenberg/icons/icons-v6-2.php:3566
 msgid "Person Walking Arrow Right"
-msgstr ""
+msgstr "Persoon die naar rechts loopt"
 
 #: modules/gutenberg/icons/icons-v6-2.php:3577
 msgid "Person Walking Dashed Line Arrow Right"
@@ -6165,7 +6165,7 @@ msgstr "Pillen"
 
 #: modules/gutenberg/icons/icons-v6-2.php:3808
 msgid "Pinterest"
-msgstr ""
+msgstr "Pinterest"
 
 #: modules/gutenberg/icons/icons-v6-2.php:3819
 msgid "Pinterest P"
@@ -7059,7 +7059,7 @@ msgstr "Plein"
 
 #: modules/gutenberg/icons/icons-v6-3.php:1152
 msgid "Square Arrow Up Right"
-msgstr ""
+msgstr "Vierkante Pijl Omhoog Rechts"
 
 #: modules/gutenberg/icons/icons-v6-3.php:1168
 msgid "Square Caret Down"
@@ -7167,7 +7167,7 @@ msgstr "Vierkant X-teken"
 
 #: modules/gutenberg/icons/icons-v6-3.php:1489
 msgid "Squarespace"
-msgstr ""
+msgstr "Squarespace"
 
 #: modules/gutenberg/icons/icons-v6-3.php:1500
 msgid "Stack Exchange"
@@ -8033,7 +8033,7 @@ msgstr "Keukengerei"
 
 #: modules/gutenberg/icons/icons-v6-3.php:3960
 msgid "V"
-msgstr ""
+msgstr "V"
 
 #: modules/gutenberg/icons/icons-v6-3.php:3971
 msgid "Vaadin"
@@ -8182,7 +8182,7 @@ msgstr "Vr Cardboard"
 
 #: modules/gutenberg/icons/icons-v6-3.php:4400
 msgid "Vue.js"
-msgstr ""
+msgstr "Vue.js"
 
 #: modules/gutenberg/icons/icons-v6-3.php:4411
 msgid "W"
@@ -9852,7 +9852,7 @@ msgstr "Formulierbreedte"
 #: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:17
 msgid "URL"
-msgstr ""
+msgstr "URL"
 
 #: assets/build/formEditor.js:172
 msgid "URL Slug"
