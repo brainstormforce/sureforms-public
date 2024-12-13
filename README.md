@@ -254,7 +254,16 @@ Yes! You can certainly use SureForms on yours as well as your client’s website
 When you use SureForms, you get an easy-to-use AI-powered form builder that can be used to build your forms fast.
 
 ## Changelog ##
-### 1.2.0 - 10th December 2024 ###
+### x.x.x ###
+* Improvement: Added support to include the Entry ID in SureTrigger workflows, enhancing integration capabilities.
+* Improvement: Updated stylings to ensure proper focus borders for checkbox and GDPR fields when navigating with a screen reader.
+* Improvement: Made global validation messages dynamic for better adaptability.
+* Improvement: Added translation compatibility for validation message input labels in admin settings.
+* Fix: Resolved Conflict with WP Code Plugin.
+* Fix: Resolved an issue with phone number unique validation not triggering correctly.
+* Fix: Resolved an issue where phone words were not accepted.
+* Fix: Resolved sprintf error by adding separate validation for multichoice fields to handle minimum and maximum selections.
+### 1.2.0 - 11th December 2024 ###
 * New: Added Zapier integration for SureForms Pro.
 * Improvement: Added support for including the Entry ID in SureTriggers' workflows, enhancing integration capabilities.
 * Improvement: Updated styling to ensure proper focus borders for the Checkbox and GDPR fields when navigating with a screen reader.
