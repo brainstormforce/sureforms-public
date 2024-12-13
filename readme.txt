@@ -255,15 +255,13 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 
 == Changelog ==
 = x.x.x =
-* Improvement: Added support to include the Entry ID in SureTrigger workflows, enhancing integration capabilities.
-* Improvement: Updated stylings to ensure proper focus borders for checkbox and GDPR fields when navigating with a screen reader.
+* Improvement: Improved screen reader announcement for the validation messages.
+* Improvement: Improved screen reader accessibility to announce the block labels and help text.
+* Fix: Resolved an issue where the MAC screen reader stopped reading form fields, pausing at the Dropdown field.
 * Improvement: Made global validation messages dynamic for better adaptability.
 * Improvement: Added translation compatibility for validation message input labels in admin settings.
 * Fix: Addressed compatibility issue between the date filter and entries export functionality.
-* Fix: Resolved Conflict with WP Code Plugin.
-* Fix: Resolved an issue with phone number unique validation not triggering correctly.
 * Fix: Resolved an issue where phone words were not accepted.
-* Fix: Resolved sprintf error by adding separate validation for multichoice fields to handle minimum and maximum selections.
 = 1.2.0 - 11th December 2024 =
 * New: Added Zapier integration for SureForms Pro.
 * Improvement: Added support for including the Entry ID in SureTriggers' workflows, enhancing integration capabilities.
