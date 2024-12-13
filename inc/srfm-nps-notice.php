@@ -31,11 +31,16 @@ if ( ! class_exists( 'SRFM_NPS_Notice' ) ) :
 		private function __construct() {
 			add_action( 'admin_footer', [ $this, 'show_nps_notice' ], 999 );
 
+			// Display the NPS survey only on SureForms pages.
 			add_filter( 
 				'srfm_nps_survey_allowed_screens', 
 				function ( $screens ) {
-					$screens[] = 'toplevel_page_sureforms_menu';
-					return $screens;
+					return [
+						'toplevel_page_sureforms_menu',
+						'sureforms_page_sureforms_form_settings',
+						'sureforms_page_sureforms_entries',
+						'sureforms_page_add-new-form',
+					];
 				} 
 			);
 		}
@@ -84,7 +89,7 @@ if ( ! class_exists( 'SRFM_NPS_Notice' ) ) :
 				'nps-survey-sureforms',
 				[
 					'show_if'          => $this->maybe_display_nps_survey(),
-					'dismiss_timespan' => 30,
+					'dismiss_timespan' => WEEK_IN_SECONDS,
 					'display_after'    => 0,
 					'plugin_slug'      => 'srfm',
 					'message'          => [
@@ -92,7 +97,7 @@ if ( ! class_exists( 'SRFM_NPS_Notice' ) ) :
 						'plugin_name'           => __( 'SureForms', 'sureforms' ),
 						'nps_rating_message'    => __( 'How likely are you to recommend SureForms to your friends or colleagues?', 'sureforms' ),
 						'feedback_title'        => __( 'Thanks a lot for your feedback! 😍', 'sureforms' ),
-						'feedback_content'      => __( 'Could you please do us a favor and give us a 5-star rating on WordPress? It would help others choose Spectra with confidence. Thank you!', 'sureforms' ),
+						'feedback_content'      => __( 'Could you please do us a favor and give us a 5-star rating on WordPress? It would help others choose SureForms with confidence. Thank you!', 'sureforms' ),
 						'plugin_rating_link'    => esc_url( 'https://wordpress.org/support/plugin/sureforms/reviews/#new-post' ),
 						'plugin_rating_title'   => __( 'Thank you for your feedback', 'sureforms' ),
 						'plugin_rating_content' => __( 'We value your input. How can we improve your experience?', 'sureforms' ),
