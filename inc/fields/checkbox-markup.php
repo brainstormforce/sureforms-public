@@ -51,7 +51,7 @@ class Checkbox_Markup extends Base {
 					name="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?><?php echo esc_attr( $this->field_name ); ?>" data-required="<?php echo esc_attr( $this->data_require_attr ); ?>" type="checkbox" <?php echo esc_attr( $this->checked_attr ); ?>/>
 					<label class="srfm-cbx" for="<?php echo esc_attr( $label_random_id ); ?>">
 						<span class="srfm-span-wrap">
-							<svg class="srfm-check-icon" width="12px" height="10px">
+							<svg class="srfm-check-icon" width="12px" height="10px" aria-hidden="true">
 								<use xlink:href="#srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?>-check"></use>
 							</svg>
 						</span>
@@ -61,7 +61,7 @@ class Checkbox_Markup extends Base {
 						<?php } ?>
 						</span>
 					</label>
-					<svg class="srfm-inline-svg">
+					<svg class="srfm-inline-svg" aria-hidden="true">
 						<symbol id="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?>-check" viewbox="0 0 12 10">
 						<polyline points="1.5 6 4.5 9 10.5 1"></polyline>
 						</symbol>
