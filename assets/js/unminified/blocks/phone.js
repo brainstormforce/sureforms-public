@@ -52,7 +52,19 @@ function initializePhoneField() {
 				: '';
 			const parentBlock = phoneNumber.closest( '.srfm-block' );
 
-			if ( phoneNumberValue && ! iti.isValidNumber() ) {
+			/**
+			 * Using the internal _utilsIsValidNumber() function from the intl-tel-input library to validate the phone number.
+			 * The function returns true if the number is valid, false otherwise.
+			 *
+			 * The isValidNumber() contains the following check:
+			 * If the input is alpha numeric then it validates the number separately.
+			 * For example, if the input is '+611800FLIGHT' then it validates '+611800' and 'FLIGHT' separately
+			 * which returns false.
+			 */
+			if (
+				phoneNumberValue &&
+				! iti._utilsIsValidNumber( iti.getNumber() )
+			) {
 				parentBlock.classList.add( 'srfm-phone-error' );
 				parentBlock.classList.add( 'srfm-error' );
 				errorMessage.textContent =
