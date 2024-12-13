@@ -33,7 +33,7 @@ if ( ! class_exists( 'SRFM_NPS_Notice' ) ) {
 
 			// Display the NPS survey only on SureForms pages.
 			add_filter(
-				'srfm_nps_survey_allowed_screens',
+				'nps_survey_allowed_screens',
 				static function ( $screens ) {
 					return [
 						'toplevel_page_sureforms_menu',
