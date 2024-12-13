@@ -1045,7 +1045,7 @@ class Entries_List_Table extends \WP_List_Table {
 	/**
 	 * Returns true if any filter is enabled.
 	 *
-	 * @since x.x.x
+	 * @since 1.2.1
 	 * @return bool
 	 */
 	protected function is_filter_enabled() {
@@ -1247,9 +1247,9 @@ class Entries_List_Table extends \WP_List_Table {
 	 *
 	 * @param int           $form_id The ID of the form to fetch entries for.
 	 * @param string        $view The view to fetch entries for.
-	 * @param array<string> $exclude_filters Added @since x.x.x and we pass filter keys to exclude from where clause.
+	 * @param array<string> $exclude_filters Added @since 1.2.1 and we pass filter keys to exclude from where clause.
 	 *
-	 * @since x.x.x Converted to static method.
+	 * @since 1.2.1 Converted to static method.
 	 * @since 0.0.13
 	 * @return array<mixed>
 	 */

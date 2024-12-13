@@ -48,7 +48,7 @@ class Translatable {
 	/**
 	 * Retrieve default dynamic validation messages.
 	 *
-	 * @since x.x.x
+	 * @since 1.2.1
 	 * @return array<string, string> Associative array of translated validation messages for dynamic use.
 	 */
 	public static function dynamic_validation_messages() {
@@ -80,7 +80,7 @@ class Translatable {
 	/**
 	 * Dynamic messages array
 	 *
-	 * @since x.x.x
+	 * @since 1.2.1
 	 * @return array<string, string> Associative array of translated dynamic messages.
 	 */
 	public static function dynamic_messages() {
