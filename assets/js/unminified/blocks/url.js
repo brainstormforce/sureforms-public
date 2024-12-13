@@ -29,7 +29,7 @@ function initializeURL() {
 						urlFiledContainer.classList.add( 'srfm-url-error' );
 						validUrlMessage.style.display = 'block';
 						validUrlMessage.innerText =
-							window?.srfm_submit?.messages?.valid_url;
+							window?.srfm_submit?.messages?.srfm_valid_url;
 					}
 				} );
 			}
