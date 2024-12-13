@@ -259,6 +259,7 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 * Improvement: Updated stylings to ensure proper focus borders for checkbox and GDPR fields when navigating with a screen reader.
 * Improvement: Made global validation messages dynamic for better adaptability.
 * Improvement: Added translation compatibility for validation message input labels in admin settings.
+* Fix: Addressed compatibility issue between the date filter and entries export functionality.
 * Fix: Resolved Conflict with WP Code Plugin.
 * Fix: Resolved an issue with phone number unique validation not triggering correctly.
 * Fix: Resolved an issue where phone words were not accepted.
