@@ -58,7 +58,7 @@ class Updater_Callbacks {
 	/**
 	 * Update callback method to handle the honeypot option in the global settings.
 	 *
-	 * @since x.x.x
+	 * @since 1.2.1
 	 * @return void
 	 */
 	public static function manage_honeypot_option() {
@@ -83,7 +83,7 @@ class Updater_Callbacks {
 	/**
 	 * Update callback method to handle the default dynamic block options in the global settings.
 	 *
-	 * @since x.x.x
+	 * @since 1.2.1
 	 * @return void
 	 */
 	public static function manage_empty_global_dynamic_options() {
