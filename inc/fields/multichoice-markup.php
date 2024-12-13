@@ -105,6 +105,7 @@ class Multichoice_Markup extends Base {
 		$this->name_attr         = $this->single_selection ? 'name="srfm-input-' . esc_attr( $this->slug ) . '-' . esc_attr( $this->block_id ) . '"' : '';
 		$this->choice_width_attr = $this->choice_width ? 'srfm-choice-width-' . str_replace( '.', '-', $this->choice_width ) : '';
 		$this->set_markup_properties();
+		$this->set_aria_described_by();
 	}
 
 	/**
@@ -123,13 +124,17 @@ class Multichoice_Markup extends Base {
 				<input class="srfm-input-<?php echo esc_attr( $this->slug ); ?>-hidden" data-required="<?php echo esc_attr( $this->data_require_attr ); ?>" <?php echo wp_kses_post( $this->data_attribute_markup() ); ?> name="srfm-input-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?><?php echo esc_attr( $this->field_name ); ?>" type="hidden" value=""/>
 				<legend class="srfm-block-legend">
 					<?php echo wp_kses_post( $this->label_markup ); ?>
-					<?php echo wp_kses_post( $this->help_markup ); ?>
 				</legend>
+				<?php echo wp_kses_post( $this->help_markup ); ?>
 					<?php if ( is_array( $this->options ) ) { ?>
 						<div class="srfm-block-wrap <?php echo esc_attr( $this->choice_width_attr ); ?> <?php echo $this->vertical_layout ? 'srfm-vertical-layout' : ''; ?>">
 							<?php foreach ( $this->options as $i => $option ) { ?>
 								<div class="srfm-<?php echo esc_attr( $this->slug ); ?>-single">
-									<input type="<?php echo esc_attr( $this->type_attr ); ?>" id="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id . '-' . $i ); ?>" class="srfm-input-<?php echo esc_attr( $this->slug ); ?>-single" <?php echo wp_kses_post( $this->name_attr ); ?>/>
+									<input type="<?php echo esc_attr( $this->type_attr ); ?>"
+										id="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id . '-' . $i ); ?>"
+										class="srfm-input-<?php echo esc_attr( $this->slug ); ?>-single" <?php echo wp_kses_post( $this->name_attr ); ?>
+										<?php echo 0 === $i ? 'aria-describedby="' . ( ! empty( $this->aria_described_by ) ? esc_attr( trim( $this->aria_described_by ) ) : '' ) . '"' : ''; ?>
+									/>
 									<div class="srfm-block-content-wrap">
 										<div class="srfm-option-container">
 											<?php if ( 'icon' === $this->option_type && ! empty( $option['icon'] ) ) { ?>

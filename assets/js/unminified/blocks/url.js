@@ -22,10 +22,16 @@ function initializeURL() {
 					const isValidUrl = pattern.test( urlInput.value );
 					if ( isValidUrl ) {
 						validUrlMessage.style.display = 'none';
-						urlFiledContainer.classList.remove( 'srfm-error' );
+						window?.srfm?.toggleErrorState(
+							urlFiledContainer,
+							false
+						);
 						urlFiledContainer.classList.remove( 'srfm-url-error' );
 					} else {
-						urlFiledContainer.classList.add( 'srfm-error' );
+						window?.srfm?.toggleErrorState(
+							urlFiledContainer,
+							true
+						);
 						urlFiledContainer.classList.add( 'srfm-url-error' );
 						validUrlMessage.style.display = 'block';
 						validUrlMessage.innerText =

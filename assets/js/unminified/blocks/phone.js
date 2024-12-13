@@ -66,7 +66,7 @@ function initializePhoneField() {
 				! iti._utilsIsValidNumber( iti.getNumber() )
 			) {
 				parentBlock.classList.add( 'srfm-phone-error' );
-				parentBlock.classList.add( 'srfm-error' );
+				window?.srfm?.toggleErrorState( parentBlock, true );
 				errorMessage.textContent =
 					window?.srfm_submit?.messages?.valid_phone_number;
 				/**
@@ -76,7 +76,7 @@ function initializePhoneField() {
 				iti.hiddenInput.value = iti.telInput.value;
 			} else {
 				parentBlock.classList.remove( 'srfm-phone-error' );
-				parentBlock.classList.remove( 'srfm-error' );
+				window?.srfm?.toggleErrorState( parentBlock, false );
 				iti.hiddenInput.value = iti.getNumber();
 			}
 		};
