@@ -308,7 +308,8 @@ $background_color: #f1f5f9;
 					.srfm-style-1-tabs {
 						> .components-tab-panel__tabs {
 							border-bottom: 1px solid $border_color;
-							gap: 32px;
+							gap: 12px;
+							justify-content: space-around;
 
 							.components-tab-panel__tabs-item {
 								font-size: 0.7em;
@@ -316,6 +317,8 @@ $background_color: #f1f5f9;
 								padding: 0;
 								height: 10px;
 								padding-bottom: 20px;
+								width: 100%;
+								justify-content: center;
 
 								&.active-tab {
 									color: $primary_color;
@@ -409,11 +412,26 @@ $background_color: #f1f5f9;
 					}
 				}
 
-				.srfm-email-test-btn {
+				.srfm-email-input-wrapper {
 					display: flex;
-					gap: 8px;
-					justify-content: center;
+					flex-direction: row;
 					align-items: center;
+					gap: 20px;
+
+					.srfm-components-input-control {
+						flex: 1;
+						.components-base-control__field {
+							margin-bottom: 0;
+						}
+					}
+					.srfm-email-test-btn {
+						display: flex;
+						gap: 8px;
+						justify-content: center;
+						align-items: center;
+						height: 40px;
+						padding: 8px 16px;
+					}
 				}
 			}
 
