@@ -7,8 +7,12 @@
  * @package sureforms
  */
 
+namespace SRFM\Inc;
+
 use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Traits\Get_Instance;
+
+use Nps_Survey;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
@@ -108,10 +112,4 @@ if ( ! class_exists( 'SRFM_NPS_Notice' ) ) {
 			);
 		}
 	}
-
-	/**
-	 * Initialize the class.
-	 */
-	SRFM_NPS_Notice::get_instance();
-
 }

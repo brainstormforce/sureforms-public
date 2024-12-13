@@ -36,6 +36,8 @@ use SRFM\Inc\Rest_Api;
 use SRFM\Inc\Single_Form_Settings\Compliance_Settings;
 use SRFM\Inc\Smart_Tags;
 use SRFM\Inc\Updater;
+use SRFM\Inc\SRFM_NPS_Notice;
+use SRFM\Inc\Lib\SRFM_Nps_Survey;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -287,6 +289,8 @@ class Plugin_Loader {
 		AI_Auth::get_instance();
 		Updater::get_instance();
 		DatabaseRegister::init();
+		SRFM_Nps_Survey::get_instance(); // Inits the NPS Survey class for further use.
+		SRFM_NPS_Notice::get_instance(); // Responsible for displaying the NPS Survey.
 
 		/**
 		 * Load core files necessary for the Spectra block.

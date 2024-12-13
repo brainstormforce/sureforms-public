@@ -15,10 +15,6 @@ use SRFM\Inc\Helper;
 use SRFM\Inc\Post_Types;
 use SRFM\Inc\Traits\Get_Instance;
 
-// TODO: Get inputs from the team.
-// require_once SRFM_DIR . 'inc/lib/srfm-nps-survey.php';
-require_once SRFM_DIR . 'inc/srfm-nps-notice.php';
-
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }

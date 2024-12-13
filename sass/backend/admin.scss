@@ -22,16 +22,22 @@ $placeholder_color: #9ca3af;
 		}
 	}
 }
-// TODO: Check the RTL case.
+// NPS Survey styles start.
+// Note: Need to check the below styles once the fix for RTL is released from the library level.
 [data-id="nps-survey-sureforms"] > .nps-survey-wrapper > div {
 	right: 8px !important;
 	bottom: 8px !important;
 }
-
+// Set the button background to the primary color in dashboard.
 [data-id="nps-survey-sureforms"] > .nps-survey-wrapper > div button[type="submit"],
 [data-id="nps-survey-sureforms"] > .nps-survey-wrapper > div .bg-nps-button-background {
 	background-color: #D54407;
 }
+// Change the text color for the Back button in the NPS survey.
+[data-id="nps-survey-sureforms"] > .nps-survey-wrapper > div button.bg-transparent.text-nps-button-background {
+	color: #D54407;
+}
+// NPS Survey styles end.
 /* Clear to evenly position the next list items after the separator */
 #toplevel_page_sureforms_menu .wp-submenu li {
 	clear: both;
