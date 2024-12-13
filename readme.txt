@@ -256,8 +256,6 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 == Changelog ==
 = 1.2.1 - 17th December 2024 =
 * Improvement: Revamped the General and Spam Protection settings within the Global Settings for improved user experience.
-* Improvement: Added support to include the Entry ID in SureTrigger workflows, enhancing integration capabilities.
-* Improvement: Updated stylings to ensure proper focus borders for checkbox and GDPR fields when navigating with a screen reader.
 * Improvement: Improved screen reader announcement for the validation messages.
 * Improvement: Improved screen reader accessibility to announce the block labels and help text.
 * Improvement: Made global validation messages dynamic for better adaptability.
