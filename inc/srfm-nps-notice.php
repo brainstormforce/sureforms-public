@@ -9,10 +9,9 @@
 
 namespace SRFM\Inc;
 
+use Nps_Survey;
 use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Traits\Get_Instance;
-
-use Nps_Survey;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
@@ -38,7 +37,7 @@ if ( ! class_exists( 'SRFM_NPS_Notice' ) ) {
 			// Display the NPS survey only on SureForms pages.
 			add_filter(
 				'nps_survey_allowed_screens',
-				static function ( $screens ) {
+				static function () {
 					return [
 						'toplevel_page_sureforms_menu',
 						'sureforms_page_sureforms_form_settings',
