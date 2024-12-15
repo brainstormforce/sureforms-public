@@ -30,7 +30,7 @@ export const attachSidebar = () => {
 		}
 
 		const blockElement = document.querySelector(
-			'.srfm-ee-quick-access__sidebar--blocks--block'
+			'.srfm-ee-quick-access-container'
 		);
 		if ( blockElement ) {
 			clearInterval( interval );
