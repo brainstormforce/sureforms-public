@@ -258,7 +258,7 @@ async function handleFormSubmission(
 			},
 		} );
 
-		if ( ! document.dispatchEvent( event ) ) {			
+		if ( ! document.dispatchEvent( event ) ) {
 			loader.classList.remove( 'srfm-active' );
 			return; // Stop further execution if event.preventDefault() was called.
 		}
