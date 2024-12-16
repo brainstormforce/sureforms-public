@@ -671,12 +671,28 @@ class Form_Submit {
 						}
 
 						/**
+						 * Temporary override the content type for wp_mail.
+						 * This helps us from breaking of content type from other plugins.
+						 * 
+						 * @since x.x.x
+						 */
+						add_filter(
+							'wp_mail_content_type',
+							function() {
+								return 'text/html'; // We need "text/html" content type to render our emails.
+							},
+							99
+						);
+
+						/**
 						 * Start sending email.
 						 * Wrapping it in the buffer because when some plugin such as zoho mail, overrides the wp_mail
 						 * function and any exception is thrown ( Or printed ) from that plugin side, it affects the JSON response.
 						 * So, to make sure such exceptions doesn't affect our JSON response, we are wrapping it inside buffer.
 						 *
 						 * Try-Catch does not work because the notice or errors might be echoed by other plugins rather than thrown as an exception.
+						 * 
+						 * @since x.x.x
 						 */
 						$sent = false;
 						ob_start();
