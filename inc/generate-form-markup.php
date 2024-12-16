@@ -52,16 +52,17 @@ class Generate_Form_Markup {
 	/**
 	 * Handle Form status
 	 *
-	 * @param int|string $id Contains form ID.
-	 * @param bool       $show_title_current_page Boolean to show/hide form title.
-	 * @param string     $sf_classname additional class_name.
-	 * @param string     $post_type Contains post type.
-	 * @param bool       $do_blocks Boolean to enable/disable parsing dynamic blocks.
+	 * @param int|string   $id Contains form ID.
+	 * @param bool         $show_title_current_page Boolean to show/hide form title.
+	 * @param string       $sf_classname additional class_name.
+	 * @param string       $post_type Contains post type.
+	 * @param bool         $do_blocks Boolean to enable/disable parsing dynamic blocks.
+	 * @param array<mixed> $srfm_live_mode_data contains live mode data.
 	 *
 	 * @return string|false
 	 * @since 0.0.1
 	 */
-	public static function get_form_markup( $id, $show_title_current_page = true, $sf_classname = '', $post_type = 'post', $do_blocks = false ) {
+	public static function get_form_markup( $id, $show_title_current_page = true, $sf_classname = '', $post_type = 'post', $do_blocks = false, $srfm_live_mode_data = [] ) {
 		if ( isset( $_GET['id'] ) && isset( $_GET['srfm_form_markup_nonce'] ) ) {
 			$nonce = isset( $_GET['srfm_form_markup_nonce'] ) ? sanitize_text_field( wp_unslash( $_GET['srfm_form_markup_nonce'] ) ) : '';
 			$id    = wp_verify_nonce( $nonce, 'srfm_form_markup' ) && ! empty( $_GET['srfm_form_markup_nonce'] ) ? Helper::get_integer_value( sanitize_text_field( wp_unslash( $_GET['id'] ) ) ) : '';
@@ -280,7 +281,7 @@ class Generate_Form_Markup {
 
 				if ( $is_page_break ) {
 					do_action( 'srfm_page_break_pagination', $post, $id );
-				} elseif ( apply_filters( 'srfm_do_not_use_default_field_content', false, [] ) ) {
+				} elseif ( apply_filters( 'srfm_do_not_use_default_field_content', false, $srfm_live_mode_data ) ) {
 					do_action( 'srfm_custom_field_content', $post, $id, [] );
 				} else {
 					// phpcs:ignore
