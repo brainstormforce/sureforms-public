@@ -287,7 +287,6 @@ class Generate_Form_Markup {
 					echo $content;
 					// phpcs:ignoreEnd
 				}
-				$hide_submit_button = apply_filters( 'srfm_hide_default_submit_button', false, [] );
 				?>
 				<?php
 				if ( 0 !== $block_count && ! $is_inline_button || $is_page_break
