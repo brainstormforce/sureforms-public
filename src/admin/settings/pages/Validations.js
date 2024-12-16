@@ -27,21 +27,21 @@ const ValidationsPage = ( {
 				{ key: 'srfm_email_block_unique_text', label: __( 'Email Block Unique Error Message', 'sureforms' ) },
 				{ key: 'srfm_dropdown_block_required_text', label: __( 'Dropdown Block Required Error Message', 'sureforms' ) },
 				{ key: 'srfm_valid_phone_number', label: __( 'Invalid Phone Number Block Error Message', 'sureforms' ) },
-				{ key: 'srfm_valid_url', label: __( 'Invalid URL Block Error Message', 'sureforms' ) },
-				{ key: 'srfm_confirm_email_same', label: __( 'Confirmation Email Block Mismatch Message', 'sureforms' ) },
-				{ key: 'srfm_valid_email', label: __( 'Invalid Email Block Error Message', 'sureforms' ) },
+				{ key: 'srfm_valid_url', label: __( 'Invalid URL Error Message', 'sureforms' ) },
+				{ key: 'srfm_confirm_email_same', label: __( 'Confirmation Email Mismatch Message', 'sureforms' ) },
+				{ key: 'srfm_valid_email', label: __( 'Invalid Email Error Message', 'sureforms' ) },
 				// Translators: %s represents the minimum input value.
-				{ key: 'srfm_input_min_value', label: __( 'Number Block Minimum Value Error Message', 'sureforms' ), description: __( '%s represents the minimum input value. For example: “Minimum value is 10.”', 'sureforms' ) },
+				{ key: 'srfm_input_min_value', label: __( 'Number Minimum Value Error Message', 'sureforms' ), description: __( '%s represents the minimum input value. For example: "Minimum value is 10."', 'sureforms' ) },
 				// Translators: %s represents the maximum input value.
-				{ key: 'srfm_input_max_value', label: __( 'Number Block Maximum Value Error Message', 'sureforms' ), description: __( '%s represents the maximum input value. For example: “Maximum value is 100.”', 'sureforms' ) },
+				{ key: 'srfm_input_max_value', label: __( 'Number Maximum Value Error Message', 'sureforms' ), description: __( '%s represents the maximum input value. For example: "Maximum value is 100."', 'sureforms' ) },
 				// Translators: %s represents the minimum input length.
-				{ key: 'srfm_dropdown_min_selections', label: __( 'Dropdown Block Minimum Selections Error Message', 'sureforms' ), description: __( '%s represents the minimum selections needed. For example: “Minimum 2 selections are required.”', 'sureforms' ) },
+				{ key: 'srfm_dropdown_min_selections', label: __( 'Dropdown Minimum Selections Error Message', 'sureforms' ), description: __( '%s represents the minimum selections needed. For example: “Minimum 2 selections are required.”', 'sureforms' ) },
 				// Translators: %s represents the maximum input length.
-				{ key: 'srfm_dropdown_max_selections', label: __( 'Dropdown Block Maximum Selections Error Message', 'sureforms' ), description: __( '%s represents the maximum selections allowed. For example: “Maximum 4 selections are allowed.”', 'sureforms' ) },
+				{ key: 'srfm_dropdown_max_selections', label: __( 'Dropdown Maximum Selections Error Message', 'sureforms' ), description: __( '%s represents the maximum selections allowed. For example: “Maximum 4 selections are allowed.”', 'sureforms' ) },
 				// Translators: %s represents the minimum input length.
-				{ key: 'srfm_multi_choice_min_selections', label: __( 'Multiple Choice Block Minimum Selections Error Message', 'sureforms' ), description: __( '%s represents the minimum choices needed. For example: “Minimum 1 selection is required.”', 'sureforms' ) },
+				{ key: 'srfm_multi_choice_min_selections', label: __( 'Multiple Choice Minimum Selections Error Message', 'sureforms' ), description: __( '%s represents the minimum choices needed. For example: “Minimum 1 selection is required.”', 'sureforms' ) },
 				// Translators: %s represents the maximum input length.
-				{ key: 'srfm_multi_choice_max_selections', label: __( 'Multiple Choice Block Maximum Selections Error Message', 'sureforms' ), description: __( '%s represents the maximum choices allowed. For example: “Maximum 3 selections are allowed.”', 'sureforms' ) },
+				{ key: 'srfm_multi_choice_max_selections', label: __( 'Multiple Choice Maximum Selections Error Message', 'sureforms' ), description: __( '%s represents the maximum choices allowed. For example: “Maximum 3 selections are allowed.”', 'sureforms' ) },
 			]
 		);
 
