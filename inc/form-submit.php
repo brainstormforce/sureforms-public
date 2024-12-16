@@ -673,12 +673,12 @@ class Form_Submit {
 						/**
 						 * Temporary override the content type for wp_mail.
 						 * This helps us from breaking of content type from other plugins.
-						 * 
+						 *
 						 * @since x.x.x
 						 */
 						add_filter(
 							'wp_mail_content_type',
-							function() {
+							static function() {
 								return 'text/html'; // We need "text/html" content type to render our emails.
 							},
 							99
@@ -691,7 +691,7 @@ class Form_Submit {
 						 * So, to make sure such exceptions doesn't affect our JSON response, we are wrapping it inside buffer.
 						 *
 						 * Try-Catch does not work because the notice or errors might be echoed by other plugins rather than thrown as an exception.
-						 * 
+						 *
 						 * @since x.x.x
 						 */
 						$sent = false;
@@ -710,7 +710,7 @@ class Form_Submit {
 									null,
 									[
 										/* translators: Here, %s is the comma separated emails list. */
-										sprintf( __( 'Email notification sent to %s', 'sureforms' ), esc_html( $to ) )
+										sprintf( __( 'Email notification sent to %s', 'sureforms' ), esc_html( $to ) ),
 									]
 								);
 							} else {
@@ -718,12 +718,12 @@ class Form_Submit {
 									$log_key,
 									null,
 									[
-										/* translators: Here, %1$s is the comma separated emails list and %2$s is error report ( if any ). */
 										sprintf(
+											/* translators: Here, %1$s is the comma separated emails list and %2$s is error report ( if any ). */
 											__( 'Failed sending email notification to %1$s. Reason: %2$s', 'sureforms' ),
 											esc_html( $to ),
 											! empty( $email_report ) ? esc_html( $email_report ) : esc_html__( 'Unknown', 'sureforms' )
-										)
+										),
 									]
 								);
 							}
