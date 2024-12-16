@@ -77,11 +77,31 @@ function toggleErrorState( container, hasError ) {
  * // Returns: 'You have selected Option 2'
  */
 function srfmSprintfString( str, ...args ) {
-	let i = 0; // Initialize sequential index for unnumbered %s placeholders.
-	return str.replace( /%(\d+\$)?s/g, ( match, index ) => {
-		// If there's an index, use it (subtract 1 to make it 0-based); otherwise, use next sequential index
-		const argIndex = index ? parseInt( index ) - 1 : i++;
-		return args[ argIndex ] !== undefined ? args[ argIndex ] : match;
+	// If more than one argument is passed, handle numbered and regular placeholders
+	if ( args.length > 1 ) {
+		return str.replace( /%(\d*)\$s|%s/g, ( match, index ) => {
+			if ( index ) {
+				// Handle numbered placeholders like %1$s, %2$s
+				const argIndex = parseInt( index, 10 ) - 1;
+				if ( argIndex >= args.length ) {
+					return ''; // Or any fallback value you prefer
+				}
+				return String( args[ argIndex ] );
+			}
+			// Handle regular %s placeholders
+			if ( args.length === 0 ) {
+				return ''; // Fallback if no arguments are provided
+			}
+			return String( args[ 0 ] );
+		} );
+	}
+
+	// If only one argument is passed, replace %s with that argument
+	return str.replace( /%s/g, () => {
+		if ( args.length === 0 ) {
+			return ''; // Fallback if no arguments are provided
+		}
+		return String( args[ 0 ] ); // Use the first argument for all %s placeholders
 	} );
 }
 
