@@ -27,6 +27,20 @@ if ( ! class_exists( 'SRFM_NPS_Notice' ) ) {
 		use Get_Instance;
 
 		/**
+		 * Array of allowed screens where the NPS survey should be displayed.
+		 * This ensures that the NPS survey is only displayed on SureForms pages.
+		 *
+		 * @var array<string>
+		 * @since x.x.x
+		 */
+		private static $allowed_screens = [
+			'toplevel_page_sureforms_menu',
+			'sureforms_page_sureforms_form_settings',
+			'sureforms_page_sureforms_entries',
+			'sureforms_page_add-new-form',
+		];
+
+		/**
 		 * Constructor.
 		 *
 		 * @since x.x.x
@@ -37,13 +51,8 @@ if ( ! class_exists( 'SRFM_NPS_Notice' ) ) {
 			// Display the NPS survey only on SureForms pages.
 			add_filter(
 				'nps_survey_allowed_screens',
-				static function () {
-					return [
-						'toplevel_page_sureforms_menu',
-						'sureforms_page_sureforms_form_settings',
-						'sureforms_page_sureforms_entries',
-						'sureforms_page_add-new-form',
-					];
+				static function ( $screens ) {
+					return array_merge( $screens, self::$allowed_screens );
 				}
 			);
 		}
@@ -75,6 +84,11 @@ if ( ! class_exists( 'SRFM_NPS_Notice' ) ) {
 		public function show_nps_notice() {
 			// Ensure the Nps_Survey class exists before proceeding.
 			if ( ! class_exists( 'Nps_Survey' ) ) {
+				return;
+			}
+
+			// Display the NPS Survey only on SureForms pages.
+			if ( ! Helper::is_sureforms_admin_page() ) {
 				return;
 			}
 
