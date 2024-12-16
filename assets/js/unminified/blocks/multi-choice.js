@@ -21,7 +21,7 @@ function initializeMultichoice() {
 			 *
 			 * @param {NodeList} getInputWrappers - A collection of wrapper elements containing inputs.
 			 */
-			getInputWrappers.forEach( ( element ) => {
+			getInputWrappers?.forEach( ( element ) => {
 				element.addEventListener( 'click', ( e ) => {
 					// Check if the target is NOT the label
 					if ( ! e.target.matches( 'label' ) ) {
@@ -43,7 +43,7 @@ function initializeMultichoice() {
 			);
 			let savedValues = [];
 			let getValue = '';
-			choices.forEach( ( element ) => {
+			choices?.forEach( ( element ) => {
 				element.addEventListener( 'click', ( e ) => {
 					e.stopPropagation();
 
