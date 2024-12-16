@@ -4,7 +4,7 @@ Tags: contact form, custom form, form builder, forms, gutenberg
 Requires at least: 6.4
 Tested up to: 6.7.1
 Requires PHP: 7.4
-Stable tag: 1.2.0
+Stable tag: 1.2.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -256,6 +256,15 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 == Changelog ==
 = x.x.x =
 * Fix: Resolves issue where email template fails to render when a third-party plugin overrides the email headers in the wp_mail() function.
+= 1.2.1 - 17th December 2024 =
+* Improvement: Revamped the General and Spam Protection settings within the Global Settings for improved user experience.
+* Improvement: Improved screen reader announcement for the validation messages.
+* Improvement: Improved screen reader accessibility to announce the block labels and help text.
+* Improvement: Made global validation messages dynamic for better adaptability.
+* Improvement: Added translation compatibility for validation message input labels in admin settings.
+* Fix: Resolved an issue where the MAC screen reader stopped reading form fields, pausing at the Dropdown field.
+* Fix: Addressed compatibility issue between the date filter and entries export functionality.
+* Fix: Resolved an issue where phone words were not accepted.
 = 1.2.0 - 11th December 2024 =
 * New: Added Zapier integration for SureForms Pro.
 * Improvement: Added support for including the Entry ID in SureTriggers' workflows, enhancing integration capabilities.

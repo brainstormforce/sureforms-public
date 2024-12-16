@@ -309,12 +309,28 @@ class Entries_List_Table extends \WP_List_Table {
 		if ( 'export' === $action ) {
 			if ( ! $entry_ids ) {
 				// If we are here then user has not selected entries so handle all entries export accordingly.
-				if ( ! empty( $_GET['form_filter'] ) && 'all' !== $_GET['form_filter'] ) {
+
+				$filter_form_id = ! empty( $_GET['form_filter'] ) && 'all' !== $_GET['form_filter'] ? absint( wp_unslash( $_GET['form_filter'] ) ) : 0;
+
+				if ( ! empty( $_GET['month_filter'] ) && 'all' !== $_GET['month_filter'] ) {
+					/**
+					 * If we are here then user has filtered the entries by month first
+					 * then selected export as bulk action without selecting any entries manually.
+					 */
+					$where_condition = self::get_where_conditions( $filter_form_id );
+					$all_entry_ids   = Entries::get_all(
+						[
+							'where'   => $where_condition,
+							'columns' => 'ID',
+						],
+						false
+					);
+				} elseif ( $filter_form_id > 0 ) {
 					/**
 					 * If we are here then user has filtered the entries by form first
 					 * then selected export as bulk action without selecting any entries manually.
 					 */
-					$all_entry_ids = Entries::get_all_entry_ids_for_form( absint( wp_unslash( $_GET['form_filter'] ) ) );
+					$all_entry_ids = Entries::get_all_entry_ids_for_form( $filter_form_id );
 				} elseif ( ! empty( $_GET['search_filter'] ) ) {
 					// Export all the available ( but not trashed ) entries.
 					$all_entry_ids = Entries::get_all(
@@ -959,6 +975,13 @@ class Entries_List_Table extends \WP_List_Table {
 			<div class="alignleft actions">
 				<?php $this->display_month_filter(); ?>
 				<?php $this->display_form_filter(); ?>
+				<?php
+				if ( $this->is_filter_enabled() ) {
+					?>
+					<a href="<?php echo esc_url( add_query_arg( 'page', 'sureforms_entries', admin_url( 'admin.php' ) ) ); ?>" class="button button-link clear-filter"><?php esc_html_e( 'Clear Filter', 'sureforms' ); ?></a>
+					<?php
+				}
+				?>
 			</div>
 			<?php
 		}
@@ -1020,6 +1043,24 @@ class Entries_List_Table extends \WP_List_Table {
 	}
 
 	/**
+	 * Returns true if any filter is enabled.
+	 *
+	 * @since 1.2.1
+	 * @return bool
+	 */
+	protected function is_filter_enabled() {
+		$intersect = array_intersect(
+			[
+				'form_filter',
+				'month_filter',
+			],
+			array_keys( wp_unslash( $_GET ) ), // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- This is fine because we are not using it to save in the database.
+		);
+
+		return ! empty( $intersect );
+	}
+
+	/**
 	 * Display the available form name to filter entries.
 	 *
 	 * @since 0.0.13
@@ -1054,8 +1095,8 @@ class Entries_List_Table extends \WP_List_Table {
 			return;
 		}
 		$view    = isset( $_GET['view'] ) ? sanitize_text_field( wp_unslash( $_GET['view'] ) ) : 'all';
-		$form_id = isset( $_GET['form_filter'] ) ? sanitize_text_field( wp_unslash( $_GET['form_filter'] ) ) : 0;
-		$months  = Entries::get_available_months( $this->get_where_conditions( $form_id, $view ) );
+		$form_id = isset( $_GET['form_filter'] ) && 'all' !== $_GET['form_filter'] ? absint( wp_unslash( $_GET['form_filter'] ) ) : 0;
+		$months  = Entries::get_available_months( self::get_where_conditions( $form_id, $view, [ 'search_filter', 'month_filter' ] ) );
 
 		// Sort the months in descending order according to key.
 		krsort( $months );
@@ -1159,7 +1200,7 @@ class Entries_List_Table extends \WP_List_Table {
 		// phpcs:enable WordPress.Security.NonceVerification.Recommended
 
 		$offset              = ( $current_page - 1 ) * $per_page;
-		$where_condition     = $this->get_where_conditions( $form_id, $view );
+		$where_condition     = self::get_where_conditions( $form_id, $view );
 		$this->data          = Entries::get_all(
 			[
 				'limit'   => $per_page,
@@ -1204,13 +1245,15 @@ class Entries_List_Table extends \WP_List_Table {
 	/**
 	 * Return the where conditions to add to the query for filtering entries.
 	 *
-	 * @param int    $form_id The ID of the form to fetch entries for.
-	 * @param string $view The view to fetch entries for.
+	 * @param int           $form_id The ID of the form to fetch entries for.
+	 * @param string        $view The view to fetch entries for.
+	 * @param array<string> $exclude_filters Added @since 1.2.1 and we pass filter keys to exclude from where clause.
 	 *
+	 * @since 1.2.1 Converted to static method.
 	 * @since 0.0.13
 	 * @return array<mixed>
 	 */
-	private function get_where_conditions( $form_id = 0, $view = 'all' ) {
+	private static function get_where_conditions( $form_id = 0, $view = 'all', $exclude_filters = [] ) {
 		if ( ! isset( $_GET['_wpnonce'] ) || ( isset( $_GET['_wpnonce'] ) && ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'srfm_entries_action' ) ) ) {
 			// Return the default condition to fetch all entries which are not in trash.
 			return [
@@ -1250,11 +1293,6 @@ class Entries_List_Table extends \WP_List_Table {
 			default:
 				break;
 		}
-		// Handle the search according to entry ID.
-		$search_term = isset( $_GET['search_filter'] ) ? sanitize_text_field( wp_unslash( $_GET['search_filter'] ) ) : '';
-
-		// Filter data based on the month and year selected.
-		$month_filter = isset( $_GET['month_filter'] ) ? sanitize_text_field( wp_unslash( $_GET['month_filter'] ) ) : '';
 
 		// If form ID is set, then we need to add the form ID condition to the where clause to fetch entries only for that form.
 		if ( 0 < $form_id ) {
@@ -1267,36 +1305,46 @@ class Entries_List_Table extends \WP_List_Table {
 			];
 		}
 
-		// Apply search filter, currently search is based on entry ID only and not text.
-		if ( ! empty( $search_term ) ) {
-			$where_condition[] = [
-				[
-					'key'     => 'ID',
-					'compare' => 'LIKE',
-					'value'   => $search_term,
-				],
-			];
+		if ( ! in_array( 'search_filter', $exclude_filters, true ) ) {
+			// Handle the search according to entry ID.
+			$search_term = isset( $_GET['search_filter'] ) ? sanitize_text_field( wp_unslash( $_GET['search_filter'] ) ) : '';
+
+			// Apply search filter, currently search is based on entry ID only and not text.
+			if ( ! empty( $search_term ) ) {
+				$where_condition[] = [
+					[
+						'key'     => 'ID',
+						'compare' => 'LIKE',
+						'value'   => $search_term,
+					],
+				];
+			}
 		}
 
-		// Apply month filter.
-		if ( ! empty( $month_filter ) && 'all' !== $month_filter ) {
-			$year       = substr( $month_filter, 0, 4 );
-			$month      = substr( $month_filter, 4, 2 );
-			$start_date = sprintf( '%s-%s-01', $year, $month );
-			$end_date   = gmdate( 'Y-m-t', strtotime( $start_date ) );
-			// Using two conditions to filter the entries based on the start and end date as the base class does not support BETWEEN operator.
-			$where_condition[] = [
-				[
-					'key'     => 'created_at',
-					'compare' => '>=',
-					'value'   => $start_date,
-				],
-				[
-					'key'     => 'created_at',
-					'compare' => '<=',
-					'value'   => $end_date,
-				],
-			];
+		if ( ! in_array( 'month_filter', $exclude_filters, true ) ) {
+			// Filter data based on the month and year selected.
+			$month_filter = isset( $_GET['month_filter'] ) ? sanitize_text_field( wp_unslash( $_GET['month_filter'] ) ) : '';
+
+			// Apply month filter.
+			if ( ! empty( $month_filter ) && 'all' !== $month_filter ) {
+				$year       = substr( $month_filter, 0, 4 );
+				$month      = substr( $month_filter, 4, 2 );
+				$start_date = sprintf( '%s-%s-01', $year, $month );
+				$end_date   = gmdate( 'Y-m-t', strtotime( $start_date ) );
+				// Using two conditions to filter the entries based on the start and end date as the base class does not support BETWEEN operator.
+				$where_condition[] = [
+					[
+						'key'     => 'created_at',
+						'compare' => '>=',
+						'value'   => $start_date,
+					],
+					[
+						'key'     => 'created_at',
+						'compare' => '<=',
+						'value'   => $end_date,
+					],
+				];
+			}
 		}
 
 		return $where_condition;

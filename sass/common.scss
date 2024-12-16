@@ -121,8 +121,7 @@ button.srfm-toolbar-width-setting-button {
 		align-items: center;
 	}
 
-	fieldset,
-	legend {
+	fieldset {
 		font-size: inherit;
 		border: none;
 		margin: 0;
@@ -138,7 +137,8 @@ button.srfm-toolbar-width-setting-button {
 	.srfm-block {
 		padding: 0 var( --srfm-col-gap-between-blocks ) !important;
 		margin-bottom: var( --srfm-row-gap-between-blocks );
-		.srfm-block-label {
+		.srfm-block-label,
+		.srfm-block-legend {
 			display: block;
 			@include srfm-block-label-styles;
 		}
@@ -242,9 +242,9 @@ button.srfm-toolbar-width-setting-button {
 
 			.srfm-input-checkbox,
 			.srfm-input-gdpr {
-				position: absolute;
-				left: 0;
-				top: 0;
+				position: absolute !important;
+				left: 0 !important;
+				top: 0 !important;
 
 				&:checked {
 					+ {

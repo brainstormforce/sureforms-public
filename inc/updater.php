@@ -40,7 +40,11 @@ class Updater {
 	public function __construct() {
 		// Get auto saved version number.
 		$this->old_version = Helper::get_string_value( get_option( 'srfm-version', '' ) );
-
+		/**
+		 * Sets the `init` action with a priority of 10.
+		 * Ensures that this initialization runs before the Pro plugin's `init` action.
+		 * Allows the necessary setup to complete prior to the Pro plugin's execution.
+		 */
 		add_action( 'init', [ $this, 'init' ], 10 );
 		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_styles' ] );
 		add_action( 'in_plugin_update_message-' . SRFM_BASENAME, [ $this, 'plugin_update_notification' ], 10 );
@@ -179,7 +183,10 @@ class Updater {
 			'1.0.4' => [
 				'SRFM\Inc\Updater_Callbacks::manage_empty_default_dynamic_options',
 			],
+			'1.2.1' => [
+				'SRFM\Inc\Updater_Callbacks::manage_honeypot_option',
+				'SRFM\Inc\Updater_Callbacks::manage_empty_global_dynamic_options',
+			],
 		];
 	}
-
 }
