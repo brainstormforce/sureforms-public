@@ -108,7 +108,7 @@ if ( ! class_exists( 'SRFM_NPS_Notice' ) ) {
 					'show_if'          => $this->maybe_display_nps_survey(),
 					'dismiss_timespan' => WEEK_IN_SECONDS,
 					'display_after'    => 0,
-					'plugin_slug'      => SRFM_SLUG,
+					'plugin_slug'      => 'sureforms',
 					'message'          => [
 						'logo'                  => esc_url( plugin_dir_url( __DIR__ ) . 'admin/assets/sureforms-logo.png' ),
 						'plugin_name'           => __( 'SureForms', 'sureforms' ),
