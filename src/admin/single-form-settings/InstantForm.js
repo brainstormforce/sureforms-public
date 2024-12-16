@@ -35,7 +35,27 @@ function findDifferentKeyValue( obj1, obj2 ) {
 }
 
 const InstantFormComponent = () => {
-	const { _srfm_submit_button_text, _srfm_instant_form_settings, _srfm_conversational_form, _srfm_premium_common } = select( editorStore ).getEditedPostAttribute( 'meta' );
+	const additionalMetas = applyFilters( 'srfm.instantFormAdditionalMetaToDestructure', [
+		'_srfm_submit_button_text',
+		'_srfm_instant_form_settings',
+		'_srfm_conversational_form',
+		'_srfm_premium_common',
+	] );
+
+	const meta = select( editorStore ).getEditedPostAttribute( 'meta' );
+
+	// Dynamically destructure the keys
+	const {
+		_srfm_submit_button_text,
+		_srfm_instant_form_settings,
+		_srfm_conversational_form,
+		_srfm_premium_common,
+	} = additionalMetas.reduce( ( acc, key ) => {
+		if ( meta[ key ] !== undefined ) {
+			acc[ key ] = meta[ key ];
+		}
+		return acc;
+	}, {} );
 
 	const {
 		// Form background color / image.
@@ -155,12 +175,15 @@ const InstantFormComponent = () => {
 			params.set( key, _srfm_instant_form_settings[ key ] );
 		} );
 
-		Object.keys( _srfm_conversational_form ).forEach( ( key ) => {
-			params.set( key, _srfm_conversational_form[ key ] );
-		} );
+		// skip _srfm_instant_form_settings and _srfm_submit_button_text and add rest of the meta keys.
+		additionalMetas.forEach( ( key ) => {
+			if ( key === '_srfm_instant_form_settings' || key === '_srfm_submit_button_text' ) {
+				return;
+			}
 
-		Object.keys( _srfm_premium_common ).forEach( ( key ) => {
-			params.set( key, _srfm_premium_common[ key ] );
+			Object.keys( meta[ key ] ).forEach( ( subKey ) => {
+				params.set( subKey, meta[ key ][ subKey ] );
+			} );
 		} );
 
 		url.search = params.toString();
