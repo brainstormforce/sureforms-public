@@ -471,54 +471,82 @@ export async function fieldValidation(
 						  )
 						: parseFloat( inputValue.replace( /,/g, '' ) );
 
-				if ( min ) {
-					if (
-						min !== '' &&
-						Number( normalizedInputValue ) < Number( min )
-					) {
-						window?.srfm?.toggleErrorState(
-							inputField.closest( '.srfm-block' ),
-							true
+				// if ( min ) {
+				// 	if (
+				// 		min !== '' &&
+				// 		Number( normalizedInputValue ) < Number( min )
+				// 	) {
+				// 		window?.srfm?.toggleErrorState(
+				// 			inputField.closest( '.srfm-block' ),
+				// 			true
+				// 		);
+				// 		if ( errorMessage ) {
+				// 			errorMessage.textContent =
+				// 				window?.srfm?.srfmSprintfString(
+				// 					window?.srfm_submit?.messages
+				// 						?.srfm_input_min_value,
+				// 					min
+				// 				);
+				// 		}
+				// 	} else {
+				// 		window?.srfm?.toggleErrorState(
+				// 			inputField.closest( '.srfm-block' ),
+				// 			false
+				// 		);
+				// 	}
+				// }
+
+				// if ( max ) {
+				// 	if (
+				// 		max !== '' &&
+				// 		Number( normalizedInputValue ) > Number( max )
+				// 	) {
+				// 		window?.srfm?.toggleErrorState(
+				// 			inputField.closest( '.srfm-block' ),
+				// 			true
+				// 		);
+
+				// 		if ( errorMessage ) {
+				// 			errorMessage.textContent =
+				// 				window?.srfm?.srfmSprintfString(
+				// 					window?.srfm_submit?.messages
+				// 						?.srfm_input_max_value,
+				// 					max
+				// 				);
+				// 		}
+				// 	} else {
+				// 		window?.srfm?.toggleErrorState(
+				// 			inputField.closest( '.srfm-block' ),
+				// 			false
+				// 		);
+				// 	}
+				// }
+
+				if (min || max) {
+					let isError = false;
+					let message = '';
+				
+					if (min && min !== '' && Number(normalizedInputValue) < Number(min)) {
+						isError = true;
+						message = window?.srfm?.srfmSprintfString(
+							window?.srfm_submit?.messages?.srfm_input_min_value,
+							min
 						);
-						if ( errorMessage ) {
-							errorMessage.textContent =
-								window?.srfm?.srfmSprintfString(
-									window?.srfm_submit?.messages
-										?.srfm_input_min_value,
-									min
-								);
-						}
-					} else {
-						window?.srfm?.toggleErrorState(
-							inputField.closest( '.srfm-block' ),
-							false
+					} else if (max && max !== '' && Number(normalizedInputValue) > Number(max)) {
+						isError = true;
+						message = window?.srfm?.srfmSprintfString(
+							window?.srfm_submit?.messages?.srfm_input_max_value,
+							max
 						);
 					}
-				}
-
-				if ( max ) {
-					if (
-						max !== '' &&
-						Number( normalizedInputValue ) > Number( max )
-					) {
-						window?.srfm?.toggleErrorState(
-							inputField.closest( '.srfm-block' ),
-							true
-						);
-
-						if ( errorMessage ) {
-							errorMessage.textContent =
-								window?.srfm?.srfmSprintfString(
-									window?.srfm_submit?.messages
-										?.srfm_input_max_value,
-									max
-								);
-						}
-					} else {
-						window?.srfm?.toggleErrorState(
-							inputField.closest( '.srfm-block' ),
-							false
-						);
+				
+					window?.srfm?.toggleErrorState(
+						inputField.closest('.srfm-block'),
+						isError
+					);
+				
+					if (errorMessage) {
+						errorMessage.textContent = isError ? message : '';
 					}
 				}
 			}
