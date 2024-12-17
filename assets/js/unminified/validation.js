@@ -504,6 +504,12 @@ export async function fieldValidation(
 
 					if ( errorMessage ) {
 						errorMessage.textContent = isError ? message : '';
+
+						if ( isError ) {
+							validateResult = true;
+							// Set the first error input.
+							setFirstErrorInput( inputField, container );
+						}
 					}
 				}
 			}
