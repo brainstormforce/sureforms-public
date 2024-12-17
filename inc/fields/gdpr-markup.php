@@ -51,14 +51,14 @@ class GDPR_Markup extends Base {
 					data-required="<?php echo esc_attr( $this->data_require_attr ); ?>" type="checkbox" <?php echo esc_attr( $this->checked_attr ); ?>/>
 					<label class="srfm-cbx" for="<?php echo esc_attr( $label_random_id ); ?>">
 						<span class="srfm-span-wrap">
-							<svg class="srfm-check-icon" width="12px" height="10px">
+							<svg class="srfm-check-icon" width="12px" height="10px" aria-hidden="true">
 								<use xlink:href="#srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?>-check"></use>
 							</svg>
 						</span>
 						<span class="srfm-span-wrap srfm-block-label"><?php echo wp_kses( $this->label, $this->allowed_tags ); ?>
 							<span class="srfm-required" aria-label="<?php echo esc_html__( 'Required', 'sureforms' ); ?>"><span aria-hidden="true"> *</span></span></span>
 					</label>
-					<svg class="srfm-inline-svg">
+					<svg class="srfm-inline-svg" aria-hidden="true">
 						<symbol id="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?>-check" viewbox="0 0 12 10">
 						<polyline points="1.5 6 4.5 9 10.5 1"></polyline>
 						</symbol>
