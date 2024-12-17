@@ -4,7 +4,7 @@
 **Requires at least:** 6.4  
 **Tested up to:** 6.7.1  
 **Requires PHP:** 7.4  
-**Stable tag:** 1.2.0  
+**Stable tag:** 1.2.1  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -254,7 +254,17 @@ Yes! You can certainly use SureForms on yours as well as your client’s website
 When you use SureForms, you get an easy-to-use AI-powered form builder that can be used to build your forms fast.
 
 ## Changelog ##
-### 1.2.0 - 10th December 2024 ###
+### 1.2.1 - 17th December 2024 ###
+* Improvement: Revamped the General and Spam Protection settings for an improved user experience.
+* Improvement: Enhanced screen reader announcements for validation messages.
+* Improvement: Improved screen reader accessibility to announce block labels and help text on tab navigation.
+* Improvement: Made global validation messages dynamic for better adaptability.
+* Improvement: Added translation compatibility for validation message input labels in admin settings.
+* Improvement: Resolved CSS conflicts for checkboxes in forms with WooCommerce and Elementor installed.
+* Fix: Resolved an issue where the Mac screen reader stopped reading form fields, pausing at the Dropdown field.
+* Fix: Addressed a compatibility issue between the date filter and the entries export functionality.
+* Fix: Resolved an issue where phonewords were not accepted.
+### 1.2.0 - 11th December 2024 ###
 * New: Added Zapier integration for SureForms Pro.
 * Improvement: Added support for including the Entry ID in SureTriggers' workflows, enhancing integration capabilities.
 * Improvement: Updated styling to ensure proper focus borders for the Checkbox and GDPR fields when navigating with a screen reader.

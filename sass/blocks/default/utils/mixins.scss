@@ -6,6 +6,8 @@
 	line-height: var( --srfm-label-line-height );
 	color: var( --srfm-color-input-label );
 	word-wrap: break-word;
+	margin: 0;
+	padding: 0;
 }
 
 @mixin srfm-input-common-styles( $important: false ) {
