@@ -132,14 +132,12 @@ class Global_Settings {
 	public static function srfm_save_general_settings( $setting_options ) {
 
 		$srfm_ip_log         = $setting_options['srfm_ip_log'] ?? false;
-		$srfm_honeypot       = $setting_options['srfm_honeypot'] ?? false;
 		$srfm_form_analytics = $setting_options['srfm_form_analytics'] ?? false;
 
 		return update_option(
 			'srfm_general_settings_options',
 			[
 				'srfm_ip_log'         => $srfm_ip_log,
-				'srfm_honeypot'       => $srfm_honeypot,
 				'srfm_form_analytics' => $srfm_form_analytics,
 			]
 		);
@@ -240,6 +238,7 @@ class Global_Settings {
 		$srfm_cf_turnstile_secret_key = $setting_options['srfm_cf_turnstile_secret_key'] ?? '';
 		$srfm_hcaptcha_site_key       = ! empty( $setting_options['srfm_hcaptcha_site_key'] ) ? $setting_options['srfm_hcaptcha_site_key'] : '';
 		$srfm_hcaptcha_secret_key     = ! empty( $setting_options['srfm_hcaptcha_secret_key'] ) ? $setting_options['srfm_hcaptcha_secret_key'] : '';
+		$srfm_honeypot                = $setting_options['srfm_honeypot'] ?? false;
 
 		return update_option(
 			'srfm_security_settings_options',
@@ -255,6 +254,7 @@ class Global_Settings {
 				'srfm_cf_turnstile_secret_key' => $srfm_cf_turnstile_secret_key,
 				'srfm_hcaptcha_site_key'       => $srfm_hcaptcha_site_key,
 				'srfm_hcaptcha_secret_key'     => $srfm_hcaptcha_secret_key,
+				'srfm_honeypot'                => $srfm_honeypot,
 			]
 		);
 	}
@@ -289,7 +289,6 @@ class Global_Settings {
 		if ( empty( $global_setting_options['srfm_general_settings_options'] ) ) {
 			$global_setting_options['srfm_general_settings_options'] = [
 				'srfm_ip_log'         => false,
-				'srfm_honeypot'       => false,
 				'srfm_form_analytics' => false,
 			];
 		}
@@ -316,6 +315,7 @@ class Global_Settings {
 				'srfm_cf_turnstile_secret_key' => '',
 				'srfm_hcaptcha_site_key'       => '',
 				'srfm_hcaptcha_secret_key'     => '',
+				'srfm_honeypot'                => false,
 			];
 		}
 

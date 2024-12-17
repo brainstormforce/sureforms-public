@@ -262,7 +262,7 @@ class Generate_Form_Markup {
 				>
 				<?php
 					wp_nonce_field( 'srfm-form-submit', 'sureforms_form_submit' );
-					$global_setting_options = get_option( 'srfm_general_settings_options' );
+					$global_setting_options = get_option( 'srfm_security_settings_options' );
 					$honeypot_spam          = is_array( $global_setting_options ) && isset( $global_setting_options['srfm_honeypot'] ) ? $global_setting_options['srfm_honeypot'] : '';
 
 				if ( $is_page_break && 'none' !== $page_break_progress_type ) {
