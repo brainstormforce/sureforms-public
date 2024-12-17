@@ -105,32 +105,6 @@ const ValidationsPage = ( {
 						return handleProCompatibilityInput( field );
 					}
 
-					const inlineCss = {};
-
-					// Hide temporarily the input min and max value fields after fixing the issue input min issue we will remove this.
-					if ( field.key === 'srfm_input_min_value' || field.key === 'srfm_input_max_value' ) {
-						inlineCss.display = 'none';
-						return (
-							<div key={ field.key } style={ inlineCss }>
-								<TextControl
-									key={ field.key }
-									label={ field.label }
-									type="text"
-									className="srfm-components-input-control"
-									value={ dynamicBlockOptions?.[ field.key ] || '' }
-									onChange={ ( value ) => {
-										updateGlobalSettings(
-											field.key,
-											value,
-											'general-settings-dynamic-opt'
-										);
-									} }
-									help={ field?.description || '' }
-								/>
-							</div>
-						);
-					}
-
 					return (
 						<TextControl
 							key={ field.key }
