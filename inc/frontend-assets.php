@@ -211,6 +211,7 @@ class Frontend_Assets {
 					[
 						'srfm-tom-select',
 						'srfm-dropdown',
+						'wp-api-fetch',
 					],
 					SRFM_VER,
 					true
