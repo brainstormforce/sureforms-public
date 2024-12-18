@@ -18,12 +18,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! class_exists( 'SRFM_NPS_Notice' ) ) {
+if ( ! class_exists( 'Nps_Notice' ) ) {
 
 	/**
-	 * Class SRFM_NPS_Notice
+	 * Class Nps_Notice
 	 */
-	class SRFM_NPS_Notice {
+	class Nps_Notice {
 		use Get_Instance;
 
 		/**

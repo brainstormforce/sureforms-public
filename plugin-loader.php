@@ -31,12 +31,12 @@ use SRFM\Inc\Global_Settings\Global_Settings;
 use SRFM\Inc\Gutenberg_Hooks;
 use SRFM\Inc\Helper;
 use SRFM\Inc\Lib\SRFM_Nps_Survey;
+use SRFM\Inc\Nps_Notice;
 use SRFM\Inc\Page_Builders\Page_Builders;
 use SRFM\Inc\Post_Types;
 use SRFM\Inc\Rest_Api;
 use SRFM\Inc\Single_Form_Settings\Compliance_Settings;
 use SRFM\Inc\Smart_Tags;
-use SRFM\Inc\SRFM_NPS_Notice;
 use SRFM\Inc\Updater;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -298,7 +298,7 @@ class Plugin_Loader {
 		if ( class_exists( 'SRFM\Inc\Lib\SRFM_Nps_Survey' ) ) {
 			SRFM_Nps_Survey::get_instance(); // Inits the NPS Survey class for which inits the NPS Survey plugin.
 		}
-		SRFM_NPS_Notice::get_instance(); // Responsible for displaying the NPS Survey.
+		Nps_Notice::get_instance(); // Responsible for displaying the NPS Survey.
 
 		/**
 		 * Load core files necessary for the Spectra block.
