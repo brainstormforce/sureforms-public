@@ -6,6 +6,8 @@
 	line-height: var( --srfm-label-line-height );
 	color: var( --srfm-color-input-label );
 	word-wrap: break-word;
+	margin: 0;
+	padding: 0;
 }
 
 @mixin srfm-input-common-styles( $important: false ) {
@@ -179,6 +181,10 @@
 	padding: 4px;
 	cursor: pointer;
 	margin: 0;
+	
+	label{
+		cursor: pointer;
+	}
 }
 
 @mixin srfm-multi-choice-block-content-wrap-styles( $important: false ) {

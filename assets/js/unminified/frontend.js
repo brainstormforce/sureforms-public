@@ -25,6 +25,90 @@ function addGlobalSrfmObject( key, value ) {
 // Assign the function to the global `window` object so it can be accessed anywhere in the project.
 window.addGlobalSrfmObject = addGlobalSrfmObject;
 
+// Functions used for managing the error state and the equivalent of the sprintf() to replace the values in a translatable string.
+/**
+ * Toggles the "srfm-error" class on the specified container element based on validation results.
+ * Additionally, manages the `id` attribute on the error message element to enable screen reader accessibility.
+ *
+ * @param {HTMLElement} container - The parent container of the input field to validate.
+ * @param {boolean}     hasError  - Determines whether to add or remove the error state.
+ *
+ *                                Description:
+ *                                - When `hasError` is true, the function adds the "srfm-error" class to the container, enabling styling for invalid fields.
+ *                                - If an error message element with the `data-srfm-id` attribute exists as a child of the container,
+ *                                this function assigns its value as the `id` attribute to allow screen readers to announce the error when visible.
+ *                                - Conversely, if `hasError` is false, the function removes both the "srfm-error" class and `id` attribute from the
+ *                                error message element, making it hidden from screen readers when the field is valid.
+ */
+function toggleErrorState( container, hasError ) {
+	// Check if the current class state already matches the intended state to avoid redundant operations
+	if ( container.classList.contains( 'srfm-error' ) === hasError ) {
+		return;
+	}
+
+	// Toggle the "srfm-error" class based on `hasError` state
+	container.classList.toggle( 'srfm-error', hasError );
+
+	// Manage the error message's `id` attribute for screen reader accessibility
+	const errorMessage = container.querySelector( '.srfm-error-message' );
+	if ( errorMessage ) {
+		if ( hasError && errorMessage.hasAttribute( 'data-srfm-id' ) ) {
+			// Set the `id` to `data-srfm-id` value to allow screen readers to announce the error message
+			errorMessage.id = errorMessage.getAttribute( 'data-srfm-id' );
+		} else {
+			// Remove the `id` when the field is valid, hiding the message from screen readers
+			errorMessage.removeAttribute( 'id' );
+		}
+	}
+}
+/**
+ * Replaces "%s" or "%1$s", "%2$s", etc., placeholders in a string with provided arguments, in sequence.
+ *
+ * This function provides basic `sprintf`-style formatting, where each "%s" or "%n$s" placeholder in
+ * the `str` parameter is replaced with corresponding values from `args`.
+ *
+ * @param {string}    str  - The string containing "%s" or "%n$s" placeholders to be replaced.
+ * @param {...string} args - Values to replace each "%s" or "%n$s" placeholder in the string.
+ *                         Each placeholder is replaced by the respective item in `args`.
+ * @return {string} The formatted string with all placeholders replaced by corresponding `args` values.
+ *
+ * @example
+ * srfmSprintfString('You have selected %s', 'Option 2');
+ * // Returns: 'You have selected Option 2'
+ */
+function srfmSprintfString( str, ...args ) {
+	// If more than one argument is passed, handle numbered and regular placeholders
+	if ( args.length > 1 ) {
+		return str.replace( /%(\d*)\$s|%s/g, ( match, index ) => {
+			if ( index ) {
+				// Handle numbered placeholders like %1$s, %2$s
+				const argIndex = parseInt( index, 10 ) - 1;
+				if ( argIndex >= args.length ) {
+					return ''; // Or any fallback value you prefer
+				}
+				return String( args[ argIndex ] );
+			}
+			// Handle regular %s placeholders
+			if ( args.length === 0 ) {
+				return ''; // Fallback if no arguments are provided
+			}
+			return String( args[ 0 ] );
+		} );
+	}
+
+	// If only one argument is passed, replace %s with that argument
+	return str.replace( /%s/g, () => {
+		if ( args.length === 0 ) {
+			return ''; // Fallback if no arguments are provided
+		}
+		return String( args[ 0 ] ); // Use the first argument for all %s placeholders
+	} );
+}
+
+// Add the functions in the srfm global object so they can be accessed from anywhere within the project.
+addGlobalSrfmObject( 'toggleErrorState', toggleErrorState );
+addGlobalSrfmObject( 'srfmSprintfString', srfmSprintfString );
+
 // Sender's Email.
 
 const emailElements = document.getElementsByClassName(

@@ -434,9 +434,11 @@ class Base {
 	 * @return void
 	 */
 	protected function set_markup_properties( $input_label = '', $override = false ) {
-		$this->help_markup          = Helper::generate_common_form_markup( $this->form_id, 'help', '', '', $this->block_id, false, $this->help );
-		$this->error_msg_markup     = Helper::generate_common_form_markup( $this->form_id, 'error', '', '', $this->block_id, boolval( $this->required || $this->min_selection || $this->max_selection ), '', $this->error_msg, false, '', $override );
-		$this->label_markup         = Helper::generate_common_form_markup( $this->form_id, 'label', $this->label, $this->slug, $this->block_id . $input_label, boolval( $this->required ) );
+		$this->help_markup      = Helper::generate_common_form_markup( $this->form_id, 'help', '', '', $this->block_id, false, $this->help );
+		$this->error_msg_markup = Helper::generate_common_form_markup( $this->form_id, 'error', '', '', $this->block_id, boolval( $this->required || $this->min_selection || $this->max_selection ), '', $this->error_msg, false, '', $override );
+		$type                   = in_array( $this->slug, [ 'multi-choice', 'dropdown', 'address' ], true ) ? 'label_text' : 'label';
+		$this->label_markup     = Helper::generate_common_form_markup( $this->form_id, $type, $this->label, $this->slug, $this->block_id . $input_label, boolval( $this->required ) );
+
 		$this->error_svg            = Helper::fetch_svg( 'error', 'srfm-error-icon' );
 		$this->duplicate_msg_markup = Helper::generate_common_form_markup( $this->form_id, 'error', '', '', $this->block_id, boolval( $this->required ), '', $this->error_msg, false, $this->duplicate_msg, $override );
 	}
@@ -465,7 +467,7 @@ class Base {
 	 * @return void
 	 */
 	protected function set_aria_described_by() {
+		$this->aria_described_by .= ' srfm-error-' . $this->block_id;
 		$this->aria_described_by .= ! empty( $this->help ) ? ' srfm-description-' . $this->block_id : '';
-		$this->aria_described_by .= ! empty( $this->required ) ? ' srfm-error-' . $this->block_id : '';
 	}
 }
