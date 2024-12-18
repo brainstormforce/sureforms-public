@@ -297,8 +297,8 @@ class Plugin_Loader {
 		 */
 		if ( class_exists( 'SRFM\Inc\Lib\SRFM_Nps_Survey' ) ) {
 			SRFM_Nps_Survey::get_instance(); // Inits the NPS Survey class for which inits the NPS Survey plugin.
+			Nps_Notice::get_instance(); // Responsible for displaying the NPS Survey: keeping the line out of the check will also work.
 		}
-		Nps_Notice::get_instance(); // Responsible for displaying the NPS Survey.
 
 		/**
 		 * Load core files necessary for the Spectra block.
