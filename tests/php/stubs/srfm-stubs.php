@@ -8949,26 +8949,6 @@ namespace SRFM\Admin\Views {
         {
         }
         /**
-         * Display resend notification trigger button.
-         *
-         * @since x.x.x
-         * @return void
-         */
-        protected function display_bulk_resend_notification_button()
-        {
-        }
-        /**
-         * Display resend notification modal markup.
-         *
-         * @param int        $form_id Form ID.
-         * @param array<int> $entry_ids An array of entry ids.
-         * @since x.x.x
-         * @return void
-         */
-        protected function resend_notification_modal($form_id, $entry_ids = [])
-        {
-        }
-        /**
          * Display the month and year from which the entries are present to filter entries according to time.
          *
          * @since 0.0.13

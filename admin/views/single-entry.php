@@ -69,20 +69,45 @@ class Single_Entry {
 		$form_name       = ! empty( get_the_title( $this->entry['form_id'] ) ) ? get_the_title( $this->entry['form_id'] ) : sprintf( esc_html__( 'SureForms Form #%d', 'sureforms' ), intval( $this->entry['form_id'] ) );
 		$meta_data       = $this->entry['form_data'];
 		$excluded_fields = [ 'srfm-honeypot-field', 'g-recaptcha-response', 'srfm-sender-email-field' ];
-
-		$blocks = $this->prepare_blocks_for_editing();
-
 		?>
 		<div class="wrap">
-			<h1 class="wp-heading-inline">Entry #<?php echo esc_attr( $this->entry_id ); ?></h1>
+			<h1 class="wp-heading-inline">
+				<?php
+				/* Translators: %s is the entry id. */
+				printf( esc_html__( 'Entry #%s', 'sureforms' ), esc_html( $this->entry_id ) );
+				?>
+			</h1>
 
 			<form method="post" action="<?php echo esc_url( admin_url( "admin.php?page=sureforms_entries&entry_id={$this->entry_id}&view=details" ) ); ?>"> <!-- check for nonce, referrer, etc. -->
+				<?php
+				/**
+				 * Action hook right after entry form opening tag.
+				 *
+				 * @since x.x.x
+				 */
+				do_action( 'srfm_after_entry_form_opening_tag', $this->entry, $this );
+				?>
+
 				<div id="poststuff">
 					<div id="post-body" class="metabox-holder columns-2">
 						<div id="postbox-container-1" class="postbox-container">
-							<?php $this->render_entry_notes(); ?>
-							<?php $this->render_submission_info( $form_name, $entry_status, $submitted_on ); ?>
-							<?php Entries_List_Table::get_instance()->display_bulk_resend_notification_button( $this->entry['form_id'], [ $this->entry_id ] ); ?>
+							<?php
+							/**
+							 * Action hook right before entry form opening tag.
+							 *
+							 * @since x.x.x
+							 */
+							do_action( 'srfm_before_entry_submission_info', $this->entry, $this );
+
+							$this->render_submission_info( $form_name, $entry_status, $submitted_on );
+
+							/**
+							 * Action hook right after entry form opening tag.
+							 *
+							 * @since x.x.x
+							 */
+							do_action( 'srfm_after_entry_submission_info', $this->entry, $this );
+							?>
 						</div>
 						<div id="postbox-container-2" class="postbox-container">
 							<?php $this->render_form_data( $meta_data, $excluded_fields ); ?>
@@ -94,33 +119,15 @@ class Single_Entry {
 					<br class="clear">
 				</div>
 				<!-- /poststuff -->
-				<dialog id="srfm-edit-entry-modal">
-					<div class="srfm-edit-entry-modal-container">
-						<div class="edit-entry-header">
-							<h2><?php esc_html_e( 'Edit Entry Data', 'sureforms' ); ?></h2>
-							<button type="button" class="srfm-cancel-entry-btn">
-								<svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
-									<path fill-rule="evenodd" clip-rule="evenodd" d="M5.46967 5.83686C5.76256 5.54396 6.23744 5.54396 6.53033 5.83686L12 11.3065L17.4697 5.83686C17.7626 5.54396 18.2374 5.54397 18.5303 5.83686C18.8232 6.12975 18.8232 6.60463 18.5303 6.89752L13.0607 12.3672L18.5303 17.8369C18.8232 18.1298 18.8232 18.6046 18.5303 18.8975C18.2374 19.1904 17.7626 19.1904 17.4697 18.8975L12 13.4278L6.53033 18.8975C6.23744 19.1904 5.76256 19.1904 5.46967 18.8975C5.17678 18.6046 5.17678 18.1298 5.46967 17.8369L10.9393 12.3672L5.46967 6.89752C5.17678 6.60462 5.17678 6.12975 5.46967 5.83686Z" fill="#94A3B8"/>
-								</svg>
-							</button>
-						</div>
-						<div class="edit-entry-content">
-							<?php
-							if ( ! empty( $blocks ) && is_array( $blocks ) ) {
-								foreach ( $blocks as $block ) {
-									echo render_block( $block ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- We need to print the form blocks markup.
-								}
-							}
-							?>
-						</div>
-						<div class="edit-entry-footer">
-							<?php wp_nonce_field( 'srfm-edit-entry-' . $this->entry_id, 'srfm-edit-entry-nonce' ); ?>
-							<input type="hidden" name="entry_id" value="<?php echo esc_attr( $this->entry_id ); ?>">
-							<input class="button button-primary srfm-update-entry-btn" type="submit" value="<?php esc_attr_e( 'Update Entry', 'sureforms' ); ?>">
-							<button type="button" class="button srfm-cancel-entry-btn"><?php esc_html_e( 'Cancel', 'sureforms' ); ?></button>
-						</div>
-					</div>
-				</dialog>
+
+				<?php
+				/**
+				 * Action hook right before entry form closing tag.
+				 *
+				 * @since x.x.x
+				 */
+				do_action( 'srfm_before_entry_form_closing_tag', $this->entry, $this );
+				?>
 			</form>
 		</div>
 		<?php
@@ -231,51 +238,6 @@ class Single_Entry {
 			</tbody>
 		</table>
 		<?php
-	}
-
-	/**
-	 * Prepares the form blocks for entry editing mode.
-	 *
-	 * @since x.x.x
-	 * @return array
-	 */
-	protected function prepare_blocks_for_editing() {
-		$parsed = parse_blocks( get_post( absint( $this->entry['form_id'] ) )->post_content );
-		$blocks = array_map(
-			function( $block ) {
-				if ( ! $block['blockName'] ) {
-					return null;
-				}
-
-				$meta_data = $this->entry['form_data'];
-
-				$attrs = [];
-
-				foreach ( $meta_data as $field_name => $value ) {
-					if ( false !== strpos( $field_name, "-{$block['attrs']['block_id']}-" ) ) {
-						$attrs = [
-							'fieldName'    => $field_name,
-							'defaultValue' => $value,
-						];
-						break;
-					}
-				}
-
-				if ( empty( $attrs ) ) {
-					return null;
-				}
-
-				$block['attrs']['entryID']      = $this->entry_id;
-				$block['attrs']['isEditing']    = true;
-				$block['attrs']['fieldName']    = $attrs['fieldName'];
-				$block['attrs']['defaultValue'] = $attrs['defaultValue'];
-
-				return $block;
-			},
-			_flatten_blocks( $parsed )
-		);
-
-		return array_filter( $blocks, 'is_array' );
 	}
 
 	/**
@@ -420,12 +382,14 @@ class Single_Entry {
 			<div class="postbox-header">
 				<!-- Removed "hndle ui-sortable-handle" class from h2 to remove the draggable stylings. -->
 				<h2><?php esc_html_e( 'Form Data', 'sureforms' ); ?></h2>
-				<button class="button button-link srfm-edit-entry" type="button">
-					<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-						<path d="M11.2411 2.99111L12.3661 1.86612C12.8543 1.37796 13.6457 1.37796 14.1339 1.86612C14.622 2.35427 14.622 3.14573 14.1339 3.63388L7.05479 10.713C6.70234 11.0654 6.26762 11.3245 5.78993 11.4668L4 12L4.53319 10.2101C4.67548 9.73239 4.93456 9.29767 5.28701 8.94522L11.2411 2.99111ZM11.2411 2.99111L13 4.74999M12 9.33333V12.5C12 13.3284 11.3284 14 10.5 14H3.5C2.67157 14 2 13.3284 2 12.5V5.49999C2 4.67157 2.67157 3.99999 3.5 3.99999H6.66667" stroke="#2271b1" stroke-linecap="round" stroke-linejoin="round"/>
-					</svg>
-					<?php esc_html_e( 'Edit', 'sureforms' ); ?>
-				</button>
+				<?php
+				/**
+				 * Action hook right after entry form opening tag.
+				 *
+				 * @since x.x.x
+				 */
+				do_action( 'srfm_after_entry_postbox_title', $this->entry, $this );
+				?>
 			</div>
 			<div class="inside">
 				<table class="widefat striped">

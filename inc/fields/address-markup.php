@@ -56,7 +56,23 @@ class Address_Markup extends Base {
 				</fieldset>
 			</div>
 		<?php
+		if ( $this->is_editing ) {
+			?>
+			<style>
+				.srfm-address-block .srfm-block-wrap {
+					display: flex;
+					flex-wrap: wrap;
+					gap: 16px 16px;
+				}
 
+				.srfm-address-block .srfm-block {
+					flex: 0 1 calc(50% - 16px / 2);
+					border: none !important;
+					padding: 0 !important;
+				}
+			</style>
+			<?php
+		}
 		return ob_get_clean();
 	}
 }

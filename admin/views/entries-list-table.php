@@ -771,111 +771,6 @@ class Entries_List_Table extends \WP_List_Table {
 	}
 
 	/**
-	 * Display resend notification trigger button.
-	 *
-	 * @param int|null   $form_id Form ID.
-	 * @param array<int> $entry_ids An array of entry ids.
-	 * @since x.x.x
-	 * @return void
-	 */
-	public function display_bulk_resend_notification_button( $form_id = null, $entry_ids = [] ) {
-		if ( ! $form_id && isset( $_GET['form_filter'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verification is skipped on purpose.
-			$form_id = absint( wp_unslash( $_GET['form_filter'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verification is skipped on purpose.
-		}
-		if ( ! $form_id ) {
-			// Do not display resend notification button if a form is not selected or form_id is not set.
-			return;
-		}
-
-		?>
-		<button type="button" class="button <?php echo empty( $entry_ids ) ? 'hidden' : ''; ?> srfm-resend-notification-trigger-btn"><?php esc_html_e( 'Resend Notification', 'sureforms' ); ?></button>
-		<?php
-		$this->resend_notification_modal( $form_id, $entry_ids );
-	}
-
-	/**
-	 * Display resend notification modal markup.
-	 *
-	 * @param int        $form_id Form ID.
-	 * @param array<int> $entry_ids An array of entry ids.
-	 * @since x.x.x
-	 * @return void
-	 */
-	public function resend_notification_modal( $form_id, $entry_ids = [] ) {
-		if ( ! $form_id ) {
-			return;
-		}
-
-		$email_notifications = get_post_meta( $form_id, '_srfm_email_notification', true );
-		?>
-		<dialog id="srfm-resend-notification-modal">
-			<div class="in-progress-overlay hidden">
-				<svg width="45" height="45" fill="#2271b1" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12,1A11,11,0,1,0,23,12,11,11,0,0,0,12,1Zm0,19a8,8,0,1,1,8-8A8,8,0,0,1,12,20Z" opacity=".25"/><path d="M12,4a8,8,0,0,1,7.89,6.7A1.53,1.53,0,0,0,21.38,12h0a1.5,1.5,0,0,0,1.48-1.75,11,11,0,0,0-21.72,0A1.5,1.5,0,0,0,2.62,12h0a1.53,1.53,0,0,0,1.49-1.3A8,8,0,0,1,12,4Z" class="spinner_z9k8"/></svg>
-			</div>
-			<div class="modal-title">
-				<h3><?php esc_html_e( 'Resend Notification', 'sureforms' ); ?></h3>
-			</div>
-			<?php
-			if ( empty( $email_notifications ) ) {
-				?>
-				<div class="modal-content">
-					<p>
-					<?php
-					/* translators: %s is the form name. */
-					printf( esc_html__( 'No email notifications found for the "%s" form. You can create email notification from the form edit page.', 'sureforms' ), esc_html( get_the_title( $form_id ) ) );
-					?>
-					</p>
-				</div>
-				<div class="modal-actions">
-					<button type="button" class="button srfm-cancel-resend-notification"><?php esc_html_e( 'Okay', 'sureforms' ); ?></button>
-				</div>
-				<?php
-			} else {
-				?>
-				<div class="modal-content">
-					<div class="field-group">
-						<h4><?php esc_html_e( 'Notification', 'sureforms' ); ?></h4>
-						<select name="email_notification" class="srfm-resend-notification-field">
-							<?php
-							foreach ( $email_notifications as $email_notification ) {
-								?>
-								<option value="<?php echo esc_attr( $email_notification['id'] ); ?>"><?php echo esc_html( $email_notification['name'] ); ?></option>
-								<?php
-							}
-							?>
-						</select>
-					</div>
-
-					<div class="field-group">
-						<h4><?php esc_html_e( 'Send To', 'sureforms' ); ?></h4>
-						<select name="send_to" class="srfm-resend-notification-field">
-							<option value="default"><?php esc_html_e( 'Default', 'sureforms' ); ?></option>
-							<option value="other"><?php esc_html_e( 'Other', 'sureforms' ); ?></option>
-						</select>
-					</div>
-
-					<div class="field-group recipient-field-group hidden">
-						<h4><?php esc_html_e( 'Recipient Email', 'sureforms' ); ?></h4>
-						<input type="email" name="recipient" class="srfm-resend-notification-field">
-					</div>
-
-					<input type="hidden" name="form_id" value="<?php echo esc_attr( $form_id ); ?>" class="srfm-resend-notification-field">
-
-					<!-- We will populate this field using JS for bulk resend -->
-					<input type="hidden" name="entry_ids" value="<?php echo esc_attr( implode( ',', $entry_ids ) ); ?>" class="srfm-resend-notification-field">
-				</div>
-				<div class="modal-actions">
-					<button type="button" class="button button-primary srfm-resend-notification"><?php esc_html_e( 'Resend Notification', 'sureforms' ); ?></button>
-					<button type="button" class="button srfm-cancel-resend-notification"><?php esc_html_e( 'Cancel', 'sureforms' ); ?></button>
-				</div>
-				<?php
-			}
-			?>
-		</dialog>
-		<?php
-	}
-
-	/**
 	 * Define the data for the "id" column and return the markup.
 	 *
 	 * @param array $item Column data.
@@ -966,6 +861,24 @@ class Entries_List_Table extends \WP_List_Table {
 		$excluded_fields = Helper::get_excluded_fields();
 		$form_data       = array_diff_key( $item['form_data'], array_flip( $excluded_fields ) );
 		$first_field     = reset( $form_data );
+		$field_name      = array_keys( $form_data )[0];
+
+		if ( false !== strpos( $field_name, 'srfm-upload' ) ) {
+			$filenames = [];
+			if ( ! empty( $first_field ) && is_array( $first_field ) ) {
+				foreach ( $first_field as $file ) {
+					$file_url = urldecode( strval( $file ) );
+					$filenames[] = pathinfo( $file_url, PATHINFO_BASENAME );
+				}
+			}
+			$first_field = implode( ', ', $filenames );
+		}
+
+		$max_length = 28;
+
+		if ( strlen( $first_field ) > $max_length ) {
+			$first_field = substr( $first_field, 0, $max_length - 3 ) . '...';
+		}
 
 		return sprintf(
 			'<p>%s</p>',
@@ -1081,10 +994,17 @@ class Entries_List_Table extends \WP_List_Table {
 		if ( 'top' === $which ) {
 			?>
 			<div class="alignleft actions">
-				<?php $this->display_month_filter(); ?>
-				<?php $this->display_form_filter(); ?>
-				<?php $this->display_bulk_resend_notification_button(); ?>
 				<?php
+				$this->display_month_filter();
+				$this->display_form_filter();
+
+				/**
+				 * Action hook right after entry form opening tag.
+				 *
+				 * @since x.x.x
+				 */
+				do_action( 'srfm_after_entry_postbox_title' );
+
 				if ( $this->is_filter_enabled() ) {
 					?>
 					<a href="<?php echo esc_url( add_query_arg( 'page', 'sureforms_entries', admin_url( 'admin.php' ) ) ); ?>" class="button button-link clear-filter"><?php esc_html_e( 'Clear Filter', 'sureforms' ); ?></a>

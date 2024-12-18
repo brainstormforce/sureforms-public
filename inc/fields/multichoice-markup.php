@@ -189,6 +189,20 @@ class Multichoice_Markup extends Base {
 				.srfm-multi-choice-block .srfm-block-wrap label p {
 					margin: 0;
 				}
+
+				.srfm-multi-choice-block .srfm-block-wrap .srfm-multi-choice-single {
+					display: flex;
+					gap: 6px;
+				}
+				.srfm-multi-choice-block .srfm-block-wrap .srfm-multi-choice-single input {
+					margin: 0;
+				}
+				.srfm-multi-choice-block .srfm-block-wrap .srfm-multi-choice-single .srfm-option-image {
+					margin: 0;
+				}
+				.srfm-multi-choice-block .srfm-block-wrap .srfm-multi-choice-single .srfm-option-image img {
+					width: 50px;
+				}
 			</style>
 			<?php
 		}

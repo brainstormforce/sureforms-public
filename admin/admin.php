@@ -804,7 +804,6 @@ class Admin {
 	 * @return void
 	 */
 	public function save_edit_entry_data() {
-
 		if ( empty( $_POST['srfm-edit-entry-nonce'] ) || empty( $_POST['entry_id'] ) ) {
 			// Bail early if we don't have nonce key or entry id key.
 			return;
@@ -814,6 +813,24 @@ class Admin {
 
 		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['srfm-edit-entry-nonce'] ) ), 'srfm-edit-entry-' . $entry_id ) ) {
 			return;
+		}
+
+		$files_deleted = [];
+		$delete_files  = isset( $_POST['srfm_uploads_block_delete_files'] ) ? wp_unslash( $_POST['srfm_uploads_block_delete_files'] ) : [];
+
+		if ( ! empty( $delete_files ) && is_array( $_POST['srfm_uploads_block_delete_files'] ) ) {
+			$upload_dir = wp_get_upload_dir();
+			foreach ( wp_unslash( $_POST['srfm_uploads_block_delete_files'] ) as $file_url ) {
+				// Get the file path from the file URL.
+				$file_path = wp_normalize_path( str_replace( $upload_dir['baseurl'], $upload_dir['basedir'], urldecode( $file_url ) ) );
+
+				// Delete the file if it exists.
+				if ( file_exists( $file_path ) ) {
+					unlink( $file_path );
+					$files_deleted[] = rawurlencode( $file_url );
+				}
+			}
+			unset( $_POST['srfm_uploads_block_delete_files'] );
 		}
 
 		$data = Helper::sanitize_by_field_type( wp_unslash( $_POST ) ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- We are sanitizing using our custom function.
@@ -829,26 +846,40 @@ class Admin {
 
 			$form_data = $instance::get( $entry_id )['form_data'];
 
-			foreach ( $data as $k => $v ) {
-				if ( ! array_key_exists( $k, $form_data ) ) {
+			foreach ( $data as $field_name => $v ) {
+				if ( ! array_key_exists( $field_name, $form_data ) ) {
 					continue;
 				}
 
-				$edited[ $k ] = is_array( $v ) ? implode( ',', $v ) : $v;
+				// If the field is an array, encode the values. This is to add support for multi-upload field.
+				if ( is_array( $v ) ) {
+					$edited[ $field_name ] = array_map(
+						static function ( $val ) {
+							return rawurlencode( $val );
+						},
+						$v
+					);
+					$edited[ $field_name ] = array_diff( $edited[ $field_name ], $files_deleted );
+					$edited[ $field_name ] = array_values( $edited[ $field_name ] );
+				} else {
+					$edited[ $field_name ] = htmlspecialchars( $v );
+				}
 
-				if ( ! isset( $form_data[ $k ] ) ) {
+				$log = is_array( $v ) ? implode( ',', $v ) : $v;
+
+				if ( ! isset( $form_data[ $field_name ] ) ) {
 					// &#8594; is html entity for arrow -> sign.
-					$instance->update_log( $instance->get_last_log_key(), null, '"" &#8594; ' . $edited[ $k ] );
+					$instance->update_log( $instance->get_last_log_key(), null, '"" &#8594; ' . $log );
 					$changed++;
 					continue;
 				}
 
-				if ( $form_data[ $k ] === $edited[ $k ] ) {
+				if ( $form_data[ $field_name ] === $edited[ $field_name ] ) {
 					continue;
 				}
 
 				// &#8594; is html entity for arrow -> sign.
-				$instance->update_log( $instance->get_last_log_key(), null, sprintf( '%1$s &#8594; %2$s', "<del>{$form_data[ $k ]}</del>", $edited[ $k ] ) );
+				$instance->update_log( $instance->get_last_log_key(), null, sprintf( '%1$s &#8594; %2$s', "<del>{$form_data[ $field_name ]}</del>", $log ) );
 				$changed++;
 			}
 		}
