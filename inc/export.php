@@ -67,7 +67,7 @@ class Export {
 		}
 
 		// check if the user has permission to export forms.
-		if ( ! current_user_can( 'manage_options' ) ) {
+		if ( ! Helper::current_user_can() ) {
 			wp_send_json_error(
 				[
 					'error' => __( 'You do not have permission to export forms.', 'sureforms' ),
