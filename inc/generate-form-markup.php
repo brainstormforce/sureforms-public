@@ -282,7 +282,7 @@ class Generate_Form_Markup {
 				if ( $is_page_break ) {
 					do_action( 'srfm_page_break_pagination', $post, $id );
 				} elseif ( apply_filters( 'srfm_do_not_use_default_field_content', false, $srfm_live_mode_data ) ) {
-					do_action( 'srfm_custom_field_content', $post, $id, [] );
+					do_action( 'srfm_custom_field_content', $post, $id, $srfm_live_mode_data );
 				} else {
 					// phpcs:ignore
 					echo $content;
@@ -290,9 +290,7 @@ class Generate_Form_Markup {
 				}
 				?>
 				<?php
-				if ( 0 !== $block_count && ! $is_inline_button || $is_page_break
-
-				) {
+				if ( 0 !== $block_count && ! $is_inline_button || $is_page_break ) {
 					?>
 					<?php if ( ! empty( $security_type ) && 'none' !== $security_type ) { ?>
 						<div class="srfm-captcha-container <?php echo esc_attr( 'v3-reCAPTCHA' === $recaptcha_version || 'v2-invisible' === $recaptcha_version ? 'srfm-display-none' : '' ); ?>">
