@@ -38,6 +38,7 @@ if ( ! class_exists( 'Nps_Notice' ) ) {
 			'sureforms_page_sureforms_form_settings',
 			'sureforms_page_sureforms_entries',
 			'sureforms_page_add-new-form',
+			'edit-sureforms_form',
 		];
 
 		/**
@@ -47,14 +48,6 @@ if ( ! class_exists( 'Nps_Notice' ) ) {
 		 */
 		private function __construct() {
 			add_action( 'admin_footer', [ $this, 'show_nps_notice' ], 999 );
-
-			// Display the NPS survey only on SureForms pages.
-			add_filter(
-				'nps_survey_allowed_screens',
-				static function ( $screens ) {
-					return array_merge( $screens, self::$allowed_screens );
-				}
-			);
 		}
 
 		/**
@@ -87,11 +80,6 @@ if ( ! class_exists( 'Nps_Notice' ) ) {
 				return;
 			}
 
-			// Display the NPS Survey only on SureForms pages.
-			if ( ! Helper::is_sureforms_admin_page() ) {
-				return;
-			}
-
 			/**
 			 * Check if the constant WEEK_IN_SECONDS is already defined.
 			 * This ensures that the constant is not redefined if it's already set by WordPress or other parts of the code.
@@ -109,6 +97,7 @@ if ( ! class_exists( 'Nps_Notice' ) ) {
 					'dismiss_timespan' => 2 * WEEK_IN_SECONDS,
 					'display_after'    => 0,
 					'plugin_slug'      => 'sureforms',
+					'show_on_screens'  => self::$allowed_screens,
 					'message'          => [
 						'logo'                  => esc_url( plugin_dir_url( __DIR__ ) . 'admin/assets/sureforms-logo.png' ),
 						'plugin_name'           => __( 'SureForms', 'sureforms' ),

@@ -26,7 +26,8 @@ $placeholder_color: #9ca3af;
 .sureforms_page_sureforms_form_settings,
 .sureforms_page_sureforms_entries,
 .sureforms_page_sureforms_form_entries,
-.sureforms_page_add-new-form {
+.sureforms_page_add-new-form,
+.post-type-sureforms_form {
 	// NPS Survey styles start.
 	// Note: Need to check the below styles once the fix for RTL is released from the library level.
 	[data-id="nps-survey-sureforms"] > .nps-survey-wrapper > div {
@@ -46,6 +47,7 @@ $placeholder_color: #9ca3af;
 
 	// Hide Spectra, Astra, and Starter Templates NPS Survey on SureForms Pages.
 	// Once NPS Team works on the task where the popup will be visible only on individual dashboard pages, we can remove the below styles.
+	// The below styles can be removed once the specific plugins update their NPS survey implementation.
 	[data-id="nps-survey-ultimate-addons-for-gutenberg"],
 	[data-id="nps-survey-astra"],
 	[data-id="nps-survey-astra-sites"] {
