@@ -35,7 +35,7 @@ function findDifferentKeyValue( obj1, obj2 ) {
 }
 
 const InstantFormComponent = () => {
-	const { _srfm_submit_button_text, _srfm_instant_form_settings, _srfm_conversational_form, _srfm_premium_common } = select( editorStore ).getEditedPostAttribute( 'meta' );
+	const { _srfm_submit_button_text, _srfm_instant_form_settings } = select( editorStore ).getEditedPostAttribute( 'meta' );
 
 	const {
 		// Form background color / image.
@@ -142,6 +142,14 @@ const InstantFormComponent = () => {
 		return instantStyles;
 	};
 
+	// Filter to add additional metas for live preview.
+	const additionalMetasForLivePreview = applyFilters( 'srfm.instantFormLivePreviewAdditionalMetas', {
+		isLiveMode,
+		 _srfm_instant_form_settings,
+	} );
+
+	const liveModeDependencies = Object.values( additionalMetasForLivePreview );
+
 	// Returns URL for the Instant Form Live Preview.
 	const getIframePreviewURL = ( postLink ) => {
 		const url = new URL( postLink ); // Use the default ( not edited ) post link for live mode as edited version is not saved yet.
@@ -155,12 +163,12 @@ const InstantFormComponent = () => {
 			params.set( key, _srfm_instant_form_settings[ key ] );
 		} );
 
-		Object.keys( _srfm_conversational_form ).forEach( ( key ) => {
-			params.set( key, _srfm_conversational_form[ key ] );
-		} );
-
-		Object.keys( _srfm_premium_common ).forEach( ( key ) => {
-			params.set( key, _srfm_premium_common[ key ] );
+		// use liveModeDependencies
+		liveModeDependencies.forEach( ( value ) => {
+			Object.keys( value ).forEach( ( key ) => {
+				params.set( key, value[ key ] );
+			}
+			);
 		} );
 
 		url.search = params.toString();
@@ -227,7 +235,9 @@ const InstantFormComponent = () => {
 		}
 
 		live_mode_prev_srfm_instant_form_settings = _srfm_instant_form_settings;
-	}, [ isLiveMode, _srfm_instant_form_settings, _srfm_conversational_form, _srfm_premium_common ] );
+	}, [
+		...liveModeDependencies,
+	] );
 
 	const onHandleChange = ( key, value ) => {
 		if ( _srfm_instant_form_settings?.[ key ] === value ) {

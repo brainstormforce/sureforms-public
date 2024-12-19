@@ -132,14 +132,12 @@ class Global_Settings {
 	public static function srfm_save_general_settings( $setting_options ) {
 
 		$srfm_ip_log         = $setting_options['srfm_ip_log'] ?? false;
-		$srfm_honeypot       = $setting_options['srfm_honeypot'] ?? false;
 		$srfm_form_analytics = $setting_options['srfm_form_analytics'] ?? false;
 
 		return update_option(
 			'srfm_general_settings_options',
 			[
 				'srfm_ip_log'         => $srfm_ip_log,
-				'srfm_honeypot'       => $srfm_honeypot,
 				'srfm_form_analytics' => $srfm_form_analytics,
 			]
 		);
@@ -153,23 +151,40 @@ class Global_Settings {
 	 * @since 0.0.1
 	 */
 	public static function srfm_save_general_settings_dynamic_opt( $setting_options ) {
-
-		$options_names = [
-			'srfm_url_block_required_text'          => $setting_options['srfm_url_block_required_text'],
-			'srfm_input_block_required_text'        => $setting_options['srfm_input_block_required_text'],
-			'srfm_input_block_unique_text'          => $setting_options['srfm_input_block_unique_text'],
-			'srfm_address_block_required_text'      => $setting_options['srfm_address_block_required_text'],
-			'srfm_phone_block_required_text'        => $setting_options['srfm_phone_block_required_text'],
-			'srfm_phone_block_unique_text'          => $setting_options['srfm_phone_block_unique_text'],
-			'srfm_number_block_required_text'       => $setting_options['srfm_number_block_required_text'],
-			'srfm_textarea_block_required_text'     => $setting_options['srfm_textarea_block_required_text'],
-			'srfm_multi_choice_block_required_text' => $setting_options['srfm_multi_choice_block_required_text'],
-			'srfm_checkbox_block_required_text'     => $setting_options['srfm_checkbox_block_required_text'],
-			'srfm_gdpr_block_required_text'         => $setting_options['srfm_gdpr_block_required_text'],
-			'srfm_email_block_required_text'        => $setting_options['srfm_email_block_required_text'],
-			'srfm_email_block_unique_text'          => $setting_options['srfm_email_block_unique_text'],
-			'srfm_dropdown_block_required_text'     => $setting_options['srfm_dropdown_block_required_text'],
+		$options_keys = [
+			'srfm_url_block_required_text',
+			'srfm_input_block_required_text',
+			'srfm_input_block_unique_text',
+			'srfm_address_block_required_text',
+			'srfm_phone_block_required_text',
+			'srfm_phone_block_unique_text',
+			'srfm_number_block_required_text',
+			'srfm_textarea_block_required_text',
+			'srfm_multi_choice_block_required_text',
+			'srfm_checkbox_block_required_text',
+			'srfm_gdpr_block_required_text',
+			'srfm_email_block_required_text',
+			'srfm_email_block_unique_text',
+			'srfm_dropdown_block_required_text',
+			'srfm_valid_phone_number',
+			'srfm_valid_url',
+			'srfm_confirm_email_same',
+			'srfm_valid_email',
+			'srfm_input_min_value',
+			'srfm_input_max_value',
+			'srfm_dropdown_min_selections',
+			'srfm_dropdown_max_selections',
+			'srfm_multi_choice_min_selections',
+			'srfm_multi_choice_max_selections',
 		];
+
+		$options_names = [];
+
+		foreach ( $options_keys as $key ) {
+			if ( isset( $setting_options[ $key ] ) ) {
+				$options_names[ $key ] = $setting_options[ $key ];
+			}
+		}
 
 		return update_option( 'srfm_default_dynamic_block_option', apply_filters( 'srfm_general_dynamic_options_to_save', $options_names, $setting_options ) );
 	}
@@ -223,6 +238,7 @@ class Global_Settings {
 		$srfm_cf_turnstile_secret_key = $setting_options['srfm_cf_turnstile_secret_key'] ?? '';
 		$srfm_hcaptcha_site_key       = ! empty( $setting_options['srfm_hcaptcha_site_key'] ) ? $setting_options['srfm_hcaptcha_site_key'] : '';
 		$srfm_hcaptcha_secret_key     = ! empty( $setting_options['srfm_hcaptcha_secret_key'] ) ? $setting_options['srfm_hcaptcha_secret_key'] : '';
+		$srfm_honeypot                = $setting_options['srfm_honeypot'] ?? false;
 
 		return update_option(
 			'srfm_security_settings_options',
@@ -238,6 +254,7 @@ class Global_Settings {
 				'srfm_cf_turnstile_secret_key' => $srfm_cf_turnstile_secret_key,
 				'srfm_hcaptcha_site_key'       => $srfm_hcaptcha_site_key,
 				'srfm_hcaptcha_secret_key'     => $srfm_hcaptcha_secret_key,
+				'srfm_honeypot'                => $srfm_honeypot,
 			]
 		);
 	}
@@ -272,7 +289,6 @@ class Global_Settings {
 		if ( empty( $global_setting_options['srfm_general_settings_options'] ) ) {
 			$global_setting_options['srfm_general_settings_options'] = [
 				'srfm_ip_log'         => false,
-				'srfm_honeypot'       => false,
 				'srfm_form_analytics' => false,
 			];
 		}
@@ -299,6 +315,7 @@ class Global_Settings {
 				'srfm_cf_turnstile_secret_key' => '',
 				'srfm_hcaptcha_site_key'       => '',
 				'srfm_hcaptcha_secret_key'     => '',
+				'srfm_honeypot'                => false,
 			];
 		}
 

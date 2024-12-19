@@ -52,12 +52,12 @@ class Generate_Form_Markup {
 	/**
 	 * Handle Form status
 	 *
-	 * @param int|string   $id Contains form ID.
-	 * @param bool         $show_title_current_page Boolean to show/hide form title.
-	 * @param string       $sf_classname additional class_name.
-	 * @param string       $post_type Contains post type.
-	 * @param bool         $do_blocks Boolean to enable/disable parsing dynamic blocks.
-	 * @param array<mixed> $srfm_live_mode_data contains live mode data.
+	 * @param int|string          $id Contains form ID.
+	 * @param bool                $show_title_current_page Boolean to show/hide form title.
+	 * @param string              $sf_classname additional class_name.
+	 * @param string              $post_type Contains post type.
+	 * @param bool                $do_blocks Boolean to enable/disable parsing dynamic blocks.
+	 * @param array<string,mixed> $srfm_live_mode_data The live mode data, it is required for updating the live preview of the instant form.
 	 *
 	 * @return string|false
 	 * @since 0.0.1
@@ -104,7 +104,7 @@ class Generate_Form_Markup {
 
 			$form_styling             = get_post_meta( $id, '_srfm_forms_styling', true );
 			$form_styling             = ! empty( $form_styling ) && is_array( $form_styling ) ? $form_styling : [];
-			$page_break_settings      = defined( 'SRFM_PRO_VER' ) ? get_post_meta( $id, '_srfm_page_break_settings', true ) : [];
+			$page_break_settings      = defined( 'SRFM_PRO_VER' ) && apply_filters( 'srfm_use_page_break_layout', true, $srfm_live_mode_data ) ? get_post_meta( $id, '_srfm_page_break_settings', true ) : [];
 			$page_break_settings      = ! empty( $page_break_settings ) && is_array( $page_break_settings ) ? $page_break_settings : [];
 			$is_page_break            = ! empty( $page_break_settings ) ? $page_break_settings['is_page_break'] : false;
 			$page_break_progress_type = ! empty( $page_break_settings ) ? $page_break_settings['progress_indicator_type'] : 'none';
@@ -263,7 +263,7 @@ class Generate_Form_Markup {
 				>
 				<?php
 					wp_nonce_field( 'srfm-form-submit', 'sureforms_form_submit' );
-					$global_setting_options = get_option( 'srfm_general_settings_options' );
+					$global_setting_options = get_option( 'srfm_security_settings_options' );
 					$honeypot_spam          = is_array( $global_setting_options ) && isset( $global_setting_options['srfm_honeypot'] ) ? $global_setting_options['srfm_honeypot'] : '';
 
 				if ( $is_page_break && 'none' !== $page_break_progress_type ) {
