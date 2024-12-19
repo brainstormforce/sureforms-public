@@ -80,6 +80,11 @@ if ( ! class_exists( 'Nps_Notice' ) ) {
 				return;
 			}
 
+			// Display the NPS Survey only on SureForms pages and avoid conflicts with other plugins.
+			if ( ! Helper::is_sureforms_admin_page() ) {
+				return;
+			}
+
 			/**
 			 * Check if the constant WEEK_IN_SECONDS is already defined.
 			 * This ensures that the constant is not redefined if it's already set by WordPress or other parts of the code.
