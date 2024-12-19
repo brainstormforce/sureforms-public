@@ -260,6 +260,7 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 * Improvement: Improved screen reader accessibility to announce block labels and help text on tab navigation.
 * Improvement: Made global validation messages dynamic for better adaptability.
 * Improvement: Added translation compatibility for validation message input labels in admin settings.
+* Improvement: Resolved CSS conflicts for checkboxes in forms with WooCommerce and Elementor installed.
 * Fix: Resolved an issue where the Mac screen reader stopped reading form fields, pausing at the Dropdown field.
 * Fix: Addressed a compatibility issue between the date filter and the entries export functionality.
 * Fix: Resolved an issue where phonewords were not accepted.
