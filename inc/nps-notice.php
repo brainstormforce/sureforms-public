@@ -106,7 +106,7 @@ if ( ! class_exists( 'Nps_Notice' ) ) {
 				'nps-survey-sureforms',
 				[
 					'show_if'          => $this->maybe_display_nps_survey(),
-					'dismiss_timespan' => WEEK_IN_SECONDS,
+					'dismiss_timespan' => 2 * WEEK_IN_SECONDS,
 					'display_after'    => 0,
 					'plugin_slug'      => 'sureforms',
 					'message'          => [
