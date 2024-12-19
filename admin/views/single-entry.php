@@ -458,6 +458,9 @@ class Single_Entry {
 											$upload_values = $value;
 											if ( ! empty( $upload_values ) && is_array( $upload_values ) ) {
 												foreach ( $upload_values as $file_url ) {
+													if ( ! file_exists( Helper::convert_fileurl_to_filepath( urldecode( $file_url ) ) ) ) {
+														continue;
+													}
 													$file_url = Helper::get_string_value( $file_url );
 													if ( ! empty( $file_url ) ) {
 														$file_type = pathinfo( $file_url, PATHINFO_EXTENSION );

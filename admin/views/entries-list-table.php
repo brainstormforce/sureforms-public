@@ -748,7 +748,6 @@ class Entries_List_Table extends \WP_List_Table {
 		if ( empty( $form_data ) ) {
 			return;
 		}
-		$upload_dir = wp_get_upload_dir();
 		foreach ( $form_data as $field_name => $value ) {
 			// Continue to the next iteration if the field name does not contain 'srfm-upload' and value is not an array.
 			if ( false === strpos( $field_name, 'srfm-upload' ) && ! is_array( $value ) ) {
@@ -759,8 +758,7 @@ class Entries_List_Table extends \WP_List_Table {
 				if ( empty( $file_url ) ) {
 					continue;
 				}
-				// Get the file path from the file URL.
-				$file_path = str_replace( $upload_dir['baseurl'], $upload_dir['basedir'], urldecode( $file_url ) );
+				$file_path = Helper::convert_fileurl_to_filepath( urldecode( $file_url ) );
 
 				// Delete the file if it exists.
 				if ( file_exists( $file_path ) ) {

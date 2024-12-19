@@ -474,48 +474,9 @@ class Admin {
 		// Enqueue styles for the entries page.
 		if ( $is_screen_sureforms_entries ) {
 			$asset_handle = '-entries';
-			wp_enqueue_style( SRFM_SLUG . $asset_handle, $css_uri . 'backend/entries' . $file_prefix . '.css', [], SRFM_VER );
 			wp_enqueue_script( SRFM_SLUG . $asset_handle, SRFM_URL . 'assets/build/entries.js', $script_info['dependencies'], SRFM_VER, true );
 
 			$script_translations_handlers[] = SRFM_SLUG . $asset_handle;
-			wp_enqueue_script( SRFM_SLUG . '-entries-admin', $js_uri . 'entries' . $file_prefix . '.js', [], SRFM_VER, true );
-			wp_localize_script(
-				SRFM_SLUG . '-entries-admin',
-				'srfm_entries',
-				[
-					'entryID'  => isset( $_GET['entry_id'] ) ? absint( wp_unslash( $_GET['entry_id'] ) ) : 0, // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verification is skipped here as we don't get nonce in the URL here and we are not doing database query.
-					'ajaxURLs' => [
-						'saveNotes'          => add_query_arg(
-							[
-								'action'   => 'sureforms_save_entry_notes',
-								'security' => wp_create_nonce( '_srfm_entry_notes_nonce' ),
-							],
-							admin_url( 'admin-ajax.php' )
-						),
-						'navigateNotes'      => add_query_arg(
-							[
-								'action'   => 'sureforms_navigate_entry_notes',
-								'security' => wp_create_nonce( '_srfm_navigate_entry_notes_nonce' ),
-							],
-							admin_url( 'admin-ajax.php' )
-						),
-						'navigateLogs'       => add_query_arg(
-							[
-								'action'   => 'sureforms_navigate_entry_logs',
-								'security' => wp_create_nonce( '_srfm_navigate_entry_logs_nonce' ),
-							],
-							admin_url( 'admin-ajax.php' )
-						),
-						'resendNotification' => add_query_arg(
-							[
-								'action'   => 'sureforms_resend_email_notifications',
-								'security' => wp_create_nonce( '_srfm_resend_email_notifications_nonce' ),
-							],
-							admin_url( 'admin-ajax.php' )
-						),
-					],
-				]
-			);
 		}
 
 		// Admin Submenu Styles.
@@ -819,10 +780,9 @@ class Admin {
 		$delete_files  = isset( $_POST['srfm_uploads_block_delete_files'] ) ? wp_unslash( $_POST['srfm_uploads_block_delete_files'] ) : [];
 
 		if ( ! empty( $delete_files ) && is_array( $_POST['srfm_uploads_block_delete_files'] ) ) {
-			$upload_dir = wp_get_upload_dir();
 			foreach ( wp_unslash( $_POST['srfm_uploads_block_delete_files'] ) as $file_url ) {
 				// Get the file path from the file URL.
-				$file_path = wp_normalize_path( str_replace( $upload_dir['baseurl'], $upload_dir['basedir'], urldecode( $file_url ) ) );
+				$file_path = Helper::convert_fileurl_to_filepath( urldecode( $file_url ) );
 
 				// Delete the file if it exists.
 				if ( file_exists( $file_path ) ) {
