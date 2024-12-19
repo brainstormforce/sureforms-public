@@ -66,6 +66,15 @@ class Export {
 			wp_send_json_error( $error_data );
 		}
 
+		// check if the user has permission to export forms.
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error(
+				[
+					'error' => __( 'You do not have permission to export forms.', 'sureforms' ),
+				]
+			);
+		}
+
 		if ( isset( $_POST['post_id'] ) ) {
 			$post_ids = explode( ',', sanitize_text_field( wp_unslash( $_POST['post_id'] ) ) );
 		} else {
