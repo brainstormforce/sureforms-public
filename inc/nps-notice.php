@@ -37,7 +37,6 @@ if ( ! class_exists( 'Nps_Notice' ) ) {
 			'toplevel_page_sureforms_menu',
 			'sureforms_page_sureforms_form_settings',
 			'sureforms_page_sureforms_entries',
-			'sureforms_page_add-new-form',
 			'edit-sureforms_form',
 		];
 

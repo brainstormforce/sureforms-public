@@ -29,11 +29,6 @@ $placeholder_color: #9ca3af;
 .sureforms_page_add-new-form,
 .post-type-sureforms_form {
 	// NPS Survey styles start.
-	// Note: Need to check the below styles once the fix for RTL is released from the library level.
-	[data-id="nps-survey-sureforms"] > .nps-survey-wrapper > div {
-		right: 8px !important;
-		bottom: 8px !important;
-	}
 	// Set the button background to the primary color in dashboard.
 	[data-id="nps-survey-sureforms"] > .nps-survey-wrapper > div button[type="submit"],
 	[data-id="nps-survey-sureforms"] > .nps-survey-wrapper > div .bg-nps-button-background {
