@@ -2,16 +2,16 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: SureForms 1.2.0\n"
+"Project-Id-Version: SureForms 1.2.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/sureforms\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-12-09T13:33:44+00:00\n"
+"POT-Creation-Date: 2024-12-17T11:38:56+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"X-Generator: WP-CLI 2.10.0\n"
+"X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: sureforms\n"
 
 #. Plugin Name of the plugin
@@ -88,7 +88,7 @@ msgstr ""
 #: inc/form-submit.php:707
 #: inc/forms-data.php:87
 #: inc/global-settings/global-settings.php:86
-#: inc/global-settings/global-settings.php:259
+#: inc/global-settings/global-settings.php:276
 #: inc/rest-api.php:92
 #: inc/rest-api.php:126
 msgid "Nonce verification failed."
@@ -105,11 +105,11 @@ msgstr ""
 
 #. translators: %1$s: SureForms version, %2$s: SureForms Pro Plugin Name, %3$s: SureForms Pro Version, %4$s: Anchor tag open, %5$s: Closing anchor tag.
 #: admin/admin.php:805
-msgid "SureForms %1$s requires minimum %2$s %3$s to work properly. Please update to the latest version."
+msgid "SureForms %1$s requires minimum %2$s %3$s to work properly. Please update to the latest version from %4$shere%5$s."
 msgstr ""
 
 #: admin/views/entries-list-table.php:89
-#: admin/views/entries-list-table.php:478
+#: admin/views/entries-list-table.php:494
 msgid "ID"
 msgstr ""
 
@@ -160,110 +160,114 @@ msgstr ""
 msgid "Search"
 msgstr ""
 
-#: admin/views/entries-list-table.php:367
+#: admin/views/entries-list-table.php:383
 msgid "Entries export failed. You have file permission issue. Temporary directory is not writable."
 msgstr ""
 
-#: admin/views/entries-list-table.php:385
+#: admin/views/entries-list-table.php:401
 msgid "Entries export failed. Your server does not support the ZipArchive library."
 msgstr ""
 
-#: admin/views/entries-list-table.php:407
+#: admin/views/entries-list-table.php:423
 msgid "Entries export failed. Unable to create the ZIP file."
 msgstr ""
 
-#: admin/views/entries-list-table.php:549
+#: admin/views/entries-list-table.php:565
 msgid "Entries export failed."
 msgstr ""
 
-#: admin/views/entries-list-table.php:564
+#: admin/views/entries-list-table.php:580
 msgid "Entries export failed. Problem occured while closing the ZIP file."
 msgstr ""
 
 #. translators: %1$d refers to the number of entries, %2$s refers to the status (read or unread).
-#: admin/views/entries-list-table.php:640
+#: admin/views/entries-list-table.php:656
 msgid "%1$d entry was successfully marked as %2$s."
 msgid_plural "%1$d entries were successfully marked as %2$s."
 msgstr[0] ""
 msgstr[1] ""
 
 #. translators: %1$d refers to the number of entries, %2$s refers to the action (trash).
-#: admin/views/entries-list-table.php:644
+#: admin/views/entries-list-table.php:660
 msgid "%1$d entry was successfully moved to trash."
 msgid_plural "%1$d entries were successfully moved to trash."
 msgstr[0] ""
 msgstr[1] ""
 
 #. translators: %1$d refers to the number of entries, %2$s refers to the action (restore).
-#: admin/views/entries-list-table.php:648
+#: admin/views/entries-list-table.php:664
 msgid "%1$d entry was successfully restored."
 msgid_plural "%1$d entries were successfully restored."
 msgstr[0] ""
 msgstr[1] ""
 
 #. translators: %1$d refers to the number of entries, %2$s refers to the action (delete).
-#: admin/views/entries-list-table.php:652
+#: admin/views/entries-list-table.php:668
 msgid "%1$d entry was permanently deleted."
 msgid_plural "%1$d entries were permanently deleted."
 msgstr[0] ""
 msgstr[1] ""
 
-#: admin/views/entries-list-table.php:781
+#: admin/views/entries-list-table.php:797
 msgid "Entry #"
 msgstr ""
 
 #. translators: %1$s is the word "form", %2$d is the form ID.
-#: admin/views/entries-list-table.php:797
+#: admin/views/entries-list-table.php:813
 #: inc/page-builders/bricks/elements/form-widget.php:96
 #: assets/build/dashboard.js:2
 msgid "Form"
 msgstr ""
 
-#: admin/views/entries-list-table.php:813
+#: admin/views/entries-list-table.php:829
 msgid "Read"
 msgstr ""
 
-#: admin/views/entries-list-table.php:816
-#: admin/views/entries-list-table.php:1123
+#: admin/views/entries-list-table.php:832
+#: admin/views/entries-list-table.php:1164
 msgid "Unread"
 msgstr ""
 
-#: admin/views/entries-list-table.php:819
-#: admin/views/entries-list-table.php:905
-#: admin/views/entries-list-table.php:1134
+#: admin/views/entries-list-table.php:835
+#: admin/views/entries-list-table.php:921
+#: admin/views/entries-list-table.php:1175
 #: modules/gutenberg/icons/icons-v6-3.php:2916
 msgid "Trash"
 msgstr ""
 
-#: admin/views/entries-list-table.php:865
+#: admin/views/entries-list-table.php:881
 msgid "Published"
 msgstr ""
 
-#: admin/views/entries-list-table.php:904
+#: admin/views/entries-list-table.php:920
 #: inc/email/email-template.php:157
 #: inc/smart-tags.php:338
 msgid "View"
 msgstr ""
 
-#: admin/views/entries-list-table.php:938
-#: admin/views/entries-list-table.php:1318
+#: admin/views/entries-list-table.php:954
+#: admin/views/entries-list-table.php:1366
 msgid "Restore"
 msgstr ""
 
-#: admin/views/entries-list-table.php:939
-#: admin/views/entries-list-table.php:1319
+#: admin/views/entries-list-table.php:955
+#: admin/views/entries-list-table.php:1367
 msgid "Delete Permanently"
 msgstr ""
 
-#: admin/views/entries-list-table.php:1035
+#: admin/views/entries-list-table.php:981
+msgid "Clear Filter"
+msgstr ""
+
+#: admin/views/entries-list-table.php:1076
 msgid "All Form Entries"
 msgstr ""
 
-#: admin/views/entries-list-table.php:1064
+#: admin/views/entries-list-table.php:1105
 msgid "All Dates"
 msgstr ""
 
-#: admin/views/entries-list-table.php:1116
+#: admin/views/entries-list-table.php:1157
 msgid "All"
 msgstr ""
 
@@ -681,6 +685,7 @@ msgstr ""
 #: inc/fields/checkbox-markup.php:60
 #: inc/fields/gdpr-markup.php:59
 #: inc/helper.php:259
+#: inc/helper.php:275
 #: assets/build/blocks.js:172
 msgid "Required"
 msgstr ""
@@ -694,7 +699,6 @@ msgid "Select an option"
 msgstr ""
 
 #: inc/fields/email-markup.php:71
-#: assets/build/settings.js:2
 msgid "Email"
 msgstr ""
 
@@ -841,8 +845,8 @@ msgid "SureForms Email Summary - %s"
 msgstr ""
 
 #: inc/global-settings/email-summary.php:206
-#: inc/global-settings/global-settings.php:188
-#: inc/global-settings/global-settings.php:286
+#: inc/global-settings/global-settings.php:203
+#: inc/global-settings/global-settings.php:302
 #: assets/build/settings.js:172
 msgid "Monday"
 msgstr ""
@@ -877,7 +881,7 @@ msgstr ""
 msgid "Value needs to be unique."
 msgstr ""
 
-#: inc/helper.php:484
+#: inc/helper.php:490
 msgid "Sorry, you are not allowed to perform this action."
 msgstr ""
 
@@ -1132,51 +1136,47 @@ msgstr ""
 msgid "Cookie Value"
 msgstr ""
 
-#: inc/translatable.php:36
+#: inc/translatable.php:88
 msgid "Please enter a valid phone number."
 msgstr ""
 
-#: inc/translatable.php:37
+#: inc/translatable.php:89
 msgid "Please enter a valid URL."
 msgstr ""
 
-#: inc/translatable.php:38
+#: inc/translatable.php:90
 msgid "Confirmation email does not match."
 msgstr ""
 
-#: inc/translatable.php:39
+#: inc/translatable.php:91
 msgid "Please enter a valid email address."
 msgstr ""
 
-#: inc/translatable.php:40
-msgid "Confirmation password does not match."
-msgstr ""
-
 #. translators: %s represents the minimum acceptable value
-#: inc/translatable.php:43
+#: inc/translatable.php:99
 msgid "Minimum value is %s"
 msgstr ""
 
 #. translators: %s represents the maximum acceptable value
-#: inc/translatable.php:46
+#: inc/translatable.php:102
 msgid "Maximum value is %s"
 msgstr ""
 
 #. translators: %s represents the minimum number of selections required
 #. translators: %s represents the minimum number of characters required
-#: inc/translatable.php:49
-#: inc/translatable.php:55
+#: inc/translatable.php:105
+#: inc/translatable.php:111
 msgid "Minimum %s selections are required"
 msgstr ""
 
 #. translators: %s represents the maximum number of selections allowed
 #. translators: %s represents the maximum number of characters allowed
-#: inc/translatable.php:52
-#: inc/translatable.php:58
+#: inc/translatable.php:108
+#: inc/translatable.php:114
 msgid "Maximum %s selections are allowed"
 msgstr ""
 
-#: inc/updater.php:133
+#: inc/updater.php:137
 msgid "Heads up!"
 msgstr ""
 
@@ -9420,7 +9420,6 @@ msgid "Form input tags"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-#: assets/build/settings.js:172
 msgid "Comma separated values are also accepted."
 msgstr ""
 
@@ -9437,6 +9436,7 @@ msgid "Name"
 msgstr ""
 
 #: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
 msgid "Send Email To"
 msgstr ""
 
@@ -9929,38 +9929,6 @@ msgid "Unlock revenue boosting features when you upgrade."
 msgstr ""
 
 #: assets/build/settings.js:172
-msgid "Miscellaneous"
-msgstr ""
-
-#: assets/build/settings.js:172
-msgid "Enable IP Logging"
-msgstr ""
-
-#: assets/build/settings.js:172
-msgid "If this option is turned on, the user's IP address will be saved with the form data"
-msgstr ""
-
-#: assets/build/settings.js:172
-msgid "Enable Honeypot Security"
-msgstr ""
-
-#: assets/build/settings.js:172
-msgid "Enable Honeypot Security for better spam protection"
-msgstr ""
-
-#: assets/build/settings.js:172
-msgid "Textarea Block Required"
-msgstr ""
-
-#: assets/build/settings.js:172
-msgid "URL Block Required"
-msgstr ""
-
-#: assets/build/settings.js:172
-msgid " Error Message"
-msgstr ""
-
-#: assets/build/settings.js:172
 msgid "Email Summaries"
 msgstr ""
 
@@ -9993,7 +9961,7 @@ msgid "Enable Email Summaries "
 msgstr ""
 
 #: assets/build/settings.js:172
-msgid "To"
+msgid "Test Email"
 msgstr ""
 
 #: assets/build/settings.js:172
@@ -10001,7 +9969,143 @@ msgid "Schedule Reports"
 msgstr ""
 
 #: assets/build/settings.js:172
-msgid "Send a Test Email Summary"
+msgid "IP Logging"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Enable IP Logging"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "If this option is turned on, the user's IP address will be saved with the form data"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "URL Block Required Error Message"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Input Block Required Error Message"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Input Block Unique Error Message"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Address Block Required Error Message"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Phone Block Required Error Message"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Phone Block Unique Error Message"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Number Block Required Error Message"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Textarea Block Required Error Message"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Multiple Choice Block Required Error Message"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Checkbox Block Required Error Message"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Email Block Required Error Message"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Email Block Unique Error Message"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Dropdown Block Required Error Message"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Invalid Phone Number Block Error Message"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Invalid URL Error Message"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Confirmation Email Mismatch Message"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Invalid Email Error Message"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Number Minimum Value Error Message"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "%s represents the minimum input value. For example: \"Minimum value is 10.\""
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Number Maximum Value Error Message"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "%s represents the maximum input value. For example: \"Maximum value is 100.\""
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Dropdown Minimum Selections Error Message"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "%s represents the minimum selections needed. For example: “Minimum 2 selections are required.”"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Dropdown Maximum Selections Error Message"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "%s represents the maximum selections allowed. For example: “Maximum 4 selections are allowed.”"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Multiple Choice Minimum Selections Error Message"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "%s represents the minimum choices needed. For example: “Minimum 1 selection is required.”"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Multiple Choice Maximum Selections Error Message"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "%s represents the maximum choices allowed. For example: “Maximum 3 selections are allowed.”"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Textarea Block Required"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "URL Block Required"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid " Error Message"
 msgstr ""
 
 #: assets/build/settings.js:172
@@ -10027,6 +10131,10 @@ msgstr ""
 
 #: assets/build/settings.js:172
 msgid "Turnstile"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Honeypot"
 msgstr ""
 
 #: assets/build/settings.js:172
@@ -10091,6 +10199,14 @@ msgstr ""
 
 #: assets/build/settings.js:172
 msgid "To enable hCAPTCHA, please add your site key and secret key. Configure these settings within the individual form. "
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Enable Honeypot Security"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Enable Honeypot Security for better spam protection"
 msgstr ""
 
 #: assets/build/settings.js:172

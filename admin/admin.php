@@ -802,10 +802,12 @@ class Admin {
 		if ( ! version_compare( SRFM_PRO_VER, SRFM_PRO_RECOMMENDED_VER, '>=' ) ) {
 			$message .= '<p>' . sprintf(
 				// translators: %1$s: SureForms version, %2$s: SureForms Pro Plugin Name, %3$s: SureForms Pro Version, %4$s: Anchor tag open, %5$s: Closing anchor tag.
-				esc_html__( 'SureForms %1$s requires minimum %2$s %3$s to work properly. Please update to the latest version.', 'sureforms' ),
+				esc_html__( 'SureForms %1$s requires minimum %2$s %3$s to work properly. Please update to the latest version from %4$shere%5$s.', 'sureforms' ),
 				esc_html( SRFM_VER ),
 				esc_html( $pro_plugin_name ),
 				esc_html( SRFM_PRO_RECOMMENDED_VER ),
+				'<a href=' . esc_url( admin_url( 'update-core.php' ) ) . '>',
+				'</a>'
 			) . '</p>';
 		}
 
