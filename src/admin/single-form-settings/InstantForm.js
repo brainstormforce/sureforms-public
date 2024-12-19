@@ -12,7 +12,7 @@ import { __ } from '@wordpress/i18n';
 import { cleanForSlug } from '@wordpress/url';
 import parse from 'html-react-parser';
 import { createRoot } from 'react-dom/client';
-import ConversationalFormSettings from './components/ConversationalFormSettings';
+import ConversationalFormSettingsPreview from './components/ConversationalFormSettingsPreview';
 import { applyFilters } from '@wordpress/hooks';
 
 let live_mode_prev_srfm_instant_form_settings = {};
@@ -142,6 +142,14 @@ const InstantFormComponent = () => {
 		return instantStyles;
 	};
 
+	// Filter to add additional metas for live preview.
+	const additionalMetasForLivePreview = applyFilters( 'srfm.instantFormLivePreviewAdditionalMetas', {
+		isLiveMode,
+		 _srfm_instant_form_settings,
+	} );
+
+	const liveModeDependencies = Object.values( additionalMetasForLivePreview );
+
 	// Returns URL for the Instant Form Live Preview.
 	const getIframePreviewURL = ( postLink ) => {
 		const url = new URL( postLink ); // Use the default ( not edited ) post link for live mode as edited version is not saved yet.
@@ -153,6 +161,14 @@ const InstantFormComponent = () => {
 
 		Object.keys( _srfm_instant_form_settings ).forEach( ( key ) => {
 			params.set( key, _srfm_instant_form_settings[ key ] );
+		} );
+
+		// use liveModeDependencies
+		liveModeDependencies.forEach( ( value ) => {
+			Object.keys( value ).forEach( ( key ) => {
+				params.set( key, value[ key ] );
+			}
+			);
 		} );
 
 		url.search = params.toString();
@@ -219,7 +235,9 @@ const InstantFormComponent = () => {
 		}
 
 		live_mode_prev_srfm_instant_form_settings = _srfm_instant_form_settings;
-	}, [ isLiveMode, _srfm_instant_form_settings ] );
+	}, [
+		...liveModeDependencies,
+	] );
 
 	const onHandleChange = ( key, value ) => {
 		if ( _srfm_instant_form_settings?.[ key ] === value ) {
@@ -288,9 +306,10 @@ const InstantFormComponent = () => {
 	};
 
 	// apply filters to show/hide instant form components.
-	const { showInstantFormSiteLogoGroup, showInstantFormStylingGroup } = applyFilters( 'srfm.instantFormComponent', {
+	const { showInstantFormSiteLogoGroup, showInstantFormStylingGroup, showInstantFormTitleSetting } = applyFilters( 'srfm.instantFormComponent', {
 		showInstantFormSiteLogoGroup: true,
 		showInstantFormStylingGroup: true,
+		showInstantFormTitleSetting: true,
 	} );
 
 	return (
@@ -338,13 +357,17 @@ const InstantFormComponent = () => {
 								onChange={ () => setIsLiveMode( ! isLiveMode ) }
 							/>
 
-							<InstantFormToggle
-								label={ __( 'Show Title', 'sureforms' ) }
-								checked={ true === single_page_form_title }
-								onChange={ () => onHandleChange( 'single_page_form_title', ! single_page_form_title ) }
-							/>
+							<ConversationalFormSettingsPreview setHidePopover={ setHidePopover } />
 
-							<ConversationalFormSettings setHidePopover={ setHidePopover } />
+							{
+								showInstantFormTitleSetting &&
+								<InstantFormToggle
+									label={ __( 'Show Title', 'sureforms' ) }
+									checked={ true === single_page_form_title }
+									onChange={ () => onHandleChange( 'single_page_form_title', ! single_page_form_title ) }
+								/>
+							}
+
 						</div>
 
 						<div className="srfm-instant-form-settings-separator" />
