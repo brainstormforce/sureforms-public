@@ -9,9 +9,9 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-12-13T11:49:14+00:00\n"
+"POT-Creation-Date: 2024-12-17T11:38:56+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"X-Generator: WP-CLI 2.10.0\n"
+"X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: sureforms\n"
 
 #. Plugin Name of the plugin
@@ -10037,35 +10037,35 @@ msgid "Invalid Phone Number Block Error Message"
 msgstr ""
 
 #: assets/build/settings.js:172
-msgid "Invalid URL Block Error Message"
+msgid "Invalid URL Error Message"
 msgstr ""
 
 #: assets/build/settings.js:172
-msgid "Confirmation Email Block Mismatch Message"
+msgid "Confirmation Email Mismatch Message"
 msgstr ""
 
 #: assets/build/settings.js:172
-msgid "Invalid Email Block Error Message"
+msgid "Invalid Email Error Message"
 msgstr ""
 
 #: assets/build/settings.js:172
-msgid "Number Block Minimum Value Error Message"
+msgid "Number Minimum Value Error Message"
 msgstr ""
 
 #: assets/build/settings.js:172
-msgid "%s represents the minimum input value. For example: “Minimum value is 10.”"
+msgid "%s represents the minimum input value. For example: \"Minimum value is 10.\""
 msgstr ""
 
 #: assets/build/settings.js:172
-msgid "Number Block Maximum Value Error Message"
+msgid "Number Maximum Value Error Message"
 msgstr ""
 
 #: assets/build/settings.js:172
-msgid "%s represents the maximum input value. For example: “Maximum value is 100.”"
+msgid "%s represents the maximum input value. For example: \"Maximum value is 100.\""
 msgstr ""
 
 #: assets/build/settings.js:172
-msgid "Dropdown Block Minimum Selections Error Message"
+msgid "Dropdown Minimum Selections Error Message"
 msgstr ""
 
 #: assets/build/settings.js:172
@@ -10073,7 +10073,7 @@ msgid "%s represents the minimum selections needed. For example: “Minimum 2 se
 msgstr ""
 
 #: assets/build/settings.js:172
-msgid "Dropdown Block Maximum Selections Error Message"
+msgid "Dropdown Maximum Selections Error Message"
 msgstr ""
 
 #: assets/build/settings.js:172
@@ -10081,7 +10081,7 @@ msgid "%s represents the maximum selections allowed. For example: “Maximum 4 s
 msgstr ""
 
 #: assets/build/settings.js:172
-msgid "Multiple Choice Block Minimum Selections Error Message"
+msgid "Multiple Choice Minimum Selections Error Message"
 msgstr ""
 
 #: assets/build/settings.js:172
@@ -10089,7 +10089,7 @@ msgid "%s represents the minimum choices needed. For example: “Minimum 1 selec
 msgstr ""
 
 #: assets/build/settings.js:172
-msgid "Multiple Choice Block Maximum Selections Error Message"
+msgid "Multiple Choice Maximum Selections Error Message"
 msgstr ""
 
 #: assets/build/settings.js:172
