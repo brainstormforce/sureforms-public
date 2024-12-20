@@ -467,7 +467,7 @@ class Base {
 	 * @return void
 	 */
 	protected function set_aria_described_by() {
-		$this->aria_described_by .= ! empty( $this->required ) ? ' srfm-error-' . $this->block_id : '';
+		$this->aria_described_by .= ' srfm-error-' . $this->block_id;
 		$this->aria_described_by .= ! empty( $this->help ) ? ' srfm-description-' . $this->block_id : '';
 	}
 }
