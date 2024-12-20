@@ -529,12 +529,12 @@ $req_err_color: #dc2625;
 							}
 
 							.srfm-editor-wrap {
-								margin-top: -44px;
+								position: relative;
 
 								.srfm-editor-dropdown {
-									position: relative;
-									left: 610px;
-									top: 38px;
+									position: absolute;
+									right: 0;
+									top: 0;
 									color: var( --dashboard-heading, #1e293b );
 									border: 1px solid #dce0e6;
 									border-radius: 6px;
