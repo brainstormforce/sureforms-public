@@ -674,7 +674,7 @@ class Form_Submit {
 						 * Temporary override the content type for wp_mail.
 						 * This helps us from breaking of content type from other plugins.
 						 *
-						 * @since x.x.x
+						 * @since 1.2.2
 						 */
 						add_filter(
 							'wp_mail_content_type',
@@ -692,7 +692,7 @@ class Form_Submit {
 						 *
 						 * Try-Catch does not work because the notice or errors might be echoed by other plugins rather than thrown as an exception.
 						 *
-						 * @since x.x.x
+						 * @since 1.2.2
 						 */
 						$sent = false;
 						ob_start();

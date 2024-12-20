@@ -2,7 +2,7 @@
 /**
  * SRFM NPS Notice.
  *
- * @since x.x.x
+ * @since 1.2.2
  *
  * @package sureforms
  */
@@ -31,7 +31,7 @@ if ( ! class_exists( 'Nps_Notice' ) ) {
 		 * This ensures that the NPS survey is only displayed on SureForms pages.
 		 *
 		 * @var array<string>
-		 * @since x.x.x
+		 * @since 1.2.2
 		 */
 		private static $allowed_screens = [
 			'toplevel_page_sureforms_menu',
@@ -43,7 +43,7 @@ if ( ! class_exists( 'Nps_Notice' ) ) {
 		/**
 		 * Constructor.
 		 *
-		 * @since x.x.x
+		 * @since 1.2.2
 		 */
 		private function __construct() {
 			add_action( 'admin_footer', [ $this, 'show_nps_notice' ], 999 );
@@ -53,7 +53,7 @@ if ( ! class_exists( 'Nps_Notice' ) ) {
 		 * Count the number of published forms and number form submissions.
 		 * Return whether the NPS survey should be shown or not.
 		 *
-		 * @since x.x.x
+		 * @since 1.2.2
 		 * @return bool
 		 */
 		public function maybe_display_nps_survey() {
@@ -70,7 +70,7 @@ if ( ! class_exists( 'Nps_Notice' ) ) {
 		/**
 		 * Render NPS Survey
 		 *
-		 * @since x.x.x
+		 * @since 1.2.2
 		 * @return void
 		 */
 		public function show_nps_notice() {

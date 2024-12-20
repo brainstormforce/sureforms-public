@@ -1050,7 +1050,7 @@ class Helper {
 	/**
 	 * Check whether the current page is a SureForms admin page.
 	 *
-	 * @since x.x.x
+	 * @since 1.2.2
 	 * @return bool Returns true if the current page is a SureForms admin page, otherwise false.
 	 */
 	public static function is_sureforms_admin_page() {
