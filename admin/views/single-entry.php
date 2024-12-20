@@ -298,19 +298,21 @@ class Single_Entry {
 											$upload_values = $value;
 											if ( ! empty( $upload_values ) && is_array( $upload_values ) ) {
 												foreach ( $upload_values as $file_url ) {
-													if ( ! file_exists( Helper::convert_fileurl_to_filepath( urldecode( $file_url ) ) ) ) {
-														continue;
-													}
-													$file_url = Helper::get_string_value( $file_url );
+													$file_url = urldecode( Helper::get_string_value( $file_url ) );
+
 													if ( ! empty( $file_url ) ) {
+														if ( ! file_exists( Helper::convert_fileurl_to_filepath( $file_url ) ) ) {
+															continue;
+														}
+
 														$file_type = pathinfo( $file_url, PATHINFO_EXTENSION );
 														$is_image  = in_array( $file_type, [ 'gif', 'png', 'bmp', 'jpg', 'jpeg', 'svg' ], true );
 														?>
-																<div class="file-card">
+																<div class="file-card" data-fileurl-hash="<?php echo esc_attr( md5( $file_url ) ); ?>">
 															<?php if ( $is_image ) { ?>
 																		<div class="file-card-image">
-																			<a target="_blank" href="<?php echo esc_attr( urldecode( $file_url ) ); ?>">
-																				<img src="<?php echo esc_attr( urldecode( $file_url ) ); ?>" alt="<?php esc_attr_e( 'Image', 'sureforms' ); ?>" />
+																			<a target="_blank" href="<?php echo esc_attr( $file_url ); ?>">
+																				<img src="<?php echo esc_attr( $file_url ); ?>" alt="<?php esc_attr_e( 'Image', 'sureforms' ); ?>" />
 																			</a>
 																		</div>
 															<?php } else { ?>
@@ -323,7 +325,7 @@ class Single_Entry {
 																		</div>
 															<?php } ?>
 																	<div class="file-card-url">
-																		<a target="_blank" href="<?php echo esc_attr( urldecode( $file_url ) ); ?>"><?php echo esc_html__( 'Open', 'sureforms' ); ?></a>
+																		<a target="_blank" href="<?php echo esc_attr( $file_url ); ?>"><?php echo esc_html__( 'Open', 'sureforms' ); ?></a>
 																	</div>
 																</div>
 															<?php

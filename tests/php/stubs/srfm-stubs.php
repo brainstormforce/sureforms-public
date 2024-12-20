@@ -8324,6 +8324,17 @@ namespace SRFM\Inc {
         {
         }
         /**
+         * Convert a file URL to a file path.
+         *
+         * @param string $file_url The URL of the file.
+         *
+         * @since x.x.x
+         * @return string The file path.
+         */
+        public static function convert_fileurl_to_filepath($file_url)
+        {
+        }
+        /**
          * Checks if current value is string or else returns default value
          *
          * @param mixed $data data which need to be checked if is string.
@@ -8344,6 +8355,71 @@ namespace SRFM\Inc {
          * @return int
          */
         public static function get_integer_value($value, $base = 10)
+        {
+        }
+        /**
+         * Checks if current value is an array or else returns default value
+         *
+         * @param mixed $data Data which needs to be checked if it is an array.
+         *
+         * @since 0.0.3
+         * @return array<mixed>
+         */
+        public static function get_array_value($data)
+        {
+        }
+        /**
+         * Extracts the field type from the dynamic field key ( or field slug ).
+         *
+         * @param string $field_key Dynamic field key.
+         * @since 0.0.6
+         * @return string Extracted field type.
+         */
+        public static function get_field_type_from_key($field_key)
+        {
+        }
+        /**
+         * Extracts the field label from the dynamic field key ( or field slug ).
+         *
+         * @param string $field_key Dynamic field key.
+         * @since 1.1.1
+         * @return string Extracted field label.
+         */
+        public static function get_field_label_from_key($field_key)
+        {
+        }
+        /**
+         * Returns the proper sanitize callback functions according to the field type.
+         *
+         * @param string $field_type HTML field type.
+         * @since 0.0.6
+         * @return callable Returns sanitize callbacks according to the provided field type.
+         */
+        public static function get_field_type_sanitize_function($field_type)
+        {
+        }
+        /**
+         * Sanitizes a numeric value.
+         *
+         * This function checks if the input value is numeric. If it is numeric, it sanitizes
+         * the value to ensure it's a float or integer, allowing for fractions and thousand separators.
+         * If the value is not numeric, it sanitizes it as a text field.
+         *
+         * @param mixed $value The value to be sanitized.
+         * @since 0.0.6
+         * @return int|float|string The sanitized value.
+         */
+        public static function sanitize_number($value)
+        {
+        }
+        /**
+         * This function sanitizes the submitted form data according to the field type.
+         *
+         * @param array<mixed> $form_data $form_data User submitted form data.
+         * @since 0.0.6
+         * @return array<mixed> $result Sanitized form data.
+         */
+        public static function sanitize_by_field_type($form_data)
         {
         }
         /**
@@ -8436,10 +8512,32 @@ namespace SRFM\Inc {
         {
         }
         /**
+         * Wrapper for the WordPress's get_post_meta function with the support for default values.
+         *
+         * @param int|string $post_id Post ID.
+         * @param string     $key The meta key to retrieve.
+         * @param mixed      $default Default value.
+         * @param bool       $single Optional. Whether to return a single value.
+         * @since 0.0.8
+         * @return mixed Meta value.
+         */
+        public static function get_post_meta($post_id, $key, $default = null, $single = true)
+        {
+        }
+        /**
+         * Returns query params data for instant form live preview.
+         *
+         * @since 0.0.8
+         * @return array<mixed> Live preview data.
+         */
+        public static function get_instant_form_live_data()
+        {
+        }
+        /**
          * Default dynamic block value.
          *
          * @since 0.0.1
-         * @return string[] Meta value.
+         * @return array<string> Meta value.
          */
         public static function default_dynamic_block_option()
         {
@@ -8457,11 +8555,20 @@ namespace SRFM\Inc {
         /**
          * Checks whether a given request has appropriate permissions.
          *
-         * @param WP_REST_Request $request Full details about the request.
          * @return true|WP_Error True if the request has read access, WP_Error object otherwise.
          * @since 0.0.1
          */
-        public static function get_items_permissions_check($request)
+        public static function get_items_permissions_check()
+        {
+        }
+        /**
+         * Check if the current user has a given capability.
+         *
+         * @param string $capability The capability to check.
+         * @since 0.0.3
+         * @return bool Whether the current user has the given capability or role.
+         */
+        public static function current_user_can($capability = '')
         {
         }
         /**
@@ -8469,8 +8576,8 @@ namespace SRFM\Inc {
          *
          * @param int        $days_old The number of days old the entries should be.
          * @param array<int> $sf_form_ids The form ids for which the entries need to be fetched.
-         * @since 0.0.3
-         * @return array<int|WP_Post> the entries matching the criteria.
+         * @since 0.0.2
+         * @return array<mixed> the entries matching the criteria.
          */
         public static function get_entries_from_form_ids($days_old = 0, $sf_form_ids = [])
         {
@@ -8481,7 +8588,7 @@ namespace SRFM\Inc {
          *
          * @link https://developer.wordpress.org/reference/functions/serialize_block_attributes/
          * @param string $encoded_data the encoded block attribute.
-         * @since 0.0.3
+         * @since 0.0.2
          * @return string decoded block attribute
          */
         public static function decode_block_attribute($encoded_data = '')
@@ -8498,28 +8605,145 @@ namespace SRFM\Inc {
         {
         }
         /**
-         * Checks if current value is an array or else returns default value
+         * Get forms options. Shows all the available forms in the dropdown.
          *
-         * @param mixed $data Data which needs to be checked if it is an array.
-         *
-         * @since 0.0.3
+         * @since 0.0.5
+         * @param string $key Determines the type of data to return.
          * @return array<mixed>
          */
-        public static function get_array_value($data)
+        public static function get_sureforms($key = '')
         {
         }
         /**
-	     * Retrieve the list of excluded fields for form data processing.
-	     *
-	     * This method returns an array of field keys that should be excluded when
-	     * processing form data.
-	     *
-	     * @since 1.1.1
-	     * @return array<string> Returns the string array of excluded fields.
-	     */
-	    public static function get_excluded_fields()
+         * Get all the forms.
+         *
+         * @since 0.0.5
+         * @return array<mixed>
+         */
+        public static function get_sureforms_title_with_ids()
         {
-	    }
+        }
+        /**
+         * Get the CSS variables based on different field spacing sizes.
+         *
+         * @param string|null $field_spacing The field spacing size or boolean false to return complete sizes array.
+         *
+         * @since 0.0.7
+         * @return array<string|mixed>
+         */
+        public static function get_css_vars($field_spacing = null)
+        {
+        }
+        /**
+         * Array of SureForms blocks which get have user input.
+         *
+         * @since 0.0.10
+         * @return array<string>
+         */
+        public static function get_sureforms_blocks()
+        {
+        }
+        /**
+         * Process blocks and inner blocks.
+         *
+         * @param array<array<array<mixed>>> $blocks The block data.
+         * @param array<string>              $slugs The array of existing slugs.
+         * @param bool                       $updated The array of existing slugs.
+         * @param string                     $prefix The array of existing slugs.
+         * @param bool                       $skip_checking_existing_slug Skips the checking of existing slug if passed true. More information documented inside this function.
+         * @since 0.0.10
+         * @return array{array<array<array<mixed>>>,array<string>,bool}
+         */
+        public static function process_blocks($blocks, &$slugs, &$updated, $prefix = '', $skip_checking_existing_slug = false)
+        {
+        }
+        /**
+         * Generates slug based on the provided block and existing slugs.
+         *
+         * @param array<mixed>  $block The block data.
+         * @param array<string> $slugs The array of existing slugs.
+         * @param string        $prefix The array of existing slugs.
+         * @since 0.0.10
+         * @return string The generated unique block slug.
+         */
+        public static function generate_unique_block_slug($block, $slugs, $prefix)
+        {
+        }
+        /**
+         * This function ensures that the slug is unique.
+         * If the slug is already taken, it appends a number to the slug to make it unique.
+         *
+         * @param string        $slug test to be converted to slug.
+         * @param array<string> $slugs An array of existing slugs.
+         * @since 0.0.10
+         * @return string The unique slug.
+         */
+        public static function generate_slug($slug, $slugs)
+        {
+        }
+        /**
+         * Encode data to JSON. This function will encode the data with JSON_UNESCAPED_SLASHES and JSON_UNESCAPED_UNICODE.
+         *
+         * @since 0.0.11
+         * @param array<mixed> $data The data to encode.
+         * @return string|false The JSON representation of the value on success or false on failure.
+         */
+        public static function encode_json($data)
+        {
+        }
+        /**
+         * Returns true if SureTriggers plugin is ready for the custom app.
+         *
+         * @since 1.0.3
+         * @return bool Returns true if SureTriggers plugin is ready for the custom app.
+         */
+        public static function is_suretriggers_ready()
+        {
+        }
+        /**
+         * Registers script translations for a specific handle.
+         *
+         * This function sets the script translations for a given script handle, allowing
+         * localization of JavaScript strings using the specified text domain and path.
+         *
+         * @param string $handle The script handle to apply translations to.
+         * @param string $domain Optional. The text domain for translations. Default is 'sureforms'.
+         * @param string $path   Optional. The path to the translation files. Default is the 'languages' folder in the SureForms directory.
+         *
+         * @since 1.0.5
+         * @return void
+         */
+        public static function register_script_translations($handle, $domain = 'sureforms', $path = SRFM_DIR . 'languages')
+        {
+        }
+        /**
+         * Validates whether the specified conditions or a single key-value pair exist in the request context.
+         *
+         * - If `$conditions` is provided as an array, it will validate all key-value pairs in `$conditions`
+         *   against the `$_REQUEST` superglobal.
+         * - If `$conditions` is empty, it validates a single key-value pair from `$key` and `$value`.
+         *
+         * @param string                $value      The expected value to match in the request if `$conditions` is not used.
+         * @param string                $key        The key to check for in the request if `$conditions` is not used.
+         * @param array<string, string> $conditions An optional associative array of key-value pairs to validate.
+         * @since 1.1.1
+         * @return bool Returns true if all conditions are met or the single key-value pair is valid, otherwise false.
+         */
+        public static function validate_request_context($value, $key = 'post_type', array $conditions = [])
+        {
+        }
+        /**
+         * Retrieve the list of excluded fields for form data processing.
+         *
+         * This method returns an array of field keys that should be excluded when
+         * processing form data.
+         *
+         * @since 1.1.1
+         * @return array<string> Returns the string array of excluded fields.
+         */
+        public static function get_excluded_fields()
+        {
+        }
     }
 }
 namespace SRFM\Inc\Global_Settings {

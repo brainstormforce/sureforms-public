@@ -196,7 +196,7 @@ class Entries extends Base {
 	/**
 	 * Update an existing log entry.
 	 *
-	 * @param int           $log_key The key of the log entry to update.
+	 * @param int|null      $log_key The key of the log entry to update.
 	 * @param string|null   $title Optional. The new title for the log entry. If null, the title will not be changed.
 	 * @param array<string> $messages Optional. An array of new messages to add to the log entry.
 	 * @since 0.0.10

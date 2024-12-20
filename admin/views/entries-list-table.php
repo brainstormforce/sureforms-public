@@ -865,7 +865,7 @@ class Entries_List_Table extends \WP_List_Table {
 			$filenames = [];
 			if ( ! empty( $first_field ) && is_array( $first_field ) ) {
 				foreach ( $first_field as $file ) {
-					$file_url = urldecode( strval( $file ) );
+					$file_url    = urldecode( strval( $file ) );
 					$filenames[] = pathinfo( $file_url, PATHINFO_BASENAME );
 				}
 			}

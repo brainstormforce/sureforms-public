@@ -115,19 +115,62 @@ class Multichoice_Markup extends Base {
 	 * @return string|bool
 	 */
 	public function markup() {
+		if ( $this->is_editing ) {
+			ob_start();
+			?>
+			<div data-block-id="<?php echo esc_attr( $this->block_id ); ?>" class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $this->type_attr ); ?>-mode srfm-<?php echo esc_attr( $this->slug ); ?>-block srf-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?>-block<?php echo wp_kses_post( $this->block_width ); ?><?php echo esc_attr( $this->class_name ); ?> <?php echo esc_attr( $this->conditional_class ); ?>">
+				<fieldset>
+					<legend class="srfm-block-legend">
+						<?php echo wp_kses_post( $this->label_markup ); ?>
+					</legend>
+					<?php echo wp_kses_post( $this->help_markup ); ?>
+						<?php if ( is_array( $this->options ) ) { ?>
+							<div class="srfm-block-wrap <?php echo esc_attr( $this->choice_width_attr ); ?> <?php echo $this->vertical_layout ? 'srfm-vertical-layout' : ''; ?>">
+								<?php foreach ( $this->options as $i => $option ) { ?>
+									<div class="srfm-<?php echo esc_attr( $this->slug ); ?>-single">
+										<label for="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id . '-' . $i ); ?>">
+											<input value="<?php echo esc_attr( $option['optionTitle'] ); ?>" <?php checked( true, in_array( $option['optionTitle'], explode( ',', $this->default ), true ) ); ?> type="<?php echo esc_attr( $this->type_attr ); ?>" id="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id . '-' . $i ); ?>" class="srfm-input-<?php echo esc_attr( $this->slug ); ?>-single" name="<?php echo $this->single_selection ? esc_attr( "srfm-input-{$this->slug}-{$this->block_id}{$this->field_name}" ) : esc_attr( "srfm-input-{$this->slug}-{$this->block_id}{$this->field_name}[]" ); ?>" />
+											<span><?php echo isset( $option['optionTitle'] ) ? esc_html( $option['optionTitle'] ) : ''; ?></span>
+										</label>
+									</div>
+								<?php } ?>
+							</div>
+						<?php } ?>
+					<div class="srfm-error-wrap"><?php echo wp_kses_post( $this->error_msg_markup ); ?></div>
+				</fieldset>
+			</div>
+			<style>
+				.srfm-multi-choice-block .srfm-block-wrap {
+					display: flex;
+					flex-wrap: wrap;
+					gap: 16px 16px;
+				}
+				.srfm-multi-choice-block  .srfm-multi-choice-single {
+					flex: 0 1 calc(50% - 16px / 2);
+				}
+				.srfm-multi-choice-block  .srfm-multi-choice-single label {
+					display: flex;
+					align-items: center;
+					gap: 8px;
+					cursor: pointer;
+				}
+				.srfm-multi-choice-block .srfm-multi-choice-single label span {
+					font-size: 14px;
+					font-weight: 500;
+					line-height: 20px;
+				}
+			</style>
+			<?php
+			return ob_get_clean();
+		}
 		$check_svg     = Helper::fetch_svg( $this->svg_type . '-checked', 'srfm-' . $this->slug . '-icon', 'aria-hidden="true"' );
 		$unchecked_svg = Helper::fetch_svg( $this->svg_type . '-unchecked', 'srfm-' . $this->slug . '-icon-unchecked', 'aria-hidden="true"' );
 
-		ob_start(); ?>
+		ob_start();
+		?>
 		<div data-block-id="<?php echo esc_attr( $this->block_id ); ?>" class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $this->type_attr ); ?>-mode srfm-<?php echo esc_attr( $this->slug ); ?>-block srf-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?>-block<?php echo wp_kses_post( $this->block_width ); ?><?php echo esc_attr( $this->class_name ); ?> <?php echo esc_attr( $this->conditional_class ); ?>">
 			<fieldset>
-				<?php
-				if ( ! $this->is_editing ) {
-					?>
 				<input class="srfm-input-<?php echo esc_attr( $this->slug ); ?>-hidden" data-required="<?php echo esc_attr( $this->data_require_attr ); ?>" <?php echo wp_kses_post( $this->data_attribute_markup() ); ?> name="srfm-input-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?><?php echo esc_attr( $this->field_name ); ?>" type="hidden" value=""/>
-					<?php
-				}
-				?>
 				<legend class="srfm-block-legend">
 					<?php echo wp_kses_post( $this->label_markup ); ?>
 				</legend>
@@ -136,21 +179,11 @@ class Multichoice_Markup extends Base {
 						<div class="srfm-block-wrap <?php echo esc_attr( $this->choice_width_attr ); ?> <?php echo $this->vertical_layout ? 'srfm-vertical-layout' : ''; ?>">
 							<?php foreach ( $this->options as $i => $option ) { ?>
 								<div class="srfm-<?php echo esc_attr( $this->slug ); ?>-single">
-									<?php
-									if ( $this->is_editing ) {
-										?>
-										<input value="<?php echo esc_attr( $option['optionTitle'] ); ?>" <?php checked( true, in_array( $option['optionTitle'], explode( ',', $this->default ), true ) ); ?> type="<?php echo esc_attr( $this->type_attr ); ?>" id="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id . '-' . $i ); ?>" class="srfm-input-<?php echo esc_attr( $this->slug ); ?>-single" name="<?php echo $this->single_selection ? esc_attr( "srfm-input-{$this->slug}-{$this->block_id}{$this->field_name}" ) : esc_attr( "srfm-input-{$this->slug}-{$this->block_id}{$this->field_name}[]" ); ?>" />
-										<?php
-									} else {
-										?>
-										<input type="<?php echo esc_attr( $this->type_attr ); ?>"
+									<input type="<?php echo esc_attr( $this->type_attr ); ?>"
 										id="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id . '-' . $i ); ?>"
 										class="srfm-input-<?php echo esc_attr( $this->slug ); ?>-single" <?php echo wp_kses_post( $this->name_attr ); ?>
 										<?php echo 0 === $i ? 'aria-describedby="' . ( ! empty( $this->aria_described_by ) ? esc_attr( trim( $this->aria_described_by ) ) : '' ) . '"' : ''; ?>
 									/>
-										<?php
-									}
-									?>
 									<div class="srfm-block-content-wrap">
 										<div class="srfm-option-container">
 											<?php if ( 'icon' === $this->option_type && ! empty( $option['icon'] ) ) { ?>
@@ -170,42 +203,10 @@ class Multichoice_Markup extends Base {
 							<?php } ?>
 						</div>
 					<?php } ?>
-					<div class="srfm-error-wrap"><?php echo wp_kses_post( $this->error_msg_markup ); ?></div>
+				<div class="srfm-error-wrap"><?php echo wp_kses_post( $this->error_msg_markup ); ?></div>
 			</fieldset>
 		</div>
 		<?php
-		if ( $this->is_editing ) {
-			?>
-			<style>
-				.srfm-multi-choice-block .srfm-block-wrap {
-					display: flex;
-					justify-content: space-between;
-				}
-				.srfm-multi-choice-block .srfm-block-wrap label {
-					display: flex;
-					align-items: center;
-					gap: 5px;
-				}
-				.srfm-multi-choice-block .srfm-block-wrap label p {
-					margin: 0;
-				}
-
-				.srfm-multi-choice-block .srfm-block-wrap .srfm-multi-choice-single {
-					display: flex;
-					gap: 6px;
-				}
-				.srfm-multi-choice-block .srfm-block-wrap .srfm-multi-choice-single input {
-					margin: 0;
-				}
-				.srfm-multi-choice-block .srfm-block-wrap .srfm-multi-choice-single .srfm-option-image {
-					margin: 0;
-				}
-				.srfm-multi-choice-block .srfm-block-wrap .srfm-multi-choice-single .srfm-option-image img {
-					width: 50px;
-				}
-			</style>
-			<?php
-		}
 		return ob_get_clean();
 	}
 

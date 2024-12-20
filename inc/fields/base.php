@@ -323,6 +323,14 @@ class Base {
 	protected $is_editing = false;
 
 	/**
+	 * Currently rendered entry ID.
+	 *
+	 * @var int
+	 * @since x.x.x
+	 */
+	protected $entry_id = 0;
+
+	/**
 	 * Render the sureforms default
 	 *
 	 * @since 0.0.2
@@ -370,6 +378,7 @@ class Base {
 		$this->max_selection      = $attributes['maxValue'] ?? '';
 
 		$this->is_editing = isset( $attributes['isEditing'] ) ? true : false;
+		$this->entry_id   = $attributes['entryID'] ?? 0;
 	}
 
 	/**

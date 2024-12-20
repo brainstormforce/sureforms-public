@@ -9,8 +9,6 @@
 
 namespace SRFM\Inc;
 
-use SRFM\Admin\Views\Single_Entry;
-use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Traits\Get_Instance;
 
 if ( ! defined( 'ABSPATH' ) ) {
