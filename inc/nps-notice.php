@@ -46,6 +46,10 @@ if ( ! class_exists( 'Nps_Notice' ) ) {
 		 * @since 1.2.2
 		 */
 		private function __construct() {
+			// Filter to disable the NPS Survey.
+			if ( apply_filters( 'srfm_nps_survey_disable', true ) ) {
+				return;
+			}
 			add_action( 'admin_footer', [ $this, 'show_nps_notice' ], 999 );
 		}
 
