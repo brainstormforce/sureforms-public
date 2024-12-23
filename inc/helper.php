@@ -1046,4 +1046,21 @@ class Helper {
 
 		return apply_filters( 'srfm_excluded_fields', $excluded_fields );
 	}
+
+	/**
+	 * Check whether the current page is a SureForms admin page.
+	 *
+	 * @since 1.2.2
+	 * @return bool Returns true if the current page is a SureForms admin page, otherwise false.
+	 */
+	public static function is_sureforms_admin_page() {
+		$current_screen                    = get_current_screen();
+		$is_screen_sureforms_menu          = self::validate_request_context( 'sureforms_menu', 'page' );
+		$is_screen_add_new_form            = self::validate_request_context( 'add-new-form', 'page' );
+		$is_screen_sureforms_form_settings = self::validate_request_context( 'sureforms_form_settings', 'page' );
+		$is_screen_sureforms_entries       = self::validate_request_context( SRFM_ENTRIES, 'page' );
+		$is_post_type_sureforms_form       = $current_screen && SRFM_FORMS_POST_TYPE === $current_screen->post_type;
+
+		return $is_screen_sureforms_menu || $is_screen_add_new_form || $is_screen_sureforms_form_settings || $is_screen_sureforms_entries || $is_post_type_sureforms_form;
+	}
 }

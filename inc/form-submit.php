@@ -670,17 +670,63 @@ class Form_Submit {
 							$headers .= 'Bcc:' . $smart_tags->process_smart_tags( $item['email_bcc'], $submission_data ) . "\r\n";
 						}
 
+						/**
+						 * Temporary override the content type for wp_mail.
+						 * This helps us from breaking of content type from other plugins.
+						 *
+						 * @since 1.2.2
+						 */
+						add_filter(
+							'wp_mail_content_type',
+							static function() {
+								return 'text/html'; // We need "text/html" content type to render our emails.
+							},
+							99
+						);
+
+						/**
+						 * Start sending email.
+						 * Wrapping it in the buffer because when some plugin such as zoho mail, overrides the wp_mail
+						 * function and any exception is thrown ( Or printed ) from that plugin side, it affects the JSON response.
+						 * So, to make sure such exceptions doesn't affect our JSON response, we are wrapping it inside buffer.
+						 *
+						 * Try-Catch does not work because the notice or errors might be echoed by other plugins rather than thrown as an exception.
+						 *
+						 * @since 1.2.2
+						 */
+						$sent = false;
+						ob_start();
 						$sent = wp_mail( $to, $subject, $message, $headers );
+						if ( ! $sent ) {
+							// Fallback to default PHP mail if for some reasons wp_mail fails.
+							$sent = mail( $to, $subject, $message, $headers );
+						}
+						$email_report = ob_get_clean(); // Catch any printed notice/errors/message for reports.
 
 						if ( is_int( $log_key ) ) {
-							$entries_db_instance->update_log(
-								$log_key,
-								null,
-								[
-									/* translators: Here, %s is the comma separated emails list. */
-									$sent ? sprintf( __( 'Email notification sent to %s', 'sureforms' ), esc_html( $to ) ) : sprintf( __( 'Failed sending email notification to %s', 'sureforms' ), esc_html( $to ) ),
-								]
-							);
+							if ( true === $sent ) {
+								$entries_db_instance->update_log(
+									$log_key,
+									null,
+									[
+										/* translators: Here, %s is the comma separated emails list. */
+										sprintf( __( 'Email notification sent to %s', 'sureforms' ), esc_html( $to ) ),
+									]
+								);
+							} else {
+								$entries_db_instance->update_log(
+									$log_key,
+									null,
+									[
+										sprintf(
+											/* translators: Here, %1$s is the comma separated emails list and %2$s is error report ( if any ). */
+											__( 'Failed sending email notification to %1$s. Reason: %2$s', 'sureforms' ),
+											esc_html( $to ),
+											! empty( $email_report ) ? esc_html( $email_report ) : esc_html__( 'Unknown', 'sureforms' )
+										),
+									]
+								);
+							}
 						}
 
 						$is_mail_sent = $sent;
