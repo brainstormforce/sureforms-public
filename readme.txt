@@ -255,8 +255,8 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 
 == Changelog ==
 = 1.2.2 - 24th December 2024 =
-* Fix: Resolves issue where email template fails to render when a third-party plugin overrides the email headers in the wp_mail() function.
-* Fix: Addressed a security bug. Props to Lucio Sá for privately reporting it.
+* Fix: Resolved an issue where the email template failed to render in the inbox when a third-party plugin overrode the email headers in the wp_mail() function.
+* Fix: Addressed a security vulnerability. Props to Lucio Sá for privately reporting it.
 = 1.2.1 - 17th December 2024 =
 * Improvement: Revamped the General and Spam Protection settings for an improved user experience.
 * Improvement: Enhanced screen reader announcements for validation messages.
