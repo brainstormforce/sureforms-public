@@ -254,11 +254,6 @@ Yes! You can certainly use SureForms on yours as well as your client’s website
 When you use SureForms, you get an easy-to-use AI-powered form builder that can be used to build your forms fast.
 
 == Changelog ==
-= x.x.x =
-* New: Added feature to edit entry.
-* New: Added option to resend email notifications for single and bulk entries.
-* New: Introduced entry notes.
-* Improvement: Added navigation controls and delete buttons to the logs interface for improved usability and easier management of entry logs.
 = 1.2.2 - 24th December 2024 =
 * Fix: Resolves issue where email template fails to render when a third-party plugin overrides the email headers in the wp_mail() function.
 * Fix: Addressed a security bug. Props to Lucio Sá for privately reporting it.
