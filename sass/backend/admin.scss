@@ -358,3 +358,49 @@ $placeholder_color: #9ca3af;
 		}
 	}
 }
+
+.entry-log-title {
+	margin-top: 8px;
+	margin-bottom: 8px;
+}
+
+.button.srfm-edit-entry {
+	margin: 0 12px;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.srfm-add-entry-note-button {
+	background: none;
+	border: none;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	cursor: pointer;
+}
+
+.srfm-entry-note-wrapper {
+	padding: 24px;
+
+	.add-notes-field {
+		display: flex;
+		gap: 16px;
+		flex-direction: column;
+		justify-content: center;
+
+		button.button#srfm-add-note {
+			width: 116px;
+			padding: 8px 16px;
+			border-radius: 6px;
+			border: 1px solid;
+			box-shadow: 0px 1px 2px 0px #0000000d;
+			font-size: 14px;
+			font-weight: 500;
+			line-height: 20px;
+		}
+	}
+}
+
+@import "tooltip";

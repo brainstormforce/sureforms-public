@@ -98,6 +98,7 @@ class Single_Entry {
 							 * @since x.x.x
 							 */
 							do_action( 'srfm_before_entry_submission_info', $this->entry, $this );
+							$this->render_upsell_placeholder( 'notes' );
 
 							$this->render_submission_info( $form_name, $entry_status, $submitted_on );
 
@@ -107,6 +108,7 @@ class Single_Entry {
 							 * @since x.x.x
 							 */
 							do_action( 'srfm_after_entry_submission_info', $this->entry, $this );
+							$this->render_upsell_placeholder( 'resend-notification' );
 							?>
 						</div>
 						<div id="postbox-container-2" class="postbox-container">
@@ -131,6 +133,121 @@ class Single_Entry {
 			</form>
 		</div>
 		<?php
+	}
+
+	/**
+	 * Add tooltip wrapper.
+	 *
+	 * @param string   $position Tooltip position.
+	 * @param callable $element_cb Element callback.
+	 * @param callable $tooltip_cb Tooltip callback.
+	 * @since x.x.x
+	 * @return void
+	 */
+	protected function add_tooltip( $position, $element_cb, $tooltip_cb ) {
+		?>
+		<div class="srfm-tooltip">
+			<?php call_user_func( $element_cb ); ?>
+			<div class="tooltip-wrap <?php echo esc_attr( $position ); ?>">
+				<div class="tooltip-content">
+					<div class="tooltip-text">
+						<?php call_user_func( $tooltip_cb ); ?>
+					</div>
+					<a target="_blank" href="https://sureforms.com/pricing"><?php esc_html_e( 'Upgrade', 'sureforms' ); ?></a>
+				</div>
+				<i></i>
+			</div>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Renders the upsell placeholder.
+	 *
+	 * @param string $for The placeholder type.
+	 * @since x.x.x
+	 * @return void
+	 */
+	protected function render_upsell_placeholder( $for ) {
+		if ( defined( 'SRFM_PRO_VER' ) ) {
+			return;
+		}
+
+		if ( 'edit-button' === $for && $this->entry_id ) {
+			$this->add_tooltip(
+				'top',
+				static function() {
+					?>
+					<button class="button button-link srfm-edit-entry" type="button">
+						<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+							<path d="M11.2411 2.99111L12.3661 1.86612C12.8543 1.37796 13.6457 1.37796 14.1339 1.86612C14.622 2.35427 14.622 3.14573 14.1339 3.63388L7.05479 10.713C6.70234 11.0654 6.26762 11.3245 5.78993 11.4668L4 12L4.53319 10.2101C4.67548 9.73239 4.93456 9.29767 5.28701 8.94522L11.2411 2.99111ZM11.2411 2.99111L13 4.74999M12 9.33333V12.5C12 13.3284 11.3284 14 10.5 14H3.5C2.67157 14 2 13.3284 2 12.5V5.49999C2 4.67157 2.67157 3.99999 3.5 3.99999H6.66667" stroke="#2271b1" stroke-linecap="round" stroke-linejoin="round"/>
+						</svg>
+						<?php esc_html_e( 'Edit', 'sureforms' ); ?>
+					</button>
+					<?php
+				},
+				static function() {
+					?>
+					<h3><?php esc_html_e( 'Unlock Edit Form Entires', 'sureforms' ); ?></h3>
+					<p><?php esc_html_e( 'With the SureForms Starter plan, you can easily edit your entries to suit your needs.', 'sureforms' ); ?></p>
+					<?php
+				}
+			);
+			return;
+		}
+
+		if ( 'resend-notification' === $for ) {
+			$this->add_tooltip(
+				'left',
+				static function() {
+					?>
+					<button type="button" class="button srfm-resend-notification-trigger-btn"><?php esc_html_e( 'Resend Notification', 'sureforms' ); ?></button>
+					<?php
+				},
+				static function() {
+					?>
+					<h3><?php esc_html_e( 'Unlock Resend Email Notification', 'sureforms' ); ?></h3>
+					<p><?php esc_html_e( 'With the SureForms Starter plan, you can effortlessly resend email notifications, ensuring your important updates reach their recipients with ease.', 'sureforms' ); ?></p>
+					<?php
+				}
+			);
+			return;
+		}
+
+		if ( 'notes' === $for ) {
+			$this->add_tooltip(
+				'left',
+				static function() {
+					?>
+					<div id="submitdiv" class="postbox entry-notes">
+						<div class="postbox-header">
+							<h2><?php esc_html_e( 'Entry Notes', 'sureforms' ); ?></h2>
+							<button type="button" id="srfm-add-entry-note" class="srfm-add-entry-note-button">
+								<?php esc_html_e( 'Add Note', 'sureforms' ); ?>
+								<svg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M8 3.33594V12.6693' stroke='black' stroke-width='1.25' stroke-linecap='round' stroke-linejoin='round'/><path d='M3.33337 8H12.6667' stroke='black' stroke-width='1.25' stroke-linecap='round' stroke-linejoin='round'/></svg>
+							</button>
+						</div>
+						<div class="inside">
+							<div class="srfm-entry-note-wrapper">
+								<div class="entry-notes-container"></div>
+								<div class="add-notes-field">
+									<textarea disabled id="srfm-entry-note" rows="5"></textarea>
+									<button id="srfm-add-note" type="button" class="button"><?php esc_html_e( 'Submit Note', 'sureforms' ); ?></button>
+								</div>
+							</div>
+						</div>
+					</div>
+					<?php
+				},
+				static function() {
+					?>
+					<h3><?php esc_html_e( 'Unlock Add Note', 'sureforms' ); ?></h3>
+					<p><?php esc_html_e( 'With the SureForms Starter plan, enhance your submitted form entries by adding personalized notes for better clarity and tracking.', 'sureforms' ); ?></p>
+					<?php
+				}
+			);
+			return;
+		}
 	}
 
 	/**
@@ -229,6 +346,7 @@ class Single_Entry {
 				 * @since x.x.x
 				 */
 				do_action( 'srfm_after_entry_postbox_title', $this->entry, $this );
+				$this->render_upsell_placeholder( 'edit-button' );
 				?>
 			</div>
 			<div class="inside">
