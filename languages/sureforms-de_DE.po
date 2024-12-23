@@ -17,6 +17,7 @@ msgstr ""
 #: admin/admin.php:114
 #: admin/admin.php:115
 #: inc/gutenberg-hooks.php:106
+#: inc/nps-notice.php:107
 #: inc/page-builders/bricks/elements/form-widget.php:66
 #: inc/page-builders/bricks/service-provider.php:55
 #: inc/page-builders/elementor/form-widget.php:93
@@ -80,9 +81,9 @@ msgstr "%1$s bearbeiten"
 #: inc/background-process.php:101
 #: inc/create-new-form.php:126
 #: inc/export.php:61
-#: inc/export.php:117
+#: inc/export.php:126
 #: inc/form-submit.php:201
-#: inc/form-submit.php:707
+#: inc/form-submit.php:753
 #: inc/forms-data.php:87
 #: inc/global-settings/global-settings.php:86
 #: inc/global-settings/global-settings.php:276
@@ -403,7 +404,7 @@ msgstr "Die Muster-Vorlagen-ID."
 
 #: api/block-patterns.php:253
 msgid "Wether pattern is pro or not."
-msgstr ""
+msgstr "Ob das Wettermuster professionell ist oder nicht."
 
 #: api/block-patterns.php:259
 msgid "The pattern keywords."
@@ -476,7 +477,7 @@ msgid "SureTriggers is not configured properly."
 msgstr "SureTriggers ist nicht richtig konfiguriert."
 
 #: inc/admin-ajax.php:236
-#: inc/form-submit.php:719
+#: inc/form-submit.php:765
 msgid "Invalid form ID."
 msgstr "Ungültige Formular-ID."
 
@@ -658,16 +659,16 @@ msgstr "SureForms-Formular erfolgreich erstellt."
 
 #: inc/create-new-form.php:193
 msgid "Error creating SureForms Form, "
-msgstr "Fehler beim Erstellen des SureForms-Formulars, "
+msgstr "Fehler beim Erstellen des SureForms-Formulars,"
 
 #: inc/email/email-template.php:46
 msgid "New form submission"
 msgstr "Neue Formularübermittlung"
 
-#: inc/export.php:126
-#: inc/export.php:131
-#: inc/export.php:166
-#: inc/export.php:183
+#: inc/export.php:135
+#: inc/export.php:140
+#: inc/export.php:175
+#: inc/export.php:192
 msgid "Failed to import form."
 msgstr "Formular konnte nicht importiert werden."
 
@@ -701,7 +702,7 @@ msgstr "E-Mail"
 
 #: inc/fields/email-markup.php:76
 msgid "Confirm "
-msgstr "Bestätigen "
+msgstr "Bestätigen"
 
 #. Translators: %s is label of block.
 #: inc/fields/email-markup.php:84
@@ -802,14 +803,9 @@ msgid "Email Notification Initiated"
 msgstr "E-Mail-Benachrichtigung gestartet"
 
 #. translators: Here, %s is the comma separated emails list.
-#: inc/form-submit.php:681
+#: inc/form-submit.php:713
 msgid "Email notification sent to %s"
 msgstr "E-Mail-Benachrichtigung an %s gesendet"
-
-#. translators: Here, %s is the comma separated emails list.
-#: inc/form-submit.php:681
-msgid "Failed sending email notification to %s"
-msgstr "Fehler beim Senden der E-Mail-Benachrichtigung an %s"
 
 #: inc/forms-data.php:67
 msgid "Sorry, you are not allowed to view the form."
@@ -1629,7 +1625,7 @@ msgstr ""
 
 #: modules/gutenberg/icons/icons-v6-0.php:1345
 msgid "Aviato"
-msgstr ""
+msgstr "Aviato"
 
 #: modules/gutenberg/icons/icons-v6-0.php:1356
 msgid "Award"
@@ -2034,7 +2030,7 @@ msgstr "Brücke Kreis Ausrufezeichen"
 
 #: modules/gutenberg/icons/icons-v6-0.php:2482
 msgid "Bridge Circle Xmark"
-msgstr ""
+msgstr "Brücke Kreis Xmark"
 
 #: modules/gutenberg/icons/icons-v6-0.php:2493
 msgid "Bridge Lock"
@@ -2924,7 +2920,7 @@ msgstr "Kuh"
 
 #: modules/gutenberg/icons/icons-v6-0.php:5109
 msgid "cPanel"
-msgstr ""
+msgstr "cPanel"
 
 #: modules/gutenberg/icons/icons-v6-0.php:5120
 msgid "Creative Commons"
@@ -3061,7 +3057,7 @@ msgstr "D&D Beyond"
 
 #: modules/gutenberg/icons/icons-v6-1.php:191
 msgid "dailymotion"
-msgstr ""
+msgstr "dailymotion"
 
 #: modules/gutenberg/icons/icons-v6-1.php:202
 msgid "DashCube"
@@ -3413,7 +3409,7 @@ msgstr "Auswerfen"
 
 #: modules/gutenberg/icons/icons-v6-1.php:1082
 msgid "Elementor"
-msgstr ""
+msgstr "Elementor"
 
 #: modules/gutenberg/icons/icons-v6-1.php:1093
 msgid "Elevator"
@@ -3565,7 +3561,7 @@ msgstr "Gesicht Grinsen Strahlen"
 
 #: modules/gutenberg/icons/icons-v6-1.php:1565
 msgid "Face Grin Beam Sweat"
-msgstr ""
+msgstr "Gesicht Grinsen Strahl Schweiß"
 
 #: modules/gutenberg/icons/icons-v6-1.php:1581
 msgid "Face Grin Hearts"
@@ -3585,7 +3581,7 @@ msgstr "Gesicht Grinsen Sterne"
 
 #: modules/gutenberg/icons/icons-v6-1.php:1645
 msgid "Face Grin Tears"
-msgstr ""
+msgstr "Gesicht Grinsen Tränen"
 
 #: modules/gutenberg/icons/icons-v6-1.php:1661
 msgid "Face Grin Tongue"
@@ -4054,7 +4050,7 @@ msgstr "freeCodeCamp"
 
 #: modules/gutenberg/icons/icons-v6-1.php:3143
 msgid "FreeBSD"
-msgstr ""
+msgstr "FreeBSD"
 
 #: modules/gutenberg/icons/icons-v6-1.php:3154
 msgid "Frog"
@@ -4554,7 +4550,7 @@ msgstr "Herzkreisprüfung"
 
 #: modules/gutenberg/icons/icons-v6-1.php:4653
 msgid "Heart Circle Exclamation"
-msgstr ""
+msgstr "Herz Kreis Ausrufezeichen"
 
 #: modules/gutenberg/icons/icons-v6-1.php:4664
 msgid "Heart Circle Minus"
@@ -4714,7 +4710,7 @@ msgstr "Haus Kreis Ausrufezeichen"
 
 #: modules/gutenberg/icons/icons-v6-1.php:5114
 msgid "House Circle Xmark"
-msgstr ""
+msgstr "Haus Kreis Xmark"
 
 #: modules/gutenberg/icons/icons-v6-1.php:5125
 msgid "House Crack"
@@ -4754,7 +4750,7 @@ msgstr "Hausärztlicher Kreis-Check"
 
 #: modules/gutenberg/icons/icons-v6-1.php:5224
 msgid "House Medical Circle Exclamation"
-msgstr ""
+msgstr "Haus Medizinischer Kreis Ausrufezeichen"
 
 #: modules/gutenberg/icons/icons-v6-1.php:5235
 msgid "House Medical Circle Xmark"
@@ -4911,7 +4907,7 @@ msgstr "iTunes-Notiz"
 
 #: modules/gutenberg/icons/icons-v6-2.php:224
 msgid "J"
-msgstr ""
+msgstr "J"
 
 #: modules/gutenberg/icons/icons-v6-2.php:235
 msgid "Jar"
@@ -5415,7 +5411,7 @@ msgstr "Erinnerung"
 
 #: modules/gutenberg/icons/icons-v6-2.php:1646
 msgid "Mendeley"
-msgstr ""
+msgstr "Mendeley"
 
 #: modules/gutenberg/icons/icons-v6-2.php:1657
 msgid "Menorah"
@@ -5799,7 +5795,7 @@ msgstr "Palette"
 
 #: modules/gutenberg/icons/icons-v6-2.php:2737
 msgid "Palfed"
-msgstr ""
+msgstr "Palfed"
 
 #: modules/gutenberg/icons/icons-v6-2.php:2748
 msgid "Pallet"
@@ -6007,7 +6003,7 @@ msgstr "Person fällt"
 
 #: modules/gutenberg/icons/icons-v6-2.php:3335
 msgid "Person Falling Burst"
-msgstr ""
+msgstr "Person fällt platzen"
 
 #: modules/gutenberg/icons/icons-v6-2.php:3346
 msgid "Person Half Dress"
@@ -6255,7 +6251,7 @@ msgstr "Steckerkreisprüfung"
 
 #: modules/gutenberg/icons/icons-v6-2.php:4050
 msgid "Plug Circle Exclamation"
-msgstr ""
+msgstr "Stecker Kreis Ausrufezeichen"
 
 #: modules/gutenberg/icons/icons-v6-2.php:4061
 msgid "Plug Circle Minus"
@@ -6263,7 +6259,7 @@ msgstr "Stecker Kreis Minus"
 
 #: modules/gutenberg/icons/icons-v6-2.php:4072
 msgid "Plug Circle Plus"
-msgstr ""
+msgstr "Steckdose Kreis Plus"
 
 #: modules/gutenberg/icons/icons-v6-2.php:4083
 msgid "Plug Circle Xmark"
@@ -6339,7 +6335,7 @@ msgstr "Python"
 
 #: modules/gutenberg/icons/icons-v6-2.php:4281
 msgid "Q"
-msgstr ""
+msgstr "Q"
 
 #: modules/gutenberg/icons/icons-v6-2.php:4292
 msgid "QQ"
@@ -6576,7 +6572,7 @@ msgstr "Rocket.Chat"
 
 #: modules/gutenberg/icons/icons-v6-2.php:4956
 msgid "Rockrms"
-msgstr ""
+msgstr "Rockrms"
 
 #: modules/gutenberg/icons/icons-v6-2.php:4967
 msgid "Rotate"
@@ -7696,7 +7692,7 @@ msgstr "Baumstadt"
 
 #: modules/gutenberg/icons/icons-v6-3.php:2987
 msgid "Trello"
-msgstr ""
+msgstr "Trello"
 
 #: modules/gutenberg/icons/icons-v6-3.php:2998
 msgid "Triangle Exclamation"
@@ -7817,7 +7813,7 @@ msgstr "Ubuntu"
 
 #: modules/gutenberg/icons/icons-v6-3.php:3350
 msgid "UIkit"
-msgstr ""
+msgstr "UIkit"
 
 #: modules/gutenberg/icons/icons-v6-3.php:3361
 msgid "Umbraco"
@@ -8079,7 +8075,7 @@ msgstr "Westenaufnäher"
 
 #: modules/gutenberg/icons/icons-v6-3.php:4070
 msgid "Viacoin"
-msgstr ""
+msgstr "Viacoin"
 
 #: modules/gutenberg/icons/icons-v6-3.php:4081
 msgid "Viadeo"
@@ -8103,7 +8099,7 @@ msgstr "Fläschchen"
 
 #: modules/gutenberg/icons/icons-v6-3.php:4147
 msgid "Viber"
-msgstr ""
+msgstr "Viber"
 
 #: modules/gutenberg/icons/icons-v6-3.php:4158
 msgid "Video"
@@ -8396,7 +8392,7 @@ msgstr "Xbox"
 
 #: modules/gutenberg/icons/icons-v6-3.php:4998
 msgid "Xing"
-msgstr ""
+msgstr "Xing"
 
 #: modules/gutenberg/icons/icons-v6-3.php:5020
 msgid "Xmark"
@@ -8635,7 +8631,7 @@ msgstr "Formulartitel auf dieser Seite anzeigen"
 
 #: assets/build/blocks.js:2
 msgid "Note: For editing SureForms, please refer to the SureForms Editor - "
-msgstr "Hinweis: Für die Bearbeitung von SureForms, bitte den SureForms-Editor verwenden - "
+msgstr "Hinweis: Für die Bearbeitung von SureForms, bitte den SureForms-Editor verwenden -"
 
 #: assets/build/blocks.js:2
 msgid "Field preview"
@@ -8800,7 +8796,7 @@ msgstr "Benutzerdefinierte Maske"
 
 #: assets/build/blocks.js:172
 msgid "Please check the documentation to manage custom input pattern "
-msgstr "Bitte überprüfen Sie die Dokumentation, um das benutzerdefinierte Eingabemuster zu verwalten "
+msgstr "Bitte überprüfen Sie die Dokumentation, um das benutzerdefinierte Eingabemuster zu verwalten"
 
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
@@ -8821,7 +8817,7 @@ msgstr "Als einzigartig validieren"
 
 #: assets/build/blocks.js:172
 msgid "Validation Message for Duplicate "
-msgstr "Validierungsnachricht für Duplikat "
+msgstr "Validierungsnachricht für Duplikat"
 
 #: assets/build/blocks.js:172
 msgid "Help Text"
@@ -9737,11 +9733,11 @@ msgstr ""
 
 #: assets/build/formEditor.js:172
 msgid "Before selecting the security type, please make sure you have configured the API keys "
-msgstr "Bevor Sie den Sicherheitstyp auswählen, stellen Sie bitte sicher, dass Sie die API-Schlüssel konfiguriert haben "
+msgstr "Bevor Sie den Sicherheitstyp auswählen, stellen Sie bitte sicher, dass Sie die API-Schlüssel konfiguriert haben"
 
 #: assets/build/formEditor.js:172
 msgid "Please configure the API keys correctly in the "
-msgstr "Bitte konfigurieren Sie die API-Schlüssel korrekt in der "
+msgstr "Bitte konfigurieren Sie die API-Schlüssel korrekt in der"
 
 #: assets/build/formEditor.js:172
 msgid "Additional CSS Class(es)"
@@ -9749,7 +9745,7 @@ msgstr "Zusätzliche CSS-Klasse(n)"
 
 #: assets/build/formEditor.js:172
 msgid " Separate multiple classes with spaces. "
-msgstr " Trennen Sie mehrere Klassen mit Leerzeichen. "
+msgstr "Trennen Sie mehrere Klassen mit Leerzeichen."
 
 #: assets/build/formEditor.js:172
 msgid "Date Picker"
@@ -9935,7 +9931,7 @@ msgstr "Sonntag"
 
 #: assets/build/settings.js:172
 msgid "Enable Email Summaries "
-msgstr "E-Mail-Zusammenfassungen aktivieren "
+msgstr "E-Mail-Zusammenfassungen aktivieren"
 
 #: assets/build/settings.js:172
 msgid "Test Email"
@@ -10014,60 +10010,16 @@ msgid "Invalid Phone Number Block Error Message"
 msgstr "Ungültige Telefonnummer Blockierungsfehlermeldung"
 
 #: assets/build/settings.js:172
-msgid "Invalid URL Block Error Message"
-msgstr "Ungültige URL-Blockierungsfehlermeldung"
-
-#: assets/build/settings.js:172
-msgid "Confirmation Email Block Mismatch Message"
-msgstr "Bestätigungs-E-Mail-Block-Mismatch-Nachricht"
-
-#: assets/build/settings.js:172
-msgid "Invalid Email Block Error Message"
-msgstr "Ungültige E-Mail-Blockierungsfehlermeldung"
-
-#: assets/build/settings.js:172
-msgid "Number Block Minimum Value Error Message"
-msgstr "Fehlermeldung für Mindestwert des Zahlenblocks"
-
-#: assets/build/settings.js:172
-msgid "%s represents the minimum input value. For example: “Minimum value is 10.”"
-msgstr "%s repräsentiert den minimalen Eingabewert. Zum Beispiel: „Der Mindestwert ist 10.“"
-
-#: assets/build/settings.js:172
-msgid "Number Block Maximum Value Error Message"
-msgstr "Fehlermeldung für maximalen Wert des Zahlenblocks"
-
-#: assets/build/settings.js:172
-msgid "%s represents the maximum input value. For example: “Maximum value is 100.”"
-msgstr "%s repräsentiert den maximalen Eingabewert. Zum Beispiel: „Der Maximalwert ist 100.“"
-
-#: assets/build/settings.js:172
-msgid "Dropdown Block Minimum Selections Error Message"
-msgstr "Fehlermeldung für Dropdown-Block Mindestanzahl an Auswahlen"
-
-#: assets/build/settings.js:172
 msgid "%s represents the minimum selections needed. For example: “Minimum 2 selections are required.”"
 msgstr "%s repräsentiert die minimal erforderlichen Auswahlen. Zum Beispiel: „Mindestens 2 Auswahlen sind erforderlich.“"
-
-#: assets/build/settings.js:172
-msgid "Dropdown Block Maximum Selections Error Message"
-msgstr "Fehlermeldung für maximale Auswahlen im Dropdown-Block"
 
 #: assets/build/settings.js:172
 msgid "%s represents the maximum selections allowed. For example: “Maximum 4 selections are allowed.”"
 msgstr "%s repräsentiert die maximal erlaubten Auswahlen. Zum Beispiel: „Maximal 4 Auswahlen sind erlaubt.“"
 
 #: assets/build/settings.js:172
-msgid "Multiple Choice Block Minimum Selections Error Message"
-msgstr "Fehlermeldung für Mindestanzahl an Auswahlen im Multiple-Choice-Block"
-
-#: assets/build/settings.js:172
 msgid "%s represents the minimum choices needed. For example: “Minimum 1 selection is required.”"
 msgstr "%s repräsentiert die minimal erforderlichen Auswahlmöglichkeiten. Zum Beispiel: „Mindestens 1 Auswahl ist erforderlich.“"
-
-#: assets/build/settings.js:172
-msgid "Multiple Choice Block Maximum Selections Error Message"
-msgstr "Fehlermeldung für maximale Auswahl bei Mehrfachauswahlblock"
 
 #: assets/build/settings.js:172
 msgid "%s represents the maximum choices allowed. For example: “Maximum 3 selections are allowed.”"
@@ -10116,7 +10068,7 @@ msgstr "Honigtopf"
 
 #: assets/build/settings.js:172
 msgid "To enable Google reCAPTCHA, please add your site key and secret key. Configure these settings within the individual form. "
-msgstr "Um Google reCAPTCHA zu aktivieren, fügen Sie bitte Ihren Site-Schlüssel und Geheimschlüssel hinzu. Konfigurieren Sie diese Einstellungen innerhalb des einzelnen Formulars. "
+msgstr "Um Google reCAPTCHA zu aktivieren, fügen Sie bitte Ihren Site-Schlüssel und Geheimschlüssel hinzu. Konfigurieren Sie diese Einstellungen innerhalb des einzelnen Formulars."
 
 #: assets/build/settings.js:172
 msgid "Learn more"
@@ -10168,7 +10120,7 @@ msgstr "Cloudflare-Drehkreuz"
 
 #: assets/build/settings.js:172
 msgid "To enable Cloudflare Turnstile, please add your site key and secret key. Configure these settings within the individual form. "
-msgstr "Um Cloudflare Turnstile zu aktivieren, fügen Sie bitte Ihren Site-Schlüssel und Geheimschlüssel hinzu. Konfigurieren Sie diese Einstellungen innerhalb des einzelnen Formulars. "
+msgstr "Um Cloudflare Turnstile zu aktivieren, fügen Sie bitte Ihren Site-Schlüssel und Geheimschlüssel hinzu. Konfigurieren Sie diese Einstellungen innerhalb des einzelnen Formulars."
 
 #: assets/build/settings.js:172
 msgid "Appearance Mode"
@@ -10176,7 +10128,7 @@ msgstr "Erscheinungsmodus"
 
 #: assets/build/settings.js:172
 msgid "To enable hCAPTCHA, please add your site key and secret key. Configure these settings within the individual form. "
-msgstr "Um hCAPTCHA zu aktivieren, fügen Sie bitte Ihren Site-Schlüssel und Geheimschlüssel hinzu. Konfigurieren Sie diese Einstellungen innerhalb des einzelnen Formulars. "
+msgstr "Um hCAPTCHA zu aktivieren, fügen Sie bitte Ihren Site-Schlüssel und Geheimschlüssel hinzu. Konfigurieren Sie diese Einstellungen innerhalb des einzelnen Formulars."
 
 #: assets/build/settings.js:172
 msgid "Enable Honeypot Security"
@@ -10212,7 +10164,7 @@ msgstr "Beschreiben Sie Ihr Formular"
 
 #: assets/build/templatePicker.js:2
 msgid "Usage "
-msgstr "Nutzung "
+msgstr "Nutzung"
 
 #: assets/build/templatePicker.js:2
 msgid "Free plan only allows %s AI form generations. Need to create more forms with AI?"
@@ -10261,7 +10213,7 @@ msgstr "Authentifizierung fehlgeschlagen"
 
 #: assets/build/templatePicker.js:172
 msgid "Please check your username and password for the account, and try to reconnect again. Need help? "
-msgstr "Bitte überprüfen Sie Ihren Benutzernamen und Ihr Passwort für das Konto und versuchen Sie erneut, eine Verbindung herzustellen. Brauchen Sie Hilfe? "
+msgstr "Bitte überprüfen Sie Ihren Benutzernamen und Ihr Passwort für das Konto und versuchen Sie erneut, eine Verbindung herzustellen. Brauchen Sie Hilfe?"
 
 #: assets/build/templatePicker.js:172
 msgid "Contact Support"
@@ -11126,7 +11078,7 @@ msgstr "Fügen Sie Bilder auf Ihrer Webseite mit mehreren Anpassungsoptionen hin
 
 #: modules/gutenberg/build/blocks.js:17
 msgid "image"
-msgstr ""
+msgstr "Bild"
 
 #: modules/gutenberg/build/blocks.js:17
 msgid "advance image"
@@ -11195,6 +11147,87 @@ msgstr "Fügen Sie Ihrer Website atemberaubende anpassbare Symbole hinzu."
 #: modules/gutenberg/build/blocks.js:17
 msgid "icon"
 msgstr "Symbol"
+
+#: inc/export.php:73
+msgid "You do not have permission to export forms."
+msgstr "Sie haben keine Berechtigung, Formulare zu exportieren."
+
+#. translators: Here, %1$s is the comma separated emails list and %2$s is error report ( if any ).
+#: inc/form-submit.php:723
+msgid "Failed sending email notification to %1$s. Reason: %2$s"
+msgstr "Fehler beim Senden der E-Mail-Benachrichtigung an %1$s. Grund: %2$s"
+
+#: inc/form-submit.php:725
+msgid "Unknown"
+msgstr "Unbekannt"
+
+#: inc/nps-notice.php:108
+msgid "How likely are you to recommend SureForms to your friends or colleagues?"
+msgstr "Wie wahrscheinlich ist es, dass Sie SureForms Ihren Freunden oder Kollegen empfehlen?"
+
+#: inc/nps-notice.php:109
+msgid "Thanks a lot for your feedback! 😍"
+msgstr "Vielen Dank für Ihr Feedback! 😍"
+
+#: inc/nps-notice.php:110
+msgid "Could you please do us a favor and give us a 5-star rating on WordPress? It would help others choose SureForms with confidence. Thank you!"
+msgstr "Könnten Sie uns bitte einen Gefallen tun und uns eine 5-Sterne-Bewertung auf WordPress geben? Es würde anderen helfen, SureForms mit Vertrauen zu wählen. Vielen Dank!"
+
+#: inc/nps-notice.php:112
+msgid "Thank you for your feedback"
+msgstr "Danke für Ihr Feedback"
+
+#: inc/nps-notice.php:113
+msgid "We value your input. How can we improve your experience?"
+msgstr "Wir schätzen Ihr Feedback. Wie können wir Ihr Erlebnis verbessern?"
+
+#: inc/nps-notice.php:114
+msgid "Rate SureForms"
+msgstr "Bewerten Sie SureForms"
+
+#: assets/build/settings.js:172
+msgid "Invalid URL Error Message"
+msgstr "Ungültige URL-Fehlermeldung"
+
+#: assets/build/settings.js:172
+msgid "Confirmation Email Mismatch Message"
+msgstr "Bestätigungs-E-Mail-Unstimmigkeitsnachricht"
+
+#: assets/build/settings.js:172
+msgid "Invalid Email Error Message"
+msgstr "Ungültige E-Mail-Fehlermeldung"
+
+#: assets/build/settings.js:172
+msgid "Number Minimum Value Error Message"
+msgstr "Fehlermeldung für den minimalen Zahlenwert"
+
+#: assets/build/settings.js:172
+msgid "%s represents the minimum input value. For example: \"Minimum value is 10.\""
+msgstr "%s repräsentiert den minimalen Eingabewert. Zum Beispiel: \"Der Mindestwert ist 10.\""
+
+#: assets/build/settings.js:172
+msgid "Number Maximum Value Error Message"
+msgstr "Fehlermeldung für maximalen Zahlenwert"
+
+#: assets/build/settings.js:172
+msgid "%s represents the maximum input value. For example: \"Maximum value is 100.\""
+msgstr "%s repräsentiert den maximalen Eingabewert. Zum Beispiel: \"Der Maximalwert ist 100.\""
+
+#: assets/build/settings.js:172
+msgid "Dropdown Minimum Selections Error Message"
+msgstr "Fehlermeldung für Mindestanzahl an Auswahlen im Dropdown-Menü"
+
+#: assets/build/settings.js:172
+msgid "Dropdown Maximum Selections Error Message"
+msgstr "Fehlermeldung für maximale Auswahlen im Dropdown-Menü"
+
+#: assets/build/settings.js:172
+msgid "Multiple Choice Minimum Selections Error Message"
+msgstr "Fehlermeldung für Mindestanzahl an Auswahlmöglichkeiten"
+
+#: assets/build/settings.js:172
+msgid "Multiple Choice Maximum Selections Error Message"
+msgstr "Fehlermeldung für Mehrfachauswahl mit maximaler Auswahl"
 
 #: inc/post-types.php:123
 msgctxt "post type general name"

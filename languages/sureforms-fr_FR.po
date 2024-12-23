@@ -17,6 +17,7 @@ msgstr ""
 #: admin/admin.php:114
 #: admin/admin.php:115
 #: inc/gutenberg-hooks.php:106
+#: inc/nps-notice.php:107
 #: inc/page-builders/bricks/elements/form-widget.php:66
 #: inc/page-builders/bricks/service-provider.php:55
 #: inc/page-builders/elementor/form-widget.php:93
@@ -80,9 +81,9 @@ msgstr "Modifier %1$s"
 #: inc/background-process.php:101
 #: inc/create-new-form.php:126
 #: inc/export.php:61
-#: inc/export.php:117
+#: inc/export.php:126
 #: inc/form-submit.php:201
-#: inc/form-submit.php:707
+#: inc/form-submit.php:753
 #: inc/forms-data.php:87
 #: inc/global-settings/global-settings.php:86
 #: inc/global-settings/global-settings.php:276
@@ -394,7 +395,7 @@ msgstr "L'identifiant du modèle de motif."
 
 #: api/block-patterns.php:253
 msgid "Wether pattern is pro or not."
-msgstr ""
+msgstr "Que le modèle soit pro ou non."
 
 #: api/block-patterns.php:259
 msgid "The pattern keywords."
@@ -467,7 +468,7 @@ msgid "SureTriggers is not configured properly."
 msgstr "SureTriggers n'est pas configuré correctement."
 
 #: inc/admin-ajax.php:236
-#: inc/form-submit.php:719
+#: inc/form-submit.php:765
 msgid "Invalid form ID."
 msgstr "ID de formulaire invalide."
 
@@ -655,10 +656,10 @@ msgstr "Erreur lors de la création du formulaire SureForms,"
 msgid "New form submission"
 msgstr "Nouvelle soumission de formulaire"
 
-#: inc/export.php:126
-#: inc/export.php:131
-#: inc/export.php:166
-#: inc/export.php:183
+#: inc/export.php:135
+#: inc/export.php:140
+#: inc/export.php:175
+#: inc/export.php:192
 msgid "Failed to import form."
 msgstr "Échec de l'importation du formulaire."
 
@@ -793,14 +794,9 @@ msgid "Email Notification Initiated"
 msgstr "Notification par e-mail initiée"
 
 #. translators: Here, %s is the comma separated emails list.
-#: inc/form-submit.php:681
+#: inc/form-submit.php:713
 msgid "Email notification sent to %s"
 msgstr "Notification par e-mail envoyée à %s"
-
-#. translators: Here, %s is the comma separated emails list.
-#: inc/form-submit.php:681
-msgid "Failed sending email notification to %s"
-msgstr "Échec de l'envoi de la notification par e-mail à %s"
 
 #: inc/forms-data.php:67
 msgid "Sorry, you are not allowed to view the form."
@@ -1224,7 +1220,7 @@ msgstr ""
 
 #: modules/gutenberg/icons/icons-v6-0.php:256
 msgid "Airbnb"
-msgstr ""
+msgstr "Airbnb"
 
 #: modules/gutenberg/icons/icons-v6-0.php:267
 msgid "Algolia"
@@ -1288,7 +1284,7 @@ msgstr "Android"
 
 #: modules/gutenberg/icons/icons-v6-0.php:432
 msgid "AngelList"
-msgstr ""
+msgstr "AngelList"
 
 #: modules/gutenberg/icons/icons-v6-0.php:443
 msgid "Angle Down"
@@ -1800,7 +1796,7 @@ msgstr ""
 
 #: modules/gutenberg/icons/icons-v6-0.php:1850
 msgid "BIMobject"
-msgstr ""
+msgstr "BIMobject"
 
 #: modules/gutenberg/icons/icons-v6-0.php:1861
 msgid "Binoculars"
@@ -2025,7 +2021,7 @@ msgstr "Pont Cercle Exclamation"
 
 #: modules/gutenberg/icons/icons-v6-0.php:2482
 msgid "Bridge Circle Xmark"
-msgstr ""
+msgstr "Pont Cercle Croix"
 
 #: modules/gutenberg/icons/icons-v6-0.php:2493
 msgid "Bridge Lock"
@@ -2169,7 +2165,7 @@ msgstr "Acheter en gros"
 
 #: modules/gutenberg/icons/icons-v6-0.php:2883
 msgid "BuySellAds"
-msgstr ""
+msgstr "BuySellAds"
 
 #: modules/gutenberg/icons/icons-v6-0.php:2894
 msgid "C"
@@ -2971,7 +2967,7 @@ msgstr "Partage Creative Commons"
 
 #: modules/gutenberg/icons/icons-v6-0.php:5263
 msgid "Creative Commons CC0"
-msgstr ""
+msgstr "Creative Commons CC0"
 
 #: modules/gutenberg/icons/icons-v6-0.php:5279
 msgid "Credit Card"
@@ -3056,7 +3052,7 @@ msgstr ""
 
 #: modules/gutenberg/icons/icons-v6-1.php:202
 msgid "DashCube"
-msgstr ""
+msgstr "DashCube"
 
 #: modules/gutenberg/icons/icons-v6-1.php:213
 msgid "Database"
@@ -3256,7 +3252,7 @@ msgstr "Télécharger"
 
 #: modules/gutenberg/icons/icons-v6-1.php:741
 msgid "Draft2digital"
-msgstr ""
+msgstr "Draft2digital"
 
 #: modules/gutenberg/icons/icons-v6-1.php:752
 msgid "Dragon"
@@ -3292,7 +3288,7 @@ msgstr "Dessiner un polygone"
 #: modules/gutenberg/icons/icons-v6-3.php:5009
 #: modules/gutenberg/icons/icons-v6-3.php:5174
 msgid "Dribbble"
-msgstr ""
+msgstr "Dribbble"
 
 #: modules/gutenberg/icons/icons-v6-1.php:785
 msgid "Dribbble Square"
@@ -3620,7 +3616,7 @@ msgstr "Faisceau de rire"
 
 #: modules/gutenberg/icons/icons-v6-1.php:1821
 msgid "Face Laugh Squint"
-msgstr ""
+msgstr "Visage Rire Plisser"
 
 #: modules/gutenberg/icons/icons-v6-1.php:1837
 msgid "Face Laugh Wink"
@@ -3640,7 +3636,7 @@ msgstr "Visage roulant des yeux"
 
 #: modules/gutenberg/icons/icons-v6-1.php:1901
 msgid "Face Sad Cry"
-msgstr ""
+msgstr "Visage Triste Pleure"
 
 #: modules/gutenberg/icons/icons-v6-1.php:1917
 msgid "Face Sad Tear"
@@ -4329,7 +4325,7 @@ msgstr "Marteau"
 
 #: modules/gutenberg/icons/icons-v6-1.php:3978
 msgid "Hamsa"
-msgstr ""
+msgstr "Hamsa"
 
 #: modules/gutenberg/icons/icons-v6-1.php:3994
 msgid "Hand"
@@ -4477,7 +4473,7 @@ msgstr "Poignée de main Slash"
 
 #: modules/gutenberg/icons/icons-v6-1.php:4445
 msgid "Hanukiah"
-msgstr ""
+msgstr "Hanoukkia"
 
 #: modules/gutenberg/icons/icons-v6-1.php:4461
 msgid "Hard Drive"
@@ -4745,7 +4741,7 @@ msgstr "Vérification du Cercle Médical de la Maison"
 
 #: modules/gutenberg/icons/icons-v6-1.php:5224
 msgid "House Medical Circle Exclamation"
-msgstr ""
+msgstr "Maison Cercle Médical Point d'exclamation"
 
 #: modules/gutenberg/icons/icons-v6-1.php:5235
 msgid "House Medical Circle Xmark"
@@ -4942,7 +4938,7 @@ msgstr "Jira"
 
 #: modules/gutenberg/icons/icons-v6-2.php:334
 msgid "Joget"
-msgstr ""
+msgstr "Joget"
 
 #: modules/gutenberg/icons/icons-v6-2.php:345
 msgid "Joint"
@@ -5478,7 +5474,7 @@ msgstr "Mélange"
 
 #: modules/gutenberg/icons/icons-v6-2.php:1849
 msgid "Mixcloud"
-msgstr ""
+msgstr "Mixcloud"
 
 #: modules/gutenberg/icons/icons-v6-2.php:1860
 msgid "Mixer"
@@ -5741,7 +5737,7 @@ msgstr "Optin Monster"
 
 #: modules/gutenberg/icons/icons-v6-2.php:2605
 msgid "ORCID"
-msgstr ""
+msgstr "ORCID"
 
 #: modules/gutenberg/icons/icons-v6-2.php:2616
 msgid "Open Source Initiative"
@@ -6194,7 +6190,7 @@ msgstr "Vérification du cercle plan"
 
 #: modules/gutenberg/icons/icons-v6-2.php:3907
 msgid "Plane Circle Exclamation"
-msgstr ""
+msgstr "Cercle d'avion Exclamation"
 
 #: modules/gutenberg/icons/icons-v6-2.php:3918
 msgid "Plane Circle Xmark"
@@ -6719,7 +6715,7 @@ msgstr "Tournevis Clé"
 
 #: modules/gutenberg/icons/icons-v6-3.php:202
 msgid "Scribd"
-msgstr ""
+msgstr "Scribd"
 
 #: modules/gutenberg/icons/icons-v6-3.php:213
 msgid "Scroll"
@@ -7332,7 +7328,7 @@ msgstr "Suse"
 
 #: modules/gutenberg/icons/icons-v6-3.php:1993
 msgid "Swatchbook"
-msgstr ""
+msgstr "Nuancier"
 
 #: modules/gutenberg/icons/icons-v6-3.php:2004
 msgid "Swift"
@@ -8070,7 +8066,7 @@ msgstr "Écussons de gilet"
 
 #: modules/gutenberg/icons/icons-v6-3.php:4070
 msgid "Viacoin"
-msgstr ""
+msgstr "Viacoin"
 
 #: modules/gutenberg/icons/icons-v6-3.php:4081
 msgid "Viadeo"
@@ -8235,7 +8231,7 @@ msgstr "Weebly"
 
 #: modules/gutenberg/icons/icons-v6-3.php:4554
 msgid "Weibo"
-msgstr ""
+msgstr "Weibo"
 
 #: modules/gutenberg/icons/icons-v6-3.php:4565
 msgid "Weight Hanging"
@@ -8363,7 +8359,7 @@ msgstr "WPExplorer"
 
 #: modules/gutenberg/icons/icons-v6-3.php:4932
 msgid "WPForms"
-msgstr ""
+msgstr "WPForms"
 
 #: modules/gutenberg/icons/icons-v6-3.php:4943
 msgid "wpressr"
@@ -9695,7 +9691,7 @@ msgstr "Type de sécurité"
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
 msgid "Google reCAPTCHA"
-msgstr ""
+msgstr "Google reCAPTCHA"
 
 #: assets/build/formEditor.js:172
 msgid "CloudFlare Turnstile"
@@ -9724,7 +9720,7 @@ msgstr "reCAPTCHA v2 Invisible"
 
 #: assets/build/formEditor.js:172
 msgid "reCAPTCHA v3"
-msgstr ""
+msgstr "reCAPTCHA v3"
 
 #: assets/build/formEditor.js:172
 msgid "Before selecting the security type, please make sure you have configured the API keys "
@@ -9965,14 +9961,6 @@ msgid "Dropdown Block Required Error Message"
 msgstr "Message d'erreur requis pour le bloc déroulant"
 
 #: assets/build/settings.js:172
-msgid "%s represents the minimum input value. For example: “Minimum value is 10.”"
-msgstr "%s représente la valeur d'entrée minimale. Par exemple : « La valeur minimale est 10. »"
-
-#: assets/build/settings.js:172
-msgid "%s represents the maximum input value. For example: “Maximum value is 100.”"
-msgstr "%s représente la valeur d'entrée maximale. Par exemple : « La valeur maximale est 100. »"
-
-#: assets/build/settings.js:172
 msgid "%s represents the minimum selections needed. For example: “Minimum 2 selections are required.”"
 msgstr "%s représente le nombre minimum de sélections nécessaires. Par exemple : « Un minimum de 2 sélections est requis. »"
 
@@ -10131,7 +10119,7 @@ msgstr "Diffusez votre soumission SureForms vers n'importe quel point de termina
 
 #: assets/build/settings.js:172
 msgid "Zapier"
-msgstr ""
+msgstr "Zapier"
 
 #: assets/build/settings.js:172
 msgid "SureForms and Zapier Integration allows you to connect your WordPress forms with a number of web apps."
@@ -11157,44 +11145,89 @@ msgid "Invalid Phone Number Block Error Message"
 msgstr "Message d'erreur de blocage de numéro de téléphone invalide"
 
 #: assets/build/settings.js:172
-msgid "Invalid URL Block Error Message"
-msgstr "Message d'erreur de blocage d'URL invalide"
-
-#: assets/build/settings.js:172
-msgid "Confirmation Email Block Mismatch Message"
-msgstr "Message de non-correspondance du bloc d'e-mail de confirmation"
-
-#: assets/build/settings.js:172
-msgid "Invalid Email Block Error Message"
-msgstr "Message d'erreur de blocage d'email invalide"
-
-#: assets/build/settings.js:172
-msgid "Number Block Minimum Value Error Message"
-msgstr "Message d'erreur de valeur minimale de bloc de nombre"
-
-#: assets/build/settings.js:172
-msgid "Number Block Maximum Value Error Message"
-msgstr "Message d'erreur de valeur maximale du bloc de numéros"
-
-#: assets/build/settings.js:172
-msgid "Dropdown Block Minimum Selections Error Message"
-msgstr "Message d'erreur pour le nombre minimum de sélections dans le bloc déroulant"
-
-#: assets/build/settings.js:172
-msgid "Dropdown Block Maximum Selections Error Message"
-msgstr "Message d'erreur de sélection maximale du bloc déroulant"
-
-#: assets/build/settings.js:172
-msgid "Multiple Choice Block Minimum Selections Error Message"
-msgstr "Message d'erreur de sélection minimale du bloc à choix multiple"
-
-#: assets/build/settings.js:172
-msgid "Multiple Choice Block Maximum Selections Error Message"
-msgstr "Message d'erreur de sélection maximale pour le bloc à choix multiple"
-
-#: assets/build/settings.js:172
 msgid "Honeypot"
 msgstr "Pot de miel"
+
+#: inc/export.php:73
+msgid "You do not have permission to export forms."
+msgstr "Vous n'avez pas la permission d'exporter des formulaires."
+
+#. translators: Here, %1$s is the comma separated emails list and %2$s is error report ( if any ).
+#: inc/form-submit.php:723
+msgid "Failed sending email notification to %1$s. Reason: %2$s"
+msgstr "Échec de l'envoi de la notification par e-mail à %1$s. Raison : %2$s"
+
+#: inc/form-submit.php:725
+msgid "Unknown"
+msgstr "Inconnu"
+
+#: inc/nps-notice.php:108
+msgid "How likely are you to recommend SureForms to your friends or colleagues?"
+msgstr "Quelle est la probabilité que vous recommandiez SureForms à vos amis ou collègues ?"
+
+#: inc/nps-notice.php:109
+msgid "Thanks a lot for your feedback! 😍"
+msgstr "Merci beaucoup pour votre retour ! 😍"
+
+#: inc/nps-notice.php:110
+msgid "Could you please do us a favor and give us a 5-star rating on WordPress? It would help others choose SureForms with confidence. Thank you!"
+msgstr "Pourriez-vous nous rendre service et nous donner une note de 5 étoiles sur WordPress ? Cela aiderait les autres à choisir SureForms en toute confiance. Merci !"
+
+#: inc/nps-notice.php:112
+msgid "Thank you for your feedback"
+msgstr "Merci pour votre retour"
+
+#: inc/nps-notice.php:113
+msgid "We value your input. How can we improve your experience?"
+msgstr "Nous apprécions votre avis. Comment pouvons-nous améliorer votre expérience ?"
+
+#: inc/nps-notice.php:114
+msgid "Rate SureForms"
+msgstr "Évaluez SureForms"
+
+#: assets/build/settings.js:172
+msgid "Invalid URL Error Message"
+msgstr "Message d'erreur d'URL invalide"
+
+#: assets/build/settings.js:172
+msgid "Confirmation Email Mismatch Message"
+msgstr "Message de non-correspondance de l'email de confirmation"
+
+#: assets/build/settings.js:172
+msgid "Invalid Email Error Message"
+msgstr "Message d'erreur d'email invalide"
+
+#: assets/build/settings.js:172
+msgid "Number Minimum Value Error Message"
+msgstr "Message d'erreur de valeur minimale du nombre"
+
+#: assets/build/settings.js:172
+msgid "%s represents the minimum input value. For example: \"Minimum value is 10.\""
+msgstr "%s représente la valeur d'entrée minimale. Par exemple : \"La valeur minimale est 10.\""
+
+#: assets/build/settings.js:172
+msgid "Number Maximum Value Error Message"
+msgstr "Message d'erreur de valeur maximale du nombre"
+
+#: assets/build/settings.js:172
+msgid "%s represents the maximum input value. For example: \"Maximum value is 100.\""
+msgstr "%s représente la valeur d'entrée maximale. Par exemple : \"La valeur maximale est 100.\""
+
+#: assets/build/settings.js:172
+msgid "Dropdown Minimum Selections Error Message"
+msgstr "Message d'erreur de sélection minimale du menu déroulant"
+
+#: assets/build/settings.js:172
+msgid "Dropdown Maximum Selections Error Message"
+msgstr "Message d'erreur pour le nombre maximum de sélections dans le menu déroulant"
+
+#: assets/build/settings.js:172
+msgid "Multiple Choice Minimum Selections Error Message"
+msgstr "Message d'erreur de sélection minimale pour choix multiple"
+
+#: assets/build/settings.js:172
+msgid "Multiple Choice Maximum Selections Error Message"
+msgstr "Message d'erreur de sélection multiple pour choix multiples"
 
 #: inc/post-types.php:123
 msgctxt "post type general name"

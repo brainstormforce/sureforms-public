@@ -17,6 +17,7 @@ msgstr ""
 #: admin/admin.php:114
 #: admin/admin.php:115
 #: inc/gutenberg-hooks.php:106
+#: inc/nps-notice.php:107
 #: inc/page-builders/bricks/elements/form-widget.php:66
 #: inc/page-builders/bricks/service-provider.php:55
 #: inc/page-builders/elementor/form-widget.php:93
@@ -80,9 +81,9 @@ msgstr "Bewerk %1$s"
 #: inc/background-process.php:101
 #: inc/create-new-form.php:126
 #: inc/export.php:61
-#: inc/export.php:117
+#: inc/export.php:126
 #: inc/form-submit.php:201
-#: inc/form-submit.php:707
+#: inc/form-submit.php:753
 #: inc/forms-data.php:87
 #: inc/global-settings/global-settings.php:86
 #: inc/global-settings/global-settings.php:276
@@ -470,7 +471,7 @@ msgid "SureTriggers is not configured properly."
 msgstr "SureTriggers is niet correct geconfigureerd."
 
 #: inc/admin-ajax.php:236
-#: inc/form-submit.php:719
+#: inc/form-submit.php:765
 msgid "Invalid form ID."
 msgstr "Ongeldige formulier-ID."
 
@@ -658,10 +659,10 @@ msgstr "Fout bij het maken van SureForms-formulier,"
 msgid "New form submission"
 msgstr "Nieuwe formulierinzending"
 
-#: inc/export.php:126
-#: inc/export.php:131
-#: inc/export.php:166
-#: inc/export.php:183
+#: inc/export.php:135
+#: inc/export.php:140
+#: inc/export.php:175
+#: inc/export.php:192
 msgid "Failed to import form."
 msgstr "Formulier importeren mislukt."
 
@@ -796,14 +797,9 @@ msgid "Email Notification Initiated"
 msgstr "E-mailmelding gestart"
 
 #. translators: Here, %s is the comma separated emails list.
-#: inc/form-submit.php:681
+#: inc/form-submit.php:713
 msgid "Email notification sent to %s"
 msgstr "E-mailmelding verzonden naar %s"
-
-#. translators: Here, %s is the comma separated emails list.
-#: inc/form-submit.php:681
-msgid "Failed sending email notification to %s"
-msgstr "Het verzenden van de e-mailmelding naar %s is mislukt"
 
 #: inc/forms-data.php:67
 msgid "Sorry, you are not allowed to view the form."
@@ -1827,7 +1823,7 @@ msgstr "Bitcoin-teken"
 
 #: modules/gutenberg/icons/icons-v6-0.php:1916
 msgid "Bity"
-msgstr ""
+msgstr "Bity"
 
 #: modules/gutenberg/icons/icons-v6-0.php:1927
 msgid "Font Awesome Black Tie"
@@ -2028,7 +2024,7 @@ msgstr ""
 
 #: modules/gutenberg/icons/icons-v6-0.php:2482
 msgid "Bridge Circle Xmark"
-msgstr ""
+msgstr "Brug Cirkel Xmark"
 
 #: modules/gutenberg/icons/icons-v6-0.php:2493
 msgid "Bridge Lock"
@@ -2918,7 +2914,7 @@ msgstr "Koe"
 
 #: modules/gutenberg/icons/icons-v6-0.php:5109
 msgid "cPanel"
-msgstr ""
+msgstr "cPanel"
 
 #: modules/gutenberg/icons/icons-v6-0.php:5120
 msgid "Creative Commons"
@@ -3043,7 +3039,7 @@ msgstr "Zeekat"
 
 #: modules/gutenberg/icons/icons-v6-1.php:158
 msgid "D"
-msgstr ""
+msgstr "D"
 
 #: modules/gutenberg/icons/icons-v6-1.php:169
 msgid "Dungeons & Dragons"
@@ -3215,7 +3211,7 @@ msgstr "DocHub"
 
 #: modules/gutenberg/icons/icons-v6-1.php:620
 msgid "Docker"
-msgstr ""
+msgstr "Docker"
 
 #: modules/gutenberg/icons/icons-v6-1.php:631
 msgid "Dog"
@@ -3715,7 +3711,7 @@ msgstr "FedEx"
 
 #: modules/gutenberg/icons/icons-v6-1.php:2140
 msgid "Fedora"
-msgstr ""
+msgstr "Fedora"
 
 #: modules/gutenberg/icons/icons-v6-1.php:2151
 msgid "Ferry"
@@ -3751,11 +3747,11 @@ msgstr ""
 
 #: modules/gutenberg/icons/icons-v6-1.php:2249
 msgid "File Circle Minus"
-msgstr ""
+msgstr "Bestand Cirkel Min"
 
 #: modules/gutenberg/icons/icons-v6-1.php:2260
 msgid "File Circle Plus"
-msgstr ""
+msgstr "Bestand Cirkel Plus"
 
 #: modules/gutenberg/icons/icons-v6-1.php:2271
 msgid "File Circle Question"
@@ -4688,7 +4684,7 @@ msgstr "Scheur in de schoorsteen van het huis"
 
 #: modules/gutenberg/icons/icons-v6-1.php:5059
 msgid "House Chimney Medical"
-msgstr ""
+msgstr "Huis Schoorsteen Medisch"
 
 #: modules/gutenberg/icons/icons-v6-1.php:5070
 msgid "House Chimney User"
@@ -4905,7 +4901,7 @@ msgstr "Itunes-notitie"
 
 #: modules/gutenberg/icons/icons-v6-2.php:224
 msgid "J"
-msgstr ""
+msgstr "J"
 
 #: modules/gutenberg/icons/icons-v6-2.php:235
 msgid "Jar"
@@ -4973,7 +4969,7 @@ msgstr "O"
 
 #: modules/gutenberg/icons/icons-v6-2.php:422
 msgid "Kaaba"
-msgstr ""
+msgstr "Ka'aba"
 
 #: modules/gutenberg/icons/icons-v6-2.php:433
 msgid "Kaggle"
@@ -5413,7 +5409,7 @@ msgstr ""
 
 #: modules/gutenberg/icons/icons-v6-2.php:1657
 msgid "Menorah"
-msgstr ""
+msgstr "Menorah"
 
 #: modules/gutenberg/icons/icons-v6-2.php:1668
 msgid "Mercury"
@@ -5973,7 +5969,7 @@ msgstr "Persoon Cirkel Vraag"
 
 #: modules/gutenberg/icons/icons-v6-2.php:3258
 msgid "Person Circle Xmark"
-msgstr ""
+msgstr "Persoon Cirkel Xmark"
 
 #: modules/gutenberg/icons/icons-v6-2.php:3269
 msgid "Person Digging"
@@ -6173,7 +6169,7 @@ msgstr "Pinterest P"
 
 #: modules/gutenberg/icons/icons-v6-2.php:3841
 msgid "Pix"
-msgstr ""
+msgstr "Pix"
 
 #: modules/gutenberg/icons/icons-v6-2.php:3852
 msgid "Pizza Slice"
@@ -6249,7 +6245,7 @@ msgstr "Stekker Cirkel Controle"
 
 #: modules/gutenberg/icons/icons-v6-2.php:4050
 msgid "Plug Circle Exclamation"
-msgstr ""
+msgstr "Stekker Cirkel Uitroepteken"
 
 #: modules/gutenberg/icons/icons-v6-2.php:4061
 msgid "Plug Circle Minus"
@@ -6329,7 +6325,7 @@ msgstr "Puzzelstuk"
 
 #: modules/gutenberg/icons/icons-v6-2.php:4270
 msgid "Python"
-msgstr ""
+msgstr "Python"
 
 #: modules/gutenberg/icons/icons-v6-2.php:4281
 msgid "Q"
@@ -7035,7 +7031,7 @@ msgstr "Draaischijf"
 
 #: modules/gutenberg/icons/icons-v6-3.php:1081
 msgid "Splotch"
-msgstr ""
+msgstr "Vlek"
 
 #: modules/gutenberg/icons/icons-v6-3.php:1092
 msgid "Spoon"
@@ -7179,7 +7175,7 @@ msgstr "Stack Overflow"
 
 #: modules/gutenberg/icons/icons-v6-3.php:1522
 msgid "Stackpath"
-msgstr ""
+msgstr "Stackpath"
 
 #: modules/gutenberg/icons/icons-v6-3.php:1544
 msgid "Stairs"
@@ -7807,7 +7803,7 @@ msgstr "Uber"
 
 #: modules/gutenberg/icons/icons-v6-3.php:3339
 msgid "Ubuntu"
-msgstr ""
+msgstr "Ubuntu"
 
 #: modules/gutenberg/icons/icons-v6-3.php:3350
 msgid "UIkit"
@@ -8077,7 +8073,7 @@ msgstr ""
 
 #: modules/gutenberg/icons/icons-v6-3.php:4081
 msgid "Viadeo"
-msgstr ""
+msgstr "Viadeo"
 
 #: modules/gutenberg/icons/icons-v6-3.php:4103
 msgid "Vial"
@@ -9968,14 +9964,6 @@ msgid "Dropdown Block Required Error Message"
 msgstr "Foutmelding Vereist voor Dropdown Blok"
 
 #: assets/build/settings.js:172
-msgid "%s represents the minimum input value. For example: “Minimum value is 10.”"
-msgstr "%s vertegenwoordigt de minimale invoerwaarde. Bijvoorbeeld: \"Minimale waarde is 10.\""
-
-#: assets/build/settings.js:172
-msgid "%s represents the maximum input value. For example: “Maximum value is 100.”"
-msgstr "%s vertegenwoordigt de maximale invoerwaarde. Bijvoorbeeld: \"Maximale waarde is 100.\""
-
-#: assets/build/settings.js:172
 msgid "%s represents the minimum selections needed. For example: “Minimum 2 selections are required.”"
 msgstr "%s vertegenwoordigt het minimum aantal selecties dat nodig is. Bijvoorbeeld: \"Minimaal 2 selecties zijn vereist.\""
 
@@ -11160,44 +11148,89 @@ msgid "Invalid Phone Number Block Error Message"
 msgstr "Ongeldig telefoonnummer blokkeerfoutmelding"
 
 #: assets/build/settings.js:172
-msgid "Invalid URL Block Error Message"
-msgstr "Ongeldige URL Blokkeerfoutmelding"
-
-#: assets/build/settings.js:172
-msgid "Confirmation Email Block Mismatch Message"
-msgstr "Bevestigingsmail Blok Mismatch Bericht"
-
-#: assets/build/settings.js:172
-msgid "Invalid Email Block Error Message"
-msgstr "Ongeldige e-mailblokfoutmelding"
-
-#: assets/build/settings.js:172
-msgid "Number Block Minimum Value Error Message"
-msgstr "Foutmelding voor minimumwaarde van nummerblok"
-
-#: assets/build/settings.js:172
-msgid "Number Block Maximum Value Error Message"
-msgstr "Foutmelding voor maximale waarde van nummerblok"
-
-#: assets/build/settings.js:172
-msgid "Dropdown Block Minimum Selections Error Message"
-msgstr "Foutmelding voor minimale selecties in dropdownblok"
-
-#: assets/build/settings.js:172
-msgid "Dropdown Block Maximum Selections Error Message"
-msgstr "Foutmelding voor maximaal aantal selecties in dropdownblok"
-
-#: assets/build/settings.js:172
-msgid "Multiple Choice Block Minimum Selections Error Message"
-msgstr "Foutmelding voor minimumselecties bij meerkeuzeblok"
-
-#: assets/build/settings.js:172
-msgid "Multiple Choice Block Maximum Selections Error Message"
-msgstr "Foutmelding voor maximaal aantal selecties in meerkeuzevak"
-
-#: assets/build/settings.js:172
 msgid "Honeypot"
 msgstr "Honeypot"
+
+#: inc/export.php:73
+msgid "You do not have permission to export forms."
+msgstr "U heeft geen toestemming om formulieren te exporteren."
+
+#. translators: Here, %1$s is the comma separated emails list and %2$s is error report ( if any ).
+#: inc/form-submit.php:723
+msgid "Failed sending email notification to %1$s. Reason: %2$s"
+msgstr "Het verzenden van de e-mailmelding naar %1$s is mislukt. Reden: %2$s"
+
+#: inc/form-submit.php:725
+msgid "Unknown"
+msgstr "Onbekend"
+
+#: inc/nps-notice.php:108
+msgid "How likely are you to recommend SureForms to your friends or colleagues?"
+msgstr "Hoe waarschijnlijk is het dat u SureForms aan uw vrienden of collega's zou aanbevelen?"
+
+#: inc/nps-notice.php:109
+msgid "Thanks a lot for your feedback! 😍"
+msgstr "Heel erg bedankt voor je feedback! 😍"
+
+#: inc/nps-notice.php:110
+msgid "Could you please do us a favor and give us a 5-star rating on WordPress? It would help others choose SureForms with confidence. Thank you!"
+msgstr "Zou je ons alstublieft een plezier willen doen en ons een 5-sterrenbeoordeling op WordPress willen geven? Het zou anderen helpen om met vertrouwen voor SureForms te kiezen. Dank je!"
+
+#: inc/nps-notice.php:112
+msgid "Thank you for your feedback"
+msgstr "Dank u voor uw feedback"
+
+#: inc/nps-notice.php:113
+msgid "We value your input. How can we improve your experience?"
+msgstr "We waarderen uw inbreng. Hoe kunnen we uw ervaring verbeteren?"
+
+#: inc/nps-notice.php:114
+msgid "Rate SureForms"
+msgstr "Beoordeel SureForms"
+
+#: assets/build/settings.js:172
+msgid "Invalid URL Error Message"
+msgstr "Ongeldige URL-foutmelding"
+
+#: assets/build/settings.js:172
+msgid "Confirmation Email Mismatch Message"
+msgstr "Bevestigingsmail komt niet overeen bericht"
+
+#: assets/build/settings.js:172
+msgid "Invalid Email Error Message"
+msgstr "Ongeldig e-mailfoutbericht"
+
+#: assets/build/settings.js:172
+msgid "Number Minimum Value Error Message"
+msgstr "Foutmelding voor minimumwaarde van nummer"
+
+#: assets/build/settings.js:172
+msgid "%s represents the minimum input value. For example: \"Minimum value is 10.\""
+msgstr "%s vertegenwoordigt de minimale invoerwaarde. Bijvoorbeeld: \"Minimale waarde is 10.\""
+
+#: assets/build/settings.js:172
+msgid "Number Maximum Value Error Message"
+msgstr "Foutmelding Maximumwaarde Nummer"
+
+#: assets/build/settings.js:172
+msgid "%s represents the maximum input value. For example: \"Maximum value is 100.\""
+msgstr "%s vertegenwoordigt de maximale invoerwaarde. Bijvoorbeeld: \"Maximale waarde is 100.\""
+
+#: assets/build/settings.js:172
+msgid "Dropdown Minimum Selections Error Message"
+msgstr "Foutmelding voor minimale selecties in dropdown"
+
+#: assets/build/settings.js:172
+msgid "Dropdown Maximum Selections Error Message"
+msgstr "Foutmelding voor maximaal aantal selecties in dropdown"
+
+#: assets/build/settings.js:172
+msgid "Multiple Choice Minimum Selections Error Message"
+msgstr "Foutmelding voor minimaal aantal selecties bij meerkeuzevragen"
+
+#: assets/build/settings.js:172
+msgid "Multiple Choice Maximum Selections Error Message"
+msgstr "Foutmelding bij meerdere keuzes maximale selecties"
 
 #: inc/post-types.php:123
 msgctxt "post type general name"
