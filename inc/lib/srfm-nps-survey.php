@@ -31,10 +31,6 @@ if ( ! class_exists( 'SRFM_Nps_Survey' ) ) :
 		 * @since 1.0.0
 		 */
 		private function __construct() {
-			// Filter to disable the NPS Survey.
-			if ( apply_filters( 'srfm_nps_survey_disable', true ) ) {
-				return;
-			}
 			$this->version_check();
 			add_action( 'init', [ $this, 'load' ], 999 );
 		}
