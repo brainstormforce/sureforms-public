@@ -1505,7 +1505,7 @@ msgstr "Flecha hacia arriba a la derecha puntos"
 
 #: modules/gutenberg/icons/icons-v6-0.php:1015
 msgid "Arrow Up Right From Square"
-msgstr ""
+msgstr "Flecha hacia arriba a la derecha desde el cuadrado"
 
 #: modules/gutenberg/icons/icons-v6-0.php:1026
 msgid "Arrow Up Short Wide"
@@ -1817,7 +1817,7 @@ msgstr "Peligro biológico"
 
 #: modules/gutenberg/icons/icons-v6-0.php:1883
 msgid "Bitbucket"
-msgstr ""
+msgstr "Bitbucket"
 
 #: modules/gutenberg/icons/icons-v6-0.php:1894
 msgid "Bitcoin"
@@ -2174,7 +2174,7 @@ msgstr "Comprar en grande"
 
 #: modules/gutenberg/icons/icons-v6-0.php:2883
 msgid "BuySellAds"
-msgstr ""
+msgstr "BuySellAds"
 
 #: modules/gutenberg/icons/icons-v6-0.php:2894
 msgid "C"
@@ -2888,7 +2888,7 @@ msgstr "Conectar Desarrollar"
 
 #: modules/gutenberg/icons/icons-v6-0.php:5011
 msgid "Contao"
-msgstr ""
+msgstr "Contao"
 
 #: modules/gutenberg/icons/icons-v6-0.php:5022
 msgid "Cookie"
@@ -3633,7 +3633,7 @@ msgstr "Cara Risa Guiño"
 
 #: modules/gutenberg/icons/icons-v6-1.php:1853
 msgid "Face Meh"
-msgstr ""
+msgstr "Enfréntame"
 
 #: modules/gutenberg/icons/icons-v6-1.php:1869
 msgid "Face Meh Blank"
@@ -4166,7 +4166,7 @@ msgstr ""
 
 #: modules/gutenberg/icons/icons-v6-1.php:3494
 msgid "GitLab"
-msgstr ""
+msgstr "GitLab"
 
 #: modules/gutenberg/icons/icons-v6-1.php:3505
 msgid "Gitter"
@@ -4430,7 +4430,7 @@ msgstr "Manos"
 
 #: modules/gutenberg/icons/icons-v6-1.php:4297
 msgid "Hands Asl Interpreting"
-msgstr ""
+msgstr "Interpretación de Lengua de Señas Asl"
 
 #: modules/gutenberg/icons/icons-v6-1.php:4308
 msgid "Hands Bound"
@@ -5079,7 +5079,7 @@ msgstr "Signo de Lari"
 
 #: modules/gutenberg/icons/icons-v6-2.php:713
 msgid "last.fm"
-msgstr ""
+msgstr "last.fm"
 
 #: modules/gutenberg/icons/icons-v6-2.php:735
 msgid "Layer Group"
@@ -5325,7 +5325,7 @@ msgstr "Golpe de Marte"
 
 #: modules/gutenberg/icons/icons-v6-2.php:1415
 msgid "Mars Stroke Right"
-msgstr ""
+msgstr "Mars Stroke Right"
 
 #: modules/gutenberg/icons/icons-v6-2.php:1426
 msgid "Mars Stroke Up"
@@ -5431,7 +5431,7 @@ msgstr "Meteorito"
 
 #: modules/gutenberg/icons/icons-v6-2.php:1706
 msgid "Micro.blog"
-msgstr ""
+msgstr "Micro.blog"
 
 #: modules/gutenberg/icons/icons-v6-2.php:1717
 msgid "Microchip"
@@ -5662,7 +5662,7 @@ msgstr ""
 
 #: modules/gutenberg/icons/icons-v6-2.php:2348
 msgid "Node.js"
-msgstr ""
+msgstr "Node.js"
 
 #: modules/gutenberg/icons/icons-v6-2.php:2359
 msgid "Node.js JS"
@@ -6283,7 +6283,7 @@ msgstr ""
 
 #: modules/gutenberg/icons/icons-v6-2.php:4138
 msgid "Poo Storm"
-msgstr ""
+msgstr "Tormenta de caca"
 
 #: modules/gutenberg/icons/icons-v6-2.php:4149
 msgid "Poop"
@@ -6355,7 +6355,7 @@ msgstr ""
 
 #: modules/gutenberg/icons/icons-v6-2.php:4336
 msgid "Quora"
-msgstr ""
+msgstr "Quora"
 
 #: modules/gutenberg/icons/icons-v6-2.php:4347
 msgid "Quote Left"
@@ -6656,7 +6656,7 @@ msgstr "Salesforce"
 
 #: modules/gutenberg/icons/icons-v6-2.php:5187
 msgid "Sass"
-msgstr ""
+msgstr "Sass"
 
 #: modules/gutenberg/icons/icons-v6-3.php:26
 msgid "Satellite"
@@ -6724,7 +6724,7 @@ msgstr "Destornillador Llave"
 
 #: modules/gutenberg/icons/icons-v6-3.php:202
 msgid "Scribd"
-msgstr ""
+msgstr "Scribd"
 
 #: modules/gutenberg/icons/icons-v6-3.php:213
 msgid "Scroll"
@@ -7153,7 +7153,7 @@ msgstr ""
 
 #: modules/gutenberg/icons/icons-v6-3.php:1445
 msgid "Square Share Nodes"
-msgstr ""
+msgstr "Nodos de Compartición Cuadrada"
 
 #: modules/gutenberg/icons/icons-v6-3.php:1456
 msgid "Square Up Right"
@@ -7572,7 +7572,7 @@ msgstr "Boleto Simple"
 
 #: modules/gutenberg/icons/icons-v6-3.php:2641
 msgid "TikTok"
-msgstr ""
+msgstr "TikTok"
 
 #: modules/gutenberg/icons/icons-v6-3.php:2652
 msgid "Timeline"
@@ -7874,7 +7874,7 @@ msgstr "Arriba Abajo Izquierda Derecha"
 
 #: modules/gutenberg/icons/icons-v6-3.php:3515
 msgid "Up Long"
-msgstr ""
+msgstr "Arriba Largo"
 
 #: modules/gutenberg/icons/icons-v6-3.php:3526
 msgid "Up Right And Down Left From Center"
@@ -8144,7 +8144,7 @@ msgstr "Virus"
 
 #: modules/gutenberg/icons/icons-v6-3.php:4290
 msgid "VK"
-msgstr ""
+msgstr "VK"
 
 #: modules/gutenberg/icons/icons-v6-3.php:4301
 msgid "VNV"
@@ -8184,7 +8184,7 @@ msgstr "Vr Cardboard"
 
 #: modules/gutenberg/icons/icons-v6-3.php:4400
 msgid "Vue.js"
-msgstr ""
+msgstr "Vue.js"
 
 #: modules/gutenberg/icons/icons-v6-3.php:4411
 msgid "W"
@@ -8380,7 +8380,7 @@ msgstr "Llave inglesa"
 
 #: modules/gutenberg/icons/icons-v6-3.php:4965
 msgid "X"
-msgstr ""
+msgstr "X"
 
 #: modules/gutenberg/icons/icons-v6-3.php:4976
 msgid "X Ray"
@@ -8718,7 +8718,7 @@ msgstr "Píxel"
 #: modules/gutenberg/build/blocks.js:11
 #: modules/gutenberg/build/blocks.js:15
 msgid "Em"
-msgstr ""
+msgstr "Em"
 
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
@@ -9423,7 +9423,7 @@ msgstr "Cuerpo del correo electrónico"
 
 #: assets/build/formEditor.js:172
 msgid "CC"
-msgstr ""
+msgstr "CC"
 
 #: assets/build/formEditor.js:172
 msgid "BCC"
@@ -10680,7 +10680,7 @@ msgstr "Contenido"
 
 #: modules/gutenberg/build/blocks.js:11
 msgid "Div"
-msgstr ""
+msgstr "Div"
 
 #: modules/gutenberg/build/blocks.js:11
 msgid "Heading Wrapper"

@@ -1272,7 +1272,7 @@ msgstr "Point d'ancrage Cercle Exclamation"
 
 #: modules/gutenberg/icons/icons-v6-0.php:399
 msgid "Anchor Circle Xmark"
-msgstr ""
+msgstr "Marque X du cercle d'ancrage"
 
 #: modules/gutenberg/icons/icons-v6-0.php:410
 msgid "Anchor Lock"
@@ -3048,7 +3048,7 @@ msgstr "D&D Beyond"
 
 #: modules/gutenberg/icons/icons-v6-1.php:191
 msgid "dailymotion"
-msgstr ""
+msgstr "dailymotion"
 
 #: modules/gutenberg/icons/icons-v6-1.php:202
 msgid "DashCube"
@@ -3400,7 +3400,7 @@ msgstr "Éjecter"
 
 #: modules/gutenberg/icons/icons-v6-1.php:1082
 msgid "Elementor"
-msgstr ""
+msgstr "Elementor"
 
 #: modules/gutenberg/icons/icons-v6-1.php:1093
 msgid "Elevator"
@@ -3556,7 +3556,7 @@ msgstr ""
 
 #: modules/gutenberg/icons/icons-v6-1.php:1581
 msgid "Face Grin Hearts"
-msgstr ""
+msgstr "Visage sourire cœurs"
 
 #: modules/gutenberg/icons/icons-v6-1.php:1597
 msgid "Face Grin Squint"
@@ -4153,7 +4153,7 @@ msgstr "GitHub alternatif"
 
 #: modules/gutenberg/icons/icons-v6-1.php:3483
 msgid "GitKraken"
-msgstr ""
+msgstr "GitKraken"
 
 #: modules/gutenberg/icons/icons-v6-1.php:3494
 msgid "GitLab"
@@ -4217,7 +4217,7 @@ msgstr "Google Drive"
 
 #: modules/gutenberg/icons/icons-v6-1.php:3659
 msgid "Google Pay"
-msgstr ""
+msgstr "Google Pay"
 
 #: modules/gutenberg/icons/icons-v6-1.php:3670
 msgid "Google Play"
@@ -4293,7 +4293,7 @@ msgstr "Panneau Guarani"
 
 #: modules/gutenberg/icons/icons-v6-1.php:3879
 msgid "Guilded"
-msgstr ""
+msgstr "Guilded"
 
 #: modules/gutenberg/icons/icons-v6-1.php:3890
 msgid "Guitar"
@@ -4481,7 +4481,7 @@ msgstr "Disque dur"
 
 #: modules/gutenberg/icons/icons-v6-1.php:4472
 msgid "Hashnode"
-msgstr ""
+msgstr "Hashnode"
 
 #: modules/gutenberg/icons/icons-v6-1.php:4483
 msgid "Hashtag"
@@ -4681,7 +4681,7 @@ msgstr "Fissure dans la cheminée de la maison"
 
 #: modules/gutenberg/icons/icons-v6-1.php:5059
 msgid "House Chimney Medical"
-msgstr ""
+msgstr "Cheminée de maison médicale"
 
 #: modules/gutenberg/icons/icons-v6-1.php:5070
 msgid "House Chimney User"
@@ -5136,7 +5136,7 @@ msgstr "Barre oblique de lien"
 
 #: modules/gutenberg/icons/icons-v6-2.php:915
 msgid "LinkedIn"
-msgstr ""
+msgstr "LinkedIn"
 
 #: modules/gutenberg/icons/icons-v6-2.php:926
 msgid "LinkedIn In"
@@ -5144,7 +5144,7 @@ msgstr "LinkedIn In"
 
 #: modules/gutenberg/icons/icons-v6-2.php:937
 msgid "Linode"
-msgstr ""
+msgstr "Linode"
 
 #: modules/gutenberg/icons/icons-v6-2.php:948
 msgid "Linux"
@@ -5268,7 +5268,7 @@ msgstr "Signe du Manat"
 
 #: modules/gutenberg/icons/icons-v6-2.php:1278
 msgid "Mandalorian"
-msgstr ""
+msgstr "Mandalorien"
 
 #: modules/gutenberg/icons/icons-v6-2.php:1294
 msgid "Map"
@@ -6386,7 +6386,7 @@ msgstr "Raspberry Pi"
 
 #: modules/gutenberg/icons/icons-v6-2.php:4446
 msgid "Ravelry"
-msgstr ""
+msgstr "Ravelry"
 
 #: modules/gutenberg/icons/icons-v6-2.php:4457
 msgid "React"
@@ -6992,7 +6992,7 @@ msgstr "Trier par ordre croissant"
 
 #: modules/gutenberg/icons/icons-v6-3.php:982
 msgid "SoundCloud"
-msgstr ""
+msgstr "SoundCloud"
 
 #: modules/gutenberg/icons/icons-v6-3.php:993
 msgid "Sourcetree"
@@ -8351,7 +8351,7 @@ msgstr "Ver"
 
 #: modules/gutenberg/icons/icons-v6-3.php:4910
 msgid "WPBeginner"
-msgstr ""
+msgstr "WPBeginner"
 
 #: modules/gutenberg/icons/icons-v6-3.php:4921
 msgid "WPExplorer"

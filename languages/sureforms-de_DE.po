@@ -1205,7 +1205,7 @@ msgstr "Barrierefreies Symbol"
 
 #: modules/gutenberg/icons/icons-v6-0.php:180
 msgid "Accusoft"
-msgstr ""
+msgstr "Accusoft"
 
 #: modules/gutenberg/icons/icons-v6-0.php:196
 msgid "Address Book"
@@ -2178,7 +2178,7 @@ msgstr "BuySellAds"
 
 #: modules/gutenberg/icons/icons-v6-0.php:2894
 msgid "C"
-msgstr ""
+msgstr "C"
 
 #: modules/gutenberg/icons/icons-v6-0.php:2905
 msgid "Cake Candles"
@@ -2976,7 +2976,7 @@ msgstr "Creative Commons Teilen"
 
 #: modules/gutenberg/icons/icons-v6-0.php:5263
 msgid "Creative Commons CC0"
-msgstr ""
+msgstr "Creative Commons CC0"
 
 #: modules/gutenberg/icons/icons-v6-0.php:5279
 msgid "Credit Card"
@@ -3349,7 +3349,7 @@ msgstr "Verlies"
 
 #: modules/gutenberg/icons/icons-v6-1.php:917
 msgid "Dyalog"
-msgstr ""
+msgstr "Dyalog"
 
 #: modules/gutenberg/icons/icons-v6-1.php:928
 msgid "E"
@@ -5277,7 +5277,7 @@ msgstr "Manat-Zeichen"
 
 #: modules/gutenberg/icons/icons-v6-2.php:1278
 msgid "Mandalorian"
-msgstr ""
+msgstr "Mandalorian"
 
 #: modules/gutenberg/icons/icons-v6-2.php:1294
 msgid "Map"
@@ -6339,7 +6339,7 @@ msgstr "Q"
 
 #: modules/gutenberg/icons/icons-v6-2.php:4292
 msgid "QQ"
-msgstr ""
+msgstr "QQ"
 
 #: modules/gutenberg/icons/icons-v6-2.php:4303
 msgid "Qrcode"
@@ -6844,7 +6844,7 @@ msgstr "Shop Slash"
 
 #: modules/gutenberg/icons/icons-v6-3.php:537
 msgid "Shopify"
-msgstr ""
+msgstr "Shopify"
 
 #: modules/gutenberg/icons/icons-v6-3.php:548
 msgid "Shopware"

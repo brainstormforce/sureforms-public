@@ -1199,7 +1199,7 @@ msgstr "Toegankelijk pictogram"
 
 #: modules/gutenberg/icons/icons-v6-0.php:180
 msgid "Accusoft"
-msgstr ""
+msgstr "Accusoft"
 
 #: modules/gutenberg/icons/icons-v6-0.php:196
 msgid "Address Book"
@@ -2020,7 +2020,7 @@ msgstr "Controle van de brugcirkel"
 
 #: modules/gutenberg/icons/icons-v6-0.php:2471
 msgid "Bridge Circle Exclamation"
-msgstr ""
+msgstr "Brug Cirkel Uitroepteken"
 
 #: modules/gutenberg/icons/icons-v6-0.php:2482
 msgid "Bridge Circle Xmark"
@@ -3055,7 +3055,7 @@ msgstr ""
 
 #: modules/gutenberg/icons/icons-v6-1.php:202
 msgid "DashCube"
-msgstr ""
+msgstr "DashCube"
 
 #: modules/gutenberg/icons/icons-v6-1.php:213
 msgid "Database"
@@ -3868,7 +3868,7 @@ msgstr "Filter Cirkel Dollar"
 
 #: modules/gutenberg/icons/icons-v6-1.php:2624
 msgid "Filter Circle Xmark"
-msgstr ""
+msgstr "Filter Cirkel Xmark"
 
 #: modules/gutenberg/icons/icons-v6-1.php:2635
 msgid "Fingerprint"
@@ -4296,7 +4296,7 @@ msgstr "Guarani-teken"
 
 #: modules/gutenberg/icons/icons-v6-1.php:3879
 msgid "Guilded"
-msgstr ""
+msgstr "Gegild"
 
 #: modules/gutenberg/icons/icons-v6-1.php:3890
 msgid "Guitar"
@@ -4328,7 +4328,7 @@ msgstr "Hamer"
 
 #: modules/gutenberg/icons/icons-v6-1.php:3978
 msgid "Hamsa"
-msgstr ""
+msgstr "Hamsa"
 
 #: modules/gutenberg/icons/icons-v6-1.php:3994
 msgid "Hand"
@@ -4476,7 +4476,7 @@ msgstr "Handdruk Slash"
 
 #: modules/gutenberg/icons/icons-v6-1.php:4445
 msgid "Hanukiah"
-msgstr ""
+msgstr "Chanoekia"
 
 #: modules/gutenberg/icons/icons-v6-1.php:4461
 msgid "Hard Drive"
@@ -5769,7 +5769,7 @@ msgstr "page4 Corporation"
 
 #: modules/gutenberg/icons/icons-v6-2.php:2682
 msgid "Pagelines"
-msgstr ""
+msgstr "Paginalijnen"
 
 #: modules/gutenberg/icons/icons-v6-2.php:2693
 msgid "Pager"
@@ -6345,7 +6345,7 @@ msgstr "Vraag"
 
 #: modules/gutenberg/icons/icons-v6-2.php:4325
 msgid "QuinScape"
-msgstr ""
+msgstr "QuinScape"
 
 #: modules/gutenberg/icons/icons-v6-2.php:4336
 msgid "Quora"
@@ -6389,7 +6389,7 @@ msgstr "Raspberry Pi"
 
 #: modules/gutenberg/icons/icons-v6-2.php:4446
 msgid "Ravelry"
-msgstr ""
+msgstr "Ravelry"
 
 #: modules/gutenberg/icons/icons-v6-2.php:4457
 msgid "React"
@@ -6650,7 +6650,7 @@ msgstr "Salesforce"
 
 #: modules/gutenberg/icons/icons-v6-2.php:5187
 msgid "Sass"
-msgstr ""
+msgstr "Sass"
 
 #: modules/gutenberg/icons/icons-v6-3.php:26
 msgid "Satellite"
@@ -6842,7 +6842,7 @@ msgstr ""
 
 #: modules/gutenberg/icons/icons-v6-3.php:548
 msgid "Shopware"
-msgstr ""
+msgstr "Shopware"
 
 #: modules/gutenberg/icons/icons-v6-3.php:559
 msgid "Shower"
@@ -7832,7 +7832,7 @@ msgstr "Onderstrepen"
 
 #: modules/gutenberg/icons/icons-v6-3.php:3416
 msgid "Uniregistry"
-msgstr ""
+msgstr "Uniregistry"
 
 #: modules/gutenberg/icons/icons-v6-3.php:3427
 msgid "Unity 3D"
@@ -8110,7 +8110,7 @@ msgstr ""
 #: modules/gutenberg/icons/icons-v6-3.php:4191
 #: modules/gutenberg/icons/icons-v6-3.php:4213
 msgid "Vimeo"
-msgstr ""
+msgstr "Vimeo"
 
 #: modules/gutenberg/icons/icons-v6-3.php:4224
 msgid "Vine"
@@ -8761,7 +8761,7 @@ msgstr "Geen"
 
 #: assets/build/blocks.js:172
 msgid "(###) ###-####"
-msgstr ""
+msgstr "(###) ###-####"
 
 #: assets/build/blocks.js:172
 msgid "(##) ####-####"
@@ -10482,7 +10482,7 @@ msgstr "H2"
 #: modules/gutenberg/build/blocks.js:11
 #: modules/gutenberg/build/blocks.js:15
 msgid "H3"
-msgstr ""
+msgstr "H3"
 
 #: modules/gutenberg/build/blocks.js:11
 #: modules/gutenberg/build/blocks.js:15
