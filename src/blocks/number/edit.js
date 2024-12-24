@@ -20,6 +20,7 @@ import { compose } from '@wordpress/compose';
 import { FieldsPreview } from '../FieldsPreview.jsx';
 import { useErrMessage } from '@Blocks/util';
 import ConditionalLogic from '@Components/conditional-logic';
+import Calculation from '@Components/calculation';
 
 const formatNumber = ( number, formatType ) => {
 	if ( ! number ) {
@@ -241,6 +242,9 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 								onChange={ ( newValue ) =>
 									setAttributes( { help: newValue } )
 								}
+							/>
+							<Calculation
+								{ ...{ setAttributes, attributes } }
 							/>
 						</SRFMAdvancedPanelBody>
 					</InspectorTab>
