@@ -154,6 +154,9 @@ class Multichoice_Markup extends Base {
 					gap: 8px;
 					cursor: pointer;
 				}
+				.srfm-multi-choice-block  .srfm-multi-choice-single label input {
+					margin: 0 !important;
+				}
 				.srfm-multi-choice-block .srfm-multi-choice-single label span {
 					font-size: 14px;
 					font-weight: 500;

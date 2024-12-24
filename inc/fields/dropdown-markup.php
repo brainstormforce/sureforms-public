@@ -78,19 +78,40 @@ class Dropdown_Markup extends Base {
 					if ( is_array( $this->options ) ) {
 						?>
 					<select
+						<?php echo $this->is_editing && 'true' === $this->multi_select_attr ? 'multiple' : ''; ?>
 						class="srfm-dropdown-common srfm-<?php echo esc_attr( $this->slug ); ?>-input"
 						<?php echo ! empty( $this->aria_described_by ) ? "aria-describedby='" . esc_attr( trim( $this->aria_described_by ) ) . "'" : ''; ?>
 				data-required="<?php echo esc_attr( $this->data_require_attr ); ?>" <?php echo wp_kses_post( $this->data_attribute_markup() ); ?> name="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?><?php echo esc_attr( $this->field_name ); ?>" data-multiple="<?php echo esc_attr( $this->multi_select_attr ); ?>" data-searchable="<?php echo esc_attr( $this->search_attr ); ?>" tabindex="0" aria-hidden="true">
+						<?php
+						if ( ! $this->is_editing ) {
+							?>
 					<option class="srfm-dropdown-placeholder" value="" disabled selected><?php echo esc_html( $this->placeholder ); ?></option>
+							<?php
+						}
+						?>
 						<?php foreach ( $this->options as $option ) { ?>
 							<?php
 								$icon_svg         = Spec_Gb_Helper::render_svg_html( $option['icon'] ?? '', true );
 								$escaped_icon_svg = htmlspecialchars( Helper::get_string_value( $icon_svg ), ENT_QUOTES, 'UTF-8' );
 
 								$label = $option['label'] ?? '';
-							?>
+
+							if ( $this->is_editing ) {
+								if ( 'true' === $this->multi_select_attr ) {
+									$values = explode( ',', $this->default );
+									?>
+										<option <?php selected( in_array( $label, $values, true ), true ); ?> value="<?php echo esc_attr( $label ); ?>" data-icon="<?php echo ! empty( $escaped_icon_svg ) ? esc_attr( $escaped_icon_svg ) : ''; ?>"><?php echo esc_html( $label ); ?></option>
+										<?php
+								} else {
+									?>
+									<option <?php selected( $this->default, $label ); ?> value="<?php echo esc_attr( $label ); ?>" data-icon="<?php echo ! empty( $escaped_icon_svg ) ? esc_attr( $escaped_icon_svg ) : ''; ?>"><?php echo esc_html( $label ); ?></option>
+									<?php
+								}
+							} else {
+								?>
 								<option <?php selected( $this->default, $label ); ?> value="<?php echo esc_attr( $label ); ?>" data-icon="<?php echo ! empty( $escaped_icon_svg ) ? esc_attr( $escaped_icon_svg ) : ''; ?>"><?php echo esc_html( $label ); ?></option>
 								<?php
+							}
 						}
 						?>
 					</select>
