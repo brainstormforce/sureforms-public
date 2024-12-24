@@ -4,8 +4,61 @@
 		"Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
 		"This file is @generated automatically"
 	],
-	"content-hash": "b30aa46f4019ba14dbc103a4d6d7247c",
+	"content-hash": "9bc1ca30db4454435afca80f38bb4b59",
 	"packages": [
+		{
+			"name": "brainstormforce/nps-survey",
+			"version": "1.0.5",
+			"source": {
+				"type": "git",
+				"url": "git@github.com:brainstormforce/nps-survey.git",
+				"reference": "6dc3d3a2b823e5fbd8cb617cba7ae7f7c20feaf7"
+			},
+			"dist": {
+				"type": "zip",
+				"url": "https://api.github.com/repos/brainstormforce/nps-survey/zipball/6dc3d3a2b823e5fbd8cb617cba7ae7f7c20feaf7",
+				"reference": "6dc3d3a2b823e5fbd8cb617cba7ae7f7c20feaf7",
+				"shasum": ""
+			},
+			"require-dev": {
+				"automattic/vipwpcs": "^2.3",
+				"dealerdirect/phpcodesniffer-composer-installer": "^0.7.1",
+				"php-stubs/generator": "^0.8.2",
+				"php-stubs/wordpress-stubs": "^6.1",
+				"phpcompatibility/php-compatibility": "^9.3",
+				"phpstan/phpstan": "^1.9",
+				"squizlabs/php_codesniffer": "^3.5",
+				"szepeviktor/phpstan-wordpress": "^1.1",
+				"wp-coding-standards/wpcs": "^2.2"
+			},
+			"type": "wordpress-plugin",
+			"scripts": {
+				"format": [
+					"vendor/bin/phpcbf"
+				],
+				"lint": [
+					"vendor/bin/phpcs"
+				],
+				"test": [
+					"vendor/bin/phpunit"
+				],
+				"phpstan": [
+					"vendor/bin/phpstan --memory-limit=2048M analyse"
+				],
+				"gen-stubs": [
+					"vendor/bin/generate-stubs artifact/phpstan/nps-survey/ --out=tests/php/stubs/nps-survey-stubs.php && rm -rf artifact/phpstan"
+				],
+				"update-stubs": [
+					"rm -f tests/php/stubs/nps-survey-stubs.php && bash bin/build-folder-phpstan.sh && composer gen-stubs"
+				]
+			},
+			"description": "NPS Survey Plugin",
+			"support": {
+				"source": "https://github.com/brainstormforce/nps-survey/tree/1.0.5",
+				"issues": "https://github.com/brainstormforce/nps-survey/issues"
+			},
+			"time": "2024-12-19T08:06:20+00:00"
+		},
 		{
 			"name": "composer/ca-bundle",
 			"version": "1.4.1",
@@ -268,6 +321,152 @@
 				}
 			],
 			"time": "2024-02-09T14:26:28+00:00"
+		},
+		{
+			"name": "composer/installers",
+			"version": "v2.3.0",
+			"source": {
+				"type": "git",
+				"url": "https://github.com/composer/installers.git",
+				"reference": "12fb2dfe5e16183de69e784a7b84046c43d97e8e"
+			},
+			"dist": {
+				"type": "zip",
+				"url": "https://api.github.com/repos/composer/installers/zipball/12fb2dfe5e16183de69e784a7b84046c43d97e8e",
+				"reference": "12fb2dfe5e16183de69e784a7b84046c43d97e8e",
+				"shasum": ""
+			},
+			"require": {
+				"composer-plugin-api": "^1.0 || ^2.0",
+				"php": "^7.2 || ^8.0"
+			},
+			"require-dev": {
+				"composer/composer": "^1.10.27 || ^2.7",
+				"composer/semver": "^1.7.2 || ^3.4.0",
+				"phpstan/phpstan": "^1.11",
+				"phpstan/phpstan-phpunit": "^1",
+				"symfony/phpunit-bridge": "^7.1.1",
+				"symfony/process": "^5 || ^6 || ^7"
+			},
+			"type": "composer-plugin",
+			"extra": {
+				"class": "Composer\\Installers\\Plugin",
+				"branch-alias": {
+					"dev-main": "2.x-dev"
+				},
+				"plugin-modifies-install-path": true
+			},
+			"autoload": {
+				"psr-4": {
+					"Composer\\Installers\\": "src/Composer/Installers"
+				}
+			},
+			"notification-url": "https://packagist.org/downloads/",
+			"license": [
+				"MIT"
+			],
+			"authors": [
+				{
+					"name": "Kyle Robinson Young",
+					"email": "kyle@dontkry.com",
+					"homepage": "https://github.com/shama"
+				}
+			],
+			"description": "A multi-framework Composer library installer",
+			"homepage": "https://composer.github.io/installers/",
+			"keywords": [
+				"Dolibarr",
+				"Eliasis",
+				"Hurad",
+				"ImageCMS",
+				"Kanboard",
+				"Lan Management System",
+				"MODX Evo",
+				"MantisBT",
+				"Mautic",
+				"Maya",
+				"OXID",
+				"Plentymarkets",
+				"Porto",
+				"RadPHP",
+				"SMF",
+				"Starbug",
+				"Thelia",
+				"Whmcs",
+				"WolfCMS",
+				"agl",
+				"annotatecms",
+				"attogram",
+				"bitrix",
+				"cakephp",
+				"chef",
+				"cockpit",
+				"codeigniter",
+				"concrete5",
+				"concreteCMS",
+				"croogo",
+				"dokuwiki",
+				"drupal",
+				"eZ Platform",
+				"elgg",
+				"expressionengine",
+				"fuelphp",
+				"grav",
+				"installer",
+				"itop",
+				"known",
+				"kohana",
+				"laravel",
+				"lavalite",
+				"lithium",
+				"magento",
+				"majima",
+				"mako",
+				"matomo",
+				"mediawiki",
+				"miaoxing",
+				"modulework",
+				"modx",
+				"moodle",
+				"osclass",
+				"pantheon",
+				"phpbb",
+				"piwik",
+				"ppi",
+				"processwire",
+				"puppet",
+				"pxcms",
+				"reindex",
+				"roundcube",
+				"shopware",
+				"silverstripe",
+				"sydes",
+				"sylius",
+				"tastyigniter",
+				"wordpress",
+				"yawik",
+				"zend",
+				"zikula"
+			],
+			"support": {
+				"issues": "https://github.com/composer/installers/issues",
+				"source": "https://github.com/composer/installers/tree/v2.3.0"
+			},
+			"funding": [
+				{
+					"url": "https://packagist.com",
+					"type": "custom"
+				},
+				{
+					"url": "https://github.com/composer",
+					"type": "github"
+				},
+				{
+					"url": "https://tidelift.com/funding/github/packagist/composer/composer",
+					"type": "tidelift"
+				}
+			],
+			"time": "2024-06-24T20:46:46+00:00"
 		},
 		{
 			"name": "composer/metadata-minifier",
