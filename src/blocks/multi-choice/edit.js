@@ -36,6 +36,7 @@ import UAGIconPicker from '@Components/icon-picker';
 import SRFMMediaPicker from '@Components/image';
 import SRFMNumberControl from '@Components/number-control';
 import { BulkInserterWithButton } from '@Components/bulk-inserter';
+import Calculation from '@Components/calculation';
 
 const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 	const {
@@ -562,6 +563,9 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 								onChange={ ( value ) =>
 									setAttributes( { help: value } )
 								}
+							/>
+							<Calculation
+								{ ...{ setAttributes, attributes } }
 							/>
 						</SRFMAdvancedPanelBody>
 					</InspectorTab>
