@@ -8,10 +8,10 @@ const Calculation = ( props ) => {
 		null, // Default value
 		{
 			attributes,
-			setAttributes
+			setAttributes,
 		}
 	);
-	
+
 	const isPro = srfm_block_data.is_pro_active;
 	return <>{ isPro ? calculation : '' }</>;
 };

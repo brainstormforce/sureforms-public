@@ -29,6 +29,7 @@ import ConditionalLogic from '@Components/conditional-logic';
 import UAGIconPicker from '@Components/icon-picker';
 import SRFMNumberControl from '@Components/number-control';
 import { BulkInserterWithButton } from '@Components/bulk-inserter';
+import Calculation from '@Components/calculation';
 
 const Edit = ( { attributes, setAttributes, clientId } ) => {
 	const {
@@ -431,6 +432,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 									setAttributes( { help: value } )
 								}
 							/>
+							<Calculation { ...{ setAttributes, attributes } } />
 						</SRFMAdvancedPanelBody>
 					</InspectorTab>
 					<InspectorTab { ...SRFMTabs.style }></InspectorTab>

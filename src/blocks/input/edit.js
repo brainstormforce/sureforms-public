@@ -23,6 +23,7 @@ import { compose } from '@wordpress/compose';
 import { FieldsPreview } from '../FieldsPreview.jsx';
 import { useErrMessage } from '@Blocks/util';
 import ConditionalLogic from '@Components/conditional-logic';
+import Calculation from '@Components/calculation';
 
 const Edit = ( { clientId, attributes, setAttributes } ) => {
 	const {
@@ -247,6 +248,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 									} )
 								}
 							/>
+							<Calculation { ...{ setAttributes, attributes } } />
 						</SRFMAdvancedPanelBody>
 					</InspectorTab>
 					<InspectorTab { ...SRFMTabs.advance }>

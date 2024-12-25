@@ -564,9 +564,7 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 									setAttributes( { help: value } )
 								}
 							/>
-							<Calculation
-								{ ...{ setAttributes, attributes } }
-							/>
+							<Calculation { ...{ setAttributes, attributes } } />
 						</SRFMAdvancedPanelBody>
 					</InspectorTab>
 					<InspectorTab { ...SRFMTabs.style }></InspectorTab>

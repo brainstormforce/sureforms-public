@@ -243,9 +243,7 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 									setAttributes( { help: newValue } )
 								}
 							/>
-							<Calculation
-								{ ...{ setAttributes, attributes } }
-							/>
+							<Calculation { ...{ setAttributes, attributes } } />
 						</SRFMAdvancedPanelBody>
 					</InspectorTab>
 					<InspectorTab { ...SRFMTabs.style }></InspectorTab>
