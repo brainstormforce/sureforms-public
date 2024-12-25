@@ -749,9 +749,7 @@ class Admin {
 			$params['bsf'] = $affiliate;
 		}
 
-		$url = add_query_arg( $params, $url );
-
-		return $url;
+		return add_query_arg( $params, $url );
 	}
 
 	// Entries methods.
