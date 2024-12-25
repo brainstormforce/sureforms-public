@@ -717,7 +717,41 @@ class Admin {
 			$url = SRFM_WEBSITE . $trail;
 		}
 
+		$url = self::add_url_params( $url );
+
 		return esc_url( $url );
+	}
+
+	/**
+	 * Add affiliate and utm params to given url.
+	 *
+	 * @param string $url URL where params need to be added.
+	 * @since x.x.x
+	 * @return string
+	 */
+	public static function add_url_params( $url ) {
+		// Whenever a sureforms is installed from astra astra should update key 'sureforms' in option 'bsf_product_referers' to 'astra'
+		// update_option( 'bsf_product_referers', [ 'sureforms' => 'astra' ] ); phpcs:ignore test code will be removed.
+
+		// 'sureforms_partner_url_param' should be updated by affiliate partners on there environment.
+		// update_option( 'sureforms_partner_url_param', '2345' );
+		$referers = get_option( 'bsf_product_referers', [] );
+
+		// check if any referer for sureforms plugin exists in database.
+		$srfm_referer = ! empty( $referers['sureforms'] ) && is_string( $referers['sureforms'] ) ? sanitize_text_field( $referers['sureforms'] ) : 'sureforms';
+		$params       = [ 'utm_source' => $srfm_referer ];
+
+		// check if option for affiliate exists in database.
+		$affiliate = get_option( 'sureforms_partner_url_param', '' );
+		$affiliate = is_string( $affiliate ) ? sanitize_text_field( $affiliate ) : '';
+
+		if ( ! empty( $affiliate ) ) {
+			$params['bsf'] = $affiliate;
+		}
+
+		$url = add_query_arg( $params, $url );
+
+		return $url;
 	}
 
 	// Entries methods.
