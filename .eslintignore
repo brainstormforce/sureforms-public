@@ -9,3 +9,4 @@ coverage-report
 playwright-report
 tests
 src/lib/*
+inc/lib/nps-survey/*
