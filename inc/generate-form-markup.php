@@ -281,7 +281,7 @@ class Generate_Form_Markup {
 
 				if ( $is_page_break ) {
 					do_action( 'srfm_page_break_pagination', $post, $id );
-				} elseif ( apply_filters( 'srfm_do_not_use_custom_field_content', true, $srfm_live_mode_data ) ) {
+				} elseif ( ! apply_filters( 'srfm_use_custom_field_content', false, $srfm_live_mode_data ) ) {
 					// phpcs:ignore
 					echo $content;
 					// phpcs:ignoreEnd
