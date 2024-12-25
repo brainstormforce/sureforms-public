@@ -281,13 +281,14 @@ class Generate_Form_Markup {
 
 				if ( $is_page_break ) {
 					do_action( 'srfm_page_break_pagination', $post, $id );
-				} elseif ( ! apply_filters( 'srfm_do_not_use_default_field_content', true, $srfm_live_mode_data ) ) {
-					do_action( 'srfm_custom_field_content', $post, $id, $srfm_live_mode_data );
-				} else {
+				} elseif ( ! apply_filters( 'srfm_use_custom_field_content', false, $srfm_live_mode_data ) ) {
 					// phpcs:ignore
 					echo $content;
 					// phpcs:ignoreEnd
 				}
+
+				do_action( 'srfm_after_field_content', $post, $id, $srfm_live_mode_data );
+
 				?>
 				<?php
 				if ( 0 !== $block_count && ! $is_inline_button || $is_page_break ) {
