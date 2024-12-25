@@ -211,7 +211,7 @@ class Export {
 				'methods'             => WP_REST_Server::EDITABLE,
 				'callback'            => [ $this, 'handle_import_form' ],
 				'permission_callback' => static function () {
-					return Helper::get_instance()->current_user_can('manage_options');
+					return Helper::get_instance()->current_user_can( 'manage_options' );
 				},
 			]
 		);
