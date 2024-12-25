@@ -135,7 +135,7 @@ class Generate_Form_Markup {
 			}
 
 			$btn_from_theme       = Helper::get_meta_value( $id, '_srfm_inherit_theme_button' );
-			$is_inline_button     = Helper::get_meta_value( $id, '_srfm_is_inline_button' );
+			$is_inline_button     = apply_filters( 'srfm_use_inline_button', true, $srfm_live_mode_data ) && Helper::get_meta_value( $id, '_srfm_is_inline_button' );
 			$security_type        = Helper::get_meta_value( $id, '_srfm_captcha_security_type' );
 			$form_custom_css_meta = Helper::get_meta_value( $id, '_srfm_form_custom_css' );
 			$custom_css           = ! empty( $form_custom_css_meta ) && is_string( $form_custom_css_meta ) ? $form_custom_css_meta : '';
