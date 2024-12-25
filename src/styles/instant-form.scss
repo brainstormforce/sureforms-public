@@ -9,6 +9,8 @@
 		display: flex;
 		align-items: center;
 		gap: 8px;
+		min-width: 136px;
+		justify-content: center;
 
 		&:hover {
 			color: #1e1e1e;

@@ -4,7 +4,7 @@ Tags: contact form, custom form, form builder, forms, gutenberg
 Requires at least: 6.4
 Tested up to: 6.7.1
 Requires PHP: 7.4
-Stable tag: 1.2.1
+Stable tag: 1.2.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -254,6 +254,9 @@ Yes! You can certainly use SureForms on yours as well as your client’s website
 When you use SureForms, you get an easy-to-use AI-powered form builder that can be used to build your forms fast.
 
 == Changelog ==
+= 1.2.2 - 24th December 2024 =
+* Fix: Resolved an issue where the email template failed to render in the inbox when a third-party plugin overrode the email headers in the wp_mail() function.
+* Fix: Addressed a security vulnerability. Props to Lucio Sá for privately reporting it.
 = 1.2.1 - 17th December 2024 =
 * Improvement: Revamped the General and Spam Protection settings for an improved user experience.
 * Improvement: Enhanced screen reader announcements for validation messages.

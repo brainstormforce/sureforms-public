@@ -52,12 +52,12 @@ class Generate_Form_Markup {
 	/**
 	 * Handle Form status
 	 *
-	 * @param int|string   $id Contains form ID.
-	 * @param bool         $show_title_current_page Boolean to show/hide form title.
-	 * @param string       $sf_classname additional class_name.
-	 * @param string       $post_type Contains post type.
-	 * @param bool         $do_blocks Boolean to enable/disable parsing dynamic blocks.
-	 * @param array<mixed> $srfm_live_mode_data contains live mode data.
+	 * @param int|string          $id Contains form ID.
+	 * @param bool                $show_title_current_page Boolean to show/hide form title.
+	 * @param string              $sf_classname additional class_name.
+	 * @param string              $post_type Contains post type.
+	 * @param bool                $do_blocks Boolean to enable/disable parsing dynamic blocks.
+	 * @param array<string,mixed> $srfm_live_mode_data The live mode data, it is required for updating the live preview of the instant form.
 	 *
 	 * @return string|false
 	 * @since 0.0.1
@@ -104,7 +104,7 @@ class Generate_Form_Markup {
 
 			$form_styling             = get_post_meta( $id, '_srfm_forms_styling', true );
 			$form_styling             = ! empty( $form_styling ) && is_array( $form_styling ) ? $form_styling : [];
-			$page_break_settings      = defined( 'SRFM_PRO_VER' ) ? get_post_meta( $id, '_srfm_page_break_settings', true ) : [];
+			$page_break_settings      = defined( 'SRFM_PRO_VER' ) && apply_filters( 'srfm_use_page_break_layout', true, $srfm_live_mode_data ) ? get_post_meta( $id, '_srfm_page_break_settings', true ) : [];
 			$page_break_settings      = ! empty( $page_break_settings ) && is_array( $page_break_settings ) ? $page_break_settings : [];
 			$is_page_break            = ! empty( $page_break_settings ) ? $page_break_settings['is_page_break'] : false;
 			$page_break_progress_type = ! empty( $page_break_settings ) ? $page_break_settings['progress_indicator_type'] : 'none';
@@ -281,8 +281,8 @@ class Generate_Form_Markup {
 
 				if ( $is_page_break ) {
 					do_action( 'srfm_page_break_pagination', $post, $id );
-				} elseif ( apply_filters( 'srfm_do_not_use_default_field_content', false, $srfm_live_mode_data ) ) {
-					do_action( 'srfm_custom_field_content', $post, $id, [] );
+				} elseif ( ! apply_filters( 'srfm_do_not_use_default_field_content', true, $srfm_live_mode_data ) ) {
+					do_action( 'srfm_custom_field_content', $post, $id, $srfm_live_mode_data );
 				} else {
 					// phpcs:ignore
 					echo $content;
@@ -290,9 +290,7 @@ class Generate_Form_Markup {
 				}
 				?>
 				<?php
-				if ( 0 !== $block_count && ! $is_inline_button || $is_page_break
-
-				) {
+				if ( 0 !== $block_count && ! $is_inline_button || $is_page_break ) {
 					?>
 					<?php if ( ! empty( $security_type ) && 'none' !== $security_type ) { ?>
 						<div class="srfm-captcha-container <?php echo esc_attr( 'v3-reCAPTCHA' === $recaptcha_version || 'v2-invisible' === $recaptcha_version ? 'srfm-display-none' : '' ); ?>">

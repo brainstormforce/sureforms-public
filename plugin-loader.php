@@ -30,6 +30,8 @@ use SRFM\Inc\Global_Settings\Email_Summary;
 use SRFM\Inc\Global_Settings\Global_Settings;
 use SRFM\Inc\Gutenberg_Hooks;
 use SRFM\Inc\Helper;
+use SRFM\Inc\Lib\SRFM_Nps_Survey;
+use SRFM\Inc\Nps_Notice;
 use SRFM\Inc\Page_Builders\Page_Builders;
 use SRFM\Inc\Post_Types;
 use SRFM\Inc\Rest_Api;
@@ -287,6 +289,16 @@ class Plugin_Loader {
 		AI_Auth::get_instance();
 		Updater::get_instance();
 		DatabaseRegister::init();
+
+		/**
+		 * Required to add the if check for the class existence to resolve phpstan error,
+		 * as the phpstan configuration ignores the inc/lib directory which gives error
+		 * unknown class.
+		 */
+		if ( class_exists( 'SRFM\Inc\Lib\SRFM_Nps_Survey' ) && ! apply_filters( 'srfm_disable_nps_survey', true ) ) {
+			SRFM_Nps_Survey::get_instance(); // Inits the NPS Survey class for which inits the NPS Survey plugin.
+			Nps_Notice::get_instance(); // Responsible for displaying the NPS Survey: keeping the line out of the check will also work.
+		}
 
 		/**
 		 * Load core files necessary for the Spectra block.

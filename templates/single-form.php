@@ -32,7 +32,7 @@ $use_banner_as_page_background = $instant_form_settings['use_banner_as_page_back
 $srfm_cover_image_url = $cover_image ? rawurldecode( strval( $cover_image ) ) : '';
 
 // Filter to use custom bg image and color combination on the Instant Form page.
-if ( ! apply_filters( 'srfm_use_color_or_image_as_bg', false, $srfm_live_mode_data ) ) {
+if ( apply_filters( 'srfm_use_color_or_image_as_bg', true, $srfm_live_mode_data ) ) {
 	if ( 'image' === $bg_type ) {
 		$bg_image = $bg_image ? 'url(' . $bg_image . ')' : '';
 		$bg_color = '#ffffff';
@@ -138,7 +138,7 @@ if ( $use_banner_as_page_background ) {
 
 	<?php
 	// Filter to use custom body content on the Instant Form page.
-	if ( ! apply_filters( 'srfm_do_not_use_default_body', false, $srfm_live_mode_data ) ) {
+	if ( apply_filters( 'srfm_use_custom_body_template', true, $srfm_live_mode_data ) ) {
 		?>
 		<body <?php body_class( $body_classes ); ?>>
 		<?php if ( ! $srfm_form_preview ) { ?>
@@ -169,7 +169,7 @@ if ( $use_banner_as_page_background ) {
 					<div class="srfm-form-wrapper">
 						<?php
 						// phpcs:ignore
-						echo Generate_Form_Markup::get_form_markup( $srfm_custom_post_id, false, '', 'sureforms_form' );
+						echo Generate_Form_Markup::get_form_markup( $srfm_custom_post_id, false, '', 'sureforms_form', false, $srfm_live_mode_data );
 						// phpcs:ignoreEnd
 						?>
 					</div>

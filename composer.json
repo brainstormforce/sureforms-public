@@ -6,7 +6,9 @@
 	"minimum-stability": "dev",
 	"prefer-stable": true,
 	"extra": {
-		"installer-disable": "true"
+		"installer-paths": {
+			"inc/lib/{$name}": ["brainstormforce/nps-survey"]
+		}
 	},
 	"require-dev": {
 		"codeinwp/phpcs-ruleset": "dev-main",
@@ -46,6 +48,15 @@
 		}
 	},
 	"require": {
-		"wp-cli/wp-cli-bundle": "^2.10"
-	}
+		"wp-cli/wp-cli-bundle": "^2.10",
+		"composer/installers": "^2.3",
+		"brainstormforce/nps-survey": "^1.0"
+	},
+	"repositories": [
+		{
+			"name": "brainstormforce/nps-survey",
+			"type": "vcs",
+			"url": "git@github.com:brainstormforce/nps-survey.git"
+		}
+	]
 }
