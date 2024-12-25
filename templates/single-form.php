@@ -138,7 +138,7 @@ if ( $use_banner_as_page_background ) {
 
 	<?php
 	// Filter to use custom body content on the Instant Form page.
-	if ( apply_filters( 'srfm_use_custom_body_template', true, $srfm_live_mode_data ) ) {
+	if ( apply_filters( 'srfm_do_not_use_custom_body_template', true, $srfm_live_mode_data ) ) {
 		?>
 		<body <?php body_class( $body_classes ); ?>>
 		<?php if ( ! $srfm_form_preview ) { ?>
