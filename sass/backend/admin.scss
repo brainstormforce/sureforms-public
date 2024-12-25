@@ -22,7 +22,34 @@ $placeholder_color: #9ca3af;
 		}
 	}
 }
+.toplevel_page_sureforms_menu,
+.sureforms_page_sureforms_form_settings,
+.sureforms_page_sureforms_entries,
+.sureforms_page_sureforms_form_entries,
+.sureforms_page_add-new-form,
+.post-type-sureforms_form {
+	// NPS Survey styles start.
+	// Set the button background to the primary color in dashboard.
+	[data-id="nps-survey-sureforms"] > .nps-survey-wrapper > div button[type="submit"],
+	[data-id="nps-survey-sureforms"] > .nps-survey-wrapper > div .bg-nps-button-background {
+		background-color: #d54407;
+		border: none;
+	}
+	// Change the text color for the Back button in the NPS survey.
+	[data-id="nps-survey-sureforms"] > .nps-survey-wrapper > div button.bg-transparent.text-nps-button-background {
+		color: #d54407;
+	}
 
+	// Hide Spectra, Astra, and Starter Templates NPS Survey on SureForms Pages.
+	// Once NPS Team works on the task where the popup will be visible only on individual dashboard pages, we can remove the below styles.
+	// The below styles can be removed once the specific plugins update their NPS survey implementation.
+	[data-id="nps-survey-ultimate-addons-for-gutenberg"],
+	[data-id="nps-survey-astra"],
+	[data-id="nps-survey-astra-sites"] {
+		display: none !important;
+	}
+	// NPS Survey styles end.
+}
 /* Clear to evenly position the next list items after the separator */
 #toplevel_page_sureforms_menu .wp-submenu li {
 	clear: both;
