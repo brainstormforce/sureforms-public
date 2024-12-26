@@ -2656,7 +2656,6 @@ msgid "Circle Xmark"
 msgstr "Cirkel Xmark"
 
 #: modules/gutenberg/icons/icons-v6-0.php:4355
-#: assets/build/blocks.js:172
 msgid "City"
 msgstr "Stad"
 
@@ -2806,7 +2805,7 @@ msgstr "Codepen"
 
 #: modules/gutenberg/icons/icons-v6-0.php:4782
 msgid "Codie Pie"
-msgstr ""
+msgstr "Codie Pie"
 
 #: modules/gutenberg/icons/icons-v6-0.php:4793
 msgid "Coins"
@@ -8322,7 +8321,7 @@ msgstr ""
 
 #: modules/gutenberg/icons/icons-v6-3.php:4822
 msgid "Wix"
-msgstr ""
+msgstr "Wix"
 
 #: modules/gutenberg/icons/icons-v6-3.php:4833
 msgid "Wizards of the Coast"
@@ -9075,26 +9074,6 @@ msgstr "Meerdere selecties inschakelen"
 #: assets/build/blocks.js:172
 msgid "Enable Search"
 msgstr "Zoeken inschakelen"
-
-#: assets/build/blocks.js:172
-msgid "Address Line 1"
-msgstr "Adresregel 1"
-
-#: assets/build/blocks.js:172
-msgid "Address Line 2"
-msgstr "Adresregel 2"
-
-#: assets/build/blocks.js:172
-msgid "State"
-msgstr "Staat"
-
-#: assets/build/blocks.js:172
-msgid "Postal Code"
-msgstr "Postcode"
-
-#: assets/build/blocks.js:172
-msgid "Country"
-msgstr "Land"
 
 #: assets/build/blocks.js:172
 msgid "%s Width"

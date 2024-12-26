@@ -2662,7 +2662,6 @@ msgid "Circle Xmark"
 msgstr "Círculo Xmark"
 
 #: modules/gutenberg/icons/icons-v6-0.php:4355
-#: assets/build/blocks.js:172
 msgid "City"
 msgstr "Ciudad"
 
@@ -3473,7 +3472,7 @@ msgstr ""
 
 #: modules/gutenberg/icons/icons-v6-1.php:1268
 msgid "Ethereum"
-msgstr ""
+msgstr "Ethereum"
 
 #: modules/gutenberg/icons/icons-v6-1.php:1279
 msgid "Ethernet"
@@ -4162,7 +4161,7 @@ msgstr "Alternativa de GitHub"
 
 #: modules/gutenberg/icons/icons-v6-1.php:3483
 msgid "GitKraken"
-msgstr ""
+msgstr "GitKraken"
 
 #: modules/gutenberg/icons/icons-v6-1.php:3494
 msgid "GitLab"
@@ -5153,7 +5152,7 @@ msgstr "LinkedIn In"
 
 #: modules/gutenberg/icons/icons-v6-2.php:937
 msgid "Linode"
-msgstr ""
+msgstr "Linode"
 
 #: modules/gutenberg/icons/icons-v6-2.php:948
 msgid "Linux"
@@ -5277,7 +5276,7 @@ msgstr "Signo de Manat"
 
 #: modules/gutenberg/icons/icons-v6-2.php:1278
 msgid "Mandalorian"
-msgstr ""
+msgstr "Mandaloriano"
 
 #: modules/gutenberg/icons/icons-v6-2.php:1294
 msgid "Map"
@@ -6279,7 +6278,7 @@ msgstr "Podcast"
 
 #: modules/gutenberg/icons/icons-v6-2.php:4127
 msgid "Poo"
-msgstr ""
+msgstr "Popó"
 
 #: modules/gutenberg/icons/icons-v6-2.php:4138
 msgid "Poo Storm"
@@ -7037,7 +7036,7 @@ msgstr "Ruleta"
 
 #: modules/gutenberg/icons/icons-v6-3.php:1081
 msgid "Splotch"
-msgstr ""
+msgstr "Mancha"
 
 #: modules/gutenberg/icons/icons-v6-3.php:1092
 msgid "Spoon"
@@ -7149,7 +7148,7 @@ msgstr "Variable de raíz cuadrada"
 
 #: modules/gutenberg/icons/icons-v6-3.php:1434
 msgid "Square Rss"
-msgstr ""
+msgstr "Cuadrado Rss"
 
 #: modules/gutenberg/icons/icons-v6-3.php:1445
 msgid "Square Share Nodes"
@@ -7805,11 +7804,11 @@ msgstr "U"
 
 #: modules/gutenberg/icons/icons-v6-3.php:3328
 msgid "Uber"
-msgstr ""
+msgstr "Uber"
 
 #: modules/gutenberg/icons/icons-v6-3.php:3339
 msgid "Ubuntu"
-msgstr ""
+msgstr "Ubuntu"
 
 #: modules/gutenberg/icons/icons-v6-3.php:3350
 msgid "UIkit"
@@ -9081,26 +9080,6 @@ msgstr "Habilitar selecciones múltiples"
 #: assets/build/blocks.js:172
 msgid "Enable Search"
 msgstr "Habilitar búsqueda"
-
-#: assets/build/blocks.js:172
-msgid "Address Line 1"
-msgstr "Línea de dirección 1"
-
-#: assets/build/blocks.js:172
-msgid "Address Line 2"
-msgstr "Línea de dirección 2"
-
-#: assets/build/blocks.js:172
-msgid "State"
-msgstr "Estado"
-
-#: assets/build/blocks.js:172
-msgid "Postal Code"
-msgstr "Código Postal"
-
-#: assets/build/blocks.js:172
-msgid "Country"
-msgstr "País"
 
 #: assets/build/blocks.js:172
 msgid "%s Width"

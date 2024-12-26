@@ -2662,7 +2662,6 @@ msgid "Circle Xmark"
 msgstr "Kreis Xmark"
 
 #: modules/gutenberg/icons/icons-v6-0.php:4355
-#: assets/build/blocks.js:172
 msgid "City"
 msgstr "Stadt"
 
@@ -5233,7 +5232,7 @@ msgstr "M"
 
 #: modules/gutenberg/icons/icons-v6-2.php:1157
 msgid "Magento"
-msgstr ""
+msgstr "Magento"
 
 #: modules/gutenberg/icons/icons-v6-2.php:1168
 msgid "Magnet"
@@ -5730,7 +5729,7 @@ msgstr "Om"
 
 #: modules/gutenberg/icons/icons-v6-2.php:2561
 msgid "OpenCart"
-msgstr ""
+msgstr "OpenCart"
 
 #: modules/gutenberg/icons/icons-v6-2.php:2572
 msgid "OpenID"
@@ -6351,7 +6350,7 @@ msgstr "Frage"
 
 #: modules/gutenberg/icons/icons-v6-2.php:4325
 msgid "QuinScape"
-msgstr ""
+msgstr "QuinScape"
 
 #: modules/gutenberg/icons/icons-v6-2.php:4336
 msgid "Quora"
@@ -7005,7 +7004,7 @@ msgstr "SoundCloud"
 
 #: modules/gutenberg/icons/icons-v6-3.php:993
 msgid "Sourcetree"
-msgstr ""
+msgstr "Sourcetree"
 
 #: modules/gutenberg/icons/icons-v6-3.php:1004
 msgid "Spa"
@@ -8039,7 +8038,7 @@ msgstr "V"
 
 #: modules/gutenberg/icons/icons-v6-3.php:3971
 msgid "Vaadin"
-msgstr ""
+msgstr "Vaadin"
 
 #: modules/gutenberg/icons/icons-v6-3.php:3982
 msgid "Van Shuttle"
@@ -8767,7 +8766,7 @@ msgstr "Keine"
 
 #: assets/build/blocks.js:172
 msgid "(###) ###-####"
-msgstr ""
+msgstr "(###) ###-####"
 
 #: assets/build/blocks.js:172
 msgid "(##) ####-####"
@@ -9081,26 +9080,6 @@ msgstr "Mehrfachauswahl aktivieren"
 #: assets/build/blocks.js:172
 msgid "Enable Search"
 msgstr "Suche aktivieren"
-
-#: assets/build/blocks.js:172
-msgid "Address Line 1"
-msgstr "Adresszeile 1"
-
-#: assets/build/blocks.js:172
-msgid "Address Line 2"
-msgstr "Adresszeile 2"
-
-#: assets/build/blocks.js:172
-msgid "State"
-msgstr "Zustand"
-
-#: assets/build/blocks.js:172
-msgid "Postal Code"
-msgstr "Postleitzahl"
-
-#: assets/build/blocks.js:172
-msgid "Country"
-msgstr "Land"
 
 #: assets/build/blocks.js:172
 msgid "%s Width"
@@ -9729,7 +9708,7 @@ msgstr "reCAPTCHA v2 Unsichtbar"
 
 #: assets/build/formEditor.js:172
 msgid "reCAPTCHA v3"
-msgstr ""
+msgstr "reCAPTCHA v3"
 
 #: assets/build/formEditor.js:172
 msgid "Before selecting the security type, please make sure you have configured the API keys "

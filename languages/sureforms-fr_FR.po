@@ -2653,7 +2653,6 @@ msgid "Circle Xmark"
 msgstr "Cercle Xmark"
 
 #: modules/gutenberg/icons/icons-v6-0.php:4355
-#: assets/build/blocks.js:172
 msgid "City"
 msgstr "Ville"
 
@@ -6194,7 +6193,7 @@ msgstr "Cercle d'avion Exclamation"
 
 #: modules/gutenberg/icons/icons-v6-2.php:3918
 msgid "Plane Circle Xmark"
-msgstr ""
+msgstr "Cercle d'avion Xmark"
 
 #: modules/gutenberg/icons/icons-v6-2.php:3929
 msgid "Plane Departure"
@@ -6755,7 +6754,7 @@ msgstr "Serveur"
 
 #: modules/gutenberg/icons/icons-v6-3.php:312
 msgid "Servicestack"
-msgstr ""
+msgstr "Servicestack"
 
 #: modules/gutenberg/icons/icons-v6-3.php:323
 msgid "Shapes"
@@ -7683,7 +7682,7 @@ msgstr "Ville des Arbres"
 
 #: modules/gutenberg/icons/icons-v6-3.php:2987
 msgid "Trello"
-msgstr ""
+msgstr "Trello"
 
 #: modules/gutenberg/icons/icons-v6-3.php:2998
 msgid "Triangle Exclamation"
@@ -8107,7 +8106,7 @@ msgstr ""
 #: modules/gutenberg/icons/icons-v6-3.php:4191
 #: modules/gutenberg/icons/icons-v6-3.php:4213
 msgid "Vimeo"
-msgstr ""
+msgstr "Vimeo"
 
 #: modules/gutenberg/icons/icons-v6-3.php:4224
 msgid "Vine"
@@ -8135,7 +8134,7 @@ msgstr "Virus"
 
 #: modules/gutenberg/icons/icons-v6-3.php:4290
 msgid "VK"
-msgstr ""
+msgstr "VK"
 
 #: modules/gutenberg/icons/icons-v6-3.php:4301
 msgid "VNV"
@@ -9072,26 +9071,6 @@ msgstr "Activer les sélections multiples"
 #: assets/build/blocks.js:172
 msgid "Enable Search"
 msgstr "Activer la recherche"
-
-#: assets/build/blocks.js:172
-msgid "Address Line 1"
-msgstr "Adresse Ligne 1"
-
-#: assets/build/blocks.js:172
-msgid "Address Line 2"
-msgstr "Adresse ligne 2"
-
-#: assets/build/blocks.js:172
-msgid "State"
-msgstr "État"
-
-#: assets/build/blocks.js:172
-msgid "Postal Code"
-msgstr "Code postal"
-
-#: assets/build/blocks.js:172
-msgid "Country"
-msgstr "Pays"
 
 #: assets/build/blocks.js:172
 msgid "%s Width"
