@@ -193,12 +193,12 @@ class Admin_Ajax {
 		$installed_plugins = get_plugins();
 
 		if ( ! isset( $installed_plugins[ $plugin_init_file ] ) ) {
-			return 'Install';
+			return __( 'Install', 'sureforms' );
 		}
 		if ( is_plugin_active( $plugin_init_file ) ) {
-			return 'Activated';
+			return __( 'Activated', 'sureforms' );
 		}
-			return 'Installed';
+			return __( 'Installed', 'sureforms' );
 	}
 
 	/**

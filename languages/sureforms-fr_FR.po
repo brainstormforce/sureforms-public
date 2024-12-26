@@ -422,6 +422,7 @@ msgid "Activating..."
 msgstr "Activation..."
 
 #: inc/admin-ajax.php:134
+#: inc/admin-ajax.php:199
 msgid "Activated"
 msgstr "Activé"
 
@@ -435,6 +436,7 @@ msgid "Installing..."
 msgstr "Installation en cours..."
 
 #: inc/admin-ajax.php:138
+#: inc/admin-ajax.php:201
 msgid "Installed"
 msgstr "Installé"
 
@@ -9145,6 +9147,7 @@ msgstr "Il n'y a pas de données sur cette vue"
 msgid "This is where your form views will appear"
 msgstr "C'est ici que vos vues de formulaire apparaîtront"
 
+#: inc/admin-ajax.php:196
 #: assets/build/dashboard.js:2
 #: assets/build/formEditor.js:172
 msgid "Install"

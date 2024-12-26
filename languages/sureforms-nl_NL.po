@@ -425,6 +425,7 @@ msgid "Activating..."
 msgstr "Activeren..."
 
 #: inc/admin-ajax.php:134
+#: inc/admin-ajax.php:199
 msgid "Activated"
 msgstr "Geactiveerd"
 
@@ -438,6 +439,7 @@ msgid "Installing..."
 msgstr "Installeren..."
 
 #: inc/admin-ajax.php:138
+#: inc/admin-ajax.php:201
 msgid "Installed"
 msgstr "Geïnstalleerd"
 
@@ -3106,7 +3108,7 @@ msgstr ""
 
 #: modules/gutenberg/icons/icons-v6-1.php:334
 msgid "DHL"
-msgstr ""
+msgstr "DHL"
 
 #: modules/gutenberg/icons/icons-v6-1.php:345
 msgid "Diagram Next"
@@ -3255,7 +3257,7 @@ msgstr "Downloaden"
 
 #: modules/gutenberg/icons/icons-v6-1.php:741
 msgid "Draft2digital"
-msgstr ""
+msgstr "Draft2digital"
 
 #: modules/gutenberg/icons/icons-v6-1.php:752
 msgid "Dragon"
@@ -3383,7 +3385,7 @@ msgstr "Aarde Oceanië"
 
 #: modules/gutenberg/icons/icons-v6-1.php:1027
 msgid "eBay"
-msgstr ""
+msgstr "eBay"
 
 #: modules/gutenberg/icons/icons-v6-1.php:1038
 msgid "Edge Browser"
@@ -3403,7 +3405,7 @@ msgstr "Uitwerpen"
 
 #: modules/gutenberg/icons/icons-v6-1.php:1082
 msgid "Elementor"
-msgstr ""
+msgstr "Elementor"
 
 #: modules/gutenberg/icons/icons-v6-1.php:1093
 msgid "Elevator"
@@ -3563,7 +3565,7 @@ msgstr "Gezicht Grijns Harten"
 
 #: modules/gutenberg/icons/icons-v6-1.php:1597
 msgid "Face Grin Squint"
-msgstr ""
+msgstr "Gezicht Grijns Samentrekken"
 
 #: modules/gutenberg/icons/icons-v6-1.php:1613
 msgid "Face Grin Squint Tears"
@@ -4504,7 +4506,7 @@ msgstr "Hoeden Tovenaar"
 
 #: modules/gutenberg/icons/icons-v6-1.php:4527
 msgid "Head Side Cough"
-msgstr ""
+msgstr "Hoofdzijde Hoest"
 
 #: modules/gutenberg/icons/icons-v6-1.php:4538
 msgid "Head Side Cough Slash"
@@ -5227,7 +5229,7 @@ msgstr "M"
 
 #: modules/gutenberg/icons/icons-v6-2.php:1157
 msgid "Magento"
-msgstr ""
+msgstr "Magento"
 
 #: modules/gutenberg/icons/icons-v6-2.php:1168
 msgid "Magnet"
@@ -6453,7 +6455,7 @@ msgstr "Geregistreerd"
 
 #: modules/gutenberg/icons/icons-v6-2.php:4648
 msgid "Renren"
-msgstr ""
+msgstr "Renren"
 
 #: modules/gutenberg/icons/icons-v6-2.php:4659
 #: modules/gutenberg/build/blocks.js:15
@@ -9148,6 +9150,7 @@ msgstr "Er zijn geen gegevens in deze weergave"
 msgid "This is where your form views will appear"
 msgstr "Hier verschijnen uw formulierweergaven"
 
+#: inc/admin-ajax.php:196
 #: assets/build/dashboard.js:2
 #: assets/build/formEditor.js:172
 msgid "Install"
