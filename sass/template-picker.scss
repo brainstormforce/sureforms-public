@@ -935,10 +935,7 @@ $sidebar_width: 290px;
 
 					// Keep the Title and Description evenly aligned.
 					.srfm-tp-sp-text-container {
-						flex-grow: 1;
-						display: flex;
-						flex-direction: column;
-						justify-content: space-between;
+						flex-grow: 1; // This will make the text container to occupy the remaining space.
 					}
 					.srfm-tp-sp-title {
 						font-size: 1.25em;
