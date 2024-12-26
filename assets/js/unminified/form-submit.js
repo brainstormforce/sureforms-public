@@ -336,7 +336,7 @@ async function handleFormSubmission(
 	}
 }
 
-export function extractFormAttributesAndElements( form ) {
+function extractFormAttributesAndElements( form ) {
 	const formId = form.getAttribute( 'form-id' );
 	const submitType = form.getAttribute( 'message-type' );
 	const successUrl = form.getAttribute( 'success-url' );
