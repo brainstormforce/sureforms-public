@@ -425,7 +425,6 @@ msgid "Activating..."
 msgstr "Activeren..."
 
 #: inc/admin-ajax.php:134
-#: inc/admin-ajax.php:199
 msgid "Activated"
 msgstr "Geactiveerd"
 
@@ -439,7 +438,6 @@ msgid "Installing..."
 msgstr "Installeren..."
 
 #: inc/admin-ajax.php:138
-#: inc/admin-ajax.php:201
 msgid "Installed"
 msgstr "Geïnstalleerd"
 
@@ -4054,7 +4052,7 @@ msgstr "Kikker"
 
 #: modules/gutenberg/icons/icons-v6-1.php:3165
 msgid "Fulcrum"
-msgstr ""
+msgstr "Draaipunt"
 
 #: modules/gutenberg/icons/icons-v6-1.php:3181
 msgid "Futbol"
@@ -6195,7 +6193,7 @@ msgstr "Vliegtuigcirkelcontrole"
 
 #: modules/gutenberg/icons/icons-v6-2.php:3907
 msgid "Plane Circle Exclamation"
-msgstr ""
+msgstr "Vliegtuig Cirkel Uitroepteken"
 
 #: modules/gutenberg/icons/icons-v6-2.php:3918
 msgid "Plane Circle Xmark"
@@ -9150,7 +9148,6 @@ msgstr "Er zijn geen gegevens in deze weergave"
 msgid "This is where your form views will appear"
 msgstr "Hier verschijnen uw formulierweergaven"
 
-#: inc/admin-ajax.php:196
 #: assets/build/dashboard.js:2
 #: assets/build/formEditor.js:172
 msgid "Install"
@@ -10125,7 +10122,7 @@ msgstr "Zend uw SureForms-indiening naar elk web-API-eindpunt met de krachtige w
 
 #: assets/build/settings.js:172
 msgid "Zapier"
-msgstr ""
+msgstr "Zapier"
 
 #: assets/build/settings.js:172
 msgid "SureForms and Zapier Integration allows you to connect your WordPress forms with a number of web apps."

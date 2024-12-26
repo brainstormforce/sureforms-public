@@ -310,7 +310,7 @@ $req_err_color: #dc2625;
 								align-self: flex-start;
 
 								& + .components-dropdown {
-									top:33px;
+									top: 33px;
 								}
 							}
 
@@ -980,7 +980,7 @@ $req_err_color: #dc2625;
 }
 
 .components-popover__fallback-container {
-	.components-dropdown-menu__menu[aria-label="Select Shortcodes"] {
+	.components-dropdown-menu__menu {
 		.components-button:disabled,
 		.components-button[aria-disabled="true"] {
 			color: #000000;

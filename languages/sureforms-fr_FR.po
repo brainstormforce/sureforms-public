@@ -422,7 +422,6 @@ msgid "Activating..."
 msgstr "Activation..."
 
 #: inc/admin-ajax.php:134
-#: inc/admin-ajax.php:199
 msgid "Activated"
 msgstr "Activé"
 
@@ -436,7 +435,6 @@ msgid "Installing..."
 msgstr "Installation en cours..."
 
 #: inc/admin-ajax.php:138
-#: inc/admin-ajax.php:201
 msgid "Installed"
 msgstr "Installé"
 
@@ -3626,7 +3624,7 @@ msgstr "Visage Rire Clin d'œil"
 
 #: modules/gutenberg/icons/icons-v6-1.php:1853
 msgid "Face Meh"
-msgstr ""
+msgstr "Fais-moi face"
 
 #: modules/gutenberg/icons/icons-v6-1.php:1869
 msgid "Face Meh Blank"
@@ -4543,7 +4541,7 @@ msgstr "Vérification du cercle du cœur"
 
 #: modules/gutenberg/icons/icons-v6-1.php:4653
 msgid "Heart Circle Exclamation"
-msgstr ""
+msgstr "Cercle Cœur Exclamation"
 
 #: modules/gutenberg/icons/icons-v6-1.php:4664
 msgid "Heart Circle Minus"
@@ -4703,7 +4701,7 @@ msgstr "Maison Cercle Point d'exclamation"
 
 #: modules/gutenberg/icons/icons-v6-1.php:5114
 msgid "House Circle Xmark"
-msgstr ""
+msgstr "Maison Cercle Xmark"
 
 #: modules/gutenberg/icons/icons-v6-1.php:5125
 msgid "House Crack"
@@ -4779,7 +4777,7 @@ msgstr "Logo HTML 5"
 
 #: modules/gutenberg/icons/icons-v6-1.php:5323
 msgid "HubSpot"
-msgstr ""
+msgstr "HubSpot"
 
 #: modules/gutenberg/icons/icons-v6-1.php:5334
 msgid "Hurricane"
@@ -8225,7 +8223,7 @@ msgstr "Place de l'Onde"
 
 #: modules/gutenberg/icons/icons-v6-3.php:4532
 msgid "Waze"
-msgstr ""
+msgstr "Waze"
 
 #: modules/gutenberg/icons/icons-v6-3.php:4543
 msgid "Weebly"
@@ -9147,7 +9145,6 @@ msgstr "Il n'y a pas de données sur cette vue"
 msgid "This is where your form views will appear"
 msgstr "C'est ici que vos vues de formulaire apparaîtront"
 
-#: inc/admin-ajax.php:196
 #: assets/build/dashboard.js:2
 #: assets/build/formEditor.js:172
 msgid "Install"

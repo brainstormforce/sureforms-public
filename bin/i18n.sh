@@ -5,7 +5,7 @@
 
 # Run textdomain updates and generate the POT file
 echo "Running textdomain update and POT file generation..."
-npm run i18n
+npm run makepot
 
 # Update PO files
 echo "Updating PO files..."

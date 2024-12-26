@@ -431,7 +431,6 @@ msgid "Activating..."
 msgstr "Activando..."
 
 #: inc/admin-ajax.php:134
-#: inc/admin-ajax.php:199
 msgid "Activated"
 msgstr "Activado"
 
@@ -445,7 +444,6 @@ msgid "Installing..."
 msgstr "Instalando..."
 
 #: inc/admin-ajax.php:138
-#: inc/admin-ajax.php:201
 msgid "Installed"
 msgstr "Instalado"
 
@@ -1583,7 +1581,7 @@ msgstr "Flechas hasta la línea"
 
 #: modules/gutenberg/icons/icons-v6-0.php:1224
 msgid "Artstation"
-msgstr ""
+msgstr "Artstation"
 
 #: modules/gutenberg/icons/icons-v6-0.php:1235
 msgid "Asterisk"
@@ -1591,7 +1589,7 @@ msgstr "Asterisco"
 
 #: modules/gutenberg/icons/icons-v6-0.php:1246
 msgid "Asymmetrik, Ltd."
-msgstr ""
+msgstr "Asymmetrik, Ltd."
 
 #: modules/gutenberg/icons/icons-v6-0.php:1257
 msgid "At"
@@ -2970,7 +2968,7 @@ msgstr "Creative Commons Sampling"
 
 #: modules/gutenberg/icons/icons-v6-0.php:5241
 msgid "Creative Commons Sampling +"
-msgstr ""
+msgstr "Creative Commons Sampling +"
 
 #: modules/gutenberg/icons/icons-v6-0.php:5252
 msgid "Creative Commons Share"
@@ -3611,7 +3609,7 @@ msgstr "Beso en la cara"
 
 #: modules/gutenberg/icons/icons-v6-1.php:1757
 msgid "Face Kiss Beam"
-msgstr ""
+msgstr "Haz de Beso en la Cara"
 
 #: modules/gutenberg/icons/icons-v6-1.php:1773
 msgid "Face Kiss Wink Heart"
@@ -3623,7 +3621,7 @@ msgstr "Cara Risa"
 
 #: modules/gutenberg/icons/icons-v6-1.php:1805
 msgid "Face Laugh Beam"
-msgstr ""
+msgstr "Cara Risa Rayo"
 
 #: modules/gutenberg/icons/icons-v6-1.php:1821
 msgid "Face Laugh Squint"
@@ -4004,7 +4002,7 @@ msgstr "Font Awesome"
 
 #: modules/gutenberg/icons/icons-v6-1.php:3011
 msgid "Fonticons"
-msgstr ""
+msgstr "Fonticons"
 
 #: modules/gutenberg/icons/icons-v6-1.php:3022
 msgid "Fonticons Fi"
@@ -7840,7 +7838,7 @@ msgstr "Subrayar"
 
 #: modules/gutenberg/icons/icons-v6-3.php:3416
 msgid "Uniregistry"
-msgstr ""
+msgstr "Uniregistry"
 
 #: modules/gutenberg/icons/icons-v6-3.php:3427
 msgid "Unity 3D"
@@ -8422,7 +8420,7 @@ msgstr "Yammer"
 
 #: modules/gutenberg/icons/icons-v6-3.php:5086
 msgid "Yandex"
-msgstr ""
+msgstr "Yandex"
 
 #: modules/gutenberg/icons/icons-v6-3.php:5097
 msgid "Yandex International"
@@ -8781,7 +8779,7 @@ msgstr ""
 
 #: assets/build/blocks.js:172
 msgid "23:59:59"
-msgstr ""
+msgstr "23:59:59"
 
 #: assets/build/blocks.js:172
 msgid "27/08/2024 23:59:59"
@@ -9156,7 +9154,6 @@ msgstr "No hay datos en esta vista"
 msgid "This is where your form views will appear"
 msgstr "Aquí es donde aparecerán las vistas de su formulario"
 
-#: inc/admin-ajax.php:196
 #: assets/build/dashboard.js:2
 #: assets/build/formEditor.js:172
 msgid "Install"

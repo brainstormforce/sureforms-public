@@ -431,7 +431,6 @@ msgid "Activating..."
 msgstr "Aktivieren..."
 
 #: inc/admin-ajax.php:134
-#: inc/admin-ajax.php:199
 msgid "Activated"
 msgstr "Aktiviert"
 
@@ -445,7 +444,6 @@ msgid "Installing..."
 msgstr "Installation läuft..."
 
 #: inc/admin-ajax.php:138
-#: inc/admin-ajax.php:201
 msgid "Installed"
 msgstr "Installiert"
 
@@ -1888,7 +1886,7 @@ msgstr "Knochen"
 
 #: modules/gutenberg/icons/icons-v6-0.php:2081
 msgid "Bong"
-msgstr ""
+msgstr "Bong"
 
 #: modules/gutenberg/icons/icons-v6-0.php:2092
 msgid "Book"
@@ -3102,7 +3100,7 @@ msgstr "Desktop"
 
 #: modules/gutenberg/icons/icons-v6-1.php:301
 msgid "DEV"
-msgstr ""
+msgstr "DEV"
 
 #: modules/gutenberg/icons/icons-v6-1.php:312
 msgid "deviantART"
@@ -3535,7 +3533,7 @@ msgstr "Gesicht wütend"
 
 #: modules/gutenberg/icons/icons-v6-1.php:1453
 msgid "Face Dizzy"
-msgstr ""
+msgstr "Gesicht schwindelig"
 
 #: modules/gutenberg/icons/icons-v6-1.php:1469
 msgid "Face Flushed"
@@ -3635,7 +3633,7 @@ msgstr "Gesicht Lachen Zwinkern"
 
 #: modules/gutenberg/icons/icons-v6-1.php:1853
 msgid "Face Meh"
-msgstr ""
+msgstr "Stell dich mir"
 
 #: modules/gutenberg/icons/icons-v6-1.php:1869
 msgid "Face Meh Blank"
@@ -3876,7 +3874,7 @@ msgstr "Filterkreis Dollar"
 
 #: modules/gutenberg/icons/icons-v6-1.php:2624
 msgid "Filter Circle Xmark"
-msgstr ""
+msgstr "Filterkreis Xmark"
 
 #: modules/gutenberg/icons/icons-v6-1.php:2635
 msgid "Fingerprint"
@@ -5520,7 +5518,7 @@ msgstr "Mobiler Bildschirmknopf"
 
 #: modules/gutenberg/icons/icons-v6-2.php:1937
 msgid "MODX"
-msgstr ""
+msgstr "MODX"
 
 #: modules/gutenberg/icons/icons-v6-2.php:1948
 msgid "Monero"
@@ -9156,7 +9154,6 @@ msgstr "Es sind keine Daten in dieser Ansicht vorhanden"
 msgid "This is where your form views will appear"
 msgstr "Hier werden Ihre Formularansichten angezeigt"
 
-#: inc/admin-ajax.php:196
 #: assets/build/dashboard.js:2
 #: assets/build/formEditor.js:172
 msgid "Install"
@@ -9381,7 +9378,7 @@ msgstr "Visuell"
 
 #: assets/build/formEditor.js:172
 msgid "HTML"
-msgstr ""
+msgstr "HTML"
 
 #: assets/build/formEditor.js:172
 msgid "All Data"
@@ -11646,7 +11643,7 @@ msgstr "Textbereich"
 #: inc/blocks/url/block.json
 msgctxt "block keyword"
 msgid "url"
-msgstr ""
+msgstr "URL"
 
 #: assets/build/blocks/url/block.json
 #: inc/blocks/url/block.json
