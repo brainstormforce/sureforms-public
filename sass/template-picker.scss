@@ -922,11 +922,21 @@ $sidebar_width: 290px;
 
 				.srfm-tp-starting-point-card {
 					padding: 2.5em 2em 2em 2em;
+					// Keep the card structure aligned evenly, so the button will always be at the bottom.
+					height: 100%;
+					display: flex;
+					flex-direction: column;
+					justify-content: space-between;
+					align-items: stretch;
 
 					svg {
 						margin-bottom: 2em;
 					}
 
+					// Keep the Title and Description evenly aligned.
+					.srfm-tp-sp-text-container {
+						flex-grow: 1; // This will make the text container to occupy the remaining space.
+					}
 					.srfm-tp-sp-title {
 						font-size: 1.25em;
 						font-weight: 600;
@@ -939,8 +949,9 @@ $sidebar_width: 290px;
 					.srfm-tp-sp-description {
 						font-size: 0.875em;
 						color: $desc_color;
-						margin-bottom: 0;
 						padding-bottom: 1.143em;
+						margin: 0;
+						flex-grow: 1;
 					}
 				}
 
