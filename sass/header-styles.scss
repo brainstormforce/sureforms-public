@@ -16,7 +16,7 @@ body.post-type-sureforms_form .edit-post-header .edit-post-fullscreen-mode-close
 }
 
 // hides the pinned items other than settings.
-.interface-pinned-items button.components-button:not( [aria-label="Settings"] ) {
+.interface-pinned-items button.components-button:not( [aria-controls="edit-post:document"] ) {
 	display: none;
 }
 
