@@ -1,6 +1,11 @@
 .srfm-tooltip {
 	position: relative;
 
+	>:not(.tooltip-wrap) {
+		pointer-events: none;
+		opacity: 60%;
+	}
+
 	.tooltip-content {
 		padding: 12px;
 		display: flex;
@@ -56,7 +61,7 @@
 		display: none;
 	}
 
-	&:focus-within .top {
+	&:hover .top {
 		display: block;
 	}
 
@@ -102,7 +107,7 @@
 		transition: opacity 0.8s;
 	}
 
-	&:focus-within .right {
+	&:hover .right {
 		visibility: visible;
 		opacity: 1;
 	}
@@ -146,7 +151,7 @@
 		display: none;
 	}
 
-	&:focus-within .bottom {
+	&:hover .bottom {
 		display: block;
 	}
 
@@ -194,7 +199,7 @@
 		border: 1px solid #dca;
 	}
 
-	&:focus-within .left {
+	&:hover .left {
 		display: block;
 	}
 
