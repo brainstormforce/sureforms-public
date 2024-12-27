@@ -199,7 +199,11 @@ function showSuccessMessage(
 	element.innerHTML = message;
 	container.classList.add( 'srfm-active' );
 	window?.srfm?.handleInstantFormWrapperHeight();
-	form.parentElement.scrollIntoView( { behavior: 'smooth' } );
+
+	// Disable scroll for conversational layout.
+	if ( ! form.querySelector( '.srfm-cf-block' ) ) {
+		form.parentElement.scrollIntoView( { behavior: 'smooth' } );
+	}
 }
 
 function redirectToUrl( url ) {
