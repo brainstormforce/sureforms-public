@@ -2,16 +2,16 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: SureForms 1.2.2\n"
+"Project-Id-Version: SureForms 1.2.3\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/sureforms\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-12-26T04:41:16+00:00\n"
+"POT-Creation-Date: 2024-12-27T11:52:07+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"X-Generator: WP-CLI 2.11.0\n"
+"X-Generator: WP-CLI 2.10.0\n"
 "X-Domain: sureforms\n"
 
 #. Plugin Name of the plugin
@@ -903,7 +903,7 @@ msgid "Thanks a lot for your feedback! 😍"
 msgstr ""
 
 #: inc/nps-notice.php:110
-msgid "Could you please do us a favor and give us a 5-star rating on WordPress? It would help others choose SureForms with confidence. Thank you!"
+msgid "Could you please do us a favor and give us a 5-star rating? It would help others choose SureForms with confidence. Thank you!"
 msgstr ""
 
 #: inc/nps-notice.php:112
