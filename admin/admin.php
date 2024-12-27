@@ -746,7 +746,7 @@ class Admin {
 		$affiliate = is_string( $affiliate ) ? sanitize_text_field( $affiliate ) : '';
 
 		if ( ! empty( $affiliate ) ) {
-			$params['bsf'] = $affiliate;
+			$params['aff'] = $affiliate;
 		}
 
 		return add_query_arg( $params, $url );
