@@ -67,7 +67,7 @@ class Export {
 		}
 
 		// check if the user has permission to export forms.
-		if ( ! Helper::current_user_can() ) {
+		if ( ! Helper::current_user_can( 'manage_options' ) ) {
 			wp_send_json_error(
 				[
 					'error' => __( 'You do not have permission to export forms.', 'sureforms' ),
@@ -204,14 +204,15 @@ class Export {
 	 * @since 0.0.1
 	 */
 	public function register_custom_endpoint() {
-		$helper = Helper::get_instance();
 		register_rest_route(
 			'sureforms/v1',
 			'/sureforms_import',
 			[
 				'methods'             => WP_REST_Server::EDITABLE,
 				'callback'            => [ $this, 'handle_import_form' ],
-				'permission_callback' => [ $helper, 'current_user_can' ],
+				'permission_callback' => static function () {
+					return Helper::current_user_can( 'manage_options' );
+				},
 			]
 		);
 	}
