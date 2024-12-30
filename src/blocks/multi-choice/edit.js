@@ -36,7 +36,7 @@ import UAGIconPicker from '@Components/icon-picker';
 import SRFMMediaPicker from '@Components/image';
 import SRFMNumberControl from '@Components/number-control';
 import { BulkInserterWithButton } from '@Components/bulk-inserter';
-import { applyFilters } from '@wordpress/hooks';
+import { attributeOptionsWithFilter } from '@Components/hooks';
 
 const Edit = ( props ) => {
 	const { attributes, setAttributes, isSelected, clientId } = props;
@@ -552,12 +552,8 @@ const Edit = ( props ) => {
 		},
 	];
 
-	const filterOptions = applyFilters(
-		'srfm.block.attributes.panel.body',
-		attributeOptions,
-		props
-	);
-
+	const filterOptions = attributeOptionsWithFilter( attributeOptions, props );
+	
 	return (
 		<div { ...blockProps }>
 			<InspectorControls>

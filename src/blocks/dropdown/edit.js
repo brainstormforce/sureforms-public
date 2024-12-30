@@ -29,7 +29,7 @@ import ConditionalLogic from '@Components/conditional-logic';
 import UAGIconPicker from '@Components/icon-picker';
 import SRFMNumberControl from '@Components/number-control';
 import { BulkInserterWithButton } from '@Components/bulk-inserter';
-import { applyFilters } from '@wordpress/hooks';
+import { attributeOptionsWithFilter } from '@Components/hooks';
 
 const Edit = ( props ) => {
 	const { attributes, setAttributes, clientId } = props;
@@ -420,11 +420,7 @@ const Edit = ( props ) => {
 		},
 	];
 
-	const filterOptions = applyFilters(
-		'srfm.block.attributes.panel.body',
-		attributeOptions,
-		props
-	);
+	const filterOptions = attributeOptionsWithFilter( attributeOptions, props );
 
 	return (
 		<div className={ className }>

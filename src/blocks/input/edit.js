@@ -23,7 +23,7 @@ import { compose } from '@wordpress/compose';
 import { FieldsPreview } from '../FieldsPreview.jsx';
 import { useErrMessage } from '@Blocks/util';
 import ConditionalLogic from '@Components/conditional-logic';
-import { applyFilters } from '@wordpress/hooks';
+import { attributeOptionsWithFilter } from '@Components/hooks';
 
 const Edit = ( props ) => {
 	const { clientId, attributes, setAttributes } = props;
@@ -256,11 +256,7 @@ const Edit = ( props ) => {
 		},
 	];
 
-	const filterOptions = applyFilters(
-		'srfm.block.attributes.panel.body',
-		attributeOptions,
-		props
-	);
+	const filterOptions = attributeOptionsWithFilter( attributeOptions, props );
 
 	return (
 		<div className={ className }>

@@ -1,5 +1,5 @@
 import { applyFilters } from '@wordpress/hooks';
 
-export const AfterAttributesPanelBody = ( props ) => {
-	return applyFilters( 'srfm.after.attributes.panel.body', [], props );
+export const AfterAttributesPanelBody = ( options, props ) => {
+	return applyFilters( 'srfm.block.attributes.panel.body', options, props );
 };
