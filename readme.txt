@@ -255,9 +255,9 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 
 == Changelog ==
 = 1.2.3 - 31st December 2024 =
-* New: Added translations for Spanish, German, French and Dutch.
-* Fix: Resolved issue where minimum value error was not displayed for the number field.
-* Fix: Addressed issue where forms were submitted despite the number field having invalid values outside the defined min and max range.
+* New: Added translations for the Spanish, German, French, and Dutch languages.
+* Fix: Resolved an issue where the minimum value error was not displayed for the Number field.
+* Fix: Addressed an issue where forms were submitted even when the Number field contained values outside the defined minimum and maximum range.
 = 1.2.2 - 24th December 2024 =
 * Fix: Resolved an issue where the email template failed to render in the inbox when a third-party plugin overrode the email headers in the wp_mail() function.
 * Fix: Addressed a security vulnerability. Props to Lucio Sá for privately reporting it.
