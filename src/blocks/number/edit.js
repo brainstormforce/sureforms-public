@@ -20,7 +20,7 @@ import { compose } from '@wordpress/compose';
 import { FieldsPreview } from '../FieldsPreview.jsx';
 import { useErrMessage } from '@Blocks/util';
 import ConditionalLogic from '@Components/conditional-logic';
-import Calculation from '@Components/calculation';
+import { AfterAttributesPanelBody } from '@Components/hooks';
 
 const formatNumber = ( number, formatType ) => {
 	if ( ! number ) {
@@ -64,7 +64,8 @@ const formatNumber = ( number, formatType ) => {
 	return formattedNumber;
 };
 
-const SureformInput = ( { attributes, setAttributes, clientId } ) => {
+const SureformInput = ( props ) => {
+	const { attributes, setAttributes, clientId } = props;
 	const {
 		help,
 		required,
@@ -243,7 +244,7 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 									setAttributes( { help: newValue } )
 								}
 							/>
-							<Calculation { ...{ setAttributes, attributes } } />
+							<AfterAttributesPanelBody { ...props } />
 						</SRFMAdvancedPanelBody>
 					</InspectorTab>
 					<InspectorTab { ...SRFMTabs.style }></InspectorTab>

@@ -36,9 +36,10 @@ import UAGIconPicker from '@Components/icon-picker';
 import SRFMMediaPicker from '@Components/image';
 import SRFMNumberControl from '@Components/number-control';
 import { BulkInserterWithButton } from '@Components/bulk-inserter';
-import Calculation from '@Components/calculation';
+import { AfterAttributesPanelBody } from '@Components/hooks';
 
-const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
+const Edit = ( props ) => {
+	const { attributes, setAttributes, isSelected, clientId } = props;
 	const {
 		required,
 		options,
@@ -564,7 +565,7 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 									setAttributes( { help: value } )
 								}
 							/>
-							<Calculation { ...{ setAttributes, attributes } } />
+							<AfterAttributesPanelBody { ...props } />
 						</SRFMAdvancedPanelBody>
 					</InspectorTab>
 					<InspectorTab { ...SRFMTabs.style }></InspectorTab>
