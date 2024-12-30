@@ -553,7 +553,7 @@ const Edit = ( props ) => {
 	];
 
 	const filterOptions = attributeOptionsWithFilter( attributeOptions, props );
-	
+
 	return (
 		<div { ...blockProps }>
 			<InspectorControls>
