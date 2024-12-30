@@ -72,6 +72,7 @@ class Checkbox_Markup extends Base {
 						<?php
 					} else {
 						?>
+						<input type="hidden" name="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?><?php echo esc_attr( $this->field_name ); ?>" value="" />
 						<input
 							class="srfm-input-common srfm-input-<?php echo esc_attr( $this->slug ); ?>"
 							id="<?php echo esc_attr( $label_random_id ); ?>"
