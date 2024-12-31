@@ -141,7 +141,8 @@
 				height: 100%;
 			}
 
-			p {
+			p,
+			label {
 				text-align: center;
 				display: flex;
 				align-items: center;
@@ -181,9 +182,13 @@
 	padding: 4px;
 	cursor: pointer;
 	margin: 0;
-	
-	label{
+
+	label {
 		cursor: pointer;
+		font-size: inherit;
+		line-height: inherit;
+		font-weight: inherit;
+		color: inherit;
 	}
 }
 
