@@ -209,26 +209,70 @@ const Edit = ( props ) => {
 		</>
 	);
 
+	const draggableItem = ( option, param, i ) => (
+		<div>
+			<Icon icon={ 'move' } { ...param.dragHandleProps } />
+			<div>
+				<SRFMTextControl
+					showHeaderControls={ false }
+					key={ i }
+					value={ option.optionTitle }
+					data={ {
+						value: option.optionTitle,
+						label: 'option',
+					} }
+					onChange={ ( value ) => editOption( value, i ) }
+				/>
+			</div>
+			{ optionType === 'icon' && (
+				<div className="srfm-icon-picker">
+					<UAGIconPicker
+						label={ '' }
+						value={ option.icon }
+						onChange={ ( value ) =>
+							changeOption( { icon: value }, i )
+						}
+						addIcon={ parse( svgIcons.custom_plus_icon ) }
+					/>
+				</div>
+			) }
+			{ optionType === 'image' && (
+				<div className="srfm-media-picker">
+					<SRFMMediaPicker
+						onSelectImage={ ( e ) => {
+							onSelectImage( e, i );
+						} }
+						backgroundImage={ option.image }
+						onRemoveImage={ () => {
+							onRemoveImage( i );
+						} }
+						disableLabel={ true }
+					/>
+				</div>
+			) }
+			<Button icon="trash" onClick={ () => deleteOption( i ) } />
+		</div>
+	);
+
+	const draggableOptions = ( dragOptions ) =>
+		dragOptions.map( ( option, i ) => (
+			<Draggable key={ i } draggableId={ 'draggable-' + i } index={ i }>
+				{ ( param ) => (
+					<div
+						ref={ param.innerRef }
+						className="srfm-option-outer-wrapper"
+						{ ...param.draggableProps }
+					>
+						{ draggableItem( option, param, i ) }
+					</div>
+				) }
+			</Draggable>
+		) );
+
 	const choicesOptions = (
 		<div style={ { marginBottom: '8px' } }>
 			{ options.length > 0 && (
-				<DragDropContext
-					onDragEnd={ ( param ) => {
-						const srcI = param.source.index;
-						const destI = param.destination.index;
-						if ( srcI !== destI ) {
-							const newOptions = [ ...options ];
-							newOptions.splice(
-								destI,
-								0,
-								newOptions.splice( srcI, 1 )[ 0 ]
-							);
-							setAttributes( {
-								options: newOptions,
-							} );
-						}
-					} }
-				>
+				<>
 					<MultiButtonsControl
 						setAttributes={ setAttributes }
 						label={ __( 'Option Type', 'sureforms' ) }
@@ -251,128 +295,36 @@ const Edit = ( props ) => {
 					<span className="srfm-control-label srfm-control__header">
 						{ __( 'Edit Options', 'sureforms' ) }
 					</span>
-					<>
+					<DragDropContext
+						onDragEnd={ ( param ) => {
+							const srcI = param.source.index;
+							const destI = param.destination.index;
+							if ( srcI !== destI ) {
+								const newOptions = [ ...options ];
+								newOptions.splice(
+									destI,
+									0,
+									newOptions.splice( srcI, 1 )[ 0 ]
+								);
+								setAttributes( {
+									options: newOptions,
+								} );
+							}
+						} }
+					>
 						<Droppable droppableId="droppable-1">
 							{ ( provided ) => (
 								<div
 									ref={ provided.innerRef }
 									{ ...provided.droppableProps }
 								>
-									{ options.map( ( option, i ) => (
-										<Draggable
-											key={ i }
-											draggableId={ 'draggable-' + i }
-											index={ i }
-										>
-											{ ( param ) => (
-												<div
-													ref={ param.innerRef }
-													className="srfm-option-outer-wrapper"
-													{ ...param.draggableProps }
-												>
-													<div>
-														<>
-															<Icon
-																icon={ 'move' }
-																{ ...param.dragHandleProps }
-															/>
-														</>
-														<div>
-															<SRFMTextControl
-																showHeaderControls={
-																	false
-																}
-																key={ i }
-																value={
-																	option.optionTitle
-																}
-																data={ {
-																	value: option.optionTitle,
-																	label: 'option',
-																} }
-																onChange={ (
-																	value
-																) =>
-																	editOption(
-																		value,
-																		i
-																	)
-																}
-															/>
-														</div>
-														<>
-															{ optionType ===
-																'icon' && (
-																<div className="srfm-icon-picker">
-																	<UAGIconPicker
-																		label={
-																			''
-																		}
-																		value={
-																			option.icon
-																		}
-																		onChange={ (
-																			value
-																		) =>
-																			changeOption(
-																				{
-																					icon: value,
-																				},
-																				i
-																			)
-																		}
-																		addIcon={ parse(
-																			svgIcons.custom_plus_icon
-																		) }
-																	/>
-																</div>
-															) }
-															{ optionType ===
-																'image' && (
-																<div className="srfm-media-picker">
-																	<SRFMMediaPicker
-																		onSelectImage={ (
-																			e
-																		) => {
-																			onSelectImage(
-																				e,
-																				i
-																			);
-																		} }
-																		backgroundImage={
-																			option.image
-																		}
-																		onRemoveImage={ () => {
-																			onRemoveImage(
-																				i
-																			);
-																		} }
-																		disableLabel={
-																			true
-																		}
-																	/>
-																</div>
-															) }
-															<Button
-																icon="trash"
-																onClick={ () =>
-																	deleteOption(
-																		i
-																	)
-																}
-															/>
-														</>
-													</div>
-												</div>
-											) }
-										</Draggable>
-									) ) }
+									{ draggableOptions( options ) }
 									{ provided.placeholder }
 								</div>
 							) }
 						</Droppable>
-					</>
-				</DragDropContext>
+					</DragDropContext>
+				</>
 			) }
 		</div>
 	);
