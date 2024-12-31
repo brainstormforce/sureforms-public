@@ -29,8 +29,10 @@ import ConditionalLogic from '@Components/conditional-logic';
 import UAGIconPicker from '@Components/icon-picker';
 import SRFMNumberControl from '@Components/number-control';
 import { BulkInserterWithButton } from '@Components/bulk-inserter';
+import { attributeOptionsWithFilter } from '@Components/hooks';
 
-const Edit = ( { attributes, setAttributes, clientId } ) => {
+const Edit = ( props ) => {
+	const { attributes, setAttributes, clientId } = props;
 	const {
 		required,
 		options,
@@ -105,6 +107,321 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 		return <FieldsPreview fieldName={ fieldName } />;
 	}
 
+	const minMaxComponent = multiSelect && options.length > 1 && (
+		<>
+			<SRFMNumberControl
+				label={ __( 'Minimum Value', 'sureforms' ) }
+				displayUnit={ false }
+				data={ {
+					value: minValue,
+					label: 'minValue',
+				} }
+				min={ 1 }
+				max={ ( maxValue || options.length ) - 1 }
+				value={ minValue }
+				onChange={ ( value ) => {
+					if ( value >= maxValue ) {
+						setError( true );
+						setAttributes( {
+							minValue: 0,
+						} );
+					} else {
+						setError( false );
+						setAttributes( {
+							minValue: value,
+						} );
+					}
+				} }
+				showControlHeader={ false }
+			/>
+			<SRFMNumberControl
+				label={ __( 'Maximum Value', 'sureforms' ) }
+				displayUnit={ false }
+				data={ {
+					value: maxValue,
+					label: 'maxValue',
+				} }
+				min={ minValue + 1 || 1 }
+				max={ options.length }
+				value={ maxValue }
+				onChange={ ( value ) => {
+					if ( value <= minValue ) {
+						setError( true );
+						setAttributes( {
+							maxValue: Number( minValue ) + 1,
+						} );
+					} else {
+						setError( false );
+						setAttributes( {
+							maxValue: value,
+						} );
+					}
+				} }
+				showControlHeader={ false }
+			/>
+			{ error && (
+				<p className="srfm-min-max-error-styles">
+					{ __(
+						'Please check the Minimum and Maximum value',
+						'sureforms'
+					) }
+				</p>
+			) }
+			<p className="components-base-control__help">
+				{ __(
+					'Note: Maximum value should always be greater than minimum value',
+					'sureforms'
+				) }
+			</p>
+		</>
+	);
+
+	const dropDownOptions = (
+		<div style={ { marginBottom: '8px' } }>
+			{ options.length > 0 && (
+				<DragDropContext
+					onDragEnd={ ( param ) => {
+						const srcI = param.source.index;
+						const destI = param.destination.index;
+						if ( srcI !== destI ) {
+							const newOptions = [ ...options ];
+							newOptions.splice(
+								destI,
+								0,
+								newOptions.splice( srcI, 1 )[ 0 ]
+							);
+							setAttributes( {
+								options: newOptions,
+							} );
+						}
+					} }
+				>
+					<span className="srfm-control-label srfm-control__header">
+						{ __( 'Edit Options', 'sureforms' ) }
+					</span>
+					<>
+						<Droppable droppableId="droppable-1">
+							{ ( provided ) => (
+								<div
+									ref={ provided.innerRef }
+									{ ...provided.droppableProps }
+								>
+									{ options.map( ( option, i ) => (
+										<Draggable
+											key={ i }
+											draggableId={ 'draggable-' + i }
+											index={ i }
+										>
+											{ ( param ) => (
+												<div
+													ref={ param.innerRef }
+													className="srfm-option-outer-wrapper"
+													{ ...param.draggableProps }
+												>
+													<div>
+														<>
+															<Icon
+																icon={ 'move' }
+																{ ...param.dragHandleProps }
+															/>
+														</>
+														<div>
+															<SRFMTextControl
+																showHeaderControls={
+																	false
+																}
+																key={ i }
+																value={
+																	option.label
+																}
+																data={ {
+																	value: option.label,
+																	label: 'option',
+																} }
+																onChange={ (
+																	value
+																) =>
+																	editOption(
+																		value,
+																		i
+																	)
+																}
+															/>
+														</div>
+														<>
+															<div className="srfm-icon-picker">
+																<UAGIconPicker
+																	label={ '' }
+																	value={
+																		option.icon
+																	}
+																	onChange={ (
+																		value
+																	) =>
+																		changeOption(
+																			{
+																				icon: value,
+																			},
+																			i
+																		)
+																	}
+																	addIcon={ parse(
+																		svgIcons.custom_plus_icon
+																	) }
+																/>
+															</div>
+															<Button
+																icon="trash"
+																onClick={ () =>
+																	handleDelete(
+																		i
+																	)
+																}
+															/>
+														</>
+													</div>
+												</div>
+											) }
+										</Draggable>
+									) ) }
+									{ provided.placeholder }
+								</div>
+							) }
+						</Droppable>
+					</>
+				</DragDropContext>
+			) }
+		</div>
+	);
+
+	const addNewOption = (
+		<>
+			<div
+				className="sureform-add-option-container"
+				onKeyDown={ ( event ) => {
+					if ( event.key === 'Enter' && newOption ) {
+						addOption( newOption );
+					}
+				} }
+			>
+				<SRFMTextControl
+					showHeaderControls={ false }
+					label={ __( 'Add New Option', 'sureforms' ) }
+					value={ newOption }
+					onChange={ ( value ) => setNewOption( value ) }
+				/>
+				<Button
+					className="sureform-add-option-button"
+					variant="secondary"
+					onClick={ () => {
+						if ( newOption ) {
+							addOption( newOption );
+						} else {
+							// TODO: May be add a tooltip here
+						}
+					} }
+				>
+					{ __( 'ADD', 'sureforms' ) }
+				</Button>
+				<BulkInserterWithButton
+					options={ options }
+					titleKey="label"
+					insertOptions={ ( newOptions, closeModal ) => {
+						setAttributes( {
+							options: newOptions,
+						} );
+						closeModal();
+					} }
+				/>
+			</div>
+			<span className="srfm-control-label srfm-control__header" />
+		</>
+	);
+
+	const attributeOptions = [
+		{
+			id: 'required',
+			component: (
+				<ToggleControl
+					label={ __( 'Required', 'sureforms' ) }
+					checked={ required }
+					onChange={ ( checked ) =>
+						setAttributes( { required: checked } )
+					}
+				/>
+			),
+		},
+		{
+			id: 'multiSelect',
+			component: (
+				<ToggleControl
+					label={ __( 'Enable Multiple Selections', 'sureforms' ) }
+					checked={ multiSelect }
+					onChange={ ( checked ) =>
+						setAttributes( { multiSelect: checked } )
+					}
+				/>
+			),
+		},
+		{
+			id: 'minMaxComponent',
+			component: minMaxComponent,
+		},
+		{
+			id: 'searchable',
+			component: (
+				<ToggleControl
+					label={ __( 'Enable Search', 'sureforms' ) }
+					checked={ searchable }
+					onChange={ ( checked ) =>
+						setAttributes( { searchable: checked } )
+					}
+				/>
+			),
+		},
+		{
+			id: 'errorMsg',
+			component: required ? (
+				<SRFMTextControl
+					label={ __( 'Error Message', 'sureforms' ) }
+					data={ {
+						value: errorMsg,
+						label: 'errorMsg',
+					} }
+					value={ currentErrorMsg }
+					onChange={ ( value ) => {
+						setCurrentErrorMsg( value );
+						setAttributes( { errorMsg: value } );
+					} }
+				/>
+			) : null,
+		},
+		{
+			id: 'dropDownOptions',
+			component: dropDownOptions,
+		},
+		{
+			id: 'addNewOption',
+			component: addNewOption,
+		},
+		{
+			id: 'help',
+			component: (
+				<SRFMTextControl
+					data={ {
+						value: help,
+						label: 'help',
+					} }
+					label={ __( 'Help Text', 'sureforms' ) }
+					value={ help }
+					onChange={ ( value ) => setAttributes( { help: value } ) }
+				/>
+			),
+		},
+	];
+
+	const filterOptions = attributeOptionsWithFilter( attributeOptions, props );
+
 	return (
 		<div className={ className }>
 			<InspectorControls>
@@ -117,320 +434,9 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 							title={ __( 'Attributes', 'sureforms' ) }
 							initialOpen={ true }
 						>
-							<ToggleControl
-								label={ __( 'Required', 'sureforms' ) }
-								checked={ required }
-								onChange={ ( checked ) =>
-									setAttributes( { required: checked } )
-								}
-							/>
-							<ToggleControl
-								label={ __(
-									'Enable Multiple Selections',
-									'sureforms'
-								) }
-								checked={ multiSelect }
-								onChange={ ( checked ) =>
-									setAttributes( { multiSelect: checked } )
-								}
-							/>
-							{ multiSelect && options.length > 1 && (
-								<>
-									<SRFMNumberControl
-										label={ __(
-											'Minimum Value',
-											'sureforms'
-										) }
-										displayUnit={ false }
-										data={ {
-											value: minValue,
-											label: 'minValue',
-										} }
-										min={ 1 }
-										max={
-											( maxValue || options.length ) - 1
-										}
-										value={ minValue }
-										onChange={ ( value ) => {
-											if ( value >= maxValue ) {
-												setError( true );
-												setAttributes( {
-													minValue: 0,
-												} );
-											} else {
-												setError( false );
-												setAttributes( {
-													minValue: value,
-												} );
-											}
-										} }
-										showControlHeader={ false }
-									/>
-									<SRFMNumberControl
-										label={ __(
-											'Maximum Value',
-											'sureforms'
-										) }
-										displayUnit={ false }
-										data={ {
-											value: maxValue,
-											label: 'maxValue',
-										} }
-										min={ minValue + 1 || 1 }
-										max={ options.length }
-										value={ maxValue }
-										onChange={ ( value ) => {
-											if ( value <= minValue ) {
-												setError( true );
-												setAttributes( {
-													maxValue:
-														Number( minValue ) + 1,
-												} );
-											} else {
-												setError( false );
-												setAttributes( {
-													maxValue: value,
-												} );
-											}
-										} }
-										showControlHeader={ false }
-									/>
-									{ error && (
-										<p className="srfm-min-max-error-styles">
-											{ __(
-												'Please check the Minimum and Maximum value',
-												'sureforms'
-											) }
-										</p>
-									) }
-									<p className="components-base-control__help">
-										{ __(
-											'Note: Maximum value should always be greater than minimum value',
-											'sureforms'
-										) }
-									</p>
-								</>
+							{ filterOptions.map(
+								( option ) => option.component
 							) }
-							<ToggleControl
-								label={ __( 'Enable Search', 'sureforms' ) }
-								checked={ searchable }
-								onChange={ ( checked ) =>
-									setAttributes( { searchable: checked } )
-								}
-							/>
-							{ required && (
-								<SRFMTextControl
-									data={ {
-										value: errorMsg,
-										label: 'errorMsg',
-									} }
-									label={ __( 'Error Message', 'sureforms' ) }
-									value={ currentErrorMsg }
-									onChange={ ( value ) => {
-										setCurrentErrorMsg( value );
-										setAttributes( { errorMsg: value } );
-									} }
-								/>
-							) }
-							<div style={ { marginBottom: '8px' } }>
-								{ options.length > 0 && (
-									<DragDropContext
-										onDragEnd={ ( param ) => {
-											const srcI = param.source.index;
-											const destI =
-												param.destination.index;
-											if ( srcI !== destI ) {
-												const newOptions = [
-													...options,
-												];
-												newOptions.splice(
-													destI,
-													0,
-													newOptions.splice(
-														srcI,
-														1
-													)[ 0 ]
-												);
-												setAttributes( {
-													options: newOptions,
-												} );
-											}
-										} }
-									>
-										<span className="srfm-control-label srfm-control__header">
-											{ __(
-												'Edit Options',
-												'sureforms'
-											) }
-										</span>
-										<>
-											<Droppable droppableId="droppable-1">
-												{ ( provided ) => (
-													<div
-														ref={
-															provided.innerRef
-														}
-														{ ...provided.droppableProps }
-													>
-														{ options.map(
-															( option, i ) => (
-																<Draggable
-																	key={ i }
-																	draggableId={
-																		'draggable-' +
-																		i
-																	}
-																	index={ i }
-																>
-																	{ (
-																		param
-																	) => (
-																		<div
-																			ref={
-																				param.innerRef
-																			}
-																			className="srfm-option-outer-wrapper"
-																			{ ...param.draggableProps }
-																		>
-																			<div>
-																				<>
-																					<Icon
-																						icon={
-																							'move'
-																						}
-																						{ ...param.dragHandleProps }
-																					/>
-																				</>
-																				<div>
-																					<SRFMTextControl
-																						showHeaderControls={
-																							false
-																						}
-																						key={
-																							i
-																						}
-																						value={
-																							option.label
-																						}
-																						data={ {
-																							value: option.label,
-																							label: 'option',
-																						} }
-																						onChange={ (
-																							value
-																						) =>
-																							editOption(
-																								value,
-																								i
-																							)
-																						}
-																					/>
-																				</div>
-																				<>
-																					<div className="srfm-icon-picker">
-																						<UAGIconPicker
-																							label={
-																								''
-																							}
-																							value={
-																								option.icon
-																							}
-																							onChange={ (
-																								value
-																							) =>
-																								changeOption(
-																									{
-																										icon: value,
-																									},
-																									i
-																								)
-																							}
-																							addIcon={ parse(
-																								svgIcons.custom_plus_icon
-																							) }
-																						/>
-																					</div>
-																					<Button
-																						icon="trash"
-																						onClick={ () =>
-																							handleDelete(
-																								i
-																							)
-																						}
-																					/>
-																				</>
-																			</div>
-																		</div>
-																	) }
-																</Draggable>
-															)
-														) }
-														{ provided.placeholder }
-													</div>
-												) }
-											</Droppable>
-										</>
-									</DragDropContext>
-								) }
-							</div>
-							<div
-								className="sureform-add-option-container"
-								onKeyDown={ ( event ) => {
-									if ( event.key === 'Enter' && newOption ) {
-										addOption( newOption );
-									}
-								} }
-							>
-								<SRFMTextControl
-									showHeaderControls={ false }
-									label={ __(
-										'Add New Option',
-										'sureforms'
-									) }
-									value={ newOption }
-									onChange={ ( value ) =>
-										setNewOption( value )
-									}
-								/>
-								<Button
-									className="sureform-add-option-button"
-									variant="secondary"
-									onClick={ () => {
-										if ( newOption ) {
-											addOption( newOption );
-										} else {
-											// TODO: May be add a tooltip here
-										}
-									} }
-								>
-									{ __( 'ADD', 'sureforms' ) }
-								</Button>
-								<BulkInserterWithButton
-									options={ options }
-									titleKey="label"
-									insertOptions={ (
-										newOptions,
-										closeModal
-									) => {
-										setAttributes( {
-											options: newOptions,
-										} );
-										closeModal();
-									} }
-								/>
-							</div>
-							<span className="srfm-control-label srfm-control__header" />
-							<SRFMTextControl
-								data={ {
-									value: help,
-									label: 'help',
-								} }
-								label={ __( 'Help Text', 'sureforms' ) }
-								value={ help }
-								onChange={ ( value ) =>
-									setAttributes( { help: value } )
-								}
-							/>
 						</SRFMAdvancedPanelBody>
 					</InspectorTab>
 					<InspectorTab { ...SRFMTabs.style }></InspectorTab>
