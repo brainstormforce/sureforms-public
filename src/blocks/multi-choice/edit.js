@@ -495,13 +495,7 @@ const Edit = ( props ) => {
 					onChange={ ( value ) => setAttributes( { help: value } ) }
 				/>
 			),
-		},
-		{
-			id: 'conditionalLogic',
-			component: (
-				<ConditionalLogic { ...{ setAttributes, attributes } } />
-			),
-		},
+		}
 	];
 
 	const filterOptions = attributeOptionsWithFilter( attributeOptions, props );
