@@ -173,10 +173,10 @@ class Single_Entry {
 			return;
 		}
 
-		if ( 'edit-button' === $for && $this->entry_id ) {
-			$this->add_tooltip(
-				'top',
-				static function() {
+		switch ( $for ) {
+			case 'edit-button':
+				$position   = 'top';
+				$element_cb = static function() {
 					?>
 					<button class="button button-link srfm-edit-entry" type="button">
 						<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -185,39 +185,33 @@ class Single_Entry {
 						<?php esc_html_e( 'Edit', 'sureforms' ); ?>
 					</button>
 					<?php
-				},
-				static function() {
+				};
+				$tooltip_cb = static function() {
 					?>
 					<h3><?php esc_html_e( 'Unlock Edit Form Entires', 'sureforms' ); ?></h3>
 					<p><?php esc_html_e( 'With the SureForms Starter plan, you can easily edit your entries to suit your needs.', 'sureforms' ); ?></p>
 					<?php
-				}
-			);
-			return;
-		}
+				};
+				break;
 
-		if ( 'resend-notification' === $for ) {
-			$this->add_tooltip(
-				'left',
-				static function() {
+			case 'resend-notification':
+				$position   = 'left';
+				$element_cb = static function() {
 					?>
 					<button type="button" class="button srfm-resend-notification-trigger-btn"><?php esc_html_e( 'Resend Notification', 'sureforms' ); ?></button>
 					<?php
-				},
-				static function() {
+				};
+				$tooltip_cb = static function() {
 					?>
 					<h3><?php esc_html_e( 'Unlock Resend Email Notification', 'sureforms' ); ?></h3>
 					<p><?php esc_html_e( 'With the SureForms Starter plan, you can effortlessly resend email notifications, ensuring your important updates reach their recipients with ease.', 'sureforms' ); ?></p>
 					<?php
-				}
-			);
-			return;
-		}
+				};
+				break;
 
-		if ( 'notes' === $for ) {
-			$this->add_tooltip(
-				'left',
-				static function() {
+			case 'notes':
+				$position   = 'left';
+				$element_cb = static function() {
 					?>
 					<div id="submitdiv" class="postbox entry-notes">
 						<div class="postbox-header">
@@ -238,16 +232,21 @@ class Single_Entry {
 						</div>
 					</div>
 					<?php
-				},
-				static function() {
+				};
+				$tooltip_cb = static function() {
 					?>
 					<h3><?php esc_html_e( 'Unlock Add Note', 'sureforms' ); ?></h3>
 					<p><?php esc_html_e( 'With the SureForms Starter plan, enhance your submitted form entries by adding personalized notes for better clarity and tracking.', 'sureforms' ); ?></p>
 					<?php
-				}
-			);
-			return;
+				};
+				break;
+
+			default:
+				// Do nothing.
+				return;
 		}
+
+		$this->add_tooltip( $position, $element_cb, $tooltip_cb );
 	}
 
 	/**
