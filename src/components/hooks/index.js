@@ -6,8 +6,8 @@ export const attributeOptionsWithFilter = ( options, props ) => {
 
 export const shouldShowDropdownValues = ( value ) => {
 	return applyFilters( 'srfm.block.dropdown.values', false, value );
-}
+};
 
 export const shouldShowMultiChoiceValues = ( value ) => {
 	return applyFilters( 'srfm.block.multi-choice.values', false, value );
-}
+};
