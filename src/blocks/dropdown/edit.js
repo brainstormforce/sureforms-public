@@ -112,8 +112,7 @@ const Edit = ( props ) => {
 		return <FieldsPreview fieldName={ fieldName } />;
 	}
 
-	// const showDropdownValues = shouldShowDropdownValues( showValue );
-	const showDropdownValues = true;
+	const showDropdownValues = shouldShowDropdownValues( showValue );
 
 	const minMaxComponent = multiSelect && options.length > 1 && (
 		<>

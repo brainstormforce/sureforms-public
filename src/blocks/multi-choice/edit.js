@@ -145,8 +145,7 @@ const Edit = ( props ) => {
 		changeOption( { image: '' }, index );
 	};
 
-	// const showMultiChoiceValues = shouldShowMultiChoiceValues( showValue );
-	const showMultiChoiceValues = true;
+	const showMultiChoiceValues = shouldShowMultiChoiceValues( showValue );
 
 	const minMaxValue = ! singleSelection && options.length > 1 && (
 		<>
@@ -380,7 +379,7 @@ const Edit = ( props ) => {
 		</div>
 	);
 
-	const addOptions = (
+	const addNewOption = (
 		<>
 			<div
 				className="sureform-add-option-container"
@@ -523,8 +522,8 @@ const Edit = ( props ) => {
 			component: choicesOptions,
 		},
 		{
-			id: 'addOptions',
-			component: addOptions,
+			id: 'addNewOption',
+			component: addNewOption,
 		},
 		{
 			id: 'control-label-span',
@@ -546,13 +545,7 @@ const Edit = ( props ) => {
 					onChange={ ( value ) => setAttributes( { help: value } ) }
 				/>
 			),
-		},
-		{
-			id: 'conditionalLogic',
-			component: (
-				<ConditionalLogic { ...{ setAttributes, attributes } } />
-			),
-		},
+		}
 	];
 
 	const filterOptions = attributeOptionsWithFilter( attributeOptions, props );
