@@ -25,7 +25,7 @@ msgstr ""
 #: inc/page-builders/elementor/service-provider.php:72
 #: assets/build/formEditor.js:172
 msgid "SureForms"
-msgstr "SicherFormulare"
+msgstr "SureForms"
 
 #. Plugin URI of the plugin
 #: sureforms.php
