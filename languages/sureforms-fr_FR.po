@@ -11148,10 +11148,6 @@ msgstr "Quelle est la probabilité que vous recommandiez SureForms à vos amis o
 msgid "Thanks a lot for your feedback! 😍"
 msgstr "Merci beaucoup pour votre retour ! 😍"
 
-#: inc/nps-notice.php:110
-msgid "Could you please do us a favor and give us a 5-star rating on WordPress? It would help others choose SureForms with confidence. Thank you!"
-msgstr "Pourriez-vous nous rendre service et nous donner une note de 5 étoiles sur WordPress ? Cela aiderait les autres à choisir SureForms en toute confiance. Merci !"
-
 #: inc/nps-notice.php:112
 msgid "Thank you for your feedback"
 msgstr "Merci pour votre retour"
@@ -11635,3 +11631,7 @@ msgstr "lien"
 msgctxt "block keyword"
 msgid "website"
 msgstr "site web"
+
+#: inc/nps-notice.php:110
+msgid "Could you please do us a favor and give us a 5-star rating? It would help others choose SureForms with confidence. Thank you!"
+msgstr ""
