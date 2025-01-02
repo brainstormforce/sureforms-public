@@ -5680,7 +5680,7 @@ msgstr "NS8"
 
 #: modules/gutenberg/icons/icons-v6-2.php:2430
 msgid "Nutritionix"
-msgstr ""
+msgstr "Nutritionix"
 
 #: modules/gutenberg/icons/icons-v6-2.php:2441
 msgid "O"
@@ -11204,6 +11204,10 @@ msgstr "Message d'erreur de sélection minimale pour choix multiple"
 msgid "Multiple Choice Maximum Selections Error Message"
 msgstr "Message d'erreur de sélection multiple pour choix multiples"
 
+#: inc/nps-notice.php:110
+msgid "Could you please do us a favor and give us a 5-star rating? It would help others choose SureForms with confidence. Thank you!"
+msgstr "Pourriez-vous nous rendre service et nous donner une note de 5 étoiles ? Cela aiderait les autres à choisir SureForms en toute confiance. Merci !"
+
 #: inc/post-types.php:123
 msgctxt "post type general name"
 msgid "Forms"
@@ -11631,7 +11635,3 @@ msgstr "lien"
 msgctxt "block keyword"
 msgid "website"
 msgstr "site web"
-
-#: inc/nps-notice.php:110
-msgid "Could you please do us a favor and give us a 5-star rating? It would help others choose SureForms with confidence. Thank you!"
-msgstr ""

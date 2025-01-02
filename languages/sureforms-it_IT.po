@@ -659,7 +659,7 @@ msgstr "Modulo SureForms creato con successo."
 
 #: inc/create-new-form.php:193
 msgid "Error creating SureForms Form, "
-msgstr "Errore nella creazione del modulo SureForms, "
+msgstr "Errore nella creazione del modulo SureForms,"
 
 #: inc/email/email-template.php:46
 msgid "New form submission"
@@ -706,7 +706,7 @@ msgstr "Email"
 
 #: inc/fields/email-markup.php:76
 msgid "Confirm "
-msgstr "Conferma "
+msgstr "Conferma"
 
 #. Translators: %s is label of block.
 #: inc/fields/email-markup.php:84
@@ -2187,7 +2187,7 @@ msgstr "Burger"
 
 #: modules/gutenberg/icons/icons-v6-0.php:2817
 msgid "Büromöbel-Experte GmbH & Co. KG."
-msgstr ""
+msgstr "Büromöbel-Experte GmbH & Co. KG."
 
 #: modules/gutenberg/icons/icons-v6-0.php:2828
 msgid "Burst"
@@ -3253,7 +3253,7 @@ msgstr "DocHub"
 
 #: modules/gutenberg/icons/icons-v6-1.php:620
 msgid "Docker"
-msgstr ""
+msgstr "Docker"
 
 #: modules/gutenberg/icons/icons-v6-1.php:631
 msgid "Dog"
@@ -3785,7 +3785,7 @@ msgstr "Controllo del cerchio del file"
 
 #: modules/gutenberg/icons/icons-v6-1.php:2238
 msgid "File Circle Exclamation"
-msgstr ""
+msgstr "Cerchio di file con punto esclamativo"
 
 #: modules/gutenberg/icons/icons-v6-1.php:2249
 msgid "File Circle Minus"
@@ -4546,7 +4546,7 @@ msgstr "Stregone del Cappello"
 
 #: modules/gutenberg/icons/icons-v6-1.php:4527
 msgid "Head Side Cough"
-msgstr ""
+msgstr "Tosse laterale della testa"
 
 #: modules/gutenberg/icons/icons-v6-1.php:4538
 msgid "Head Side Cough Slash"
@@ -4598,7 +4598,7 @@ msgstr "Cerchio del Cuore Plus"
 
 #: modules/gutenberg/icons/icons-v6-1.php:4686
 msgid "Heart Circle Xmark"
-msgstr ""
+msgstr "Cerchio del cuore Xmark"
 
 #: modules/gutenberg/icons/icons-v6-1.php:4697
 msgid "Heart Crack"
@@ -5047,7 +5047,7 @@ msgstr "Kickstarter K"
 
 #: modules/gutenberg/icons/icons-v6-2.php:526
 msgid "Kip Sign"
-msgstr ""
+msgstr "Segnale Kip"
 
 #: modules/gutenberg/icons/icons-v6-2.php:537
 msgid "Kit Medical"
@@ -6235,7 +6235,7 @@ msgstr "Controllo del cerchio del piano"
 
 #: modules/gutenberg/icons/icons-v6-2.php:3907
 msgid "Plane Circle Exclamation"
-msgstr ""
+msgstr "Cerchio Piano Esclamazione"
 
 #: modules/gutenberg/icons/icons-v6-2.php:3918
 msgid "Plane Circle Xmark"
@@ -6279,7 +6279,7 @@ msgstr "Spina"
 
 #: modules/gutenberg/icons/icons-v6-2.php:4028
 msgid "Plug Circle Bolt"
-msgstr ""
+msgstr "Bullone a cerchio per spina"
 
 #: modules/gutenberg/icons/icons-v6-2.php:4039
 msgid "Plug Circle Check"
@@ -6375,7 +6375,7 @@ msgstr "Q"
 
 #: modules/gutenberg/icons/icons-v6-2.php:4292
 msgid "QQ"
-msgstr ""
+msgstr "QQ"
 
 #: modules/gutenberg/icons/icons-v6-2.php:4303
 msgid "Qrcode"
@@ -6748,7 +6748,7 @@ msgstr "Forbici"
 
 #: modules/gutenberg/icons/icons-v6-3.php:169
 msgid "Screenpal"
-msgstr ""
+msgstr "Screenpal"
 
 #: modules/gutenberg/icons/icons-v6-3.php:180
 msgid "Screwdriver"
@@ -7297,7 +7297,7 @@ msgstr "Negozio Slash"
 
 #: modules/gutenberg/icons/icons-v6-3.php:1779
 msgid "Strava"
-msgstr ""
+msgstr "Strava"
 
 #: modules/gutenberg/icons/icons-v6-3.php:1790
 msgid "Street View"
@@ -7373,7 +7373,7 @@ msgstr ""
 
 #: modules/gutenberg/icons/icons-v6-3.php:1993
 msgid "Swatchbook"
-msgstr ""
+msgstr "Campionario"
 
 #: modules/gutenberg/icons/icons-v6-3.php:2004
 msgid "Swift"
@@ -7845,7 +7845,7 @@ msgstr "Uber"
 
 #: modules/gutenberg/icons/icons-v6-3.php:3339
 msgid "Ubuntu"
-msgstr ""
+msgstr "Ubuntu"
 
 #: modules/gutenberg/icons/icons-v6-3.php:3350
 msgid "UIkit"
@@ -7898,7 +7898,7 @@ msgstr ""
 
 #: modules/gutenberg/icons/icons-v6-3.php:3482
 msgid "Untappd"
-msgstr ""
+msgstr "Untappd"
 
 #: modules/gutenberg/icons/icons-v6-3.php:3493
 msgid "Up Down"
@@ -8115,7 +8115,7 @@ msgstr "Viacoin"
 
 #: modules/gutenberg/icons/icons-v6-3.php:4081
 msgid "Viadeo"
-msgstr ""
+msgstr "Viadeo"
 
 #: modules/gutenberg/icons/icons-v6-3.php:4103
 msgid "Vial"
@@ -8324,7 +8324,7 @@ msgstr "Wi-Fi"
 
 #: modules/gutenberg/icons/icons-v6-3.php:4697
 msgid "Wikipedia W"
-msgstr ""
+msgstr "Wikipedia W"
 
 #: modules/gutenberg/icons/icons-v6-3.php:4708
 msgid "Wind"
@@ -8444,7 +8444,7 @@ msgstr "Sì"
 
 #: modules/gutenberg/icons/icons-v6-3.php:5053
 msgid "Y Combinator"
-msgstr ""
+msgstr "Y Combinator"
 
 #: modules/gutenberg/icons/icons-v6-3.php:5064
 msgid "Yahoo Logo"
@@ -8667,7 +8667,7 @@ msgstr "Mostra il titolo del modulo su questa pagina"
 
 #: assets/build/blocks.js:2
 msgid "Note: For editing SureForms, please refer to the SureForms Editor - "
-msgstr "Nota: Per modificare i SureForms, fare riferimento all'Editor di SureForms - "
+msgstr "Nota: Per modificare i SureForms, fare riferimento all'Editor di SureForms -"
 
 #: assets/build/blocks.js:2
 msgid "Field preview"
@@ -8832,7 +8832,7 @@ msgstr "Maschera personalizzata"
 
 #: assets/build/blocks.js:172
 msgid "Please check the documentation to manage custom input pattern "
-msgstr "Si prega di controllare la documentazione per gestire il modello di input personalizzato "
+msgstr "Si prega di controllare la documentazione per gestire il modello di input personalizzato"
 
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
@@ -8853,7 +8853,7 @@ msgstr "Convalida come Unico"
 
 #: assets/build/blocks.js:172
 msgid "Validation Message for Duplicate "
-msgstr "Messaggio di convalida per duplicato "
+msgstr "Messaggio di convalida per duplicato"
 
 #: assets/build/blocks.js:172
 msgid "Help Text"
@@ -9394,7 +9394,7 @@ msgstr "Visivo"
 
 #: assets/build/formEditor.js:172
 msgid "HTML"
-msgstr ""
+msgstr "HTML"
 
 #: assets/build/formEditor.js:172
 msgid "All Data"
@@ -9749,11 +9749,11 @@ msgstr ""
 
 #: assets/build/formEditor.js:172
 msgid "Before selecting the security type, please make sure you have configured the API keys "
-msgstr "Prima di selezionare il tipo di sicurezza, assicurati di aver configurato le chiavi API "
+msgstr "Prima di selezionare il tipo di sicurezza, assicurati di aver configurato le chiavi API"
 
 #: assets/build/formEditor.js:172
 msgid "Please configure the API keys correctly in the "
-msgstr "Si prega di configurare correttamente le chiavi API nel "
+msgstr "Si prega di configurare correttamente le chiavi API nel"
 
 #: assets/build/formEditor.js:172
 msgid "Additional CSS Class(es)"
@@ -9761,7 +9761,7 @@ msgstr "Classe(i) CSS aggiuntiva(e)"
 
 #: assets/build/formEditor.js:172
 msgid " Separate multiple classes with spaces. "
-msgstr " Separa più classi con spazi. "
+msgstr "Separa più classi con spazi."
 
 #: assets/build/formEditor.js:172
 msgid "Date Picker"
@@ -9947,7 +9947,7 @@ msgstr "Domenica"
 
 #: assets/build/settings.js:172
 msgid "Enable Email Summaries "
-msgstr "Abilita i riepiloghi email "
+msgstr "Abilita i riepiloghi email"
 
 #: assets/build/settings.js:172
 msgid "Test Email"
@@ -10128,7 +10128,7 @@ msgstr "Trappola"
 
 #: assets/build/settings.js:172
 msgid "To enable Google reCAPTCHA, please add your site key and secret key. Configure these settings within the individual form. "
-msgstr "Per abilitare Google reCAPTCHA, aggiungi la tua chiave del sito e la chiave segreta. Configura queste impostazioni all'interno del modulo individuale. "
+msgstr "Per abilitare Google reCAPTCHA, aggiungi la tua chiave del sito e la chiave segreta. Configura queste impostazioni all'interno del modulo individuale."
 
 #: assets/build/settings.js:172
 msgid "Learn more"
@@ -10180,7 +10180,7 @@ msgstr "Cloudflare Turnstile"
 
 #: assets/build/settings.js:172
 msgid "To enable Cloudflare Turnstile, please add your site key and secret key. Configure these settings within the individual form. "
-msgstr "Per abilitare Cloudflare Turnstile, aggiungi la tua chiave del sito e la chiave segreta. Configura queste impostazioni all'interno del modulo individuale. "
+msgstr "Per abilitare Cloudflare Turnstile, aggiungi la tua chiave del sito e la chiave segreta. Configura queste impostazioni all'interno del modulo individuale."
 
 #: assets/build/settings.js:172
 msgid "Appearance Mode"
@@ -10188,7 +10188,7 @@ msgstr "Modalità Aspetto"
 
 #: assets/build/settings.js:172
 msgid "To enable hCAPTCHA, please add your site key and secret key. Configure these settings within the individual form. "
-msgstr "Per abilitare hCAPTCHA, aggiungi la tua chiave del sito e la chiave segreta. Configura queste impostazioni all'interno del singolo modulo. "
+msgstr "Per abilitare hCAPTCHA, aggiungi la tua chiave del sito e la chiave segreta. Configura queste impostazioni all'interno del singolo modulo."
 
 #: assets/build/settings.js:172
 msgid "Enable Honeypot Security"
@@ -10224,7 +10224,7 @@ msgstr "Descrivi il tuo modulo"
 
 #: assets/build/templatePicker.js:2
 msgid "Usage "
-msgstr "Utilizzo "
+msgstr "Utilizzo"
 
 #: assets/build/templatePicker.js:2
 msgid "Free plan only allows %s AI form generations. Need to create more forms with AI?"
@@ -10273,7 +10273,7 @@ msgstr "Autenticazione fallita"
 
 #: assets/build/templatePicker.js:172
 msgid "Please check your username and password for the account, and try to reconnect again. Need help? "
-msgstr "Si prega di controllare il nome utente e la password per l'account e provare a riconnettersi. Hai bisogno di aiuto? "
+msgstr "Si prega di controllare il nome utente e la password per l'account e provare a riconnettersi. Hai bisogno di aiuto?"
 
 #: assets/build/templatePicker.js:172
 msgid "Contact Support"
@@ -10337,7 +10337,7 @@ msgstr "Per favore descrivi il modulo che vuoi creare"
 
 #: assets/build/templatePicker.js:172
 msgid "E.g. Form to gather feedback from our customers for our product functionality, usability, how much you will rate it, and what you don’t like about it."
-msgstr "Ad esempio, modulo per raccogliere feedback dai nostri clienti sulla funzionalità del prodotto, l'usabilità, quanto lo valuteresti e cosa non ti piace. "
+msgstr "Ad esempio, modulo per raccogliere feedback dai nostri clienti sulla funzionalità del prodotto, l'usabilità, quanto lo valuteresti e cosa non ti piace."
 
 #: assets/build/templatePicker.js:172
 msgid "Prompt cannot be empty."
@@ -10564,17 +10564,17 @@ msgstr "H2"
 #: modules/gutenberg/build/blocks.js:11
 #: modules/gutenberg/build/blocks.js:15
 msgid "H3"
-msgstr ""
+msgstr "H3"
 
 #: modules/gutenberg/build/blocks.js:11
 #: modules/gutenberg/build/blocks.js:15
 msgid "H4"
-msgstr ""
+msgstr "H4"
 
 #: modules/gutenberg/build/blocks.js:11
 #: modules/gutenberg/build/blocks.js:15
 msgid "H5"
-msgstr ""
+msgstr "H5"
 
 #: modules/gutenberg/build/blocks.js:11
 #: modules/gutenberg/build/blocks.js:15
@@ -11071,7 +11071,7 @@ msgstr "Descrizione"
 
 #: modules/gutenberg/build/blocks.js:15
 msgid "Caption"
-msgstr ""
+msgstr "<translated didascalia"
 
 #: modules/gutenberg/build/blocks.js:15
 #: modules/gutenberg/build/blocks.js:17
