@@ -30,7 +30,11 @@
 			"type": "boolean"
 		},
 		"minValue": {
+<<<<<<< HEAD
 			"type": "number"
+=======
+				"type": "number"
+>>>>>>> d29bc8389d4b57ecaab32793bf5314ead95cdcd9
 		},
 		"maxValue": {
 			"type": "number"
@@ -83,8 +87,8 @@
 			"default":false
 		},
 		"slug":{
-				"type":"string",
-				"default":""
+			"type":"string",
+			"default":""
 		},
 		"optionType": {
 			"type": "string",

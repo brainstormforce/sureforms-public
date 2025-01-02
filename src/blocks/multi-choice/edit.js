@@ -545,7 +545,7 @@ const Edit = ( props ) => {
 					onChange={ ( value ) => setAttributes( { help: value } ) }
 				/>
 			),
-		}
+		},
 	];
 
 	const filterOptions = attributeOptionsWithFilter( attributeOptions, props );

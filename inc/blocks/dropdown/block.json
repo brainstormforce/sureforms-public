@@ -30,10 +30,10 @@
 			"default": false
 		},
 		"minValue": {
-		"type": "number"
+			"type": "number"
 		},
 		"maxValue": {
-		"type": "number"
+			"type": "number"
 		},
 		"searchable": {
 			"type": "boolean",
@@ -43,7 +43,7 @@
 			"type": "array",
 			"default": [
 				{ "label": "Option 1", "icon": "", "value": "" },
-				{ "label": "Option 2", "icon": "" , "value": "" }
+				{ "label": "Option 2", "icon": "", "value": "" }
 			]
 		},
 		"fieldWidth": {
@@ -75,12 +75,12 @@
 			"default":false
 		},
 		"slug":{
-				"type":"string",
-				"default":""
-			}
+			"type":"string",
+			"default":""
 		},
 		"showValues": {
 			"type": "boolean",
 			"default": false
 		}
+	}
 }
