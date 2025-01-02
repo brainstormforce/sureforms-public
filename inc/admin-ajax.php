@@ -386,6 +386,6 @@ class Admin_Ajax {
 	 */
 	public function print_rest_nonce() {
 		echo esc_js( wp_create_nonce( 'wp_rest' ) );
-		exit();
+		exit;
 	}
 }
