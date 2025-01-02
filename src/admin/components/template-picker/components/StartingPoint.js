@@ -29,15 +29,15 @@ const StartingPoint = ( {
 				<div className="srfm-tp-sp-text-container">
 					<h4 className="srfm-tp-sp-title">{ title }</h4>
 					<p className="srfm-tp-sp-description">{ description }</p>
-					<div className={ `srfm-tp-sp-container ${ isSecondary ? 'srfm-button-secondary' : 'srfm-button-primary' } srfm-tp-btn` }>
-						<Link
-							className={ `srfm-buttons srfm-tp-btn` }
-							to={ btnLink }
-							reloadDocument
-						>
-							{ btnText }
-						</Link>
-					</div>
+				</div>
+				<div className={ `srfm-tp-sp-container ${ isSecondary ? 'srfm-button-secondary' : 'srfm-button-primary' } srfm-tp-btn` }>
+					<Link
+						className={ `srfm-buttons srfm-tp-btn` }
+						to={ btnLink }
+						reloadDocument
+					>
+						{ btnText }
+					</Link>
 				</div>
 			</div>
 		</>
