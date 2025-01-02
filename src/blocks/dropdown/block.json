@@ -29,12 +29,12 @@
 			"type": "boolean",
 			"default": false
 		},
-    "minValue": {
-      "type": "number"
-    },
-    "maxValue": {
-      "type": "number"
-    },
+		"minValue": {
+		"type": "number"
+		},
+		"maxValue": {
+		"type": "number"
+		},
 		"searchable": {
 			"type": "boolean",
 			"default": true
@@ -42,9 +42,9 @@
 		"options": {
 			"type": "array",
 			"default": [
-				{ "label": "Option 1", "icon": "" },
-				{ "label": "Option 2", "icon": "" }
-			 ]
+				{ "label": "Option 1", "icon": "", "value": "" },
+				{ "label": "Option 2", "icon": "" , "value": "" }
+			]
 		},
 		"fieldWidth": {
 			"type": "number",
@@ -68,11 +68,19 @@
 		},
 		"placeholder": {
 			"type": "string",
-			"default": "Select Option"
+			"default": "Select an option"
 		},
 		"isConditionalLogic":{
 			"type":"boolean",
 			"default":false
+		},
+		"slug":{
+				"type":"string",
+				"default":""
+			}
+		},
+		"showValues": {
+			"type": "boolean",
+			"default": false
 		}
-	}
 }
