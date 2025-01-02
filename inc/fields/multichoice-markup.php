@@ -139,30 +139,6 @@ class Multichoice_Markup extends Base {
 					<div class="srfm-error-wrap"><?php echo wp_kses_post( $this->error_msg_markup ); ?></div>
 				</fieldset>
 			</div>
-			<style>
-				.srfm-multi-choice-block .srfm-block-wrap {
-					display: flex;
-					flex-wrap: wrap;
-					gap: 16px 16px;
-				}
-				.srfm-multi-choice-block  .srfm-multi-choice-single {
-					flex: 0 1 calc(50% - 16px / 2);
-				}
-				.srfm-multi-choice-block  .srfm-multi-choice-single label {
-					display: flex;
-					align-items: center;
-					gap: 8px;
-					cursor: pointer;
-				}
-				.srfm-multi-choice-block  .srfm-multi-choice-single label input {
-					margin: 0 !important;
-				}
-				.srfm-multi-choice-block .srfm-multi-choice-single label span {
-					font-size: 14px;
-					font-weight: 500;
-					line-height: 20px;
-				}
-			</style>
 			<?php
 			return ob_get_clean();
 		}
