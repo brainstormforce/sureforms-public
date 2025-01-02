@@ -95,7 +95,7 @@ const SureformsFormSpecificSettings = ( props ) => {
 	);
 
 	const addRootClass = () => {
-		if ( formRootContainer && sureformsKeys._srfm_additional_classes ) {
+		if ( formRootContainer && sureformsKeys?._srfm_additional_classes ) {
 			// Split the classes string by spaces
 			const classesArray =
 				sureformsKeys._srfm_additional_classes.split( ' ' );
@@ -110,7 +110,7 @@ const SureformsFormSpecificSettings = ( props ) => {
 	useEffect( addRootClass, [ formRootContainer ] );
 
 	// Update the custom CSS when the formCustomCssData prop changes. This will apply the custom CSS to the editor.
-	const formCustomCssData = sureformsKeys._srfm_form_custom_css || [];
+	const formCustomCssData = sureformsKeys?._srfm_form_custom_css || [];
 	useEffect( () => {
 		const isExistStyle = document.getElementById(
 			'srfm-blocks-editor-custom-css'
@@ -136,7 +136,7 @@ const SureformsFormSpecificSettings = ( props ) => {
 			updateMeta( '_srfm_page_break_settings', updatedPageBreakSettings );
 		}
 
-		if ( typeof sureformsKeys._srfm_is_inline_button === 'boolean' ) {
+		if ( typeof sureformsKeys?._srfm_is_inline_button === 'boolean' ) {
 			updateMeta( '_srfm_is_inline_button', isInlineButtonBlockPresent );
 		}
 	}, [ blockCount ] );
