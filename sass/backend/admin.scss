@@ -381,6 +381,36 @@ $placeholder_color: #9ca3af;
 	cursor: pointer;
 }
 
+.status.column-status {
+	span {
+		text-transform: capitalize;
+		border-radius: 30px;
+		padding: 2px 4px;
+		font-weight: 500;
+		font-size: 12px;
+		line-height: 16px;
+		user-select: none;
+		-moz-user-select: none;
+		-webkit-user-select: none;
+
+		&.status-read {
+			color: #15803d;
+			background-color: #f0fdf4;
+			border: 1px solid #bbf7d0;
+		}
+		&.status-unread {
+			color: #a16207;
+			background-color: #fefce8;
+			border: 1px solid #fef08a;
+		}
+		&.status-trash {
+			color: #b91c1c;
+			background-color: #fee2e2;
+			border: 1px solid #fca5a5;
+		}
+	}
+}
+
 #post-body .srfm-resend-notification-trigger-btn {
     padding: 8px 16px;
     border-radius: 6px;
