@@ -52,17 +52,16 @@ class Generate_Form_Markup {
 	/**
 	 * Handle Form status
 	 *
-	 * @param int|string          $id Contains form ID.
-	 * @param bool                $show_title_current_page Boolean to show/hide form title.
-	 * @param string              $sf_classname additional class_name.
-	 * @param string              $post_type Contains post type.
-	 * @param bool                $do_blocks Boolean to enable/disable parsing dynamic blocks.
-	 * @param array<string,mixed> $srfm_live_mode_data The live mode data, it is required for updating the live preview of the instant form.
+	 * @param int|string $id Contains form ID.
+	 * @param bool       $show_title_current_page Boolean to show/hide form title.
+	 * @param string     $sf_classname additional class_name.
+	 * @param string     $post_type Contains post type.
+	 * @param bool       $do_blocks Boolean to enable/disable parsing dynamic blocks.
 	 *
 	 * @return string|false
 	 * @since 0.0.1
 	 */
-	public static function get_form_markup( $id, $show_title_current_page = true, $sf_classname = '', $post_type = 'post', $do_blocks = false, $srfm_live_mode_data = [] ) {
+	public static function get_form_markup( $id, $show_title_current_page = true, $sf_classname = '', $post_type = 'post', $do_blocks = false ) {
 		if ( isset( $_GET['id'] ) && isset( $_GET['srfm_form_markup_nonce'] ) ) {
 			$nonce = isset( $_GET['srfm_form_markup_nonce'] ) ? sanitize_text_field( wp_unslash( $_GET['srfm_form_markup_nonce'] ) ) : '';
 			$id    = wp_verify_nonce( $nonce, 'srfm_form_markup' ) && ! empty( $_GET['srfm_form_markup_nonce'] ) ? Helper::get_integer_value( sanitize_text_field( wp_unslash( $_GET['id'] ) ) ) : '';
@@ -104,7 +103,7 @@ class Generate_Form_Markup {
 
 			$form_styling             = get_post_meta( $id, '_srfm_forms_styling', true );
 			$form_styling             = ! empty( $form_styling ) && is_array( $form_styling ) ? $form_styling : [];
-			$page_break_settings      = defined( 'SRFM_PRO_VER' ) && apply_filters( 'srfm_use_page_break_layout', true, $srfm_live_mode_data ) ? get_post_meta( $id, '_srfm_page_break_settings', true ) : [];
+			$page_break_settings      = defined( 'SRFM_PRO_VER' ) && apply_filters( 'srfm_use_page_break_layout', true ) ? get_post_meta( $id, '_srfm_page_break_settings', true ) : [];
 			$page_break_settings      = ! empty( $page_break_settings ) && is_array( $page_break_settings ) ? $page_break_settings : [];
 			$is_page_break            = ! empty( $page_break_settings ) ? $page_break_settings['is_page_break'] : false;
 			$page_break_progress_type = ! empty( $page_break_settings ) ? $page_break_settings['progress_indicator_type'] : 'none';
@@ -135,7 +134,7 @@ class Generate_Form_Markup {
 			}
 
 			$btn_from_theme       = Helper::get_meta_value( $id, '_srfm_inherit_theme_button' );
-			$is_inline_button     = apply_filters( 'srfm_is_inline_button', Helper::get_meta_value( $id, '_srfm_is_inline_button' ), $srfm_live_mode_data );
+			$is_inline_button     = apply_filters( 'srfm_is_inline_button', Helper::get_meta_value( $id, '_srfm_is_inline_button' ) );
 			$security_type        = Helper::get_meta_value( $id, '_srfm_captcha_security_type' );
 			$form_custom_css_meta = Helper::get_meta_value( $id, '_srfm_form_custom_css' );
 			$custom_css           = ! empty( $form_custom_css_meta ) && is_string( $form_custom_css_meta ) ? $form_custom_css_meta : '';
@@ -281,13 +280,13 @@ class Generate_Form_Markup {
 
 				if ( $is_page_break ) {
 					do_action( 'srfm_page_break_pagination', $post, $id );
-				} elseif ( ! apply_filters( 'srfm_use_custom_field_content', false, $srfm_live_mode_data ) ) {
+				} elseif ( ! apply_filters( 'srfm_use_custom_field_content', false ) ) {
 					// phpcs:ignore
 					echo $content;
 					// phpcs:ignoreEnd
 				}
 
-				do_action( 'srfm_after_field_content', $post, $id, $srfm_live_mode_data );
+				do_action( 'srfm_after_field_content', $post, $id );
 
 				?>
 				<?php
