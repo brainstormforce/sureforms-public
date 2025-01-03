@@ -25,7 +25,7 @@ msgstr ""
 #: inc/page-builders/elementor/service-provider.php:72
 #: assets/build/formEditor.js:172
 msgid "SureForms"
-msgstr "SicherFormulare"
+msgstr "SureForms"
 
 #. Plugin URI of the plugin
 #: sureforms.php
@@ -3084,7 +3084,7 @@ msgstr "Demokrat"
 
 #: modules/gutenberg/icons/icons-v6-1.php:268
 msgid "deploy.dog"
-msgstr ""
+msgstr "deploy.dog"
 
 #: modules/gutenberg/icons/icons-v6-1.php:279
 msgid "Deskpro"
@@ -4978,7 +4978,7 @@ msgstr "Kaaba"
 
 #: modules/gutenberg/icons/icons-v6-2.php:433
 msgid "Kaggle"
-msgstr ""
+msgstr "Kaggle"
 
 #: modules/gutenberg/icons/icons-v6-2.php:444
 msgid "Key"
@@ -5906,7 +5906,7 @@ msgstr "Pfeffer scharf"
 
 #: modules/gutenberg/icons/icons-v6-2.php:3071
 msgid "PerByte"
-msgstr ""
+msgstr "ProByte"
 
 #: modules/gutenberg/icons/icons-v6-2.php:3082
 msgid "Percent"
@@ -9406,7 +9406,7 @@ msgstr "CC"
 
 #: assets/build/formEditor.js:172
 msgid "BCC"
-msgstr ""
+msgstr "BCC"
 
 #: assets/build/formEditor.js:172
 msgid "Reply To"
@@ -10488,7 +10488,7 @@ msgstr "H3"
 #: modules/gutenberg/build/blocks.js:11
 #: modules/gutenberg/build/blocks.js:15
 msgid "H4"
-msgstr ""
+msgstr "H4"
 
 #: modules/gutenberg/build/blocks.js:11
 #: modules/gutenberg/build/blocks.js:15
@@ -11204,6 +11204,10 @@ msgstr "Fehlermeldung für Mindestanzahl an Auswahlmöglichkeiten"
 msgid "Multiple Choice Maximum Selections Error Message"
 msgstr "Fehlermeldung für Mehrfachauswahl mit maximaler Auswahl"
 
+#: inc/nps-notice.php:110
+msgid "Could you please do us a favor and give us a 5-star rating? It would help others choose SureForms with confidence. Thank you!"
+msgstr "Könnten Sie uns bitte einen Gefallen tun und uns eine 5-Sterne-Bewertung geben? Es würde anderen helfen, SureForms mit Vertrauen zu wählen. Vielen Dank!"
+
 #: inc/post-types.php:123
 msgctxt "post type general name"
 msgid "Forms"
@@ -11631,7 +11635,3 @@ msgstr "Link"
 msgctxt "block keyword"
 msgid "website"
 msgstr "Website"
-
-#: inc/nps-notice.php:110
-msgid "Could you please do us a favor and give us a 5-star rating? It would help others choose SureForms with confidence. Thank you!"
-msgstr ""
