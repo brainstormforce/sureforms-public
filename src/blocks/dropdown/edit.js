@@ -50,7 +50,7 @@ const Edit = ( props ) => {
 		searchable,
 		minValue,
 		maxValue,
-		showValue = false,
+		showValues = false,
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
 	const [ newOption, setNewOption ] = useState( '' );
@@ -112,7 +112,7 @@ const Edit = ( props ) => {
 		return <FieldsPreview fieldName={ fieldName } />;
 	}
 
-	const showDropdownValues = shouldShowDropdownValues( showValue );
+	const showDropdownValues = shouldShowDropdownValues( showValues );
 
 	const minMaxComponent = multiSelect && options.length > 1 && (
 		<>

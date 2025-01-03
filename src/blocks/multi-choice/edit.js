@@ -58,7 +58,7 @@ const Edit = ( props ) => {
 		optionType,
 		minValue,
 		maxValue,
-		showValue = false,
+		showValues = false,
 	} = attributes;
 
 	const currentFormId = useGetCurrentFormId( clientId );
@@ -145,7 +145,7 @@ const Edit = ( props ) => {
 		changeOption( { image: '' }, index );
 	};
 
-	const showMultiChoiceValues = shouldShowMultiChoiceValues( showValue );
+	const showMultiChoiceValues = shouldShowMultiChoiceValues( showValues );
 
 	const minMaxValue = ! singleSelection && options.length > 1 && (
 		<>
