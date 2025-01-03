@@ -1271,11 +1271,11 @@ msgstr "Anker Cirkel Controle"
 
 #: modules/gutenberg/icons/icons-v6-0.php:388
 msgid "Anchor Circle Exclamation"
-msgstr ""
+msgstr "Anker Cirkel Uitroepteken"
 
 #: modules/gutenberg/icons/icons-v6-0.php:399
 msgid "Anchor Circle Xmark"
-msgstr ""
+msgstr "Anker Cirkel Xmark"
 
 #: modules/gutenberg/icons/icons-v6-0.php:410
 msgid "Anchor Lock"
@@ -5072,7 +5072,7 @@ msgstr "Lari-teken"
 
 #: modules/gutenberg/icons/icons-v6-2.php:713
 msgid "last.fm"
-msgstr ""
+msgstr "last.fm"
 
 #: modules/gutenberg/icons/icons-v6-2.php:735
 msgid "Layer Group"
@@ -5270,7 +5270,7 @@ msgstr "Manatteken"
 
 #: modules/gutenberg/icons/icons-v6-2.php:1278
 msgid "Mandalorian"
-msgstr ""
+msgstr "Mandaloriaan"
 
 #: modules/gutenberg/icons/icons-v6-2.php:1294
 msgid "Map"
@@ -5824,7 +5824,7 @@ msgstr "Plakken"
 
 #: modules/gutenberg/icons/icons-v6-2.php:2846
 msgid "Patreon"
-msgstr ""
+msgstr "Patreon"
 
 #: modules/gutenberg/icons/icons-v6-2.php:2857
 msgid "Pause"
@@ -6332,7 +6332,7 @@ msgstr "V"
 
 #: modules/gutenberg/icons/icons-v6-2.php:4292
 msgid "QQ"
-msgstr ""
+msgstr "QQ"
 
 #: modules/gutenberg/icons/icons-v6-2.php:4303
 msgid "Qrcode"
@@ -10466,7 +10466,7 @@ msgstr "H3"
 #: modules/gutenberg/build/blocks.js:11
 #: modules/gutenberg/build/blocks.js:15
 msgid "H4"
-msgstr ""
+msgstr "H4"
 
 #: modules/gutenberg/build/blocks.js:11
 #: modules/gutenberg/build/blocks.js:15
@@ -11151,10 +11151,6 @@ msgstr "Hoe waarschijnlijk is het dat u SureForms aan uw vrienden of collega's z
 msgid "Thanks a lot for your feedback! 😍"
 msgstr "Heel erg bedankt voor je feedback! 😍"
 
-#: inc/nps-notice.php:110
-msgid "Could you please do us a favor and give us a 5-star rating on WordPress? It would help others choose SureForms with confidence. Thank you!"
-msgstr "Zou je ons alstublieft een plezier willen doen en ons een 5-sterrenbeoordeling op WordPress willen geven? Het zou anderen helpen om met vertrouwen voor SureForms te kiezen. Dank je!"
-
 #: inc/nps-notice.php:112
 msgid "Thank you for your feedback"
 msgstr "Dank u voor uw feedback"
@@ -11210,6 +11206,10 @@ msgstr "Foutmelding voor minimaal aantal selecties bij meerkeuzevragen"
 #: assets/build/settings.js:172
 msgid "Multiple Choice Maximum Selections Error Message"
 msgstr "Foutmelding bij meerdere keuzes maximale selecties"
+
+#: inc/nps-notice.php:110
+msgid "Could you please do us a favor and give us a 5-star rating? It would help others choose SureForms with confidence. Thank you!"
+msgstr "Zou je ons alstublieft een plezier willen doen en ons een 5-sterrenbeoordeling geven? Het zou anderen helpen om met vertrouwen voor SureForms te kiezen. Dank je!"
 
 #: inc/post-types.php:123
 msgctxt "post type general name"

@@ -254,6 +254,8 @@ Yes! You can certainly use SureForms on yours as well as your client’s website
 When you use SureForms, you get an easy-to-use AI-powered form builder that can be used to build your forms fast.
 
 == Changelog ==
+= x.x.x =
+* New: Added translations for the Italian, Portugese and Polish languages.
 = 1.2.3 - 31st December 2024 =
 * New: Added translations for the Spanish, German, French, and Dutch languages.
 * Fix: Resolved an issue where the minimum value error was not displayed for the Number field.
