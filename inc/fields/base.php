@@ -25,6 +25,14 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class Base {
 	/**
+	 * Stores the attributes of the block.
+	 *
+	 * @var array<mixed> $attributes Block attributes.
+	 * @since x.x.x
+	 */
+	protected $attributes;
+
+	/**
 	 * Flag indicating if the field is required.
 	 *
 	 * @var bool
@@ -348,6 +356,7 @@ class Base {
 	 * @return void
 	 */
 	protected function set_properties( $attributes ) {
+		$this->attributes         = $attributes;
 		$this->required           = $attributes['required'] ?? false;
 		$this->field_width        = $attributes['fieldWidth'] ?? '';
 		$this->label              = $attributes['label'] ?? '';

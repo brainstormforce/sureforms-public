@@ -46,11 +46,8 @@ class GDPR_Markup extends Base {
 		ob_start(); ?>
 			<div data-block-id="<?php echo esc_attr( $this->block_id ); ?>" class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $this->slug ); ?>-block srf-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?>-block<?php echo esc_attr( $this->block_width ); ?><?php echo esc_attr( $this->class_name ); ?> <?php echo esc_attr( $this->conditional_class ); ?>">
 				<div class="srfm-block-wrap">
-					<?php
-					if ( ! $this->is_editing ) {
-						?>
 					<input class="srfm-input-common screen-reader-text srfm-input-<?php echo esc_attr( $this->slug ); ?>" id="<?php echo esc_attr( $label_random_id ); ?>" name="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?><?php echo esc_attr( $this->field_name ); ?>"
-						<?php echo ! empty( $this->aria_described_by ) ? "aria-describedby='" . esc_attr( trim( $this->aria_described_by ) ) . "'" : ''; ?>
+					<?php echo ! empty( $this->aria_described_by ) ? "aria-describedby='" . esc_attr( trim( $this->aria_described_by ) ) . "'" : ''; ?>
 					data-required="<?php echo esc_attr( $this->data_require_attr ); ?>" type="checkbox" <?php echo esc_attr( $this->checked_attr ); ?>/>
 					<label class="srfm-cbx" for="<?php echo esc_attr( $label_random_id ); ?>">
 						<span class="srfm-span-wrap">
@@ -66,23 +63,6 @@ class GDPR_Markup extends Base {
 						<polyline points="1.5 6 4.5 9 10.5 1"></polyline>
 						</symbol>
 					</svg>
-						<?php
-					} else {
-						?>
-						<input
-							class="srfm-input-common srfm-input-<?php echo esc_attr( $this->slug ); ?>"
-							id="<?php echo esc_attr( $label_random_id ); ?>"
-							name="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?><?php echo esc_attr( $this->field_name ); ?>"
-						data-required="<?php echo esc_attr( $this->data_require_attr ); ?>"
-						type="checkbox" <?php checked( 'on', $this->default ); ?>
-						/>
-						<label class="srfm-cbx" for="<?php echo esc_attr( $label_random_id ); ?>">
-							<span class="srfm-span-wrap srfm-block-label"><?php echo wp_kses( $this->label, $this->allowed_tags ); ?>
-							<span class="srfm-required" aria-label="<?php echo esc_html__( 'Required', 'sureforms' ); ?>"><span aria-hidden="true"> *</span></span></span>
-						</label>
-						<?php
-					}
-					?>
 				</div>
 				<?php echo wp_kses_post( $this->help_markup ); ?>
 				<div class="srfm-error-wrap">
@@ -90,6 +70,17 @@ class GDPR_Markup extends Base {
 				</div>
 			</div>
 		<?php
-		return ob_get_clean();
+		$markup = ob_get_clean();
+
+		return apply_filters(
+			'srfm_block_field_markup',
+			$markup,
+			[
+				'slug'       => $this->slug,
+				'field_name' => $this->field_name,
+				'is_editing' => $this->is_editing,
+				'attributes' => $this->attributes,
+			]
+		);
 	}
 }
