@@ -237,41 +237,6 @@ class Entries extends Base {
 	}
 
 	/**
-	 * Add a note to an existing entry in the database.
-	 *
-	 * @param int    $entry_id The ID of the entry to which the note will be added. Must be a valid, non-empty integer.
-	 * @param string $note The content of the note to be added. It will be trimmed before saving.
-	 * @since x.x.x
-	 * @return bool True on success, false if the entry ID is invalid or the note is empty.
-	 */
-	public static function add_note( $entry_id, $note = '' ) {
-		if ( empty( $entry_id ) ) {
-			return false;
-		}
-
-		$note = trim( $note );
-
-		if ( empty( $note ) ) {
-			return false;
-		}
-
-		// Format notes structure.
-		$_note = [
-			'submitted_by' => get_current_user_id(),
-			'timestamp'    => time(),
-			'note'         => $note,
-		];
-
-		// Merge with old notes and save it to database and return boolean result.
-		return false !== self::update(
-			$entry_id,
-			[
-				'notes' => array_merge( [ $_note ], Helper::get_array_value( self::get( $entry_id )['notes'] ) ),
-			]
-		);
-	}
-
-	/**
 	 * Add a new entry to the database.
 	 *
 	 * @param array<mixed> $data An associative array of data for the new entry. Must include 'form_id'.
