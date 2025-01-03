@@ -381,7 +381,7 @@ class Admin_Ajax {
 	 * This function will echo wp_rest nonce
 	 * was required to provide nonce for fallback of wp.apiFetch
 	 *
-	 * @since x.x.x
+	 * @since 1.2.4
 	 * @return void
 	 */
 	public function print_rest_nonce() {

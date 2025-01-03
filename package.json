@@ -1,6 +1,6 @@
 {
 	"name": "sureforms",
-	"version": "1.2.3",
+	"version": "1.2.4",
 	"description": "A simple yet powerful way to add forms to your website.",
 	"main": "index.js",
 	"scripts": {
@@ -45,7 +45,6 @@
 		"i18n:gptpo:it": "gpt-po translate --po languages/sureforms-it_IT.po --lang it --verbose",
 		"i18n:gptpo:pt": "gpt-po translate --po languages/sureforms-pt_PT.po --lang pt --verbose",
 		"i18n:gptpo:pl": "gpt-po translate --po languages/sureforms-pl_PL.po --lang pl --verbose"
-
 	},
 	"repository": "git+https://github.com/brainstormforce/sureforms.git",
 	"author": "Brainstorm Force",
