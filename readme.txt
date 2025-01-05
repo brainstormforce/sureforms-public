@@ -255,8 +255,8 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 
 == Changelog ==
 = 1.2.4 - 7th January 2025 =
-* New: Added translations for the Italian, Portugese and Polish languages.
-* Fix: Addressed an issue where forms where not submitting in page cached environment.
+* New: Added translations for the Italian, Portuguese, and Polish languages.
+* Fix: Addressed an issue where forms were not submitting in a page-cached environment.
 = 1.2.3 - 31st December 2024 =
 * New: Added translations for the Spanish, German, French, and Dutch languages.
 * Fix: Resolved an issue where the minimum value error was not displayed for the Number field.
