@@ -1,4 +1,33 @@
 .single-sureforms_form {
+
+	.srfm-form-status-badge {
+		position: absolute;
+		top: 54px;
+		right: 24px;
+		display: flex;
+		gap: 6px;
+		align-items: center;
+		background-color: #ffffff;
+		padding: 2px 12px 2px 8px;
+		width: max-content;
+		border: 1px solid #d1d5db;
+		border-radius: 12px;
+		box-shadow: 0px 1px 3px 0px #0000001a;
+		color: #020617;
+		font-weight: 400;
+		font-size: 14px;
+		line-height: 20px;
+
+		&::before {
+			content: "";
+			display: block;
+			width: 6px;
+			height: 6px;
+			background-color: #eab308;
+			border-radius: 10px;
+		}
+	}
+
 	.srfm-single-page-container {
 		position: relative;
 
@@ -13,34 +42,7 @@
 				left: 24px;
 				height: 40px;
 			}
-
-			.srfm-form-status-badge {
-				position: absolute;
-				top: 24px;
-				right: 24px;
-				display: flex;
-				gap: 6px;
-				align-items: center;
-				background-color: #ffffff;
-				padding: 2px 12px 2px 8px;
-				width: max-content;
-				border: 1px solid #d1d5db;
-				border-radius: 12px;
-				box-shadow: 0px 1px 3px 0px #0000001a;
-				color: #020617;
-				font-weight: 400;
-				font-size: 14px;
-				line-height: 20px;
-
-				&::before {
-					content: "";
-					display: block;
-					width: 6px;
-					height: 6px;
-					background-color: #eab308;
-					border-radius: 10px;
-				}
-			}
+		
 		}
 
 		.srfm-form-wrapper {

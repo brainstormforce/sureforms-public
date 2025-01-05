@@ -34,14 +34,6 @@ const ConversationalFormSettingsPreview = ( { setHidePopover } ) => {
 							id="srfm-conversational-placeholder-toggle"
 						/>
 					</div>
-					<div
-						className="srfm-conversational-placeholder-help-text"
-					>
-						{ __( 'To use this feature you need to upgrade to the Business plan. ', 'sureforms' ) }
-						<ExternalLink href="https://sureforms.com/pricing" target="_blank">
-							{ __( 'Upgrade now', 'sureforms' ) }
-						</ExternalLink>
-					</div>
 				</>
 			 : conversationalFormSettings }
 		</>
