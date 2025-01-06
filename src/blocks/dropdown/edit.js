@@ -32,7 +32,7 @@ import SRFMNumberControl from '@Components/number-control';
 import { BulkInserterWithButton } from '@Components/bulk-inserter';
 import {
 	attributeOptionsWithFilter,
-	shouldShowDropdownValues,
+	shouldShowOptionsValue,
 } from '@Components/hooks';
 
 const Edit = ( props ) => {
@@ -112,7 +112,7 @@ const Edit = ( props ) => {
 		return <FieldsPreview fieldName={ fieldName } />;
 	}
 
-	const showDropdownValues = shouldShowDropdownValues( showValues );
+	const showDropdownValues = shouldShowOptionsValue( showValues );
 
 	const minMaxComponent = multiSelect && options.length > 1 && (
 		<>

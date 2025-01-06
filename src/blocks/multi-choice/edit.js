@@ -39,7 +39,7 @@ import SRFMNumberControl from '@Components/number-control';
 import { BulkInserterWithButton } from '@Components/bulk-inserter';
 import {
 	attributeOptionsWithFilter,
-	shouldShowMultiChoiceValues,
+	shouldShowOptionsValue,
 } from '@Components/hooks';
 
 const Edit = ( props ) => {
@@ -145,7 +145,7 @@ const Edit = ( props ) => {
 		changeOption( { image: '' }, index );
 	};
 
-	const showMultiChoiceValues = shouldShowMultiChoiceValues( showValues );
+	const showMultiChoiceValues = shouldShowOptionsValue( showValues );
 
 	const minMaxValue = ! singleSelection && options.length > 1 && (
 		<>
