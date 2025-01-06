@@ -115,33 +115,6 @@ class Multichoice_Markup extends Base {
 	 * @return string|bool
 	 */
 	public function markup() {
-		if ( $this->is_editing ) {
-			ob_start();
-			?>
-			<div data-block-id="<?php echo esc_attr( $this->block_id ); ?>" class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $this->type_attr ); ?>-mode srfm-<?php echo esc_attr( $this->slug ); ?>-block srf-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?>-block<?php echo wp_kses_post( $this->block_width ); ?><?php echo esc_attr( $this->class_name ); ?> <?php echo esc_attr( $this->conditional_class ); ?>">
-				<fieldset>
-					<legend class="srfm-block-legend">
-						<?php echo wp_kses_post( $this->label_markup ); ?>
-					</legend>
-					<?php echo wp_kses_post( $this->help_markup ); ?>
-						<?php if ( is_array( $this->options ) ) { ?>
-							<div class="srfm-block-wrap <?php echo esc_attr( $this->choice_width_attr ); ?> <?php echo $this->vertical_layout ? 'srfm-vertical-layout' : ''; ?>">
-								<?php foreach ( $this->options as $i => $option ) { ?>
-									<div class="srfm-<?php echo esc_attr( $this->slug ); ?>-single">
-										<label for="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id . '-' . $i ); ?>">
-											<input value="<?php echo esc_attr( $option['optionTitle'] ); ?>" <?php checked( true, in_array( $option['optionTitle'], explode( ',', $this->default ), true ) ); ?> type="<?php echo esc_attr( $this->type_attr ); ?>" id="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id . '-' . $i ); ?>" class="srfm-input-<?php echo esc_attr( $this->slug ); ?>-single" name="<?php echo $this->single_selection ? esc_attr( "srfm-input-{$this->slug}-{$this->block_id}{$this->field_name}" ) : esc_attr( "srfm-input-{$this->slug}-{$this->block_id}{$this->field_name}[]" ); ?>" />
-											<span><?php echo isset( $option['optionTitle'] ) ? esc_html( $option['optionTitle'] ) : ''; ?></span>
-										</label>
-									</div>
-								<?php } ?>
-							</div>
-						<?php } ?>
-					<div class="srfm-error-wrap"><?php echo wp_kses_post( $this->error_msg_markup ); ?></div>
-				</fieldset>
-			</div>
-			<?php
-			return ob_get_clean();
-		}
 		$check_svg     = Helper::fetch_svg( $this->svg_type . '-checked', 'srfm-' . $this->slug . '-icon', 'aria-hidden="true"' );
 		$unchecked_svg = Helper::fetch_svg( $this->svg_type . '-unchecked', 'srfm-' . $this->slug . '-icon-unchecked', 'aria-hidden="true"' );
 
@@ -189,7 +162,18 @@ class Multichoice_Markup extends Base {
 			</fieldset>
 		</div>
 		<?php
-		return ob_get_clean();
+		$markup = ob_get_clean();
+
+		return apply_filters(
+			'srfm_block_field_markup',
+			$markup,
+			[
+				'slug'       => $this->slug,
+				'is_editing' => $this->is_editing,
+				'field_name' => $this->field_name,
+				'attributes' => $this->attributes,
+			]
+		);
 	}
 
 	/**

@@ -65,21 +65,10 @@ class Dropdown_Markup extends Base {
 	 * @return string|bool
 	 */
 	public function markup() {
-		$name = "srfm-{$this->slug}-{$this->block_id}{$this->field_name}";
-
-		if ( $this->is_editing && 'true' === $this->multi_select_attr ) {
-			$name = "srfm-{$this->slug}-{$this->block_id}{$this->field_name}[]";
-		}
 		ob_start(); ?>
 			<div data-block-id="<?php echo esc_attr( $this->block_id ); ?>" class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $this->slug ); ?>-block srf-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?>-block<?php echo esc_attr( $this->block_width ); ?><?php echo esc_attr( $this->class_name ); ?> <?php echo esc_attr( $this->conditional_class ); ?>">
 				<fieldset>
-					<?php
-					if ( ! $this->is_editing ) {
-						?>
 					<input class="srfm-input-<?php echo esc_attr( $this->slug ); ?>-hidden" data-required="<?php echo esc_attr( $this->data_require_attr ); ?>" <?php echo wp_kses_post( $this->data_attribute_markup() ); ?> name="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?><?php echo esc_attr( $this->field_name ); ?>" type="hidden" value=""/>
-						<?php
-					}
-					?>
 					<legend class="srfm-block-legend">
 						<?php echo wp_kses_post( $this->label_markup ); ?>
 						<?php echo wp_kses_post( $this->help_markup ); ?>
@@ -89,40 +78,17 @@ class Dropdown_Markup extends Base {
 					if ( is_array( $this->options ) ) {
 						?>
 					<select
-						<?php echo $this->is_editing && 'true' === $this->multi_select_attr ? 'multiple' : ''; ?>
 						class="srfm-dropdown-common srfm-<?php echo esc_attr( $this->slug ); ?>-input"
 						<?php echo ! empty( $this->aria_described_by ) ? "aria-describedby='" . esc_attr( trim( $this->aria_described_by ) ) . "'" : ''; ?>
-				data-required="<?php echo esc_attr( $this->data_require_attr ); ?>" <?php echo wp_kses_post( $this->data_attribute_markup() ); ?> name="<?php echo esc_attr( $name ); ?>" data-multiple="<?php echo esc_attr( $this->multi_select_attr ); ?>" data-searchable="<?php echo esc_attr( $this->search_attr ); ?>" tabindex="0" aria-hidden="true">
-						<?php
-						if ( 'true' !== $this->multi_select_attr || ! $this->is_editing ) {
-							?>
+				data-required="<?php echo esc_attr( $this->data_require_attr ); ?>" <?php echo wp_kses_post( $this->data_attribute_markup() ); ?> name="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?><?php echo esc_attr( $this->field_name ); ?>" data-multiple="<?php echo esc_attr( $this->multi_select_attr ); ?>" data-searchable="<?php echo esc_attr( $this->search_attr ); ?>" tabindex="0" aria-hidden="true">
 					<option class="srfm-dropdown-placeholder" value="" disabled selected><?php echo esc_html( $this->placeholder ); ?></option>
-							<?php
-						}
-						?>
 						<?php foreach ( $this->options as $option ) { ?>
 							<?php
 								$icon_svg         = Spec_Gb_Helper::render_svg_html( $option['icon'] ?? '', true );
 								$escaped_icon_svg = htmlspecialchars( Helper::get_string_value( $icon_svg ), ENT_QUOTES, 'UTF-8' );
-
-								$label = $option['label'] ?? '';
-
-							if ( $this->is_editing ) {
-								if ( 'true' === $this->multi_select_attr ) {
-									$values = explode( ',', $this->default );
-									?>
-										<option <?php selected( in_array( $label, $values, true ), true ); ?> value="<?php echo esc_attr( $label ); ?>" data-icon="<?php echo ! empty( $escaped_icon_svg ) ? esc_attr( $escaped_icon_svg ) : ''; ?>"><?php echo esc_html( $label ); ?></option>
-										<?php
-								} else {
-									?>
-									<option <?php selected( $this->default, $label ); ?> value="<?php echo esc_attr( $label ); ?>" data-icon="<?php echo ! empty( $escaped_icon_svg ) ? esc_attr( $escaped_icon_svg ) : ''; ?>"><?php echo esc_html( $label ); ?></option>
-									<?php
-								}
-							} else {
-								?>
-								<option <?php selected( $this->default, $label ); ?> value="<?php echo esc_attr( $label ); ?>" data-icon="<?php echo ! empty( $escaped_icon_svg ) ? esc_attr( $escaped_icon_svg ) : ''; ?>"><?php echo esc_html( $label ); ?></option>
+							?>
+								<option value="<?php echo isset( $option['label'] ) ? esc_html( $option['label'] ) : ''; ?>" data-icon="<?php echo ! empty( $escaped_icon_svg ) ? esc_attr( $escaped_icon_svg ) : ''; ?>"><?php echo isset( $option['label'] ) ? esc_html( $option['label'] ) : ''; ?></option>
 								<?php
-							}
 						}
 						?>
 					</select>
@@ -134,7 +100,18 @@ class Dropdown_Markup extends Base {
 				</fieldset>
 			</div>
 		<?php
-		return ob_get_clean();
+		$markup = ob_get_clean();
+
+		return apply_filters(
+			'srfm_block_field_markup',
+			$markup,
+			[
+				'slug'       => $this->slug,
+				'field_name' => $this->field_name,
+				'is_editing' => $this->is_editing,
+				'attributes' => $this->attributes,
+			]
+		);
 	}
 
 	/**
