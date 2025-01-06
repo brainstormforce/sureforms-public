@@ -30,7 +30,7 @@
 			"type": "boolean"
 		},
 		"minValue": {
-				"type": "number"
+			"type": "number"
 		},
 		"maxValue": {
 			"type": "number"
@@ -44,7 +44,8 @@
 				{
 					"optionTitle": "Option 1",
 					"icon": "",
-					"image": ""
+					"image": "",
+					"value": ""
 				}
 			]
 		},
@@ -88,6 +89,10 @@
 		"optionType": {
 			"type": "string",
 			"default": "icon"
+		},
+		"showValues": {
+			"type": "boolean",
+			"default": false
 		}
 	}
 }

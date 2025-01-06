@@ -15,6 +15,7 @@ import InspectorTab, {
 import { useErrMessage } from '@Blocks/util';
 import svgIcons from '@Svg/svgs.json';
 import parse from 'html-react-parser';
+import { MdDragIndicator } from 'react-icons/md';
 
 /**
  * Component Dependencies
@@ -29,7 +30,10 @@ import ConditionalLogic from '@Components/conditional-logic';
 import UAGIconPicker from '@Components/icon-picker';
 import SRFMNumberControl from '@Components/number-control';
 import { BulkInserterWithButton } from '@Components/bulk-inserter';
-import { attributeOptionsWithFilter } from '@Components/hooks';
+import {
+	attributeOptionsWithFilter,
+	shouldShowDropdownValues,
+} from '@Components/hooks';
 
 const Edit = ( props ) => {
 	const { attributes, setAttributes, clientId } = props;
@@ -46,6 +50,7 @@ const Edit = ( props ) => {
 		searchable,
 		minValue,
 		maxValue,
+		showValues = false,
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
 	const [ newOption, setNewOption ] = useState( '' );
@@ -106,6 +111,8 @@ const Edit = ( props ) => {
 		const fieldName = srfm_fields_preview.dropdown_preview;
 		return <FieldsPreview fieldName={ fieldName } />;
 	}
+
+	const showDropdownValues = shouldShowDropdownValues( showValues );
 
 	const minMaxComponent = multiSelect && options.length > 1 && (
 		<>
@@ -178,32 +185,80 @@ const Edit = ( props ) => {
 
 	const draggableItem = ( option, param, i ) => {
 		return (
-			<div>
-				<Icon icon={ 'move' } { ...param.dragHandleProps } />
+			<>
 				<div>
-					<SRFMTextControl
-						showHeaderControls={ false }
-						key={ i }
-						value={ option.label }
-						data={ {
-							value: option.label,
-							label: 'option',
-						} }
-						onChange={ ( value ) => editOption( value, i ) }
-					/>
+					<span { ...param.dragHandleProps }>
+						<MdDragIndicator
+							style={ {
+								width: '20px',
+								height: '20px',
+							} }
+						/>
+					</span>
+					<div>
+						<SRFMTextControl
+							showHeaderControls={ false }
+							key={ i }
+							value={ option.label }
+							data={ {
+								value: option.label,
+								label: 'option',
+							} }
+							onChange={ ( value ) => editOption( value, i ) }
+						/>
+					</div>
+					{ showDropdownValues && (
+						<div className="srfm-text-control srfm-option-value">
+							<input
+								className="components-text-control__input"
+								type="text"
+								value={
+									isNaN( option.value ) ? '' : option.value
+								}
+								onChange={ ( e ) => {
+									const value = e.target.value;
+									if ( value !== '' && isNaN( value ) ) {
+										return;
+									}
+									changeOption( { value }, i );
+								} }
+							/>
+						</div>
+					) }
+					<div className="srfm-icon-picker">
+						<UAGIconPicker
+							label={ '' }
+							value={ option.icon }
+							onChange={ ( value ) =>
+								changeOption( { icon: value }, i )
+							}
+							addIcon={ parse( svgIcons.custom_plus_icon ) }
+						/>
+					</div>
+					{ ! showDropdownValues && (
+						<Button
+							icon="trash"
+							onClick={ () => handleDelete( i ) }
+						/>
+					) }
 				</div>
-				<div className="srfm-icon-picker">
-					<UAGIconPicker
-						label={ '' }
-						value={ option.icon }
-						onChange={ ( value ) =>
-							changeOption( { icon: value }, i )
-						}
-						addIcon={ parse( svgIcons.custom_plus_icon ) }
-					/>
-				</div>
-				<Button icon="trash" onClick={ () => handleDelete( i ) } />
-			</div>
+				{ showDropdownValues && (
+					<div>
+						<Icon
+							icon={ 'move' }
+							style={ {
+								visibility: 'hidden',
+							} }
+						/>
+						<span
+							className="srfm-options-delete"
+							onClick={ () => handleDelete( i ) }
+						>
+							{ __( 'Delete', 'sureforms' ) }
+						</span>
+					</div>
+				) }
+			</>
 		);
 	};
 

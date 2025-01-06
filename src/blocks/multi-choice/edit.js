@@ -19,6 +19,7 @@ import InspectorTab, {
 import { useErrMessage } from '@Blocks/util';
 import svgIcons from '@Svg/svgs.json';
 import parse from 'html-react-parser';
+import { MdDragIndicator } from 'react-icons/md';
 
 /**
  * Component Dependencies
@@ -36,7 +37,10 @@ import UAGIconPicker from '@Components/icon-picker';
 import SRFMMediaPicker from '@Components/image';
 import SRFMNumberControl from '@Components/number-control';
 import { BulkInserterWithButton } from '@Components/bulk-inserter';
-import { attributeOptionsWithFilter } from '@Components/hooks';
+import {
+	attributeOptionsWithFilter,
+	shouldShowMultiChoiceValues,
+} from '@Components/hooks';
 
 const Edit = ( props ) => {
 	const { attributes, setAttributes, isSelected, clientId } = props;
@@ -54,6 +58,7 @@ const Edit = ( props ) => {
 		optionType,
 		minValue,
 		maxValue,
+		showValues = false,
 	} = attributes;
 
 	const currentFormId = useGetCurrentFormId( clientId );
@@ -140,6 +145,8 @@ const Edit = ( props ) => {
 		changeOption( { image: '' }, index );
 	};
 
+	const showMultiChoiceValues = shouldShowMultiChoiceValues( showValues );
+
 	const minMaxValue = ! singleSelection && options.length > 1 && (
 		<>
 			<SRFMNumberControl
@@ -210,48 +217,91 @@ const Edit = ( props ) => {
 	);
 
 	const draggableItem = ( option, param, i ) => (
-		<div>
-			<Icon icon={ 'move' } { ...param.dragHandleProps } />
+		<>
 			<div>
-				<SRFMTextControl
-					showHeaderControls={ false }
-					key={ i }
-					value={ option.optionTitle }
-					data={ {
-						value: option.optionTitle,
-						label: 'option',
-					} }
-					onChange={ ( value ) => editOption( value, i ) }
-				/>
+				<span { ...param.dragHandleProps }>
+					<MdDragIndicator
+						style={ {
+							width: '20px',
+							height: '20px',
+						} }
+					/>
+				</span>
+				<div>
+					<SRFMTextControl
+						showHeaderControls={ false }
+						key={ i }
+						value={ option.optionTitle }
+						data={ {
+							value: option.optionTitle,
+							label: 'option',
+						} }
+						onChange={ ( value ) => editOption( value, i ) }
+					/>
+				</div>
+				{ showMultiChoiceValues && (
+					<div className="srfm-text-control srfm-option-value">
+						<input
+							className="components-text-control__input"
+							type="text"
+							value={ isNaN( option.value ) ? '' : option.value }
+							onChange={ ( e ) => {
+								const value = e.target.value;
+								if ( value !== '' && isNaN( value ) ) {
+									return;
+								}
+								changeOption( { value }, i );
+							} }
+						/>
+					</div>
+				) }
+				{ optionType === 'icon' && (
+					<div className="srfm-icon-picker">
+						<UAGIconPicker
+							label={ '' }
+							value={ option.icon }
+							onChange={ ( value ) =>
+								changeOption( { icon: value }, i )
+							}
+							addIcon={ parse( svgIcons.custom_plus_icon ) }
+						/>
+					</div>
+				) }
+				{ optionType === 'image' && (
+					<div className="srfm-media-picker">
+						<SRFMMediaPicker
+							onSelectImage={ ( e ) => {
+								onSelectImage( e, i );
+							} }
+							backgroundImage={ option.image }
+							onRemoveImage={ () => {
+								onRemoveImage( i );
+							} }
+							disableLabel={ true }
+						/>
+					</div>
+				) }
+				{ ! showMultiChoiceValues && (
+					<Button icon="trash" onClick={ () => deleteOption( i ) } />
+				) }
 			</div>
-			{ optionType === 'icon' && (
-				<div className="srfm-icon-picker">
-					<UAGIconPicker
-						label={ '' }
-						value={ option.icon }
-						onChange={ ( value ) =>
-							changeOption( { icon: value }, i )
-						}
-						addIcon={ parse( svgIcons.custom_plus_icon ) }
+			{ showMultiChoiceValues && (
+				<div>
+					<Icon
+						icon={ 'move' }
+						style={ {
+							visibility: 'hidden',
+						} }
 					/>
+					<span
+						className="srfm-options-delete"
+						onClick={ () => deleteOption( i ) }
+					>
+						{ __( 'Delete', 'sureforms' ) }
+					</span>
 				</div>
 			) }
-			{ optionType === 'image' && (
-				<div className="srfm-media-picker">
-					<SRFMMediaPicker
-						onSelectImage={ ( e ) => {
-							onSelectImage( e, i );
-						} }
-						backgroundImage={ option.image }
-						onRemoveImage={ () => {
-							onRemoveImage( i );
-						} }
-						disableLabel={ true }
-					/>
-				</div>
-			) }
-			<Button icon="trash" onClick={ () => deleteOption( i ) } />
-		</div>
+		</>
 	);
 
 	const draggableOptions = ( dragOptions ) =>
@@ -329,7 +379,7 @@ const Edit = ( props ) => {
 		</div>
 	);
 
-	const addOptions = (
+	const addNewOption = (
 		<>
 			<div
 				className="sureform-add-option-container"
@@ -472,8 +522,8 @@ const Edit = ( props ) => {
 			component: choicesOptions,
 		},
 		{
-			id: 'addOptions',
-			component: addOptions,
+			id: 'addNewOption',
+			component: addNewOption,
 		},
 		{
 			id: 'control-label-span',
