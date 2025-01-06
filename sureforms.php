@@ -3,6 +3,8 @@
  * Plugin Name: SureForms
  * Plugin URI: https://sureforms.com
  * Description: A simple yet powerful way to create modern forms for your website.
+ * Requires at least: 6.4
+ * Requires PHP: 7.4
  * Author: SureForms
  * Author URI: https://sureforms.com/
  * Version: 1.2.4
