@@ -42,8 +42,8 @@
 		"options": {
 			"type": "array",
 			"default": [
-				{ "label": "Option 1", "icon": "", "value": "" },
-				{ "label": "Option 2", "icon": "", "value": "" }
+				{ "label": "Option 1", "icon": "" },
+				{ "label": "Option 2", "icon": "" }
 			]
 		},
 		"fieldWidth": {
@@ -77,10 +77,6 @@
 		"slug":{
 			"type":"string",
 			"default":""
-		},
-		"showValues": {
-			"type": "boolean",
-			"default": false
 		}
 	}
 }

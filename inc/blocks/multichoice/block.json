@@ -44,8 +44,7 @@
 				{
 					"optionTitle": "Option 1",
 					"icon": "",
-					"image": "",
-					"value": ""
+					"image": ""
 				}
 			]
 		},
@@ -89,10 +88,6 @@
 		"optionType": {
 			"type": "string",
 			"default": "icon"
-		},
-		"showValues": {
-			"type": "boolean",
-			"default": false
 		}
 	}
 }

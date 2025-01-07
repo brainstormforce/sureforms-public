@@ -2,7 +2,7 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { ToggleControl, Button, Icon } from '@wordpress/components';
+import { ToggleControl, Button } from '@wordpress/components';
 import { InspectorControls } from '@wordpress/block-editor';
 import { useEffect, useState } from '@wordpress/element';
 import SRFMTextControl from '@Components/text-control';
@@ -32,7 +32,7 @@ import SRFMNumberControl from '@Components/number-control';
 import { BulkInserterWithButton } from '@Components/bulk-inserter';
 import {
 	attributeOptionsWithFilter,
-	shouldShowOptionsValue,
+	enhancedDropdownOptions,
 } from '@Components/hooks';
 
 const Edit = ( props ) => {
@@ -50,7 +50,6 @@ const Edit = ( props ) => {
 		searchable,
 		minValue,
 		maxValue,
-		showValues = false,
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
 	const [ newOption, setNewOption ] = useState( '' );
@@ -111,8 +110,6 @@ const Edit = ( props ) => {
 		const fieldName = srfm_fields_preview.dropdown_preview;
 		return <FieldsPreview fieldName={ fieldName } />;
 	}
-
-	const showDropdownValues = shouldShowOptionsValue( showValues );
 
 	const minMaxComponent = multiSelect && options.length > 1 && (
 		<>
@@ -207,24 +204,6 @@ const Edit = ( props ) => {
 							onChange={ ( value ) => editOption( value, i ) }
 						/>
 					</div>
-					{ showDropdownValues && (
-						<div className="srfm-text-control srfm-option-value">
-							<input
-								className="components-text-control__input"
-								type="text"
-								value={
-									isNaN( option.value ) ? '' : option.value
-								}
-								onChange={ ( e ) => {
-									const value = e.target.value;
-									if ( value !== '' && isNaN( value ) ) {
-										return;
-									}
-									changeOption( { value }, i );
-								} }
-							/>
-						</div>
-					) }
 					<div className="srfm-icon-picker">
 						<UAGIconPicker
 							label={ '' }
@@ -235,29 +214,8 @@ const Edit = ( props ) => {
 							addIcon={ parse( svgIcons.custom_plus_icon ) }
 						/>
 					</div>
-					{ ! showDropdownValues && (
-						<Button
-							icon="trash"
-							onClick={ () => handleDelete( i ) }
-						/>
-					) }
+					<Button icon="trash" onClick={ () => handleDelete( i ) } />
 				</div>
-				{ showDropdownValues && (
-					<div>
-						<Icon
-							icon={ 'move' }
-							style={ {
-								visibility: 'hidden',
-							} }
-						/>
-						<span
-							className="srfm-options-delete"
-							onClick={ () => handleDelete( i ) }
-						>
-							{ __( 'Delete', 'sureforms' ) }
-						</span>
-					</div>
-				) }
 			</>
 		);
 	};
@@ -271,7 +229,18 @@ const Edit = ( props ) => {
 						className="srfm-option-outer-wrapper"
 						{ ...param.draggableProps }
 					>
-						{ draggableItem( option, param, i ) }
+						{ enhancedDropdownOptions(
+							draggableItem( option, param, i ),
+							{
+								props,
+								option,
+								param,
+								i,
+								editOption,
+								changeOption,
+								handleDelete,
+							}
+						) }
 					</div>
 				) }
 			</Draggable>

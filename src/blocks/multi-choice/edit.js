@@ -2,12 +2,7 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import {
-	ToggleControl,
-	SelectControl,
-	Button,
-	Icon,
-} from '@wordpress/components';
+import { ToggleControl, SelectControl, Button } from '@wordpress/components';
 import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
 import { useState, useEffect } from '@wordpress/element';
 import SRFMTextControl from '@Components/text-control';
@@ -39,7 +34,7 @@ import SRFMNumberControl from '@Components/number-control';
 import { BulkInserterWithButton } from '@Components/bulk-inserter';
 import {
 	attributeOptionsWithFilter,
-	shouldShowOptionsValue,
+	enhanceMultiChoiceOptions,
 } from '@Components/hooks';
 
 const Edit = ( props ) => {
@@ -58,7 +53,6 @@ const Edit = ( props ) => {
 		optionType,
 		minValue,
 		maxValue,
-		showValues = false,
 	} = attributes;
 
 	const currentFormId = useGetCurrentFormId( clientId );
@@ -144,8 +138,6 @@ const Edit = ( props ) => {
 	const onRemoveImage = ( index ) => {
 		changeOption( { image: '' }, index );
 	};
-
-	const showMultiChoiceValues = shouldShowOptionsValue( showValues );
 
 	const minMaxValue = ! singleSelection && options.length > 1 && (
 		<>
@@ -239,22 +231,6 @@ const Edit = ( props ) => {
 						onChange={ ( value ) => editOption( value, i ) }
 					/>
 				</div>
-				{ showMultiChoiceValues && (
-					<div className="srfm-text-control srfm-option-value">
-						<input
-							className="components-text-control__input"
-							type="text"
-							value={ isNaN( option.value ) ? '' : option.value }
-							onChange={ ( e ) => {
-								const value = e.target.value;
-								if ( value !== '' && isNaN( value ) ) {
-									return;
-								}
-								changeOption( { value }, i );
-							} }
-						/>
-					</div>
-				) }
 				{ optionType === 'icon' && (
 					<div className="srfm-icon-picker">
 						<UAGIconPicker
@@ -281,26 +257,8 @@ const Edit = ( props ) => {
 						/>
 					</div>
 				) }
-				{ ! showMultiChoiceValues && (
-					<Button icon="trash" onClick={ () => deleteOption( i ) } />
-				) }
+				<Button icon="trash" onClick={ () => deleteOption( i ) } />
 			</div>
-			{ showMultiChoiceValues && (
-				<div>
-					<Icon
-						icon={ 'move' }
-						style={ {
-							visibility: 'hidden',
-						} }
-					/>
-					<span
-						className="srfm-options-delete"
-						onClick={ () => deleteOption( i ) }
-					>
-						{ __( 'Delete', 'sureforms' ) }
-					</span>
-				</div>
-			) }
 		</>
 	);
 
@@ -313,7 +271,18 @@ const Edit = ( props ) => {
 						className="srfm-option-outer-wrapper"
 						{ ...param.draggableProps }
 					>
-						{ draggableItem( option, param, i ) }
+						{ enhanceMultiChoiceOptions(
+							draggableItem( option, param, i ),
+							{
+								props,
+								option,
+								param,
+								i,
+								editOption,
+								changeOption,
+								deleteOption,
+							}
+						) }
 					</div>
 				) }
 			</Draggable>
