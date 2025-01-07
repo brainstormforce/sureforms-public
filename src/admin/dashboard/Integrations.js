@@ -132,11 +132,18 @@ export default () => {
 								icon={ plugin.logo }
 								title={ plugin.title }
 								descriptions={ plugin.subtitle }
-								statusText={
-									'Installed' === plugin.status
-										? srfm_admin.plugin_activate_text
-										: plugin.status
-								}
+								statusText={ ( () => {
+									switch ( plugin.status ) {
+										case 'Installed':
+											return srfm_admin.plugin_activate_text;
+										case 'Install':
+											return __( 'Install', 'sureforms' );
+										case 'Activated':
+											return srfm_admin.plugin_activated_text;
+										default:
+											return plugin.status;
+									}
+								} )() }
 								statusColor={
 									plugin.status === 'Installed' ||
 									plugin.status === 'Activated'
