@@ -10,7 +10,7 @@ export const enhanceDropdownOptions = ( option, args ) => {
 
 export const enhanceMultiChoiceOptions = ( option, args ) => {
 	return applyFilters(
-		'srfm.blocks.multi.choice.options.enhance',
+		'srfm.blocks.multichoice.options.enhance',
 		option,
 		args
 	);
