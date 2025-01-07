@@ -1,5 +1,5 @@
 import { __ } from '@wordpress/i18n';
-import { ExternalLink, FormToggle } from '@wordpress/components';
+import { FormToggle } from '@wordpress/components';
 import { applyFilters } from '@wordpress/hooks';
 
 const ConversationalFormSettingsPreview = ( { setHidePopover } ) => {
