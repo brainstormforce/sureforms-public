@@ -159,7 +159,6 @@ if ( $use_banner_as_page_background ) {
 							<?php
 						}
 
-
 						?>
 					</div>
 					<div class="srfm-form-wrapper">
