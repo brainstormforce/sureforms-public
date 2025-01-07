@@ -17,9 +17,9 @@ npm run i18n:gptpo:nl
 npm run i18n:gptpo:fr
 npm run i18n:gptpo:de
 npm run i18n:gptpo:es
-# npm run i18n:gptpo:pt
-# npm run i18n:gptpo:pl
-# npm run i18n:gptpo:it
+npm run i18n:gptpo:it
+npm run i18n:gptpo:pt
+npm run i18n:gptpo:pl
 
 # Update PO files again after translation
 echo "Updating PO files again..."

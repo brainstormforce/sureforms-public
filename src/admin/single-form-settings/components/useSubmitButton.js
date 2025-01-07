@@ -56,7 +56,7 @@ export default function useSubmitButton( args ) {
 					'.srfm-submit-richtext'
 				);
 
-				const submitBtnText = sureformsKeys._srfm_submit_button_text;
+				const submitBtnText = sureformsKeys?._srfm_submit_button_text;
 
 				// Add block inserter in the srfm-custom-block-inserter div.
 				const getBlockInserterDiv = elementParent.querySelector(

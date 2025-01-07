@@ -418,119 +418,119 @@ msgstr "El contenido del patrón."
 msgid "Determines whether the pattern is visible in inserter."
 msgstr "Determina si el patrón es visible en el insertador."
 
-#: inc/admin-ajax.php:74
+#: inc/admin-ajax.php:78
 msgid "No plugin specified"
 msgstr "No se especificó ningún complemento"
 
-#: inc/admin-ajax.php:95
+#: inc/admin-ajax.php:99
 msgid "Plugin Successfully Activated"
 msgstr "Plugin activado con éxito"
 
-#: inc/admin-ajax.php:133
+#: inc/admin-ajax.php:137
 msgid "Activating..."
 msgstr "Activando..."
 
-#: inc/admin-ajax.php:134
+#: inc/admin-ajax.php:138
 msgid "Activated"
 msgstr "Activado"
 
-#: inc/admin-ajax.php:135
+#: inc/admin-ajax.php:139
 #: assets/build/formEditor.js:172
 msgid "Activate"
 msgstr "Activar"
 
-#: inc/admin-ajax.php:137
+#: inc/admin-ajax.php:141
 msgid "Installing..."
 msgstr "Instalando..."
 
-#: inc/admin-ajax.php:138
+#: inc/admin-ajax.php:142
 msgid "Installed"
 msgstr "Instalado"
 
-#: inc/admin-ajax.php:159
+#: inc/admin-ajax.php:163
 #: assets/build/formEditor.js:172
 msgid "SureTriggers"
 msgstr "SureTriggers"
 
-#: inc/admin-ajax.php:160
+#: inc/admin-ajax.php:164
 msgid "Connect SureForms to hundreds of apps, CRMs and tools such as Slack, Mailchimp, etc."
 msgstr "Conecta SureForms a cientos de aplicaciones, CRM y herramientas como Slack, Mailchimp, etc."
 
-#: inc/admin-ajax.php:161
+#: inc/admin-ajax.php:165
 msgid "SureTriggers is a powerful automation platform that helps you connect your various plugins and apps together. It allows you to automate repetitive tasks, so you can focus on more important work."
 msgstr "SureTriggers es una potente plataforma de automatización que te ayuda a conectar tus diversos plugins y aplicaciones. Te permite automatizar tareas repetitivas, para que puedas centrarte en trabajos más importantes."
 
-#: inc/admin-ajax.php:212
+#: inc/admin-ajax.php:216
 msgid "You do not have permission to access this page."
 msgstr "No tienes permiso para acceder a esta página."
 
-#: inc/admin-ajax.php:216
+#: inc/admin-ajax.php:220
 msgid "Invalid nonce."
 msgstr "Nonce no válido."
 
-#: inc/admin-ajax.php:220
+#: inc/admin-ajax.php:224
 msgid "Form ID is required."
 msgstr "Se requiere el ID del formulario."
 
-#: inc/admin-ajax.php:227
+#: inc/admin-ajax.php:231
 msgid "SureTriggers is not configured properly."
 msgstr "SureTriggers no está configurado correctamente."
 
-#: inc/admin-ajax.php:236
+#: inc/admin-ajax.php:240
 #: inc/form-submit.php:765
 msgid "Invalid form ID."
 msgstr "ID de formulario no válido."
 
 #. Translators: %s: Form ID.
-#: inc/admin-ajax.php:240
+#: inc/admin-ajax.php:244
 msgid "SureForms id: %s"
 msgstr "SureForms id: %s"
 
-#: inc/admin-ajax.php:250
+#: inc/admin-ajax.php:254
 msgid "Form Submitted"
 msgstr "Formulario enviado"
 
-#: inc/admin-ajax.php:252
+#: inc/admin-ajax.php:256
 msgid "Runs when a form is submitted"
 msgstr "Se ejecuta cuando se envía un formulario"
 
-#: inc/admin-ajax.php:344
-#: inc/admin-ajax.php:373
+#: inc/admin-ajax.php:348
+#: inc/admin-ajax.php:377
 msgid "Sample data"
 msgstr "Datos de muestra"
 
-#: inc/admin-ajax.php:348
+#: inc/admin-ajax.php:352
 msgid "Sample input data"
 msgstr "Datos de entrada de muestra"
 
-#: inc/admin-ajax.php:350
+#: inc/admin-ajax.php:354
 msgid "Sample textarea data"
 msgstr "Datos de muestra del área de texto"
 
-#: inc/admin-ajax.php:355
-#: inc/admin-ajax.php:356
+#: inc/admin-ajax.php:359
+#: inc/admin-ajax.php:360
 msgid "Address data"
 msgstr "Datos de dirección"
 
-#: inc/admin-ajax.php:357
+#: inc/admin-ajax.php:361
 msgid "Selected dropdown option"
 msgstr "Opción seleccionada del menú desplegable"
 
-#: inc/admin-ajax.php:358
+#: inc/admin-ajax.php:362
 msgid "Selected Multichoice option"
 msgstr "Opción de selección múltiple seleccionada"
 
-#: inc/admin-ajax.php:359
+#: inc/admin-ajax.php:363
 msgid "Selected radio option"
 msgstr "Opción de radio seleccionada"
 
-#: inc/admin-ajax.php:360
+#: inc/admin-ajax.php:364
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 msgid "Submit"
 msgstr "Enviar"
 
-#: inc/admin-ajax.php:363
+#: inc/admin-ajax.php:367
 msgid "Hidden Value"
 msgstr "Valor Oculto"
 
@@ -1205,7 +1205,7 @@ msgstr "Icono accesible"
 
 #: modules/gutenberg/icons/icons-v6-0.php:180
 msgid "Accusoft"
-msgstr ""
+msgstr "Accusoft"
 
 #: modules/gutenberg/icons/icons-v6-0.php:196
 msgid "Address Book"
@@ -1677,7 +1677,7 @@ msgstr "Compra de bolsas"
 
 #: modules/gutenberg/icons/icons-v6-0.php:1488
 msgid "Bahai"
-msgstr ""
+msgstr "Bahai"
 
 #: modules/gutenberg/icons/icons-v6-0.php:1499
 msgid "Baht Sign"
@@ -2579,7 +2579,7 @@ msgstr "Círculo Chevron Arriba"
 
 #: modules/gutenberg/icons/icons-v6-0.php:4069
 msgid "Circle Dollar To Slot"
-msgstr ""
+msgstr "Círculo Dólar A Ranura"
 
 #: modules/gutenberg/icons/icons-v6-0.php:4085
 msgid "Circle Dot"
@@ -2755,7 +2755,7 @@ msgstr "Nube Sol Lluvia"
 
 #: modules/gutenberg/icons/icons-v6-0.php:4628
 msgid "Cloudflare"
-msgstr ""
+msgstr "Cloudflare"
 
 #: modules/gutenberg/icons/icons-v6-0.php:4639
 msgid "cloudscale.ch"
@@ -3644,7 +3644,7 @@ msgstr "Cara con ojos en blanco"
 
 #: modules/gutenberg/icons/icons-v6-1.php:1901
 msgid "Face Sad Cry"
-msgstr ""
+msgstr "Cara Triste Llora"
 
 #: modules/gutenberg/icons/icons-v6-1.php:1917
 msgid "Face Sad Tear"
@@ -3873,7 +3873,7 @@ msgstr "Filtro Círculo Dólar"
 
 #: modules/gutenberg/icons/icons-v6-1.php:2624
 msgid "Filter Circle Xmark"
-msgstr ""
+msgstr "Filtro Círculo Xmarca"
 
 #: modules/gutenberg/icons/icons-v6-1.php:2635
 msgid "Fingerprint"
@@ -4209,7 +4209,7 @@ msgstr "Tee de pelota de golf"
 
 #: modules/gutenberg/icons/icons-v6-1.php:3615
 msgid "Goodreads"
-msgstr ""
+msgstr "Goodreads"
 
 #: modules/gutenberg/icons/icons-v6-1.php:3626
 msgid "Goodreads G"
@@ -4257,7 +4257,7 @@ msgstr ""
 
 #: modules/gutenberg/icons/icons-v6-1.php:3758
 msgid "Grav"
-msgstr ""
+msgstr "Grav"
 
 #: modules/gutenberg/icons/icons-v6-1.php:3769
 msgid "Greater Than"
@@ -4513,7 +4513,7 @@ msgstr "Tos de lado de la cabeza"
 
 #: modules/gutenberg/icons/icons-v6-1.php:4538
 msgid "Head Side Cough Slash"
-msgstr ""
+msgstr "Cabeza Lado Tos Barra"
 
 #: modules/gutenberg/icons/icons-v6-1.php:4549
 msgid "Head Side Mask"
@@ -4785,7 +4785,7 @@ msgstr "Logo de HTML 5"
 
 #: modules/gutenberg/icons/icons-v6-1.php:5323
 msgid "HubSpot"
-msgstr ""
+msgstr "HubSpot"
 
 #: modules/gutenberg/icons/icons-v6-1.php:5334
 msgid "Hurricane"
@@ -4974,7 +4974,7 @@ msgstr "Ok"
 
 #: modules/gutenberg/icons/icons-v6-2.php:422
 msgid "Kaaba"
-msgstr ""
+msgstr "Kaaba"
 
 #: modules/gutenberg/icons/icons-v6-2.php:433
 msgid "Kaggle"
@@ -5296,7 +5296,7 @@ msgstr "Pin de mapa"
 
 #: modules/gutenberg/icons/icons-v6-2.php:1338
 msgid "Markdown"
-msgstr ""
+msgstr "Markdown"
 
 #: modules/gutenberg/icons/icons-v6-2.php:1349
 msgid "Marker"
@@ -6711,7 +6711,7 @@ msgstr "Tijeras"
 
 #: modules/gutenberg/icons/icons-v6-3.php:169
 msgid "Screenpal"
-msgstr ""
+msgstr "Screenpal"
 
 #: modules/gutenberg/icons/icons-v6-3.php:180
 msgid "Screwdriver"
@@ -7332,7 +7332,7 @@ msgstr "Flexible"
 
 #: modules/gutenberg/icons/icons-v6-3.php:1982
 msgid "Suse"
-msgstr ""
+msgstr "Suse"
 
 #: modules/gutenberg/icons/icons-v6-3.php:1993
 msgid "Swatchbook"
@@ -7767,7 +7767,7 @@ msgstr ""
 
 #: modules/gutenberg/icons/icons-v6-3.php:3196
 msgid "Tumblr"
-msgstr ""
+msgstr "Tumblr"
 
 #: modules/gutenberg/icons/icons-v6-3.php:3218
 msgid "Turkish Lira Sign"
@@ -8078,7 +8078,7 @@ msgstr ""
 
 #: modules/gutenberg/icons/icons-v6-3.php:4081
 msgid "Viadeo"
-msgstr ""
+msgstr "Viadeo"
 
 #: modules/gutenberg/icons/icons-v6-3.php:4103
 msgid "Vial"
@@ -8327,7 +8327,7 @@ msgstr ""
 
 #: modules/gutenberg/icons/icons-v6-3.php:4822
 msgid "Wix"
-msgstr ""
+msgstr "Wix"
 
 #: modules/gutenberg/icons/icons-v6-3.php:4833
 msgid "Wizards of the Coast"
@@ -9679,7 +9679,7 @@ msgstr "Tipo de seguridad"
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
 msgid "Google reCAPTCHA"
-msgstr ""
+msgstr "Google reCAPTCHA"
 
 #: assets/build/formEditor.js:172
 msgid "CloudFlare Turnstile"
@@ -11148,10 +11148,6 @@ msgstr "¿Qué tan probable es que recomiende SureForms a sus amigos o colegas?"
 msgid "Thanks a lot for your feedback! 😍"
 msgstr "¡Muchas gracias por tus comentarios! 😍"
 
-#: inc/nps-notice.php:110
-msgid "Could you please do us a favor and give us a 5-star rating on WordPress? It would help others choose SureForms with confidence. Thank you!"
-msgstr "¿Podrías hacernos un favor y darnos una calificación de 5 estrellas en WordPress? Ayudaría a otros a elegir SureForms con confianza. ¡Gracias!"
-
 #: inc/nps-notice.php:112
 msgid "Thank you for your feedback"
 msgstr "Gracias por tus comentarios"
@@ -11207,6 +11203,10 @@ msgstr "Mensaje de error de selección mínima de opción múltiple"
 #: assets/build/settings.js:172
 msgid "Multiple Choice Maximum Selections Error Message"
 msgstr "Mensaje de error de selección máxima de opción múltiple"
+
+#: inc/nps-notice.php:110
+msgid "Could you please do us a favor and give us a 5-star rating on WordPress? It would help others choose SureForms with confidence. Thank you!"
+msgstr "¿Podrías hacernos un favor y darnos una calificación de 5 estrellas en WordPress? Ayudaría a otros a elegir SureForms con confianza. ¡Gracias!"
 
 #: inc/post-types.php:123
 msgctxt "post type general name"
@@ -11572,7 +11572,7 @@ msgstr "cuestionario"
 #: inc/blocks/multichoice/block.json
 msgctxt "block keyword"
 msgid "multi"
-msgstr ""
+msgstr "multi"
 
 #: assets/build/blocks/multi-choice/block.json
 #: assets/build/blocks/sureforms-form/block.json

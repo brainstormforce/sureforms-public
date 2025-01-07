@@ -38,6 +38,10 @@ class Admin_Ajax {
 		add_action( 'wp_ajax_sureforms_integration', [ $this, 'generate_data_for_suretriggers_integration' ] );
 
 		add_filter( SRFM_SLUG . '_admin_filter', [ $this, 'localize_script_integration' ] );
+
+		// adding support for rest-nonce endpoint. To regenerate latest nonce incase of form submission failure.
+		add_action( 'wp_ajax_rest-nonce', [ $this, 'print_rest_nonce' ], 999 );
+		add_action( 'wp_ajax_nopriv_rest-nonce', [ $this, 'print_rest_nonce' ], 999 );
 	}
 
 	/**
@@ -371,5 +375,17 @@ class Admin_Ajax {
 			return $dummy_data[ $block_name ];
 		}
 			return __( 'Sample data', 'sureforms' );
+	}
+
+	/**
+	 * This function will echo wp_rest nonce
+	 * was required to provide nonce for fallback of wp.apiFetch
+	 *
+	 * @since 1.2.4
+	 * @return void
+	 */
+	public function print_rest_nonce() {
+		echo esc_js( wp_create_nonce( 'wp_rest' ) );
+		exit;
 	}
 }
