@@ -899,10 +899,6 @@ msgstr "Jak bardzo prawdopodobne jest, że polecisz SureForms swoim znajomym lub
 msgid "Thanks a lot for your feedback! 😍"
 msgstr "Bardzo dziękuję za Twoją opinię! 😍"
 
-#: inc/nps-notice.php:110
-msgid "Could you please do us a favor and give us a 5-star rating? It would help others choose SureForms with confidence. Thank you!"
-msgstr "Czy mógłbyś zrobić nam przysługę i dać nam ocenę 5 gwiazdek? To pomoże innym wybrać SureForms z pewnością. Dziękujemy!"
-
 #: inc/nps-notice.php:112
 msgid "Thank you for your feedback"
 msgstr "Dziękuję za Twoją opinię"
@@ -4086,7 +4082,7 @@ msgstr "freeCodeCamp"
 
 #: modules/gutenberg/icons/icons-v6-1.php:3143
 msgid "FreeBSD"
-msgstr ""
+msgstr "FreeBSD"
 
 #: modules/gutenberg/icons/icons-v6-1.php:3154
 msgid "Frog"
@@ -5011,7 +5007,7 @@ msgstr "K"
 
 #: modules/gutenberg/icons/icons-v6-2.php:422
 msgid "Kaaba"
-msgstr ""
+msgstr "Kaaba"
 
 #: modules/gutenberg/icons/icons-v6-2.php:433
 msgid "Kaggle"
@@ -5698,7 +5694,7 @@ msgstr ""
 
 #: modules/gutenberg/icons/icons-v6-2.php:2348
 msgid "Node.js"
-msgstr ""
+msgstr "Node.js"
 
 #: modules/gutenberg/icons/icons-v6-2.php:2359
 msgid "Node.js JS"
@@ -6728,7 +6724,7 @@ msgstr "Kontrola w kręgu szkolnym"
 
 #: modules/gutenberg/icons/icons-v6-3.php:114
 msgid "School Circle Exclamation"
-msgstr ""
+msgstr "Okrąg Szkolny Wykrzyknik"
 
 #: modules/gutenberg/icons/icons-v6-3.php:125
 msgid "School Circle Xmark"
@@ -6940,7 +6936,7 @@ msgstr "Mapa strony"
 
 #: modules/gutenberg/icons/icons-v6-3.php:702
 msgid "Sith"
-msgstr ""
+msgstr "Sith"
 
 #: modules/gutenberg/icons/icons-v6-3.php:713
 msgid "Sitrox"
@@ -8115,7 +8111,7 @@ msgstr ""
 
 #: modules/gutenberg/icons/icons-v6-3.php:4081
 msgid "Viadeo"
-msgstr ""
+msgstr "Viadeo"
 
 #: modules/gutenberg/icons/icons-v6-3.php:4103
 msgid "Vial"
@@ -8400,7 +8396,7 @@ msgstr ""
 
 #: modules/gutenberg/icons/icons-v6-3.php:4921
 msgid "WPExplorer"
-msgstr ""
+msgstr "WPExplorer"
 
 #: modules/gutenberg/icons/icons-v6-3.php:4932
 msgid "WPForms"
@@ -9439,7 +9435,7 @@ msgstr "Treść e-maila"
 
 #: assets/build/formEditor.js:172
 msgid "CC"
-msgstr ""
+msgstr "DW"
 
 #: assets/build/formEditor.js:172
 msgid "BCC"
@@ -10740,7 +10736,7 @@ msgstr "Zawartość"
 
 #: modules/gutenberg/build/blocks.js:11
 msgid "Div"
-msgstr ""
+msgstr "Div"
 
 #: modules/gutenberg/build/blocks.js:11
 msgid "Heading Wrapper"
@@ -11207,6 +11203,10 @@ msgstr "Dodaj oszałamiające, konfigurowalne ikony do swojej strony internetowe
 #: modules/gutenberg/build/blocks.js:17
 msgid "icon"
 msgstr "ikona"
+
+#: inc/nps-notice.php:110
+msgid "Could you please do us a favor and give us a 5-star rating on WordPress? It would help others choose SureForms with confidence. Thank you!"
+msgstr "Czy mógłbyś zrobić nam przysługę i dać nam ocenę 5 gwiazdek na WordPress? To pomoże innym wybrać SureForms z pewnością. Dziękujemy!"
 
 #: inc/post-types.php:123
 msgctxt "post type general name"

@@ -3583,7 +3583,7 @@ msgstr ""
 
 #: modules/gutenberg/icons/icons-v6-1.php:1693
 msgid "Face Grin Tongue Wink"
-msgstr ""
+msgstr "Visage Grin Langue Clin d'œil"
 
 #: modules/gutenberg/icons/icons-v6-1.php:1709
 msgid "Face Grin Wide"
@@ -11205,8 +11205,8 @@ msgid "Multiple Choice Maximum Selections Error Message"
 msgstr "Message d'erreur de sélection multiple pour choix multiples"
 
 #: inc/nps-notice.php:110
-msgid "Could you please do us a favor and give us a 5-star rating? It would help others choose SureForms with confidence. Thank you!"
-msgstr "Pourriez-vous nous rendre service et nous donner une note de 5 étoiles ? Cela aiderait les autres à choisir SureForms en toute confiance. Merci !"
+msgid "Could you please do us a favor and give us a 5-star rating on WordPress? It would help others choose SureForms with confidence. Thank you!"
+msgstr "Pourriez-vous nous rendre service et nous donner une note de 5 étoiles sur WordPress ? Cela aiderait les autres à choisir SureForms en toute confiance. Merci !"
 
 #: inc/post-types.php:123
 msgctxt "post type general name"

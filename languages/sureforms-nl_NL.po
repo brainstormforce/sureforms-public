@@ -3742,7 +3742,7 @@ msgstr "Bestandskringcontrole"
 
 #: modules/gutenberg/icons/icons-v6-1.php:2238
 msgid "File Circle Exclamation"
-msgstr ""
+msgstr "Bestand Cirkel Uitroepteken"
 
 #: modules/gutenberg/icons/icons-v6-1.php:2249
 msgid "File Circle Minus"
@@ -11208,8 +11208,8 @@ msgid "Multiple Choice Maximum Selections Error Message"
 msgstr "Foutmelding bij meerdere keuzes maximale selecties"
 
 #: inc/nps-notice.php:110
-msgid "Could you please do us a favor and give us a 5-star rating? It would help others choose SureForms with confidence. Thank you!"
-msgstr "Zou je ons alstublieft een plezier willen doen en ons een 5-sterrenbeoordeling geven? Het zou anderen helpen om met vertrouwen voor SureForms te kiezen. Dank je!"
+msgid "Could you please do us a favor and give us a 5-star rating on WordPress? It would help others choose SureForms with confidence. Thank you!"
+msgstr "Zou je ons alstublieft een plezier willen doen en ons een 5-sterrenbeoordeling op WordPress willen geven? Het zou anderen helpen om met vertrouwen voor SureForms te kiezen. Dank je!"
 
 #: inc/post-types.php:123
 msgctxt "post type general name"
