@@ -11205,8 +11205,8 @@ msgid "Multiple Choice Maximum Selections Error Message"
 msgstr "Mensaje de error de selección máxima de opción múltiple"
 
 #: inc/nps-notice.php:110
-msgid "Could you please do us a favor and give us a 5-star rating? It would help others choose SureForms with confidence. Thank you!"
-msgstr "¿Podrías hacernos un favor y darnos una calificación de 5 estrellas? Ayudaría a otros a elegir SureForms con confianza. ¡Gracias!"
+msgid "Could you please do us a favor and give us a 5-star rating on WordPress? It would help others choose SureForms with confidence. Thank you!"
+msgstr "¿Podrías hacernos un favor y darnos una calificación de 5 estrellas en WordPress? Ayudaría a otros a elegir SureForms con confianza. ¡Gracias!"
 
 #: inc/post-types.php:123
 msgctxt "post type general name"

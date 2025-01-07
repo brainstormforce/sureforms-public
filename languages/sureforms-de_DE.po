@@ -4729,7 +4729,7 @@ msgstr "Hausflutwasser"
 
 #: modules/gutenberg/icons/icons-v6-1.php:5169
 msgid "House Flood Water Circle Arrow Right"
-msgstr ""
+msgstr "Haus Flut Wasser Kreis Pfeil Rechts"
 
 #: modules/gutenberg/icons/icons-v6-1.php:5180
 msgid "House Laptop"
@@ -5657,7 +5657,7 @@ msgstr "NFC-Symbol"
 
 #: modules/gutenberg/icons/icons-v6-2.php:2337
 msgid "Nimblr"
-msgstr ""
+msgstr "Nimblr"
 
 #: modules/gutenberg/icons/icons-v6-2.php:2348
 msgid "Node.js"
@@ -11205,8 +11205,8 @@ msgid "Multiple Choice Maximum Selections Error Message"
 msgstr "Fehlermeldung für Mehrfachauswahl mit maximaler Auswahl"
 
 #: inc/nps-notice.php:110
-msgid "Could you please do us a favor and give us a 5-star rating? It would help others choose SureForms with confidence. Thank you!"
-msgstr "Könnten Sie uns bitte einen Gefallen tun und uns eine 5-Sterne-Bewertung geben? Es würde anderen helfen, SureForms mit Vertrauen zu wählen. Vielen Dank!"
+msgid "Could you please do us a favor and give us a 5-star rating on WordPress? It would help others choose SureForms with confidence. Thank you!"
+msgstr "Könnten Sie uns bitte einen Gefallen tun und uns eine 5-Sterne-Bewertung auf WordPress geben? Es würde anderen helfen, SureForms mit Vertrauen zu wählen. Vielen Dank!"
 
 #: inc/post-types.php:123
 msgctxt "post type general name"
