@@ -32,7 +32,7 @@ import SRFMNumberControl from '@Components/number-control';
 import { BulkInserterWithButton } from '@Components/bulk-inserter';
 import {
 	attributeOptionsWithFilter,
-	enhancedDropdownOptions,
+	enhanceDropdownOptions,
 } from '@Components/hooks';
 
 const Edit = ( props ) => {
@@ -229,7 +229,7 @@ const Edit = ( props ) => {
 						className="srfm-option-outer-wrapper"
 						{ ...param.draggableProps }
 					>
-						{ enhancedDropdownOptions(
+						{ enhanceDropdownOptions(
 							draggableItem( option, param, i ),
 							{
 								props,
