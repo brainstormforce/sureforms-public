@@ -19,8 +19,6 @@ document.addEventListener( 'DOMContentLoaded', function () {
 			successContainer,
 			successElement,
 			errorElement,
-			submitBtn,
-			siteKey,
 			recaptchaType,
 			afterSubmission,
 			captchaErrorElement,
@@ -28,33 +26,7 @@ document.addEventListener( 'DOMContentLoaded', function () {
 			turnstileDiv,
 		} = extractFormAttributesAndElements( form );
 
-		if ( recaptchaType === 'v3-reCAPTCHA' ) {
-			//For V3 recaptcha
-			submitBtn.addEventListener( 'click', ( e ) => {
-				e.preventDefault();
-				grecaptcha.ready( function () {
-					grecaptcha
-						.execute( siteKey, { action: 'submit' } )
-						.then( async function ( token ) {
-							if ( token ) {
-								handleFormSubmission(
-									form,
-									formId,
-									ajaxUrl,
-									nonce,
-									loader,
-									successUrl,
-									successContainer,
-									successElement,
-									errorElement,
-									submitType,
-									afterSubmission
-								);
-							}
-						} );
-				} );
-			} );
-		} else if (
+		if (
 			'v2-checkbox' === recaptchaType ||
 			!! hCaptchaDiv ||
 			!! turnstileDiv
@@ -381,7 +353,7 @@ function extractFormAttributesAndElements( form ) {
 
 // eslint-disable-next-line no-unused-vars
 // v-2 invisible recaptcha callback
-function onloadCallback() {
+function onloadCallback( token = '' ) {
 	const forms = Array.from( document.querySelectorAll( '.srfm-form' ) );
 	forms.forEach( ( form ) => {
 		const {
@@ -439,6 +411,24 @@ function onloadCallback() {
 					);
 				}
 			} );
+		}
+
+		// v3-reCAPTCHA
+		if ( recaptchaType === 'v3-reCAPTCHA' && token ) {
+			loader.classList.add( 'srfm-active' );
+			handleFormSubmission(
+				form,
+				formId,
+				ajaxUrl,
+				nonce,
+				loader,
+				successUrl,
+				successContainer,
+				successElement,
+				errorElement,
+				submitType,
+				afterSubmission
+			);
 		}
 	} );
 }
