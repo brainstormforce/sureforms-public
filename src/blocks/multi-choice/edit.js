@@ -2,12 +2,7 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import {
-	ToggleControl,
-	SelectControl,
-	Button,
-	Icon,
-} from '@wordpress/components';
+import { ToggleControl, SelectControl, Button } from '@wordpress/components';
 import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
 import { useState, useEffect } from '@wordpress/element';
 import SRFMTextControl from '@Components/text-control';
@@ -19,6 +14,7 @@ import InspectorTab, {
 import { useErrMessage } from '@Blocks/util';
 import svgIcons from '@Svg/svgs.json';
 import parse from 'html-react-parser';
+import { MdDragIndicator } from 'react-icons/md';
 
 /**
  * Component Dependencies
@@ -36,7 +32,10 @@ import UAGIconPicker from '@Components/icon-picker';
 import SRFMMediaPicker from '@Components/image';
 import SRFMNumberControl from '@Components/number-control';
 import { BulkInserterWithButton } from '@Components/bulk-inserter';
-import { attributeOptionsWithFilter } from '@Components/hooks';
+import {
+	attributeOptionsWithFilter,
+	enhanceMultiChoiceOptions,
+} from '@Components/hooks';
 
 const Edit = ( props ) => {
 	const { attributes, setAttributes, isSelected, clientId } = props;
@@ -209,26 +208,90 @@ const Edit = ( props ) => {
 		</>
 	);
 
+	const draggableItem = ( option, param, i ) => (
+		<>
+			<div>
+				<span { ...param.dragHandleProps }>
+					<MdDragIndicator
+						style={ {
+							width: '20px',
+							height: '20px',
+						} }
+					/>
+				</span>
+				<div>
+					<SRFMTextControl
+						showHeaderControls={ false }
+						key={ i }
+						value={ option.optionTitle }
+						data={ {
+							value: option.optionTitle,
+							label: 'option',
+						} }
+						onChange={ ( value ) => editOption( value, i ) }
+					/>
+				</div>
+				{ optionType === 'icon' && (
+					<div className="srfm-icon-picker">
+						<UAGIconPicker
+							label={ '' }
+							value={ option.icon }
+							onChange={ ( value ) =>
+								changeOption( { icon: value }, i )
+							}
+							addIcon={ parse( svgIcons.custom_plus_icon ) }
+						/>
+					</div>
+				) }
+				{ optionType === 'image' && (
+					<div className="srfm-media-picker">
+						<SRFMMediaPicker
+							onSelectImage={ ( e ) => {
+								onSelectImage( e, i );
+							} }
+							backgroundImage={ option.image }
+							onRemoveImage={ () => {
+								onRemoveImage( i );
+							} }
+							disableLabel={ true }
+						/>
+					</div>
+				) }
+				<Button icon="trash" onClick={ () => deleteOption( i ) } />
+			</div>
+		</>
+	);
+
+	const draggableOptions = ( dragOptions ) =>
+		dragOptions.map( ( option, i ) => (
+			<Draggable key={ i } draggableId={ 'draggable-' + i } index={ i }>
+				{ ( param ) => (
+					<div
+						ref={ param.innerRef }
+						className="srfm-option-outer-wrapper"
+						{ ...param.draggableProps }
+					>
+						{ enhanceMultiChoiceOptions(
+							draggableItem( option, param, i ),
+							{
+								props,
+								option,
+								param,
+								i,
+								editOption,
+								changeOption,
+								deleteOption,
+							}
+						) }
+					</div>
+				) }
+			</Draggable>
+		) );
+
 	const choicesOptions = (
 		<div style={ { marginBottom: '8px' } }>
 			{ options.length > 0 && (
-				<DragDropContext
-					onDragEnd={ ( param ) => {
-						const srcI = param.source.index;
-						const destI = param.destination.index;
-						if ( srcI !== destI ) {
-							const newOptions = [ ...options ];
-							newOptions.splice(
-								destI,
-								0,
-								newOptions.splice( srcI, 1 )[ 0 ]
-							);
-							setAttributes( {
-								options: newOptions,
-							} );
-						}
-					} }
-				>
+				<>
 					<MultiButtonsControl
 						setAttributes={ setAttributes }
 						label={ __( 'Option Type', 'sureforms' ) }
@@ -251,133 +314,41 @@ const Edit = ( props ) => {
 					<span className="srfm-control-label srfm-control__header">
 						{ __( 'Edit Options', 'sureforms' ) }
 					</span>
-					<>
+					<DragDropContext
+						onDragEnd={ ( param ) => {
+							const srcI = param.source.index;
+							const destI = param.destination.index;
+							if ( srcI !== destI ) {
+								const newOptions = [ ...options ];
+								newOptions.splice(
+									destI,
+									0,
+									newOptions.splice( srcI, 1 )[ 0 ]
+								);
+								setAttributes( {
+									options: newOptions,
+								} );
+							}
+						} }
+					>
 						<Droppable droppableId="droppable-1">
 							{ ( provided ) => (
 								<div
 									ref={ provided.innerRef }
 									{ ...provided.droppableProps }
 								>
-									{ options.map( ( option, i ) => (
-										<Draggable
-											key={ i }
-											draggableId={ 'draggable-' + i }
-											index={ i }
-										>
-											{ ( param ) => (
-												<div
-													ref={ param.innerRef }
-													className="srfm-option-outer-wrapper"
-													{ ...param.draggableProps }
-												>
-													<div>
-														<>
-															<Icon
-																icon={ 'move' }
-																{ ...param.dragHandleProps }
-															/>
-														</>
-														<div>
-															<SRFMTextControl
-																showHeaderControls={
-																	false
-																}
-																key={ i }
-																value={
-																	option.optionTitle
-																}
-																data={ {
-																	value: option.optionTitle,
-																	label: 'option',
-																} }
-																onChange={ (
-																	value
-																) =>
-																	editOption(
-																		value,
-																		i
-																	)
-																}
-															/>
-														</div>
-														<>
-															{ optionType ===
-																'icon' && (
-																<div className="srfm-icon-picker">
-																	<UAGIconPicker
-																		label={
-																			''
-																		}
-																		value={
-																			option.icon
-																		}
-																		onChange={ (
-																			value
-																		) =>
-																			changeOption(
-																				{
-																					icon: value,
-																				},
-																				i
-																			)
-																		}
-																		addIcon={ parse(
-																			svgIcons.custom_plus_icon
-																		) }
-																	/>
-																</div>
-															) }
-															{ optionType ===
-																'image' && (
-																<div className="srfm-media-picker">
-																	<SRFMMediaPicker
-																		onSelectImage={ (
-																			e
-																		) => {
-																			onSelectImage(
-																				e,
-																				i
-																			);
-																		} }
-																		backgroundImage={
-																			option.image
-																		}
-																		onRemoveImage={ () => {
-																			onRemoveImage(
-																				i
-																			);
-																		} }
-																		disableLabel={
-																			true
-																		}
-																	/>
-																</div>
-															) }
-															<Button
-																icon="trash"
-																onClick={ () =>
-																	deleteOption(
-																		i
-																	)
-																}
-															/>
-														</>
-													</div>
-												</div>
-											) }
-										</Draggable>
-									) ) }
+									{ draggableOptions( options ) }
 									{ provided.placeholder }
 								</div>
 							) }
 						</Droppable>
-					</>
-				</DragDropContext>
+					</DragDropContext>
+				</>
 			) }
 		</div>
 	);
 
-	const addOptions = (
+	const addNewOption = (
 		<>
 			<div
 				className="sureform-add-option-container"
@@ -520,8 +491,8 @@ const Edit = ( props ) => {
 			component: choicesOptions,
 		},
 		{
-			id: 'addOptions',
-			component: addOptions,
+			id: 'addNewOption',
+			component: addNewOption,
 		},
 		{
 			id: 'control-label-span',
@@ -542,12 +513,6 @@ const Edit = ( props ) => {
 					value={ help }
 					onChange={ ( value ) => setAttributes( { help: value } ) }
 				/>
-			),
-		},
-		{
-			id: 'conditionalLogic',
-			component: (
-				<ConditionalLogic { ...{ setAttributes, attributes } } />
 			),
 		},
 	];
