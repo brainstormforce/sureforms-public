@@ -412,119 +412,119 @@ msgstr "De patrooninhoud."
 msgid "Determines whether the pattern is visible in inserter."
 msgstr "Bepaalt of het patroon zichtbaar is in de invoeger."
 
-#: inc/admin-ajax.php:74
+#: inc/admin-ajax.php:78
 msgid "No plugin specified"
 msgstr "Geen plugin opgegeven"
 
-#: inc/admin-ajax.php:95
+#: inc/admin-ajax.php:99
 msgid "Plugin Successfully Activated"
 msgstr "Plugin succesvol geactiveerd"
 
-#: inc/admin-ajax.php:133
+#: inc/admin-ajax.php:137
 msgid "Activating..."
 msgstr "Activeren..."
 
-#: inc/admin-ajax.php:134
+#: inc/admin-ajax.php:138
 msgid "Activated"
 msgstr "Geactiveerd"
 
-#: inc/admin-ajax.php:135
+#: inc/admin-ajax.php:139
 #: assets/build/formEditor.js:172
 msgid "Activate"
 msgstr "Activeren"
 
-#: inc/admin-ajax.php:137
+#: inc/admin-ajax.php:141
 msgid "Installing..."
 msgstr "Installeren..."
 
-#: inc/admin-ajax.php:138
+#: inc/admin-ajax.php:142
 msgid "Installed"
 msgstr "Geïnstalleerd"
 
-#: inc/admin-ajax.php:159
+#: inc/admin-ajax.php:163
 #: assets/build/formEditor.js:172
 msgid "SureTriggers"
 msgstr "SureTriggers"
 
-#: inc/admin-ajax.php:160
+#: inc/admin-ajax.php:164
 msgid "Connect SureForms to hundreds of apps, CRMs and tools such as Slack, Mailchimp, etc."
 msgstr "Verbind SureForms met honderden apps, CRM's en tools zoals Slack, Mailchimp, enz."
 
-#: inc/admin-ajax.php:161
+#: inc/admin-ajax.php:165
 msgid "SureTriggers is a powerful automation platform that helps you connect your various plugins and apps together. It allows you to automate repetitive tasks, so you can focus on more important work."
 msgstr "SureTriggers is een krachtig automatiseringsplatform dat je helpt om je verschillende plugins en apps met elkaar te verbinden. Het stelt je in staat om repetitieve taken te automatiseren, zodat je je kunt concentreren op belangrijker werk."
 
-#: inc/admin-ajax.php:212
+#: inc/admin-ajax.php:216
 msgid "You do not have permission to access this page."
 msgstr "U heeft geen toestemming om deze pagina te openen."
 
-#: inc/admin-ajax.php:216
+#: inc/admin-ajax.php:220
 msgid "Invalid nonce."
 msgstr "Ongeldige nonce."
 
-#: inc/admin-ajax.php:220
+#: inc/admin-ajax.php:224
 msgid "Form ID is required."
 msgstr "Formulier-ID is vereist."
 
-#: inc/admin-ajax.php:227
+#: inc/admin-ajax.php:231
 msgid "SureTriggers is not configured properly."
 msgstr "SureTriggers is niet correct geconfigureerd."
 
-#: inc/admin-ajax.php:236
+#: inc/admin-ajax.php:240
 #: inc/form-submit.php:765
 msgid "Invalid form ID."
 msgstr "Ongeldige formulier-ID."
 
 #. Translators: %s: Form ID.
-#: inc/admin-ajax.php:240
+#: inc/admin-ajax.php:244
 msgid "SureForms id: %s"
 msgstr "SureForms-id: %s"
 
-#: inc/admin-ajax.php:250
+#: inc/admin-ajax.php:254
 msgid "Form Submitted"
 msgstr "Formulier ingediend"
 
-#: inc/admin-ajax.php:252
+#: inc/admin-ajax.php:256
 msgid "Runs when a form is submitted"
 msgstr "Wordt uitgevoerd wanneer een formulier wordt ingediend"
 
-#: inc/admin-ajax.php:344
-#: inc/admin-ajax.php:373
+#: inc/admin-ajax.php:348
+#: inc/admin-ajax.php:377
 msgid "Sample data"
 msgstr "Voorbeeldgegevens"
 
-#: inc/admin-ajax.php:348
+#: inc/admin-ajax.php:352
 msgid "Sample input data"
 msgstr "Voorbeeldinvoergegevens"
 
-#: inc/admin-ajax.php:350
+#: inc/admin-ajax.php:354
 msgid "Sample textarea data"
 msgstr "Voorbeeld van tekstvakgegevens"
 
-#: inc/admin-ajax.php:355
-#: inc/admin-ajax.php:356
+#: inc/admin-ajax.php:359
+#: inc/admin-ajax.php:360
 msgid "Address data"
 msgstr "Adresgegevens"
 
-#: inc/admin-ajax.php:357
+#: inc/admin-ajax.php:361
 msgid "Selected dropdown option"
 msgstr "Geselecteerde vervolgkeuzelijstoptie"
 
-#: inc/admin-ajax.php:358
+#: inc/admin-ajax.php:362
 msgid "Selected Multichoice option"
 msgstr "Geselecteerde meerkeuzeoptie"
 
-#: inc/admin-ajax.php:359
+#: inc/admin-ajax.php:363
 msgid "Selected radio option"
 msgstr "Geselecteerde radio-optie"
 
-#: inc/admin-ajax.php:360
+#: inc/admin-ajax.php:364
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 msgid "Submit"
 msgstr "Indienen"
 
-#: inc/admin-ajax.php:363
+#: inc/admin-ajax.php:367
 msgid "Hidden Value"
 msgstr "Verborgen Waarde"
 
@@ -1271,11 +1271,11 @@ msgstr "Anker Cirkel Controle"
 
 #: modules/gutenberg/icons/icons-v6-0.php:388
 msgid "Anchor Circle Exclamation"
-msgstr ""
+msgstr "Anker Cirkel Uitroepteken"
 
 #: modules/gutenberg/icons/icons-v6-0.php:399
 msgid "Anchor Circle Xmark"
-msgstr ""
+msgstr "Anker Cirkel Xmark"
 
 #: modules/gutenberg/icons/icons-v6-0.php:410
 msgid "Anchor Lock"
@@ -1343,7 +1343,7 @@ msgstr "iOS App Store"
 
 #: modules/gutenberg/icons/icons-v6-0.php:586
 msgid "Apper Systems AB"
-msgstr ""
+msgstr "Apper Systems AB"
 
 #: modules/gutenberg/icons/icons-v6-0.php:597
 msgid "Apple"
@@ -2749,7 +2749,7 @@ msgstr "Wolk Zon Regen"
 
 #: modules/gutenberg/icons/icons-v6-0.php:4628
 msgid "Cloudflare"
-msgstr ""
+msgstr "Cloudflare"
 
 #: modules/gutenberg/icons/icons-v6-0.php:4639
 msgid "cloudscale.ch"
@@ -3642,7 +3642,7 @@ msgstr "Gezicht Verdrietig Huilen"
 
 #: modules/gutenberg/icons/icons-v6-1.php:1917
 msgid "Face Sad Tear"
-msgstr ""
+msgstr "Gezicht Verdriet Traan"
 
 #: modules/gutenberg/icons/icons-v6-1.php:1933
 msgid "Face Smile"
@@ -3742,7 +3742,7 @@ msgstr "Bestandskringcontrole"
 
 #: modules/gutenberg/icons/icons-v6-1.php:2238
 msgid "File Circle Exclamation"
-msgstr ""
+msgstr "Bestand Cirkel Uitroepteken"
 
 #: modules/gutenberg/icons/icons-v6-1.php:2249
 msgid "File Circle Minus"
@@ -4191,7 +4191,7 @@ msgstr "Wereldbol"
 
 #: modules/gutenberg/icons/icons-v6-1.php:3582
 msgid "Gofore"
-msgstr ""
+msgstr "Gofore"
 
 #: modules/gutenberg/icons/icons-v6-1.php:3593
 msgid "Go"
@@ -5072,7 +5072,7 @@ msgstr "Lari-teken"
 
 #: modules/gutenberg/icons/icons-v6-2.php:713
 msgid "last.fm"
-msgstr ""
+msgstr "last.fm"
 
 #: modules/gutenberg/icons/icons-v6-2.php:735
 msgid "Layer Group"
@@ -5270,7 +5270,7 @@ msgstr "Manatteken"
 
 #: modules/gutenberg/icons/icons-v6-2.php:1278
 msgid "Mandalorian"
-msgstr ""
+msgstr "Mandaloriaan"
 
 #: modules/gutenberg/icons/icons-v6-2.php:1294
 msgid "Map"
@@ -5824,7 +5824,7 @@ msgstr "Plakken"
 
 #: modules/gutenberg/icons/icons-v6-2.php:2846
 msgid "Patreon"
-msgstr ""
+msgstr "Patreon"
 
 #: modules/gutenberg/icons/icons-v6-2.php:2857
 msgid "Pause"
@@ -6332,7 +6332,7 @@ msgstr "V"
 
 #: modules/gutenberg/icons/icons-v6-2.php:4292
 msgid "QQ"
-msgstr ""
+msgstr "QQ"
 
 #: modules/gutenberg/icons/icons-v6-2.php:4303
 msgid "Qrcode"
@@ -7326,7 +7326,7 @@ msgstr "Soepel"
 
 #: modules/gutenberg/icons/icons-v6-3.php:1982
 msgid "Suse"
-msgstr ""
+msgstr "Suse"
 
 #: modules/gutenberg/icons/icons-v6-3.php:1993
 msgid "Swatchbook"
@@ -9400,7 +9400,7 @@ msgstr ""
 
 #: assets/build/formEditor.js:172
 msgid "BCC"
-msgstr ""
+msgstr "BCC"
 
 #: assets/build/formEditor.js:172
 msgid "Reply To"
@@ -10466,7 +10466,7 @@ msgstr "H3"
 #: modules/gutenberg/build/blocks.js:11
 #: modules/gutenberg/build/blocks.js:15
 msgid "H4"
-msgstr ""
+msgstr "H4"
 
 #: modules/gutenberg/build/blocks.js:11
 #: modules/gutenberg/build/blocks.js:15
@@ -11151,10 +11151,6 @@ msgstr "Hoe waarschijnlijk is het dat u SureForms aan uw vrienden of collega's z
 msgid "Thanks a lot for your feedback! 😍"
 msgstr "Heel erg bedankt voor je feedback! 😍"
 
-#: inc/nps-notice.php:110
-msgid "Could you please do us a favor and give us a 5-star rating on WordPress? It would help others choose SureForms with confidence. Thank you!"
-msgstr "Zou je ons alstublieft een plezier willen doen en ons een 5-sterrenbeoordeling op WordPress willen geven? Het zou anderen helpen om met vertrouwen voor SureForms te kiezen. Dank je!"
-
 #: inc/nps-notice.php:112
 msgid "Thank you for your feedback"
 msgstr "Dank u voor uw feedback"
@@ -11210,6 +11206,10 @@ msgstr "Foutmelding voor minimaal aantal selecties bij meerkeuzevragen"
 #: assets/build/settings.js:172
 msgid "Multiple Choice Maximum Selections Error Message"
 msgstr "Foutmelding bij meerdere keuzes maximale selecties"
+
+#: inc/nps-notice.php:110
+msgid "Could you please do us a favor and give us a 5-star rating on WordPress? It would help others choose SureForms with confidence. Thank you!"
+msgstr "Zou je ons alstublieft een plezier willen doen en ons een 5-sterrenbeoordeling op WordPress willen geven? Het zou anderen helpen om met vertrouwen voor SureForms te kiezen. Dank je!"
 
 #: inc/post-types.php:123
 msgctxt "post type general name"

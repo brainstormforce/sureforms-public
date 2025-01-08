@@ -409,119 +409,119 @@ msgstr "Le contenu du motif."
 msgid "Determines whether the pattern is visible in inserter."
 msgstr "Détermine si le motif est visible dans l'inserteur."
 
-#: inc/admin-ajax.php:74
+#: inc/admin-ajax.php:78
 msgid "No plugin specified"
 msgstr "Aucun plugin spécifié"
 
-#: inc/admin-ajax.php:95
+#: inc/admin-ajax.php:99
 msgid "Plugin Successfully Activated"
 msgstr "Plugin activé avec succès"
 
-#: inc/admin-ajax.php:133
+#: inc/admin-ajax.php:137
 msgid "Activating..."
 msgstr "Activation..."
 
-#: inc/admin-ajax.php:134
+#: inc/admin-ajax.php:138
 msgid "Activated"
 msgstr "Activé"
 
-#: inc/admin-ajax.php:135
+#: inc/admin-ajax.php:139
 #: assets/build/formEditor.js:172
 msgid "Activate"
 msgstr "Activer"
 
-#: inc/admin-ajax.php:137
+#: inc/admin-ajax.php:141
 msgid "Installing..."
 msgstr "Installation en cours..."
 
-#: inc/admin-ajax.php:138
+#: inc/admin-ajax.php:142
 msgid "Installed"
 msgstr "Installé"
 
-#: inc/admin-ajax.php:159
+#: inc/admin-ajax.php:163
 #: assets/build/formEditor.js:172
 msgid "SureTriggers"
 msgstr "SureTriggers"
 
-#: inc/admin-ajax.php:160
+#: inc/admin-ajax.php:164
 msgid "Connect SureForms to hundreds of apps, CRMs and tools such as Slack, Mailchimp, etc."
 msgstr "Connectez SureForms à des centaines d'applications, de CRM et d'outils tels que Slack, Mailchimp, etc."
 
-#: inc/admin-ajax.php:161
+#: inc/admin-ajax.php:165
 msgid "SureTriggers is a powerful automation platform that helps you connect your various plugins and apps together. It allows you to automate repetitive tasks, so you can focus on more important work."
 msgstr "SureTriggers est une plateforme d'automatisation puissante qui vous aide à connecter vos différents plugins et applications ensemble. Elle vous permet d'automatiser les tâches répétitives, afin que vous puissiez vous concentrer sur un travail plus important."
 
-#: inc/admin-ajax.php:212
+#: inc/admin-ajax.php:216
 msgid "You do not have permission to access this page."
 msgstr "Vous n'avez pas la permission d'accéder à cette page."
 
-#: inc/admin-ajax.php:216
+#: inc/admin-ajax.php:220
 msgid "Invalid nonce."
 msgstr "Nonce invalide."
 
-#: inc/admin-ajax.php:220
+#: inc/admin-ajax.php:224
 msgid "Form ID is required."
 msgstr "L'identifiant du formulaire est requis."
 
-#: inc/admin-ajax.php:227
+#: inc/admin-ajax.php:231
 msgid "SureTriggers is not configured properly."
 msgstr "SureTriggers n'est pas configuré correctement."
 
-#: inc/admin-ajax.php:236
+#: inc/admin-ajax.php:240
 #: inc/form-submit.php:765
 msgid "Invalid form ID."
 msgstr "ID de formulaire invalide."
 
 #. Translators: %s: Form ID.
-#: inc/admin-ajax.php:240
+#: inc/admin-ajax.php:244
 msgid "SureForms id: %s"
 msgstr "Identifiant SureForms : %s"
 
-#: inc/admin-ajax.php:250
+#: inc/admin-ajax.php:254
 msgid "Form Submitted"
 msgstr "Formulaire soumis"
 
-#: inc/admin-ajax.php:252
+#: inc/admin-ajax.php:256
 msgid "Runs when a form is submitted"
 msgstr "S'exécute lorsqu'un formulaire est soumis"
 
-#: inc/admin-ajax.php:344
-#: inc/admin-ajax.php:373
+#: inc/admin-ajax.php:348
+#: inc/admin-ajax.php:377
 msgid "Sample data"
 msgstr "Données d'exemple"
 
-#: inc/admin-ajax.php:348
+#: inc/admin-ajax.php:352
 msgid "Sample input data"
 msgstr "Données d'entrée d'exemple"
 
-#: inc/admin-ajax.php:350
+#: inc/admin-ajax.php:354
 msgid "Sample textarea data"
 msgstr "Données d'exemple de zone de texte"
 
-#: inc/admin-ajax.php:355
-#: inc/admin-ajax.php:356
+#: inc/admin-ajax.php:359
+#: inc/admin-ajax.php:360
 msgid "Address data"
 msgstr "Données d'adresse"
 
-#: inc/admin-ajax.php:357
+#: inc/admin-ajax.php:361
 msgid "Selected dropdown option"
 msgstr "Option sélectionnée dans le menu déroulant"
 
-#: inc/admin-ajax.php:358
+#: inc/admin-ajax.php:362
 msgid "Selected Multichoice option"
 msgstr "Option à choix multiple sélectionnée"
 
-#: inc/admin-ajax.php:359
+#: inc/admin-ajax.php:363
 msgid "Selected radio option"
 msgstr "Option radio sélectionnée"
 
-#: inc/admin-ajax.php:360
+#: inc/admin-ajax.php:364
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 msgid "Submit"
 msgstr "Soumettre"
 
-#: inc/admin-ajax.php:363
+#: inc/admin-ajax.php:367
 msgid "Hidden Value"
 msgstr "Valeur cachée"
 
@@ -3339,7 +3339,7 @@ msgstr "Donjon"
 
 #: modules/gutenberg/icons/icons-v6-1.php:917
 msgid "Dyalog"
-msgstr ""
+msgstr "Dyalog"
 
 #: modules/gutenberg/icons/icons-v6-1.php:928
 msgid "E"
@@ -3583,7 +3583,7 @@ msgstr ""
 
 #: modules/gutenberg/icons/icons-v6-1.php:1693
 msgid "Face Grin Tongue Wink"
-msgstr ""
+msgstr "Visage Grin Langue Clin d'œil"
 
 #: modules/gutenberg/icons/icons-v6-1.php:1709
 msgid "Face Grin Wide"
@@ -3639,7 +3639,7 @@ msgstr "Visage Triste Pleure"
 
 #: modules/gutenberg/icons/icons-v6-1.php:1917
 msgid "Face Sad Tear"
-msgstr ""
+msgstr "Visage Triste Larme"
 
 #: modules/gutenberg/icons/icons-v6-1.php:1933
 msgid "Face Smile"
@@ -5680,7 +5680,7 @@ msgstr "NS8"
 
 #: modules/gutenberg/icons/icons-v6-2.php:2430
 msgid "Nutritionix"
-msgstr ""
+msgstr "Nutritionix"
 
 #: modules/gutenberg/icons/icons-v6-2.php:2441
 msgid "O"
@@ -7335,7 +7335,7 @@ msgstr "Rapide"
 
 #: modules/gutenberg/icons/icons-v6-3.php:2015
 msgid "Symfony"
-msgstr ""
+msgstr "Symfony"
 
 #: modules/gutenberg/icons/icons-v6-3.php:2026
 msgid "Synagogue"
@@ -11148,10 +11148,6 @@ msgstr "Quelle est la probabilité que vous recommandiez SureForms à vos amis o
 msgid "Thanks a lot for your feedback! 😍"
 msgstr "Merci beaucoup pour votre retour ! 😍"
 
-#: inc/nps-notice.php:110
-msgid "Could you please do us a favor and give us a 5-star rating on WordPress? It would help others choose SureForms with confidence. Thank you!"
-msgstr "Pourriez-vous nous rendre service et nous donner une note de 5 étoiles sur WordPress ? Cela aiderait les autres à choisir SureForms en toute confiance. Merci !"
-
 #: inc/nps-notice.php:112
 msgid "Thank you for your feedback"
 msgstr "Merci pour votre retour"
@@ -11207,6 +11203,10 @@ msgstr "Message d'erreur de sélection minimale pour choix multiple"
 #: assets/build/settings.js:172
 msgid "Multiple Choice Maximum Selections Error Message"
 msgstr "Message d'erreur de sélection multiple pour choix multiples"
+
+#: inc/nps-notice.php:110
+msgid "Could you please do us a favor and give us a 5-star rating on WordPress? It would help others choose SureForms with confidence. Thank you!"
+msgstr "Pourriez-vous nous rendre service et nous donner une note de 5 étoiles sur WordPress ? Cela aiderait les autres à choisir SureForms en toute confiance. Merci !"
 
 #: inc/post-types.php:123
 msgctxt "post type general name"
@@ -11623,6 +11623,9 @@ msgstr "zone de texte"
 msgctxt "block keyword"
 msgid "url"
 msgstr ""
+"The term \"url\" is a technical term and remains the same in French. \n"
+"\n"
+"url"
 
 #: assets/build/blocks/url/block.json
 #: inc/blocks/url/block.json
