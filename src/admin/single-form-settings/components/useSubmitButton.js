@@ -11,7 +11,6 @@ const SubmitButton = ( props ) => {
 	const buttonElement = useRef( null );
 
 	const labelText = metaValues?._srfm_submit_button_text || __( 'Submit', 'sureforms' );
-	const btnClasses = metaValues?._srfm_inherit_theme_button ? 'srfm-btn-alignment wp-block-button__link' : 'srfm-button srfm-submit-button srfm-btn-alignment srfm-btn-bg-color';
 
 	useEffect( () => {
 		const eventToButton = () => {
@@ -42,7 +41,7 @@ const SubmitButton = ( props ) => {
 		};
 	}, [] );
 
-	return <button className={ `srfm-submit-richtext ${ btnClasses }` } ref={ buttonElement }>
+	return <button className="srfm-submit-richtext srfm-button srfm-submit-button srfm-btn-alignment srfm-btn-bg-color" ref={ buttonElement }>
 		<RichText
 			tagName="label"
 			value={ labelText }
@@ -53,12 +52,7 @@ const SubmitButton = ( props ) => {
 };
 
 export default function useSubmitButton( args ) {
-	const {
-		sureformsKeys,
-		blockCount,
-		isInlineButtonBlockPresent,
-		updateMeta,
-	} = args;
+	const { isInlineButtonBlockPresent, updateMeta } = args;
 
 	const [ codeEditor, setCodeEditor ] = useState( null );
 
@@ -67,10 +61,8 @@ export default function useSubmitButton( args ) {
 	}, [] );
 
 	function addSubmitButton( elm ) {
-		const btnCtnClass = sureformsKeys?._srfm_inherit_theme_button ? 'wp-block-button' : 'srfm-submit-btn-font-size';
-
 		if ( ! elm.closest( 'body' ).querySelector( '.srfm-submit-btn-container' ) ) {
-			const appendHtml = `<div class="srfm-custom-block-inserter"></div><div class="srfm-submit-btn-container ${ btnCtnClass }"></div>`;
+			const appendHtml = `<div class="srfm-custom-block-inserter"></div><div class="srfm-submit-btn-container srfm-submit-btn-font-size"></div>`;
 
 			elm.insertAdjacentHTML( 'afterend', appendHtml );
 			// Add block inserter in the srfm-custom-block-inserter div.
@@ -80,18 +72,6 @@ export default function useSubmitButton( args ) {
 
 			if ( getBlockInserterDiv ) {
 				createRoot( getBlockInserterDiv ).render( <BlockInserterWrapper /> );
-			}
-		} else if ( elm.closest( 'body' ).querySelector( '.srfm-submit-btn-container' ) ) {
-			if ( sureformsKeys?._srfm_inherit_theme_button ) {
-				// For button container.
-				const buttonContainer = elm.parentElement.querySelector(
-					'.srfm-submit-btn-container'
-				);
-
-				// If _srfm_inherit_theme_button comes delayed, then add the class to the button container. because _srfm_inherit_theme_button comes from the useSelect hook.
-				if ( buttonContainer && ! buttonContainer.classList.contains( 'wp-block-button' ) ) {
-					buttonContainer.classList.add( 'wp-block-button' );
-				}
 			}
 		}
 
@@ -146,10 +126,5 @@ export default function useSubmitButton( args ) {
 				}
 			}
 		}, 200 );
-	}, [
-		sureformsKeys,
-		codeEditor,
-		blockCount,
-		isInlineButtonBlockPresent,
-	] );
+	}, [ codeEditor, isInlineButtonBlockPresent ] );
 }

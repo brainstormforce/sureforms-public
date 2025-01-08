@@ -147,8 +147,6 @@ const SureformsFormSpecificSettings = ( props ) => {
 	}, [ blockCount ] );
 
 	useSubmitButton( {
-		sureformsKeys,
-		blockCount,
 		isInlineButtonBlockPresent,
 		updateMeta,
 	} );
