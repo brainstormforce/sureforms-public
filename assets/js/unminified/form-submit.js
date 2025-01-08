@@ -355,6 +355,8 @@ function extractFormAttributesAndElements( form ) {
  * Callback function to handle form submission.
  * Incase of v2-invisible reCAPTCHA, it will render the reCAPTCHA and handle form submission.
  * Incase of v3-reCAPTCHA, it will handle form submission directly.
+ *
+ * @param {string} token v3-reCAPTCHA token.
  */
 function recaptchaCallback( token = '' ) {
 	const forms = Array.from( document.querySelectorAll( '.srfm-form' ) );
