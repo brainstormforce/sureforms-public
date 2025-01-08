@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from '@wordpress/element';
+import { useEffect, useRef } from '@wordpress/element';
 import { useSelect } from '@wordpress/data';
 import { store as editorStore } from '@wordpress/editor';
 import { createRoot } from 'react-dom/client';
@@ -52,13 +52,7 @@ const SubmitButton = ( props ) => {
 };
 
 export default function useSubmitButton( args ) {
-	const { isInlineButtonBlockPresent, updateMeta } = args;
-
-	const [ codeEditor, setCodeEditor ] = useState( null );
-
-	useEffect( () => {
-		setCodeEditor( document.querySelector( '.editor-post-text-editor' ) );
-	}, [] );
+	const { isInlineButtonBlockPresent, updateMeta, editorMode } = args;
 
 	function addSubmitButton( elm ) {
 		if ( ! elm.closest( 'body' ).querySelector( '.srfm-submit-btn-container' ) ) {
@@ -126,5 +120,5 @@ export default function useSubmitButton( args ) {
 				}
 			}
 		}, 200 );
-	}, [ codeEditor, isInlineButtonBlockPresent ] );
+	}, [ isInlineButtonBlockPresent, editorMode ] );
 }
