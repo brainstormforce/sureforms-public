@@ -98,7 +98,7 @@ export default function useSubmitButton( args ) {
 			}
 
 			// If Custom Button is not present, add the default button. Remove the default button if there are more than one.
-			if ( ! isInlineButtonBlockPresent ) {
+			if ( ! isInlineButtonBlockPresent && 'visual' === editorMode ) {
 				if ( elm ) {
 					addSubmitButton( elm );
 				}

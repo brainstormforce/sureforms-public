@@ -153,7 +153,7 @@ const SureformsFormSpecificSettings = ( props ) => {
 	useSubmitButton( {
 		isInlineButtonBlockPresent,
 		updateMeta,
-		editorMode
+		editorMode,
 	} );
 
 	useEffect( () => {
