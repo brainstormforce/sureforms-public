@@ -255,7 +255,7 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 
 == Changelog ==
 = x.x.x =
-* Fix: reCAPTCHA v3 not letting the form to submit.
+* Fix: Forms are not being submitted in some instances with V3 reCAPTCHA.
 = 1.2.4 - 7th January 2025 =
 * New: Added translations for the Italian, Portuguese, and Polish languages.
 * Fix: Addressed an issue where forms were not submitting in a page-cached environment.
