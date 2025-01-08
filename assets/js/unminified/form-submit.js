@@ -351,9 +351,12 @@ function extractFormAttributesAndElements( form ) {
 	};
 }
 
-// eslint-disable-next-line no-unused-vars
-// v-2 invisible recaptcha callback
-function onloadCallback( token = '' ) {
+/**
+ * Callback function to handle form submission.
+ * Incase of v2-invisible reCAPTCHA, it will render the reCAPTCHA and handle form submission.
+ * Incase of v3-reCAPTCHA, it will handle form submission directly.
+ */
+function recaptchaCallback( token = '' ) {
 	const forms = Array.from( document.querySelectorAll( '.srfm-form' ) );
 	forms.forEach( ( form ) => {
 		const {
@@ -461,8 +464,8 @@ function emitFormSubmitSuccess( formStatus ) {
 	document.dispatchEvent( srfmFormSubmissionSuccessEvent );
 }
 
-// directly assign onloadCallback into the global space:
-window.onloadCallback = onloadCallback;
+// directly assign recaptchaCallback into the global space:
+window.recaptchaCallback = recaptchaCallback;
 
 // Bricks Builder compatibility to disable form submission in the preview mode
 window.handleBricksPreviewFormSubmission = function () {
