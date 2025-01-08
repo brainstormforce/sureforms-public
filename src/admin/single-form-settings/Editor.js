@@ -93,7 +93,6 @@ const SureformsFormSpecificSettings = ( props ) => {
 	const formRootContainer = document.querySelector(
 		'.editor-styles-wrapper'
 	);
-
 	const addRootClass = () => {
 		if ( formRootContainer && sureformsKeys?._srfm_additional_classes ) {
 			// Split the classes string by spaces
@@ -110,11 +109,17 @@ const SureformsFormSpecificSettings = ( props ) => {
 	useEffect( addRootClass, [ formRootContainer ] );
 
 	// Update the custom CSS when the formCustomCssData prop changes. This will apply the custom CSS to the editor.
-	const formCustomCssData = sureformsKeys?._srfm_form_custom_css || [];
+	const formCustomCssData = sureformsKeys?._srfm_form_custom_css || '';
+
 	useEffect( () => {
+		if ( ! formCustomCssData ) {
+			return;
+		}
+
 		const isExistStyle = document.getElementById(
 			'srfm-blocks-editor-custom-css'
 		);
+
 		if ( ! isExistStyle ) {
 			const node = document.createElement( 'style' );
 			node.setAttribute( 'id', 'srfm-blocks-editor-custom-css' );
