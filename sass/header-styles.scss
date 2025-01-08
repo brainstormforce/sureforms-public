@@ -16,7 +16,9 @@ body.post-type-sureforms_form .edit-post-header .edit-post-fullscreen-mode-close
 }
 
 // hides the pinned items other than settings.
-.interface-pinned-items button.components-button:not( [aria-controls="edit-post:document"] ) {
+// When the block is not selected aria-controls is set to edit-post:document.
+// When the block is selected aria-controls is set to edit-post:block. So we need to exclude these two.
+.interface-pinned-items button.components-button:not( [aria-controls="edit-post:document"] ):not( [aria-controls="edit-post:block"] ) {
 	display: none;
 }
 
