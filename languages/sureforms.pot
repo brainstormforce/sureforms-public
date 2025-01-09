@@ -9,9 +9,9 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-01-07T05:11:53+00:00\n"
+"POT-Creation-Date: 2025-01-08T10:06:13+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"X-Generator: WP-CLI 2.11.0\n"
+"X-Generator: WP-CLI 2.10.0\n"
 "X-Domain: sureforms\n"
 
 #. Plugin Name of the plugin
@@ -530,6 +530,7 @@ msgstr ""
 #: inc/admin-ajax.php:364
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
+#: inc/lib/nps-survey/dist/main.js:1
 msgid "Submit"
 msgstr ""
 
@@ -8746,6 +8747,7 @@ msgstr ""
 
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
+#: inc/lib/nps-survey/dist/main.js:1
 msgid "Back"
 msgstr ""
 
@@ -10444,6 +10446,22 @@ msgstr ""
 
 #: assets/build/templatePicker.js:172
 msgid "Build With AI"
+msgstr ""
+
+#: inc/lib/nps-survey/dist/main.js:1
+msgid "Very unlikely"
+msgstr ""
+
+#: inc/lib/nps-survey/dist/main.js:1
+msgid "Very likely"
+msgstr ""
+
+#: inc/lib/nps-survey/dist/main.js:1
+msgid "I already did!"
+msgstr ""
+
+#: inc/lib/nps-survey/dist/main.js:1
+msgid "Rate the Plugin"
 msgstr ""
 
 #: modules/gutenberg/build/blocks.js:7
