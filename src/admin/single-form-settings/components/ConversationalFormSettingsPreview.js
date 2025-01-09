@@ -25,7 +25,7 @@ const ConversationalFormSettingsPreview = ( { setHidePopover } ) => {
 							<span
 								className="srfm-conversational-placeholder-label"
 							>
-								{ __( 'Pro', 'sureforms' ) }
+								{ __( 'Pro Plan', 'sureforms' ) }
 							</span>
 						</div>
 						<FormToggle
