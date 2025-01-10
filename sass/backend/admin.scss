@@ -371,11 +371,40 @@ $placeholder_color: #9ca3af;
 			opacity: 0.6;
 		}
 	}
-}
 
-.entry-log-title {
-	margin-top: 8px;
-	margin-bottom: 8px;
+	.postbox.srfm-entry-logs {
+		.inside {
+			margin: 0 !important;
+			padding: 0;
+	
+			.no-logs-found {
+				padding: 6px 0 8px 12px;
+				margin: 0 !important;
+			}
+	
+			.entry-logs-table {
+				width: 100%;
+				border-collapse: collapse;
+	
+				.entry-log-container {
+					padding: 16px;
+	
+					.entry-log-title {
+						display: flex;
+						justify-content: space-between;
+						align-items: center;
+						margin: 0;
+					}
+	
+					.entry-log-messages {
+						p {
+							margin-top: 6px;
+						}
+					}
+				}
+			}
+		}
+	}
 }
 
 .button.srfm-edit-entry {

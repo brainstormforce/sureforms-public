@@ -475,13 +475,13 @@ class Single_Entry {
 	private function render_entry_logs( $entry_logs ) {
 		ob_start();
 		?>
-		<div id="sureform_entry_meta" class="postbox">
+		<div id="sureform_entry_meta" class="postbox srfm-entry-logs">
 			<div class="postbox-header">
 				<!-- Removed "hndle ui-sortable-handle" class from h2 to remove the draggable stylings. -->
 				<h2><?php esc_html_e( 'Entry Logs', 'sureforms' ); ?></h2>
 			</div>
 			<div class="inside">
-				<table class="widefat striped entry-logs-table">
+				<table class="striped entry-logs-table">
 					<tbody>
 						<?php if ( ! empty( $entry_logs ) ) { ?>
 								<?php foreach ( $entry_logs as $log ) { ?>
@@ -502,7 +502,7 @@ class Single_Entry {
 									</tr>
 								<?php } ?>
 						<?php } else { ?>
-							<p><?php esc_html_e( 'No logs found for this entry.', 'sureforms' ); ?></p>
+							<p class="no-logs-found"><?php esc_html_e( 'No logs found for this entry.', 'sureforms' ); ?></p>
 						<?php } ?>
 					</tbody>
 				</table>
