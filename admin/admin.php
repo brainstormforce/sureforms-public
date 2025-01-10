@@ -14,6 +14,7 @@ use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Helper;
 use SRFM\Inc\Post_Types;
 use SRFM\Inc\Traits\Get_Instance;
+use BSF_UTM_Analytics\Inc\Utils as UTM_Utils;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -717,7 +718,8 @@ class Admin {
 			$url = SRFM_WEBSITE . $trail;
 		}
 
-		$url = self::add_url_params( $url );
+		$url = UTM_Utils::get_utm_ready_link( $url, 'sureforms' );
+		$url = self::add_partner_params( $url );
 
 		return esc_url( $url );
 	}
@@ -729,18 +731,7 @@ class Admin {
 	 * @since x.x.x
 	 * @return string
 	 */
-	public static function add_url_params( $url ) {
-		// Whenever a sureforms is installed from astra astra should update key 'sureforms' in option 'bsf_product_referers' to 'astra'
-		// update_option( 'bsf_product_referers', [ 'sureforms' => 'astra' ] ); phpcs:ignore test code will be removed.
-
-		// 'sureforms_partner_url_param' should be updated by affiliate partners on there environment.
-		// update_option( 'sureforms_partner_url_param', '2345' );
-		$referers = get_option( 'bsf_product_referers', [] );
-
-		// check if any referer for sureforms plugin exists in database.
-		$srfm_referer = ! empty( $referers['sureforms'] ) && is_string( $referers['sureforms'] ) ? sanitize_text_field( $referers['sureforms'] ) : 'sureforms';
-		$params       = [ 'utm_source' => $srfm_referer ];
-
+	public static function add_partner_params( $url ) {
 		// check if option for affiliate exists in database.
 		$affiliate = get_option( 'sureforms_partner_url_param', '' );
 		$affiliate = is_string( $affiliate ) ? sanitize_text_field( $affiliate ) : '';
