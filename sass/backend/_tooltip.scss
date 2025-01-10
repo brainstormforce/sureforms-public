@@ -1,7 +1,7 @@
 .srfm-tooltip {
 	position: relative;
 
-	>:not(.tooltip-wrap) {
+	> :not( .tooltip-wrap ) {
 		pointer-events: none;
 		opacity: 60%;
 	}
