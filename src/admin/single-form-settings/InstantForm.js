@@ -5,7 +5,7 @@ import Range from '@Components/range/Range.js';
 import svgIcons from '@Svg/svgs.json';
 import { ExternalLink, FormToggle, Popover } from '@wordpress/components';
 import { useCopyToClipboard } from '@wordpress/compose';
-import { select, useDispatch } from '@wordpress/data';
+import { select, useDispatch, useSelect } from '@wordpress/data';
 import { store as editorStore } from '@wordpress/editor';
 import { useId, useState, useEffect } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
@@ -35,7 +35,22 @@ function findDifferentKeyValue( obj1, obj2 ) {
 }
 
 const InstantFormComponent = () => {
-	const { _srfm_submit_button_text, _srfm_instant_form_settings } = select( editorStore ).getEditedPostAttribute( 'meta' );
+	const getMetaValue = useSelect( ( hookSelect ) => {
+		const getStore = hookSelect( editorStore );
+		const metaValue = getStore.getEditedPostAttribute( 'meta' );
+		const getPermalinkParts = getStore.getPermalinkParts();
+
+		return {
+			_srfm_submit_button_text: metaValue?._srfm_submit_button_text,
+			_srfm_instant_form_settings: metaValue?._srfm_instant_form_settings,
+			getPermalinkParts,
+		};
+	}, [] );
+
+	const _srfm_submit_button_text = getMetaValue._srfm_submit_button_text || '';
+	const _srfm_instant_form_settings = getMetaValue._srfm_instant_form_settings || {};
+	const prefix = getMetaValue?.getPermalinkParts?.prefix;
+	const postName = getMetaValue?.getPermalinkParts?.postName;
 
 	const {
 		// Form background color / image.
@@ -67,8 +82,6 @@ const InstantFormComponent = () => {
 		edit: false,
 		forceEmptyField: false,
 	} );
-
-	const { prefix, postName } = select( editorStore ).getPermalinkParts();
 
 	const link = prefix + postName;
 

@@ -58,7 +58,6 @@ const Header = () => {
 									background: showRevokePopover
 										? '#F3F4F6'
 										: 'white',
-									width: '225px',
 								} }
 								className="srfm-tp-header-credits"
 								onClick={ () => {
