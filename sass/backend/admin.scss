@@ -366,6 +366,10 @@ $placeholder_color: #9ca3af;
 			margin: 0;
 			padding: 12px;
 		}
+		.button:hover {
+			background: none;
+			opacity: 0.6;
+		}
 	}
 }
 
@@ -378,7 +382,7 @@ $placeholder_color: #9ca3af;
 	margin: 0 12px;
 	display: flex;
 	align-items: center;
-	gap: 8px;
+	gap: 4px;
 }
 
 .srfm-add-entry-note-button {
