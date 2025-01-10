@@ -359,6 +359,16 @@ $placeholder_color: #9ca3af;
 	}
 }
 
+// Single Entry Page Stylings
+.sureforms_page_sureforms_entries {
+	#sureform_entry_meta.srfm-form-data {
+		.inside {
+			margin: 0;
+			padding: 12px;
+		}
+	}
+}
+
 .entry-log-title {
 	margin-top: 8px;
 	margin-bottom: 8px;
