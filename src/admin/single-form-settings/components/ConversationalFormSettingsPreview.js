@@ -1,5 +1,5 @@
 import { __ } from '@wordpress/i18n';
-import { ExternalLink, FormToggle } from '@wordpress/components';
+import { FormToggle } from '@wordpress/components';
 import { applyFilters } from '@wordpress/hooks';
 
 const ConversationalFormSettingsPreview = ( { setHidePopover } ) => {
@@ -25,7 +25,7 @@ const ConversationalFormSettingsPreview = ( { setHidePopover } ) => {
 							<span
 								className="srfm-conversational-placeholder-label"
 							>
-								{ __( 'Pro', 'sureforms' ) }
+								{ __( 'Pro Plan', 'sureforms' ) }
 							</span>
 						</div>
 						<FormToggle
@@ -33,14 +33,6 @@ const ConversationalFormSettingsPreview = ( { setHidePopover } ) => {
 							label=""
 							id="srfm-conversational-placeholder-toggle"
 						/>
-					</div>
-					<div
-						className="srfm-conversational-placeholder-help-text"
-					>
-						{ __( 'To use this feature you need to upgrade to the Business plan. ', 'sureforms' ) }
-						<ExternalLink href="https://sureforms.com/pricing" target="_blank">
-							{ __( 'Upgrade now', 'sureforms' ) }
-						</ExternalLink>
 					</div>
 				</>
 			 : conversationalFormSettings }

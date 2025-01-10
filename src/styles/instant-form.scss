@@ -43,6 +43,25 @@
 	padding: 16px;
 	width: 302px;
 
+	.srfm-conversational-form-layout-options {
+		.srfm-multi-button-button-group {
+			gap: 8px !important;
+		}
+
+		.srfm-multi-buttons__color-scheme--primary button.srfm-multi-button.is-primary.is-primary {
+			background-color: #7fb6fa;
+		}
+
+		.components-button-group.srfm-multi-button-button-group button {
+			box-shadow: none !important;
+			border-radius: 3px !important;
+		}
+
+		.srfm-multi-buttons-control.srfm-multibutton-icons .srfm-multi-button {
+			padding: 1.5px !important;
+		}
+	}
+
 	.srfm-instant-form-settings-group {
 		display: flex;
 		flex-direction: column;
