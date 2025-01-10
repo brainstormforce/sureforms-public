@@ -181,7 +181,9 @@ const AiFormBuilder = () => {
 					setMessage( __( 'Redirecting to Editor', 'sureforms' ) );
 					setPercentBuild( 100 );
 					const formTitle = content?.form?.formTitle;
-					handleAddNewPost( postContent, formTitle, [] );
+					// send the premium common meta data to the handleAddNewPost function
+					const metasToUpdate = content?.form?.formMetaData[0]._srfm_premium_common[0];
+					handleAddNewPost( postContent, formTitle, metasToUpdate );
 				} else {
 					setShowFormCreationErr( true );
 				}

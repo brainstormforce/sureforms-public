@@ -35,4 +35,6 @@ define( 'SRFM_PRO_RECOMMENDED_VER', '1.2.2' );
 
 define( 'SRFM_SURETRIGGERS_INTEGRATION_BASE_URL', 'https://app.suretriggers.com/' );
 
+define( 'SRFM_AI_SYSTEM_PROMPT_ARGS', [ 'version' => '1.2.7' ] );
+
 require_once 'plugin-loader.php';

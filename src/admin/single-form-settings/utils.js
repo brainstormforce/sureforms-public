@@ -10,7 +10,6 @@ export const defaultKeys = {
 	// Submit Button
 	_srfm_submit_button_text: __( 'Submit', 'sureforms' ),
 	// Page Break
-	_srfm_is_page_break: false,
 	_srfm_first_page_label: __( 'Page break', 'sureforms' ),
 	_srfm_page_break_progress_indicator: 'connector',
 	_srfm_page_break_toggle_label: false,

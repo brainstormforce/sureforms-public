@@ -155,31 +155,21 @@ class Create_New_Form {
 
 		$title          = $form_info_obj->template_name ?? '';
 		$content        = $form_info_obj->form_data ?? '';
-		$template_metas = isset( $form_info_obj->template_metas ) ? (array) $form_info_obj->template_metas : [];
-
-		// if post content contains srfm/page-break block, then set _srfm_is_page_break meta to true.
-		if ( strpos( $content, 'srfm/page-break' ) !== false ) {
-			$template_metas['_srfm_is_page_break'] = [ 'true' ];
-		}
+		$_srfm_premium_common = isset( $form_info_obj->template_metas ) ? (array) $form_info_obj->template_metas : [];
 
 		$post_id = wp_insert_post(
 			[
 				'post_title'   => $title,
 				'post_content' => $content,
+				'meta_input'   => [
+					'_srfm_premium_common' => $_srfm_premium_common,
+				],
 				'post_status'  => 'draft',
 				'post_type'    => 'sureforms_form',
 			]
 		);
 
 		if ( ! empty( $post_id ) ) {
-			if ( ! empty( $template_metas ) ) {
-				$default_post_metas = self::get_default_meta_keys();
-				$post_metas         = array_merge( $default_post_metas, $template_metas );
-
-				foreach ( $post_metas as $meta_key => $meta_value ) {
-					add_post_meta( $post_id, $meta_key, $meta_value[0] );
-				}
-			}
 
 			return new WP_REST_Response(
 				[
