@@ -434,7 +434,7 @@ class Test_Helper extends TestCase {
     public function test_is_valid_css_class_name()
     {
         // Valid class names
-        $validClassNames = [
+        $valid_class_names = [
             'my-class',
             'my_class',
             'class123',
@@ -444,15 +444,15 @@ class Test_Helper extends TestCase {
             '_class-name123', // Starts with an underscore followed by valid characters
         ];
 
-        foreach ($validClassNames as $className) {
+        foreach ($valid_class_names as $class_name) {
             $this->assertTrue(
-                Helper::is_valid_css_class_name($className),
-                "Expected '$className' to be a valid CSS class name."
+                Helper::is_valid_css_class_name($class_name),
+                "Expected '$class_name' to be a valid CSS class name."
             );
         }
 
         // Invalid class names
-        $invalidClassNames = [
+        $invalid_class_names = [
             '123class',       // Starts with a digit
             '-invalid-class', // Starts with a hyphen
             '_invalid',       // Starts with an underscore
@@ -461,10 +461,10 @@ class Test_Helper extends TestCase {
             ' ',              // Space is invalid
         ];
 
-        foreach ($invalidClassNames as $className) {
+        foreach ($invalid_class_names as $class_name) {
             $this->assertFalse(
-                Helper::is_valid_css_class_name($className),
-                "Expected '$className' to be an invalid CSS class name."
+                Helper::is_valid_css_class_name($class_name),
+                "Expected '$class_name' to be an invalid CSS class name."
             );
         }
     }

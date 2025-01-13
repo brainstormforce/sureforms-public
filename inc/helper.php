@@ -1071,16 +1071,16 @@ class Helper {
 	 * - Does not start with a digit, hyphen, or underscore.
 	 * - Can contain alphanumeric characters, underscores, hyphens, and Unicode letters.
 	 *
-	 * @param string $className The class name to validate.
+	 * @param string $class_name The class name to validate.
 	 *
 	 * @since x.x.x
 	 * @return bool True if the class name is valid, otherwise false.
 	 */
-	public static function is_valid_css_class_name( $className ) {
-		// Regular expression to validate a Unicode-aware CSS class name
-		$classNameRegex = '/^[^\d\-_][\w\p{L}\p{N}\-_]*$/u';
+	public static function is_valid_css_class_name( $class_name ) {
+		// Regular expression to validate a Unicode-aware CSS class name.
+		$class_name_regex = '/^[^\d\-_][\w\p{L}\p{N}\-_]*$/u';
 
-		// Check if the className matches the pattern
-		return preg_match( $classNameRegex, $className ) === 1;
+		// Check if the className matches the pattern.
+		return preg_match( $class_name_regex, $class_name ) === 1;
 	}
 }
