@@ -53,7 +53,7 @@ class Generate_Form_Markup {
 	 * Handle Form status
 	 *
 	 * @param int|string $id Contains form ID.
-	 * @param bool       $show_title_current_page Boolean to show/srfm-hide form title.
+	 * @param bool       $show_title_current_page Boolean to srfm-show/srfm-hide form title.
 	 * @param string     $sf_classname additional class_name.
 	 * @param string     $post_type Contains post type.
 	 * @param bool       $do_blocks Boolean to enable/disable parsing dynamic blocks.

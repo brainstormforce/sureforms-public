@@ -62,6 +62,10 @@
 				background-size: cover;
 				background-position: center;
 				background-color: var( --srfm-bg-color );
+				// Retaining this .hide class for backward compatibility with older versions of the pro plugin.
+				&.hide {
+					display: none;
+				}
 				&.srfm-hide {
 					display: none;
 				}

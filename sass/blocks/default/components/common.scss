@@ -105,6 +105,10 @@
 			width: 100%;
 			margin-bottom: 1.2em;
 
+			// Retaining this .hide class for backward compatibility with older versions of the pro plugin.
+			&.hide {
+				display: none;
+			}
 			&.srfm-hide {
 				display: none;
 			}
