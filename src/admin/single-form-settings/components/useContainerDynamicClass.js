@@ -33,7 +33,6 @@ const useContainerDynamicClass = ( sureformsKeys ) => {
 			classesArray.forEach( ( classname ) => {
 				const validClass = validateClassName( classname );
 				if ( validClass ) {
-					// formRootContainer?.classList.add( classname );
 					classString += ` ${ classname }`;
 				}
 			} );
