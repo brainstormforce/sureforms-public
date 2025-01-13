@@ -361,10 +361,11 @@ $placeholder_color: #9ca3af;
 
 // Single Entry Page Stylings
 .sureforms_page_sureforms_entries {
+	#sureform_form_name_meta,
 	#sureform_entry_meta.srfm-form-data {
 		.inside {
 			margin: 0;
-			padding: 12px;
+			padding: 16px;
 		}
 		.button:hover {
 			background: none;
@@ -465,7 +466,7 @@ $placeholder_color: #9ca3af;
 }
 
 .srfm-entry-note-wrapper {
-	padding: 24px;
+	padding: 16px;
 
 	.add-notes-field {
 		display: flex;
