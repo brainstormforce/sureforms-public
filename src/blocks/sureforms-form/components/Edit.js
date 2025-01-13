@@ -24,7 +24,9 @@ import {
 export default ( { attributes, setAttributes } ) => {
 	const { id, showTitle } = attributes;
 	const iframeRef = useRef( null );
+	const iframeContainerRef = useRef( null );
 	const [ loading, setLoading ] = useState( false );
+	const [ formIframeHeight, setFormIframeHeight ] = useState( 0 );
 
 	// eslint-disable-next-line no-unused-vars
 	const [ formUrl, setFormUrl ] = useEntityProp(
@@ -78,11 +80,68 @@ export default ( { attributes, setAttributes } ) => {
 		);
 
 		if ( formOuterContainerSelector ) {
-			iframeRef.current.height = formOuterContainerSelector.offsetHeight;
+			const getHeight = formOuterContainerSelector.offsetHeight;
+
+			if( getHeight && 0 !== getHeight ) {
+				// set height of iframe if form is not empty.
+				setFormIframeHeight( getHeight );
+				iframeRef.current.height = getHeight;
+			}
 		}
 
 		setLoading( false );
 	};
+
+	useEffect( () => {
+		if ( ! iframeContainerRef?.current ) {
+			return;
+		}
+
+		const formElement = iframeContainerRef?.current; // Replace with your form's ID or selector
+
+		// Define the observer options
+		const options = {
+			root: null, // Use the viewport as the container
+			rootMargin: '0px', // No margin around the root
+			threshold: 0.1 // Trigger when at least 10% of the form is visible
+		};
+
+		// Callback function when visibility changes
+		const observerCallback = (entries, observer) => {
+			entries.forEach(entry => {
+
+				console.log( {entry} );
+
+				if ( ! formIframeHeight && entry.isIntersecting) {
+					console.log('Form is in the viewport.');
+					// Add any logic when the form is visible
+					const iframeDocument = iframeRef.current.contentDocument;
+
+					const formOuterContainerSelector = iframeDocument.querySelector(
+						'.srfm-form-container'
+					);
+			
+					if ( formOuterContainerSelector ) {
+						const getHeight = formOuterContainerSelector.offsetHeight;
+						if(  getHeight && 0 !== getHeight ) {
+							// set height of iframe if form is not empty.
+							setFormIframeHeight( getHeight );
+							iframeRef.current.height = getHeight;
+						}
+					}
+				}
+			});
+		};
+
+		// Create an Intersection Observer
+		const observer = new IntersectionObserver(observerCallback, options);
+
+		// Start observing the form
+		observer.observe(formElement);
+
+		// Clean up
+		return () => observer.disconnect();
+	}, [iframeContainerRef?.current]);
 
 	useEffect( () => {
 		if ( iframeRef && iframeRef.current ) {
@@ -182,7 +241,7 @@ export default ( { attributes, setAttributes } ) => {
 			</InspectorControls>
 			{ hasResolved ? (
 				<div { ...blockProps }>
-					<div className="srfm-iframe-container">
+					<div className="srfm-iframe-container" ref={ iframeContainerRef }>
 						{ loading && (
 							<div className="srfm-iframe-loader">
 								<Spinner />
