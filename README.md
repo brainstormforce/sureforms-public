@@ -254,6 +254,10 @@ Yes! You can certainly use SureForms on yours as well as your client’s website
 When you use SureForms, you get an easy-to-use AI-powered form builder that can be used to build your forms fast.
 
 ## Changelog ##
+### x.x.x ###
+* Fix: Forms are not being submitted in some instances with V3 reCAPTCHA.
+* Fix: Addressed an issue where selecting a block in the editor would hide the Settings button.
+* Fix: Resolved an issue where forms inside tabs or accordions were not displaying correctly. The height of the form is now adjusted when it becomes visible on the page.
 ### 1.2.4 - 7th January 2025 ###
 * New: Added translations for the Italian, Portuguese, and Polish languages.
 * Fix: Addressed an issue where forms were not submitting in a page-cached environment.
