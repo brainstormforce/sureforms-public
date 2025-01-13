@@ -427,4 +427,45 @@ class Test_Helper extends TestCase {
         // Test that the result is the expected value.
         $this->assertSame( $expected, $result );
     }
+
+    /**
+     * Test that the function returns the default excluded fields with additional fields.
+     */
+    public function test_is_valid_css_class_name()
+    {
+        // Valid class names
+        $validClassNames = [
+            'my-class',
+            'my_class',
+            'class123',
+            '名字123',        // Unicode characters
+            'valid-name',
+            'a',              // Single valid character
+            '_class-name123', // Starts with an underscore followed by valid characters
+        ];
+
+        foreach ($validClassNames as $className) {
+            $this->assertTrue(
+                Helper::isValidCssClassName($className),
+                "Expected '$className' to be a valid CSS class name."
+            );
+        }
+
+        // Invalid class names
+        $invalidClassNames = [
+            '123class',       // Starts with a digit
+            '-invalid-class', // Starts with a hyphen
+            '_invalid',       // Starts with an underscore
+            '',               // Empty string
+            '#invalid',       // Contains invalid characters
+            ' ',              // Space is invalid
+        ];
+
+        foreach ($invalidClassNames as $className) {
+            $this->assertFalse(
+                Helper::isValidCssClassName($className),
+                "Expected '$className' to be an invalid CSS class name."
+            );
+        }
+    }
 }
