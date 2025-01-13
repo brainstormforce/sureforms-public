@@ -446,7 +446,7 @@ class Test_Helper extends TestCase {
 
         foreach ($validClassNames as $className) {
             $this->assertTrue(
-                Helper::isValidCssClassName($className),
+                Helper::is_valid_css_class_name($className),
                 "Expected '$className' to be a valid CSS class name."
             );
         }
@@ -463,7 +463,7 @@ class Test_Helper extends TestCase {
 
         foreach ($invalidClassNames as $className) {
             $this->assertFalse(
-                Helper::isValidCssClassName($className),
+                Helper::is_valid_css_class_name($className),
                 "Expected '$className' to be an invalid CSS class name."
             );
         }

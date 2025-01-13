@@ -103,7 +103,7 @@ class Generate_Form_Markup {
 			if ( ! empty( $custom_added_classes ) && is_string( $custom_added_classes ) ) {
 				$custom_added_classes = explode( ' ', $custom_added_classes );
 				foreach ( $custom_added_classes as $class ) {
-					if ( Helper::isValidCssClassName( $class ) ) {
+					if ( Helper::is_valid_css_class_name( $class ) ) {
 						$form_classes[] = $class;
 					}
 				}

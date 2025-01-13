@@ -1076,7 +1076,7 @@ class Helper {
 	 * @since x.x.x
 	 * @return bool True if the class name is valid, otherwise false.
 	 */
-	public static function isValidCssClassName( $className ) {
+	public static function is_valid_css_class_name( $className ) {
 		// Regular expression to validate a Unicode-aware CSS class name
 		$classNameRegex = '/^[^\d\-_][\w\p{L}\p{N}\-_]*$/u';
 
