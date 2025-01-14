@@ -76,6 +76,8 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 		formatType,
 		formId,
 		className,
+		prefix,
+		suffix,
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
 	const [ error, setError ] = useState( false );
@@ -240,6 +242,28 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 								} }
 								onChange={ ( newValue ) =>
 									setAttributes( { help: newValue } )
+								}
+							/>
+							<SRFMTextControl
+								label={ __( 'Prefix Label', 'sureforms' ) }
+								value={ prefix }
+								data={ {
+									value: prefix,
+									label: 'prefix',
+								} }
+								onChange={ ( newValue ) =>
+									setAttributes( { prefix: newValue } )
+								}
+							/>
+							<SRFMTextControl
+								label={ __( 'Suffix Label', 'sureforms' ) }
+								value={ suffix }
+								data={ {
+									value: suffix,
+									label: 'suffix',
+								} }
+								onChange={ ( newValue ) =>
+									setAttributes( { suffix: newValue } )
 								}
 							/>
 						</SRFMAdvancedPanelBody>
