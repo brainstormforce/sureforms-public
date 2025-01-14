@@ -5,7 +5,7 @@ on: pull_request
 jobs:
   phpunit:
     name: PHPUnit (PHP ${{ matrix.php }} with WordPress ${{ matrix.wordpress }})
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     services:
       mysql:
@@ -37,9 +37,6 @@ jobs:
           php-version: ${{ matrix.php }}
           coverage: none
           tools: composer, cs2pr
-
-      - name: Install Subversion
-        run: sudo apt-get update && sudo apt-get install -y subversion
 
       - name: Install WordPress test setup
         env:
