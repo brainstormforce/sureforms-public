@@ -1,6 +1,6 @@
 === SureForms – Drag and Drop Form Builder for WordPress ===
 Contributors: brainstormforce
-Tags: contact form, custom form, form builder, forms, gutenberg
+Tags: contact form, custom form, forms, contact form plugin, form builder
 Requires at least: 6.4
 Tested up to: 6.7.1
 Requires PHP: 7.4
