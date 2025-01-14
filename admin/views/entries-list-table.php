@@ -1102,6 +1102,7 @@ class Entries_List_Table extends \WP_List_Table {
 		echo '<select name="form_filter">';
 		echo '<option value="all">' . esc_html__( 'All Form Entries', 'sureforms' ) . '</option>';
 		foreach ( $forms as $form_id => $form_name ) {
+			$form_name = ! empty( $form_name ) ? $form_name : sprintf( 'SureForms %1$s #%2$d', esc_html__( 'Form', 'sureforms' ), esc_attr( $form_id ) );
 			// Adding the phpcs ignore nonce verification as no database operations are performed in this function.
 			// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			$selected = isset( $_GET['form_filter'] ) && Helper::get_integer_value( sanitize_text_field( wp_unslash( $_GET['form_filter'] ) ) ) === $form_id ? ' selected="selected"' : '';

@@ -359,16 +359,60 @@ $placeholder_color: #9ca3af;
 	}
 }
 
-.entry-log-title {
-	margin-top: 8px;
-	margin-bottom: 8px;
+// Single Entry Page Stylings
+.sureforms_page_sureforms_entries {
+	#sureform_form_name_meta,
+	#sureform_entry_meta.srfm-form-data {
+		.inside {
+			margin: 0;
+			padding: 16px;
+		}
+		.button:hover {
+			background: none;
+			opacity: 0.6;
+		}
+	}
+
+	.postbox.srfm-entry-logs {
+		.inside {
+			margin: 0 !important;
+			padding: 0;
+
+			.no-logs-found {
+				padding: 6px 0 8px 12px;
+				margin: 0 !important;
+			}
+
+			.entry-logs-table {
+				width: 100%;
+				border-collapse: collapse;
+
+				.entry-log-container {
+					padding: 16px;
+
+					.entry-log-title {
+						display: flex;
+						justify-content: space-between;
+						align-items: center;
+						margin: 0;
+					}
+
+					.entry-log-messages {
+						p {
+							margin-top: 6px;
+						}
+					}
+				}
+			}
+		}
+	}
 }
 
 .button.srfm-edit-entry {
 	margin: 0 12px;
 	display: flex;
 	align-items: center;
-	gap: 8px;
+	gap: 4px;
 }
 
 .srfm-add-entry-note-button {
@@ -412,17 +456,17 @@ $placeholder_color: #9ca3af;
 }
 
 #post-body .srfm-resend-notification-trigger-btn {
-    padding: 8px 16px;
-    border-radius: 6px;
-    border: 1px solid;
-    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, .0509803922);
-    font-size: 14px;
-    font-weight: 500;
-    line-height: 20px;
+	padding: 8px 16px;
+	border-radius: 6px;
+	border: 1px solid;
+	box-shadow: 0 1px 2px 0 rgba( 0, 0, 0, 0.0509803922 );
+	font-size: 14px;
+	font-weight: 500;
+	line-height: 20px;
 }
 
 .srfm-entry-note-wrapper {
-	padding: 24px;
+	padding: 16px;
 
 	.add-notes-field {
 		display: flex;

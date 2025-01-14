@@ -334,7 +334,7 @@ class Single_Entry {
 	 */
 	private function render_form_data( $meta_data, $excluded_fields ) {
 		?>
-		<div id="sureform_entry_meta" class="postbox">
+		<div id="sureform_entry_meta" class="postbox srfm-form-data">
 			<div class="postbox-header">
 				<!-- Removed "hndle ui-sortable-handle" class from h2 to remove the draggable stylings. -->
 				<h2><?php esc_html_e( 'Form Data', 'sureforms' ); ?></h2>
@@ -475,14 +475,13 @@ class Single_Entry {
 	private function render_entry_logs( $entry_logs ) {
 		ob_start();
 		?>
-		<div id="sureform_entry_meta" class="postbox">
+		<div id="sureform_entry_meta" class="postbox srfm-entry-logs">
 			<div class="postbox-header">
 				<!-- Removed "hndle ui-sortable-handle" class from h2 to remove the draggable stylings. -->
 				<h2><?php esc_html_e( 'Entry Logs', 'sureforms' ); ?></h2>
-				<!-- <div class="handle-actions hide-if-no-js"><button type="button" class="handle-order-higher" aria-disabled="false" aria-describedby="sureform_entry_meta-handle-order-higher-description"><span class="screen-reader-text">Move up</span><span class="order-higher-indicator" aria-hidden="true"></span></button><span class="hidden" id="sureform_entry_meta-handle-order-higher-description">Move Form Data box up</span><button type="button" class="handle-order-lower" aria-disabled="false" aria-describedby="sureform_entry_meta-handle-order-lower-description"><span class="screen-reader-text">Move down</span><span class="order-lower-indicator" aria-hidden="true"></span></button><span class="hidden" id="sureform_entry_meta-handle-order-lower-description">Move Form Data box down</span><button type="button" class="handlediv" aria-expanded="true"><span class="screen-reader-text">Toggle panel: Form Data</span><span class="toggle-indicator" aria-hidden="true"></span></button></div> -->
 			</div>
 			<div class="inside">
-				<table class="widefat striped entry-logs-table">
+				<table class="striped entry-logs-table">
 					<tbody>
 						<?php if ( ! empty( $entry_logs ) ) { ?>
 								<?php foreach ( $entry_logs as $log ) { ?>
@@ -503,7 +502,7 @@ class Single_Entry {
 									</tr>
 								<?php } ?>
 						<?php } else { ?>
-							<p><?php esc_html_e( 'No logs found for this entry.', 'sureforms' ); ?></p>
+							<p class="no-logs-found"><?php esc_html_e( 'No logs found for this entry.', 'sureforms' ); ?></p>
 						<?php } ?>
 					</tbody>
 				</table>

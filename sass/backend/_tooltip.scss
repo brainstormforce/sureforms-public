@@ -1,7 +1,7 @@
 .srfm-tooltip {
 	position: relative;
 
-	>:not(.tooltip-wrap) {
+	> :not( .tooltip-wrap ) {
 		pointer-events: none;
 		opacity: 60%;
 	}
@@ -46,7 +46,7 @@
 
 	.top {
 		width: 328px;
-		top: -20px;
+		top: -10px;
 		left: 50%;
 		transform: translate( -30%, -100% );
 		color: #ffffff;
@@ -58,11 +58,6 @@
 		z-index: 99999999;
 		box-sizing: border-box;
 		box-shadow: 0 1px 8px rgba( 0, 0, 0, 0.5 );
-		display: none;
-	}
-
-	&:hover .top {
-		display: block;
 	}
 
 	.top i {
@@ -90,7 +85,7 @@
 		width: 328px;
 		top: 50%;
 		left: 100%;
-		margin-left: 20px;
+		margin-left: 10px;
 		transform: translate( 0, -50% );
 		padding: 0;
 		color: #ffffff;
@@ -102,14 +97,6 @@
 		z-index: 99999999;
 		box-sizing: border-box;
 		box-shadow: 0 1px 8px rgba( 0, 0, 0, 0.5 );
-		visibility: hidden;
-		opacity: 0;
-		transition: opacity 0.8s;
-	}
-
-	&:hover .right {
-		visibility: visible;
-		opacity: 1;
 	}
 
 	.right i {
@@ -148,11 +135,6 @@
 		z-index: 99999999;
 		box-sizing: border-box;
 		box-shadow: 0 1px 8px rgba( 0, 0, 0, 0.5 );
-		display: none;
-	}
-
-	&:hover .bottom {
-		display: block;
 	}
 
 	.bottom img {
@@ -184,7 +166,7 @@
 		width: 328px;
 		top: 50%;
 		right: 100%;
-		margin-right: 20px;
+		margin-right: 10px;
 		transform: translate( 0, -50% );
 		padding: 0;
 		color: #ffffff;
@@ -195,12 +177,7 @@
 		position: absolute;
 		z-index: 99999999;
 		box-sizing: border-box;
-		display: none;
 		border: 1px solid #dca;
-	}
-
-	&:hover .left {
-		display: block;
 	}
 
 	.left i {
@@ -223,5 +200,26 @@
 		transform: translate( -50%, -50% ) rotate( -45deg );
 		background-color: #1e1e1e;
 		border: 1px solid #dca;
+	}
+
+	// Add transition to the tooltip's visible and hidden state.
+	.top,
+	.right,
+	.bottom,
+	.left {
+		visibility: hidden;
+		opacity: 0;
+		transition: opacity 0.3s ease-in-out, visibility 0s linear 0.3s; /* Delay visibility until after fade-out */
+	}
+
+	&:hover {
+		.top,
+		.right,
+		.bottom,
+		.left {
+			opacity: 1;
+			visibility: visible;
+			transition: opacity 0.3s ease-in-out, visibility 0s linear 0s;
+		}
 	}
 }
