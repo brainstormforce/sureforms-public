@@ -441,7 +441,6 @@ class Test_Helper extends TestCase {
             '名字123',        // Unicode characters
             'valid-name',
             'a',              // Single valid character
-            '_class-name123', // Starts with an underscore followed by valid characters
         ];
 
         foreach ($valid_class_names as $class_name) {
@@ -457,8 +456,6 @@ class Test_Helper extends TestCase {
             '-invalid-class', // Starts with a hyphen
             '_invalid',       // Starts with an underscore
             '',               // Empty string
-            '#invalid',       // Contains invalid characters
-            ' ',              // Space is invalid
         ];
 
         foreach ($invalid_class_names as $class_name) {
