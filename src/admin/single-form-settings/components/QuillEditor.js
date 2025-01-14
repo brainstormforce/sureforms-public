@@ -24,11 +24,13 @@ const Editor = ( {
 		{
 			name: 'srfm-editor-visual',
 			title: __( 'Visual', 'sureforms' ),
+			value: 'visual',
 			className: 'srfm-editor-visual',
 		},
 		{
 			name: 'srfm-editor-html',
 			title: __( 'HTML', 'sureforms' ),
+			value: 'html',
 			className: 'srfm-editor-html',
 		},
 	];
@@ -157,8 +159,8 @@ const Editor = ( {
 				initialTabName={ activeTabRef.current }
 			>
 				{ ( tab ) => {
-					switch ( tab.title ) {
-						case 'Visual':
+					switch ( tab.value ) {
+						case 'visual':
 							return (
 								<div className="srfm-editor-visual">
 									<EditorToolbar />
@@ -173,7 +175,7 @@ const Editor = ( {
 									/>
 								</div>
 							);
-						case 'HTML':
+						case 'html':
 							return (
 								<textarea
 									id="srfm-editor-html"

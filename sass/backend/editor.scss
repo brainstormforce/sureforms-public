@@ -139,6 +139,12 @@ body.post-type-sureforms_form {
 		}
 	}
 
+	.srfm-inspector-tabs-container {
+		.srfm-inspector-tabs > div {
+			padding: 0 5px;
+		}
+	}
+
 	.srfm-inspector-tab .components-panel__body .srfm-instant-form-settings-separator {
 		width: auto;
 		margin: 25px ( -16px );
@@ -554,7 +560,7 @@ body.post-type-sureforms_form {
 		cursor: pointer;
 	}
 
-	/* 
+	/*
 	* Allow pointer events for elements with the attribute content-editable set to "true".
 	* This is crucial because some elements may inherit pointer-events: none from their parent,
 	* which can lead to issues in certain browsers, such as Firefox, preventing user interaction.

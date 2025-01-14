@@ -749,7 +749,7 @@ class Form_Submit {
 	 * @return void
 	 */
 	public function field_unique_validation() {
-		if ( isset( $_POST['nonce'] ) && ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['nonce'] ) ), 'unique_validation_nonce' ) ) {
+		if ( empty( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['nonce'] ) ), 'unique_validation_nonce' ) ) {
 			$error_message = __( 'Nonce verification failed.', 'sureforms' );
 			$error_data    = [
 				'error' => $error_message,
