@@ -16,7 +16,7 @@
 		}
 	}
 
-	.srfm-input-common:not(.srfm-input-number) {
+	.srfm-input-common:not( .srfm-input-number ) {
 		@include srfm-input-common-styles( true );
 	}
 

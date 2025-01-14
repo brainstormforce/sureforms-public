@@ -37,9 +37,9 @@ export const NumberComponent = ( { attributes, blockID, setAttributes } ) => {
 				block_id={ blockID }
 			/>
 			<div className="srfm-block-wrap">
-				{ prefix &&
-					<span className='srfm-number-prefix'> { prefix } </span>
-				}
+				{ prefix && (
+					<span className="srfm-number-prefix"> { prefix } </span>
+				) }
 				<input
 					className={ `srfm-input-common srfm-input-${ slug }` }
 					id={ `srfm-${ slug }-${ blockID }` }
@@ -52,9 +52,9 @@ export const NumberComponent = ( { attributes, blockID, setAttributes } ) => {
 					min={ minValue }
 					max={ maxValue }
 				/>
-				{ suffix &&
-					<span className='srfm-number-suffix'> { suffix } </span>
-				}
+				{ suffix && (
+					<span className="srfm-number-suffix"> { suffix } </span>
+				) }
 			</div>
 		</>
 	);
