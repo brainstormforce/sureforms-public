@@ -1,3 +1,4 @@
+@import "../utils/mixins.scss";
 .srfm-form-container {
 	.srfm-form {
 		.srfm-number-block {
@@ -6,6 +7,9 @@
 				&::-webkit-outer-spin-button {
 					appearance: none;
 				}
+			}
+			.srfm-block-wrap {
+				@include srfm-number-styles;
 			}
 		}
 	}

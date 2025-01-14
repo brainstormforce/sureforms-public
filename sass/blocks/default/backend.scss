@@ -93,6 +93,9 @@
 				appearance: none;
 			}
 		}
+		.srfm-block-wrap {
+			@include srfm-number-styles;
+		}
 	}
 
 	//Checkbox & GDPR.
