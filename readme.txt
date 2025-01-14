@@ -254,6 +254,8 @@ Yes! You can certainly use SureForms on yours as well as your client’s website
 When you use SureForms, you get an easy-to-use AI-powered form builder that can be used to build your forms fast.
 
 == Changelog ==
+= x.x.x =
+* New: Added support for prefix and suffix label in the number field.
 = 1.2.4 - 7th January 2025 =
 * New: Added translations for the Italian, Portuguese, and Polish languages.
 * Fix: Addressed an issue where forms were not submitting in a page-cached environment.
