@@ -1,6 +1,6 @@
 # SureForms – Drag and Drop Form Builder for WordPress #
 **Contributors:** [brainstormforce](https://profiles.wordpress.org/brainstormforce/)  
-**Tags:** contact form, custom form, form builder, forms, gutenberg  
+**Tags:** contact form, custom form, forms, contact form plugin, form builder  
 **Requires at least:** 6.4  
 **Tested up to:** 6.7.1  
 **Requires PHP:** 7.4  
@@ -255,6 +255,8 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 
 ## Changelog ##
 ### x.x.x ###
+* Fix: Forms are not being submitted in some instances with V3 reCAPTCHA.
+* Fix: Addressed an issue where selecting a block in the editor would hide the Settings button.
 * Fix: Submit button now works consistently when switching between Visual and Text modes in the Gutenberg editor.
 ### 1.2.4 - 7th January 2025 ###
 * New: Added translations for the Italian, Portuguese, and Polish languages.
