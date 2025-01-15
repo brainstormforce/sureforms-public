@@ -131,6 +131,10 @@ class Frontend_Assets {
 				'is_rtl'   => $is_rtl,
 			]
 		);
+
+		if ( is_singular( SRFM_FORMS_POST_TYPE ) ) {
+			self::enqueue_scripts_and_styles();
+		}
 	}
 
 	/**

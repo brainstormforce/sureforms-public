@@ -257,6 +257,7 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 = x.x.x =
 * Fix: Forms are not being submitted in some instances with V3 reCAPTCHA.
 * Fix: Addressed an issue where selecting a block in the editor would hide the Settings button.
+* Fix: Addressed the glitch effect occurring on the initial load and after refreshing Instant Forms. 
 = 1.2.4 - 7th January 2025 =
 * New: Added translations for the Italian, Portuguese, and Polish languages.
 * Fix: Addressed an issue where forms were not submitting in a page-cached environment.
