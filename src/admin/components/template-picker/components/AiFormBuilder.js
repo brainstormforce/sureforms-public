@@ -138,10 +138,15 @@ const AiFormBuilder = () => {
 				content: chat.message,
 			} ) ) || [];
 		messageArray.push( { role: 'user', content: userCommand } );
+		let formType = '';
+		if ( isConversationalForm ) {
+			formType = 'conversational';
+		}
 		const postData = {
 			message_array: messageArray,
 			use_system_message: useSystemMessage,
-			is_conversational_form: isConversationalForm,
+			// is_conversational_form: isConversationalForm,
+			form_type: formType,
 		};
 
 		// add a pause of 2 seconds and set percentBuild to 25 without using setTimeout
@@ -183,11 +188,6 @@ const AiFormBuilder = () => {
 					setMessage( __( 'Redirecting to Editor', 'sureforms' ) );
 					setPercentBuild( 100 );
 					const formTitle = content?.form?.formTitle;
-					let formType = '';
-					if ( isConversationalForm ) {
-						formType = 'conversational';
-					}
-
 					// send the premium common meta data to the handleAddNewPost function
 					const metasToUpdate = isConversationalForm ? { _srfm_premium_common: content?.form?.formMetaData[ 0 ]?._srfm_premium_common[ 0 ] } : {};
 					handleAddNewPost( postContent, formTitle, metasToUpdate, formType );
