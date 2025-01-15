@@ -12,6 +12,7 @@ import { useState, useEffect, render } from '@wordpress/element';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { store as editorStore, PluginDocumentSettingPanel, PluginPostPublishPanel } from '@wordpress/editor';
 import { store as blockEditorStore } from '@wordpress/block-editor';
+import { store as preferencesStore } from '@wordpress/preferences';
 
 import GeneralSettings from './tabs/GeneralSettings.js';
 import StyleSettings from './tabs/StyleSettings.js';
@@ -42,8 +43,11 @@ const SureformsFormSpecificSettings = ( props ) => {
 		sureformsKeys,
 		blockCount,
 		blocks,
+		editorMode,
 	} = useSelect( ( select ) => {
+		const { get } = select( preferencesStore );
 		return {
+			editorMode: get( 'core', 'editorMode' ) ?? 'visual',
 			postId: select( 'core/editor' ).getCurrentPostId(),
 			sureformsKeys: select( editorStore ).getEditedPostAttribute( 'meta' ),
 			blockCount: select( blockEditorStore ).getBlockCount(),
@@ -149,6 +153,7 @@ const SureformsFormSpecificSettings = ( props ) => {
 	useSubmitButton( {
 		isInlineButtonBlockPresent,
 		updateMeta,
+		editorMode,
 	} );
 
 	useEffect( () => {
