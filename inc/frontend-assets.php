@@ -133,6 +133,7 @@ class Frontend_Assets {
 		);
 
 		if ( is_singular( SRFM_FORMS_POST_TYPE ) ) {
+			// Load needed styles in head tag if we are in instant form page so that we don't get the glitchy effect.
 			self::enqueue_scripts_and_styles();
 		}
 	}
