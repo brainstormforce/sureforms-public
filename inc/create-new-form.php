@@ -153,17 +153,39 @@ class Create_New_Form {
 			}
 		}
 
-		$title          = $form_info_obj->template_name ?? '';
-		$content        = $form_info_obj->form_data ?? '';
-		$_srfm_premium_common = isset( $form_info_obj->template_metas ) ? (array) $form_info_obj->template_metas : [];
+		$title      = $form_info_obj->template_name ?? '';
+		$content    = $form_info_obj->form_data ?? '';
+		$post_metas = [];
+		$form_type  = $form_info_obj->form_type ?? '';
+
+		// add post metas based on form type.
+		switch ( $form_type ) {
+			case 'conversational':
+				if ( defined( 'SRFM_PRO_VER' ) ) {
+					$_srfm_premium_common = isset( $form_info_obj->template_metas ) && isset( $form_info_obj->template_metas->_srfm_premium_common ) ? (array) $form_info_obj->template_metas->_srfm_premium_common : [];
+
+					$post_metas = [
+						'_srfm_premium_common'      => [
+							'is_welcome_screen' => true,
+							...$_srfm_premium_common,
+						],
+						'_srfm_conversational_form' => [
+							'is_cf_enabled'      => true,
+							'cf_layout'          => 'no-image',
+							'cf_is_progress_bar' => true,
+						],
+					];
+				}
+				break;
+			default:
+				$post_metas = [];
+		}
 
 		$post_id = wp_insert_post(
 			[
 				'post_title'   => $title,
 				'post_content' => $content,
-				'meta_input'   => [
-					'_srfm_premium_common' => $_srfm_premium_common,
-				],
+				'meta_input'   => $post_metas,
 				'post_status'  => 'draft',
 				'post_type'    => 'sureforms_form',
 			]

@@ -33,6 +33,7 @@ const AiFormBuilder = () => {
 	const accessKey = urlParams.get( 'access_key' );
 	const [ isListening, setIsListening ] = useState( false ); // State to manage voice recording
 	const recognitionRef = useRef( null ); // To store SpeechRecognition instance
+	const [ isConversationalForm, setIsConversationalForm ] = useState( false );
 
 	const examplePrompts = [
 		{
@@ -140,6 +141,7 @@ const AiFormBuilder = () => {
 		const postData = {
 			message_array: messageArray,
 			use_system_message: useSystemMessage,
+			is_conversational_form: isConversationalForm,
 		};
 
 		// add a pause of 2 seconds and set percentBuild to 25 without using setTimeout
@@ -181,9 +183,14 @@ const AiFormBuilder = () => {
 					setMessage( __( 'Redirecting to Editor', 'sureforms' ) );
 					setPercentBuild( 100 );
 					const formTitle = content?.form?.formTitle;
+					let formType = '';
+					if ( isConversationalForm ) {
+						formType = 'conversational';
+					}
+
 					// send the premium common meta data to the handleAddNewPost function
-					const metasToUpdate = content?.form?.formMetaData[0]._srfm_premium_common[0];
-					handleAddNewPost( postContent, formTitle, metasToUpdate );
+					const metasToUpdate = isConversationalForm ? { _srfm_premium_common: content?.form?.formMetaData[ 0 ]?._srfm_premium_common[ 0 ] } : {};
+					handleAddNewPost( postContent, formTitle, metasToUpdate, formType );
 				} else {
 					setShowFormCreationErr( true );
 				}
@@ -334,6 +341,24 @@ const AiFormBuilder = () => {
 									) }
 								</span>
 							) }
+							<div className="srfm-ai-conversational-form-toggle">
+								<div style={ { backgroundColor: isConversationalForm ? '#D54407' : '#fff',
+		  border: isConversationalForm ? '1px solid #D54407' : '1px solid #000',
+
+								} } onClick={ () => {
+									setIsConversationalForm( ! isConversationalForm );
+								  } } className="srfm-ai-conversational-form-toggle-btn">
+									<div style={ {
+										backgroundColor: isConversationalForm ? '#fff' : '#000',
+										left: isConversationalForm ? '18px' : '3px',
+									} }
+									className="srfm-ai-conversational-form-toggle-thumb"
+									></div>
+								</div>
+								{
+									__( 'Create Conversational Form', 'sureforms' )
+								}
+							</div>
 							<div
 								className="srfm-ai-voice-input-ctn"
 							>

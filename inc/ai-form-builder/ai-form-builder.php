@@ -53,6 +53,11 @@ class AI_Form_Builder {
 			array_unshift( $messages, $current_message );
 		}
 
+		// if conversational form is enabled then define the version.
+		if ( is_array( $params ) && isset( $params['is_conversational_form'] ) && ! empty( $params['is_conversational_form'] ) ) {
+			define( 'SRFM_AI_SYSTEM_PROMPT_ARGS', [ 'version' => SRFM_AI_CONVERSATIONAL_FORM_TEMPLATE_VER ] );
+		}
+
 		// Get the response from the endpoint.
 		$response = AI_Helper::get_chat_completions_response(
 			array_merge(
