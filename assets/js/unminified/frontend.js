@@ -189,9 +189,6 @@ function onSuccess( response ) {
 	 * @return {string} The computed background color of the element in CSS color format (e.g., `rgb(255, 255, 255)`, `rgba(0, 0, 0, 0)`, or `transparent`).
 	 */
 	function getComputedBackgroundColor( element ) {
-
-		console.log( {element} );
-
 		const style = element ? window.getComputedStyle( element ) : null;
 		return style?.backgroundColor || 'transparent';
 	}
