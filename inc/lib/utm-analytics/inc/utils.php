@@ -26,9 +26,17 @@ class Utils {
 	 */
 	private static $bsf_product_slugs = [
 		'astra',
+		'astra-sites',
 		'cartflows',
+		'checkout-paypal-woo',
+		'checkout-plugins-stripe-woo',
+		'presto-player',
+		'surecart',
 		'sureforms',
 		'suretriggers',
+		'ultimate-addons-for-gutenberg',
+		'woo-cart-abandonment-recovery',
+		'variation-swatches-woo',
 		'zipwp',
 	];
 

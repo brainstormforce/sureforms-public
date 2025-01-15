@@ -54,7 +54,7 @@
 		"wp-cli/wp-cli-bundle": "^2.10",
 		"composer/installers": "^2.3",
 		"brainstormforce/nps-survey": "^1.0",
-    "brainstormforce/utm-analytics": "^0.0.1"
+    "brainstormforce/utm-analytics": "*"
 	},
 	"repositories": [
 		{

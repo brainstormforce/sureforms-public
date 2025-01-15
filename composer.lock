@@ -4,25 +4,26 @@
 		"Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
 		"This file is @generated automatically"
 	],
-	"content-hash": "9aa6ebb9409a277e060c3437f9c2bb9f",
+	"content-hash": "5ae0a1f981f4e30fdfa6635cd4abe1fa",
 	"packages": [
 		{
 			"name": "brainstormforce/nps-survey",
-			"version": "1.0.6",
+			"version": "1.0.7",
 			"source": {
 				"type": "git",
 				"url": "git@github.com:brainstormforce/nps-survey.git",
-				"reference": "ce03eeb5ef7bbb0d16b329929e44f5564a2a0d3e"
+				"reference": "544b2b5afdd11bd2f4bfb6cdfa8a692c23502664"
 			},
 			"dist": {
 				"type": "zip",
-				"url": "https://api.github.com/repos/brainstormforce/nps-survey/zipball/ce03eeb5ef7bbb0d16b329929e44f5564a2a0d3e",
-				"reference": "ce03eeb5ef7bbb0d16b329929e44f5564a2a0d3e",
+				"url": "https://api.github.com/repos/brainstormforce/nps-survey/zipball/544b2b5afdd11bd2f4bfb6cdfa8a692c23502664",
+				"reference": "544b2b5afdd11bd2f4bfb6cdfa8a692c23502664",
 				"shasum": ""
 			},
 			"require-dev": {
 				"automattic/vipwpcs": "^2.3",
 				"dealerdirect/phpcodesniffer-composer-installer": "^0.7.1",
+				"nunomaduro/phpinsights": "^2.10",
 				"php-stubs/generator": "^0.8.2",
 				"php-stubs/wordpress-stubs": "^6.1",
 				"phpcompatibility/php-compatibility": "^9.3",
@@ -45,6 +46,12 @@
 				"phpstan": [
 					"vendor/bin/phpstan --memory-limit=2048M analyse"
 				],
+				"insights": [
+					"./vendor/bin/phpinsights analyse -v --no-interaction"
+				],
+				"insights:fix": [
+					"./vendor/bin/phpinsights analyse --fix --no-interaction"
+				],
 				"gen-stubs": [
 					"vendor/bin/generate-stubs artifact/phpstan/nps-survey/ --out=tests/php/stubs/nps-survey-stubs.php && rm -rf artifact/phpstan"
 				],
@@ -54,23 +61,23 @@
 			},
 			"description": "NPS Survey Plugin",
 			"support": {
-				"source": "https://github.com/brainstormforce/nps-survey/tree/1.0.6",
+				"source": "https://github.com/brainstormforce/nps-survey/tree/1.0.7",
 				"issues": "https://github.com/brainstormforce/nps-survey/issues"
 			},
-			"time": "2024-12-31T12:01:58+00:00"
+			"time": "2025-01-14T06:03:52+00:00"
 		},
 		{
 			"name": "brainstormforce/utm-analytics",
-			"version": "0.0.1",
+			"version": "0.0.3",
 			"source": {
 				"type": "git",
 				"url": "git@github.com:brainstormforce/utm-analytics.git",
-				"reference": "a08e3cdef33a296aff9b02e6b4846296bb270f45"
+				"reference": "b7594cabe3ef954d6dc2e715b4e7c883069397b7"
 			},
 			"dist": {
 				"type": "zip",
-				"url": "https://api.github.com/repos/brainstormforce/utm-analytics/zipball/a08e3cdef33a296aff9b02e6b4846296bb270f45",
-				"reference": "a08e3cdef33a296aff9b02e6b4846296bb270f45",
+				"url": "https://api.github.com/repos/brainstormforce/utm-analytics/zipball/b7594cabe3ef954d6dc2e715b4e7c883069397b7",
+				"reference": "b7594cabe3ef954d6dc2e715b4e7c883069397b7",
 				"shasum": ""
 			},
 			"require-dev": {
@@ -107,10 +114,10 @@
 			},
 			"description": "This library helps in managing utm analytics for bsf products",
 			"support": {
-				"source": "https://github.com/brainstormforce/utm-analytics/tree/0.0.1",
+				"source": "https://github.com/brainstormforce/utm-analytics/tree/0.0.3",
 				"issues": "https://github.com/brainstormforce/utm-analytics/issues"
 			},
-			"time": "2025-01-09T11:17:55+00:00"
+			"time": "2025-01-10T13:37:37+00:00"
 		},
 		{
 			"name": "composer/ca-bundle",
@@ -5361,16 +5368,16 @@
 		},
 		{
 			"name": "friendsofphp/php-cs-fixer",
-			"version": "v3.67.0",
+			"version": "v3.68.0",
 			"source": {
 				"type": "git",
 				"url": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer.git",
-				"reference": "0ad34c75d1172f7d30320460e803887981830cbf"
+				"reference": "73f78d8b2b34a0dd65fedb434a602ee4c2c8ad4c"
 			},
 			"dist": {
 				"type": "zip",
-				"url": "https://api.github.com/repos/PHP-CS-Fixer/PHP-CS-Fixer/zipball/0ad34c75d1172f7d30320460e803887981830cbf",
-				"reference": "0ad34c75d1172f7d30320460e803887981830cbf",
+				"url": "https://api.github.com/repos/PHP-CS-Fixer/PHP-CS-Fixer/zipball/73f78d8b2b34a0dd65fedb434a602ee4c2c8ad4c",
+				"reference": "73f78d8b2b34a0dd65fedb434a602ee4c2c8ad4c",
 				"shasum": ""
 			},
 			"require": {
@@ -5452,7 +5459,7 @@
 			],
 			"support": {
 				"issues": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer/issues",
-				"source": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer/tree/v3.67.0"
+				"source": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer/tree/v3.68.0"
 			},
 			"funding": [
 				{
@@ -5460,7 +5467,7 @@
 					"type": "github"
 				}
 			],
-			"time": "2025-01-08T10:17:40+00:00"
+			"time": "2025-01-13T17:01:01+00:00"
 		},
 		{
 			"name": "league/container",
