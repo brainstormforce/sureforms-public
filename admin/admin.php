@@ -7,6 +7,7 @@
 
 namespace SRFM\Admin;
 
+use BSF_UTM_Analytics\Inc\Utils as UTM_Utils;
 use SRFM\Admin\Views\Entries_List_Table;
 use SRFM\Admin\Views\Single_Entry;
 use SRFM\Inc\AI_Form_Builder\AI_Helper;
@@ -14,7 +15,6 @@ use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Helper;
 use SRFM\Inc\Post_Types;
 use SRFM\Inc\Traits\Get_Instance;
-use BSF_UTM_Analytics\Inc\Utils as UTM_Utils;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -719,28 +719,8 @@ class Admin {
 		}
 
 		$url = UTM_Utils::get_utm_ready_link( $url, 'sureforms' );
-		$url = self::add_partner_params( $url );
 
 		return esc_url( $url );
-	}
-
-	/**
-	 * Add affiliate and utm params to given url.
-	 *
-	 * @param string $url URL where params need to be added.
-	 * @since x.x.x
-	 * @return string
-	 */
-	public static function add_partner_params( $url ) {
-		// check if option for affiliate exists in database.
-		$affiliate = get_option( 'sureforms_partner_url_param', '' );
-		$affiliate = is_string( $affiliate ) ? sanitize_text_field( $affiliate ) : '';
-
-		if ( ! empty( $affiliate ) ) {
-			$params['aff'] = $affiliate;
-		}
-
-		return add_query_arg( $params, $url );
 	}
 
 	// Entries methods.

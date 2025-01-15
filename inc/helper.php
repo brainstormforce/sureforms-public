@@ -835,7 +835,7 @@ class Helper {
 	/**
 	 * Process blocks and inner blocks.
 	 *
-	 * @param mixed[]       $blocks The block data.
+	 * @param array<mixed>  $blocks The block data.
 	 * @param array<string> $slugs The array of existing slugs.
 	 * @param bool          $updated The array of existing slugs.
 	 * @param string        $prefix The array of existing slugs.
