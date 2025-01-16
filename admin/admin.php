@@ -7,7 +7,6 @@
 
 namespace SRFM\Admin;
 
-use BSF_UTM_Analytics\Inc\Utils as UTM_Utils;
 use SRFM\Admin\Views\Entries_List_Table;
 use SRFM\Admin\Views\Single_Entry;
 use SRFM\Inc\AI_Form_Builder\AI_Helper;
@@ -718,7 +717,7 @@ class Admin {
 			$url = SRFM_WEBSITE . $trail;
 		}
 
-		$url = UTM_Utils::get_utm_ready_link( $url, 'sureforms' );
+		$url = \BSF_UTM_Analytics\Inc\Utils::get_utm_ready_link( $url, 'sureforms' );
 
 		return esc_url( $url );
 	}
