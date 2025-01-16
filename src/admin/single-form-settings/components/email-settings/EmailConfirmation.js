@@ -26,6 +26,9 @@ const EmailConfirmation = ( props ) => {
 		email_cc: data.email_cc || '',
 		email_body: data.email_body || '',
 	} );
+
+	const [ prevData ] = useState( formData ); // Previous saved data before making any changes.
+
 	const [ dynamicSubject, setDynamicSubject ] = useState(
 		data.subject || ''
 	);
@@ -72,6 +75,12 @@ const EmailConfirmation = ( props ) => {
 		}
 	};
 
+	// On cancel button clicked.
+	const onCancel = () => {
+		handleConfirmEmail( prevData );
+		handleBackNotification();
+	};
+
 	const debounced = useDebouncedCallback( ( value ) => {
 		if ( ! handleConfirmEmail( value ) ) {
 			setHasValidationErrors( true );
@@ -103,7 +112,7 @@ const EmailConfirmation = ( props ) => {
 						<h4>{ __( 'Email Notification', 'sureforms' ) }</h4>
 					</div>
 					<button
-						onClick={ handleBackNotification }
+						onClick={ onCancel }
 						className="srfm-modal-inner-heading-button"
 					>
 						{ __( 'Cancel', 'sureforms' ) }
