@@ -186,7 +186,7 @@ class Inlinebutton_Markup extends Base {
 				<?php
 				if ( 'g-recaptcha' === $this->captcha_security_type ) {
 					if ( 'v3-reCAPTCHA' === $this->recaptcha_version ) {
-						wp_enqueue_script( 'srfm-google-recaptchaV3', 'https://www.google.com/recaptcha/api.js?render=' . esc_js( $this->google_captcha_site_key ), [], SRFM_VER, true );
+						wp_enqueue_script( 'srfm-google-recaptchaV3', 'https://www.google.com/recaptcha/api.js', [], SRFM_VER, true );
 					}
 
 					if ( 'v2-checkbox' === $this->recaptcha_version ) {
@@ -194,7 +194,7 @@ class Inlinebutton_Markup extends Base {
 					}
 
 					if ( 'v2-invisible' === $this->recaptcha_version ) {
-						wp_enqueue_script( 'google-recaptcha-invisible', 'https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit', [ SRFM_SLUG . '-form-submit' ], SRFM_VER, true );
+						wp_enqueue_script( 'google-recaptcha-invisible', 'https://www.google.com/recaptcha/api.js?onload=recaptchaCallback&render=explicit', [ SRFM_SLUG . '-form-submit' ], SRFM_VER, true );
 					}
 				}
 
@@ -215,7 +215,7 @@ class Inlinebutton_Markup extends Base {
 					wp_enqueue_script( 'hcaptcha', 'https://js.hcaptcha.com/1/api.js', [], null, [ 'strategy' => 'defer' ] ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
 				}
 				?>
-				<button style="<?php echo $this->btn_from_theme ? '' : ' font-family: inherit; font-weight: var(--wp--custom--font-weight--medium); line-height: normal;'; ?>width:100%;" id="srfm-submit-btn" class="<?php echo esc_attr( 'v2-invisible' === $this->recaptcha_version || 'v3-reCAPTCHA' === $this->recaptcha_version ? 'g-recaptcha ' : '' ); ?> <?php echo esc_attr( '1' === $this->btn_from_theme ? 'wp-block-button__link' : 'srfm-button srfm-submit-button srfm-btn-frontend srfm-custom-button' ); ?> " <?php echo 'v2-invisible' === $this->recaptcha_version || 'v3-reCAPTCHA' === $this->recaptcha_version ? esc_attr( 'recaptcha-type=' . $this->recaptcha_version . ' data-sitekey=' . $this->google_captcha_site_key ) : ''; ?>>
+				<button style="<?php echo $this->btn_from_theme ? '' : ' font-family: inherit; font-weight: var(--wp--custom--font-weight--medium); line-height: normal;'; ?>width:100%;" id="srfm-submit-btn" class="<?php echo esc_attr( 'v2-invisible' === $this->recaptcha_version || 'v3-reCAPTCHA' === $this->recaptcha_version ? 'g-recaptcha ' : '' ); ?> <?php echo esc_attr( '1' === $this->btn_from_theme ? 'wp-block-button__link' : 'srfm-button srfm-submit-button srfm-btn-frontend srfm-custom-button' ); ?> " <?php echo 'v2-invisible' === $this->recaptcha_version || 'v3-reCAPTCHA' === $this->recaptcha_version ? esc_attr( 'recaptcha-type=' . $this->recaptcha_version . ' data-sitekey=' . $this->google_captcha_site_key ) . ' data-callback="recaptchaCallback"' : ''; ?>>
 					<div class="srfm-submit-wrap">
 						<?php echo esc_html( $this->button_text ); ?>
 						<div class="srfm-loader"></div>
