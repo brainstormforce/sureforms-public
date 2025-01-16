@@ -82,7 +82,9 @@ const EmailConfirmation = ( props ) => {
 
 	// On cancel button clicked.
 	const onCancel = () => {
-		handleConfirmEmail( prevData );
+		if ( formData.id ) {
+			handleConfirmEmail( prevData );
+		}
 		handleBackNotification();
 	};
 
