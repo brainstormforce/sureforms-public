@@ -681,7 +681,7 @@ class Form_Submit {
 
 		if ( is_iterable( $email_notification ) ) {
 			$entries_db_instance = Entries::get_instance();
-			$log_key             = $entries_db_instance->add_log( __( 'Email notification initiated', 'sureforms' ) );
+			$log_key             = $entries_db_instance->add_log( __( 'Email notification passed to the sending server', 'sureforms' ) );
 
 			foreach ( $email_notification as $notification ) {
 				foreach ( $notification as $item ) {
@@ -729,7 +729,7 @@ class Form_Submit {
 									null,
 									[
 										/* translators: Here, %s is the comma separated emails list. */
-										sprintf( __( 'Email notification sent to %s', 'sureforms' ), esc_html( $parsed['to'] ) ),
+										sprintf( __( 'Email notification recipient: %s', 'sureforms' ), esc_html( $parsed['to'] ) ),
 									]
 								);
 							} else {
@@ -739,7 +739,7 @@ class Form_Submit {
 									[
 										sprintf(
 											/* translators: Here, %1$s is the comma separated emails list and %2$s is error report ( if any ). */
-											__( 'Failed sending email notification to %1$s. Reason: %2$s', 'sureforms' ),
+											__( 'Email server was unable to send the email notification. Recipient: %1$s. Reason: %2$s', 'sureforms' ),
 											esc_html( $parsed['to'] ),
 											! empty( $email_report ) ? esc_html( $email_report ) : esc_html__( 'Unknown', 'sureforms' )
 										),
