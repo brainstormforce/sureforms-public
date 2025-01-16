@@ -1,10 +1,10 @@
 === SureForms – Drag and Drop Form Builder for WordPress ===
 Contributors: brainstormforce
-Tags: contact form, custom form, form builder, forms, gutenberg
+Tags: contact form, custom form, forms, contact form plugin, form builder
 Requires at least: 6.4
 Tested up to: 6.7.1
 Requires PHP: 7.4
-Stable tag: 1.2.3
+Stable tag: 1.2.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -255,7 +255,10 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 
 == Changelog ==
 = x.x.x =
-* New: Added translations for the Italian, Portugese and Polish languages.
+* Improvement: Restrict storing confirm email data in database.
+= 1.2.4 - 7th January 2025 =
+* New: Added translations for the Italian, Portuguese, and Polish languages.
+* Fix: Addressed an issue where forms were not submitting in a page-cached environment.
 = 1.2.3 - 31st December 2024 =
 * New: Added translations for the Spanish, German, French, and Dutch languages.
 * Fix: Resolved an issue where the minimum value error was not displayed for the Number field.
