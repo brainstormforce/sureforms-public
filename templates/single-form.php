@@ -195,7 +195,7 @@ if ( $use_banner_as_page_background ) {
 		<?php
 	}
 
-	if ( ! $srfm_live_mode_data && ! $srfm_form_preview && empty( $enable_instant_form ) ) {
+	if ( ! $srfm_form_preview && empty( $enable_instant_form ) ) {
 		?>
 		<div class="srfm-form-status-badge"><?php esc_html_e( 'Instant Form Disabled', 'sureforms' ); ?></div>
 		<?php
