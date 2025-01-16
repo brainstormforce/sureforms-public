@@ -27,7 +27,7 @@ const EmailConfirmation = ( props ) => {
 		email_body: data.email_body || '',
 	} );
 
-	const [ prevData ] = useState( formData ); // Previous saved data before making any changes.
+	const [ prevData, setPrevData ] = useState( {} ); // Previous saved data before making any changes.
 
 	const [ dynamicSubject, setDynamicSubject ] = useState(
 		data.subject || ''
@@ -68,6 +68,11 @@ const EmailConfirmation = ( props ) => {
 		removeErrorClassIfNeeded( '.srfm-modal-email-to', formData.email_to );
 		removeErrorClassIfNeeded( '.srfm-modal-subject', dynamicSubject );
 	}, [ formData.email_to, dynamicSubject ] );
+
+	// Set previous data one time on component load.
+	useEffect( () => {
+		setPrevData( formData );
+	}, [] );
 
 	const onClickBack = () => {
 		if ( handleConfirmEmail( formData ) ) {
