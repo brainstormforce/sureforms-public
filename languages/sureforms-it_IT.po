@@ -418,119 +418,119 @@ msgstr "Il contenuto del modello."
 msgid "Determines whether the pattern is visible in inserter."
 msgstr "Determina se il modello è visibile nell'inseritore."
 
-#: inc/admin-ajax.php:74
+#: inc/admin-ajax.php:78
 msgid "No plugin specified"
 msgstr "Nessun plugin specificato"
 
-#: inc/admin-ajax.php:95
+#: inc/admin-ajax.php:99
 msgid "Plugin Successfully Activated"
 msgstr "Plugin attivato con successo"
 
-#: inc/admin-ajax.php:133
+#: inc/admin-ajax.php:137
 msgid "Activating..."
 msgstr "Attivazione in corso..."
 
-#: inc/admin-ajax.php:134
+#: inc/admin-ajax.php:138
 msgid "Activated"
 msgstr "Attivato"
 
-#: inc/admin-ajax.php:135
+#: inc/admin-ajax.php:139
 #: assets/build/formEditor.js:172
 msgid "Activate"
 msgstr "Attiva"
 
-#: inc/admin-ajax.php:137
+#: inc/admin-ajax.php:141
 msgid "Installing..."
 msgstr "Installazione in corso..."
 
-#: inc/admin-ajax.php:138
+#: inc/admin-ajax.php:142
 msgid "Installed"
 msgstr "Installato"
 
-#: inc/admin-ajax.php:159
+#: inc/admin-ajax.php:163
 #: assets/build/formEditor.js:172
 msgid "SureTriggers"
 msgstr "SureTriggers"
 
-#: inc/admin-ajax.php:160
+#: inc/admin-ajax.php:164
 msgid "Connect SureForms to hundreds of apps, CRMs and tools such as Slack, Mailchimp, etc."
 msgstr "Collega SureForms a centinaia di app, CRM e strumenti come Slack, Mailchimp, ecc."
 
-#: inc/admin-ajax.php:161
+#: inc/admin-ajax.php:165
 msgid "SureTriggers is a powerful automation platform that helps you connect your various plugins and apps together. It allows you to automate repetitive tasks, so you can focus on more important work."
 msgstr "SureTriggers è una potente piattaforma di automazione che ti aiuta a collegare insieme i tuoi vari plugin e app. Ti consente di automatizzare le attività ripetitive, così puoi concentrarti su lavori più importanti."
 
-#: inc/admin-ajax.php:212
+#: inc/admin-ajax.php:216
 msgid "You do not have permission to access this page."
 msgstr "Non hai il permesso di accedere a questa pagina."
 
-#: inc/admin-ajax.php:216
+#: inc/admin-ajax.php:220
 msgid "Invalid nonce."
 msgstr "Nonce non valido."
 
-#: inc/admin-ajax.php:220
+#: inc/admin-ajax.php:224
 msgid "Form ID is required."
 msgstr "L'ID del modulo è obbligatorio."
 
-#: inc/admin-ajax.php:227
+#: inc/admin-ajax.php:231
 msgid "SureTriggers is not configured properly."
 msgstr "SureTriggers non è configurato correttamente."
 
-#: inc/admin-ajax.php:236
+#: inc/admin-ajax.php:240
 #: inc/form-submit.php:765
 msgid "Invalid form ID."
 msgstr "ID modulo non valido."
 
 #. Translators: %s: Form ID.
-#: inc/admin-ajax.php:240
+#: inc/admin-ajax.php:244
 msgid "SureForms id: %s"
 msgstr "SureForms id: %s"
 
-#: inc/admin-ajax.php:250
+#: inc/admin-ajax.php:254
 msgid "Form Submitted"
 msgstr "Modulo inviato"
 
-#: inc/admin-ajax.php:252
+#: inc/admin-ajax.php:256
 msgid "Runs when a form is submitted"
 msgstr "Viene eseguito quando un modulo viene inviato"
 
-#: inc/admin-ajax.php:344
-#: inc/admin-ajax.php:373
+#: inc/admin-ajax.php:348
+#: inc/admin-ajax.php:377
 msgid "Sample data"
 msgstr "Dati di esempio"
 
-#: inc/admin-ajax.php:348
+#: inc/admin-ajax.php:352
 msgid "Sample input data"
 msgstr "Dati di input di esempio"
 
-#: inc/admin-ajax.php:350
+#: inc/admin-ajax.php:354
 msgid "Sample textarea data"
 msgstr "Dati di esempio dell'area di testo"
 
-#: inc/admin-ajax.php:355
-#: inc/admin-ajax.php:356
+#: inc/admin-ajax.php:359
+#: inc/admin-ajax.php:360
 msgid "Address data"
 msgstr "Dati dell'indirizzo"
 
-#: inc/admin-ajax.php:357
+#: inc/admin-ajax.php:361
 msgid "Selected dropdown option"
 msgstr "Opzione selezionata dal menu a tendina"
 
-#: inc/admin-ajax.php:358
+#: inc/admin-ajax.php:362
 msgid "Selected Multichoice option"
 msgstr "Opzione a scelta multipla selezionata"
 
-#: inc/admin-ajax.php:359
+#: inc/admin-ajax.php:363
 msgid "Selected radio option"
 msgstr "Opzione radio selezionata"
 
-#: inc/admin-ajax.php:360
+#: inc/admin-ajax.php:364
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 msgid "Submit"
 msgstr "Invia"
 
-#: inc/admin-ajax.php:363
+#: inc/admin-ajax.php:367
 msgid "Hidden Value"
 msgstr "Valore Nascosto"
 
@@ -899,10 +899,6 @@ msgstr "Quanto è probabile che raccomanderesti SureForms ai tuoi amici o colleg
 msgid "Thanks a lot for your feedback! 😍"
 msgstr "Grazie mille per il tuo feedback! 😍"
 
-#: inc/nps-notice.php:110
-msgid "Could you please do us a favor and give us a 5-star rating? It would help others choose SureForms with confidence. Thank you!"
-msgstr "Potresti per favore farci un favore e darci una valutazione di 5 stelle? Aiuterebbe gli altri a scegliere SureForms con fiducia. Grazie!"
-
 #: inc/nps-notice.php:112
 msgid "Thank you for your feedback"
 msgstr "Grazie per il tuo feedback"
@@ -1226,7 +1222,7 @@ msgstr "Divisore"
 
 #: modules/gutenberg/icons/icons-v6-0.php:136
 msgid "42.group"
-msgstr ""
+msgstr "42.gruppo"
 
 #: modules/gutenberg/icons/icons-v6-0.php:147
 msgid "500px"
@@ -1294,7 +1290,7 @@ msgstr ""
 
 #: modules/gutenberg/icons/icons-v6-0.php:333
 msgid "Amazon"
-msgstr ""
+msgstr "Amazon"
 
 #: modules/gutenberg/icons/icons-v6-0.php:344
 msgid "Amazon Pay"
@@ -1314,7 +1310,7 @@ msgstr "Controllo del Cerchio dell'Ancora"
 
 #: modules/gutenberg/icons/icons-v6-0.php:388
 msgid "Anchor Circle Exclamation"
-msgstr ""
+msgstr "Ancora Cerchio Esclamazione"
 
 #: modules/gutenberg/icons/icons-v6-0.php:399
 msgid "Anchor Circle Xmark"
@@ -2211,7 +2207,7 @@ msgstr "Compra n Large"
 
 #: modules/gutenberg/icons/icons-v6-0.php:2883
 msgid "BuySellAds"
-msgstr ""
+msgstr "BuySellAds"
 
 #: modules/gutenberg/icons/icons-v6-0.php:2894
 msgid "C"
@@ -3601,7 +3597,7 @@ msgstr ""
 
 #: modules/gutenberg/icons/icons-v6-1.php:1581
 msgid "Face Grin Hearts"
-msgstr ""
+msgstr "Faccia Sorridente Cuori"
 
 #: modules/gutenberg/icons/icons-v6-1.php:1597
 msgid "Face Grin Squint"
@@ -3649,7 +3645,7 @@ msgstr "Bacio sul viso"
 
 #: modules/gutenberg/icons/icons-v6-1.php:1773
 msgid "Face Kiss Wink Heart"
-msgstr ""
+msgstr "Faccia Bacio Occhiolino Cuore"
 
 #: modules/gutenberg/icons/icons-v6-1.php:1789
 msgid "Face Laugh"
@@ -3761,7 +3757,7 @@ msgstr "Traghetto"
 
 #: modules/gutenberg/icons/icons-v6-1.php:2162
 msgid "Figma"
-msgstr ""
+msgstr "Figma"
 
 #: modules/gutenberg/icons/icons-v6-1.php:2178
 msgid "File"
@@ -4790,7 +4786,7 @@ msgstr ""
 
 #: modules/gutenberg/icons/icons-v6-1.php:5235
 msgid "House Medical Circle Xmark"
-msgstr ""
+msgstr "Cerchio Medico Casa Xmark"
 
 #: modules/gutenberg/icons/icons-v6-1.php:5246
 msgid "House Medical Flag"
@@ -5011,7 +5007,7 @@ msgstr "Ok"
 
 #: modules/gutenberg/icons/icons-v6-2.php:422
 msgid "Kaaba"
-msgstr ""
+msgstr "Kaaba"
 
 #: modules/gutenberg/icons/icons-v6-2.php:433
 msgid "Kaggle"
@@ -5181,7 +5177,7 @@ msgstr "Collegamento Slash"
 
 #: modules/gutenberg/icons/icons-v6-2.php:915
 msgid "LinkedIn"
-msgstr ""
+msgstr "LinkedIn"
 
 #: modules/gutenberg/icons/icons-v6-2.php:926
 msgid "LinkedIn In"
@@ -5269,7 +5265,7 @@ msgstr "M"
 
 #: modules/gutenberg/icons/icons-v6-2.php:1157
 msgid "Magento"
-msgstr ""
+msgstr "Magento"
 
 #: modules/gutenberg/icons/icons-v6-2.php:1168
 msgid "Magnet"
@@ -5313,7 +5309,7 @@ msgstr "Simbolo del Manat"
 
 #: modules/gutenberg/icons/icons-v6-2.php:1278
 msgid "Mandalorian"
-msgstr ""
+msgstr "Mandaloriano"
 
 #: modules/gutenberg/icons/icons-v6-2.php:1294
 msgid "Map"
@@ -5333,7 +5329,7 @@ msgstr "Spillo della mappa"
 
 #: modules/gutenberg/icons/icons-v6-2.php:1338
 msgid "Markdown"
-msgstr ""
+msgstr "Markdown"
 
 #: modules/gutenberg/icons/icons-v6-2.php:1349
 msgid "Marker"
@@ -5519,7 +5515,7 @@ msgstr "Mischia"
 
 #: modules/gutenberg/icons/icons-v6-2.php:1849
 msgid "Mixcloud"
-msgstr ""
+msgstr "Mixcloud"
 
 #: modules/gutenberg/icons/icons-v6-2.php:1860
 msgid "Mixer"
@@ -6211,7 +6207,7 @@ msgstr "Pinterest P"
 
 #: modules/gutenberg/icons/icons-v6-2.php:3841
 msgid "Pix"
-msgstr ""
+msgstr "Pix"
 
 #: modules/gutenberg/icons/icons-v6-2.php:3852
 msgid "Pizza Slice"
@@ -6536,7 +6532,7 @@ msgstr "Ritwitta"
 
 #: modules/gutenberg/icons/icons-v6-2.php:4758
 msgid "Rev.io"
-msgstr ""
+msgstr "Rev.io"
 
 #: modules/gutenberg/icons/icons-v6-2.php:4769
 msgid "Ribbon"
@@ -6584,7 +6580,7 @@ msgstr "Rotonda Punto Esclamativo"
 
 #: modules/gutenberg/icons/icons-v6-2.php:4890
 msgid "Road Circle Xmark"
-msgstr ""
+msgstr "Incrocio stradale Xmark"
 
 #: modules/gutenberg/icons/icons-v6-2.php:4901
 msgid "Road Lock"
@@ -6688,7 +6684,7 @@ msgstr "Barca a vela"
 
 #: modules/gutenberg/icons/icons-v6-2.php:5176
 msgid "Salesforce"
-msgstr ""
+msgstr "Salesforce"
 
 #: modules/gutenberg/icons/icons-v6-2.php:5187
 msgid "Sass"
@@ -7369,7 +7365,7 @@ msgstr "Morbido"
 
 #: modules/gutenberg/icons/icons-v6-3.php:1982
 msgid "Suse"
-msgstr ""
+msgstr "Suse"
 
 #: modules/gutenberg/icons/icons-v6-3.php:1993
 msgid "Swatchbook"
@@ -7728,7 +7724,7 @@ msgstr "Città degli Alberi"
 
 #: modules/gutenberg/icons/icons-v6-3.php:2987
 msgid "Trello"
-msgstr ""
+msgstr "Trello"
 
 #: modules/gutenberg/icons/icons-v6-3.php:2998
 msgid "Triangle Exclamation"
@@ -7804,7 +7800,7 @@ msgstr ""
 
 #: modules/gutenberg/icons/icons-v6-3.php:3196
 msgid "Tumblr"
-msgstr ""
+msgstr "Tumblr"
 
 #: modules/gutenberg/icons/icons-v6-3.php:3218
 msgid "Turkish Lira Sign"
@@ -9439,7 +9435,7 @@ msgstr "Corpo dell'email"
 
 #: assets/build/formEditor.js:172
 msgid "CC"
-msgstr ""
+msgstr "CC"
 
 #: assets/build/formEditor.js:172
 msgid "BCC"
@@ -10554,7 +10550,7 @@ msgstr "Tag di intestazione"
 #: modules/gutenberg/build/blocks.js:11
 #: modules/gutenberg/build/blocks.js:15
 msgid "H1"
-msgstr ""
+msgstr "H1"
 
 #: modules/gutenberg/build/blocks.js:11
 #: modules/gutenberg/build/blocks.js:15
@@ -11207,6 +11203,10 @@ msgstr "Aggiungi icone personalizzabili straordinarie al tuo sito web."
 #: modules/gutenberg/build/blocks.js:17
 msgid "icon"
 msgstr "icona"
+
+#: inc/nps-notice.php:110
+msgid "Could you please do us a favor and give us a 5-star rating on WordPress? It would help others choose SureForms with confidence. Thank you!"
+msgstr "Potresti per favore farci un favore e darci una valutazione di 5 stelle su WordPress? Aiuterebbe gli altri a scegliere SureForms con fiducia. Grazie!"
 
 #: inc/post-types.php:123
 msgctxt "post type general name"

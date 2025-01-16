@@ -418,119 +418,119 @@ msgstr "O conteúdo do padrão."
 msgid "Determines whether the pattern is visible in inserter."
 msgstr "Determina se o padrão é visível no inseridor."
 
-#: inc/admin-ajax.php:74
+#: inc/admin-ajax.php:78
 msgid "No plugin specified"
 msgstr "Nenhum plugin especificado"
 
-#: inc/admin-ajax.php:95
+#: inc/admin-ajax.php:99
 msgid "Plugin Successfully Activated"
 msgstr "Plugin ativado com sucesso"
 
-#: inc/admin-ajax.php:133
+#: inc/admin-ajax.php:137
 msgid "Activating..."
 msgstr "Ativando..."
 
-#: inc/admin-ajax.php:134
+#: inc/admin-ajax.php:138
 msgid "Activated"
 msgstr "Ativado"
 
-#: inc/admin-ajax.php:135
+#: inc/admin-ajax.php:139
 #: assets/build/formEditor.js:172
 msgid "Activate"
 msgstr "Ativar"
 
-#: inc/admin-ajax.php:137
+#: inc/admin-ajax.php:141
 msgid "Installing..."
 msgstr "Instalando..."
 
-#: inc/admin-ajax.php:138
+#: inc/admin-ajax.php:142
 msgid "Installed"
 msgstr "Instalado"
 
-#: inc/admin-ajax.php:159
+#: inc/admin-ajax.php:163
 #: assets/build/formEditor.js:172
 msgid "SureTriggers"
-msgstr ""
+msgstr "SureTriggers"
 
-#: inc/admin-ajax.php:160
+#: inc/admin-ajax.php:164
 msgid "Connect SureForms to hundreds of apps, CRMs and tools such as Slack, Mailchimp, etc."
 msgstr "Conecte o SureForms a centenas de aplicativos, CRMs e ferramentas como Slack, Mailchimp, etc."
 
-#: inc/admin-ajax.php:161
+#: inc/admin-ajax.php:165
 msgid "SureTriggers is a powerful automation platform that helps you connect your various plugins and apps together. It allows you to automate repetitive tasks, so you can focus on more important work."
 msgstr "SureTriggers é uma poderosa plataforma de automação que ajuda a conectar seus diversos plugins e aplicativos. Ela permite automatizar tarefas repetitivas, para que você possa se concentrar em trabalhos mais importantes."
 
-#: inc/admin-ajax.php:212
+#: inc/admin-ajax.php:216
 msgid "You do not have permission to access this page."
 msgstr "Você não tem permissão para acessar esta página."
 
-#: inc/admin-ajax.php:216
+#: inc/admin-ajax.php:220
 msgid "Invalid nonce."
 msgstr "Nonce inválido."
 
-#: inc/admin-ajax.php:220
+#: inc/admin-ajax.php:224
 msgid "Form ID is required."
 msgstr "O ID do formulário é obrigatório."
 
-#: inc/admin-ajax.php:227
+#: inc/admin-ajax.php:231
 msgid "SureTriggers is not configured properly."
 msgstr "SureTriggers não está configurado corretamente."
 
-#: inc/admin-ajax.php:236
+#: inc/admin-ajax.php:240
 #: inc/form-submit.php:765
 msgid "Invalid form ID."
 msgstr "ID de formulário inválido."
 
 #. Translators: %s: Form ID.
-#: inc/admin-ajax.php:240
+#: inc/admin-ajax.php:244
 msgid "SureForms id: %s"
 msgstr "SureForms id: %s"
 
-#: inc/admin-ajax.php:250
+#: inc/admin-ajax.php:254
 msgid "Form Submitted"
 msgstr "Formulário Enviado"
 
-#: inc/admin-ajax.php:252
+#: inc/admin-ajax.php:256
 msgid "Runs when a form is submitted"
 msgstr "Executa quando um formulário é enviado"
 
-#: inc/admin-ajax.php:344
-#: inc/admin-ajax.php:373
+#: inc/admin-ajax.php:348
+#: inc/admin-ajax.php:377
 msgid "Sample data"
 msgstr "Dados de amostra"
 
-#: inc/admin-ajax.php:348
+#: inc/admin-ajax.php:352
 msgid "Sample input data"
 msgstr "Dados de entrada de amostra"
 
-#: inc/admin-ajax.php:350
+#: inc/admin-ajax.php:354
 msgid "Sample textarea data"
 msgstr "Dados de exemplo da área de texto"
 
-#: inc/admin-ajax.php:355
-#: inc/admin-ajax.php:356
+#: inc/admin-ajax.php:359
+#: inc/admin-ajax.php:360
 msgid "Address data"
 msgstr "Dados de endereço"
 
-#: inc/admin-ajax.php:357
+#: inc/admin-ajax.php:361
 msgid "Selected dropdown option"
 msgstr "Opção selecionada no menu suspenso"
 
-#: inc/admin-ajax.php:358
+#: inc/admin-ajax.php:362
 msgid "Selected Multichoice option"
 msgstr "Opção de múltipla escolha selecionada"
 
-#: inc/admin-ajax.php:359
+#: inc/admin-ajax.php:363
 msgid "Selected radio option"
 msgstr "Opção de rádio selecionada"
 
-#: inc/admin-ajax.php:360
+#: inc/admin-ajax.php:364
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 msgid "Submit"
 msgstr "Enviar"
 
-#: inc/admin-ajax.php:363
+#: inc/admin-ajax.php:367
 msgid "Hidden Value"
 msgstr "Valor Oculto"
 
@@ -659,7 +659,7 @@ msgstr "SureForms Formulário criado com sucesso."
 
 #: inc/create-new-form.php:193
 msgid "Error creating SureForms Form, "
-msgstr "Erro ao criar o formulário SureForms, "
+msgstr "Erro ao criar o formulário SureForms,"
 
 #: inc/email/email-template.php:46
 msgid "New form submission"
@@ -706,7 +706,7 @@ msgstr "Email"
 
 #: inc/fields/email-markup.php:76
 msgid "Confirm "
-msgstr "Confirmar "
+msgstr "Confirmar"
 
 #. Translators: %s is label of block.
 #: inc/fields/email-markup.php:84
@@ -898,10 +898,6 @@ msgstr "Qual a probabilidade de você recomendar o SureForms aos seus amigos ou 
 #: inc/nps-notice.php:109
 msgid "Thanks a lot for your feedback! 😍"
 msgstr "Muito obrigado pelo seu feedback! 😍"
-
-#: inc/nps-notice.php:110
-msgid "Could you please do us a favor and give us a 5-star rating? It would help others choose SureForms with confidence. Thank you!"
-msgstr "Poderia, por favor, nos fazer um favor e nos dar uma avaliação de 5 estrelas? Isso ajudaria outros a escolher o SureForms com confiança. Obrigado!"
 
 #: inc/nps-notice.php:112
 msgid "Thank you for your feedback"
@@ -1242,7 +1238,7 @@ msgstr "Ícone Acessível"
 
 #: modules/gutenberg/icons/icons-v6-0.php:180
 msgid "Accusoft"
-msgstr ""
+msgstr "Accusoft"
 
 #: modules/gutenberg/icons/icons-v6-0.php:196
 msgid "Address Book"
@@ -1290,7 +1286,7 @@ msgstr "Alinhar à direita"
 
 #: modules/gutenberg/icons/icons-v6-0.php:322
 msgid "Alipay"
-msgstr ""
+msgstr "Alipay"
 
 #: modules/gutenberg/icons/icons-v6-0.php:333
 msgid "Amazon"
@@ -1734,7 +1730,7 @@ msgstr "Curativo"
 
 #: modules/gutenberg/icons/icons-v6-0.php:1543
 msgid "Bandcamp"
-msgstr ""
+msgstr "Bandcamp"
 
 #: modules/gutenberg/icons/icons-v6-0.php:1554
 msgid "Barcode"
@@ -2211,11 +2207,11 @@ msgstr "Compre em Grande"
 
 #: modules/gutenberg/icons/icons-v6-0.php:2883
 msgid "BuySellAds"
-msgstr ""
+msgstr "BuySellAds"
 
 #: modules/gutenberg/icons/icons-v6-0.php:2894
 msgid "C"
-msgstr ""
+msgstr "C"
 
 #: modules/gutenberg/icons/icons-v6-0.php:2905
 msgid "Cake Candles"
@@ -2848,7 +2844,7 @@ msgstr "Codepen"
 
 #: modules/gutenberg/icons/icons-v6-0.php:4782
 msgid "Codie Pie"
-msgstr ""
+msgstr "Codie Pie"
 
 #: modules/gutenberg/icons/icons-v6-0.php:4793
 msgid "Coins"
@@ -3004,7 +3000,7 @@ msgstr "Creative Commons Sampling"
 
 #: modules/gutenberg/icons/icons-v6-0.php:5241
 msgid "Creative Commons Sampling +"
-msgstr ""
+msgstr "Creative Commons Sampling +"
 
 #: modules/gutenberg/icons/icons-v6-0.php:5252
 msgid "Creative Commons Share"
@@ -3245,7 +3241,7 @@ msgstr "Dividir"
 
 #: modules/gutenberg/icons/icons-v6-1.php:598
 msgid "Dna"
-msgstr ""
+msgstr "DNA"
 
 #: modules/gutenberg/icons/icons-v6-1.php:609
 msgid "DocHub"
@@ -3297,7 +3293,7 @@ msgstr "Baixar"
 
 #: modules/gutenberg/icons/icons-v6-1.php:741
 msgid "Draft2digital"
-msgstr ""
+msgstr "Draft2digital"
 
 #: modules/gutenberg/icons/icons-v6-1.php:752
 msgid "Dragon"
@@ -3333,7 +3329,7 @@ msgstr "Desenhar Polígono"
 #: modules/gutenberg/icons/icons-v6-3.php:5009
 #: modules/gutenberg/icons/icons-v6-3.php:5174
 msgid "Dribbble"
-msgstr ""
+msgstr "Dribbble"
 
 #: modules/gutenberg/icons/icons-v6-1.php:785
 msgid "Dribbble Square"
@@ -3601,11 +3597,11 @@ msgstr ""
 
 #: modules/gutenberg/icons/icons-v6-1.php:1581
 msgid "Face Grin Hearts"
-msgstr ""
+msgstr "Cara Sorriso Corações"
 
 #: modules/gutenberg/icons/icons-v6-1.php:1597
 msgid "Face Grin Squint"
-msgstr ""
+msgstr "Cara Sorriso Cerrado"
 
 #: modules/gutenberg/icons/icons-v6-1.php:1613
 msgid "Face Grin Squint Tears"
@@ -3625,7 +3621,7 @@ msgstr "Cara Sorriso Língua"
 
 #: modules/gutenberg/icons/icons-v6-1.php:1677
 msgid "Face Grin Tongue Squint"
-msgstr ""
+msgstr "Cara Sorriso Língua Piscar"
 
 #: modules/gutenberg/icons/icons-v6-1.php:1693
 msgid "Face Grin Tongue Wink"
@@ -3681,7 +3677,7 @@ msgstr "Rosto revirando os olhos"
 
 #: modules/gutenberg/icons/icons-v6-1.php:1901
 msgid "Face Sad Cry"
-msgstr ""
+msgstr "Cara Triste Chorar"
 
 #: modules/gutenberg/icons/icons-v6-1.php:1917
 msgid "Face Sad Tear"
@@ -3753,7 +3749,7 @@ msgstr "FedEx"
 
 #: modules/gutenberg/icons/icons-v6-1.php:2140
 msgid "Fedora"
-msgstr ""
+msgstr "Fedora"
 
 #: modules/gutenberg/icons/icons-v6-1.php:2151
 msgid "Ferry"
@@ -3910,7 +3906,7 @@ msgstr "Filtro Círculo Dólar"
 
 #: modules/gutenberg/icons/icons-v6-1.php:2624
 msgid "Filter Circle Xmark"
-msgstr ""
+msgstr "Filtro Círculo Xmark"
 
 #: modules/gutenberg/icons/icons-v6-1.php:2635
 msgid "Fingerprint"
@@ -4094,7 +4090,7 @@ msgstr "Sapo"
 
 #: modules/gutenberg/icons/icons-v6-1.php:3165
 msgid "Fulcrum"
-msgstr ""
+msgstr "Fulcro"
 
 #: modules/gutenberg/icons/icons-v6-1.php:3181
 msgid "Futbol"
@@ -4538,7 +4534,7 @@ msgstr "Chapéu Cowboy"
 
 #: modules/gutenberg/icons/icons-v6-1.php:4505
 msgid "Hat Cowboy Side"
-msgstr ""
+msgstr "Chapéu Cowboy Lado"
 
 #: modules/gutenberg/icons/icons-v6-1.php:4516
 msgid "Hat Wizard"
@@ -4598,7 +4594,7 @@ msgstr "Círculo de Coração Mais"
 
 #: modules/gutenberg/icons/icons-v6-1.php:4686
 msgid "Heart Circle Xmark"
-msgstr ""
+msgstr "Círculo de Coração Xmark"
 
 #: modules/gutenberg/icons/icons-v6-1.php:4697
 msgid "Heart Crack"
@@ -4662,7 +4658,7 @@ msgstr "Holly Berry"
 
 #: modules/gutenberg/icons/icons-v6-1.php:4862
 msgid "Hooli"
-msgstr ""
+msgstr "Hooli"
 
 #: modules/gutenberg/icons/icons-v6-1.php:4873
 msgid "Hornbill"
@@ -4746,7 +4742,7 @@ msgstr "Casa Círculo Exclamação"
 
 #: modules/gutenberg/icons/icons-v6-1.php:5114
 msgid "House Circle Xmark"
-msgstr ""
+msgstr "Casa Círculo Xmark"
 
 #: modules/gutenberg/icons/icons-v6-1.php:5125
 msgid "House Crack"
@@ -5047,7 +5043,7 @@ msgstr "Kickstarter K"
 
 #: modules/gutenberg/icons/icons-v6-2.php:526
 msgid "Kip Sign"
-msgstr ""
+msgstr "Sinal de Kip"
 
 #: modules/gutenberg/icons/icons-v6-2.php:537
 msgid "Kit Medical"
@@ -5189,7 +5185,7 @@ msgstr "LinkedIn In"
 
 #: modules/gutenberg/icons/icons-v6-2.php:937
 msgid "Linode"
-msgstr ""
+msgstr "Linode"
 
 #: modules/gutenberg/icons/icons-v6-2.php:948
 msgid "Linux"
@@ -5305,7 +5301,7 @@ msgstr "Lupa Plus"
 
 #: modules/gutenberg/icons/icons-v6-2.php:1256
 msgid "Mailchimp"
-msgstr ""
+msgstr "Mailchimp"
 
 #: modules/gutenberg/icons/icons-v6-2.php:1267
 msgid "Manat Sign"
@@ -5333,7 +5329,7 @@ msgstr "Alfinete de Mapa"
 
 #: modules/gutenberg/icons/icons-v6-2.php:1338
 msgid "Markdown"
-msgstr ""
+msgstr "Markdown"
 
 #: modules/gutenberg/icons/icons-v6-2.php:1349
 msgid "Marker"
@@ -5698,7 +5694,7 @@ msgstr ""
 
 #: modules/gutenberg/icons/icons-v6-2.php:2348
 msgid "Node.js"
-msgstr ""
+msgstr "Node.js"
 
 #: modules/gutenberg/icons/icons-v6-2.php:2359
 msgid "Node.js JS"
@@ -5762,7 +5758,7 @@ msgstr "Velha República"
 
 #: modules/gutenberg/icons/icons-v6-2.php:2550
 msgid "Om"
-msgstr ""
+msgstr "Om"
 
 #: modules/gutenberg/icons/icons-v6-2.php:2561
 msgid "OpenCart"
@@ -5770,7 +5766,7 @@ msgstr ""
 
 #: modules/gutenberg/icons/icons-v6-2.php:2572
 msgid "OpenID"
-msgstr ""
+msgstr "OpenID"
 
 #: modules/gutenberg/icons/icons-v6-2.php:2583
 msgid "Opera"
@@ -5803,7 +5799,7 @@ msgstr "P"
 
 #: modules/gutenberg/icons/icons-v6-2.php:2660
 msgid "Padlet"
-msgstr ""
+msgstr "Padlet"
 
 #: modules/gutenberg/icons/icons-v6-2.php:2671
 msgid "page4 Corporation"
@@ -5867,7 +5863,7 @@ msgstr "Colar"
 
 #: modules/gutenberg/icons/icons-v6-2.php:2846
 msgid "Patreon"
-msgstr ""
+msgstr "Patreon"
 
 #: modules/gutenberg/icons/icons-v6-2.php:2857
 msgid "Pause"
@@ -5959,7 +5955,7 @@ msgstr "Pessoa"
 
 #: modules/gutenberg/icons/icons-v6-2.php:3115
 msgid "Person Arrow Down To Line"
-msgstr ""
+msgstr "Pessoa Seta Para Baixo Até a Linha"
 
 #: modules/gutenberg/icons/icons-v6-2.php:3126
 msgid "Person Arrow Up From Line"
@@ -6119,7 +6115,7 @@ msgstr "Pessoa Caminhando"
 
 #: modules/gutenberg/icons/icons-v6-2.php:3555
 msgid "Person Walking Arrow Loop Left"
-msgstr ""
+msgstr "Pessoa Caminhando Seta Loop Esquerda"
 
 #: modules/gutenberg/icons/icons-v6-2.php:3566
 msgid "Person Walking Arrow Right"
@@ -6235,7 +6231,7 @@ msgstr "Verificação do Círculo Plano"
 
 #: modules/gutenberg/icons/icons-v6-2.php:3907
 msgid "Plane Circle Exclamation"
-msgstr ""
+msgstr "Círculo de Avião Exclamação"
 
 #: modules/gutenberg/icons/icons-v6-2.php:3918
 msgid "Plane Circle Xmark"
@@ -6375,7 +6371,7 @@ msgstr "Q"
 
 #: modules/gutenberg/icons/icons-v6-2.php:4292
 msgid "QQ"
-msgstr ""
+msgstr "QQ"
 
 #: modules/gutenberg/icons/icons-v6-2.php:4303
 msgid "Qrcode"
@@ -6520,7 +6516,7 @@ msgstr "Republicano"
 
 #: modules/gutenberg/icons/icons-v6-2.php:4714
 msgid "Researchgate"
-msgstr ""
+msgstr "Researchgate"
 
 #: modules/gutenberg/icons/icons-v6-2.php:4725
 msgid "Resolving"
@@ -7073,7 +7069,7 @@ msgstr "Giratória"
 
 #: modules/gutenberg/icons/icons-v6-3.php:1081
 msgid "Splotch"
-msgstr ""
+msgstr "Mancha"
 
 #: modules/gutenberg/icons/icons-v6-3.php:1092
 msgid "Spoon"
@@ -7217,7 +7213,7 @@ msgstr "Stack Overflow"
 
 #: modules/gutenberg/icons/icons-v6-3.php:1522
 msgid "Stackpath"
-msgstr ""
+msgstr "Stackpath"
 
 #: modules/gutenberg/icons/icons-v6-3.php:1544
 msgid "Stairs"
@@ -7369,7 +7365,7 @@ msgstr "Flexível"
 
 #: modules/gutenberg/icons/icons-v6-3.php:1982
 msgid "Suse"
-msgstr ""
+msgstr "Suse"
 
 #: modules/gutenberg/icons/icons-v6-3.php:1993
 msgid "Swatchbook"
@@ -7728,7 +7724,7 @@ msgstr "Cidade das Árvores"
 
 #: modules/gutenberg/icons/icons-v6-3.php:2987
 msgid "Trello"
-msgstr ""
+msgstr "Trello"
 
 #: modules/gutenberg/icons/icons-v6-3.php:2998
 msgid "Triangle Exclamation"
@@ -8115,7 +8111,7 @@ msgstr ""
 
 #: modules/gutenberg/icons/icons-v6-3.php:4081
 msgid "Viadeo"
-msgstr ""
+msgstr "Viadeo"
 
 #: modules/gutenberg/icons/icons-v6-3.php:4103
 msgid "Vial"
@@ -8364,7 +8360,7 @@ msgstr ""
 
 #: modules/gutenberg/icons/icons-v6-3.php:4822
 msgid "Wix"
-msgstr ""
+msgstr "Wix"
 
 #: modules/gutenberg/icons/icons-v6-3.php:4833
 msgid "Wizards of the Coast"
@@ -8432,7 +8428,7 @@ msgstr "Xing"
 
 #: modules/gutenberg/icons/icons-v6-3.php:5020
 msgid "Xmark"
-msgstr ""
+msgstr "Xmark"
 
 #: modules/gutenberg/icons/icons-v6-3.php:5031
 msgid "Xmarks Lines"
@@ -8488,7 +8484,7 @@ msgstr "YouTube"
 
 #: modules/gutenberg/icons/icons-v6-3.php:5185
 msgid "Z"
-msgstr ""
+msgstr "Z"
 
 #: modules/gutenberg/icons/icons-v6-3.php:5196
 msgid "Zhihu"
@@ -8667,7 +8663,7 @@ msgstr "Mostrar título do formulário nesta página"
 
 #: assets/build/blocks.js:2
 msgid "Note: For editing SureForms, please refer to the SureForms Editor - "
-msgstr "Nota: Para editar SureForms, consulte o Editor de SureForms - "
+msgstr "Nota: Para editar SureForms, consulte o Editor de SureForms -"
 
 #: assets/build/blocks.js:2
 msgid "Field preview"
@@ -8807,7 +8803,7 @@ msgstr "(###) ###-####"
 
 #: assets/build/blocks.js:172
 msgid "(##) ####-####"
-msgstr ""
+msgstr "(##) ####-####"
 
 #: assets/build/blocks.js:172
 msgid "27/08/2024"
@@ -8832,7 +8828,7 @@ msgstr "Máscara Personalizada"
 
 #: assets/build/blocks.js:172
 msgid "Please check the documentation to manage custom input pattern "
-msgstr "Por favor, verifique a documentação para gerenciar o padrão de entrada personalizado "
+msgstr "Por favor, verifique a documentação para gerenciar o padrão de entrada personalizado"
 
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
@@ -8853,7 +8849,7 @@ msgstr "Validar como Único"
 
 #: assets/build/blocks.js:172
 msgid "Validation Message for Duplicate "
-msgstr "Mensagem de validação para duplicado "
+msgstr "Mensagem de validação para duplicado"
 
 #: assets/build/blocks.js:172
 msgid "Help Text"
@@ -9745,15 +9741,15 @@ msgstr "reCAPTCHA v2 Invisível"
 
 #: assets/build/formEditor.js:172
 msgid "reCAPTCHA v3"
-msgstr ""
+msgstr "reCAPTCHA v3"
 
 #: assets/build/formEditor.js:172
 msgid "Before selecting the security type, please make sure you have configured the API keys "
-msgstr "Antes de selecionar o tipo de segurança, certifique-se de que configurou as chaves da API "
+msgstr "Antes de selecionar o tipo de segurança, certifique-se de que configurou as chaves da API"
 
 #: assets/build/formEditor.js:172
 msgid "Please configure the API keys correctly in the "
-msgstr "Por favor, configure as chaves da API corretamente no "
+msgstr "Por favor, configure as chaves da API corretamente no"
 
 #: assets/build/formEditor.js:172
 msgid "Additional CSS Class(es)"
@@ -9761,7 +9757,7 @@ msgstr "Classe(s) CSS Adicional(is)"
 
 #: assets/build/formEditor.js:172
 msgid " Separate multiple classes with spaces. "
-msgstr " Separe várias classes com espaços. "
+msgstr "Separe várias classes com espaços."
 
 #: assets/build/formEditor.js:172
 msgid "Date Picker"
@@ -9947,7 +9943,7 @@ msgstr "Domingo"
 
 #: assets/build/settings.js:172
 msgid "Enable Email Summaries "
-msgstr "Ativar Resumos de Email "
+msgstr "Ativar Resumos de Email"
 
 #: assets/build/settings.js:172
 msgid "Test Email"
@@ -10128,7 +10124,7 @@ msgstr "Pote de mel"
 
 #: assets/build/settings.js:172
 msgid "To enable Google reCAPTCHA, please add your site key and secret key. Configure these settings within the individual form. "
-msgstr "Para ativar o Google reCAPTCHA, adicione sua chave do site e chave secreta. Configure essas configurações dentro do formulário individual. "
+msgstr "Para ativar o Google reCAPTCHA, adicione sua chave do site e chave secreta. Configure essas configurações dentro do formulário individual."
 
 #: assets/build/settings.js:172
 msgid "Learn more"
@@ -10180,7 +10176,7 @@ msgstr "Cloudflare Turnstile"
 
 #: assets/build/settings.js:172
 msgid "To enable Cloudflare Turnstile, please add your site key and secret key. Configure these settings within the individual form. "
-msgstr "Para ativar o Cloudflare Turnstile, adicione sua chave do site e chave secreta. Configure essas configurações dentro do formulário individual. "
+msgstr "Para ativar o Cloudflare Turnstile, adicione sua chave do site e chave secreta. Configure essas configurações dentro do formulário individual."
 
 #: assets/build/settings.js:172
 msgid "Appearance Mode"
@@ -10188,7 +10184,7 @@ msgstr "Modo de Aparência"
 
 #: assets/build/settings.js:172
 msgid "To enable hCAPTCHA, please add your site key and secret key. Configure these settings within the individual form. "
-msgstr "Para ativar o hCAPTCHA, adicione sua chave do site e chave secreta. Configure essas configurações dentro do formulário individual. "
+msgstr "Para ativar o hCAPTCHA, adicione sua chave do site e chave secreta. Configure essas configurações dentro do formulário individual."
 
 #: assets/build/settings.js:172
 msgid "Enable Honeypot Security"
@@ -10224,7 +10220,7 @@ msgstr "Descreva o seu formulário"
 
 #: assets/build/templatePicker.js:2
 msgid "Usage "
-msgstr "Uso "
+msgstr "Uso"
 
 #: assets/build/templatePicker.js:2
 msgid "Free plan only allows %s AI form generations. Need to create more forms with AI?"
@@ -10273,7 +10269,7 @@ msgstr "Falha na autenticação"
 
 #: assets/build/templatePicker.js:172
 msgid "Please check your username and password for the account, and try to reconnect again. Need help? "
-msgstr "Por favor, verifique seu nome de usuário e senha da conta e tente reconectar novamente. Precisa de ajuda? "
+msgstr "Por favor, verifique seu nome de usuário e senha da conta e tente reconectar novamente. Precisa de ajuda?"
 
 #: assets/build/templatePicker.js:172
 msgid "Contact Support"
@@ -11207,6 +11203,10 @@ msgstr "Adicione ícones personalizáveis impressionantes ao seu site."
 #: modules/gutenberg/build/blocks.js:17
 msgid "icon"
 msgstr "ícone"
+
+#: inc/nps-notice.php:110
+msgid "Could you please do us a favor and give us a 5-star rating on WordPress? It would help others choose SureForms with confidence. Thank you!"
+msgstr "Poderia, por favor, nos fazer um favor e nos dar uma avaliação de 5 estrelas no WordPress? Isso ajudaria outros a escolherem o SureForms com confiança. Obrigado!"
 
 #: inc/post-types.php:123
 msgctxt "post type general name"
