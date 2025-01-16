@@ -34,8 +34,6 @@ const AiFormBuilder = () => {
 	const accessKey = urlParams.get( 'access_key' );
 	const [ isListening, setIsListening ] = useState( false ); // State to manage voice recording
 	const recognitionRef = useRef( null ); // To store SpeechRecognition instance
-	// const [ isConversationalForm, setIsConversationalForm ] = useState( false );
-
 	const [ formTypeObj, setFormTypeObj ] = useState( {} );
 	const showAiConversationalFormToggle = false;
 	const conversationalFormAiToggle = applyFilters(
@@ -44,8 +42,6 @@ const AiFormBuilder = () => {
 		formTypeObj,
 		setFormTypeObj
 	);
-
-	console.log( 'conversationalFormAiToggle', conversationalFormAiToggle );
 
 	const examplePrompts = [
 		{
