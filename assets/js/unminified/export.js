@@ -125,20 +125,31 @@ function importForm() {
 }
 
 function appendImportBtn() {
-	// checks whether current page is initial UI where no forms exists.
-	const attachmentElement = document.querySelector(
-		'#posts-filter .search-box'
-	);
+	const createImportButton = () => {
+		const button = document.createElement( 'button' );
+		button.className = 'button button-secondary srfm-import-btn';
+		button.textContent = wp.i18n.__( 'Import Form', 'sureforms' );
+		button.style.float = 'right'; // Align button to the right end. The layout is not broken in any case.
+		return button;
+	};
 
-	if ( ! attachmentElement ) {
+	// Checks whether the search box is available in the page and appends the import form button.
+	const searchBox = document.querySelector( '#posts-filter .search-box' );
+	if ( searchBox ) {
+		searchBox.appendChild( createImportButton() );
 		return;
 	}
 
-	const newElement = document.createElement( 'button' );
-
-	newElement.className = 'button button-secondary srfm-import-btn';
-	newElement.textContent = wp.i18n.__( 'Import Form', 'sureforms' );
-	attachmentElement.append( newElement );
+	// Ensures that the button is appended only when the search box is not available and it is not a blank page.
+	// Case: If all the forms are in trash status, the page will show "No forms found." in the table and the search box will not be available.
+	const formElement = document.querySelector( '#posts-filter' );
+	const blankPageTitle = document.querySelector(
+		'.sureform-blank-page-title'
+	); // If the title exists then it indicates that the page has no forms in any state.
+	if ( formElement && ! blankPageTitle ) {
+		// append the button at the top of the form
+		formElement.prepend( createImportButton() );
+	}
 }
 document.addEventListener( 'DOMContentLoaded', function () {
 	appendImportBtn();
