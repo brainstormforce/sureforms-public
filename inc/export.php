@@ -46,7 +46,6 @@ class Export {
 	 */
 	public function __construct() {
 		add_action( 'wp_ajax_export_form', [ $this, 'handle_export_form' ] );
-		add_action( 'wp_ajax_nopriv_export_form', [ $this, 'handle_export_form' ] );
 		add_action( 'rest_api_init', [ $this, 'register_custom_endpoint' ] );
 	}
 
