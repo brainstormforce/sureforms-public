@@ -302,7 +302,7 @@ class Plugin_Loader {
 		}
 
 		if ( class_exists( 'SRFM\Inc\Lib\SRFM_Utm_Analytics' ) ) {
-			SRFM_Utm_Analytics::get_instance(); // Inits the NPS Survey class for which inits the NPS Survey plugin.
+			SRFM_Utm_Analytics::get_instance(); // Inits the UTM Analytics library.
 		}
 
 		/**
