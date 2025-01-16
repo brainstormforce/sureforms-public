@@ -141,13 +141,13 @@ function appendImportBtn() {
 	}
 
 	// Ensures that the button is appended only when the search box is not available and it is not a blank page.
-	// Case: If all the forms are in trash status, the page will show "No forms found." in the table and the search box will not be available.
+	// Case Handled: If all the forms are in trash, the page will show "No forms found." in the table and the search box will not be available.
 	const formElement = document.querySelector( '#posts-filter' );
 	const blankPageTitle = document.querySelector(
 		'.sureform-blank-page-title'
 	); // If the title exists then it indicates that the page has no forms in any state.
 	if ( formElement && ! blankPageTitle ) {
-		// append the button at the top of the form
+		// append the button at the top of the form.
 		formElement.prepend( createImportButton() );
 	}
 }
