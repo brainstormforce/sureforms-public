@@ -354,12 +354,15 @@ const AiFormBuilder = () => {
 							{ false === conversationalFormAiToggle
 								? <div className="srfm-ai-conversational-form-toggle"
 								>
-									<div style={ { backgroundColor: '#fff',
+									<div style={ { 
+										// Inline styles are used here to override the default styles
+										backgroundColor: '#fff',
 										border: '1px solid #949494',
 										pointerEvents: 'none',
 									} }
 								 className="srfm-ai-conversational-form-toggle-btn">
 										<div style={ {
+												// Inline styles are used here to override the default styles
 											backgroundColor: '#949494',
 											left: '3px',
 										} }
