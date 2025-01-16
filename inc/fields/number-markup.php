@@ -119,7 +119,7 @@ class Number_Markup extends Base {
 			<div data-block-id="<?php echo esc_attr( $this->block_id ); ?>" class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $this->slug ); ?>-block<?php echo esc_attr( $this->block_width ); ?><?php echo esc_attr( $this->class_name ); ?> <?php echo esc_attr( $this->conditional_class ); ?>">
 				<?php echo wp_kses_post( $this->label_markup ); ?>
 				<?php echo wp_kses_post( $this->help_markup ); ?>
-				<div class="srfm-block-wrap">
+				<div class="srfm-block-wrap <?php echo trim( ( $this->prefix ? 'srfm-has-prefix ' : '' ) . ( $this->suffix ? 'srfm-has-suffix' : '' ) ); ?>">
 					<?php if ( ! empty( $this->prefix ) ) { ?>
 						<span class="srfm-number-prefix"><?php echo esc_html( $this->prefix ); ?></span>
 					<?php } ?>
