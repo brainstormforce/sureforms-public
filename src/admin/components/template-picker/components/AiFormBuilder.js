@@ -17,6 +17,7 @@ import LimitReachedPopup from './LimitReachedPopup.js';
 import ErrorPopup from './ErrorPopup.js';
 import { AuthErrorPopup } from './AuthErrorPopup.js';
 import toast, { Toaster } from 'react-hot-toast';
+import { applyFilters } from '@wordpress/hooks';
 
 const AiFormBuilder = () => {
 	const [ message, setMessage ] = useState(
@@ -33,7 +34,18 @@ const AiFormBuilder = () => {
 	const accessKey = urlParams.get( 'access_key' );
 	const [ isListening, setIsListening ] = useState( false ); // State to manage voice recording
 	const recognitionRef = useRef( null ); // To store SpeechRecognition instance
-	const [ isConversationalForm, setIsConversationalForm ] = useState( false );
+	// const [ isConversationalForm, setIsConversationalForm ] = useState( false );
+
+	const [ formTypeObj, setFormTypeObj ] = useState( {} );
+	const showAiConversationalFormToggle = false;
+	const conversationalFormAiToggle = applyFilters(
+		'srfm.aiFormScreen.conversational.toggle',
+		showAiConversationalFormToggle,
+		formTypeObj,
+		setFormTypeObj
+	);
+
+	console.log( 'conversationalFormAiToggle', conversationalFormAiToggle );
 
 	const examplePrompts = [
 		{
@@ -139,13 +151,12 @@ const AiFormBuilder = () => {
 			} ) ) || [];
 		messageArray.push( { role: 'user', content: userCommand } );
 		let formType = '';
-		if ( isConversationalForm ) {
+		if ( formTypeObj?.isConversationalForm ) {
 			formType = 'conversational';
 		}
 		const postData = {
 			message_array: messageArray,
 			use_system_message: useSystemMessage,
-			// is_conversational_form: isConversationalForm,
 			form_type: formType,
 		};
 
@@ -188,8 +199,7 @@ const AiFormBuilder = () => {
 					setMessage( __( 'Redirecting to Editor', 'sureforms' ) );
 					setPercentBuild( 100 );
 					const formTitle = content?.form?.formTitle;
-					// send the premium common meta data to the handleAddNewPost function
-					const metasToUpdate = isConversationalForm ? { _srfm_premium_common: content?.form?.formMetaData[ 0 ]?._srfm_premium_common[ 0 ] } : {};
+					const metasToUpdate = formTypeObj?.isConversationalForm ? { _srfm_premium_common: content?.form?.formMetaData[ 0 ]?._srfm_premium_common[ 0 ] } : {};
 					handleAddNewPost( postContent, formTitle, metasToUpdate, formType );
 				} else {
 					setShowFormCreationErr( true );
@@ -341,24 +351,31 @@ const AiFormBuilder = () => {
 									) }
 								</span>
 							) }
-							<div className="srfm-ai-conversational-form-toggle">
-								<div style={ { backgroundColor: isConversationalForm ? '#D54407' : '#fff',
-		  border: isConversationalForm ? '1px solid #D54407' : '1px solid #000',
-
-								} } onClick={ () => {
-									setIsConversationalForm( ! isConversationalForm );
-								  } } className="srfm-ai-conversational-form-toggle-btn">
-									<div style={ {
-										backgroundColor: isConversationalForm ? '#fff' : '#000',
-										left: isConversationalForm ? '18px' : '3px',
+							{ false === conversationalFormAiToggle
+								? <div className="srfm-ai-conversational-form-toggle"
+								>
+									<div style={ { backgroundColor: '#fff',
+										border: '1px solid #949494',
+										pointerEvents: 'none',
 									} }
-									className="srfm-ai-conversational-form-toggle-thumb"
-									></div>
+								 className="srfm-ai-conversational-form-toggle-btn">
+										<div style={ {
+											backgroundColor: '#949494',
+											left: '3px',
+										} }
+										className="srfm-ai-conversational-form-toggle-thumb"
+										></div>
+									</div>
+									{
+										__( 'Create Conversational Form', 'sureforms' )
+									}
+									<span
+										className="srfm-ai-conversational-form-pro-plan-badge"
+									>
+										{ __( 'Pro Plan', 'sureforms' ) }
+									</span>
 								</div>
-								{
-									__( 'Create Conversational Form', 'sureforms' )
-								}
-							</div>
+								: conversationalFormAiToggle }
 							<div
 								className="srfm-ai-voice-input-ctn"
 							>

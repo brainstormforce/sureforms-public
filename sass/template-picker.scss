@@ -469,6 +469,20 @@ $sidebar_width: 290px;
 							transition: left 0.3s ease;
 						}
 					}
+
+					.srfm-ai-conversational-form-pro-plan-badge {
+						min-width: 16px;
+						max-height: 16px;
+						padding: 2px;
+						border-radius: 9999px;
+						background: #1f2937;
+						color: #fff;
+						border: 0.5px solid #374151;
+						font-size: 9px;
+						font-weight: 600;
+						line-height: normal;
+						text-align: center;
+					}
 				}
 
 				.srfm-ai-voice-input-ctn {
