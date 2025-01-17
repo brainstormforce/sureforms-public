@@ -473,7 +473,6 @@ class Admin {
 		// Enqueue styles for the entries page.
 		if ( $is_screen_sureforms_entries ) {
 			$asset_handle = '-entries';
-			wp_enqueue_style( SRFM_SLUG . $asset_handle, $css_uri . 'backend/entries' . $file_prefix . '.css', [], SRFM_VER );
 			wp_enqueue_script( SRFM_SLUG . $asset_handle, SRFM_URL . 'assets/build/entries.js', $script_info['dependencies'], SRFM_VER, true );
 
 			$script_translations_handlers[] = SRFM_SLUG . $asset_handle;

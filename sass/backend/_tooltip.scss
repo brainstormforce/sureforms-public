@@ -1,0 +1,225 @@
+.srfm-tooltip {
+	position: relative;
+
+	> :not( .tooltip-wrap ) {
+		pointer-events: none;
+		opacity: 60%;
+	}
+
+	.tooltip-content {
+		padding: 12px;
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+
+		.tooltip-text {
+			display: flex;
+			flex-direction: column;
+			gap: 4px;
+		}
+
+		h3 {
+			margin: 0;
+			padding: 0;
+			color: #ffffff;
+			font-size: 12px;
+			font-weight: 600;
+			line-height: 16px;
+		}
+		p {
+			margin: 0;
+			padding: 0;
+			color: #ffffff;
+			font-size: 12px;
+			font-weight: 400;
+			line-height: 16px;
+		}
+		a {
+			margin: 0;
+			padding: 0;
+			color: #28afed;
+			font-size: 12px;
+			font-weight: 600;
+			line-height: 16px;
+		}
+	}
+
+	.top {
+		width: 328px;
+		top: -10px;
+		left: 50%;
+		transform: translate( -30%, -100% );
+		color: #ffffff;
+		background-color: #1e1e1e;
+		font-weight: normal;
+		font-size: 14px;
+		border-radius: 8px;
+		position: absolute;
+		z-index: 99999999;
+		box-sizing: border-box;
+		box-shadow: 0 1px 8px rgba( 0, 0, 0, 0.5 );
+	}
+
+	.top i {
+		position: absolute;
+		top: 100%;
+		left: 30%;
+		margin-left: -15px;
+		width: 30px;
+		height: 15px;
+		overflow: hidden;
+	}
+
+	.top i::after {
+		content: "";
+		position: absolute;
+		width: 15px;
+		height: 15px;
+		left: 50%;
+		transform: translate( -50%, -50% ) rotate( 45deg );
+		background-color: #1e1e1e;
+		box-shadow: 0 1px 8px rgba( 0, 0, 0, 0.5 );
+	}
+
+	.right {
+		width: 328px;
+		top: 50%;
+		left: 100%;
+		margin-left: 10px;
+		transform: translate( 0, -50% );
+		padding: 0;
+		color: #ffffff;
+		background-color: #1e1e1e;
+		font-weight: normal;
+		font-size: 13px;
+		border-radius: 8px;
+		position: absolute;
+		z-index: 99999999;
+		box-sizing: border-box;
+		box-shadow: 0 1px 8px rgba( 0, 0, 0, 0.5 );
+	}
+
+	.right i {
+		position: absolute;
+		top: 50%;
+		right: 100%;
+		margin-top: -12px;
+		width: 12px;
+		height: 24px;
+		overflow: hidden;
+	}
+	.right i::after {
+		content: "";
+		position: absolute;
+		width: 12px;
+		height: 12px;
+		left: 0;
+		top: 50%;
+		transform: translate( 50%, -50% ) rotate( -45deg );
+		background-color: #444444;
+		box-shadow: 0 1px 8px rgba( 0, 0, 0, 0.5 );
+	}
+
+	.bottom {
+		width: 328px;
+		top: 40px;
+		left: 50%;
+		transform: translate( -50%, 0 );
+		padding: 0;
+		color: #ffffff;
+		background-color: #1e1e1e;
+		font-weight: normal;
+		font-size: 13px;
+		border-radius: 8px;
+		position: absolute;
+		z-index: 99999999;
+		box-sizing: border-box;
+		box-shadow: 0 1px 8px rgba( 0, 0, 0, 0.5 );
+	}
+
+	.bottom img {
+		width: 400px;
+	}
+
+	.bottom i {
+		position: absolute;
+		bottom: 100%;
+		left: 50%;
+		margin-left: -12px;
+		width: 24px;
+		height: 12px;
+		overflow: hidden;
+	}
+
+	.bottom i::after {
+		content: "";
+		position: absolute;
+		width: 12px;
+		height: 12px;
+		left: 50%;
+		transform: translate( -50%, 50% ) rotate( 45deg );
+		background-color: #1e1e1e;
+		box-shadow: 0 1px 8px rgba( 0, 0, 0, 0.5 );
+	}
+
+	.left {
+		width: 328px;
+		top: 50%;
+		right: 100%;
+		margin-right: 10px;
+		transform: translate( 0, -50% );
+		padding: 0;
+		color: #ffffff;
+		background-color: #1e1e1e;
+		font-weight: normal;
+		font-size: 13px;
+		border-radius: 8px;
+		position: absolute;
+		z-index: 99999999;
+		box-sizing: border-box;
+		border: 1px solid #dca;
+	}
+
+	.left i {
+		position: absolute;
+		top: 50%;
+		left: 100%;
+		margin-top: -12px;
+		width: 12px;
+		height: 24px;
+		overflow: hidden;
+	}
+
+	.left i::after {
+		content: "";
+		position: absolute;
+		width: 12px;
+		height: 12px;
+		left: 0;
+		top: 50%;
+		transform: translate( -50%, -50% ) rotate( -45deg );
+		background-color: #1e1e1e;
+		border: 1px solid #dca;
+	}
+
+	// Add transition to the tooltip's visible and hidden state.
+	.top,
+	.right,
+	.bottom,
+	.left {
+		visibility: hidden;
+		opacity: 0;
+		transition: opacity 0.3s ease-in-out, visibility 0s linear 0.3s; /* Delay visibility until after fade-out */
+	}
+
+	&:hover {
+		.top,
+		.right,
+		.bottom,
+		.left {
+			opacity: 1;
+			visibility: visible;
+			transition: opacity 0.3s ease-in-out, visibility 0s linear 0s;
+		}
+	}
+}

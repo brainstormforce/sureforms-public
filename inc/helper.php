@@ -47,6 +47,23 @@ class Helper {
 	}
 
 	/**
+	 * Convert a file URL to a file path.
+	 *
+	 * @param string $file_url The URL of the file.
+	 *
+	 * @since x.x.x
+	 * @return string The file path.
+	 */
+	public static function convert_fileurl_to_filepath( $file_url ) {
+		static $upload_dir = null;
+		if ( ! $upload_dir ) {
+			// Internally cache the upload directory.
+			$upload_dir = wp_get_upload_dir();
+		}
+		return wp_normalize_path( str_replace( $upload_dir['baseurl'], $upload_dir['basedir'], $file_url ) );
+	}
+
+	/**
 	 * Checks if current value is string or else returns default value
 	 *
 	 * @param mixed $data data which need to be checked if is string.

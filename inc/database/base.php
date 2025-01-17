@@ -531,9 +531,12 @@ abstract class Base {
 		 */
 		$format = $prepared_data['format'];
 
+		// Reset the cache on update.
+		$this->cache_reset();
+
 		return $this->wpdb->update(
 			$this->get_tablename(),
-			$data,
+			$prepared_data['data'],
 			$where,
 			$format
 		);
