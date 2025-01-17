@@ -15,3 +15,7 @@ export const enhanceMultiChoiceOptions = ( option, args ) => {
 		args
 	);
 };
+
+export const submitButtonContainerOptions = ( options, args ) => {
+	return applyFilters( 'srfm.submit.button.container.options', options, args );
+};
