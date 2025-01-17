@@ -999,7 +999,7 @@ class Entries_List_Table extends \WP_List_Table {
 				/**
 				 * Action hook right after entry form opening tag.
 				 *
-				 * @since x.x.x
+				 * @since 1.3.0
 				 */
 				do_action( 'srfm_after_entry_postbox_title' );
 
