@@ -4,7 +4,7 @@
 		"Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
 		"This file is @generated automatically"
 	],
-	"content-hash": "5ae0a1f981f4e30fdfa6635cd4abe1fa",
+	"content-hash": "1f9159b2f05f4e4197aaf998c9c3477f",
 	"packages": [
 		{
 			"name": "brainstormforce/nps-survey",
@@ -68,22 +68,21 @@
 		},
 		{
 			"name": "brainstormforce/utm-analytics",
-			"version": "0.0.3",
+			"version": "0.0.4",
 			"source": {
 				"type": "git",
 				"url": "git@github.com:brainstormforce/utm-analytics.git",
-				"reference": "b7594cabe3ef954d6dc2e715b4e7c883069397b7"
+				"reference": "f2d9e760b9849c9b9d20d911107574ea2777a608"
 			},
 			"dist": {
 				"type": "zip",
-				"url": "https://api.github.com/repos/brainstormforce/utm-analytics/zipball/b7594cabe3ef954d6dc2e715b4e7c883069397b7",
-				"reference": "b7594cabe3ef954d6dc2e715b4e7c883069397b7",
+				"url": "https://api.github.com/repos/brainstormforce/utm-analytics/zipball/f2d9e760b9849c9b9d20d911107574ea2777a608",
+				"reference": "f2d9e760b9849c9b9d20d911107574ea2777a608",
 				"shasum": ""
 			},
 			"require-dev": {
 				"automattic/vipwpcs": "^2.3",
 				"dealerdirect/phpcodesniffer-composer-installer": "^0.7.1",
-				"nunomaduro/phpinsights": "^2.10",
 				"php-stubs/generator": "^0.8.2",
 				"php-stubs/wordpress-stubs": "^6.1",
 				"phpcompatibility/php-compatibility": "^9.3",
@@ -106,12 +105,6 @@
 				"phpstan": [
 					"vendor/bin/phpstan --memory-limit=2048M analyse"
 				],
-				"insights": [
-					"./vendor/bin/phpinsights analyse -v --no-interaction"
-				],
-				"insights:fix": [
-					"./vendor/bin/phpinsights analyse --fix --no-interaction"
-				],
 				"gen-stubs": [
 					"vendor/bin/generate-stubs artifact/phpstan/bsf-utm-analytics/ --out=tests/php/stubs/bsf-utm-analytics-stubs.php && rm -rf artifact/phpstan"
 				],
@@ -121,10 +114,10 @@
 			},
 			"description": "This library helps in managing utm analytics for bsf products",
 			"support": {
-				"source": "https://github.com/brainstormforce/utm-analytics/tree/0.0.3",
+				"source": "https://github.com/brainstormforce/utm-analytics/tree/0.0.4",
 				"issues": "https://github.com/brainstormforce/utm-analytics/issues"
 			},
-			"time": "2025-01-10T13:37:37+00:00"
+			"time": "2025-01-16T09:51:57+00:00"
 		},
 		{
 			"name": "composer/ca-bundle",

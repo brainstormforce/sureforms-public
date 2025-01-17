@@ -25,20 +25,29 @@ class Utils {
 	 * @since 0.0.1
 	 */
 	private static $bsf_product_slugs = [
+		'all-in-one-schemaorg-rich-snippets',
 		'astra',
+		'astra-portfolio',
 		'astra-sites',
+		'bb-ultimate-addon',
 		'cartflows',
 		'checkout-paypal-woo',
 		'checkout-plugins-stripe-woo',
+		'convertpro',
+		'header-footer-elementor',
 		'presto-player',
 		'surecart',
 		'sureforms',
 		'suretriggers',
+		'ultimate-addons-for-beaver-builder-lite',
 		'ultimate-addons-for-gutenberg',
-		'woo-cart-abandonment-recovery',
+		'ultimate-elementor',
 		'variation-swatches-woo',
+		'woo-cart-abandonment-recovery',
+		'wp-schema-pro',
 		'zipwp',
 	];
+
 
 	/**
 	 * This function will help to determine if provided slug is a valid bsf product or not,
