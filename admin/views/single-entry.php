@@ -83,7 +83,7 @@ class Single_Entry {
 				/**
 				 * Action hook right after entry form opening tag.
 				 *
-				 * @since x.x.x
+				 * @since 1.3.0
 				 */
 				do_action( 'srfm_after_entry_form_opening_tag', $this->entry, $this );
 				?>
@@ -95,7 +95,7 @@ class Single_Entry {
 							/**
 							 * Action hook right before entry form opening tag.
 							 *
-							 * @since x.x.x
+							 * @since 1.3.0
 							 */
 							do_action( 'srfm_before_entry_submission_info', $this->entry, $this );
 							$this->render_upsell_placeholder( 'notes' );
@@ -105,7 +105,7 @@ class Single_Entry {
 							/**
 							 * Action hook right after entry form opening tag.
 							 *
-							 * @since x.x.x
+							 * @since 1.3.0
 							 */
 							do_action( 'srfm_after_entry_submission_info', $this->entry, $this );
 							$this->render_upsell_placeholder( 'resend-notification' );
@@ -126,7 +126,7 @@ class Single_Entry {
 				/**
 				 * Action hook right before entry form closing tag.
 				 *
-				 * @since x.x.x
+				 * @since 1.3.0
 				 */
 				do_action( 'srfm_before_entry_form_closing_tag', $this->entry, $this );
 				?>
@@ -141,7 +141,7 @@ class Single_Entry {
 	 * @param string   $position Tooltip position.
 	 * @param callable $element_cb Element callback.
 	 * @param callable $tooltip_cb Tooltip callback.
-	 * @since x.x.x
+	 * @since 1.3.0
 	 * @return void
 	 */
 	protected function add_tooltip( $position, $element_cb, $tooltip_cb ) {
@@ -165,7 +165,7 @@ class Single_Entry {
 	 * Renders the upsell placeholder.
 	 *
 	 * @param string $for The placeholder type.
-	 * @since x.x.x
+	 * @since 1.3.0
 	 * @return void
 	 */
 	protected function render_upsell_placeholder( $for ) {
@@ -342,7 +342,7 @@ class Single_Entry {
 				/**
 				 * Action hook right after entry form opening tag.
 				 *
-				 * @since x.x.x
+				 * @since 1.3.0
 				 */
 				do_action( 'srfm_after_entry_postbox_title', $this->entry, $this );
 				$this->render_upsell_placeholder( 'edit-button' );

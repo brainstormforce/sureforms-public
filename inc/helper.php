@@ -51,7 +51,7 @@ class Helper {
 	 *
 	 * @param string $file_url The URL of the file.
 	 *
-	 * @since x.x.x
+	 * @since 1.3.0
 	 * @return string The file path.
 	 */
 	public static function convert_fileurl_to_filepath( $file_url ) {

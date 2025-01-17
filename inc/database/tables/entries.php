@@ -219,7 +219,7 @@ class Entries extends Base {
 	/**
 	 * Resets logs to zero.
 	 *
-	 * @since x.x.x
+	 * @since 1.3.0
 	 * @return void
 	 */
 	public function reset_logs() {
