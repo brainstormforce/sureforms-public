@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { RichText } from '@wordpress/block-editor';
 import { __ } from '@wordpress/i18n';
 import { BlockInserterWrapper } from '../Inserter.js';
+import { shouldSubmitButtonDisable } from '@Components/hooks';
 
 export default function useSubmitButton( args ) {
 	const {
@@ -108,8 +109,10 @@ export default function useSubmitButton( args ) {
 				'.block-editor-block-list__layout'
 			);
 
+			const disableSubmitButton = shouldSubmitButtonDisable( sureformsKeys );
+
 			// If Custom Button is present, remove the default button.
-			if ( isInlineButtonBlockPresent ) {
+			if ( isInlineButtonBlockPresent || disableSubmitButton ) {
 				const submitBtn = document.querySelectorAll(
 					'.srfm-submit-btn-container'
 				);
@@ -119,7 +122,7 @@ export default function useSubmitButton( args ) {
 			}
 
 			// If Custom Button is not present, add the default button. Remove the default button if there are more than one.
-			if ( ! submitBtnContainer && ! isInlineButtonBlockPresent ) {
+			if ( ! submitBtnContainer && ! isInlineButtonBlockPresent && ! disableSubmitButton ) {
 				addSubmitButton( elm );
 
 				// remove duplicated submit button from the view after inline button is removed
