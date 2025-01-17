@@ -28,7 +28,7 @@ class Base {
 	 * Stores the attributes of the block.
 	 *
 	 * @var array<mixed> $attributes Block attributes.
-	 * @since x.x.x
+	 * @since 1.3.0
 	 */
 	protected $attributes;
 
@@ -326,7 +326,7 @@ class Base {
 	 * If it is true, then block is currently rendered in edit entry.
 	 *
 	 * @var bool
-	 * @since x.x.x
+	 * @since 1.3.0
 	 */
 	protected $is_editing = false;
 
@@ -334,7 +334,7 @@ class Base {
 	 * Currently rendered entry ID.
 	 *
 	 * @var int
-	 * @since x.x.x
+	 * @since 1.3.0
 	 */
 	protected $entry_id = 0;
 

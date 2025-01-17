@@ -8328,7 +8328,7 @@ namespace SRFM\Inc {
          *
          * @param string $file_url The URL of the file.
          *
-         * @since x.x.x
+         * @since 1.3.0
          * @return string The file path.
          */
         public static function convert_fileurl_to_filepath($file_url)
@@ -8936,7 +8936,7 @@ namespace SRFM\Admin\Views {
          * @param array<mixed> $array Array item to paginate.
          * @param int          $current_page Current page number.
          * @param int          $items_per_page Total items to return per pagination.
-         * @since x.x.x
+         * @since 1.3.0
          * @return array<mixed>
          */
         public static function paginate_array($array, $current_page, $items_per_page = 3)
@@ -8946,7 +8946,7 @@ namespace SRFM\Admin\Views {
          * Prints entry note item markup.
          *
          * @param array $note Single note array.
-         * @since x.x.x
+         * @since 1.3.0
          * @return void
          */
         public static function entry_note_item_markup($note)
@@ -8956,7 +8956,7 @@ namespace SRFM\Admin\Views {
          * Provides table markup for the entry logs.
          *
          * @param array<mixed> $entry_logs Entry logs stored in the database.
-         * @since x.x.x
+         * @since 1.3.0
          * @return void
          */
         public static function entry_logs_table_markup($entry_logs)
