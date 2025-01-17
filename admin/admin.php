@@ -717,6 +717,8 @@ class Admin {
 			$url = SRFM_WEBSITE . $trail;
 		}
 
+		$url = \BSF_UTM_Analytics\Inc\Utils::get_utm_ready_link( $url, 'sureforms' );
+
 		return esc_url( $url );
 	}
 
