@@ -33,6 +33,15 @@ function StyleSettings( props ) {
 	);
 	const [ fieldSpacing, setFieldSpacing ] = useState( formStyling?.field_spacing || 'medium' );
 
+	// Add the CSS properties to the root element.
+	const addStyleInRoot = ( cssProperties ) => {
+		if ( Object.keys( cssProperties ).length > 0 ) {
+			for ( const [ key, objValue ] of Object.entries( cssProperties ) ) {
+				root.style.setProperty( key, objValue );
+			}
+		}
+	};
+
 	// Apply the sizings when field spacing changes.
 	useEffect( () => {
 		applyFieldSpacing( fieldSpacing );
@@ -114,9 +123,7 @@ function StyleSettings( props ) {
 				'--srfm-submit-width-backend': sureformsKeys._srfm_submit_width_backend || '',
 			};
 
-			for ( const [ key, value ] of Object.entries( cssProperties ) ) {
-				root.style.setProperty( key, value );
-			}
+			addStyleInRoot( cssProperties );
 		} else {
 			sureformsKeys = defaultKeys;
 			editPost( {
@@ -129,18 +136,15 @@ function StyleSettings( props ) {
 		const value_id = 0;
 		const key_id = '';
 
+		const cssProperties = {};
 		// Button
 		if ( option === '_srfm_button_border_width' ) {
-			root.style.setProperty(
-				'--srfm-btn-border-width',
-				value ? value + 'px' : '0px'
-			);
+			cssProperties[ '--srfm-btn-border-width' ] = value ? value + 'px' : '0px';
 		} else if ( option === '_srfm_button_border_color' ) {
-			root.style.setProperty(
-				'--srfm-btn-border-color',
-				value ? value : '#000000'
-			);
+			cssProperties[ '--srfm-btn-border-color' ] = value ? value : '#000000';
 		}
+
+		addStyleInRoot( cssProperties );
 
 		const option_array = {};
 
@@ -169,9 +173,7 @@ function StyleSettings( props ) {
 		const overrideSize = srfm_admin?.field_spacing_vars[ sizingValue ] || {};
 		const finalSize = { ...baseSize, ...overrideSize };
 
-		for ( const [ key, value ] of Object.entries( finalSize ) ) {
-			root.style.setProperty( key, value );
-		}
+		addStyleInRoot( finalSize );
 	}
 
 	/**
@@ -226,11 +228,7 @@ function StyleSettings( props ) {
 			}
 		}
 
-		if ( Object.keys( cssProperties ).length > 0 ) {
-			for ( const [ key, objValue ] of Object.entries( cssProperties ) ) {
-				root.style.setProperty( key, objValue );
-			}
-		}
+		addStyleInRoot( cssProperties );
 
 		editPost( {
 			meta: {
