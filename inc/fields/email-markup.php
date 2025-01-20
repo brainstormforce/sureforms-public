@@ -133,7 +133,18 @@ class Email_Markup extends Base {
 				<?php } ?>
 			</div>
 		<?php
-		return ob_get_clean();
+		$markup = ob_get_clean();
+
+		return apply_filters(
+			'srfm_block_field_markup',
+			$markup,
+			[
+				'slug'       => $this->slug,
+				'is_editing' => $this->is_editing,
+				'field_name' => $this->field_name,
+				'attributes' => $this->attributes,
+			]
+		);
 	}
 
 }

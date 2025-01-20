@@ -226,7 +226,7 @@ function StyleSettings( props ) {
 			}
 		}
 
-		if( Object.keys( cssProperties ).length > 0 ) {
+		if ( Object.keys( cssProperties ).length > 0 ) {
 			for ( const [ key, objValue ] of Object.entries( cssProperties ) ) {
 				root.style.setProperty( key, objValue );
 			}

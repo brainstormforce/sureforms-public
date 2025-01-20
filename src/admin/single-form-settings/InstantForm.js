@@ -230,7 +230,7 @@ const InstantFormComponent = () => {
 		}
 
 		live_mode_prev_srfm_instant_form_settings = _srfm_instant_form_settings;
-	}, [ isLiveMode, _srfm_instant_form_settings ] );
+	}, [ isLiveMode, _srfm_submit_button_text, _srfm_instant_form_settings ] );
 
 	const onHandleChange = ( key, value ) => {
 		if ( _srfm_instant_form_settings?.[ key ] === value ) {

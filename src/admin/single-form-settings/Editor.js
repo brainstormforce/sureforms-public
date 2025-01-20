@@ -12,6 +12,7 @@ import { useState, useEffect, render } from '@wordpress/element';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { store as editorStore, PluginDocumentSettingPanel, PluginPostPublishPanel } from '@wordpress/editor';
 import { store as blockEditorStore } from '@wordpress/block-editor';
+import { store as preferencesStore } from '@wordpress/preferences';
 
 import GeneralSettings from './tabs/GeneralSettings.js';
 import StyleSettings from './tabs/StyleSettings.js';
@@ -42,8 +43,11 @@ const SureformsFormSpecificSettings = ( props ) => {
 		sureformsKeys,
 		blockCount,
 		blocks,
+		editorMode,
 	} = useSelect( ( select ) => {
+		const { get } = select( preferencesStore );
 		return {
+			editorMode: get( 'core', 'editorMode' ) ?? 'visual',
 			postId: select( 'core/editor' ).getCurrentPostId(),
 			sureformsKeys: select( editorStore ).getEditedPostAttribute( 'meta' ),
 			blockCount: select( blockEditorStore ).getBlockCount(),
@@ -93,7 +97,6 @@ const SureformsFormSpecificSettings = ( props ) => {
 	const formRootContainer = document.querySelector(
 		'.editor-styles-wrapper'
 	);
-
 	const addRootClass = () => {
 		if ( formRootContainer && sureformsKeys?._srfm_additional_classes ) {
 			// Split the classes string by spaces
@@ -110,11 +113,17 @@ const SureformsFormSpecificSettings = ( props ) => {
 	useEffect( addRootClass, [ formRootContainer ] );
 
 	// Update the custom CSS when the formCustomCssData prop changes. This will apply the custom CSS to the editor.
-	const formCustomCssData = sureformsKeys?._srfm_form_custom_css || [];
+	const formCustomCssData = sureformsKeys?._srfm_form_custom_css || '';
+
 	useEffect( () => {
+		if ( ! formCustomCssData ) {
+			return;
+		}
+
 		const isExistStyle = document.getElementById(
 			'srfm-blocks-editor-custom-css'
 		);
+
 		if ( ! isExistStyle ) {
 			const node = document.createElement( 'style' );
 			node.setAttribute( 'id', 'srfm-blocks-editor-custom-css' );
@@ -142,10 +151,9 @@ const SureformsFormSpecificSettings = ( props ) => {
 	}, [ blockCount ] );
 
 	useSubmitButton( {
-		sureformsKeys,
-		blockCount,
 		isInlineButtonBlockPresent,
 		updateMeta,
+		editorMode,
 	} );
 
 	useEffect( () => {
