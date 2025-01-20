@@ -327,7 +327,7 @@ const InstantFormComponent = () => {
 	} );
 
 	// Filter to add additional components to instant form settings.
-	const components = applyFilters( 'srfm.instant_form_settings.components', [], { onImageSelect, setHidePopover } );
+	const components = applyFilters( 'srfm.instant_form_settings.components', [], { setHidePopover } );
 
 	return (
 		<>
