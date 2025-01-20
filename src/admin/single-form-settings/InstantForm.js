@@ -158,6 +158,7 @@ const InstantFormComponent = () => {
 	// Filter to add additional metas for live preview.
 	const additionalMetasForLivePreview = applyFilters( 'srfm.instantFormLivePreviewAdditionalMetas', {
 		isLiveMode,
+		_srfm_submit_button_text,
 		 _srfm_instant_form_settings,
 	} );
 
