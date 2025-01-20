@@ -325,6 +325,9 @@ const InstantFormComponent = () => {
 		showInstantFormTitleSetting: true,
 	} );
 
+	// Filter to add additional components to instant form settings.
+	const components = applyFilters( 'srfm.instant_form_settings.components', [], { onImageSelect, setHidePopover } );
+
 	return (
 		<>
 			<button ref={ setPopoverAnchor } onClick={ () => setOpenPopover( ! openPopover ) } className="srfm-instant-form-button">
@@ -384,6 +387,16 @@ const InstantFormComponent = () => {
 						</div>
 
 						<div className="srfm-instant-form-settings-separator" />
+
+						{
+							components.length > 0 && (
+								components.map( ( component, index ) => (
+									<div key={ index }>
+										{ component }
+									</div>
+								) )
+							)
+						}
 
 						{
 						 showInstantFormSiteLogoGroup &&
