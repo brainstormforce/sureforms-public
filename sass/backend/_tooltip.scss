@@ -177,7 +177,6 @@
 		position: absolute;
 		z-index: 99999999;
 		box-sizing: border-box;
-		border: 1px solid #dca;
 	}
 
 	.left i {
@@ -199,7 +198,6 @@
 		top: 50%;
 		transform: translate( -50%, -50% ) rotate( -45deg );
 		background-color: #1e1e1e;
-		border: 1px solid #dca;
 	}
 
 	// Add transition to the tooltip's visible and hidden state.
