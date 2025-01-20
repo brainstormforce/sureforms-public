@@ -56,7 +56,7 @@ class Admin {
 		// A better solution will be required from library to resolve plugin conflict.
 		add_action(
 			'admin_footer',
-			function() {
+			static function() {
 				Helper::register_script_translations( 'nps-survey-script' );
 			},
 			1000
