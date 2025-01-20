@@ -255,11 +255,11 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 
 == Changelog ==
 = 1.3.0 - 21st January 2025 =
-* Improvement: Restrict storing confirm email data in database.
-* Fix: Forms are not being submitted in some instances with V3 reCAPTCHA.
-* Fix: Addressed an issue where selecting a block in the editor would hide the Settings button.
-* Fix: Addressed the glitch effect occurring on the initial load and after refreshing Instant Forms. 
-* Fix: Submit button now works consistently when switching between Visual and Text modes in the Gutenberg editor.
+* Improvement: Stopped storing confirmation email setting's data of the Email field in the database.
+* Fix: Resolved an issue where forms were not being submitted in some instances with v3 reCAPTCHA.
+* Fix: Addressed an issue where selecting a field in the editor would hide the Settings icon.
+* Fix: Fixed a UI glitch on the initial load and refresh of Instant Forms.
+* Fix: Ensured the Submit button works consistently when switching between Visual and Text modes in the Gutenberg editor.
 = 1.2.4 - 7th January 2025 =
 * New: Added translations for the Italian, Portuguese, and Polish languages.
 * Fix: Addressed an issue where forms were not submitting in a page-cached environment.
