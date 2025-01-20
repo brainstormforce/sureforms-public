@@ -51,6 +51,16 @@ class Admin {
 		// Handle entry actions.
 		add_action( 'admin_init', [ $this, 'handle_entry_actions' ] );
 		add_action( 'admin_notices', [ Entries_List_Table::class, 'display_bulk_action_notice' ] );
+
+		// This action enqueues translations for NPS Survey library.
+		// A better solution will be required from library to resolve plugin conflict.
+		add_action(
+			'admin_footer',
+			function() {
+				Helper::register_script_translations( 'nps-survey-script' );
+			},
+			1000
+		);
 	}
 
 	/**
