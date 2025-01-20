@@ -5,20 +5,14 @@ import { createRoot } from 'react-dom/client';
 import { RichText } from '@wordpress/block-editor';
 import { __ } from '@wordpress/i18n';
 import { BlockInserterWrapper } from '../Inserter.js';
-import { shouldSubmitButtonDisable } from '@Components/hooks';
+import { filterSubmitButton } from '@Components/hooks';
 
 const SubmitButton = ( props ) => {
 	const metaValues = useSelect( ( select ) => select( editorStore ).getEditedPostAttribute( 'meta' ) );
 	const buttonElement = useRef( null );
-	const disableSubmitButton = shouldSubmitButtonDisable( metaValues );
-
 	const labelText = metaValues?._srfm_submit_button_text || __( 'Submit', 'sureforms' );
 
 	useEffect( () => {
-		if ( disableSubmitButton ) {
-			return;
-		}
-
 		const eventToButton = () => {
 			// need multiple timeouts for DOM elements to find.
 			// click on form section
@@ -45,13 +39,9 @@ const SubmitButton = ( props ) => {
 				buttonElement.current.removeEventListener( 'click', eventToButton );
 			}
 		};
-	}, [ disableSubmitButton ] );
+	}, [] );
 
-	if ( disableSubmitButton ) {
-		return null;
-	}
-
-	return <button className="srfm-submit-richtext srfm-button srfm-submit-button srfm-btn-alignment srfm-btn-bg-color" ref={ buttonElement }>
+	const submitButton = <button className="srfm-submit-richtext srfm-button srfm-submit-button srfm-btn-alignment srfm-btn-bg-color" ref={ buttonElement }>
 		<RichText
 			tagName="label"
 			value={ labelText }
@@ -59,6 +49,8 @@ const SubmitButton = ( props ) => {
 			placeholder={ __( 'Submit', 'sureforms' ) }
 		/>
 	</button>;
+
+	return filterSubmitButton( submitButton, metaValues );
 };
 
 export default function useSubmitButton( args ) {

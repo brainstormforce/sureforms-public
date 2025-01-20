@@ -24,6 +24,6 @@ export const submitButtonContainerOptions = ( options, args ) => {
 	);
 };
 
-export const shouldSubmitButtonDisable = ( args ) => {
-	return applyFilters( 'srfm.submit.button.disable', true, args );
+export const filterSubmitButton = ( submitButton ) => {
+	return applyFilters( 'srfm.submit.button', submitButton );
 };
