@@ -73,17 +73,17 @@ msgstr "Einträge"
 msgid "Edit %1$s"
 msgstr "%1$s bearbeiten"
 
-#: admin/admin.php:741
+#: admin/admin.php:742
 #: api/block-patterns.php:110
 #: inc/ai-form-builder/ai-auth.php:45
 #: inc/ai-form-builder/ai-auth.php:81
 #: inc/ai-form-builder/ai-auth.php:145
 #: inc/background-process.php:101
 #: inc/create-new-form.php:126
-#: inc/export.php:61
-#: inc/export.php:126
+#: inc/export.php:60
+#: inc/export.php:125
 #: inc/form-submit.php:201
-#: inc/form-submit.php:753
+#: inc/form-submit.php:776
 #: inc/forms-data.php:87
 #: inc/global-settings/global-settings.php:86
 #: inc/global-settings/global-settings.php:276
@@ -92,180 +92,181 @@ msgstr "%1$s bearbeiten"
 msgid "Nonce verification failed."
 msgstr "Überprüfung des Nonce ist fehlgeschlagen."
 
-#: admin/admin.php:750
+#: admin/admin.php:751
 msgid "You cannot view this entry because it is in trash."
 msgstr "Sie können diesen Eintrag nicht anzeigen, da er im Papierkorb ist."
 
 #. translators: %1$s: Opening anchor tag with URL, %2$s: Closing anchor tag, %3$s: SureForms Pro Plugin Name.
-#: admin/admin.php:795
+#: admin/admin.php:796
 msgid "Please %1$sactivate%2$s your copy of %3$s to get new features, access support, receive update notifications, and more."
 msgstr "Bitte %1$saktivieren%2$s Sie Ihre Kopie von %3$s, um neue Funktionen zu erhalten, Support zu nutzen, Update-Benachrichtigungen zu erhalten und mehr."
 
 #. translators: %1$s: SureForms version, %2$s: SureForms Pro Plugin Name, %3$s: SureForms Pro Version, %4$s: Anchor tag open, %5$s: Closing anchor tag.
-#: admin/admin.php:805
+#: admin/admin.php:806
 msgid "SureForms %1$s requires minimum %2$s %3$s to work properly. Please update to the latest version from %4$shere%5$s."
 msgstr "SureForms %1$s erfordert mindestens %2$s %3$s, um ordnungsgemäß zu funktionieren. Bitte aktualisieren Sie auf die neueste Version von %4$shier%5$s."
 
-#: admin/views/entries-list-table.php:89
-#: admin/views/entries-list-table.php:494
+#: admin/views/entries-list-table.php:92
+#: admin/views/entries-list-table.php:497
 msgid "ID"
 msgstr "ID"
 
-#: admin/views/entries-list-table.php:90
+#: admin/views/entries-list-table.php:93
 #: inc/global-settings/email-summary.php:106
 msgid "Form Name"
 msgstr "Formularname"
 
-#: admin/views/entries-list-table.php:91
+#: admin/views/entries-list-table.php:94
 #: assets/build/formEditor.js:172
 msgid "Status"
 msgstr "Status"
 
-#: admin/views/entries-list-table.php:92
+#: admin/views/entries-list-table.php:95
 msgid "First Field"
 msgstr "Erstes Feld"
 
-#: admin/views/entries-list-table.php:93
+#: admin/views/entries-list-table.php:96
 msgid "Submitted On"
 msgstr "Eingereicht am"
 
-#: admin/views/entries-list-table.php:119
+#: admin/views/entries-list-table.php:122
 msgid "Move to Trash"
 msgstr "In den Papierkorb verschieben"
 
-#: admin/views/entries-list-table.php:120
+#: admin/views/entries-list-table.php:123
 msgid "Mark as Read"
 msgstr "Als gelesen markieren"
 
-#: admin/views/entries-list-table.php:121
-#: admin/views/single-entry.php:164
+#: admin/views/entries-list-table.php:124
+#: admin/views/single-entry.php:312
 msgid "Mark as Unread"
 msgstr "Als ungelesen markieren"
 
-#: admin/views/entries-list-table.php:122
+#: admin/views/entries-list-table.php:125
 #: inc/post-types.php:192
 #: inc/post-types.php:219
 msgid "Export"
 msgstr "Exportieren"
 
-#: admin/views/entries-list-table.php:138
+#: admin/views/entries-list-table.php:141
 msgid "No entries found."
 msgstr "Keine Einträge gefunden."
 
-#: admin/views/entries-list-table.php:251
+#: admin/views/entries-list-table.php:254
 #: assets/build/blocks.js:172
 #: modules/gutenberg/build/blocks.js:7
 msgid "Search"
 msgstr "Suche"
 
-#: admin/views/entries-list-table.php:383
+#: admin/views/entries-list-table.php:386
 msgid "Entries export failed. You have file permission issue. Temporary directory is not writable."
 msgstr "Der Export der Einträge ist fehlgeschlagen. Sie haben ein Problem mit den Dateiberechtigungen. Das temporäre Verzeichnis ist nicht beschreibbar."
 
-#: admin/views/entries-list-table.php:401
+#: admin/views/entries-list-table.php:404
 msgid "Entries export failed. Your server does not support the ZipArchive library."
 msgstr "Der Export der Einträge ist fehlgeschlagen. Ihr Server unterstützt die ZipArchive-Bibliothek nicht."
 
-#: admin/views/entries-list-table.php:423
+#: admin/views/entries-list-table.php:426
 msgid "Entries export failed. Unable to create the ZIP file."
 msgstr "Export der Einträge fehlgeschlagen. Die ZIP-Datei konnte nicht erstellt werden."
 
-#: admin/views/entries-list-table.php:565
+#: admin/views/entries-list-table.php:568
 msgid "Entries export failed."
 msgstr "Der Export der Einträge ist fehlgeschlagen."
 
-#: admin/views/entries-list-table.php:580
+#: admin/views/entries-list-table.php:583
 msgid "Entries export failed. Problem occured while closing the ZIP file."
 msgstr "Der Export der Einträge ist fehlgeschlagen. Beim Schließen der ZIP-Datei ist ein Problem aufgetreten."
 
 #. translators: %1$d refers to the number of entries, %2$s refers to the status (read or unread).
-#: admin/views/entries-list-table.php:656
+#: admin/views/entries-list-table.php:659
 msgid "%1$d entry was successfully marked as %2$s."
 msgid_plural "%1$d entries were successfully marked as %2$s."
 msgstr[0] "%1$d Eintrag wurde erfolgreich als %2$s markiert."
 msgstr[1] ""
 
 #. translators: %1$d refers to the number of entries, %2$s refers to the action (trash).
-#: admin/views/entries-list-table.php:660
+#: admin/views/entries-list-table.php:663
 msgid "%1$d entry was successfully moved to trash."
 msgid_plural "%1$d entries were successfully moved to trash."
 msgstr[0] "%1$d Eintrag wurde erfolgreich in den Papierkorb verschoben."
 msgstr[1] ""
 
 #. translators: %1$d refers to the number of entries, %2$s refers to the action (restore).
-#: admin/views/entries-list-table.php:664
+#: admin/views/entries-list-table.php:667
 msgid "%1$d entry was successfully restored."
 msgid_plural "%1$d entries were successfully restored."
 msgstr[0] "%1$d Eintrag wurde erfolgreich wiederhergestellt."
 msgstr[1] ""
 
 #. translators: %1$d refers to the number of entries, %2$s refers to the action (delete).
-#: admin/views/entries-list-table.php:668
+#: admin/views/entries-list-table.php:671
 msgid "%1$d entry was permanently deleted."
 msgid_plural "%1$d entries were permanently deleted."
 msgstr[0] "%1$d Eintrag wurde dauerhaft gelöscht."
 msgstr[1] ""
 
-#: admin/views/entries-list-table.php:797
+#: admin/views/entries-list-table.php:798
 msgid "Entry #"
 msgstr "Eintrag #"
 
 #. translators: %1$s is the word "form", %2$d is the form ID.
-#: admin/views/entries-list-table.php:813
+#: admin/views/entries-list-table.php:814
+#: admin/views/entries-list-table.php:1105
 #: inc/page-builders/bricks/elements/form-widget.php:96
 #: assets/build/dashboard.js:2
 msgid "Form"
 msgstr "Formular"
 
-#: admin/views/entries-list-table.php:829
+#: admin/views/entries-list-table.php:830
 msgid "Read"
 msgstr "Lesen"
 
-#: admin/views/entries-list-table.php:832
-#: admin/views/entries-list-table.php:1164
+#: admin/views/entries-list-table.php:833
+#: admin/views/entries-list-table.php:1192
 msgid "Unread"
 msgstr "Ungelesen"
 
-#: admin/views/entries-list-table.php:835
-#: admin/views/entries-list-table.php:921
-#: admin/views/entries-list-table.php:1175
+#: admin/views/entries-list-table.php:836
+#: admin/views/entries-list-table.php:940
+#: admin/views/entries-list-table.php:1203
 #: modules/gutenberg/icons/icons-v6-3.php:2916
 msgid "Trash"
 msgstr "Müll"
 
-#: admin/views/entries-list-table.php:881
+#: admin/views/entries-list-table.php:900
 msgid "Published"
 msgstr "Veröffentlicht"
 
-#: admin/views/entries-list-table.php:920
+#: admin/views/entries-list-table.php:939
 #: inc/email/email-template.php:157
 #: inc/smart-tags.php:338
 msgid "View"
 msgstr "Ansehen"
 
-#: admin/views/entries-list-table.php:954
-#: admin/views/entries-list-table.php:1366
+#: admin/views/entries-list-table.php:973
+#: admin/views/entries-list-table.php:1394
 msgid "Restore"
 msgstr "Wiederherstellen"
 
-#: admin/views/entries-list-table.php:955
-#: admin/views/entries-list-table.php:1367
+#: admin/views/entries-list-table.php:974
+#: admin/views/entries-list-table.php:1395
 msgid "Delete Permanently"
 msgstr "Dauerhaft löschen"
 
-#: admin/views/entries-list-table.php:981
+#: admin/views/entries-list-table.php:1008
 msgid "Clear Filter"
 msgstr "Filter löschen"
 
-#: admin/views/entries-list-table.php:1076
+#: admin/views/entries-list-table.php:1103
 msgid "All Form Entries"
 msgstr "Alle Formulareinträge"
 
-#: admin/views/entries-list-table.php:1105
+#: admin/views/entries-list-table.php:1133
 msgid "All Dates"
 msgstr "Alle Daten"
 
-#: admin/views/entries-list-table.php:1157
+#: admin/views/entries-list-table.php:1185
 msgid "All"
 msgstr "Alle"
 
@@ -274,63 +275,55 @@ msgstr "Alle"
 msgid "SureForms Form #%d"
 msgstr "SureForms Formular Nr. %d"
 
-#: admin/views/single-entry.php:75
-msgid "View Entry"
-msgstr "Eintrag anzeigen"
-
-#: admin/views/single-entry.php:82
-msgid "Add title"
-msgstr "Titel hinzufügen"
-
-#: admin/views/single-entry.php:123
+#: admin/views/single-entry.php:271
 msgid "Submission Info"
 msgstr "Einreichungsinformationen"
 
-#: admin/views/single-entry.php:130
+#: admin/views/single-entry.php:278
 msgid "Entry:"
 msgstr "Eingang:"
 
-#: admin/views/single-entry.php:134
+#: admin/views/single-entry.php:282
 msgid "Form Name:"
 msgstr "Formularname:"
 
-#: admin/views/single-entry.php:139
+#: admin/views/single-entry.php:287
 msgid "User IP:"
 msgstr "Benutzer-IP:"
 
-#: admin/views/single-entry.php:144
+#: admin/views/single-entry.php:292
 msgid "Browser:"
 msgstr "Browser:"
 
-#: admin/views/single-entry.php:148
+#: admin/views/single-entry.php:296
 msgid "Device:"
 msgstr "Gerät:"
 
-#: admin/views/single-entry.php:153
+#: admin/views/single-entry.php:301
 msgid "User:"
 msgstr "Benutzer:"
 
-#: admin/views/single-entry.php:158
+#: admin/views/single-entry.php:306
 msgid "Status:"
 msgstr "Status:"
 
-#: admin/views/single-entry.php:169
+#: admin/views/single-entry.php:317
 msgid "Submitted On:"
 msgstr "Eingereicht am:"
 
-#: admin/views/single-entry.php:192
+#: admin/views/single-entry.php:340
 msgid "Form Data"
 msgstr "Formulardaten"
 
-#: admin/views/single-entry.php:199
+#: admin/views/single-entry.php:355
 msgid "Fields"
 msgstr "Felder"
 
-#: admin/views/single-entry.php:200
+#: admin/views/single-entry.php:356
 msgid "Values"
 msgstr "Werte"
 
-#: admin/views/single-entry.php:271
+#: admin/views/single-entry.php:432
 #: modules/gutenberg/classes/class-spec-block-config.php:562
 #: modules/gutenberg/icons/icons-v6-1.php:5470
 #: assets/build/blocks.js:172
@@ -342,15 +335,15 @@ msgstr "Werte"
 msgid "Image"
 msgstr "Bild"
 
-#: admin/views/single-entry.php:284
+#: admin/views/single-entry.php:445
 msgid "Open"
 msgstr "Öffnen"
 
-#: admin/views/single-entry.php:320
+#: admin/views/single-entry.php:481
 msgid "Entry Logs"
 msgstr "Eintragsprotokolle"
 
-#: admin/views/single-entry.php:345
+#: admin/views/single-entry.php:505
 msgid "No logs found for this entry."
 msgstr "Keine Protokolle für diesen Eintrag gefunden."
 
@@ -447,90 +440,91 @@ msgstr "Installation läuft..."
 msgid "Installed"
 msgstr "Installiert"
 
-#: inc/admin-ajax.php:163
+#: inc/admin-ajax.php:165
 #: assets/build/formEditor.js:172
 msgid "SureTriggers"
 msgstr "SureTriggers"
 
-#: inc/admin-ajax.php:164
+#: inc/admin-ajax.php:166
 msgid "Connect SureForms to hundreds of apps, CRMs and tools such as Slack, Mailchimp, etc."
 msgstr "Verbinden Sie SureForms mit Hunderten von Apps, CRMs und Tools wie Slack, Mailchimp usw."
 
-#: inc/admin-ajax.php:165
+#: inc/admin-ajax.php:167
 msgid "SureTriggers is a powerful automation platform that helps you connect your various plugins and apps together. It allows you to automate repetitive tasks, so you can focus on more important work."
 msgstr "SureTriggers ist eine leistungsstarke Automatisierungsplattform, die Ihnen hilft, Ihre verschiedenen Plugins und Apps miteinander zu verbinden. Sie ermöglicht es Ihnen, sich wiederholende Aufgaben zu automatisieren, damit Sie sich auf wichtigere Arbeiten konzentrieren können."
 
-#: inc/admin-ajax.php:216
+#: inc/admin-ajax.php:218
 msgid "You do not have permission to access this page."
 msgstr "Sie haben keine Berechtigung, auf diese Seite zuzugreifen."
 
-#: inc/admin-ajax.php:220
+#: inc/admin-ajax.php:222
 msgid "Invalid nonce."
 msgstr "Ungültiger Nonce."
 
-#: inc/admin-ajax.php:224
+#: inc/admin-ajax.php:226
 msgid "Form ID is required."
 msgstr "Formular-ID ist erforderlich."
 
-#: inc/admin-ajax.php:231
+#: inc/admin-ajax.php:233
 msgid "SureTriggers is not configured properly."
 msgstr "SureTriggers ist nicht richtig konfiguriert."
 
-#: inc/admin-ajax.php:240
-#: inc/form-submit.php:765
+#: inc/admin-ajax.php:242
+#: inc/form-submit.php:788
 msgid "Invalid form ID."
 msgstr "Ungültige Formular-ID."
 
 #. Translators: %s: Form ID.
-#: inc/admin-ajax.php:244
+#: inc/admin-ajax.php:246
 msgid "SureForms id: %s"
 msgstr "SureForms-ID: %s"
 
-#: inc/admin-ajax.php:254
+#: inc/admin-ajax.php:256
 msgid "Form Submitted"
 msgstr "Formular eingereicht"
 
-#: inc/admin-ajax.php:256
+#: inc/admin-ajax.php:258
 msgid "Runs when a form is submitted"
 msgstr "Läuft, wenn ein Formular abgeschickt wird"
 
-#: inc/admin-ajax.php:348
-#: inc/admin-ajax.php:377
+#: inc/admin-ajax.php:350
+#: inc/admin-ajax.php:379
 msgid "Sample data"
 msgstr "Beispieldaten"
 
-#: inc/admin-ajax.php:352
+#: inc/admin-ajax.php:354
 msgid "Sample input data"
 msgstr "Beispieldaten"
 
-#: inc/admin-ajax.php:354
+#: inc/admin-ajax.php:356
 msgid "Sample textarea data"
 msgstr "Beispieldaten für Textbereich"
 
-#: inc/admin-ajax.php:359
-#: inc/admin-ajax.php:360
+#: inc/admin-ajax.php:361
+#: inc/admin-ajax.php:362
 msgid "Address data"
 msgstr "Adressdaten"
 
-#: inc/admin-ajax.php:361
+#: inc/admin-ajax.php:363
 msgid "Selected dropdown option"
 msgstr "Ausgewählte Dropdown-Option"
 
-#: inc/admin-ajax.php:362
+#: inc/admin-ajax.php:364
 msgid "Selected Multichoice option"
 msgstr "Ausgewählte Mehrfachauswahl-Option"
 
-#: inc/admin-ajax.php:363
+#: inc/admin-ajax.php:365
 msgid "Selected radio option"
 msgstr "Ausgewählte Radiooption"
 
-#: inc/admin-ajax.php:364
+#: inc/admin-ajax.php:366
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
+#: inc/lib/nps-survey/dist/main.js:1
 msgid "Submit"
 msgstr "Einreichen"
 
-#: inc/admin-ajax.php:367
+#: inc/admin-ajax.php:369
 msgid "Hidden Value"
 msgstr "Verborgener Wert"
 
@@ -665,10 +659,10 @@ msgstr "Fehler beim Erstellen des SureForms-Formulars,"
 msgid "New form submission"
 msgstr "Neue Formularübermittlung"
 
-#: inc/export.php:135
-#: inc/export.php:140
-#: inc/export.php:175
-#: inc/export.php:192
+#: inc/export.php:134
+#: inc/export.php:139
+#: inc/export.php:174
+#: inc/export.php:191
 msgid "Failed to import form."
 msgstr "Formular konnte nicht importiert werden."
 
@@ -682,8 +676,8 @@ msgstr "Kontrollkästchen"
 
 #: inc/fields/checkbox-markup.php:60
 #: inc/fields/gdpr-markup.php:59
-#: inc/helper.php:259
-#: inc/helper.php:275
+#: inc/helper.php:276
+#: inc/helper.php:292
 #: assets/build/blocks.js:172
 msgid "Required"
 msgstr "Erforderlich"
@@ -798,20 +792,11 @@ msgstr "Spam erkannt"
 msgid "Error submitting form"
 msgstr "Fehler beim Absenden des Formulars"
 
-#: inc/form-submit.php:649
-msgid "Email Notification Initiated"
-msgstr "E-Mail-Benachrichtigung gestartet"
-
-#. translators: Here, %s is the comma separated emails list.
-#: inc/form-submit.php:713
-msgid "Email notification sent to %s"
-msgstr "E-Mail-Benachrichtigung an %s gesendet"
-
 #: inc/forms-data.php:67
 msgid "Sorry, you are not allowed to view the form."
 msgstr "Entschuldigung, Sie dürfen das Formular nicht ansehen."
 
-#: inc/generate-form-markup.php:366
+#: inc/generate-form-markup.php:367
 msgid "There was an error trying to submit your form. Please try again."
 msgstr "Beim Absenden Ihres Formulars ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut."
 
@@ -874,7 +859,7 @@ msgstr "Dieses Feld ist erforderlich."
 msgid "Value needs to be unique."
 msgstr "Der Wert muss einzigartig sein."
 
-#: inc/helper.php:490
+#: inc/helper.php:507
 msgid "Sorry, you are not allowed to perform this action."
 msgstr "Entschuldigung, Sie dürfen diese Aktion nicht ausführen."
 
@@ -922,6 +907,7 @@ msgstr "Verbergen"
 msgid "Edit Form"
 msgstr "Formular bearbeiten"
 
+#: admin/views/single-entry.php:185
 #: inc/page-builders/elementor/form-widget.php:177
 msgid "Edit"
 msgstr "Bearbeiten"
@@ -6679,7 +6665,7 @@ msgstr "Waage unausgeglichen umdrehen"
 
 #: modules/gutenberg/icons/icons-v6-3.php:81
 msgid "SCHLIX"
-msgstr ""
+msgstr "SCHLIX"
 
 #: modules/gutenberg/icons/icons-v6-3.php:92
 msgid "School"
@@ -8575,20 +8561,20 @@ msgstr "Formular zur Einreichung einer Supportanfrage"
 msgid "Support"
 msgstr "Unterstützung"
 
-#: templates/single-form.php:143
+#: templates/single-form.php:144
 msgid "Link to homepage"
 msgstr "Link zur Startseite"
 
-#: templates/single-form.php:144
+#: templates/single-form.php:145
 msgid "Instant form site logo"
 msgstr "Sofortiges Formular-Website-Logo"
 
-#: templates/single-form.php:157
+#: templates/single-form.php:158
 msgid "Instant Form Disabled"
 msgstr "Sofortformular deaktiviert"
 
 #. translators: Here %s is the plugin's name.
-#: templates/single-form.php:177
+#: templates/single-form.php:178
 msgid "Crafted with ♡ %s"
 msgstr "Mit ♡ gefertigt %s"
 
@@ -8638,7 +8624,7 @@ msgstr "Feldvorschau"
 
 #: assets/build/blocks.js:2
 #: assets/build/formEditor.js:172
-#: assets/build/settings.js:2
+#: assets/build/settings.js:172
 #: modules/gutenberg/build/blocks.js:7
 msgid "General"
 msgstr "Allgemein"
@@ -8686,6 +8672,7 @@ msgstr "Weiter"
 
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
+#: inc/lib/nps-survey/dist/main.js:1
 msgid "Back"
 msgstr "Zurück"
 
@@ -9150,7 +9137,7 @@ msgstr "Plugin-Aktivierung fehlgeschlagen, bitte versuchen Sie es später erneut
 
 #: assets/build/dashboard.js:2
 #: assets/build/formEditor.js:172
-#: assets/build/settings.js:2
+#: assets/build/settings.js:172
 msgid "Integrations"
 msgstr "Integrationen"
 
@@ -9240,8 +9227,9 @@ msgstr "Blöcke zur Schnellzugriffsleiste hinzufügen"
 msgid "Re-arrange block inside Quick Action Bar"
 msgstr "Block im Schnellaktionsbereich neu anordnen"
 
+#: admin/views/single-entry.php:156
 #: assets/build/formEditor.js:172
-#: assets/build/settings.js:2
+#: assets/build/settings.js:172
 msgid "Upgrade"
 msgstr "Aktualisieren"
 
@@ -9863,20 +9851,19 @@ msgstr "Formular-Kurzcode"
 msgid "Paste this shortcode on the page or post to render this form."
 msgstr "Fügen Sie diesen Shortcode auf der Seite oder im Beitrag ein, um dieses Formular anzuzeigen."
 
-#: assets/build/settings.js:2
 #: assets/build/settings.js:172
 msgid "Validations"
 msgstr "Validierungen"
 
-#: assets/build/settings.js:2
+#: assets/build/settings.js:172
 msgid "Spam Protection"
 msgstr "Spam-Schutz"
 
-#: assets/build/settings.js:2
+#: assets/build/settings.js:172
 msgid "Want More?"
 msgstr "Möchten Sie mehr?"
 
-#: assets/build/settings.js:2
+#: assets/build/settings.js:172
 msgid "Unlock revenue boosting features when you upgrade."
 msgstr "Schalten Sie umsatzsteigernde Funktionen frei, wenn Sie ein Upgrade durchführen."
 
@@ -11127,16 +11114,11 @@ msgstr "Fügen Sie Ihrer Website atemberaubende anpassbare Symbole hinzu."
 msgid "icon"
 msgstr "Symbol"
 
-#: inc/export.php:73
+#: inc/export.php:72
 msgid "You do not have permission to export forms."
 msgstr "Sie haben keine Berechtigung, Formulare zu exportieren."
 
-#. translators: Here, %1$s is the comma separated emails list and %2$s is error report ( if any ).
-#: inc/form-submit.php:723
-msgid "Failed sending email notification to %1$s. Reason: %2$s"
-msgstr "Fehler beim Senden der E-Mail-Benachrichtigung an %1$s. Grund: %2$s"
-
-#: inc/form-submit.php:725
+#: inc/form-submit.php:744
 msgid "Unknown"
 msgstr "Unbekannt"
 
@@ -11207,6 +11189,85 @@ msgstr "Fehlermeldung für Mehrfachauswahl mit maximaler Auswahl"
 #: inc/nps-notice.php:110
 msgid "Could you please do us a favor and give us a 5-star rating on WordPress? It would help others choose SureForms with confidence. Thank you!"
 msgstr "Könnten Sie uns bitte einen Gefallen tun und uns eine 5-Sterne-Bewertung auf WordPress geben? Es würde anderen helfen, SureForms mit Vertrauen zu wählen. Vielen Dank!"
+
+#. Translators: %s is the entry id.
+#: admin/views/single-entry.php:77
+msgid "Entry #%s"
+msgstr "Eintrag Nr. %s"
+
+#: admin/views/single-entry.php:191
+msgid "Unlock Edit Form Entires"
+msgstr "Bearbeitungsformulareinträge entsperren"
+
+#: admin/views/single-entry.php:192
+msgid "With the SureForms Starter plan, you can easily edit your entries to suit your needs."
+msgstr "Mit dem SureForms Starter-Plan können Sie Ihre Einträge ganz einfach anpassen, um Ihren Bedürfnissen gerecht zu werden."
+
+#: admin/views/single-entry.php:201
+msgid "Resend Notification"
+msgstr "Benachrichtigung erneut senden"
+
+#: admin/views/single-entry.php:206
+msgid "Unlock Resend Email Notification"
+msgstr "E-Mail-Benachrichtigung zum erneuten Senden entsperren"
+
+#: admin/views/single-entry.php:207
+msgid "With the SureForms Starter plan, you can effortlessly resend email notifications, ensuring your important updates reach their recipients with ease."
+msgstr "Mit dem SureForms Starter-Plan können Sie E-Mail-Benachrichtigungen mühelos erneut senden, sodass Ihre wichtigen Updates ihre Empfänger problemlos erreichen."
+
+#: admin/views/single-entry.php:218
+msgid "Entry Notes"
+msgstr "Eintragsnotizen"
+
+#: admin/views/single-entry.php:220
+msgid "Add Note"
+msgstr "Notiz hinzufügen"
+
+#: admin/views/single-entry.php:229
+msgid "Submit Note"
+msgstr "Notiz einreichen"
+
+#: admin/views/single-entry.php:238
+msgid "Unlock Add Note"
+msgstr "Notiz hinzufügen entsperren"
+
+#: admin/views/single-entry.php:239
+msgid "With the SureForms Starter plan, enhance your submitted form entries by adding personalized notes for better clarity and tracking."
+msgstr "Mit dem SureForms Starter-Plan verbessern Sie Ihre eingereichten Formulareinträge, indem Sie personalisierte Notizen für bessere Klarheit und Nachverfolgung hinzufügen."
+
+#: inc/form-submit.php:684
+msgid "Email notification passed to the sending server"
+msgstr "E-Mail-Benachrichtigung an den sendenden Server übermittelt"
+
+#. translators: Here, %s is the comma separated emails list.
+#: inc/form-submit.php:732
+msgid "Email notification recipient: %s"
+msgstr "E-Mail-Benachrichtigungsempfänger: %s"
+
+#. translators: Here, %1$s is the comma separated emails list and %2$s is error report ( if any ).
+#: inc/form-submit.php:742
+msgid "Email server was unable to send the email notification. Recipient: %1$s. Reason: %2$s"
+msgstr "E-Mail-Server konnte die E-Mail-Benachrichtigung nicht senden. Empfänger: %1$s. Grund: %2$s"
+
+#: inc/form-submit.php:758
+msgid "No emails were sent"
+msgstr "Es wurden keine E-Mails gesendet"
+
+#: inc/lib/nps-survey/dist/main.js:1
+msgid "Very unlikely"
+msgstr "Sehr unwahrscheinlich"
+
+#: inc/lib/nps-survey/dist/main.js:1
+msgid "Very likely"
+msgstr "Sehr wahrscheinlich"
+
+#: inc/lib/nps-survey/dist/main.js:1
+msgid "I already did!"
+msgstr "Ich habe es bereits getan!"
+
+#: inc/lib/nps-survey/dist/main.js:1
+msgid "Rate the Plugin"
+msgstr "Bewerten Sie das Plugin"
 
 #: inc/post-types.php:123
 msgctxt "post type general name"

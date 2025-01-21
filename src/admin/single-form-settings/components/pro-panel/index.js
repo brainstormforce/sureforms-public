@@ -8,6 +8,7 @@ import {
 } from 'react-icons/md';
 import { FaRegEyeSlash } from 'react-icons/fa';
 import { RxSlider } from 'react-icons/rx';
+import { addQueryParam } from '@Utils/Helpers';
 
 const IconBlock = ( { icon, label } ) => (
 	<div className="block-editor-block-types-list__list-item">
@@ -90,7 +91,7 @@ const index = () => {
 					style={ {} }
 					className="srfm-upgrade-pro-btn"
 					onClick={ () => {
-						window.open( srfm_admin?.sureforms_pricing_page, '_blank' );
+						window.open( addQueryParam( srfm_admin?.sureforms_pricing_page, 'sureforms_editor' ), '_blank' );
 					} }
 				>
 					{ __( 'Upgrade to Unlock These Fields', 'sureforms' ) }

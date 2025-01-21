@@ -74,6 +74,7 @@ module.exports = {
 		SureForms: true,
 		srfm_quick_sidebar_blocks: true,
 		srfm_backend: true,
+		srfm_entries: true,
 		TomSelect: true,
 		root: true,
 		srfmElementorData: true,

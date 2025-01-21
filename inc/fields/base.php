@@ -25,6 +25,14 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class Base {
 	/**
+	 * Stores the attributes of the block.
+	 *
+	 * @var array<mixed> $attributes Block attributes.
+	 * @since 1.3.0
+	 */
+	protected $attributes;
+
+	/**
 	 * Flag indicating if the field is required.
 	 *
 	 * @var bool
@@ -314,6 +322,23 @@ class Base {
 	protected $max_selection;
 
 	/**
+	 * Whether or not block is render in editing mode.
+	 * If it is true, then block is currently rendered in edit entry.
+	 *
+	 * @var bool
+	 * @since 1.3.0
+	 */
+	protected $is_editing = false;
+
+	/**
+	 * Currently rendered entry ID.
+	 *
+	 * @var int
+	 * @since 1.3.0
+	 */
+	protected $entry_id = 0;
+
+	/**
 	 * Render the sureforms default
 	 *
 	 * @since 0.0.2
@@ -331,6 +356,7 @@ class Base {
 	 * @return void
 	 */
 	protected function set_properties( $attributes ) {
+		$this->attributes         = $attributes;
 		$this->required           = $attributes['required'] ?? false;
 		$this->field_width        = $attributes['fieldWidth'] ?? '';
 		$this->label              = $attributes['label'] ?? '';
@@ -359,6 +385,9 @@ class Base {
 		];
 		$this->min_selection      = $attributes['minValue'] ?? '';
 		$this->max_selection      = $attributes['maxValue'] ?? '';
+
+		$this->is_editing = isset( $attributes['isEditing'] ) ? true : false;
+		$this->entry_id   = $attributes['entryID'] ?? 0;
 	}
 
 	/**
