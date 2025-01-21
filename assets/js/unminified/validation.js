@@ -1090,7 +1090,7 @@ export const handleCaptchaValidation = (
 		! turnstileDiv &&
 		! captchaErrorElement
 	) {
-		return false;
+		return true; // Return true if no captcha elements are found.
 	}
 	let captchaResponse;
 	if ( 'v2-checkbox' === recaptchaType ) {
