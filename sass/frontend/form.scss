@@ -79,10 +79,16 @@
 			width: 100%;
 			padding: 0 var( --srfm-col-gap-between-blocks ) !important;
 			margin-bottom: var( --srfm-row-gap-between-blocks );
+
+			// Adding a default fixed height to the h-captcha container to manage the error spacing.
+			.h-captcha {
+				height: 78px;
+			}
 		}
 
 		.srfm-validation-error {
 			@include srfm-error-styles;
+			margin: var( --srfm-input-field-margin ) 0 0;
 		}
 
 		.uagb-block {
