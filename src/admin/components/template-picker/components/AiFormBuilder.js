@@ -43,7 +43,7 @@ const AiFormBuilder = () => {
 		setFormTypeObj
 	);
 
-	const examplePrompts = [
+	let examplePrompts = [
 		{
 			title: __( 'Create simple contact form', 'sureforms' ),
 		},
@@ -60,6 +60,27 @@ const AiFormBuilder = () => {
 			title: __( 'Make an event registration form', 'sureforms' ),
 		},
 	];
+
+	// if conversational form is enabled, change the example prompts
+	if ( formTypeObj?.isConversationalForm ) {
+		examplePrompts = [
+			{
+				title: __( 'Create a market research form', 'sureforms' ),
+			},
+			{
+				title: __( 'Create a T-shirt order form', 'sureforms' ),
+			},
+			{
+				title: __( 'Create a lead qualification form', 'sureforms' ),
+			},
+			{
+				title: __( 'Generate a wedding invitation form', 'sureforms' ),
+			},
+			{
+				title: __( 'Create a employee feedback form', 'sureforms' ),
+			},
+		];
+	}
 
 	const initSpeechRecognition = () => {
 		const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
