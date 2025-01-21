@@ -86,5 +86,8 @@ module.exports = {
 		Inputmask: true,
 		FileReader: true,
 		srfm_submit: true,
+		grecaptcha: true,
+		hcaptcha: true,
+		turnstile: true,
 	},
 };
