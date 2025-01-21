@@ -60,7 +60,6 @@ if ( $use_banner_as_page_background ) {
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<?php
 	}
-	wp_head();
 	?>
 	<style>
 		<?php
@@ -131,6 +130,8 @@ if ( $use_banner_as_page_background ) {
 		}
 		?>
 	</style>
+
+	<?php wp_head(); ?>
 </head>
 
 <body <?php body_class( $body_classes ); ?>>

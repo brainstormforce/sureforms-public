@@ -156,6 +156,8 @@ class Admin_Ajax {
 	 */
 	public function sureforms_get_integration() {
 		$suretrigger_connected = apply_filters( 'suretriggers_is_user_connected', '' );
+		$logo                  = file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/suretriggers.svg' );
+		$logo_full             = file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/suretriggers_full.svg' );
 		return apply_filters(
 			'srfm_integrated_plugins',
 			[
@@ -167,8 +169,8 @@ class Admin_Ajax {
 					'slug'        => 'suretriggers',
 					'path'        => 'suretriggers/suretriggers.php',
 					'redirection' => admin_url( 'admin.php?page=suretriggers' ),
-					'logo'        => self::encode_svg( is_string( file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/suretriggers.svg' ) ) ? file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/suretriggers.svg' ) : '' ),
-					'logo_full'   => self::encode_svg( is_string( file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/suretriggers_full.svg' ) ) ? file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/suretriggers_full.svg' ) : '' ),
+					'logo'        => self::encode_svg( is_string( $logo ) ? $logo : '' ),
+					'logo_full'   => self::encode_svg( is_string( $logo_full ) ? $logo_full : '' ),
 					'connected'   => $suretrigger_connected,
 				],
 			]

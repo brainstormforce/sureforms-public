@@ -17,10 +17,26 @@
 				width: 100%;
 
 				.iti__selected-country {
+					all: unset; // Unset everything so that it don't create issue if button styles are being overridden from theme.
 					background: none !important;
 					padding-top: 10px;
 					padding-bottom: 10px;
 					gap: 4px; // Fixed gap between the flag and the country code.
+					z-index: 1;
+					position: relative;
+					display: flex;
+					align-items: center;
+					height: 100%;
+					border: 0;
+					margin: 0;
+					padding: 0;
+					font-family: inherit;
+					font-size: inherit;
+					color: inherit;
+					border-radius: 0;
+					font-weight: inherit;
+					line-height: inherit;
+					text-decoration: none;
 
 					&:focus {
 						background: none !important;

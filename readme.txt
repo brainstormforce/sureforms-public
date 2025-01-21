@@ -4,7 +4,7 @@ Tags: contact form, custom form, forms, contact form plugin, form builder
 Requires at least: 6.4
 Tested up to: 6.7.1
 Requires PHP: 7.4
-Stable tag: 1.2.4
+Stable tag: 1.3.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -32,7 +32,7 @@ After all, the ultimate aim of most websites is to get those forms filled out.
 
 "Unfortunately, many website owners struggle to design forms that match the overall website aesthetics and user experience."
 
-<a href="https://zipwp.org/plugins/sureforms/" target="_blank" rel="">Try it out on a free dummy site</a>
+<a href="https://bsf.io/sureforms-demo" target="_blank" rel="">Try it out on a free dummy site</a>
 
 SureForms addresses several pain points commonly experienced by website owners:
 
@@ -256,6 +256,12 @@ Yes! You can certainly use SureForms on yours as well as your client’s website
 When you use SureForms, you get an easy-to-use AI-powered form builder that can be used to build your forms fast.
 
 == Changelog ==
+= 1.3.0 - 21st January 2025 =
+* Improvement: Stopped storing confirmation email setting's data of the Email field in the database.
+* Fix: Resolved an issue where forms were not being submitted in some instances with v3 reCAPTCHA.
+* Fix: Addressed an issue where selecting a field in the editor would hide the Settings icon.
+* Fix: Fixed a UI glitch on the initial load and refresh of Instant Forms.
+* Fix: Ensured the Submit button works consistently when switching between Visual and Text modes in the Gutenberg editor.
 = 1.2.4 - 7th January 2025 =
 * New: Added translations for the Italian, Portuguese, and Polish languages.
 * Fix: Addressed an issue where forms were not submitting in a page-cached environment.

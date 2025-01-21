@@ -10,6 +10,7 @@ namespace SRFM\Admin\Views;
 
 use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Helper;
+use SRFM\Inc\Traits\Get_Instance;
 
 /**
  * Exit if accessed directly.
@@ -31,6 +32,8 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
  * Create the entries table using WP_List_Table.
  */
 class Entries_List_Table extends \WP_List_Table {
+	use Get_Instance;
+
 	/**
 	 * Stores the count for the entries data fetched from the database according to the status.
 	 * It will be used for pagination.
@@ -745,7 +748,6 @@ class Entries_List_Table extends \WP_List_Table {
 		if ( empty( $form_data ) ) {
 			return;
 		}
-		$upload_dir = wp_get_upload_dir();
 		foreach ( $form_data as $field_name => $value ) {
 			// Continue to the next iteration if the field name does not contain 'srfm-upload' and value is not an array.
 			if ( false === strpos( $field_name, 'srfm-upload' ) && ! is_array( $value ) ) {
@@ -756,8 +758,7 @@ class Entries_List_Table extends \WP_List_Table {
 				if ( empty( $file_url ) ) {
 					continue;
 				}
-				// Get the file path from the file URL.
-				$file_path = str_replace( $upload_dir['baseurl'], $upload_dir['basedir'], urldecode( $file_url ) );
+				$file_path = Helper::convert_fileurl_to_filepath( urldecode( $file_url ) );
 
 				// Delete the file if it exists.
 				if ( file_exists( $file_path ) ) {
@@ -858,6 +859,24 @@ class Entries_List_Table extends \WP_List_Table {
 		$excluded_fields = Helper::get_excluded_fields();
 		$form_data       = array_diff_key( $item['form_data'], array_flip( $excluded_fields ) );
 		$first_field     = reset( $form_data );
+		$field_name      = array_keys( $form_data )[0];
+
+		if ( false !== strpos( $field_name, 'srfm-upload' ) ) {
+			$filenames = [];
+			if ( ! empty( $first_field ) && is_array( $first_field ) ) {
+				foreach ( $first_field as $file ) {
+					$file_url    = urldecode( strval( $file ) );
+					$filenames[] = pathinfo( $file_url, PATHINFO_BASENAME );
+				}
+			}
+			$first_field = implode( ', ', $filenames );
+		}
+
+		$max_length = 28;
+
+		if ( strlen( $first_field ) > $max_length ) {
+			$first_field = substr( $first_field, 0, $max_length - 3 ) . '...';
+		}
 
 		return sprintf(
 			'<p>%s</p>',
@@ -973,9 +992,17 @@ class Entries_List_Table extends \WP_List_Table {
 		if ( 'top' === $which ) {
 			?>
 			<div class="alignleft actions">
-				<?php $this->display_month_filter(); ?>
-				<?php $this->display_form_filter(); ?>
 				<?php
+				$this->display_month_filter();
+				$this->display_form_filter();
+
+				/**
+				 * Action hook right after entry form opening tag.
+				 *
+				 * @since 1.3.0
+				 */
+				do_action( 'srfm_after_entry_postbox_title' );
+
 				if ( $this->is_filter_enabled() ) {
 					?>
 					<a href="<?php echo esc_url( add_query_arg( 'page', 'sureforms_entries', admin_url( 'admin.php' ) ) ); ?>" class="button button-link clear-filter"><?php esc_html_e( 'Clear Filter', 'sureforms' ); ?></a>
@@ -1075,6 +1102,7 @@ class Entries_List_Table extends \WP_List_Table {
 		echo '<select name="form_filter">';
 		echo '<option value="all">' . esc_html__( 'All Form Entries', 'sureforms' ) . '</option>';
 		foreach ( $forms as $form_id => $form_name ) {
+			$form_name = ! empty( $form_name ) ? $form_name : sprintf( 'SureForms %1$s #%2$d', esc_html__( 'Form', 'sureforms' ), esc_attr( $form_id ) );
 			// Adding the phpcs ignore nonce verification as no database operations are performed in this function.
 			// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			$selected = isset( $_GET['form_filter'] ) && Helper::get_integer_value( sanitize_text_field( wp_unslash( $_GET['form_filter'] ) ) ) === $form_id ? ' selected="selected"' : '';
