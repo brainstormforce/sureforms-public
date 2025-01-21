@@ -7,7 +7,10 @@
 	"prefer-stable": true,
 	"extra": {
 		"installer-paths": {
-			"inc/lib/{$name}": ["brainstormforce/nps-survey"]
+			"inc/lib/{$name}": [
+        "brainstormforce/nps-survey",
+        "brainstormforce/utm-analytics"
+      ]
 		}
 	},
 	"require-dev": {
@@ -15,7 +18,7 @@
 		"phpunit/phpunit": "^9.0.0",
 		"squizlabs/php_codesniffer": "^3.5",
 		"yoast/phpunit-polyfills": "^2.0",
-		"dealerdirect/phpcodesniffer-composer-installer": "^0.7.2",
+		"dealerdirect/phpcodesniffer-composer-installer": "^1.0.0",
 		"phpcompatibility/php-compatibility": "^9.3",
 		"wp-coding-standards/wpcs": "^2.3",
 		"phpstan/phpstan": "^1.10",
@@ -50,13 +53,19 @@
 	"require": {
 		"wp-cli/wp-cli-bundle": "^2.10",
 		"composer/installers": "^2.3",
-		"brainstormforce/nps-survey": "^1.0"
+		"brainstormforce/nps-survey": "^1.0",
+    "brainstormforce/utm-analytics": "^0"
 	},
 	"repositories": [
 		{
 			"name": "brainstormforce/nps-survey",
 			"type": "vcs",
 			"url": "git@github.com:brainstormforce/nps-survey.git"
+		},
+    {
+			"name": "brainstormforce/utm-analytics",
+			"type": "vcs",
+			"url": "git@github.com:brainstormforce/utm-analytics.git"
 		}
 	]
 }

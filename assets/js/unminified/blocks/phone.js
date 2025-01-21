@@ -91,7 +91,10 @@ function initializePhoneField() {
 		}
 
 		if ( phoneNumber ) {
-			phoneNumber.addEventListener( 'change', updatePhoneNumber );
+			/**
+			 * Changed onChange event to input event to handle properly in Conversational Form.
+			 */
+			phoneNumber.addEventListener( 'input', updatePhoneNumber );
 			phoneNumber.addEventListener( 'countrychange', updatePhoneNumber );
 			// Add iti__active class to the selected country in the dropdown and scroll to the selected country.
 			phoneNumber.addEventListener( 'open:countrydropdown', () => {
