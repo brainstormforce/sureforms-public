@@ -184,12 +184,21 @@ async function handleFormSubmission(
 			form
 		);
 
-		const isCaptchaValid = handleCaptchaValidation(
-			recaptchaType,
-			hCaptchaDiv,
-			turnstileDiv,
+		// If captcha is enabled, check if it is valid. Keeping default value as true for forms without captcha.
+		let isCaptchaValid = true;
+		if (
+			recaptchaType ||
+			hCaptchaDiv ||
+			turnstileDiv ||
 			captchaErrorElement
-		);
+		) {
+			isCaptchaValid = handleCaptchaValidation(
+				recaptchaType,
+				hCaptchaDiv,
+				turnstileDiv,
+				captchaErrorElement
+			);
+		}
 
 		/**
 		 * if captcha or field validation fails, show error message and scroll to the first input or captcha container.
