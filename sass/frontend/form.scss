@@ -1,3 +1,5 @@
+@import "../blocks/default/utils/mixins.scss";
+
 .srfm-form-container {
 	// This is the parent form class. Adds specificity so that there is no conflict.
 	position: relative;
@@ -80,11 +82,7 @@
 		}
 
 		.srfm-validation-error {
-			font-size: 0.7em;
-			margin-top: 0.571em;
-			font-weight: 400;
-			line-height: normal;
-			color: var( --srfm-error-color );
+			@include srfm-error-styles;
 		}
 
 		.uagb-block {
