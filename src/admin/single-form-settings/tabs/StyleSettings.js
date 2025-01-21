@@ -138,10 +138,13 @@ function StyleSettings( props ) {
 
 		const cssProperties = {};
 		// Button
-		if ( option === '_srfm_button_border_width' ) {
-			cssProperties[ '--srfm-btn-border-width' ] = value ? value + 'px' : '0px';
-		} else if ( option === '_srfm_button_border_color' ) {
-			cssProperties[ '--srfm-btn-border-color' ] = value ? value : '#000000';
+		switch ( option ) {
+			case '_srfm_button_border_width':
+				cssProperties[ '--srfm-btn-border-width' ] = value ? value + 'px' : '0px';
+				break;
+			case '_srfm_button_border_color':
+				cssProperties[ '--srfm-btn-border-color' ] = value ? value : '#000000';
+				break;
 		}
 
 		addStyleInRoot( cssProperties );
@@ -188,44 +191,50 @@ function StyleSettings( props ) {
 	function updateFormStyling( option, value ) {
 		const cssProperties = {};
 
-		if ( option === 'primary_color' ) {
-			cssProperties[ '--srfm-color-scheme-primary' ] = value || '#0C78FB';
-			cssProperties[ '--srfm-btn-color-hover' ] = `hsl( from ${ value || '#0C78FB' } h s l / 0.9)`;
-		} else if ( option === 'text_color' ) {
-			const defaultTextColor = '#1E1E1E';
-			cssProperties[ '--srfm-color-scheme-text' ] = value || defaultTextColor;
-			cssProperties[ '--srfm-color-input-label' ] = value || defaultTextColor;
-			cssProperties[ '--srfm-color-input-placeholder' ] = value || defaultTextColor;
-			cssProperties[ '--srfm-color-input-text' ] = value || defaultTextColor;
-			cssProperties[ '--srfm-color-input-description' ] = `hsl( from ${ value || defaultTextColor } h s l / 0.65)`;
-			cssProperties[ '--srfm-color-input-prefix' ] = `hsl( from ${ value || defaultTextColor } h s l / 0.65)`;
-			cssProperties[ '--srfm-color-input-background' ] = `hsl( from ${ value || defaultTextColor } h s l / 0.02)`;
-			cssProperties[ '--srfm-color-input-background-disabled' ] = `hsl( from ${ value || defaultTextColor } h s l / 0.05)`;
-			cssProperties[ '--srfm-color-input-border' ] = `hsl( from ${ value || defaultTextColor } h s l / 0.25)`;
-			cssProperties[ '--srfm-color-input-border-disabled' ] = `hsl( from ${ value || defaultTextColor } h s l / 0.15)`;
-		} else if ( option === 'text_color_on_primary' ) {
-			cssProperties[ '--srfm-color-scheme-text-on-primary' ] = value || '#FFFFFF';
-		} else if ( option === 'field_spacing' ) {
-			cssProperties[ '--srfm-field-spacing' ] = value || 'medium';
-		} else if ( option === 'submit_button_alignment' ) {
-			cssProperties[ '--srfm-submit-alignment' ] = value || 'left';
-			cssProperties[ '--srfm-submit-width-backend' ] = 'max-content';
-			updateMeta( '_srfm_submit_width_backend', 'max-content' );
+		switch ( option ) {
+			case 'primary_color':
+				cssProperties[ '--srfm-color-scheme-primary' ] = value || '#0C78FB';
+				cssProperties[ '--srfm-btn-color-hover' ] = `hsl( from ${ value || '#0C78FB' } h s l / 0.9)`;
+				break;
+			case 'text_color':
+				const defaultTextColor = '#1E1E1E';
+				cssProperties[ '--srfm-color-scheme-text' ] = value || defaultTextColor;
+				cssProperties[ '--srfm-color-input-label' ] = value || defaultTextColor;
+				cssProperties[ '--srfm-color-input-placeholder' ] = value || defaultTextColor;
+				cssProperties[ '--srfm-color-input-text' ] = value || defaultTextColor;
+				cssProperties[ '--srfm-color-input-description' ] = `hsl( from ${ value || defaultTextColor } h s l / 0.65)`;
+				cssProperties[ '--srfm-color-input-prefix' ] = `hsl( from ${ value || defaultTextColor } h s l / 0.65)`;
+				cssProperties[ '--srfm-color-input-background' ] = `hsl( from ${ value || defaultTextColor } h s l / 0.02)`;
+				cssProperties[ '--srfm-color-input-background-disabled' ] = `hsl( from ${ value || defaultTextColor } h s l / 0.05)`;
+				cssProperties[ '--srfm-color-input-border' ] = `hsl( from ${ value || defaultTextColor } h s l / 0.25)`;
+				cssProperties[ '--srfm-color-input-border-disabled' ] = `hsl( from ${ value || defaultTextColor } h s l / 0.15)`;
+				break;
+			case 'text_color_on_primary':
+				cssProperties[ '--srfm-color-scheme-text-on-primary' ] = value || '#FFFFFF';
+				break;
+			case 'field_spacing':
+				cssProperties[ '--srfm-field-spacing' ] = value || 'medium';
+				break;
+			case 'submit_button_alignment':
+				cssProperties[ '--srfm-submit-alignment' ] = value || 'left';
+				cssProperties[ '--srfm-submit-width-backend' ] = 'max-content';
+				updateMeta( '_srfm_submit_width_backend', 'max-content' );
 
-			if ( value === 'left' ) {
-				cssProperties[ '--srfm-submit-alignment-backend' ] = '100%';
-				updateMeta( '_srfm_submit_alignment_backend', '100%' );
-			} else if ( value === 'right' ) {
-				cssProperties[ '--srfm-submit-alignment-backend' ] = '0%';
-				updateMeta( '_srfm_submit_alignment_backend', '0%' );
-			} else if ( value === 'center' ) {
-				cssProperties[ '--srfm-submit-alignment-backend' ] = '50%';
-				updateMeta( '_srfm_submit_alignment_backend', '50%' );
-			} else if ( value === 'justify' ) {
-				cssProperties[ '--srfm-submit-alignment-backend' ] = '50%';
-				cssProperties[ '--srfm-submit-width-backend' ] = 'auto';
-				updateMeta( '_srfm_submit_alignment_backend', '50%' );
-			}
+				if ( value === 'left' ) {
+					cssProperties[ '--srfm-submit-alignment-backend' ] = '100%';
+					updateMeta( '_srfm_submit_alignment_backend', '100%' );
+				} else if ( value === 'right' ) {
+					cssProperties[ '--srfm-submit-alignment-backend' ] = '0%';
+					updateMeta( '_srfm_submit_alignment_backend', '0%' );
+				} else if ( value === 'center' ) {
+					cssProperties[ '--srfm-submit-alignment-backend' ] = '50%';
+					updateMeta( '_srfm_submit_alignment_backend', '50%' );
+				} else if ( value === 'justify' ) {
+					cssProperties[ '--srfm-submit-alignment-backend' ] = '50%';
+					cssProperties[ '--srfm-submit-width-backend' ] = 'auto';
+					updateMeta( '_srfm_submit_alignment_backend', '50%' );
+				}
+				break;
 		}
 
 		addStyleInRoot( cssProperties );
