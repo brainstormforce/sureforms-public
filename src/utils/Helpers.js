@@ -399,6 +399,17 @@ export const SRFMToaster = ( {
 export const uagbClassNames = ( classes ) =>
 	classes.filter( Boolean ).join( ' ' );
 
+export const addQueryParam = ( url, paramValue, paramKey = 'utm_medium' ) => {
+	try {
+		const urlObj = new URL( url );
+		urlObj.searchParams.set( paramKey, paramValue );
+		return urlObj.toString();
+	} catch ( error ) {
+		console.error( 'Invalid URL:', error );
+		return url; // Return the original URL in case of error
+	}
+};
+
 // const generateSlug = ( label, existingSlugs ) => {
 // 	// const baseSlug = slugify( label, {
 // 	// 	lower: true,

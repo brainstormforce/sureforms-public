@@ -251,6 +251,11 @@ class Frontend_Assets {
 	 */
 	public function generate_render_script( $block_content, $block ) {
 
+		if ( isset( $block['attrs']['isEditing'] ) ) {
+			// Only load block assets on the frontend.
+			return $block_content;
+		}
+
 		if ( isset( $block['blockName'] ) ) {
 			self::enqueue_srfm_script( $block['blockName'] );
 		}

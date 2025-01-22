@@ -389,7 +389,7 @@ abstract class Base {
 			}
 
 			preg_match( '/(\w+)\s/', $column_definition, $column_matches );
-			$column_name = $column_matches[1];
+			$column_name = $column_matches[1] ?? '';
 
 			// If the column does not exist, add it.
 			if ( ! isset( $existing_columns[ $column_name ] ) ) {
@@ -531,9 +531,12 @@ abstract class Base {
 		 */
 		$format = $prepared_data['format'];
 
+		// Reset the cache on update.
+		$this->cache_reset();
+
 		return $this->wpdb->update(
 			$this->get_tablename(),
-			$data,
+			$prepared_data['data'],
 			$where,
 			$format
 		);
