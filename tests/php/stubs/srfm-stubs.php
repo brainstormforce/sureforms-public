@@ -8755,6 +8755,7 @@ namespace SRFM\Inc {
 	    public static function join_strings( $class_names )
         {
         }
+    }
 }
 namespace SRFM\Inc\Global_Settings {
     /**
