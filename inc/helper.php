@@ -1083,18 +1083,21 @@ class Helper {
 
 	/**
 	 * Filters and concatenates valid class names from an array.
-	 * 
-	 * @param array $inputArray The array containing potential class names.
+	 *
+	 * @param array<string> $class_names The array containing potential class names.
 	 * @since x.x.x
 	 * @return string The concatenated string of valid class names separated by spaces.
 	 */
-	public static function join_strings( array $inputArray ): string {
-		// Filter the array to include only valid class names
-		$validClassNames = array_filter($inputArray, function ($value) {
-			return is_string($value) && $value !== '' && $value !== false;
-		});
-		
-		// Concatenate the valid class names with spaces and return
-		return implode(' ', $validClassNames);
+	public static function join_strings( array $class_names ): string {
+		// Filter the array to include only valid class names.
+		$valid_class_names = array_filter(
+			$class_names,
+			static function ( $value ) {
+				return is_string( $value ) && '' !== $value && false !== $value;
+			}
+		);
+
+		// Concatenate the valid class names with spaces and return.
+		return implode( ' ', $valid_class_names );
 	}
 }
