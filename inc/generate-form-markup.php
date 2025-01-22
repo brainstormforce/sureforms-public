@@ -133,12 +133,11 @@ class Generate_Form_Markup {
 				$submit_button_alignment = 'right' === $submit_button_alignment ? 'left' : 'right';
 			}
 
-			$btn_from_theme           = Helper::get_meta_value( $id, '_srfm_inherit_theme_button' );
-			$is_inline_button         = Helper::get_meta_value( $id, '_srfm_is_inline_button' );
-			$is_submit_button_disable = Helper::get_meta_value( $id, '_srfm_submit_button_disable' );
-			$security_type            = Helper::get_meta_value( $id, '_srfm_captcha_security_type' );
-			$form_custom_css_meta     = Helper::get_meta_value( $id, '_srfm_form_custom_css' );
-			$custom_css               = ! empty( $form_custom_css_meta ) && is_string( $form_custom_css_meta ) ? $form_custom_css_meta : '';
+			$btn_from_theme       = Helper::get_meta_value( $id, '_srfm_inherit_theme_button' );
+			$is_inline_button     = Helper::get_meta_value( $id, '_srfm_is_inline_button' );
+			$security_type        = Helper::get_meta_value( $id, '_srfm_captcha_security_type' );
+			$form_custom_css_meta = Helper::get_meta_value( $id, '_srfm_form_custom_css' );
+			$custom_css           = ! empty( $form_custom_css_meta ) && is_string( $form_custom_css_meta ) ? $form_custom_css_meta : '';
 
 			$full                       = 'justify' === $submit_button_alignment ? true : false;
 			$recaptcha_version          = 'g-recaptcha' === $security_type ? Helper::get_meta_value( $id, '_srfm_form_recaptcha' ) : '';
