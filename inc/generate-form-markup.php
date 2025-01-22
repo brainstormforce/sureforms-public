@@ -133,11 +133,12 @@ class Generate_Form_Markup {
 				$submit_button_alignment = 'right' === $submit_button_alignment ? 'left' : 'right';
 			}
 
-			$btn_from_theme       = Helper::get_meta_value( $id, '_srfm_inherit_theme_button' );
-			$is_inline_button     = Helper::get_meta_value( $id, '_srfm_is_inline_button' );
-			$security_type        = Helper::get_meta_value( $id, '_srfm_captcha_security_type' );
-			$form_custom_css_meta = Helper::get_meta_value( $id, '_srfm_form_custom_css' );
-			$custom_css           = ! empty( $form_custom_css_meta ) && is_string( $form_custom_css_meta ) ? $form_custom_css_meta : '';
+			$btn_from_theme           = Helper::get_meta_value( $id, '_srfm_inherit_theme_button' );
+			$is_inline_button         = Helper::get_meta_value( $id, '_srfm_is_inline_button' );
+			$is_submit_button_disable = Helper::get_meta_value( $id, '_srfm_submit_button_disable' );
+			$security_type            = Helper::get_meta_value( $id, '_srfm_captcha_security_type' );
+			$form_custom_css_meta     = Helper::get_meta_value( $id, '_srfm_form_custom_css' );
+			$custom_css               = ! empty( $form_custom_css_meta ) && is_string( $form_custom_css_meta ) ? $form_custom_css_meta : '';
 
 			$full                       = 'justify' === $submit_button_alignment ? true : false;
 			$recaptcha_version          = 'g-recaptcha' === $security_type ? Helper::get_meta_value( $id, '_srfm_form_recaptcha' ) : '';
@@ -189,6 +190,13 @@ class Generate_Form_Markup {
 			$label_text_color_var = $label_text_color ? $label_text_color : '#111827';
 
 			$selected_size = Helper::get_css_vars( $field_spacing );
+
+			$should_show_submit_button = apply_filters(
+				'srfm_show_submit_button',
+				0 !== $block_count && ! $is_inline_button || $is_page_break,
+				$id
+			);
+
 			?>
 			<div class="<?php echo esc_attr( implode( ' ', array_filter( $form_classes ) ) ); ?>">
 			<style>
@@ -286,7 +294,7 @@ class Generate_Form_Markup {
 					// phpcs:ignoreEnd
 				}
 				?>
-				<?php if ( 0 !== $block_count && ! $is_inline_button || $is_page_break ) { ?>
+				<?php if ( $should_show_submit_button ) { ?>
 					<?php if ( ! empty( $security_type ) && 'none' !== $security_type ) { ?>
 						<div class="srfm-captcha-container <?php echo esc_attr( 'v3-reCAPTCHA' === $recaptcha_version || 'v2-invisible' === $recaptcha_version ? 'srfm-display-none' : '' ); ?>">
 						<?php if ( is_string( $google_captcha_site_key ) && ! empty( $google_captcha_site_key ) && 'g-recaptcha' === $security_type ) { ?>
