@@ -68,6 +68,7 @@ class Admin {
 	/**
 	 * Enable block editor in Enfold theme for SureForms post type.
 	 *
+	 * @param bool $use_block_editor Whether to use block editor.
 	 * @since x.x.x
 	 */
 	public function enable_block_editor_in_enfold_theme( $use_block_editor ) {
