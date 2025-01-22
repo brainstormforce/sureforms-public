@@ -1,7 +1,10 @@
 import { __ } from '@wordpress/i18n';
+import { addQueryParam } from '@Utils/Helpers';
 
 export default ( { badgeName = 'Starter'
-	, tooltipHeading = '', tooltipContent = '' } ) => {
+	, tooltipHeading = '', tooltipContent = '',
+	utmMedium = '',
+} ) => {
 	return (
 		<div className="srfm-tooltip"
 		>
@@ -25,7 +28,7 @@ export default ( { badgeName = 'Starter'
 						</h3>
 						{ tooltipContent }
 					</div>
-					<a target="_blank" href="https://sureforms.com/pricing" rel="noreferrer">{ __( 'Upgrade', 'sureforms' ) }</a>
+					<a target="_blank" href={ addQueryParam( srfm_admin?.pricing_page_url || srfm_admin?.sureforms_pricing_page, utmMedium ) } rel="noreferrer">{ __( 'Upgrade', 'sureforms' ) }</a>
 				</div>
 				<i></i>
 			</div>

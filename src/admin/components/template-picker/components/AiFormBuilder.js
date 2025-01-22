@@ -396,6 +396,7 @@ const AiFormBuilder = () => {
 										tooltipContent={
 											__( 'With the SureForms Pro Plan, you can create forms with conversational layouts using AI in less than a minute.', 'sureforms' )
 										}
+										utmMedium="ai_builder"
 									/>
 								</div>
 								: conversationalFormAiToggle }
