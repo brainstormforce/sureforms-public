@@ -61,6 +61,21 @@ class Admin {
 			},
 			1000
 		);
+		// Enfold theme compatibility to enable block editor for SureForms post type.
+		add_filter( 'avf_use_block_editor_for_post', [ $this, 'enable_block_editor_in_enfold_theme' ] );
+	}
+
+	/**
+	 * Enable block editor in Enfold theme for SureForms post type.
+	 *
+	 * @since x.x.x
+	 */
+	public function enable_block_editor_in_enfold_theme( $use_block_editor ) {
+		// if SureForms form post type then return true.
+		if ( SRFM_FORMS_POST_TYPE === get_current_screen()->post_type ) {
+			return true;
+		}
+		return $use_block_editor;
 	}
 
 	/**
@@ -69,9 +84,10 @@ class Admin {
 	 * @since 0.0.10
 	 */
 	public function enable_gutenberg_for_sureforms() {
-
-		// Check if the Classic Editor plugin is active and if it is set to replace the block editor.
-		if ( ! class_exists( 'Classic_Editor' ) || 'block' === get_option( 'classic-editor-replace' ) ) {
+		/**
+		 * Check if the classic editor is enabled from Classic Editor plugin settings or Divi settings.
+		 */
+		if ( 'block' === get_option( 'classic-editor-replace' ) || 'on' === get_option( 'et_enable_classic_editor' ) ) {
 			return;
 		}
 
