@@ -182,11 +182,13 @@ class Entries extends Base {
 	 * @return int|null The key of the newly added log entry, or null if the log could not be added.
 	 */
 	public function add_log( $title, $messages = [] ) {
-		$this->logs[] = [
+		$log = [
 			'title'     => Helper::get_string_value( trim( $title ) ),
 			'messages'  => Helper::get_array_value( $messages ),
 			'timestamp' => time(),
 		];
+
+		$this->logs = array_merge( [ $log ], $this->logs );
 
 		return $this->get_last_log_key();
 	}
@@ -194,7 +196,7 @@ class Entries extends Base {
 	/**
 	 * Update an existing log entry.
 	 *
-	 * @param int           $log_key The key of the log entry to update.
+	 * @param int|null      $log_key The key of the log entry to update.
 	 * @param string|null   $title Optional. The new title for the log entry. If null, the title will not be changed.
 	 * @param array<string> $messages Optional. An array of new messages to add to the log entry.
 	 * @since 0.0.10
@@ -212,6 +214,16 @@ class Entries extends Base {
 
 		$this->logs = $logs;
 		return $log_key;
+	}
+
+	/**
+	 * Resets logs to zero.
+	 *
+	 * @since 1.3.0
+	 * @return void
+	 */
+	public function reset_logs() {
+		$this->logs = [];
 	}
 
 	/**
@@ -264,6 +276,12 @@ class Entries extends Base {
 		if ( empty( $entry_id ) ) {
 			return false;
 		}
+
+		if ( isset( $data['logs'] ) ) {
+			// Add logs from the current cache at the very last moment so that we don't tax the performance.
+			$data['logs'] = array_merge( Helper::get_array_value( $data['logs'] ), Helper::get_array_value( self::get( $entry_id )['logs'] ) );
+		}
+
 		return self::get_instance()->use_update( $data, [ 'ID' => absint( $entry_id ) ] );
 	}
 

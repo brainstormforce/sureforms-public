@@ -92,7 +92,7 @@ const Navigation = () => {
 								'sureforms'
 							) }
 						</div>
-						<UpgradeToProButton className="srfm-button-primary srfm-notice-btn" />
+						<UpgradeToProButton className="srfm-button-primary srfm-notice-btn" location="settings_page_upgrade_button" />
 					</div>
 				) }
 			</div>

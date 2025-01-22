@@ -6,7 +6,7 @@ import UpgradeToProButton from '@Admin/components/UpgradeToProButton';
 const WebhooksCard = ( { setSelectedTab } ) => {
 	const primaryButton = applyFilters(
 		'srfm.formSettings.integrations.webhooks.button',
-		<UpgradeToProButton className="srfm-button-primary" />,
+		<UpgradeToProButton className="srfm-button-primary" location="setting_editor_integration_webhooks" />,
 		setSelectedTab
 	);
 	return (
