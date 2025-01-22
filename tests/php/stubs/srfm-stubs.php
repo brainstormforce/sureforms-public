@@ -8744,7 +8744,17 @@ namespace SRFM\Inc {
         public static function get_excluded_fields()
         {
         }
-    }
+
+        /**
+	     * Filters and concatenates valid class names from an array.
+	     *
+	     * @param array<string> $class_names The array containing potential class names.
+	     * @since x.x.x
+	     * @return string The concatenated string of valid class names separated by spaces.
+	     */
+	    public static function join_strings( $class_names )
+        {
+        }
 }
 namespace SRFM\Inc\Global_Settings {
     /**

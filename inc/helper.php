@@ -1088,7 +1088,7 @@ class Helper {
 	 * @since x.x.x
 	 * @return string The concatenated string of valid class names separated by spaces.
 	 */
-	public static function join_strings( array $class_names ): string {
+	public static function join_strings( $class_names ) {
 		// Filter the array to include only valid class names.
 		$valid_class_names = array_filter(
 			$class_names,
