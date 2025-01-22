@@ -243,24 +243,24 @@ const pushSmartTagToArray = (
 	} );
 };
 
-// const getBlocksSlugs = () => {
-// 	const { getBlocks } = select( editorStore );
+const getBlocksSlugs = () => {
+	const { getBlocks } = select( editorStore );
 
-// 	console.log( 'getBlocksSlugs blocks ->', getBlocks() );
-// 	const slugs = prepareBlockSlugs( getBlocks() );
+	console.log( 'getBlocksSlugs blocks ->', getBlocks() );
+	const slugs = prepareBlockSlugs( getBlocks() );
 
-// 	console.log( 'getBlocksSlugs->', slugs );
-// };
+	console.log( 'getBlocksSlugs->', slugs );
+};
 
 export const setFormSpecificSmartTags = ( savedBlocks, blockSlugs ) => {
-	// console.log( 'setFormSpecificSmartTags called->', {
-	// 	savedBlocks,
-	// 	blockSlugs,
-	// } );
+	console.log( 'setFormSpecificSmartTags called->', {
+		savedBlocks,
+		blockSlugs,
+	} );
 
-	// const getNewBlocks = getBlocksSlugs();
+	const getNewBlocks = getBlocksSlugs();
 
-	// console.log( 'getNewBlocks->', getNewBlocks );
+	console.log( 'getNewBlocks->', getNewBlocks );
 
 	if ( ! Object.keys( blockSlugs )?.length ) {
 		return;
@@ -296,14 +296,14 @@ export const setFormSpecificSmartTags = ( savedBlocks, blockSlugs ) => {
 		( savedBlock ) => ! excludedBlocks.includes( savedBlock?.name )
 	);
 
-	// console.log( 'setFormSpecificSmartTags->setFormSpecificSmartTags->', {
-	// 	savedBlocks,
-	// 	blockSlugs,
-	// 	formSmartTags,
-	// 	formSmartTagsUniqueSlugs,
-	// 	'win-formSmartTags': window.sureforms.formSpecificSmartTags,
-	// 	'win-formEmailSmartTags': window.sureforms.formSpecificEmailSmartTags,
-	// } );
+	console.log( 'setFormSpecificSmartTags->setFormSpecificSmartTags->', {
+		savedBlocks,
+		blockSlugs,
+		formSmartTags,
+		formSmartTagsUniqueSlugs,
+		'win-formSmartTags': window.sureforms.formSpecificSmartTags,
+		'win-formEmailSmartTags': window.sureforms.formSpecificEmailSmartTags,
+	} );
 
 	pushSmartTagToArray(
 		savedBlocks,
@@ -410,54 +410,59 @@ export const addQueryParam = ( url, paramValue, paramKey = 'utm_medium' ) => {
 	}
 };
 
-// const generateSlug = ( label, existingSlugs ) => {
-// 	// const baseSlug = slugify( label, {
-// 	// 	lower: true,
-// 	// 	strict: true,
-// 	// } );
-// 	const baseSlug = label.toLowerCase().replace( /[^a-zA-Z ]/g, '' ).replace( /\s+/g, '-' );
+console.log("working on Helpers.js", slugify( 'working on Helpers.js ekjqheiurhiuebb 99888883390() && ', {
+	lower: true,
+	strict: true,
+} ));
 
-// 	let slug = baseSlug;
-// 	let counter = 1;
+const generateSlug = ( label, existingSlugs ) => {
+	const baseSlug = slugify( label, {
+		lower: true,
+		strict: true,
+	} );
+	// const baseSlug = label.toLowerCase().replace( /[^a-zA-Z ]/g, '' ).replace( /\s+/g, '-' );
 
-// 	while ( existingSlugs.has( slug ) ) {
-// 		slug = `${ baseSlug }-${ counter }`;
-// 		counter++;
-// 	}
+	let slug = baseSlug;
+	let counter = 1;
 
-// 	return slug;
-// };
+	while ( existingSlugs.has( slug ) ) {
+		slug = `${ baseSlug }-${ counter }`;
+		counter++;
+	}
 
-// const prepareBlockSlugs = ( blocks ) => {
-// 	const blockSlugs = {};
-// 	const existingSlugs = new Set();
+	return slug;
+};
 
-// 	const processBlocks = ( blocks ) => {
-// 		for ( const block of blocks ) {
-// 			let { slug, label, block_id } = block.attributes;
+const prepareBlockSlugs = ( blocks ) => {
+	const blockSlugs = {};
+	const existingSlugs = new Set();
 
-// 			if ( ! slug ) {
-// 				slug = generateSlug( label, existingSlugs );
+	const processBlocks = ( blocks ) => {
+		for ( const block of blocks ) {
+			let { slug, label, block_id } = block.attributes;
+
+			if ( ! slug ) {
+				slug = generateSlug( label, existingSlugs );
 				
-// 				// Update the block attributes with the generated slug.
-// 				// const { updateBlockAttributes } = useDispatch( blockEditorStore );
+				// Update the block attributes with the generated slug.
+				const { updateBlockAttributes } = useDispatch( blockEditorStore );
 
-// 				// updateBlockAttributes( block.clientId, { slug } );
-// 			}
+				updateBlockAttributes( block.clientId, { slug } );
+			}
 
-// 			blockSlugs[ block_id ] = slug;
-// 			existingSlugs.add( slug );
+			blockSlugs[ block_id ] = slug;
+			existingSlugs.add( slug );
 
-// 			if (
-// 				Array.isArray( block.innerBlocks ) &&
-// 				block.innerBlocks.length > 0
-// 			) {
-// 				processBlocks( block.innerBlocks );
-// 			}
-// 		}
-// 	};
+			if (
+				Array.isArray( block.innerBlocks ) &&
+				block.innerBlocks.length > 0
+			) {
+				processBlocks( block.innerBlocks );
+			}
+		}
+	};
 
-// 	processBlocks( blocks );
+	processBlocks( blocks );
 
-// 	return blockSlugs;
-// };
+	return blockSlugs;
+};
