@@ -69,36 +69,184 @@ class Single_Entry {
 		$form_name       = ! empty( get_the_title( $this->entry['form_id'] ) ) ? get_the_title( $this->entry['form_id'] ) : sprintf( esc_html__( 'SureForms Form #%d', 'sureforms' ), intval( $this->entry['form_id'] ) );
 		$meta_data       = $this->entry['form_data'];
 		$excluded_fields = [ 'srfm-honeypot-field', 'g-recaptcha-response', 'srfm-sender-email-field' ];
-		$entry_logs      = $this->entry['logs'];
 		?>
 		<div class="wrap">
-			<h1 class="wp-heading-inline"><?php esc_html_e( 'View Entry', 'sureforms' ); ?></h1>
-			<form method="get" id="get"> <!-- check for nonce, referrer, etc. -->
+			<h1 class="wp-heading-inline">
+				<?php
+				/* Translators: %s is the entry id. */
+				printf( esc_html__( 'Entry #%s', 'sureforms' ), esc_html( $this->entry_id ) );
+				?>
+			</h1>
+
+			<form method="post" action="<?php echo esc_url( admin_url( "admin.php?page=sureforms_entries&entry_id={$this->entry_id}&view=details" ) ); ?>"> <!-- check for nonce, referrer, etc. -->
+				<?php
+				/**
+				 * Action hook right after entry form opening tag.
+				 *
+				 * @since 1.3.0
+				 */
+				do_action( 'srfm_after_entry_form_opening_tag', $this->entry, $this );
+				?>
+
 				<div id="poststuff">
 					<div id="post-body" class="metabox-holder columns-2">
-						<div id="post-body-content">
-							<div id="titlediv">
-								<div id="titlewrap">
-									<label class="screen-reader-text" id="title-prompt-text" for="title"><?php esc_html_e( 'Add title', 'sureforms' ); ?></label>
-									<input type="text" name="post_title" size="30" value="Entry #<?php echo esc_attr( $this->entry_id ); ?>" id="title" spellcheck="true" autocomplete="off" readonly>
-								</div>
-							</div><!-- /titlediv -->
-						</div><!-- /post-body-content -->
 						<div id="postbox-container-1" class="postbox-container">
-							<?php $this->render_submission_info( $form_name, $entry_status, $submitted_on ); ?>
+							<?php
+							/**
+							 * Action hook right before entry form opening tag.
+							 *
+							 * @since 1.3.0
+							 */
+							do_action( 'srfm_before_entry_submission_info', $this->entry, $this );
+							$this->render_upsell_placeholder( 'notes' );
+
+							$this->render_submission_info( $form_name, $entry_status, $submitted_on );
+
+							/**
+							 * Action hook right after entry form opening tag.
+							 *
+							 * @since 1.3.0
+							 */
+							do_action( 'srfm_after_entry_submission_info', $this->entry, $this );
+							$this->render_upsell_placeholder( 'resend-notification' );
+							?>
 						</div>
 						<div id="postbox-container-2" class="postbox-container">
 							<?php $this->render_form_data( $meta_data, $excluded_fields ); ?>
 						</div>
 						<div id="postbox-container-3" class="postbox-container">
-							<?php $this->render_entry_logs( $entry_logs ); ?>
+							<?php $this->render_entry_logs( $this->entry['logs'] ); ?>
 						</div>
 					</div><!-- /post-body -->
 					<br class="clear">
-				</div><!-- /poststuff -->
+				</div>
+				<!-- /poststuff -->
+
+				<?php
+				/**
+				 * Action hook right before entry form closing tag.
+				 *
+				 * @since 1.3.0
+				 */
+				do_action( 'srfm_before_entry_form_closing_tag', $this->entry, $this );
+				?>
 			</form>
 		</div>
 		<?php
+	}
+
+	/**
+	 * Add tooltip wrapper.
+	 *
+	 * @param string   $position Tooltip position.
+	 * @param callable $element_cb Element callback.
+	 * @param callable $tooltip_cb Tooltip callback.
+	 * @since 1.3.0
+	 * @return void
+	 */
+	protected function add_tooltip( $position, $element_cb, $tooltip_cb ) {
+		?>
+		<div class="srfm-tooltip">
+			<?php call_user_func( $element_cb ); ?>
+			<div class="tooltip-wrap <?php echo esc_attr( $position ); ?>">
+				<div class="tooltip-content">
+					<div class="tooltip-text">
+						<?php call_user_func( $tooltip_cb ); ?>
+					</div>
+					<a target="_blank" href="https://sureforms.com/pricing"><?php esc_html_e( 'Upgrade', 'sureforms' ); ?></a>
+				</div>
+				<i></i>
+			</div>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Renders the upsell placeholder.
+	 *
+	 * @param string $for The placeholder type.
+	 * @since 1.3.0
+	 * @return void
+	 */
+	protected function render_upsell_placeholder( $for ) {
+		if ( defined( 'SRFM_PRO_VER' ) ) {
+			return;
+		}
+
+		switch ( $for ) {
+			case 'edit-button':
+				$position   = 'top';
+				$element_cb = static function() {
+					?>
+					<button class="button button-link srfm-edit-entry" type="button">
+						<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+							<path d="M11.2411 2.99111L12.3661 1.86612C12.8543 1.37796 13.6457 1.37796 14.1339 1.86612C14.622 2.35427 14.622 3.14573 14.1339 3.63388L7.05479 10.713C6.70234 11.0654 6.26762 11.3245 5.78993 11.4668L4 12L4.53319 10.2101C4.67548 9.73239 4.93456 9.29767 5.28701 8.94522L11.2411 2.99111ZM11.2411 2.99111L13 4.74999M12 9.33333V12.5C12 13.3284 11.3284 14 10.5 14H3.5C2.67157 14 2 13.3284 2 12.5V5.49999C2 4.67157 2.67157 3.99999 3.5 3.99999H6.66667" stroke="#2271b1" stroke-linecap="round" stroke-linejoin="round"/>
+						</svg>
+						<?php esc_html_e( 'Edit', 'sureforms' ); ?>
+					</button>
+					<?php
+				};
+				$tooltip_cb = static function() {
+					?>
+					<h3><?php esc_html_e( 'Unlock Edit Form Entires', 'sureforms' ); ?></h3>
+					<p><?php esc_html_e( 'With the SureForms Starter plan, you can easily edit your entries to suit your needs.', 'sureforms' ); ?></p>
+					<?php
+				};
+				break;
+
+			case 'resend-notification':
+				$position   = 'left';
+				$element_cb = static function() {
+					?>
+					<button type="button" class="button srfm-resend-notification-trigger-btn"><?php esc_html_e( 'Resend Notification', 'sureforms' ); ?></button>
+					<?php
+				};
+				$tooltip_cb = static function() {
+					?>
+					<h3><?php esc_html_e( 'Unlock Resend Email Notification', 'sureforms' ); ?></h3>
+					<p><?php esc_html_e( 'With the SureForms Starter plan, you can effortlessly resend email notifications, ensuring your important updates reach their recipients with ease.', 'sureforms' ); ?></p>
+					<?php
+				};
+				break;
+
+			case 'notes':
+				$position   = 'left';
+				$element_cb = static function() {
+					?>
+					<div id="submitdiv" class="postbox entry-notes">
+						<div class="postbox-header">
+							<h2><?php esc_html_e( 'Entry Notes', 'sureforms' ); ?></h2>
+							<button type="button" id="srfm-add-entry-note" class="srfm-add-entry-note-button">
+								<?php esc_html_e( 'Add Note', 'sureforms' ); ?>
+								<svg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M8 3.33594V12.6693' stroke='black' stroke-width='1.25' stroke-linecap='round' stroke-linejoin='round'/><path d='M3.33337 8H12.6667' stroke='black' stroke-width='1.25' stroke-linecap='round' stroke-linejoin='round'/></svg>
+							</button>
+						</div>
+						<div class="inside">
+							<div class="srfm-entry-note-wrapper">
+								<div class="entry-notes-container"></div>
+								<div class="add-notes-field">
+									<textarea disabled id="srfm-entry-note" rows="5"></textarea>
+									<button id="srfm-add-note" type="button" class="button"><?php esc_html_e( 'Submit Note', 'sureforms' ); ?></button>
+								</div>
+							</div>
+						</div>
+					</div>
+					<?php
+				};
+				$tooltip_cb = static function() {
+					?>
+					<h3><?php esc_html_e( 'Unlock Add Note', 'sureforms' ); ?></h3>
+					<p><?php esc_html_e( 'With the SureForms Starter plan, enhance your submitted form entries by adding personalized notes for better clarity and tracking.', 'sureforms' ); ?></p>
+					<?php
+				};
+				break;
+
+			default:
+				// Do nothing.
+				return;
+		}
+
+		$this->add_tooltip( $position, $element_cb, $tooltip_cb );
 	}
 
 	/**
@@ -126,35 +274,35 @@ class Single_Entry {
 				<table style="border-collapse: separate; border-spacing: 5px 5px;">
 					<tbody>
 						<!-- TODO: Add Type and User info. -->
-						<tr style="margin-bottom: 10px;">
+						<tr>
 							<td><b><?php esc_html_e( 'Entry:', 'sureforms' ); ?></b></td>
 							<td>#<?php echo esc_attr( $this->entry_id ); ?></td>
 						</tr>
-						<tr style="margin-bottom: 10px;">
+						<tr>
 							<td><b><?php esc_html_e( 'Form Name:', 'sureforms' ); ?></b></td>
 							<td><a target="_blank" rel="noopener" href="<?php the_permalink( $this->entry['form_id'] ); ?>"><?php echo esc_attr( $form_name ); ?></a></td>
 						</tr>
 						<?php if ( ! empty( $this->entry['submission_info']['user_ip'] ) ) { ?>
-							<tr style="margin-bottom: 10px;">
+							<tr>
 								<td><b><?php esc_html_e( 'User IP:', 'sureforms' ); ?></b></td>
 								<td><a target="_blank" rel="noopener" href="https://ipinfo.io/"><?php echo esc_attr( $this->entry['submission_info']['user_ip'] ); ?></a></td>
 							</tr>
 						<?php } ?>
-						<tr style="margin-bottom: 10px;">
+						<tr>
 							<td><b><?php esc_html_e( 'Browser:', 'sureforms' ); ?></b></td>
 							<td><?php echo esc_attr( $this->entry['submission_info']['browser_name'] ); ?></td>
 						</tr>
-						<tr style="margin-bottom: 10px;">
+						<tr>
 							<td><b><?php esc_html_e( 'Device:', 'sureforms' ); ?></b></td>
 							<td><?php echo esc_attr( $this->entry['submission_info']['device_name'] ); ?></td>
 						</tr>
 						<?php if ( 0 !== $user_id ) { ?>
-							<tr style="margin-bottom: 10px;">
+							<tr>
 								<td><b><?php esc_html_e( 'User:', 'sureforms' ); ?></b></td>
 								<td><a target="_blank" rel="noopener" href="<?php echo esc_url( $user_profile_url ); ?>"><?php echo esc_attr( $user_name ); ?></a></td>
 							</tr>
 						<?php } ?>
-						<tr style="margin-bottom: 10px;">
+						<tr>
 							<td><b><?php esc_html_e( 'Status:', 'sureforms' ); ?></b></td>
 							<td>
 								<span style="text-transform: capitalize;">
@@ -165,7 +313,7 @@ class Single_Entry {
 								<?php } ?>
 							</td>
 						</tr>
-						<tr style="margin-bottom: 10px;">
+						<tr>
 							<td><b><?php esc_html_e( 'Submitted On:', 'sureforms' ); ?></b></td>
 							<td><?php echo esc_attr( $submitted_on ); ?></td>
 						</tr>
@@ -186,11 +334,19 @@ class Single_Entry {
 	 */
 	private function render_form_data( $meta_data, $excluded_fields ) {
 		?>
-		<div id="sureform_entry_meta" class="postbox">
+		<div id="sureform_entry_meta" class="postbox srfm-form-data">
 			<div class="postbox-header">
 				<!-- Removed "hndle ui-sortable-handle" class from h2 to remove the draggable stylings. -->
 				<h2><?php esc_html_e( 'Form Data', 'sureforms' ); ?></h2>
-				<!-- <div class="handle-actions hide-if-no-js"><button type="button" class="handle-order-higher" aria-disabled="false" aria-describedby="sureform_entry_meta-handle-order-higher-description"><span class="screen-reader-text">Move up</span><span class="order-higher-indicator" aria-hidden="true"></span></button><span class="hidden" id="sureform_entry_meta-handle-order-higher-description">Move Form Data box up</span><button type="button" class="handle-order-lower" aria-disabled="false" aria-describedby="sureform_entry_meta-handle-order-lower-description"><span class="screen-reader-text">Move down</span><span class="order-lower-indicator" aria-hidden="true"></span></button><span class="hidden" id="sureform_entry_meta-handle-order-lower-description">Move Form Data box down</span><button type="button" class="handlediv" aria-expanded="true"><span class="screen-reader-text">Toggle panel: Form Data</span><span class="toggle-indicator" aria-hidden="true"></span></button></div> -->
+				<?php
+				/**
+				 * Action hook right after entry form opening tag.
+				 *
+				 * @since 1.3.0
+				 */
+				do_action( 'srfm_after_entry_postbox_title', $this->entry, $this );
+				$this->render_upsell_placeholder( 'edit-button' );
+				?>
 			</div>
 			<div class="inside">
 				<table class="widefat striped">
@@ -259,16 +415,21 @@ class Single_Entry {
 											$upload_values = $value;
 											if ( ! empty( $upload_values ) && is_array( $upload_values ) ) {
 												foreach ( $upload_values as $file_url ) {
-													$file_url = Helper::get_string_value( $file_url );
+													$file_url = urldecode( Helper::get_string_value( $file_url ) );
+
 													if ( ! empty( $file_url ) ) {
+														if ( ! file_exists( Helper::convert_fileurl_to_filepath( $file_url ) ) ) {
+															continue;
+														}
+
 														$file_type = pathinfo( $file_url, PATHINFO_EXTENSION );
 														$is_image  = in_array( $file_type, [ 'gif', 'png', 'bmp', 'jpg', 'jpeg', 'svg' ], true );
 														?>
-																<div class="file-card">
+																<div class="file-card" data-fileurl-hash="<?php echo esc_attr( md5( $file_url ) ); ?>">
 															<?php if ( $is_image ) { ?>
 																		<div class="file-card-image">
-																			<a target="_blank" href="<?php echo esc_attr( urldecode( $file_url ) ); ?>">
-																				<img src="<?php echo esc_attr( urldecode( $file_url ) ); ?>" alt="<?php esc_attr_e( 'Image', 'sureforms' ); ?>" />
+																			<a target="_blank" href="<?php echo esc_attr( $file_url ); ?>">
+																				<img src="<?php echo esc_attr( $file_url ); ?>" alt="<?php esc_attr_e( 'Image', 'sureforms' ); ?>" />
 																			</a>
 																		</div>
 															<?php } else { ?>
@@ -281,7 +442,7 @@ class Single_Entry {
 																		</div>
 															<?php } ?>
 																	<div class="file-card-url">
-																		<a target="_blank" href="<?php echo esc_attr( urldecode( $file_url ) ); ?>"><?php echo esc_html__( 'Open', 'sureforms' ); ?></a>
+																		<a target="_blank" href="<?php echo esc_attr( $file_url ); ?>"><?php echo esc_html__( 'Open', 'sureforms' ); ?></a>
 																	</div>
 																</div>
 															<?php
@@ -304,7 +465,6 @@ class Single_Entry {
 		</div>
 		<?php
 	}
-
 	/**
 	 * Render the entry logs for a specific entry.
 	 *
@@ -313,15 +473,15 @@ class Single_Entry {
 	 * @return void
 	 */
 	private function render_entry_logs( $entry_logs ) {
+		ob_start();
 		?>
-		<div id="sureform_entry_meta" class="postbox">
+		<div id="sureform_entry_meta" class="postbox srfm-entry-logs">
 			<div class="postbox-header">
 				<!-- Removed "hndle ui-sortable-handle" class from h2 to remove the draggable stylings. -->
 				<h2><?php esc_html_e( 'Entry Logs', 'sureforms' ); ?></h2>
-				<!-- <div class="handle-actions hide-if-no-js"><button type="button" class="handle-order-higher" aria-disabled="false" aria-describedby="sureform_entry_meta-handle-order-higher-description"><span class="screen-reader-text">Move up</span><span class="order-higher-indicator" aria-hidden="true"></span></button><span class="hidden" id="sureform_entry_meta-handle-order-higher-description">Move Form Data box up</span><button type="button" class="handle-order-lower" aria-disabled="false" aria-describedby="sureform_entry_meta-handle-order-lower-description"><span class="screen-reader-text">Move down</span><span class="order-lower-indicator" aria-hidden="true"></span></button><span class="hidden" id="sureform_entry_meta-handle-order-lower-description">Move Form Data box down</span><button type="button" class="handlediv" aria-expanded="true"><span class="screen-reader-text">Toggle panel: Form Data</span><span class="toggle-indicator" aria-hidden="true"></span></button></div> -->
 			</div>
 			<div class="inside">
-				<table class="widefat striped entry-logs-table">
+				<table class="striped entry-logs-table">
 					<tbody>
 						<?php if ( ! empty( $entry_logs ) ) { ?>
 								<?php foreach ( $entry_logs as $log ) { ?>
@@ -334,7 +494,7 @@ class Single_Entry {
 												</h4>
 												<div class="entry-log-messages">
 												<?php foreach ( $log['messages'] as $message ) { ?>
-													<p><?php echo esc_html( $message ); ?></p>
+													<p><?php echo wp_kses_post( $message ); ?></p>
 												<?php } ?>
 												</div>
 											</div>
@@ -342,12 +502,14 @@ class Single_Entry {
 									</tr>
 								<?php } ?>
 						<?php } else { ?>
-							<p><?php esc_html_e( 'No logs found for this entry.', 'sureforms' ); ?></p>
+							<p class="no-logs-found"><?php esc_html_e( 'No logs found for this entry.', 'sureforms' ); ?></p>
 						<?php } ?>
 					</tbody>
 				</table>
 			</div>
 		</div>
 		<?php
+		$content = ob_get_clean();
+		echo apply_filters( 'srfm_entry_logs_markup', $content, $entry_logs ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
 }

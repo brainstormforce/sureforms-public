@@ -11,7 +11,7 @@ on:
 jobs:
   build-artifact:
     name: Build Release Artifact
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     outputs:
       current_version: ${{ steps.get_version.outputs.current_version }}
     steps:
