@@ -110,10 +110,10 @@ const SingleFormSettingsPopup = ( props ) => {
 		if ( ! Object.keys( blockSlugs ).length ) {
 			// Process the blocks using fetch one time per Modal open ( Or if data is not set already in blockSlugs state. )
 
-			console.log( 'Fetching saved blocks', {
-				getEditedPostContent: getEditedPostContent(),
-				getCurrentPostId: getCurrentPostId(),
-			} );
+			// console.log( 'Fetching saved blocks', {
+			// 	getEditedPostContent: getEditedPostContent(),
+			// 	getCurrentPostId: getCurrentPostId(),
+			// } );
 
 			getServerGeneratedBlockSlugs( getCurrentPostId(), getEditedPostContent() )
 				.then( ( response ) => {

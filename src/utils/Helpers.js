@@ -243,30 +243,28 @@ const pushSmartTagToArray = (
 	} );
 };
 
-const getBlocksSlugs = () => {
-	const { getBlocks } = select( editorStore );
+// const getBlocksSlugs = () => {
+// 	const { getBlocks } = select( editorStore );
 
-	console.log( 'getBlocksSlugs blocks ->', getBlocks() );
-	const slugs = prepareBlockSlugs( getBlocks() );
+// 	console.log( 'getBlocksSlugs blocks ->', getBlocks() );
+// 	const slugs = prepareBlockSlugs( getBlocks() );
 
-	console.log( 'getBlocksSlugs->', slugs );
-};
+// 	console.log( 'getBlocksSlugs->', slugs );
+// };
 
 export const setFormSpecificSmartTags = ( savedBlocks, blockSlugs ) => {
-	console.log( 'setFormSpecificSmartTags called->', {
-		savedBlocks,
-		blockSlugs,
-	} );
+	// console.log( 'setFormSpecificSmartTags called->', {
+	// 	savedBlocks,
+	// 	blockSlugs,
+	// } );
 
-	const getNewBlocks = getBlocksSlugs();
+	// const getNewBlocks = getBlocksSlugs();
 
-	console.log( 'getNewBlocks->', getNewBlocks );
+	// console.log( 'getNewBlocks->', getNewBlocks );
 
 	if ( ! Object.keys( blockSlugs )?.length ) {
 		return;
 	}
-
-	console.log( 'executed->' );
 
 	const excludedBlocks = [
 		'srfm/inline-button',
@@ -298,14 +296,14 @@ export const setFormSpecificSmartTags = ( savedBlocks, blockSlugs ) => {
 		( savedBlock ) => ! excludedBlocks.includes( savedBlock?.name )
 	);
 
-	console.log( 'setFormSpecificSmartTags->setFormSpecificSmartTags->', {
-		savedBlocks,
-		blockSlugs,
-		formSmartTags,
-		formSmartTagsUniqueSlugs,
-		'win-formSmartTags': window.sureforms.formSpecificSmartTags,
-		'win-formEmailSmartTags': window.sureforms.formSpecificEmailSmartTags,
-	} );
+	// console.log( 'setFormSpecificSmartTags->setFormSpecificSmartTags->', {
+	// 	savedBlocks,
+	// 	blockSlugs,
+	// 	formSmartTags,
+	// 	formSmartTagsUniqueSlugs,
+	// 	'win-formSmartTags': window.sureforms.formSpecificSmartTags,
+	// 	'win-formEmailSmartTags': window.sureforms.formSpecificEmailSmartTags,
+	// } );
 
 	pushSmartTagToArray(
 		savedBlocks,
@@ -401,53 +399,54 @@ export const SRFMToaster = ( {
 export const uagbClassNames = ( classes ) =>
 	classes.filter( Boolean ).join( ' ' );
 
-const generateSlug = ( label, existingSlugs ) => {
-	const baseSlug = slugify( label, {
-		lower: true,
-		strict: true,
-	} );
+// const generateSlug = ( label, existingSlugs ) => {
+// 	// const baseSlug = slugify( label, {
+// 	// 	lower: true,
+// 	// 	strict: true,
+// 	// } );
+// 	const baseSlug = label.toLowerCase().replace( /[^a-zA-Z ]/g, '' ).replace( /\s+/g, '-' );
 
-	let slug = baseSlug;
-	let counter = 1;
+// 	let slug = baseSlug;
+// 	let counter = 1;
 
-	while ( existingSlugs.has( slug ) ) {
-		slug = `${ baseSlug }-${ counter }`;
-		counter++;
-	}
+// 	while ( existingSlugs.has( slug ) ) {
+// 		slug = `${ baseSlug }-${ counter }`;
+// 		counter++;
+// 	}
 
-	return slug;
-};
+// 	return slug;
+// };
 
-const prepareBlockSlugs = ( blocks ) => {
-	const blockSlugs = {};
-	const existingSlugs = new Set();
+// const prepareBlockSlugs = ( blocks ) => {
+// 	const blockSlugs = {};
+// 	const existingSlugs = new Set();
 
-	const processBlocks = ( blocks ) => {
-		for ( const block of blocks ) {
-			let { slug, label, block_id } = block.attributes;
+// 	const processBlocks = ( blocks ) => {
+// 		for ( const block of blocks ) {
+// 			let { slug, label, block_id } = block.attributes;
 
-			if ( ! slug ) {
-				slug = generateSlug( label, existingSlugs );
+// 			if ( ! slug ) {
+// 				slug = generateSlug( label, existingSlugs );
 				
-				// Update the block attributes with the generated slug.
-const { updateBlockAttributes } = useDispatch( blockEditorStore );
+// 				// Update the block attributes with the generated slug.
+// 				// const { updateBlockAttributes } = useDispatch( blockEditorStore );
 
-				updateBlockAttributes( block.clientId, { slug } );
-			}
+// 				// updateBlockAttributes( block.clientId, { slug } );
+// 			}
 
-			blockSlugs[ block_id ] = slug;
-			existingSlugs.add( slug );
+// 			blockSlugs[ block_id ] = slug;
+// 			existingSlugs.add( slug );
 
-			if (
-				Array.isArray( block.innerBlocks ) &&
-				block.innerBlocks.length > 0
-			) {
-				processBlocks( block.innerBlocks );
-			}
-		}
-	};
+// 			if (
+// 				Array.isArray( block.innerBlocks ) &&
+// 				block.innerBlocks.length > 0
+// 			) {
+// 				processBlocks( block.innerBlocks );
+// 			}
+// 		}
+// 	};
 
-	processBlocks( blocks );
+// 	processBlocks( blocks );
 
-	return blockSlugs;
-};
+// 	return blockSlugs;
+// };

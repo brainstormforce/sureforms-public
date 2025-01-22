@@ -44,6 +44,15 @@ const addInitialAttr = ( ChildComponent ) => {
 			const { blockIds, clientIds } = getAllBlocks
 				? getUniqId( getAllBlocks )
 				: { blockIds: [], clientIds: [] };
+
+			// const isDuplicate = checkDuplicate(
+			// 	blockIds,
+			// 	block_id,
+			// 	clientIds.indexOf( clientId )
+			// );
+
+			// console.log( 'isDuplicate', {isDuplicate, block_id} );
+
 			if (
 				'not_set' === block_id ||
 				'0' === block_id ||
