@@ -14,6 +14,7 @@ import parse from 'html-react-parser';
 import { createRoot } from 'react-dom/client';
 import ConversationalFormSettingsPreview from './components/ConversationalFormSettingsPreview';
 import { applyFilters } from '@wordpress/hooks';
+import { getInstantFormAdditionalSettings } from '@Components/hooks';
 
 let live_mode_prev_srfm_instant_form_settings = {};
 
@@ -326,8 +327,8 @@ const InstantFormComponent = () => {
 		showInstantFormTitleSetting: true,
 	} );
 
-	// Filter to add additional components to instant form settings.
-	const components = applyFilters( 'srfm.instant_form_settings.additional.settings', [], { setHidePopover } );
+	// Filter to add additional settings to instant form popup.
+	const additionalSettings = getInstantFormAdditionalSettings( [], { setHidePopover } );
 
 	return (
 		<>
@@ -390,10 +391,10 @@ const InstantFormComponent = () => {
 						<div className="srfm-instant-form-settings-separator" />
 
 						{
-							components.length > 0 && (
-								components.map( ( component, index ) => (
+							additionalSettings.length > 0 && (
+								additionalSettings.map( ( setting, index ) => (
 									<div key={ index }>
-										{ component }
+										{ setting }
 									</div>
 								) )
 							)
