@@ -256,6 +256,8 @@ Yes! You can certainly use SureForms on yours as well as your client’s website
 When you use SureForms, you get an easy-to-use AI-powered form builder that can be used to build your forms fast.
 
 == Changelog ==
+= x.x.x =
+* Fix: Make SureForms Compatible with Divi's and Enfold's Classic Editor Settings.
 = 1.3.0 - 21st January 2025 =
 * Improvement: Stopped storing confirmation email setting's data of the Email field in the database.
 * Fix: Resolved an issue where forms were not being submitted in some instances with v3 reCAPTCHA.
