@@ -53,9 +53,9 @@ class AI_Form_Builder {
 			array_unshift( $messages, $current_message );
 		}
 
-		// if conversational form is enabled then define the version.
+		// if conversational form is enabled in the ai builder screen then define the version.
 		if ( defined( 'SRFM_PRO_VER' ) && is_array( $params ) && isset( $params['form_type'] ) && 'conversational' === $params['form_type'] ) {
-			define( 'SRFM_AI_SYSTEM_PROMPT_ARGS', [ 'version' => SRFM_AI_CONVERSATIONAL_FORM_TEMPLATE_VER ] );
+			define( 'SRFM_AI_SYSTEM_PROMPT_ARGS', [ 'version' => '1.2.7' ] );
 		}
 
 		// Get the response from the endpoint.

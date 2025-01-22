@@ -18,6 +18,7 @@ import ErrorPopup from './ErrorPopup.js';
 import { AuthErrorPopup } from './AuthErrorPopup.js';
 import toast, { Toaster } from 'react-hot-toast';
 import { applyFilters } from '@wordpress/hooks';
+import ProBadge from '@Admin/single-form-settings/components/ProBadge';
 
 const AiFormBuilder = () => {
 	const [ message, setMessage ] = useState(
@@ -389,11 +390,13 @@ const AiFormBuilder = () => {
 									{
 										__( 'Create Conversational Form', 'sureforms' )
 									}
-									<span
-										className="srfm-ai-conversational-form-pro-plan-badge"
-									>
-										{ __( 'Pro Plan', 'sureforms' ) }
-									</span>
+									<ProBadge
+										badgeName={ __( 'Pro', 'sureforms' ) }
+										tooltipHeading={ __( 'Unlock AI Conversational Forms', 'sureforms' ) }
+										tooltipContent={
+											__( 'With the SureForms Pro Plan, you can create forms with conversational layouts using AI in less than a minute.', 'sureforms' )
+										}
+									/>
 								</div>
 								: conversationalFormAiToggle }
 							<div

@@ -37,9 +37,4 @@ define( 'SRFM_PRO_RECOMMENDED_VER', '1.3.0' );
 
 define( 'SRFM_SURETRIGGERS_INTEGRATION_BASE_URL', 'https://app.suretriggers.com/' );
 
-/**
- * AI Form Template Versions
- */
-define( 'SRFM_AI_CONVERSATIONAL_FORM_TEMPLATE_VER', '1.2.7' );
-
 require_once 'plugin-loader.php';

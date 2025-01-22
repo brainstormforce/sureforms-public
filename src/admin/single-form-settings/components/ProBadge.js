@@ -6,7 +6,7 @@ export default ( { badgeName = 'Starter'
 		<div className="srfm-tooltip"
 		>
 			<span
-				className="srfm-conversational-placeholder-label"
+				className="srfm-premium-badge-text"
 				onClick={ ( e ) => {
 					e.stopPropagation();
 					window.open( 'https://sureforms.com/pricing', '_blank' );
