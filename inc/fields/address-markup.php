@@ -56,7 +56,6 @@ class Address_Markup extends Base {
 				</fieldset>
 			</div>
 		<?php
-
 		return ob_get_clean();
 	}
 }

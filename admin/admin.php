@@ -51,6 +51,16 @@ class Admin {
 		// Handle entry actions.
 		add_action( 'admin_init', [ $this, 'handle_entry_actions' ] );
 		add_action( 'admin_notices', [ Entries_List_Table::class, 'display_bulk_action_notice' ] );
+
+		// This action enqueues translations for NPS Survey library.
+		// A better solution will be required from library to resolve plugin conflict.
+		add_action(
+			'admin_footer',
+			static function() {
+				Helper::register_script_translations( 'nps-survey-script' );
+			},
+			1000
+		);
 	}
 
 	/**
@@ -473,7 +483,6 @@ class Admin {
 		// Enqueue styles for the entries page.
 		if ( $is_screen_sureforms_entries ) {
 			$asset_handle = '-entries';
-			wp_enqueue_style( SRFM_SLUG . $asset_handle, $css_uri . 'backend/entries' . $file_prefix . '.css', [], SRFM_VER );
 			wp_enqueue_script( SRFM_SLUG . $asset_handle, SRFM_URL . 'assets/build/entries.js', $script_info['dependencies'], SRFM_VER, true );
 
 			$script_translations_handlers[] = SRFM_SLUG . $asset_handle;
@@ -716,6 +725,8 @@ class Admin {
 		if ( ! empty( $trail ) && is_string( $trail ) ) {
 			$url = SRFM_WEBSITE . $trail;
 		}
+
+		$url = \BSF_UTM_Analytics\Inc\Utils::get_utm_ready_link( $url, 'sureforms' );
 
 		return esc_url( $url );
 	}

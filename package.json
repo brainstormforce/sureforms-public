@@ -1,6 +1,6 @@
 {
 	"name": "sureforms",
-	"version": "1.2.4",
+	"version": "1.3.0",
 	"description": "A simple yet powerful way to add forms to your website.",
 	"main": "index.js",
 	"scripts": {
@@ -44,7 +44,8 @@
 		"i18n:gptpo:es": "gpt-po translate --po languages/sureforms-es_ES.po --lang es --verbose",
 		"i18n:gptpo:it": "gpt-po translate --po languages/sureforms-it_IT.po --lang it --verbose",
 		"i18n:gptpo:pt": "gpt-po translate --po languages/sureforms-pt_PT.po --lang pt --verbose",
-		"i18n:gptpo:pl": "gpt-po translate --po languages/sureforms-pl_PL.po --lang pl --verbose"
+		"i18n:gptpo:pl": "gpt-po translate --po languages/sureforms-pl_PL.po --lang pl --verbose",
+		"replace-nps-textdomain-js": "find inc/lib/nps-survey/dist -name '*.js' -exec sed -i '' -e 's/\"nps-survey\"/\"sureforms\"/g' {} +"
 	},
 	"repository": "git+https://github.com/brainstormforce/sureforms.git",
 	"author": "Brainstorm Force",
