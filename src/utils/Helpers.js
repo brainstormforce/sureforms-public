@@ -8,6 +8,11 @@
 import apiFetch from '@wordpress/api-fetch';
 import { __ } from '@wordpress/i18n';
 import { Toaster, ToastBar } from 'react-hot-toast';
+import { store as blockEditorStore } from '@wordpress/block-editor';
+import { store as editorStore } from '@wordpress/editor';
+// const updateParentAlignment = ( align ) => updateBlockAttributes( immediateParentClientId, { align } );
+import { select } from '@wordpress/data';
+import slugify from 'slugify';
 
 export function getImageSize( sizes ) {
 	const sizeArr = [];
@@ -115,15 +120,6 @@ export const randomNiceColor = () => {
 	const s = randomInt( 42, 98 );
 	const l = randomInt( 40, 90 );
 	return `hsla(${ h },${ s }%,${ l }%,${ 0.2 })`;
-};
-
-export const generateSmartTagsDropDown = ( setInputData ) => {
-	const smartTagList = srfm_block_data.smart_tags_array;
-	if ( ! smartTagList ) {
-		return;
-	}
-	const entries = Object.entries( smartTagList );
-	return generateDropDownOptions( setInputData, entries );
 };
 
 export const generateDropDownOptions = (
@@ -247,10 +243,30 @@ const pushSmartTagToArray = (
 	} );
 };
 
+const getBlocksSlugs = () => {
+	const { getBlocks } = select( editorStore );
+
+	console.log( 'getBlocksSlugs blocks ->', getBlocks() );
+	const slugs = prepareBlockSlugs( getBlocks() );
+
+	console.log( 'getBlocksSlugs->', slugs );
+};
+
 export const setFormSpecificSmartTags = ( savedBlocks, blockSlugs ) => {
+	console.log( 'setFormSpecificSmartTags called->', {
+		savedBlocks,
+		blockSlugs,
+	} );
+
+	const getNewBlocks = getBlocksSlugs();
+
+	console.log( 'getNewBlocks->', getNewBlocks );
+
 	if ( ! Object.keys( blockSlugs )?.length ) {
 		return;
 	}
+
+	console.log( 'executed->' );
 
 	const excludedBlocks = [
 		'srfm/inline-button',
@@ -281,6 +297,15 @@ export const setFormSpecificSmartTags = ( savedBlocks, blockSlugs ) => {
 	savedBlocks = savedBlocks.filter(
 		( savedBlock ) => ! excludedBlocks.includes( savedBlock?.name )
 	);
+
+	console.log( 'setFormSpecificSmartTags->setFormSpecificSmartTags->', {
+		savedBlocks,
+		blockSlugs,
+		formSmartTags,
+		formSmartTagsUniqueSlugs,
+		'win-formSmartTags': window.sureforms.formSpecificSmartTags,
+		'win-formEmailSmartTags': window.sureforms.formSpecificEmailSmartTags,
+	} );
 
 	pushSmartTagToArray(
 		savedBlocks,
@@ -375,3 +400,54 @@ export const SRFMToaster = ( {
 // Using for the icon picker component.
 export const uagbClassNames = ( classes ) =>
 	classes.filter( Boolean ).join( ' ' );
+
+const generateSlug = ( label, existingSlugs ) => {
+	const baseSlug = slugify( label, {
+		lower: true,
+		strict: true,
+	} );
+
+	let slug = baseSlug;
+	let counter = 1;
+
+	while ( existingSlugs.has( slug ) ) {
+		slug = `${ baseSlug }-${ counter }`;
+		counter++;
+	}
+
+	return slug;
+};
+
+const prepareBlockSlugs = ( blocks ) => {
+	const blockSlugs = {};
+	const existingSlugs = new Set();
+
+	const processBlocks = ( blocks ) => {
+		for ( const block of blocks ) {
+			let { slug, label, block_id } = block.attributes;
+
+			if ( ! slug ) {
+				slug = generateSlug( label, existingSlugs );
+				
+				// Update the block attributes with the generated slug.
+const { updateBlockAttributes } = useDispatch( blockEditorStore );
+
+				updateBlockAttributes( block.clientId, { slug } );
+			}
+
+			blockSlugs[ block_id ] = slug;
+			existingSlugs.add( slug );
+
+			if (
+				Array.isArray( block.innerBlocks ) &&
+				block.innerBlocks.length > 0
+			) {
+				processBlocks( block.innerBlocks );
+			}
+		}
+	};
+
+	processBlocks( blocks );
+
+	return blockSlugs;
+};
