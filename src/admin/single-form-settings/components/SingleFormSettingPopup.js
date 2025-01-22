@@ -13,10 +13,8 @@ import {
 	MdOutlineCode,
 	MdOutlineDashboardCustomize,
 } from 'react-icons/md';
-import { select } from '@wordpress/data';
-import { store as editorStore } from '@wordpress/editor';
 import FormConfirmSetting from './form-confirm-setting';
-import { setFormSpecificSmartTags, SRFMToaster, getServerGeneratedBlockSlugs } from '@Utils/Helpers';
+import { setFormSpecificSmartTags, SRFMToaster } from '@Utils/Helpers';
 import toast from 'react-hot-toast';
 
 const SingleFormSettingsPopup = ( props ) => {
@@ -32,8 +30,6 @@ const SingleFormSettingsPopup = ( props ) => {
 	const [ action, setAction ] = useState();
 	const [ CTA, setCTA ] = useState();
 	const [ pluginConnected, setPluginConnected ] = useState( null );
-
-	const [ blockSlugs, setBlockSlugs ] = useState( {} );
 
 	const tabs = applyFilters(
 		'srfm.formSettings.tabs',
@@ -95,9 +91,7 @@ const SingleFormSettingsPopup = ( props ) => {
 		}
 	);
 
-	const { getBlocks, getCurrentPostId, getEditedPostContent } = select( editorStore );
-
-	setFormSpecificSmartTags( getBlocks(), blockSlugs );
+	setFormSpecificSmartTags();
 
 	useEffect( () => {
 		const activeTabObject = tabs.find( ( tab ) => tab.id === selectedTab );
@@ -105,27 +99,6 @@ const SingleFormSettingsPopup = ( props ) => {
 			setParentTab( activeTabObject.parent );
 		} else {
 			setParentTab( null );
-		}
-
-		if ( ! Object.keys( blockSlugs ).length ) {
-			// Process the blocks using fetch one time per Modal open ( Or if data is not set already in blockSlugs state. )
-
-			console.log( 'Fetching saved blocks', {
-				getEditedPostContent: getEditedPostContent(),
-				getCurrentPostId: getCurrentPostId(),
-			} );
-
-			getServerGeneratedBlockSlugs( getCurrentPostId(), getEditedPostContent() )
-				.then( ( response ) => {
-					console.log( 'Fetched saved blocks', response );
-
-					if ( true !== response?.success ) {
-						return console.error( 'Unable to fetch saved blocks: ', response?.data );
-					}
-					setBlockSlugs( response.data );
-				} ).catch( ( err ) => {
-					console.error( 'Unable to fetch saved blocks: ', err );
-				} );
 		}
 	}, [ selectedTab ] );
 

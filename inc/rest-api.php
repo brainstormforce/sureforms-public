@@ -79,40 +79,6 @@ class Rest_Api {
 	}
 
 	/**
-	 * Generate the block slugs as per the request by parsing the post content.
-	 *
-	 * @param  \WP_REST_Request $request Full details about the request.
-	 * @since 0.0.7
-	 * @return void
-	 */
-	public function generate_block_slugs_by_content( $request ) {
-		$nonce = Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) );
-
-		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
-			wp_send_json_error( __( 'Nonce verification failed.', 'sureforms' ) );
-		}
-
-		$slugs   = [];
-		$updated = false;
-		$params  = $request->get_params();
-
-		if ( empty( $params['formID'] ) ) {
-			wp_send_json_error( __( 'Invalid request. Form ID missing.', 'sureforms' ) );
-		}
-
-		$form    = get_post( absint( $params['formID'] ) );
-		$content = ! empty( $params['content'] ) ? wp_kses_post( $params['content'] ) : '';
-
-		if ( ! is_null( $form ) ) {
-			Helper::process_blocks( parse_blocks( $form->post_content ), $slugs, $updated );
-		}
-
-		Helper::process_blocks( parse_blocks( $content ), $slugs, $updated, '', true );
-
-		wp_send_json_success( $slugs );
-	}
-
-	/**
 	 * Get the data for generating entries chart.
 	 *
 	 * @param \WP_REST_Request $request Full details about the request.
@@ -171,11 +137,6 @@ class Rest_Api {
 		return apply_filters(
 			'srfm_rest_api_endpoints',
 			[
-				'generate-block-slugs' => [
-					'methods'             => 'POST',
-					'callback'            => [ $this, 'generate_block_slugs_by_content' ],
-					'permission_callback' => [ $this, 'can_edit_posts' ],
-				],
 				'generate-form'        => [
 					'methods'             => 'POST',
 					'callback'            => [ AI_Form_Builder::get_instance(), 'generate_ai_form' ],

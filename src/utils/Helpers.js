@@ -10,6 +10,7 @@ import { __ } from '@wordpress/i18n';
 import { Toaster, ToastBar } from 'react-hot-toast';
 import { store as blockEditorStore } from '@wordpress/block-editor';
 import { store as editorStore } from '@wordpress/editor';
+import { useDispatch } from '@wordpress/data';
 // const updateParentAlignment = ( align ) => updateBlockAttributes( immediateParentClientId, { align } );
 import { select } from '@wordpress/data';
 import slugify from 'slugify';
@@ -154,19 +155,6 @@ export const generateDropDownOptions = (
 	return data;
 };
 
-export async function getServerGeneratedBlockSlugs( formID, content ) {
-	const option = {
-		path: `/sureforms/v1/generate-block-slugs`,
-		method: 'POST',
-		data: {
-			formID,
-			content,
-		},
-	};
-
-	return await apiFetch( option );
-}
-
 // Creates excerpt.
 export function trimTextToWords( text, wordLimit, ending = '...' ) {
 	// Split the text into words
@@ -243,38 +231,34 @@ const pushSmartTagToArray = (
 	} );
 };
 
+export const withoutSlugBlocks = [
+	'srfm/inline-button',
+	'srfm/hidden',
+	'srfm/page-break',
+	'srfm/separator',
+	'srfm/advanced-heading',
+	'srfm/image',
+	'srfm/icon',
+];
+
 const getBlocksSlugs = () => {
 	const { getBlocks } = select( editorStore );
 
-	console.log( 'getBlocksSlugs blocks ->', getBlocks() );
-	const slugs = prepareBlockSlugs( getBlocks() );
-
-	console.log( 'getBlocksSlugs->', slugs );
+	// return prepareBlockSlugs( getBlocks() );
+	return {
+		savedBlocks: getBlocks(),
+		blockSlugs: prepareBlockSlugs( getBlocks() ),
+	}
 };
 
-export const setFormSpecificSmartTags = ( savedBlocks, blockSlugs ) => {
-	console.log( 'setFormSpecificSmartTags called->', {
-		savedBlocks,
-		blockSlugs,
-	} );
+export const setFormSpecificSmartTags = () => {
+	let { savedBlocks, blockSlugs } = getBlocksSlugs();
 
-	const getNewBlocks = getBlocksSlugs();
-
-	console.log( 'getNewBlocks->', getNewBlocks );
+	console.log( 'slugs with new implementation->', getBlocksSlugs() );
 
 	if ( ! Object.keys( blockSlugs )?.length ) {
 		return;
 	}
-
-	const excludedBlocks = [
-		'srfm/inline-button',
-		'srfm/hidden',
-		'srfm/page-break',
-		'srfm/separator',
-		'srfm/advanced-heading',
-		'srfm/image',
-		'srfm/icon',
-	];
 
 	const formSmartTags = [];
 	const formEmailSmartTags = [];
@@ -293,7 +277,7 @@ export const setFormSpecificSmartTags = ( savedBlocks, blockSlugs ) => {
 	}
 
 	savedBlocks = savedBlocks.filter(
-		( savedBlock ) => ! excludedBlocks.includes( savedBlock?.name )
+		( savedBlock ) => ! withoutSlugBlocks.includes( savedBlock?.name )
 	);
 
 	console.log( 'setFormSpecificSmartTags->setFormSpecificSmartTags->', {
@@ -409,11 +393,6 @@ export const addQueryParam = ( url, paramValue, paramKey = 'utm_medium' ) => {
 		return url; // Return the original URL in case of error
 	}
 };
-
-console.log("working on Helpers.js", slugify( 'working on Helpers.js ekjqheiurhiuebb 99888883390() && ', {
-	lower: true,
-	strict: true,
-} ));
 
 const generateSlug = ( label, existingSlugs ) => {
 	const baseSlug = slugify( label, {
