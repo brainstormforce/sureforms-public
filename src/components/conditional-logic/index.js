@@ -1,32 +1,31 @@
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
 import PremiumBadge from '@Admin/components/PremiumBadge';
-import { PanelBody } from '@wordpress/components';
+import { chevronDown } from '@wordpress/icons';
 
 const ConditionalLogicPreview = () => {
 	return (
 		<div className="srfm-conditional-logic-preview">
-			<PanelBody
-				title={
-					<>
-						{ __( 'Conditional Logic', 'sureforms' ) }
-						<PremiumBadge
-							badgeName={ 'Pro' }
-							tooltipHeading={ __(
-								'Unlock Conditional Logic',
-								'sureforms'
-							) }
-							tooltipContent={ __(
-								'Upgrade to the SureForms Pro Plan to create dynamic forms that adapt based on user input, offering a personalised and efficient form experience.',
-								'sureforms'
-							) }
-							tooltipPosition={ 'bottom' }
-							utmMedium={ 'editor_blocks_conditional_logic' }
-						/>
-					</>
-				}
-				initialOpen={ false }
-			></PanelBody>
+			<div className="components-panel__body">
+				<h2 className="components-panel__body-title">
+					{ ' ' }
+					{ __( 'Conditional Logic', 'sureforms' ) }{ ' ' }
+				</h2>
+				<PremiumBadge
+					badgeName={ 'Pro' }
+					tooltipHeading={ __(
+						'Unlock Conditional Logic',
+						'sureforms'
+					) }
+					tooltipContent={ __(
+						'Upgrade to the SureForms Pro Plan to create dynamic forms that adapt based on user input, offering a personalised and efficient form experience.',
+						'sureforms'
+					) }
+					tooltipPosition={ 'bottom' }
+					utmMedium={ 'editor_blocks_conditional_logic' }
+				/>
+				{ chevronDown }
+			</div>
 		</div>
 	);
 };
