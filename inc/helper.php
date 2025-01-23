@@ -1094,7 +1094,9 @@ class Helper {
 			$url = SRFM_WEBSITE . $trail;
 		}
 
-		$url = \BSF_UTM_Analytics\Inc\Utils::get_utm_ready_link( $url, 'sureforms' );
+		if ( class_exists( '\BSF_UTM_Analytics\Inc\Utils' ) ) {
+			$url = \BSF_UTM_Analytics\Inc\Utils::get_utm_ready_link( $url, 'sureforms' );
+		}
 
 		return esc_url( $url );
 	}
