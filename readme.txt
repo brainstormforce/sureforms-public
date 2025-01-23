@@ -258,6 +258,7 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 == Changelog ==
 = x.x.x =
 * Improvement: Fixed console error by adding validation for arguments in getComputedStyle, ensuring compatibility with FSE themes.
+* Fix: Make SureForms Compatible with Divi's and Enfold's Classic Editor Settings.
 = 1.3.0 - 21st January 2025 =
 * Improvement: Stopped storing confirmation email setting's data of the Email field in the database.
 * Fix: Resolved an issue where forms were not being submitted in some instances with v3 reCAPTCHA.
