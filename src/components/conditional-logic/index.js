@@ -12,13 +12,13 @@ const ConditionalLogicPreview = () => {
 					{ __( 'Conditional Logic', 'sureforms' ) }{ ' ' }
 				</h2>
 				<PremiumBadge
-					badgeName={ 'Pro' }
+					badgeName={ 'Starter' }
 					tooltipHeading={ __(
 						'Unlock Conditional Logic',
 						'sureforms'
 					) }
 					tooltipContent={ __(
-						'Upgrade to the SureForms Pro Plan to create dynamic forms that adapt based on user input, offering a personalised and efficient form experience.',
+						'Upgrade to the SureForms Starter Plan to create dynamic forms that adapt based on user input, offering a personalised and efficient form experience.',
 						'sureforms'
 					) }
 					tooltipPosition={ 'bottom' }
