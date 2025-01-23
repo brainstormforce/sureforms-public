@@ -47,23 +47,23 @@ const AiFormBuilder = () => {
 	const examplePrompts = applyFilters(
 		'srfm.aiFormScreen.examplePrompts',
 		[
-				{
-					title: __( 'Create simple contact form', 'sureforms' ),
-				},
-				{
-					title: __( 'Create a lead generation form', 'sureforms' ),
-				},
-				{
-					title: __( 'Generate a user feedback form', 'sureforms' ),
-				},
-				{
-					title: __( 'Create a job application form', 'sureforms' ),
-				},
-				{
-					title: __( 'Make an event registration form', 'sureforms' ),
-				},
-			], 
-			formTypeObj
+			{
+				title: __( 'Create simple contact form', 'sureforms' ),
+			},
+			{
+				title: __( 'Create a lead generation form', 'sureforms' ),
+			},
+			{
+				title: __( 'Generate a user feedback form', 'sureforms' ),
+			},
+			{
+				title: __( 'Create a job application form', 'sureforms' ),
+			},
+			{
+				title: __( 'Make an event registration form', 'sureforms' ),
+			},
+		],
+		formTypeObj
 		 );
 
 	const initSpeechRecognition = () => {
@@ -207,9 +207,9 @@ const AiFormBuilder = () => {
 						{},
 						formTypeObj,
 						content
-					)
+					);
 					console.log( 'metasToUpdate', metasToUpdate );
-					
+
 					handleAddNewPost( postContent, formTitle, metasToUpdate, formTypeObj?.isConversationalForm, formType );
 				} else {
 					setShowFormCreationErr( true );

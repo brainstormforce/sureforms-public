@@ -57,7 +57,7 @@ export const handleAddNewPost = async (
 	formData,
 	templateName,
 	templateMetas,
-	isConversational = false, 
+	isConversational = false,
 	formType = ''
 ) => {
 	if ( '1' !== srfm_admin.capability ) {
