@@ -339,6 +339,20 @@ class Base {
 	protected $entry_id = 0;
 
 	/**
+	 * Configuration array for the field.
+	 *
+	 * This associative array contains configuration settings for the field,
+	 * which can be used for various JavaScript functionalities such as
+	 * calculation, validation, and conditional logic (in future).
+	 * The array data will be stored in the block field's "data-field-config"
+	 * attribute as a JSON string.
+	 *
+	 * @var array $field_config Configuration settings for the field.
+	 * @since x.x.x
+	 */
+	protected $field_config;
+
+	/**
 	 * Render the sureforms default
 	 *
 	 * @since 0.0.2
@@ -356,6 +370,10 @@ class Base {
 	 * @return void
 	 */
 	protected function set_properties( $attributes ) {
+		$default_classes = isset( $attributes['className'] ) ? ' ' . $attributes['className'] : '';
+		$filter_classes = apply_filters( 'srfm_field_classes', $default_classes, [ 'attributes' => $attributes ] );
+
+		$this->field_config = apply_filters( 'srfm_field_config', [], [ 'attributes' => $attributes ] );
 		$this->attributes         = $attributes;
 		$this->required           = $attributes['required'] ?? false;
 		$this->field_width        = $attributes['fieldWidth'] ?? '';
@@ -364,7 +382,7 @@ class Base {
 		$this->block_id           = isset( $attributes['block_id'] ) ? Helper::get_string_value( $attributes['block_id'] ) : '';
 		$this->form_id            = isset( $attributes['formId'] ) ? Helper::get_string_value( $attributes['formId'] ) : '';
 		$this->block_slug         = $attributes['slug'] ?? '';
-		$this->class_name         = isset( $attributes['className'] ) ? ' ' . $attributes['className'] : '';
+		$this->class_name         = $filter_classes;
 		$this->placeholder        = $attributes['placeholder'] ?? '';
 		$this->default            = $attributes['defaultValue'] ?? '';
 		$this->checked            = $attributes['checked'] ?? '';

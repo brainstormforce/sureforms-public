@@ -1080,4 +1080,24 @@ class Helper {
 
 		return $is_screen_sureforms_menu || $is_screen_add_new_form || $is_screen_sureforms_form_settings || $is_screen_sureforms_entries || $is_post_type_sureforms_form;
 	}
+
+	/**
+	 * Filters and concatenates valid class names from an array.
+	 *
+	 * @param array<string> $class_names The array containing potential class names.
+	 * @since x.x.x
+	 * @return string The concatenated string of valid class names separated by spaces.
+	 */
+	public static function join_strings( $class_names ) {
+		// Filter the array to include only valid class names.
+		$valid_class_names = array_filter(
+			$class_names,
+			static function ( $value ) {
+				return is_string( $value ) && '' !== $value && false !== $value;
+			}
+		);
+
+		// Concatenate the valid class names with spaces and return.
+		return implode( ' ', $valid_class_names );
+	}
 }
