@@ -94,7 +94,7 @@ const index = () => {
 						'sureforms'
 					) }
 					tooltipPosition={ 'bottom' }
-					utmMedium={ 'pro_panel' }
+					utmMedium={ 'srfm_editor_pro_panel' }
 				/>
 			</div>
 			<div className="srfm-upgrade-pro-btn-container">

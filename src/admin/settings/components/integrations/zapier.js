@@ -33,16 +33,22 @@ const Zapier = () => {
 			</div>
 			<div className="srfm-integration-cta">
 				{ false === zapierDetails ? <UpgradeToProButton className="srfm-button-secondary srfm-button-xs" location="settings_integrations_zapier" /> : zapierDetails }
-				<PremiumBadge
-					badgeName={ 'Pro' }
-					tooltipHeading={ __( 'Unlock Zapier Integration', 'sureforms' ) }
-					tooltipContent={ __(
-						'With the SureForms Pro Plan, you can enable Zapier integration to seamlessly connect with thousands of apps for powerful workflow automation.',
-						'sureforms'
-					) }
-					tooltipPosition={ 'bottom' }
-					utmMedium={ 'integrations_zapier' }
-				/>
+				{ false === zapierDetails ? (
+					<PremiumBadge
+						badgeName={ 'Pro' }
+						tooltipHeading={ __( 'Unlock Zapier Integration', 'sureforms' ) }
+						tooltipContent={ __(
+							'With the SureForms Pro Plan, you can enable Zapier integration to seamlessly connect with thousands of apps for powerful workflow automation.',
+							'sureforms'
+						) }
+						tooltipPosition={ 'bottom' }
+						utmMedium={ 'global_integration_settings_zapier' }
+					/>
+				) : (
+					<div className="srfm-pro-badge">
+						{ __( 'Pro', 'sureforms' ) }
+					</div>
+				) }
 			</div>
 		</> );
 };

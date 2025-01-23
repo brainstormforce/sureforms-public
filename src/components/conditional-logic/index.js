@@ -21,7 +21,7 @@ const ConditionalLogicPreview = () => {
 								'sureforms'
 							) }
 							tooltipPosition={ 'bottom' }
-							utmMedium={ 'conditional_logic' }
+							utmMedium={ 'editor_blocks_conditional_logic' }
 						/>
 					</>
 				}
