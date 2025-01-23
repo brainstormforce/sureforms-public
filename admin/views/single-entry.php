@@ -145,7 +145,7 @@ class Single_Entry {
 	 * @return void
 	 */
 	protected function add_tooltip( $position, $element_cb, $tooltip_cb ) {
-		$upsell_url = add_query_arg( 'utm_medium', 'srfm_entries_management', 'https://sureforms.com/pricing' );
+		$upsell_url = add_query_arg( 'utm_medium', 'srfm_entries_management', Helper::get_sureforms_website_url( 'pricing' ) );
 		?>
 		<div class="srfm-tooltip">
 			<?php call_user_func( $element_cb ); ?>

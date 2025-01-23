@@ -12,7 +12,7 @@ export default ( { badgeName = 'Starter'
 				className="srfm-premium-badge-text"
 				onClick={ ( e ) => {
 					e.stopPropagation();
-					window.open( addQueryParam( srfm_admin?.pricing_page_url || srfm_admin?.sureforms_pricing_page, utmMedium ), '_blank', 'noreferrer' );
+					window.open( addQueryParam( srfm_admin?.sureforms_pricing_page, utmMedium ), '_blank', 'noreferrer' );
 				}
 				}
 			>
@@ -28,7 +28,7 @@ export default ( { badgeName = 'Starter'
 						</h3>
 						<p>{ tooltipContent }</p>
 					</div>
-					<a target="_blank" href={ addQueryParam( srfm_admin?.pricing_page_url || srfm_admin?.sureforms_pricing_page, utmMedium ) } rel="noreferrer">{ __( 'Upgrade', 'sureforms' ) }</a>
+					<a target="_blank" href={ addQueryParam( srfm_admin?.sureforms_pricing_page, utmMedium ) } rel="noreferrer">{ __( 'Upgrade', 'sureforms' ) }</a>
 				</div>
 				<i></i>
 			</div>
