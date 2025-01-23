@@ -1,9 +1,8 @@
 import apiFetch from '@wordpress/api-fetch';
 import { __ } from '@wordpress/i18n';
 import { Toaster, ToastBar } from 'react-hot-toast';
-import { store as blockEditorStore } from '@wordpress/block-editor';
 import { store as editorStore } from '@wordpress/editor';
-import { useDispatch, select } from '@wordpress/data';
+import { select } from '@wordpress/data';
 import slugify from 'slugify';
 
 /**
@@ -238,10 +237,10 @@ export const withoutSlugBlocks = [
 	'srfm/icon',
 ];
 
-export const useFormSpecificSmartTags = () => {
+export const setFormSpecificSmartTags = ( updateBlockAttributes ) => {
 	const { getBlocks } = select( editorStore );
 	let savedBlocks = getBlocks();
-	const blockSlugs = usePrepareBlockSlugs( savedBlocks );
+	const blockSlugs = prepareBlockSlugs( updateBlockAttributes, savedBlocks );
 
 	if ( ! Object.keys( blockSlugs )?.length ) {
 		return;
@@ -389,10 +388,9 @@ const generateSlug = ( label, existingSlugs ) => {
 	return slug;
 };
 
-const usePrepareBlockSlugs = ( srfmBlocks ) => {
+const prepareBlockSlugs = ( updateBlockAttributes, srfmBlocks ) => {
 	const blockSlugs = {};
 	const existingSlugs = new Set();
-	const { updateBlockAttributes } = useDispatch( blockEditorStore );
 
 	const processBlocks = ( blocks ) => {
 		for ( const block of blocks ) {

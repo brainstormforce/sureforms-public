@@ -14,8 +14,10 @@ import {
 	MdOutlineDashboardCustomize,
 } from 'react-icons/md';
 import FormConfirmSetting from './form-confirm-setting';
-import { useFormSpecificSmartTags, SRFMToaster } from '@Utils/Helpers';
+import { setFormSpecificSmartTags, SRFMToaster } from '@Utils/Helpers';
 import toast from 'react-hot-toast';
+import { useDispatch } from '@wordpress/data';
+import { store as blockEditorStore } from '@wordpress/block-editor';
 
 const SingleFormSettingsPopup = ( props ) => {
 	const { sureformsKeys, targetTab, setHasValidationErrors } = props;
@@ -30,6 +32,7 @@ const SingleFormSettingsPopup = ( props ) => {
 	const [ action, setAction ] = useState();
 	const [ CTA, setCTA ] = useState();
 	const [ pluginConnected, setPluginConnected ] = useState( null );
+	const { updateBlockAttributes } = useDispatch( blockEditorStore );
 
 	const tabs = applyFilters(
 		'srfm.formSettings.tabs',
@@ -91,7 +94,7 @@ const SingleFormSettingsPopup = ( props ) => {
 		}
 	);
 
-	useFormSpecificSmartTags();
+	setFormSpecificSmartTags( updateBlockAttributes );
 
 	useEffect( () => {
 		const activeTabObject = tabs.find( ( tab ) => tab.id === selectedTab );
