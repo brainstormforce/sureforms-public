@@ -47,6 +47,23 @@ class Helper {
 	}
 
 	/**
+	 * Convert a file URL to a file path.
+	 *
+	 * @param string $file_url The URL of the file.
+	 *
+	 * @since 1.3.0
+	 * @return string The file path.
+	 */
+	public static function convert_fileurl_to_filepath( $file_url ) {
+		static $upload_dir = null;
+		if ( ! $upload_dir ) {
+			// Internally cache the upload directory.
+			$upload_dir = wp_get_upload_dir();
+		}
+		return wp_normalize_path( str_replace( $upload_dir['baseurl'], $upload_dir['basedir'], $file_url ) );
+	}
+
+	/**
 	 * Checks if current value is string or else returns default value
 	 *
 	 * @param mixed $data data which need to be checked if is string.
@@ -92,7 +109,7 @@ class Helper {
 	 * @param mixed $data Data which needs to be checked if it is an array.
 	 *
 	 * @since 0.0.3
-	 * @return array<mixed>
+	 * @return array
 	 */
 	public static function get_array_value( $data ) {
 		if ( is_array( $data ) ) {
@@ -835,13 +852,13 @@ class Helper {
 	/**
 	 * Process blocks and inner blocks.
 	 *
-	 * @param array<array<array<mixed>>> $blocks The block data.
-	 * @param array<string>              $slugs The array of existing slugs.
-	 * @param bool                       $updated The array of existing slugs.
-	 * @param string                     $prefix The array of existing slugs.
-	 * @param bool                       $skip_checking_existing_slug Skips the checking of existing slug if passed true. More information documented inside this function.
+	 * @param array<mixed>  $blocks The block data.
+	 * @param array<string> $slugs The array of existing slugs.
+	 * @param bool          $updated The array of existing slugs.
+	 * @param string        $prefix The array of existing slugs.
+	 * @param bool          $skip_checking_existing_slug Skips the checking of existing slug if passed true. More information documented inside this function.
 	 * @since 0.0.10
-	 * @return array{array<array<array<mixed>>>,array<string>,bool}
+	 * @return array
 	 */
 	public static function process_blocks( $blocks, &$slugs, &$updated, $prefix = '', $skip_checking_existing_slug = false ) {
 

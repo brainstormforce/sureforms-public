@@ -131,6 +131,19 @@ class Frontend_Assets {
 				'is_rtl'   => $is_rtl,
 			]
 		);
+
+		$current_post = get_post();
+
+		// Let's conditionally load form assets if current requested page has our forms.
+		if ( $current_post instanceof \WP_Post ) {
+			// Handles condition for Instant Form, Block Embedded, and Shortcode Embedded forms.
+			$load_assets = ( SRFM_FORMS_POST_TYPE === $current_post->post_type || ( false !== strpos( $current_post->post_content, 'wp:srfm/form' ) || has_shortcode( $current_post->post_content, 'sureforms' ) ) );
+
+			if ( $load_assets ) {
+				// Load needed styles in head tag if current requested page has SureForms form.
+				self::enqueue_scripts_and_styles();
+			}
+		}
 	}
 
 	/**
@@ -237,6 +250,11 @@ class Frontend_Assets {
 	 * @return string
 	 */
 	public function generate_render_script( $block_content, $block ) {
+
+		if ( isset( $block['attrs']['isEditing'] ) ) {
+			// Only load block assets on the frontend.
+			return $block_content;
+		}
 
 		if ( isset( $block['blockName'] ) ) {
 			self::enqueue_srfm_script( $block['blockName'] );
