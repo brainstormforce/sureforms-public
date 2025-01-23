@@ -137,7 +137,7 @@ class Rest_Api {
 		return apply_filters(
 			'srfm_rest_api_endpoints',
 			[
-				'generate-form'        => [
+				'generate-form'      => [
 					'methods'             => 'POST',
 					'callback'            => [ AI_Form_Builder::get_instance(), 'generate_ai_form' ],
 					'permission_callback' => [ $this, 'can_edit_posts' ],
@@ -148,25 +148,25 @@ class Rest_Api {
 					],
 				],
 				// This route is used to map the AI response to SureForms fields markup.
-				'map-fields'           => [
+				'map-fields'         => [
 					'methods'             => 'POST',
 					'callback'            => [ Field_Mapping::get_instance(), 'generate_gutenberg_fields_from_questions' ],
 					'permission_callback' => [ $this, 'can_edit_posts' ],
 				],
 				// This route is used to initiate auth process when user tries to authenticate on billing portal.
-				'initiate-auth'        => [
+				'initiate-auth'      => [
 					'methods'             => 'GET',
 					'callback'            => [ AI_Auth::get_instance(), 'get_auth_url' ],
 					'permission_callback' => [ $this, 'can_edit_posts' ],
 				],
 				// This route is to used to decrypt the access key and save it in the database.
-				'handle-access-key'    => [
+				'handle-access-key'  => [
 					'methods'             => 'POST',
 					'callback'            => [ AI_Auth::get_instance(), 'handle_access_key' ],
 					'permission_callback' => [ $this, 'can_edit_posts' ],
 				],
 				// This route is to get the form submissions for the last 30 days.
-				'entries-chart-data'   => [
+				'entries-chart-data' => [
 					'methods'             => 'GET',
 					'callback'            => [ $this, 'get_entries_chart_data' ],
 					'permission_callback' => [ $this, 'can_edit_posts' ],
