@@ -153,8 +153,8 @@ class Create_New_Form {
 			}
 		}
 
-		$title                = $form_info_obj->template_name ?? '';
-		$content              = $form_info_obj->form_data ?? '';
+		$title   = $form_info_obj->template_name ?? '';
+		$content = $form_info_obj->form_data ?? '';
 
 		// Create post metas for the creating form.
 		$post_metas = apply_filters(
