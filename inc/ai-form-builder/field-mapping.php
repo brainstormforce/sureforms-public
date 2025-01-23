@@ -79,6 +79,7 @@ class Field_Mapping {
 					'label'    => sanitize_text_field( $question['label'] ),
 					'required' => filter_var( $question['required'], FILTER_VALIDATE_BOOLEAN ),
 					'help'     => sanitize_text_field( $question['helpText'] ),
+					'slug'     => sanitize_text_field( $question['slug'] ),
 				]
 			);
 
@@ -147,6 +148,12 @@ class Field_Mapping {
 					}
 					if ( 'phone' === $question['fieldType'] ) {
 						$merged_attributes['autoCountry'] = true;
+					}
+
+					// if number field is set to integer then set the step to 1.
+					if ( 'number' === $question['fieldType'] && ! empty( $question['calculationFormula'] ) ) {
+						$merged_attributes['enableCalculation'] = true;
+						$merged_attributes['calculationFormula'] = $question['calculationFormula'];
 					}
 
 					$post_content .= '<!-- wp:srfm/' . $question['fieldType'] . ' ' . Helper::encode_json( $merged_attributes ) . ' /-->' . PHP_EOL;
