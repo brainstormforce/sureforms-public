@@ -383,20 +383,17 @@ class Admin {
 		$current_screen = get_current_screen();
 		global $wp_version;
 
-		$file_prefix  = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? '' : '.min';
-			$dir_name = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? 'unminified' : 'minified';
-			$js_uri   = SRFM_URL . 'assets/js/' . $dir_name . '/';
-			$css_uri  = SRFM_URL . 'assets/css/' . $dir_name . '/';
+		$file_prefix = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? '' : '.min';
+		$dir_name    = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? 'unminified' : 'minified';
+		$js_uri      = SRFM_URL . 'assets/js/' . $dir_name . '/';
+		$css_uri     = SRFM_URL . 'assets/css/' . $dir_name . '/';
+		$is_rtl      = is_rtl();
+		$rtl         = $is_rtl ? '-rtl' : '';
 
 		/**
 		 * List of the handles in which we need to add translation compatibility.
 		 */
 		$script_translations_handlers = [];
-
-			/* RTL */
-		if ( is_rtl() ) {
-			$file_prefix .= '-rtl';
-		}
 
 		$localization_data = [
 			'site_url'                => get_site_url(),
@@ -463,7 +460,7 @@ class Admin {
 		}
 
 		if ( $is_screen_sureforms_form_settings ) {
-			wp_enqueue_style( SRFM_SLUG . '-settings', $css_uri . 'backend/settings' . $file_prefix . '.css', [], SRFM_VER );
+			wp_enqueue_style( SRFM_SLUG . '-settings', $css_uri . 'backend/settings' . $file_prefix . $rtl . '.css', [], SRFM_VER );
 
 			// if version is equal to or lower than 6.6.2 then add compatibility css.
 			if ( version_compare( $wp_version, '6.6.2', '<=' ) ) {
@@ -489,7 +486,7 @@ class Admin {
 		}
 
 		// Admin Submenu Styles.
-		wp_enqueue_style( SRFM_SLUG . '-admin', $css_uri . 'backend/admin' . $file_prefix . '.css', [], SRFM_VER );
+		wp_enqueue_style( SRFM_SLUG . '-admin', $css_uri . 'backend/admin' . $file_prefix . $rtl . '.css', [], SRFM_VER );
 
 		if ( 'edit-' . SRFM_FORMS_POST_TYPE === $current_screen->id ) {
 			$asset_handle = 'page_header';
@@ -502,7 +499,7 @@ class Admin {
 				'version'      => SRFM_VER,
 			];
 			wp_enqueue_script( SRFM_SLUG . '-form-page-header', SRFM_URL . 'assets/build/' . $asset_handle . '.js', $script_info['dependencies'], SRFM_VER, true );
-			wp_enqueue_style( SRFM_SLUG . '-form-archive-styles', $css_uri . 'form-archive-styles' . $file_prefix . '.css', [], SRFM_VER );
+			wp_enqueue_style( SRFM_SLUG . '-form-archive-styles', $css_uri . 'form-archive-styles' . $file_prefix . $rtl . '.css', [], SRFM_VER );
 
 			$script_translations_handlers[] = SRFM_SLUG . '-form-page-header';
 		}
@@ -558,17 +555,7 @@ class Admin {
 		}
 
 		if ( $is_screen_add_new_form ) {
-			$file_prefix = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? '' : '.min';
-			$dir_name    = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? 'unminified' : 'minified';
-
-			$css_uri = SRFM_URL . 'assets/css/' . $dir_name . '/';
-
-			/* RTL */
-			if ( is_rtl() ) {
-				$file_prefix .= '-rtl';
-			}
-
-			wp_enqueue_style( SRFM_SLUG . '-template-picker', $css_uri . 'template-picker' . $file_prefix . '.css', [], SRFM_VER );
+			wp_enqueue_style( SRFM_SLUG . '-template-picker', $css_uri . 'template-picker' . $file_prefix . $rtl . '.css', [], SRFM_VER );
 
 			$sureforms_admin = 'templatePicker';
 

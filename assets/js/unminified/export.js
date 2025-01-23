@@ -129,7 +129,6 @@ function appendImportBtn() {
 		const button = document.createElement( 'button' );
 		button.className = 'button button-secondary srfm-import-btn';
 		button.textContent = wp.i18n.__( 'Import Form', 'sureforms' );
-		button.style.float = 'right'; // Align button to the right end. The layout is not broken in any case.
 		return button;
 	};
 
