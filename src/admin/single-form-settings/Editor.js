@@ -94,28 +94,7 @@ const SureformsFormSpecificSettings = ( props ) => {
 
 	useEffect( addFormStylingClass, [ rootContainer, deviceType ] );
 
-<<<<<<< HEAD
 	useContainerDynamicClass( sureformsKeys );
-=======
-	// Find the root container of the form
-	const formRootContainer = document.querySelector(
-		'.editor-styles-wrapper'
-	);
-	const addRootClass = () => {
-		if ( formRootContainer && sureformsKeys?._srfm_additional_classes ) {
-			// Split the classes string by spaces
-			const classesArray =
-				sureformsKeys._srfm_additional_classes.split( ' ' );
-
-			// Add classes individually
-			classesArray.forEach( ( classname ) => {
-				formRootContainer?.classList.add( classname );
-			} );
-		}
-	};
-
-	useEffect( addRootClass, [ formRootContainer ] );
->>>>>>> 94f36e9241930da51d7281c78a2527d947b12d37
 
 	// Update the custom CSS when the formCustomCssData prop changes. This will apply the custom CSS to the editor.
 	const formCustomCssData = sureformsKeys?._srfm_form_custom_css || '';
