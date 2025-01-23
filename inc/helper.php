@@ -1080,4 +1080,24 @@ class Helper {
 
 		return $is_screen_sureforms_menu || $is_screen_add_new_form || $is_screen_sureforms_form_settings || $is_screen_sureforms_entries || $is_post_type_sureforms_form;
 	}
+
+	/**
+	 * Validates if the given string is a valid CSS class name.
+	 *
+	 * A valid CSS class name:
+	 * - Does not start with a digit, hyphen, or underscore.
+	 * - Can contain alphanumeric characters, underscores, hyphens, and Unicode letters.
+	 *
+	 * @param string $class_name The class name to validate.
+	 *
+	 * @since x.x.x
+	 * @return bool True if the class name is valid, otherwise false.
+	 */
+	public static function is_valid_css_class_name( $class_name ) {
+		// Regular expression to validate a Unicode-aware CSS class name.
+		$class_name_regex = '/^[^\d\-_][\w\p{L}\p{N}\-_]*$/u';
+
+		// Check if the className matches the pattern.
+		return preg_match( $class_name_regex, $class_name ) === 1;
+	}
 }
