@@ -2,7 +2,7 @@ import { applyFilters } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
 import WebhookIcon from '@Image/webhook.js';
 import UpgradeToProButton from '@Admin/components/UpgradeToProButton';
-import ProBadge from '@Admin/components/ProBadge';
+import PremiumBadge from '@Admin/components/PremiumBadge';
 
 const Webhooks = () => {
 	const showSwitch = false;
@@ -28,7 +28,7 @@ const Webhooks = () => {
 			</div>
 			<div className="srfm-integration-cta">
 				{ false === switchWebhook ? <UpgradeToProButton className="srfm-button-secondary srfm-button-xs" location="settings_integrations_webhooks" /> : switchWebhook }
-				<ProBadge
+				<PremiumBadge
 					badgeName={ 'Starter' }
 					tooltipHeading={ __( 'Unlock Webhooks', 'sureforms' ) }
 					tooltipContent={ __(
@@ -36,6 +36,7 @@ const Webhooks = () => {
 						'sureforms'
 					) }
 					tooltipPosition={ 'bottom' }
+					utmMedium={ 'integrations_webhooks' }
 				/>
 			</div>
 		</> );

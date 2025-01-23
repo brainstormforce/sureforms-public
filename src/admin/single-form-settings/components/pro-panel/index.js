@@ -9,7 +9,7 @@ import {
 import { FaRegEyeSlash } from 'react-icons/fa';
 import { RxSlider } from 'react-icons/rx';
 import { addQueryParam } from '@Utils/Helpers';
-import ProBadge from '@Admin/components/ProBadge';
+import PremiumBadge from '@Admin/components/PremiumBadge';
 
 const IconBlock = ( { icon, label } ) => (
 	<div className="block-editor-block-types-list__list-item">
@@ -86,7 +86,7 @@ const index = () => {
 				<h2 className="block-editor-inserter__panel-title">
 					{ __( 'SureForms Pro', 'sureforms' ) }
 				</h2>
-				<ProBadge
+				<PremiumBadge
 					badgeName={ 'Starter' }
 					tooltipHeading={ __( 'Unlock Advanced Fields', 'sureforms' ) }
 					tooltipContent={ __(
@@ -94,6 +94,7 @@ const index = () => {
 						'sureforms'
 					) }
 					tooltipPosition={ 'bottom' }
+					utmMedium={ 'pro_panel' }
 				/>
 			</div>
 			<div className="srfm-upgrade-pro-btn-container">

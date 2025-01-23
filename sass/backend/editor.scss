@@ -592,3 +592,23 @@ html[dir="rtl"] body.post-type-sureforms_form {
 		}
 	}
 }
+
+.srfm-conditional-logic-preview {
+	.components-panel__body-title {
+		background-color: #f0f0f0;
+	}
+	.components-button {
+		cursor: auto;
+		pointer-events: none;
+		&:hover {
+			color: inherit;
+		}
+		.srfm-tooltip {
+			margin-left: 12px;
+			.tooltip-wrap {
+				width: auto;
+				min-width: 200px;
+			}
+		}
+	}
+}
