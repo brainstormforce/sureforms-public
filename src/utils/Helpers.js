@@ -57,6 +57,7 @@ export const handleAddNewPost = async (
 	formData,
 	templateName,
 	templateMetas,
+	isConversational = false, 
 	formType = ''
 ) => {
 	if ( '1' !== srfm_admin.capability ) {
@@ -76,6 +77,7 @@ export const handleAddNewPost = async (
 				form_data: formData,
 				template_name: templateName,
 				template_metas: templateMetas,
+				is_conversational: isConversational,
 				form_type: formType,
 			},
 		} );

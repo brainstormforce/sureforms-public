@@ -18,7 +18,7 @@ import ErrorPopup from './ErrorPopup.js';
 import { AuthErrorPopup } from './AuthErrorPopup.js';
 import toast, { Toaster } from 'react-hot-toast';
 import { applyFilters } from '@wordpress/hooks';
-import ProBadge from '@Admin/single-form-settings/components/ProBadge';
+import PremiumBadge from '@Admin/single-form-settings/components/PremiumBadge';
 
 const AiFormBuilder = () => {
 	const [ message, setMessage ] = useState(
@@ -44,44 +44,27 @@ const AiFormBuilder = () => {
 		setFormTypeObj
 	);
 
-	let examplePrompts = [
-		{
-			title: __( 'Create simple contact form', 'sureforms' ),
-		},
-		{
-			title: __( 'Create a lead generation form', 'sureforms' ),
-		},
-		{
-			title: __( 'Generate a user feedback form', 'sureforms' ),
-		},
-		{
-			title: __( 'Create a job application form', 'sureforms' ),
-		},
-		{
-			title: __( 'Make an event registration form', 'sureforms' ),
-		},
-	];
-
-	// if conversational form is enabled, change the example prompts
-	if ( formTypeObj?.isConversationalForm ) {
-		examplePrompts = [
-			{
-				title: __( 'Create a market research form', 'sureforms' ),
-			},
-			{
-				title: __( 'Create a T-shirt order form', 'sureforms' ),
-			},
-			{
-				title: __( 'Create a lead qualification form', 'sureforms' ),
-			},
-			{
-				title: __( 'Generate a wedding invitation form', 'sureforms' ),
-			},
-			{
-				title: __( 'Create a employee feedback form', 'sureforms' ),
-			},
-		];
-	}
+	const examplePrompts = applyFilters(
+		'srfm.aiFormScreen.examplePrompts',
+		[
+				{
+					title: __( 'Create simple contact form', 'sureforms' ),
+				},
+				{
+					title: __( 'Create a lead generation form', 'sureforms' ),
+				},
+				{
+					title: __( 'Generate a user feedback form', 'sureforms' ),
+				},
+				{
+					title: __( 'Create a job application form', 'sureforms' ),
+				},
+				{
+					title: __( 'Make an event registration form', 'sureforms' ),
+				},
+			], 
+			formTypeObj
+		 );
 
 	const initSpeechRecognition = () => {
 		const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -168,13 +151,15 @@ const AiFormBuilder = () => {
 				content: chat.message,
 			} ) ) || [];
 		messageArray.push( { role: 'user', content: userCommand } );
-		let formType = '';
-		if ( formTypeObj?.isConversationalForm ) {
-			formType = 'conversational';
-		}
+		const formType = applyFilters(
+			'srfm.aiFormScreen.formType',
+			'',
+			formTypeObj
+		);
 		const postData = {
 			message_array: messageArray,
 			use_system_message: useSystemMessage,
+			is_conversional: formTypeObj?.isConversationalForm,
 			form_type: formType,
 		};
 
@@ -217,8 +202,15 @@ const AiFormBuilder = () => {
 					setMessage( __( 'Redirecting to Editor', 'sureforms' ) );
 					setPercentBuild( 100 );
 					const formTitle = content?.form?.formTitle;
-					const metasToUpdate = formTypeObj?.isConversationalForm ? { _srfm_premium_common: content?.form?.formMetaData[ 0 ]?._srfm_premium_common[ 0 ] } : {};
-					handleAddNewPost( postContent, formTitle, metasToUpdate, formType );
+					const metasToUpdate = applyFilters(
+						'srfm.aiFormScreen.metasToUpdate',
+						{},
+						formTypeObj,
+						content
+					)
+					console.log( 'metasToUpdate', metasToUpdate );
+					
+					handleAddNewPost( postContent, formTitle, metasToUpdate, formTypeObj?.isConversationalForm, formType );
 				} else {
 					setShowFormCreationErr( true );
 				}
@@ -390,12 +382,10 @@ const AiFormBuilder = () => {
 									{
 										__( 'Create Conversational Form', 'sureforms' )
 									}
-									<ProBadge
+									<PremiumBadge
 										badgeName={ __( 'Pro', 'sureforms' ) }
-										tooltipHeading={ __( 'Unlock AI Conversational Forms', 'sureforms' ) }
-										tooltipContent={
-											__( 'With the SureForms Pro Plan, you can create forms with conversational layouts using AI in less than a minute.', 'sureforms' )
-										}
+										tooltipHeading={ __( 'Unlock Conversational Forms', 'sureforms' ) }
+										tooltipContent={ __( 'With the SureForms Pro Plan, you can transform your forms into engaging conversational layouts for a seamless user experience.', 'sureforms' ) }
 										utmMedium="ai_builder"
 									/>
 								</div>

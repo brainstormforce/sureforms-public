@@ -12,7 +12,7 @@ export default ( { badgeName = 'Starter'
 				className="srfm-premium-badge-text"
 				onClick={ ( e ) => {
 					e.stopPropagation();
-					window.open( 'https://sureforms.com/pricing', '_blank' );
+					window.open( addQueryParam( srfm_admin?.pricing_page_url || srfm_admin?.sureforms_pricing_page, utmMedium ), '_blank' , 'noreferrer' );
 				}
 				}
 			>

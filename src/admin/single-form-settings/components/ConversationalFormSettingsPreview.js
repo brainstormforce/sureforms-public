@@ -1,7 +1,7 @@
 import { __ } from '@wordpress/i18n';
 import { FormToggle } from '@wordpress/components';
 import { applyFilters } from '@wordpress/hooks';
-import ProBadge from './ProBadge';
+import PremiumBadge from './PremiumBadge';
 
 const ConversationalFormSettingsPreview = ( { setHidePopover } ) => {
 	const showCoversationalFormSettings = false;
@@ -23,7 +23,7 @@ const ConversationalFormSettingsPreview = ( { setHidePopover } ) => {
 							>
 								{ __( 'Conversational Layout', 'sureforms' ) }
 							</label>
-							<ProBadge
+							<PremiumBadge
 								badgeName={ __( 'Pro', 'sureforms' ) }
 								tooltipHeading={ __( 'Unlock Conversational Forms', 'sureforms' ) }
 								tooltipContent={ __( 'With the SureForms Pro Plan, you can transform your forms into engaging conversational layouts for a seamless user experience.', 'sureforms' ) }

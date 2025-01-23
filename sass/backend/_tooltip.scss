@@ -258,6 +258,7 @@
 	font-weight: 600;
 	line-height: 16px;
 	text-align: center;
+	// !important is used to override the default styles.
 	opacity: 1 !important;
-	pointer-events: visible;
+	pointer-events: visible !important;
 }

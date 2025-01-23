@@ -155,26 +155,12 @@ class Create_New_Form {
 
 		$title                = $form_info_obj->template_name ?? '';
 		$content              = $form_info_obj->form_data ?? '';
-		$form_type            = $form_info_obj->form_type ?? '';
-		$_srfm_premium_common = [];
-
-		// add post metas based on form type.
-		switch ( $form_type ) {
-			case 'conversational':
-				if ( defined( 'SRFM_PRO_VER' ) ) {
-					$_srfm_premium_common = isset( $form_info_obj->template_metas ) && isset( $form_info_obj->template_metas->_srfm_premium_common ) ? (array) $form_info_obj->template_metas->_srfm_premium_common : [];
-				}
-				break;
-			default:
-				break;
-		}
 
 		// Create post metas for the creating form.
 		$post_metas = apply_filters(
 			'srfm_modify_ai_post_metas',
 			[],
-			$form_type,
-			$_srfm_premium_common
+			$form_info_obj,
 		);
 
 		$post_id = wp_insert_post(
