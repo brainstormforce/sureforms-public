@@ -630,6 +630,42 @@ class Form_Submit {
 	}
 
 	/**
+	 * Parse an email notification template and generate the necessary components for sending an email.
+	 *
+	 * @param array<mixed>         $submission_data An associative array containing submission data to be used in the email template.
+	 * @param array<string,string> $item An associative array containing email settings, such as 'email_to', 'subject', 'email_body', and optional headers like 'email_reply_to', 'email_cc', and 'email_bcc'.
+	 * @param array<string>        $form_data Request object or array containing form data.
+	 * @since 1.3.0
+	 * @return array<string,string> An associative array containing 'to', 'subject', 'message', and 'headers' for the email.
+	 */
+	public static function parse_email_notification_template( $submission_data, $item, $form_data = [] ) {
+		$smart_tags = Smart_Tags::get_instance();
+
+		$from           = Helper::get_string_value( get_option( 'admin_email' ) );
+		$to             = $smart_tags->process_smart_tags( $item['email_to'], $submission_data );
+		$subject        = $smart_tags->process_smart_tags( $item['subject'], $submission_data, $form_data );
+		$email_body     = $smart_tags->process_smart_tags( $item['email_body'], $submission_data, $form_data );
+		$email_template = new Email_Template();
+		$message        = $email_template->render( $submission_data, $email_body );
+		$headers        = "From: {$from}\r\n";
+		$headers       .= 'X-Mailer: PHP/' . phpversion() . "\r\n";
+		$headers       .= "Content-Type: text/html; charset=utf-8\r\n";
+		if ( isset( $item['email_reply_to'] ) && ! empty( $item['email_reply_to'] ) ) {
+			$headers .= 'Reply-To:' . $smart_tags->process_smart_tags( $item['email_reply_to'], $submission_data ) . "\r\n";
+		} else {
+			$headers .= "Reply-To: {$from}\r\n";
+		}
+		if ( isset( $item['email_cc'] ) && ! empty( $item['email_cc'] ) ) {
+			$headers .= 'Cc:' . $smart_tags->process_smart_tags( $item['email_cc'], $submission_data ) . "\r\n";
+		}
+		if ( isset( $item['email_bcc'] ) && ! empty( $item['email_bcc'] ) ) {
+			$headers .= 'Bcc:' . $smart_tags->process_smart_tags( $item['email_bcc'], $submission_data ) . "\r\n";
+		}
+
+		return compact( 'to', 'subject', 'message', 'headers' );
+	}
+
+	/**
 	 * Send Email.
 	 *
 	 * @param string        $id Form ID.
@@ -640,35 +676,18 @@ class Form_Submit {
 	 */
 	public static function send_email( $id, $submission_data, $form_data = [] ) {
 		$email_notification = get_post_meta( intval( $id ), '_srfm_email_notification' );
-		$smart_tags         = new Smart_Tags();
 		$is_mail_sent       = false;
 		$emails             = [];
 
 		if ( is_iterable( $email_notification ) ) {
 			$entries_db_instance = Entries::get_instance();
-			$log_key             = $entries_db_instance->add_log( __( 'Email Notification Initiated', 'sureforms' ) );
+			$log_key             = $entries_db_instance->add_log( __( 'Email notification passed to the sending server', 'sureforms' ) );
 
 			foreach ( $email_notification as $notification ) {
 				foreach ( $notification as $item ) {
 					if ( true === $item['status'] ) {
-						$from           = Helper::get_string_value( get_option( 'admin_email' ) );
-						$to             = $smart_tags->process_smart_tags( $item['email_to'], $submission_data );
-						$subject        = $smart_tags->process_smart_tags( $item['subject'], $submission_data, $form_data );
-						$email_body     = $smart_tags->process_smart_tags( $item['email_body'], $submission_data, $form_data );
-						$email_template = new Email_Template();
-						$message        = $email_template->render( $submission_data, $email_body );
-						$headers        = "From: {$from}\r\nX-Mailer: PHP/" . phpversion() . "\r\nContent-Type: text/html; charset=utf-8\r\n";
-						if ( isset( $item['email_reply_to'] ) && ! empty( $item['email_reply_to'] ) ) {
-							$headers .= 'Reply-To:' . $smart_tags->process_smart_tags( $item['email_reply_to'], $submission_data ) . "\r\n";
-						} else {
-							$headers .= "Reply-To: {$from}\r\n";
-						}
-						if ( isset( $item['email_cc'] ) && ! empty( $item['email_cc'] ) ) {
-							$headers .= 'Cc:' . $smart_tags->process_smart_tags( $item['email_cc'], $submission_data ) . "\r\n";
-						}
-						if ( isset( $item['email_bcc'] ) && ! empty( $item['email_bcc'] ) ) {
-							$headers .= 'Bcc:' . $smart_tags->process_smart_tags( $item['email_bcc'], $submission_data ) . "\r\n";
-						}
+
+						$parsed = self::parse_email_notification_template( $submission_data, $item, $form_data );
 
 						/**
 						 * Temporary override the content type for wp_mail.
@@ -696,10 +715,10 @@ class Form_Submit {
 						 */
 						$sent = false;
 						ob_start();
-						$sent = wp_mail( $to, $subject, $message, $headers );
+						$sent = wp_mail( $parsed['to'], $parsed['subject'], $parsed['message'], $parsed['headers'] );
 						if ( ! $sent ) {
 							// Fallback to default PHP mail if for some reasons wp_mail fails.
-							$sent = mail( $to, $subject, $message, $headers );
+							$sent = mail( $parsed['to'], $parsed['subject'], $parsed['message'], $parsed['headers'] );
 						}
 						$email_report = ob_get_clean(); // Catch any printed notice/errors/message for reports.
 
@@ -710,7 +729,7 @@ class Form_Submit {
 									null,
 									[
 										/* translators: Here, %s is the comma separated emails list. */
-										sprintf( __( 'Email notification sent to %s', 'sureforms' ), esc_html( $to ) ),
+										sprintf( __( 'Email notification recipient: %s', 'sureforms' ), esc_html( $parsed['to'] ) ),
 									]
 								);
 							} else {
@@ -720,8 +739,8 @@ class Form_Submit {
 									[
 										sprintf(
 											/* translators: Here, %1$s is the comma separated emails list and %2$s is error report ( if any ). */
-											__( 'Failed sending email notification to %1$s. Reason: %2$s', 'sureforms' ),
-											esc_html( $to ),
+											__( 'Email server was unable to send the email notification. Recipient: %1$s. Reason: %2$s', 'sureforms' ),
+											esc_html( $parsed['to'] ),
 											! empty( $email_report ) ? esc_html( $email_report ) : esc_html__( 'Unknown', 'sureforms' )
 										),
 									]
@@ -730,9 +749,13 @@ class Form_Submit {
 						}
 
 						$is_mail_sent = $sent;
-						$emails[]     = $to;
+						$emails[]     = $parsed['to'];
 					}
 				}
+			}
+
+			if ( empty( $emails ) ) {
+				$entries_db_instance->add_log( __( 'No emails were sent', 'sureforms' ) );
 			}
 		}
 
