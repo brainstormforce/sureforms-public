@@ -18,7 +18,7 @@ import ErrorPopup from './ErrorPopup.js';
 import { AuthErrorPopup } from './AuthErrorPopup.js';
 import toast, { Toaster } from 'react-hot-toast';
 import { applyFilters } from '@wordpress/hooks';
-import PremiumBadge from '@Admin/single-form-settings/components/PremiumBadge';
+import PremiumBadge from '@Admin/components/PremiumBadge';
 
 const AiFormBuilder = () => {
 	const [ message, setMessage ] = useState(

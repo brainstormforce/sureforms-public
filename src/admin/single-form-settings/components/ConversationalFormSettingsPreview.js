@@ -1,7 +1,7 @@
 import { __ } from '@wordpress/i18n';
 import { FormToggle } from '@wordpress/components';
 import { applyFilters } from '@wordpress/hooks';
-import PremiumBadge from './PremiumBadge';
+import PremiumBadge from '@Admin/components/PremiumBadge';
 
 const ConversationalFormSettingsPreview = ( { setHidePopover } ) => {
 	const showCoversationalFormSettings = false;
