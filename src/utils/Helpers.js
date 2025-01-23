@@ -1,20 +1,17 @@
+import apiFetch from '@wordpress/api-fetch';
+import { __ } from '@wordpress/i18n';
+import { Toaster, ToastBar } from 'react-hot-toast';
+import { store as blockEditorStore } from '@wordpress/block-editor';
+import { store as editorStore } from '@wordpress/editor';
+import { useDispatch, select } from '@wordpress/data';
+import slugify from 'slugify';
+
 /**
  * Get Image Sizes and return an array of Size.
  *
  * @param {Object} sizes - The sizes object.
  * @return {Object} sizeArr - The sizeArr object.
  */
-
-import apiFetch from '@wordpress/api-fetch';
-import { __ } from '@wordpress/i18n';
-import { Toaster, ToastBar } from 'react-hot-toast';
-import { store as blockEditorStore } from '@wordpress/block-editor';
-import { store as editorStore } from '@wordpress/editor';
-import { useDispatch } from '@wordpress/data';
-// const updateParentAlignment = ( align ) => updateBlockAttributes( immediateParentClientId, { align } );
-import { select } from '@wordpress/data';
-import slugify from 'slugify';
-
 export function getImageSize( sizes ) {
 	const sizeArr = [];
 	for ( const size in sizes ) {
@@ -241,20 +238,10 @@ export const withoutSlugBlocks = [
 	'srfm/icon',
 ];
 
-const getBlocksSlugs = () => {
+export const useFormSpecificSmartTags = () => {
 	const { getBlocks } = select( editorStore );
-
-	// return prepareBlockSlugs( getBlocks() );
-	return {
-		savedBlocks: getBlocks(),
-		blockSlugs: prepareBlockSlugs( getBlocks() ),
-	}
-};
-
-export const setFormSpecificSmartTags = () => {
-	let { savedBlocks, blockSlugs } = getBlocksSlugs();
-
-	console.log( 'slugs with new implementation->', getBlocksSlugs() );
+	let savedBlocks = getBlocks();
+	const blockSlugs = usePrepareBlockSlugs( savedBlocks );
 
 	if ( ! Object.keys( blockSlugs )?.length ) {
 		return;
@@ -279,15 +266,6 @@ export const setFormSpecificSmartTags = () => {
 	savedBlocks = savedBlocks.filter(
 		( savedBlock ) => ! withoutSlugBlocks.includes( savedBlock?.name )
 	);
-
-	console.log( 'setFormSpecificSmartTags->setFormSpecificSmartTags->', {
-		savedBlocks,
-		blockSlugs,
-		formSmartTags,
-		formSmartTagsUniqueSlugs,
-		'win-formSmartTags': window.sureforms.formSpecificSmartTags,
-		'win-formEmailSmartTags': window.sureforms.formSpecificEmailSmartTags,
-	} );
 
 	pushSmartTagToArray(
 		savedBlocks,
@@ -399,7 +377,6 @@ const generateSlug = ( label, existingSlugs ) => {
 		lower: true,
 		strict: true,
 	} );
-	// const baseSlug = label.toLowerCase().replace( /[^a-zA-Z ]/g, '' ).replace( /\s+/g, '-' );
 
 	let slug = baseSlug;
 	let counter = 1;
@@ -412,9 +389,10 @@ const generateSlug = ( label, existingSlugs ) => {
 	return slug;
 };
 
-const prepareBlockSlugs = ( blocks ) => {
+const usePrepareBlockSlugs = ( srfmBlocks ) => {
 	const blockSlugs = {};
 	const existingSlugs = new Set();
+	const { updateBlockAttributes } = useDispatch( blockEditorStore );
 
 	const processBlocks = ( blocks ) => {
 		for ( const block of blocks ) {
@@ -422,10 +400,8 @@ const prepareBlockSlugs = ( blocks ) => {
 
 			if ( ! slug ) {
 				slug = generateSlug( label, existingSlugs );
-				
-				// Update the block attributes with the generated slug.
-				const { updateBlockAttributes } = useDispatch( blockEditorStore );
 
+				// Update the block attributes with the generated slug.
 				updateBlockAttributes( block.clientId, { slug } );
 			}
 
@@ -441,7 +417,7 @@ const prepareBlockSlugs = ( blocks ) => {
 		}
 	};
 
-	processBlocks( blocks );
+	processBlocks( srfmBlocks );
 
 	return blockSlugs;
 };

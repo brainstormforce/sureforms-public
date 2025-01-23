@@ -14,7 +14,7 @@ import {
 	MdOutlineDashboardCustomize,
 } from 'react-icons/md';
 import FormConfirmSetting from './form-confirm-setting';
-import { setFormSpecificSmartTags, SRFMToaster } from '@Utils/Helpers';
+import { useFormSpecificSmartTags, SRFMToaster } from '@Utils/Helpers';
 import toast from 'react-hot-toast';
 
 const SingleFormSettingsPopup = ( props ) => {
@@ -91,7 +91,7 @@ const SingleFormSettingsPopup = ( props ) => {
 		}
 	);
 
-	setFormSpecificSmartTags();
+	useFormSpecificSmartTags();
 
 	useEffect( () => {
 		const activeTabObject = tabs.find( ( tab ) => tab.id === selectedTab );

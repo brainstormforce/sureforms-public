@@ -55,13 +55,21 @@ const addInitialAttr = ( ChildComponent ) => {
 				clientIds.indexOf( clientId )
 			);
 
-			if( isDuplicate ) {
-				if( ! withoutSlugBlocks.includes( name ) && attributes?.slug ) {
+			if ( isDuplicate ) {
+				if (
+					! withoutSlugBlocks.includes( name ) &&
+					attributes?.slug
+				) {
 					attributeObject.slug = '';
 				}
 			}
 
-			if ( 'not_set' === block_id || '0' === block_id || ! block_id || isDuplicate ) {
+			if (
+				'not_set' === block_id ||
+				'0' === block_id ||
+				! block_id ||
+				isDuplicate
+			) {
 				setAttributes( attributeObject );
 			}
 		}, [ clientId ] );
