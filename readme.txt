@@ -264,6 +264,7 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 * Fix: Addressed an issue where selecting a field in the editor would hide the Settings icon.
 * Fix: Fixed a UI glitch on the initial load and refresh of Instant Forms.
 * Fix: Ensured the Submit button works consistently when switching between Visual and Text modes in the Gutenberg editor.
+* Fix: Resolved an issue where the email notification cancel button was not functioning correctly.
 = 1.2.4 - 7th January 2025 =
 * New: Added translations for the Italian, Portuguese, and Polish languages.
 * Fix: Addressed an issue where forms were not submitting in a page-cached environment.
