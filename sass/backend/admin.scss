@@ -358,3 +358,133 @@ $placeholder_color: #9ca3af;
 		}
 	}
 }
+
+// Single Entry Page Stylings
+.sureforms_page_sureforms_entries {
+	#sureform_form_name_meta,
+	#sureform_entry_meta.srfm-form-data {
+		.inside {
+			margin: 0;
+			padding: 16px;
+		}
+		.button:hover {
+			background: none;
+			opacity: 0.6;
+		}
+	}
+
+	.postbox.srfm-entry-logs {
+		.inside {
+			margin: 0 !important;
+			padding: 0;
+
+			.no-logs-found {
+				padding: 6px 0 8px 12px;
+				margin: 0 !important;
+			}
+
+			.entry-logs-table {
+				width: 100%;
+				border-collapse: collapse;
+
+				.entry-log-container {
+					padding: 16px;
+
+					.entry-log-title {
+						display: flex;
+						justify-content: space-between;
+						align-items: center;
+						margin: 0;
+					}
+
+					.entry-log-messages {
+						p {
+							margin-top: 6px;
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+.button.srfm-edit-entry {
+	margin: 0 12px;
+	display: flex;
+	align-items: center;
+	gap: 4px;
+}
+
+.srfm-add-entry-note-button {
+	background: none;
+	border: none;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	cursor: pointer;
+}
+
+.status.column-status {
+	span {
+		text-transform: capitalize;
+		border-radius: 30px;
+		padding: 2px 4px;
+		font-weight: 500;
+		font-size: 12px;
+		line-height: 16px;
+		user-select: none;
+		-moz-user-select: none;
+		-webkit-user-select: none;
+
+		&.status-read {
+			color: #15803d;
+			background-color: #f0fdf4;
+			border: 1px solid #bbf7d0;
+		}
+		&.status-unread {
+			color: #a16207;
+			background-color: #fefce8;
+			border: 1px solid #fef08a;
+		}
+		&.status-trash {
+			color: #b91c1c;
+			background-color: #fee2e2;
+			border: 1px solid #fca5a5;
+		}
+	}
+}
+
+#post-body .srfm-resend-notification-trigger-btn {
+	padding: 8px 16px;
+	border-radius: 6px;
+	border: 1px solid;
+	box-shadow: 0 1px 2px 0 rgba( 0, 0, 0, 0.0509803922 );
+	font-size: 14px;
+	font-weight: 500;
+	line-height: 20px;
+}
+
+.srfm-entry-note-wrapper {
+	padding: 16px;
+
+	.add-notes-field {
+		display: flex;
+		gap: 16px;
+		flex-direction: column;
+		justify-content: center;
+
+		button.button#srfm-add-note {
+			width: 116px;
+			padding: 8px 16px;
+			border-radius: 6px;
+			border: 1px solid;
+			box-shadow: 0px 1px 2px 0px #0000000d;
+			font-size: 14px;
+			font-weight: 500;
+			line-height: 20px;
+		}
+	}
+}
+
+@import "tooltip";
