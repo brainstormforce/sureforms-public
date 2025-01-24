@@ -267,3 +267,10 @@
 	border: 1px solid var( --srfm-dropdown-menu-border-color );
 	border-radius: var( --srfm-input-field-border-radius );
 }
+
+@mixin srfm-error-styles {
+	line-height: var( --srfm-error-line-height );
+	color: var( --srfm-error-color );
+	font-size: var( --srfm-error-font-size );
+	font-weight: var( --srfm-error-font-weight );
+}
