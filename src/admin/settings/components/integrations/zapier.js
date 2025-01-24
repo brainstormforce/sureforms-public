@@ -31,7 +31,7 @@ const Zapier = () => {
 				</div>
 			</div>
 			<div className="srfm-integration-cta">
-				{ false === zapierDetails ? <UpgradeToProButton className="srfm-button-secondary srfm-button-xs" /> : zapierDetails }
+				{ false === zapierDetails ? <UpgradeToProButton className="srfm-button-secondary srfm-button-xs" location="settings_integrations_zapier" /> : zapierDetails }
 				<div className="srfm-pro-badge">
 					{ __( 'Pro', 'sureforms' ) }
 				</div>

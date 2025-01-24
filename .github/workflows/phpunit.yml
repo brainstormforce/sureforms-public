@@ -37,7 +37,7 @@ jobs:
           php-version: ${{ matrix.php }}
           coverage: none
           tools: composer, cs2pr
-
+      
       - name: Install WordPress test setup
         env:
           WP_VERSION: ${{ matrix.wordpress }}

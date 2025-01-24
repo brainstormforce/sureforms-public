@@ -53,7 +53,7 @@ class Generate_Form_Markup {
 	 * Handle Form status
 	 *
 	 * @param int|string $id Contains form ID.
-	 * @param bool       $show_title_current_page Boolean to show/hide form title.
+	 * @param bool       $show_title_current_page Boolean to srfm-show/srfm-hide form title.
 	 * @param string     $sf_classname additional class_name.
 	 * @param string     $post_type Contains post type.
 	 * @param bool       $do_blocks Boolean to enable/disable parsing dynamic blocks.
@@ -99,7 +99,15 @@ class Generate_Form_Markup {
 				$sf_classname,
 			];
 
-			$form_classes[] = Helper::get_string_value( Helper::get_meta_value( $id, '_srfm_additional_classes' ) );
+			$custom_added_classes = Helper::get_meta_value( $id, '_srfm_additional_classes' );
+			if ( ! empty( $custom_added_classes ) && is_string( $custom_added_classes ) ) {
+				$custom_added_classes = explode( ' ', $custom_added_classes );
+				foreach ( $custom_added_classes as $class ) {
+					if ( Helper::is_valid_css_class_name( $class ) ) {
+						$form_classes[] = $class;
+					}
+				}
+			}
 
 			$form_styling             = get_post_meta( $id, '_srfm_forms_styling', true );
 			$form_styling             = ! empty( $form_styling ) && is_array( $form_styling ) ? $form_styling : [];
@@ -347,7 +355,7 @@ class Generate_Form_Markup {
 					}
 					?>
 
-					<div class="srfm-submit-container <?php echo esc_attr( $is_page_break ? 'hide' : '' ); ?>">
+					<div class="srfm-submit-container <?php echo esc_attr( $is_page_break ? 'srfm-hide' : '' ); ?>">
 						<div style="width: <?php echo esc_attr( $full ? '100%' : '' ); ?>; text-align: <?php echo esc_attr( $submit_button_alignment ); ?>" class="wp-block-button">
 						<button style="width:<?php echo esc_attr( $full ? '100%;' : '' ); ?>" id="srfm-submit-btn"class="<?php echo esc_attr( '1' === $btn_from_theme ? 'wp-block-button__link' : 'srfm-btn-frontend srfm-button srfm-submit-button' ); ?><?php echo 'v3-reCAPTCHA' === $recaptcha_version ? ' g-recaptcha' : ''; ?>"
 						<?php if ( 'v3-reCAPTCHA' === $recaptcha_version ) { ?>
