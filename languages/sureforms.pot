@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-01-24T11:32:03+00:00\n"
+"POT-Creation-Date: 2025-01-24T12:28:00+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.10.0\n"
 "X-Domain: sureforms\n"
@@ -1004,10 +1004,12 @@ msgid "Form Title"
 msgstr ""
 
 #: inc/page-builders/elementor/form-widget.php:162
+#: assets/build/blocks.js:172
 msgid "Show"
 msgstr ""
 
 #: inc/page-builders/elementor/form-widget.php:163
+#: assets/build/blocks.js:172
 msgid "Hide"
 msgstr ""
 
@@ -8879,6 +8881,18 @@ msgid "Upgrade to the SureForms Starter Plan to create dynamic forms that adapt 
 msgstr ""
 
 #: assets/build/blocks.js:172
+msgid "Enable Conditional Logic"
+msgstr ""
+
+#: assets/build/blocks.js:172
+msgid "this field if"
+msgstr ""
+
+#: assets/build/blocks.js:172
+msgid "Configure Conditions"
+msgstr ""
+
+#: assets/build/blocks.js:172
 msgid "Attributes"
 msgstr ""
 
@@ -9368,11 +9382,6 @@ msgstr ""
 #: assets/build/formEditor.js:2
 #: modules/quick-action-sidebar/components/Sidebar.js:231
 msgid "Re-arrange block inside Quick Action Bar"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-#: assets/build/settings.js:172
-msgid "Starter"
 msgstr ""
 
 #: assets/build/formEditor.js:172
@@ -10321,10 +10330,6 @@ msgstr ""
 
 #: assets/build/settings.js:172
 msgid "With the SureForms Pro Plan, you can enable Zapier integration to seamlessly connect with thousands of apps for powerful workflow automation."
-msgstr ""
-
-#: assets/build/settings.js:172
-msgid "Pro"
 msgstr ""
 
 #: assets/build/settings.js:172
