@@ -16,11 +16,7 @@ const WebhooksCard = ( { setSelectedTab } ) => {
 				<div className="srfm-modal-card-content-inner">
 					<div className="srfm-modal-card-wrapper">
 						<WebhookIconNew />
-						{ srfm_admin?.is_pro_active ? (
-							<div className="srfm-pro-badge">
-								{ __( 'Starter', 'sureforms' ) }
-							</div>
-						) : (
+						{ ! srfm_admin?.is_pro_active && (
 							<PremiumBadge
 								badgeName={ 'Starter' }
 								tooltipHeading={ __( 'Unlock Webhooks', 'sureforms' ) }
