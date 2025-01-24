@@ -592,3 +592,26 @@ html[dir="rtl"] body.post-type-sureforms_form {
 		}
 	}
 }
+
+.srfm-conditional-logic-preview {
+	.components-panel__body {
+		display: flex;
+		gap: 12px;
+		padding: 16px 48px 16px 16px;
+		background-color: #f0f0f0;
+
+		.srfm-tooltip {
+			.tooltip-wrap {
+				width: auto;
+				min-width: 200px;
+			}
+		}
+		svg {
+			height: 24px;
+			width: 24px;
+			align-self: center;
+			right: 15px;
+			position: absolute;
+		}
+	}
+}

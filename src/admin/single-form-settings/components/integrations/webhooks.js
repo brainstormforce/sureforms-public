@@ -2,6 +2,7 @@ import { __ } from '@wordpress/i18n';
 import { applyFilters, addFilter } from '@wordpress/hooks';
 import WebhookIconNew from '@Image/webhook_new.js';
 import UpgradeToProButton from '@Admin/components/UpgradeToProButton';
+import PremiumBadge from '@Admin/components/PremiumBadge';
 
 const WebhooksCard = ( { setSelectedTab } ) => {
 	const primaryButton = applyFilters(
@@ -15,9 +16,22 @@ const WebhooksCard = ( { setSelectedTab } ) => {
 				<div className="srfm-modal-card-content-inner">
 					<div className="srfm-modal-card-wrapper">
 						<WebhookIconNew />
-						<div className="srfm-pro-badge">
-							{ __( 'Starter', 'sureforms' ) }
-						</div>
+						{ srfm_admin?.is_pro_active ? (
+							<div className="srfm-pro-badge">
+								{ __( 'Starter', 'sureforms' ) }
+							</div>
+						) : (
+							<PremiumBadge
+								badgeName={ 'Starter' }
+								tooltipHeading={ __( 'Unlock Webhooks', 'sureforms' ) }
+								tooltipContent={ __(
+									'With the SureForms Starter Plan, you can enable webhooks to seamlessly connect with your favorite apps for real-time data transfer and automation.',
+									'sureforms'
+								) }
+								tooltipPosition={ 'bottom' }
+								utmMedium={ 'setting_editor_integration_webhooks' }
+							/>
+						) }
 					</div>
 
 					<div className="srfm-modal-card-title">

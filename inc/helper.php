@@ -1080,4 +1080,29 @@ class Helper {
 
 		return $is_screen_sureforms_menu || $is_screen_add_new_form || $is_screen_sureforms_form_settings || $is_screen_sureforms_entries || $is_post_type_sureforms_form;
 	}
+
+	/**
+	 * Get SureForms Website URL.
+	 *
+	 * @param string                $trail The URL trail to append to SureForms website URL. The parameter should not include a leading slash as the base URL already ends with a trailing slash.
+	 * @param array<string, string> $utm_args Optional. An associative array of UTM parameters to append to the URL. Default empty array. Example: [ 'utm_medium' => 'dashboard'].
+	 * @since 0.0.7
+	 * @return string
+	 */
+	public static function get_sureforms_website_url( $trail, $utm_args = [] ) {
+		$url = SRFM_WEBSITE;
+		if ( ! empty( $trail ) && is_string( $trail ) ) {
+			$url = SRFM_WEBSITE . $trail;
+		}
+
+		if ( ! is_array( $utm_args ) ) {
+			$utm_args = [];
+		}
+
+		if ( class_exists( '\BSF_UTM_Analytics\Inc\Utils' ) ) {
+			$url = \BSF_UTM_Analytics\Inc\Utils::get_utm_ready_link( $url, 'sureforms', $utm_args );
+		}
+
+		return esc_url( $url );
+	}
 }
