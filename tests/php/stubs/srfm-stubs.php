@@ -8748,10 +8748,11 @@ namespace SRFM\Inc {
 	     * Get SureForms Website URL.
 	     *
 	     * @param string $trail The URL trail to append to SureForms website URL. The parameter should not include a leading slash as the base URL already ends with a trailing slash.
+         * @param array<string, string> $utm_args Optional. An associative array of UTM parameters to append to the URL. Default empty array. Example: [ 'utm_medium' => 'dashboard'].
 	     * @since 0.0.7
 	     * @return string
 	     */
-	    public static function get_sureforms_website_url( $trail ) {
+	    public static function get_sureforms_website_url( $trail, $utm_args = [] ) {
 	    }
     }
 }
