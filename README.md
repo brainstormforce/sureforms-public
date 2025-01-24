@@ -262,13 +262,13 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 * Fix: Make SureForms Compatible with Divi's and Enfold's Classic Editor Settings.
 * Fix: Addressed an issue where captcha error was being displayed before field validation errors.
 * Fix: Resolved an issue where forms inside tabs or accordions were not displaying correctly. The height of the form is now adjusted when it becomes visible on the page.
+* Fix: Resolved an issue where the email notification cancel button was not functioning correctly.
 ### 1.3.0 - 21st January 2025 ###
 * Improvement: Stopped storing confirmation email setting's data of the Email field in the database.
 * Fix: Resolved an issue where forms were not being submitted in some instances with v3 reCAPTCHA.
 * Fix: Addressed an issue where selecting a field in the editor would hide the Settings icon.
 * Fix: Fixed a UI glitch on the initial load and refresh of Instant Forms.
 * Fix: Ensured the Submit button works consistently when switching between Visual and Text modes in the Gutenberg editor.
-* Fix: Resolved an issue where the email notification cancel button was not functioning correctly.
 ### 1.2.4 - 7th January 2025 ###
 * New: Added translations for the Italian, Portuguese, and Polish languages.
 * Fix: Addressed an issue where forms were not submitting in a page-cached environment.
