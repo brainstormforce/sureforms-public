@@ -598,8 +598,11 @@ html[dir="rtl"] body.post-type-sureforms_form {
 		display: flex;
 		gap: 12px;
 		padding: 16px 48px 16px 16px;
-		background-color: #f0f0f0;
 		cursor: pointer;
+
+		.components-panel__body-title:hover {
+			background: unset;
+		}
 
 		.srfm-tooltip {
 			.tooltip-wrap {
@@ -616,8 +619,8 @@ html[dir="rtl"] body.post-type-sureforms_form {
 		}
 	}
 	.components-panel__body-content {
-		background-color: #f0f0f0;
 		padding: 16px;
+		border-bottom: 1px solid #e0e0e0;
 	}
 }
 // The following are used for conditional logic preview as well as actual settings.

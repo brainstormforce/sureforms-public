@@ -38,7 +38,7 @@ const ConditionalLogicPreview = () => {
 				<div className="components-panel__body-content">
 					<ToggleControl
 						label={ __( 'Enable Conditional Logic', 'sureforms' ) }
-						checked={ true }
+						checked={ false }
 						disabled={ true }
 					/>
 					<div className="srfm-show-hide-select">
