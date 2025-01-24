@@ -33,7 +33,7 @@ const Zapier = () => {
 			</div>
 			<div className="srfm-integration-cta">
 				{ false === zapierDetails ? <UpgradeToProButton className="srfm-button-secondary srfm-button-xs" location="settings_integrations_zapier" /> : zapierDetails }
-				{ false === zapierDetails ? (
+				{ false === zapierDetails && (
 					<PremiumBadge
 						badgeName={ 'Pro' }
 						tooltipHeading={ __( 'Unlock Zapier Integration', 'sureforms' ) }
@@ -44,10 +44,6 @@ const Zapier = () => {
 						tooltipPosition={ 'bottom' }
 						utmMedium={ 'global_integration_settings_zapier' }
 					/>
-				) : (
-					<div className="srfm-pro-badge">
-						{ __( 'Pro', 'sureforms' ) }
-					</div>
 				) }
 			</div>
 		</> );

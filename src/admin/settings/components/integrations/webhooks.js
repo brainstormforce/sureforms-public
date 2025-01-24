@@ -28,7 +28,7 @@ const Webhooks = () => {
 			</div>
 			<div className="srfm-integration-cta">
 				{ false === switchWebhook ? <UpgradeToProButton className="srfm-button-secondary srfm-button-xs" location="settings_integrations_webhooks" /> : switchWebhook }
-				{ false === switchWebhook ? (
+				{ false === switchWebhook && (
 					<PremiumBadge
 						badgeName={ 'Starter' }
 						tooltipHeading={ __( 'Unlock Webhooks', 'sureforms' ) }
@@ -39,10 +39,6 @@ const Webhooks = () => {
 						tooltipPosition={ 'bottom' }
 						utmMedium={ 'global_integration_settings_webhooks' }
 					/>
-				) : (
-					<div className="srfm-pro-badge">
-						{ __( 'Starter', 'sureforms' ) }
-					</div>
 				) }
 			</div>
 		</> );
