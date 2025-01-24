@@ -199,6 +199,9 @@ input:checked + .slider:before {
 	white-space: nowrap;
 	box-sizing: border-box;
 }
+.srfm-import-btn {
+	float: right;
+}
 .srfm-import-form input[type="file"] {
 	margin-right: 10px;
 }
