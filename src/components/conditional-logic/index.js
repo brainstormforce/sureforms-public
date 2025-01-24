@@ -2,18 +2,19 @@ import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
 import PremiumBadge from '@Admin/components/PremiumBadge';
 import { chevronDown, chevronUp } from '@wordpress/icons';
-import {
-	SelectControl,
-	Button,
-	ToggleControl
-} from '@wordpress/components';
+import { SelectControl, Button, ToggleControl } from '@wordpress/components';
 import { useState } from '@wordpress/element';
 
 const ConditionalLogicPreview = () => {
 	const [ isExpanded, setIsExpanded ] = useState( false );
 	return (
 		<div className="srfm-conditional-logic-preview">
-			<div className="components-panel__body" onClick={ () => { setIsExpanded( ! isExpanded ) } }>
+			<div
+				className="components-panel__body"
+				onClick={ () => {
+					setIsExpanded( ! isExpanded );
+				} }
+			>
 				<h2 className="components-panel__body-title">
 					{ ' ' }
 					{ __( 'Conditional Logic', 'sureforms' ) }{ ' ' }
@@ -34,9 +35,9 @@ const ConditionalLogicPreview = () => {
 				{ ! isExpanded ? chevronDown : chevronUp }
 			</div>
 			{ isExpanded ? (
-				<div className='components-panel__body-content'>
+				<div className="components-panel__body-content">
 					<ToggleControl
-						label={ __( 'Enable Conditional Logic', 'sureforms-pro' ) }
+						label={ __( 'Enable Conditional Logic', 'sureforms' ) }
 						checked={ true }
 						disabled={ true }
 					/>
@@ -47,15 +48,15 @@ const ConditionalLogicPreview = () => {
 							options={ [
 								{
 									value: 'show',
-									label: __( 'Show', 'sureforms-pro' ),
+									label: __( 'Show', 'sureforms' ),
 								},
 								{
 									value: 'hide',
-									label: __( 'Hide', 'sureforms-pro' ),
+									label: __( 'Hide', 'sureforms' ),
 								},
 							] }
 						/>
-						<p>{ __( 'this field if', 'sureforms-pro' ) }</p>
+						<p>{ __( 'this field if', 'sureforms' ) }</p>
 					</div>
 					<Button
 						variant="secondary"
@@ -64,7 +65,7 @@ const ConditionalLogicPreview = () => {
 						} }
 						disabled={ true }
 					>
-						{ __( 'Configure Conditions', 'sureforms-pro' ) }
+						{ __( 'Configure Conditions', 'sureforms' ) }
 					</Button>
 				</div>
 			) : null }
