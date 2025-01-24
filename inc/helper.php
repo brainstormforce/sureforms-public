@@ -1115,7 +1115,7 @@ class Helper {
 	 *
 	 * @param string $class_name The class name to validate.
 	 *
-	 * @since x.x.x
+	 * @since 1.3.1
 	 * @return bool True if the class name is valid, otherwise false.
 	 */
 	public static function is_valid_css_class_name( $class_name ) {
