@@ -261,6 +261,7 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 * Fix: Resolved an issue where the "Import Form" button was not visible when all forms were moved to the Trash.
 * Fix: Make SureForms Compatible with Divi's and Enfold's Classic Editor Settings.
 * Fix: Addressed an issue where captcha error was being displayed before field validation errors.
+* Fix: Resolved an issue where forms inside tabs or accordions were not displaying correctly. The height of the form is now adjusted when it becomes visible on the page.
 = 1.3.0 - 21st January 2025 =
 * Improvement: Stopped storing confirmation email setting's data of the Email field in the database.
 * Fix: Resolved an issue where forms were not being submitted in some instances with v3 reCAPTCHA.
