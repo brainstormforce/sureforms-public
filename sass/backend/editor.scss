@@ -598,7 +598,11 @@ html[dir="rtl"] body.post-type-sureforms_form {
 		display: flex;
 		gap: 12px;
 		padding: 16px 48px 16px 16px;
-		background-color: #f0f0f0;
+		cursor: pointer;
+
+		.components-panel__body-title:hover {
+			background: unset;
+		}
 
 		.srfm-tooltip {
 			.tooltip-wrap {
@@ -613,5 +617,30 @@ html[dir="rtl"] body.post-type-sureforms_form {
 			right: 15px;
 			position: absolute;
 		}
+	}
+	.components-panel__body-content {
+		padding: 16px;
+		border-bottom: 1px solid #e0e0e0;
+	}
+}
+// The following are used for conditional logic preview as well as actual settings.
+.srfm-show-hide-select {
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	gap: 8px;
+	margin-bottom: 18px;
+
+	.components-base-control {
+		margin-bottom: 0 !important;
+		.components-base-control__field {
+			margin-bottom: 0 !important;
+		}
+	}
+
+	p {
+		margin-bottom: 0;
+		padding: 0;
+		color: #50575e;
 	}
 }

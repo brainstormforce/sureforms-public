@@ -472,6 +472,10 @@ $background_color: #f1f5f9;
 					justify-content: space-between;
 					padding: 16px 24px 16px 24px;
 					align-items: center;
+
+					.srfm-tooltip {
+						height: 24px; // Added to maintain the spacing of the badge.
+					}
 				}
 			}
 
