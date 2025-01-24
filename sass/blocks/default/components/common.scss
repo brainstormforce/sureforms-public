@@ -89,10 +89,7 @@
 
 			.srfm-error-wrap {
 				.srfm-error-message {
-					line-height: var( --srfm-error-line-height );
-					color: var( --srfm-error-color );
-					font-size: var( --srfm-error-font-size );
-					font-weight: var( --srfm-error-font-weight );
+					@include srfm-error-styles;
 				}
 			}
 		}
