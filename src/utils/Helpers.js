@@ -3,7 +3,7 @@ import { __ } from '@wordpress/i18n';
 import { Toaster, ToastBar } from 'react-hot-toast';
 import { store as editorStore } from '@wordpress/editor';
 import { select } from '@wordpress/data';
-import slugify from 'slugify';
+import { cleanForSlug } from '@wordpress/url';
 
 /**
  * Get Image Sizes and return an array of Size.
@@ -372,10 +372,7 @@ export const addQueryParam = ( url, paramValue, paramKey = 'utm_medium' ) => {
 };
 
 const generateSlug = ( label, existingSlugs ) => {
-	const baseSlug = slugify( label, {
-		lower: true,
-		strict: true,
-	} );
+	const baseSlug = cleanForSlug( label );
 
 	let slug = baseSlug;
 	let counter = 1;
