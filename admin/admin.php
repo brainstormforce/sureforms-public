@@ -73,7 +73,7 @@ class Admin {
 	 */
 	public function enable_block_editor_in_enfold_theme( $use_block_editor ) {
 		// if SureForms form post type then return true.
-		if ( SRFM_FORMS_POST_TYPE === get_current_screen()->post_type ) {
+		if ( ! is_null( get_current_screen() ) && SRFM_FORMS_POST_TYPE === get_current_screen()->post_type ) {
 			return true;
 		}
 		return $use_block_editor;
