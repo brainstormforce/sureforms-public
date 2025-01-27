@@ -14,8 +14,8 @@ msgstr ""
 #. Plugin Name of the plugin
 #. Author of the plugin
 #: sureforms.php
-#: admin/admin.php:114
-#: admin/admin.php:115
+#: admin/admin.php:141
+#: admin/admin.php:142
 #: inc/gutenberg-hooks.php:106
 #: inc/nps-notice.php:107
 #: inc/page-builders/bricks/elements/form-widget.php:66
@@ -42,26 +42,26 @@ msgstr "Uma maneira simples, mas poderosa, de criar formulários modernos para o
 msgid "https://sureforms.com/"
 msgstr ""
 
-#: admin/admin.php:127
-#: admin/admin.php:128
+#: admin/admin.php:154
+#: admin/admin.php:155
 msgid "Dashboard"
 msgstr "Painel de Controle"
 
-#: admin/admin.php:145
-#: admin/admin.php:146
-#: admin/admin.php:263
+#: admin/admin.php:172
+#: admin/admin.php:173
+#: admin/admin.php:290
 msgid "Settings"
 msgstr "Configurações"
 
-#: admin/admin.php:190
-#: admin/admin.php:191
+#: admin/admin.php:217
+#: admin/admin.php:218
 #: inc/post-types.php:128
 msgid "New Form"
 msgstr "Novo Formulário"
 
-#: admin/admin.php:199
-#: admin/admin.php:200
-#: admin/admin.php:236
+#: admin/admin.php:226
+#: admin/admin.php:227
+#: admin/admin.php:263
 #: inc/global-settings/email-summary.php:107
 #: inc/post-types.php:686
 #: assets/build/dashboard.js:2
@@ -69,11 +69,11 @@ msgid "Entries"
 msgstr "Entradas"
 
 #. Translators: Post Title.
-#: admin/admin.php:343
+#: admin/admin.php:370
 msgid "Edit %1$s"
 msgstr "Editar %1$s"
 
-#: admin/admin.php:742
+#: admin/admin.php:738
 #: api/block-patterns.php:110
 #: inc/ai-form-builder/ai-auth.php:45
 #: inc/ai-form-builder/ai-auth.php:81
@@ -92,17 +92,17 @@ msgstr "Editar %1$s"
 msgid "Nonce verification failed."
 msgstr "A verificação do nonce falhou."
 
-#: admin/admin.php:751
+#: admin/admin.php:747
 msgid "You cannot view this entry because it is in trash."
 msgstr "Você não pode visualizar esta entrada porque ela está na lixeira."
 
 #. translators: %1$s: Opening anchor tag with URL, %2$s: Closing anchor tag, %3$s: SureForms Pro Plugin Name.
-#: admin/admin.php:796
+#: admin/admin.php:792
 msgid "Please %1$sactivate%2$s your copy of %3$s to get new features, access support, receive update notifications, and more."
 msgstr "Por favor, %1$sative%2$s sua cópia do %3$s para obter novos recursos, acessar suporte, receber notificações de atualizações e muito mais."
 
 #. translators: %1$s: SureForms version, %2$s: SureForms Pro Plugin Name, %3$s: SureForms Pro Version, %4$s: Anchor tag open, %5$s: Closing anchor tag.
-#: admin/admin.php:806
+#: admin/admin.php:802
 msgid "SureForms %1$s requires minimum %2$s %3$s to work properly. Please update to the latest version from %4$shere%5$s."
 msgstr "O SureForms %1$s requer um mínimo de %2$s %3$s para funcionar corretamente. Por favor, atualize para a versão mais recente %4$saqui%5$s."
 
@@ -138,7 +138,7 @@ msgid "Mark as Read"
 msgstr "Marcar como lido"
 
 #: admin/views/entries-list-table.php:124
-#: admin/views/single-entry.php:312
+#: admin/views/single-entry.php:313
 msgid "Mark as Unread"
 msgstr "Marcar como não lido"
 
@@ -275,55 +275,55 @@ msgstr "Todos"
 msgid "SureForms Form #%d"
 msgstr "Formulário SureForms nº %d"
 
-#: admin/views/single-entry.php:271
+#: admin/views/single-entry.php:272
 msgid "Submission Info"
 msgstr "Informações de Submissão"
 
-#: admin/views/single-entry.php:278
+#: admin/views/single-entry.php:279
 msgid "Entry:"
 msgstr "Entrada:"
 
-#: admin/views/single-entry.php:282
+#: admin/views/single-entry.php:283
 msgid "Form Name:"
 msgstr "Nome do Formulário:"
 
-#: admin/views/single-entry.php:287
+#: admin/views/single-entry.php:288
 msgid "User IP:"
 msgstr "IP do usuário:"
 
-#: admin/views/single-entry.php:292
+#: admin/views/single-entry.php:293
 msgid "Browser:"
 msgstr "Navegador:"
 
-#: admin/views/single-entry.php:296
+#: admin/views/single-entry.php:297
 msgid "Device:"
 msgstr "Dispositivo:"
 
-#: admin/views/single-entry.php:301
+#: admin/views/single-entry.php:302
 msgid "User:"
 msgstr "Usuário:"
 
-#: admin/views/single-entry.php:306
+#: admin/views/single-entry.php:307
 msgid "Status:"
 msgstr "Status:"
 
-#: admin/views/single-entry.php:317
+#: admin/views/single-entry.php:318
 msgid "Submitted On:"
 msgstr "Enviado em:"
 
-#: admin/views/single-entry.php:340
+#: admin/views/single-entry.php:341
 msgid "Form Data"
 msgstr "Dados do Formulário"
 
-#: admin/views/single-entry.php:355
+#: admin/views/single-entry.php:356
 msgid "Fields"
 msgstr "Campos"
 
-#: admin/views/single-entry.php:356
+#: admin/views/single-entry.php:357
 msgid "Values"
 msgstr "Valores"
 
-#: admin/views/single-entry.php:432
+#: admin/views/single-entry.php:433
 #: modules/gutenberg/classes/class-spec-block-config.php:562
 #: modules/gutenberg/icons/icons-v6-1.php:5470
 #: assets/build/blocks.js:172
@@ -335,15 +335,15 @@ msgstr "Valores"
 msgid "Image"
 msgstr "Imagem"
 
-#: admin/views/single-entry.php:445
+#: admin/views/single-entry.php:446
 msgid "Open"
 msgstr "Abrir"
 
-#: admin/views/single-entry.php:481
+#: admin/views/single-entry.php:482
 msgid "Entry Logs"
 msgstr "Registros de Entrada"
 
-#: admin/views/single-entry.php:505
+#: admin/views/single-entry.php:506
 msgid "No logs found for this entry."
 msgstr "Nenhum registro encontrado para esta entrada."
 
@@ -712,7 +712,7 @@ msgid "I consent to have this website store my submitted information so they can
 msgstr "Eu consinto que este site armazene as informações que enviei para que possam responder à minha consulta."
 
 #: inc/fields/inlinebutton-markup.php:182
-#: inc/generate-form-markup.php:340
+#: inc/generate-form-markup.php:348
 msgid "Please verify that you are not a robot."
 msgstr "Por favor, verifique se você não é um robô."
 
@@ -804,7 +804,7 @@ msgstr "Desconhecido"
 msgid "Sorry, you are not allowed to view the form."
 msgstr "Desculpe, você não tem permissão para visualizar o formulário."
 
-#: inc/generate-form-markup.php:367
+#: inc/generate-form-markup.php:375
 msgid "There was an error trying to submit your form. Please try again."
 msgstr "Houve um erro ao tentar enviar seu formulário. Por favor, tente novamente."
 
@@ -922,10 +922,12 @@ msgid "Form Title"
 msgstr "Título do Formulário"
 
 #: inc/page-builders/elementor/form-widget.php:162
+#: assets/build/blocks.js:172
 msgid "Show"
 msgstr "Mostrar"
 
 #: inc/page-builders/elementor/form-widget.php:163
+#: assets/build/blocks.js:172
 msgid "Hide"
 msgstr "Esconder"
 
@@ -935,7 +937,7 @@ msgstr "Esconder"
 msgid "Edit Form"
 msgstr "Editar Formulário"
 
-#: admin/views/single-entry.php:185
+#: admin/views/single-entry.php:186
 #: inc/page-builders/elementor/form-widget.php:177
 msgid "Edit"
 msgstr "Editar"
@@ -950,7 +952,7 @@ msgid "Create"
 msgstr "Criar"
 
 #: inc/post-types.php:87
-#: assets/js/unminified/export.js:140
+#: assets/js/unminified/export.js:131
 msgid "Import Form"
 msgstr "Formulário de Importação"
 
@@ -1203,7 +1205,7 @@ msgstr "Divisor"
 
 #: modules/gutenberg/icons/icons-v6-0.php:136
 msgid "42.group"
-msgstr ""
+msgstr "42.grupo"
 
 #: modules/gutenberg/icons/icons-v6-0.php:147
 msgid "500px"
@@ -2989,7 +2991,7 @@ msgstr "Compartilhar Creative Commons"
 
 #: modules/gutenberg/icons/icons-v6-0.php:5263
 msgid "Creative Commons CC0"
-msgstr ""
+msgstr "Creative Commons CC0"
 
 #: modules/gutenberg/icons/icons-v6-0.php:5279
 msgid "Credit Card"
@@ -3646,7 +3648,7 @@ msgstr "Cara Riso Piscadela"
 
 #: modules/gutenberg/icons/icons-v6-1.php:1853
 msgid "Face Meh"
-msgstr ""
+msgstr "Encare Meh"
 
 #: modules/gutenberg/icons/icons-v6-1.php:1869
 msgid "Face Meh Blank"
@@ -3662,7 +3664,7 @@ msgstr "Cara Triste Chorar"
 
 #: modules/gutenberg/icons/icons-v6-1.php:1917
 msgid "Face Sad Tear"
-msgstr ""
+msgstr "Rosto Triste Lágrima"
 
 #: modules/gutenberg/icons/icons-v6-1.php:1933
 msgid "Face Smile"
@@ -3738,7 +3740,7 @@ msgstr "Balsa"
 
 #: modules/gutenberg/icons/icons-v6-1.php:2162
 msgid "Figma"
-msgstr ""
+msgstr "Figma"
 
 #: modules/gutenberg/icons/icons-v6-1.php:2178
 msgid "File"
@@ -4703,7 +4705,7 @@ msgstr "Rachadura na Chaminé da Casa"
 
 #: modules/gutenberg/icons/icons-v6-1.php:5059
 msgid "House Chimney Medical"
-msgstr ""
+msgstr "Chaminé da Casa Médica"
 
 #: modules/gutenberg/icons/icons-v6-1.php:5070
 msgid "House Chimney User"
@@ -4763,7 +4765,7 @@ msgstr "Verificação do Círculo Médico da Casa"
 
 #: modules/gutenberg/icons/icons-v6-1.php:5224
 msgid "House Medical Circle Exclamation"
-msgstr ""
+msgstr "Círculo Médico da Casa Exclamação"
 
 #: modules/gutenberg/icons/icons-v6-1.php:5235
 msgid "House Medical Circle Xmark"
@@ -8112,7 +8114,7 @@ msgstr "Frascos"
 
 #: modules/gutenberg/icons/icons-v6-3.php:4147
 msgid "Viber"
-msgstr ""
+msgstr "Viber"
 
 #: modules/gutenberg/icons/icons-v6-3.php:4158
 msgid "Video"
@@ -9255,16 +9257,12 @@ msgstr "Adicionar blocos à Barra de Ação Rápida"
 msgid "Re-arrange block inside Quick Action Bar"
 msgstr "Reorganizar bloco dentro da Barra de Ação Rápida"
 
-#: admin/views/single-entry.php:156
+#: admin/views/single-entry.php:157
+#: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
 msgid "Upgrade"
 msgstr "Atualizar"
-
-#: assets/build/formEditor.js:172
-#: assets/build/settings.js:172
-msgid "Starter"
-msgstr "Entrada"
 
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
@@ -9739,10 +9737,6 @@ msgid "Additional CSS Class(es)"
 msgstr "Classe(s) CSS Adicional(is)"
 
 #: assets/build/formEditor.js:172
-msgid " Separate multiple classes with spaces. "
-msgstr "Separe várias classes com espaços."
-
-#: assets/build/formEditor.js:172
 msgid "Date Picker"
 msgstr "Seletor de Data"
 
@@ -10182,15 +10176,11 @@ msgstr "Transmita sua submissão do SureForms para qualquer endpoint de API web 
 
 #: assets/build/settings.js:172
 msgid "Zapier"
-msgstr ""
+msgstr "Zapier"
 
 #: assets/build/settings.js:172
 msgid "SureForms and Zapier Integration allows you to connect your WordPress forms with a number of web apps."
 msgstr "A integração do SureForms com o Zapier permite conectar seus formulários do WordPress com vários aplicativos web."
-
-#: assets/build/settings.js:172
-msgid "Pro"
-msgstr "Pró"
 
 #: assets/build/settings.js:172
 msgid "This field cannot be left blank."
@@ -10542,7 +10532,7 @@ msgstr "H2"
 #: modules/gutenberg/build/blocks.js:11
 #: modules/gutenberg/build/blocks.js:15
 msgid "H3"
-msgstr ""
+msgstr "H3"
 
 #: modules/gutenberg/build/blocks.js:11
 #: modules/gutenberg/build/blocks.js:15
@@ -11195,43 +11185,43 @@ msgstr "Poderia, por favor, nos fazer um favor e nos dar uma avaliação de 5 es
 msgid "Entry #%s"
 msgstr "Entrada #%s"
 
-#: admin/views/single-entry.php:191
+#: admin/views/single-entry.php:192
 msgid "Unlock Edit Form Entires"
 msgstr "Desbloquear Entradas do Formulário de Edição"
 
-#: admin/views/single-entry.php:192
+#: admin/views/single-entry.php:193
 msgid "With the SureForms Starter plan, you can easily edit your entries to suit your needs."
 msgstr "Com o plano SureForms Starter, você pode facilmente editar suas entradas para atender às suas necessidades."
 
-#: admin/views/single-entry.php:201
+#: admin/views/single-entry.php:202
 msgid "Resend Notification"
 msgstr "Reenviar Notificação"
 
-#: admin/views/single-entry.php:206
+#: admin/views/single-entry.php:207
 msgid "Unlock Resend Email Notification"
 msgstr "Desbloquear Reenviar Notificação de Email"
 
-#: admin/views/single-entry.php:207
+#: admin/views/single-entry.php:208
 msgid "With the SureForms Starter plan, you can effortlessly resend email notifications, ensuring your important updates reach their recipients with ease."
 msgstr "Com o plano SureForms Starter, você pode reenviar notificações por e-mail sem esforço, garantindo que suas atualizações importantes cheguem aos destinatários com facilidade."
 
-#: admin/views/single-entry.php:218
+#: admin/views/single-entry.php:219
 msgid "Entry Notes"
 msgstr "Notas de Entrada"
 
-#: admin/views/single-entry.php:220
+#: admin/views/single-entry.php:221
 msgid "Add Note"
 msgstr "Adicionar Nota"
 
-#: admin/views/single-entry.php:229
+#: admin/views/single-entry.php:230
 msgid "Submit Note"
 msgstr "Enviar Nota"
 
-#: admin/views/single-entry.php:238
+#: admin/views/single-entry.php:239
 msgid "Unlock Add Note"
 msgstr "Desbloquear Adicionar Nota"
 
-#: admin/views/single-entry.php:239
+#: admin/views/single-entry.php:240
 msgid "With the SureForms Starter plan, enhance your submitted form entries by adding personalized notes for better clarity and tracking."
 msgstr "Com o plano SureForms Starter, melhore suas entradas de formulário enviadas adicionando notas personalizadas para maior clareza e acompanhamento."
 
@@ -11268,6 +11258,66 @@ msgstr "Eu já fiz!"
 #: inc/lib/nps-survey/dist/main.js:1
 msgid "Rate the Plugin"
 msgstr "Avalie o Plugin"
+
+#: assets/build/blocks.js:172
+#: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
+msgid "Plan"
+msgstr "Plano"
+
+#: assets/build/blocks.js:172
+msgid "Conditional Logic"
+msgstr "Lógica Condicional"
+
+#: assets/build/blocks.js:172
+msgid "Unlock Conditional Logic"
+msgstr "Desbloquear Lógica Condicional"
+
+#: assets/build/blocks.js:172
+msgid "Upgrade to the SureForms Starter Plan to create dynamic forms that adapt based on user input, offering a personalised and efficient form experience."
+msgstr "Faça upgrade para o Plano Starter do SureForms para criar formulários dinâmicos que se adaptam com base nas entradas do usuário, oferecendo uma experiência de formulário personalizada e eficiente."
+
+#: assets/build/blocks.js:172
+msgid "Enable Conditional Logic"
+msgstr "Ativar Lógica Condicional"
+
+#: assets/build/blocks.js:172
+msgid "this field if"
+msgstr "este campo se"
+
+#: assets/build/blocks.js:172
+msgid "Configure Conditions"
+msgstr "Configurar Condições"
+
+#: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
+msgid "Unlock Webhooks"
+msgstr "Desbloquear Webhooks"
+
+#: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
+msgid "With the SureForms Starter Plan, you can enable webhooks to seamlessly connect with your favorite apps for real-time data transfer and automation."
+msgstr "Com o Plano Starter do SureForms, você pode habilitar webhooks para se conectar perfeitamente com seus aplicativos favoritos para transferência de dados em tempo real e automação."
+
+#: assets/build/formEditor.js:172
+msgid "Class names should be separated by spaces. Each class name must not start with a digit, hyphen, or underscore. They can only include letters (including Unicode characters), numbers, hyphens, and underscores."
+msgstr "Os nomes das classes devem ser separados por espaços. Cada nome de classe não deve começar com um dígito, hífen ou sublinhado. Eles podem incluir apenas letras (incluindo caracteres Unicode), números, hífens e sublinhados."
+
+#: assets/build/formEditor.js:172
+msgid "Unlock Advanced Fields"
+msgstr "Desbloquear Campos Avançados"
+
+#: assets/build/formEditor.js:172
+msgid "With the SureForms Starter plan, you get access to advanced fields like Slider, Page Break, Date Picker, File Upload, and more to enhance your forms."
+msgstr "Com o plano SureForms Starter, você tem acesso a campos avançados como Slider, Quebra de Página, Seletor de Data, Upload de Arquivo e mais para aprimorar seus formulários."
+
+#: assets/build/settings.js:172
+msgid "Unlock Zapier Integration"
+msgstr "Desbloquear Integração com Zapier"
+
+#: assets/build/settings.js:172
+msgid "With the SureForms Pro Plan, you can enable Zapier integration to seamlessly connect with thousands of apps for powerful workflow automation."
+msgstr "Com o Plano SureForms Pro, você pode habilitar a integração com o Zapier para se conectar perfeitamente com milhares de aplicativos para uma automação de fluxo de trabalho poderosa."
 
 #: inc/post-types.php:123
 msgctxt "post type general name"
@@ -11367,65 +11417,11 @@ msgctxt "block title"
 msgid "URL"
 msgstr "URL"
 
-#: assets/build/blocks/address/block.json
-#: inc/blocks/address/block.json
-msgctxt "block description"
-msgid "Displays a SureForm Address Field"
-msgstr "Exibe um campo de endereço SureForm"
-
-#: assets/build/blocks/checkbox/block.json
-#: inc/blocks/checkbox/block.json
-msgctxt "block description"
-msgid "Displays a SureForm Checkbox Field"
-msgstr "Exibe um campo de caixa de seleção SureForm"
-
-#: assets/build/blocks/dropdown/block.json
-#: inc/blocks/dropdown/block.json
-msgctxt "block description"
-msgid "Displays a SureForm Dropdown Field"
-msgstr "Exibe um campo suspenso SureForm"
-
-#: assets/build/blocks/email/block.json
-#: inc/blocks/email/block.json
-msgctxt "block description"
-msgid "Displays a SureForm Email Field"
-msgstr "Exibe um campo de e-mail SureForm"
-
-#: assets/build/blocks/gdpr/block.json
-#: inc/blocks/gdpr/block.json
-msgctxt "block description"
-msgid "Displays a SureForm GDPR Agreement Field"
-msgstr "Exibe um campo de acordo SureForm GDPR"
-
 #: assets/build/blocks/inline-button/block.json
 #: inc/blocks/inlinebutton/block.json
 msgctxt "block description"
 msgid "Displays a SureForms Custom Button"
 msgstr "Exibe um Botão Personalizado do SureForms"
-
-#: assets/build/blocks/input/block.json
-#: inc/blocks/input/block.json
-msgctxt "block description"
-msgid "Displays a SureForm Text Field"
-msgstr "Exibe um campo de texto SureForm"
-
-#: assets/build/blocks/multi-choice/block.json
-#: inc/blocks/multichoice/block.json
-msgctxt "block description"
-msgid "Displays a SureForm Multi-Choice Field"
-msgstr "Exibe um campo de múltipla escolha SureForm"
-
-#: assets/build/blocks/number/block.json
-#: inc/blocks/number/block.json
-msgctxt "block description"
-msgid "Displays a SureForm Number Field"
-msgstr "Exibe um campo numérico SureForm"
-
-#: assets/build/blocks/phone/block.json
-#: inc/blocks/phone/block.json
-msgctxt "block description"
-msgid "Displays a SureForm Phone Field"
-msgstr "Exibe um campo de telefone SureForm"
 
 #: assets/build/blocks/sureforms-form/block.json
 #: inc/blocks/sform/block.json
@@ -11433,17 +11429,71 @@ msgctxt "block description"
 msgid "Collect and Manage data effortlessly with customizable SureForms."
 msgstr "Colete e gerencie dados sem esforço com SureForms personalizáveis."
 
+#: assets/build/blocks/address/block.json
+#: inc/blocks/address/block.json
+msgctxt "block description"
+msgid "Displays a SureForms Address Field"
+msgstr "Exibe um campo de endereço SureForms"
+
+#: assets/build/blocks/checkbox/block.json
+#: inc/blocks/checkbox/block.json
+msgctxt "block description"
+msgid "Displays a SureForms Checkbox Field"
+msgstr "Exibe um campo de caixa de seleção SureForms"
+
+#: assets/build/blocks/dropdown/block.json
+#: inc/blocks/dropdown/block.json
+msgctxt "block description"
+msgid "Displays a SureForms Dropdown Field"
+msgstr "Exibe um campo suspenso SureForms"
+
+#: assets/build/blocks/email/block.json
+#: inc/blocks/email/block.json
+msgctxt "block description"
+msgid "Displays a SureForms Email Field"
+msgstr "Exibe um campo de e-mail SureForms"
+
+#: assets/build/blocks/gdpr/block.json
+#: inc/blocks/gdpr/block.json
+msgctxt "block description"
+msgid "Displays a SureForms GDPR Agreement Field"
+msgstr "Exibe um campo de acordo SureForms GDPR"
+
+#: assets/build/blocks/input/block.json
+#: inc/blocks/input/block.json
+msgctxt "block description"
+msgid "Displays a SureForms Text Field"
+msgstr "Exibe um campo de texto SureForms"
+
+#: assets/build/blocks/multi-choice/block.json
+#: inc/blocks/multichoice/block.json
+msgctxt "block description"
+msgid "Displays a SureForms Multi-Choice Field"
+msgstr "Exibe um campo de múltipla escolha do SureForms"
+
+#: assets/build/blocks/number/block.json
+#: inc/blocks/number/block.json
+msgctxt "block description"
+msgid "Displays a SureForms Number Field"
+msgstr "Exibe um campo numérico SureForms"
+
+#: assets/build/blocks/phone/block.json
+#: inc/blocks/phone/block.json
+msgctxt "block description"
+msgid "Displays a SureForms Phone Field"
+msgstr "Exibe um campo de telefone SureForms"
+
 #: assets/build/blocks/textarea/block.json
 #: inc/blocks/textarea/block.json
 msgctxt "block description"
-msgid "Displays a SureForm Textarea Field"
-msgstr "Exibe um campo de área de texto SureForm"
+msgid "Displays a SureForms Textarea Field"
+msgstr "Exibe um campo de área de texto SureForms"
 
 #: assets/build/blocks/url/block.json
 #: inc/blocks/url/block.json
 msgctxt "block description"
-msgid "Displays a SureForm URL Field"
-msgstr "Exibe um campo de URL SureForm"
+msgid "Displays a SureForms URL Field"
+msgstr "Exibe um campo de URL do SureForms"
 
 #: assets/build/blocks/address/block.json
 #: inc/blocks/address/block.json
