@@ -14,6 +14,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { useDeviceType } from '@Controls/getPreviewType';
 import { submitButtonContainerOptions } from '@Components/hooks';
+import { addStyleInRoot } from '@Utils/Helpers';
 
 function StyleSettings( props ) {
 	const { editPost } = useDispatch( editorStore );
@@ -32,15 +33,6 @@ function StyleSettings( props ) {
 		document.querySelector( '.srfm-submit-btn-container' )
 	);
 	const [ fieldSpacing, setFieldSpacing ] = useState( formStyling?.field_spacing || 'medium' );
-
-	// Add the CSS properties to the root element.
-	const addStyleInRoot = ( cssProperties ) => {
-		if ( Object.keys( cssProperties ).length > 0 ) {
-			for ( const [ key, objValue ] of Object.entries( cssProperties ) ) {
-				root.style.setProperty( key, objValue );
-			}
-		}
-	};
 
 	// Apply the sizings when field spacing changes.
 	useEffect( () => {
@@ -123,7 +115,7 @@ function StyleSettings( props ) {
 				'--srfm-submit-width-backend': sureformsKeys._srfm_submit_width_backend || '',
 			};
 
-			addStyleInRoot( cssProperties );
+			addStyleInRoot( root, cssProperties );
 		} else {
 			sureformsKeys = defaultKeys;
 			editPost( {
@@ -147,7 +139,7 @@ function StyleSettings( props ) {
 				break;
 		}
 
-		addStyleInRoot( cssProperties );
+		addStyleInRoot( root, cssProperties );
 
 		const option_array = {};
 
@@ -176,7 +168,7 @@ function StyleSettings( props ) {
 		const overrideSize = srfm_admin?.field_spacing_vars[ sizingValue ] || {};
 		const finalSize = { ...baseSize, ...overrideSize };
 
-		addStyleInRoot( finalSize );
+		addStyleInRoot( root, finalSize );
 	}
 
 	/**
@@ -237,7 +229,7 @@ function StyleSettings( props ) {
 				break;
 		}
 
-		addStyleInRoot( cssProperties );
+		addStyleInRoot( root, cssProperties );
 
 		editPost( {
 			meta: {
