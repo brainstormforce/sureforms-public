@@ -208,8 +208,6 @@ const AiFormBuilder = () => {
 						formTypeObj,
 						content
 					);
-					console.log( 'metasToUpdate', metasToUpdate );
-
 					handleAddNewPost( postContent, formTitle, metasToUpdate, formTypeObj?.isConversationalForm, formType );
 				} else {
 					setShowFormCreationErr( true );
