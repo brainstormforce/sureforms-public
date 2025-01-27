@@ -1,7 +1,7 @@
 {
 	"name": "srfm/number",
 	"title": "Number",
-	"description": "Displays a SureForm Number Field",
+	"description": "Displays a SureForms Number Field",
 	"category": "sureforms",
 	"keywords": [ "number", "input", "custom", "field" ],
 	"textdomain": "sureforms",

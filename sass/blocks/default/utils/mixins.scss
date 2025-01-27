@@ -268,59 +268,9 @@
 	border-radius: var( --srfm-input-field-border-radius );
 }
 
-// Number Block Styles
-@mixin srfm-number-styles {
-	display: flex;
-	align-items: center;
-
-	.srfm-number-prefix,
-	.srfm-number-suffix {
-		display: flex;
-		align-items: center;
-		padding: 10px 8px;
-		font-size: var( --srfm-input-field-font-size );
-		line-height: var( --srfm-input-field-line-height );
-		color: var( --srfm-color-input-text );
-		background-color: var( --srfm-color-input-background );
-		border: var( --srfm-color-input-border ) solid 1px;
-		border-radius: var( --srfm-input-field-border-radius );
-		height: var( --srfm-input-height );
-		// Adding the below styles to handle the case where user enters a long text in prefix and/or suffix.
-		white-space: nowrap;
-		max-width: 100%;
-		overflow: hidden;
-	}
-
-	// The srfm-has-prefix and srfm-has-suffix is added with the element having class srfm-block-wrap.
-	&.srfm-has-prefix {
-		// For prefix, set the prefix element right border and border-radius to 0.
-		.srfm-number-prefix {
-			border-right: none;
-			border-top-right-radius: 0;
-			border-bottom-right-radius: 0;
-		}
-		// With prefix, for the input field set the left border-radius to 0.
-		.srfm-input-number {
-			border-top-left-radius: 0;
-			border-bottom-left-radius: 0;
-		}
-	}
-
-	&.srfm-has-suffix {
-		// For suffix, set the suffix element left border and border-radius to 0.
-		.srfm-number-suffix {
-			border-left: none;
-			border-top-left-radius: 0;
-			border-bottom-left-radius: 0;
-		}
-		// With suffix, for the input field set the right border-radius to 0.
-		.srfm-input-number {
-			border-top-right-radius: 0;
-			border-bottom-right-radius: 0;
-		}
-	}
-
-	.srfm-input-number {
-		flex: 1; // Take up the available space in the block, for compatibility with prefix and suffix overflow hidden.
-	}
+@mixin srfm-error-styles {
+	line-height: var( --srfm-error-line-height );
+	color: var( --srfm-error-color );
+	font-size: var( --srfm-error-font-size );
+	font-weight: var( --srfm-error-font-weight );
 }

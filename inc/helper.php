@@ -1080,4 +1080,49 @@ class Helper {
 
 		return $is_screen_sureforms_menu || $is_screen_add_new_form || $is_screen_sureforms_form_settings || $is_screen_sureforms_entries || $is_post_type_sureforms_form;
 	}
+
+	/**
+	 * Get SureForms Website URL.
+	 *
+	 * @param string                $trail The URL trail to append to SureForms website URL. The parameter should not include a leading slash as the base URL already ends with a trailing slash.
+	 * @param array<string, string> $utm_args Optional. An associative array of UTM parameters to append to the URL. Default empty array. Example: [ 'utm_medium' => 'dashboard'].
+	 * @since 0.0.7
+	 * @return string
+	 */
+	public static function get_sureforms_website_url( $trail, $utm_args = [] ) {
+		$url = SRFM_WEBSITE;
+		if ( ! empty( $trail ) && is_string( $trail ) ) {
+			$url = SRFM_WEBSITE . $trail;
+		}
+
+		if ( ! is_array( $utm_args ) ) {
+			$utm_args = [];
+		}
+
+		if ( class_exists( '\BSF_UTM_Analytics\Inc\Utils' ) ) {
+			$url = \BSF_UTM_Analytics\Inc\Utils::get_utm_ready_link( $url, 'sureforms', $utm_args );
+		}
+
+		return esc_url( $url );
+	}
+
+	/**
+	 * Validates if the given string is a valid CSS class name.
+	 *
+	 * A valid CSS class name:
+	 * - Does not start with a digit, hyphen, or underscore.
+	 * - Can contain alphanumeric characters, underscores, hyphens, and Unicode letters.
+	 *
+	 * @param string $class_name The class name to validate.
+	 *
+	 * @since 1.3.1
+	 * @return bool True if the class name is valid, otherwise false.
+	 */
+	public static function is_valid_css_class_name( $class_name ) {
+		// Regular expression to validate a Unicode-aware CSS class name.
+		$class_name_regex = '/^[^\d\-_][\w\p{L}\p{N}\-_]*$/u';
+
+		// Check if the className matches the pattern.
+		return preg_match( $class_name_regex, $class_name ) === 1;
+	}
 }
