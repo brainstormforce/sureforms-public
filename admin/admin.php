@@ -555,6 +555,7 @@ class Admin {
 					'site_url'             => get_site_url(),
 					'srfm_import_endpoint' => '/wp-json/sureforms/v1/sureforms_import',
 					'import_form_nonce'    => current_user_can( 'edit_posts' ) ? wp_create_nonce( 'wp_rest' ) : '',
+					'import_btn_string'    => __( 'Import Form', 'sureforms' ),
 				]
 			);
 
