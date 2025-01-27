@@ -148,7 +148,7 @@ if ( ! class_exists( 'Nps_Notice' ) ) {
 		 */
 		public function update_nps_survey_endpoint( $endpoint, $post_data ) {
 			if ( isset( $post_data['plugin_slug'] ) && 'sureforms' === $post_data['plugin_slug'] ) {
-				$endpoint = SRFM_NPS_SURVEY_ENDPOINT;
+				$endpoint = SRFM_NPS_SURVEY_URL;
 			}
 
 			return $endpoint;
