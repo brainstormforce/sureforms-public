@@ -34,7 +34,7 @@ define( 'SRFM_WEBSITE', 'https://sureforms.com/' );
 define( 'SRFM_AI_MIDDLEWARE', 'https://credits.startertemplates.com/sureforms/' );
 define( 'SRFM_BILLING_PORTAL', 'https://billing.sureforms.com/' );
 define( 'SRFM_PRO_RECOMMENDED_VER', '1.3.0' );
-define( 'SRFM_NPS_SURVEY_URL', 'https://webhook.suretriggers.com/suretriggers/58a66e6f-5d70-4a66-94d8-d5c26ecfb9e3' );
+define( 'SRFM_NPS_SURVEY_URL', 'https://webhook.suretriggers.com/suretriggers/30b8bcdc-d70c-47e3-99e6-cc676c4971b0' );
 
 define( 'SRFM_SURETRIGGERS_INTEGRATION_BASE_URL', 'https://app.suretriggers.com/' );
 
