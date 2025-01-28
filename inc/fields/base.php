@@ -371,9 +371,10 @@ class Base {
 	 */
 	protected function set_properties( $attributes ) {
 		$default_classes = isset( $attributes['className'] ) ? ' ' . $attributes['className'] : '';
-		$filter_classes = apply_filters( 'srfm_field_classes', $default_classes, [ 'attributes' => $attributes ] );
+		$filter_classes  = apply_filters( 'srfm_field_classes', $default_classes, [ 'attributes' => $attributes ] );
+		$field_config    = apply_filters( 'srfm_field_config', [], [ 'attributes' => $attributes ] );
 
-		$this->field_config = apply_filters( 'srfm_field_config', [], [ 'attributes' => $attributes ] );
+		$this->field_config       = ! empty( $field_config ) ? $field_config : null;
 		$this->attributes         = $attributes;
 		$this->required           = $attributes['required'] ?? false;
 		$this->field_width        = $attributes['fieldWidth'] ?? '';

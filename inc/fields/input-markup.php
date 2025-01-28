@@ -8,6 +8,8 @@
 
 namespace SRFM\Inc\Fields;
 
+use SRFM\Inc\Helper;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
@@ -70,8 +72,21 @@ class Input_Markup extends Base {
 	 * @return string|bool
 	 */
 	public function markup() {
+		$data_config       = $this->field_config;
+		$container_classes = Helper::join_strings(
+			[
+				'srfm-block-single',
+				'srfm-block',
+				"srfm-{$this->slug}-block",
+				"srf-{$this->slug}-{$this->block_id}-block",
+				$this->block_width,
+				$this->class_name,
+				$this->conditional_class,
+			]
+		);
+
 		ob_start(); ?>
-			<div data-block-id="<?php echo esc_attr( $this->block_id ); ?>" class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $this->slug ); ?>-block srf-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?>-block<?php echo esc_attr( $this->block_width ); ?><?php echo esc_attr( $this->class_name ); ?> <?php echo esc_attr( $this->conditional_class ); ?>">
+			<div data-block-id="<?php echo esc_attr( $this->block_id ); ?>" class="<?php echo esc_attr( $container_classes ); ?>" <?php echo $data_config ? "data-field-config='" . wp_json_encode( $data_config ) . "'" : ''; ?>>
 			<?php echo wp_kses_post( $this->label_markup ); ?>
 			<?php echo wp_kses_post( $this->help_markup ); ?>
 				<div class="srfm-block-wrap">

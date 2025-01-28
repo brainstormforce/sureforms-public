@@ -1091,7 +1091,7 @@ class Helper {
 	public static function join_strings( $class_names ) {
 		// Filter the array to include only valid class names.
 		$valid_class_names = array_filter(
-			$class_names,
+			array_map( 'trim', $class_names ),
 			static function ( $value ) {
 				return is_string( $value ) && '' !== $value && false !== $value;
 			}
