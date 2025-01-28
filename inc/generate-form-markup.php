@@ -99,7 +99,15 @@ class Generate_Form_Markup {
 				$sf_classname,
 			];
 
-			$form_classes[] = Helper::get_string_value( Helper::get_meta_value( $id, '_srfm_additional_classes' ) );
+			$custom_added_classes = Helper::get_meta_value( $id, '_srfm_additional_classes' );
+			if ( ! empty( $custom_added_classes ) && is_string( $custom_added_classes ) ) {
+				$custom_added_classes = explode( ' ', $custom_added_classes );
+				foreach ( $custom_added_classes as $class ) {
+					if ( Helper::is_valid_css_class_name( $class ) ) {
+						$form_classes[] = $class;
+					}
+				}
+			}
 
 			$form_styling             = get_post_meta( $id, '_srfm_forms_styling', true );
 			$form_styling             = ! empty( $form_styling ) && is_array( $form_styling ) ? $form_styling : [];

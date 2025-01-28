@@ -14,8 +14,8 @@ msgstr ""
 #. Plugin Name of the plugin
 #. Author of the plugin
 #: sureforms.php
-#: admin/admin.php:114
-#: admin/admin.php:115
+#: admin/admin.php:141
+#: admin/admin.php:142
 #: inc/gutenberg-hooks.php:106
 #: inc/nps-notice.php:107
 #: inc/page-builders/bricks/elements/form-widget.php:66
@@ -42,26 +42,26 @@ msgstr "Eine einfache, aber leistungsstarke Möglichkeit, moderne Formulare für
 msgid "https://sureforms.com/"
 msgstr ""
 
-#: admin/admin.php:127
-#: admin/admin.php:128
+#: admin/admin.php:154
+#: admin/admin.php:155
 msgid "Dashboard"
 msgstr "Armaturenbrett"
 
-#: admin/admin.php:145
-#: admin/admin.php:146
-#: admin/admin.php:263
+#: admin/admin.php:172
+#: admin/admin.php:173
+#: admin/admin.php:290
 msgid "Settings"
 msgstr "Einstellungen"
 
-#: admin/admin.php:190
-#: admin/admin.php:191
+#: admin/admin.php:217
+#: admin/admin.php:218
 #: inc/post-types.php:128
 msgid "New Form"
 msgstr "Neues Formular"
 
-#: admin/admin.php:199
-#: admin/admin.php:200
-#: admin/admin.php:236
+#: admin/admin.php:226
+#: admin/admin.php:227
+#: admin/admin.php:263
 #: inc/global-settings/email-summary.php:107
 #: inc/post-types.php:686
 #: assets/build/dashboard.js:2
@@ -69,11 +69,11 @@ msgid "Entries"
 msgstr "Einträge"
 
 #. Translators: Post Title.
-#: admin/admin.php:343
+#: admin/admin.php:370
 msgid "Edit %1$s"
 msgstr "%1$s bearbeiten"
 
-#: admin/admin.php:742
+#: admin/admin.php:738
 #: api/block-patterns.php:110
 #: inc/ai-form-builder/ai-auth.php:45
 #: inc/ai-form-builder/ai-auth.php:81
@@ -92,17 +92,17 @@ msgstr "%1$s bearbeiten"
 msgid "Nonce verification failed."
 msgstr "Überprüfung des Nonce ist fehlgeschlagen."
 
-#: admin/admin.php:751
+#: admin/admin.php:747
 msgid "You cannot view this entry because it is in trash."
 msgstr "Sie können diesen Eintrag nicht anzeigen, da er im Papierkorb ist."
 
 #. translators: %1$s: Opening anchor tag with URL, %2$s: Closing anchor tag, %3$s: SureForms Pro Plugin Name.
-#: admin/admin.php:796
+#: admin/admin.php:792
 msgid "Please %1$sactivate%2$s your copy of %3$s to get new features, access support, receive update notifications, and more."
 msgstr "Bitte %1$saktivieren%2$s Sie Ihre Kopie von %3$s, um neue Funktionen zu erhalten, Support zu nutzen, Update-Benachrichtigungen zu erhalten und mehr."
 
 #. translators: %1$s: SureForms version, %2$s: SureForms Pro Plugin Name, %3$s: SureForms Pro Version, %4$s: Anchor tag open, %5$s: Closing anchor tag.
-#: admin/admin.php:806
+#: admin/admin.php:802
 msgid "SureForms %1$s requires minimum %2$s %3$s to work properly. Please update to the latest version from %4$shere%5$s."
 msgstr "SureForms %1$s erfordert mindestens %2$s %3$s, um ordnungsgemäß zu funktionieren. Bitte aktualisieren Sie auf die neueste Version von %4$shier%5$s."
 
@@ -138,7 +138,7 @@ msgid "Mark as Read"
 msgstr "Als gelesen markieren"
 
 #: admin/views/entries-list-table.php:124
-#: admin/views/single-entry.php:312
+#: admin/views/single-entry.php:313
 msgid "Mark as Unread"
 msgstr "Als ungelesen markieren"
 
@@ -275,55 +275,55 @@ msgstr "Alle"
 msgid "SureForms Form #%d"
 msgstr "SureForms Formular Nr. %d"
 
-#: admin/views/single-entry.php:271
+#: admin/views/single-entry.php:272
 msgid "Submission Info"
 msgstr "Einreichungsinformationen"
 
-#: admin/views/single-entry.php:278
+#: admin/views/single-entry.php:279
 msgid "Entry:"
 msgstr "Eingang:"
 
-#: admin/views/single-entry.php:282
+#: admin/views/single-entry.php:283
 msgid "Form Name:"
 msgstr "Formularname:"
 
-#: admin/views/single-entry.php:287
+#: admin/views/single-entry.php:288
 msgid "User IP:"
 msgstr "Benutzer-IP:"
 
-#: admin/views/single-entry.php:292
+#: admin/views/single-entry.php:293
 msgid "Browser:"
 msgstr "Browser:"
 
-#: admin/views/single-entry.php:296
+#: admin/views/single-entry.php:297
 msgid "Device:"
 msgstr "Gerät:"
 
-#: admin/views/single-entry.php:301
+#: admin/views/single-entry.php:302
 msgid "User:"
 msgstr "Benutzer:"
 
-#: admin/views/single-entry.php:306
+#: admin/views/single-entry.php:307
 msgid "Status:"
 msgstr "Status:"
 
-#: admin/views/single-entry.php:317
+#: admin/views/single-entry.php:318
 msgid "Submitted On:"
 msgstr "Eingereicht am:"
 
-#: admin/views/single-entry.php:340
+#: admin/views/single-entry.php:341
 msgid "Form Data"
 msgstr "Formulardaten"
 
-#: admin/views/single-entry.php:355
+#: admin/views/single-entry.php:356
 msgid "Fields"
 msgstr "Felder"
 
-#: admin/views/single-entry.php:356
+#: admin/views/single-entry.php:357
 msgid "Values"
 msgstr "Werte"
 
-#: admin/views/single-entry.php:432
+#: admin/views/single-entry.php:433
 #: modules/gutenberg/classes/class-spec-block-config.php:562
 #: modules/gutenberg/icons/icons-v6-1.php:5470
 #: assets/build/blocks.js:172
@@ -335,15 +335,15 @@ msgstr "Werte"
 msgid "Image"
 msgstr "Bild"
 
-#: admin/views/single-entry.php:445
+#: admin/views/single-entry.php:446
 msgid "Open"
 msgstr "Öffnen"
 
-#: admin/views/single-entry.php:481
+#: admin/views/single-entry.php:482
 msgid "Entry Logs"
 msgstr "Eintragsprotokolle"
 
-#: admin/views/single-entry.php:505
+#: admin/views/single-entry.php:506
 msgid "No logs found for this entry."
 msgstr "Keine Protokolle für diesen Eintrag gefunden."
 
@@ -708,7 +708,7 @@ msgid "I consent to have this website store my submitted information so they can
 msgstr "Ich stimme zu, dass diese Website meine übermittelten Informationen speichert, damit sie auf meine Anfrage antworten können."
 
 #: inc/fields/inlinebutton-markup.php:182
-#: inc/generate-form-markup.php:340
+#: inc/generate-form-markup.php:348
 msgid "Please verify that you are not a robot."
 msgstr "Bitte bestätigen Sie, dass Sie kein Roboter sind."
 
@@ -796,7 +796,7 @@ msgstr "Fehler beim Absenden des Formulars"
 msgid "Sorry, you are not allowed to view the form."
 msgstr "Entschuldigung, Sie dürfen das Formular nicht ansehen."
 
-#: inc/generate-form-markup.php:367
+#: inc/generate-form-markup.php:375
 msgid "There was an error trying to submit your form. Please try again."
 msgstr "Beim Absenden Ihres Formulars ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut."
 
@@ -894,10 +894,12 @@ msgid "Form Title"
 msgstr "Formulartitel"
 
 #: inc/page-builders/elementor/form-widget.php:162
+#: assets/build/blocks.js:172
 msgid "Show"
 msgstr "Zeigen"
 
 #: inc/page-builders/elementor/form-widget.php:163
+#: assets/build/blocks.js:172
 msgid "Hide"
 msgstr "Verbergen"
 
@@ -907,7 +909,7 @@ msgstr "Verbergen"
 msgid "Edit Form"
 msgstr "Formular bearbeiten"
 
-#: admin/views/single-entry.php:185
+#: admin/views/single-entry.php:186
 #: inc/page-builders/elementor/form-widget.php:177
 msgid "Edit"
 msgstr "Bearbeiten"
@@ -922,7 +924,7 @@ msgid "Create"
 msgstr "Erstellen"
 
 #: inc/post-types.php:87
-#: assets/js/unminified/export.js:140
+#: assets/js/unminified/export.js:131
 msgid "Import Form"
 msgstr "Importformular"
 
@@ -3054,7 +3056,7 @@ msgstr "Datenbank"
 
 #: modules/gutenberg/icons/icons-v6-1.php:224
 msgid "Deezer"
-msgstr ""
+msgstr "Deezer"
 
 #: modules/gutenberg/icons/icons-v6-1.php:235
 msgid "Delete Left"
@@ -9227,16 +9229,12 @@ msgstr "Blöcke zur Schnellzugriffsleiste hinzufügen"
 msgid "Re-arrange block inside Quick Action Bar"
 msgstr "Block im Schnellaktionsbereich neu anordnen"
 
-#: admin/views/single-entry.php:156
+#: admin/views/single-entry.php:157
+#: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
 msgid "Upgrade"
 msgstr "Aktualisieren"
-
-#: assets/build/formEditor.js:172
-#: assets/build/settings.js:172
-msgid "Starter"
-msgstr "Vorspeise"
 
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
@@ -9711,10 +9709,6 @@ msgid "Additional CSS Class(es)"
 msgstr "Zusätzliche CSS-Klasse(n)"
 
 #: assets/build/formEditor.js:172
-msgid " Separate multiple classes with spaces. "
-msgstr "Trennen Sie mehrere Klassen mit Leerzeichen."
-
-#: assets/build/formEditor.js:172
 msgid "Date Picker"
 msgstr "Datumsauswahl"
 
@@ -10115,10 +10109,6 @@ msgstr "Zapier"
 #: assets/build/settings.js:172
 msgid "SureForms and Zapier Integration allows you to connect your WordPress forms with a number of web apps."
 msgstr "SureForms und Zapier-Integration ermöglicht es Ihnen, Ihre WordPress-Formulare mit einer Vielzahl von Web-Apps zu verbinden."
-
-#: assets/build/settings.js:172
-msgid "Pro"
-msgstr "Pro"
 
 #: assets/build/settings.js:172
 msgid "This field cannot be left blank."
@@ -11195,43 +11185,43 @@ msgstr "Könnten Sie uns bitte einen Gefallen tun und uns eine 5-Sterne-Bewertun
 msgid "Entry #%s"
 msgstr "Eintrag Nr. %s"
 
-#: admin/views/single-entry.php:191
+#: admin/views/single-entry.php:192
 msgid "Unlock Edit Form Entires"
 msgstr "Bearbeitungsformulareinträge entsperren"
 
-#: admin/views/single-entry.php:192
+#: admin/views/single-entry.php:193
 msgid "With the SureForms Starter plan, you can easily edit your entries to suit your needs."
 msgstr "Mit dem SureForms Starter-Plan können Sie Ihre Einträge ganz einfach anpassen, um Ihren Bedürfnissen gerecht zu werden."
 
-#: admin/views/single-entry.php:201
+#: admin/views/single-entry.php:202
 msgid "Resend Notification"
 msgstr "Benachrichtigung erneut senden"
 
-#: admin/views/single-entry.php:206
+#: admin/views/single-entry.php:207
 msgid "Unlock Resend Email Notification"
 msgstr "E-Mail-Benachrichtigung zum erneuten Senden entsperren"
 
-#: admin/views/single-entry.php:207
+#: admin/views/single-entry.php:208
 msgid "With the SureForms Starter plan, you can effortlessly resend email notifications, ensuring your important updates reach their recipients with ease."
 msgstr "Mit dem SureForms Starter-Plan können Sie E-Mail-Benachrichtigungen mühelos erneut senden, sodass Ihre wichtigen Updates ihre Empfänger problemlos erreichen."
 
-#: admin/views/single-entry.php:218
+#: admin/views/single-entry.php:219
 msgid "Entry Notes"
 msgstr "Eintragsnotizen"
 
-#: admin/views/single-entry.php:220
+#: admin/views/single-entry.php:221
 msgid "Add Note"
 msgstr "Notiz hinzufügen"
 
-#: admin/views/single-entry.php:229
+#: admin/views/single-entry.php:230
 msgid "Submit Note"
 msgstr "Notiz einreichen"
 
-#: admin/views/single-entry.php:238
+#: admin/views/single-entry.php:239
 msgid "Unlock Add Note"
 msgstr "Notiz hinzufügen entsperren"
 
-#: admin/views/single-entry.php:239
+#: admin/views/single-entry.php:240
 msgid "With the SureForms Starter plan, enhance your submitted form entries by adding personalized notes for better clarity and tracking."
 msgstr "Mit dem SureForms Starter-Plan verbessern Sie Ihre eingereichten Formulareinträge, indem Sie personalisierte Notizen für bessere Klarheit und Nachverfolgung hinzufügen."
 
@@ -11268,6 +11258,66 @@ msgstr "Ich habe es bereits getan!"
 #: inc/lib/nps-survey/dist/main.js:1
 msgid "Rate the Plugin"
 msgstr "Bewerten Sie das Plugin"
+
+#: assets/build/blocks.js:172
+#: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
+msgid "Plan"
+msgstr "Plan"
+
+#: assets/build/blocks.js:172
+msgid "Conditional Logic"
+msgstr "Bedingte Logik"
+
+#: assets/build/blocks.js:172
+msgid "Unlock Conditional Logic"
+msgstr "Bedingte Logik freischalten"
+
+#: assets/build/blocks.js:172
+msgid "Upgrade to the SureForms Starter Plan to create dynamic forms that adapt based on user input, offering a personalised and efficient form experience."
+msgstr "Wechseln Sie zum SureForms Starter-Plan, um dynamische Formulare zu erstellen, die sich basierend auf Benutzereingaben anpassen und ein personalisiertes und effizientes Formularerlebnis bieten."
+
+#: assets/build/blocks.js:172
+msgid "Enable Conditional Logic"
+msgstr "Bedingte Logik aktivieren"
+
+#: assets/build/blocks.js:172
+msgid "this field if"
+msgstr "dieses Feld, wenn"
+
+#: assets/build/blocks.js:172
+msgid "Configure Conditions"
+msgstr "Bedingungen konfigurieren"
+
+#: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
+msgid "Unlock Webhooks"
+msgstr "Webhooks entsperren"
+
+#: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
+msgid "With the SureForms Starter Plan, you can enable webhooks to seamlessly connect with your favorite apps for real-time data transfer and automation."
+msgstr "Mit dem SureForms Starter-Plan können Sie Webhooks aktivieren, um nahtlos mit Ihren Lieblings-Apps für den Echtzeit-Datentransfer und die Automatisierung zu verbinden."
+
+#: assets/build/formEditor.js:172
+msgid "Class names should be separated by spaces. Each class name must not start with a digit, hyphen, or underscore. They can only include letters (including Unicode characters), numbers, hyphens, and underscores."
+msgstr "Klassennamen sollten durch Leerzeichen getrennt werden. Jeder Klassenname darf nicht mit einer Ziffer, einem Bindestrich oder einem Unterstrich beginnen. Sie dürfen nur Buchstaben (einschließlich Unicode-Zeichen), Zahlen, Bindestriche und Unterstriche enthalten."
+
+#: assets/build/formEditor.js:172
+msgid "Unlock Advanced Fields"
+msgstr "Erweiterte Felder freischalten"
+
+#: assets/build/formEditor.js:172
+msgid "With the SureForms Starter plan, you get access to advanced fields like Slider, Page Break, Date Picker, File Upload, and more to enhance your forms."
+msgstr "Mit dem SureForms Starter-Plan erhalten Sie Zugriff auf erweiterte Felder wie Schieberegler, Seitenumbruch, Datumswähler, Dateiupload und mehr, um Ihre Formulare zu verbessern."
+
+#: assets/build/settings.js:172
+msgid "Unlock Zapier Integration"
+msgstr "Zapier-Integration freischalten"
+
+#: assets/build/settings.js:172
+msgid "With the SureForms Pro Plan, you can enable Zapier integration to seamlessly connect with thousands of apps for powerful workflow automation."
+msgstr "Mit dem SureForms Pro Plan können Sie die Zapier-Integration aktivieren, um nahtlos mit Tausenden von Apps für eine leistungsstarke Workflow-Automatisierung zu verbinden."
 
 #: inc/post-types.php:123
 msgctxt "post type general name"
@@ -11367,65 +11417,11 @@ msgctxt "block title"
 msgid "URL"
 msgstr "URL"
 
-#: assets/build/blocks/address/block.json
-#: inc/blocks/address/block.json
-msgctxt "block description"
-msgid "Displays a SureForm Address Field"
-msgstr "Zeigt ein SureForm-Adressfeld an"
-
-#: assets/build/blocks/checkbox/block.json
-#: inc/blocks/checkbox/block.json
-msgctxt "block description"
-msgid "Displays a SureForm Checkbox Field"
-msgstr "Zeigt ein SureForm-Kontrollkästchenfeld an"
-
-#: assets/build/blocks/dropdown/block.json
-#: inc/blocks/dropdown/block.json
-msgctxt "block description"
-msgid "Displays a SureForm Dropdown Field"
-msgstr "Zeigt ein SureForm-Dropdown-Feld an"
-
-#: assets/build/blocks/email/block.json
-#: inc/blocks/email/block.json
-msgctxt "block description"
-msgid "Displays a SureForm Email Field"
-msgstr "Zeigt ein SureForm-E-Mail-Feld an"
-
-#: assets/build/blocks/gdpr/block.json
-#: inc/blocks/gdpr/block.json
-msgctxt "block description"
-msgid "Displays a SureForm GDPR Agreement Field"
-msgstr "Zeigt ein SureForm GDPR-Vereinbarungsfeld an"
-
 #: assets/build/blocks/inline-button/block.json
 #: inc/blocks/inlinebutton/block.json
 msgctxt "block description"
 msgid "Displays a SureForms Custom Button"
 msgstr "Zeigt eine SureForms-Benutzerdefinierte Schaltfläche an"
-
-#: assets/build/blocks/input/block.json
-#: inc/blocks/input/block.json
-msgctxt "block description"
-msgid "Displays a SureForm Text Field"
-msgstr "Zeigt ein SureForm-Textfeld an"
-
-#: assets/build/blocks/multi-choice/block.json
-#: inc/blocks/multichoice/block.json
-msgctxt "block description"
-msgid "Displays a SureForm Multi-Choice Field"
-msgstr "Zeigt ein SureForm-Mehrfachauswahlfeld an"
-
-#: assets/build/blocks/number/block.json
-#: inc/blocks/number/block.json
-msgctxt "block description"
-msgid "Displays a SureForm Number Field"
-msgstr "Zeigt ein SureForm-Zahlenfeld an"
-
-#: assets/build/blocks/phone/block.json
-#: inc/blocks/phone/block.json
-msgctxt "block description"
-msgid "Displays a SureForm Phone Field"
-msgstr "Zeigt ein SureForm-Telefonfeld an"
 
 #: assets/build/blocks/sureforms-form/block.json
 #: inc/blocks/sform/block.json
@@ -11433,17 +11429,71 @@ msgctxt "block description"
 msgid "Collect and Manage data effortlessly with customizable SureForms."
 msgstr "Erfassen und Verwalten Sie Daten mühelos mit anpassbaren SureForms."
 
+#: assets/build/blocks/address/block.json
+#: inc/blocks/address/block.json
+msgctxt "block description"
+msgid "Displays a SureForms Address Field"
+msgstr "Zeigt ein SureForms-Adressfeld an"
+
+#: assets/build/blocks/checkbox/block.json
+#: inc/blocks/checkbox/block.json
+msgctxt "block description"
+msgid "Displays a SureForms Checkbox Field"
+msgstr "Zeigt ein SureForms-Kontrollkästchenfeld an"
+
+#: assets/build/blocks/dropdown/block.json
+#: inc/blocks/dropdown/block.json
+msgctxt "block description"
+msgid "Displays a SureForms Dropdown Field"
+msgstr "Zeigt ein SureForms-Dropdown-Feld an"
+
+#: assets/build/blocks/email/block.json
+#: inc/blocks/email/block.json
+msgctxt "block description"
+msgid "Displays a SureForms Email Field"
+msgstr "Zeigt ein SureForms-E-Mail-Feld an"
+
+#: assets/build/blocks/gdpr/block.json
+#: inc/blocks/gdpr/block.json
+msgctxt "block description"
+msgid "Displays a SureForms GDPR Agreement Field"
+msgstr "Zeigt ein SureForms GDPR-Vereinbarungsfeld an"
+
+#: assets/build/blocks/input/block.json
+#: inc/blocks/input/block.json
+msgctxt "block description"
+msgid "Displays a SureForms Text Field"
+msgstr "Zeigt ein SureForms-Textfeld an"
+
+#: assets/build/blocks/multi-choice/block.json
+#: inc/blocks/multichoice/block.json
+msgctxt "block description"
+msgid "Displays a SureForms Multi-Choice Field"
+msgstr "Zeigt ein SureForms-Mehrfachauswahlfeld an"
+
+#: assets/build/blocks/number/block.json
+#: inc/blocks/number/block.json
+msgctxt "block description"
+msgid "Displays a SureForms Number Field"
+msgstr "Zeigt ein SureForms-Zahlenfeld an"
+
+#: assets/build/blocks/phone/block.json
+#: inc/blocks/phone/block.json
+msgctxt "block description"
+msgid "Displays a SureForms Phone Field"
+msgstr "Zeigt ein SureForms-Telefonfeld an"
+
 #: assets/build/blocks/textarea/block.json
 #: inc/blocks/textarea/block.json
 msgctxt "block description"
-msgid "Displays a SureForm Textarea Field"
-msgstr "Zeigt ein SureForm-Textbereichsfeld an"
+msgid "Displays a SureForms Textarea Field"
+msgstr "Zeigt ein SureForms-Textbereichsfeld an"
 
 #: assets/build/blocks/url/block.json
 #: inc/blocks/url/block.json
 msgctxt "block description"
-msgid "Displays a SureForm URL Field"
-msgstr "Zeigt ein SureForm-URL-Feld an"
+msgid "Displays a SureForms URL Field"
+msgstr "Zeigt ein SureForms-URL-Feld an"
 
 #: assets/build/blocks/address/block.json
 #: inc/blocks/address/block.json
