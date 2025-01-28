@@ -182,7 +182,7 @@ class Create_New_Form {
 			}
 
 			/**
-			 * update _srfm_is_ai_generated meta to true.
+			 * Update _srfm_is_ai_generated meta to true.
 			 * If the request is coming here then the form is AI generated.
 			 */
 			update_post_meta( $post_id, '_srfm_is_ai_generated', 'true' );
