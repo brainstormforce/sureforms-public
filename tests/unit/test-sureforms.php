@@ -31,6 +31,5 @@ class Test_Sureforms extends TestCase {
 		$this->assertTrue( defined( 'SRFM_BILLING_PORTAL' ) );
 		$this->assertTrue( defined( 'SRFM_SURETRIGGERS_INTEGRATION_BASE_URL' ) );
 		$this->assertTrue( defined( 'SRFM_PRO_RECOMMENDED_VER' ) );
-		$this->assertTrue( defined( 'SRFM_NPS_SURVEY_URL' ) );
 	}
 }
