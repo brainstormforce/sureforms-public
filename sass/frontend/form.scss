@@ -80,6 +80,7 @@
 			padding: 0 var( --srfm-col-gap-between-blocks ) !important;
 			margin-bottom: var( --srfm-row-gap-between-blocks );
 
+
 			// Adding a default fixed height to the h-captcha container to manage the error spacing.
 			.h-captcha {
 				height: 78px;
@@ -173,5 +174,14 @@
 
 	.srfm-display-none {
 		display: none;
+	}
+}
+
+/*
+ * To show reCAPTCHA v3 & v2 badge in bricks theme 
+ */
+.srfm-form-container {
+	.grecaptcha-badge {
+		visibility: revert !important;
 	}
 }
