@@ -1,3 +1,5 @@
+@import "../blocks/default/utils/mixins.scss";
+
 .srfm-form-container {
 	// This is the parent form class. Adds specificity so that there is no conflict.
 	position: relative;
@@ -77,14 +79,16 @@
 			width: 100%;
 			padding: 0 var( --srfm-col-gap-between-blocks ) !important;
 			margin-bottom: var( --srfm-row-gap-between-blocks );
+
+			// Adding a default fixed height to the h-captcha container to manage the error spacing.
+			.h-captcha {
+				height: 78px;
+			}
 		}
 
 		.srfm-validation-error {
-			font-size: 0.7em;
-			margin-top: 0.571em;
-			font-weight: 400;
-			line-height: normal;
-			color: var( --srfm-error-color );
+			@include srfm-error-styles;
+			margin: var( --srfm-input-field-margin ) 0 0;
 		}
 
 		.uagb-block {
