@@ -148,7 +148,7 @@ if ( ! class_exists( 'Nps_Notice' ) ) {
 		 */
 		public function update_nps_survey_endpoint( $endpoint, $post_data ) {
 			if ( isset( $post_data['plugin_slug'] ) && 'sureforms' === $post_data['plugin_slug'] ) {
-				$endpoint = SRFM_NPS_SURVEY_URL;
+				$endpoint = 'https://webhook.suretriggers.com/suretriggers/30b8bcdc-d70c-47e3-99e6-cc676c4971b0';
 			}
 
 			return $endpoint;
