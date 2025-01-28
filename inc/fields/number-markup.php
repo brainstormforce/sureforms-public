@@ -69,6 +69,22 @@ class Number_Markup extends Base {
 	protected $max_value_attr;
 
 	/**
+	 * Prefix for the input field.
+	 *
+	 * @var string
+	 * @since x.x.x
+	 */
+	protected $prefix;
+
+	/**
+	 * Suffix for the input field.
+	 *
+	 * @var string
+	 * @since x.x.x
+	 */
+	protected $suffix;
+
+	/**
 	 * Initialize the properties based on block attributes.
 	 *
 	 * @param array<mixed> $attributes Block attributes.
@@ -83,6 +99,8 @@ class Number_Markup extends Base {
 		$this->format_attr    = $this->format_type ? ' format-type="' . $this->format_type . '" ' : '';
 		$this->min_value_attr = $this->min_value ? ' min="' . $this->min_value . '" ' : '';
 		$this->max_value_attr = $this->max_value ? ' max="' . $this->max_value . '" ' : '';
+		$this->prefix         = $attributes['prefix'] ?? '';
+		$this->suffix         = $attributes['suffix'] ?? '';
 		$this->set_input_label( __( 'Number', 'sureforms' ) );
 		$this->set_error_msg( $attributes, 'srfm_number_block_required_text' );
 		$this->set_unique_slug();
@@ -119,11 +137,16 @@ class Number_Markup extends Base {
 			<div data-block-id="<?php echo esc_attr( $this->block_id ); ?>" class="<?php echo esc_attr( $container_classes ); ?>" data-field-config="<?php echo esc_attr( $config_data ); ?>">
 				<?php echo wp_kses_post( $this->label_markup ); ?>
 				<?php echo wp_kses_post( $this->help_markup ); ?>
-				<div class="srfm-block-wrap">
+				<div class="srfm-block-wrap <?php echo esc_attr( trim( ( $this->prefix ? 'srfm-has-prefix ' : '' ) . ( $this->suffix ? 'srfm-has-suffix' : '' ) ) ); ?>">
+					<?php if ( ! empty( $this->prefix ) ) { ?>
+						<span class="srfm-number-prefix" aria-hidden="true"><?php echo esc_html( $this->prefix ); ?></span>
+					<?php } ?>
 					<input class="srfm-input-common srfm-input-<?php echo esc_attr( $this->slug ); ?>" type="text" name="<?php echo esc_attr( $this->field_name ); ?>" id="<?php echo esc_attr( $this->unique_slug ); ?>"
 					<?php echo ! empty( $this->aria_described_by ) ? "aria-describedby='" . esc_attr( trim( $this->aria_described_by ) ) . "'" : ''; ?>
 					data-required="<?php echo esc_attr( $this->data_require_attr ); ?>" <?php echo wp_kses_post( $this->placeholder_attr . '' . $this->default_value_attr . '' . $this->format_attr . '' . $this->min_value_attr . '' . $this->max_value_attr ); ?> />
-					<?php echo $this->error_svg; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Ignored to render svg ?>
+					<?php if ( ! empty( $this->suffix ) ) { ?>
+						<span class="srfm-number-suffix" aria-hidden="true"><?php echo esc_html( $this->suffix ); ?></span>
+					<?php } ?>
 				</div>
 				<div class="srfm-error-wrap">
 					<?php echo wp_kses_post( $this->error_msg_markup ); ?>

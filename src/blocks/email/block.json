@@ -1,7 +1,7 @@
 {
 	"name": "srfm/email",
 	"title": "Email",
-	"description": "Displays a SureForm Email Field",
+	"description": "Displays a SureForms Email Field",
 	"category": "sureforms",
 	"keywords": [ "email", "mail" ],
 	"textdomain": "sureforms",

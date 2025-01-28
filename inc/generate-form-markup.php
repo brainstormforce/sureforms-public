@@ -99,7 +99,15 @@ class Generate_Form_Markup {
 				$sf_classname,
 			];
 
-			$form_classes[] = Helper::get_string_value( Helper::get_meta_value( $id, '_srfm_additional_classes' ) );
+			$custom_added_classes = Helper::get_meta_value( $id, '_srfm_additional_classes' );
+			if ( ! empty( $custom_added_classes ) && is_string( $custom_added_classes ) ) {
+				$custom_added_classes = explode( ' ', $custom_added_classes );
+				foreach ( $custom_added_classes as $class ) {
+					if ( Helper::is_valid_css_class_name( $class ) ) {
+						$form_classes[] = $class;
+					}
+				}
+			}
 
 			$form_styling             = get_post_meta( $id, '_srfm_forms_styling', true );
 			$form_styling             = ! empty( $form_styling ) && is_array( $form_styling ) ? $form_styling : [];
@@ -189,6 +197,13 @@ class Generate_Form_Markup {
 			$label_text_color_var = $label_text_color ? $label_text_color : '#111827';
 
 			$selected_size = Helper::get_css_vars( $field_spacing );
+
+			$should_show_submit_button = apply_filters(
+				'srfm_show_submit_button',
+				0 !== $block_count && ! $is_inline_button || $is_page_break,
+				$id
+			);
+
 			?>
 			<div class="<?php echo esc_attr( implode( ' ', array_filter( $form_classes ) ) ); ?>">
 			<style>
@@ -286,7 +301,7 @@ class Generate_Form_Markup {
 					// phpcs:ignoreEnd
 				}
 				?>
-				<?php if ( 0 !== $block_count && ! $is_inline_button || $is_page_break ) { ?>
+				<?php if ( $should_show_submit_button ) { ?>
 					<?php if ( ! empty( $security_type ) && 'none' !== $security_type ) { ?>
 						<div class="srfm-captcha-container <?php echo esc_attr( 'v3-reCAPTCHA' === $recaptcha_version || 'v2-invisible' === $recaptcha_version ? 'srfm-display-none' : '' ); ?>">
 						<?php if ( is_string( $google_captcha_site_key ) && ! empty( $google_captcha_site_key ) && 'g-recaptcha' === $security_type ) { ?>

@@ -13,6 +13,8 @@ import {
 	faAlignJustify,
 } from '@fortawesome/free-solid-svg-icons';
 import { useDeviceType } from '@Controls/getPreviewType';
+import { submitButtonContainerOptions } from '@Components/hooks';
+import { addStyleInRoot } from '@Utils/Helpers';
 
 function StyleSettings( props ) {
 	const { editPost } = useDispatch( editorStore );
@@ -77,158 +79,67 @@ function StyleSettings( props ) {
 		}
 	}
 
-	if ( sureformsKeys ) {
-		// Form Container
-		root.style.setProperty(
-			'--srfm-color-scheme-primary',
-			formStyling?.primary_color || '#0C78FB'
-		);
-		root.style.setProperty(
-			'--srfm-btn-color-hover',
-			formStyling?.primary_color
-				? `hsl( from ${ formStyling.primary_color } h s l / 0.9)`
-				: `hsl( from #0C78FB h s l / 0.9)`
-		);
-		root.style.setProperty(
-			'--srfm-color-scheme-text-on-primary',
-			formStyling?.text_color_on_primary || '#FFFFFF'
-		);
+	useEffect( () => {
+		if ( sureformsKeys ) {
+			const defaultTextColor = '#1E1E1E';
 
-		const defaultTextColor = '#1E1E1E';
+			// Form Container
+			const cssProperties = {
+				'--srfm-color-scheme-primary': formStyling?.primary_color || '#0C78FB',
+				'--srfm-btn-color-hover': `hsl( from ${ formStyling?.primary_color || '#0C78FB' } h s l / 0.9)`,
+				'--srfm-color-scheme-text-on-primary': formStyling?.text_color_on_primary || '#FFFFFF',
+				'--srfm-color-scheme-text': formStyling?.text_color || defaultTextColor,
+				'--srfm-color-input-label': formStyling?.text_color || defaultTextColor,
+				'--srfm-color-input-placeholder': `hsl( from ${ formStyling?.text_color || defaultTextColor } h s l / 0.5)`,
+				'--srfm-color-input-text': formStyling?.text_color || defaultTextColor,
+				'--srfm-color-input-description': `hsl( from ${ formStyling?.text_color || defaultTextColor } h s l / 0.65)`,
+				'--srfm-color-input-prefix': `hsl( from ${ formStyling?.text_color || defaultTextColor } h s l / 0.65)`,
+				'--srfm-color-input-background': `hsl( from ${ formStyling?.text_color || defaultTextColor } h s l / 0.02)`,
+				'--srfm-color-input-background-disabled': `hsl( from ${ formStyling?.text_color || defaultTextColor } h s l / 0.05)`,
+				'--srfm-color-input-border': `hsl( from ${ formStyling?.text_color || defaultTextColor } h s l / 0.25)`,
+				'--srfm-color-input-border-disabled': `hsl( from ${ formStyling?.text_color || defaultTextColor } h s l / 0.15)`,
+				'--srfm-color-input-border-focus-glow': `hsl( from ${ formStyling?.primary_color || '#FAE4DC' } h s l / 0.15 )`,
+				// checkbox and gdpr - for small, medium and large checkbox sizes
+				'--srfm-checkbox-input-border-radius': '4px',
+				'--srfm-color-multi-choice-svg': `hsl( from ${ formStyling?.text_color || defaultTextColor } h s l / 0.7)`,
+				// Button
+				// Button text color
+				'--srfm-btn-text-color': formStyling?.text_color_on_primary || '#FFFFFF',
+				// btn border color
+				'--srfm-btn-border-color': formStyling?.primary_color || '#0C78FB',
 
-		root.style.setProperty(
-			'--srfm-color-scheme-text',
-			formStyling?.text_color || defaultTextColor
-		);
-		root.style.setProperty(
-			'--srfm-color-input-label',
-			formStyling?.text_color || defaultTextColor
-		);
-		root.style.setProperty(
-			'--srfm-color-input-placeholder',
-			formStyling?.text_color
-				? `hsl( from ${ formStyling.text_color } h s l / 0.5)`
-				: `hsl( from ${ defaultTextColor } h s l / 0.5)`
-		);
-		root.style.setProperty(
-			'--srfm-color-input-text',
-			formStyling?.text_color || defaultTextColor
-		);
-		root.style.setProperty(
-			'--srfm-color-input-description',
-			formStyling?.text_color
-				? `hsl( from ${ formStyling.text_color } h s l / 0.65)`
-				: `hsl( from ${ defaultTextColor } h s l / 0.65)`
-		);
-		root.style.setProperty(
-			'--srfm-color-input-prefix',
-			formStyling?.text_color
-				? `hsl( from ${ formStyling.text_color } h s l / 0.65)`
-				: `hsl( from ${ defaultTextColor } h s l / 0.65)`
-		);
-		root.style.setProperty(
-			'--srfm-color-input-background',
-			formStyling?.text_color
-				? `hsl( from ${ formStyling.text_color } h s l / 0.02)`
-				: `hsl( from ${ defaultTextColor } h s l / 0.02)`
-		);
-		root.style.setProperty(
-			'--srfm-color-input-background-disabled',
-			formStyling?.text_color
-				? `hsl( from ${ formStyling.text_color } h s l / 0.05)`
-				: `hsl( from ${ defaultTextColor } h s l / 0.05)`
-		);
-		root.style.setProperty(
-			'--srfm-color-input-border',
-			formStyling?.text_color
-				? `hsl( from ${ formStyling.text_color } h s l / 0.25)`
-				: `hsl( from ${ defaultTextColor } h s l / 0.25)`
-		);
-		root.style.setProperty(
-			'--srfm-color-input-border-disabled',
-			formStyling?.text_color
-				? `hsl( from ${ formStyling.text_color } h s l / 0.15)`
-				: `hsl( from ${ defaultTextColor } h s l / 0.15)`
-		);
-		root.style.setProperty(
-			'--srfm-color-input-border-focus-glow',
-			formStyling.primary_color
-				? `hsl( from ${ formStyling.primary_color } h s l / 0.15 )`
-				: '#FAE4DC'
-		);
+				// Button alignment
+				'--srfm-submit-alignment': formStyling?.submit_button_alignment || 'left',
+				'--srfm-submit-width': sureformsKeys?._srfm_submit_width || '',
+				'--srfm-submit-alignment-backend': sureformsKeys._srfm_submit_alignment_backend || '',
+				'--srfm-submit-width-backend': sureformsKeys._srfm_submit_width_backend || '',
+			};
 
-		// checkbox and gdpr - for small, medium and large checkbox sizes
-		root.style.setProperty(
-			'--srfm-checkbox-input-border-radius',
-			'4px'
-		);
-
-		root.style.setProperty(
-			'--srfm-color-multi-choice-svg',
-			formStyling?.text_color
-				? `hsl( from ${ formStyling.text_color } h s l / 0.7)`
-				: `hsl( from ${ defaultTextColor } h s l / 0.7)`
-		);
-
-		// Button
-		// Button text color
-		root.style.setProperty(
-			'--srfm-btn-text-color',
-			formStyling?.text_color_on_primary || '#FFFFFF'
-		);
-		// btn border color
-		root.style.setProperty(
-			'--srfm-btn-border-color',
-			formStyling?.primary_color || '#0C78FB'
-		);
-
-		// Button alignment
-		root.style.setProperty(
-			'--srfm-submit-alignment',
-			formStyling?.submit_button_alignment || 'left'
-		);
-		root.style.setProperty(
-			'--srfm-submit-width',
-			sureformsKeys._srfm_submit_width
-				? sureformsKeys._srfm_submit_width
-				: ''
-		);
-		root.style.setProperty(
-			'--srfm-submit-alignment-backend',
-			sureformsKeys._srfm_submit_alignment_backend
-				? sureformsKeys._srfm_submit_alignment_backend
-				: ''
-		);
-		root.style.setProperty(
-			'--srfm-submit-width-backend',
-			sureformsKeys._srfm_submit_width_backend
-				? sureformsKeys._srfm_submit_width_backend
-				: ''
-		);
-	} else {
-		sureformsKeys = defaultKeys;
-		editPost( {
-			meta: sureformsKeys,
-		} );
-	}
+			addStyleInRoot( root, cssProperties );
+		} else {
+			sureformsKeys = defaultKeys;
+			editPost( {
+				meta: sureformsKeys,
+			} );
+		}
+	}, [ sureformsKeys ] );
 
 	function updateMeta( option, value ) {
 		const value_id = 0;
 		const key_id = '';
 
+		const cssProperties = {};
 		// Button
-		if ( option === '_srfm_button_border_width' ) {
-			root.style.setProperty(
-				'--srfm-btn-border-width',
-				value ? value + 'px' : '0px'
-			);
+		switch ( option ) {
+			case '_srfm_button_border_width':
+				cssProperties[ '--srfm-btn-border-width' ] = value ? value + 'px' : '0px';
+				break;
+			case '_srfm_button_border_color':
+				cssProperties[ '--srfm-btn-border-color' ] = value ? value : '#000000';
+				break;
 		}
-		if ( option === '_srfm_button_border_color' ) {
-			root.style.setProperty(
-				'--srfm-btn-border-color',
-				value ? value : '#000000'
-			);
-		}
+
+		addStyleInRoot( root, cssProperties );
 
 		const option_array = {};
 
@@ -257,9 +168,7 @@ function StyleSettings( props ) {
 		const overrideSize = srfm_admin?.field_spacing_vars[ sizingValue ] || {};
 		const finalSize = { ...baseSize, ...overrideSize };
 
-		for ( const [ key, value ] of Object.entries( finalSize ) ) {
-			root.style.setProperty( key, value );
-		}
+		addStyleInRoot( root, finalSize );
 	}
 
 	/**
@@ -272,129 +181,55 @@ function StyleSettings( props ) {
 	 * @since 0.0.7
 	 */
 	function updateFormStyling( option, value ) {
-		if ( option === 'primary_color' ) {
-			root.style.setProperty(
-				'--srfm-color-scheme-primary',
-				value || '#0C78FB'
-			);
+		const cssProperties = {};
 
-			root.style.setProperty(
-				'--srfm-btn-color-hover',
-				value
-					? `hsl( from ${ value } h s l / 0.9)`
-					: `hsl( from #0C78FB h s l / 0.9)`
-			);
+		switch ( option ) {
+			case 'primary_color':
+				cssProperties[ '--srfm-color-scheme-primary' ] = value || '#0C78FB';
+				cssProperties[ '--srfm-btn-color-hover' ] = `hsl( from ${ value || '#0C78FB' } h s l / 0.9)`;
+				break;
+			case 'text_color':
+				const defaultTextColor = '#1E1E1E';
+				cssProperties[ '--srfm-color-scheme-text' ] = value || defaultTextColor;
+				cssProperties[ '--srfm-color-input-label' ] = value || defaultTextColor;
+				cssProperties[ '--srfm-color-input-placeholder' ] = value || defaultTextColor;
+				cssProperties[ '--srfm-color-input-text' ] = value || defaultTextColor;
+				cssProperties[ '--srfm-color-input-description' ] = `hsl( from ${ value || defaultTextColor } h s l / 0.65)`;
+				cssProperties[ '--srfm-color-input-prefix' ] = `hsl( from ${ value || defaultTextColor } h s l / 0.65)`;
+				cssProperties[ '--srfm-color-input-background' ] = `hsl( from ${ value || defaultTextColor } h s l / 0.02)`;
+				cssProperties[ '--srfm-color-input-background-disabled' ] = `hsl( from ${ value || defaultTextColor } h s l / 0.05)`;
+				cssProperties[ '--srfm-color-input-border' ] = `hsl( from ${ value || defaultTextColor } h s l / 0.25)`;
+				cssProperties[ '--srfm-color-input-border-disabled' ] = `hsl( from ${ value || defaultTextColor } h s l / 0.15)`;
+				break;
+			case 'text_color_on_primary':
+				cssProperties[ '--srfm-color-scheme-text-on-primary' ] = value || '#FFFFFF';
+				break;
+			case 'field_spacing':
+				cssProperties[ '--srfm-field-spacing' ] = value || 'medium';
+				break;
+			case 'submit_button_alignment':
+				cssProperties[ '--srfm-submit-alignment' ] = value || 'left';
+				cssProperties[ '--srfm-submit-width-backend' ] = 'max-content';
+				updateMeta( '_srfm_submit_width_backend', 'max-content' );
+
+				if ( value === 'left' ) {
+					cssProperties[ '--srfm-submit-alignment-backend' ] = '100%';
+					updateMeta( '_srfm_submit_alignment_backend', '100%' );
+				} else if ( value === 'right' ) {
+					cssProperties[ '--srfm-submit-alignment-backend' ] = '0%';
+					updateMeta( '_srfm_submit_alignment_backend', '0%' );
+				} else if ( value === 'center' ) {
+					cssProperties[ '--srfm-submit-alignment-backend' ] = '50%';
+					updateMeta( '_srfm_submit_alignment_backend', '50%' );
+				} else if ( value === 'justify' ) {
+					cssProperties[ '--srfm-submit-alignment-backend' ] = '50%';
+					cssProperties[ '--srfm-submit-width-backend' ] = 'auto';
+					updateMeta( '_srfm_submit_alignment_backend', '50%' );
+				}
+				break;
 		}
 
-		if ( option === 'text_color' ) {
-			const defaultTextColor = '#1E1E1E';
-
-			root.style.setProperty(
-				'--srfm-color-scheme-text',
-				value ? value : defaultTextColor
-			);
-			root.style.setProperty(
-				'--srfm-color-input-label',
-				value ? value : defaultTextColor
-			);
-			root.style.setProperty(
-				'--srfm-color-input-placeholder',
-				value ? value : defaultTextColor
-			);
-			root.style.setProperty(
-				'--srfm-color-input-text',
-				value ? value : defaultTextColor
-			);
-			root.style.setProperty(
-				'--srfm-color-input-description',
-				value
-					? `hsl( from ${ value } h s l / 0.65)`
-					: `hsl( from ${ defaultTextColor } h s l / 0.65)`
-			);
-			root.style.setProperty(
-				'--srfm-color-input-prefix',
-				value
-					? `hsl( from ${ value } h s l / 0.65)`
-					: `hsl( from ${ defaultTextColor } h s l / 0.65)`
-			);
-			root.style.setProperty(
-				'--srfm-color-input-background',
-				value
-					? `hsl( from ${ value } h s l / 0.02)`
-					: `hsl( from ${ defaultTextColor } h s l / 0.02)`
-			);
-			root.style.setProperty(
-				'--srfm-color-input-background-disabled',
-				value
-					? `hsl( from ${ value } h s l / 0.05)`
-					: `hsl( from ${ defaultTextColor } h s l / 0.05)`
-			);
-			root.style.setProperty(
-				'--srfm-color-input-border',
-				value
-					? `hsl( from ${ value } h s l / 0.25)`
-					: `hsl( from ${ defaultTextColor } h s l / 0.25)`
-			);
-			root.style.setProperty(
-				'--srfm-color-input-border-disabled',
-				value
-					? `hsl( from ${ value } h s l / 0.15)`
-					: `hsl( from ${ defaultTextColor } h s l / 0.15)`
-			);
-		}
-
-		if ( option === 'text_color_on_primary' ) {
-			root.style.setProperty(
-				'--srfm-color-scheme-text-on-primary',
-				value || '#FFFFFF'
-			);
-		}
-
-		if ( option === 'field_spacing' ) {
-			root.style.setProperty( '--srfm-field-spacing', value || 'medium' );
-		}
-
-		if ( option === 'submit_button_alignment' ) {
-			root.style.setProperty(
-				'--srfm-submit-alignment',
-				value || 'left'
-			);
-			root.style.setProperty(
-				'--srfm-submit-width-backend',
-				'max-content'
-			);
-			updateMeta( '_srfm_submit_width_backend', 'max-content' );
-
-			if ( value === 'left' ) {
-				root.style.setProperty(
-					'--srfm-submit-alignment-backend',
-					'100%'
-				);
-				updateMeta( '_srfm_submit_alignment_backend', '100%' );
-			}
-			if ( value === 'right' ) {
-				root.style.setProperty(
-					'--srfm-submit-alignment-backend',
-					'0%'
-				);
-				updateMeta( '_srfm_submit_alignment_backend', '0%' );
-			}
-			if ( value === 'center' ) {
-				root.style.setProperty(
-					'--srfm-submit-alignment-backend',
-					'50%'
-				);
-				updateMeta( '_srfm_submit_alignment_backend', '50%' );
-			}
-			if ( value === 'justify' ) {
-				root.style.setProperty(
-					'--srfm-submit-alignment-backend',
-					'50%'
-				);
-				root.style.setProperty( '--srfm-submit-width-backend', 'auto' );
-				updateMeta( '_srfm_submit_alignment_backend', '50%' );
-			}
-		}
+		addStyleInRoot( root, cssProperties );
 
 		editPost( {
 			meta: {
@@ -403,65 +238,83 @@ function StyleSettings( props ) {
 		} );
 	}
 
-	return (
-		<>
-			<SRFMAdvancedPanelBody
-				title={ __( 'Form Container', 'sureforms' ) }
-				initialOpen={ true }
-			>
-				<AdvancedPopColorControl
-					label={ __( 'Primary Color', 'sureforms' ) }
-					colorValue={ formStyling?.primary_color }
-					data={ {
-						value: formStyling?.primary_color,
-						label: 'primary_color',
-					} }
-					onColorChange={ ( colorValue ) => {
-						if ( colorValue !== formStyling?.primary_color ) {
-							updateFormStyling( 'primary_color', colorValue );
-						}
-					} }
-					value={ formStyling?.primary_color }
-					isFormSpecific={ true }
-				/>
-				<p className="components-base-control__help" />
-				<AdvancedPopColorControl
-					label={ __( 'Text Color', 'sureforms' ) }
-					colorValue={ formStyling?.text_color }
-					data={ {
-						value: formStyling?.text_color,
-						label: 'text_color',
-					} }
-					onColorChange={ ( colorValue ) => {
-						if ( colorValue !== formStyling?.text_color ) {
-							updateFormStyling( 'text_color', colorValue );
-						}
-					} }
-					value={ formStyling?.text_color }
-					isFormSpecific={ true }
-				/>
-				<p className="components-base-control__help" />
-				<AdvancedPopColorControl
-					label={ __( 'Text Color on Primary', 'sureforms' ) }
-					colorValue={ formStyling?.text_color_on_primary }
-					data={ {
-						value: formStyling?.text_color_on_primary,
-						label: 'text_color_on_primary',
-					} }
-					onColorChange={ ( colorValue ) => {
-						if (
-							colorValue !== formStyling?.text_color_on_primary
-						) {
-							updateFormStyling(
-								'text_color_on_primary',
-								colorValue
-							);
-						}
-					} }
-					value={ formStyling?.text_color_on_primary }
-					isFormSpecific={ true }
-				/>
-				<p className="components-base-control__help" />
+	const formOptions = [
+		{
+			id: 'primary_color',
+			component: (
+				<>
+					<AdvancedPopColorControl
+						label={ __( 'Primary Color', 'sureforms' ) }
+						colorValue={ formStyling?.primary_color }
+						data={ {
+							value: formStyling?.primary_color,
+							label: 'primary_color',
+						} }
+						onColorChange={ ( colorValue ) => {
+							if ( colorValue !== formStyling?.primary_color ) {
+								updateFormStyling( 'primary_color', colorValue );
+							}
+						} }
+						value={ formStyling?.primary_color }
+						isFormSpecific={ true }
+					/>
+					<p className="components-base-control__help" />
+				</>
+			),
+		},
+		{
+			id: 'text_color',
+			component: (
+				<>
+					<AdvancedPopColorControl
+						label={ __( 'Text Color', 'sureforms' ) }
+						colorValue={ formStyling?.text_color }
+						data={ {
+							value: formStyling?.text_color,
+							label: 'text_color',
+						} }
+						onColorChange={ ( colorValue ) => {
+							if ( colorValue !== formStyling?.text_color ) {
+								updateFormStyling( 'text_color', colorValue );
+							}
+						} }
+						value={ formStyling?.text_color }
+						isFormSpecific={ true }
+					/>
+					<p className="components-base-control__help" />
+				</> ),
+		},
+		{
+			id: 'text_color_on_primary',
+			component: (
+				<>
+					<AdvancedPopColorControl
+						label={ __( 'Text Color on Primary', 'sureforms' ) }
+						colorValue={ formStyling?.text_color_on_primary }
+						data={ {
+							value: formStyling?.text_color_on_primary,
+							label: 'text_color_on_primary',
+						} }
+						onColorChange={ ( colorValue ) => {
+							if (
+								colorValue !== formStyling?.text_color_on_primary
+							) {
+								updateFormStyling(
+									'text_color_on_primary',
+									colorValue
+								);
+							}
+						} }
+						value={ formStyling?.text_color_on_primary }
+						isFormSpecific={ true }
+					/>
+					<p className="components-base-control__help" />
+				</>
+			),
+		},
+		{
+			id: 'field_spacing',
+			component: (
 				<MultiButtonsControl
 					label={ __( 'Field Spacing', 'sureforms' ) }
 					data={ {
@@ -488,7 +341,12 @@ function StyleSettings( props ) {
 						setFieldSpacing( value );
 					} }
 				/>
-				{ ! isInlineButtonBlockPresent && (
+			),
+		},
+		{
+			id: 'submit_button_alignment',
+			component: (
+				! isInlineButtonBlockPresent && (
 					<>
 						<p className="components-base-control__help" />
 						<MultiButtonsControl
@@ -554,6 +412,21 @@ function StyleSettings( props ) {
 							} }
 						/>
 					</>
+				)
+			),
+		},
+	];
+
+	const filterOptions = submitButtonContainerOptions( formOptions, { props, sureformsKeys, editPost } );
+
+	return (
+		<>
+			<SRFMAdvancedPanelBody
+				title={ __( 'Form Container', 'sureforms' ) }
+				initialOpen={ true }
+			>
+				{ filterOptions.map(
+					( option ) => option.component
 				) }
 			</SRFMAdvancedPanelBody>
 		</>

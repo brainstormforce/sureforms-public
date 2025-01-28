@@ -2,6 +2,7 @@ import { applyFilters } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
 import ZapierIcon from '@Image/zapier.jpeg';
 import UpgradeToProButton from '@Admin/components/UpgradeToProButton';
+import PremiumBadge from '@Admin/components/PremiumBadge';
 
 const Zapier = () => {
 	const zapierDetails = applyFilters(
@@ -32,9 +33,18 @@ const Zapier = () => {
 			</div>
 			<div className="srfm-integration-cta">
 				{ false === zapierDetails ? <UpgradeToProButton className="srfm-button-secondary srfm-button-xs" location="settings_integrations_zapier" /> : zapierDetails }
-				<div className="srfm-pro-badge">
-					{ __( 'Pro', 'sureforms' ) }
-				</div>
+				{ false === zapierDetails && (
+					<PremiumBadge
+						badgeName={ 'Pro' }
+						tooltipHeading={ __( 'Unlock Zapier Integration', 'sureforms' ) }
+						tooltipContent={ __(
+							'With the SureForms Pro Plan, you can enable Zapier integration to seamlessly connect with thousands of apps for powerful workflow automation.',
+							'sureforms'
+						) }
+						tooltipPosition={ 'bottom' }
+						utmMedium={ 'global_integration_settings_zapier' }
+					/>
+				) }
 			</div>
 		</> );
 };
