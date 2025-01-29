@@ -179,8 +179,10 @@
 /*
  * To show reCAPTCHA v3 & v2 badge in bricks theme 
  */
-.srfm-form-container {
-	.grecaptcha-badge {
-		visibility: revert !important;
+.brx-body {
+	.srfm-form-container {
+		.grecaptcha-badge {
+			visibility: revert !important;
+		}
 	}
 }
