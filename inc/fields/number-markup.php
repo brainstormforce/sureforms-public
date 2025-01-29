@@ -131,10 +131,8 @@ class Number_Markup extends Base {
 			]
 		);
 
-		$config_data = wp_json_encode( $data_config );
-
 		ob_start(); ?>
-			<div data-block-id="<?php echo esc_attr( $this->block_id ); ?>" class="<?php echo esc_attr( $container_classes ); ?>" data-field-config="<?php echo esc_attr( $config_data ); ?>">
+			<div data-block-id="<?php echo esc_attr( $this->block_id ); ?>" class="<?php echo esc_attr( $container_classes ); ?>" <?php echo $data_config ? "data-field-config='" . wp_json_encode( $data_config ) . "'" : ''; ?>>
 				<?php echo wp_kses_post( $this->label_markup ); ?>
 				<?php echo wp_kses_post( $this->help_markup ); ?>
 				<div class="srfm-block-wrap <?php echo esc_attr( trim( ( $this->prefix ? 'srfm-has-prefix ' : '' ) . ( $this->suffix ? 'srfm-has-suffix' : '' ) ) ); ?>">

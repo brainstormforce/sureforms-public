@@ -79,6 +79,7 @@ class Input_Markup extends Base {
 				'srfm-block',
 				"srfm-{$this->slug}-block",
 				"srf-{$this->slug}-{$this->block_id}-block",
+				"srfm-slug-{$this->block_slug}",
 				$this->block_width,
 				$this->class_name,
 				$this->conditional_class,
