@@ -9,6 +9,7 @@
 namespace SRFM;
 
 use SRFM\Admin\Admin;
+use SRFM\Admin\Analytics;
 use SRFM\API\Block_Patterns;
 use SRFM\Inc\Activator;
 use SRFM\Inc\Admin_Ajax;
@@ -96,6 +97,7 @@ class Plugin_Loader {
 				Events_Scheduler::unschedule_events( 'srfm_daily_scheduled_action' );
 			}
 		);
+		Analytics::get_instance();
 	}
 
 	/**
