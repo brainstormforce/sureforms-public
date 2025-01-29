@@ -1,7 +1,7 @@
 {
 	"name": "srfm/url",
 	"title": "URL",
-	"description": "Displays a SureForm URL Field",
+	"description": "Displays a SureForms URL Field",
 	"category": "sureforms",
 	"keywords": [ "url", "link", "website" ],
 	"textdomain": "sureforms",

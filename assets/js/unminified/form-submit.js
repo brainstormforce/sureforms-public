@@ -3,6 +3,7 @@ import {
 	fieldValidation,
 	initializeInlineFieldValidation,
 	handleScrollAndFocusOnError,
+	handleCaptchaValidation,
 } from './validation';
 document.addEventListener( 'DOMContentLoaded', function () {
 	initializeInlineFieldValidation();
@@ -26,58 +27,31 @@ document.addEventListener( 'DOMContentLoaded', function () {
 			turnstileDiv,
 		} = extractFormAttributesAndElements( form );
 
-		if (
+		const hasCaptcha =
 			'v2-checkbox' === recaptchaType ||
 			!! hCaptchaDiv ||
-			!! turnstileDiv
-		) {
-			form.addEventListener( 'submit', ( e ) => {
-				e.preventDefault();
-				let captchaResponse;
-				if ( 'v2-checkbox' === recaptchaType ) {
-					captchaResponse = grecaptcha.getResponse();
-				} else if ( !! hCaptchaDiv ) {
-					captchaResponse = hcaptcha.getResponse();
-				} else if ( !! turnstileDiv ) {
-					captchaResponse = turnstile.getResponse();
-				}
-				if ( 0 === captchaResponse.length ) {
-					captchaErrorElement.style.display = 'block';
-					return;
-				}
-				captchaErrorElement.style.display = 'none';
-				handleFormSubmission(
-					form,
-					formId,
-					ajaxUrl,
-					nonce,
-					loader,
-					successUrl,
-					successContainer,
-					successElement,
-					errorElement,
-					submitType,
-					afterSubmission
-				);
-			} );
-		} else {
-			form.addEventListener( 'submit', async function ( e ) {
-				e.preventDefault();
-				handleFormSubmission(
-					form,
-					formId,
-					ajaxUrl,
-					nonce,
-					loader,
-					successUrl,
-					successContainer,
-					successElement,
-					errorElement,
-					submitType,
-					afterSubmission
-				);
-			} );
-		}
+			!! turnstileDiv;
+
+		form.addEventListener( 'submit', async ( e ) => {
+			e.preventDefault();
+			handleFormSubmission(
+				form,
+				formId,
+				ajaxUrl,
+				nonce,
+				loader,
+				successUrl,
+				successContainer,
+				successElement,
+				errorElement,
+				submitType,
+				afterSubmission,
+				hasCaptcha ? recaptchaType : undefined,
+				hasCaptcha ? hCaptchaDiv : undefined,
+				hasCaptcha ? turnstileDiv : undefined,
+				hasCaptcha ? captchaErrorElement : undefined
+			);
+		} );
 	}
 } );
 
@@ -198,7 +172,11 @@ async function handleFormSubmission(
 	successElement,
 	errorElement,
 	submitType,
-	afterSubmission
+	afterSubmission,
+	recaptchaType,
+	hCaptchaDiv,
+	turnstileDiv,
+	captchaErrorElement
 ) {
 	try {
 		loader.classList.add( 'srfm-active' );
@@ -210,14 +188,30 @@ async function handleFormSubmission(
 			form
 		);
 
+		// Handle captcha validation, returns true if captcha is valid or not present.
+		const isCaptchaValid = handleCaptchaValidation(
+			recaptchaType,
+			hCaptchaDiv,
+			turnstileDiv,
+			captchaErrorElement
+		);
+
 		/**
-		 * if validation fails, show error message and scroll to the first
+		 * if captcha or field validation fails, show error message and scroll to the first input or captcha container.
 		 */
-		if ( isValidate?.validateResult ) {
+		if ( isValidate?.validateResult || ! isCaptchaValid ) {
 			loader.classList.remove( 'srfm-active' );
 
-			// Handle scroll and focus on error field when validation fails.
-			handleScrollAndFocusOnError( isValidate );
+			if ( isValidate?.validateResult ) {
+				// Handle scroll and focus on error field when validation fails.
+				handleScrollAndFocusOnError( isValidate );
+			} else if ( ! isCaptchaValid ) {
+				// Handle scroll and focus on error field when captcha validation fails.
+				handleScrollAndFocusOnError( {
+					firstErrorInput: captchaErrorElement,
+					scrollElement: captchaErrorElement,
+				} );
+			}
 			return;
 		}
 

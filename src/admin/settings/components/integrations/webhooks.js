@@ -2,6 +2,7 @@ import { applyFilters } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
 import WebhookIcon from '@Image/webhook.js';
 import UpgradeToProButton from '@Admin/components/UpgradeToProButton';
+import PremiumBadge from '@Admin/components/PremiumBadge';
 
 const Webhooks = () => {
 	const showSwitch = false;
@@ -27,8 +28,18 @@ const Webhooks = () => {
 			</div>
 			<div className="srfm-integration-cta">
 				{ false === switchWebhook ? <UpgradeToProButton className="srfm-button-secondary srfm-button-xs" location="settings_integrations_webhooks" /> : switchWebhook }
-				<div className="srfm-pro-badge">
-					{ __( 'Starter', 'sureforms' ) }</div>
+				{ false === switchWebhook && (
+					<PremiumBadge
+						badgeName={ 'Starter' }
+						tooltipHeading={ __( 'Unlock Webhooks', 'sureforms' ) }
+						tooltipContent={ __(
+							'With the SureForms Starter Plan, you can enable webhooks to seamlessly connect with your favorite apps for real-time data transfer and automation.',
+							'sureforms'
+						) }
+						tooltipPosition={ 'bottom' }
+						utmMedium={ 'global_integration_settings_webhooks' }
+					/>
+				) }
 			</div>
 		</> );
 };
