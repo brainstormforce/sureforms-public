@@ -120,8 +120,8 @@ class Multichoice_Markup extends Base {
 
 		$container_classes = Helper::join_strings(
 			[
-				'srfm-block-single',
-				'srfm-block',
+				"srfm-block-single",
+				"srfm-block",
 				"srfm-{$this->type_attr}-mode",
 				"srfm-{$this->slug}-block",
 				"srf-{$this->slug}-{$this->block_id}-block",
