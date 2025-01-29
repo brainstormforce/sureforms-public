@@ -300,6 +300,7 @@ const AiFormBuilder = () => {
 			<div className="srfm-ts-main-container srfm-content-section">
 				<div className="srfm-ai-builder-container">
 					<div className="srfm-ai-builder-inner-container">
+					<FormTypeSelector />
 						<h1 className="srfm-ai-builder-header-title">
 							{ __(
 								'Please describe the form you want to create',
@@ -558,6 +559,88 @@ export const getLimitReachedPopup = () => {
 	}
 
 	return <AiFormBuilder />;
+};
+
+const FormTypeSelector = () => {
+	const [selected, setSelected] = useState("simple");
+
+	const handleSelection = (type) => {
+		setSelected(type);
+	};
+
+	const containerStyle = {
+		fontFamily: "Inter, sans-serif",
+		width: "100%",
+	};
+
+	const labelStyle = {
+		fontSize: "20px",
+		fontWeight: "600",
+		color: "#121826",
+		marginBottom: "8px",
+	};
+
+	const selectorStyle = {
+		display: "flex",
+		alignItems: "center",
+		backgroundColor: "#F3F4F6",
+		borderRadius: "12px",
+		padding: "4px",
+		position: "relative",
+		width: "100%",
+		height: "48px",
+		overflow: "hidden", // Prevents the highlight from overflowing
+	};
+
+	const optionStyle = (isActive) => ({
+		flex: 1,
+		textAlign: "center",
+		fontWeight: isActive ? "600" : "400",
+		cursor: "pointer",
+		padding: "12px",
+		position: "relative",
+		zIndex: 2,
+		transition: "color 0.3s ease-in-out",
+		cursor: "pointer",
+	});
+
+	const highlightStyle = {
+		position: "absolute",
+		width: "calc(50% - 4px)", // Ensures it stays within bounds
+		height: "40px",
+		borderRadius: "8px",
+		backgroundColor: "#ffffff",
+		boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+		top: "4px",
+		left: selected === "simple" ? "4px" : "calc(50% + 0px)", // Adjusted position
+		transition: "left 0.3s ease-in-out",
+	};
+
+	return (
+		<div style={containerStyle}>
+			<p style={labelStyle}>Please select form type</p>
+			<div style={selectorStyle}>
+				{/* Animated Background */}
+				<div style={highlightStyle} />
+
+				{/* Simple Option */}
+				<div
+					style={optionStyle(selected === "simple")}
+					onClick={() => handleSelection("simple")}
+				>
+					Simple
+				</div>
+
+				{/* Calculations Option */}
+				<div
+					style={optionStyle(selected === "calculations")}
+					onClick={() => handleSelection("calculations")}
+				>
+					Calculations
+				</div>
+			</div>
+		</div>
+	);
 };
 
 export default AiFormBuilder;
