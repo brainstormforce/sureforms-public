@@ -28,8 +28,7 @@ class Analytics {
 	 */
 	public function __construct() {
 
-		// These two lines are only for testing purpose not to be merged.
-		define( 'BSF_ANALYTICS_API_BASE_URL', 'http://127.0.0.1:8000/' );
+		// This two lines are only for testing purpose not to be merged.
 		add_filter( 'sureforms_tracking_enabled', '__return_true' );
 		/*
 		* BSF Analytics.
@@ -56,12 +55,12 @@ class Analytics {
 
 	public function add_srfm_analytics_data( $stats_data ) {
 		$stats_data['plugin_data']['sureforms'] = [
-			'free_version' => SRFM_VER,
-			'total_forms' => wp_count_posts( SRFM_FORMS_POST_TYPE )->publish ?? 0,
-			'instant_forms_enabled' => $this->instant_forms_enabled(),
+			'free_version'           => SRFM_VER,
+			'total_forms'            => wp_count_posts( SRFM_FORMS_POST_TYPE )->publish ?? 0,
+			'instant_forms_enabled'  => $this->instant_forms_enabled(),
 			'forms_using_custom_css' => $this->forms_using_custom_css(),
-			'ai_generated_forms' => $this->ai_generated_forms(),
-			'site_language' => get_locale(),
+			'ai_generated_forms'     => $this->ai_generated_forms(),
+			'site_language'          => get_locale(),
 
 		];
 
@@ -70,10 +69,10 @@ class Analytics {
 		return $stats_data;
 	}
 
-	public function instant_forms_enabled(){
+	public function instant_forms_enabled() {
 		$args = [
 			'post_type'      => SRFM_FORMS_POST_TYPE,
-			'post_status'      => 'publish',
+			'post_status'    => 'publish',
 			'posts_per_page' => -1,
 			'meta_query'     => [
 				[
@@ -87,10 +86,10 @@ class Analytics {
 		return $this->custom_wp_query_total_posts( $args );
 	}
 
-	public function ai_generated_forms(){
+	public function ai_generated_forms() {
 		$args = [
 			'post_type'      => SRFM_FORMS_POST_TYPE,
-			'post_status'      => 'publish',
+			'post_status'    => 'publish',
 			'posts_per_page' => -1,
 			'meta_query'     => [
 				[
@@ -104,10 +103,10 @@ class Analytics {
 		return $this->custom_wp_query_total_posts( $args );
 	}
 
-	public function forms_using_custom_css(){
+	public function forms_using_custom_css() {
 		$args = [
 			'post_type'      => SRFM_FORMS_POST_TYPE,
-			'post_status'      => 'publish',
+			'post_status'    => 'publish',
 			'posts_per_page' => -1,
 			'meta_query'     => [
 				[
@@ -122,7 +121,7 @@ class Analytics {
 	}
 
 	private function custom_wp_query_total_posts( $args ) {
-		$query = new \WP_Query($args);
+		$query       = new \WP_Query( $args );
 		$posts_count = $query->found_posts;
 
 		wp_reset_postdata();
@@ -130,28 +129,28 @@ class Analytics {
 		return $posts_count;
 	}
 
-	public function global_settings_data(){
+	public function global_settings_data() {
 		$global_data = [];
 
-		$security_settings = get_option( 'srfm_security_settings_options', [] );
+		$security_settings               = get_option( 'srfm_security_settings_options', [] );
 		$global_data['honeypot_enabled'] = true === $security_settings['srfm_honeypot'];
 
-		$email_summary_data = get_option( 'srfm_email_summary_settings_options', [] );
+		$email_summary_data                   = get_option( 'srfm_email_summary_settings_options', [] );
 		$global_data['email_summary_enabled'] = true === $email_summary_data['srfm_email_summary'];
 
-		$global_data['suretriggers_active'] = is_plugin_active( 'suretriggers/suretriggers.php');
+		$global_data['suretriggers_active'] = is_plugin_active( 'suretriggers/suretriggers.php' );
 
 		$bsf_internal_referrer = get_option( 'bsf_product_referers', [] );
-		if( ! empty( $bsf_internal_referrer['sureforms'] ) ) {
+		if ( ! empty( $bsf_internal_referrer['sureforms'] ) ) {
 			$global_data['internal_referer'] = $bsf_internal_referrer['sureforms'];
 		} else {
 			$global_data['internal_referer'] = '';
 		}
 
-		$general_settings = get_option( 'srfm_general_settings_options', [] );
+		$general_settings                  = get_option( 'srfm_general_settings_options', [] );
 		$global_data['ip_logging_enabled'] = ! empty( $general_settings['srfm_ip_log']['sureforms'] );
 
-		$validation_messages = get_option( 'srfm_default_dynamic_block_option', [] );
+		$validation_messages                      = get_option( 'srfm_default_dynamic_block_option', [] );
 		$global_data['custom_validation_message'] = ! empty( $validation_messages ) && is_array( $validation_messages );
 
 		return $global_data;
