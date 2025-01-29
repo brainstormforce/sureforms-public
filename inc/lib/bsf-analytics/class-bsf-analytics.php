@@ -497,7 +497,7 @@ if ( ! class_exists( 'BSF_Analytics' ) ) {
 			if ( ! $this->is_tracking_enabled() ) {
 				return;
 			}
-			$this->send();
+
 			$analytics_track = get_site_transient( 'bsf_analytics_track' );
 
 			// If the last data sent is 2 days old i.e. transient is expired.
