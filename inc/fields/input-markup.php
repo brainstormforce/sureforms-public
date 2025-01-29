@@ -75,8 +75,8 @@ class Input_Markup extends Base {
 		$data_config       = $this->field_config;
 		$container_classes = Helper::join_strings(
 			[
-				"srfm-block-single",
-				"srfm-block",
+				'srfm-block-single',
+				'srfm-block',
 				"srfm-{$this->slug}-block",
 				"srf-{$this->slug}-{$this->block_id}-block",
 				"srfm-slug-{$this->block_slug}",

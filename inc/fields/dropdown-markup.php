@@ -67,8 +67,8 @@ class Dropdown_Markup extends Base {
 	public function markup() {
 		$container_classes = Helper::join_strings(
 			[
-				"srfm-block-single",
-				"srfm-block",
+				'srfm-block-single',
+				'srfm-block',
 				"srfm-{$this->slug}-block",
 				"srf-{$this->slug}-{$this->block_id}-block",
 				$this->block_width,
