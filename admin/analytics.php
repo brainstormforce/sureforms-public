@@ -27,7 +27,6 @@ class Analytics {
 	 * @since x.x.x
 	 */
 	public function __construct() {
-
 		/*
 		* BSF Analytics.
 		*/
@@ -44,18 +43,21 @@ class Analytics {
 					'path'                => SRFM_DIR . 'inc/lib/bsf-analytics',
 					'author'              => 'SureForms',
 					'time_to_display'     => '+24 hours',
-					'deactivation_survey' => apply_filters( 'srfm_deactivation_survey_data',[
+					'deactivation_survey' => apply_filters(
+						'srfm_deactivation_survey_data',
 						[
-							'id'                => 'deactivation-survey-sureforms',
-							'popup_logo'        => SRFM_URL . 'admin/assets/sureforms-logo.png',
-							'plugin_slug'       => 'sureforms',
-							'popup_title'       => __( 'Quick Feedback', 'sureforms' ),
-							'support_url'       => 'https://sureforms.com/contact/',
-							'popup_description' => __( 'If you have a moment, please share why you are deactivating SureForms:', 'sureforms' ),
-							'show_on_screens'   => [ 'plugins' ],
-							'plugin_version'    => SRFM_VER,
+							[
+								'id'                => 'deactivation-survey-sureforms',
+								'popup_logo'        => SRFM_URL . 'admin/assets/sureforms-logo.png',
+								'plugin_slug'       => 'sureforms',
+								'popup_title'       => __( 'Quick Feedback', 'sureforms' ),
+								'support_url'       => 'https://sureforms.com/contact/',
+								'popup_description' => __( 'If you have a moment, please share why you are deactivating SureForms:', 'sureforms' ),
+								'show_on_screens'   => [ 'plugins' ],
+								'plugin_version'    => SRFM_VER,
+							],
 						]
-					])
+					),
 				],
 			]
 		);
@@ -63,6 +65,13 @@ class Analytics {
 		add_filter( 'bsf_core_stats', [ $this, 'add_srfm_analytics_data' ] );
 	}
 
+	/**
+	 * Callback function to add SureForms specific analytics data.
+	 *
+	 * @param array $stats_data existing stats_data.
+	 * @since x.x.x
+	 * @return int
+	 */
 	public function add_srfm_analytics_data( $stats_data ) {
 		$stats_data['plugin_data']['sureforms']                   = [
 			'free_version'  => SRFM_VER,
@@ -80,66 +89,66 @@ class Analytics {
 		return $stats_data;
 	}
 
+	/**
+	 * Return total number of forms using instant forms.
+	 *
+	 * @since x.x.x
+	 * @return int
+	 */
 	public function instant_forms_enabled() {
-		$args = [
-			'post_type'      => SRFM_FORMS_POST_TYPE,
-			'post_status'    => 'publish',
-			'posts_per_page' => -1,
-			'meta_query'     => [
-				[
-					'key'     => '_srfm_instant_form_settings',
-					'value'   => '"enable_instant_form";b:1;',
-					'compare' => 'LIKE',
-				],
+		$meta_query = [
+			[
+				'key'     => '_srfm_instant_form_settings',
+				'value'   => '"enable_instant_form";b:1;',
+				'compare' => 'LIKE',
 			],
 		];
 
-		return $this->custom_wp_query_total_posts( $args );
+		return $this->custom_wp_query_total_posts( $meta_query );
 	}
 
+	/**
+	 * Return total number of ai generated forms.
+	 *
+	 * @since x.x.x
+	 * @return int
+	 */
 	public function ai_generated_forms() {
-		$args = [
-			'post_type'      => SRFM_FORMS_POST_TYPE,
-			'post_status'    => 'publish',
-			'posts_per_page' => -1,
-			'meta_query'     => [
-				[
-					'key'     => '_srfm_is_ai_generated',
-					'value'   => '',
-					'compare' => '!=', // Checks if the value is NOT empty
-				],
+		$meta_query = [
+			[
+				'key'     => '_srfm_is_ai_generated',
+				'value'   => '',
+				'compare' => '!=', // Checks if the value is NOT empty.
 			],
 		];
 
-		return $this->custom_wp_query_total_posts( $args );
+		return $this->custom_wp_query_total_posts( $meta_query );
 	}
 
+	/**
+	 * Returns total number of forms using custom css.
+	 *
+	 * @since x.x.x
+	 * @return int
+	 */
 	public function forms_using_custom_css() {
-		$args = [
-			'post_type'      => SRFM_FORMS_POST_TYPE,
-			'post_status'    => 'publish',
-			'posts_per_page' => -1,
-			'meta_query'     => [
-				[
-					'key'     => '_srfm_form_custom_css',
-					'value'   => '',
-					'compare' => '!=', // Checks if the value is NOT empty
-				],
+		$meta_query = [
+			[
+				'key'     => '_srfm_form_custom_css',
+				'value'   => '',
+				'compare' => '!=', // Checks if the value is NOT empty.
 			],
 		];
 
-		return $this->custom_wp_query_total_posts( $args );
+		return $this->custom_wp_query_total_posts( $meta_query );
 	}
 
-	private function custom_wp_query_total_posts( $args ) {
-		$query       = new \WP_Query( $args );
-		$posts_count = $query->found_posts;
-
-		wp_reset_postdata();
-
-		return $posts_count;
-	}
-
+	/**
+	 * Generates global setting data for analytics
+	 *
+	 * @since x.x.x
+	 * @return array
+	 */
 	public function global_settings_data() {
 		$global_data = [];
 
@@ -165,5 +174,29 @@ class Analytics {
 		$global_data['boolean_values']['custom_validation_message'] = ! empty( $validation_messages ) && is_array( $validation_messages );
 
 		return $global_data;
+	}
+
+	/**
+	 * Runs custom WP_Query to fetch data as per requirement
+	 *
+	 * @param array $meta_query meta query array for WP_Query.
+	 * @since x.x.x
+	 * @return int
+	 */
+	private function custom_wp_query_total_posts( $meta_query ) {
+
+		$args = [
+			'post_type'      => SRFM_FORMS_POST_TYPE,
+			'post_status'    => 'publish',
+			'posts_per_page' => -1,
+			'meta_query'     => $meta_query, //phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Meta query required as we need to fetch count of nested data.
+		];
+
+		$query       = new \WP_Query( $args );
+		$posts_count = $query->found_posts;
+
+		wp_reset_postdata();
+
+		return $posts_count;
 	}
 }

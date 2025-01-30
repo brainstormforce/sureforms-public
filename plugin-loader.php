@@ -97,7 +97,6 @@ class Plugin_Loader {
 				Events_Scheduler::unschedule_events( 'srfm_daily_scheduled_action' );
 			}
 		);
-		Analytics::get_instance();
 	}
 
 	/**
@@ -266,6 +265,7 @@ class Plugin_Loader {
 	 * @return void
 	 */
 	public function load_plugin() {
+		Analytics::get_instance();
 		Post_Types::get_instance();
 		Form_Submit::get_instance();
 		Block_Patterns::get_instance();
