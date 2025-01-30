@@ -40,30 +40,22 @@ class Analytics {
 		$srfm_bsf_analytics->set_entity(
 			[
 				'sureforms' => [
-					'product_name'    => 'SureForms',
-					'path'            => SRFM_DIR . 'inc/lib/bsf-analytics',
-					'author'          => 'SureForms',
-					'time_to_display' => '+24 hours',
-					'deactivation_survey'	=> [
+					'product_name'        => 'SureForms',
+					'path'                => SRFM_DIR . 'inc/lib/bsf-analytics',
+					'author'              => 'SureForms',
+					'time_to_display'     => '+24 hours',
+					'deactivation_survey' => apply_filters( 'srfm_deactivation_survey_data',[
 						[
-							'id'			=>'deactivation-survay-sureforms',
-							'popup_logo'		=> SRFM_DIR . 'admin/assets/sureforms-logo.svg',
-							'plugin_slug'		=> 'sureforms',
-							'popup_title'		=> __( 'Quick Feedback', 'sureforms' ),
-							'support_url'		=> 'https://sureforms.com/contact/',
-							'popup_description'	=> __( 'If you have a moment, please share why you are deactivating SureForms:', 'sureforms' ),
-							'show_on_screens'	=> [ 'plugins' ],
-						],
-						[
-							'id'			=>'deactivation-survay-sureforms-pro',
-							'popup_logo'		=> SRFM_DIR . 'admin/assets/sureforms-logo.svg',
-							'plugin_slug'		=> 'sureforms-pro',
-							'popup_title'		=> __( 'Quick Feedback', 'sureforms' ),
-							'support_url'		=> 'https://sureforms.com/contact/',
-							'popup_description'	=> __( 'If you have a moment, please share why you are deactivating SureForms Pro:', 'sureforms' ),
-							'show_on_screens'	=> [ 'plugins' ],
+							'id'                => 'deactivation-survey-sureforms',
+							'popup_logo'        => SRFM_URL . 'admin/assets/sureforms-logo.png',
+							'plugin_slug'       => 'sureforms',
+							'popup_title'       => __( 'Quick Feedback', 'sureforms' ),
+							'support_url'       => 'https://sureforms.com/contact/',
+							'popup_description' => __( 'If you have a moment, please share why you are deactivating SureForms:', 'sureforms' ),
+							'show_on_screens'   => [ 'plugins' ],
+							'plugin_version'    => SRFM_VER,
 						]
-					]
+					])
 				],
 			]
 		);
@@ -72,9 +64,9 @@ class Analytics {
 	}
 
 	public function add_srfm_analytics_data( $stats_data ) {
-		$stats_data['plugin_data']['sureforms'] = [
-			'free_version'           => SRFM_VER,
-			'site_language'          => get_locale(),
+		$stats_data['plugin_data']['sureforms']                   = [
+			'free_version'  => SRFM_VER,
+			'site_language' => get_locale(),
 		];
 		$stats_data['plugin_data']['sureforms']['numeric_values'] = [
 			'total_forms'            => wp_count_posts( SRFM_FORMS_POST_TYPE )->publish ?? 0,
@@ -151,10 +143,10 @@ class Analytics {
 	public function global_settings_data() {
 		$global_data = [];
 
-		$security_settings               = get_option( 'srfm_security_settings_options', [] );
+		$security_settings                                 = get_option( 'srfm_security_settings_options', [] );
 		$global_data['boolean_values']['honeypot_enabled'] = true === $security_settings['srfm_honeypot'];
 
-		$email_summary_data                   = get_option( 'srfm_email_summary_settings_options', [] );
+		$email_summary_data                                     = get_option( 'srfm_email_summary_settings_options', [] );
 		$global_data['boolean_values']['email_summary_enabled'] = true === $email_summary_data['srfm_email_summary'];
 
 		$global_data['boolean_values']['suretriggers_active'] = is_plugin_active( 'suretriggers/suretriggers.php' );
@@ -166,10 +158,10 @@ class Analytics {
 			$global_data['internal_referer'] = '';
 		}
 
-		$general_settings                  = get_option( 'srfm_general_settings_options', [] );
+		$general_settings                                    = get_option( 'srfm_general_settings_options', [] );
 		$global_data['boolean_values']['ip_logging_enabled'] = ! empty( $general_settings['srfm_ip_log']['sureforms'] );
 
-		$validation_messages                      = get_option( 'srfm_default_dynamic_block_option', [] );
+		$validation_messages                                        = get_option( 'srfm_default_dynamic_block_option', [] );
 		$global_data['boolean_values']['custom_validation_message'] = ! empty( $validation_messages ) && is_array( $validation_messages );
 
 		return $global_data;

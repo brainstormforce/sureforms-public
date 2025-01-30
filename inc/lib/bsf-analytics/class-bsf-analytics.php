@@ -541,7 +541,7 @@ if ( ! class_exists( 'BSF_Analytics' ) ) {
 			if ( class_exists( 'Deactivation_Survey_Feedback' ) ) {
 				foreach ( $this->entities as $key => $data ) {
 					// If the deactibation_survery info in available then only add the form.
-					if ( is_array( $data['deactivation_survey'] ) && ! empty( $data['deactivation_survey'] ) ) {
+					if ( ! empty( $data['deactivation_survey'] ) && is_array( $data['deactivation_survey'] ) ) {
 						foreach ( $data['deactivation_survey'] as $key => $survey_args ) {
 							Deactivation_Survey_Feedback::show_feedback_form(
 								$survey_args
@@ -561,7 +561,7 @@ if ( ! class_exists( 'BSF_Analytics' ) ) {
 		 */
 		public function add_slugs_to_uds_vars( $vars ) {
 			foreach ( $this->entities as $key => $data ) {
-				if ( is_array( $data['deactivation_survey'] ) && ! empty( $data['deactivation_survey'] ) ) {
+				if ( ! empty( $data['deactivation_survey'] ) && is_array( $data['deactivation_survey'] ) ) {
 					foreach ( $data['deactivation_survey'] as $key => $survey_args ) {
 						$vars['_plugin_slug'] = isset( $vars['_plugin_slug'] ) ? array_merge( $vars['_plugin_slug'], array( $survey_args['plugin_slug'] ) ) : array( $survey_args['plugin_slug'] );
 					}

@@ -8,16 +8,16 @@
 	"packages": [
 		{
 			"name": "brainstormforce/bsf-analytics",
-			"version": "1.1.7",
+			"version": "1.1.8",
 			"source": {
 				"type": "git",
 				"url": "git@github.com:brainstormforce/bsf-analytics.git",
-				"reference": "6f5328aa7db5f2aa8ff22120058e45946135757a"
+				"reference": "9a2689edb28ab4faead68a70a232a0a8f9d5e152"
 			},
 			"dist": {
 				"type": "zip",
-				"url": "https://api.github.com/repos/brainstormforce/bsf-analytics/zipball/6f5328aa7db5f2aa8ff22120058e45946135757a",
-				"reference": "6f5328aa7db5f2aa8ff22120058e45946135757a",
+				"url": "https://api.github.com/repos/brainstormforce/bsf-analytics/zipball/9a2689edb28ab4faead68a70a232a0a8f9d5e152",
+				"reference": "9a2689edb28ab4faead68a70a232a0a8f9d5e152",
 				"shasum": ""
 			},
 			"require-dev": {
@@ -51,10 +51,10 @@
 			},
 			"description": "Library to gather non sensitive analytics data to enhance bsf products.",
 			"support": {
-				"source": "https://github.com/brainstormforce/bsf-analytics/tree/1.1.7",
+				"source": "https://github.com/brainstormforce/bsf-analytics/tree/1.1.8",
 				"issues": "https://github.com/brainstormforce/bsf-analytics/issues"
 			},
-			"time": "2025-01-30T12:20:49+00:00"
+			"time": "2025-01-30T13:50:30+00:00"
 		},
 		{
 			"name": "brainstormforce/nps-survey",
