@@ -56,7 +56,7 @@
 		"composer/installers": "^2.3",
 		"brainstormforce/nps-survey": "^1.0",
     "brainstormforce/utm-analytics": "^0",
-    "brainstormforce/bsf-analytics": "^1"
+    "brainstormforce/bsf-analytics": "^1.0"
 	},
 	"repositories": [
 		{

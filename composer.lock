@@ -4,20 +4,20 @@
 		"Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
 		"This file is @generated automatically"
 	],
-	"content-hash": "13c892dcd1965c8d6c2e672c6bd9ae86",
+	"content-hash": "e51cc37b8d1738192b6f5f21d81d1a9f",
 	"packages": [
 		{
 			"name": "brainstormforce/bsf-analytics",
-			"version": "1.1.6",
+			"version": "1.1.7",
 			"source": {
 				"type": "git",
 				"url": "git@github.com:brainstormforce/bsf-analytics.git",
-				"reference": "0174228add07e9941cdd92507b26ef31a493832d"
+				"reference": "6f5328aa7db5f2aa8ff22120058e45946135757a"
 			},
 			"dist": {
 				"type": "zip",
-				"url": "https://api.github.com/repos/brainstormforce/bsf-analytics/zipball/0174228add07e9941cdd92507b26ef31a493832d",
-				"reference": "0174228add07e9941cdd92507b26ef31a493832d",
+				"url": "https://api.github.com/repos/brainstormforce/bsf-analytics/zipball/6f5328aa7db5f2aa8ff22120058e45946135757a",
+				"reference": "6f5328aa7db5f2aa8ff22120058e45946135757a",
 				"shasum": ""
 			},
 			"require-dev": {
@@ -51,10 +51,10 @@
 			},
 			"description": "Library to gather non sensitive analytics data to enhance bsf products.",
 			"support": {
-				"source": "https://github.com/brainstormforce/bsf-analytics/tree/1.1.6",
+				"source": "https://github.com/brainstormforce/bsf-analytics/tree/1.1.7",
 				"issues": "https://github.com/brainstormforce/bsf-analytics/issues"
 			},
-			"time": "2025-01-28T13:16:02+00:00"
+			"time": "2025-01-30T12:20:49+00:00"
 		},
 		{
 			"name": "brainstormforce/nps-survey",

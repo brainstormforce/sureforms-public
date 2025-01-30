@@ -76,6 +76,7 @@ if ( ! class_exists( 'Deactivation_Survey_Feedback' ) ) {
 				'source'            => 'User Deactivation Survey',
 				'popup_logo'        => '',
 				'plugin_slug'       => 'user-deactivation-survey',
+				'plugin_version'    => '',
 				'popup_title'       => __( 'Quick Feedback' ),
 				'support_url'       => 'https://brainstormforce.com/contact/',
 				'popup_reasons'     => self::get_default_reasons(),
@@ -153,8 +154,8 @@ if ( ! class_exists( 'Deactivation_Survey_Feedback' ) ) {
 							<button class="button button-primary uds-feedback-submit" data-action="submit"><?php esc_html_e( 'Submit & Deactivate' ); ?></button>
 							<button class="button button-secondary uds-feedback-skip" data-action="skip"><?php esc_html_e( 'Skip & Deactivate' ); ?></button>
 								<input type="hidden" name="referer" value="<?php echo esc_url( get_site_url() ); ?>">
-								<input type="hidden" name="version" value="<?php echo esc_attr( BSF_ANALYTICS_VERSION ); ?>">
-								<input type="hidden" name="source" value="<?php echo esc_attr( $args['source'] ); ?>">
+								<input type="hidden" name="version" value="<?php echo esc_attr( $args['plugin_version'] ); ?>">
+								<input type="hidden" name="source" value="<?php echo esc_attr( $args['plugin_slug'] ); ?>">
 							</div>
 						</form>
 					</div>
@@ -179,10 +180,11 @@ if ( ! class_exists( 'Deactivation_Survey_Feedback' ) ) {
 			}
 
 			$dir_path = BSF_ANALYTICS_URI . '/modules/deactivation-survey/';
+			$file_ext = ! SCRIPT_DEBUG ? '.min' : '';
 
 			wp_enqueue_script(
 				'uds-feedback-script',
-				$dir_path . 'assets/js/feedback.min.js',
+				$dir_path . 'assets/js/feedback' . $file_ext . '.js',
 				array( 'jquery' ),
 				BSF_ANALYTICS_VERSION,
 				true
@@ -205,7 +207,7 @@ if ( ! class_exists( 'Deactivation_Survey_Feedback' ) ) {
 				$data
 			);
 
-			wp_enqueue_style( 'uds-feedback-style', $dir_path . 'assets/css/feedback.min.css', array(), BSF_ANALYTICS_VERSION );
+			wp_enqueue_style( 'uds-feedback-style', $dir_path . 'assets/css/feedback' . $file_ext . '.css', array(), BSF_ANALYTICS_VERSION );
 			wp_style_add_data( 'uds-feedback-style', 'rtl', 'replace' );
 		}
 
