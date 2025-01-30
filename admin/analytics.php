@@ -28,8 +28,6 @@ class Analytics {
 	 */
 	public function __construct() {
 
-		// This two lines are only for testing purpose not to be merged.
-		add_filter( 'sureforms_tracking_enabled', '__return_true' );
 		/*
 		* BSF Analytics.
 		*/
@@ -46,6 +44,26 @@ class Analytics {
 					'path'            => SRFM_DIR . 'inc/lib/bsf-analytics',
 					'author'          => 'SureForms',
 					'time_to_display' => '+24 hours',
+					'deactivation_survey'	=> [
+						[
+							'id'			=>'deactivation-survay-sureforms',
+							'popup_logo'		=> SRFM_DIR . 'admin/assets/sureforms-logo.svg',
+							'plugin_slug'		=> 'sureforms',
+							'popup_title'		=> __( 'Quick Feedback', 'sureforms' ),
+							'support_url'		=> 'https://sureforms.com/contact/',
+							'popup_description'	=> __( 'If you have a moment, please share why you are deactivating SureForms:', 'sureforms' ),
+							'show_on_screens'	=> [ 'plugins' ],
+						],
+						[
+							'id'			=>'deactivation-survay-sureforms-pro',
+							'popup_logo'		=> SRFM_DIR . 'admin/assets/sureforms-logo.svg',
+							'plugin_slug'		=> 'sureforms-pro',
+							'popup_title'		=> __( 'Quick Feedback', 'sureforms' ),
+							'support_url'		=> 'https://sureforms.com/contact/',
+							'popup_description'	=> __( 'If you have a moment, please share why you are deactivating SureForms Pro:', 'sureforms' ),
+							'show_on_screens'	=> [ 'plugins' ],
+						]
+					]
 				],
 			]
 		);
@@ -56,15 +74,16 @@ class Analytics {
 	public function add_srfm_analytics_data( $stats_data ) {
 		$stats_data['plugin_data']['sureforms'] = [
 			'free_version'           => SRFM_VER,
+			'site_language'          => get_locale(),
+		];
+		$stats_data['plugin_data']['sureforms']['numeric_values'] = [
 			'total_forms'            => wp_count_posts( SRFM_FORMS_POST_TYPE )->publish ?? 0,
 			'instant_forms_enabled'  => $this->instant_forms_enabled(),
 			'forms_using_custom_css' => $this->forms_using_custom_css(),
 			'ai_generated_forms'     => $this->ai_generated_forms(),
-			'site_language'          => get_locale(),
-
 		];
 
-		$stats_data['plugin_data']['sureforms'] = array_merge( $stats_data['plugin_data']['sureforms'], $this->global_settings_data() );
+		$stats_data['plugin_data']['sureforms'] = array_merge_recursive( $stats_data['plugin_data']['sureforms'], $this->global_settings_data() );
 
 		return $stats_data;
 	}
@@ -133,12 +152,12 @@ class Analytics {
 		$global_data = [];
 
 		$security_settings               = get_option( 'srfm_security_settings_options', [] );
-		$global_data['honeypot_enabled'] = true === $security_settings['srfm_honeypot'];
+		$global_data['boolean_values']['honeypot_enabled'] = true === $security_settings['srfm_honeypot'];
 
 		$email_summary_data                   = get_option( 'srfm_email_summary_settings_options', [] );
-		$global_data['email_summary_enabled'] = true === $email_summary_data['srfm_email_summary'];
+		$global_data['boolean_values']['email_summary_enabled'] = true === $email_summary_data['srfm_email_summary'];
 
-		$global_data['suretriggers_active'] = is_plugin_active( 'suretriggers/suretriggers.php' );
+		$global_data['boolean_values']['suretriggers_active'] = is_plugin_active( 'suretriggers/suretriggers.php' );
 
 		$bsf_internal_referrer = get_option( 'bsf_product_referers', [] );
 		if ( ! empty( $bsf_internal_referrer['sureforms'] ) ) {
@@ -148,10 +167,10 @@ class Analytics {
 		}
 
 		$general_settings                  = get_option( 'srfm_general_settings_options', [] );
-		$global_data['ip_logging_enabled'] = ! empty( $general_settings['srfm_ip_log']['sureforms'] );
+		$global_data['boolean_values']['ip_logging_enabled'] = ! empty( $general_settings['srfm_ip_log']['sureforms'] );
 
 		$validation_messages                      = get_option( 'srfm_default_dynamic_block_option', [] );
-		$global_data['custom_validation_message'] = ! empty( $validation_messages ) && is_array( $validation_messages );
+		$global_data['boolean_values']['custom_validation_message'] = ! empty( $validation_messages ) && is_array( $validation_messages );
 
 		return $global_data;
 	}
