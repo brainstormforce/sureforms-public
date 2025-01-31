@@ -1,7 +1,7 @@
 {
 	"name": "srfm/phone",
 	"title": "Phone Number",
-	"description": "Displays a SureForm Phone Field",
+	"description": "Displays a SureForms Phone Field",
 	"category": "sureforms",
 	"keywords": [ "telephone", "phone", "mobile", "field" ],
 	"textdomain": "sureforms",

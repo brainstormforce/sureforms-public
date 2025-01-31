@@ -47,6 +47,8 @@ if ( ! class_exists( 'Nps_Notice' ) ) {
 		 */
 		private function __construct() {
 			add_action( 'admin_footer', [ $this, 'show_nps_notice' ], 999 );
+			add_filter( 'nps_survey_post_data', [ $this, 'update_nps_survey_post_data' ] );
+			add_filter( 'nps_survey_api_endpoint', [ $this, 'update_nps_survey_endpoint' ], 10, 2 );
 		}
 
 		/**
@@ -117,6 +119,39 @@ if ( ! class_exists( 'Nps_Notice' ) ) {
 
 				]
 			);
+		}
+
+		/**
+		 * Update the NPS survey post data.
+		 * Add SureForms plugin version to the NPS survey post data.
+		 *
+		 * @param array<mixed> $post_data NPS survey post data.
+		 * @since x.x.x
+		 * @return array<mixed>
+		 */
+		public function update_nps_survey_post_data( $post_data ) {
+			if ( isset( $post_data['plugin_slug'] ) && 'sureforms' === $post_data['plugin_slug'] ) {
+				$post_data['plugin_version'] = SRFM_VER;
+			}
+
+			return $post_data;
+		}
+
+		/**
+		 * Update the NPS survey endpoint.
+		 * Replace the existing endpoint with custom webhooks URL.
+		 *
+		 * @param string       $endpoint NPS survey endpoint.
+		 * @param array<mixed> $post_data NPS survey post data.
+		 * @since x.x.x
+		 * @return string
+		 */
+		public function update_nps_survey_endpoint( $endpoint, $post_data ) {
+			if ( isset( $post_data['plugin_slug'] ) && 'sureforms' === $post_data['plugin_slug'] ) {
+				$endpoint = 'https://webhook.suretriggers.com/suretriggers/30b8bcdc-d70c-47e3-99e6-cc676c4971b0';
+			}
+
+			return $endpoint;
 		}
 	}
 }

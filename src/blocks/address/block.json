@@ -1,7 +1,7 @@
 {
 	"name": "srfm/address",
 	"title": "Address",
-	"description": "Displays a SureForm Address Field",
+	"description": "Displays a SureForms Address Field",
 	"category": "sureforms",
 	"keywords": [ "address", "country", "location", "field" ],
 	"textdomain": "sureforms",
