@@ -17,6 +17,7 @@ import LimitReachedPopup from './LimitReachedPopup.js';
 import ErrorPopup from './ErrorPopup.js';
 import { AuthErrorPopup } from './AuthErrorPopup.js';
 import toast, { Toaster } from 'react-hot-toast';
+import { applyFilters } from '@wordpress/hooks';
 
 const AiFormBuilder = () => {
 	const [ message, setMessage ] = useState(
@@ -33,6 +34,7 @@ const AiFormBuilder = () => {
 	const accessKey = urlParams.get( 'access_key' );
 	const [ isListening, setIsListening ] = useState( false ); // State to manage voice recording
 	const recognitionRef = useRef( null ); // To store SpeechRecognition instance
+	const [ formType, setFormType ] = useState("simple");
 
 	const examplePrompts = [
 		{
@@ -300,14 +302,17 @@ const AiFormBuilder = () => {
 			<div className="srfm-ts-main-container srfm-content-section">
 				<div className="srfm-ai-builder-container">
 					<div className="srfm-ai-builder-inner-container">
-					<FormTypeSelector />
+					<FormTypeSelector
+					formType={formType}
+					setFormType={setFormType}
+					/>
+						<div className="srfm-ai-builder-textarea-ctn">
 						<h1 className="srfm-ai-builder-header-title">
 							{ __(
 								'Please describe the form you want to create',
 								'sureforms'
 							) }
 						</h1>
-						<div className="srfm-ai-builder-textarea-ctn">
 							<textarea
 								style={ {
 									borderColor: showEmptyError
@@ -561,11 +566,20 @@ export const getLimitReachedPopup = () => {
 	return <AiFormBuilder />;
 };
 
-const FormTypeSelector = () => {
-	const [selected, setSelected] = useState("simple");
+const FormTypeSelector = ({
+	formType,
+	setFormType,
+}) => {
+	const formTypeOptions = applyFilters(
+		'srfm.ai_form_builder.form_type_options',
+		[
+			{ label: 'Simple', enabled: true },
+			{ label: 'Calculations', enabled: false },
+		]
+	);
 
 	const handleSelection = (type) => {
-		setSelected(type);
+		setFormType(type);
 	};
 
 	const containerStyle = {
@@ -577,42 +591,48 @@ const FormTypeSelector = () => {
 		fontSize: "20px",
 		fontWeight: "600",
 		color: "#121826",
-		marginBottom: "8px",
+		margin: 0,
+		marginBottom: "18px",
+		lineHeight: '28px',
 	};
 
 	const selectorStyle = {
 		display: "flex",
 		alignItems: "center",
 		backgroundColor: "#F3F4F6",
-		borderRadius: "12px",
 		padding: "4px",
 		position: "relative",
 		width: "100%",
 		height: "48px",
 		overflow: "hidden", // Prevents the highlight from overflowing
+		borderRadius: "8px",
+		border: '0.5px solid #E5E7EB',
 	};
 
 	const optionStyle = (isActive) => ({
 		flex: 1,
 		textAlign: "center",
-		fontWeight: isActive ? "600" : "400",
-		cursor: "pointer",
-		padding: "12px",
+		fontWeight:  500,
+		fontSize: "18px",
+		lineHeight: "28px",
+		cursor: isActive ? "default" : "pointer",
+		padding: "6px",
 		position: "relative",
 		zIndex: 2,
 		transition: "color 0.3s ease-in-out",
-		cursor: "pointer",
+		color: isActive ? "#111827" : "#BDC1C7",
 	});
 
 	const highlightStyle = {
 		position: "absolute",
 		width: "calc(50% - 4px)", // Ensures it stays within bounds
 		height: "40px",
-		borderRadius: "8px",
+		borderRadius: "6px",
+		padding: "6px",
 		backgroundColor: "#ffffff",
-		boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+		boxShadow: "0px 1px 2px 0px #0000000D",
 		top: "4px",
-		left: selected === "simple" ? "4px" : "calc(50% + 0px)", // Adjusted position
+		left: formType === "simple" ? "4px" : "calc(50% + 0px)", // Adjusted position
 		transition: "left 0.3s ease-in-out",
 	};
 
@@ -620,24 +640,24 @@ const FormTypeSelector = () => {
 		<div style={containerStyle}>
 			<p style={labelStyle}>Please select form type</p>
 			<div style={selectorStyle}>
-				{/* Animated Background */}
 				<div style={highlightStyle} />
-
-				{/* Simple Option */}
-				<div
-					style={optionStyle(selected === "simple")}
-					onClick={() => handleSelection("simple")}
-				>
-					Simple
-				</div>
-
-				{/* Calculations Option */}
-				<div
-					style={optionStyle(selected === "calculations")}
-					onClick={() => handleSelection("calculations")}
-				>
-					Calculations
-				</div>
+				{
+					formTypeOptions.map((option, index) => (
+						option.enabled ? <div
+							key={index}
+							style={optionStyle(formType === option.label.toLowerCase())}
+							onClick={() => handleSelection(option.label.toLowerCase())}
+						>
+							{option.label}
+						</div> :
+						<div
+							key={index}
+							style={{...optionStyle(false), cursor:"default"}}
+						>
+							{option.label}
+						</div>
+					))
+				}
 			</div>
 		</div>
 	);
