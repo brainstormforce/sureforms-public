@@ -569,9 +569,12 @@ body.post-type-sureforms_form {
 		pointer-events: auto;
 	}
 
-	// counter css for the margin added by zip-images library when UAGB or Starter Templates plugin is active.
-	.components-base-control__field {
-		margin-top: 0;
+	/*
+	* Conversational Form Settings Styles
+	*/
+	.srfm-conversational-placeholder-label-ctn {
+		display: flex;
+		gap: 8px;
 	}
 }
 

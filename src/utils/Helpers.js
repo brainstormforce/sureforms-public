@@ -56,7 +56,9 @@ export const srfmDeepClone = ( arrayOrObject ) =>
 export const handleAddNewPost = async (
 	formData,
 	templateName,
-	templateMetas
+	templateMetas,
+	isConversational = false,
+	formType = ''
 ) => {
 	if ( '1' !== srfm_admin.capability ) {
 		console.error( 'User does not have permission to create posts' );
@@ -75,6 +77,8 @@ export const handleAddNewPost = async (
 				form_data: formData,
 				template_name: templateName,
 				template_metas: templateMetas,
+				is_conversational: isConversational,
+				form_type: formType,
 			},
 		} );
 
