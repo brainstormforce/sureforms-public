@@ -92,7 +92,7 @@ function initializePhoneField() {
 
 		if ( phoneNumber ) {
 			/**
-			 * Changed onChange event to input event to handle properly in Conversational Form.
+			 * Changed onChange event to input event to handle paste event.
 			 */
 			phoneNumber.addEventListener( 'input', updatePhoneNumber );
 			phoneNumber.addEventListener( 'countrychange', updatePhoneNumber );
