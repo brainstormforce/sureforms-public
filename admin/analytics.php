@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Analytics class.
  *
- * @since x.x.x
+ * @since 1.4.0
  */
 class Analytics {
 	use Get_Instance;
@@ -24,7 +24,7 @@ class Analytics {
 	 * Class constructor.
 	 *
 	 * @return void
-	 * @since x.x.x
+	 * @since 1.4.0
 	 */
 	public function __construct() {
 		/*
@@ -69,7 +69,7 @@ class Analytics {
 	 * Callback function to add SureForms specific analytics data.
 	 *
 	 * @param array $stats_data existing stats_data.
-	 * @since x.x.x
+	 * @since 1.4.0
 	 * @return array
 	 */
 	public function add_srfm_analytics_data( $stats_data ) {
@@ -92,7 +92,7 @@ class Analytics {
 	/**
 	 * Return total number of forms using instant forms.
 	 *
-	 * @since x.x.x
+	 * @since 1.4.0
 	 * @return int
 	 */
 	public function instant_forms_enabled() {
@@ -110,7 +110,7 @@ class Analytics {
 	/**
 	 * Return total number of ai generated forms.
 	 *
-	 * @since x.x.x
+	 * @since 1.4.0
 	 * @return int
 	 */
 	public function ai_generated_forms() {
@@ -128,7 +128,7 @@ class Analytics {
 	/**
 	 * Returns total number of forms using custom css.
 	 *
-	 * @since x.x.x
+	 * @since 1.4.0
 	 * @return int
 	 */
 	public function forms_using_custom_css() {
@@ -146,7 +146,7 @@ class Analytics {
 	/**
 	 * Generates global setting data for analytics
 	 *
-	 * @since x.x.x
+	 * @since 1.4.0
 	 * @return array
 	 */
 	public function global_settings_data() {
@@ -180,7 +180,7 @@ class Analytics {
 	 * Runs custom WP_Query to fetch data as per requirement
 	 *
 	 * @param array $meta_query meta query array for WP_Query.
-	 * @since x.x.x
+	 * @since 1.4.0
 	 * @return int
 	 */
 	private function custom_wp_query_total_posts( $meta_query ) {

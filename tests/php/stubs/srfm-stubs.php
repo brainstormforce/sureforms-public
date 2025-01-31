@@ -165,7 +165,7 @@ namespace SRFM\Admin {
 /**
  * Analytics class.
  *
- * @since x.x.x
+ * @since 1.4.0
  */
 class Analytics
 {
@@ -174,7 +174,7 @@ class Analytics
      * Class constructor.
      *
      * @return void
-     * @since x.x.x
+     * @since 1.4.0
      */
     public function __construct()
     {
@@ -183,7 +183,7 @@ class Analytics
      * Callback function to add SureForms specific analytics data.
      *
      * @param array $stats_data existing stats_data.
-     * @since x.x.x
+     * @since 1.4.0
      * @return array
      */
     public function add_srfm_analytics_data($stats_data)
@@ -192,7 +192,7 @@ class Analytics
     /**
      * Return total number of forms using instant forms.
      *
-     * @since x.x.x
+     * @since 1.4.0
      * @return int
      */
     public function instant_forms_enabled()
@@ -201,7 +201,7 @@ class Analytics
     /**
      * Return total number of ai generated forms.
      *
-     * @since x.x.x
+     * @since 1.4.0
      * @return int
      */
     public function ai_generated_forms()
@@ -210,7 +210,7 @@ class Analytics
     /**
      * Returns total number of forms using custom css.
      *
-     * @since x.x.x
+     * @since 1.4.0
      * @return int
      */
     public function forms_using_custom_css()
@@ -219,7 +219,7 @@ class Analytics
     /**
      * Generates global setting data for analytics
      *
-     * @since x.x.x
+     * @since 1.4.0
      * @return array
      */
     public function global_settings_data()
@@ -8817,7 +8817,7 @@ namespace SRFM\Inc {
 	     * Filters and concatenates valid class names from an array.
 	     *
 	     * @param array<string> $class_names The array containing potential class names.
-	     * @since x.x.x
+	     * @since 1.4.0
 	     * @return string The concatenated string of valid class names separated by spaces.
 	     */
 	    public static function join_strings( $class_names )

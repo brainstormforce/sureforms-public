@@ -1085,7 +1085,7 @@ class Helper {
 	 * Filters and concatenates valid class names from an array.
 	 *
 	 * @param array<string> $class_names The array containing potential class names.
-	 * @since x.x.x
+	 * @since 1.4.0
 	 * @return string The concatenated string of valid class names separated by spaces.
 	 */
 	public static function join_strings( $class_names ) {

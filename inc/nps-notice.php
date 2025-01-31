@@ -125,7 +125,7 @@ if ( ! class_exists( 'Nps_Notice' ) ) {
 		 * Add SureForms plugin version to the NPS survey post data.
 		 *
 		 * @param array<mixed> $post_data NPS survey post data.
-		 * @since x.x.x
+		 * @since 1.4.0
 		 * @return array<mixed>
 		 */
 		public function update_nps_survey_post_data( $post_data ) {
