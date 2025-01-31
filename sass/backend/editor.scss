@@ -592,3 +592,55 @@ html[dir="rtl"] body.post-type-sureforms_form {
 		}
 	}
 }
+
+.srfm-conditional-logic-preview {
+	.components-panel__body {
+		display: flex;
+		gap: 12px;
+		padding: 16px 48px 16px 16px;
+		cursor: pointer;
+
+		.components-panel__body-title:hover {
+			background: unset;
+		}
+
+		.srfm-tooltip {
+			.tooltip-wrap {
+				width: auto;
+				min-width: 200px;
+			}
+		}
+		svg {
+			height: 24px;
+			width: 24px;
+			align-self: center;
+			right: 15px;
+			position: absolute;
+		}
+	}
+	.components-panel__body-content {
+		padding: 16px;
+		border-bottom: 1px solid #e0e0e0;
+	}
+}
+// The following are used for conditional logic preview as well as actual settings.
+.srfm-show-hide-select {
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	gap: 8px;
+	margin-bottom: 18px;
+
+	.components-base-control {
+		margin-bottom: 0 !important;
+		.components-base-control__field {
+			margin-bottom: 0 !important;
+		}
+	}
+
+	p {
+		margin-bottom: 0;
+		padding: 0;
+		color: #50575e;
+	}
+}
