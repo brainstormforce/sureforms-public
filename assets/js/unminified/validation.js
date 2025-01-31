@@ -1076,3 +1076,32 @@ export const handleScrollAndFocusOnError = ( validationObject ) => {
 		}
 	}
 };
+
+// Handle the captcha validation for the form.
+export const handleCaptchaValidation = (
+	recaptchaType,
+	hCaptchaDiv,
+	turnstileDiv,
+	captchaErrorElement
+) => {
+	if (
+		! recaptchaType &&
+		! hCaptchaDiv &&
+		! turnstileDiv &&
+		! captchaErrorElement
+	) {
+		return true; // Return true if no captcha elements are found.
+	}
+	let captchaResponse;
+	if ( 'v2-checkbox' === recaptchaType ) {
+		captchaResponse = grecaptcha.getResponse();
+	} else if ( !! hCaptchaDiv ) {
+		captchaResponse = hcaptcha.getResponse();
+	} else if ( !! turnstileDiv ) {
+		captchaResponse = turnstile.getResponse();
+	}
+	const isValid = captchaResponse.length > 0;
+	captchaErrorElement.style.display = isValid ? 'none' : 'block';
+
+	return isValid;
+};

@@ -32,6 +32,7 @@ import useSubmitButton from './components/useSubmitButton.js';
 import SureFormsDescription from './components/SureFormsDescription.js';
 import { defaultKeys, forcePanel } from './utils.js';
 import InstantForm from './InstantForm.js';
+import useContainerDynamicClass from './components/useContainerDynamicClass.js';
 
 const SureformsFormSpecificSettings = ( props ) => {
 	const [ hasCopied, setHasCopied ] = useState( false );
@@ -93,24 +94,7 @@ const SureformsFormSpecificSettings = ( props ) => {
 
 	useEffect( addFormStylingClass, [ rootContainer, deviceType ] );
 
-	// Find the root container of the form
-	const formRootContainer = document.querySelector(
-		'.editor-styles-wrapper'
-	);
-	const addRootClass = () => {
-		if ( formRootContainer && sureformsKeys?._srfm_additional_classes ) {
-			// Split the classes string by spaces
-			const classesArray =
-				sureformsKeys._srfm_additional_classes.split( ' ' );
-
-			// Add classes individually
-			classesArray.forEach( ( classname ) => {
-				formRootContainer?.classList.add( classname );
-			} );
-		}
-	};
-
-	useEffect( addRootClass, [ formRootContainer ] );
+	useContainerDynamicClass( sureformsKeys );
 
 	// Update the custom CSS when the formCustomCssData prop changes. This will apply the custom CSS to the editor.
 	const formCustomCssData = sureformsKeys?._srfm_form_custom_css || '';

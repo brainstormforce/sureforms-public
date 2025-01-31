@@ -16,6 +16,7 @@
 		font-weight: 400;
 		font-size: 14px;
 		line-height: 20px;
+		z-index: 99999;
 
 		&::before {
 			content: "";

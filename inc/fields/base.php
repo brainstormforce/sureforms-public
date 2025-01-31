@@ -282,14 +282,6 @@ class Base {
 	protected $label_markup;
 
 	/**
-	 * Stores the error icon to be used in HTML markup.
-	 *
-	 * @var string
-	 * @since 0.0.2
-	 */
-	protected $error_svg;
-
-	/**
 	 * Stores the duplicate message markup for a field.
 	 *
 	 * @var string
@@ -468,7 +460,6 @@ class Base {
 		$type                   = in_array( $this->slug, [ 'multi-choice', 'dropdown', 'address' ], true ) ? 'label_text' : 'label';
 		$this->label_markup     = Helper::generate_common_form_markup( $this->form_id, $type, $this->label, $this->slug, $this->block_id . $input_label, boolval( $this->required ) );
 
-		$this->error_svg            = Helper::fetch_svg( 'error', 'srfm-error-icon' );
 		$this->duplicate_msg_markup = Helper::generate_common_form_markup( $this->form_id, 'error', '', '', $this->block_id, boolval( $this->required ), '', $this->error_msg, false, $this->duplicate_msg, $override );
 	}
 
