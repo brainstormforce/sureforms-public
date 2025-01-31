@@ -575,23 +575,6 @@ body.post-type-sureforms_form {
 	.srfm-conversational-placeholder-label-ctn {
 		display: flex;
 		gap: 8px;
-
-		.srfm-conversational-placeholder-label {
-			min-width: 16px;
-			max-height: 16px;
-			cursor: pointer;
-			padding: 2px 6px;
-			border-radius: 9999px;
-			background: #111827;
-			color: #fff;
-			border: 0.5px solid #374151;
-			font-size: 12px;
-			font-weight: 600;
-			line-height: 16px;
-			text-align: center;
-			opacity: 1;
-			pointer-events: visible;
-		}
 	}
 }
 
