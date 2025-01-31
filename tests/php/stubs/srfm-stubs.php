@@ -160,7 +160,75 @@ namespace SRFM\Admin {
         {
         }
     }
+
+
+/**
+ * Analytics class.
+ *
+ * @since x.x.x
+ */
+class Analytics
+{
+    use \SRFM\Inc\Traits\Get_Instance;
+    /**
+     * Class constructor.
+     *
+     * @return void
+     * @since x.x.x
+     */
+    public function __construct()
+    {
+    }
+    /**
+     * Callback function to add SureForms specific analytics data.
+     *
+     * @param array $stats_data existing stats_data.
+     * @since x.x.x
+     * @return array
+     */
+    public function add_srfm_analytics_data($stats_data)
+    {
+    }
+    /**
+     * Return total number of forms using instant forms.
+     *
+     * @since x.x.x
+     * @return int
+     */
+    public function instant_forms_enabled()
+    {
+    }
+    /**
+     * Return total number of ai generated forms.
+     *
+     * @since x.x.x
+     * @return int
+     */
+    public function ai_generated_forms()
+    {
+    }
+    /**
+     * Returns total number of forms using custom css.
+     *
+     * @since x.x.x
+     * @return int
+     */
+    public function forms_using_custom_css()
+    {
+    }
+    /**
+     * Generates global setting data for analytics
+     *
+     * @since x.x.x
+     * @return array
+     */
+    public function global_settings_data()
+    {
+    }
 }
+}
+
+
 namespace SRFM\Inc\Email {
     /**
      * Email Class
