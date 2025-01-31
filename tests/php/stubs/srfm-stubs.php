@@ -184,7 +184,7 @@ class Analytics
      *
      * @param array $stats_data existing stats_data.
      * @since x.x.x
-     * @return int
+     * @return array
      */
     public function add_srfm_analytics_data($stats_data)
     {
