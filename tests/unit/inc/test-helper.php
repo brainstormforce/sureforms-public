@@ -465,4 +465,45 @@ class Test_Helper extends TestCase {
             );
         }
     }
+
+    /**
+     * Test the join_strings method with various inputs.
+     */
+    public function testJoinStrings() {
+        $testCases = [
+            'normal strings' => [
+                'input' => ['class1', 'class2', 'class3'],
+                'expected' => 'class1 class2 class3'
+            ],
+            'empty strings' => [
+                'input' => ['class1', '', 'class2'],
+                'expected' => 'class1 class2'
+            ],
+            'false values' => [
+                'input' => ['class1', false, 'class2'],
+                'expected' => 'class1 class2'
+            ],
+            'null values' => [
+                'input' => ['class1', null, 'class2'],
+                'expected' => 'class1 class2'
+            ],
+            'numeric values' => [
+                'input' => ['class1', 123, 'class2'],
+                'expected' => 'class1 class2'
+            ],
+            'mixed valid and invalid' => [
+                'input' => ['class1', '', false, null, 'class2', 0, 'class3'],
+                'expected' => 'class1 class2 class3'
+            ]
+        ];
+
+        // Iterate through test cases and assert results
+        foreach ($testCases as $description => $testCase) {
+            $this->assertEquals(
+                $testCase['expected'],
+                Helper::join_strings($testCase['input']),
+                "Failed asserting for case: {$description}"
+            );
+        }
+    }
 }
