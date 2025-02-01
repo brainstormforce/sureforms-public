@@ -86,6 +86,14 @@ class Multichoice_Markup extends Base {
 	protected $option_type;
 
 	/**
+	 * Flag indicating if the value should be shown.
+	 *
+	 * @var bool
+	 * @since x.x.x
+	 */
+	protected $show_values;
+
+	/**
 	 * Initialize the properties based on block attributes.
 	 *
 	 * @param array<mixed> $attributes Block attributes.
@@ -104,6 +112,7 @@ class Multichoice_Markup extends Base {
 		$this->svg_type          = $this->single_selection ? 'circle' : 'square';
 		$this->name_attr         = $this->single_selection ? 'name="srfm-input-' . esc_attr( $this->slug ) . '-' . esc_attr( $this->block_id ) . '"' : '';
 		$this->choice_width_attr = $this->choice_width ? 'srfm-choice-width-' . str_replace( '.', '-', $this->choice_width ) : '';
+		$this->show_values       = apply_filters( 'srfm_show_options_values', false, $attributes['showValues'] ?? false );
 		$this->set_markup_properties();
 		$this->set_aria_described_by();
 	}
@@ -149,6 +158,7 @@ class Multichoice_Markup extends Base {
 										id="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id . '-' . $i ); ?>"
 										class="srfm-input-<?php echo esc_attr( $this->slug ); ?>-single" <?php echo wp_kses_post( $this->name_attr ); ?>
 										<?php echo 0 === $i ? 'aria-describedby="' . ( ! empty( $this->aria_described_by ) ? esc_attr( trim( $this->aria_described_by ) ) : '' ) . '"' : ''; ?>
+										<?php echo $this->show_values && isset( $option['value'] ) ? 'option-value="' . esc_attr( $option['value'] ) . '"' : ''; ?>
 									/>
 									<div class="srfm-block-content-wrap">
 										<div class="srfm-option-container">
