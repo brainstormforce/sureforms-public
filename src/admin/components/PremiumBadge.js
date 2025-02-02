@@ -12,7 +12,7 @@ export default ( { badgeName = 'Starter'
 				className="srfm-premium-badge-text"
 				onClick={ ( e ) => {
 					e.stopPropagation();
-					window.open( addQueryParam( srfm_admin?.sureforms_pricing_page, utmMedium ), '_blank', 'noreferrer' );
+					window.open( addQueryParam( srfm_admin?.pricing_page_url || srfm_admin?.sureforms_pricing_page, utmMedium ), '_blank', 'noreferrer' ); // both srfm_admin are in different js file context one is being loaded in Dashboard and other in Form Editor
 				}
 				}
 			>
@@ -28,7 +28,9 @@ export default ( { badgeName = 'Starter'
 						</h3>
 						<p>{ tooltipContent }</p>
 					</div>
-					<a target="_blank" href={ addQueryParam( srfm_admin?.sureforms_pricing_page, utmMedium ) } rel="noreferrer">{ __( 'Upgrade', 'sureforms' ) }</a>
+					<a target="_blank" href={ addQueryParam( srfm_admin?.pricing_page_url || srfm_admin?.sureforms_pricing_page, utmMedium ) } rel="noreferrer">{ __( 'Upgrade', 'sureforms' ) }</a>{
+						// both srfm_admin are in different js file context one is being loaded in Dashboard and other in Form Editor
+					}
 				</div>
 				<i></i>
 			</div>
