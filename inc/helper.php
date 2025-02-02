@@ -1144,24 +1144,4 @@ class Helper {
 		// Check if the className matches the pattern.
 		return preg_match( $class_name_regex, $class_name ) === 1;
 	}
-
-	/**
-	 * Filters and concatenates valid class names from an array.
-	 *
-	 * @param array<string> $class_names The array containing potential class names.
-	 * @since x.x.x
-	 * @return string The concatenated string of valid class names separated by spaces.
-	 */
-	public static function join_strings( $class_names ) {
-		// Filter the array to include only valid class names.
-		$valid_class_names = array_filter(
-			array_map( 'trim', $class_names ),
-			static function ( $value ) {
-				return is_string( $value ) && '' !== $value && false !== $value;
-			}
-		);
-
-		// Concatenate the valid class names with spaces and return.
-		return implode( ' ', $valid_class_names );
-	}
 }
