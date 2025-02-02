@@ -36,6 +36,8 @@ const UAGBAdvancedHeading = ( props ) => {
 		setAttributes,
 	} = props;
 
+	console.log( 'UAGBAdvancedHeading', props );
+
 	// Check dynamic content in heading and description.
 	const headingHasDynamicContent =
 		-1 !== headingTitle.indexOf( '<span data-spectra-dc-field="' );
