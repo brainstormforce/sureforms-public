@@ -4,8 +4,58 @@
 		"Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
 		"This file is @generated automatically"
 	],
-	"content-hash": "1f9159b2f05f4e4197aaf998c9c3477f",
+	"content-hash": "e51cc37b8d1738192b6f5f21d81d1a9f",
 	"packages": [
+		{
+			"name": "brainstormforce/bsf-analytics",
+			"version": "1.1.8",
+			"source": {
+				"type": "git",
+				"url": "git@github.com:brainstormforce/bsf-analytics.git",
+				"reference": "9a2689edb28ab4faead68a70a232a0a8f9d5e152"
+			},
+			"dist": {
+				"type": "zip",
+				"url": "https://api.github.com/repos/brainstormforce/bsf-analytics/zipball/9a2689edb28ab4faead68a70a232a0a8f9d5e152",
+				"reference": "9a2689edb28ab4faead68a70a232a0a8f9d5e152",
+				"shasum": ""
+			},
+			"require-dev": {
+				"brainmaestro/composer-git-hooks": "^2.6",
+				"dealerdirect/phpcodesniffer-composer-installer": "^1.0",
+				"phpcompatibility/phpcompatibility-wp": "2.1.0",
+				"wp-coding-standards/wpcs": "2.2.1"
+			},
+			"type": "wordpress-plugin",
+			"extra": {
+				"hooks": {
+					"pre-commit": [
+						"echo committing as $(git config user.name)",
+						"sh bin/block-commits-with-merge-conflict.sh"
+					]
+				}
+			},
+			"scripts": {
+				"format": [
+					"phpcbf --standard=phpcs.xml.dist --report-summary --report-source"
+				],
+				"lint": [
+					"phpcs --standard=phpcs.xml.dist --report-summary --report-source"
+				],
+				"post-install-cmd": [
+					"vendor/bin/cghooks add --ignore-lock"
+				],
+				"post-update-cmd": [
+					"vendor/bin/cghooks update"
+				]
+			},
+			"description": "Library to gather non sensitive analytics data to enhance bsf products.",
+			"support": {
+				"source": "https://github.com/brainstormforce/bsf-analytics/tree/1.1.8",
+				"issues": "https://github.com/brainstormforce/bsf-analytics/issues"
+			},
+			"time": "2025-01-30T13:50:30+00:00"
+		},
 		{
 			"name": "brainstormforce/nps-survey",
 			"version": "1.0.7",

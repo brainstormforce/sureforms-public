@@ -77,6 +77,7 @@ module.exports = {
 			'@Svg': path.resolve( __dirname, 'assets/svg/' ),
 			'@Attributes': path.resolve( __dirname, 'src/blocks-attributes/' ),
 			'@Image': path.resolve( __dirname, 'images/' ),
+			'@IncBlocks': path.resolve( __dirname, 'inc/blocks/' ),
 		},
 	},
 	module: {

@@ -160,7 +160,75 @@ namespace SRFM\Admin {
         {
         }
     }
+
+
+/**
+ * Analytics class.
+ *
+ * @since 1.4.0
+ */
+class Analytics
+{
+    use \SRFM\Inc\Traits\Get_Instance;
+    /**
+     * Class constructor.
+     *
+     * @return void
+     * @since 1.4.0
+     */
+    public function __construct()
+    {
+    }
+    /**
+     * Callback function to add SureForms specific analytics data.
+     *
+     * @param array $stats_data existing stats_data.
+     * @since 1.4.0
+     * @return array
+     */
+    public function add_srfm_analytics_data($stats_data)
+    {
+    }
+    /**
+     * Return total number of forms using instant forms.
+     *
+     * @since 1.4.0
+     * @return int
+     */
+    public function instant_forms_enabled()
+    {
+    }
+    /**
+     * Return total number of ai generated forms.
+     *
+     * @since 1.4.0
+     * @return int
+     */
+    public function ai_generated_forms()
+    {
+    }
+    /**
+     * Returns total number of forms using custom css.
+     *
+     * @since 1.4.0
+     * @return int
+     */
+    public function forms_using_custom_css()
+    {
+    }
+    /**
+     * Generates global setting data for analytics
+     *
+     * @since 1.4.0
+     * @return array
+     */
+    public function global_settings_data()
+    {
+    }
 }
+}
+
+
 namespace SRFM\Inc\Email {
     /**
      * Email Class
@@ -8742,6 +8810,17 @@ namespace SRFM\Inc {
          * @return array<string> Returns the string array of excluded fields.
          */
         public static function get_excluded_fields()
+        {
+        }
+
+        /**
+	     * Filters and concatenates valid class names from an array.
+	     *
+	     * @param array<string> $class_names The array containing potential class names.
+	     * @since 1.4.0
+	     * @return string The concatenated string of valid class names separated by spaces.
+	     */
+	    public static function join_strings( $class_names )
         {
         }
         /**

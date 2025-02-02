@@ -321,6 +321,8 @@ class Post_Types {
 				// Security.
 				'_srfm_captcha_security_type'    => 'string',
 				'_srfm_form_recaptcha'           => 'string',
+				// post meta to store if the form is AI generated.
+				'_srfm_is_ai_generated'          => 'boolean',
 			]
 		);
 
