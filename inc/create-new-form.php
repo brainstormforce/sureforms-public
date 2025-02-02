@@ -153,33 +153,33 @@ class Create_New_Form {
 			}
 		}
 
-		$title          = $form_info_obj->template_name ?? '';
-		$content        = $form_info_obj->form_data ?? '';
-		$template_metas = isset( $form_info_obj->template_metas ) ? (array) $form_info_obj->template_metas : [];
+		$title   = $form_info_obj->template_name ?? '';
+		$content = $form_info_obj->form_data ?? '';
 
-		// if post content contains srfm/page-break block, then set _srfm_is_page_break meta to true.
-		if ( strpos( $content, 'srfm/page-break' ) !== false ) {
-			$template_metas['_srfm_is_page_break'] = [ 'true' ];
-		}
+		// Create post metas for the creating form.
+		$post_metas = apply_filters(
+			'srfm_modify_ai_post_metas',
+			[],
+			$form_info_obj,
+		);
 
 		$post_id = wp_insert_post(
 			[
 				'post_title'   => $title,
 				'post_content' => $content,
+				'meta_input'   => $post_metas,
 				'post_status'  => 'draft',
 				'post_type'    => 'sureforms_form',
 			]
 		);
 
 		if ( ! empty( $post_id ) ) {
-			if ( ! empty( $template_metas ) ) {
-				$default_post_metas = self::get_default_meta_keys();
-				$post_metas         = array_merge( $default_post_metas, $template_metas );
 
-				foreach ( $post_metas as $meta_key => $meta_value ) {
-					add_post_meta( $post_id, $meta_key, $meta_value[0] );
-				}
-			}
+			/**
+			 * Update _srfm_is_ai_generated meta to true.
+			 * If the request is coming here then the form is AI generated.
+			 */
+			update_post_meta( $post_id, '_srfm_is_ai_generated', true );
 
 			return new WP_REST_Response(
 				[

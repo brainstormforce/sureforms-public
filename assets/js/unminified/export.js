@@ -128,7 +128,7 @@ function appendImportBtn() {
 	const createImportButton = () => {
 		const button = document.createElement( 'button' );
 		button.className = 'button button-secondary srfm-import-btn';
-		button.textContent = wp.i18n.__( 'Import Form', 'sureforms' );
+		button.textContent = srfm_export?.import_btn_string;
 		return button;
 	};
 

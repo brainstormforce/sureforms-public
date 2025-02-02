@@ -9,6 +9,7 @@
 namespace SRFM;
 
 use SRFM\Admin\Admin;
+use SRFM\Admin\Analytics;
 use SRFM\API\Block_Patterns;
 use SRFM\Inc\Activator;
 use SRFM\Inc\Admin_Ajax;
@@ -264,6 +265,7 @@ class Plugin_Loader {
 	 * @return void
 	 */
 	public function load_plugin() {
+		Analytics::get_instance();
 		Post_Types::get_instance();
 		Form_Submit::get_instance();
 		Block_Patterns::get_instance();
