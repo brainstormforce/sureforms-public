@@ -38,9 +38,12 @@ class Analytics {
 			require_once SRFM_DIR . 'inc/lib/astra-notices/class-astra-notices.php';
 		}
 
-		add_filter( 'uds_survey_allowed_screens', function ( $screens ) {
-			return [ 'plugins' ];
-		} );
+		add_filter(
+			'uds_survey_allowed_screens',
+			function ( $screens ) {
+				return [ 'plugins' ];
+			}
+		);
 
 		$srfm_bsf_analytics = \BSF_Analytics_Loader::get_instance();
 
