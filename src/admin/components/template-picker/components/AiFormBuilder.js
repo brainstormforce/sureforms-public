@@ -152,11 +152,11 @@ const AiFormBuilder = () => {
 				content: chat.message,
 			} ) ) || [];
 		messageArray.push( { role: 'user', content: userCommand } );
-		const formType = applyFilters(
-			'srfm.aiFormScreen.formType',
-			'',
-			formTypeObj
-		);
+		// const formType = applyFilters(
+		// 	'srfm.aiFormScreen.formType',
+		// 	'',
+		// 	formTypeObj
+		// );
 		const postData = {
 			message_array: messageArray,
 			use_system_message: useSystemMessage,
@@ -707,9 +707,22 @@ const FormTypeSelector = ({
 						</div> :
 						<div
 							key={index}
-							style={{...optionStyle(false), cursor:"default"}}
+							style={{...optionStyle(false), cursor:"default",
+
+								display: "flex",
+								alignItems: "center",
+								justifyContent: "center",
+								gap: "8px",
+
+							}}
 						>
 							{option.label}
+							<PremiumBadge badgeName={__( 'Business', 'sureforms' )} 
+									tooltipHeading={ __( 'Unlock Conversational Forms', 'sureforms' ) }
+									tooltipContent={ __( 'With the SureForms Pro Plan, you can transform your forms into engaging conversational layouts for a seamless user experience.', 'sureforms' ) }
+									utmMedium="ai_builder"
+									tooltipPosition="top"
+							/>
 						</div>
 					))
 				}
