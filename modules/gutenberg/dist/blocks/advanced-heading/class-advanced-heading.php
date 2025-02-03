@@ -699,9 +699,8 @@ if ( ! class_exists( 'Advanced_Heading' ) ) {
 
 			$conditional_class = apply_filters( 'srfm_conditional_logic_classes', $form_id, $block_id );
 
-			$filter_classes  = apply_filters( 'srfm_field_classes', '', [ 'attributes' => $attributes ] );
-			$field_config    = apply_filters( 'srfm_field_config', [], [ 'attributes' => $attributes ] );
-
+			$filter_classes = apply_filters( 'srfm_field_classes', '', [ 'attributes' => $attributes ] );
+			$field_config   = apply_filters( 'srfm_field_config', [], [ 'attributes' => $attributes ] );
 
 			$main_classes = [
 				'wp-block-uagb-advanced-heading',
