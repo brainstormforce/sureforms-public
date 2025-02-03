@@ -92,10 +92,10 @@ class Multichoice_Markup extends Base {
 	 * @since 0.0.2
 	 */
 	public function __construct( $attributes ) {
+		$this->slug = 'multi-choice';
 		$this->set_properties( $attributes );
 		$this->set_input_label( __( 'Multi Choice', 'sureforms' ) );
 		$this->set_error_msg( $attributes, 'srfm_multi_choice_block_required_text' );
-		$this->slug              = 'multi-choice';
 		$this->single_selection  = $attributes['singleSelection'] ?? false;
 		$this->choice_width      = $attributes['choiceWidth'] ?? '';
 		$this->vertical_layout   = $attributes['verticalLayout'] ?? false;
@@ -120,15 +120,8 @@ class Multichoice_Markup extends Base {
 
 		$container_classes = Helper::join_strings(
 			[
-				'srfm-block-single',
-				'srfm-block',
-				"srfm-{$this->type_attr}-mode",
-				"srfm-{$this->slug}-block",
-				"srf-{$this->slug}-{$this->block_id}-block",
-				$this->block_width,
 				$this->class_name,
-				"srfm-slug-{$this->block_slug}",
-				$this->conditional_class,
+				"srfm-{$this->type_attr}-mode",
 			]
 		);
 

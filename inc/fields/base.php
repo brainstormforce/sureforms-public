@@ -399,6 +399,23 @@ class Base {
 
 		$this->is_editing = isset( $attributes['isEditing'] ) ? true : false;
 		$this->entry_id   = $attributes['entryID'] ?? 0;
+
+		// If the slug is one of the following: dropdown, input, multi-choice, or number,
+		// add common classes to the class_name property.
+		if ( in_array( $this->slug, [ 'dropdown', 'input', 'multi-choice', 'number' ], true ) ) {
+			$common_classes = [
+				'srfm-block-single',
+				'srfm-block',
+				"srfm-{$this->slug}-block",
+				"srf-{$this->slug}-{$this->block_id}-block",
+				$this->block_width,
+				$this->class_name,
+				"srfm-slug-{$this->block_slug}",
+				$this->conditional_class,
+			];
+
+			$this->class_name = Helper::join_strings( $common_classes );
+		}
 	}
 
 	/**
