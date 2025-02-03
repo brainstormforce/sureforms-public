@@ -11,3 +11,4 @@ tests
 src/lib/*
 inc/lib/nps-survey/*
 inc/lib/bsf-analytics/*
+inc/lib/astra-notices/*
