@@ -92,10 +92,10 @@ class Multichoice_Markup extends Base {
 	 * @since 0.0.2
 	 */
 	public function __construct( $attributes ) {
+		$this->slug = 'multi-choice';
 		$this->set_properties( $attributes );
 		$this->set_input_label( __( 'Multi Choice', 'sureforms' ) );
 		$this->set_error_msg( $attributes, 'srfm_multi_choice_block_required_text' );
-		$this->slug              = 'multi-choice';
 		$this->single_selection  = $attributes['singleSelection'] ?? false;
 		$this->choice_width      = $attributes['choiceWidth'] ?? '';
 		$this->vertical_layout   = $attributes['verticalLayout'] ?? false;
@@ -118,9 +118,11 @@ class Multichoice_Markup extends Base {
 		$check_svg     = Helper::fetch_svg( $this->svg_type . '-checked', 'srfm-' . $this->slug . '-icon', 'aria-hidden="true"' );
 		$unchecked_svg = Helper::fetch_svg( $this->svg_type . '-unchecked', 'srfm-' . $this->slug . '-icon-unchecked', 'aria-hidden="true"' );
 
+		$this->class_name = $this->get_field_classes( [ "srfm-{$this->type_attr}-mode" ] );
+
 		ob_start();
 		?>
-		<div data-block-id="<?php echo esc_attr( $this->block_id ); ?>" class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $this->type_attr ); ?>-mode srfm-<?php echo esc_attr( $this->slug ); ?>-block srf-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?>-block<?php echo wp_kses_post( $this->block_width ); ?><?php echo esc_attr( $this->class_name ); ?> <?php echo esc_attr( $this->conditional_class ); ?>">
+		<div data-block-id="<?php echo esc_attr( $this->block_id ); ?>" class="<?php echo esc_attr( $this->class_name ); ?>">
 			<fieldset>
 				<input class="srfm-input-<?php echo esc_attr( $this->slug ); ?>-hidden" data-required="<?php echo esc_attr( $this->data_require_attr ); ?>" <?php echo wp_kses_post( $this->data_attribute_markup() ); ?> name="srfm-input-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?><?php echo esc_attr( $this->field_name ); ?>" type="hidden" value=""/>
 				<legend class="srfm-block-legend">
