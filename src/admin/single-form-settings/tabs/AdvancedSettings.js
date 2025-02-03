@@ -358,7 +358,7 @@ function AdvancedSettings( props ) {
 				/>
 				<p className="components-base-control__help">
 					{ __(
-						' Separate multiple classes with spaces. ',
+						'Class names should be separated by spaces. Each class name must not start with a digit, hyphen, or underscore. They can only include letters (including Unicode characters), numbers, hyphens, and underscores.',
 						'sureforms'
 					) }
 				</p>

@@ -4,7 +4,7 @@ Tags: contact form, custom form, forms, contact form plugin, form builder
 Requires at least: 6.4
 Tested up to: 6.7.1
 Requires PHP: 7.4
-Stable tag: 1.3.0
+Stable tag: 1.4.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -256,6 +256,16 @@ Yes! You can certainly use SureForms on yours as well as your client’s website
 When you use SureForms, you get an easy-to-use AI-powered form builder that can be used to build your forms fast.
 
 == Changelog ==
+= 1.4.0 - 4th February 2025 =
+* Fix: Addressed an issue with Bricks theme where reCAPTCHA v2 Invisible and v3 was getting hidden.
+= 1.3.1 - 28th January 2025 =
+* Improvement: Enhanced compatibility with FSE themes.
+* Fix: Addressed an issue where CAPTCHA errors were displayed before field validation errors.
+* Fix: Corrected the spelling of “SureForms” in field descriptions.
+* Fix: Ensured compatibility with Divi and Enfold’s Classic Editor settings.
+* Fix: Fixed an issue where forms inside tabs or accordions were not displaying correctly. The form height is now properly adjusted when it becomes visible on the page.
+* Fix: Resolved an issue where the “Import Form” button was not visible when all forms were moved to the Trash.
+* Fix: Resolved an issue where the Cancel button in the form Email Notification settings was not functioning correctly.
 = 1.3.0 - 21st January 2025 =
 * Improvement: Stopped storing confirmation email setting's data of the Email field in the database.
 * Fix: Resolved an issue where forms were not being submitted in some instances with v3 reCAPTCHA.

@@ -9,6 +9,7 @@
 namespace SRFM;
 
 use SRFM\Admin\Admin;
+use SRFM\Admin\Analytics;
 use SRFM\API\Block_Patterns;
 use SRFM\Inc\Activator;
 use SRFM\Inc\Admin_Ajax;
@@ -264,6 +265,7 @@ class Plugin_Loader {
 	 * @return void
 	 */
 	public function load_plugin() {
+		Analytics::get_instance();
 		Post_Types::get_instance();
 		Form_Submit::get_instance();
 		Block_Patterns::get_instance();
@@ -290,7 +292,6 @@ class Plugin_Loader {
 		AI_Auth::get_instance();
 		Updater::get_instance();
 		DatabaseRegister::init();
-
 		/**
 		 * Required to add the if check for the class existence to resolve phpstan error,
 		 * as the phpstan configuration ignores the inc/lib directory which gives error

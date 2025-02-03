@@ -56,7 +56,9 @@ export const srfmDeepClone = ( arrayOrObject ) =>
 export const handleAddNewPost = async (
 	formData,
 	templateName,
-	templateMetas
+	templateMetas,
+	isConversational = false,
+	formType = ''
 ) => {
 	if ( '1' !== srfm_admin.capability ) {
 		console.error( 'User does not have permission to create posts' );
@@ -75,6 +77,8 @@ export const handleAddNewPost = async (
 				form_data: formData,
 				template_name: templateName,
 				template_metas: templateMetas,
+				is_conversational: isConversational,
+				form_type: formType,
 			},
 		} );
 
@@ -384,5 +388,14 @@ export const addQueryParam = ( url, paramValue, paramKey = 'utm_medium' ) => {
 	} catch ( error ) {
 		console.error( 'Invalid URL:', error );
 		return url; // Return the original URL in case of error
+	}
+};
+
+// Add the CSS properties to the root element.
+export const addStyleInRoot = ( root, cssProperties ) => {
+	if ( Object.keys( cssProperties ).length > 0 ) {
+		for ( const [ key, objValue ] of Object.entries( cssProperties ) ) {
+			root.style.setProperty( key, objValue );
+		}
 	}
 };

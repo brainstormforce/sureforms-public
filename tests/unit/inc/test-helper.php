@@ -427,4 +427,83 @@ class Test_Helper extends TestCase {
         // Test that the result is the expected value.
         $this->assertSame( $expected, $result );
     }
+
+    /**
+     * Test that the function returns the default excluded fields with additional fields.
+     */
+    public function test_is_valid_css_class_name()
+    {
+        // Valid class names
+        $valid_class_names = [
+            'my-class',
+            'my_class',
+            'class123',
+            '名字123',        // Unicode characters
+            'valid-name',
+            'a',              // Single valid character
+        ];
+
+        foreach ($valid_class_names as $class_name) {
+            $this->assertTrue(
+                Helper::is_valid_css_class_name($class_name),
+                "Expected '$class_name' to be a valid CSS class name."
+            );
+        }
+
+        // Invalid class names
+        $invalid_class_names = [
+            '123class',       // Starts with a digit
+            '-invalid-class', // Starts with a hyphen
+            '_invalid',       // Starts with an underscore
+            '',               // Empty string
+        ];
+
+        foreach ($invalid_class_names as $class_name) {
+            $this->assertFalse(
+                Helper::is_valid_css_class_name($class_name),
+                "Expected '$class_name' to be an invalid CSS class name."
+            );
+        }
+    }
+
+    /**
+     * Test the join_strings method with various inputs.
+     */
+    public function testJoinStrings() {
+        $testCases = [
+            'normal strings' => [
+                'input' => ['class1', 'class2', 'class3'],
+                'expected' => 'class1 class2 class3'
+            ],
+            'empty strings' => [
+                'input' => ['class1', '', 'class2'],
+                'expected' => 'class1 class2'
+            ],
+            'false values' => [
+                'input' => ['class1', false, 'class2'],
+                'expected' => 'class1 class2'
+            ],
+            'null values' => [
+                'input' => ['class1', null, 'class2'],
+                'expected' => 'class1 class2'
+            ],
+            'numeric values' => [
+                'input' => ['class1', 123, 'class2'],
+                'expected' => 'class1 class2'
+            ],
+            'mixed valid and invalid' => [
+                'input' => ['class1', '', false, null, 'class2', 0, 'class3'],
+                'expected' => 'class1 class2 class3'
+            ]
+        ];
+
+        // Iterate through test cases and assert results
+        foreach ($testCases as $description => $testCase) {
+            $this->assertEquals(
+                $testCase['expected'],
+                Helper::join_strings($testCase['input']),
+                "Failed asserting for case: {$description}"
+            );
+        }
+    }
 }
