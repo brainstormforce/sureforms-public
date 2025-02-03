@@ -1,5 +1,5 @@
 import { __ } from '@wordpress/i18n';
-import { addQueryParam } from '@Utils/Helpers';
+import { addQueryParam } from '../../utils/Helpers';
 
 export default ( { badgeName = 'Starter'
 	, tooltipHeading = '', tooltipContent = '', tooltipPosition = 'bottom',
