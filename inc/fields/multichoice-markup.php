@@ -118,7 +118,7 @@ class Multichoice_Markup extends Base {
 		$check_svg     = Helper::fetch_svg( $this->svg_type . '-checked', 'srfm-' . $this->slug . '-icon', 'aria-hidden="true"' );
 		$unchecked_svg = Helper::fetch_svg( $this->svg_type . '-unchecked', 'srfm-' . $this->slug . '-icon-unchecked', 'aria-hidden="true"' );
 
-		$this->class_name =$this->get_field_classes(["srfm-{$this->type_attr}-mode"]);
+		$this->class_name = $this->get_field_classes( [ "srfm-{$this->type_attr}-mode" ] );
 
 		ob_start();
 		?>

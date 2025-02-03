@@ -115,7 +115,7 @@ class Number_Markup extends Base {
 	 * @return string|bool
 	 */
 	public function markup() {
-		$data_config = $this->field_config;
+		$data_config      = $this->field_config;
 		$this->class_name = $this->get_field_classes();
 
 		ob_start(); ?>

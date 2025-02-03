@@ -345,13 +345,23 @@ class Base {
 	protected $field_config;
 
 	/**
+	 * Render the sureforms default
+	 *
+	 * @since 0.0.2
+	 * @return string|bool
+	 */
+	public function markup() {
+		return '';
+	}
+
+	/**
 	 * Constructor for the Base class.
 	 *
-	 * @param array<mixed> $attributes Block attributes.
+	 * @param array<mixed> $extra_classes Extra classes to be added to the field.
 	 * @since x.x.x
 	 * @return string
 	 */
-	function get_field_classes( $extra_classes = [] ){
+	public function get_field_classes( $extra_classes = [] ) {
 		$common_classes = [
 			'srfm-block-single',
 			'srfm-block',
@@ -368,16 +378,6 @@ class Base {
 		}
 
 		return Helper::join_strings( $common_classes );
-	} 
-
-	/**
-	 * Render the sureforms default
-	 *
-	 * @since 0.0.2
-	 * @return string|bool
-	 */
-	public function markup() {
-		return '';
 	}
 
 	/**
@@ -425,23 +425,6 @@ class Base {
 
 		$this->is_editing = isset( $attributes['isEditing'] ) ? true : false;
 		$this->entry_id   = $attributes['entryID'] ?? 0;
-
-		// // If the slug is one of the following: dropdown, input, multi-choice, or number,
-		// // add common classes to the class_name property.
-		// if ( in_array( $this->slug, [ 'dropdown', 'input', 'multi-choice', 'number' ], true ) ) {
-		// 	$common_classes = [
-		// 		'srfm-block-single',
-		// 		'srfm-block',
-		// 		"srfm-{$this->slug}-block",
-		// 		"srf-{$this->slug}-{$this->block_id}-block",
-		// 		$this->block_width,
-		// 		$this->class_name,
-		// 		"srfm-slug-{$this->block_slug}",
-		// 		$this->conditional_class,
-		// 	];
-
-		// 	$this->class_name = Helper::join_strings( $common_classes );
-		// }
 	}
 
 	/**

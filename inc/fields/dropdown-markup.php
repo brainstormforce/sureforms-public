@@ -65,7 +65,7 @@ class Dropdown_Markup extends Base {
 	 * @return string|bool
 	 */
 	public function markup() {
-		$this->class_name =$this->get_field_classes();
+		$this->class_name = $this->get_field_classes();
 
 		ob_start(); ?>
 			<div data-block-id="<?php echo esc_attr( $this->block_id ); ?>" class="<?php echo esc_attr( $this->class_name ); ?>">

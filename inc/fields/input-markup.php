@@ -72,7 +72,7 @@ class Input_Markup extends Base {
 	public function markup() {
 		$data_config = $this->field_config;
 
-		$this->class_name =$this->get_field_classes();
+		$this->class_name = $this->get_field_classes();
 
 		ob_start(); ?>
 			<div data-block-id="<?php echo esc_attr( $this->block_id ); ?>" class="<?php echo esc_attr( $this->class_name ); ?>" <?php echo $data_config ? "data-field-config='" . wp_json_encode( $data_config ) . "'" : ''; ?>>
