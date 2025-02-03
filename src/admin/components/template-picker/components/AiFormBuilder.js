@@ -36,13 +36,13 @@ const AiFormBuilder = () => {
 	const [ isListening, setIsListening ] = useState( false ); // State to manage voice recording
 	const recognitionRef = useRef( null ); // To store SpeechRecognition instance
 	const [ formType, setFormType ] = useState("simple");
-	const [ formTypeObj, setFormTypeObj ] = useState( {} );
+	const [ formLayout, setformLayout ] = useState( {} );
 	const showAiConversationalFormToggle = false;
 	const conversationalFormAiToggle = applyFilters(
 		'srfm.aiFormScreen.conversational.toggle',
 		showAiConversationalFormToggle,
-		formTypeObj,
-		setFormTypeObj
+		formLayout,
+		setformLayout
 	);
 
 	const examplePrompts = applyFilters(
@@ -64,7 +64,8 @@ const AiFormBuilder = () => {
 				title: __( 'Make an event registration form', 'sureforms' ),
 			},
 		],
-		formTypeObj
+		formLayout,
+		formType
 		 );
 
 	const initSpeechRecognition = () => {
@@ -152,15 +153,10 @@ const AiFormBuilder = () => {
 				content: chat.message,
 			} ) ) || [];
 		messageArray.push( { role: 'user', content: userCommand } );
-		// const formType = applyFilters(
-		// 	'srfm.aiFormScreen.formType',
-		// 	'',
-		// 	formTypeObj
-		// );
 		const postData = {
 			message_array: messageArray,
 			use_system_message: useSystemMessage,
-			is_conversional: formTypeObj?.isConversationalForm,
+			is_conversional: formLayout?.isConversationalForm,
 			form_type: formType,
 		};
 
@@ -206,10 +202,10 @@ const AiFormBuilder = () => {
 					const metasToUpdate = applyFilters(
 						'srfm.aiFormScreen.metasToUpdate',
 						{},
-						formTypeObj,
+						formLayout,
 						content
 					);
-					handleAddNewPost( postContent, formTitle, metasToUpdate, formTypeObj?.isConversationalForm, formType );
+					handleAddNewPost( postContent, formTitle, metasToUpdate, formLayout?.isConversationalForm, formType );
 				} else {
 					setShowFormCreationErr( true );
 				}
@@ -331,6 +327,7 @@ const AiFormBuilder = () => {
 					<FormTypeSelector
 					formType={formType}
 					setFormType={setFormType}
+					setformLayout={setformLayout}
 					/>
 						<div className="srfm-ai-builder-textarea-ctn">
 						<h1 className="srfm-ai-builder-header-title">
@@ -364,7 +361,7 @@ const AiFormBuilder = () => {
 									) }
 								</span>
 							) }
-							{ false === conversationalFormAiToggle
+							{ "simple" === formType && (false === conversationalFormAiToggle
 								? <div className="srfm-ai-conversational-form-toggle"
 								>
 									<div style={ {
@@ -392,7 +389,7 @@ const AiFormBuilder = () => {
 										utmMedium="ai_builder"
 									/>
 								</div>
-								: conversationalFormAiToggle }
+								: conversationalFormAiToggle) }
 							<div
 								className="srfm-ai-voice-input-ctn"
 							>
@@ -624,17 +621,22 @@ export const getLimitReachedPopup = () => {
 const FormTypeSelector = ({
 	formType,
 	setFormType,
+	setformLayout
 }) => {
 	const formTypeOptions = applyFilters(
 		'srfm.ai_form_builder.form_type_options',
 		[
 			{ label: 'Simple', enabled: true },
 			{ label: 'Calculations', enabled: false },
-		]
+		],
 	);
 
 	const handleSelection = (type) => {
 		setFormType(type);
+		// if the form type is not simple, reset the form type object to disable conversational form
+		if (type !== "simple") {
+			setformLayout({});
+		}
 	};
 
 	const containerStyle = {
