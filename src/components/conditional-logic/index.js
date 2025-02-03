@@ -19,7 +19,7 @@ const ConditionalLogicPreview = () => {
 					{ ' ' }
 					{ __( 'Conditional Logic', 'sureforms' ) }{ ' ' }
 				</h2>
-				{/* <PremiumBadge
+				{ /* <PremiumBadge
 					badgeName={ 'Starter' }
 					tooltipHeading={ __(
 						'Unlock Conditional Logic',
@@ -31,7 +31,7 @@ const ConditionalLogicPreview = () => {
 					) }
 					tooltipPosition={ 'bottom' }
 					utmMedium={ 'editor_blocks_conditional_logic' }
-				/> */}
+				/> */ }
 				{ ! isExpanded ? chevronDown : chevronUp }
 			</div>
 			{ isExpanded ? (
