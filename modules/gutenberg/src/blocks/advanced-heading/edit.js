@@ -36,7 +36,7 @@ const UAGBAdvancedHeading = ( props ) => {
 		setAttributes,
 	} = props;
 
-	console.log( 'UAGBAdvancedHeading', props );
+	console.log( 'UAGBAdvancedHeading ->', props );
 
 	// Check dynamic content in heading and description.
 	const headingHasDynamicContent =
