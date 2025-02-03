@@ -40,7 +40,7 @@ class Analytics {
 
 		add_filter(
 			'uds_survey_allowed_screens',
-			function ( $screens ) {
+			static function ( $screens ) {
 				return [ 'plugins' ];
 			}
 		);
