@@ -292,7 +292,6 @@ class Plugin_Loader {
 		AI_Auth::get_instance();
 		Updater::get_instance();
 		DatabaseRegister::init();
-
 		/**
 		 * Required to add the if check for the class existence to resolve phpstan error,
 		 * as the phpstan configuration ignores the inc/lib directory which gives error

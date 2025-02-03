@@ -34,6 +34,14 @@ class Analytics {
 			require_once SRFM_DIR . 'inc/lib/bsf-analytics/class-bsf-analytics-loader.php';
 		}
 
+		if ( ! class_exists( 'Astra_Notices' ) ) {
+			require_once SRFM_DIR . 'inc/lib/astra-notices/class-astra-notices.php';
+		}
+
+		add_filter( 'uds_survey_allowed_screens', function ( $screens ) {
+			return [ 'plugins' ];
+		} );
+
 		$srfm_bsf_analytics = \BSF_Analytics_Loader::get_instance();
 
 		$srfm_bsf_analytics->set_entity(
@@ -50,9 +58,9 @@ class Analytics {
 								'id'                => 'deactivation-survey-sureforms',
 								'popup_logo'        => SRFM_URL . 'admin/assets/sureforms-logo.png',
 								'plugin_slug'       => 'sureforms',
-								'popup_title'       => __( 'Quick Feedback', 'sureforms' ),
+								'popup_title'       => 'Quick Feedback',
 								'support_url'       => 'https://sureforms.com/contact/',
-								'popup_description' => __( 'If you have a moment, please share why you are deactivating SureForms:', 'sureforms' ),
+								'popup_description' => 'If you have a moment, please share why you are deactivating SureForms:',
 								'show_on_screens'   => [ 'plugins' ],
 								'plugin_version'    => SRFM_VER,
 							],
