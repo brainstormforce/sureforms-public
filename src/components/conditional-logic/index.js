@@ -1,6 +1,7 @@
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
-import PremiumBadge from '@Admin/components/PremiumBadge';
+// import PremiumBadge from '@Admin/components/PremiumBadge';
+import PremiumBadge from '../../admin/components/PremiumBadge';
 import { chevronDown, chevronUp } from '@wordpress/icons';
 import { SelectControl, Button, ToggleControl } from '@wordpress/components';
 import { useState } from '@wordpress/element';
