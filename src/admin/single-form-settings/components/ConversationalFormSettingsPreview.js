@@ -24,7 +24,7 @@ const ConversationalFormSettingsPreview = ( { setHidePopover } ) => {
 								{ __( 'Conversational Layout', 'sureforms' ) }
 							</label>
 							<PremiumBadge
-								badgeName={ __( 'Pro', 'sureforms' ) }
+								badgeName={ 'Pro' }
 								tooltipHeading={ __( 'Unlock Conversational Forms', 'sureforms' ) }
 								tooltipContent={ __( 'With the SureForms Pro Plan, you can transform your forms into engaging conversational layouts for a seamless user experience.', 'sureforms' ) }
 								utmMedium="sureforms_editor"

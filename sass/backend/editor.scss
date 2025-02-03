@@ -575,6 +575,7 @@ body.post-type-sureforms_form {
 	.srfm-conversational-placeholder-label-ctn {
 		display: flex;
 		gap: 8px;
+		align-items: center;
 	}
 }
 
@@ -602,6 +603,7 @@ html[dir="rtl"] body.post-type-sureforms_form {
 		gap: 12px;
 		padding: 16px 48px 16px 16px;
 		cursor: pointer;
+		align-items: center;
 
 		.components-panel__body-title:hover {
 			background: unset;
