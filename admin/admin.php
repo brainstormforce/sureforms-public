@@ -65,7 +65,7 @@ class Admin {
 		add_filter( 'avf_use_block_editor_for_post', [ $this, 'enable_block_editor_in_enfold_theme' ] );
 
 		// Add action links to the plugin page.
-		add_filter( 'plugin_action_links_' . SRFM_BASENAME, array( $this, 'add_action_links' ) );
+		add_filter( 'plugin_action_links_' . SRFM_BASENAME, [ $this, 'add_action_links' ] );
 	}
 
 	/**
