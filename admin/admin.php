@@ -63,6 +63,24 @@ class Admin {
 		);
 		// Enfold theme compatibility to enable block editor for SureForms post type.
 		add_filter( 'avf_use_block_editor_for_post', [ $this, 'enable_block_editor_in_enfold_theme' ] );
+
+		// Add action links to the plugin page.
+		add_filter( 'plugin_action_links_' . SRFM_BASENAME, array( $this, 'add_action_links' ) );
+	}
+
+	/**
+	 * Show action on plugin page.
+	 *
+	 * @param  array $links links.
+	 * @return array
+	 * @since x.x.x
+	 */
+	public function add_action_links( $links ) {
+		if ( ! defined( 'SRFM_PRO_FILE' ) ) {
+			$links[] = '<a style="color:#D54407;font-weight:bold;" href="https://sureforms.com/pricing" target="_blank" rel="noreferrer" class="sureforms-plugins-go-pro">' . __( 'Get SureForms Pro', 'sureforms' ) . '</a>';
+		}
+
+		return $links;
 	}
 
 	/**
