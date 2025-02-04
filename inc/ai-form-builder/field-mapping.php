@@ -152,7 +152,7 @@ class Field_Mapping {
 
 					// if number field is set to integer then set the step to 1.
 					if ( 'number' === $question['fieldType'] && ! empty( $question['calculationFormula'] ) ) {
-						$merged_attributes['enableCalculation'] = true;
+						$merged_attributes['enableCalculation']  = true;
 						$merged_attributes['calculationFormula'] = $question['calculationFormula'];
 					}
 
