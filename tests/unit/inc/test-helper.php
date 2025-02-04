@@ -506,4 +506,43 @@ class Test_Helper extends TestCase {
             );
         }
     }
+
+    public function testgetRequestValue() {
+        // Prepare setup for testing.
+        $_GET = ['test_key' => 'get_value'];
+        $_POST = ['test_key' => 'post_value'];
+        $_REQUEST = array_merge($_GET, $_POST, ['test_key' => 'request_value']);
+
+        /**
+         * Test that the function returns the expected value from $_GET.
+         */
+        $result = Helper::get_request_value('get');
+        $this->assertIsArray($result);
+        $this->assertArrayHasKey('test_key', $result);
+        $this->assertEquals('get_value', $result['test_key']);
+
+        /**
+         * Test that the function returns the expected value from $_POST.
+         */
+        $result = Helper::get_request_value('post');
+        $this->assertIsArray($result);
+        $this->assertArrayHasKey('test_key', $result);
+        $this->assertEquals('post_value', $result['test_key']);
+
+        /**
+         * Test that the function returns the expected value from $_REQUEST.
+         */
+        $result = Helper::get_request_value('request');
+        $this->assertIsArray($result);
+        $this->assertArrayHasKey('test_key', $result);
+        $this->assertEquals('request_value', $result['test_key']);
+
+        /**
+         * Test that the function returns the expected value from $_GET by default.
+         */
+        $result = Helper::get_request_value(); // Default should be 'get'
+        $this->assertIsArray($result);
+        $this->assertArrayHasKey('test_key', $result);
+        $this->assertEquals('get_value', $result['test_key']);
+    }
 }

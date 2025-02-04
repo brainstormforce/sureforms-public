@@ -131,12 +131,12 @@ class Multichoice_Markup extends Base {
 				'fill'    => true,
 			],
 			'path' => [
-				'd'              => true,
-				'stroke'         => true,
-				'stroke-opacity' => true,
-				'stroke-width'   => true,
-				'stroke-linecap' => true,
-				'stroke-linejoin'=> true,
+				'd'               => true,
+				'stroke'          => true,
+				'stroke-opacity'  => true,
+				'stroke-width'    => true,
+				'stroke-linecap'  => true,
+				'stroke-linejoin' => true,
 			],
 		];
 

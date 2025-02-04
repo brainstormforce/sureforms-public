@@ -167,6 +167,10 @@ class Admin {
 	 * @since 0.0.1
 	 */
 	public function settings_page() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+
 		$callback = [ $this, 'settings_page_callback' ];
 		add_submenu_page(
 			'sureforms_menu',
@@ -177,10 +181,12 @@ class Admin {
 			$callback
 		);
 
-		// Get the current submenu page.
-		$submenu_page = isset( $_GET['page'] ) ? sanitize_text_field( wp_unslash( $_GET['page'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- $_GET['page'] does not provide nonce.
+		$request_value = Helper::get_request_value();
 
-		if ( ! isset( $_GET['tab'] ) && 'sureforms_form_settings' === $submenu_page ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- $_GET['page'] does not provide nonce.
+		// Get the current submenu page.
+		$submenu_page = isset( $request_value['page'] ) ? sanitize_text_field( wp_unslash( $request_value['page'] ) ) : '';
+
+		if ( ! isset( $request_value['tab'] ) && 'sureforms_form_settings' === $submenu_page ) {
 			wp_safe_redirect( admin_url( 'admin.php?page=sureforms_form_settings&tab=general-settings' ) );
 			exit;
 		}
@@ -250,9 +256,10 @@ class Admin {
 	 * @return void
 	 */
 	public function render_entries() {
+		$request_value = Helper::get_request_value();
 		// Render single entry view.
 		// Adding the phpcs ignore nonce verification as no database operations are performed in this function, it is used to display the single entry view.
-		if ( isset( $_GET['entry_id'] ) && is_numeric( $_GET['entry_id'] ) && isset( $_GET['view'] ) && 'details' === $_GET['view'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		if ( isset( $request_value['entry_id'] ) && is_numeric( $request_value['entry_id'] ) && isset( $request_value['view'] ) && 'details' === $request_value['view'] ) {
 			$single_entry_view = new Single_Entry();
 			$single_entry_view->render();
 			return;
@@ -345,10 +352,12 @@ class Admin {
 	 * @return array Breadcrumbs Array.
 	 */
 	public function get_breadcrumbs_for_current_page() {
+		$request_value = Helper::get_request_value();
+
 		global $post, $pagenow;
 		$breadcrumbs = [];
 
-		if ( 'admin.php' === $pagenow && isset( $_GET['page'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		if ( 'admin.php' === $pagenow && isset( $request_value['page'] ) ) {
 			$page_title    = get_admin_page_title();
 			$breadcrumbs[] = [
 				'title' => $page_title,
@@ -363,7 +372,7 @@ class Admin {
 					'link'  => admin_url( 'edit.php?post_type=' . $post_type_obj->name ),
 				];
 
-				if ( 'edit.php' === $pagenow && ! isset( $_GET['page'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+				if ( 'edit.php' === $pagenow && ! isset( $request_value['page'] ) ) {
 					$breadcrumbs[ count( $breadcrumbs ) - 1 ]['link'] = '';
 				} else {
 					$breadcrumbs[] = [
@@ -812,7 +821,7 @@ class Admin {
 
 		if ( ! empty( $message ) ) {
 			// Phpcs ignore comment is required as $message variable is already escaped.
-			echo '<div class="notice notice-warning">' . $message . '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			echo '<div class="notice notice-warning">' . wp_kses_post( $message ) . '</div>';
 		}
 	}
 

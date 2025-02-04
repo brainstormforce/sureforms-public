@@ -511,6 +511,6 @@ class Single_Entry {
 		</div>
 		<?php
 		$content = ob_get_clean();
-		echo apply_filters( 'srfm_entry_logs_markup', $content, $entry_logs ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo apply_filters( 'srfm_entry_logs_markup', $content, $entry_logs ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Dynamic values are escaped in the callback.
 	}
 }
