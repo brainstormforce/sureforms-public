@@ -149,12 +149,8 @@ class Field_Mapping {
 					if ( 'phone' === $question['fieldType'] ) {
 						$merged_attributes['autoCountry'] = true;
 					}
-
-					// if number field is set to integer then set the step to 1.
-					if ( 'number' === $question['fieldType'] && ! empty( $question['calculationFormula'] ) ) {
-						$merged_attributes['enableCalculation']  = true;
-						$merged_attributes['calculationFormula'] = $question['calculationFormula'];
-					}
+					
+					$merged_attributes = apply_filters( 'srfm_ai_form_builder_modify_merged_attributes', $merged_attributes, $question );
 
 					$post_content .= '<!-- wp:srfm/' . $question['fieldType'] . ' ' . Helper::encode_json( $merged_attributes ) . ' /-->' . PHP_EOL;
 					break;
