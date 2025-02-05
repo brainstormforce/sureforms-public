@@ -180,7 +180,6 @@ class Post_Types {
 		}
 	}
 
-
 	/**
 	 * Remove add new form menu item.
 	 *
