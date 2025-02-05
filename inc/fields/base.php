@@ -355,6 +355,32 @@ class Base {
 	}
 
 	/**
+	 * Constructor for the Base class.
+	 *
+	 * @param array<mixed> $extra_classes Extra classes to be added to the field.
+	 * @since x.x.x
+	 * @return string
+	 */
+	public function get_field_classes( $extra_classes = [] ) {
+		$common_classes = [
+			'srfm-block-single',
+			'srfm-block',
+			"srfm-{$this->slug}-block",
+			"srf-{$this->slug}-{$this->block_id}-block",
+			$this->block_width,
+			$this->class_name,
+			"srfm-slug-{$this->block_slug}",
+			$this->conditional_class,
+		];
+
+		if ( ! empty( $extra_classes ) && is_array( $extra_classes ) ) {
+			$common_classes = array_merge( $common_classes, $extra_classes );
+		}
+
+		return Helper::join_strings( $common_classes );
+	}
+
+	/**
 	 * Setter for the properties of class based on block attributes.
 	 *
 	 * @param array<mixed> $attributes Block attributes.

@@ -261,4 +261,5 @@
 	// !important is used to override the default styles.
 	opacity: 1 !important;
 	pointer-events: visible !important;
+	white-space: nowrap; // Prevent the text from wrapping.
 }

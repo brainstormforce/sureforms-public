@@ -1,6 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
-// import PremiumBadge from '@Admin/components/PremiumBadge';
+import PremiumBadge from '../../admin/components/PremiumBadge';
 import { chevronDown, chevronUp } from '@wordpress/icons';
 import { SelectControl, Button, ToggleControl } from '@wordpress/components';
 import { useState } from '@wordpress/element';
@@ -19,7 +19,7 @@ const ConditionalLogicPreview = () => {
 					{ ' ' }
 					{ __( 'Conditional Logic', 'sureforms' ) }{ ' ' }
 				</h2>
-				{ /* <PremiumBadge
+				<PremiumBadge
 					badgeName={ 'Starter' }
 					tooltipHeading={ __(
 						'Unlock Conditional Logic',
@@ -31,7 +31,7 @@ const ConditionalLogicPreview = () => {
 					) }
 					tooltipPosition={ 'bottom' }
 					utmMedium={ 'editor_blocks_conditional_logic' }
-				/> */ }
+				/>
 				{ ! isExpanded ? chevronDown : chevronUp }
 			</div>
 			{ isExpanded ? (
