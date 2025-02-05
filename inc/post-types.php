@@ -43,6 +43,7 @@ class Post_Types {
 		add_action( 'admin_notices', [ $this, 'import_form_popup' ] );
 		add_action( 'admin_bar_menu', [ $this, 'remove_admin_bar_menu_item' ], 80, 1 );
 		add_action( 'template_redirect', [ $this, 'srfm_instant_form_redirect' ] );
+		add_action( 'template_redirect', [ $this, 'disable_sureforms_archive_page' ], 9 );
 	}
 
 	/**
@@ -144,7 +145,7 @@ class Post_Types {
 				'rewrite'           => [ 'slug' => 'form' ],
 				'public'            => true,
 				'show_in_rest'      => true,
-				'has_archive'       => false,
+				'has_archive'       => true,
 				'show_ui'           => true,
 				'supports'          => [ 'title', 'author', 'editor', 'custom-fields' ],
 				'show_in_menu'      => 'sureforms_menu',
@@ -165,6 +166,20 @@ class Post_Types {
 		// )
 		// );.
 	}
+
+	/**
+	 * Redirects requests for SureForms archieve page to homeurl
+	 *
+	 * @since x.x.x
+	 * @return void
+	 */
+	public function disable_sureforms_archive_page() {
+		if ( is_post_type_archive( SRFM_FORMS_POST_TYPE ) ) {
+			wp_safe_redirect( home_url(), 301 );
+			exit;
+		}
+	}
+
 
 	/**
 	 * Remove add new form menu item.
