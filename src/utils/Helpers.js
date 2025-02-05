@@ -258,7 +258,6 @@ export const setFormSpecificSmartTags = ( savedBlocks, blockSlugs ) => {
 
 	const excludedBlocks = [
 		'srfm/inline-button',
-		'srfm/hidden',
 		'srfm/page-break',
 		'srfm/separator',
 		'srfm/advanced-heading',
