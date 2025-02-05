@@ -69,11 +69,12 @@ class Admin {
 	 * Enable block editor in Enfold theme for SureForms post type.
 	 *
 	 * @param bool $use_block_editor Whether to use block editor.
-	 * @since x.x.x
+	 * @since 1.3.1
 	 */
 	public function enable_block_editor_in_enfold_theme( $use_block_editor ) {
+		$current_screen = get_current_screen();
 		// if SureForms form post type then return true.
-		if ( SRFM_FORMS_POST_TYPE === get_current_screen()->post_type ) {
+		if ( ! is_null( $current_screen ) && SRFM_FORMS_POST_TYPE === $current_screen->post_type ) {
 			return true;
 		}
 		return $use_block_editor;
@@ -421,7 +422,7 @@ class Admin {
 			'is_pro_active'           => defined( 'SRFM_PRO_VER' ),
 			'pro_plugin_version'      => defined( 'SRFM_PRO_VER' ) ? SRFM_PRO_VER : '',
 			'pro_plugin_name'         => defined( 'SRFM_PRO_VER' ) && defined( 'SRFM_PRO_PRODUCT' ) ? SRFM_PRO_PRODUCT : 'SureForms Pro',
-			'sureforms_pricing_page'  => $this->get_sureforms_website_url( 'pricing' ),
+			'sureforms_pricing_page'  => Helper::get_sureforms_website_url( 'pricing' ),
 			'field_spacing_vars'      => Helper::get_css_vars(),
 			'is_ver_lower_than_6_7'   => version_compare( $wp_version, '6.6.2', '<=' ),
 		];
@@ -554,6 +555,7 @@ class Admin {
 					'site_url'             => get_site_url(),
 					'srfm_import_endpoint' => '/wp-json/sureforms/v1/sureforms_import',
 					'import_form_nonce'    => current_user_can( 'edit_posts' ) ? wp_create_nonce( 'wp_rest' ) : '',
+					'import_btn_string'    => __( 'Import Form', 'sureforms' ),
 				]
 			);
 
@@ -600,7 +602,7 @@ class Admin {
 					'srfm_ai_usage_details'        => AI_Helper::get_current_usage_details(),
 					'is_pro_license_active'        => AI_Helper::is_pro_license_active(),
 					'srfm_ai_auth_user_email'      => get_option( 'srfm_ai_auth_user_email' ),
-					'pricing_page_url'             => $this->get_sureforms_website_url( 'pricing' ),
+					'pricing_page_url'             => Helper::get_sureforms_website_url( 'pricing' ),
 				]
 			);
 
@@ -715,24 +717,6 @@ class Admin {
 		}
 
 		return $status;
-	}
-
-	/**
-	 * Get SureForms Website URL.
-	 *
-	 * @param string $trail The URL trail to append to SureForms website URL. The parameter should not include a leading slash as the base URL already ends with a trailing slash.
-	 * @since 0.0.7
-	 * @return string
-	 */
-	public static function get_sureforms_website_url( $trail ) {
-		$url = SRFM_WEBSITE;
-		if ( ! empty( $trail ) && is_string( $trail ) ) {
-			$url = SRFM_WEBSITE . $trail;
-		}
-
-		$url = \BSF_UTM_Analytics\Inc\Utils::get_utm_ready_link( $url, 'sureforms' );
-
-		return esc_url( $url );
 	}
 
 	// Entries methods.

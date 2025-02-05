@@ -1,15 +1,15 @@
-import inputAttributes from '@Blocks/input/block.json';
-import emailAttributes from '@Blocks/email/block.json';
-import phoneAttributes from '@Blocks/phone/block.json';
-import textareaAttributes from '@Blocks/textarea/block.json';
-import urlAttributes from '@Blocks/url/block.json';
-import numberAttributes from '@Blocks/number/block.json';
-import checkboxAttributes from '@Blocks/checkbox/block.json';
-import addressAttributes from '@Blocks/address/block.json';
-import multiChoiceAttributes from '@Blocks/multi-choice/block.json';
-import dropdownAttributes from '@Blocks/dropdown/block.json';
-import gdprAttributes from '@Blocks/gdpr/block.json';
-import inlineButton from '@Blocks/inline-button/block.json';
+import inputAttributes from '@IncBlocks/input/block.json';
+import emailAttributes from '@IncBlocks/email/block.json';
+import phoneAttributes from '@IncBlocks/phone/block.json';
+import textareaAttributes from '@IncBlocks/textarea/block.json';
+import urlAttributes from '@IncBlocks/url/block.json';
+import numberAttributes from '@IncBlocks/number/block.json';
+import checkboxAttributes from '@IncBlocks/checkbox/block.json';
+import addressAttributes from '@IncBlocks/address/block.json';
+import multiChoiceAttributes from '@IncBlocks/multichoice/block.json';
+import dropdownAttributes from '@IncBlocks/dropdown/block.json';
+import gdprAttributes from '@IncBlocks/gdpr/block.json';
+import inlineButton from '@IncBlocks/inlinebutton/block.json';
 import { getDefaultMessage } from '@Blocks/util';
 import { __ } from '@wordpress/i18n';
 

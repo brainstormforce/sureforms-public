@@ -7,7 +7,7 @@ import { MdOutlineChecklist as icon } from 'react-icons/md';
  */
 import edit from './edit';
 import save from './save';
-import metadata from './block.json';
+import metadata from '@IncBlocks/multichoice/block.json';
 
 const { name } = metadata;
 
