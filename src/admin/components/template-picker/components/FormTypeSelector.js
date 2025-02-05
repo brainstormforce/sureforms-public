@@ -3,11 +3,13 @@ import { applyFilters } from '@wordpress/hooks';
 import PremiumBadge from '../../../components/PremiumBadge';
 
 const FormTypeSelector = ( { formType, setFormType, setformLayout } ) => {
+    // filter to add more form types
 	const formTypeOptions = applyFilters(
 		'srfm.ai_form_builder.form_type_options',
 		[
-			{ label: 'Simple', enabled: true },
-			{ label: 'Calculations', enabled: false },
+			{ label: 'Simple', isAvailable: true },
+            // this is added to show a preview of calculations form type in free plugin
+			{ label: 'Calculations', isAvailable: false },
 		],
 	);
 
@@ -21,14 +23,14 @@ const FormTypeSelector = ( { formType, setFormType, setformLayout } ) => {
 
 	return (
 		<div className="srfm-ai-builder-form-type-selector">
-			<p className="srfm-ai-builder-form-type-label">Please select form type</p>
+			<p className="srfm-ai-builder-form-type-label">{__( 'Please select form type', 'sureforms' )}</p>
 			<div className="srfm-ai-builder-form-type-selector">
 				<div
 					className="srfm-ai-builder-form-type-highlight"
 					style={ { left: formType === 'simple' ? '4px' : 'calc(50% + 0px)' } }
 				/>
 				{ formTypeOptions.map( ( option, index ) => (
-					option.enabled ? (
+					option.isAvailable ? (
 						<div
 							key={ index }
 							className={ `srfm-ai-builder-form-type-option ${ formType === option.label.toLowerCase() ? 'active' : '' }` }

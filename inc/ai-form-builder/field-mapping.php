@@ -149,7 +149,7 @@ class Field_Mapping {
 					if ( 'phone' === $question['fieldType'] ) {
 						$merged_attributes['autoCountry'] = true;
 					}
-					
+
 					// Apply filter to modify merged attributes.
 					$merged_attributes = apply_filters( 'srfm_ai_form_builder_modify_merged_attributes', $merged_attributes, $question );
 
