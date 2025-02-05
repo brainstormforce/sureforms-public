@@ -79,7 +79,7 @@ class Field_Mapping {
 					'label'    => sanitize_text_field( $question['label'] ),
 					'required' => filter_var( $question['required'], FILTER_VALIDATE_BOOLEAN ),
 					'help'     => sanitize_text_field( $question['helpText'] ),
-					'slug'     => sanitize_text_field( $question['slug'] ),
+					'slug'     => isset( $question['slug'] ) ? sanitize_text_field( $question['slug'] ) : '',
 				]
 			);
 
@@ -150,6 +150,7 @@ class Field_Mapping {
 						$merged_attributes['autoCountry'] = true;
 					}
 					
+					// Apply filter to modify merged attributes.
 					$merged_attributes = apply_filters( 'srfm_ai_form_builder_modify_merged_attributes', $merged_attributes, $question );
 
 					$post_content .= '<!-- wp:srfm/' . $question['fieldType'] . ' ' . Helper::encode_json( $merged_attributes ) . ' /-->' . PHP_EOL;
