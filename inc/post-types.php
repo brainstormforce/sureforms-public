@@ -170,7 +170,7 @@ class Post_Types {
 	/**
 	 * Redirects requests for SureForms archieve page to homeurl
 	 *
-	 * @since x.x.x
+	 * @since 1.4.0
 	 * @return void
 	 */
 	public function disable_sureforms_archive_page() {
