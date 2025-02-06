@@ -685,8 +685,7 @@ class Entries_List_Table extends \WP_List_Table {
 	 * @return bool
 	 */
 	public static function is_trash_view() {
-		$request_value = Helper::get_request_value();
-		return isset( $request_value['view'] ) && 'trash' === sanitize_text_field( wp_unslash( $request_value['view'] ) );
+		return isset( $_GET['view'] ) && 'trash' === sanitize_text_field( wp_unslash( $_GET['view'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verification is not required here as we are not doing any database work.
 	}
 
 	/**
@@ -1077,14 +1076,12 @@ class Entries_List_Table extends \WP_List_Table {
 	 * @return bool
 	 */
 	protected function is_filter_enabled() {
-		$request_value = Helper::get_request_value();
-
 		$intersect = array_intersect(
 			[
 				'form_filter',
 				'month_filter',
 			],
-			array_keys( wp_unslash( $request_value ) ),
+			array_keys( wp_unslash( $_GET ) ), // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- This is fine because we are not using it to save in the database.
 		);
 
 		return ! empty( $intersect );
@@ -1097,11 +1094,9 @@ class Entries_List_Table extends \WP_List_Table {
 	 * @return void
 	 */
 	protected function display_form_filter() {
-		$request_value = Helper::get_request_value();
-
 		$forms = $this->get_available_forms();
 		// Added the phpcs ignore nonce verification as no database operations are performed in this function.
-		$view = isset( $request_value['view'] ) ? sanitize_text_field( wp_unslash( $request_value['view'] ) ) : 'all';
+		$view = isset( $_GET['view'] ) ? sanitize_text_field( wp_unslash( $_GET['view'] ) ) : 'all'; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 
 		echo '<input type="hidden" name="view" value="' . esc_attr( $view ) . '" />';
 		echo '<select name="form_filter">';
@@ -1109,7 +1104,8 @@ class Entries_List_Table extends \WP_List_Table {
 		foreach ( $forms as $form_id => $form_name ) {
 			$form_name = ! empty( $form_name ) ? $form_name : sprintf( 'SureForms %1$s #%2$d', esc_html__( 'Form', 'sureforms' ), esc_attr( $form_id ) );
 			// Adding the phpcs ignore nonce verification as no database operations are performed in this function.
-			$selected = isset( $request_value['form_filter'] ) && Helper::get_integer_value( sanitize_text_field( wp_unslash( $request_value['form_filter'] ) ) ) === $form_id ? ' selected="selected"' : '';
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			$selected = isset( $_GET['form_filter'] ) && Helper::get_integer_value( sanitize_text_field( wp_unslash( $_GET['form_filter'] ) ) ) === $form_id ? ' selected="selected"' : '';
 			printf( '<option value="%s"%s>%s</option>', esc_attr( $form_id ), esc_attr( $selected ), esc_html( $form_name ) );
 		}
 		echo '</select>';
@@ -1170,14 +1166,12 @@ class Entries_List_Table extends \WP_List_Table {
 	 * @return array<string,string>
 	 */
 	protected function get_views() {
-		$request_value = Helper::get_request_value();
-
 		// Get the status count of the entries.
 		$unread_entries_count = Entries::get_total_entries_by_status( 'unread' );
 
 		// Get the current view (All, Read, Unread, Trash) to highlight the selected one.
 		// Adding the phpcs ignore nonce verification as no complex operations are performed here only the count of the entries is required.
-		$current_view = isset( $request_value['view'] ) ? sanitize_text_field( wp_unslash( $request_value['view'] ) ) : 'all';
+		$current_view = isset( $_GET['view'] ) ? sanitize_text_field( wp_unslash( $_GET['view'] ) ) : 'all'; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verification is not needed here and this is admin page request only.
 
 		// Define the base URL for the views (without query parameters).
 		$base_url = wp_nonce_url( admin_url( 'admin.php?page=sureforms_entries' ), 'srfm_entries_action' );

@@ -8,8 +8,6 @@
  * @package Sureforms
  */
 
-use SRFM\Inc\Helper;
-
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
@@ -128,9 +126,8 @@ class Spec_Init_Blocks {
 	 * @since 0.0.1
 	 */
 	public function editor_assets() {
-		$request_value = Helper::get_request_value();
 
-		$post_id   = isset( $request_value['post'] ) ? intval( $request_value['post'] ) : 0;
+		$post_id   = isset( $_GET['post'] ) ? intval( $_GET['post'] ) : 0; //phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$post_type = get_post_type( $post_id );
 
 		if ( SRFM_FORMS_POST_TYPE === $post_type ) {

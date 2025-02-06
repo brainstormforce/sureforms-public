@@ -767,7 +767,6 @@ class Post_Types {
 	 * @return void
 	 */
 	public function srfm_instant_form_redirect() {
-		$request_value = Helper::get_request_value();
 
 		$form_id = Helper::get_integer_value( get_the_ID() );
 
@@ -780,7 +779,7 @@ class Post_Types {
 
 		$form_preview = '';
 
-		$form_preview_attr = isset( $request_value['preview'] ) ? sanitize_text_field( wp_unslash( $request_value['preview'] ) ) : '';
+		$form_preview_attr = isset( $_GET['preview'] ) ? sanitize_text_field( wp_unslash( $_GET['preview'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verification is not needed here.
 
 		if ( $form_preview_attr ) {
 			$form_preview = filter_var( $form_preview_attr, FILTER_VALIDATE_BOOLEAN );

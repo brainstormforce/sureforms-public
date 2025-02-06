@@ -34,30 +34,6 @@ class Helper {
 	private static $srfm_svgs = null;
 
 	/**
-	 * Get the value of a request variable.
-	 *
-	 * @param string $method The method of the request variable.
-	 *
-	 * @since x.x.x
-	 * @return array The value of the request variable.
-	 */
-	public static function get_request_value( $method = 'get' ) {
-		/**
-		 * Note to reviewers, we are using phpcs-ignore here because we are returning superglobals directly,
-		 * and sanitizing them where they are used.
-		 */
-		switch ( strtolower( $method ) ) {
-			case 'get':
-				return $_GET; // phpcs:ignore
-			case 'post':
-				return $_POST; // phpcs:ignore
-			case 'request':
-			default:
-				return $_REQUEST; // phpcs:ignore
-		}
-	}
-
-	/**
 	 * Get common error message.
 	 *
 	 * @since 0.0.2
@@ -443,9 +419,7 @@ class Helper {
 	 * @return array<mixed> Live preview data.
 	 */
 	public static function get_instant_form_live_data() {
-		$request_value = self::get_request_value();
-
-		$srfm_live_mode_data = isset( $request_value['live_mode'] ) && current_user_can( 'edit_posts' ) ? self::sanitize_recursively( 'sanitize_text_field', wp_unslash( $request_value ) ) : [];
+		$srfm_live_mode_data = isset( $_GET['live_mode'] ) && current_user_can( 'edit_posts' ) ? self::sanitize_recursively( 'sanitize_text_field', wp_unslash( $_GET ) ) : []; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verification is not needed here.
 
 		return $srfm_live_mode_data ? array_map(
 			// Normalize falsy values.
@@ -1054,12 +1028,10 @@ class Helper {
 	 * @return bool Returns true if all conditions are met or the single key-value pair is valid, otherwise false.
 	 */
 	public static function validate_request_context( $value, $key = 'post_type', array $conditions = [] ) {
-		$request_value = self::get_request_value( 'request' );
-
 		// If conditions are provided, validate all key-value pairs in the conditions array.
 		if ( ! empty( $conditions ) ) {
 			foreach ( $conditions as $condition_key => $condition_value ) {
-				if ( ! isset( $request_value[ $condition_key ] ) || $request_value[ $condition_key ] !== $condition_value ) {
+				if ( ! isset( $_REQUEST[ $condition_key ] ) || $_REQUEST[ $condition_key ] !== $condition_value ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- This is a controlled comparison of request values.
 					// Return false if any condition is not satisfied.
 					return false;
 				}
@@ -1074,7 +1046,7 @@ class Helper {
 		}
 
 		// Validate a single key-value pair when no conditions are provided.
-		return isset( $request_value[ $key ] ) && $request_value[ $key ] === $value;
+		return isset( $_REQUEST[ $key ] ) && $_REQUEST[ $key ] === $value; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verification is not needed here. Input is validated via strict comparison.
 	}
 
 	/**
