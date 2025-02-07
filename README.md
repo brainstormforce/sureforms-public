@@ -32,7 +32,7 @@ After all, the ultimate aim of most websites is to get those forms filled out.
 
 "Unfortunately, many website owners struggle to design forms that match the overall website aesthetics and user experience."
 
-<a href="https://bsf.io/sureforms-demo" target="_blank" rel="">Try it out on a free dummy site</a>
+<a href="https://bsf.io/sureforms-demo" target="_blank" rel="">Try the live demo of SureForms</a>
 
 SureForms addresses several pain points commonly experienced by website owners:
 
