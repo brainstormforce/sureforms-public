@@ -36,7 +36,7 @@ const FormTypeSelector = ( { formType, setFormType, setformLayout } ) => {
 							className={ `srfm-ai-builder-form-type-option ${ formType === option.label.toLowerCase() ? 'active' : '' }` }
 							onClick={ () => handleSelection( option.label.toLowerCase() ) }
 						>
-							{ option.label }
+							<span className="srfm-ai-builder-form-type-text">{ option.label }</span>
 						</div>
 					) : (
 						<div
@@ -46,10 +46,10 @@ const FormTypeSelector = ( { formType, setFormType, setformLayout } ) => {
 							{ option.label }
 							<PremiumBadge
 								badgeName={ __( 'Business', 'sureforms' ) }
-								tooltipHeading={ __( 'Unlock Conversational Forms', 'sureforms' ) }
-								tooltipContent={ __( 'With the SureForms Pro Plan, you can transform your forms into engaging conversational layouts for a seamless user experience.', 'sureforms' ) }
+								tooltipHeading={ __( 'Unlock Calculations', 'sureforms' ) }
+								tooltipContent={ __( 'Upgrade to the SureForms Business Plan to create advanced forms with real-time calculations, such as project quote calculators, BMI calculators, loan calculators, and more.', 'sureforms' ) }
 								utmMedium="ai_builder"
-								tooltipPosition="top"
+								tooltipPosition="left"
 							/>
 						</div>
 					)
