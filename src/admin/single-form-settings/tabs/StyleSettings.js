@@ -13,6 +13,8 @@ import {
 	faAlignJustify,
 } from '@fortawesome/free-solid-svg-icons';
 import { useDeviceType } from '@Controls/getPreviewType';
+import { SelectControl } from '@wordpress/components';
+import { getFormStylingOptions } from '@Components/hooks';
 
 function StyleSettings( props ) {
 	const { editPost } = useDispatch( editorStore );
@@ -403,11 +405,32 @@ function StyleSettings( props ) {
 		} );
 	}
 
+	const formStylingOptions = getFormStylingOptions( [
+		{
+			label: __( 'SureForms Default', 'sureforms' ),
+			value: 'default',
+		},
+	] );
+
 	return (
 		<>
 			<SRFMAdvancedPanelBody
-				title={ __( 'Form Container', 'sureforms' ) }
+				title={ __( 'Presets', 'sureforms' ) }
 				initialOpen={ true }
+			>
+				<SelectControl
+					label={ __( 'Form Theme', 'sureforms' ) }
+					value={ formStyling?.form_preset || 'default' }
+					options={ formStylingOptions }
+					onChange={ ( value ) => {
+						updateFormStyling( 'form_preset', value );
+					} }
+				/>
+
+			</SRFMAdvancedPanelBody>
+			<SRFMAdvancedPanelBody
+				title={ __( 'Form', 'sureforms' ) }
+				initialOpen={ false }
 			>
 				<AdvancedPopColorControl
 					label={ __( 'Primary Color', 'sureforms' ) }
@@ -462,6 +485,11 @@ function StyleSettings( props ) {
 					isFormSpecific={ true }
 				/>
 				<p className="components-base-control__help" />
+			</SRFMAdvancedPanelBody>
+			<SRFMAdvancedPanelBody
+				title={ __( 'Fields', 'sureforms' ) }
+				initialOpen={ false }
+			>
 				<MultiButtonsControl
 					label={ __( 'Field Spacing', 'sureforms' ) }
 					data={ {
@@ -488,74 +516,77 @@ function StyleSettings( props ) {
 						setFieldSpacing( value );
 					} }
 				/>
-				{ ! isInlineButtonBlockPresent && (
-					<>
-						<p className="components-base-control__help" />
-						<MultiButtonsControl
-							label={ __(
-								'Submit Button Alignment',
-								'sureforms'
-							) }
-							data={ {
-								value: formStyling?.submit_button_alignment,
-								label: 'submit_button_alignment',
-							} }
-							options={ [
-								{
-									value: 'left',
-									icon: (
-										<FontAwesomeIcon icon={ faAlignLeft } />
-									),
-									tooltip: __( 'Left', 'sureforms' ),
-								},
-								{
-									value: 'center',
-									icon: (
-										<FontAwesomeIcon
-											icon={ faAlignCenter }
-										/>
-									),
-									tooltip: __( 'Center', 'sureforms' ),
-								},
-								{
-									value: 'right',
-									icon: (
-										<FontAwesomeIcon
-											icon={ faAlignRight }
-										/>
-									),
-									tooltip: __( 'Right', 'sureforms' ),
-								},
-								{
-									value: 'justify',
-									icon: (
-										<FontAwesomeIcon
-											icon={ faAlignJustify }
-										/>
-									),
-									tooltip: __( 'Full Width', 'sureforms' ),
-								},
-							] }
-							showIcons={ true }
-							onChange={ ( value ) => {
-								updateFormStyling(
-									'submit_button_alignment',
-									value || 'left'
-								);
-								if ( 'justify' === value ) {
-									updateMeta( '_srfm_submit_width', '100%' );
-									updateMeta(
-										'_srfm_submit_width_backend',
-										'auto'
-									);
-								} else {
-									updateMeta( '_srfm_submit_width', '' );
-								}
-							} }
-						/>
-					</>
-				) }
 			</SRFMAdvancedPanelBody>
+			{ ! isInlineButtonBlockPresent && (
+				<SRFMAdvancedPanelBody
+					title={ __( 'Button', 'sureforms' ) }
+					initialOpen={ false }
+				>
+					<p className="components-base-control__help" />
+					<MultiButtonsControl
+						label={ __(
+							'Submit Button Alignment',
+							'sureforms'
+						) }
+						data={ {
+							value: formStyling?.submit_button_alignment,
+							label: 'submit_button_alignment',
+						} }
+						options={ [
+							{
+								value: 'left',
+								icon: (
+									<FontAwesomeIcon icon={ faAlignLeft } />
+								),
+								tooltip: __( 'Left', 'sureforms' ),
+							},
+							{
+								value: 'center',
+								icon: (
+									<FontAwesomeIcon
+										icon={ faAlignCenter }
+									/>
+								),
+								tooltip: __( 'Center', 'sureforms' ),
+							},
+							{
+								value: 'right',
+								icon: (
+									<FontAwesomeIcon
+										icon={ faAlignRight }
+									/>
+								),
+								tooltip: __( 'Right', 'sureforms' ),
+							},
+							{
+								value: 'justify',
+								icon: (
+									<FontAwesomeIcon
+										icon={ faAlignJustify }
+									/>
+								),
+								tooltip: __( 'Full Width', 'sureforms' ),
+							},
+						] }
+						showIcons={ true }
+						onChange={ ( value ) => {
+							updateFormStyling(
+								'submit_button_alignment',
+								value || 'left'
+							);
+							if ( 'justify' === value ) {
+								updateMeta( '_srfm_submit_width', '100%' );
+								updateMeta(
+									'_srfm_submit_width_backend',
+									'auto'
+								);
+							} else {
+								updateMeta( '_srfm_submit_width', '' );
+							}
+						} }
+					/>
+				</SRFMAdvancedPanelBody>
+			) }
 		</>
 	);
 }
