@@ -9,8 +9,5 @@ export const getInstantFormAdditionalSettings = ( settings, args ) => {
 };
 
 export const getFormStylingOptions = ( options ) => {
-	return applyFilters(
-		'srfm.form_styling.options',
-		options
-	);
+	return applyFilters( 'srfm.form_styling.options', options );
 };
