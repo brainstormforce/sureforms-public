@@ -17,8 +17,6 @@ import { chevronDown } from '@wordpress/icons';
 import PremiumBadge from '@Admin/components/PremiumBadge';
 import { formPresetAccordion } from '@Components/hooks';
 import { submitButtonContainerStyles } from '@Components/hooks';
-import { init } from 'grunt';
-import { initial } from 'lodash';
 
 function StyleSettings( props ) {
 	const { editPost } = useDispatch( editorStore );
@@ -747,15 +745,57 @@ function StyleSettings( props ) {
 
 	const stylePanels = submitButtonContainerStyles( optionsPanelBodies, { props, sureformsKeys, editPost } );
 
-	return stylePanels.map( ( panel, index ) => (
-		<SRFMAdvancedPanelBody
-			key={ index }
-			title={ panel.title }
-			initialOpen={ panel.initialOpen }
-		>
-			{ panel.content }
-		</SRFMAdvancedPanelBody>
-	) );
+	console.log( 'stylePanels', stylePanels );
+
+	return stylePanels.map( ( panel, index ) => {
+		const { panelId, title, content, initialOpen } = panel;
+		const contentMarkup = content.map( ( item ) => item.component );
+		return (
+			<SRFMAdvancedPanelBody
+				key={ panelId }
+				title={ title }
+				initialOpen={ initialOpen }
+			>
+				{ contentMarkup }
+			</SRFMAdvancedPanelBody>
+		);
+	} );
 }
 
 export default StyleSettings;
+
+
+
+
+
+{/* <SRFMAdvancedPanelBody
+				title={ __( 'Fields', 'sureforms' ) }
+				initialOpen={ false }
+			>
+				<MultiButtonsControl
+					label={ __( 'Field Spacing', 'sureforms' ) }
+					data={ {
+						value: formStyling?.field_spacing || 'medium',
+						label: 'field_spacing',
+					} }
+					options={ [
+						{
+							value: 'small',
+							label: __( 'Small', 'sureforms' ),
+						},
+						{
+							value: 'medium',
+							label: __( 'Medium', 'sureforms' ),
+						},
+						{
+							value: 'large',
+							label: __( 'Large', 'sureforms' ),
+						},
+					] }
+					showIcons={ false }
+					onChange={ ( value ) => {
+						updateFormStyling( 'field_spacing', value );
+						setFieldSpacing( value );
+					} }
+				/>
+			</SRFMAdvancedPanelBody> */}
