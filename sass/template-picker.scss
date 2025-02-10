@@ -435,6 +435,8 @@ $sidebar_width: 290px;
 						.srfm-ai-builder-form-type-text {
 							display: flex;
 							justify-content: center;
+							align-items: center;
+							gap: 8px;
 						}
 
 						&.active {

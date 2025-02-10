@@ -103,6 +103,10 @@ class Field_Mapping {
 					) {
 						$merged_attributes['options'] = $question['fieldOptions'];
 
+						if ( isset( $question['showValues'] ) ) {
+							$merged_attributes['showValues'] = filter_var( $question['showValues'], FILTER_VALIDATE_BOOLEAN );
+						}
+
 						// remove icon from options for the dropdown field.
 						foreach ( $merged_attributes['options'] as $key => $option ) {
 							if ( ! empty( $merged_attributes['options'][ $key ]['icon'] ) ) {
@@ -134,6 +138,10 @@ class Field_Mapping {
 								static fn( $carry, $option ) => $carry && ! empty( $option['icon'] ),
 								true
 							);
+						}
+
+						if ( isset( $question['showValues'] ) ) {
+							$merged_attributes['showValues'] = filter_var( $question['showValues'], FILTER_VALIDATE_BOOLEAN );
 						}
 
 						// Set single selection if provided.

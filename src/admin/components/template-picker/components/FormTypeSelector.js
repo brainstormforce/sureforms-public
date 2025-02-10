@@ -8,8 +8,8 @@ const FormTypeSelector = ( { formType, setFormType, setformLayout } ) => {
 		'srfm.ai_form_builder.form_type_options',
 		[
 			{ label: __( 'Simple', 'sureforms' ), isAvailable: true },
-			// this is added to show a preview of calculations form type in free plugin
-			{ label: __( 'Calculations', 'sureforms' ), isAvailable: false },
+			// this is added to show a preview of Calculator form type in free plugin
+			{ label: __( 'Calculator', 'sureforms' ), isAvailable: false },
 		],
 	);
 
@@ -27,7 +27,7 @@ const FormTypeSelector = ( { formType, setFormType, setformLayout } ) => {
 			<div className="srfm-ai-builder-form-type-selector">
 				<div
 					className="srfm-ai-builder-form-type-highlight"
-					style={ { left: formType === 'simple' ? '4px' : 'calc(50% + 0px)' } }
+					style={ { left: formType === 'simple' ? '4px' : '50%' } }
 				/>
 				{ formTypeOptions.map( ( option, index ) => (
 					option.isAvailable ? (
@@ -36,7 +36,7 @@ const FormTypeSelector = ( { formType, setFormType, setformLayout } ) => {
 							className={ `srfm-ai-builder-form-type-option ${ formType === option.label.toLowerCase() ? 'active' : '' }` }
 							onClick={ () => handleSelection( option.label.toLowerCase() ) }
 						>
-							<span className="srfm-ai-builder-form-type-text">{ option.label }</span>
+							<span className="srfm-ai-builder-form-type-text">{ option.label }{ formType === option.label.toLowerCase() && option.icon && option.icon }</span>
 						</div>
 					) : (
 						<div
