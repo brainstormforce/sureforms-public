@@ -13,8 +13,9 @@ import {
 	faAlignJustify,
 } from '@fortawesome/free-solid-svg-icons';
 import { useDeviceType } from '@Controls/getPreviewType';
-import { SelectControl } from '@wordpress/components';
-import { getFormStylingOptions } from '@Components/hooks';
+import { chevronDown } from '@wordpress/icons';
+import PremiumBadge from '@Admin/components/PremiumBadge';
+import { formPresetAccordion } from '@Components/hooks';
 
 function StyleSettings( props ) {
 	const { editPost } = useDispatch( editorStore );
@@ -405,29 +406,35 @@ function StyleSettings( props ) {
 		} );
 	}
 
-	const formStylingOptions = getFormStylingOptions( [
-		{
-			label: __( 'SureForms Default', 'sureforms' ),
-			value: 'default',
-		},
-	] );
+	const formPresetAccordionMarkup = formPresetAccordion(
+		<div className="srfm-panel-preview">
+			<div className="components-panel__body" style={ { 'border-bottom': 'unset' } }>
+				<h2 className="components-panel__body-title">
+					{ ' ' }
+					{ __( 'Presets', 'sureforms' ) }{ ' ' }
+				</h2>
+				<PremiumBadge
+					badgeName={ 'Premium' }
+					tooltipHeading={ __(
+						'Unlock Form Presets',
+						'sureforms'
+					) }
+					tooltipContent={ __(
+						'Upgrade to the SureForms Starter Plan to access a range of form presets that can be applied to your form with a single click, saving you time and effort.',
+						'sureforms'
+					) }
+					tooltipPosition={ 'bottom' }
+					utmMedium={ 'editor_form_presets' }
+				/>
+				{ chevronDown }
+			</div>
+		</div>,
+		{ formStyling, updateFormStyling }
+	);
 
 	return (
 		<>
-			<SRFMAdvancedPanelBody
-				title={ __( 'Presets', 'sureforms' ) }
-				initialOpen={ true }
-			>
-				<SelectControl
-					label={ __( 'Form Theme', 'sureforms' ) }
-					value={ formStyling?.form_preset || 'default' }
-					options={ formStylingOptions }
-					onChange={ ( value ) => {
-						updateFormStyling( 'form_preset', value );
-					} }
-				/>
-
-			</SRFMAdvancedPanelBody>
+			{ formPresetAccordionMarkup }
 			<SRFMAdvancedPanelBody
 				title={ __( 'Form', 'sureforms' ) }
 				initialOpen={ false }

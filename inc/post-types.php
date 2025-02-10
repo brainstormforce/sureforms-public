@@ -475,9 +475,6 @@ class Post_Types {
 							'submit_button_alignment' => [
 								'type' => 'string',
 							],
-							'form_preset'             => [
-								'type' => 'string',
-							],
 						],
 					],
 				],
@@ -487,7 +484,6 @@ class Post_Types {
 					'text_color_on_primary'   => '#FFFFFF',
 					'field_spacing'           => 'medium',
 					'submit_button_alignment' => 'left',
-					'form_preset'             => 'default',
 				],
 			]
 		);

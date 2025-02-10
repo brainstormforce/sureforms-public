@@ -8,6 +8,6 @@ export const getInstantFormAdditionalSettings = ( settings, args ) => {
 	);
 };
 
-export const getFormStylingOptions = ( options ) => {
-	return applyFilters( 'srfm.form_styling.options', options );
+export const formPresetAccordion = ( panel, args ) => {
+	return applyFilters( 'srfm.form_styling.preset.accordion', panel, args );
 };
