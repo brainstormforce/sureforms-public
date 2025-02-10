@@ -381,7 +381,6 @@ const AiFormBuilder = () => {
 										__( 'Create Conversational Form', 'sureforms' )
 									}
 									<PremiumBadge
-										badgeName={ __( 'Pro', 'sureforms' ) }
 										tooltipHeading={ __( 'Unlock Conversational Forms', 'sureforms' ) }
 										tooltipContent={ __( 'With the SureForms Pro Plan, you can transform your forms into engaging conversational layouts for a seamless user experience.', 'sureforms' ) }
 										utmMedium="ai_builder"

@@ -1,8 +1,9 @@
 import { __ } from '@wordpress/i18n';
 import { addQueryParam } from '../../utils/Helpers';
+import svgIcons from '@Svg/svgs.json';
+import parse from 'html-react-parser';
 
-export default ( { badgeName = 'Starter'
-	, tooltipHeading = '', tooltipContent = '', tooltipPosition = 'bottom',
+export default ( { tooltipHeading = '', tooltipContent = '', tooltipPosition = 'bottom',
 	utmMedium = '',
 } ) => {
 	return (
@@ -16,9 +17,8 @@ export default ( { badgeName = 'Starter'
 				}
 				}
 			>
-				{
-					badgeName + ' ' + __( 'Plan', 'sureforms' )
-				}
+				<span className="srfm-premium-svg-wrapper">{ parse( svgIcons.lock_icon ) }</span>
+				<span className="srfm-premium-text-wrapper"> { ' ' + __( 'Premium', 'sureforms' ) } </span>
 			</span>
 			<div className={ `tooltip-wrap ${ tooltipPosition }` }>
 				<div className="tooltip-content">
