@@ -84,6 +84,7 @@
 	},
 	"private": true,
 	"dependencies": {
+		"@bsf/force-ui": "git+https://github.com/brainstormforce/force-ui.git#1.0.0",
 		"@emotion/react": "^11.10.6",
 		"@fortawesome/fontawesome-svg-core": "^6.4.0",
 		"@fortawesome/free-regular-svg-icons": "^6.4.0",
@@ -101,6 +102,7 @@
 		"gpt-po": "^1.1.1",
 		"html-react-parser": "^5.0.7",
 		"lodash": "^4.17.21",
+		"postcss": "^8.5.1",
 		"prop-types": "^15.8.1",
 		"react-apexcharts": "^1.4.1",
 		"react-beautiful-dnd": "^13.1.1",
