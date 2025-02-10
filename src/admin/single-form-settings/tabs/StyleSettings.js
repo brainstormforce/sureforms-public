@@ -16,6 +16,9 @@ import { useDeviceType } from '@Controls/getPreviewType';
 import { chevronDown } from '@wordpress/icons';
 import PremiumBadge from '@Admin/components/PremiumBadge';
 import { formPresetAccordion } from '@Components/hooks';
+import { submitButtonContainerStyles } from '@Components/hooks';
+import { init } from 'grunt';
+import { initial } from 'lodash';
 
 function StyleSettings( props ) {
 	const { editPost } = useDispatch( editorStore );
@@ -432,71 +435,190 @@ function StyleSettings( props ) {
 		{ formStyling, updateFormStyling }
 	);
 
-	return (
-		<>
-			{ formPresetAccordionMarkup }
-			<SRFMAdvancedPanelBody
-				title={ __( 'Form', 'sureforms' ) }
-				initialOpen={ false }
-			>
-				<AdvancedPopColorControl
-					label={ __( 'Primary Color', 'sureforms' ) }
-					colorValue={ formStyling?.primary_color }
-					data={ {
-						value: formStyling?.primary_color,
-						label: 'primary_color',
-					} }
-					onColorChange={ ( colorValue ) => {
-						if ( colorValue !== formStyling?.primary_color ) {
-							updateFormStyling( 'primary_color', colorValue );
-						}
-					} }
-					value={ formStyling?.primary_color }
-					isFormSpecific={ true }
-				/>
-				<p className="components-base-control__help" />
-				{/* <AdvancedPopColorControl
-					label={ __( 'Text Color', 'sureforms' ) }
-					colorValue={ formStyling?.text_color }
-					data={ {
-						value: formStyling?.text_color,
-						label: 'text_color',
-					} }
-					onColorChange={ ( colorValue ) => {
-						if ( colorValue !== formStyling?.text_color ) {
-							updateFormStyling( 'text_color', colorValue );
-						}
-					} }
-					value={ formStyling?.text_color }
-					isFormSpecific={ true }
-				/>
-				<p className="components-base-control__help" />
-				<AdvancedPopColorControl
-					label={ __( 'Text Color on Primary', 'sureforms' ) }
-					colorValue={ formStyling?.text_color_on_primary }
-					data={ {
-						value: formStyling?.text_color_on_primary,
-						label: 'text_color_on_primary',
-					} }
-					onColorChange={ ( colorValue ) => {
-						if (
-							colorValue !== formStyling?.text_color_on_primary
-						) {
-							updateFormStyling(
-								'text_color_on_primary',
-								colorValue
-							);
-						}
-					} }
-					value={ formStyling?.text_color_on_primary }
-					isFormSpecific={ true }
-				/>
-				<p className="components-base-control__help" /> */}
-			</SRFMAdvancedPanelBody>
-			<SRFMAdvancedPanelBody
-				title={ __( 'Fields', 'sureforms' ) }
-				initialOpen={ false }
-			>
+
+	const form = [
+		{
+			id: 'primary_color',
+			component: (
+				<>
+					<AdvancedPopColorControl
+						label={ __( 'Primary Color', 'sureforms' ) }
+						colorValue={ formStyling?.primary_color }
+						data={ {
+							value: formStyling?.primary_color,
+							label: 'primary_color',
+						} }
+						onColorChange={ ( colorValue ) => {
+							if ( colorValue !== formStyling?.primary_color ) {
+								updateFormStyling( 'primary_color', colorValue );
+							}
+						} }
+						value={ formStyling?.primary_color }
+						isFormSpecific={ true }
+					/>
+					<p className="components-base-control__help" />
+				</>
+			),
+		},
+		// {
+		// 	id: 'text_color',
+		// 	component: (
+		// 		<>
+		// 			<AdvancedPopColorControl
+		// 				label={ __( 'Text Color', 'sureforms' ) }
+		// 				colorValue={ formStyling?.text_color }
+		// 				data={ {
+		// 					value: formStyling?.text_color,
+		// 					label: 'text_color',
+		// 				} }
+		// 				onColorChange={ ( colorValue ) => {
+		// 					if ( colorValue !== formStyling?.text_color ) {
+		// 						updateFormStyling( 'text_color', colorValue );
+		// 					}
+		// 				} }
+		// 				value={ formStyling?.text_color }
+		// 				isFormSpecific={ true }
+		// 			/>
+		// 			<p className="components-base-control__help" />
+		// 		</> ),
+		// },
+		// {
+		// 	id: 'text_color_on_primary',
+		// 	component: (
+		// 		<>
+		// 			<AdvancedPopColorControl
+		// 				label={ __( 'Text Color on Primary', 'sureforms' ) }
+		// 				colorValue={ formStyling?.text_color_on_primary }
+		// 				data={ {
+		// 					value: formStyling?.text_color_on_primary,
+		// 					label: 'text_color_on_primary',
+		// 				} }
+		// 				onColorChange={ ( colorValue ) => {
+		// 					if (
+		// 						colorValue !== formStyling?.text_color_on_primary
+		// 					) {
+		// 						updateFormStyling(
+		// 							'text_color_on_primary',
+		// 							colorValue
+		// 						);
+		// 					}
+		// 				} }
+		// 				value={ formStyling?.text_color_on_primary }
+		// 				isFormSpecific={ true }
+		// 			/>
+		// 			<p className="components-base-control__help" />
+		// 		</>
+		// 	),
+		// },
+		// {
+		// 	id: 'field_spacing',
+		// 	component: (
+		// 		<MultiButtonsControl
+		// 			label={ __( 'Field Spacing', 'sureforms' ) }
+		// 			data={ {
+		// 				value: formStyling?.field_spacing || 'medium',
+		// 				label: 'field_spacing',
+		// 			} }
+		// 			options={ [
+		// 				{
+		// 					value: 'small',
+		// 					label: __( 'Small', 'sureforms' ),
+		// 				},
+		// 				{
+		// 					value: 'medium',
+		// 					label: __( 'Medium', 'sureforms' ),
+		// 				},
+		// 				{
+		// 					value: 'large',
+		// 					label: __( 'Large', 'sureforms' ),
+		// 				},
+		// 			] }
+		// 			showIcons={ false }
+		// 			onChange={ ( value ) => {
+		// 				updateFormStyling( 'field_spacing', value );
+		// 				setFieldSpacing( value );
+		// 			} }
+		// 		/>
+		// 	),
+		// },
+		// {
+		// 	id: 'submit_button_alignment',
+		// 	component: (
+		// 		! isInlineButtonBlockPresent && (
+		// 			<>
+		// 				<p className="components-base-control__help" />
+		// 				<MultiButtonsControl
+		// 					label={ __(
+		// 						'Submit Button Alignment',
+		// 						'sureforms'
+		// 					) }
+		// 					data={ {
+		// 						value: formStyling?.submit_button_alignment,
+		// 						label: 'submit_button_alignment',
+		// 					} }
+		// 					options={ [
+		// 						{
+		// 							value: 'left',
+		// 							icon: (
+		// 								<FontAwesomeIcon icon={ faAlignLeft } />
+		// 							),
+		// 							tooltip: __( 'Left', 'sureforms' ),
+		// 						},
+		// 						{
+		// 							value: 'center',
+		// 							icon: (
+		// 								<FontAwesomeIcon
+		// 									icon={ faAlignCenter }
+		// 								/>
+		// 							),
+		// 							tooltip: __( 'Center', 'sureforms' ),
+		// 						},
+		// 						{
+		// 							value: 'right',
+		// 							icon: (
+		// 								<FontAwesomeIcon
+		// 									icon={ faAlignRight }
+		// 								/>
+		// 							),
+		// 							tooltip: __( 'Right', 'sureforms' ),
+		// 						},
+		// 						{
+		// 							value: 'justify',
+		// 							icon: (
+		// 								<FontAwesomeIcon
+		// 									icon={ faAlignJustify }
+		// 								/>
+		// 							),
+		// 							tooltip: __( 'Full Width', 'sureforms' ),
+		// 						},
+		// 					] }
+		// 					showIcons={ true }
+		// 					onChange={ ( value ) => {
+		// 						updateFormStyling(
+		// 							'submit_button_alignment',
+		// 							value || 'left'
+		// 						);
+		// 						if ( 'justify' === value ) {
+		// 							updateMeta( '_srfm_submit_width', '100%' );
+		// 							updateMeta(
+		// 								'_srfm_submit_width_backend',
+		// 								'auto'
+		// 							);
+		// 						} else {
+		// 							updateMeta( '_srfm_submit_width', '' );
+		// 						}
+		// 					} }
+		// 				/>
+		// 			</>
+		// 		)
+		// 	),
+		// },
+	];
+
+	const fields = [
+		{
+			id: 'field_spacing',
+			component: (
 				<MultiButtonsControl
 					label={ __( 'Field Spacing', 'sureforms' ) }
 					data={ {
@@ -523,79 +645,117 @@ function StyleSettings( props ) {
 						setFieldSpacing( value );
 					} }
 				/>
-			</SRFMAdvancedPanelBody>
-			{ ! isInlineButtonBlockPresent && (
-				<SRFMAdvancedPanelBody
-					title={ __( 'Button', 'sureforms' ) }
-					initialOpen={ false }
-				>
-					<p className="components-base-control__help" />
-					<MultiButtonsControl
-						label={ __(
-							'Submit Button Alignment',
-							'sureforms'
-						) }
-						data={ {
-							value: formStyling?.submit_button_alignment,
-							label: 'submit_button_alignment',
-						} }
-						options={ [
-							{
-								value: 'left',
-								icon: (
-									<FontAwesomeIcon icon={ faAlignLeft } />
-								),
-								tooltip: __( 'Left', 'sureforms' ),
-							},
-							{
-								value: 'center',
-								icon: (
-									<FontAwesomeIcon
-										icon={ faAlignCenter }
-									/>
-								),
-								tooltip: __( 'Center', 'sureforms' ),
-							},
-							{
-								value: 'right',
-								icon: (
-									<FontAwesomeIcon
-										icon={ faAlignRight }
-									/>
-								),
-								tooltip: __( 'Right', 'sureforms' ),
-							},
-							{
-								value: 'justify',
-								icon: (
-									<FontAwesomeIcon
-										icon={ faAlignJustify }
-									/>
-								),
-								tooltip: __( 'Full Width', 'sureforms' ),
-							},
-						] }
-						showIcons={ true }
-						onChange={ ( value ) => {
-							updateFormStyling(
-								'submit_button_alignment',
-								value || 'left'
-							);
-							if ( 'justify' === value ) {
-								updateMeta( '_srfm_submit_width', '100%' );
-								updateMeta(
-									'_srfm_submit_width_backend',
-									'auto'
+			),
+		},
+	];
+
+	const button = [
+		{
+			id: 'submit_button_alignment',
+			component: (
+				! isInlineButtonBlockPresent && (
+					<>
+						<p className="components-base-control__help" />
+						<MultiButtonsControl
+							label={ __(
+								'Submit Button Alignment',
+								'sureforms'
+							) }
+							data={ {
+								value: formStyling?.submit_button_alignment,
+								label: 'submit_button_alignment',
+							} }
+							options={ [
+								{
+									value: 'left',
+									icon: (
+										<FontAwesomeIcon icon={ faAlignLeft } />
+									),
+									tooltip: __( 'Left', 'sureforms' ),
+								},
+								{
+									value: 'center',
+									icon: (
+										<FontAwesomeIcon
+											icon={ faAlignCenter }
+										/>
+									),
+									tooltip: __( 'Center', 'sureforms' ),
+								},
+								{
+									value: 'right',
+									icon: (
+										<FontAwesomeIcon
+											icon={ faAlignRight }
+										/>
+									),
+									tooltip: __( 'Right', 'sureforms' ),
+								},
+								{
+									value: 'justify',
+									icon: (
+										<FontAwesomeIcon
+											icon={ faAlignJustify }
+										/>
+									),
+									tooltip: __( 'Full Width', 'sureforms' ),
+								},
+							] }
+							showIcons={ true }
+							onChange={ ( value ) => {
+								updateFormStyling(
+									'submit_button_alignment',
+									value || 'left'
 								);
-							} else {
-								updateMeta( '_srfm_submit_width', '' );
-							}
-						} }
-					/>
-				</SRFMAdvancedPanelBody>
-			) }
-		</>
-	);
+								if ( 'justify' === value ) {
+									updateMeta( '_srfm_submit_width', '100%' );
+									updateMeta(
+										'_srfm_submit_width_backend',
+										'auto'
+									);
+								} else {
+									updateMeta( '_srfm_submit_width', '' );
+								}
+							} }
+						/>
+					</>
+				)
+			),
+		},
+	];
+
+	const optionsPanelBodies = [
+		{
+			panelId: 'form',
+			title: __( 'Form', 'sureforms' ),
+			content: form,
+			initialOpen: true,
+		},
+		{
+			panelId: 'fields',
+			title: __( 'Fields', 'sureforms' ),
+			content: fields,
+			initialOpen: false,
+		},
+		{
+			panelId: 'button',
+			title: __( 'Button', 'sureforms' ),
+			content: button,
+			initialOpen: false,
+		}
+	]
+
+	const stylePanels = submitButtonContainerStyles( optionsPanelBodies, { props, sureformsKeys, editPost } );
+
+	return stylePanels.map( ( panel, index ) => (
+		<SRFMAdvancedPanelBody
+			key={ index }
+			title={ panel.title }
+			initialOpen={ panel.initialOpen }
+		>
+			{ panel.content }
+		</SRFMAdvancedPanelBody>
+	) );
 }
 
 export default StyleSettings;
