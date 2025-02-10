@@ -455,7 +455,7 @@ function StyleSettings( props ) {
 					isFormSpecific={ true }
 				/>
 				<p className="components-base-control__help" />
-				<AdvancedPopColorControl
+				{/* <AdvancedPopColorControl
 					label={ __( 'Text Color', 'sureforms' ) }
 					colorValue={ formStyling?.text_color }
 					data={ {
@@ -491,7 +491,7 @@ function StyleSettings( props ) {
 					value={ formStyling?.text_color_on_primary }
 					isFormSpecific={ true }
 				/>
-				<p className="components-base-control__help" />
+				<p className="components-base-control__help" /> */}
 			</SRFMAdvancedPanelBody>
 			<SRFMAdvancedPanelBody
 				title={ __( 'Fields', 'sureforms' ) }
