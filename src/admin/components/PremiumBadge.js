@@ -18,7 +18,7 @@ export default ( { tooltipHeading = '', tooltipContent = '', tooltipPosition = '
 				}
 			>
 				<span className="srfm-premium-svg-wrapper">{ parse( svgIcons.lock_icon ) }</span>
-				<span className="srfm-premium-text-wrapper"> { ' ' + __( 'Premium', 'sureforms' ) } </span>
+				<span className="srfm-premium-text-wrapper"> { __( 'Premium', 'sureforms' ) } </span>
 			</span>
 			<div className={ `tooltip-wrap ${ tooltipPosition }` }>
 				<div className="tooltip-content">
