@@ -589,7 +589,7 @@ function StyleSettings( props ) {
 		},
 	];
 
-	const optionsPanelBodies = [
+	const baseStylePanels = [
 		{
 			panelId: 'form',
 			title: __( 'Form', 'sureforms' ),
@@ -610,11 +610,11 @@ function StyleSettings( props ) {
 		}
 	]
 
-	const stylePanels = getStylePanels( optionsPanelBodies, { props, sureformsKeys, editPost, formStyling, updateFormStyling } );
+	const enhancedStylePanels = getStylePanels( baseStylePanels, { props, sureformsKeys, editPost, formStyling, updateFormStyling } );
 
 	return(
 		<>
-			{ stylePanels.map( ( panel ) => {
+			{ enhancedStylePanels.map( ( panel ) => {
 				const { panelId, title, content, initialOpen } = panel;
 				const panelOptions = content.map( ( item ) => item.component );
 				return (
