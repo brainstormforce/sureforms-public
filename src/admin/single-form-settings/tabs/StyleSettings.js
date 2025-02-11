@@ -15,6 +15,8 @@ import {
 import { useDeviceType } from '@Controls/getPreviewType';
 import { getStylePanels } from '@Components/hooks';
 import { addStyleInRoot } from '@Utils/Helpers';
+import { chevronDown } from '@wordpress/icons';
+import PremiumBadge from '@Admin/components/PremiumBadge';
 
 function StyleSettings( props ) {
 	const { editPost } = useDispatch( editorStore );
@@ -446,8 +448,35 @@ function StyleSettings( props ) {
 
 	const enhancedStylePanels = getStylePanels( baseStylePanels, { props, sureformsKeys, editPost, formStyling, updateFormStyling } );
 
+	const presetPreview = (
+		<>
+			<div className="srfm-panel-preview">
+				<div className="components-panel__body" style={ { 'border-bottom': 'unset' } }>
+					<h2 className="components-panel__body-title">
+						{ __( 'Presets', 'sureforms' ) }
+					</h2>
+					<PremiumBadge
+						tooltipHeading={ __(
+							'Unlock Form Presets',
+							'sureforms'
+						) }
+						tooltipContent={ __(
+							'Upgrade to the SureForms Starter Plan to access a range of form presets that can be applied to your form with a single click, saving you time and effort.',
+							'sureforms'
+						) }
+						tooltipPosition={ 'bottom' }
+						utmMedium={ 'editor_form_presets' }
+					/>
+					{ chevronDown }
+				</div>
+			</div>
+		</>
+	);
+
+	const isPresetPanelPresent = enhancedStylePanels.find( ( panel ) => panel.panelId === 'presets' );
 	return (
 		<>
+			{ ! isPresetPanelPresent && presetPreview }
 			{ enhancedStylePanels.map( ( panel ) => {
 				const { panelId, title, content, initialOpen } = panel;
 				const panelOptions = content.map( ( item ) => item.component );
