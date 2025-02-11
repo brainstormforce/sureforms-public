@@ -8,21 +8,21 @@ export const getInstantFormAdditionalSettings = ( settings, args ) => {
 	);
 };
 
-export const formPresetAccordion = ( panel, args ) => {
+export const formPresetPanel = ( panel, args ) => {
 	return applyFilters( 'srfm.form_styling.preset.accordion', panel, args );
 };
 
 /**
- * Filters the submit button container options with the provided filter.
+ * Filters the style panels by allowing additional panels or options to be added.
  *
- * @param {Array}  options - The submit button container options to filter.
+ * @param {Array}  panels - The existing style panel configuration.
  * @param {Object} args    - Additional arguments for the filter.
- * @return {Array} - The filtered submit button container options.
+ * @return {Array} - The filtered style panels.
  */
-export const submitButtonContainerStyles = ( options, args ) => {
+export const getStylePanels = ( panels, args ) => {
 	return applyFilters(
-		'srfm.submit.button.container.styles',
-		options,
+		'srfm.style.panels',
+		panels,
 		args
 	);
 };
