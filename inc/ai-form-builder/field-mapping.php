@@ -155,8 +155,8 @@ class Field_Mapping {
 						$merged_attributes['autoCountry'] = true;
 					}
 
-					// if field type is checkbox or gdpr then ignore it
-					if ( ! empty( $skip_fields ) && in_array( $field_type, $skip_fields, strict: true ) ) {
+					// if field type is needs to be skipped then skip that field.
+					if ( ! empty( $skip_fields ) && in_array( $field_type, $skip_fields, true ) ) {
 						break;
 					}
 
