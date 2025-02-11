@@ -8,10 +8,6 @@ export const getInstantFormAdditionalSettings = ( settings, args ) => {
 	);
 };
 
-export const formPresetPanel = ( panel, args ) => {
-	return applyFilters( 'srfm.form_styling.preset.accordion', panel, args );
-};
-
 /**
  * Filters the style panels by allowing additional panels or options to be added.
  *

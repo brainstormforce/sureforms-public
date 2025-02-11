@@ -8,7 +8,7 @@ import { useState } from '@wordpress/element';
 const ConditionalLogicPreview = () => {
 	const [ isExpanded, setIsExpanded ] = useState( false );
 	return (
-		<div className="srfm-panel-preview">
+		<div className="srfm-conditional-logic-preview">
 			<div
 				className="components-panel__body"
 				onClick={ () => {
