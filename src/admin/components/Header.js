@@ -32,7 +32,7 @@ export default () => {
 				>
 					<Tabs.Tab
 						slug="dashboard"
-						text={ __( 'Dashboard', 'sureforms' ) }
+						text={ __( 'Dashboard app', 'sureforms' ) }
 					/>
 					<Tabs.Tab
 						slug="all-forms"

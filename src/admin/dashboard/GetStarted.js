@@ -4,7 +4,6 @@ import { css, jsx } from '@emotion/react';
 import { ScCard, ScFlex } from '@surecart/components-react';
 
 import GetStartedBox from './GetStartedBox';
-import { Container, Topbar, Badge } from '@bsf/force-ui';
 
 export default () => {
 	const siteUrl = srfm_admin.site_url;
@@ -53,7 +52,6 @@ export default () => {
 			<div className="sc-getstarted-inner-wrap">
 				<h3 className="sc-get-started-main-title">
 					{ __( 'Get started with SureForms', 'sureforms' ) }
-					<Badge label="-- badge force ui Pro" size="xs" variant="neutral" closable={false} />
 				</h3>
 				<ScFlex stack="mobile">
 					<GetStartedBox

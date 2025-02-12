@@ -6,7 +6,7 @@
 	"scripts": {
 		"start": "wp-scripts start",
 		"build": "wp-scripts build && npm run build:sass && grunt minify && npm run build-tw",
-		"start-tw": "webpack --config webpack-with-tw-config.js --mode=development",
+		"start-tw": "webpack --config webpack-with-tw-config.js --mode=development --watch",
 		"build-tw": "webpack --config webpack-with-tw-config.js --mode=production",
 		"build:script": "wp-scripts build",
 		"build:sass": "node scripts/generate-assets-files.js",
