@@ -58,7 +58,7 @@ class Field_Mapping {
 		// Initialize post content string.
 		$post_content = '';
 
-		$is_conversational = isset( $params['is_conversational'] ) ? filter_var( $params['is_conversational'], FILTER_VALIDATE_BOOLEAN ) : false;
+		$is_conversational = isset( $params['is_conversional'] ) ? filter_var( $params['is_conversional'], FILTER_VALIDATE_BOOLEAN ) : false;
 
 		// Filer to skip fields while mapping the fields.
 		$skip_fields = apply_filters( 'srfm_ai_field_map_skip_fields', [], $is_conversational );

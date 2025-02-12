@@ -159,7 +159,7 @@ const AiFormBuilder = () => {
 		const postData = {
 			message_array: messageArray,
 			use_system_message: useSystemMessage,
-			is_conversational: formTypeObj?.isConversationalForm,
+			is_conversional: formTypeObj?.isConversationalForm,
 			form_type: formType,
 		};
 
@@ -195,7 +195,7 @@ const AiFormBuilder = () => {
 				const postContent = await apiFetch( {
 					path: 'sureforms/v1/map-fields',
 					method: 'POST',
-					data: { form_data: content,	is_conversational: formTypeObj?.isConversationalForm },
+					data: { form_data: content,	is_conversional: formTypeObj?.isConversationalForm },
 				} );
 
 				if ( postContent ) {
