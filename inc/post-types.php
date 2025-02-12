@@ -439,7 +439,7 @@ class Post_Types {
 					'bg_image'                      => '',
 					'site_logo'                     => '',
 					'cover_type'                    => 'color',
-					'cover_color'                   => '#0C78FB',
+					'cover_color'                   => '#111C44',
 					'cover_image'                   => '',
 					'enable_instant_form'           => false,
 					'form_container_width'          => 620,
@@ -479,7 +479,7 @@ class Post_Types {
 					],
 				],
 				'default'       => [
-					'primary_color'           => '#0C78FB',
+					'primary_color'           => '#111C44',
 					'text_color'              => '#1E1E1E',
 					'text_color_on_primary'   => '#FFFFFF',
 					'field_spacing'           => 'medium',
