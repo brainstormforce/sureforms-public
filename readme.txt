@@ -257,9 +257,9 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 
 == Changelog ==
 = 1.4.0 - 12th February 2025 =
+* Improvement: Added BSF Analytics.
 * Improvement: Prevented public access to the form archive page.
 * Improvement: Simplified the form confirmation message.
-* Improvement: Added BSF Analytics.
 * Improvement: Updated the primary color for new forms.
 * Fix: Addressed an issue with the Bricks theme where reCAPTCHA v2 Invisible and v3 were being hidden.
 = 1.3.1 - 28th January 2025 =
