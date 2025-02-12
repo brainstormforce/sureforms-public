@@ -21,7 +21,7 @@ export default () => {
 					activeItem={ activeTab }
 					iconPosition="left"
 					onChange={function Ki( e ) {
-						console.log( "tabs changed", e );
+						console.log( "tabs changed e", e );
 						// e.value.slug
 						setActiveTab( e.value.slug );
 					}}
