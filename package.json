@@ -5,7 +5,9 @@
 	"main": "index.js",
 	"scripts": {
 		"start": "wp-scripts start",
-		"build": "wp-scripts build && npm run build:sass && grunt minify",
+		"build": "wp-scripts build && npm run build:sass && grunt minify && npm run build-tw",
+		"start-tw": "webpack --config webpack-with-tw-config.js --mode=development",
+		"build-tw": "webpack --config webpack-with-tw-config.js --mode=production",
 		"build:script": "wp-scripts build",
 		"build:sass": "node scripts/generate-assets-files.js",
 		"makepot": "wp i18n make-pot . --skip-audit --exclude='.dev,.github,.wordpress-org,docs,src,node_modules,tests,vendor,wordpress' languages/sureforms.pot",

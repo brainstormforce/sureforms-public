@@ -438,16 +438,16 @@ class Admin {
 
 			wp_enqueue_style( SRFM_SLUG . $asset_handle . '-font', 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap', [], SRFM_VER );
 
-			$script_asset_path = SRFM_DIR . 'assets/build/dashboard.asset.php';
+			$script_asset_path = SRFM_DIR . 'assets/settings-build/dashboard.asset.php';
 			$script_info       = file_exists( $script_asset_path )
 			? include $script_asset_path
 			: [
 				'dependencies' => [],
 				'version'      => SRFM_VER,
 			];
-			wp_enqueue_script( SRFM_SLUG . $asset_handle, SRFM_URL . 'assets/build/dashboard.js', $script_info['dependencies'], SRFM_VER, true );
+			wp_enqueue_script( SRFM_SLUG . $asset_handle, SRFM_URL . 'assets/settings-build/dashboard.js', $script_info['dependencies'], SRFM_VER, true );
 
-			wp_localize_script( SRFM_SLUG . $asset_handle, 'scIcons', [ 'path' => SRFM_URL . 'assets/build/icon-assets' ] );
+			// wp_localize_script( SRFM_SLUG . $asset_handle, 'scIcons', [ 'path' => SRFM_URL . 'assets/settings-build/icon-assets' ] );
 
 			$script_translations_handlers[] = SRFM_SLUG . $asset_handle;
 
@@ -473,7 +473,7 @@ class Admin {
 					$localization_data
 				)
 			);
-			wp_enqueue_style( SRFM_SLUG . '-dashboard', SRFM_URL . 'assets/build/dashboard.css', [], SRFM_VER, 'all' );
+			wp_enqueue_style( SRFM_SLUG . '-dashboard', SRFM_URL . 'assets/settings-build/dashboard.css', [], SRFM_VER, 'all' );
 
 		}
 
