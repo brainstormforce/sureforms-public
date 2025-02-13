@@ -56,12 +56,9 @@ function StyleSettings( props ) {
 	const getMetaValue = useSelect( ( hookSelect ) => {
 		const getStore = hookSelect( editorStore );
 		const metaValue = getStore.getEditedPostAttribute( 'meta' );
-		const getPermalinkParts = getStore.getPermalinkParts();
 
 		return {
-			_srfm_submit_button_text: metaValue?._srfm_submit_button_text,
-			_srfm_instant_form_settings: metaValue?._srfm_instant_form_settings,
-			getPermalinkParts,
+			_srfm_instant_form_settings: metaValue?._srfm_instant_form_settings
 		};
 	}, [] );
 	const _srfm_instant_form_settings = getMetaValue._srfm_instant_form_settings || {};
@@ -416,7 +413,6 @@ function StyleSettings( props ) {
 						label={ __( 'Background', 'sureforms' ) }
 						setAttributes={ onHandleChange }
 						onHandleChange={ onHandleChange }
-						meta={ _srfm_instant_form_settings }
 						onSelectImage={ onImageSelect }
 					/>
 					<p className="components-base-control__help" />

@@ -466,13 +466,13 @@ class Post_Types {
 								'type' => 'string',
 							],
 							'bg_gradient_angle'        => [
-								'type' => 'string',
+								'type' => 'integer',
 							],
 							'bg_gradient_location_1'   => [
-								'type' => 'string',
+								'type' => 'integer',
 							],
 							'bg_gradient_location_2'   => [
-								'type' => 'string',
+								'type' => 'integer',
 							],
 						],
 					],
@@ -496,9 +496,9 @@ class Post_Types {
 					'bg_image_size_custom_type'     => 'px',
 					'gradient_type'                 => 'basic',
 					'bg_gradient_type'              => 'linear',
-					'bg_gradient_angle' 		    => '90',
-					'bg_gradient_color_1'           => '#000',
-					'bg_gradient_color_2'           => '#fff',
+					'bg_gradient_angle' 		    => 90,
+					'bg_gradient_color_1'           => '#0C78FB',
+					'bg_gradient_color_2'           => '#ffffff',
 				],
 			]
 		);
