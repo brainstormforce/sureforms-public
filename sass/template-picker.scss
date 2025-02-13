@@ -432,6 +432,12 @@ $sidebar_width: 290px;
 						transition: color 0.3s ease-in-out;
 						color: #bdc1c7;
 
+						svg {
+							path {
+								stroke: #bdc1c7;
+							}
+						}
+
 						.srfm-ai-builder-form-type-text {
 							display: flex;
 							justify-content: center;
@@ -442,6 +448,12 @@ $sidebar_width: 290px;
 						&.active {
 							cursor: default;
 							color: #111827;
+
+							svg {
+								path {
+									stroke: #111827;
+								}
+							}
 						}
 
 						&.disabled {

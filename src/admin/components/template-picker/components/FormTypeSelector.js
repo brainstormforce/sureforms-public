@@ -45,14 +45,14 @@ const FormTypeSelector = ( { formType, setFormType, setformLayout } ) => {
 						>
 							{ option.label }
 							<div style={ { lineHeight: 0 } }>
-							<PremiumBadge
-								badgeName={ __( 'Business', 'sureforms' ) }
-								tooltipHeading={ __( 'Unlock Calculations', 'sureforms' ) }
-								tooltipContent={ __( 'Upgrade to the SureForms Business Plan to create advanced forms with real-time calculations, such as project quote calculators, BMI calculators, loan calculators, and more.', 'sureforms' ) }
-								utmMedium="ai_builder"
-								tooltipPosition="left"
-							/>
-						</div>
+								<PremiumBadge
+									badgeName={ __( 'Business', 'sureforms' ) }
+									tooltipHeading={ __( 'Unlock Calculations', 'sureforms' ) }
+									tooltipContent={ __( 'Upgrade to the SureForms Business Plan to create advanced forms with real-time calculations, such as project quote calculators, BMI calculators, loan calculators, and more.', 'sureforms' ) }
+									utmMedium="ai_builder"
+									tooltipPosition="left"
+								/>
+							</div>
 						</div>
 					)
 				) ) }
