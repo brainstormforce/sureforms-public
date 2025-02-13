@@ -257,7 +257,6 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 
 == Changelog ==
 = 1.4.0 - 12th February 2025 =
-* Improvement: Added BSF Analytics.
 * Improvement: Prevented public access to the form archive page.
 * Improvement: Simplified the form confirmation message.
 * Improvement: Updated the primary color for new forms.
