@@ -36,7 +36,7 @@ const FormTypeSelector = ( { formType, setFormType, setformLayout } ) => {
 							className={ `srfm-ai-builder-form-type-option ${ formType === option.label.toLowerCase() ? 'active' : '' }` }
 							onClick={ () => handleSelection( option.label.toLowerCase() ) }
 						>
-							<span className="srfm-ai-builder-form-type-text">{ option.label }{ formType === option.label.toLowerCase() && option.icon && option.icon }</span>
+							<span className="srfm-ai-builder-form-type-text">{ option.label }{ option.icon && option.icon }</span>
 						</div>
 					) : (
 						<div
@@ -44,6 +44,7 @@ const FormTypeSelector = ( { formType, setFormType, setformLayout } ) => {
 							className="srfm-ai-builder-form-type-option disabled"
 						>
 							{ option.label }
+							<div style={ { lineHeight: 0 } }>
 							<PremiumBadge
 								badgeName={ __( 'Business', 'sureforms' ) }
 								tooltipHeading={ __( 'Unlock Calculations', 'sureforms' ) }
@@ -51,6 +52,7 @@ const FormTypeSelector = ( { formType, setFormType, setformLayout } ) => {
 								utmMedium="ai_builder"
 								tooltipPosition="left"
 							/>
+						</div>
 						</div>
 					)
 				) ) }
