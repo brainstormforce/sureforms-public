@@ -51,7 +51,7 @@
 		left: 50%;
 		transform: translate( -30%, -100% );
 		color: #ffffff;
-		background-color: #1e1e1e;
+		background-color: #111827;
 		font-weight: normal;
 		font-size: 14px;
 		border-radius: 8px;
@@ -78,7 +78,7 @@
 		height: 15px;
 		left: 50%;
 		transform: translate( -50%, -50% ) rotate( 45deg );
-		background-color: #1e1e1e;
+		background-color: #111827;
 		box-shadow: 0 1px 8px rgba( 0, 0, 0, 0.5 );
 	}
 
@@ -90,7 +90,7 @@
 		transform: translate( 0, -50% );
 		padding: 0;
 		color: #ffffff;
-		background-color: #1e1e1e;
+		background-color: #111827;
 		font-weight: normal;
 		font-size: 13px;
 		border-radius: 8px;
@@ -128,7 +128,7 @@
 		transform: translate( -50%, 0 );
 		padding: 0;
 		color: #ffffff;
-		background-color: #1e1e1e;
+		background-color: #111827;
 		font-weight: normal;
 		font-size: 13px;
 		border-radius: 8px;
@@ -159,7 +159,7 @@
 		height: 12px;
 		left: 50%;
 		transform: translate( -50%, 50% ) rotate( 45deg );
-		background-color: #1e1e1e;
+		background-color: #111827;
 		box-shadow: 0 1px 8px rgba( 0, 0, 0, 0.5 );
 	}
 
@@ -171,7 +171,7 @@
 		transform: translate( 0, -50% );
 		padding: 0;
 		color: #ffffff;
-		background-color: #1e1e1e;
+		background-color: #111827;
 		font-weight: normal;
 		font-size: 13px;
 		border-radius: 8px;
@@ -198,7 +198,8 @@
 		left: 0;
 		top: 50%;
 		transform: translate( -50%, -50% ) rotate( -45deg );
-		background-color: #1e1e1e;
+		background-color: #111827;
+		border: 1px solid #dca;
 	}
 
 	// Add transition to the tooltip's visible and hidden state.
@@ -224,6 +225,24 @@
 }
 
 /*
+ * Override the tooltip width for the instant form settings.
+ */
+.srfm-instant-form-settings {
+	.tooltip-wrap {
+		&.top,
+		&.bottom,
+		&.left,
+		&.right {
+			width: 200px;
+		}
+
+		&.bottom {
+			top: 30px;
+		}
+	}
+}
+
+/*
  * Styles for the badge text.
  */
 .srfm-premium-badge-text {
@@ -242,4 +261,5 @@
 	// !important is used to override the default styles.
 	opacity: 1 !important;
 	pointer-events: visible !important;
+	white-space: nowrap; // Prevent the text from wrapping.
 }
