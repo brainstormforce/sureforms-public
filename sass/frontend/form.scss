@@ -175,3 +175,14 @@
 		display: none;
 	}
 }
+
+/*
+ * To show reCAPTCHA v3 & v2 badge in bricks theme 
+ */
+.brx-body {
+	.srfm-form-container {
+		.grecaptcha-badge {
+			visibility: revert !important;
+		}
+	}
+}

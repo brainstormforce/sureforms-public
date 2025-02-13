@@ -5,6 +5,7 @@ import {
 	handleScrollAndFocusOnError,
 	handleCaptchaValidation,
 } from './validation';
+import { applyFilters } from '@wordpress/hooks';
 document.addEventListener( 'DOMContentLoaded', function () {
 	initializeInlineFieldValidation();
 
@@ -145,7 +146,11 @@ function showSuccessMessage(
 	element.innerHTML = message;
 	container.classList.add( 'srfm-active' );
 	window?.srfm?.handleInstantFormWrapperHeight();
-	form.parentElement.scrollIntoView( { behavior: 'smooth' } );
+
+	// Scroll to the success message container, if enabled.
+	if ( applyFilters( 'srfm.enableScrollOnSuccess', true ) ) {
+		form.parentElement.scrollIntoView( { behavior: 'smooth' } );
+	}
 }
 
 function redirectToUrl( url ) {

@@ -47,6 +47,7 @@ if ( ! class_exists( 'Nps_Notice' ) ) {
 		 */
 		private function __construct() {
 			add_action( 'admin_footer', [ $this, 'show_nps_notice' ], 999 );
+			add_filter( 'nps_survey_post_data', [ $this, 'update_nps_survey_post_data' ] );
 		}
 
 		/**
@@ -117,6 +118,22 @@ if ( ! class_exists( 'Nps_Notice' ) ) {
 
 				]
 			);
+		}
+
+		/**
+		 * Update the NPS survey post data.
+		 * Add SureForms plugin version to the NPS survey post data.
+		 *
+		 * @param array<mixed> $post_data NPS survey post data.
+		 * @since 1.4.0
+		 * @return array<mixed>
+		 */
+		public function update_nps_survey_post_data( $post_data ) {
+			if ( isset( $post_data['plugin_slug'] ) && 'sureforms' === $post_data['plugin_slug'] ) {
+				$post_data['plugin_version'] = SRFM_VER;
+			}
+
+			return $post_data;
 		}
 	}
 }

@@ -14,10 +14,10 @@ msgstr ""
 #. Plugin Name of the plugin
 #. Author of the plugin
 #: sureforms.php
-#: admin/admin.php:141
 #: admin/admin.php:142
+#: admin/admin.php:143
 #: inc/gutenberg-hooks.php:106
-#: inc/nps-notice.php:107
+#: inc/nps-notice.php:108
 #: inc/page-builders/bricks/elements/form-widget.php:66
 #: inc/page-builders/bricks/service-provider.php:55
 #: inc/page-builders/elementor/form-widget.php:93
@@ -42,46 +42,46 @@ msgstr "Un moyen simple mais puissant de créer des formulaires modernes pour vo
 msgid "https://sureforms.com/"
 msgstr ""
 
-#: admin/admin.php:154
 #: admin/admin.php:155
+#: admin/admin.php:156
 msgid "Dashboard"
 msgstr "Tableau de bord"
 
-#: admin/admin.php:172
 #: admin/admin.php:173
-#: admin/admin.php:290
+#: admin/admin.php:174
+#: admin/admin.php:291
 msgid "Settings"
 msgstr "Paramètres"
 
-#: admin/admin.php:217
 #: admin/admin.php:218
+#: admin/admin.php:219
 #: inc/post-types.php:128
 msgid "New Form"
 msgstr "Nouveau formulaire"
 
-#: admin/admin.php:226
 #: admin/admin.php:227
-#: admin/admin.php:263
+#: admin/admin.php:228
+#: admin/admin.php:264
 #: inc/global-settings/email-summary.php:107
-#: inc/post-types.php:686
+#: inc/post-types.php:688
 #: assets/build/dashboard.js:2
 msgid "Entries"
 msgstr "Entrées"
 
 #. Translators: Post Title.
-#: admin/admin.php:370
+#: admin/admin.php:371
 msgid "Edit %1$s"
 msgstr "Modifier %1$s"
 
-#: admin/admin.php:738
+#: admin/admin.php:740
 #: api/block-patterns.php:110
 #: inc/ai-form-builder/ai-auth.php:45
 #: inc/ai-form-builder/ai-auth.php:81
 #: inc/ai-form-builder/ai-auth.php:145
 #: inc/background-process.php:101
 #: inc/create-new-form.php:126
-#: inc/export.php:60
-#: inc/export.php:125
+#: inc/export.php:62
+#: inc/export.php:127
 #: inc/form-submit.php:201
 #: inc/form-submit.php:776
 #: inc/forms-data.php:87
@@ -92,12 +92,12 @@ msgstr "Modifier %1$s"
 msgid "Nonce verification failed."
 msgstr "La vérification du nonce a échoué."
 
-#: admin/admin.php:747
+#: admin/admin.php:749
 msgid "You cannot view this entry because it is in trash."
 msgstr "Vous ne pouvez pas voir cette entrée car elle est dans la corbeille."
 
 #. translators: %1$s: Opening anchor tag with URL, %2$s: Closing anchor tag, %3$s: SureForms Pro Plugin Name.
-#: admin/admin.php:792
+#: admin/admin.php:794
 msgid "Please %1$sactivate%2$s your copy of %3$s to get new features, access support, receive update notifications, and more."
 msgstr "Veuillez %1$sactiver%2$s votre copie de %3$s pour obtenir de nouvelles fonctionnalités, accéder au support, recevoir des notifications de mise à jour, et plus encore."
 
@@ -543,7 +543,7 @@ msgstr "Échec du décodage JSON des données décryptées."
 msgid "No user email found in the decrypted data."
 msgstr "Aucun e-mail utilisateur trouvé dans les données décryptées."
 
-#: inc/ai-form-builder/ai-form-builder.php:39
+#: inc/ai-form-builder/ai-form-builder.php:38
 msgid "The message array was not supplied"
 msgstr "Le tableau de messages n'a pas été fourni"
 
@@ -650,10 +650,10 @@ msgstr "Erreur lors de la création du formulaire SureForms,"
 msgid "New form submission"
 msgstr "Nouvelle soumission de formulaire"
 
-#: inc/export.php:134
-#: inc/export.php:139
-#: inc/export.php:174
-#: inc/export.php:191
+#: inc/export.php:136
+#: inc/export.php:141
+#: inc/export.php:176
+#: inc/export.php:193
 msgid "Failed to import form."
 msgstr "Échec de l'importation du formulaire."
 
@@ -699,7 +699,7 @@ msgid "I consent to have this website store my submitted information so they can
 msgstr "Je consens à ce que ce site web stocke les informations que j'ai soumises afin qu'ils puissent répondre à ma demande."
 
 #: inc/fields/inlinebutton-markup.php:182
-#: inc/generate-form-markup.php:348
+#: inc/generate-form-markup.php:353
 msgid "Please verify that you are not a robot."
 msgstr "Veuillez vérifier que vous n'êtes pas un robot."
 
@@ -787,7 +787,7 @@ msgstr "Erreur lors de la soumission du formulaire"
 msgid "Sorry, you are not allowed to view the form."
 msgstr "Désolé, vous n'êtes pas autorisé à voir le formulaire."
 
-#: inc/generate-form-markup.php:375
+#: inc/generate-form-markup.php:380
 msgid "There was an error trying to submit your form. Please try again."
 msgstr "Une erreur s'est produite lors de la soumission de votre formulaire. Veuillez réessayer."
 
@@ -914,8 +914,8 @@ msgstr "Créer un nouveau formulaire"
 msgid "Create"
 msgstr "Créer"
 
+#: admin/admin.php:558
 #: inc/post-types.php:87
-#: assets/js/unminified/export.js:131
 msgid "Import Form"
 msgstr "Formulaire d'importation"
 
@@ -973,28 +973,28 @@ msgstr "Formulaire publié."
 msgid "Form updated."
 msgstr "Formulaire mis à jour."
 
-#: inc/post-types.php:528
+#: inc/post-types.php:530
 msgid "Admin Notification Email"
 msgstr "Email de notification d'administration"
 
 #. translators: %s: Form title smart tag
-#: inc/post-types.php:533
+#: inc/post-types.php:535
 msgid "New Form Submission - %s"
 msgstr "Nouvelle soumission de formulaire - %s"
 
-#: inc/post-types.php:685
+#: inc/post-types.php:687
 msgid "Shortcode"
 msgstr "Code court"
 
-#: inc/post-types.php:749
+#: inc/post-types.php:751
 msgid "Please choose the SureForms export file (.json) that you wish to import."
 msgstr "Veuillez choisir le fichier d'exportation SureForms (.json) que vous souhaitez importer."
 
-#: inc/post-types.php:752
+#: inc/post-types.php:754
 msgid "Import Now"
 msgstr "Importer maintenant"
 
-#: inc/post-types.php:754
+#: inc/post-types.php:756
 msgid "There is some error in json file, please export the SureForms Forms again."
 msgstr "Il y a une erreur dans le fichier JSON, veuillez exporter à nouveau les formulaires SureForms."
 
@@ -5636,7 +5636,7 @@ msgstr "Symbole NFC"
 
 #: modules/gutenberg/icons/icons-v6-2.php:2337
 msgid "Nimblr"
-msgstr ""
+msgstr "Nimblr"
 
 #: modules/gutenberg/icons/icons-v6-2.php:2348
 msgid "Node.js"
@@ -8077,7 +8077,7 @@ msgstr "Fioles"
 
 #: modules/gutenberg/icons/icons-v6-3.php:4147
 msgid "Viber"
-msgstr ""
+msgstr "Viber"
 
 #: modules/gutenberg/icons/icons-v6-3.php:4158
 msgid "Video"
@@ -8554,20 +8554,20 @@ msgstr "Formulaire pour soumettre une demande de support"
 msgid "Support"
 msgstr "Soutien"
 
-#: templates/single-form.php:144
+#: templates/single-form.php:151
 msgid "Link to homepage"
 msgstr "Lien vers la page d'accueil"
 
-#: templates/single-form.php:145
+#: templates/single-form.php:152
 msgid "Instant form site logo"
 msgstr "Logo du site de formulaire instantané"
 
-#: templates/single-form.php:158
+#: templates/single-form.php:201
 msgid "Instant Form Disabled"
 msgstr "Formulaire instantané désactivé"
 
 #. translators: Here %s is the plugin's name.
-#: templates/single-form.php:178
+#: templates/single-form.php:180
 msgid "Crafted with ♡ %s"
 msgstr "Conçu avec ♡ %s"
 
@@ -9224,6 +9224,7 @@ msgstr "Réorganiser le bloc dans la barre d'action rapide"
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
+#: assets/build/templatePicker.js:172
 msgid "Upgrade"
 msgstr "Mise à niveau"
 
@@ -11080,7 +11081,7 @@ msgid "icon"
 msgstr "icône"
 
 #. translators: %1$s: SureForms version, %2$s: SureForms Pro Plugin Name, %3$s: SureForms Pro Version, %4$s: Anchor tag open, %5$s: Closing anchor tag.
-#: admin/admin.php:802
+#: admin/admin.php:804
 msgid "SureForms %1$s requires minimum %2$s %3$s to work properly. Please update to the latest version from %4$shere%5$s."
 msgstr "SureForms %1$s nécessite au minimum %2$s %3$s pour fonctionner correctement. Veuillez mettre à jour vers la dernière version depuis %4$scet endroit%5$s."
 
@@ -11104,7 +11105,7 @@ msgstr "Message d'erreur de blocage de numéro de téléphone invalide"
 msgid "Honeypot"
 msgstr "Pot de miel"
 
-#: inc/export.php:72
+#: inc/export.php:74
 msgid "You do not have permission to export forms."
 msgstr "Vous n'avez pas la permission d'exporter des formulaires."
 
@@ -11112,23 +11113,23 @@ msgstr "Vous n'avez pas la permission d'exporter des formulaires."
 msgid "Unknown"
 msgstr "Inconnu"
 
-#: inc/nps-notice.php:108
+#: inc/nps-notice.php:109
 msgid "How likely are you to recommend SureForms to your friends or colleagues?"
 msgstr "Quelle est la probabilité que vous recommandiez SureForms à vos amis ou collègues ?"
 
-#: inc/nps-notice.php:109
+#: inc/nps-notice.php:110
 msgid "Thanks a lot for your feedback! 😍"
 msgstr "Merci beaucoup pour votre retour ! 😍"
 
-#: inc/nps-notice.php:112
+#: inc/nps-notice.php:113
 msgid "Thank you for your feedback"
 msgstr "Merci pour votre retour"
 
-#: inc/nps-notice.php:113
+#: inc/nps-notice.php:114
 msgid "We value your input. How can we improve your experience?"
 msgstr "Nous apprécions votre avis. Comment pouvons-nous améliorer votre expérience ?"
 
-#: inc/nps-notice.php:114
+#: inc/nps-notice.php:115
 msgid "Rate SureForms"
 msgstr "Évaluez SureForms"
 
@@ -11176,7 +11177,7 @@ msgstr "Message d'erreur de sélection minimale pour choix multiple"
 msgid "Multiple Choice Maximum Selections Error Message"
 msgstr "Message d'erreur de sélection multiple pour choix multiples"
 
-#: inc/nps-notice.php:110
+#: inc/nps-notice.php:111
 msgid "Could you please do us a favor and give us a 5-star rating on WordPress? It would help others choose SureForms with confidence. Thank you!"
 msgstr "Pourriez-vous nous rendre service et nous donner une note de 5 étoiles sur WordPress ? Cela aiderait les autres à choisir SureForms en toute confiance. Merci !"
 
@@ -11262,6 +11263,7 @@ msgstr "Évaluez le plugin"
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
+#: assets/build/templatePicker.js:172
 msgid "Plan"
 msgstr "Plan"
 
@@ -11303,14 +11305,6 @@ msgstr "Avec le plan de démarrage SureForms, vous pouvez activer les webhooks p
 msgid "Class names should be separated by spaces. Each class name must not start with a digit, hyphen, or underscore. They can only include letters (including Unicode characters), numbers, hyphens, and underscores."
 msgstr "Les noms de classe doivent être séparés par des espaces. Chaque nom de classe ne doit pas commencer par un chiffre, un tiret ou un soulignement. Ils peuvent uniquement inclure des lettres (y compris les caractères Unicode), des chiffres, des tirets et des soulignements."
 
-#: assets/build/formEditor.js:172
-msgid "Unlock Advanced Fields"
-msgstr "Déverrouiller les champs avancés"
-
-#: assets/build/formEditor.js:172
-msgid "With the SureForms Starter plan, you get access to advanced fields like Slider, Page Break, Date Picker, File Upload, and more to enhance your forms."
-msgstr "Avec le plan Starter de SureForms, vous avez accès à des champs avancés tels que le curseur, la rupture de page, le sélecteur de date, le téléversement de fichiers, et bien plus encore pour améliorer vos formulaires."
-
 #: assets/build/settings.js:172
 msgid "Unlock Zapier Integration"
 msgstr "Débloquer l'intégration Zapier"
@@ -11318,6 +11312,29 @@ msgstr "Débloquer l'intégration Zapier"
 #: assets/build/settings.js:172
 msgid "With the SureForms Pro Plan, you can enable Zapier integration to seamlessly connect with thousands of apps for powerful workflow automation."
 msgstr "Avec le plan SureForms Pro, vous pouvez activer l'intégration Zapier pour vous connecter sans effort à des milliers d'applications pour une automatisation puissante des flux de travail."
+
+#: assets/build/formEditor.js:172
+msgid "Conversational Layout"
+msgstr "Disposition conversationnelle"
+
+#: assets/build/formEditor.js:172
+#: assets/build/templatePicker.js:172
+msgid "Pro"
+msgstr "Pro"
+
+#: assets/build/formEditor.js:172
+#: assets/build/templatePicker.js:172
+msgid "Unlock Conversational Forms"
+msgstr "Déverrouiller les formulaires conversationnels"
+
+#: assets/build/formEditor.js:172
+#: assets/build/templatePicker.js:172
+msgid "With the SureForms Pro Plan, you can transform your forms into engaging conversational layouts for a seamless user experience."
+msgstr "Avec le plan SureForms Pro, vous pouvez transformer vos formulaires en mises en page conversationnelles engageantes pour une expérience utilisateur fluide."
+
+#: assets/build/templatePicker.js:172
+msgid "Create Conversational Form"
+msgstr "Créer un formulaire conversationnel"
 
 #: inc/post-types.php:123
 msgctxt "post type general name"
@@ -11339,186 +11356,151 @@ msgctxt "form"
 msgid "Add New"
 msgstr "Ajouter nouveau"
 
-#: assets/build/blocks/address/block.json
 #: inc/blocks/address/block.json
 msgctxt "block title"
 msgid "Address"
 msgstr "Adresse"
 
-#: assets/build/blocks/checkbox/block.json
 #: inc/blocks/checkbox/block.json
 msgctxt "block title"
 msgid "Checkbox"
 msgstr "Case à cocher"
 
-#: assets/build/blocks/dropdown/block.json
 #: inc/blocks/dropdown/block.json
 msgctxt "block title"
 msgid "Dropdown"
 msgstr "Menu déroulant"
 
-#: assets/build/blocks/email/block.json
 #: inc/blocks/email/block.json
 msgctxt "block title"
 msgid "Email"
 msgstr "Email"
 
-#: assets/build/blocks/gdpr/block.json
 #: inc/blocks/gdpr/block.json
 msgctxt "block title"
 msgid "GDPR Agreement"
 msgstr "Accord RGPD"
 
-#: assets/build/blocks/inline-button/block.json
 #: inc/blocks/inlinebutton/block.json
 msgctxt "block title"
 msgid "Custom Button"
 msgstr "Bouton personnalisé"
 
-#: assets/build/blocks/input/block.json
 #: inc/blocks/input/block.json
 msgctxt "block title"
 msgid "Text"
 msgstr "Texte"
 
-#: assets/build/blocks/multi-choice/block.json
 #: inc/blocks/multichoice/block.json
 msgctxt "block title"
 msgid "Multiple Choice"
 msgstr "Choix multiple"
 
-#: assets/build/blocks/number/block.json
 #: inc/blocks/number/block.json
 msgctxt "block title"
 msgid "Number"
 msgstr "Nombre"
 
-#: assets/build/blocks/phone/block.json
 #: inc/blocks/phone/block.json
 msgctxt "block title"
 msgid "Phone Number"
 msgstr "Numéro de téléphone"
 
-#: assets/build/blocks/sureforms-form/block.json
 #: inc/blocks/sform/block.json
 msgctxt "block title"
 msgid "Form"
 msgstr "Formulaire"
 
-#: assets/build/blocks/textarea/block.json
 #: inc/blocks/textarea/block.json
 msgctxt "block title"
 msgid "Textarea"
 msgstr "Zone de texte"
 
-#: assets/build/blocks/url/block.json
 #: inc/blocks/url/block.json
 msgctxt "block title"
 msgid "URL"
 msgstr "URL"
 
-#: assets/build/blocks/inline-button/block.json
 #: inc/blocks/inlinebutton/block.json
 msgctxt "block description"
 msgid "Displays a SureForms Custom Button"
 msgstr "Affiche un bouton personnalisé SureForms"
 
-#: assets/build/blocks/sureforms-form/block.json
 #: inc/blocks/sform/block.json
 msgctxt "block description"
 msgid "Collect and Manage data effortlessly with customizable SureForms."
 msgstr "Collectez et gérez les données sans effort avec les SureForms personnalisables."
 
-#: assets/build/blocks/address/block.json
 #: inc/blocks/address/block.json
 msgctxt "block description"
 msgid "Displays a SureForms Address Field"
 msgstr "Affiche un champ d'adresse SureForms"
 
-#: assets/build/blocks/checkbox/block.json
 #: inc/blocks/checkbox/block.json
 msgctxt "block description"
 msgid "Displays a SureForms Checkbox Field"
 msgstr "Affiche un champ de case à cocher SureForms"
 
-#: assets/build/blocks/dropdown/block.json
 #: inc/blocks/dropdown/block.json
 msgctxt "block description"
 msgid "Displays a SureForms Dropdown Field"
 msgstr "Affiche un champ déroulant SureForms"
 
-#: assets/build/blocks/email/block.json
 #: inc/blocks/email/block.json
 msgctxt "block description"
 msgid "Displays a SureForms Email Field"
 msgstr "Affiche un champ de courriel SureForms"
 
-#: assets/build/blocks/gdpr/block.json
 #: inc/blocks/gdpr/block.json
 msgctxt "block description"
 msgid "Displays a SureForms GDPR Agreement Field"
 msgstr "Affiche un champ d'accord GDPR SureForms"
 
-#: assets/build/blocks/input/block.json
 #: inc/blocks/input/block.json
 msgctxt "block description"
 msgid "Displays a SureForms Text Field"
 msgstr "Affiche un champ de texte SureForms"
 
-#: assets/build/blocks/multi-choice/block.json
 #: inc/blocks/multichoice/block.json
 msgctxt "block description"
 msgid "Displays a SureForms Multi-Choice Field"
 msgstr "Affiche un champ à choix multiple SureForms"
 
-#: assets/build/blocks/number/block.json
 #: inc/blocks/number/block.json
 msgctxt "block description"
 msgid "Displays a SureForms Number Field"
 msgstr "Affiche un champ numérique SureForms"
 
-#: assets/build/blocks/phone/block.json
 #: inc/blocks/phone/block.json
 msgctxt "block description"
 msgid "Displays a SureForms Phone Field"
 msgstr "Affiche un champ de téléphone SureForms"
 
-#: assets/build/blocks/textarea/block.json
 #: inc/blocks/textarea/block.json
 msgctxt "block description"
 msgid "Displays a SureForms Textarea Field"
 msgstr "Affiche un champ de texte SureForms"
 
-#: assets/build/blocks/url/block.json
 #: inc/blocks/url/block.json
 msgctxt "block description"
 msgid "Displays a SureForms URL Field"
 msgstr "Affiche un champ d'URL SureForms"
 
-#: assets/build/blocks/address/block.json
 #: inc/blocks/address/block.json
 msgctxt "block keyword"
 msgid "address"
 msgstr "adresse"
 
-#: assets/build/blocks/address/block.json
 #: inc/blocks/address/block.json
 msgctxt "block keyword"
 msgid "country"
 msgstr "pays"
 
-#: assets/build/blocks/address/block.json
 #: inc/blocks/address/block.json
 msgctxt "block keyword"
 msgid "location"
 msgstr "emplacement"
 
-#: assets/build/blocks/address/block.json
-#: assets/build/blocks/dropdown/block.json
-#: assets/build/blocks/input/block.json
-#: assets/build/blocks/number/block.json
-#: assets/build/blocks/phone/block.json
-#: assets/build/blocks/textarea/block.json
 #: inc/blocks/address/block.json
 #: inc/blocks/dropdown/block.json
 #: inc/blocks/input/block.json
@@ -11529,108 +11511,87 @@ msgctxt "block keyword"
 msgid "field"
 msgstr "champ"
 
-#: assets/build/blocks/checkbox/block.json
-#: assets/build/blocks/gdpr/block.json
 #: inc/blocks/checkbox/block.json
 #: inc/blocks/gdpr/block.json
 msgctxt "block keyword"
 msgid "checkbox"
 msgstr "case à cocher"
 
-#: assets/build/blocks/checkbox/block.json
 #: inc/blocks/checkbox/block.json
 msgctxt "block keyword"
 msgid "toggle"
 msgstr "basculer"
 
-#: assets/build/blocks/checkbox/block.json
 #: inc/blocks/checkbox/block.json
 msgctxt "block keyword"
 msgid "checkout"
 msgstr "caisse"
 
-#: assets/build/blocks/checkbox/block.json
 #: inc/blocks/checkbox/block.json
 msgctxt "block keyword"
 msgid "engine"
 msgstr "moteur"
 
-#: assets/build/blocks/dropdown/block.json
 #: inc/blocks/dropdown/block.json
 msgctxt "block keyword"
 msgid "select"
 msgstr "sélectionner"
 
-#: assets/build/blocks/dropdown/block.json
 #: inc/blocks/dropdown/block.json
 msgctxt "block keyword"
 msgid "dropdown"
 msgstr "menu déroulant"
 
-#: assets/build/blocks/dropdown/block.json
 #: inc/blocks/dropdown/block.json
 msgctxt "block keyword"
 msgid "options"
 msgstr "options"
 
-#: assets/build/blocks/email/block.json
 #: inc/blocks/email/block.json
 msgctxt "block keyword"
 msgid "email"
 msgstr "e-mail"
 
-#: assets/build/blocks/email/block.json
 #: inc/blocks/email/block.json
 msgctxt "block keyword"
 msgid "mail"
 msgstr "courrier"
 
-#: assets/build/blocks/gdpr/block.json
 #: inc/blocks/gdpr/block.json
 msgctxt "block keyword"
 msgid "gdpr"
 msgstr ""
 
-#: assets/build/blocks/gdpr/block.json
 #: inc/blocks/gdpr/block.json
 msgctxt "block keyword"
 msgid "compliance"
 msgstr "conformité"
 
-#: assets/build/blocks/gdpr/block.json
 #: inc/blocks/gdpr/block.json
 msgctxt "block keyword"
 msgid "agreement"
 msgstr "accord"
 
-#: assets/build/blocks/inline-button/block.json
 #: inc/blocks/inlinebutton/block.json
 msgctxt "block keyword"
 msgid "inline submit"
 msgstr "soumettre en ligne"
 
-#: assets/build/blocks/inline-button/block.json
 #: inc/blocks/inlinebutton/block.json
 msgctxt "block keyword"
 msgid "button"
 msgstr "bouton"
 
-#: assets/build/blocks/inline-button/block.json
 #: inc/blocks/inlinebutton/block.json
 msgctxt "block keyword"
 msgid "submit"
 msgstr "soumettre"
 
-#: assets/build/blocks/inline-button/block.json
 #: inc/blocks/inlinebutton/block.json
 msgctxt "block keyword"
 msgid "inline"
 msgstr "en ligne"
 
-#: assets/build/blocks/inline-button/block.json
-#: assets/build/blocks/input/block.json
-#: assets/build/blocks/number/block.json
-#: assets/build/blocks/textarea/block.json
 #: inc/blocks/inlinebutton/block.json
 #: inc/blocks/input/block.json
 #: inc/blocks/number/block.json
@@ -11639,21 +11600,16 @@ msgctxt "block keyword"
 msgid "custom"
 msgstr "personnalisé"
 
-#: assets/build/blocks/inline-button/block.json
 #: inc/blocks/inlinebutton/block.json
 msgctxt "block keyword"
 msgid "custom button"
 msgstr "bouton personnalisé"
 
-#: assets/build/blocks/input/block.json
 #: inc/blocks/input/block.json
 msgctxt "block keyword"
 msgid "text"
 msgstr "texte"
 
-#: assets/build/blocks/input/block.json
-#: assets/build/blocks/number/block.json
-#: assets/build/blocks/textarea/block.json
 #: inc/blocks/input/block.json
 #: inc/blocks/number/block.json
 #: inc/blocks/textarea/block.json
@@ -11661,75 +11617,62 @@ msgctxt "block keyword"
 msgid "input"
 msgstr "entrée"
 
-#: assets/build/blocks/input/block.json
 #: inc/blocks/input/block.json
 msgctxt "block keyword"
 msgid "name"
 msgstr "nom"
 
-#: assets/build/blocks/multi-choice/block.json
 #: inc/blocks/multichoice/block.json
 msgctxt "block keyword"
 msgid "multi-choice"
 msgstr "choix multiple"
 
-#: assets/build/blocks/multi-choice/block.json
 #: inc/blocks/multichoice/block.json
 msgctxt "block keyword"
 msgid "quiz"
 msgstr "quiz"
 
-#: assets/build/blocks/multi-choice/block.json
 #: inc/blocks/multichoice/block.json
 msgctxt "block keyword"
 msgid "multi"
 msgstr "multi"
 
-#: assets/build/blocks/multi-choice/block.json
-#: assets/build/blocks/sureforms-form/block.json
 #: inc/blocks/multichoice/block.json
 #: inc/blocks/sform/block.json
 msgctxt "block keyword"
 msgid "sureforms"
 msgstr ""
 
-#: assets/build/blocks/number/block.json
 #: inc/blocks/number/block.json
 msgctxt "block keyword"
 msgid "number"
 msgstr "nombre"
 
-#: assets/build/blocks/phone/block.json
 #: inc/blocks/phone/block.json
 msgctxt "block keyword"
 msgid "telephone"
 msgstr "téléphone"
 
-#: assets/build/blocks/phone/block.json
 #: inc/blocks/phone/block.json
 msgctxt "block keyword"
 msgid "phone"
 msgstr "téléphone"
 
-#: assets/build/blocks/phone/block.json
 #: inc/blocks/phone/block.json
 msgctxt "block keyword"
 msgid "mobile"
 msgstr "mobile"
 
-#: assets/build/blocks/sureforms-form/block.json
 #: inc/blocks/sform/block.json
 msgctxt "block keyword"
 msgid "form"
 msgstr "formulaire"
 
-#: assets/build/blocks/textarea/block.json
 #: inc/blocks/textarea/block.json
 msgctxt "block keyword"
 msgid "textarea"
 msgstr "zone de texte"
 
-#: assets/build/blocks/url/block.json
 #: inc/blocks/url/block.json
 msgctxt "block keyword"
 msgid "url"
@@ -11738,13 +11681,11 @@ msgstr ""
 "\n"
 "url"
 
-#: assets/build/blocks/url/block.json
 #: inc/blocks/url/block.json
 msgctxt "block keyword"
 msgid "link"
 msgstr "lien"
 
-#: assets/build/blocks/url/block.json
 #: inc/blocks/url/block.json
 msgctxt "block keyword"
 msgid "website"
