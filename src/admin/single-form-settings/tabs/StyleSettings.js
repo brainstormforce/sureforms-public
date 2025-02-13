@@ -81,13 +81,13 @@ function StyleSettings( props ) {
 		// Form Container
 		root.style.setProperty(
 			'--srfm-color-scheme-primary',
-			formStyling?.primary_color || '#0C78FB'
+			formStyling?.primary_color || '#111C44'
 		);
 		root.style.setProperty(
 			'--srfm-btn-color-hover',
 			formStyling?.primary_color
 				? `hsl( from ${ formStyling.primary_color } h s l / 0.9)`
-				: `hsl( from #0C78FB h s l / 0.9)`
+				: `hsl( from #111C44 h s l / 0.9)`
 		);
 		root.style.setProperty(
 			'--srfm-color-scheme-text-on-primary',
@@ -179,7 +179,7 @@ function StyleSettings( props ) {
 		// btn border color
 		root.style.setProperty(
 			'--srfm-btn-border-color',
-			formStyling?.primary_color || '#0C78FB'
+			formStyling?.primary_color || '#111C44'
 		);
 
 		// Button alignment
@@ -275,14 +275,14 @@ function StyleSettings( props ) {
 		if ( option === 'primary_color' ) {
 			root.style.setProperty(
 				'--srfm-color-scheme-primary',
-				value || '#0C78FB'
+				value || '#111C44'
 			);
 
 			root.style.setProperty(
 				'--srfm-btn-color-hover',
 				value
 					? `hsl( from ${ value } h s l / 0.9)`
-					: `hsl( from #0C78FB h s l / 0.9)`
+					: `hsl( from #111C44 h s l / 0.9)`
 			);
 		}
 
