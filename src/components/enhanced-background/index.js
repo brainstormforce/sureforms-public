@@ -166,7 +166,7 @@ const Background = ( props ) => {
 			{ 'color' === backgroundType.value && (
 				<div className="srfm-background-color">
                     <AdvancedPopColorControl
-                        label={ __( 'Color', 'sureforms' ) }
+                        label={ __( 'Background Color', 'sureforms' ) }
                         colorValue={ backgroundColor.value }
                         data={ {
                             value: backgroundColor.value,
@@ -382,7 +382,7 @@ const Background = ( props ) => {
 												unitValue: 'em',
 											},
 										] }
-										onChange={ ( value ) => onHandleChange( backgroundCustomSizeType.label, value ) }
+										onChange={ ( value ) => onHandleChange( backgroundCustomSize[ deviceType ].label, value ) }
 									/>
 								) }
 							</div>

@@ -370,7 +370,7 @@ function StyleSettings( props ) {
 							}
 						} }
 						backgroundCustomSizeType={ {
-							value: _srfm_instant_form_settings?.bg_image_size_custom_type,
+							value: _srfm_instant_form_settings?.bg_image_size_custom_type || 'px',
 							label: 'bg_image_size_custom_type',
 						} }
 						customPosition={ {
