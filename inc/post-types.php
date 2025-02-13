@@ -444,9 +444,34 @@ class Post_Types {
 								'type' => 'string',
 							],
 							'bg_image_size_custom'         => [
-								'type' => 'string',
+								'type' => 'integer',
 							],
 							'bg_image_size_custom_type'    => [
+								'type' => 'string',
+							],
+							// Gradient Properties
+							'bg_gradient'                  => [
+								'type' => 'string',
+							],
+							'gradient_type'             => [
+								'type' => 'string',
+							],
+							'bg_gradient_type'             => [
+								'type' => 'string',
+							],
+							'bg_gradient_color_1'          => [
+								'type' => 'string',
+							],
+							'bg_gradient_color_2'          => [
+								'type' => 'string',
+							],
+							'bg_gradient_angle'        => [
+								'type' => 'string',
+							],
+							'bg_gradient_location_1'   => [
+								'type' => 'string',
+							],
+							'bg_gradient_location_2'   => [
 								'type' => 'string',
 							],
 						],
@@ -469,6 +494,11 @@ class Post_Types {
 					'bg_image_repeat'               => 'no-repeat',
 					'bg_image_size'                 => 'cover',
 					'bg_image_size_custom_type'     => 'px',
+					'gradient_type'                 => 'basic',
+					'bg_gradient_type'              => 'linear',
+					'bg_gradient_angle' 		    => '90',
+					'bg_gradient_color_1'           => '#000',
+					'bg_gradient_color_2'           => '#fff',
 				],
 			]
 		);

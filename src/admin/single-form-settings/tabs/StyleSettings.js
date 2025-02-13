@@ -65,7 +65,8 @@ function StyleSettings( props ) {
 		};
 	}, [] );
 	const _srfm_instant_form_settings = getMetaValue._srfm_instant_form_settings || {};
-	const onHandleChange = ( key, value ) => {
+	const onHandleChange = ( updatedSettings ) => {
+		const [ key, value ] = Object.entries( updatedSettings )[0];
 		if ( _srfm_instant_form_settings?.[ key ] === value ) {
 			// Do not re-render if the value is same. This is necessary for color picker type controls which re-render on selection.
 			return;
@@ -377,8 +378,43 @@ function StyleSettings( props ) {
 							value: _srfm_instant_form_settings?.bg_image_custom_position,
 							label: 'bg_image_custom_position',
 						} }
+						// Gradient Properties
+						gradientType={ {
+							value: _srfm_instant_form_settings?.gradient_type,
+							label: 'gradient_type',
+						} }
+						backgroundGradientColor1={ {
+							value: _srfm_instant_form_settings?.bg_gradient_color_1,
+							label: 'bg_gradient_color_1',
+						} }
+						backgroundGradientColor2={ {
+							value: _srfm_instant_form_settings?.bg_gradient_color_2,
+							label: 'bg_gradient_color_2',
+						} }
+						backgroundGradientLocation1={ {
+							value: _srfm_instant_form_settings?.bg_gradient_location_1,
+							label: 'bg_gradient_location_1',
+						} }
+						backgroundGradientLocation2={ {
+							value: _srfm_instant_form_settings?.bg_gradient_location_2,
+							label: 'bg_gradient_location_2',
+						} }
+						backgroundGradientAngle={ {
+							value: _srfm_instant_form_settings?.bg_gradient_angle,
+							label: 'bg_gradient_angle',
+						} }
+						backgroundGradientType={ {
+							value: _srfm_instant_form_settings?.bg_gradient_type,
+							label: 'bg_gradient_type',
+						} }
+						backgroundGradient={ {
+							value: _srfm_instant_form_settings?.bg_gradient,
+							label: 'bg_gradient',
+						} }
+
 						imageResponsive={ false }
 						label={ __( 'Background', 'sureforms' ) }
+						setAttributes={ onHandleChange }
 						onHandleChange={ onHandleChange }
 						meta={ _srfm_instant_form_settings }
 						onSelectImage={ onImageSelect }
