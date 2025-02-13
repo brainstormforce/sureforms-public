@@ -430,6 +430,25 @@ class Post_Types {
 							'use_banner_as_page_background' => [
 								'type' => 'boolean',
 							],
+							// Image Properties
+							'bg_image_position'            => [
+								'type' => 'string',
+							],
+							'bg_image_attachment'          => [
+								'type' => 'string',
+							],
+							'bg_image_repeat'              => [
+								'type' => 'string',
+							],
+							'bg_image_size'                => [
+								'type' => 'string',
+							],
+							'bg_image_size_custom'         => [
+								'type' => 'string',
+							],
+							'bg_image_size_custom_type'    => [
+								'type' => 'string',
+							],
 						],
 					],
 				],
@@ -445,6 +464,11 @@ class Post_Types {
 					'form_container_width'          => 620,
 					'single_page_form_title'        => true,
 					'use_banner_as_page_background' => false,
+					'bg_image_position'             => 'default',
+					'bg_image_attachment'           => 'scroll',
+					'bg_image_repeat'               => 'no-repeat',
+					'bg_image_size'                 => 'cover',
+					'bg_image_size_custom_type'     => 'px',
 				],
 			]
 		);

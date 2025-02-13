@@ -17,6 +17,7 @@ import { getStylePanels } from '@Components/hooks';
 import { addStyleInRoot } from '@Utils/Helpers';
 import { chevronDown } from '@wordpress/icons';
 import PremiumBadge from '@Admin/components/PremiumBadge';
+import Background from '@Components/enhanced-background';
 
 function StyleSettings( props ) {
 	const { editPost } = useDispatch( editorStore );
@@ -51,6 +52,84 @@ function StyleSettings( props ) {
 			submitButtonInherit();
 		}, 1000 );
 	}, [ deviceType, submitBtn, sureformsKeys._srfm_inherit_theme_button ] );
+
+	const getMetaValue = useSelect( ( hookSelect ) => {
+		const getStore = hookSelect( editorStore );
+		const metaValue = getStore.getEditedPostAttribute( 'meta' );
+		const getPermalinkParts = getStore.getPermalinkParts();
+
+		return {
+			_srfm_submit_button_text: metaValue?._srfm_submit_button_text,
+			_srfm_instant_form_settings: metaValue?._srfm_instant_form_settings,
+			getPermalinkParts,
+		};
+	}, [] );
+	const _srfm_instant_form_settings = getMetaValue._srfm_instant_form_settings || {};
+	const onHandleChange = ( key, value ) => {
+		if ( _srfm_instant_form_settings?.[ key ] === value ) {
+			// Do not re-render if the value is same. This is necessary for color picker type controls which re-render on selection.
+			return;
+		}
+
+		const instantFormSettings = {
+			..._srfm_instant_form_settings,
+			...{
+				[ key ]: value,
+			},
+		};
+
+		editPost( {
+			meta: {
+				_srfm_instant_form_settings: instantFormSettings,
+			},
+		} );
+	};
+
+	/**
+	 * Handles the selection of an image and updates the post metadata with the selected image's URL and ID.
+	 *
+	 * This function performs the following steps:
+	 * 1. Checks if the provided `media` object is valid and of type 'image'.
+	 * 2. If valid, it extracts the image's ID and URL, and then updates the post metadata with this information.
+	 * 3. If the `media` object is not valid or is not an image, it sets the image URL to `null`.
+	 *
+	 * @param {string} key   - The key used to identify the metadata field for the image URL in the post metadata.
+	 * @param {Object} media - The media object representing the selected image.
+	 */
+	const onImageSelect = ( key, media ) => {
+		let key_id = '';
+		let imageID = 0;
+		let imageURL = media;
+
+		if (
+			! media ||
+			! media.url ||
+			! media.type ||
+			'image' !== media.type
+		) {
+			imageURL = null;
+		}
+
+		if ( imageURL ) {
+			imageID = imageURL.id;
+			imageURL = imageURL.sizes.full.url;
+		}
+		key_id = key + '_id';
+
+		const updatedSettings = {
+			..._srfm_instant_form_settings,
+			...{
+				[ key ]: imageURL,
+				[ key_id ]: imageID,
+			},
+		};
+
+		editPost( {
+			meta: {
+				_srfm_instant_form_settings: updatedSettings,
+			},
+		} );
+	};
 
 	function submitButtonInherit() {
 		const inheritClass = [ 'srfm-btn-alignment', 'wp-block-button__link' ];
@@ -241,6 +320,73 @@ function StyleSettings( props ) {
 	}
 
 	const form = [
+		{
+			id: 'background',
+			component: (
+				<>
+					<Background
+						gradientOverlay={ {value: true} }
+						backgroundVideoType={ {value: false} }
+						backgroundType={ {
+							value: _srfm_instant_form_settings?.bg_type,
+							label: 'bg_type',
+						} }
+						backgroundColor={ {
+							value: _srfm_instant_form_settings?.bg_color,
+							label: 'bg_color',
+						} }
+						backgroundImage={ {
+							value: _srfm_instant_form_settings?.bg_image,
+							label: 'bg_image',
+						} }
+						backgroundPosition={ {
+							value: _srfm_instant_form_settings?.bg_image_position,
+							label: 'bg_image_position',
+						} }
+						backgroundAttachment={ {
+							value: _srfm_instant_form_settings?.bg_image_attachment,
+							label: 'bg_image_attachment',
+						} }
+						backgroundRepeat={ {
+							value: _srfm_instant_form_settings?.bg_image_repeat,
+							label: 'bg_image_repeat',
+						} }
+						backgroundSize={ {
+							value: _srfm_instant_form_settings?.bg_image_size,
+							label: 'bg_image_size',
+						} }
+						backgroundCustomSize={ {
+							desktop: {
+								value: _srfm_instant_form_settings?.bg_image_size_custom,
+								label: 'bg_image_size_custom',
+							},
+							tablet: {
+								value: _srfm_instant_form_settings?.bg_image_size_custom,
+								label: 'bg_image_size_custom',
+							},
+							mobile: {
+								value: _srfm_instant_form_settings?.bg_image_size_custom,
+								label: 'bg_image_size_custom',
+							}
+						} }
+						backgroundCustomSizeType={ {
+							value: _srfm_instant_form_settings?.bg_image_size_custom_type,
+							label: 'bg_image_size_custom_type',
+						} }
+						customPosition={ {
+							value: _srfm_instant_form_settings?.bg_image_custom_position,
+							label: 'bg_image_custom_position',
+						} }
+						imageResponsive={ false }
+						label={ __( 'Background', 'sureforms' ) }
+						onHandleChange={ onHandleChange }
+						meta={ _srfm_instant_form_settings }
+						onSelectImage={ onImageSelect }
+					/>
+					<p className="components-base-control__help" />
+				</>
+			),
+		},
 		{
 			id: 'primary_color',
 			component: (
