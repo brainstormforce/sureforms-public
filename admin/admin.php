@@ -77,11 +77,13 @@ class Admin {
 	 */
 	public function add_action_links( $links ) {
 		if ( ! defined( 'SRFM_PRO_FILE' ) ) {
-			$upsell_link = Helper::get_sureforms_website_url(
-				'pricing',
+			$upsell_link = add_query_arg(
 				[
-					'utm_medium' => 'plugin-list',
-				]
+					'utm_source'   => 'plugin-list',
+					'utm_medium'   => 'free-plugin',
+					'utm_campaign' => 'plugin-list',
+				],
+				Helper::get_sureforms_website_url( 'pricing' )
 			);
 			$links[]     = '<a href="' . esc_url( $upsell_link ) . '" target="_blank" rel="noreferrer" class="sureforms-plugins-go-pro">' . esc_html__( 'Get SureForms Pro', 'sureforms' ) . '</a>';
 		}
