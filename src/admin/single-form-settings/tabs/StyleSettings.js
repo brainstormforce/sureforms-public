@@ -453,15 +453,15 @@ function StyleSettings( props ) {
 			<div className="srfm-panel-preview">
 				<div className="components-panel__body" style={ { 'border-bottom': 'unset' } }>
 					<h2 className="components-panel__body-title">
-						{ __( 'Presets', 'sureforms' ) }
+						{ __( 'Form Theme', 'sureforms' ) }
 					</h2>
 					<PremiumBadge
 						tooltipHeading={ __(
-							'Unlock Form Presets',
+							'Unlock Form Theme',
 							'sureforms'
 						) }
 						tooltipContent={ __(
-							'Upgrade to the SureForms Starter Plan to access a range of form presets that can be applied to your form with a single click, saving you time and effort.',
+							'With the SureForms Starter Plan, access essential form styling options to personalize the look and feel of your forms, ensuring a seamless and engaging user experience.',
 							'sureforms'
 						) }
 						tooltipPosition={ 'bottom' }
