@@ -511,6 +511,28 @@ class Single_Entry {
 		</div>
 		<?php
 		$content = ob_get_clean();
-		echo apply_filters( 'srfm_entry_logs_markup', $content, $entry_logs ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+
+		$allowed_tags = array_merge(
+			wp_kses_allowed_html( 'post' ),
+			[
+				'svg'  => [
+					'width'   => true,
+					'height'  => true,
+					'fill'    => true,
+					'viewbox' => true,
+					'xmlns'   => true,
+				],
+				'path' => [
+					'd'               => true,
+					'opacity'         => true,
+					'class'           => true,
+					'stroke-width'    => true,
+					'stroke-linecap'  => true,
+					'stroke-linejoin' => true,
+				],
+			]
+		);
+
+		echo wp_kses( apply_filters( 'srfm_entry_logs_markup', $content, $entry_logs ), $allowed_tags );
 	}
 }
