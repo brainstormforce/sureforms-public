@@ -53,32 +53,21 @@ function StyleSettings( props ) {
 		}, 1000 );
 	}, [ deviceType, submitBtn, sureformsKeys._srfm_inherit_theme_button ] );
 
-	const getMetaValue = useSelect( ( hookSelect ) => {
-		const getStore = hookSelect( editorStore );
-		const metaValue = getStore.getEditedPostAttribute( 'meta' );
-
-		return {
-			_srfm_instant_form_settings: metaValue?._srfm_instant_form_settings
-		};
-	}, [] );
-	const _srfm_instant_form_settings = getMetaValue._srfm_instant_form_settings || {};
 	const onHandleChange = ( updatedSettings ) => {
 		const [ key, value ] = Object.entries( updatedSettings )[0];
-		if ( _srfm_instant_form_settings?.[ key ] === value ) {
+		if ( formStyling?.[ key ] === value ) {
 			// Do not re-render if the value is same. This is necessary for color picker type controls which re-render on selection.
 			return;
 		}
 
-		const instantFormSettings = {
-			..._srfm_instant_form_settings,
-			...{
-				[ key ]: value,
-			},
+		const formStylingSettings = {
+			...formStyling,
+			[ key ]: value,
 		};
 
 		editPost( {
 			meta: {
-				_srfm_instant_form_settings: instantFormSettings,
+				_srfm_forms_styling: formStylingSettings,
 			},
 		} );
 	};
@@ -114,17 +103,13 @@ function StyleSettings( props ) {
 		}
 		key_id = key + '_id';
 
-		const updatedSettings = {
-			..._srfm_instant_form_settings,
-			...{
-				[ key ]: imageURL,
-				[ key_id ]: imageID,
-			},
-		};
-
 		editPost( {
 			meta: {
-				_srfm_instant_form_settings: updatedSettings,
+				_srfm_forms_styling: {
+					...formStyling,
+					[ key ]: imageURL,
+					[ key_id ]: imageID,
+				},
 			},
 		} );
 	};
@@ -326,87 +311,91 @@ function StyleSettings( props ) {
 						gradientOverlay={ {value: true} }
 						backgroundVideoType={ {value: false} }
 						backgroundType={ {
-							value: _srfm_instant_form_settings?.bg_type,
+							value: formStyling?.bg_type,
 							label: 'bg_type',
 						} }
 						backgroundColor={ {
-							value: _srfm_instant_form_settings?.bg_color,
+							value: formStyling?.bg_color,
 							label: 'bg_color',
 						} }
 						backgroundImage={ {
-							value: _srfm_instant_form_settings?.bg_image,
+							value: formStyling?.bg_image,
 							label: 'bg_image',
 						} }
 						backgroundPosition={ {
-							value: _srfm_instant_form_settings?.bg_image_position,
+							value: formStyling?.bg_image_position,
 							label: 'bg_image_position',
 						} }
 						backgroundAttachment={ {
-							value: _srfm_instant_form_settings?.bg_image_attachment,
+							value: formStyling?.bg_image_attachment,
 							label: 'bg_image_attachment',
 						} }
 						backgroundRepeat={ {
-							value: _srfm_instant_form_settings?.bg_image_repeat,
+							value: formStyling?.bg_image_repeat,
 							label: 'bg_image_repeat',
 						} }
 						backgroundSize={ {
-							value: _srfm_instant_form_settings?.bg_image_size,
+							value: formStyling?.bg_image_size,
 							label: 'bg_image_size',
 						} }
 						backgroundCustomSize={ {
 							desktop: {
-								value: _srfm_instant_form_settings?.bg_image_size_custom,
+								value: formStyling?.bg_image_size_custom,
 								label: 'bg_image_size_custom',
 							},
 							tablet: {
-								value: _srfm_instant_form_settings?.bg_image_size_custom,
+								value: formStyling?.bg_image_size_custom,
 								label: 'bg_image_size_custom',
 							},
 							mobile: {
-								value: _srfm_instant_form_settings?.bg_image_size_custom,
+								value: formStyling?.bg_image_size_custom,
 								label: 'bg_image_size_custom',
 							}
 						} }
 						backgroundCustomSizeType={ {
-							value: _srfm_instant_form_settings?.bg_image_size_custom_type || 'px',
+							value: formStyling?.bg_image_size_custom_type || 'px',
 							label: 'bg_image_size_custom_type',
 						} }
 						customPosition={ {
-							value: _srfm_instant_form_settings?.bg_image_custom_position,
+							value: formStyling?.bg_image_custom_position,
 							label: 'bg_image_custom_position',
 						} }
 						// Gradient Properties
 						gradientType={ {
-							value: _srfm_instant_form_settings?.gradient_type,
+							value: formStyling?.gradient_type,
 							label: 'gradient_type',
 						} }
 						backgroundGradientColor1={ {
-							value: _srfm_instant_form_settings?.bg_gradient_color_1,
+							value: formStyling?.bg_gradient_color_1,
 							label: 'bg_gradient_color_1',
 						} }
 						backgroundGradientColor2={ {
-							value: _srfm_instant_form_settings?.bg_gradient_color_2,
+							value: formStyling?.bg_gradient_color_2,
 							label: 'bg_gradient_color_2',
 						} }
 						backgroundGradientLocation1={ {
-							value: _srfm_instant_form_settings?.bg_gradient_location_1,
+							value: formStyling?.bg_gradient_location_1,
 							label: 'bg_gradient_location_1',
 						} }
 						backgroundGradientLocation2={ {
-							value: _srfm_instant_form_settings?.bg_gradient_location_2,
+							value: formStyling?.bg_gradient_location_2,
 							label: 'bg_gradient_location_2',
 						} }
 						backgroundGradientAngle={ {
-							value: _srfm_instant_form_settings?.bg_gradient_angle,
+							value: formStyling?.bg_gradient_angle,
 							label: 'bg_gradient_angle',
 						} }
 						backgroundGradientType={ {
-							value: _srfm_instant_form_settings?.bg_gradient_type,
+							value: formStyling?.bg_gradient_type,
 							label: 'bg_gradient_type',
 						} }
 						backgroundGradient={ {
-							value: _srfm_instant_form_settings?.bg_gradient,
+							value: formStyling?.bg_gradient,
 							label: 'bg_gradient',
+						} }
+						overlayType={ {
+							value: formStyling?.bg_gradient_overlay_type,
+							label: 'bg_gradient_overlay_type',
 						} }
 
 						imageResponsive={ false }

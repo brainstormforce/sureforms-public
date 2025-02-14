@@ -182,7 +182,7 @@ const Background = ( props ) => {
 				<div className="srfm-background-image">
 					{ ! imageResponsive && (
                         <SRFMMediaPicker
-                            onSelectImage={ ( media ) => onSelectImage( backgroundImage.value, media ) }
+                            onSelectImage={ ( media ) => onSelectImage( backgroundImage.label, media ) }
                             backgroundImage={ backgroundImage.value }
                             onRemoveImage={ () => onHandleChange( {[backgroundImage.label]: ''} ) }
                             isFormSpecific={ true }

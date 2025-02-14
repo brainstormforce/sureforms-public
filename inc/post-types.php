@@ -430,6 +430,63 @@ class Post_Types {
 							'use_banner_as_page_background' => [
 								'type' => 'boolean',
 							],
+						],
+					],
+				],
+				'default'       => [
+					'bg_type'                       => 'color',
+					'bg_color'                      => '#ffffff',
+					'bg_image'                      => '',
+					'site_logo'                     => '',
+					'cover_type'                    => 'color',
+					'cover_color'                   => '#0C78FB',
+					'cover_image'                   => '',
+					'enable_instant_form'           => false,
+					'form_container_width'          => 620,
+					'single_page_form_title'        => true,
+					'use_banner_as_page_background' => false,
+				],
+			]
+		);
+
+		register_post_meta(
+			SRFM_FORMS_POST_TYPE,
+			'_srfm_forms_styling',
+			[
+				'single'        => true,
+				'type'          => 'object',
+				'auth_callback' => '__return_true',
+				'show_in_rest'  => [
+					'schema' => [
+						'type'       => 'object',
+						'properties' => [
+							'primary_color'           => [
+								'type' => 'string',
+							],
+							'text_color'              => [
+								'type' => 'string',
+							],
+							'text_color_on_primary'   => [
+								'type' => 'string',
+							],
+							'field_spacing'           => [
+								'type' => 'string',
+							],
+							'submit_button_alignment' => [
+								'type' => 'string',
+							],
+							'bg_type'                  => [
+								'type' => 'string',
+							],
+							'bg_color'               => [
+								'type' => 'string',
+							],
+							'bg_image'               => [
+								'type' => 'string',
+							],
+							'bg_image_id'            => [
+								'type' => 'integer',
+							],
 							// Image Properties
 							'bg_image_position'            => [
 								'type' => 'string',
@@ -474,59 +531,7 @@ class Post_Types {
 							'bg_gradient_location_2'   => [
 								'type' => 'integer',
 							],
-						],
-					],
-				],
-				'default'       => [
-					'bg_type'                       => 'color',
-					'bg_color'                      => '#ffffff',
-					'bg_image'                      => '',
-					'site_logo'                     => '',
-					'cover_type'                    => 'color',
-					'cover_color'                   => '#0C78FB',
-					'cover_image'                   => '',
-					'enable_instant_form'           => false,
-					'form_container_width'          => 620,
-					'single_page_form_title'        => true,
-					'use_banner_as_page_background' => false,
-					'bg_image_position'             => 'default',
-					'bg_image_attachment'           => 'scroll',
-					'bg_image_repeat'               => 'no-repeat',
-					'bg_image_size'                 => 'cover',
-					'bg_image_size_custom_type'     => 'px',
-					'gradient_type'                 => 'basic',
-					'bg_gradient_type'              => 'linear',
-					'bg_gradient_angle' 		    => 90,
-					'bg_gradient_color_1'           => '#0C78FB',
-					'bg_gradient_color_2'           => '#ffffff',
-				],
-			]
-		);
-
-		register_post_meta(
-			SRFM_FORMS_POST_TYPE,
-			'_srfm_forms_styling',
-			[
-				'single'        => true,
-				'type'          => 'object',
-				'auth_callback' => '__return_true',
-				'show_in_rest'  => [
-					'schema' => [
-						'type'       => 'object',
-						'properties' => [
-							'primary_color'           => [
-								'type' => 'string',
-							],
-							'text_color'              => [
-								'type' => 'string',
-							],
-							'text_color_on_primary'   => [
-								'type' => 'string',
-							],
-							'field_spacing'           => [
-								'type' => 'string',
-							],
-							'submit_button_alignment' => [
+							'bg_gradient_overlay_type'  => [
 								'type' => 'string',
 							],
 						],
@@ -538,6 +543,19 @@ class Post_Types {
 					'text_color_on_primary'   => '#FFFFFF',
 					'field_spacing'           => 'medium',
 					'submit_button_alignment' => 'left',
+					'bg_type'                  => 'color',
+					'bg_color'                 => '#ffffff',
+					'bg_image'                 => '',
+					'bg_image_position'             => 'default',
+					'bg_image_attachment'           => 'scroll',
+					'bg_image_repeat'               => 'no-repeat',
+					'bg_image_size'                 => 'cover',
+					'bg_image_size_custom_type'     => 'px',
+					'gradient_type'                 => 'basic',
+					'bg_gradient_type'              => 'linear',
+					'bg_gradient_angle' 		    => 90,
+					'bg_gradient_color_1'           => '#0C78FB',
+					'bg_gradient_color_2'           => '#ffffff',
 				],
 			]
 		);
