@@ -23,11 +23,11 @@ const defaultKeys = {
 	back_button_text: { default: __( 'Back', 'sureforms' ) },
 	// Style Tab
 	// Form Container
-	primary_color: { default: '#0C78FB' },
+	primary_color: { default: '#111C44' },
 	text_color: { default: '#1E1E1E' },
 	text_color_on_primary: { default: '#FFFFFF' },
 	form_container_width: { default: 620 },
-	cover_color: { default: '#0C78FB' },
+	cover_color: { default: '#111C44' },
 	bg_color: { default: '#ffffff' },
 };
 
