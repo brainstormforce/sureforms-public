@@ -465,7 +465,7 @@ function StyleSettings( props ) {
 							'sureforms'
 						) }
 						tooltipPosition={ 'bottom' }
-						utmMedium={ 'editor_form_presets' }
+						utmMedium={ 'editor_form_themes' }
 					/>
 					{ chevronDown }
 				</div>
@@ -473,7 +473,7 @@ function StyleSettings( props ) {
 		</>
 	);
 
-	const isPresetPanelPresent = enhancedStylePanels.find( ( panel ) => panel.panelId === 'presets' );
+	const isPresetPanelPresent = enhancedStylePanels.find( ( panel ) => panel.panelId === 'themes' );
 	return (
 		<>
 			{ ! isPresetPanelPresent && presetPreview }
