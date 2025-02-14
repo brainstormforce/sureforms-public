@@ -27,16 +27,24 @@ class Register {
 	 * @since  0.0.1
 	 */
 	public function __construct() {
-		$namespace  = 'SRFM\\Inc\\Blocks';
-		$blocks_dir = glob( SRFM_DIR . 'inc/blocks/**/*.php' );
-		$base       = 'Block';
-		$this->register_block( $blocks_dir, $namespace, $base );
-
+		$blocks = [
+			[
+				'dir'       => SRFM_DIR . 'inc/blocks/**/*.php',
+				'namespace' => 'SRFM\\Inc\\Blocks',
+			]
+		];
+	
 		if ( defined( 'SRFM_PRO_VER' ) ) {
-			$blocks_dir = glob( SRFM_PRO_DIR . 'inc/blocks/**/*.php' );
-			$namespace  = 'SRFM_PRO\\Inc\\Blocks';
-			$base       = 'Block';
-			$this->register_block( $blocks_dir, $namespace, $base );
+			$blocks[] = [
+				'dir'       => SRFM_PRO_DIR . 'inc/blocks/**/*.php',
+				'namespace' => 'SRFM_PRO\\Inc\\Blocks',
+			];
+		}
+
+		$blocks = apply_filters( 'srfm_registered_blocks', $blocks );
+	
+		foreach ( $blocks as $block ) {
+			$this->register_block( glob( $block['dir'] ), $block['namespace'], 'Block' );
 		}
 	}
 
