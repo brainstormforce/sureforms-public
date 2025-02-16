@@ -7,9 +7,15 @@ const FormTypeSelector = ( { formType, setFormType, setformLayout } ) => {
 	const formTypeOptions = applyFilters(
 		'srfm.ai_form_builder.form_type_options',
 		[
-			{ label: __( 'Simple', 'sureforms' ), isAvailable: true },
+			{ label: __( 'Simple', 'sureforms' ), slug: 'simple', isAvailable: true },
 			// this is added to show a preview of Calculator form type in free plugin
-			{ label: __( 'Calculator', 'sureforms' ), isAvailable: false },
+			{ label: __( 'Calculator', 'sureforms' ), slug: 'calculator', isAvailable: false, upgradeTooltipContent: {
+				badgeName: __( 'Premium', 'sureforms' ),
+				tooltipHeadin: __( 'Unlock Calculations', 'sureforms' ),
+				tooltipContent: __( 'Upgrade to the SureForms Business Plan to create advanced forms with real-time calculations, such as project quote calculators, BMI calculators, loan calculators, and more.', 'sureforms' ),
+				utmMedium: 'ai_builder_calculator',
+				tooltipPosition: 'left',
+			} },
 		],
 	);
 
@@ -33,8 +39,8 @@ const FormTypeSelector = ( { formType, setFormType, setformLayout } ) => {
 					option.isAvailable ? (
 						<div
 							key={ index }
-							className={ `srfm-ai-builder-form-type-option ${ formType === option.label.toLowerCase() ? 'active' : '' }` }
-							onClick={ () => handleSelection( option.label.toLowerCase() ) }
+							className={ `srfm-ai-builder-form-type-option ${ formType === option.slug ? 'active' : '' }` }
+							onClick={ () => handleSelection( option.slug ) }
 						>
 							<span className="srfm-ai-builder-form-type-text">{ option.label }{ option.icon && option.icon }</span>
 						</div>
@@ -46,11 +52,11 @@ const FormTypeSelector = ( { formType, setFormType, setformLayout } ) => {
 							{ option.label }
 							<div style={ { lineHeight: 0 } }>
 								<PremiumBadge
-									badgeName={ __( 'Business', 'sureforms' ) }
-									tooltipHeading={ __( 'Unlock Calculations', 'sureforms' ) }
-									tooltipContent={ __( 'Upgrade to the SureForms Business Plan to create advanced forms with real-time calculations, such as project quote calculators, BMI calculators, loan calculators, and more.', 'sureforms' ) }
-									utmMedium="ai_builder"
-									tooltipPosition="left"
+									badgeName={ option?.upgradeTooltipContent?.badgeName }
+									tooltipHeading={ option?.upgradeTooltipContent?.tooltipHeading }
+									tooltipContent={ option?.upgradeTooltipContent?.tooltipContent }
+									utmMedium={ option?.upgradeTooltipContent?.utmMedium }
+									tooltipPosition={ option?.upgradeTooltipContent?.tooltipPosition }
 								/>
 							</div>
 						</div>
