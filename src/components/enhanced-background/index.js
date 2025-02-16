@@ -1,6 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import AdvancedPopColorControl from '@Components/color-control/advanced-pop-color-control.js';
-import { SelectControl, ToggleControl } from '@wordpress/components';
+import { SelectControl } from '@wordpress/components';
 import styles from './editor.lazy.scss';
 import GradientSettings from '@Components/gradient-settings';
 import {
@@ -11,10 +11,6 @@ import {
 } from '@wordpress/element';
 import SRFMMediaPicker from '@Components/image';
 import ResponsiveSlider from '@Components/responsive-slider';
-import ResponsiveSelectControl from '@Components/responsive-select';
-import { useDeviceType } from '@Controls/getPreviewType';
-import ResponsiveSRFMImage from '@Components/responsive-image';
-import ResponsiveSRFMFocalPointPicker from '@Components/responsive-focal-point-picker';
 import MultiButtonsControl from '@Components/multi-buttons-control';
 import SRFM_Block_Icons from '@Controls/block-icons';
 import { getPanelIdFromRef } from '@Utils/Helpers';
@@ -37,8 +33,6 @@ const Background = ( props ) => {
 		};
 	}, [] );
 
-	const deviceType = useDeviceType().toLowerCase();
-
 	const {
 		setAttributes,
         onHandleChange,
@@ -55,14 +49,7 @@ const Background = ( props ) => {
 		backgroundType,
 		backgroundCustomSize,
 		backgroundCustomSizeType,
-		imageResponsive,
 		gradientOverlay,
-		customPosition,
-		centralizedPosition,
-		xPositionDesktop,
-		xPositionType,
-		yPositionDesktop,
-		yPositionType,
 		help = false,
 		backgroundOverlaySize,
 		backgroundOverlayRepeat,
@@ -71,17 +58,7 @@ const Background = ( props ) => {
 		backgroundOverlayImage,
 		backgroundOverlayCustomSize,
 		backgroundOverlayCustomSizeType,
-		customOverlayPosition,
-		xPositionOverlayDesktop,
-		xPositionOverlayType,
-		yPositionOverlayDesktop,
-		yPositionOverlayTablet,
-		yPositionOverlayMobile,
-		yPositionOverlayType,
-		yPositionOverlayTypeTablet,
-		yPositionOverlayTypeMobile,
 		overlayBlendMode,
-		imageOverlayResponsive,
 		label = __( 'Type', 'sureforms' ),
 	} = props;
 
@@ -188,12 +165,6 @@ const Background = ( props ) => {
 		];
 	}
 
-    // Using backgroundImage.value instead of backgroundImage.desktop.value
-	const setImage =
-		imageResponsive && backgroundImage?.value
-			? true
-			: false;
-
 	// Render Common Overlay Controls.
 	const renderOverlayControls = () => {
 		return (
@@ -234,26 +205,16 @@ const Background = ( props ) => {
 			setAttributes( { [ backgroundOverlayImage.label ]: media } );
 		};
 
-		const setOverlayImage =
-			imageOverlayResponsive &&
-			( backgroundOverlayImage.desktop?.value ||
-				backgroundOverlayImage.tablet?.value ||
-				backgroundOverlayImage.mobile?.value )
-				? true
-				: false;
-
 		return (
 			<>
 				<div className="srfm-background-image">
-					{ ! imageOverlayResponsive && (
-						<SRFMMediaPicker
-							onSelectImage={ onSelectOverlayImage }
-							backgroundOverlayImage={ backgroundOverlayImage.value }
-							onRemoveImage={ onRemoveOverlayImage }
-							disableLabel={ true }
-						/>
-					) }
-					{ ! imageOverlayResponsive && backgroundOverlayImage.value && (
+                    <SRFMMediaPicker
+                        onSelectImage={ onSelectOverlayImage }
+                        backgroundOverlayImage={ backgroundOverlayImage.value }
+                        onRemoveImage={ onRemoveOverlayImage }
+                        disableLabel={ true }
+                    />
+					{ backgroundOverlayImage.value && (
 						<>
 							<div className="srfm-background-image-position">
 								<SelectControl
@@ -457,279 +418,6 @@ const Background = ( props ) => {
 							</div>
 						</>
 					) }
-					{ imageOverlayResponsive && backgroundOverlayImage && (
-						<ResponsiveSRFMImage
-							backgroundImage={ backgroundOverlayImage }
-							setAttributes={ setAttributes }
-						/>
-					) }
-					{ imageOverlayResponsive && backgroundOverlayImage && setOverlayImage && (
-						<>
-							<div className="srfm-background-image-position">
-								<MultiButtonsControl
-									setAttributes={ setAttributes }
-									label={ __( 'Image Position', 'sureforms' ) }
-									data={ {
-										value: customOverlayPosition.value,
-										label: customOverlayPosition.label,
-									} }
-									options={ [
-										{ value: 'default', label: __( 'Default', 'sureforms' ) },
-										{ value: 'custom', label: __( 'Custom', 'sureforms' ) },
-									] }
-								/>
-							</div>
-							{ 'custom' !== customOverlayPosition.value && (
-								<div className="srfm-background-image-position">
-									<ResponsiveSRFMFocalPointPicker
-										backgroundPosition={ backgroundOverlayPosition }
-										setAttributes={ setAttributes }
-										backgroundImage={ backgroundOverlayImage }
-									/>
-								</div>
-							) }
-							{ 'custom' === customOverlayPosition.value && (
-								<>
-									<div className="srfm-background-image-position">
-										<ResponsiveSlider
-											label={ __( 'X Position', 'sureforms' ) }
-											data={ {
-												desktop: {
-													value: xPositionOverlayDesktop.value,
-													label: 'xPositionOverlayDesktop',
-													unit: {
-														value: xPositionOverlayType.value,
-														label: 'xPositionOverlayType',
-													},
-												},
-											} }
-											limitMin={ { 'px': -800, '%': -100, 'em': -100, 'vw': -100 } }
-											limitMax={ { 'px': 800, '%': 100, 'em': 100, 'vw': 100 } }
-											units={ [
-												{
-													name: __( 'PX', 'sureforms' ),
-													unitValue: 'px',
-												},
-												{
-													name: __( '%', 'sureforms' ),
-													unitValue: '%',
-												},
-												{
-													name: __( 'EM', 'sureforms' ),
-													unitValue: 'em',
-												},
-												{
-													name: __( 'VW', 'sureforms' ),
-													unitValue: 'vw',
-												},
-											] }
-											setAttributes={ setAttributes }
-										/>
-									</div>
-									<div className="srfm-background-image-position">
-										<ResponsiveSlider
-											label={ __( 'Y Position', 'sureforms' ) }
-											data={ {
-												desktop: {
-													value: yPositionOverlayDesktop.value,
-													label: 'yPositionOverlayDesktop',
-													unit: {
-														value: yPositionOverlayType.value,
-														label: 'yPositionOverlayType',
-													},
-												},
-												tablet: {
-													value: yPositionOverlayTablet.value,
-													label: 'yPositionOverlayTablet',
-													unit: {
-														value: yPositionOverlayTypeTablet.value,
-														label: 'yPositionOverlayTypeTablet',
-													},
-												},
-												mobile: {
-													value: yPositionOverlayMobile.value,
-													label: 'yPositionOverlayMobile',
-													unit: {
-														value: yPositionOverlayTypeMobile.value,
-														label: 'yPositionOverlayTypeMobile',
-													},
-												},
-											} }
-											limitMin={ { 'px': -800, '%': -100, 'em': -100, 'vh': -100 } }
-											limitMax={ { 'px': 800, '%': 100, 'em': 100, 'vh': 100 } }
-											units={ [
-												{
-													name: __( 'PX', 'sureforms' ),
-													unitValue: 'px',
-												},
-												{
-													name: __( '%', 'sureforms' ),
-													unitValue: '%',
-												},
-												{
-													name: __( 'EM', 'sureforms' ),
-													unitValue: 'em',
-												},
-												{
-													name: __( 'VH', 'sureforms' ),
-													unitValue: 'vh',
-												},
-											] }
-											setAttributes={ setAttributes }
-										/>
-									</div>
-								</>
-							) }
-							<div className="srfm-background-image-attachment">
-								<ResponsiveSelectControl
-									label={ __( 'Attachment', 'sureforms' ) }
-									data={ backgroundOverlayAttachment }
-									options={ {
-										desktop: [
-											{
-												value: 'fixed',
-												label: __( 'Fixed', 'sureforms' ),
-											},
-											{
-												value: 'scroll',
-												label: __( 'Scroll', 'sureforms' ),
-											},
-										],
-									} }
-									setAttributes={ setAttributes }
-								/>
-							</div>
-							<div className="srfm-background-blend-mode">
-								<ResponsiveSelectControl
-									label={ __( 'Blend Mode', 'sureforms' ) }
-									data={ overlayBlendMode }
-									options={ {
-										desktop: [
-											{
-												value: 'normal',
-												label: __( 'Normal', 'sureforms' ),
-											},
-											{
-												value: 'multiply',
-												label: __( 'Multiply', 'sureforms' ),
-											},
-											{
-												value: 'screen',
-												label: __( 'Screen', 'sureforms' ),
-											},
-											{
-												value: 'overlay',
-												label: __( 'Overlay', 'sureforms' ),
-											},
-											{
-												value: 'darken',
-												label: __( 'Darken', 'sureforms' ),
-											},
-											{
-												value: 'lighten',
-												label: __( 'Lighten', 'sureforms' ),
-											},
-											{
-												value: 'color-dodge',
-												label: __( 'Color Dodge', 'sureforms' ),
-											},
-											{
-												value: 'saturation',
-												label: __( 'Saturation', 'sureforms' ),
-											},
-											{
-												value: 'color',
-												label: __( 'Color', 'sureforms' ),
-											},
-										],
-									} }
-									setAttributes={ setAttributes }
-								/>
-							</div>
-							<div className="srfm-background-image-repeat">
-								<ResponsiveSelectControl
-									label={ __( 'Repeat', 'sureforms' ) }
-									data={ backgroundOverlayRepeat }
-									options={ {
-										desktop: [
-											{
-												value: 'no-repeat',
-												label: __( 'No Repeat', 'sureforms' ),
-											},
-											{
-												value: 'repeat',
-												label: __( 'Repeat', 'sureforms' ),
-											},
-											{
-												value: 'repeat-x',
-												label: __( 'Repeat-x', 'sureforms' ),
-											},
-											{
-												value: 'repeat-y',
-												label: __( 'Repeat-y', 'sureforms' ),
-											},
-										],
-									} }
-									setAttributes={ setAttributes }
-								/>
-							</div>
-							<div className="srfm-background-image-size">
-								<ResponsiveSelectControl
-									label={ __( 'Size', 'sureforms' ) }
-									data={ backgroundOverlaySize }
-									options={ {
-										desktop: [
-											{
-												value: 'auto',
-												label: __( 'Auto', 'sureforms' ),
-											},
-											{
-												value: 'cover',
-												label: __( 'Cover', 'sureforms' ),
-											},
-											{
-												value: 'contain',
-												label: __( 'Contain', 'sureforms' ),
-											},
-											{
-												value: 'custom',
-												label: __( 'Custom', 'sureforms' ),
-											},
-										],
-									} }
-									setAttributes={ setAttributes }
-								/>
-								{ 'custom' === backgroundOverlaySize[ deviceType ].value &&
-									backgroundOverlayCustomSize && (
-										<ResponsiveSlider
-											label={ __( 'Width', 'sureforms' ) }
-											data={ backgroundOverlayCustomSize }
-											min={ 0 }
-											limitMax={ { 'px': 1600, '%': 100, 'em': 572 } }
-											unit={ {
-												value: backgroundOverlayCustomSizeType.value,
-												label: backgroundOverlayCustomSizeType.label,
-											} }
-											units={ [
-												{
-													name: __( 'PX', 'sureforms' ),
-													unitValue: 'px',
-												},
-												{
-													name: __( '%', 'sureforms' ),
-													unitValue: '%',
-												},
-												{
-													name: __( 'EM', 'sureforms' ),
-													unitValue: 'em',
-												},
-											] }
-											setAttributes={ setAttributes }
-										/>
-									) }
-							</div>
-						</>
-					) }
 					{ renderOverlayControls() }
 				</div>
 			</>
@@ -765,8 +453,7 @@ const Background = ( props ) => {
 					{ 'image' === overlayType.value && renderOverlayImageControls() }
 				</>
 			) }
-			{ backgroundType.value === 'image' &&
-				( ( imageResponsive && setImage ) || ( ! imageResponsive && backgroundImage?.value ) ) && (
+			{ backgroundType.value === 'image' && backgroundImage?.value && (
 					<>
 						{ buttonControl }
 						{ 'color' === overlayType.value && (
@@ -855,16 +542,14 @@ const Background = ( props ) => {
 			) }
 			{ 'image' === backgroundType.value && (
 				<div className="srfm-background-image">
-					{ ! imageResponsive && (
-                        <SRFMMediaPicker
-                            onSelectImage={ ( media ) => onSelectImage( backgroundImage.label, media ) }
-                            backgroundImage={ backgroundImage.value }
-                            onRemoveImage={ () => onHandleChange( {[backgroundImage.label]: ''} ) }
-                            isFormSpecific={ true }
-                            disableLabel={ true }
-                        />
-					) }
-					{ ! imageResponsive && backgroundImage.value && (
+                    <SRFMMediaPicker
+                        onSelectImage={ ( media ) => onSelectImage( backgroundImage.label, media ) }
+                        backgroundImage={ backgroundImage.value }
+                        onRemoveImage={ () => onHandleChange( {[backgroundImage.label]: ''} ) }
+                        isFormSpecific={ true }
+                        disableLabel={ true }
+                    />
+					{ backgroundImage.value && (
 						<>
 							<div className="srfm-background-image-position">
 								<SelectControl
@@ -999,230 +684,6 @@ const Background = ( props ) => {
 											},
 										] }
 										setAttributes={ setAttributes } // Modified the onHandleChange function.
-									/>
-								) }
-							</div>
-						</>
-					) }
-					{ imageResponsive && backgroundImage && (
-						<ResponsiveSRFMImage backgroundImage={ backgroundImage } setAttributes={ setAttributes } />
-					) }
-					{ imageResponsive && backgroundImage && setImage && (
-						<>
-							<div className="srfm-background-image-position">
-								<MultiButtonsControl
-									onChange={ ( value ) => onHandleChange( {[customPosition.label]: value} ) }
-									label={ __( 'Image Position', 'sureforms' ) }
-									data={ {
-										value: customPosition.value,
-										label: customPosition.label,
-									} }
-									options={ [
-										{ value: 'default', label: __( 'Default', 'sureforms' ) },
-										{ value: 'custom', label: __( 'Custom', 'sureforms' ) },
-									] }
-								/>
-							</div>
-							{ 'custom' !== customPosition.value && (
-								<div className="srfm-background-image-position">
-									<ResponsiveSRFMFocalPointPicker
-										backgroundPosition={ backgroundPosition }
-										setAttributes={ setAttributes }
-										backgroundImage={ backgroundImage }
-									/>
-								</div>
-							) }
-							{ 'custom' === customPosition.value && (
-								<>
-									<div className="srfm-background-image-position">
-										{ (
-											<div className="srfm-background-image-axis-position">
-												<ToggleControl
-													label={ __(
-														'Centralized Position',
-														'sureforms'
-													) }
-													checked={ centralizedPosition.value }
-													onChange={ () =>
-														setAttributes( {
-															[ centralizedPosition.label ]: ! centralizedPosition.value,
-														} )
-													}
-												/>
-											</div>
-										) }
-
-										<ResponsiveSlider
-											label={ __( 'X Position', 'sureforms' ) }
-											data={ {
-												desktop: {
-													value: xPositionDesktop.value,
-													label: 'xPositionDesktop',
-													unit: {
-														value: xPositionType.value,
-														label: 'xPositionType',
-													},
-												},
-											} }
-											limitMin={ { 'px': -1000, '%': -100, 'em': -100, 'vw': -100 } }
-											limitMax={ { 'px': 1000, '%': 100, 'em': 100, 'vw': 100 } }
-											units={ [
-												{
-													name: __( 'PX', 'sureforms' ),
-													unitValue: 'px',
-												},
-												{
-													name: __( '%', 'sureforms' ),
-													unitValue: '%',
-												},
-												{
-													name: __( 'EM', 'sureforms' ),
-													unitValue: 'em',
-												},
-												{
-													name: __( 'VW', 'sureforms' ),
-													unitValue: 'vw',
-												},
-											] }
-											setAttributes={ setAttributes }
-										/>
-									</div>
-									<div className="srfm-background-image-position">
-										<ResponsiveSlider
-											label={ __( 'Y Position', 'sureforms' ) }
-											data={ {
-												desktop: {
-													value: yPositionDesktop.value,
-													label: yPositionDesktop.label,
-													unit: {
-														value: yPositionType.value,
-														label: yPositionType.label,
-													},
-												},
-											} }
-											limitMin={ { 'px': -800, '%': -100, 'em': -100, 'vh': -100 } }
-											limitMax={ { 'px': 800, '%': 100, 'em': 100, 'vh': 100 } }
-											units={ [
-												{
-													name: __( 'PX', 'sureforms' ),
-													unitValue: 'px',
-												},
-												{
-													name: __( '%', 'sureforms' ),
-													unitValue: '%',
-												},
-												{
-													name: __( 'EM', 'sureforms' ),
-													unitValue: 'em',
-												},
-												{
-													name: __( 'VH', 'sureforms' ),
-													unitValue: 'vh',
-												},
-											] }
-											setAttributes={ setAttributes }
-										/>
-									</div>
-								</>
-							) }
-							<div className="srfm-background-image-attachment">
-								<ResponsiveSelectControl
-									label={ __( 'Attachment', 'sureforms' ) }
-									data={ backgroundAttachment }
-									options={ {
-										desktop: [
-											{
-												value: 'fixed',
-												label: __( 'Fixed', 'sureforms' ),
-											},
-											{
-												value: 'scroll',
-												label: __( 'Scroll', 'sureforms' ),
-											},
-										],
-									} }
-									setAttributes={ setAttributes }
-								/>
-							</div>
-							<div className="srfm-background-image-repeat">
-								<ResponsiveSelectControl
-									label={ __( 'Repeat', 'sureforms' ) }
-									data={ backgroundRepeat }
-									options={ {
-										desktop: [
-											{
-												value: 'no-repeat',
-												label: __( 'No Repeat', 'sureforms' ),
-											},
-											{
-												value: 'repeat',
-												label: __( 'Repeat', 'sureforms' ),
-											},
-											{
-												value: 'repeat-x',
-												label: __( 'Repeat-x', 'sureforms' ),
-											},
-											{
-												value: 'repeat-y',
-												label: __( 'Repeat-y', 'sureforms' ),
-											},
-										],
-									} }
-									setAttributes={ setAttributes }
-								/>
-							</div>
-							<div className="srfm-background-image-size">
-								<ResponsiveSelectControl
-									label={ __( 'Size', 'sureforms' ) }
-									data={ backgroundSize }
-									options={ {
-										desktop: [
-											{
-												value: 'auto',
-												label: __( 'Auto', 'sureforms' ),
-											},
-											{
-												value: 'cover',
-												label: __( 'Cover', 'sureforms' ),
-											},
-											{
-												value: 'contain',
-												label: __( 'Contain', 'sureforms' ),
-											},
-											{
-												value: 'custom',
-												label: __( 'Custom', 'sureforms' ),
-											},
-										],
-									} }
-									onChange={ ( value ) => onHandleChange( {[backgroundSize.label]: value} ) }
-								/>
-                                {/* Changed backgroundSize[deviceType].value since responsive support is not provided. */}
-								{ 'custom' === backgroundSize.value && backgroundCustomSize && (
-									<ResponsiveSlider
-										label={ __( 'Width', 'sureforms' ) }
-										data={ backgroundCustomSize }
-										min={ 0 }
-										limitMax={ { 'px': 1600, '%': 100, 'em': 574 } }
-										unit={ {
-											value: backgroundCustomSizeType.value,
-											label: backgroundCustomSizeType.label,
-										} }
-										units={ [
-											{
-												name: __( 'PX', 'sureforms' ),
-												unitValue: 'px',
-											},
-											{
-												name: __( '%', 'sureforms' ),
-												unitValue: '%',
-											},
-											{
-												name: __( 'EM', 'sureforms' ),
-												unitValue: 'em',
-											},
-										] }
-                                        onChange={ ( value ) => onHandleChange( {[backgroundCustomSizeType.label]: value} ) }
 									/>
 								) }
 							</div>

@@ -308,9 +308,7 @@ function StyleSettings( props ) {
 			component: (
 				<>
 					<Background
-						gradientOverlay={ {value: true} }
-						imageResponsive={ false }
-						imageOverlayResponsive={ false }
+						gradientOverlay={ { value: true } }
 						backgroundType={ {
 							value: formStyling?.bg_type,
 							label: 'bg_type',
@@ -357,10 +355,6 @@ function StyleSettings( props ) {
 							value: formStyling?.bg_image_size_custom_type || 'px',
 							label: 'bg_image_size_custom_type',
 						} }
-						customPosition={ {
-							value: formStyling?.bg_image_custom_position,
-							label: 'bg_image_custom_position',
-						} }
 						// Gradient Properties
 						gradientType={ {
 							value: formStyling?.gradient_type,
@@ -405,22 +399,6 @@ function StyleSettings( props ) {
 						backgroundOverlayImage={ {
 							value: formStyling?.bg_image_overlay,
 							label: 'bg_image_overlay',
-						} }
-						xPositionDesktop={ {
-							value: formStyling?.x_position_desktop,
-							label: 'x_position_desktop',
-						} }
-						yPositionDesktop={ {
-							value: formStyling?.y_position_desktop,
-							label: 'y_position_desktop',
-						} }
-						xPositionOverlayDesktop={ {
-							value: formStyling?.x_position_overlay_desktop,
-							label: 'x_position_overlay_desktop',
-						} }
-						yPositionOverlayDesktop={ {
-							value: formStyling?.y_position_overlay_desktop,
-							label: 'y_position_overlay_desktop',
 						} }
 						backgroundOverlayCustomSize={ {
 							desktop: {
