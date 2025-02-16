@@ -3,26 +3,16 @@ import AdvancedPopColorControl from '@Components/color-control/advanced-pop-colo
 import { SelectControl } from '@wordpress/components';
 import styles from './editor.lazy.scss';
 import GradientSettings from '@Components/gradient-settings';
-import {
-	useEffect,
-	useState,
-	useRef,
-	useLayoutEffect,
-} from '@wordpress/element';
+import { useRef, useLayoutEffect } from '@wordpress/element';
 import SRFMMediaPicker from '@Components/image';
 import ResponsiveSlider from '@Components/responsive-slider';
 import MultiButtonsControl from '@Components/multi-buttons-control';
 import SRFM_Block_Icons from '@Controls/block-icons';
-import { getPanelIdFromRef } from '@Utils/Helpers';
-import { select } from '@wordpress/data';
 import SRFMHelpText from '@Components/help-text';
-import { applyFilters } from '@wordpress/hooks';
 import Range from '@Components/range/Range';
 import Separator from '@Components/separator';
 
 const Background = ( props ) => {
-	const { getSelectedBlock } = select( 'core/block-editor' );
-	const [ panelNameForHook, setPanelNameForHook ] = useState( null );
 	const panelRef = useRef( null );
 
 	// Add and remove the CSS on the drop and remove of the component.
@@ -61,11 +51,6 @@ const Background = ( props ) => {
 		overlayBlendMode,
 		label = __( 'Type', 'sureforms' ),
 	} = props;
-
-	const blockNameForHook = getSelectedBlock()?.name.split( '/' ).pop(); // eslint-disable-line @wordpress/no-unused-vars-before-return
-	useEffect( () => {
-		setPanelNameForHook( getPanelIdFromRef( panelRef ) );
-	}, [ blockNameForHook ] );
 
 	let overlayOptions = [];
 
@@ -413,6 +398,7 @@ const Background = ( props ) => {
 											},
 										] }
 										setAttributes={ setAttributes }
+                                        responsive={ false }
 									/>
 								) }
 							</div>
@@ -684,6 +670,7 @@ const Background = ( props ) => {
 											},
 										] }
 										setAttributes={ setAttributes } // Modified the onHandleChange function.
+                                        responsive={ false }
 									/>
 								) }
 							</div>
@@ -709,26 +696,12 @@ const Background = ( props ) => {
             { overlayControls }
 		</>
 	);
-	const controlName = 'background'; // there is no label props that's why keep hard coded label
-	const controlBeforeDomElement = applyFilters(
-		`srfm.${ blockNameForHook }.${ panelNameForHook }.${ controlName }.before`,
-		'',
-		blockNameForHook
-	);
-	const controlAfterDomElement = applyFilters(
-		`srfm.${ blockNameForHook }.${ panelNameForHook }.${ controlName }`,
-		'',
-		blockNameForHook
-	);
-
 	return (
 		<div ref={ panelRef } className="components-base-control">
-			{ controlBeforeDomElement }
 			<div className="srfm-bg-select-control">
 				{ advancedControls }
 				<SRFMHelpText text={ help } />
 			</div>
-			{ controlAfterDomElement }
 		</div>
 	);
 };

@@ -352,7 +352,7 @@ function StyleSettings( props ) {
 							}
 						} }
 						backgroundCustomSizeType={ {
-							value: formStyling?.bg_image_size_custom_type || 'px',
+							value: formStyling?.bg_image_size_custom_type || '%',
 							label: 'bg_image_size_custom_type',
 						} }
 						// Gradient Properties
@@ -397,8 +397,8 @@ function StyleSettings( props ) {
 							label: 'bg_overlay_opacity',
 						} }
 						backgroundOverlayImage={ {
-							value: formStyling?.bg_image_overlay,
-							label: 'bg_image_overlay',
+							value: formStyling?.bg_overlay_image,
+							label: 'bg_overlay_image',
 						} }
 						backgroundOverlayCustomSize={ {
 							desktop: {

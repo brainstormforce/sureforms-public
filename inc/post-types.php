@@ -531,23 +531,27 @@ class Post_Types {
 							'bg_gradient_location_2'   => [
 								'type' => 'integer',
 							],
-							'bg_gradient_overlay_type'  => [
-								'type' => 'string',
-							],
+							// Overlay Properties
 							'bg_overlay_size'           => [
 								'type' => 'string',
 							],
-							'bg_image_size_custom_type_overlay' => [
+							'bg_gradient_overlay_type'  => [
 								'type' => 'string',
 							],
 							'bg_overlay_opacity'            => [
 								'type' => 'integer',
 							],
-							'bg_overlay_iamge'        => [
+							'bg_overlay_image'        => [
 								'type' => 'string',
 							],
 							'bg_image_overlay_color'  => [
 								'type' => 'string',
+							],
+							'bg_image_size_custom_type_overlay' => [
+								'type' => 'string',
+							],
+							'bg_image_size_custom_overlay'     => [
+								'type' => 'integer',
 							],
 						],
 					],
@@ -562,21 +566,25 @@ class Post_Types {
 					'bg_color'                 => '#ffffff',
 					'bg_image'                 => '',
 					'bg_image_position'             => 'default',
-					'bg_image_attachment'           => 'scroll',
+					'bg_image_attachment'           => 'fixed',
 					'bg_image_repeat'               => 'no-repeat',
 					'bg_image_size'                 => 'cover',
-					'bg_image_size_custom_type'     => 'px',
+					'bg_image_size_custom'     => 100,
+					'bg_image_size_custom_type'     => '%',
 					'gradient_type'                 => 'basic',
 					'bg_gradient_type'              => 'linear',
-					'bg_gradient_angle' 		    => 90,
 					'bg_gradient_color_1'           => '#0C78FB',
 					'bg_gradient_color_2'           => '#ffffff',
+					'bg_gradient_angle' 		    => 90,
+					'bg_gradient_location_1' 		    => 0,
+					'bg_gradient_location_2' 		    => 100,
 					'bg_overlay_size'               => 'auto',
-					'bg_image_size_custom_type_overlay' => 'px',
+					'bg_gradient_overlay_type'      => '',
 					'bg_overlay_opacity'			  => 1,
 					'bg_overlay_image'			  => '',
-					'bg_gradient_overlay_type'      => '',
 					'bg_image_overlay_color'        => '',
+					'bg_image_size_custom_type_overlay' => '%',
+					'bg_image_size_custom_overlay'  => 100,
 				],
 			]
 		);
