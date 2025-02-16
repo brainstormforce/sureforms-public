@@ -534,6 +534,37 @@ class Post_Types {
 							'bg_gradient_overlay_type'  => [
 								'type' => 'string',
 							],
+							'custom_overlay_position'   => [
+								'type' => 'string',
+							],
+							'bg_overlay_size'           => [
+								'type' => 'string',
+							],
+							'bg_image_size_custom_type_overlay' => [
+								'type' => 'string',
+							],
+							// size
+							'x_position_desktop'        => [
+								'type' => 'integer',
+							],
+							'y_position_desktop'        => [
+								'type' => 'integer',
+							],
+							'x_position_overlay_desktop' => [
+								'type' => 'integer',
+							],
+							'y_position_overlay_desktop' => [
+								'type' => 'integer',
+							],
+							'bg_overlay_opacity'            => [
+								'type' => 'integer',
+							],
+							'bg_overlay_iamge'        => [
+								'type' => 'string',
+							],
+							'bg_image_overlay_color'  => [
+								'type' => 'string',
+							],
 						],
 					],
 				],
@@ -556,6 +587,13 @@ class Post_Types {
 					'bg_gradient_angle' 		    => 90,
 					'bg_gradient_color_1'           => '#0C78FB',
 					'bg_gradient_color_2'           => '#ffffff',
+					'custom_overlay_position'       => 'default',
+					'bg_overlay_size'               => 'auto',
+					'bg_image_size_custom_type_overlay' => 'px',
+					'bg_overlay_opacity'			  => 1,
+					'bg_overlay_image'			  => '',
+					'bg_gradient_overlay_type'      => '',
+					'bg_image_overlay_color'        => '',
 				],
 			]
 		);

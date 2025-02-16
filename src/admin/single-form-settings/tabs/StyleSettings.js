@@ -309,7 +309,8 @@ function StyleSettings( props ) {
 				<>
 					<Background
 						gradientOverlay={ {value: true} }
-						backgroundVideoType={ {value: false} }
+						imageResponsive={ false }
+						imageOverlayResponsive={ false }
 						backgroundType={ {
 							value: formStyling?.bg_type,
 							label: 'bg_type',
@@ -397,8 +398,52 @@ function StyleSettings( props ) {
 							value: formStyling?.bg_gradient_overlay_type,
 							label: 'bg_gradient_overlay_type',
 						} }
-
-						imageResponsive={ false }
+						overlayOpacity={ {
+							value: formStyling?.bg_overlay_opacity,
+							label: 'bg_overlay_opacity',
+						} }
+						backgroundOverlayImage={ {
+							value: formStyling?.bg_image_overlay,
+							label: 'bg_image_overlay',
+						} }
+						xPositionDesktop={ {
+							value: formStyling?.x_position_desktop,
+							label: 'x_position_desktop',
+						} }
+						yPositionDesktop={ {
+							value: formStyling?.y_position_desktop,
+							label: 'y_position_desktop',
+						} }
+						xPositionOverlayDesktop={ {
+							value: formStyling?.x_position_overlay_desktop,
+							label: 'x_position_overlay_desktop',
+						} }
+						yPositionOverlayDesktop={ {
+							value: formStyling?.y_position_overlay_desktop,
+							label: 'y_position_overlay_desktop',
+						} }
+						backgroundOverlayCustomSize={ {
+							desktop: {
+								value: formStyling?.bg_image_size_custom_overlay,
+								label: 'bg_image_size_custom_overlay',
+							},
+							tablet: {
+								value: formStyling?.bg_image_size_custom_overlay,
+								label: 'bg_image_size_custom_overlay',
+							},
+							mobile: {
+								value: formStyling?.bg_image_size_custom_overlay,
+								label: 'bg_image_size_custom_overlay',
+							},
+						} }
+						backgroundOverlayCustomSizeType={ {
+							value: formStyling?.bg_image_size_custom_type_overlay || 'px',
+							label: 'bg_image_size_custom_type_overlay',
+						} }
+						backgroundImageColor={ {
+							value: formStyling?.bg_image_overlay_color,
+							label: 'bg_image_overlay_color',
+						} }
 						label={ __( 'Background', 'sureforms' ) }
 						setAttributes={ onHandleChange }
 						onHandleChange={ onHandleChange }

@@ -28,6 +28,17 @@
 		}
 	}
 
+	// CSS Specifically to ensure that the Opacity slider and Gradient sliders are not broken in the current CSS file state.
+	.srfm-background-image-overlay-opacity,
+	.srfm-background-image-overlay-gradient {
+		margin-top: $srfm-control-vertical-gap;
+
+		.srfm-range-control.srfm-size-type-field-tabs {
+			flex-direction: column;
+			align-items: flex-start;
+		}
+	}
+
 	.srfm-background-image > .components-base-control > .srfm-responsive-select-control {
 		.srfm-size-type-field-tabs {
 			display: block;
@@ -91,6 +102,22 @@
 				.focal-point-picker__controls-position-unit-control {
 					width: 115px;
 				}
+			}
+		}
+	}
+
+	.srfm-background-image-axis-position {
+		margin-bottom: 24px;
+	}
+
+	// Overlay component with icons.
+	.srfm-background-image-overlay-type {
+		.srfm-multibutton-icons {
+			align-items: center;
+			display: grid;
+			grid-template-columns: 50% 50%;
+			.srfm-multi-buttons-control__label {
+				margin-bottom: 0;
 			}
 		}
 	}
