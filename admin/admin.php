@@ -76,7 +76,8 @@ class Admin {
 	 * @since x.x.x
 	 */
 	public function add_action_links( $links ) {
-		if ( ! defined( 'SRFM_PRO_FILE' ) ) {
+		if ( ! defined( 'SRFM_PRO_FILE' ) && ! file_exists( WP_PLUGIN_DIR . '/sureforms-pro/sureforms-pro.php' ) ) {
+			// Display upsell link if SureForms Pro is not installed.
 			$upsell_link = add_query_arg(
 				[
 					'utm_medium' => 'plugin-list',
