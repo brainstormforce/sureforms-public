@@ -547,7 +547,7 @@ class Post_Types {
 							'bg_image_overlay_color'  => [
 								'type' => 'string',
 							],
-							'bg_image_size_custom_type_overlay' => [
+							'bg_image_size_custom_overlay_type' => [
 								'type' => 'string',
 							],
 							'bg_image_size_custom_overlay'     => [
@@ -569,7 +569,7 @@ class Post_Types {
 					'bg_image_attachment'           => 'fixed',
 					'bg_image_repeat'               => 'no-repeat',
 					'bg_image_size'                 => 'cover',
-					'bg_image_size_custom'     => 100,
+					'bg_image_size_custom'     => 100, // Image width when set to custom.
 					'bg_image_size_custom_type'     => '%',
 					'gradient_type'                 => 'basic',
 					'bg_gradient_type'              => 'linear',
@@ -583,7 +583,7 @@ class Post_Types {
 					'bg_overlay_opacity'			  => 1,
 					'bg_overlay_image'			  => '',
 					'bg_image_overlay_color'        => '',
-					'bg_image_size_custom_type_overlay' => '%',
+					'bg_image_size_custom_overlay_type' => '%',
 					'bg_image_size_custom_overlay'  => 100,
 				],
 			]

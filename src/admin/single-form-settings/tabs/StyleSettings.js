@@ -72,6 +72,35 @@ function StyleSettings( props ) {
 		} );
 	};
 
+	const {
+		// Background Properties
+		bg_type,
+		bg_color,
+		bg_image,
+		bg_image_position,
+		bg_image_attachment,
+		bg_image_repeat,
+		bg_image_size,
+		bg_image_size_custom,
+		bg_image_size_custom_type,
+		// Gradient Properties
+		gradient_type,
+		bg_gradient_color_1,
+		bg_gradient_color_2,
+		bg_gradient_location_1,
+		bg_gradient_location_2,
+		bg_gradient_angle,
+		bg_gradient_type,
+		bg_gradient,
+		// Overlay Properties
+		bg_gradient_overlay_type,
+		bg_overlay_opacity,
+		bg_overlay_image,
+		bg_image_size_custom_overlay,
+		bg_image_size_custom_overlay_type,
+		bg_image_overlay_color,
+	} = formStyling;
+
 	/**
 	 * Handles the selection of an image and updates the post metadata with the selected image's URL and ID.
 	 *
@@ -308,118 +337,120 @@ function StyleSettings( props ) {
 			component: (
 				<>
 					<Background
-						gradientOverlay={ { value: true } }
+						// Background Properties
 						backgroundType={ {
-							value: formStyling?.bg_type,
+							value: bg_type,
 							label: 'bg_type',
 						} }
 						backgroundColor={ {
-							value: formStyling?.bg_color,
+							value: bg_color,
 							label: 'bg_color',
 						} }
 						backgroundImage={ {
-							value: formStyling?.bg_image,
+							value: bg_image,
 							label: 'bg_image',
 						} }
 						backgroundPosition={ {
-							value: formStyling?.bg_image_position,
+							value: bg_image_position,
 							label: 'bg_image_position',
 						} }
 						backgroundAttachment={ {
-							value: formStyling?.bg_image_attachment,
+							value: bg_image_attachment,
 							label: 'bg_image_attachment',
 						} }
 						backgroundRepeat={ {
-							value: formStyling?.bg_image_repeat,
+							value: bg_image_repeat,
 							label: 'bg_image_repeat',
 						} }
 						backgroundSize={ {
-							value: formStyling?.bg_image_size,
+							value: bg_image_size,
 							label: 'bg_image_size',
 						} }
 						backgroundCustomSize={ {
 							desktop: {
-								value: formStyling?.bg_image_size_custom,
+								value: bg_image_size_custom,
 								label: 'bg_image_size_custom',
 							},
 							tablet: {
-								value: formStyling?.bg_image_size_custom,
+								value: bg_image_size_custom,
 								label: 'bg_image_size_custom',
 							},
 							mobile: {
-								value: formStyling?.bg_image_size_custom,
+								value: bg_image_size_custom,
 								label: 'bg_image_size_custom',
 							}
 						} }
 						backgroundCustomSizeType={ {
-							value: formStyling?.bg_image_size_custom_type || '%',
+							value: bg_image_size_custom_type || '%',
 							label: 'bg_image_size_custom_type',
 						} }
 						// Gradient Properties
+						gradientOverlay={ { value: true } }
 						gradientType={ {
-							value: formStyling?.gradient_type,
+							value: gradient_type,
 							label: 'gradient_type',
 						} }
 						backgroundGradientColor1={ {
-							value: formStyling?.bg_gradient_color_1,
+							value: bg_gradient_color_1,
 							label: 'bg_gradient_color_1',
 						} }
 						backgroundGradientColor2={ {
-							value: formStyling?.bg_gradient_color_2,
+							value: bg_gradient_color_2,
 							label: 'bg_gradient_color_2',
 						} }
 						backgroundGradientLocation1={ {
-							value: formStyling?.bg_gradient_location_1,
+							value: bg_gradient_location_1,
 							label: 'bg_gradient_location_1',
 						} }
 						backgroundGradientLocation2={ {
-							value: formStyling?.bg_gradient_location_2,
+							value: bg_gradient_location_2,
 							label: 'bg_gradient_location_2',
 						} }
 						backgroundGradientAngle={ {
-							value: formStyling?.bg_gradient_angle,
+							value: bg_gradient_angle,
 							label: 'bg_gradient_angle',
 						} }
 						backgroundGradientType={ {
-							value: formStyling?.bg_gradient_type,
+							value: bg_gradient_type,
 							label: 'bg_gradient_type',
 						} }
 						backgroundGradient={ {
-							value: formStyling?.bg_gradient,
+							value: bg_gradient,
 							label: 'bg_gradient',
 						} }
+						// Overlay Properties
 						overlayType={ {
-							value: formStyling?.bg_gradient_overlay_type,
+							value: bg_gradient_overlay_type,
 							label: 'bg_gradient_overlay_type',
 						} }
 						overlayOpacity={ {
-							value: formStyling?.bg_overlay_opacity,
+							value: bg_overlay_opacity,
 							label: 'bg_overlay_opacity',
 						} }
 						backgroundOverlayImage={ {
-							value: formStyling?.bg_overlay_image,
+							value: bg_overlay_image,
 							label: 'bg_overlay_image',
 						} }
 						backgroundOverlayCustomSize={ {
 							desktop: {
-								value: formStyling?.bg_image_size_custom_overlay,
+								value: bg_image_size_custom_overlay,
 								label: 'bg_image_size_custom_overlay',
 							},
 							tablet: {
-								value: formStyling?.bg_image_size_custom_overlay,
+								value: bg_image_size_custom_overlay,
 								label: 'bg_image_size_custom_overlay',
 							},
 							mobile: {
-								value: formStyling?.bg_image_size_custom_overlay,
+								value: bg_image_size_custom_overlay,
 								label: 'bg_image_size_custom_overlay',
 							},
 						} }
 						backgroundOverlayCustomSizeType={ {
-							value: formStyling?.bg_image_size_custom_type_overlay || 'px',
-							label: 'bg_image_size_custom_type_overlay',
+							value: bg_image_size_custom_overlay_type || 'px',
+							label: 'bg_image_size_custom_overlay_type',
 						} }
 						backgroundImageColor={ {
-							value: formStyling?.bg_image_overlay_color,
+							value: bg_image_overlay_color,
 							label: 'bg_image_overlay_color',
 						} }
 						label={ __( 'Background', 'sureforms' ) }
