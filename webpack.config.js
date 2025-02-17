@@ -62,6 +62,7 @@ module.exports = {
 			__dirname,
 			'src/admin/components/PageHeader.js'
 		),
+		dashboard: path.resolve( __dirname, 'src/admin/dashboard/index.js' ),
 		blocks: path.resolve( __dirname, 'src/blocks/blocks.js' ),
 		entries: path.resolve( __dirname, 'src/admin/entries/index.js' ),
 	},
@@ -85,7 +86,7 @@ module.exports = {
 			...defaultConfig.module.rules,
 			{
 				test: /\.(scss|css)$/,
-				exclude: [ /node_modules/, /style/, /admin.scss/ ],
+				exclude: [ /node_modules/, /style/, /admin.scss/, /tw-base.scss/ ],
 				use: [
 					{
 						loader: 'style-loader',
