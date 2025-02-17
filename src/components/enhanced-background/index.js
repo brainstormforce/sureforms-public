@@ -173,31 +173,22 @@ const Background = ( props ) => {
 
 	//Render Common Overlay Controls.
 	const renderOverlayImageControls = () => {
-		const onRemoveOverlayImage = () => {
-			setAttributes( { [ backgroundOverlayImage.label ]: null } );
-		};
-
-		const onSelectOverlayImage = ( media ) => {
-			if ( ! media || ! media.url ) {
-				setAttributes( { [ backgroundOverlayImage.label ]: null } );
-				return;
-			}
-
-			if ( ! media.type || 'image' !== media.type ) {
-				return;
-			}
-
-			setAttributes( { [ backgroundOverlayImage.label ]: media } );
-		};
-
 		return (
 			<>
 				<div className="srfm-background-image">
 					<SRFMMediaPicker
-						onSelectImage={ onSelectOverlayImage }
 						backgroundOverlayImage={ backgroundOverlayImage.value }
-						onRemoveImage={ onRemoveOverlayImage }
 						disableLabel={ true }
+						backgroundImage={ backgroundOverlayImage.value }
+						onSelectImage={ ( media ) =>
+							onSelectImage( backgroundOverlayImage.label, media )
+						}
+						onRemoveImage={ () =>
+							setAttributes( {
+								[ backgroundOverlayImage.label ]: '',
+							} )
+						}
+						isFormSpecific={ true }
 					/>
 					{ backgroundOverlayImage.value && (
 						<>
