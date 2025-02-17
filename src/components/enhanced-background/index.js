@@ -165,6 +165,7 @@ const Background = ( props ) => {
 					max={ 1 }
 					step={ 0.05 }
 					displayUnit={ false }
+					isFormSpecific={ true }
 				/>
 			</div>
 		);
@@ -470,6 +471,7 @@ const Background = ( props ) => {
 										] }
 										setAttributes={ setAttributes }
 										responsive={ false }
+										isFormSpecific={ true }
 									/>
 								) }
 							</div>
@@ -831,6 +833,7 @@ const Background = ( props ) => {
 										] }
 										setAttributes={ setAttributes } // Modified the onHandleChange function.
 										responsive={ false }
+										isFormSpecific={ true }
 									/>
 								) }
 							</div>

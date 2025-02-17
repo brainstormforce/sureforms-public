@@ -95,10 +95,15 @@ function StyleSettings( props ) {
 		// Overlay Properties
 		bg_gradient_overlay_type,
 		bg_overlay_opacity,
-		bg_overlay_image,
-		bg_image_size_custom_overlay,
-		bg_image_size_custom_overlay_type,
 		bg_image_overlay_color,
+		bg_overlay_image,
+		bg_overlay_position,
+		bg_overlay_attachment,
+		overlay_blend_mode,
+		bg_overlay_repeat,
+		bg_overlay_size,
+		bg_overlay_custom_size,
+		bg_overlay_custom_size_type,
 	} = formStyling;
 
 	/**
@@ -431,27 +436,47 @@ function StyleSettings( props ) {
 							value: bg_overlay_image,
 							label: 'bg_overlay_image',
 						} }
-						backgroundOverlayCustomSize={ {
-							desktop: {
-								value: bg_image_size_custom_overlay,
-								label: 'bg_image_size_custom_overlay',
-							},
-							tablet: {
-								value: bg_image_size_custom_overlay,
-								label: 'bg_image_size_custom_overlay',
-							},
-							mobile: {
-								value: bg_image_size_custom_overlay,
-								label: 'bg_image_size_custom_overlay',
-							},
-						} }
-						backgroundOverlayCustomSizeType={ {
-							value: bg_image_size_custom_overlay_type || 'px',
-							label: 'bg_image_size_custom_overlay_type',
-						} }
 						backgroundImageColor={ {
 							value: bg_image_overlay_color,
 							label: 'bg_image_overlay_color',
+						} }
+						backgroundOverlayPosition={ {
+							value: bg_overlay_position,
+							label: 'bg_overlay_position',
+						} }
+						backgroundOverlayAttachment={ {
+							value: bg_overlay_attachment,
+							label: 'bg_overlay_attachment',
+						} }
+						overlayBlendMode={ {
+							value: overlay_blend_mode,
+							label: 'overlay_blend_mode',
+						} }
+						backgroundOverlayRepeat={ {
+							value: bg_overlay_repeat,
+							label: 'bg_overlay_repeat',
+						} }
+						backgroundOverlaySize={ {
+							value: bg_overlay_size,
+							label: 'bg_overlay_size',
+						} }
+						backgroundOverlayCustomSize={ {
+							desktop: {
+								value: bg_overlay_custom_size,
+								label: 'bg_overlay_custom_size',
+							},
+							tablet: {
+								value: bg_overlay_custom_size,
+								label: 'bg_overlay_custom_size',
+							},
+							mobile: {
+								value: bg_overlay_custom_size,
+								label: 'bg_overlay_custom_size',
+							},
+						} }
+						backgroundOverlayCustomSizeType={ {
+							value: bg_overlay_custom_size_type,
+							label: 'bg_overlay_custom_size_type',
 						} }
 						label={ __( 'Background', 'sureforms' ) }
 						setAttributes={ onHandleChange }

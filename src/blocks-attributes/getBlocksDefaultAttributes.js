@@ -29,6 +29,17 @@ const defaultKeys = {
 	form_container_width: { default: 620 },
 	cover_color: { default: '#111C44' },
 	bg_color: { default: '#ffffff' },
+	gradient_type: { default: 'basic' },
+	bg_gradient_type: { default: 'linear' },
+	bg_gradient_angle: { default: 90 },
+	bg_gradient_color_1: { default: '#FFC9B2' },
+	bg_gradient_color_2: { default: '#C7CBFF' },
+	bg_gradient_location_1: { default: 0 },
+	bg_gradient_location_2: { default: 100 },
+	bg_overlay_custom_size: { default: 100 },
+	bg_overlay_custom_size_type: { default: '%' },
+	bg_image_size_custom: { default: 100 },
+	bg_overlay_opacity: { default: 1 },
 };
 
 export const blocksAttributes = {
