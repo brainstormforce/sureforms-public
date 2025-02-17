@@ -79,7 +79,7 @@ class Admin {
 		if ( ! defined( 'SRFM_PRO_FILE' ) ) {
 			$upsell_link = add_query_arg(
 				[
-					'utm_medium'   => 'plugin-list',
+					'utm_medium' => 'plugin-list',
 				],
 				Helper::get_sureforms_website_url( 'pricing' )
 			);
