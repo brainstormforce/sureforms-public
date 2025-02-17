@@ -7,7 +7,7 @@ import { ArrowLeft, FilePlus, WandSparkles } from 'lucide-react';
 export default () => {
 	return (
 		<Container
-			className="p-4 gap-2 bg-background-primary border-0.5 border-solid border-border-subtle rounded-xl shadow-sm-blur-2"
+			className="p-4 gap-2 bg-background-primary border-0.5 border-solid border-border-subtle rounded-xl shadow-sm-blur-2 w-[50%] ml-auto mr-auto"
 			containerType="flex"
 			direction="column"
 		>
