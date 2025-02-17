@@ -22,7 +22,6 @@ artifact/
 artifacts/
 
 assets/build/
-assets/settings-build/
 
 assets/css/unminified/*
 assets/css/minified/*
