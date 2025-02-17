@@ -258,6 +258,7 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 == Changelog ==
 = x.x.x =
 * Improvement: Improved code quality.
+* Improvement: Made submission text translatable.
 = 1.4.0 - 12th February 2025 =
 * Improvement: Prevented public access to the form archive page.
 * Improvement: Simplified the form confirmation message.
