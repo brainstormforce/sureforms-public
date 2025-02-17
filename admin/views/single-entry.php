@@ -456,7 +456,7 @@ class Single_Entry {
 							<?php } elseif ( false !== strpos( $field_name, 'srfm-url' ) ) { ?>
 									<td><a target="_blank" href="<?php echo esc_url( $value ); ?>"><?php echo esc_url( $value ); ?></a></td>
 							<?php } elseif ( false !== strpos( $field_name, 'srfm-Signature' ) ) { ?>
-								<td><img style="width: 300px;" src="<?php echo  $value ; ?>" alt="Signature" /></td>
+								<td><img style="width: 300px;" src="<?php echo $value; ?>" alt="Signature" /></td>
 							<?php } else { ?>
 									<td><?php echo false !== strpos( $value, PHP_EOL ) ? wp_kses_post( wpautop( $value ) ) : wp_kses_post( $value ); ?></td>
 							<?php } ?>

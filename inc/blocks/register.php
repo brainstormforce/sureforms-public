@@ -31,9 +31,9 @@ class Register {
 			[
 				'dir'       => SRFM_DIR . 'inc/blocks/**/*.php',
 				'namespace' => 'SRFM\\Inc\\Blocks',
-			]
+			],
 		];
-	
+
 		if ( defined( 'SRFM_PRO_VER' ) ) {
 			$blocks[] = [
 				'dir'       => SRFM_PRO_DIR . 'inc/blocks/**/*.php',
@@ -42,7 +42,7 @@ class Register {
 		}
 
 		$blocks = apply_filters( 'srfm_registered_blocks', $blocks );
-	
+
 		foreach ( $blocks as $block ) {
 			$this->register_block( glob( $block['dir'] ), $block['namespace'], 'Block' );
 		}
