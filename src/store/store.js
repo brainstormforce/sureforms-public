@@ -2,7 +2,6 @@
  * WordPress dependencies
  */
 import { createReduxStore, register } from '@wordpress/data';
-import { applyFilters } from '@wordpress/hooks';
 
 /**
  * Internal dependencies
