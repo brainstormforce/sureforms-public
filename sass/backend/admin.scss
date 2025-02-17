@@ -491,7 +491,9 @@ $placeholder_color: #9ca3af;
 	color: #d54407;
 	font-weight: bold;
 
-	&:hover {
+	&:hover,
+	&:active,
+	&:focus {
 		color: #d54407;
 		opacity: 0.8;
 	}
