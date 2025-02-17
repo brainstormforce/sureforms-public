@@ -26,21 +26,6 @@ function GeneralSettings( props ) {
 		select( editorStore ).getEditedPostAttribute( 'meta' )
 	);
 
-	const xx = wp.hooks.applyFilters( 'srfm.store.defaultStateOne', {a:1,b:2,} );
-
-	console.log('xx', xx);
-
-	let sf = useSelect( ( select ) => {
-			const sureforms = select( 'sureforms' );
-			return {
-				geta : sureforms.getA(),
-			}
-		}, []
-	);
-	const sfD = useDispatch( 'sureforms' );
-
-	console.log('sf', sf);
-
 	const pageBreakSettings = sureformsKeys?._srfm_page_break_settings || {};
 
 	const deviceType = useDeviceType();
@@ -219,11 +204,6 @@ function GeneralSettings( props ) {
 						updateMeta( '_srfm_use_label_as_placeholder', value );
 					} }
 				/>
-					{/* <button onClick={()=>{
-						const increase1 = sf.geta + 1;
-						sfD.updateA(increase1);
-					}}>Increate a {sf.geta}</button> */}
-
 				<p className="components-base-control__help">
 					{ __(
 						'Above setting will place the labels inside the fields as placeholders (where possible). This setting takes effect only on the live page, not in the editor preview.',
