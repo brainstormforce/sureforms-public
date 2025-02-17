@@ -54,7 +54,7 @@ function StyleSettings( props ) {
 	}, [ deviceType, submitBtn, sureformsKeys._srfm_inherit_theme_button ] );
 
 	const onHandleChange = ( updatedSettings ) => {
-		const [ key, value ] = Object.entries( updatedSettings )[0];
+		const [ key, value ] = Object.entries( updatedSettings )[ 0 ];
 		if ( formStyling?.[ key ] === value ) {
 			// Do not re-render if the value is same. This is necessary for color picker type controls which re-render on selection.
 			return;
@@ -378,7 +378,7 @@ function StyleSettings( props ) {
 							mobile: {
 								value: bg_image_size_custom,
 								label: 'bg_image_size_custom',
-							}
+							},
 						} }
 						backgroundCustomSizeType={ {
 							value: bg_image_size_custom_type || '%',

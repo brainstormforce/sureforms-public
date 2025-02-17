@@ -460,34 +460,34 @@ class Post_Types {
 					'schema' => [
 						'type'       => 'object',
 						'properties' => [
-							'primary_color'           => [
+							'primary_color'                => [
 								'type' => 'string',
 							],
-							'text_color'              => [
+							'text_color'                   => [
 								'type' => 'string',
 							],
-							'text_color_on_primary'   => [
+							'text_color_on_primary'        => [
 								'type' => 'string',
 							],
-							'field_spacing'           => [
+							'field_spacing'                => [
 								'type' => 'string',
 							],
-							'submit_button_alignment' => [
+							'submit_button_alignment'      => [
 								'type' => 'string',
 							],
-							'bg_type'                  => [
+							'bg_type'                      => [
 								'type' => 'string',
 							],
-							'bg_color'               => [
+							'bg_color'                     => [
 								'type' => 'string',
 							],
-							'bg_image'               => [
+							'bg_image'                     => [
 								'type' => 'string',
 							],
-							'bg_image_id'            => [
+							'bg_image_id'                  => [
 								'type' => 'integer',
 							],
-							// Image Properties
+							// Image Properties.
 							'bg_image_position'            => [
 								'type' => 'string',
 							],
@@ -506,11 +506,11 @@ class Post_Types {
 							'bg_image_size_custom_type'    => [
 								'type' => 'string',
 							],
-							// Gradient Properties
+							// Gradient Properties.
 							'bg_gradient'                  => [
 								'type' => 'string',
 							],
-							'gradient_type'             => [
+							'gradient_type'                => [
 								'type' => 'string',
 							],
 							'bg_gradient_type'             => [
@@ -522,69 +522,69 @@ class Post_Types {
 							'bg_gradient_color_2'          => [
 								'type' => 'string',
 							],
-							'bg_gradient_angle'        => [
+							'bg_gradient_angle'            => [
 								'type' => 'integer',
 							],
-							'bg_gradient_location_1'   => [
+							'bg_gradient_location_1'       => [
 								'type' => 'integer',
 							],
-							'bg_gradient_location_2'   => [
+							'bg_gradient_location_2'       => [
 								'type' => 'integer',
 							],
-							// Overlay Properties
-							'bg_overlay_size'           => [
+							// Overlay Properties.
+							'bg_overlay_size'              => [
 								'type' => 'string',
 							],
-							'bg_gradient_overlay_type'  => [
+							'bg_gradient_overlay_type'     => [
 								'type' => 'string',
 							],
-							'bg_overlay_opacity'            => [
+							'bg_overlay_opacity'           => [
 								'type' => 'integer',
 							],
-							'bg_overlay_image'        => [
+							'bg_overlay_image'             => [
 								'type' => 'string',
 							],
-							'bg_image_overlay_color'  => [
+							'bg_image_overlay_color'       => [
 								'type' => 'string',
 							],
 							'bg_image_size_custom_overlay_type' => [
 								'type' => 'string',
 							],
-							'bg_image_size_custom_overlay'     => [
+							'bg_image_size_custom_overlay' => [
 								'type' => 'integer',
 							],
 						],
 					],
 				],
 				'default'       => [
-					'primary_color'           => '#0C78FB',
-					'text_color'              => '#1E1E1E',
-					'text_color_on_primary'   => '#FFFFFF',
-					'field_spacing'           => 'medium',
-					'submit_button_alignment' => 'left',
-					'bg_type'                  => 'color',
-					'bg_color'                 => '#ffffff',
-					'bg_image'                 => '',
-					'bg_image_position'             => 'default',
-					'bg_image_attachment'           => 'fixed',
-					'bg_image_repeat'               => 'no-repeat',
-					'bg_image_size'                 => 'cover',
-					'bg_image_size_custom'     => 100, // Image width when set to custom.
-					'bg_image_size_custom_type'     => '%',
-					'gradient_type'                 => 'basic',
-					'bg_gradient_type'              => 'linear',
-					'bg_gradient_color_1'           => '#0C78FB',
-					'bg_gradient_color_2'           => '#ffffff',
-					'bg_gradient_angle' 		    => 90,
-					'bg_gradient_location_1' 		    => 0,
-					'bg_gradient_location_2' 		    => 100,
-					'bg_overlay_size'               => 'auto',
-					'bg_gradient_overlay_type'      => '',
-					'bg_overlay_opacity'			  => 1,
-					'bg_overlay_image'			  => '',
-					'bg_image_overlay_color'        => '',
+					'primary_color'                     => '#0C78FB',
+					'text_color'                        => '#1E1E1E',
+					'text_color_on_primary'             => '#FFFFFF',
+					'field_spacing'                     => 'medium',
+					'submit_button_alignment'           => 'left',
+					'bg_type'                           => 'color',
+					'bg_color'                          => '#ffffff',
+					'bg_image'                          => '',
+					'bg_image_position'                 => 'default',
+					'bg_image_attachment'               => 'fixed',
+					'bg_image_repeat'                   => 'no-repeat',
+					'bg_image_size'                     => 'cover',
+					'bg_image_size_custom'              => 100, // Image width when set to custom.
+					'bg_image_size_custom_type'         => '%',
+					'gradient_type'                     => 'basic',
+					'bg_gradient_type'                  => 'linear',
+					'bg_gradient_color_1'               => '#0C78FB',
+					'bg_gradient_color_2'               => '#ffffff',
+					'bg_gradient_angle'                 => 90,
+					'bg_gradient_location_1'            => 0,
+					'bg_gradient_location_2'            => 100,
+					'bg_overlay_size'                   => 'auto',
+					'bg_gradient_overlay_type'          => '',
+					'bg_overlay_opacity'                => 1,
+					'bg_overlay_image'                  => '',
+					'bg_image_overlay_color'            => '',
 					'bg_image_size_custom_overlay_type' => '%',
-					'bg_image_size_custom_overlay'  => 100,
+					'bg_image_size_custom_overlay'      => 100,
 				],
 			]
 		);
