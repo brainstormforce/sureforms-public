@@ -455,7 +455,6 @@ function StyleSettings( props ) {
 						} }
 						label={ __( 'Background', 'sureforms' ) }
 						setAttributes={ onHandleChange }
-						onHandleChange={ onHandleChange }
 						onSelectImage={ onImageSelect }
 					/>
 					<p className="components-base-control__help" />

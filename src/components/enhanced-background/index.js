@@ -25,7 +25,6 @@ const Background = ( props ) => {
 
 	const {
 		setAttributes,
-        onHandleChange,
         onSelectImage,
 		backgroundImageColor,
 		overlayType,
@@ -509,7 +508,7 @@ const Background = ( props ) => {
 				showIcons={ true }
 				colorVariant="secondary"
 				layoutVariant="inline"
-                onChange={ ( value ) => onHandleChange( { [ backgroundType.label ]: value } ) }
+                setAttributes={ setAttributes }
 			/>
 			{ 'color' === backgroundType.value && (
 				<div className="srfm-background-color">
@@ -520,7 +519,7 @@ const Background = ( props ) => {
                             value: backgroundColor.value,
                             label: backgroundColor.label,
                         } }
-                        onColorChange={ ( colorValue ) => onHandleChange( { [backgroundColor.label]: colorValue } ) }
+                        onColorChange={ ( colorValue ) => setAttributes( { [backgroundColor.label]: colorValue } ) }
                         value={ backgroundColor.value }
                         isFormSpecific={ true }
                     />
@@ -531,7 +530,7 @@ const Background = ( props ) => {
                     <SRFMMediaPicker
                         onSelectImage={ ( media ) => onSelectImage( backgroundImage.label, media ) }
                         backgroundImage={ backgroundImage.value }
-                        onRemoveImage={ () => onHandleChange( {[backgroundImage.label]: ''} ) }
+                        onRemoveImage={ () => setAttributes( {[backgroundImage.label]: ''} ) }
                         isFormSpecific={ true }
                         disableLabel={ true }
                     />
@@ -542,7 +541,7 @@ const Background = ( props ) => {
 									label={ __( 'Image Position', 'sureforms' ) }
 									value={ backgroundPosition.value }
 									onChange={ ( value ) =>
-										onHandleChange( {[backgroundPosition.label]: value} ) }
+										setAttributes( {[backgroundPosition.label]: value} ) }
 									options={ [
 										{
 											value: 'left top',
@@ -587,7 +586,7 @@ const Background = ( props ) => {
 								<SelectControl
 									label={ __( 'Attachment', 'sureforms' ) }
 									value={ backgroundAttachment.value }
-									onChange={ ( value ) => onHandleChange( {[backgroundAttachment.label]: value} ) }
+									onChange={ ( value ) => setAttributes( {[backgroundAttachment.label]: value} ) }
 									options={ [
 										{
 											value: 'fixed',
@@ -604,7 +603,7 @@ const Background = ( props ) => {
 								<SelectControl
 									label={ __( 'Repeat', 'sureforms' ) }
 									value={ backgroundRepeat.value }
-									onChange={ ( value ) => onHandleChange( {[backgroundRepeat.label]: value} ) }
+									onChange={ ( value ) => setAttributes( {[backgroundRepeat.label]: value} ) }
 									options={ [
 										{
 											value: 'no-repeat',
@@ -629,7 +628,7 @@ const Background = ( props ) => {
 								<SelectControl
 									label={ __( 'Size', 'sureforms' ) }
 									value={ backgroundSize.value }
-									onChange={ ( value ) => onHandleChange( {[backgroundSize.label]: value} ) }
+									onChange={ ( value ) => setAttributes( {[backgroundSize.label]: value} ) }
 									options={ bgSizeOptions }
 								/>
 								{ 'custom' === backgroundSize.value && backgroundCustomSize && (
