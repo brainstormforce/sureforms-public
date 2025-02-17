@@ -103,6 +103,7 @@
 		"html-react-parser": "^5.0.7",
 		"lodash": "^4.17.21",
 		"postcss": "^8.5.1",
+		"lucide-react": "^0.447.0",
 		"prop-types": "^15.8.1",
 		"react-apexcharts": "^1.4.1",
 		"react-beautiful-dnd": "^13.1.1",

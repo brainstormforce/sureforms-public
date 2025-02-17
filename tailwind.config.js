@@ -1,9 +1,7 @@
 const withTW = require( '@bsf/force-ui/withTW' );
 
 module.exports = withTW( {
-	content: [
-		'./src/**/*.{js,jsx}',
-	],
+	content: [ './src/**/*.{js,jsx}' ],
 	theme: {},
 	variants: {
 		extend: {
@@ -15,4 +13,4 @@ module.exports = withTW( {
 		preflight: false,
 	},
 	important: '#srfm-dashboard-container',
-});
+} );

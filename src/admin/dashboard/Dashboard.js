@@ -1,12 +1,3 @@
-/** @jsx jsx */
-import { jsx } from '@emotion/react';
-import {
-	ScFlex,
-} from '@surecart/components-react';
-import { Fragment } from '@wordpress/element';
-import GetStarted from './GetStarted';
-import Overview from './Overview';
-import DashboardModel from './templates/DashboardModel';
 import Logo from './templates/Logo';
 import { __ } from '@wordpress/i18n';
 import { cn } from '@Utils/Helpers';
@@ -15,75 +6,26 @@ import {
 	Container,
 	Topbar,
 	Badge,
-	Sidebar,
-	Menu,
-	// LayoutTemplate,
-	// PackageCheck,
-	// GitCompare,
 	Title,
 	Button,
-	Label,
-	Input,
-	RadioButton,
-	Switch,
 	Avatar,
 } from '@bsf/force-ui';
 import {
-	CircleHelp, ArrowUpRight, Megaphone, User, Settings, Type, Eye, Blocks, Zap, X, CirclePlay
+	CircleHelp, ArrowUpRight, Megaphone, User, CirclePlay,
 } from 'lucide-react';
 
 export default () => {
-	// return (
-	// 	<>
-	// 		<DashboardModel>
-	// 			<Fragment>					
-	// 				<GetStarted />
-	// 				<ScFlex
-	// 					style={ { '--sc-flex-column-gap': '2em' } }
-	// 					stack="tablet"
-	// 				>
-	// 					<Overview />
-	// 				</ScFlex>
-	// 			</Fragment>
-	// 		</DashboardModel>
-	// 	</>
-	// );
-
 	const tabItems = [
-		{ slug: 'dashboard', text: __('Dashboard app', 'sureforms'), link: 'http://seo-reference.local/wp-admin/admin.php?page=sureforms_menu' },
-		{ slug: 'all-forms', text: __('All Forms', 'sureforms'), link: 'http://seo-reference.local/wp-admin/edit.php?post_type=sureforms_form' },
-		{ slug: 'entries', text: __('Entries', 'sureforms'), link: 'http://seo-reference.local/wp-admin/admin.php?page=sureforms_entries' },
-		{ slug: 'settings', text: __('Settings', 'sureforms'), link: 'http://seo-reference.local/wp-admin/admin.php?page=sureforms_form_settings&tab=general-settings' },
+		{ slug: 'dashboard', text: __( 'Dashboard app', 'sureforms' ), link: 'http://seo-reference.local/wp-admin/admin.php?page=sureforms_menu' },
+		{ slug: 'all-forms', text: __( 'All Forms', 'sureforms' ), link: 'http://seo-reference.local/wp-admin/edit.php?post_type=sureforms_form' },
+		{ slug: 'entries', text: __( 'Entries', 'sureforms' ), link: 'http://seo-reference.local/wp-admin/admin.php?page=sureforms_entries' },
+		{ slug: 'settings', text: __( 'Settings', 'sureforms' ), link: 'http://seo-reference.local/wp-admin/admin.php?page=sureforms_form_settings&tab=general-settings' },
 	];
-
-	const topBanner = <div className="py-2 flex items-center justify-center relative bg-brand-background-hover-100">
-		<div className="space-x-1 text-text-primary text-xs">
-			<span className="font-semibold">
-				Unlock Spectra's Full Potential!
-			</span>
-			<span className="font-normal">
-				Get exclusive features and unbeatable performance.
-			</span>
-			<a
-				className="content-center text-inherit font-normal underline"
-				href="#"
-				target="_self"
-			>
-				Upgrade now
-			</a>
-		</div>
-		<button className="inline-flex items-center justify-center absolute right-2 top-2 p-0 bg-transparent shadow-none border-0 outline-none focus:outline-none cursor-pointer">
-			<X className="size-4" />
-			<span className="sr-only">
-				Close
-			</span>
-		</button>
-	</div>;
 
 	const nav = <Container.Item>
 		<Topbar
 			className="w-auto min-h-[unset] h-16 shadow-sm p-0 pl-[12px] pr-[12px] relative z-[1]"
-			gap={0}
+			gap={ 0 }
 		>
 			<Topbar.Left className="p-5">
 				<Topbar.Item>
@@ -95,22 +37,20 @@ export default () => {
 				className="h-full"
 			>
 				<Topbar.Item className="h-full gap-4">
-					{/* content-center no-underline h-full py-0 px-1 m-0 bg-transparent outline-none shadow-none border-0 focus:outline-none text-text-primary text-sm font-medium cursor-pointer relative */}
 					{
-						tabItems.map((item) => (
+						tabItems.map( ( item ) => (
 							<a
 								className="content-center no-underline h-full py-0 px-1 m-0 bg-transparent outline-none shadow-none border-0 focus:outline-none text-text-secondary text-sm font-medium cursor-pointer"
-								href={item.link}
+								href={ item.link }
 								target="_self"
+								key={ item.slug }
 							>
-								{item.text}
+								{ item.text }
 							</a>
-						))
+						) )
 					}
-					<a
+					<button
 						className="content-center no-underline h-full inline-flex items-center py-0 px-1 m-0 bg-transparent outline-none shadow-none border-0 focus:outline-none cursor-pointer text-sm font-semibold text-brand-800"
-						href="#"
-						target="_self"
 					>
 						<span>
 							Upgrade Pro Features
@@ -119,7 +59,7 @@ export default () => {
 							className="size-5"
 							strokeWidth="1.5"
 						/>
-					</a>
+					</button>
 				</Topbar.Item>
 			</Topbar.Middle>
 			<Topbar.Right
@@ -158,27 +98,27 @@ export default () => {
 	</Container.Item>;
 
 	const leftSidebar = <div
-		className={cn("h-full border-l border-solid border-red-400", "p-[32px]")}
+		className={ cn( 'h-full border-l border-solid', 'p-[32px]' ) }
 	>
 		<Container
 			className="p-8 max-w-[82rem] mx-auto"
-			cols={12}
+			cols={ 12 }
 			containerType="grid"
 			gap="2xl"
 		>
 			<Container.Item
 				className="flex flex-col gap-8"
-				colSpan={8}
+				colSpan={ 8 }
 			>
 				<Container
 					className="bg-background-primary p-6 shadow-sm rounded-xl"
-					cols={8}
+					cols={ 8 }
 					containerType="grid"
 					gap="2xl"
 				>
 					<Container.Item
 						className="flex flex-col gap-6"
-						colSpan={5}
+						colSpan={ 5 }
 					>
 						<div>
 							<Title
@@ -196,14 +136,14 @@ export default () => {
 								Start Customizing
 							</Button>
 							<Button
-								icon={<CirclePlay />}
+								icon={ <CirclePlay /> }
 								variant="ghost"
 							>
 								Watch a Quick Guide
 							</Button>
 						</div>
 					</Container.Item>
-					<Container.Item colSpan={3}>
+					<Container.Item colSpan={ 3 }>
 						<img
 							alt="Astra video"
 							className="w-full h-full object-cover rounded"
@@ -219,20 +159,20 @@ export default () => {
 		className="h-full"
 		containerType="flex"
 		direction="column"
-		gap={0}
+		gap={ 0 }
 	>
-		{/* top banner */}
-		{/* nav */}
-		{nav}
+		{ /* top banner */ }
+		{ /* nav */ }
+		{ nav }
 		<Container.Item>
 			<Container
 				className="h-full grid-cols-[minmax(864px,63%)_minmax(416px,37%)] w-full mx-auto gap-[32px]"
 				containerType="grid"
-				gap={0}
+				gap={ 0 }
 			>
 				<Container.Item>
-					{/* left sidebar */}
-					{leftSidebar}
+					{ /* left sidebar */ }
+					{ leftSidebar }
 				</Container.Item>
 				<Container.Item>
 					<div>
@@ -242,5 +182,5 @@ export default () => {
 			</Container>
 
 		</Container.Item>
-	</Container>
+	</Container>;
 };

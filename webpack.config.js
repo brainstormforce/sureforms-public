@@ -86,7 +86,12 @@ module.exports = {
 			...defaultConfig.module.rules,
 			{
 				test: /\.(scss|css)$/,
-				exclude: [ /node_modules/, /style/, /admin.scss/, /tw-base.scss/ ],
+				exclude: [
+					/node_modules/,
+					/style/,
+					/admin.scss/,
+					/tw-base.scss/,
+				],
 				use: [
 					{
 						loader: 'style-loader',
