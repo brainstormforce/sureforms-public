@@ -41,9 +41,16 @@ class Register {
 			];
 		}
 
-		$blocks = apply_filters( 'srfm_registered_blocks', $blocks );
+		// Filter to add and register additional blocks. Like Signature block.
+		$additional_blocks = apply_filters( 'srfm_register_additional_blocks', [] );
+
+		// Merge additional blocks with the default blocks. When the additional blocks are not empty.
+		if ( ! empty( $additional_blocks ) && count( $additional_blocks ) > 0 ) {
+			$blocks = [ ...$blocks, ...$additional_blocks ];
+		}
 
 		foreach ( $blocks as $block ) {
+			// Register the block.
 			$this->register_block( glob( $block['dir'] ), $block['namespace'], 'Block' );
 		}
 	}
