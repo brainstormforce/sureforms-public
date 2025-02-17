@@ -178,8 +178,8 @@ function StyleSettings( props ) {
 
 			// Form Container
 			const cssProperties = {
-				'--srfm-color-scheme-primary': formStyling?.primary_color || '#0C78FB',
-				'--srfm-btn-color-hover': `hsl( from ${ formStyling?.primary_color || '#0C78FB' } h s l / 0.9)`,
+				'--srfm-color-scheme-primary': formStyling?.primary_color || '#111C44',
+				'--srfm-btn-color-hover': `hsl( from ${ formStyling?.primary_color || '#111C44' } h s l / 0.9)`,
 				'--srfm-color-scheme-text-on-primary': formStyling?.text_color_on_primary || '#FFFFFF',
 				'--srfm-color-scheme-text': formStyling?.text_color || defaultTextColor,
 				'--srfm-color-input-label': formStyling?.text_color || defaultTextColor,
@@ -199,7 +199,7 @@ function StyleSettings( props ) {
 				// Button text color
 				'--srfm-btn-text-color': formStyling?.text_color_on_primary || '#FFFFFF',
 				// btn border color
-				'--srfm-btn-border-color': formStyling?.primary_color || '#0C78FB',
+				'--srfm-btn-border-color': formStyling?.primary_color || '#111C44',
 
 				// Button alignment
 				'--srfm-submit-alignment': formStyling?.submit_button_alignment || 'left',
@@ -278,8 +278,8 @@ function StyleSettings( props ) {
 
 		switch ( option ) {
 			case 'primary_color':
-				cssProperties[ '--srfm-color-scheme-primary' ] = value || '#0C78FB';
-				cssProperties[ '--srfm-btn-color-hover' ] = `hsl( from ${ value || '#0C78FB' } h s l / 0.9)`;
+				cssProperties[ '--srfm-color-scheme-primary' ] = value || '#111C44';
+				cssProperties[ '--srfm-btn-color-hover' ] = `hsl( from ${ value || '#111C44' } h s l / 0.9)`;
 				break;
 			case 'text_color':
 				const defaultTextColor = '#1E1E1E';
@@ -673,19 +673,19 @@ function StyleSettings( props ) {
 			<div className="srfm-panel-preview">
 				<div className="components-panel__body" style={ { 'border-bottom': 'unset' } }>
 					<h2 className="components-panel__body-title">
-						{ __( 'Presets', 'sureforms' ) }
+						{ __( 'Form Theme', 'sureforms' ) }
 					</h2>
 					<PremiumBadge
 						tooltipHeading={ __(
-							'Unlock Form Presets',
+							'Unlock Form Theme',
 							'sureforms'
 						) }
 						tooltipContent={ __(
-							'Upgrade to the SureForms Starter Plan to access a range of form presets that can be applied to your form with a single click, saving you time and effort.',
+							'With the SureForms Starter Plan, access essential form styling options to personalize the look and feel of your forms, ensuring a seamless and engaging user experience.',
 							'sureforms'
 						) }
 						tooltipPosition={ 'bottom' }
-						utmMedium={ 'editor_form_presets' }
+						utmMedium={ 'editor_form_themes' }
 					/>
 					{ chevronDown }
 				</div>
@@ -693,7 +693,7 @@ function StyleSettings( props ) {
 		</>
 	);
 
-	const isPresetPanelPresent = enhancedStylePanels.find( ( panel ) => panel.panelId === 'presets' );
+	const isPresetPanelPresent = enhancedStylePanels.find( ( panel ) => panel.panelId === 'themes' );
 	return (
 		<>
 			{ ! isPresetPanelPresent && presetPreview }

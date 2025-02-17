@@ -20,7 +20,6 @@ const ConditionalLogicPreview = () => {
 					{ __( 'Conditional Logic', 'sureforms' ) }{ ' ' }
 				</h2>
 				<PremiumBadge
-					badgeName={ 'Starter' }
 					tooltipHeading={ __(
 						'Unlock Conditional Logic',
 						'sureforms'
