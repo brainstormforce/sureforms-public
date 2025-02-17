@@ -21,7 +21,7 @@ import { getBlockTypes } from '@Blocks/util';
 import { __, sprintf } from '@wordpress/i18n';
 
 // Register store.
-import "../store/store.js";
+import '../store/store.js';
 
 const registerBlock = [
 	text,
