@@ -19,6 +19,16 @@ import { BlockControls } from '@wordpress/block-editor';
 import { ToolbarGroup, ToolbarButton } from '@wordpress/components';
 import { getBlockTypes } from '@Blocks/util';
 import { __, sprintf } from '@wordpress/i18n';
+// import { applyFilters } from '@wordpress/hooks';
+
+// Register store.
+import "../store/store.js";
+
+// let x = [1,2];
+
+// x = wp.hooks.applyFilters( 'srfm.store.defaultStateOne', x );
+
+// console.log('x in the store block js->', x);
 
 const registerBlock = [
 	text,
