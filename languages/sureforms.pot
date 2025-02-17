@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-02-12T08:21:46+00:00\n"
+"POT-Creation-Date: 2025-02-14T04:43:39+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: sureforms\n"
@@ -1118,6 +1118,11 @@ msgstr ""
 #. translators: %s: Form title smart tag
 #: inc/post-types.php:549
 msgid "New Form Submission - %s"
+msgstr ""
+
+#: inc/post-types.php:649
+#: assets/build/formEditor.js:172
+msgid "Thank you"
 msgstr ""
 
 #: inc/post-types.php:701
@@ -9924,10 +9929,6 @@ msgstr ""
 
 #: assets/build/formEditor.js:172
 msgid "Previous"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-msgid "Thank you"
 msgstr ""
 
 #: assets/build/formEditor.js:172
