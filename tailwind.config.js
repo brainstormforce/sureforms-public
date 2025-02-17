@@ -14,4 +14,5 @@ module.exports = withTW( {
 	corePlugins: {
 		preflight: false,
 	},
+	important: '#srfm-dashboard-container',
 });

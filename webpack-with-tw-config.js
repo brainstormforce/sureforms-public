@@ -19,20 +19,6 @@ module.exports = {
         //     filename: [name].css,
         // }),
     ],
-    // module: {
-    //     rules: [
-    //         ...defaultConfig.module.rules, // Keep existing WP rules
-    //         {
-    //             test: /\.(scss|css)$/,
-    //             use: [
-    //                 MiniCssExtractPlugin.loader,
-    //                 'css-loader',
-    //                 'postcss-loader', // Tailwind and Autoprefixer processing
-    //                 'sass-loader',
-    //             ],
-    //         },
-    //     ],
-    // },
     entry: {
         dashboard: path.resolve(__dirname, 'src/admin/dashboard/index.js'),
     },

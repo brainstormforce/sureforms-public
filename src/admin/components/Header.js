@@ -3,13 +3,21 @@ import { useState, useEffect } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import Logo from '../dashboard/templates/Logo';
 import useWhatsNewRSS from '../../lib/whats-new/useWhatsNewRSS';
-import { Topbar, Badge, Avatar, Button, Tabs } from '@bsf/force-ui';
+import { Topbar, Badge, Avatar, Button, Tabs, HamburgerMenu } from '@bsf/force-ui';
 import { CircleHelp, ArrowUpRight, Megaphone, User } from 'lucide-react';
+import { cn } from '@Utils/Helpers';
 
 export default () => {
 	const [ activeTab, setActiveTab ] = useState( 'dashboard' );
 
-	return <Topbar className='self-srfm-header pt-0 pb-0 min-h-0'>
+	const tabItems = [
+		{ slug: 'dashboard', text: __( 'Dashboard app', 'sureforms' ), link: 'http://seo-reference.local/wp-admin/admin.php?page=sureforms_menu' },
+		{ slug: 'all-forms', text: __( 'All Forms', 'sureforms' ), link: 'http://seo-reference.local/wp-admin/edit.php?post_type=sureforms_form' },
+		{ slug: 'entries', text: __( 'Entries', 'sureforms' ), link: 'http://seo-reference.local/wp-admin/admin.php?page=sureforms_entries' },
+		{ slug: 'settings', text: __( 'Settings', 'sureforms' ), link: 'http://seo-reference.local/wp-admin/admin.php?page=sureforms_form_settings&tab=general-settings' },
+	];
+
+	return <Topbar className='self-srfm-header p-[48px] pt-0 pb-0 min-h-0 position-sticky top-[32px] sticky z-[1000]'>
 		<Topbar.Left>
 			<Topbar.Item>
 				<Logo display="block" />
@@ -22,7 +30,8 @@ export default () => {
 					iconPosition="left"
 					onChange={function Ki( e ) {
 						console.log( "tabs changed e", e );
-						// e.value.slug
+						window.location.href = tabItems.find( ( item ) => item.slug === e.value.slug ).link;
+
 						setActiveTab( e.value.slug );
 					}}
 					orientation="horizontal"
@@ -30,23 +39,16 @@ export default () => {
 					variant="underline"
 					width="auto"
 				>
-					<Tabs.Tab
-						slug="dashboard"
-						text={ __( 'Dashboard app', 'sureforms' ) }
-					/>
-					<Tabs.Tab
-						slug="all-forms"
-						text={ __( 'All Forms', 'sureforms' ) }
-					/>
-					<Tabs.Tab
-						slug="entries"
-						text={ __( 'Entries', 'sureforms' ) }
-					/>
-					<Tabs.Tab
-						slug="settings"
-						text={ __( 'Settings', 'sureforms' ) }
-					/>
+					{ tabItems.map( ( item ) => (
+						<Tabs.Tab
+							key={ item.slug }
+							slug={ item.slug }
+							text={ item.text }
+							className={ cn( 'h-[72px]' ) }
+						/>
+					) ) }
 				</Tabs.Group>
+
 			</Topbar.Item>
 			<Topbar.Item>
 				<Button

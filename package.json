@@ -117,7 +117,9 @@
 		"react-router-dom": "^6.11.0",
 		"react-select": "^5.7.2",
 		"react-virtualized": "^9.22.5",
-		"use-debounce": "^10.0.0"
+		"use-debounce": "^10.0.0",
+		"tailwind-merge": "^3.0.1",
+		"clsx": "^2.1.1"
 	},
 	"volta": {
 		"node": "18.15.0"
