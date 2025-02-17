@@ -5,6 +5,7 @@ import StartingPoint from './components/StartingPoint.js';
 import ICONS from './components/icons';
 import { BrowserRouter as Router, useLocation } from 'react-router-dom';
 import AiFormBuilder, { getLimitReachedPopup } from './components/AiFormBuilder.js';
+import AddNewForm from '../../dashboard/AddNewForm.js';
 
 const TemplatePicker = () => {
 	// Remove admin bar padding.
@@ -32,7 +33,7 @@ const TemplatePicker = () => {
 				return (
 					<div className="srfm-tp-sp-container srfm-content-section">
 						<Header />
-						<div className="srfm-tp-sp-methods-container">
+						{ /* <div className="srfm-tp-sp-methods-container">
 							<div className="srfm-tp-sp-methods-inner-wrap">
 								<div className="srfm-tp-sp-heading-container">
 									<h1 className="srfm-tp-sp-heading">
@@ -86,7 +87,8 @@ const TemplatePicker = () => {
 									</div>
 								</div>
 							</div>
-						</div>
+						</div> */ }
+						<AddNewForm />
 					</div>
 				);
 		}
