@@ -78,7 +78,7 @@ class Plugin_Loader {
 		add_action( 'plugins_loaded', [ $this, 'load_plugin' ], 99 );
 		add_action( 'init', [ $this, 'load_classes' ] );
 		add_action( 'admin_init', [ $this, 'activation_redirect' ] );
-
+		Analytics::get_instance();
 		/**
 		 * The code that runs during plugin activation
 		 */
@@ -265,7 +265,6 @@ class Plugin_Loader {
 	 * @return void
 	 */
 	public function load_plugin() {
-		Analytics::get_instance();
 		Post_Types::get_instance();
 		Form_Submit::get_instance();
 		Block_Patterns::get_instance();

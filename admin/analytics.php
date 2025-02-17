@@ -179,7 +179,7 @@ class Analytics {
 		}
 
 		$general_settings                                    = get_option( 'srfm_general_settings_options', [] );
-		$global_data['boolean_values']['ip_logging_enabled'] = ! empty( $general_settings['srfm_ip_log']['sureforms'] );
+		$global_data['boolean_values']['ip_logging_enabled'] = ! empty( $general_settings['srfm_ip_log'] );
 
 		$validation_messages                                        = get_option( 'srfm_default_dynamic_block_option', [] );
 		$global_data['boolean_values']['custom_validation_message'] = ! empty( $validation_messages ) && is_array( $validation_messages );

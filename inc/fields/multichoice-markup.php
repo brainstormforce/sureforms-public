@@ -129,6 +129,28 @@ class Multichoice_Markup extends Base {
 
 		$this->class_name = $this->get_field_classes( [ "srfm-{$this->type_attr}-mode" ] );
 
+		$allowed_tags_svg = [
+			'span' => [
+				'class'       => true,
+				'aria-hidden' => true,
+			],
+			'svg'  => [
+				'xmlns'   => true,
+				'width'   => true,
+				'height'  => true,
+				'viewBox' => true,
+				'fill'    => true,
+			],
+			'path' => [
+				'd'               => true,
+				'stroke'          => true,
+				'stroke-opacity'  => true,
+				'stroke-width'    => true,
+				'stroke-linecap'  => true,
+				'stroke-linejoin' => true,
+			],
+		];
+
 		ob_start();
 		?>
 		<div data-block-id="<?php echo esc_attr( $this->block_id ); ?>" class="<?php echo esc_attr( $this->class_name ); ?>">
@@ -164,7 +186,7 @@ class Multichoice_Markup extends Base {
 											If you make any changes here, ensure the corresponding JavaScript value functionality and conditional logic are also updated. -->
 											<label for="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id . '-' . $i ); ?>"><?php echo isset( $option['optionTitle'] ) ? esc_html( $option['optionTitle'] ) : ''; ?></label>
 										</div>
-										<div class="srfm-icon-container"><?php echo $check_svg . $unchecked_svg; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Ignored to render svg ?></div>
+										<div class="srfm-icon-container"><?php echo wp_kses( $check_svg, $allowed_tags_svg ) . wp_kses( $unchecked_svg, $allowed_tags_svg ); ?></div>
 									</div>
 								</div>
 							<?php } ?>
