@@ -10,7 +10,6 @@ const FormTypeSelector = ( { formType, setFormType, setformLayout } ) => {
 			{ label: __( 'Simple', 'sureforms' ), slug: 'simple', isAvailable: true },
 			// this is added to show a preview of Calculator form type in free plugin
 			{ label: __( 'Calculator', 'sureforms' ), slug: 'calculator', isAvailable: false, upgradeTooltipContent: {
-				badgeName: __( 'Premium', 'sureforms' ),
 				tooltipHeadin: __( 'Unlock Calculations', 'sureforms' ),
 				tooltipContent: __( 'Upgrade to the SureForms Business Plan to create advanced forms with real-time calculations, such as project quote calculators, BMI calculators, loan calculators, and more.', 'sureforms' ),
 				utmMedium: 'ai_builder_calculator',
@@ -52,7 +51,6 @@ const FormTypeSelector = ( { formType, setFormType, setformLayout } ) => {
 							{ option.label }
 							<div style={ { lineHeight: 0 } }>
 								<PremiumBadge
-									badgeName={ option?.upgradeTooltipContent?.badgeName }
 									tooltipHeading={ option?.upgradeTooltipContent?.tooltipHeading }
 									tooltipContent={ option?.upgradeTooltipContent?.tooltipContent }
 									utmMedium={ option?.upgradeTooltipContent?.utmMedium }
