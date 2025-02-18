@@ -2,9 +2,9 @@
 Contributors: brainstormforce
 Tags: contact form, custom form, forms, contact form plugin, form builder
 Requires at least: 6.4
-Tested up to: 6.7.1
+Tested up to: 6.7.2
 Requires PHP: 7.4
-Stable tag: 1.3.1
+Stable tag: 1.4.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -32,7 +32,7 @@ After all, the ultimate aim of most websites is to get those forms filled out.
 
 "Unfortunately, many website owners struggle to design forms that match the overall website aesthetics and user experience."
 
-<a href="https://bsf.io/sureforms-demo" target="_blank" rel="">Try it out on a free dummy site</a>
+<a href="https://bsf.io/sureforms-demo" target="_blank" rel="">Try the live demo of SureForms</a>
 
 SureForms addresses several pain points commonly experienced by website owners:
 
@@ -256,6 +256,14 @@ Yes! You can certainly use SureForms on yours as well as your client’s website
 When you use SureForms, you get an easy-to-use AI-powered form builder that can be used to build your forms fast.
 
 == Changelog ==
+= x.x.x =
+* Improvement: Improved code quality.
+* Improvement: Made submission text translatable.
+= 1.4.0 - 12th February 2025 =
+* Improvement: Prevented public access to the form archive page.
+* Improvement: Simplified the form confirmation message.
+* Improvement: Updated the primary color for new forms.
+* Fix: Addressed an issue with the Bricks theme where reCAPTCHA v2 Invisible and v3 were being hidden.
 = 1.3.1 - 28th January 2025 =
 * Improvement: Enhanced compatibility with FSE themes.
 * Fix: Addressed an issue where CAPTCHA errors were displayed before field validation errors.

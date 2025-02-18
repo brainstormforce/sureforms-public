@@ -419,7 +419,7 @@ class Helper {
 	 * @return array<mixed> Live preview data.
 	 */
 	public static function get_instant_form_live_data() {
-		$srfm_live_mode_data = isset( $_GET['live_mode'] ) && current_user_can( 'edit_posts' ) ? self::sanitize_recursively( 'sanitize_text_field', wp_unslash( $_GET ) ) : []; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$srfm_live_mode_data = isset( $_GET['live_mode'] ) && current_user_can( 'edit_posts' ) ? self::sanitize_recursively( 'sanitize_text_field', wp_unslash( $_GET ) ) : []; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verification is not needed here.
 
 		return $srfm_live_mode_data ? array_map(
 			// Normalize falsy values.
@@ -1046,7 +1046,7 @@ class Helper {
 		}
 
 		// Validate a single key-value pair when no conditions are provided.
-		return isset( $_REQUEST[ $key ] ) && $_REQUEST[ $key ] === $value; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Input is validated via strict comparison.
+		return isset( $_REQUEST[ $key ] ) && $_REQUEST[ $key ] === $value; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verification is not needed here. Input is validated via strict comparison.
 	}
 
 	/**
@@ -1081,6 +1081,25 @@ class Helper {
 		return $is_screen_sureforms_menu || $is_screen_add_new_form || $is_screen_sureforms_form_settings || $is_screen_sureforms_entries || $is_post_type_sureforms_form;
 	}
 
+	/**
+	 * Filters and concatenates valid class names from an array.
+	 *
+	 * @param array<string> $class_names The array containing potential class names.
+	 * @since 1.4.0
+	 * @return string The concatenated string of valid class names separated by spaces.
+	 */
+	public static function join_strings( $class_names ) {
+		// Filter the array to include only valid class names.
+		$valid_class_names = array_filter(
+			$class_names,
+			static function ( $value ) {
+				return is_string( $value ) && '' !== $value && false !== $value;
+			}
+		);
+
+		// Concatenate the valid class names with spaces and return.
+		return implode( ' ', $valid_class_names );
+	}
 	/**
 	 * Get SureForms Website URL.
 	 *

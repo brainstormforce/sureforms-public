@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 $srfm_custom_post_id = absint( get_the_ID() );
-$srfm_form_preview   = isset( $_GET['form_preview'] ) ? boolval( sanitize_text_field( wp_unslash( $_GET['form_preview'] ) ) ) : false;  // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+$srfm_form_preview   = isset( $_GET['form_preview'] ) ? boolval( wp_unslash( $_GET['form_preview'] ) ) : false;  // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verification is not required here.
 $srfm_live_mode_data = Helper::get_instant_form_live_data();
 
 $instant_form_settings         = ! empty( $srfm_live_mode_data ) ? $srfm_live_mode_data : Helper::get_array_value( Helper::get_post_meta( $srfm_custom_post_id, '_srfm_instant_form_settings' ) );
@@ -31,12 +31,15 @@ $use_banner_as_page_background = $instant_form_settings['use_banner_as_page_back
 
 $srfm_cover_image_url = $cover_image ? rawurldecode( strval( $cover_image ) ) : '';
 
-if ( 'image' === $bg_type ) {
-	$bg_image = $bg_image ? 'url(' . $bg_image . ')' : '';
-	$bg_color = '#ffffff';
-} else {
-	$bg_image = 'none';
-	$bg_color = $bg_color ? $bg_color : '';
+// Filter to use custom bg image and color combination on the Instant Form page.
+if ( apply_filters( 'srfm_use_color_or_image_as_bg', true ) ) {
+	if ( 'image' === $bg_type ) {
+		$bg_image = $bg_image ? 'url(' . $bg_image . ')' : '';
+		$bg_color = '#ffffff';
+	} else {
+		$bg_image = 'none';
+		$bg_color = $bg_color ? $bg_color : '';
+	}
 }
 
 $body_classes = [];
@@ -134,76 +137,86 @@ if ( $use_banner_as_page_background ) {
 	<?php wp_head(); ?>
 </head>
 
-<body <?php body_class( $body_classes ); ?>>
-	<?php if ( ! $srfm_form_preview ) { ?>
-		<div id="srfm-single-page-container" class="srfm-single-page-container <?php echo (bool) $single_page_form_title ? 'has-form-title' : ''; ?>">
-			<div class="srfm-page-banner">
-				<?php
-				if ( ! empty( $site_logo ) ) {
-					?>
-					<a href="<?php echo esc_url( home_url() ); ?>" aria-label="<?php esc_attr_e( 'Link to homepage', 'sureforms' ); ?>">
-						<img class="srfm-site-logo" src="<?php echo esc_url( $site_logo ); ?>" alt="<?php esc_attr_e( 'Instant form site logo', 'sureforms' ); ?>">
-					</a>
-					<?php
-				}
+	<?php
+	// Filter to use custom body content on the Instant Form page.
+	if ( ! apply_filters( 'srfm_use_custom_body_template', false ) ) {
+		?>
+		<body <?php body_class( $body_classes ); ?>>
+		<?php if ( ! $srfm_form_preview ) { ?>
+				<div id="srfm-single-page-container" class="srfm-single-page-container <?php echo (bool) $single_page_form_title ? 'has-form-title' : ''; ?>">
+					<div class="srfm-page-banner">
+						<?php
+						if ( ! empty( $site_logo ) ) {
+							?>
+							<a href="<?php echo esc_url( home_url() ); ?>" aria-label="<?php esc_attr_e( 'Link to homepage', 'sureforms' ); ?>">
+								<img class="srfm-site-logo" src="<?php echo esc_url( $site_logo ); ?>" alt="<?php esc_attr_e( 'Instant form site logo', 'sureforms' ); ?>">
+							</a>
+							<?php
+						}
 
-				if ( ! empty( $single_page_form_title ) ) {
-					?>
-					<h1 class="srfm-single-banner-title"><?php echo esc_html( get_the_title() ); ?></h1>
-					<?php
-				}
+						if ( ! empty( $single_page_form_title ) ) {
+							?>
+							<h1 class="srfm-single-banner-title"><?php echo esc_html( get_the_title() ); ?></h1>
+							<?php
+						}
 
-				if ( empty( $enable_instant_form ) ) {
-					?>
-					<div class="srfm-form-status-badge"><?php esc_html_e( 'Instant Form Disabled', 'sureforms' ); ?></div>
+						?>
+					</div>
+					<div class="srfm-form-wrapper">
+						<?php
+						// phpcs:ignore
+						echo Generate_Form_Markup::get_form_markup( $srfm_custom_post_id, false, '', 'sureforms_form' );
+						// phpcs:ignoreEnd
+						?>
+					</div>
 					<?php
-				}
-				?>
-			</div>
-			<div class="srfm-form-wrapper">
+					if ( ! defined( 'SRFM_PRO_VER' ) ) {
+						// Display SureForms branding if SureForms Pro is not activated.
+						echo wp_kses_post(
+							sprintf(
+								'<a href="%1$s" class="srfm-branding" target="_blank">%2$s</a>',
+								esc_url( SRFM_WEBSITE ),
+								/* translators: Here %s is the plugin's name. */
+									sprintf( esc_html__( 'Crafted with ♡ %s', 'sureforms' ), 'SureForms' )
+							)
+						);
+					}
+					?>
+				</div>
+		<?php } else { ?>
 				<?php
+				show_admin_bar( false );
 				// phpcs:ignore
-				echo Generate_Form_Markup::get_form_markup( $srfm_custom_post_id, false, '', 'sureforms_form' );
+				echo Generate_Form_Markup::get_form_markup( $srfm_custom_post_id, false, 'sureforms_form' );
 				// phpcs:ignoreEnd
-				?>
-			</div>
-			<?php
-			if ( ! defined( 'SRFM_PRO_VER' ) ) {
-				// Display SureForms branding if SureForms Pro is not activated.
-				echo wp_kses_post(
-					sprintf(
-						'<a href="%1$s" class="srfm-branding" target="_blank">%2$s</a>',
-						esc_url( SRFM_WEBSITE ),
-						/* translators: Here %s is the plugin's name. */
-							sprintf( esc_html__( 'Crafted with ♡ %s', 'sureforms' ), 'SureForms' )
-					)
-				);
-			}
-			?>
-		</div>
-	<?php } else { ?>
+		}
+			wp_footer();
+		?>
+		</body>
 		<?php
-		show_admin_bar( false );
-		// phpcs:ignore
-		echo Generate_Form_Markup::get_form_markup( $srfm_custom_post_id, false, 'sureforms_form' );
-		// phpcs:ignoreEnd
 	}
 
-	wp_footer();
+	if ( ! $srfm_form_preview && empty( $enable_instant_form ) ) {
+		?>
+		<div class="srfm-form-status-badge"><?php esc_html_e( 'Instant Form Disabled', 'sureforms' ); ?></div>
+		<?php
+	}
+
+	// Action to load custom body content on the Instant Form page.
+	do_action( 'srfm_after_instant_form_body', $srfm_custom_post_id, $instant_form_settings, $body_classes );
 
 	if ( $srfm_live_mode_data ) {
 		?>
-		<script>
-			(function() {
-				document.addEventListener('DOMContentLoaded', function() {
-					document.querySelector('html').style.opacity = 1;
-				});
-			}());
-		</script>
+			<script>
+				(function() {
+					document.addEventListener('DOMContentLoaded', function() {
+						document.querySelector('html').style.opacity = 1;
+					});
+				}());
+			</script>
 		<?php
 	}
 	?>
-</body>
 
 </html>
 <?php

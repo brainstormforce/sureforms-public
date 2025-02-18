@@ -11,6 +11,8 @@ export const NumberComponent = ( { attributes, blockID, setAttributes } ) => {
 		minValue,
 		maxValue,
 		help,
+		prefix,
+		suffix,
 	} = attributes;
 
 	const isRequired = required ? ' srfm-required' : '';
@@ -34,7 +36,14 @@ export const NumberComponent = ( { attributes, blockID, setAttributes } ) => {
 				setAttributes={ setAttributes }
 				block_id={ blockID }
 			/>
-			<div className="srfm-block-wrap">
+			<div
+				className={ `srfm-block-wrap ${
+					prefix ? 'srfm-has-prefix' : ''
+				} ${ suffix ? 'srfm-has-suffix' : '' }` }
+			>
+				{ prefix && (
+					<span className="srfm-number-prefix"> { prefix } </span>
+				) }
 				<input
 					className={ `srfm-input-common srfm-input-${ slug }` }
 					id={ `srfm-${ slug }-${ blockID }` }
@@ -47,6 +56,9 @@ export const NumberComponent = ( { attributes, blockID, setAttributes } ) => {
 					min={ minValue }
 					max={ maxValue }
 				/>
+				{ suffix && (
+					<span className="srfm-number-suffix"> { suffix } </span>
+				) }
 			</div>
 		</>
 	);

@@ -58,7 +58,9 @@ export const srfmDeepClone = ( arrayOrObject ) =>
 export const handleAddNewPost = async (
 	formData,
 	templateName,
-	templateMetas
+	templateMetas,
+	isConversational = false,
+	formType = ''
 ) => {
 	if ( '1' !== srfm_admin.capability ) {
 		console.error( 'User does not have permission to create posts' );
@@ -77,6 +79,8 @@ export const handleAddNewPost = async (
 				form_data: formData,
 				template_name: templateName,
 				template_metas: templateMetas,
+				is_conversational: isConversational,
+				form_type: formType,
 			},
 		} );
 
@@ -416,3 +420,12 @@ const prepareBlockSlugs = ( updateBlockAttributes, srfmBlocks ) => {
 
 	return blockSlugs;
 };
+
+// Add the CSS properties to the root element.
+export const addStyleInRoot = ( root, cssProperties ) => {
+	if ( Object.keys( cssProperties ).length > 0 ) {
+		for ( const [ key, objValue ] of Object.entries( cssProperties ) ) {
+			root.style.setProperty( key, objValue );
+		}
+	}
+}

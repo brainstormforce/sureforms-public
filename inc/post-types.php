@@ -43,6 +43,7 @@ class Post_Types {
 		add_action( 'admin_notices', [ $this, 'import_form_popup' ] );
 		add_action( 'admin_bar_menu', [ $this, 'remove_admin_bar_menu_item' ], 80, 1 );
 		add_action( 'template_redirect', [ $this, 'srfm_instant_form_redirect' ] );
+		add_action( 'template_redirect', [ $this, 'disable_sureforms_archive_page' ], 9 );
 	}
 
 	/**
@@ -144,7 +145,7 @@ class Post_Types {
 				'rewrite'           => [ 'slug' => 'form' ],
 				'public'            => true,
 				'show_in_rest'      => true,
-				'has_archive'       => false,
+				'has_archive'       => true,
 				'show_ui'           => true,
 				'supports'          => [ 'title', 'author', 'editor', 'custom-fields' ],
 				'show_in_menu'      => 'sureforms_menu',
@@ -164,6 +165,19 @@ class Post_Types {
 		// 'label_count'               => _n_noop( 'Unread (%s)', 'Unread (%s)', 'sureforms' ),
 		// )
 		// );.
+	}
+
+	/**
+	 * Redirects requests for SureForms archieve page to homeurl
+	 *
+	 * @since 1.4.0
+	 * @return void
+	 */
+	public function disable_sureforms_archive_page() {
+		if ( is_post_type_archive( SRFM_FORMS_POST_TYPE ) ) {
+			wp_safe_redirect( home_url(), 301 );
+			exit;
+		}
 	}
 
 	/**
@@ -321,6 +335,8 @@ class Post_Types {
 				// Security.
 				'_srfm_captcha_security_type'    => 'string',
 				'_srfm_form_recaptcha'           => 'string',
+				// post meta to store if the form is AI generated.
+				'_srfm_is_ai_generated'          => 'boolean',
 			]
 		);
 
@@ -423,7 +439,7 @@ class Post_Types {
 					'bg_image'                      => '',
 					'site_logo'                     => '',
 					'cover_type'                    => 'color',
-					'cover_color'                   => '#0C78FB',
+					'cover_color'                   => '#111C44',
 					'cover_image'                   => '',
 					'enable_instant_form'           => false,
 					'form_container_width'          => 620,
@@ -463,7 +479,7 @@ class Post_Types {
 					],
 				],
 				'default'       => [
-					'primary_color'           => '#0C78FB',
+					'primary_color'           => '#111C44',
 					'text_color'              => '#1E1E1E',
 					'text_color_on_primary'   => '#FFFFFF',
 					'field_spacing'           => 'medium',
@@ -630,7 +646,7 @@ class Post_Types {
 						'confirmation_type' => 'same page',
 						'page_url'          => '',
 						'custom_url'        => '',
-						'message'           => '<p style="text-align: center;"><img src="' . esc_attr( $check_icon ) . '" alt="" aria-hidden="true"></img></p><h2 style="text-align: center;">Thank you</h2><p style="text-align: center;">We have received your email. You\'ll hear from us as soon as possible.</p><p style="text-align: center;">Please be sure to whitelist our {admin_email} email address to ensure our replies reach your inbox safely.</p>',
+						'message'           => '<p style="text-align: center;"><img src="' . esc_attr( $check_icon ) . '" alt="" aria-hidden="true"></img></p><h2 style="text-align: center;">' . esc_html__( 'Thank you', 'sureforms' ) . '</h2>',
 						'submission_action' => 'hide form',
 					],
 				],

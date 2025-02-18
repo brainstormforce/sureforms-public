@@ -35,7 +35,6 @@ const Zapier = () => {
 				{ false === zapierDetails ? <UpgradeToProButton className="srfm-button-secondary srfm-button-xs" location="settings_integrations_zapier" /> : zapierDetails }
 				{ false === zapierDetails && (
 					<PremiumBadge
-						badgeName={ 'Pro' }
 						tooltipHeading={ __( 'Unlock Zapier Integration', 'sureforms' ) }
 						tooltipContent={ __(
 							'With the SureForms Pro Plan, you can enable Zapier integration to seamlessly connect with thousands of apps for powerful workflow automation.',

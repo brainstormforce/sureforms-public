@@ -37,6 +37,8 @@ class Export {
 		'_srfm_integrations_webhooks',
 		'_srfm_instant_form_settings',
 		'_srfm_page_break_settings',
+		'_srfm_conversational_form',
+		'_srfm_premium_common',
 	];
 
 	/**
