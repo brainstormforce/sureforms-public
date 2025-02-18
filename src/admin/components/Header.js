@@ -17,13 +17,11 @@ const NAV_ITEMS = [
 ];
 
 const Header = () => {
-	const location = useLocation();
-
 	const getActiveTab = useCallback( () => {
-		const searchParams = new URLSearchParams( location.search );
+		const searchParams = new URLSearchParams( window.location.search );
 		const currentPage = searchParams.get( 'page' );
 		return NAV_ITEMS.find( ( item ) => item.slug === currentPage );
-	}, [ location.search ] );
+	}, [] );
 
 	useWhatsNewRSS( {
 		uniqueKey: 'sureforms',
@@ -50,9 +48,9 @@ const Header = () => {
 					<nav className="flex items-center gap-4 h-full">
 						{
 							NAV_ITEMS.map( ( item ) => (
-								<NavLink className={ cn( 'h-full text-text-secondary text-sm font-medium no-underline px-1 content-center relative focus:outline-none', getActiveTab()?.slug === item?.slug && 'text-text-primary before:content-[""] before:absolute before:h-px before:bg-border-interactive before:bottom-0 before:inset-x-0' ) } to={ item.link } key={ item.slug } reloadDocument>
+								<a className={ cn( 'h-full text-text-secondary text-sm font-medium no-underline px-1 content-center relative focus:outline-none', getActiveTab()?.slug === item?.slug && 'text-text-primary before:content-[""] before:absolute before:h-px before:bg-border-interactive before:bottom-0 before:inset-x-0' ) } href={ item.link } key={ item.slug }>
 									{ item.text }
-								</NavLink>
+								</a>
 							) )
 						}
 					</nav>

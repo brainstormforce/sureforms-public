@@ -176,6 +176,11 @@ module.exports = withTW( {
 				'toggle-on-disabled': '#EEF2FF',
 				'toggle-off-disabled': '#FFF3EE',
 			},
+			lineHeight: {
+				7.5: '1.875rem', // 30px
+				9.5: '2.375rem', // 38px
+				11: '2.75rem', // 44px
+			},
 		},
 	},
 	variants: {
