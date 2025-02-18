@@ -32,12 +32,6 @@ export default () => {
 		{ /* nav */ }
 		{ nav }
 		<Container.Item>
-			<Container.Item>
-				<br /><br /><br />
-			</Container.Item>
-			<Container.Item>
-				<ConnectWithAI />
-			</Container.Item>
 			<Container
 				className="p-5 pb-8 xl:p-8 max-[1920px]:max-w-full max-w-[92rem] mx-auto box-content bg-background-secondary"
 				containerType="grid"
