@@ -7,6 +7,7 @@ import {
 import ExtendTab from './ExtendTab';
 
 import Header from '../components/Header';
+import QuickAccessTab from './QuickAccessTab';
 
 export default () => {
 	const nav = <Header />;
@@ -35,6 +36,7 @@ export default () => {
 				className="flex flex-col gap-8"
 			>
 				<ExtendTab />
+				<QuickAccessTab />
 			</Container.Item>
 		</Container>
 	</div>;

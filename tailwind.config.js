@@ -184,6 +184,7 @@ module.exports = withTW( {
 			},
 			width: {
 				864: '864px',
+				12: '12px',
 			},
 			boxShadow: {
 				'sm-blur-1': '0 1px 1px rgba(0, 0, 0, 0.05)',
