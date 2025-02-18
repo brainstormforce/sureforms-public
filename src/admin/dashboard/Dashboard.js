@@ -32,6 +32,12 @@ export default () => {
 		{ /* nav */ }
 		{ nav }
 		<Container.Item>
+			<Container.Item>
+				<AiFormBuilderNew />
+			</Container.Item>
+			<Container.Item>
+				<AddNewForm />
+			</Container.Item>
 			<Container
 				className="p-5 pb-8 xl:p-8 max-[1920px]:max-w-full max-w-[92rem] mx-auto box-content bg-background-secondary"
 				containerType="grid"

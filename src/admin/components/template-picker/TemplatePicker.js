@@ -33,7 +33,7 @@ const TemplatePicker = () => {
 				return (
 					<div className="srfm-tp-sp-container srfm-content-section">
 						<Header />
-						{ /* <div className="srfm-tp-sp-methods-container">
+						{/* <div className="srfm-tp-sp-methods-container">
 							<div className="srfm-tp-sp-methods-inner-wrap">
 								<div className="srfm-tp-sp-heading-container">
 									<h1 className="srfm-tp-sp-heading">
@@ -87,7 +87,7 @@ const TemplatePicker = () => {
 									</div>
 								</div>
 							</div>
-						</div> */ }
+						</div> */}
 						<AddNewForm />
 					</div>
 				);
