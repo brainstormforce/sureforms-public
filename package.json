@@ -78,13 +78,13 @@
 		"sass": "^1.69.4",
 		"sass-loader": "^13.3.2",
 		"style-loader": "^3.3.3",
-		"tailwindcss": "^3.3.2",
+		"tailwindcss": "^3.4.17",
 		"webpack": "^5.89.0",
 		"wp-prettier": "^2.6.2"
 	},
 	"private": true,
 	"dependencies": {
-		"@bsf/force-ui": "git+https://github.com/brainstormforce/force-ui.git#1.0.0",
+		"@bsf/force-ui": "github:brainstormforce/force-ui#1.4.1",
 		"@emotion/react": "^11.10.6",
 		"@fortawesome/fontawesome-svg-core": "^6.4.0",
 		"@fortawesome/free-regular-svg-icons": "^6.4.0",
@@ -96,12 +96,15 @@
 		"@tomickigrzegorz/react-circular-progress-bar": "^1.1.2",
 		"@wordpress/api-fetch": "^6.42.0",
 		"@wordpress/icons": "^9.18.0",
+		"apexcharts": "^4.4.0",
 		"autoprefixer": "^10.4.16",
 		"classnames": "^2.3.2",
+		"clsx": "^2.1.1",
 		"cssnano": "^6.0.1",
 		"gpt-po": "^1.1.1",
 		"html-react-parser": "^5.0.7",
 		"lodash": "^4.17.21",
+		"lucide-react": "^0.475.0",
 		"postcss": "^8.5.1",
 		"lucide-react": "^0.447.0",
 		"prop-types": "^15.8.1",
@@ -116,9 +119,8 @@
 		"react-router-dom": "^6.11.0",
 		"react-select": "^5.7.2",
 		"react-virtualized": "^9.22.5",
-		"use-debounce": "^10.0.0",
 		"tailwind-merge": "^3.0.1",
-		"clsx": "^2.1.1"
+		"use-debounce": "^10.0.0"
 	},
 	"volta": {
 		"node": "18.15.0"
