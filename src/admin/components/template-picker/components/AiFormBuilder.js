@@ -193,7 +193,7 @@ const AiFormBuilder = () => {
 				const postContent = await apiFetch( {
 					path: 'sureforms/v1/map-fields',
 					method: 'POST',
-					data: { form_data: content },
+					data: { form_data: content,	is_conversional: formTypeObj?.isConversationalForm },
 				} );
 
 				if ( postContent ) {
@@ -384,7 +384,6 @@ const AiFormBuilder = () => {
 										__( 'Create Conversational Form', 'sureforms' )
 									}
 									<PremiumBadge
-										badgeName={ __( 'Pro', 'sureforms' ) }
 										tooltipHeading={ __( 'Unlock Conversational Forms', 'sureforms' ) }
 										tooltipContent={ __( 'With the SureForms Pro Plan, you can transform your forms into engaging conversational layouts for a seamless user experience.', 'sureforms' ) }
 										utmMedium="ai_builder"

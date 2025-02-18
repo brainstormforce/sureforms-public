@@ -487,4 +487,16 @@ $placeholder_color: #9ca3af;
 	}
 }
 
+.sureforms-plugins-go-pro {
+	color: #d54407;
+	font-weight: bold;
+
+	&:hover,
+	&:active,
+	&:focus {
+		color: #d54407;
+		opacity: 0.8;
+	}
+}
+
 @import "tooltip";
