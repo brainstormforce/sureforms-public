@@ -1,0 +1,155 @@
+/** @jsx jsx */
+import { __ } from '@wordpress/i18n';
+import { jsx } from '@emotion/react';
+import { Button, Container, Label } from '@bsf/force-ui';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
+
+export default () => {
+	return (
+		<Container
+			className="p-8 gap-6 bg-background-secondary w-[90%] ml-auto mr-auto"
+			containerType="flex"
+			direction="column"
+		>
+			<Container.Item className="gap-8"
+				containerType="flex"
+				direction="column"
+			>
+				<Container
+					className="px-2 gap-12"
+					containerType="grid"
+					cols={ 12 }
+				>
+					<Container.Item
+						className=""
+						colSpan={ 6 }
+					>
+						<Container
+							className="gap-2"
+							containerType="flex"
+							direction="column"
+						>
+							<Container.Item className="flex flex-col p-1">
+								<Label
+									tag="h3"
+									variant="neutral"
+									className="font-semibold text-2xl text-text-primary"
+								>
+									{ __( 'Building forms with AI', 'sureforms' ) }
+								</Label>
+								<Label
+									variant="neutral"
+									className="font-normal text-text-secondary text-base"
+								>
+									{ __( 'SureForms AI, helps you build your forms 10x faster.', 'sureforms' ) }
+								</Label>
+							</Container.Item>
+							<Container.Item className="p-1">
+								<Label
+									variant="neutral"
+									className="font-normal text-text-secondary text-base"
+								>
+									{ __( 'Here is how the AI Form Builder Works:', 'sureforms' ) }
+								</Label>
+							</Container.Item>
+							<Container.Item>
+								<Container
+									containerType="flex"
+									direction="column"
+									className="gap-1.5"
+								>
+									<Container.Item>
+										<Label
+											variant="neutral"
+											className="font-medium text-field-input text-sm"
+										>
+											{ __( '1. Create a free account to connect with our AI.', 'sureforms' ) }
+										</Label>
+									</Container.Item>
+									<Container.Item>
+										<Label
+											variant="neutral"
+											className="font-medium text-field-input text-sm"
+										>
+											{ __( '2. Describe the form you want to create in words.', 'sureforms' ) }
+										</Label>
+									</Container.Item>
+									<Container.Item>
+										<Label
+											variant="neutral"
+											className="font-medium text-field-input text-sm"
+										>
+											{ __( '3. Watch as our AI crafts your form instantly.', 'sureforms' ) }
+										</Label>
+									</Container.Item>
+									<Container.Item>
+										<Label
+											variant="neutral"
+											className="font-medium text-field-input text-sm"
+										>
+											{ __( '4. Refine the form with our easy drag & drop builder.', 'sureforms' ) }
+										</Label>
+									</Container.Item>
+									<Container.Item>
+										<Label
+											variant="neutral"
+											className="font-medium text-field-input text-sm"
+										>
+											{ __( '5. Launch.', 'sureforms' ) }
+										</Label>
+									</Container.Item>
+								</Container>
+							</Container.Item>
+							<Container.Item>
+								<Container
+									containerType="flex"
+									direction="row"
+									className="gap-1 p-1"
+								>
+									<Container.Item>
+										<Button
+											// className="bg-button-primary hover:bg-button-primary gap-1 border border-solid border-button-primary text-button-text hover:border-button-primary shadow-sm-blur-2"
+											className="text-text-tertiary font-semibold text-sm"
+											icon={ <ArrowLeft size={ 20 } strokeWidth={ 1.25 } /> }
+											iconPosition="left"
+											size="md"
+											tag="button"
+											type="button"
+											variant="ghost"
+										>
+											{ __( 'Back', 'sureforms' ) }
+										</Button>
+									</Container.Item>
+									<Container.Item>
+										<Button
+											className="bg-button-primary hover:bg-button-primary gap-1 border border-solid border-button-primary text-button-text hover:border-button-primary shadow-sm-blur-2"
+											icon={ <ArrowRight size={ 20 } strokeWidth={ 1.25 } /> }
+											iconPosition="right"
+											size="md"
+											tag="button"
+											type="button"
+											variant="outline"
+										>
+											<Label
+												variant="neutral"
+												className="font-semibold text-button-text text-sm"
+											>
+												{ __( 'Get Started', 'sureforms' ) }
+											</Label>
+										</Button>
+									</Container.Item>
+								</Container>
+							</Container.Item>
+						</Container>
+					</Container.Item>
+					<Container.Item
+						className="bg-gray-200"
+						colSpan={ 6 }
+					>
+						Image
+					</Container.Item>
+				</Container>
+			</Container.Item>
+		</Container >
+	);
+};

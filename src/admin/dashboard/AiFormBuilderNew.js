@@ -21,7 +21,7 @@ export default () => {
 			</Container.Item>
 			<Container.Item className="p-2 gap-6">
 				<TextArea
-					aria-label="Textarea"
+					aria-label={ __( 'Describe the form you want to create', 'sureforms' ) }
 					defaultValue=""
 					placeholder={ __( "E.g. Form to gather feedback from our customer for our product functionality, usability , how much you will rate it and what you don't like about it.", 'sureforms' ) }
 					id="textarea"
@@ -31,7 +31,7 @@ export default () => {
 			</Container.Item>
 			<Container.Item className="p-2 flex flex-row items-center gap-3">
 				<Switch
-					aria-label="Switch Element"
+					aria-label={ __( 'Create Conversation Form', 'sureforms' ) }
 					id="switch-element"
 					onChange={ function Ki() { } }
 					size="sm"
@@ -41,7 +41,7 @@ export default () => {
 					variant="neutral"
 					className="font-medium text-field-label text-sm"
 				>
-					{ __( 'How would you like to create a new form?', 'sureforms' ) }
+					{ __( 'Create Conversation Form', 'sureforms' ) }
 				</Label>
 			</Container.Item>
 			<Container.Item className="p-2 gap-6">
