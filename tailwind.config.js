@@ -179,6 +179,15 @@ module.exports = withTW( {
 				9.5: '2.375rem', // 38px
 				11: '2.75rem', // 44px
 			},
+			borderWidth: {
+				0.5: '0.5px',
+			},
+			width: {
+				864: '864px',
+			},
+			boxShadow: {
+				'sm-blur-1': '0 1px 1px rgba(0, 0, 0, 0.05)',
+			},
 		},
 	},
 	variants: {
