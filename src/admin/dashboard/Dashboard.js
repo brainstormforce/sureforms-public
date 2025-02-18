@@ -33,10 +33,10 @@ export default () => {
 		{ nav }
 		<Container.Item>
 			<Container.Item>
-				<AiFormBuilderNew />
+				<br /><br /><br />
 			</Container.Item>
 			<Container.Item>
-				<AddNewForm />
+				<ConnectWithAI />
 			</Container.Item>
 			<Container
 				className="p-5 pb-8 xl:p-8 max-[1920px]:max-w-full max-w-[92rem] mx-auto box-content bg-background-secondary"
