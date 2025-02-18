@@ -28,6 +28,7 @@ function StyleSettings( props ) {
 	);
 	const formStyling = sureformsKeys?._srfm_forms_styling || {};
 	const root = document.documentElement.querySelector( 'body' );
+	const editor = root.querySelector( '.editor-styles-wrapper' );
 	const deviceType = useDeviceType();
 	const [ submitBtn, setSubmitBtn ] = useState(
 		document.querySelector( '.srfm-submit-richtext' )
@@ -60,6 +61,8 @@ function StyleSettings( props ) {
 			return;
 		}
 
+		const cssProperties = getCSSProperties( key, value );
+		addStyleInRoot( editor, cssProperties );
 		const formStylingSettings = {
 			...formStyling,
 			[ key ]: value,
@@ -137,6 +140,9 @@ function StyleSettings( props ) {
 		}
 		key_id = key + '_id';
 
+		const cssProperties = getCSSProperties( key, imageURL );
+		addStyleInRoot( editor, cssProperties );
+
 		editPost( {
 			meta: {
 				_srfm_forms_styling: {
@@ -178,6 +184,9 @@ function StyleSettings( props ) {
 	}
 
 	useEffect( () => {
+		// Add the background type class to the editor for styling purpose.
+		addBackgroundTypeClass( bg_type );
+
 		if ( sureformsKeys ) {
 			const defaultTextColor = '#1E1E1E';
 
@@ -211,6 +220,8 @@ function StyleSettings( props ) {
 				'--srfm-submit-width': sureformsKeys?._srfm_submit_width || '',
 				'--srfm-submit-alignment-backend': sureformsKeys._srfm_submit_alignment_backend || '',
 				'--srfm-submit-width-backend': sureformsKeys._srfm_submit_width_backend || '',
+				// Background Control Settings - verify once.
+				'--srfm-bg-color': formStyling?.bg_color || '#FFFFFF',
 			};
 
 			addStyleInRoot( root, cssProperties );
@@ -279,8 +290,66 @@ function StyleSettings( props ) {
 	 * @since 0.0.7
 	 */
 	function updateFormStyling( option, value ) {
-		const cssProperties = {};
+		const cssProperties = getCSSProperties( option, value );
 
+		// switch ( option ) {
+		// 	case 'primary_color':
+		// 		cssProperties[ '--srfm-color-scheme-primary' ] = value || '#111C44';
+		// 		cssProperties[ '--srfm-btn-color-hover' ] = `hsl( from ${ value || '#111C44' } h s l / 0.9)`;
+		// 		break;
+		// 	case 'text_color':
+		// 		const defaultTextColor = '#1E1E1E';
+		// 		cssProperties[ '--srfm-color-scheme-text' ] = value || defaultTextColor;
+		// 		cssProperties[ '--srfm-color-input-label' ] = value || defaultTextColor;
+		// 		cssProperties[ '--srfm-color-input-placeholder' ] = value || defaultTextColor;
+		// 		cssProperties[ '--srfm-color-input-text' ] = value || defaultTextColor;
+		// 		cssProperties[ '--srfm-color-input-description' ] = `hsl( from ${ value || defaultTextColor } h s l / 0.65)`;
+		// 		cssProperties[ '--srfm-color-input-prefix' ] = `hsl( from ${ value || defaultTextColor } h s l / 0.65)`;
+		// 		cssProperties[ '--srfm-color-input-background' ] = `hsl( from ${ value || defaultTextColor } h s l / 0.02)`;
+		// 		cssProperties[ '--srfm-color-input-background-disabled' ] = `hsl( from ${ value || defaultTextColor } h s l / 0.05)`;
+		// 		cssProperties[ '--srfm-color-input-border' ] = `hsl( from ${ value || defaultTextColor } h s l / 0.25)`;
+		// 		cssProperties[ '--srfm-color-input-border-disabled' ] = `hsl( from ${ value || defaultTextColor } h s l / 0.15)`;
+		// 		break;
+		// 	case 'text_color_on_primary':
+		// 		cssProperties[ '--srfm-color-scheme-text-on-primary' ] = value || '#FFFFFF';
+		// 		break;
+		// 	case 'field_spacing':
+		// 		cssProperties[ '--srfm-field-spacing' ] = value || 'medium';
+		// 		break;
+		// 	case 'submit_button_alignment':
+		// 		cssProperties[ '--srfm-submit-alignment' ] = value || 'left';
+		// 		cssProperties[ '--srfm-submit-width-backend' ] = 'max-content';
+		// 		updateMeta( '_srfm_submit_width_backend', 'max-content' );
+
+		// 		if ( value === 'left' ) {
+		// 			cssProperties[ '--srfm-submit-alignment-backend' ] = '100%';
+		// 			updateMeta( '_srfm_submit_alignment_backend', '100%' );
+		// 		} else if ( value === 'right' ) {
+		// 			cssProperties[ '--srfm-submit-alignment-backend' ] = '0%';
+		// 			updateMeta( '_srfm_submit_alignment_backend', '0%' );
+		// 		} else if ( value === 'center' ) {
+		// 			cssProperties[ '--srfm-submit-alignment-backend' ] = '50%';
+		// 			updateMeta( '_srfm_submit_alignment_backend', '50%' );
+		// 		} else if ( value === 'justify' ) {
+		// 			cssProperties[ '--srfm-submit-alignment-backend' ] = '50%';
+		// 			cssProperties[ '--srfm-submit-width-backend' ] = 'auto';
+		// 			updateMeta( '_srfm_submit_alignment_backend', '50%' );
+		// 		}
+		// 		break;
+		// }
+
+		addStyleInRoot( editor, cssProperties );
+
+		editPost( {
+			meta: {
+				_srfm_forms_styling: { ...formStyling, [ option ]: value },
+			},
+		} );
+	}
+
+	function getCSSProperties( option, value ) {
+		const cssProperties = {};
+		console.log( { [option]: value } );
 		switch ( option ) {
 			case 'primary_color':
 				cssProperties[ '--srfm-color-scheme-primary' ] = value || '#111C44';
@@ -325,16 +394,85 @@ function StyleSettings( props ) {
 					updateMeta( '_srfm_submit_alignment_backend', '50%' );
 				}
 				break;
+			case 'bg_color':
+				cssProperties[ '--srfm-bg-color' ] = value || '#FFFFFF';
+				break;
+			// Image Variables.
+			case 'bg_image':
+				cssProperties[ '--srfm-bg-image' ] = value ? `url(${ value })` : 'none';
+				break;
+			case 'bg_image_position':
+				cssProperties[ '--srfm-bg-position' ] = value || 'top left';
+				break;
+			case 'bg_image_attachment':
+				cssProperties[ '--srfm-bg-attachment' ] = value || 'scroll';
+				break;
+			case 'bg_image_repeat':
+				cssProperties[ '--srfm-bg-repeat' ] = value || 'no-repeat';
+				break;
+			case 'bg_image_size':
+				cssProperties[ '--srfm-bg-size' ] = value || 'cover';
+				break;
+			case 'bg_image_size_custom':
+				cssProperties[ '--srfm-bg-size' ] = value || 'cover';
+				break;
+			// Gradient Variables.
+			case 'bg_gradient':
+			case 'bg_gradient_type':
+			case 'bg_gradient_color_1':
+			case 'bg_gradient_color_2':
+			case 'bg_gradient_location_1':
+			case 'bg_gradient_location_2':
+			case 'bg_gradient_angle':
+				if ( bg_type === 'gradient' ) {
+					if ( bg_gradient ) {
+						console.log( 'bg_gradient', bg_gradient );
+						cssProperties[ '--srfm-bg-gradient' ] = bg_gradient;
+						break;
+					}
+					console.log( 'option', option );
+					cssProperties[ '--srfm-bg-gradient' ] = getGradientCSS(
+						option === 'bg_gradient_type' ? value : 'linear',
+						option === 'bg_gradient_color_1' ? value : '#FFC9B2',
+						option === 'bg_gradient_color_2' ? value : '#C7CBFF',
+						option === 'bg_gradient_location_1' ? value : 0,
+						option === 'bg_gradient_location_2' ? value : 100,
+						option === 'bg_gradient_angle' ? value : 90
+					);
+				}
+				break;
 		}
 
-		addStyleInRoot( root, cssProperties );
-
-		editPost( {
-			meta: {
-				_srfm_forms_styling: { ...formStyling, [ option ]: value },
-			},
-		} );
+		return cssProperties;
 	}
+
+	function getGradientCSS( type = 'linear', color1 = '#FFC9B2', color2 = '#C7CBFF', loc1 = 0, loc2 = 100, angle = 90 ) {
+		if ( type === 'radial' ) {
+			return `radial-gradient(circle at ${ loc1 }%, ${ color1 }, ${ color2 } ${ loc2 }% )`;
+		} else {
+			return `linear-gradient( ${ angle }deg, ${ color1 } ${ loc1 }%, ${ color2 } ${ loc2 }%)`;
+		}
+	}
+
+	const addBackgroundTypeClass = ( type ) => {
+		switch ( type ) {
+			case 'image':
+				editor.classList.add( 'srfm-bg-type-image' );
+				editor.classList.remove( 'srfm-bg-type-color' );
+				editor.classList.remove( 'srfm-bg-type-gradient' );
+				break;
+			case 'gradient':
+				editor.classList.add( 'srfm-bg-type-gradient' );
+				editor.classList.remove( 'srfm-bg-type-color' );
+				editor.classList.remove( 'srfm-bg-type-image' );
+				break;
+			// For background type color or deselect state, keep the color as default class.
+			default:
+				editor.classList.add( 'srfm-bg-type-color' );
+				editor.classList.remove( 'srfm-bg-type-image' );
+				editor.classList.remove( 'srfm-bg-type-gradient' );
+		}
+	};
 
 	const form = [
 		{

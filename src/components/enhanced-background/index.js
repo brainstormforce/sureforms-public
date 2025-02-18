@@ -532,7 +532,7 @@ const Background = ( props ) => {
 							<div className="srfm-background-image-overlay-gradient">
 								<GradientSettings
 									backgroundGradient={
-										props.backgroundOverlayGradient
+										props.backgroundGradient
 									}
 									setAttributes={ setAttributes }
 									gradientType={ props.gradientType }

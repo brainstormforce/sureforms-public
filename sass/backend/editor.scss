@@ -1,4 +1,19 @@
 body.post-type-sureforms_form {
+	.editor-styles-wrapper {
+		&.srfm-bg-type-color {
+			background-color: var( --srfm-bg-color );
+		}
+		&.srfm-bg-type-image {
+			background-image: var( --srfm-bg-image );
+			background-position: var( --srfm-bg-position );
+			background-attachment: var( --srfm-bg-attachment );
+			background-repeat: var( --srfm-bg-repeat );
+			background-size: var( --srfm-bg-size );
+		}
+		&.srfm-bg-type-gradient {
+			background: var( --srfm-bg-gradient );
+		}
+	}
 	// Added to align the icon picker component with the option text field.
 	.srfm-size-type-field-tabs {
 		// Astra theme adds a top padding which distorts the layout.
