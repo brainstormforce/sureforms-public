@@ -4,6 +4,7 @@ import GetStartedNew from './GetStartedNew';
 import {
 	Container,
 } from '@bsf/force-ui';
+import ExtendTab from './ExtendTab';
 
 import Header from '../components/Header';
 
@@ -11,7 +12,7 @@ export default () => {
 	const nav = <Header />;
 
 	const leftSidebar = <div
-		className={ cn( 'h-full border-l border-solid', 'p-[32px]' ) }
+		className={ cn( 'h-full border-l border-solid border-red-400', 'p-[32px]' ) }
 	>
 		<Container
 			className="p-8 max-w-[82rem] mx-auto"
@@ -22,6 +23,22 @@ export default () => {
 			<GetStartedNew />
 		</Container>
 	</div>;
+
+	const rightSidebar = <div
+		className={ cn( 'h-full border-l border-solid border-red-400', 'p-[32px]' ) }
+	>
+		<Container
+			className="p-8"
+			gap="2xl"
+		>
+			<Container.Item
+				className="flex flex-col gap-8"
+			>
+				<ExtendTab />
+			</Container.Item>
+		</Container>
+	</div>;
+
 	return <Container
 		className="h-full"
 		containerType="flex"
@@ -42,9 +59,8 @@ export default () => {
 					{ leftSidebar }
 				</Container.Item>
 				<Container.Item>
-					<div>
-						<h1>This is right sidebar</h1>
-					</div>
+					{ /* right sidebar */ }
+					{ rightSidebar }
 				</Container.Item>
 			</Container>
 
