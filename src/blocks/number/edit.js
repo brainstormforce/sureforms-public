@@ -27,8 +27,13 @@ const formatNumber = ( number, formatType ) => {
 		return '';
 	}
 
-	// Convert all to empty strings except: Numbers, Dots, Commas.
-	number = number.replace( /[^0-9,.]+/g, '' );
+	// Convert all to empty strings except: Numbers, Dots, Commas, and a single leading Minus.
+	number = number.replace( /(?!^-)[^0-9,.-]+/g, '' );
+
+	if ( number.length === 1 && number.startsWith( '-' ) ) {
+		// It means, user has just started negative number. Eg: "-".
+		return number;
+	}
 
 	if ( number.endsWith( '.' ) || number.endsWith( ',' ) ) {
 		// It means, user has just started decimal point. Eg: "2." or "2,"

@@ -42,8 +42,11 @@ function initializeNumberField() {
 				// Things we want to reflect on real time: "input".
 				numberInput.addEventListener( 'input', ( e ) => {
 					// Convert all to empty strings except: Numbers, Dots, Commas, and a single leading Minus.
-					numberInput.value = e.target.value.replace(/(?!^-)[^0-9,.-]+/g, '');
-				});
+					numberInput.value = e.target.value.replace(
+						/(?!^-)[^0-9,.-]+/g,
+						''
+					);
+				} );
 
 				// Things we want to process after user changes the focus, to save performance: "change".
 				numberInput.addEventListener( 'change', ( e ) => {
