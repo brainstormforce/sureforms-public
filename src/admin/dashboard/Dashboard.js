@@ -8,6 +8,7 @@ import ExtendTab from './ExtendTab';
 
 import Header from '../components/Header';
 import QuickAccessTab from './QuickAccessTab';
+import UpgradeToPro from './UpgradeToPro';
 
 export default () => {
 	const nav = <Header />;
@@ -21,7 +22,12 @@ export default () => {
 			containerType="grid"
 			gap="2xl"
 		>
-			<GetStartedNew />
+			<Container.Item
+				className="flex flex-col gap-8"
+			>
+				<GetStartedNew />
+				<UpgradeToPro />
+			</Container.Item>
 		</Container>
 	</div>;
 

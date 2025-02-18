@@ -181,6 +181,7 @@ module.exports = withTW( {
 			},
 			borderWidth: {
 				0.5: '0.5px',
+				1.25: '1.25px',
 			},
 			width: {
 				864: '864px',
