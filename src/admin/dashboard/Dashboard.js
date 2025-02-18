@@ -1,4 +1,3 @@
-import { __ } from '@wordpress/i18n';
 import { cn } from '@Utils/Helpers';
 import {
 	Container,
