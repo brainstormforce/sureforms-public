@@ -428,4 +428,4 @@ export const addStyleInRoot = ( root, cssProperties ) => {
 			root.style.setProperty( key, objValue );
 		}
 	}
-}
+};
