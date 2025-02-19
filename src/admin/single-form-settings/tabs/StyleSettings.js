@@ -116,7 +116,6 @@ function StyleSettings( props ) {
 		location_2: bg_gradient_location_2 || 100,
 		angle: bg_gradient_angle || 90,
 	} );
-	const [ isGradientBasic, setIsGradientBasic ] = useState( false );
 
 	/**
 	 * Handles the selection of an image and updates the post metadata with the selected image's URL and ID.
@@ -231,7 +230,7 @@ function StyleSettings( props ) {
 				// Background Control Settings.
 				'--srfm-bg-color': formStyling?.bg_color || '#FFFFFF',
 				'--srfm-bg-image': formStyling?.bg_image ? `url(${ formStyling?.bg_image })` : 'none',
-				'--srfm-bg-position': formStyling?.bg_image_position || 'top left',
+				'--srfm-bg-position': formStyling?.bg_image_position.replace( '-', ' ' ) || 'left top',
 				'--srfm-bg-attachment': formStyling?.bg_image_attachment || 'scroll',
 				'--srfm-bg-repeat': formStyling?.bg_image_repeat || 'no-repeat',
 				'--srfm-bg-size': formStyling?.bg_image_size || 'cover',
@@ -248,7 +247,7 @@ function StyleSettings( props ) {
 				meta: sureformsKeys,
 			} );
 		}
-	}, [ sureformsKeys, gradientOptions ] );
+	}, [ sureformsKeys, gradientOptions, bg_gradient ] );
 
 	function updateMeta( option, value ) {
 		const value_id = 0;
@@ -370,7 +369,7 @@ function StyleSettings( props ) {
 				cssProperties[ '--srfm-bg-image' ] = value ? `url(${ value })` : 'none';
 				break;
 			case 'bg_image_position':
-				cssProperties[ '--srfm-bg-position' ] = value || 'top left';
+				cssProperties[ '--srfm-bg-position' ] = value.replace( '-', ' ' ) || 'left top';
 				break;
 			case 'bg_image_attachment':
 				cssProperties[ '--srfm-bg-attachment' ] = value || 'scroll';
@@ -389,8 +388,6 @@ function StyleSettings( props ) {
 				break;
 			// Gradient Variables.
 			case 'gradient_type':
-				setIsGradientBasic( value === 'basic' );
-				break;
 			case 'bg_gradient':
 			case 'bg_gradient_type':
 			case 'bg_gradient_color_1':
@@ -398,7 +395,7 @@ function StyleSettings( props ) {
 			case 'bg_gradient_location_1':
 			case 'bg_gradient_location_2':
 			case 'bg_gradient_angle':
-				if ( isGradientBasic ) {
+				if ( ( option === 'gradient_type' && value === 'basic' ) || option === 'bg_gradient' ) {
 					cssProperties[ '--srfm-bg-gradient' ] = bg_gradient;
 					break;
 				}
@@ -406,16 +403,6 @@ function StyleSettings( props ) {
 					...gradientOptions,
 					[ option.replace( 'bg_gradient_', '' ) ]: value,
 				};
-				// TODO: Refactor - added gradientOptions in useEffect for updating the gradient.
-				const advancedGradientStyles = getGradientCSS(
-					updatedGradientOptions.type,
-					updatedGradientOptions.color_1,
-					updatedGradientOptions.color_2,
-					updatedGradientOptions.location_1,
-					updatedGradientOptions.location_2,
-					updatedGradientOptions.angle
-				);
-				editor.style.setProperty( '--srfm-bg-gradient', advancedGradientStyles );
 				setGradientOptions( updatedGradientOptions );
 				break;
 		}
