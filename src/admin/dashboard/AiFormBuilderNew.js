@@ -51,7 +51,7 @@ export default () => {
 						>
 							{ __( 'Some Form Ideas', 'sureforms' ) }
 						</Label>
-						<ChevronDown size={ 12 } className="text-icon-secondary" />
+						<ChevronDown size={ 20 } className="text-icon-secondary" />
 					</Container.Item>
 					<Container.Item className="py-2 px-4 gap-2">
 						<Badge
