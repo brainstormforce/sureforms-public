@@ -38,6 +38,40 @@ function StyleSettings( props ) {
 	);
 	const [ fieldSpacing, setFieldSpacing ] = useState( formStyling?.field_spacing || 'medium' );
 
+	const {
+		// Background Properties
+		bg_type,
+		bg_color,
+		bg_image,
+		bg_image_position,
+		bg_image_attachment,
+		bg_image_repeat,
+		bg_image_size,
+		bg_image_size_custom,
+		bg_image_size_custom_type,
+		// Gradient Properties
+		gradient_type,
+		bg_gradient_color_1,
+		bg_gradient_color_2,
+		bg_gradient_location_1,
+		bg_gradient_location_2,
+		bg_gradient_angle,
+		bg_gradient_type,
+		bg_gradient,
+		// Overlay Properties
+		bg_gradient_overlay_type,
+		bg_overlay_opacity,
+		bg_image_overlay_color,
+		bg_overlay_image,
+		bg_overlay_position,
+		bg_overlay_attachment,
+		overlay_blend_mode,
+		bg_overlay_repeat,
+		bg_overlay_size,
+		bg_overlay_custom_size,
+		bg_overlay_custom_size_type,
+	} = formStyling;
+
 	// Apply the sizings when field spacing changes.
 	useEffect( () => {
 		applyFieldSpacing( fieldSpacing );
@@ -73,40 +107,6 @@ function StyleSettings( props ) {
 			},
 		} );
 	};
-
-	const {
-		// Background Properties
-		bg_type,
-		bg_color,
-		bg_image,
-		bg_image_position,
-		bg_image_attachment,
-		bg_image_repeat,
-		bg_image_size,
-		bg_image_size_custom,
-		bg_image_size_custom_type,
-		// Gradient Properties
-		gradient_type,
-		bg_gradient_color_1,
-		bg_gradient_color_2,
-		bg_gradient_location_1,
-		bg_gradient_location_2,
-		bg_gradient_angle,
-		bg_gradient_type,
-		bg_gradient,
-		// Overlay Properties
-		bg_gradient_overlay_type,
-		bg_overlay_opacity,
-		bg_image_overlay_color,
-		bg_overlay_image,
-		bg_overlay_position,
-		bg_overlay_attachment,
-		overlay_blend_mode,
-		bg_overlay_repeat,
-		bg_overlay_size,
-		bg_overlay_custom_size,
-		bg_overlay_custom_size_type,
-	} = formStyling;
 
 	const [ gradientOptions, setGradientOptions ] = useState( {
 		type: bg_gradient_type || 'linear',
