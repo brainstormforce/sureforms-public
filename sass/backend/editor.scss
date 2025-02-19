@@ -43,6 +43,18 @@ body.post-type-sureforms_form {
 				opacity: var( --srfm-bg-overlay-opacity );
 			}
 		}
+		&.srfm-overlay-type-gradient {
+			&::before {
+				content: "";
+				position: absolute;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				background: var( --srfm-bg-gradient );
+				opacity: var( --srfm-bg-overlay-opacity );
+			}
+		}
 	}
 	// Added to align the icon picker component with the option text field.
 	.srfm-size-type-field-tabs {
