@@ -1,8 +1,7 @@
 import { __ } from '@wordpress/i18n';
 import { Button, Container, Label } from '@bsf/force-ui';
 import { ArrowLeft } from 'lucide-react';
-import FilePlus from '../../../images/FilePlus';
-import WandSparkles from '../../../images/WandSparkles';
+import ForceUiIcons from './ForceUiIcons';
 
 export default () => {
 	return (
@@ -43,7 +42,7 @@ export default () => {
 									containerType="flex"
 									direction="column">
 									<Container.Item className="">
-										<FilePlus />
+										{ ForceUiIcons.filePlus }
 									</Container.Item>
 									<Container.Item className="gap-1 p-1">
 										<Label
@@ -94,7 +93,7 @@ export default () => {
 									containerType="flex"
 									direction="column">
 									<Container.Item className="">
-										<WandSparkles />
+										{ ForceUiIcons.wandSparkles }
 									</Container.Item>
 									<Container.Item className="gap-1 p-1">
 										<Label

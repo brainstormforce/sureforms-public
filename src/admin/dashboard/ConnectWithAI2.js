@@ -1,8 +1,7 @@
 import { __ } from '@wordpress/i18n';
 import { Button, Container, Label } from '@bsf/force-ui';
 import { Check } from 'lucide-react';
-import SureFormsIcon from '../../../images/SureFormsIcon';
-import WordpressIcon from '../../../images/WordpressIcon';
+import ForceUiIcons from './ForceUiIcons';
 
 export default () => {
 	return (
@@ -42,7 +41,7 @@ export default () => {
 					direction="row"
 				>
 					<Container.Item>
-						<WordpressIcon />
+						{ ForceUiIcons.wordpressIcon }
 					</Container.Item>
 					<Container.Item>
 						<Label
@@ -62,7 +61,7 @@ export default () => {
 						</Label>
 					</Container.Item>
 					<Container.Item>
-						<SureFormsIcon />
+						{ ForceUiIcons.sureFormsIcon }
 					</Container.Item>
 				</Container>
 			</Container.Item>
