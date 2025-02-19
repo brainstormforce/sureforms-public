@@ -540,7 +540,7 @@ export async function fieldValidation(
 
 		if ( container.classList.contains( 'srfm-signature-block' ) ) {
 			const signatureInput = container.querySelector(
-				'.srfm-input-signature'
+				'.srfm-input-signature-hidden'
 			);
 			const signatureRequired =
 				signatureInput.getAttribute( 'data-required' );
