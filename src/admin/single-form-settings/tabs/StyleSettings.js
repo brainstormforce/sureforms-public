@@ -192,9 +192,8 @@ function StyleSettings( props ) {
 
 
 	useEffect( () => {
-		// Add the background type class to the editor for styling purpose.
-		addBackgroundTypeClass( bg_type );
-		addOverlayTypeClass( bg_gradient_overlay_type, bg_type );
+		// Update the classes on the editor based on the background and overlay types.
+		updateEditorBackgroundClasses( bg_type, bg_gradient_overlay_type );
 	}, [ bg_type, bg_gradient_overlay_type ] );
 
 	useEffect( () => {
@@ -232,28 +231,28 @@ function StyleSettings( props ) {
 				'--srfm-submit-alignment-backend': sureformsKeys._srfm_submit_alignment_backend || '',
 				'--srfm-submit-width-backend': sureformsKeys._srfm_submit_width_backend || '',
 				// Background Control Settings.
-				'--srfm-bg-color': formStyling?.bg_color || '#FFFFFF',
-				'--srfm-bg-image': formStyling?.bg_image ? `url(${ formStyling?.bg_image })` : 'none',
-				'--srfm-bg-position': formStyling?.bg_image_position.replace( '-', ' ' ) || 'left top',
-				'--srfm-bg-attachment': formStyling?.bg_image_attachment || 'scroll',
-				'--srfm-bg-repeat': formStyling?.bg_image_repeat || 'no-repeat',
-				'--srfm-bg-size': formStyling?.bg_image_size || 'auto',
-				'--srfm-bg-size-custom': formStyling?.bg_image_size_custom || 100,
-				'--srfm-bg-size-custom-type': formStyling?.bg_image_size_custom_type || '%',
+				'--srfm-bg-color': bg_color || '#FFFFFF',
+				'--srfm-bg-image': bg_image ? `url(${ bg_image })` : 'none',
+				'--srfm-bg-position': bg_image_position.replace( '-', ' ' ) || 'left top',
+				'--srfm-bg-attachment': bg_image_attachment || 'scroll',
+				'--srfm-bg-repeat': bg_image_repeat || 'no-repeat',
+				'--srfm-bg-size': bg_image_size || 'auto',
+				'--srfm-bg-size-custom': bg_image_size_custom || 100,
+				'--srfm-bg-size-custom-type': bg_image_size_custom_type || '%',
 				// Gradient Variables.
-				'--srfm-bg-gradient': formStyling?.gradient_type === 'basic' ? formStyling?.bg_gradient || 'linear-gradient(90deg, #FFC9B2 0%, #C7CBFF 100%)' : getGradientCSS( gradientOptions.type, gradientOptions.color_1, gradientOptions.color_2, gradientOptions.location_1, gradientOptions.location_2, gradientOptions.angle ),
+				'--srfm-bg-gradient': gradient_type === 'basic' ? bg_gradient || 'linear-gradient(90deg, #FFC9B2 0%, #C7CBFF 100%)' : getGradientCSS( gradientOptions.type, gradientOptions.color_1, gradientOptions.color_2, gradientOptions.location_1, gradientOptions.location_2, gradientOptions.angle ),
 				// Overlay Variables - Image.
-				'--srfm-bg-overlay-image': formStyling?.bg_overlay_image ? `url(${ formStyling?.bg_overlay_image })` : 'none',
-				'--srfm-bg-overlay-position': formStyling?.bg_overlay_position.replace( '-', ' ' ) || 'left top',
-				'--srfm-bg-overlay-attachment': formStyling?.bg_overlay_attachment || 'scroll',
-				'--srfm-bg-overlay-repeat': formStyling?.bg_overlay_repeat || 'no-repeat',
-				'--srfm-bg-overlay-blend-mode': formStyling?.overlay_blend_mode || 'normal',
-				'--srfm-bg-overlay-size': formStyling?.bg_overlay_size || 'auto',
-				'--srfm-bg-overlay-custom-size': formStyling?.bg_overlay_custom_size || 100,
-				'--srfm-bg-overlay-custom-size-type': formStyling?.bg_overlay_custom_size_type || '%',
-				'--srfm-bg-overlay-opacity': formStyling?.bg_overlay_opacity ?? 1,
+				'--srfm-bg-overlay-image': bg_overlay_image ? `url(${ bg_overlay_image })` : 'none',
+				'--srfm-bg-overlay-position': bg_overlay_position.replace( '-', ' ' ) || 'left top',
+				'--srfm-bg-overlay-attachment': bg_overlay_attachment || 'scroll',
+				'--srfm-bg-overlay-repeat': bg_overlay_repeat || 'no-repeat',
+				'--srfm-bg-overlay-blend-mode': overlay_blend_mode || 'normal',
+				'--srfm-bg-overlay-size': bg_overlay_size || 'auto',
+				'--srfm-bg-overlay-custom-size': bg_overlay_custom_size || 100,
+				'--srfm-bg-overlay-custom-size-type': bg_overlay_custom_size_type || '%',
+				'--srfm-bg-overlay-opacity': bg_overlay_opacity ?? 1,
 				// Overlay Variables - Color.
-				'--srfm-bg-overlay-color': formStyling?.bg_image_overlay_color || '#FFFFFF75',
+				'--srfm-bg-overlay-color': bg_image_overlay_color || '#FFFFFF75',
 			};
 
 			addStyleInRoot( root, cssProperties );
@@ -471,50 +470,25 @@ function StyleSettings( props ) {
 		}
 	}
 
-	const addBackgroundTypeClass = ( type ) => {
-		switch ( type ) {
-			case 'image':
-				editor.classList.add( 'srfm-bg-type-image' );
-				editor.classList.remove( 'srfm-bg-type-color' );
-				editor.classList.remove( 'srfm-bg-type-gradient' );
-				break;
-			case 'gradient':
-				editor.classList.add( 'srfm-bg-type-gradient' );
-				editor.classList.remove( 'srfm-bg-type-color' );
-				editor.classList.remove( 'srfm-bg-type-image' );
-				break;
-			// For background type color or deselect state, keep the color as default class.
-			default:
-				editor.classList.add( 'srfm-bg-type-color' );
-				editor.classList.remove( 'srfm-bg-type-image' );
-				editor.classList.remove( 'srfm-bg-type-gradient' );
-		}
-	};
+	const updateEditorBackgroundClasses = ( backgroundType, overlayType ) => {
+		const backgroundClasses = {
+			image: 'srfm-bg-type-image',
+			gradient: 'srfm-bg-type-gradient',
+			default: 'srfm-bg-type-color',
+		};
+		const overlayClasses = {
+			image: 'srfm-overlay-type-image',
+			gradient: 'srfm-overlay-type-gradient',
+			color: 'srfm-overlay-type-color',
+		};
 
-	const addOverlayTypeClass = ( overlayType, bgType ) => {
-		if ( bgType === 'image' ) {
-			switch ( overlayType ) {
-				case 'color':
-					editor.classList.add( 'srfm-overlay-type-color' );
-					editor.classList.remove( 'srfm-overlay-type-image' );
-					editor.classList.remove( 'srfm-overlay-type-gradient' );
-					break;
-				case 'image':
-					editor.classList.add( 'srfm-overlay-type-image' );
-					editor.classList.remove( 'srfm-overlay-type-color' );
-					editor.classList.remove( 'srfm-overlay-type-gradient' );
-					break;
-				case 'gradient':
-					editor.classList.add( 'srfm-overlay-type-gradient' );
-					editor.classList.remove( 'srfm-overlay-type-color' );
-					editor.classList.remove( 'srfm-overlay-type-image' );
-			}
-		} else {
-			if ( overlayType === 'image' ) {
-				editor.classList.add( 'srfm-overlay-type-image' );
-				editor.classList.remove( 'srfm-overlay-type-color' );
-				editor.classList.remove( 'srfm-overlay-type-gradient' );
-			}
+		editor.classList.remove( ...Object.values( backgroundClasses ) );
+		editor.classList.remove( ...Object.values( overlayClasses ) );
+
+		editor.classList.add( backgroundClasses[ backgroundType ] || backgroundClasses.default );
+		if ( overlayType ) {
+			const addOverlayClass = backgroundType === 'image' ? overlayClasses[ overlayType ] : overlayClasses.image;
+			editor.classList.add( addOverlayClass );
 		}
 	};
 

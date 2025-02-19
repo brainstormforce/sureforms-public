@@ -1,3 +1,5 @@
+@import "../blocks/default/utils/mixins.scss";
+
 body.post-type-sureforms_form {
 	.editor-styles-wrapper {
 		&.srfm-bg-type-color {
@@ -13,47 +15,27 @@ body.post-type-sureforms_form {
 		&.srfm-bg-type-gradient {
 			background: var( --srfm-bg-gradient );
 		}
-		&.srfm-overlay-type-image {
-			&::before {
-				content: "";
-				position: absolute;
-				top: 0;
-				left: 0;
-				width: 100%;
-				height: 100%;
-				background-image: var( --srfm-bg-overlay-image );
-				background-position: var( --srfm-bg-overlay-position );
-				background-attachment: var( --srfm-bg-overlay-attachment );
-				background-repeat: var( --srfm-bg-overlay-repeat );
-				background-size: var( --srfm-bg-overlay-size );
-				opacity: var( --srfm-bg-overlay-opacity );
-				mix-blend-mode: var( --srfm-bg-overlay-blend-mode );
-				background-color: unset;
-			}
+		// Target the ::before pseudo element in the overlay classes for color, gradient and image.
+		&[class*="srfm-overlay-type"]::before {
+			@include srfm-overlay-base; // Common styles for overlay types.
 		}
-		&.srfm-overlay-type-color {
-			&::before {
-				content: "";
-				position: absolute;
-				top: 0;
-				left: 0;
-				width: 100%;
-				height: 100%;
-				background-color: var( --srfm-bg-overlay-color );
-				opacity: var( --srfm-bg-overlay-opacity );
-			}
+		// Image Overlay Specific Styles.
+		&.srfm-overlay-type-image::before {
+			background-image: var( --srfm-bg-overlay-image );
+			background-position: var( --srfm-bg-overlay-position );
+			background-attachment: var( --srfm-bg-overlay-attachment );
+			background-repeat: var( --srfm-bg-overlay-repeat );
+			background-size: var( --srfm-bg-overlay-size );
+			mix-blend-mode: var( --srfm-bg-overlay-blend-mode );
+			background-color: unset; // Need to add this to prevent other styles from overriding the background image.
 		}
-		&.srfm-overlay-type-gradient {
-			&::before {
-				content: "";
-				position: absolute;
-				top: 0;
-				left: 0;
-				width: 100%;
-				height: 100%;
-				background: var( --srfm-bg-gradient );
-				opacity: var( --srfm-bg-overlay-opacity );
-			}
+		// Color Overlay Specific Styles.
+		&.srfm-overlay-type-color::before {
+			background-color: var( --srfm-bg-overlay-color );
+		}
+		// Gradient Overlay Specific Styles.
+		&.srfm-overlay-type-gradient::before {
+			background: var( --srfm-bg-gradient );
 		}
 	}
 	// Added to align the icon picker component with the option text field.
