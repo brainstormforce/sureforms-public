@@ -539,15 +539,16 @@ export async function fieldValidation(
 		}
 
 		if ( container.classList.contains( 'srfm-signature-block' ) ) {
-			const signatureInput = container.querySelector( '.srfm-input-signature' );
-
-			console.log( 'signatureInput', signatureInput );
-			
-			const signatureRequired = signatureInput.getAttribute( 'data-required' );
-
+			const signatureInput = container.querySelector(
+				'.srfm-input-signature'
+			);
+			const signatureRequired =
+				signatureInput.getAttribute( 'data-required' );
 			const fileInput = container.querySelector( '.srfm-input-upload' );
-
-			if ( signatureRequired === 'true' && ! signatureInput.value || ! fileInput.value ) {
+			if (
+				( signatureRequired === 'true' && ! signatureInput.value ) ||
+				! fileInput.value
+			) {
 				window?.srfm?.toggleErrorState(
 					signatureInput.closest( '.srfm-block' ),
 					true
@@ -827,7 +828,7 @@ export function initializeInlineFieldValidation() {
 function addBlurListener( containerClass, blockClass ) {
 	console.log( 'containerClass', containerClass );
 	console.log( 'blockClass', blockClass );
-	
+
 	const container = Array.from(
 		document.getElementsByClassName( containerClass )
 	);
@@ -843,7 +844,6 @@ function addBlurListener( containerClass, blockClass ) {
 			if ( containerClass === 'srfm-upload-block' ) {
 				areaField = areaInput.querySelector( 'input[type="file"]' );
 				console.log( 'areaField', areaField );
-			
 			}
 
 			// signature block
@@ -891,7 +891,7 @@ function addBlurListener( containerClass, blockClass ) {
 			// for all other fields
 			if ( areaField ) {
 				areaField.addEventListener( 'blur', async function () {
-			console.log( 'areaField', areaField );
+					console.log( 'areaField', areaField );
 
 					fieldValidationInit( areaField, blockClass );
 				} );
@@ -912,7 +912,7 @@ function addRatingBlurListener( areaField, areaInput, blockClass ) {
 	areaField = areaInput.querySelectorAll( '.srfm-icon' );
 
 	areaField.forEach( ( field ) => {
-		field.addEventListener( 'blur', async function () {			
+		field.addEventListener( 'blur', async function () {
 			fieldValidationInit( field, blockClass );
 		} );
 	} );

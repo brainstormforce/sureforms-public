@@ -61,7 +61,6 @@ const getBlockTypes = ( exclude = '' ) => {
 	}
 
 	console.log( 'blocks', blocks );
-	
 
 	return blocks;
 };
