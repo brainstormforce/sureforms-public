@@ -539,9 +539,12 @@ class Post_Types {
 								'type' => 'string',
 							],
 							'bg_overlay_opacity'          => [
-								'type' => 'integer',
+								'type' => 'number',
 							],
 							'bg_overlay_image'            => [
+								'type' => 'string',
+							],
+							'bg_overlay_image_id'            => [
 								'type' => 'string',
 							],
 							'bg_image_overlay_color'      => [
