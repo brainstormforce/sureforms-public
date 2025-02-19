@@ -765,7 +765,7 @@ const Background = ( props ) => {
 										limitMax={ {
 											px: 1600,
 											'%': 100,
-											em: 571,
+											em: 574,
 										} }
 										unit={ {
 											value: backgroundCustomSizeType.value,

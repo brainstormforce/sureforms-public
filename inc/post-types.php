@@ -584,7 +584,7 @@ class Post_Types {
 					'bg_image_attachment'         => 'fixed',
 					'bg_image_repeat'             => 'no-repeat',
 					'bg_image_size'               => 'cover',
-					'bg_image_size_custom'        => 100, // Image width when set to custom.
+					'bg_image_size_custom'        => 100, // Image size when set to custom.
 					'bg_image_size_custom_type'   => '%',
 					'gradient_type'               => 'basic',
 					'bg_gradient_type'            => 'linear',
