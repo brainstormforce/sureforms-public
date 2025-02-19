@@ -297,6 +297,7 @@
 		border: var( --srfm-color-input-border ) solid 1px;
 		border-radius: var( --srfm-input-field-border-radius );
 		height: var( --srfm-input-height );
+		margin: var( --srfm-input-field-margin );
 		// Adding the below styles to handle the case where user enters a long text in prefix and/or suffix.
 		white-space: nowrap;
 		max-width: 100%;
