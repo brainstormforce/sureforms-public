@@ -146,6 +146,8 @@ module.exports = withTW( {
 				'badge-hover-disabled': '#F3F4F6',
 				'badge-border-disabled': '#E5E7EB',
 				'badge-background-important': '#DC2626',
+				'badge-background-orange-10': '#D544071A',
+				'badge-background-orange-30': '#D544074D',
 				// alert
 				'alert-background-neutral': '#FFFFFF',
 				'alert-border-neutral': '#E5E7EB',
