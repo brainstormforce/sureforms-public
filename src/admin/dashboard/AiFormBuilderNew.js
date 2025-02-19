@@ -1,6 +1,4 @@
-/** @jsx jsx */
 import { __ } from '@wordpress/i18n';
-import { jsx } from '@emotion/react';
 import { Badge, Button, Container, Label, TextArea, Title, Switch } from '@bsf/force-ui';
 import { ArrowRight, ChevronDown, MicOff } from 'lucide-react';
 
@@ -62,14 +60,14 @@ export default () => {
 							size="xs"
 							type="pill"
 							variant="neutral"
-							className="bg-badge-background border-0.5 border-badge-border text-badge-text font-medium text-xs hover:bg-badge-background hover:cursor-pointer"
+							className="bg-badge-background-orange-10 border-0.5 border-badge-background-orange-30 text-brand-800 font-medium text-xs hover:bg-badge-background-orange-10 hover:cursor-pointer"
 						/>
 					</Container.Item>
 				</Container>
 			</Container.Item>
 			<Container.Item className="py-1 px-2 gap-3 flex justify-end">
 				<Button
-					className="bg-button-primary hover:bg-button-primary gap-1 border border-solid border-button-primary text-button-text hover:border-button-primary shadow-sm-blur-2"
+					className="bg-button-primary hover:bg-button-primary gap-1 border border-solid border-button-primary text-text-on-color hover:border-button-primary shadow-sm-blur-2"
 					icon={ <ArrowRight size={ 20 } strokeWidth={ 1.25 } /> }
 					iconPosition="right"
 					size="md"
@@ -79,7 +77,7 @@ export default () => {
 				>
 					<Label
 						variant="neutral"
-						className="font-semibold text-button-text text-sm"
+						className="font-semibold text-text-on-color text-sm hover:cursor-pointer"
 					>
 						{ __( 'Generate Form', 'sureforms' ) }
 					</Label>

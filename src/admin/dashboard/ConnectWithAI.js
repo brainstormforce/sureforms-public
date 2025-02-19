@@ -1,6 +1,4 @@
-/** @jsx jsx */
 import { __ } from '@wordpress/i18n';
-import { jsx } from '@emotion/react';
 import { Button, Container, Label } from '@bsf/force-ui';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 
@@ -29,7 +27,7 @@ export default () => {
 							containerType="flex"
 							direction="column"
 						>
-							<Container.Item className="flex flex-col p-1">
+							<Container.Item className="flex flex-col p-1 gap-1">
 								<Label
 									tag="h3"
 									variant="neutral"
@@ -108,7 +106,6 @@ export default () => {
 								>
 									<Container.Item>
 										<Button
-											// className="bg-button-primary hover:bg-button-primary gap-1 border border-solid border-button-primary text-button-text hover:border-button-primary shadow-sm-blur-2"
 											className="text-text-tertiary font-semibold text-sm"
 											icon={ <ArrowLeft size={ 20 } strokeWidth={ 1.25 } /> }
 											iconPosition="left"
@@ -122,7 +119,7 @@ export default () => {
 									</Container.Item>
 									<Container.Item>
 										<Button
-											className="bg-button-primary hover:bg-button-primary gap-1 border border-solid border-button-primary text-button-text hover:border-button-primary shadow-sm-blur-2"
+											className="bg-button-primary hover:bg-button-primary gap-1 border border-solid border-button-primary text-text-on-color hover:border-button-primary shadow-sm-blur-2"
 											icon={ <ArrowRight size={ 20 } strokeWidth={ 1.25 } /> }
 											iconPosition="right"
 											size="md"
@@ -132,7 +129,7 @@ export default () => {
 										>
 											<Label
 												variant="neutral"
-												className="font-semibold text-button-text text-sm"
+												className="font-semibold text-text-on-color text-sm hover:cursor-pointer"
 											>
 												{ __( 'Get Started', 'sureforms' ) }
 											</Label>
