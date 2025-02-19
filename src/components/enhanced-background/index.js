@@ -207,63 +207,46 @@ const Background = ( props ) => {
 									}
 									options={ [
 										{
-											value: 'left top',
+											value: 'left-top',
 											label: __(
 												'Top Left',
 												'sureforms'
 											),
 										},
 										{
-											value: 'center top',
+											value: 'center-top',
 											label: __(
 												'Top Center',
 												'sureforms'
 											),
 										},
 										{
-											value: 'right top',
+											value: 'right-top',
 											label: __(
 												'Top Right',
 												'sureforms'
 											),
 										},
 										{
-											value: 'center top',
-											label: __(
-												'Center Top',
-												'sureforms'
-											),
+											value: 'center',
+											label: __( 'Center', 'sureforms' ),
 										},
 										{
-											value: 'center center',
-											label: __(
-												'Center Center',
-												'sureforms'
-											),
-										},
-										{
-											value: 'center bottom',
-											label: __(
-												'Center Bottom',
-												'sureforms'
-											),
-										},
-										{
-											value: 'left bottom',
+											value: 'left-bottom',
 											label: __(
 												'Bottom Left',
 												'sureforms'
 											),
 										},
 										{
-											value: 'center bottom',
+											value: 'center-bottom',
 											label: __(
 												'Bottom Center',
 												'sureforms'
 											),
 										},
 										{
-											value: 'right bottom',
+											value: 'right-bottom',
 											label: __(
 												'Bottom Right',
 												'sureforms'
