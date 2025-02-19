@@ -40,6 +40,7 @@ const defaultKeys = {
 	bg_overlay_custom_size_type: { default: '%' },
 	bg_image_size_custom: { default: 100 },
 	bg_overlay_opacity: { default: 1 },
+	bg_image_overlay_color: { default: '#FFFFFF75' },
 };
 
 export const blocksAttributes = {

@@ -252,6 +252,8 @@ function StyleSettings( props ) {
 				'--srfm-bg-overlay-custom-size': formStyling?.bg_overlay_custom_size || 100,
 				'--srfm-bg-overlay-custom-size-type': formStyling?.bg_overlay_custom_size_type || '%',
 				'--srfm-bg-overlay-opacity': formStyling?.bg_overlay_opacity ?? 1,
+				// Overlay Variables - Color.
+				'--srfm-bg-overlay-color': formStyling?.bg_image_overlay_color || '#FFFFFF75',
 			};
 
 			addStyleInRoot( root, cssProperties );
@@ -451,6 +453,10 @@ function StyleSettings( props ) {
 				break;
 			case 'bg_overlay_opacity':
 				cssProperties[ '--srfm-bg-overlay-opacity' ] = value ?? 1;
+				break;
+			// Overlay Variables - Color.
+			case 'bg_image_overlay_color':
+				cssProperties[ '--srfm-bg-overlay-color' ] = value || '#FFFFFF75';
 				break;
 		}
 

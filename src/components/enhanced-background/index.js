@@ -521,7 +521,13 @@ const Background = ( props ) => {
 										value: backgroundImageColor.value,
 										label: backgroundImageColor.label,
 									} }
-									setAttributes={ setAttributes }
+									onColorChange={ ( colorValue ) =>
+										setAttributes( {
+											[ backgroundImageColor.label ]: colorValue,
+										} )
+									}
+									value={ backgroundImageColor.value }
+									isFormSpecific={ true }
 								/>
 							</div>
 							{ renderOverlayControls() }
