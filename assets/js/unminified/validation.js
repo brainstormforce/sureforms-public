@@ -538,6 +538,34 @@ export async function fieldValidation(
 			}
 		}
 
+		if ( container.classList.contains( 'srfm-signature-block' ) ) {
+			const signatureInput = container.querySelector( '.srfm-input-signature' );
+
+			console.log( 'signatureInput', signatureInput );
+			
+			const signatureRequired = signatureInput.getAttribute( 'data-required' );
+
+			const fileInput = container.querySelector( '.srfm-input-upload' );
+
+			if ( signatureRequired === 'true' && ! signatureInput.value || ! fileInput.value ) {
+				window?.srfm?.toggleErrorState(
+					signatureInput.closest( '.srfm-block' ),
+					true
+				);
+				validateResult = true;
+				// Set the first error input.
+				setFirstErrorInput(
+					container.querySelector( '.srfm-icon' ),
+					container
+				);
+			} else {
+				window?.srfm?.toggleErrorState(
+					signatureInput.closest( '.srfm-block' ),
+					false
+				);
+			}
+		}
+
 		// Slider Field.
 		if ( container.classList.contains( 'srfm-slider-block' ) ) {
 			const isSliderRequired = container.getAttribute( 'data-required' );
@@ -783,6 +811,7 @@ export function initializeInlineFieldValidation() {
 		'srfm-textarea-block',
 		'srfm-dropdown-block',
 		'srfm-slider-block',
+		'srfm-signature-block',
 	];
 
 	srfmFields.forEach( ( block ) => addBlurListener( block, `.${ block }` ) );
@@ -796,6 +825,9 @@ export function initializeInlineFieldValidation() {
  * @param {string} blockClass
  */
 function addBlurListener( containerClass, blockClass ) {
+	console.log( 'containerClass', containerClass );
+	console.log( 'blockClass', blockClass );
+	
 	const container = Array.from(
 		document.getElementsByClassName( containerClass )
 	);
@@ -810,6 +842,14 @@ function addBlurListener( containerClass, blockClass ) {
 			// upload block
 			if ( containerClass === 'srfm-upload-block' ) {
 				areaField = areaInput.querySelector( 'input[type="file"]' );
+				console.log( 'areaField', areaField );
+			
+			}
+
+			// signature block
+			if ( containerClass === 'srfm-signature-block' ) {
+				areaField = areaInput.querySelector( 'input[type="file"]' );
+				console.log( 'areaField', areaField );
 			}
 
 			// rating block
@@ -851,6 +891,8 @@ function addBlurListener( containerClass, blockClass ) {
 			// for all other fields
 			if ( areaField ) {
 				areaField.addEventListener( 'blur', async function () {
+			console.log( 'areaField', areaField );
+
 					fieldValidationInit( areaField, blockClass );
 				} );
 			}
@@ -870,7 +912,7 @@ function addRatingBlurListener( areaField, areaInput, blockClass ) {
 	areaField = areaInput.querySelectorAll( '.srfm-icon' );
 
 	areaField.forEach( ( field ) => {
-		field.addEventListener( 'blur', async function () {
+		field.addEventListener( 'blur', async function () {			
 			fieldValidationInit( field, blockClass );
 		} );
 	} );

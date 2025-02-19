@@ -49,6 +49,7 @@ const getBlockTypes = ( exclude = '' ) => {
 		'srfm/multi-choice',
 		'srfm/url',
 		'srfm/inline-button',
+		'srfm/signature',
 	] );
 
 	if ( exclude ) {
@@ -58,6 +59,9 @@ const getBlockTypes = ( exclude = '' ) => {
 			}
 		}
 	}
+
+	console.log( 'blocks', blocks );
+	
 
 	return blocks;
 };
