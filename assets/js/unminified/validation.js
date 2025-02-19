@@ -542,7 +542,6 @@ export async function fieldValidation(
 			const signatureInput = container.querySelector(
 				'.srfm-input-signature'
 			);
-			const uploadIcon = signatureInput.closest( '.srfm-block' );
 			const signatureRequired =
 				signatureInput.getAttribute( 'data-required' );
 			if ( signatureRequired === 'true' && ! signatureInput.value ) {
