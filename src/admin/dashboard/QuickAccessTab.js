@@ -5,7 +5,7 @@ import { Ticket, CircleHelp, MessagesSquare, Star } from 'lucide-react';
 export default () => {
 	return (
 		<Container
-			className="bg-background-primary border-0.5 w-[416px] ml-auto border-solid rounded-xl border-border-subtle shadow-sm-blur-1 p-3 gap-2"
+			className="bg-background-primary border border-solid rounded-xl border-border-subtle p-3 shadow-sm"
 			containerType="flex"
 			direction="column"
 			gap="xs"

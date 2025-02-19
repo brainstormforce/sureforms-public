@@ -5,7 +5,7 @@ import { Check, Zap } from 'lucide-react';
 export default () => {
 	return (
 		<Container
-			className="w-864 bg-background-primary p-4 gap-2 border-0.5 border-solid border-border-subtle shadow-sm-blur-1 rounded-xl"
+			className="bg-background-primary p-5 xl:p-6 shadow-sm rounded-xl border border-solid border-border-subtle gap-y-8 md:gap-x-8"
 			containerType="grid"
 			cols={ 12 }
 		>

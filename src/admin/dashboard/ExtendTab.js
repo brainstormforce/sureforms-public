@@ -5,19 +5,20 @@ import { Button, Container, Label } from '@bsf/force-ui';
 
 export default () => {
 	return (
-		<Container className="flex flex-col bg-background-primary border-0.5 border-solid border-border-subtle shadow-sm-blur-1 rounded-xl p-3 gap-2 w-[416px] ml-auto">
+		<Container
+			className="bg-background-primary border border-solid rounded-xl border-border-subtle p-3 shadow-sm" containerType="flex"
+			direction="column"
+			gap="xs"
+		>
 			<Container.Item>
 				<Container>
-					<Container.Item>
-						<Label
-							className="text-sm text-text-primary font-semibold"
-						>
-							{ __( 'Extend Your Website', 'sureforms' ) }
-						</Label>
-					</Container.Item>
+					<Label
+						className="text-sm text-text-primary font-semibold"
+					>
+						{ __( 'Extend Your Website', 'sureforms' ) }
+					</Label>
 				</Container>
 			</Container.Item>
-
 			<Container.Item>
 				<Container className="grid grid-cols-2 p-1 gap-1 bg-background-secondary rounded-lg">
 					{ /* SureTriggers */ }

@@ -10,10 +10,10 @@ export default () => {
 	return (
 		<>
 			<Container
-				className="bg-background-primary p-4 w-864 border-0.5 border-solid border-border-subtle rounded-xl shadow-sm-blur-1 gap-8"
+				className="bg-background-primary p-5 xl:p-6 shadow-sm rounded-xl border border-solid border-border-subtle gap-y-8 md:gap-x-8"
 				containerType="grid"
 				cols={ 12 }
-				gap="sm"
+				align="center"
 			>
 				<Container.Item
 					colSpan={ 8 }

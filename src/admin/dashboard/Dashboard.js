@@ -1,4 +1,3 @@
-import { cn } from '@Utils/Helpers';
 import GetStartedNew from './GetStartedNew';
 
 import {
@@ -13,39 +12,15 @@ import UpgradeToPro from './UpgradeToPro';
 export default () => {
 	const nav = <Header />;
 
-	const leftSidebar = <div
-		className={ cn( 'h-full border-l border-solid border-red-400', 'p-[32px]' ) }
-	>
-		<Container
-			className="p-8 max-w-[82rem] mx-auto"
-			cols={ 12 }
-			containerType="grid"
-			gap="2xl"
-		>
-			<Container.Item
-				className="flex flex-col gap-8"
-			>
-				<GetStartedNew />
-				<UpgradeToPro />
-			</Container.Item>
-		</Container>
-	</div>;
+	const leftSidebar = <>
+		<GetStartedNew />
+		<UpgradeToPro />
+	</>;
 
-	const rightSidebar = <div
-		className={ cn( 'h-full border-l border-solid border-red-400', 'p-[32px]' ) }
-	>
-		<Container
-			className="p-8"
-			gap="2xl"
-		>
-			<Container.Item
-				className="flex flex-col gap-8"
-			>
-				<ExtendTab />
-				<QuickAccessTab />
-			</Container.Item>
-		</Container>
-	</div>;
+	const rightSidebar = <>
+		<ExtendTab />
+		<QuickAccessTab />
+	</>;
 
 	return <Container
 		className="h-full"
@@ -58,15 +33,16 @@ export default () => {
 		{ nav }
 		<Container.Item>
 			<Container
-				className="h-full grid-cols-[minmax(864px,63%)_minmax(416px,37%)] w-full mx-auto gap-[32px]"
+				className="p-5 pb-8 xl:p-8 max-[1920px]:max-w-full max-w-[92rem] mx-auto box-content bg-background-secondary"
 				containerType="grid"
-				gap={ 0 }
+				cols={ 12 }
+				gap="2xl"
 			>
-				<Container.Item>
+				<Container.Item className="flex flex-col gap-8 col-span-12 xl:col-span-8 ---sf-left-sidebar">
 					{ /* left sidebar */ }
 					{ leftSidebar }
 				</Container.Item>
-				<Container.Item>
+				<Container.Item className="flex flex-col gap-8 col-span-12 xl:col-span-4 ---sf-right-sidebar">
 					{ /* right sidebar */ }
 					{ rightSidebar }
 				</Container.Item>
