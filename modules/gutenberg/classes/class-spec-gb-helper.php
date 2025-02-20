@@ -113,6 +113,13 @@ if ( ! class_exists( 'Spec_Gb_Helper' ) ) {
 		 */
 		public static $icon_array_merged = [];
 
+		/**
+		 * Seen Refs Array
+		 * This array will store the block IDs which have already been processed.
+		 *
+		 * @since x.x.x
+		 * @var array
+		 */
 		private static $seen_refs = [];
 
 		/**
