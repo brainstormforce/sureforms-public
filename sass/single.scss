@@ -72,6 +72,10 @@
 				&.srfm-bg-gradient {
 					background: var( --srfm-bg-gradient );
 				}
+				// Maintain the border radius for the overlays.
+				&[class*="srfm-overlay"]::before {
+					border-radius: 12px;
+				}
 				// Retaining this .hide class for backward compatibility with older versions of the pro plugin.
 				&.hide {
 					display: none;
