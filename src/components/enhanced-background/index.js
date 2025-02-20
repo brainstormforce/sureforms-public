@@ -506,7 +506,8 @@ const Background = ( props ) => {
 									} }
 									onColorChange={ ( colorValue ) =>
 										setAttributes( {
-											[ backgroundImageColor.label ]: colorValue,
+											[ backgroundImageColor.label ]:
+												colorValue,
 										} )
 									}
 									value={ backgroundImageColor.value }

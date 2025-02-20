@@ -190,7 +190,6 @@ function StyleSettings( props ) {
 		}
 	}
 
-
 	useEffect( () => {
 		// Update the classes on the editor based on the background and overlay types.
 		updateEditorBackgroundClasses( bg_type, bg_gradient_overlay_type );
@@ -236,7 +235,7 @@ function StyleSettings( props ) {
 				'--srfm-bg-position': bg_image_position?.replace( '-', ' ' ) || 'left top',
 				'--srfm-bg-attachment': bg_image_attachment || 'scroll',
 				'--srfm-bg-repeat': bg_image_repeat || 'no-repeat',
-				'--srfm-bg-size': bg_image_size === 'custom' ? `${bg_image_size_custom ?? 100}${bg_image_size_custom_type ?? '%'}` : bg_image_size || 'cover',
+				'--srfm-bg-size': bg_image_size === 'custom' ? `${ bg_image_size_custom ?? 100 }${ bg_image_size_custom_type ?? '%' }` : bg_image_size || 'cover',
 				'--srfm-bg-size-custom': bg_image_size_custom || 100,
 				'--srfm-bg-size-custom-type': bg_image_size_custom_type || '%',
 				// Gradient Variables.
@@ -247,7 +246,7 @@ function StyleSettings( props ) {
 				'--srfm-bg-overlay-attachment': bg_overlay_attachment || 'scroll',
 				'--srfm-bg-overlay-repeat': bg_overlay_repeat || 'no-repeat',
 				'--srfm-bg-overlay-blend-mode': bg_overlay_blend_mode || 'normal',
-				'--srfm-bg-overlay-size': bg_overlay_size === 'custom' ? `${bg_overlay_custom_size ?? 100}${bg_overlay_custom_size_type ?? '%'}` : bg_overlay_size || 'cover',
+				'--srfm-bg-overlay-size': bg_overlay_size === 'custom' ? `${ bg_overlay_custom_size ?? 100 }${ bg_overlay_custom_size_type ?? '%' }` : bg_overlay_size || 'cover',
 				'--srfm-bg-overlay-custom-size': bg_overlay_custom_size || 100,
 				'--srfm-bg-overlay-custom-size-type': bg_overlay_custom_size_type || '%',
 				'--srfm-bg-overlay-opacity': bg_overlay_opacity ?? 1,
@@ -393,17 +392,17 @@ function StyleSettings( props ) {
 				cssProperties[ '--srfm-bg-repeat' ] = value || 'no-repeat';
 				break;
 			case 'bg_image_size':
-				cssProperties['--srfm-bg-size'] = value === 'custom'
-					? `${bg_image_size_custom ?? 100}${bg_image_size_custom ?? '%'}`
+				cssProperties[ '--srfm-bg-size' ] = value === 'custom'
+					? `${ bg_image_size_custom ?? 100 }${ bg_image_size_custom ?? '%' }`
 					: value || 'cover';
 				break;
 			case 'bg_image_size_custom':
-				cssProperties['--srfm-bg-size-custom'] = value ?? 100;
-				cssProperties['--srfm-bg-size'] = `${value ?? 100}${bg_image_size_custom ?? '%'}`;
+				cssProperties[ '--srfm-bg-size-custom' ] = value ?? 100;
+				cssProperties[ '--srfm-bg-size' ] = `${ value ?? 100 }${ bg_image_size_custom ?? '%' }`;
 				break;
 			case 'bg_image_size_custom_type':
-				cssProperties['--srfm-bg-size-custom-type'] = value ?? '%';
-				cssProperties['--srfm-bg-size'] = `${bg_image_size_custom ?? 100}${value ?? '%'}`;
+				cssProperties[ '--srfm-bg-size-custom-type' ] = value ?? '%';
+				cssProperties[ '--srfm-bg-size' ] = `${ bg_image_size_custom ?? 100 }${ value ?? '%' }`;
 				break;
 			// Gradient Variables.
 			case 'gradient_type':
@@ -444,17 +443,17 @@ function StyleSettings( props ) {
 				cssProperties[ '--srfm-bg-overlay-blend-mode' ] = value || 'normal';
 				break;
 			case 'bg_overlay_size':
-				cssProperties['--srfm-bg-overlay-size'] = value === 'custom'
-					? `${bg_overlay_custom_size ?? 100}${bg_overlay_custom_size_type ?? '%'}`
+				cssProperties[ '--srfm-bg-overlay-size' ] = value === 'custom'
+					? `${ bg_overlay_custom_size ?? 100 }${ bg_overlay_custom_size_type ?? '%' }`
 					: value || 'cover';
 				break;
 			case 'bg_overlay_custom_size':
 				cssProperties[ '--srfm-bg-overlay-custom-size' ] = value ?? 100;
-				cssProperties['--srfm-bg-overlay-size'] = `${value ?? 100}${bg_overlay_custom_size_type ?? '%'}`;
+				cssProperties[ '--srfm-bg-overlay-size' ] = `${ value ?? 100 }${ bg_overlay_custom_size_type ?? '%' }`;
 				break;
 			case 'bg_overlay_custom_size_type':
 				cssProperties[ '--srfm-bg-overlay-custom-size-type' ] = value ?? '%';
-				cssProperties['--srfm-bg-overlay-size'] = `${bg_overlay_custom_size ?? 100}${value ?? '%'}`;
+				cssProperties[ '--srfm-bg-overlay-size' ] = `${ bg_overlay_custom_size ?? 100 }${ value ?? '%' }`;
 				break;
 			case 'bg_overlay_opacity':
 				cssProperties[ '--srfm-bg-overlay-opacity' ] = value ?? 1; // Using nullish coalescing operator to handle 0 case. If value is 0, it should be 0.
@@ -471,26 +470,25 @@ function StyleSettings( props ) {
 	function getGradientCSS( type = 'linear', color1 = '#FFC9B2', color2 = '#C7CBFF', loc1 = 0, loc2 = 100, angle = 90 ) {
 		if ( type === 'radial' ) {
 			return `radial-gradient(${ color1 } ${ loc1 }%, ${ color2 } ${ loc2 }% )`;
-		} else {
-			return `linear-gradient( ${ angle }deg, ${ color1 } ${ loc1 }%, ${ color2 } ${ loc2 }%)`;
 		}
+		return `linear-gradient( ${ angle }deg, ${ color1 } ${ loc1 }%, ${ color2 } ${ loc2 }%)`;
 	}
 
 	/**
 	 * Updates the editor's background and overlay classes based on the selected types.
 	 *
-	 * This function removes all existing background and overlay classes before applying 
+	 * This function removes all existing background and overlay classes before applying
 	 * the appropriate class based on the provided `backgroundType` and `overlayType`.
 	 * If no valid background type is given, it defaults to `srfm-bg-type-color`.
-	 * 
+	 *
 	 * For overlay types:
 	 * - If the `backgroundType` is `"image"`, the function applies the corresponding overlay type.
 	 * - If the `backgroundType` is not `"image"`, it defaults to `"srfm-overlay-type-image"`.
 	 *
 	 * @param {string} backgroundType - The type of background (e.g., "image", "gradient", or undefined).
-	 * @param {string} overlayType - The type of overlay (e.g., "image", "gradient", "color", or undefined).
+	 * @param {string} overlayType    - The type of overlay (e.g., "image", "gradient", "color", or undefined).
 	 *
-	 * @returns {void} - This function is responsible for handling classes and does not return a value.
+	 * @return {void} - This function is responsible for handling classes and does not return a value.
 	 * @since x.x.x
 	 */
 	const updateEditorBackgroundClasses = ( backgroundType, overlayType ) => {
