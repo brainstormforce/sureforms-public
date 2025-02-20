@@ -1163,15 +1163,14 @@ class Helper {
 			return "linear-gradient({$angle}deg, {$color1} {$loc1}%, {$color2} {$loc2}%)";
 		}
 			return "radial-gradient({$color1} {$loc1}%, {$color2} {$loc2}%)";
-
 	}
 
 	/**
 	 * Return the classes based on background and overlay type to add to the form container.
-	 * 
+	 *
 	 * @param string $background_type The background type. Default 'color'.
 	 * @param string $overlay_type The overlay type. Default 'none'.
-	 * 
+	 *
 	 * @since x.x.x
 	 * @return string The classes to add to the form container.
 	 */
@@ -1181,7 +1180,7 @@ class Helper {
 			$background_type = 'color';
 		}
 		$background_type_class = '';
-		$overlay_class = $overlay_type ? "srfm-overlay-{$overlay_type}" : '';
+		$overlay_class         = $overlay_type ? "srfm-overlay-{$overlay_type}" : '';
 
 		// Set the class based on the background type.
 		switch ( $background_type ) {
