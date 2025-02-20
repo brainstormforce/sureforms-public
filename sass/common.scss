@@ -30,6 +30,8 @@ button.srfm-toolbar-width-setting-button {
 
 .block-editor-page.post-type-sureforms_form .is-root-container,
 .srfm-form-container {
+	position: relative;
+	z-index: 1;
 	&.srfm-bg-color {
 		background-color: var( --srfm-bg-color );
 	}

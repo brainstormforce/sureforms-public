@@ -289,4 +289,5 @@
 	height: 100%;
 	opacity: var( --srfm-bg-overlay-opacity );
 	pointer-events: none;
+	z-index: -1;
 }
