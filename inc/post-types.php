@@ -544,7 +544,7 @@ class Post_Types {
 							'bg_overlay_image'            => [
 								'type' => 'string',
 							],
-							'bg_overlay_image_id'            => [
+							'bg_overlay_image_id'         => [
 								'type' => 'integer',
 							],
 							'bg_image_overlay_color'      => [
@@ -556,7 +556,7 @@ class Post_Types {
 							'bg_overlay_custom_size'      => [
 								'type' => 'integer',
 							],
-							'bg_overlay_blend_mode'          => [
+							'bg_overlay_blend_mode'       => [
 								'type' => 'string',
 							],
 							'bg_overlay_position'         => [

@@ -1147,22 +1147,22 @@ class Helper {
 
 	/**
 	 * Get the gradient css for given gradient parameters.
-	 * 
+	 *
 	 * @param string $type The type of gradient. Default 'linear'.
 	 * @param string $color1 The first color of the gradient. Default '#FFC9B2'.
 	 * @param string $color2 The second color of the gradient. Default '#C7CBFF'.
-	 * @param int $loc1 The location of the first color. Default 0.
-	 * @param int $loc2 The location of the second color. Default 100.
-	 * @param int $angle The angle of the gradient. Default 90.
-	 * 
+	 * @param int    $loc1 The location of the first color. Default 0.
+	 * @param int    $loc2 The location of the second color. Default 100.
+	 * @param int    $angle The angle of the gradient. Default 90.
+	 *
 	 * @since x.x.x
 	 * @return string The gradient css.
 	 */
 	public static function get_gradient_css( $type = 'linear', $color1 = '#FFC9B2', $color2 = '#C7CBFF', $loc1 = 0, $loc2 = 100, $angle = 90 ) {
 		if ( 'linear' === $type ) {
 			return "linear-gradient({$angle}deg, {$color1} {$loc1}%, {$color2} {$loc2}%)";
-		} else {
-			return "radial-gradient({$color1} {$loc1}%, {$color2} {$loc2}%)";
 		}
+			return "radial-gradient({$color1} {$loc1}%, {$color2} {$loc2}%)";
+
 	}
 }
