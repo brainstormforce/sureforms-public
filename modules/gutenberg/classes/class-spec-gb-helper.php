@@ -816,8 +816,6 @@ if ( ! class_exists( 'Spec_Gb_Helper' ) ) {
 			}
 		}
 
-
-
 		/**
 		 * Generates CSS recurrsively.
 		 *
