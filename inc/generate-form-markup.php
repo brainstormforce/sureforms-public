@@ -123,27 +123,17 @@ class Generate_Form_Markup {
 			$overlay_attachment = $form_styling['bg_overlay_attachment'] ?? 'scroll';
 			$overlay_repeat     = $form_styling['bg_overlay_repeat'] ?? 'no-repeat';
 			$overlay_blend_mode = $form_styling['bg_overlay_blend_mode'] ?? 'normal';
-			// based on the $bg_type, add respective class in the $form_classes array.
-			$bg_type_class = '';
-			$overlay_class = $overlay_type ? "srfm-overlay-{$overlay_type}" : '';
-			switch ( $bg_type ) {
-				case 'image':
-					$bg_type_class = 'srfm-bg-image';
-					break;
-				case 'gradient':
-					$bg_type_class = 'srfm-bg-gradient';
-					break;
-				default:
-					$bg_type_class = 'srfm-bg-color';
-					break;
+
+			$background_classes = '';
+			if ( apply_filters( 'srfm_add_background_classes', true ) ) {
+				$background_classes = Helper::get_background_classes( $bg_type, $overlay_type );
 			}
 
 			$form_classes = [
 				'srfm-form-container',
 				$container_id,
 				$sf_classname,
-				$bg_type_class,
-				$overlay_class,
+				$background_classes,
 			];
 
 			$custom_added_classes = Helper::get_meta_value( $id, '_srfm_additional_classes' );

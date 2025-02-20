@@ -2,7 +2,7 @@
 
 body.post-type-sureforms_form {
 	.editor-styles-wrapper {
-		@include srfm-background-control-styles;
+		@include srfm-background-control-styles( true );
 	}
 	// Added to align the icon picker component with the option text field.
 	.srfm-size-type-field-tabs {

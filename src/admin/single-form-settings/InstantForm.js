@@ -483,58 +483,6 @@ const InstantFormComponent = () => {
 									/>
 
 									<div className="srfm-instant-form-settings">
-										<label>{ __( 'Form Background', 'sureforms' ) }</label>
-										<MultiButtonsControl
-											data={ {
-												value: bg_type,
-												label: 'bg_type',
-											} }
-											options={ [
-												{
-													value: 'color',
-													label: __( 'Color', 'sureforms' ),
-												},
-												{
-													value: 'image',
-													label: __( 'Image', 'sureforms' ),
-												},
-											] }
-											showIcons={ false }
-											onChange={ ( value ) => onHandleChange( 'bg_type', value ) }
-										/>
-									</div>
-
-									{
-										'image' === bg_type ? (
-											<div className="srfm-instant-form-settings">
-												<label>{ __( 'Upload Image', 'sureforms' ) }</label>
-												<SRFMMediaPicker
-													label={ '' }
-													onModalClose={ () => setHidePopover( false ) }
-													onSelectImage={ ( imageURL ) => onImageSelect( 'bg_image', imageURL ) }
-													backgroundImage={ bg_image }
-													onRemoveImage={ () => onHandleChange( 'bg_image', '' ) }
-													isFormSpecific={ true }
-												/>
-											</div>
-										) : (
-											<div className="srfm-instant-form-settings srfm-instant-form-settings-inline">
-												<label>{ __( 'Background Color', 'sureforms' ) }</label>
-												<AdvancedPopColorControl
-													colorValue={ bg_color }
-													data={ {
-														value: bg_color,
-														label: 'bg_color',
-													} }
-													onColorChange={ ( colorValue ) => onHandleChange( 'bg_color', colorValue ) }
-													value={ bg_color }
-													isFormSpecific={ true }
-												/>
-											</div>
-										)
-									}
-
-									<div className="srfm-instant-form-settings">
 										<Range
 											label={ __( 'Form Width', 'sureforms' ) }
 											data={ {

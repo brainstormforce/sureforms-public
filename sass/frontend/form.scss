@@ -6,6 +6,8 @@
 	padding: 0;
 	height: 100%;
 
+	@include srfm-background-control-styles;
+
 	// styles for core paragraph block
 	.srfm-custom-wp-paragraph {
 		width: 100% !important;

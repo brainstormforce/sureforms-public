@@ -1165,4 +1165,37 @@ class Helper {
 			return "radial-gradient({$color1} {$loc1}%, {$color2} {$loc2}%)";
 
 	}
+
+	/**
+	 * Return the classes based on background and overlay type to add to the form container.
+	 * 
+	 * @param string $background_type The background type. Default 'color'.
+	 * @param string $overlay_type The overlay type. Default 'none'.
+	 * 
+	 * @since x.x.x
+	 * @return string The classes to add to the form container.
+	 */
+	public static function get_background_classes( $background_type, $overlay_type ) {
+		// If background type is not set, then default to color.
+		if ( ! $background_type ) {
+			$background_type = 'color';
+		}
+		$background_type_class = '';
+		$overlay_class = $overlay_type ? "srfm-overlay-{$overlay_type}" : '';
+
+		// Set the class based on the background type.
+		switch ( $background_type ) {
+			case 'image':
+				$background_type_class = 'srfm-bg-image';
+				break;
+			case 'gradient':
+				$background_type_class = 'srfm-bg-gradient';
+				break;
+			default:
+				$background_type_class = 'srfm-bg-color';
+				break;
+		}
+
+		return self::join_strings( [ $background_type_class, $overlay_class ] );
+	}
 }

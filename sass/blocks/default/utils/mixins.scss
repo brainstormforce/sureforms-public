@@ -280,20 +280,8 @@
 	font-weight: var( --srfm-error-font-weight );
 }
 
-@mixin srfm-overlay-base {
-	content: "";
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	opacity: var( --srfm-bg-overlay-opacity );
-	pointer-events: none;
-	z-index: -1;
-}
-
 // The mixin is used with the class .srfm-form-container and .editor-styles-wrapper.
-@mixin srfm-background-control-styles {
+@mixin srfm-background-control-styles( $backend: false ) {
 	&.srfm-bg-color {
 		background-color: var( --srfm-bg-color );
 	}
@@ -309,7 +297,19 @@
 	}
 	// Target the ::before pseudo element in the overlay classes for color, gradient and image.
 	&[class*="srfm-overlay"]::before {
-		@include srfm-overlay-base; // Common styles for overlay types.
+		content: "";
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		opacity: var( --srfm-bg-overlay-opacity );
+		pointer-events: none;
+		@if ( $backend ) {
+			z-index: 0;
+		} @else {
+			z-index: -1;
+		}
 	}
 	// Image Overlay Specific Styles.
 	&.srfm-overlay-image::before {
