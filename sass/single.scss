@@ -59,10 +59,19 @@
 				height: auto;
 				border-radius: 12px;
 				box-shadow: 0px 10px 15px -3px rgba( 0, 0, 0, 0.1 );
-				background-image: var( --srfm-bg-image );
-				background-size: cover;
-				background-position: center;
-				background-color: var( --srfm-bg-color );
+				&.srfm-bg-color {
+					background-color: var( --srfm-bg-color );
+				}
+				&.srfm-bg-image {
+					background-image: var( --srfm-bg-image );
+					background-position: var( --srfm-bg-position );
+					background-attachment: var( --srfm-bg-attachment );
+					background-repeat: var( --srfm-bg-repeat );
+					background-size: var( --srfm-bg-size );
+				}
+				&.srfm-bg-gradient {
+					background: var( --srfm-bg-gradient );
+				}
 				// Retaining this .hide class for backward compatibility with older versions of the pro plugin.
 				&.hide {
 					display: none;

@@ -65,7 +65,7 @@ function StyleSettings( props ) {
 		bg_overlay_image,
 		bg_overlay_position,
 		bg_overlay_attachment,
-		overlay_blend_mode,
+		bg_overlay_blend_mode,
 		bg_overlay_repeat,
 		bg_overlay_size,
 		bg_overlay_custom_size,
@@ -246,7 +246,7 @@ function StyleSettings( props ) {
 				'--srfm-bg-overlay-position': bg_overlay_position.replace( '-', ' ' ) || 'left top',
 				'--srfm-bg-overlay-attachment': bg_overlay_attachment || 'scroll',
 				'--srfm-bg-overlay-repeat': bg_overlay_repeat || 'no-repeat',
-				'--srfm-bg-overlay-blend-mode': overlay_blend_mode || 'normal',
+				'--srfm-bg-overlay-blend-mode': bg_overlay_blend_mode || 'normal',
 				'--srfm-bg-overlay-size': bg_overlay_size === 'custom' ? `${bg_overlay_custom_size ?? 100}${bg_overlay_custom_size_type ?? '%'}` : bg_overlay_size || 'cover',
 				'--srfm-bg-overlay-custom-size': bg_overlay_custom_size || 100,
 				'--srfm-bg-overlay-custom-size-type': bg_overlay_custom_size_type || '%',
@@ -440,7 +440,7 @@ function StyleSettings( props ) {
 			case 'bg_overlay_repeat':
 				cssProperties[ '--srfm-bg-overlay-repeat' ] = value || 'no-repeat';
 				break;
-			case 'overlay_blend_mode':
+			case 'bg_overlay_blend_mode':
 				cssProperties[ '--srfm-bg-overlay-blend-mode' ] = value || 'normal';
 				break;
 			case 'bg_overlay_size':
@@ -470,7 +470,7 @@ function StyleSettings( props ) {
 
 	function getGradientCSS( type = 'linear', color1 = '#FFC9B2', color2 = '#C7CBFF', loc1 = 0, loc2 = 100, angle = 90 ) {
 		if ( type === 'radial' ) {
-			return `radial-gradient(circle at ${ loc1 }%, ${ color1 }, ${ color2 } ${ loc2 }% )`;
+			return `radial-gradient(${ color1 } ${ loc1 }%, ${ color2 } ${ loc2 }% )`;
 		} else {
 			return `linear-gradient( ${ angle }deg, ${ color1 } ${ loc1 }%, ${ color2 } ${ loc2 }%)`;
 		}
@@ -628,8 +628,8 @@ function StyleSettings( props ) {
 							label: 'bg_overlay_attachment',
 						} }
 						overlayBlendMode={ {
-							value: overlay_blend_mode,
-							label: 'overlay_blend_mode',
+							value: bg_overlay_blend_mode,
+							label: 'bg_overlay_blend_mode',
 						} }
 						backgroundOverlayRepeat={ {
 							value: bg_overlay_repeat,
