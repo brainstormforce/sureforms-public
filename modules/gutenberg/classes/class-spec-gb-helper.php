@@ -493,11 +493,11 @@ if ( ! class_exists( 'Spec_Gb_Helper' ) ) {
 					if ( 'core/block' === $block['blockName'] ) {
 						$id = ( isset( $block['attrs']['ref'] ) ) ? $block['attrs']['ref'] : 0;
 
-						$is_block_seen = in_array( $id, self::$seen_refs );
+						$is_block_seen = in_array( $id, self::$seen_refs, true );
 
 						if ( $id && ! $is_block_seen ) {
 							self::$seen_refs[] = $id;
-							$content = get_post_field( 'post_content', $id );
+							$content           = get_post_field( 'post_content', $id );
 
 							$reusable_blocks = $this->parse( $content );
 
