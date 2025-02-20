@@ -2,41 +2,7 @@
 
 body.post-type-sureforms_form {
 	.editor-styles-wrapper {
-		&.srfm-bg-type-color {
-			background-color: var( --srfm-bg-color );
-		}
-		&.srfm-bg-type-image {
-			background-image: var( --srfm-bg-image );
-			background-position: var( --srfm-bg-position );
-			background-attachment: var( --srfm-bg-attachment );
-			background-repeat: var( --srfm-bg-repeat );
-			background-size: var( --srfm-bg-size );
-		}
-		&.srfm-bg-type-gradient {
-			background: var( --srfm-bg-gradient );
-		}
-		// Target the ::before pseudo element in the overlay classes for color, gradient and image.
-		&[class*="srfm-overlay-type"]::before {
-			@include srfm-overlay-base; // Common styles for overlay types.
-		}
-		// Image Overlay Specific Styles.
-		&.srfm-overlay-type-image::before {
-			background-image: var( --srfm-bg-overlay-image );
-			background-position: var( --srfm-bg-overlay-position );
-			background-attachment: var( --srfm-bg-overlay-attachment );
-			background-repeat: var( --srfm-bg-overlay-repeat );
-			background-size: var( --srfm-bg-overlay-size );
-			mix-blend-mode: var( --srfm-bg-overlay-blend-mode );
-			background-color: unset; // Need to add this to prevent other styles from overriding the background image.
-		}
-		// Color Overlay Specific Styles.
-		&.srfm-overlay-type-color::before {
-			background-color: var( --srfm-bg-overlay-color );
-		}
-		// Gradient Overlay Specific Styles.
-		&.srfm-overlay-type-gradient::before {
-			background: var( --srfm-bg-gradient );
-		}
+		@include srfm-background-control-styles;
 	}
 	// Added to align the icon picker component with the option text field.
 	.srfm-size-type-field-tabs {

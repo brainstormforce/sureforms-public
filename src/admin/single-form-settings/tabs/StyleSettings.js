@@ -233,7 +233,7 @@ function StyleSettings( props ) {
 				// Background Control Settings.
 				'--srfm-bg-color': bg_color || '#FFFFFF',
 				'--srfm-bg-image': bg_image ? `url(${ bg_image })` : 'none',
-				'--srfm-bg-position': bg_image_position.replace( '-', ' ' ) || 'left top',
+				'--srfm-bg-position': bg_image_position?.replace( '-', ' ' ) || 'left top',
 				'--srfm-bg-attachment': bg_image_attachment || 'scroll',
 				'--srfm-bg-repeat': bg_image_repeat || 'no-repeat',
 				'--srfm-bg-size': bg_image_size === 'custom' ? `${bg_image_size_custom ?? 100}${bg_image_size_custom_type ?? '%'}` : bg_image_size || 'cover',
@@ -243,7 +243,7 @@ function StyleSettings( props ) {
 				'--srfm-bg-gradient': gradient_type === 'basic' ? bg_gradient || 'linear-gradient(90deg, #FFC9B2 0%, #C7CBFF 100%)' : getGradientCSS( gradientOptions.type, gradientOptions.color_1, gradientOptions.color_2, gradientOptions.location_1, gradientOptions.location_2, gradientOptions.angle ),
 				// Overlay Variables - Image.
 				'--srfm-bg-overlay-image': bg_overlay_image ? `url(${ bg_overlay_image })` : 'none',
-				'--srfm-bg-overlay-position': bg_overlay_position.replace( '-', ' ' ) || 'left top',
+				'--srfm-bg-overlay-position': bg_overlay_position?.replace( '-', ' ' ) || 'left top',
 				'--srfm-bg-overlay-attachment': bg_overlay_attachment || 'scroll',
 				'--srfm-bg-overlay-repeat': bg_overlay_repeat || 'no-repeat',
 				'--srfm-bg-overlay-blend-mode': bg_overlay_blend_mode || 'normal',
@@ -384,7 +384,7 @@ function StyleSettings( props ) {
 				cssProperties[ '--srfm-bg-image' ] = value ? `url(${ value })` : 'none';
 				break;
 			case 'bg_image_position':
-				cssProperties[ '--srfm-bg-position' ] = value.replace( '-', ' ' ) || 'left top';
+				cssProperties[ '--srfm-bg-position' ] = value?.replace( '-', ' ' ) || 'left top';
 				break;
 			case 'bg_image_attachment':
 				cssProperties[ '--srfm-bg-attachment' ] = value || 'scroll';
@@ -432,7 +432,7 @@ function StyleSettings( props ) {
 				cssProperties[ '--srfm-bg-overlay-image' ] = value ? `url(${ value })` : 'none';
 				break;
 			case 'bg_overlay_position':
-				cssProperties[ '--srfm-bg-overlay-position' ] = value.replace( '-', ' ' ) || 'left top';
+				cssProperties[ '--srfm-bg-overlay-position' ] = value?.replace( '-', ' ' ) || 'left top';
 				break;
 			case 'bg_overlay_attachment':
 				cssProperties[ '--srfm-bg-overlay-attachment' ] = value || 'scroll';
@@ -495,14 +495,14 @@ function StyleSettings( props ) {
 	 */
 	const updateEditorBackgroundClasses = ( backgroundType, overlayType ) => {
 		const backgroundClasses = {
-			image: 'srfm-bg-type-image',
-			gradient: 'srfm-bg-type-gradient',
-			default: 'srfm-bg-type-color',
+			image: 'srfm-bg-image',
+			gradient: 'srfm-bg-gradient',
+			default: 'srfm-bg-color',
 		};
 		const overlayClasses = {
-			image: 'srfm-overlay-type-image',
-			gradient: 'srfm-overlay-type-gradient',
-			color: 'srfm-overlay-type-color',
+			image: 'srfm-overlay-image',
+			gradient: 'srfm-overlay-gradient',
+			color: 'srfm-overlay-color',
 		};
 
 		editor.classList.remove( ...Object.values( backgroundClasses ) );
