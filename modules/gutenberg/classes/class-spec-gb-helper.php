@@ -113,6 +113,8 @@ if ( ! class_exists( 'Spec_Gb_Helper' ) ) {
 		 */
 		public static $icon_array_merged = [];
 
+		private static $seen_refs = [];
+
 		/**
 		 *  Initiator
 		 *
@@ -484,7 +486,10 @@ if ( ! class_exists( 'Spec_Gb_Helper' ) ) {
 					if ( 'core/block' === $block['blockName'] ) {
 						$id = ( isset( $block['attrs']['ref'] ) ) ? $block['attrs']['ref'] : 0;
 
-						if ( $id ) {
+						$is_block_seen = in_array( $id, self::$seen_refs );
+
+						if ( $id && ! $is_block_seen ) {
+							self::$seen_refs[] = $id;
 							$content = get_post_field( 'post_content', $id );
 
 							$reusable_blocks = $this->parse( $content );
@@ -803,6 +808,8 @@ if ( ! class_exists( 'Spec_Gb_Helper' ) ) {
 				}
 			}
 		}
+
+
 
 		/**
 		 * Generates CSS recurrsively.
