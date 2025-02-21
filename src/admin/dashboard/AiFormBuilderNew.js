@@ -1,19 +1,25 @@
 import { __ } from '@wordpress/i18n';
 import { useState, useRef } from '@wordpress/element';
-import { Badge, Button, Container, Label, TextArea, Title, Tooltip, Switch } from '@bsf/force-ui';
+import { Badge, Button, Container, Label, TextArea, Title, Switch } from '@bsf/force-ui';
 import { ArrowRight, ChevronDown, ChevronUp, MicOff, Mic } from 'lucide-react';
 import { applyFilters } from '@wordpress/hooks';
 import toast from 'react-hot-toast';
 
 export default ( props ) => {
-	const { handleCreateAiForm, setIsBuildingForm, formTypeObj } = props;
+	const { handleCreateAiForm, setIsBuildingForm, formTypeObj, setFormTypeObj, showEmptyError, setShowEmptyError } = props;
 
 	const [ isListening, setIsListening ] = useState( false ); // State to manage voice recording
 	const [ showFormIdeas, setShowFormIdeas ] = useState( true );
-	const [ showEmptyError, setShowEmptyError ] = useState( false );
 	const [ characterCount, setCharacterCount ] = useState( 0 );
 	const [ text, setText ] = useState( '' );
 	const recognitionRef = useRef( null ); // To store SpeechRecognition instance
+	const showAiConversationalFormToggle = true;
+	const conversationalFormAiToggle = applyFilters(
+		'srfm.aiFormScreen.conversational.toggle',
+		showAiConversationalFormToggle,
+		formTypeObj,
+		setFormTypeObj
+	);
 
 	const handlePromptClick = ( prompt ) => {
 		setShowEmptyError( false );
@@ -34,6 +40,15 @@ export default ( props ) => {
 		recognition.maxAlternatives = 1; // One alternative result
 		recognition.continuous = true; // Keep recording until stopped
 		return recognition;
+	};
+
+	// Stops voice input if typing begins
+	const handleTyping = () => {
+		if ( isListening && recognitionRef.current ) {
+			recognitionRef.current.stop();
+			setIsListening( false );
+		}
+		setShowEmptyError( false );
 	};
 
 	const toggleListening = () => {
@@ -131,6 +146,7 @@ export default ( props ) => {
 					onChange={ ( e ) => {
 						handlePromptClick( e );
 					} }
+					onInput={ handleTyping }
 				/>
 				{ showEmptyError && <Label
 					size="sm"
@@ -140,7 +156,7 @@ export default ( props ) => {
 					{ __( 'Prompt cannot be empty.', 'sureforms' ) }
 				</Label> }
 			</Container.Item>
-			<Container.Item className="p-2 flex flex-wrap items-center gap-3">
+			{ false === conversationalFormAiToggle ? <Container.Item className="p-2 flex flex-wrap items-center gap-3">
 				<Switch
 					aria-label={ __( 'Create Conversational Form', 'sureforms' ) }
 					id="switch-element"
@@ -162,6 +178,8 @@ export default ( props ) => {
 					variant="inverse"
 				/>
 			</Container.Item>
+				: null
+			}
 			<Container.Item className="p-2 gap-6">
 				<Container
 					containerType="flex"
@@ -239,6 +257,12 @@ export default ( props ) => {
 				</Container>
 			</Container.Item>
 			<Container.Item className="py-1 px-2 gap-3 flex flex-col sm:flex-row justify-end">
+				<Label
+					variant="neutral"
+					className="font-semibold text-text-tertiary text-sm cursor-pointer"
+				>
+					{ characterCount }/2000
+				</Label>
 				<Button
 					className="bg-button-primary hover:bg-button-primary gap-1 border border-solid border-button-primary text-text-on-color hover:border-button-primary shadow-sm-blur-2"
 					icon={ <ArrowRight size={ 20 } strokeWidth={ 1.25 } /> }
