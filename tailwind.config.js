@@ -191,23 +191,6 @@ module.exports = withTW( {
 				'sm-blur-1': '0 1px 1px rgba(0, 0, 0, 0.05)',
 				'sm-blur-2': '0 1px 2px rgba(0, 0, 0, 0.05)',
 			},
-			lineHeight: {
-				7.5: '1.875rem', // 30px
-				9.5: '2.375rem', // 38px
-				11: '2.75rem', // 44px
-			},
-			borderWidth: {
-				0.5: '0.5px',
-				1.25: '1.25px',
-			},
-			width: {
-				864: '864px',
-				12: '12px',
-			},
-			boxShadow: {
-				'sm-blur-1': '0 1px 1px rgba(0, 0, 0, 0.05)',
-				'sm-blur-2': '0 1px 2px rgba(0, 0, 0, 0.05)',
-			},
 		},
 	},
 	variants: {
