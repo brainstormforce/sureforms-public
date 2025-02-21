@@ -822,8 +822,6 @@ export function initializeInlineFieldValidation() {
  * @param {string} blockClass
  */
 function addBlurListener( containerClass, blockClass ) {
-	console.log( 'containerClass', containerClass );
-	console.log( 'blockClass', blockClass );
 
 	const container = Array.from(
 		document.getElementsByClassName( containerClass )
@@ -839,13 +837,11 @@ function addBlurListener( containerClass, blockClass ) {
 			// upload block
 			if ( containerClass === 'srfm-upload-block' ) {
 				areaField = areaInput.querySelector( 'input[type="file"]' );
-				console.log( 'areaField', areaField );
 			}
 
 			// signature block
 			if ( containerClass === 'srfm-signature-block' ) {
 				areaField = areaInput.querySelector( 'input[type="file"]' );
-				console.log( 'areaField', areaField );
 			}
 
 			// rating block
@@ -887,8 +883,6 @@ function addBlurListener( containerClass, blockClass ) {
 			// for all other fields
 			if ( areaField ) {
 				areaField.addEventListener( 'blur', async function () {
-					console.log( 'areaField', areaField );
-
 					fieldValidationInit( areaField, blockClass );
 				} );
 			}
