@@ -171,8 +171,8 @@ module.exports = withTW( {
 				'toggle-off-border': '#D1D5DB',
 				'toggle-on-hover': '#F18E63',
 				'toggle-on-border': '#F8A581',
-				'toggle-on-disabled': '#EEF2FF',
-				'toggle-off-disabled': '#FFF3EE',
+				'toggle-on-disabled': '#FFF3EE',
+				'toggle-off-disabled': '#F3F4F6',
 			},
 			lineHeight: {
 				7.5: '1.875rem', // 30px
