@@ -88,19 +88,19 @@ export default ( props ) => {
 		'srfm.aiFormScreen.examplePrompts',
 		[
 			{
-				title: __( 'Generate user feedback form', 'sureforms' ),
+				title: __( 'Create simple contact form', 'sureforms' ),
+			},
+			{
+				title: __( 'Create a lead generation form', 'sureforms' ),
+			},
+			{
+				title: __( 'Generate a user feedback form', 'sureforms' ),
 			},
 			{
 				title: __( 'Create a job application form', 'sureforms' ),
 			},
 			{
-				title: __( 'Create simple contact form', 'sureforms' ),
-			},
-			{
 				title: __( 'Make an event registration form', 'sureforms' ),
-			},
-			{
-				title: __( 'Create market research survey form for', 'sureforms' ),
 			},
 		],
 		formTypeObj
@@ -142,35 +142,25 @@ export default ( props ) => {
 			</Container.Item>
 			<Container.Item className="p-2 flex flex-wrap items-center gap-3">
 				<Switch
-					aria-label={ __( 'Create Conversation Form', 'sureforms' ) }
+					aria-label={ __( 'Create Conversational Form', 'sureforms' ) }
 					id="switch-element"
 					onChange={ function Ki() { } }
 					size="sm"
 					className="border border-toggle-off-border shadow-sm-blur-2"
-					value={ false }
+					disabled={ true }
 				/>
 				<Label
 					variant="neutral"
 					className="font-medium text-field-label text-sm"
 				>
-					{ __( 'Create Conversation Form', 'sureforms' ) }
+					{ __( 'Create Conversational Form', 'sureforms' ) }
 				</Label>
-				{ /* <Tooltip
-					arrow
-					content={<div className="mt-2"><div>Tooltips provide extra information for elements.</div><Button className="w-full mt-2" size="sm" variant="primary">Upgrade now</Button></div>}
-					interactive
-					placement="bottom"
-					title="Tooltip"
-					variant="dark"
-					className="bg-background-brand"
-				> */ }
 				<Badge
 					label={ __( 'Pro Plan', 'sureforms' ) }
 					size="sm"
 					type="pill"
 					variant="inverse"
 				/>
-				{ /* </Tooltip> */ }
 			</Container.Item>
 			<Container.Item className="p-2 gap-6">
 				<Container
@@ -208,7 +198,7 @@ export default ( props ) => {
 									>
 										{ __( 'Listening', 'sureforms' ) }
 									</Button>
-									:									<Button
+									: <Button
 										icon={ <MicOff size={ 12 } /> }
 										iconPosition="left"
 										variant="outline"
