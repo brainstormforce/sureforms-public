@@ -1,7 +1,11 @@
 import { __ } from '@wordpress/i18n';
 import { Container, Label } from '@bsf/force-ui';
+import aiFormBuilderPlaceholder from '@Image/ai-form-builder.svg';
+import { CircularProgressBar } from '@tomickigrzegorz/react-circular-progress-bar';
 
-export default () => {
+export default ( props ) => {
+	const { message, percentBuild } = props;
+
 	return (
 		<Container
 			containerType="flex"
@@ -12,22 +16,22 @@ export default () => {
 				className=""
 			>
 				<Container
-					className="gap-6"
+					className="gap-6 items-center"
 					containerType="flex"
 					direction="row"
 				>
 					<Container.Item>
-						<div className="relative w-[72px] h-[72px]">
-							<svg className="w-full h-full" viewBox="0 0 100 100">
-								<circle cx="50" cy="50" r="40" stroke="#fce8df" strokeWidth="10" fill="none" />
-								<circle cx="50" cy="50" r="40" stroke="#d7460b" strokeWidth="10" fill="none"
-									strokeDasharray="251.2" strokeDashoffset="175.8" strokeLinecap="round"
-									transform="rotate(-90 50 50)" />
-							</svg>
-							<div className="absolute inset-0 flex items-center justify-center text-black text-[20px] font-bold">
-								30%
-							</div>
-						</div>
+						<CircularProgressBar
+							colorCircle="#eee3e1"
+							colorSlice="#D54407"
+							percent={ percentBuild }
+							round
+							speed={ 85 }
+							fontColor="#0F172A"
+							fontSize="18px"
+							fontWeight={ 700 }
+							size={ 72 }
+						/>
 					</Container.Item>
 					<Container.Item className="flex flex-col gap-0.5">
 						<Label
@@ -40,14 +44,17 @@ export default () => {
 							variant="neutral"
 							className="text-text-tertiary font-normal text-sm"
 						>
-							{ __( 'Adding form fields', 'sureforms' ) }
+							{ message }
 						</Label>
 					</Container.Item>
 				</Container>
 			</Container.Item>
-			<Container.Item className="bg-gray-100 w-[384px] h-[274px] border-0.5 border-solid border-brand-800 rounded-lg shadow-sm">
-				image
-			</Container.Item>
+			{ /* <Container.Item className="bg-gray-100 w-[384px] h-[274px] border-0.5 border-solid border-brand-800 rounded-lg shadow-sm"> */ }
+			<img
+				src={ aiFormBuilderPlaceholder }
+				alt={ __( 'AI Form Builder', 'sureforms' ) }
+			/>
+			{ /* </Container.Item> */ }
 		</Container>
 	);
 };

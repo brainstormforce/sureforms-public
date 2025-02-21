@@ -1,6 +1,7 @@
 import { __ } from '@wordpress/i18n';
 import { Button, Container, Label } from '@bsf/force-ui';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
+import aiAuthPlaceholder from '@Image/ai-auth.svg';
 
 export default () => {
 	return (
@@ -140,10 +141,13 @@ export default () => {
 						</Container>
 					</Container.Item>
 					<Container.Item
-						className="bg-gray-200"
-						colSpan={ 6 }
+						// className="bg-gray-200"
+						// colSpan={ 6 }
 					>
-						Image
+						<img
+							src={ aiAuthPlaceholder }
+							alt={ __( 'AI Form Builder', 'sureforms' ) }
+						/>
 					</Container.Item>
 				</Container>
 			</Container.Item>

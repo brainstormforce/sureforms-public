@@ -6,7 +6,7 @@ import ForceUiIcons from './ForceUiIcons';
 export default () => {
 	return (
 		<Container
-			className="p-4 gap-2 bg-background-primary border-0.5 border-solid border-border-subtle rounded-xl shadow-sm-blur-2 w-[50%] ml-auto mr-auto"
+			className="p-4 gap-2 bg-background-primary border-0.5 border-solid border-border-subtle rounded-xl shadow-sm-blur-2 w-[680px] ml-auto mr-auto"
 			containerType="flex"
 			direction="column"
 		>
@@ -23,28 +23,13 @@ export default () => {
 			<Container.Item
 				className="p-2 gap-6"
 			>
-				<Container
-					className=""
-					containerType="grid"
-					cols="12"
-				>
-					<Container.Item
-						colSpan="6"
-						className="bg-background-primary border-0.5 border-solid border-border-subtle rounded-lg shadow-sm-blur-2"
-					>
-						<Container
-							className=""
-							containerType="flex"
-							direction="column"
-						>
+				<Container className="flex flex-col md:flex-row">
+					<Container.Item className="flex flex-col flex-1 bg-background-primary border-0.5 border-solid border-border-subtle rounded-lg shadow-sm-blur-2">
+						<Container className="flex flex-col flex-1">
 							<Container.Item className="gap-2 p-3">
-								<Container
-									containerType="flex"
-									direction="column">
-									<Container.Item className="">
-										{ ForceUiIcons.filePlus }
-									</Container.Item>
-									<Container.Item className="gap-1 p-1">
+								<Container containerType="flex" direction="column">
+									<Container.Item>{ ForceUiIcons.filePlus }</Container.Item>
+									<Container.Item className="flex flex-col gap-1 p-1">
 										<Label
 											size="md"
 											variant="neutral"
@@ -62,7 +47,7 @@ export default () => {
 									</Container.Item>
 								</Container>
 							</Container.Item>
-							<Container.Item className="gap-3 p-3">
+							<Container.Item className="mt-auto p-3">
 								<Button
 									className="gap-0.5 w-full bg-button-secondary border border-solid border-button-secondary shadow-sm-blur-2 hover:bg-button-secondary font-semibold rounded-lg text-text-on-color text-xs"
 									iconPosition="left"
@@ -71,7 +56,7 @@ export default () => {
 									type="button"
 									variant="ghost"
 									onClick={ () => {
-										window.location.href = '#';
+										window.location.href = `${ srfm_admin.site_url }/wp-admin/post-new.php?post_type=sureforms_form`;
 									} }
 								>
 									{ __( 'Build From Scratch', 'sureforms' ) }
@@ -79,23 +64,12 @@ export default () => {
 							</Container.Item>
 						</Container>
 					</Container.Item>
-					<Container.Item
-						colSpan="6"
-						className="bg-background-primary border-0.5 border-solid border-border-subtle rounded-lg shadow-sm-blur-2"
-					>
-						<Container
-							className=""
-							containerType="flex"
-							direction="column"
-						>
+					<Container.Item className="flex flex-col flex-1 bg-background-primary border-0.5 border-solid border-border-subtle rounded-lg shadow-sm-blur-2">
+						<Container className="flex flex-col flex-1">
 							<Container.Item className="gap-2 p-3">
-								<Container
-									containerType="flex"
-									direction="column">
-									<Container.Item className="">
-										{ ForceUiIcons.wandSparkles }
-									</Container.Item>
-									<Container.Item className="gap-1 p-1">
+								<Container containerType="flex" direction="column">
+									<Container.Item>{ ForceUiIcons.wandSparkles }</Container.Item>
+									<Container.Item className="flex flex-col gap-1 p-1">
 										<Label
 											size="md"
 											variant="neutral"
@@ -113,7 +87,7 @@ export default () => {
 									</Container.Item>
 								</Container>
 							</Container.Item>
-							<Container.Item className="gap-3 p-3">
+							<Container.Item className="mt-auto p-3">
 								<Button
 									className="gap-0.5 w-full bg-button-primary border border-solid border-button-primary shadow-sm-blur-2 hover:bg-button-primary font-semibold rounded-lg text-text-on-color text-xs"
 									iconPosition="left"
@@ -122,7 +96,7 @@ export default () => {
 									type="button"
 									variant="ghost"
 									onClick={ () => {
-										window.location.href = '#';
+										window.location.href = `${ srfm_admin.site_url }/wp-admin/admin.php?page=add-new-form&method=ai`;
 									} }
 								>
 									{ __( 'Try the AI FormBuilder', 'sureforms' ) }
@@ -144,7 +118,7 @@ export default () => {
 					type="button"
 					variant="ghost"
 					onClick={ () => {
-						window.location.href = '#';
+						window.location.href = '/wp-admin/admin.php?page=sureforms_menu';
 					} }
 				>
 					{ __( 'Exit to Dashboard', 'sureforms' ) }
