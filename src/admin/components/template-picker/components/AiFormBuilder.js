@@ -3,13 +3,13 @@ import {
 	sprintf,
 } from '@wordpress/i18n';
 import apiFetch from '@wordpress/api-fetch';
-import { useState, useEffect, useRef } from '@wordpress/element';
+import { useState, useEffect } from '@wordpress/element';
 import { handleAddNewPost, initiateAuth } from '@Utils/Helpers';
 import Header from './Header.js';
 import LimitReachedPopup from './LimitReachedPopup.js';
 import ErrorPopup from './ErrorPopup.js';
 import { AuthErrorPopup } from './AuthErrorPopup.js';
-import toast, { Toaster } from 'react-hot-toast';
+import { Toaster } from 'react-hot-toast';
 import { applyFilters } from '@wordpress/hooks';
 import AiFormBuilderNew from '@Admin/dashboard/AiFormBuilderNew.js';
 import AiFormProgressPage from '@Admin/dashboard/AiFormProgressPage.js';
@@ -22,81 +22,10 @@ const AiFormBuilder = () => {
 	const [ percentBuild, setPercentBuild ] = useState( 0 );
 	const [ showEmptyError, setShowEmptyError ] = useState( false );
 	const [ showFormCreationErr, setShowFormCreationErr ] = useState( false );
-	// const [ showFormIdeas, setShowFormIdeas ] = useState( true );
-	const [ characterCount, setCharacterCount ] = useState( 0 );
 	const [ showAuthErrorPopup, setShowAuthErrorPopup ] = useState( false );
 	const urlParams = new URLSearchParams( window.location.search );
 	const accessKey = urlParams.get( 'access_key' );
-	const [ isListening, setIsListening ] = useState( false ); // State to manage voice recording
-	const recognitionRef = useRef( null ); // To store SpeechRecognition instance
 	const [ formTypeObj, setFormTypeObj ] = useState( {} );
-	const showAiConversationalFormToggle = false;
-	const conversationalFormAiToggle = applyFilters(
-		'srfm.aiFormScreen.conversational.toggle',
-		showAiConversationalFormToggle,
-		formTypeObj,
-		setFormTypeObj
-	);
-
-	const initSpeechRecognition = () => {
-		const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-		if ( ! SpeechRecognition ) {
-			return null;
-		}
-		const recognition = new SpeechRecognition();
-		recognition.lang = 'en-US'; // Set language to English
-		recognition.interimResults = false; // Only show final results
-		recognition.maxAlternatives = 1; // One alternative result
-		recognition.continuous = true; // Keep recording until stopped
-		return recognition;
-	};
-
-	const toggleListening = () => {
-		// initialize SpeechRecognition instance if not already initialized
-		if ( ! recognitionRef.current ) {
-			recognitionRef.current = initSpeechRecognition();
-		}
-
-		// if SpeechRecognition is not supported, show error message
-		if ( ! recognitionRef.current ) {
-			return;
-		}
-
-		const recognition = recognitionRef.current;
-
-		if ( isListening ) {
-			// Stop recording if already started
-			recognition.stop();
-			setIsListening( false );
-		} else {
-			// Start recording if not started
-			recognition.start();
-			setIsListening( true );
-			recognition.onresult = ( event ) => {
-				// keep on appending the result to the textarea
-				const speechResult = event.results[ event.results.length - 1 ][ 0 ].transcript;
-				const textArea = document.querySelector( 'textarea' );
-				textArea.value += speechResult;
-				setCharacterCount( textArea.value.length );
-			};
-			recognition.onerror = ( e ) => {
-				recognition.stop();
-				setIsListening( false );
-				toast.dismiss();
-
-				if ( e.error === 'not-allowed' ) {
-					toast.error( __( 'Please allow microphone access to use voice input.', 'sureforms' ), {
-						duration: 5000,
-					} );
-					return;
-				}
-
-				toast.error( __( 'Speech recognition is not supported in your current browser. Please use Google Chrome / Safari.', 'sureforms' ), {
-					duration: 5000,
-				} );
-			};
-		}
-	};
 
 	const handleCreateAiForm = async (
 		userCommand,
@@ -197,13 +126,6 @@ const AiFormBuilder = () => {
 		}
 	};
 
-	// const handlePromptClick = ( prompt ) => {
-	// 	const textArea = document.querySelector( 'textarea' );
-	// 	textArea.value = prompt;
-	// 	setShowEmptyError( false );
-	// 	setCharacterCount( prompt.length );
-	// };
-
 	const handleAccessKey = async () => {
 		// if access key is present, handle it by decrypting it and redirecting to form builder
 		const response = await apiFetch( {
@@ -226,15 +148,6 @@ const AiFormBuilder = () => {
 			setShowAuthErrorPopup( true );
 			console.error( 'Error handling access key: ', response.message );
 		}
-	};
-
-	// Stops voice input if typing begins
-	const handleTyping = () => {
-		if ( isListening && recognitionRef.current ) {
-			recognitionRef.current.stop();
-			setIsListening( false );
-		}
-		setShowEmptyError( false );
 	};
 
 	// Handle access key on component mount
@@ -269,8 +182,9 @@ const AiFormBuilder = () => {
 				handleCreateAiForm={ handleCreateAiForm }
 				setIsBuildingForm={ setIsBuildingForm }
 				formTypeObj={ formTypeObj }
-			// toggleListening={toggleListening}
-			// isListening={isListening}
+				showEmptyError={ showEmptyError }
+				setShowEmptyError={ setShowEmptyError }
+				setFormTypeObj={ setFormTypeObj }
 			/>
 		</>
 	);
