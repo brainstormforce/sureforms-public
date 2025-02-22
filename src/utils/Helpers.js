@@ -8,6 +8,8 @@
 import apiFetch from '@wordpress/api-fetch';
 import { __ } from '@wordpress/i18n';
 import { Toaster, ToastBar } from 'react-hot-toast';
+import clsx from 'clsx';
+import { twMerge } from 'tailwind-merge';
 
 export function getImageSize( sizes ) {
 	const sizeArr = [];
@@ -390,3 +392,11 @@ export const addQueryParam = ( url, paramValue, paramKey = 'utm_medium' ) => {
 		return url; // Return the original URL in case of error
 	}
 };
+
+/**
+ * Utility function to merge Tailwind CSS and conditional class names.
+ *
+ * @param {...any} args
+ * @return {string} - The concatenated class string.
+ */
+export const cn = ( ...args ) => twMerge( clsx( ...args ) );
