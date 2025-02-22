@@ -1,6 +1,7 @@
 import '@surecart/components/src/themes/base.css';
 import { createRoot } from '@wordpress/element';
 import Dashboard from './Dashboard';
+import '../tw-base.scss';
 
 const APP = () => {
 	return (
