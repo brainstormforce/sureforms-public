@@ -23,8 +23,13 @@ function StyleSettings( props ) {
 	const { editPost } = useDispatch( editorStore );
 	const { defaultKeys, isInlineButtonBlockPresent } = props;
 
-	let sureformsKeys = useSelect( ( select ) =>
-		select( editorStore ).getEditedPostAttribute( 'meta' )
+	let sureformsKeys = useSelect(
+		( select ) => {
+			const meta =
+				select( editorStore ).getEditedPostAttribute( 'meta' ) || {};
+			return meta;
+		},
+		[ editorStore ]
 	);
 	const formStyling = sureformsKeys?._srfm_forms_styling || {};
 	const root = document.documentElement.querySelector( 'body' );

@@ -9,6 +9,8 @@
 
 namespace SRFM\Inc;
 
+use WP_Query;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
@@ -102,5 +104,67 @@ class Updater_Callbacks {
 
 		// update the options.
 		update_option( 'srfm_default_dynamic_block_option', $previous_options );
+	}
+
+	/**
+	 * Migrate the background type and associated values from
+	 * _srfm_instant_form_settings to _srfm_form_styling meta.
+	 *
+	 * @param int $post_id The post ID.
+	 * @since x.x.x
+	 * @return void
+	 */
+	public static function migrate_instant_form_to_form_styling( $post_id ) {
+		// Retrieve the existing meta values.
+		$instant_form_settings = get_post_meta( $post_id, '_srfm_instant_form_settings', true );
+		$form_styling          = get_post_meta( $post_id, '_srfm_forms_styling', true );
+
+		if ( ! is_array( $instant_form_settings ) ) {
+			return;
+		}
+
+		if ( ! is_array( $form_styling ) ) {
+			$form_styling = [];
+		}
+
+		// Define the keys to migrate.
+		$mapping = [
+			'bg_type'     => 'bg_type',
+			'bg_color'    => 'bg_color',
+			'bg_image'    => 'bg_image',
+			'bg_image_id' => 'bg_image_id',
+		];
+
+		// Migrate the values.
+		foreach ( $mapping as $instant_key => $styling_key ) {
+			if ( isset( $instant_form_settings[ $instant_key ] ) ) {
+				$form_styling[ $styling_key ] = $instant_form_settings[ $instant_key ];
+			}
+		}
+
+		// Update the new meta.
+		update_post_meta( $post_id, '_srfm_forms_styling', $form_styling );
+	}
+
+	/**
+	 * Migrate all forms from _srfm_instant_form_settings to _srfm_forms_styling meta.
+	 *
+	 * @since x.x.x
+	 * @return void
+	 */
+	public static function migrate_all_forms_styling() {
+		$query = new WP_Query(
+			[
+				'post_type'      => SRFM_FORMS_POST_TYPE,
+				'posts_per_page' => -1,
+				'fields'         => 'ids',
+			]
+		);
+
+		if ( $query->have_posts() ) {
+			foreach ( $query->posts as $post_id ) {
+				self::migrate_instant_form_to_form_styling( Helper::get_integer_value( $post_id ) );
+			}
+		}
 	}
 }

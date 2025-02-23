@@ -54,11 +54,6 @@ const InstantFormComponent = () => {
 	const postName = getMetaValue?.getPermalinkParts?.postName;
 
 	const {
-		// Form background color / image.
-		bg_type,
-		bg_color,
-		bg_image,
-
 		// Form banner color / image.
 		cover_type,
 		cover_color,
@@ -129,14 +124,6 @@ const InstantFormComponent = () => {
 				instantStyles.push( `
 					${ ! use_banner_as_page_background ? '.single-sureforms_form .srfm-single-page-container .srfm-page-banner' : 'html body.single-sureforms_form' } {
 						background-color: ${ cover_color };
-					}
-				` );
-				break;
-
-			case 'bg_color':
-				instantStyles.push( `
-					#srfm-single-page-container {
-						--srfm-bg-color: ${ bg_color };
 					}
 				` );
 				break;
