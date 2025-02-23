@@ -456,7 +456,7 @@ class Helper {
 			'srfm_email_block_unique_text'          => $common_err_msg['unique'],
 			'srfm_dropdown_block_required_text'     => $common_err_msg['required'],
 			'srfm_rating_block_required_text'       => $common_err_msg['required'],
-			'srfm_signature_block_required_text'       => $common_err_msg['required'],
+			'srfm_signature_block_required_text'    => $common_err_msg['required'],
 		];
 
 		$default_values = array_merge( $default_values, Translatable::dynamic_validation_messages() );
