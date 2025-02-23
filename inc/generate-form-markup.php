@@ -274,51 +274,51 @@ class Generate_Form_Markup {
 					--srfm-dropdown-icon-disabled: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.25 );
 					/* Background Control Variables */
 					<?php
+						$styling_vars = [];
+						// Background Styles.
 					if ( 'image' === $bg_type && ! empty( $bg_image ) ) {
 						$bg_size_merged = 'custom' === $bg_image_size ? "{$bg_image_size_custom}{$bg_image_size_custom_type}" : $bg_image_size;
-						?>
-							--srfm-bg-image: url(<?php echo esc_html( $bg_image ); ?>);
-							--srfm-bg-position: <?php echo esc_html( $bg_image_position ); ?>;
-							--srfm-bg-attachment: <?php echo esc_html( $bg_image_attachment ); ?>;
-							--srfm-bg-repeat: <?php echo esc_html( $bg_image_repeat ); ?>;
-							--srfm-bg-size: <?php echo esc_html( $bg_size_merged ); ?>;
-							<?php
+						$styling_vars  += [
+							'--srfm-bg-image'      => 'url(' . esc_html( $bg_image ) . ')',
+							'--srfm-bg-position'   => esc_html( $bg_image_position ),
+							'--srfm-bg-attachment' => esc_html( $bg_image_attachment ),
+							'--srfm-bg-repeat'     => esc_html( $bg_image_repeat ),
+							'--srfm-bg-size'       => esc_html( $bg_size_merged ),
+						];
 					} elseif ( 'color' === $bg_type && ! empty( $bg_color ) ) {
-						?>
-							--srfm-bg-color: <?php echo esc_html( $bg_color ); ?>;
-							<?php
+						$styling_vars['--srfm-bg-color'] = esc_html( $bg_color );
 					} elseif ( 'gradient' === $bg_type && ! empty( $bg_gradient ) ) {
 						if ( $is_advanced_gradient ) {
 							$bg_gradient = Helper::get_gradient_css( $bg_gradient_type, $bg_gradient_color_1, $bg_gradient_color_2, $bg_gradient_location_1, $bg_gradient_location_2, $bg_gradient_angle );
 						}
-						?>
-							--srfm-bg-gradient: <?php echo esc_html( $bg_gradient ); ?>;
-							<?php
+						$styling_vars['--srfm-bg-gradient'] = esc_html( $bg_gradient );
 					}
-						// Overlay Variables.
+							// Overlay Variables.
 					if ( 'image' === $overlay_type && ! empty( $overlay_image ) ) {
-						?>
-							--srfm-bg-overlay-image: url(<?php echo esc_html( $overlay_image ); ?>);
-							--srfm-bg-overlay-position: <?php echo esc_html( $overlay_position ); ?>;
-							--srfm-bg-overlay-attachment: <?php echo esc_html( $overlay_attachment ); ?>;
-							--srfm-bg-overlay-repeat: <?php echo esc_html( $overlay_repeat ); ?>;
-							--srfm-bg-overlay-size: <?php echo esc_html( $overlay_size ); ?>;
-							--srfm-bg-overlay-blend-mode: <?php echo esc_html( $overlay_blend_mode ); ?>;
-							--srfm-bg-overlay-opacity: <?php echo esc_html( $overlay_opacity ); ?>;
-							<?php
+						$styling_vars += [
+							'--srfm-bg-overlay-image'      => 'url(' . esc_html( $overlay_image ) . ')',
+							'--srfm-bg-overlay-position'   => esc_html( $overlay_position ),
+							'--srfm-bg-overlay-attachment' => esc_html( $overlay_attachment ),
+							'--srfm-bg-overlay-repeat'     => esc_html( $overlay_repeat ),
+							'--srfm-bg-overlay-size'       => esc_html( $overlay_size ),
+							'--srfm-bg-overlay-blend-mode' => esc_html( $overlay_blend_mode ),
+						];
 					} elseif ( 'color' === $overlay_type && ! empty( $overlay_color ) ) {
-						?>
-							--srfm-bg-overlay-color: <?php echo esc_html( $overlay_color ); ?>;
-							--srfm-bg-overlay-opacity: <?php echo esc_html( $overlay_opacity ); ?>;
-							<?php
+						$styling_vars += [
+							'--srfm-bg-overlay-color' => esc_html( $overlay_color ),
+						];
 					} elseif ( 'gradient' === $overlay_type && ! empty( $overlay_color ) ) {
 						if ( $is_advanced_gradient ) {
 							$bg_gradient = Helper::get_gradient_css( $bg_gradient_type, $bg_gradient_color_1, $bg_gradient_color_2, $bg_gradient_location_1, $bg_gradient_location_2, $bg_gradient_angle );
 						}
-						?>
-							--srfm-bg-gradient: <?php echo esc_html( $bg_gradient ); ?>;
-							--srfm-bg-overlay-opacity: <?php echo esc_html( $overlay_opacity ); ?>;
-							<?php
+						$styling_vars += [
+							'--srfm-bg-gradient' => esc_html( $bg_gradient ),
+						];
+					}
+						$styling_vars['--srfm-bg-overlay-opacity'] = esc_html( $overlay_opacity );
+						// Output the CSS variables.
+					foreach ( $styling_vars as $key => $value ) {
+						echo esc_html( Helper::get_string_value( $key ) ) . ': ' . esc_html( $value ) . ';';
 					}
 					?>
 					<?php
