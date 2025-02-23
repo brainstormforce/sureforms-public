@@ -512,9 +512,14 @@ function StyleSettings( props ) {
 		editor.classList.remove( ...Object.values( overlayClasses ) );
 
 		editor.classList.add( backgroundClasses[ backgroundType ] || backgroundClasses.default );
-		if ( overlayType ) {
-			const addOverlayClass = backgroundType === 'image' ? overlayClasses[ overlayType ] : overlayClasses.image;
-			editor.classList.add( addOverlayClass );
+
+		// Reset overlayType if it's not valid for the selected backgroundType.
+		if ( backgroundType !== 'image' && overlayType !== 'image' ) {
+			overlayType = '';
+		}
+
+		if ( overlayType && overlayClasses[ overlayType ] ) {
+			editor.classList.add( overlayClasses[ overlayType ] );
 		}
 	};
 
