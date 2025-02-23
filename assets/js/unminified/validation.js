@@ -822,7 +822,6 @@ export function initializeInlineFieldValidation() {
  * @param {string} blockClass
  */
 function addBlurListener( containerClass, blockClass ) {
-
 	const container = Array.from(
 		document.getElementsByClassName( containerClass )
 	);
