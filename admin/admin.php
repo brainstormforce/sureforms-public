@@ -217,7 +217,7 @@ class Admin {
 	 * @since 0.0.1
 	 */
 	public function render_dashboard() {
-		echo '<div id="srfm-dashboard-container"></div>';
+		echo '<div id="srfm-dashboard-container" class="srfm-admin-wrapper"></div>';
 	}
 
 	/**
@@ -227,7 +227,7 @@ class Admin {
 	 * @since 0.0.1
 	 */
 	public function settings_page_callback() {
-		echo '<div id="srfm-settings-container"></div>';
+		echo '<div id="srfm-settings-container" class="srfm-admin-wrapper"></div>';
 	}
 
 	/**
@@ -264,7 +264,7 @@ class Admin {
 	 * @since 0.0.1
 	 */
 	public function add_new_form_callback() {
-		echo '<div id="srfm-add-new-form-container"></div>';
+		echo '<div id="srfm-add-new-form-container" class="srfm-admin-wrapper"></div>';
 	}
 
 	/**
