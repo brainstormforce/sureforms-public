@@ -258,6 +258,8 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 == Changelog ==
 = x.x.x =
 * Improvement: Made submission text translatable.
+* Fix: Resolved block inserter issues when using the Spectra One theme.
+* Fix: Prevented WPForms notice from appearing on the SureForm edit page.
 = 1.4.0 - 12th February 2025 =
 * Improvement: Prevented public access to the form archive page.
 * Improvement: Simplified the form confirmation message.

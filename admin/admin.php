@@ -828,6 +828,7 @@ class Admin {
 	 *
 	 * @param bool $user_can A boolean indicating whether the user has the capability.
 	 * @return bool Returns true if the capabilities are successfully disabled, false otherwise.
+	 * @since x.x.x
 	 */
 	public function disable_wpforms_capabilities( $user_can ) {
 		// Note: Nonce verification is intentionally omitted here as no database operations are performed.

@@ -39,8 +39,6 @@ const SureformsFormSpecificSettings = ( props ) => {
 	const [ enableQuickActionSidebar, setEnableQuickActionSidebar ] =
 		useState( 'enabled' );
 
-	console.log( 'SureformsFormSpecificSettings props->', props );
-
 	const {
 		postId,
 		sureformsKeys,
