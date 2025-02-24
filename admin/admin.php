@@ -63,6 +63,31 @@ class Admin {
 		);
 		// Enfold theme compatibility to enable block editor for SureForms post type.
 		add_filter( 'avf_use_block_editor_for_post', [ $this, 'enable_block_editor_in_enfold_theme' ] );
+
+		// Add action links to the plugin page.
+		add_filter( 'plugin_action_links_' . SRFM_BASENAME, [ $this, 'add_action_links' ] );
+	}
+
+	/**
+	 * Show action on plugin page.
+	 *
+	 * @param  array $links links.
+	 * @return array
+	 * @since x.x.x
+	 */
+	public function add_action_links( $links ) {
+		if ( ! defined( 'SRFM_PRO_FILE' ) && ! file_exists( WP_PLUGIN_DIR . '/sureforms-pro/sureforms-pro.php' ) ) {
+			// Display upsell link if SureForms Pro is not installed.
+			$upsell_link = add_query_arg(
+				[
+					'utm_medium' => 'plugin-list',
+				],
+				Helper::get_sureforms_website_url( 'pricing' )
+			);
+			$links[]     = '<a href="' . esc_url( $upsell_link ) . '" target="_blank" rel="noreferrer" class="sureforms-plugins-go-pro">' . esc_html__( 'Get SureForms Pro', 'sureforms' ) . '</a>';
+		}
+
+		return $links;
 	}
 
 	/**
@@ -192,7 +217,7 @@ class Admin {
 	 * @since 0.0.1
 	 */
 	public function render_dashboard() {
-		echo '<div id="srfm-dashboard-container"></div>';
+		echo '<div id="srfm-dashboard-container" class="srfm-admin-wrapper"></div>';
 	}
 
 	/**
@@ -202,7 +227,7 @@ class Admin {
 	 * @since 0.0.1
 	 */
 	public function settings_page_callback() {
-		echo '<div id="srfm-settings-container"></div>';
+		echo '<div id="srfm-settings-container" class="srfm-admin-wrapper"></div>';
 	}
 
 	/**
@@ -239,7 +264,7 @@ class Admin {
 	 * @since 0.0.1
 	 */
 	public function add_new_form_callback() {
-		echo '<div id="srfm-add-new-form-container"></div>';
+		echo '<div id="srfm-add-new-form-container" class="srfm-admin-wrapper"></div>';
 	}
 
 	/**
