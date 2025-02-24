@@ -123,7 +123,6 @@ export default ( props ) => {
 		<Switch
 			aria-label={ __( 'Create Conversational Form', 'sureforms' ) }
 			id="switch-element"
-			onChange={ function Ki() { } }
 			size="sm"
 			className="border border-toggle-off-border shadow-sm-blur-2"
 			disabled={ true }

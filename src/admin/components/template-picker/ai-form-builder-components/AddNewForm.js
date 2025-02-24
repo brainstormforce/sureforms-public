@@ -4,6 +4,84 @@ import { ArrowLeft } from 'lucide-react';
 import ICONS from '../components/icons';
 
 export default () => {
+	const buildFromScratch = (
+		<Container className="flex flex-col flex-1">
+			<Container.Item className="gap-2 p-3">
+				<Container containerType="flex" direction="column">
+					<Container.Item>{ ICONS.filePlus }</Container.Item>
+					<Container.Item className="flex flex-col gap-1 p-1">
+						<Label
+							size="md"
+							variant="neutral"
+							className="font-medium text-text-primary text-lg"
+						>
+							{ __( 'Build Form From Scratch', 'sureforms' ) }
+						</Label>
+						<Label
+							size="sm"
+							variant="help"
+							className="text-text-tertiary font-normal text-xs"
+						>
+							{ __( 'Tailor your form precisely to your unique needs. No coding skills required—just unleash your creativity.', 'sureforms' ) }
+						</Label>
+					</Container.Item>
+				</Container>
+			</Container.Item>
+			<Container.Item className="mt-auto p-3">
+				<Button
+					className="gap-0.5 w-full bg-button-secondary border border-solid border-button-secondary shadow-sm-blur-2 hover:bg-button-secondary font-semibold rounded-lg text-text-on-color text-xs"
+					iconPosition="left"
+					size="md"
+					variant="ghost"
+					onClick={ () => {
+						window.location.href = `${ srfm_admin.site_url }/wp-admin/post-new.php?post_type=sureforms_form`;
+					} }
+				>
+					{ __( 'Build From Scratch', 'sureforms' ) }
+				</Button>
+			</Container.Item>
+		</Container>
+	);
+
+	const aiFormBuilder = (
+		<Container className="flex flex-col flex-1">
+			<Container.Item className="gap-2 p-3">
+				<Container containerType="flex" direction="column">
+					<Container.Item>{ ICONS.wandSparkles }</Container.Item>
+					<Container.Item className="flex flex-col gap-1 p-1">
+						<Label
+							size="md"
+							variant="neutral"
+							className="font-medium text-text-primary text-lg"
+						>
+							{ __( 'Generate Form with AI', 'sureforms' ) }
+						</Label>
+						<Label
+							size="sm"
+							variant="help"
+							className="text-text-tertiary font-normal text-xs"
+						>
+							{ __( 'Experience the future of form building with AI-powered forms. Use AI to build your form 10x faster.', 'sureforms' ) }
+						</Label>
+					</Container.Item>
+				</Container>
+			</Container.Item>
+			<Container.Item className="mt-auto p-3">
+				<Button
+					className="gap-0.5 w-full bg-button-primary border border-solid border-button-primary shadow-sm-blur-2 hover:bg-button-primary font-semibold rounded-lg text-text-on-color text-xs"
+					iconPosition="left"
+					size="md"
+					variant="ghost"
+					onClick={ () => {
+						window.location.href = `${ srfm_admin.site_url }/wp-admin/admin.php?page=add-new-form&method=ai`;
+					} }
+				>
+					{ __( 'Try the AI FormBuilder', 'sureforms' ) }
+				</Button>
+			</Container.Item>
+		</Container>
+	);
+
 	return (
 		<Container
 			className="mt-24 p-4 gap-2 bg-background-primary border-0.5 border-solid border-border-subtle rounded-xl shadow-sm-blur-2 w-[680px] ml-auto mr-auto"
@@ -25,80 +103,10 @@ export default () => {
 			>
 				<Container className="flex flex-col sm:flex-row">
 					<Container.Item className="flex flex-col flex-1 bg-background-primary border-0.5 border-solid border-border-subtle rounded-lg shadow-sm-blur-2">
-						<Container className="flex flex-col flex-1">
-							<Container.Item className="gap-2 p-3">
-								<Container containerType="flex" direction="column">
-									<Container.Item>{ ICONS.filePlus }</Container.Item>
-									<Container.Item className="flex flex-col gap-1 p-1">
-										<Label
-											size="md"
-											variant="neutral"
-											className="font-medium text-text-primary text-lg"
-										>
-											{ __( 'Build Form From Scratch', 'sureforms' ) }
-										</Label>
-										<Label
-											size="sm"
-											variant="help"
-											className="text-text-tertiary font-normal text-xs"
-										>
-											{ __( 'Tailor your form precisely to your unique needs. No coding skills required—just unleash your creativity.', 'sureforms' ) }
-										</Label>
-									</Container.Item>
-								</Container>
-							</Container.Item>
-							<Container.Item className="mt-auto p-3">
-								<Button
-									className="gap-0.5 w-full bg-button-secondary border border-solid border-button-secondary shadow-sm-blur-2 hover:bg-button-secondary font-semibold rounded-lg text-text-on-color text-xs"
-									iconPosition="left"
-									size="md"
-									variant="ghost"
-									onClick={ () => {
-										window.location.href = `${ srfm_admin.site_url }/wp-admin/post-new.php?post_type=sureforms_form`;
-									} }
-								>
-									{ __( 'Build From Scratch', 'sureforms' ) }
-								</Button>
-							</Container.Item>
-						</Container>
+						{ buildFromScratch }
 					</Container.Item>
 					<Container.Item className="flex flex-col flex-1 bg-background-primary border-0.5 border-solid border-border-subtle rounded-lg shadow-sm-blur-2">
-						<Container className="flex flex-col flex-1">
-							<Container.Item className="gap-2 p-3">
-								<Container containerType="flex" direction="column">
-									<Container.Item>{ ICONS.wandSparkles }</Container.Item>
-									<Container.Item className="flex flex-col gap-1 p-1">
-										<Label
-											size="md"
-											variant="neutral"
-											className="font-medium text-text-primary text-lg"
-										>
-											{ __( 'Generate Form with AI', 'sureforms' ) }
-										</Label>
-										<Label
-											size="sm"
-											variant="help"
-											className="text-text-tertiary font-normal text-xs"
-										>
-											{ __( 'Experience the future of form building with AI-powered forms. Use AI to build your form 10x faster.', 'sureforms' ) }
-										</Label>
-									</Container.Item>
-								</Container>
-							</Container.Item>
-							<Container.Item className="mt-auto p-3">
-								<Button
-									className="gap-0.5 w-full bg-button-primary border border-solid border-button-primary shadow-sm-blur-2 hover:bg-button-primary font-semibold rounded-lg text-text-on-color text-xs"
-									iconPosition="left"
-									size="md"
-									variant="ghost"
-									onClick={ () => {
-										window.location.href = `${ srfm_admin.site_url }/wp-admin/admin.php?page=add-new-form&method=ai`;
-									} }
-								>
-									{ __( 'Try the AI FormBuilder', 'sureforms' ) }
-								</Button>
-							</Container.Item>
-						</Container>
+						{ aiFormBuilder }
 					</Container.Item>
 				</Container>
 			</Container.Item >

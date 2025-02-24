@@ -205,6 +205,5 @@ module.exports = withTW( {
 	corePlugins: {
 		preflight: false,
 	},
-	important:
-		':is(.srfm-admin-wrapper)',
+	important: ':is(.srfm-admin-wrapper)',
 } );
