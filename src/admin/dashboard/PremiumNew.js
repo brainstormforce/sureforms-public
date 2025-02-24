@@ -1,20 +1,19 @@
 import { __ } from '@wordpress/i18n';
 import { Badge, Tooltip } from '@bsf/force-ui';
 import { LockKeyhole } from 'lucide-react';
+import { addQueryParam } from '../../utils/Helpers';
 
-export default ( { title, description, btnText, placement = 'bottom', arrow = true, interactive = true, portalId = 'srfm-add-new-form-container' } ) => {
+export default ( { title, description, btnText, placement = 'bottom', arrow = true, interactive = true, portalId = '', utmMedium = '' } ) => {
 	const tooltipContent = (
 		<div>
-			<div
-				className="text-sm text-text-secondary font-normal"
-			>
+			<div>
 				{ description }
 			</div>
-			<div className="mt-2">
+			<div>
 				<a
-					href={ srfm_admin?.pricing_page_url }
+					href={ addQueryParam( srfm_admin?.pricing_page_url || srfm_admin?.sureforms_pricing_page, utmMedium ) }
 					target="_blank"
-					className="text-xs font-semibold no-underline text-link-premium-badge hover:no-underline focus:no-underline hover:text-link-premium-badge focus:text-link-premium-badge"
+					className="no-underline text-link-premium-badge hover:no-underline focus:no-underline hover:text-link-premium-badge focus:text-link-premium-badge"
 					rel="noreferrer"
 				>
 					{ btnText }
@@ -23,16 +22,9 @@ export default ( { title, description, btnText, placement = 'bottom', arrow = tr
 		</div>
 	);
 
-	const tooltipTitle =
-		<div
-			className="text-lg font-semibold"
-		>
-			<span>{ title }</span>
-		</div>;
-
 	return (
 		<Tooltip
-			title={ tooltipTitle }
+			title={ title }
 			content={ tooltipContent }
 			placement={ placement }
 			triggers={ [
@@ -40,7 +32,7 @@ export default ( { title, description, btnText, placement = 'bottom', arrow = tr
 				'focus',
 			] }
 			variant="dark"
-			className="cursor-pointer shadow-sm-blur-2"
+			className="cursor-pointer"
 			interactive={ interactive }
 			arrow={ arrow }
 			tooltipPortalId={ portalId }
@@ -48,10 +40,9 @@ export default ( { title, description, btnText, placement = 'bottom', arrow = tr
 			<Badge
 				icon={ <LockKeyhole /> }
 				label={ __( 'Premium', 'sureforms' ) }
-				size="md"
+				size="sm"
 				type="pill"
 				variant="inverse"
-				className="cursor-pointer font-semibold text-sm"
 			/>
 		</Tooltip>
 	);

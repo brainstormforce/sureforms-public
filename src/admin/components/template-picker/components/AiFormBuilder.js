@@ -11,8 +11,8 @@ import ErrorPopup from './ErrorPopup.js';
 import { AuthErrorPopup } from './AuthErrorPopup.js';
 import { Toaster } from 'react-hot-toast';
 import { applyFilters } from '@wordpress/hooks';
-import AiFormBuilderNew from '@Admin/dashboard/AiFormBuilderNew.js';
-import AiFormProgressPage from '@Admin/dashboard/AiFormProgressPage.js';
+import AiFormBuilderNew from '../force-ui-components/AiFormBuilderNew.js';
+import AiFormProgressPage from '../force-ui-components/AiFormProgressPage.js';
 
 const AiFormBuilder = () => {
 	const [ message, setMessage ] = useState(

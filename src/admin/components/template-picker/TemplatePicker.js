@@ -2,7 +2,7 @@ import { useEffect, render } from '@wordpress/element';
 import Header from './components/Header.js';
 import { BrowserRouter as Router, useLocation } from 'react-router-dom';
 import AiFormBuilder, { getLimitReachedPopup } from './components/AiFormBuilder.js';
-import AddNewForm from '@Admin/dashboard/AddNewForm.js';
+import AddNewForm from './force-ui-components/AddNewForm.js';
 
 const TemplatePicker = () => {
 	// Remove admin bar padding.

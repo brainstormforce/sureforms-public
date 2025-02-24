@@ -4,7 +4,7 @@ import { Button, Container, Label, TextArea, Title, Switch } from '@bsf/force-ui
 import { ArrowRight, ChevronDown, ChevronUp, MicOff, Mic } from 'lucide-react';
 import { applyFilters } from '@wordpress/hooks';
 import toast from 'react-hot-toast';
-import PremiumNew from './PremiumNew';
+import PremiumNew from '@Admin/dashboard/PremiumNew';
 
 export default ( props ) => {
 	const { handleCreateAiForm, setIsBuildingForm, formTypeObj, setFormTypeObj, showEmptyError, setShowEmptyError } = props;
@@ -24,8 +24,6 @@ export default ( props ) => {
 
 	const handlePromptClick = ( prompt ) => {
 		setShowEmptyError( false );
-		// const textArea = document.querySelector('#textarea');
-		// textArea.value = prompt;
 		setText( prompt );
 		setCharacterCount( prompt.length );
 	};
@@ -76,8 +74,6 @@ export default ( props ) => {
 			recognition.onresult = ( event ) => {
 				// keep on appending the result to the textarea
 				const speechResult = event.results[ event.results.length - 1 ][ 0 ].transcript;
-				// const textArea = document.querySelector('#textarea');
-				// textArea.value += speechResult;
 				setText( text + speechResult );
 				setCharacterCount( text );
 			};
@@ -124,7 +120,7 @@ export default ( props ) => {
 
 	return (
 		<Container
-			className="mt-[80px] p-4 gap-1.5 bg-background-primary border-0.5 border-solid border-border-subtle shadow-sm-blur-2 rounded-xl w-full max-w-[680px] mx-auto"
+			className="mt-[90px] p-4 gap-1.5 bg-background-primary border-0.5 border-solid border-border-subtle shadow-sm-blur-2 rounded-xl w-full max-w-[680px] mx-auto"
 			containerType="flex"
 			direction="column"
 		>
@@ -176,10 +172,8 @@ export default ( props ) => {
 					title={ __( 'Unlock Conversational Forms', 'sureforms' ) }
 					description={ __( 'With the SureForms Pro Plan, you can transform your forms into engaging conversational layouts for a seamless user experience.', 'sureforms' ) }
 					btnText={ __( 'Upgrade', 'sureforms' ) }
-					placement="bottom"
-					interactive={ true }
-					arrow={ true }
 					portalId="srfm-add-new-form-container"
+					utmMedium="ai_builder"
 				/>
 			</Container.Item>
 				: null
@@ -285,6 +279,8 @@ export default ( props ) => {
 								! text.trim()
 							) {
 								setShowEmptyError( true );
+								const textArea = document.getElementById( 'textarea' );
+								textArea.focus();
 								return;
 							}
 

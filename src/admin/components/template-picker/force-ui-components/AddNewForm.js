@@ -23,7 +23,7 @@ export default () => {
 			<Container.Item
 				className="p-2 gap-6"
 			>
-				<Container className="flex flex-col md:flex-row">
+				<Container className="flex flex-col sm:flex-row">
 					<Container.Item className="flex flex-col flex-1 bg-background-primary border-0.5 border-solid border-border-subtle rounded-lg shadow-sm-blur-2">
 						<Container className="flex flex-col flex-1">
 							<Container.Item className="gap-2 p-3">
