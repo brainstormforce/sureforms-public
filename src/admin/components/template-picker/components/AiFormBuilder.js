@@ -9,10 +9,10 @@ import Header from './Header.js';
 import LimitReachedPopup from './LimitReachedPopup.js';
 import ErrorPopup from './ErrorPopup.js';
 import { AuthErrorPopup } from './AuthErrorPopup.js';
-import { Toaster } from 'react-hot-toast';
 import { applyFilters } from '@wordpress/hooks';
-import AiFormBuilderNew from '../force-ui-components/AiFormBuilderNew.js';
-import AiFormProgressPage from '../force-ui-components/AiFormProgressPage.js';
+import { Container, Toaster } from '@bsf/force-ui';
+import AiFormBuilderForm from '../ai-form-builder-components/AiFormBuilderForm.js';
+import AiFormProgressPage from '../ai-form-builder-components/AiFormProgressPage.js';
 
 const AiFormBuilder = () => {
 	const [ message, setMessage ] = useState(
@@ -161,9 +161,9 @@ const AiFormBuilder = () => {
 	if ( isBuildingForm ) {
 		return (
 			<>
-				<div className="srfm-ts-main-container srfm-content-section">
+				<Container className="bg-background-secondary">
 					<AiFormProgressPage message={ message } percentBuild={ percentBuild } />
-				</div>
+				</Container>
 				{ showFormCreationErr && <ErrorPopup /> }
 			</>
 		);
@@ -175,10 +175,10 @@ const AiFormBuilder = () => {
 	}
 
 	return (
-		<>
-			<Toaster position="bottom-right" />
+		<Container className="max-h-screen overflow-y-auto">
+			<Toaster position="bottom-right" design="stack" theme="light" autoDismiss={ true } dismissAfter={ 5000 } />
 			<Header />
-			<AiFormBuilderNew
+			<AiFormBuilderForm
 				handleCreateAiForm={ handleCreateAiForm }
 				setIsBuildingForm={ setIsBuildingForm }
 				formTypeObj={ formTypeObj }
@@ -186,7 +186,7 @@ const AiFormBuilder = () => {
 				setShowEmptyError={ setShowEmptyError }
 				setFormTypeObj={ setFormTypeObj }
 			/>
-		</>
+		</Container>
 	);
 };
 

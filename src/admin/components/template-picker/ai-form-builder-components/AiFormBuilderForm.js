@@ -1,10 +1,10 @@
 import { __ } from '@wordpress/i18n';
 import { useState, useRef } from '@wordpress/element';
-import { Button, Container, Label, TextArea, Title, Switch } from '@bsf/force-ui';
+import { Button, Container, Label, TextArea, Title, toast, Switch } from '@bsf/force-ui';
 import { ArrowRight, ChevronDown, ChevronUp, MicOff, Mic } from 'lucide-react';
 import { applyFilters } from '@wordpress/hooks';
-import toast from 'react-hot-toast';
-import PremiumNew from '@Admin/dashboard/PremiumNew';
+import PremiumBadge from '@Admin/dashboard/PremiumBadge';
+import { cn } from '@Utils/Helpers';
 
 export default ( props ) => {
 	const { handleCreateAiForm, setIsBuildingForm, formTypeObj, setFormTypeObj, showEmptyError, setShowEmptyError } = props;
@@ -118,13 +118,38 @@ export default ( props ) => {
 		formTypeObj
 	);
 
+	// conversational form toggle
+	const conversationalAiToggle = ( <Container.Item className="p-2 flex flex-wrap items-center gap-3">
+		<Switch
+			aria-label={ __( 'Create Conversational Form', 'sureforms' ) }
+			id="switch-element"
+			onChange={ function Ki() { } }
+			size="sm"
+			className="border border-toggle-off-border shadow-sm-blur-2"
+			disabled={ true }
+		/>
+		<Label
+			variant="neutral"
+			className="font-medium text-field-label text-sm"
+		>
+			{ __( 'Create Conversational Form', 'sureforms' ) }
+		</Label>
+		<PremiumBadge
+			title={ __( 'Unlock Conversational Forms', 'sureforms' ) }
+			description={ __( 'With the SureForms Pro Plan, you can transform your forms into engaging conversational layouts for a seamless user experience.', 'sureforms' ) }
+			btnText={ __( 'Upgrade', 'sureforms' ) }
+			portalId="srfm-add-new-form-container"
+			utmMedium="ai_builder"
+		/>
+	</Container.Item> );
+
 	return (
 		<Container
-			className="mt-[90px] p-4 gap-1.5 bg-background-primary border-0.5 border-solid border-border-subtle shadow-sm-blur-2 rounded-xl w-full max-w-[680px] mx-auto"
+			className="mt-24 p-4 gap-1.5 bg-background-primary border-0.5 border-solid border-border-subtle shadow-sm-blur-2 rounded-xl w-full max-w-[680px] mx-auto"
 			containerType="flex"
 			direction="column"
 		>
-			<Container.Item className="p-2 gap-6">
+			<Container.Item className="flex flex-col p-2 gap-2">
 				<Title
 					tag="h4"
 					size="md"
@@ -139,7 +164,7 @@ export default ( props ) => {
 					id="textarea"
 					value={ text }
 					size="lg"
-					className="gap-1.5 w-full h-[124px] font-normal text-md ${characterCount > 0 ? 'text-field-placeholder' : 'text-text-primary'}"
+					className={ cn( 'gap-1.5 w-full h-[124px] font-normal text-md text-field-placeholder', characterCount > 0 && 'text-text-primary' ) }
 					onChange={ ( e ) => {
 						handlePromptClick( e );
 					} }
@@ -155,29 +180,8 @@ export default ( props ) => {
 				</Label> }
 			</Container.Item>
 			<Container className="flex flex-wrap flex-row justify-between items-center">
-				{ false === conversationalFormAiToggle ? <Container.Item className="p-2 flex flex-wrap items-center gap-3">
-					<Switch
-						aria-label={ __( 'Create Conversational Form', 'sureforms' ) }
-						id="switch-element"
-						onChange={ function Ki() { } }
-						size="sm"
-						className="border border-toggle-off-border shadow-sm-blur-2"
-						disabled={ true }
-					/>
-					<Label
-						variant="neutral"
-						className="font-medium text-field-label text-sm"
-					>
-						{ __( 'Create Conversational Form', 'sureforms' ) }
-					</Label>
-					<PremiumNew
-						title={ __( 'Unlock Conversational Forms', 'sureforms' ) }
-						description={ __( 'With the SureForms Pro Plan, you can transform your forms into engaging conversational layouts for a seamless user experience.', 'sureforms' ) }
-						btnText={ __( 'Upgrade', 'sureforms' ) }
-						portalId="srfm-add-new-form-container"
-						utmMedium="ai_builder"
-					/>
-				</Container.Item>
+				{ false === conversationalFormAiToggle
+					? conversationalAiToggle
 					: null
 				}
 				<Container.Item className="py-2 px-4 gap-2 ml-auto">
@@ -268,8 +272,6 @@ export default ( props ) => {
 					icon={ <ArrowRight size={ 20 } strokeWidth={ 1.25 } /> }
 					iconPosition="right"
 					size="md"
-					tag="button"
-					type="button"
 					variant="outline"
 				>
 					<Label

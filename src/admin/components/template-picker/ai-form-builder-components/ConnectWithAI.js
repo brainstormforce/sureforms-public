@@ -4,6 +4,25 @@ import { ArrowLeft, ArrowRight } from 'lucide-react';
 import aiAuthPlaceholder from '@Image/ai-auth.svg';
 
 export default () => {
+	const examplePrompts =
+		[
+			{
+				title: __( '1. Create a free account to connect with our AI.', 'sureforms' ),
+			},
+			{
+				title: __( '2. Describe the form you want to create in words.', 'sureforms' ),
+			},
+			{
+				title: __( '3. Watch as our AI crafts your form instantly.', 'sureforms' ),
+			},
+			{
+				title: __( '4. Refine the form with our easy drag & drop.', 'sureforms' ),
+			},
+			{
+				title: __( '5. Launch.', 'sureforms' ),
+			},
+		];
+
 	return (
 		<Container
 			className="p-8 gap-6 bg-background-secondary w-[90%] ml-auto mr-auto"
@@ -58,44 +77,15 @@ export default () => {
 									className="gap-1.5"
 								>
 									<Container.Item>
-										<Label
-											variant="neutral"
-											className="font-medium text-field-input text-sm"
-										>
-											{ __( '1. Create a free account to connect with our AI.', 'sureforms' ) }
-										</Label>
-									</Container.Item>
-									<Container.Item>
-										<Label
-											variant="neutral"
-											className="font-medium text-field-input text-sm"
-										>
-											{ __( '2. Describe the form you want to create in words.', 'sureforms' ) }
-										</Label>
-									</Container.Item>
-									<Container.Item>
-										<Label
-											variant="neutral"
-											className="font-medium text-field-input text-sm"
-										>
-											{ __( '3. Watch as our AI crafts your form instantly.', 'sureforms' ) }
-										</Label>
-									</Container.Item>
-									<Container.Item>
-										<Label
-											variant="neutral"
-											className="font-medium text-field-input text-sm"
-										>
-											{ __( '4. Refine the form with our easy drag & drop builder.', 'sureforms' ) }
-										</Label>
-									</Container.Item>
-									<Container.Item>
-										<Label
-											variant="neutral"
-											className="font-medium text-field-input text-sm"
-										>
-											{ __( '5. Launch.', 'sureforms' ) }
-										</Label>
+										{ examplePrompts.map( ( prompt, index ) => (
+											<Label
+												key={ index }
+												variant="neutral"
+												className="font-medium text-field-input text-sm"
+											>
+												{ prompt.title }
+											</Label>
+										) ) }
 									</Container.Item>
 								</Container>
 							</Container.Item>
@@ -111,8 +101,6 @@ export default () => {
 											icon={ <ArrowLeft size={ 20 } strokeWidth={ 1.25 } /> }
 											iconPosition="left"
 											size="md"
-											tag="button"
-											type="button"
 											variant="ghost"
 										>
 											{ __( 'Back', 'sureforms' ) }
@@ -124,8 +112,6 @@ export default () => {
 											icon={ <ArrowRight size={ 20 } strokeWidth={ 1.25 } /> }
 											iconPosition="right"
 											size="md"
-											tag="button"
-											type="button"
 											variant="outline"
 										>
 											<Label
@@ -140,10 +126,7 @@ export default () => {
 							</Container.Item>
 						</Container>
 					</Container.Item>
-					<Container.Item
-						// className="bg-gray-200"
-						// colSpan={ 6 }
-					>
+					<Container.Item>
 						<img
 							src={ aiAuthPlaceholder }
 							alt={ __( 'AI Form Builder', 'sureforms' ) }

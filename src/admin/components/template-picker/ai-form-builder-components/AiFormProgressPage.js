@@ -10,7 +10,7 @@ export default ( props ) => {
 		<Container
 			containerType="flex"
 			direction="column"
-			className="bg-background-secondary p-8 gap-6 w-[39%] ml-auto mr-auto"
+			className="mt-10 bg-background-secondary p-8 gap-6 w-[39%] ml-auto mr-auto"
 		>
 			<Container.Item
 				className=""
@@ -49,12 +49,10 @@ export default ( props ) => {
 					</Container.Item>
 				</Container>
 			</Container.Item>
-			{ /* <Container.Item className="bg-gray-100 w-[384px] h-[274px] border-0.5 border-solid border-brand-800 rounded-lg shadow-sm"> */ }
 			<img
 				src={ aiFormBuilderPlaceholder }
 				alt={ __( 'AI Form Builder', 'sureforms' ) }
 			/>
-			{ /* </Container.Item> */ }
 		</Container>
 	);
 };

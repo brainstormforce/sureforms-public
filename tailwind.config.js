@@ -206,5 +206,5 @@ module.exports = withTW( {
 		preflight: false,
 	},
 	important:
-		':is(#srfm-dashboard-container, #srfm-settings-container, #srfm-add-new-form-container, #srfm-page-header)',
+		':is(.srfm-admin-wrapper)',
 } );
