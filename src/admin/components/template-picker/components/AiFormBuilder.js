@@ -69,6 +69,13 @@ const AiFormBuilder = () => {
 		formType
 		 );
 
+		 const aiPromptPlaceholder = applyFilters(
+		'srfm.aiFormScreen.aiPromptPlaceholder',
+		'',
+		formLayout,
+		formType
+			 );
+
 	const initSpeechRecognition = () => {
 		const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 		if ( ! SpeechRecognition ) {
@@ -343,10 +350,10 @@ const AiFormBuilder = () => {
 										? '#CD1A1A'
 										: '#CBD5E1',
 								} }
-								placeholder={ __(
+								placeholder={ formType === 'simple' ? __(
 									'E.g. Form to gather feedback from our customers for our product functionality, usability, how much you will rate it, and what you don’t like about it.',
 									'sureforms'
-								) }
+								) : aiPromptPlaceholder }
 								maxLength={ 2000 }
 								onChange={ ( e ) => {
 									setShowEmptyError( false );
