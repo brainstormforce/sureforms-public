@@ -296,7 +296,7 @@ class Post_Types {
 				}
 			}
 		</style>
-		<div id="srfm-page-header" class="srfm-page-header">
+		<div id="srfm-page-header" class="srfm-page-header srfm-admin-wrapper">
 			<div class="srfm-page-pre-nav-content"></div>
 		</div>
 			<?php

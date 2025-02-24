@@ -1,4 +1,4 @@
-import { renderToString, useCallback } from '@wordpress/element';
+import { renderToString, useEffect, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import Logo from '../dashboard/templates/Logo';
 import useWhatsNewRSS from '../../lib/whats-new/useWhatsNewRSS';
@@ -16,10 +16,19 @@ const NAV_ITEMS = [
 ];
 
 const Header = () => {
-	const getActiveTab = useCallback( () => {
+	const [ activePage, setActivePage ] = useState( null );
+
+	useEffect( () => {
 		const searchParams = new URLSearchParams( window.location.search );
-		const currentPage = searchParams.get( 'page' );
-		return NAV_ITEMS.find( ( item ) => item.slug === currentPage );
+		let currentPage = searchParams.get( 'page' );
+
+		// If 'page' parameter is not present, check for 'post_type' parameter
+		if ( ! currentPage ) {
+			currentPage = searchParams.get( 'post_type' );
+		}
+
+		// Set the active page based on the current URL parameter
+		setActivePage( NAV_ITEMS.find( ( item ) => item.slug === currentPage ) );
 	}, [] );
 
 	useWhatsNewRSS( {
@@ -47,7 +56,7 @@ const Header = () => {
 					<nav className="flex items-center gap-4 h-full">
 						{
 							NAV_ITEMS.map( ( item ) => (
-								<a className={ cn( 'h-full text-text-secondary text-sm font-medium no-underline px-1 content-center relative focus:outline-none', getActiveTab()?.slug === item?.slug && 'text-text-primary before:content-[""] before:absolute before:h-px before:bg-border-interactive before:bottom-0 before:inset-x-0' ) } href={ item.link } key={ item.slug }>
+								<a className={ cn( 'h-full text-text-secondary text-sm font-medium no-underline px-1 content-center relative focus:outline-none', activePage?.slug === item?.slug && 'text-text-primary before:content-[""] before:absolute before:h-px before:bg-border-interactive before:bottom-0 before:inset-x-0' ) } href={ item.link } key={ item.slug }>
 									{ item.text }
 								</a>
 							) )
