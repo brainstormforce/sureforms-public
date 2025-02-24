@@ -71,6 +71,7 @@ module.exports = withTW( {
 				'link-visited': '#DC4809',
 				'link-visited-inverse': '#22D3EE',
 				'link-inverse-hover': '#FCBFA5',
+				'link-premium-badge': '#28afed',
 				// icon
 				'icon-primary': '#111827',
 				'icon-secondary': '#6B7280',

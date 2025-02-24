@@ -1,9 +1,10 @@
 import { __ } from '@wordpress/i18n';
 import { useState, useRef } from '@wordpress/element';
-import { Badge, Button, Container, Label, TextArea, Title, Switch } from '@bsf/force-ui';
+import { Button, Container, Label, TextArea, Title, Switch } from '@bsf/force-ui';
 import { ArrowRight, ChevronDown, ChevronUp, MicOff, Mic } from 'lucide-react';
 import { applyFilters } from '@wordpress/hooks';
 import toast from 'react-hot-toast';
+import PremiumNew from './PremiumNew';
 
 export default ( props ) => {
 	const { handleCreateAiForm, setIsBuildingForm, formTypeObj, setFormTypeObj, showEmptyError, setShowEmptyError } = props;
@@ -123,7 +124,7 @@ export default ( props ) => {
 
 	return (
 		<Container
-			className="mt-[100px] p-4 gap-1.5 bg-background-primary border-0.5 border-solid border-border-subtle shadow-sm-blur-2 rounded-xl w-full max-w-[680px] mx-auto"
+			className="mt-[80px] p-4 gap-1.5 bg-background-primary border-0.5 border-solid border-border-subtle shadow-sm-blur-2 rounded-xl w-full max-w-[680px] mx-auto"
 			containerType="flex"
 			direction="column"
 		>
@@ -171,11 +172,14 @@ export default ( props ) => {
 				>
 					{ __( 'Create Conversational Form', 'sureforms' ) }
 				</Label>
-				<Badge
-					label={ __( 'Pro Plan', 'sureforms' ) }
-					size="sm"
-					type="pill"
-					variant="inverse"
+				<PremiumNew
+					title={ __( 'Unlock Conversational Forms', 'sureforms' ) }
+					description={ __( 'With the SureForms Pro Plan, you can transform your forms into engaging conversational layouts for a seamless user experience.', 'sureforms' ) }
+					btnText={ __( 'Upgrade', 'sureforms' ) }
+					placement="bottom"
+					interactive={ true }
+					arrow={ true }
+					portalId="srfm-add-new-form-container"
 				/>
 			</Container.Item>
 				: null
