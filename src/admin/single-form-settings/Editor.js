@@ -39,6 +39,8 @@ const SureformsFormSpecificSettings = ( props ) => {
 	const [ enableQuickActionSidebar, setEnableQuickActionSidebar ] =
 		useState( 'enabled' );
 
+	console.log( 'SureformsFormSpecificSettings props->', props );
+
 	const {
 		postId,
 		sureformsKeys,
@@ -92,7 +94,7 @@ const SureformsFormSpecificSettings = ( props ) => {
 		}
 	};
 
-	useEffect( addFormStylingClass, [ rootContainer, deviceType ] );
+	useEffect( addFormStylingClass, [ rootContainer, rootContainerDiv, deviceType ] );
 
 	useContainerDynamicClass( sureformsKeys );
 
