@@ -272,6 +272,7 @@ class Generate_Form_Markup {
 					--srfm-dropdown-placeholder-color: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.50 );
 					--srfm-dropdown-icon-color: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.65 );
 					--srfm-dropdown-icon-disabled: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.25 );
+
 					/* Background Control Variables */
 					<?php
 						$styling_vars = [];
@@ -332,6 +333,7 @@ class Generate_Form_Markup {
 							'id'            => $id,
 							'primary_color' => $primary_color_var,
 							'help_color'    => $help_color_var,
+							'form_styling'  => $form_styling,
 						]
 					);
 					// echo custom css on page/post.

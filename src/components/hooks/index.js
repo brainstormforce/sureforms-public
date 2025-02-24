@@ -18,3 +18,18 @@ export const getInstantFormAdditionalSettings = ( settings, args ) => {
 export const getStylePanels = ( panels, args ) => {
 	return applyFilters( 'srfm.style.panels', panels, args );
 };
+
+/**
+ * Add the additional css properties to the editor.
+ *
+ * @param {Object} properties  - The existing css properties.
+ * @param {Object} formStyling - The form styling object.
+ * @return {Object} - The updated css properties.
+ */
+export const getPremiumCssProperties = ( properties, formStyling ) => {
+	return applyFilters(
+		'srfm.style.custom_styling_properties',
+		properties,
+		formStyling
+	);
+};

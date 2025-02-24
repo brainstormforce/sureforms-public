@@ -18,7 +18,7 @@
 	--srfm-dropdown-menu-padding: 6px;
 	--srfm-dropdown-menu-icon-gap: 8px;
 	--srfm-dropdown-option-padding: 8px 12px;
-	--srfm-dropdown-badge-delete-icon: #{rgba( $srfmColorErrorLight, 0.65 )};
+	--srfm-dropdown-badge-delete-icon: var( --srfm-error-color-border, #dc2626 );
 	--srfm-expandable-menu-background: #ffffff;
 
 	// Input field variables.
