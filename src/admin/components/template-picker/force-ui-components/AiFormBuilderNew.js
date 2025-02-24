@@ -144,6 +144,7 @@ export default ( props ) => {
 						handlePromptClick( e );
 					} }
 					onInput={ handleTyping }
+					maxLength={ 2000 }
 				/>
 				{ showEmptyError && <Label
 					size="sm"
@@ -153,31 +154,57 @@ export default ( props ) => {
 					{ __( 'Prompt cannot be empty.', 'sureforms' ) }
 				</Label> }
 			</Container.Item>
-			{ false === conversationalFormAiToggle ? <Container.Item className="p-2 flex flex-wrap items-center gap-3">
-				<Switch
-					aria-label={ __( 'Create Conversational Form', 'sureforms' ) }
-					id="switch-element"
-					onChange={ function Ki() { } }
-					size="sm"
-					className="border border-toggle-off-border shadow-sm-blur-2"
-					disabled={ true }
-				/>
-				<Label
-					variant="neutral"
-					className="font-medium text-field-label text-sm"
-				>
-					{ __( 'Create Conversational Form', 'sureforms' ) }
-				</Label>
-				<PremiumNew
-					title={ __( 'Unlock Conversational Forms', 'sureforms' ) }
-					description={ __( 'With the SureForms Pro Plan, you can transform your forms into engaging conversational layouts for a seamless user experience.', 'sureforms' ) }
-					btnText={ __( 'Upgrade', 'sureforms' ) }
-					portalId="srfm-add-new-form-container"
-					utmMedium="ai_builder"
-				/>
-			</Container.Item>
-				: null
-			}
+			<Container className="flex flex-wrap flex-row justify-between items-center">
+				{ false === conversationalFormAiToggle ? <Container.Item className="p-2 flex flex-wrap items-center gap-3">
+					<Switch
+						aria-label={ __( 'Create Conversational Form', 'sureforms' ) }
+						id="switch-element"
+						onChange={ function Ki() { } }
+						size="sm"
+						className="border border-toggle-off-border shadow-sm-blur-2"
+						disabled={ true }
+					/>
+					<Label
+						variant="neutral"
+						className="font-medium text-field-label text-sm"
+					>
+						{ __( 'Create Conversational Form', 'sureforms' ) }
+					</Label>
+					<PremiumNew
+						title={ __( 'Unlock Conversational Forms', 'sureforms' ) }
+						description={ __( 'With the SureForms Pro Plan, you can transform your forms into engaging conversational layouts for a seamless user experience.', 'sureforms' ) }
+						btnText={ __( 'Upgrade', 'sureforms' ) }
+						portalId="srfm-add-new-form-container"
+						utmMedium="ai_builder"
+					/>
+				</Container.Item>
+					: null
+				}
+				<Container.Item className="py-2 px-4 gap-2 ml-auto">
+					{ isListening
+						? <Button
+							icon={ <Mic size={ 12 } /> }
+							iconPosition="left"
+							variant="outline"
+							size="xs"
+							className="rounded-full bg-badge-background-green border-0.5 border-solid border-badge-border-green text-badge-color-green font-medium text-xs hover:bg-badge-background-green hover:cursor-pointer"
+							onClick={ toggleListening }
+						>
+							{ __( 'Listening', 'sureforms' ) }
+						</Button>
+						: <Button
+							icon={ <MicOff size={ 12 } /> }
+							iconPosition="left"
+							variant="outline"
+							size="xs"
+							className="rounded-full bg-badge-background-orange-10 border-0.5 border-solid border-badge-background-orange-30 text-brand-800 font-medium text-xs hover:bg-badge-background-orange-10 hover:cursor-pointer"
+							onClick={ toggleListening }
+						>
+							{ __( 'Voice Input', 'sureforms' ) }
+						</Button>
+					}
+				</Container.Item>
+			</Container>
 			<Container.Item className="p-2 gap-6">
 				<Container
 					containerType="flex"
@@ -201,31 +228,6 @@ export default ( props ) => {
 										<ChevronDown size={ 20 } className="!text-icon-secondary" />
 									) }
 								</Label>
-							</Container.Item>
-							<Container.Item className="py-2 px-4 gap-2">
-								{ isListening
-									? <Button
-										icon={ <Mic size={ 12 } /> }
-										iconPosition="left"
-										variant="outline"
-										size="xs"
-										className="rounded-full bg-badge-background-green border-0.5 border-solid border-badge-border-green text-badge-color-green font-medium text-xs hover:bg-badge-background-green hover:cursor-pointer"
-										onClick={ toggleListening }
-									>
-										{ __( 'Listening', 'sureforms' ) }
-									</Button>
-									: <Button
-										icon={ <MicOff size={ 12 } /> }
-										iconPosition="left"
-										variant="outline"
-										size="xs"
-										className="rounded-full bg-badge-background-orange-10 border-0.5 border-solid border-badge-background-orange-30 text-brand-800 font-medium text-xs hover:bg-badge-background-orange-10 hover:cursor-pointer"
-										onClick={ toggleListening }
-									>
-										{ __( 'Voice Input', 'sureforms' ) }
-									</Button>
-
-								}
 							</Container.Item>
 						</Container>
 					</Container.Item>

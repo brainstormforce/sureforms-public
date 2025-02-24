@@ -38,11 +38,11 @@ export default () => {
 				cols={ 12 }
 				gap="2xl"
 			>
-				<Container.Item className="flex flex-col gap-8 col-span-12 xl:col-span-8 ---sf-left-sidebar">
+				<Container.Item className="flex flex-col gap-8 col-span-12 lg:col-span-8 ---sf-left-sidebar">
 					{ /* left sidebar */ }
 					{ leftSidebar }
 				</Container.Item>
-				<Container.Item className="flex flex-col gap-8 col-span-12 xl:col-span-4 ---sf-right-sidebar">
+				<Container.Item className="flex flex-col gap-8 col-span-12 lg:col-span-4 ---sf-right-sidebar">
 					{ /* right sidebar */ }
 					{ rightSidebar }
 				</Container.Item>
