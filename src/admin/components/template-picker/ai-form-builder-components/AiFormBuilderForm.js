@@ -272,28 +272,28 @@ export default ( props ) => {
 					iconPosition="right"
 					size="md"
 					variant="outline"
+					onClick={ () => {
+						if (
+							! text ||
+							! text.trim()
+						) {
+							setShowEmptyError( true );
+							const textArea = document.getElementById( 'textarea' );
+							textArea.focus();
+							return;
+						}
+
+						handleCreateAiForm(
+							text,
+							[],
+							true
+						);
+						setIsBuildingForm( true );
+					} }
 				>
 					<Label
 						variant="neutral"
 						className="font-semibold text-text-on-color text-sm cursor-pointer"
-						onClick={ () => {
-							if (
-								! text ||
-								! text.trim()
-							) {
-								setShowEmptyError( true );
-								const textArea = document.getElementById( 'textarea' );
-								textArea.focus();
-								return;
-							}
-
-							handleCreateAiForm(
-								text,
-								[],
-								true
-							);
-							setIsBuildingForm( true );
-						} }
 					>
 						{ __( 'Generate Form', 'sureforms' ) }
 					</Label>
