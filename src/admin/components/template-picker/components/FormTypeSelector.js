@@ -13,7 +13,7 @@ const FormTypeSelector = ( { formType, setFormType, setformLayout } ) => {
 				tooltipHeadin: __( 'Unlock Calculations', 'sureforms' ),
 				tooltipContent: __( 'Upgrade to the SureForms Business Plan to create advanced forms with real-time calculations, such as project quote calculators, BMI calculators, loan calculators, and more.', 'sureforms' ),
 				utmMedium: 'ai_builder_calculator',
-				tooltipPosition: 'left',
+				tooltipPosition: 'top',
 			} },
 		],
 	);
