@@ -1070,6 +1070,9 @@ const fieldValidationInit = async ( areaField, blockClass ) => {
 export const handleScrollAndFocusOnError = ( validationObject ) => {
 	// If the first error input is available
 	if ( validationObject?.firstErrorInput ) {
+
+		console.log( validationObject );
+		
 		// If the scroll element exists, smoothly scroll the element into view
 		if ( validationObject?.scrollElement ) {
 			/**
