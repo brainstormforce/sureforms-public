@@ -1,8 +1,8 @@
 import { __ } from '@wordpress/i18n';
-import { Button } from '@wordpress/components';
 import Header from './Header.js';
 import ICONS from './icons.js';
 import AiFormBuilder from './AiFormBuilder.js';
+import { Button, Container, Label } from '@bsf/force-ui';
 
 const LimitReachedPopup = ( {
 	title = __( 'Limit Reached', 'sureforms' ),
@@ -14,41 +14,53 @@ const LimitReachedPopup = ( {
 	return (
 		<>
 			<Header />
-			<div className="srfm-popup-overlay" />
-			<div className="srfm-limit-reached-popup">
-				<div className="srfm-popup-header">
-					<span className="srfm-popup-icon">{ ICONS.warning }</span>
-					<span className="srfm-popup-title">
-						{ title }
-					</span>
-					<div
-						className="srfm-ai-limit-reached-close"
-						onClick={
-							() => window.location.href = srfm_admin.site_url + '/wp-admin/admin.php?page=add-new-form'
-						 }
-					>
-						{ ICONS.close }
-					</div>
-				</div>
-				<div className="srfm-limit-reached-popup-content">
-					<span className="srfm-limit-reached-popup-text">
-						{ paraOne }
-					</span>
-					<span>
-						{ paraTwo }
-					</span>
-				</div>
-				<div className="srfm-limit-reached-popup-content">
-					<Button
-						className="srfm-limit-reached-more-credits-btn"
-						onClick={
-							onclick
-						 }
-					>
-						{ buttonText ?? __( 'Connect Now', 'sureforms' ) }
-					</Button>
-				</div>
-			</div>
+			<Container
+				containerType="flex"
+				direction="column"
+				className="fixed inset-0 w-full h-full bg-overlay-background z-[99999999] flex justify-center items-center"
+			>
+				<Container
+					containerType="flex"
+					direction="column"
+					className="bg-white gap-6 py-4 px-5 rounded-lg w-full max-w-[480px] h-auto shadow-lg"
+				>
+					<Container.Item className="relative pt-2">
+						<Label variant="neutral" className="text-lg font-bold flex gap-3">
+							<span className="pt-1">
+								{ ICONS.warning }
+							</span>
+							{ title }
+							<span
+								className="absolute top-[-10px] right-[-15px] cursor-pointer"
+								onClick={
+									() => window.location.href = srfm_admin.site_url + '/wp-admin/admin.php?page=add-new-form'
+								}
+							>
+								{ ICONS.close }
+							</span>
+						</Label>
+					</Container.Item>
+					<Container.Item className="flex flex-col gap-4">
+						<Label className="text-text-secondary font-normal text-base">
+
+							{ paraOne }
+						</Label>
+						<Label className="text-text-secondary font-normal text-base">
+							{ paraTwo }
+						</Label>
+					</Container.Item>
+					<Container.Item className="flex flex-col w-full gap-4 pb-2">
+						<Button
+							size="md"
+							variant="primary"
+							className="text-sm font-semibold bg-brand-800 hover:bg-brand-800"
+							onClick={ onclick }
+						>
+							{ buttonText ?? __( 'Connect Now', 'sureforms' ) }
+						</Button>
+					</Container.Item>
+				</Container>
+			</Container>
 			<AiFormBuilder />
 		</>
 	);

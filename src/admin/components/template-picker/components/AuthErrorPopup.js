@@ -1,51 +1,69 @@
 import { __ } from '@wordpress/i18n';
-import { Button } from '@wordpress/components';
 import ICONS from './icons';
 import Header from './Header.js';
+import { Button, Container, Label } from '@bsf/force-ui';
 
 export const AuthErrorPopup = ( { initiateAuth } ) => {
 	return (
 		<>
 			<Header />
-			<div className="srfm-popup-overlay" />
-			<div className="srfm-auth-err-confirmation-container">
-				<div className="srfm-popup-header">
-					<span className="srfm-popup-icon">{ ICONS.warning }</span>
-					<span className="srfm-popup-title">
-						{ __( 'Authentication Failed', 'sureforms' ) }
-					</span>
-				</div>
-				<span className="srfm-auth-err-confirmation-description">
-					{ __(
-						'Please check your username and password for the account, and try to reconnect again. Need help? ',
-						'sureforms'
-					) }
-					<a href="https://sureforms.com/contact/" target="_blank"
-						style={ {
-							color: '#D54407',
-							textDecoration: 'underline',
-						} } rel="noreferrer"
-					>{ __( 'Contact Support', 'sureforms' ) }</a>
-				</span>
-				<div className="srfm-auth-err-confirmation-btn-container">
-					<Button
-						className="srfm-auth-err-confirmation-auth-err-btn"
-						onClick={
-							initiateAuth
-						}
-					>
-						{ __( 'Click Here to Retry', 'sureforms' ) }
-					</Button>
-					<Button
-						className="srfm-auth-err-confirmation-cancel-btn"
-						onClick={ () => {
-							window.location.href = '/wp-admin/admin.php?page=sureforms_menu';
-						} }
-					>
-						{ __( 'Exit to Dashboard', 'sureforms' ) }
-					</Button>
-				</div>
-			</div>
+			<Container
+				containerType="flex"
+				direction="column"
+				className="fixed inset-0 w-full h-full bg-overlay-background z-[99999999] flex justify-center items-center"
+			>
+				<Container
+					containerType="flex"
+					direction="column"
+					className="bg-white gap-4 py-4 px-5 rounded-lg w-full max-w-[464px] h-auto sm:h-[184px] shadow-lg"
+				>
+					<Container.Item>
+						<Label variant="neutral" className="text-lg font-bold flex gap-3">
+							<span className="pt-1">
+								{ ICONS.warning }
+							</span>
+							{ __( 'Authentication Failed', 'sureforms' ) }
+						</Label>
+					</Container.Item>
+					<Container.Item>
+						<Label className="inline text-text-secondary font-normal text-sm">
+							{ __(
+								'Please check your username and password for the account, and try to reconnect again. Need help?',
+								'sureforms'
+							) } { ' ' }
+							<Label
+								onClick={ () => {
+									window.open( 'https://sureforms.com/contact/', '_blank' );
+								} }
+								className="cursor-pointer inline underline font-normal !text-link-primary text-sm"
+							>
+								{ __( 'Contact Support', 'sureforms' ) }
+							</Label>
+						</Label>
+					</Container.Item>
+					<Container.Item className="flex flex-col gap-4 sm:flex-row">
+						<Button
+							size="md"
+							variant="primary"
+							onClick={
+								initiateAuth
+							}
+							className="text-sm font-semibold bg-brand-800 hover:bg-brand-800"
+						>
+							{ __( 'Click Here to Retry', 'sureforms' ) }
+						</Button>
+						<Button
+							size="md"
+							variant="outline"
+							className="text-sm font-semibold"
+							onClick={ () => {
+								window.location.href = '/wp-admin/admin.php?page=sureforms_menu';
+							} }>
+							{ __( 'Exit to Dashboard', 'sureforms' ) }
+						</Button>
+					</Container.Item>
+				</Container>
+			</Container>
 		</>
 	);
 };

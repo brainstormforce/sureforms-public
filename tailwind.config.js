@@ -176,6 +176,8 @@ module.exports = withTW( {
 				'toggle-on-border': '#F8A581',
 				'toggle-on-disabled': '#FFF3EE',
 				'toggle-off-disabled': '#F3F4F6',
+				// overlay
+				'overlay-background': '#0f172ab2',
 			},
 			lineHeight: {
 				7.5: '1.875rem', // 30px

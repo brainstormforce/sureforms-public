@@ -14,7 +14,7 @@ export default ( props ) => {
 	const [ characterCount, setCharacterCount ] = useState( 0 );
 	const [ text, setText ] = useState( '' );
 	const recognitionRef = useRef( null ); // To store SpeechRecognition instance
-	const showAiConversationalFormToggle = true;
+	const showAiConversationalFormToggle = false;
 	const conversationalFormAiToggle = applyFilters(
 		'srfm.aiFormScreen.conversational.toggle',
 		showAiConversationalFormToggle,
@@ -144,7 +144,7 @@ export default ( props ) => {
 
 	return (
 		<Container
-			className="mt-24 p-2 gap-1.5 bg-background-primary border-0.5 border-solid border-border-subtle shadow-sm-blur-2 rounded-xl w-full max-w-[680px] mx-auto"
+			className="mt-24 p-2 gap-1.5 bg-background-primary border-0.5 border-solid border-border-subtle shadow-sm-blur-2 rounded-xl w-full h-full max-w-[680px] mx-auto"
 			containerType="flex"
 			direction="column"
 		>
@@ -180,7 +180,7 @@ export default ( props ) => {
 				<Container className="flex flex-wrap flex-row justify-between items-center">
 					{ false === conversationalFormAiToggle
 						? conversationalAiToggle
-						: null
+						: conversationalFormAiToggle
 					}
 					<Container.Item className="py-2 gap-2 ml-auto">
 						{ isListening
