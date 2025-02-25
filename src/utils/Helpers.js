@@ -399,3 +399,12 @@ export const addStyleInRoot = ( root, cssProperties ) => {
 		}
 	}
 };
+
+// Remove the CSS properties from the root element.
+export const removeStylesFromRoot = ( root, cssProperties ) => {
+	if ( Object.keys( cssProperties ).length > 0 ) {
+		for ( const [ key ] of Object.entries( cssProperties ) ) {
+			root.style.removeProperty( key );
+		}
+	}
+};
