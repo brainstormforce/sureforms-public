@@ -119,7 +119,7 @@ export default ( props ) => {
 	);
 
 	// conversational form toggle
-	const conversationalAiToggle = ( <Container.Item className="p-2 flex flex-wrap items-center gap-3">
+	const conversationalAiToggle = ( <Container.Item className="py-2 flex flex-wrap items-center gap-3">
 		<Switch
 			aria-label={ __( 'Create Conversational Form', 'sureforms' ) }
 			id="switch-element"
@@ -144,7 +144,7 @@ export default ( props ) => {
 
 	return (
 		<Container
-			className="mt-24 p-4 gap-1.5 bg-background-primary border-0.5 border-solid border-border-subtle shadow-sm-blur-2 rounded-xl w-full max-w-[680px] mx-auto"
+			className="mt-24 p-2 gap-1.5 bg-background-primary border-0.5 border-solid border-border-subtle shadow-sm-blur-2 rounded-xl w-full max-w-[680px] mx-auto"
 			containerType="flex"
 			direction="column"
 		>
@@ -177,37 +177,37 @@ export default ( props ) => {
 				>
 					{ __( 'Prompt cannot be empty.', 'sureforms' ) }
 				</Label> }
-			</Container.Item>
-			<Container className="flex flex-wrap flex-row justify-between items-center">
-				{ false === conversationalFormAiToggle
-					? conversationalAiToggle
-					: null
-				}
-				<Container.Item className="py-2 px-4 gap-2 ml-auto">
-					{ isListening
-						? <Button
-							icon={ <Mic size={ 12 } /> }
-							iconPosition="left"
-							variant="outline"
-							size="xs"
-							className="rounded-full bg-badge-background-green border-0.5 border-solid border-badge-border-green text-badge-color-green font-medium text-xs hover:bg-badge-background-green hover:cursor-pointer"
-							onClick={ toggleListening }
-						>
-							{ __( 'Listening', 'sureforms' ) }
-						</Button>
-						: <Button
-							icon={ <MicOff size={ 12 } /> }
-							iconPosition="left"
-							variant="outline"
-							size="xs"
-							className="rounded-full bg-badge-background-orange-10 border-0.5 border-solid border-badge-background-orange-30 text-brand-800 font-medium text-xs hover:bg-badge-background-orange-10 hover:cursor-pointer"
-							onClick={ toggleListening }
-						>
-							{ __( 'Voice Input', 'sureforms' ) }
-						</Button>
+				<Container className="flex flex-wrap flex-row justify-between items-center">
+					{ false === conversationalFormAiToggle
+						? conversationalAiToggle
+						: null
 					}
-				</Container.Item>
-			</Container>
+					<Container.Item className="py-2 gap-2 ml-auto">
+						{ isListening
+							? <Button
+								icon={ <Mic size={ 12 } /> }
+								iconPosition="left"
+								variant="outline"
+								size="xs"
+								className="rounded-full bg-badge-background-green border-0.5 border-solid border-badge-border-green text-badge-color-green font-medium text-xs hover:bg-badge-background-green hover:cursor-pointer"
+								onClick={ toggleListening }
+							>
+								{ __( 'Listening', 'sureforms' ) }
+							</Button>
+							: <Button
+								icon={ <MicOff size={ 12 } /> }
+								iconPosition="left"
+								variant="outline"
+								size="xs"
+								className="rounded-full bg-badge-background-orange-10 border-0.5 border-solid border-badge-background-orange-30 text-brand-800 font-medium text-xs hover:bg-badge-background-orange-10 hover:cursor-pointer"
+								onClick={ toggleListening }
+							>
+								{ __( 'Voice Input', 'sureforms' ) }
+							</Button>
+						}
+					</Container.Item>
+				</Container>
+			</Container.Item>
 			<Container.Item className="p-2 gap-6">
 				<Container
 					containerType="flex"

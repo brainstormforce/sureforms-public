@@ -6,11 +6,13 @@ import { addQueryParam } from '../../utils/Helpers';
 export default ( { title, description, btnText, placement = 'bottom', arrow = true, interactive = true, portalId = '', utmMedium = '' } ) => {
 	const tooltipContent = (
 		<div>
-			{ description }
+			<div className="mt-1 font-normal">
+				{ description }
+			</div>
 			<a
 				href={ addQueryParam( srfm_admin?.pricing_page_url || srfm_admin?.sureforms_pricing_page, utmMedium ) }
 				target="_blank"
-				className="block no-underline text-link-premium-badge hover:no-underline focus:no-underline hover:text-link-premium-badge focus:text-link-premium-badge"
+				className="font-semibold my-1 block no-underline text-link-premium-badge hover:no-underline focus:no-underline hover:text-link-premium-badge focus:text-link-premium-badge"
 				rel="noreferrer"
 			>
 				{ btnText }
@@ -28,7 +30,7 @@ export default ( { title, description, btnText, placement = 'bottom', arrow = tr
 				'focus',
 			] }
 			variant="dark"
-			className="cursor-pointer"
+			className="cursor-pointer text-xs"
 			interactive={ interactive }
 			arrow={ arrow }
 			tooltipPortalId={ portalId }
@@ -39,6 +41,7 @@ export default ( { title, description, btnText, placement = 'bottom', arrow = tr
 				size="sm"
 				type="pill"
 				variant="inverse"
+				className="cursor-pointer"
 			/>
 		</Tooltip>
 	);

@@ -1,6 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import { Button, Container, Label } from '@bsf/force-ui';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
 import ICONS from '../components/icons';
 
 export default () => {
@@ -69,14 +69,15 @@ export default () => {
 			<Container.Item className="mt-auto p-3">
 				<Button
 					className="gap-0.5 w-full bg-button-primary border border-solid border-button-primary shadow-sm-blur-2 hover:bg-button-primary font-semibold rounded-lg text-text-on-color text-xs"
-					iconPosition="left"
 					size="md"
+					icon={ <ArrowRight size={ 12 } /> }
+					iconPosition="right"
 					variant="ghost"
 					onClick={ () => {
 						window.location.href = `${ srfm_admin.site_url }/wp-admin/admin.php?page=add-new-form&method=ai`;
 					} }
 				>
-					{ __( 'Try the AI FormBuilder', 'sureforms' ) }
+					{ __( 'Build With AI', 'sureforms' ) }
 				</Button>
 			</Container.Item>
 		</Container>
