@@ -305,7 +305,7 @@ export default ( props ) => {
 							</Label>
 						</Button>
 					</Container.Item>
-				</Container >
+				</Container>
 			</Container.Item>
 		</Container>
 	);
