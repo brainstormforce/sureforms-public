@@ -1,4 +1,4 @@
-import GetStartedNew from './GetStartedNew';
+import GetStarted from './GetStarted';
 
 import {
 	Container,
@@ -13,8 +13,8 @@ export default () => {
 	const nav = <Header />;
 
 	const leftSidebar = <>
-		<GetStartedNew />
-		<UpgradeToPro />
+		<GetStarted />
+		{ ! srfm_admin?.is_pro_active && <UpgradeToPro /> }
 	</>;
 
 	const rightSidebar = <>

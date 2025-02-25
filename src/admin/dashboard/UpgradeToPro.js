@@ -1,22 +1,29 @@
 import { __ } from '@wordpress/i18n';
 import { Button, Container, Label, Title } from '@bsf/force-ui';
 import { Check, Zap } from 'lucide-react';
+import upgradeToProPlaceholder from '@Image/upgrade-to-pro.svg';
 
 export default () => {
+	const featuresText = [
+		{ title: __( 'FileUpload', 'sureforms' ) },
+		{ title: __( 'Page Break', 'sureforms' ) },
+		{ title: __( 'Rating Fields', 'sureforms' ) },
+		{ title: __( 'Date & Time Pickers', 'sureforms' ) },
+		{ title: __( 'Conditional Logic', 'sureforms' ) },
+		{ title: __( 'And much more…', 'sureforms' ) },
+	];
+
 	return (
 		<Container
 			className="bg-background-primary p-5 xl:p-6 shadow-sm rounded-xl border border-solid border-border-subtle gap-y-8 md:gap-x-8"
 			containerType="grid"
 			cols={ 12 }
 		>
-			<Container.Item
-				className="flex flex-col gap-8 p-2"
-				colSpan={ 8 }
-			>
+			<Container.Item className="flex flex-col gap-8 p-2" colSpan={ 8 }>
 				<Container className="flex flex-col">
 					<Container.Item className="flex flex-row gap-1 items-center">
-						<Zap className="w-12 text-brand-primary border-1.25" />
-						<Label className="font-semibold cursor-pointer text-xs text-brand-primary">
+						<Zap className="w-12 text-brand-800 border-1.25" />
+						<Label className="font-semibold cursor-pointer text-xs text-brand-800">
 							{ __( 'Upgrade to Pro', 'sureforms' ) }
 						</Label>
 					</Container.Item>
@@ -32,42 +39,14 @@ export default () => {
 					</Container.Item>
 					<Container.Item>
 						<Container className="grid grid-cols-1 sm:grid-cols-2 py-1 gap-3 rounded-lg">
-							<Container.Item className="flex flex-row items-center gap-2">
-								<Check className="w-12 text-brand-primary border" />
-								<Label className="text-field-label font-medium text-sm">
-									{ __( 'File Upload', 'sureforms' ) }
-								</Label>
-							</Container.Item>
-							<Container.Item className="flex flex-row items-center gap-2">
-								<Check className="w-12 text-brand-primary border" />
-								<Label className="text-field-label font-medium text-sm">
-									{ __( 'Page Break', 'sureforms' ) }
-								</Label>
-							</Container.Item>
-							<Container.Item className="flex flex-row items-center gap-2">
-								<Check className="w-12 text-brand-primary border" />
-								<Label className="text-field-label font-medium text-sm">
-									{ __( 'Rating Fields', 'sureforms' ) }
-								</Label>
-							</Container.Item>
-							<Container.Item className="flex flex-row items-center gap-2">
-								<Check className="w-12 text-brand-primary border" />
-								<Label className="text-field-label font-medium text-sm">
-									{ __( 'Date & Time Pickers', 'sureforms' ) }
-								</Label>
-							</Container.Item>
-							<Container.Item className="flex flex-row items-center gap-2">
-								<Check className="w-12 text-brand-primary border" />
-								<Label className="text-field-label font-medium text-sm">
-									{ __( 'Conditional Logic', 'sureforms' ) }
-								</Label>
-							</Container.Item>
-							<Container.Item className="flex flex-row items-center gap-2">
-								<Check className="w-12 text-brand-primary border" />
-								<Label className="text-field-label font-medium text-sm">
-									{ __( 'And much more…', 'sureforms' ) }
-								</Label>
-							</Container.Item>
+							{ featuresText.map( ( prompt, index ) => (
+								<Container.Item className="flex flex-row items-center gap-2" key={ index }>
+									<Check className="w-12 text-brand-800 border" />
+									<Label className="text-field-label font-medium text-sm">
+										{ prompt.title }
+									</Label>
+								</Container.Item>
+							) ) }
 						</Container>
 					</Container.Item>
 					<Container.Item className="p-2 gap-3">
@@ -77,8 +56,12 @@ export default () => {
 					</Container.Item>
 				</Container>
 			</Container.Item>
-			<Container.Item className="p-2 gap-1.5 bg-gray-500" colSpan={ 4 }>
-				image
+			<Container.Item className="p-2 gap-1.5 flex justify-center items-center" colSpan={ 4 }>
+				<img
+					src={ upgradeToProPlaceholder }
+					alt={ __( 'Upgrade To Pro', 'sureforms' ) }
+					className="max-w-full h-auto"
+				/>
 			</Container.Item>
 		</Container>
 	);
