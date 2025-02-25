@@ -124,7 +124,7 @@ export default ( props ) => {
 			aria-label={ __( 'Create Conversational Form', 'sureforms' ) }
 			id="switch-element"
 			size="sm"
-			className="border border-toggle-off-border shadow-sm-blur-2"
+			className="border border-toggle-off-border bg-toggle-on-disabled shadow-sm-blur-2"
 			disabled={ true }
 		/>
 		<Label

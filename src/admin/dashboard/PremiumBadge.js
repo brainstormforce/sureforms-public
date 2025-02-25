@@ -1,5 +1,5 @@
 import { __ } from '@wordpress/i18n';
-import { Badge, Tooltip } from '@bsf/force-ui';
+import { Badge, Tooltip, Label } from '@bsf/force-ui';
 import { LockKeyhole } from 'lucide-react';
 import { addQueryParam } from '../../utils/Helpers';
 
@@ -35,14 +35,24 @@ export default ( { title, description, btnText, placement = 'bottom', arrow = tr
 			arrow={ arrow }
 			tooltipPortalId={ portalId }
 		>
-			<Badge
-				icon={ <LockKeyhole /> }
-				label={ __( 'Premium', 'sureforms' ) }
-				size="sm"
-				type="pill"
-				variant="inverse"
+			<Label
+				variant="neutral"
 				className="cursor-pointer"
-			/>
+				onClick={ ( e ) => {
+					e.stopPropagation();
+					window.open( addQueryParam( srfm_admin?.pricing_page_url || srfm_admin?.sureforms_pricing_page, utmMedium ), '_blank', 'noreferrer' ); // both srfm_admin are in different js file context one is being loaded in Dashboard and other in Form Editor
+				}
+				}
+			>
+				<Badge
+					icon={ <LockKeyhole /> }
+					label={ __( 'Premium', 'sureforms' ) }
+					size="sm"
+					type="pill"
+					variant="inverse"
+					className="cursor-pointer !text-white !font-normal !text-sm"
+				/>
+			</Label>
 		</Tooltip>
 	);
 };
