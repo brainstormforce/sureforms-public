@@ -837,20 +837,8 @@ class Admin {
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$post_id = ! empty( $_REQUEST['post'] ) && ! empty( $_REQUEST['action'] ) ? absint( $_REQUEST['post'] ) : 0;
 
-		// If post_id empty then it is a new form.
-		if ( empty( $post_id ) ) {
-			// phpcs:ignore WordPress.Security.NonceVerification.Recommended
-			$post_type = isset( $_REQUEST['post_type'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['post_type'] ) ) : '';
-			if ( SRFM_FORMS_POST_TYPE === $post_type ) {
-				return false;
-			}
-		} elseif ( ! empty( $post_id ) ) {
-			$post_type = get_post_type( $post_id );
-			if ( SRFM_FORMS_POST_TYPE === $post_type ) {
-				return false;
-			}
-		}
-
-		return $user_can;
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$post_type = $post_id ? get_post_type( $post_id ) : sanitize_text_field( wp_unslash( $_REQUEST['post_type'] ?? '' ) );
+		return SRFM_FORMS_POST_TYPE === $post_type ? false : $user_can;
 	}
 }
