@@ -31,6 +31,7 @@ export default () => {
 				<Button
 					className="gap-0.5 w-full bg-button-secondary border border-solid border-button-secondary shadow-sm-blur-2 hover:bg-button-secondary font-semibold rounded-lg text-text-on-color text-xs"
 					iconPosition="left"
+					icon={ <ArrowRight size={ 12 } className="text-transparent" /> }
 					size="md"
 					variant="ghost"
 					onClick={ () => {
@@ -85,7 +86,7 @@ export default () => {
 
 	return (
 		<Container
-			className="mt-24 p-4 gap-2 bg-background-primary border-0.5 border-solid border-border-subtle rounded-xl shadow-sm-blur-2 w-[680px] h-full ml-auto mr-auto"
+			className="mt-24 p-4 gap-2 bg-background-primary border-0.5 border-solid border-border-subtle rounded-xl shadow-sm-blur-2 w-[680px] ml-auto mr-auto"
 			containerType="flex"
 			direction="column"
 		>

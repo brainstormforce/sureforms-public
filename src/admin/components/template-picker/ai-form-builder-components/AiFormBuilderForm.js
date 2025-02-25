@@ -5,6 +5,7 @@ import { ArrowRight, ChevronDown, ChevronUp, MicOff, Mic } from 'lucide-react';
 import { applyFilters } from '@wordpress/hooks';
 import PremiumBadge from '@Admin/dashboard/PremiumBadge';
 import { cn } from '@Utils/Helpers';
+import ConnectWithAIBanner from '../ai-form-builder-components/ConnectWithAIBanner.js';
 
 export default ( props ) => {
 	const { handleCreateAiForm, setIsBuildingForm, formTypeObj, setFormTypeObj, showEmptyError, setShowEmptyError } = props;
@@ -143,162 +144,169 @@ export default ( props ) => {
 	</Container.Item> );
 
 	return (
-		<Container
-			className="mt-24 p-2 gap-1.5 bg-background-primary border-0.5 border-solid border-border-subtle shadow-sm-blur-2 rounded-xl w-full h-full max-w-[680px] mx-auto"
-			containerType="flex"
-			direction="column"
-		>
-			<Container.Item className="flex flex-col p-2 gap-2">
-				<Title
-					tag="h4"
-					size="md"
-					className="text-text-primary font-semibold"
-					title={ __( 'Please describe the form you want to create', 'sureforms' ) }
-				/>
+		<Container className="mt-4 w-full h-full mx-auto" containerType="flex" direction="column">
+			<Container.Item>
+				{ ! srfm_admin?.is_pro_active && ! srfm_admin?.is_pro_license_active && <ConnectWithAIBanner /> }
 			</Container.Item>
-			<Container.Item className="p-2 gap-6">
-				<TextArea
-					aria-label={ __( 'Describe the form you want to create', 'sureforms' ) }
-					placeholder={ __( "E.g. Form to gather feedback from our customer for our product functionality, usability , how much you will rate it and what you don't like about it.", 'sureforms' ) }
-					id="textarea"
-					value={ text }
-					size="lg"
-					className={ cn( 'gap-1.5 w-full h-[124px] font-normal text-md text-field-placeholder', characterCount > 0 && 'text-text-primary' ) }
-					onChange={ ( e ) => {
-						handlePromptClick( e );
-					} }
-					onInput={ handleTyping }
-					maxLength={ 2000 }
-				/>
-				{ showEmptyError && <Label
-					size="sm"
-					variant="error"
-					className="font-semibold text-sm"
-				>
-					{ __( 'Prompt cannot be empty.', 'sureforms' ) }
-				</Label> }
-				<Container className="flex flex-wrap flex-row justify-between items-center">
-					{ false === conversationalFormAiToggle
-						? conversationalAiToggle
-						: conversationalFormAiToggle
-					}
-					<Container.Item className="py-2 gap-2 ml-auto">
-						{ isListening
-							? <Button
-								icon={ <Mic size={ 12 } /> }
-								iconPosition="left"
-								variant="outline"
-								size="xs"
-								className="rounded-full bg-badge-background-green border-0.5 border-solid border-badge-border-green text-badge-color-green font-medium text-xs hover:bg-badge-background-green hover:cursor-pointer"
-								onClick={ toggleListening }
-							>
-								{ __( 'Listening', 'sureforms' ) }
-							</Button>
-							: <Button
-								icon={ <MicOff size={ 12 } /> }
-								iconPosition="left"
-								variant="outline"
-								size="xs"
-								className="rounded-full bg-badge-background-orange-10 border-0.5 border-solid border-badge-background-orange-30 text-brand-800 font-medium text-xs hover:bg-badge-background-orange-10 hover:cursor-pointer"
-								onClick={ toggleListening }
-							>
-								{ __( 'Voice Input', 'sureforms' ) }
-							</Button>
-						}
-					</Container.Item>
-				</Container>
-			</Container.Item>
-			<Container.Item className="p-2 gap-6">
+			<Container.Item>
 				<Container
+					className="p-2 gap-1.5 bg-background-primary border-0.5 border-solid border-border-subtle shadow-sm-blur-2 rounded-xl w-full h-full max-w-[680px] mx-auto"
 					containerType="flex"
 					direction="column"
 				>
-					<Container.Item>
+					<Container.Item className="flex flex-col p-2 gap-2">
+						<Title
+							tag="h4"
+							size="md"
+							className="text-text-primary font-semibold"
+							title={ __( 'Please describe the form you want to create', 'sureforms' ) }
+						/>
+					</Container.Item>
+					<Container.Item className="p-2 gap-6">
+						<TextArea
+							aria-label={ __( 'Describe the form you want to create', 'sureforms' ) }
+							placeholder={ __( "E.g. Form to gather feedback from our customer for our product functionality, usability , how much you will rate it and what you don't like about it.", 'sureforms' ) }
+							id="textarea"
+							value={ text }
+							size="lg"
+							className={ cn( 'gap-1.5 w-full h-[124px] font-normal text-md text-field-placeholder', characterCount > 0 && 'text-text-primary' ) }
+							onChange={ ( e ) => {
+								handlePromptClick( e );
+							} }
+							onInput={ handleTyping }
+							maxLength={ 2000 }
+						/>
+						{ showEmptyError && <Label
+							size="sm"
+							variant="error"
+							className="font-semibold text-sm"
+						>
+							{ __( 'Prompt cannot be empty.', 'sureforms' ) }
+						</Label> }
 						<Container className="flex flex-wrap flex-row justify-between items-center">
-							<Container.Item className="p-1 gap-1 flex flex-row items-center">
-								<Label
-									variant="neutral"
-									className="font-medium text-text-primary text-sm gap-1 flex items-center cursor-pointer"
-									onClick={ () =>
-										setShowFormIdeas( ! showFormIdeas )
-									}
-								>
-									{ __( 'Some Form Ideas', 'sureforms' ) }
-
-									{ showFormIdeas ? (
-										<ChevronUp size={ 20 } className="!text-icon-secondary" />
-									) : (
-										<ChevronDown size={ 20 } className="!text-icon-secondary" />
-									) }
-								</Label>
+							{ false === conversationalFormAiToggle
+								? conversationalAiToggle
+								: conversationalFormAiToggle
+							}
+							<Container.Item className="py-2 gap-2 ml-auto">
+								{ isListening
+									? <Button
+										icon={ <Mic size={ 12 } /> }
+										iconPosition="left"
+										variant="outline"
+										size="xs"
+										className="rounded-full bg-badge-background-green border-0.5 border-solid border-badge-border-green text-badge-color-green font-medium text-xs hover:bg-badge-background-green hover:cursor-pointer"
+										onClick={ toggleListening }
+									>
+										{ __( 'Listening', 'sureforms' ) }
+									</Button>
+									: <Button
+										icon={ <MicOff size={ 12 } /> }
+										iconPosition="left"
+										variant="outline"
+										size="xs"
+										className="rounded-full bg-badge-background-orange-10 border-0.5 border-solid border-badge-background-orange-30 text-brand-800 font-medium text-xs hover:bg-badge-background-orange-10 hover:cursor-pointer"
+										onClick={ toggleListening }
+									>
+										{ __( 'Voice Input', 'sureforms' ) }
+									</Button>
+								}
 							</Container.Item>
 						</Container>
 					</Container.Item>
-					{ showFormIdeas && <Container.Item>
-						<Container className="gap-2 flex-wrap"
+					<Container.Item className="p-2 gap-6">
+						<Container
 							containerType="flex"
-							direction="row"
+							direction="column"
 						>
-							{ examplePrompts.map( ( prompt, index ) => (
-								<Label
-									key={ index }
-									size="md"
-									type="pill"
-									variant="neutral"
-									className="rounded-full border-0.5 border-solid border-badge-border-gray bg-badge-background-gray hover:bg-badge-background-gray hover:cursor-pointer text-badge-color-gray font-medium text-sm py-1 px-1.5 gap-1 flex"
-									onClick={ () =>
-										handlePromptClick(
-											prompt.title
-										)
-									}
-								>
-									{ prompt.title }
-								</Label>
-							) ) }
-						</Container>
-					</Container.Item> }
-				</Container>
-			</Container.Item>
-			<Container.Item className="py-1 px-2 gap-3 flex flex-col sm:flex-row justify-end">
-				<Label
-					variant="neutral"
-					className="font-semibold text-text-tertiary text-sm cursor-pointer"
-				>
-					{ characterCount }/2000
-				</Label>
-				<Button
-					className="bg-button-primary hover:bg-button-primary gap-1 border border-solid border-button-primary text-text-on-color hover:border-button-primary shadow-sm-blur-2"
-					icon={ <ArrowRight size={ 20 } strokeWidth={ 1.25 } /> }
-					iconPosition="right"
-					size="md"
-					variant="outline"
-					onClick={ () => {
-						if (
-							! text ||
-							! text.trim()
-						) {
-							setShowEmptyError( true );
-							const textArea = document.getElementById( 'textarea' );
-							textArea.focus();
-							return;
-						}
+							<Container.Item>
+								<Container className="flex flex-wrap flex-row justify-between items-center">
+									<Container.Item className="p-1 gap-1 flex flex-row items-center">
+										<Label
+											variant="neutral"
+											className="font-medium text-text-primary text-sm gap-1 flex items-center cursor-pointer"
+											onClick={ () =>
+												setShowFormIdeas( ! showFormIdeas )
+											}
+										>
+											{ __( 'Some Form Ideas', 'sureforms' ) }
 
-						handleCreateAiForm(
-							text,
-							[],
-							true
-						);
-						setIsBuildingForm( true );
-					} }
-				>
-					<Label
-						variant="neutral"
-						className="font-semibold text-text-on-color text-sm cursor-pointer"
-					>
-						{ __( 'Generate Form', 'sureforms' ) }
-					</Label>
-				</Button>
+											{ showFormIdeas ? (
+												<ChevronUp size={ 20 } className="!text-icon-secondary" />
+											) : (
+												<ChevronDown size={ 20 } className="!text-icon-secondary" />
+											) }
+										</Label>
+									</Container.Item>
+								</Container>
+							</Container.Item>
+							{ showFormIdeas && <Container.Item>
+								<Container className="gap-2 flex-wrap"
+									containerType="flex"
+									direction="row"
+								>
+									{ examplePrompts.map( ( prompt, index ) => (
+										<Label
+											key={ index }
+											size="md"
+											type="pill"
+											variant="neutral"
+											className="rounded-full border-0.5 border-solid border-badge-border-gray bg-badge-background-gray hover:bg-badge-background-gray hover:cursor-pointer text-badge-color-gray font-medium text-sm py-1 px-1.5 gap-1 flex"
+											onClick={ () =>
+												handlePromptClick(
+													prompt.title
+												)
+											}
+										>
+											{ prompt.title }
+										</Label>
+									) ) }
+								</Container>
+							</Container.Item> }
+						</Container>
+					</Container.Item>
+					<Container.Item className="py-1 px-2 gap-3 flex flex-col sm:flex-row justify-end">
+						<Label
+							variant="neutral"
+							className="font-semibold text-text-tertiary text-sm cursor-pointer"
+						>
+							{ characterCount }/2000
+						</Label>
+						<Button
+							className="bg-button-primary hover:bg-button-primary gap-1 border border-solid border-button-primary text-text-on-color hover:border-button-primary shadow-sm-blur-2"
+							icon={ <ArrowRight size={ 20 } strokeWidth={ 1.25 } /> }
+							iconPosition="right"
+							size="md"
+							variant="outline"
+							onClick={ () => {
+								if (
+									! text ||
+									! text.trim()
+								) {
+									setShowEmptyError( true );
+									const textArea = document.getElementById( 'textarea' );
+									textArea.focus();
+									return;
+								}
+
+								handleCreateAiForm(
+									text,
+									[],
+									true
+								);
+								setIsBuildingForm( true );
+							} }
+						>
+							<Label
+								variant="neutral"
+								className="font-semibold text-text-on-color text-sm cursor-pointer"
+							>
+								{ __( 'Generate Form', 'sureforms' ) }
+							</Label>
+						</Button>
+					</Container.Item>
+				</Container >
 			</Container.Item>
-		</Container >
+		</Container>
 	);
 };
