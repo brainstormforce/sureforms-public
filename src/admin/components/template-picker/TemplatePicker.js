@@ -3,6 +3,7 @@ import Header from './components/Header.js';
 import { BrowserRouter as Router, useLocation } from 'react-router-dom';
 import AiFormBuilder, { getLimitReachedPopup } from './components/AiFormBuilder.js';
 import AddNewForm from './ai-form-builder-components/AddNewForm.js';
+import { Container } from '@bsf/force-ui';
 
 const TemplatePicker = () => {
 	// Remove admin bar padding.
@@ -28,10 +29,10 @@ const TemplatePicker = () => {
 
 			default:
 				return (
-					<>
+					<Container className="max-h-screen overflow-y-auto">
 						<Header />
 						<AddNewForm />
-					</>
+					</Container>
 				);
 		}
 	}
