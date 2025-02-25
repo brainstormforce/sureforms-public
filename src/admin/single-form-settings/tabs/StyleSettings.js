@@ -13,7 +13,7 @@ import {
 	faAlignJustify,
 } from '@fortawesome/free-solid-svg-icons';
 import { useDeviceType } from '@Controls/getPreviewType';
-import { getStylePanels, getPremiumCssProperties } from '@Components/hooks';
+import { getStylePanels } from '@Components/hooks';
 import { addStyleInRoot } from '@Utils/Helpers';
 import { chevronDown } from '@wordpress/icons';
 import PremiumBadge from '@Admin/components/PremiumBadge';
@@ -205,7 +205,7 @@ function StyleSettings( props ) {
 			const defaultTextColor = '#1E1E1E';
 
 			// Form Container
-			let cssProperties = {
+			const cssProperties = {
 				'--srfm-color-scheme-primary': formStyling?.primary_color || '#111C44',
 				'--srfm-btn-color-hover': `hsl( from ${ formStyling?.primary_color || '#111C44' } h s l / 0.9)`,
 				'--srfm-color-scheme-text-on-primary': formStyling?.text_color_on_primary || '#FFFFFF',
@@ -259,8 +259,6 @@ function StyleSettings( props ) {
 				'--srfm-bg-overlay-color': bg_image_overlay_color || '#FFFFFF75',
 			};
 
-			// Add css properties from custom stylings.
-			cssProperties = getPremiumCssProperties( cssProperties, formStyling );
 			addStyleInRoot( root, cssProperties );
 		} else {
 			sureformsKeys = defaultKeys;
