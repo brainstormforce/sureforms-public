@@ -4,7 +4,7 @@ import { ArrowLeft, ArrowRight } from 'lucide-react';
 import ICONS from '../components/icons';
 
 export default () => {
-	const FormOption = ( { icon, title, description, buttonText, buttonClass, iconPosition, onClick } ) => (
+	const FormOption = ( { icon, title, description, buttonText, buttonClass, iconPosition, onClick, btnIcon } ) => (
 		<Container.Item className="flex flex-col flex-1 bg-background-primary border-0.5 border-solid border-border-subtle rounded-lg shadow-sm-blur-2">
 			<Container className="flex flex-col flex-1">
 				<Container.Item className="gap-2 p-3">
@@ -25,7 +25,7 @@ export default () => {
 						className={ `gap-0.5 w-full ${ buttonClass } font-semibold rounded-lg text-text-on-color text-xs` }
 						size="md"
 						iconPosition={ iconPosition }
-						icon={ <ArrowRight size={ 12 } /> }
+						icon={ btnIcon }
 						variant="ghost"
 						onClick={ onClick }
 					>
@@ -47,6 +47,7 @@ export default () => {
 			onClick: () => {
 				window.location.href = `${ srfm_admin.site_url }/wp-admin/post-new.php?post_type=sureforms_form`;
 			},
+			btnIcon: <ArrowRight size={ 12 } stroke="transparent" />,
 		},
 		aiFormBuilder: {
 			icon: ICONS.wandSparkles,
@@ -58,6 +59,7 @@ export default () => {
 			onClick: () => {
 				window.location.href = `${ srfm_admin.site_url }/wp-admin/admin.php?page=add-new-form&method=ai`;
 			},
+			btnIcon: <ArrowRight size={ 12 } />,
 		},
 	};
 
@@ -71,39 +73,43 @@ export default () => {
 
 	return (
 		<Container
-			className="mt-24 p-4 gap-2 bg-background-primary border-0.5 border-solid border-border-subtle rounded-xl shadow-sm-blur-2 h-full w-[680px] ml-auto mr-auto"
-			containerType="flex"
-			direction="column"
+			className="flex w-full h-screen justify-center items-center mx-auto"
 		>
-			<Container.Item
-				className="p-2 gap-6"
+			<Container
+				className="p-4 gap-2 bg-background-primary border-0.5 border-solid border-border-subtle rounded-xl shadow-sm-blur-2 max-w-[680px]"
+				containerType="flex"
+				direction="column"
 			>
-				<Label
-					variant="neutral"
-					className="text-text-primary font-semibold text-2xl"
+				<Container.Item
+					className="p-2 gap-6"
 				>
-					{ __( 'How would you like to create a new form?', 'sureforms' ) }
-				</Label>
-			</Container.Item>
-			<Container.Item className="p-2 gap-6">
-				<FormSelection />
-			</Container.Item >
-			<Container.Item
-				className="flex p-2 gap-6 justify-center"
-			>
-				<Button
-					className="text-text-tertiary font-semibold text-xs hover:cursor-pointer"
-					icon={ <ArrowLeft size={ 16 } /> }
-					iconPosition="left"
-					size="xs"
-					variant="ghost"
-					onClick={ () => {
-						window.location.href = '/wp-admin/admin.php?page=sureforms_menu';
-					} }
+					<Label
+						variant="neutral"
+						className="text-text-primary font-semibold text-2xl"
+					>
+						{ __( 'How would you like to create a new form?', 'sureforms' ) }
+					</Label>
+				</Container.Item>
+				<Container.Item className="p-2 gap-6">
+					<FormSelection />
+				</Container.Item >
+				<Container.Item
+					className="flex p-2 gap-6 justify-center"
 				>
-					{ __( 'Exit to Dashboard', 'sureforms' ) }
-				</Button>
-			</Container.Item >
+					<Button
+						className="text-text-tertiary font-semibold text-xs hover:cursor-pointer"
+						icon={ <ArrowLeft size={ 16 } /> }
+						iconPosition="left"
+						size="xs"
+						variant="ghost"
+						onClick={ () => {
+							window.location.href = '/wp-admin/admin.php?page=sureforms_menu';
+						} }
+					>
+						{ __( 'Exit to Dashboard', 'sureforms' ) }
+					</Button>
+				</Container.Item >
+			</Container>
 		</Container >
 	);
 };

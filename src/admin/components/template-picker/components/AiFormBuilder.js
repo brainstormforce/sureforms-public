@@ -175,7 +175,7 @@ const AiFormBuilder = () => {
 	}
 
 	return (
-		<>
+		<Container className="max-h-screen overflow-y-auto">
 			<Toaster position="bottom-right" design="stack" theme="light" autoDismiss={ true } dismissAfter={ 5000 } />
 			<Header />
 			<AiFormBuilderForm
@@ -186,7 +186,7 @@ const AiFormBuilder = () => {
 				setShowEmptyError={ setShowEmptyError }
 				setFormTypeObj={ setFormTypeObj }
 			/>
-		</>
+		</Container>
 	);
 };
 
