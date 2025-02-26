@@ -84,7 +84,9 @@ const Range = ( props ) => {
 	};
 
 	const onChangeUnits = ( newValue ) => {
-		props.setAttributes( { [ props.unit.label ]: newValue } );
+		if ( props.setAttributes ) {
+			props.setAttributes( { [ props.unit.label ]: newValue } );
+		}
 
 		max = limitMax( newValue, props );
 		min = limitMin( newValue, props );
