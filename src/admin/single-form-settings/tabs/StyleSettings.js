@@ -1,6 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import { useSelect, useDispatch } from '@wordpress/data';
-import { useState, useEffect } from '@wordpress/element';
+import { useState, useEffect, useRef, useLayoutEffect } from '@wordpress/element';
 import { store as editorStore } from '@wordpress/editor';
 import AdvancedPopColorControl from '@Components/color-control/advanced-pop-color-control.js';
 import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
@@ -30,8 +30,13 @@ function StyleSettings( props ) {
 		[ editorStore ]
 	);
 	const formStyling = sureformsKeys?._srfm_forms_styling || {};
-	const root = document.documentElement.querySelector( 'body' );
-	const editor = root.querySelector( '.editor-styles-wrapper' );
+	const rootRef = useRef( null );
+	const editorRef = useRef( null );
+
+	useLayoutEffect( () => {
+		rootRef.current = document.documentElement.querySelector( 'body' );
+		editorRef.current = rootRef.current?.querySelector( '.editor-styles-wrapper' );
+	}, [] );
 	const deviceType = useDeviceType();
 	const [ submitBtn, setSubmitBtn ] = useState(
 		document.querySelector( '.srfm-submit-richtext' )
@@ -98,7 +103,7 @@ function StyleSettings( props ) {
 			return;
 		}
 
-		addStyleInRoot( root, getCSSProperties( key, value ) );
+		addStyleInRoot( rootRef.current, getCSSProperties( key, value ) );
 		const formStylingSettings = {
 			...formStyling,
 			[ key ]: value,
@@ -151,7 +156,7 @@ function StyleSettings( props ) {
 		}
 		key_id = key + '_id';
 
-		addStyleInRoot( root, getCSSProperties( key, imageURL ) );
+		addStyleInRoot( rootRef.current, getCSSProperties( key, imageURL ) );
 
 		editPost( {
 			meta: {
@@ -257,7 +262,7 @@ function StyleSettings( props ) {
 				'--srfm-bg-overlay-color': bg_image_overlay_color || '#FFFFFF75',
 			};
 
-			addStyleInRoot( root, cssProperties );
+			addStyleInRoot( rootRef.current, cssProperties );
 		} else {
 			sureformsKeys = defaultKeys;
 			editPost( {
@@ -281,7 +286,7 @@ function StyleSettings( props ) {
 				break;
 		}
 
-		addStyleInRoot( root, cssProperties );
+		addStyleInRoot( rootRef.current, cssProperties );
 
 		const option_array = {};
 
@@ -310,7 +315,7 @@ function StyleSettings( props ) {
 		const overrideSize = srfm_admin?.field_spacing_vars[ sizingValue ] || {};
 		const finalSize = { ...baseSize, ...overrideSize };
 
-		addStyleInRoot( root, finalSize );
+		addStyleInRoot( rootRef.current, finalSize );
 	}
 
 	/**
@@ -323,7 +328,7 @@ function StyleSettings( props ) {
 	 * @since 0.0.7
 	 */
 	function updateFormStyling( option, value ) {
-		addStyleInRoot( root, getCSSProperties( option, value ) );
+		addStyleInRoot( rootRef.current, getCSSProperties( option, value ) );
 
 		editPost( {
 			meta: {
@@ -506,10 +511,10 @@ function StyleSettings( props ) {
 			color: 'srfm-overlay-color',
 		};
 
-		editor.classList.remove( ...Object.values( backgroundClasses ) );
-		editor.classList.remove( ...Object.values( overlayClasses ) );
+		editorRef.current.classList.remove( ...Object.values( backgroundClasses ) );
+		editorRef.current.classList.remove( ...Object.values( overlayClasses ) );
 
-		editor.classList.add( backgroundClasses[ backgroundType ] || backgroundClasses.default );
+		editorRef.current.classList.add( backgroundClasses[ backgroundType ] || backgroundClasses.default );
 
 		// Reset overlayType if it's not valid for the selected backgroundType.
 		if ( backgroundType !== 'image' && overlayType !== 'image' ) {
@@ -517,7 +522,7 @@ function StyleSettings( props ) {
 		}
 
 		if ( overlayType && overlayClasses[ overlayType ] ) {
-			editor.classList.add( overlayClasses[ overlayType ] );
+			editorRef.current.classList.add( overlayClasses[ overlayType ] );
 		}
 	};
 
