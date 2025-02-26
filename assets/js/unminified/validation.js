@@ -793,7 +793,6 @@ export function initializeInlineFieldValidation() {
 		'srfm-textarea-block',
 		'srfm-dropdown-block',
 		'srfm-slider-block',
-		'srfm-signature-block',
 	];
 
 	srfmFields.forEach( ( block ) => addBlurListener( block, `.${ block }` ) );
@@ -820,11 +819,6 @@ function addBlurListener( containerClass, blockClass ) {
 
 			// upload block
 			if ( containerClass === 'srfm-upload-block' ) {
-				areaField = areaInput.querySelector( 'input[type="file"]' );
-			}
-
-			// signature block
-			if ( containerClass === 'srfm-signature-block' ) {
 				areaField = areaInput.querySelector( 'input[type="file"]' );
 			}
 
