@@ -257,6 +257,7 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 
 == Changelog ==
 = x.x.x =
+* Fix: Resolved recursive pattern insertion issue in Gutenberg that was causing a 502 error due to an infinite loop.
 * Improvement: Made submission text translatable.
 = 1.4.0 - 12th February 2025 =
 * Improvement: Prevented public access to the form archive page.
