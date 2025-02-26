@@ -4,7 +4,7 @@ import { Button, Container, Label, TextArea, Title, toast, Switch } from '@bsf/f
 import { ArrowRight, ChevronDown, ChevronUp, MicOff, Mic } from 'lucide-react';
 import { applyFilters } from '@wordpress/hooks';
 import PremiumBadge from '@Admin/components/PremiumBadge';
-import { cn } from '@Utils/Helpers';
+import { cn, srfmClassNames } from '@Utils/Helpers';
 import ConnectWithAIBanner from '../ai-form-builder-components/ConnectWithAIBanner.js';
 
 export default ( props ) => {
@@ -76,7 +76,7 @@ export default ( props ) => {
 				// keep on appending the result to the textarea
 				const speechResult = event.results[ event.results.length - 1 ][ 0 ].transcript;
 				setText( text + speechResult );
-				setCharacterCount( text );
+				setCharacterCount( text.length + speechResult.length );
 			};
 			recognition.onerror = ( e ) => {
 				recognition.stop();
@@ -144,6 +144,43 @@ export default ( props ) => {
 
 	const is_pro_active = srfm_admin?.is_pro_active && srfm_admin?.is_pro_license_active;
 
+	const VoiceToggleButton = () => {
+		const buttonProps = isListening
+			? {
+				icon: <Mic size={ 12 } />,
+				className: srfmClassNames( [
+					'bg-badge-background-green',
+					'border-badge-border-green',
+					'text-badge-color-green',
+					'hover:bg-badge-background-green',
+				] ),
+				label: __( 'Listening', 'sureforms' ),
+			}
+			: {
+				icon: <MicOff size={ 12 } />,
+				className: srfmClassNames( [
+					'bg-badge-background-orange-10',
+					'border-badge-background-orange-30',
+					'text-brand-800',
+					'hover:bg-badge-background-orange-10',
+				] ),
+				label: __( 'Voice Input', 'sureforms' ),
+			};
+
+		return (
+			<Button
+				icon={ buttonProps.icon }
+				iconPosition="left"
+				variant="outline"
+				size="xs"
+				className={ `rounded-full border-0.5 border-solid font-medium text-xs hover:cursor-pointer ${ buttonProps.className }` }
+				onClick={ toggleListening }
+			>
+				{ buttonProps.label }
+			</Button>
+		);
+	};
+
 	return (
 		<Container
 			className={ cn( 'w-full h-full mx-auto', ( is_pro_active ) && 'mt-20' ) }
@@ -193,28 +230,7 @@ export default ( props ) => {
 								: conversationalFormAiToggle
 							}
 							<Container.Item className="py-2 gap-2 ml-auto">
-								{ isListening
-									? <Button
-										icon={ <Mic size={ 12 } /> }
-										iconPosition="left"
-										variant="outline"
-										size="xs"
-										className="rounded-full bg-badge-background-green border-0.5 border-solid border-badge-border-green text-badge-color-green font-medium text-xs hover:bg-badge-background-green hover:cursor-pointer"
-										onClick={ toggleListening }
-									>
-										{ __( 'Listening', 'sureforms' ) }
-									</Button>
-									: <Button
-										icon={ <MicOff size={ 12 } /> }
-										iconPosition="left"
-										variant="outline"
-										size="xs"
-										className="rounded-full bg-badge-background-orange-10 border-0.5 border-solid border-badge-background-orange-30 text-brand-800 font-medium text-xs hover:bg-badge-background-orange-10 hover:cursor-pointer"
-										onClick={ toggleListening }
-									>
-										{ __( 'Voice Input', 'sureforms' ) }
-									</Button>
-								}
+								<VoiceToggleButton />
 							</Container.Item>
 						</Container>
 					</Container.Item>
