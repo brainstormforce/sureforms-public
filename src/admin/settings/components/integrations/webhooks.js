@@ -37,6 +37,7 @@ const Webhooks = () => {
 						) }
 						tooltipPosition={ 'bottom' }
 						utmMedium={ 'global_integration_settings_webhooks' }
+						portalId="srfm-settings-container"
 					/>
 				) }
 			</div>

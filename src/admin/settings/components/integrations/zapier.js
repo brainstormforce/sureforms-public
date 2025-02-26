@@ -42,6 +42,7 @@ const Zapier = () => {
 						) }
 						tooltipPosition={ 'bottom' }
 						utmMedium={ 'global_integration_settings_zapier' }
+						portalId="srfm-settings-container"
 					/>
 				) }
 			</div>

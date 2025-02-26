@@ -30,6 +30,7 @@ const ConditionalLogicPreview = () => {
 					) }
 					tooltipPosition={ 'bottom' }
 					utmMedium={ 'editor_blocks_conditional_logic' }
+					portalId={ 'editor' }
 				/>
 				{ ! isExpanded ? chevronDown : chevronUp }
 			</div>

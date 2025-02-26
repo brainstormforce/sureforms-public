@@ -25,6 +25,7 @@ const WebhooksCard = ( { setSelectedTab } ) => {
 								) }
 								tooltipPosition={ 'bottom' }
 								utmMedium={ 'setting_editor_integration_webhooks' }
+								portalId={ 'editor' }
 							/>
 						) }
 					</div>

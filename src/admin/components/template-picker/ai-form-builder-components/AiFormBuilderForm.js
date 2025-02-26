@@ -3,7 +3,7 @@ import { useState, useRef } from '@wordpress/element';
 import { Button, Container, Label, TextArea, Title, toast, Switch } from '@bsf/force-ui';
 import { ArrowRight, ChevronDown, ChevronUp, MicOff, Mic } from 'lucide-react';
 import { applyFilters } from '@wordpress/hooks';
-import PremiumBadge from '@Admin/dashboard/PremiumBadge';
+import PremiumBadge from '@Admin/components/PremiumBadge';
 import { cn } from '@Utils/Helpers';
 import ConnectWithAIBanner from '../ai-form-builder-components/ConnectWithAIBanner.js';
 
@@ -135,18 +135,22 @@ export default ( props ) => {
 			{ __( 'Create Conversational Form', 'sureforms' ) }
 		</Label>
 		<PremiumBadge
-			title={ __( 'Unlock Conversational Forms', 'sureforms' ) }
-			description={ __( 'With the SureForms Pro Plan, you can transform your forms into engaging conversational layouts for a seamless user experience.', 'sureforms' ) }
-			btnText={ __( 'Upgrade', 'sureforms' ) }
+			tooltipHeading={ __( 'Unlock Conversational Forms', 'sureforms' ) }
+			tooltipContent={ __( 'With the SureForms Pro Plan, you can transform your forms into engaging conversational layouts for a seamless user experience.', 'sureforms' ) }
 			portalId="srfm-add-new-form-container"
 			utmMedium="ai_builder"
 		/>
 	</Container.Item> );
 
+	const is_pro_active = srfm_admin?.is_pro_active && srfm_admin?.is_pro_license_active;
+
 	return (
-		<Container className="mt-32 w-full h-full mx-auto" containerType="flex" direction="column">
+		<Container
+			className={ cn( 'w-full h-full mx-auto', ( is_pro_active ) && 'mt-20' ) }
+			containerType="flex"
+			direction="column">
 			<Container.Item>
-				{ ! srfm_admin?.is_pro_active && ! srfm_admin?.is_pro_license_active && <ConnectWithAIBanner /> }
+				{ ! is_pro_active && <ConnectWithAIBanner /> }
 			</Container.Item>
 			<Container.Item>
 				<Container
