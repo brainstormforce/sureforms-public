@@ -1,13 +1,13 @@
+@import url('https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&display=swap');
 /* stylelint-disable */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-/* Import Figtree font from Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&display=swap');
+
 
 @layer utilities {
   *{
-    @apply box-border;
+    @apply box-border font-sans;
   }
 
   h1, h2, h3, h4, h5, h6, p, pre {
@@ -40,5 +40,15 @@
 
   p {
     @apply text-sm leading-5 text-text-secondary font-normal;
+  }
+}
+
+#wpwrap:has([id^="srfm-"]) {
+  @apply bg-background-secondary;
+}
+
+#srfm-dialog-root {
+  > div[data-floating-ui-portal] > div {
+    @apply z-999999;
   }
 }

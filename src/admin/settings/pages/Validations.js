@@ -1,14 +1,28 @@
 import { __ } from '@wordpress/i18n';
-import { TextControl } from '@wordpress/components';
+import { useState } from '@wordpress/element';
 import { applyFilters } from '@wordpress/hooks';
 
 import ContentSection from '../components/ContentSection';
+import { Input, Label, Tabs } from '@bsf/force-ui';
+
+const TABS = [
+	{
+		label: __( 'Error Messages', 'sureforms' ),
+		slug: 'error-messages',
+	},
+	{
+		label: __( 'Unique Error Messages', 'sureforms' ),
+		slug: 'unique-error-messages',
+	},
+];
 
 const ValidationsPage = ( {
 	loading,
 	updateGlobalSettings,
 	dynamicBlockOptions,
 } ) => {
+	const [ activeTab, setActiveTab ] = useState( TABS[ 0 ].slug );
+
 	const validationContent = () => {
 		const validationFields = applyFilters(
 			'srfm.general.tab.validationFields',
@@ -30,6 +44,12 @@ const ValidationsPage = ( {
 				{ key: 'srfm_valid_url', label: __( 'Invalid URL Error Message', 'sureforms' ) },
 				{ key: 'srfm_confirm_email_same', label: __( 'Confirmation Email Mismatch Message', 'sureforms' ) },
 				{ key: 'srfm_valid_email', label: __( 'Invalid Email Error Message', 'sureforms' ) },
+			]
+		);
+
+		const uniqueValidationFields = applyFilters(
+			'srfm.general.tab.uniqueValidationFields',
+			[
 				// Translators: %s represents the minimum input value.
 				{ key: 'srfm_input_min_value', label: __( 'Number Minimum Value Error Message', 'sureforms' ), description: __( '%s represents the minimum input value. For example: "Minimum value is 10."', 'sureforms' ) },
 				// Translators: %s represents the maximum input value.
@@ -69,7 +89,7 @@ const ValidationsPage = ( {
 				)
 				.join( ' ' );
 			return (
-				<TextControl
+				<Input
 					key={ field }
 					label={ `${
 						( fieldLabel === 'Area Block Required '
@@ -83,7 +103,7 @@ const ValidationsPage = ( {
 								__( ' Error Message', 'sureforms' )
 					}` }
 					type="text"
-					className="srfm-components-input-control"
+					size="md"
 					value={ dynamicBlockOptions[ field ] }
 					onChange={ ( value ) => {
 						updateGlobalSettings(
@@ -98,7 +118,7 @@ const ValidationsPage = ( {
 
 		return (
 			<>
-				{ validationFields.map( ( field ) => {
+				{ ( activeTab === 'error-messages' ? validationFields : uniqueValidationFields ).map( ( field ) => {
 					// Ensure compatibility for validation fields in Pro version.
 					// If the key is not available in dynamicBlockOptions, treat it as a Pro-specific field.
 					if ( ! field?.key ) {
@@ -106,21 +126,24 @@ const ValidationsPage = ( {
 					}
 
 					return (
-						<TextControl
-							key={ field.key }
-							label={ field.label }
-							type="text"
-							className="srfm-components-input-control"
-							value={ dynamicBlockOptions?.[ field.key ] || '' }
-							onChange={ ( value ) => {
-								updateGlobalSettings(
-									field.key,
-									value,
-									'general-settings-dynamic-opt'
-								);
-							} }
-							help={ field?.description || '' }
-						/>
+						<div key={ field.key } className="space-y-1.5">
+							<Input
+								label={ field.label }
+								type="text"
+								size="md"
+								value={ dynamicBlockOptions?.[ field.key ] || '' }
+								onChange={ ( value ) => {
+									updateGlobalSettings(
+										field.key,
+										value,
+										'general-settings-dynamic-opt'
+									);
+								} }
+							/>
+							{ field?.description && (
+								<Label tag="p" size="xs" variant="help">{ field?.description }</Label>
+							) }
+						</div>
 					);
 				} ) }
 			</>
@@ -128,11 +151,23 @@ const ValidationsPage = ( {
 	};
 
 	return (
-		<ContentSection
-			loading={ loading }
-			title={ __( 'Validations', 'sureforms' ) }
-			content={ validationContent() }
-		/>
+		<Tabs activeItem={ activeTab }>
+			<Tabs.Group variant="rounded" onChange={ ( { value: { slug } } ) => setActiveTab( slug ) }>
+				{
+					TABS.map( ( tab ) => (
+						<Tabs.Tab key={ tab.label } slug={ tab.slug } text={ tab.label } />
+					) ) }
+			</Tabs.Group>
+			<Tabs.Panel slug={ activeTab }>
+				<div className="mt-6">
+					<ContentSection
+						loading={ loading }
+						title={ __( 'Validations', 'sureforms' ) }
+						content={ validationContent( activeTab ) }
+					/>
+				</div>
+			</Tabs.Panel>
+		</Tabs>
 	);
 };
 

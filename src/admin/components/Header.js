@@ -45,7 +45,7 @@ const Header = () => {
 	} );
 
 	return (
-		<Topbar className="self-srfm-header py-0 px-8 pt-0 pb-0 min-h-0 h-14 top-8 sticky z-[1000] gap-4 shadow-sm bg-background-primary/75 backdrop-blur-[5px]">
+		<Topbar className="py-0 px-8 pt-0 pb-0 min-h-0 h-14 top-8 sticky z-[1] gap-4 shadow-sm bg-background-primary/75 backdrop-blur-[5px]">
 			<Topbar.Left>
 				<Topbar.Item>
 					<Logo />

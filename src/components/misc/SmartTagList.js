@@ -1,20 +1,20 @@
-import { DropdownMenu } from '@wordpress/components';
 import { applyFilters } from '@wordpress/hooks';
-import { generateDropDownOptions } from '@Utils/Helpers';
-import svgIcons from '@Image/single-form-logo.json';
-import parse from 'html-react-parser';
-import { __ } from '@wordpress/i18n';
+import { cn, generateDropDownOptions } from '@Utils/Helpers';
+import { DropdownMenu, Button, Label } from '@bsf/force-ui';
+import { EllipsisVerticalIcon } from 'lucide-react';
 
 export default function SmartTagList( {
 	icon,
 	label,
-	text,
 	tagFor,
-	cssClass,
 	tagsArray,
 	setTargetData,
+	className,
+	triggerSize = 'sm',
+	triggerVariant = 'outline',
+	triggerClassName,
+	dropdownPlacement = 'bottom-start',
 } ) {
-	const verticalDotIcon = parse( svgIcons.verticalDot );
 	const controls = [];
 
 	applyFilters( 'srfm.smartTagList.tagsArray', tagsArray, tagFor ).forEach(
@@ -30,12 +30,50 @@ export default function SmartTagList( {
 	);
 
 	return (
-		<DropdownMenu
-			icon={ icon ?? verticalDotIcon }
-			className={ cssClass ?? 'srfm-scroll-dropdown' }
-			label={ label ?? __( 'Select Shortcodes', 'sureforms' ) }
-			text={ text }
-			controls={ controls }
-		/>
+		<DropdownMenu placement={ dropdownPlacement } className="min-w-fit">
+			<DropdownMenu.Trigger>
+				<Button
+					variant={ triggerVariant }
+					size={ triggerSize }
+					icon={ icon ?? <EllipsisVerticalIcon /> }
+					iconPosition="right"
+					className={ cn( 'min-w-fit [&_svg]:shrink-0', triggerClassName ) }
+				>
+					{ !! label && label }
+				</Button>
+			</DropdownMenu.Trigger>
+			<DropdownMenu.Portal id="srfm-dialog-root">
+				<DropdownMenu.Content className={ cn( 'w-60 max-h-80 overflow-y-auto', className ) }>
+					<DropdownMenu.List>
+						{ controls.map( ( section, sectionIndx ) =>
+							section.map( ( control, indx ) =>
+								indx === 0 ? (
+									<Label
+										key={ `${ sectionIndx }-${ indx }-control-${ control?.title }` }
+										variant="help"
+										size="xs"
+										className="p-2"
+										tabIndex={ -1 }
+									>
+										{ control?.title }
+									</Label>
+								) : (
+									<DropdownMenu.Item
+										key={ `${ sectionIndx }-${ indx }-control-${ control?.title }` }
+										className="text-sm font-normal"
+										{ ...( typeof control?.onClick ===
+										'function'
+											? { onClick: control?.onClick }
+											: {} ) }
+									>
+										{ control?.title }
+									</DropdownMenu.Item>
+								)
+							)
+						) }
+					</DropdownMenu.List>
+				</DropdownMenu.Content>
+			</DropdownMenu.Portal>
+		</DropdownMenu>
 	);
 }
