@@ -40,36 +40,6 @@ const ICONS = {
 			/>
 		</svg>
 	),
-	scratch: (
-		<svg
-			xmlns="http://www.w3.org/2000/svg"
-			width="48"
-			height="48"
-			viewBox="0 0 48 48"
-			fill="none"
-		>
-			<path
-				d="M39 28.5V23.25C39 19.5221 35.9779 16.5 32.25 16.5H29.25C28.0074 16.5 27 15.4926 27 14.25V11.25C27 7.52208 23.9779 4.5 20.25 4.5H16.5M24 22.5V34.5M30 28.5H18M21 4.5H11.25C10.0074 4.5 9 5.50736 9 6.75V41.25C9 42.4926 10.0074 43.5 11.25 43.5H36.75C37.9926 43.5 39 42.4926 39 41.25V22.5C39 12.5589 30.9411 4.5 21 4.5Z"
-				stroke="url(#paint0_linear_4036_26181)"
-				strokeWidth="2"
-				strokeLinecap="round"
-				strokeLinejoin="round"
-			/>
-			<defs>
-				<linearGradient
-					id="paint0_linear_4036_26181"
-					x1="24"
-					y1="4.5"
-					x2="24"
-					y2="43.5"
-					gradientUnits="userSpaceOnUse"
-				>
-					<stop stopColor="#18C1CC" />
-					<stop offset="1" stopColor="#135A99" />
-				</linearGradient>
-			</defs>
-		</svg>
-	),
 	template: (
 		<svg
 			xmlns="http://www.w3.org/2000/svg"
@@ -96,36 +66,6 @@ const ICONS = {
 				>
 					<stop stopColor="#A8CC18" />
 					<stop offset="1" stopColor="#139969" />
-				</linearGradient>
-			</defs>
-		</svg>
-	),
-	ai: (
-		<svg
-			width="48"
-			height="48"
-			viewBox="0 0 48 48"
-			fill="none"
-			xmlns="http://www.w3.org/2000/svg"
-		>
-			<path
-				d="M30 12L36 18M12 42L42 12L36 6L6 36L12 42ZM18 6C18 7.06087 18.4214 8.07828 19.1716 8.82843C19.9217 9.57857 20.9391 10 22 10C20.9391 10 19.9217 10.4214 19.1716 11.1716C18.4214 11.9217 18 12.9391 18 14C18 12.9391 17.5786 11.9217 16.8284 11.1716C16.0783 10.4214 15.0609 10 14 10C15.0609 10 16.0783 9.57857 16.8284 8.82843C17.5786 8.07828 18 7.06087 18 6ZM38 26C38 27.0609 38.4214 28.0783 39.1716 28.8284C39.9217 29.5786 40.9391 30 42 30C40.9391 30 39.9217 30.4214 39.1716 31.1716C38.4214 31.9217 38 32.9391 38 34C38 32.9391 37.5786 31.9217 36.8284 31.1716C36.0783 30.4214 35.0609 30 34 30C35.0609 30 36.0783 29.5786 36.8284 28.8284C37.5786 28.0783 38 27.0609 38 26Z"
-				stroke="url(#paint0_linear_4036_26204)"
-				strokeWidth="2"
-				strokeLinecap="round"
-				strokeLinejoin="round"
-			/>
-			<defs>
-				<linearGradient
-					id="paint0_linear_4036_26204"
-					x1="24"
-					y1="6"
-					x2="24"
-					y2="42"
-					gradientUnits="userSpaceOnUse"
-				>
-					<stop stopColor="#F437ED" />
-					<stop offset="1" stopColor="#5E1399" />
 				</linearGradient>
 			</defs>
 		</svg>
@@ -224,40 +164,6 @@ const ICONS = {
 				d="M10.9983 7.9975V11.7475M1.69506 15.1231C0.829677 16.6231 1.91225 18.4975 3.64398 18.4975H18.3526C20.0844 18.4975 21.1669 16.6231 20.3016 15.1231L12.9472 2.37562C12.0814 0.874792 9.91525 0.874792 9.04939 2.37562L1.69506 15.1231ZM10.9983 14.7475H11.0058V14.755H10.9983V14.7475Z"
 				stroke="#EF4444"
 				strokeWidth="2"
-				strokeLinecap="round"
-				strokeLinejoin="round"
-			/>
-		</svg>
-	),
-	exit: (
-		<svg
-			width="20"
-			height="20"
-			viewBox="0 0 20 20"
-			fill="none"
-			xmlns="http://www.w3.org/2000/svg"
-		>
-			<path
-				d="M9.625 6.5V3.375C9.625 2.33947 8.78553 1.5 7.75 1.5L2.75 1.5C1.71447 1.5 0.875001 2.33947 0.875 3.375L0.875 14.625C0.875 15.6605 1.71447 16.5 2.75 16.5H7.75C8.78553 16.5 9.625 15.6605 9.625 14.625V11.5M12.125 11.5L14.625 9M14.625 9L12.125 6.5M14.625 9L4 9"
-				stroke="#64748B"
-				strokeWidth="1.5"
-				strokeLinecap="round"
-				strokeLinejoin="round"
-			/>
-		</svg>
-	),
-	arrowRight: (
-		<svg
-			width="14"
-			height="12"
-			viewBox="0 0 14 12"
-			fill="none"
-			xmlns="http://www.w3.org/2000/svg"
-		>
-			<path
-				d="M7.75 1L12.75 6M12.75 6L7.75 11M12.75 6H0.75"
-				stroke="white"
-				strokeWidth="1.5"
 				strokeLinecap="round"
 				strokeLinejoin="round"
 			/>
