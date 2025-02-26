@@ -4,89 +4,74 @@ import { ArrowLeft, ArrowRight } from 'lucide-react';
 import ICONS from '../components/icons';
 
 export default () => {
-	const buildFromScratch = (
-		<Container className="flex flex-col flex-1">
-			<Container.Item className="gap-2 p-3">
-				<Container containerType="flex" direction="column">
-					<Container.Item>{ ICONS.filePlus }</Container.Item>
-					<Container.Item className="flex flex-col gap-1 p-1">
-						<Label
-							size="md"
-							variant="neutral"
-							className="font-medium text-text-primary text-lg"
-						>
-							{ __( 'Build Form From Scratch', 'sureforms' ) }
-						</Label>
-						<Label
-							size="sm"
-							variant="help"
-							className="text-text-tertiary font-normal text-xs"
-						>
-							{ __( 'Tailor your form precisely to your unique needs. No coding skills required—just unleash your creativity.', 'sureforms' ) }
-						</Label>
-					</Container.Item>
-				</Container>
-			</Container.Item>
-			<Container.Item className="mt-auto p-3">
-				<Button
-					className="gap-0.5 w-full bg-button-secondary border border-solid border-button-secondary shadow-sm-blur-2 hover:bg-button-secondary font-semibold rounded-lg text-text-on-color text-xs"
-					iconPosition="left"
-					icon={ <ArrowRight size={ 12 } className="text-transparent" /> }
-					size="md"
-					variant="ghost"
-					onClick={ () => {
-						window.location.href = `${ srfm_admin.site_url }/wp-admin/post-new.php?post_type=sureforms_form`;
-					} }
-				>
-					{ __( 'Build From Scratch', 'sureforms' ) }
-				</Button>
-			</Container.Item>
-		</Container>
+	const FormOption = ( { icon, title, description, buttonText, buttonClass, iconPosition, onClick } ) => (
+		<Container.Item className="flex flex-col flex-1 bg-background-primary border-0.5 border-solid border-border-subtle rounded-lg shadow-sm-blur-2">
+			<Container className="flex flex-col flex-1">
+				<Container.Item className="gap-2 p-3">
+					<Container containerType="flex" direction="column">
+						<Container.Item>{ icon }</Container.Item>
+						<Container.Item className="flex flex-col gap-1 p-1">
+							<Label size="md" variant="neutral" className="font-medium text-text-primary text-lg">
+								{ title }
+							</Label>
+							<Label size="sm" variant="help" className="text-text-tertiary font-normal text-xs">
+								{ description }
+							</Label>
+						</Container.Item>
+					</Container>
+				</Container.Item>
+				<Container.Item className="mt-auto p-3">
+					<Button
+						className={ `gap-0.5 w-full ${ buttonClass } font-semibold rounded-lg text-text-on-color text-xs` }
+						size="md"
+						iconPosition={ iconPosition }
+						icon={ <ArrowRight size={ 12 } /> }
+						variant="ghost"
+						onClick={ onClick }
+					>
+						{ buttonText }
+					</Button>
+				</Container.Item>
+			</Container>
+		</Container.Item>
 	);
 
-	const aiFormBuilder = (
-		<Container className="flex flex-col flex-1">
-			<Container.Item className="gap-2 p-3">
-				<Container containerType="flex" direction="column">
-					<Container.Item>{ ICONS.wandSparkles }</Container.Item>
-					<Container.Item className="flex flex-col gap-1 p-1">
-						<Label
-							size="md"
-							variant="neutral"
-							className="font-medium text-text-primary text-lg"
-						>
-							{ __( 'Generate Form with AI', 'sureforms' ) }
-						</Label>
-						<Label
-							size="sm"
-							variant="help"
-							className="text-text-tertiary font-normal text-xs"
-						>
-							{ __( 'Experience the future of form building with AI-powered forms. Use AI to build your form 10x faster.', 'sureforms' ) }
-						</Label>
-					</Container.Item>
-				</Container>
-			</Container.Item>
-			<Container.Item className="mt-auto p-3">
-				<Button
-					className="gap-0.5 w-full bg-button-primary border border-solid border-button-primary shadow-sm-blur-2 hover:bg-button-primary font-semibold rounded-lg text-text-on-color text-xs"
-					size="md"
-					icon={ <ArrowRight size={ 12 } /> }
-					iconPosition="right"
-					variant="ghost"
-					onClick={ () => {
-						window.location.href = `${ srfm_admin.site_url }/wp-admin/admin.php?page=add-new-form&method=ai`;
-					} }
-				>
-					{ __( 'Build With AI', 'sureforms' ) }
-				</Button>
-			</Container.Item>
+	const formOptions = {
+		buildFromScratch: {
+			icon: ICONS.filePlus,
+			title: __( 'Build Form From Scratch', 'sureforms' ),
+			description: __( 'Tailor your form precisely to your unique needs. No coding skills required—just unleash your creativity.', 'sureforms' ),
+			buttonText: __( 'Build From Scratch', 'sureforms' ),
+			buttonClass: 'bg-button-secondary border border-solid border-button-secondary shadow-sm-blur-2 hover:bg-button-secondary',
+			iconPosition: 'left',
+			onClick: () => {
+				window.location.href = `${ srfm_admin.site_url }/wp-admin/post-new.php?post_type=sureforms_form`;
+			},
+		},
+		aiFormBuilder: {
+			icon: ICONS.wandSparkles,
+			title: __( 'Generate Form with AI', 'sureforms' ),
+			description: __( 'Experience the future of form building with AI-powered forms. Use AI to build your form 10x faster.', 'sureforms' ),
+			buttonText: __( 'Build With AI', 'sureforms' ),
+			buttonClass: 'bg-button-primary border border-solid border-button-primary shadow-sm-blur-2 hover:bg-button-primary',
+			iconPosition: 'right',
+			onClick: () => {
+				window.location.href = `${ srfm_admin.site_url }/wp-admin/admin.php?page=add-new-form&method=ai`;
+			},
+		},
+	};
+
+	const FormSelection = () => (
+		<Container className="flex flex-col sm:flex-row">
+			{ Object.keys( formOptions ).map( ( key ) => (
+				<FormOption key={ key } { ...formOptions[ key ] } />
+			) ) }
 		</Container>
 	);
 
 	return (
 		<Container
-			className="mt-24 p-4 gap-2 bg-background-primary border-0.5 border-solid border-border-subtle rounded-xl shadow-sm-blur-2 w-[680px] ml-auto mr-auto"
+			className="mt-24 p-4 gap-2 bg-background-primary border-0.5 border-solid border-border-subtle rounded-xl shadow-sm-blur-2 h-full w-[680px] ml-auto mr-auto"
 			containerType="flex"
 			direction="column"
 		>
@@ -100,17 +85,8 @@ export default () => {
 					{ __( 'How would you like to create a new form?', 'sureforms' ) }
 				</Label>
 			</Container.Item>
-			<Container.Item
-				className="p-2 gap-6"
-			>
-				<Container className="flex flex-col sm:flex-row">
-					<Container.Item className="flex flex-col flex-1 bg-background-primary border-0.5 border-solid border-border-subtle rounded-lg shadow-sm-blur-2">
-						{ buildFromScratch }
-					</Container.Item>
-					<Container.Item className="flex flex-col flex-1 bg-background-primary border-0.5 border-solid border-border-subtle rounded-lg shadow-sm-blur-2">
-						{ aiFormBuilder }
-					</Container.Item>
-				</Container>
+			<Container.Item className="p-2 gap-6">
+				<FormSelection />
 			</Container.Item >
 			<Container.Item
 				className="flex p-2 gap-6 justify-center"

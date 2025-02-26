@@ -144,13 +144,13 @@ export default ( props ) => {
 	</Container.Item> );
 
 	return (
-		<Container className="mt-4 w-full h-full mx-auto" containerType="flex" direction="column">
+		<Container className="mt-32 w-full h-full mx-auto" containerType="flex" direction="column">
 			<Container.Item>
 				{ ! srfm_admin?.is_pro_active && ! srfm_admin?.is_pro_license_active && <ConnectWithAIBanner /> }
 			</Container.Item>
 			<Container.Item>
 				<Container
-					className="p-2 gap-1.5 bg-background-primary border-0.5 border-solid border-border-subtle shadow-sm-blur-2 rounded-xl w-full h-full max-w-[680px] mx-auto"
+					className="p-4 gap-0.5 bg-background-primary border-0.5 border-solid border-border-subtle shadow-sm-blur-2 rounded-xl w-full h-full max-w-[680px] mx-auto"
 					containerType="flex"
 					direction="column"
 				>
