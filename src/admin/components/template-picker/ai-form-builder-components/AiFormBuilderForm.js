@@ -148,22 +148,22 @@ export default ( props ) => {
 		const buttonProps = isListening
 			? {
 				icon: <Mic size={ 12 } />,
-				className: srfmClassNames( [
+				required_className: [
 					'bg-badge-background-green',
 					'border-badge-border-green',
 					'text-badge-color-green',
 					'hover:bg-badge-background-green',
-				] ),
+				],
 				label: __( 'Listening', 'sureforms' ),
 			}
 			: {
 				icon: <MicOff size={ 12 } />,
-				className: srfmClassNames( [
+				required_className: [
 					'bg-badge-background-orange-10',
 					'border-badge-background-orange-30',
 					'text-brand-800',
 					'hover:bg-badge-background-orange-10',
-				] ),
+				],
 				label: __( 'Voice Input', 'sureforms' ),
 			};
 
@@ -173,7 +173,7 @@ export default ( props ) => {
 				iconPosition="left"
 				variant="outline"
 				size="xs"
-				className={ `rounded-full border-0.5 border-solid font-medium text-xs hover:cursor-pointer ${ buttonProps.className }` }
+				className={ `rounded-full border-0.5 border-solid font-medium text-xs hover:cursor-pointer ${ srfmClassNames( buttonProps.required_className ) }` }
 				onClick={ toggleListening }
 			>
 				{ buttonProps.label }
