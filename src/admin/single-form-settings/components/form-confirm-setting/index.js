@@ -7,6 +7,8 @@ import ComponentKeyValueUI from '@Components/misc/ComponentKeyValueUI';
 import { useDebouncedCallback } from 'use-debounce';
 import { applyFilters } from '@wordpress/hooks';
 import DefaultConfirmationTypes from './DefaultConfirmationTypes';
+import { Label, Title } from '@bsf/force-ui';
+import RadioGroup from '@Admin/components/RadioGroup';
 
 const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 	const sureforms_keys = useSelect( ( select ) =>
@@ -152,34 +154,55 @@ const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 	}, [] );
 
 	// Added filter so that the additional confirmation types can be added.
-	const confirmationTypeInputs = applyFilters( 'srfm.formConfirmation.confirmationType.inputs', [
+	const confirmationTypeInputs = applyFilters(
+		'srfm.formConfirmation.confirmationType.inputs',
+		[
+			{
+				label: __( 'Success Message', 'sureforms' ),
+				value: 'same page',
+				component: (
+					<DefaultConfirmationTypes
+						data={ data }
+						setData={ setData }
+						pageOptions={ pageOptions }
+						errorMessage={ errorMessage }
+						setErrorMessage={ setErrorMessage }
+						keyValueComponent={ keyValueComponent }
+					/>
+				),
+			},
+			{
+				label: __( 'Redirect', 'sureforms' ),
+				value: 'different page',
+				subOptionLabel: __( 'Redirect to', 'sureforms' ),
+				subOptions: [
+					{
+						label: __( 'Page', 'sureforms' ),
+						value: 'different page',
+					},
+					{
+						label: __( 'Custom URL', 'sureforms' ),
+						value: 'custom url',
+					},
+				],
+				component: (
+					<DefaultConfirmationTypes
+						data={ data }
+						setData={ setData }
+						pageOptions={ pageOptions }
+						errorMessage={ errorMessage }
+						setErrorMessage={ setErrorMessage }
+						keyValueComponent={ keyValueComponent }
+					/>
+				),
+			},
+		],
 		{
-			label: __( 'Success Message', 'sureforms' ),
-			value: 'same page',
-			component: <DefaultConfirmationTypes data={ data } setData={ setData } pageOptions={ pageOptions } errorMessage={ errorMessage } setErrorMessage={ setErrorMessage } keyValueComponent={ keyValueComponent } />,
-		},
-		{
-			label: __( 'Redirect', 'sureforms' ),
-			value: 'different page',
-			subOptionLabel: __( 'Redirect to', 'sureforms' ),
-			subOptions: [
-				{
-					label: __( 'Page', 'sureforms' ),
-					value: 'different page',
-				},
-				{
-					label: __( 'Custom URL', 'sureforms' ),
-					value: 'custom url',
-				},
-			],
-			component: <DefaultConfirmationTypes data={ data } setData={ setData } pageOptions={ pageOptions } errorMessage={ errorMessage } setErrorMessage={ setErrorMessage } keyValueComponent={ keyValueComponent } />,
-		},
-	], {
-		data,
-		setData,
-		errorMessage,
-		setErrorMessage,
-	}
+			data,
+			setData,
+			errorMessage,
+			setErrorMessage,
+		}
 	);
 
 	// Find the selected confirmation type and sub type (if any).
@@ -202,98 +225,82 @@ const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 	}, [ data ] );
 
 	return (
-		<div className="srfm-modal-content">
-			<div className="srfm-modal-inner-content">
-				<div className="srfm-modal-inner-heading">
-					<div className="srfm-modal-inner-heading-text">
-						<h4>{ __( 'Form Confirmation', 'sureforms' ) }</h4>
-					</div>
-				</div>
-				<div className="srfm-modal-inner-box">
-					<div className="srfm-modal-inner-box-text">
-						<h5>{ __( 'Confirmation', 'sureforms' ) }</h5>
-					</div>
-					<div className="srfm-modal-separator" />
-					<div className="srfm-modal-inner-box-content">
-						<div className="srfm-modal-option-box">
-							<div className="srfm-modal-label">
-								<label>
-									{ __( 'Confirmation Type', 'sureforms' ) }
-								</label>
-							</div>
-							<div className="srfm-options-wrapper">
-								{
-									confirmationTypeInputs.map( ( option, index ) => {
-										const isActive = isOptionActive( option, data?.confirmation_type );
-										return (
-											<label
-												className="srfm-option-label"
-												htmlFor={ `confirm-type-${ index }` }
-												key={ index }
-											>
-												<div
-													className={ `srfm-option ${ isActive ? 'srfm-active-conf-type' : '' }` }
-												>
-													<input
-														className="srfm-option-input"
-														value={ option.value }
-														checked={ isActive }
-														onChange={ ( e ) => setData( { ...data, confirmation_type: e.target.value } ) }
-														type="radio"
-														id={ `confirm-type-${ index }` }
-														name="confirm-type"
-													/>
-													{ option.label }
-												</div>
-											</label>
+		<div className="space-y-7 pb-8">
+			<div>
+				<Title
+					tag="h4"
+					title={ __( 'Form Confirmation', 'sureforms' ) }
+				/>
+			</div>
+			<div className="p-6 bg-background-primary rounded-lg shadow-sm">
+				<div className="space-y-6">
+					<div className="space-y-2">
+						<Label>
+							{ __( 'Confirmation Type', 'sureforms' ) }
+						</Label>
+						<div>
+							<RadioGroup cols={ 2 }>
+								{ confirmationTypeInputs.map(
+									( option, index ) => {
+										const isActive = isOptionActive(
+											option,
+											data?.confirmation_type
 										);
-									} )
-								}
-							</div>
+										return (
+											<RadioGroup.Option
+												key={ index }
+												label={ option.label }
+												onChange={ () =>
+													setData( {
+														...data,
+														confirmation_type:
+															option.value,
+													} )
+												}
+												value={ option.value }
+												checked={ isActive }
+											/>
+										);
+									}
+								) }
+							</RadioGroup>
 						</div>
-						{
-							confirmationOption?.subOptionLabel && (
-								<div className="srfm-modal-option-box">
-									<div className="srfm-modal-label">
-										<label>
-											{ confirmationOption?.subOptionLabel }
-										</label>
-									</div>
-									<div className="srfm-options-wrapper">
-										{
-										// render the suboptions based on the selected confirmation type.
-											confirmationOption?.subOptions?.map( ( subOption, index ) => (
-												<label
-													className="srfm-option-label"
-													htmlFor={ `suboptions-type-${ index }` }
-													key={ index }
-												>
-													<div
-														className={ `srfm-option ${ data?.confirmation_type === subOption.value ? 'srfm-active-conf-type' : '' }` }
-													>
-														<input
-															className="srfm-option-input"
-															value={ subOption.value }
-															checked={ data?.confirmation_type === subOption.value }
-															onChange={ ( e ) => setData( { ...data, confirmation_type: e.target.value } ) }
-															type="radio"
-															id={ `suboptions-type-${ index }` }
-															name="suboptions-type"
-														/>
-														{ subOption.label }
-													</div>
-												</label>
-											) )
-										}
-									</div>
-								</div>
-							)
-						}
-						{
-							// Render the associated component based on the selected confirmation type.
-							confirmationOption?.component
-						}
 					</div>
+					{ confirmationOption?.subOptionLabel && (
+						<div className="space-y-2">
+							<Label>
+								{ confirmationOption?.subOptionLabel }
+							</Label>
+							<RadioGroup cols={ 2 }>
+								{ confirmationOption?.subOptions?.map(
+									( subOption, index ) => {
+										return (
+											<RadioGroup.Option
+												key={ index }
+												label={ subOption.label }
+												value={ subOption.value }
+												checked={
+													data?.confirmation_type ===
+													subOption.value
+												}
+												onChange={ () =>
+													setData( {
+														...data,
+														confirmation_type:
+															subOption.value,
+													} )
+												}
+											/>
+										);
+									}
+								) }
+							</RadioGroup>
+						</div>
+					) }
+					{
+						// Render the associated component based on the selected confirmation type.
+						confirmationOption?.component
+					}
 				</div>
 			</div>
 		</div>

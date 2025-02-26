@@ -171,8 +171,14 @@ module.exports = withTW( {
 				'toggle-off-border': '#D1D5DB',
 				'toggle-on-hover': '#F18E63',
 				'toggle-on-border': '#F8A581',
-				'toggle-on-disabled': '#FFF3EE',
-				'toggle-off-disabled': '#F3F4F6',
+				'toggle-on-disabled': '#EEF2FF',
+				'toggle-off-disabled': '#FFF3EE',
+			},
+			spacing: {
+				'content-container': '43.5rem',
+			},
+			fontFamily: {
+				sans: [ 'Figtree', 'sans-serif' ],
 			},
 			lineHeight: {
 				7.5: '1.875rem', // 30px
@@ -198,9 +204,8 @@ module.exports = withTW( {
 			borderWidth: [ 'last' ],
 		},
 	},
-	plugins: [ require( '@tailwindcss/forms' ) ],
 	corePlugins: {
 		preflight: false,
 	},
-	important: ':is(.srfm-admin-wrapper)',
+	important: ':is(#srfm-dashboard-container, #srfm-settings-container, #srfm-dialog-root)',
 } );
