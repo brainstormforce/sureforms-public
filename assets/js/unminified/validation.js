@@ -1,3 +1,5 @@
+import { applyFilters } from '@wordpress/hooks';
+
 async function getUniqueValidationData( checkData, formId, ajaxUrl, nonce ) {
 	let queryString =
 		'action=validation_ajax_action&nonce=' +
@@ -538,31 +540,6 @@ export async function fieldValidation(
 			}
 		}
 
-		if ( container.classList.contains( 'srfm-signature-block' ) ) {
-			const signatureInput = container.querySelector(
-				'.srfm-input-signature-hidden'
-			);
-			const signatureRequired =
-				signatureInput.getAttribute( 'data-required' );
-			if ( signatureRequired === 'true' && ! signatureInput.value ) {
-				window?.srfm?.toggleErrorState(
-					signatureInput.closest( '.srfm-block' ),
-					true
-				);
-				validateResult = true;
-				// Set the first error input.
-				setFirstErrorInput(
-					container.querySelector( '.srfm-icon' ),
-					container
-				);
-			} else {
-				window?.srfm?.toggleErrorState(
-					signatureInput.closest( '.srfm-block' ),
-					false
-				);
-			}
-		}
-
 		// Slider Field.
 		if ( container.classList.contains( 'srfm-slider-block' ) ) {
 			const isSliderRequired = container.getAttribute( 'data-required' );
@@ -770,6 +747,14 @@ export async function fieldValidation(
 				}
 			}
 		}
+
+		// filter to modify the validation result and set the first error input
+		validateResult = applyFilters(
+			'srfm.modifyFielValidationResult',
+			validateResult,
+			container,
+			setFirstErrorInput
+		);
 	}
 
 	/**
