@@ -316,6 +316,8 @@ body.post-type-sureforms_form {
 		max-width: calc( 620px + 0.6em ) !important; //Astra theme compatibility. It overrides the width.
 		margin: 0 auto;
 		margin-top: 2em;
+		// Removed the margin-bottom from blocks, will be handled using the gap property.
+		@include srfm-gap-styles;
 
 		// apply width to all blocks except the address block.
 		.block-list-appender,
@@ -336,7 +338,6 @@ body.post-type-sureforms_form {
 				margin-right: 0 !important; // This is needed to get the field width working.
 				margin-top: 0 !important; // Had to add as various themes distort the layout.
 			}
-			padding: 0 0.5rem;
 			max-width: 100%;
 		}
 	}

@@ -6,6 +6,7 @@
 	.srfm-form {
 		display: flex;
 		flex-wrap: wrap;
+		@include srfm-gap-styles;
 
 		.conditional-logic {
 			display: none;
