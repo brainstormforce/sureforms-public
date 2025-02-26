@@ -503,20 +503,6 @@ class Admin {
 
 		if ( $is_screen_sureforms_form_settings ) {
 			wp_enqueue_style( SRFM_SLUG . '-settings', $css_uri . 'backend/settings' . $file_prefix . $rtl . '.css', [], SRFM_VER );
-
-			// if version is equal to or lower than 6.6.2 then add compatibility css.
-			if ( version_compare( $wp_version, '6.6.2', '<=' ) ) {
-				$srfm_inline_css = '
-				.srfm-settings-page-container
-					.components-toggle-control {
-						.components-base-control__help{
-							margin-left: 4em;
-						}
-					}
-				}
-				';
-				wp_add_inline_style( SRFM_SLUG . '-settings', $srfm_inline_css );
-			}
 		}
 
 		// Enqueue styles for the entries page.

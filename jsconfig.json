@@ -12,5 +12,11 @@
 			"@Image/*": [ "images/*" ],
 			"@IncBlocks/*": [ "inc/blocks/*" ]
 		}
-	}
+	},
+	"exclude": [
+		"node_modules",
+		"dist",
+		"build",
+		"assets"
+	]
 }

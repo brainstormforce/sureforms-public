@@ -294,17 +294,6 @@ $req_err_color: #dc2625;
 							align-self: stretch;
 							position: relative;
 
-							.srfm-scroll-dropdown {
-								position: absolute;
-								right: -5px;
-								bottom: 1px;
-
-								.has-icon {
-									&:focus:not( :disabled ) {
-										box-shadow: none;
-									}
-								}
-							}
 							.components-base-control__help {
 								margin: 0;
 								align-self: flex-start;
@@ -397,14 +386,6 @@ $req_err_color: #dc2625;
 								display: flex;
 								gap: 12px;
 
-								.srfm-active-conf-type {
-									border-color: $primary_color !important;
-								}
-
-								.srfm-active-after-submit {
-									border-color: $primary_color !important;
-								}
-
 								.srfm-option {
 									border: 1px solid #dce0e6;
 									padding: 8px 16px 8px 16px;
@@ -412,35 +393,6 @@ $req_err_color: #dc2625;
 									display: flex;
 									align-items: center;
 									gap: 8px;
-
-									.srfm-option-input {
-										margin: 0;
-										box-shadow: none;
-
-										&:focus {
-											box-shadow: none;
-											border-color: $primary_color;
-										}
-
-										&:checked {
-											background-color: $primary_color;
-											border-color: $primary_color;
-
-											&:focus {
-												box-shadow: none;
-											}
-										}
-
-										&:checked::before {
-											content: "";
-											border-radius: 50%;
-											width: 0.5rem;
-											height: 0.5rem;
-											margin: 0.1875rem;
-											background-color: #fff;
-											line-height: 1.14285714;
-										}
-									}
 								}
 
 								.srfm-select-page {
@@ -450,14 +402,6 @@ $req_err_color: #dc2625;
 									.srfm-select__input {
 										box-shadow: none;
 									}
-								}
-
-								.srfm-option-label {
-									color: var( --dashboard-heading, #1e293b );
-									font-size: 14px;
-									font-style: normal;
-									line-height: 20px;
-									cursor: pointer;
 								}
 							}
 						}
@@ -531,27 +475,6 @@ $req_err_color: #dc2625;
 							.srfm-editor-wrap {
 								position: relative;
 
-								.srfm-editor-dropdown {
-									position: absolute;
-									right: 0;
-									top: 0;
-									color: var( --dashboard-heading, #1e293b );
-									border: 1px solid #dce0e6;
-									border-radius: 6px;
-
-									.components-dropdown-menu__toggle svg {
-										height: 8px;
-									}
-
-									.components-button {
-										&:hover {
-											color: #1e293b;
-										}
-
-										color: #1e293b !important;
-									}
-								}
-
 								ul {
 									list-style: disc;
 									margin-left: 2em;
@@ -572,13 +495,6 @@ $req_err_color: #dc2625;
 										height: 34px;
 										margin-bottom: 1rem;
 									}
-								}
-
-								.srfm-active-editor {
-									background: $primary_color;
-
-									box-shadow: 0px 1px 2px 0px rgba( 0, 0, 0, 0.05 );
-									color: #ffffff;
 								}
 							}
 						}
@@ -901,67 +817,6 @@ $req_err_color: #dc2625;
 			.components-checkbox-control__input[type="checkbox"] {
 				border: 1px solid #dce0e6;
 				box-shadow: 0 1px 2px 0 rgba( 13, 19, 30, 0.1 );
-			}
-
-			&.srfm-components-input-control,
-			.srfm-components-select-control {
-				gap: 0;
-
-				label {
-					color: $label_color;
-					font-size: 0.7em;
-					line-height: normal;
-					text-transform: none;
-					margin-bottom: 0.3em;
-				}
-
-				.components-text-control__input,
-				.components-select-control__input {
-					font-size: 0.8em;
-					border: 1px solid $border_color;
-					border-radius: 0.25em;
-					padding: 0.75em 1em;
-					box-shadow: none;
-
-					&:focus {
-						border: 1px solid $primary_color !important;
-						box-shadow: none;
-					}
-
-					&::placeholder {
-						color: $placeholder_color;
-					}
-				}
-
-				.components-textarea-control__input {
-					font-size: 0.8em;
-					border: 1px solid $border_color;
-					border-radius: 0.25em;
-					padding: 0.75em 1em;
-					box-shadow: none;
-
-					&:focus {
-						border: 1px solid $primary_color;
-						box-shadow: none;
-					}
-				}
-
-				.components-select-control__input {
-					height: auto;
-					line-height: normal;
-					border: 1px solid $border_color;
-					box-shadow: none;
-
-					&:focus {
-						border: 1.5px solid $primary_color;
-						box-shadow: none;
-					}
-				}
-
-				.components-input-control__backdrop {
-					border: none;
-					box-shadow: none;
-				}
 			}
 
 			&:nth-last-child( 1 ) {
