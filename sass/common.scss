@@ -38,19 +38,19 @@ button.srfm-toolbar-width-setting-button {
 	}
 
 	.srfm-block-width-25 {
-		flex: 0 1 calc( 25% - ( 3 / 4 ) * var( --srfm-col-gap-between-blocks ) );
+		flex: 0 1 calc( 25% - ( 3 / 4 ) * var( --srfm-column-gap-between-blocks ) );
 	}
 
 	.srfm-block-width-33-33 {
-		flex: 0 1 calc( 33.33% - ( 2 / 3 ) * var( --srfm-col-gap-between-blocks ) );
+		flex: 0 1 calc( 33.33% - ( 2 / 3 ) * var( --srfm-column-gap-between-blocks ) );
 	}
 
 	.srfm-block-width-50 {
-		flex: 0 1 calc( 50% - var( --srfm-col-gap-between-blocks ) / 2 );
+		flex: 0 1 calc( 50% - var( --srfm-column-gap-between-blocks ) / 2 );
 	}
 
 	.srfm-block-width-75 {
-		flex: 0 1 calc( 75% - var( --srfm-col-gap-between-blocks ) / 4 );
+		flex: 0 1 calc( 75% - var( --srfm-column-gap-between-blocks ) / 4 );
 	}
 
 	.srfm-block-width-100 {

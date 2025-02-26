@@ -334,5 +334,5 @@
 // Row Gap and Column Gap Mixin.
 @mixin srfm-gap-styles {
 	row-gap: var( --srfm-row-gap-between-blocks );
-	column-gap: var( --srfm-col-gap-between-blocks );
+	column-gap: var( --srfm-column-gap-between-blocks );
 }
