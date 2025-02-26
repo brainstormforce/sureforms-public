@@ -4,7 +4,7 @@ Tags: contact form, custom form, forms, contact form plugin, form builder
 Requires at least: 6.4
 Tested up to: 6.7.2
 Requires PHP: 7.4
-Stable tag: 1.4.0
+Stable tag: 1.4.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -259,6 +259,8 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 = x.x.x =
 * Improvement: Improved code quality.
 * Improvement: Made submission text translatable.
+= 1.4.1 - 25th February 2025 =
+* Fix: Addressed a security bug. Props to Naresh Dhanuk for privately reporting it.
 = 1.4.0 - 12th February 2025 =
 * Improvement: Prevented public access to the form archive page.
 * Improvement: Simplified the form confirmation message.
@@ -287,7 +289,7 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 * Fix: Addressed an issue where forms were submitted even when the Number field contained values outside the defined minimum and maximum range.
 = 1.2.2 - 24th December 2024 =
 * Fix: Resolved an issue where the email template failed to render in the inbox when a third-party plugin overrode the email headers in the wp_mail() function.
-* Fix: Addressed a security vulnerability. Props to Lucio Sá for privately reporting it.
+* Fix: Addressed a security bug. Props to Lucio Sá for privately reporting it.
 = 1.2.1 - 17th December 2024 =
 * Improvement: Revamped the General and Spam Protection settings for an improved user experience.
 * Improvement: Enhanced screen reader announcements for validation messages.
