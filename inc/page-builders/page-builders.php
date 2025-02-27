@@ -57,6 +57,9 @@ class Page_Builders {
 		}
 
 		Frontend_Assets::enqueue_scripts_and_styles();
+
+		// Action to enqueue common field assets.
+		do_action( 'srfm_enqueue_common_field_assets' );
 	}
 
 }
