@@ -49,12 +49,10 @@ export default () => {
 								<Container.Item
 								>
 									<Button
-										className="bg-button-primary text-white shadow-sm-blur-1 gap-1 hover:bg-button-primary focus:bg-button-primary"
+										className="bg-button-primary text-white shadow-sm-blur-1 gap-1 hover:bg-button-primary focus:bg-button-primary focus:[box-shadow:none]"
 										icon={ <Plus aria-label="icon" role="img" /> }
 										iconPosition="right"
 										size="md"
-										tag="button"
-										type="button"
 										variant="ghost"
 										onClick={ () => {
 											window.location.href = `${ siteUrl }/wp-admin/admin.php?page=add-new-form`;
@@ -68,12 +66,10 @@ export default () => {
 								<Container.Item
 								>
 									<Button
-										className="gap-1"
+										className="gap-1 focus:[box-shadow:none]"
 										icon={ <SquareArrowOutUpRight aria-label="icon" role="img" /> }
 										iconPosition="right"
 										size="md"
-										tag="button"
-										type="button"
 										variant="ghost"
 										onClick={ () => {
 											window.open( 'https://sureforms.com/docs/', '_blank' );

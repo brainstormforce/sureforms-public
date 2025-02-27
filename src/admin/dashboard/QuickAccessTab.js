@@ -42,7 +42,7 @@ export default () => {
 				>
 					<Container.Item className="flex">
 						<Button
-							className="font-medium cursor-pointer text-sm text-text-primary"
+							className="font-medium cursor-pointer text-sm text-text-primary focus:[box-shadow:none]"
 							icon={ icon }
 							iconPosition="left"
 							size="xs"

@@ -54,7 +54,7 @@ export default () => {
 						<Button
 							variant="secondary"
 							size="md"
-							className="border border-solid border-button-secondary bg-button-secondary hover:bg-button-secondary gap-1 shadow-sm-blur-2 text-sm"
+							className="border border-solid border-button-secondary bg-button-secondary hover:bg-button-secondary gap-1 shadow-sm-blur-2 text-sm focus:[box-shadow:none]"
 							onClick={ () => window.open( addQueryParam( srfm_admin?.pricing_page_url || srfm_admin?.sureforms_pricing_page, 'dashboard-cta' ), '_blank', 'noreferrer' ) }
 						>
 							{ __( 'Upgrade now', 'sureforms' ) }

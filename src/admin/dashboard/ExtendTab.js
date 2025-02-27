@@ -42,7 +42,7 @@ export default () => {
 	const getPluginStatusText = ( plugin ) => {
 		const statusTextMap = {
 			Installed: srfm_admin.plugin_activate_text,
-			Install: __( 'Install', 'sureforms' ),
+			Install: __( 'Install & Activate', 'sureforms' ),
 			Activated: srfm_admin.plugin_activated_text,
 		};
 
@@ -142,7 +142,7 @@ export default () => {
 									</Label>
 								</Container.Item>
 								<Button
-									className={ cn( 'rounded-sm border-0.5 border-solid border-border-subtle shadow-sm-blur-2 text-xs font-semibold text-text-primary w-fit p-2 gap-0.5', ( plugin.status === 'Activated' ) && 'bg-badge-background-green hover:bg-badge-background-green' ) }
+									className={ cn( 'rounded-sm border-0.5 border-solid border-border-subtle shadow-sm-blur-2 text-xs font-semibold text-text-primary w-fit p-2 gap-0.5 focus:[box-shadow:none]', ( plugin.status === 'Activated' ) && 'bg-badge-background-green hover:bg-badge-background-green' ) }
 									variant="outline"
 									onClick={ ( e ) => handlePluginActionTrigger( { plugin, e } ) }
 								>
