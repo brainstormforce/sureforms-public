@@ -3,6 +3,62 @@ import { Button, Container, Label } from '@bsf/force-ui';
 import { Ticket, CircleHelp, MessagesSquare, Star } from 'lucide-react';
 
 export default () => {
+	const quickAccessOptions = [
+		{
+			key: 'support-ticket',
+			label: __( 'Open Support Ticket', 'sureforms' ),
+			icon: <Ticket className="w-12 text-icon-primary" />,
+			link: '#',
+		},
+		{
+			key: 'help-center',
+			label: __( 'Help Center', 'sureforms' ),
+			icon: <CircleHelp className="w-12 text-icon-primary" />,
+			link: '#',
+		},
+		{
+			key: 'join-community',
+			label: __( 'Join the Community', 'sureforms' ),
+			icon: <MessagesSquare className="w-12 text-icon-primary" />,
+			link: '#',
+		},
+		{
+			key: 'rate-us',
+			label: __( 'Rate Us', 'sureforms' ),
+			icon: <Star className="w-12 text-icon-primary" />,
+			link: 'https://wordpress.org/support/plugin/sureforms/reviews/?rate=5#new-post',
+		},
+	];
+
+	const QuickAccessButtons = () => {
+		return (
+			quickAccessOptions.map( ( { key, label, icon, link } ) => (
+				<Container
+					key={ key }
+					align="center"
+					className="gap-1 p-1 rounded-md bg-background-primary shadow-sm-blur-1"
+					containerType="flex"
+					direction="row"
+				>
+					<Container.Item className="flex">
+						<Button
+							className="font-medium cursor-pointer text-sm text-text-primary"
+							icon={ icon }
+							iconPosition="left"
+							size="xs"
+							variant="ghost"
+							onClick={ () => {
+								window.location.href = link;
+							} }
+						>
+							{ label }
+						</Button>
+					</Container.Item>
+				</Container>
+			) )
+		);
+	};
+
 	return (
 		<Container
 			className="bg-background-primary border border-solid rounded-xl border-border-subtle p-3 shadow-sm"
@@ -16,102 +72,7 @@ export default () => {
 				</Label>
 			</Container.Item>
 			<Container.Item className="flex flex-col bg-background-secondary gap-1 p-2 rounded-lg">
-				{ /* Support Ticket */ }
-				<Container
-					align="center"
-					className="gap-1 p-1 rounded-md bg-background-primary shadow-sm-blur-1"
-					containerType="flex"
-					direction="row"
-				>
-					<Container.Item className="flex">
-						<Button
-							className="font-medium cursor-pointer text-sm text-text-primary"
-							icon={ <Ticket className="w-12 text-icon-primary" /> }
-							iconPosition="left"
-							size="xs"
-							tag="button"
-							type="button"
-							variant="ghost"
-							onClick={ () => {
-								window.location.href = '#';
-							} }
-						>
-							{ __( 'Open Support Ticket', 'sureforms' ) }
-						</Button>
-					</Container.Item>
-				</Container>
-				{ /* Help center */ }
-				<Container
-					align="center"
-					className="gap-1 p-1 rounded-md bg-background-primary shadow-sm-blur-1"
-					containerType="flex"
-					direction="row"
-				>
-					<Container.Item className="flex">
-						<Button
-							className="font-medium cursor-pointer text-sm text-text-primary"
-							icon={ <CircleHelp className="w-12 text-icon-primary" /> }
-							iconPosition="left"
-							size="xs"
-							tag="button"
-							type="button"
-							variant="ghost"
-							onClick={ () => {
-								window.location.href = '#';
-							} }
-						>
-							{ __( 'Help Center', 'sureforms' ) }
-						</Button>
-					</Container.Item>
-				</Container>
-				{ /* Join the Community */ }
-				<Container
-					align="center"
-					className="gap-1 p-1 rounded-md bg-background-primary shadow-sm-blur-1"
-					containerType="flex"
-					direction="row"
-				>
-					<Container.Item className="flex">
-						<Button
-							className="font-medium cursor-pointer text-sm text-text-primary"
-							icon={ <MessagesSquare className="w-12 text-icon-primary" /> }
-							iconPosition="left"
-							size="xs"
-							tag="button"
-							type="button"
-							variant="ghost"
-							onClick={ () => {
-								window.location.href = '#';
-							} }
-						>
-							{ __( 'Join the Community', 'sureforms' ) }
-						</Button>
-					</Container.Item>
-				</Container>
-				{ /* Rate Us */ }
-				<Container
-					align="center"
-					className="gap-1 p-1 rounded-md bg-background-primary shadow-sm-blur-1"
-					containerType="flex"
-					direction="row"
-				>
-					<Container.Item className="flex">
-						<Button
-							className="font-medium cursor-pointer text-sm text-text-primary"
-							icon={ <Star className="w-12 text-icon-primary" /> }
-							iconPosition="left"
-							size="xs"
-							tag="button"
-							type="button"
-							variant="ghost"
-							onClick={ () => {
-								window.location.href = '#';
-							} }
-						>
-							{ __( 'Rate Us', 'sureforms' ) }
-						</Button>
-					</Container.Item>
-				</Container>
+				<QuickAccessButtons />
 			</Container.Item>
 		</Container>
 	);
