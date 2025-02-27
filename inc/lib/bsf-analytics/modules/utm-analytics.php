@@ -12,7 +12,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 if ( ! class_exists( 'BSF_UTM_Analytics' ) ) {
 
-	define( 'BSF_UTM_ANALYTICS_REFERER_OPTION', 'bsf_product_referers' );
+	
+	if ( ! defined( 'BSF_UTM_ANALYTICS_REFERER' ) ) {
+		define( 'BSF_UTM_ANALYTICS_REFERER', 'bsf_product_referers' );
+	}
 
 	/**
 	 * UTM Analytics class
@@ -98,14 +101,14 @@ if ( ! class_exists( 'BSF_UTM_Analytics' ) ) {
 	
 			$slugs = array_map( 'sanitize_text_field', $slugs );
 	
-			$bsf_product_referers = get_option( BSF_UTM_ANALYTICS_REFERER_OPTION, [] );
+			$bsf_product_referers = get_option( BSF_UTM_ANALYTICS_REFERER, [] );
 			if ( ! is_array( $bsf_product_referers ) ) {
 				$bsf_product_referers = [];
 			}
 	
 			$bsf_product_referers[ $slugs['product'] ] = $slugs['referer'];
 	
-			update_option( BSF_UTM_ANALYTICS_REFERER_OPTION, $bsf_product_referers );
+			update_option( BSF_UTM_ANALYTICS_REFERER, $bsf_product_referers );
 		}
 	
 		/**
@@ -130,7 +133,7 @@ if ( ! class_exists( 'BSF_UTM_Analytics' ) ) {
 				return $link;
 			}
 	
-			$bsf_product_referers = get_option( BSF_UTM_ANALYTICS_REFERER_OPTION, [] );
+			$bsf_product_referers = get_option( BSF_UTM_ANALYTICS_REFERER, [] );
 	
 			if ( ! is_array( $bsf_product_referers ) || empty( $bsf_product_referers[ $product ] ) ) {
 				return $link;
