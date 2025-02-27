@@ -8,19 +8,19 @@ export default () => {
 			key: 'support-ticket',
 			label: __( 'Open Support Ticket', 'sureforms' ),
 			icon: <Ticket className="w-12 text-icon-primary" />,
-			link: '#',
+			link: 'https://sureforms.com/contact/',
 		},
 		{
 			key: 'help-center',
 			label: __( 'Help Center', 'sureforms' ),
 			icon: <CircleHelp className="w-12 text-icon-primary" />,
-			link: '#',
+			link: 'https://sureforms.com/docs/',
 		},
 		{
 			key: 'join-community',
 			label: __( 'Join the Community', 'sureforms' ),
 			icon: <MessagesSquare className="w-12 text-icon-primary" />,
-			link: '#',
+			link: 'https://www.facebook.com/groups/surecrafted',
 		},
 		{
 			key: 'rate-us',
@@ -47,9 +47,7 @@ export default () => {
 							iconPosition="left"
 							size="xs"
 							variant="ghost"
-							onClick={ () => {
-								window.location.href = link;
-							} }
+							onClick={ () => window.open( link, '_blank' ) }
 						>
 							{ label }
 						</Button>

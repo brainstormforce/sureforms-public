@@ -2,6 +2,7 @@ import { __ } from '@wordpress/i18n';
 import { Button, Container, Label, Title } from '@bsf/force-ui';
 import { Check, Zap } from 'lucide-react';
 import upgradeToProPlaceholder from '@Image/upgrade-to-pro.svg';
+import { addQueryParam } from '@Utils/Helpers';
 
 export default () => {
 	const featuresText = [
@@ -15,12 +16,12 @@ export default () => {
 
 	return (
 		<Container
-			className="bg-background-primary p-5 xl:p-6 shadow-sm rounded-xl border border-solid border-border-subtle gap-y-8 md:gap-x-8"
+			className="bg-background-primary p-4 shadow-sm rounded-xl border border-solid border-border-subtle gap-1"
 			containerType="grid"
 			cols={ 12 }
 		>
-			<Container.Item className="flex flex-col gap-8 p-2" colSpan={ 8 }>
-				<Container className="flex flex-col">
+			<Container.Item className="flex flex-col p-2" colSpan={ 7 }>
+				<Container className="flex flex-col gap-1">
 					<Container.Item className="flex flex-row gap-1 items-center">
 						<Zap className="w-12 text-brand-800 border-1.25" />
 						<Label className="font-semibold cursor-pointer text-xs text-brand-800">
@@ -50,19 +51,24 @@ export default () => {
 						</Container>
 					</Container.Item>
 					<Container.Item className="p-2 gap-3">
-						<Button variant="secondary" size="md" className="border border-solid border-button-secondary bg-button-secondary hover:bg-button-secondary gap-1 shadow-sm-blur-2 text-sm">
+						<Button
+							variant="secondary"
+							size="md"
+							className="border border-solid border-button-secondary bg-button-secondary hover:bg-button-secondary gap-1 shadow-sm-blur-2 text-sm"
+							onClick={ () => window.open( addQueryParam( srfm_admin?.pricing_page_url || srfm_admin?.sureforms_pricing_page, 'dashboard-cta' ), '_blank', 'noreferrer' ) }
+						>
 							{ __( 'Upgrade now', 'sureforms' ) }
 						</Button>
 					</Container.Item>
 				</Container>
-			</Container.Item>
-			<Container.Item className="p-2 gap-1.5 flex justify-center items-center" colSpan={ 4 }>
+			</Container.Item >
+			<Container.Item className="p-2 gap-1.5 flex justify-center items-center" colSpan={ 5 }>
 				<img
 					src={ upgradeToProPlaceholder }
 					alt={ __( 'Upgrade To Pro', 'sureforms' ) }
 					className="max-w-full h-auto"
 				/>
 			</Container.Item>
-		</Container>
+		</Container >
 	);
 };

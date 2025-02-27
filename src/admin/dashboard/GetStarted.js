@@ -8,22 +8,22 @@ export default () => {
 	return (
 		<>
 			<Container
-				className="bg-background-primary p-5 xl:p-6 shadow-sm rounded-xl border border-solid border-border-subtle gap-y-8 md:gap-x-8"
+				className="bg-background-primary p-4 shadow-sm rounded-xl border border-solid border-border-subtle gap-y-8 md:gap-x-8"
 				containerType="grid"
 				cols={ 12 }
 				align="center"
 			>
 				<Container.Item
-					colSpan={ 8 }
+					className="flex flex-col gap-6 col-span-12 md:col-span-7 lg:col-span-7"
 				>
 					<Container
 						containerType="grid"
 						cols={ 8 }
-						gap="sm"
 					>
 
 						<Container.Item
 							colSpan={ 8 }
+							className="flex flex-col gap-1"
 						>
 							<Title
 								description=""
@@ -32,20 +32,19 @@ export default () => {
 								size="lg"
 								tag="h4"
 								title={ __( 'Welcome to SureForms!', 'sureforms' ) }
-								className="p-2"
+								className="px-2"
 							/>
 							<Label
 								size="sm"
 								variant="neutral"
-								className="p-2 font-[400] text-text-secondary"
+								className="px-2 font-normal text-text-secondary"
 							>
 								{ __( 'SureForms is a WordPress plugin that enables users to create beautiful looking forms through a drag-and-drop interface, without needing to code. It integrates with the WordPress block editor.', 'sureforms' ) }
 							</Label>
 
 							<Container
-								className="p-2 gap-3"
+								className="p-2 gap-3 flex-col sm:flex-row"
 								containerType="flex"
-								gap="sm"
 							>
 								<Container.Item
 								>
@@ -89,7 +88,7 @@ export default () => {
 					</Container>
 				</Container.Item>
 
-				<Container.Item className="p-2 gap-8 flex justify-center items-center" colSpan={ 4 }>
+				<Container.Item className="col-span-12 md:col-span-5 lg:col-span-5">
 					<iframe
 						width="100%"
 						src="https://www.youtube.com/embed/it16jGnZBus"
