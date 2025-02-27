@@ -155,14 +155,13 @@ class Admin_Ajax {
 	 * @return array<mixed>
 	 */
 	public function sureforms_get_integration() {
-		$suretrigger_connected = apply_filters( 'suretriggers_is_user_connected', '' );
-		$logo_sure_triggers                  = file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/suretriggers.svg' );
-		$logo_full             = file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/suretriggers_full.svg' );
-	
-		$logo_sure_mails                  = file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/suremails.svg' );
-		$logo_sure_cart                  = file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/surecart.svg' );
-		$logo_starter_templates                  = file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/starterTemplates.svg' );
-		
+		$suretrigger_connected  = apply_filters( 'suretriggers_is_user_connected', '' );
+		$logo_sure_triggers     = file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/suretriggers.svg' );
+		$logo_full              = file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/suretriggers_full.svg' );
+		$logo_sure_mails        = file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/suremails.svg' );
+		$logo_sure_cart         = file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/surecart.svg' );
+		$logo_starter_templates = file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/starterTemplates.svg' );
+
 		return apply_filters(
 			'srfm_integrated_plugins',
 			[
@@ -185,7 +184,7 @@ class Admin_Ajax {
 					'path'        => 'suremails/suremails.php',
 					'redirection' => admin_url( 'options-general.php?page=suremail#/dashboard' ),
 					'logo'        => self::encode_svg( is_string( $logo_sure_mails ) ? $logo_sure_mails : '' ),
-				],	
+				],
 				[
 					'title'       => __( 'SureCart', 'sureforms' ),
 					'subtitle'    => __( 'The new way to sell on WordPress.', 'sureforms' ),
