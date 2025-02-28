@@ -3,7 +3,6 @@ import { applyFilters } from '@wordpress/hooks';
 import apiFetch from '@wordpress/api-fetch';
 import { Fragment, useEffect, useState } from '@wordpress/element';
 import './webhooks';
-import IntegrationIcons from '@Image/integration-icons.js';
 import SureTriggersIcon from '@Image/suretriggers.svg';
 import { Badge, Button, Label, Title } from '@bsf/force-ui';
 import IntegrationCard from '@Admin/settings/components/integrations/Card';
