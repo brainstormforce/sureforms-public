@@ -56,7 +56,7 @@ function StyleSettings( props ) {
 		bg_image_repeat,
 		bg_image_size,
 		bg_image_size_custom,
-		bg_image_size_custom_type,
+		bg_image_size_custom_unit,
 		// Gradient Properties
 		gradient_type,
 		bg_gradient_color_1,
@@ -77,7 +77,7 @@ function StyleSettings( props ) {
 		bg_overlay_repeat,
 		bg_overlay_size,
 		bg_overlay_custom_size,
-		bg_overlay_custom_size_type,
+		bg_overlay_custom_size_unit,
 	} = formStyling;
 
 	// Apply the sizings when field spacing changes.
@@ -576,8 +576,8 @@ function StyleSettings( props ) {
 							},
 						} }
 						backgroundCustomSizeType={ {
-							value: bg_image_size_custom_type || '%',
-							label: 'bg_image_size_custom_type',
+							value: bg_image_size_custom_unit || '%',
+							label: 'bg_image_size_custom_unit',
 						} }
 						// Gradient Properties
 						gradientOverlay={ { value: true } }
@@ -665,8 +665,8 @@ function StyleSettings( props ) {
 							},
 						} }
 						backgroundOverlayCustomSizeType={ {
-							value: bg_overlay_custom_size_type,
-							label: 'bg_overlay_custom_size_type',
+							value: bg_overlay_custom_size_unit,
+							label: 'bg_overlay_custom_size_unit',
 						} }
 						label={ __( 'Background', 'sureforms' ) }
 						setAttributes={ onHandleChange }
