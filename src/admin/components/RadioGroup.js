@@ -1,10 +1,11 @@
 import { RadioButton } from '@bsf/force-ui';
+import { Children } from '@wordpress/element';
 import { cn } from '@Utils/Helpers';
 
 const RadioGroup = ( { className, cols, children } ) => {
 	return (
 		<RadioButton.Group
-			columns={ cols }
+			columns={ cols ?? Children.count( children ) }
 			className={ cn( 'gap-3 max-w-fit', className ) }
 			size="sm"
 		>
