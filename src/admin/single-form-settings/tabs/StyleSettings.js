@@ -243,9 +243,9 @@ function StyleSettings( props ) {
 				'--srfm-bg-position': bg_image_position?.replace( '-', ' ' ) || 'left top',
 				'--srfm-bg-attachment': bg_image_attachment || 'scroll',
 				'--srfm-bg-repeat': bg_image_repeat || 'no-repeat',
-				'--srfm-bg-size': bg_image_size === 'custom' ? `${ bg_image_size_custom ?? 100 }${ bg_image_size_custom_type ?? '%' }` : bg_image_size || 'cover',
+				'--srfm-bg-size': bg_image_size === 'custom' ? `${ bg_image_size_custom ?? 100 }${ bg_image_size_custom_unit ?? '%' }` : bg_image_size || 'cover',
 				'--srfm-bg-size-custom': bg_image_size_custom || 100,
-				'--srfm-bg-size-custom-type': bg_image_size_custom_type || '%',
+				'--srfm-bg-size-custom-unit': bg_image_size_custom_unit || '%',
 				// Gradient Variables.
 				'--srfm-bg-gradient': gradient_type === 'basic' ? bg_gradient || 'linear-gradient(90deg, #FFC9B2 0%, #C7CBFF 100%)' : getGradientCSS( gradientOptions.type, gradientOptions.color_1, gradientOptions.color_2, gradientOptions.location_1, gradientOptions.location_2, gradientOptions.angle ),
 				// Overlay Variables - Image.
@@ -254,9 +254,9 @@ function StyleSettings( props ) {
 				'--srfm-bg-overlay-attachment': bg_overlay_attachment || 'scroll',
 				'--srfm-bg-overlay-repeat': bg_overlay_repeat || 'no-repeat',
 				'--srfm-bg-overlay-blend-mode': bg_overlay_blend_mode || 'normal',
-				'--srfm-bg-overlay-size': bg_overlay_size === 'custom' ? `${ bg_overlay_custom_size ?? 100 }${ bg_overlay_custom_size_type ?? '%' }` : bg_overlay_size || 'cover',
+				'--srfm-bg-overlay-size': bg_overlay_size === 'custom' ? `${ bg_overlay_custom_size ?? 100 }${ bg_overlay_custom_size_unit ?? '%' }` : bg_overlay_size || 'cover',
 				'--srfm-bg-overlay-custom-size': bg_overlay_custom_size || 100,
-				'--srfm-bg-overlay-custom-size-type': bg_overlay_custom_size_type || '%',
+				'--srfm-bg-overlay-custom-size-unit': bg_overlay_custom_size_unit || '%',
 				'--srfm-bg-overlay-opacity': bg_overlay_opacity ?? 1,
 				// Overlay Variables - Color.
 				'--srfm-bg-overlay-color': bg_image_overlay_color || '#FFFFFF75',
@@ -408,8 +408,8 @@ function StyleSettings( props ) {
 				cssProperties[ '--srfm-bg-size-custom' ] = value ?? 100;
 				cssProperties[ '--srfm-bg-size' ] = `${ value ?? 100 }${ bg_image_size_custom ?? '%' }`;
 				break;
-			case 'bg_image_size_custom_type':
-				cssProperties[ '--srfm-bg-size-custom-type' ] = value ?? '%';
+			case 'bg_image_size_custom_unit':
+				cssProperties[ '--srfm-bg-size-custom-unit' ] = value ?? '%';
 				cssProperties[ '--srfm-bg-size' ] = `${ bg_image_size_custom ?? 100 }${ value ?? '%' }`;
 				break;
 			// Gradient Variables.
@@ -452,15 +452,15 @@ function StyleSettings( props ) {
 				break;
 			case 'bg_overlay_size':
 				cssProperties[ '--srfm-bg-overlay-size' ] = value === 'custom'
-					? `${ bg_overlay_custom_size ?? 100 }${ bg_overlay_custom_size_type ?? '%' }`
+					? `${ bg_overlay_custom_size ?? 100 }${ bg_overlay_custom_size_unit ?? '%' }`
 					: value || 'cover';
 				break;
 			case 'bg_overlay_custom_size':
 				cssProperties[ '--srfm-bg-overlay-custom-size' ] = value ?? 100;
-				cssProperties[ '--srfm-bg-overlay-size' ] = `${ value ?? 100 }${ bg_overlay_custom_size_type ?? '%' }`;
+				cssProperties[ '--srfm-bg-overlay-size' ] = `${ value ?? 100 }${ bg_overlay_custom_size_unit ?? '%' }`;
 				break;
-			case 'bg_overlay_custom_size_type':
-				cssProperties[ '--srfm-bg-overlay-custom-size-type' ] = value ?? '%';
+			case 'bg_overlay_custom_size_unit':
+				cssProperties[ '--srfm-bg-overlay-custom-size-unit' ] = value ?? '%';
 				cssProperties[ '--srfm-bg-overlay-size' ] = `${ bg_overlay_custom_size ?? 100 }${ value ?? '%' }`;
 				break;
 			case 'bg_overlay_opacity':
