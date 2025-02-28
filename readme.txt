@@ -258,6 +258,7 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 == Changelog ==
 = x.x.x =
 * Improvement: Made submission text translatable.
+* Fix: Dropdown Conditional Logic not working in Page Builders.
 = 1.4.1 - 25th February 2025 =
 * Fix: Addressed a security bug. Props to Naresh Dhanuk for privately reporting it.
 = 1.4.0 - 12th February 2025 =
