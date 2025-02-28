@@ -22,7 +22,7 @@ const RadioGroupOption = ( { label, value, checked, onChange, className } ) => {
 				heading: label,
 			} }
 			buttonWrapperClasses={ cn(
-				'py-2 pl-2.5 pr-10 max-w-fit hover:ring-1 ring-1 ring-transparent hover:ring-focus',
+				'py-2 pl-2.5 pr-10 max-w-fit min-w-full hover:ring-1 ring-1 ring-transparent hover:ring-focus',
 				checked && 'ring-focus',
 				className
 			) }
