@@ -7,6 +7,7 @@ const PremiumBadge = ( { tooltipHeading = '', tooltipContent = '', tooltipPositi
 	return (
 		<div className="tooltip">
 			<Tooltip
+				className="z-999999"
 				content={ (
 					<div className="tooltip-content space-y-1">
 						<div className="tooltip-text space-y-1">
