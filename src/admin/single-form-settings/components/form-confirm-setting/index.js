@@ -239,7 +239,7 @@ const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 							{ __( 'Confirmation Type', 'sureforms' ) }
 						</Label>
 						<div>
-							<RadioGroup cols={ 2 }>
+							<RadioGroup>
 								{ confirmationTypeInputs.map(
 									( option, index ) => {
 										const isActive = isOptionActive(
