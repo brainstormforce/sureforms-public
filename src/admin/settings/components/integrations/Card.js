@@ -4,7 +4,7 @@ import { Title } from '@bsf/force-ui';
 const IntegrationCard = ( { className, children } ) => {
 	return (
 		<div className={ cn(
-			'bg-white rounded-md shadow-sm p-4',
+			'bg-background-primary rounded-md shadow-sm p-4',
 			className
 		) }>
 			<div className="space-y-4">
