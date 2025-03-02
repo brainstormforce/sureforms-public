@@ -34,28 +34,6 @@ const Spacing = ( props ) => {
 	const onChangeUnits = ( value ) => {
 		setAttributes( { [ unit.label ]: value.unitValue } );
 	};
-	const changeLinkedValues = ( newValue, linked = false ) => {
-		setAttributes({
-			[ valueTop.label ]: newValue,
-			[ valueRight.label ]: newValue,
-			[ valueBottom.label ]: newValue,
-			[ valueLeft.label ]: newValue,
-		});
-		if ( linked )  {
-			setAttributes( { [ link.label ]: true } );
-		}
-	};
-	const changedUnLinkedValues = ( linked = true ) => {
-		setAttributes( {
-			[ valueTop.label ]: valueTop.value || 0,
-			[ valueRight.label ]: valueRight.value || 0,
-			[ valueBottom.label ]: valueBottom.value || 0,
-			[ valueLeft.label ]: valueLeft.value || 0,
-		} );
-		if ( ! linked ) {
-			setAttributes( { [ link.label ]: false } );
-		}
-	};
 
 	const onChangeValue = ( event, value = '', valueLabel ) => {
 		let newValue = value;
@@ -64,7 +42,12 @@ const Spacing = ( props ) => {
 				event.target.value === '' ? 0 : Number( event.target.value );
 		}
 		if ( link.value ) {
-			changeLinkedValues( newValue );
+			setAttributes({
+				[ valueTop.label ]: newValue,
+				[ valueRight.label ]: newValue,
+				[ valueBottom.label ]: newValue,
+				[ valueLeft.label ]: newValue,
+			});
 		} else {
 			setAttributes( { [ valueLabel ]: newValue } );
 		}
@@ -129,7 +112,13 @@ const Spacing = ( props ) => {
 			<span // eslint-disable-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
 				className="srfm-spacing-control__link srfm-spacing-control-connected dashicons dashicons-admin-links "
 				onClick={ () => {
-					changedUnLinkedValues( false );
+					setAttributes( {
+						[ valueTop.label ]: valueTop.value || 0,
+						[ valueRight.label ]: valueRight.value || 0,
+						[ valueBottom.label ]: valueBottom.value || 0,
+						[ valueLeft.label ]: valueLeft.value || 0,
+						[ link.label ]: false,
+					} );
 				} }
 			></span>
 		);
@@ -138,7 +127,13 @@ const Spacing = ( props ) => {
 			<span // eslint-disable-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
 				className="srfm-spacing-control__link srfm-spacing-control-disconnected dashicons dashicons-editor-unlink"
 				onClick={ () => {
-					changeLinkedValues( valueTop.value, true );
+					setAttributes({
+						[ valueTop.label ]: valueTop.value,
+						[ valueRight.label ]: valueTop.value,
+						[ valueBottom.label ]: valueTop.value,
+						[ valueLeft.label ]: valueTop.value,
+						[ link.label ]: true,
+					});
 				} }
 			></span>
 		);
@@ -174,7 +169,7 @@ const Spacing = ( props ) => {
 								] }
 								isFormSpecific={ true }
 								setAttributes={ setAttributes }
-								// value={ props?.value }
+								value={ props?.value }
 							/>
 							<ButtonGroup
 								className="srfm-control__units"
