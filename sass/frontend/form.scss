@@ -5,7 +5,10 @@
 	position: relative;
 	padding: 0;
 	height: 100%;
-	padding: 32px;
+	padding-top: var( --srfm-form-padding-top, 32px );
+	padding-right: var( --srfm-form-padding-right, 32px );
+	padding-bottom: var( --srfm-form-padding-bottom, 32px );
+	padding-left: var( --srfm-form-padding-left, 32px );
 
 	@include srfm-background-control-styles;
 
