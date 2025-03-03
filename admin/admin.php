@@ -74,7 +74,7 @@ class Admin {
 	 *
 	 * @param  array $links links.
 	 * @return array
-	 * @since x.x.x
+	 * @since 1.4.2
 	 */
 	public function add_action_links( $links ) {
 		if ( ! defined( 'SRFM_PRO_FILE' ) && ! file_exists( WP_PLUGIN_DIR . '/sureforms-pro/sureforms-pro.php' ) ) {
@@ -851,7 +851,7 @@ class Admin {
 	 *
 	 * @param bool $user_can A boolean indicating whether the user has the capability.
 	 * @return bool Returns true if the capabilities are successfully disabled, false otherwise.
-	 * @since x.x.x
+	 * @since 1.4.2
 	 */
 	public function disable_wpforms_capabilities( $user_can ) {
 		// Note: Nonce verification is intentionally omitted here as no database operations are performed.

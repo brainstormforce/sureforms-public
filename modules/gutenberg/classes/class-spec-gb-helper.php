@@ -117,7 +117,7 @@ if ( ! class_exists( 'Spec_Gb_Helper' ) ) {
 		 * Seen Refs Array
 		 * This array will store the block IDs which have already been processed.
 		 *
-		 * @since x.x.x
+		 * @since 1.4.2
 		 * @var array
 		 */
 		private static $seen_refs = [];
