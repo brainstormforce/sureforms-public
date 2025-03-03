@@ -12,9 +12,6 @@ use SRFM\Inc\AI_Form_Builder\AI_Form_Builder;
 use SRFM\Inc\AI_Form_Builder\Field_Mapping;
 use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Traits\Get_Instance;
-use SRFM\Admin\Views\Entries_List_Table;
-
-use function cli\err;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -135,7 +132,7 @@ class Rest_Api {
 			wp_send_json_error( __( 'Request could not be processed.', 'sureforms' ) );
 		}
 
-		$after = is_array( $params ) && ! empty( $params['after'] ) ? sanitize_text_field( Helper::get_string_value( $params['after'] ) ) : '';
+		$after  = is_array( $params ) && ! empty( $params['after'] ) ? sanitize_text_field( Helper::get_string_value( $params['after'] ) ) : '';
 		$before = is_array( $params ) && ! empty( $params['before'] ) ? sanitize_text_field( Helper::get_string_value( $params['before'] ) ) : '';
 
 		if ( empty( $after ) || empty( $before ) ) {
@@ -159,7 +156,6 @@ class Rest_Api {
 			],
 		];
 
-
 		if ( ! empty( $form ) ) {
 			$where[0][] = [
 				'key'     => 'form_id',
@@ -176,10 +172,10 @@ class Rest_Api {
 	}
 
 	/**
-	 * Get the data for generating entries chart.
+	 * Get the data for all the forms.
 	 *
 	 * @param \WP_REST_Request $request Full details about the request.
-	 * @since 1.0.0
+	 * @since x.x.x
 	 * @return array<mixed>
 	 */
 	public function get_form_data( $request ) {
@@ -202,8 +198,7 @@ class Rest_Api {
 
 		if ( ! empty( $forms ) ) {
 			foreach ( $forms as $form ) {
-				// Populate the array with the form ID as key and form title as value.
-				// $available_forms[ $form->ID ] = $form->post_title;
+				// Populate the array with form ID and form title.
 				$available_forms[] = [
 					'id'    => $form->ID,
 					'title' => $form->post_title,
@@ -268,11 +263,10 @@ class Rest_Api {
 					'callback'            => [ $this, 'get_entries_chart_data' ],
 					'permission_callback' => [ $this, 'can_edit_posts' ],
 				],
-				// This route is to get the form submissions for the last 30 days.
-				'form-data'   => [
+				// This route is to get all forms data.
+				'form-data'            => [
 					'methods'             => 'GET',
 					'callback'            => [ $this, 'get_form_data' ],
-					// 'callback'            => [ Entries_List_Table::get_instance(), 'get_available_forms' ],
 					'permission_callback' => [ $this, 'can_edit_posts' ],
 				],
 			]
