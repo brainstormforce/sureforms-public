@@ -147,6 +147,7 @@ const Spacing = ( props ) => {
 		} );
 
 		updatedAttributes[ unit?.label ] = defaultValues[ unit?.label ];
+		updatedAttributes[ link?.label ] = defaultValues[ link?.label ];
 
 		setAttributes( updatedAttributes );
 	};
@@ -166,6 +167,7 @@ const Spacing = ( props ) => {
 									valueBottom?.label,
 									valueLeft?.label,
 									unit?.label,
+									link?.label,
 								] }
 								isFormSpecific={ true }
 								setAttributes={ setAttributes }
@@ -176,6 +178,7 @@ const Spacing = ( props ) => {
 									valueBottom?.value,
 									valueLeft?.value,
 									unit?.value,
+									link?.value,
 								] }
 							/>
 							<ButtonGroup

@@ -73,7 +73,11 @@ button.srfm-toolbar-width-setting-button {
 	}
 
 	.srfm-button {
-		padding: var( --srfm-btn-padding ) !important;
+		// TODO: Refactor padding to use a common mixin.
+		padding-top: var( --srfm-button-padding-top, 10px ) !important;
+		padding-right: var( --srfm-button-padding-right, 14px ) !important;
+		padding-bottom: var( --srfm-button-padding-bottom, 10px ) !important;
+		padding-left: var( --srfm-button-padding-left, 14px ) !important;
 		font-size: var( --srfm-btn-font-size ) !important;
 		font-weight: var( --srfm-btn-font-weight ) !important;
 		line-height: var( --srfm-btn-line-height ) !important;
