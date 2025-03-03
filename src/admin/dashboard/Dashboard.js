@@ -8,12 +8,14 @@ import ExtendTab from './ExtendTab';
 import Header from '../components/Header';
 import QuickAccessTab from './QuickAccessTab';
 import UpgradeToPro from './UpgradeToPro';
+import FormsOverview from './FormsOverview';
 
 export default () => {
 	const nav = <Header />;
 
 	const leftSidebar = <>
 		<GetStarted />
+		<FormsOverview />
 		{ ! srfm_admin?.is_pro_active && <UpgradeToPro /> }
 	</>;
 

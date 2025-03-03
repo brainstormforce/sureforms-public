@@ -12,6 +12,9 @@ use SRFM\Inc\AI_Form_Builder\AI_Form_Builder;
 use SRFM\Inc\AI_Form_Builder\Field_Mapping;
 use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Traits\Get_Instance;
+use SRFM\Admin\Views\Entries_List_Table;
+
+use function cli\err;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -133,10 +136,13 @@ class Rest_Api {
 		}
 
 		$after = is_array( $params ) && ! empty( $params['after'] ) ? sanitize_text_field( Helper::get_string_value( $params['after'] ) ) : '';
+		$before = is_array( $params ) && ! empty( $params['before'] ) ? sanitize_text_field( Helper::get_string_value( $params['before'] ) ) : '';
 
-		if ( empty( $after ) ) {
+		if ( empty( $after ) || empty( $before ) ) {
 			wp_send_json_error( __( 'Invalid date.', 'sureforms' ) );
 		}
+
+		$form = is_array( $params ) && ! empty( $params['form'] ) ? sanitize_text_field( Helper::get_string_value( $params['form'] ) ) : '';
 
 		$where = [
 			[
@@ -145,15 +151,67 @@ class Rest_Api {
 					'value'   => $after,
 					'compare' => '>=',
 				],
-
+				[
+					'key'     => 'created_at',
+					'value'   => $before,
+					'compare' => '<=',
+				],
 			],
 		];
+
+
+		if ( ! empty( $form ) ) {
+			$where[0][] = [
+				'key'     => 'form_id',
+				'value'   => $form,
+				'compare' => '=',
+			];
+		}
 
 		return Entries::get_instance()->get_results(
 			$where,
 			'created_at',
 			[ 'ORDER BY created_at DESC' ]
 		);
+	}
+
+	/**
+	 * Get the data for generating entries chart.
+	 *
+	 * @param \WP_REST_Request $request Full details about the request.
+	 * @since 1.0.0
+	 * @return array<mixed>
+	 */
+	public function get_form_data( $request ) {
+		$nonce = Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) );
+
+		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
+			wp_send_json_error( __( 'Nonce verification failed.', 'sureforms' ) );
+		}
+
+		$forms = get_posts(
+			[
+				'post_type'      => SRFM_FORMS_POST_TYPE,
+				'posts_per_page' => -1,
+				'orderby'        => 'title',
+				'order'          => 'ASC',
+			]
+		);
+
+		$available_forms = [];
+
+		if ( ! empty( $forms ) ) {
+			foreach ( $forms as $form ) {
+				// Populate the array with the form ID as key and form title as value.
+				// $available_forms[ $form->ID ] = $form->post_title;
+				$available_forms[] = [
+					'id'    => $form->ID,
+					'title' => $form->post_title,
+				];
+			}
+		}
+
+		return $available_forms;
 	}
 
 	/**
@@ -208,6 +266,13 @@ class Rest_Api {
 				'entries-chart-data'   => [
 					'methods'             => 'GET',
 					'callback'            => [ $this, 'get_entries_chart_data' ],
+					'permission_callback' => [ $this, 'can_edit_posts' ],
+				],
+				// This route is to get the form submissions for the last 30 days.
+				'form-data'   => [
+					'methods'             => 'GET',
+					'callback'            => [ $this, 'get_form_data' ],
+					// 'callback'            => [ Entries_List_Table::get_instance(), 'get_available_forms' ],
 					'permission_callback' => [ $this, 'can_edit_posts' ],
 				],
 			]
