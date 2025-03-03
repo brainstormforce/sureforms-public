@@ -4,8 +4,9 @@ import apiFetch from '@wordpress/api-fetch';
 import { Fragment, useEffect, useState } from '@wordpress/element';
 import './webhooks';
 import SureTriggersIcon from '@Image/suretriggers.svg';
-import { Badge, Button, Label, Title } from '@bsf/force-ui';
+import { Badge, Button, Label } from '@bsf/force-ui';
 import IntegrationCard from '@Admin/settings/components/integrations/Card';
+import TabContentWrapper from '@Components/tab-content-wrapper';
 
 const Integrations = ( {
 	setSelectedTab,
@@ -39,21 +40,15 @@ const Integrations = ( {
 		},
 	];
 	return (
-		<div className="space-y-7 pb-8">
-			<Title
-				tag="h4"
-				title={ __( 'Integrations', 'sureforms' ) }
-			/>
-			<div className="bg-background-primary rounded-xl p-4 shadow-sm">
-				<div className="flex flex-col gap-1 bg-background-secondary rounded-lg p-1">
-					{ cards.map( ( cardItem, cardIndex ) => (
-						<Fragment key={ cardIndex }>
-							{ cardItem.component }
-						</Fragment>
-					) ) }
-				</div>
+		<TabContentWrapper title={ __( 'Integrations', 'sureforms' ) } className="p-4">
+			<div className="flex flex-col gap-1 bg-background-secondary rounded-lg p-1">
+				{ cards.map( ( cardItem, cardIndex ) => (
+					<Fragment key={ cardIndex }>
+						{ cardItem.component }
+					</Fragment>
+				) ) }
 			</div>
-		</div>
+		</TabContentWrapper>
 	);
 };
 
