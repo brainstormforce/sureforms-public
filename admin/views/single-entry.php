@@ -455,6 +455,85 @@ class Single_Entry {
 										</td>
 							<?php } elseif ( false !== strpos( $field_name, 'srfm-url' ) ) { ?>
 									<td><a target="_blank" href="<?php echo esc_url( $value ); ?>"><?php echo esc_url( $value ); ?></a></td>
+									<?php } elseif ( false !== strpos( $field_name, 'srfm-signature' ) ) { ?>
+
+<style>
+											.file-cards-container {
+												display: flex;
+												flex-wrap: wrap;
+												gap: 10px;
+											}
+											.file-card {
+												border: 1px solid #ddd;
+												border-radius: 4px;
+												padding: 10px;
+												width: 100px; /* Reduced width */
+												text-align: center;
+												background: #f9f9f9;
+												font-size: 12px; /* Reduced font size for smaller cards */
+											}
+											.file-card-image img {
+												max-width: 80px; /* Reduced max width */
+												max-height: 80px; /* Reduced max height */
+												object-fit: cover;
+											}
+											.file-card-icon {
+												font-size: 24px; /* Reduced icon size */
+												margin-bottom: 5px;
+											}
+											.file-card-details {
+												margin-bottom: 5px;
+												font-weight: bold;
+											}
+											.file-card-url a {
+												color: #007bff;
+												text-decoration: none;
+												font-size: 12px; /* Reduced font size */
+											}
+											.file-card-url a:hover {
+												text-decoration: underline;
+											}
+										</style>
+										<td>
+											<div class="file-cards-container">
+											<?php
+											if ( ! empty( $value ) ) {
+													$file_url = urldecode( Helper::get_string_value( $value ) );
+
+													if ( ! empty( $file_url ) ) {
+														if ( ! file_exists( Helper::convert_fileurl_to_filepath( $file_url ) ) ) {
+															continue;
+														}
+
+														$file_type = pathinfo( $file_url, PATHINFO_EXTENSION );
+														$is_image  = in_array( $file_type, [ 'gif', 'png', 'bmp', 'jpg', 'jpeg', 'svg' ], true );
+														?>
+																<div class="file-card" data-fileurl-hash="<?php echo esc_attr( md5( $file_url ) ); ?>">
+															<?php if ( $is_image ) { ?>
+																		<div class="file-card-image">
+																			<a target="_blank" href="<?php echo esc_attr( $file_url ); ?>">
+																				<img src="<?php echo esc_attr( $file_url ); ?>" alt="<?php esc_attr_e( 'Image', 'sureforms' ); ?>" />
+																			</a>
+																		</div>
+															<?php } else { ?>
+																		<div class="file-card-icon">
+																			<?php // Display a file icon for non-image files. ?>
+																			<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16.333V4.667a1.333 1.333 0 011.333-1.333h13.334a1.333 1.333 0 011.333 1.333v11.666a1.333 1.333 0 01-1.333 1.333H5.333A1.333 1.333 0 014 16.333zm8-8h2v6h-2v-6zm-2 8h6v2H10v-2zm-6-6h4v6H4v-6zm0-4h16v2H4V6z"/></svg>
+																		</div>
+																		<div class="file-card-details">
+																			<span><?php echo esc_html( strtoupper( $file_type ) ); ?></span>
+																		</div>
+															<?php } ?>
+																	<div class="file-card-url">
+																		<a target="_blank" href="<?php echo esc_attr( $file_url ); ?>"><?php echo esc_html__( 'Open', 'sureforms' ); ?></a>
+																	</div>
+																</div>
+															<?php
+												}
+											}
+											?>
+											</div>
+										</td>
 							<?php } else { ?>
 									<td><?php echo false !== strpos( $value, PHP_EOL ) ? wp_kses_post( wpautop( $value ) ) : wp_kses_post( $value ); ?></td>
 							<?php } ?>

@@ -766,6 +766,24 @@ class Entries_List_Table extends \WP_List_Table {
 				}
 			}
 		}
+
+		// delete signature files.
+		foreach ( $form_data as $field_name => $value ) {
+			// Continue to the next iteration if the field name does not contain 'srfm-signature' and value is not an array.
+			if ( false === strpos( $field_name, 'srfm-signature' ) && ! is_string( $value ) ) {
+				continue;
+			}
+				// If the file URL is empty, skip to the next iteration.
+				if ( empty( $value ) ) {
+					continue;
+				}
+				$file_path = Helper::convert_fileurl_to_filepath( urldecode( $value ) );
+
+				// Delete the file if it exists.
+				if ( file_exists( $file_path ) ) {
+					unlink( $file_path );
+				}
+		}
 	}
 
 	/**
