@@ -10,7 +10,7 @@ const SRFMReset = ( props ) => {
 	const [ panelNameForHook, setPanelNameForHook ] = useState( null );
 	const panelRef = useRef( null );
 
-	const { onReset, attributeNames, setAttributes, isFormSpecific } = props;
+	const { onReset, attributeNames, setAttributes, isFormSpecific, isValueArray = false } = props;
 
 	const [ refreshPresets, toggleRefreshPresets ] = useState( false );
 
@@ -68,6 +68,13 @@ const SRFMReset = ( props ) => {
 		//for form sepecific settings.
 		if ( isFormSpecific ) {
 			if ( defaultValues && attributeNames ) {
+				// If props.value is an array, check if all the values are same as default values.
+				if ( isValueArray ) {
+					resetDisableState = attributeNames.every( ( attributeName, index ) => {
+						return defaultValues[ attributeName ] === props.value[ index ];
+					} );
+					return resetDisableState;
+				}
 				const formSpecificKey = attributeNames[ 0 ];
 				return defaultValues[ formSpecificKey ] === props.value;
 			}

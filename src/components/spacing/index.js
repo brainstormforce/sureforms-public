@@ -169,7 +169,14 @@ const Spacing = ( props ) => {
 								] }
 								isFormSpecific={ true }
 								setAttributes={ setAttributes }
-								value={ props?.value }
+								isValueArray={ true } // New: Added to compare array values.
+								value={ [
+									valueTop?.value,
+									valueRight?.value,
+									valueBottom?.value,
+									valueLeft?.value,
+									unit?.value,
+								] }
 							/>
 							<ButtonGroup
 								className="srfm-control__units"
