@@ -259,6 +259,11 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 = x.x.x =
 * Improvement: Improved code quality.
 * Improvement: Made submission text translatable.
+* Fix: Resolved recursive pattern insertion issue in Gutenberg that was causing a 502 error due to an infinite loop.
+* Fix: Resolved block inserter issues when using the Spectra One theme.
+* Fix: Prevented WPForms notice from appearing on the SureForm edit page.
+* Fix: Dropdown Conditional Logic not working in Page Builders.
+* Fix: Fixed an issue where long URLs without breaks caused UI overflow in the edit entries section.
 = 1.4.1 - 25th February 2025 =
 * Fix: Addressed a security bug. Props to Naresh Dhanuk for privately reporting it.
 = 1.4.0 - 12th February 2025 =

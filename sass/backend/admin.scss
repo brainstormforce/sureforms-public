@@ -361,6 +361,18 @@ $placeholder_color: #9ca3af;
 
 // Single Entry Page Stylings
 .sureforms_page_sureforms_entries {
+	#postbox-container-2 {
+		#sureform_entry_meta {
+			table {
+				tbody {
+					td:last-child {
+						word-break: break-all;
+					}
+				}
+			}
+		}
+	}
+
 	#sureform_form_name_meta,
 	#sureform_entry_meta.srfm-form-data {
 		.inside {
