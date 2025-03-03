@@ -93,7 +93,8 @@
 		}
 
 		.srfm-required {
-			color: var( --srfm-error-color );
+			// Keeping this color static to avoid changing with error message color.
+			color: #dc2626;
 		}
 
 		.srfm-block {

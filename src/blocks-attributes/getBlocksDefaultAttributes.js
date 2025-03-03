@@ -37,7 +37,7 @@ const defaultKeys = {
 	bg_gradient_location_1: { default: 0 },
 	bg_gradient_location_2: { default: 100 },
 	bg_overlay_custom_size: { default: 100 },
-	bg_overlay_custom_size_type: { default: '%' },
+	bg_overlay_custom_size_unit: { default: '%' },
 	bg_image_size_custom: { default: 100 },
 	bg_image_size_custom_type: { default: '%' },
 	bg_overlay_opacity: { default: 1 },

@@ -187,9 +187,6 @@ class Updater {
 				'SRFM\Inc\Updater_Callbacks::manage_honeypot_option',
 				'SRFM\Inc\Updater_Callbacks::manage_empty_global_dynamic_options',
 			],
-			'x.x.x' => [
-				'SRFM\Inc\Updater_Callbacks::migrate_all_forms_styling',
-			],
 		];
 	}
 }

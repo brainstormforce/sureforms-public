@@ -1,6 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import { useSelect, useDispatch } from '@wordpress/data';
-import { useState, useEffect } from '@wordpress/element';
+import { useState, useEffect, useRef, useLayoutEffect } from '@wordpress/element';
 import { store as editorStore } from '@wordpress/editor';
 import AdvancedPopColorControl from '@Components/color-control/advanced-pop-color-control.js';
 import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
@@ -32,8 +32,13 @@ function StyleSettings( props ) {
 		[ editorStore ]
 	);
 	const formStyling = sureformsKeys?._srfm_forms_styling || {};
-	const root = document.documentElement.querySelector( 'body' );
-	const editor = root.querySelector( '.editor-styles-wrapper' );
+	const rootRef = useRef( null );
+	const editorRef = useRef( null );
+
+	useLayoutEffect( () => {
+		rootRef.current = document.documentElement.querySelector( 'body' );
+		editorRef.current = rootRef.current?.querySelector( '.editor-styles-wrapper' );
+	}, [] );
 	const deviceType = useDeviceType();
 	const [ submitBtn, setSubmitBtn ] = useState(
 		document.querySelector( '.srfm-submit-richtext' )
@@ -53,7 +58,7 @@ function StyleSettings( props ) {
 		bg_image_repeat,
 		bg_image_size,
 		bg_image_size_custom,
-		bg_image_size_custom_type,
+		bg_image_size_custom_unit,
 		// Gradient Properties
 		gradient_type,
 		bg_gradient_color_1,
@@ -74,7 +79,7 @@ function StyleSettings( props ) {
 		bg_overlay_repeat,
 		bg_overlay_size,
 		bg_overlay_custom_size,
-		bg_overlay_custom_size_type,
+		bg_overlay_custom_size_unit,
 	} = formStyling;
 
 	// Apply the sizings when field spacing changes.
@@ -100,7 +105,7 @@ function StyleSettings( props ) {
 			return;
 		}
 
-		addStyleInRoot( root, getCSSProperties( key, value ) );
+		addStyleInRoot( rootRef.current, getCSSProperties( key, value ) );
 		const formStylingSettings = {
 			...formStyling,
 			[ key ]: value,
@@ -153,7 +158,7 @@ function StyleSettings( props ) {
 		}
 		key_id = key + '_id';
 
-		addStyleInRoot( root, getCSSProperties( key, imageURL ) );
+		addStyleInRoot( rootRef.current, getCSSProperties( key, imageURL ) );
 
 		editPost( {
 			meta: {
@@ -240,9 +245,9 @@ function StyleSettings( props ) {
 				'--srfm-bg-position': bg_image_position?.replace( '-', ' ' ) || 'left top',
 				'--srfm-bg-attachment': bg_image_attachment || 'scroll',
 				'--srfm-bg-repeat': bg_image_repeat || 'no-repeat',
-				'--srfm-bg-size': bg_image_size === 'custom' ? `${ bg_image_size_custom ?? 100 }${ bg_image_size_custom_type ?? '%' }` : bg_image_size || 'cover',
+				'--srfm-bg-size': bg_image_size === 'custom' ? `${ bg_image_size_custom ?? 100 }${ bg_image_size_custom_unit ?? '%' }` : bg_image_size || 'cover',
 				'--srfm-bg-size-custom': bg_image_size_custom || 100,
-				'--srfm-bg-size-custom-type': bg_image_size_custom_type || '%',
+				'--srfm-bg-size-custom-unit': bg_image_size_custom_unit || '%',
 				// Gradient Variables.
 				'--srfm-bg-gradient': gradient_type === 'basic' ? bg_gradient || 'linear-gradient(90deg, #FFC9B2 0%, #C7CBFF 100%)' : getGradientCSS( gradientOptions.type, gradientOptions.color_1, gradientOptions.color_2, gradientOptions.location_1, gradientOptions.location_2, gradientOptions.angle ),
 				// Overlay Variables - Image.
@@ -251,15 +256,15 @@ function StyleSettings( props ) {
 				'--srfm-bg-overlay-attachment': bg_overlay_attachment || 'scroll',
 				'--srfm-bg-overlay-repeat': bg_overlay_repeat || 'no-repeat',
 				'--srfm-bg-overlay-blend-mode': bg_overlay_blend_mode || 'normal',
-				'--srfm-bg-overlay-size': bg_overlay_size === 'custom' ? `${ bg_overlay_custom_size ?? 100 }${ bg_overlay_custom_size_type ?? '%' }` : bg_overlay_size || 'cover',
+				'--srfm-bg-overlay-size': bg_overlay_size === 'custom' ? `${ bg_overlay_custom_size ?? 100 }${ bg_overlay_custom_size_unit ?? '%' }` : bg_overlay_size || 'cover',
 				'--srfm-bg-overlay-custom-size': bg_overlay_custom_size || 100,
-				'--srfm-bg-overlay-custom-size-type': bg_overlay_custom_size_type || '%',
+				'--srfm-bg-overlay-custom-size-unit': bg_overlay_custom_size_unit || '%',
 				'--srfm-bg-overlay-opacity': bg_overlay_opacity ?? 1,
 				// Overlay Variables - Color.
 				'--srfm-bg-overlay-color': bg_image_overlay_color || '#FFFFFF75',
 			};
 
-			addStyleInRoot( root, cssProperties );
+			addStyleInRoot( rootRef.current, cssProperties );
 		} else {
 			sureformsKeys = defaultKeys;
 			editPost( {
@@ -283,7 +288,7 @@ function StyleSettings( props ) {
 				break;
 		}
 
-		addStyleInRoot( root, cssProperties );
+		addStyleInRoot( rootRef.current, cssProperties );
 
 		const option_array = {};
 
@@ -312,7 +317,7 @@ function StyleSettings( props ) {
 		const overrideSize = srfm_admin?.field_spacing_vars[ sizingValue ] || {};
 		const finalSize = { ...baseSize, ...overrideSize };
 
-		addStyleInRoot( root, finalSize );
+		addStyleInRoot( rootRef.current, finalSize );
 	}
 
 	/**
@@ -325,7 +330,7 @@ function StyleSettings( props ) {
 	 * @since 0.0.7
 	 */
 	function updateFormStyling( option, value ) {
-		addStyleInRoot( root, getCSSProperties( option, value ) );
+		addStyleInRoot( rootRef.current, getCSSProperties( option, value ) );
 
 		editPost( {
 			meta: {
@@ -405,8 +410,8 @@ function StyleSettings( props ) {
 				cssProperties[ '--srfm-bg-size-custom' ] = value ?? 100;
 				cssProperties[ '--srfm-bg-size' ] = `${ value ?? 100 }${ bg_image_size_custom ?? '%' }`;
 				break;
-			case 'bg_image_size_custom_type':
-				cssProperties[ '--srfm-bg-size-custom-type' ] = value ?? '%';
+			case 'bg_image_size_custom_unit':
+				cssProperties[ '--srfm-bg-size-custom-unit' ] = value ?? '%';
 				cssProperties[ '--srfm-bg-size' ] = `${ bg_image_size_custom ?? 100 }${ value ?? '%' }`;
 				break;
 			// Gradient Variables.
@@ -449,15 +454,15 @@ function StyleSettings( props ) {
 				break;
 			case 'bg_overlay_size':
 				cssProperties[ '--srfm-bg-overlay-size' ] = value === 'custom'
-					? `${ bg_overlay_custom_size ?? 100 }${ bg_overlay_custom_size_type ?? '%' }`
+					? `${ bg_overlay_custom_size ?? 100 }${ bg_overlay_custom_size_unit ?? '%' }`
 					: value || 'cover';
 				break;
 			case 'bg_overlay_custom_size':
 				cssProperties[ '--srfm-bg-overlay-custom-size' ] = value ?? 100;
-				cssProperties[ '--srfm-bg-overlay-size' ] = `${ value ?? 100 }${ bg_overlay_custom_size_type ?? '%' }`;
+				cssProperties[ '--srfm-bg-overlay-size' ] = `${ value ?? 100 }${ bg_overlay_custom_size_unit ?? '%' }`;
 				break;
-			case 'bg_overlay_custom_size_type':
-				cssProperties[ '--srfm-bg-overlay-custom-size-type' ] = value ?? '%';
+			case 'bg_overlay_custom_size_unit':
+				cssProperties[ '--srfm-bg-overlay-custom-size-unit' ] = value ?? '%';
 				cssProperties[ '--srfm-bg-overlay-size' ] = `${ bg_overlay_custom_size ?? 100 }${ value ?? '%' }`;
 				break;
 			case 'bg_overlay_opacity':
@@ -508,10 +513,10 @@ function StyleSettings( props ) {
 			color: 'srfm-overlay-color',
 		};
 
-		editor.classList.remove( ...Object.values( backgroundClasses ) );
-		editor.classList.remove( ...Object.values( overlayClasses ) );
+		editorRef.current.classList.remove( ...Object.values( backgroundClasses ) );
+		editorRef.current.classList.remove( ...Object.values( overlayClasses ) );
 
-		editor.classList.add( backgroundClasses[ backgroundType ] || backgroundClasses.default );
+		editorRef.current.classList.add( backgroundClasses[ backgroundType ] || backgroundClasses.default );
 
 		// Reset overlayType if it's not valid for the selected backgroundType.
 		if ( backgroundType !== 'image' && overlayType !== 'image' ) {
@@ -519,7 +524,7 @@ function StyleSettings( props ) {
 		}
 
 		if ( overlayType && overlayClasses[ overlayType ] ) {
-			editor.classList.add( overlayClasses[ overlayType ] );
+			editorRef.current.classList.add( overlayClasses[ overlayType ] );
 		}
 	};
 
@@ -573,8 +578,8 @@ function StyleSettings( props ) {
 							},
 						} }
 						backgroundCustomSizeType={ {
-							value: bg_image_size_custom_type || '%',
-							label: 'bg_image_size_custom_type',
+							value: bg_image_size_custom_unit || '%',
+							label: 'bg_image_size_custom_unit',
 						} }
 						// Gradient Properties
 						gradientOverlay={ { value: true } }
@@ -662,8 +667,8 @@ function StyleSettings( props ) {
 							},
 						} }
 						backgroundOverlayCustomSizeType={ {
-							value: bg_overlay_custom_size_type,
-							label: 'bg_overlay_custom_size_type',
+							value: bg_overlay_custom_size_unit,
+							label: 'bg_overlay_custom_size_unit',
 						} }
 						label={ __( 'Background', 'sureforms' ) }
 						setAttributes={ onHandleChange }
