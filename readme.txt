@@ -257,6 +257,7 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 
 == Changelog ==
 = x.x.x =
+* Fix: Resolved recursive pattern insertion issue in Gutenberg that was causing a 502 error due to an infinite loop.
 * Improvement: Made submission text translatable.
 * Fix: Resolved block inserter issues when using the Spectra One theme.
 * Fix: Prevented WPForms notice from appearing on the SureForm edit page.
