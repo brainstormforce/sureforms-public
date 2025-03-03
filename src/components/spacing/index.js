@@ -42,12 +42,12 @@ const Spacing = ( props ) => {
 				event.target.value === '' ? 0 : Number( event.target.value );
 		}
 		if ( link.value ) {
-			setAttributes({
+			setAttributes( {
 				[ valueTop.label ]: newValue,
 				[ valueRight.label ]: newValue,
 				[ valueBottom.label ]: newValue,
 				[ valueLeft.label ]: newValue,
-			});
+			} );
 		} else {
 			setAttributes( { [ valueLabel ]: newValue } );
 		}
@@ -127,13 +127,13 @@ const Spacing = ( props ) => {
 			<span // eslint-disable-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
 				className="srfm-spacing-control__link srfm-spacing-control-disconnected dashicons dashicons-editor-unlink"
 				onClick={ () => {
-					setAttributes({
+					setAttributes( {
 						[ valueTop.label ]: valueTop.value,
 						[ valueRight.label ]: valueTop.value,
 						[ valueBottom.label ]: valueTop.value,
 						[ valueLeft.label ]: valueTop.value,
 						[ link.label ]: true,
-					});
+					} );
 				} }
 			></span>
 		);
@@ -189,19 +189,20 @@ const Spacing = ( props ) => {
 					{
 						<>
 							<div className="srfm-spacing-control__inputs">
-								{ inputs.map( ( input ) => (
+								{ inputs.map( ( input, index ) => (
 									<input
+										key={ index }
 										className="srfm-spacing-control__number"
 										type="number"
 										min={ min }
 										onChange={ ( e ) =>
-											onChangeValue(
-												e,
-												'',
-												input.label
-											)
+											onChangeValue( e, '', input.label )
 										}
-										value={ undefined !== input.value ? input.value : '' }
+										value={
+											undefined !== input.value
+												? input.value
+												: ''
+										}
 									/>
 								) ) }
 								{ linkHtml }

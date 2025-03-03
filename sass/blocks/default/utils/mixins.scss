@@ -336,3 +336,18 @@
 	row-gap: var( --srfm-row-gap-between-blocks );
 	column-gap: var( --srfm-column-gap-between-blocks );
 }
+
+// Form Container Padding Mixin.
+@mixin srfm-form-padding-styles {
+	padding-top: var( --srfm-form-padding-top, 32px );
+	padding-right: var( --srfm-form-padding-right, 32px );
+	padding-bottom: var( --srfm-form-padding-bottom, 32px );
+	padding-left: var( --srfm-form-padding-left, 32px );
+}
+// Form Container Border Radius Mixin.
+@mixin srfm-form-border-radius-styles {
+	border-top-left-radius: var( --srfm-form-border-radius-top, 12px );
+	border-top-right-radius: var( --srfm-form-border-radius-right, 12px );
+	border-bottom-right-radius: var( --srfm-form-border-radius-bottom, 12px );
+	border-bottom-left-radius: var( --srfm-form-border-radius-left, 12px );
+}
