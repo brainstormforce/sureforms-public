@@ -39,7 +39,7 @@ const defaultKeys = {
 	bg_overlay_custom_size: { default: 100 },
 	bg_overlay_custom_size_unit: { default: '%' },
 	bg_image_size_custom: { default: 100 },
-	bg_image_size_custom_type: { default: '%' },
+	bg_image_size_custom_unit: { default: '%' },
 	bg_overlay_opacity: { default: 1 },
 	bg_image_overlay_color: { default: '#FFFFFF75' },
 };
