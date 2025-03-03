@@ -103,7 +103,7 @@ class Generate_Form_Markup {
 			$bg_image_repeat           = $form_styling['bg_image_repeat'] ?? 'no-repeat';
 			$bg_image_size             = $form_styling['bg_image_size'] ?? 'cover';
 			$bg_image_size_custom      = $form_styling['bg_image_size_custom'] ?? 100;
-			$bg_image_size_custom_type = $form_styling['bg_image_size_custom_type'] ?? '%';
+			$bg_image_size_custom_unit = $form_styling['bg_image_size_custom_unit'] ?? '%';
 			$bg_gradient               = $form_styling['bg_gradient'] ?? 'linear-gradient(90deg, #FFC9B2 0%, #C7CBFF 100%)';
 			$gradient_type             = $form_styling['gradient_type'] ?? 'basic'; // Basic or advanced.
 			$is_advanced_gradient      = 'advanced' === $gradient_type ? true : false;
@@ -275,7 +275,7 @@ class Generate_Form_Markup {
 						$styling_vars = [];
 						// Background Styles.
 					if ( 'image' === $bg_type && ! empty( $bg_image ) ) {
-						$bg_size_merged = 'custom' === $bg_image_size ? "{$bg_image_size_custom}{$bg_image_size_custom_type}" : $bg_image_size;
+						$bg_size_merged = 'custom' === $bg_image_size ? "{$bg_image_size_custom}{$bg_image_size_custom_unit}" : $bg_image_size;
 						$styling_vars  += [
 							'--srfm-bg-image'      => 'url(' . esc_html( $bg_image ) . ')',
 							'--srfm-bg-position'   => esc_html( $bg_image_position ),
