@@ -10,9 +10,9 @@ const Suretriggers = ( { setSelectedTab } ) => {
 
 	return (
 		<div className="space-y-7 h-full pb-10">
-			<Container className="gap-2">
+			<Container align="center" className="gap-2">
 				<Button
-					className="p-1"
+					className="p-0"
 					size="md"
 					variant="ghost"
 					onClick={ () => setSelectedTab( 'integrations' ) }
