@@ -22,8 +22,8 @@ export default () => {
 				</Container.Item>
 				<Container.Item className="mt-auto p-3">
 					<Button
-						className={ `gap-0.5 w-full ${ buttonClass } font-semibold rounded-lg text-text-on-color text-xs` }
-						size="md"
+						className={ `gap-0.5 w-full ${ buttonClass } text-text-on-color text-xs focus:[box-shadow:none]` }
+						size="sm"
 						iconPosition={ iconPosition }
 						icon={ btnIcon }
 						variant="ghost"
@@ -42,7 +42,7 @@ export default () => {
 			title: __( 'Build Form From Scratch', 'sureforms' ),
 			description: __( 'Tailor your form precisely to your unique needs. No coding skills required—just unleash your creativity.', 'sureforms' ),
 			buttonText: __( 'Build From Scratch', 'sureforms' ),
-			buttonClass: 'bg-button-secondary border border-solid border-button-secondary shadow-sm-blur-2 hover:bg-button-secondary',
+			buttonClass: 'bg-button-secondary hover:bg-button-secondary',
 			iconPosition: 'left',
 			onClick: () => {
 				window.location.href = `${ srfm_admin.site_url }/wp-admin/post-new.php?post_type=sureforms_form`;
@@ -54,7 +54,7 @@ export default () => {
 			title: __( 'Generate Form with AI', 'sureforms' ),
 			description: __( 'Experience the future of form building with AI-powered forms. Use AI to build your form 10x faster.', 'sureforms' ),
 			buttonText: __( 'Build With AI', 'sureforms' ),
-			buttonClass: 'bg-button-primary border border-solid border-button-primary shadow-sm-blur-2 hover:bg-button-primary',
+			buttonClass: 'bg-button-primary hover:bg-button-primary',
 			iconPosition: 'right',
 			onClick: () => {
 				window.location.href = `${ srfm_admin.site_url }/wp-admin/admin.php?page=add-new-form&method=ai`;
@@ -97,8 +97,8 @@ export default () => {
 					className="flex p-2 gap-6 justify-center"
 				>
 					<Button
-						className="text-text-tertiary font-semibold text-xs hover:cursor-pointer"
-						icon={ <ArrowLeft size={ 16 } /> }
+						className="text-text-tertiary hover:cursor-pointer focus:[box-shadow:none]"
+						icon={ <ArrowLeft size={ 12 } /> }
 						iconPosition="left"
 						size="xs"
 						variant="ghost"

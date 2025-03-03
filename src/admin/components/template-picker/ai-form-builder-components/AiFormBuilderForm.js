@@ -293,11 +293,11 @@ export default ( props ) => {
 							{ characterCount }/2000
 						</Label>
 						<Button
-							className="bg-button-primary hover:bg-button-primary gap-1 border border-solid border-button-primary text-text-on-color hover:border-button-primary shadow-sm-blur-2"
+							className="gap-1 focus:[box-shadow:none]"
 							icon={ <ArrowRight size={ 20 } strokeWidth={ 1.25 } /> }
 							iconPosition="right"
 							size="md"
-							variant="outline"
+							variant="primary"
 							onClick={ () => {
 								if (
 									! text ||

@@ -31,7 +31,6 @@ const ErrorPopup = () => {
 					<Button
 						size="md"
 						variant="primary"
-						className="text-sm font-semibold bg-brand-800 hover:bg-brand-800"
 						onClick={ () => {
 							window.location.reload();
 						} }

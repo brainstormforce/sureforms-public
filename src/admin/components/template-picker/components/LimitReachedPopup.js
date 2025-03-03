@@ -53,7 +53,7 @@ const LimitReachedPopup = ( {
 						<Button
 							size="md"
 							variant="primary"
-							className="text-sm font-semibold bg-brand-800 hover:bg-brand-800"
+							className="text-sm font-semibold"
 							onClick={ onclick }
 						>
 							{ buttonText ?? __( 'Connect Now', 'sureforms' ) }
