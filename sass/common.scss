@@ -276,10 +276,10 @@ button.srfm-toolbar-width-setting-button {
 		border-bottom-width: var( --srfm-button-border-width-bottom, 1px ) !important;
 		border-left-width: var( --srfm-button-border-width-left, 1px ) !important;
 		// Border Radius.
-		border-top-left-radius: var( --srfm-button-border-radius-top, 1px ) !important;
-		border-top-right-radius: var( --srfm-button-border-radius-right, 1px ) !important;
-		border-bottom-right-radius: var( --srfm-button-border-radius-bottom, 1px ) !important;
-		border-bottom-left-radius: var( --srfm-button-border-radius-left, 1px ) !important;
+		border-top-left-radius: var( --srfm-button-border-radius-top, 6px ) !important;
+		border-top-right-radius: var( --srfm-button-border-radius-right, 6px ) !important;
+		border-bottom-right-radius: var( --srfm-button-border-radius-bottom, 6px ) !important;
+		border-bottom-left-radius: var( --srfm-button-border-radius-left, 6px ) !important;
 		// Border Color.
 		border-color: var( --srfm-button-border-color, var( --srfm-color-scheme-primary ) ) !important;
 
