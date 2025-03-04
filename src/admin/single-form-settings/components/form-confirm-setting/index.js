@@ -7,8 +7,9 @@ import ComponentKeyValueUI from '@Components/misc/ComponentKeyValueUI';
 import { useDebouncedCallback } from 'use-debounce';
 import { applyFilters } from '@wordpress/hooks';
 import DefaultConfirmationTypes from './DefaultConfirmationTypes';
-import { Label, Title } from '@bsf/force-ui';
+import { Label } from '@bsf/force-ui';
 import RadioGroup from '@Admin/components/RadioGroup';
+import TabContentWrapper from '@Components/tab-content-wrapper';
 
 const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 	const sureforms_keys = useSelect( ( select ) =>
@@ -225,85 +226,77 @@ const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 	}, [ data ] );
 
 	return (
-		<div className="space-y-7 pb-8">
-			<div>
-				<Title
-					tag="h4"
-					title={ __( 'Form Confirmation', 'sureforms' ) }
-				/>
-			</div>
-			<div className="p-6 bg-background-primary rounded-lg shadow-sm">
-				<div className="space-y-6">
+		<TabContentWrapper title={ __( 'Form Confirmation', 'sureforms' ) }>
+			<div className="space-y-6">
+				<div className="space-y-2">
+					<Label>
+						{ __( 'Confirmation Type', 'sureforms' ) }
+					</Label>
+					<div>
+						<RadioGroup>
+							{ confirmationTypeInputs.map(
+								( option, index ) => {
+									const isActive = isOptionActive(
+										option,
+										data?.confirmation_type
+									);
+									return (
+										<RadioGroup.Option
+											key={ index }
+											label={ option.label }
+											onChange={ () =>
+												setData( {
+													...data,
+													confirmation_type:
+															option.value,
+												} )
+											}
+											value={ option.value }
+											checked={ isActive }
+										/>
+									);
+								}
+							) }
+						</RadioGroup>
+					</div>
+				</div>
+				{ confirmationOption?.subOptionLabel && (
 					<div className="space-y-2">
 						<Label>
-							{ __( 'Confirmation Type', 'sureforms' ) }
+							{ confirmationOption?.subOptionLabel }
 						</Label>
-						<div>
-							<RadioGroup cols={ 2 }>
-								{ confirmationTypeInputs.map(
-									( option, index ) => {
-										const isActive = isOptionActive(
-											option,
-											data?.confirmation_type
-										);
-										return (
-											<RadioGroup.Option
-												key={ index }
-												label={ option.label }
-												onChange={ () =>
-													setData( {
-														...data,
-														confirmation_type:
-															option.value,
-													} )
-												}
-												value={ option.value }
-												checked={ isActive }
-											/>
-										);
-									}
-								) }
-							</RadioGroup>
-						</div>
-					</div>
-					{ confirmationOption?.subOptionLabel && (
-						<div className="space-y-2">
-							<Label>
-								{ confirmationOption?.subOptionLabel }
-							</Label>
-							<RadioGroup cols={ 2 }>
-								{ confirmationOption?.subOptions?.map(
-									( subOption, index ) => {
-										return (
-											<RadioGroup.Option
-												key={ index }
-												label={ subOption.label }
-												value={ subOption.value }
-												checked={
-													data?.confirmation_type ===
+						<RadioGroup cols={ 2 }>
+							{ confirmationOption?.subOptions?.map(
+								( subOption, index ) => {
+									return (
+										<RadioGroup.Option
+											key={ index }
+											label={ subOption.label }
+											value={ subOption.value }
+											checked={
+												data?.confirmation_type ===
 													subOption.value
-												}
-												onChange={ () =>
-													setData( {
-														...data,
-														confirmation_type:
+											}
+											onChange={ () =>
+												setData( {
+													...data,
+													confirmation_type:
 															subOption.value,
-													} )
-												}
-											/>
-										);
-									}
-								) }
-							</RadioGroup>
-						</div>
-					) }
-					{
-						// Render the associated component based on the selected confirmation type.
-						confirmationOption?.component
-					}
-				</div>
+												} )
+											}
+										/>
+									);
+								}
+							) }
+						</RadioGroup>
+					</div>
+				) }
+				{
+					// Render the associated component based on the selected confirmation type.
+					confirmationOption?.component
+				}
 			</div>
-		</div>
+		</TabContentWrapper>
 	);
 };
 

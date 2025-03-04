@@ -1,10 +1,11 @@
 import { RadioButton } from '@bsf/force-ui';
+import { Children } from '@wordpress/element';
 import { cn } from '@Utils/Helpers';
 
 const RadioGroup = ( { className, cols, children } ) => {
 	return (
 		<RadioButton.Group
-			columns={ cols }
+			columns={ cols ?? Children.count( children ) }
 			className={ cn( 'gap-3 max-w-fit', className ) }
 			size="sm"
 		>
@@ -20,8 +21,10 @@ const RadioGroupOption = ( { label, value, checked, onChange, className } ) => {
 			label={ {
 				heading: label,
 			} }
+			// There are some style issues existing in the radio button component of the force-ui package.
+			// This is a temporary fix to override the styles.
 			buttonWrapperClasses={ cn(
-				'py-2 pl-2.5 pr-10 max-w-fit hover:ring-1 ring-1 ring-transparent hover:ring-focus',
+				'py-2 pl-2.5 pr-10 max-w-fit min-w-full hover:ring-1 ring-1 ring-transparent hover:ring-focus',
 				checked && 'ring-focus',
 				className
 			) }
