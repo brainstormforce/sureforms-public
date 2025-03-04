@@ -28,6 +28,7 @@ const Spacing = ( props ) => {
 		setAttributes,
 		help = false,
 		min = -50,
+		disableUnits = false,
 	} = props;
 	const inputs = [ valueTop, valueRight, valueBottom, valueLeft ];
 
@@ -185,7 +186,7 @@ const Spacing = ( props ) => {
 								className="srfm-control__units"
 								aria-label={ __( 'Select Units', 'sureforms' ) }
 							>
-								{ onUnitSizeClick( unitSizes ) }
+								{ ! disableUnits && onUnitSizeClick( unitSizes ) }
 							</ButtonGroup>
 						</div>
 					</div>
