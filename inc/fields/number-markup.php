@@ -8,6 +8,8 @@
 
 namespace SRFM\Inc\Fields;
 
+use SRFM\Inc\Helper;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
@@ -115,7 +117,7 @@ class Number_Markup extends Base {
 	 * @return string|bool
 	 */
 	public function markup() {
-		$data_config      = $this->field_config ? htmlspecialchars( wp_json_encode( $this->field_config, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ), ENT_QUOTES, 'UTF-8' ) : '';
+		$data_config      = $this->field_config ? htmlspecialchars( Helper::get_string_value( wp_json_encode( $this->field_config, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) ), ENT_QUOTES, 'UTF-8' ) : '';
 		$this->class_name = $this->get_field_classes();
 
 		ob_start(); ?>
