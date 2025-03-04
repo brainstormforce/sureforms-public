@@ -137,7 +137,6 @@ export default ( props ) => {
 		<PremiumBadge
 			tooltipHeading={ __( 'Unlock Conversational Forms', 'sureforms' ) }
 			tooltipContent={ __( 'With the SureForms Pro Plan, you can transform your forms into engaging conversational layouts for a seamless user experience.', 'sureforms' ) }
-			portalId="srfm-add-new-form-container"
 			utmMedium="ai_builder"
 		/>
 	</Container.Item> );

@@ -10,7 +10,7 @@ export default ( props ) => {
 		<Container
 			containerType="flex"
 			direction="column"
-			className="mt-10 bg-background-secondary p-8 gap-6 w-[39%] ml-auto mr-auto"
+			className="mt-10 bg-background-secondary p-8 gap-6 ml-auto mr-auto"
 		>
 			<Container.Item
 				className=""
