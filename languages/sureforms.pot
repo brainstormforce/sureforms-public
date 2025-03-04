@@ -2,23 +2,23 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: SureForms 1.4.1\n"
+"Project-Id-Version: SureForms 1.4.2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/sureforms\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-02-25T08:52:33+00:00\n"
+"POT-Creation-Date: 2025-03-03T07:07:18+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"X-Generator: WP-CLI 2.10.0\n"
+"X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: sureforms\n"
 
 #. Plugin Name of the plugin
 #. Author of the plugin
 #: sureforms.php
-#: admin/admin.php:142
-#: admin/admin.php:143
+#: admin/admin.php:167
+#: admin/admin.php:168
 #: inc/gutenberg-hooks.php:106
 #: inc/nps-notice.php:108
 #: inc/page-builders/bricks/elements/form-widget.php:66
@@ -45,26 +45,30 @@ msgstr ""
 msgid "https://sureforms.com/"
 msgstr ""
 
-#: admin/admin.php:155
-#: admin/admin.php:156
+#: admin/admin.php:88
+msgid "Get SureForms Pro"
+msgstr ""
+
+#: admin/admin.php:180
+#: admin/admin.php:181
 msgid "Dashboard"
 msgstr ""
 
-#: admin/admin.php:173
-#: admin/admin.php:174
-#: admin/admin.php:291
+#: admin/admin.php:198
+#: admin/admin.php:199
+#: admin/admin.php:316
 msgid "Settings"
 msgstr ""
 
-#: admin/admin.php:218
-#: admin/admin.php:219
+#: admin/admin.php:243
+#: admin/admin.php:244
 #: inc/post-types.php:129
 msgid "New Form"
 msgstr ""
 
-#: admin/admin.php:227
-#: admin/admin.php:228
-#: admin/admin.php:264
+#: admin/admin.php:252
+#: admin/admin.php:253
+#: admin/admin.php:289
 #: inc/global-settings/email-summary.php:107
 #: inc/post-types.php:702
 #: assets/build/dashboard.js:2
@@ -72,16 +76,16 @@ msgid "Entries"
 msgstr ""
 
 #. Translators: Post Title.
-#: admin/admin.php:371
+#: admin/admin.php:396
 msgid "Edit %1$s"
 msgstr ""
 
-#: admin/admin.php:558
+#: admin/admin.php:583
 #: inc/post-types.php:88
 msgid "Import Form"
 msgstr ""
 
-#: admin/admin.php:740
+#: admin/admin.php:765
 #: api/block-patterns.php:110
 #: inc/ai-form-builder/ai-auth.php:45
 #: inc/ai-form-builder/ai-auth.php:81
@@ -100,17 +104,17 @@ msgstr ""
 msgid "Nonce verification failed."
 msgstr ""
 
-#: admin/admin.php:749
+#: admin/admin.php:774
 msgid "You cannot view this entry because it is in trash."
 msgstr ""
 
 #. translators: %1$s: Opening anchor tag with URL, %2$s: Closing anchor tag, %3$s: SureForms Pro Plugin Name.
-#: admin/admin.php:794
+#: admin/admin.php:819
 msgid "Please %1$sactivate%2$s your copy of %3$s to get new features, access support, receive update notifications, and more."
 msgstr ""
 
 #. translators: %1$s: SureForms version, %2$s: SureForms Pro Plugin Name, %3$s: SureForms Pro Version, %4$s: Anchor tag open, %5$s: Closing anchor tag.
-#: admin/admin.php:804
+#: admin/admin.php:829
 msgid "SureForms %1$s requires minimum %2$s %3$s to work properly. Please update to the latest version from %4$shere%5$s."
 msgstr ""
 
@@ -1118,6 +1122,11 @@ msgstr ""
 #. translators: %s: Form title smart tag
 #: inc/post-types.php:549
 msgid "New Form Submission - %s"
+msgstr ""
+
+#: inc/post-types.php:649
+#: assets/build/formEditor.js:172
+msgid "Thank you"
 msgstr ""
 
 #: inc/post-types.php:701
@@ -8871,7 +8880,7 @@ msgstr ""
 #: assets/build/settings.js:172
 #: assets/build/templatePicker.js:172
 #: modules/gutenberg/build/blocks.js:181
-msgid "Plan"
+msgid "Premium"
 msgstr ""
 
 #: assets/build/blocks.js:172
@@ -9927,10 +9936,6 @@ msgid "Previous"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-msgid "Thank you"
-msgstr ""
-
-#: assets/build/formEditor.js:172
 msgid "Form submitted successfully!"
 msgstr ""
 
@@ -10481,10 +10486,6 @@ msgstr ""
 
 #: assets/build/templatePicker.js:172
 msgid "Create Conversational Form"
-msgstr ""
-
-#: assets/build/templatePicker.js:172
-msgid "Pro"
 msgstr ""
 
 #: assets/build/templatePicker.js:172
