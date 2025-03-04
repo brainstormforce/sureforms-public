@@ -1220,11 +1220,15 @@ class Entries_List_Table extends \WP_List_Table {
 	 * @return array
 	 */
 	private function table_data( $per_page, $current_page, $view, $form_id = 0 ) {
+		$allowed_orderby_columns = $this->get_sortable_columns();
+
 		// Disabled the nonce verification due to the sorting functionality, will need custom implementation to display the sortable columns to accommodate nonce check.
 		// phpcs:disable WordPress.Security.NonceVerification.Recommended
 		$orderby = isset( $_GET['orderby'] ) ? sanitize_text_field( wp_unslash( $_GET['orderby'] ) ) : 'created_at';
+		$orderby = isset( $allowed_orderby_columns[ $orderby ] ) ? $orderby : 'created_at'; // If the orderby column is not in the allowed columns, set it to default.
 		$orderby = 'id' === $orderby ? strtoupper( $orderby ) : $orderby;
 		$order   = isset( $_GET['order'] ) ? sanitize_text_field( wp_unslash( $_GET['order'] ) ) : 'desc';
+		$order   = 'asc' === $order ? 'asc' : 'desc'; // If the order is not asc, set it to desc.
 		// phpcs:enable WordPress.Security.NonceVerification.Recommended
 
 		$offset              = ( $current_page - 1 ) * $per_page;
