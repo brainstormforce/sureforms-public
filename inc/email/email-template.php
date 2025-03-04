@@ -158,17 +158,11 @@ class Email_Template {
 									<?php
 								}
 							}
-						} 
-						
-						// else if if value is an url then add <a> with view text.
-						else if ( ! empty( $value ) && is_string( $value ) && filter_var( $value, FILTER_VALIDATE_URL ) ) {
+						} elseif ( ! empty( $value ) && is_string( $value ) && filter_var( $value, FILTER_VALIDATE_URL ) ) {
 							?>
 							<a target="_blank" href="<?php echo esc_attr( urldecode( $value ) ); ?>"><?php echo esc_html__( 'View', 'sureforms' ); ?></a>
 							<?php
-						}
-						
-
-						else {
+						} else {
 							if ( is_string( $value ) ) {
 								echo false !== strpos( $value, PHP_EOL ) ? wp_kses_post( wpautop( $value ) ) : wp_kses(
 									$value,
