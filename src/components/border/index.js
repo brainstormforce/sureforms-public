@@ -215,7 +215,7 @@ const Border = ( props ) => {
 					min={ 0 }
 				/>
 			) }
-			{ 'none' !== borderStyle && 'default' !== borderStyle && (
+			{ ! [ 'none', 'default' ].includes( borderStyle.value ) && (
 				<SRFMTabsControl
 					tabs={ tabsToUse }
 					normal={ tabOutputNormal }
@@ -224,7 +224,6 @@ const Border = ( props ) => {
 					disableBottomSeparator={ true }
 				/>
 			) }
-			{ ! disableBottomSeparator && <Separator /> }
 			<SRFMHelpText text={ help } />
 		</>
 	);
