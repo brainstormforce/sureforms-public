@@ -36,7 +36,7 @@ export default () => {
 				<Container
 					key={ key }
 					align="center"
-					className="gap-1 p-1 rounded-md bg-background-primary shadow-sm-blur-1"
+					className="gap-1 p-1 rounded-md bg-background-primary shadow-sm-blur-1 hover:bg-background-primary"
 					containerType="flex"
 					direction="row"
 				>

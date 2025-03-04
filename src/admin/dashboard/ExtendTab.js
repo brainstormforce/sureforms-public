@@ -142,9 +142,10 @@ export default () => {
 									</Label>
 								</Container.Item>
 								<Button
-									className={ cn( 'rounded-sm border-0.5 border-solid border-border-subtle shadow-sm-blur-2 text-xs font-semibold text-text-primary w-fit p-2 gap-0.5 focus:[box-shadow:none]', ( plugin.status === 'Activated' ) && 'bg-badge-background-green hover:bg-badge-background-green' ) }
+									className={ cn( 'rounded-sm border-0.5 border-solid border-border-subtle shadow-sm-blur-2 w-fit font-semibold text-text-primary p-2 gap-0.5 focus:[box-shadow:none]', ( plugin.status === 'Activated' ) && 'bg-badge-background-green hover:bg-badge-background-green' ) }
 									variant="outline"
 									onClick={ ( e ) => handlePluginActionTrigger( { plugin, e } ) }
+									size="xs"
 								>
 									{ getPluginStatusText( plugin ) }
 								</Button>
