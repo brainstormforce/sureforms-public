@@ -65,7 +65,7 @@ export default () => {
 			gap="xs"
 		>
 			<Container.Item className="p-1 gap-8">
-				<Label className="font-semibold text-text-primary text-sm">
+				<Label className="font-semibold text-text-primary text-base">
 					{ __( 'Quick Access', 'sureforms' ) }
 				</Label>
 			</Container.Item>

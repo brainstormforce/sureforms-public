@@ -115,11 +115,9 @@ export default () => {
 		>
 			<Toaster position="bottom-right" design="stack" theme="light" autoDismiss={ true } dismissAfter={ 5000 } />
 			<Container.Item>
-				<Container>
-					<Label className="text-sm text-text-primary font-semibold">
-						{ __( 'Extend Your Website', 'sureforms' ) }
-					</Label>
-				</Container>
+				<Label className="text-sm text-text-primary font-semibold">
+					{ __( 'Extend Your Website', 'sureforms' ) }
+				</Label>
 			</Container.Item>
 			<Container.Item>
 				<Container className="flex flex-wrap p-1 gap-1 bg-background-secondary rounded-lg">
@@ -128,14 +126,10 @@ export default () => {
 							<Container className="flex-1 flex flex-col justify-between">
 								<Container.Item className="flex flex-col gap-1.5">
 									<Container className="flex gap-1.5 items-center">
-										<Container.Item>
-											<img className="w-5 h-5" src={ plugin.logo } alt={ plugin.title } />
-										</Container.Item>
-										<Container.Item>
-											<Label className="text-sm font-medium text-text-primary">
-												{ plugin.title }
-											</Label>
-										</Container.Item>
+										<img className="w-5 h-5" src={ plugin.logo } alt={ plugin.title } />
+										<Label className="text-sm font-medium text-text-primary">
+											{ plugin.title }
+										</Label>
 									</Container>
 									<Label className="text-sm text-text-tertiary font-normal">
 										{ plugin.subtitle }
