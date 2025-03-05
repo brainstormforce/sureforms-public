@@ -19,6 +19,7 @@ import { AuthErrorPopup } from './AuthErrorPopup.js';
 import toast, { Toaster } from 'react-hot-toast';
 import { applyFilters } from '@wordpress/hooks';
 import PremiumBadge from '@Admin/components/PremiumBadge';
+import FormTypeSelector from './FormTypeSelector';
 
 const AiFormBuilder = () => {
 	const [ message, setMessage ] = useState(
@@ -35,13 +36,14 @@ const AiFormBuilder = () => {
 	const accessKey = urlParams.get( 'access_key' );
 	const [ isListening, setIsListening ] = useState( false ); // State to manage voice recording
 	const recognitionRef = useRef( null ); // To store SpeechRecognition instance
-	const [ formTypeObj, setFormTypeObj ] = useState( {} );
+	const [ formType, setFormType ] = useState( 'simple' );
+	const [ formLayout, setformLayout ] = useState( {} );
 	const showAiConversationalFormToggle = false;
 	const conversationalFormAiToggle = applyFilters(
 		'srfm.aiFormScreen.conversational.toggle',
 		showAiConversationalFormToggle,
-		formTypeObj,
-		setFormTypeObj
+		formLayout,
+		setformLayout
 	);
 
 	const examplePrompts = applyFilters(
@@ -63,8 +65,16 @@ const AiFormBuilder = () => {
 				title: __( 'Make an event registration form', 'sureforms' ),
 			},
 		],
-		formTypeObj
+		formLayout,
+		formType
 		 );
+
+		 const aiPromptPlaceholder = applyFilters(
+		'srfm.aiFormScreen.aiPromptPlaceholder',
+		'',
+		formLayout,
+		formType
+			 );
 
 	const initSpeechRecognition = () => {
 		const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -151,15 +161,10 @@ const AiFormBuilder = () => {
 				content: chat.message,
 			} ) ) || [];
 		messageArray.push( { role: 'user', content: userCommand } );
-		const formType = applyFilters(
-			'srfm.aiFormScreen.formType',
-			'',
-			formTypeObj
-		);
 		const postData = {
 			message_array: messageArray,
 			use_system_message: useSystemMessage,
-			is_conversional: formTypeObj?.isConversationalForm,
+			is_conversional: formLayout?.isConversationalForm,
 			form_type: formType,
 		};
 
@@ -195,7 +200,7 @@ const AiFormBuilder = () => {
 				const postContent = await apiFetch( {
 					path: 'sureforms/v1/map-fields',
 					method: 'POST',
-					data: { form_data: content,	is_conversional: formTypeObj?.isConversationalForm },
+					data: { form_data: content,	is_conversional: formLayout?.isConversationalForm },
 				} );
 
 				if ( postContent ) {
@@ -205,10 +210,10 @@ const AiFormBuilder = () => {
 					const metasToUpdate = applyFilters(
 						'srfm.aiFormScreen.metasToUpdate',
 						{},
-						formTypeObj,
+						formLayout,
 						content
 					);
-					handleAddNewPost( postContent, formTitle, metasToUpdate, formTypeObj?.isConversationalForm, formType );
+					handleAddNewPost( postContent, formTitle, metasToUpdate, formLayout?.isConversationalForm, formType );
 				} else {
 					setShowFormCreationErr( true );
 				}
@@ -327,23 +332,28 @@ const AiFormBuilder = () => {
 			<div className="srfm-ts-main-container srfm-content-section">
 				<div className="srfm-ai-builder-container">
 					<div className="srfm-ai-builder-inner-container">
-						<h1 className="srfm-ai-builder-header-title">
-							{ __(
-								'Please describe the form you want to create',
-								'sureforms'
-							) }
-						</h1>
+						<FormTypeSelector
+							formType={ formType }
+							setFormType={ setFormType }
+							setformLayout={ setformLayout }
+						/>
 						<div className="srfm-ai-builder-textarea-ctn">
+							<h1 className="srfm-ai-builder-header-title">
+								{ __(
+									'Please describe the form you want to create',
+									'sureforms'
+								) }
+							</h1>
 							<textarea
 								style={ {
 									borderColor: showEmptyError
 										? '#CD1A1A'
 										: '#CBD5E1',
 								} }
-								placeholder={ __(
+								placeholder={ formType === 'simple' ? __(
 									'E.g. Form to gather feedback from our customers for our product functionality, usability, how much you will rate it, and what you don’t like about it.',
 									'sureforms'
-								) }
+								) : aiPromptPlaceholder }
 								maxLength={ 2000 }
 								onChange={ ( e ) => {
 									setShowEmptyError( false );
@@ -359,7 +369,7 @@ const AiFormBuilder = () => {
 									) }
 								</span>
 							) }
-							{ false === conversationalFormAiToggle
+							{ 'simple' === formType && ( false === conversationalFormAiToggle
 								? <div className="srfm-ai-conversational-form-toggle"
 								>
 									<div style={ {
@@ -386,7 +396,7 @@ const AiFormBuilder = () => {
 										utmMedium="ai_builder"
 									/>
 								</div>
-								: conversationalFormAiToggle }
+								: conversationalFormAiToggle ) }
 							<div
 								className="srfm-ai-voice-input-ctn"
 							>

@@ -84,6 +84,7 @@ class Field_Mapping {
 					'label'    => sanitize_text_field( $question['label'] ),
 					'required' => filter_var( $question['required'], FILTER_VALIDATE_BOOLEAN ),
 					'help'     => sanitize_text_field( $question['helpText'] ),
+					'slug'     => isset( $question['slug'] ) ? sanitize_text_field( $question['slug'] ) : '',
 				]
 			);
 
@@ -109,6 +110,10 @@ class Field_Mapping {
 					! empty( $question['fieldOptions'][0]['label'] )
 					) {
 						$merged_attributes['options'] = $question['fieldOptions'];
+
+						if ( isset( $question['showValues'] ) ) {
+							$merged_attributes['showValues'] = filter_var( $question['showValues'], FILTER_VALIDATE_BOOLEAN );
+						}
 
 						// remove icon from options for the dropdown field.
 						foreach ( $merged_attributes['options'] as $key => $option ) {
@@ -143,6 +148,10 @@ class Field_Mapping {
 							);
 						}
 
+						if ( isset( $question['showValues'] ) ) {
+							$merged_attributes['showValues'] = filter_var( $question['showValues'], FILTER_VALIDATE_BOOLEAN );
+						}
+
 						// Set single selection if provided.
 						if ( isset( $question['singleSelection'] ) ) {
 							$merged_attributes['singleSelection'] = filter_var( $question['singleSelection'], FILTER_VALIDATE_BOOLEAN );
@@ -156,6 +165,9 @@ class Field_Mapping {
 					if ( 'phone' === $field_type ) {
 						$merged_attributes['autoCountry'] = true;
 					}
+
+					// Apply filter to modify merged attributes.
+					$merged_attributes = apply_filters( 'srfm_ai_form_builder_modify_merged_attributes', $merged_attributes, $question );
 
 					// if field type is needs to be skipped then skip that field.
 					if ( ! empty( $skip_fields ) && in_array( $field_type, $skip_fields, true ) ) {
@@ -177,6 +189,11 @@ class Field_Mapping {
 					}
 
 					// Handle specific attributes for certain pro fields.
+					if ( 'slider' === $field_type ) {
+						$merged_attributes['min']  = ! empty( $question['min'] ) ? filter_var( $question['min'], FILTER_VALIDATE_INT ) : 0;
+						$merged_attributes['max']  = ! empty( $question['max'] ) ? filter_var( $question['max'], FILTER_VALIDATE_INT ) : 100;
+						$merged_attributes['step'] = ! empty( $question['step'] ) ? filter_var( $question['step'], FILTER_VALIDATE_INT ) : 10;
+					}
 					if ( 'date-picker' === $field_type ) {
 						$merged_attributes['dateFormat'] = ! empty( $question['dateFormat'] ) ? sanitize_text_field( $question['dateFormat'] ) : 'mm/dd/yy';
 						$merged_attributes['min']        = ! empty( $question['minDate'] ) ? sanitize_text_field( $question['minDate'] ) : '';
