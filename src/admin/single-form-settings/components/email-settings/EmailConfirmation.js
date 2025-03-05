@@ -68,14 +68,14 @@ const EmailConfirmation = ( props ) => {
 	const removeErrorClassIfNeeded = ( selector, condition ) => {
 		if ( condition ) {
 			const inputElement = document.querySelector( selector );
-			inputElement?.classList.remove( 'required-error' );
+			inputElement?.classList.remove( 'outline-focus-error-border' );
 		}
 	};
 
 	// if required fields values are changed by smart tags then remove the required error
 	useEffect( () => {
-		removeErrorClassIfNeeded( '.srfm-modal-email-to', formData.email_to );
-		removeErrorClassIfNeeded( '.srfm-modal-subject', dynamicSubject );
+		removeErrorClassIfNeeded( '#srfm-email-notification-to', formData.email_to );
+		removeErrorClassIfNeeded( '#srfm-email-notification-subject', dynamicSubject );
 	}, [ formData.email_to, dynamicSubject ] );
 
 	// Set previous data one time on component load.
@@ -131,7 +131,6 @@ const EmailConfirmation = ( props ) => {
 					/>
 				</div>
 				<Button
-					className=""
 					size="md"
 					variant="outline"
 					onClick={ onCancel }
@@ -237,7 +236,7 @@ const EmailConfirmation = ( props ) => {
 						/>
 					</div>
 
-					<div className="flex flex-row">
+					<div className="flex flex-row gap-2">
 						<ModalInputBox
 							label={ __( 'CC', 'sureforms' ) }
 							id="srfm-email-notification-cc"
