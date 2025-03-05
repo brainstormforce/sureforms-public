@@ -573,6 +573,22 @@ body.post-type-sureforms_form {
 		gap: 8px;
 		align-items: center;
 	}
+	/*
+	* Custom Styling Component Styles.
+	*/
+	.srfm-btn-bg {
+		.srfm-bg-type-container {
+			.srfm-multi-buttons-control {
+				display: flex;
+				flex-direction: column;
+				align-items: flex-start;
+				row-gap: 10px;
+			}
+		}
+		.srfm-control-tabs {
+			margin-bottom: 25px; // Same as .components-base-control
+		}
+	}
 }
 
 // TODO: Adding style fot the temprary hide spectra QAB.

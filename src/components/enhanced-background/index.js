@@ -48,6 +48,8 @@ const Background = ( props ) => {
 		backgroundOverlayCustomSize,
 		backgroundOverlayCustomSizeType,
 		overlayBlendMode,
+		disableOverlay = false,
+		bgTextOptions,
 		label = __( 'Type', 'sureforms' ),
 	} = props;
 
@@ -465,8 +467,8 @@ const Background = ( props ) => {
 					setAttributes={ setAttributes }
 					label={ __( 'Overlay Type', 'sureforms' ) }
 					data={ {
-						value: overlayType.value,
-						label: overlayType.label,
+						value: overlayType?.value,
+						label: overlayType?.label,
 					} }
 					options={ overlayOptions }
 					showIcons={ true }
@@ -479,19 +481,19 @@ const Background = ( props ) => {
 
 	const overlayControls = (
 		<>
-			{ ( ( backgroundType.value === 'color' && backgroundColor.value ) ||
+			{ ! disableOverlay && ( ( backgroundType.value === 'color' && backgroundColor.value ) ||
 				( backgroundType.value === 'gradient' &&
 					gradientOverlay.value ) ) && (
 				<>
 					{ buttonControl }
-					{ 'image' === overlayType.value &&
+					{ 'image' === overlayType?.value &&
 						renderOverlayImageControls() }
 				</>
 			) }
 			{ backgroundType.value === 'image' && backgroundImage?.value && (
 				<>
 					{ buttonControl }
-					{ 'color' === overlayType.value && (
+					{ 'color' === overlayType?.value && (
 						<>
 							<div className="srfm-background-image-overlay-color">
 								<AdvancedPopColorControl
@@ -517,7 +519,7 @@ const Background = ( props ) => {
 							{ renderOverlayControls() }
 						</>
 					) }
-					{ 'gradient' === overlayType.value && (
+					{ 'gradient' === overlayType?.value && (
 						<>
 							<div className="srfm-background-image-overlay-gradient">
 								<GradientSettings
@@ -549,7 +551,7 @@ const Background = ( props ) => {
 							{ renderOverlayControls() }
 						</>
 					) }
-					{ 'image' === overlayType.value &&
+					{ 'image' === overlayType?.value &&
 						renderOverlayImageControls() }
 				</>
 			) }
@@ -559,18 +561,20 @@ const Background = ( props ) => {
 
 	const advancedControls = (
 		<>
-			<MultiButtonsControl
-				label={ label }
-				data={ {
-					value: backgroundType.value,
-					label: backgroundType.label,
-				} }
-				options={ bgIconOptions }
-				showIcons={ true }
-				colorVariant="secondary"
-				layoutVariant="inline"
-				setAttributes={ setAttributes }
-			/>
+			<div className='srfm-bg-type-container'>
+				<MultiButtonsControl
+					label={ label }
+					data={ {
+						value: backgroundType.value,
+						label: backgroundType.label,
+					} }
+					options={ bgTextOptions ? bgTextOptions : bgIconOptions }
+					showIcons={ bgTextOptions ? false : true }
+					colorVariant="secondary"
+					layoutVariant="inline"
+					setAttributes={ setAttributes }
+				/>
+			</div>
 			{ 'color' === backgroundType.value && (
 				<div className="srfm-background-color">
 					<AdvancedPopColorControl
@@ -805,7 +809,7 @@ const Background = ( props ) => {
 					) }
 				</div>
 			) }
-			{ gradientOverlay.value && 'gradient' === backgroundType.value && (
+			{ 'gradient' === backgroundType.value && (
 				<div className="srfm-background-gradient">
 					<GradientSettings
 						backgroundGradient={ props.backgroundGradient }
@@ -830,7 +834,7 @@ const Background = ( props ) => {
 					/>
 				</div>
 			) }
-			{ overlayControls }
+			{ ! disableOverlay && ( overlayControls ) }
 		</>
 	);
 	return (
