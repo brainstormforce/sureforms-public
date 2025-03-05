@@ -3,22 +3,26 @@ import EmailConfirmation from './EmailConfirmation';
 import { useState } from '@wordpress/element';
 import { store as editorStore } from '@wordpress/editor';
 import { useDispatch } from '@wordpress/data';
-import { ToggleControl, Popover } from '@wordpress/components';
-import svgIcons from '@Image/single-form-logo.json';
-import parse from 'html-react-parser';
+import {
+	Button,
+	Container,
+	Switch,
+	Title,
+	Table,
+	Toaster,
+	toast,
+	Tooltip,
+} from '@bsf/force-ui';
+import { Files, SquarePen, Trash } from 'lucide-react';
 
 const EmailNotification = ( {
 	setHasValidationErrors,
 	emailNotificationData,
-	toast,
 } ) => {
 	const [ showConfirmation, setShowConfirmation ] = useState( false );
 	const [ currData, setCurrData ] = useState( [] );
 	const [ isPopup, setIsPopup ] = useState( null );
 	const { editPost } = useDispatch( editorStore );
-	const plusIcons = parse( svgIcons.plus );
-	const editIcons = parse( svgIcons.edit );
-	const deleteIcons = parse( svgIcons.delete );
 	const handleEdit = ( data ) => {
 		setShowConfirmation( true );
 		setCurrData( data );
@@ -56,16 +60,22 @@ const EmailNotification = ( {
 		subject = subject.trim();
 
 		if ( ! email_to ) {
-			document
-				.querySelector( '.srfm-modal-email-to' )
-				.classList.add( 'required-error' );
+			const inputField = document.querySelector(
+				'#srfm-email-notification-to'
+			);
+			if ( inputField ) {
+				inputField.classList.add( 'outline-focus-error-border' );
+			}
 			hasError = true;
 		}
 
 		if ( ! subject ) {
-			document
-				.querySelector( '.srfm-modal-subject' )
-				.classList.add( 'required-error' );
+			const inputField = document.querySelector(
+				'#srfm-email-notification-subject'
+			);
+			if ( inputField ) {
+				inputField.classList.add( 'outline-focus-error-border' );
+			}
 			hasError = true;
 		}
 
@@ -129,154 +139,225 @@ const EmailNotification = ( {
 		setShowConfirmation( false );
 		setHasValidationErrors( false );
 	};
+
+	const headerContent = [
+		{
+			label: __( 'Status', 'sureforms' ),
+		},
+		{
+			label: __( 'Name', 'sureforms' ),
+		},
+		{
+			label: __( 'Subject', 'sureforms' ),
+		},
+		{
+			label: __( 'Actions', 'sureforms' ),
+		},
+	];
+
 	if ( showConfirmation ) {
 		return (
-			<EmailConfirmation
-				setHasValidationErrors={ setHasValidationErrors }
-				handleConfirmEmail={ handleUpdateEmailData }
-				handleBackNotification={ handleBackNotification }
-				data={ currData }
-			/>
+			<>
+				<Toaster
+					position="top-right"
+					design="stack"
+					theme="light"
+					autoDismiss={ true }
+					dismissAfter={ 5000 }
+				/>
+				<EmailConfirmation
+					setHasValidationErrors={ setHasValidationErrors }
+					handleConfirmEmail={ handleUpdateEmailData }
+					handleBackNotification={ handleBackNotification }
+					data={ currData }
+				/>
+			</>
 		);
 	}
+
 	return (
-		<div className="srfm-modal-content">
-			<div className="srfm-modal-inner-content">
-				<div className="srfm-modal-inner-heading">
-					<span className="srfm-modal-inner-heading-text">
-						<h4>{ __( 'Email Notification', 'sureforms' ) }</h4>
-					</span>
-					<button
-						onClick={ handleEdit }
-						className="srfm-modal-inner-heading-button"
-					>
-						{ __( 'Add Notification', 'sureforms' ) }
-					</button>
-				</div>
-				<div className="srfm-modal-inner-box">
-					<div className="srfm-modal-inner-box-text">
-						<h5>{ __( 'Notification', 'sureforms' ) }</h5>
-					</div>
-					<div className="srfm-modal-separator" />
-					{
-						emailNotificationData.length === 0 ? (
-							<div className="srfm-empty-data">
-								<p>{ __( 'No data', 'sureforms' ) }</p>
-							</div>
-						) : (
-							<div className="srfm-modal-inner-box-table">
-								<div className="srfm-modal-table-wrapper">
-									<div className="srfm-responsive-table">
-										<table>
-											<thead>
-												<tr className="srfm-modal-row">
-													<th className="srfm-modal-col-first">
-														<p className="srfm-modal-col-text">{ __( 'Status', 'sureforms' ) }</p>
-													</th>
-													<th className="srfm-modal-col-second">
-														<p className="srfm-modal-col-text">{ __( 'Name', 'sureforms' ) }</p>
-													</th>
-													<th className="srfm-modal-col-third">
-														<p className="srfm-modal-col-text">{ __( 'Subject', 'sureforms' ) }</p>
-													</th>
-													<th className="srfm-modal-col-fourth">
-														<p className="srfm-modal-col-text">{ __( 'Action', 'sureforms' ) }</p>
-													</th>
-												</tr>
-											</thead>
-											<tbody>
-												{
-													emailNotificationData && emailNotificationData.map( ( el, i ) => {
-														return (
-															<div key={ el.id } className="srfm-modal-row-body">
-																<tr className={ `srfm-modal-row srfm-modal-row-data ${ i % 2 !== 0 ? ' odd' : '' }` }>
-																	<td className="srfm-modal-col-first">
-																		<ToggleControl
-																			checked={ el.status }
-																			onChange={ () => {
-																				handleToggle( el );
-																			} }
-																		/>
-																	</td>
-																	<td className="srfm-modal-col-second">
-																		<span>{ el.name }</span>
-																	</td>
-																	<td className="srfm-modal-col-third">
-																		<span>{ el.subject }</span>
-																	</td>
-																	<td className="srfm-modal-col-fourth">
-																		<button onClick={ () => handleDuplicate( el ) } className="srfm-cursor-pointer">
-																			{ plusIcons }
-																		</button>
-																		<button onClick={ () => handleEdit( el ) } className="srfm-cursor-pointer">
-																			{ editIcons }
-																		</button>
-																		<span>
-																			<button onClick={ () => {
-																				setIsPopup( el.id );
-																			} } className="srfm-cursor-pointer">
-																				{ deleteIcons }
-																			</button>
-																			{
-																				isPopup === el.id &&
-																					<Popover placement={ 'top' } className="srfm-el-popover" offset={ 20 } noArrow={ false } onFocusOutside={ () => setIsPopup( null ) } >
-																						<p className="srfm-popover-text">{ __( 'Are you sure to delete this?', 'sureforms' ) }</p>
-																						<div className="srfm-popover-btn">
-																							<button onClick={ () => setIsPopup( null ) } className="srfm-cancel-btn popover-btn">{ __( 'Cancel', 'sureforms' ) }</button>
-																							<button onClick={ () => handleDelete( el ) } className="srfm-confirm-btn popover-btn">{ __( 'Confirm', 'sureforms' ) }</button>
-																						</div>
-																					</Popover>
-																			}
-																		</span>
-																	</td>
-																</tr>
+		<div className="space-y-7 pb-8">
+			<Toaster
+				position="top-right"
+				design="stack"
+				theme="light"
+				autoDismiss={ true }
+				dismissAfter={ 5000 }
+			/>
+			<div className="flex flex-row justify-between items-center">
+				<Title
+					tag="h4"
+					title={ __( 'Email Notification', 'sureforms' ) }
+				/>
+				<Button
+					className=""
+					size="md"
+					variant="primary"
+					onClick={ handleEdit }
+				>
+					{ __( 'Add Notification', 'sureforms' ) }
+				</Button>
+			</div>
+			<div className="p-6 bg-background-primary rounded-lg shadow-sm">
+				<div className="space-y-6">
+					<Table>
+						<Table.Head>
+							{ headerContent.map( ( header, index ) => (
+								<Table.HeadCell
+									key={ index }
+									className={
+										index === 3 ? 'text-right' : ''
+									}
+								>
+									{ header.label }
+								</Table.HeadCell>
+							) ) }
+						</Table.Head>
+						<Table.Body>
+							{ emailNotificationData &&
+								emailNotificationData.map( ( el ) => {
+									return (
+										<Table.Row
+											key={ el.id }
+											onChangeSelection={ function Ki() {} }
+											value={ {
+												status: el.status,
+												name: el.name,
+												subject: el.subject,
+											} }
+										>
+											<Table.Cell>
+												<Switch
+													aria-label="Switch Element"
+													id="switch-element"
+													size="sm"
+													checked={ el.status }
+													onChange={ () => {
+														handleToggle( el );
+													} }
+												/>
+											</Table.Cell>
+											<Table.Cell>{ el.name }</Table.Cell>
+											<Table.Cell>
+												{ el.subject }
+											</Table.Cell>
+											<Table.Cell>
+												<Container
+													align="center"
+													className="gap-2"
+													justify="end"
+												>
+													<Button
+														aria-label="Duplicate"
+														className="text-icon-secondary hover:text-icon-primary"
+														icon={ <Files /> }
+														size="xs"
+														variant="ghost"
+														onClick={ () =>
+															handleDuplicate(
+																el
+															)
+														}
+													/>
+													<Button
+														aria-label="Edit"
+														className="text-icon-secondary hover:text-icon-primary"
+														icon={ <SquarePen /> }
+														size="xs"
+														variant="ghost"
+														onClick={ () =>
+															handleEdit( el )
+														}
+													/>
+
+													<Tooltip
+														arrow
+														content={
+															<div
+																className="relative"
+																offset={ 20 }
+															>
+																<p className="text-center my-2 mx-2">
+																	{ __(
+																		'Are you sure to delete this?',
+																		'sureforms'
+																	) }
+																</p>
+																<div className="flex px-4 pb-2 gap-2">
+																	<Button
+																		onClick={ () =>
+																			setIsPopup(
+																				null
+																			)
+																		}
+																		className="inline-flex items-center px-2"
+																		variant="outline"
+																		size="xs"
+																	>
+																		{ __(
+																			'Cancel',
+																			'sureforms'
+																		) }
+																	</Button>
+																	<Button
+																		onClick={ () =>
+																			handleDelete(
+																				el
+																			)
+																		}
+																		variant="primary"
+																		size="xs"
+																		className="inline-flex items-center px-2"
+																		destructive
+																	>
+																		{ __(
+																			'Confirm',
+																			'sureforms'
+																		) }
+																	</Button>
+																</div>
 															</div>
-														);
-													} )
-												}
-											</tbody>
-											<tfoot>
-												<tr className="srfm-modal-row">
-													<th className="srfm-modal-col-first">
-														<p className="srfm-modal-col-text">
-															{ __(
-																'Status',
-																'sureforms'
-															) }
-														</p>
-													</th>
-													<th className="srfm-modal-col-second">
-														<p className="srfm-modal-col-text">
-															{ __(
-																'Name',
-																'sureforms'
-															) }
-														</p>
-													</th>
-													<th className="srfm-modal-col-third">
-														<p className="srfm-modal-col-text">
-															{ __(
-																'Subject',
-																'sureforms'
-															) }
-														</p>
-													</th>
-													<th className="srfm-modal-col-fourth">
-														<p className="srfm-modal-col-text">
-															{ __(
-																'Action',
-																'sureforms'
-															) }
-														</p>
-													</th>
-												</tr>
-											</tfoot>
-										</table>
-									</div>
-								</div>
-							</div>
-						)
-					}
+														}
+														placement="top"
+														triggers={ [
+															'click',
+															'focus',
+														] }
+														tooltipPortalId="srfm-settings-container"
+														interactive
+														className="z-999999"
+														variant="light"
+														open={
+															isPopup === el.id
+																? true
+																: false
+														}
+														setOpen={
+															isPopup === el.id
+																? true
+																: false
+														}
+													>
+														<Button
+															aria-label="Delete"
+															className="text-icon-secondary hover:text-icon-primary"
+															icon={ <Trash /> }
+															size="xs"
+															variant="ghost"
+															onClick={ () => {
+																setIsPopup(
+																	el.id
+																);
+															} }
+														/>
+													</Tooltip>
+												</Container>
+											</Table.Cell>
+										</Table.Row>
+									);
+								} ) }
+						</Table.Body>
+					</Table>
 				</div>
 			</div>
 		</div>
