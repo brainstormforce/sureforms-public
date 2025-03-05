@@ -408,3 +408,11 @@ export const removeStylesFromRoot = ( root, cssProperties ) => {
 		}
 	}
 };
+
+// Get the advanced gradient css styles.
+export const getGradientCSS = ( type = 'linear', color1 = '#FFC9B2', color2 = '#C7CBFF', loc1 = 0, loc2 = 100, angle = 90 ) => {
+	if ( type === 'radial' ) {
+		return `radial-gradient(${ color1 } ${ loc1 }%, ${ color2 } ${ loc2 }% )`;
+	}
+	return `linear-gradient( ${ angle }deg, ${ color1 } ${ loc1 }%, ${ color2 } ${ loc2 }%)`;
+}

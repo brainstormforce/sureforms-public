@@ -14,7 +14,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { useDeviceType } from '@Controls/getPreviewType';
 import { getStylePanels } from '@Components/hooks';
-import { addStyleInRoot } from '@Utils/Helpers';
+import { addStyleInRoot, getGradientCSS } from '@Utils/Helpers';
 import { chevronDown } from '@wordpress/icons';
 import PremiumBadge from '@Admin/components/PremiumBadge';
 import Background from '@Components/enhanced-background';
@@ -474,13 +474,6 @@ function StyleSettings( props ) {
 		}
 
 		return cssProperties;
-	}
-
-	function getGradientCSS( type = 'linear', color1 = '#FFC9B2', color2 = '#C7CBFF', loc1 = 0, loc2 = 100, angle = 90 ) {
-		if ( type === 'radial' ) {
-			return `radial-gradient(${ color1 } ${ loc1 }%, ${ color2 } ${ loc2 }% )`;
-		}
-		return `linear-gradient( ${ angle }deg, ${ color1 } ${ loc1 }%, ${ color2 } ${ loc2 }%)`;
 	}
 
 	/**
