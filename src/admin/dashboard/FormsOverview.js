@@ -186,10 +186,14 @@ export default () => {
 	};
 
 	// Text for chart when data is loading or no data is available
-	const ChartText = ( { text, color = 'primary', weight = 'medium' } ) => (
+	const ChartText = ( {
+		text,
+		color = 'text-text-primary',
+		weight = 'font-medium',
+	} ) => (
 		<Label
 			tag="p"
-			className={ `text-sm font-${ weight } text-center text-text-${ color }` }
+			className={ `text-sm ${ weight } text-center ${ color }` }
 		>
 			{ text ||
 				__( 'This is where your form views will appear', 'sureforms' ) }
@@ -203,7 +207,6 @@ export default () => {
 			size="xs"
 			icon={ <X /> }
 			onClick={ onClick }
-			className="text-button-danger no-underline hover:no-underline hover:text-button-danger"
 			aria-label={ ariaLabel }
 		>
 			{ '' }
@@ -217,87 +220,93 @@ export default () => {
 			gap="xs"
 			className="w-full h-full p-4 rounded-xl bg-background-primary border-border-subtle border-0.5"
 		>
-			<Container.Item className="flex items-center justify-between w-full p-1">
+			<Container.Item className="flex flex-wrap items-center justify-between w-full p-1 sm:flex-row sm:gap-2">
 				<Title title={ __( 'Overview', 'sureforms' ) } tag="h5" />
-				<div className="flex items-center gap-2">
-					{ selectedForm ? (
-						<ClearButton
-							onClick={ () => handleChange( '' ) }
-							ariaLabel={ __(
-								'Clear Form Filters',
-								'sureforms'
-							) }
-						/>
-					) : null }
-					<div className="w-auto min-w-[200px] cursor-pointer [&>input]:min-h-2 rounded-sm shadow-sm">
-						<Select
-							value={ selectedForm }
-							onChange={ ( value ) => handleChange( value ) }
-							size="sm"
-						>
-							<Select.Button className="text-text-primary text-xs">
-								{ getFormLabel( selectedForm ) }
-							</Select.Button>
-							<Select.Options className="z-999999">
-								{ formData.map( ( option ) => (
-									<Select.Option
-										key={ option.id }
-										value={ option.id }
-									>
-										{ <span>{ option.name }</span> }
-									</Select.Option>
-								) ) }
-							</Select.Options>
-						</Select>
+				<div className="flex flex-wrap items-center gap-2 sm:flex-row">
+					<div>
+						{ selectedForm ? (
+							<ClearButton
+								onClick={ () => handleChange( '' ) }
+								ariaLabel={ __(
+									'Clear Form Filters',
+									'sureforms'
+								) }
+							/>
+						) : null }
+						<div className="min-w-[200px] cursor-pointer rounded-sm shadow-sm">
+							<Select
+								value={ selectedForm }
+								onChange={ ( value ) => handleChange( value ) }
+								size="sm"
+							>
+								<Select.Button className="text-text-primary text-xs">
+									{ getFormLabel( selectedForm ) }
+								</Select.Button>
+								<Select.Options className="z-999999">
+									{ formData.map( ( option ) => (
+										<Select.Option
+											key={ option.id }
+											value={ option.id }
+										>
+											{ <span>{ option.name }</span> }
+										</Select.Option>
+									) ) }
+								</Select.Options>
+							</Select>
+						</div>
 					</div>
-					{ selectedDates.from || selectedDates.to ? (
-						<ClearButton
-							onClick={ handleClearDateFilters }
-							ariaLabel={ __(
-								'Clear Date Filters',
-								'sureforms'
+					<div>
+						{ selectedDates.from || selectedDates.to ? (
+							<ClearButton
+								onClick={ handleClearDateFilters }
+								ariaLabel={ __(
+									'Clear Date Filters',
+									'sureforms'
+								) }
+							/>
+						) : null }
+						<div className="relative" ref={ containerRef }>
+							<Input
+								type="text"
+								size="sm"
+								value={ getSelectedDate( selectedDates ) }
+								suffix={
+									<Calendar className="text-icon-secondary" />
+								}
+								onClick={ () =>
+									setIsDatePickerOpen( ( prev ) => ! prev )
+								}
+								placeholder={ getDatePlaceholder() }
+								className="min-w-[200px] cursor-pointer min-h-9 rounded-sm shadow-sm"
+								readOnly
+								aria-label={ __(
+									'Select Date Range',
+									'sureforms'
+								) }
+							/>
+							{ isDatePickerOpen && (
+								<div className="absolute z-10 mt-2 rounded-lg shadow-lg right-0 bg-background-primary">
+									<DatePicker
+										applyButtonText={ __(
+											'Apply',
+											'sureforms'
+										) }
+										cancelButtonText={ __(
+											'Cancel',
+											'sureforms'
+										) }
+										selectionType="range"
+										showOutsideDays={ false }
+										variant="presets"
+										onApply={ handleDateApply }
+										onCancel={ handleDateCancel }
+										selected={ getLastNDays(
+											selectedDates
+										) }
+									/>
+								</div>
 							) }
-						/>
-					) : null }
-					<div className="relative" ref={ containerRef }>
-						<Input
-							type="text"
-							size="sm"
-							value={ getSelectedDate( selectedDates ) }
-							suffix={
-								<Calendar className="text-icon-secondary" />
-							}
-							onClick={ () =>
-								setIsDatePickerOpen( ( prev ) => ! prev )
-							}
-							placeholder={ getDatePlaceholder() }
-							className="w-auto min-w-[200px] cursor-pointer [&>input]:min-h-9 rounded-sm shadow-sm"
-							readOnly
-							aria-label={ __(
-								'Select Date Range',
-								'sureforms'
-							) }
-						/>
-						{ isDatePickerOpen && (
-							<div className="absolute z-10 mt-2 rounded-lg shadow-lg right-0 bg-background-primary">
-								<DatePicker
-									applyButtonText={ __(
-										'Apply',
-										'sureforms'
-									) }
-									cancelButtonText={ __(
-										'Cancel',
-										'sureforms'
-									) }
-									selectionType="range"
-									showOutsideDays={ false }
-									variant="presets"
-									onApply={ handleDateApply }
-									onCancel={ handleDateCancel }
-									selected={ getLastNDays( selectedDates ) }
-								/>
-							</div>
-						) }
+						</div>
 					</div>
 				</div>
 			</Container.Item>
@@ -331,8 +340,8 @@ export default () => {
 										) }
 									/>
 									<ChartText
-										color="secondary"
-										weight="normal"
+										color="text-text-secondary"
+										weight="font-normal"
 									/>
 								</div>
 							</div>
@@ -375,8 +384,8 @@ export default () => {
 										) }
 									/>
 									<ChartText
-										color="secondary"
-										weight="normal"
+										color="text-text-secondary"
+										weight="font-normal"
 									/>
 								</div>
 							</div>

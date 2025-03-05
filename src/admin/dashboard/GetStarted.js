@@ -31,9 +31,9 @@ export default () => {
 						) }
 					</Label>
 				</div>
-				<div className="flex flex-row flex-wrap gap-3">
+				<div className="flex flex-row flex-wrap gap-3 px-2">
 					<Button
-						className="text-white shadow-sm-blur-1 gap-1"
+						className="shadow-sm-blur-1 gap-1"
 						icon={ <Plus aria-label="icon" role="img" /> }
 						iconPosition="right"
 						size="md"
