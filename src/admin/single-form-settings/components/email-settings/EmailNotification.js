@@ -1,6 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import EmailConfirmation from './EmailConfirmation';
-import { useState } from '@wordpress/element';
+import { useEffect, useState } from '@wordpress/element';
 import { store as editorStore } from '@wordpress/editor';
 import { useDispatch } from '@wordpress/data';
 import {
@@ -154,6 +154,19 @@ const EmailNotification = ( {
 			label: __( 'Actions', 'sureforms' ),
 		},
 	];
+
+	useEffect( () => {
+		function handleClickOutside( ) {
+			setIsPopup( null );
+		}
+
+		// Bind the event listener
+		document.addEventListener( 'mousedown', handleClickOutside );
+		return () => {
+			// Unbind the event listener on cleanup
+			document.removeEventListener( 'mousedown', handleClickOutside );
+		};
+	}, [ isPopup ] );
 
 	if ( showConfirmation ) {
 		return (
@@ -327,16 +340,8 @@ const EmailNotification = ( {
 														interactive
 														className="z-999999"
 														variant="light"
-														open={
-															isPopup === el.id
-																? true
-																: false
-														}
-														setOpen={
-															isPopup === el.id
-																? true
-																: false
-														}
+														open={ isPopup === el.id }
+														setOpen={ () => setIsPopup( el.id ) }
 													>
 														<Button
 															aria-label="Delete"
