@@ -185,6 +185,31 @@ export default () => {
 		return format( new Date( tickItem ), 'MMM dd, yyyy' );
 	};
 
+	// Text for chart when data is loading or no data is available
+	const ChartText = ( { text, color = 'primary', weight = 'medium' } ) => (
+		<Label
+			tag="p"
+			className={ `text-sm font-${ weight } text-center text-text-${ color }` }
+		>
+			{ text ||
+				__( 'This is where your form views will appear', 'sureforms' ) }
+		</Label>
+	);
+
+	// Clear Filters Button
+	const ClearButton = ( { onClick, ariaLabel } ) => (
+		<Button
+			variant="link"
+			size="xs"
+			icon={ <X /> }
+			onClick={ onClick }
+			className="text-button-danger no-underline hover:no-underline hover:text-button-danger"
+			aria-label={ ariaLabel }
+		>
+			{ '' }
+		</Button>
+	);
+
 	return (
 		<Container
 			containerType="flex"
@@ -196,16 +221,13 @@ export default () => {
 				<Title title={ __( 'Overview', 'sureforms' ) } tag="h5" />
 				<div className="flex items-center gap-2">
 					{ selectedForm ? (
-						<Button
-							variant="link"
-							size="xs"
-							icon={ <X /> }
+						<ClearButton
 							onClick={ () => handleChange( '' ) }
-							className="text-button-danger no-underline hover:no-underline hover:text-button-danger"
-							aria-label={ __( 'Clear Filters', 'sureforms' ) }
-						>
-							{ '' }
-						</Button>
+							ariaLabel={ __(
+								'Clear Form Filters',
+								'sureforms'
+							) }
+						/>
 					) : null }
 					<div className="w-auto min-w-[200px] cursor-pointer [&>input]:min-h-2 rounded-sm shadow-sm">
 						<Select
@@ -213,7 +235,7 @@ export default () => {
 							onChange={ ( value ) => handleChange( value ) }
 							size="sm"
 						>
-							<Select.Button className="text-text-tertiary text-xs">
+							<Select.Button className="text-text-primary text-xs">
 								{ getFormLabel( selectedForm ) }
 							</Select.Button>
 							<Select.Options className="z-999999">
@@ -229,16 +251,13 @@ export default () => {
 						</Select>
 					</div>
 					{ selectedDates.from || selectedDates.to ? (
-						<Button
-							variant="link"
-							size="xs"
-							icon={ <X /> }
+						<ClearButton
 							onClick={ handleClearDateFilters }
-							className="text-button-danger no-underline hover:no-underline hover:text-button-danger"
-							aria-label={ __( 'Clear Filters', 'sureforms' ) }
-						>
-							{ '' }
-						</Button>
+							ariaLabel={ __(
+								'Clear Date Filters',
+								'sureforms'
+							) }
+						/>
 					) : null }
 					<div className="relative" ref={ containerRef }>
 						<Input
@@ -305,24 +324,16 @@ export default () => {
 									variant="primary"
 								/>
 								<div className="flex flex-col items-center space-y-1">
-									<Label
-										tag="p"
-										className="text-sm font-medium text-center text-text-primary"
-									>
-										{ __(
+									<ChartText
+										text={ __(
 											'Please wait for the data to load',
 											'sureforms'
 										) }
-									</Label>
-									<Label
-										tag="p"
-										className="text-sm font-normal text-center text-text-secondary"
-									>
-										{ __(
-											'This is where your form views will appear',
-											'sureforms'
-										) }
-									</Label>
+									/>
+									<ChartText
+										color="secondary"
+										weight="normal"
+									/>
 								</div>
 							</div>
 						</div>
@@ -357,24 +368,16 @@ export default () => {
 							<div className="flex flex-col items-center justify-center">
 								<FileChartColumnIncreasing className="mb-3" />
 								<div className="flex flex-col items-center space-y-1">
-									<Label
-										tag="p"
-										className="text-sm font-medium text-center text-text-primary"
-									>
-										{ __(
+									<ChartText
+										text={ __(
 											'There is no data on this view',
 											'sureforms'
 										) }
-									</Label>
-									<Label
-										tag="p"
-										className="text-sm font-normal text-center text-text-secondary"
-									>
-										{ __(
-											'This is where your form views will appear',
-											'sureforms'
-										) }
-									</Label>
+									/>
+									<ChartText
+										color="secondary"
+										weight="normal"
+									/>
 								</div>
 							</div>
 						</div>
