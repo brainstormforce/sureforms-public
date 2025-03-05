@@ -168,7 +168,7 @@ class Field_Mapping {
 					}
 
 					// Apply filter to modify merged attributes.
-					$merged_attributes = apply_filters( 'srfm_ai_form_builder_modify_merged_attributes', $merged_attributes, $question );
+					$merged_attributes = apply_filters( 'srfm_ai_form_builder_modify_merged_attributes', $merged_attributes, $question, $is_conversational, $form_type );
 
 					// if field type is needs to be skipped then skip that field.
 					if ( ! empty( $skip_fields ) && in_array( $field_type, $skip_fields, true ) ) {
