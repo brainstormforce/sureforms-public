@@ -156,7 +156,7 @@ const EmailNotification = ( {
 	];
 
 	useEffect( () => {
-		function handleClickOutside( ) {
+		function handleClickOutside() {
 			setIsPopup( null );
 		}
 
@@ -167,6 +167,21 @@ const EmailNotification = ( {
 			document.removeEventListener( 'mousedown', handleClickOutside );
 		};
 	}, [ isPopup ] );
+
+	const CustomButton = ( { ariaLabel, icon, onClick } ) => {
+		return (
+			<Button
+				aria-label={ ariaLabel }
+				className="text-icon-secondary hover:text-icon-primary"
+				variant="ghost"
+				size="xs"
+				onClick={ onClick }
+				icon={ icon }
+			>
+				{ '' }
+			</Button>
+		);
+	};
 
 	if ( showConfirmation ) {
 		return (
@@ -202,12 +217,7 @@ const EmailNotification = ( {
 					tag="h4"
 					title={ __( 'Email Notification', 'sureforms' ) }
 				/>
-				<Button
-					className=""
-					size="md"
-					variant="primary"
-					onClick={ handleEdit }
-				>
+				<Button size="md" variant="primary" onClick={ handleEdit }>
 					{ __( 'Add Notification', 'sureforms' ) }
 				</Button>
 			</div>
@@ -241,8 +251,8 @@ const EmailNotification = ( {
 										>
 											<Table.Cell>
 												<Switch
-													aria-label="Switch Element"
-													id="switch-element"
+													aria-label="Email Notification Switch"
+													id={ el.id }
 													size="sm"
 													checked={ el.status }
 													onChange={ () => {
@@ -260,50 +270,49 @@ const EmailNotification = ( {
 													className="gap-2"
 													justify="end"
 												>
-													<Button
-														aria-label="Duplicate"
-														className="text-icon-secondary hover:text-icon-primary"
+													<CustomButton
+														ariaLabel={ __(
+															'Duplicate',
+															'sureforms'
+														) }
 														icon={ <Files /> }
-														size="xs"
-														variant="ghost"
 														onClick={ () =>
 															handleDuplicate(
 																el
 															)
 														}
 													/>
-													<Button
-														aria-label="Edit"
-														className="text-icon-secondary hover:text-icon-primary"
+													<CustomButton
+														ariaLabel={ __(
+															'Edit',
+															'sureforms'
+														) }
 														icon={ <SquarePen /> }
-														size="xs"
-														variant="ghost"
 														onClick={ () =>
 															handleEdit( el )
 														}
 													/>
-
 													<Tooltip
 														arrow
 														content={
 															<div
-																className="relative"
+																className="flex gap-3 flex-col p-1"
 																offset={ 20 }
 															>
-																<p className="text-center my-2 mx-2">
+																<p className="text-center text-[13px] font-normal">
 																	{ __(
 																		'Are you sure to delete this?',
 																		'sureforms'
 																	) }
 																</p>
-																<div className="flex px-4 pb-2 gap-2">
+																<div className="flex gap-3">
 																	<Button
 																		onClick={ () =>
 																			setIsPopup(
 																				null
 																			)
 																		}
-																		className="inline-flex items-center px-2"
+																		className="px-3"
 																		variant="outline"
 																		size="xs"
 																	>
@@ -320,7 +329,7 @@ const EmailNotification = ( {
 																		}
 																		variant="primary"
 																		size="xs"
-																		className="inline-flex items-center px-2"
+																		className="px-3"
 																		destructive
 																	>
 																		{ __(
@@ -340,8 +349,12 @@ const EmailNotification = ( {
 														interactive
 														className="z-999999"
 														variant="light"
-														open={ isPopup === el.id }
-														setOpen={ () => setIsPopup( el.id ) }
+														open={
+															isPopup === el.id
+														}
+														setOpen={ () =>
+															setIsPopup( el.id )
+														}
 													>
 														<Button
 															aria-label="Delete"
