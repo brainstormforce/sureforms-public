@@ -257,35 +257,17 @@ button.srfm-toolbar-width-setting-button {
 .editor-styles-wrapper,
 .srfm-form-container {
 	.srfm-button {
-		// TODO: Refactor padding to use a common mixin.
-		padding-top: var( --srfm-button-padding-top, 10px ) !important;
-		padding-right: var( --srfm-button-padding-right, 14px ) !important;
-		padding-bottom: var( --srfm-button-padding-bottom, 10px ) !important;
-		padding-left: var( --srfm-button-padding-left, 14px ) !important;
-		font-size: var( --srfm-btn-font-size ) !important;
-		font-weight: var( --srfm-btn-font-weight ) !important;
-		line-height: var( --srfm-btn-line-height ) !important;
-		border-radius: var( --srfm-btn-border-radius ) !important;
-		background: var( --srfm-color-scheme-primary ) !important;
-		color: var( --srfm-color-scheme-text-on-primary ) !important;
-		// border: 1px solid var( --srfm-color-scheme-primary ) !important;
-		border-style: var( --srfm-button-border-style, solid ) !important;
-		// Border Width.
-		border-top-width: var( --srfm-button-border-width-top, 1px ) !important;
-		border-right-width: var( --srfm-button-border-width-right, 1px ) !important;
-		border-bottom-width: var( --srfm-button-border-width-bottom, 1px ) !important;
-		border-left-width: var( --srfm-button-border-width-left, 1px ) !important;
-		// Border Radius.
-		border-top-left-radius: var( --srfm-button-border-radius-top, 6px ) !important;
-		border-top-right-radius: var( --srfm-button-border-radius-right, 6px ) !important;
-		border-bottom-right-radius: var( --srfm-button-border-radius-bottom, 6px ) !important;
-		border-bottom-left-radius: var( --srfm-button-border-radius-left, 6px ) !important;
-		// Border Color.
-		border-color: var( --srfm-button-border-color, var( --srfm-color-scheme-primary ) ) !important;
+		padding: var( --srfm-btn-padding );
+		font-size: var( --srfm-btn-font-size );
+		font-weight: var( --srfm-btn-font-weight );
+		line-height: var( --srfm-btn-line-height );
+		border-radius: var( --srfm-btn-border-radius );
+		background: var( --srfm-color-scheme-primary );
+		color: var( --srfm-color-scheme-text-on-primary );
+		border: 1px solid var( --srfm-color-scheme-primary );
 
 		&:hover {
-			border-color: var( --srfm-button-border-hover-color, var( --srfm-color-scheme-primary ) ) !important;
-			background: var( --srfm-btn-color-hover ) !important;
+			background: var( --srfm-btn-color-hover );
 		}
 
 		&:focus {
