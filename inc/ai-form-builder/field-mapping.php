@@ -59,7 +59,7 @@ class Field_Mapping {
 		$post_content = '';
 
 		$is_conversational = isset( $params['is_conversional'] ) ? filter_var( $params['is_conversional'], FILTER_VALIDATE_BOOLEAN ) : false;
-		$forn_type         = isset( $params['form_type'] ) ? Helper::get_string_value( $params['form_type'] ) : 'simple';
+		$form_type         = isset( $params['form_type'] ) ? Helper::get_string_value( $params['form_type'] ) : 'simple';
 
 		// Filer to skip fields while mapping the fields.
 		$skip_fields = apply_filters( 'srfm_ai_field_map_skip_fields', [], $is_conversational );
@@ -90,7 +90,7 @@ class Field_Mapping {
 			);
 
 			// Apply filter to modify field type.
-			$field_type = apply_filters( 'srfm_ai_field_modify_field_type', $question['fieldType'], $question, $is_conversational, $forn_type );
+			$field_type = apply_filters( 'srfm_ai_field_modify_field_type', $question['fieldType'], $question, $is_conversational, $form_type );
 
 			// Determine field type based on field_type.
 			switch ( $field_type ) {
