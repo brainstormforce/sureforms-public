@@ -15,7 +15,7 @@ export default () => {
 			<Container.Item className="flex flex-col gap-6 col-span-12 md:col-span-7 lg:col-span-7">
 				<div>
 					<Title
-						size="lg"
+						size="md"
 						tag="h3"
 						title={ __( 'Welcome to SureForms!', 'sureforms' ) }
 						className="mb-1 px-2"
@@ -34,7 +34,9 @@ export default () => {
 				<div className="flex flex-row flex-wrap gap-3 px-2">
 					<Button
 						className="shadow-sm-blur-1 gap-1"
-						icon={ <Plus aria-label="Create new form" role="img" /> }
+						icon={
+							<Plus aria-label="Create new form" role="img" />
+						}
 						iconPosition="right"
 						size="md"
 						variant="primary"

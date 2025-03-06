@@ -12,7 +12,12 @@ export default () => {
 	};
 
 	// Helper function for API requests
-	const performApiAction = async ( { url, formData, successCallback, errorCallback } ) => {
+	const performApiAction = async ( {
+		url,
+		formData,
+		successCallback,
+		errorCallback,
+	} ) => {
 		try {
 			const response = await apiFetch( {
 				url,
@@ -27,15 +32,22 @@ export default () => {
 			}
 		} catch ( error ) {
 			console.error( 'API Error:', error );
-			toast.error( __( 'An error occurred. Please try again later.', 'sureforms' ), {
-				duration: 5000,
-			} );
+			toast.error(
+				__( 'An error occurred. Please try again later.', 'sureforms' ),
+				{
+					duration: 5000,
+				}
+			);
 		}
 	};
 
 	// Get action type based on plugin status
 	const getAction = ( status ) => {
-		return status === 'Installed' ? ACTIONS.ACTIVATE : ( status === 'Activated' ? '' : ACTIONS.INSTALL );
+		return status === 'Installed'
+			? ACTIONS.ACTIVATE
+			: status === 'Activated'
+				? ''
+				: ACTIONS.INSTALL;
 	};
 
 	// Get plugin button text
@@ -66,45 +78,62 @@ export default () => {
 				window.location = plugin.redirection;
 			},
 			errorCallback: () => {
-				toast.error( __( 'Plugin activation failed, Please try again later.', 'sureforms' ), {
-					duration: 5000,
-				} );
+				toast.error(
+					__(
+						'Plugin activation failed, Please try again later.',
+						'sureforms'
+					),
+					{
+						duration: 5000,
+					}
+				);
 				e.target.innerText = srfm_admin.plugin_activate_text;
 			},
 		} );
 	}, [] );
 
-	const handlePluginActionTrigger = useCallback( ( { plugin, e } ) => {
-		const action = getAction( plugin.status );
-		if ( ! action ) {
-			return;
-		}
+	const handlePluginActionTrigger = useCallback(
+		( { plugin, e } ) => {
+			const action = getAction( plugin.status );
+			if ( ! action ) {
+				return;
+			}
 
-		const formData = new window.FormData();
+			const formData = new window.FormData();
 
-		if ( action === ACTIONS.INSTALL ) {
-			formData.append( 'action', ACTIONS.INSTALL );
-			formData.append( '_ajax_nonce', srfm_admin.plugin_installer_nonce );
-			formData.append( 'slug', plugin.slug );
+			if ( action === ACTIONS.INSTALL ) {
+				formData.append( 'action', ACTIONS.INSTALL );
+				formData.append(
+					'_ajax_nonce',
+					srfm_admin.plugin_installer_nonce
+				);
+				formData.append( 'slug', plugin.slug );
 
-			e.target.innerText = srfm_admin.plugin_installing_text;
+				e.target.innerText = srfm_admin.plugin_installing_text;
 
-			performApiAction( {
-				url: srfm_admin.ajax_url,
-				formData,
-				successCallback: () => {
-					e.target.innerText = srfm_admin.plugin_installed_text;
-					activatePlugin( { plugin, e } );
-				},
-				errorCallback: () => {
-					e.target.innerText = __( 'Install', 'sureforms' );
-					alert( __( 'Plugin Installation failed, Please try again later.', 'sureforms' ) );
-				},
-			} );
-		} else if ( action === ACTIONS.ACTIVATE ) {
-			activatePlugin( { plugin, e } );
-		}
-	}, [ activatePlugin ] );
+				performApiAction( {
+					url: srfm_admin.ajax_url,
+					formData,
+					successCallback: () => {
+						e.target.innerText = srfm_admin.plugin_installed_text;
+						activatePlugin( { plugin, e } );
+					},
+					errorCallback: () => {
+						e.target.innerText = __( 'Install', 'sureforms' );
+						alert(
+							__(
+								'Plugin Installation failed, Please try again later.',
+								'sureforms'
+							)
+						);
+					},
+				} );
+			} else if ( action === ACTIONS.ACTIVATE ) {
+				activatePlugin( { plugin, e } );
+			}
+		},
+		[ activatePlugin ]
+	);
 
 	return (
 		<Container
@@ -113,32 +142,58 @@ export default () => {
 			direction="column"
 			gap="xs"
 		>
-			<Toaster position="bottom-right" design="stack" theme="light" autoDismiss={ true } dismissAfter={ 5000 } />
+			<Toaster
+				position="bottom-right"
+				design="stack"
+				theme="light"
+				autoDismiss={ true }
+				dismissAfter={ 5000 }
+			/>
 			<Container.Item>
-				<Label className="text-sm text-text-primary font-semibold">
+				<Label size="md" className="font-semibold">
 					{ __( 'Extend Your Website', 'sureforms' ) }
 				</Label>
 			</Container.Item>
 			<Container.Item>
 				<Container className="flex flex-wrap p-1 gap-1 bg-background-secondary rounded-lg">
 					{ srfm_admin?.integrations?.map( ( plugin, index ) => (
-						<Container.Item key={ index } className="flex gap-1 p-2 shadow-sm-blur-2 rounded-md bg-background-primary flex-1 min-w-[calc(50%-0.5rem)]">
+						<Container.Item
+							key={ index }
+							className="flex gap-1 p-2 shadow-sm-blur-2 rounded-md bg-background-primary flex-1 min-w-[calc(50%-0.5rem)]"
+						>
 							<Container className="flex-1 flex flex-col justify-between">
 								<Container.Item className="flex flex-col gap-1.5">
 									<Container className="flex gap-1.5 items-center">
-										<img className="w-5 h-5" src={ plugin.logo } alt={ plugin.title } />
-										<Label className="text-sm font-medium text-text-primary">
+										<img
+											className="w-5 h-5"
+											src={ plugin.logo }
+											alt={ plugin.title }
+										/>
+										<Label size="sm">
 											{ plugin.title }
 										</Label>
 									</Container>
-									<Label className="text-sm text-text-tertiary font-normal">
+									<Label
+										size="sm"
+										variant="help"
+										className="font-normal"
+									>
 										{ plugin.subtitle }
 									</Label>
 								</Container.Item>
 								<Button
-									className={ cn( 'rounded-sm border-0.5 border-solid border-border-subtle shadow-sm-blur-2 w-fit font-semibold text-text-primary p-2 gap-0.5 focus:[box-shadow:none]', ( plugin.status === 'Activated' ) && 'bg-badge-background-green hover:bg-badge-background-green' ) }
+									className={ cn(
+										'w-fit focus:[box-shadow:none]',
+										plugin.status === 'Activated' &&
+											'bg-badge-background-green hover:bg-badge-background-green'
+									) }
 									variant="outline"
-									onClick={ ( e ) => handlePluginActionTrigger( { plugin, e } ) }
+									onClick={ ( e ) =>
+										handlePluginActionTrigger( {
+											plugin,
+											e,
+										} )
+									}
 									size="xs"
 								>
 									{ getPluginStatusText( plugin ) }

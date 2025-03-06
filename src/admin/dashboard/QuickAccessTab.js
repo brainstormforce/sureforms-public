@@ -1,5 +1,5 @@
 import { __ } from '@wordpress/i18n';
-import { Button, Container, Label } from '@bsf/force-ui';
+import { Container, Label } from '@bsf/force-ui';
 import { Ticket, CircleHelp, MessagesSquare, Star } from 'lucide-react';
 
 export default () => {
@@ -31,30 +31,29 @@ export default () => {
 	];
 
 	const QuickAccessButtons = () => {
-		return (
-			quickAccessOptions.map( ( { key, label, icon, link } ) => (
-				<Container
-					key={ key }
-					align="center"
-					className="gap-1 p-1 rounded-md bg-background-primary shadow-sm-blur-1 hover:bg-background-primary"
-					containerType="flex"
-					direction="row"
-				>
-					<Container.Item className="flex">
-						<Button
-							className="font-medium cursor-pointer text-sm text-text-primary focus:[box-shadow:none]"
-							icon={ icon }
-							iconPosition="left"
-							size="xs"
-							variant="ghost"
-							onClick={ () => window.open( link, '_blank' ) }
-						>
+		return quickAccessOptions.map( ( { key, label, icon, link } ) => (
+			<Container
+				key={ key }
+				align="center"
+				className="gap-1 p-1 rounded-md bg-background-primary shadow-sm-blur-1"
+				containerType="flex"
+				direction="row"
+			>
+				<Container.Item className="flex">{ icon }</Container.Item>
+				<Container.Item className="flex">
+					<a
+						className="no-underline hover:underline hover:text-field-label"
+						href={ link }
+						target="_blank"
+						rel="noreferrer"
+					>
+						<Label className="py-0 px-1 font-normal cursor-pointer">
 							{ label }
-						</Button>
-					</Container.Item>
-				</Container>
-			) )
-		);
+						</Label>
+					</a>
+				</Container.Item>
+			</Container>
+		) );
 	};
 
 	return (
@@ -65,7 +64,7 @@ export default () => {
 			gap="xs"
 		>
 			<Container.Item className="p-1 gap-8">
-				<Label className="font-semibold text-text-primary text-base">
+				<Label size="md" className="font-semibold">
 					{ __( 'Quick Access', 'sureforms' ) }
 				</Label>
 			</Container.Item>

@@ -21,6 +21,31 @@ import {
 } from '@Utils/Helpers';
 import { useState, useEffect, useRef } from '@wordpress/element';
 
+// Text for chart when data is loading or no data is available
+const ChartText = ( { text, color = '', weight = '' } ) => (
+	<Label
+		tag="p"
+		size="sm"
+		className={ ` ${ weight } text-center ${ color }` }
+	>
+		{ text ||
+			__( 'This is where your form views will appear', 'sureforms' ) }
+	</Label>
+);
+
+// Clear Filters Button
+const ClearButton = ( { onClick, ariaLabel } ) => (
+	<Button
+		variant="link"
+		size="xs"
+		icon={ <X /> }
+		onClick={ onClick }
+		aria-label={ ariaLabel }
+	>
+		{ '' }
+	</Button>
+);
+
 export default () => {
 	const [ selectedDates, setSelectedDates ] = useState( {
 		from: null,
@@ -185,34 +210,6 @@ export default () => {
 		return format( new Date( tickItem ), 'MMM dd, yyyy' );
 	};
 
-	// Text for chart when data is loading or no data is available
-	const ChartText = ( {
-		text,
-		color = 'text-text-primary',
-		weight = 'font-medium',
-	} ) => (
-		<Label
-			tag="p"
-			className={ `text-sm ${ weight } text-center ${ color }` }
-		>
-			{ text ||
-				__( 'This is where your form views will appear', 'sureforms' ) }
-		</Label>
-	);
-
-	// Clear Filters Button
-	const ClearButton = ( { onClick, ariaLabel } ) => (
-		<Button
-			variant="link"
-			size="xs"
-			icon={ <X /> }
-			onClick={ onClick }
-			aria-label={ ariaLabel }
-		>
-			{ '' }
-		</Button>
-	);
-
 	return (
 		<Container
 			containerType="flex"
@@ -223,7 +220,7 @@ export default () => {
 			<Container.Item className="flex flex-wrap items-center justify-between w-full p-1 sm:flex-row sm:gap-2">
 				<Title title={ __( 'Overview', 'sureforms' ) } tag="h5" />
 				<div className="flex flex-wrap items-center gap-2 sm:flex-row">
-					<div>
+					<div className="flex items-center gap-2">
 						{ selectedForm ? (
 							<ClearButton
 								onClick={ () => handleChange( '' ) }
@@ -233,13 +230,13 @@ export default () => {
 								) }
 							/>
 						) : null }
-						<div className="min-w-[200px] cursor-pointer rounded-sm shadow-sm">
+						<div className="min-w-[200px]">
 							<Select
 								value={ selectedForm }
 								onChange={ ( value ) => handleChange( value ) }
 								size="sm"
 							>
-								<Select.Button className="text-text-primary text-xs">
+								<Select.Button>
 									{ getFormLabel( selectedForm ) }
 								</Select.Button>
 								<Select.Options className="z-999999">
@@ -255,7 +252,7 @@ export default () => {
 							</Select>
 						</div>
 					</div>
-					<div>
+					<div className="flex items-center gap-2">
 						{ selectedDates.from || selectedDates.to ? (
 							<ClearButton
 								onClick={ handleClearDateFilters }
@@ -277,7 +274,7 @@ export default () => {
 									setIsDatePickerOpen( ( prev ) => ! prev )
 								}
 								placeholder={ getDatePlaceholder() }
-								className="min-w-[200px] cursor-pointer min-h-9 rounded-sm shadow-sm"
+								className="min-w-[200px]"
 								readOnly
 								aria-label={ __(
 									'Select Date Range',
