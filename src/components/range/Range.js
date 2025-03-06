@@ -77,12 +77,13 @@ const Range = ( props ) => {
 	const resetValues = ( defaultValues ) => {
 		const newAttributes = {
 			[ props.data.label ]: defaultValues[ props?.data?.label ],
-		}
+		};
 		if ( props?.onChange ) {
 			props?.onChange( defaultValues[ props?.data?.label ] );
 		}
 		if ( props.displayUnit ) {
-			newAttributes[ props.unit.label ] = defaultValues[ props?.unit?.label ];
+			newAttributes[ props.unit.label ] =
+				defaultValues[ props?.unit?.label ];
 		}
 		if ( props?.setAttributes ) {
 			props.setAttributes( newAttributes );

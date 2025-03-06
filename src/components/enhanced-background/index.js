@@ -481,13 +481,15 @@ const Background = ( props ) => {
 
 	const overlayControls = (
 		<>
-			{ ! disableOverlay && ( ( backgroundType.value === 'color' && backgroundColor.value ) ||
-				( backgroundType.value === 'gradient' &&
-					gradientOverlay.value ) ) && (
+			{ ! disableOverlay &&
+				( ( backgroundType.value === 'color' &&
+					backgroundColor.value ) ||
+					( backgroundType.value === 'gradient' &&
+						gradientOverlay.value ) ) && (
 				<>
 					{ buttonControl }
 					{ 'image' === overlayType?.value &&
-						renderOverlayImageControls() }
+							renderOverlayImageControls() }
 				</>
 			) }
 			{ backgroundType.value === 'image' && backgroundImage?.value && (
@@ -561,7 +563,7 @@ const Background = ( props ) => {
 
 	const advancedControls = (
 		<>
-			<div className='srfm-bg-type-container'>
+			<div className="srfm-bg-type-container">
 				<MultiButtonsControl
 					label={ label }
 					data={ {
@@ -834,7 +836,7 @@ const Background = ( props ) => {
 					/>
 				</div>
 			) }
-			{ ! disableOverlay && ( overlayControls ) }
+			{ ! disableOverlay && overlayControls }
 		</>
 	);
 	return (

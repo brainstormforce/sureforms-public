@@ -7,7 +7,6 @@ import AdvancedPopColorControl from '@Components/color-control/advanced-pop-colo
 import SRFMSelectControl from '@Components/select-control';
 import SRFMTabsControl from '@Components/tabs';
 import SRFMHelpText from '@Components/help-text';
-import Separator from '@Components/separator';
 import Spacing from '@Components/spacing';
 
 const defaultProps = {
@@ -22,7 +21,6 @@ const Border = ( props ) => {
 	const {
 		setAttributes,
 		disabledBorderTitle,
-		disableBottomSeparator,
 		showWidth,
 		help = false,
 		// Default Attributes.
@@ -228,11 +226,7 @@ const Border = ( props ) => {
 		</>
 	);
 
-	return (
-		<div>
-			{ advancedControls }
-		</div>
-	);
+	return <div>{ advancedControls }</div>;
 };
 
 export default Border;
