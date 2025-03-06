@@ -55,6 +55,9 @@ function initializeNumberField() {
 						numberInput.getAttribute( 'format-type' )
 					);
 				} );
+
+				// Trigger the change event to format the default value.
+				numberInput.dispatchEvent( new Event( 'change' ) );
 			}
 		} );
 	}
