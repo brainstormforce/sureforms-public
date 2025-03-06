@@ -1,6 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import EmailConfirmation from './EmailConfirmation';
-import { useEffect, useState } from '@wordpress/element';
+import { useEffect, useState, forwardRef } from '@wordpress/element';
 import { store as editorStore } from '@wordpress/editor';
 import { useDispatch } from '@wordpress/data';
 import {
@@ -14,6 +14,36 @@ import {
 	Tooltip,
 } from '@bsf/force-ui';
 import { Files, SquarePen, Trash } from 'lucide-react';
+
+const CustomButton = forwardRef(
+	(
+		{
+			ariaLabel,
+			icon,
+			onClick,
+			variant = 'ghost',
+			classNames = 'text-icon-secondary',
+			label = '',
+			...props
+		},
+		ref
+	) => {
+		return (
+			<Button
+				aria-label={ ariaLabel }
+				className={ classNames }
+				variant={ variant }
+				size="xs"
+				onClick={ onClick }
+				icon={ icon }
+				ref={ ref }
+				{ ...props }
+			>
+				{ label || '' }
+			</Button>
+		);
+	}
+);
 
 const EmailNotification = ( {
 	setHasValidationErrors,
@@ -168,21 +198,6 @@ const EmailNotification = ( {
 		};
 	}, [ isPopup ] );
 
-	const CustomButton = ( { ariaLabel, icon, onClick } ) => {
-		return (
-			<Button
-				aria-label={ ariaLabel }
-				className="text-icon-secondary hover:text-icon-primary"
-				variant="ghost"
-				size="xs"
-				onClick={ onClick }
-				icon={ icon }
-			>
-				{ '' }
-			</Button>
-		);
-	};
-
 	if ( showConfirmation ) {
 		return (
 			<>
@@ -296,47 +311,52 @@ const EmailNotification = ( {
 														arrow
 														content={
 															<div
-																className="flex gap-3 flex-col p-1"
+																className="flex gap-2 flex-col p-1"
 																offset={ 20 }
 															>
-																<p className="text-center text-[13px] font-normal">
+																<p className="text-[13px] font-normal">
 																	{ __(
 																		'Are you sure to delete this?',
 																		'sureforms'
 																	) }
 																</p>
 																<div className="flex gap-3">
-																	<Button
+																	<CustomButton
+																		ariaLabel={ __(
+																			'Cancel',
+																			'sureforms'
+																		) }
 																		onClick={ () =>
 																			setIsPopup(
 																				null
 																			)
 																		}
-																		className="px-3"
-																		variant="outline"
-																		size="xs"
-																	>
-																		{ __(
+																		label={ __(
 																			'Cancel',
 																			'sureforms'
 																		) }
-																	</Button>
-																	<Button
+																		variant="outline"
+																		className="px-2"
+																	/>
+
+																	<CustomButton
+																		ariaLabel={ __(
+																			'Confirm',
+																			'sureforms'
+																		) }
 																		onClick={ () =>
 																			handleDelete(
 																				el
 																			)
 																		}
-																		variant="primary"
-																		size="xs"
-																		className="px-3"
-																		destructive
-																	>
-																		{ __(
+																		label={ __(
 																			'Confirm',
 																			'sureforms'
 																		) }
-																	</Button>
+																		variant="primary"
+																		className="px-2"
+																		destructive
+																	/>
 																</div>
 															</div>
 														}
@@ -356,12 +376,12 @@ const EmailNotification = ( {
 															setIsPopup( el.id )
 														}
 													>
-														<Button
-															aria-label="Delete"
-															className="text-icon-secondary hover:text-icon-primary"
-															icon={ <Trash /> }
-															size="xs"
-															variant="ghost"
+														<CustomButton
+															ariaLabel={ __(
+																'Delete',
+																'sureforms'
+															) }
+															icon={ <Trash className="text-icon-secondary" /> }
 															onClick={ () => {
 																setIsPopup(
 																	el.id
