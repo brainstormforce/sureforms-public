@@ -22,7 +22,7 @@ export default () => {
 		>
 			<Container.Item className="flex flex-col px-2 gap-2" colSpan={ 6 }>
 				<div className="flex flex-col gap-2">
-					<div className="flex flex-row gap-1 items-center mt-2">
+					<div className="flex flex-row gap-1 items-center my-2">
 						<Zap className="size-4 text-brand-800 border-1.25" />
 						<div className="font-semibold text-xs text-brand-800">
 							{ __( 'Upgrade to Pro', 'sureforms' ) }
