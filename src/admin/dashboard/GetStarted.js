@@ -7,7 +7,7 @@ export default () => {
 
 	return (
 		<Container
-			className="bg-background-primary p-4 shadow-sm rounded-xl border border-solid border-border-subtle gap-y-8 md:gap-x-8"
+			className="bg-background-primary p-4 shadow-sm-blur-1 rounded-xl border-0.5 border-solid border-border-subtle gap-y-8 md:gap-x-8"
 			containerType="grid"
 			cols={ 12 }
 			align="center"

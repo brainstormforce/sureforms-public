@@ -7,25 +7,25 @@ export default () => {
 		{
 			key: 'support-ticket',
 			label: __( 'Open Support Ticket', 'sureforms' ),
-			icon: <Ticket className="w-12 text-icon-primary" />,
+			icon: <Ticket size={ 16 } />,
 			link: 'https://sureforms.com/contact/',
 		},
 		{
 			key: 'help-center',
 			label: __( 'Help Center', 'sureforms' ),
-			icon: <CircleHelp className="w-12 text-icon-primary" />,
+			icon: <CircleHelp size={ 16 } />,
 			link: 'https://sureforms.com/docs/',
 		},
 		{
 			key: 'join-community',
 			label: __( 'Join the Community', 'sureforms' ),
-			icon: <MessagesSquare className="w-12 text-icon-primary" />,
+			icon: <MessagesSquare size={ 16 } />,
 			link: 'https://www.facebook.com/groups/surecrafted',
 		},
 		{
 			key: 'rate-us',
 			label: __( 'Rate Us', 'sureforms' ),
-			icon: <Star className="w-12 text-icon-primary" />,
+			icon: <Star size={ 16 } />,
 			link: 'https://wordpress.org/support/plugin/sureforms/reviews/?rate=5#new-post',
 		},
 	];
@@ -42,7 +42,7 @@ export default () => {
 				<Container.Item className="flex">{ icon }</Container.Item>
 				<Container.Item className="flex">
 					<a
-						className="no-underline hover:underline hover:text-field-label"
+						className="no-underline"
 						href={ link }
 						target="_blank"
 						rel="noreferrer"
@@ -58,7 +58,7 @@ export default () => {
 
 	return (
 		<Container
-			className="bg-background-primary border border-solid rounded-xl border-border-subtle p-3 shadow-sm"
+			className="bg-background-primary border-0.5 border-solid rounded-xl border-border-subtle p-3 shadow-sm"
 			containerType="flex"
 			direction="column"
 			gap="xs"

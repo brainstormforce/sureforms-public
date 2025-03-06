@@ -215,7 +215,7 @@ export default () => {
 			containerType="flex"
 			direction="column"
 			gap="xs"
-			className="w-full h-full p-4 rounded-xl bg-background-primary border-border-subtle border-0.5"
+			className="w-full h-full p-4 rounded-xl bg-background-primary border-0.5 border-solid border-border-subtle shadow-sm-blur-2"
 		>
 			<Container.Item className="flex flex-wrap items-center justify-between w-full p-1 sm:flex-row sm:gap-2">
 				<Title title={ __( 'Overview', 'sureforms' ) } tag="h5" />
@@ -236,7 +236,9 @@ export default () => {
 								onChange={ ( value ) => handleChange( value ) }
 								size="sm"
 							>
-								<Select.Button>
+								<Select.Button
+									placeholder={ __( 'Select a form', 'sureforms' ) }
+								>
 									{ getFormLabel( selectedForm ) }
 								</Select.Button>
 								<Select.Options className="z-999999">

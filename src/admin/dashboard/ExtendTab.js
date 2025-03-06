@@ -137,7 +137,7 @@ export default () => {
 
 	return (
 		<Container
-			className="bg-background-primary border border-solid rounded-xl border-border-subtle p-3 shadow-sm"
+			className="bg-background-primary border-0.5 border-solid rounded-xl border-border-subtle p-3 shadow-sm-blur-1"
 			containerType="flex"
 			direction="column"
 			gap="xs"
