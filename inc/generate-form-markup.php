@@ -204,6 +204,10 @@ class Generate_Form_Markup {
 				$id
 			);
 
+			if ( ! $should_show_submit_button ) {
+				$form_classes[] = 'srfm-submit-button-hidden';
+			}
+
 			?>
 			<div class="<?php echo esc_attr( implode( ' ', array_filter( $form_classes ) ) ); ?>">
 			<style>
