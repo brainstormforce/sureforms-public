@@ -20,7 +20,7 @@ export default () => {
 			containerType="grid"
 			cols={ 12 }
 		>
-			<Container.Item className="flex flex-col px-2 gap-2" colSpan={ 6 }>
+			<Container.Item className="flex flex-col px-2 gap-2 gap-6 col-span-12 md:col-span-6">
 				<div className="flex flex-col gap-2">
 					<div className="flex flex-row gap-1 items-center my-2">
 						<Zap className="size-4 text-brand-800 border-1.25" />
@@ -80,10 +80,7 @@ export default () => {
 					</Button>
 				</div>
 			</Container.Item>
-			<Container.Item
-				className="gap-1.5 flex justify-center items-center"
-				colSpan={ 6 }
-			>
+			<Container.Item className="gap-1.5 flex justify-center items-center col-span-12 md:col-span-6">
 				<img
 					src={ upgradeToProPlaceholder }
 					alt={ __( 'Upgrade To Pro', 'sureforms' ) }
