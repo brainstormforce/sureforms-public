@@ -8,8 +8,6 @@
 
 namespace SRFM\Inc\Fields;
 
-use SRFM\Inc\Helper;
-
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }

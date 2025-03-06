@@ -339,7 +339,7 @@ class Base {
 	 * The array data will be stored in the block field's "data-field-config"
 	 * attribute as a JSON string.
 	 *
-	 * @var array $field_config Configuration settings for the field.
+	 * @var string $field_config Configuration settings for the field.
 	 * @since x.x.x
 	 */
 	protected $field_config;
@@ -392,8 +392,7 @@ class Base {
 		$filter_classes  = apply_filters( 'srfm_field_classes', $default_classes, [ 'attributes' => $attributes ] );
 		$field_config    = apply_filters( 'srfm_field_config', [], [ 'attributes' => $attributes ] );
 
-		$this->field_config       = ! empty( $field_config ) ? $field_config : null;
-		$this->field_config       = $this->field_config ? htmlspecialchars( Helper::get_string_value( wp_json_encode( $this->field_config, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) ), ENT_QUOTES, 'UTF-8' ) : '';
+		$this->field_config       = $field_config ? htmlspecialchars( Helper::get_string_value( wp_json_encode( $field_config, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) ), ENT_QUOTES, 'UTF-8' ) : '';
 		$this->attributes         = $attributes;
 		$this->required           = $attributes['required'] ?? false;
 		$this->field_width        = $attributes['fieldWidth'] ?? '';
