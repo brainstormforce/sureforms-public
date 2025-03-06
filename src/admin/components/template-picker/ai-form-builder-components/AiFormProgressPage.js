@@ -36,13 +36,14 @@ export default ( props ) => {
 					<Container.Item className="flex flex-col gap-0.5">
 						<Label
 							variant="neutral"
-							className="text-text-primary font-bold text-[20px] leading-[28px]"
+							size="md"
+							className="font-bold"
 						>
 							{ __( 'We are building your form…', 'sureforms' ) }
 						</Label>
 						<Label
-							variant="neutral"
-							className="text-text-tertiary font-normal text-sm"
+							variant="help"
+							size="sm"
 						>
 							{ message }
 						</Label>

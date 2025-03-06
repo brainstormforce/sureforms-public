@@ -4,17 +4,17 @@ import { ArrowLeft, ArrowRight } from 'lucide-react';
 import ICONS from '../components/icons';
 
 export default () => {
-	const FormOption = ( { icon, title, description, buttonText, buttonClass, iconPosition, onClick, btnIcon } ) => (
+	const FormOption = ( { icon, title, description, buttonText, iconPosition, onClick, btnIcon, variant } ) => (
 		<Container.Item className="flex flex-col flex-1 bg-background-primary border-0.5 border-solid border-border-subtle rounded-lg shadow-sm-blur-2">
 			<Container className="flex flex-col flex-1">
 				<Container.Item className="gap-2 p-3">
 					<Container containerType="flex" direction="column">
 						<Container.Item>{ icon }</Container.Item>
 						<Container.Item className="flex flex-col gap-1 p-1">
-							<Label size="md" variant="neutral" className="font-medium text-text-primary text-lg">
+							<Label size="md" variant="neutral" className="text-lg">
 								{ title }
 							</Label>
-							<Label size="sm" variant="help" className="text-text-tertiary font-normal text-xs">
+							<Label size="xs" variant="help">
 								{ description }
 							</Label>
 						</Container.Item>
@@ -22,11 +22,11 @@ export default () => {
 				</Container.Item>
 				<Container.Item className="mt-auto p-3">
 					<Button
-						className={ `gap-0.5 w-full ${ buttonClass } text-text-on-color text-xs focus:[box-shadow:none]` }
+						className={ `gap-0.5 w-full text-xs` }
 						size="sm"
 						iconPosition={ iconPosition }
 						icon={ btnIcon }
-						variant="ghost"
+						variant={ variant }
 						onClick={ onClick }
 					>
 						{ buttonText }
@@ -42,24 +42,24 @@ export default () => {
 			title: __( 'Build Form From Scratch', 'sureforms' ),
 			description: __( 'Tailor your form precisely to your unique needs. No coding skills required—just unleash your creativity.', 'sureforms' ),
 			buttonText: __( 'Build From Scratch', 'sureforms' ),
-			buttonClass: 'bg-button-secondary hover:bg-button-secondary',
 			iconPosition: 'left',
 			onClick: () => {
 				window.location.href = `${ srfm_admin.site_url }/wp-admin/post-new.php?post_type=sureforms_form`;
 			},
 			btnIcon: <ArrowRight size={ 12 } stroke="transparent" />,
+			variant: 'secondary',
 		},
 		aiFormBuilder: {
 			icon: ICONS.wandSparkles,
 			title: __( 'Generate Form with AI', 'sureforms' ),
 			description: __( 'Experience the future of form building with AI-powered forms. Use AI to build your form 10x faster.', 'sureforms' ),
 			buttonText: __( 'Build With AI', 'sureforms' ),
-			buttonClass: 'bg-button-primary hover:bg-button-primary',
 			iconPosition: 'right',
 			onClick: () => {
 				window.location.href = `${ srfm_admin.site_url }/wp-admin/admin.php?page=add-new-form&method=ai`;
 			},
 			btnIcon: <ArrowRight size={ 12 } />,
+			variant: 'primary',
 		},
 	};
 
@@ -85,7 +85,7 @@ export default () => {
 				>
 					<Label
 						variant="neutral"
-						className="text-text-primary font-semibold text-2xl"
+						className="font-semibold text-2xl"
 					>
 						{ __( 'How would you like to create a new form?', 'sureforms' ) }
 					</Label>
@@ -97,7 +97,7 @@ export default () => {
 					className="flex p-2 gap-6 justify-center"
 				>
 					<Button
-						className="text-text-tertiary hover:cursor-pointer focus:[box-shadow:none]"
+						className="text-text-tertiary hover:cursor-pointer"
 						icon={ <ArrowLeft size={ 12 } /> }
 						iconPosition="left"
 						size="xs"

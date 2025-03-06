@@ -11,12 +11,13 @@ export default () => {
 		>
 			<Label
 				variant="neutral"
-				className="text-xs font-normal text-text-primary"
+				size="xs"
 			>
 				{ __( 'Connect your website with SureForms AI to get 20 more AI form generations.', 'sureforms' ) }
 				<Label
 					variant="neutral"
-					className="!text-link-primary !font-normal !text-xs cursor-pointer underline focus:cursor-pointer"
+					size="xs"
+					className="!text-link-primary cursor-pointer underline focus:cursor-pointer"
 					onClick={ initiateAuth }
 				>
 					{ __( 'Connect Now', 'sureforms' ) }

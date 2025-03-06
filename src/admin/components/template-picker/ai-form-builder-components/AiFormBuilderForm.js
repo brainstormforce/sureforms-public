@@ -125,12 +125,12 @@ export default ( props ) => {
 			aria-label={ __( 'Create Conversational Form', 'sureforms' ) }
 			id="switch-element"
 			size="sm"
-			className="border border-toggle-off-border bg-toggle-on-disabled shadow-sm-blur-2"
+			className="shadow-sm-blur-2"
 			disabled={ true }
 		/>
 		<Label
 			variant="neutral"
-			className="font-medium text-field-label text-sm"
+			size="sm"
 		>
 			{ __( 'Create Conversational Form', 'sureforms' ) }
 		</Label>
@@ -172,7 +172,7 @@ export default ( props ) => {
 				iconPosition="left"
 				variant="outline"
 				size="xs"
-				className={ `rounded-full border-0.5 border-solid font-medium text-xs hover:cursor-pointer ${ srfmClassNames( buttonProps.required_className ) }` }
+				className={ `rounded-full border-0.5 border-solid font-medium hover:cursor-pointer ${ srfmClassNames( buttonProps.required_className ) }` }
 				onClick={ toggleListening }
 			>
 				{ buttonProps.label }
@@ -194,11 +194,10 @@ export default ( props ) => {
 					containerType="flex"
 					direction="column"
 				>
-					<Container.Item className="flex flex-col p-2 gap-2">
+					<Container.Item className="flex p-2">
 						<Title
 							tag="h4"
 							size="md"
-							className="text-text-primary font-semibold"
 							title={ __( 'Please describe the form you want to create', 'sureforms' ) }
 						/>
 					</Container.Item>
@@ -209,7 +208,7 @@ export default ( props ) => {
 							id="textarea"
 							value={ text }
 							size="lg"
-							className={ cn( 'gap-1.5 w-full h-[124px] font-normal text-md text-field-placeholder', characterCount > 0 && 'text-text-primary' ) }
+							className={ cn( 'gap-1.5 w-full h-[124px] text-field-placeholder', characterCount > 0 && 'text-text-primary' ) }
 							onChange={ ( e ) => {
 								handlePromptClick( e );
 							} }
@@ -219,7 +218,7 @@ export default ( props ) => {
 						{ showEmptyError && <Label
 							size="sm"
 							variant="error"
-							className="font-semibold text-sm"
+							className="font-semibold"
 						>
 							{ __( 'Prompt cannot be empty.', 'sureforms' ) }
 						</Label> }
@@ -243,7 +242,8 @@ export default ( props ) => {
 									<Container.Item className="p-1 gap-1 flex flex-row items-center">
 										<Label
 											variant="neutral"
-											className="font-medium text-text-primary text-sm gap-1 flex items-center cursor-pointer"
+											size="sm"
+											className="gap-1 flex items-center cursor-pointer"
 											onClick={ () =>
 												setShowFormIdeas( ! showFormIdeas )
 											}
@@ -270,7 +270,7 @@ export default ( props ) => {
 											size="md"
 											type="pill"
 											variant="neutral"
-											className="rounded-full border-0.5 border-solid border-badge-border-gray bg-badge-background-gray hover:bg-badge-background-gray hover:cursor-pointer text-badge-color-gray font-medium text-sm py-1 px-1.5 gap-1 flex"
+											className="rounded-full border-0.5 border-solid border-badge-border-gray bg-badge-background-gray hover:bg-badge-background-gray hover:cursor-pointer font-medium text-sm py-1 px-1.5 gap-1 flex"
 											onClick={ () =>
 												handlePromptClick(
 													prompt.title
@@ -286,13 +286,14 @@ export default ( props ) => {
 					</Container.Item>
 					<Container.Item className="py-1 px-2 gap-3 flex flex-col sm:flex-row justify-end">
 						<Label
-							variant="neutral"
-							className="font-semibold text-text-tertiary text-sm cursor-pointer"
+							variant="help"
+							size="sm"
+							className="font-semibold cursor-pointer"
 						>
 							{ characterCount }/2000
 						</Label>
 						<Button
-							className="gap-1 focus:[box-shadow:none]"
+							className="gap-1"
 							icon={ <ArrowRight size={ 20 } strokeWidth={ 1.25 } /> }
 							iconPosition="right"
 							size="md"
@@ -316,12 +317,7 @@ export default ( props ) => {
 								setIsBuildingForm( true );
 							} }
 						>
-							<Label
-								variant="neutral"
-								className="font-semibold text-text-on-color text-sm cursor-pointer"
-							>
-								{ __( 'Generate Form', 'sureforms' ) }
-							</Label>
+							{ __( 'Generate Form', 'sureforms' ) }
 						</Button>
 					</Container.Item>
 				</Container>
