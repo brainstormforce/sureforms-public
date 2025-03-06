@@ -393,6 +393,7 @@ class Base {
 		$field_config    = apply_filters( 'srfm_field_config', [], [ 'attributes' => $attributes ] );
 
 		$this->field_config       = ! empty( $field_config ) ? $field_config : null;
+		$this->field_config       = $this->field_config ? htmlspecialchars( Helper::get_string_value( wp_json_encode( $this->field_config, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) ), ENT_QUOTES, 'UTF-8' ) : '';
 		$this->attributes         = $attributes;
 		$this->required           = $attributes['required'] ?? false;
 		$this->field_width        = $attributes['fieldWidth'] ?? '';

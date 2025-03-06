@@ -117,11 +117,11 @@ class Number_Markup extends Base {
 	 * @return string|bool
 	 */
 	public function markup() {
-		$data_config      = $this->field_config ? htmlspecialchars( Helper::get_string_value( wp_json_encode( $this->field_config, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) ), ENT_QUOTES, 'UTF-8' ) : '';
+		$data_config      = $this->field_config;
 		$this->class_name = $this->get_field_classes();
 
 		ob_start(); ?>
-			<div data-block-id="<?php echo esc_attr( $this->block_id ); ?>" class="<?php echo esc_attr( $this->class_name ); ?>" <?php echo "data-field-config='" . esc_attr( $data_config ) . "'"; ?>>
+			<div data-block-id="<?php echo esc_attr( $this->block_id ); ?>" class="<?php echo esc_attr( $this->class_name ); ?>" <?php echo $data_config ? "data-field-config='" . esc_attr( $data_config ) . "'" : ''; ?>>
 				<?php echo wp_kses_post( $this->label_markup ); ?>
 				<?php echo wp_kses_post( $this->help_markup ); ?>
 				<div class="srfm-block-wrap <?php echo esc_attr( trim( ( $this->prefix ? 'srfm-has-prefix ' : '' ) . ( $this->suffix ? 'srfm-has-suffix' : '' ) ) ); ?>">
