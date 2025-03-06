@@ -34,7 +34,7 @@ export default () => {
 				<div className="flex flex-row flex-wrap gap-3 px-2">
 					<Button
 						className="shadow-sm-blur-1 gap-1"
-						icon={ <Plus aria-label="icon" role="img" /> }
+						icon={ <Plus aria-label="Create new form" role="img" /> }
 						iconPosition="right"
 						size="md"
 						variant="primary"
@@ -45,10 +45,10 @@ export default () => {
 						{ __( 'Create New Form', 'sureforms' ) }
 					</Button>
 					<Button
-						className="gap-1 focus:[box-shadow:none]"
+						className="gap-1"
 						icon={
 							<SquareArrowOutUpRight
-								aria-label="icon"
+								aria-label="Read full guide"
 								role="img"
 							/>
 						}
