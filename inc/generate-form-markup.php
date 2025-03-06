@@ -124,7 +124,7 @@ class Generate_Form_Markup {
 			$overlay_repeat     = $form_styling['bg_overlay_repeat'] ?? 'no-repeat';
 			$overlay_blend_mode = $form_styling['bg_overlay_blend_mode'] ?? 'normal';
 
-			$background_classes = apply_filters( 'srfm_add_background_classes', Helper::get_background_classes( $bg_type, $overlay_type ) );
+			$background_classes = apply_filters( 'srfm_add_background_classes', Helper::get_background_classes( $bg_type, $overlay_type ), $id );
 
 			$form_classes = [
 				'srfm-form-container',
