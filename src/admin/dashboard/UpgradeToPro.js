@@ -20,15 +20,15 @@ export default () => {
 			containerType="grid"
 			cols={ 12 }
 		>
-			<Container.Item className="flex flex-col px-2 gap-2 gap-6 col-span-12 md:col-span-6">
-				<div className="flex flex-col gap-2">
-					<div className="flex flex-row gap-1 items-center my-2">
-						<Zap className="size-4 text-brand-800 border-1.25" />
+			<Container.Item className="flex flex-col gap-2 col-span-12 md:col-span-6">
+				<div className="flex flex-col gap-2 p-2">
+					<div className="flex flex-row gap-1 items-center">
+						<Zap className="size-4 text-brand-800" />
 						<div className="font-semibold text-xs text-brand-800">
 							{ __( 'Upgrade to Pro', 'sureforms' ) }
 						</div>
 					</div>
-					<div className="flex flex-col gap-1">
+					<div className="flex flex-col gap-1 py-1">
 						<Title
 							tag="h5"
 							title={ __(
@@ -44,14 +44,14 @@ export default () => {
 						</p>
 					</div>
 					<Container.Item>
-						<Container className="grid grid-cols-1 sm:grid-cols-2 gap-3 rounded-lg mt-2">
+						<Container className="grid grid-cols-1 sm:grid-cols-2 gap-3 rounded-lg py-1">
 							{ featuresText.map( ( prompt, index ) => (
 								<Container.Item
 									className="flex flex-row items-center gap-2"
 									key={ index }
 								>
 									<Check className="size-3.5 text-brand-800" />
-									<span className="text-field-label font-medium text-sm">
+									<span className="text-field-label font-medium text-sm flex gap-0.5">
 										{ prompt.title }
 									</span>
 								</Container.Item>
@@ -59,7 +59,7 @@ export default () => {
 						</Container>
 					</Container.Item>
 				</div>
-				<div className="flex p-2 gap-3 mt-2">
+				<div className="flex p-2 gap-3">
 					<Button
 						variant="secondary"
 						size="md"
@@ -80,7 +80,7 @@ export default () => {
 					</Button>
 				</div>
 			</Container.Item>
-			<Container.Item className="gap-1.5 flex justify-center items-center col-span-12 md:col-span-6">
+			<Container.Item className="gap-1.5 p-2 flex justify-center items-center col-span-12 md:col-span-6">
 				<img
 					src={ upgradeToProPlaceholder }
 					alt={ __( 'Upgrade To Pro', 'sureforms' ) }

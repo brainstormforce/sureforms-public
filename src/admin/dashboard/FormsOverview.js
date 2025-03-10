@@ -39,6 +39,7 @@ const ClearButton = ( { onClick, ariaLabel } ) => (
 		variant="link"
 		size="xs"
 		icon={ <X /> }
+		iconPosition="left"
 		onClick={ onClick }
 		aria-label={ ariaLabel }
 	>
@@ -66,7 +67,8 @@ export default () => {
 		const label = formData.find( ( option ) => {
 			return option.id === value;
 		} );
-		return label ? label.name : '';
+		console.log( 'label', label );
+		return label ? label.name.length > 0 ? label.name : 'Unnamed Form' : '';
 	};
 
 	useEffect( () => {
@@ -247,7 +249,7 @@ export default () => {
 											key={ option.id }
 											value={ option.id }
 										>
-											{ <span>{ option.name }</span> }
+											{ <span>{ option.name.length > 0 ? option.name : 'Unnamed Form' }</span> }
 										</Select.Option>
 									) ) }
 								</Select.Options>

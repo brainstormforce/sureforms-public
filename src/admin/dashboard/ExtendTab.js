@@ -150,7 +150,7 @@ export default () => {
 				dismissAfter={ 5000 }
 			/>
 			<Container.Item>
-				<Label size="md" className="font-semibold">
+				<Label size="sm" className="font-semibold">
 					{ __( 'Extend Your Website', 'sureforms' ) }
 				</Label>
 			</Container.Item>
@@ -188,10 +188,10 @@ export default () => {
 											'bg-badge-background-green hover:bg-badge-background-green'
 									) }
 									variant="outline"
-									onClick={ ( e ) =>
+									onClick={ ( event ) =>
 										handlePluginActionTrigger( {
 											plugin,
-											e,
+											event,
 										} )
 									}
 									size="xs"

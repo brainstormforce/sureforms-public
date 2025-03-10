@@ -35,40 +35,41 @@ export default () => {
 			<Container
 				key={ key }
 				align="center"
-				className="gap-1 p-1 rounded-md bg-background-primary shadow-sm-blur-1"
+				className="gap-1 p-2 rounded-md bg-background-primary shadow-sm-blur-1"
 				containerType="flex"
 				direction="row"
 			>
-				<Container.Item className="flex">{ icon }</Container.Item>
-				<Container.Item className="flex">
-					<a
-						className="no-underline"
-						href={ link }
-						target="_blank"
-						rel="noreferrer"
-					>
-						<Label className="py-0 px-1 font-normal cursor-pointer">
-							{ label }
-						</Label>
-					</a>
-				</Container.Item>
+				<div className="flex p-1 gap-1">
+					<Container.Item className="flex">{ icon }</Container.Item>
+					<Container.Item className="flex px-1 gap-2">
+						<a
+							className="no-underline"
+							href={ link }
+							target="_blank"
+							rel="noreferrer"
+						>
+							<Label size="sm" className="cursor-pointer">
+								{ label }
+							</Label>
+						</a>
+					</Container.Item>
+				</div>
 			</Container>
 		) );
 	};
 
 	return (
 		<Container
-			className="bg-background-primary border-0.5 border-solid rounded-xl border-border-subtle p-3 shadow-sm"
+			className="bg-background-primary border-0.5 border-solid rounded-xl border-border-subtle p-3 gap-2 shadow-sm"
 			containerType="flex"
 			direction="column"
-			gap="xs"
 		>
-			<Container.Item className="p-1 gap-8">
-				<Label size="md" className="font-semibold">
+			<Container.Item className="p-1 gap-2">
+				<Label size="sm" className="font-semibold">
 					{ __( 'Quick Access', 'sureforms' ) }
 				</Label>
 			</Container.Item>
-			<Container.Item className="flex flex-col bg-background-secondary gap-1 p-2 rounded-lg">
+			<Container.Item className="flex flex-col bg-background-secondary gap-1 p-1 rounded-lg">
 				<QuickAccessButtons />
 			</Container.Item>
 		</Container>
