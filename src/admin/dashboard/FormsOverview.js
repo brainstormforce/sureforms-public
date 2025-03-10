@@ -67,8 +67,11 @@ export default () => {
 		const label = formData.find( ( option ) => {
 			return option.id === value;
 		} );
-		console.log( 'label', label );
-		return label ? label.name.length > 0 ? label.name : 'Unnamed Form' : '';
+		return label
+			? label.name.length > 0
+				? label.name
+				: 'Unnamed Form'
+			: '';
 	};
 
 	useEffect( () => {
@@ -239,7 +242,10 @@ export default () => {
 								size="sm"
 							>
 								<Select.Button
-									placeholder={ __( 'Select a form', 'sureforms' ) }
+									placeholder={ __(
+										'Select Form',
+										'sureforms'
+									) }
 								>
 									{ getFormLabel( selectedForm ) }
 								</Select.Button>
@@ -249,7 +255,13 @@ export default () => {
 											key={ option.id }
 											value={ option.id }
 										>
-											{ <span>{ option.name.length > 0 ? option.name : 'Unnamed Form' }</span> }
+											{
+												<span>
+													{ option.name.length > 0
+														? option.name
+														: 'Unnamed Form' }
+												</span>
+											}
 										</Select.Option>
 									) ) }
 								</Select.Options>
@@ -311,6 +323,17 @@ export default () => {
 					</div>
 				</div>
 			</Container.Item>
+			<Container.Item className="flex justify-between p-1 gap-2">
+				<span className="text-sm font-semibold text-text-tertiary">
+					{ getFormLabel( selectedForm ) || 'All Forms' }
+				</span>
+				<span className="flex items-center gap-2 p-1">
+					<div className="w-2 h-2 bg-chart-purple-500 rounded-sm"></div>
+					<span className="text-xs font-medium text-text-tertiary">
+						Entries
+					</span>
+				</span>
+			</Container.Item>
 			<Container.Item
 				className={ cn(
 					'w-full flex items-stretch justify-between gap-1 bg-background-secondary rounded-lg',
@@ -319,7 +342,7 @@ export default () => {
 			>
 				<Container
 					className={ cn(
-						'w-full flex flex-col flex-1 p-2 overflow-hidden bg-background-primary',
+						'w-full flex flex-col flex-1 overflow-hidden bg-background-primary',
 						dataToShow.length > 0 ? 'rounded-md shadow-sm' : ''
 					) }
 					containerType="flex"
@@ -355,12 +378,8 @@ export default () => {
 									chartHeight="100%"
 									colors={ [
 										{
-											fill: '#BFDBFE',
-											stroke: '#2563EB',
-										},
-										{
-											fill: '#BAE6FD',
-											stroke: '#38BDF8',
+											fill: '#E879F9',
+											stroke: '#E879F9',
 										},
 									] }
 									data={ dataToShow }
