@@ -14,8 +14,8 @@ const ModalInputBox = ( {
 	helpText,
 } ) => {
 	return (
-		<div className="flex flex-col w-full h-auto gap-2">
-			<div className="flex w-full items-center gap-2">
+		<div className="flex flex-col w-full h-auto gap-2 px-2">
+			<div className="flex w-full items-center gap-1.5">
 				<div className="flex-1">
 					<Input
 						aria-label={ label }
