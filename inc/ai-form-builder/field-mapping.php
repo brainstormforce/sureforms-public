@@ -62,7 +62,7 @@ class Field_Mapping {
 		$form_type         = isset( $params['form_type'] ) ? Helper::get_string_value( $params['form_type'] ) : 'simple';
 
 		// Filer to skip fields while mapping the fields.
-		$skip_fields = apply_filters( 'srfm_ai_field_map_skip_fields', [], $is_conversational );
+		$skip_fields = apply_filters( 'srfm_ai_field_map_skip_fields', [], $is_conversational, $form_type );
 
 		// Loop through questions.
 		foreach ( $form_fields as $question ) {
