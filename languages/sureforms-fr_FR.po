@@ -14,8 +14,8 @@ msgstr ""
 #. Plugin Name of the plugin
 #. Author of the plugin
 #: sureforms.php
-#: admin/admin.php:142
-#: admin/admin.php:143
+#: admin/admin.php:167
+#: admin/admin.php:168
 #: inc/gutenberg-hooks.php:106
 #: inc/nps-notice.php:108
 #: inc/page-builders/bricks/elements/form-widget.php:66
@@ -42,38 +42,38 @@ msgstr "Un moyen simple mais puissant de créer des formulaires modernes pour vo
 msgid "https://sureforms.com/"
 msgstr ""
 
-#: admin/admin.php:155
-#: admin/admin.php:156
+#: admin/admin.php:180
+#: admin/admin.php:181
 msgid "Dashboard"
 msgstr "Tableau de bord"
 
-#: admin/admin.php:173
-#: admin/admin.php:174
-#: admin/admin.php:291
+#: admin/admin.php:198
+#: admin/admin.php:199
+#: admin/admin.php:316
 msgid "Settings"
 msgstr "Paramètres"
 
-#: admin/admin.php:218
-#: admin/admin.php:219
-#: inc/post-types.php:128
+#: admin/admin.php:243
+#: admin/admin.php:244
+#: inc/post-types.php:129
 msgid "New Form"
 msgstr "Nouveau formulaire"
 
-#: admin/admin.php:227
-#: admin/admin.php:228
-#: admin/admin.php:264
+#: admin/admin.php:252
+#: admin/admin.php:253
+#: admin/admin.php:289
 #: inc/global-settings/email-summary.php:107
-#: inc/post-types.php:688
+#: inc/post-types.php:702
 #: assets/build/dashboard.js:2
 msgid "Entries"
 msgstr "Entrées"
 
 #. Translators: Post Title.
-#: admin/admin.php:371
+#: admin/admin.php:396
 msgid "Edit %1$s"
 msgstr "Modifier %1$s"
 
-#: admin/admin.php:740
+#: admin/admin.php:765
 #: api/block-patterns.php:110
 #: inc/ai-form-builder/ai-auth.php:45
 #: inc/ai-form-builder/ai-auth.php:81
@@ -92,12 +92,12 @@ msgstr "Modifier %1$s"
 msgid "Nonce verification failed."
 msgstr "La vérification du nonce a échoué."
 
-#: admin/admin.php:749
+#: admin/admin.php:774
 msgid "You cannot view this entry because it is in trash."
 msgstr "Vous ne pouvez pas voir cette entrée car elle est dans la corbeille."
 
 #. translators: %1$s: Opening anchor tag with URL, %2$s: Closing anchor tag, %3$s: SureForms Pro Plugin Name.
-#: admin/admin.php:794
+#: admin/admin.php:819
 msgid "Please %1$sactivate%2$s your copy of %3$s to get new features, access support, receive update notifications, and more."
 msgstr "Veuillez %1$sactiver%2$s votre copie de %3$s pour obtenir de nouvelles fonctionnalités, accéder au support, recevoir des notifications de mise à jour, et plus encore."
 
@@ -138,8 +138,8 @@ msgid "Mark as Unread"
 msgstr "Marquer comme non lu"
 
 #: admin/views/entries-list-table.php:125
-#: inc/post-types.php:192
-#: inc/post-types.php:219
+#: inc/post-types.php:206
+#: inc/post-types.php:233
 msgid "Export"
 msgstr "Exporter"
 
@@ -149,7 +149,7 @@ msgstr "Aucune entrée trouvée."
 
 #: admin/views/entries-list-table.php:254
 #: assets/build/blocks.js:172
-#: modules/gutenberg/build/blocks.js:7
+#: modules/gutenberg/build/blocks.js:177
 msgid "Search"
 msgstr "Recherche"
 
@@ -240,12 +240,12 @@ msgid "View"
 msgstr "Voir"
 
 #: admin/views/entries-list-table.php:973
-#: admin/views/entries-list-table.php:1394
+#: admin/views/entries-list-table.php:1398
 msgid "Restore"
 msgstr "Restaurer"
 
 #: admin/views/entries-list-table.php:974
-#: admin/views/entries-list-table.php:1395
+#: admin/views/entries-list-table.php:1399
 msgid "Delete Permanently"
 msgstr "Supprimer définitivement"
 
@@ -320,9 +320,9 @@ msgstr "Valeurs"
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks-placeholder.js:11
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:15
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:181
+#: modules/gutenberg/build/blocks.js:185
+#: modules/gutenberg/build/blocks.js:187
 msgid "Image"
 msgstr "Image"
 
@@ -804,7 +804,7 @@ msgid "Let's see how your forms performed in the last week"
 msgstr "Voyons comment vos formulaires ont performé la semaine dernière"
 
 #: inc/global-settings/email-summary.php:148
-#: inc/post-types.php:135
+#: inc/post-types.php:136
 msgid "No forms found."
 msgstr "Aucun formulaire trouvé."
 
@@ -886,16 +886,18 @@ msgstr "Titre du formulaire"
 
 #: inc/page-builders/elementor/form-widget.php:162
 #: assets/build/blocks.js:172
+#: modules/gutenberg/build/blocks.js:181
 msgid "Show"
 msgstr "Afficher"
 
 #: inc/page-builders/elementor/form-widget.php:163
 #: assets/build/blocks.js:172
+#: modules/gutenberg/build/blocks.js:181
 msgid "Hide"
 msgstr "Cacher"
 
 #: inc/page-builders/elementor/form-widget.php:174
-#: inc/post-types.php:129
+#: inc/post-types.php:130
 #: assets/build/blocks.js:2
 msgid "Edit Form"
 msgstr "Modifier le formulaire"
@@ -914,87 +916,87 @@ msgstr "Créer un nouveau formulaire"
 msgid "Create"
 msgstr "Créer"
 
-#: admin/admin.php:558
-#: inc/post-types.php:87
+#: admin/admin.php:583
+#: inc/post-types.php:88
 msgid "Import Form"
 msgstr "Formulaire d'importation"
 
-#: inc/post-types.php:90
+#: inc/post-types.php:91
 msgid "Let’s build your first form"
 msgstr "Construisons votre premier formulaire"
 
-#: inc/post-types.php:91
+#: inc/post-types.php:92
 msgid "Craft beautiful and functional forms in minutes"
 msgstr "Créez des formulaires beaux et fonctionnels en quelques minutes"
 
-#: inc/post-types.php:96
-#: inc/post-types.php:127
+#: inc/post-types.php:97
+#: inc/post-types.php:128
 #: assets/build/templatePicker.js:2
 msgid "Add New Form"
 msgstr "Ajouter un nouveau formulaire"
 
-#: inc/post-types.php:105
+#: inc/post-types.php:106
 msgid "No records found"
 msgstr "Aucun enregistrement trouvé"
 
-#: inc/post-types.php:106
+#: inc/post-types.php:107
 msgid "This is where your form entries will appear"
 msgstr "C'est ici que vos entrées de formulaire apparaîtront"
 
-#: inc/post-types.php:130
+#: inc/post-types.php:131
 msgid "View Form"
 msgstr "Voir le formulaire"
 
-#: inc/post-types.php:131
+#: inc/post-types.php:132
 msgid "View Forms"
 msgstr "Afficher les formulaires"
 
-#: inc/post-types.php:132
+#: inc/post-types.php:133
 msgid "Forms"
 msgstr "Formulaires"
 
-#: inc/post-types.php:133
+#: inc/post-types.php:134
 msgid "Search Forms"
 msgstr "Formulaires de recherche"
 
-#: inc/post-types.php:134
+#: inc/post-types.php:135
 msgid "Parent Forms:"
 msgstr "Formulaires parents :"
 
-#: inc/post-types.php:136
+#: inc/post-types.php:137
 msgid "No forms found in Trash."
 msgstr "Aucun formulaire trouvé dans la corbeille."
 
-#: inc/post-types.php:137
+#: inc/post-types.php:138
 msgid "Form published."
 msgstr "Formulaire publié."
 
-#: inc/post-types.php:138
+#: inc/post-types.php:139
 msgid "Form updated."
 msgstr "Formulaire mis à jour."
 
-#: inc/post-types.php:530
+#: inc/post-types.php:544
 msgid "Admin Notification Email"
 msgstr "Email de notification d'administration"
 
 #. translators: %s: Form title smart tag
-#: inc/post-types.php:535
+#: inc/post-types.php:549
 msgid "New Form Submission - %s"
 msgstr "Nouvelle soumission de formulaire - %s"
 
-#: inc/post-types.php:687
+#: inc/post-types.php:701
 msgid "Shortcode"
 msgstr "Code court"
 
-#: inc/post-types.php:751
+#: inc/post-types.php:765
 msgid "Please choose the SureForms export file (.json) that you wish to import."
 msgstr "Veuillez choisir le fichier d'exportation SureForms (.json) que vous souhaitez importer."
 
-#: inc/post-types.php:754
+#: inc/post-types.php:768
 msgid "Import Now"
 msgstr "Importer maintenant"
 
-#: inc/post-types.php:756
+#: inc/post-types.php:770
 msgid "There is some error in json file, please export the SureForms Forms again."
 msgstr "Il y a une erreur dans le fichier JSON, veuillez exporter à nouveau les formulaires SureForms."
 
@@ -1134,35 +1136,35 @@ msgstr "Attention !"
 
 #: modules/gutenberg/classes/class-spec-block-config.php:470
 #: modules/gutenberg/build/blocks-placeholder.js:12
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:181
+#: modules/gutenberg/build/blocks.js:185
 msgid "Separator"
 msgstr "Séparateur"
 
 #: modules/gutenberg/classes/class-spec-block-config.php:574
 #: assets/build/blocks.js:172
 #: modules/gutenberg/build/blocks-placeholder.js:10
-#: modules/gutenberg/build/blocks.js:7
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:177
+#: modules/gutenberg/build/blocks.js:181
+#: modules/gutenberg/build/blocks.js:187
 msgid "Icon"
 msgstr "Icône"
 
 #: modules/gutenberg/classes/class-spec-block-config.php:585
 #: modules/gutenberg/icons/icons-v6-1.php:4571
 #: modules/gutenberg/build/blocks-placeholder.js:9
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:181
+#: modules/gutenberg/build/blocks.js:185
 msgid "Heading"
 msgstr "En-tête"
 
 #: modules/gutenberg/dist/blocks/advanced-heading/class-advanced-heading.php:86
-#: modules/gutenberg/build/blocks.js:1
+#: modules/gutenberg/build/blocks.js:171
 msgid "Your Attractive Heading"
 msgstr "Votre Titre Attrayant"
 
 #: modules/gutenberg/dist/blocks/separator/class-spec-separator.php:235
-#: modules/gutenberg/build/blocks.js:1
+#: modules/gutenberg/build/blocks.js:171
 msgid "Divider"
 msgstr "Séparateur"
 
@@ -2516,7 +2518,7 @@ msgid "Church"
 msgstr "Église"
 
 #: modules/gutenberg/icons/icons-v6-0.php:3954
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:185
 msgid "Circle"
 msgstr "Cercle"
 
@@ -2965,7 +2967,7 @@ msgid "Critical Role"
 msgstr "Rôle Critique"
 
 #: modules/gutenberg/icons/icons-v6-0.php:5301
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:187
 msgid "Crop"
 msgstr "Recadrer"
 
@@ -3072,7 +3074,7 @@ msgstr "Deskpro"
 #: modules/gutenberg/icons/icons-v6-1.php:290
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:1
+#: modules/gutenberg/build/blocks.js:171
 msgid "Desktop"
 msgstr "Bureau"
 
@@ -3109,7 +3111,7 @@ msgid "Diagram Successor"
 msgstr "Successeur du diagramme"
 
 #: modules/gutenberg/icons/icons-v6-1.php:389
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:185
 msgid "Diamond"
 msgstr "Diamant"
 
@@ -3479,7 +3481,7 @@ msgstr "Développer"
 
 #: modules/gutenberg/icons/icons-v6-1.php:1345
 msgid "ExpeditedSSL"
-msgstr ""
+msgstr "ExpeditedSSL"
 
 #: modules/gutenberg/icons/icons-v6-1.php:1356
 msgid "Explosion"
@@ -3830,7 +3832,7 @@ msgid "File Zipper"
 msgstr "Compresseur de fichiers"
 
 #: modules/gutenberg/icons/icons-v6-1.php:2569
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:185
 msgid "Fill"
 msgstr "Remplir"
 
@@ -4867,7 +4869,7 @@ msgid "ioxhost"
 msgstr ""
 
 #: modules/gutenberg/icons/icons-v6-2.php:180
-#: modules/gutenberg/build/blocks.js:7
+#: modules/gutenberg/build/blocks.js:177
 msgid "Italic"
 msgstr "Italique"
 
@@ -5112,8 +5114,8 @@ msgid "Lines Leaning"
 msgstr "Lignes penchées"
 
 #: modules/gutenberg/icons/icons-v6-2.php:893
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:181
+#: modules/gutenberg/build/blocks.js:187
 msgid "Link"
 msgstr "Lien"
 
@@ -5307,7 +5309,7 @@ msgstr "Mars Stroke Right"
 
 #: modules/gutenberg/icons/icons-v6-2.php:1426
 msgid "Mars Stroke Up"
-msgstr ""
+msgstr "Mars Stroke Up"
 
 #: modules/gutenberg/icons/icons-v6-2.php:1437
 msgid "Martini Glass"
@@ -5322,7 +5324,7 @@ msgid "Martini Glass Empty"
 msgstr "Verre à martini vide"
 
 #: modules/gutenberg/icons/icons-v6-2.php:1470
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:185
 msgid "Mask"
 msgstr "Masque"
 
@@ -5474,7 +5476,7 @@ msgstr ""
 #: modules/gutenberg/icons/icons-v6-2.php:1882
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:1
+#: modules/gutenberg/build/blocks.js:171
 msgid "Mobile"
 msgstr "Mobile"
 
@@ -5739,7 +5741,7 @@ msgid "Outdent"
 msgstr "Désindenter"
 
 #: modules/gutenberg/icons/icons-v6-2.php:2649
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:181
 msgid "P"
 msgstr "P"
 
@@ -6440,7 +6442,7 @@ msgid "Renren"
 msgstr ""
 
 #: modules/gutenberg/icons/icons-v6-2.php:4659
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:185
 msgid "Repeat"
 msgstr "Répéter"
 
@@ -6913,7 +6915,7 @@ msgid "Slack Logo"
 msgstr "Logo Slack"
 
 #: modules/gutenberg/icons/icons-v6-3.php:790
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:181
 msgid "Slash"
 msgstr "Barre oblique"
 
@@ -7364,7 +7366,7 @@ msgstr "Raquette de tennis de table"
 #: modules/gutenberg/icons/icons-v6-3.php:2125
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:1
+#: modules/gutenberg/build/blocks.js:171
 msgid "Tablet"
 msgstr "Tablette"
 
@@ -7810,7 +7812,7 @@ msgid "Uncharted Software"
 msgstr "Logiciel Inexploré"
 
 #: modules/gutenberg/icons/icons-v6-3.php:3405
-#: modules/gutenberg/build/blocks.js:7
+#: modules/gutenberg/build/blocks.js:177
 msgid "Underline"
 msgstr "Souligner"
 
@@ -8482,7 +8484,7 @@ msgstr "Formulaire vierge"
 
 #: templates/forms/blank-form.php:19
 #: templates/forms/contact-form.php:20
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:181
 msgid "Basic"
 msgstr "De base"
 
@@ -8618,22 +8620,22 @@ msgstr "Aperçu du champ"
 #: assets/build/blocks.js:2
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
-#: modules/gutenberg/build/blocks.js:7
+#: modules/gutenberg/build/blocks.js:177
 msgid "General"
 msgstr "Général"
 
 #: assets/build/blocks.js:2
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:7
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:177
+#: modules/gutenberg/build/blocks.js:181
+#: modules/gutenberg/build/blocks.js:185
 msgid "Style"
 msgstr "Style"
 
 #: assets/build/blocks.js:2
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:7
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:177
+#: modules/gutenberg/build/blocks.js:181
 msgid "Advanced"
 msgstr "Avancé"
 
@@ -8644,7 +8646,7 @@ msgstr "Aucune étiquette disponible"
 
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:1
+#: modules/gutenberg/build/blocks.js:171
 msgid "Device"
 msgstr "Appareil"
 
@@ -8672,7 +8674,7 @@ msgstr "Retour"
 #. translators: abbreviation for units
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:3
+#: modules/gutenberg/build/blocks.js:173
 msgid "Reset"
 msgstr "Réinitialiser"
 
@@ -8683,48 +8685,48 @@ msgstr "Balises génériques"
 
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:3
-#: modules/gutenberg/build/blocks.js:7
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:173
+#: modules/gutenberg/build/blocks.js:177
+#: modules/gutenberg/build/blocks.js:181
+#: modules/gutenberg/build/blocks.js:185
 msgid "Pixel"
 msgstr "Pixel"
 
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:3
-#: modules/gutenberg/build/blocks.js:7
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:173
+#: modules/gutenberg/build/blocks.js:177
+#: modules/gutenberg/build/blocks.js:181
+#: modules/gutenberg/build/blocks.js:185
 msgid "Em"
 msgstr "Em"
 
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:3
-#: modules/gutenberg/build/blocks.js:7
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:173
+#: modules/gutenberg/build/blocks.js:177
+#: modules/gutenberg/build/blocks.js:181
 msgid "Select Units"
 msgstr "Sélectionner les unités"
 
 #. translators: abbreviation for units
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:5
-#: modules/gutenberg/build/blocks.js:7
-#: modules/gutenberg/build/blocks.js:9
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:13
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:175
+#: modules/gutenberg/build/blocks.js:177
+#: modules/gutenberg/build/blocks.js:179
+#: modules/gutenberg/build/blocks.js:181
+#: modules/gutenberg/build/blocks.js:183
+#: modules/gutenberg/build/blocks.js:185
 msgid "%s units"
 msgstr "%s unités"
 
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:7
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:15
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:177
+#: modules/gutenberg/build/blocks.js:181
+#: modules/gutenberg/build/blocks.js:185
+#: modules/gutenberg/build/blocks.js:187
 msgid "Margin"
 msgstr "Marge"
 
@@ -8738,9 +8740,9 @@ msgstr "Modèle d'entrée"
 
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:7
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:177
+#: modules/gutenberg/build/blocks.js:181
+#: modules/gutenberg/build/blocks.js:185
 msgid "None"
 msgstr "Aucun"
 
@@ -8765,7 +8767,7 @@ msgid "27/08/2024 23:59:59"
 msgstr ""
 
 #: assets/build/blocks.js:172
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:185
 msgid "Custom"
 msgstr "Personnalisé"
 
@@ -8860,131 +8862,131 @@ msgstr "Coché par défaut"
 
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:7
+#: modules/gutenberg/build/blocks.js:177
 msgid "Please add a option props to MultiButtonsControl"
 msgstr "Veuillez ajouter une option props à MultiButtonsControl"
 
 #: assets/build/blocks.js:172
-#: modules/gutenberg/build/blocks.js:7
+#: modules/gutenberg/build/blocks.js:177
 msgid "Icon Library"
 msgstr "Bibliothèque d'icônes"
 
 #: assets/build/blocks.js:172
-#: modules/gutenberg/build/blocks.js:7
+#: modules/gutenberg/build/blocks.js:177
 msgid "Close"
 msgstr "Fermer"
 
 #: assets/build/blocks.js:172
-#: modules/gutenberg/build/blocks.js:7
+#: modules/gutenberg/build/blocks.js:177
 msgid "All Icons"
 msgstr "Toutes les icônes"
 
 #: assets/build/blocks.js:172
-#: modules/gutenberg/build/blocks.js:7
+#: modules/gutenberg/build/blocks.js:177
 msgid "Other"
 msgstr "Autre"
 
 #: assets/build/blocks.js:172
-#: modules/gutenberg/build/blocks.js:7
+#: modules/gutenberg/build/blocks.js:177
 msgid "No Icons Found"
 msgstr "Aucune icône trouvée"
 
 #: assets/build/blocks.js:172
-#: modules/gutenberg/build/blocks.js:7
+#: modules/gutenberg/build/blocks.js:177
 msgid "Insert Icon"
 msgstr "Insérer une icône"
 
 #: assets/build/blocks.js:172
-#: modules/gutenberg/build/blocks.js:7
+#: modules/gutenberg/build/blocks.js:177
 msgid "Change Icon"
 msgstr "Changer l'icône"
 
 #: assets/build/blocks.js:172
-#: modules/gutenberg/build/blocks.js:7
+#: modules/gutenberg/build/blocks.js:177
 msgid "Choose Icon"
 msgstr "Choisir une icône"
 
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:181
 msgid "Confirm"
 msgstr "Confirmer"
 
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:181
 msgid "Cancel"
 msgstr "Annuler"
 
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:181
 msgid "Processing…"
 msgstr "Traitement…"
 
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:181
 msgid "Select Video"
 msgstr "Sélectionner la vidéo"
 
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:181
 msgid "Change Video"
 msgstr "Changer la vidéo"
 
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:181
 msgid "Select Lottie Animation"
 msgstr "Sélectionner l'animation Lottie"
 
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:181
 msgid "Change Lottie Animation"
 msgstr "Changer l'animation Lottie"
 
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:181
 msgid "Upload SVG"
 msgstr "Télécharger SVG"
 
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:181
 msgid "Change SVG"
 msgstr "Modifier SVG"
 
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:181
 msgid "Select Image"
 msgstr "Sélectionner l'image"
 
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:181
 msgid "Change Image"
 msgstr "Changer l'image"
 
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:181
 msgid "Upload SVG?"
 msgstr "Télécharger le SVG ?"
 
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:181
 msgid "Upload SVG can be potentially risky. Are you sure?"
 msgstr "Télécharger un SVG peut être potentiellement risqué. Êtes-vous sûr ?"
 
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:181
 msgid "Upload Anyway"
 msgstr "Télécharger quand même"
 
@@ -9206,7 +9208,7 @@ msgid "No results found."
 msgstr "Aucun résultat trouvé."
 
 #: assets/build/formEditor.js:2
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:181
 msgid "data object is empty"
 msgstr "l'objet de données est vide"
 
@@ -9225,6 +9227,7 @@ msgstr "Réorganiser le bloc dans la barre d'action rapide"
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
 #: assets/build/templatePicker.js:172
+#: modules/gutenberg/build/blocks.js:181
 msgid "Upgrade"
 msgstr "Mise à niveau"
 
@@ -9583,12 +9586,12 @@ msgid "Form Behavior"
 msgstr "Comportement du formulaire"
 
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:7
+#: modules/gutenberg/build/blocks.js:177
 msgid "Clear"
 msgstr "Clair"
 
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:7
+#: modules/gutenberg/build/blocks.js:177
 msgid "Select Color"
 msgstr "Sélectionner la couleur"
 
@@ -9601,7 +9604,7 @@ msgid "Primary Color"
 msgstr "Couleur primaire"
 
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:181
 msgid "Text Color"
 msgstr "Couleur du texte"
 
@@ -9626,23 +9629,23 @@ msgid "Submit Button Alignment"
 msgstr "Alignement du bouton de soumission"
 
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:15
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:181
+#: modules/gutenberg/build/blocks.js:185
+#: modules/gutenberg/build/blocks.js:187
 msgid "Left"
 msgstr "Gauche"
 
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:15
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:181
+#: modules/gutenberg/build/blocks.js:185
+#: modules/gutenberg/build/blocks.js:187
 msgid "Center"
 msgstr "Centre"
 
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:15
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:181
+#: modules/gutenberg/build/blocks.js:185
+#: modules/gutenberg/build/blocks.js:187
 msgid "Right"
 msgstr "D'accord"
 
@@ -9744,6 +9747,7 @@ msgstr "Saut de page"
 msgid "Previous"
 msgstr "Précédent"
 
+#: inc/post-types.php:649
 #: assets/build/formEditor.js:172
 msgid "Thank you"
 msgstr "Merci"
@@ -9777,9 +9781,9 @@ msgid "Banner Background"
 msgstr "Arrière-plan de la bannière"
 
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:15
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:181
+#: modules/gutenberg/build/blocks.js:185
+#: modules/gutenberg/build/blocks.js:187
 msgid "Color"
 msgstr "Couleur"
 
@@ -9788,7 +9792,7 @@ msgid "Upload Image"
 msgstr "Télécharger l'image"
 
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:181
 msgid "Background Color"
 msgstr "Couleur de fond"
 
@@ -9805,7 +9809,7 @@ msgid "Form Width"
 msgstr "Largeur du formulaire"
 
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:187
 msgid "URL"
 msgstr "URL"
 
@@ -9986,7 +9990,7 @@ msgid "Schedule Reports"
 msgstr "Programmer les rapports"
 
 #: assets/build/settings.js:172
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:185
 msgid "Auto"
 msgstr "Auto"
 
@@ -10295,793 +10299,793 @@ msgstr "Découvrez l'avenir de la création de formulaires avec des formulaires 
 msgid "Build With AI"
 msgstr "Construire avec l'IA"
 
-#: modules/gutenberg/build/blocks.js:7
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:177
+#: modules/gutenberg/build/blocks.js:181
+#: modules/gutenberg/build/blocks.js:185
 msgid "Default"
 msgstr "Par défaut"
 
-#: modules/gutenberg/build/blocks.js:7
+#: modules/gutenberg/build/blocks.js:177
 msgid "Font Size"
 msgstr "Taille de la police"
 
-#: modules/gutenberg/build/blocks.js:7
+#: modules/gutenberg/build/blocks.js:177
 msgid "Font Family"
 msgstr "Famille de polices"
 
-#: modules/gutenberg/build/blocks.js:7
+#: modules/gutenberg/build/blocks.js:177
 msgid "Weight"
 msgstr "Poids"
 
-#: modules/gutenberg/build/blocks.js:7
+#: modules/gutenberg/build/blocks.js:177
 msgid "Oblique"
 msgstr "Oblique"
 
-#: modules/gutenberg/build/blocks.js:7
+#: modules/gutenberg/build/blocks.js:177
 msgid "Line Height"
 msgstr "Hauteur de ligne"
 
-#: modules/gutenberg/build/blocks.js:7
+#: modules/gutenberg/build/blocks.js:177
 msgid "Letter Spacing"
 msgstr "Espacement des lettres"
 
-#: modules/gutenberg/build/blocks.js:7
+#: modules/gutenberg/build/blocks.js:177
 msgid "Transform"
 msgstr "Transformer"
 
-#: modules/gutenberg/build/blocks.js:7
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:15
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:177
+#: modules/gutenberg/build/blocks.js:181
+#: modules/gutenberg/build/blocks.js:185
+#: modules/gutenberg/build/blocks.js:187
 msgid "Normal"
 msgstr "Normal"
 
-#: modules/gutenberg/build/blocks.js:7
+#: modules/gutenberg/build/blocks.js:177
 msgid "Capitalize"
 msgstr "Mettre en majuscules"
 
-#: modules/gutenberg/build/blocks.js:7
+#: modules/gutenberg/build/blocks.js:177
 msgid "Uppercase"
 msgstr "Majuscules"
 
-#: modules/gutenberg/build/blocks.js:7
+#: modules/gutenberg/build/blocks.js:177
 msgid "Lowercase"
 msgstr "Minuscule"
 
-#: modules/gutenberg/build/blocks.js:7
+#: modules/gutenberg/build/blocks.js:177
 msgid "Decoration"
 msgstr "Décoration"
 
-#: modules/gutenberg/build/blocks.js:7
+#: modules/gutenberg/build/blocks.js:177
 msgid "Overline"
 msgstr "Surligner"
 
-#: modules/gutenberg/build/blocks.js:7
+#: modules/gutenberg/build/blocks.js:177
 msgid "Line Through"
 msgstr "Barrer"
 
-#: modules/gutenberg/build/blocks.js:7
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:177
+#: modules/gutenberg/build/blocks.js:181
+#: modules/gutenberg/build/blocks.js:185
 msgid "%"
 msgstr "%"
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:181
 msgid "Top"
 msgstr "Haut"
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:181
 msgid "Bottom"
 msgstr "Bas"
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:181
 msgid "Note: Please set Separator Height for proper thickness."
 msgstr "Remarque : Veuillez régler la hauteur du séparateur pour obtenir l'épaisseur appropriée."
 
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:181
+#: modules/gutenberg/build/blocks.js:185
 msgid "Dotted"
 msgstr "Pointillé"
 
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:181
+#: modules/gutenberg/build/blocks.js:185
 msgid "Dashed"
 msgstr "Tireté"
 
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:181
+#: modules/gutenberg/build/blocks.js:185
 msgid "Double"
 msgstr "Double"
 
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:181
+#: modules/gutenberg/build/blocks.js:185
 msgid "Solid"
 msgstr "Solide"
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:181
 msgid "Rectangles"
 msgstr "Rectangles"
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:181
 msgid "Parallelogram"
 msgstr "Parallélogramme"
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:181
 msgid "Leaves"
 msgstr "Feuilles"
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:181
 msgid "Add Element"
 msgstr "Ajouter un élément"
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:181
 msgid "Text"
 msgstr "Texte"
 
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:181
+#: modules/gutenberg/build/blocks.js:185
 msgid "Heading Tag"
 msgstr "Balise de titre"
 
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:181
+#: modules/gutenberg/build/blocks.js:185
 msgid "H1"
 msgstr "H1"
 
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:181
+#: modules/gutenberg/build/blocks.js:185
 msgid "H2"
 msgstr "H2"
 
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:181
+#: modules/gutenberg/build/blocks.js:185
 msgid "H3"
 msgstr "H3"
 
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:181
+#: modules/gutenberg/build/blocks.js:185
 msgid "H4"
 msgstr "H4"
 
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:181
+#: modules/gutenberg/build/blocks.js:185
 msgid "H5"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:181
+#: modules/gutenberg/build/blocks.js:185
 msgid "H6"
 msgstr "H6"
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:181
 msgid "Span"
 msgstr "Portée"
 
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:15
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:181
+#: modules/gutenberg/build/blocks.js:185
+#: modules/gutenberg/build/blocks.js:187
 msgid "Alignment"
 msgstr "Alignement"
 
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:181
+#: modules/gutenberg/build/blocks.js:185
 msgid "Width"
 msgstr "Largeur"
 
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:181
+#: modules/gutenberg/build/blocks.js:187
 msgid "Size"
 msgstr "Taille"
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:181
 msgid "Separator Height"
 msgstr "Hauteur du séparateur"
 
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:181
+#: modules/gutenberg/build/blocks.js:185
 msgid "Typography"
 msgstr "Typographie"
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:181
 msgid "Icon Size"
 msgstr "Taille de l'icône"
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:181
 msgid "EM"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:181
+#: modules/gutenberg/build/blocks.js:187
 msgid "Spacing"
 msgstr "Espacement"
 
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:181
+#: modules/gutenberg/build/blocks.js:187
 msgid "Padding"
 msgstr "Rembourrage"
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:181
 msgid "Please add preview image."
 msgstr "Veuillez ajouter une image de prévisualisation."
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:181
 msgid "Add a modern separator to divide your page content with icon/text."
 msgstr "Ajoutez un séparateur moderne pour diviser le contenu de votre page avec une icône/texte."
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:181
 msgid "divider"
 msgstr "séparateur"
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:181
 msgid "separator"
 msgstr "sépérateur"
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:181
 msgid "Color 1"
 msgstr "Couleur 1"
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:181
 msgid "Color 2"
 msgstr "Couleur 2"
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:181
 msgid "Type"
 msgstr "Type"
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:181
 msgid "Linear"
 msgstr "Linéaire"
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:181
 msgid "Radial"
 msgstr "Radial"
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:181
 msgid "Location 1"
 msgstr "Emplacement 1"
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:181
 msgid "Location 2"
 msgstr "Emplacement 2"
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:181
 msgid "Angle"
 msgstr "Angle"
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:181
 msgid "Classic"
 msgstr "Classique"
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:181
 msgid "Gradient"
 msgstr "Gradient"
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:181
 msgid "Text Shadow"
 msgstr "Ombre de texte"
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:181
 msgid "Radius"
 msgstr "Rayon"
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:181
 msgid "Border"
 msgstr "Frontière"
 
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:15
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:181
+#: modules/gutenberg/build/blocks.js:185
+#: modules/gutenberg/build/blocks.js:187
 msgid "Hover"
 msgstr "Survoler"
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:181
 msgid "Groove"
 msgstr "Groove"
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:181
 msgid "Inset"
 msgstr "Encart"
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:181
 msgid "Outset"
 msgstr "Début"
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:181
 msgid "Ridge"
 msgstr "Crête"
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:181
 msgid "Above Heading"
 msgstr "Au-dessus de l'en-tête"
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:181
 msgid "Below Heading"
 msgstr "Sous le titre"
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:181
 msgid "Above Sub-heading"
 msgstr "Au-dessus du sous-titre"
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:181
 msgid "Below Sub-heading"
 msgstr "Sous-titre ci-dessous"
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:181
 msgid "Content"
 msgstr "Contenu"
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:181
 msgid "Div"
 msgstr "Div"
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:181
 msgid "Heading Wrapper"
 msgstr "En-tête Wrapper"
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:181
 msgid "Header"
 msgstr "En-tête"
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:181
 msgid "Sub Heading"
 msgstr "Sous-titre"
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:181
 msgid "Enable Sub Heading"
 msgstr "Activer le sous-titre"
 
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:15
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:181
+#: modules/gutenberg/build/blocks.js:185
+#: modules/gutenberg/build/blocks.js:187
 msgid "Position"
 msgstr "Position"
 
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:15
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:181
+#: modules/gutenberg/build/blocks.js:185
+#: modules/gutenberg/build/blocks.js:187
 msgid "Horizontal"
 msgstr "Horizontal"
 
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:15
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:181
+#: modules/gutenberg/build/blocks.js:185
+#: modules/gutenberg/build/blocks.js:187
 msgid "Vertical"
 msgstr "Vertical"
 
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:15
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:181
+#: modules/gutenberg/build/blocks.js:185
+#: modules/gutenberg/build/blocks.js:187
 msgid "Blur"
 msgstr "Flou"
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:181
 msgid "Bottom Spacing"
 msgstr "Espacement inférieur"
 
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:181
+#: modules/gutenberg/build/blocks.js:185
 msgid "Thickness"
 msgstr "Épaisseur"
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:181
 msgid "Below settings will apply to the heading text to which a link is applied."
 msgstr "Les paramètres ci-dessous s'appliqueront au texte de l'en-tête auquel un lien est appliqué."
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:181
 msgid "Highlight"
 msgstr "Surligner"
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:181
 msgid "Highlight heading text from toolbar to see the below controls working."
 msgstr "Sélectionnez le texte de l'en-tête depuis la barre d'outils pour voir les contrôles ci-dessous fonctionner."
 
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:181
+#: modules/gutenberg/build/blocks.js:185
 msgid "Background"
 msgstr "Contexte"
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:181
 msgid "Write a Heading"
 msgstr "Écrire un titre"
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:181
 msgid "Write a Description"
 msgstr "Rédiger une description"
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:181
 msgid "Highlight Text"
 msgstr "Mettre en surbrillance le texte"
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:181
 msgid "Add heading, sub heading and a separator using one block."
 msgstr "Ajoutez un titre, un sous-titre et un séparateur en utilisant un seul bloc."
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:181
 msgid "creative heading"
 msgstr "titre créatif"
 
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:181
+#: modules/gutenberg/build/blocks.js:187
 msgid "uag"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:181
 msgid "heading"
 msgstr "titre"
 
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:15
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:181
+#: modules/gutenberg/build/blocks.js:185
+#: modules/gutenberg/build/blocks.js:187
 msgid "Box Shadow"
 msgstr "Ombre de boîte"
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:181
 msgid "Inset (10px)"
 msgstr "Encart (10px)"
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:185
 msgid "Height"
 msgstr "Hauteur"
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:185
 msgid "Image Size"
 msgstr "Taille de l'image"
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:185
 msgid "Image Dimensions"
 msgstr "Dimensions de l'image"
 
-#: modules/gutenberg/build/blocks.js:15
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:185
+#: modules/gutenberg/build/blocks.js:187
 msgid "Preset 1"
 msgstr "Préréglage 1"
 
-#: modules/gutenberg/build/blocks.js:15
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:185
+#: modules/gutenberg/build/blocks.js:187
 msgid "Preset 2"
 msgstr "Préréglage 2"
 
-#: modules/gutenberg/build/blocks.js:15
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:185
+#: modules/gutenberg/build/blocks.js:187
 msgid "Preset 3"
 msgstr "Préréglage 3"
 
-#: modules/gutenberg/build/blocks.js:15
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:185
+#: modules/gutenberg/build/blocks.js:187
 msgid "Preset 4"
 msgstr "Préréglage 4"
 
-#: modules/gutenberg/build/blocks.js:15
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:185
+#: modules/gutenberg/build/blocks.js:187
 msgid "Preset 5"
 msgstr "Préréglage 5"
 
-#: modules/gutenberg/build/blocks.js:15
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:185
+#: modules/gutenberg/build/blocks.js:187
 msgid "Preset 6"
 msgstr "Préréglage 6"
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:185
 msgid "Select Preset"
 msgstr "Sélectionner le préréglage"
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:185
 msgid "Cover"
 msgstr "Couvrir"
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:185
 msgid "Contain"
 msgstr "Contenir"
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:185
 msgid "Disable Lazy Loading"
 msgstr "Désactiver le chargement différé"
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:185
 msgid "Layout"
 msgstr "Mise en page"
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:185
 msgid "Overlay"
 msgstr "Superposition"
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:185
 msgid "Content Position"
 msgstr "Position du contenu"
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:185
 msgid "Border Distance From EDGE"
 msgstr "Distance de la bordure depuis le BORD"
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:185
 msgid "Alt Text"
 msgstr "Texte alternatif"
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:185
 msgid "Object Fit"
 msgstr "Ajustement de l'objet"
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:185
 msgid "On Hover Image"
 msgstr "Image au survol"
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:185
 msgid "Static"
 msgstr "Statique"
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:185
 msgid "Zoom In"
 msgstr "Zoomer"
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:185
 msgid "Slide"
 msgstr "Diapositive"
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:185
 msgid "Gray Scale"
 msgstr "Échelle de gris"
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:185
 msgid "Enable Caption"
 msgstr "Activer les sous-titres"
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:185
 msgid "Mask Shape"
 msgstr "Forme de masque"
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:185
 msgid "Hexagon"
 msgstr "Hexagone"
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:185
 msgid "Rounded"
 msgstr "Arrondi"
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:185
 msgid "Blob 1"
 msgstr "Blob 1"
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:185
 msgid "Blob 2"
 msgstr "Blob 2"
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:185
 msgid "Blob 3"
 msgstr "Blob 3"
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:185
 msgid "Blob 4"
 msgstr "Blob 4"
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:185
 msgid "Custom Mask Image"
 msgstr "Image de masque personnalisé"
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:185
 msgid "Mask Size"
 msgstr "Taille du masque"
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:185
 msgid "Mask Position"
 msgstr "Position du masque"
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:185
 msgid "Center Top"
 msgstr "Centre Haut"
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:185
 msgid "Center Center"
 msgstr "Centre Centre"
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:185
 msgid "Center Bottom"
 msgstr "Centre Bas"
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:185
 msgid "Left Top"
 msgstr "Haut gauche"
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:185
 msgid "Left Center"
 msgstr "Centre gauche"
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:185
 msgid "Left Bottom"
 msgstr "En bas à gauche"
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:185
 msgid "Right Top"
 msgstr "En haut à droite"
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:185
 msgid "Right Center"
 msgstr "Centre droit"
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:185
 msgid "Right Bottom"
 msgstr "En bas à droite"
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:185
 msgid "Mask Repeat"
 msgstr "Répéter le masque"
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:185
 msgid "No Repeat"
 msgstr "Pas de répétition"
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:185
 msgid "Repeat-X"
 msgstr "Répéter-X"
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:185
 msgid "Repeat-Y"
 msgstr "Répéter-Y"
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:185
 msgid "Show On"
 msgstr "Afficher activé"
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:185
 msgid "Always"
 msgstr "Toujours"
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:185
 msgid "Before Title"
 msgstr "Avant le titre"
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:185
 msgid "After Title"
 msgstr "Après le titre"
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:185
 msgid "After Sub Title"
 msgstr "Après le sous-titre"
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:185
 msgid "Description"
 msgstr "Description"
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:185
 msgid "Caption"
 msgstr "Légende"
 
-#: modules/gutenberg/build/blocks.js:15
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:185
+#: modules/gutenberg/build/blocks.js:187
 msgid "Separate Hover Shadow"
 msgstr "Ombre de survol séparée"
 
-#: modules/gutenberg/build/blocks.js:15
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:185
+#: modules/gutenberg/build/blocks.js:187
 msgid "Spread"
 msgstr "Propager"
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:185
 msgid "Overlay Opacity"
 msgstr "Opacité de superposition"
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:185
 msgid "Overlay Hover Opacity"
 msgstr "Opacité de survol de superposition"
 
 #. translators: %s: file name
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:187
 msgid "This image has an empty alt attribute; its file name is %s"
 msgstr "Cette image a un attribut alt vide ; son nom de fichier est %s"
 
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:187
 msgid "This image has an empty alt attribute"
 msgstr "Cette image a un attribut alt vide"
 
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:187
 msgid "Image overlay heading text"
 msgstr "Texte de l'en-tête de superposition d'image"
 
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:187
 msgid "Add Heading"
 msgstr "Ajouter un en-tête"
 
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:187
 msgid "Image caption text"
 msgstr "Texte de légende d'image"
 
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:187
 msgid "Add caption"
 msgstr "Ajouter une légende"
 
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:187
 msgid "Edit image"
 msgstr "Modifier l'image"
 
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:187
 msgid "Image uploaded."
 msgstr "Image téléchargée."
 
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:187
 msgid "Upload external image"
 msgstr "Télécharger une image externe"
 
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:187
 msgid "Upload an image file, pick one from your media library, or add one with a URL."
 msgstr "Téléchargez un fichier image, choisissez-en un dans votre bibliothèque multimédia, ou ajoutez-en un avec une URL."
 
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:187
 msgid "Add images on your webpage with multiple customization options."
 msgstr "Ajoutez des images sur votre page web avec plusieurs options de personnalisation."
 
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:187
 msgid "image"
 msgstr "image"
 
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:187
 msgid "advance image"
 msgstr "image avancée"
 
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:187
 msgid "caption"
 msgstr "légende"
 
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:187
 msgid "overlay image"
 msgstr "superposer une image"
 
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:187
 msgid "Accessibility Mode"
 msgstr "Mode Accessibilité"
 
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:187
 msgid "SVG"
 msgstr "SVG"
 
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:187
 msgid "Decorative"
 msgstr "Décoratif"
 
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:187
 msgid "Accessibility Label"
 msgstr "Étiquette d'accessibilité"
 
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:187
 msgid "Rotation"
 msgstr "Rotation"
 
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:187
 msgid "Degree"
 msgstr "Diplôme"
 
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:187
 msgid "Enter URL"
 msgstr "Entrez l'URL"
 
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:187
 msgid "Open in New Tab"
 msgstr "Ouvrir dans un nouvel onglet"
 
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:187
 msgid "Presets"
 msgstr "Préréglages"
 
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:187
 msgid "Icon Color"
 msgstr "Couleur de l'icône"
 
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:187
 msgid "Background Type"
 msgstr "Type d'arrière-plan"
 
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:187
 msgid "Drop Shadow"
 msgstr "Ombre portée"
 
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:187
 msgid "Add stunning customizable icons to your website."
 msgstr "Ajoutez des icônes personnalisables époustouflantes à votre site web."
 
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:187
 msgid "icon"
 msgstr "icône"
 
 #. translators: %1$s: SureForms version, %2$s: SureForms Pro Plugin Name, %3$s: SureForms Pro Version, %4$s: Anchor tag open, %5$s: Closing anchor tag.
-#: admin/admin.php:804
+#: admin/admin.php:829
 msgid "SureForms %1$s requires minimum %2$s %3$s to work properly. Please update to the latest version from %4$shere%5$s."
 msgstr "SureForms %1$s nécessite au minimum %2$s %3$s pour fonctionner correctement. Veuillez mettre à jour vers la dernière version depuis %4$scet endroit%5$s."
 
@@ -11261,33 +11265,32 @@ msgid "Rate the Plugin"
 msgstr "Évaluez le plugin"
 
 #: assets/build/blocks.js:172
-#: assets/build/formEditor.js:172
-#: assets/build/settings.js:172
-#: assets/build/templatePicker.js:172
-msgid "Plan"
-msgstr "Plan"
-
-#: assets/build/blocks.js:172
+#: modules/gutenberg/build/blocks.js:181
 msgid "Conditional Logic"
 msgstr "Logique conditionnelle"
 
 #: assets/build/blocks.js:172
+#: modules/gutenberg/build/blocks.js:181
 msgid "Unlock Conditional Logic"
 msgstr "Déverrouiller la logique conditionnelle"
 
 #: assets/build/blocks.js:172
+#: modules/gutenberg/build/blocks.js:181
 msgid "Upgrade to the SureForms Starter Plan to create dynamic forms that adapt based on user input, offering a personalised and efficient form experience."
 msgstr "Passez au plan de démarrage SureForms pour créer des formulaires dynamiques qui s'adaptent en fonction des saisies de l'utilisateur, offrant une expérience de formulaire personnalisée et efficace."
 
 #: assets/build/blocks.js:172
+#: modules/gutenberg/build/blocks.js:181
 msgid "Enable Conditional Logic"
 msgstr "Activer la logique conditionnelle"
 
 #: assets/build/blocks.js:172
+#: modules/gutenberg/build/blocks.js:181
 msgid "this field if"
 msgstr "ce champ si"
 
 #: assets/build/blocks.js:172
+#: modules/gutenberg/build/blocks.js:181
 msgid "Configure Conditions"
 msgstr "Configurer les conditions"
 
@@ -11319,11 +11322,6 @@ msgstr "Disposition conversationnelle"
 
 #: assets/build/formEditor.js:172
 #: assets/build/templatePicker.js:172
-msgid "Pro"
-msgstr "Pro"
-
-#: assets/build/formEditor.js:172
-#: assets/build/templatePicker.js:172
 msgid "Unlock Conversational Forms"
 msgstr "Déverrouiller les formulaires conversationnels"
 
@@ -11336,22 +11334,34 @@ msgstr "Avec le plan SureForms Pro, vous pouvez transformer vos formulaires en m
 msgid "Create Conversational Form"
 msgstr "Créer un formulaire conversationnel"
 
-#: inc/post-types.php:123
+#: admin/admin.php:88
+msgid "Get SureForms Pro"
+msgstr "Obtenez SureForms Pro"
+
+#: assets/build/blocks.js:172
+#: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
+#: assets/build/templatePicker.js:172
+#: modules/gutenberg/build/blocks.js:181
+msgid "Premium"
+msgstr "Premium"
+
+#: inc/post-types.php:124
 msgctxt "post type general name"
 msgid "Forms"
 msgstr "Formulaires"
 
-#: inc/post-types.php:124
+#: inc/post-types.php:125
 msgctxt "post type singular name"
 msgid "Form"
 msgstr "Formulaire"
 
-#: inc/post-types.php:125
+#: inc/post-types.php:126
 msgctxt "admin menu"
 msgid "Forms"
 msgstr "Formulaires"
 
-#: inc/post-types.php:126
+#: inc/post-types.php:127
 msgctxt "form"
 msgid "Add New"
 msgstr "Ajouter nouveau"
