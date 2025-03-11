@@ -77,7 +77,7 @@ if ( ! class_exists( 'BSF_Analytics_Helper' ) ) {
 		public static function is_allowed_screen() {
 
 			// This filter allows to dynamically modify the list of allowed screens for the survey.
-			$allowed_screens = apply_filters( 'uds_survey_allowed_screens', array( 'plugins', 'themes' ) );
+			$allowed_screens = apply_filters( 'uds_survey_allowed_screens', array( 'plugins' ) );
 
 			$current_screen = get_current_screen();
 

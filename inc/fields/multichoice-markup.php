@@ -118,6 +118,28 @@ class Multichoice_Markup extends Base {
 		$check_svg     = Helper::fetch_svg( $this->svg_type . '-checked', 'srfm-' . $this->slug . '-icon', 'aria-hidden="true"' );
 		$unchecked_svg = Helper::fetch_svg( $this->svg_type . '-unchecked', 'srfm-' . $this->slug . '-icon-unchecked', 'aria-hidden="true"' );
 
+		$allowed_tags_svg = [
+			'span' => [
+				'class'       => true,
+				'aria-hidden' => true,
+			],
+			'svg'  => [
+				'xmlns'   => true,
+				'width'   => true,
+				'height'  => true,
+				'viewBox' => true,
+				'fill'    => true,
+			],
+			'path' => [
+				'd'               => true,
+				'stroke'          => true,
+				'stroke-opacity'  => true,
+				'stroke-width'    => true,
+				'stroke-linecap'  => true,
+				'stroke-linejoin' => true,
+			],
+		];
+
 		ob_start();
 		?>
 		<div data-block-id="<?php echo esc_attr( $this->block_id ); ?>" class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $this->type_attr ); ?>-mode srfm-<?php echo esc_attr( $this->slug ); ?>-block srf-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?>-block<?php echo wp_kses_post( $this->block_width ); ?><?php echo esc_attr( $this->class_name ); ?> <?php echo esc_attr( $this->conditional_class ); ?>">
@@ -152,7 +174,7 @@ class Multichoice_Markup extends Base {
 											If you make any changes here, ensure the corresponding JavaScript value functionality and conditional logic are also updated. -->
 											<label for="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id . '-' . $i ); ?>"><?php echo isset( $option['optionTitle'] ) ? esc_html( $option['optionTitle'] ) : ''; ?></label>
 										</div>
-										<div class="srfm-icon-container"><?php echo $check_svg . $unchecked_svg; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Ignored to render svg ?></div>
+										<div class="srfm-icon-container"><?php echo wp_kses( $check_svg, $allowed_tags_svg ) . wp_kses( $unchecked_svg, $allowed_tags_svg ); ?></div>
 									</div>
 								</div>
 							<?php } ?>
