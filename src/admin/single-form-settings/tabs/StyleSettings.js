@@ -867,12 +867,14 @@ function StyleSettings( props ) {
 			content: fields,
 			initialOpen: false,
 		},
-		{
-			panelId: 'button',
-			title: __( 'Button', 'sureforms' ),
-			content: button,
-			initialOpen: false,
-		},
+		...( button.some( ( setting ) => setting.component ) ? [
+			{
+				panelId: 'button',
+				title: __( 'Button', 'sureforms' ),
+				content: button,
+				initialOpen: false,
+			},
+		] : [] ),
 	];
 
 	const enhancedStylePanels = getStylePanels( baseStylePanels, { props } );
