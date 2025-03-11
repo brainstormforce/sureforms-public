@@ -10,6 +10,7 @@ import { FaFileSignature } from 'react-icons/fa';
 import { FaRegEyeSlash } from 'react-icons/fa';
 import { RxSlider } from 'react-icons/rx';
 import { addQueryParam } from '@Utils/Helpers';
+import {apply_filters} from '@wordpress/hooks';
 
 const IconBlock = ( { icon, label } ) => (
 	<div className="block-editor-block-types-list__list-item">
@@ -79,40 +80,77 @@ const IconBlock = ( { icon, label } ) => (
 // 	</div>
 // );
 
-const iconBlocks = [
-	{
-		icon: <MdOutlineCalendarMonth size={24} color="#B4B4B4" />, 
-		label: __('Date Picker', 'sureforms')
-	},
-	{
-		icon: <MdAccessTime size={24} color="#B4B4B4" />, 
-		label: __('Time Picker', 'sureforms')
-	},
-	{
-		icon: <FaRegEyeSlash size={24} color="#B4B4B4" />, 
-		label: __('Hidden', 'sureforms')
-	},
-	{
-		icon: <RxSlider size={24} color="#B4B4B4" />, 
-		label: __('Slider', 'sureforms')
-	},
-	{
-		icon: <MdOutlineInsertPageBreak size={24} color="#B4B4B4" />, 
-		label: __('Page Break', 'sureforms')
-	},
-	{
-		icon: <MdOutlineStarBorder size={24} color="#B4B4B4" />, 
-		label: __('Rating', 'sureforms')
-	},
-	{
-		icon: <MdOutlineCloudUpload size={24} color="#B4B4B4" />, 
-		label: __('Upload', 'sureforms')
-	},
-	{
-		icon: <FaFileSignature size={24} color="#B4B4B4" />, 
-		label: __('Signature', 'sureforms')
-	}
-];
+// const iconBlocks = [
+// 	{
+// 		icon: <MdOutlineCalendarMonth size={24} color="#B4B4B4" />, 
+// 		label: __('Date Picker', 'sureforms')
+// 	},
+// 	{
+// 		icon: <MdAccessTime size={24} color="#B4B4B4" />, 
+// 		label: __('Time Picker', 'sureforms')
+// 	},
+// 	{
+// 		icon: <FaRegEyeSlash size={24} color="#B4B4B4" />, 
+// 		label: __('Hidden', 'sureforms')
+// 	},
+// 	{
+// 		icon: <RxSlider size={24} color="#B4B4B4" />, 
+// 		label: __('Slider', 'sureforms')
+// 	},
+// 	{
+// 		icon: <MdOutlineInsertPageBreak size={24} color="#B4B4B4" />, 
+// 		label: __('Page Break', 'sureforms')
+// 	},
+// 	{
+// 		icon: <MdOutlineStarBorder size={24} color="#B4B4B4" />, 
+// 		label: __('Rating', 'sureforms')
+// 	},
+// 	{
+// 		icon: <MdOutlineCloudUpload size={24} color="#B4B4B4" />, 
+// 		label: __('Upload', 'sureforms')
+// 	},
+// 	{
+// 		icon: <FaFileSignature size={24} color="#B4B4B4" />, 
+// 		label: __('Signature', 'sureforms')
+// 	}
+// ];
+
+const iconBlocks = apply_filters('sureforms_pro_fields', [
+		{
+			icon: <MdOutlineCalendarMonth size={24} color="#B4B4B4" />, 
+			label: __('Date Picker', 'sureforms')
+		},
+		{
+			icon: <MdAccessTime size={24} color="#B4B4B4" />, 
+			label: __('Time Picker', 'sureforms')
+		},
+		{
+			icon: <FaRegEyeSlash size={24} color="#B4B4B4" />, 
+			label: __('Hidden', 'sureforms')
+		},
+		{
+			icon: <RxSlider size={24} color="#B4B4B4" />, 
+			label: __('Slider', 'sureforms')
+		},
+		{
+			icon: <MdOutlineInsertPageBreak size={24} color="#B4B4B4" />, 
+			label: __('Page Break', 'sureforms')
+		},
+		{
+			icon: <MdOutlineStarBorder size={24} color="#B4B4B4" />, 
+			label: __('Rating', 'sureforms')
+		},
+		{
+			icon: <MdOutlineCloudUpload size={24} color="#B4B4B4" />, 
+			label: __('Upload', 'sureforms')
+		},
+		{
+			icon: <FaFileSignature size={24} color="#B4B4B4" />, 
+			label: __('Signature', 'sureforms')
+		}
+	]
+);
+
 
 const IconGrid = () => (
 	<div className="block-editor-inserter__panel-content">
