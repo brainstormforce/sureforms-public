@@ -114,6 +114,15 @@ if ( ! class_exists( 'Spec_Gb_Helper' ) ) {
 		public static $icon_array_merged = [];
 
 		/**
+		 * Seen Refs Array
+		 * This array will store the block IDs which have already been processed.
+		 *
+		 * @since 1.4.2
+		 * @var array
+		 */
+		private static $seen_refs = [];
+
+		/**
 		 *  Initiator
 		 *
 		 * @since 0.0.1
@@ -484,8 +493,11 @@ if ( ! class_exists( 'Spec_Gb_Helper' ) ) {
 					if ( 'core/block' === $block['blockName'] ) {
 						$id = ( isset( $block['attrs']['ref'] ) ) ? $block['attrs']['ref'] : 0;
 
-						if ( $id ) {
-							$content = get_post_field( 'post_content', $id );
+						$is_block_seen = in_array( $id, self::$seen_refs, true );
+
+						if ( $id && ! $is_block_seen ) {
+							self::$seen_refs[] = $id;
+							$content           = get_post_field( 'post_content', $id );
 
 							$reusable_blocks = $this->parse( $content );
 

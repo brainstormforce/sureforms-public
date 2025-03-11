@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 $srfm_custom_post_id = absint( get_the_ID() );
-$srfm_form_preview   = isset( $_GET['form_preview'] ) ? boolval( sanitize_text_field( wp_unslash( $_GET['form_preview'] ) ) ) : false;  // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+$srfm_form_preview   = isset( $_GET['form_preview'] ) ? boolval( wp_unslash( $_GET['form_preview'] ) ) : false;  // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verification is not required here.
 $srfm_live_mode_data = Helper::get_instant_form_live_data();
 
 $instant_form_settings         = ! empty( $srfm_live_mode_data ) ? $srfm_live_mode_data : Helper::get_array_value( Helper::get_post_meta( $srfm_custom_post_id, '_srfm_instant_form_settings' ) );

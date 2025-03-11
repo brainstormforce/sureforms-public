@@ -646,7 +646,7 @@ class Post_Types {
 						'confirmation_type' => 'same page',
 						'page_url'          => '',
 						'custom_url'        => '',
-						'message'           => '<p style="text-align: center;"><img src="' . esc_attr( $check_icon ) . '" alt="" aria-hidden="true"></img></p><h2 style="text-align: center;">Thank you</h2>',
+						'message'           => '<p style="text-align: center;"><img src="' . esc_attr( $check_icon ) . '" alt="" aria-hidden="true"></img></p><h2 style="text-align: center;">' . esc_html__( 'Thank you', 'sureforms' ) . '</h2>',
 						'submission_action' => 'hide form',
 					],
 				],
