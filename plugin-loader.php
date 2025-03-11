@@ -32,7 +32,6 @@ use SRFM\Inc\Global_Settings\Global_Settings;
 use SRFM\Inc\Gutenberg_Hooks;
 use SRFM\Inc\Helper;
 use SRFM\Inc\Lib\SRFM_Nps_Survey;
-use SRFM\Inc\Lib\SRFM_Utm_Analytics;
 use SRFM\Inc\Nps_Notice;
 use SRFM\Inc\Page_Builders\Page_Builders;
 use SRFM\Inc\Post_Types;
@@ -299,10 +298,6 @@ class Plugin_Loader {
 		if ( class_exists( 'SRFM\Inc\Lib\SRFM_Nps_Survey' ) && ! apply_filters( 'srfm_disable_nps_survey', false ) ) {
 			SRFM_Nps_Survey::get_instance(); // Inits the NPS Survey class for which inits the NPS Survey plugin.
 			Nps_Notice::get_instance(); // Responsible for displaying the NPS Survey: keeping the line out of the check will also work.
-		}
-
-		if ( class_exists( 'SRFM\Inc\Lib\SRFM_Utm_Analytics' ) ) {
-			SRFM_Utm_Analytics::get_instance(); // Inits the UTM Analytics library.
 		}
 
 		/**
