@@ -750,7 +750,7 @@ export async function fieldValidation(
 
 		// filter to modify the validation result and set the first error input
 		validateResult = applyFilters(
-			'srfm.modifyFielValidationResult',
+			'srfm.modifyFieldValidationResult',
 			validateResult,
 			container,
 			setFirstErrorInput
