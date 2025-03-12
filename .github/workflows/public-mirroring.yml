@@ -40,5 +40,5 @@ jobs:
         env:
           PERSONAL_ACCESS_TOKEN: ${{ secrets.TEST_PAT }}
         run: |
-          git remote add mirror https://github.com/adi3890/demo-sf.git
+          git remote add mirror https://$PERSONAL_ACCESS_TOKEN@github.com/adi3890/demo-sf.git
           git push mirror test-mirroring --force
