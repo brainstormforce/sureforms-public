@@ -33,7 +33,6 @@ jobs:
           git checkout --orphan temp_branch  # Create a new orphan branch
           git add .
           git commit -m "Consolidated commit from private repo"
-          git branch -D temp_branch_master  # Delete existing main branch if it exists
           git branch -m temp_branch_master  # Rename temp_branch to main
 
       - name: Push to the public repo
