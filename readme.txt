@@ -224,6 +224,10 @@ There is no limit to the types of businesses and organizations that can benefit 
 
 [Join our Facebook group community](https://www.facebook.com/groups/surecart): Learn the tricks and techniques that other SureForms users are using to grow their business. Also, get exciting insider information on upcoming feature releases.
 
+### WANT TO CONTRIBUTE TO THE PLUGIN?
+
+You may now contribute to the plugin on [GitHub](https://github.com/brainstormforce/sureforms-public)
+
 ### USE OF 3RD PARTY SERVICES
 
 To improve the user experience, SureForms may use the following 3rd party services if the required features are enabled:
