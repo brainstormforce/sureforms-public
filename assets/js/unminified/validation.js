@@ -811,16 +811,13 @@ function validateMultiChoiceMinMax() {
 			return;
 		}
 
-		const minSelection =
-			parseInt(
-				multiChoiceHiddenInput.getAttribute( 'data-min-selection' ),
-				10
-			) || 0;
-		const maxSelection =
-			parseInt(
-				multiChoiceHiddenInput.getAttribute( 'data-max-selection' ),
-				10
-			) || Infinity;
+		const minSelection = multiChoiceHiddenInput.getAttribute( 'data-min-selection' );
+		const maxSelection = multiChoiceHiddenInput.getAttribute( 'data-max-selection' );
+
+		if ( ! minSelection && ! maxSelection ) {
+			// No min or max selection set, no need to validate.
+			return;
+		}
 
 		const errorMessage = container.querySelector( '.srfm-error-message' );
 		const errorMessages = window?.srfm_submit?.messages || {};
@@ -841,12 +838,12 @@ function validateMultiChoiceMinMax() {
 
 			let errorText = '';
 
-			if ( selectedCount < minSelection ) {
+			if ( minSelection && selectedCount < minSelection ) {
 				errorText = window?.srfm?.srfmSprintfString(
 					errorMessages.srfm_multi_choice_min_selections,
 					minSelection
 				);
-			} else if ( selectedCount > maxSelection ) {
+			} else if ( maxSelection && selectedCount > maxSelection ) {
 				errorText = window?.srfm?.srfmSprintfString(
 					errorMessages.srfm_multi_choice_max_selections,
 					maxSelection
