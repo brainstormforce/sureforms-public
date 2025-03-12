@@ -811,8 +811,10 @@ function validateMultiChoiceMinMax() {
 			return;
 		}
 
-		const minSelection = multiChoiceHiddenInput.getAttribute( 'data-min-selection' );
-		const maxSelection = multiChoiceHiddenInput.getAttribute( 'data-max-selection' );
+		const minSelection =
+			multiChoiceHiddenInput.getAttribute( 'data-min-selection' );
+		const maxSelection =
+			multiChoiceHiddenInput.getAttribute( 'data-max-selection' );
 
 		if ( ! minSelection && ! maxSelection ) {
 			// No min or max selection set, no need to validate.
