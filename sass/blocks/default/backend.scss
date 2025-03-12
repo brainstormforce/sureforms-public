@@ -164,7 +164,7 @@
 	.srfm-phone-block-wrap {
 		// Adding margin to srfm-block-wrap because the library styles are overriding the input styles.
 		.srfm-block-wrap {
-			margin: var( --srfm-input-field-margin ) !important;
+			@include srfm-input-margin-styles( true );
 		}
 		.iti-flag {
 			margin-right: 4px; // Fixed gap between the flag and the country code.

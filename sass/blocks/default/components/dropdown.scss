@@ -1,3 +1,4 @@
+@import "../utils/mixins.scss";
 .srfm-form-container {
 	.srfm-form {
 		.srfm-block {
@@ -207,7 +208,7 @@
 				select {
 					display: block;
 					padding: var( --srfm-input-field-padding );
-					margin: var( --srfm-input-field-margin );
+					@include srfm-input-margin-styles;
 					width: 100%;
 					font-size: 0.7em;
 				}

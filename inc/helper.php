@@ -697,7 +697,7 @@ class Helper {
 					'--srfm-input-field-padding'           => '10px 12px',
 					'--srfm-input-field-font-size'         => '14px',
 					'--srfm-input-field-line-height'       => '20px',
-					'--srfm-input-field-margin'            => '4px 0',
+					'--srfm-input-field-margin'            => '4px',
 					// Checkbox and GDPR Variables.
 					'--srfm-check-ctn-width'               => '16px',
 					'--srfm-check-ctn-height'              => '16px',
@@ -738,7 +738,7 @@ class Helper {
 					'--srfm-input-height'                  => '44px',
 					'--srfm-input-field-font-size'         => '16px',
 					'--srfm-input-field-line-height'       => '24px',
-					'--srfm-input-field-margin'            => '6px 0',
+					'--srfm-input-field-margin'            => '6px',
 					// Checkbox and GDPR Variables.
 					'--srfm-checkbox-margin-top-frontend'  => '4px',
 					'--srfm-checkbox-margin-top-editor'    => '6px',
@@ -779,7 +779,7 @@ class Helper {
 					'--srfm-input-field-padding'           => '10px 14px',
 					'--srfm-input-field-font-size'         => '18px',
 					'--srfm-input-field-line-height'       => '28px',
-					'--srfm-input-field-margin'            => '8px 0',
+					'--srfm-input-field-margin'            => '8px',
 					// Checkbox and GDPR Variables.
 					'--srfm-check-ctn-width'               => '20px',
 					'--srfm-check-ctn-height'              => '20px',

@@ -87,7 +87,7 @@ button.srfm-toolbar-width-setting-button {
 		align-items: flex-end;
 		justify-content: flex-end;
 		.srfm-button {
-			margin: var( --srfm-input-field-margin );
+			@include srfm-input-margin-styles;
 		}
 		&.srfm-block {
 			height: auto;
