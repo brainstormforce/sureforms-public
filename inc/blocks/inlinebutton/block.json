@@ -1,0 +1,50 @@
+{
+	"name": "srfm/inline-button",
+	"title": "Custom Button",
+	"description": "Displays a SureForms Custom Button",
+	"category": "sureforms",
+	"keywords": [
+		"inline submit",
+		"button",
+		"submit",
+		"inline",
+		"custom",
+		"custom button"
+	],
+	"textdomain": "sureforms",
+	"supports": {
+		"reusable": false,
+		"html": false,
+		"multiple": false
+	},
+	"example": {
+		"attributes": {
+			"preview": true
+		}
+	},
+	"attributes": {
+		"preview": {
+			"type": "boolean",
+			"default": false
+		},
+		"block_id": {
+			"type": "string"
+		},
+		"fieldWidth": {
+			"type": "number",
+			"default": 100
+		},
+		"buttonText": {
+			"type": "string",
+			"default": "Submit"
+		},
+		"formId": {
+			"type": "number",
+			"default": ""
+		},
+		"isConditionalLogic": {
+			"type": "boolean",
+			"default": false
+		}
+	}
+}

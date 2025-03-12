@@ -1,0 +1,60 @@
+/* Normal & Hover Tabs CSS*/
+
+@import "../../styles/variables";
+
+.srfm-control-tabs {
+	margin: 0 ( -$srfm-panel-body-padding );
+	padding: 0 $srfm-panel-body-padding;
+
+	&.srfm-control-tabs-three-tabs {
+		.components-tab-panel__tabs {
+			& > .components-button {
+				width: 31.3%;
+			}
+		}
+	}
+
+	& > .components-tab-panel__tabs {
+		justify-content: space-between;
+		margin: 0 ( -$srfm-panel-body-padding ) $srfm-control-vertical-gap;
+		padding: 0 $srfm-panel-body-padding;
+		border-bottom: 1px solid $srfm-color-border;
+
+		& > .components-button {
+			width: 47%;
+			text-align: center;
+			justify-content: center;
+			border: 1px solid $srfm-color-border;
+			border-radius: $srfm-control-border-radius $srfm-control-border-radius 0 0;
+			color: $srfm-color-body;
+			background-color: $srfm-color-light-background;
+			max-height: 30px;
+			font-size: $srfm-font-size-button;
+			border-bottom: 0;
+			margin-bottom: -1px;
+
+			&.active-tab {
+				color: $srfm-color-primary;
+				background: $srfm-color-plain-background;
+			}
+
+			&:focus:not( :disabled ) {
+				box-shadow: none;
+			}
+		}
+	}
+
+	& .components-base-control {
+		margin-bottom: $srfm-control-vertical-gap;
+
+		.components-base-control,
+		.components-base-control__field {
+			padding-top: 0;
+			margin-bottom: 0;
+		}
+
+		&:last-child {
+			margin-bottom: 0;
+		}
+	}
+}

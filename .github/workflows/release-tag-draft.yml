@@ -1,0 +1,85 @@
+name: Create a release tag
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      # Release happens only if the version number in main file is updated.
+      - 'sureforms.php'
+
+jobs:
+  build-artifact:
+    name: Build Release Artifact
+    runs-on: ubuntu-22.04
+    outputs:
+      current_version: ${{ steps.get_version.outputs.current_version }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@master
+        with:
+          ref: master
+
+      - name: Initialize mandatory git config
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Compute current version
+        id: get_version
+        run: |
+          CURRENT_VERSION=$(jq --raw-output '.version' package.json)
+          echo "::set-output name=current_version::$(echo $CURRENT_VERSION)"
+
+      - name: Clear npm cache
+        run: npm cache clean --force
+
+      - name: Install Node.js and npm
+        uses: actions/setup-node@v2
+        with:
+          node-version: '18.15.0'
+
+      - name: Install dependencies
+        run: npm install --force
+
+      - name: Build
+        run: npm run build
+
+      - name: Build plugin ZIP file
+        run: bash ./bin/build-zip.sh
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sureforms-plugin
+          path: ./artifact/sureforms.zip
+
+  create-release:
+    name: Create Release Draft and Attach Asset
+    needs: [build-artifact]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set Release Version
+        id: get_release_version
+        env:
+          VERSION: ${{ needs.build-artifact.outputs.current_version }}
+        run: echo ::set-output name=version::$(echo $VERSION | cut -d / -f 3 | sed 's/-rc./ RC/' )
+
+      - name: Download Plugin Zip Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: sureforms-plugin
+
+      - name: Create Release Draft
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          name: Version ${{ steps.get_release_version.outputs.version }}
+          tag_name: "v${{ steps.get_release_version.outputs.version }}"
+          target_commitish: master
+          draft: true
+          prerelease: false
+          body: 'Replace changelog here'
+          files: ./sureforms.zip

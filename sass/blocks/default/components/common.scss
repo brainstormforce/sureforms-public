@@ -1,0 +1,137 @@
+@import "../utils/mixins.scss";
+
+.srfm-form-container {
+	&.srfm-has-dark-bg {
+		// We are treating these colors as static here because it will be the fixed color as suggested in Figma.
+		--srfm-error-color: #f87171;
+		--srfm-error-color-border: hsl( from var( --srfm-error-color ) h s l / 0.65 );
+		--srfm-error-color-border-glow: hsl( from var( --srfm-error-color ) h s l / 0.15 );
+	}
+
+	.srfm-form {
+		display: flex;
+		flex-wrap: wrap;
+
+		.conditional-logic {
+			display: none;
+			// This is for the compatibility of sureforms-pro version 1.0.3 and below and will be removed in future versions.
+			&.move-up-to-down {
+				animation: moveUpToDown 500ms linear forwards;
+				z-index: 1;
+			}
+
+			&.move-down-to-up {
+				animation: moveDownToUp 500ms linear forwards;
+			}
+			// Compatibility code ends here.
+
+			&.show-element {
+				display: block;
+			}
+
+			&.hide-element {
+				display: none;
+			}
+		}
+
+		.srfm-block {
+			&.srfm-error,
+			&.srfm-valid-email-error {
+				.srfm-block-wrap {
+					.srfm-input-common,
+					.ts-wrapper {
+						border-color: var( --srfm-error-color-border );
+
+						&.input-active {
+							box-shadow: 0px 0px 0px 3px var( --srfm-error-color-border-glow );
+							border-color: transparent;
+						}
+						.ts-control {
+							border-color: var( --srfm-error-color-border ) !important;
+						}
+
+						&:focus {
+							box-shadow: 0px 0px 0px 3px var( --srfm-error-color-border-glow );
+						}
+					}
+
+					.srfm-input-common:not( .srfm-dropdown-common ) {
+						padding-right: 2.2em;
+					}
+				}
+
+				.srfm-error-message {
+					display: block;
+				}
+			}
+			.srfm-input-common {
+				font-family: inherit;
+				@include srfm-input-common-styles();
+				transition: 0.2s ease-out;
+
+				&:focus {
+					box-shadow: 0px 0px 0px 3px var( --srfm-color-input-border-focus-glow );
+					border-color: var( --srfm-color-input-border-hover );
+				}
+				&:hover {
+					border-color: var( --srfm-color-input-border-hover );
+				}
+				&:disabled {
+					color: var( --srfm-disabled-color );
+					background-color: var( --srfm-disabled-background-color );
+					border-color: var( --srfm-disabled-border-color );
+				}
+				// Placeholder color for input fields.
+				&::placeholder {
+					color: var( --srfm-dropdown-placeholder-color );
+				}
+			}
+
+			.srfm-error-wrap {
+				.srfm-error-message {
+					@include srfm-error-styles;
+				}
+			}
+		}
+
+		.srfm-submit-container {
+			width: 100%;
+			margin-bottom: 1.2em;
+
+			// Retaining this .hide class for backward compatibility with older versions of the pro plugin.
+			&.hide {
+				display: none;
+			}
+			&.srfm-hide {
+				display: none;
+			}
+		}
+	}
+}
+/**
+ * Below code (moveUpToDown/moveDownToUp) is just for the compatibility of sureforms-pro version 1.0.3 and below and will be removed in future versions.
+ */
+@keyframes moveUpToDown {
+	0% {
+		opacity: 0;
+		max-height: 0;
+	}
+
+	100% {
+		opacity: 1;
+		max-height: 500px;
+	}
+}
+
+@keyframes moveDownToUp {
+	0% {
+		opacity: 1;
+		max-height: 500px;
+	}
+
+	100% {
+		opacity: 0;
+		max-height: 0;
+	}
+}
+// Compatibility code ends here.

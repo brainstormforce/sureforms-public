@@ -1,0 +1,16 @@
+.elementor-element .srfm-elementor-widget-icon::after {
+	content: "";
+	background-image: url( "data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgNDAwIDQwMCIgZmlsbD0iI2E3YWFhZCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KCTxwYXRoIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBkPSJNMTI2LjIyNiAxMTAuMDExQzEzOC42NTQgOTcuNTc4MyAxNjIuOTc3IDg3LjUgMTgwLjU1MyA4Ny41SDMzOS42NzRMMjgzLjQxNiAxNDMuNzc2SDkyLjQ3MTRMMTI2LjIyNiAxMTAuMDExWk0xMTYuOTA1IDI1Ni4yMjRIMzA3Ljg1TDI3NC4wOTUgMjg5Ljk5QzI2MS42NjcgMzAyLjQyMiAyMzcuMzQ0IDMxMi41IDIxOS43NjggMzEyLjVINjAuNjQ3MkwxMTYuOTA1IDI1Ni4yMjRaTTMyOC43NjYgMTcxLjg2Mkg2NC42MjVMNTMuMzczNSAxODMuMTE3QzI4LjUxNzMgMjA3Ljk4MiAzNi44NjM3IDIyOC4xMzggNzIuMDE1NyAyMjguMTM4SDMzNi4xNTZMMzQ3LjQwOCAyMTYuODgzQzM3Mi4yNjQgMTkyLjAxOCAzNjMuOTE4IDE3MS44NjIgMzI4Ljc2NiAxNzEuODYyWiIvPgo8L3N2Zz4K" );
+	position: absolute;
+	top: 0;
+	right: 0;
+	z-index: 1;
+	width: 20px;
+	height: 20px;
+	padding: 0.2em 0.5em;
+	border-width: 0 0 1px 1px;
+	border-color: #797878;
+	border-style: solid;
+	background-repeat: no-repeat;
+	background-position: center center;
+}

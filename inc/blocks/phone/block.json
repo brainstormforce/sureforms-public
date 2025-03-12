@@ -1,0 +1,72 @@
+{
+	"name": "srfm/phone",
+	"title": "Phone Number",
+	"description": "Displays a SureForms Phone Field",
+	"category": "sureforms",
+	"keywords": [ "telephone", "phone", "mobile", "field" ],
+	"textdomain": "sureforms",
+	"supports": {
+		"reusable": false,
+		"html": false
+	},
+	"example": {
+		"attributes": {
+			"preview": true
+		}
+	},
+	"attributes": {
+		"preview": {
+			"type": "boolean",
+			"default": false
+		},
+		"block_id": {
+			"type": "string"
+		},
+		"required": {
+			"type": "boolean"
+		},
+		"fieldWidth": {
+			"type": "number",
+			"default": 100
+		},
+		"label": {
+			"type": "string",
+			"default": "Phone Number"
+		},
+		"placeholder": {
+			"type": "string"
+		},
+		"help": {
+			"type": "string",
+			"default": ""
+		},
+		"isUnique": {
+			"type": "boolean",
+			"default": false
+		},
+		"duplicateMsg": {
+			"type": "string",
+			"default": ""
+		},
+		"errorMsg": {
+			"type": "string",
+			"default": ""
+		},
+		"formId": {
+			"type": "number",
+			"default": ""
+		},
+		"autoCountry": {
+			"type": "boolean",
+			"default": true
+		},
+		"isConditionalLogic":{
+			"type":"boolean",
+			"default":false
+		},
+    "slug":{
+			"type":"string",
+			"default":""
+		}
+	}
+}

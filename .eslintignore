@@ -1,0 +1,14 @@
+.cache
+build
+node_modules
+vendor
+*.min.js
+restriction-build
+licensing-sdk
+coverage-report
+playwright-report
+tests
+src/lib/*
+inc/lib/nps-survey/*
+inc/lib/bsf-analytics/*
+inc/lib/astra-notices/*

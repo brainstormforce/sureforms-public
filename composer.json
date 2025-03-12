@@ -1,0 +1,78 @@
+{
+	"name": "brainstormforce/sureforms",
+	"description": "A simple yet powerful way to add forms to your website.",
+	"type": "project",
+	"license": "GPL-2.0+",
+	"minimum-stability": "dev",
+	"prefer-stable": true,
+	"extra": {
+		"installer-paths": {
+			"inc/lib/{$name}": [
+        "brainstormforce/nps-survey",
+        "brainstormforce/bsf-analytics",
+		"brainstormforce/astra-notices"
+      ]
+		}
+	},
+	"require-dev": {
+		"codeinwp/phpcs-ruleset": "dev-main",
+		"phpunit/phpunit": "^9.0.0",
+		"squizlabs/php_codesniffer": "^3.5",
+		"yoast/phpunit-polyfills": "^2.0",
+		"dealerdirect/phpcodesniffer-composer-installer": "^1.0.0",
+		"phpcompatibility/php-compatibility": "^9.3",
+		"wp-coding-standards/wpcs": "^2.3",
+		"phpstan/phpstan": "^1.10",
+		"szepeviktor/phpstan-wordpress": "^1.1",
+		"php-stubs/generator": "^0.8.3",
+		"nunomaduro/phpinsights": "^2.11"
+	},
+	"scripts": {
+		"format": "vendor/bin/phpcbf",
+		"lint": "vendor/bin/phpcs",
+		"test": "vendor/bin/phpunit",
+    "test:coverage": "XDEBUG_MODE=coverage vendor/bin/phpunit --debug --coverage-text",
+		"phpstan": "vendor/bin/phpstan --memory-limit=2048M analyse",
+    "insights": "vendor/bin/phpinsights",
+    "insights:fix": "vendor/bin/phpinsights --fix",
+		"gen-stubs": "vendor/bin/generate-stubs sureforms/ --out=tests/php/stubs/srfm-stubs.php",
+		"update-stubs": "rm -f tests/php/stubs/srfm-stubs.php && grunt release-no-clean && composer gen-stubs  && rm -rf sureforms",
+		"commit:hook:pre": [
+			"cp .scripts/git-hooks/pre-commit .git/hooks/",
+			"chmod +x .git/hooks/pre-commit",
+			"echo 'pre-commit hook copied'"
+		],
+		"activate-checkout-build": "chmod +x bin/checkout-and-build",
+		"gcb": "bin/checkout-and-build"
+	},
+	"config": {
+		"allow-plugins": {
+			"dealerdirect/phpcodesniffer-composer-installer": true,
+			"composer/installers": true
+		}
+	},
+	"require": {
+		"wp-cli/wp-cli-bundle": "^2.10",
+		"composer/installers": "^2.3",
+		"brainstormforce/nps-survey": "^1.0",
+    "brainstormforce/bsf-analytics": "^1.0",
+		"brainstormforce/astra-notices": "^1.1"
+	},
+	"repositories": [
+		{
+			"name": "brainstormforce/nps-survey",
+			"type": "vcs",
+			"url": "git@github.com:brainstormforce/nps-survey.git"
+		},
+    {
+			"name": "brainstormforce/bsf-analytics",
+			"type": "vcs",
+			"url": "git@github.com:brainstormforce/bsf-analytics.git"
+		},
+		{
+			"name": "brainstormforce/astra-notices",
+			"type": "vcs",
+			"url": "git@github.com:brainstormforce/astra-notices.git"
+		}
+	]
+}

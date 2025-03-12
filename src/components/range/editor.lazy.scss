@@ -1,0 +1,44 @@
+.srfm-range-control {
+	.srfm-range-control__mobile-controls {
+		display: flex;
+		width: 100%;
+		align-items: center;
+
+		.components-base-control.components-range-control {
+			-webkit-tap-highlight-color: transparent;
+			box-sizing: border-box;
+			align-items: flex-start;
+			-webkit-box-pack: start;
+			justify-content: flex-start;
+			margin-right: 20px;
+			position: relative;
+			width: 100%;
+			margin-bottom: 0;
+			max-height: 30px;
+
+			.components-range-control__tooltip {
+				left: 45%;
+			}
+		}
+
+		.components-input-control__container {
+			flex: 0 0 0%;
+			width: 100%;
+		}
+
+		.components-number-control {
+			width: 35%;
+			margin-left: 10px;
+
+			.components-input-control__input {
+				padding: 0 1px 0 8px !important;
+				text-align: left;
+				font-size: 14px;
+			}
+		}
+
+		.components-range-control__marks {
+			top: 13px;
+		}
+	}
+}

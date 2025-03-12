@@ -1,0 +1,62 @@
+{
+	"apiVersion": 2,
+	"name": "srfm/checkbox",
+	"title": "Checkbox",
+	"description": "Displays a SureForms Checkbox Field",
+	"category": "sureforms",
+	"keywords": [ "checkbox", "toggle", "checkout", "engine" ],
+	"textdomain": "sureforms",
+	"supports": {
+		"reusable": false,
+		"html": false
+	},
+	"example": {
+		"attributes": {
+			"preview": true
+		}
+	},
+	"attributes": {
+		"preview": {
+			"type": "boolean",
+			"default": false
+		},
+		"block_id": {
+			"type": "string"
+		},
+		"fieldWidth": {
+			"type": "number",
+			"default": 100
+		},
+		"label": {
+			"type": "string",
+			"default": "Checkbox"
+		},
+		"required": {
+			"type": "boolean"
+		},
+		"checked": {
+			"type": "boolean",
+			"default": false
+		},
+		"help": {
+			"type": "string",
+			"default": ""
+		},
+		"errorMsg": {
+			"type": "string",
+			"default": ""
+		},
+		"formId": {
+			"type": "number",
+			"default": ""
+		},
+		"isConditionalLogic":{
+			"type":"boolean",
+			"default":false
+		},
+    "slug":{
+			"type":"string",
+			"default":""
+		}
+	}
+}

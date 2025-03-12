@@ -1,0 +1,34 @@
+.srfm-custom-css-panel {
+	.CodeMirror-wrap {
+		border-top: 1px solid #ddd6d6;
+		border-bottom: 1px solid #ddd6d6;
+
+		.CodeMirror-scroll {
+			width: 100%;
+		}
+
+		.CodeMirror-sizer {
+			border-right: unset;
+		}
+
+		span.CodeMirror-matchingbracket {
+			color: #ffc200;
+		}
+
+		.CodeMirror-vscrollbar {
+			overflow-y: hidden;
+		}
+	}
+}
+
+.interface-complementary-area.edit-post-sidebar:has( .srfm-sidebar ) {
+	height: auto;
+}
+
+.interface-interface-skeleton__sidebar:has( .srfm-sidebar ) {
+	height: auto;
+}
+
+.srfm-sidebar {
+	height: 100%;
+}

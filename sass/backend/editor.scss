@@ -1,0 +1,648 @@
+body.post-type-sureforms_form {
+	// Added to align the icon picker component with the option text field.
+	.srfm-size-type-field-tabs {
+		// Astra theme adds a top padding which distorts the layout.
+		.components-base-control__field {
+			padding-top: 0 !important;
+		}
+	}
+	.srfm-icon-picker {
+		.uag-control-label {
+			display: none;
+		}
+		.uag-ip-remove-icon {
+			top: 2px !important;
+			right: 2px !important;
+			svg {
+				height: 8px !important;
+				width: 8px !important;
+			}
+		}
+		.uag-ip-placeholder-wrap {
+			// Container size 32x32 px.
+			width: 32px;
+			min-height: 32px !important;
+
+			&:hover {
+				background-color: #f8fafc;
+			}
+
+			.uag-ip-remove-icon svg {
+				background-color: var( --srfm-error-color );
+			}
+
+			.uag-ip-selected-icon svg {
+				&.srfm-custom-plus-icon {
+					padding: 5px;
+				}
+			}
+
+			// Match selected icon size with delete icon.
+			.uag-ip-selected-icon-value svg {
+				height: 20px;
+				width: 20px;
+			}
+		}
+		.uag-ip-actions {
+			display: none !important;
+		}
+	}
+	overflow-y: hidden;
+
+	// Adding multi choice repeater styles.
+	.srfm-option-outer-wrapper {
+		&:first-child {
+			> div {
+				padding-top: 0;
+			}
+		}
+
+		> div {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			padding: 4px 0;
+			.components-base-control {
+				margin-bottom: 0 !important;
+			}
+		}
+	}
+
+	.srfm-media-picker {
+		div {
+			margin: 0;
+		}
+
+		.components-base-control__field {
+			padding: 0;
+		}
+		.srfm-media-control__wrapper {
+			width: 32px;
+			height: 32px;
+			flex-direction: row;
+
+			.srfm-media-control__clickable {
+				min-width: 30px;
+			}
+
+			.srfm-media-control__footer {
+				background-color: transparent;
+				height: 32px;
+				width: 32px;
+				overflow: hidden;
+				position: relative;
+				z-index: 9;
+				.srfm-control-label {
+					background-color: transparent;
+					color: transparent;
+				}
+			}
+			.srfm-media-control__clickable--close {
+				padding: 0;
+				top: 2px;
+				right: 2px;
+				z-index: 10;
+				.srfm-media-control__button--close {
+					height: 8px;
+					width: 8px;
+					svg {
+						background-color: var( --srfm-error-color );
+						padding: 2.4px;
+						path {
+							fill: #ffffff;
+						}
+					}
+				}
+			}
+		}
+	}
+	.edit-post-sidebar > .components-panel > .components-panel__body {
+		display: none;
+
+		&.srfm--panel.is-opened {
+			display: block;
+		}
+	}
+
+	.block-editor-inserter__tablist-and-close-button {
+		display: none;
+	}
+
+	.srfm-instant-form-settings-separator {
+		width: 100%;
+		height: 1px;
+		margin: 25px 0;
+		background-color: #e6e7e9;
+
+		&--removed-top-space {
+			margin-top: 0 !important;
+		}
+	}
+
+	.srfm-inspector-tabs-container {
+		.srfm-inspector-tabs > div {
+			padding: 0 5px;
+		}
+	}
+
+	.srfm-inspector-tab .components-panel__body .srfm-instant-form-settings-separator {
+		width: auto;
+		margin: 25px ( -16px );
+	}
+
+	.edit-post-sidebar__panel,
+	.editor-sidebar__panel {
+		margin-top: 1px;
+
+		// change the toggle switch border color.
+		.components-form-toggle .components-form-toggle__track {
+			border: 1px solid #1e1e1e;
+		}
+	}
+
+	.srfm-single-form-settings-description {
+		border-top: none !important;
+	}
+
+	.block-editor-inner-blocks {
+		.block-editor-block-list__layout:not( .srfm-address-block-wrap .block-list-appender ) {
+			display: flex;
+			flex-wrap: wrap;
+			padding: 0;
+			max-width: calc( 620px + 0.6em ) !important;
+			margin: 0 auto;
+		}
+	}
+
+	// hide site ion in the SureForms editor.
+	.edit-post-fullscreen-mode-close_site-icon {
+		display: none;
+	}
+
+	// Make the field preview container background white.
+	.block-editor-block-preview__container {
+		background-color: #fff;
+	}
+
+	// Styling for the sidebar - WP6.4.
+	.edit-post-sidebar {
+		> .components-panel {
+			> .components-panel__body.is-opened {
+				padding: 0 !important;
+				width: 100%;
+
+				> .components-panel__body-title {
+					display: none;
+				}
+
+				.srfm-inspector-tab h2 {
+					display: block;
+				}
+			}
+			> .components-panel__body {
+				&.edit-post-post-status.is-opened {
+					display: none;
+				}
+			}
+		}
+
+		button.editor-post-url__panel-toggle {
+			text-wrap: wrap;
+			text-align: left;
+			margin-left: 25px;
+		}
+	}
+
+	// Styling for the sidebar - WP6.5.
+	div[id="edit-post:document"].edit-post-sidebar,
+	div[id="edit-post:document"].editor-sidebar {
+		> .edit-post-sidebar__panel,
+		.editor-sidebar__panel {
+			.components-panel__body.is-opened {
+				padding: 0 !important; // This is needed to override the padding added by WordPress.
+				width: 100%;
+
+				> h2 {
+					display: none;
+				}
+
+				.srfm-inspector-tab h2 {
+					display: block;
+				}
+			}
+
+			.srfm--panel {
+				.components-panel__body.is-opened {
+					padding: 16px !important; // This is needed to override the padding added by WordPress.
+					width: 100%;
+				}
+			}
+
+			.edit-post-post-status,
+			.editor-post-summary {
+				display: none;
+			}
+		}
+
+		button.editor-post-url__panel-toggle {
+			text-wrap: wrap;
+			text-align: left;
+			margin-left: 25px;
+		}
+	}
+
+	.editor-post-url__panel-dialog {
+		> .components-popover__content {
+			width: 260px;
+		}
+	}
+
+	.edit-post-visual-editor .edit-post-visual-editor__content-area {
+		padding: 0 !important;
+	}
+
+	> .block-editor-block-list__layout .block-editor-block-list__block:not( .editor-post-title__input ) {
+		transition: 0.3s;
+
+		&:hover {
+			box-shadow: 0 0 0 var( --wp-admin-border-width-focus ) var( --wp-admin-theme-color );
+		}
+	}
+
+	.srfm-hide-labels {
+		label.srfm-block-label {
+			display: none !important;
+		}
+	}
+
+	.srfm-hide-asterisk {
+		.srfm-block-text,
+		.srfm-block-label {
+			&.srfm-required::after {
+				content: "";
+			}
+		}
+	}
+
+	&.block-editor-iframe__body,
+	.editor-styles-wrapper {
+		position: relative;
+		width: 100%;
+		font-family: inherit;
+		.block-editor-block-list__layout {
+			// font-size: var( --srfm-font-size ); will be used in the future.
+			font-size: 16px;
+		}
+	}
+
+	&.block-editor-iframe__body {
+		border: 0;
+
+		@media ( max-width: 430px ) {
+			padding-left: 0;
+			padding-right: 0;
+		}
+	}
+
+	div.is-root-container.block-editor-block-list__layout {
+		display: flex;
+		flex-wrap: wrap;
+		padding: 0;
+		max-width: calc( 620px + 0.6em ) !important; //Astra theme compatibility. It overrides the width.
+		margin: 0 auto;
+		margin-top: 2em;
+
+		// apply width to all blocks except the address block.
+		.block-list-appender,
+		.block-editor-block-list__block:not( .srfm-address-block-wrap ) {
+			&:not( .srfm-block-single ),
+			&[data-type="srfm/image"],
+			&[data-type="srfm/separator"],
+			&[data-type="srfm/advanced-heading"],
+			&[data-type="srfm/icon"] {
+				width: 100%;
+			}
+		}
+
+		.block-editor-block-list__block,
+		.block-list-appender {
+			&:not( .wp-block-srfm-separator ) {
+				margin-left: 0 !important; // This is needed to get the field width working.
+				margin-right: 0 !important; // This is needed to get the field width working.
+				margin-top: 0 !important; // Had to add as various themes distort the layout.
+			}
+			padding: 0 0.5rem;
+			max-width: 100%;
+		}
+	}
+
+	// Hide default title and preview btns ( desktop / tablet / mobile ).
+	.edit-post-visual-editor__post-title-wrapper,
+	// classname in WP-6.4.
+	.block-editor-post-preview__button-toggle,
+	// classname in WP-6.5.
+	.editor-preview-dropdown__toggle {
+		display: none;
+	}
+
+	.editor-post-preview {
+		@media screen and ( max-width: 782px ) {
+			display: none;
+		}
+	}
+
+	.edit-post-header__settings {
+		@media screen and ( max-width: 782px ) {
+			flex: none;
+		}
+	}
+
+	.edit-post-header-toolbar__left {
+		margin-left: -10px;
+	}
+
+	.edit-post-header__center,
+	// added support for WP 6.6.
+	.editor-header__center {
+		// styles added to make title bar compatible if block toolbar settings are moved in the header
+		display: flex;
+		align-items: stretch;
+		justify-content: center;
+		gap: 0;
+		min-width: 0;
+		max-height: 36px;
+		margin: 0 16px;
+		opacity: 1;
+
+		.srfm-header-title-input {
+			width: 100%;
+			max-width: 500px;
+
+			.components-base-control__field {
+				margin-top: 0;
+			}
+		}
+
+		.components-text-control__input {
+			font-size: 16px;
+			font-style: normal;
+			font-weight: 400;
+			padding: 11px 16px;
+			border-radius: 8px;
+			border: 1px solid #ddd;
+			background: rgb( 249, 250, 251 );
+			box-shadow: none;
+			transition: 0.2s ease-out;
+			// need to declare height for WP6.5.
+			height: 36px;
+
+			&:focus {
+				border-color: #0284c7;
+				box-shadow: 0px 0px 0px 3px #0284c726;
+				outline: none;
+			}
+		}
+	}
+
+	// Pro panel preview styles.
+	.srfm-upgrade-pro-btn-container {
+		text-align: center;
+	}
+
+	.srfm-upgrade-pro-btn {
+		background-color: #1e1e1e;
+		color: #fff;
+		padding: 10px;
+		font-size: 12px;
+		border: none;
+		border-radius: 5px;
+		cursor: pointer;
+		transition: background-color 0.3s;
+		margin-top: 16px;
+		max-width: 280px;
+		width: 100%;
+	}
+
+	// Hide block inserter below wordpress version 6.6.
+	// This default appender is not available from 6.6.
+	#srfm-form-container {
+		> div.block-list-appender.wp-block {
+			display: none;
+		}
+	}
+
+	// Add submit button below the Block Appended.
+	.srfm-custom-block-inserter {
+		width: 100%;
+		max-width: calc( 620px - 0em );
+		margin: 1.2em auto;
+		.components-dropdown.block-editor-inserter {
+			width: 100%;
+
+			button.srfm-custom-block-inserter-button {
+				box-shadow: none;
+				border: 1px dashed #959595;
+				padding: 24px;
+				background-color: #fff;
+				transition: 0.3s;
+
+				svg {
+					width: 30px;
+					height: 30px;
+					background-color: #555d66;
+					border-radius: 100%;
+					transition: 0.3s;
+					path {
+						fill: white;
+					}
+				}
+
+				&:hover {
+					border-color: #1e1e1e;
+
+					svg {
+						background-color: #1e1e1e;
+					}
+				}
+			}
+		}
+	}
+
+	.srfm-submit-btn-container {
+		position: relative;
+		max-width: calc( 620px - 0em );
+		padding: 0;
+		margin: 0 auto 6em auto;
+
+		.srfm-btn-bg-color {
+			font-family: inherit;
+			text-decoration: none;
+			border: 0px;
+			padding: var( --srfm-btn-padding ) !important;
+			font-size: var( --srfm-btn-font-size ) !important;
+			font-weight: var( --srfm-btn-font-weight ) !important;
+			line-height: var( --srfm-btn-line-height ) !important;
+			border-radius: var( --srfm-btn-border-radius ) !important;
+			background: var( --srfm-color-scheme-primary ) !important;
+			color: var( --srfm-color-scheme-text-on-primary ) !important;
+			border: 1px solid var( --srfm-color-scheme-primary ) !important;
+		}
+		.srfm-btn-alignment {
+			position: absolute;
+			transform: translateX( var( --srfm-submit-alignment-backend ) );
+			right: var( --srfm-submit-alignment-backend );
+			max-width: var( --srfm-submit-width-backend );
+			width: 100%;
+
+			label {
+				display: inline-block;
+				width: 100%;
+			}
+		}
+
+		@media ( max-width: 778px ) {
+			max-width: calc( 620px - 0.6em );
+		}
+
+		@media ( max-width: 360px ) {
+			max-width: calc( 620px - 0em );
+			margin-left: 0.3em;
+			margin-right: 0.3em;
+		}
+	}
+
+	// SureForms Custom Button Styles.
+	.srfm-inline-submit-button {
+		margin-top: 4px;
+	}
+
+	.editor-post-publish-panel__content {
+		.srfm-shortcode {
+			position: relative;
+
+			.components-clipboard-button {
+				position: absolute;
+				top: 0;
+				right: 0;
+				padding: 0;
+				height: 31px;
+			}
+		}
+	}
+
+	// Hide the box shadow of input inside React Select.
+	.srfm-select__input {
+		box-shadow: none;
+	}
+
+	.edit-post-sidebar__panel,
+	.editor-sidebar__panel {
+		.block-editor-block-card svg {
+			fill: #d54407;
+			color: #d54407;
+		}
+	}
+
+	// Override style coming from astra theme.
+	.sureform-add-option-button {
+		box-shadow: 0 0 0 1px var( --wp-components-color-accent, var( --wp-admin-theme-color, #3858e9 ) ) !important;
+	}
+	.sureforms-add-bulk-option-button {
+		all: unset;
+		margin-left: 10px;
+		color: var( --wp-components-color-accent, var( --wp-admin-theme-color, #3858e9 ) );
+		text-decoration: underline;
+		font-size: 13px;
+		box-shadow: none !important;
+		cursor: pointer;
+	}
+
+	/*
+	* Allow pointer events for elements with the attribute content-editable set to "true".
+	* This is crucial because some elements may inherit pointer-events: none from their parent,
+	* which can lead to issues in certain browsers, such as Firefox, preventing user interaction.
+	*/
+	label[contenteditable="true"] {
+		pointer-events: auto;
+	}
+
+	/*
+	* Conversational Form Settings Styles
+	*/
+	.srfm-conversational-placeholder-label-ctn {
+		display: flex;
+		gap: 8px;
+		align-items: center;
+	}
+}
+
+// TODO: Adding style fot the temprary hide spectra QAB.
+body.post-type-sureforms_form {
+	.spectra-ee-quick-access-container {
+		display: none !important;
+	}
+}
+
+html[dir="rtl"] body.post-type-sureforms_form {
+	.srfm-submit-btn-container {
+		max-width: calc( 620px - 20em );
+		.srfm-button {
+			// New variable is required as the value was getting evaluated to positive (-1 * -1) if used directly in translateX().
+			--srfm-submit-alignment-backend-rtl: calc( -1 * ( var( --srfm-submit-alignment-backend ) ) );
+			transform: translateX( var( --srfm-submit-alignment-backend-rtl ) );
+		}
+	}
+}
+
+.srfm-conditional-logic-preview {
+	.components-panel__body {
+		display: flex;
+		gap: 12px;
+		padding: 16px 48px 16px 16px;
+		cursor: pointer;
+		align-items: center;
+
+		.components-panel__body-title:hover {
+			background: unset;
+		}
+
+		.srfm-tooltip {
+			.tooltip-wrap {
+				width: auto;
+				min-width: 200px;
+			}
+		}
+		svg {
+			height: 24px;
+			width: 24px;
+			align-self: center;
+			right: 15px;
+			position: absolute;
+		}
+	}
+	.components-panel__body-content {
+		padding: 16px;
+		border-bottom: 1px solid #e0e0e0;
+	}
+}
+// The following are used for conditional logic preview as well as actual settings.
+.srfm-show-hide-select {
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	gap: 8px;
+	margin-bottom: 18px;
+
+	.components-base-control {
+		margin-bottom: 0 !important;
+		.components-base-control__field {
+			margin-bottom: 0 !important;
+		}
+	}
+
+	p {
+		margin-bottom: 0;
+		padding: 0;
+		color: #50575e;
+	}
+}

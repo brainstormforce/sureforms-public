@@ -1,0 +1,28 @@
+@import "../utils/mixins.scss";
+.srfm-form-container {
+	.srfm-form {
+		.srfm-address-block {
+			legend {
+				margin-bottom: var( --srfm-gap-below-address-label );
+			}
+			.srfm-block-wrap {
+				@include srfm-address-block-styles;
+
+				.srfm-block-single {
+					@include srfm-no-margin-padding;
+				}
+
+				.srfm-input-common {
+					&:focus {
+						z-index: 99;
+					}
+				}
+
+				// Removing the margin-bottom for the dropdown field legend inside the address block.
+				legend {
+					margin-bottom: 0;
+				}
+			}
+		}
+	}
+}

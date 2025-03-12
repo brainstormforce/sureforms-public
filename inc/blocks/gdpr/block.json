@@ -1,0 +1,59 @@
+{
+	"apiVersion": 2,
+	"name": "srfm/gdpr",
+	"title": "GDPR Agreement",
+	"description": "Displays a SureForms GDPR Agreement Field",
+	"category": "sureforms",
+	"keywords": [ "gdpr", "compliance", "checkbox", "agreement" ],
+	"textdomain": "sureforms",
+	"supports": {
+		"reusable": false,
+		"html": false
+	},
+	"example": {
+		"attributes": {
+			"preview": true
+		}
+	},
+	"attributes": {
+		"preview": {
+			"type": "boolean",
+			"default": false
+		},
+		"block_id": {
+			"type": "string"
+		},
+		"fieldWidth": {
+			"type": "number",
+			"default": 100
+		},
+		"label": {
+			"type": "string",
+			"default": "I consent to have this website store my submitted information so they can respond to my inquiry."
+		},
+		"checked": {
+			"type": "boolean",
+			"default": false
+		},
+		"help": {
+			"type": "string",
+			"default": ""
+		},
+		"errorMsg": {
+			"type": "string",
+			"default": ""
+		},
+		"formId": {
+			"type": "number",
+			"default": ""
+		},
+		"isConditionalLogic": {
+			"type": "boolean",
+			"default": false
+		},
+		"slug": {
+			"type": "string",
+			"default": ""
+		}
+	}
+}

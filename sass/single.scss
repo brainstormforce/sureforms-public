@@ -1,0 +1,162 @@
+.single-sureforms_form {
+	.srfm-form-status-badge {
+		position: absolute;
+		top: 54px;
+		right: 24px;
+		display: flex;
+		gap: 6px;
+		align-items: center;
+		background-color: #ffffff;
+		padding: 2px 12px 2px 8px;
+		width: max-content;
+		border: 1px solid #d1d5db;
+		border-radius: 12px;
+		box-shadow: 0px 1px 3px 0px #0000001a;
+		color: #020617;
+		font-weight: 400;
+		font-size: 14px;
+		line-height: 20px;
+		z-index: 99999;
+
+		&::before {
+			content: "";
+			display: block;
+			width: 6px;
+			height: 6px;
+			background-color: #eab308;
+			border-radius: 10px;
+		}
+	}
+
+	.srfm-single-page-container {
+		position: relative;
+
+		.srfm-page-banner {
+			height: 256px;
+			padding: 58px 15px 112px 15px;
+			text-align: center;
+
+			.srfm-site-logo {
+				position: absolute;
+				top: 24px;
+				left: 24px;
+				height: 40px;
+			}
+		}
+
+		.srfm-form-wrapper {
+			padding: 0 1em;
+			display: flex;
+			justify-content: center;
+			height: 100vh;
+
+			.srfm-form-container {
+				position: absolute;
+				top: 112px;
+				padding: 32px;
+				max-width: var( --srfm-form-container-width );
+				width: 90%; // Maintains better spacing on the both side of the form for the responsive devices.
+				height: auto;
+				border-radius: 12px;
+				box-shadow: 0px 10px 15px -3px rgba( 0, 0, 0, 0.1 );
+				background-image: var( --srfm-bg-image );
+				background-size: cover;
+				background-position: center;
+				background-color: var( --srfm-bg-color );
+				// Retaining this .hide class for backward compatibility with older versions of the pro plugin.
+				&.hide {
+					display: none;
+				}
+				&.srfm-hide {
+					display: none;
+				}
+
+				@media ( max-width: 576px ) {
+					padding: 24px;
+				}
+			}
+		}
+
+		&.has-form-title {
+			.srfm-single-banner-title {
+				max-width: var( --srfm-form-container-width );
+				margin: 0 auto;
+				color: #ffffff;
+				font-weight: 600;
+				font-size: 40px;
+				line-height: 44px;
+			}
+
+			.srfm-form-container {
+				top: 172px;
+			}
+		}
+
+		.srfm-branding {
+			position: relative;
+			display: block;
+			width: max-content;
+			bottom: 36px;
+			padding: 4px 16px;
+			margin: 0 auto;
+			color: #1e1e1e80;
+			background: #1e1e1e05;
+			border-radius: var( --srfm-btn-border-radius, 6px );
+			font-size: 14px;
+			line-height: 20px;
+			font-weight: 400;
+			text-decoration: none;
+
+			&:hover {
+				color: #1e1e1ea6;
+				text-decoration: underline;
+			}
+		}
+
+		@media screen and ( max-width: 599px ) {
+			.srfm-page-banner {
+				padding-top: 50px;
+
+				.srfm-site-logo {
+					position: static;
+					height: 20px;
+				}
+			}
+		}
+	}
+
+	/**
+	* Some special edge case css when banner as page background enabled.
+	*/
+	&.srfm-has-banner-page-bg {
+		&.srfm-has-cover-img {
+			@media ( min-width: 1025px ) {
+				min-height: 100vh;
+			}
+		}
+
+		.srfm-single-page-container.has-form-title .srfm-page-banner {
+			height: 172px;
+		}
+		.srfm-single-page-container .srfm-page-banner {
+			height: 112px;
+			padding-bottom: 60px;
+		}
+		.srfm-single-page-container .srfm-form-wrapper {
+			padding-bottom: 100px;
+			height: 100%;
+		}
+		.srfm-single-page-container .srfm-form-wrapper .srfm-form-container {
+			position: static;
+		}
+
+		/* Branding styles when banner as page bg is enabled. */
+		.srfm-single-page-container .srfm-branding {
+			background: #ffffff05;
+			color: #ffffff80;
+		}
+		.srfm-single-page-container .srfm-branding:hover {
+			color: #ffffffa6;
+		}
+	}
+}

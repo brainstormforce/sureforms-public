@@ -1,0 +1,227 @@
+@import "./utils/mixins.scss";
+
+.is-root-container {
+	font-size: var( --srfm-font-size );
+	margin-top: 2em;
+
+	.srfm-block-wrap {
+		pointer-events: none;
+	}
+
+	.srfm-block-text,
+	.srfm-block-label {
+		&.srfm-required::after {
+			content: " *";
+			color: var( --srfm-error-color );
+		}
+	}
+
+	.srfm-input-common {
+		@include srfm-input-common-styles( true );
+	}
+
+	// checkbox and gdpr
+	.srfm-checkbox-block,
+	.srfm-gdpr-block {
+		.srfm-block-wrap {
+			.srfm-cbx {
+				.srfm-span-wrap {
+					&:first-child {
+						margin-top: var( --srfm-checkbox-margin-top-editor ) !important;
+					}
+				}
+			}
+		}
+	}
+
+	// checkbox and gdpr
+	.srfm-input-checkbox,
+	.srfm-input-gdpr {
+		display: none;
+
+		&:checked {
+			+ {
+				.srfm-cbx {
+					span {
+						&:first-child:not( .srfm-required ) {
+							background: var( --srfm-color-scheme-primary );
+							border-color: var( --srfm-color-scheme-primary );
+						}
+					}
+				}
+			}
+		}
+	}
+
+	.srfm-input-textarea {
+		height: unset !important;
+	}
+
+	// Address block styles.
+	.srfm-address-block-wrap {
+		.srfm-block-wrap {
+			display: flex;
+			flex-wrap: wrap;
+		}
+		.block-editor-inner-blocks {
+			margin-top: var( --srfm-gap-below-address-label );
+
+			.block-editor-block-list__layout {
+				@include srfm-address-block-styles;
+
+				.block-editor-block-list__block {
+					@include srfm-no-margin-padding;
+				}
+			}
+		}
+		.block-editor-block-list__block,
+		.block-list-appender {
+			margin-top: 1em !important;
+		}
+	}
+
+	// Number
+	div[data-type="srfm/number"] {
+		.srfm-input-number {
+			&::-webkit-inner-spin-button,
+			&::-webkit-outer-spin-button {
+				appearance: none;
+			}
+		}
+	}
+
+	//Checkbox & GDPR.
+	div[data-type="srfm/checkbox"],
+	div[data-type="srfm/gdpr"] {
+		.srfm-block-wrap {
+			input {
+				margin: 0;
+				border: 1px solid var( --srfm-color-input-border );
+				box-shadow: none;
+			}
+
+			.srfm-block-text {
+				font-size: 0.7em;
+				padding-left: 8px;
+				line-height: 18px;
+				pointer-events: all;
+				color: var( --srfm-label-text-color );
+			}
+		}
+	}
+
+	// Multi select.
+	div[data-type="srfm/multi-choice"] {
+		&.is-selected {
+			.srfm-block-wrap {
+				pointer-events: initial;
+			}
+		}
+
+		.srfm-block-wrap {
+			@include srfm-multi-choice-wrap-styles;
+
+			.srfm-multi-choice-single {
+				@include srfm-multi-choice-single-styles;
+
+				.srfm-input-common {
+					width: calc( 100% - 3em );
+					margin: 0 !important;
+					height: auto !important;
+				}
+
+				.components-button {
+					width: 1em;
+					height: 1em;
+					padding: 1em;
+				}
+
+				.srfm-block-content-wrap {
+					@include srfm-multi-choice-block-content-wrap-styles( true );
+					width: auto;
+
+					.srfm-multi-choice-icon {
+						@include srfm-multi-choice-icon-styles;
+					}
+				}
+
+				@media ( max-width: 430px ) {
+					width: 100%;
+				}
+			}
+
+			.srfm-multi-choice-add-option-wrapper {
+				width: 100%;
+				margin-top: 4px;
+				margin-left: 4px;
+			}
+
+			@include srfm-multi-choice-vertical-layout( true );
+		}
+	}
+
+	// Phone.
+	.srfm-phone-block-wrap {
+		// Adding margin to srfm-block-wrap because the library styles are overriding the input styles.
+		.srfm-block-wrap {
+			margin: var( --srfm-input-field-margin ) !important;
+		}
+		.iti-flag {
+			margin-right: 4px; // Fixed gap between the flag and the country code.
+		}
+		.flag-container {
+			width: auto !important;
+			padding: var( --srfm-flag-section-padding ) !important;
+			.selected-flag {
+				display: flex !important;
+				width: auto !important;
+				background-color: inherit !important;
+				.selected-dial-code {
+					font-size: var( --srfm-input-field-font-size );
+					padding-left: 0;
+					color: var( --srfm-color-input-prefix );
+				}
+			}
+			.arrow {
+				display: none;
+			}
+		}
+	}
+
+	// Select / Dropdown
+	div[data-type="srfm/dropdown"] {
+		.srfm-dropdown-common-wrap {
+			position: relative;
+			width: 100%;
+			color: var( --srfm-color-input-placeholder );
+
+			.ts-dropdown-icon {
+				top: 50%;
+				transform: translateY( -50% );
+			}
+
+			input[type="text"] {
+				padding-right: 2em;
+				&:placeholder-shown {
+					text-overflow: ellipsis;
+				}
+			}
+
+			input[type="text"].srfm-address-country-wrap {
+				padding-right: 2.2em;
+				border-bottom: 0;
+				border-radius: 0;
+			}
+
+			.srfm-input-common {
+				width: 100%;
+			}
+		}
+	}
+}
+
+.editor-styles-wrapper {
+	&::before {
+		background-color: red;
+	}
+}

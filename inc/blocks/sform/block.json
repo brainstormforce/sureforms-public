@@ -1,0 +1,41 @@
+{
+	"$schema": "https://json.schemastore.org/block.json",
+	"apiVersion": 3,
+	"name": "srfm/form",
+	"title": "Form",
+	"description": "Collect and Manage data effortlessly with customizable SureForms.",
+	"category": "sureforms",
+	"keywords": [ "form", "sureforms", "form" ],
+	"textdomain": "sureforms",
+	"supports": {
+		"reusable": false,
+		"html": false
+	},
+	"attributes": {
+		"isPreview": {
+			"type": "boolean",
+			"default": false
+		},
+		"showTitle": {
+			"type": "boolean",
+			"default": false
+		},
+		"id": {
+			"type": "number"
+		},
+		"title": {
+			"type": "string"
+		},
+		"choices": {
+			"type": "array"
+		},
+		"template": {
+			"type": "string"
+		},
+		"choice_type": {
+			"type": "string",
+			"enum": [ "all", "checkbox", "radio" ],
+			"default": "all"
+		}
+	}
+}

@@ -1,0 +1,82 @@
+{
+	"name": "srfm/dropdown",
+	"title": "Dropdown",
+	"description": "Displays a SureForms Dropdown Field",
+	"category": "sureforms",
+	"keywords": [ "select", "dropdown", "options", "field" ],
+	"textdomain": "sureforms",
+	"supports": {
+		"reusable": false,
+		"html": false
+	},
+	"example": {
+		"attributes": {
+			"preview": true
+		}
+	},
+	"attributes": {
+		"preview": {
+			"type": "boolean",
+			"default": false
+		},
+		"block_id": {
+			"type": "string"
+		},
+		"required": {
+			"type": "boolean"
+		},
+		"multiSelect": {
+			"type": "boolean",
+			"default": false
+		},
+    "minValue": {
+      "type": "number"
+    },
+    "maxValue": {
+      "type": "number"
+    },
+		"searchable": {
+			"type": "boolean",
+			"default": true
+		},
+		"options": {
+			"type": "array",
+			"default": [
+				{ "label": "Option 1", "icon": "" },
+				{ "label": "Option 2", "icon": "" }
+			 ]
+		},
+		"fieldWidth": {
+			"type": "number",
+			"default": 100
+		},
+		"label": {
+			"default": "Dropdown",
+			"type": "string"
+		},
+		"help": {
+			"type": "string",
+			"default": ""
+		},
+		"errorMsg": {
+			"type": "string",
+			"default": ""
+		},
+		"formId": {
+			"type": "number",
+			"default": ""
+		},
+		"placeholder": {
+			"type": "string",
+			"default": "Select an option"
+		},
+		"isConditionalLogic":{
+			"type":"boolean",
+			"default":false
+		},
+    "slug":{
+			"type":"string",
+			"default":""
+		}
+	}
+}
