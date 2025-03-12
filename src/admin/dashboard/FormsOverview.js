@@ -13,7 +13,6 @@ import {
 import { FileChartColumnIncreasing, Calendar, X } from 'lucide-react';
 import apiFetch from '@wordpress/api-fetch';
 import {
-	cn,
 	format,
 	getDatePlaceholder,
 	getSelectedDate,
@@ -120,7 +119,7 @@ export default () => {
 							new Date( dateA ) - new Date( dateB )
 					)
 					.map( ( [ date, count ] ) => ( {
-						month: date,
+						month: format( new Date( date ), 'MMM dd, yyyy' ),
 						entries: count,
 					} ) );
 
@@ -212,19 +211,24 @@ export default () => {
 
 	// Formatter for X-Axis
 	const formatXAxis = ( tickItem ) => {
+		console.log(
+			'tickItem',
+			format( new Date( tickItem ), 'MMM dd, yyyy' )
+		);
 		return format( new Date( tickItem ), 'MMM dd, yyyy' );
 	};
+
+	console.log( 'dataToShow', dataToShow );
 
 	return (
 		<Container
 			containerType="flex"
 			direction="column"
-			gap="xs"
-			className="w-full h-full p-4 rounded-xl bg-background-primary border-0.5 border-solid border-border-subtle shadow-sm-blur-2"
+			className="w-full h-full p-4 gap-2 rounded-xl bg-background-primary border-0.5 border-solid border-border-subtle shadow-sm-blur-2"
 		>
-			<Container.Item className="flex flex-wrap items-center justify-between w-full p-1 sm:flex-row sm:gap-2">
+			<Container.Item className="flex flex-wrap items-center justify-between w-full p-1 gap-8 sm:flex-row sm:gap-2">
 				<Title title={ __( 'Overview', 'sureforms' ) } tag="h5" />
-				<div className="flex flex-wrap items-center gap-2 sm:flex-row">
+				<div className="flex flex-wrap items-center gap-3 sm:flex-row">
 					<div className="flex items-center gap-2">
 						{ selectedForm ? (
 							<ClearButton
@@ -330,88 +334,83 @@ export default () => {
 				<span className="flex items-center gap-2 p-1">
 					<div className="w-2 h-2 bg-chart-purple-500 rounded-sm"></div>
 					<span className="text-xs font-medium text-text-tertiary">
-						Entries
+						{ __( 'Entries', 'sureforms' ) }
 					</span>
 				</span>
 			</Container.Item>
 			<Container.Item
-				className={ cn(
-					'w-full flex items-stretch justify-between gap-1 bg-background-secondary rounded-lg',
-					dataToShow.length > 0 ? 'p-1' : 'p-0'
-				) }
+				className={
+					'w-full flex flex-col flex-1 items-stretch justify-between gap-2 p-1 rounded-md'
+				}
 			>
-				<Container
-					className={ cn(
-						'w-full flex flex-col flex-1 overflow-hidden bg-background-primary',
-						dataToShow.length > 0 ? 'rounded-md shadow-sm' : ''
-					) }
-					containerType="flex"
-					direction="column"
-				>
-					{ loading ? (
-						<div className="flex flex-col items-center justify-center h-full min-h-[256px] gap-3">
-							<div className="flex flex-col items-center justify-center">
-								<Loader
-									className="mb-3"
-									size="xl"
-									variant="primary"
+				{ loading ? (
+					<div className="flex flex-col items-center justify-center h-full min-h-[256px] gap-3">
+						<div className="flex flex-col items-center justify-center">
+							<Loader
+								className="mb-3"
+								size="xl"
+								variant="primary"
+							/>
+							<div className="flex flex-col items-center space-y-1">
+								<ChartText
+									text={ __(
+										'Please wait for the data to load',
+										'sureforms'
+									) }
 								/>
-								<div className="flex flex-col items-center space-y-1">
-									<ChartText
-										text={ __(
-											'Please wait for the data to load',
-											'sureforms'
-										) }
-									/>
-									<ChartText
-										color="text-text-secondary"
-										weight="font-normal"
-									/>
-								</div>
-							</div>
-						</div>
-					) : ! loading && dataToShow.length > 0 ? (
-						<div className="flex-1 w-full">
-							<div className="w-full h-full min-h-[248px]">
-								<AreaChart
-									chartWidth="100%"
-									chartHeight="100%"
-									colors={ [
-										{
-											fill: '#E879F9',
-											stroke: '#E879F9',
-										},
-									] }
-									data={ dataToShow }
-									dataKeys={ [ 'entries' ] }
-									showXAxis={ true }
-									showYAxis={ false }
-									variant="gradient"
-									xAxisDataKey="month"
-									tickFormatter={ formatXAxis }
+								<ChartText
+									color="text-text-secondary"
+									weight="font-normal"
 								/>
 							</div>
 						</div>
-					) : (
-						<div className="flex flex-col items-center justify-center h-full min-h-[256px] gap-3">
-							<div className="flex flex-col items-center justify-center">
-								<FileChartColumnIncreasing className="mb-3" />
-								<div className="flex flex-col items-center space-y-1">
-									<ChartText
-										text={ __(
-											'There is no data on this view',
-											'sureforms'
-										) }
-									/>
-									<ChartText
-										color="text-text-secondary"
-										weight="font-normal"
-									/>
-								</div>
+					</div>
+				) : ! loading && dataToShow.length > 0 ? (
+					<div className="flex-1 w-full">
+						<div className="w-full h-full min-h-[248px]">
+							<AreaChart
+								data={ dataToShow }
+								dataKeys={ [ 'entries' ] }
+								chartWidth="100%"
+								chartHeight="100%"
+								variant="gradient"
+								showTooltip={ true }
+								showYAxis={ false }
+								showLegend={ false }
+								showCartesianGrid={ true }
+								colors={ [
+									{
+										fill: '#E879F9',
+										stroke: '#E879F9',
+									},
+								] }
+								showXAxis={ true }
+								tooltipIndicator="dot"
+								tickFormatter={ formatXAxis }
+								xAxisDataKey="month"
+								tooltipLabelKey="month"
+							/>
+						</div>
+					</div>
+				) : (
+					<div className="flex flex-col items-center justify-center h-full min-h-[256px] gap-3">
+						<div className="flex flex-col items-center justify-center">
+							<FileChartColumnIncreasing className="mb-3" />
+							<div className="flex flex-col items-center space-y-1">
+								<ChartText
+									text={ __(
+										'There is no data on this view',
+										'sureforms'
+									) }
+								/>
+								<ChartText
+									color="text-text-secondary"
+									weight="font-normal"
+								/>
 							</div>
 						</div>
-					) }
-				</Container>
+					</div>
+				) }
 			</Container.Item>
 		</Container>
 	);

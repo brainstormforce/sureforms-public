@@ -137,10 +137,9 @@ export default () => {
 
 	return (
 		<Container
-			className="bg-background-primary border-0.5 border-solid rounded-xl border-border-subtle p-3 shadow-sm-blur-1"
+			className="bg-background-primary border-0.5 border-solid rounded-xl border-border-subtle p-3 gap-2 shadow-sm-blur-1"
 			containerType="flex"
 			direction="column"
-			gap="xs"
 		>
 			<Toaster
 				position="bottom-right"
@@ -150,12 +149,12 @@ export default () => {
 				dismissAfter={ 5000 }
 			/>
 			<Container.Item>
-				<Label size="sm" className="font-semibold">
+				<Label size="sm" className="flex font-semibold p-1 gap-2">
 					{ __( 'Extend Your Website', 'sureforms' ) }
 				</Label>
 			</Container.Item>
 			<Container.Item>
-				<Container className="flex flex-wrap p-1 gap-1 bg-background-secondary rounded-lg">
+				<Container className="flex flex-wrap p-1 gap-1 bg-background-secondary rounded-lg p-1 gap-1">
 					{ srfm_admin?.integrations?.map( ( plugin, index ) => (
 						<Container.Item
 							key={ index }
@@ -163,7 +162,7 @@ export default () => {
 						>
 							<Container className="flex-1 flex flex-col justify-between">
 								<Container.Item className="flex flex-col gap-1.5">
-									<Container className="flex gap-1.5 items-center">
+									<Container className="flex gap-1.5 p-1 items-center">
 										<img
 											className="w-5 h-5"
 											src={ plugin.logo }
@@ -176,28 +175,30 @@ export default () => {
 									<Label
 										size="sm"
 										variant="help"
-										className="font-normal"
+										className="font-normal p-1 gap-0.5"
 									>
 										{ plugin.subtitle }
 									</Label>
 								</Container.Item>
-								<Button
-									className={ cn(
-										'w-fit focus:[box-shadow:none]',
-										plugin.status === 'Activated' &&
-											'bg-badge-background-green hover:bg-badge-background-green'
-									) }
-									variant="outline"
-									onClick={ ( event ) =>
-										handlePluginActionTrigger( {
-											plugin,
-											event,
-										} )
-									}
-									size="xs"
-								>
-									{ getPluginStatusText( plugin ) }
-								</Button>
+								<Container.Item className="flex gap-0.5 p-1">
+									<Button
+										className={ cn(
+											'w-fit focus:[box-shadow:none]',
+											plugin.status === 'Activated' &&
+												'bg-badge-background-green hover:bg-badge-background-green'
+										) }
+										variant="outline"
+										onClick={ ( event ) =>
+											handlePluginActionTrigger( {
+												plugin,
+												event,
+											} )
+										}
+										size="xs"
+									>
+										{ getPluginStatusText( plugin ) }
+									</Button>
+								</Container.Item>
 							</Container>
 						</Container.Item>
 					) ) }
