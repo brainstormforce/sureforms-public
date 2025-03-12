@@ -830,6 +830,12 @@ function validateMultiChoiceMinMax() {
 				.split( ',' )
 				.filter( Boolean );
 			const selectedCount = selectedOptions.length;
+
+			if ( selectedCount === 0 ) {
+				window?.srfm?.toggleErrorState( container, false );
+				return;
+			}
+
 			const closestBlock =
 				multiChoiceHiddenInput.closest( '.srfm-block' );
 
