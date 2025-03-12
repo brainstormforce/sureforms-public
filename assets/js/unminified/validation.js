@@ -793,62 +793,66 @@ export function initializeInlineFieldValidation() {
 
 /**
  * Validates the multichoice min and max selection on the input event.
- * Creating this separate function to avoid conflict with the existing logic.
+ * This function is separate to prevent conflicts with existing logic.
  *
  * @return {void}
  */
 function validateMultiChoiceMinMax() {
-	const container = document.querySelector( '.srfm-multi-choice-block' );
+	const multiChoiceBlocks = document.querySelectorAll(
+		'.srfm-multi-choice-block'
+	);
 
-	if ( ! container ) {
-		return;
-	}
-
-	const errorMessage = container.querySelector( '.srfm-error-message' );
-
-	container.addEventListener( 'input', function () {
+	multiChoiceBlocks.forEach( ( container ) => {
 		const multiChoiceHiddenInput = container.querySelector(
 			'.srfm-input-multi-choice-hidden'
 		);
-		const selectedOptions = multiChoiceHiddenInput.value.split( ',' );
-		const maxSelection =
-			multiChoiceHiddenInput.getAttribute( 'data-max-selection' );
-		const minSelection =
-			multiChoiceHiddenInput.getAttribute( 'data-min-selection' );
 
-		if ( minSelection || maxSelection ) {
-			// If some value is selected but less than minSelection.
-			if ( minSelection && selectedOptions.length < minSelection ) {
-				errorMessage.textContent = window?.srfm?.srfmSprintfString(
-					window?.srfm_submit?.messages
-						?.srfm_multi_choice_min_selections,
+		if ( ! multiChoiceHiddenInput ) {
+			return;
+		}
+
+		const minSelection =
+			parseInt(
+				multiChoiceHiddenInput.getAttribute( 'data-min-selection' ),
+				10
+			) || 0;
+		const maxSelection =
+			parseInt(
+				multiChoiceHiddenInput.getAttribute( 'data-max-selection' ),
+				10
+			) || Infinity;
+
+		const errorMessage = container.querySelector( '.srfm-error-message' );
+		const errorMessages = window?.srfm_submit?.messages || {};
+
+		container.addEventListener( 'input', () => {
+			const selectedOptions = multiChoiceHiddenInput.value
+				.split( ',' )
+				.filter( Boolean );
+			const selectedCount = selectedOptions.length;
+			const closestBlock =
+				multiChoiceHiddenInput.closest( '.srfm-block' );
+
+			let errorText = '';
+
+			if ( selectedCount < minSelection ) {
+				errorText = window?.srfm?.srfmSprintfString(
+					errorMessages.srfm_multi_choice_min_selections,
 					minSelection
 				);
-				window?.srfm?.toggleErrorState(
-					multiChoiceHiddenInput.closest( '.srfm-block' ),
-					true
-				);
-			} else if (
-				maxSelection &&
-				selectedOptions.length > maxSelection
-			) {
-				// If some value is selected but more than maxSelection.
-				errorMessage.textContent = window?.srfm?.srfmSprintfString(
-					window?.srfm_submit?.messages
-						?.srfm_multi_choice_max_selections,
+			} else if ( selectedCount > maxSelection ) {
+				errorText = window?.srfm?.srfmSprintfString(
+					errorMessages.srfm_multi_choice_max_selections,
 					maxSelection
 				);
-				window?.srfm?.toggleErrorState(
-					multiChoiceHiddenInput.closest( '.srfm-block' ),
-					true
-				);
-			} else {
-				window?.srfm?.toggleErrorState(
-					multiChoiceHiddenInput.closest( '.srfm-block' ),
-					false
-				);
 			}
-		}
+
+			errorMessage.textContent = errorText;
+			window?.srfm?.toggleErrorState(
+				closestBlock,
+				Boolean( errorText )
+			);
+		} );
 	} );
 }
 
