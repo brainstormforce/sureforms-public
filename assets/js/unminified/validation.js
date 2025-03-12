@@ -786,6 +786,70 @@ export function initializeInlineFieldValidation() {
 	];
 
 	srfmFields.forEach( ( block ) => addBlurListener( block, `.${ block }` ) );
+
+	// Validate multi choice block for min and max selection.
+	validateMultiChoiceMinMax();
+}
+
+/**
+ * Validates the multichoice min and max selection on the input event.
+ * Creating this separate function to avoid conflict with the existing logic.
+ *
+ * @return {void}
+ */
+function validateMultiChoiceMinMax() {
+	const container = document.querySelector( '.srfm-multi-choice-block' );
+
+	if ( ! container ) {
+		return;
+	}
+
+	const errorMessage = container.querySelector( '.srfm-error-message' );
+
+	container.addEventListener( 'input', function () {
+		const multiChoiceHiddenInput = container.querySelector(
+			'.srfm-input-multi-choice-hidden'
+		);
+		const selectedOptions = multiChoiceHiddenInput.value.split( ',' );
+		const maxSelection =
+			multiChoiceHiddenInput.getAttribute( 'data-max-selection' );
+		const minSelection =
+			multiChoiceHiddenInput.getAttribute( 'data-min-selection' );
+
+		if ( minSelection || maxSelection ) {
+			// If some value is selected but less than minSelection.
+			if ( minSelection && selectedOptions.length < minSelection ) {
+				errorMessage.textContent = window?.srfm?.srfmSprintfString(
+					window?.srfm_submit?.messages
+						?.srfm_multi_choice_min_selections,
+					minSelection
+				);
+				window?.srfm?.toggleErrorState(
+					multiChoiceHiddenInput.closest( '.srfm-block' ),
+					true
+				);
+			} else if (
+				maxSelection &&
+				selectedOptions.length > maxSelection
+			) {
+				// If some value is selected but more than maxSelection.
+				errorMessage.textContent = window?.srfm?.srfmSprintfString(
+					window?.srfm_submit?.messages
+						?.srfm_multi_choice_max_selections,
+					maxSelection
+				);
+				window?.srfm?.toggleErrorState(
+					multiChoiceHiddenInput.closest( '.srfm-block' ),
+					true
+				);
+			} else {
+				window?.srfm?.toggleErrorState(
+					multiChoiceHiddenInput.closest( '.srfm-block' ),
+					false
+				);
+			}
+		}
+	} );
 }
 
 /**
