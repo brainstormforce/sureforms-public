@@ -57,7 +57,6 @@ class AI_Form_Builder {
 			apply_filters(
 				'srfm_ai_form_generator_body',
 				[
-					"model" => "gpt-4o",
 					'query' => $messages[0]['content'],
 				],
 				$params
