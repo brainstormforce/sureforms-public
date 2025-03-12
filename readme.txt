@@ -226,7 +226,7 @@ There is no limit to the types of businesses and organizations that can benefit 
 
 ### WANT TO CONTRIBUTE TO THE PLUGIN?
 
-You may now contribute to the plugin on Github: <a href="https://github.com/brainstormforce/sureforms-public" target="_blank" rel="">SureForms on Github</a>
+You may now contribute to the plugin on [GitHub](https://github.com/brainstormforce/sureforms-public)
 
 ### USE OF 3RD PARTY SERVICES
 
