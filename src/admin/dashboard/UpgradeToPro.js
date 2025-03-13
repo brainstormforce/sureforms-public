@@ -1,5 +1,5 @@
 import { __ } from '@wordpress/i18n';
-import { Button, Container, Title } from '@bsf/force-ui';
+import { Button, Container, Title, Label } from '@bsf/force-ui';
 import { Check, Zap } from 'lucide-react';
 import upgradeToProPlaceholder from '@Image/upgrade-to-pro.svg';
 import { addQueryParam } from '@Utils/Helpers';
@@ -16,7 +16,7 @@ export default () => {
 
 	return (
 		<Container
-			className="bg-background-primary p-4 shadow-sm-blur-1 rounded-xl border-0.5 border-solid border-border-subtle gap-2"
+			className="bg-background-primary p-4 gap-2 shadow-sm-blur-1 rounded-xl border-0.5 border-solid border-border-subtle"
 			containerType="grid"
 			cols={ 12 }
 		>
@@ -24,9 +24,9 @@ export default () => {
 				<div className="flex flex-col gap-2 p-2">
 					<div className="flex flex-row gap-1 items-center">
 						<Zap className="size-4 text-brand-800" />
-						<div className="font-semibold text-xs text-brand-800">
+						<Label size="xs" className="font-semibold text-brand-800">
 							{ __( 'Upgrade to Pro', 'sureforms' ) }
-						</div>
+						</Label>
 					</div>
 					<div className="flex flex-col gap-1 py-1">
 						<Title
@@ -51,9 +51,9 @@ export default () => {
 									key={ index }
 								>
 									<Check className="size-3.5 text-brand-800" />
-									<span className="text-field-label font-medium text-sm flex gap-0.5">
+									<Label size="sm">
 										{ prompt.title }
-									</span>
+									</Label>
 								</Container.Item>
 							) ) }
 						</Container>
@@ -63,7 +63,7 @@ export default () => {
 					<Button
 						variant="secondary"
 						size="md"
-						className="gap-1 shadow-sm-blur-2"
+						className="shadow-sm-blur-2"
 						onClick={ () =>
 							window.open(
 								addQueryParam(

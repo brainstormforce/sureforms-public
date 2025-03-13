@@ -42,7 +42,7 @@ const ClearButton = ( { onClick, ariaLabel } ) => (
 		onClick={ onClick }
 		aria-label={ ariaLabel }
 	>
-		{ '' }
+		{ ' ' }
 	</Button>
 );
 
@@ -226,10 +226,10 @@ export default () => {
 			direction="column"
 			className="w-full h-full p-4 gap-2 rounded-xl bg-background-primary border-0.5 border-solid border-border-subtle shadow-sm-blur-2"
 		>
-			<Container.Item className="flex flex-wrap items-center justify-between w-full p-1 gap-8 sm:flex-row sm:gap-2">
-				<Title title={ __( 'Overview', 'sureforms' ) } tag="h5" />
+			<Container.Item className="flex flex-wrap items-center justify-between w-full p-1 gap-6 sm:flex-row sm:gap-2">
+				<Title title={ __( 'Forms Overview', 'sureforms' ) } size="xs" />
 				<div className="flex flex-wrap items-center gap-3 sm:flex-row">
-					<div className="flex items-center gap-2">
+					<div className="flex items-center">
 						{ selectedForm ? (
 							<ClearButton
 								onClick={ () => handleChange( '' ) }
@@ -272,7 +272,7 @@ export default () => {
 							</Select>
 						</div>
 					</div>
-					<div className="flex items-center gap-2">
+					<div className="flex items-center">
 						{ selectedDates.from || selectedDates.to ? (
 							<ClearButton
 								onClick={ handleClearDateFilters }
@@ -282,7 +282,7 @@ export default () => {
 								) }
 							/>
 						) : null }
-						<div className="relative" ref={ containerRef }>
+						<div className="relative flex gap-1" ref={ containerRef }>
 							<Input
 								type="text"
 								size="sm"
@@ -328,19 +328,19 @@ export default () => {
 				</div>
 			</Container.Item>
 			<Container.Item className="flex justify-between p-1 gap-2">
-				<span className="text-sm font-semibold text-text-tertiary">
+				<Label size="sm" variant="help" className="font-semibold">
 					{ getFormLabel( selectedForm ) || 'All Forms' }
-				</span>
+				</Label>
 				<span className="flex items-center gap-2 p-1">
 					<div className="w-2 h-2 bg-chart-purple-500 rounded-sm"></div>
-					<span className="text-xs font-medium text-text-tertiary">
+					<Label size="xs" variant="help" className="font-medium">
 						{ __( 'Entries', 'sureforms' ) }
-					</span>
+					</Label>
 				</span>
 			</Container.Item>
 			<Container.Item
 				className={
-					'w-full flex flex-col flex-1 items-stretch justify-between gap-2 p-1 rounded-md'
+					'w-full flex flex-col flex-1 items-stretch justify-between rounded-md'
 				}
 			>
 				{ loading ? (

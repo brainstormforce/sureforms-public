@@ -161,7 +161,7 @@ export default () => {
 							className="flex gap-1 p-2 shadow-sm-blur-2 rounded-md bg-background-primary flex-1 min-w-[calc(50%-0.5rem)]"
 						>
 							<Container className="flex-1 flex flex-col justify-between">
-								<Container.Item className="flex flex-col gap-1.5">
+								<Container.Item className="flex flex-col">
 									<Container className="flex gap-1.5 p-1 items-center">
 										<img
 											className="w-5 h-5"
