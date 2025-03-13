@@ -90,14 +90,8 @@ const iconBlocks = [
 ];
 
 const filterIconBlocks = iconBlocks.filter( ( block ) => {
-	// if there is no package name, that means it is free plugin.
-	// so, show all the blocks preview
-	if ( ! srfm_block_data?.pro_plugin_name.split( ' ' )[ 1 ] ) {
-		return true;
-	}
-
 	// if current package is mathcing with the block package, add the block to the list.
-	if ( srfm_block_data?.pro_plugin_name.split( ' ' )[ 1 ].toLowerCase() === 'free' ) {
+	if ( srfm_block_data?.pro_plugin_name === 'free' ) {
 		return block.showIn.includes( 'free' );
 	} else if ( srfm_block_data?.pro_plugin_name.split( ' ' )[ 1 ].toLowerCase() === 'starter' ) {
 		return block.showIn.includes( 'starter' );
