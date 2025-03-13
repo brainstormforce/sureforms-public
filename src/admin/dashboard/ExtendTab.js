@@ -159,10 +159,10 @@ export default () => {
 					{ srfm_admin?.integrations?.map( ( plugin, index ) => (
 						<Container.Item
 							key={ index }
-							className="flex gap-1 p-2 shadow-sm-blur-2 rounded-md bg-background-primary flex-1 min-w-[calc(50%-0.5rem)]"
+							className="flex shadow-sm-blur-2 rounded-md bg-background-primary flex-1 min-w-[calc(50%-0.5rem)]"
 						>
-							<Container className="flex-1 flex flex-col justify-between">
-								<Container.Item className="flex flex-col">
+							<Container className="flex-1 flex flex-col justify-between gap-1 p-2">
+								<Container.Item className="flex flex-col gap-1 pb-1">
 									<Container className="flex gap-1.5 p-1 items-center">
 										<img
 											className="w-5 h-5"
@@ -181,7 +181,7 @@ export default () => {
 										{ plugin.subtitle }
 									</Label>
 								</Container.Item>
-								<Container.Item className="flex gap-0.5 p-1">
+								<Container.Item className="flex gap-0.5 pt-2 pb-1 px-1">
 									<Button
 										className={ cn(
 											'w-fit focus:[box-shadow:none]',

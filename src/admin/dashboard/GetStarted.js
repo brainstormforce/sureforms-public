@@ -14,7 +14,7 @@ export default () => {
 			align="center"
 		>
 			<Container.Item className="flex flex-col gap-6 p-2 col-span-12 md:col-span-7 lg:col-span-7">
-				<div className="flex flex-col gap-[2px]">
+				<div className="flex flex-col gap-0.5">
 					<Title
 						size="md"
 						tag="h3"
