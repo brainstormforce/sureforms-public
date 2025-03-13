@@ -767,8 +767,8 @@ class Entries_List_Table extends \WP_List_Table {
 			}
 		}
 
-		// Filter to delete files from pro.
-		do_action( 'srfm_delete_entry_files', $form_data, $entry_id );
+		// Action to run after deleting the entry files.
+		do_action( 'srfm_after_deleting_entry_files', $form_data, $entry_id );
 	}
 
 	/**
