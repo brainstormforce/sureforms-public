@@ -98,15 +98,11 @@ function StyleSettings( props ) {
 
 	const onHandleChange = ( updatedSettings ) => {
 		const [ key, value ] = Object.entries( updatedSettings )[ 0 ];
-		if ( formStyling?.[ key ] === value ) {
-			// Do not re-render if the value is same. This is necessary for color picker type controls which re-render on selection.
-			return;
-		}
 
 		addStyleInRoot( rootRef.current, getCSSProperties( key, value ) );
 		const formStylingSettings = {
 			...formStyling,
-			[ key ]: value,
+			...updatedSettings,
 		};
 
 		editPost( {
@@ -562,18 +558,8 @@ function StyleSettings( props ) {
 							label: 'bg_image_size',
 						} }
 						backgroundCustomSize={ {
-							desktop: {
-								value: bg_image_size_custom,
-								label: 'bg_image_size_custom',
-							},
-							tablet: {
-								value: bg_image_size_custom,
-								label: 'bg_image_size_custom',
-							},
-							mobile: {
-								value: bg_image_size_custom,
-								label: 'bg_image_size_custom',
-							},
+							value: bg_image_size_custom,
+							label: 'bg_image_size_custom',
 						} }
 						backgroundCustomSizeType={ {
 							value: bg_image_size_custom_unit || '%',
@@ -651,18 +637,8 @@ function StyleSettings( props ) {
 							label: 'bg_overlay_size',
 						} }
 						backgroundOverlayCustomSize={ {
-							desktop: {
-								value: bg_overlay_custom_size,
-								label: 'bg_overlay_custom_size',
-							},
-							tablet: {
-								value: bg_overlay_custom_size,
-								label: 'bg_overlay_custom_size',
-							},
-							mobile: {
-								value: bg_overlay_custom_size,
-								label: 'bg_overlay_custom_size',
-							},
+							value: bg_overlay_custom_size,
+							label: 'bg_overlay_custom_size',
 						} }
 						backgroundOverlayCustomSizeType={ {
 							value: bg_overlay_custom_size_unit,
