@@ -128,6 +128,7 @@ const IconGrid = () => (
 	<div className="block-editor-inserter__panel-content">
 		<div className="block-editor-block-types-list">
 			{ filterIconBlocks.reduce( ( acc, block, index ) => {
+				// if the index is divisible by 3, create a new group to show 3 blocks in a row
 				if ( index % 3 === 0 ) {
 					acc.push( <div role="presentation" key={ `group-${ index }` }>{ [] }</div> );
 				}
