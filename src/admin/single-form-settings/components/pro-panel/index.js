@@ -130,8 +130,10 @@ const IconGrid = () => (
 			{ filterIconBlocks.reduce( ( acc, block, index ) => {
 				// if the index is divisible by 3, create a new group to show 3 blocks in a row
 				if ( index % 3 === 0 ) {
+					// in accumulator, create a new group
 					acc.push( <div role="presentation" key={ `group-${ index }` }>{ [] }</div> );
 				}
+				// add the block to the last group
 				acc[ acc.length - 1 ].props.children.push(
 					<IconBlock key={ index } icon={ block.icon } label={ block.label } />
 				);
