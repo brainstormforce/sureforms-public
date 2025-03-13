@@ -1,6 +1,7 @@
 import { __ } from '@wordpress/i18n';
 import { Button, Container, Label, Title } from '@bsf/force-ui';
-import { Plus, SquareArrowOutUpRight } from 'lucide-react';
+import { Plus } from 'lucide-react';
+import ExternalLinkIcon from '@Image/external-link-icon.js';
 
 export default () => {
 	const siteUrl = srfm_admin.site_url;
@@ -13,12 +14,11 @@ export default () => {
 			align="center"
 		>
 			<Container.Item className="flex flex-col gap-6 p-2 col-span-12 md:col-span-7 lg:col-span-7">
-				<div>
+				<div className="flex flex-col gap-[2px]">
 					<Title
 						size="md"
 						tag="h3"
 						title={ __( 'Welcome to SureForms!', 'sureforms' ) }
-						className="mb-1"
 					/>
 					<Label
 						size="md"
@@ -49,10 +49,7 @@ export default () => {
 					<Button
 						className="gap-1"
 						icon={
-							<SquareArrowOutUpRight
-								aria-label="Read full guide"
-								role="img"
-							/>
+							<ExternalLinkIcon aria-label="Read full guide" />
 						}
 						iconPosition="right"
 						size="md"

@@ -17,16 +17,13 @@ import {
 	getDatePlaceholder,
 	getSelectedDate,
 	getLastNDays,
+	cn,
 } from '@Utils/Helpers';
 import { useState, useEffect, useRef } from '@wordpress/element';
 
 // Text for chart when data is loading or no data is available
 const ChartText = ( { text, color = '', weight = '' } ) => (
-	<Label
-		tag="p"
-		size="sm"
-		className={ ` ${ weight } text-center ${ color }` }
-	>
+	<Label tag="p" size="sm" className={ cn( 'text-center', color, weight ) }>
 		{ text ||
 			__( 'This is where your form views will appear', 'sureforms' ) }
 	</Label>
@@ -42,7 +39,7 @@ const ClearButton = ( { onClick, ariaLabel } ) => (
 		onClick={ onClick }
 		aria-label={ ariaLabel }
 	>
-		{ ' ' }
+		{ __( 'Clear Filters', 'sureforms' ) }
 	</Button>
 );
 
@@ -218,8 +215,6 @@ export default () => {
 		return format( new Date( tickItem ), 'MMM dd, yyyy' );
 	};
 
-	console.log( 'dataToShow', dataToShow );
-
 	return (
 		<Container
 			containerType="flex"
@@ -227,9 +222,12 @@ export default () => {
 			className="w-full h-full p-4 gap-2 rounded-xl bg-background-primary border-0.5 border-solid border-border-subtle shadow-sm-blur-2"
 		>
 			<Container.Item className="flex flex-wrap items-center justify-between w-full p-1 gap-6 sm:flex-row sm:gap-2">
-				<Title title={ __( 'Forms Overview', 'sureforms' ) } size="xs" />
+				<Title
+					title={ __( 'Forms Overview', 'sureforms' ) }
+					size="xs"
+				/>
 				<div className="flex flex-wrap items-center gap-3 sm:flex-row">
-					<div className="flex items-center">
+					<div className="flex items-center gap-2">
 						{ selectedForm ? (
 							<ClearButton
 								onClick={ () => handleChange( '' ) }
@@ -272,7 +270,7 @@ export default () => {
 							</Select>
 						</div>
 					</div>
-					<div className="flex items-center">
+					<div className="flex items-center gap-2">
 						{ selectedDates.from || selectedDates.to ? (
 							<ClearButton
 								onClick={ handleClearDateFilters }
@@ -282,7 +280,10 @@ export default () => {
 								) }
 							/>
 						) : null }
-						<div className="relative flex gap-1" ref={ containerRef }>
+						<div
+							className="relative flex gap-1"
+							ref={ containerRef }
+						>
 							<Input
 								type="text"
 								size="sm"

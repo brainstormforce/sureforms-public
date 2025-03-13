@@ -61,20 +61,20 @@ export default () => {
 		return statusTextMap[ plugin.status ] || plugin.status;
 	};
 
-	const activatePlugin = useCallback( ( { plugin, e } ) => {
+	const activatePlugin = useCallback( ( { plugin, event } ) => {
 		const formData = new window.FormData();
 		formData.append( 'action', ACTIONS.ACTIVATE );
 		formData.append( 'security', srfm_admin.sfPluginManagerNonce );
 		formData.append( 'init', plugin.path );
 
-		e.target.innerText = srfm_admin.plugin_activating_text;
+		event.target.innerText = srfm_admin.plugin_activating_text;
 
 		performApiAction( {
 			url: srfm_admin.ajax_url,
 			formData,
 			successCallback: () => {
-				e.target.style.color = '#16A34A';
-				e.target.innerText = srfm_admin.plugin_activated_text;
+				event.target.style.color = '#16A34A';
+				event.target.innerText = srfm_admin.plugin_activated_text;
 				window.location = plugin.redirection;
 			},
 			errorCallback: () => {
@@ -87,13 +87,13 @@ export default () => {
 						duration: 5000,
 					}
 				);
-				e.target.innerText = srfm_admin.plugin_activate_text;
+				event.target.innerText = srfm_admin.plugin_activate_text;
 			},
 		} );
 	}, [] );
 
 	const handlePluginActionTrigger = useCallback(
-		( { plugin, e } ) => {
+		( { plugin, event } ) => {
 			const action = getAction( plugin.status );
 			if ( ! action ) {
 				return;
@@ -109,17 +109,18 @@ export default () => {
 				);
 				formData.append( 'slug', plugin.slug );
 
-				e.target.innerText = srfm_admin.plugin_installing_text;
+				event.target.innerText = srfm_admin.plugin_installing_text;
 
 				performApiAction( {
 					url: srfm_admin.ajax_url,
 					formData,
 					successCallback: () => {
-						e.target.innerText = srfm_admin.plugin_installed_text;
-						activatePlugin( { plugin, e } );
+						event.target.innerText =
+							srfm_admin.plugin_installed_text;
+						activatePlugin( { plugin, event } );
 					},
 					errorCallback: () => {
-						e.target.innerText = __( 'Install', 'sureforms' );
+						event.target.innerText = __( 'Install', 'sureforms' );
 						alert(
 							__(
 								'Plugin Installation failed, Please try again later.',
@@ -129,7 +130,7 @@ export default () => {
 					},
 				} );
 			} else if ( action === ACTIONS.ACTIVATE ) {
-				activatePlugin( { plugin, e } );
+				activatePlugin( { plugin, event } );
 			}
 		},
 		[ activatePlugin ]
