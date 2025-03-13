@@ -180,7 +180,7 @@ class Gutenberg_Hooks {
 			[
 				'plugin_url'      => SRFM_URL,
 				'admin_email'     => get_option( 'admin_email' ),
-				'pro_plugin_name' => defined( 'SRFM_PRO_VER' ) && defined( 'SRFM_PRO_PRODUCT' ) ? SRFM_PRO_PRODUCT : '',
+				'pro_plugin_name' => defined( 'SRFM_PRO_VER' ) && defined( 'SRFM_PRO_PRODUCT' ) ? SRFM_PRO_PRODUCT : 'free',
 			]
 		);
 

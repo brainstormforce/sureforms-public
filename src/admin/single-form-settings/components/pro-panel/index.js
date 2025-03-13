@@ -33,77 +33,62 @@ const iconBlocks = [
 	{
 		icon: <MdOutlineCalendarMonth size={ 24 } color="#B4B4B4" />,
 		label: __( 'Date Picker', 'sureforms' ),
-		hideIn: [
-			'starter',
-			'pro',
-			'business',
+		showIn: [
+			'free',
 		],
 	},
 	{
 		icon: <MdAccessTime size={ 24 } color="#B4B4B4" />,
 		label: __( 'Time Picker', 'sureforms' ),
-		hideIn: [
-			'starter',
-			'pro',
-			'business',
+		showIn: [
+			'free',
 		],
 	},
 	{
 		icon: <FaRegEyeSlash size={ 24 } color="#B4B4B4" />,
 		label: __( 'Hidden', 'sureforms' ),
-		hideIn: [
-			'starter',
-			'pro',
-			'business',
+		showIn: [
+			'free',
 		],
 	},
 	{
 		icon: <RxSlider size={ 24 } color="#B4B4B4" />,
 		label: __( 'Slider', 'sureforms' ),
-		hideIn: [
-			'starter',
-			'pro',
-			'business',
+		showIn: [
+			'free',
 		],
 	},
 	{
 		icon: <MdOutlineInsertPageBreak size={ 24 } color="#B4B4B4" />,
 		label: __( 'Page Break', 'sureforms' ),
-		hideIn: [
-			'starter',
-			'pro',
-			'business',
+		showIn: [
+			'free',
 		],
 	},
 	{
 		icon: <MdOutlineStarBorder size={ 24 } color="#B4B4B4" />,
 		label: __( 'Rating', 'sureforms' ),
-		hideIn: [
-			'starter',
-			'pro',
-			'business',
+		showIn: [
+			'free',
 		],
 	},
 	{
 		icon: <MdOutlineCloudUpload size={ 24 } color="#B4B4B4" />,
 		label: __( 'Upload', 'sureforms' ),
-		hideIn: [
-			'starter',
-			'pro',
-			'business',
+		showIn: [
+			'free',
 		],
 	},
 	{
 		icon: <FaFileSignature size={ 24 } color="#B4B4B4" />,
 		label: __( 'Signature', 'sureforms' ),
-		hideIn: [
-			'pro',
-			'business',
+		showIn: [
+			'free',
+			'starter',
 		],
 	},
 ];
 
-// filter the blocks based on the package name
 const filterIconBlocks = iconBlocks.filter( ( block ) => {
 	// if there is no package name, that means it is free plugin.
 	// so, show all the blocks preview
@@ -111,16 +96,17 @@ const filterIconBlocks = iconBlocks.filter( ( block ) => {
 		return true;
 	}
 
-	// if current package is starter, then do not show the block preview with package starter
-	if ( srfm_block_data?.pro_plugin_name.split( ' ' )[ 1 ].toLowerCase() === 'starter' ) {
-		return block.hideIn.includes( 'starter' ) ? false : true;
-	// if current package is pro, then do not show the block preview with package starter and pro
+	// if current package is mathcing with the block package, add the block to the list.
+	if ( srfm_block_data?.pro_plugin_name.split( ' ' )[ 1 ].toLowerCase() === 'free' ) {
+		return block.showIn.includes( 'free' );
+	} else if ( srfm_block_data?.pro_plugin_name.split( ' ' )[ 1 ].toLowerCase() === 'starter' ) {
+		return block.showIn.includes( 'starter' );
 	} else if ( srfm_block_data?.pro_plugin_name.split( ' ' )[ 1 ].toLowerCase() === 'pro' ) {
-		return block.hideIn.includes( 'pro' ) || block.hideIn.includes( 'starter' ) ? false : true;
-	// if current package is business, then do not show the block preview with package starter, pro and business
+		return block.showIn.includes( 'pro' );
 	} else if ( srfm_block_data?.pro_plugin_name.split( ' ' )[ 1 ].toLowerCase() === 'business' ) {
-		return block.hideIn.includes( 'business' ) || block.hideIn.includes( 'pro' ) || block.hideIn.includes( 'starter' ) ? false : true;
+		return block.showIn.includes( 'business' );
 	}
+
 	return true;
 } );
 
