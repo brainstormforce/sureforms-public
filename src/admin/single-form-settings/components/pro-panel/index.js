@@ -6,7 +6,7 @@ import {
 	MdOutlineCloudUpload,
 	MdAccessTime,
 } from 'react-icons/md';
-import { FaFileSignature , FaRegEyeSlash } from 'react-icons/fa';
+import { FaFileSignature, FaRegEyeSlash } from 'react-icons/fa';
 import { RxSlider } from 'react-icons/rx';
 import { addQueryParam } from '@Utils/Helpers';
 
