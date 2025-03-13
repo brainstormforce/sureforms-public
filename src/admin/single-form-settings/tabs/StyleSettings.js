@@ -240,7 +240,7 @@ function StyleSettings( props ) {
 				// Background Control Settings.
 				'--srfm-bg-color': bg_color || '#FFFFFF',
 				'--srfm-bg-image': bg_image ? `url(${ bg_image })` : 'none',
-				'--srfm-bg-position': bg_image_position?.replace( '-', ' ' ) || 'left top',
+				'--srfm-bg-position': bg_image_position?.replace( '-', ' ' ) || 'center',
 				'--srfm-bg-attachment': bg_image_attachment || 'scroll',
 				'--srfm-bg-repeat': bg_image_repeat || 'no-repeat',
 				'--srfm-bg-size': bg_image_size === 'custom' ? `${ bg_image_size_custom ?? 100 }${ bg_image_size_custom_unit ?? '%' }` : bg_image_size || 'cover',
@@ -250,7 +250,7 @@ function StyleSettings( props ) {
 				'--srfm-bg-gradient': gradient_type === 'basic' ? bg_gradient || 'linear-gradient(90deg, #FFC9B2 0%, #C7CBFF 100%)' : getGradientCSS( gradientOptions.type, gradientOptions.color_1, gradientOptions.color_2, gradientOptions.location_1, gradientOptions.location_2, gradientOptions.angle ),
 				// Overlay Variables - Image.
 				'--srfm-bg-overlay-image': bg_overlay_image ? `url(${ bg_overlay_image })` : 'none',
-				'--srfm-bg-overlay-position': bg_overlay_position?.replace( '-', ' ' ) || 'left top',
+				'--srfm-bg-overlay-position': bg_overlay_position?.replace( '-', ' ' ) || 'center',
 				'--srfm-bg-overlay-attachment': bg_overlay_attachment || 'scroll',
 				'--srfm-bg-overlay-repeat': bg_overlay_repeat || 'no-repeat',
 				'--srfm-bg-overlay-blend-mode': bg_overlay_blend_mode || 'normal',
@@ -530,7 +530,7 @@ function StyleSettings( props ) {
 		{
 			id: 'background',
 			component: (
-				<>
+				<div className='srfm-bg-component'>
 					<Background
 						// Background Properties
 						backgroundType={ {
@@ -673,7 +673,7 @@ function StyleSettings( props ) {
 						onSelectImage={ onImageSelect }
 					/>
 					<p className="components-base-control__help" />
-				</>
+				</div>
 			),
 		},
 		{
