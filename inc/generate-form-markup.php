@@ -125,9 +125,9 @@ class Generate_Form_Markup {
 			$overlay_blend_mode = $form_styling['bg_overlay_blend_mode'] ?? 'normal';
 
 			if ( 'custom' === $overlay_size ) {
-				$bg_overlay_custom_size = $form_styling['bg_overlay_custom_size'] ?? 100;
+				$bg_overlay_custom_size      = $form_styling['bg_overlay_custom_size'] ?? 100;
 				$bg_overlay_custom_size_unit = $form_styling['bg_overlay_custom_size_unit'] ?? '%';
-				$overlay_size = $bg_overlay_custom_size . $bg_overlay_custom_size_unit;
+				$overlay_size                = $bg_overlay_custom_size . $bg_overlay_custom_size_unit;
 			}
 
 			$background_classes = apply_filters( 'srfm_add_background_classes', Helper::get_background_classes( $bg_type, $overlay_type ) );

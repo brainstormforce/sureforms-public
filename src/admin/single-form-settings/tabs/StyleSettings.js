@@ -530,7 +530,7 @@ function StyleSettings( props ) {
 		{
 			id: 'background',
 			component: (
-				<div className='srfm-bg-component'>
+				<div className="srfm-bg-component">
 					<Background
 						// Background Properties
 						backgroundType={ {
