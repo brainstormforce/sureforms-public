@@ -90,14 +90,17 @@ const iconBlocks = [
 ];
 
 const filterIconBlocks = iconBlocks.filter( ( block ) => {
+
+	const srfmProduct = srfm_block_data?.pro_plugin_name.split( ' ' )[ 1 ].toLowerCase()
+
 	// if current package is mathcing with the block package, add the block to the list.
 	if ( srfm_block_data?.pro_plugin_name === 'free' ) {
 		return block.showIn.includes( 'free' );
-	} else if ( srfm_block_data?.pro_plugin_name.split( ' ' )[ 1 ].toLowerCase() === 'starter' ) {
+	} else if ( srfmProduct === 'starter' ) {
 		return block.showIn.includes( 'starter' );
-	} else if ( srfm_block_data?.pro_plugin_name.split( ' ' )[ 1 ].toLowerCase() === 'pro' ) {
+	} else if ( srfmProduct === 'pro' ) {
 		return block.showIn.includes( 'pro' );
-	} else if ( srfm_block_data?.pro_plugin_name.split( ' ' )[ 1 ].toLowerCase() === 'business' ) {
+	} else if ( srfmProduct === 'business' ) {
 		return block.showIn.includes( 'business' );
 	}
 
