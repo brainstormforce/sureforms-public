@@ -92,7 +92,7 @@ const SureformsFormSpecificSettings = ( props ) => {
 		}
 	};
 
-	useEffect( addFormStylingClass, [ rootContainer, deviceType ] );
+	useEffect( addFormStylingClass, [ rootContainer, rootContainerDiv, deviceType ] );
 
 	useContainerDynamicClass( sureformsKeys );
 
