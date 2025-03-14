@@ -177,7 +177,7 @@ class Field_Mapping {
 						break;
 					}
 
-					if ( 'signature' === $field_type && SRFM_PRO_PRODUCT === 'SureForms Starter' ) {
+					if ( 'signature' === $field_type && defined( 'SRFM_PRO_VER' ) && SRFM_PRO_PRODUCT === 'SureForms Starter' ) {
 						// If the product is SureForms Starter then skip the signature field.
 						break;
 					}
