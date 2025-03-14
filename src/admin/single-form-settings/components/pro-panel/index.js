@@ -93,17 +93,18 @@ const filterIconBlocks = iconBlocks.filter( ( block ) => {
 	const srfmProduct = srfm_block_data?.pro_plugin_name.split( ' ' )[ 1 ].toLowerCase();
 
 	// if current package is mathcing with the block package, add the block to the list.
-	if ( srfm_block_data?.pro_plugin_name === 'free' ) {
-		return block.showIn.includes( 'free' );
-	} else if ( srfmProduct === 'starter' ) {
-		return block.showIn.includes( 'starter' );
-	} else if ( srfmProduct === 'pro' ) {
-		return block.showIn.includes( 'pro' );
-	} else if ( srfmProduct === 'business' ) {
-		return block.showIn.includes( 'business' );
+	switch ( srfmProduct ) {
+		case 'free':
+			return block.showIn.includes( 'free' );
+		case 'starter':
+			return block.showIn.includes( 'starter' );
+		case 'pro':
+			return block.showIn.includes( 'pro' );
+		case 'business':
+			return block.showIn.includes( 'business' );
+		default:
+			return true;
 	}
-
-	return true;
 } );
 
 const IconGrid = () => (
