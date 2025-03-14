@@ -568,7 +568,7 @@ function StyleSettings( props ) {
 						// Gradient Properties
 						gradientOverlay={ { value: true } }
 						gradientType={ {
-							value: gradient_type,
+							value: gradient_type || 'basic',
 							label: 'gradient_type',
 						} }
 						backgroundGradientColor1={ {
@@ -641,7 +641,7 @@ function StyleSettings( props ) {
 							label: 'bg_overlay_custom_size',
 						} }
 						backgroundOverlayCustomSizeType={ {
-							value: bg_overlay_custom_size_unit,
+							value: bg_overlay_custom_size_unit || '%',
 							label: 'bg_overlay_custom_size_unit',
 						} }
 						label={ __( 'Background', 'sureforms' ) }
