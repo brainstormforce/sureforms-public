@@ -1,5 +1,6 @@
 import SmartTagList from '@Components/misc/SmartTagList';
 import { Label, Input } from '@bsf/force-ui';
+import { cn } from '@Utils/Helpers';
 
 const ModalInputBox = ( {
 	label,
@@ -12,9 +13,10 @@ const ModalInputBox = ( {
 	setTargetData,
 	showSmartTagList = true,
 	helpText,
+	padding = '',
 } ) => {
 	return (
-		<div className="flex flex-col w-full h-auto gap-2 px-2">
+		<div className={ cn( 'flex flex-col w-full h-auto gap-2', padding ) }>
 			<div className="flex w-full items-center gap-1.5">
 				<div className="flex-1">
 					<Input
@@ -26,6 +28,7 @@ const ModalInputBox = ( {
 						value={ value }
 						label={ label }
 						required={ required }
+						size="md"
 					/>
 				</div>
 				{ showSmartTagList && (
@@ -35,12 +38,13 @@ const ModalInputBox = ( {
 							tagFor={ tagFor }
 							tagsArray={ smartTagList }
 							setTargetData={ setTargetData }
+							triggerSize="md"
 						/>
 					</div>
 				) }
 			</div>
 			{ helpText && (
-				<Label size="xs" variant="help" className="italic">
+				<Label size="sm" variant="help" className="font-normal">
 					{ helpText }
 				</Label>
 			) }
