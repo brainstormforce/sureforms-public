@@ -13,7 +13,7 @@ import {
 	toast,
 	Tooltip,
 } from '@bsf/force-ui';
-import { Files, SquarePen, Trash } from 'lucide-react';
+import { Copy, PenLine, Trash } from 'lucide-react';
 
 const CustomButton = forwardRef(
 	(
@@ -227,7 +227,7 @@ const EmailNotification = ( {
 				autoDismiss={ true }
 				dismissAfter={ 5000 }
 			/>
-			<div className="flex flex-row justify-between items-center gap-3">
+			<div className="flex flex-row justify-between items-center gap-2">
 				<Title
 					size="md"
 					tag="h4"
@@ -237,8 +237,8 @@ const EmailNotification = ( {
 					{ __( 'Add Notification', 'sureforms' ) }
 				</Button>
 			</div>
-			<div className="p-4 bg-background-primary rounded-lg shadow-sm-blur-1 space-y-2">
-				<Table>
+			<div className="p-6 bg-background-primary rounded-xl shadow-sm-blur-1 space-y-2">
+				<Table className="rounded-md">
 					<Table.Head>
 						{ headerContent.map( ( header, index ) => (
 							<Table.HeadCell
@@ -286,7 +286,9 @@ const EmailNotification = ( {
 														'Duplicate',
 														'sureforms'
 													) }
-													icon={ <Files /> }
+													icon={
+														<Copy className="size-4" />
+													}
 													onClick={ () =>
 														handleDuplicate( el )
 													}
@@ -296,7 +298,9 @@ const EmailNotification = ( {
 														'Edit',
 														'sureforms'
 													) }
-													icon={ <SquarePen /> }
+													icon={
+														<PenLine className="size-4" />
+													}
 													onClick={ () =>
 														handleEdit( el )
 													}
@@ -305,7 +309,7 @@ const EmailNotification = ( {
 													arrow
 													content={
 														<div
-															className="flex gap-2 flex-col p-1"
+															className="flex gap-2 flex-col"
 															offset={ 20 }
 														>
 															<p className="text-[13px] font-normal">
@@ -330,7 +334,7 @@ const EmailNotification = ( {
 																		'sureforms'
 																	) }
 																	variant="outline"
-																	className="px-2"
+																	className="px-3"
 																/>
 
 																<CustomButton
@@ -348,7 +352,7 @@ const EmailNotification = ( {
 																		'sureforms'
 																	) }
 																	variant="primary"
-																	className="px-2"
+																	className="px-2 ml-2"
 																	destructive
 																/>
 															</div>
@@ -374,7 +378,7 @@ const EmailNotification = ( {
 															'sureforms'
 														) }
 														icon={
-															<Trash className="text-icon-secondary" />
+															<Trash className="text-icon-secondary size-4" />
 														}
 														onClick={ () => {
 															setIsPopup( el.id );

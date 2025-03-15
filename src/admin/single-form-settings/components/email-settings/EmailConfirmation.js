@@ -138,7 +138,7 @@ const EmailConfirmation = ( props ) => {
 					{ __( 'Cancel', 'sureforms' ) }
 				</Button>
 			</div>
-			<div className="p-4 bg-background-primary rounded-lg shadow-sm-blur-1 space-y-6">
+			<div className="px-4 py-6 bg-background-primary rounded-xl shadow-sm-blur-1 space-y-2">
 				<ModalInputBox
 					label={ __( 'Name', 'sureforms' ) }
 					id="srfm-email-notification-name"
@@ -164,6 +164,7 @@ const EmailConfirmation = ( props ) => {
 					setTargetData={ ( tag ) =>
 						setDynamicSubject( dynamicSubject + tag )
 					}
+					padding="px-2"
 				/>
 
 				<ModalInputBox
@@ -196,6 +197,7 @@ const EmailConfirmation = ( props ) => {
 							email_to: formData.email_to + tag,
 						} )
 					}
+					padding="px-2"
 				/>
 
 				<ModalInputBox
@@ -221,9 +223,10 @@ const EmailConfirmation = ( props ) => {
 					setTargetData={ ( tag ) =>
 						setDynamicSubject( dynamicSubject + tag )
 					}
+					padding="px-2"
 				/>
 
-				<div className="px-2">
+				<div className="p-2 gap-6">
 					<Editor
 						handleContentChange={ handleOnChangeEmailBodyContent }
 						content={ formData.email_body }
@@ -263,6 +266,7 @@ const EmailConfirmation = ( props ) => {
 								email_cc: formData.email_cc + tag,
 							} )
 						}
+						padding="pl-2"
 					/>
 					<ModalInputBox
 						label={ __( 'BCC', 'sureforms' ) }
@@ -293,6 +297,7 @@ const EmailConfirmation = ( props ) => {
 								email_bcc: formData.email_bcc + tag,
 							} )
 						}
+						padding="pr-2"
 					/>
 				</div>
 				<ModalInputBox
@@ -324,6 +329,7 @@ const EmailConfirmation = ( props ) => {
 							email_reply_to: formData.email_reply_to + tag,
 						} )
 					}
+					padding="px-2"
 				/>
 			</div>
 		</div>
