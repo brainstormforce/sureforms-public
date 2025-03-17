@@ -344,6 +344,14 @@ const AiFormBuilder = () => {
 									'sureforms'
 								) }
 							</h1>
+							{
+
+								formType !== 'simple' &&
+								<span className="srfm-ai-builder-header-subtitle">
+									{
+										__( 'The AI-generated form may require manual review and adjustments. Please verify all fields before publishing the form.', 'sureforms' )
+									}
+								</span> }
 							<textarea
 								style={ {
 									borderColor: showEmptyError
