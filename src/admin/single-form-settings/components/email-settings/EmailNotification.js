@@ -301,6 +301,7 @@ const EmailNotification = ( {
 											/>
 											<Tooltip
 												arrow
+												offset={ 20 }
 												content={
 													<Container
 														containerType="flex"
