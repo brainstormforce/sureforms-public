@@ -100,15 +100,11 @@ function StyleSettings( props ) {
 
 	const onHandleChange = ( updatedSettings ) => {
 		const [ key, value ] = Object.entries( updatedSettings )[ 0 ];
-		if ( formStyling?.[ key ] === value ) {
-			// Do not re-render if the value is same. This is necessary for color picker type controls which re-render on selection.
-			return;
-		}
 
 		addStyleInRoot( rootRef.current, getCSSProperties( key, value ) );
 		const formStylingSettings = {
 			...formStyling,
-			[ key ]: value,
+			...updatedSettings,
 		};
 
 		editPost( {
@@ -241,7 +237,7 @@ function StyleSettings( props ) {
 				// Background Control Settings.
 				'--srfm-bg-color': bg_color || '#FFFFFF',
 				'--srfm-bg-image': bg_image ? `url(${ bg_image })` : 'none',
-				'--srfm-bg-position': bg_image_position?.replace( '-', ' ' ) || 'left top',
+				'--srfm-bg-position': bg_image_position?.replace( '-', ' ' ) || 'center',
 				'--srfm-bg-attachment': bg_image_attachment || 'scroll',
 				'--srfm-bg-repeat': bg_image_repeat || 'no-repeat',
 				'--srfm-bg-size': bg_image_size === 'custom' ? `${ bg_image_size_custom ?? 100 }${ bg_image_size_custom_unit ?? '%' }` : bg_image_size || 'cover',
@@ -251,7 +247,7 @@ function StyleSettings( props ) {
 				'--srfm-bg-gradient': gradient_type === 'basic' ? bg_gradient || 'linear-gradient(90deg, #FFC9B2 0%, #C7CBFF 100%)' : getGradientCSS( gradientOptions.type, gradientOptions.color_1, gradientOptions.color_2, gradientOptions.location_1, gradientOptions.location_2, gradientOptions.angle ),
 				// Overlay Variables - Image.
 				'--srfm-bg-overlay-image': bg_overlay_image ? `url(${ bg_overlay_image })` : 'none',
-				'--srfm-bg-overlay-position': bg_overlay_position?.replace( '-', ' ' ) || 'left top',
+				'--srfm-bg-overlay-position': bg_overlay_position?.replace( '-', ' ' ) || 'center',
 				'--srfm-bg-overlay-attachment': bg_overlay_attachment || 'scroll',
 				'--srfm-bg-overlay-repeat': bg_overlay_repeat || 'no-repeat',
 				'--srfm-bg-overlay-blend-mode': bg_overlay_blend_mode || 'normal',
@@ -524,7 +520,7 @@ function StyleSettings( props ) {
 		{
 			id: 'background',
 			component: (
-				<>
+				<div className="srfm-bg-component">
 					<Background
 						// Background Properties
 						backgroundType={ {
@@ -556,18 +552,8 @@ function StyleSettings( props ) {
 							label: 'bg_image_size',
 						} }
 						backgroundCustomSize={ {
-							desktop: {
-								value: bg_image_size_custom,
-								label: 'bg_image_size_custom',
-							},
-							tablet: {
-								value: bg_image_size_custom,
-								label: 'bg_image_size_custom',
-							},
-							mobile: {
-								value: bg_image_size_custom,
-								label: 'bg_image_size_custom',
-							},
+							value: bg_image_size_custom,
+							label: 'bg_image_size_custom',
 						} }
 						backgroundCustomSizeType={ {
 							value: bg_image_size_custom_unit || '%',
@@ -576,7 +562,7 @@ function StyleSettings( props ) {
 						// Gradient Properties
 						gradientOverlay={ { value: true } }
 						gradientType={ {
-							value: gradient_type,
+							value: gradient_type || 'basic',
 							label: 'gradient_type',
 						} }
 						backgroundGradientColor1={ {
@@ -645,21 +631,11 @@ function StyleSettings( props ) {
 							label: 'bg_overlay_size',
 						} }
 						backgroundOverlayCustomSize={ {
-							desktop: {
-								value: bg_overlay_custom_size,
-								label: 'bg_overlay_custom_size',
-							},
-							tablet: {
-								value: bg_overlay_custom_size,
-								label: 'bg_overlay_custom_size',
-							},
-							mobile: {
-								value: bg_overlay_custom_size,
-								label: 'bg_overlay_custom_size',
-							},
+							value: bg_overlay_custom_size,
+							label: 'bg_overlay_custom_size',
 						} }
 						backgroundOverlayCustomSizeType={ {
-							value: bg_overlay_custom_size_unit,
+							value: bg_overlay_custom_size_unit || '%',
 							label: 'bg_overlay_custom_size_unit',
 						} }
 						label={ __( 'Background', 'sureforms' ) }
@@ -667,7 +643,7 @@ function StyleSettings( props ) {
 						onSelectImage={ onImageSelect }
 					/>
 					<p className="components-base-control__help" />
-				</>
+				</div>
 			),
 		},
 		{

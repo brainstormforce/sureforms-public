@@ -283,7 +283,7 @@
 // The mixin is used with the class .srfm-form-container and .editor-styles-wrapper.
 @mixin srfm-background-control-styles( $backend: false ) {
 	&.srfm-bg-color {
-		background-color: var( --srfm-bg-color );
+		background: var( --srfm-bg-color );
 	}
 	&.srfm-bg-image {
 		background-image: var( --srfm-bg-image );
