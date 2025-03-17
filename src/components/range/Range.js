@@ -91,18 +91,27 @@ const Range = ( props ) => {
 	};
 
 	const onChangeUnits = ( newValue ) => {
-		if ( props.setAttributes ) {
-			props.setAttributes( { [ props.unit.label ]: newValue } );
-		}
+		const newAttributes = {
+			[ props.unit.label ]: newValue,
+		};
 
-		max = limitMax( newValue, props );
-		min = limitMin( newValue, props );
+		max = parseFloat( limitMax( newValue, props ) );
+		min = parseFloat( limitMin( newValue, props ) );
 
 		if ( props.value > max ) {
-			handleOnChange( max );
+			newAttributes[ props.data.label ] = max;
+			if ( props?.onChange ) {
+				props.onChange( max );
+			}
+		} else if ( props.value < min ) {
+			newAttributes[ props.data.label ] = min;
+			if ( props?.onChange ) {
+				props.onChange( min );
+			}
 		}
-		if ( props.value < min ) {
-			handleOnChange( min );
+
+		if ( props?.setAttributes ) {
+			props.setAttributes( newAttributes );
 		}
 	};
 
