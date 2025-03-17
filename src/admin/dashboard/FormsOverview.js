@@ -226,8 +226,8 @@ export default () => {
 					title={ __( 'Forms Overview', 'sureforms' ) }
 					size="xs"
 				/>
-				<div className="flex flex-wrap items-center gap-3 sm:flex-row">
-					<div className="flex items-center gap-2">
+				<Container containerType="flex" direction="row" align="center" className="flex-wrap gap-3 sm:flex-row">
+					<Container containerType="flex" direction="row" align="center" className="gap-2">
 						{ selectedForm ? (
 							<ClearButton
 								onClick={ () => handleChange( '' ) }
@@ -269,8 +269,8 @@ export default () => {
 								</Select.Options>
 							</Select>
 						</div>
-					</div>
-					<div className="flex items-center gap-2">
+					</Container>
+					<Container containerType="flex" direction="row" align="center" className="gap-2">
 						{ selectedDates.from || selectedDates.to ? (
 							<ClearButton
 								onClick={ handleClearDateFilters }
@@ -325,19 +325,19 @@ export default () => {
 								</div>
 							) }
 						</div>
-					</div>
-				</div>
+					</Container>
+				</Container>
 			</Container.Item>
 			<Container.Item className="flex justify-between p-1 gap-2">
 				<Label size="sm" variant="help" className="font-semibold">
 					{ getFormLabel( selectedForm ) || 'All Forms' }
 				</Label>
-				<span className="flex items-center gap-2 p-1">
+				<Container containerType="flex" align="center" className="gap-2 p-1">
 					<div className="w-2 h-2 bg-chart-purple-500 rounded-sm"></div>
 					<Label size="xs" variant="help" className="font-medium">
 						{ __( 'Entries', 'sureforms' ) }
 					</Label>
-				</span>
+				</Container>
 			</Container.Item>
 			<Container.Item
 				className={
@@ -345,7 +345,7 @@ export default () => {
 				}
 			>
 				{ loading ? (
-					<div className="flex flex-col items-center justify-center h-full min-h-[256px] gap-3">
+					<Container containerType="flex" direction="column" justify="center" items="center" className="h-full min-h-[256px] gap-3">
 						<div className="flex flex-col items-center justify-center">
 							<Loader
 								className="mb-3"
@@ -365,36 +365,34 @@ export default () => {
 								/>
 							</div>
 						</div>
-					</div>
+					</Container>
 				) : ! loading && dataToShow.length > 0 ? (
-					<div className="flex-1 w-full">
-						<div className="w-full h-full min-h-[248px]">
-							<AreaChart
-								data={ dataToShow }
-								dataKeys={ [ 'entries' ] }
-								chartWidth="100%"
-								chartHeight="100%"
-								variant="gradient"
-								showTooltip={ true }
-								showYAxis={ false }
-								showLegend={ false }
-								showCartesianGrid={ true }
-								colors={ [
-									{
-										fill: '#E879F9',
-										stroke: '#E879F9',
-									},
-								] }
-								showXAxis={ true }
-								tooltipIndicator="dot"
-								tickFormatter={ formatXAxis }
-								xAxisDataKey="month"
-								tooltipLabelKey="month"
-							/>
-						</div>
+					<div className="flex-1 w-full h-full min-h-[248px]">
+						<AreaChart
+							data={ dataToShow }
+							dataKeys={ [ 'entries' ] }
+							chartWidth="100%"
+							chartHeight="100%"
+							variant="gradient"
+							showTooltip={ true }
+							showYAxis={ false }
+							showLegend={ false }
+							showCartesianGrid={ true }
+							colors={ [
+								{
+									fill: '#E879F9',
+									stroke: '#E879F9',
+								},
+							] }
+							showXAxis={ true }
+							tooltipIndicator="dot"
+							tickFormatter={ formatXAxis }
+							xAxisDataKey="month"
+							tooltipLabelKey="month"
+						/>
 					</div>
 				) : (
-					<div className="flex flex-col items-center justify-center h-full min-h-[256px] gap-3">
+					<Container containerType="flex" direction="column" align="center" justify="center" className="h-full min-h-[256px] gap-3">
 						<div className="flex flex-col items-center justify-center">
 							<FileChartColumnIncreasing className="mb-3" />
 							<div className="flex flex-col items-center space-y-1">
@@ -410,7 +408,7 @@ export default () => {
 								/>
 							</div>
 						</div>
-					</div>
+					</Container>
 				) }
 			</Container.Item>
 		</Container>

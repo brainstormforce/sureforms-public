@@ -39,7 +39,7 @@ export default () => {
 				containerType="flex"
 				direction="row"
 			>
-				<div className="flex p-1 gap-1 items-center">
+				<Container containerType="flex" direction="row" align="center" className="p-1 gap-1">
 					<Container.Item className="flex">{ icon }</Container.Item>
 					<Container.Item className="flex px-1 gap-2">
 						<a
@@ -53,7 +53,7 @@ export default () => {
 							</Label>
 						</a>
 					</Container.Item>
-				</div>
+				</Container>
 			</Container>
 		) );
 	};
