@@ -260,7 +260,8 @@ Yes! You can certainly use SureForms on yours as well as your client’s website
 When you use SureForms, you get an easy-to-use AI-powered form builder that can be used to build your forms fast.
 
 == Changelog ==
-= x.x.x =
+= x.x.x = 
+* Fix: Addressed issue where min and max selection errors in the multichoice block field were not displayed in real-time and were only shown upon form submission.
 * Fix: Improved security.
 = 1.4.2 - 4th March 2025 =
 * Improvement: Made the form submission text translatable.
