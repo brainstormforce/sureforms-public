@@ -35,6 +35,8 @@ function SRFMFormatNumber( number, formatType ) {
 function initializeNumberField() {
 	const numberElement = document.querySelectorAll( '.srfm-number-block' );
 
+	console.log( 'numberElement', numberElement );
+
 	if ( numberElement ) {
 		numberElement.forEach( ( element ) => {
 			const numberInput = element.querySelector( 'input' );
