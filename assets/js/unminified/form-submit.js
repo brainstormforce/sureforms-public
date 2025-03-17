@@ -35,6 +35,15 @@ document.addEventListener( 'DOMContentLoaded', function () {
 
 		form.addEventListener( 'submit', async ( e ) => {
 			e.preventDefault();
+
+			const formTarget = e.target;
+			if ( formTarget?.tagName === 'FORM' ) {
+				// If the submit button is hidden, prevent form submission.
+				if ( formTarget?.closest('.srfm-form-container')?.classList.contains('srfm-submit-button-hidden') ) {
+					return;
+				}
+			}
+
 			handleFormSubmission(
 				form,
 				formId,
