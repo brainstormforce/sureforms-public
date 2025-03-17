@@ -481,6 +481,14 @@ $sidebar_width: 290px;
 				flex-direction: column;
 				gap: 16px;
 
+				.srfm-ai-builder-header-subtitle {
+					font-size: 12px;
+					line-height: 16px;
+					margin-top: -8px;
+					margin-bottom: -8px;
+					color: #6b7280;
+				}
+
 				textarea {
 					width: 688px;
 					height: 114px;
