@@ -277,7 +277,7 @@ export default ( props ) => {
 								{ __( 'Prompt cannot be empty.', 'sureforms' ) }
 							</Label>
 						) }
-						<Container className="flex flex-wrap flex-row justify-between items-center">
+						<Container className="flex-wrap" containerType="flex" direction="row" align="center" justify="between">
 							{ false === conversationalFormAiToggle
 								? conversationalAiToggle
 								: conversationalFormAiToggle }
@@ -289,7 +289,7 @@ export default ( props ) => {
 					<Container.Item className="p-2 gap-3">
 						<Container containerType="flex" direction="column">
 							<Container.Item>
-								<Container className="flex flex-wrap flex-row justify-between items-center">
+								<Container containerType="flex" direction="row" align="center" justify="between" className="flex-wrap">
 									<Container.Item className="p-1 gap-1 flex flex-row items-center">
 										<Label
 											variant="neutral"

@@ -10,13 +10,16 @@ export default ( props ) => {
 		<Container
 			containerType="flex"
 			direction="column"
-			className="mt-8 bg-background-secondary p-8 gap-8 mx-auto justify-center items-center"
+			className="mt-8 bg-background-secondary mx-auto p-8 gap-8"
+			align="center"
+			justify="center"
 		>
 			<Container.Item>
 				<Container
-					className="gap-6 items-center"
+					className="gap-6"
 					containerType="flex"
 					direction="row"
+					align="center"
 				>
 					<Container.Item>
 						<CircularProgressBar

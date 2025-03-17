@@ -5,9 +5,11 @@ import { initiateAuth } from '@Utils/Helpers';
 export default () => {
 	return (
 		<Container
-			className="mt-16 gap-2 w-full p-2 bg-brand-background-hover-100 justify-center items-center"
+			className="mt-16 gap-2 w-full p-2 bg-brand-background-hover-100"
 			containerType="flex"
 			direction="column"
+			align="center"
+			justify="center"
 		>
 			<Label variant="neutral" size="xs" className="font-normal">
 				{ __(

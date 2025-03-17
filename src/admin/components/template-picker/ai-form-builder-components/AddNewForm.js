@@ -96,7 +96,7 @@ export default () => {
 	);
 
 	return (
-		<Container className="flex w-full h-screen justify-center items-center mx-auto p-8 gap-8">
+		<Container className="flex w-full h-screen mx-auto p-8 gap-8" justify="center" align="center">
 			<Container
 				className="p-4 gap-2 bg-background-primary border-0.5 border-solid border-border-subtle rounded-xl shadow-sm-blur-2 max-w-[680px]"
 				containerType="flex"
