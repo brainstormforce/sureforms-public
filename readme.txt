@@ -224,6 +224,10 @@ There is no limit to the types of businesses and organizations that can benefit 
 
 [Join our Facebook group community](https://www.facebook.com/groups/surecart): Learn the tricks and techniques that other SureForms users are using to grow their business. Also, get exciting insider information on upcoming feature releases.
 
+### WANT TO CONTRIBUTE TO THE PLUGIN?
+
+You may now contribute to the plugin on [GitHub](https://github.com/brainstormforce/sureforms-public)
+
 ### USE OF 3RD PARTY SERVICES
 
 To improve the user experience, SureForms may use the following 3rd party services if the required features are enabled:
@@ -258,6 +262,7 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 == Changelog ==
 = x.x.x = 
 * Fix: Addressed issue where min and max selection errors in the multichoice block field were not displayed in real-time and were only shown upon form submission.
+* Fix: Improved security.
 = 1.4.2 - 4th March 2025 =
 * Improvement: Made the form submission text translatable.
 * Fix: Resolved a recursive pattern insertion issue in Gutenberg that was causing a 502 error due to an infinite loop.
