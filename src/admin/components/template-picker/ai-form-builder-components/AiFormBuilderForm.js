@@ -1,6 +1,14 @@
 import { __ } from '@wordpress/i18n';
 import { useState, useRef } from '@wordpress/element';
-import { Button, Container, Label, TextArea, Title, toast, Switch } from '@bsf/force-ui';
+import {
+	Button,
+	Container,
+	Label,
+	TextArea,
+	Title,
+	toast,
+	Switch,
+} from '@bsf/force-ui';
 import { ArrowRight, ChevronDown, ChevronUp, MicOff, Mic } from 'lucide-react';
 import { applyFilters } from '@wordpress/hooks';
 import PremiumBadge from '@Admin/components/PremiumBadge';
@@ -8,7 +16,14 @@ import { cn, srfmClassNames } from '@Utils/Helpers';
 import ConnectWithAIBanner from '../ai-form-builder-components/ConnectWithAIBanner.js';
 
 export default ( props ) => {
-	const { handleCreateAiForm, setIsBuildingForm, formTypeObj, setFormTypeObj, showEmptyError, setShowEmptyError } = props;
+	const {
+		handleCreateAiForm,
+		setIsBuildingForm,
+		formTypeObj,
+		setFormTypeObj,
+		showEmptyError,
+		setShowEmptyError,
+	} = props;
 
 	const [ isListening, setIsListening ] = useState( false ); // State to manage voice recording
 	const [ showFormIdeas, setShowFormIdeas ] = useState( true );
@@ -30,7 +45,8 @@ export default ( props ) => {
 	};
 
 	const initSpeechRecognition = () => {
-		const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+		const SpeechRecognition =
+			window.SpeechRecognition || window.webkitSpeechRecognition;
 		if ( ! SpeechRecognition ) {
 			return null;
 		}
@@ -74,7 +90,8 @@ export default ( props ) => {
 			setIsListening( true );
 			recognition.onresult = ( event ) => {
 				// keep on appending the result to the textarea
-				const speechResult = event.results[ event.results.length - 1 ][ 0 ].transcript;
+				const speechResult =
+					event.results[ event.results.length - 1 ][ 0 ].transcript;
 				setText( text + speechResult );
 				setCharacterCount( text.length + speechResult.length );
 			};
@@ -84,15 +101,27 @@ export default ( props ) => {
 				toast.dismiss();
 
 				if ( e.error === 'not-allowed' ) {
-					toast.error( __( 'Please allow microphone access to use voice input.', 'sureforms' ), {
-						duration: 5000,
-					} );
+					toast.error(
+						__(
+							'Please allow microphone access to use voice input.',
+							'sureforms'
+						),
+						{
+							duration: 5000,
+						}
+					);
 					return;
 				}
 
-				toast.error( __( 'Speech recognition is not supported in your current browser. Please use Google Chrome / Safari.', 'sureforms' ), {
-					duration: 5000,
-				} );
+				toast.error(
+					__(
+						'Speech recognition is not supported in your current browser. Please use Google Chrome / Safari.',
+						'sureforms'
+					),
+					{
+						duration: 5000,
+					}
+				);
 			};
 		}
 	};
@@ -120,28 +149,34 @@ export default ( props ) => {
 	);
 
 	// conversational form toggle
-	const conversationalAiToggle = ( <Container.Item className="py-2 flex flex-wrap items-center gap-3">
-		<Switch
-			aria-label={ __( 'Create Conversational Form', 'sureforms' ) }
-			id="switch-element"
-			size="sm"
-			className="shadow-sm-blur-2"
-			disabled={ true }
-		/>
-		<Label
-			variant="neutral"
-			size="sm"
-		>
-			{ __( 'Create Conversational Form', 'sureforms' ) }
-		</Label>
-		<PremiumBadge
-			tooltipHeading={ __( 'Unlock Conversational Forms', 'sureforms' ) }
-			tooltipContent={ __( 'With the SureForms Pro Plan, you can transform your forms into engaging conversational layouts for a seamless user experience.', 'sureforms' ) }
-			utmMedium="ai_builder"
-		/>
-	</Container.Item> );
+	const conversationalAiToggle = (
+		<Container.Item className="py-2 flex flex-wrap items-center gap-2">
+			<Switch
+				aria-label={ __( 'Create Conversational Form', 'sureforms' ) }
+				id="switch-element"
+				size="sm"
+				className="shadow-sm-blur-2"
+				disabled={ true }
+			/>
+			<Label variant="neutral" size="sm">
+				{ __( 'Create Conversational Form', 'sureforms' ) }
+			</Label>
+			<PremiumBadge
+				tooltipHeading={ __(
+					'Unlock Conversational Forms',
+					'sureforms'
+				) }
+				tooltipContent={ __(
+					'With the SureForms Pro Plan, you can transform your forms into engaging conversational layouts for a seamless user experience.',
+					'sureforms'
+				) }
+				utmMedium="ai_builder"
+			/>
+		</Container.Item>
+	);
 
-	const is_pro_active = srfm_admin?.is_pro_active && srfm_admin?.is_pro_license_active;
+	const is_pro_active =
+		srfm_admin?.is_pro_active && srfm_admin?.is_pro_license_active;
 
 	const VoiceToggleButton = () => {
 		const buttonProps = isListening
@@ -154,7 +189,7 @@ export default ( props ) => {
 					'hover:bg-badge-background-green',
 				],
 				label: __( 'Listening', 'sureforms' ),
-			}
+			  }
 			: {
 				icon: <MicOff size={ 12 } />,
 				required_className: [
@@ -164,7 +199,7 @@ export default ( props ) => {
 					'hover:bg-badge-background-orange-10',
 				],
 				label: __( 'Voice Input', 'sureforms' ),
-			};
+			  };
 
 		return (
 			<Button
@@ -172,7 +207,9 @@ export default ( props ) => {
 				iconPosition="left"
 				variant="outline"
 				size="xs"
-				className={ `rounded-full border-0.5 border-solid font-medium hover:cursor-pointer ${ srfmClassNames( buttonProps.required_className ) }` }
+				className={ `rounded-full border-0.5 border-solid font-medium hover:cursor-pointer ${ srfmClassNames(
+					buttonProps.required_className
+				) }` }
 				onClick={ toggleListening }
 			>
 				{ buttonProps.label }
@@ -182,61 +219,75 @@ export default ( props ) => {
 
 	return (
 		<Container
-			className={ cn( 'w-full h-full mx-auto', ( is_pro_active ) && 'mt-20' ) }
+			className={ cn(
+				'w-full h-full mx-auto px-8 pb-8 gap-8',
+				is_pro_active && 'mt-16'
+			) }
 			containerType="flex"
-			direction="column">
+			direction="column"
+		>
 			<Container.Item>
 				{ ! is_pro_active && <ConnectWithAIBanner /> }
 			</Container.Item>
 			<Container.Item>
 				<Container
-					className="p-4 gap-0.5 bg-background-primary border-0.5 border-solid border-border-subtle shadow-sm-blur-2 rounded-xl w-full h-full max-w-[680px] mx-auto"
+					className="p-4 gap-1.5 bg-background-primary border-0.5 border-solid border-border-subtle shadow-sm-blur-2 rounded-xl w-full h-full max-w-[680px] mx-auto"
 					containerType="flex"
 					direction="column"
 				>
-					<Container.Item className="flex p-2">
+					<Container.Item className="flex p-2 gap-6">
 						<Title
 							tag="h4"
 							size="md"
-							title={ __( 'Please describe the form you want to create', 'sureforms' ) }
+							title={ __(
+								'Please describe the form you want to create',
+								'sureforms'
+							) }
 						/>
 					</Container.Item>
 					<Container.Item className="p-2 gap-6">
 						<TextArea
-							aria-label={ __( 'Describe the form you want to create', 'sureforms' ) }
-							placeholder={ __( "E.g. Form to gather feedback from our customer for our product functionality, usability , how much you will rate it and what you don't like about it.", 'sureforms' ) }
+							aria-label={ __(
+								'Describe the form you want to create',
+								'sureforms'
+							) }
+							placeholder={ __(
+								"E.g. Form to gather feedback from our customer for our product functionality, usability , how much you will rate it and what you don't like about it.",
+								'sureforms'
+							) }
 							id="textarea"
 							value={ text }
 							size="lg"
-							className={ cn( 'gap-1.5 w-full h-[124px] text-field-placeholder', characterCount > 0 && 'text-text-primary' ) }
+							className={ cn(
+								'gap-2 w-full h-[124px] text-field-placeholder py-2 px-4',
+								characterCount > 0 && 'text-text-primary'
+							) }
 							onChange={ ( e ) => {
 								handlePromptClick( e );
 							} }
 							onInput={ handleTyping }
 							maxLength={ 2000 }
 						/>
-						{ showEmptyError && <Label
-							size="sm"
-							variant="error"
-							className="font-semibold"
-						>
-							{ __( 'Prompt cannot be empty.', 'sureforms' ) }
-						</Label> }
+						{ showEmptyError && (
+							<Label
+								size="sm"
+								variant="error"
+								className="font-semibold"
+							>
+								{ __( 'Prompt cannot be empty.', 'sureforms' ) }
+							</Label>
+						) }
 						<Container className="flex flex-wrap flex-row justify-between items-center">
 							{ false === conversationalFormAiToggle
 								? conversationalAiToggle
-								: conversationalFormAiToggle
-							}
+								: conversationalFormAiToggle }
 							<Container.Item className="py-2 gap-2 ml-auto">
 								<VoiceToggleButton />
 							</Container.Item>
 						</Container>
 					</Container.Item>
-					<Container.Item className="p-2 gap-6">
-						<Container
-							containerType="flex"
-							direction="column"
-						>
+					<Container.Item className="p-2 gap-3">
+						<Container containerType="flex" direction="column">
 							<Container.Item>
 								<Container className="flex flex-wrap flex-row justify-between items-center">
 									<Container.Item className="p-1 gap-1 flex flex-row items-center">
@@ -245,43 +296,53 @@ export default ( props ) => {
 											size="sm"
 											className="gap-1 flex items-center cursor-pointer"
 											onClick={ () =>
-												setShowFormIdeas( ! showFormIdeas )
+												setShowFormIdeas(
+													! showFormIdeas
+												)
 											}
 										>
-											{ __( 'Some Form Ideas', 'sureforms' ) }
+											{ __(
+												'Some Form Ideas',
+												'sureforms'
+											) }
 
 											{ showFormIdeas ? (
-												<ChevronUp size={ 20 } className="!text-icon-secondary" />
+												<ChevronUp className="!text-icon-secondary !size-5" />
 											) : (
-												<ChevronDown size={ 20 } className="!text-icon-secondary" />
+												<ChevronDown className="!text-icon-secondary !size-5" />
 											) }
 										</Label>
 									</Container.Item>
 								</Container>
 							</Container.Item>
-							{ showFormIdeas && <Container.Item>
-								<Container className="gap-2 flex-wrap"
-									containerType="flex"
-									direction="row"
-								>
-									{ examplePrompts.map( ( prompt, index ) => (
-										<Label
-											key={ index }
-											size="md"
-											type="pill"
-											variant="neutral"
-											className="rounded-full border-0.5 border-solid border-badge-border-gray bg-badge-background-gray hover:bg-badge-background-gray hover:cursor-pointer font-medium text-sm py-1 px-1.5 gap-1 flex"
-											onClick={ () =>
-												handlePromptClick(
-													prompt.title
-												)
-											}
-										>
-											{ prompt.title }
-										</Label>
-									) ) }
-								</Container>
-							</Container.Item> }
+							{ showFormIdeas && (
+								<Container.Item>
+									<Container
+										className="gap-2 flex-wrap"
+										containerType="flex"
+										direction="row"
+									>
+										{ examplePrompts.map(
+											( prompt, index ) => (
+												<Label
+													key={ index }
+													size="md"
+													type="pill"
+													variant="neutral"
+													className="rounded-full border-0.5 border-solid border-badge-border-gray bg-badge-background-gray hover:bg-badge-background-gray hover:cursor-pointer font-medium text-sm py-1 px-1.5 gap-0.5 flex"
+													onClick={ () =>
+														handlePromptClick(
+															prompt.title
+														)
+													}
+												>
+													{ prompt.title }
+												</Label>
+											)
+										) }
+									</Container>
+								</Container.Item>
+							) }
 						</Container>
 					</Container.Item>
 					<Container.Item className="py-1 px-2 gap-3 flex flex-col sm:flex-row justify-end">
@@ -294,26 +355,22 @@ export default ( props ) => {
 						</Label>
 						<Button
 							className="gap-1"
-							icon={ <ArrowRight size={ 20 } strokeWidth={ 1.25 } /> }
+							icon={
+								<ArrowRight size={ 20 } strokeWidth={ 1.25 } />
+							}
 							iconPosition="right"
 							size="md"
 							variant="primary"
 							onClick={ () => {
-								if (
-									! text ||
-									! text.trim()
-								) {
+								if ( ! text || ! text.trim() ) {
 									setShowEmptyError( true );
-									const textArea = document.getElementById( 'textarea' );
+									const textArea =
+										document.getElementById( 'textarea' );
 									textArea.focus();
 									return;
 								}
 
-								handleCreateAiForm(
-									text,
-									[],
-									true
-								);
+								handleCreateAiForm( text, [], true );
 								setIsBuildingForm( true );
 							} }
 						>

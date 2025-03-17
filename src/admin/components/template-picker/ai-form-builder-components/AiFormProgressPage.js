@@ -10,11 +10,9 @@ export default ( props ) => {
 		<Container
 			containerType="flex"
 			direction="column"
-			className="mt-10 bg-background-secondary p-8 gap-6 ml-auto mr-auto"
+			className="mt-8 bg-background-secondary p-8 gap-8 ml-auto mr-auto"
 		>
-			<Container.Item
-				className=""
-			>
+			<Container.Item>
 				<Container
 					className="gap-6 items-center"
 					containerType="flex"
@@ -41,10 +39,7 @@ export default ( props ) => {
 						>
 							{ __( 'We are building your form…', 'sureforms' ) }
 						</Label>
-						<Label
-							variant="help"
-							size="sm"
-						>
+						<Label variant="help" size="sm" className="font-normal">
 							{ message }
 						</Label>
 					</Container.Item>
