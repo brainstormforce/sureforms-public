@@ -98,7 +98,7 @@ class Generate_Form_Markup {
 			$bg_type                   = $form_styling['bg_type'] ?? 'color';
 			$bg_color                  = $form_styling['bg_color'] ?? '';
 			$bg_image                  = $form_styling['bg_image'] ?? '';
-			$bg_image_position         = $form_styling['bg_image_position'] ?? 'left top';
+			$bg_image_position         = str_replace( '-', ' ', $form_styling['bg_image_position'] ?? 'center' );
 			$bg_image_attachment       = $form_styling['bg_image_attachment'] ?? 'scroll';
 			$bg_image_repeat           = $form_styling['bg_image_repeat'] ?? 'no-repeat';
 			$bg_image_size             = $form_styling['bg_image_size'] ?? 'cover';
@@ -115,14 +115,20 @@ class Generate_Form_Markup {
 			$bg_gradient_angle         = $is_advanced_gradient ? $form_styling['bg_gradient_angle'] : '';
 			// Overlay Settings.
 			$overlay_type       = $form_styling['bg_gradient_overlay_type'] ?? '';
-			$overlay_size       = $form_styling['bg_overlay_size'] ?? 'auto';
+			$overlay_size       = $form_styling['bg_overlay_size'] ?? 'cover';
 			$overlay_opacity    = $form_styling['bg_overlay_opacity'] ?? 1;
 			$overlay_color      = $form_styling['bg_image_overlay_color'] ?? '';
 			$overlay_image      = $form_styling['bg_overlay_image'] ?? '';
-			$overlay_position   = $form_styling['bg_overlay_position'] ?? 'left top';
+			$overlay_position   = str_replace( '-', ' ', $form_styling['bg_overlay_position'] ?? 'center' );
 			$overlay_attachment = $form_styling['bg_overlay_attachment'] ?? 'scroll';
 			$overlay_repeat     = $form_styling['bg_overlay_repeat'] ?? 'no-repeat';
 			$overlay_blend_mode = $form_styling['bg_overlay_blend_mode'] ?? 'normal';
+
+			if ( 'custom' === $overlay_size ) {
+				$bg_overlay_custom_size      = $form_styling['bg_overlay_custom_size'] ?? 100;
+				$bg_overlay_custom_size_unit = $form_styling['bg_overlay_custom_size_unit'] ?? '%';
+				$overlay_size                = $bg_overlay_custom_size . $bg_overlay_custom_size_unit;
+			}
 
 			$background_classes = apply_filters( 'srfm_add_background_classes', Helper::get_background_classes( $bg_type, $overlay_type ) );
 

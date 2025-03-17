@@ -164,10 +164,10 @@ class Analytics {
 		$global_data = [];
 
 		$security_settings                                 = get_option( 'srfm_security_settings_options', [] );
-		$global_data['boolean_values']['honeypot_enabled'] = true === $security_settings['srfm_honeypot'];
+		$global_data['boolean_values']['honeypot_enabled'] = isset( $security_settings['srfm_honeypot'] ) && true === $security_settings['srfm_honeypot'];
 
 		$email_summary_data                                     = get_option( 'srfm_email_summary_settings_options', [] );
-		$global_data['boolean_values']['email_summary_enabled'] = true === $email_summary_data['srfm_email_summary'];
+		$global_data['boolean_values']['email_summary_enabled'] = isset( $email_summary_data['srfm_email_summary'] ) && true === $email_summary_data['srfm_email_summary'];
 
 		$global_data['boolean_values']['suretriggers_active'] = is_plugin_active( 'suretriggers/suretriggers.php' );
 

@@ -1,6 +1,22 @@
 @import "../blocks/default/utils/mixins.scss";
 
 body.post-type-sureforms_form {
+	/**
+	 * Hide the Patterns and Media tabs in the block editor.
+	 * Using the ^= and $= selectors to target the tabs that start with "tabs-" and end with "-patterns" or "-media".
+	 * This is because the tabs number is dynamic and changes but the start and end part is static.
+	 */
+	[id^="tabs-"][id$="-patterns"],
+	[id^="tabs-"][id$="-media"] {
+		display: none;
+	}
+
+	.srfm-bg-component {
+		.srfm-responsive-common-button {
+			display: none;
+		}
+	}
+
 	.editor-styles-wrapper {
 		@include srfm-background-control-styles( true );
 	}
@@ -430,8 +446,8 @@ body.post-type-sureforms_form {
 
 	// Hide block inserter below wordpress version 6.6.
 	// This default appender is not available from 6.6.
-	.srfm-form-container {
-		> div:last-child.block-list-appender.wp-block {
+	#srfm-form-container {
+		> div.block-list-appender.wp-block {
 			display: none;
 		}
 	}
@@ -548,9 +564,6 @@ body.post-type-sureforms_form {
 		}
 	}
 
-	.wpforms-edit-post-education-notice {
-		display: none;
-	}
 	// Override style coming from astra theme.
 	.sureform-add-option-button {
 		box-shadow: 0 0 0 1px var( --wp-components-color-accent, var( --wp-admin-theme-color, #3858e9 ) ) !important;
