@@ -63,6 +63,32 @@ class Admin {
 		);
 		// Enfold theme compatibility to enable block editor for SureForms post type.
 		add_filter( 'avf_use_block_editor_for_post', [ $this, 'enable_block_editor_in_enfold_theme' ] );
+
+		// Add action links to the plugin page.
+		add_filter( 'plugin_action_links_' . SRFM_BASENAME, [ $this, 'add_action_links' ] );
+		add_filter( 'wpforms_current_user_can', [ $this, 'disable_wpforms_capabilities' ], 10, 3 );
+	}
+
+	/**
+	 * Show action on plugin page.
+	 *
+	 * @param  array $links links.
+	 * @return array
+	 * @since 1.4.2
+	 */
+	public function add_action_links( $links ) {
+		if ( ! defined( 'SRFM_PRO_FILE' ) && ! file_exists( WP_PLUGIN_DIR . '/sureforms-pro/sureforms-pro.php' ) ) {
+			// Display upsell link if SureForms Pro is not installed.
+			$upsell_link = add_query_arg(
+				[
+					'utm_medium' => 'plugin-list',
+				],
+				Helper::get_sureforms_website_url( 'pricing' )
+			);
+			$links[]     = '<a href="' . esc_url( $upsell_link ) . '" target="_blank" rel="noreferrer" class="sureforms-plugins-go-pro">' . esc_html__( 'Get SureForms Pro', 'sureforms' ) . '</a>';
+		}
+
+		return $links;
 	}
 
 	/**
@@ -72,9 +98,8 @@ class Admin {
 	 * @since 1.3.1
 	 */
 	public function enable_block_editor_in_enfold_theme( $use_block_editor ) {
-		$current_screen = get_current_screen();
 		// if SureForms form post type then return true.
-		if ( ! is_null( $current_screen ) && SRFM_FORMS_POST_TYPE === $current_screen->post_type ) {
+		if ( SRFM_FORMS_POST_TYPE === get_current_screen()->post_type ) {
 			return true;
 		}
 		return $use_block_editor;
@@ -252,7 +277,7 @@ class Admin {
 	public function render_entries() {
 		// Render single entry view.
 		// Adding the phpcs ignore nonce verification as no database operations are performed in this function, it is used to display the single entry view.
-		if ( isset( $_GET['entry_id'] ) && is_numeric( $_GET['entry_id'] ) && isset( $_GET['view'] ) && 'details' === $_GET['view'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		if ( isset( $_GET['entry_id'] ) && is_numeric( $_GET['entry_id'] ) && isset( $_GET['view'] ) && 'details' === $_GET['view'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verification is not needed here and explained in the comments above as well.
 			$single_entry_view = new Single_Entry();
 			$single_entry_view->render();
 			return;
@@ -348,7 +373,7 @@ class Admin {
 		global $post, $pagenow;
 		$breadcrumbs = [];
 
-		if ( 'admin.php' === $pagenow && isset( $_GET['page'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		if ( 'admin.php' === $pagenow && isset( $_GET['page'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- We don't need nonce verification here.
 			$page_title    = get_admin_page_title();
 			$breadcrumbs[] = [
 				'title' => $page_title,
@@ -363,7 +388,7 @@ class Admin {
 					'link'  => admin_url( 'edit.php?post_type=' . $post_type_obj->name ),
 				];
 
-				if ( 'edit.php' === $pagenow && ! isset( $_GET['page'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+				if ( 'edit.php' === $pagenow && ! isset( $_GET['page'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- We don't need nonce verification here.
 					$breadcrumbs[ count( $breadcrumbs ) - 1 ]['link'] = '';
 				} else {
 					$breadcrumbs[] = [
@@ -812,8 +837,31 @@ class Admin {
 
 		if ( ! empty( $message ) ) {
 			// Phpcs ignore comment is required as $message variable is already escaped.
-			echo '<div class="notice notice-warning">' . $message . '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			echo '<div class="notice notice-warning">' . wp_kses_post( $message ) . '</div>';
 		}
 	}
 
+	/**
+	 * Disables the capabilities for WPForms to avoid conflicts when enqueueing
+	 * scripts and styles for WPForms.
+	 *
+	 * This function is intended to prevent any potential conflicts that may arise
+	 * when WPForms scripts and styles are enqueued. By disabling certain capabilities,
+	 * it ensures that WPForms does not interfere with other functionalities.
+	 *
+	 * @param bool $user_can A boolean indicating whether the user has the capability.
+	 * @return bool Returns true if the capabilities are successfully disabled, false otherwise.
+	 * @since 1.4.2
+	 */
+	public function disable_wpforms_capabilities( $user_can ) {
+		// Note: Nonce verification is intentionally omitted here as no database operations are performed.
+		// The values of the $_REQUEST variables are strictly validated, ensuring security without the need for nonce verification.
+
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$post_id = ! empty( $_REQUEST['post'] ) && ! empty( $_REQUEST['action'] ) ? absint( $_REQUEST['post'] ) : 0;
+
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$post_type = $post_id ? get_post_type( $post_id ) : sanitize_text_field( wp_unslash( $_REQUEST['post_type'] ?? '' ) );
+		return SRFM_FORMS_POST_TYPE === $post_type ? false : $user_can;
+	}
 }

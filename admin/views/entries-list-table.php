@@ -685,7 +685,7 @@ class Entries_List_Table extends \WP_List_Table {
 	 * @return bool
 	 */
 	public static function is_trash_view() {
-		return isset( $_GET['view'] ) && 'trash' === sanitize_text_field( wp_unslash( $_GET['view'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		return isset( $_GET['view'] ) && 'trash' === sanitize_text_field( wp_unslash( $_GET['view'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verification is not required here as we are not doing any database work.
 	}
 
 	/**
@@ -1171,7 +1171,7 @@ class Entries_List_Table extends \WP_List_Table {
 
 		// Get the current view (All, Read, Unread, Trash) to highlight the selected one.
 		// Adding the phpcs ignore nonce verification as no complex operations are performed here only the count of the entries is required.
-		$current_view = isset( $_GET['view'] ) ? sanitize_text_field( wp_unslash( $_GET['view'] ) ) : 'all'; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$current_view = isset( $_GET['view'] ) ? sanitize_text_field( wp_unslash( $_GET['view'] ) ) : 'all'; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verification is not needed here and this is admin page request only.
 
 		// Define the base URL for the views (without query parameters).
 		$base_url = wp_nonce_url( admin_url( 'admin.php?page=sureforms_entries' ), 'srfm_entries_action' );
@@ -1220,11 +1220,15 @@ class Entries_List_Table extends \WP_List_Table {
 	 * @return array
 	 */
 	private function table_data( $per_page, $current_page, $view, $form_id = 0 ) {
+		$allowed_orderby_columns = $this->get_sortable_columns();
+
 		// Disabled the nonce verification due to the sorting functionality, will need custom implementation to display the sortable columns to accommodate nonce check.
 		// phpcs:disable WordPress.Security.NonceVerification.Recommended
 		$orderby = isset( $_GET['orderby'] ) ? sanitize_text_field( wp_unslash( $_GET['orderby'] ) ) : 'created_at';
+		$orderby = isset( $allowed_orderby_columns[ $orderby ] ) ? $orderby : 'created_at'; // If the orderby column is not in the allowed columns, set it to default.
 		$orderby = 'id' === $orderby ? strtoupper( $orderby ) : $orderby;
 		$order   = isset( $_GET['order'] ) ? sanitize_text_field( wp_unslash( $_GET['order'] ) ) : 'desc';
+		$order   = 'asc' === $order ? 'asc' : 'desc'; // If the order is not asc, set it to desc.
 		// phpcs:enable WordPress.Security.NonceVerification.Recommended
 
 		$offset              = ( $current_page - 1 ) * $per_page;
