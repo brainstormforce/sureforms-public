@@ -220,7 +220,7 @@ export default ( props ) => {
 	return (
 		<Container
 			className={ cn(
-				'w-full h-full mx-auto px-8 pb-8 gap-8',
+				'w-full h-full mx-auto pb-8 gap-8',
 				is_pro_active && 'mt-16'
 			) }
 			containerType="flex"
