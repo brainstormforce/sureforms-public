@@ -7,13 +7,13 @@ import {
 	Button,
 	Container,
 	Switch,
-	Title,
 	Table,
 	Toaster,
 	toast,
 	Tooltip,
 } from '@bsf/force-ui';
 import { Copy, PenLine, Trash } from 'lucide-react';
+import TabContentWrapper from '@Components/tab-content-wrapper';
 
 const CustomButton = forwardRef(
 	(
@@ -219,7 +219,12 @@ const EmailNotification = ( {
 	}
 
 	return (
-		<div className="space-y-6 p-8">
+		<TabContentWrapper
+			title={ __( 'Email Notifications', 'sureforms' ) }
+			actionBtnText={ __( 'Add Notification', 'sureforms' ) }
+			onClickAction={ handleEdit }
+			className="gap-2"
+		>
 			<Toaster
 				position="top-right"
 				design="stack"
@@ -227,173 +232,165 @@ const EmailNotification = ( {
 				autoDismiss={ true }
 				dismissAfter={ 5000 }
 			/>
-			<div className="flex flex-row justify-between items-center gap-2">
-				<Title
-					size="md"
-					tag="h4"
-					title={ __( 'Email Notification', 'sureforms' ) }
-				/>
-				<Button size="md" variant="primary" onClick={ handleEdit }>
-					{ __( 'Add Notification', 'sureforms' ) }
-				</Button>
-			</div>
-			<div className="p-6 bg-background-primary rounded-xl shadow-sm-blur-1 space-y-2">
-				<Table className="rounded-md">
-					<Table.Head>
-						{ headerContent.map( ( header, index ) => (
-							<Table.HeadCell
-								key={ index }
-								className={ index === 3 ? 'text-right' : '' }
-							>
-								{ header.label }
-							</Table.HeadCell>
-						) ) }
-					</Table.Head>
-					<Table.Body>
-						{ emailNotificationData &&
-							emailNotificationData.map( ( el ) => {
-								return (
-									<Table.Row
-										key={ el.id }
-										onChangeSelection={ function Ki() {} }
-										value={ {
-											status: el.status,
-											name: el.name,
-											subject: el.subject,
-										} }
-									>
-										<Table.Cell>
-											<Switch
-												aria-label="Email Notification Switch"
-												id={ el.id }
-												size="sm"
-												checked={ el.status }
-												onChange={ () => {
-													handleToggle( el );
-												} }
+			<Table className="rounded-md">
+				<Table.Head>
+					{ headerContent.map( ( header, index ) => (
+						<Table.HeadCell
+							key={ index }
+							className={ index === 3 ? 'text-right' : '' }
+						>
+							{ header.label }
+						</Table.HeadCell>
+					) ) }
+				</Table.Head>
+				<Table.Body>
+					{ emailNotificationData &&
+						emailNotificationData.map( ( el ) => {
+							return (
+								<Table.Row
+									key={ el.id }
+									onChangeSelection={ function Ki() {} }
+									value={ {
+										status: el.status,
+										name: el.name,
+										subject: el.subject,
+									} }
+								>
+									<Table.Cell>
+										<Switch
+											aria-label="Email Notification Switch"
+											id={ el.id }
+											size="sm"
+											checked={ el.status }
+											onChange={ () => {
+												handleToggle( el );
+											} }
+										/>
+									</Table.Cell>
+									<Table.Cell>{ el.name }</Table.Cell>
+									<Table.Cell>{ el.subject }</Table.Cell>
+									<Table.Cell>
+										<Container
+											align="center"
+											className="gap-2"
+											justify="end"
+										>
+											<CustomButton
+												ariaLabel={ __(
+													'Duplicate',
+													'sureforms'
+												) }
+												icon={
+													<Copy className="size-4" />
+												}
+												onClick={ () =>
+													handleDuplicate( el )
+												}
 											/>
-										</Table.Cell>
-										<Table.Cell>{ el.name }</Table.Cell>
-										<Table.Cell>{ el.subject }</Table.Cell>
-										<Table.Cell>
-											<Container
-												align="center"
-												className="gap-2"
-												justify="end"
+											<CustomButton
+												ariaLabel={ __(
+													'Edit',
+													'sureforms'
+												) }
+												icon={
+													<PenLine className="size-4" />
+												}
+												onClick={ () =>
+													handleEdit( el )
+												}
+											/>
+											<Tooltip
+												arrow
+												content={
+													<Container
+														containerType="flex"
+														direction="column"
+														className="gap-2"
+													>
+														<p className="text-[13px] font-normal">
+															{ __(
+																'Are you sure to delete this?',
+																'sureforms'
+															) }
+														</p>
+														<Container
+															containerType="flex"
+															direction="row"
+															className="gap-3"
+														>
+															<CustomButton
+																ariaLabel={ __(
+																	'Cancel',
+																	'sureforms'
+																) }
+																onClick={ () =>
+																	setIsPopup(
+																		null
+																	)
+																}
+																label={ __(
+																	'Cancel',
+																	'sureforms'
+																) }
+																variant="outline"
+																className="px-3"
+															/>
+															<CustomButton
+																ariaLabel={ __(
+																	'Confirm',
+																	'sureforms'
+																) }
+																onClick={ () =>
+																	handleDelete(
+																		el
+																	)
+																}
+																label={ __(
+																	'Confirm',
+																	'sureforms'
+																) }
+																variant="primary"
+																className="px-2 ml-2"
+																destructive
+															/>
+														</Container>
+													</Container>
+												}
+												placement="top"
+												triggers={ [
+													'click',
+													'focus',
+												] }
+												tooltipPortalId="srfm-settings-container"
+												interactive
+												className="z-999999"
+												variant="light"
+												open={ isPopup === el.id }
+												setOpen={ () =>
+													setIsPopup( el.id )
+												}
 											>
 												<CustomButton
 													ariaLabel={ __(
-														'Duplicate',
+														'Delete',
 														'sureforms'
 													) }
 													icon={
-														<Copy className="size-4" />
+														<Trash className="text-icon-secondary size-4" />
 													}
-													onClick={ () =>
-														handleDuplicate( el )
-													}
+													onClick={ () => {
+														setIsPopup( el.id );
+													} }
 												/>
-												<CustomButton
-													ariaLabel={ __(
-														'Edit',
-														'sureforms'
-													) }
-													icon={
-														<PenLine className="size-4" />
-													}
-													onClick={ () =>
-														handleEdit( el )
-													}
-												/>
-												<Tooltip
-													arrow
-													content={
-														<div
-															className="flex gap-2 flex-col"
-															offset={ 20 }
-														>
-															<p className="text-[13px] font-normal">
-																{ __(
-																	'Are you sure to delete this?',
-																	'sureforms'
-																) }
-															</p>
-															<div className="flex gap-3">
-																<CustomButton
-																	ariaLabel={ __(
-																		'Cancel',
-																		'sureforms'
-																	) }
-																	onClick={ () =>
-																		setIsPopup(
-																			null
-																		)
-																	}
-																	label={ __(
-																		'Cancel',
-																		'sureforms'
-																	) }
-																	variant="outline"
-																	className="px-3"
-																/>
-
-																<CustomButton
-																	ariaLabel={ __(
-																		'Confirm',
-																		'sureforms'
-																	) }
-																	onClick={ () =>
-																		handleDelete(
-																			el
-																		)
-																	}
-																	label={ __(
-																		'Confirm',
-																		'sureforms'
-																	) }
-																	variant="primary"
-																	className="px-2 ml-2"
-																	destructive
-																/>
-															</div>
-														</div>
-													}
-													placement="top"
-													triggers={ [
-														'click',
-														'focus',
-													] }
-													tooltipPortalId="srfm-settings-container"
-													interactive
-													className="z-999999"
-													variant="light"
-													open={ isPopup === el.id }
-													setOpen={ () =>
-														setIsPopup( el.id )
-													}
-												>
-													<CustomButton
-														ariaLabel={ __(
-															'Delete',
-															'sureforms'
-														) }
-														icon={
-															<Trash className="text-icon-secondary size-4" />
-														}
-														onClick={ () => {
-															setIsPopup( el.id );
-														} }
-													/>
-												</Tooltip>
-											</Container>
-										</Table.Cell>
-									</Table.Row>
-								);
-							} ) }
-					</Table.Body>
-				</Table>
-			</div>
-		</div>
+											</Tooltip>
+										</Container>
+									</Table.Cell>
+								</Table.Row>
+							);
+						} ) }
+				</Table.Body>
+			</Table>
+		</TabContentWrapper>
 	);
 };
 

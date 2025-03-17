@@ -2,9 +2,9 @@ import { __ } from '@wordpress/i18n';
 import Editor from '../QuillEditor';
 import { useState, useEffect } from '@wordpress/element';
 import { useDebouncedCallback } from 'use-debounce';
-import { Button, Title } from '@bsf/force-ui';
-import { ArrowLeft } from 'lucide-react';
+import { Container } from '@bsf/force-ui';
 import ModalInputBox from './ModalInputBox';
+import TabContentWrapper from '@Components/tab-content-wrapper';
 
 const EmailConfirmation = ( props ) => {
 	const {
@@ -123,22 +123,18 @@ const EmailConfirmation = ( props ) => {
 	);
 
 	return (
-		<div className="space-y-6 p-8">
-			<div className="flex flex-row justify-between items-center gap-2">
-				<div onClick={ onClickBack } className="cursor-pointer">
-					<Title
-						icon={ <ArrowLeft className="size-5" /> }
-						iconPosition="left"
-						tag="h4"
-						size="md"
-						title={ __( 'Email Notification', 'sureforms' ) }
-					/>
-				</div>
-				<Button size="md" variant="outline" onClick={ onCancel }>
-					{ __( 'Cancel', 'sureforms' ) }
-				</Button>
-			</div>
-			<div className="px-4 py-6 bg-background-primary rounded-xl shadow-sm-blur-1 space-y-2">
+		<TabContentWrapper
+			title={ __( 'Email Notifications', 'sureforms' ) }
+			actionBtnText={ __( 'Cancel', 'sureforms' ) }
+			actionBtnVariant="outline"
+			onClickAction={ onCancel }
+			onClickBack={ onClickBack }
+		>
+			<Container
+				containerType="flex"
+				direction="column"
+				className="gap-2"
+			>
 				<ModalInputBox
 					label={ __( 'Name', 'sureforms' ) }
 					id="srfm-email-notification-name"
@@ -236,7 +232,7 @@ const EmailConfirmation = ( props ) => {
 					/>
 				</div>
 
-				<div className="flex flex-row gap-2">
+				<Container containerType="flex" direction="row" className="gap-2">
 					<ModalInputBox
 						label={ __( 'CC', 'sureforms' ) }
 						id="srfm-email-notification-cc"
@@ -299,7 +295,8 @@ const EmailConfirmation = ( props ) => {
 						}
 						padding="pr-2"
 					/>
-				</div>
+				</Container>
+
 				<ModalInputBox
 					label={ __( 'Reply To', 'sureforms' ) }
 					id="srfm-email-notification-reply-to"
@@ -331,8 +328,8 @@ const EmailConfirmation = ( props ) => {
 					}
 					padding="px-2"
 				/>
-			</div>
-		</div>
+			</Container>
+		</TabContentWrapper>
 	);
 };
 
