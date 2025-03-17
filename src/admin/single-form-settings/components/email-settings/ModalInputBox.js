@@ -1,5 +1,5 @@
 import SmartTagList from '@Components/misc/SmartTagList';
-import { Label, Input } from '@bsf/force-ui';
+import { Label, Input, Container } from '@bsf/force-ui';
 import { cn } from '@Utils/Helpers';
 
 const ModalInputBox = ( {
@@ -16,8 +16,8 @@ const ModalInputBox = ( {
 	padding = '',
 } ) => {
 	return (
-		<div className={ cn( 'flex flex-col w-full h-auto gap-2', padding ) }>
-			<div className="flex w-full items-center gap-1.5">
+		<Container containerType="flex" direction="column" className={ cn( 'w-full gap-2', padding ) }>
+			<Container containerType="flex" direction="row" align="center" className="gap-1.5">
 				<div className="flex-1">
 					<Input
 						aria-label={ label }
@@ -42,13 +42,13 @@ const ModalInputBox = ( {
 						/>
 					</div>
 				) }
-			</div>
+			</Container>
 			{ helpText && (
 				<Label size="sm" variant="help" className="font-normal">
 					{ helpText }
 				</Label>
 			) }
-		</div>
+		</Container>
 	);
 };
 
