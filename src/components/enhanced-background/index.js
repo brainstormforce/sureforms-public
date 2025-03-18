@@ -1,6 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import AdvancedPopColorControl from '@Components/color-control/advanced-pop-color-control.js';
-import { SelectControl } from '@wordpress/components';
+import { SelectControl, FocalPointPicker } from '@wordpress/components';
 import styles from './editor.lazy.scss';
 import GradientSettings from '@Components/gradient-settings';
 import { useRef, useLayoutEffect } from '@wordpress/element';
@@ -192,66 +192,19 @@ const Background = ( props ) => {
 					{ backgroundOverlayImage.value && (
 						<>
 							<div className="srfm-background-image-position">
-								<SelectControl
+								<FocalPointPicker
 									label={ __(
 										'Image Position',
 										'sureforms'
 									) }
-									value={ backgroundOverlayPosition.value }
-									onChange={ ( value ) =>
+									url={ backgroundOverlayImage?.value }
+									value={ backgroundOverlayPosition?.value }
+									onChange={ ( focalPoint ) => {
 										setAttributes( {
-											[ backgroundOverlayPosition.label ]:
-												value,
-										} )
-									}
-									options={ [
-										{
-											value: 'left-top',
-											label: __(
-												'Top Left',
-												'sureforms'
-											),
-										},
-										{
-											value: 'center-top',
-											label: __(
-												'Top Center',
-												'sureforms'
-											),
-										},
-										{
-											value: 'right-top',
-											label: __(
-												'Top Right',
-												'sureforms'
-											),
-										},
-										{
-											value: 'center',
-											label: __( 'Center', 'sureforms' ),
-										},
-										{
-											value: 'left-bottom',
-											label: __(
-												'Bottom Left',
-												'sureforms'
-											),
-										},
-										{
-											value: 'center-bottom',
-											label: __(
-												'Bottom Center',
-												'sureforms'
-											),
-										},
-										{
-											value: 'right-bottom',
-											label: __(
-												'Bottom Right',
-												'sureforms'
-											),
-										},
-									] }
+											[ backgroundOverlayPosition?.label ]:
+												focalPoint,
+										} );
+									} }
 								/>
 							</div>
 							<div className="srfm-background-image-attachment">
@@ -584,65 +537,19 @@ const Background = ( props ) => {
 					{ backgroundImage.value && (
 						<>
 							<div className="srfm-background-image-position">
-								<SelectControl
+								<FocalPointPicker
 									label={ __(
 										'Image Position',
 										'sureforms'
 									) }
-									value={ backgroundPosition.value }
-									onChange={ ( value ) =>
+									url={ backgroundImage?.value }
+									value={ backgroundPosition?.value }
+									onChange={ ( focalPoint ) => {
 										setAttributes( {
-											[ backgroundPosition.label ]: value,
-										} )
-									}
-									options={ [
-										{
-											value: 'left-top',
-											label: __(
-												'Top Left',
-												'sureforms'
-											),
-										},
-										{
-											value: 'center-top',
-											label: __(
-												'Top Center',
-												'sureforms'
-											),
-										},
-										{
-											value: 'right-top',
-											label: __(
-												'Top Right',
-												'sureforms'
-											),
-										},
-										{
-											value: 'center',
-											label: __( 'Center', 'sureforms' ),
-										},
-										{
-											value: 'left-bottom',
-											label: __(
-												'Bottom Left',
-												'sureforms'
-											),
-										},
-										{
-											value: 'center-bottom',
-											label: __(
-												'Bottom Center',
-												'sureforms'
-											),
-										},
-										{
-											value: 'right-bottom',
-											label: __(
-												'Bottom Right',
-												'sureforms'
-											),
-										},
-									] }
+											[ backgroundPosition?.label ]:
+												focalPoint,
+										} );
+									} }
 								/>
 							</div>
 							<div className="srfm-background-image-attachment">

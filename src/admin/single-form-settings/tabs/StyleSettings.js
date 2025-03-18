@@ -253,7 +253,7 @@ function StyleSettings( props ) {
 				// Background Control Settings.
 				'--srfm-bg-color': bg_color || '#FFFFFF',
 				'--srfm-bg-image': bg_image ? `url(${ bg_image })` : 'none',
-				'--srfm-bg-position': bg_image_position?.replace( '-', ' ' ) || 'center',
+				'--srfm-bg-position': `${ bg_image_position?.x * 100 }% ${ bg_image_position?.y * 100 }%` || '50% 50%',
 				'--srfm-bg-attachment': bg_image_attachment || 'scroll',
 				'--srfm-bg-repeat': bg_image_repeat || 'no-repeat',
 				'--srfm-bg-size': bg_image_size === 'custom' ? `${ bg_image_size_custom ?? 100 }${ bg_image_size_custom_unit ?? '%' }` : bg_image_size || 'cover',
@@ -263,7 +263,7 @@ function StyleSettings( props ) {
 				'--srfm-bg-gradient': gradient_type === 'basic' ? bg_gradient || 'linear-gradient(90deg, #FFC9B2 0%, #C7CBFF 100%)' : getGradientCSS( gradientOptions.type, gradientOptions.color_1, gradientOptions.color_2, gradientOptions.location_1, gradientOptions.location_2, gradientOptions.angle ),
 				// Overlay Variables - Image.
 				'--srfm-bg-overlay-image': bg_overlay_image ? `url(${ bg_overlay_image })` : 'none',
-				'--srfm-bg-overlay-position': bg_overlay_position?.replace( '-', ' ' ) || 'center',
+				'--srfm-bg-overlay-position': `${ bg_overlay_position?.x * 100 }% ${ bg_overlay_position?.y * 100 }%` || '50% 50%',
 				'--srfm-bg-overlay-attachment': bg_overlay_attachment || 'scroll',
 				'--srfm-bg-overlay-repeat': bg_overlay_repeat || 'no-repeat',
 				'--srfm-bg-overlay-blend-mode': bg_overlay_blend_mode || 'normal',
@@ -406,7 +406,7 @@ function StyleSettings( props ) {
 				cssProperties[ '--srfm-bg-image' ] = value ? `url(${ value })` : 'none';
 				break;
 			case 'bg_image_position':
-				cssProperties[ '--srfm-bg-position' ] = value?.replace( '-', ' ' ) || 'left top';
+				cssProperties[ '--srfm-bg-position' ] = value || '50% 50%';
 				break;
 			case 'bg_image_attachment':
 				cssProperties[ '--srfm-bg-attachment' ] = value || 'scroll';
@@ -454,7 +454,7 @@ function StyleSettings( props ) {
 				cssProperties[ '--srfm-bg-overlay-image' ] = value ? `url(${ value })` : 'none';
 				break;
 			case 'bg_overlay_position':
-				cssProperties[ '--srfm-bg-overlay-position' ] = value?.replace( '-', ' ' ) || 'left top';
+				cssProperties[ '--srfm-bg-overlay-position' ] = value || '50% 50%';
 				break;
 			case 'bg_overlay_attachment':
 				cssProperties[ '--srfm-bg-overlay-attachment' ] = value || 'scroll';
@@ -546,7 +546,7 @@ function StyleSettings( props ) {
 
 		editorRef.current?.classList.add( backgroundClasses[ backgroundType ] );
 
-		if ( overlayType && overlayClasses[ overlayType ] ) {
+		if ( backgroundType === 'image' && overlayType && overlayClasses[ overlayType ] ) {
 			editorRef.current?.classList.add( overlayClasses[ overlayType ] );
 		}
 	};
