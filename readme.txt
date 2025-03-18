@@ -261,8 +261,8 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 
 == Changelog ==
 = 1.4.3 - 18th March 2025 =
-* Fix: Addressed issue where min and max selection errors in the multichoice block field were not displayed in real-time and were only shown upon form submission.
-* Fix: Improved security.
+* Fix: Addressed an issue where minimum and maximum selection errors in the Multiple Choice field were not displayed in real-time and were only shown upon form submission.
+* Fix: This update addressed a security bug. Please make sure you are using the latest version on your website.
 = 1.4.2 - 4th March 2025 =
 * Improvement: Made the form submission text translatable.
 * Fix: Resolved a recursive pattern insertion issue in Gutenberg that was causing a 502 error due to an infinite loop.
