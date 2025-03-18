@@ -506,4 +506,82 @@ class Test_Helper extends TestCase {
             );
         }
     }
+
+    /**
+     * Test the get_gradient_css function with various inputs.
+     */
+    public function testGetGradientCss() {
+        $testCases = [
+            'default values' => [
+                'input' => [],
+                'expected' => 'linear-gradient(90deg, #FFC9B2 0%, #C7CBFF 100%)'
+            ],
+            'custom linear gradient' => [
+                'input' => ['linear', '#FF0000', '#00FF00', 10, 90, 45],
+                'expected' => 'linear-gradient(45deg, #FF0000 10%, #00FF00 90%)'
+            ],
+            'custom radial gradient' => [
+                'input' => ['radial', '#000000', '#FFFFFF', 20, 80],
+                'expected' => 'radial-gradient(#000000 20%, #FFFFFF 80%)'
+            ],
+            'linear with zero values' => [
+                'input' => ['linear', '#123456', '#654321', 0, 0, 0],
+                'expected' => 'linear-gradient(0deg, #123456 0%, #654321 0%)'
+            ],
+            'radial with zero values' => [
+                'input' => ['radial', '#ABCDEF', '#FEDCBA', 0, 0],
+                'expected' => 'radial-gradient(#ABCDEF 0%, #FEDCBA 0%)'
+            ],
+        ];
+
+        // Iterate through test cases and assert results.
+        foreach ($testCases as $description => $testCase) {
+            $this->assertEquals(
+                $testCase['expected'],
+                Helper::get_gradient_css(...$testCase['input']),
+                "Failed asserting for case: {$description}"
+            );
+        }
+    }
+
+    /**
+     * Test the get_background_classes method with various inputs.
+     */
+    public function testGetBackgroundClasses() {
+        $testCases = [
+            'default background type' => [
+                'input' => ['', ''],
+                'expected' => 'srfm-bg-color'
+            ],
+            'background type: color, overlay: image' => [
+                'input' => ['color', 'image'],
+                'expected' => 'srfm-bg-color srfm-overlay-image'
+            ],
+            'background type: image, overlay: color' => [
+                'input' => ['image', 'color'],
+                'expected' => 'srfm-bg-image srfm-overlay-color'
+            ],
+            'background type: image, overlay: gradient' => [
+                'input' => ['image', 'gradient'],
+                'expected' => 'srfm-bg-image srfm-overlay-gradient'
+            ],
+            'background type: gradient, overlay: image' => [
+                'input' => ['gradient', 'image'],
+                'expected' => 'srfm-bg-gradient srfm-overlay-image'
+            ],
+            'background type: empty, overlay: image' => [
+                'input' => ['', 'image'],
+                'expected' => 'srfm-bg-color srfm-overlay-image'
+            ],
+        ];
+
+        // Iterate through test cases and assert results.
+        foreach ($testCases as $description => $testCase) {
+            $this->assertEquals(
+                $testCase['expected'],
+                Helper::get_background_classes(...$testCase['input']),
+                "Failed asserting for case: {$description}"
+            );
+        }
+    }
 }
