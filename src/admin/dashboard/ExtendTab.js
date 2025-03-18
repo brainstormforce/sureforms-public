@@ -163,7 +163,7 @@ export default () => {
 						>
 							<Container className="flex-1 flex flex-col justify-between gap-1 p-2">
 								<Container.Item className="flex flex-col gap-1 pb-1">
-									<Container className="flex gap-1.5 p-1 items-center">
+									<Container containerType="flex" direction="row" align="center" className="gap-1.5 p-1">
 										<img
 											className="w-5 h-5"
 											src={ plugin.logo }

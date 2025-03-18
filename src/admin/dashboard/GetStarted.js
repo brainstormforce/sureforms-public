@@ -14,7 +14,7 @@ export default () => {
 			align="center"
 		>
 			<Container.Item className="flex flex-col gap-6 p-2 col-span-12 md:col-span-7 lg:col-span-7">
-				<div className="flex flex-col gap-0.5">
+				<Container containerType="flex" direction="column" className="gap-0.5">
 					<Title
 						size="md"
 						tag="h3"
@@ -30,8 +30,8 @@ export default () => {
 							'sureforms'
 						) }
 					</Label>
-				</div>
-				<div className="flex flex-row flex-wrap gap-3">
+				</Container>
+				<Container containerType="flex" direction="row" className="flex-wrap gap-3">
 					<Button
 						className="shadow-sm-blur-1 gap-1"
 						icon={
@@ -63,7 +63,7 @@ export default () => {
 					>
 						{ __( 'Read Full Guide', 'sureforms' ) }
 					</Button>
-				</div>
+				</Container>
 			</Container.Item>
 			<Container className="p-2 gap-2 col-span-12 md:col-span-5 lg:col-span-5 aspect-video">
 				<iframe

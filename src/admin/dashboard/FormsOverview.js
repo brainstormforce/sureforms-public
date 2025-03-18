@@ -223,7 +223,7 @@ export default () => {
 					size="xs"
 				/>
 				<Container containerType="flex" direction="row" align="center" className="flex-wrap gap-3 sm:flex-row">
-					<Container containerType="flex" direction="row" align="center" className="gap-2">
+					<Container containerType="flex" direction="row" align="center" className="p-2 gap-2">
 						{ selectedForm ? (
 							<ClearButton
 								onClick={ () => handleChange( '' ) }
@@ -266,7 +266,7 @@ export default () => {
 							</Select>
 						</div>
 					</Container>
-					<Container containerType="flex" direction="row" align="center" className="gap-2">
+					<Container containerType="flex" direction="row" align="center" className="py-2 pl-2 gap-2">
 						{ selectedDates.from || selectedDates.to ? (
 							<ClearButton
 								onClick={ handleClearDateFilters }
