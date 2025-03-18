@@ -208,10 +208,6 @@ export default () => {
 
 	// Formatter for X-Axis
 	const formatXAxis = ( tickItem ) => {
-		console.log(
-			'tickItem',
-			format( new Date( tickItem ), 'MMM dd, yyyy' )
-		);
 		return format( new Date( tickItem ), 'MMM dd, yyyy' );
 	};
 
