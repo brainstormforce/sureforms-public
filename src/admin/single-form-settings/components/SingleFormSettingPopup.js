@@ -16,7 +16,11 @@ import {
 import { select } from '@wordpress/data';
 import { store as editorStore } from '@wordpress/editor';
 import FormConfirmSetting from './form-confirm-setting';
-import { setFormSpecificSmartTags, SRFMToaster, getServerGeneratedBlockSlugs } from '@Utils/Helpers';
+import {
+	setFormSpecificSmartTags,
+	SRFMToaster,
+	getServerGeneratedBlockSlugs,
+} from '@Utils/Helpers';
 import toast from 'react-hot-toast';
 
 const SingleFormSettingsPopup = ( props ) => {
@@ -55,7 +59,9 @@ const SingleFormSettingsPopup = ( props ) => {
 				title: __( 'Email Notification', 'sureforms' ),
 				icon: <MdOutlineMailOutline size={ 20 } />,
 				component: (
-					<EmailNotification { ...{ setHasValidationErrors, emailNotificationData, toast } } />
+					<EmailNotification
+						{ ...{ setHasValidationErrors, emailNotificationData } }
+					/>
 				),
 			},
 			{
@@ -68,15 +74,25 @@ const SingleFormSettingsPopup = ( props ) => {
 				id: 'integrations',
 				title: __( 'Integrations', 'sureforms' ),
 				icon: <MdOutlineDashboardCustomize size={ 20 } />,
-				component: <Integrations { ...{ setSelectedTab, action, setAction, CTA, setCTA, pluginConnected, setPluginConnected } } />,
+				component: (
+					<Integrations
+						{ ...{
+							setSelectedTab,
+							action,
+							setAction,
+							CTA,
+							setCTA,
+							pluginConnected,
+							setPluginConnected,
+						} }
+					/>
+				),
 			},
 			{
 				id: 'form_custom_css',
 				title: __( 'Custom CSS', 'sureforms' ),
 				icon: <MdOutlineCode size={ 20 } />,
-				component: (
-					<FormCustomCssPanel { ...{ formCustomCssData } } />
-				),
+				component: <FormCustomCssPanel { ...{ formCustomCssData } } />,
 			},
 			{
 				id: 'suretriggers',
@@ -95,7 +111,8 @@ const SingleFormSettingsPopup = ( props ) => {
 		}
 	);
 
-	const { getBlocks, getCurrentPostId, getEditedPostContent } = select( editorStore );
+	const { getBlocks, getCurrentPostId, getEditedPostContent } =
+		select( editorStore );
 
 	setFormSpecificSmartTags( getBlocks(), blockSlugs );
 
@@ -109,13 +126,20 @@ const SingleFormSettingsPopup = ( props ) => {
 
 		if ( ! Object.keys( blockSlugs ).length ) {
 			// Process the blocks using fetch one time per Modal open ( Or if data is not set already in blockSlugs state. )
-			getServerGeneratedBlockSlugs( getCurrentPostId(), getEditedPostContent() )
+			getServerGeneratedBlockSlugs(
+				getCurrentPostId(),
+				getEditedPostContent()
+			)
 				.then( ( response ) => {
 					if ( true !== response?.success ) {
-						return console.error( 'Unable to fetch saved blocks: ', response?.data );
+						return console.error(
+							'Unable to fetch saved blocks: ',
+							response?.data
+						);
 					}
 					setBlockSlugs( response.data );
-				} ).catch( ( err ) => {
+				} )
+				.catch( ( err ) => {
 					console.error( 'Unable to fetch saved blocks: ', err );
 				} );
 		}
