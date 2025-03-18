@@ -131,9 +131,8 @@ const EmailConfirmation = ( props ) => {
 			onClickBack={ onClickBack }
 		>
 			<Container
-				containerType="flex"
 				direction="column"
-				className="gap-2"
+				className="gap-4 px-2"
 			>
 				<ModalInputBox
 					label={ __( 'Name', 'sureforms' ) }
@@ -160,7 +159,6 @@ const EmailConfirmation = ( props ) => {
 					setTargetData={ ( tag ) =>
 						setDynamicSubject( dynamicSubject + tag )
 					}
-					padding="px-2"
 				/>
 
 				<ModalInputBox
@@ -193,7 +191,6 @@ const EmailConfirmation = ( props ) => {
 							email_to: formData.email_to + tag,
 						} )
 					}
-					padding="px-2"
 				/>
 
 				<ModalInputBox
@@ -219,10 +216,9 @@ const EmailConfirmation = ( props ) => {
 					setTargetData={ ( tag ) =>
 						setDynamicSubject( dynamicSubject + tag )
 					}
-					padding="px-2"
 				/>
 
-				<div className="p-2 gap-6">
+				<div className="py-2 gap-6">
 					<Editor
 						handleContentChange={ handleOnChangeEmailBodyContent }
 						content={ formData.email_body }
@@ -232,7 +228,7 @@ const EmailConfirmation = ( props ) => {
 					/>
 				</div>
 
-				<Container containerType="flex" direction="row" className="gap-2">
+				<Container className="gap-2">
 					<ModalInputBox
 						label={ __( 'CC', 'sureforms' ) }
 						id="srfm-email-notification-cc"
@@ -262,7 +258,6 @@ const EmailConfirmation = ( props ) => {
 								email_cc: formData.email_cc + tag,
 							} )
 						}
-						padding="pl-2"
 					/>
 					<ModalInputBox
 						label={ __( 'BCC', 'sureforms' ) }
@@ -293,7 +288,6 @@ const EmailConfirmation = ( props ) => {
 								email_bcc: formData.email_bcc + tag,
 							} )
 						}
-						padding="pr-2"
 					/>
 				</Container>
 
@@ -326,7 +320,6 @@ const EmailConfirmation = ( props ) => {
 							email_reply_to: formData.email_reply_to + tag,
 						} )
 					}
-					padding="px-2"
 				/>
 			</Container>
 		</TabContentWrapper>

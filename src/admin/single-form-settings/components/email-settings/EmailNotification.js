@@ -304,7 +304,6 @@ const EmailNotification = ( {
 												offset={ 20 }
 												content={
 													<Container
-														containerType="flex"
 														direction="column"
 														className="gap-2"
 													>
@@ -315,8 +314,6 @@ const EmailNotification = ( {
 															) }
 														</p>
 														<Container
-															containerType="flex"
-															direction="row"
 															className="gap-3"
 														>
 															<CustomButton
