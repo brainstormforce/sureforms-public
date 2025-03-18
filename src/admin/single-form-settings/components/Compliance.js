@@ -1,18 +1,18 @@
 import { __ } from '@wordpress/i18n';
 import { store as editorStore } from '@wordpress/editor';
 import { useDispatch } from '@wordpress/data';
-import { ToggleControl, TextControl } from '@wordpress/components';
+import { Info } from 'lucide-react';
+import { Input, Switch, Label, Container } from '@bsf/force-ui';
+import TabContentWrapper from '@Components/tab-content-wrapper';
 
 const Compliance = ( { complianceData } ) => {
 	const { editPost } = useDispatch( editorStore );
 
-	const handleToggle = ( data ) => {
-		const updatedData = complianceData.map( ( item ) => {
-			return {
-				...item,
-				[ data.id ]: data.status,
-			};
-		} );
+	const handleToggle = ( id, status ) => {
+		const updatedData = complianceData.map( ( item ) => ( {
+			...item,
+			[ id ]: status,
+		} ) );
 
 		editPost( {
 			meta: {
@@ -21,134 +21,110 @@ const Compliance = ( { complianceData } ) => {
 		} );
 	};
 
+	const ComplianceSwitch = ( { id, label, value, onChange } ) => (
+		<Switch
+			label={ label }
+			value={ value }
+			onChange={ ( val ) => onChange( id, val ) }
+		/>
+	);
+
+	const switches = [
+		{
+			id: 'gdpr',
+			label: {
+				heading: __( 'Enable GDPR Compliance', 'sureforms' ),
+				description: __(
+					'When enabled this form will not store User IP, Browser Name and the Device Name in the Entries.',
+					'sureforms'
+				),
+			},
+		},
+		{
+			id: 'do_not_store_entries',
+			label: {
+				heading: __(
+					'Never store entry data after form submission',
+					'sureforms'
+				),
+				description: __(
+					'When enabled this form will never store Entries.',
+					'sureforms'
+				),
+			},
+			condition: complianceData[ 0 ]?.gdpr,
+		},
+		{
+			id: 'auto_delete_entries',
+			label: {
+				heading: __( 'Automatically delete entries', 'sureforms' ),
+				description: __(
+					'When enabled this form will automatically delete entries after a certain period of time.',
+					'sureforms'
+				),
+			},
+			condition:
+				complianceData[ 0 ]?.gdpr &&
+				! complianceData[ 0 ]?.do_not_store_entries,
+		},
+	];
+
 	return (
-		<div className="srfm-modal-content">
-			<div className="srfm-modal-inner-content">
-				<div className="srfm-modal-inner-heading">
-					<span className="srfm-modal-inner-heading-text">
-						<h4>{ __( 'Compliance Settings', 'sureforms' ) }</h4>
-					</span>
-				</div>
-				<div className="srfm-modal-inner-box">
-					<div className="srfm-modal-inner-box-text">
-						<h5>{ __( 'GDPR Settings', 'sureforms' ) }</h5>
-					</div>
-					<div className="srfm-modal-separator"></div>
-					<div className="srfm-modal-inner-box-table">
-						<ToggleControl
-							label={ __(
-								'Enable GDPR Compliance',
-								'sureforms'
-							) }
-							help={ __(
-								'When enabled this form will not store User IP, Browser Name and the Device Name in the Entries.',
-								'sureforms'
-							) }
-							checked={ complianceData[ 0 ]?.gdpr }
-							onChange={ ( value ) =>
-								handleToggle( {
-									id: 'gdpr',
-									status: value,
-								} )
-							}
-						/>
-						{ complianceData[ 0 ]?.gdpr && (
-							<ToggleControl
-								label={ __(
-									'Never store entry data after form submission',
-									'sureforms'
-								) }
-								help={ __(
-									'When enabled this form will never store Entries.',
-									'sureforms'
-								) }
-								checked={
-									complianceData[ 0 ]?.do_not_store_entries
-								}
-								onChange={ ( value ) =>
-									handleToggle( {
-										id: 'do_not_store_entries',
-										status: value,
-									} )
-								}
+		<TabContentWrapper title={ __( 'Compliance Settings', 'sureforms' ) }>
+			<Container direction="column" className="gap-6">
+				{ switches.map(
+					( { id, label, condition = true } ) =>
+						condition && (
+							<ComplianceSwitch
+								key={ id }
+								id={ id }
+								label={ label }
+								value={ complianceData[ 0 ]?.[ id ] }
+								onChange={ handleToggle }
 							/>
-						) }
-						{ ! complianceData[ 0 ]?.do_not_store_entries &&
-							complianceData[ 0 ]?.gdpr && (
-							<>
-								<ToggleControl
-									label={ __(
-										'Automatically delete entries',
-										'sureforms'
-									) }
-									help={ __(
-										'When enabled this form will automatically delete entries after a certain period of time.',
-										'sureforms'
-									) }
-									checked={
-										complianceData[ 0 ]
-											?.auto_delete_entries
-									}
-									onChange={ ( value ) =>
-										handleToggle( {
-											id: 'auto_delete_entries',
-											status: value,
-										} )
-									}
-								/>
-								{ complianceData[ 0 ]
-									?.auto_delete_entries && (
-									<div
-										style={ {
-											marginLeft: '50px',
-										} }
-									>
-										<label className="components-flex-item components-flex-block components-toggle-control__label">
-											{ __(
-												'Set the automatic deletion period for entries of this form (in days)',
-												'sureforms'
-											) }
-										</label>
-										<TextControl
-											type="number"
-											style={ {
-												width: '17%',
-												marginTop: 'calc(8px)',
-												fontSize: '12px',
-											} }
-											value={
-												complianceData[ 0 ]
-													?.auto_delete_days
-											}
-											help={ __(
-												'Entries older than the days set will be deleted automatically.',
-												'sureforms'
-											) }
-											onChange={ ( value ) => {
-												value = parseInt( value );
+						)
+				) }
+				{ complianceData[ 0 ]?.auto_delete_entries &&
+					! complianceData[ 0 ]?.do_not_store_entries &&
+					complianceData[ 0 ]?.gdpr && (
+					<Container direction="column" className="gap-1.5">
+						<Input
+							aria-label={ __(
+								'Entries older than the selected days will be deleted.',
+								'sureforms'
+							) }
+							size="md"
+							type="number"
+							value={ complianceData[ 0 ]?.auto_delete_days }
+							label={ __(
+								'Entries Time Period',
+								'sureforms'
+							) }
+							onChange={ ( value ) => {
+								value = parseInt( value );
 
-												if ( value < 0 ) {
-													value = 1;
-												}
+								if ( value < 0 ) {
+									value = 1;
+								}
 
-												value = value.toString();
+								value = value.toString();
 
-												handleToggle( {
-													id: 'auto_delete_days',
-													status: value,
-												} );
-											} }
-											min={ 1 }
-											max={ Infinity }
-										/>
-									</div>
+								handleToggle( 'auto_delete_days', value );
+							} }
+						/>
+						<Container gap="0" align="center">
+							<Info className="w-4 h-4 mr-1 cursor-pointer text-icon-secondary" />
+							<Label tag="p" size="sm" variant="help">
+								{ __(
+									'Entries older than the days set will be deleted automatically.',
+									'sureforms'
 								) }
-							</>
-						) }
-					</div>
-				</div>
-			</div>
-		</div>
+							</Label>
+						</Container>
+					</Container>
+				) }
+			</Container>
+		</TabContentWrapper>
 	);
 };
 
