@@ -539,10 +539,13 @@ class Post_Types {
 								'type' => 'string',
 							],
 							'bg_overlay_opacity'          => [
-								'type' => 'integer',
+								'type' => 'number',
 							],
 							'bg_overlay_image'            => [
 								'type' => 'string',
+							],
+							'bg_overlay_image_id'         => [
+								'type' => 'integer',
 							],
 							'bg_image_overlay_color'      => [
 								'type' => 'string',
@@ -553,7 +556,7 @@ class Post_Types {
 							'bg_overlay_custom_size'      => [
 								'type' => 'integer',
 							],
-							'overlay_blend_mode'          => [
+							'bg_overlay_blend_mode'       => [
 								'type' => 'string',
 							],
 							'bg_overlay_position'         => [
@@ -577,7 +580,7 @@ class Post_Types {
 					'bg_type'                     => 'color',
 					'bg_color'                    => '#ffffff',
 					'bg_image'                    => '',
-					'bg_image_position'           => 'default',
+					'bg_image_position'           => 'center',
 					'bg_image_attachment'         => 'fixed',
 					'bg_image_repeat'             => 'no-repeat',
 					'bg_image_size'               => 'cover',
@@ -590,17 +593,17 @@ class Post_Types {
 					'bg_gradient_angle'           => 90,
 					'bg_gradient_location_1'      => 0,
 					'bg_gradient_location_2'      => 100,
-					'bg_overlay_size'             => 'auto',
+					'bg_overlay_size'             => 'cover',
 					'bg_gradient_overlay_type'    => '',
 					'bg_overlay_opacity'          => 1,
 					'bg_overlay_image'            => '',
 					'bg_image_overlay_color'      => '',
 					'bg_overlay_custom_size_unit' => '%',
 					'bg_overlay_custom_size'      => 100,
-					'bg_overlay_position'         => '',
-					'bg_overlay_attachment'       => '',
-					'bg_overlay_repeat'           => '',
-					'overlay_blend_mode'          => '',
+					'bg_overlay_position'         => 'center',
+					'bg_overlay_attachment'       => 'fixed',
+					'bg_overlay_repeat'           => 'no-repeat',
+					'bg_overlay_blend_mode'       => 'normal',
 				],
 			]
 		);

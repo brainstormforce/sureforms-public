@@ -1,6 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import { useSelect, useDispatch } from '@wordpress/data';
-import { useState, useEffect } from '@wordpress/element';
+import { useState, useEffect, useRef, useLayoutEffect } from '@wordpress/element';
 import { store as editorStore } from '@wordpress/editor';
 import AdvancedPopColorControl from '@Components/color-control/advanced-pop-color-control.js';
 import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
@@ -15,19 +15,28 @@ import {
 import { useDeviceType } from '@Controls/getPreviewType';
 import { getStylePanels } from '@Components/hooks';
 import { addStyleInRoot } from '@Utils/Helpers';
-import { chevronDown } from '@wordpress/icons';
-import PremiumBadge from '@Admin/components/PremiumBadge';
 import Background from '@Components/enhanced-background';
 
 function StyleSettings( props ) {
 	const { editPost } = useDispatch( editorStore );
 	const { defaultKeys, isInlineButtonBlockPresent } = props;
 
-	let sureformsKeys = useSelect( ( select ) =>
-		select( editorStore ).getEditedPostAttribute( 'meta' )
+	let sureformsKeys = useSelect(
+		( select ) => {
+			const meta =
+				select( editorStore ).getEditedPostAttribute( 'meta' ) || {};
+			return meta;
+		},
+		[ editorStore ]
 	);
 	const formStyling = sureformsKeys?._srfm_forms_styling || {};
-	const root = document.documentElement.querySelector( 'body' );
+	const rootRef = useRef( null );
+	const editorRef = useRef( null );
+
+	useLayoutEffect( () => {
+		rootRef.current = document.documentElement.querySelector( 'body' );
+		editorRef.current = rootRef.current?.querySelector( '.editor-styles-wrapper' );
+	}, [] );
 	const deviceType = useDeviceType();
 	const [ submitBtn, setSubmitBtn ] = useState(
 		document.querySelector( '.srfm-submit-richtext' )
@@ -64,7 +73,7 @@ function StyleSettings( props ) {
 		bg_overlay_image,
 		bg_overlay_position,
 		bg_overlay_attachment,
-		overlay_blend_mode,
+		bg_overlay_blend_mode,
 		bg_overlay_repeat,
 		bg_overlay_size,
 		bg_overlay_custom_size,
@@ -89,14 +98,11 @@ function StyleSettings( props ) {
 
 	const onHandleChange = ( updatedSettings ) => {
 		const [ key, value ] = Object.entries( updatedSettings )[ 0 ];
-		if ( formStyling?.[ key ] === value ) {
-			// Do not re-render if the value is same. This is necessary for color picker type controls which re-render on selection.
-			return;
-		}
 
+		addStyleInRoot( rootRef.current, getCSSProperties( key, value ) );
 		const formStylingSettings = {
 			...formStyling,
-			[ key ]: value,
+			...updatedSettings,
 		};
 
 		editPost( {
@@ -105,6 +111,15 @@ function StyleSettings( props ) {
 			},
 		} );
 	};
+
+	const [ gradientOptions, setGradientOptions ] = useState( {
+		type: bg_gradient_type || 'linear',
+		color_1: bg_gradient_color_1 || '#FFC9B2',
+		color_2: bg_gradient_color_2 || '#C7CBFF',
+		location_1: bg_gradient_location_1 || 0,
+		location_2: bg_gradient_location_2 || 100,
+		angle: bg_gradient_angle || 90,
+	} );
 
 	/**
 	 * Handles the selection of an image and updates the post metadata with the selected image's URL and ID.
@@ -136,6 +151,8 @@ function StyleSettings( props ) {
 			imageURL = imageURL.sizes.full.url;
 		}
 		key_id = key + '_id';
+
+		addStyleInRoot( rootRef.current, getCSSProperties( key, imageURL ) );
 
 		editPost( {
 			meta: {
@@ -178,6 +195,11 @@ function StyleSettings( props ) {
 	}
 
 	useEffect( () => {
+		// Update the classes on the editor based on the background and overlay types.
+		updateEditorBackgroundClasses( bg_type, bg_gradient_overlay_type );
+	}, [ bg_type, bg_gradient_overlay_type ] );
+
+	useEffect( () => {
 		if ( sureformsKeys ) {
 			const defaultTextColor = '#1E1E1E';
 
@@ -211,16 +233,39 @@ function StyleSettings( props ) {
 				'--srfm-submit-width': sureformsKeys?._srfm_submit_width || '',
 				'--srfm-submit-alignment-backend': sureformsKeys._srfm_submit_alignment_backend || '',
 				'--srfm-submit-width-backend': sureformsKeys._srfm_submit_width_backend || '',
+				// Background Control Settings.
+				'--srfm-bg-color': bg_color || '#FFFFFF',
+				'--srfm-bg-image': bg_image ? `url(${ bg_image })` : 'none',
+				'--srfm-bg-position': bg_image_position?.replace( '-', ' ' ) || 'center',
+				'--srfm-bg-attachment': bg_image_attachment || 'scroll',
+				'--srfm-bg-repeat': bg_image_repeat || 'no-repeat',
+				'--srfm-bg-size': bg_image_size === 'custom' ? `${ bg_image_size_custom ?? 100 }${ bg_image_size_custom_unit ?? '%' }` : bg_image_size || 'cover',
+				'--srfm-bg-size-custom': bg_image_size_custom || 100,
+				'--srfm-bg-size-custom-unit': bg_image_size_custom_unit || '%',
+				// Gradient Variables.
+				'--srfm-bg-gradient': gradient_type === 'basic' ? bg_gradient || 'linear-gradient(90deg, #FFC9B2 0%, #C7CBFF 100%)' : getGradientCSS( gradientOptions.type, gradientOptions.color_1, gradientOptions.color_2, gradientOptions.location_1, gradientOptions.location_2, gradientOptions.angle ),
+				// Overlay Variables - Image.
+				'--srfm-bg-overlay-image': bg_overlay_image ? `url(${ bg_overlay_image })` : 'none',
+				'--srfm-bg-overlay-position': bg_overlay_position?.replace( '-', ' ' ) || 'center',
+				'--srfm-bg-overlay-attachment': bg_overlay_attachment || 'scroll',
+				'--srfm-bg-overlay-repeat': bg_overlay_repeat || 'no-repeat',
+				'--srfm-bg-overlay-blend-mode': bg_overlay_blend_mode || 'normal',
+				'--srfm-bg-overlay-size': bg_overlay_size === 'custom' ? `${ bg_overlay_custom_size ?? 100 }${ bg_overlay_custom_size_unit ?? '%' }` : bg_overlay_size || 'cover',
+				'--srfm-bg-overlay-custom-size': bg_overlay_custom_size || 100,
+				'--srfm-bg-overlay-custom-size-unit': bg_overlay_custom_size_unit || '%',
+				'--srfm-bg-overlay-opacity': bg_overlay_opacity ?? 1,
+				// Overlay Variables - Color.
+				'--srfm-bg-overlay-color': bg_image_overlay_color || '#FFFFFF75',
 			};
 
-			addStyleInRoot( root, cssProperties );
+			addStyleInRoot( rootRef.current, cssProperties );
 		} else {
 			sureformsKeys = defaultKeys;
 			editPost( {
 				meta: sureformsKeys,
 			} );
 		}
-	}, [ sureformsKeys ] );
+	}, [ sureformsKeys, gradientOptions, bg_gradient ] );
 
 	function updateMeta( option, value ) {
 		const value_id = 0;
@@ -237,7 +282,7 @@ function StyleSettings( props ) {
 				break;
 		}
 
-		addStyleInRoot( root, cssProperties );
+		addStyleInRoot( rootRef.current, cssProperties );
 
 		const option_array = {};
 
@@ -266,7 +311,7 @@ function StyleSettings( props ) {
 		const overrideSize = srfm_admin?.field_spacing_vars[ sizingValue ] || {};
 		const finalSize = { ...baseSize, ...overrideSize };
 
-		addStyleInRoot( root, finalSize );
+		addStyleInRoot( rootRef.current, finalSize );
 	}
 
 	/**
@@ -279,8 +324,17 @@ function StyleSettings( props ) {
 	 * @since 0.0.7
 	 */
 	function updateFormStyling( option, value ) {
-		const cssProperties = {};
+		addStyleInRoot( rootRef.current, getCSSProperties( option, value ) );
 
+		editPost( {
+			meta: {
+				_srfm_forms_styling: { ...formStyling, [ option ]: value },
+			},
+		} );
+	}
+
+	function getCSSProperties( option, value ) {
+		const cssProperties = {};
 		switch ( option ) {
 			case 'primary_color':
 				cssProperties[ '--srfm-color-scheme-primary' ] = value || '#111C44';
@@ -325,22 +379,154 @@ function StyleSettings( props ) {
 					updateMeta( '_srfm_submit_alignment_backend', '50%' );
 				}
 				break;
+			case 'bg_color':
+				cssProperties[ '--srfm-bg-color' ] = value || '#FFFFFF';
+				break;
+			// Image Variables.
+			case 'bg_image':
+				cssProperties[ '--srfm-bg-image' ] = value ? `url(${ value })` : 'none';
+				break;
+			case 'bg_image_position':
+				cssProperties[ '--srfm-bg-position' ] = value?.replace( '-', ' ' ) || 'left top';
+				break;
+			case 'bg_image_attachment':
+				cssProperties[ '--srfm-bg-attachment' ] = value || 'scroll';
+				break;
+			case 'bg_image_repeat':
+				cssProperties[ '--srfm-bg-repeat' ] = value || 'no-repeat';
+				break;
+			case 'bg_image_size':
+				cssProperties[ '--srfm-bg-size' ] = value === 'custom'
+					? `${ bg_image_size_custom ?? 100 }${ bg_image_size_custom ?? '%' }`
+					: value || 'cover';
+				break;
+			case 'bg_image_size_custom':
+				cssProperties[ '--srfm-bg-size-custom' ] = value ?? 100;
+				cssProperties[ '--srfm-bg-size' ] = `${ value ?? 100 }${ bg_image_size_custom ?? '%' }`;
+				break;
+			case 'bg_image_size_custom_unit':
+				cssProperties[ '--srfm-bg-size-custom-unit' ] = value ?? '%';
+				cssProperties[ '--srfm-bg-size' ] = `${ bg_image_size_custom ?? 100 }${ value ?? '%' }`;
+				break;
+			// Gradient Variables.
+			case 'gradient_type':
+			case 'bg_gradient':
+			case 'bg_gradient_type':
+			case 'bg_gradient_color_1':
+			case 'bg_gradient_color_2':
+			case 'bg_gradient_location_1':
+			case 'bg_gradient_location_2':
+			case 'bg_gradient_angle':
+				if ( ( option === 'gradient_type' && value === 'basic' ) || option === 'bg_gradient' ) {
+					cssProperties[ '--srfm-bg-gradient' ] = bg_gradient;
+					break;
+				}
+				const updatedGradientOptions = {
+					...gradientOptions,
+					[ option.replace( 'bg_gradient_', '' ) ]: value,
+				};
+				setGradientOptions( updatedGradientOptions );
+				break;
+			// Overlay Variables - Image.
+			case 'bg_gradient_overlay_type': // might be used in future.
+				cssProperties[ '--srfm-bg-gradient-overlay-type' ] = value || 'none';
+				break;
+			case 'bg_overlay_image':
+				cssProperties[ '--srfm-bg-overlay-image' ] = value ? `url(${ value })` : 'none';
+				break;
+			case 'bg_overlay_position':
+				cssProperties[ '--srfm-bg-overlay-position' ] = value?.replace( '-', ' ' ) || 'left top';
+				break;
+			case 'bg_overlay_attachment':
+				cssProperties[ '--srfm-bg-overlay-attachment' ] = value || 'scroll';
+				break;
+			case 'bg_overlay_repeat':
+				cssProperties[ '--srfm-bg-overlay-repeat' ] = value || 'no-repeat';
+				break;
+			case 'bg_overlay_blend_mode':
+				cssProperties[ '--srfm-bg-overlay-blend-mode' ] = value || 'normal';
+				break;
+			case 'bg_overlay_size':
+				cssProperties[ '--srfm-bg-overlay-size' ] = value === 'custom'
+					? `${ bg_overlay_custom_size ?? 100 }${ bg_overlay_custom_size_unit ?? '%' }`
+					: value || 'cover';
+				break;
+			case 'bg_overlay_custom_size':
+				cssProperties[ '--srfm-bg-overlay-custom-size' ] = value ?? 100;
+				cssProperties[ '--srfm-bg-overlay-size' ] = `${ value ?? 100 }${ bg_overlay_custom_size_unit ?? '%' }`;
+				break;
+			case 'bg_overlay_custom_size_unit':
+				cssProperties[ '--srfm-bg-overlay-custom-size-unit' ] = value ?? '%';
+				cssProperties[ '--srfm-bg-overlay-size' ] = `${ bg_overlay_custom_size ?? 100 }${ value ?? '%' }`;
+				break;
+			case 'bg_overlay_opacity':
+				cssProperties[ '--srfm-bg-overlay-opacity' ] = value ?? 1; // Using nullish coalescing operator to handle 0 case. If value is 0, it should be 0.
+				break;
+			// Overlay Variables - Color.
+			case 'bg_image_overlay_color':
+				cssProperties[ '--srfm-bg-overlay-color' ] = value || '#FFFFFF75';
+				break;
 		}
 
-		addStyleInRoot( root, cssProperties );
-
-		editPost( {
-			meta: {
-				_srfm_forms_styling: { ...formStyling, [ option ]: value },
-			},
-		} );
+		return cssProperties;
 	}
+
+	function getGradientCSS( type = 'linear', color1 = '#FFC9B2', color2 = '#C7CBFF', loc1 = 0, loc2 = 100, angle = 90 ) {
+		if ( type === 'radial' ) {
+			return `radial-gradient(${ color1 } ${ loc1 }%, ${ color2 } ${ loc2 }% )`;
+		}
+		return `linear-gradient( ${ angle }deg, ${ color1 } ${ loc1 }%, ${ color2 } ${ loc2 }%)`;
+	}
+
+	/**
+	 * Updates the editor's background and overlay classes based on the selected types.
+	 *
+	 * This function removes all existing background and overlay classes before applying
+	 * the appropriate class based on the provided `backgroundType` and `overlayType`.
+	 * If no valid background type is given, it defaults to `srfm-bg-type-color`.
+	 *
+	 * For overlay types:
+	 * - If the `backgroundType` is `"image"`, the function applies the corresponding overlay type.
+	 * - If the `backgroundType` is not `"image"`, it defaults to `"srfm-overlay-type-image"`.
+	 *
+	 * @param {string} backgroundType - The type of background (e.g., "image", "gradient", or undefined).
+	 * @param {string} overlayType    - The type of overlay (e.g., "image", "gradient", "color", or undefined).
+	 *
+	 * @return {void} - This function is responsible for handling classes and does not return a value.
+	 * @since x.x.x
+	 */
+	const updateEditorBackgroundClasses = ( backgroundType, overlayType ) => {
+		const backgroundClasses = {
+			image: 'srfm-bg-image',
+			gradient: 'srfm-bg-gradient',
+			default: 'srfm-bg-color',
+		};
+		const overlayClasses = {
+			image: 'srfm-overlay-image',
+			gradient: 'srfm-overlay-gradient',
+			color: 'srfm-overlay-color',
+		};
+
+		editorRef.current.classList.remove( ...Object.values( backgroundClasses ) );
+		editorRef.current.classList.remove( ...Object.values( overlayClasses ) );
+
+		editorRef.current.classList.add( backgroundClasses[ backgroundType ] || backgroundClasses.default );
+
+		// Reset overlayType if it's not valid for the selected backgroundType.
+		if ( backgroundType !== 'image' && overlayType !== 'image' ) {
+			overlayType = '';
+		}
+
+		if ( overlayType && overlayClasses[ overlayType ] ) {
+			editorRef.current.classList.add( overlayClasses[ overlayType ] );
+		}
+	};
 
 	const form = [
 		{
 			id: 'background',
 			component: (
-				<>
+				<div className="srfm-bg-component">
 					<Background
 						// Background Properties
 						backgroundType={ {
@@ -372,18 +558,8 @@ function StyleSettings( props ) {
 							label: 'bg_image_size',
 						} }
 						backgroundCustomSize={ {
-							desktop: {
-								value: bg_image_size_custom,
-								label: 'bg_image_size_custom',
-							},
-							tablet: {
-								value: bg_image_size_custom,
-								label: 'bg_image_size_custom',
-							},
-							mobile: {
-								value: bg_image_size_custom,
-								label: 'bg_image_size_custom',
-							},
+							value: bg_image_size_custom,
+							label: 'bg_image_size_custom',
 						} }
 						backgroundCustomSizeType={ {
 							value: bg_image_size_custom_unit || '%',
@@ -392,7 +568,7 @@ function StyleSettings( props ) {
 						// Gradient Properties
 						gradientOverlay={ { value: true } }
 						gradientType={ {
-							value: gradient_type,
+							value: gradient_type || 'basic',
 							label: 'gradient_type',
 						} }
 						backgroundGradientColor1={ {
@@ -420,7 +596,7 @@ function StyleSettings( props ) {
 							label: 'bg_gradient_type',
 						} }
 						backgroundGradient={ {
-							value: bg_gradient,
+							value: bg_gradient || 'linear-gradient(90deg, #FFC9B2 0%, #C7CBFF 100%)',
 							label: 'bg_gradient',
 						} }
 						// Overlay Properties
@@ -449,8 +625,8 @@ function StyleSettings( props ) {
 							label: 'bg_overlay_attachment',
 						} }
 						overlayBlendMode={ {
-							value: overlay_blend_mode,
-							label: 'overlay_blend_mode',
+							value: bg_overlay_blend_mode,
+							label: 'bg_overlay_blend_mode',
 						} }
 						backgroundOverlayRepeat={ {
 							value: bg_overlay_repeat,
@@ -461,21 +637,11 @@ function StyleSettings( props ) {
 							label: 'bg_overlay_size',
 						} }
 						backgroundOverlayCustomSize={ {
-							desktop: {
-								value: bg_overlay_custom_size,
-								label: 'bg_overlay_custom_size',
-							},
-							tablet: {
-								value: bg_overlay_custom_size,
-								label: 'bg_overlay_custom_size',
-							},
-							mobile: {
-								value: bg_overlay_custom_size,
-								label: 'bg_overlay_custom_size',
-							},
+							value: bg_overlay_custom_size,
+							label: 'bg_overlay_custom_size',
 						} }
 						backgroundOverlayCustomSizeType={ {
-							value: bg_overlay_custom_size_unit,
+							value: bg_overlay_custom_size_unit || '%',
 							label: 'bg_overlay_custom_size_unit',
 						} }
 						label={ __( 'Background', 'sureforms' ) }
@@ -483,7 +649,7 @@ function StyleSettings( props ) {
 						onSelectImage={ onImageSelect }
 					/>
 					<p className="components-base-control__help" />
-				</>
+				</div>
 			),
 		},
 		{
@@ -693,35 +859,8 @@ function StyleSettings( props ) {
 
 	const enhancedStylePanels = getStylePanels( baseStylePanels, { props, sureformsKeys, editPost, formStyling, updateFormStyling } );
 
-	const presetPreview = (
-		<>
-			<div className="srfm-panel-preview">
-				<div className="components-panel__body" style={ { 'border-bottom': 'unset' } }>
-					<h2 className="components-panel__body-title">
-						{ __( 'Form Theme', 'sureforms' ) }
-					</h2>
-					<PremiumBadge
-						tooltipHeading={ __(
-							'Unlock Form Theme',
-							'sureforms'
-						) }
-						tooltipContent={ __(
-							'With the SureForms Starter Plan, access essential form styling options to personalize the look and feel of your forms, ensuring a seamless and engaging user experience.',
-							'sureforms'
-						) }
-						tooltipPosition={ 'bottom' }
-						utmMedium={ 'editor_form_themes' }
-					/>
-					{ chevronDown }
-				</div>
-			</div>
-		</>
-	);
-
-	const isPresetPanelPresent = enhancedStylePanels.find( ( panel ) => panel.panelId === 'themes' );
 	return (
 		<>
-			{ ! isPresetPanelPresent && presetPreview }
 			{ enhancedStylePanels.map( ( panel ) => {
 				const { panelId, title, content, initialOpen } = panel;
 				const panelOptions = content.map( ( item ) => item.component );

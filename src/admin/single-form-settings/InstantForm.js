@@ -54,11 +54,6 @@ const InstantFormComponent = () => {
 	const postName = getMetaValue?.getPermalinkParts?.postName;
 
 	const {
-		// Form background color / image.
-		bg_type,
-		bg_color,
-		bg_image,
-
 		// Form banner color / image.
 		cover_type,
 		cover_color,
@@ -129,14 +124,6 @@ const InstantFormComponent = () => {
 				instantStyles.push( `
 					${ ! use_banner_as_page_background ? '.single-sureforms_form .srfm-single-page-container .srfm-page-banner' : 'html body.single-sureforms_form' } {
 						background-color: ${ cover_color };
-					}
-				` );
-				break;
-
-			case 'bg_color':
-				instantStyles.push( `
-					#srfm-single-page-container {
-						--srfm-bg-color: ${ bg_color };
 					}
 				` );
 				break;
@@ -481,58 +468,6 @@ const InstantFormComponent = () => {
 										checked={ true === use_banner_as_page_background }
 										onChange={ () => onHandleChange( 'use_banner_as_page_background', ! use_banner_as_page_background ) }
 									/>
-
-									<div className="srfm-instant-form-settings">
-										<label>{ __( 'Form Background', 'sureforms' ) }</label>
-										<MultiButtonsControl
-											data={ {
-												value: bg_type,
-												label: 'bg_type',
-											} }
-											options={ [
-												{
-													value: 'color',
-													label: __( 'Color', 'sureforms' ),
-												},
-												{
-													value: 'image',
-													label: __( 'Image', 'sureforms' ),
-												},
-											] }
-											showIcons={ false }
-											onChange={ ( value ) => onHandleChange( 'bg_type', value ) }
-										/>
-									</div>
-
-									{
-										'image' === bg_type ? (
-											<div className="srfm-instant-form-settings">
-												<label>{ __( 'Upload Image', 'sureforms' ) }</label>
-												<SRFMMediaPicker
-													label={ '' }
-													onModalClose={ () => setHidePopover( false ) }
-													onSelectImage={ ( imageURL ) => onImageSelect( 'bg_image', imageURL ) }
-													backgroundImage={ bg_image }
-													onRemoveImage={ () => onHandleChange( 'bg_image', '' ) }
-													isFormSpecific={ true }
-												/>
-											</div>
-										) : (
-											<div className="srfm-instant-form-settings srfm-instant-form-settings-inline">
-												<label>{ __( 'Background Color', 'sureforms' ) }</label>
-												<AdvancedPopColorControl
-													colorValue={ bg_color }
-													data={ {
-														value: bg_color,
-														label: 'bg_color',
-													} }
-													onColorChange={ ( colorValue ) => onHandleChange( 'bg_color', colorValue ) }
-													value={ bg_color }
-													isFormSpecific={ true }
-												/>
-											</div>
-										)
-									}
 
 									<div className="srfm-instant-form-settings">
 										<Range

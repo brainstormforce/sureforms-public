@@ -20,9 +20,6 @@
 		margin-top: $srfm-control-vertical-gap;
 
 		.srfm-size-type-field-tabs {
-			display: flex;
-			justify-content: space-between;
-
 			& > .components-base-control {
 				width: 45%;
 			}

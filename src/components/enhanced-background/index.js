@@ -5,7 +5,6 @@ import styles from './editor.lazy.scss';
 import GradientSettings from '@Components/gradient-settings';
 import { useRef, useLayoutEffect } from '@wordpress/element';
 import SRFMMediaPicker from '@Components/image';
-import ResponsiveSlider from '@Components/responsive-slider';
 import MultiButtonsControl from '@Components/multi-buttons-control';
 import SRFM_Block_Icons from '@Controls/block-icons';
 import SRFMHelpText from '@Components/help-text';
@@ -388,27 +387,14 @@ const Background = ( props ) => {
 								/>
 								{ 'custom' === backgroundOverlaySize.value &&
 									backgroundOverlayCustomSize && (
-									<ResponsiveSlider
+									<Range
 										label={ __( 'Width', 'sureforms' ) }
+										value={
+											backgroundOverlayCustomSize?.value
+										}
 										data={ {
-											desktop: {
-												value: backgroundOverlayCustomSize
-													.desktop.value,
-												label: backgroundOverlayCustomSize
-													.desktop.label,
-											},
-											tablet: {
-												value: backgroundOverlayCustomSize
-													.tablet.value,
-												label: backgroundOverlayCustomSize
-													.tablet.label,
-											},
-											mobile: {
-												value: backgroundOverlayCustomSize
-													.mobile.value,
-												label: backgroundOverlayCustomSize
-													.mobile.label,
-											},
+											value: backgroundOverlayCustomSize?.value,
+											label: backgroundOverlayCustomSize?.label,
 										} }
 										min={ 0 }
 										limitMax={ {
@@ -446,6 +432,7 @@ const Background = ( props ) => {
 										setAttributes={ setAttributes }
 										responsive={ false }
 										isFormSpecific={ true }
+										displayUnit={ true }
 									/>
 								) }
 							</div>
@@ -504,7 +491,14 @@ const Background = ( props ) => {
 										value: backgroundImageColor.value,
 										label: backgroundImageColor.label,
 									} }
-									setAttributes={ setAttributes }
+									onColorChange={ ( colorValue ) =>
+										setAttributes( {
+											[ backgroundImageColor.label ]:
+												colorValue,
+										} )
+									}
+									value={ backgroundImageColor.value }
+									isFormSpecific={ true }
 								/>
 							</div>
 							{ renderOverlayControls() }
@@ -515,7 +509,7 @@ const Background = ( props ) => {
 							<div className="srfm-background-image-overlay-gradient">
 								<GradientSettings
 									backgroundGradient={
-										props.backgroundOverlayGradient
+										props.backgroundGradient
 									}
 									setAttributes={ setAttributes }
 									gradientType={ props.gradientType }
@@ -733,37 +727,24 @@ const Background = ( props ) => {
 								/>
 								{ 'custom' === backgroundSize.value &&
 									backgroundCustomSize && (
-									<ResponsiveSlider
+									<Range
 										label={ __( 'Width', 'sureforms' ) }
+										value={
+											backgroundCustomSize?.value
+										}
 										data={ {
-											desktop: {
-												value: backgroundCustomSize
-													.desktop.value,
-												label: backgroundCustomSize
-													.desktop.label,
-											},
-											tablet: {
-												value: backgroundCustomSize
-													.tablet.value,
-												label: backgroundCustomSize
-													.tablet.label,
-											},
-											mobile: {
-												value: backgroundCustomSize
-													.mobile.value,
-												label: backgroundCustomSize
-													.mobile.label,
-											},
+											value: backgroundCustomSize?.value,
+											label: backgroundCustomSize?.label,
 										} }
 										min={ 0 }
 										limitMax={ {
 											px: 1600,
 											'%': 100,
-											em: 571,
+											em: 574,
 										} }
 										unit={ {
-											value: backgroundCustomSizeType.value,
-											label: backgroundCustomSizeType.label,
+											value: backgroundCustomSizeType?.value,
+											label: backgroundCustomSizeType?.label,
 										} }
 										units={ [
 											{
@@ -788,7 +769,8 @@ const Background = ( props ) => {
 												unitValue: 'em',
 											},
 										] }
-										setAttributes={ setAttributes } // Modified the onHandleChange function.
+										displayUnit={ true }
+										setAttributes={ setAttributes }
 										responsive={ false }
 										isFormSpecific={ true }
 									/>
