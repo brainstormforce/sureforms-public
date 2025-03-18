@@ -140,7 +140,7 @@ class Generate_Form_Markup {
 				$overlay_size                = $bg_overlay_custom_size . $bg_overlay_custom_size_unit;
 			}
 
-			$background_classes = apply_filters( 'srfm_add_background_classes', Helper::get_background_classes( $bg_type, $overlay_type ) );
+			$background_classes = apply_filters( 'srfm_add_background_classes', Helper::get_background_classes( $bg_type, $overlay_type, $bg_image ) );
 
 			$form_classes = [
 				'srfm-form-container',

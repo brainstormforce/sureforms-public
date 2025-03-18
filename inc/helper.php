@@ -1170,13 +1170,14 @@ class Helper {
 	 *
 	 * @param string $background_type The background type.
 	 * @param string $overlay_type The overlay type.
+	 * @param string $bg_image The background image url.
 	 *
 	 * @since x.x.x
 	 * @return string The classes to add to the form container.
 	 */
-	public static function get_background_classes( $background_type, $overlay_type ) {
+	public static function get_background_classes( $background_type, $overlay_type, $bg_image = '' ) {
 		$background_type_class = '';
-		$overlay_class         = 'image' === $background_type && $overlay_type ? "srfm-overlay-{$overlay_type}" : '';
+		$overlay_class         = 'image' === $background_type && ! empty( $bg_image ) && $overlay_type ? "srfm-overlay-{$overlay_type}" : '';
 
 		// Set the class based on the background type.
 		switch ( $background_type ) {

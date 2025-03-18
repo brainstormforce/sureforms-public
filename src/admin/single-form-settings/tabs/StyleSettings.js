@@ -214,7 +214,7 @@ function StyleSettings( props ) {
 	useEffect( () => {
 		// Update the classes on the editor based on the background and overlay types.
 		updateEditorBackgroundClasses( bg_type, bg_gradient_overlay_type );
-	}, [ bg_type, bg_gradient_overlay_type ] );
+	}, [ bg_type, bg_gradient_overlay_type, bg_image ] );
 
 	useEffect( () => {
 		if ( sureformsKeys ) {
@@ -546,7 +546,7 @@ function StyleSettings( props ) {
 
 		editorRef.current?.classList.add( backgroundClasses[ backgroundType ] );
 
-		if ( backgroundType === 'image' && overlayType && overlayClasses[ overlayType ] ) {
+		if ( backgroundType === 'image' && bg_image && overlayType && overlayClasses[ overlayType ] ) {
 			editorRef.current?.classList.add( overlayClasses[ overlayType ] );
 		}
 	};
