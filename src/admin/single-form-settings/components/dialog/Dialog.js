@@ -194,7 +194,6 @@ const Dialog = ( {
 				scrollLock
 				open={ open }
 				setOpen={ setOpen }
-				trigger={ <Button className="z-999999">Open Dialog</Button> }
 				className="[&>div>div]:h-full"
 			>
 				<ForceUIDialog.Backdrop />
@@ -205,7 +204,7 @@ const Dialog = ( {
 						className="w-full h-full p-3 divide-y divide-x-0 divide-solid divide-border-subtle"
 					>
 						<Container className="px-2 pt-2 pb-4" justify="between">
-							<Title tag="h6" title="Form Behavior" size="xs" />
+							<Title tag="h6" title={ __( 'Form Behavior', 'sureforms' ) } size="xs" />
 							<Button
 								variant="ghost"
 								size="sm"

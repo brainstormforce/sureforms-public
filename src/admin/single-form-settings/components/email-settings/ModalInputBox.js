@@ -16,13 +16,12 @@ const ModalInputBox = ( {
 	padding = '',
 } ) => {
 	return (
-		<Container containerType="flex" direction="column" className={ cn( 'w-full gap-2', padding ) }>
-			<Container containerType="flex" direction="row" align="center" className="gap-1.5">
+		<Container direction="column" className={ cn( 'w-full gap-2', padding ) }>
+			<Container align="center" className="gap-1.5">
 				<div className="flex-1">
 					<Input
 						aria-label={ label }
 						type="text"
-						className="w-full flex-1"
 						id={ id }
 						onChange={ ( val ) => onChange( val ) }
 						value={ value }
