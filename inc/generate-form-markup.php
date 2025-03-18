@@ -95,7 +95,7 @@ class Generate_Form_Markup {
 			$form_styling = get_post_meta( $id, '_srfm_forms_styling', true );
 			$form_styling = ! empty( $form_styling ) && is_array( $form_styling ) ? $form_styling : [];
 			// Background Settings.
-			$bg_type                   = $form_styling['bg_type'] ?? 'color';
+			$bg_type                   = $form_styling['bg_type'] ?? '';
 			$bg_color                  = $form_styling['bg_color'] ?? '';
 			$bg_image                  = $form_styling['bg_image'] ?? '';
 			$bg_image_position         = str_replace( '-', ' ', $form_styling['bg_image_position'] ?? 'center' );
@@ -123,6 +123,16 @@ class Generate_Form_Markup {
 			$overlay_attachment = $form_styling['bg_overlay_attachment'] ?? 'scroll';
 			$overlay_repeat     = $form_styling['bg_overlay_repeat'] ?? 'no-repeat';
 			$overlay_blend_mode = $form_styling['bg_overlay_blend_mode'] ?? 'normal';
+			// Gradient Overlay.
+			$bg_overlay_gradient               = $form_styling['bg_overlay_gradient'] ?? 'linear-gradient(90deg, #FFC9B2 0%, #C7CBFF 100%)';
+			$overlay_gradient_type             = $form_styling['overlay_gradient_type'] ?? 'basic'; // Basic or advanced.
+			$is_overlay_advanced_gradient      = 'advanced' === $overlay_gradient_type ? true : false;
+			$bg_overlay_gradient_type          = $is_overlay_advanced_gradient ? $form_styling['bg_overlay_gradient_type'] : '';
+			$bg_overlay_gradient_color_1       = $is_overlay_advanced_gradient ? $form_styling['bg_overlay_gradient_color_1'] : '';
+			$bg_overlay_gradient_color_2       = $is_overlay_advanced_gradient ? $form_styling['bg_overlay_gradient_color_2'] : '';
+			$bg_overlay_gradient_location_1    = $is_overlay_advanced_gradient ? $form_styling['bg_overlay_gradient_location_1'] : '';
+			$bg_overlay_gradient_location_2    = $is_overlay_advanced_gradient ? $form_styling['bg_overlay_gradient_location_2'] : '';
+			$bg_overlay_gradient_angle         = $is_overlay_advanced_gradient ? $form_styling['bg_overlay_gradient_angle'] : '';
 
 			if ( 'custom' === $overlay_size ) {
 				$bg_overlay_custom_size      = $form_styling['bg_overlay_custom_size'] ?? 100;
@@ -297,7 +307,7 @@ class Generate_Form_Markup {
 						$styling_vars['--srfm-bg-gradient'] = esc_html( $bg_gradient );
 					}
 							// Overlay Variables.
-					if ( 'image' === $overlay_type && ! empty( $overlay_image ) ) {
+					if ( 'image' === $bg_type && 'image' === $overlay_type && ! empty( $overlay_image ) ) {
 						$styling_vars += [
 							'--srfm-bg-overlay-image'      => 'url(' . esc_html( $overlay_image ) . ')',
 							'--srfm-bg-overlay-position'   => esc_html( $overlay_position ),
@@ -306,16 +316,16 @@ class Generate_Form_Markup {
 							'--srfm-bg-overlay-size'       => esc_html( $overlay_size ),
 							'--srfm-bg-overlay-blend-mode' => esc_html( $overlay_blend_mode ),
 						];
-					} elseif ( 'color' === $overlay_type && ! empty( $overlay_color ) ) {
+					} elseif ( 'image' === $bg_type && 'color' === $overlay_type && ! empty( $overlay_color ) ) {
 						$styling_vars += [
 							'--srfm-bg-overlay-color' => esc_html( $overlay_color ),
 						];
-					} elseif ( 'gradient' === $overlay_type && ! empty( $overlay_color ) ) {
-						if ( $is_advanced_gradient ) {
-							$bg_gradient = Helper::get_gradient_css( $bg_gradient_type, $bg_gradient_color_1, $bg_gradient_color_2, $bg_gradient_location_1, $bg_gradient_location_2, $bg_gradient_angle );
+					} elseif ( 'image' === $bg_type && 'gradient' === $overlay_type && ! empty( $overlay_color ) ) {
+						if ( $is_overlay_advanced_gradient ) {
+							$bg_overlay_gradient = Helper::get_gradient_css( $bg_overlay_gradient_type, $bg_overlay_gradient_color_1, $bg_overlay_gradient_color_2, $bg_overlay_gradient_location_1, $bg_overlay_gradient_location_2, $bg_overlay_gradient_angle );
 						}
 						$styling_vars += [
-							'--srfm-bg-gradient' => esc_html( $bg_gradient ),
+							'--srfm-bg-overlay-gradient' => esc_html( $bg_overlay_gradient ),
 						];
 					}
 						$styling_vars['--srfm-bg-overlay-opacity'] = esc_html( $overlay_opacity );

@@ -78,6 +78,15 @@ function StyleSettings( props ) {
 		bg_overlay_size,
 		bg_overlay_custom_size,
 		bg_overlay_custom_size_unit,
+		// Gradient Overlay.
+		overlay_gradient_type,
+		bg_overlay_gradient_color_1,
+		bg_overlay_gradient_color_2,
+		bg_overlay_gradient_location_1,
+		bg_overlay_gradient_location_2,
+		bg_overlay_gradient_angle,
+		bg_overlay_gradient_type,
+		bg_overlay_gradient,
 	} = formStyling;
 
 	// Apply the sizings when field spacing changes.
@@ -119,6 +128,14 @@ function StyleSettings( props ) {
 		location_1: bg_gradient_location_1 || 0,
 		location_2: bg_gradient_location_2 || 100,
 		angle: bg_gradient_angle || 90,
+	} );
+	const [ overlayGradientOptions, setOverlayGradientOptions ] = useState( {
+		type: bg_overlay_gradient_type || 'linear',
+		color_1: bg_overlay_gradient_color_1 || '#FFC9B2',
+		color_2: bg_overlay_gradient_color_2 || '#C7CBFF',
+		location_1: bg_overlay_gradient_location_1 || 0,
+		location_2: bg_overlay_gradient_location_2 || 100,
+		angle: bg_overlay_gradient_angle || 90,
 	} );
 
 	/**
@@ -256,6 +273,8 @@ function StyleSettings( props ) {
 				'--srfm-bg-overlay-opacity': bg_overlay_opacity ?? 1,
 				// Overlay Variables - Color.
 				'--srfm-bg-overlay-color': bg_image_overlay_color || '#FFFFFF75',
+				// Overlay Variables - Gradient.
+				'--srfm-bg-overlay-gradient': overlay_gradient_type === 'basic' ? bg_overlay_gradient || 'linear-gradient(90deg, #FFC9B2 0%, #C7CBFF 100%)' : getGradientCSS( overlayGradientOptions.type, overlayGradientOptions.color_1, overlayGradientOptions.color_2, overlayGradientOptions.location_1, overlayGradientOptions.location_2, overlayGradientOptions.angle ),
 			};
 
 			addStyleInRoot( rootRef.current, cssProperties );
@@ -265,7 +284,7 @@ function StyleSettings( props ) {
 				meta: sureformsKeys,
 			} );
 		}
-	}, [ sureformsKeys, gradientOptions, bg_gradient ] );
+	}, [ sureformsKeys, gradientOptions, overlayGradientOptions, bg_gradient, bg_overlay_gradient ] );
 
 	function updateMeta( option, value ) {
 		const value_id = 0;
@@ -466,6 +485,26 @@ function StyleSettings( props ) {
 			case 'bg_image_overlay_color':
 				cssProperties[ '--srfm-bg-overlay-color' ] = value || '#FFFFFF75';
 				break;
+			// Overlay Variables - Gradient.
+			// Gradient Variables.
+			case 'overlay_gradient_type':
+			case 'bg_overlay_gradient':
+			case 'bg_overlay_gradient_type':
+			case 'bg_overlay_gradient_color_1':
+			case 'bg_overlay_gradient_color_2':
+			case 'bg_overlay_gradient_location_1':
+			case 'bg_overlay_gradient_location_2':
+			case 'bg_overlay_gradient_angle':
+				if ( ( option === 'overlay_gradient_type' && value === 'basic' ) || option === 'bg_overlay_gradient' ) {
+					cssProperties[ '--srfm-bg-overlay-gradient' ] = bg_overlay_gradient;
+					break;
+				}
+				const updatedOverlayGradientOptions = {
+					...overlayGradientOptions,
+					[ option.replace( 'bg_overlay_gradient_', '' ) ]: value,
+				};
+				setOverlayGradientOptions( updatedOverlayGradientOptions );
+				break;
 		}
 
 		return cssProperties;
@@ -483,11 +522,6 @@ function StyleSettings( props ) {
 	 *
 	 * This function removes all existing background and overlay classes before applying
 	 * the appropriate class based on the provided `backgroundType` and `overlayType`.
-	 * If no valid background type is given, it defaults to `srfm-bg-type-color`.
-	 *
-	 * For overlay types:
-	 * - If the `backgroundType` is `"image"`, the function applies the corresponding overlay type.
-	 * - If the `backgroundType` is not `"image"`, it defaults to `"srfm-overlay-type-image"`.
 	 *
 	 * @param {string} backgroundType - The type of background (e.g., "image", "gradient", or undefined).
 	 * @param {string} overlayType    - The type of overlay (e.g., "image", "gradient", "color", or undefined).
@@ -499,7 +533,7 @@ function StyleSettings( props ) {
 		const backgroundClasses = {
 			image: 'srfm-bg-image',
 			gradient: 'srfm-bg-gradient',
-			default: 'srfm-bg-color',
+			color: 'srfm-bg-color',
 		};
 		const overlayClasses = {
 			image: 'srfm-overlay-image',
@@ -507,18 +541,13 @@ function StyleSettings( props ) {
 			color: 'srfm-overlay-color',
 		};
 
-		editorRef.current.classList.remove( ...Object.values( backgroundClasses ) );
-		editorRef.current.classList.remove( ...Object.values( overlayClasses ) );
+		editorRef.current?.classList.remove( ...Object.values( backgroundClasses ) );
+		editorRef.current?.classList.remove( ...Object.values( overlayClasses ) );
 
-		editorRef.current.classList.add( backgroundClasses[ backgroundType ] || backgroundClasses.default );
-
-		// Reset overlayType if it's not valid for the selected backgroundType.
-		if ( backgroundType !== 'image' && overlayType !== 'image' ) {
-			overlayType = '';
-		}
+		editorRef.current?.classList.add( backgroundClasses[ backgroundType ] );
 
 		if ( overlayType && overlayClasses[ overlayType ] ) {
-			editorRef.current.classList.add( overlayClasses[ overlayType ] );
+			editorRef.current?.classList.add( overlayClasses[ overlayType ] );
 		}
 	};
 
@@ -643,6 +672,39 @@ function StyleSettings( props ) {
 						backgroundOverlayCustomSizeType={ {
 							value: bg_overlay_custom_size_unit || '%',
 							label: 'bg_overlay_custom_size_unit',
+						} }
+						// Gradient Overlay.
+						overlayGradientType={ {
+							value: overlay_gradient_type || 'basic',
+							label: 'overlay_gradient_type',
+						} }
+						overlayBackgroundGradientColor1={ {
+							value: bg_overlay_gradient_color_1,
+							label: 'bg_overlay_gradient_color_1',
+						} }
+						overlayBackgroundGradientColor2={ {
+							value: bg_overlay_gradient_color_2,
+							label: 'bg_overlay_gradient_color_2',
+						} }
+						overlayBackgroundGradientLocation1={ {
+							value: bg_overlay_gradient_location_1,
+							label: 'bg_overlay_gradient_location_1',
+						} }
+						overlayBackgroundGradientLocation2={ {
+							value: bg_overlay_gradient_location_2,
+							label: 'bg_overlay_gradient_location_2',
+						} }
+						overlayBackgroundGradientAngle={ {
+							value: bg_overlay_gradient_angle,
+							label: 'bg_overlay_gradient_angle',
+						} }
+						overlayBackgroundGradientType={ {
+							value: bg_overlay_gradient_type,
+							label: 'bg_overlay_gradient_type',
+						} }
+						overlayBackgroundGradient={ {
+							value: bg_overlay_gradient || 'linear-gradient(90deg, #FFC9B2 0%, #C7CBFF 100%)',
+							label: 'bg_overlay_gradient',
 						} }
 						label={ __( 'Background', 'sureforms' ) }
 						setAttributes={ onHandleChange }

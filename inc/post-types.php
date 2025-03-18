@@ -568,6 +568,31 @@ class Post_Types {
 							'bg_overlay_repeat'           => [
 								'type' => 'string',
 							],
+							// Gradient Overlay Properties.
+							'bg_overlay_gradient'                 => [
+								'type' => 'string',
+							],
+							'overlay_gradient_type'               => [
+								'type' => 'string',
+							],
+							'bg_overlay_gradient_type'            => [
+								'type' => 'string',
+							],
+							'bg_overlay_gradient_color_1'         => [
+								'type' => 'string',
+							],
+							'bg_overlay_gradient_color_2'         => [
+								'type' => 'string',
+							],
+							'bg_overlay_gradient_angle'           => [
+								'type' => 'integer',
+							],
+							'bg_overlay_gradient_location_1'      => [
+								'type' => 'integer',
+							],
+							'bg_overlay_gradient_location_2'      => [
+								'type' => 'integer',
+							],
 						],
 					],
 				],
@@ -604,6 +629,14 @@ class Post_Types {
 					'bg_overlay_attachment'       => 'fixed',
 					'bg_overlay_repeat'           => 'no-repeat',
 					'bg_overlay_blend_mode'       => 'normal',
+					// Gradient Overlay Properties.
+					'overlay_gradient_type'               => 'basic',
+					'bg_overlay_gradient_type'            => 'linear',
+					'bg_overlay_gradient_color_1'         => '#FFC9B2',
+					'bg_overlay_gradient_color_2'         => '#C7CBFF',
+					'bg_overlay_gradient_angle'           => 90,
+					'bg_overlay_gradient_location_1'      => 0,
+					'bg_overlay_gradient_location_2'      => 100,
 				],
 			]
 		);

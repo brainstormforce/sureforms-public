@@ -466,15 +466,6 @@ const Background = ( props ) => {
 
 	const overlayControls = (
 		<>
-			{ ( ( backgroundType.value === 'color' && backgroundColor.value ) ||
-				( backgroundType.value === 'gradient' &&
-					gradientOverlay.value ) ) && (
-				<>
-					{ buttonControl }
-					{ 'image' === overlayType.value &&
-						renderOverlayImageControls() }
-				</>
-			) }
 			{ backgroundType.value === 'image' && backgroundImage?.value && (
 				<>
 					{ buttonControl }
@@ -509,27 +500,27 @@ const Background = ( props ) => {
 							<div className="srfm-background-image-overlay-gradient">
 								<GradientSettings
 									backgroundGradient={
-										props.backgroundGradient
+										props.overlayBackgroundGradient
 									}
 									setAttributes={ setAttributes }
-									gradientType={ props.gradientType }
+									gradientType={ props.overlayGradientType }
 									backgroundGradientColor2={
-										props.backgroundGradientColor2
+										props.overlayBackgroundGradientColor2
 									}
 									backgroundGradientColor1={
-										props.backgroundGradientColor1
+										props.overlayBackgroundGradientColor1
 									}
 									backgroundGradientType={
-										props.backgroundGradientType
+										props.overlayBackgroundGradientType
 									}
 									backgroundGradientLocation1={
-										props.backgroundGradientLocation1
+										props.overlayBackgroundGradientLocation1
 									}
 									backgroundGradientLocation2={
-										props.backgroundGradientLocation2
+										props.overlayBackgroundGradientLocation2
 									}
 									backgroundGradientAngle={
-										props.backgroundGradientAngle
+										props.overlayBackgroundGradientAngle
 									}
 								/>
 							</div>
