@@ -550,28 +550,44 @@ class Test_Helper extends TestCase {
     public function testGetBackgroundClasses() {
         $testCases = [
             'default background type' => [
-                'input' => ['', ''],
+                'input' => ['', '', ''],
+                'expected' => ''
+            ],
+            'background type: color, overlay: image (should ignore overlay)' => [
+                'input' => ['color', 'image', ''],
                 'expected' => 'srfm-bg-color'
             ],
-            'background type: color, overlay: image' => [
-                'input' => ['color', 'image'],
-                'expected' => 'srfm-bg-color srfm-overlay-image'
+            'background type: image, overlay: color (no bg image)' => [
+                'input' => ['image', 'color', ''],
+                'expected' => 'srfm-bg-image'
             ],
-            'background type: image, overlay: color' => [
-                'input' => ['image', 'color'],
+            'background type: image, overlay: color (with bg image)' => [
+                'input' => ['image', 'color', 'example.jpg'],
                 'expected' => 'srfm-bg-image srfm-overlay-color'
             ],
-            'background type: image, overlay: gradient' => [
-                'input' => ['image', 'gradient'],
+            'background type: image, overlay: gradient (no bg image)' => [
+                'input' => ['image', 'gradient', ''],
+                'expected' => 'srfm-bg-image'
+            ],
+            'background type: image, overlay: gradient (with bg image)' => [
+                'input' => ['image', 'gradient', 'example.jpg'],
                 'expected' => 'srfm-bg-image srfm-overlay-gradient'
             ],
-            'background type: gradient, overlay: image' => [
-                'input' => ['gradient', 'image'],
-                'expected' => 'srfm-bg-gradient srfm-overlay-image'
+            'background type: gradient, overlay: image (should ignore overlay)' => [
+                'input' => ['gradient', 'image', ''],
+                'expected' => 'srfm-bg-gradient'
             ],
-            'background type: empty, overlay: image' => [
-                'input' => ['', 'image'],
-                'expected' => 'srfm-bg-color srfm-overlay-image'
+            'background type: empty, overlay: image (should ignore overlay)' => [
+                'input' => ['', 'image', ''],
+                'expected' => ''
+            ],
+            'background type: image, overlay: none (with bg image)' => [
+                'input' => ['image', '', 'example.jpg'],
+                'expected' => 'srfm-bg-image'
+            ],
+            'background type: image, overlay: none (no bg image)' => [
+                'input' => ['image', '', ''],
+                'expected' => 'srfm-bg-image'
             ],
         ];
 
