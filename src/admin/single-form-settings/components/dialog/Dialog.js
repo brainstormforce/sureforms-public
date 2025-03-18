@@ -1,7 +1,25 @@
-import { useState, useLayoutEffect, createPortal, useEffect, memo } from '@wordpress/element';
-import { Dialog as ForceUIDialog, Button, Container, Title } from '@bsf/force-ui';
+import {
+	useState,
+	useLayoutEffect,
+	createPortal,
+	useEffect,
+	memo,
+} from '@wordpress/element';
+import {
+	Dialog as ForceUIDialog,
+	Button,
+	Container,
+	Title,
+} from '@bsf/force-ui';
 import SidebarNav from './SidebarNav';
-import { AlertTriangleIcon, Code2Icon, CpuIcon, SettingsIcon, ShieldCheckIcon, XIcon } from 'lucide-react';
+import {
+	AlertTriangleIcon,
+	Code2Icon,
+	CpuIcon,
+	SettingsIcon,
+	ShieldCheckIcon,
+	XIcon,
+} from 'lucide-react';
 
 import Integrations from '../integrations';
 import Suretriggers from '../integrations/suretriggers';
@@ -13,7 +31,10 @@ import EmailNotification from '../email-settings/EmailNotification';
 import { select } from '@wordpress/data';
 import { store as editorStore } from '@wordpress/editor';
 import FormConfirmSetting from '../form-confirm-setting';
-import { setFormSpecificSmartTags, getServerGeneratedBlockSlugs } from '@Utils/Helpers';
+import {
+	setFormSpecificSmartTags,
+	getServerGeneratedBlockSlugs,
+} from '@Utils/Helpers';
 import toast from 'react-hot-toast';
 
 const Dialog = ( {
@@ -71,7 +92,9 @@ const Dialog = ( {
 				label: __( 'Email Notification', 'sureforms' ),
 				icon: <ShieldCheckIcon />,
 				component: (
-					<EmailNotification { ...{ setHasValidationErrors, emailNotificationData, toast } } />
+					<EmailNotification
+						{ ...{ setHasValidationErrors, emailNotificationData } }
+					/>
 				),
 			},
 			{
@@ -84,15 +107,25 @@ const Dialog = ( {
 				id: 'integrations',
 				label: __( 'Integrations', 'sureforms' ),
 				icon: <CpuIcon />,
-				component: <Integrations { ...{ setSelectedTab, action, setAction, CTA, setCTA, pluginConnected, setPluginConnected } } />,
+				component: (
+					<Integrations
+						{ ...{
+							setSelectedTab,
+							action,
+							setAction,
+							CTA,
+							setCTA,
+							pluginConnected,
+							setPluginConnected,
+						} }
+					/>
+				),
 			},
 			{
 				id: 'form_custom_css',
 				label: __( 'Custom CSS', 'sureforms' ),
 				icon: <Code2Icon />,
-				component: (
-					<FormCustomCssPanel { ...{ formCustomCssData } } />
-				),
+				component: <FormCustomCssPanel { ...{ formCustomCssData } } />,
 			},
 			{
 				id: 'suretriggers',
@@ -111,7 +144,8 @@ const Dialog = ( {
 		}
 	);
 
-	const { getBlocks, getCurrentPostId, getEditedPostContent } = select( editorStore );
+	const { getBlocks, getCurrentPostId, getEditedPostContent } =
+		select( editorStore );
 
 	setFormSpecificSmartTags( getBlocks(), blockSlugs );
 
@@ -125,13 +159,20 @@ const Dialog = ( {
 
 		if ( ! Object.keys( blockSlugs ).length ) {
 			// Process the blocks using fetch one time per Modal open ( Or if data is not set already in blockSlugs state. )
-			getServerGeneratedBlockSlugs( getCurrentPostId(), getEditedPostContent() )
+			getServerGeneratedBlockSlugs(
+				getCurrentPostId(),
+				getEditedPostContent()
+			)
 				.then( ( response ) => {
 					if ( true !== response?.success ) {
-						return console.error( 'Unable to fetch saved blocks: ', response?.data );
+						return console.error(
+							'Unable to fetch saved blocks: ',
+							response?.data
+						);
 					}
 					setBlockSlugs( response.data );
-				} ).catch( ( err ) => {
+				} )
+				.catch( ( err ) => {
 					console.error( 'Unable to fetch saved blocks: ', err );
 				} );
 		}
@@ -153,7 +194,6 @@ const Dialog = ( {
 				scrollLock
 				open={ open }
 				setOpen={ setOpen }
-				trigger={ <Button className="z-999999">Open Dialog</Button> }
 				className="[&>div>div]:h-full"
 			>
 				<ForceUIDialog.Backdrop />
@@ -164,8 +204,14 @@ const Dialog = ( {
 						className="w-full h-full p-3 divide-y divide-x-0 divide-solid divide-border-subtle"
 					>
 						<Container className="px-2 pt-2 pb-4" justify="between">
-							<Title tag="h6" title="Form Behavior" size="xs" />
-							<Button variant="ghost" size="sm" className="p-1" onClick={ close } icon={ <XIcon /> } />
+							<Title tag="h6" title={ __( 'Form Behavior', 'sureforms' ) } size="xs" />
+							<Button
+								variant="ghost"
+								size="sm"
+								className="p-1"
+								onClick={ close }
+								icon={ <XIcon /> }
+							/>
 						</Container>
 						<div className="px-2 pb-2 pt-2 w-full h-[calc(100%-3rem)] flex justify-start items-stretch">
 							{ /* Sidebar Navigation */ }
