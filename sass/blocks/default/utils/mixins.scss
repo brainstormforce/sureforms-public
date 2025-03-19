@@ -282,21 +282,21 @@
 
 // Number Block Styles
 @mixin srfm-number-styles {
-	.srfm-input-content{
+	.srfm-input-content {
 		display: flex;
 		width: 100%;
 		align-items: center;
 		font-family: inherit;
-		font-size: var(--srfm-input-field-font-size);
-		font-weight: var(--srfm-input-field-font-weight);
-		line-height: var(--srfm-input-field-line-height);
-		color: var(--srfm-color-input-text);
-		border: var(--srfm-color-input-border) solid 1px;
-		border-radius: var(--srfm-input-field-border-radius);
-		background-color: var(--srfm-color-input-background);
-		height: var(--srfm-input-height);
+		font-size: var( --srfm-input-field-font-size );
+		font-weight: var( --srfm-input-field-font-weight );
+		line-height: var( --srfm-input-field-line-height );
+		color: var( --srfm-color-input-text );
+		border: var( --srfm-color-input-border ) solid 1px;
+		border-radius: var( --srfm-input-field-border-radius );
+		background-color: var( --srfm-color-input-background );
+		height: var( --srfm-input-height );
 		outline: 0;
-		margin: var(--srfm-input-field-margin);
+		margin: var( --srfm-input-field-margin );
 		transition: 0.2s ease-out;
 		padding-top: 0;
 		padding-bottom: 0;
@@ -319,7 +319,7 @@
 			background-color: inherit;
 			border: none;
 			border-radius: 0;
-			padding: var(--srfm-input-field-padding);
+			padding: var( --srfm-input-field-padding );
 			height: 100%; // Keeping height to 100% for matching the input height with the input content container.
 			flex: 1; // Take up the available space in the block, for compatibility with prefix and suffix overflow hidden.
 			&::placeholder {
