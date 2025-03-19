@@ -98,7 +98,7 @@ class Generate_Form_Markup {
 			$bg_type                   = $form_styling['bg_type'] ?? 'color';
 			$bg_color                  = $form_styling['bg_color'] ?? '';
 			$bg_image                  = $form_styling['bg_image'] ?? '';
-			$bg_image_position         = $form_styling['bg_image_position'];
+			$bg_image_position         = $form_styling['bg_image_position'] ?? [];
 			$bg_image_attachment       = $form_styling['bg_image_attachment'] ?? 'scroll';
 			$bg_image_repeat           = $form_styling['bg_image_repeat'] ?? 'no-repeat';
 			$bg_image_size             = $form_styling['bg_image_size'] ?? 'cover';
@@ -107,19 +107,19 @@ class Generate_Form_Markup {
 			$bg_gradient               = $form_styling['bg_gradient'] ?? 'linear-gradient(90deg, #FFC9B2 0%, #C7CBFF 100%)';
 			$gradient_type             = $form_styling['gradient_type'] ?? 'basic'; // Basic or advanced.
 			$is_advanced_gradient      = 'advanced' === $gradient_type ? true : false;
-			$bg_gradient_type          = $is_advanced_gradient ? $form_styling['bg_gradient_type'] : ''; // linear or radial gradient.
-			$bg_gradient_color_1       = $is_advanced_gradient ? $form_styling['bg_gradient_color_1'] : '';
-			$bg_gradient_color_2       = $is_advanced_gradient ? $form_styling['bg_gradient_color_2'] : '';
-			$bg_gradient_location_1    = $is_advanced_gradient ? $form_styling['bg_gradient_location_1'] : '';
-			$bg_gradient_location_2    = $is_advanced_gradient ? $form_styling['bg_gradient_location_2'] : '';
-			$bg_gradient_angle         = $is_advanced_gradient ? $form_styling['bg_gradient_angle'] : '';
+			$bg_gradient_type          = $is_advanced_gradient && isset( $form_styling['bg_gradient_type'] ) ? $form_styling['bg_gradient_type'] : ''; // linear or radial gradient.
+			$bg_gradient_color_1       = $is_advanced_gradient && isset( $form_styling['bg_gradient_color_1'] ) ? $form_styling['bg_gradient_color_1'] : '';
+			$bg_gradient_color_2       = $is_advanced_gradient && isset( $form_styling['bg_gradient_color_2'] ) ? $form_styling['bg_gradient_color_2'] : '';
+			$bg_gradient_location_1    = $is_advanced_gradient && isset( $form_styling['bg_gradient_location_1'] ) ? $form_styling['bg_gradient_location_1'] : '';
+			$bg_gradient_location_2    = $is_advanced_gradient && isset( $form_styling['bg_gradient_location_2'] ) ? $form_styling['bg_gradient_location_2'] : '';
+			$bg_gradient_angle         = $is_advanced_gradient && isset( $form_styling['bg_gradient_angle'] ) ? $form_styling['bg_gradient_angle'] : '';
 			// Overlay Settings.
 			$overlay_type       = $form_styling['bg_gradient_overlay_type'] ?? '';
 			$overlay_size       = $form_styling['bg_overlay_size'] ?? 'cover';
 			$overlay_opacity    = $form_styling['bg_overlay_opacity'] ?? 1;
 			$overlay_color      = $form_styling['bg_image_overlay_color'] ?? '';
 			$overlay_image      = $form_styling['bg_overlay_image'] ?? '';
-			$overlay_position   = $form_styling['bg_overlay_position'];
+			$overlay_position   = $form_styling['bg_overlay_position'] ?? [];
 			$overlay_attachment = $form_styling['bg_overlay_attachment'] ?? 'scroll';
 			$overlay_repeat     = $form_styling['bg_overlay_repeat'] ?? 'no-repeat';
 			$overlay_blend_mode = $form_styling['bg_overlay_blend_mode'] ?? 'normal';
@@ -127,12 +127,12 @@ class Generate_Form_Markup {
 			$bg_overlay_gradient            = $form_styling['bg_overlay_gradient'] ?? 'linear-gradient(90deg, #FFC9B2 0%, #C7CBFF 100%)';
 			$overlay_gradient_type          = $form_styling['overlay_gradient_type'] ?? 'basic'; // Basic or advanced.
 			$is_overlay_advanced_gradient   = 'advanced' === $overlay_gradient_type ? true : false;
-			$bg_overlay_gradient_type       = $is_overlay_advanced_gradient ? $form_styling['bg_overlay_gradient_type'] : '';
-			$bg_overlay_gradient_color_1    = $is_overlay_advanced_gradient ? $form_styling['bg_overlay_gradient_color_1'] : '';
-			$bg_overlay_gradient_color_2    = $is_overlay_advanced_gradient ? $form_styling['bg_overlay_gradient_color_2'] : '';
-			$bg_overlay_gradient_location_1 = $is_overlay_advanced_gradient ? $form_styling['bg_overlay_gradient_location_1'] : '';
-			$bg_overlay_gradient_location_2 = $is_overlay_advanced_gradient ? $form_styling['bg_overlay_gradient_location_2'] : '';
-			$bg_overlay_gradient_angle      = $is_overlay_advanced_gradient ? $form_styling['bg_overlay_gradient_angle'] : '';
+			$bg_overlay_gradient_type       = $is_overlay_advanced_gradient && isset( $form_styling['bg_overlay_gradient_type'] ) ? $form_styling['bg_overlay_gradient_type'] : '';
+			$bg_overlay_gradient_color_1    = $is_overlay_advanced_gradient && isset( $form_styling['bg_overlay_gradient_color_1'] ) ? $form_styling['bg_overlay_gradient_color_1'] : '';
+			$bg_overlay_gradient_color_2    = $is_overlay_advanced_gradient && isset( $form_styling['bg_overlay_gradient_color_2'] ) ? $form_styling['bg_overlay_gradient_color_2'] : '';
+			$bg_overlay_gradient_location_1 = $is_overlay_advanced_gradient && isset( $form_styling['bg_overlay_gradient_location_1'] ) ? $form_styling['bg_overlay_gradient_location_1'] : '';
+			$bg_overlay_gradient_location_2 = $is_overlay_advanced_gradient && isset( $form_styling['bg_overlay_gradient_location_2'] ) ? $form_styling['bg_overlay_gradient_location_2'] : '';
+			$bg_overlay_gradient_angle      = $is_overlay_advanced_gradient && isset( $form_styling['bg_overlay_gradient_angle'] ) ? $form_styling['bg_overlay_gradient_angle'] : '';
 
 			if ( 'custom' === $overlay_size ) {
 				$bg_overlay_custom_size      = $form_styling['bg_overlay_custom_size'] ?? 100;
