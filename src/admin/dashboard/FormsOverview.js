@@ -207,23 +207,22 @@ export default () => {
 	}, [ isDatePickerOpen ] );
 
 	// Formatter for X-Axis
-	const formatXAxis = ( tickItem ) => {
-		return format( new Date( tickItem ), 'MMM dd, yyyy' );
+	const formatXAxis = ( ) => {
+		return '';
 	};
 
 	return (
 		<Container
-			containerType="flex"
 			direction="column"
-			className="w-full h-full p-4 gap-2 rounded-xl bg-background-primary border-0.5 border-solid border-border-subtle shadow-sm-blur-2"
+			className="p-4 gap-2 rounded-xl bg-background-primary border-0.5 border-solid border-border-subtle shadow-sm-blur-2"
 		>
-			<Container.Item className="flex flex-wrap items-center justify-between w-full p-1 gap-6 sm:flex-row sm:gap-2">
+			<Container.Item className="flex flex-wrap items-center justify-between p-1 gap-6 sm:flex-row sm:gap-2">
 				<Title
 					title={ __( 'Forms Overview', 'sureforms' ) }
 					size="xs"
 				/>
-				<Container containerType="flex" direction="row" align="center" className="flex-wrap gap-3 sm:flex-row">
-					<Container containerType="flex" direction="row" align="center" className="p-2 gap-2">
+				<Container align="center" className="flex-wrap gap-3 sm:flex-row">
+					<Container align="center" className="gap-2">
 						{ selectedForm ? (
 							<ClearButton
 								onClick={ () => handleChange( '' ) }
@@ -266,7 +265,7 @@ export default () => {
 							</Select>
 						</div>
 					</Container>
-					<Container containerType="flex" direction="row" align="center" className="py-2 pl-2 gap-2">
+					<Container align="center" className="gap-2">
 						{ selectedDates.from || selectedDates.to ? (
 							<ClearButton
 								onClick={ handleClearDateFilters }
@@ -328,7 +327,7 @@ export default () => {
 				<Label size="sm" variant="help" className="font-semibold">
 					{ getFormLabel( selectedForm ) || 'All Forms' }
 				</Label>
-				<Container containerType="flex" align="center" className="gap-2 p-1">
+				<Container align="center" className="gap-2 p-1">
 					<div className="w-2 h-2 bg-chart-purple-500 rounded-sm"></div>
 					<Label size="xs" variant="help" className="font-medium">
 						{ __( 'Entries', 'sureforms' ) }
@@ -337,33 +336,30 @@ export default () => {
 			</Container.Item>
 			<Container.Item
 				className={
-					'w-full flex flex-col flex-1 items-stretch justify-between rounded-md'
+					'w-full flex flex-col flex-1 items-stretch justify-between rounded-md mt-2'
 				}
 			>
 				{ loading ? (
-					<Container containerType="flex" direction="column" justify="center" items="center" className="h-full min-h-[256px] gap-3">
-						<div className="flex flex-col items-center justify-center">
-							<Loader
-								className="mb-3"
-								size="xl"
-								variant="primary"
+					<Container direction="column" justify="center" align="center" className="min-h-[256px] gap-6">
+						<Loader
+							size="xl"
+							variant="primary"
+						/>
+						<Container direction="column" align="center" className="gap-1">
+							<ChartText
+								text={ __(
+									'Please wait for the data to load',
+									'sureforms'
+								) }
 							/>
-							<div className="flex flex-col items-center space-y-1">
-								<ChartText
-									text={ __(
-										'Please wait for the data to load',
-										'sureforms'
-									) }
-								/>
-								<ChartText
-									color="text-text-secondary"
-									weight="font-normal"
-								/>
-							</div>
-						</div>
+							<ChartText
+								color="text-text-secondary"
+								weight="font-normal"
+							/>
+						</Container>
 					</Container>
 				) : ! loading && dataToShow.length > 0 ? (
-					<div className="flex-1 w-full h-full min-h-[248px]">
+					<div className="flex-1 min-h-[248px]">
 						<AreaChart
 							data={ dataToShow }
 							dataKeys={ [ 'entries' ] }
@@ -388,22 +384,20 @@ export default () => {
 						/>
 					</div>
 				) : (
-					<Container containerType="flex" direction="column" align="center" justify="center" className="h-full min-h-[256px] gap-3">
-						<div className="flex flex-col items-center justify-center">
-							<FileChartColumnIncreasing className="mb-3" />
-							<div className="flex flex-col items-center space-y-1">
-								<ChartText
-									text={ __(
-										'There is no data on this view',
-										'sureforms'
-									) }
-								/>
-								<ChartText
-									color="text-text-secondary"
-									weight="font-normal"
-								/>
-							</div>
-						</div>
+					<Container direction="column" align="center" justify="center" className="min-h-[256px] gap-6">
+						<FileChartColumnIncreasing />
+						<Container direction="column" align="center" className="gap-1">
+							<ChartText
+								text={ __(
+									'There is no data on this view',
+									'sureforms'
+								) }
+							/>
+							<ChartText
+								color="text-text-secondary"
+								weight="font-normal"
+							/>
+						</Container>
 					</Container>
 				) }
 			</Container.Item>

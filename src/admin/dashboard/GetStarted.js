@@ -14,7 +14,7 @@ export default () => {
 			align="center"
 		>
 			<Container.Item className="flex flex-col gap-6 p-2 col-span-12 md:col-span-7 lg:col-span-7">
-				<Container containerType="flex" direction="column" className="gap-0.5">
+				<Container direction="column" className="gap-1">
 					<Title
 						size="md"
 						tag="h3"
@@ -31,11 +31,11 @@ export default () => {
 						) }
 					</Label>
 				</Container>
-				<Container containerType="flex" direction="row" className="flex-wrap gap-3">
+				<Container className="flex-wrap gap-3">
 					<Button
 						className="shadow-sm-blur-1 gap-1"
 						icon={
-							<Plus aria-label="Create new form" role="img" />
+							<Plus aria-label="Create new form" />
 						}
 						iconPosition="right"
 						size="md"
@@ -67,7 +67,7 @@ export default () => {
 			</Container.Item>
 			<Container className="p-2 gap-2 col-span-12 md:col-span-5 lg:col-span-5 aspect-video">
 				<iframe
-					className="w-full h-full rounded border border-border-subtle"
+					className="w-full h-full rounded border border-solid border-border-subtle"
 					src="https://www.youtube.com/embed/it16jGnZBus"
 					title="SureForms: Custom WordPress Forms MADE SIMPLE"
 					allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"

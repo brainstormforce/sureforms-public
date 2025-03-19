@@ -139,7 +139,6 @@ export default () => {
 	return (
 		<Container
 			className="bg-background-primary border-0.5 border-solid rounded-xl border-border-subtle p-3 gap-2 shadow-sm-blur-1"
-			containerType="flex"
 			direction="column"
 		>
 			<Toaster
@@ -150,20 +149,20 @@ export default () => {
 				dismissAfter={ 5000 }
 			/>
 			<Container.Item>
-				<Label size="sm" className="flex font-semibold p-1 gap-2">
+				<Label size="sm" className="font-semibold p-1">
 					{ __( 'Extend Your Website', 'sureforms' ) }
 				</Label>
 			</Container.Item>
 			<Container.Item>
-				<Container className="flex flex-wrap p-1 gap-1 bg-background-secondary rounded-lg p-1 gap-1">
+				<Container className="flex-wrap p-1 gap-1 bg-background-secondary rounded-lg p-1 gap-1">
 					{ srfm_admin?.integrations?.map( ( plugin, index ) => (
 						<Container.Item
 							key={ index }
 							className="flex shadow-sm-blur-2 rounded-md bg-background-primary flex-1 min-w-[calc(50%-0.5rem)]"
 						>
-							<Container className="flex-1 flex flex-col justify-between gap-1 p-2">
+							<Container direction="column" justify="between" className="flex-1 gap-1 p-2">
 								<Container.Item className="flex flex-col gap-1 pb-1">
-									<Container containerType="flex" direction="row" align="center" className="gap-1.5 p-1">
+									<Container align="center" className="gap-1.5 p-1">
 										<img
 											className="w-5 h-5"
 											src={ plugin.logo }

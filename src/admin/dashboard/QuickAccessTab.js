@@ -36,10 +36,8 @@ export default () => {
 				key={ key }
 				align="center"
 				className="gap-1 p-2 rounded-md bg-background-primary shadow-sm-blur-1"
-				containerType="flex"
-				direction="row"
 			>
-				<Container containerType="flex" direction="row" align="center" className="p-1 gap-1">
+				<Container align="center" className="p-1 gap-1">
 					<Container.Item className="flex">{ icon }</Container.Item>
 					<Container.Item className="flex px-1 gap-2">
 						<a
@@ -61,7 +59,6 @@ export default () => {
 	return (
 		<Container
 			className="bg-background-primary border-0.5 border-solid rounded-xl border-border-subtle p-3 gap-2 shadow-sm"
-			containerType="flex"
 			direction="column"
 		>
 			<Container.Item className="p-1 gap-2">

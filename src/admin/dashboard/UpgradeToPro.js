@@ -21,14 +21,14 @@ export default () => {
 			cols={ 12 }
 		>
 			<Container.Item className="flex flex-col gap-2 col-span-12 md:col-span-6">
-				<Container containerType="flex" direction="column" className="gap-2 p-2">
-					<Container containerType="flex" direction="row" align="center" className="gap-1">
+				<Container direction="column" className="gap-2 p-2">
+					<Container align="center" className="gap-1">
 						<Zap className="size-4 text-brand-800" />
 						<Label size="xs" className="font-semibold text-brand-800">
 							{ __( 'Upgrade to Pro', 'sureforms' ) }
 						</Label>
 					</Container>
-					<Container containerType="flex" direction="column" className="gap-1 py-1">
+					<Container direction="column" className="gap-1 py-1">
 						<Title
 							tag="h5"
 							title={ __(
@@ -44,7 +44,7 @@ export default () => {
 						</p>
 					</Container>
 					<Container.Item>
-						<Container className="grid grid-cols-1 sm:grid-cols-2 gap-3 rounded-lg py-1">
+						<Container containerType="gird" className="grid-cols-1 sm:grid-cols-2 gap-1.5 rounded-lg py-1">
 							{ featuresText.map( ( prompt, index ) => (
 								<Container.Item
 									className="flex flex-row items-center gap-2"
@@ -59,7 +59,7 @@ export default () => {
 						</Container>
 					</Container.Item>
 				</Container>
-				<Container containerType="flex" direction="row" className="p-2 gap-3">
+				<Container className="p-2 gap-3">
 					<Button
 						variant="secondary"
 						size="md"
