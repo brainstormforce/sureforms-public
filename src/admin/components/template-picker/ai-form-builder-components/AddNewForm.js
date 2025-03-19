@@ -15,7 +15,7 @@ export default () => {
 		variant,
 	} ) => (
 		<Container.Item className="flex flex-col gap-0 flex-1 border-0.5 border-solid border-border-subtle rounded-lg shadow-sm-blur-2">
-			<Container direction="column" className="flex-1">
+			<Container direction="column">
 				<Container.Item>
 					<Container
 						direction="column"
@@ -95,7 +95,7 @@ export default () => {
 	);
 
 	return (
-		<Container className="w-full h-screen mx-auto p-8 gap-8" justify="center" align="center">
+		<Container className="w-full h-screen p-8 gap-8" justify="center" align="center">
 			<Container
 				className="p-4 gap-2 bg-background-primary border-0.5 border-solid border-border-subtle rounded-xl shadow-sm-blur-2 max-w-[42.5rem]"
 				direction="column"
