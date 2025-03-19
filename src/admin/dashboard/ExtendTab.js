@@ -154,13 +154,16 @@ export default () => {
 				</Label>
 			</Container.Item>
 			<Container.Item>
-				<Container className="flex-wrap p-1 gap-1 bg-background-secondary rounded-lg p-1 gap-1">
+				<Container
+					containerType="grid"
+					className="gap-1 p-1 grid-cols-2 md:grid-cols-4 xl:grid-cols-2 bg-background-secondary rounded-lg p-1 gap-1"
+				>
 					{ srfm_admin?.integrations?.map( ( plugin, index ) => (
 						<Container.Item
 							key={ index }
 							className="flex shadow-sm-blur-2 rounded-md bg-background-primary flex-1 min-w-[calc(50%-0.5rem)]"
 						>
-							<Container direction="column" justify="between" className="flex-1 gap-1 p-2">
+							<Container direction="column" className="gap-1 p-2">
 								<Container.Item className="flex flex-col gap-1 pb-1">
 									<Container align="center" className="gap-1.5 p-1">
 										<img

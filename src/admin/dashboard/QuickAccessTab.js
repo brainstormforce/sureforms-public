@@ -45,6 +45,7 @@ export default () => {
 							href={ link }
 							target="_blank"
 							rel="noreferrer"
+							aria-label={ label }
 						>
 							<Label size="sm" className="cursor-pointer">
 								{ label }

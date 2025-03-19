@@ -36,12 +36,12 @@ export default () => {
 								'sureforms'
 							) }
 						/>
-						<p className="text-sm text-text-secondary font-normal">
+						<Label size="sm" className="text-text-secondary font-normal">
 							{ __(
 								'Upgrade to SureForms Premium and access advanced fields and features that enhance your form-building experience:',
 								'sureforms'
 							) }
-						</p>
+						</Label>
 					</Container>
 					<Container.Item>
 						<Container containerType="gird" className="grid-cols-1 sm:grid-cols-2 gap-1.5 rounded-lg py-1">
