@@ -108,6 +108,9 @@ if ( $use_banner_as_page_background ) {
 					background-position: center;
 					background-repeat: no-repeat;
 					background-size: cover;
+					<?php if ( $use_banner_as_page_background ) { ?>
+						background-attachment: fixed;
+					<?php } ?>
 				<?php } else { ?>
 					background-color: <?php echo esc_attr( $cover_color ); ?>;
 				<?php } ?>
