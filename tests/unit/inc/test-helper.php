@@ -551,7 +551,7 @@ class Test_Helper extends TestCase {
         $testCases = [
             'default background type' => [
                 'input' => ['', '', ''],
-                'expected' => ''
+                'expected' => 'srfm-bg-color'
             ],
             'background type: color, overlay: image (should ignore overlay)' => [
                 'input' => ['color', 'image', ''],
@@ -579,7 +579,7 @@ class Test_Helper extends TestCase {
             ],
             'background type: empty, overlay: image (should ignore overlay)' => [
                 'input' => ['', 'image', ''],
-                'expected' => ''
+                'expected' => 'srfm-bg-color'
             ],
             'background type: image, overlay: none (with bg image)' => [
                 'input' => ['image', '', 'example.jpg'],

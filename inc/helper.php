@@ -1176,6 +1176,10 @@ class Helper {
 	 * @return string The classes to add to the form container.
 	 */
 	public static function get_background_classes( $background_type, $overlay_type, $bg_image = '' ) {
+		if ( empty( $background_type ) ) {
+			$background_type = 'color';
+		}
+
 		$background_type_class = '';
 		$overlay_class         = 'image' === $background_type && ! empty( $bg_image ) && $overlay_type ? "srfm-overlay-{$overlay_type}" : '';
 
@@ -1187,11 +1191,9 @@ class Helper {
 			case 'gradient':
 				$background_type_class = 'srfm-bg-gradient';
 				break;
-			case 'color':
+			default:
 				$background_type_class = 'srfm-bg-color';
 				break;
-			default:
-				$background_type_class = '';
 		}
 
 		return self::join_strings( [ $background_type_class, $overlay_class ] );

@@ -533,7 +533,7 @@ function StyleSettings( props ) {
 		const backgroundClasses = {
 			image: 'srfm-bg-image',
 			gradient: 'srfm-bg-gradient',
-			color: 'srfm-bg-color',
+			default: 'srfm-bg-color',
 		};
 		const overlayClasses = {
 			image: 'srfm-overlay-image',
@@ -544,7 +544,7 @@ function StyleSettings( props ) {
 		editorRef.current?.classList.remove( ...Object.values( backgroundClasses ) );
 		editorRef.current?.classList.remove( ...Object.values( overlayClasses ) );
 
-		editorRef.current?.classList.add( backgroundClasses[ backgroundType ] );
+		editorRef.current?.classList.add( backgroundClasses[ backgroundType ] || backgroundClasses.default );
 
 		if ( backgroundType === 'image' && bg_image && overlayType && overlayClasses[ overlayType ] ) {
 			editorRef.current?.classList.add( overlayClasses[ overlayType ] );

@@ -95,7 +95,7 @@ class Generate_Form_Markup {
 			$form_styling = get_post_meta( $id, '_srfm_forms_styling', true );
 			$form_styling = ! empty( $form_styling ) && is_array( $form_styling ) ? $form_styling : [];
 			// Background Settings.
-			$bg_type                   = $form_styling['bg_type'] ?? '';
+			$bg_type                   = $form_styling['bg_type'] ?? 'color';
 			$bg_color                  = $form_styling['bg_color'] ?? '';
 			$bg_image                  = $form_styling['bg_image'] ?? '';
 			$bg_image_position         = $form_styling['bg_image_position'];
