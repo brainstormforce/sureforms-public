@@ -220,10 +220,9 @@ export default ( props ) => {
 	return (
 		<Container
 			className={ cn(
-				'w-full h-full mx-auto pb-8 gap-8',
+				'pb-8 gap-8',
 				is_pro_active && 'mt-16'
 			) }
-			containerType="flex"
 			direction="column"
 		>
 			<Container.Item>
@@ -231,8 +230,7 @@ export default ( props ) => {
 			</Container.Item>
 			<Container.Item>
 				<Container
-					className="p-4 gap-1.5 bg-background-primary border-0.5 border-solid border-border-subtle shadow-sm-blur-2 rounded-xl w-full h-full max-w-[680px] mx-auto"
-					containerType="flex"
+					className="p-4 gap-1.5 bg-background-primary border-0.5 border-solid border-border-subtle shadow-sm-blur-2 rounded-xl w-full h-full max-w-[42.5rem] mx-auto"
 					direction="column"
 				>
 					<Container.Item className="flex p-2 gap-6">
@@ -277,50 +275,45 @@ export default ( props ) => {
 								{ __( 'Prompt cannot be empty.', 'sureforms' ) }
 							</Label>
 						) }
-						<Container className="flex-wrap" containerType="flex" direction="row" align="center" justify="between">
+						<Container className="flex-wrap" align="center" justify="between">
 							{ false === conversationalFormAiToggle
 								? conversationalAiToggle
 								: conversationalFormAiToggle }
-							<Container.Item className="py-2 gap-2 ml-auto">
+							<Container.Item className="py-2 gap-2">
 								<VoiceToggleButton />
 							</Container.Item>
 						</Container>
 					</Container.Item>
 					<Container.Item className="p-2 gap-3">
-						<Container containerType="flex" direction="column">
+						<Container direction="column">
 							<Container.Item>
-								<Container containerType="flex" direction="row" align="center" justify="between" className="flex-wrap">
-									<Container.Item className="p-1 gap-1 flex flex-row items-center">
-										<Label
-											variant="neutral"
-											size="sm"
-											className="gap-1 flex items-center cursor-pointer"
-											onClick={ () =>
-												setShowFormIdeas(
-													! showFormIdeas
-												)
-											}
-										>
-											{ __(
-												'Some Form Ideas',
-												'sureforms'
-											) }
-
-											{ showFormIdeas ? (
-												<ChevronUp className="!text-icon-secondary !size-5" />
-											) : (
-												<ChevronDown className="!text-icon-secondary !size-5" />
-											) }
-										</Label>
-									</Container.Item>
+								<Container align="center" justify="between" className="flex-wrap p-1 gap-1">
+									<Label
+										variant="neutral"
+										size="sm"
+										className="gap-1 flex items-center cursor-pointer"
+										onClick={ () =>
+											setShowFormIdeas(
+												! showFormIdeas
+											)
+										}
+									>
+										{ __(
+											'Some Form Ideas',
+											'sureforms'
+										) }
+										{ showFormIdeas ? (
+											<ChevronUp className="!text-icon-secondary !size-5" />
+										) : (
+											<ChevronDown className="!text-icon-secondary !size-5" />
+										) }
+									</Label>
 								</Container>
 							</Container.Item>
 							{ showFormIdeas && (
 								<Container.Item>
 									<Container
 										className="gap-2 flex-wrap"
-										containerType="flex"
-										direction="row"
 									>
 										{ examplePrompts.map(
 											( prompt, index ) => (

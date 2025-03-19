@@ -5,14 +5,14 @@ import { Button, Container, Label } from '@bsf/force-ui';
 const ErrorPopup = () => {
 	return (
 		<Container
-			containerType="flex"
 			direction="column"
-			className="fixed inset-0 w-full h-full bg-overlay-background z-[99999999] flex justify-center items-center"
+			justify="center"
+			align="center"
+			className="fixed inset-0 bg-overlay-background z-[99999999]"
 		>
 			<Container
-				containerType="flex"
 				direction="column"
-				className="bg-white gap-5 px-5 py-4 rounded-lg w-full max-w-[400px] h-auto shadow-lg"
+				className="bg-background-primary gap-5 px-5 py-4 rounded-lg max-w-sm shadow-lg"
 			>
 				<Container.Item className="pt-2">
 					<Label variant="neutral" className="text-lg font-bold flex gap-3">
@@ -23,7 +23,7 @@ const ErrorPopup = () => {
 					</Label>
 				</Container.Item>
 				<Container.Item className="flex flex-col gap-4">
-					<Label className="text-text-secondary font-normal text-sm">
+					<Label size="sm" className="text-text-secondary font-normal">
 						{ __( 'There was an error mapping the AI response to Fields. Please try again.', 'sureforms' ) }
 					</Label>
 				</Container.Item>

@@ -8,14 +8,14 @@ export const AuthErrorPopup = ( { initiateAuth } ) => {
 		<>
 			<Header />
 			<Container
-				containerType="flex"
 				direction="column"
-				className="fixed inset-0 w-full h-full bg-overlay-background z-[99999999] flex justify-center items-center"
+				justify="center"
+				align="center"
+				className="fixed inset-0 bg-overlay-background z-[99999999]"
 			>
 				<Container
-					containerType="flex"
 					direction="column"
-					className="bg-white gap-4 py-4 px-5 rounded-lg w-full max-w-[464px] h-auto sm:h-[184px] shadow-lg"
+					className="bg-background-primary gap-4 py-4 px-5 rounded-lg max-w-md shadow-lg"
 				>
 					<Container.Item>
 						<Label variant="neutral" className="text-lg font-bold flex gap-3">
@@ -26,7 +26,7 @@ export const AuthErrorPopup = ( { initiateAuth } ) => {
 						</Label>
 					</Container.Item>
 					<Container.Item>
-						<Label className="inline text-text-secondary font-normal text-sm">
+						<Label size="sm" className="inline text-text-secondary font-normal">
 							{ __(
 								'Please check your username and password for the account, and try to reconnect again. Need help?',
 								'sureforms'
@@ -35,7 +35,8 @@ export const AuthErrorPopup = ( { initiateAuth } ) => {
 								onClick={ () => {
 									window.open( 'https://sureforms.com/contact/', '_blank' );
 								} }
-								className="cursor-pointer inline underline font-normal !text-link-primary text-sm"
+								size="sm"
+								className="cursor-pointer inline underline font-normal !text-link-primary"
 							>
 								{ __( 'Contact Support', 'sureforms' ) }
 							</Label>

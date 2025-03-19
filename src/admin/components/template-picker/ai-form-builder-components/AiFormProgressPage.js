@@ -8,7 +8,6 @@ export default ( props ) => {
 
 	return (
 		<Container
-			containerType="flex"
 			direction="column"
 			className="mt-8 bg-background-secondary mx-auto p-8 gap-8"
 			align="center"
@@ -17,8 +16,6 @@ export default ( props ) => {
 			<Container.Item>
 				<Container
 					className="gap-6"
-					containerType="flex"
-					direction="row"
 					align="center"
 				>
 					<Container.Item>

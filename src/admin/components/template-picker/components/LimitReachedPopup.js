@@ -15,14 +15,14 @@ const LimitReachedPopup = ( {
 		<>
 			<Header />
 			<Container
-				containerType="flex"
 				direction="column"
-				className="fixed inset-0 w-full h-full bg-overlay-background z-[99999999] flex justify-center items-center"
+				justify="center"
+				align="center"
+				className="fixed inset-0 bg-overlay-background z-[99999999]"
 			>
 				<Container
-					containerType="flex"
 					direction="column"
-					className="bg-white gap-6 py-4 px-5 rounded-lg w-full max-w-[480px] h-auto shadow-lg"
+					className="bg-background-primary gap-6 py-4 px-5 rounded-lg max-w-md shadow-lg"
 				>
 					<Container.Item className="relative pt-2">
 						<Label variant="neutral" className="text-lg font-bold flex gap-3">
@@ -41,11 +41,10 @@ const LimitReachedPopup = ( {
 						</Label>
 					</Container.Item>
 					<Container.Item className="flex flex-col gap-4">
-						<Label className="text-text-secondary font-normal text-base">
-
+						<Label size="md" className="text-text-secondary font-normal">
 							{ paraOne }
 						</Label>
-						<Label className="text-text-secondary font-normal text-base">
+						<Label size="md" className="text-text-secondary font-normal">
 							{ paraTwo }
 						</Label>
 					</Container.Item>
@@ -53,7 +52,6 @@ const LimitReachedPopup = ( {
 						<Button
 							size="md"
 							variant="primary"
-							className="text-sm font-semibold"
 							onClick={ onclick }
 						>
 							{ buttonText ?? __( 'Connect Now', 'sureforms' ) }
