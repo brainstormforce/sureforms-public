@@ -123,7 +123,7 @@ class Number_Markup extends Base {
 				<?php echo wp_kses_post( $this->label_markup ); ?>
 				<?php echo wp_kses_post( $this->help_markup ); ?>
 				<div class="srfm-block-wrap <?php echo esc_attr( trim( ( $this->prefix ? 'srfm-has-prefix ' : '' ) . ( $this->suffix ? 'srfm-has-suffix' : '' ) ) ); ?>">
-					<!-- <div class="srfm-input-content"> -->
+					<div class="srfm-input-content">
 						<?php if ( ! empty( $this->prefix ) ) { ?>
 							<span class="srfm-number-prefix" aria-hidden="true"><?php echo esc_html( $this->prefix ); ?></span>
 						<?php } ?>
@@ -133,7 +133,7 @@ class Number_Markup extends Base {
 						<?php if ( ! empty( $this->suffix ) ) { ?>
 							<span class="srfm-number-suffix" aria-hidden="true"><?php echo esc_html( $this->suffix ); ?></span>
 						<?php } ?>
-					<!-- </div> -->
+					</div>
 				</div>
 				<div class="srfm-error-wrap">
 					<?php echo wp_kses_post( $this->error_msg_markup ); ?>

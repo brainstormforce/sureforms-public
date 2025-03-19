@@ -60,6 +60,36 @@ function initializeNumberField() {
 
 				// Trigger the change event to format the default value.
 				numberInput.dispatchEvent( new Event( 'change' ) );
+
+				// Add focus event to remove formatting and add 'srfm-input-focused' class.
+				numberInput.addEventListener( 'focus', ( e ) => {
+					const parentElement = e.target.closest( '.srfm-input-content' );
+					if ( parentElement ) {
+						parentElement.classList.add( 'srfm-input-focused' );
+						parentElement.classList.remove( 'srfm-input-filled' );
+					}
+				} );
+
+				// Add blur event to format the input and update classes based on input value.
+				numberInput.addEventListener( 'blur', ( e ) => {
+					const parentElement = e.target.closest( '.srfm-input-content' );
+					if ( parentElement ) {
+						parentElement.classList.remove( 'srfm-input-focused' );
+						if ( e.target.value ) {
+							parentElement.classList.add( 'srfm-input-filled' );
+						} else {
+							parentElement.classList.remove( 'srfm-input-filled' );
+						}
+					}
+				} );
+
+				// Set default state for 'srfm-input-filled' class based on initial input value.
+				if ( numberInput.value ) {
+					const parentElement = numberInput.closest( '.srfm-input-content' );
+					if ( parentElement ) {
+						parentElement.classList.add( 'srfm-input-filled' );
+					}
+				}
 			}
 		} );
 	}
