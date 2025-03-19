@@ -221,7 +221,7 @@ export default ( props ) => {
 		<Container
 			className={ cn(
 				'pb-8 gap-8',
-				is_pro_active && 'mt-16'
+				is_pro_active && 'mt-12'
 			) }
 			direction="column"
 		>

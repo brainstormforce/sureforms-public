@@ -5,7 +5,7 @@ import { initiateAuth } from '@Utils/Helpers';
 export default () => {
 	return (
 		<Container
-			className="mt-16 gap-2 w-full p-2 bg-brand-background-hover-100"
+			className="mt-14 gap-2 w-full p-2 bg-brand-background-hover-100"
 			direction="column"
 			align="center"
 			justify="center"
