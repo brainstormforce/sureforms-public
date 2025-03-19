@@ -122,7 +122,7 @@ class Number_Markup extends Base {
 			<div data-block-id="<?php echo esc_attr( $this->block_id ); ?>" class="<?php echo esc_attr( $this->class_name ); ?>" <?php echo $data_config ? "data-field-config='" . esc_attr( $data_config ) . "'" : ''; ?>>
 				<?php echo wp_kses_post( $this->label_markup ); ?>
 				<?php echo wp_kses_post( $this->help_markup ); ?>
-				<div class="srfm-block-wrap <?php echo esc_attr( trim( ( $this->prefix ? 'srfm-has-prefix ' : '' ) . ( $this->suffix ? 'srfm-has-suffix' : '' ) ) ); ?>">
+				<div class="srfm-block-wrap">
 					<div class="srfm-input-content">
 						<?php if ( ! empty( $this->prefix ) ) { ?>
 							<span class="srfm-number-prefix" aria-hidden="true"><?php echo esc_html( $this->prefix ); ?></span>

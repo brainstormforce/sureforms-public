@@ -36,11 +36,7 @@ export const NumberComponent = ( { attributes, blockID, setAttributes } ) => {
 				setAttributes={ setAttributes }
 				block_id={ blockID }
 			/>
-			<div
-				className={ `srfm-block-wrap ${
-					prefix ? 'srfm-has-prefix' : ''
-				} ${ suffix ? 'srfm-has-suffix' : '' }` }
-			>
+			<div className="srfm-block-wrap">
 				<div className='srfm-input-content'>
 					{ prefix && (
 						<span className="srfm-number-prefix"> { prefix } </span>

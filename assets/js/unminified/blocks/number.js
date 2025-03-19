@@ -83,6 +83,20 @@ function initializeNumberField() {
 					}
 				} );
 
+				// Add hover event to add 'srfm-input-hovered' class.
+				numberInput.addEventListener( 'mouseenter', ( e ) => {
+					const parentElement = e.target.closest( '.srfm-input-content' );
+					if ( parentElement ) {
+						parentElement.classList.add( 'srfm-input-hovered' );
+					}
+				} );
+				numberInput.addEventListener( 'mouseleave', ( e ) => {
+					const parentElement = e.target.closest( '.srfm-input-content' );
+					if ( parentElement ) {
+						parentElement.classList.remove( 'srfm-input-hovered' );
+					}
+				} );
+
 				// Set default state for 'srfm-input-filled' class based on initial input value.
 				if ( numberInput.value ) {
 					const parentElement = numberInput.closest( '.srfm-input-content' );
