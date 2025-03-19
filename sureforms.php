@@ -7,7 +7,7 @@
  * Requires PHP: 7.4
  * Author: SureForms
  * Author URI: https://sureforms.com/
- * Version: 1.4.2
+ * Version: 1.4.3
  * License: GPLv2 or later
  * Text Domain: sureforms
  *
@@ -25,7 +25,7 @@ define( 'SRFM_FILE', __FILE__ );
 define( 'SRFM_BASENAME', plugin_basename( SRFM_FILE ) );
 define( 'SRFM_DIR', plugin_dir_path( SRFM_FILE ) );
 define( 'SRFM_URL', plugins_url( '/', SRFM_FILE ) );
-define( 'SRFM_VER', '1.4.2' );
+define( 'SRFM_VER', '1.4.3' );
 define( 'SRFM_SLUG', 'srfm' );
 // ------ ADDITIONAL CONSTANTS ------- //
 define( 'SRFM_FORMS_POST_TYPE', 'sureforms_form' );
