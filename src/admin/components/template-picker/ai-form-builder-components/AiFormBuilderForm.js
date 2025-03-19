@@ -284,10 +284,10 @@ export default ( props ) => {
 							</Container.Item>
 						</Container>
 					</Container.Item>
-					<Container.Item className="p-2 gap-3">
+					<Container.Item className="p-2 gap-6">
 						<Container direction="column">
 							<Container.Item>
-								<Container align="center" justify="between" className="flex-wrap p-1 gap-1">
+								<Container align="center" justify="between" className="flex-wrap p-1">
 									<Label
 										variant="neutral"
 										size="sm"
@@ -349,7 +349,7 @@ export default ( props ) => {
 						<Button
 							className="gap-1"
 							icon={
-								<ArrowRight size={ 20 } strokeWidth={ 1.25 } />
+								<ArrowRight size={ 20 } />
 							}
 							iconPosition="right"
 							size="md"

@@ -9,7 +9,7 @@ export default ( props ) => {
 	return (
 		<Container
 			direction="column"
-			className="mt-8 bg-background-secondary mx-auto p-8 gap-8"
+			className="bg-background-secondary mx-auto gap-6"
 			align="center"
 			justify="center"
 		>
@@ -35,20 +35,22 @@ export default ( props ) => {
 						<Label
 							variant="neutral"
 							size="md"
-							className="font-bold"
+							className="font-bold text-xl"
 						>
 							{ __( 'We are building your form…', 'sureforms' ) }
 						</Label>
-						<Label variant="help" size="sm" className="font-normal">
+						<Label variant="help" size="sm">
 							{ message }
 						</Label>
 					</Container.Item>
 				</Container>
 			</Container.Item>
-			<img
-				src={ aiFormBuilderPlaceholder }
-				alt={ __( 'AI Form Builder', 'sureforms' ) }
-			/>
+			<Container.Item>
+				<img
+					src={ aiFormBuilderPlaceholder }
+					alt={ __( 'AI Form Builder', 'sureforms' ) }
+				/>
+			</Container.Item>
 		</Container>
 	);
 };

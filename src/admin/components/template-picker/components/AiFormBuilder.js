@@ -161,7 +161,7 @@ const AiFormBuilder = () => {
 	if ( isBuildingForm ) {
 		return (
 			<>
-				<Container className="bg-background-secondary">
+				<Container className="h-screen bg-background-secondary p-8 gap-8">
 					<AiFormProgressPage message={ message } percentBuild={ percentBuild } />
 				</Container>
 				{ showFormCreationErr && <ErrorPopup /> }
