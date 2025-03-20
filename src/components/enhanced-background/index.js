@@ -3,7 +3,7 @@ import AdvancedPopColorControl from '@Components/color-control/advanced-pop-colo
 import { SelectControl, FocalPointPicker } from '@wordpress/components';
 import styles from './editor.lazy.scss';
 import GradientSettings from '@Components/gradient-settings';
-import { useRef, useLayoutEffect } from '@wordpress/element';
+import { useRef, useLayoutEffect, useEffect } from '@wordpress/element';
 import SRFMMediaPicker from '@Components/image';
 import MultiButtonsControl from '@Components/multi-buttons-control';
 import SRFM_Block_Icons from '@Controls/block-icons';
@@ -20,6 +20,25 @@ const Background = ( props ) => {
 		return () => {
 			styles?.unuse();
 		};
+	}, [] );
+
+	/**
+	 * Adding a containerRef and observer to trigger the resize event on the container dimension change.
+	 * This is to handle the case where focal point picker uses default bounds for the image due delayed image load.
+	 * Triggering the resize event will force the focal point picker to recalculate the bounds and this works for the image overlay focal point picker as well.
+	 */
+	const containerRef = useRef( null );
+	useEffect( () => {
+		if ( ! containerRef.current ) {
+			return;
+		}
+
+		const observer = new ResizeObserver( () => {
+			window.dispatchEvent( new Event( 'resize' ) );
+		} );
+
+		observer.observe( containerRef.current );
+		return () => observer.disconnect();
 	}, [] );
 
 	const {
@@ -536,7 +555,10 @@ const Background = ( props ) => {
 					/>
 					{ backgroundImage.value && (
 						<>
-							<div className="srfm-background-image-position">
+							<div
+								className="srfm-background-image-position"
+								ref={ containerRef }
+							>
 								<FocalPointPicker
 									label={ __(
 										'Image Position',
