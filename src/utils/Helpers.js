@@ -499,6 +499,7 @@ export const getSelectedDate = ( selectedDates ) => {
 
 /**
  *
+ * @param {Object} dates - The date object.
  * @return {string} - The formatted date string.
  */
 export const getLastNDays = ( dates ) => {
