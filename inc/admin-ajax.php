@@ -9,6 +9,7 @@
 
 namespace SRFM\Inc;
 
+use BSF_UTM_Analytics;
 use SRFM\Inc\Traits\Get_Instance;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -95,9 +96,9 @@ class Admin_Ajax {
 			);
 		}
 
-		if ( class_exists( '\BSF_UTM_Analytics\Inc\Utils' ) && is_callable( '\BSF_UTM_Analytics\Inc\Utils::update_referer' ) ) {
+		if ( class_exists( 'BSF_UTM_Analytics' ) && method_exists( 'BSF_UTM_Analytics', 'update_referer' ) ) {
 			$plugin_slug = pathinfo( $plugin_slug, PATHINFO_FILENAME );
-			\BSF_UTM_Analytics\Inc\Utils::update_referer( 'sureforms', $plugin_slug );
+			BSF_UTM_Analytics::update_referer( 'sureforms', $plugin_slug );
 		}
 
 		wp_send_json_success(
