@@ -1118,8 +1118,8 @@ class Helper {
 			$utm_args = [];
 		}
 
-		if ( class_exists( '\BSF_UTM_Analytics\Inc\Utils' ) ) {
-			$url = \BSF_UTM_Analytics\Inc\Utils::get_utm_ready_link( $url, 'sureforms', $utm_args );
+		if ( class_exists( 'BSF_UTM_Analytics' ) ) {
+			$url = \BSF_UTM_Analytics::get_utm_ready_link( $url, 'sureforms', $utm_args );
 		}
 
 		return esc_url( $url );
