@@ -475,31 +475,9 @@ function onSuccess( response ) {
 	window.addEventListener( 'resize', handleInstantFormWrapperHeight ); // Handle wrapper height on window resize.
 	window.addEventListener( 'mousemove', handleInstantFormWrapperHeight ); // Recalculate the wrapper height on mouse move.
 
-	/**
-	 * Adjusts the color of the `.srfm-branding` element based on the background color.
-	 * This function ensures that the branding text is always visible and readable, regardless of the background color.
-	 * It checks the computed background color of the form container and adjusts the branding text color accordingly.
-	 */
-	function adjustBrandingColor() {
-		const srfmBranding = document.querySelector( '.srfm-branding' );
-
-		if ( ! srfmBranding ) {
-			return;
-		}
-
-		const body = document.querySelector( 'body' );
-		const bodyColor = getComputedBackgroundColor( body );
-		const bodyLuminance = getColorLuminance( bodyColor );
-
-		if ( ! isColorDark( bodyLuminance ) ) {
-			srfmBranding.style.color = 'black';
-		}
-	}
-
 	window.addEventListener( 'load', function () {
 		handleInstantFormWrapperHeight();
 		handleInstantFormBranding();
-		adjustBrandingColor();
 
 		const formContainers = document.querySelectorAll(
 			'.srfm-form-container'
