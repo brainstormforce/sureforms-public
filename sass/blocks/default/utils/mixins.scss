@@ -282,58 +282,76 @@
 
 // Number Block Styles
 @mixin srfm-number-styles {
-	display: flex;
-	align-items: center;
+	.srfm-input-content {
+		display: flex;
+		width: 100%;
+		align-items: center;
+		font-family: inherit;
+		font-size: var( --srfm-input-field-font-size );
+		font-weight: var( --srfm-input-field-font-weight );
+		line-height: var( --srfm-input-field-line-height );
+		color: var( --srfm-color-input-text );
+		border: var( --srfm-color-input-border ) solid 1px;
+		border-radius: var( --srfm-input-field-border-radius );
+		background-color: var( --srfm-color-input-background );
+		height: var( --srfm-input-height );
+		outline: 0;
+		margin: var( --srfm-input-field-margin );
+		transition: 0.2s ease-out;
+		padding-top: 0;
+		padding-bottom: 0;
+		overflow: hidden;
+
+		&.srfm-input-focused {
+			box-shadow: 0px 0px 0px 3px var( --srfm-color-input-border-focus-glow );
+			border-color: var( --srfm-color-input-border-hover );
+		}
+		&.srfm-input-hovered {
+			border-color: var( --srfm-color-input-border-hover );
+		}
+
+		.srfm-input-number {
+			font-family: inherit;
+			font-size: inherit;
+			font-weight: inherit;
+			line-height: inherit;
+			color: inherit;
+			background-color: inherit;
+			border: none;
+			border-radius: 0;
+			padding: var( --srfm-input-field-padding );
+			height: 100%; // Keeping height to 100% for matching the input height with the input content container.
+			flex: 1; // Take up the available space in the block, for compatibility with prefix and suffix overflow hidden.
+			&::placeholder {
+				color: var( --srfm-dropdown-placeholder-color );
+			}
+			&:focus {
+				outline: none !important;
+				border: none !important;
+			}
+		}
+	}
 
 	.srfm-number-prefix,
 	.srfm-number-suffix {
 		display: flex;
 		align-items: center;
-		padding: 10px 8px;
 		font-size: var( --srfm-input-field-font-size );
 		line-height: var( --srfm-input-field-line-height );
 		color: var( --srfm-color-input-text );
 		background-color: var( --srfm-color-input-background );
-		border: var( --srfm-color-input-border ) solid 1px;
-		border-radius: var( --srfm-input-field-border-radius );
-		height: var( --srfm-input-height );
-		margin: var( --srfm-input-field-margin );
+		height: 100%;
+		padding: 0 8px;
 		// Adding the below styles to handle the case where user enters a long text in prefix and/or suffix.
 		white-space: nowrap;
 		max-width: 100%;
 		overflow: hidden;
 	}
-
-	// The srfm-has-prefix and srfm-has-suffix is added with the element having class srfm-block-wrap.
-	&.srfm-has-prefix {
-		// For prefix, set the prefix element right border and border-radius to 0.
-		.srfm-number-prefix {
-			border-right: none;
-			border-top-right-radius: 0;
-			border-bottom-right-radius: 0;
-		}
-		// With prefix, for the input field set the left border-radius to 0.
-		.srfm-input-number {
-			border-top-left-radius: 0;
-			border-bottom-left-radius: 0;
-		}
+	.srfm-number-prefix {
+		border-right: var( --srfm-color-input-border ) solid 1px;
 	}
 
-	&.srfm-has-suffix {
-		// For suffix, set the suffix element left border and border-radius to 0.
-		.srfm-number-suffix {
-			border-left: none;
-			border-top-left-radius: 0;
-			border-bottom-left-radius: 0;
-		}
-		// With suffix, for the input field set the right border-radius to 0.
-		.srfm-input-number {
-			border-top-right-radius: 0;
-			border-bottom-right-radius: 0;
-		}
-	}
-
-	.srfm-input-number {
-		flex: 1; // Take up the available space in the block, for compatibility with prefix and suffix overflow hidden.
+	.srfm-number-suffix {
+		border-left: var( --srfm-color-input-border ) solid 1px;
 	}
 }

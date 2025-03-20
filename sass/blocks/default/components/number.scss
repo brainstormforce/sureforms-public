@@ -12,5 +12,23 @@
 				@include srfm-number-styles;
 			}
 		}
+		.srfm-number-block.srfm-error {
+			.srfm-block-wrap {
+				.srfm-input-content {
+					border-color: var( --srfm-error-color-border );
+					// Focus state for the number block in case of error.
+					&.srfm-input-focused {
+						box-shadow: 0px 0px 0px 3px var( --srfm-error-color-border-glow );
+					}
+				}
+			}
+
+			.srfm-error-wrap {
+				.srfm-error-message {
+					@include srfm-error-styles;
+					display: block;
+				}
+			}
+		}
 	}
 }
