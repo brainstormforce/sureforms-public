@@ -185,12 +185,12 @@ class Rest_Api {
 			wp_send_json_error( __( 'Nonce verification failed.', 'sureforms' ) );
 		}
 
-		$forms= Helper::get_instance()->get_sureforms();
+		$forms = Helper::get_instance()->get_sureforms();
 
 		$available_forms = [];
 
-		if (!empty($forms)) {
-			foreach ($forms as $id => $title) {
+		if ( ! empty( $forms ) ) {
+			foreach ( $forms as $id => $title ) {
 				$available_forms[] = [
 					'id'    => $id,
 					'title' => $title,
