@@ -96,7 +96,7 @@ class Admin_Ajax {
 			);
 		}
 
-		if ( class_exists( 'BSF_UTM_Analytics' ) && method_exists( 'BSF_UTM_Analytics', 'update_referer' ) ) {
+		if ( class_exists( 'BSF_UTM_Analytics' ) && is_callable( 'BSF_UTM_Analytics::update_referer' ) ) {
 			$plugin_slug = pathinfo( $plugin_slug, PATHINFO_FILENAME );
 			BSF_UTM_Analytics::update_referer( 'sureforms', $plugin_slug );
 		}
