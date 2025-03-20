@@ -46,6 +46,7 @@ class Utils {
 		'woo-cart-abandonment-recovery',
 		'wp-schema-pro',
 		'zipwp',
+		'suremails',
 	];
 
 

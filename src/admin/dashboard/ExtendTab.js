@@ -66,6 +66,7 @@ export default () => {
 		formData.append( 'action', ACTIONS.ACTIVATE );
 		formData.append( 'security', srfm_admin.sfPluginManagerNonce );
 		formData.append( 'init', plugin.path );
+		formData.append( 'slug', plugin.slug );
 
 		event.target.innerText = srfm_admin.plugin_activating_text;
 
@@ -162,7 +163,6 @@ export default () => {
 				>
 					{ integrations?.map(
 						( plugin, index ) => (
-							console.log( 'plugin', plugin ),
 							(
 								<Container.Item
 									key={ index }

@@ -82,6 +82,8 @@ class Admin_Ajax {
 
 		$plugin_init = isset( $_POST['init'] ) ? sanitize_text_field( wp_unslash( $_POST['init'] ) ) : '';
 
+		$plugin_slug = isset( $_POST['slug'] ) ? sanitize_text_field( wp_unslash( $_POST['slug'] ) ) : '';
+
 		$activate = activate_plugin( $plugin_init, '', false, true );
 
 		if ( is_wp_error( $activate ) ) {
@@ -91,6 +93,11 @@ class Admin_Ajax {
 					'message' => $activate->get_error_message(),
 				]
 			);
+		}
+
+		if ( class_exists( '\BSF_UTM_Analytics\Inc\Utils' ) && is_callable( '\BSF_UTM_Analytics\Inc\Utils::update_referer' ) ) {
+			$plugin_slug = pathinfo( $plugin_slug, PATHINFO_FILENAME );
+			\BSF_UTM_Analytics\Inc\Utils::update_referer( 'sureforms', $plugin_slug );
 		}
 
 		wp_send_json_success(
