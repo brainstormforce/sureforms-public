@@ -66,7 +66,7 @@ export default () => {
 		return label
 			? label.name.length > 0
 				? label.name
-				: 'Unnamed Form'
+				: __( 'Unnamed Form', 'sureforms' )
 			: '';
 	};
 
@@ -256,7 +256,7 @@ export default () => {
 												<span>
 													{ option.name.length > 0
 														? option.name
-														: 'Unnamed Form' }
+														: __( 'Unnamed Form', 'sureforms' ) }
 												</span>
 											}
 										</Select.Option>

@@ -448,7 +448,6 @@ export const formatDate = ( dateString, options = {} ) => {
  *
  * @return {string} - The formatted date string.
  */
-
 export const getDatePlaceholder = () => {
 	const currentDate = new Date();
 	const pastDate = new Date();
@@ -502,7 +501,6 @@ export const getSelectedDate = ( selectedDates ) => {
  *
  * @return {string} - The formatted date string.
  */
-
 export const getLastNDays = ( dates ) => {
 	const { from, to } = dates;
 

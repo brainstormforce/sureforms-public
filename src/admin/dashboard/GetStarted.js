@@ -35,7 +35,7 @@ export default () => {
 					<Button
 						className="shadow-sm-blur-1 gap-1"
 						icon={
-							<Plus aria-label="Create new form" />
+							<Plus aria-label={ __( 'Create New Form', 'sureforms' ) } />
 						}
 						iconPosition="right"
 						size="md"
@@ -49,7 +49,7 @@ export default () => {
 					<Button
 						className="gap-1"
 						icon={
-							<ExternalLinkIcon aria-label="Read full guide" />
+							<ExternalLinkIcon aria-label={ __( 'Read Full Guide', 'sureforms' ) } />
 						}
 						iconPosition="right"
 						size="md"
@@ -69,7 +69,7 @@ export default () => {
 				<iframe
 					className="w-full h-full rounded border border-solid border-border-subtle"
 					src="https://www.youtube.com/embed/it16jGnZBus"
-					title="SureForms: Custom WordPress Forms MADE SIMPLE"
+					title={ __( 'SureForms: Custom WordPress Forms MADE SIMPLE', 'sureforms' ) }
 					allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
 					referrerPolicy="strict-origin-when-cross-origin"
 					allowFullScreen
