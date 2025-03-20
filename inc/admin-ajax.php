@@ -165,7 +165,7 @@ class Admin_Ajax {
 		return apply_filters(
 			'srfm_integrated_plugins',
 			[
-				[
+				'sure_triggers'     => [
 					'title'       => __( 'SureTriggers', 'sureforms' ),
 					'subtitle'    => __( 'Automate your WordPress setup.', 'sureforms' ),
 					'status'      => self::get_plugin_status( 'suretriggers/suretriggers.php' ),
@@ -176,7 +176,7 @@ class Admin_Ajax {
 					'logo_full'   => self::encode_svg( is_string( $logo_full ) ? $logo_full : '' ),
 					'connected'   => $suretrigger_connected,
 				],
-				[
+				'sure_mails'        => [
 					'title'       => __( 'SureMail', 'sureforms' ),
 					'subtitle'    => __( 'Free and easy SMTP mails plugin.', 'sureforms' ),
 					'status'      => self::get_plugin_status( 'suremails/suremails.php' ),
@@ -185,7 +185,7 @@ class Admin_Ajax {
 					'redirection' => admin_url( 'options-general.php?page=suremail#/dashboard' ),
 					'logo'        => self::encode_svg( is_string( $logo_sure_mails ) ? $logo_sure_mails : '' ),
 				],
-				[
+				'sure_cart'         => [
 					'title'       => __( 'SureCart', 'sureforms' ),
 					'subtitle'    => __( 'The new way to sell on WordPress.', 'sureforms' ),
 					'status'      => self::get_plugin_status( 'surecart/surecart.php' ),
@@ -194,7 +194,7 @@ class Admin_Ajax {
 					'redirection' => admin_url( 'admin.php?page=sc-getting-started' ),
 					'logo'        => self::encode_svg( is_string( $logo_sure_cart ) ? $logo_sure_cart : '' ),
 				],
-				[
+				'starter_templates' => [
 					'title'       => __( 'Starter Templates', 'sureforms' ),
 					'subtitle'    => __( 'Build your dream website in minutes with AI.', 'sureforms' ),
 					'status'      => self::get_plugin_status( 'astra-sites/astra-sites.php' ),

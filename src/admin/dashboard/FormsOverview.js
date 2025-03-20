@@ -140,13 +140,16 @@ export default () => {
 				// Fetch data from API
 				const response = await apiFetch( { path: endpoint } );
 
-				const formsData = response.map( ( post ) => ( {
-					name: post.title,
-					id: post.id,
-				} ) );
+				const responseData = Object.entries( response );
 
-				// Prepare the forms data.
-				setFormData( formsData );
+				// check response data length and set in the state
+				if ( responseData.length > 0 ) {
+					const formsData = responseData.map( ( post ) => ( {
+						name: post[ 1 ],
+						id: post[ 0 ],
+					} ) );
+					setFormData( formsData );
+				}
 			} catch ( error ) {
 				console.error( 'Error fetching data:', error );
 			}
@@ -207,7 +210,7 @@ export default () => {
 	}, [ isDatePickerOpen ] );
 
 	// Formatter for X-Axis
-	const formatXAxis = ( ) => {
+	const formatXAxis = () => {
 		return '';
 	};
 
@@ -221,7 +224,10 @@ export default () => {
 					title={ __( 'Forms Overview', 'sureforms' ) }
 					size="xs"
 				/>
-				<Container align="center" className="flex-wrap gap-3 sm:flex-row">
+				<Container
+					align="center"
+					className="flex-wrap gap-3 sm:flex-row"
+				>
 					<Container align="center" className="gap-2">
 						{ selectedForm ? (
 							<ClearButton
@@ -256,7 +262,10 @@ export default () => {
 												<span>
 													{ option.name.length > 0
 														? option.name
-														: __( 'Unnamed Form', 'sureforms' ) }
+														: __(
+															'Unnamed Form',
+															'sureforms'
+														  ) }
 												</span>
 											}
 										</Select.Option>
@@ -340,12 +349,18 @@ export default () => {
 				}
 			>
 				{ loading ? (
-					<Container direction="column" justify="center" align="center" className="min-h-[256px] gap-6">
-						<Loader
-							size="xl"
-							variant="primary"
-						/>
-						<Container direction="column" align="center" className="gap-1">
+					<Container
+						direction="column"
+						justify="center"
+						align="center"
+						className="min-h-[256px] gap-6"
+					>
+						<Loader size="xl" variant="primary" />
+						<Container
+							direction="column"
+							align="center"
+							className="gap-1"
+						>
 							<ChartText
 								text={ __(
 									'Please wait for the data to load',
@@ -384,9 +399,18 @@ export default () => {
 						/>
 					</div>
 				) : (
-					<Container direction="column" align="center" justify="center" className="min-h-[256px] gap-6">
+					<Container
+						direction="column"
+						align="center"
+						justify="center"
+						className="min-h-[256px] gap-6"
+					>
 						<FileChartColumnIncreasing />
-						<Container direction="column" align="center" className="gap-1">
+						<Container
+							direction="column"
+							align="center"
+							className="gap-1"
+						>
 							<ChartText
 								text={ __(
 									'There is no data on this view',

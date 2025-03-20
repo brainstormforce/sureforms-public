@@ -187,18 +187,7 @@ class Rest_Api {
 
 		$forms = Helper::get_instance()->get_sureforms();
 
-		$available_forms = [];
-
-		if ( ! empty( $forms ) ) {
-			foreach ( $forms as $id => $title ) {
-				$available_forms[] = [
-					'id'    => $id,
-					'title' => $title,
-				];
-			}
-		}
-
-		return $available_forms;
+		return ! empty( $forms ) ? $forms : [];
 	}
 
 	/**
