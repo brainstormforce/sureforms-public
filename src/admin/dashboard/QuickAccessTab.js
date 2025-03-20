@@ -35,9 +35,9 @@ export default () => {
 			<Container
 				key={ key }
 				align="center"
-				className="gap-1 p-2 rounded-md bg-background-primary shadow-sm-blur-1"
+				className="gap-1 p-3 rounded-md bg-background-primary shadow-sm-blur-1"
 			>
-				<Container align="center" className="p-1 gap-1">
+				<Container align="center" className="gap-1">
 					<Container.Item className="flex">{ icon }</Container.Item>
 					<Container.Item className="flex px-1 gap-2">
 						<a
