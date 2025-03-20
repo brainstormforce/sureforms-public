@@ -150,7 +150,7 @@ const Header = () => {
 									addQueryParam(
 										srfm_admin?.pricing_page_url ||
 											srfm_admin?.sureforms_pricing_page,
-										'dashboard-cta'
+										'dashboard-header-cta'
 									),
 									'_blank',
 									'noreferrer'

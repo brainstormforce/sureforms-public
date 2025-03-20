@@ -69,7 +69,7 @@ export default () => {
 								addQueryParam(
 									srfm_admin?.pricing_page_url ||
 										srfm_admin?.sureforms_pricing_page,
-									'dashboard-cta'
+									'dashboard-upgrade-to-pro-banner-cta'
 								),
 								'_blank',
 								'noreferrer'

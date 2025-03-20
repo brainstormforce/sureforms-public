@@ -38,7 +38,7 @@ const UpgradeNotice = ( { onClose } ) => {
 							addQueryParam(
 								srfm_admin?.pricing_page_url ||
 									srfm_admin?.sureforms_pricing_page,
-								'dashboard-cta'
+								'dashboard-upgrade-notice-cta'
 							),
 							'_blank',
 							'noreferrer'
