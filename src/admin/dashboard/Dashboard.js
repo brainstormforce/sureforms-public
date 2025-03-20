@@ -1,4 +1,4 @@
-import GetStartedNew from './GetStartedNew';
+import GetStarted from './GetStarted';
 
 import {
 	Container,
@@ -8,13 +8,15 @@ import ExtendTab from './ExtendTab';
 import Header from '../components/Header';
 import QuickAccessTab from './QuickAccessTab';
 import UpgradeToPro from './UpgradeToPro';
+import FormsOverview from './FormsOverview';
 
 export default () => {
 	const nav = <Header />;
 
 	const leftSidebar = <>
-		<GetStartedNew />
-		<UpgradeToPro />
+		<GetStarted />
+		<FormsOverview />
+		{ ! srfm_admin?.is_pro_active && <UpgradeToPro /> }
 	</>;
 
 	const rightSidebar = <>
@@ -24,7 +26,6 @@ export default () => {
 
 	return <Container
 		className="h-full"
-		containerType="flex"
 		direction="column"
 		gap={ 0 }
 	>
@@ -38,11 +39,11 @@ export default () => {
 				cols={ 12 }
 				gap="2xl"
 			>
-				<Container.Item className="flex flex-col gap-8 col-span-12 xl:col-span-8 ---sf-left-sidebar">
+				<Container.Item className="flex flex-col gap-8 col-span-12 xl:col-span-8">
 					{ /* left sidebar */ }
 					{ leftSidebar }
 				</Container.Item>
-				<Container.Item className="flex flex-col gap-8 col-span-12 xl:col-span-4 ---sf-right-sidebar">
+				<Container.Item className="flex flex-col gap-8 col-span-12 xl:col-span-4">
 					{ /* right sidebar */ }
 					{ rightSidebar }
 				</Container.Item>

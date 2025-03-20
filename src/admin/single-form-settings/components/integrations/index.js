@@ -102,9 +102,8 @@ const UpsellSureTriggers = ( {
 	pluginConnected,
 	setPluginConnected,
 } ) => {
-	const plugin = srfm_admin?.integrations?.find( ( item ) => {
-		return 'suretriggers' === item.slug;
-	} );
+	const integrations = Object.entries( srfm_admin?.integrations );
+	const plugin = integrations?.find( ( item ) => 'suretriggers' === item[ 1 ].slug )?.[ 1 ];
 
 	const [ btnDisabled, setBtnDisabled ] = useState( false );
 
