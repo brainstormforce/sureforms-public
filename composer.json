@@ -9,7 +9,6 @@
 		"installer-paths": {
 			"inc/lib/{$name}": [
         "brainstormforce/nps-survey",
-        "brainstormforce/utm-analytics",
         "brainstormforce/bsf-analytics",
 		"brainstormforce/astra-notices"
       ]
@@ -56,7 +55,6 @@
 		"wp-cli/wp-cli-bundle": "^2.10",
 		"composer/installers": "^2.3",
 		"brainstormforce/nps-survey": "^1.0",
-    "brainstormforce/utm-analytics": "^0",
     "brainstormforce/bsf-analytics": "^1.0",
 		"brainstormforce/astra-notices": "^1.1"
 	},
@@ -65,11 +63,6 @@
 			"name": "brainstormforce/nps-survey",
 			"type": "vcs",
 			"url": "git@github.com:brainstormforce/nps-survey.git"
-		},
-    {
-			"name": "brainstormforce/utm-analytics",
-			"type": "vcs",
-			"url": "git@github.com:brainstormforce/utm-analytics.git"
 		},
     {
 			"name": "brainstormforce/bsf-analytics",
