@@ -2,6 +2,7 @@ import { __ } from '@wordpress/i18n';
 import { useState } from '@wordpress/element';
 import { Button, Container } from '@bsf/force-ui';
 import { XIcon } from 'lucide-react';
+import { addQueryParam } from '@Utils/Helpers';
 
 const UpgradeNotice = ( { onClose } ) => {
 	const [ isVisible, setIsVisible ] = useState( true );
@@ -32,6 +33,17 @@ const UpgradeNotice = ( { onClose } ) => {
 					tag="a"
 					variant="link"
 					className="p-0 [&>span]:p-0 underline underline-offset-2"
+					onClick={ () =>
+						window.open(
+							addQueryParam(
+								srfm_admin?.pricing_page_url ||
+									srfm_admin?.sureforms_pricing_page,
+								'dashboard-cta'
+							),
+							'_blank',
+							'noreferrer'
+						)
+					}
 				>
 					{ __( 'Upgrade now', 'sureforms' ) }
 				</Button>{ ' ' }

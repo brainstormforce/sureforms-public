@@ -4,7 +4,7 @@ import Logo from '../dashboard/templates/Logo';
 import useWhatsNewRSS from '../../lib/whats-new/useWhatsNewRSS';
 import { Topbar, Badge, Button, HamburgerMenu } from '@bsf/force-ui';
 import { CircleHelp, ArrowUpRight, Megaphone } from 'lucide-react';
-import { cn } from '@Utils/Helpers';
+import { addQueryParam, cn } from '@Utils/Helpers';
 import UpgradeNotice from './UpgradeNotice';
 
 const {
@@ -145,6 +145,17 @@ const Header = () => {
 							variant="link"
 							size="sm"
 							className="h-full text-link-primary text-sm font-semibold no-underline hover:no-underline px-1 content-center [box-shadow:none] focus:[box-shadow:none] focus:outline-none"
+							onClick={ () =>
+								window.open(
+									addQueryParam(
+										srfm_admin?.pricing_page_url ||
+											srfm_admin?.sureforms_pricing_page,
+										'dashboard-cta'
+									),
+									'_blank',
+									'noreferrer'
+								)
+							}
 						>
 							{ __( 'Upgrade to Pro', 'sureforms' ) }
 						</Button>
