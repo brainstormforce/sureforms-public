@@ -185,23 +185,15 @@ class Rest_Api {
 			wp_send_json_error( __( 'Nonce verification failed.', 'sureforms' ) );
 		}
 
-		$forms = get_posts(
-			[
-				'post_type'      => SRFM_FORMS_POST_TYPE,
-				'posts_per_page' => -1,
-				'orderby'        => 'title',
-				'order'          => 'ASC',
-			]
-		);
+		$forms= Helper::get_instance()->get_sureforms();
 
 		$available_forms = [];
 
-		if ( ! empty( $forms ) ) {
-			foreach ( $forms as $form ) {
-				// Populate the array with form ID and form title.
+		if (!empty($forms)) {
+			foreach ($forms as $id => $title) {
 				$available_forms[] = [
-					'id'    => $form->ID,
-					'title' => $form->post_title,
+					'id'    => $id,
+					'title' => $title,
 				];
 			}
 		}
