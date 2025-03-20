@@ -1,84 +1,91 @@
 import { __ } from '@wordpress/i18n';
-import { Button, Container, Label, Title } from '@bsf/force-ui';
+import { Button, Container, Title, Label } from '@bsf/force-ui';
 import { Check, Zap } from 'lucide-react';
+import upgradeToProPlaceholder from '@Image/upgrade-to-pro.svg';
+import { addQueryParam } from '@Utils/Helpers';
 
 export default () => {
+	const featuresText = [
+		{ title: __( 'FileUpload', 'sureforms' ) },
+		{ title: __( 'Page Break', 'sureforms' ) },
+		{ title: __( 'Rating Fields', 'sureforms' ) },
+		{ title: __( 'Date & Time Pickers', 'sureforms' ) },
+		{ title: __( 'Conditional Logic', 'sureforms' ) },
+		{ title: __( 'And much more…', 'sureforms' ) },
+	];
+
 	return (
 		<Container
-			className="bg-background-primary p-5 xl:p-6 shadow-sm rounded-xl border border-solid border-border-subtle gap-y-8 md:gap-x-8"
+			className="bg-background-primary p-4 gap-2 shadow-sm-blur-1 rounded-xl border-0.5 border-solid border-border-subtle"
 			containerType="grid"
 			cols={ 12 }
 		>
-			<Container.Item
-				className="flex flex-col gap-8 p-2"
-				colSpan={ 8 }
-			>
-				<Container className="flex flex-col">
-					<Container.Item className="flex flex-row gap-1 items-center">
-						<Zap className="w-12 text-brand-primary border-1.25" />
-						<Label className="font-semibold cursor-pointer text-xs text-brand-primary">
+			<Container.Item className="flex flex-col gap-2 col-span-12 md:col-span-6">
+				<Container direction="column" className="gap-2 p-2">
+					<Container align="center" className="gap-1">
+						<Zap className="size-4 text-brand-800" />
+						<Label size="xs" className="font-semibold text-brand-800">
 							{ __( 'Upgrade to Pro', 'sureforms' ) }
 						</Label>
-					</Container.Item>
-					<Container.Item className="flex flex-col gap-1 py-1">
+					</Container>
+					<Container direction="column" className="gap-1 py-1">
 						<Title
-							className="text-text-primary font-semibold text-lg"
 							tag="h5"
-							title={ __( 'Upgrade to Unlock SureForms Premium Features!', 'sureforms' ) }
+							title={ __(
+								'Upgrade to Unlock SureForms Premium Features!',
+								'sureforms'
+							) }
 						/>
-						<Label className="text-sm text-text-secondary font-normal">
-							{ __( 'Upgrade to SureForms Premium and access advanced fields and features that enhance your form-building experience:', 'sureforms' ) }
+						<Label size="sm" className="text-text-secondary font-normal">
+							{ __(
+								'Upgrade to SureForms Premium and access advanced fields and features that enhance your form-building experience:',
+								'sureforms'
+							) }
 						</Label>
-					</Container.Item>
+					</Container>
 					<Container.Item>
-						<Container className="grid grid-cols-1 sm:grid-cols-2 py-1 gap-3 rounded-lg">
-							<Container.Item className="flex flex-row items-center gap-2">
-								<Check className="w-12 text-brand-primary border" />
-								<Label className="text-field-label font-medium text-sm">
-									{ __( 'File Upload', 'sureforms' ) }
-								</Label>
-							</Container.Item>
-							<Container.Item className="flex flex-row items-center gap-2">
-								<Check className="w-12 text-brand-primary border" />
-								<Label className="text-field-label font-medium text-sm">
-									{ __( 'Page Break', 'sureforms' ) }
-								</Label>
-							</Container.Item>
-							<Container.Item className="flex flex-row items-center gap-2">
-								<Check className="w-12 text-brand-primary border" />
-								<Label className="text-field-label font-medium text-sm">
-									{ __( 'Rating Fields', 'sureforms' ) }
-								</Label>
-							</Container.Item>
-							<Container.Item className="flex flex-row items-center gap-2">
-								<Check className="w-12 text-brand-primary border" />
-								<Label className="text-field-label font-medium text-sm">
-									{ __( 'Date & Time Pickers', 'sureforms' ) }
-								</Label>
-							</Container.Item>
-							<Container.Item className="flex flex-row items-center gap-2">
-								<Check className="w-12 text-brand-primary border" />
-								<Label className="text-field-label font-medium text-sm">
-									{ __( 'Conditional Logic', 'sureforms' ) }
-								</Label>
-							</Container.Item>
-							<Container.Item className="flex flex-row items-center gap-2">
-								<Check className="w-12 text-brand-primary border" />
-								<Label className="text-field-label font-medium text-sm">
-									{ __( 'And much more…', 'sureforms' ) }
-								</Label>
-							</Container.Item>
+						<Container containerType="gird" className="grid-cols-1 sm:grid-cols-2 gap-1.5 rounded-lg py-1">
+							{ featuresText.map( ( prompt, index ) => (
+								<Container.Item
+									className="flex flex-row items-center gap-2"
+									key={ index }
+								>
+									<Check className="size-3.5 text-brand-800" />
+									<Label size="sm">
+										{ prompt.title }
+									</Label>
+								</Container.Item>
+							) ) }
 						</Container>
 					</Container.Item>
-					<Container.Item className="p-2 gap-3">
-						<Button variant="secondary" size="md" className="border border-solid border-button-secondary bg-button-secondary hover:bg-button-secondary gap-1 shadow-sm-blur-2 text-sm">
-							{ __( 'Upgrade now', 'sureforms' ) }
-						</Button>
-					</Container.Item>
+				</Container>
+				<Container className="p-2 gap-3">
+					<Button
+						variant="secondary"
+						size="md"
+						className="shadow-sm-blur-2"
+						onClick={ () =>
+							window.open(
+								addQueryParam(
+									srfm_admin?.pricing_page_url ||
+										srfm_admin?.sureforms_pricing_page,
+									'dashboard-upgrade-to-pro-banner-cta'
+								),
+								'_blank',
+								'noreferrer'
+							)
+						}
+					>
+						{ __( 'Upgrade now', 'sureforms' ) }
+					</Button>
 				</Container>
 			</Container.Item>
-			<Container.Item className="p-2 gap-1.5 bg-gray-500" colSpan={ 4 }>
-				image
+			<Container.Item className="gap-1.5 p-2 flex justify-center items-center col-span-12 md:col-span-6">
+				<img
+					src={ upgradeToProPlaceholder }
+					alt={ __( 'Upgrade To Pro', 'sureforms' ) }
+					className="max-w-full h-auto"
+				/>
 			</Container.Item>
 		</Container>
 	);

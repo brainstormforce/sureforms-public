@@ -10,6 +10,7 @@ import { __ } from '@wordpress/i18n';
 import { Toaster, ToastBar } from 'react-hot-toast';
 import clsx from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { format as format_date } from 'date-fns';
 
 export function getImageSize( sizes ) {
 	const sizeArr = [];
@@ -400,3 +401,123 @@ export const addQueryParam = ( url, paramValue, paramKey = 'utm_medium' ) => {
  * @return {string} - The concatenated class string.
  */
 export const cn = ( ...args ) => twMerge( clsx( ...args ) );
+
+/**
+ * Formats a given date string based on the provided options.
+ *
+ * @param {string}  dateString       - The date string to format.
+ * @param {Object}  options          - Formatting options to customize the output.
+ * @param {boolean} [options.day]    - Whether to include the day in the output.
+ * @param {boolean} [options.month]  - Whether to include the month in the output.
+ * @param {boolean} [options.year]   - Whether to include the year in the output.
+ * @param {boolean} [options.hour]   - Whether to include the hour in the output.
+ * @param {boolean} [options.minute] - Whether to include the minute in the output.
+ * @param {boolean} [options.hour12] - Whether to use a 12-hour clock format.
+ * @return {string} - The formatted date string or a fallback if the input is invalid.
+ */
+export const formatDate = ( dateString, options = {} ) => {
+	if ( ! dateString || isNaN( new Date( dateString ).getTime() ) ) {
+		return __( 'No Date', 'sureforms' );
+	}
+
+	const optionMap = {
+		day: '2-digit',
+		month: 'short',
+		year: 'numeric',
+		hour: '2-digit',
+		minute: '2-digit',
+		hour12: true, // Note: hour12 is a boolean directly
+	};
+
+	const formattingOptions = Object.keys( optionMap ).reduce( ( acc, key ) => {
+		if ( options[ key ] === true ) {
+			acc[ key ] = optionMap[ key ];
+		} else if ( options[ key ] === false ) {
+		} else if ( options[ key ] !== undefined ) {
+			acc[ key ] = options[ key ];
+		}
+		return acc;
+	}, {} );
+
+	return new Intl.DateTimeFormat( 'en-US', formattingOptions ).format(
+		new Date( dateString )
+	);
+};
+
+/**
+ *
+ * @return {string} - The formatted date string.
+ */
+export const getDatePlaceholder = () => {
+	const currentDate = new Date();
+	const pastDate = new Date();
+	pastDate.setDate( currentDate.getDate() - 30 ); // Set to 30 days ago
+
+	const formattedPastDate = formatDate( pastDate, 'MM/dd/yyyy' );
+	const formattedCurrentDate = formatDate( currentDate, 'MM/dd/yyyy' );
+
+	return `${ formattedPastDate } - ${ formattedCurrentDate }`;
+};
+
+/**
+ * Formats a given date string based on the provided options.
+ * If no options are provided, it defaults to 'yyyy-MM-dd' format.
+ *
+ * @param {string|Date} date                      - The date string or Date object to format.
+ * @param {string}      [dateFormat='yyyy-MM-dd'] - The date format string for `date-fns`.
+ * @return {string} - The formatted date string or a fallback if the input is invalid.
+ */
+export const format = ( date, dateFormat = 'yyyy-MM-dd' ) => {
+	try {
+		if ( ! date || isNaN( new Date( date ).getTime() ) ) {
+			throw new Error( __( 'Invalid Date', 'sureforms' ) );
+		}
+		return format_date( new Date( date ), dateFormat );
+	} catch ( error ) {
+		return __( 'No Date', 'sureforms' );
+	}
+};
+
+/**
+ * Returns selected date in string format
+ *
+ * @param {*} selectedDates
+ * @return {string} - Formatted string.
+ */
+export const getSelectedDate = ( selectedDates ) => {
+	if ( ! selectedDates.from ) {
+		return '';
+	}
+	if ( ! selectedDates.to ) {
+		return `${ format( selectedDates.from, 'MM/dd/yyyy' ) }`;
+	}
+	return `${ format( selectedDates.from, 'MM/dd/yyyy' ) } - ${ format(
+		selectedDates.to,
+		'MM/dd/yyyy'
+	) }`;
+};
+
+/**
+ *
+ * @param {Object} dates - The date object.
+ * @return {string} - The formatted date string.
+ */
+export const getLastNDays = ( dates ) => {
+	const { from, to } = dates;
+
+	if ( ! from || ! to ) {
+		const currentDate = new Date();
+		const pastDate = new Date();
+		pastDate.setDate( currentDate.getDate() - 30 );
+
+		return {
+			from: pastDate,
+			to: currentDate,
+		};
+	}
+
+	return {
+		from: new Date( from ),
+		to: new Date( to ),
+	};
+};

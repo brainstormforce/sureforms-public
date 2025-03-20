@@ -178,6 +178,8 @@ module.exports = withTW( {
 				'toggle-off-disabled': '#FFF3EE',
 				// overlay
 				'overlay-background': '#0f172ab2',
+				// chart color
+				'chart-purple-500': '#A855F7',
 			},
 			spacing: {
 				'content-container': '43.5rem',
@@ -212,5 +214,6 @@ module.exports = withTW( {
 	corePlugins: {
 		preflight: false,
 	},
-	important: ':is(#srfm-dashboard-container, #srfm-settings-container, #srfm-page-header, #srfm-dialog-root, #srfm-add-new-form-container)',
+	important:
+		':is(#srfm-dashboard-container, #srfm-settings-container, #srfm-page-header, #srfm-dialog-root, #srfm-add-new-form-container)',
 } );

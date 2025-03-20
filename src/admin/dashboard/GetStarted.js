@@ -1,98 +1,80 @@
 import { __ } from '@wordpress/i18n';
 import { Button, Container, Label, Title } from '@bsf/force-ui';
-import { Plus, SquareArrowOutUpRight } from 'lucide-react';
+import { Plus } from 'lucide-react';
+import ExternalLinkIcon from '@Image/external-link-icon.js';
 
 export default () => {
 	const siteUrl = srfm_admin.site_url;
 
 	return (
-		<>
-			<Container
-				className="bg-background-primary p-5 xl:p-6 shadow-sm rounded-xl border border-solid border-border-subtle gap-y-8 md:gap-x-8"
-				containerType="grid"
-				cols={ 12 }
-				align="center"
-			>
-				<Container.Item
-					colSpan={ 8 }
-				>
-					<Container
-						containerType="grid"
-						cols={ 8 }
-						gap="sm"
+		<Container
+			className="bg-background-primary p-4 gap-8 shadow-sm-blur-1 rounded-xl border-0.5 border-solid border-border-subtle"
+			containerType="grid"
+			cols={ 12 }
+			align="center"
+		>
+			<Container.Item className="flex flex-col gap-6 p-2 col-span-12 md:col-span-7 lg:col-span-7">
+				<Container direction="column" className="gap-1">
+					<Title
+						size="md"
+						tag="h3"
+						title={ __( 'Welcome to SureForms!', 'sureforms' ) }
+					/>
+					<Label
+						size="md"
+						variant="neutral"
+						className="font-normal text-text-secondary"
 					>
-
-						<Container.Item
-							colSpan={ 8 }
-						>
-							<Title
-								description=""
-								icon={ null }
-								iconPosition="right"
-								size="lg"
-								tag="h4"
-								title={ __( 'Welcome to SureForms!', 'sureforms' ) }
-								className="p-2"
-							/>
-							<Label
-								size="sm"
-								variant="neutral"
-								className="p-2 font-[400] text-text-secondary"
-							>
-								{ __( 'SureForms is a WordPress plugin that enables users to create beautiful looking forms through a drag-and-drop interface, without needing to code. It integrates with the WordPress block editor.', 'sureforms' ) }
-							</Label>
-
-							<Container
-								className="p-2 gap-3"
-								containerType="flex"
-								gap="sm"
-							>
-								<Container.Item
-								>
-									<Button
-										className="shadow-sm-blur-1 gap-1"
-										icon={ <Plus aria-label="Create new form" role="img" /> }
-										iconPosition="right"
-										size="md"
-										variant="primary"
-										onClick={ () => {
-											window.location.href = `${ siteUrl }/wp-admin/admin.php?page=add-new-form`;
-										} }
-
-									>
-										{ __( 'Create New Form', 'sureforms' ) }
-									</Button>
-								</Container.Item>
-
-								<Container.Item
-								>
-									<Button
-										className="gap-1"
-										icon={ <SquareArrowOutUpRight aria-label="Read full guide" role="img" /> }
-										iconPosition="right"
-										size="md"
-										variant="ghost"
-										onClick={ () => {
-											window.open( 'https://sureforms.com/docs/', '_blank' );
-										} }
-									>
-										{ __( 'Read Full Guide', 'sureforms' ) }
-									</Button>
-								</Container.Item>
-							</Container>
-						</Container.Item>
-
-					</Container>
-				</Container.Item>
-
-				<Container.Item
-					className="p-2 gap-8 bg-gray-100"
-					colSpan={ 4 }
-				>
-				Image
-				</Container.Item>
-
+						{ __(
+							'SureForms is a WordPress plugin that enables users to create beautiful looking forms through a drag-and-drop interface, without needing to code. It integrates with the WordPress block editor.',
+							'sureforms'
+						) }
+					</Label>
+				</Container>
+				<Container className="flex-wrap gap-3">
+					<Button
+						className="shadow-sm-blur-1 gap-1"
+						icon={
+							<Plus aria-label={ __( 'Create New Form', 'sureforms' ) } />
+						}
+						iconPosition="right"
+						size="md"
+						variant="primary"
+						onClick={ () => {
+							window.location.href = `${ siteUrl }/wp-admin/admin.php?page=add-new-form`;
+						} }
+					>
+						{ __( 'Create New Form', 'sureforms' ) }
+					</Button>
+					<Button
+						className="gap-1"
+						icon={
+							<ExternalLinkIcon aria-label={ __( 'Read Full Guide', 'sureforms' ) } />
+						}
+						iconPosition="right"
+						size="md"
+						variant="ghost"
+						onClick={ () => {
+							window.open(
+								'https://sureforms.com/docs/',
+								'_blank'
+							);
+						} }
+					>
+						{ __( 'Read Full Guide', 'sureforms' ) }
+					</Button>
+				</Container>
+			</Container.Item>
+			<Container className="p-2 gap-2 col-span-12 md:col-span-5 lg:col-span-5 aspect-video">
+				<iframe
+					className="w-full h-full rounded border border-solid border-border-subtle"
+					src="https://www.youtube.com/embed/it16jGnZBus"
+					title={ __( 'SureForms: Custom WordPress Forms MADE SIMPLE', 'sureforms' ) }
+					allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+					referrerPolicy="strict-origin-when-cross-origin"
+					allowFullScreen
+				></iframe>
 			</Container>
-		</>
+		</Container>
 	);
 };
