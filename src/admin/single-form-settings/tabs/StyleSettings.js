@@ -589,7 +589,6 @@ function StyleSettings( props ) {
 							label: 'bg_image_size_custom_unit',
 						} }
 						// Gradient Properties
-						gradientOverlay={ { value: true } }
 						gradientType={ {
 							value: gradient_type || 'basic',
 							label: 'gradient_type',
