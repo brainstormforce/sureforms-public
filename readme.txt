@@ -4,7 +4,7 @@ Tags: contact form, custom form, forms, contact form plugin, form builder
 Requires at least: 6.4
 Tested up to: 6.7.2
 Requires PHP: 7.4
-Stable tag: 1.4.2
+Stable tag: 1.4.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -224,6 +224,10 @@ There is no limit to the types of businesses and organizations that can benefit 
 
 [Join our Facebook group community](https://www.facebook.com/groups/surecart): Learn the tricks and techniques that other SureForms users are using to grow their business. Also, get exciting insider information on upcoming feature releases.
 
+### WANT TO CONTRIBUTE TO THE PLUGIN?
+
+You may now contribute to the plugin on [GitHub](https://github.com/brainstormforce/sureforms-public)
+
 ### USE OF 3RD PARTY SERVICES
 
 To improve the user experience, SureForms may use the following 3rd party services if the required features are enabled:
@@ -256,6 +260,9 @@ Yes! You can certainly use SureForms on yours as well as your client’s website
 When you use SureForms, you get an easy-to-use AI-powered form builder that can be used to build your forms fast.
 
 == Changelog ==
+= 1.4.3 - 18th March 2025 =
+* Fix: Addressed an issue where minimum and maximum selection errors in the Multiple Choice field were not displayed in real-time and were only shown upon form submission.
+* Fix: This update addressed a security bug. Please make sure you are using the latest version on your website.
 = 1.4.2 - 4th March 2025 =
 * Improvement: Made the form submission text translatable.
 * Fix: Resolved a recursive pattern insertion issue in Gutenberg that was causing a 502 error due to an infinite loop.
