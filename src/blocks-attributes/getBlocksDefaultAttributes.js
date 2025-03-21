@@ -42,6 +42,13 @@ const defaultKeys = {
 	bg_image_size_custom_unit: { default: '%' },
 	bg_overlay_opacity: { default: 1 },
 	bg_image_overlay_color: { default: '#FFFFFF75' },
+	overlay_gradient_type: { default: 'basic' },
+	bg_overlay_gradient_type: { default: 'linear' },
+	bg_overlay_gradient_angle: { default: 90 },
+	bg_overlay_gradient_color_1: { default: '#FFC9B2' },
+	bg_overlay_gradient_color_2: { default: '#C7CBFF' },
+	bg_overlay_gradient_location_1: { default: 0 },
+	bg_overlay_gradient_location_2: { default: 100 },
 };
 
 export const blocksAttributes = {
