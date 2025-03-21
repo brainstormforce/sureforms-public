@@ -96,7 +96,7 @@ const TextStylesControl = ( props ) => {
 						} }
 						min={ 0 }
 						max={ 200 }
-						step={ lineHeight?.value === 'em' ? 0.1 : 1 }
+						step={ lineHeightUnit?.value === 'em' ? 0.1 : 1 }
 						unit={ {
 							value: lineHeightUnit?.value,
 							label: lineHeightUnit?.label,
