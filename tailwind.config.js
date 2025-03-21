@@ -71,6 +71,7 @@ module.exports = withTW( {
 				'link-visited': '#DC4809',
 				'link-visited-inverse': '#22D3EE',
 				'link-inverse-hover': '#FCBFA5',
+				'link-premium-badge': '#28afed',
 				// icon
 				'icon-primary': '#111827',
 				'icon-secondary': '#6B7280',
@@ -146,6 +147,8 @@ module.exports = withTW( {
 				'badge-hover-disabled': '#F3F4F6',
 				'badge-border-disabled': '#E5E7EB',
 				'badge-background-important': '#DC2626',
+				'badge-background-orange-10': '#D544071A',
+				'badge-background-orange-30': '#D544074D',
 				// alert
 				'alert-background-neutral': '#FFFFFF',
 				'alert-border-neutral': '#E5E7EB',
@@ -173,6 +176,8 @@ module.exports = withTW( {
 				'toggle-on-border': '#F8A581',
 				'toggle-on-disabled': '#EEF2FF',
 				'toggle-off-disabled': '#FFF3EE',
+				// overlay
+				'overlay-background': '#0f172ab2',
 				// chart color
 				'chart-purple-500': '#A855F7',
 			},
