@@ -1,9 +1,9 @@
 import { __ } from '@wordpress/i18n';
 import AdvancedPopColorControl from '@Components/color-control/advanced-pop-color-control.js';
-import { SelectControl } from '@wordpress/components';
+import { SelectControl, FocalPointPicker } from '@wordpress/components';
 import styles from './editor.lazy.scss';
 import GradientSettings from '@Components/gradient-settings';
-import { useRef, useLayoutEffect } from '@wordpress/element';
+import { useRef, useLayoutEffect, useEffect } from '@wordpress/element';
 import SRFMMediaPicker from '@Components/image';
 import MultiButtonsControl from '@Components/multi-buttons-control';
 import SRFM_Block_Icons from '@Controls/block-icons';
@@ -20,6 +20,25 @@ const Background = ( props ) => {
 		return () => {
 			styles?.unuse();
 		};
+	}, [] );
+
+	/**
+	 * Adding a containerRef and observer to trigger the resize event on the container dimension change.
+	 * This is to handle the case where focal point picker uses default bounds for the image due delayed image load.
+	 * Triggering the resize event will force the focal point picker to recalculate the bounds and this works for the image overlay focal point picker as well.
+	 */
+	const containerRef = useRef( null );
+	useEffect( () => {
+		if ( ! containerRef.current ) {
+			return;
+		}
+
+		const observer = new ResizeObserver( () => {
+			window.dispatchEvent( new Event( 'resize' ) );
+		} );
+
+		observer.observe( containerRef.current );
+		return () => observer.disconnect();
 	}, [] );
 
 	const {
@@ -194,66 +213,19 @@ const Background = ( props ) => {
 					{ backgroundOverlayImage.value && (
 						<>
 							<div className="srfm-background-image-position">
-								<SelectControl
+								<FocalPointPicker
 									label={ __(
 										'Image Position',
 										'sureforms'
 									) }
-									value={ backgroundOverlayPosition.value }
-									onChange={ ( value ) =>
+									url={ backgroundOverlayImage?.value }
+									value={ backgroundOverlayPosition?.value }
+									onChange={ ( focalPoint ) => {
 										setAttributes( {
-											[ backgroundOverlayPosition.label ]:
-												value,
-										} )
-									}
-									options={ [
-										{
-											value: 'left-top',
-											label: __(
-												'Top Left',
-												'sureforms'
-											),
-										},
-										{
-											value: 'center-top',
-											label: __(
-												'Top Center',
-												'sureforms'
-											),
-										},
-										{
-											value: 'right-top',
-											label: __(
-												'Top Right',
-												'sureforms'
-											),
-										},
-										{
-											value: 'center',
-											label: __( 'Center', 'sureforms' ),
-										},
-										{
-											value: 'left-bottom',
-											label: __(
-												'Bottom Left',
-												'sureforms'
-											),
-										},
-										{
-											value: 'center-bottom',
-											label: __(
-												'Bottom Center',
-												'sureforms'
-											),
-										},
-										{
-											value: 'right-bottom',
-											label: __(
-												'Bottom Right',
-												'sureforms'
-											),
-										},
-									] }
+											[ backgroundOverlayPosition?.label ]:
+												focalPoint,
+										} );
+									} }
 								/>
 							</div>
 							<div className="srfm-background-image-attachment">
@@ -468,17 +440,6 @@ const Background = ( props ) => {
 
 	const overlayControls = (
 		<>
-			{ ! disableOverlay &&
-				( ( backgroundType.value === 'color' &&
-					backgroundColor.value ) ||
-					( backgroundType.value === 'gradient' &&
-						gradientOverlay.value ) ) && (
-				<>
-					{ buttonControl }
-					{ 'image' === overlayType?.value &&
-							renderOverlayImageControls() }
-				</>
-			) }
 			{ backgroundType.value === 'image' && backgroundImage?.value && (
 				<>
 					{ buttonControl }
@@ -513,27 +474,27 @@ const Background = ( props ) => {
 							<div className="srfm-background-image-overlay-gradient">
 								<GradientSettings
 									backgroundGradient={
-										props.backgroundGradient
+										props.overlayBackgroundGradient
 									}
 									setAttributes={ setAttributes }
-									gradientType={ props.gradientType }
+									gradientType={ props.overlayGradientType }
 									backgroundGradientColor2={
-										props.backgroundGradientColor2
+										props.overlayBackgroundGradientColor2
 									}
 									backgroundGradientColor1={
-										props.backgroundGradientColor1
+										props.overlayBackgroundGradientColor1
 									}
 									backgroundGradientType={
-										props.backgroundGradientType
+										props.overlayBackgroundGradientType
 									}
 									backgroundGradientLocation1={
-										props.backgroundGradientLocation1
+										props.overlayBackgroundGradientLocation1
 									}
 									backgroundGradientLocation2={
-										props.backgroundGradientLocation2
+										props.overlayBackgroundGradientLocation2
 									}
 									backgroundGradientAngle={
-										props.backgroundGradientAngle
+										props.overlayBackgroundGradientAngle
 									}
 								/>
 							</div>
@@ -598,66 +559,23 @@ const Background = ( props ) => {
 					/>
 					{ backgroundImage.value && (
 						<>
-							<div className="srfm-background-image-position">
-								<SelectControl
+							<div
+								className="srfm-background-image-position"
+								ref={ containerRef }
+							>
+								<FocalPointPicker
 									label={ __(
 										'Image Position',
 										'sureforms'
 									) }
-									value={ backgroundPosition.value }
-									onChange={ ( value ) =>
+									url={ backgroundImage?.value }
+									value={ backgroundPosition?.value }
+									onChange={ ( focalPoint ) => {
 										setAttributes( {
-											[ backgroundPosition.label ]: value,
-										} )
-									}
-									options={ [
-										{
-											value: 'left-top',
-											label: __(
-												'Top Left',
-												'sureforms'
-											),
-										},
-										{
-											value: 'center-top',
-											label: __(
-												'Top Center',
-												'sureforms'
-											),
-										},
-										{
-											value: 'right-top',
-											label: __(
-												'Top Right',
-												'sureforms'
-											),
-										},
-										{
-											value: 'center',
-											label: __( 'Center', 'sureforms' ),
-										},
-										{
-											value: 'left-bottom',
-											label: __(
-												'Bottom Left',
-												'sureforms'
-											),
-										},
-										{
-											value: 'center-bottom',
-											label: __(
-												'Bottom Center',
-												'sureforms'
-											),
-										},
-										{
-											value: 'right-bottom',
-											label: __(
-												'Bottom Right',
-												'sureforms'
-											),
-										},
-									] }
+											[ backgroundPosition?.label ]:
+												focalPoint,
+										} );
+									} }
 								/>
 							</div>
 							<div className="srfm-background-image-attachment">
