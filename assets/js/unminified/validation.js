@@ -786,6 +786,79 @@ export function initializeInlineFieldValidation() {
 	];
 
 	srfmFields.forEach( ( block ) => addBlurListener( block, `.${ block }` ) );
+
+	// Validate multi choice block for min and max selection.
+	validateMultiChoiceMinMax();
+}
+
+/**
+ * Validates the multichoice min and max selection on the input event.
+ * This function is separate to prevent conflicts with existing logic.
+ *
+ * @return {void}
+ */
+function validateMultiChoiceMinMax() {
+	const multiChoiceBlocks = document.querySelectorAll(
+		'.srfm-multi-choice-block'
+	);
+
+	multiChoiceBlocks.forEach( ( container ) => {
+		const multiChoiceHiddenInput = container.querySelector(
+			'.srfm-input-multi-choice-hidden'
+		);
+
+		if ( ! multiChoiceHiddenInput ) {
+			return;
+		}
+
+		const minSelection =
+			multiChoiceHiddenInput.getAttribute( 'data-min-selection' );
+		const maxSelection =
+			multiChoiceHiddenInput.getAttribute( 'data-max-selection' );
+
+		if ( ! minSelection && ! maxSelection ) {
+			// No min or max selection set, no need to validate.
+			return;
+		}
+
+		const errorMessage = container.querySelector( '.srfm-error-message' );
+		const errorMessages = window?.srfm_submit?.messages || {};
+
+		container.addEventListener( 'input', () => {
+			const selectedOptions = multiChoiceHiddenInput.value
+				.split( ',' )
+				.filter( Boolean );
+			const selectedCount = selectedOptions.length;
+
+			if ( selectedCount === 0 ) {
+				window?.srfm?.toggleErrorState( container, false );
+				return;
+			}
+
+			const closestBlock =
+				multiChoiceHiddenInput.closest( '.srfm-block' );
+
+			let errorText = '';
+
+			if ( minSelection && selectedCount < minSelection ) {
+				errorText = window?.srfm?.srfmSprintfString(
+					errorMessages.srfm_multi_choice_min_selections,
+					minSelection
+				);
+			} else if ( maxSelection && selectedCount > maxSelection ) {
+				errorText = window?.srfm?.srfmSprintfString(
+					errorMessages.srfm_multi_choice_max_selections,
+					maxSelection
+				);
+			}
+
+			errorMessage.textContent = errorText;
+			window?.srfm?.toggleErrorState(
+				closestBlock,
+				Boolean( errorText )
+			);
+		} );
+	} );
 }
 
 /**

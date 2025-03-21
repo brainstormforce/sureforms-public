@@ -8850,15 +8850,16 @@ namespace SRFM\Inc {
 	    public static function get_sureforms_website_url( $trail, $utm_args = [] ) {
 	    }
         /**
-         * Return the classes based on background and overlay type to add to the form container.
-         * 
-         * @param string $background_type The background type. Default 'color'.
-         * @param string $overlay_type The overlay type. Default 'none'.
-         * 
-         * @since x.x.x
-         * @return string The classes to add to the form container.
-         */
-        public static function get_background_classes( $background_type, $overlay_type )
+	     * Return the classes based on background and overlay type to add to the form container.
+         *
+	     * @param string $background_type The background type.
+	     * @param string $overlay_type The overlay type.
+         * @param string $bg_image The background image url.
+	     *
+	     * @since x.x.x
+	     * @return string The classes to add to the form container.
+	     */
+	    public static function get_background_classes( $background_type, $overlay_type, $bg_image = '' )
         {
         }
     }
