@@ -39,6 +39,7 @@ class Export {
 		'_srfm_page_break_settings',
 		'_srfm_conversational_form',
 		'_srfm_premium_common',
+		'_srfm_forms_styling_starter',
 	];
 
 	/**
