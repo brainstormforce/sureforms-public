@@ -390,3 +390,13 @@ export const addQueryParam = ( url, paramValue, paramKey = 'utm_medium' ) => {
 		return url; // Return the original URL in case of error
 	}
 };
+
+/**
+ * Check if the given element is a valid React element.
+ *
+ * @param {Object} element - The element to check.
+ * @return {boolean} Returns true if the element is a valid React element, otherwise returns false.
+ */
+export const isValidReactElement = ( element ) => {
+	return element && Symbol.for( 'react.element' ) === element.$$typeof;
+};
