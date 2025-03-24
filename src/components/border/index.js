@@ -73,7 +73,9 @@ const Border = ( props ) => {
 				value: borderColor?.value,
 				label: borderColor?.label,
 			} }
-			onColorChange={ ( colorValue ) => setAttributes( { [ borderColor?.label ]: colorValue } ) }
+			onColorChange={ ( colorValue ) =>
+				setAttributes( { [ borderColor?.label ]: colorValue } )
+			}
 			isFormSpecific={ true }
 		/>
 	);
@@ -86,7 +88,9 @@ const Border = ( props ) => {
 				value: borderHoverColor?.value,
 				label: borderHoverColor?.label,
 			} }
-			onColorChange={ ( colorValue ) => setAttributes( { [ borderHoverColor?.label ]: colorValue } ) }
+			onColorChange={ ( colorValue ) =>
+				setAttributes( { [ borderHoverColor?.label ]: colorValue } )
+			}
 			isFormSpecific={ true }
 		/>
 	);
