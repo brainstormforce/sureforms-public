@@ -128,6 +128,15 @@ class Create_New_Form {
 			);
 		}
 
+		if ( ! current_user_can( 'manage_options' ) ) {
+			// Return error if user does not have permissions to manage options.
+			wp_send_json_error(
+				[
+					'message' => esc_html__( 'You do not have permissions to manage options.', 'sureforms' ),
+				]
+			);
+		}
+
 		$form_info     = $data->get_body();
 		$form_info_obj = json_decode( $form_info );
 

@@ -88,6 +88,15 @@ class Global_Settings {
 			);
 		}
 
+		if ( ! current_user_can( 'manage_options' ) ) {
+			// Return error if user does not have permissions to manage options.
+			wp_send_json_error(
+				[
+					'data' => esc_html__( 'You do not have permissions to manage options.', 'sureforms' ),
+				]
+			);
+		}
+
 		$setting_options = $request->get_params();
 
 		$tab = $setting_options['srfm_tab'];
