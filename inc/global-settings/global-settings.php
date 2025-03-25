@@ -92,7 +92,7 @@ class Global_Settings {
 			// Return error if user is not logged in.
 			wp_send_json_error(
 				[
-					'message' => esc_html__( 'You must be logged in to make this request.', 'sureforms' ),
+					'data' => esc_html__( 'You must be logged in to make this request.', 'sureforms' ),
 				]
 			);
 		}
