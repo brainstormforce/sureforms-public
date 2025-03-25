@@ -44,7 +44,7 @@ const CreditDetailsPopup = ( {
 						className="progress"
 						style={ {
 							width: `${
-								// If the user is registered, show the progress bar based on the remaining form creations
+								// Convert to percentage
 								( aiFormCreationCount / totalFormCount ) * 100
 							}%`,
 						} }
