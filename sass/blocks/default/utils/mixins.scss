@@ -327,6 +327,6 @@
 	}
 	// Gradient Overlay Specific Styles.
 	&.srfm-overlay-gradient::before {
-		background: var( --srfm-bg-gradient );
+		background: var( --srfm-bg-overlay-gradient );
 	}
 }
