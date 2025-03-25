@@ -595,16 +595,22 @@ export const getLimitReachedPopup = () => {
 		);
 	}
 
-	// when initial 5 forms are consumed
+	// when initial 3 forms are consumed
 	if ( type === 'non-registered' && formCreationleft === 0 ) {
 		return (
 			<LimitReachedPopup
-				paraOne={ __(
-					'You have reached the maximum number of form generations.',
-					'sureforms'
-				) }
+				paraOne={
+					sprintf(
+						// translators: %s: Number of AI form generations
+						__(
+							'Free plan only allows %s AI form generations. Need to create more forms with AI?',
+							'sureforms'
+						),
+						srfm_admin?.srfm_ai_usage_details?.limit ?? 0
+					)
+				 }
 				paraTwo={ __(
-					'Please connect your website with SureForms AI to create 20 more forms with AI.',
+					'Please connect your website with SureForms AI to create 10 more forms with AI.',
 					'sureforms'
 				) }
 				onclick={ initiateAuth }
