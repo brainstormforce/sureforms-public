@@ -90,7 +90,7 @@ const iconBlocks = [
 ];
 
 const filterIconBlocks = iconBlocks.filter( ( block ) => {
-	const srfmProduct = srfm_block_data?.pro_plugin_name.split( ' ' )[ 1 ].toLowerCase();
+	const srfmProduct = srfm_block_data?.pro_plugin_name.split( ' ' )[ 1 ]?.toLowerCase();
 
 	// if current package is mathcing with the block package, add the block to the list.
 	switch ( srfmProduct ) {
