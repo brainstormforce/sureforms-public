@@ -111,7 +111,18 @@ const GradientSettings = ( props ) => {
 							value: backgroundGradientColor1.value,
 							label: backgroundGradientColor1.label,
 						} }
-						setAttributes={ setAttributes }
+						onColorChange={ ( colorValue ) => {
+							if (
+								colorValue !== backgroundGradientColor1.value
+							) {
+								setAttributes( {
+									[ backgroundGradientColor1.label ]:
+										colorValue,
+								} );
+							}
+						} }
+						value={ backgroundGradientColor1?.value }
+						isFormSpecific={ true }
 					/>
 					<AdvancedPopColorControl
 						label={ __( 'Color 2', 'sureforms' ) }
@@ -124,7 +135,18 @@ const GradientSettings = ( props ) => {
 							value: backgroundGradientColor2.value,
 							label: backgroundGradientColor2.label,
 						} }
-						setAttributes={ setAttributes }
+						onColorChange={ ( colorValue ) => {
+							if (
+								colorValue !== backgroundGradientColor2.value
+							) {
+								setAttributes( {
+									[ backgroundGradientColor2.label ]:
+										colorValue,
+								} );
+							}
+						} }
+						value={ backgroundGradientColor2?.value }
+						isFormSpecific={ true }
 					/>
 					<MultiButtonsControl
 						setAttributes={ setAttributes }
@@ -156,6 +178,7 @@ const GradientSettings = ( props ) => {
 						min={ 0 }
 						max={ 100 }
 						displayUnit={ false }
+						isFormSpecific={ true }
 					/>
 					<Range
 						label={ __( 'Location 2', 'sureforms' ) }
@@ -168,6 +191,7 @@ const GradientSettings = ( props ) => {
 						min={ 0 }
 						max={ 100 }
 						displayUnit={ false }
+						isFormSpecific={ true }
 					/>
 					{ 'linear' === backgroundGradientType.value && (
 						<Range
@@ -181,6 +205,7 @@ const GradientSettings = ( props ) => {
 							min={ 0 }
 							max={ 360 }
 							displayUnit={ false }
+							isFormSpecific={ true }
 						/>
 					) }
 				</>
