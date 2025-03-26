@@ -102,12 +102,13 @@
 			padding: 4px 16px;
 			margin: 0 auto;
 			color: #1e1e1e80;
-			background: #1e1e1e05;
 			border-radius: var( --srfm-btn-border-radius, 6px );
 			font-size: 14px;
 			line-height: 20px;
 			font-weight: 400;
 			text-decoration: none;
+			box-shadow: 0px 8px 32px -12px #95a0b229;
+			border: 0.5px solid #1e1e1e26;
 
 			&:hover {
 				color: #1e1e1ea6;
@@ -151,11 +152,11 @@
 
 		/* Branding styles when banner as page bg is enabled. */
 		.srfm-single-page-container .srfm-branding {
-			background: #ffffff05;
-			color: #ffffff80;
+			background: #fff;
+			color: #1e1e1eb2;
 		}
 		.srfm-single-page-container .srfm-branding:hover {
-			color: #ffffffa6;
+			color: #1e1e1ecc;
 		}
 	}
 }
