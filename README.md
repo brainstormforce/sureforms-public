@@ -261,6 +261,7 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 
 ## Changelog ##
 ### 1.4.4 - 27th March 2025 ###
+* New: Introduced background stylings for the form.
 * Improvement: Modified AI Form generation limit.
 ### 1.4.3 - 18th March 2025 ###
 * Fix: Addressed an issue where minimum and maximum selection errors in the Multiple Choice field were not displayed in real-time and were only shown upon form submission.
