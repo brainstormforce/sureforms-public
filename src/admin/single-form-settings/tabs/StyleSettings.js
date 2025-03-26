@@ -527,7 +527,7 @@ function StyleSettings( props ) {
 	 * @param {string} overlayType    - The type of overlay (e.g., "image", "gradient", "color", or undefined).
 	 *
 	 * @return {void} - This function is responsible for handling classes and does not return a value.
-	 * @since x.x.x
+	 * @since 1.4.4
 	 */
 	const updateEditorBackgroundClasses = ( backgroundType, overlayType ) => {
 		const backgroundClasses = {
