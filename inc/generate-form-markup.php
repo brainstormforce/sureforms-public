@@ -93,8 +93,8 @@ class Generate_Form_Markup {
 
 			$container_id = 'srfm-form-container-' . Helper::get_string_value( $id );
 
-			$neve_theme_margin_class_name = "srfm-neve-theme-add-margin-bottom";
-			$theme_name              	  = wp_get_theme()->get( 'Name' );
+			$neve_theme_margin_class_name = 'srfm-neve-theme-add-margin-bottom';
+			$theme_name                   = wp_get_theme()->get( 'Name' );
 
 			$form_classes = [
 				'srfm-form-container',
