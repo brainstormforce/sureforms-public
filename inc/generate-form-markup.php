@@ -93,10 +93,14 @@ class Generate_Form_Markup {
 
 			$container_id = 'srfm-form-container-' . Helper::get_string_value( $id );
 
+			$neve_theme_margin_class_name = "srfm-neve-theme-add-margin-bottom";
+			$theme_name              	  = wp_get_theme()->get( 'Name' );
+
 			$form_classes = [
 				'srfm-form-container',
 				$container_id,
 				$sf_classname,
+				'Neve' === $theme_name ? $neve_theme_margin_class_name : '', // compatibility with Neve theme for margin between main content and footer.
 			];
 
 			$custom_added_classes = Helper::get_meta_value( $id, '_srfm_additional_classes' );
