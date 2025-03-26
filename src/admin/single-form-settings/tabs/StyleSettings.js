@@ -1,6 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import { useSelect, useDispatch } from '@wordpress/data';
-import { useState, useEffect } from '@wordpress/element';
+import { useState, useEffect, useRef, useLayoutEffect } from '@wordpress/element';
 import { store as editorStore } from '@wordpress/editor';
 import AdvancedPopColorControl from '@Components/color-control/advanced-pop-color-control.js';
 import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
@@ -13,16 +13,30 @@ import {
 	faAlignJustify,
 } from '@fortawesome/free-solid-svg-icons';
 import { useDeviceType } from '@Controls/getPreviewType';
+import { getStylePanels } from '@Components/hooks';
+import { addStyleInRoot } from '@Utils/Helpers';
+import Background from '@Components/enhanced-background';
 
 function StyleSettings( props ) {
 	const { editPost } = useDispatch( editorStore );
 	const { defaultKeys, isInlineButtonBlockPresent } = props;
 
-	let sureformsKeys = useSelect( ( select ) =>
-		select( editorStore ).getEditedPostAttribute( 'meta' )
+	let sureformsKeys = useSelect(
+		( select ) => {
+			const meta =
+				select( editorStore ).getEditedPostAttribute( 'meta' ) || {};
+			return meta;
+		},
+		[ editorStore ]
 	);
 	const formStyling = sureformsKeys?._srfm_forms_styling || {};
-	const root = document.documentElement.querySelector( 'body' );
+	const rootRef = useRef( null );
+	const editorRef = useRef( null );
+
+	useLayoutEffect( () => {
+		rootRef.current = document.documentElement.querySelector( 'body' );
+		editorRef.current = rootRef.current?.querySelector( '.editor-styles-wrapper' );
+	}, [] );
 	const deviceType = useDeviceType();
 	const [ submitBtn, setSubmitBtn ] = useState(
 		document.querySelector( '.srfm-submit-richtext' )
@@ -31,6 +45,49 @@ function StyleSettings( props ) {
 		document.querySelector( '.srfm-submit-btn-container' )
 	);
 	const [ fieldSpacing, setFieldSpacing ] = useState( formStyling?.field_spacing || 'medium' );
+
+	const {
+		// Background Properties
+		bg_type,
+		bg_color,
+		bg_image,
+		bg_image_position,
+		bg_image_attachment,
+		bg_image_repeat,
+		bg_image_size,
+		bg_image_size_custom,
+		bg_image_size_custom_unit,
+		// Gradient Properties
+		gradient_type,
+		bg_gradient_color_1,
+		bg_gradient_color_2,
+		bg_gradient_location_1,
+		bg_gradient_location_2,
+		bg_gradient_angle,
+		bg_gradient_type,
+		bg_gradient,
+		// Overlay Properties
+		bg_gradient_overlay_type,
+		bg_overlay_opacity,
+		bg_image_overlay_color,
+		bg_overlay_image,
+		bg_overlay_position,
+		bg_overlay_attachment,
+		bg_overlay_blend_mode,
+		bg_overlay_repeat,
+		bg_overlay_size,
+		bg_overlay_custom_size,
+		bg_overlay_custom_size_unit,
+		// Gradient Overlay.
+		overlay_gradient_type,
+		bg_overlay_gradient_color_1,
+		bg_overlay_gradient_color_2,
+		bg_overlay_gradient_location_1,
+		bg_overlay_gradient_location_2,
+		bg_overlay_gradient_angle,
+		bg_overlay_gradient_type,
+		bg_overlay_gradient,
+	} = formStyling;
 
 	// Apply the sizings when field spacing changes.
 	useEffect( () => {
@@ -47,6 +104,83 @@ function StyleSettings( props ) {
 			submitButtonInherit();
 		}, 1000 );
 	}, [ deviceType, submitBtn, sureformsKeys._srfm_inherit_theme_button ] );
+
+	const onHandleChange = ( updatedSettings ) => {
+		const [ key, value ] = Object.entries( updatedSettings )[ 0 ];
+
+		addStyleInRoot( rootRef.current, getCSSProperties( key, value ) );
+		const formStylingSettings = {
+			...formStyling,
+			...updatedSettings,
+		};
+
+		editPost( {
+			meta: {
+				_srfm_forms_styling: formStylingSettings,
+			},
+		} );
+	};
+
+	const [ gradientOptions, setGradientOptions ] = useState( {
+		type: bg_gradient_type || 'linear',
+		color_1: bg_gradient_color_1 || '#FFC9B2',
+		color_2: bg_gradient_color_2 || '#C7CBFF',
+		location_1: bg_gradient_location_1 || 0,
+		location_2: bg_gradient_location_2 || 100,
+		angle: bg_gradient_angle || 90,
+	} );
+	const [ overlayGradientOptions, setOverlayGradientOptions ] = useState( {
+		type: bg_overlay_gradient_type || 'linear',
+		color_1: bg_overlay_gradient_color_1 || '#FFC9B2',
+		color_2: bg_overlay_gradient_color_2 || '#C7CBFF',
+		location_1: bg_overlay_gradient_location_1 || 0,
+		location_2: bg_overlay_gradient_location_2 || 100,
+		angle: bg_overlay_gradient_angle || 90,
+	} );
+
+	/**
+	 * Handles the selection of an image and updates the post metadata with the selected image's URL and ID.
+	 *
+	 * This function performs the following steps:
+	 * 1. Checks if the provided `media` object is valid and of type 'image'.
+	 * 2. If valid, it extracts the image's ID and URL, and then updates the post metadata with this information.
+	 * 3. If the `media` object is not valid or is not an image, it sets the image URL to `null`.
+	 *
+	 * @param {string} key   - The key used to identify the metadata field for the image URL in the post metadata.
+	 * @param {Object} media - The media object representing the selected image.
+	 */
+	const onImageSelect = ( key, media ) => {
+		let key_id = '';
+		let imageID = 0;
+		let imageURL = media;
+
+		if (
+			! media ||
+			! media.url ||
+			! media.type ||
+			'image' !== media.type
+		) {
+			imageURL = null;
+		}
+
+		if ( imageURL ) {
+			imageID = imageURL.id;
+			imageURL = imageURL.sizes.full.url;
+		}
+		key_id = key + '_id';
+
+		addStyleInRoot( rootRef.current, getCSSProperties( key, imageURL ) );
+
+		editPost( {
+			meta: {
+				_srfm_forms_styling: {
+					...formStyling,
+					[ key ]: imageURL,
+					[ key_id ]: imageID,
+				},
+			},
+		} );
+	};
 
 	function submitButtonInherit() {
 		const inheritClass = [ 'srfm-btn-alignment', 'wp-block-button__link' ];
@@ -77,158 +211,97 @@ function StyleSettings( props ) {
 		}
 	}
 
-	if ( sureformsKeys ) {
-		// Form Container
-		root.style.setProperty(
-			'--srfm-color-scheme-primary',
-			formStyling?.primary_color || '#111C44'
-		);
-		root.style.setProperty(
-			'--srfm-btn-color-hover',
-			formStyling?.primary_color
-				? `hsl( from ${ formStyling.primary_color } h s l / 0.9)`
-				: `hsl( from #111C44 h s l / 0.9)`
-		);
-		root.style.setProperty(
-			'--srfm-color-scheme-text-on-primary',
-			formStyling?.text_color_on_primary || '#FFFFFF'
-		);
+	useEffect( () => {
+		// Update the classes on the editor based on the background and overlay types.
+		updateEditorBackgroundClasses( bg_type, bg_gradient_overlay_type );
+	}, [ bg_type, bg_gradient_overlay_type, bg_image ] );
 
-		const defaultTextColor = '#1E1E1E';
+	useEffect( () => {
+		if ( sureformsKeys ) {
+			const defaultTextColor = '#1E1E1E';
 
-		root.style.setProperty(
-			'--srfm-color-scheme-text',
-			formStyling?.text_color || defaultTextColor
-		);
-		root.style.setProperty(
-			'--srfm-color-input-label',
-			formStyling?.text_color || defaultTextColor
-		);
-		root.style.setProperty(
-			'--srfm-color-input-placeholder',
-			formStyling?.text_color
-				? `hsl( from ${ formStyling.text_color } h s l / 0.5)`
-				: `hsl( from ${ defaultTextColor } h s l / 0.5)`
-		);
-		root.style.setProperty(
-			'--srfm-color-input-text',
-			formStyling?.text_color || defaultTextColor
-		);
-		root.style.setProperty(
-			'--srfm-color-input-description',
-			formStyling?.text_color
-				? `hsl( from ${ formStyling.text_color } h s l / 0.65)`
-				: `hsl( from ${ defaultTextColor } h s l / 0.65)`
-		);
-		root.style.setProperty(
-			'--srfm-color-input-prefix',
-			formStyling?.text_color
-				? `hsl( from ${ formStyling.text_color } h s l / 0.65)`
-				: `hsl( from ${ defaultTextColor } h s l / 0.65)`
-		);
-		root.style.setProperty(
-			'--srfm-color-input-background',
-			formStyling?.text_color
-				? `hsl( from ${ formStyling.text_color } h s l / 0.02)`
-				: `hsl( from ${ defaultTextColor } h s l / 0.02)`
-		);
-		root.style.setProperty(
-			'--srfm-color-input-background-disabled',
-			formStyling?.text_color
-				? `hsl( from ${ formStyling.text_color } h s l / 0.05)`
-				: `hsl( from ${ defaultTextColor } h s l / 0.05)`
-		);
-		root.style.setProperty(
-			'--srfm-color-input-border',
-			formStyling?.text_color
-				? `hsl( from ${ formStyling.text_color } h s l / 0.25)`
-				: `hsl( from ${ defaultTextColor } h s l / 0.25)`
-		);
-		root.style.setProperty(
-			'--srfm-color-input-border-disabled',
-			formStyling?.text_color
-				? `hsl( from ${ formStyling.text_color } h s l / 0.15)`
-				: `hsl( from ${ defaultTextColor } h s l / 0.15)`
-		);
-		root.style.setProperty(
-			'--srfm-color-input-border-focus-glow',
-			formStyling.primary_color
-				? `hsl( from ${ formStyling.primary_color } h s l / 0.15 )`
-				: '#FAE4DC'
-		);
+			// Form Container
+			const cssProperties = {
+				'--srfm-color-scheme-primary': formStyling?.primary_color || '#111C44',
+				'--srfm-btn-color-hover': `hsl( from ${ formStyling?.primary_color || '#111C44' } h s l / 0.9)`,
+				'--srfm-color-scheme-text-on-primary': formStyling?.text_color_on_primary || '#FFFFFF',
+				'--srfm-color-scheme-text': formStyling?.text_color || defaultTextColor,
+				'--srfm-color-input-label': formStyling?.text_color || defaultTextColor,
+				'--srfm-color-input-placeholder': `hsl( from ${ formStyling?.text_color || defaultTextColor } h s l / 0.5)`,
+				'--srfm-color-input-text': formStyling?.text_color || defaultTextColor,
+				'--srfm-color-input-description': `hsl( from ${ formStyling?.text_color || defaultTextColor } h s l / 0.65)`,
+				'--srfm-color-input-prefix': `hsl( from ${ formStyling?.text_color || defaultTextColor } h s l / 0.65)`,
+				'--srfm-color-input-background': `hsl( from ${ formStyling?.text_color || defaultTextColor } h s l / 0.02)`,
+				'--srfm-color-input-background-disabled': `hsl( from ${ formStyling?.text_color || defaultTextColor } h s l / 0.05)`,
+				'--srfm-color-input-border': `hsl( from ${ formStyling?.text_color || defaultTextColor } h s l / 0.25)`,
+				'--srfm-color-input-border-disabled': `hsl( from ${ formStyling?.text_color || defaultTextColor } h s l / 0.15)`,
+				'--srfm-color-input-border-focus-glow': `hsl( from ${ formStyling?.primary_color || '#FAE4DC' } h s l / 0.15 )`,
+				// checkbox and gdpr - for small, medium and large checkbox sizes
+				'--srfm-checkbox-input-border-radius': '4px',
+				'--srfm-color-multi-choice-svg': `hsl( from ${ formStyling?.text_color || defaultTextColor } h s l / 0.7)`,
+				// Button
+				// Button text color
+				'--srfm-btn-text-color': formStyling?.text_color_on_primary || '#FFFFFF',
+				// btn border color
+				'--srfm-btn-border-color': formStyling?.primary_color || '#111C44',
 
-		// checkbox and gdpr - for small, medium and large checkbox sizes
-		root.style.setProperty(
-			'--srfm-checkbox-input-border-radius',
-			'4px'
-		);
+				// Button alignment
+				'--srfm-submit-alignment': formStyling?.submit_button_alignment || 'left',
+				'--srfm-submit-width': sureformsKeys?._srfm_submit_width || '',
+				'--srfm-submit-alignment-backend': sureformsKeys._srfm_submit_alignment_backend || '',
+				'--srfm-submit-width-backend': sureformsKeys._srfm_submit_width_backend || '',
+				// Background Control Settings.
+				'--srfm-bg-color': bg_color || '#FFFFFF',
+				'--srfm-bg-image': bg_image ? `url(${ bg_image })` : 'none',
+				'--srfm-bg-position': `${ bg_image_position?.x * 100 }% ${ bg_image_position?.y * 100 }%` || '50% 50%',
+				'--srfm-bg-attachment': bg_image_attachment || 'scroll',
+				'--srfm-bg-repeat': bg_image_repeat || 'no-repeat',
+				'--srfm-bg-size': bg_image_size === 'custom' ? `${ bg_image_size_custom ?? 100 }${ bg_image_size_custom_unit ?? '%' }` : bg_image_size || 'cover',
+				'--srfm-bg-size-custom': bg_image_size_custom || 100,
+				'--srfm-bg-size-custom-unit': bg_image_size_custom_unit || '%',
+				// Gradient Variables.
+				'--srfm-bg-gradient': gradient_type === 'basic' ? bg_gradient || 'linear-gradient(90deg, #FFC9B2 0%, #C7CBFF 100%)' : getGradientCSS( gradientOptions.type, gradientOptions.color_1, gradientOptions.color_2, gradientOptions.location_1, gradientOptions.location_2, gradientOptions.angle ),
+				// Overlay Variables - Image.
+				'--srfm-bg-overlay-image': bg_overlay_image ? `url(${ bg_overlay_image })` : 'none',
+				'--srfm-bg-overlay-position': `${ bg_overlay_position?.x * 100 }% ${ bg_overlay_position?.y * 100 }%` || '50% 50%',
+				'--srfm-bg-overlay-attachment': bg_overlay_attachment || 'scroll',
+				'--srfm-bg-overlay-repeat': bg_overlay_repeat || 'no-repeat',
+				'--srfm-bg-overlay-blend-mode': bg_overlay_blend_mode || 'normal',
+				'--srfm-bg-overlay-size': bg_overlay_size === 'custom' ? `${ bg_overlay_custom_size ?? 100 }${ bg_overlay_custom_size_unit ?? '%' }` : bg_overlay_size || 'cover',
+				'--srfm-bg-overlay-custom-size': bg_overlay_custom_size || 100,
+				'--srfm-bg-overlay-custom-size-unit': bg_overlay_custom_size_unit || '%',
+				'--srfm-bg-overlay-opacity': bg_overlay_opacity ?? 1,
+				// Overlay Variables - Color.
+				'--srfm-bg-overlay-color': bg_image_overlay_color || '#FFFFFF75',
+				// Overlay Variables - Gradient.
+				'--srfm-bg-overlay-gradient': overlay_gradient_type === 'basic' ? bg_overlay_gradient || 'linear-gradient(90deg, #FFC9B2 0%, #C7CBFF 100%)' : getGradientCSS( overlayGradientOptions.type, overlayGradientOptions.color_1, overlayGradientOptions.color_2, overlayGradientOptions.location_1, overlayGradientOptions.location_2, overlayGradientOptions.angle ),
+			};
 
-		root.style.setProperty(
-			'--srfm-color-multi-choice-svg',
-			formStyling?.text_color
-				? `hsl( from ${ formStyling.text_color } h s l / 0.7)`
-				: `hsl( from ${ defaultTextColor } h s l / 0.7)`
-		);
-
-		// Button
-		// Button text color
-		root.style.setProperty(
-			'--srfm-btn-text-color',
-			formStyling?.text_color_on_primary || '#FFFFFF'
-		);
-		// btn border color
-		root.style.setProperty(
-			'--srfm-btn-border-color',
-			formStyling?.primary_color || '#111C44'
-		);
-
-		// Button alignment
-		root.style.setProperty(
-			'--srfm-submit-alignment',
-			formStyling?.submit_button_alignment || 'left'
-		);
-		root.style.setProperty(
-			'--srfm-submit-width',
-			sureformsKeys._srfm_submit_width
-				? sureformsKeys._srfm_submit_width
-				: ''
-		);
-		root.style.setProperty(
-			'--srfm-submit-alignment-backend',
-			sureformsKeys._srfm_submit_alignment_backend
-				? sureformsKeys._srfm_submit_alignment_backend
-				: ''
-		);
-		root.style.setProperty(
-			'--srfm-submit-width-backend',
-			sureformsKeys._srfm_submit_width_backend
-				? sureformsKeys._srfm_submit_width_backend
-				: ''
-		);
-	} else {
-		sureformsKeys = defaultKeys;
-		editPost( {
-			meta: sureformsKeys,
-		} );
-	}
+			addStyleInRoot( rootRef.current, cssProperties );
+		} else {
+			sureformsKeys = defaultKeys;
+			editPost( {
+				meta: sureformsKeys,
+			} );
+		}
+	}, [ sureformsKeys, gradientOptions, overlayGradientOptions, bg_gradient, bg_overlay_gradient ] );
 
 	function updateMeta( option, value ) {
 		const value_id = 0;
 		const key_id = '';
 
+		const cssProperties = {};
 		// Button
-		if ( option === '_srfm_button_border_width' ) {
-			root.style.setProperty(
-				'--srfm-btn-border-width',
-				value ? value + 'px' : '0px'
-			);
+		switch ( option ) {
+			case '_srfm_button_border_width':
+				cssProperties[ '--srfm-btn-border-width' ] = value ? value + 'px' : '0px';
+				break;
+			case '_srfm_button_border_color':
+				cssProperties[ '--srfm-btn-border-color' ] = value ? value : '#000000';
+				break;
 		}
-		if ( option === '_srfm_button_border_color' ) {
-			root.style.setProperty(
-				'--srfm-btn-border-color',
-				value ? value : '#000000'
-			);
-		}
+
+		addStyleInRoot( rootRef.current, cssProperties );
 
 		const option_array = {};
 
@@ -257,9 +330,7 @@ function StyleSettings( props ) {
 		const overrideSize = srfm_admin?.field_spacing_vars[ sizingValue ] || {};
 		const finalSize = { ...baseSize, ...overrideSize };
 
-		for ( const [ key, value ] of Object.entries( finalSize ) ) {
-			root.style.setProperty( key, value );
-		}
+		addStyleInRoot( rootRef.current, finalSize );
 	}
 
 	/**
@@ -272,129 +343,7 @@ function StyleSettings( props ) {
 	 * @since 0.0.7
 	 */
 	function updateFormStyling( option, value ) {
-		if ( option === 'primary_color' ) {
-			root.style.setProperty(
-				'--srfm-color-scheme-primary',
-				value || '#111C44'
-			);
-
-			root.style.setProperty(
-				'--srfm-btn-color-hover',
-				value
-					? `hsl( from ${ value } h s l / 0.9)`
-					: `hsl( from #111C44 h s l / 0.9)`
-			);
-		}
-
-		if ( option === 'text_color' ) {
-			const defaultTextColor = '#1E1E1E';
-
-			root.style.setProperty(
-				'--srfm-color-scheme-text',
-				value ? value : defaultTextColor
-			);
-			root.style.setProperty(
-				'--srfm-color-input-label',
-				value ? value : defaultTextColor
-			);
-			root.style.setProperty(
-				'--srfm-color-input-placeholder',
-				value ? value : defaultTextColor
-			);
-			root.style.setProperty(
-				'--srfm-color-input-text',
-				value ? value : defaultTextColor
-			);
-			root.style.setProperty(
-				'--srfm-color-input-description',
-				value
-					? `hsl( from ${ value } h s l / 0.65)`
-					: `hsl( from ${ defaultTextColor } h s l / 0.65)`
-			);
-			root.style.setProperty(
-				'--srfm-color-input-prefix',
-				value
-					? `hsl( from ${ value } h s l / 0.65)`
-					: `hsl( from ${ defaultTextColor } h s l / 0.65)`
-			);
-			root.style.setProperty(
-				'--srfm-color-input-background',
-				value
-					? `hsl( from ${ value } h s l / 0.02)`
-					: `hsl( from ${ defaultTextColor } h s l / 0.02)`
-			);
-			root.style.setProperty(
-				'--srfm-color-input-background-disabled',
-				value
-					? `hsl( from ${ value } h s l / 0.05)`
-					: `hsl( from ${ defaultTextColor } h s l / 0.05)`
-			);
-			root.style.setProperty(
-				'--srfm-color-input-border',
-				value
-					? `hsl( from ${ value } h s l / 0.25)`
-					: `hsl( from ${ defaultTextColor } h s l / 0.25)`
-			);
-			root.style.setProperty(
-				'--srfm-color-input-border-disabled',
-				value
-					? `hsl( from ${ value } h s l / 0.15)`
-					: `hsl( from ${ defaultTextColor } h s l / 0.15)`
-			);
-		}
-
-		if ( option === 'text_color_on_primary' ) {
-			root.style.setProperty(
-				'--srfm-color-scheme-text-on-primary',
-				value || '#FFFFFF'
-			);
-		}
-
-		if ( option === 'field_spacing' ) {
-			root.style.setProperty( '--srfm-field-spacing', value || 'medium' );
-		}
-
-		if ( option === 'submit_button_alignment' ) {
-			root.style.setProperty(
-				'--srfm-submit-alignment',
-				value || 'left'
-			);
-			root.style.setProperty(
-				'--srfm-submit-width-backend',
-				'max-content'
-			);
-			updateMeta( '_srfm_submit_width_backend', 'max-content' );
-
-			if ( value === 'left' ) {
-				root.style.setProperty(
-					'--srfm-submit-alignment-backend',
-					'100%'
-				);
-				updateMeta( '_srfm_submit_alignment_backend', '100%' );
-			}
-			if ( value === 'right' ) {
-				root.style.setProperty(
-					'--srfm-submit-alignment-backend',
-					'0%'
-				);
-				updateMeta( '_srfm_submit_alignment_backend', '0%' );
-			}
-			if ( value === 'center' ) {
-				root.style.setProperty(
-					'--srfm-submit-alignment-backend',
-					'50%'
-				);
-				updateMeta( '_srfm_submit_alignment_backend', '50%' );
-			}
-			if ( value === 'justify' ) {
-				root.style.setProperty(
-					'--srfm-submit-alignment-backend',
-					'50%'
-				);
-				root.style.setProperty( '--srfm-submit-width-backend', 'auto' );
-				updateMeta( '_srfm_submit_alignment_backend', '50%' );
-			}
-		}
+		addStyleInRoot( rootRef.current, getCSSProperties( option, value ) );
 
 		editPost( {
 			meta: {
@@ -403,65 +352,447 @@ function StyleSettings( props ) {
 		} );
 	}
 
-	return (
-		<>
-			<SRFMAdvancedPanelBody
-				title={ __( 'Form Container', 'sureforms' ) }
-				initialOpen={ true }
-			>
-				<AdvancedPopColorControl
-					label={ __( 'Primary Color', 'sureforms' ) }
-					colorValue={ formStyling?.primary_color }
-					data={ {
-						value: formStyling?.primary_color,
-						label: 'primary_color',
-					} }
-					onColorChange={ ( colorValue ) => {
-						if ( colorValue !== formStyling?.primary_color ) {
-							updateFormStyling( 'primary_color', colorValue );
-						}
-					} }
-					value={ formStyling?.primary_color }
-					isFormSpecific={ true }
-				/>
-				<p className="components-base-control__help" />
-				<AdvancedPopColorControl
-					label={ __( 'Text Color', 'sureforms' ) }
-					colorValue={ formStyling?.text_color }
-					data={ {
-						value: formStyling?.text_color,
-						label: 'text_color',
-					} }
-					onColorChange={ ( colorValue ) => {
-						if ( colorValue !== formStyling?.text_color ) {
-							updateFormStyling( 'text_color', colorValue );
-						}
-					} }
-					value={ formStyling?.text_color }
-					isFormSpecific={ true }
-				/>
-				<p className="components-base-control__help" />
-				<AdvancedPopColorControl
-					label={ __( 'Text Color on Primary', 'sureforms' ) }
-					colorValue={ formStyling?.text_color_on_primary }
-					data={ {
-						value: formStyling?.text_color_on_primary,
-						label: 'text_color_on_primary',
-					} }
-					onColorChange={ ( colorValue ) => {
-						if (
-							colorValue !== formStyling?.text_color_on_primary
-						) {
-							updateFormStyling(
-								'text_color_on_primary',
-								colorValue
-							);
-						}
-					} }
-					value={ formStyling?.text_color_on_primary }
-					isFormSpecific={ true }
-				/>
-				<p className="components-base-control__help" />
+	function getCSSProperties( option, value ) {
+		const cssProperties = {};
+		switch ( option ) {
+			case 'primary_color':
+				cssProperties[ '--srfm-color-scheme-primary' ] = value || '#111C44';
+				cssProperties[ '--srfm-btn-color-hover' ] = `hsl( from ${ value || '#111C44' } h s l / 0.9)`;
+				break;
+			case 'text_color':
+				const defaultTextColor = '#1E1E1E';
+				cssProperties[ '--srfm-color-scheme-text' ] = value || defaultTextColor;
+				cssProperties[ '--srfm-color-input-label' ] = value || defaultTextColor;
+				cssProperties[ '--srfm-color-input-placeholder' ] = value || defaultTextColor;
+				cssProperties[ '--srfm-color-input-text' ] = value || defaultTextColor;
+				cssProperties[ '--srfm-color-input-description' ] = `hsl( from ${ value || defaultTextColor } h s l / 0.65)`;
+				cssProperties[ '--srfm-color-input-prefix' ] = `hsl( from ${ value || defaultTextColor } h s l / 0.65)`;
+				cssProperties[ '--srfm-color-input-background' ] = `hsl( from ${ value || defaultTextColor } h s l / 0.02)`;
+				cssProperties[ '--srfm-color-input-background-disabled' ] = `hsl( from ${ value || defaultTextColor } h s l / 0.05)`;
+				cssProperties[ '--srfm-color-input-border' ] = `hsl( from ${ value || defaultTextColor } h s l / 0.25)`;
+				cssProperties[ '--srfm-color-input-border-disabled' ] = `hsl( from ${ value || defaultTextColor } h s l / 0.15)`;
+				break;
+			case 'text_color_on_primary':
+				cssProperties[ '--srfm-color-scheme-text-on-primary' ] = value || '#FFFFFF';
+				break;
+			case 'field_spacing':
+				cssProperties[ '--srfm-field-spacing' ] = value || 'medium';
+				break;
+			case 'submit_button_alignment':
+				cssProperties[ '--srfm-submit-alignment' ] = value || 'left';
+				cssProperties[ '--srfm-submit-width-backend' ] = 'max-content';
+				updateMeta( '_srfm_submit_width_backend', 'max-content' );
+
+				if ( value === 'left' ) {
+					cssProperties[ '--srfm-submit-alignment-backend' ] = '100%';
+					updateMeta( '_srfm_submit_alignment_backend', '100%' );
+				} else if ( value === 'right' ) {
+					cssProperties[ '--srfm-submit-alignment-backend' ] = '0%';
+					updateMeta( '_srfm_submit_alignment_backend', '0%' );
+				} else if ( value === 'center' ) {
+					cssProperties[ '--srfm-submit-alignment-backend' ] = '50%';
+					updateMeta( '_srfm_submit_alignment_backend', '50%' );
+				} else if ( value === 'justify' ) {
+					cssProperties[ '--srfm-submit-alignment-backend' ] = '50%';
+					cssProperties[ '--srfm-submit-width-backend' ] = 'auto';
+					updateMeta( '_srfm_submit_alignment_backend', '50%' );
+				}
+				break;
+			case 'bg_color':
+				cssProperties[ '--srfm-bg-color' ] = value || '#FFFFFF';
+				break;
+			// Image Variables.
+			case 'bg_image':
+				cssProperties[ '--srfm-bg-image' ] = value ? `url(${ value })` : 'none';
+				break;
+			case 'bg_image_position':
+				cssProperties[ '--srfm-bg-position' ] = value || '50% 50%';
+				break;
+			case 'bg_image_attachment':
+				cssProperties[ '--srfm-bg-attachment' ] = value || 'scroll';
+				break;
+			case 'bg_image_repeat':
+				cssProperties[ '--srfm-bg-repeat' ] = value || 'no-repeat';
+				break;
+			case 'bg_image_size':
+				cssProperties[ '--srfm-bg-size' ] = value === 'custom'
+					? `${ bg_image_size_custom ?? 100 }${ bg_image_size_custom ?? '%' }`
+					: value || 'cover';
+				break;
+			case 'bg_image_size_custom':
+				cssProperties[ '--srfm-bg-size-custom' ] = value ?? 100;
+				cssProperties[ '--srfm-bg-size' ] = `${ value ?? 100 }${ bg_image_size_custom ?? '%' }`;
+				break;
+			case 'bg_image_size_custom_unit':
+				cssProperties[ '--srfm-bg-size-custom-unit' ] = value ?? '%';
+				cssProperties[ '--srfm-bg-size' ] = `${ bg_image_size_custom ?? 100 }${ value ?? '%' }`;
+				break;
+			// Gradient Variables.
+			case 'gradient_type':
+			case 'bg_gradient':
+			case 'bg_gradient_type':
+			case 'bg_gradient_color_1':
+			case 'bg_gradient_color_2':
+			case 'bg_gradient_location_1':
+			case 'bg_gradient_location_2':
+			case 'bg_gradient_angle':
+				if ( ( option === 'gradient_type' && value === 'basic' ) || option === 'bg_gradient' ) {
+					cssProperties[ '--srfm-bg-gradient' ] = bg_gradient;
+					break;
+				}
+				const updatedGradientOptions = {
+					...gradientOptions,
+					[ option.replace( 'bg_gradient_', '' ) ]: value,
+				};
+				setGradientOptions( updatedGradientOptions );
+				break;
+			// Overlay Variables - Image.
+			case 'bg_gradient_overlay_type': // might be used in future.
+				cssProperties[ '--srfm-bg-gradient-overlay-type' ] = value || 'none';
+				break;
+			case 'bg_overlay_image':
+				cssProperties[ '--srfm-bg-overlay-image' ] = value ? `url(${ value })` : 'none';
+				break;
+			case 'bg_overlay_position':
+				cssProperties[ '--srfm-bg-overlay-position' ] = value || '50% 50%';
+				break;
+			case 'bg_overlay_attachment':
+				cssProperties[ '--srfm-bg-overlay-attachment' ] = value || 'scroll';
+				break;
+			case 'bg_overlay_repeat':
+				cssProperties[ '--srfm-bg-overlay-repeat' ] = value || 'no-repeat';
+				break;
+			case 'bg_overlay_blend_mode':
+				cssProperties[ '--srfm-bg-overlay-blend-mode' ] = value || 'normal';
+				break;
+			case 'bg_overlay_size':
+				cssProperties[ '--srfm-bg-overlay-size' ] = value === 'custom'
+					? `${ bg_overlay_custom_size ?? 100 }${ bg_overlay_custom_size_unit ?? '%' }`
+					: value || 'cover';
+				break;
+			case 'bg_overlay_custom_size':
+				cssProperties[ '--srfm-bg-overlay-custom-size' ] = value ?? 100;
+				cssProperties[ '--srfm-bg-overlay-size' ] = `${ value ?? 100 }${ bg_overlay_custom_size_unit ?? '%' }`;
+				break;
+			case 'bg_overlay_custom_size_unit':
+				cssProperties[ '--srfm-bg-overlay-custom-size-unit' ] = value ?? '%';
+				cssProperties[ '--srfm-bg-overlay-size' ] = `${ bg_overlay_custom_size ?? 100 }${ value ?? '%' }`;
+				break;
+			case 'bg_overlay_opacity':
+				cssProperties[ '--srfm-bg-overlay-opacity' ] = value ?? 1; // Using nullish coalescing operator to handle 0 case. If value is 0, it should be 0.
+				break;
+			// Overlay Variables - Color.
+			case 'bg_image_overlay_color':
+				cssProperties[ '--srfm-bg-overlay-color' ] = value || '#FFFFFF75';
+				break;
+			// Overlay Variables - Gradient.
+			// Gradient Variables.
+			case 'overlay_gradient_type':
+			case 'bg_overlay_gradient':
+			case 'bg_overlay_gradient_type':
+			case 'bg_overlay_gradient_color_1':
+			case 'bg_overlay_gradient_color_2':
+			case 'bg_overlay_gradient_location_1':
+			case 'bg_overlay_gradient_location_2':
+			case 'bg_overlay_gradient_angle':
+				if ( ( option === 'overlay_gradient_type' && value === 'basic' ) || option === 'bg_overlay_gradient' ) {
+					cssProperties[ '--srfm-bg-overlay-gradient' ] = bg_overlay_gradient;
+					break;
+				}
+				const updatedOverlayGradientOptions = {
+					...overlayGradientOptions,
+					[ option.replace( 'bg_overlay_gradient_', '' ) ]: value,
+				};
+				setOverlayGradientOptions( updatedOverlayGradientOptions );
+				break;
+		}
+
+		return cssProperties;
+	}
+
+	function getGradientCSS( type = 'linear', color1 = '#FFC9B2', color2 = '#C7CBFF', loc1 = 0, loc2 = 100, angle = 90 ) {
+		if ( type === 'radial' ) {
+			return `radial-gradient(${ color1 } ${ loc1 }%, ${ color2 } ${ loc2 }% )`;
+		}
+		return `linear-gradient( ${ angle }deg, ${ color1 } ${ loc1 }%, ${ color2 } ${ loc2 }%)`;
+	}
+
+	/**
+	 * Updates the editor's background and overlay classes based on the selected types.
+	 *
+	 * This function removes all existing background and overlay classes before applying
+	 * the appropriate class based on the provided `backgroundType` and `overlayType`.
+	 *
+	 * @param {string} backgroundType - The type of background (e.g., "image", "gradient", or undefined).
+	 * @param {string} overlayType    - The type of overlay (e.g., "image", "gradient", "color", or undefined).
+	 *
+	 * @return {void} - This function is responsible for handling classes and does not return a value.
+	 * @since x.x.x
+	 */
+	const updateEditorBackgroundClasses = ( backgroundType, overlayType ) => {
+		const backgroundClasses = {
+			image: 'srfm-bg-image',
+			gradient: 'srfm-bg-gradient',
+			default: 'srfm-bg-color',
+		};
+		const overlayClasses = {
+			image: 'srfm-overlay-image',
+			gradient: 'srfm-overlay-gradient',
+			color: 'srfm-overlay-color',
+		};
+
+		editorRef.current?.classList.remove( ...Object.values( backgroundClasses ) );
+		editorRef.current?.classList.remove( ...Object.values( overlayClasses ) );
+
+		editorRef.current?.classList.add( backgroundClasses[ backgroundType ] || backgroundClasses.default );
+
+		if ( backgroundType === 'image' && bg_image && overlayType && overlayClasses[ overlayType ] ) {
+			editorRef.current?.classList.add( overlayClasses[ overlayType ] );
+		}
+	};
+
+	const form = [
+		{
+			id: 'background',
+			component: (
+				<div className="srfm-bg-component">
+					<Background
+						// Background Properties
+						backgroundType={ {
+							value: bg_type,
+							label: 'bg_type',
+						} }
+						backgroundColor={ {
+							value: bg_color,
+							label: 'bg_color',
+						} }
+						backgroundImage={ {
+							value: bg_image,
+							label: 'bg_image',
+						} }
+						backgroundPosition={ {
+							value: bg_image_position,
+							label: 'bg_image_position',
+						} }
+						backgroundAttachment={ {
+							value: bg_image_attachment,
+							label: 'bg_image_attachment',
+						} }
+						backgroundRepeat={ {
+							value: bg_image_repeat,
+							label: 'bg_image_repeat',
+						} }
+						backgroundSize={ {
+							value: bg_image_size,
+							label: 'bg_image_size',
+						} }
+						backgroundCustomSize={ {
+							value: bg_image_size_custom,
+							label: 'bg_image_size_custom',
+						} }
+						backgroundCustomSizeType={ {
+							value: bg_image_size_custom_unit || '%',
+							label: 'bg_image_size_custom_unit',
+						} }
+						// Gradient Properties
+						gradientOverlay={ { value: true } }
+						gradientType={ {
+							value: gradient_type || 'basic',
+							label: 'gradient_type',
+						} }
+						backgroundGradientColor1={ {
+							value: bg_gradient_color_1,
+							label: 'bg_gradient_color_1',
+						} }
+						backgroundGradientColor2={ {
+							value: bg_gradient_color_2,
+							label: 'bg_gradient_color_2',
+						} }
+						backgroundGradientLocation1={ {
+							value: bg_gradient_location_1,
+							label: 'bg_gradient_location_1',
+						} }
+						backgroundGradientLocation2={ {
+							value: bg_gradient_location_2,
+							label: 'bg_gradient_location_2',
+						} }
+						backgroundGradientAngle={ {
+							value: bg_gradient_angle,
+							label: 'bg_gradient_angle',
+						} }
+						backgroundGradientType={ {
+							value: bg_gradient_type,
+							label: 'bg_gradient_type',
+						} }
+						backgroundGradient={ {
+							value: bg_gradient || 'linear-gradient(90deg, #FFC9B2 0%, #C7CBFF 100%)',
+							label: 'bg_gradient',
+						} }
+						// Overlay Properties
+						overlayType={ {
+							value: bg_gradient_overlay_type,
+							label: 'bg_gradient_overlay_type',
+						} }
+						overlayOpacity={ {
+							value: bg_overlay_opacity,
+							label: 'bg_overlay_opacity',
+						} }
+						backgroundOverlayImage={ {
+							value: bg_overlay_image,
+							label: 'bg_overlay_image',
+						} }
+						backgroundImageColor={ {
+							value: bg_image_overlay_color,
+							label: 'bg_image_overlay_color',
+						} }
+						backgroundOverlayPosition={ {
+							value: bg_overlay_position,
+							label: 'bg_overlay_position',
+						} }
+						backgroundOverlayAttachment={ {
+							value: bg_overlay_attachment,
+							label: 'bg_overlay_attachment',
+						} }
+						overlayBlendMode={ {
+							value: bg_overlay_blend_mode,
+							label: 'bg_overlay_blend_mode',
+						} }
+						backgroundOverlayRepeat={ {
+							value: bg_overlay_repeat,
+							label: 'bg_overlay_repeat',
+						} }
+						backgroundOverlaySize={ {
+							value: bg_overlay_size,
+							label: 'bg_overlay_size',
+						} }
+						backgroundOverlayCustomSize={ {
+							value: bg_overlay_custom_size,
+							label: 'bg_overlay_custom_size',
+						} }
+						backgroundOverlayCustomSizeType={ {
+							value: bg_overlay_custom_size_unit || '%',
+							label: 'bg_overlay_custom_size_unit',
+						} }
+						// Gradient Overlay.
+						overlayGradientType={ {
+							value: overlay_gradient_type || 'basic',
+							label: 'overlay_gradient_type',
+						} }
+						overlayBackgroundGradientColor1={ {
+							value: bg_overlay_gradient_color_1,
+							label: 'bg_overlay_gradient_color_1',
+						} }
+						overlayBackgroundGradientColor2={ {
+							value: bg_overlay_gradient_color_2,
+							label: 'bg_overlay_gradient_color_2',
+						} }
+						overlayBackgroundGradientLocation1={ {
+							value: bg_overlay_gradient_location_1,
+							label: 'bg_overlay_gradient_location_1',
+						} }
+						overlayBackgroundGradientLocation2={ {
+							value: bg_overlay_gradient_location_2,
+							label: 'bg_overlay_gradient_location_2',
+						} }
+						overlayBackgroundGradientAngle={ {
+							value: bg_overlay_gradient_angle,
+							label: 'bg_overlay_gradient_angle',
+						} }
+						overlayBackgroundGradientType={ {
+							value: bg_overlay_gradient_type,
+							label: 'bg_overlay_gradient_type',
+						} }
+						overlayBackgroundGradient={ {
+							value: bg_overlay_gradient || 'linear-gradient(90deg, #FFC9B2 0%, #C7CBFF 100%)',
+							label: 'bg_overlay_gradient',
+						} }
+						label={ __( 'Background', 'sureforms' ) }
+						setAttributes={ onHandleChange }
+						onSelectImage={ onImageSelect }
+					/>
+					<p className="components-base-control__help" />
+				</div>
+			),
+		},
+		{
+			id: 'primary_color',
+			component: (
+				<>
+					<AdvancedPopColorControl
+						label={ __( 'Primary Color', 'sureforms' ) }
+						colorValue={ formStyling?.primary_color }
+						data={ {
+							value: formStyling?.primary_color,
+							label: 'primary_color',
+						} }
+						onColorChange={ ( colorValue ) => {
+							if ( colorValue !== formStyling?.primary_color ) {
+								updateFormStyling( 'primary_color', colorValue );
+							}
+						} }
+						value={ formStyling?.primary_color }
+						isFormSpecific={ true }
+					/>
+					<p className="components-base-control__help" />
+				</>
+			),
+		},
+		{
+			id: 'text_color',
+			component: (
+				<>
+					<AdvancedPopColorControl
+						label={ __( 'Text Color', 'sureforms' ) }
+						colorValue={ formStyling?.text_color }
+						data={ {
+							value: formStyling?.text_color,
+							label: 'text_color',
+						} }
+						onColorChange={ ( colorValue ) => {
+							if ( colorValue !== formStyling?.text_color ) {
+								updateFormStyling( 'text_color', colorValue );
+							}
+						} }
+						value={ formStyling?.text_color }
+						isFormSpecific={ true }
+					/>
+					<p className="components-base-control__help" />
+				</> ),
+		},
+		{
+			id: 'text_color_on_primary',
+			component: (
+				<>
+					<AdvancedPopColorControl
+						label={ __( 'Text Color on Primary', 'sureforms' ) }
+						colorValue={ formStyling?.text_color_on_primary }
+						data={ {
+							value: formStyling?.text_color_on_primary,
+							label: 'text_color_on_primary',
+						} }
+						onColorChange={ ( colorValue ) => {
+							if (
+								colorValue !== formStyling?.text_color_on_primary
+							) {
+								updateFormStyling(
+									'text_color_on_primary',
+									colorValue
+								);
+							}
+						} }
+						value={ formStyling?.text_color_on_primary }
+						isFormSpecific={ true }
+					/>
+					<p className="components-base-control__help" />
+				</>
+			),
+		},
+	];
+
+	const fields = [
+		{
+			id: 'field_spacing',
+			component: (
 				<MultiButtonsControl
 					label={ __( 'Field Spacing', 'sureforms' ) }
 					data={ {
@@ -488,7 +819,15 @@ function StyleSettings( props ) {
 						setFieldSpacing( value );
 					} }
 				/>
-				{ ! isInlineButtonBlockPresent && (
+			),
+		},
+	];
+
+	const button = [
+		{
+			id: 'submit_button_alignment',
+			component: (
+				! isInlineButtonBlockPresent && (
 					<>
 						<p className="components-base-control__help" />
 						<MultiButtonsControl
@@ -554,8 +893,49 @@ function StyleSettings( props ) {
 							} }
 						/>
 					</>
-				) }
-			</SRFMAdvancedPanelBody>
+				)
+			),
+		},
+	];
+
+	const baseStylePanels = [
+		{
+			panelId: 'form',
+			title: __( 'Form', 'sureforms' ),
+			content: form,
+			initialOpen: true,
+		},
+		{
+			panelId: 'fields',
+			title: __( 'Fields', 'sureforms' ),
+			content: fields,
+			initialOpen: false,
+		},
+		{
+			panelId: 'button',
+			title: __( 'Button', 'sureforms' ),
+			content: button,
+			initialOpen: false,
+		},
+	];
+
+	const enhancedStylePanels = getStylePanels( baseStylePanels, { props, sureformsKeys, editPost, formStyling, updateFormStyling } );
+
+	return (
+		<>
+			{ enhancedStylePanels.map( ( panel ) => {
+				const { panelId, title, content, initialOpen } = panel;
+				const panelOptions = content.map( ( item ) => item.component );
+				return (
+					<SRFMAdvancedPanelBody
+						key={ panelId }
+						title={ title }
+						initialOpen={ initialOpen }
+					>
+						{ panelOptions }
+					</SRFMAdvancedPanelBody>
+				);
+			} ) }
 		</>
 	);
 }
