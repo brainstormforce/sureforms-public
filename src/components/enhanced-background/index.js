@@ -56,7 +56,6 @@ const Background = ( props ) => {
 		backgroundType,
 		backgroundCustomSize,
 		backgroundCustomSizeType,
-		gradientOverlay,
 		help = false,
 		backgroundOverlaySize,
 		backgroundOverlayRepeat,

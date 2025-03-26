@@ -68,22 +68,30 @@ const Border = ( props ) => {
 		<AdvancedPopColorControl
 			label={ borderColorLabel }
 			colorValue={ borderColor?.value }
+			value={ borderColor?.value }
 			data={ {
 				value: borderColor?.value,
 				label: borderColor?.label,
 			} }
-			setAttributes={ setAttributes }
+			onColorChange={ ( colorValue ) =>
+				setAttributes( { [ borderColor?.label ]: colorValue } )
+			}
+			isFormSpecific={ true }
 		/>
 	);
 	const tabOutputHover = (
 		<AdvancedPopColorControl
 			label={ borderHoverColorLabel }
 			colorValue={ borderHoverColor?.value }
+			value={ borderHoverColor?.value }
 			data={ {
 				value: borderHoverColor?.value,
 				label: borderHoverColor?.label,
 			} }
-			setAttributes={ setAttributes }
+			onColorChange={ ( colorValue ) =>
+				setAttributes( { [ borderHoverColor?.label ]: colorValue } )
+			}
+			isFormSpecific={ true }
 		/>
 	);
 
