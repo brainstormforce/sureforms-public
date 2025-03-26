@@ -525,9 +525,20 @@ class Generate_Form_Markup {
 			return $confirmation_message;
 		}
 		$smart_tags           = new Smart_Tags();
-		$confirmation_message = $smart_tags->process_smart_tags( $confirmation_data['message'], $submission_data, $form_data );
+		$confirmation_message = $smart_tags->process_smart_tags( $confirmation_message, $submission_data, $form_data );
 
-		return apply_filters( 'srfm_after_submit_confirmation_message', $confirmation_message );
+		$markup = wp_kses_post( apply_filters( 'srfm_after_submit_confirmation_message', $confirmation_message ) );
+
+		if ( false !== strpos( $markup, 'src="image/svg+xml;base64' ) ) {
+			// Handle Form Confirmation SVGs separately. We have planned to improve it in the future replacing it with image URL.
+			$normalized_string = preg_replace( '/src="image\/svg\+xml;base64/', 'src="data:image/svg+xml;base64', $markup );
+
+			if ( is_string( $normalized_string ) ) {
+				$markup = $normalized_string;
+			}
+		}
+
+		return $markup;
 	}
 
 	/**
