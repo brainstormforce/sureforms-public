@@ -209,7 +209,8 @@
 		height: auto;
 	}
 
-	p {
+	p,
+	label {
 		font-size: 1em;
 		line-height: var( --srfm-input-field-line-height );
 		margin-top: 0;
