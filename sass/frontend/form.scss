@@ -72,12 +72,12 @@
 		.uagb-block
 		// .srfm-captcha-container:not( .srfm-submit-button, .srfm-custom-button )
 		{
-			padding: 0.5em;
+			padding: 0;
 		}
 
 		.srfm-captcha-container {
 			width: 100%;
-			padding: 0 var( --srfm-col-gap-between-blocks ) !important;
+			padding: 0;
 			margin-bottom: var( --srfm-row-gap-between-blocks );
 
 			// Adding a default fixed height to the h-captcha container to manage the error spacing.

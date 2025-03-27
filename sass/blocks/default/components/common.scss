@@ -1,7 +1,8 @@
 @import "../utils/mixins.scss";
 
-.srfm-neve-theme-add-margin-bottom { // Adding margin for neve theme between main content and footer
-	margin-bottom: 1.2em;
+// Adding margin for neve theme between main content and footer
+.srfm-neve-theme-add-margin-bottom {
+	margin-bottom: var(--srfm-row-gap-between-blocks);
 }
 
 .srfm-form-container {
