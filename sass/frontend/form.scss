@@ -5,6 +5,9 @@
 	position: relative;
 	padding: 0;
 	height: 100%;
+	padding: 32px;
+
+	@include srfm-background-control-styles;
 
 	// styles for core paragraph block
 	.srfm-custom-wp-paragraph {

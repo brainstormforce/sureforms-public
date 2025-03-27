@@ -130,6 +130,16 @@ class Export {
 			);
 		}
 
+		if ( ! current_user_can( 'manage_options' ) ) {
+			// Return error if user does not have permissions to manage options.
+			wp_send_json_error(
+				[
+					'data'   => esc_html__( 'You do not have permissions to manage options.', 'sureforms' ),
+					'status' => false,
+				]
+			);
+		}
+
 		// Get the raw POST data.
 		$post_data = file_get_contents( 'php://input' );
 		if ( ! $post_data ) {

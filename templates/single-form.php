@@ -20,7 +20,6 @@ $instant_form_settings         = ! empty( $srfm_live_mode_data ) ? $srfm_live_mo
 $site_logo                     = $instant_form_settings['site_logo'];
 $bg_type                       = $instant_form_settings['bg_type'];
 $bg_color                      = $instant_form_settings['bg_color'];
-$bg_image                      = $instant_form_settings['bg_image'];
 $cover_type                    = $instant_form_settings['cover_type'];
 $cover_color                   = $instant_form_settings['cover_color'];
 $cover_image                   = $instant_form_settings['cover_image'];
@@ -34,10 +33,8 @@ $srfm_cover_image_url = $cover_image ? rawurldecode( strval( $cover_image ) ) : 
 // Filter to use custom bg image and color combination on the Instant Form page.
 if ( apply_filters( 'srfm_use_color_or_image_as_bg', true ) ) {
 	if ( 'image' === $bg_type ) {
-		$bg_image = $bg_image ? 'url(' . $bg_image . ')' : '';
 		$bg_color = '#ffffff';
 	} else {
-		$bg_image = 'none';
 		$bg_color = $bg_color ? $bg_color : '';
 	}
 }
@@ -92,7 +89,6 @@ if ( $use_banner_as_page_background ) {
 			}
 			#srfm-single-page-container {
 				--srfm-form-container-width: <?php echo esc_attr( $form_container_width . 'px' ); ?>;
-				--srfm-bg-image: <?php echo $bg_image && is_string( $bg_image ) ? esc_html( $bg_image ) : ''; ?>;
 				--srfm-bg-color: <?php echo $bg_color && is_string( $bg_color ) ? esc_html( $bg_color ) : ''; ?>;
 			}
 			<?php
@@ -108,6 +104,9 @@ if ( $use_banner_as_page_background ) {
 					background-position: center;
 					background-repeat: no-repeat;
 					background-size: cover;
+					<?php if ( $use_banner_as_page_background ) { ?>
+						background-attachment: fixed;
+					<?php } ?>
 				<?php } else { ?>
 					background-color: <?php echo esc_attr( $cover_color ); ?>;
 				<?php } ?>
