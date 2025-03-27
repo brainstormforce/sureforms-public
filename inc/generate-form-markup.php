@@ -407,7 +407,7 @@ class Generate_Form_Markup {
 				<?php
 				if ( 0 !== $block_count && ! $is_inline_button || $is_page_break ) {
 					?>
-					<?php if ( ! empty( $security_type ) && 'none' !== $security_type && 'none' !==  $recaptcha_version ) { ?>
+					<?php if ( ! empty( $security_type ) && 'none' !== $security_type && 'none' !== $recaptcha_version ) { ?>
 						<div class="srfm-captcha-container <?php echo esc_attr( 'v3-reCAPTCHA' === $recaptcha_version || 'v2-invisible' === $recaptcha_version ? 'srfm-display-none' : '' ); ?>">
 						<?php if ( is_string( $google_captcha_site_key ) && ! empty( $google_captcha_site_key ) && 'g-recaptcha' === $security_type ) { ?>
 
