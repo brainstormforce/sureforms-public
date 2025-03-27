@@ -101,6 +101,7 @@
 			bottom: 36px;
 			padding: 4px 16px;
 			margin: 0 auto;
+			background: #fff;
 			color: #1e1e1e80;
 			border-radius: var( --srfm-btn-border-radius, 6px );
 			font-size: 14px;
@@ -148,6 +149,13 @@
 		.srfm-single-page-container .srfm-form-wrapper {
 			padding-bottom: 100px;
 			height: 100%;
+		}
+		.srfm-single-page-container .srfm-form-wrapper .srfm-form-container {
+			/**
+			* This was static before but it was causing the background overlay to span out of the form container,
+			* so we are making it sticky to keep the overlay within the form container and not affect the branding.
+			*/
+			position: sticky;
 		}
 
 		/* Branding styles when banner as page bg is enabled. */

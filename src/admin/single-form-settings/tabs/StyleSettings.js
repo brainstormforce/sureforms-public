@@ -260,7 +260,7 @@ function StyleSettings( props ) {
 				'--srfm-bg-size-custom': bg_image_size_custom || 100,
 				'--srfm-bg-size-custom-unit': bg_image_size_custom_unit || '%',
 				// Gradient Variables.
-				'--srfm-bg-gradient': gradient_type === 'basic' ? bg_gradient || 'linear-gradient(90deg, #FFC9B2 0%, #C7CBFF 100%)' : getGradientCSS( gradientOptions.type, gradientOptions.color_1, gradientOptions.color_2, gradientOptions.location_1, gradientOptions.location_2, gradientOptions.angle ),
+				'--srfm-bg-gradient': gradient_type === 'basic' || gradient_type === undefined ? bg_gradient || 'linear-gradient(90deg, #FFC9B2 0%, #C7CBFF 100%)' : getGradientCSS( gradientOptions.type, gradientOptions.color_1, gradientOptions.color_2, gradientOptions.location_1, gradientOptions.location_2, gradientOptions.angle ),
 				// Overlay Variables - Image.
 				'--srfm-bg-overlay-image': bg_overlay_image ? `url(${ bg_overlay_image })` : 'none',
 				'--srfm-bg-overlay-position': `${ bg_overlay_position?.x * 100 }% ${ bg_overlay_position?.y * 100 }%` || '50% 50%',
@@ -274,7 +274,7 @@ function StyleSettings( props ) {
 				// Overlay Variables - Color.
 				'--srfm-bg-overlay-color': bg_image_overlay_color || '#FFFFFF75',
 				// Overlay Variables - Gradient.
-				'--srfm-bg-overlay-gradient': overlay_gradient_type === 'basic' ? bg_overlay_gradient || 'linear-gradient(90deg, #FFC9B2 0%, #C7CBFF 100%)' : getGradientCSS( overlayGradientOptions.type, overlayGradientOptions.color_1, overlayGradientOptions.color_2, overlayGradientOptions.location_1, overlayGradientOptions.location_2, overlayGradientOptions.angle ),
+				'--srfm-bg-overlay-gradient': overlay_gradient_type === 'basic' || overlay_gradient_type === undefined ? bg_overlay_gradient || 'linear-gradient(90deg, #FFC9B2 0%, #C7CBFF 100%)' : getGradientCSS( overlayGradientOptions.type, overlayGradientOptions.color_1, overlayGradientOptions.color_2, overlayGradientOptions.location_1, overlayGradientOptions.location_2, overlayGradientOptions.angle ),
 			};
 
 			addStyleInRoot( rootRef.current, cssProperties );
@@ -559,7 +559,7 @@ function StyleSettings( props ) {
 					<Background
 						// Background Properties
 						backgroundType={ {
-							value: bg_type,
+							value: bg_type || 'color',
 							label: 'bg_type',
 						} }
 						backgroundColor={ {
@@ -621,7 +621,7 @@ function StyleSettings( props ) {
 							label: 'bg_gradient_angle',
 						} }
 						backgroundGradientType={ {
-							value: bg_gradient_type,
+							value: bg_gradient_type || 'linear',
 							label: 'bg_gradient_type',
 						} }
 						backgroundGradient={ {
@@ -699,7 +699,7 @@ function StyleSettings( props ) {
 							label: 'bg_overlay_gradient_angle',
 						} }
 						overlayBackgroundGradientType={ {
-							value: bg_overlay_gradient_type,
+							value: bg_overlay_gradient_type || 'linear',
 							label: 'bg_overlay_gradient_type',
 						} }
 						overlayBackgroundGradient={ {
