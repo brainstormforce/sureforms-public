@@ -460,30 +460,209 @@ class Post_Types {
 					'schema' => [
 						'type'       => 'object',
 						'properties' => [
-							'primary_color'           => [
+							'primary_color'               => [
 								'type' => 'string',
 							],
-							'text_color'              => [
+							'text_color'                  => [
 								'type' => 'string',
 							],
-							'text_color_on_primary'   => [
+							'text_color_on_primary'       => [
 								'type' => 'string',
 							],
-							'field_spacing'           => [
+							'field_spacing'               => [
 								'type' => 'string',
 							],
-							'submit_button_alignment' => [
+							'submit_button_alignment'     => [
 								'type' => 'string',
+							],
+							'bg_type'                     => [
+								'type' => 'string',
+							],
+							'bg_color'                    => [
+								'type' => 'string',
+							],
+							'bg_image'                    => [
+								'type' => 'string',
+							],
+							'bg_image_id'                 => [
+								'type' => 'integer',
+							],
+							// Image Properties.
+							'bg_image_position'           => [
+								'type'       => 'object',
+								'properties' => [
+									'x' => [
+										'type'   => 'number',
+										'format' => 'float',
+									],
+									'y' => [
+										'type'   => 'number',
+										'format' => 'float',
+									],
+								],
+							],
+							'bg_image_attachment'         => [
+								'type' => 'string',
+							],
+							'bg_image_repeat'             => [
+								'type' => 'string',
+							],
+							'bg_image_size'               => [
+								'type' => 'string',
+							],
+							'bg_image_size_custom'        => [
+								'type' => 'integer',
+							],
+							'bg_image_size_custom_unit'   => [
+								'type' => 'string',
+							],
+							// Gradient Properties.
+							'bg_gradient'                 => [
+								'type' => 'string',
+							],
+							'gradient_type'               => [
+								'type' => 'string',
+							],
+							'bg_gradient_type'            => [
+								'type' => 'string',
+							],
+							'bg_gradient_color_1'         => [
+								'type' => 'string',
+							],
+							'bg_gradient_color_2'         => [
+								'type' => 'string',
+							],
+							'bg_gradient_angle'           => [
+								'type' => 'integer',
+							],
+							'bg_gradient_location_1'      => [
+								'type' => 'integer',
+							],
+							'bg_gradient_location_2'      => [
+								'type' => 'integer',
+							],
+							// Overlay Properties.
+							'bg_overlay_size'             => [
+								'type' => 'string',
+							],
+							'bg_gradient_overlay_type'    => [
+								'type' => 'string',
+							],
+							'bg_overlay_opacity'          => [
+								'type' => 'number',
+							],
+							'bg_overlay_image'            => [
+								'type' => 'string',
+							],
+							'bg_overlay_image_id'         => [
+								'type' => 'integer',
+							],
+							'bg_image_overlay_color'      => [
+								'type' => 'string',
+							],
+							'bg_overlay_custom_size_unit' => [
+								'type' => 'string',
+							],
+							'bg_overlay_custom_size'      => [
+								'type' => 'integer',
+							],
+							'bg_overlay_blend_mode'       => [
+								'type' => 'string',
+							],
+							'bg_overlay_position'         => [
+								'type'       => 'object',
+								'properties' => [
+									'x' => [
+										'type'   => 'number',
+										'format' => 'float',
+									],
+									'y' => [
+										'type'   => 'number',
+										'format' => 'float',
+									],
+								],
+							],
+							'bg_overlay_attachment'       => [
+								'type' => 'string',
+							],
+							'bg_overlay_repeat'           => [
+								'type' => 'string',
+							],
+							// Gradient Overlay Properties.
+							'bg_overlay_gradient'         => [
+								'type' => 'string',
+							],
+							'overlay_gradient_type'       => [
+								'type' => 'string',
+							],
+							'bg_overlay_gradient_type'    => [
+								'type' => 'string',
+							],
+							'bg_overlay_gradient_color_1' => [
+								'type' => 'string',
+							],
+							'bg_overlay_gradient_color_2' => [
+								'type' => 'string',
+							],
+							'bg_overlay_gradient_angle'   => [
+								'type' => 'integer',
+							],
+							'bg_overlay_gradient_location_1' => [
+								'type' => 'integer',
+							],
+							'bg_overlay_gradient_location_2' => [
+								'type' => 'integer',
 							],
 						],
 					],
 				],
 				'default'       => [
-					'primary_color'           => '#111C44',
-					'text_color'              => '#1E1E1E',
-					'text_color_on_primary'   => '#FFFFFF',
-					'field_spacing'           => 'medium',
-					'submit_button_alignment' => 'left',
+					'primary_color'                  => '#111C44',
+					'text_color'                     => '#1E1E1E',
+					'text_color_on_primary'          => '#FFFFFF',
+					'field_spacing'                  => 'medium',
+					'submit_button_alignment'        => 'left',
+					'bg_type'                        => 'color',
+					'bg_color'                       => '#ffffff',
+					'bg_image'                       => '',
+					'bg_image_position'              => [
+						'x' => 0.5,
+						'y' => 0.5,
+					],
+					'bg_image_attachment'            => 'scroll',
+					'bg_image_repeat'                => 'no-repeat',
+					'bg_image_size'                  => 'cover',
+					'bg_image_size_custom'           => 100, // Image width when set to custom.
+					'bg_image_size_custom_unit'      => '%',
+					'gradient_type'                  => 'basic',
+					'bg_gradient_type'               => 'linear',
+					'bg_gradient_color_1'            => '#FFC9B2',
+					'bg_gradient_color_2'            => '#C7CBFF',
+					'bg_gradient_angle'              => 90,
+					'bg_gradient_location_1'         => 0,
+					'bg_gradient_location_2'         => 100,
+					'bg_overlay_size'                => 'cover',
+					'bg_gradient_overlay_type'       => '',
+					'bg_overlay_opacity'             => 1,
+					'bg_overlay_image'               => '',
+					'bg_image_overlay_color'         => '#FFFFFF75',
+					'bg_overlay_custom_size_unit'    => '%',
+					'bg_overlay_custom_size'         => 100,
+					'bg_overlay_position'            => [
+						'x' => 0.5,
+						'y' => 0.5,
+					],
+					'bg_overlay_attachment'          => 'scroll',
+					'bg_overlay_repeat'              => 'no-repeat',
+					'bg_overlay_blend_mode'          => 'normal',
+					// Gradient Overlay Properties.
+					'overlay_gradient_type'          => 'basic',
+					'bg_overlay_gradient_type'       => 'linear',
+					'bg_overlay_gradient_color_1'    => '#FFC9B2',
+					'bg_overlay_gradient_color_2'    => '#C7CBFF',
+					'bg_overlay_gradient_angle'      => 90,
+					'bg_overlay_gradient_location_1' => 0,
+					'bg_overlay_gradient_location_2' => 100,
 				],
 			]
 		);
