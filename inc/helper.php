@@ -1144,4 +1144,58 @@ class Helper {
 		// Check if the className matches the pattern.
 		return preg_match( $class_name_regex, $class_name ) === 1;
 	}
+
+	/**
+	 * Get the gradient css for given gradient parameters.
+	 *
+	 * @param string $type The type of gradient. Default 'linear'.
+	 * @param string $color1 The first color of the gradient. Default '#FFC9B2'.
+	 * @param string $color2 The second color of the gradient. Default '#C7CBFF'.
+	 * @param int    $loc1 The location of the first color. Default 0.
+	 * @param int    $loc2 The location of the second color. Default 100.
+	 * @param int    $angle The angle of the gradient. Default 90.
+	 *
+	 * @since 1.4.4
+	 * @return string The gradient css.
+	 */
+	public static function get_gradient_css( $type = 'linear', $color1 = '#FFC9B2', $color2 = '#C7CBFF', $loc1 = 0, $loc2 = 100, $angle = 90 ) {
+		if ( 'linear' === $type ) {
+			return "linear-gradient({$angle}deg, {$color1} {$loc1}%, {$color2} {$loc2}%)";
+		}
+			return "radial-gradient({$color1} {$loc1}%, {$color2} {$loc2}%)";
+	}
+
+	/**
+	 * Return the classes based on background and overlay type to add to the form container.
+	 *
+	 * @param string $background_type The background type.
+	 * @param string $overlay_type The overlay type.
+	 * @param string $bg_image The background image url.
+	 *
+	 * @since 1.4.4
+	 * @return string The classes to add to the form container.
+	 */
+	public static function get_background_classes( $background_type, $overlay_type, $bg_image = '' ) {
+		if ( empty( $background_type ) ) {
+			$background_type = 'color';
+		}
+
+		$background_type_class = '';
+		$overlay_class         = 'image' === $background_type && ! empty( $bg_image ) && $overlay_type ? "srfm-overlay-{$overlay_type}" : '';
+
+		// Set the class based on the background type.
+		switch ( $background_type ) {
+			case 'image':
+				$background_type_class = 'srfm-bg-image';
+				break;
+			case 'gradient':
+				$background_type_class = 'srfm-bg-gradient';
+				break;
+			default:
+				$background_type_class = 'srfm-bg-color';
+				break;
+		}
+
+		return self::join_strings( [ $background_type_class, $overlay_class ] );
+	}
 }
