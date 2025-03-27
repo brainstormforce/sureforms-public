@@ -75,6 +75,16 @@
 	// Classes for Color Scheme.
 	&__color-scheme {
 		&--primary {
+			// Adding styles for handling the double click scenario.
+			button.srfm-multi-button.is-secondary.is-pressed {
+				&:active {
+					background-color: $srfm-color-tab-background;
+				}
+				&:hover {
+					color: $srfm-color-primary;
+				}
+			}
+			button.srfm-multi-button.is-secondary.is-pressed,
 			button.srfm-multi-button.is-primary.is-primary {
 				color: $srfm-color-primary;
 				background-color: $srfm-color-tab-background;
@@ -88,6 +98,16 @@
 		}
 
 		&--secondary {
+			// Adding styles for handling the double click scenario.
+			button.srfm-multi-button.is-secondary.is-pressed {
+				&:active {
+					background-color: $srfm-color-border-hover;
+				}
+				&:hover {
+					color: $srfm-color-plain-background;
+				}
+			}
+			button.srfm-multi-button.is-secondary.is-pressed,
 			button.srfm-multi-button.is-primary.is-primary {
 				color: $srfm-color-plain-background;
 				background-color: $srfm-color-border-hover;

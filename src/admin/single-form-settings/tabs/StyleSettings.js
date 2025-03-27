@@ -559,7 +559,7 @@ function StyleSettings( props ) {
 					<Background
 						// Background Properties
 						backgroundType={ {
-							value: bg_type,
+							value: bg_type || 'color',
 							label: 'bg_type',
 						} }
 						backgroundColor={ {
@@ -597,7 +597,7 @@ function StyleSettings( props ) {
 						// Gradient Properties
 						gradientOverlay={ { value: true } }
 						gradientType={ {
-							value: gradient_type,
+							value: gradient_type || 'basic',
 							label: 'gradient_type',
 						} }
 						backgroundGradientColor1={ {
@@ -621,7 +621,7 @@ function StyleSettings( props ) {
 							label: 'bg_gradient_angle',
 						} }
 						backgroundGradientType={ {
-							value: bg_gradient_type,
+							value: bg_gradient_type || 'linear',
 							label: 'bg_gradient_type',
 						} }
 						backgroundGradient={ {
@@ -675,7 +675,7 @@ function StyleSettings( props ) {
 						} }
 						// Gradient Overlay.
 						overlayGradientType={ {
-							value: overlay_gradient_type,
+							value: overlay_gradient_type || 'basic',
 							label: 'overlay_gradient_type',
 						} }
 						overlayBackgroundGradientColor1={ {
@@ -699,7 +699,7 @@ function StyleSettings( props ) {
 							label: 'bg_overlay_gradient_angle',
 						} }
 						overlayBackgroundGradientType={ {
-							value: bg_overlay_gradient_type,
+							value: bg_overlay_gradient_type || 'linear',
 							label: 'bg_overlay_gradient_type',
 						} }
 						overlayBackgroundGradient={ {
