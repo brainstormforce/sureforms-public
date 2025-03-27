@@ -60,7 +60,10 @@ const GradientSettings = ( props ) => {
 		blockNameForHook
 	);
 
-	const type = undefined !== gradientType ? gradientType.value : 'basic';
+	const type =
+		undefined !== gradientType && undefined !== gradientType?.value
+			? gradientType?.value
+			: 'basic';
 
 	return (
 		<>
