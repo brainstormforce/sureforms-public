@@ -265,6 +265,7 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 * Improvement: Enhanced the SureForms branding color on instant form.
 * Improvement: Modified the AI form generation limit.
 * Fix: Resolved a text visibility issue in buttons within form settings.
+* Fix: Addressed a security bug. Props to Dmitrii Ignatyev for privately reporting it.
 ### 1.4.3 - 18th March 2025 ###
 * Fix: Addressed an issue where minimum and maximum selection errors in the Multiple Choice field were not displayed in real-time and were only shown upon form submission.
 * Fix: This update addressed a security bug. Please make sure you are using the latest version on your website.
