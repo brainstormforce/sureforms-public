@@ -30,6 +30,10 @@
 			}
 		}
 
+		// Set hidden block display to none so that it does not take up space.
+		.srfm-hidden-block {
+			display: none;
+		}
 		.srfm-block {
 			&.srfm-error,
 			&.srfm-valid-email-error {

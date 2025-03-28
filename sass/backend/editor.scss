@@ -17,6 +17,17 @@ body.post-type-sureforms_form {
 		}
 	}
 
+	/**
+	 * Setting the cursor to default for the range control with only pixel units.
+	 * This is applicable for only the row gap and column gap component as it has only single unit.
+	 */
+	.srfm-form-row-gap-component,
+	.srfm-form-column-gap-component {
+		.srfm-control__units .srfm-range-control__units--Pixel {
+			cursor: unset;
+		}
+	}
+
 	.editor-styles-wrapper {
 		@include srfm-background-control-styles( true );
 	}
