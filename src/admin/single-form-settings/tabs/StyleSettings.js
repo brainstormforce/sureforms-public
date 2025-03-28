@@ -13,7 +13,7 @@ import {
 	faAlignJustify,
 } from '@fortawesome/free-solid-svg-icons';
 import { useDeviceType } from '@Controls/getPreviewType';
-import { submitButtonContainerOptions, getStylePanels } from '@Components/hooks';
+import { getStylePanels } from '@Components/hooks';
 import { addStyleInRoot } from '@Utils/Helpers';
 import Background from '@Components/enhanced-background';
 
