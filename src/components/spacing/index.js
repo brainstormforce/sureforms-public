@@ -40,7 +40,9 @@ const Spacing = ( props ) => {
 		let newValue = value;
 		if ( '' === value && '' !== event ) {
 			newValue =
-				event.target.value === '' ? 0 : Number( event.target.value );
+				event.target.value === '' || event.target.value < 0
+					? 0
+					: Number( event.target.value );
 		}
 		if ( link.value ) {
 			setAttributes( {
