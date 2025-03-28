@@ -28,6 +28,7 @@ const Spacing = ( props ) => {
 		setAttributes,
 		help = false,
 		min = 0,
+		disableUnits = false,
 	} = props;
 	const inputs = [ valueTop, valueRight, valueBottom, valueLeft ];
 
@@ -147,6 +148,7 @@ const Spacing = ( props ) => {
 		} );
 
 		updatedAttributes[ unit?.label ] = defaultValues[ unit?.label ];
+		updatedAttributes[ link?.label ] = defaultValues[ link?.label ];
 
 		setAttributes( updatedAttributes );
 	};
@@ -168,6 +170,7 @@ const Spacing = ( props ) => {
 									valueBottom?.label,
 									valueLeft?.label,
 									unit?.label,
+									link?.label,
 								] }
 								isFormSpecific={ true }
 								setAttributes={ setAttributes }
@@ -178,13 +181,15 @@ const Spacing = ( props ) => {
 									valueBottom?.value,
 									valueLeft?.value,
 									unit?.value,
+									link?.value,
 								] }
 							/>
 							<ButtonGroup
 								className="srfm-control__units"
 								aria-label={ __( 'Select Units', 'sureforms' ) }
 							>
-								{ onUnitSizeClick( unitSizes ) }
+								{ ! disableUnits &&
+									onUnitSizeClick( unitSizes ) }
 							</ButtonGroup>
 						</div>
 					</div>
