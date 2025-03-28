@@ -8824,6 +8824,22 @@ namespace SRFM\Inc {
         {
         }
         /**
+         * Get the gradient css for given gradient parameters.
+         *
+         * @param string $type The type of gradient. Default 'linear'.
+         * @param string $color1 The first color of the gradient. Default '#FFC9B2'.
+         * @param string $color2 The second color of the gradient. Default '#C7CBFF'.
+         * @param int    $loc1 The location of the first color. Default 0.
+         * @param int    $loc2 The location of the second color. Default 100.
+         * @param int    $angle The angle of the gradient. Default 90.
+         *
+         * @since 1.4.4
+         * @return string The gradient css.
+         */
+        public static function get_gradient_css( $type = 'linear', $color1 = '#FFC9B2', $color2 = '#C7CBFF', $loc1 = 0, $loc2 = 100, $angle = 90 )
+        {
+        }
+        /**
 	     * Get SureForms Website URL.
 	     *
 	     * @param string $trail The URL trail to append to SureForms website URL. The parameter should not include a leading slash as the base URL already ends with a trailing slash.
@@ -8833,6 +8849,19 @@ namespace SRFM\Inc {
 	     */
 	    public static function get_sureforms_website_url( $trail, $utm_args = [] ) {
 	    }
+        /**
+	     * Return the classes based on background and overlay type to add to the form container.
+         *
+	     * @param string $background_type The background type.
+	     * @param string $overlay_type The overlay type.
+         * @param string $bg_image The background image url.
+	     *
+	     * @since 1.4.4
+	     * @return string The classes to add to the form container.
+	     */
+	    public static function get_background_classes( $background_type, $overlay_type, $bg_image = '' )
+        {
+        }
     }
 }
 namespace SRFM\Inc\Global_Settings {

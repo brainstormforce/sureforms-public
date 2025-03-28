@@ -46,21 +46,6 @@ export const enhanceMultiChoiceOptions = ( option, args ) => {
 };
 
 /**
- * Filters the submit button container options with the provided filter.
- *
- * @param {Array}  options - The submit button container options to filter.
- * @param {Object} args    - Additional arguments for the filter.
- * @return {Array} - The filtered submit button container options.
- */
-export const submitButtonContainerOptions = ( options, args ) => {
-	return applyFilters(
-		'srfm.submit.button.container.options',
-		options,
-		args
-	);
-};
-
-/**
  * Filters the submit button with the provided filter.
  *
  * @param {Object} submitButton - The submit button to filter.
@@ -69,4 +54,15 @@ export const submitButtonContainerOptions = ( options, args ) => {
  */
 export const filterSubmitButton = ( submitButton, args ) => {
 	return applyFilters( 'srfm.submit.button', submitButton, args );
+};
+
+/**
+ * Filters the style panels by allowing additional panels or options to be added.
+ *
+ * @param {Array}  panels - The existing style panel configuration.
+ * @param {Object} args   - Additional arguments for the filter.
+ * @return {Array} - The filtered style panels.
+ */
+export const getStylePanels = ( panels, args ) => {
+	return applyFilters( 'srfm.style.panels', panels, args );
 };

@@ -16,7 +16,7 @@ msgstr ""
 #: sureforms.php
 #: admin/admin.php:167
 #: admin/admin.php:168
-#: inc/gutenberg-hooks.php:106
+#: inc/gutenberg-hooks.php:107
 #: inc/nps-notice.php:108
 #: inc/page-builders/bricks/elements/form-widget.php:66
 #: inc/page-builders/bricks/service-provider.php:55
@@ -63,7 +63,7 @@ msgstr "Novo Formulário"
 #: admin/admin.php:253
 #: admin/admin.php:289
 #: inc/global-settings/email-summary.php:107
-#: inc/post-types.php:702
+#: inc/post-types.php:881
 #: assets/build/dashboard.js:2
 msgid "Entries"
 msgstr "Entradas"
@@ -86,7 +86,7 @@ msgstr "Editar %1$s"
 #: inc/form-submit.php:776
 #: inc/forms-data.php:87
 #: inc/global-settings/global-settings.php:86
-#: inc/global-settings/global-settings.php:276
+#: inc/global-settings/global-settings.php:294
 #: inc/rest-api.php:92
 #: inc/rest-api.php:126
 msgid "Nonce verification failed."
@@ -215,6 +215,7 @@ msgstr "Entrada #"
 #: admin/views/entries-list-table.php:1105
 #: inc/page-builders/bricks/elements/form-widget.php:96
 #: assets/build/dashboard.js:2
+#: assets/build/formEditor.js:172
 msgid "Form"
 msgstr "Formulário"
 
@@ -316,6 +317,7 @@ msgid "Form Data"
 msgstr "Dados do Formulário"
 
 #: admin/views/single-entry.php:356
+#: assets/build/formEditor.js:172
 msgid "Fields"
 msgstr "Campos"
 
@@ -639,19 +641,19 @@ msgstr "Algo deu errado. Registramos o erro para investigação posterior."
 msgid "Sorry, you are not allowed to create forms."
 msgstr "Desculpe, você não tem permissão para criar formulários."
 
-#: inc/create-new-form.php:138
+#: inc/create-new-form.php:156
 msgid "Invalid JSON format."
 msgstr "Formato JSON inválido."
 
-#: inc/create-new-form.php:150
+#: inc/create-new-form.php:168
 msgid "Missing required properties in form info."
 msgstr "Faltam propriedades obrigatórias nas informações do formulário."
 
-#: inc/create-new-form.php:186
+#: inc/create-new-form.php:204
 msgid "SureForms Form created successfully."
 msgstr "SureForms Formulário criado com sucesso."
 
-#: inc/create-new-form.php:193
+#: inc/create-new-form.php:211
 msgid "Error creating SureForms Form, "
 msgstr "Erro ao criar o formulário SureForms,"
 
@@ -663,10 +665,10 @@ msgstr "Nova submissão de formulário"
 msgid "You do not have permission to export forms."
 msgstr "Você não tem permissão para exportar formulários."
 
-#: inc/export.php:136
-#: inc/export.php:141
-#: inc/export.php:176
-#: inc/export.php:193
+#: inc/export.php:146
+#: inc/export.php:151
+#: inc/export.php:186
+#: inc/export.php:203
 msgid "Failed to import form."
 msgstr "Falha ao importar formulário."
 
@@ -712,7 +714,7 @@ msgid "I consent to have this website store my submitted information so they can
 msgstr "Eu consinto que este site armazene as informações que enviei para que possam responder à minha consulta."
 
 #: inc/fields/inlinebutton-markup.php:182
-#: inc/generate-form-markup.php:353
+#: inc/generate-form-markup.php:456
 msgid "Please verify that you are not a robot."
 msgstr "Por favor, verifique se você não é um robô."
 
@@ -804,7 +806,7 @@ msgstr "Desconhecido"
 msgid "Sorry, you are not allowed to view the form."
 msgstr "Desculpe, você não tem permissão para visualizar o formulário."
 
-#: inc/generate-form-markup.php:380
+#: inc/generate-form-markup.php:483
 msgid "There was an error trying to submit your form. Please try again."
 msgstr "Houve um erro ao tentar enviar seu formulário. Por favor, tente novamente."
 
@@ -831,30 +833,30 @@ msgid "SureForms Email Summary - %s"
 msgstr "Resumo de Email do SureForms - %s"
 
 #: inc/global-settings/email-summary.php:206
-#: inc/global-settings/global-settings.php:203
-#: inc/global-settings/global-settings.php:302
+#: inc/global-settings/global-settings.php:221
+#: inc/global-settings/global-settings.php:320
 #: assets/build/settings.js:172
 msgid "Monday"
 msgstr "Segunda-feira"
 
-#: inc/global-settings/global-settings.php:116
+#: inc/global-settings/global-settings.php:134
 msgid "Error Saving Settings!"
 msgstr "Erro ao salvar configurações!"
 
-#: inc/global-settings/global-settings.php:116
+#: inc/global-settings/global-settings.php:134
 #: assets/build/formEditor.js:172
 msgid "Global Settings"
 msgstr "Configurações Globais"
 
-#: inc/global-settings/global-settings.php:120
+#: inc/global-settings/global-settings.php:138
 msgid "Settings Saved Successfully."
 msgstr "Configurações salvas com sucesso."
 
-#: inc/gutenberg-hooks.php:104
+#: inc/gutenberg-hooks.php:105
 msgid "General Fields"
 msgstr "Campos Gerais"
 
-#: inc/gutenberg-hooks.php:116
+#: inc/gutenberg-hooks.php:117
 #: assets/build/formEditor.js:172
 msgid "Advanced Fields"
 msgstr "Campos Avançados"
@@ -1012,28 +1014,28 @@ msgstr "Formulário publicado."
 msgid "Form updated."
 msgstr "Formulário atualizado."
 
-#: inc/post-types.php:544
+#: inc/post-types.php:723
 msgid "Admin Notification Email"
 msgstr "Email de Notificação do Administrador"
 
 #. translators: %s: Form title smart tag
-#: inc/post-types.php:549
+#: inc/post-types.php:728
 msgid "New Form Submission - %s"
 msgstr "Nova Submissão de Formulário - %s"
 
-#: inc/post-types.php:701
+#: inc/post-types.php:880
 msgid "Shortcode"
 msgstr "Código curto"
 
-#: inc/post-types.php:765
+#: inc/post-types.php:944
 msgid "Please choose the SureForms export file (.json) that you wish to import."
 msgstr "Por favor, escolha o arquivo de exportação SureForms (.json) que deseja importar."
 
-#: inc/post-types.php:768
+#: inc/post-types.php:947
 msgid "Import Now"
 msgstr "Importar agora"
 
-#: inc/post-types.php:770
+#: inc/post-types.php:949
 msgid "There is some error in json file, please export the SureForms Forms again."
 msgstr "Há algum erro no arquivo json, por favor, exporte os formulários SureForms novamente."
 
@@ -2080,7 +2082,7 @@ msgstr "Escova"
 
 #: modules/gutenberg/icons/icons-v6-0.php:2570
 msgid "BTC"
-msgstr ""
+msgstr "BTC"
 
 #: modules/gutenberg/icons/icons-v6-0.php:2581
 msgid "Bucket"
@@ -2773,7 +2775,7 @@ msgstr "Nuvem Sol Chuva"
 
 #: modules/gutenberg/icons/icons-v6-0.php:4628
 msgid "Cloudflare"
-msgstr ""
+msgstr "Cloudflare"
 
 #: modules/gutenberg/icons/icons-v6-0.php:4639
 msgid "cloudscale.ch"
@@ -3117,7 +3119,7 @@ msgstr "Área de trabalho"
 
 #: modules/gutenberg/icons/icons-v6-1.php:301
 msgid "DEV"
-msgstr ""
+msgstr "DEV"
 
 #: modules/gutenberg/icons/icons-v6-1.php:312
 msgid "deviantART"
@@ -3518,7 +3520,7 @@ msgstr "Expandir"
 
 #: modules/gutenberg/icons/icons-v6-1.php:1345
 msgid "ExpeditedSSL"
-msgstr ""
+msgstr "ExpeditedSSL"
 
 #: modules/gutenberg/icons/icons-v6-1.php:1356
 msgid "Explosion"
@@ -3578,7 +3580,7 @@ msgstr "Sorriso Radiante"
 
 #: modules/gutenberg/icons/icons-v6-1.php:1565
 msgid "Face Grin Beam Sweat"
-msgstr ""
+msgstr "Rosto Sorriso Brilho Suor"
 
 #: modules/gutenberg/icons/icons-v6-1.php:1581
 msgid "Face Grin Hearts"
@@ -4859,7 +4861,7 @@ msgstr "Imagens"
 
 #: modules/gutenberg/icons/icons-v6-2.php:26
 msgid "IMDB"
-msgstr ""
+msgstr "IMDB"
 
 #: modules/gutenberg/icons/icons-v6-2.php:37
 msgid "Inbox"
@@ -5346,7 +5348,7 @@ msgstr "Mars Stroke Right"
 
 #: modules/gutenberg/icons/icons-v6-2.php:1426
 msgid "Mars Stroke Up"
-msgstr ""
+msgstr "Mars Stroke Up"
 
 #: modules/gutenberg/icons/icons-v6-2.php:1437
 msgid "Martini Glass"
@@ -5792,7 +5794,7 @@ msgstr "page4 Corporation"
 
 #: modules/gutenberg/icons/icons-v6-2.php:2682
 msgid "Pagelines"
-msgstr ""
+msgstr "Pagelines"
 
 #: modules/gutenberg/icons/icons-v6-2.php:2693
 msgid "Pager"
@@ -5924,7 +5926,7 @@ msgstr "Pimenta Picante"
 
 #: modules/gutenberg/icons/icons-v6-2.php:3071
 msgid "PerByte"
-msgstr ""
+msgstr "PerByte"
 
 #: modules/gutenberg/icons/icons-v6-2.php:3082
 msgid "Percent"
@@ -6479,6 +6481,7 @@ msgid "Renren"
 msgstr "Renren"
 
 #: modules/gutenberg/icons/icons-v6-2.php:4659
+#: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:185
 msgid "Repeat"
 msgstr "Repetir"
@@ -6744,6 +6747,7 @@ msgid "Scribd"
 msgstr "Scribd"
 
 #: modules/gutenberg/icons/icons-v6-3.php:213
+#: assets/build/formEditor.js:172
 msgid "Scroll"
 msgstr "Rolar"
 
@@ -6865,7 +6869,7 @@ msgstr ""
 
 #: modules/gutenberg/icons/icons-v6-3.php:548
 msgid "Shopware"
-msgstr ""
+msgstr "Shopware"
 
 #: modules/gutenberg/icons/icons-v6-3.php:559
 msgid "Shower"
@@ -8133,7 +8137,7 @@ msgstr ""
 #: modules/gutenberg/icons/icons-v6-3.php:4191
 #: modules/gutenberg/icons/icons-v6-3.php:4213
 msgid "Vimeo"
-msgstr ""
+msgstr "Vimeo"
 
 #: modules/gutenberg/icons/icons-v6-3.php:4224
 msgid "Vine"
@@ -8257,7 +8261,7 @@ msgstr "Weebly"
 
 #: modules/gutenberg/icons/icons-v6-3.php:4554
 msgid "Weibo"
-msgstr ""
+msgstr "Weibo"
 
 #: modules/gutenberg/icons/icons-v6-3.php:4565
 msgid "Weight Hanging"
@@ -8425,7 +8429,7 @@ msgstr "Y"
 
 #: modules/gutenberg/icons/icons-v6-3.php:5053
 msgid "Y Combinator"
-msgstr ""
+msgstr "Y Combinator"
 
 #: modules/gutenberg/icons/icons-v6-3.php:5064
 msgid "Yahoo Logo"
@@ -8521,6 +8525,7 @@ msgstr "Formulário em Branco"
 
 #: templates/forms/blank-form.php:19
 #: templates/forms/contact-form.php:20
+#: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:181
 msgid "Basic"
 msgstr "Básico"
@@ -8593,20 +8598,20 @@ msgstr "Formulário para enviar consulta de suporte"
 msgid "Support"
 msgstr "Suporte"
 
-#: templates/single-form.php:151
+#: templates/single-form.php:150
 msgid "Link to homepage"
 msgstr "Link para a página inicial"
 
-#: templates/single-form.php:152
+#: templates/single-form.php:151
 msgid "Instant form site logo"
 msgstr "Logotipo do site de formulário instantâneo"
 
-#: templates/single-form.php:201
+#: templates/single-form.php:200
 msgid "Instant Form Disabled"
 msgstr "Formulário Instantâneo Desativado"
 
 #. translators: Here %s is the plugin's name.
-#: templates/single-form.php:180
+#: templates/single-form.php:179
 msgid "Crafted with ♡ %s"
 msgstr "Feito com ♡ %s"
 
@@ -8804,6 +8809,7 @@ msgid "27/08/2024 23:59:59"
 msgstr ""
 
 #: assets/build/blocks.js:172
+#: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:185
 msgid "Custom"
 msgstr "Personalizado"
@@ -9633,10 +9639,6 @@ msgid "Select Color"
 msgstr "Selecionar Cor"
 
 #: assets/build/formEditor.js:172
-msgid "Form Container"
-msgstr "Contêiner de Formulário"
-
-#: assets/build/formEditor.js:172
 msgid "Primary Color"
 msgstr "Cor Primária"
 
@@ -9784,7 +9786,7 @@ msgstr "Quebra de página"
 msgid "Previous"
 msgstr "Anterior"
 
-#: inc/post-types.php:649
+#: inc/post-types.php:828
 #: assets/build/formEditor.js:172
 msgid "Thank you"
 msgstr "Obrigado"
@@ -9836,10 +9838,6 @@ msgstr "Cor de Fundo"
 #: assets/build/formEditor.js:172
 msgid "Use banner as page background"
 msgstr "Usar banner como fundo de página"
-
-#: assets/build/formEditor.js:172
-msgid "Form Background"
-msgstr "Fundo do Formulário"
 
 #: assets/build/formEditor.js:172
 msgid "Form Width"
@@ -10074,6 +10072,7 @@ msgstr "Bloqueio de URL Necessário"
 msgid " Error Message"
 msgstr "Mensagem de Erro"
 
+#: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
 #: modules/gutenberg/build/blocks.js:185
 msgid "Auto"
@@ -10365,10 +10364,6 @@ msgid "You have reached the maximum number of form generations."
 msgstr "Você atingiu o número máximo de gerações de formulários."
 
 #: assets/build/templatePicker.js:172
-msgid "Please connect your website with SureForms AI to create 20 more forms with AI."
-msgstr "Por favor, conecte seu site com o SureForms AI para criar mais 20 formulários com IA."
-
-#: assets/build/templatePicker.js:172
 msgid "How would you like to create a new form?"
 msgstr "Como você gostaria de criar um novo formulário?"
 
@@ -10430,6 +10425,7 @@ msgstr "Espaçamento entre letras"
 msgid "Transform"
 msgstr "Transformar"
 
+#: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:177
 #: modules/gutenberg/build/blocks.js:181
 #: modules/gutenberg/build/blocks.js:185
@@ -10461,6 +10457,7 @@ msgstr "Sobrescrito"
 msgid "Line Through"
 msgstr "Riscar"
 
+#: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:177
 #: modules/gutenberg/build/blocks.js:181
 #: modules/gutenberg/build/blocks.js:185
@@ -10564,11 +10561,13 @@ msgstr "Extensão"
 msgid "Alignment"
 msgstr "Alinhamento"
 
+#: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:181
 #: modules/gutenberg/build/blocks.js:185
 msgid "Width"
 msgstr "Largura"
 
+#: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:181
 #: modules/gutenberg/build/blocks.js:187
 msgid "Size"
@@ -10587,6 +10586,7 @@ msgstr "Tipografia"
 msgid "Icon Size"
 msgstr "Tamanho do Ícone"
 
+#: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:181
 msgid "EM"
 msgstr "EM"
@@ -10617,42 +10617,52 @@ msgstr "divisor"
 msgid "separator"
 msgstr "separador"
 
+#: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:181
 msgid "Color 1"
 msgstr "Cor 1"
 
+#: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:181
 msgid "Color 2"
 msgstr "Cor 2"
 
+#: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:181
 msgid "Type"
 msgstr "Digite"
 
+#: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:181
 msgid "Linear"
 msgstr "Linear"
 
+#: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:181
 msgid "Radial"
 msgstr "Radial"
 
+#: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:181
 msgid "Location 1"
 msgstr "Localização 1"
 
+#: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:181
 msgid "Location 2"
 msgstr "Localização 2"
 
+#: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:181
 msgid "Angle"
 msgstr "Ângulo"
 
+#: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:181
 msgid "Classic"
 msgstr "Clássico"
 
+#: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:181
 msgid "Gradient"
 msgstr "Gradiente"
@@ -10776,6 +10786,7 @@ msgstr "Destaque"
 msgid "Highlight heading text from toolbar to see the below controls working."
 msgstr "Realce o texto do cabeçalho na barra de ferramentas para ver os controles abaixo funcionando."
 
+#: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:181
 #: modules/gutenberg/build/blocks.js:185
 msgid "Background"
@@ -10866,10 +10877,12 @@ msgstr "Predefinição 6"
 msgid "Select Preset"
 msgstr "Selecionar Predefinição"
 
+#: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:185
 msgid "Cover"
 msgstr "Cobertura"
 
+#: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:185
 msgid "Contain"
 msgstr "Conter"
@@ -10882,6 +10895,7 @@ msgstr "Desativar Carregamento Preguiçoso"
 msgid "Layout"
 msgstr "Layout"
 
+#: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:185
 msgid "Overlay"
 msgstr "Sobreposição"
@@ -11006,6 +11020,7 @@ msgstr "Inferior Direito"
 msgid "Mask Repeat"
 msgstr "Repetir Máscara"
 
+#: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:185
 msgid "No Repeat"
 msgstr "Sem repetição"
@@ -11056,6 +11071,7 @@ msgstr "Sombra de Hover Separada"
 msgid "Spread"
 msgstr "Espalhar"
 
+#: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:185
 msgid "Overlay Opacity"
 msgstr "Opacidade da Sobreposição"
@@ -11345,6 +11361,85 @@ msgstr "Obtenha o SureForms Pro"
 #: modules/gutenberg/build/blocks.js:181
 msgid "Premium"
 msgstr "Premium"
+
+#: inc/create-new-form.php:135
+#: inc/global-settings/global-settings.php:95
+msgid "You must be logged in to make this request."
+msgstr "Você deve estar logado para fazer esta solicitação."
+
+#: inc/create-new-form.php:144
+#: inc/export.php:137
+#: inc/global-settings/global-settings.php:104
+msgid "You do not have permissions to manage options."
+msgstr "Você não tem permissão para gerenciar opções."
+
+#: assets/build/formEditor.js:172
+msgid "Overlay Type"
+msgstr "Tipo de Sobreposição"
+
+#: assets/build/formEditor.js:172
+msgid "Image Overlay Color"
+msgstr "Cor de Sobreposição da Imagem"
+
+#: assets/build/formEditor.js:172
+msgid "Image Position"
+msgstr "Posição da Imagem"
+
+#: assets/build/formEditor.js:172
+msgid "Attachment"
+msgstr "Anexo"
+
+#: assets/build/formEditor.js:172
+msgid "Fixed"
+msgstr "Fixo"
+
+#: assets/build/formEditor.js:172
+msgid "Blend Mode"
+msgstr "Modo de Mesclagem"
+
+#: assets/build/formEditor.js:172
+msgid "Multiply"
+msgstr "Multiplicar"
+
+#: assets/build/formEditor.js:172
+msgid "Screen"
+msgstr "Tela"
+
+#: assets/build/formEditor.js:172
+msgid "Darken"
+msgstr "Escurecer"
+
+#: assets/build/formEditor.js:172
+msgid "Lighten"
+msgstr "Iluminar"
+
+#: assets/build/formEditor.js:172
+msgid "Color Dodge"
+msgstr "Esquiva de Cor"
+
+#: assets/build/formEditor.js:172
+msgid "Saturation"
+msgstr "Saturação"
+
+#: assets/build/formEditor.js:172
+msgid "Repeat-x"
+msgstr "Repetir-x"
+
+#: assets/build/formEditor.js:172
+msgid "Repeat-y"
+msgstr "Repita-y"
+
+#: assets/build/formEditor.js:172
+msgid "PX"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+msgid "Button"
+msgstr "Botão"
+
+#: assets/build/templatePicker.js:172
+msgid "Please connect your website with SureForms AI to create 10 more forms with AI."
+msgstr "Por favor, conecte seu site com o SureForms AI para criar mais 10 formulários com IA."
 
 #: inc/post-types.php:124
 msgctxt "post type general name"

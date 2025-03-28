@@ -613,7 +613,7 @@ export const getLimitReachedPopup = () => {
 		);
 	}
 
-	// when initial 5 forms are consumed
+	// when initial 3 forms are consumed
 	if ( type === 'non-registered' && formCreationleft === 0 ) {
 		return (
 			<LimitReachedPopup
@@ -622,7 +622,7 @@ export const getLimitReachedPopup = () => {
 					'sureforms'
 				) }
 				paraTwo={ __(
-					'Please connect your website with SureForms AI to create 20 more forms with AI.',
+					'Please connect your website with SureForms AI to create 10 more forms with AI.',
 					'sureforms'
 				) }
 				onclick={ initiateAuth }

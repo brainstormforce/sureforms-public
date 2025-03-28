@@ -355,3 +355,54 @@
 		border-left: var( --srfm-color-input-border ) solid 1px;
 	}
 }
+
+// The mixin is used with the class .srfm-form-container and .editor-styles-wrapper.
+@mixin srfm-background-control-styles( $backend: false ) {
+	&.srfm-bg-color {
+		background: var( --srfm-bg-color );
+	}
+	&.srfm-bg-image {
+		background-image: var( --srfm-bg-image );
+		background-position: var( --srfm-bg-position );
+		background-attachment: var( --srfm-bg-attachment );
+		background-repeat: var( --srfm-bg-repeat );
+		background-size: var( --srfm-bg-size );
+	}
+	&.srfm-bg-gradient {
+		background: var( --srfm-bg-gradient );
+	}
+	// Target the ::before pseudo element in the overlay classes for color, gradient and image.
+	&[class*="srfm-overlay"]::before {
+		content: "";
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		opacity: var( --srfm-bg-overlay-opacity );
+		pointer-events: none;
+		@if ( $backend ) {
+			z-index: 0;
+		} @else {
+			z-index: -1;
+		}
+	}
+	// Image Overlay Specific Styles.
+	&.srfm-overlay-image::before {
+		background-image: var( --srfm-bg-overlay-image );
+		background-position: var( --srfm-bg-overlay-position );
+		background-attachment: var( --srfm-bg-overlay-attachment );
+		background-repeat: var( --srfm-bg-overlay-repeat );
+		background-size: var( --srfm-bg-overlay-size );
+		mix-blend-mode: var( --srfm-bg-overlay-blend-mode );
+		background-color: unset; // Need to add this to prevent other styles from overriding the background image.
+	}
+	// Color Overlay Specific Styles.
+	&.srfm-overlay-color::before {
+		background-color: var( --srfm-bg-overlay-color );
+	}
+	// Gradient Overlay Specific Styles.
+	&.srfm-overlay-gradient::before {
+		background: var( --srfm-bg-overlay-gradient );
+	}
+}
