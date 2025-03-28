@@ -50,12 +50,17 @@ export const EmailComponent = ( { attributes, blockID, setAttributes } ) => {
 
 			{ isConfirmEmail && (
 				<div className={ `srfm-${ slug }-confirm-block` }>
-					<label
+					<RichText
+						tagName="label"
+						value={ confirmLabel }
+						onChange={ ( value ) => {
+							setAttributes( { confirmLabel: decodeHtmlEntities( value ) } );
+						} }
 						className={ `srfm-block-label${ isRequired }` }
-						htmlFor={ `srfm-${ slug }-confirm-${ blockID }` }
-					>
-						{ confirmLabel }
-					</label>
+						multiline={ false }
+						id={ blockID }
+						allowedFormats={ [] }
+					/>
 					<div className="srfm-block-wrap">
 						<input
 							id={ `srfm-${ slug }-confirm-${ blockID }` }
