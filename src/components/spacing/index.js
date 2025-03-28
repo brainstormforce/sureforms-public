@@ -158,9 +158,7 @@ const Spacing = ( props ) => {
 			<div className="srfm-spacing-control">
 				<div className="srfm-size-type-field-tabs">
 					<div className="srfm-control__header">
-						<span className='srfm-control-label'>
-							{ label }
-						</span>
+						<span className="srfm-control-label">{ label }</span>
 						<div className="srfm-control__actions">
 							<SRFMReset
 								onReset={ resetValues }
