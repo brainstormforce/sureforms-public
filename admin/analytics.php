@@ -85,8 +85,9 @@ class Analytics {
 	 */
 	public function add_srfm_analytics_data( $stats_data ) {
 		$stats_data['plugin_data']['sureforms']                   = [
-			'free_version'  => SRFM_VER,
-			'site_language' => get_locale(),
+			'free_version'        => SRFM_VER,
+			'site_language'       => get_locale(),
+			'most_used_anti_spam' => $this->most_used_anti_spam(),
 		];
 		$stats_data['plugin_data']['sureforms']['numeric_values'] = [
 			'total_forms'            => wp_count_posts( SRFM_FORMS_POST_TYPE )->publish ?? 0,
@@ -134,6 +135,71 @@ class Analytics {
 		];
 
 		return $this->custom_wp_query_total_posts( $meta_query );
+	}
+
+	/**
+	 * Return most used anti-spam type on this site.
+	 *
+	 * @since 1.4.4
+	 * @return int
+	 */
+	public function most_used_anti_spam() {
+		global $wpdb;
+
+		// Attempt to get from cache first.
+		$cache_key     = 'most_used_anti_spam';
+		$cached_result = wp_cache_get( $cache_key, 'sureforms' );
+
+		if ( false !== $cached_result ) {
+			return $cached_result;
+		}
+
+		$meta_key = '_srfm_captcha_security_type';
+
+		// Query to get the most used captcha type.
+		// PHPCS: Ignore direct database query warning, as there is no built-in alternative.
+    	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+		$result = $wpdb->get_row(
+			$wpdb->prepare(
+				"
+			SELECT meta_value, COUNT(meta_value) as count
+			FROM {$wpdb->postmeta}
+			WHERE meta_key = %s
+			AND meta_value != ''
+			GROUP BY meta_value
+			ORDER BY count DESC
+			LIMIT 1
+		",
+				$meta_key
+			),
+			ARRAY_A
+		);
+
+		$output = '';
+		if ( $result && ! empty( $result['meta_value'] ) ) {
+			switch ( $result['meta_value'] ) {
+				case 'g-recaptcha':
+					$output = 'Google reCAPTCHA';
+					break;
+
+				case 'cf-turnstile':
+					$output = 'CloudFlare Turnstile';
+					break;
+
+				case 'hcaptcha':
+					$output = 'hCaptcha';
+					break;
+
+				default:
+					$output = '';
+					break;
+			}
+		}
+
+		// Store result in cache for 1 hour.
+		wp_cache_set( $cache_key, $output, 'sureforms', HOUR_IN_SECONDS );
+
+		return $output;
 	}
 
 	/**

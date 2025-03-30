@@ -90,5 +90,6 @@ module.exports = {
 		grecaptcha: true,
 		hcaptcha: true,
 		turnstile: true,
+		ResizeObserver: true,
 	},
 };
