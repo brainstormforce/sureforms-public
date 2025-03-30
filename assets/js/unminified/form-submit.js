@@ -162,18 +162,6 @@ function showErrorMessage( element ) {
 	console.error( 'Network Error' );
 }
 
-// wp.hooks.addFilter( 'srfm_before_form_submission', 'srfm', ( check, args ) => {
-// 	console.log( 'addFilter check', {check, args} );
-// 	return check;
-// } );
-
-// prevent to submit form by srfm_on_trigger_form_submission event
-document.addEventListener( 'srfm_on_trigger_form_submission', ( event ) => {
-	console.log( 'by event event', event );
-	
-	event.preventDefault();
-} );
-
 async function handleFormSubmission(
 	form,
 	formId,
@@ -200,16 +188,6 @@ async function handleFormSubmission(
 			nonce,
 			form
 		);
-
-		const shouldFormSubmit = wp.hooks.applyFilters( 'srfm_before_form_submission', true, {
-			form,
-			isValidate,
-		} );
-
-		if ( ! shouldFormSubmit ) {
-			loader.classList.remove( 'srfm-active' );
-			return false;
-		}
 
 		// Handle captcha validation, returns true if captcha is valid or not present.
 		const isCaptchaValid = handleCaptchaValidation(
@@ -250,8 +228,6 @@ async function handleFormSubmission(
 				successContainer,
 			},
 		} );
-
-		console.log( 'by event event', document.dispatchEvent( event ) );
 
 		if ( ! document.dispatchEvent( event ) ) {
 			loader.classList.remove( 'srfm-active' );
