@@ -293,7 +293,7 @@ class Generate_Form_Markup {
 					if ( 'image' === $bg_type && ! empty( $bg_image ) ) {
 						$bg_size_merged = 'custom' === $bg_image_size ? "{$bg_image_size_custom}{$bg_image_size_custom_unit}" : $bg_image_size;
 						$styling_vars  += [
-							'--srfm-bg-image'      => 'url(' . esc_html( $bg_image ) . ')',
+							'--srfm-bg-image'      => 'url(' . esc_url( $bg_image ) . ')',
 							'--srfm-bg-position'   => esc_html(
 								( ( ! empty( $bg_image_position['x'] ) ? $bg_image_position['x'] : 0.5 ) * 100 ) . '% ' .
 								( ( ! empty( $bg_image_position['y'] ) ? $bg_image_position['y'] : 0.5 ) * 100 ) . '% '
@@ -313,7 +313,7 @@ class Generate_Form_Markup {
 							// Overlay Variables.
 					if ( 'image' === $bg_type && 'image' === $overlay_type && ! empty( $overlay_image ) ) {
 						$styling_vars += [
-							'--srfm-bg-overlay-image'      => 'url(' . esc_html( $overlay_image ) . ')',
+							'--srfm-bg-overlay-image'      => 'url(' . esc_url( $overlay_image ) . ')',
 							'--srfm-bg-overlay-position'   => esc_html(
 								( ( ! empty( $overlay_position['x'] ) ? $overlay_position['x'] : 0.5 ) * 100 ) . '% ' .
 								( ( ! empty( $overlay_position['y'] ) ? $overlay_position['y'] : 0.5 ) * 100 ) . '%'
