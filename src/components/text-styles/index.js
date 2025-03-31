@@ -84,7 +84,9 @@ const TextStylesControl = ( props ) => {
 								props?.displayUnit ? props.displayUnit : true
 							}
 							isFormSpecific={
-								props?.isFormSpecific ? props.isFormSpecific : true
+								props?.isFormSpecific
+									? props.isFormSpecific
+									: true
 							}
 							setAttributes={ setAttributes }
 						/>
@@ -111,7 +113,9 @@ const TextStylesControl = ( props ) => {
 								props?.displayUnit ? props.displayUnit : true
 							}
 							isFormSpecific={
-								props?.isFormSpecific ? props.isFormSpecific : true
+								props?.isFormSpecific
+									? props.isFormSpecific
+									: true
 							}
 							setAttributes={ setAttributes }
 						/>
