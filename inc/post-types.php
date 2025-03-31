@@ -645,7 +645,7 @@ class Post_Types {
 					'bg_gradient_overlay_type'       => '',
 					'bg_overlay_opacity'             => 1,
 					'bg_overlay_image'               => '',
-					'bg_image_overlay_color'         => '',
+					'bg_image_overlay_color'         => '#FFFFFF75',
 					'bg_overlay_custom_size_unit'    => '%',
 					'bg_overlay_custom_size'         => 100,
 					'bg_overlay_position'            => [

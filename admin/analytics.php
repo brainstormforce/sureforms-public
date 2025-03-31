@@ -140,7 +140,7 @@ class Analytics {
 	/**
 	 * Return most used anti-spam type on this site.
 	 *
-	 * @since x.x.x
+	 * @since 1.4.4
 	 * @return int
 	 */
 	public function most_used_anti_spam() {
