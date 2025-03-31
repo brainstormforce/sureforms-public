@@ -1155,7 +1155,7 @@ class Helper {
 	 * @param int    $loc2 The location of the second color. Default 100.
 	 * @param int    $angle The angle of the gradient. Default 90.
 	 *
-	 * @since x.x.x
+	 * @since 1.4.4
 	 * @return string The gradient css.
 	 */
 	public static function get_gradient_css( $type = 'linear', $color1 = '#FFC9B2', $color2 = '#C7CBFF', $loc1 = 0, $loc2 = 100, $angle = 90 ) {
@@ -1172,7 +1172,7 @@ class Helper {
 	 * @param string $overlay_type The overlay type.
 	 * @param string $bg_image The background image url.
 	 *
-	 * @since x.x.x
+	 * @since 1.4.4
 	 * @return string The classes to add to the form container.
 	 */
 	public static function get_background_classes( $background_type, $overlay_type, $bg_image = '' ) {

@@ -27,7 +27,7 @@ const Spacing = ( props ) => {
 		link,
 		setAttributes,
 		help = false,
-		min = -50,
+		min = 0,
 		disableUnits = false,
 	} = props;
 	const inputs = [ valueTop, valueRight, valueBottom, valueLeft ];
@@ -40,7 +40,9 @@ const Spacing = ( props ) => {
 		let newValue = value;
 		if ( '' === value && '' !== event ) {
 			newValue =
-				event.target.value === '' ? 0 : Number( event.target.value );
+				event.target.value === '' || event.target.value < 0
+					? 0
+					: Number( event.target.value );
 		}
 		if ( link.value ) {
 			setAttributes( {
@@ -158,7 +160,7 @@ const Spacing = ( props ) => {
 			<div className="srfm-spacing-control">
 				<div className="srfm-size-type-field-tabs">
 					<div className="srfm-control__header">
-						{ label }
+						<span className="srfm-control-label">{ label }</span>
 						<div className="srfm-control__actions">
 							<SRFMReset
 								onReset={ resetValues }
