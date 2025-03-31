@@ -729,7 +729,7 @@ class Post_Types {
 						'name'           => __( 'Admin Notification Email', 'sureforms' ),
 						'email_to'       => '{admin_email}',
 						'email_reply_to' => '{admin_email}',
-						'from_name'      => '{admin_name}',
+						'from_name'      => '{site_title}',
 						'from_email'     => '{admin_email}',
 						'email_cc'       => '{admin_email}',
 						'email_bcc'      => '{admin_email}',
