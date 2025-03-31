@@ -679,6 +679,9 @@ class Form_Submit {
 		$is_mail_sent       = false;
 		$emails             = [];
 
+		// Filter to determine whether the email notification should be sent.
+		$email_notification = apply_filters( 'srfm_email_notification_should_send', $email_notification, $submission_data, $form_data );
+
 		if ( is_iterable( $email_notification ) ) {
 			$entries_db_instance = Entries::get_instance();
 			$log_key             = $entries_db_instance->add_log( __( 'Email notification passed to the sending server', 'sureforms' ) );
