@@ -88,6 +88,24 @@ class Global_Settings {
 			);
 		}
 
+		if ( ! is_user_logged_in() ) {
+			// Return error if user is not logged in.
+			wp_send_json_error(
+				[
+					'data' => esc_html__( 'You must be logged in to make this request.', 'sureforms' ),
+				]
+			);
+		}
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			// Return error if user does not have permissions to manage options.
+			wp_send_json_error(
+				[
+					'data' => esc_html__( 'You do not have permissions to manage options.', 'sureforms' ),
+				]
+			);
+		}
+
 		$setting_options = $request->get_params();
 
 		$tab = $setting_options['srfm_tab'];

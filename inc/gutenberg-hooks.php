@@ -306,7 +306,7 @@ class Gutenberg_Hooks {
 	 * Migrate the background type and associated values from
 	 * instant form settings to form styling meta.
 	 *
-	 * @since x.x.x
+	 * @since 1.4.4
 	 * @return void
 	 */
 	public function maybe_migrate_form_stylings() {
