@@ -48,13 +48,12 @@ const EmailNotification = ( {
 		);
 	};
 	const handleUpdateEmailData = ( newData ) => {
-		let { email_to, subject, from_email } = newData;
+		let { email_to, subject } = newData;
 		let hasError = false;
 
 		// Trim off the empty blank white spaces for validation.
 		email_to = email_to.trim();
 		subject = subject.trim();
-		from_email = from_email.trim();
 
 
 		if ( ! email_to ) {
@@ -67,13 +66,6 @@ const EmailNotification = ( {
 		if ( ! subject ) {
 			document
 				.querySelector( '.srfm-modal-subject' )
-				.classList.add( 'required-error' );
-			hasError = true;
-		}
-
-		if ( ! from_email ) {
-			document
-				.querySelector( '.srfm-modal-from-email' )
 				.classList.add( 'required-error' );
 			hasError = true;
 		}
