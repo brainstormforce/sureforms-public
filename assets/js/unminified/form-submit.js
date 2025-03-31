@@ -6,6 +6,8 @@ import {
 	handleCaptchaValidation,
 } from './validation';
 import { applyFilters } from '@wordpress/hooks';
+import { __ } from '@wordpress/i18n';
+
 document.addEventListener( 'DOMContentLoaded', function () {
 	initializeInlineFieldValidation();
 
@@ -20,7 +22,7 @@ document.addEventListener( 'DOMContentLoaded', function () {
 			loader,
 			successContainer,
 			successElement,
-			errorElement,
+			// errorElement,
 			recaptchaType,
 			afterSubmission,
 			captchaErrorElement,
@@ -44,7 +46,7 @@ document.addEventListener( 'DOMContentLoaded', function () {
 				successUrl,
 				successContainer,
 				successElement,
-				errorElement,
+				// errorElement,
 				submitType,
 				afterSubmission,
 				hasCaptcha ? recaptchaType : undefined,
@@ -157,9 +159,56 @@ function redirectToUrl( url ) {
 	window.location.assign( url );
 }
 
-function showErrorMessage( element ) {
-	element.removeAttribute( 'hidden' );
-	console.error( 'Network Error' );
+/**
+ * Displays an error message on the form in the specified position.
+ *
+ * This function is used to show an error message on a form when a submission fails.
+ * It supports displaying the error message either at the header or footer of the form.
+ *
+ * @param {Object}      args                     - Configuration options for displaying the error message.
+ * @param {HTMLElement} args.form                - The form element where the error message will be displayed.
+ * @param {string}      [args.message]           - The error message to display. Defaults to a generic error message.
+ * @param {string}      [args.position='footer'] - The position where the error message should be displayed.
+ *                                               Acceptable values are 'header' or 'footer'.
+ */
+function showErrorMessage( args ) {
+	const { form, message = '', position = 'footer' } = args;
+
+	if ( ! form ) {
+		return;
+	}
+
+	const errorMessage =
+		message ||
+		__(
+			'There was an error trying to submit your form. Please try again.',
+			'sureforms'
+		);
+	const errorClass =
+		position === 'header' ? 'srfm-head-error' : 'srfm-footer-error';
+	const errorElement = form.querySelector(
+		`.srfm-common-error-message.${ errorClass }`
+	);
+
+	if ( errorElement ) {
+		errorElement.innerHTML = errorMessage;
+		errorElement.removeAttribute( 'hidden' );
+
+		// Scroll to the error message container, if enabled.
+		handleScrollAndFocusOnError( {
+			firstErrorInput: errorElement,
+			scrollElement: errorElement,
+		} );
+	}
+}
+
+function hideErrorMessage( form ) {
+	const getErrorMessages = form.querySelectorAll(
+		'.srfm-common-error-message'
+	);
+	getErrorMessages.forEach( ( errorMessage ) => {
+		errorMessage.setAttribute( 'hidden', true );
+	} );
 }
 
 async function handleFormSubmission(
@@ -171,7 +220,7 @@ async function handleFormSubmission(
 	successUrl,
 	successContainer,
 	successElement,
-	errorElement,
+	// errorElement,
 	submitType,
 	afterSubmission,
 	recaptchaType,
@@ -181,6 +230,9 @@ async function handleFormSubmission(
 ) {
 	try {
 		loader.classList.add( 'srfm-active' );
+
+		// Hide any previous error messages.
+		hideErrorMessage( form );
 
 		const isValidate = await fieldValidation(
 			formId,
@@ -279,8 +331,8 @@ async function handleFormSubmission(
 				afterSubmit( formStatus );
 			}
 		} else {
-			loader.classList.remove( 'srfm-active' );
-			showErrorMessage( errorElement );
+			const errorData = formStatus?.data || {};
+			showErrorMessage( { form, ...errorData } );
 			loader.classList.remove( 'srfm-active' );
 		}
 	} catch ( error ) {
@@ -303,7 +355,7 @@ async function handleFormSubmission(
 		document.dispatchEvent( event );
 
 		loader.classList.remove( 'srfm-active' );
-		showErrorMessage( errorElement );
+		showErrorMessage( { form } );
 	}
 }
 
@@ -320,7 +372,7 @@ function extractFormAttributesAndElements( form ) {
 	const successElement = successContainer?.querySelector(
 		'.srfm-success-box-description'
 	);
-	const errorElement = form.querySelector( '.srfm-error-message' );
+	// const errorElement = form.querySelector( '.srfm-error-message' );
 	const submitBtn = form.querySelector( '#srfm-submit-btn' );
 	const afterSubmission = form.getAttribute( 'after-submission' );
 	const gcaptchaDiv = form.querySelector( '.g-recaptcha' );
@@ -339,7 +391,7 @@ function extractFormAttributesAndElements( form ) {
 		loader,
 		successContainer,
 		successElement,
-		errorElement,
+		// errorElement,
 		submitBtn,
 		siteKey,
 		recaptchaType,
@@ -369,7 +421,7 @@ function recaptchaCallback( token = '' ) {
 			loader,
 			successContainer,
 			successElement,
-			errorElement,
+			// errorElement,
 			submitBtn,
 			siteKey,
 			recaptchaType,
@@ -389,7 +441,7 @@ function recaptchaCallback( token = '' ) {
 						successUrl,
 						successContainer,
 						successElement,
-						errorElement,
+						// errorElement,
 						submitType,
 						afterSubmission
 					);
@@ -409,7 +461,7 @@ function recaptchaCallback( token = '' ) {
 						successUrl,
 						successContainer,
 						successElement,
-						errorElement,
+						// errorElement,
 						submitType,
 						afterSubmission
 					);
@@ -429,7 +481,7 @@ function recaptchaCallback( token = '' ) {
 				successUrl,
 				successContainer,
 				successElement,
-				errorElement,
+				// errorElement,
 				submitType,
 				afterSubmission
 			);

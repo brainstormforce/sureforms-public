@@ -387,6 +387,7 @@ class Generate_Form_Markup {
 				<?php if ( $honeypot_spam ) { ?>
 					<input type="hidden" value="" name="srfm-honeypot-field">
 				<?php } ?>
+				<p class="srfm-common-error-message srfm-error-message srfm-head-error" hidden="true"><?php echo esc_html__( 'There was an error trying to submit your form. Please try again.', 'sureforms' ); ?></p>
 				<?php
 
 				if ( $is_page_break ) {
@@ -480,7 +481,7 @@ class Generate_Form_Markup {
 						</div>
 					</div>
 				<?php } ?>
-				<p id="srfm-error-message" class="srfm-error-message" hidden="true"><?php echo esc_html__( 'There was an error trying to submit your form. Please try again.', 'sureforms' ); ?></p>
+				<p id="srfm-error-message" class="srfm-common-error-message srfm-error-message srfm-footer-error" hidden="true"><?php echo esc_html__( 'There was an error trying to submit your form. Please try again.', 'sureforms' ); ?></p>
 			</form>
 			<div class="srfm-single-form srfm-success-box in-page">
 				<div aria-live="polite" aria-atomic="true" role="alert" id="srfm-success-message-page-<?php echo esc_attr( Helper::get_string_value( $id ) ); ?>" class="srfm-success-box-description"></div>

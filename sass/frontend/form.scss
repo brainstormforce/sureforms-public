@@ -145,6 +145,24 @@
 				height: 100%;
 			}
 		}
+
+		p {
+			&.srfm-error-message {
+				line-height: var( --srfm-error-line-height );
+				color: var( --srfm-error-color );
+				font-size: var( --srfm-error-font-size );
+				font-weight: var( --srfm-error-font-weight );
+				margin: 0;
+			}
+
+			&.srfm-footer-error {
+				margin-top: var( --srfm-row-gap-between-blocks );
+			}
+
+			&.srfm-head-error {
+				margin-bottom: var( --srfm-row-gap-between-blocks );
+			}
+		}
 	}
 
 	.srfm-success-box {
