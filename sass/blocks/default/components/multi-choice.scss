@@ -17,7 +17,6 @@
 							box-shadow: none;
 							border-color: var( --srfm-color-input-border-hover );
 							background: var( --srfm-color-input-selected );
-
 							.srfm-multi-choice-icon {
 								opacity: 1;
 								width: var( --srfm-multi-choice-horizontal-svg-size );
@@ -39,6 +38,11 @@
 								}
 							}
 						}
+
+						&:focus + .srfm-block-content-wrap {
+							box-shadow: 0px 0px 0px 3px var( --srfm-color-input-border-focus-glow );
+							border-color: var( --srfm-color-input-border-hover );
+						}
 					}
 
 					.srfm-block-content-wrap {
@@ -47,8 +51,7 @@
 
 						&:hover {
 							border-color: var( --srfm-color-input-border-hover );
-							// hover background opacity different from existing common hover background opacity.
-							background-color: hsl( from var( --srfm-color-input-background ) h s l / 0.8 );
+							background-color: var( --srfm-color-input-background-hover );
 						}
 
 						&:disabled {
