@@ -158,19 +158,20 @@ function redirectToUrl( url ) {
 }
 
 /**
- * Displays an error message on the form in the specified position.
+ * Handles the display of an error message on the form at a specified position.
  *
- * This function is used to show an error message on a form when a submission fails.
- * It supports displaying the error message either at the header or footer of the form.
+ * This function is triggered by the `srfm_show_common_form_error` event and is responsible
+ * for showing an error message on the form. The error message can be displayed either
+ * at the header or footer of the form, based on the provided position.
  *
- * @param {Object}      args                     - Configuration options for displaying the error message.
- * @param {HTMLElement} args.form                - The form element where the error message will be displayed.
- * @param {string}      [args.message]           - The error message to display. Defaults to a generic error message.
- * @param {string}      [args.position='footer'] - The position where the error message should be displayed.
- *                                               Acceptable values are 'header' or 'footer'.
+ * @param {Event}       event                            - The custom event containing details for displaying the error message.
+ * @param {Object}      event.detail                     - The event detail object.
+ * @param {HTMLElement} event.detail.form                - The form element where the error message will be displayed.
+ * @param {string}      [event.detail.message]           - The error message to display. Defaults to a generic error message.
+ * @param {string}      [event.detail.position='footer'] - The position to display the error message ('header' or 'footer').
  */
-function showErrorMessage( args ) {
-	const { form, message = '', position = 'footer' } = args;
+function dispatchErrorEvent( event ) {
+	const { form, message = '', position = 'footer' } = event.detail || {};
 
 	if ( ! form ) {
 		return;
@@ -182,6 +183,7 @@ function showErrorMessage( args ) {
 			'There was an error trying to submit your form. Please try again.',
 			'sureforms'
 		);
+
 	const errorClass =
 		position === 'header' ? 'srfm-head-error' : 'srfm-footer-error';
 	const errorElement = form.querySelector(
@@ -192,12 +194,29 @@ function showErrorMessage( args ) {
 		errorElement.innerHTML = errorMessage;
 		errorElement.removeAttribute( 'hidden' );
 
-		// Scroll to the error message container, if enabled.
+		// Scroll to and focus on the error message container, if enabled.
 		handleScrollAndFocusOnError( {
 			firstErrorInput: errorElement,
 			scrollElement: errorElement,
 		} );
 	}
+}
+
+// Listen for the custom event
+document.addEventListener( 'srfm_show_common_form_error', dispatchErrorEvent );
+
+function showErrorMessage( args ) {
+	const { form, message = '', position = 'footer' } = args;
+
+	const errorEvent = new CustomEvent( 'srfm_show_common_form_error', {
+		detail: {
+			form,
+			message,
+			position,
+		},
+	} );
+
+	document.dispatchEvent( errorEvent );
 }
 
 function hideErrorMessage( form ) {
