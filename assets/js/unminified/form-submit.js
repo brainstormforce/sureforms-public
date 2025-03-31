@@ -235,6 +235,9 @@ async function handleFormSubmission(
 		}
 
 		const formStatus = await submitFormData( form );
+
+		console.log( 'formStatus', formStatus );
+
 		if ( formStatus?.success ) {
 			/**
 			 * Emit a function to signal the successful submission of a form.
@@ -279,11 +282,16 @@ async function handleFormSubmission(
 				afterSubmit( formStatus );
 			}
 		} else {
+
+			console.log( 'error from no catch', formStatus );
+
 			loader.classList.remove( 'srfm-active' );
 			showErrorMessage( errorElement );
 			loader.classList.remove( 'srfm-active' );
 		}
 	} catch ( error ) {
+		console.log( "error catch this", error);
+ 
 		// Create and dispatch a custom event
 		const event = new CustomEvent(
 			'srfm_on_trigger_form_submission_failure',

@@ -689,6 +689,12 @@ class Form_Submit {
 
 						$parsed = self::parse_email_notification_template( $submission_data, $item, $form_data );
 
+						// Filter the email data before the email is sent.
+						$parsed = apply_filters( 'srfm_email_notification', $parsed, $submission_data, $item, $form_data );
+
+						// Add action before sending email.
+						do_action( 'srfm_before_email_send', $parsed, $submission_data, $item, $form_data );
+
 						/**
 						 * Temporary override the content type for wp_mail.
 						 * This helps us from breaking of content type from other plugins.
@@ -747,6 +753,15 @@ class Form_Submit {
 								);
 							}
 						}
+
+						// Add action after sending email.
+						do_action(
+							'srfm_after_email_send',
+							$parsed,
+							$submission_data,
+							$item,
+							$form_data
+						);
 
 						$is_mail_sent = $sent;
 						$emails[]     = $parsed['to'];
