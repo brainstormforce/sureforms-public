@@ -650,6 +650,9 @@ class Form_Submit {
 		$headers        = "From: {$from}\r\n";
 		$headers       .= 'X-Mailer: PHP/' . phpversion() . "\r\n";
 		$headers       .= "Content-Type: text/html; charset=utf-8\r\n";
+		if ( isset( $item['from_email'] ) && ! empty( $item['from_email'] ) && ! is_array( $item['from_email'] ) ) {
+			$headers .=  'From: ' . $smart_tags->process_smart_tags( $item['from_name'], $submission_data ) . '<' . $smart_tags->process_smart_tags( $item['from_email'], $submission_data ) . '>' . "\r\n";
+		}
 		if ( isset( $item['email_reply_to'] ) && ! empty( $item['email_reply_to'] ) ) {
 			$headers .= 'Reply-To:' . $smart_tags->process_smart_tags( $item['email_reply_to'], $submission_data ) . "\r\n";
 		} else {
@@ -662,7 +665,7 @@ class Form_Submit {
 			$headers .= 'Bcc:' . $smart_tags->process_smart_tags( $item['email_bcc'], $submission_data ) . "\r\n";
 		}
 
-		return compact( 'to', 'subject', 'message', 'headers' );
+		return compact(  'to', 'subject', 'message', 'headers' );
 	}
 
 	/**

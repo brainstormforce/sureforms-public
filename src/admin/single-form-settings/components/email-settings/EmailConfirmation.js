@@ -25,6 +25,8 @@ const EmailConfirmation = ( props ) => {
 		email_bcc: data.email_bcc || '',
 		email_cc: data.email_cc || '',
 		email_body: data.email_body || '',
+		from_name: data.from_name || '{admin_name}',
+		from_email: data.from_email || '{admin_email}',
 	} );
 
 	const [ prevData, setPrevData ] = useState( {} ); // Previous saved data before making any changes.
@@ -67,7 +69,8 @@ const EmailConfirmation = ( props ) => {
 	useEffect( () => {
 		removeErrorClassIfNeeded( '.srfm-modal-email-to', formData.email_to );
 		removeErrorClassIfNeeded( '.srfm-modal-subject', dynamicSubject );
-	}, [ formData.email_to, dynamicSubject ] );
+		removeErrorClassIfNeeded( '.srfm-modal-from-email', formData.from_email );
+	}, [ formData.email_to, dynamicSubject, formData.from_email ] );
 
 	// Set previous data one time on component load.
 	useEffect( () => {
@@ -271,6 +274,112 @@ const EmailConfirmation = ( props ) => {
 							<h1 className="srfm-modal-email-advanced-fields-title">
 								{ __( 'Advanced Fields', 'sureforms' ) }
 							</h1>
+						<div className="srfm-modal-input-box"
+						style={{
+							marginBottom: '20px',
+						}}
+						>
+								<div className="srfm-modal-label">
+									<label htmlFor="srfm-email-notification-from-name">
+										{ __( 'From Name', 'sureforms' ) }
+									</label>
+								</div>
+								<input
+									id="srfm-email-notification-from-name"
+									onChange={ ( e ) =>
+										setFormData( {
+											...formData,
+											from_name: e.target.value,
+										} )
+									}
+									value={ formData.from_name }
+									className="srfm-modal-input"
+								/>
+								<SmartTagList
+								tagFor="emailConfirmation.fromName"
+								tagsArray={ [
+									{
+										tags: formSmartTags,
+										label: __(
+											'Form input tags',
+											'sureforms'
+										),
+									},
+									{
+										tags: genericSmartTags,
+										label: __(
+											'Generic tags',
+											'sureforms'
+										),
+									},
+								] }
+								// setTargetData={ ( tag ) =>
+								// 	setDynamicSubject( dynamicSubject + tag )
+								// }
+								setTargetData={ ( tag ) =>
+									setFormData( {
+										...formData,
+										from_name:
+											formData.from_name + tag,
+									} )
+								}
+							/>
+							</div>
+							<div className="srfm-modal-input-box"
+							style={{
+								marginBottom: '20px',
+							}}
+							>
+								<div className="srfm-modal-label">
+									<label htmlFor="srfm-email-notification-from-email">
+										{ __( 'From Email', 'sureforms' ) }
+									</label>
+									<span className="srfm-required"> *</span>
+								</div>
+								<input
+									id="srfm-email-notification-from-email"
+									onChange={ ( e ) =>
+									{
+										setFormData( {
+											...formData,
+											from_email: e.target.value,
+										} );
+										maybeRemoveRequiredError( e )
+									}}
+									value={ formData.from_email }
+									className="srfm-modal-input srfm-modal-from-email"
+								/>
+									<p className="components-base-control__help">{ __(
+									'Notifications can only use 1 From Email. Please do not enter multiple addresses.',
+									'sureforms'
+								) }</p>
+								<SmartTagList
+										tagFor="emailConfirmation.fromEmail"
+										tagsArray={ [
+											{
+												tags: formEmailSmartTags,
+												label: __(
+													'Form input tags',
+													'sureforms'
+												),
+											},
+											{
+												tags: genericEmailSmartTags,
+												label: __(
+													'Generic tags',
+													'sureforms'
+												),
+											},
+										] }
+										setTargetData={ ( tag ) =>
+											setFormData( {
+												...formData,
+												from_email:
+													formData.from_email + tag,
+											} )
+										}
+									/>
+							</div>
 							<div className="srfm-modal-email-advanced-fields-inner">
 								<div
 									className="srfm-modal-input-box"
