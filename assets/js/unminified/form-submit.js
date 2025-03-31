@@ -416,7 +416,6 @@ function recaptchaCallback( token = '' ) {
 			loader,
 			successContainer,
 			successElement,
-			// errorElement,
 			submitBtn,
 			siteKey,
 			recaptchaType,
