@@ -22,7 +22,6 @@ document.addEventListener( 'DOMContentLoaded', function () {
 			loader,
 			successContainer,
 			successElement,
-			// errorElement,
 			recaptchaType,
 			afterSubmission,
 			captchaErrorElement,
@@ -46,7 +45,6 @@ document.addEventListener( 'DOMContentLoaded', function () {
 				successUrl,
 				successContainer,
 				successElement,
-				// errorElement,
 				submitType,
 				afterSubmission,
 				hasCaptcha ? recaptchaType : undefined,
@@ -220,7 +218,6 @@ async function handleFormSubmission(
 	successUrl,
 	successContainer,
 	successElement,
-	// errorElement,
 	submitType,
 	afterSubmission,
 	recaptchaType,
@@ -372,7 +369,6 @@ function extractFormAttributesAndElements( form ) {
 	const successElement = successContainer?.querySelector(
 		'.srfm-success-box-description'
 	);
-	// const errorElement = form.querySelector( '.srfm-error-message' );
 	const submitBtn = form.querySelector( '#srfm-submit-btn' );
 	const afterSubmission = form.getAttribute( 'after-submission' );
 	const gcaptchaDiv = form.querySelector( '.g-recaptcha' );
@@ -391,7 +387,6 @@ function extractFormAttributesAndElements( form ) {
 		loader,
 		successContainer,
 		successElement,
-		// errorElement,
 		submitBtn,
 		siteKey,
 		recaptchaType,
@@ -441,7 +436,6 @@ function recaptchaCallback( token = '' ) {
 						successUrl,
 						successContainer,
 						successElement,
-						// errorElement,
 						submitType,
 						afterSubmission
 					);
@@ -461,7 +455,6 @@ function recaptchaCallback( token = '' ) {
 						successUrl,
 						successContainer,
 						successElement,
-						// errorElement,
 						submitType,
 						afterSubmission
 					);
@@ -481,7 +474,6 @@ function recaptchaCallback( token = '' ) {
 				successUrl,
 				successContainer,
 				successElement,
-				// errorElement,
 				submitType,
 				afterSubmission
 			);
