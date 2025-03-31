@@ -689,10 +689,10 @@ class Form_Submit {
 
 						$parsed = self::parse_email_notification_template( $submission_data, $item, $form_data );
 
-						// Filter the email data before the email is sent.
+						// Allow filtering of the email data before it is sent.
 						$parsed = apply_filters( 'srfm_email_notification', $parsed, $submission_data, $item, $form_data );
 
-						// Add action before sending email.
+						// Trigger an action before sending the email, allowing additional processing or logging.
 						do_action( 'srfm_before_email_send', $parsed, $submission_data, $item, $form_data );
 
 						/**
@@ -754,7 +754,7 @@ class Form_Submit {
 							}
 						}
 
-						// Add action after sending email.
+						// Trigger an action after the email is sent, allowing additional processing or logging.
 						do_action(
 							'srfm_after_email_send',
 							$parsed,
