@@ -69,7 +69,7 @@ class Admin {
 		add_filter( 'wpforms_current_user_can', [ $this, 'disable_wpforms_capabilities' ], 10, 3 );
 
 		// Update Astra's menu priority to show after Dashboard menu.
-		add_filter( 'astra_menu_priority', array( $this, 'update_admin_menu_position' ) );
+		add_filter( 'astra_menu_priority', [ $this, 'update_admin_menu_position' ] );
 	}
 
 	/**
@@ -874,7 +874,7 @@ class Admin {
 	 * @param int $menu_priority top level menu priority.
 	 * @since x.x.x
 	 */
-	public function update_admin_menu_position( $menu_priority ) {
+	public function update_admin_menu_position() {
 		return 2.1;
 	}
 }
