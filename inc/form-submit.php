@@ -720,6 +720,9 @@ class Form_Submit {
 		$is_mail_sent       = false;
 		$emails             = [];
 
+		// Filter to determine whether the email notification should be sent.
+		$email_notification = apply_filters( 'srfm_email_notification_should_send', $email_notification, $submission_data, $form_data );
+
 		if ( is_iterable( $email_notification ) ) {
 			$entries_db_instance = Entries::get_instance();
 			$log_key             = $entries_db_instance->add_log( __( 'Email notification passed to the sending server', 'sureforms' ) );
@@ -729,6 +732,12 @@ class Form_Submit {
 					if ( true === $item['status'] ) {
 
 						$parsed = self::parse_email_notification_template( $submission_data, $item, $form_data );
+
+						// Allow filtering of the email data before it is sent.
+						$parsed = apply_filters( 'srfm_email_notification', $parsed, $submission_data, $item, $form_data );
+
+						// Trigger an action before sending the email, allowing additional processing or logging.
+						do_action( 'srfm_before_email_send', $parsed, $submission_data, $item, $form_data );
 
 						/**
 						 * Temporary override the content type for wp_mail.
@@ -788,6 +797,15 @@ class Form_Submit {
 								);
 							}
 						}
+
+						// Trigger an action after the email is sent, allowing additional processing or logging.
+						do_action(
+							'srfm_after_email_send',
+							$parsed,
+							$submission_data,
+							$item,
+							$form_data
+						);
 
 						$is_mail_sent = $sent;
 						$emails[]     = $parsed['to'];
