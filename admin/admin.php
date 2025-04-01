@@ -870,12 +870,10 @@ class Admin {
 
 	/**
 	 * Update Astra's menu priority to show after Dashboard menu.
-	 * @param int $menu_priority top level menu priority.
 	 *
 	 * @since x.x.x
 	 */
-	public function update_admin_menu_position( $menu_priority ) {
-		$menu_priority = 2.1;
-		return $menu_priority;
+	public function update_admin_menu_position() {
+		return 2.1;
 	}
 }
