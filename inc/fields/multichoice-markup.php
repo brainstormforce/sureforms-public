@@ -118,27 +118,7 @@ class Multichoice_Markup extends Base {
 		$check_svg     = Helper::fetch_svg( $this->svg_type . '-checked', 'srfm-' . $this->slug . '-icon', 'aria-hidden="true"' );
 		$unchecked_svg = Helper::fetch_svg( $this->svg_type . '-unchecked', 'srfm-' . $this->slug . '-icon-unchecked', 'aria-hidden="true"' );
 
-		$allowed_tags_svg = [
-			'span' => [
-				'class'       => true,
-				'aria-hidden' => true,
-			],
-			'svg'  => [
-				'xmlns'   => true,
-				'width'   => true,
-				'height'  => true,
-				'viewBox' => true,
-				'fill'    => true,
-			],
-			'path' => [
-				'd'               => true,
-				'stroke'          => true,
-				'stroke-opacity'  => true,
-				'stroke-width'    => true,
-				'stroke-linecap'  => true,
-				'stroke-linejoin' => true,
-			],
-		];
+		$allowed_tags_svg = Helper::$allowed_tags_svg;
 
 		ob_start();
 		?>

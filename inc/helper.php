@@ -34,6 +34,33 @@ class Helper {
 	private static $srfm_svgs = null;
 
 	/**
+	 * Allowed HTML tags for SVG.
+	 *
+	 * @var array<string, array<string, bool>>
+	 */
+	public static $allowed_tags_svg = [
+		'span' => [
+			'class'       => true,
+			'aria-hidden' => true,
+		],
+		'svg'  => [
+			'xmlns'   => true,
+			'width'   => true,
+			'height'  => true,
+			'viewBox' => true,
+			'fill'    => true,
+		],
+		'path' => [
+			'd'               => true,
+			'stroke'          => true,
+			'stroke-opacity'  => true,
+			'stroke-width'    => true,
+			'stroke-linecap'  => true,
+			'stroke-linejoin' => true,
+		],
+	];
+
+	/**
 	 * Get common error message.
 	 *
 	 * @since 0.0.2

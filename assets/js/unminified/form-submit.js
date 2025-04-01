@@ -191,7 +191,9 @@ function dispatchErrorEvent( event ) {
 	);
 
 	if ( errorElement ) {
-		errorElement.innerHTML = errorMessage;
+		// errorElement.innerHTML = errorMessage;
+		errorElement.querySelector( '.srfm-error-content' ).innerHTML =
+			errorMessage;
 		errorElement.removeAttribute( 'hidden' );
 
 		// Scroll to and focus on the error message container, if enabled.

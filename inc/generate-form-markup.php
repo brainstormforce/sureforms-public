@@ -386,10 +386,9 @@ class Generate_Form_Markup {
 				<input type="hidden" value="<?php echo esc_attr( Helper::get_string_value( $is_page_break ) ); ?>" id="srfm-page-break">
 				<?php if ( $honeypot_spam ) { ?>
 					<input type="hidden" value="" name="srfm-honeypot-field">
-				<?php } ?>
-				<p class="srfm-common-error-message srfm-error-message srfm-head-error" hidden="true"><?php echo esc_html__( 'There was an error trying to submit your form. Please try again.', 'sureforms' ); ?></p>
-				<?php
-
+					<?php
+				}
+					self::common_error_message( 'head' );
 				if ( $is_page_break ) {
 					do_action( 'srfm_page_break_pagination', $post, $id );
 				} elseif ( ! apply_filters( 'srfm_use_custom_field_content', false ) ) {
@@ -482,8 +481,10 @@ class Generate_Form_Markup {
 						<?php do_action( 'srfm_after_submit_button', $id ); ?>
 						</div>
 					</div>
-				<?php } ?>
-				<p id="srfm-error-message" class="srfm-common-error-message srfm-error-message srfm-footer-error" hidden="true"><?php echo esc_html__( 'There was an error trying to submit your form. Please try again.', 'sureforms' ); ?></p>
+					<?php
+				}
+				self::common_error_message( 'footer' );
+				?>
 			</form>
 			<div class="srfm-single-form srfm-success-box in-page">
 				<div aria-live="polite" aria-atomic="true" role="alert" id="srfm-success-message-page-<?php echo esc_attr( Helper::get_string_value( $id ) ); ?>" class="srfm-success-box-description"></div>
@@ -494,6 +495,21 @@ class Generate_Form_Markup {
 			</div>
 		<?php
 		return ob_get_clean();
+	}
+
+	/**
+	 * Generate common error message markup
+	 *
+	 * @param string $position position of the error message.
+	 * @since x.x.x
+	 * @return void
+	 */
+	public static function common_error_message( $position = 'footer' ) {
+		$icon    = Helper::fetch_svg( 'info_circle', '', 'aria-hidden="true"' );
+		$classes = "srfm-common-error-message srfm-error-message srfm-{$position}-error";
+		?>
+		<p id="srfm-error-message" class="<?php echo esc_attr( $classes ); ?>" hidden="true"><?php echo wp_kses( $icon, Helper::$allowed_tags_svg ); ?><span class="srfm-error-content"><?php echo esc_html__( 'There was an error trying to submit your form. Please try again.', 'sureforms' ); ?></span></p>
+		<?php
 	}
 
 	/**

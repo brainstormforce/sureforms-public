@@ -261,7 +261,8 @@ class Form_Submit {
 		if ( ! $form_data['form-id'] ) {
 			wp_send_json_error(
 				[
-					'message' => __( 'Form Id is missing.', 'sureforms' ),
+					'message'  => __( 'Form Id is missing.', 'sureforms' ),
+					'position' => 'header',
 				]
 			);
 		}
