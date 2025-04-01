@@ -27,13 +27,6 @@ class Helper {
 	use Get_Instance;
 
 	/**
-	 * Sureforms SVGs.
-	 *
-	 * @var mixed srfm_svgs
-	 */
-	private static $srfm_svgs = null;
-
-	/**
 	 * Allowed HTML tags for SVG.
 	 *
 	 * @var array<string, array<string, bool>>
@@ -59,6 +52,13 @@ class Helper {
 			'stroke-linejoin' => true,
 		],
 	];
+
+	/**
+	 * Sureforms SVGs.
+	 *
+	 * @var mixed srfm_svgs
+	 */
+	private static $srfm_svgs = null;
 
 	/**
 	 * Get common error message.
