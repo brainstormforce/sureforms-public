@@ -999,6 +999,16 @@ function addEmailBlurListener( areaInput, blockClass ) {
 				? parentBlock.querySelector( '.srfm-email-confirm-block' )
 				: parentBlock.querySelector( '.srfm-email-block' );
 
+			const errorContainer = inputBlock.querySelector(
+				'.srfm-error-message'
+			);
+
+			// If the email field is empty, remove the error class and hide error message
+			if ( ! emailField.value ) {
+				errorContainer.style.display = 'none';
+				inputBlock.classList.remove( 'srfm-valid-email-error' );
+			}
+
 			// Handle email confirmation field validation
 			if ( emailField.classList.contains( 'srfm-input-email-confirm' ) ) {
 				const originalEmailField =
@@ -1012,6 +1022,7 @@ function addEmailBlurListener( areaInput, blockClass ) {
 				const originalEmailValue = originalEmailField.value;
 
 				if ( originalEmailValue !== emailField.value ) {
+					confirmErrorContainer.style.display = 'block';
 					confirmErrorContainer.textContent =
 						window?.srfm_submit?.messages?.srfm_confirm_email_same;
 					window?.srfm?.toggleErrorState( parentBlock, true );
@@ -1019,11 +1030,8 @@ function addEmailBlurListener( areaInput, blockClass ) {
 				}
 				window?.srfm?.toggleErrorState( parentBlock, false );
 				confirmErrorContainer.textContent = '';
+				confirmErrorContainer.style.display = 'none';
 			}
-
-			const errorContainer = inputBlock.querySelector(
-				'.srfm-error-message'
-			);
 
 			// Handle general email validation
 			if ( '' !== emailField?.value && ! isValidEmail ) {
