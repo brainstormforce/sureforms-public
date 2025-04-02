@@ -260,6 +260,8 @@ Yes! You can certainly use SureForms on yours as well as your client’s website
 When you use SureForms, you get an easy-to-use AI-powered form builder that can be used to build your forms fast.
 
 == Changelog ==
+= x.x.x =
+* Improvement: Enabled editing of the "Confirm Email" text for greater flexibility.
 = 1.4.4 - 27th March 2025 =
 * New: Introduced background styling for the form.
 * Improvement: Enhanced the SureForms branding color on instant form.
