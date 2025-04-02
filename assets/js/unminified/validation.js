@@ -1038,11 +1038,13 @@ function addEmailBlurListener( areaInput, blockClass ) {
 				inputBlock.parentElement.classList.add(
 					'srfm-valid-email-error'
 				);
+				errorContainer.style.display = 'block';
 				errorContainer.innerHTML =
 					window?.srfm_submit?.messages?.srfm_valid_email;
 				errorContainer.id =
 					errorContainer.getAttribute( 'data-srfm-id' );
 			} else {
+				errorContainer.style.display = 'none';
 				inputBlock.parentElement.classList.remove(
 					'srfm-valid-email-error'
 				);
