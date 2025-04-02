@@ -1,12 +1,13 @@
 @import "../utils/mixins.scss";
 
 .srfm-form-container {
-	&.srfm-has-dark-bg {
-		// We are treating these colors as static here because it will be the fixed color as suggested in Figma.
-		--srfm-error-color: #f87171;
-		--srfm-error-color-border: hsl( from var( --srfm-error-color ) h s l / 0.65 );
-		--srfm-error-color-border-glow: hsl( from var( --srfm-error-color ) h s l / 0.15 );
-	}
+	/**
+	* Removed .srfm-has-dark-bg class and it's associated css which had error color variables.
+	* The class had static variables for error message color which were used in dark mode.
+	* Since we introduced customization for error color, there is no need for this variables.
+	*
+	* @deprecated x.x.x
+	*/
 
 	.srfm-form {
 		display: flex;
