@@ -55,7 +55,6 @@ const EmailNotification = ( {
 		email_to = email_to.trim();
 		subject = subject.trim();
 
-
 		if ( ! email_to ) {
 			document
 				.querySelector( '.srfm-modal-email-to' )
