@@ -183,7 +183,11 @@ const Range = ( props ) => {
 								] }
 								setAttributes={ props?.setAttributes }
 								isFormSpecific={ props?.isFormSpecific }
-								value={ props?.value }
+								isValueArray={ true }
+								value={ [
+									props?.value,
+									props.displayUnit ? props.unit.value : '',
+								] }
 							/>
 						) }
 						{ props.displayUnit && (

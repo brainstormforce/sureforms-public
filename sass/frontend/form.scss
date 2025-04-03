@@ -5,7 +5,10 @@
 	position: relative;
 	padding: 0;
 	height: 100%;
-	padding: 32px;
+	// Form Container Padding.
+	@include srfm-form-padding-styles;
+	// Form Container Border Radius.
+	@include srfm-form-border-radius-styles;
 
 	@include srfm-background-control-styles;
 
@@ -70,18 +73,8 @@
 	}
 
 	.srfm-form {
-		.srfm-block-single,
-		.srfm-submit-container,
-		.uagb-block
-		// .srfm-captcha-container:not( .srfm-submit-button, .srfm-custom-button )
-		{
-			padding: 0 0.5em;
-		}
-
 		.srfm-captcha-container {
 			width: 100%;
-			padding: 0 var( --srfm-col-gap-between-blocks ) !important;
-			margin-bottom: var( --srfm-row-gap-between-blocks );
 
 			// Adding a default fixed height to the h-captcha container to manage the error spacing.
 			.h-captcha {
