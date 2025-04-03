@@ -230,7 +230,7 @@ class Admin_Ajax {
 			wp_send_json_error(
 				[
 					'code'    => 'invalid_secret_key',
-					'message' => __( 'SureTriggers is not configured properly.', 'sureforms' ),
+					'message' => __( 'OttoKit is not configured properly.', 'sureforms' ),
 				]
 			);
 		}
