@@ -1034,7 +1034,7 @@ function addEmailBlurListener( areaInput, blockClass ) {
 			}
 
 			// Handle general email validation
-			if ( ! isValidEmail ) {
+			if ( '' !== emailField?.value && ! isValidEmail ) {
 				inputBlock.parentElement.classList.add(
 					'srfm-valid-email-error'
 				);
