@@ -41,7 +41,7 @@ const SubmitButton = ( props ) => {
 		};
 	}, [] );
 
-	return <button className="srfm-submit-richtext srfm-button srfm-submit-button srfm-btn-alignment srfm-btn-bg-color" ref={ buttonElement }>
+	return <button className="srfm-submit-richtext srfm-button srfm-submit-button srfm-btn-alignment" ref={ buttonElement }>
 		<RichText
 			tagName="label"
 			value={ labelText }

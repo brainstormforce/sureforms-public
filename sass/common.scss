@@ -72,25 +72,6 @@ button.srfm-toolbar-width-setting-button {
 		max-width: 100%;
 	}
 
-	.srfm-button {
-		padding: var( --srfm-btn-padding ) !important;
-		font-size: var( --srfm-btn-font-size ) !important;
-		font-weight: var( --srfm-btn-font-weight ) !important;
-		line-height: var( --srfm-btn-line-height ) !important;
-		border-radius: var( --srfm-btn-border-radius ) !important;
-		background: var( --srfm-color-scheme-primary ) !important;
-		color: var( --srfm-color-scheme-text-on-primary ) !important;
-		border: 1px solid var( --srfm-color-scheme-primary ) !important;
-
-		&:hover {
-			background: var( --srfm-btn-color-hover ) !important;
-		}
-
-		&:focus {
-			box-shadow: 0px 0px 0px 3px var( --srfm-color-input-border-focus-glow );
-		}
-	}
-
 	.srfm-submit-button {
 		cursor: pointer;
 	}
@@ -107,7 +88,6 @@ button.srfm-toolbar-width-setting-button {
 		justify-content: flex-end;
 		.srfm-button {
 			margin: var( --srfm-input-field-margin );
-			padding: 9px 0px !important;
 		}
 		&.srfm-block {
 			height: auto;
@@ -270,6 +250,28 @@ button.srfm-toolbar-width-setting-button {
 				pointer-events: none;
 				user-select: none;
 			}
+		}
+	}
+}
+
+.editor-styles-wrapper,
+.srfm-form-container {
+	.srfm-button {
+		padding: var( --srfm-btn-padding );
+		font-size: var( --srfm-btn-font-size );
+		font-weight: var( --srfm-btn-font-weight );
+		line-height: var( --srfm-btn-line-height );
+		border-radius: var( --srfm-btn-border-radius );
+		background: var( --srfm-color-scheme-primary );
+		color: var( --srfm-color-scheme-text-on-primary );
+		border: 1px solid var( --srfm-color-scheme-primary );
+
+		&:hover {
+			background: var( --srfm-btn-color-hover );
+		}
+
+		&:focus {
+			box-shadow: 0px 0px 0px 3px var( --srfm-color-input-border-focus-glow );
 		}
 	}
 }

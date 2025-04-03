@@ -14,7 +14,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { useDeviceType } from '@Controls/getPreviewType';
 import { getStylePanels } from '@Components/hooks';
-import { addStyleInRoot } from '@Utils/Helpers';
+import { addStyleInRoot, getGradientCSS } from '@Utils/Helpers';
 import { chevronDown } from '@wordpress/icons';
 import PremiumBadge from '@Admin/components/PremiumBadge';
 import Background from '@Components/enhanced-background';
@@ -190,7 +190,6 @@ function StyleSettings( props ) {
 			'srfm-button',
 			'srfm-submit-button',
 			'srfm-btn-alignment',
-			'srfm-btn-bg-color',
 		];
 		const btnClass =
 			sureformsKeys?._srfm_inherit_theme_button &&
@@ -512,13 +511,6 @@ function StyleSettings( props ) {
 		return cssProperties;
 	}
 
-	function getGradientCSS( type = 'linear', color1 = '#FFC9B2', color2 = '#C7CBFF', loc1 = 0, loc2 = 100, angle = 90 ) {
-		if ( type === 'radial' ) {
-			return `radial-gradient(${ color1 } ${ loc1 }%, ${ color2 } ${ loc2 }% )`;
-		}
-		return `linear-gradient( ${ angle }deg, ${ color1 } ${ loc1 }%, ${ color2 } ${ loc2 }%)`;
-	}
-
 	/**
 	 * Updates the editor's background and overlay classes based on the selected types.
 	 *
@@ -597,7 +589,6 @@ function StyleSettings( props ) {
 							label: 'bg_image_size_custom_unit',
 						} }
 						// Gradient Properties
-						gradientOverlay={ { value: true } }
 						gradientType={ {
 							value: gradient_type || 'basic',
 							label: 'gradient_type',
@@ -913,12 +904,14 @@ function StyleSettings( props ) {
 			content: fields,
 			initialOpen: false,
 		},
-		{
-			panelId: 'button',
-			title: __( 'Button', 'sureforms' ),
-			content: button,
-			initialOpen: false,
-		},
+		...( button.some( ( setting ) => setting.component ) ? [
+			{
+				panelId: 'button',
+				title: __( 'Button', 'sureforms' ),
+				content: button,
+				initialOpen: false,
+			},
+		] : [] ),
 	];
 
 	const enhancedStylePanels = getStylePanels( baseStylePanels, { props } );

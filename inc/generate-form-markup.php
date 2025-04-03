@@ -140,7 +140,7 @@ class Generate_Form_Markup {
 				$overlay_size                = $bg_overlay_custom_size . $bg_overlay_custom_size_unit;
 			}
 
-			$background_classes = apply_filters( 'srfm_add_background_classes', Helper::get_background_classes( $bg_type, $overlay_type, $bg_image ) );
+			$background_classes = apply_filters( 'srfm_add_background_classes', Helper::get_background_classes( $bg_type, $overlay_type, $bg_image ), $id );
 
 			$form_classes = [
 				'srfm-form-container',
@@ -463,11 +463,12 @@ class Generate_Form_Markup {
 					if ( $is_page_break ) {
 						do_action( 'srfm_page_break_btn', $id );
 					}
+					$srfm_button_classes = apply_filters( 'srfm_add_button_classes', [ '1' === $btn_from_theme ? 'wp-block-button__link' : 'srfm-btn-frontend srfm-button srfm-submit-button', 'v3-reCAPTCHA' === $recaptcha_version ? ' g-recaptcha' : '' ] );
 					?>
 
 					<div class="srfm-submit-container <?php echo esc_attr( $is_page_break ? 'srfm-hide' : '' ); ?>">
-						<div style="width: <?php echo esc_attr( $full ? '100%' : '' ); ?>; text-align: <?php echo esc_attr( $submit_button_alignment ); ?>" class="wp-block-button">
-						<button style="width:<?php echo esc_attr( $full ? '100%;' : '' ); ?>" id="srfm-submit-btn"class="<?php echo esc_attr( '1' === $btn_from_theme ? 'wp-block-button__link' : 'srfm-btn-frontend srfm-button srfm-submit-button' ); ?><?php echo 'v3-reCAPTCHA' === $recaptcha_version ? ' g-recaptcha' : ''; ?>"
+						<div style="<?php echo esc_attr( $full ? 'width: 100%; ' : '' ); ?>text-align: <?php echo esc_attr( $submit_button_alignment ); ?>;" class="wp-block-button">
+						<button style="<?php echo esc_attr( $full ? 'width: 100%;' : '' ); ?>" id="srfm-submit-btn" class="<?php echo esc_attr( implode( ' ', array_filter( $srfm_button_classes ) ) ); ?>"
 						<?php if ( 'v3-reCAPTCHA' === $recaptcha_version ) { ?>
 							data-callback="recaptchaCallback"
 							recaptcha-type="<?php echo esc_attr( $recaptcha_version ); ?>"
