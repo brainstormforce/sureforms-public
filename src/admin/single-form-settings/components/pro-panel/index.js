@@ -33,51 +33,30 @@ const iconBlocks = [
 	{
 		icon: <MdOutlineCalendarMonth size={ 24 } color="#B4B4B4" />,
 		label: __( 'Date Picker', 'sureforms' ),
-		showIn: [
-			'free',
-		],
 	},
 	{
 		icon: <MdAccessTime size={ 24 } color="#B4B4B4" />,
 		label: __( 'Time Picker', 'sureforms' ),
-		showIn: [
-			'free',
-		],
 	},
 	{
 		icon: <FaRegEyeSlash size={ 24 } color="#B4B4B4" />,
 		label: __( 'Hidden', 'sureforms' ),
-		showIn: [
-			'free',
-		],
 	},
 	{
 		icon: <RxSlider size={ 24 } color="#B4B4B4" />,
 		label: __( 'Slider', 'sureforms' ),
-		showIn: [
-			'free',
-		],
 	},
 	{
 		icon: <MdOutlineInsertPageBreak size={ 24 } color="#B4B4B4" />,
 		label: __( 'Page Break', 'sureforms' ),
-		showIn: [
-			'free',
-		],
 	},
 	{
 		icon: <MdOutlineStarBorder size={ 24 } color="#B4B4B4" />,
 		label: __( 'Rating', 'sureforms' ),
-		showIn: [
-			'free',
-		],
 	},
 	{
 		icon: <MdOutlineCloudUpload size={ 24 } color="#B4B4B4" />,
 		label: __( 'Upload', 'sureforms' ),
-		showIn: [
-			'free',
-		],
 	},
 	{
 		icon: <FaFileSignature size={ 24 } color="#B4B4B4" />,
@@ -91,6 +70,12 @@ const iconBlocks = [
 
 const filterIconBlocks = iconBlocks.filter( ( block ) => {
 	const srfmProduct = srfm_block_data?.pro_plugin_name.split( ' ' )[ 1 ]?.toLowerCase();
+
+	if ( ! block.showIn ) {
+		block.showIn = [
+			'free',
+		];
+	}
 
 	// if current package is mathcing with the block package, add the block to the list.
 	switch ( srfmProduct ) {
