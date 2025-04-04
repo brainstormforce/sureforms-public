@@ -156,6 +156,11 @@
 						@include srfm-dropdown-styles;
 						color: var( --srfm-dropdown-option-text-color );
 						.option {
+							// Add 4px gap between the options except the last one.
+							// This is to distinguish between the options when selected.
+							&:not( :last-child ) {
+								margin-bottom: 4px;
+							}
 							display: flex;
 							align-items: center;
 							border-radius: 4px;
