@@ -86,12 +86,7 @@ const handleImportForm = () => {
 			if ( ! response?.success ) {
 				throw new Error( `HTTP error! Status: ${ response.status }` );
 			}
-			const importError = document.querySelector( '#srfm-import-error' );
-			if ( importError ) {
-				importError.style.display = 'none';
-			}
 			window.location.reload();
-			return response;
 		} )
 		.catch( ( e ) => {
 			const importError = document.querySelector( '#srfm-import-error' );
