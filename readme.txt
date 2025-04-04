@@ -262,6 +262,7 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 == Changelog ==
 = x.x.x = 
 * Fix: Resolved issue where an optional email field blocked form submission after clearing input.
+* Fix: Resolved import issue for Bedrock and similar setups.
 = 1.4.4 - 27th March 2025 =
 * New: Introduced background styling for the form.
 * Improvement: Enhanced the SureForms branding color on instant form.
