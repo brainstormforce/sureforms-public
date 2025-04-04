@@ -5,6 +5,7 @@
  * @package sureforms
  * @since x.x.x
  */
+
 namespace SRFM\Inc\Compatibility\Themes;
 
 use SRFM\Inc\Traits\Get_Instance;
@@ -30,15 +31,15 @@ class Astra_Compatibility {
 		add_filter( 'astra_menu_priority', [ $this, 'update_admin_menu_position' ] );
     }
 
-	/**
-	 * Update Astra's menu priority to show after Dashboard menu.
+    /**
+     * Update Astra's menu priority to show after Dashboard menu.
      * Checks for existing menu items and assigns a new priority to Astra's menu item.
      * Decreases the priority by 0.1 until it finds a unique value.
-	 * If astra priority becomes less than dashboard priority set it to 2 by default.
+     * If astra priority becomes less than dashboard priority, set it to 2 by default.
      *
-	 * @since x.x.x
-	 */
-    public function update_admin_menu_position() {
+     * @since x.x.x
+     */
+    public function update_admin_menu_position(): float {
         global $menu;
 
         $dashboard_priority = null;

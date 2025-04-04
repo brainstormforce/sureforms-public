@@ -19,6 +19,7 @@ use SRFM\Inc\AI_Form_Builder\AI_Helper;
 use SRFM\Inc\AI_Form_Builder\Field_Mapping;
 use SRFM\Inc\Background_Process;
 use SRFM\Inc\Blocks\Register;
+use SRFM\Inc\Compatibility\Themes\Astra_Compatibility;
 use SRFM\Inc\Create_New_Form;
 use SRFM\Inc\Database\Register as DatabaseRegister;
 use SRFM\Inc\Events_Scheduler;
@@ -39,7 +40,6 @@ use SRFM\Inc\Rest_Api;
 use SRFM\Inc\Single_Form_Settings\Compliance_Settings;
 use SRFM\Inc\Smart_Tags;
 use SRFM\Inc\Updater;
-use SRFM\Inc\Compatibility\Themes\Astra_Compatibility;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
