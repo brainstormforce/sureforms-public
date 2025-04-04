@@ -138,7 +138,7 @@ button.srfm-toolbar-width-setting-button {
 	}
 
 	.srfm-block {
-		padding: 0;
+		padding: 0 var( --srfm-col-gap-between-blocks ) !important;
 		margin-bottom: var( --srfm-row-gap-between-blocks );
 		.srfm-block-label,
 		.srfm-block-legend {
