@@ -6,7 +6,9 @@ import {
 	MdOutlineCloudUpload,
 	MdAccessTime,
 } from 'react-icons/md';
-import { FaSignature, FaRegEyeSlash } from 'react-icons/fa';
+import { FaRegEyeSlash } from 'react-icons/fa';
+import svgIcons from '@Svg/svgs.json';
+import parse from 'html-react-parser';
 import { RxSlider } from 'react-icons/rx';
 import { addQueryParam } from '@Utils/Helpers';
 
@@ -59,7 +61,7 @@ const iconBlocks = [
 		label: __( 'Upload', 'sureforms' ),
 	},
 	{
-		icon: <FaSignature size={ 24 } color="#B4B4B4" />,
+		icon: parse( svgIcons.signature ),
 		label: __( 'Signature', 'sureforms' ),
 		showIn: [
 			'free',
