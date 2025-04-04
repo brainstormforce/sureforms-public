@@ -391,6 +391,19 @@ export const addQueryParam = ( url, paramValue, paramKey = 'utm_medium' ) => {
 	}
 };
 
+/**
+ * Check if the given element is a valid React element.
+ *
+ * @param {Object} element - The element to check.
+ * @return {boolean} Returns true if the element is a valid React element, otherwise returns false.
+ */
+export const isValidReactElement = ( element ) => {
+	if ( ! element || typeof element !== 'object' ) {
+		return false;
+	}
+	return Symbol.for( 'react.element' ) === element.$$typeof;
+};
+
 // Add the CSS properties to the root element.
 export const addStyleInRoot = ( root, cssProperties ) => {
 	if ( Object.keys( cssProperties ).length > 0 ) {
