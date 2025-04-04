@@ -69,14 +69,13 @@ function handleFileChange( event ) {
 }
 
 const handleImportForm = () => {
-	if ( ! data ) {
+	if ( ! data || ! srfm_export?.srfm_import_endpoint ) {
 		return;
 	}
-	const site_url = srfm_export.site_url;
-	const endpoint = srfm_export.srfm_import_endpoint;
-	const path = site_url + endpoint;
-	fetch( path, {
+
+	wp.apiFetch( {
 		method: 'POST',
+		path: srfm_export.srfm_import_endpoint,
 		body: JSON.stringify( data ),
 		headers: {
 			'Content-Type': 'application/json',
@@ -84,8 +83,7 @@ const handleImportForm = () => {
 		},
 	} )
 		.then( ( response ) => {
-			console.log( { response } );
-			if ( ! response.ok ) {
+			if ( ! response?.success ) {
 				throw new Error( `HTTP error! Status: ${ response.status }` );
 			}
 			const importError = document.querySelector( '#srfm-import-error' );
