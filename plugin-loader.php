@@ -39,6 +39,7 @@ use SRFM\Inc\Rest_Api;
 use SRFM\Inc\Single_Form_Settings\Compliance_Settings;
 use SRFM\Inc\Smart_Tags;
 use SRFM\Inc\Updater;
+use SRFM\Inc\Compatibility\Themes\Astra_Compatibility;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -290,6 +291,7 @@ class Plugin_Loader {
 		AI_Auth::get_instance();
 		Updater::get_instance();
 		DatabaseRegister::init();
+		Astra_Compatibility::get_instance();
 		/**
 		 * Required to add the if check for the class existence to resolve phpstan error,
 		 * as the phpstan configuration ignores the inc/lib directory which gives error

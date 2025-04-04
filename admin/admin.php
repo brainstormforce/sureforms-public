@@ -67,9 +67,6 @@ class Admin {
 		// Add action links to the plugin page.
 		add_filter( 'plugin_action_links_' . SRFM_BASENAME, [ $this, 'add_action_links' ] );
 		add_filter( 'wpforms_current_user_can', [ $this, 'disable_wpforms_capabilities' ], 10, 3 );
-
-		// Update Astra's menu priority to show after Dashboard menu.
-		add_filter( 'astra_menu_priority', [ $this, 'update_admin_menu_position' ] );
 	}
 
 	/**
@@ -866,14 +863,5 @@ class Admin {
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$post_type = $post_id ? get_post_type( $post_id ) : sanitize_text_field( wp_unslash( $_REQUEST['post_type'] ?? '' ) );
 		return SRFM_FORMS_POST_TYPE === $post_type ? false : $user_can;
-	}
-
-	/**
-	 * Update Astra's menu priority to show after Dashboard menu.
-	 *
-	 * @since x.x.x
-	 */
-	public function update_admin_menu_position() {
-		return 2.1;
 	}
 }
