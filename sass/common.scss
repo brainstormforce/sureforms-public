@@ -165,14 +165,6 @@ button.srfm-toolbar-width-setting-button {
 		}
 	}
 
-	[data-type="srfm/advanced-heading"],
-	[data-type="srfm/separator"],
-	[data-type="srfm/image"],
-	[data-type="srfm/icon"]
-	{
-		margin-bottom: var(--srfm-row-gap-between-blocks);
-	}
-
 	//checkbox and gdpr common styles
 	.srfm-checkbox-block,
 	.srfm-gdpr-block {
