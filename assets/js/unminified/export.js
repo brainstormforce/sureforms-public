@@ -75,7 +75,7 @@ const handleImportForm = () => {
 
 	wp.apiFetch( {
 		method: 'POST',
-		path: srfm_export.srfm_import_endpoint,
+		path: '/sureforms/v1/sureforms_import',
 		body: JSON.stringify( data ),
 		headers: {
 			'Content-Type': 'application/json',
