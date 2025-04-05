@@ -69,7 +69,7 @@ function handleFileChange( event ) {
 }
 
 const handleImportForm = () => {
-	if ( ! data || ! srfm_export?.srfm_import_endpoint ) {
+	if ( ! data ) {
 		return;
 	}
 
