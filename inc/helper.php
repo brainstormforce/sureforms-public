@@ -627,7 +627,7 @@ class Helper {
 			}
 			$label                = explode( '-lbl-', $key )[1];
 			$slug                 = implode( '-', array_slice( explode( '-', $label ), 1 ) );
-			$mapped_data[ $slug ] = $value;
+			$mapped_data[ $slug ] = is_string( $value ) ? html_entity_decode( esc_attr( $value ) ) : $value;
 		}
 		return $mapped_data;
 	}
