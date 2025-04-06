@@ -1,6 +1,7 @@
 @import "./blocks/default/utils/mixins.scss";
 
 button.srfm-toolbar-width-setting-button {
+	width: max-content !important;
 	&:before {
 		display: none !important;
 	}
