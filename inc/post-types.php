@@ -1028,52 +1028,54 @@ class Post_Types {
 		add_filter( 'wpseo_metabox_prio', '__return_false' );
 
 		// Restrict AIOSEO columns.
-		// add_filter( 'aioseo_public_post_types', [ $this, 'unset_sureforms_post_type' ] );
 		$this->restrict_in_aioseo_plugin();
 	}
 
 	/**
-	 * Restrict unwanted insertions.
+	 * Restrict unwanted insertions from the AIOSEO plugin.
+	 *
+	 * This method ensures that the SureForms post type is excluded from AIOSEO's
+	 * public post types unless the current page is related to AIOSEO settings.
 	 *
 	 * @return void
 	 * @since x.x.x
 	 */
 	public function restrict_in_aioseo_plugin() {
-		// if AIOSEO_DIR defained it means AIOSEO is installed.
-		if( ! defined( 'AIOSEO_DIR' ) ) {
+		/**
+		 * Checks if the AIOSEO plugin is installed and excludes the SureForms post type from AIOSEO's public post types.
+		 *
+		 * - Verifies the presence of the AIOSEO_DIR constant to ensure AIOSEO is installed.
+		 * - Allows AIOSEO functionality on its own settings pages by checking the `REQUEST_URI` and `page` query parameter.
+		 * - Excludes the SureForms post type from AIOSEO's public post types using the `aioseo_public_post_types` filter.
+		 *
+		 * Security Note:
+		 * - The `$_SERVER['REQUEST_URI']` and `$_GET['page']` variables are sanitized using `sanitize_text_field` and `wp_unslash`.
+		 * - Nonce verification is intentionally skipped (`phpcs:ignore WordPress.Security.NonceVerification.Recommended`)
+		 *   because this code is only performing a read operation to check the current request URI and query parameters.
+		 *   It does not modify or process sensitive data, making nonce verification unnecessary in this context.
+		 */
+		// Check if AIOSEO is installed by verifying the AIOSEO_DIR constant.
+		if ( ! defined( 'AIOSEO_DIR' ) ) {
 			return;
 		}
 
-		// Get the page id of the SureForms menu.
+		$server = $_SERVER; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$get    = $_GET; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 
-		// admin.php?page=aioseo-social-networks#/facebook
-
-		// If page is admin.php and GET['page'] is has contained 'aioseo' then filter should not work.
-		
-		// admin.php 
-		if ( isset( $_SERVER['REQUEST_URI'] ) && strpos( $_SERVER['REQUEST_URI'], 'admin.php' ) !== false ) {
-			// Check if the page is aioseo.
-			if ( isset( $_GET['page'] ) && strpos( $_GET['page'], 'aioseo' ) !== false ) {
-				return;
+		// Allow AIOSEO functionality on its own settings pages.
+		if ( isset( $server['REQUEST_URI'] ) ) {
+			$request_uri = sanitize_text_field( wp_unslash( $server['REQUEST_URI'] ) );
+			if ( strpos( $request_uri, 'admin.php' ) !== false ) {
+				if ( isset( $get['page'] ) ) {
+					$page = sanitize_text_field( wp_unslash( $get['page'] ) );
+					if ( strpos( $page, 'aioseo' ) !== false ) {
+						return;
+					}
+				}
 			}
 		}
 
-		add_filter( 'aioseo_public_post_types', [ $this, 'unset_sureforms_post_type_2' ] );
-	}
-
-	public function unset_sureforms_post_type_2( $post_types ) {
-		$return =  array_filter(
-			$post_types,
-			static function( $post_type ) {
-
-				if ( is_array( $post_type ) && isset( $post_type['name'] ) ) {
-					return SRFM_FORMS_POST_TYPE !== $post_type['name'];
-				}
-				
-				return SRFM_FORMS_POST_TYPE !== $post_type;
-			}
-		);
-
-		return $return;
+		// Exclude the SureForms post type from AIOSEO's public post types.
+		add_filter( 'aioseo_public_post_types', [ $this, 'unset_sureforms_post_type' ] );
 	}
 }
