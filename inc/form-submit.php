@@ -641,25 +641,19 @@ class Form_Submit {
 	public static function parse_email_notification_template( $submission_data, $item, $form_data = [] ) {
 		$smart_tags = Smart_Tags::get_instance();
 
-		$from           = Helper::get_string_value( get_option( 'admin_email' ) );
 		$to             = $smart_tags->process_smart_tags( $item['email_to'], $submission_data );
 		$subject        = $smart_tags->process_smart_tags( $item['subject'], $submission_data, $form_data );
 		$email_body     = $smart_tags->process_smart_tags( $item['email_body'], $submission_data, $form_data );
 		$email_template = new Email_Template();
 		$message        = $email_template->render( $submission_data, $email_body );
-		$headers        = "From: {$from}\r\n";
-		$headers       .= 'X-Mailer: PHP/' . phpversion() . "\r\n";
+		$headers       = 'X-Mailer: PHP/' . phpversion() . "\r\n";
 		$headers       .= "Content-Type: text/html; charset=utf-8\r\n";
 
-		$from_name  = ! empty( $item['from_name'] ) ? Helper::get_string_value( $item['from_name'] ) : '{site_title}';
-		$from_email = ! empty( $item['from_email'] ) ? Helper::get_string_value( $item['from_email'] ) : '{admin_email}';
-
-		$headers .= 'From: ' . $smart_tags->process_smart_tags( $from_name, $submission_data ) . '<' . $smart_tags->process_smart_tags( $from_email, $submission_data ) . '>' . "\r\n";
+		// Add the From: to the headers.
+		$headers .= self::add_from_data_in_header( $submission_data, $item, $smart_tags );
 
 		if ( isset( $item['email_reply_to'] ) && ! empty( $item['email_reply_to'] ) ) {
 			$headers .= 'Reply-To:' . $smart_tags->process_smart_tags( $item['email_reply_to'], $submission_data ) . "\r\n";
-		} else {
-			$headers .= "Reply-To: {$from}\r\n";
 		}
 		if ( isset( $item['email_cc'] ) && ! empty( $item['email_cc'] ) ) {
 			$headers .= 'Cc:' . $smart_tags->process_smart_tags( $item['email_cc'], $submission_data ) . "\r\n";
@@ -669,6 +663,21 @@ class Form_Submit {
 		}
 
 		return compact(  'to', 'subject', 'message', 'headers' );
+	}
+
+	/**
+	 * Add From email header.
+	 *
+	 * @param array<mixed> $submission_data Submission data.
+	 * @param array<string> $item An associative array containing email settings, such as 'email_to', 'subject', 'email_body', and optional headers like 'email_reply_to', 'email_cc', and 'email_bcc'.
+	 * @param Smart_Tags   $smart_tags Smart Tags instance.
+	 * @since x.x.x
+	 * @return string The formatted "From" email header.
+	 */
+	private static function add_from_data_in_header( $submission_data, $item, $smart_tags ) {
+		$from_name  = is_array( $item ) && ! empty( $item['from_name'] ) ? Helper::get_string_value( $item['from_name'] ) : '{site_title}';
+		$from_email = is_array( $item ) && ! empty( $item['from_email'] ) ? Helper::get_string_value( $item['from_email'] ) : '{admin_email}';
+		return 'From: ' . $smart_tags->process_smart_tags( $from_name, $submission_data ) . ' <' . $smart_tags->process_smart_tags( $from_email, $submission_data ) . '>' . "\r\n";
 	}
 
 	/**

@@ -226,6 +226,7 @@ class Gutenberg_Hooks {
 				'form_selector_nonce'               => current_user_can( 'edit_posts' ) ? wp_create_nonce( 'wp_rest' ) : '',
 				'is_admin_user'                     => current_user_can( 'manage_options' ),
 				'site_url'                          => parse_url(get_site_url(), PHP_URL_HOST),
+				'is_suremails_active' 			    => is_plugin_active( 'suremails/suremails.php' ),
 			]
 		);
 
