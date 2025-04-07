@@ -35,6 +35,6 @@ define( 'SRFM_AI_MIDDLEWARE', 'https://credits.startertemplates.com/sureforms/' 
 define( 'SRFM_BILLING_PORTAL', 'https://billing.sureforms.com/' );
 define( 'SRFM_PRO_RECOMMENDED_VER', '1.4.3' );
 
-define( 'SRFM_SURETRIGGERS_INTEGRATION_BASE_URL', 'https://app.suretriggers.com/' );
+define( 'SRFM_SURETRIGGERS_INTEGRATION_BASE_URL', 'https://app.ottokit.com/' );
 
 require_once 'plugin-loader.php';
