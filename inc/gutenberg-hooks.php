@@ -225,8 +225,8 @@ class Gutenberg_Hooks {
 				'srfm_default_dynamic_block_option' => get_option( 'srfm_default_dynamic_block_option', Helper::default_dynamic_block_option() ),
 				'form_selector_nonce'               => current_user_can( 'edit_posts' ) ? wp_create_nonce( 'wp_rest' ) : '',
 				'is_admin_user'                     => current_user_can( 'manage_options' ),
-				'site_url'                          => parse_url(get_site_url(), PHP_URL_HOST),
-				'is_suremails_active' 			    => is_plugin_active( 'suremails/suremails.php' ),
+				'site_url'                          => parse_url( get_site_url(), PHP_URL_HOST ),
+				'is_suremails_active'               => is_plugin_active( 'suremails/suremails.php' ),
 			]
 		);
 

@@ -699,10 +699,10 @@ class Post_Types {
 								'email_reply_to' => [
 									'type' => 'string',
 								],
-								'from_name'       => [
+								'from_name'      => [
 									'type' => 'string',
 								],
-								'from_email'       => [
+								'from_email'     => [
 									'type' => 'string',
 								],
 								'email_cc'       => [

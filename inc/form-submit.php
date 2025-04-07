@@ -646,7 +646,7 @@ class Form_Submit {
 		$email_body     = $smart_tags->process_smart_tags( $item['email_body'], $submission_data, $form_data );
 		$email_template = new Email_Template();
 		$message        = $email_template->render( $submission_data, $email_body );
-		$headers       = 'X-Mailer: PHP/' . phpversion() . "\r\n";
+		$headers        = 'X-Mailer: PHP/' . phpversion() . "\r\n";
 		$headers       .= "Content-Type: text/html; charset=utf-8\r\n";
 
 		// Add the From: to the headers.
@@ -662,15 +662,15 @@ class Form_Submit {
 			$headers .= 'Bcc:' . $smart_tags->process_smart_tags( $item['email_bcc'], $submission_data ) . "\r\n";
 		}
 
-		return compact(  'to', 'subject', 'message', 'headers' );
+		return compact( 'to', 'subject', 'message', 'headers' );
 	}
 
 	/**
 	 * Add From email header.
 	 *
-	 * @param array<mixed> $submission_data Submission data.
+	 * @param array<mixed>  $submission_data Submission data.
 	 * @param array<string> $item An associative array containing email settings, such as 'email_to', 'subject', 'email_body', and optional headers like 'email_reply_to', 'email_cc', and 'email_bcc'.
-	 * @param Smart_Tags   $smart_tags Smart Tags instance.
+	 * @param Smart_Tags    $smart_tags Smart Tags instance.
 	 * @since x.x.x
 	 * @return string The formatted "From" email header.
 	 */
