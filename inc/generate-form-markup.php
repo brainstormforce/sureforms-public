@@ -397,9 +397,9 @@ class Generate_Form_Markup {
 				<input type="hidden" value="<?php echo esc_attr( Helper::get_string_value( $is_page_break ) ); ?>" id="srfm-page-break">
 				<?php if ( $honeypot_spam ) { ?>
 					<input type="hidden" value="" name="srfm-honeypot-field">
-				<?php } ?>
-				<?php
-
+					<?php
+				}
+					self::common_error_message( 'head' );
 				if ( $is_page_break ) {
 					do_action( 'srfm_page_break_pagination', $post, $id );
 				} elseif ( ! apply_filters( 'srfm_use_custom_field_content', false ) ) {
@@ -473,6 +473,7 @@ class Generate_Form_Markup {
 
 					<div class="srfm-submit-container <?php echo esc_attr( $is_page_break ? 'srfm-hide' : '' ); ?>" style="<?php echo ! $should_show_submit_button ? 'visibility:hidden;position:absolute;' : ''; ?>">
 						<div style="width: <?php echo esc_attr( $full ? '100%' : '' ); ?>; text-align: <?php echo esc_attr( $submit_button_alignment ); ?>" class="wp-block-button">
+						<?php do_action( 'srfm_before_submit_button', $id ); ?>
 						<button style="width:<?php echo esc_attr( $full ? '100%;' : '' ); ?>" id="srfm-submit-btn"class="<?php echo esc_attr( '1' === $btn_from_theme ? 'wp-block-button__link' : 'srfm-btn-frontend srfm-button srfm-submit-button' ); ?><?php echo 'v3-reCAPTCHA' === $recaptcha_version ? ' g-recaptcha' : ''; ?>"
 						<?php if ( 'v3-reCAPTCHA' === $recaptcha_version ) { ?>
 							data-callback="recaptchaCallback"
@@ -485,19 +486,34 @@ class Generate_Form_Markup {
 							<div class="srfm-loader"></div>
 							</div>
 						</button>
+						<?php do_action( 'srfm_after_submit_button', $id ); ?>
 						</div>
 					</div>
-				<p id="srfm-error-message" class="srfm-error-message" hidden="true"><?php echo esc_html__( 'There was an error trying to submit your form. Please try again.', 'sureforms' ); ?></p>
+					<?php
+				}
+				self::common_error_message( 'footer' );
+				?>
 			</form>
 			<div class="srfm-single-form srfm-success-box in-page">
 				<div aria-live="polite" aria-atomic="true" role="alert" id="srfm-success-message-page-<?php echo esc_attr( Helper::get_string_value( $id ) ); ?>" class="srfm-success-box-description"></div>
 			</div>
-			<?php
-		}
-		?>
-			</div>
 		<?php
 		return ob_get_clean();
+	}
+
+	/**
+	 * Generate common error message markup
+	 *
+	 * @param string $position position of the error message.
+	 * @since x.x.x
+	 * @return void
+	 */
+	public static function common_error_message( $position = 'footer' ) {
+		$icon    = Helper::fetch_svg( 'info_circle', '', 'aria-hidden="true"' );
+		$classes = "srfm-common-error-message srfm-error-message srfm-{$position}-error";
+		?>
+		<p id="srfm-error-message" class="<?php echo esc_attr( $classes ); ?>" hidden="true"><?php echo wp_kses( $icon, Helper::$allowed_tags_svg ); ?><span class="srfm-error-content"><?php echo esc_html__( 'There was an error trying to submit your form. Please try again.', 'sureforms' ); ?></span></p>
+		<?php
 	}
 
 	/**
