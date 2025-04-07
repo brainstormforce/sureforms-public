@@ -80,7 +80,7 @@ const SingleFormSettingsPopup = ( props ) => {
 			{
 				id: 'suretriggers',
 				parent: 'integrations',
-				title: __( 'SureTriggers', 'sureforms' ),
+				title: __( 'OttoKit', 'sureforms' ),
 				icon: {},
 				component: <Suretriggers { ...{ setSelectedTab } } />,
 			},
