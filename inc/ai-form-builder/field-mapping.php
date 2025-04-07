@@ -197,6 +197,18 @@ class Field_Mapping {
 
 						$merged_attributes['prefixTooltip'] = ! empty( $question['prefixTooltip'] ) ? $question['prefixTooltip'] : '';
 						$merged_attributes['suffixTooltip'] = ! empty( $question['suffixTooltip'] ) ? $question['suffixTooltip'] : '';
+
+						// get min and max then diveide by 2 and round it.
+						$min = $merged_attributes['min'];
+						$max = $merged_attributes['max'];
+
+						if ( is_numeric( $min ) && is_numeric( $max ) ) {
+							$min = intval( $min );
+							$max = intval( $max );
+
+							// If min and max are same then set the value to 0.
+							$merged_attributes['numberDefaultValue'] = Helper::get_string_value( round( ( $min + $max ) / 2 ) );
+						}
 					}
 					if ( 'date-picker' === $field_type ) {
 						$merged_attributes['dateFormat'] = ! empty( $question['dateFormat'] ) ? sanitize_text_field( $question['dateFormat'] ) : 'mm/dd/yy';
@@ -282,7 +294,7 @@ class Field_Mapping {
 			}
 		}
 
-		return $post_content;
+		return apply_filters( 'srfm_ai_form_builder_post_content', $post_content, $is_conversational, $form_type );
 	}
 
 }
