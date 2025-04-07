@@ -651,14 +651,11 @@ class Form_Submit {
 		$headers       .= 'X-Mailer: PHP/' . phpversion() . "\r\n";
 		$headers       .= "Content-Type: text/html; charset=utf-8\r\n";
 
-
 		$from_name  = ! empty( $from_email ) && ! is_array( $from_email ) ? Helper::get_string_value( $item['from_name'] ) : '{site_title}';
 		$from_email = ! empty( $item['from_email'] ) && ! is_array( $item['from_email'] ) ? Helper::get_string_value( $item['from_email'] ) : '{admin_email}';
 
 		$headers .= 'From: ' . $smart_tags->process_smart_tags( $from_name, $submission_data ) . '<' . $smart_tags->process_smart_tags( $from_email, $submission_data ) . '>' . "\r\n";
 
-		if ( isset( $from_email ) && ! empty( $from_email ) && ! is_array( $from_email ) ) {
-		}
 		if ( isset( $item['email_reply_to'] ) && ! empty( $item['email_reply_to'] ) ) {
 			$headers .= 'Reply-To:' . $smart_tags->process_smart_tags( $item['email_reply_to'], $submission_data ) . "\r\n";
 		} else {
