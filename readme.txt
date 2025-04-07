@@ -262,7 +262,9 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 == Changelog ==
 = x.x.x =
 * New: Added srfm_email_notification_should_send, srfm_email_notification filter and srfm_before_email_send, srfm_after_email_send, srfm_before_submit_button, srfm_after_submit_button actions for enhanced email customization.
+* New: Added support for prefix and suffix in the Number field.
 * Improvement: Enabled editing of the "Confirm Email" text for greater flexibility.
+* Improvement: Smart Tags now dynamically detect fields with default labels.
 * Fix: Resolved issue where an optional email field blocked form submission after clearing in.
 = 1.4.4 - 27th March 2025 =
 * New: Introduced background styling for the form.
