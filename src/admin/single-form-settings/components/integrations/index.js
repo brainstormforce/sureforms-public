@@ -12,7 +12,7 @@ const Integrations = ( { setSelectedTab, action, setAction, CTA, setCTA, pluginC
 			component: <AllIntegrations setSelectedTab={ setSelectedTab } />,
 		},
 		{
-			title: __( 'Integrations via SureTriggers', 'sureforms' ),
+			title: __( 'Integrations via OttoKit', 'sureforms' ),
 			component: <UpsellSureTriggers
 				{ ...{
 					setSelectedTab,
@@ -264,7 +264,7 @@ const UpsellSureTriggers = ( { setSelectedTab, action, setAction, CTA, setCTA, p
 			if ( pluginConnected || plugin.connected ) {
 				return __( 'View Integrations', 'sureforms' );
 			}
-			return __( 'Connect with SureTriggers', 'sureforms' );
+			return __( 'Connect with OttoKit', 'sureforms' );
 		} else if ( status === 'Installed' ) {
 			return __( 'Activate', 'sureforms' );
 		}
@@ -291,7 +291,7 @@ const UpsellSureTriggers = ( { setSelectedTab, action, setAction, CTA, setCTA, p
 					<img height="24px" src={ plugin.logo_full } alt="logo" />
 					<p>
 						{ __(
-							'SureTriggers lets you connect your forms to hundreds of apps. With this integration you can automatically send form entries to your CRM, add subscribers to you email marketing platform, etc. Whatever you want SureForms and SureTriggers has you covered.',
+							'OttoKit lets you connect your forms to hundreds of apps. With this integration you can automatically send form entries to your CRM, add subscribers to you email marketing platform, etc. Whatever you want SureForms and OttoKit has you covered.',
 							'sureforms'
 						) }
 					</p>
