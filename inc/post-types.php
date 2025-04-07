@@ -1028,6 +1028,52 @@ class Post_Types {
 		add_filter( 'wpseo_metabox_prio', '__return_false' );
 
 		// Restrict AIOSEO columns.
-		add_filter( 'aioseo_public_post_types', [ $this, 'unset_sureforms_post_type' ] );
+		// add_filter( 'aioseo_public_post_types', [ $this, 'unset_sureforms_post_type' ] );
+		$this->restrict_in_aioseo_plugin();
+	}
+
+	/**
+	 * Restrict unwanted insertions.
+	 *
+	 * @return void
+	 * @since x.x.x
+	 */
+	public function restrict_in_aioseo_plugin() {
+		// if AIOSEO_DIR defained it means AIOSEO is installed.
+		if( ! defined( 'AIOSEO_DIR' ) ) {
+			return;
+		}
+
+		// Get the page id of the SureForms menu.
+
+		// admin.php?page=aioseo-social-networks#/facebook
+
+		// If page is admin.php and GET['page'] is has contained 'aioseo' then filter should not work.
+		
+		// admin.php 
+		if ( isset( $_SERVER['REQUEST_URI'] ) && strpos( $_SERVER['REQUEST_URI'], 'admin.php' ) !== false ) {
+			// Check if the page is aioseo.
+			if ( isset( $_GET['page'] ) && strpos( $_GET['page'], 'aioseo' ) !== false ) {
+				return;
+			}
+		}
+
+		add_filter( 'aioseo_public_post_types', [ $this, 'unset_sureforms_post_type_2' ] );
+	}
+
+	public function unset_sureforms_post_type_2( $post_types ) {
+		$return =  array_filter(
+			$post_types,
+			static function( $post_type ) {
+
+				if ( is_array( $post_type ) && isset( $post_type['name'] ) ) {
+					return SRFM_FORMS_POST_TYPE !== $post_type['name'];
+				}
+				
+				return SRFM_FORMS_POST_TYPE !== $post_type;
+			}
+		);
+
+		return $return;
 	}
 }
