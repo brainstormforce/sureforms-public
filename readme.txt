@@ -260,7 +260,9 @@ Yes! You can certainly use SureForms on yours as well as your client’s website
 When you use SureForms, you get an easy-to-use AI-powered form builder that can be used to build your forms fast.
 
 == Changelog ==
-= x.x.x = 
+= x.x.x =
+* New: Added srfm_email_notification_should_send, srfm_email_notification filter and srfm_before_email_send, srfm_after_email_send, srfm_before_submit_button, srfm_after_submit_button actions for enhanced email customization.
+* Improvement: SureTriggers re-branded to OttoKit. Compatibility changes added for smooth transition.
 * Fix: Resolved issue where an optional email field blocked form submission after clearing input.
 * Fix: Resolved import issue for Bedrock and similar setups.
 = 1.4.4 - 27th March 2025 =
