@@ -490,12 +490,13 @@ class Generate_Form_Markup {
 						</div>
 					</div>
 					<?php
-				}
+		}
 				self::common_error_message( 'footer' );
-				?>
+		?>
 			</form>
 			<div class="srfm-single-form srfm-success-box in-page">
 				<div aria-live="polite" aria-atomic="true" role="alert" id="srfm-success-message-page-<?php echo esc_attr( Helper::get_string_value( $id ) ); ?>" class="srfm-success-box-description"></div>
+			</div>
 			</div>
 		<?php
 		return ob_get_clean();
