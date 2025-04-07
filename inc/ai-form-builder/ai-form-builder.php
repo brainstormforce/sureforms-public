@@ -57,7 +57,6 @@ class AI_Form_Builder {
 			apply_filters(
 				'srfm_ai_form_generator_body',
 				[
-					'model' => 'o3-mini-2025-01-31',
 					'query' => $messages[0]['content'],
 				],
 				$params
