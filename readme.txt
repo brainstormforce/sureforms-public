@@ -262,6 +262,7 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 == Changelog ==
 = x.x.x = 
 * Fix: Resolved issue where an optional email field blocked form submission after clearing input.
+* Fix: Resolved a compatibility issue with Astra Pro and All in One SEO Plugin where SEO preview was not working due to the sureform post type being unregistered.
 = 1.4.4 - 27th March 2025 =
 * New: Introduced background styling for the form.
 * Improvement: Enhanced the SureForms branding color on instant form.
