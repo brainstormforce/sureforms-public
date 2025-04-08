@@ -575,12 +575,11 @@ class Admin {
 				SRFM_SLUG . '-export',
 				SRFM_SLUG . '_export',
 				[
-					'ajaxurl'              => admin_url( 'admin-ajax.php' ),
-					'srfm_export_nonce'    => wp_create_nonce( 'export_form_nonce' ),
-					'site_url'             => get_site_url(),
-					'srfm_import_endpoint' => '/wp-json/sureforms/v1/sureforms_import',
-					'import_form_nonce'    => current_user_can( 'edit_posts' ) ? wp_create_nonce( 'wp_rest' ) : '',
-					'import_btn_string'    => __( 'Import Form', 'sureforms' ),
+					'ajaxurl'           => admin_url( 'admin-ajax.php' ),
+					'srfm_export_nonce' => wp_create_nonce( 'export_form_nonce' ),
+					'site_url'          => get_site_url(),
+					'import_form_nonce' => current_user_can( 'edit_posts' ) ? wp_create_nonce( 'wp_rest' ) : '',
+					'import_btn_string' => __( 'Import Form', 'sureforms' ),
 				]
 			);
 

@@ -1014,24 +1014,6 @@ class Post_Types {
 	}
 
 	/**
-	 * Restrict interference of other plugins with SureForms.
-	 *
-	 * @since 0.0.5
-	 * @return void
-	 */
-	private function restrict_unwanted_insertions() {
-		// Restrict RankMath metaboxes in edit page.
-		add_action( 'cmb2_admin_init', [ $this, 'restrict_data' ] );
-
-		// Restrict Yoast columns.
-		add_filter( 'wpseo_accessible_post_types', [ $this, 'unset_sureforms_post_type' ] );
-		add_filter( 'wpseo_metabox_prio', '__return_false' );
-
-		// Restrict AIOSEO columns.
-		$this->restrict_in_aioseo_plugin();
-	}
-
-	/**
 	 * Restrict unwanted insertions from the AIOSEO plugin.
 	 *
 	 * This method ensures that the SureForms post type is excluded from AIOSEO's
@@ -1077,5 +1059,23 @@ class Post_Types {
 
 		// Exclude the SureForms post type from AIOSEO's public post types.
 		add_filter( 'aioseo_public_post_types', [ $this, 'unset_sureforms_post_type' ] );
+	}
+
+	/**
+	 * Restrict interference of other plugins with SureForms.
+	 *
+	 * @since 0.0.5
+	 * @return void
+	 */
+	private function restrict_unwanted_insertions() {
+		// Restrict RankMath metaboxes in edit page.
+		add_action( 'cmb2_admin_init', [ $this, 'restrict_data' ] );
+
+		// Restrict Yoast columns.
+		add_filter( 'wpseo_accessible_post_types', [ $this, 'unset_sureforms_post_type' ] );
+		add_filter( 'wpseo_metabox_prio', '__return_false' );
+
+		// Restrict AIOSEO columns.
+		$this->restrict_in_aioseo_plugin();
 	}
 }
