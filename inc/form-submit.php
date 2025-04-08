@@ -940,8 +940,19 @@ class Form_Submit {
 	 * @return string The formatted "From" email header.
 	 */
 	private static function add_from_data_in_header( $submission_data, $item, $smart_tags ) {
-		$from_name  = is_array( $item ) && ! empty( $item['from_name'] ) ? Helper::get_string_value( $item['from_name'] ) : '{site_title}';
+		$from_name  = is_array( $item ) && ! empty( $item['from_name'] ) ? sanitize_text_field(Helper::get_string_value( $item['from_name'] ) ) : '{site_title}';
 		$from_email = is_array( $item ) && ! empty( $item['from_email'] ) ? Helper::get_string_value( $item['from_email'] ) : '{admin_email}';
-		return 'From: ' . $smart_tags->process_smart_tags( $from_name, $submission_data ) . ' <' . $smart_tags->process_smart_tags( $from_email, $submission_data ) . '>' . "\r\n";
+
+		// Check if the email contains smart tags. If not, validate the email.
+		$is_valid_email = true;
+		if ( ! str_contains( $from_email, '{' ) ) {
+			$is_valid_email = filter_var( $from_email, FILTER_VALIDATE_EMAIL );
+		}
+		// if the email is not valid, set it to the admin email.
+		if ( ! $is_valid_email ) {
+			$from_email = Helper::get_string_value( get_option( 'admin_email' ) );
+		}
+
+		return 'From: ' .  esc_html( $smart_tags->process_smart_tags( $from_name, $submission_data ) ) . ' <' . esc_html( $smart_tags->process_smart_tags( $from_email, $submission_data ) ) . '>' . "\r\n";
 	}
 }
