@@ -666,7 +666,7 @@ class Form_Submit {
 	}
 
 	/**
-	 * Add From email header.
+	 * Add From email and name in the header.
 	 *
 	 * @param array<mixed>  $submission_data Submission data.
 	 * @param array<string> $item An associative array containing email settings, such as 'email_to', 'subject', 'email_body', and optional headers like 'email_reply_to', 'email_cc', and 'email_bcc'.

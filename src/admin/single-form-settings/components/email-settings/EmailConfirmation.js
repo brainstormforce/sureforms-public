@@ -31,7 +31,6 @@ const EmailConfirmation = ( props ) => {
 
 	const [ prevData, setPrevData ] = useState( {} ); // Previous saved data before making any changes.
 	const [ fromEmailWarningMessage, setFromEmailWarningMessage ] = useState( '' );
-	const [ showFromEmailWarning, setShowFromEmailWarning ] = useState( false );
 
 	const [ dynamicSubject, setDynamicSubject ] = useState(
 		data.subject || ''
@@ -120,14 +119,12 @@ const EmailConfirmation = ( props ) => {
 
 		// If value starts with '{', no warning should be displayed. To avoid issue with smart tags.
 		if ( fromEmail.startsWith( '{' ) ) {
-			setShowFromEmailWarning( false );
+			setFromEmailWarningMessage();
 		} else if ( fromEmail === '' || ! isValidEmail ) {
 			// Show general warning for empty or invalid email
-			setShowFromEmailWarning( true );
 			setFromEmailWarningMessage( __( "Please enter a valid email address. Your notifications won't be sent if the field is not filled in correctly.", 'sureforms' ) );
 		} else if ( userEnteredUrl !== siteUrl ) {
 			// Show domain mismatch warning
-			setShowFromEmailWarning( true );
 			if ( srfm_block_data?.is_suremails_active ) {
 				setFromEmailWarningMessage(
 					sprintf(
@@ -169,12 +166,10 @@ const EmailConfirmation = ( props ) => {
 			}
 		} else {
 			// No warning needed
-			setShowFromEmailWarning( false );
+			setFromEmailWarningMessage();
 		}
 	}
-	, [ formData.from_email ] );
-
-	console.log( srfm_block_data.is_suremails_active );
+	, [ formData ] );
 
 	return (
 		<div className="srfm-modal-content">
@@ -340,10 +335,7 @@ const EmailConfirmation = ( props ) => {
 							<h1 className="srfm-modal-email-advanced-fields-title">
 								{ __( 'Advanced Fields', 'sureforms' ) }
 							</h1>
-							<div className="srfm-modal-input-box"
-								style={ {
-									marginBottom: '20px',
-								} }
+							<div className="srfm-modal-input-box srfm-modal-from-name-box"
 							>
 								<div className="srfm-modal-label">
 									<label htmlFor="srfm-email-notification-from-name">
@@ -388,10 +380,7 @@ const EmailConfirmation = ( props ) => {
 									}
 								/>
 							</div>
-							<div className="srfm-modal-input-box"
-								style={ {
-									marginBottom: '10px',
-								} }
+							<div className="srfm-modal-input-box srfm-modal-from-email-box"
 							>
 								<div className="srfm-modal-label">
 									<label htmlFor="srfm-email-notification-from-email">
@@ -436,13 +425,8 @@ const EmailConfirmation = ( props ) => {
 									}
 								/>
 							</div>
-							<div className="srfm-modal-input-box"
-								style={ {
-									display: 'flex',
-									alignItems: 'center',
-									gap: '10px',
-									marginBottom: '20px',
-								} }>
+							<div className="srfm-modal-input-box srfm-modal-from-email-warning-box"
+							>
 								<p className="components-base-control__help">
 									{ __(
 										'Notifications can only use 1 From Email. Please do not enter multiple addresses. Please check out our ',
@@ -452,10 +436,6 @@ const EmailConfirmation = ( props ) => {
 										href="https://sureforms.com/docs/how-to-setup-smtp-for-sureforms/"
 										target="_blank"
 										rel="noopener noreferrer"
-										style={ {
-											textDecoration: 'underline',
-											color: '#2563EB',
-										} }
 									>
 										{ __(
 											'SMTP documentation',
@@ -465,7 +445,7 @@ const EmailConfirmation = ( props ) => {
 									{ __( ' on fixing email delivery issues for more details.', 'sureforms' ) }
 								</p>
 
-								{ showFromEmailWarning && <FromEmailWarning
+								{ fromEmailWarningMessage && <ModalWarning
 									message={ fromEmailWarningMessage }
 								/> }
 							</div>
@@ -624,24 +604,16 @@ const EmailConfirmation = ( props ) => {
 	);
 };
 
-const FromEmailWarning = ( { message } ) => {
+const ModalWarning = ( { message } ) => {
 	return (
 		<div
-			style={ {
-				display: 'flex',
-				alignItems: 'center',
-				gap: '8px',
-				borderRadius: '8px',
-				border: '1px solid  #FEF08A',
-				padding: '12px',
-				backgroundColor: '#FEFCE8',
-				width: '100%',
-			} }
+			className="srfm-modal-warning-box"
 		>
-			<span style={ {
-				height: '20px',
-				width: '20px',
-			} }>
+			<span
+
+				className="srfm-modal-warning-icon"
+
+			>
 				<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
 					<path d="M18.1085 14.9999L11.4419 3.33319C11.2965 3.0767 11.0857 2.86335 10.831 2.71492C10.5762 2.56649 10.2867 2.48828 9.99185 2.48828C9.69703 2.48828 9.40748 2.56649 9.15275 2.71492C8.89802 2.86335 8.68722 3.0767 8.54185 3.33319L1.87519 14.9999C1.72825 15.2543 1.65121 15.5431 1.65186 15.837C1.65251 16.1308 1.73083 16.4192 1.87889 16.673C2.02695 16.9269 2.23948 17.137 2.49493 17.2822C2.75039 17.4274 3.03969 17.5025 3.33352 17.4999H16.6669C16.9593 17.4996 17.2465 17.4223 17.4996 17.2759C17.7527 17.1295 17.9629 16.9191 18.1089 16.6658C18.255 16.4125 18.3319 16.1252 18.3318 15.8328C18.3317 15.5404 18.2547 15.2531 18.1085 14.9999Z" stroke="#EAB308" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
 					<path d="M10 7.5V10.8333" stroke="#EAB308" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -649,13 +621,7 @@ const FromEmailWarning = ( { message } ) => {
 				</svg>
 			</span>
 			<span
-				style={ {
-					fontWeight: '400',
-					fontSize: '14px',
-					lineHeight: '20px',
-					color: '#111827',
-					width: '100%',
-				} }
+				className="srfm-modal-warning-text"
 			>{ message }</span>
 		</div>
 	);
