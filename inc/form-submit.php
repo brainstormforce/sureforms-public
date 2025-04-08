@@ -192,14 +192,12 @@ class Form_Submit {
 	 * @return \WP_REST_Response|\WP_Error Response object on success, or WP_Error object on failure.
 	 */
 	public function handle_form_submission( $request ) {
-
 		$nonce = Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) );
 
 		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
 			wp_send_json_error(
 				[
-					'data'   => __( 'Nonce verification failed.', 'sureforms' ),
-					'status' => false,
+					'message' => __( 'Nonce verification failed.', 'sureforms' ),
 				]
 			);
 		}
@@ -207,7 +205,11 @@ class Form_Submit {
 		$form_data = Helper::sanitize_by_field_type( $request->get_params() );
 
 		if ( empty( $form_data ) || ! is_array( $form_data ) ) {
-			wp_send_json_error( __( 'Form data is not found.', 'sureforms' ) );
+			wp_send_json_error(
+				[
+					'message' => __( 'Form data is not found.', 'sureforms' ),
+				]
+			);
 		}
 
 		if ( isset( $_SERVER['REQUEST_METHOD'] ) && 'POST' === $_SERVER['REQUEST_METHOD'] && ! empty( $_FILES ) ) {
@@ -243,7 +245,11 @@ class Form_Submit {
 						if ( $move_file && ! isset( $move_file['error'] ) ) {
 							$form_data[ $field ][] = $move_file['url'];
 						} else {
-							wp_send_json_error( __( 'File is not uploaded', 'sureforms' ) );
+							wp_send_json_error(
+								[
+									'message' => __( 'File is not uploaded', 'sureforms' ),
+								]
+							);
 						}
 					}
 				} else {
@@ -253,7 +259,12 @@ class Form_Submit {
 		}
 
 		if ( ! $form_data['form-id'] ) {
-			wp_send_json_error( __( 'Form Id is missing.', 'sureforms' ) );
+			wp_send_json_error(
+				[
+					'message'  => __( 'Form Id is missing.', 'sureforms' ),
+					'position' => 'header',
+				]
+			);
 		}
 		$current_form_id       = $form_data['form-id'];
 		$security_type         = Helper::get_meta_value( Helper::get_integer_value( $current_form_id ), '_srfm_captcha_security_type' );
@@ -308,7 +319,11 @@ class Form_Submit {
 			// If the cloudflare validation fails, return an error.
 			if ( is_array( $turnstile_validation_result ) && isset( $turnstile_validation_result['success'] ) && false === $turnstile_validation_result['success'] ) {
 				$error_message = $turnstile_validation_result['error'] ?? __( 'Cloudflare Turnstile validation failed.', 'sureforms' );
-				return new \WP_Error( 'cf_turnstile_error', $error_message, [ 'status' => 403 ] );
+				wp_send_json_error(
+					[
+						'message' => $error_message,
+					]
+				);
 			}
 		}
 
@@ -334,7 +349,11 @@ class Form_Submit {
 			// If the hcaptcha validation fails, return an error.
 			if ( is_array( $hcaptcha_validation_result ) && isset( $hcaptcha_validation_result['success'] ) && false === $hcaptcha_validation_result['success'] ) {
 				$error_message = $hcaptcha_validation_result['error'] ?? __( 'hCaptcha validation failed.', 'sureforms' );
-				return new \WP_Error( 'hcaptcha_error', $error_message, [ 'status' => 403 ] );
+				wp_send_json_error(
+					[
+						'message' => $error_message,
+					]
+				);
 			}
 		}
 
@@ -357,17 +376,27 @@ class Form_Submit {
 					$sureforms_captcha_data = $data;
 
 				} else {
-					return new \WP_Error( 'recaptcha_error', __( 'reCAPTCHA error.', 'sureforms' ), [ 'status' => 403 ] );
+					wp_send_json_error(
+						[
+							'message' => __( 'reCAPTCHA error.', 'sureforms' ),
+						]
+					);
 				}
 				if ( isset( $sureforms_captcha_data['success'] ) && true === $sureforms_captcha_data['success'] ) {
 					return rest_ensure_response( $this->handle_form_entry( $form_data ) );
 				}
-					return new \WP_Error( 'recaptcha_error', __( 'reCAPTCHA error.', 'sureforms' ), [ 'status' => 403 ] );
+
+				wp_send_json_error(
+					[
+						'message' => __( 'reCAPTCHA error.', 'sureforms' ),
+					]
+				);
 
 			}
-				return rest_ensure_response( $this->handle_form_entry( $form_data ) );
 
+			return rest_ensure_response( $this->handle_form_entry( $form_data ) );
 		}
+
 		if ( ! isset( $form_data['srfm-honeypot-field'] ) ) {
 			if ( ! empty( $google_captcha_secret_key ) ) {
 				if ( isset( $form_data['sureforms_form_submit'] ) ) {
@@ -387,18 +416,31 @@ class Form_Submit {
 					$sureforms_captcha_data = $data;
 
 				} else {
-					return new \WP_Error( 'recaptcha_error', __( 'reCAPTCHA error.', 'sureforms' ), [ 'status' => 403 ] );
+					wp_send_json_error(
+						[
+							'message' => __( 'reCAPTCHA error.', 'sureforms' ),
+						]
+					);
 				}
 				if ( true === $sureforms_captcha_data['success'] ) {
 					return rest_ensure_response( $this->handle_form_entry( $form_data ) );
 				}
-					return new \WP_Error( 'recaptcha_error', __( 'reCAPTCHA error.', 'sureforms' ), [ 'status' => 403 ] );
 
+				wp_send_json_error(
+					[
+						'message' => __( 'reCAPTCHA error.', 'sureforms' ),
+					]
+				);
 			}
-				return rest_ensure_response( $this->handle_form_entry( $form_data ) );
 
+			return rest_ensure_response( $this->handle_form_entry( $form_data ) );
 		}
-			return new \WP_Error( 'spam_detected', __( 'Spam Detected', 'sureforms' ), [ 'status' => 403 ] );
+
+		wp_send_json_error(
+			[
+				'message' => __( 'Spam Detected', 'sureforms' ),
+			]
+		);
 	}
 
 	/**
@@ -679,6 +721,9 @@ class Form_Submit {
 		$is_mail_sent       = false;
 		$emails             = [];
 
+		// Filter to determine whether the email notification should be sent.
+		$email_notification = apply_filters( 'srfm_email_notification_should_send', $email_notification, $submission_data, $form_data );
+
 		if ( is_iterable( $email_notification ) ) {
 			$entries_db_instance = Entries::get_instance();
 			$log_key             = $entries_db_instance->add_log( __( 'Email notification passed to the sending server', 'sureforms' ) );
@@ -688,6 +733,12 @@ class Form_Submit {
 					if ( true === $item['status'] ) {
 
 						$parsed = self::parse_email_notification_template( $submission_data, $item, $form_data );
+
+						// Allow filtering of the email data before it is sent.
+						$parsed = apply_filters( 'srfm_email_notification', $parsed, $submission_data, $item, $form_data );
+
+						// Trigger an action before sending the email, allowing additional processing or logging.
+						do_action( 'srfm_before_email_send', $parsed, $submission_data, $item, $form_data );
 
 						/**
 						 * Temporary override the content type for wp_mail.
@@ -747,6 +798,15 @@ class Form_Submit {
 								);
 							}
 						}
+
+						// Trigger an action after the email is sent, allowing additional processing or logging.
+						do_action(
+							'srfm_after_email_send',
+							$parsed,
+							$submission_data,
+							$item,
+							$form_data
+						);
 
 						$is_mail_sent = $sent;
 						$emails[]     = $parsed['to'];
