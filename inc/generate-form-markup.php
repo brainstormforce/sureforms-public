@@ -506,7 +506,7 @@ class Generate_Form_Markup {
 	 * Generate common error message markup
 	 *
 	 * @param string $position position of the error message.
-	 * @since x.x.x
+	 * @since 1.5.0
 	 * @return void
 	 */
 	public static function common_error_message( $position = 'footer' ) {

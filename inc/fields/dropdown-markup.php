@@ -43,7 +43,7 @@ class Dropdown_Markup extends Base {
 	 * Flag indicating if the value should be shown.
 	 *
 	 * @var bool
-	 * @since x.x.x
+	 * @since 1.5.0
 	 */
 	protected $show_values;
 

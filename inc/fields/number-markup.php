@@ -70,7 +70,7 @@ class Number_Markup extends Base {
 	 * Prefix for the input field.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 1.5.0
 	 */
 	protected $prefix;
 
@@ -78,7 +78,7 @@ class Number_Markup extends Base {
 	 * Suffix for the input field.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 1.5.0
 	 */
 	protected $suffix;
 
