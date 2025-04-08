@@ -666,21 +666,6 @@ class Form_Submit {
 	}
 
 	/**
-	 * Add From email and name in the header.
-	 *
-	 * @param array<mixed>  $submission_data Submission data.
-	 * @param array<string> $item An associative array containing email settings, such as 'email_to', 'subject', 'email_body', and optional headers like 'email_reply_to', 'email_cc', and 'email_bcc'.
-	 * @param Smart_Tags    $smart_tags Smart Tags instance.
-	 * @since x.x.x
-	 * @return string The formatted "From" email header.
-	 */
-	private static function add_from_data_in_header( $submission_data, $item, $smart_tags ) {
-		$from_name  = is_array( $item ) && ! empty( $item['from_name'] ) ? Helper::get_string_value( $item['from_name'] ) : '{site_title}';
-		$from_email = is_array( $item ) && ! empty( $item['from_email'] ) ? Helper::get_string_value( $item['from_email'] ) : '{admin_email}';
-		return 'From: ' . $smart_tags->process_smart_tags( $from_name, $submission_data ) . ' <' . $smart_tags->process_smart_tags( $from_email, $submission_data ) . '>' . "\r\n";
-	}
-
-	/**
 	 * Send Email.
 	 *
 	 * @param string        $id Form ID.
@@ -883,5 +868,20 @@ class Form_Submit {
 			wp_send_json_success();
 		}
 		wp_send_json_error();
+	}
+
+	/**
+	 * Add From email and name in the header.
+	 *
+	 * @param array<mixed>  $submission_data Submission data.
+	 * @param array<string> $item An associative array containing email settings, such as 'email_to', 'subject', 'email_body', and optional headers like 'email_reply_to', 'email_cc', and 'email_bcc'.
+	 * @param Smart_Tags    $smart_tags Smart Tags instance.
+	 * @since x.x.x
+	 * @return string The formatted "From" email header.
+	 */
+	private static function add_from_data_in_header( $submission_data, $item, $smart_tags ) {
+		$from_name  = is_array( $item ) && ! empty( $item['from_name'] ) ? Helper::get_string_value( $item['from_name'] ) : '{site_title}';
+		$from_email = is_array( $item ) && ! empty( $item['from_email'] ) ? Helper::get_string_value( $item['from_email'] ) : '{admin_email}';
+		return 'From: ' . $smart_tags->process_smart_tags( $from_name, $submission_data ) . ' <' . $smart_tags->process_smart_tags( $from_email, $submission_data ) . '>' . "\r\n";
 	}
 }
