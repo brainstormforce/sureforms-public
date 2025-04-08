@@ -45,7 +45,7 @@ class Astra_Compatibility {
 		$dashboard_priority = null;
 
 		foreach ( $menu as $position => $menu_item ) {
-			if ( isset( $menu_item[0] ) && 'Dashboard' === $menu_item[0] ) {
+			if ( isset( $menu_item[5] ) && 'menu-dashboard' === $menu_item[5] ) {
 				$dashboard_priority = (float) $position;
 				break;
 			}
