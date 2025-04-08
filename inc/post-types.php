@@ -1041,15 +1041,12 @@ class Post_Types {
 			return;
 		}
 
-		$server = $_SERVER; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-		$get    = $_GET; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-
 		// Allow AIOSEO functionality on its own settings pages.
-		if ( isset( $server['REQUEST_URI'] ) ) {
-			$request_uri = sanitize_text_field( wp_unslash( $server['REQUEST_URI'] ) );
+		if ( isset( $_SERVER['REQUEST_URI'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			$request_uri = sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			if ( strpos( $request_uri, 'admin.php' ) !== false ) {
-				if ( isset( $get['page'] ) ) {
-					$page = sanitize_text_field( wp_unslash( $get['page'] ) );
+				if ( isset( $_GET['page'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+					$page = sanitize_text_field( wp_unslash( $_GET['page'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 					if ( strpos( $page, 'aioseo' ) !== false ) {
 						return;
 					}
