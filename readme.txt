@@ -4,7 +4,7 @@ Tags: contact form, custom form, forms, contact form plugin, form builder
 Requires at least: 6.4
 Tested up to: 6.7.2
 Requires PHP: 7.4
-Stable tag: 1.4.4
+Stable tag: 1.5.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -260,7 +260,7 @@ Yes! You can certainly use SureForms on yours as well as your client’s website
 When you use SureForms, you get an easy-to-use AI-powered form builder that can be used to build your forms fast.
 
 == Changelog ==
-= x.x.x =
+= 1.5.0 - 9th April 2025 =
 * New: Added srfm_email_notification_should_send, srfm_email_notification filter and srfm_before_email_send, srfm_after_email_send, srfm_before_submit_button, srfm_after_submit_button actions for enhanced email customization.
 * New: Added support for prefix and suffix in the Number field.
 * Improvement: Enabled editing of the "Confirm Email" text for greater flexibility.

@@ -340,7 +340,7 @@ class Base {
 	 * attribute as a JSON string.
 	 *
 	 * @var string $field_config Configuration settings for the field.
-	 * @since x.x.x
+	 * @since 1.5.0
 	 */
 	protected $field_config;
 
@@ -358,7 +358,7 @@ class Base {
 	 * Constructor for the Base class.
 	 *
 	 * @param array<mixed> $extra_classes Extra classes to be added to the field.
-	 * @since x.x.x
+	 * @since 1.5.0
 	 * @return string
 	 */
 	public function get_field_classes( $extra_classes = [] ) {
