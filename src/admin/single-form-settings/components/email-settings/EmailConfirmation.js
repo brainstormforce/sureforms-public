@@ -5,6 +5,7 @@ import SmartTagList from '@Components/misc/SmartTagList';
 import svgIcons from '@Image/single-form-logo.json';
 import parse from 'html-react-parser';
 import { useDebouncedCallback } from 'use-debounce';
+import svg from '@Svg/svgs.json';
 
 const EmailConfirmation = ( props ) => {
 	const {
@@ -425,29 +426,18 @@ const EmailConfirmation = ( props ) => {
 									}
 								/>
 							</div>
-							<div className="srfm-modal-input-box srfm-modal-from-email-warning-box"
-							>
+							<div className="srfm-modal-input-box srfm-modal-from-email-warning-box">
 								<p className="components-base-control__help">
-									{ __(
-										'Notifications can only use 1 From Email. Please do not enter multiple addresses. Please check out our ',
-										'sureforms'
-									) }
-									<a
-										href="https://sureforms.com/docs/how-to-setup-smtp-for-sureforms/"
-										target="_blank"
-										rel="noopener noreferrer"
-									>
-										{ __(
-											'SMTP documentation',
-											'sureforms'
-										) }
-									</a>
-									{ __( ' on fixing email delivery issues for more details.', 'sureforms' ) }
+									{
+										sprintf(
+											// Translators: %1$s is the SMTP documentation link, %2$s is the closing tag.
+											__( 'Check out our %1$sSMTP documentation%2$s for more info.', 'sureforms' ),
+											'<a href="https://sureforms.com/docs/how-to-setup-smtp-for-sureforms/" target="_blank" rel="noopener noreferrer">',
+											'</a>'
+										  )
+									}
 								</p>
-
-								{ fromEmailWarningMessage && <ModalWarning
-									message={ fromEmailWarningMessage }
-								/> }
+								{ fromEmailWarningMessage && <ModalWarning message={ fromEmailWarningMessage } /> }
 							</div>
 							<div className="srfm-modal-email-advanced-fields-inner">
 								<div
@@ -606,23 +596,11 @@ const EmailConfirmation = ( props ) => {
 
 const ModalWarning = ( { message } ) => {
 	return (
-		<div
-			className="srfm-modal-warning-box"
-		>
-			<span
-
-				className="srfm-modal-warning-icon"
-
-			>
-				<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-					<path d="M18.1085 14.9999L11.4419 3.33319C11.2965 3.0767 11.0857 2.86335 10.831 2.71492C10.5762 2.56649 10.2867 2.48828 9.99185 2.48828C9.69703 2.48828 9.40748 2.56649 9.15275 2.71492C8.89802 2.86335 8.68722 3.0767 8.54185 3.33319L1.87519 14.9999C1.72825 15.2543 1.65121 15.5431 1.65186 15.837C1.65251 16.1308 1.73083 16.4192 1.87889 16.673C2.02695 16.9269 2.23948 17.137 2.49493 17.2822C2.75039 17.4274 3.03969 17.5025 3.33352 17.4999H16.6669C16.9593 17.4996 17.2465 17.4223 17.4996 17.2759C17.7527 17.1295 17.9629 16.9191 18.1089 16.6658C18.255 16.4125 18.3319 16.1252 18.3318 15.8328C18.3317 15.5404 18.2547 15.2531 18.1085 14.9999Z" stroke="#EAB308" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-					<path d="M10 7.5V10.8333" stroke="#EAB308" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-					<path d="M10 14.168H10.0083" stroke="#EAB308" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-				</svg>
+		<div className="srfm-modal-warning-box">
+			<span className="srfm-modal-warning-icon">
+				{ parse( svg?.warning ) }
 			</span>
-			<span
-				className="srfm-modal-warning-text"
-			>{ message }</span>
+			<span className="srfm-modal-warning-text">{ message }</span>
 		</div>
 	);
 };
