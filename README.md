@@ -261,7 +261,7 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 
 ## Changelog ##
 ### 1.5.0 - 8th April 2025 ###
-* New: Added support for Calculator forms in Business Plan.
+* New: New: Added support for Calculators in Business Plan.
 * New: Added support for prefix and suffix in the Number field.
 * New: Multiple hooks for email and form submission were added.
 * Improvement: Enabled editing of the "Confirm Email" text for greater flexibility.
