@@ -115,8 +115,7 @@ const EmailConfirmation = ( props ) => {
 		const fromEmail = formData.from_email || '';
 		const userEnteredUrl = fromEmail.split( '@' )[ 1 ] || '';
 		const siteUrl = window?.srfm_block_data?.site_url || '';
-
-		const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test( fromEmail );
+		const isValidEmail = /^[\p{L}\p{N}._%+-]+@[\p{L}\p{N}.-]+\.[\p{L}]{2,}$/u.test( fromEmail );
 
 		// If value starts with '{', no warning should be displayed. To avoid issue with smart tags.
 		if ( fromEmail.startsWith( '{' ) ) {
@@ -393,7 +392,7 @@ const EmailConfirmation = ( props ) => {
 									onChange={ ( e ) => {
 										setFormData( {
 											...formData,
-											from_email: e.target.value,
+											from_email: e.target.value.trim(),
 										} );
 									} }
 									value={ formData.from_email }
@@ -429,12 +428,7 @@ const EmailConfirmation = ( props ) => {
 							<div className="srfm-modal-input-box srfm-modal-from-email-warning-box">
 								<p className="components-base-control__help">
 									{
-										sprintf(
-											// Translators: %1$s is the SMTP documentation link, %2$s is the closing tag.
-											__( 'Check out our %1$sSMTP documentation%2$s for more info.', 'sureforms' ),
-											'<a href="https://sureforms.com/docs/how-to-setup-smtp-for-sureforms/" target="_blank" rel="noopener noreferrer">',
-											'</a>'
-										  )
+										__( 'Notifications can only use 1 From Email. Please do not enter multiple addresses.', 'sureforms' )
 									}
 								</p>
 								{ fromEmailWarningMessage && <ModalWarning message={ fromEmailWarningMessage } /> }
