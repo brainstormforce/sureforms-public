@@ -18,7 +18,7 @@ defined( 'ABSPATH' ) || exit;
  *
  * @since x.x.x
  */
-class Astra_Compatibility {
+class Astra {
 	use Get_Instance;
 
 	/**
