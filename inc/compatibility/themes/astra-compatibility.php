@@ -37,9 +37,8 @@ class Astra_Compatibility {
 	 * Decreases the priority by 0.1 until it finds a unique value.
 	 * If astra priority becomes less than dashboard priority, set it to 2 by default.
 	 *
-	 * @since x.x.x
-	 *
 	 * @return float
+	 * @since x.x.x
 	 */
 	public function update_admin_menu_position() {
 		global $menu;
