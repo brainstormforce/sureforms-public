@@ -21,7 +21,7 @@ const Suretriggers = ( { setSelectedTab } ) => {
 				</div>
 				<div className="srfm-modal-inner-box" style={ { height: '100%' } }>
 					<div className="srfm-modal-inner-box-text">
-						<h5>{ __( 'SureTriggers Integrations', 'sureforms' ) }</h5>
+						<h5>{ __( 'OttoKit Integrations', 'sureforms' ) }</h5>
 					</div>
 
 					<div className="srfm-modal-separator" />
