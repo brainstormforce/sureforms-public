@@ -265,6 +265,7 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 * Improvement: SureTriggers re-branded to OttoKit. Compatibility changes added for smooth transition.
 * Fix: Resolved issue where an optional email field blocked form submission after clearing input.
 * Fix: Resolved import issue for Bedrock and similar setups.
+* Fix: Resolved styling conflicts in UAGB blocks (Heading, Icon, Image, Separator) caused by duplicate block IDs on duplication.
 = 1.4.4 - 27th March 2025 =
 * New: Introduced background styling for the form.
 * Improvement: Enhanced the SureForms branding color on instant form.
