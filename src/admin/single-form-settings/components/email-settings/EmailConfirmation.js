@@ -118,7 +118,7 @@ const EmailConfirmation = ( props ) => {
 		const isValidEmail = /^[\p{L}\p{N}._%+-]+@[\p{L}\p{N}.-]+\.[\p{L}]{2,}$/u.test( fromEmail );
 
 		// If value starts with '{', no warning should be displayed. To avoid issue with smart tags.
-		if ( fromEmail.startsWith( '{' ) ) {
+		if ( fromEmail.startsWith( '{' ) && fromEmail.endsWith( '}' ) ) {
 			setFromEmailWarningMessage();
 		} else if ( fromEmail === '' || ! isValidEmail ) {
 			// Show general warning for empty or invalid email

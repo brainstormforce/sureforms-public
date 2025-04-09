@@ -945,7 +945,7 @@ class Form_Submit {
 
 		// Check if the email contains smart tags. If not, validate the email.
 		$is_valid_email = true;
-		if ( ! str_contains( $from_email, '{' ) ) {
+		if ( ! str_contains( $from_email, '{' ) && ! str_contains( $from_email, '}' ) ) {
 			$is_valid_email = filter_var( $from_email, FILTER_VALIDATE_EMAIL );
 		}
 		// if the email is not valid, set it to the admin email.
