@@ -482,50 +482,83 @@ class Entries_List_Table extends \WP_List_Table {
 				}
 
 				$csv_files[] = $csv_filepath;
+				$block_key_map   = [];
+				$block_labels    = [];
 
-				foreach ( $results as $index => $result ) {
-					if ( empty( $result['form_data'] ) ) {
+				// Step 1: Build consistent map of block_id => latest key and label
+				foreach ( $results as $result ) {
+					if ( empty( $result['form_data'] ) || ! is_array( $result['form_data'] ) ) {
 						// Probably invalid submission.
 						continue;
 					}
 
-					$form_data = $result['form_data'];
+					/**
+					 * The structure of the keys is like srfm-[block_type]-[block_id]-lbl-[label].
+					 * We need to get the block_id and label from the key and create a map of block_id => key.
+					 * This will help us to create a consistent CSV file with the same order of columns.
+					 */
+					foreach ( $result['form_data'] as $key => $value ) {
+						if ( preg_match( '/^srfm-[a-z]+-([a-f0-9]+)-lbl-([A-Za-z0-9+=\/]+)-/', $key, $matches ) ) {
+							$block_id     = $matches[1];
+							$label_base64 = $matches[2];
+							$label        = Helper::decrypt( $label_base64 );
 
-					if ( ! empty( $form_data ) && is_array( $form_data ) ) {
-						if ( 0 === $index ) {
-							$labels = array_merge(
-								[ __( 'ID', 'sureforms' ) ],
-								array_map(
-									[ Helper::class, 'get_field_label_from_key' ],
-									array_keys( $form_data )
-								)
-							);
-							fputcsv( $stream, $labels );
+							// Only store latest key for each block_id.
+							$block_key_map[ $block_id ]   = $key;
+							// Only update the label if it is not already set.
+							if ( ! isset( $block_labels[ $block_id ] ) ) {
+								$block_labels[ $block_id ] = $label;
+							}
 						}
+					}
+				}
 
-						$values = [ '#' . absint( $result['ID'] ) ]; // Add entry id for first element.
+				// Step 2: Build CSV header using block_labels.
+				$labels = array_merge(
+					[ __( 'ID', 'sureforms' ) ],
+					array_values( $block_labels )
+				);
+				// Add the headers to the CSV file.
+				fputcsv( $stream, $labels );
+
+				// Step 3: Write each row using block_id -> matched key
+				foreach ( $results as $result ) {
+					if ( empty( $result['form_data'] ) || ! is_array( $result['form_data'] ) ) {
+						continue;
+					}
+
+					$form_data = $result['form_data'];
+					$values    = [ '#' . absint( $result['ID'] ) ];
+
+					foreach ( $block_key_map as $block_id => $srfm_key ) {
+						$field_value = '';
+
+						// Try to find a key that matches this block ID in current form_data and use it's value.
+						foreach ( $form_data as $key => $value ) {
+							if ( strpos( $key, $block_id ) !== false ) {
+								$field_value = $value;
+								break;
+							}
+						}
 
 						/**
 						 * Lets normalize field values for the CSV file.
 						 * 1. If it is array then first check if it is from upload field value. Process the upload file urls and convert array into comma separated string.
 						 * 2. If it is not upload field value then convert array into comma separated string.
 						 */
-						foreach ( $form_data as $field_name => $field_value ) {
-							if ( false !== strpos( $field_name, 'srfm-upload' ) ) {
-								// Decode the URLs, then create a comma separated string.
-								$_value = implode( ', ', array_map( 'urldecode', $field_value ) );
-							} else {
-								$_value = is_array( $field_value ) ? implode( ', ', $field_value ) : $field_value;
-							}
-
-							$values[] = $_value ? $_value : '';
+						if ( false !== strpos( $srfm_key, 'srfm-upload' ) && is_array( $field_value ) ) {
+							// Decode the URLs, then create a comma separated string.
+							$_value = implode( ', ', array_map( 'urldecode', $field_value ) );
+						} else {
+							$_value = is_array( $field_value ) ? implode( ', ', $field_value ) : $field_value;
 						}
 
-						fputcsv( $stream, $values );
+						$values[] = $_value ? $_value : '';
 					}
 
-					$form_data = []; // Reset form data.
+					fputcsv( $stream, $values );
 				}
+
 
 				fclose( $stream ); // phpcs:ignore -- Using fclose as we have used fopen above to decrease the memory use.
 
