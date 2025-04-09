@@ -192,7 +192,7 @@ class Helper {
 	 */
 	public static function get_block_id_from_key( $field_key ) {
 		// Check if the key contains the block ID identifier.
-		if ( strpos( $field_key, 'srfm-' ) !== 0 || strpos( $field_key, '-lbl-' ) === false ) {
+		if ( strpos( $field_key, 'srfm-' ) === 0 && strpos( $field_key, '-lbl-' ) === false ) {
 			return '';  // Return empty if the key format is invalid.
 		}
 

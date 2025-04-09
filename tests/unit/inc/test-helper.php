@@ -30,13 +30,21 @@ class Test_Helper extends TestCase {
      */
     public function test_get_block_id_from_key() {
         $testCases = [
-            'simple input' => [
+            'simple input key' => [
                 'input' => 'srfm-input-fe439fd2-lbl-RnVsbCBOYW1l-full-name',
                 'expected' => 'fe439fd2'
             ],
-            'input with multi word slug' => [
+            'input key with multi word slug' => [
                 'input' => 'srfm-input-multi-choice-3ccec323-lbl-TXVsdGkgQ2hvaWNl-srfm-multi-choice',
                 'expected' => '3ccec323'
+            ],
+            'invalid input key' => [
+                'input' => 'srfm-input-invalid-key',
+                'expected' => ''
+            ],
+            'input with empty key' => [
+                'input' => '',
+                'expected' => ''
             ],
         ];
 
