@@ -58,8 +58,10 @@
 		}
 	}
 
-	.srfm-input-textarea {
-		height: unset !important;
+	.srfm-block-wrap {
+		.srfm-input-textarea {
+			height: unset !important;
+		}
 	}
 
 	// Address block styles.
