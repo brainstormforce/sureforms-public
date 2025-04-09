@@ -1042,11 +1042,11 @@ class Post_Types {
 		}
 
 		// Allow AIOSEO functionality on its own settings pages.
-		if ( isset( $_SERVER['REQUEST_URI'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-			$request_uri = sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		if ( isset( $_SERVER['REQUEST_URI'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Checking request URI for AIOSEO settings.
+			$request_uri = sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Sanitizing request URI.
 			if ( strpos( $request_uri, 'admin.php' ) !== false ) {
-				if ( isset( $_GET['page'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-					$page = sanitize_text_field( wp_unslash( $_GET['page'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+				if ( isset( $_GET['page'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Checking page query parameter for AIOSEO settings.
+					$page = sanitize_text_field( wp_unslash( $_GET['page'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Sanitizing page parameter.
 					if ( strpos( $page, 'aioseo' ) !== false ) {
 						return;
 					}
