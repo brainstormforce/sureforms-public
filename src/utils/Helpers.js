@@ -204,9 +204,14 @@ const pushSmartTagToArray = (
 			return;
 		}
 
+		// Verify if `block.attributes.block_id` is defined and not empty.
+		if ( ! block?.attributes?.block_id ) {
+			return;
+		}
+
 		const fieldSlug = blockSlugs[ block.attributes.block_id ];
 
-		if ( 'undefined' === typeof fieldSlug ) {
+		if ( 'undefined' === typeof fieldSlug || ! fieldSlug ) {
 			// If we are here, then field is invalid and we don't need to process it.
 			return;
 		}
