@@ -66,13 +66,21 @@ $placeholder_color: #9ca3af;
 }
 
 /* Add the separator after the second last item in the SureForms Settings Submenu */
-#toplevel_page_sureforms_menu .wp-submenu li:nth-last-child( 2 )::after {
+#toplevel_page_sureforms_menu .wp-submenu li:nth-child(5)::after {
 	content: "";
 	border-bottom: 1px solid rgb( 255 255 255 / 0.2 );
 	display: block;
 	float: left;
 	margin: 8px 0;
 	width: 100%;
+}
+
+#toplevel_page_sureforms_menu .wp-submenu li a[href="https://sureforms.com/upgrade-pro"] {
+	background-color: #04A382;
+	color: #FFFFFF;
+	font-size: 14px;
+	font-weight: 500;
+	line-height: 20px;
 }
 
 /* Add negative margins to the top separator if this is not the current submenu */

@@ -37,6 +37,9 @@ class Admin {
 		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_scripts' ] );
 		add_action( 'admin_menu', [ $this, 'settings_page' ] );
 		add_action( 'admin_menu', [ $this, 'add_new_form' ] );
+		if ( ! defined( 'SRFM_PRO_VER' ) ) {
+			add_action( 'admin_menu', [ $this, 'add_upgrade_to_pro' ] );
+		}
 		add_filter( 'plugin_action_links', [ $this, 'add_settings_link' ], 10, 2 );
 		add_action( 'enqueue_block_assets', [ $this, 'enqueue_styles' ] );
 		add_action( 'admin_head', [ $this, 'enqueue_header_styles' ] );
@@ -209,6 +212,22 @@ class Admin {
 			wp_safe_redirect( admin_url( 'admin.php?page=sureforms_form_settings&tab=general-settings' ) );
 			exit;
 		}
+	}
+
+	/**
+	 * Add Upgrade to pro menu item.
+	 *
+	 * @return void
+	 * @since x.x.x
+	 */
+	public function add_upgrade_to_pro() {
+		add_submenu_page(
+			'sureforms_menu',
+			__( 'Upgrade to Pro', 'sureforms' ),
+			__( 'Upgrade to Pro', 'sureforms' ),
+			'edit_others_posts',
+			'https://sureforms.com/upgrade-pro/'
+		);
 	}
 
 	/**
