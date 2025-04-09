@@ -199,7 +199,9 @@ class Helper {
 		$parts = explode( '-lbl-', $field_key );
 		if ( isset( $parts[0] ) ) {
 			$block_id = explode( '-', $parts[0] );
-			return end( $block_id );
+			if ( is_array( $block_id ) && ! empty( $block_id ) ) {
+				return end( $block_id );
+			}
 		}
 		return '';
 	}
