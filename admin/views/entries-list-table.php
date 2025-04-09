@@ -498,10 +498,8 @@ class Entries_List_Table extends \WP_List_Table {
 					 * This will help us to create a consistent CSV file with the same order of columns.
 					 */
 					foreach ( $result['form_data'] as $key => $value ) {
-						if ( preg_match( '/^srfm-[a-z]+-([a-f0-9]+)-lbl-([A-Za-z0-9+=\/]+)-/', $key, $matches ) ) {
-							$block_id     = $matches[1];
-							$label_base64 = $matches[2];
-							$label        = Helper::decrypt( $label_base64 );
+							$block_id     = Helper::get_block_id_from_key( $key );
+							$label = Helper::get_field_label_from_key( $key );
 
 							// Only store latest key for each block_id.
 							$block_key_map[ $block_id ]   = $key;
@@ -509,7 +507,6 @@ class Entries_List_Table extends \WP_List_Table {
 							if ( ! isset( $block_labels[ $block_id ] ) ) {
 								$block_labels[ $block_id ] = $label;
 							}
-						}
 					}
 				}
 
