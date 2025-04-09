@@ -191,13 +191,13 @@ class Helper {
 	 * @return string Extracted block ID.
 	 */
 	public static function get_block_id_from_key( $field_key ) {
-		 // Check if the key contains the block ID identifier.
-		 if ( strpos( $field_key, 'srfm-' ) !== 0 || strpos( $field_key, '-lbl-' ) === false ) {
-            return '';  // Return empty if the key format is invalid.
-        }
+		// Check if the key contains the block ID identifier.
+		if ( strpos( $field_key, 'srfm-' ) !== 0 || strpos( $field_key, '-lbl-' ) === false ) {
+			return '';  // Return empty if the key format is invalid.
+		}
 
 		$parts = explode( '-lbl-', $field_key );
-		if( isset( $parts[0] ) ) {
+		if ( isset( $parts[0] ) ) {
 			$block_id = explode( '-', $parts[0] );
 			return end( $block_id );
 		}

@@ -481,11 +481,11 @@ class Entries_List_Table extends \WP_List_Table {
 					continue;
 				}
 
-				$csv_files[] = $csv_filepath;
-				$block_key_map   = [];
-				$block_labels    = [];
+				$csv_files[]   = $csv_filepath;
+				$block_key_map = [];
+				$block_labels  = [];
 
-				// Step 1: Build consistent map of block_id => latest key and label
+				// Step 1: Build consistent map of block_id => latest key and label.
 				foreach ( $results as $result ) {
 					if ( empty( $result['form_data'] ) || ! is_array( $result['form_data'] ) ) {
 						// Probably invalid submission.
@@ -498,15 +498,15 @@ class Entries_List_Table extends \WP_List_Table {
 					 * This will help us to create a consistent CSV file with the same order of columns.
 					 */
 					foreach ( $result['form_data'] as $key => $value ) {
-							$block_id     = Helper::get_block_id_from_key( $key );
-							$label = Helper::get_field_label_from_key( $key );
+							$block_id = Helper::get_block_id_from_key( $key );
+							$label    = Helper::get_field_label_from_key( $key );
 
 							// Only store latest key for each block_id.
-							$block_key_map[ $block_id ]   = $key;
+							$block_key_map[ $block_id ] = $key;
 							// Only update the label if it is not already set.
-							if ( ! isset( $block_labels[ $block_id ] ) ) {
-								$block_labels[ $block_id ] = $label;
-							}
+						if ( ! isset( $block_labels[ $block_id ] ) ) {
+							$block_labels[ $block_id ] = $label;
+						}
 					}
 				}
 
@@ -518,7 +518,7 @@ class Entries_List_Table extends \WP_List_Table {
 				// Add the headers to the CSV file.
 				fputcsv( $stream, $labels );
 
-				// Step 3: Write each row using block_id -> matched key
+				// Step 3: Write each row using block_id -> matched key.
 				foreach ( $results as $result ) {
 					if ( empty( $result['form_data'] ) || ! is_array( $result['form_data'] ) ) {
 						continue;
@@ -555,7 +555,6 @@ class Entries_List_Table extends \WP_List_Table {
 
 					fputcsv( $stream, $values );
 				}
-
 
 				fclose( $stream ); // phpcs:ignore -- Using fclose as we have used fopen above to decrease the memory use.
 
