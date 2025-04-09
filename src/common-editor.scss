@@ -866,11 +866,14 @@ button.components-button.srfm-review-select-btn.is-secondary {
 }
 
 // Text Styles Popup Stylings.
-.srfm-text-style-options {
-	.srfm-control-popup {
-		display: flex;
-		flex-direction: column;
-		gap: 15px;
+.components-base-control {
+	.srfm-text-style-options {
+		margin-bottom: 0;
+		.srfm-control-popup {
+			display: flex;
+			flex-direction: column;
+			gap: 15px;
+		}
 	}
 }
 
