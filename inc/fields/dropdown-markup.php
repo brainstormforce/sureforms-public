@@ -40,22 +40,31 @@ class Dropdown_Markup extends Base {
 	protected $search_attr;
 
 	/**
+	 * Flag indicating if the value should be shown.
+	 *
+	 * @var bool
+	 * @since 1.5.0
+	 */
+	protected $show_values;
+
+	/**
 	 * Initialize the properties based on block attributes.
 	 *
 	 * @param array<mixed> $attributes Block attributes.
 	 * @since 0.0.2
 	 */
 	public function __construct( $attributes ) {
+		$this->slug = 'dropdown';
 		$this->set_properties( $attributes );
 		$this->set_input_label( __( 'Dropdown', 'sureforms' ) );
 		$this->set_error_msg( $attributes, 'srfm_dropdown_block_required_text' );
-		$this->slug              = 'dropdown';
 		$this->multi_select_attr = ! empty( $attributes['multiSelect'] ) ? 'true' : 'false';
 		$this->search_attr       = ! empty( $attributes['searchable'] ) ? 'true' : 'false';
 		$this->set_markup_properties();
 		$this->set_aria_described_by();
 		$this->set_label_as_placeholder( $this->input_label );
 		$this->placeholder = ! empty( $this->placeholder_attr ) ? $this->label : __( 'Select an option', 'sureforms' );
+		$this->show_values = apply_filters( 'srfm_show_options_values', false, $attributes['showValues'] ?? false );
 	}
 
 	/**
@@ -65,8 +74,10 @@ class Dropdown_Markup extends Base {
 	 * @return string|bool
 	 */
 	public function markup() {
+		$this->class_name = $this->get_field_classes();
+
 		ob_start(); ?>
-			<div data-block-id="<?php echo esc_attr( $this->block_id ); ?>" class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $this->slug ); ?>-block srf-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?>-block<?php echo esc_attr( $this->block_width ); ?><?php echo esc_attr( $this->class_name ); ?> <?php echo esc_attr( $this->conditional_class ); ?>">
+			<div data-block-id="<?php echo esc_attr( $this->block_id ); ?>" class="<?php echo esc_attr( $this->class_name ); ?>">
 				<fieldset>
 					<input class="srfm-input-<?php echo esc_attr( $this->slug ); ?>-hidden" data-required="<?php echo esc_attr( $this->data_require_attr ); ?>" <?php echo wp_kses_post( $this->data_attribute_markup() ); ?> name="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?><?php echo esc_attr( $this->field_name ); ?>" type="hidden" value=""/>
 					<legend class="srfm-block-legend">
@@ -87,7 +98,7 @@ class Dropdown_Markup extends Base {
 								$icon_svg         = Spec_Gb_Helper::render_svg_html( $option['icon'] ?? '', true );
 								$escaped_icon_svg = htmlspecialchars( Helper::get_string_value( $icon_svg ), ENT_QUOTES, 'UTF-8' );
 							?>
-								<option value="<?php echo isset( $option['label'] ) ? esc_html( $option['label'] ) : ''; ?>" data-icon="<?php echo ! empty( $escaped_icon_svg ) ? esc_attr( $escaped_icon_svg ) : ''; ?>"><?php echo isset( $option['label'] ) ? esc_html( $option['label'] ) : ''; ?></option>
+								<option value="<?php echo isset( $option['label'] ) ? esc_html( $option['label'] ) : ''; ?>" data-icon="<?php echo ! empty( $escaped_icon_svg ) ? esc_attr( $escaped_icon_svg ) : ''; ?>" <?php echo $this->show_values && isset( $option['value'] ) ? 'option-value="' . esc_attr( $option['value'] ) . '"' : ''; ?>><?php echo isset( $option['label'] ) ? esc_html( $option['label'] ) : ''; ?></option>
 								<?php
 						}
 						?>

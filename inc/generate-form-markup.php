@@ -245,6 +245,17 @@ class Generate_Form_Markup {
 			$label_text_color_var = $label_text_color ? $label_text_color : '#111827';
 
 			$selected_size = Helper::get_css_vars( $field_spacing );
+
+			$should_show_submit_button = apply_filters(
+				'srfm_show_submit_button',
+				0 !== $block_count && ! $is_inline_button || $is_page_break,
+				$id
+			);
+
+			if ( ! $should_show_submit_button ) {
+				$form_classes[] = 'srfm-submit-button-hidden';
+			}
+
 			?>
 			<div class="<?php echo esc_attr( implode( ' ', array_filter( $form_classes ) ) ); ?>">
 			<style>
@@ -262,7 +273,7 @@ class Generate_Form_Markup {
 					--srfm-color-input-prefix: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.65 );
 					--srfm-color-input-background: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.02 );
 					--srfm-color-input-background-hover: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.05 );
-					--srfm-color-input-background-disabled: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.05 );
+					--srfm-color-input-background-disabled: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.07 );
 					--srfm-color-input-border: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.25 );
 					--srfm-color-input-border-disabled: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.15 );
 					--srfm-color-multi-choice-svg: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.7 );
@@ -400,10 +411,7 @@ class Generate_Form_Markup {
 				do_action( 'srfm_after_field_content', $post, $id );
 
 				?>
-				<?php
-				if ( 0 !== $block_count && ! $is_inline_button || $is_page_break ) {
-					?>
-					<?php if ( ! empty( $security_type ) && 'none' !== $security_type ) { ?>
+					<?php if ( $should_show_submit_button && ! empty( $security_type ) && 'none' !== $security_type ) { ?>
 						<div class="srfm-captcha-container <?php echo esc_attr( 'v3-reCAPTCHA' === $recaptcha_version || 'v2-invisible' === $recaptcha_version ? 'srfm-display-none' : '' ); ?>">
 						<?php if ( is_string( $google_captcha_site_key ) && ! empty( $google_captcha_site_key ) && 'g-recaptcha' === $security_type ) { ?>
 
@@ -463,7 +471,7 @@ class Generate_Form_Markup {
 					}
 					?>
 
-					<div class="srfm-submit-container <?php echo esc_attr( $is_page_break ? 'srfm-hide' : '' ); ?>">
+					<div class="srfm-submit-container <?php echo esc_attr( $is_page_break ? 'srfm-hide' : '' ); ?>" style="<?php echo ! $should_show_submit_button ? 'visibility:hidden;position:absolute;' : ''; ?>">
 						<div style="width: <?php echo esc_attr( $full ? '100%' : '' ); ?>; text-align: <?php echo esc_attr( $submit_button_alignment ); ?>" class="wp-block-button">
 						<?php do_action( 'srfm_before_submit_button', $id ); ?>
 						<button style="width:<?php echo esc_attr( $full ? '100%;' : '' ); ?>" id="srfm-submit-btn"class="<?php echo esc_attr( '1' === $btn_from_theme ? 'wp-block-button__link' : 'srfm-btn-frontend srfm-button srfm-submit-button' ); ?><?php echo 'v3-reCAPTCHA' === $recaptcha_version ? ' g-recaptcha' : ''; ?>"
@@ -482,16 +490,13 @@ class Generate_Form_Markup {
 						</div>
 					</div>
 					<?php
-				}
+		}
 				self::common_error_message( 'footer' );
-				?>
+		?>
 			</form>
 			<div class="srfm-single-form srfm-success-box in-page">
 				<div aria-live="polite" aria-atomic="true" role="alert" id="srfm-success-message-page-<?php echo esc_attr( Helper::get_string_value( $id ) ); ?>" class="srfm-success-box-description"></div>
 			</div>
-			<?php
-		}
-		?>
 			</div>
 		<?php
 		return ob_get_clean();
@@ -501,7 +506,7 @@ class Generate_Form_Markup {
 	 * Generate common error message markup
 	 *
 	 * @param string $position position of the error message.
-	 * @since x.x.x
+	 * @since 1.5.0
 	 * @return void
 	 */
 	public static function common_error_message( $position = 'footer' ) {
