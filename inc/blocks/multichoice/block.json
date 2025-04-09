@@ -29,13 +29,13 @@
 		"singleSelection": {
 			"type": "boolean"
 		},
-    "minValue": {
-      "type": "number"
-    },
-    "maxValue": {
-      "type": "number"
-    },
-    "verticalLayout": {
+		"minValue": {
+			"type": "number"
+		},
+		"maxValue": {
+			"type": "number"
+		},
+		"verticalLayout": {
 			"type": "boolean"
 		},
 		"options": {
@@ -44,7 +44,7 @@
 				{
 					"optionTitle": "Option 1",
 					"icon": "",
-          "image": ""
+					"image": ""
 				}
 			]
 		},
@@ -81,13 +81,13 @@
 			"type":"boolean",
 			"default":false
 		},
-    "slug":{
+		"slug":{
 			"type":"string",
 			"default":""
 		},
-    "optionType": {
-      "type": "string",
-      "default": "icon"
-    }
+		"optionType": {
+			"type": "string",
+			"default": "icon"
+		}
 	}
 }
