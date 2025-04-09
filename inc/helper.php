@@ -187,7 +187,7 @@ class Helper {
 	 * Extracts the block ID from the dynamic field key ( or field slug ).
 	 *
 	 * @param string $field_key Dynamic field key.
-	 * @since 1.1.1
+	 * @since x.x.x
 	 * @return string Extracted block ID.
 	 */
 	public static function get_block_id_from_key( $field_key ) {
