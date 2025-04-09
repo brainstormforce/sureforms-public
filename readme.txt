@@ -260,7 +260,7 @@ Yes! You can certainly use SureForms on yours as well as your client’s website
 When you use SureForms, you get an easy-to-use AI-powered form builder that can be used to build your forms fast.
 
 == Changelog ==
-= 1.5.0 - 8th April 2025 =
+= 1.5.0 - 9th April 2025 =
 * New: New: Added support for Calculators in Business Plan.
 * New: Added support for prefix and suffix in the Number field.
 * New: Multiple hooks for email and form submission were added.
