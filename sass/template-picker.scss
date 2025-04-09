@@ -380,15 +380,94 @@ $sidebar_width: 290px;
 			display: flex;
 			flex-direction: column;
 			width: 768px;
-			min-height: 420px;
+			min-height: 680px;
 			gap: 32px;
 			padding: 40px;
 			background: #ffffff;
 
+			.srfm-ai-builder-form-type-selector {
+				width: 100%;
+
+				.srfm-ai-builder-form-type-label {
+					font-size: 20px;
+					font-weight: 600;
+					color: #121826;
+					margin: 0 0 18px 0;
+					line-height: 28px;
+				}
+
+				.srfm-ai-builder-form-type-selector {
+					display: flex;
+					align-items: center;
+					background-color: #f3f4f6;
+					position: relative;
+					width: 100%;
+					height: 48px;
+					border-radius: 8px;
+					border: 0.5px solid #e5e7eb;
+
+					.srfm-ai-builder-form-type-highlight {
+						position: absolute;
+						width: calc( 50% - 4px );
+						height: 40px;
+						border-radius: 6px;
+						padding: 6px;
+						background-color: #ffffff;
+						box-shadow: 0px 1px 2px 0px #0000000d;
+						left: 4px;
+						transition: left 0.3s ease-in-out;
+					}
+
+					.srfm-ai-builder-form-type-option {
+						flex: 1;
+						font-weight: 500;
+						font-size: 18px;
+						line-height: 28px;
+						cursor: pointer;
+						padding: 6px;
+						position: relative;
+						z-index: 2;
+						transition: color 0.3s ease-in-out;
+						color: #bdc1c7;
+
+						svg {
+							path {
+								stroke: #bdc1c7;
+							}
+						}
+
+						.srfm-ai-builder-form-type-text {
+							display: flex;
+							justify-content: center;
+							align-items: center;
+						}
+
+						&.active {
+							cursor: default;
+							color: #111827;
+
+							svg {
+								path {
+									stroke: #111827;
+								}
+							}
+						}
+
+						&.disabled {
+							cursor: default;
+							display: flex;
+							align-items: center;
+							justify-content: center;
+							gap: 8px;
+						}
+					}
+				}
+			}
+
 			.srfm-ai-builder-header-title {
-				font-size: 30px;
+				font-size: 20px;
+				line-height: 28px;
 				font-weight: 600;
-				line-height: 36px;
 				text-align: left;
 				margin: 0;
 				padding: 0;
@@ -398,7 +477,15 @@ $sidebar_width: 290px;
 			.srfm-ai-builder-textarea-ctn {
 				display: flex;
 				flex-direction: column;
-				gap: 12px;
+				gap: 16px;
+
+				.srfm-ai-builder-header-subtitle {
+					font-size: 12px;
+					line-height: 16px;
+					margin-top: -8px;
+					margin-bottom: -8px;
+					color: #6b7280;
+				}
 
 				textarea {
 					width: 688px;
