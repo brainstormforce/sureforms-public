@@ -16,8 +16,8 @@ const FromEmail = ( {	formData,
 	 * Validate and show warning message for From Email
 	 */
 	const validateAndShowFromEmailWarning = () => {
-		const fromEmail = formData.from_email || '';
-		const userEnteredUrl = fromEmail.split( '@' )[ 1 ] || '';
+		const fromEmail = formData?.from_email || '';
+		const userEnteredUrl = fromEmail?.split( '@' )[ 1 ] || '';
 		const siteUrl = window?.srfm_block_data?.site_url || '';
 		const isValidEmail = /^[\p{L}\p{N}._%+-]+@[\p{L}\p{N}.-]+\.[\p{L}]{2,}$/u.test( fromEmail );
 
@@ -97,7 +97,7 @@ const FromEmail = ( {	formData,
 							from_name: e.target.value,
 						} )
 					}
-					value={ formData.from_name }
+					value={ formData?.from_name }
 					className="srfm-modal-input"
 				/>
 				<SmartTagList
@@ -122,7 +122,7 @@ const FromEmail = ( {	formData,
 						setFormData( {
 							...formData,
 							from_name:
-                            formData.from_name + tag,
+                            formData?.from_name + tag,
 						} )
 					}
 				/>
@@ -142,7 +142,7 @@ const FromEmail = ( {	formData,
 							from_email: e.target.value.trim(),
 						} );
 					} }
-					value={ formData.from_email }
+					value={ formData?.from_email }
 					className="srfm-modal-input srfm-modal-from-email"
 				/>
 				<SmartTagList
@@ -167,7 +167,7 @@ const FromEmail = ( {	formData,
 						setFormData( {
 							...formData,
 							from_email:
-                                formData.from_email + tag,
+                                formData?.from_email + tag,
 						} )
 					}
 				/>
