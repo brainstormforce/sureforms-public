@@ -111,7 +111,10 @@ const EmailConfirmation = ( props ) => {
 
 	const emailHelpText = __( 'Comma separated values are also accepted.', 'sureforms' );
 
-	useEffect( () => {
+	/**
+	 * Validate and show warning message for From Email
+	 */
+	const validateAndShowFromEmailWarning = () => {
 		const fromEmail = formData.from_email || '';
 		const userEnteredUrl = fromEmail.split( '@' )[ 1 ] || '';
 		const siteUrl = window?.srfm_block_data?.site_url || '';
@@ -168,8 +171,14 @@ const EmailConfirmation = ( props ) => {
 			// No warning needed
 			setFromEmailWarningMessage();
 		}
-	}
-	, [ formData ] );
+	};
+
+	useEffect(
+		() => {
+			// Validate and show warning message for From Email
+			validateAndShowFromEmailWarning();
+		}
+		, [ formData ] );
 
 	return (
 		<div className="srfm-modal-content">
