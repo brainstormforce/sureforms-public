@@ -261,7 +261,6 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 
 == Changelog ==
 = x.x.x =
-* New: Added srfm_email_notification_should_send, srfm_email_notification filter and srfm_before_email_send, srfm_after_email_send, srfm_before_submit_button, srfm_after_submit_button actions for enhanced email customization.
 * Fix: Resolved a compatibility issue with Astra Pro and All in One SEO Plugin where SEO preview was not working due to the sureform post type being unregistered.
 = 1.5.0 - 9th April 2025 =
 * New: New: Added support for Calculators in Business Plan.
