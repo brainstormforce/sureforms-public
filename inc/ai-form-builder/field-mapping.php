@@ -59,9 +59,10 @@ class Field_Mapping {
 		$post_content = '';
 
 		$is_conversational = isset( $params['is_conversional'] ) ? filter_var( $params['is_conversional'], FILTER_VALIDATE_BOOLEAN ) : false;
+		$form_type         = isset( $params['form_type'] ) ? Helper::get_string_value( $params['form_type'] ) : 'simple';
 
 		// Filer to skip fields while mapping the fields.
-		$skip_fields = apply_filters( 'srfm_ai_field_map_skip_fields', [], $is_conversational );
+		$skip_fields = apply_filters( 'srfm_ai_field_map_skip_fields', [], $is_conversational, $form_type );
 
 		// Loop through questions.
 		foreach ( $form_fields as $question ) {
@@ -84,11 +85,12 @@ class Field_Mapping {
 					'label'    => sanitize_text_field( $question['label'] ),
 					'required' => filter_var( $question['required'], FILTER_VALIDATE_BOOLEAN ),
 					'help'     => sanitize_text_field( $question['helpText'] ),
+					'slug'     => isset( $question['slug'] ) ? sanitize_text_field( $question['slug'] ) : '',
 				]
 			);
 
 			// Apply filter to modify field type.
-			$field_type = apply_filters( 'srfm_ai_field_modify_field_type', $question['fieldType'], $question, $is_conversational );
+			$field_type = apply_filters( 'srfm_ai_field_modify_field_type', $question['fieldType'], $question, $is_conversational, $form_type );
 
 			// Determine field type based on field_type.
 			switch ( $field_type ) {
@@ -109,6 +111,10 @@ class Field_Mapping {
 					! empty( $question['fieldOptions'][0]['label'] )
 					) {
 						$merged_attributes['options'] = $question['fieldOptions'];
+
+						if ( isset( $question['showValues'] ) ) {
+							$merged_attributes['showValues'] = filter_var( $question['showValues'], FILTER_VALIDATE_BOOLEAN );
+						}
 
 						// remove icon from options for the dropdown field.
 						foreach ( $merged_attributes['options'] as $key => $option ) {
@@ -143,6 +149,10 @@ class Field_Mapping {
 							);
 						}
 
+						if ( isset( $question['showValues'] ) ) {
+							$merged_attributes['showValues'] = filter_var( $question['showValues'], FILTER_VALIDATE_BOOLEAN );
+						}
+
 						// Set single selection if provided.
 						if ( isset( $question['singleSelection'] ) ) {
 							$merged_attributes['singleSelection'] = filter_var( $question['singleSelection'], FILTER_VALIDATE_BOOLEAN );
@@ -156,6 +166,9 @@ class Field_Mapping {
 					if ( 'phone' === $field_type ) {
 						$merged_attributes['autoCountry'] = true;
 					}
+
+					// Apply filter to modify merged attributes.
+					$merged_attributes = apply_filters( 'srfm_ai_form_builder_modify_merged_attributes', $merged_attributes, $question, $is_conversational, $form_type );
 
 					// if field type is needs to be skipped then skip that field.
 					if ( ! empty( $skip_fields ) && in_array( $field_type, $skip_fields, true ) ) {
@@ -177,6 +190,26 @@ class Field_Mapping {
 					}
 
 					// Handle specific attributes for certain pro fields.
+					if ( 'slider' === $field_type ) {
+						$merged_attributes['min']  = ! empty( $question['min'] ) ? filter_var( $question['min'], FILTER_VALIDATE_INT ) : 0;
+						$merged_attributes['max']  = ! empty( $question['max'] ) ? filter_var( $question['max'], FILTER_VALIDATE_INT ) : 100;
+						$merged_attributes['step'] = ! empty( $question['step'] ) ? filter_var( $question['step'], FILTER_VALIDATE_INT ) : 1;
+
+						$merged_attributes['prefixTooltip'] = ! empty( $question['prefixTooltip'] ) ? $question['prefixTooltip'] : '';
+						$merged_attributes['suffixTooltip'] = ! empty( $question['suffixTooltip'] ) ? $question['suffixTooltip'] : '';
+
+						// get min and max then diveide by 2 and round it.
+						$min = $merged_attributes['min'];
+						$max = $merged_attributes['max'];
+
+						if ( is_numeric( $min ) && is_numeric( $max ) ) {
+							$min = intval( $min );
+							$max = intval( $max );
+
+							// If min and max are same then set the value to 0.
+							$merged_attributes['numberDefaultValue'] = Helper::get_string_value( round( ( $min + $max ) / 2 ) );
+						}
+					}
 					if ( 'date-picker' === $field_type ) {
 						$merged_attributes['dateFormat'] = ! empty( $question['dateFormat'] ) ? sanitize_text_field( $question['dateFormat'] ) : 'mm/dd/yy';
 						$merged_attributes['min']        = ! empty( $question['minDate'] ) ? sanitize_text_field( $question['minDate'] ) : '';
@@ -261,7 +294,7 @@ class Field_Mapping {
 			}
 		}
 
-		return $post_content;
+		return apply_filters( 'srfm_ai_form_builder_post_content', $post_content, $is_conversational, $form_type );
 	}
 
 }
