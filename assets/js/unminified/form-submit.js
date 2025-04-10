@@ -36,6 +36,29 @@ document.addEventListener( 'DOMContentLoaded', function () {
 
 		form.addEventListener( 'submit', async ( e ) => {
 			e.preventDefault();
+
+			const formTarget = e.target;
+			if ( formTarget?.tagName === 'FORM' ) {
+				// If the submit button is hidden, prevent form submission.
+				const getTheContainer = formTarget?.closest(
+					'.srfm-form-container'
+				);
+				const hasHiddenClass = getTheContainer?.classList.contains(
+					'srfm-submit-button-hidden'
+				);
+
+				const isCustomButton = formTarget?.querySelector(
+					'button.srfm-custom-button'
+				);
+
+				if ( hasHiddenClass && ! isCustomButton ) {
+					console.warn(
+						'Form submission is disabled because the submit button is hidden.'
+					);
+					return;
+				}
+			}
+
 			handleFormSubmission(
 				form,
 				formId,

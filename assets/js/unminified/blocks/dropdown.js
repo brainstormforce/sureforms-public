@@ -69,6 +69,11 @@ function initializeDropdown() {
 							'value',
 							Array.isArray( value ) ? value.join( ',' ) : value
 						);
+
+						// Dispatch the change event on the hidden input field.
+						hiddenInputField.dispatchEvent(
+							new Event( 'change', { bubbles: true } )
+						);
 					}
 				},
 				// Handle the input state when an item is added or removed.
