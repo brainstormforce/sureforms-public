@@ -162,9 +162,9 @@ class Admin_Ajax {
 			'srfm_integrated_plugins',
 			[
 				[
-					'title'       => __( 'SureTriggers', 'sureforms' ),
+					'title'       => __( 'OttoKit', 'sureforms' ),
 					'subtitle'    => __( 'Connect SureForms to hundreds of apps, CRMs and tools such as Slack, Mailchimp, etc.', 'sureforms' ),
-					'description' => __( 'SureTriggers is a powerful automation platform that helps you connect your various plugins and apps together. It allows you to automate repetitive tasks, so you can focus on more important work.', 'sureforms' ),
+					'description' => __( 'OttoKit is a powerful automation platform that helps you connect your various plugins and apps together. It allows you to automate repetitive tasks, so you can focus on more important work.', 'sureforms' ),
 					'status'      => self::get_plugin_status( 'suretriggers/suretriggers.php' ),
 					'slug'        => 'suretriggers',
 					'path'        => 'suretriggers/suretriggers.php',
@@ -230,7 +230,7 @@ class Admin_Ajax {
 			wp_send_json_error(
 				[
 					'code'    => 'invalid_secret_key',
-					'message' => __( 'SureTriggers is not configured properly.', 'sureforms' ),
+					'message' => __( 'OttoKit is not configured properly.', 'sureforms' ),
 				]
 			);
 		}

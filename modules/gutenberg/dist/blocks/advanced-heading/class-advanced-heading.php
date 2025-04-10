@@ -5,6 +5,8 @@
  * @package Sureforms
  */
 
+use SRFM\Inc\Helper;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
@@ -699,11 +701,23 @@ if ( ! class_exists( 'Advanced_Heading' ) ) {
 
 			$conditional_class = apply_filters( 'srfm_conditional_logic_classes', $form_id, $block_id );
 
+			$filter_classes = apply_filters( 'srfm_field_classes', '', [ 'attributes' => $attributes ] );
+			$field_config   = apply_filters(
+				'srfm_field_config',
+				[],
+				[
+					'attributes' => $attributes,
+					'blockName'  => 'srfm/advanced-heading',
+				]
+			);
+			$field_config   = $field_config ? htmlspecialchars( Helper::get_string_value( wp_json_encode( $field_config, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) ), ENT_QUOTES, 'UTF-8' ) : '';
+
 			$main_classes = [
 				'wp-block-uagb-advanced-heading',
 				'uagb-block',
 				'uagb-block-' . $block_id,
 				$conditional_class,
+				$filter_classes,
 			];
 
 			if ( isset( $attributes['className'] ) ) {
@@ -712,7 +726,7 @@ if ( ! class_exists( 'Advanced_Heading' ) ) {
 
 			ob_start();
 			?>
-				<<?php echo esc_attr( $element ); ?> data-block-id="<?php echo esc_attr( $block_id ); ?>" class="<?php echo esc_attr( implode( ' ', $main_classes ) ); ?>">
+				<<?php echo esc_attr( $element ); ?> data-block-id="<?php echo esc_attr( $block_id ); ?>" class="<?php echo esc_attr( implode( ' ', $main_classes ) ); ?>" <?php echo ! empty( $field_config ) ? "data-field-config='" . esc_attr( $field_config ) . "'" : ''; ?>>
 					<?php
 					if ( $attributes['headingDescToggle']
 						&& 'above-heading' === $attributes['headingDescPosition']

@@ -39,7 +39,7 @@
 			}
 		}
 
-		.srfm-block {
+		.srfm-block:not( .srfm-number-block ) {
 			&.srfm-error,
 			&.srfm-valid-email-error {
 				.srfm-block-wrap {
