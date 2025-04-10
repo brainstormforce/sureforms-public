@@ -27,6 +27,33 @@ class Helper {
 	use Get_Instance;
 
 	/**
+	 * Allowed HTML tags for SVG.
+	 *
+	 * @var array<string, array<string, bool>>
+	 */
+	public static $allowed_tags_svg = [
+		'span' => [
+			'class'       => true,
+			'aria-hidden' => true,
+		],
+		'svg'  => [
+			'xmlns'   => true,
+			'width'   => true,
+			'height'  => true,
+			'viewBox' => true,
+			'fill'    => true,
+		],
+		'path' => [
+			'd'               => true,
+			'stroke'          => true,
+			'stroke-opacity'  => true,
+			'stroke-width'    => true,
+			'stroke-linecap'  => true,
+			'stroke-linejoin' => true,
+		],
+	];
+
+	/**
 	 * Sureforms SVGs.
 	 *
 	 * @var mixed srfm_svgs
@@ -600,7 +627,7 @@ class Helper {
 			}
 			$label                = explode( '-lbl-', $key )[1];
 			$slug                 = implode( '-', array_slice( explode( '-', $label ), 1 ) );
-			$mapped_data[ $slug ] = $value;
+			$mapped_data[ $slug ] = is_string( $value ) ? html_entity_decode( esc_attr( $value ) ) : $value;
 		}
 		return $mapped_data;
 	}
