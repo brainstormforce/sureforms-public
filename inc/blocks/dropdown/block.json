@@ -29,12 +29,12 @@
 			"type": "boolean",
 			"default": false
 		},
-    "minValue": {
-      "type": "number"
-    },
-    "maxValue": {
-      "type": "number"
-    },
+		"minValue": {
+			"type": "number"
+		},
+		"maxValue": {
+			"type": "number"
+		},
 		"searchable": {
 			"type": "boolean",
 			"default": true
@@ -44,7 +44,7 @@
 			"default": [
 				{ "label": "Option 1", "icon": "" },
 				{ "label": "Option 2", "icon": "" }
-			 ]
+			]
 		},
 		"fieldWidth": {
 			"type": "number",
@@ -74,7 +74,7 @@
 			"type":"boolean",
 			"default":false
 		},
-    "slug":{
+		"slug":{
 			"type":"string",
 			"default":""
 		}

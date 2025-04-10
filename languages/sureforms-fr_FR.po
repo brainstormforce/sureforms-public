@@ -73,7 +73,7 @@ msgstr "Entrées"
 msgid "Edit %1$s"
 msgstr "Modifier %1$s"
 
-#: admin/admin.php:765
+#: admin/admin.php:764
 #: api/block-patterns.php:110
 #: inc/ai-form-builder/ai-auth.php:45
 #: inc/ai-form-builder/ai-auth.php:81
@@ -82,22 +82,21 @@ msgstr "Modifier %1$s"
 #: inc/create-new-form.php:126
 #: inc/export.php:62
 #: inc/export.php:127
-#: inc/form-submit.php:201
-#: inc/form-submit.php:776
+#: inc/form-submit.php:200
+#: inc/form-submit.php:836
 #: inc/forms-data.php:87
 #: inc/global-settings/global-settings.php:86
 #: inc/global-settings/global-settings.php:294
 #: inc/rest-api.php:92
-#: inc/rest-api.php:126
 msgid "Nonce verification failed."
 msgstr "La vérification du nonce a échoué."
 
-#: admin/admin.php:774
+#: admin/admin.php:773
 msgid "You cannot view this entry because it is in trash."
 msgstr "Vous ne pouvez pas voir cette entrée car elle est dans la corbeille."
 
 #. translators: %1$s: Opening anchor tag with URL, %2$s: Closing anchor tag, %3$s: SureForms Pro Plugin Name.
-#: admin/admin.php:819
+#: admin/admin.php:818
 msgid "Please %1$sactivate%2$s your copy of %3$s to get new features, access support, receive update notifications, and more."
 msgstr "Veuillez %1$sactiver%2$s votre copie de %3$s pour obtenir de nouvelles fonctionnalités, accéder au support, recevoir des notifications de mise à jour, et plus encore."
 
@@ -433,18 +432,9 @@ msgstr "Installation en cours..."
 msgid "Installed"
 msgstr "Installé"
 
-#: inc/admin-ajax.php:165
-#: assets/build/formEditor.js:172
-msgid "SureTriggers"
-msgstr "SureTriggers"
-
 #: inc/admin-ajax.php:166
 msgid "Connect SureForms to hundreds of apps, CRMs and tools such as Slack, Mailchimp, etc."
 msgstr "Connectez SureForms à des centaines d'applications, de CRM et d'outils tels que Slack, Mailchimp, etc."
-
-#: inc/admin-ajax.php:167
-msgid "SureTriggers is a powerful automation platform that helps you connect your various plugins and apps together. It allows you to automate repetitive tasks, so you can focus on more important work."
-msgstr "SureTriggers est une plateforme d'automatisation puissante qui vous aide à connecter vos différents plugins et applications ensemble. Elle vous permet d'automatiser les tâches répétitives, afin que vous puissiez vous concentrer sur un travail plus important."
 
 #: inc/admin-ajax.php:218
 msgid "You do not have permission to access this page."
@@ -458,12 +448,8 @@ msgstr "Nonce invalide."
 msgid "Form ID is required."
 msgstr "L'identifiant du formulaire est requis."
 
-#: inc/admin-ajax.php:233
-msgid "SureTriggers is not configured properly."
-msgstr "SureTriggers n'est pas configuré correctement."
-
 #: inc/admin-ajax.php:242
-#: inc/form-submit.php:788
+#: inc/form-submit.php:848
 msgid "Invalid form ID."
 msgstr "ID de formulaire invalide."
 
@@ -653,9 +639,9 @@ msgid "New form submission"
 msgstr "Nouvelle soumission de formulaire"
 
 #: inc/export.php:146
-#: inc/export.php:151
-#: inc/export.php:186
-#: inc/export.php:203
+#: inc/export.php:150
+#: inc/export.php:185
+#: inc/export.php:202
 msgid "Failed to import form."
 msgstr "Échec de l'importation du formulaire."
 
@@ -669,17 +655,17 @@ msgstr "Case à cocher"
 
 #: inc/fields/checkbox-markup.php:60
 #: inc/fields/gdpr-markup.php:59
-#: inc/helper.php:276
-#: inc/helper.php:292
+#: inc/helper.php:303
+#: inc/helper.php:319
 #: assets/build/blocks.js:172
 msgid "Required"
 msgstr "Requis"
 
-#: inc/fields/dropdown-markup.php:50
+#: inc/fields/dropdown-markup.php:59
 msgid "Dropdown"
 msgstr "Menu déroulant"
 
-#: inc/fields/dropdown-markup.php:58
+#: inc/fields/dropdown-markup.php:66
 msgid "Select an option"
 msgstr "Sélectionnez une option"
 
@@ -701,7 +687,7 @@ msgid "I consent to have this website store my submitted information so they can
 msgstr "Je consens à ce que ce site web stocke les informations que j'ai soumises afin qu'ils puissent répondre à ma demande."
 
 #: inc/fields/inlinebutton-markup.php:182
-#: inc/generate-form-markup.php:456
+#: inc/generate-form-markup.php:464
 msgid "Please verify that you are not a robot."
 msgstr "Veuillez vérifier que vous n'êtes pas un robot."
 
@@ -709,11 +695,11 @@ msgstr "Veuillez vérifier que vous n'êtes pas un robot."
 msgid "Text Field"
 msgstr "Champ de texte"
 
-#: inc/fields/multichoice-markup.php:96
+#: inc/fields/multichoice-markup.php:105
 msgid "Multi Choice"
 msgstr "Choix multiple"
 
-#: inc/fields/number-markup.php:84
+#: inc/fields/number-markup.php:102
 msgid "Number"
 msgstr "Nombre"
 
@@ -754,34 +740,34 @@ msgstr "La réponse hCaptcha est manquante."
 msgid "Form data is not found."
 msgstr "Les données du formulaire sont introuvables."
 
-#: inc/form-submit.php:246
+#: inc/form-submit.php:250
 msgid "File is not uploaded"
 msgstr "Le fichier n'est pas téléchargé"
 
-#: inc/form-submit.php:256
+#: inc/form-submit.php:264
 msgid "Form Id is missing."
 msgstr "L'identifiant du formulaire est manquant."
 
-#: inc/form-submit.php:310
+#: inc/form-submit.php:321
 msgid "Cloudflare Turnstile validation failed."
 msgstr "La validation de Cloudflare Turnstile a échoué."
 
-#: inc/form-submit.php:336
+#: inc/form-submit.php:351
 msgid "hCaptcha validation failed."
 msgstr "La validation hCaptcha a échoué."
 
-#: inc/form-submit.php:360
-#: inc/form-submit.php:365
-#: inc/form-submit.php:390
-#: inc/form-submit.php:395
+#: inc/form-submit.php:381
+#: inc/form-submit.php:391
+#: inc/form-submit.php:421
+#: inc/form-submit.php:431
 msgid "reCAPTCHA error."
 msgstr "Erreur reCAPTCHA."
 
-#: inc/form-submit.php:401
+#: inc/form-submit.php:441
 msgid "Spam Detected"
 msgstr "Spam détecté"
 
-#: inc/form-submit.php:592
+#: inc/form-submit.php:634
 msgid "Error submitting form"
 msgstr "Erreur lors de la soumission du formulaire"
 
@@ -789,7 +775,9 @@ msgstr "Erreur lors de la soumission du formulaire"
 msgid "Sorry, you are not allowed to view the form."
 msgstr "Désolé, vous n'êtes pas autorisé à voir le formulaire."
 
-#: inc/generate-form-markup.php:483
+#: inc/generate-form-markup.php:516
+#: assets/build/formSubmit.js:2
+#: assets/js/unminified/form-submit.js:205
 msgid "There was an error trying to submit your form. Please try again."
 msgstr "Une erreur s'est produite lors de la soumission de votre formulaire. Veuillez réessayer."
 
@@ -844,15 +832,15 @@ msgstr "Champs généraux"
 msgid "Advanced Fields"
 msgstr "Champs avancés"
 
-#: inc/helper.php:44
+#: inc/helper.php:71
 msgid "This field is required."
 msgstr "Ce champ est requis."
 
-#: inc/helper.php:45
+#: inc/helper.php:72
 msgid "Value needs to be unique."
 msgstr "La valeur doit être unique."
 
-#: inc/helper.php:507
+#: inc/helper.php:534
 msgid "Sorry, you are not allowed to perform this action."
 msgstr "Désolé, vous n'êtes pas autorisé à effectuer cette action."
 
@@ -918,7 +906,7 @@ msgstr "Créer un nouveau formulaire"
 msgid "Create"
 msgstr "Créer"
 
-#: admin/admin.php:583
+#: admin/admin.php:582
 #: inc/post-types.php:88
 msgid "Import Form"
 msgstr "Formulaire d'importation"
@@ -1002,15 +990,11 @@ msgstr "Importer maintenant"
 msgid "There is some error in json file, please export the SureForms Forms again."
 msgstr "Il y a une erreur dans le fichier JSON, veuillez exporter à nouveau les formulaires SureForms."
 
-#: inc/rest-api.php:100
-msgid "Invalid request. Form ID missing."
-msgstr "Requête invalide. ID de formulaire manquant."
-
-#: inc/rest-api.php:132
+#: inc/rest-api.php:98
 msgid "Request could not be processed."
 msgstr "La demande n'a pas pu être traitée."
 
-#: inc/rest-api.php:138
+#: inc/rest-api.php:104
 msgid "Invalid date."
 msgstr "Date invalide."
 
@@ -1160,7 +1144,7 @@ msgstr "Icône"
 msgid "Heading"
 msgstr "En-tête"
 
-#: modules/gutenberg/dist/blocks/advanced-heading/class-advanced-heading.php:86
+#: modules/gutenberg/dist/blocks/advanced-heading/class-advanced-heading.php:88
 #: modules/gutenberg/build/blocks.js:171
 msgid "Your Attractive Heading"
 msgstr "Votre Titre Attrayant"
@@ -2168,6 +2152,7 @@ msgid "Cake Candles"
 msgstr "Bougies de gâteau"
 
 #: modules/gutenberg/icons/icons-v6-0.php:2916
+#: assets/build/templatePicker.js:172
 msgid "Calculator"
 msgstr "Calculatrice"
 
@@ -3082,7 +3067,7 @@ msgstr "Bureau"
 
 #: modules/gutenberg/icons/icons-v6-1.php:301
 msgid "DEV"
-msgstr ""
+msgstr "DEV"
 
 #: modules/gutenberg/icons/icons-v6-1.php:312
 msgid "deviantART"
@@ -3191,7 +3176,7 @@ msgstr "Diviser"
 
 #: modules/gutenberg/icons/icons-v6-1.php:598
 msgid "Dna"
-msgstr ""
+msgstr "ADN"
 
 #: modules/gutenberg/icons/icons-v6-1.php:609
 msgid "DocHub"
@@ -3371,7 +3356,7 @@ msgstr "Océanie terrestre"
 
 #: modules/gutenberg/icons/icons-v6-1.php:1027
 msgid "eBay"
-msgstr ""
+msgstr "eBay"
 
 #: modules/gutenberg/icons/icons-v6-1.php:1038
 msgid "Edge Browser"
@@ -4544,7 +4529,7 @@ msgstr "Cercle Cœur Plus"
 
 #: modules/gutenberg/icons/icons-v6-1.php:4686
 msgid "Heart Circle Xmark"
-msgstr ""
+msgstr "Cercle de cœur Xmark"
 
 #: modules/gutenberg/icons/icons-v6-1.php:4697
 msgid "Heart Crack"
@@ -9267,28 +9252,12 @@ msgid "View Integrations"
 msgstr "Voir les intégrations"
 
 #: assets/build/formEditor.js:172
-msgid "Connect with SureTriggers"
-msgstr "Connectez-vous avec SureTriggers"
-
-#: assets/build/formEditor.js:172
 msgid "Install & Activate"
 msgstr "Installer et activer"
 
 #: assets/build/formEditor.js:172
-msgid "SureTriggers lets you connect your forms to hundreds of apps. With this integration you can automatically send form entries to your CRM, add subscribers to you email marketing platform, etc. Whatever you want SureForms and SureTriggers has you covered."
-msgstr "SureTriggers vous permet de connecter vos formulaires à des centaines d'applications. Avec cette intégration, vous pouvez automatiquement envoyer les entrées de formulaire à votre CRM, ajouter des abonnés à votre plateforme de marketing par e-mail, etc. Quoi que vous souhaitiez, SureForms et SureTriggers vous couvrent."
-
-#: assets/build/formEditor.js:172
 msgid "All Integrations"
 msgstr "Toutes les intégrations"
-
-#: assets/build/formEditor.js:172
-msgid "Integrations via SureTriggers"
-msgstr "Intégrations via SureTriggers"
-
-#: assets/build/formEditor.js:172
-msgid "SureTriggers Integrations"
-msgstr "Intégrations SureTriggers"
 
 #: assets/build/formEditor.js:172
 msgid "Compliance Settings"
@@ -11101,7 +11070,7 @@ msgid "icon"
 msgstr "icône"
 
 #. translators: %1$s: SureForms version, %2$s: SureForms Pro Plugin Name, %3$s: SureForms Pro Version, %4$s: Anchor tag open, %5$s: Closing anchor tag.
-#: admin/admin.php:829
+#: admin/admin.php:828
 msgid "SureForms %1$s requires minimum %2$s %3$s to work properly. Please update to the latest version from %4$shere%5$s."
 msgstr "SureForms %1$s nécessite au minimum %2$s %3$s pour fonctionner correctement. Veuillez mettre à jour vers la dernière version depuis %4$scet endroit%5$s."
 
@@ -11129,7 +11098,7 @@ msgstr "Pot de miel"
 msgid "You do not have permission to export forms."
 msgstr "Vous n'avez pas la permission d'exporter des formulaires."
 
-#: inc/form-submit.php:744
+#: inc/form-submit.php:795
 msgid "Unknown"
 msgstr "Inconnu"
 
@@ -11246,21 +11215,21 @@ msgstr "Déverrouiller Ajouter une note"
 msgid "With the SureForms Starter plan, enhance your submitted form entries by adding personalized notes for better clarity and tracking."
 msgstr "Avec le plan SureForms Starter, améliorez vos entrées de formulaire soumises en ajoutant des notes personnalisées pour une meilleure clarté et un suivi amélioré."
 
-#: inc/form-submit.php:684
+#: inc/form-submit.php:729
 msgid "Email notification passed to the sending server"
 msgstr "Notification par e-mail transmise au serveur d'envoi"
 
 #. translators: Here, %s is the comma separated emails list.
-#: inc/form-submit.php:732
+#: inc/form-submit.php:783
 msgid "Email notification recipient: %s"
 msgstr "Destinataire de la notification par e-mail : %s"
 
 #. translators: Here, %1$s is the comma separated emails list and %2$s is error report ( if any ).
-#: inc/form-submit.php:742
+#: inc/form-submit.php:793
 msgid "Email server was unable to send the email notification. Recipient: %1$s. Reason: %2$s"
 msgstr "Le serveur de messagerie n'a pas pu envoyer la notification par e-mail. Destinataire : %1$s. Raison : %2$s"
 
-#: inc/form-submit.php:758
+#: inc/form-submit.php:818
 msgid "No emails were sent"
 msgstr "Aucun e-mail n'a été envoyé"
 
@@ -11440,6 +11409,63 @@ msgstr "Bouton"
 #: assets/build/templatePicker.js:172
 msgid "Please connect your website with SureForms AI to create 10 more forms with AI."
 msgstr "Veuillez connecter votre site web avec SureForms AI pour créer 10 formulaires supplémentaires avec l'IA."
+
+#: inc/admin-ajax.php:165
+#: assets/build/formEditor.js:172
+msgid "OttoKit"
+msgstr "OttoKit"
+
+#: inc/admin-ajax.php:167
+msgid "OttoKit is a powerful automation platform that helps you connect your various plugins and apps together. It allows you to automate repetitive tasks, so you can focus on more important work."
+msgstr "OttoKit est une plateforme d'automatisation puissante qui vous aide à connecter vos différents plugins et applications. Elle vous permet d'automatiser les tâches répétitives, afin que vous puissiez vous concentrer sur un travail plus important."
+
+#: inc/admin-ajax.php:233
+msgid "OttoKit is not configured properly."
+msgstr "OttoKit n'est pas configuré correctement."
+
+#: assets/build/blocks.js:172
+msgid "Prefix Label"
+msgstr "Étiquette de préfixe"
+
+#: assets/build/blocks.js:172
+msgid "Suffix Label"
+msgstr "Étiquette de suffixe"
+
+#: assets/build/formEditor.js:172
+msgid "Connect with OttoKit"
+msgstr "Connectez-vous avec OttoKit"
+
+#: assets/build/formEditor.js:172
+msgid "OttoKit lets you connect your forms to hundreds of apps. With this integration you can automatically send form entries to your CRM, add subscribers to you email marketing platform, etc. Whatever you want SureForms and OttoKit has you covered."
+msgstr "OttoKit vous permet de connecter vos formulaires à des centaines d'applications. Avec cette intégration, vous pouvez automatiquement envoyer les entrées de formulaire à votre CRM, ajouter des abonnés à votre plateforme de marketing par e-mail, etc. Quoi que vous souhaitiez, SureForms et OttoKit vous couvrent."
+
+#: assets/build/formEditor.js:172
+msgid "Integrations via OttoKit"
+msgstr "Intégrations via OttoKit"
+
+#: assets/build/formEditor.js:172
+msgid "OttoKit Integrations"
+msgstr "Intégrations OttoKit"
+
+#: assets/build/templatePicker.js:172
+msgid "Simple"
+msgstr "Simple"
+
+#: assets/build/templatePicker.js:172
+msgid "Unlock Calculations"
+msgstr "Déverrouiller les calculs"
+
+#: assets/build/templatePicker.js:172
+msgid "Upgrade to the SureForms Business Plan to create advanced forms with real-time calculations, such as project quote calculators, BMI calculators, loan calculators, and more."
+msgstr "Passez au plan d'affaires SureForms pour créer des formulaires avancés avec des calculs en temps réel, tels que des calculateurs de devis de projet, des calculateurs d'IMC, des calculateurs de prêt, et plus encore."
+
+#: assets/build/templatePicker.js:172
+msgid "Please select form type"
+msgstr "Veuillez sélectionner le type de formulaire"
+
+#: assets/build/templatePicker.js:172
+msgid "The AI-generated form may require manual review and adjustments. Please verify all fields before publishing the form."
+msgstr "Le formulaire généré par l'IA peut nécessiter une révision et des ajustements manuels. Veuillez vérifier tous les champs avant de publier le formulaire."
 
 #: inc/post-types.php:124
 msgctxt "post type general name"

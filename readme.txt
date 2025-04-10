@@ -4,7 +4,7 @@ Tags: contact form, custom form, forms, contact form plugin, form builder
 Requires at least: 6.4
 Tested up to: 6.7.2
 Requires PHP: 7.4
-Stable tag: 1.4.4
+Stable tag: 1.5.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -261,11 +261,16 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 
 == Changelog ==
 = x.x.x =
-* New: Added srfm_email_notification_should_send, srfm_email_notification filter and srfm_before_email_send, srfm_after_email_send, srfm_before_submit_button, srfm_after_submit_button actions for enhanced email customization.
-* Improvement: SureTriggers re-branded to OttoKit. Compatibility changes added for smooth transition.
-* Fix: Resolved issue where an optional email field blocked form submission after clearing input.
-* Fix: Resolved import issue for Bedrock and similar setups.
 * Fix: Resolved styling conflicts in UAGB blocks (Heading, Icon, Image, Separator) caused by duplicate block IDs on duplication.
+= 1.5.0 - 9th April 2025 =
+* New: New: Added support for Calculators in Business Plan.
+* New: Added support for prefix and suffix in the Number field.
+* New: Multiple hooks for email and form submission were added.
+* Improvement: Enabled editing of the "Confirm Email" text for greater flexibility.
+* Improvement: Smart Tags now dynamically detect fields with default labels.
+* Improvement: SureTriggers is rebranded to OttoKit, added compatibility changes for a smooth transition.
+* Fix: Resolved an issue where an optional email field blocked form submission after clearing the input.
+* Fix: Resolved an import issue for Bedrock and similar setups.
 = 1.4.4 - 27th March 2025 =
 * New: Introduced background styling for the form.
 * Improvement: Enhanced the SureForms branding color on instant form.
