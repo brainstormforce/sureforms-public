@@ -8,6 +8,7 @@ import CreditDetailsPopup from './CreditDetailsPopup.js';
 import Logo from '@Admin/dashboard/templates/Logo.js';
 const Header = () => {
 	const [ showRevokePopover, setShowRevokePopover ] = useState( true );
+	const formCreationleft = srfm_admin?.srfm_ai_usage_details?.remaining ?? 0;
 
 	function useQuery() {
 		return new URLSearchParams( useLocation().search );
@@ -27,7 +28,6 @@ const Header = () => {
 		}
 	}, [ method ] );
 
-	const formCreationleft = srfm_admin?.srfm_ai_usage_details?.remaining ?? 0;
 	const isRegistered =
 		srfm_admin?.srfm_ai_usage_details?.type === 'registered';
 	const finalFormCreationCountRemaining =

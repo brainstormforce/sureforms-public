@@ -1,4 +1,25 @@
+@import "../blocks/default/utils/mixins.scss";
+
 body.post-type-sureforms_form {
+	/**
+	 * Hide the Patterns and Media tabs in the block editor.
+	 * Using the ^= and $= selectors to target the tabs that start with "tabs-" and end with "-patterns" or "-media".
+	 * This is because the tabs number is dynamic and changes but the start and end part is static.
+	 */
+	[id^="tabs-"][id$="-patterns"],
+	[id^="tabs-"][id$="-media"] {
+		display: none;
+	}
+
+	.srfm-bg-component {
+		.srfm-responsive-common-button {
+			display: none;
+		}
+	}
+
+	.editor-styles-wrapper {
+		@include srfm-background-control-styles( true );
+	}
 	// Added to align the icon picker component with the option text field.
 	.srfm-size-type-field-tabs {
 		// Astra theme adds a top padding which distorts the layout.
@@ -65,6 +86,18 @@ body.post-type-sureforms_form {
 			.components-base-control {
 				margin-bottom: 0 !important;
 			}
+		}
+
+		.srfm-option-value {
+			width: 75px;
+		}
+
+		.srfm-options-delete {
+			font-size: 12px;
+			font-weight: 600;
+			line-height: 1.4;
+			color: #357ab5;
+			cursor: pointer;
 		}
 	}
 
@@ -594,7 +627,7 @@ html[dir="rtl"] body.post-type-sureforms_form {
 	}
 }
 
-.srfm-conditional-logic-preview {
+.srfm-panel-preview {
 	.components-panel__body {
 		display: flex;
 		gap: 12px;

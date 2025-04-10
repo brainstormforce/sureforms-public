@@ -28,14 +28,11 @@ import FormCustomCssPanel from '../FormCustomCssPanel';
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
 import EmailNotification from '../email-settings/EmailNotification';
-import { select } from '@wordpress/data';
-import { store as editorStore } from '@wordpress/editor';
 import FormConfirmSetting from '../form-confirm-setting';
-import {
-	setFormSpecificSmartTags,
-	getServerGeneratedBlockSlugs,
-} from '@Utils/Helpers';
+import { setFormSpecificSmartTags } from '@Utils/Helpers';
 import toast from 'react-hot-toast';
+import { useDispatch } from '@wordpress/data';
+import { store as blockEditorStore } from '@wordpress/block-editor';
 
 const Dialog = ( {
 	open,
@@ -46,6 +43,7 @@ const Dialog = ( {
 	close,
 } ) => {
 	const [ renderRoot, setRenderRoot ] = useState( null );
+	const { updateBlockAttributes } = useDispatch( blockEditorStore );
 
 	// Create a root element for the dialog
 	useLayoutEffect( () => {
@@ -69,8 +67,6 @@ const Dialog = ( {
 	const [ action, setAction ] = useState();
 	const [ CTA, setCTA ] = useState();
 	const [ pluginConnected, setPluginConnected ] = useState( null );
-
-	const [ blockSlugs, setBlockSlugs ] = useState( {} );
 
 	const tabs = applyFilters(
 		'srfm.formSettings.tabs',
@@ -144,10 +140,7 @@ const Dialog = ( {
 		}
 	);
 
-	const { getBlocks, getCurrentPostId, getEditedPostContent } =
-		select( editorStore );
-
-	setFormSpecificSmartTags( getBlocks(), blockSlugs );
+	setFormSpecificSmartTags( updateBlockAttributes );
 
 	useEffect( () => {
 		const activeTabObject = tabs.find( ( tab ) => tab.id === selectedTab );
@@ -155,26 +148,6 @@ const Dialog = ( {
 			setParentTab( activeTabObject.parent );
 		} else {
 			setParentTab( null );
-		}
-
-		if ( ! Object.keys( blockSlugs ).length ) {
-			// Process the blocks using fetch one time per Modal open ( Or if data is not set already in blockSlugs state. )
-			getServerGeneratedBlockSlugs(
-				getCurrentPostId(),
-				getEditedPostContent()
-			)
-				.then( ( response ) => {
-					if ( true !== response?.success ) {
-						return console.error(
-							'Unable to fetch saved blocks: ',
-							response?.data
-						);
-					}
-					setBlockSlugs( response.data );
-				} )
-				.catch( ( err ) => {
-					console.error( 'Unable to fetch saved blocks: ', err );
-				} );
 		}
 	}, [ selectedTab ] );
 

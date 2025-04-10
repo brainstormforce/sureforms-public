@@ -15,7 +15,7 @@ const CreditDetailsPopup = ( {
 	const aiFormCreationCount = totalFormCount - formCreationleft;
 	const isRegistered =
 		srfm_admin?.srfm_ai_usage_details?.type === 'registered';
-	const aiFormsConsumed = 20 - finalFormCreationCountRemaining;
+	const aiFormsConsumed = totalFormCount - finalFormCreationCountRemaining;
 
 	useEffect( () => {
 		const handleClickOutside = ( event ) => {

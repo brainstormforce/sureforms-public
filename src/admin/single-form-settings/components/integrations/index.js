@@ -23,7 +23,7 @@ const Integrations = ( {
 			component: <AllIntegrations setSelectedTab={ setSelectedTab } />,
 		},
 		{
-			title: __( 'Integrations via SureTriggers', 'sureforms' ),
+			title: __( 'Integrations via OttoKit', 'sureforms' ),
 			component: (
 				<UpsellSureTriggers
 					{ ...{
@@ -280,7 +280,7 @@ const UpsellSureTriggers = ( {
 			if ( pluginConnected || plugin.connected ) {
 				return __( 'View Integrations', 'sureforms' );
 			}
-			return __( 'Connect with SureTriggers', 'sureforms' );
+			return __( 'Connect with OttoKit', 'sureforms' );
 		} else if ( status === 'Installed' ) {
 			return __( 'Activate', 'sureforms' );
 		}

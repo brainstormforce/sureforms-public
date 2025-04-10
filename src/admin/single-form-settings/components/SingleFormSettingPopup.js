@@ -13,15 +13,11 @@ import {
 	MdOutlineCode,
 	MdOutlineDashboardCustomize,
 } from 'react-icons/md';
-import { select } from '@wordpress/data';
-import { store as editorStore } from '@wordpress/editor';
 import FormConfirmSetting from './form-confirm-setting';
-import {
-	setFormSpecificSmartTags,
-	SRFMToaster,
-	getServerGeneratedBlockSlugs,
-} from '@Utils/Helpers';
+import { setFormSpecificSmartTags, SRFMToaster } from '@Utils/Helpers';
 import toast from 'react-hot-toast';
+import { useDispatch } from '@wordpress/data';
+import { store as blockEditorStore } from '@wordpress/block-editor';
 
 const SingleFormSettingsPopup = ( props ) => {
 	const { sureformsKeys, targetTab, setHasValidationErrors } = props;
@@ -36,8 +32,7 @@ const SingleFormSettingsPopup = ( props ) => {
 	const [ action, setAction ] = useState();
 	const [ CTA, setCTA ] = useState();
 	const [ pluginConnected, setPluginConnected ] = useState( null );
-
-	const [ blockSlugs, setBlockSlugs ] = useState( {} );
+	const { updateBlockAttributes } = useDispatch( blockEditorStore );
 
 	const tabs = applyFilters(
 		'srfm.formSettings.tabs',
@@ -97,7 +92,7 @@ const SingleFormSettingsPopup = ( props ) => {
 			{
 				id: 'suretriggers',
 				parent: 'integrations',
-				title: __( 'SureTriggers', 'sureforms' ),
+				title: __( 'OttoKit', 'sureforms' ),
 				icon: {},
 				component: <Suretriggers { ...{ setSelectedTab } } />,
 			},
@@ -111,10 +106,7 @@ const SingleFormSettingsPopup = ( props ) => {
 		}
 	);
 
-	const { getBlocks, getCurrentPostId, getEditedPostContent } =
-		select( editorStore );
-
-	setFormSpecificSmartTags( getBlocks(), blockSlugs );
+	setFormSpecificSmartTags( updateBlockAttributes );
 
 	useEffect( () => {
 		const activeTabObject = tabs.find( ( tab ) => tab.id === selectedTab );
@@ -122,26 +114,6 @@ const SingleFormSettingsPopup = ( props ) => {
 			setParentTab( activeTabObject.parent );
 		} else {
 			setParentTab( null );
-		}
-
-		if ( ! Object.keys( blockSlugs ).length ) {
-			// Process the blocks using fetch one time per Modal open ( Or if data is not set already in blockSlugs state. )
-			getServerGeneratedBlockSlugs(
-				getCurrentPostId(),
-				getEditedPostContent()
-			)
-				.then( ( response ) => {
-					if ( true !== response?.success ) {
-						return console.error(
-							'Unable to fetch saved blocks: ',
-							response?.data
-						);
-					}
-					setBlockSlugs( response.data );
-				} )
-				.catch( ( err ) => {
-					console.error( 'Unable to fetch saved blocks: ', err );
-				} );
 		}
 	}, [ selectedTab ] );
 

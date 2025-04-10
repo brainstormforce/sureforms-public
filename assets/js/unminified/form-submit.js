@@ -6,6 +6,8 @@ import {
 	handleCaptchaValidation,
 } from './validation';
 import { applyFilters } from '@wordpress/hooks';
+import { __ } from '@wordpress/i18n';
+
 document.addEventListener( 'DOMContentLoaded', function () {
 	initializeInlineFieldValidation();
 
@@ -20,7 +22,6 @@ document.addEventListener( 'DOMContentLoaded', function () {
 			loader,
 			successContainer,
 			successElement,
-			errorElement,
 			recaptchaType,
 			afterSubmission,
 			captchaErrorElement,
@@ -35,6 +36,29 @@ document.addEventListener( 'DOMContentLoaded', function () {
 
 		form.addEventListener( 'submit', async ( e ) => {
 			e.preventDefault();
+
+			const formTarget = e.target;
+			if ( formTarget?.tagName === 'FORM' ) {
+				// If the submit button is hidden, prevent form submission.
+				const getTheContainer = formTarget?.closest(
+					'.srfm-form-container'
+				);
+				const hasHiddenClass = getTheContainer?.classList.contains(
+					'srfm-submit-button-hidden'
+				);
+
+				const isCustomButton = formTarget?.querySelector(
+					'button.srfm-custom-button'
+				);
+
+				if ( hasHiddenClass && ! isCustomButton ) {
+					console.warn(
+						'Form submission is disabled because the submit button is hidden.'
+					);
+					return;
+				}
+			}
+
 			handleFormSubmission(
 				form,
 				formId,
@@ -44,7 +68,6 @@ document.addEventListener( 'DOMContentLoaded', function () {
 				successUrl,
 				successContainer,
 				successElement,
-				errorElement,
 				submitType,
 				afterSubmission,
 				hasCaptcha ? recaptchaType : undefined,
@@ -157,9 +180,77 @@ function redirectToUrl( url ) {
 	window.location.assign( url );
 }
 
-function showErrorMessage( element ) {
-	element.removeAttribute( 'hidden' );
-	console.error( 'Network Error' );
+/**
+ * Handles the display of an error message on the form at a specified position.
+ *
+ * This function is triggered by the `srfm_show_common_form_error` event and is responsible
+ * for showing an error message on the form. The error message can be displayed either
+ * at the header or footer of the form, based on the provided position.
+ *
+ * @param {Event}       event                            - The custom event containing details for displaying the error message.
+ * @param {Object}      event.detail                     - The event detail object.
+ * @param {HTMLElement} event.detail.form                - The form element where the error message will be displayed.
+ * @param {string}      [event.detail.message]           - The error message to display. Defaults to a generic error message.
+ * @param {string}      [event.detail.position='footer'] - The position to display the error message ('header' or 'footer').
+ */
+function dispatchErrorEvent( event ) {
+	const { form, message = '', position = 'footer' } = event.detail || {};
+
+	if ( ! form ) {
+		return;
+	}
+
+	const errorMessage =
+		message ||
+		__(
+			'There was an error trying to submit your form. Please try again.',
+			'sureforms'
+		);
+
+	const errorClass =
+		position === 'header' ? 'srfm-head-error' : 'srfm-footer-error';
+	const errorElement = form.querySelector(
+		`.srfm-common-error-message.${ errorClass }`
+	);
+
+	if ( errorElement ) {
+		// errorElement.innerHTML = errorMessage;
+		errorElement.querySelector( '.srfm-error-content' ).innerHTML =
+			errorMessage;
+		errorElement.removeAttribute( 'hidden' );
+
+		// Scroll to and focus on the error message container, if enabled.
+		handleScrollAndFocusOnError( {
+			firstErrorInput: errorElement,
+			scrollElement: errorElement,
+		} );
+	}
+}
+
+// Listen for the custom event
+document.addEventListener( 'srfm_show_common_form_error', dispatchErrorEvent );
+
+function showErrorMessage( args ) {
+	const { form, message = '', position = 'footer' } = args;
+
+	const errorEvent = new CustomEvent( 'srfm_show_common_form_error', {
+		detail: {
+			form,
+			message,
+			position,
+		},
+	} );
+
+	document.dispatchEvent( errorEvent );
+}
+
+function hideErrorMessage( form ) {
+	const getErrorMessages = form.querySelectorAll(
+		'.srfm-common-error-message'
+	);
+	getErrorMessages.forEach( ( errorMessage ) => {
+		errorMessage.setAttribute( 'hidden', true );
+	} );
 }
 
 async function handleFormSubmission(
@@ -171,7 +262,6 @@ async function handleFormSubmission(
 	successUrl,
 	successContainer,
 	successElement,
-	errorElement,
 	submitType,
 	afterSubmission,
 	recaptchaType,
@@ -181,6 +271,9 @@ async function handleFormSubmission(
 ) {
 	try {
 		loader.classList.add( 'srfm-active' );
+
+		// Hide any previous error messages.
+		hideErrorMessage( form );
 
 		const isValidate = await fieldValidation(
 			formId,
@@ -279,8 +372,8 @@ async function handleFormSubmission(
 				afterSubmit( formStatus );
 			}
 		} else {
-			loader.classList.remove( 'srfm-active' );
-			showErrorMessage( errorElement );
+			const errorData = formStatus?.data || {};
+			showErrorMessage( { form, ...errorData } );
 			loader.classList.remove( 'srfm-active' );
 		}
 	} catch ( error ) {
@@ -303,7 +396,7 @@ async function handleFormSubmission(
 		document.dispatchEvent( event );
 
 		loader.classList.remove( 'srfm-active' );
-		showErrorMessage( errorElement );
+		showErrorMessage( { form } );
 	}
 }
 
@@ -320,7 +413,6 @@ function extractFormAttributesAndElements( form ) {
 	const successElement = successContainer?.querySelector(
 		'.srfm-success-box-description'
 	);
-	const errorElement = form.querySelector( '.srfm-error-message' );
 	const submitBtn = form.querySelector( '#srfm-submit-btn' );
 	const afterSubmission = form.getAttribute( 'after-submission' );
 	const gcaptchaDiv = form.querySelector( '.g-recaptcha' );
@@ -339,7 +431,6 @@ function extractFormAttributesAndElements( form ) {
 		loader,
 		successContainer,
 		successElement,
-		errorElement,
 		submitBtn,
 		siteKey,
 		recaptchaType,
@@ -369,7 +460,6 @@ function recaptchaCallback( token = '' ) {
 			loader,
 			successContainer,
 			successElement,
-			errorElement,
 			submitBtn,
 			siteKey,
 			recaptchaType,
@@ -389,7 +479,6 @@ function recaptchaCallback( token = '' ) {
 						successUrl,
 						successContainer,
 						successElement,
-						errorElement,
 						submitType,
 						afterSubmission
 					);
@@ -409,7 +498,6 @@ function recaptchaCallback( token = '' ) {
 						successUrl,
 						successContainer,
 						successElement,
-						errorElement,
 						submitType,
 						afterSubmission
 					);
@@ -429,7 +517,6 @@ function recaptchaCallback( token = '' ) {
 				successUrl,
 				successContainer,
 				successElement,
-				errorElement,
 				submitType,
 				afterSubmission
 			);

@@ -261,8 +261,8 @@ const MultiButtonsControl = ( props ) => {
 			if ( setAttributes ) {
 				setAttributes( {
 					[ data.label ]:
-						allBlocksAttributes[ selectedBlock ][ data.label ]
-							.default,
+						allBlocksAttributes[ selectedBlock ]?.[ data.label ]
+							?.default,
 				} );
 			}
 

@@ -21,7 +21,7 @@ const Suretriggers = ( { setSelectedTab } ) => {
 				<Title
 					tag="h5"
 					title={ __(
-						'SureTriggers',
+						'OttoKit Integrations',
 						'sureforms'
 					) }
 				/>

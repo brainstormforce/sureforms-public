@@ -14,6 +14,9 @@ import { Container, Toaster } from '@bsf/force-ui';
 import AiFormBuilderForm from '../ai-form-builder-components/AiFormBuilderForm.js';
 import AiFormProgressPage from '../ai-form-builder-components/AiFormProgressPage.js';
 
+// import PremiumBadge from '@Admin/components/PremiumBadge';
+// import FormTypeSelector from './FormTypeSelector';
+
 const AiFormBuilder = () => {
 	const [ message, setMessage ] = useState(
 		__( 'Connecting with AI…', 'sureforms' )
@@ -52,15 +55,10 @@ const AiFormBuilder = () => {
 				content: chat.message,
 			} ) ) || [];
 		messageArray.push( { role: 'user', content: userCommand } );
-		const formType = applyFilters(
-			'srfm.aiFormScreen.formType',
-			'',
-			formTypeObj
-		);
 		const postData = {
 			message_array: messageArray,
 			use_system_message: useSystemMessage,
-			is_conversional: formTypeObj?.isConversationalForm,
+			is_conversional: formLayout?.isConversationalForm,
 			form_type: formType,
 		};
 
@@ -106,10 +104,10 @@ const AiFormBuilder = () => {
 					const metasToUpdate = applyFilters(
 						'srfm.aiFormScreen.metasToUpdate',
 						{},
-						formTypeObj,
+						formLayout,
 						content
 					);
-					handleAddNewPost( postContent, formTitle, metasToUpdate, formTypeObj?.isConversationalForm, formType );
+					handleAddNewPost( postContent, formTitle, metasToUpdate, formLayout?.isConversationalForm, formType );
 				} else {
 					setShowFormCreationErr( true );
 				}
@@ -263,7 +261,7 @@ export const getLimitReachedPopup = () => {
 		);
 	}
 
-	// when initial 5 forms are consumed
+	// when initial 3 forms are consumed
 	if ( type === 'non-registered' && formCreationleft === 0 ) {
 		return (
 			<LimitReachedPopup
@@ -272,7 +270,7 @@ export const getLimitReachedPopup = () => {
 					'sureforms'
 				) }
 				paraTwo={ __(
-					'Please connect your website with SureForms AI to create 20 more forms with AI.',
+					'Please connect your website with SureForms AI to create 10 more forms with AI.',
 					'sureforms'
 				) }
 				onclick={ initiateAuth }
