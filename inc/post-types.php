@@ -1031,7 +1031,6 @@ class Post_Types {
 		 * - Excludes the SureForms post type from AIOSEO's public post types using the `aioseo_public_post_types` filter.
 		 *
 		 * Security Note:
-		 * - The `$_SERVER['REQUEST_URI']` and `$_GET['page']` variables are sanitized using `sanitize_text_field` and `wp_unslash`.
 		 * - Nonce verification is intentionally skipped (`phpcs:ignore WordPress.Security.NonceVerification.Recommended`)
 		 *   because this code is only performing a read operation to check the current request URI and query parameters.
 		 *   It does not modify or process sensitive data, making nonce verification unnecessary in this context.
@@ -1042,8 +1041,8 @@ class Post_Types {
 		}
 
 		// Allow AIOSEO functionality on its own settings pages.
-		if ( isset( $_SERVER['REQUEST_URI'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Checking request URI for AIOSEO settings.
-			$request_uri = sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Sanitizing request URI.
+		if ( isset( $_SERVER['REQUEST_URI'] ) ) {
+			$request_uri = sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) );
 			if ( strpos( $request_uri, 'admin.php' ) !== false ) {
 				if ( isset( $_GET['page'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Checking page query parameter for AIOSEO settings.
 					$page = sanitize_text_field( wp_unslash( $_GET['page'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Sanitizing page parameter.
