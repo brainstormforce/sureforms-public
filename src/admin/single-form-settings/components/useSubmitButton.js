@@ -5,11 +5,11 @@ import { createRoot } from 'react-dom/client';
 import { RichText } from '@wordpress/block-editor';
 import { __ } from '@wordpress/i18n';
 import { BlockInserterWrapper } from '../Inserter.js';
+import { filterSubmitButton } from '@Components/hooks';
 
 const SubmitButton = ( props ) => {
 	const metaValues = useSelect( ( select ) => select( editorStore ).getEditedPostAttribute( 'meta' ) );
 	const buttonElement = useRef( null );
-
 	const labelText = metaValues?._srfm_submit_button_text || __( 'Submit', 'sureforms' );
 
 	useEffect( () => {
@@ -41,7 +41,7 @@ const SubmitButton = ( props ) => {
 		};
 	}, [] );
 
-	return <button className="srfm-submit-richtext srfm-button srfm-submit-button srfm-btn-alignment" ref={ buttonElement }>
+	const submitButton = <button className="srfm-submit-richtext srfm-button srfm-submit-button srfm-btn-alignment srfm-btn-bg-color" ref={ buttonElement }>
 		<RichText
 			tagName="label"
 			value={ labelText }
@@ -49,6 +49,8 @@ const SubmitButton = ( props ) => {
 			placeholder={ __( 'Submit', 'sureforms' ) }
 		/>
 	</button>;
+
+	return filterSubmitButton( submitButton, metaValues );
 };
 
 export default function useSubmitButton( args ) {

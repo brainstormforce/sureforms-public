@@ -98,6 +98,18 @@ body.post-type-sureforms_form {
 				margin-bottom: 0 !important;
 			}
 		}
+
+		.srfm-option-value {
+			width: 75px;
+		}
+
+		.srfm-options-delete {
+			font-size: 12px;
+			font-weight: 600;
+			line-height: 1.4;
+			color: #357ab5;
+			cursor: pointer;
+		}
 	}
 
 	.srfm-media-picker {
