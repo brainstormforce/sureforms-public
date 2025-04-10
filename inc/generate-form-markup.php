@@ -92,11 +92,61 @@ class Generate_Form_Markup {
 		if ( '' !== $id && 0 !== $block_count ) {
 
 			$container_id = 'srfm-form-container-' . Helper::get_string_value( $id );
+			$form_styling = get_post_meta( $id, '_srfm_forms_styling', true );
+			$form_styling = ! empty( $form_styling ) && is_array( $form_styling ) ? $form_styling : [];
+			// Background Settings.
+			$bg_type                   = $form_styling['bg_type'] ?? 'color';
+			$bg_color                  = $form_styling['bg_color'] ?? '';
+			$bg_image                  = $form_styling['bg_image'] ?? '';
+			$bg_image_position         = $form_styling['bg_image_position'] ?? [];
+			$bg_image_attachment       = $form_styling['bg_image_attachment'] ?? 'scroll';
+			$bg_image_repeat           = $form_styling['bg_image_repeat'] ?? 'no-repeat';
+			$bg_image_size             = $form_styling['bg_image_size'] ?? 'cover';
+			$bg_image_size_custom      = $form_styling['bg_image_size_custom'] ?? 100;
+			$bg_image_size_custom_type = $form_styling['bg_image_size_custom_type'] ?? '%';
+			$bg_gradient               = $form_styling['bg_gradient'] ?? 'linear-gradient(90deg, #FFC9B2 0%, #C7CBFF 100%)';
+			$gradient_type             = $form_styling['gradient_type'] ?? 'basic'; // Basic or advanced.
+			$is_advanced_gradient      = 'advanced' === $gradient_type ? true : false;
+			$bg_gradient_type          = $is_advanced_gradient && isset( $form_styling['bg_gradient_type'] ) ? $form_styling['bg_gradient_type'] : 'linear'; // linear or radial gradient.
+			$bg_gradient_color_1       = $is_advanced_gradient && isset( $form_styling['bg_gradient_color_1'] ) ? $form_styling['bg_gradient_color_1'] : '';
+			$bg_gradient_color_2       = $is_advanced_gradient && isset( $form_styling['bg_gradient_color_2'] ) ? $form_styling['bg_gradient_color_2'] : '';
+			$bg_gradient_location_1    = $is_advanced_gradient && isset( $form_styling['bg_gradient_location_1'] ) ? $form_styling['bg_gradient_location_1'] : '';
+			$bg_gradient_location_2    = $is_advanced_gradient && isset( $form_styling['bg_gradient_location_2'] ) ? $form_styling['bg_gradient_location_2'] : '';
+			$bg_gradient_angle         = $is_advanced_gradient && isset( $form_styling['bg_gradient_angle'] ) ? $form_styling['bg_gradient_angle'] : '';
+			// Overlay Settings.
+			$overlay_type       = $form_styling['bg_gradient_overlay_type'] ?? '';
+			$overlay_size       = $form_styling['bg_overlay_size'] ?? 'cover';
+			$overlay_opacity    = $form_styling['bg_overlay_opacity'] ?? 1;
+			$overlay_color      = $form_styling['bg_image_overlay_color'] ?? '';
+			$overlay_image      = $form_styling['bg_overlay_image'] ?? '';
+			$overlay_position   = $form_styling['bg_overlay_position'] ?? [];
+			$overlay_attachment = $form_styling['bg_overlay_attachment'] ?? 'scroll';
+			$overlay_repeat     = $form_styling['bg_overlay_repeat'] ?? 'no-repeat';
+			$overlay_blend_mode = $form_styling['bg_overlay_blend_mode'] ?? 'normal';
+			// Gradient Overlay.
+			$bg_overlay_gradient            = $form_styling['bg_overlay_gradient'] ?? 'linear-gradient(90deg, #FFC9B2 0%, #C7CBFF 100%)';
+			$overlay_gradient_type          = $form_styling['overlay_gradient_type'] ?? 'basic'; // Basic or advanced.
+			$is_overlay_advanced_gradient   = 'advanced' === $overlay_gradient_type ? true : false;
+			$bg_overlay_gradient_type       = $is_overlay_advanced_gradient && isset( $form_styling['bg_overlay_gradient_type'] ) ? $form_styling['bg_overlay_gradient_type'] : 'linear';
+			$bg_overlay_gradient_color_1    = $is_overlay_advanced_gradient && isset( $form_styling['bg_overlay_gradient_color_1'] ) ? $form_styling['bg_overlay_gradient_color_1'] : '';
+			$bg_overlay_gradient_color_2    = $is_overlay_advanced_gradient && isset( $form_styling['bg_overlay_gradient_color_2'] ) ? $form_styling['bg_overlay_gradient_color_2'] : '';
+			$bg_overlay_gradient_location_1 = $is_overlay_advanced_gradient && isset( $form_styling['bg_overlay_gradient_location_1'] ) ? $form_styling['bg_overlay_gradient_location_1'] : '';
+			$bg_overlay_gradient_location_2 = $is_overlay_advanced_gradient && isset( $form_styling['bg_overlay_gradient_location_2'] ) ? $form_styling['bg_overlay_gradient_location_2'] : '';
+			$bg_overlay_gradient_angle      = $is_overlay_advanced_gradient && isset( $form_styling['bg_overlay_gradient_angle'] ) ? $form_styling['bg_overlay_gradient_angle'] : '';
+
+			if ( 'custom' === $overlay_size ) {
+				$bg_overlay_custom_size      = $form_styling['bg_overlay_custom_size'] ?? 100;
+				$bg_overlay_custom_size_unit = $form_styling['bg_overlay_custom_size_unit'] ?? '%';
+				$overlay_size                = $bg_overlay_custom_size . $bg_overlay_custom_size_unit;
+			}
+
+			$background_classes = apply_filters( 'srfm_add_background_classes', Helper::get_background_classes( $bg_type, $overlay_type, $bg_image ) );
 
 			$form_classes = [
 				'srfm-form-container',
 				$container_id,
 				$sf_classname,
+				$background_classes,
 			];
 
 			$custom_added_classes = Helper::get_meta_value( $id, '_srfm_additional_classes' );
@@ -109,8 +159,6 @@ class Generate_Form_Markup {
 				}
 			}
 
-			$form_styling             = get_post_meta( $id, '_srfm_forms_styling', true );
-			$form_styling             = ! empty( $form_styling ) && is_array( $form_styling ) ? $form_styling : [];
 			$page_break_settings      = defined( 'SRFM_PRO_VER' ) && apply_filters( 'srfm_use_page_break_layout', true ) ? get_post_meta( $id, '_srfm_page_break_settings', true ) : [];
 			$page_break_settings      = ! empty( $page_break_settings ) && is_array( $page_break_settings ) ? $page_break_settings : [];
 			$is_page_break            = ! empty( $page_break_settings ) ? $page_break_settings['is_page_break'] : false;
@@ -197,6 +245,17 @@ class Generate_Form_Markup {
 			$label_text_color_var = $label_text_color ? $label_text_color : '#111827';
 
 			$selected_size = Helper::get_css_vars( $field_spacing );
+
+			$should_show_submit_button = apply_filters(
+				'srfm_show_submit_button',
+				0 !== $block_count && ! $is_inline_button || $is_page_break,
+				$id
+			);
+
+			if ( ! $should_show_submit_button ) {
+				$form_classes[] = 'srfm-submit-button-hidden';
+			}
+
 			?>
 			<div class="<?php echo esc_attr( implode( ' ', array_filter( $form_classes ) ) ); ?>">
 			<style>
@@ -214,7 +273,7 @@ class Generate_Form_Markup {
 					--srfm-color-input-prefix: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.65 );
 					--srfm-color-input-background: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.02 );
 					--srfm-color-input-background-hover: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.05 );
-					--srfm-color-input-background-disabled: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.05 );
+					--srfm-color-input-background-disabled: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.07 );
 					--srfm-color-input-border: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.25 );
 					--srfm-color-input-border-disabled: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.15 );
 					--srfm-color-multi-choice-svg: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.7 );
@@ -237,6 +296,61 @@ class Generate_Form_Markup {
 					--srfm-dropdown-placeholder-color: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.50 );
 					--srfm-dropdown-icon-color: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.65 );
 					--srfm-dropdown-icon-disabled: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.25 );
+					/* Background Control Variables */
+					<?php
+						$styling_vars = [];
+						// Background Styles.
+					if ( 'image' === $bg_type && ! empty( $bg_image ) ) {
+						$bg_size_merged = 'custom' === $bg_image_size ? "{$bg_image_size_custom}{$bg_image_size_custom_type}" : $bg_image_size;
+						$styling_vars  += [
+							'--srfm-bg-image'      => 'url(' . esc_html( $bg_image ) . ')',
+							'--srfm-bg-position'   => esc_html(
+								( ( ! empty( $bg_image_position['x'] ) ? $bg_image_position['x'] : 0.5 ) * 100 ) . '% ' .
+								( ( ! empty( $bg_image_position['y'] ) ? $bg_image_position['y'] : 0.5 ) * 100 ) . '% '
+							),
+							'--srfm-bg-attachment' => esc_html( $bg_image_attachment ),
+							'--srfm-bg-repeat'     => esc_html( $bg_image_repeat ),
+							'--srfm-bg-size'       => esc_html( $bg_size_merged ),
+						];
+					} elseif ( 'color' === $bg_type && ! empty( $bg_color ) ) {
+						$styling_vars['--srfm-bg-color'] = esc_html( $bg_color );
+					} elseif ( 'gradient' === $bg_type && ! empty( $bg_gradient ) ) {
+						if ( $is_advanced_gradient ) {
+							$bg_gradient = Helper::get_gradient_css( $bg_gradient_type, $bg_gradient_color_1, $bg_gradient_color_2, $bg_gradient_location_1, $bg_gradient_location_2, $bg_gradient_angle );
+						}
+						$styling_vars['--srfm-bg-gradient'] = esc_html( $bg_gradient );
+					}
+							// Overlay Variables.
+					if ( 'image' === $bg_type && 'image' === $overlay_type && ! empty( $overlay_image ) ) {
+						$styling_vars += [
+							'--srfm-bg-overlay-image'      => 'url(' . esc_html( $overlay_image ) . ')',
+							'--srfm-bg-overlay-position'   => esc_html(
+								( ( ! empty( $overlay_position['x'] ) ? $overlay_position['x'] : 0.5 ) * 100 ) . '% ' .
+								( ( ! empty( $overlay_position['y'] ) ? $overlay_position['y'] : 0.5 ) * 100 ) . '%'
+							),
+							'--srfm-bg-overlay-attachment' => esc_html( $overlay_attachment ),
+							'--srfm-bg-overlay-repeat'     => esc_html( $overlay_repeat ),
+							'--srfm-bg-overlay-size'       => esc_html( $overlay_size ),
+							'--srfm-bg-overlay-blend-mode' => esc_html( $overlay_blend_mode ),
+						];
+					} elseif ( 'image' === $bg_type && 'color' === $overlay_type && ! empty( $overlay_color ) ) {
+						$styling_vars += [
+							'--srfm-bg-overlay-color' => esc_html( $overlay_color ),
+						];
+					} elseif ( 'image' === $bg_type && 'gradient' === $overlay_type && ! empty( $bg_overlay_gradient ) ) {
+						if ( $is_overlay_advanced_gradient ) {
+							$bg_overlay_gradient = Helper::get_gradient_css( $bg_overlay_gradient_type, $bg_overlay_gradient_color_1, $bg_overlay_gradient_color_2, $bg_overlay_gradient_location_1, $bg_overlay_gradient_location_2, $bg_overlay_gradient_angle );
+						}
+						$styling_vars += [
+							'--srfm-bg-overlay-gradient' => esc_html( $bg_overlay_gradient ),
+						];
+					}
+						$styling_vars['--srfm-bg-overlay-opacity'] = esc_html( $overlay_opacity );
+						// Output the CSS variables.
+					foreach ( $styling_vars as $key => $value ) {
+						echo esc_html( Helper::get_string_value( $key ) ) . ': ' . esc_html( $value ) . ';';
+					}
+					?>
 					<?php
 					// Echo the CSS variables for the form according to the field spacing selected.
 					foreach ( $selected_size as $variable => $value ) {
@@ -283,9 +397,9 @@ class Generate_Form_Markup {
 				<input type="hidden" value="<?php echo esc_attr( Helper::get_string_value( $is_page_break ) ); ?>" id="srfm-page-break">
 				<?php if ( $honeypot_spam ) { ?>
 					<input type="hidden" value="" name="srfm-honeypot-field">
-				<?php } ?>
-				<?php
-
+					<?php
+				}
+					self::common_error_message( 'head' );
 				if ( $is_page_break ) {
 					do_action( 'srfm_page_break_pagination', $post, $id );
 				} elseif ( ! apply_filters( 'srfm_use_custom_field_content', false ) ) {
@@ -297,10 +411,7 @@ class Generate_Form_Markup {
 				do_action( 'srfm_after_field_content', $post, $id );
 
 				?>
-				<?php
-				if ( 0 !== $block_count && ! $is_inline_button || $is_page_break ) {
-					?>
-					<?php if ( ! empty( $security_type ) && 'none' !== $security_type ) { ?>
+					<?php if ( $should_show_submit_button && ! empty( $security_type ) && 'none' !== $security_type ) { ?>
 						<div class="srfm-captcha-container <?php echo esc_attr( 'v3-reCAPTCHA' === $recaptcha_version || 'v2-invisible' === $recaptcha_version ? 'srfm-display-none' : '' ); ?>">
 						<?php if ( is_string( $google_captcha_site_key ) && ! empty( $google_captcha_site_key ) && 'g-recaptcha' === $security_type ) { ?>
 
@@ -360,8 +471,9 @@ class Generate_Form_Markup {
 					}
 					?>
 
-					<div class="srfm-submit-container <?php echo esc_attr( $is_page_break ? 'srfm-hide' : '' ); ?>">
+					<div class="srfm-submit-container <?php echo esc_attr( $is_page_break ? 'srfm-hide' : '' ); ?>" style="<?php echo ! $should_show_submit_button ? 'visibility:hidden;position:absolute;' : ''; ?>">
 						<div style="width: <?php echo esc_attr( $full ? '100%' : '' ); ?>; text-align: <?php echo esc_attr( $submit_button_alignment ); ?>" class="wp-block-button">
+						<?php do_action( 'srfm_before_submit_button', $id ); ?>
 						<button style="width:<?php echo esc_attr( $full ? '100%;' : '' ); ?>" id="srfm-submit-btn"class="<?php echo esc_attr( '1' === $btn_from_theme ? 'wp-block-button__link' : 'srfm-btn-frontend srfm-button srfm-submit-button' ); ?><?php echo 'v3-reCAPTCHA' === $recaptcha_version ? ' g-recaptcha' : ''; ?>"
 						<?php if ( 'v3-reCAPTCHA' === $recaptcha_version ) { ?>
 							data-callback="recaptchaCallback"
@@ -374,20 +486,35 @@ class Generate_Form_Markup {
 							<div class="srfm-loader"></div>
 							</div>
 						</button>
+						<?php do_action( 'srfm_after_submit_button', $id ); ?>
 						</div>
 					</div>
-				<?php } ?>
-				<p id="srfm-error-message" class="srfm-error-message" hidden="true"><?php echo esc_html__( 'There was an error trying to submit your form. Please try again.', 'sureforms' ); ?></p>
+					<?php
+		}
+				self::common_error_message( 'footer' );
+		?>
 			</form>
 			<div class="srfm-single-form srfm-success-box in-page">
 				<div aria-live="polite" aria-atomic="true" role="alert" id="srfm-success-message-page-<?php echo esc_attr( Helper::get_string_value( $id ) ); ?>" class="srfm-success-box-description"></div>
 			</div>
-			<?php
-		}
-		?>
 			</div>
 		<?php
 		return ob_get_clean();
+	}
+
+	/**
+	 * Generate common error message markup
+	 *
+	 * @param string $position position of the error message.
+	 * @since 1.5.0
+	 * @return void
+	 */
+	public static function common_error_message( $position = 'footer' ) {
+		$icon    = Helper::fetch_svg( 'info_circle', '', 'aria-hidden="true"' );
+		$classes = "srfm-common-error-message srfm-error-message srfm-{$position}-error";
+		?>
+		<p id="srfm-error-message" class="<?php echo esc_attr( $classes ); ?>" hidden="true"><?php echo wp_kses( $icon, Helper::$allowed_tags_svg ); ?><span class="srfm-error-content"><?php echo esc_html__( 'There was an error trying to submit your form. Please try again.', 'sureforms' ); ?></span></p>
+		<?php
 	}
 
 	/**
@@ -422,9 +549,20 @@ class Generate_Form_Markup {
 			return $confirmation_message;
 		}
 		$smart_tags           = new Smart_Tags();
-		$confirmation_message = $smart_tags->process_smart_tags( $confirmation_data['message'], $submission_data, $form_data );
+		$confirmation_message = $smart_tags->process_smart_tags( $confirmation_message, $submission_data, $form_data );
 
-		return apply_filters( 'srfm_after_submit_confirmation_message', $confirmation_message );
+		$markup = wp_kses_post( apply_filters( 'srfm_after_submit_confirmation_message', $confirmation_message ) );
+
+		if ( false !== strpos( $markup, 'src="image/svg+xml;base64' ) ) {
+			// Handle Form Confirmation SVGs separately. We have planned to improve it in the future replacing it with image URL.
+			$normalized_string = preg_replace( '/src="image\/svg\+xml;base64/', 'src="data:image/svg+xml;base64', $markup );
+
+			if ( is_string( $normalized_string ) ) {
+				$markup = $normalized_string;
+			}
+		}
+
+		return $markup;
 	}
 
 	/**

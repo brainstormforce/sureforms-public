@@ -5,6 +5,9 @@
 	position: relative;
 	padding: 0;
 	height: 100%;
+	padding: 32px;
+
+	@include srfm-background-control-styles;
 
 	// styles for core paragraph block
 	.srfm-custom-wp-paragraph {
@@ -140,6 +143,40 @@
 				justify-content: center;
 				overflow-wrap: anywhere;
 				height: 100%;
+			}
+		}
+
+		p {
+			&:not( [hidden="true"] ) {
+				&.srfm-error-message {
+					.srfm-icon {
+						line-height: 1;
+						display: flex;
+						color: #dc2626;
+					}
+
+					line-height: 20px;
+					color: #111827;
+					font-size: 14px;
+					font-weight: var( --srfm-error-font-weight );
+					margin: 0;
+					display: flex;
+					align-items: center;
+					border: 1px solid #fecaca;
+					width: 100%;
+					padding: 12px;
+					border-radius: 8px;
+					background-color: #fef2f2;
+					gap: 8px;
+				}
+
+				&.srfm-footer-error {
+					margin-top: var( --srfm-row-gap-between-blocks );
+				}
+
+				&.srfm-head-error {
+					margin-bottom: var( --srfm-row-gap-between-blocks );
+				}
 			}
 		}
 	}

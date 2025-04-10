@@ -52,6 +52,7 @@ class Gutenberg_Hooks {
 		add_action( 'init', [ $this, 'register_block_patterns' ], 9 );
 		add_filter( 'allowed_block_types_all', [ $this, 'disable_forms_wrapper_block' ], 10, 2 );
 		add_action( 'save_post_sureforms_form', [ $this, 'update_field_slug' ], 10, 2 );
+		add_action( 'load-post.php', [ $this, 'maybe_migrate_form_stylings' ] );
 	}
 
 	/**
@@ -302,6 +303,48 @@ class Gutenberg_Hooks {
 	}
 
 	/**
+	 * Migrate the background type and associated values from
+	 * instant form settings to form styling meta.
+	 *
+	 * @since 1.4.4
+	 * @return void
+	 */
+	public function maybe_migrate_form_stylings() {
+		$post_id = isset( $_GET['post'] ) ? Helper::get_integer_value( sanitize_text_field( wp_unslash( $_GET['post'] ) ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- $_GET['post'] does not provide nonce.
+		if ( empty( $post_id ) || ! current_user_can( 'edit_post', $post_id ) ) {
+			return;
+		}
+
+		$post_type = get_post_type( $post_id );
+		if ( SRFM_FORMS_POST_TYPE !== $post_type ) {
+			return;
+		}
+
+		$instant_form_settings = get_post_meta( $post_id, '_srfm_instant_form_settings', true );
+		if ( ! is_array( $instant_form_settings ) ) {
+			return;
+		}
+
+		$form_styling = get_post_meta( $post_id, '_srfm_forms_styling', true );
+		if ( ! is_array( $form_styling ) ) {
+			$form_styling = [];
+		}
+
+		$migrated = false;
+		$keys     = [ 'bg_type', 'bg_color', 'bg_image', 'bg_image_id' ];
+
+		foreach ( $keys as $key ) {
+			if ( ! isset( $form_styling[ $key ] ) && isset( $instant_form_settings[ $key ] ) ) {
+				$form_styling[ $key ] = $instant_form_settings[ $key ];
+				$migrated             = true;
+			}
+		}
+		if ( $migrated ) {
+			update_post_meta( $post_id, '_srfm_forms_styling', $form_styling );
+		}
+	}
+
+	/**
 	 * Register block pattern from the specified directory.
 	 *
 	 * @param string|mixed $block_pattern The block pattern name.
@@ -319,5 +362,4 @@ class Gutenberg_Hooks {
 
 		return false;
 	}
-
 }

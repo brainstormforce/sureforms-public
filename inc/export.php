@@ -130,13 +130,22 @@ class Export {
 			);
 		}
 
+		if ( ! current_user_can( 'manage_options' ) ) {
+			// Return error if user does not have permissions to manage options.
+			wp_send_json_error(
+				[
+					'data'   => esc_html__( 'You do not have permissions to manage options.', 'sureforms' ),
+					'status' => false,
+				]
+			);
+		}
+
 		// Get the raw POST data.
 		$post_data = file_get_contents( 'php://input' );
 		if ( ! $post_data ) {
 			wp_send_json_error( __( 'Failed to import form.', 'sureforms' ) );
 		}
-		$data      = json_decode( $post_data, true );
-		$responses = [];
+		$data = json_decode( $post_data, true );
 		if ( ! is_iterable( $data ) ) {
 			wp_send_json_error( __( 'Failed to import form.', 'sureforms' ) );
 		}
@@ -195,7 +204,7 @@ class Export {
 		}
 
 		// Return the responses.
-		wp_send_json_success( $responses );
+		wp_send_json_success();
 	}
 
 	/**

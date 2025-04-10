@@ -1,5 +1,7 @@
 import { useEffect } from '@wordpress/element';
 import { select } from '@wordpress/data';
+import { withoutSlugBlocks } from '@Utils/Helpers';
+
 const getUniqId = ( blocks ) =>
 	blocks.reduce(
 		( result, block ) => {
@@ -35,7 +37,9 @@ const addInitialAttr = ( ChildComponent ) => {
 		const {
 			setAttributes,
 			clientId,
+			name,
 			attributes: { block_id },
+			attributes,
 		} = props;
 
 		useEffect( () => {
@@ -44,15 +48,27 @@ const addInitialAttr = ( ChildComponent ) => {
 			const { blockIds, clientIds } = getAllBlocks
 				? getUniqId( getAllBlocks )
 				: { blockIds: [], clientIds: [] };
+
+			const isDuplicate = checkDuplicate(
+				blockIds,
+				block_id,
+				clientIds.indexOf( clientId )
+			);
+
+			if ( isDuplicate ) {
+				if (
+					! withoutSlugBlocks.includes( name ) &&
+					attributes?.slug
+				) {
+					attributeObject.slug = '';
+				}
+			}
+
 			if (
 				'not_set' === block_id ||
 				'0' === block_id ||
 				! block_id ||
-				checkDuplicate(
-					blockIds,
-					block_id,
-					clientIds.indexOf( clientId )
-				)
+				isDuplicate
 			) {
 				setAttributes( attributeObject );
 			}

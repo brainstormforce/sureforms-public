@@ -4,11 +4,12 @@ import PremiumBadge from '../../admin/components/PremiumBadge';
 import { chevronDown, chevronUp } from '@wordpress/icons';
 import { SelectControl, Button, ToggleControl } from '@wordpress/components';
 import { useState } from '@wordpress/element';
+import { isValidReactElement } from '../../utils/Helpers';
 
 const ConditionalLogicPreview = () => {
 	const [ isExpanded, setIsExpanded ] = useState( false );
 	return (
-		<div className="srfm-conditional-logic-preview">
+		<div className="srfm-panel-preview">
 			<div
 				className="components-panel__body"
 				onClick={ () => {
@@ -79,7 +80,17 @@ const ConditionalLogic = ( { attributes, setAttributes } ) => {
 		setAttributes
 	);
 	const isPro = srfm_block_data.is_pro_active;
-	return <>{ isPro ? conditionalSettings : <ConditionalLogicPreview /> }</>;
+	const isValidElement = isValidReactElement( conditionalSettings );
+
+	return (
+		<>
+			{ isPro && isValidElement ? (
+				conditionalSettings
+			) : (
+				<ConditionalLogicPreview />
+			) }
+		</>
+	);
 };
 
 export default ConditionalLogic;
