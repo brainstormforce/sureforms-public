@@ -3,13 +3,12 @@
 		.srfm-textarea-block {
 			.srfm-block-wrap {
 				line-height: 0;
-			}
-
-			.srfm-input-textarea {
-				resize: vertical;
-				height: unset;
-				// Marking line-height as important specific to textarea to override the bricks styling.
-				line-height: var( --srfm-input-field-line-height ) !important;
+				.srfm-input-textarea {
+					resize: vertical;
+					height: unset;
+					// Marking line-height as important specific to textarea to override the bricks styling.
+					line-height: var( --srfm-input-field-line-height ) !important;
+				}
 			}
 		}
 	}

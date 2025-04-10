@@ -146,8 +146,7 @@ class Export {
 		if ( ! $post_data ) {
 			wp_send_json_error( __( 'Failed to import form.', 'sureforms' ) );
 		}
-		$data      = json_decode( $post_data, true );
-		$responses = [];
+		$data = json_decode( $post_data, true );
 		if ( ! is_iterable( $data ) ) {
 			wp_send_json_error( __( 'Failed to import form.', 'sureforms' ) );
 		}
@@ -206,7 +205,7 @@ class Export {
 		}
 
 		// Return the responses.
-		wp_send_json_success( $responses );
+		wp_send_json_success();
 	}
 
 	/**

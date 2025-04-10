@@ -51,15 +51,15 @@ function initializeMultichoice() {
 						.closest( '.srfm-multi-choice-single' )
 						.querySelector( 'label' ).innerText;
 
+					let hiddenInput = null;
 					if ( getValue ) {
 						// For Radio Mode / single select.
 						if ( single.classList.contains( 'srfm-radio-mode' ) ) {
 							if ( e.target.checked ) {
-								single
-									.querySelector(
-										'.srfm-input-multi-choice-hidden'
-									)
-									.setAttribute( 'value', getValue );
+								hiddenInput = single.querySelector(
+									'.srfm-input-multi-choice-hidden'
+								);
+								hiddenInput.setAttribute( 'value', getValue );
 							}
 						}
 						// For checkbox mode / multi select.
@@ -68,22 +68,33 @@ function initializeMultichoice() {
 						) {
 							if ( e.target.checked ) {
 								savedValues = [ ...savedValues, getValue ];
-								single
-									.querySelector(
-										'.srfm-input-multi-choice-hidden'
-									)
-									.setAttribute( 'value', savedValues );
+								hiddenInput = single.querySelector(
+									'.srfm-input-multi-choice-hidden'
+								);
+								hiddenInput.setAttribute(
+									'value',
+									savedValues
+								);
 							} else {
 								const arr = savedValues.filter(
 									( item ) => item !== getValue
 								);
 								savedValues = arr;
-								single
-									.querySelector(
-										'.srfm-input-multi-choice-hidden'
-									)
-									.setAttribute( 'value', savedValues );
+								hiddenInput = single.querySelector(
+									'.srfm-input-multi-choice-hidden'
+								);
+								hiddenInput.setAttribute(
+									'value',
+									savedValues
+								);
 							}
+						}
+
+						// Add event in the ".srfm-input-multi-choice-hidden" element.
+						if ( hiddenInput ) {
+							hiddenInput.dispatchEvent(
+								new Event( 'change', { bubbles: true } )
+							);
 						}
 					}
 				} );
