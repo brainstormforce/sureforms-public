@@ -1044,8 +1044,8 @@ class Post_Types {
 		if ( isset( $_SERVER['REQUEST_URI'] ) ) {
 			$request_uri = sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) );
 			if ( strpos( $request_uri, 'admin.php' ) !== false ) {
-				if ( isset( $_GET['page'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Checking page query parameter for AIOSEO settings.
-					$page = sanitize_text_field( wp_unslash( $_GET['page'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Sanitizing page parameter.
+				if ( isset( $_GET['page'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verification is not required here because Safe here as we're only reading the `page` parameter.
+					$page = sanitize_text_field( wp_unslash( $_GET['page'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verification is not required here because only we are reading the `page` parameter.
 					if ( strpos( $page, 'aioseo' ) !== false ) {
 						return;
 					}
