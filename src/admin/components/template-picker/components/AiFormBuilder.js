@@ -56,7 +56,7 @@ const AiFormBuilder = () => {
 			message_array: messageArray,
 			use_system_message: useSystemMessage,
 			is_conversional: formTypeObj?.isConversationalForm,
-			form_type: formType,
+			// form_type: formType, // check this variable in next-release
 		};
 
 		// add a pause of 2 seconds and set percentBuild to 25 without using setTimeout
@@ -104,7 +104,7 @@ const AiFormBuilder = () => {
 						formTypeObj,
 						content
 					);
-					handleAddNewPost( postContent, formTitle, metasToUpdate, formTypeObj?.isConversationalForm, formType );
+					handleAddNewPost( postContent, formTitle, metasToUpdate, formTypeObj?.isConversationalForm, formType ); // Check for the formType variable
 				} else {
 					setShowFormCreationErr( true );
 				}
