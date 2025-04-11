@@ -1,3 +1,5 @@
+import { applyFilters } from '@wordpress/hooks';
+
 async function getUniqueValidationData( checkData, formId, ajaxUrl, nonce ) {
 	let queryString =
 		'action=validation_ajax_action&nonce=' +
@@ -745,6 +747,14 @@ export async function fieldValidation(
 				}
 			}
 		}
+
+		// filter to modify the validation result and set the first error input
+		validateResult = applyFilters(
+			'srfm.modifyFieldValidationResult',
+			validateResult,
+			container,
+			setFirstErrorInput
+		);
 	}
 
 	/**
