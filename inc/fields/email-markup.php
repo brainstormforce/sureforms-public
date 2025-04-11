@@ -81,7 +81,7 @@ class Email_Markup extends Base {
 		$this->set_markup_properties( $this->input_label, true );
 		$this->set_aria_described_by();
 		// Translators: %s is label of block.
-		$this->confirm_label = sprintf( __( 'Confirm %s', 'sureforms' ), $this->label );
+		$this->confirm_label = ! empty( $attributes['confirmLabel'] ) ? sanitize_text_field( $attributes['confirmLabel'] ) : sprintf( __( 'Confirm %s', 'sureforms' ), $this->label );
 		$this->set_label_as_placeholder( $this->input_label );
 	}
 
