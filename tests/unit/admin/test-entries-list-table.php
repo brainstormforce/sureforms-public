@@ -90,6 +90,7 @@ class Test_Entries_List_Table extends TestCase {
             'map' => $this->block_key_map,
             'labels' => $this->labels,
         ], $output);
+        $this->assertIsArray($output);
     }
 
     /**
