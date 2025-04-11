@@ -8,6 +8,8 @@ import {
 import { applyFilters } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
 
+console.log( 'SureForms: Form Submit JS Loaded' );
+
 document.addEventListener( 'DOMContentLoaded', function () {
 	initializeInlineFieldValidation();
 
@@ -107,6 +109,8 @@ async function submitFormData( form ) {
 		// Append the (possibly modified) key-value pair to filteredFormData
 		filteredFormData.append( key, value );
 	}
+
+	console.log( 'Filtered Form Data:', filteredFormData );
 
 	try {
 		return await wp.apiFetch( {
@@ -282,6 +286,8 @@ async function handleFormSubmission(
 			form
 		);
 
+		console.log("isValidate", isValidate );
+
 		// Handle captcha validation, returns true if captcha is valid or not present.
 		const isCaptchaValid = handleCaptchaValidation(
 			recaptchaType,
@@ -405,7 +411,7 @@ function extractFormAttributesAndElements( form ) {
 	const submitType = form.getAttribute( 'message-type' );
 	const successUrl = form.getAttribute( 'success-url' );
 	const ajaxUrl = form.getAttribute( 'ajaxurl' );
-	const nonce = form.getAttribute( 'nonce' );
+	const nonce = form.getAttribute( 'data-nonce' );
 	const loader = form.querySelector( '.srfm-loader' );
 	const successContainer = form.parentElement.querySelector(
 		'.srfm-single-form.srfm-success-box'

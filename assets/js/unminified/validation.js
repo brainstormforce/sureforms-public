@@ -85,6 +85,11 @@ export async function fieldValidation(
 			ajaxUrl,
 			nonce
 		);
+
+		console.log(
+			'Unique Entry Data: ',
+			uniqueEntryData
+		); // Debugging line to check the uniqueEntryData
 	}
 
 	const fieldContainers = singleField
@@ -1095,7 +1100,7 @@ const fieldValidationInit = async ( areaField, blockClass ) => {
 	const form = formTextarea.closest( 'form' );
 	const formId = form.getAttribute( 'form-id' );
 	const ajaxUrl = form.getAttribute( 'ajaxurl' );
-	const nonce = form.getAttribute( 'nonce' );
+	const nonce = form.getAttribute( 'data-nonce' );
 	const singleField = true;
 
 	await fieldValidation( formId, ajaxUrl, nonce, formTextarea, singleField );
