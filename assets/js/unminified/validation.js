@@ -85,11 +85,6 @@ export async function fieldValidation(
 			ajaxUrl,
 			nonce
 		);
-
-		console.log(
-			'Unique Entry Data: ',
-			uniqueEntryData
-		); // Debugging line to check the uniqueEntryData
 	}
 
 	const fieldContainers = singleField

@@ -8,8 +8,6 @@ import {
 import { applyFilters } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
 
-console.log( 'SureForms: Form Submit JS Loaded' );
-
 document.addEventListener( 'DOMContentLoaded', function () {
 	initializeInlineFieldValidation();
 
@@ -109,8 +107,6 @@ async function submitFormData( form ) {
 		// Append the (possibly modified) key-value pair to filteredFormData
 		filteredFormData.append( key, value );
 	}
-
-	console.log( 'Filtered Form Data:', filteredFormData );
 
 	try {
 		return await wp.apiFetch( {
@@ -285,8 +281,6 @@ async function handleFormSubmission(
 			nonce,
 			form
 		);
-
-		console.log("isValidate", isValidate );
 
 		// Handle captcha validation, returns true if captcha is valid or not present.
 		const isCaptchaValid = handleCaptchaValidation(
