@@ -276,3 +276,8 @@ button.srfm-toolbar-width-setting-button {
 		}
 	}
 }
+
+// Temporary fix for the uneven spacing when we hide the submit button. This will be removed once we have a better solution.
+.srfm-submit-button-hidden .srfm-form .srfm-block-single:has( + .srfm-submit-container ) {
+	margin-bottom: 0 !important;
+}
