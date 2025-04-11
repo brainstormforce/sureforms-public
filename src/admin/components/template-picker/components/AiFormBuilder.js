@@ -14,9 +14,6 @@ import { Container, Toaster } from '@bsf/force-ui';
 import AiFormBuilderForm from '../ai-form-builder-components/AiFormBuilderForm.js';
 import AiFormProgressPage from '../ai-form-builder-components/AiFormProgressPage.js';
 
-// import PremiumBadge from '@Admin/components/PremiumBadge';
-// import FormTypeSelector from './FormTypeSelector';
-
 const AiFormBuilder = () => {
 	const [ message, setMessage ] = useState(
 		__( 'Connecting with AI…', 'sureforms' )
@@ -58,7 +55,7 @@ const AiFormBuilder = () => {
 		const postData = {
 			message_array: messageArray,
 			use_system_message: useSystemMessage,
-			is_conversional: formLayout?.isConversationalForm,
+			is_conversional: formTypeObj?.isConversationalForm,
 			form_type: formType,
 		};
 
@@ -104,10 +101,10 @@ const AiFormBuilder = () => {
 					const metasToUpdate = applyFilters(
 						'srfm.aiFormScreen.metasToUpdate',
 						{},
-						formLayout,
+						formTypeObj,
 						content
 					);
-					handleAddNewPost( postContent, formTitle, metasToUpdate, formLayout?.isConversationalForm, formType );
+					handleAddNewPost( postContent, formTitle, metasToUpdate, formTypeObj?.isConversationalForm, formType );
 				} else {
 					setShowFormCreationErr( true );
 				}
