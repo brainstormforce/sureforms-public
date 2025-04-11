@@ -221,12 +221,16 @@ class Admin {
 	 * @since x.x.x
 	 */
 	public function add_upgrade_to_pro() {
+		// The url used here is used as a selector for css to style the upgrade to pro submenu.
+		// If you are changing this url, please make sure to update the css as well.
+		$upgrade_url = esc_url( 'https://sureforms.com/upgrade-pro/' );
+
 		add_submenu_page(
 			'sureforms_menu',
 			__( 'Upgrade to Pro', 'sureforms' ),
 			__( 'Upgrade to Pro', 'sureforms' ),
 			'edit_others_posts',
-			'https://sureforms.com/upgrade-pro/'
+			$upgrade_url
 		);
 	}
 
