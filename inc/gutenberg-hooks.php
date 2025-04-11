@@ -179,8 +179,9 @@ class Gutenberg_Hooks {
 			SRFM_SLUG . $form_editor_script,
 			SRFM_SLUG . '_block_data',
 			[
-				'plugin_url'  => SRFM_URL,
-				'admin_email' => get_option( 'admin_email' ),
+				'plugin_url'      => SRFM_URL,
+				'admin_email'     => get_option( 'admin_email' ),
+				'pro_plugin_name' => defined( 'SRFM_PRO_VER' ) && defined( 'SRFM_PRO_PRODUCT' ) ? SRFM_PRO_PRODUCT : 'free',
 			]
 		);
 

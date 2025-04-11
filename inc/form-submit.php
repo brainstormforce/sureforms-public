@@ -512,6 +512,8 @@ class Form_Submit {
 			}
 		}
 
+		$submission_data = apply_filters( 'srfm_before_prepare_submission_data', $submission_data );
+
 		$modified_message = $this->prepare_submission_data( $submission_data );
 
 		$form_before_submission_data = [
