@@ -59,6 +59,14 @@ class Astra {
 			$dashboard_priority = 2.0;
 		}
 
+		// Check if the Astra priority is numeric.
+		// If not, set it to 2.0.
+		if ( ! is_numeric( $astra_priority ) ) {
+			$astra_priority = 2.0;
+		} else {
+			$astra_priority = (float) $astra_priority;
+		}
+
 		// If the Astra priority is already less than the dashboard priority, return it.
 		if ( $astra_priority < $dashboard_priority ) {
 			return $astra_priority;
