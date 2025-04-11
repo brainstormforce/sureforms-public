@@ -77,6 +77,7 @@ class Test_Entries_List_Table extends TestCase {
         $method->setAccessible( true );
         return $method;
     }
+
     /**
      * Test the build_block_key_map_and_labels method.
      */

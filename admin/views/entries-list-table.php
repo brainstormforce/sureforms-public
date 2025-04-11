@@ -335,39 +335,11 @@ class Entries_List_Table extends \WP_List_Table {
 					 */
 					$all_entry_ids = Entries::get_all_entry_ids_for_form( $filter_form_id );
 				} elseif ( ! empty( $_GET['search_filter'] ) ) {
-					// Export all the available ( but not trashed ) entries.
-					$all_entry_ids = Entries::get_all(
-						[
-							'where'   => [
-								[
-									[
-										'key'     => 'ID',
-										'compare' => 'LIKE',
-										'value'   => sanitize_text_field( wp_unslash( $_GET['search_filter'] ) ),
-									],
-								],
-							],
-							'columns' => 'ID',
-						],
-						false
-					);
+					// Export entries based on the search filter.
+					$all_entry_ids = self::get_entries_based_on_search( sanitize_text_field( wp_unslash( $_GET['search_filter'] ) ) );
 				} else {
 					// Export all the available ( but not trashed ) entries.
-					$all_entry_ids = Entries::get_all(
-						[
-							'where'   => [
-								[
-									[
-										'key'     => 'status',
-										'compare' => '!=',
-										'value'   => 'trash',
-									],
-								],
-							],
-							'columns' => 'ID',
-						],
-						false
-					);
+					$all_entry_ids = self::get_all_entries_except_trash();
 				}
 				$entry_ids = array_map( 'absint', array_column( $all_entry_ids, 'ID' ) );
 			}
@@ -1378,6 +1350,56 @@ class Entries_List_Table extends \WP_List_Table {
 					],
 				],
 				'columns' => 'ID, form_data', // Query only needed columns for the performance.
+			],
+			false
+		);
+	}
+
+	/**
+	 * Get all the entries data except the ones which are in trash.
+	 *
+	 * @since x.x.x
+	 * @return array The entries data.
+	 */
+	private static function get_all_entries_except_trash() {
+		return Entries::get_all(
+			[
+				'where'   => [
+					[
+						[
+							'key'     => 'status',
+							'compare' => '!=',
+							'value'   => 'trash',
+						],
+					],
+				],
+				'columns' => 'ID',
+			],
+			false
+		);
+	}
+
+	/**
+	 * Get the entries based on the search term.
+	 *
+	 * @param string $search_term The search term to filter entries.
+	 *
+	 * @since x.x.x
+	 * @return array The entries data.
+	 */
+	private static function get_entries_based_on_search( $search_term ) {
+		return Entries::get_all(
+			[
+				'where'   => [
+					[
+						[
+							'key'     => 'ID',
+							'compare' => 'LIKE',
+							'value'   => $search_term,
+						],
+					],
+				],
+				'columns' => 'ID',
 			],
 			false
 		);
