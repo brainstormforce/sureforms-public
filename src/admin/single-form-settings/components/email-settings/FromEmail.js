@@ -22,56 +22,58 @@ const FromEmail = ( {	formData,
 		const isValidEmail = /^[\p{L}\p{N}._%+-]+@[\p{L}\p{N}.-]+\.[\p{L}]{2,}$/u.test( fromEmail );
 
 		// If value starts with '{', no warning should be displayed. To avoid issue with smart tags.
+		let warningMessage = '';
+
 		if ( fromEmail.startsWith( '{' ) && fromEmail.endsWith( '}' ) ) {
-			setFromEmailWarningMessage();
+			warningMessage = undefined;
 		} else if ( fromEmail === '' || ! isValidEmail ) {
-			// Show general warning for empty or invalid email
-			setFromEmailWarningMessage( __( "Please enter a valid email address. Your notifications won't be sent if the field is not filled in correctly.", 'sureforms' ) );
+			warningMessage = __(
+				"Please enter a valid email address. Your notifications won't be sent if the field is not filled in correctly.",
+				'sureforms'
+			);
 		} else if ( userEnteredUrl !== siteUrl ) {
-			// Show domain mismatch warning
 			if ( srfm_block_data?.is_suremails_active ) {
-				setFromEmailWarningMessage(
-					sprintf(
-						// Translators: %1$s is the website domain, %2$s is the suggested admin email.
-						__(
-							"The current 'From Email' address does not match your website domain name (%1$s). This can cause your notification emails to be blocked or marked as spam. Alternately, try using a From Address that matches your website domain (admin@%2$s).",
-							'sureforms'
-						),
-						siteUrl,
-						siteUrl
-					)
+				warningMessage = sprintf(
+					// Translators: %1$s is the website domain, %2$s is the suggested admin email.
+					__(
+						"The current 'From Email' address does not match your website domain name (%1$s). This can cause your notification emails to be blocked or marked as spam. Alternately, try using a From Address that matches your website domain (admin@%2$s).",
+						'sureforms'
+					),
+					siteUrl,
+					siteUrl
 				);
 			} else {
-				setFromEmailWarningMessage(
+				warningMessage = (
 					<>
-			  { sprintf(
+						{ sprintf(
 							// Translators: %s is the website domain.
 							__(
-				  "The current 'From Email' address does not match your website domain name (%s). This can cause your notification emails to be blocked or marked as spam. ",
-				  'sureforms'
+								"The current 'From Email' address does not match your website domain name (%s). This can cause your notification emails to be blocked or marked as spam. ",
+								'sureforms'
 							),
 							siteUrl
-			  ) }
-			  { __( 'We strongly recommend that you install the free ', 'sureforms' ) }
-			  <a href="https://suremails.com?utm_medium=sureforms" target="_blank" rel="noopener noreferrer">
-				SureMails
-			  </a>
-			  { __( ' plugin! The Setup Wizard makes it easy to fix your emails. ', 'sureforms' ) }
-			  { sprintf(
+						) }
+						{ __( 'We strongly recommend that you install the free ', 'sureforms' ) }
+						<a href="https://suremails.com?utm_medium=sureforms" target="_blank" rel="noopener noreferrer">
+							SureMails
+						</a>
+						{ __( ' plugin! The Setup Wizard makes it easy to fix your emails. ', 'sureforms' ) }
+						{ sprintf(
 							// Translators: %s is the website domain.
 							__(
-				  ' Alternately, try using a From Address that matches your website domain (admin@%s).',
-				  'sureforms'
+								' Alternately, try using a From Address that matches your website domain (admin@%s).',
+								'sureforms'
 							),
 							siteUrl
-			  ) }
+						) }
 					</>
-		  );
+				);
 			}
 		} else {
-			// No warning needed
-			setFromEmailWarningMessage();
+			warningMessage = undefined;
 		}
+
+		setFromEmailWarningMessage( warningMessage );
 	};
 
 	useEffect(
