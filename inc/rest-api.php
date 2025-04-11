@@ -206,7 +206,7 @@ class Rest_Api {
 					'permission_callback' => [ $this, 'can_edit_posts' ],
 				],
 				// This route is to get all forms data.
-				'form-data'            => [
+				'form-data'          => [
 					'methods'             => 'GET',
 					'callback'            => [ $this, 'get_form_data' ],
 					'permission_callback' => [ $this, 'can_edit_posts' ],

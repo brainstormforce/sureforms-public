@@ -172,7 +172,7 @@ class Admin_Ajax {
 		return apply_filters(
 			'srfm_integrated_plugins',
 			[
-				'sure_triggers' => [
+				'sure_triggers'     => [
 					'title'       => __( 'OttoKit', 'sureforms' ),
 					'subtitle'    => __( 'Connect SureForms to hundreds of apps, CRMs and tools such as Slack, Mailchimp, etc.', 'sureforms' ),
 					'description' => __( 'OttoKit is a powerful automation platform that helps you connect your various plugins and apps together. It allows you to automate repetitive tasks, so you can focus on more important work.', 'sureforms' ),
