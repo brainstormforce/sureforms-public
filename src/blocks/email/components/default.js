@@ -54,7 +54,9 @@ export const EmailComponent = ( { attributes, blockID, setAttributes } ) => {
 						tagName="label"
 						value={ confirmLabel }
 						onChange={ ( value ) => {
-							setAttributes( { confirmLabel: decodeHtmlEntities( value ) } );
+							setAttributes( {
+								confirmLabel: decodeHtmlEntities( value ),
+							} );
 						} }
 						className={ `srfm-block-label${ isRequired }` }
 						multiline={ false }
