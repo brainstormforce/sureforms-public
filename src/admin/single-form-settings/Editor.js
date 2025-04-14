@@ -188,7 +188,7 @@ const SureformsFormSpecificSettings = ( props ) => {
 				'.block-editor-inserter__block-list'
 			);
 
-			if ( targetElement && ! isPro ) {
+			if ( targetElement ) {
 				// Check if the custom component is already present
 				const customComponent = targetElement.querySelector(
 					'.upgrade-pro-container'
