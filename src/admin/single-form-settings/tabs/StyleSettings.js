@@ -914,7 +914,7 @@ function StyleSettings( props ) {
 		] : [] ),
 	];
 
-	const enhancedStylePanels = getStylePanels( baseStylePanels, { props } );
+	const enhancedStylePanels = getStylePanels( baseStylePanels, { props, sureformsKeys, editPost, formStyling, updateFormStyling } );
 
 	const presetPreview = (
 		<>
