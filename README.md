@@ -4,7 +4,7 @@
 **Requires at least:** 6.4  
 **Tested up to:** 6.7.2  
 **Requires PHP:** 7.4  
-**Stable tag:** 1.5.0  
+**Stable tag:** 1.6.0  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -260,6 +260,11 @@ Yes! You can certainly use SureForms on yours as well as your client’s website
 When you use SureForms, you get an easy-to-use AI-powered form builder that can be used to build your forms fast.
 
 ## Changelog ##
+### 1.6.0 - 15th April 2025 ###
+* Fix: Resolved an issue where width options overlapped or failed to update correctly when switching between them (displayed correctly on the front end).
+* Fix: Resolved a UI glitch where a fade/shade overlay appeared on the “Block” option in the block inserter panel.
+* Fix: Resolved a compatibility issue with Astra Pro and the All in One SEO plugin, where the SEO preview was not working due to the SureForm post type being unregistered.
+* Fix: Resolved styling conflicts in UAGB blocks (Heading, Icon, Image, Separator) caused by duplicate block IDs when duplicating blocks.
 ### 1.5.0 - 9th April 2025 ###
 * New: New: Added support for Calculators in Business Plan.
 * New: Added support for prefix and suffix in the Number field.
