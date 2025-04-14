@@ -262,6 +262,10 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 == Changelog ==
 = x.x.x =
 * Improvement: Update Astra menu priority to show right below the dashboard menu.
+* Fix: Resolved issue where width options overlapped or failed to update correctly when switching between them (displayed correctly on the front end).
+* Fix: Resolved UI glitch where a fade/shade overlay appeared on the “Block” option in the block inserter panel.
+* Fix: Resolved a compatibility issue with Astra Pro and All in One SEO Plugin where SEO preview was not working due to the sureform post type being unregistered.
+* Fix: Resolved styling conflicts in UAGB blocks (Heading, Icon, Image, Separator) caused by duplicate block IDs on duplication.
 = 1.5.0 - 9th April 2025 =
 * New: New: Added support for Calculators in Business Plan.
 * New: Added support for prefix and suffix in the Number field.
