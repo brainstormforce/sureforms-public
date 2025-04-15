@@ -41,9 +41,10 @@ class Form_Submit {
 	/**
 	 * Addresses.
 	 *
-	 * @var array
+	 * @var string
+	 * @since x.x.x
 	 */
-	private $addresses = [];
+	private $addresses = '';
 
 	/**
 	 * Constructor

@@ -378,8 +378,6 @@ async function handleFormSubmission(
 			return; // Stop further execution if event.preventDefault() was called.
 		}
 
-		console.log( 'Form submission triggered' );
-
 		const formStatus = await submitFormData( form );
 		if ( formStatus?.success ) {
 			/**
