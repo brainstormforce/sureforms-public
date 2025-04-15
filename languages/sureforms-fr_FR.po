@@ -83,7 +83,7 @@ msgstr "Modifier %1$s"
 #: inc/export.php:62
 #: inc/export.php:127
 #: inc/form-submit.php:200
-#: inc/form-submit.php:836
+#: inc/form-submit.php:838
 #: inc/forms-data.php:87
 #: inc/global-settings/global-settings.php:86
 #: inc/global-settings/global-settings.php:294
@@ -200,64 +200,66 @@ msgid_plural "%1$d entries were permanently deleted."
 msgstr[0] "%1$d entrée a été supprimée définitivement."
 msgstr[1] ""
 
-#: admin/views/entries-list-table.php:798
+#: admin/views/entries-list-table.php:801
 msgid "Entry #"
 msgstr "Entrée n°"
 
 #. translators: %1$s is the word "form", %2$d is the form ID.
-#: admin/views/entries-list-table.php:814
-#: admin/views/entries-list-table.php:1105
+#: admin/views/entries-list-table.php:817
+#: admin/views/entries-list-table.php:1108
 #: inc/page-builders/bricks/elements/form-widget.php:96
 #: assets/build/dashboard.js:2
 #: assets/build/formEditor.js:172
 msgid "Form"
 msgstr "Formulaire"
 
-#: admin/views/entries-list-table.php:830
+#: admin/views/entries-list-table.php:833
 msgid "Read"
 msgstr "Lire"
 
-#: admin/views/entries-list-table.php:833
-#: admin/views/entries-list-table.php:1192
+#: admin/views/entries-list-table.php:836
+#: admin/views/entries-list-table.php:1195
 msgid "Unread"
 msgstr "Non lu"
 
-#: admin/views/entries-list-table.php:836
-#: admin/views/entries-list-table.php:940
-#: admin/views/entries-list-table.php:1203
+#: admin/views/entries-list-table.php:839
+#: admin/views/entries-list-table.php:943
+#: admin/views/entries-list-table.php:1206
 #: modules/gutenberg/icons/icons-v6-3.php:2916
 msgid "Trash"
 msgstr "Poubelle"
 
-#: admin/views/entries-list-table.php:900
+#: admin/views/entries-list-table.php:903
 msgid "Published"
 msgstr "Publié"
 
-#: admin/views/entries-list-table.php:939
+#: admin/views/entries-list-table.php:942
 #: inc/email/email-template.php:157
+#: inc/email/email-template.php:163
 #: inc/smart-tags.php:338
+#: inc/smart-tags.php:344
 msgid "View"
 msgstr "Voir"
 
-#: admin/views/entries-list-table.php:973
-#: admin/views/entries-list-table.php:1398
+#: admin/views/entries-list-table.php:976
+#: admin/views/entries-list-table.php:1401
 msgid "Restore"
 msgstr "Restaurer"
 
-#: admin/views/entries-list-table.php:974
-#: admin/views/entries-list-table.php:1399
+#: admin/views/entries-list-table.php:977
+#: admin/views/entries-list-table.php:1402
 msgid "Delete Permanently"
 msgstr "Supprimer définitivement"
 
-#: admin/views/entries-list-table.php:1103
+#: admin/views/entries-list-table.php:1106
 msgid "All Form Entries"
 msgstr "Toutes les entrées de formulaire"
 
-#: admin/views/entries-list-table.php:1133
+#: admin/views/entries-list-table.php:1136
 msgid "All Dates"
 msgstr "Toutes les dates"
 
-#: admin/views/entries-list-table.php:1185
+#: admin/views/entries-list-table.php:1188
 msgid "All"
 msgstr "Tous"
 
@@ -331,11 +333,11 @@ msgstr "Image"
 msgid "Open"
 msgstr "Ouvrir"
 
-#: admin/views/single-entry.php:482
+#: admin/views/single-entry.php:484
 msgid "Entry Logs"
 msgstr "Journaux d'entrée"
 
-#: admin/views/single-entry.php:506
+#: admin/views/single-entry.php:508
 msgid "No logs found for this entry."
 msgstr "Aucun journal trouvé pour cette entrée."
 
@@ -449,7 +451,7 @@ msgid "Form ID is required."
 msgstr "L'identifiant du formulaire est requis."
 
 #: inc/admin-ajax.php:242
-#: inc/form-submit.php:848
+#: inc/form-submit.php:850
 msgid "Invalid form ID."
 msgstr "ID de formulaire invalide."
 
@@ -767,7 +769,7 @@ msgstr "Erreur reCAPTCHA."
 msgid "Spam Detected"
 msgstr "Spam détecté"
 
-#: inc/form-submit.php:634
+#: inc/form-submit.php:636
 msgid "Error submitting form"
 msgstr "Erreur lors de la soumission du formulaire"
 
@@ -5038,7 +5040,7 @@ msgstr "Ordinateur portable médical"
 
 #: modules/gutenberg/icons/icons-v6-2.php:691
 msgid "Laravel"
-msgstr ""
+msgstr "Laravel"
 
 #: modules/gutenberg/icons/icons-v6-2.php:702
 msgid "Lari Sign"
@@ -5337,7 +5339,7 @@ msgstr "Oreiller de matelas"
 
 #: modules/gutenberg/icons/icons-v6-2.php:1536
 msgid "MaxCDN"
-msgstr ""
+msgstr "MaxCDN"
 
 #: modules/gutenberg/icons/icons-v6-2.php:1547
 msgid "Maximize"
@@ -5874,7 +5876,7 @@ msgstr "Piment Fort"
 
 #: modules/gutenberg/icons/icons-v6-2.php:3071
 msgid "PerByte"
-msgstr ""
+msgstr "ParOctet"
 
 #: modules/gutenberg/icons/icons-v6-2.php:3082
 msgid "Percent"
@@ -6844,6 +6846,7 @@ msgid "Signal"
 msgstr "Signal"
 
 #: modules/gutenberg/icons/icons-v6-3.php:625
+#: assets/build/formEditor.js:172
 msgid "Signature"
 msgstr "Signature"
 
@@ -9313,7 +9316,7 @@ msgstr "Visuel"
 
 #: assets/build/formEditor.js:172
 msgid "HTML"
-msgstr ""
+msgstr "HTML"
 
 #: assets/build/formEditor.js:172
 msgid "All Data"
@@ -9693,10 +9696,6 @@ msgstr "Curseur"
 #: assets/build/formEditor.js:172
 msgid "Rating"
 msgstr "Évaluation"
-
-#: assets/build/formEditor.js:172
-msgid "SureForms Pro"
-msgstr "SureForms Pro"
 
 #: assets/build/formEditor.js:172
 msgid "Upgrade to Unlock These Fields"
@@ -11074,7 +11073,7 @@ msgstr "icône"
 msgid "SureForms %1$s requires minimum %2$s %3$s to work properly. Please update to the latest version from %4$shere%5$s."
 msgstr "SureForms %1$s nécessite au minimum %2$s %3$s pour fonctionner correctement. Veuillez mettre à jour vers la dernière version depuis %4$scet endroit%5$s."
 
-#: admin/views/entries-list-table.php:1008
+#: admin/views/entries-list-table.php:1011
 msgid "Clear Filter"
 msgstr "Effacer le filtre"
 
@@ -11098,7 +11097,7 @@ msgstr "Pot de miel"
 msgid "You do not have permission to export forms."
 msgstr "Vous n'avez pas la permission d'exporter des formulaires."
 
-#: inc/form-submit.php:795
+#: inc/form-submit.php:797
 msgid "Unknown"
 msgstr "Inconnu"
 
@@ -11215,21 +11214,21 @@ msgstr "Déverrouiller Ajouter une note"
 msgid "With the SureForms Starter plan, enhance your submitted form entries by adding personalized notes for better clarity and tracking."
 msgstr "Avec le plan SureForms Starter, améliorez vos entrées de formulaire soumises en ajoutant des notes personnalisées pour une meilleure clarté et un suivi amélioré."
 
-#: inc/form-submit.php:729
+#: inc/form-submit.php:731
 msgid "Email notification passed to the sending server"
 msgstr "Notification par e-mail transmise au serveur d'envoi"
 
 #. translators: Here, %s is the comma separated emails list.
-#: inc/form-submit.php:783
+#: inc/form-submit.php:785
 msgid "Email notification recipient: %s"
 msgstr "Destinataire de la notification par e-mail : %s"
 
 #. translators: Here, %1$s is the comma separated emails list and %2$s is error report ( if any ).
-#: inc/form-submit.php:793
+#: inc/form-submit.php:795
 msgid "Email server was unable to send the email notification. Recipient: %1$s. Reason: %2$s"
 msgstr "Le serveur de messagerie n'a pas pu envoyer la notification par e-mail. Destinataire : %1$s. Raison : %2$s"
 
-#: inc/form-submit.php:818
+#: inc/form-submit.php:820
 msgid "No emails were sent"
 msgstr "Aucun e-mail n'a été envoyé"
 
@@ -11466,6 +11465,10 @@ msgstr "Veuillez sélectionner le type de formulaire"
 #: assets/build/templatePicker.js:172
 msgid "The AI-generated form may require manual review and adjustments. Please verify all fields before publishing the form."
 msgstr "Le formulaire généré par l'IA peut nécessiter une révision et des ajustements manuels. Veuillez vérifier tous les champs avant de publier le formulaire."
+
+#: assets/build/formEditor.js:172
+msgid "SUREFORMS PREMIUM FIELDS"
+msgstr "CHAMPS PREMIUM SUREFORMS"
 
 #: inc/post-types.php:124
 msgctxt "post type general name"
