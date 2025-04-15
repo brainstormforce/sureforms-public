@@ -136,16 +136,16 @@ class Generate_Form_Markup {
 			// Form Settings.
 			$form = [
 				// Padding.
-				'padding_top'          => $form_styling['form_padding_top'] ?? 32,
-				'padding_right'        => $form_styling['form_padding_right'] ?? 32,
-				'padding_bottom'       => $form_styling['form_padding_bottom'] ?? 32,
-				'padding_left'         => $form_styling['form_padding_left'] ?? 32,
+				'padding_top'          => isset( $form_styling['form_padding_top'] ) ? floatval( $form_styling['form_padding_top'] ) : 32,
+				'padding_right'        => isset( $form_styling['form_padding_right'] ) ? floatval( $form_styling['form_padding_right'] ) : 32,
+				'padding_bottom'       => isset( $form_styling['form_padding_bottom'] ) ? floatval( $form_styling['form_padding_bottom'] ) : 32,
+				'padding_left'         => isset( $form_styling['form_padding_left'] ) ? floatval( $form_styling['form_padding_left'] ) : 32,
 				'padding_unit'         => Helper::get_string_value( $form_styling['form_padding_unit'] ) ?? 'px',
 				// Border Radius.
-				'border_radius_top'    => $form_styling['form_border_radius_top'] ?? 12,
-				'border_radius_right'  => $form_styling['form_border_radius_right'] ?? 12,
-				'border_radius_bottom' => $form_styling['form_border_radius_bottom'] ?? 12,
-				'border_radius_left'   => $form_styling['form_border_radius_left'] ?? 12,
+				'border_radius_top'    => isset( $form_styling['form_border_radius_top'] ) ? floatval( $form_styling['form_border_radius_top'] ) : 12,
+				'border_radius_right'  => isset( $form_styling['form_border_radius_right'] ) ? floatval( $form_styling['form_border_radius_right'] ) : 12,
+				'border_radius_bottom' => isset( $form_styling['form_border_radius_bottom'] ) ? floatval( $form_styling['form_border_radius_bottom'] ) : 12,
+				'border_radius_left'   => isset( $form_styling['form_border_radius_left'] ) ? floatval( $form_styling['form_border_radius_left'] ) : 12,
 				'border_radius_unit'   => Helper::get_string_value( $form_styling['form_border_radius_unit'] ) ?? 'px',
 			];
 
