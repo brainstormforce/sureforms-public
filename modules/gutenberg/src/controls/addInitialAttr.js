@@ -5,7 +5,7 @@ const getUniqId = ( blocks ) =>
 		( result, block ) => {
 			if (
 				block?.attributes?.block_id &&
-				block.name.includes( 'uagb' )
+				block.name.includes( 'srfm' )
 			) {
 				result.blockIds.push( block.attributes.block_id );
 				result.clientIds.push( block.clientId );
