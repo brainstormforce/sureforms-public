@@ -8,6 +8,7 @@
 
 namespace SRFM\Inc\Compatibility\Themes;
 
+use SRFM\Inc\Helper;
 use SRFM\Inc\Traits\Get_Instance;
 
 // Exit if accessed directly.
@@ -78,7 +79,8 @@ class Astra {
 		$existing_priorities = array_keys( $menu );
 
 		// If the computed astra_priority already exists, just default to 2.0.
-		if ( in_array( (string) $astra_priority, array_map( 'strval', $existing_priorities ), true ) ) {
+		// We are converting the existing priorities to string to make sure the type is always same.
+		if ( in_array( Helper::get_string_value( $astra_priority ), array_map( 'strval', $existing_priorities ), true ) ) {
 			$astra_priority = 2.0;
 		}
 
