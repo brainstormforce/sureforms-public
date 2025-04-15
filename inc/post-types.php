@@ -613,6 +613,44 @@ class Post_Types {
 							'bg_overlay_gradient_location_2' => [
 								'type' => 'integer',
 							],
+							// Form Padding.
+							'form_padding_top'             => [
+								'type' => 'number',
+							],
+							'form_padding_right'           => [
+								'type' => 'number',
+							],
+							'form_padding_bottom'          => [
+								'type' => 'number',
+							],
+							'form_padding_left'            => [
+								'type' => 'number',
+							],
+							'form_padding_unit'            => [
+								'type' => 'string',
+							],
+							'form_padding_link'            => [
+								'type' => 'boolean',
+							],
+							// Border Radius.
+							'form_border_radius_top'       => [
+								'type' => 'number',
+							],
+							'form_border_radius_right'     => [
+								'type' => 'number',
+							],
+							'form_border_radius_bottom'    => [
+								'type' => 'number',
+							],
+							'form_border_radius_left'      => [
+								'type' => 'number',
+							],
+							'form_border_radius_unit'      => [
+								'type' => 'string',
+							],
+							'form_border_radius_link'      => [
+								'type' => 'boolean',
+							],
 						],
 					],
 				],
@@ -663,6 +701,21 @@ class Post_Types {
 					'bg_overlay_gradient_angle'      => 90,
 					'bg_overlay_gradient_location_1' => 0,
 					'bg_overlay_gradient_location_2' => 100,
+					// Form Properties.
+					// Padding.
+					'form_padding_top'               => 32,
+					'form_padding_right'             => 32,
+					'form_padding_bottom'            => 32,
+					'form_padding_left'              => 32,
+					'form_padding_unit'              => 'px',
+					'form_padding_link'              => true,
+					// Border Radius.
+					'form_border_radius_top'         => 12,
+					'form_border_radius_right'       => 12,
+					'form_border_radius_bottom'      => 12,
+					'form_border_radius_left'        => 12,
+					'form_border_radius_unit'        => 'px',
+					'form_border_radius_link'        => true,
 				],
 			]
 		);

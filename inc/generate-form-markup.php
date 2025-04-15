@@ -133,6 +133,21 @@ class Generate_Form_Markup {
 			$bg_overlay_gradient_location_1 = $is_overlay_advanced_gradient && isset( $form_styling['bg_overlay_gradient_location_1'] ) ? $form_styling['bg_overlay_gradient_location_1'] : '';
 			$bg_overlay_gradient_location_2 = $is_overlay_advanced_gradient && isset( $form_styling['bg_overlay_gradient_location_2'] ) ? $form_styling['bg_overlay_gradient_location_2'] : '';
 			$bg_overlay_gradient_angle      = $is_overlay_advanced_gradient && isset( $form_styling['bg_overlay_gradient_angle'] ) ? $form_styling['bg_overlay_gradient_angle'] : '';
+			// Form Settings.
+			$form = [
+				// Padding.
+				'padding_top'    => $form_styling['form_padding_top'] ?? 32,
+				'padding_right'  => $form_styling['form_padding_right'] ?? 32,
+				'padding_bottom' => $form_styling['form_padding_bottom'] ?? 32,
+				'padding_left'   => $form_styling['form_padding_left'] ?? 32,
+				'padding_unit'  => Helper::get_string_value( $form_styling['form_padding_unit'] ) ?? 'px',
+				// Border Radius.
+				'border_radius_top'    => $form_styling['form_border_radius_top'] ?? 12,
+				'border_radius_right'  => $form_styling['form_border_radius_right'] ?? 12,
+				'border_radius_bottom' => $form_styling['form_border_radius_bottom'] ?? 12,
+				'border_radius_left'   => $form_styling['form_border_radius_left'] ?? 12,
+				'border_radius_unit'   => Helper::get_string_value( $form_styling['form_border_radius_unit'] ) ?? 'px',
+			];
 
 			if ( 'custom' === $overlay_size ) {
 				$bg_overlay_custom_size      = $form_styling['bg_overlay_custom_size'] ?? 100;
@@ -299,7 +314,19 @@ class Generate_Form_Markup {
 
 					/* Background Control Variables */
 					<?php
-						$styling_vars = [];
+						// Form Styles.
+						$styling_vars = [
+							// Padding.
+							'--srfm-form-padding-top'                  => sanitize_text_field( "{$form['padding_top']}{$form['padding_unit']}" ),
+							'--srfm-form-padding-right'                => sanitize_text_field( "{$form['padding_right']}{$form['padding_unit']}" ),
+							'--srfm-form-padding-bottom'               => sanitize_text_field( "{$form['padding_bottom']}{$form['padding_unit']}" ),
+							'--srfm-form-padding-left'                 => sanitize_text_field( "{$form['padding_left']}{$form['padding_unit']}" ),
+							// Border Radius.
+							'--srfm-form-border-radius-top'            => sanitize_text_field( "{$form['border_radius_top']}{$form['border_radius_unit']}" ),
+							'--srfm-form-border-radius-right'          => sanitize_text_field( "{$form['border_radius_right']}{$form['border_radius_unit']}" ),
+							'--srfm-form-border-radius-bottom'         => sanitize_text_field( "{$form['border_radius_bottom']}{$form['border_radius_unit']}" ),
+							'--srfm-form-border-radius-left'           => sanitize_text_field( "{$form['border_radius_left']}{$form['border_radius_unit']}" ),
+						];
 						// Background Styles.
 					if ( 'image' === $bg_type && ! empty( $bg_image ) ) {
 						$bg_size_merged = 'custom' === $bg_image_size ? "{$bg_image_size_custom}{$bg_image_size_custom_unit}" : $bg_image_size;
