@@ -261,10 +261,11 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 
 ## Changelog ##
 ### 1.6.0 - 15th April 2025 ###
-* Fix: Resolved an issue where width options overlapped or failed to update correctly when switching between them (displayed correctly on the front end).
-* Fix: Resolved a UI glitch where a fade/shade overlay appeared on the “Block” option in the block inserter panel.
-* Fix: Resolved a compatibility issue with Astra Pro and the All in One SEO plugin, where the SEO preview was not working due to the SureForm post type being unregistered.
-* Fix: Resolved styling conflicts in UAGB blocks (Heading, Icon, Image, Separator) caused by duplicate block IDs when duplicating blocks.
+* New: Added Signature block in Pro Plan.
+* Fix: Ensured compatibility with WordPress 6.8 by fixing a UI glitch where a fade overlay appeared on the Block option in the block inserter panel.
+* Fix: Improved compatibility with WordPress 6.8 by resolving an issue where width options overlapped or didn't update correctly when switching between them though they displayed correctly on the front end.
+* Fix: Resolved a compatibility issue with Astra Pro and All in One SEO Plugin where SEO preview was not working due to the SureForms post type being unregistered.
+* Fix: Resolved styling conflicts in UAGB blocks (Heading, Icon, Image, Separator) caused by duplicate block IDs on duplication.
 ### 1.5.0 - 9th April 2025 ###
 * New: New: Added support for Calculators in Business Plan.
 * New: Added support for prefix and suffix in the Number field.
