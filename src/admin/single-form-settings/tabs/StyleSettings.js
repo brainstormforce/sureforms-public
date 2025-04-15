@@ -800,7 +800,7 @@ function StyleSettings( props ) {
 			id: 'padding',
 			component: (
 				<Spacing
-					label={ __( 'Padding', 'sureforms-pro' ) }
+					label={ __( 'Padding', 'sureforms' ) }
 					valueTop={ {
 						value: form_padding_top,
 						label: 'form_padding_top',
@@ -833,7 +833,7 @@ function StyleSettings( props ) {
 			id: 'border_radius',
 			component: (
 				<Spacing
-					label={ __( 'Border Radius', 'sureforms-pro' ) }
+					label={ __( 'Border Radius', 'sureforms' ) }
 					valueTop={ {
 						value: form_border_radius_top,
 						label: 'form_border_radius_top',
