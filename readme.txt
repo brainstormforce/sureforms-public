@@ -2,13 +2,13 @@
 Contributors: brainstormforce
 Tags: contact form, custom form, forms, contact form plugin, form builder
 Requires at least: 6.4
-Tested up to: 6.7.2
+Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 1.5.0
+Stable tag: 1.6.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-SureForms: Transform your WordPress form-building experience with stunning designs, ai integration, and no-code flexibility.
+SureForms: Transform your WordPress form-building experience with stunning designs, AI integration, and no-code flexibility.
 
 == Description ==
 
@@ -260,6 +260,12 @@ Yes! You can certainly use SureForms on yours as well as your client’s website
 When you use SureForms, you get an easy-to-use AI-powered form builder that can be used to build your forms fast.
 
 == Changelog ==
+= 1.6.0 - 16th April 2025 =
+* New: Added Signature block in Pro Plan.
+* Fix: Ensured compatibility with WordPress 6.8 by fixing a UI glitch where a fade overlay appeared on the Block option in the block inserter panel.
+* Fix: Improved compatibility with WordPress 6.8 by resolving an issue where width options overlapped or didn't update correctly when switching between them though they displayed correctly on the front end.
+* Fix: Resolved a compatibility issue with Astra Pro and All in One SEO Plugin where SEO preview was not working due to the SureForms post type being unregistered.
+* Fix: Resolved styling conflicts in UAGB blocks (Heading, Icon, Image, Separator) caused by duplicate block IDs on duplication.
 = 1.5.0 - 9th April 2025 =
 * New: Added support for Calculators in Business Plan.
 * New: Added support for prefix and suffix in the Number field.
