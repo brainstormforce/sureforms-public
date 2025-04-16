@@ -89,6 +89,14 @@ $placeholder_color: #9ca3af;
 	line-height: 20px;
 }
 
+#toplevel_page_sureforms_menu .wp-submenu li a[href="https://sureforms.com/upgrade-pro/?utm_medium=submenu_link_upgrade"]:hover {
+	background-color: #018D71;
+	color: #FFFFFF;
+	font-size: 14px;
+	font-weight: 500;
+	line-height: 20px;
+}
+
 /* Add negative margins to the top separator if this is not the current submenu */
 #toplevel_page_sureforms_menu.wp-not-current-submenu .wp-submenu li.wp-first-item::after {
 	margin: 8px -3px;
