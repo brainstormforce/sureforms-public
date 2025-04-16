@@ -11,7 +11,7 @@ const SureTriggers = () => {
 					<img
 						src={ SureTriggersIcon }
 						className="size-6"
-						alt={ __( 'SureTriggers', 'sureforms' ) }
+						alt={ __( 'OttoKit', 'sureforms' ) }
 					/>
 				</div>
 				<div>
@@ -20,11 +20,11 @@ const SureTriggers = () => {
 			</IntegrationCard.Header>
 			<IntegrationCard.Content>
 				<IntegrationCard.Title
-					title={ __( 'SureTriggers', 'sureforms' ) }
+					title={ __( 'OttoKit', 'sureforms' ) }
 				/>
 				<IntegrationCard.Description
 					description={ __(
-						'Effortlessly connects your forms to hundreds of apps, automating tasks like sending entries to your favourite CRM.',
+						'Effortlessly connect your forms to hundreds of apps, automating tasks like sending entries to your favourite CRM.',
 						'sureforms'
 					) }
 				/>
