@@ -260,6 +260,8 @@ Yes! You can certainly use SureForms on yours as well as your client’s website
 When you use SureForms, you get an easy-to-use AI-powered form builder that can be used to build your forms fast.
 
 == Changelog ==
+= x.x.x =
+* Improvement: Added margin bottom for the form container for Neve theme compatibility.
 = 1.6.0 - 16th April 2025 =
 * New: Added Signature block in Pro Plan.
 * Fix: Ensured compatibility with WordPress 6.8 by fixing a UI glitch where a fade overlay appeared on the Block option in the block inserter panel.
