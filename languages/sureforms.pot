@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: SureForms 1.5.0\n"
+"Project-Id-Version: SureForms 1.6.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/sureforms\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-04-08T05:53:48+00:00\n"
+"POT-Creation-Date: 2025-04-15T07:53:55+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: sureforms\n"
@@ -95,7 +95,7 @@ msgstr ""
 #: inc/export.php:62
 #: inc/export.php:127
 #: inc/form-submit.php:200
-#: inc/form-submit.php:836
+#: inc/form-submit.php:838
 #: inc/forms-data.php:87
 #: inc/global-settings/global-settings.php:86
 #: inc/global-settings/global-settings.php:294
@@ -217,68 +217,70 @@ msgid_plural "%1$d entries were permanently deleted."
 msgstr[0] ""
 msgstr[1] ""
 
-#: admin/views/entries-list-table.php:798
+#: admin/views/entries-list-table.php:801
 msgid "Entry #"
 msgstr ""
 
 #. translators: %1$s is the word "form", %2$d is the form ID.
-#: admin/views/entries-list-table.php:814
-#: admin/views/entries-list-table.php:1105
+#: admin/views/entries-list-table.php:817
+#: admin/views/entries-list-table.php:1108
 #: inc/page-builders/bricks/elements/form-widget.php:96
 #: assets/build/dashboard.js:2
 #: assets/build/formEditor.js:172
 msgid "Form"
 msgstr ""
 
-#: admin/views/entries-list-table.php:830
+#: admin/views/entries-list-table.php:833
 msgid "Read"
 msgstr ""
 
-#: admin/views/entries-list-table.php:833
-#: admin/views/entries-list-table.php:1192
+#: admin/views/entries-list-table.php:836
+#: admin/views/entries-list-table.php:1195
 msgid "Unread"
 msgstr ""
 
-#: admin/views/entries-list-table.php:836
-#: admin/views/entries-list-table.php:940
-#: admin/views/entries-list-table.php:1203
+#: admin/views/entries-list-table.php:839
+#: admin/views/entries-list-table.php:943
+#: admin/views/entries-list-table.php:1206
 #: modules/gutenberg/icons/icons-v6-3.php:2916
 msgid "Trash"
 msgstr ""
 
-#: admin/views/entries-list-table.php:900
+#: admin/views/entries-list-table.php:903
 msgid "Published"
 msgstr ""
 
-#: admin/views/entries-list-table.php:939
+#: admin/views/entries-list-table.php:942
 #: inc/email/email-template.php:157
+#: inc/email/email-template.php:163
 #: inc/smart-tags.php:338
+#: inc/smart-tags.php:344
 msgid "View"
 msgstr ""
 
-#: admin/views/entries-list-table.php:973
-#: admin/views/entries-list-table.php:1398
+#: admin/views/entries-list-table.php:976
+#: admin/views/entries-list-table.php:1401
 msgid "Restore"
 msgstr ""
 
-#: admin/views/entries-list-table.php:974
-#: admin/views/entries-list-table.php:1399
+#: admin/views/entries-list-table.php:977
+#: admin/views/entries-list-table.php:1402
 msgid "Delete Permanently"
 msgstr ""
 
-#: admin/views/entries-list-table.php:1008
+#: admin/views/entries-list-table.php:1011
 msgid "Clear Filter"
 msgstr ""
 
-#: admin/views/entries-list-table.php:1103
+#: admin/views/entries-list-table.php:1106
 msgid "All Form Entries"
 msgstr ""
 
-#: admin/views/entries-list-table.php:1133
+#: admin/views/entries-list-table.php:1136
 msgid "All Dates"
 msgstr ""
 
-#: admin/views/entries-list-table.php:1185
+#: admin/views/entries-list-table.php:1188
 msgid "All"
 msgstr ""
 
@@ -411,11 +413,11 @@ msgstr ""
 msgid "Open"
 msgstr ""
 
-#: admin/views/single-entry.php:482
+#: admin/views/single-entry.php:484
 msgid "Entry Logs"
 msgstr ""
 
-#: admin/views/single-entry.php:506
+#: admin/views/single-entry.php:508
 msgid "No logs found for this entry."
 msgstr ""
 
@@ -542,7 +544,7 @@ msgid "OttoKit is not configured properly."
 msgstr ""
 
 #: inc/admin-ajax.php:242
-#: inc/form-submit.php:848
+#: inc/form-submit.php:850
 msgid "Invalid form ID."
 msgstr ""
 
@@ -875,29 +877,29 @@ msgstr ""
 msgid "Spam Detected"
 msgstr ""
 
-#: inc/form-submit.php:634
+#: inc/form-submit.php:636
 msgid "Error submitting form"
 msgstr ""
 
-#: inc/form-submit.php:729
+#: inc/form-submit.php:731
 msgid "Email notification passed to the sending server"
 msgstr ""
 
 #. translators: Here, %s is the comma separated emails list.
-#: inc/form-submit.php:783
+#: inc/form-submit.php:785
 msgid "Email notification recipient: %s"
 msgstr ""
 
 #. translators: Here, %1$s is the comma separated emails list and %2$s is error report ( if any ).
-#: inc/form-submit.php:793
+#: inc/form-submit.php:795
 msgid "Email server was unable to send the email notification. Recipient: %1$s. Reason: %2$s"
 msgstr ""
 
-#: inc/form-submit.php:795
+#: inc/form-submit.php:797
 msgid "Unknown"
 msgstr ""
 
-#: inc/form-submit.php:818
+#: inc/form-submit.php:820
 msgid "No emails were sent"
 msgstr ""
 
@@ -7013,6 +7015,7 @@ msgid "Signal"
 msgstr ""
 
 #: modules/gutenberg/icons/icons-v6-3.php:625
+#: assets/build/formEditor.js:172
 msgid "Signature"
 msgstr ""
 
@@ -10126,7 +10129,7 @@ msgid "Rating"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-msgid "SureForms Pro"
+msgid "SUREFORMS PREMIUM FIELDS"
 msgstr ""
 
 #: assets/build/formEditor.js:172

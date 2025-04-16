@@ -7,6 +7,7 @@
 
 namespace SRFM\Admin;
 
+use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Traits\Get_Instance;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -94,6 +95,7 @@ class Analytics {
 			'instant_forms_enabled'  => $this->instant_forms_enabled(),
 			'forms_using_custom_css' => $this->forms_using_custom_css(),
 			'ai_generated_forms'     => $this->ai_generated_forms(),
+			'total_entries'          => Entries::get_total_entries_by_status(),
 		];
 
 		$stats_data['plugin_data']['sureforms'] = array_merge_recursive( $stats_data['plugin_data']['sureforms'], $this->global_settings_data() );
