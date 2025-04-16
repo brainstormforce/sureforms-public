@@ -1020,7 +1020,7 @@ class Post_Types {
 	 * public post types unless the current page is related to AIOSEO settings.
 	 *
 	 * @return void
-	 * @since x.x.x
+	 * @since 1.6.0
 	 */
 	public function restrict_in_aioseo_plugin() {
 		/**
