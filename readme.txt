@@ -8,7 +8,7 @@ Stable tag: 1.6.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-SureForms: Transform your WordPress form-building experience with stunning designs, ai integration, and no-code flexibility.
+SureForms: Transform your WordPress form-building experience with stunning designs, AI integration, and no-code flexibility.
 
 == Description ==
 
@@ -260,7 +260,7 @@ Yes! You can certainly use SureForms on yours as well as your client’s website
 When you use SureForms, you get an easy-to-use AI-powered form builder that can be used to build your forms fast.
 
 == Changelog ==
-= 1.6.0 - 15th April 2025 = 
+= 1.6.0 - 15th April 2025 =
 * New: Added Signature block in Pro Plan.
 * Fix: Ensured compatibility with WordPress 6.8 by fixing a UI glitch where a fade overlay appeared on the Block option in the block inserter panel.
 * Fix: Improved compatibility with WordPress 6.8 by resolving an issue where width options overlapped or didn't update correctly when switching between them though they displayed correctly on the front end.
