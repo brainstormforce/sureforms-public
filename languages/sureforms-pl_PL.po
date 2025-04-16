@@ -83,7 +83,7 @@ msgstr "Edytuj %1$s"
 #: inc/export.php:62
 #: inc/export.php:127
 #: inc/form-submit.php:200
-#: inc/form-submit.php:836
+#: inc/form-submit.php:838
 #: inc/forms-data.php:87
 #: inc/global-settings/global-settings.php:86
 #: inc/global-settings/global-settings.php:294
@@ -205,68 +205,70 @@ msgid_plural "%1$d entries were permanently deleted."
 msgstr[0] "%1$d wpis został trwale usunięty."
 msgstr[1] ""
 
-#: admin/views/entries-list-table.php:798
+#: admin/views/entries-list-table.php:801
 msgid "Entry #"
 msgstr "Wpis #"
 
 #. translators: %1$s is the word "form", %2$d is the form ID.
-#: admin/views/entries-list-table.php:814
-#: admin/views/entries-list-table.php:1105
+#: admin/views/entries-list-table.php:817
+#: admin/views/entries-list-table.php:1108
 #: inc/page-builders/bricks/elements/form-widget.php:96
 #: assets/build/dashboard.js:2
 #: assets/build/formEditor.js:172
 msgid "Form"
 msgstr "Formularz"
 
-#: admin/views/entries-list-table.php:830
+#: admin/views/entries-list-table.php:833
 msgid "Read"
 msgstr "Czytaj"
 
-#: admin/views/entries-list-table.php:833
-#: admin/views/entries-list-table.php:1192
+#: admin/views/entries-list-table.php:836
+#: admin/views/entries-list-table.php:1195
 msgid "Unread"
 msgstr "Nieprzeczytane"
 
-#: admin/views/entries-list-table.php:836
-#: admin/views/entries-list-table.php:940
-#: admin/views/entries-list-table.php:1203
+#: admin/views/entries-list-table.php:839
+#: admin/views/entries-list-table.php:943
+#: admin/views/entries-list-table.php:1206
 #: modules/gutenberg/icons/icons-v6-3.php:2916
 msgid "Trash"
 msgstr "Śmieci"
 
-#: admin/views/entries-list-table.php:900
+#: admin/views/entries-list-table.php:903
 msgid "Published"
 msgstr "Opublikowano"
 
-#: admin/views/entries-list-table.php:939
+#: admin/views/entries-list-table.php:942
 #: inc/email/email-template.php:157
+#: inc/email/email-template.php:163
 #: inc/smart-tags.php:338
+#: inc/smart-tags.php:344
 msgid "View"
 msgstr "Widok"
 
-#: admin/views/entries-list-table.php:973
-#: admin/views/entries-list-table.php:1398
+#: admin/views/entries-list-table.php:976
+#: admin/views/entries-list-table.php:1401
 msgid "Restore"
 msgstr "Przywróć"
 
-#: admin/views/entries-list-table.php:974
-#: admin/views/entries-list-table.php:1399
+#: admin/views/entries-list-table.php:977
+#: admin/views/entries-list-table.php:1402
 msgid "Delete Permanently"
 msgstr "Usuń na stałe"
 
-#: admin/views/entries-list-table.php:1008
+#: admin/views/entries-list-table.php:1011
 msgid "Clear Filter"
 msgstr "Wyczyść filtr"
 
-#: admin/views/entries-list-table.php:1103
+#: admin/views/entries-list-table.php:1106
 msgid "All Form Entries"
 msgstr "Wszystkie wpisy formularza"
 
-#: admin/views/entries-list-table.php:1133
+#: admin/views/entries-list-table.php:1136
 msgid "All Dates"
 msgstr "Wszystkie daty"
 
-#: admin/views/entries-list-table.php:1185
+#: admin/views/entries-list-table.php:1188
 msgid "All"
 msgstr "Wszystko"
 
@@ -340,11 +342,11 @@ msgstr "Obraz"
 msgid "Open"
 msgstr "Otwórz"
 
-#: admin/views/single-entry.php:482
+#: admin/views/single-entry.php:484
 msgid "Entry Logs"
 msgstr "Dzienniki wejść"
 
-#: admin/views/single-entry.php:506
+#: admin/views/single-entry.php:508
 msgid "No logs found for this entry."
 msgstr "Nie znaleziono logów dla tego wpisu."
 
@@ -458,7 +460,7 @@ msgid "Form ID is required."
 msgstr "Wymagany jest identyfikator formularza."
 
 #: inc/admin-ajax.php:242
-#: inc/form-submit.php:848
+#: inc/form-submit.php:850
 msgid "Invalid form ID."
 msgstr "Nieprawidłowy identyfikator formularza."
 
@@ -780,11 +782,11 @@ msgstr "Błąd reCAPTCHA."
 msgid "Spam Detected"
 msgstr "Wykryto spam"
 
-#: inc/form-submit.php:634
+#: inc/form-submit.php:636
 msgid "Error submitting form"
 msgstr "Błąd podczas przesyłania formularza"
 
-#: inc/form-submit.php:795
+#: inc/form-submit.php:797
 msgid "Unknown"
 msgstr "Nieznany"
 
@@ -3393,7 +3395,7 @@ msgstr "Ziemia Oceania"
 
 #: modules/gutenberg/icons/icons-v6-1.php:1027
 msgid "eBay"
-msgstr ""
+msgstr "eBay"
 
 #: modules/gutenberg/icons/icons-v6-1.php:1038
 msgid "Edge Browser"
@@ -5075,7 +5077,7 @@ msgstr "Laptop Medyczny"
 
 #: modules/gutenberg/icons/icons-v6-2.php:691
 msgid "Laravel"
-msgstr ""
+msgstr "Laravel"
 
 #: modules/gutenberg/icons/icons-v6-2.php:702
 msgid "Lari Sign"
@@ -5333,7 +5335,7 @@ msgstr "Marsz w prawo"
 
 #: modules/gutenberg/icons/icons-v6-2.php:1426
 msgid "Mars Stroke Up"
-msgstr ""
+msgstr "Marsz w górę"
 
 #: modules/gutenberg/icons/icons-v6-2.php:1437
 msgid "Martini Glass"
@@ -5738,7 +5740,7 @@ msgstr "OpenCart"
 
 #: modules/gutenberg/icons/icons-v6-2.php:2572
 msgid "OpenID"
-msgstr ""
+msgstr "OpenID"
 
 #: modules/gutenberg/icons/icons-v6-2.php:2583
 msgid "Opera"
@@ -6267,7 +6269,7 @@ msgstr "Wtyczka Circle Plus"
 
 #: modules/gutenberg/icons/icons-v6-2.php:4083
 msgid "Plug Circle Xmark"
-msgstr ""
+msgstr "Wtyczka Okrąg Xmark"
 
 #: modules/gutenberg/icons/icons-v6-2.php:4094
 msgid "Plus"
@@ -6881,6 +6883,7 @@ msgid "Signal"
 msgstr "Sygnał"
 
 #: modules/gutenberg/icons/icons-v6-3.php:625
+#: assets/build/formEditor.js:172
 msgid "Signature"
 msgstr "Podpis"
 
@@ -8779,7 +8782,7 @@ msgstr "(###) ###-####"
 
 #: assets/build/blocks.js:172
 msgid "(##) ####-####"
-msgstr ""
+msgstr "(##) ####-####"
 
 #: assets/build/blocks.js:172
 msgid "27/08/2024"
@@ -9730,10 +9733,6 @@ msgstr "Suwak"
 #: assets/build/formEditor.js:172
 msgid "Rating"
 msgstr "Ocena"
-
-#: assets/build/formEditor.js:172
-msgid "SureForms Pro"
-msgstr "SureForms Pro"
 
 #: assets/build/formEditor.js:172
 msgid "Upgrade to Unlock These Fields"
@@ -11215,21 +11214,21 @@ msgstr "Odblokuj Dodaj Notatkę"
 msgid "With the SureForms Starter plan, enhance your submitted form entries by adding personalized notes for better clarity and tracking."
 msgstr "Dzięki planowi SureForms Starter ulepsz swoje przesłane formularze, dodając spersonalizowane notatki dla lepszej przejrzystości i śledzenia."
 
-#: inc/form-submit.php:729
+#: inc/form-submit.php:731
 msgid "Email notification passed to the sending server"
 msgstr "Powiadomienie e-mail zostało przekazane do serwera wysyłającego"
 
 #. translators: Here, %s is the comma separated emails list.
-#: inc/form-submit.php:783
+#: inc/form-submit.php:785
 msgid "Email notification recipient: %s"
 msgstr "Odbiorca powiadomienia e-mail: %s"
 
 #. translators: Here, %1$s is the comma separated emails list and %2$s is error report ( if any ).
-#: inc/form-submit.php:793
+#: inc/form-submit.php:795
 msgid "Email server was unable to send the email notification. Recipient: %1$s. Reason: %2$s"
 msgstr "Serwer poczty nie mógł wysłać powiadomienia e-mail. Odbiorca: %1$s. Powód: %2$s"
 
-#: inc/form-submit.php:818
+#: inc/form-submit.php:820
 msgid "No emails were sent"
 msgstr "Nie wysłano żadnych e-maili"
 
@@ -11466,6 +11465,10 @@ msgstr "Proszę wybrać typ formularza"
 #: assets/build/templatePicker.js:172
 msgid "The AI-generated form may require manual review and adjustments. Please verify all fields before publishing the form."
 msgstr "Formularz wygenerowany przez AI może wymagać ręcznej weryfikacji i poprawek. Proszę zweryfikować wszystkie pola przed opublikowaniem formularza."
+
+#: assets/build/formEditor.js:172
+msgid "SUREFORMS PREMIUM FIELDS"
+msgstr "Pola premium SureForms"
 
 #: inc/post-types.php:124
 msgctxt "post type general name"
