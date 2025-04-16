@@ -40,6 +40,8 @@ class Admin {
 		if ( ! defined( 'SRFM_PRO_VER' ) ) {
 			add_action( 'admin_menu', [ $this, 'add_upgrade_to_pro' ] );
 		}
+		add_action( 'admin_footer', [ $this, 'add_upgrade_to_pro_target_attr' ] );
+
 		add_filter( 'plugin_action_links', [ $this, 'add_settings_link' ], 10, 2 );
 		add_action( 'enqueue_block_assets', [ $this, 'enqueue_styles' ] );
 		add_action( 'admin_head', [ $this, 'enqueue_header_styles' ] );
@@ -215,15 +217,50 @@ class Admin {
 	}
 
 	/**
+	 * Add target attribute to Upgrade to Pro submenu link.
+	 *
+	 * @return void
+	 * @since x.x.x
+	 */
+	public function add_upgrade_to_pro_target_attr() {
+		?>
+		<script type="text/javascript">
+			document.addEventListener('DOMContentLoaded', function () {
+				// Select all links with the specific href.
+				// If you are changing this url, please make sure to update the url in the add_upgrade_to_pro function as well.
+				const links = document.querySelectorAll('a[href*="https://sureforms.com/upgrade-pro/?utm_medium=submenu_link_upgrade"]');
+
+				links.forEach(link => {
+					// Skip if already opens in new tab.
+					if (link.target === '_blank') return;
+
+					link.addEventListener('click', function (e) {
+						e.preventDefault();
+						window.open(this.href, '_blank');
+					});
+				});
+			});
+		</script>
+		<?php
+	}
+
+	/**
 	 * Add Upgrade to pro menu item.
 	 *
 	 * @return void
 	 * @since x.x.x
 	 */
 	public function add_upgrade_to_pro() {
+		$upgrade_url = esc_url( 'https://sureforms.com/upgrade-pro/' );
+
 		// The url used here is used as a selector for css to style the upgrade to pro submenu.
 		// If you are changing this url, please make sure to update the css as well.
-		$upgrade_url = esc_url( 'https://sureforms.com/upgrade-pro/' );
+		$upgrade_url = add_query_arg(
+			[
+				'utm_medium' => 'submenu_link_upgrade',
+			],
+			$upgrade_url
+		);
 
 		add_submenu_page(
 			'sureforms_menu',

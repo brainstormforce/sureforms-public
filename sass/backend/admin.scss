@@ -81,7 +81,7 @@ $placeholder_color: #9ca3af;
 
 /* The url used here as the selector is the url for the upgrade to pro submenu */
 /* If url is updated here then please make sure to update it for the submenu as well  */
-#toplevel_page_sureforms_menu .wp-submenu li a[href="https://sureforms.com/upgrade-pro"] {
+#toplevel_page_sureforms_menu .wp-submenu li a[href="https://sureforms.com/upgrade-pro/?utm_medium=submenu_link_upgrade"] {
 	background-color: #04A382;
 	color: #FFFFFF;
 	font-size: 14px;
