@@ -2,7 +2,7 @@
 Contributors: brainstormforce
 Tags: contact form, custom form, forms, contact form plugin, form builder
 Requires at least: 6.4
-Tested up to: 6.7.2
+Tested up to: 6.8
 Requires PHP: 7.4
 Stable tag: 1.6.0
 License: GPLv2 or later
@@ -260,7 +260,7 @@ Yes! You can certainly use SureForms on yours as well as your client’s website
 When you use SureForms, you get an easy-to-use AI-powered form builder that can be used to build your forms fast.
 
 == Changelog ==
-= 1.6.0 - 15th April 2025 =
+= 1.6.0 - 16th April 2025 =
 * New: Added Signature block in Pro Plan.
 * Fix: Ensured compatibility with WordPress 6.8 by fixing a UI glitch where a fade overlay appeared on the Block option in the block inserter panel.
 * Fix: Improved compatibility with WordPress 6.8 by resolving an issue where width options overlapped or didn't update correctly when switching between them though they displayed correctly on the front end.
