@@ -146,7 +146,7 @@ const SureTriggers = () => {
 					<img
 						src={ SureTriggersIcon }
 						className="size-6"
-						alt={ __( 'OttoKit', 'sureforms' ) }
+						alt={ __( 'OttoKit Logo', 'sureforms' ) }
 					/>
 				</div>
 				<div>
