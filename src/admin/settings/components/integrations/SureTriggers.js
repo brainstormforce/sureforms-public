@@ -54,32 +54,32 @@ const SureTriggers = () => {
 	};
 
 	// Get plugin button text
-	const getPluginStatusText = ( plugin ) => {
+	const getPluginStatusText = ( plugin_data ) => {
 		const statusTextMap = {
-			Installed: plugin.plugin_activate_text,
+			Installed: plugin_data.plugin_activate_text,
 			Install: __( 'Install & Activate', 'sureforms' ),
-			Activated: plugin.plugin_activated_text,
+			Activated: plugin_data.plugin_activated_text,
 		};
 
-		return statusTextMap[ plugin.status ] || plugin.status;
+		return statusTextMap[ plugin_data.status ] || plugin_data.status;
 	};
 
-	const activatePlugin = useCallback( ( { plugin, event } ) => {
+	const activatePlugin = useCallback( ( { plugin_data, event } ) => {
 		const formData = new window.FormData();
 		formData.append( 'action', ACTIONS.ACTIVATE );
 		formData.append( 'security', srfm_admin.sfPluginManagerNonce );
-		formData.append( 'init', plugin.path );
-		formData.append( 'slug', plugin.slug );
+		formData.append( 'init', plugin_data.path );
+		formData.append( 'slug', plugin_data.slug );
 
-		event.target.innerText = plugin.plugin_activating_text;
+		event.target.innerText = plugin_data.plugin_activating_text;
 
 		performApiAction( {
 			url: srfm_admin.ajax_url,
 			formData,
 			successCallback: () => {
 				event.target.style.color = '#FFFFFF';
-				event.target.innerText = plugin.plugin_activated_text;
-				window.location = plugin.redirection;
+				event.target.innerText = plugin_data.plugin_activated_text;
+				window.location = plugin_data.redirection;
 			},
 			errorCallback: () => {
 				toast.error(
@@ -91,14 +91,14 @@ const SureTriggers = () => {
 						duration: 5000,
 					}
 				);
-				event.target.innerText = plugin.plugin_activate_text;
+				event.target.innerText = plugin_data.plugin_activate_text;
 			},
 		} );
 	}, [] );
 
 	const handlePluginActionTrigger = useCallback(
-		( { plugin, event } ) => {
-			const action = getAction( plugin.status );
+		( { plugin_data, event } ) => {
+			const action = getAction( plugin_data.status );
 			if ( ! action ) {
 				return;
 			}
@@ -111,16 +111,16 @@ const SureTriggers = () => {
 					'_ajax_nonce',
 					srfm_admin.plugin_installer_nonce
 				);
-				formData.append( 'slug', plugin.slug );
+				formData.append( 'slug', plugin_data.slug );
 
-				event.target.innerText = plugin.plugin_installing_text;
+				event.target.innerText = plugin_data.plugin_installing_text;
 
 				performApiAction( {
 					url: srfm_admin.ajax_url,
 					formData,
 					successCallback: () => {
-						event.target.innerText = plugin.plugin_installed_text;
-						activatePlugin( { plugin, event } );
+						event.target.innerText = plugin_data.plugin_installed_text;
+						activatePlugin( { plugin_data, event } );
 					},
 					errorCallback: () => {
 						event.target.innerText = __( 'Install', 'sureforms' );
@@ -133,7 +133,7 @@ const SureTriggers = () => {
 					},
 				} );
 			} else if ( action === ACTIONS.ACTIVATE ) {
-				activatePlugin( { plugin, event } );
+				activatePlugin( { plugin_data, event } );
 			}
 		},
 		[ activatePlugin ]
@@ -170,7 +170,7 @@ const SureTriggers = () => {
 						size="xs"
 						onClick={ ( event ) =>
 							handlePluginActionTrigger( {
-								plugin,
+								plugin_data: plugin,
 								event,
 							} )
 						}
