@@ -487,7 +487,7 @@ class Form_Submit {
 		}
 
 		// Check if the form data contains 'srfm_addresses' and is not empty.
-		if ( isset( $form_data['srfm_addresses'] ) && ! empty( $form_data['srfm_addresses'] ) ) {
+		if ( ! empty( $form_data['srfm_addresses'] ) ) {
 			// Assign the addresses to the class property for further processing.
 			$this->addresses = $form_data['srfm_addresses'];
 			// Remove the address data from the form data to avoid redundancy.
@@ -693,7 +693,7 @@ class Form_Submit {
 		if ( ! empty( $this->addresses ) ) {
 			// Address will be JSON stringified, so decode it.
 			$address = json_decode( wp_unslash( $this->addresses ), true );
-			if ( is_array( $address ) && ! empty( $address ) ) {
+			if ( ! empty( $address ) && is_array( $address ) ) {
 				$modified_message = array_merge( $modified_message, $address );
 			}
 		}
