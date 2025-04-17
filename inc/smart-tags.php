@@ -339,7 +339,12 @@ class Smart_Tags {
 						}
 					}
 				} else {
-					$replacement_data .= $submission_item_value;
+					// if $submission_item_value is a url then add <a> tag. with view text.
+					if ( is_string( $submission_item_value ) && filter_var( $submission_item_value, FILTER_VALIDATE_URL ) ) {
+						$replacement_data .= '<a href=' . urldecode( $submission_item_value ) . ' target="_blank">' . __( 'View', 'sureforms' ) . '</a>';
+					} else {
+						$replacement_data .= $submission_item_value;
+					}
 				}
 				break;
 			}
