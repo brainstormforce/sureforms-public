@@ -264,8 +264,8 @@ class Admin {
 
 		add_submenu_page(
 			'sureforms_menu',
-			__( 'Upgrade to Pro', 'sureforms' ),
-			__( 'Upgrade to Pro', 'sureforms' ),
+			__( 'Upgrade Sureforms', 'sureforms' ),
+			__( 'Upgrade Sureforms', 'sureforms' ),
 			'edit_others_posts',
 			$upgrade_url
 		);
