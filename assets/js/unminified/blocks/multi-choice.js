@@ -2,6 +2,8 @@ function initializeMultichoice() {
 	const multiChoices = document.querySelectorAll(
 		'.srfm-multi-choice-block'
 	);
+	const { srfmUtility } = window.srfm;
+
 	if ( multiChoices ) {
 		multiChoices.forEach( ( single ) => {
 			const getInputWrappers = single.querySelectorAll(
@@ -51,12 +53,6 @@ function initializeMultichoice() {
 						.closest( '.srfm-multi-choice-single' )
 						.querySelector( 'label' ).innerText;
 
-					console.log("getValue", {
-						getValue,
-						savedValues,
-						element,
-					});
-
 					let hiddenInput = single.querySelector(
 						'.srfm-input-multi-choice-hidden'
 					);
@@ -84,13 +80,8 @@ function initializeMultichoice() {
 							savedValues = arr;
 						}
 
-						setValue = savedValues;
+						setValue = srfmUtility.prepareValue( savedValues );
 					}
-
-					console.log("setValue", {
-						setValue,
-						savedValues,
-					});
 
 					// Set the value of the hidden input field.
 					if ( setValue ){
@@ -104,30 +95,6 @@ function initializeMultichoice() {
 				} );
 			} );
 		} );
-	}
-}
-
-const UTILITY = {
-	cleanValue: function ( value ) {
-		// Create a new array to store the cleaned values
-		const cleanedValues = [];
-		// Split the input string by the delimiter
-		const values = value.split( '%,%' );
-		// Iterate through each value
-		values.forEach( ( item ) => {
-			// Trim whitespace and check if the item is not empty
-			const trimmedItem = item.trim();
-			if ( trimmedItem ) {
-				cleanedValues.push( trimmedItem );
-			}
-		} );
-		// Return the cleaned values as an array
-		return cleanedValues;
-	},
-	prepareValue: function ( value = [] ) {
-		// We have value like ["value 1", "value 2"]
-		// We need to join them with "%,%"" so this will be robust solution. then if add label like "some text, another text" then problem will not occur.
-		return value.join( '%,%' );
 	}
 }
 

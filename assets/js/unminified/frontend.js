@@ -495,4 +495,22 @@ function onSuccess( response ) {
 		'handleInstantFormWrapperHeight',
 		handleInstantFormWrapperHeight
 	);
+
+	const UTILITY = {
+		prepareValue: function ( value = [] ) {
+			// We have value like ["value 1", "value 2"]
+			// We need to join them with "|"" so this will be robust solution. then if add label like "some text, another text" then problem will not occur.
+			return value.join( ' | ' );
+		},
+		extractValue: function ( value = '' ) {
+			// We have value like "value 1 | value 2"
+			// We need to split them with "|"" so this will be robust solution. then if add label like "some text, another text" then problem will not occur.
+			return value.split( ' | ' );
+		}
+	};
+
+	// Adding the `UTILITY` object to the global `srfm` object.
+	// This allows the object to be accessed from other parts of the application,
+	// enabling consistent handling of utility functions across different modules.
+	addGlobalSrfmObject( 'srfmUtility', UTILITY );
 }() );
