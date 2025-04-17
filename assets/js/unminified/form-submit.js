@@ -405,7 +405,7 @@ function extractFormAttributesAndElements( form ) {
 	const submitType = form.getAttribute( 'message-type' );
 	const successUrl = form.getAttribute( 'success-url' );
 	const ajaxUrl = form.getAttribute( 'ajaxurl' );
-	const nonce = form.getAttribute( 'nonce' );
+	const nonce = form.getAttribute( 'data-nonce' );
 	const loader = form.querySelector( '.srfm-loader' );
 	const successContainer = form.parentElement.querySelector(
 		'.srfm-single-form.srfm-success-box'
