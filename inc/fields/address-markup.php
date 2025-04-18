@@ -39,8 +39,10 @@ class Address_Markup extends Base {
 	 * @return string|bool
 	 */
 	public function markup( $content = '' ) {
+		$this->class_name = $this->get_field_classes();
+
 		ob_start(); ?>
-			<div data-block-id="<?php echo esc_attr( $this->block_id ); ?>" class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $this->slug ); ?>-block srf-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?>-block<?php echo esc_attr( $this->block_width ); ?><?php echo esc_attr( $this->class_name ); ?> <?php echo esc_attr( $this->conditional_class ); ?>">
+			<div data-block-id="<?php echo esc_attr( $this->block_id ); ?>" class="<?php echo esc_attr( $this->class_name ); ?>" data-slug="<?php echo esc_attr( $this->block_slug ); ?>">
 				<fieldset>
 					<legend class="srfm-block-legend">
 						<?php echo wp_kses_post( $this->label_markup ); ?>
