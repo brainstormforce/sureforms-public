@@ -226,19 +226,15 @@ class Admin {
 		?>
 		<script type="text/javascript">
 			document.addEventListener('DOMContentLoaded', function () {
-				// Select all links with the specific href.
-				// If you are changing this url, please make sure to update the url in the add_upgrade_to_pro function as well.
-				const links = document.querySelectorAll('a[href*="https://sureforms.com/upgrade/?utm_medium=submenu_link_upgrade"]');
-
-				links.forEach(link => {
-					// Skip if already opens in new tab.
-					if (link.target === '_blank') return;
-
-					link.addEventListener('click', function (e) {
+				// Upgrade link handler.
+				// IMPORTANT: If this URL changes, also update it in the `add_upgrade_to_pro` function.
+				const upgradeLink = document.querySelector('a[href*="https://sureforms.com/upgrade/?utm_medium=submenu_link_upgrade"]');
+				if (upgradeLink) {
+					upgradeLink.addEventListener('click', e => {
 						e.preventDefault();
-						window.open(this.href, '_blank');
+						window.open(upgradeLink.href, '_blank');
 					});
-				});
+				}
 			});
 		</script>
 		<?php
