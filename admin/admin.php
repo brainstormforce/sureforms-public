@@ -217,7 +217,7 @@ class Admin {
 	}
 
 	/**
-	 * Add target attribute to Upgrade to Pro submenu link.
+	 * Open to Upgrade to Pro submenu link in new tab.
 	 *
 	 * @return void
 	 * @since x.x.x
