@@ -3,7 +3,7 @@ import { __,
 } from '@wordpress/i18n';
 import { Button } from '@wordpress/components';
 import apiFetch from '@wordpress/api-fetch';
-import { useState, useEffect } from '@wordpress/element';
+import { useState, useEffect, useRef } from '@wordpress/element';
 import { handleAddNewPost, initiateAuth } from '@Utils/Helpers';
 import {
 	MdArrowForward,
@@ -16,6 +16,10 @@ import Header from './Header.js';
 import LimitReachedPopup from './LimitReachedPopup.js';
 import ErrorPopup from './ErrorPopup.js';
 import { AuthErrorPopup } from './AuthErrorPopup.js';
+import toast, { Toaster } from 'react-hot-toast';
+import { applyFilters } from '@wordpress/hooks';
+import PremiumBadge from '@Admin/components/PremiumBadge';
+import FormTypeSelector from './FormTypeSelector';
 
 const AiFormBuilder = () => {
 	const [ message, setMessage ] = useState(
@@ -30,23 +34,107 @@ const AiFormBuilder = () => {
 	const [ showAuthErrorPopup, setShowAuthErrorPopup ] = useState( false );
 	const urlParams = new URLSearchParams( window.location.search );
 	const accessKey = urlParams.get( 'access_key' );
-	const examplePrompts = [
-		{
-			title: 'Create simple contact form',
-		},
-		{
-			title: 'Create a lead generation form',
-		},
-		{
-			title: 'Generate a user feedback form',
-		},
-		{
-			title: 'Create a job application form',
-		},
-		{
-			title: 'Make an event registration form',
-		},
-	];
+	const [ isListening, setIsListening ] = useState( false ); // State to manage voice recording
+	const recognitionRef = useRef( null ); // To store SpeechRecognition instance
+	const [ formType, setFormType ] = useState( 'simple' );
+	const [ formLayout, setformLayout ] = useState( {} );
+	const showAiConversationalFormToggle = false;
+	const conversationalFormAiToggle = applyFilters(
+		'srfm.aiFormScreen.conversational.toggle',
+		showAiConversationalFormToggle,
+		formLayout,
+		setformLayout
+	);
+
+	const examplePrompts = applyFilters(
+		'srfm.aiFormScreen.examplePrompts',
+		[
+			{
+				title: __( 'Create simple contact form', 'sureforms' ),
+			},
+			{
+				title: __( 'Create a lead generation form', 'sureforms' ),
+			},
+			{
+				title: __( 'Generate a user feedback form', 'sureforms' ),
+			},
+			{
+				title: __( 'Create a job application form', 'sureforms' ),
+			},
+			{
+				title: __( 'Make an event registration form', 'sureforms' ),
+			},
+		],
+		formLayout,
+		formType
+		 );
+
+		 const aiPromptPlaceholder = applyFilters(
+		'srfm.aiFormScreen.aiPromptPlaceholder',
+		'',
+		formLayout,
+		formType
+			 );
+
+	const initSpeechRecognition = () => {
+		const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+		if ( ! SpeechRecognition ) {
+			return null;
+		}
+		const recognition = new SpeechRecognition();
+		recognition.lang = 'en-US'; // Set language to English
+		recognition.interimResults = false; // Only show final results
+		recognition.maxAlternatives = 1; // One alternative result
+		recognition.continuous = true; // Keep recording until stopped
+		return recognition;
+	};
+
+	const toggleListening = () => {
+		// initialize SpeechRecognition instance if not already initialized
+		if ( ! recognitionRef.current ) {
+			recognitionRef.current = initSpeechRecognition();
+		}
+
+		// if SpeechRecognition is not supported, show error message
+		if ( ! recognitionRef.current ) {
+			return;
+		}
+
+		const recognition = recognitionRef.current;
+
+		if ( isListening ) {
+			// Stop recording if already started
+			recognition.stop();
+			setIsListening( false );
+		} else {
+			// Start recording if not started
+			recognition.start();
+			setIsListening( true );
+			recognition.onresult = ( event ) => {
+				// keep on appending the result to the textarea
+				const speechResult = event.results[ event.results.length - 1 ][ 0 ].transcript;
+				const textArea = document.querySelector( 'textarea' );
+				textArea.value += speechResult;
+				setCharacterCount( textArea.value.length );
+			};
+			recognition.onerror = ( e ) => {
+				recognition.stop();
+				setIsListening( false );
+				toast.dismiss();
+
+				if ( e.error === 'not-allowed' ) {
+					toast.error( __( 'Please allow microphone access to use voice input.', 'sureforms' ), {
+						duration: 5000,
+					} );
+					return;
+				}
+
+				toast.error( __( 'Speech recognition is not supported in your current browser. Please use Google Chrome / Safari.', 'sureforms' ), {
+					duration: 5000,
+				} );
+			};
+		}
+	};
 
 	const handleCreateAiForm = async (
 		userCommand,
@@ -76,6 +164,8 @@ const AiFormBuilder = () => {
 		const postData = {
 			message_array: messageArray,
 			use_system_message: useSystemMessage,
+			is_conversional: formLayout?.isConversationalForm,
+			form_type: formType,
 		};
 
 		// add a pause of 2 seconds and set percentBuild to 25 without using setTimeout
@@ -110,14 +200,20 @@ const AiFormBuilder = () => {
 				const postContent = await apiFetch( {
 					path: 'sureforms/v1/map-fields',
 					method: 'POST',
-					data: { form_data: content },
+					data: { form_data: content,	is_conversional: formLayout?.isConversationalForm, form_type: formType },
 				} );
 
 				if ( postContent ) {
 					setMessage( __( 'Redirecting to Editor', 'sureforms' ) );
 					setPercentBuild( 100 );
 					const formTitle = content?.form?.formTitle;
-					handleAddNewPost( postContent, formTitle, [] );
+					const metasToUpdate = applyFilters(
+						'srfm.aiFormScreen.metasToUpdate',
+						{},
+						formLayout,
+						content
+					);
+					handleAddNewPost( postContent, formTitle, metasToUpdate, formLayout?.isConversationalForm, formType );
 				} else {
 					setShowFormCreationErr( true );
 				}
@@ -163,6 +259,15 @@ const AiFormBuilder = () => {
 			setShowAuthErrorPopup( true );
 			console.error( 'Error handling access key: ', response.message );
 		}
+	};
+
+	// Stops voice input if typing begins
+	const handleTyping = () => {
+		if ( isListening && recognitionRef.current ) {
+			recognitionRef.current.stop();
+			setIsListening( false );
+		}
+		setShowEmptyError( false );
 	};
 
 	// Handle access key on component mount
@@ -222,32 +327,47 @@ const AiFormBuilder = () => {
 
 	return (
 		<>
+			<Toaster position="bottom-right" />
 			<Header />
 			<div className="srfm-ts-main-container srfm-content-section">
 				<div className="srfm-ai-builder-container">
 					<div className="srfm-ai-builder-inner-container">
-						<h1 className="srfm-ai-builder-header-title">
-							{ __(
-								'Please describe the form you want to create',
-								'sureforms'
-							) }
-						</h1>
+						<FormTypeSelector
+							formType={ formType }
+							setFormType={ setFormType }
+							setformLayout={ setformLayout }
+						/>
 						<div className="srfm-ai-builder-textarea-ctn">
+							<h1 className="srfm-ai-builder-header-title">
+								{ __(
+									'Please describe the form you want to create',
+									'sureforms'
+								) }
+							</h1>
+							{
+
+								formType !== 'simple' &&
+								<span className="srfm-ai-builder-header-subtitle">
+									{
+										__( 'The AI-generated form may require manual review and adjustments. Please verify all fields before publishing the form.', 'sureforms' )
+									}
+								</span> }
 							<textarea
 								style={ {
 									borderColor: showEmptyError
 										? '#CD1A1A'
 										: '#CBD5E1',
 								} }
-								placeholder={ __(
+								placeholder={ formType === 'simple' ? __(
 									'E.g. Form to gather feedback from our customers for our product functionality, usability, how much you will rate it, and what you don’t like about it.',
 									'sureforms'
-								) }
+								) : aiPromptPlaceholder }
 								maxLength={ 2000 }
 								onChange={ ( e ) => {
 									setShowEmptyError( false );
 									setCharacterCount( e.target.value.length );
 								} }
+								onInput={ handleTyping }
 							/>
 							{ showEmptyError && (
 								<span className="srfm-ai-builder-textarea-error">
@@ -257,19 +377,95 @@ const AiFormBuilder = () => {
 									) }
 								</span>
 							) }
-							<Button
-								onClick={ () =>
-									setShowFormIdeas( ! showFormIdeas )
-								}
-								className="srfm-ai-form-ideas-toggle"
+							{ 'simple' === formType && ( false === conversationalFormAiToggle
+								? <div className="srfm-ai-conversational-form-toggle"
+								>
+									<div style={ {
+										// Inline styles are used here to override the default styles
+										backgroundColor: '#fff',
+										border: '1px solid #949494',
+										pointerEvents: 'none',
+									} }
+								 className="srfm-ai-conversational-form-toggle-btn">
+										<div style={ {
+											// Inline styles are used here to override the default styles
+											backgroundColor: '#949494',
+											left: '3px',
+										} }
+										className="srfm-ai-conversational-form-toggle-thumb"
+										></div>
+									</div>
+									{
+										__( 'Create Conversational Form', 'sureforms' )
+									}
+									<PremiumBadge
+										tooltipHeading={ __( 'Unlock Conversational Forms', 'sureforms' ) }
+										tooltipContent={ __( 'With the SureForms Pro Plan, you can transform your forms into engaging conversational layouts for a seamless user experience.', 'sureforms' ) }
+										utmMedium="ai_builder"
+									/>
+								</div>
+								: conversationalFormAiToggle ) }
+							<div
+								className="srfm-ai-voice-input-ctn"
 							>
-								{ __( 'Some Form Ideas', 'sureforms' ) }
-								{ showFormIdeas ? (
-									<MdKeyboardArrowUp />
-								) : (
-									<MdKeyboardArrowDown />
-								) }
-							</Button>
+								<Button
+									onClick={ () =>
+										setShowFormIdeas( ! showFormIdeas )
+									}
+									className="srfm-ai-form-ideas-toggle"
+								>
+									{ __( 'Some Form Ideas', 'sureforms' ) }
+									{ showFormIdeas ? (
+										<MdKeyboardArrowUp />
+									) : (
+										<MdKeyboardArrowDown />
+									) }
+								</Button>
+								<Button
+									onClick={ toggleListening }
+									className="srfm-ai-voice-input-toggle-btn"
+									style={ {
+										background: isListening ? '#F0FDF4' : '#D544071A',
+										border: isListening ? '0.5px solid #BBF7D0' : '0.5px solid #D544074D',
+									} }
+								>
+									{ isListening ? (
+										<>
+											<svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+												<path
+													d="M6 1C5.60218 1 5.22064 1.15804 4.93934 1.43934C4.65804 1.72064 4.5 2.10218 4.5 2.5V6C4.5 6.39782 4.65804 6.77936 4.93934 7.06066C5.22064 7.34196 5.60218 7.5 6 7.5C6.39782 7.5 6.77936 7.34196 7.06066 7.06066C7.34196 6.77936 7.5 6.39782 7.5 6V2.5C7.5 2.10218 7.34196 1.72064 7.06066 1.43934C6.77936 1.15804 6.39782 1 6 1Z"
+													stroke="#15803D"
+													strokeLinecap="round"
+													strokeLinejoin="round"
+												/>
+												<path d="M9.5 5V6C9.5 6.92826 9.13125 7.8185 8.47487 8.47487C7.8185 9.13125 6.92826 9.5 6 9.5C5.07174 9.5 4.1815 9.13125 3.52513 8.47487C2.86875 7.8185 2.5 6.92826 2.5 6V5" stroke="#15803D" strokeLinecap="round" strokeLinejoin="round" />
+												<path d="M6 9.5V11" stroke="#15803D" strokeLinecap="round" strokeLinejoin="round" />
+											</svg>
+											<span className="srfm-ai-voice-input-text" style={ { color: '#15803D' } }>{ __( 'Listening', 'sureforms' ) }</span>
+										</>
+									) : (
+										<>
+											<svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+												<g clipPath="url(#clip0_15859_8426)">
+													<path d="M1 1L11 11" stroke="#D54407" strokeLinecap="round" strokeLinejoin="round" />
+													<path d="M9.44482 6.615C9.48093 6.41198 9.49934 6.20621 9.49982 6V5" stroke="#D54407" strokeLinecap="round" strokeLinejoin="round" />
+													<path d="M2.49988 5V6C2.48971 6.69958 2.68944 7.38616 3.0733 7.97112C3.45716 8.55607 4.00752 9.01256 4.65336 9.28166C5.2992 9.55076 6.01086 9.62012 6.69651 9.48079C7.38215 9.34146 8.0103 8.99983 8.49988 8.5" stroke="#D54407" strokeLinecap="round" strokeLinejoin="round" />
+													<path d="M7.50016 4.66878V2.49878C7.49813 2.16196 7.3828 1.83563 7.17274 1.57234C6.96268 1.30904 6.67012 1.12411 6.34217 1.04732C6.01422 0.970527 5.66996 1.00635 5.36485 1.14901C5.05973 1.29167 4.81151 1.53288 4.66016 1.83378" stroke="#D54407" strokeLinecap="round" strokeLinejoin="round" />
+													<path d="M4.5 4.5V6C4.50026 6.29648 4.58838 6.58623 4.75322 6.83266C4.91806 7.0791 5.15223 7.27115 5.42615 7.38457C5.70008 7.498 6.00147 7.5277 6.29227 7.46993C6.58307 7.41216 6.85023 7.26951 7.06 7.06" stroke="#D54407" strokeLinecap="round" strokeLinejoin="round" />
+													<path d="M6 9.5V11" stroke="#D54407" strokeLinecap="round" strokeLinejoin="round" />
+												</g>
+												<defs>
+													<clipPath id="clip0_15859_8426">
+														<rect width="12" height="12" fill="white" />
+													</clipPath>
+												</defs>
+											</svg>
+											<span className="srfm-ai-voice-input-text" style={ { color: '#D54407' } }>{ __( 'Voice Input', 'sureforms' ) }</span>
+										</>
+									) }
+								</Button>
+
+							</div>
 							{ showFormIdeas && (
 								<div className="srfm-ai-form-ideas-ctn">
 									{ examplePrompts.map( ( prompt, index ) => (
@@ -417,7 +613,7 @@ export const getLimitReachedPopup = () => {
 		);
 	}
 
-	// when initial 5 forms are consumed
+	// when initial 3 forms are consumed
 	if ( type === 'non-registered' && formCreationleft === 0 ) {
 		return (
 			<LimitReachedPopup
@@ -426,7 +622,7 @@ export const getLimitReachedPopup = () => {
 					'sureforms'
 				) }
 				paraTwo={ __(
-					'Please connect your website with SureForms AI to create 20 more forms with AI.',
+					'Please connect your website with SureForms AI to create 10 more forms with AI.',
 					'sureforms'
 				) }
 				onclick={ initiateAuth }

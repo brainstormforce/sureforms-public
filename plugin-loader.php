@@ -8,33 +8,36 @@
 
 namespace SRFM;
 
-use SRFM\Inc\Post_Types;
-use SRFM\Inc\Form_Submit;
-use SRFM\Inc\Gutenberg_Hooks;
-use SRFM\API\Block_Patterns;
-use SRFM\Inc\Forms_Data;
 use SRFM\Admin\Admin;
-use SRFM\Inc\Blocks\Register;
-use SRFM\Inc\Frontend_Assets;
-use SRFM\Inc\Helper;
+use SRFM\Admin\Analytics;
+use SRFM\API\Block_Patterns;
 use SRFM\Inc\Activator;
 use SRFM\Inc\Admin_Ajax;
-use SRFM\Inc\Export;
-use SRFM\Inc\Smart_Tags;
-use SRFM\Inc\Generate_Form_Markup;
-use SRFM\Inc\Create_New_Form;
-use SRFM\Inc\Global_Settings\Global_Settings;
-use SRFM\Inc\Global_Settings\Email_Summary;
-use SRFM\Inc\Single_Form_Settings\Compliance_Settings;
-use SRFM\Inc\Events_Scheduler;
+use SRFM\Inc\AI_Form_Builder\AI_Auth;
 use SRFM\Inc\AI_Form_Builder\AI_Form_Builder;
+use SRFM\Inc\AI_Form_Builder\AI_Helper;
 use SRFM\Inc\AI_Form_Builder\Field_Mapping;
 use SRFM\Inc\Background_Process;
-use SRFM\Inc\Page_Builders\Page_Builders;
-use SRFM\Inc\Rest_Api;
-use SRFM\Inc\AI_Form_Builder\AI_Helper;
-use SRFM\Inc\AI_Form_Builder\AI_Auth;
+use SRFM\Inc\Blocks\Register;
+use SRFM\Inc\Create_New_Form;
 use SRFM\Inc\Database\Register as DatabaseRegister;
+use SRFM\Inc\Events_Scheduler;
+use SRFM\Inc\Export;
+use SRFM\Inc\Form_Submit;
+use SRFM\Inc\Forms_Data;
+use SRFM\Inc\Frontend_Assets;
+use SRFM\Inc\Generate_Form_Markup;
+use SRFM\Inc\Global_Settings\Email_Summary;
+use SRFM\Inc\Global_Settings\Global_Settings;
+use SRFM\Inc\Gutenberg_Hooks;
+use SRFM\Inc\Helper;
+use SRFM\Inc\Lib\SRFM_Nps_Survey;
+use SRFM\Inc\Nps_Notice;
+use SRFM\Inc\Page_Builders\Page_Builders;
+use SRFM\Inc\Post_Types;
+use SRFM\Inc\Rest_Api;
+use SRFM\Inc\Single_Form_Settings\Compliance_Settings;
+use SRFM\Inc\Smart_Tags;
 use SRFM\Inc\Updater;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -47,7 +50,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 0.0.1
  */
 class Plugin_Loader {
-
 	/**
 	 * Instance
 	 *
@@ -56,6 +58,45 @@ class Plugin_Loader {
 	 * @since 0.0.1
 	 */
 	private static $instance = null;
+
+	/**
+	 * Constructor
+	 *
+	 * @since 0.0.1
+	 */
+	public function __construct() {
+		if ( ! defined( 'SRFM_DIR' ) || ! defined( 'SRFM_FILE' ) ) {
+			return;
+		}
+		// Load the action scheduler before plugin loads.
+		require_once SRFM_DIR . 'inc/lib/action-scheduler/action-scheduler.php';
+
+		spl_autoload_register( [ $this, 'autoload' ] );
+
+		add_action( 'plugins_loaded', [ $this, 'load_textdomain' ] );
+		add_action( 'plugins_loaded', [ $this, 'load_plugin' ], 99 );
+		add_action( 'init', [ $this, 'load_classes' ] );
+		add_action( 'admin_init', [ $this, 'activation_redirect' ] );
+		Analytics::get_instance();
+		/**
+		 * The code that runs during plugin activation
+		 */
+		register_activation_hook(
+			SRFM_FILE,
+			static function () {
+				Activator::activate();
+			}
+		);
+
+		register_deactivation_hook(
+			SRFM_FILE,
+			static function () {
+				update_option( '__sureforms_do_redirect', false );
+				Events_Scheduler::unschedule_events( 'srfm_weekly_scheduled_events' );
+				Events_Scheduler::unschedule_events( 'srfm_daily_scheduled_action' );
+			}
+		);
+	}
 
 	/**
 	 * Initiator
@@ -107,71 +148,6 @@ class Plugin_Loader {
 				require_once $file;
 			}
 		}
-
-	}
-
-	/**
-	 * Constructor
-	 *
-	 * @since 0.0.1
-	 */
-	public function __construct() {
-		// Load the action scheduler before plugin loads.
-		require_once SRFM_DIR . 'inc/lib/action-scheduler/action-scheduler.php';
-
-		spl_autoload_register( [ $this, 'autoload' ] );
-
-		add_action( 'plugins_loaded', [ $this, 'load_textdomain' ] );
-		add_action( 'plugins_loaded', [ $this, 'load_plugin' ], 99 );
-		add_action( 'init', [ $this, 'load_classes' ] );
-		add_action( 'admin_init', [ $this, 'activation_redirect' ] );
-		Post_Types::get_instance();
-		Form_Submit::get_instance();
-		Block_Patterns::get_instance();
-		Gutenberg_Hooks::get_instance();
-		Register::get_instance();
-		Frontend_Assets::get_instance();
-		Helper::get_instance();
-		Activator::get_instance();
-		Admin_Ajax::get_instance();
-		Forms_Data::get_instance();
-		Export::get_instance();
-		Smart_Tags::get_instance();
-		Generate_Form_Markup::get_instance();
-		Create_New_Form::get_instance();
-		Global_Settings::get_instance();
-		Email_Summary::get_instance();
-		Compliance_Settings::get_instance();
-		Events_Scheduler::get_instance();
-		AI_Form_Builder::get_instance();
-		Field_Mapping::get_instance();
-		Background_Process::get_instance();
-		Page_Builders::get_instance();
-		Rest_Api::get_instance();
-		AI_Helper::get_instance();
-		AI_Auth::get_instance();
-		Updater::get_instance();
-
-		DatabaseRegister::init();
-
-		/**
-		 * The code that runs during plugin activation
-		 */
-		register_activation_hook(
-			SRFM_FILE,
-			function () {
-				Activator::activate();
-			}
-		);
-
-		register_deactivation_hook(
-			SRFM_FILE,
-			function () {
-				update_option( '__sureforms_do_redirect', false );
-				Events_Scheduler::unschedule_events( 'srfm_weekly_scheduled_events' );
-				Events_Scheduler::unschedule_events( 'srfm_daily_scheduled_action' );
-			}
-		);
 	}
 
 	/**
@@ -181,6 +157,15 @@ class Plugin_Loader {
 	 * @since 0.0.1
 	 */
 	public function activation_redirect() {
+		// Avoid redirection in case of WP_CLI calls.
+		if ( defined( 'WP_CLI' ) && \WP_CLI ) {
+			return;
+		}
+
+		// Avoid redirection in case of ajax calls.
+		if ( wp_doing_ajax() ) {
+			return;
+		}
 
 		$do_redirect = apply_filters( 'srfm_enable_redirect_activation', get_option( '__srfm_do_redirect' ) );
 
@@ -198,7 +183,7 @@ class Plugin_Loader {
 						admin_url( 'admin.php' )
 					)
 				);
-				exit();
+				exit;
 			}
 		}
 	}
@@ -210,6 +195,8 @@ class Plugin_Loader {
 	 * @since 0.0.1
 	 */
 	public function load_classes() {
+
+		Register::get_instance();
 		if ( is_admin() ) {
 			Admin::get_instance();
 		}
@@ -247,7 +234,6 @@ class Plugin_Loader {
 		/**
 		 * Language Locale for plugin
 		 *
-		 * @var string $get_locale The locale to use.
 		 * Uses get_user_locale()` in WordPress 4.7 or greater,
 		 * otherwise uses `get_locale()`.
 		 */
@@ -270,7 +256,6 @@ class Plugin_Loader {
 		}
 	}
 
-
 	/**
 	 * Loads plugin files.
 	 *
@@ -279,6 +264,49 @@ class Plugin_Loader {
 	 * @return void
 	 */
 	public function load_plugin() {
+		Post_Types::get_instance();
+		Form_Submit::get_instance();
+		Block_Patterns::get_instance();
+		Gutenberg_Hooks::get_instance();
+		Frontend_Assets::get_instance();
+		Helper::get_instance();
+		Activator::get_instance();
+		Admin_Ajax::get_instance();
+		Forms_Data::get_instance();
+		Export::get_instance();
+		Smart_Tags::get_instance();
+		Generate_Form_Markup::get_instance();
+		Create_New_Form::get_instance();
+		Global_Settings::get_instance();
+		Email_Summary::get_instance();
+		Compliance_Settings::get_instance();
+		Events_Scheduler::get_instance();
+		AI_Form_Builder::get_instance();
+		Field_Mapping::get_instance();
+		Background_Process::get_instance();
+		Page_Builders::get_instance();
+		Rest_Api::get_instance();
+		AI_Helper::get_instance();
+		AI_Auth::get_instance();
+		Updater::get_instance();
+		DatabaseRegister::init();
+		/**
+		 * Required to add the if check for the class existence to resolve phpstan error,
+		 * as the phpstan configuration ignores the inc/lib directory which gives error
+		 * unknown class.
+		 */
+		if ( class_exists( 'SRFM\Inc\Lib\SRFM_Nps_Survey' ) && ! apply_filters( 'srfm_disable_nps_survey', false ) ) {
+			SRFM_Nps_Survey::get_instance(); // Inits the NPS Survey class for which inits the NPS Survey plugin.
+			Nps_Notice::get_instance(); // Responsible for displaying the NPS Survey: keeping the line out of the check will also work.
+		}
+
+		/**
+		 * Load core files necessary for the Spectra block.
+		 * This method is called in the Spectra block loader to ensure core files are loaded during the 'plugins_loaded' action.
+		 *
+		 * Note: This code is added at the bottom to ensure the form block is loaded first,
+		 * followed by the Spectra blocks such as heading, image, and icon blocks.
+		 */
 		$this->load_core_files();
 	}
 
@@ -293,8 +321,6 @@ class Plugin_Loader {
 		include_once SRFM_DIR . 'modules/gutenberg/classes/class-spec-block-loader.php';
 	}
 }
-
-
 
 /**
  * Kicking this off by calling 'get_instance()' method

@@ -7,6 +7,10 @@ function initializeDropdown() {
 		if ( element ) {
 			let additionalConfig = {};
 			const inputName = element.getAttribute( 'name' );
+			const errorContainerID = element
+				.closest( '.srfm-dropdown-block' )
+				.querySelector( '.srfm-error-message' )
+				?.getAttribute( 'data-srfm-id' );
 
 			if ( element.getAttribute( 'data-multiple' ) === 'true' ) {
 				additionalConfig = {
@@ -24,6 +28,28 @@ function initializeDropdown() {
 				maxOptions: null,
 				hidePlaceholder: true, // Hide the placeholder text after an option is selected.
 				plugins: [ 'remove_button', 'clear_button' ], // Adding remove button to the selected options and clear button for the dropdown.
+				openOnFocus: false, // Stop the dropdown from opening on focus.
+				/**
+				 * If the error container is present, assign it to the aria-describedby attribute.
+				 * This will ensure that when there is a error, it will be announced by the screen reader
+				 * when the field is in focus state.
+				 *
+				 * If there are selected options, announce them on field focus.
+				 */
+				onFocus() {
+					if ( errorContainerID ) {
+						tomInputInstance.control_input.setAttribute(
+							'aria-describedby',
+							errorContainerID
+						);
+					}
+					if (
+						tomInputInstance.hasOptions &&
+						tomInputInstance.items
+					) {
+						wp.a11y.speak( tomInputInstance.items.toString() );
+					}
+				},
 				onChange( value ) {
 					// In case of multi-select dropdown, the value will be an array.
 					if ( Array.isArray( value ) ) {
@@ -43,11 +69,19 @@ function initializeDropdown() {
 							'value',
 							Array.isArray( value ) ? value.join( ',' ) : value
 						);
+
+						// Dispatch the change event on the hidden input field.
+						hiddenInputField.dispatchEvent(
+							new Event( 'change', { bubbles: true } )
+						);
 					}
 				},
 				// Handle the input state when an item is added or removed.
 				onItemAdd() {
 					handleInputState( element );
+					this.setTextboxValue( '' ); // Clear the dropdown search input.
+					this.lastQuery = null; // Clears the internal search query.
+					this.refreshOptions( false ); // Removes the highlight from options based on the search without a full reload.
 				},
 				onItemRemove() {
 					handleInputState( element );
@@ -65,6 +99,25 @@ function initializeDropdown() {
 						) }</div>`;
 					},
 				},
+				/**
+				 * When dropdown is opened, set the role for the options to `menuitem`
+				 * for enhanced accessibility experience by proper announcement of the
+				 * dropdown options.
+				 *
+				 * Default role `option` is added to the options which was causing issues
+				 * with the announcement.
+				 */
+				onDropdownOpen() {
+					const options =
+						tomInputInstance.dropdown_content.querySelectorAll(
+							'.option'
+						);
+					options.forEach( ( option ) => {
+						if ( option.getAttribute( 'role' ) === 'option' ) {
+							option.setAttribute( 'role', 'menuitem' );
+						}
+					} );
+				},
 			};
 
 			/**
@@ -79,20 +132,67 @@ function initializeDropdown() {
 			 * @param {string}      inputName - The key under which the TomSelect instance is stored in the `window.srfm` object.
 			 */
 			const tomInputInstance = new TomSelect( element, config );
+			/**
+			 * `keydown` & `click` event listeners to open the dropdown menu programmatically
+			 * since we set the `openOnFocus` option to false for the dropdown.
+			 *
+			 * `keydown` event listener - When user presses Space key then open the dropdown menu if
+			 * it is not active.
+			 *
+			 * `click` event listener - When the user clicks on the input, open the dropdown menu if
+			 * it is not active.
+			 */
+			tomInputInstance.control.addEventListener( 'keydown', ( e ) => {
+				if (
+					e.key === ' ' &&
+					! tomInputInstance.wrapper.classList.contains(
+						'dropdown-active'
+					)
+				) {
+					e.preventDefault();
+					tomInputInstance.open();
+				}
+			} );
+			tomInputInstance.control.addEventListener( 'click', () => {
+				if (
+					! tomInputInstance.wrapper.classList.contains(
+						'dropdown-active'
+					)
+				) {
+					tomInputInstance.open();
+				}
+			} );
 
 			// Add the TomSelect instance to the global window.srfm object for future reference
 			window?.addGlobalSrfmObject( inputName, tomInputInstance );
 
 			// Clear Icon and Dropdown Arrow SVGs.
-			const clearSVG = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 4L4 12" stroke="currentColor" stroke-opacity="0.65" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 4L12 12" stroke="currentColor" stroke-opacity="0.65" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
-			const dropdownSVG = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-opacity="0.65" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" /></svg>`;
+			const clearSVG = `<svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 4L4 12" stroke="currentColor" stroke-opacity="0.65" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 4L12 12" stroke="currentColor" stroke-opacity="0.65" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+			const dropdownSVG = `<svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-opacity="0.65" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" /></svg>`;
 			const dropdownWrapper = element
 				.closest( '.srfm-dropdown-block' )
 				.querySelector( '.ts-control' );
 
 			const clearButton =
 				dropdownWrapper.querySelector( '.clear-button' );
-			clearButton.innerHTML = clearSVG;
+			if ( clearButton ) {
+				// Replace the default clear icon with the custom clear SVG.
+				clearButton.innerHTML = clearSVG;
+				// Adding the tabindex to the clear button for keyboard accessibility (tab navigation).
+				clearButton.setAttribute( 'tabindex', '0' );
+				clearButton.setAttribute( 'role', 'button' ); // Add role button to the clear button for proper announcement.
+				/**
+				 * Clear the selected options when the clear button is clicked using keyboard.
+				 * The clear() method removes all selected options from the control and is available in the TomSelect instance.
+				 */
+				clearButton.addEventListener( 'keydown', ( e ) => {
+					if ( e.key === ' ' || e.key === 'Enter' ) {
+						e.preventDefault();
+						e.stopPropagation(); // Stop the event from triggering the parent element event.
+						tomInputInstance.clear();
+					}
+				} );
+			}
 			const dropdownIconDiv = document.createElement( 'div' );
 			dropdownIconDiv.classList.add( 'ts-dropdown-icon' );
 			dropdownIconDiv.innerHTML = dropdownSVG;

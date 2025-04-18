@@ -8,7 +8,6 @@ import toast, { Toaster, ToastBar } from 'react-hot-toast';
 import { navigation } from './Navigation';
 import GeneralPage from './pages/General';
 import ValidationsPage from './pages/Validations';
-import EmailPage from './pages/Email';
 import SecurityPage from './pages/Security';
 import IntegrationPage from './pages/Integrations';
 import { applyFilters } from '@wordpress/hooks';
@@ -21,7 +20,6 @@ const Component = ( { path } ) => {
 	// Global settings states.
 	const [ generalTabOptions, setGeneralTabOptions ] = useState( {
 		srfm_ip_log: false,
-		srfm_honeypot: false,
 		srfm_form_analytics: false,
 	} );
 	const [ emailTabOptions, setEmailTabOptions ] = useState( {
@@ -41,6 +39,7 @@ const Component = ( { path } ) => {
 		srfm_cf_turnstile_secret_key: '',
 		srfm_hcaptcha_site_key: '',
 		srfm_hcaptcha_secret_key: '',
+		srfm_honeypot: false,
 	} );
 	const [ dynamicBlockOptions, setDynamicBlockOptions ] = useState( {} );
 	const [ preDynamicBlockOptions, setPreDynamicBlockOptions ] = useState(
@@ -52,7 +51,7 @@ const Component = ( { path } ) => {
 		'srfm_general_settings_options',
 		'srfm_email_summary_settings_options',
 		'srfm_security_settings_options',
-		'get_default_dynamic_block_option',
+		'srfm_default_dynamic_block_option',
 	];
 
 	// set page title and icon based on the path.
@@ -92,11 +91,10 @@ const Component = ( { path } ) => {
 				} = data;
 
 				if ( srfm_general_settings_options ) {
-					const { srfm_ip_log, srfm_honeypot, srfm_form_analytics } =
+					const { srfm_ip_log, srfm_form_analytics } =
 						srfm_general_settings_options;
 					setGeneralTabOptions( {
 						srfm_ip_log,
-						srfm_honeypot,
 						srfm_form_analytics,
 					} );
 				}
@@ -127,6 +125,7 @@ const Component = ( { path } ) => {
 						srfm_cf_turnstile_secret_key,
 						srfm_hcaptcha_site_key,
 						srfm_hcaptcha_secret_key,
+						srfm_honeypot,
 					} = data.srfm_security_settings_options;
 					setSecurityTabOptions( {
 						srfm_v2_checkbox_site_key,
@@ -140,15 +139,16 @@ const Component = ( { path } ) => {
 						srfm_cf_turnstile_secret_key,
 						srfm_hcaptcha_site_key,
 						srfm_hcaptcha_secret_key,
+						srfm_honeypot,
 					} );
 				}
 
-				if ( data.get_default_dynamic_block_option ) {
+				if ( data.srfm_default_dynamic_block_option ) {
 					setDynamicBlockOptions( {
-						...data.get_default_dynamic_block_option,
+						...data.srfm_default_dynamic_block_option,
 					} );
 					setPreDynamicBlockOptions( {
-						...data.get_default_dynamic_block_option,
+						...data.srfm_default_dynamic_block_option,
 					} );
 				}
 				setLoading( false );
@@ -261,7 +261,7 @@ const Component = ( { path } ) => {
 					/>
 				) }
 			</Toaster>
-			<div className="srfm-page-heading">
+			{ pageIcon && pageTitle && <div className="srfm-page-heading">
 				<div className="srfm-page-icon">{ pageIcon }</div>
 				<h4
 					style={ {
@@ -271,11 +271,12 @@ const Component = ( { path } ) => {
 				>
 					{ pageTitle }
 				</h4>
-			</div>
+			</div> }
 			<div className="srfm-page-content">
 				{ 'general-settings' === path && (
 					<GeneralPage
 						loading={ loading }
+						emailTabOptions={ emailTabOptions }
 						generalTabOptions={ generalTabOptions }
 						updateGlobalSettings={ updateGlobalSettings }
 					/>
@@ -287,17 +288,11 @@ const Component = ( { path } ) => {
 						updateGlobalSettings={ updateGlobalSettings }
 					/>
 				) }
-				{ 'email-settings' === path && (
-					<EmailPage
-						loading={ loading }
-						emailTabOptions={ emailTabOptions }
-						updateGlobalSettings={ updateGlobalSettings }
-					/>
-				) }
 				{ 'security-settings' === path && (
 					<SecurityPage
 						loading={ loading }
 						securitytabOptions={ securitytabOptions }
+						generalTabOptions={ generalTabOptions }
 						updateGlobalSettings={ updateGlobalSettings }
 					/>
 				) }
@@ -307,7 +302,7 @@ const Component = ( { path } ) => {
 				) }
 				{ applyFilters(
 					'srfm.settings.page.content',
-					'',
+					[],
 					path,
 					loading,
 					toast

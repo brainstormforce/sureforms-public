@@ -106,10 +106,17 @@
 	margin-left: 0;
   }
   .intl-tel-input.allow-dropdown .flag-container {
+	width: 100%;
 	right: auto;
 	left: 0;
-	width: 100%;
   }
+
+  /* RTL support for phone field flag container */
+  html[dir="rtl"] .intl-tel-input.allow-dropdown .flag-container {
+	right: 6px;
+	left: auto;
+  }
+  
   .intl-tel-input.allow-dropdown .selected-flag {
 	width: 46px;
   }
@@ -653,8 +660,8 @@
 	background-position: -2391px 0px;
   }
   .iti-flag.in {
-	height: 14px;
-	background-position: -2413px 0px;
+	height: 12px;
+	background-position: -2415px -1px;
   }
   .iti-flag.io {
 	height: 10px;
@@ -1242,7 +1249,7 @@
   }
   
   .iti-flag {
-	width: 20px;
+	width: 16px;
 	height: 15px;
 	box-shadow: 0px 0px 1px 0px #888;
 	background-image: url("./img-backend/flags.png");
@@ -1259,5 +1266,3 @@
   .iti-flag.np {
 	background-color: transparent;
   }
-  
-  

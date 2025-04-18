@@ -160,7 +160,75 @@ namespace SRFM\Admin {
         {
         }
     }
+
+
+/**
+ * Analytics class.
+ *
+ * @since 1.4.0
+ */
+class Analytics
+{
+    use \SRFM\Inc\Traits\Get_Instance;
+    /**
+     * Class constructor.
+     *
+     * @return void
+     * @since 1.4.0
+     */
+    public function __construct()
+    {
+    }
+    /**
+     * Callback function to add SureForms specific analytics data.
+     *
+     * @param array $stats_data existing stats_data.
+     * @since 1.4.0
+     * @return array
+     */
+    public function add_srfm_analytics_data($stats_data)
+    {
+    }
+    /**
+     * Return total number of forms using instant forms.
+     *
+     * @since 1.4.0
+     * @return int
+     */
+    public function instant_forms_enabled()
+    {
+    }
+    /**
+     * Return total number of ai generated forms.
+     *
+     * @since 1.4.0
+     * @return int
+     */
+    public function ai_generated_forms()
+    {
+    }
+    /**
+     * Returns total number of forms using custom css.
+     *
+     * @since 1.4.0
+     * @return int
+     */
+    public function forms_using_custom_css()
+    {
+    }
+    /**
+     * Generates global setting data for analytics
+     *
+     * @since 1.4.0
+     * @return array
+     */
+    public function global_settings_data()
+    {
+    }
 }
+}
+
+
 namespace SRFM\Inc\Email {
     /**
      * Email Class
@@ -7993,27 +8061,6 @@ namespace SRFM\Inc\Blocks {
         {
         }
         /**
-         * Run any block middleware before rendering.
-         *
-         * @param array<mixed> $attributes Block attributes.
-         * @param string       $content   Post content.
-         * @return boolean|\WP_Error;
-         * @since 0.0.1
-         */
-        protected function middleware($attributes, $content)
-        {
-        }
-        /**
-         * Allows filtering of attributes before rendering.
-         *
-         * @param array<mixed> $attributes Block attributes.
-         * @return array<mixed> $attributes
-         * @since 0.0.1
-         */
-        public function get_attributes($attributes)
-        {
-        }
-        /**
          * Render the block
          *
          * @param array<mixed> $attributes Block attributes.
@@ -8345,6 +8392,17 @@ namespace SRFM\Inc {
         {
         }
         /**
+         * Convert a file URL to a file path.
+         *
+         * @param string $file_url The URL of the file.
+         *
+         * @since 1.3.0
+         * @return string The file path.
+         */
+        public static function convert_fileurl_to_filepath($file_url)
+        {
+        }
+        /**
          * Checks if current value is string or else returns default value
          *
          * @param mixed $data data which need to be checked if is string.
@@ -8365,6 +8423,71 @@ namespace SRFM\Inc {
          * @return int
          */
         public static function get_integer_value($value, $base = 10)
+        {
+        }
+        /**
+         * Checks if current value is an array or else returns default value
+         *
+         * @param mixed $data Data which needs to be checked if it is an array.
+         *
+         * @since 0.0.3
+         * @return array<mixed>
+         */
+        public static function get_array_value($data)
+        {
+        }
+        /**
+         * Extracts the field type from the dynamic field key ( or field slug ).
+         *
+         * @param string $field_key Dynamic field key.
+         * @since 0.0.6
+         * @return string Extracted field type.
+         */
+        public static function get_field_type_from_key($field_key)
+        {
+        }
+        /**
+         * Extracts the field label from the dynamic field key ( or field slug ).
+         *
+         * @param string $field_key Dynamic field key.
+         * @since 1.1.1
+         * @return string Extracted field label.
+         */
+        public static function get_field_label_from_key($field_key)
+        {
+        }
+        /**
+         * Returns the proper sanitize callback functions according to the field type.
+         *
+         * @param string $field_type HTML field type.
+         * @since 0.0.6
+         * @return callable Returns sanitize callbacks according to the provided field type.
+         */
+        public static function get_field_type_sanitize_function($field_type)
+        {
+        }
+        /**
+         * Sanitizes a numeric value.
+         *
+         * This function checks if the input value is numeric. If it is numeric, it sanitizes
+         * the value to ensure it's a float or integer, allowing for fractions and thousand separators.
+         * If the value is not numeric, it sanitizes it as a text field.
+         *
+         * @param mixed $value The value to be sanitized.
+         * @since 0.0.6
+         * @return int|float|string The sanitized value.
+         */
+        public static function sanitize_number($value)
+        {
+        }
+        /**
+         * This function sanitizes the submitted form data according to the field type.
+         *
+         * @param array<mixed> $form_data $form_data User submitted form data.
+         * @since 0.0.6
+         * @return array<mixed> $result Sanitized form data.
+         */
+        public static function sanitize_by_field_type($form_data)
         {
         }
         /**
@@ -8457,10 +8580,32 @@ namespace SRFM\Inc {
         {
         }
         /**
+         * Wrapper for the WordPress's get_post_meta function with the support for default values.
+         *
+         * @param int|string $post_id Post ID.
+         * @param string     $key The meta key to retrieve.
+         * @param mixed      $default Default value.
+         * @param bool       $single Optional. Whether to return a single value.
+         * @since 0.0.8
+         * @return mixed Meta value.
+         */
+        public static function get_post_meta($post_id, $key, $default = null, $single = true)
+        {
+        }
+        /**
+         * Returns query params data for instant form live preview.
+         *
+         * @since 0.0.8
+         * @return array<mixed> Live preview data.
+         */
+        public static function get_instant_form_live_data()
+        {
+        }
+        /**
          * Default dynamic block value.
          *
          * @since 0.0.1
-         * @return string[] Meta value.
+         * @return array<string> Meta value.
          */
         public static function default_dynamic_block_option()
         {
@@ -8478,11 +8623,20 @@ namespace SRFM\Inc {
         /**
          * Checks whether a given request has appropriate permissions.
          *
-         * @param WP_REST_Request $request Full details about the request.
          * @return true|WP_Error True if the request has read access, WP_Error object otherwise.
          * @since 0.0.1
          */
-        public static function get_items_permissions_check($request)
+        public static function get_items_permissions_check()
+        {
+        }
+        /**
+         * Check if the current user has a given capability.
+         *
+         * @param string $capability The capability to check.
+         * @since 0.0.3
+         * @return bool Whether the current user has the given capability or role.
+         */
+        public static function current_user_can($capability = '')
         {
         }
         /**
@@ -8490,8 +8644,8 @@ namespace SRFM\Inc {
          *
          * @param int        $days_old The number of days old the entries should be.
          * @param array<int> $sf_form_ids The form ids for which the entries need to be fetched.
-         * @since 0.0.3
-         * @return array<int|WP_Post> the entries matching the criteria.
+         * @since 0.0.2
+         * @return array<mixed> the entries matching the criteria.
          */
         public static function get_entries_from_form_ids($days_old = 0, $sf_form_ids = [])
         {
@@ -8502,7 +8656,7 @@ namespace SRFM\Inc {
          *
          * @link https://developer.wordpress.org/reference/functions/serialize_block_attributes/
          * @param string $encoded_data the encoded block attribute.
-         * @since 0.0.3
+         * @since 0.0.2
          * @return string decoded block attribute
          */
         public static function decode_block_attribute($encoded_data = '')
@@ -8519,14 +8673,193 @@ namespace SRFM\Inc {
         {
         }
         /**
-         * Checks if current value is an array or else returns default value
+         * Get forms options. Shows all the available forms in the dropdown.
          *
-         * @param mixed $data Data which needs to be checked if it is an array.
-         *
-         * @since 0.0.3
+         * @since 0.0.5
+         * @param string $key Determines the type of data to return.
          * @return array<mixed>
          */
-        public static function get_array_value($data)
+        public static function get_sureforms($key = '')
+        {
+        }
+        /**
+         * Get all the forms.
+         *
+         * @since 0.0.5
+         * @return array<mixed>
+         */
+        public static function get_sureforms_title_with_ids()
+        {
+        }
+        /**
+         * Get the CSS variables based on different field spacing sizes.
+         *
+         * @param string|null $field_spacing The field spacing size or boolean false to return complete sizes array.
+         *
+         * @since 0.0.7
+         * @return array<string|mixed>
+         */
+        public static function get_css_vars($field_spacing = null)
+        {
+        }
+        /**
+         * Array of SureForms blocks which get have user input.
+         *
+         * @since 0.0.10
+         * @return array<string>
+         */
+        public static function get_sureforms_blocks()
+        {
+        }
+        /**
+         * Process blocks and inner blocks.
+         *
+         * @param array<array<array<mixed>>> $blocks The block data.
+         * @param array<string>              $slugs The array of existing slugs.
+         * @param bool                       $updated The array of existing slugs.
+         * @param string                     $prefix The array of existing slugs.
+         * @param bool                       $skip_checking_existing_slug Skips the checking of existing slug if passed true. More information documented inside this function.
+         * @since 0.0.10
+         * @return array{array<array<array<mixed>>>,array<string>,bool}
+         */
+        public static function process_blocks($blocks, &$slugs, &$updated, $prefix = '', $skip_checking_existing_slug = false)
+        {
+        }
+        /**
+         * Generates slug based on the provided block and existing slugs.
+         *
+         * @param array<mixed>  $block The block data.
+         * @param array<string> $slugs The array of existing slugs.
+         * @param string        $prefix The array of existing slugs.
+         * @since 0.0.10
+         * @return string The generated unique block slug.
+         */
+        public static function generate_unique_block_slug($block, $slugs, $prefix)
+        {
+        }
+        /**
+         * This function ensures that the slug is unique.
+         * If the slug is already taken, it appends a number to the slug to make it unique.
+         *
+         * @param string        $slug test to be converted to slug.
+         * @param array<string> $slugs An array of existing slugs.
+         * @since 0.0.10
+         * @return string The unique slug.
+         */
+        public static function generate_slug($slug, $slugs)
+        {
+        }
+        /**
+         * Encode data to JSON. This function will encode the data with JSON_UNESCAPED_SLASHES and JSON_UNESCAPED_UNICODE.
+         *
+         * @since 0.0.11
+         * @param array<mixed> $data The data to encode.
+         * @return string|false The JSON representation of the value on success or false on failure.
+         */
+        public static function encode_json($data)
+        {
+        }
+        /**
+         * Returns true if SureTriggers plugin is ready for the custom app.
+         *
+         * @since 1.0.3
+         * @return bool Returns true if SureTriggers plugin is ready for the custom app.
+         */
+        public static function is_suretriggers_ready()
+        {
+        }
+        /**
+         * Registers script translations for a specific handle.
+         *
+         * This function sets the script translations for a given script handle, allowing
+         * localization of JavaScript strings using the specified text domain and path.
+         *
+         * @param string $handle The script handle to apply translations to.
+         * @param string $domain Optional. The text domain for translations. Default is 'sureforms'.
+         * @param string $path   Optional. The path to the translation files. Default is the 'languages' folder in the SureForms directory.
+         *
+         * @since 1.0.5
+         * @return void
+         */
+        public static function register_script_translations($handle, $domain = 'sureforms', $path = SRFM_DIR . 'languages')
+        {
+        }
+        /**
+         * Validates whether the specified conditions or a single key-value pair exist in the request context.
+         *
+         * - If `$conditions` is provided as an array, it will validate all key-value pairs in `$conditions`
+         *   against the `$_REQUEST` superglobal.
+         * - If `$conditions` is empty, it validates a single key-value pair from `$key` and `$value`.
+         *
+         * @param string                $value      The expected value to match in the request if `$conditions` is not used.
+         * @param string                $key        The key to check for in the request if `$conditions` is not used.
+         * @param array<string, string> $conditions An optional associative array of key-value pairs to validate.
+         * @since 1.1.1
+         * @return bool Returns true if all conditions are met or the single key-value pair is valid, otherwise false.
+         */
+        public static function validate_request_context($value, $key = 'post_type', array $conditions = [])
+        {
+        }
+        /**
+         * Retrieve the list of excluded fields for form data processing.
+         *
+         * This method returns an array of field keys that should be excluded when
+         * processing form data.
+         *
+         * @since 1.1.1
+         * @return array<string> Returns the string array of excluded fields.
+         */
+        public static function get_excluded_fields()
+        {
+        }
+
+        /**
+	     * Filters and concatenates valid class names from an array.
+	     *
+	     * @param array<string> $class_names The array containing potential class names.
+	     * @since 1.4.0
+	     * @return string The concatenated string of valid class names separated by spaces.
+	     */
+	    public static function join_strings( $class_names )
+        {
+        }
+        /**
+         * Get the gradient css for given gradient parameters.
+         *
+         * @param string $type The type of gradient. Default 'linear'.
+         * @param string $color1 The first color of the gradient. Default '#FFC9B2'.
+         * @param string $color2 The second color of the gradient. Default '#C7CBFF'.
+         * @param int    $loc1 The location of the first color. Default 0.
+         * @param int    $loc2 The location of the second color. Default 100.
+         * @param int    $angle The angle of the gradient. Default 90.
+         *
+         * @since 1.4.4
+         * @return string The gradient css.
+         */
+        public static function get_gradient_css( $type = 'linear', $color1 = '#FFC9B2', $color2 = '#C7CBFF', $loc1 = 0, $loc2 = 100, $angle = 90 )
+        {
+        }
+        /**
+	     * Get SureForms Website URL.
+	     *
+	     * @param string $trail The URL trail to append to SureForms website URL. The parameter should not include a leading slash as the base URL already ends with a trailing slash.
+         * @param array<string, string> $utm_args Optional. An associative array of UTM parameters to append to the URL. Default empty array. Example: [ 'utm_medium' => 'dashboard'].
+	     * @since 0.0.7
+	     * @return string
+	     */
+	    public static function get_sureforms_website_url( $trail, $utm_args = [] ) {
+	    }
+        /**
+	     * Return the classes based on background and overlay type to add to the form container.
+         *
+	     * @param string $background_type The background type.
+	     * @param string $overlay_type The overlay type.
+         * @param string $bg_image The background image url.
+	     *
+	     * @since 1.4.4
+	     * @return string The classes to add to the form container.
+	     */
+	    public static function get_background_classes( $background_type, $overlay_type, $bg_image = '' )
         {
         }
     }
@@ -8686,6 +9019,363 @@ namespace SRFM\Inc\Global_Settings {
          * @since 0.0.1
          */
         public static function srfm_get_general_settings($request)
+        {
+        }
+    }
+}
+namespace SRFM\Admin\Views {
+    /**
+     * Single entry page.
+     *
+     * @since 0.0.13
+     */
+    class Single_Entry
+    {
+        /**
+         * Initialize the properties.
+         *
+         * @since 0.0.13
+         */
+        public function __construct()
+        {
+        }
+        /**
+         * Render the single entry page if an entry is found.
+         *
+         * @since 0.0.13
+         * @return void
+         */
+        public function render()
+        {
+        }
+		/**
+         * Helper method to paginate the provided array data.
+         *
+         * @param array<mixed> $array Array item to paginate.
+         * @param int          $current_page Current page number.
+         * @param int          $items_per_page Total items to return per pagination.
+         * @since 1.3.0
+         * @return array<mixed>
+         */
+        public static function paginate_array($array, $current_page, $items_per_page = 3)
+        {
+        }
+        /**
+         * Prints entry note item markup.
+         *
+         * @param array $note Single note array.
+         * @since 1.3.0
+         * @return void
+         */
+        public static function entry_note_item_markup($note)
+        {
+        }
+        /**
+         * Provides table markup for the entry logs.
+         *
+         * @param array<mixed> $entry_logs Entry logs stored in the database.
+         * @since 1.3.0
+         * @return void
+         */
+        public static function entry_logs_table_markup($entry_logs)
+        {
+        }
+    }
+    /**
+     * Create the entries table using WP_List_Table.
+     */
+    class Entries_List_Table extends \WP_List_Table
+    {
+        /**
+         * Stores the entries data fetched from database.
+         *
+         * @var array<mixed>
+         * @since 0.0.13
+         */
+        protected $data = [];
+        /**
+         * Stores the count for the entries data fetched from the database according to the status.
+         * It will be used for pagination.
+         *
+         * @var int
+         * @since 0.0.13
+         */
+        public $entries_count;
+        /**
+         * Stores the count for all entries regardles of status.
+         * It will be used for managing the no entries found page.
+         *
+         * @var int
+         * @since 0.0.13
+         */
+        public $all_entries_count;
+        /**
+         * Stores the count for the trashed entries.
+         * Used for displaying the no entries found page.
+         *
+         * @var int
+         * @since 0.0.13
+         */
+        public $trash_entries_count;
+        /**
+         * Constructor.
+         *
+         * @since 0.0.13
+         * @return void
+         */
+        public function __construct()
+        {
+        }
+        /**
+         * Override the parent columns method. Defines the columns to use in your listing table.
+         *
+         * @since 0.0.13
+         * @return array
+         */
+        public function get_columns()
+        {
+        }
+        /**
+         * Define the sortable columns.
+         *
+         * @since 0.0.13
+         * @return array
+         */
+        public function get_sortable_columns()
+        {
+        }
+        /**
+         * Bulk action items.
+         *
+         * @since 0.0.13
+         * @return array $actions Bulk actions.
+         */
+        public function get_bulk_actions()
+        {
+        }
+        /**
+         * Message to be displayed when there are no entries.
+         *
+         * @since 0.0.13
+         * @return void
+         */
+        public function no_items()
+        {
+        }
+        /**
+         * Prepare the items for the table to process.
+         *
+         * @since 0.0.13
+         * @return void
+         */
+        public function prepare_items()
+        {
+        }
+        /**
+         * Define what data to show on each column of the table.
+         *
+         * @param array  $item Column data.
+         * @param string $column_name Current column name.
+         *
+         * @since 0.0.13
+         * @return mixed
+         */
+        public function column_default($item, $column_name)
+        {
+        }
+        /**
+         * Callback function for checkbox field.
+         *
+         * @param array $item Columns items.
+         * @return string
+         * @since 0.0.13
+         */
+        public function column_cb($item)
+        {
+        }
+        /**
+         * Define the data for the "id" column and return the markup.
+         *
+         * @param array $item Column data.
+         *
+         * @since 0.0.13
+         * @return string
+         */
+        protected function column_id($item)
+        {
+        }
+        /**
+         * Define the data for the "form name" column and return the markup.
+         *
+         * @param array $item Column data.
+         *
+         * @since 0.0.13
+         * @return string
+         */
+        protected function column_form_name($item)
+        {
+        }
+        /**
+         * Define the data for the "status" column and return the markup.
+         *
+         * @param array $item Column data.
+         *
+         * @since 0.0.13
+         * @return string
+         */
+        protected function column_status($item)
+        {
+        }
+        /**
+         * Define the data for the "first field" column and return the markup.
+         *
+         * @param array $item Column data.
+         *
+         * @since 0.0.13
+         * @return string
+         */
+        protected function column_first_field($item)
+        {
+        }
+        /**
+         * Define the data for the "submitted on" column and return the markup.
+         *
+         * @param array $item Column data.
+         *
+         * @since 0.0.13
+         * @return string
+         */
+        protected function column_created_at($item)
+        {
+        }
+        /**
+         * Returns array of row actions for packages.
+         *
+         * @param array $item Column data.
+         *
+         * @since 0.0.13
+         * @return array
+         */
+        protected function package_row_actions($item)
+        {
+        }
+        /**
+         * Extra controls to be displayed between bulk actions and pagination.
+         *
+         * @param string $which Which table navigation is it... Is it top or bottom.
+         *
+         * @since 0.0.13
+         * @return void
+         */
+        protected function extra_tablenav($which)
+        {
+        }
+        /**
+         * Generates the table navigation above or below the table.
+         *
+         * @param string $which is it the top or bottom of the table.
+         *
+         * @since 0.0.13
+         * @return void
+         */
+        protected function display_tablenav($which)
+        {
+        }
+        /**
+         * Display the available form name to filter entries.
+         *
+         * @since 0.0.13
+         * @return void
+         */
+        protected function display_form_filter()
+        {
+        }
+        /**
+         * Display the month and year from which the entries are present to filter entries according to time.
+         *
+         * @since 0.0.13
+         * @return void
+         */
+        protected function display_month_filter()
+        {
+        }
+        /**
+         * Entries table form search input markup.
+         * Currently search is based on entry ID only and not text.
+         *
+         * @param string $text The 'submit' button label.
+         * @param int    $input_id ID attribute value for the search input field.
+         *
+         * @since 0.0.13
+         * @return void
+         */
+        public function search_box_markup($text, $input_id)
+        {
+        }
+        /**
+         * Displays the table.
+         *
+         * @since 0.0.13
+         */
+        public function display()
+        {
+        }
+        /**
+         * List of CSS classes for the "WP_List_Table" table element.
+         *
+         * @since 0.0.13
+         * @return array<string>
+         */
+        protected function get_table_classes()
+        {
+        }
+        /**
+         * Get the views for the entries table.
+         *
+         * @since 0.0.13
+         * @return array<string,string>
+         */
+        protected function get_views()
+        {
+        }
+        /**
+         * Process bulk actions.
+         *
+         * @since 0.0.13
+         * @return void
+         */
+        public static function process_bulk_actions()
+        {
+        }
+        /**
+         * Check if the current page is a trash list.
+         *
+         * @since 0.0.13
+         * @return bool
+         */
+        public static function is_trash_view()
+        {
+        }
+        /**
+         * Common function to update the status of an entry.
+         *
+         * @param int    $entry_id The ID of the entry to update.
+         * @param string $action The action to perform.
+         * @param string $view The view to handle redirection.
+         *
+         * @since 0.0.13
+         * @return void
+         */
+        public static function handle_entry_status($entry_id, $action, $view = '')
+        {
+        }
+        /**
+         * Display admin notice for bulk actions.
+         *
+         * @since 0.0.13
+         * @return void
+         */
+        public static function display_bulk_action_notice()
         {
         }
     }
@@ -10469,6 +11159,7 @@ namespace {
     // ------ ADDITIONAL CONSTANTS ------- //
     \define('SRFM_FORMS_POST_TYPE', 'sureforms_form');
     \define('SRFM_ENTRIES', 'sureforms_entries');
+    \define('SRFM_PRO_RECOMMENDED_VER', '');
     /**
      * Filesystem class
      *

@@ -1,4 +1,5 @@
 /** @jsx jsx */
+import { __ } from '@wordpress/i18n';
 import { css, jsx } from '@emotion/react';
 import { ScCard, ScDashboardModule } from '@surecart/components-react';
 import ChartSummary from './charts/ChartSummary';
@@ -25,7 +26,7 @@ export default ( {} ) => {
 				display: flex;
 				align-items:center;
 				` }>
-				Entries
+					{ __( 'Entries', 'sureforms' ) }
 					<span
 						css={ css`
 				width: 16px;

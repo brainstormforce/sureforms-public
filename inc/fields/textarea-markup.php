@@ -20,7 +20,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 0.0.1
  */
 class Textarea_Markup extends Base {
-
 	/**
 	 * Maximum length of text allowed for the textarea.
 	 *
@@ -80,8 +79,8 @@ class Textarea_Markup extends Base {
 		$this->set_input_label( __( 'Textarea', 'sureforms' ) );
 		$this->set_error_msg( $attributes, 'srfm_textarea_block_required_text' );
 		$this->slug       = 'textarea';
-		$this->max_length = isset( $attributes['maxLength'] ) ? $attributes['maxLength'] : '';
-		$this->rows       = isset( $attributes['rows'] ) ? $attributes['rows'] : '';
+		$this->max_length = $attributes['maxLength'] ?? '';
+		$this->rows       = $attributes['rows'] ?? '';
 		// html attributes.
 		$this->max_length_attr = $this->max_length ? ' maxLength="' . $this->max_length . '" ' : '';
 		$this->rows_attr       = $this->rows ? ' rows="' . $this->rows . '" ' : '';
@@ -98,7 +97,7 @@ class Textarea_Markup extends Base {
 	 * Render the sureforms textarea classic styling
 	 *
 	 * @since 0.0.2
-	 * @return string|boolean
+	 * @return string|bool
 	 */
 	public function markup() {
 		$classes = [
@@ -112,7 +111,7 @@ class Textarea_Markup extends Base {
 			$this->is_richtext ? 'srfm-richtext' : '',
 		];
 
-		$classes = Helper::class_name( $classes );
+		$classes = Helper::join_strings( $classes );
 
 		ob_start(); ?>
 		<div data-block-id="<?php echo esc_attr( $this->block_id ); ?>" class="<?php echo esc_attr( $classes ); ?>">
@@ -124,7 +123,7 @@ class Textarea_Markup extends Base {
 					name="<?php echo esc_attr( $this->field_name ); ?>"
 					id="<?php echo esc_attr( $this->unique_slug ); ?>"
 					<?php echo ! empty( $this->aria_described_by ) ? "aria-describedby='" . esc_attr( trim( $this->aria_described_by ) ) . "'" : ''; ?>
-					aria-required="<?php echo esc_attr( $this->aria_require_attr ); ?>" <?php echo wp_kses_post( $this->max_length_attr . '' . $this->rows_attr ); ?> <?php echo wp_kses_post( $this->placeholder_attr ); ?>
+					data-required="<?php echo esc_attr( $this->data_require_attr ); ?>" <?php echo wp_kses_post( $this->max_length_attr . '' . $this->rows_attr ); ?> <?php echo wp_kses_post( $this->placeholder_attr ); ?>
 					<?php echo $this->is_richtext ? 'data-is-richtext="true"' : ''; ?>
 					><?php echo esc_html( $this->default ); ?></textarea>
 					<?php if ( $this->is_richtext ) : ?>
@@ -140,6 +139,5 @@ class Textarea_Markup extends Base {
 
 		<?php
 		return ob_get_clean();
-
 	}
 }

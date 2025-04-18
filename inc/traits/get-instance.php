@@ -15,7 +15,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Trait Get_Instance.
  */
 trait Get_Instance {
-
 	/**
 	 * Instance object.
 	 *

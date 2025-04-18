@@ -9,10 +9,8 @@
 namespace SRFM\Inc;
 
 use SRFM\Inc\Database\Tables\Entries;
-use WP_Admin_Bar;
 use SRFM\Inc\Traits\Get_Instance;
-use SRFM\Inc\Generate_Form_Markup;
-use SRFM\Inc\Helper;
+use WP_Admin_Bar;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -44,7 +42,9 @@ class Post_Types {
 		add_filter( 'bulk_actions-edit-sureforms_form', [ $this, 'register_modify_bulk_actions' ], 99 );
 		add_action( 'admin_notices', [ $this, 'import_form_popup' ] );
 		add_action( 'admin_bar_menu', [ $this, 'remove_admin_bar_menu_item' ], 80, 1 );
-		add_action( 'template_redirect', [ $this, 'srfm_instant_form_redirect' ] );}
+		add_action( 'template_redirect', [ $this, 'srfm_instant_form_redirect' ] );
+		add_action( 'template_redirect', [ $this, 'disable_sureforms_archive_page' ], 9 );
+	}
 
 	/**
 	 * Add SureForms menu.
@@ -145,7 +145,7 @@ class Post_Types {
 				'rewrite'           => [ 'slug' => 'form' ],
 				'public'            => true,
 				'show_in_rest'      => true,
-				'has_archive'       => false,
+				'has_archive'       => true,
 				'show_ui'           => true,
 				'supports'          => [ 'title', 'author', 'editor', 'custom-fields' ],
 				'show_in_menu'      => 'sureforms_menu',
@@ -165,6 +165,19 @@ class Post_Types {
 		// 'label_count'               => _n_noop( 'Unread (%s)', 'Unread (%s)', 'sureforms' ),
 		// )
 		// );.
+	}
+
+	/**
+	 * Redirects requests for SureForms archieve page to homeurl
+	 *
+	 * @since 1.4.0
+	 * @return void
+	 */
+	public function disable_sureforms_archive_page() {
+		if ( is_post_type_archive( SRFM_FORMS_POST_TYPE ) ) {
+			wp_safe_redirect( home_url(), 301 );
+			exit;
+		}
 	}
 
 	/**
@@ -190,7 +203,7 @@ class Post_Types {
 	 */
 	public function modify_entries_list_row_actions( $actions, $post ) {
 		if ( 'sureforms_form' === $post->post_type ) {
-			$actions['export'] = '<a href="#" onclick="exportForm(' . $post->ID . ')">Export</a>';
+			$actions['export'] = '<a href="#" onclick="exportForm(' . $post->ID . ')">' . __( 'Export', 'sureforms' ) . '</a>';
 		}
 
 		return $actions;
@@ -271,7 +284,9 @@ class Post_Types {
 		$screen    = get_current_screen();
 		$screen_id = $screen ? $screen->id : '';
 
-		if ( 'edit-' . SRFM_FORMS_POST_TYPE === $screen_id || 'sureforms_page_' . SRFM_ENTRIES === $screen_id ) {
+		$is_screen_sureforms_entries = Helper::validate_request_context( SRFM_ENTRIES, 'page' );
+
+		if ( 'edit-' . SRFM_FORMS_POST_TYPE === $screen_id || $is_screen_sureforms_entries ) {
 			?>
 		<style>
 			.srfm-page-header {
@@ -320,6 +335,8 @@ class Post_Types {
 				// Security.
 				'_srfm_captcha_security_type'    => 'string',
 				'_srfm_form_recaptcha'           => 'string',
+				// post meta to store if the form is AI generated.
+				'_srfm_is_ai_generated'          => 'boolean',
 			]
 		);
 
@@ -331,10 +348,10 @@ class Post_Types {
 				'show_in_rest'      => true,
 				'type'              => 'string',
 				'single'            => true,
-				'auth_callback'     => function() {
+				'auth_callback'     => static function() {
 					return current_user_can( 'edit_posts' );
 				},
-				'sanitize_callback' => function( $meta_value ) {
+				'sanitize_callback' => static function( $meta_value ) {
 					return wp_kses_post( $meta_value );
 				},
 			]
@@ -350,7 +367,7 @@ class Post_Types {
 					'single'            => true,
 					'type'              => $type,
 					'sanitize_callback' => 'sanitize_text_field',
-					'auth_callback'     => function() {
+					'auth_callback'     => static function() {
 						return current_user_can( 'edit_posts' );
 					},
 				]
@@ -422,7 +439,7 @@ class Post_Types {
 					'bg_image'                      => '',
 					'site_logo'                     => '',
 					'cover_type'                    => 'color',
-					'cover_color'                   => '#0C78FB',
+					'cover_color'                   => '#111C44',
 					'cover_image'                   => '',
 					'enable_instant_form'           => false,
 					'form_container_width'          => 620,
@@ -443,30 +460,209 @@ class Post_Types {
 					'schema' => [
 						'type'       => 'object',
 						'properties' => [
-							'primary_color'           => [
+							'primary_color'               => [
 								'type' => 'string',
 							],
-							'text_color'              => [
+							'text_color'                  => [
 								'type' => 'string',
 							],
-							'text_color_on_primary'   => [
+							'text_color_on_primary'       => [
 								'type' => 'string',
 							],
-							'field_spacing'           => [
+							'field_spacing'               => [
 								'type' => 'string',
 							],
-							'submit_button_alignment' => [
+							'submit_button_alignment'     => [
 								'type' => 'string',
+							],
+							'bg_type'                     => [
+								'type' => 'string',
+							],
+							'bg_color'                    => [
+								'type' => 'string',
+							],
+							'bg_image'                    => [
+								'type' => 'string',
+							],
+							'bg_image_id'                 => [
+								'type' => 'integer',
+							],
+							// Image Properties.
+							'bg_image_position'           => [
+								'type'       => 'object',
+								'properties' => [
+									'x' => [
+										'type'   => 'number',
+										'format' => 'float',
+									],
+									'y' => [
+										'type'   => 'number',
+										'format' => 'float',
+									],
+								],
+							],
+							'bg_image_attachment'         => [
+								'type' => 'string',
+							],
+							'bg_image_repeat'             => [
+								'type' => 'string',
+							],
+							'bg_image_size'               => [
+								'type' => 'string',
+							],
+							'bg_image_size_custom'        => [
+								'type' => 'integer',
+							],
+							'bg_image_size_custom_unit'   => [
+								'type' => 'string',
+							],
+							// Gradient Properties.
+							'bg_gradient'                 => [
+								'type' => 'string',
+							],
+							'gradient_type'               => [
+								'type' => 'string',
+							],
+							'bg_gradient_type'            => [
+								'type' => 'string',
+							],
+							'bg_gradient_color_1'         => [
+								'type' => 'string',
+							],
+							'bg_gradient_color_2'         => [
+								'type' => 'string',
+							],
+							'bg_gradient_angle'           => [
+								'type' => 'integer',
+							],
+							'bg_gradient_location_1'      => [
+								'type' => 'integer',
+							],
+							'bg_gradient_location_2'      => [
+								'type' => 'integer',
+							],
+							// Overlay Properties.
+							'bg_overlay_size'             => [
+								'type' => 'string',
+							],
+							'bg_gradient_overlay_type'    => [
+								'type' => 'string',
+							],
+							'bg_overlay_opacity'          => [
+								'type' => 'number',
+							],
+							'bg_overlay_image'            => [
+								'type' => 'string',
+							],
+							'bg_overlay_image_id'         => [
+								'type' => 'integer',
+							],
+							'bg_image_overlay_color'      => [
+								'type' => 'string',
+							],
+							'bg_overlay_custom_size_unit' => [
+								'type' => 'string',
+							],
+							'bg_overlay_custom_size'      => [
+								'type' => 'integer',
+							],
+							'bg_overlay_blend_mode'       => [
+								'type' => 'string',
+							],
+							'bg_overlay_position'         => [
+								'type'       => 'object',
+								'properties' => [
+									'x' => [
+										'type'   => 'number',
+										'format' => 'float',
+									],
+									'y' => [
+										'type'   => 'number',
+										'format' => 'float',
+									],
+								],
+							],
+							'bg_overlay_attachment'       => [
+								'type' => 'string',
+							],
+							'bg_overlay_repeat'           => [
+								'type' => 'string',
+							],
+							// Gradient Overlay Properties.
+							'bg_overlay_gradient'         => [
+								'type' => 'string',
+							],
+							'overlay_gradient_type'       => [
+								'type' => 'string',
+							],
+							'bg_overlay_gradient_type'    => [
+								'type' => 'string',
+							],
+							'bg_overlay_gradient_color_1' => [
+								'type' => 'string',
+							],
+							'bg_overlay_gradient_color_2' => [
+								'type' => 'string',
+							],
+							'bg_overlay_gradient_angle'   => [
+								'type' => 'integer',
+							],
+							'bg_overlay_gradient_location_1' => [
+								'type' => 'integer',
+							],
+							'bg_overlay_gradient_location_2' => [
+								'type' => 'integer',
 							],
 						],
 					],
 				],
 				'default'       => [
-					'primary_color'           => '#0C78FB',
-					'text_color'              => '#1E1E1E',
-					'text_color_on_primary'   => '#FFFFFF',
-					'field_spacing'           => 'medium',
-					'submit_button_alignment' => 'left',
+					'primary_color'                  => '#111C44',
+					'text_color'                     => '#1E1E1E',
+					'text_color_on_primary'          => '#FFFFFF',
+					'field_spacing'                  => 'medium',
+					'submit_button_alignment'        => 'left',
+					'bg_type'                        => 'color',
+					'bg_color'                       => '#ffffff',
+					'bg_image'                       => '',
+					'bg_image_position'              => [
+						'x' => 0.5,
+						'y' => 0.5,
+					],
+					'bg_image_attachment'            => 'scroll',
+					'bg_image_repeat'                => 'no-repeat',
+					'bg_image_size'                  => 'cover',
+					'bg_image_size_custom'           => 100, // Image width when set to custom.
+					'bg_image_size_custom_unit'      => '%',
+					'gradient_type'                  => 'basic',
+					'bg_gradient_type'               => 'linear',
+					'bg_gradient_color_1'            => '#FFC9B2',
+					'bg_gradient_color_2'            => '#C7CBFF',
+					'bg_gradient_angle'              => 90,
+					'bg_gradient_location_1'         => 0,
+					'bg_gradient_location_2'         => 100,
+					'bg_overlay_size'                => 'cover',
+					'bg_gradient_overlay_type'       => '',
+					'bg_overlay_opacity'             => 1,
+					'bg_overlay_image'               => '',
+					'bg_image_overlay_color'         => '#FFFFFF75',
+					'bg_overlay_custom_size_unit'    => '%',
+					'bg_overlay_custom_size'         => 100,
+					'bg_overlay_position'            => [
+						'x' => 0.5,
+						'y' => 0.5,
+					],
+					'bg_overlay_attachment'          => 'scroll',
+					'bg_overlay_repeat'              => 'no-repeat',
+					'bg_overlay_blend_mode'          => 'normal',
+					// Gradient Overlay Properties.
+					'overlay_gradient_type'          => 'basic',
+					'bg_overlay_gradient_type'       => 'linear',
+					'bg_overlay_gradient_color_1'    => '#FFC9B2',
+					'bg_overlay_gradient_color_2'    => '#C7CBFF',
+					'bg_overlay_gradient_angle'      => 90,
+					'bg_overlay_gradient_location_1' => 0,
+					'bg_overlay_gradient_location_2' => 100,
 				],
 			]
 		);
@@ -524,12 +720,12 @@ class Post_Types {
 						'id'             => 1,
 						'status'         => true,
 						'is_raw_format'  => false,
-						'name'           => 'Admin Notification Email',
+						'name'           => __( 'Admin Notification Email', 'sureforms' ),
 						'email_to'       => '{admin_email}',
 						'email_reply_to' => '{admin_email}',
 						'email_cc'       => '{admin_email}',
 						'email_bcc'      => '{admin_email}',
-						'subject'        => 'New Form Submission',
+						'subject'        => sprintf( /* translators: %s: Form title smart tag */ __( 'New Form Submission - %s', 'sureforms' ), '{form_title}' ),
 						'email_body'     => '{all_data}',
 					],
 				],
@@ -629,7 +825,7 @@ class Post_Types {
 						'confirmation_type' => 'same page',
 						'page_url'          => '',
 						'custom_url'        => '',
-						'message'           => '<p style="text-align: center;"><img src="' . esc_attr( $check_icon ) . '"></img></p><h2 style="text-align: center;">Thank you</h2><p style="text-align: center;">We have received your email. You\'ll hear from us as soon as possible.</p><p style="text-align: center;">Please be sure to whitelist our {admin_email} email address to ensure our replies reach your inbox safely.</p>',
+						'message'           => '<p style="text-align: center;"><img src="' . esc_attr( $check_icon ) . '" alt="" aria-hidden="true"></img></p><h2 style="text-align: center;">' . esc_html__( 'Thank you', 'sureforms' ) . '</h2>',
 						'submission_action' => 'hide form',
 					],
 				],
@@ -642,7 +838,6 @@ class Post_Types {
 		 * Hook for registering additional Post Meta
 		 */
 		do_action( 'srfm_register_additional_post_meta' );
-
 	}
 
 	/**
@@ -665,8 +860,7 @@ class Post_Types {
 		$post = get_post( $id );
 
 		if ( ! empty( $id ) && $post ) {
-			$content = Generate_Form_Markup::get_form_markup( $id, ! filter_var( $atts['show_title'], FILTER_VALIDATE_BOOLEAN ), '', 'post', true );
-			return $content;
+			return Generate_Form_Markup::get_form_markup( $id, ! filter_var( $atts['show_title'], FILTER_VALIDATE_BOOLEAN ), '', 'post', true );
 		}
 
 		return '';
@@ -680,7 +874,7 @@ class Post_Types {
 	 * @since 0.0.1
 	 */
 	public function custom_form_columns( $columns ) {
-		$columns = [
+		return [
 			'cb'        => $columns['cb'],
 			'title'     => $columns['title'],
 			'sureforms' => __( 'Shortcode', 'sureforms' ),
@@ -688,14 +882,13 @@ class Post_Types {
 			'author'    => $columns['author'],
 			'date'      => $columns['date'],
 		];
-		return $columns;
 	}
 
 	/**
 	 * Populate custom column with data.
 	 *
-	 * @param string  $column Attributes.
-	 * @param integer $post_id Attributes.
+	 * @param string $column Attributes.
+	 * @param int    $post_id Attributes.
 	 * @return void
 	 * @since 0.0.1
 	 */
@@ -751,7 +944,7 @@ class Post_Types {
 					<p class="srfm-import-help"><?php echo esc_html__( 'Please choose the SureForms export file (.json) that you wish to import.', 'sureforms' ); ?></p>
 					<form method="post" enctype="multipart/form-data" class="srfm-import-form">
 						<input type="file" id="srfm-import-file" onchange="handleFileChange(event)" name="import form" accept=".json">
-						<input type="submit" name="import-form-submit" id="import-form-submit" class="srfm-import-button" value="Import Now" disabled>
+						<input type="submit" name="import-form-submit" id="import-form-submit" class="srfm-import-button" value="<?php esc_attr_e( 'Import Now', 'sureforms' ); ?>" disabled>
 					</form>
 					<p id="srfm-import-error"><?php echo esc_html__( 'There is some error in json file, please export the SureForms Forms again.', 'sureforms' ); ?></p>
 				</div>
@@ -792,24 +985,6 @@ class Post_Types {
 	}
 
 	/**
-	 * Restrict interference of other plugins with SureForms.
-	 *
-	 * @since 0.0.5
-	 * @return void
-	 */
-	private function restrict_unwanted_insertions() {
-		// Restrict RankMath metaboxes in edit page.
-		add_action( 'cmb2_admin_init', [ $this, 'restrict_data' ] );
-
-		// Restrict Yoast columns.
-		add_filter( 'wpseo_accessible_post_types', [ $this, 'unset_sureforms_post_type' ] );
-		add_filter( 'wpseo_metabox_prio', '__return_false' );
-
-		// Restrict AIOSEO columns.
-		add_filter( 'aioseo_public_post_types', [ $this, 'unset_sureforms_post_type' ] );
-	}
-
-	/**
 	 * Restrict RankMath meta boxes in edit page.
 	 *
 	 * @since 0.0.5
@@ -827,17 +1002,76 @@ class Post_Types {
 	 * @return array<mixed> $post_types Modified post types.
 	 */
 	public function unset_sureforms_post_type( $post_types ) {
-		$filtered_post_types = array_filter(
+		return array_filter(
 			$post_types,
-			function( $post_type ) {
+			static function( $post_type ) {
 				if ( is_array( $post_type ) && isset( $post_type['name'] ) ) {
 					return SRFM_FORMS_POST_TYPE !== $post_type['name'];
-				} else {
-					return SRFM_FORMS_POST_TYPE !== $post_type;
 				}
+					return SRFM_FORMS_POST_TYPE !== $post_type;
 			}
 		);
+	}
 
-		return $filtered_post_types;
+	/**
+	 * Restrict unwanted insertions from the AIOSEO plugin.
+	 *
+	 * This method ensures that the SureForms post type is excluded from AIOSEO's
+	 * public post types unless the current page is related to AIOSEO settings.
+	 *
+	 * @return void
+	 * @since 1.6.0
+	 */
+	public function restrict_in_aioseo_plugin() {
+		/**
+		 * Checks if the AIOSEO plugin is installed and excludes the SureForms post type from AIOSEO's public post types.
+		 *
+		 * - Verifies the presence of the AIOSEO_DIR constant to ensure AIOSEO is installed.
+		 * - Allows AIOSEO functionality on its own settings pages by checking the `REQUEST_URI` and `page` query parameter.
+		 * - Excludes the SureForms post type from AIOSEO's public post types using the `aioseo_public_post_types` filter.
+		 *
+		 * Security Note:
+		 * - Nonce verification is intentionally skipped (`phpcs:ignore WordPress.Security.NonceVerification.Recommended`)
+		 *   because this code is only performing a read operation to check the current request URI and query parameters.
+		 *   It does not modify or process sensitive data, making nonce verification unnecessary in this context.
+		 */
+		// Check if AIOSEO is installed by verifying the AIOSEO_DIR constant.
+		if ( ! defined( 'AIOSEO_DIR' ) ) {
+			return;
+		}
+
+		// Allow AIOSEO functionality on its own settings pages.
+		if ( isset( $_SERVER['REQUEST_URI'] ) ) {
+			$request_uri = sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) );
+			if ( strpos( $request_uri, 'admin.php' ) !== false ) {
+				if ( isset( $_GET['page'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verification is not required here because Safe here as we're only reading the `page` parameter.
+					$page = sanitize_text_field( wp_unslash( $_GET['page'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verification is not required here because only we are reading the `page` parameter.
+					if ( strpos( $page, 'aioseo' ) !== false ) {
+						return;
+					}
+				}
+			}
+		}
+
+		// Exclude the SureForms post type from AIOSEO's public post types.
+		add_filter( 'aioseo_public_post_types', [ $this, 'unset_sureforms_post_type' ] );
+	}
+
+	/**
+	 * Restrict interference of other plugins with SureForms.
+	 *
+	 * @since 0.0.5
+	 * @return void
+	 */
+	private function restrict_unwanted_insertions() {
+		// Restrict RankMath metaboxes in edit page.
+		add_action( 'cmb2_admin_init', [ $this, 'restrict_data' ] );
+
+		// Restrict Yoast columns.
+		add_filter( 'wpseo_accessible_post_types', [ $this, 'unset_sureforms_post_type' ] );
+		add_filter( 'wpseo_metabox_prio', '__return_false' );
+
+		// Restrict AIOSEO columns.
+		$this->restrict_in_aioseo_plugin();
 	}
 }

@@ -24,7 +24,7 @@ class Block extends Base {
 	 * @param array<mixed> $attributes Block attributes.
 	 * @param string       $content Post content.
 	 *
-	 * @return string|boolean
+	 * @return string|bool
 	 */
 	public function render( $attributes, $content = '' ) {
 		if ( ! empty( $attributes ) ) {

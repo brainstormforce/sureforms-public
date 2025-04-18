@@ -14,16 +14,14 @@ const Suretriggers = ( { setSelectedTab } ) => {
 		<div className="srfm-modal-content" style={ { height: '100%' } }>
 			<div className="srfm-modal-inner-content" style={ { height: '100%' } }>
 				<div className="srfm-modal-inner-heading">
-					<div className="srfm-modal-inner-heading-text">
-						<span onClick={ () => {
-							setSelectedTab( 'integrations' );
-						} } className="srfm-back-btn">{ backArrow }</span>
+					<div onClick={ () => setSelectedTab( 'integrations' ) } className="srfm-modal-inner-heading-text srfm-modal-inner-heading-back-button">
+						<span className="srfm-back-btn">{ backArrow }</span>
 						<h4>{ __( 'Integrations', 'sureforms' ) }</h4>
 					</div>
 				</div>
 				<div className="srfm-modal-inner-box" style={ { height: '100%' } }>
 					<div className="srfm-modal-inner-box-text">
-						<h5>{ __( 'SureTriggers Integrations', 'sureforms' ) }</h5>
+						<h5>{ __( 'OttoKit Integrations', 'sureforms' ) }</h5>
 					</div>
 
 					<div className="srfm-modal-separator" />

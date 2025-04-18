@@ -8,7 +8,7 @@ import icon from '@Image/Logo.js';
  */
 import edit from './edit';
 import save from './save';
-import metadata from './block.json';
+import metadata from '@IncBlocks/sform/block.json';
 import { FieldsPreview } from '../FieldsPreview.jsx';
 import addCommonData from '@Controls/addCommonData';
 import { applyFilters } from '@wordpress/hooks';

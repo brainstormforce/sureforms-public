@@ -245,17 +245,17 @@ function GeneralSettings( props ) {
 						}
 						className="srfm-progress-control"
 						options={ [
-							{ label: 'None', value: 'none' },
+							{ label: __( 'None', 'sureforms' ), value: 'none' },
 							{
-								label: 'Progress Bar',
+								label: __( 'Progress Bar', 'sureforms' ),
 								value: 'progress-bar',
 							},
 							{
-								label: 'Connector',
+								label: __( 'Connector', 'sureforms' ),
 								value: 'connector',
 							},
 							{
-								label: 'Steps',
+								label: __( 'Steps', 'sureforms' ),
 								value: 'steps',
 							},
 						] }

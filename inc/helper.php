@@ -11,8 +11,8 @@ namespace SRFM\Inc;
 use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Traits\Get_Instance;
 use WP_Error;
-use WP_Post_Type;
 use WP_Post;
+use WP_Post_Type;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -25,6 +25,33 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class Helper {
 	use Get_Instance;
+
+	/**
+	 * Allowed HTML tags for SVG.
+	 *
+	 * @var array<string, array<string, bool>>
+	 */
+	public static $allowed_tags_svg = [
+		'span' => [
+			'class'       => true,
+			'aria-hidden' => true,
+		],
+		'svg'  => [
+			'xmlns'   => true,
+			'width'   => true,
+			'height'  => true,
+			'viewBox' => true,
+			'fill'    => true,
+		],
+		'path' => [
+			'd'               => true,
+			'stroke'          => true,
+			'stroke-opacity'  => true,
+			'stroke-width'    => true,
+			'stroke-linecap'  => true,
+			'stroke-linejoin' => true,
+		],
+	];
 
 	/**
 	 * Sureforms SVGs.
@@ -46,6 +73,22 @@ class Helper {
 		];
 	}
 
+	/**
+	 * Convert a file URL to a file path.
+	 *
+	 * @param string $file_url The URL of the file.
+	 *
+	 * @since 1.3.0
+	 * @return string The file path.
+	 */
+	public static function convert_fileurl_to_filepath( $file_url ) {
+		static $upload_dir = null;
+		if ( ! $upload_dir ) {
+			// Internally cache the upload directory.
+			$upload_dir = wp_get_upload_dir();
+		}
+		return wp_normalize_path( str_replace( $upload_dir['baseurl'], $upload_dir['basedir'], $file_url ) );
+	}
 
 	/**
 	 * Checks if current value is string or else returns default value
@@ -58,13 +101,14 @@ class Helper {
 	public static function get_string_value( $data ) {
 		if ( is_scalar( $data ) ) {
 			return (string) $data;
-		} elseif ( is_object( $data ) && method_exists( $data, '__toString' ) ) {
+		}
+		if ( is_object( $data ) && method_exists( $data, '__toString' ) ) {
 			return $data->__toString();
-		} elseif ( is_null( $data ) ) {
-			return '';
-		} else {
+		}
+		if ( is_null( $data ) ) {
 			return '';
 		}
+			return '';
 	}
 	/**
 	 * Checks if current value is number or else returns default value
@@ -78,12 +122,12 @@ class Helper {
 	public static function get_integer_value( $value, $base = 10 ) {
 		if ( is_numeric( $value ) ) {
 			return (int) $value;
-		} elseif ( is_string( $value ) ) {
+		}
+		if ( is_string( $value ) ) {
 			$trimmed_value = trim( $value );
 			return intval( $trimmed_value, $base );
-		} else {
-			return 0;
 		}
+			return 0;
 	}
 
 	/**
@@ -92,16 +136,16 @@ class Helper {
 	 * @param mixed $data Data which needs to be checked if it is an array.
 	 *
 	 * @since 0.0.3
-	 * @return array<mixed>
+	 * @return array
 	 */
 	public static function get_array_value( $data ) {
 		if ( is_array( $data ) ) {
 			return $data;
-		} elseif ( is_null( $data ) ) {
-			return [];
-		} else {
-			return (array) $data;
 		}
+		if ( is_null( $data ) ) {
+			return [];
+		}
+			return (array) $data;
 	}
 
 	/**
@@ -121,6 +165,25 @@ class Helper {
 	}
 
 	/**
+	 * Extracts the field label from the dynamic field key ( or field slug ).
+	 *
+	 * @param string $field_key Dynamic field key.
+	 * @since 1.1.1
+	 * @return string Extracted field label.
+	 */
+	public static function get_field_label_from_key( $field_key ) {
+		if ( false === strpos( $field_key, '-lbl-' ) ) {
+			return '';
+		}
+
+		$label = explode( '-lbl-', $field_key )[1];
+		// Getting the encrypted label. we are removing the block slug here.
+		$label = explode( '-', $label )[0];
+
+		return $label ? html_entity_decode( self::decrypt( $label ) ) : '';
+	}
+
+	/**
 	 * Returns the proper sanitize callback functions according to the field type.
 	 *
 	 * @param string $field_type HTML field type.
@@ -133,14 +196,13 @@ class Helper {
 			[
 				'url'      => 'esc_url_raw',
 				'input'    => 'sanitize_text_field',
-				'number'   => [ __CLASS__, 'sanitize_number' ],
+				'number'   => [ self::class, 'sanitize_number' ],
 				'email'    => 'sanitize_email',
 				'textarea' => 'wp_kses_post',
 			]
 		);
 
-		return isset( $callbacks[ $field_type ] ) ? $callbacks[ $field_type ] : 'sanitize_text_field';
-
+		return $callbacks[ $field_type ] ?? 'sanitize_text_field';
 	}
 
 	/**
@@ -152,7 +214,7 @@ class Helper {
 	 *
 	 * @param mixed $value The value to be sanitized.
 	 * @since 0.0.6
-	 * @return integer|float|string The sanitized value.
+	 * @return int|float|string The sanitized value.
 	 */
 	public static function sanitize_number( $value ) {
 		if ( ! is_numeric( $value ) ) {
@@ -187,7 +249,6 @@ class Helper {
 		}
 
 		return $result;
-
 	}
 
 	/**
@@ -239,19 +300,23 @@ class Helper {
 
 		switch ( $type ) {
 			case 'label':
-				$markup = $label ? '<label for="srfm-' . $slug . '-' . esc_attr( $block_id ) . '" class="srfm-block-label">' . htmlspecialchars_decode( esc_html( $label ) ) . ( $required ? '<span class="srfm-required"> *</span>' : '' ) . '</label>' : '';
+				$markup = $label ? '<label id="srfm-label-' . esc_attr( $block_id ) . '" for="srfm-' . $slug . '-' . esc_attr( $block_id ) . '" class="srfm-block-label">' . htmlspecialchars_decode( esc_html( $label ) ) . ( $required ? '<span class="srfm-required" aria-label="' . esc_attr__( 'Required', 'sureforms' ) . '"><span aria-hidden="true"> *</span></span>' : '' ) . '</label>' : '';
 				break;
 			case 'help':
-				$markup = $help ? '<div class="srfm-description" id="srfm-description-' . esc_attr( $block_id ) . '">' . esc_html( $help ) . '</div>' : '';
+				$markup = $help ? '<div class="srfm-description" id="srfm-description-' . esc_attr( $block_id ) . '">' . wp_kses_post( htmlspecialchars_decode( $help ) ) . '</div>' : '';
 				break;
 			case 'error':
-				$markup = $required || $override ? '<div class="srfm-error-message" id="srfm-error-' . esc_attr( $block_id ) . '" data-error-msg="' . esc_attr( $error_msg ) . '"' . $duplicate_msg . '>' . esc_html( $error_msg ) . '</div>' : '';
+				$markup = $required || $override ? '<div class="srfm-error-message" data-srfm-id="srfm-error-' . esc_attr( $block_id ) . '" data-error-msg="' . esc_attr( $error_msg ) . '"' . $duplicate_msg . '>' . esc_html( $error_msg ) . '</div>' : '';
 				break;
 			case 'is_unique':
 				$markup = $is_unique ? '<div class="srfm-error">' . esc_html( $duplicate_msg ) . '</div>' : '';
 				break;
 			case 'placeholder':
-				$markup = $label && '1' === $show_labels_as_placeholder ? $label . ( $required ? ' *' : '' ) : '';
+				$markup = $label && '1' === $show_labels_as_placeholder ? htmlspecialchars_decode( esc_html( $label ) ) . ( $required ? ' *' : '' ) : '';
+				break;
+			case 'label_text':
+				// This has been added for generating label text for the form markup instead of adding it in the label tag.
+				$markup = $label ? htmlspecialchars_decode( esc_html( $label ) ) . ( $required ? '<span class="srfm-required" aria-label=",' . esc_attr__( 'Required', 'sureforms' ) . ',"><span aria-hidden="true"> *</span></span>' : '' ) . '</label>' : '';
 				break;
 			default:
 				$markup = '';
@@ -259,7 +324,6 @@ class Helper {
 
 		return $markup;
 	}
-
 
 	/**
 	 * Get an SVG Icon
@@ -282,12 +346,11 @@ class Helper {
 			self::$srfm_svgs = apply_filters( 'srfm_svg_icons', self::$srfm_svgs );
 		}
 
-		$output .= isset( self::$srfm_svgs[ $icon ] ) ? self::$srfm_svgs[ $icon ] : '';
+		$output .= self::$srfm_svgs[ $icon ] ?? '';
 		$output .= '</span>';
 
 		return $output;
 	}
-
 
 	/**
 	 * Encrypt data using base64.
@@ -304,8 +367,7 @@ class Helper {
 
 		// Encrypt the input and return it.
 		$base_64 = base64_encode( $input ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
-		$encode  = rtrim( $base_64, '=' );
-		return $encode;
+		return rtrim( $base_64, '=' );
 	}
 
 	/**
@@ -323,8 +385,7 @@ class Helper {
 
 		// Decrypt the input and return it.
 		$base_64 = $input . str_repeat( '=', strlen( $input ) % 4 );
-		$decode  = base64_decode( $base_64 ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_decode
-		return $decode;
+		return base64_decode( $base_64 ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_decode
 	}
 
 	/**
@@ -360,8 +421,7 @@ class Helper {
 			return self::get_string_value( $srfm_live_mode_data[ $key ] );
 		}
 
-		$meta_value = get_post_meta( self::get_integer_value( $post_id ), $key, $single ) ? self::get_string_value( get_post_meta( self::get_integer_value( $post_id ), $key, $single ) ) : self::get_string_value( $default );
-		return $meta_value;
+		return get_post_meta( self::get_integer_value( $post_id ), $key, $single ) ? self::get_string_value( get_post_meta( self::get_integer_value( $post_id ), $key, $single ) ) : self::get_string_value( $default );
 	}
 
 	/**
@@ -370,7 +430,7 @@ class Helper {
 	 * @param int|string $post_id Post ID.
 	 * @param string     $key The meta key to retrieve.
 	 * @param mixed      $default Default value.
-	 * @param boolean    $single Optional. Whether to return a single value.
+	 * @param bool       $single Optional. Whether to return a single value.
 	 * @since 0.0.8
 	 * @return mixed Meta value.
 	 */
@@ -386,23 +446,22 @@ class Helper {
 	 * @return array<mixed> Live preview data.
 	 */
 	public static function get_instant_form_live_data() {
-		$srfm_live_mode_data = isset( $_GET['live_mode'] ) && current_user_can( 'edit_posts' ) ? self::sanitize_recursively( 'sanitize_text_field', wp_unslash( $_GET ) ) : []; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$srfm_live_mode_data = isset( $_GET['live_mode'] ) && current_user_can( 'edit_posts' ) ? self::sanitize_recursively( 'sanitize_text_field', wp_unslash( $_GET ) ) : []; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verification is not needed here.
 
 		return $srfm_live_mode_data ? array_map(
 			// Normalize falsy values.
-			function( $live_data ) {
+			static function( $live_data ) {
 				return 'false' === $live_data ? false : $live_data;
 			},
 			$srfm_live_mode_data
 		) : [];
 	}
 
-
 	/**
 	 * Default dynamic block value.
 	 *
 	 * @since 0.0.1
-	 * @return string[] Meta value.
+	 * @return array<string> Meta value.
 	 */
 	public static function default_dynamic_block_option() {
 
@@ -426,8 +485,9 @@ class Helper {
 			'srfm_rating_block_required_text'       => $common_err_msg['required'],
 		];
 
-		return apply_filters( 'srfm_default_dynamic_block_option', $default_values, $common_err_msg );
+		$default_values = array_merge( $default_values, Translatable::dynamic_validation_messages() );
 
+		return apply_filters( 'srfm_default_dynamic_block_option', $default_values, $common_err_msg );
 	}
 
 	/**
@@ -439,13 +499,12 @@ class Helper {
 	 */
 	public static function get_default_dynamic_block_option( $key ) {
 		$default_dynamic_values = self::default_dynamic_block_option();
-		$option                 = get_option( 'get_default_dynamic_block_option', $default_dynamic_values );
+		$option                 = get_option( 'srfm_default_dynamic_block_option', $default_dynamic_values );
 
 		if ( is_array( $option ) && array_key_exists( $key, $option ) ) {
 			return $option[ $key ];
-		} else {
-			return '';
 		}
+			return '';
 	}
 
 	/**
@@ -568,7 +627,7 @@ class Helper {
 			}
 			$label                = explode( '-lbl-', $key )[1];
 			$slug                 = implode( '-', array_slice( explode( '-', $label ), 1 ) );
-			$mapped_data[ $slug ] = $value;
+			$mapped_data[ $slug ] = is_string( $value ) ? html_entity_decode( esc_attr( $value ) ) : $value;
 		}
 		return $mapped_data;
 	}
@@ -635,12 +694,12 @@ class Helper {
 	 */
 	public static function get_css_vars( $field_spacing = null ) {
 		/**
-		* $sizes - Field Spacing Sizes Variables.
-		* The array contains the CSS variables for different field spacing sizes.
-		* Each key corresponds to the field spacing size, and the value is an array of CSS variables.
-		*
-		* For future variables depending on the field spacing size, add the variable to the array respectively.
-		*/
+		 * $sizes - Field Spacing Sizes Variables.
+		 * The array contains the CSS variables for different field spacing sizes.
+		 * Each key corresponds to the field spacing size, and the value is an array of CSS variables.
+		 *
+		 * For future variables depending on the field spacing size, add the variable to the array respectively.
+		 */
 		$sizes = apply_filters(
 			'srfm_css_vars_sizes',
 			[
@@ -820,13 +879,13 @@ class Helper {
 	/**
 	 * Process blocks and inner blocks.
 	 *
-	 * @param array<array<array<mixed>>> $blocks The block data.
-	 * @param array<string>              $slugs The array of existing slugs.
-	 * @param bool                       $updated The array of existing slugs.
-	 * @param string                     $prefix The array of existing slugs.
-	 * @param boolean                    $skip_checking_existing_slug Skips the checking of existing slug if passed true. More information documented inside this function.
+	 * @param array<mixed>  $blocks The block data.
+	 * @param array<string> $slugs The array of existing slugs.
+	 * @param bool          $updated The array of existing slugs.
+	 * @param string        $prefix The array of existing slugs.
+	 * @param bool          $skip_checking_existing_slug Skips the checking of existing slug if passed true. More information documented inside this function.
 	 * @since 0.0.10
-	 * @return array{array<array<array<mixed>>>,array<string>,bool}
+	 * @return array
 	 */
 	public static function process_blocks( $blocks, &$slugs, &$updated, $prefix = '', $skip_checking_existing_slug = false ) {
 
@@ -877,7 +936,7 @@ class Helper {
 				$updated                              = true;
 				if ( is_array( $block['innerBlocks'] ) && ! empty( $block['innerBlocks'] ) ) {
 
-					list( $blocks[ $index ]['innerBlocks'], $slugs, $updated ) = self::process_blocks( $block['innerBlocks'], $slugs, $updated, $blocks[ $index ]['attrs']['slug'] );
+					[ $blocks[ $index ]['innerBlocks'], $slugs, $updated ] = self::process_blocks( $block['innerBlocks'], $slugs, $updated, $blocks[ $index ]['attrs']['slug'] );
 
 				}
 			}
@@ -905,9 +964,7 @@ class Helper {
 			$slug = $prefix . '-' . $slug;
 		}
 
-		$slug = self::generate_slug( $slug, $slugs );
-
-		return $slug;
+		return self::generate_slug( $slug, $slugs );
 	}
 
 	/**
@@ -947,22 +1004,225 @@ class Helper {
 	}
 
 	/**
-	 * Merge class names from an array into a single string.
+	 * Returns true if SureTriggers plugin is ready for the custom app.
 	 *
-	 * @since x.x.x
-	 * @param string[] $classes Array of class name strings.
-	 * @return string Merged class names, or an empty string if no valid class names are provided.
+	 * @since 1.0.3
+	 * @return bool Returns true if SureTriggers plugin is ready for the custom app.
 	 */
-	public static function class_name( $classes = [] ) {
-		// Filter out empty or invalid class names.
-		$valid_classes = array_filter(
-			$classes,
-			function( $class_name ) {
-				return ! empty( trim( $class_name ) ); // Only keep non-empty, trimmed class names.
+	public static function is_suretriggers_ready() {
+		if ( ! defined( 'SURE_TRIGGERS_FILE' ) ) {
+			// Probably plugin is de-activated or not installed at all.
+			return false;
+		}
+
+		$suretriggers_data = get_option( 'suretrigger_options', [] );
+		if ( ! is_array( $suretriggers_data ) || empty( $suretriggers_data['secret_key'] ) || ! is_string( $suretriggers_data['secret_key'] ) ) {
+			// SureTriggers is not authenticated yet.
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Registers script translations for a specific handle.
+	 *
+	 * This function sets the script translations for a given script handle, allowing
+	 * localization of JavaScript strings using the specified text domain and path.
+	 *
+	 * @param string $handle The script handle to apply translations to.
+	 * @param string $domain Optional. The text domain for translations. Default is 'sureforms'.
+	 * @param string $path   Optional. The path to the translation files. Default is the 'languages' folder in the SureForms directory.
+	 *
+	 * @since 1.0.5
+	 * @return void
+	 */
+	public static function register_script_translations( $handle, $domain = 'sureforms', $path = SRFM_DIR . 'languages' ) {
+		wp_set_script_translations( $handle, $domain, $path );
+	}
+
+	/**
+	 * Validates whether the specified conditions or a single key-value pair exist in the request context.
+	 *
+	 * - If `$conditions` is provided as an array, it will validate all key-value pairs in `$conditions`
+	 *   against the `$_REQUEST` superglobal.
+	 * - If `$conditions` is empty, it validates a single key-value pair from `$key` and `$value`.
+	 *
+	 * @param string                $value      The expected value to match in the request if `$conditions` is not used.
+	 * @param string                $key        The key to check for in the request if `$conditions` is not used.
+	 * @param array<string, string> $conditions An optional associative array of key-value pairs to validate.
+	 * @since 1.1.1
+	 * @return bool Returns true if all conditions are met or the single key-value pair is valid, otherwise false.
+	 */
+	public static function validate_request_context( $value, $key = 'post_type', array $conditions = [] ) {
+		// If conditions are provided, validate all key-value pairs in the conditions array.
+		if ( ! empty( $conditions ) ) {
+			foreach ( $conditions as $condition_key => $condition_value ) {
+				if ( ! isset( $_REQUEST[ $condition_key ] ) || $_REQUEST[ $condition_key ] !== $condition_value ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- This is a controlled comparison of request values.
+					// Return false if any condition is not satisfied.
+					return false;
+				}
+			}
+			// Return true if all conditions are satisfied.
+			return true;
+		}
+
+		// Validate $value and $key when no conditions are provided.
+		if ( empty( $key ) || empty( $value ) ) {
+			return false;
+		}
+
+		// Validate a single key-value pair when no conditions are provided.
+		return isset( $_REQUEST[ $key ] ) && $_REQUEST[ $key ] === $value; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verification is not needed here. Input is validated via strict comparison.
+	}
+
+	/**
+	 * Retrieve the list of excluded fields for form data processing.
+	 *
+	 * This method returns an array of field keys that should be excluded when
+	 * processing form data.
+	 *
+	 * @since 1.1.1
+	 * @return array<string> Returns the string array of excluded fields.
+	 */
+	public static function get_excluded_fields() {
+		$excluded_fields = [ 'srfm-honeypot-field', 'g-recaptcha-response', 'srfm-sender-email-field', 'form-id' ];
+
+		return apply_filters( 'srfm_excluded_fields', $excluded_fields );
+	}
+
+	/**
+	 * Check whether the current page is a SureForms admin page.
+	 *
+	 * @since 1.2.2
+	 * @return bool Returns true if the current page is a SureForms admin page, otherwise false.
+	 */
+	public static function is_sureforms_admin_page() {
+		$current_screen                    = get_current_screen();
+		$is_screen_sureforms_menu          = self::validate_request_context( 'sureforms_menu', 'page' );
+		$is_screen_add_new_form            = self::validate_request_context( 'add-new-form', 'page' );
+		$is_screen_sureforms_form_settings = self::validate_request_context( 'sureforms_form_settings', 'page' );
+		$is_screen_sureforms_entries       = self::validate_request_context( SRFM_ENTRIES, 'page' );
+		$is_post_type_sureforms_form       = $current_screen && SRFM_FORMS_POST_TYPE === $current_screen->post_type;
+
+		return $is_screen_sureforms_menu || $is_screen_add_new_form || $is_screen_sureforms_form_settings || $is_screen_sureforms_entries || $is_post_type_sureforms_form;
+	}
+
+	/**
+	 * Filters and concatenates valid class names from an array.
+	 *
+	 * @param array<string> $class_names The array containing potential class names.
+	 * @since 1.4.0
+	 * @return string The concatenated string of valid class names separated by spaces.
+	 */
+	public static function join_strings( $class_names ) {
+		// Filter the array to include only valid class names.
+		$valid_class_names = array_filter(
+			$class_names,
+			static function ( $value ) {
+				return is_string( $value ) && '' !== $value && false !== $value;
 			}
 		);
 
-		// Return the merged class names as a single string.
-		return ! empty( $valid_classes ) ? implode( ' ', $valid_classes ) : '';
+		// Concatenate the valid class names with spaces and return.
+		return implode( ' ', $valid_class_names );
+	}
+	/**
+	 * Get SureForms Website URL.
+	 *
+	 * @param string                $trail The URL trail to append to SureForms website URL. The parameter should not include a leading slash as the base URL already ends with a trailing slash.
+	 * @param array<string, string> $utm_args Optional. An associative array of UTM parameters to append to the URL. Default empty array. Example: [ 'utm_medium' => 'dashboard'].
+	 * @since 0.0.7
+	 * @return string
+	 */
+	public static function get_sureforms_website_url( $trail, $utm_args = [] ) {
+		$url = SRFM_WEBSITE;
+		if ( ! empty( $trail ) && is_string( $trail ) ) {
+			$url = SRFM_WEBSITE . $trail;
+		}
+
+		if ( ! is_array( $utm_args ) ) {
+			$utm_args = [];
+		}
+
+		if ( class_exists( 'BSF_UTM_Analytics' ) ) {
+			$url = \BSF_UTM_Analytics::get_utm_ready_link( $url, 'sureforms', $utm_args );
+		}
+
+		return esc_url( $url );
+	}
+
+	/**
+	 * Validates if the given string is a valid CSS class name.
+	 *
+	 * A valid CSS class name:
+	 * - Does not start with a digit, hyphen, or underscore.
+	 * - Can contain alphanumeric characters, underscores, hyphens, and Unicode letters.
+	 *
+	 * @param string $class_name The class name to validate.
+	 *
+	 * @since 1.3.1
+	 * @return bool True if the class name is valid, otherwise false.
+	 */
+	public static function is_valid_css_class_name( $class_name ) {
+		// Regular expression to validate a Unicode-aware CSS class name.
+		$class_name_regex = '/^[^\d\-_][\w\p{L}\p{N}\-_]*$/u';
+
+		// Check if the className matches the pattern.
+		return preg_match( $class_name_regex, $class_name ) === 1;
+	}
+
+	/**
+	 * Get the gradient css for given gradient parameters.
+	 *
+	 * @param string $type The type of gradient. Default 'linear'.
+	 * @param string $color1 The first color of the gradient. Default '#FFC9B2'.
+	 * @param string $color2 The second color of the gradient. Default '#C7CBFF'.
+	 * @param int    $loc1 The location of the first color. Default 0.
+	 * @param int    $loc2 The location of the second color. Default 100.
+	 * @param int    $angle The angle of the gradient. Default 90.
+	 *
+	 * @since 1.4.4
+	 * @return string The gradient css.
+	 */
+	public static function get_gradient_css( $type = 'linear', $color1 = '#FFC9B2', $color2 = '#C7CBFF', $loc1 = 0, $loc2 = 100, $angle = 90 ) {
+		if ( 'linear' === $type ) {
+			return "linear-gradient({$angle}deg, {$color1} {$loc1}%, {$color2} {$loc2}%)";
+		}
+			return "radial-gradient({$color1} {$loc1}%, {$color2} {$loc2}%)";
+	}
+
+	/**
+	 * Return the classes based on background and overlay type to add to the form container.
+	 *
+	 * @param string $background_type The background type.
+	 * @param string $overlay_type The overlay type.
+	 * @param string $bg_image The background image url.
+	 *
+	 * @since 1.4.4
+	 * @return string The classes to add to the form container.
+	 */
+	public static function get_background_classes( $background_type, $overlay_type, $bg_image = '' ) {
+		if ( empty( $background_type ) ) {
+			$background_type = 'color';
+		}
+
+		$background_type_class = '';
+		$overlay_class         = 'image' === $background_type && ! empty( $bg_image ) && $overlay_type ? "srfm-overlay-{$overlay_type}" : '';
+
+		// Set the class based on the background type.
+		switch ( $background_type ) {
+			case 'image':
+				$background_type_class = 'srfm-bg-image';
+				break;
+			case 'gradient':
+				$background_type_class = 'srfm-bg-gradient';
+				break;
+			default:
+				$background_type_class = 'srfm-bg-color';
+				break;
+		}
+
+		return self::join_strings( [ $background_type_class, $overlay_class ] );
 	}
 }

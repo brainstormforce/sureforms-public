@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 const { select, dispatch } = wp.data;
 
 export const defaultKeys = {
@@ -7,14 +8,14 @@ export const defaultKeys = {
 	_srfm_instant_form: false,
 	_srfm_is_inline_button: false,
 	// Submit Button
-	_srfm_submit_button_text: 'Submit',
+	_srfm_submit_button_text: __( 'Submit', 'sureforms' ),
 	// Page Break
 	_srfm_is_page_break: false,
-	_srfm_first_page_label: 'Page break',
+	_srfm_first_page_label: __( 'Page break', 'sureforms' ),
 	_srfm_page_break_progress_indicator: 'connector',
 	_srfm_page_break_toggle_label: false,
-	_srfm_previous_button_text: 'Previous',
-	_srfm_next_button_text: 'Next',
+	_srfm_previous_button_text: __( 'Previous', 'sureforms' ),
+	_srfm_next_button_text: __( 'Next', 'sureforms' ),
 	// Style Tab
 	// Form Container
 	_srfm_form_container_width: 650,
@@ -41,8 +42,8 @@ export const defaultKeys = {
 	// Advanced Tab
 	// Success Message
 	_srfm_submit_type: 'message',
-	_srfm_thankyou_message_title: 'Thank you',
-	_srfm_thankyou_message: 'Form submitted successfully!',
+	_srfm_thankyou_message_title: __( 'Thank you', 'sureforms' ),
+	_srfm_thankyou_message: __( 'Form submitted successfully!', 'sureforms' ),
 	_srfm_submit_url: '',
 	_srfm_form_recaptcha: 'none',
 };
@@ -72,4 +73,12 @@ export const forcePanel = () => {
 			'srfm-form-specific-settings/srfm-sidebar'
 		);
 	}
+};
+
+export const validateClassName = ( className ) => {
+	// Regular expression to validate a Unicode-aware CSS class name
+	const classNameRegex = /^[^\d\-_][\w\p{L}\p{N}\-_]*$/u;
+
+	// Check if the className matches the pattern
+	return classNameRegex.test( className );
 };

@@ -8,12 +8,10 @@
 
 namespace SRFM\Inc;
 
-use WP_REST_Response;
-use WP_REST_Request;
+use SRFM\Inc\Traits\Get_Instance;
 use WP_Error;
 use WP_Post_Type;
-use SRFM\Inc\Traits\Get_Instance;
-use SRFM\Inc\Helper;
+use WP_REST_Response;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -57,11 +55,10 @@ class Create_New_Form {
 	/**
 	 * Checks whether a given request has permission to create new forms.
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
 	 * @return true|WP_Error True if the request has read access, WP_Error object otherwise.
 	 * @since 0.0.1
 	 */
-	public function get_items_permissions_check( $request ) {
+	public function get_items_permissions_check() {
 		if ( current_user_can( 'edit_posts' ) ) {
 			return true;
 		}
@@ -131,6 +128,24 @@ class Create_New_Form {
 			);
 		}
 
+		if ( ! is_user_logged_in() ) {
+			// Return error if user is not logged in.
+			wp_send_json_error(
+				[
+					'message' => esc_html__( 'You must be logged in to make this request.', 'sureforms' ),
+				]
+			);
+		}
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			// Return error if user does not have permissions to manage options.
+			wp_send_json_error(
+				[
+					'message' => esc_html__( 'You do not have permissions to manage options.', 'sureforms' ),
+				]
+			);
+		}
+
 		$form_info     = $data->get_body();
 		$form_info_obj = json_decode( $form_info );
 
@@ -156,33 +171,33 @@ class Create_New_Form {
 			}
 		}
 
-		$title          = isset( $form_info_obj->template_name ) ? $form_info_obj->template_name : '';
-		$content        = isset( $form_info_obj->form_data ) ? $form_info_obj->form_data : '';
-		$template_metas = isset( $form_info_obj->template_metas ) ? (array) $form_info_obj->template_metas : [];
+		$title   = $form_info_obj->template_name ?? '';
+		$content = $form_info_obj->form_data ?? '';
 
-		// if post content contains srfm/page-break block, then set _srfm_is_page_break meta to true.
-		if ( strpos( $content, 'srfm/page-break' ) !== false ) {
-			$template_metas['_srfm_is_page_break'] = [ 'true' ];
-		}
+		// Create post metas for the creating form.
+		$post_metas = apply_filters(
+			'srfm_modify_ai_post_metas',
+			[],
+			$form_info_obj,
+		);
 
 		$post_id = wp_insert_post(
 			[
 				'post_title'   => $title,
 				'post_content' => $content,
+				'meta_input'   => $post_metas,
 				'post_status'  => 'draft',
 				'post_type'    => 'sureforms_form',
 			]
 		);
 
 		if ( ! empty( $post_id ) ) {
-			if ( ! empty( $template_metas ) ) {
-				$default_post_metas = self::get_default_meta_keys();
-				$post_metas         = array_merge( $default_post_metas, $template_metas );
 
-				foreach ( $post_metas as $meta_key => $meta_value ) {
-					add_post_meta( $post_id, $meta_key, $meta_value[0] );
-				}
-			}
+			/**
+			 * Update _srfm_is_ai_generated meta to true.
+			 * If the request is coming here then the form is AI generated.
+			 */
+			update_post_meta( $post_id, '_srfm_is_ai_generated', true );
 
 			return new WP_REST_Response(
 				[
@@ -190,14 +205,12 @@ class Create_New_Form {
 					'id'      => $post_id,
 				]
 			);
-		} else {
+		}
 			wp_send_json_error(
 				[
 					'message' => __( 'Error creating SureForms Form, ', 'sureforms' ),
 				]
 			);
-		}
 	}
-
 
 }

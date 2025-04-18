@@ -1,5 +1,5 @@
 import { __ } from '@wordpress/i18n';
-import { TextControl, TabPanel, ExternalLink } from '@wordpress/components';
+import { TextControl, TabPanel, ExternalLink, ToggleControl } from '@wordpress/components';
 
 import ContentSection from '../components/ContentSection';
 
@@ -21,6 +21,8 @@ const SecurityPage = ( {
 	];
 
 	const captchaContent = () => {
+		const is_ver_lower_than_6_7 = srfm_admin?.is_ver_lower_than_6_7;
+
 		return (
 			<>
 				<TabPanel
@@ -42,6 +44,11 @@ const SecurityPage = ( {
 							name: 'srfm-captcha-tab-3',
 							title: __( 'hCaptcha', 'sureforms' ),
 							className: 'srfm-captcha-tab-3',
+						},
+						{
+							name: 'srfm-honeypot-tab-4',
+							title: __( 'Honeypot', 'sureforms' ),
+							className: 'srfm-honeypot-tab-4',
 						},
 					] }
 				>
@@ -99,7 +106,8 @@ const SecurityPage = ( {
 											<div
 												className="components-base-control srfm-components-input-control css-qy3gpb ej5x27r4"
 												style={ {
-													marginBottom: '0',
+													marginBottom: is_ver_lower_than_6_7 ? '0' : '.43em',
+													fontWeight: is_ver_lower_than_6_7 ? 'normal' : '500',
 												} }
 											>
 												<div className="components-base-control__field">
@@ -367,8 +375,14 @@ const SecurityPage = ( {
 											</div>
 										</div>
 										<div className="srfm-sub-section-content">
-											<div className="components-base-control srfm-components-input-control css-qy3gpb ej5x27r4">
-												<div className="components-base-control__field css-1t5ousf ej5x27r3">
+											<div className="components-base-control srfm-components-input-control css-qy3gpb ej5x27r4" style={ {
+												marginBottom: is_ver_lower_than_6_7 ? '0' : '.43em',
+												fontWeight: is_ver_lower_than_6_7 ? 'normal' : '500',
+											} }>
+												<div className="components-base-control__field ej5x27r3"style={ {
+													marginBottom: is_ver_lower_than_6_7 ? '0' : '.43em',
+													fontWeight: is_ver_lower_than_6_7 ? 'normal' : '500',
+												} }>
 													<label
 														className="components-base-control__label css-1v57ksj ej5x27r2"
 														htmlFor="inspector-text-control-2"
@@ -378,61 +392,62 @@ const SecurityPage = ( {
 															'sureforms'
 														) }
 													</label>
-													<div className="srfm-style-2-tabs">
-														<div
-															role="tablist"
-															aria-orientation="horizontal"
-															className="components-tab-panel__tabs"
-														>
-															{ buttonData.map(
-																(
-																	button,
-																	index
-																) => (
-																	<button
-																		key={
-																			index
-																		}
-																		type="button"
-																		aria-selected={
-																			button.mode ===
+
+												</div>
+												<div className="srfm-style-2-tabs">
+													<div
+														role="tablist"
+														aria-orientation="horizontal"
+														className="components-tab-panel__tabs"
+													>
+														{ buttonData.map(
+															(
+																button,
+																index
+															) => (
+																<button
+																	key={
+																		index
+																	}
+																	type="button"
+																	aria-selected={
+																		button.mode ===
 																			securitytabOptions.srfm_cf_appearance_mode
-																		}
-																		id={ `tab-panel-2-${ button.mode }` }
-																		role="tab"
-																		aria-controls={ `tab-panel-2-${ button.mode }-view` }
-																		className={ `components-button components-tab-panel__tabs-item srfm-captcha-tab-${
-																			index +
+																	}
+																	id={ `tab-panel-2-${ button.mode }` }
+																	role="tab"
+																	aria-controls={ `tab-panel-2-${ button.mode }-view` }
+																	className={ `components-button components-tab-panel__tabs-item srfm-captcha-tab-${
+																		index +
 																			1
-																		} ${
-																			button.mode ===
+																	} ${
+																		button.mode ===
 																			securitytabOptions.srfm_cf_appearance_mode
-																				? 'active-tab'
-																				: ''
-																		}` }
-																		onClick={ () => {
-																			updateGlobalSettings(
-																				'srfm_cf_appearance_mode',
-																				button.mode,
-																				'security-settings'
-																			);
-																		} }
-																	>
-																		{
-																			button.label
-																		}
-																	</button>
-																)
-															) }
-														</div>
-														<div
-															id={ `tab-panel-2-${ securitytabOptions.srfm_cf_appearance_mode }-view` }
-															role="tabpanel"
-															aria-labelledby={ `tab-panel-2-${ securitytabOptions.srfm_cf_appearance_mode }` }
-															className="components-tab-panel__tab-content"
-															tabIndex="0"
-														></div>
+																			? 'active-tab'
+																			: ''
+																	}` }
+																	onClick={ () => {
+																		updateGlobalSettings(
+																			'srfm_cf_appearance_mode',
+																			button.mode,
+																			'security-settings'
+																		);
+																	} }
+																>
+																	{
+																		button.label
+																	}
+																</button>
+															)
+														) }
 													</div>
+													<div
+														id={ `tab-panel-2-${ securitytabOptions.srfm_cf_appearance_mode }-view` }
+														role="tabpanel"
+														aria-labelledby={ `tab-panel-2-${ securitytabOptions.srfm_cf_appearance_mode }` }
+														className="components-tab-panel__tab-content"
+														tabIndex="0"
+													></div>
 												</div>
 											</div>
 
@@ -575,6 +590,36 @@ const SecurityPage = ( {
 													'Enter your secret key here',
 													'sureforms'
 												) }
+											/>
+										</div>
+									</>
+								);
+							case 'srfm-honeypot-tab-4':
+								return (
+									<>
+										<div className="srfm-sub-section-heading">
+											<h2>
+												{ __(
+													'Honeypot',
+													'sureforms'
+												) }
+											</h2>
+										</div>
+										<div className="srfm-sub-section-content">
+											<ToggleControl
+												label={ __( 'Enable Honeypot Security', 'sureforms' ) }
+												help={ __(
+													'Enable Honeypot Security for better spam protection',
+													'sureforms'
+												) }
+												checked={ securitytabOptions.srfm_honeypot }
+												onChange={ ( value ) =>
+													updateGlobalSettings(
+														'srfm_honeypot',
+														value,
+														'security-settings'
+													)
+												}
 											/>
 										</div>
 									</>

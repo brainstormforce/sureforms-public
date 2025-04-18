@@ -14,6 +14,7 @@
 
 		.conditional-logic {
 			display: none;
+			// This is for the compatibility of sureforms-pro version 1.0.3 and below and will be removed in future versions.
 			&.move-up-to-down {
 				animation: moveUpToDown 500ms linear forwards;
 				z-index: 1;
@@ -22,6 +23,7 @@
 			&.move-down-to-up {
 				animation: moveDownToUp 500ms linear forwards;
 			}
+			// Compatibility code ends here.
 
 			&.show-element {
 				display: block;
@@ -32,7 +34,7 @@
 			}
 		}
 
-		.srfm-block {
+		.srfm-block:not( .srfm-number-block ) {
 			&.srfm-error,
 			&.srfm-valid-email-error {
 				.srfm-block-wrap {
@@ -85,16 +87,9 @@
 				}
 			}
 
-			.srfm-error-icon {
-				display: none;
-			}
-
 			.srfm-error-wrap {
 				.srfm-error-message {
-					line-height: var( --srfm-error-line-height );
-					color: var( --srfm-error-color );
-					font-size: var( --srfm-error-font-size );
-					font-weight: var( --srfm-error-font-weight );
+					@include srfm-error-styles;
 				}
 			}
 		}
@@ -103,13 +98,19 @@
 			width: 100%;
 			margin-bottom: 1.2em;
 
+			// Retaining this .hide class for backward compatibility with older versions of the pro plugin.
 			&.hide {
+				display: none;
+			}
+			&.srfm-hide {
 				display: none;
 			}
 		}
 	}
 }
-
+/**
+ * Below code (moveUpToDown/moveDownToUp) is just for the compatibility of sureforms-pro version 1.0.3 and below and will be removed in future versions.
+ */
 @keyframes moveUpToDown {
 	0% {
 		opacity: 0;
@@ -133,3 +134,4 @@
 		max-height: 0;
 	}
 }
+// Compatibility code ends here.

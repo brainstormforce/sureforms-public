@@ -25,6 +25,8 @@
 .babelrc
 .scripts
 .nvmrc
+.phpunit.result.cache
+.dccache
 playwright.config.js
 postcss.config.js
 tailwind.config.js
@@ -59,9 +61,13 @@ codesniffer.ruleset.xml
 jsconfig.json
 admin/assets/src
 artifact
+artifacts
 tests
 scripts
 sass
 src
 unminified
+coverage-report
+phpinsights.php
+playwright-report
 

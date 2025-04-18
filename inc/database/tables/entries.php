@@ -176,17 +176,19 @@ class Entries extends Base {
 	/**
 	 * Add a new log entry.
 	 *
-	 * @param string   $title The title of the log entry.
-	 * @param string[] $messages Optional. An array of messages to include in the log entry. Default is an empty array.
+	 * @param string        $title The title of the log entry.
+	 * @param array<string> $messages Optional. An array of messages to include in the log entry. Default is an empty array.
 	 * @since 0.0.10
 	 * @return int|null The key of the newly added log entry, or null if the log could not be added.
 	 */
 	public function add_log( $title, $messages = [] ) {
-		$this->logs[] = [
+		$log = [
 			'title'     => Helper::get_string_value( trim( $title ) ),
 			'messages'  => Helper::get_array_value( $messages ),
 			'timestamp' => time(),
 		];
+
+		$this->logs = array_merge( [ $log ], $this->logs );
 
 		return $this->get_last_log_key();
 	}
@@ -194,9 +196,9 @@ class Entries extends Base {
 	/**
 	 * Update an existing log entry.
 	 *
-	 * @param int         $log_key The key of the log entry to update.
-	 * @param string|null $title Optional. The new title for the log entry. If null, the title will not be changed.
-	 * @param string[]    $messages Optional. An array of new messages to add to the log entry.
+	 * @param int|null      $log_key The key of the log entry to update.
+	 * @param string|null   $title Optional. The new title for the log entry. If null, the title will not be changed.
+	 * @param array<string> $messages Optional. An array of new messages to add to the log entry.
 	 * @since 0.0.10
 	 * @return int|null The key of the updated log entry, or null if the log entry does not exist.
 	 */
@@ -212,6 +214,16 @@ class Entries extends Base {
 
 		$this->logs = $logs;
 		return $log_key;
+	}
+
+	/**
+	 * Resets logs to zero.
+	 *
+	 * @since 1.3.0
+	 * @return void
+	 */
+	public function reset_logs() {
+		$this->logs = [];
 	}
 
 	/**
@@ -264,6 +276,12 @@ class Entries extends Base {
 		if ( empty( $entry_id ) ) {
 			return false;
 		}
+
+		if ( isset( $data['logs'] ) ) {
+			// Add logs from the current cache at the very last moment so that we don't tax the performance.
+			$data['logs'] = array_merge( Helper::get_array_value( $data['logs'] ), Helper::get_array_value( self::get( $entry_id )['logs'] ) );
+		}
+
 		return self::get_instance()->use_update( $data, [ 'ID' => absint( $entry_id ) ] );
 	}
 
@@ -320,6 +338,7 @@ class Entries extends Base {
 			$args,
 			[
 				'where'   => [],
+				'columns' => '*',
 				'limit'   => 10,
 				'offset'  => 0,
 				'orderby' => 'created_at',
@@ -335,7 +354,7 @@ class Entries extends Base {
 		}
 		return self::get_instance()->get_results(
 			$_args['where'],
-			'*',
+			$_args['columns'],
 			$extra_queries
 		);
 	}
@@ -430,6 +449,35 @@ class Entries extends Base {
 	}
 
 	/**
+	 * Get form IDs associated with a list of entry IDs.
+	 * This method retrieves the distinct form IDs that are linked to the provided entry IDs.
+	 *
+	 * @param array<int> $entry_ids An array of entry IDs to fetch associated form IDs for.
+	 * @since 1.1.1
+	 * @return array<int> An array of form IDs.
+	 */
+	public static function get_form_ids_by_entries( $entry_ids ) {
+		if ( empty( $entry_ids ) && ! is_array( $entry_ids ) ) {
+			return [];
+		}
+
+		$results = self::get_instance()->get_results(
+			[
+				[
+					[
+						'key'     => 'ID',
+						'compare' => 'IN',
+						'value'   => $entry_ids,
+					],
+				],
+			],
+			'DISTINCT form_id'
+		);
+
+		return array_map( 'absint', array_column( $results, 'form_id' ) );  // Flatten the array.
+	}
+
+	/**
 	 * Get the form data for a specific entry.
 	 *
 	 * @param int $entry_id The ID of the entry to get the form data for.
@@ -442,45 +490,5 @@ class Entries extends Base {
 			'form_data'
 		);
 		return isset( $result[0] ) && is_array( $result[0] ) ? Helper::get_array_value( $result[0]['form_data'] ) : [];
-	}
-
-	/**
-	 * Get the data for generating entries chart.
-	 *
-	 * @param \WP_REST_Request $request Full details about the request.
-	 * @since 1.0.0
-	 * @return array<mixed>
-	 */
-	public function get_entries_chart_data( $request ) {
-		$nonce = Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) );
-
-		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
-			wp_send_json_error( 'Nonce verification failed.' );
-		}
-
-		$params = $request->get_params();
-
-		if ( empty( $params ) ) {
-			wp_send_json_error( 'Invalid Request.' );
-		}
-
-		$after = is_array( $params ) && ! empty( $params['after'] ) ? sanitize_text_field( Helper::get_string_value( $params['after'] ) ) : '';
-
-		$where = [
-			[
-				[
-					'key'     => 'created_at',
-					'value'   => $after,
-					'compare' => '>=',
-				],
-
-			],
-		];
-
-		return self::get_instance()->get_results(
-			$where,
-			'ID, created_at',
-			[ 'ORDER BY created_at DESC' ]
-		);
 	}
 }

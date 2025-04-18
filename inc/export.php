@@ -10,7 +10,6 @@ namespace SRFM\Inc;
 
 use SRFM\Inc\Traits\Get_Instance;
 use WP_REST_Server;
-use SRFM\Inc\Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -38,6 +37,8 @@ class Export {
 		'_srfm_integrations_webhooks',
 		'_srfm_instant_form_settings',
 		'_srfm_page_break_settings',
+		'_srfm_conversational_form',
+		'_srfm_premium_common',
 	];
 
 	/**
@@ -47,7 +48,6 @@ class Export {
 	 */
 	public function __construct() {
 		add_action( 'wp_ajax_export_form', [ $this, 'handle_export_form' ] );
-		add_action( 'wp_ajax_nopriv_export_form', [ $this, 'handle_export_form' ] );
 		add_action( 'rest_api_init', [ $this, 'register_custom_endpoint' ] );
 	}
 
@@ -58,13 +58,22 @@ class Export {
 	 * @return void
 	 */
 	public function handle_export_form() {
-		if ( isset( $_POST['nonce'] ) && ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'export_form_nonce' ) ) {
-			$error_message = 'Nonce verification failed.';
+		if ( empty( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'export_form_nonce' ) ) {
+			$error_message = __( 'Nonce verification failed.', 'sureforms' );
 
 			$error_data = [
 				'error' => $error_message,
 			];
 			wp_send_json_error( $error_data );
+		}
+
+		// check if the user has permission to export forms.
+		if ( ! Helper::current_user_can( 'manage_options' ) ) {
+			wp_send_json_error(
+				[
+					'error' => __( 'You do not have permission to export forms.', 'sureforms' ),
+				]
+			);
 		}
 
 		if ( isset( $_POST['post_id'] ) ) {
@@ -100,7 +109,6 @@ class Export {
 		wp_send_json( $posts );
 	}
 
-
 	/**
 	 * Handle Import Form
 	 *
@@ -122,13 +130,22 @@ class Export {
 			);
 		}
 
+		if ( ! current_user_can( 'manage_options' ) ) {
+			// Return error if user does not have permissions to manage options.
+			wp_send_json_error(
+				[
+					'data'   => esc_html__( 'You do not have permissions to manage options.', 'sureforms' ),
+					'status' => false,
+				]
+			);
+		}
+
 		// Get the raw POST data.
 		$post_data = file_get_contents( 'php://input' );
 		if ( ! $post_data ) {
 			wp_send_json_error( __( 'Failed to import form.', 'sureforms' ) );
 		}
-		$data      = json_decode( $post_data, true );
-		$responses = [];
+		$data = json_decode( $post_data, true );
 		if ( ! is_iterable( $data ) ) {
 			wp_send_json_error( __( 'Failed to import form.', 'sureforms' ) );
 		}
@@ -187,7 +204,7 @@ class Export {
 		}
 
 		// Return the responses.
-		wp_send_json_success( $responses );
+		wp_send_json_success();
 	}
 
 	/**
@@ -197,14 +214,15 @@ class Export {
 	 * @since 0.0.1
 	 */
 	public function register_custom_endpoint() {
-		$helper = Helper::get_instance();
 		register_rest_route(
 			'sureforms/v1',
 			'/sureforms_import',
 			[
 				'methods'             => WP_REST_Server::EDITABLE,
 				'callback'            => [ $this, 'handle_import_form' ],
-				'permission_callback' => [ $helper, 'current_user_can' ],
+				'permission_callback' => static function () {
+					return Helper::current_user_can( 'manage_options' );
+				},
 			]
 		);
 	}

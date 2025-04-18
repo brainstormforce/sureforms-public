@@ -21,7 +21,6 @@ defined( 'ABSPATH' ) || exit;
  * @since 0.0.13
  */
 class Register {
-
 	/**
 	 * Init database registration.
 	 *

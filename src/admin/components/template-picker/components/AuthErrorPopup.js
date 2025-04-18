@@ -25,7 +25,7 @@ export const AuthErrorPopup = ( { initiateAuth } ) => {
 							color: '#D54407',
 							textDecoration: 'underline',
 						} } rel="noreferrer"
-					>Contact Support</a>
+					>{ __( 'Contact Support', 'sureforms' ) }</a>
 				</span>
 				<div className="srfm-auth-err-confirmation-btn-container">
 					<Button

@@ -114,6 +114,15 @@ if ( ! class_exists( 'Spec_Gb_Helper' ) ) {
 		public static $icon_array_merged = [];
 
 		/**
+		 * Seen Refs Array
+		 * This array will store the block IDs which have already been processed.
+		 *
+		 * @since 1.4.2
+		 * @var array
+		 */
+		private static $seen_refs = [];
+
+		/**
 		 *  Initiator
 		 *
 		 * @since 0.0.1
@@ -133,11 +142,27 @@ if ( ! class_exists( 'Spec_Gb_Helper' ) ) {
 			require SRFM_DIR . 'modules/gutenberg/classes/class-spec-block-helper.php';
 			require SRFM_DIR . 'modules/gutenberg/classes/class-spec-block-js.php';
 
-			self::$block_list = Spec_Block_Config::get_block_attributes();
+			/**
+			 * Introduce this action to execute Spec_Block_Config::get_block_attributes().
+			 * This is necessary because translation functions are called within it.
+			 * WordPress 6.7 introduced warnings when hook execution order is incorrect,
+			 * which can lead to notices. This action ensures proper hook sequence.
+			 */
+			add_action( 'init', [ $this, 'init_block_attributes' ] );
 
 			add_action( 'wp', [ $this, 'wp_actions' ], 10 );
 
 			add_filter( 'render_block', [ $this, 'generate_render_styles' ], 10, 2 );
+		}
+
+		/**
+		 * Initialize block attributes.
+		 *
+		 * @since 1.0.6
+		 * @return void
+		 */
+		public static function init_block_attributes() {
+			self::$block_list = Spec_Block_Config::get_block_attributes();
 		}
 
 		/**
@@ -468,8 +493,11 @@ if ( ! class_exists( 'Spec_Gb_Helper' ) ) {
 					if ( 'core/block' === $block['blockName'] ) {
 						$id = ( isset( $block['attrs']['ref'] ) ) ? $block['attrs']['ref'] : 0;
 
-						if ( $id ) {
-							$content = get_post_field( 'post_content', $id );
+						$is_block_seen = in_array( $id, self::$seen_refs, true );
+
+						if ( $id && ! $is_block_seen ) {
+							self::$seen_refs[] = $id;
+							$content           = get_post_field( 'post_content', $id );
 
 							$reusable_blocks = $this->parse( $content );
 

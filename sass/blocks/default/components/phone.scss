@@ -1,38 +1,71 @@
 .srfm-form-container {
 	.srfm-form {
 		.srfm-phone-block {
+			&.srfm-error {
+				.srfm-error-message {
+					/**
+					 * When the unique validation is triggered and resolved,
+					 * triggering the invalid validation and then the required validation
+					 * will not display the error message due to inline display: none.
+					 *
+					 * Added the !important attribute to override the inline style.
+					 */
+					display: block !important;
+				}
+			}
 			.iti {
 				width: 100%;
 
-				.iti__flag-container {
+				.iti__selected-country {
+					all: unset; // Unset everything so that it don't create issue if button styles are being overridden from theme.
+					background: none !important;
+					padding-top: 10px;
+					padding-bottom: 10px;
+					gap: 4px; // Fixed gap between the flag and the country code.
+					z-index: 1;
+					position: relative;
+					display: flex;
+					align-items: center;
+					height: 100%;
+					border: 0;
+					margin: 0;
+					padding: 0;
+					font-family: inherit;
+					font-size: inherit;
+					color: inherit;
+					border-radius: 0;
+					font-weight: inherit;
+					line-height: inherit;
+					text-decoration: none;
+
+					&:focus {
+						background: none !important;
+						outline: none;
+						border: var( --srfm-color-scheme-primary ) solid 1px;
+						// The border radius is reduced by 1px to eliminate any gaps remaining from the input element border.
+						border-top-left-radius: calc( var( --srfm-input-field-border-radius ) - 1px );
+						border-bottom-left-radius: calc( var( --srfm-input-field-border-radius ) - 1px );
+					}
+				}
+
+				.iti__country-container {
 					// Setting the line height to normal aligns the country code with the phone number regardless of the browser.
 					line-height: normal;
 					margin: var( --srfm-input-field-margin );
-					.iti__country-list {
-						top: 100%;
-						bottom: auto; // Prevent the dropdown menu from shrinking.
-						width: 310px;
-						transition: 0.2s ease-out;
+					.iti__dropdown-content {
+						width: 310px !important;
+						.iti__country-list {
+							top: 100%;
+							bottom: auto; // Prevent the dropdown menu from shrinking.
+							width: 100%;
+							transition: 0.2s ease-out;
 
-						&.iti__hide {
-							display: block;
-							transform: translateY( 1em );
-							opacity: 0;
-							visibility: hidden;
-						}
-					}
-					.iti__selected-flag {
-						background-color: inherit !important;
-						padding-top: 10px;
-						padding-bottom: 10px;
-						gap: 4px; // Fixed gap between the flag and the country code.
-
-						&:focus-visible {
-							outline: none;
-							border: var( --srfm-color-scheme-primary ) solid 1px;
-							// The border radius is reduced by 1px to eliminate any gaps remaining from the input element border.
-							border-top-left-radius: calc( var( --srfm-input-field-border-radius ) - 1px );
-							border-bottom-left-radius: calc( var( --srfm-input-field-border-radius ) - 1px );
+							&.iti__hide {
+								display: block;
+								transform: translateY( 1em );
+								opacity: 0;
+								visibility: hidden;
+							}
 						}
 					}
 					.iti__selected-dial-code {
@@ -55,11 +88,30 @@
 }
 
 .iti {
+	.iti__dropdown-content {
+		margin-top: var( --srfm-dropdown-gap-between-input-menu ) !important;
+		background-color: var( --srfm-expandable-menu-background );
+		border-radius: var( --srfm-input-field-border-radius );
+		border: 1px solid var( --srfm-dropdown-menu-border-color ) !important;
+		.iti__search-input {
+			color: var( --srfm-color-input-text );
+			background-color: var( --srfm-expandable-menu-background );
+			border: none; // Remove the dotted border from the search input.
+			border-bottom: 0.5px solid var( --srfm-dropdown-menu-border-color ); // Add bottom border for the search input.
+			padding: var( --srfm-input-field-padding );
+			outline: none;
+			font-size: var( --srfm-dropdown-font-size ) !important;
+			border-radius: var( --srfm-input-field-border-radius ) var( --srfm-input-field-border-radius ) 0 0; // Keep the bottom border as 0.
+		}
+	}
 	.iti__country-list {
 		display: block;
 		opacity: 1;
 		line-height: var( --srfm-input-field-line-height );
 		@include srfm-dropdown-styles;
+		margin-top: 0;
+		border: none;
+		clip-path: inset( 0 round 10px ); // Removes the bottom-right scrollbar corner to align with the border radius.
 
 		.iti__country {
 			padding: var( --srfm-dropdown-option-padding );
@@ -85,7 +137,6 @@
 			&.iti__highlight {
 				background-color: var( --srfm-dropdown-option-background-hover );
 			}
-
 			&.iti__active {
 				background-color: var( --srfm-dropdown-option-background-selected );
 				&::after {

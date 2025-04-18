@@ -124,10 +124,18 @@ export const BulkInserterPopup = ( props ) => {
 						className="srfm-bulk-edit-textarea"
 					></textarea>
 					<div className="srfm-body-footer">
-						<Button isSecondary onClick={ closeModal } className="srfm-cancel-button">
+						<Button
+							isSecondary
+							onClick={ closeModal }
+							className="srfm-cancel-button"
+						>
 							{ __( 'Cancel', 'sureforms' ) }
 						</Button>
-						<Button isPrimary onClick={ handleBulkInsert } className="srfm-insert-button">
+						<Button
+							isPrimary
+							onClick={ handleBulkInsert }
+							className="srfm-insert-button"
+						>
 							{ __( 'Insert Options', 'sureforms' ) }
 						</Button>
 					</div>

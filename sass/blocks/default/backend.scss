@@ -16,8 +16,13 @@
 		}
 	}
 
-	.srfm-input-common {
+	.srfm-input-common:not( .srfm-input-number ) {
 		@include srfm-input-common-styles( true );
+	}
+
+	// Keeping input styles for number block not !important to avoid overriding stylings related to prefix and suffix.
+	.srfm-input-number {
+		@include srfm-input-common-styles();
 	}
 
 	// checkbox and gdpr
@@ -53,8 +58,10 @@
 		}
 	}
 
-	.srfm-input-textarea {
-		height: unset !important;
+	.srfm-block-wrap {
+		.srfm-input-textarea {
+			height: unset !important;
+		}
 	}
 
 	.srfm-textarea-quill {
@@ -98,6 +105,9 @@
 			&::-webkit-outer-spin-button {
 				appearance: none;
 			}
+		}
+		.srfm-block-wrap {
+			@include srfm-number-styles;
 		}
 	}
 

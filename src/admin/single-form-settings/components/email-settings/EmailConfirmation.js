@@ -26,6 +26,9 @@ const EmailConfirmation = ( props ) => {
 		email_cc: data.email_cc || '',
 		email_body: data.email_body || '',
 	} );
+
+	const [ prevData, setPrevData ] = useState( {} ); // Previous saved data before making any changes.
+
 	const [ dynamicSubject, setDynamicSubject ] = useState(
 		data.subject || ''
 	);
@@ -66,10 +69,23 @@ const EmailConfirmation = ( props ) => {
 		removeErrorClassIfNeeded( '.srfm-modal-subject', dynamicSubject );
 	}, [ formData.email_to, dynamicSubject ] );
 
+	// Set previous data one time on component load.
+	useEffect( () => {
+		setPrevData( formData );
+	}, [] );
+
 	const onClickBack = () => {
 		if ( handleConfirmEmail( formData ) ) {
 			handleBackNotification();
 		}
+	};
+
+	// On cancel button clicked.
+	const onCancel = () => {
+		if ( formData.id ) {
+			handleConfirmEmail( prevData );
+		}
+		handleBackNotification();
 	};
 
 	const debounced = useDebouncedCallback( ( value ) => {
@@ -103,7 +119,7 @@ const EmailConfirmation = ( props ) => {
 						<h4>{ __( 'Email Notification', 'sureforms' ) }</h4>
 					</div>
 					<button
-						onClick={ handleBackNotification }
+						onClick={ onCancel }
 						className="srfm-modal-inner-heading-button"
 					>
 						{ __( 'Cancel', 'sureforms' ) }
@@ -154,6 +170,7 @@ const EmailConfirmation = ( props ) => {
 							/>
 							<p className="components-base-control__help">{ emailHelpText }</p>
 							<SmartTagList
+								tagFor="emailConfirmation.sendEmailTo"
 								tagsArray={ [
 									{
 										tags: formEmailSmartTags,
@@ -196,6 +213,7 @@ const EmailConfirmation = ( props ) => {
 							/>
 
 							<SmartTagList
+								tagFor="emailConfirmation.Subject"
 								tagsArray={ [
 									{
 										tags: formSmartTags,
@@ -278,6 +296,7 @@ const EmailConfirmation = ( props ) => {
 									/>
 									<p className="components-base-control__help">{ emailHelpText }</p>
 									<SmartTagList
+										tagFor="emailConfirmation.CC"
 										tagsArray={ [
 											{
 												tags: formEmailSmartTags,
@@ -327,6 +346,7 @@ const EmailConfirmation = ( props ) => {
 									/>
 									<p className="components-base-control__help">{ emailHelpText }</p>
 									<SmartTagList
+										tagFor="emailConfirmation.BCC"
 										tagsArray={ [
 											{
 												tags: formEmailSmartTags,
@@ -372,6 +392,7 @@ const EmailConfirmation = ( props ) => {
 								/>
 								<p className="components-base-control__help">{ emailHelpText }</p>
 								<SmartTagList
+									tagFor="emailConfirmation.replyTo"
 									tagsArray={ [
 										{
 											tags: formEmailSmartTags,

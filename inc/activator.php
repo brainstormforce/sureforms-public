@@ -8,9 +8,8 @@
 
 namespace SRFM\Inc;
 
-use SRFM\Inc\Database\Tables\Entries;
-use SRFM\Inc\Traits\Get_Instance;
 use SRFM\Inc\Global_Settings\Email_Summary;
+use SRFM\Inc\Traits\Get_Instance;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -46,6 +45,5 @@ class Activator {
 		delete_option( 'rewrite_rules' );
 
 		update_option( '__srfm_do_redirect', true );
-
 	}
 }

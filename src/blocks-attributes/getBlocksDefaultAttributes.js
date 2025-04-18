@@ -1,33 +1,54 @@
-import inputAttributes from '@Blocks/input/block.json';
-import emailAttributes from '@Blocks/email/block.json';
-import phoneAttributes from '@Blocks/phone/block.json';
-import textareaAttributes from '@Blocks/textarea/block.json';
-import urlAttributes from '@Blocks/url/block.json';
-import numberAttributes from '@Blocks/number/block.json';
-import checkboxAttributes from '@Blocks/checkbox/block.json';
-import addressAttributes from '@Blocks/address/block.json';
-import multiChoiceAttributes from '@Blocks/multi-choice/block.json';
-import dropdownAttributes from '@Blocks/dropdown/block.json';
-import gdprAttributes from '@Blocks/gdpr/block.json';
-import inlineButton from '@Blocks/inline-button/block.json';
+import inputAttributes from '@IncBlocks/input/block.json';
+import emailAttributes from '@IncBlocks/email/block.json';
+import phoneAttributes from '@IncBlocks/phone/block.json';
+import textareaAttributes from '@IncBlocks/textarea/block.json';
+import urlAttributes from '@IncBlocks/url/block.json';
+import numberAttributes from '@IncBlocks/number/block.json';
+import checkboxAttributes from '@IncBlocks/checkbox/block.json';
+import addressAttributes from '@IncBlocks/address/block.json';
+import multiChoiceAttributes from '@IncBlocks/multichoice/block.json';
+import dropdownAttributes from '@IncBlocks/dropdown/block.json';
+import gdprAttributes from '@IncBlocks/gdpr/block.json';
+import inlineButton from '@IncBlocks/inlinebutton/block.json';
 import { getDefaultMessage } from '@Blocks/util';
+import { __ } from '@wordpress/i18n';
 
 const defaultKeys = {
 	// General Tab
 	// Submit button
-	_srfm_submit_button_text: { default: 'Submit' },
+	_srfm_submit_button_text: { default: __( 'Submit', 'sureforms' ) },
 	// Page Break
-	first_page_label: { default: 'Page Break Label' },
-	next_button_text: { default: 'Next' },
-	back_button_text: { default: 'Back' },
+	first_page_label: { default: __( 'Page Break Label', 'sureforms' ) },
+	next_button_text: { default: __( 'Next', 'sureforms' ) },
+	back_button_text: { default: __( 'Back', 'sureforms' ) },
 	// Style Tab
 	// Form Container
-	primary_color: { default: '#0C78FB' },
+	primary_color: { default: '#111C44' },
 	text_color: { default: '#1E1E1E' },
 	text_color_on_primary: { default: '#FFFFFF' },
 	form_container_width: { default: 620 },
-	cover_color: { default: '#0C78FB' },
+	cover_color: { default: '#111C44' },
 	bg_color: { default: '#ffffff' },
+	gradient_type: { default: 'basic' },
+	bg_gradient_type: { default: 'linear' },
+	bg_gradient_angle: { default: 90 },
+	bg_gradient_color_1: { default: '#FFC9B2' },
+	bg_gradient_color_2: { default: '#C7CBFF' },
+	bg_gradient_location_1: { default: 0 },
+	bg_gradient_location_2: { default: 100 },
+	bg_overlay_custom_size: { default: 100 },
+	bg_overlay_custom_size_unit: { default: '%' },
+	bg_image_size_custom: { default: 100 },
+	bg_image_size_custom_unit: { default: '%' },
+	bg_overlay_opacity: { default: 1 },
+	bg_image_overlay_color: { default: '#FFFFFF75' },
+	overlay_gradient_type: { default: 'basic' },
+	bg_overlay_gradient_type: { default: 'linear' },
+	bg_overlay_gradient_angle: { default: 90 },
+	bg_overlay_gradient_color_1: { default: '#FFC9B2' },
+	bg_overlay_gradient_color_2: { default: '#C7CBFF' },
+	bg_overlay_gradient_location_1: { default: 0 },
+	bg_overlay_gradient_location_2: { default: 100 },
 };
 
 export const blocksAttributes = {

@@ -19,6 +19,7 @@ sureforms/
 .eslintcache
 
 artifact/
+artifacts/
 
 assets/build/
 
@@ -40,3 +41,10 @@ assets/js/minified/*
 .DS_Store
 
 .dccache
+
+.phpunit.result.cache
+coverage-report
+
+# playwright
+tests/play/test-results/*
+playwright-report/*

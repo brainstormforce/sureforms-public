@@ -5,18 +5,40 @@ export default () => {
 			height="24"
 			viewBox="0 0 24 24"
 			fill="none"
+			className="srfm-logo"
 			xmlns="http://www.w3.org/2000/svg"
 		>
-			<g clipPath="url(#clip0_5160_18741)">
+			{ /* Had to add the internal styles here to maintain the logo color in block inserter selected state. */ }
+			<style>{ `.is-selected svg.srfm-logo path {fill:#000000;}` }</style>
+			<g clipPath="url(#clip0_15961_16935)">
+				<rect width="24" height="24" fill="evenodd" />
 				<path
-					fillRule="evenodd"
-					clipRule="evenodd"
-					d="M11.9695 23.9389C18.58 23.9389 23.9389 18.58 23.9389 11.9695C23.9389 5.35891 18.58 0 11.9695 0C5.35891 0 0 5.35891 0 11.9695C0 18.58 5.35891 23.9389 11.9695 23.9389ZM12.021 5.98472C11.0599 5.98472 9.72986 6.53435 9.05026 7.21236L7.20449 9.05382H16.4046L19.4809 5.98472H12.021ZM14.8731 16.7265C14.1935 17.4045 12.8635 17.9542 11.9024 17.9542H4.44254L7.51882 14.8851H16.7189L14.8731 16.7265ZM17.8633 10.5884H5.66968L5.09372 11.1638C3.72988 12.3915 4.13437 13.3505 6.04436 13.3505H18.2709L18.8471 12.7751C20.1976 11.5547 19.7732 10.5884 17.8633 10.5884Z"
-					fill="currentColor"
+					d="M6.85742 5.14258H17.1431V8.57115H8.57171L6.85742 10.2854V8.57115V5.14258Z"
+					fill="white"
+				/>
+				<path
+					d="M6.85742 5.14258H17.1431V8.57115H8.57171L6.85742 10.2854V8.57115V5.14258Z"
+					fill="white"
+				/>
+				<path
+					d="M6.85742 10.2852H15.4288V13.7137H8.57171L6.85742 15.428V13.7137V10.2852Z"
+					fill="white"
+				/>
+				<path
+					d="M6.85742 10.2852H15.4288V13.7137H8.57171L6.85742 15.428V13.7137V10.2852Z"
+					fill="white"
+				/>
+				<path
+					d="M6.85742 15.4287H12.0003V18.8573H6.85742V15.4287Z"
+					fill="white"
+				/>
+				<path
+					d="M6.85742 15.4287H12.0003V18.8573H6.85742V15.4287Z"
+					fill="white"
 				/>
 			</g>
 			<defs>
-				<clipPath id="clip0_5160_18741">
+				<clipPath id="clip0_15961_16935">
 					<rect width="24" height="24" fill="white" />
 				</clipPath>
 			</defs>

@@ -30,7 +30,7 @@ export default ( {} ) => {
 						margin: 0;
 					` }
 				>
-					Overview
+					{ __( 'Overview', 'sureforms' ) }
 				</h2>
 				<ScButton
 					type="primary"

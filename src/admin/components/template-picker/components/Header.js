@@ -9,6 +9,7 @@ import { Button } from '@wordpress/components';
 
 const Header = () => {
 	const [ showRevokePopover, setShowRevokePopover ] = useState( true );
+	const formCreationleft = srfm_admin?.srfm_ai_usage_details?.remaining ?? 0;
 
 	function useQuery() {
 		return new URLSearchParams( useLocation().search );
@@ -27,10 +28,6 @@ const Header = () => {
 			document.body.style.overflow = 'hidden';
 		}
 	}, [ method ] );
-
-	const formCreationleft = srfm_admin?.srfm_ai_usage_details?.remaining ?? 0;
-	const isRegistered = srfm_admin?.srfm_ai_usage_details?.type === 'registered';
-	const finalFormCreationCountRemaining = isRegistered && formCreationleft > 20 ? 20 : formCreationleft;
 
 	return (
 		<div
@@ -58,7 +55,6 @@ const Header = () => {
 									background: showRevokePopover
 										? '#F3F4F6'
 										: 'white',
-									width: '225px',
 								} }
 								className="srfm-tp-header-credits"
 								onClick={ () => {
@@ -72,7 +68,7 @@ const Header = () => {
 											'%d AI form generations left',
 											'sureforms'
 										),
-										finalFormCreationCountRemaining
+										formCreationleft
 									) }
 								</span>
 								<div className="srfm-tp-header-bolt-icon">
@@ -81,7 +77,7 @@ const Header = () => {
 							</Button>
 							{ showRevokePopover && (
 								<CreditDetailsPopup
-									finalFormCreationCountRemaining={ finalFormCreationCountRemaining }
+									finalFormCreationCountRemaining={ formCreationleft }
 									setShowRevokePopover={ setShowRevokePopover }
 								/>
 							) }

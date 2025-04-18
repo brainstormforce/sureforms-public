@@ -1,6 +1,7 @@
 @import "./blocks/default/utils/mixins.scss";
 
 button.srfm-toolbar-width-setting-button {
+	width: max-content !important;
 	&:before {
 		display: none !important;
 	}
@@ -30,6 +31,9 @@ button.srfm-toolbar-width-setting-button {
 
 .block-editor-page.post-type-sureforms_form .is-root-container,
 .srfm-form-container {
+	position: relative;
+	z-index: 1;
+
 	* {
 		box-sizing: border-box;
 	}
@@ -121,8 +125,7 @@ button.srfm-toolbar-width-setting-button {
 		align-items: center;
 	}
 
-	fieldset,
-	legend {
+	fieldset {
 		font-size: inherit;
 		border: none;
 		margin: 0;
@@ -138,7 +141,8 @@ button.srfm-toolbar-width-setting-button {
 	.srfm-block {
 		padding: 0 var( --srfm-col-gap-between-blocks ) !important;
 		margin-bottom: var( --srfm-row-gap-between-blocks );
-		.srfm-block-label {
+		.srfm-block-label,
+		.srfm-block-legend {
 			display: block;
 			@include srfm-block-label-styles;
 		}
@@ -242,19 +246,19 @@ button.srfm-toolbar-width-setting-button {
 
 			.srfm-input-checkbox,
 			.srfm-input-gdpr {
-				position: fixed; // Changing the position from absolute to fixed solves the page jump issue without affecting the UI.
+				position: absolute !important;
+				left: 0 !important;
+				top: 0 !important;
 
 				&:checked {
 					+ {
 						.srfm-cbx {
-							span {
-								&:first-child:not( .srfm-required ) {
-									background: var( --srfm-color-scheme-primary );
-									border-color: var( --srfm-color-scheme-primary );
-									svg {
-										opacity: 1;
-										stroke-dashoffset: 0;
-									}
+							> span.srfm-span-wrap:first-child {
+								background: var( --srfm-color-scheme-primary );
+								border-color: var( --srfm-color-scheme-primary );
+								svg {
+									opacity: 1;
+									stroke-dashoffset: 0;
 								}
 							}
 						}
@@ -271,4 +275,9 @@ button.srfm-toolbar-width-setting-button {
 			}
 		}
 	}
+}
+
+// Temporary fix for the uneven spacing when we hide the submit button. This will be removed once we have a better solution.
+.srfm-submit-button-hidden .srfm-form .srfm-block-single:has( + .srfm-submit-container ) {
+	margin-bottom: 0 !important;
 }

@@ -7,9 +7,8 @@
 
 namespace SRFM\Inc\Email;
 
-use SRFM\Inc\Traits\Get_Instance;
 use SRFM\Inc\Helper;
-
+use SRFM\Inc\Traits\Get_Instance;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -21,7 +20,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 0.0.1
  */
 class Email_Template {
-
 	use Get_Instance;
 
 	/**
@@ -31,7 +29,6 @@ class Email_Template {
 	 * @return void
 	 */
 	public function __construct() {
-
 	}
 
 	/**
@@ -82,8 +79,6 @@ class Email_Template {
 	 * @return string|false footer tags.
 	 */
 	public function get_footer() {
-		// Translators: Site URL.
-		$site_link = sprintf( __( '<a href=%1$s>%2$s</a>', 'sureforms' ), home_url( '/' ), get_bloginfo( 'name' ) );
 		ob_start();
 		?>
 																				</div>
@@ -144,11 +139,11 @@ class Email_Template {
 
 						$label       = explode( '-lbl-', $field_name )[1];
 						$label       = explode( '-', $label )[0];
-						$field_label = $label ? esc_html( Helper::decrypt( $label ) ) : '';
+						$field_label = $label ? Helper::decrypt( $label ) : '';
 						?>
 					<tr class="field-label">
 						<th style="font-weight: 500;font-size: 14px;color: #1E293B;padding: 8px 16px;background-color: #F1F5F9;text-align: left;">
-							<strong><?php echo esc_html( $field_label ); ?><?php echo esc_html__( ':', 'sureforms' ); ?><strong/>
+							<strong><?php echo wp_kses_post( html_entity_decode( $field_label ) ); ?>:<strong/>
 						</th>
 					</tr>
 					<tr class="field-value">
@@ -163,6 +158,10 @@ class Email_Template {
 									<?php
 								}
 							}
+						} elseif ( ! empty( $value ) && is_string( $value ) && filter_var( $value, FILTER_VALIDATE_URL ) ) {
+							?>
+							<a target="_blank" href="<?php echo esc_attr( urldecode( $value ) ); ?>"><?php echo esc_html__( 'View', 'sureforms' ); ?></a>
+							<?php
 						} else {
 							if ( is_string( $value ) ) {
 								echo false !== strpos( $value, PHP_EOL ) ? wp_kses_post( wpautop( $value ) ) : wp_kses(
@@ -187,8 +186,7 @@ class Email_Template {
 				$current_table_data = $table_data ? $table_data : ''; // This is done as str_replace expects array|string but ob_get_clean() returns string|false.
 			$message                = str_replace( '{all_data}', $current_table_data, $message );
 		}
-		$message .= $this->get_footer();
-		return $message;
+		return $message . $this->get_footer();
 	}
 
 }

@@ -8,12 +8,9 @@
 
 namespace SRFM\Inc;
 
-use SRFM\Inc\Traits\Get_Instance;
-use SRFM\Inc\Helper;
 use SRFM\Inc\Database\Tables\Entries;
+use SRFM\Inc\Traits\Get_Instance;
 use WP_REST_Server;
-use WP_Error;
-use WP_REST_Request;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -78,7 +75,7 @@ class Background_Process {
 				'args'                => [
 					'submission_id' => [
 						'required'          => true,
-						'validate_callback' => function( $param, $request, $key ) {
+						'validate_callback' => static function( $param ) {
 							return is_integer( Helper::get_integer_value( $param ) ) && 0 < $param;
 						},
 					],
@@ -127,7 +124,7 @@ class Background_Process {
 				__( 'Something went wrong. We haved logged the error for further investigation', 'sureforms' ),
 				[ 'status' => 403 ]
 			);
-		};
+		}
 
 		return new \WP_REST_Response( [] );
 	}

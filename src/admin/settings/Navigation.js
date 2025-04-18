@@ -7,7 +7,6 @@ import { applyFilters } from '@wordpress/hooks';
 import {
 	MdSettings,
 	MdWarningAmber,
-	MdOutlineMail,
 	MdOutlineSecurity,
 	MdOutlineDashboardCustomize,
 } from 'react-icons/md';
@@ -29,11 +28,6 @@ export const navigation = applyFilters( 'srfm.settings.navigation', [
 		icon: <MdWarningAmber size={ 20 } color="#0f172a" />,
 	},
 	{
-		name: __( 'Email', 'sureforms' ),
-		slug: 'email-settings',
-		icon: <MdOutlineMail size={ 20 } color="#0f172a" />,
-	},
-	{
 		name: __( 'Spam Protection', 'sureforms' ),
 		slug: 'security-settings',
 		icon: <MdOutlineSecurity size={ 20 } color="#0f172a" />,
@@ -49,6 +43,7 @@ const isProActive = srfm_admin.is_pro_active;
 
 const Navigation = () => {
 	const activatedTab = useQuery();
+	const addActiveClass = false;
 
 	return (
 		<div
@@ -67,7 +62,13 @@ const Navigation = () => {
 							} }
 							key={ item.name }
 							className={ `srfm-settings-sidebar-category ${
-								activatedTab.get( 'tab' ) === item.slug
+								activatedTab.get( 'tab' ) === item.slug ||
+								applyFilters(
+									'srfm.settings.nav.addActiveClass',
+									addActiveClass,
+									item.name,
+									activatedTab.get( 'tab' )
+								)
 									? 'active'
 									: ''
 							}` }
@@ -91,7 +92,7 @@ const Navigation = () => {
 								'sureforms'
 							) }
 						</div>
-						<UpgradeToProButton className="srfm-button-primary srfm-notice-btn" />
+						<UpgradeToProButton className="srfm-button-primary srfm-notice-btn" location="settings_page_upgrade_button" />
 					</div>
 				) }
 			</div>

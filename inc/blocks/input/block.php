@@ -18,16 +18,14 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Address Block.
  */
 class Block extends Base {
-
 	/**
 	 * Render the block
 	 *
 	 * @param array<mixed> $attributes Block attributes.
-	 * @param string       $content Post content.
 	 *
-	 * @return string|boolean
+	 * @return string|bool
 	 */
-	public function render( $attributes, $content = '' ) {
+	public function render( $attributes ) {
 		if ( ! empty( $attributes ) ) {
 			$markup_class = new Input_Markup( $attributes );
 			ob_start();

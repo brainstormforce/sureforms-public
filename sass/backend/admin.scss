@@ -22,7 +22,34 @@ $placeholder_color: #9ca3af;
 		}
 	}
 }
+.toplevel_page_sureforms_menu,
+.sureforms_page_sureforms_form_settings,
+.sureforms_page_sureforms_entries,
+.sureforms_page_sureforms_form_entries,
+.sureforms_page_add-new-form,
+.post-type-sureforms_form {
+	// NPS Survey styles start.
+	// Set the button background to the primary color in dashboard.
+	[data-id="nps-survey-sureforms"] > .nps-survey-wrapper > div button[type="submit"],
+	[data-id="nps-survey-sureforms"] > .nps-survey-wrapper > div .bg-nps-button-background {
+		background-color: #d54407;
+		border: none;
+	}
+	// Change the text color for the Back button in the NPS survey.
+	[data-id="nps-survey-sureforms"] > .nps-survey-wrapper > div button.bg-transparent.text-nps-button-background {
+		color: #d54407;
+	}
 
+	// Hide Spectra, Astra, and Starter Templates NPS Survey on SureForms Pages.
+	// Once NPS Team works on the task where the popup will be visible only on individual dashboard pages, we can remove the below styles.
+	// The below styles can be removed once the specific plugins update their NPS survey implementation.
+	[data-id="nps-survey-ultimate-addons-for-gutenberg"],
+	[data-id="nps-survey-astra"],
+	[data-id="nps-survey-astra-sites"] {
+		display: none !important;
+	}
+	// NPS Survey styles end.
+}
 /* Clear to evenly position the next list items after the separator */
 #toplevel_page_sureforms_menu .wp-submenu li {
 	clear: both;
@@ -308,3 +335,178 @@ $placeholder_color: #9ca3af;
 		box-sizing: border-box;
 	}
 }
+
+// css for whats-new
+.srfm_whats_new_flyout {
+	.whats-new-rss-flyout-contents {
+		top: 32px !important;
+		height: calc( 100% - 32px );
+
+		@media screen and ( max-width: 782px ) {
+			top: 48px !important;
+			height: calc( 100% - 48px );
+		}
+
+		@media screen and ( max-width: 600px ) {
+			top: 0;
+			height: 100%;
+		}
+
+		// adding this css to match height of header component.
+		.whats-new-rss-flyout-inner-header {
+			padding: 18px 20px 18px 24px !important;
+		}
+	}
+}
+
+// Single Entry Page Stylings
+.sureforms_page_sureforms_entries {
+	#sureform_entry_meta {
+		table {
+			tbody {
+				td:last-child {
+					word-break: break-all;
+				}
+			}
+		}
+	}
+
+	#sureform_form_name_meta,
+	#sureform_entry_meta.srfm-form-data {
+		.inside {
+			margin: 0;
+			padding: 16px;
+		}
+		.button:hover {
+			background: none;
+			opacity: 0.6;
+		}
+	}
+
+	.postbox.srfm-entry-logs {
+		.inside {
+			margin: 0 !important;
+			padding: 0;
+
+			.no-logs-found {
+				padding: 6px 0 8px 12px;
+				margin: 0 !important;
+			}
+
+			.entry-logs-table {
+				width: 100%;
+				border-collapse: collapse;
+
+				.entry-log-container {
+					padding: 16px;
+
+					.entry-log-title {
+						display: flex;
+						justify-content: space-between;
+						align-items: center;
+						margin: 0;
+					}
+
+					.entry-log-messages {
+						p {
+							margin-top: 6px;
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+.button.srfm-edit-entry {
+	margin: 0 12px;
+	display: flex;
+	align-items: center;
+	gap: 4px;
+}
+
+.srfm-add-entry-note-button {
+	background: none;
+	border: none;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	cursor: pointer;
+}
+
+.status.column-status {
+	span {
+		text-transform: capitalize;
+		border-radius: 30px;
+		padding: 2px 4px;
+		font-weight: 500;
+		font-size: 12px;
+		line-height: 16px;
+		user-select: none;
+		-moz-user-select: none;
+		-webkit-user-select: none;
+
+		&.status-read {
+			color: #15803d;
+			background-color: #f0fdf4;
+			border: 1px solid #bbf7d0;
+		}
+		&.status-unread {
+			color: #a16207;
+			background-color: #fefce8;
+			border: 1px solid #fef08a;
+		}
+		&.status-trash {
+			color: #b91c1c;
+			background-color: #fee2e2;
+			border: 1px solid #fca5a5;
+		}
+	}
+}
+
+#post-body .srfm-resend-notification-trigger-btn {
+	padding: 8px 16px;
+	border-radius: 6px;
+	border: 1px solid;
+	box-shadow: 0 1px 2px 0 rgba( 0, 0, 0, 0.0509803922 );
+	font-size: 14px;
+	font-weight: 500;
+	line-height: 20px;
+}
+
+.srfm-entry-note-wrapper {
+	padding: 16px;
+
+	.add-notes-field {
+		display: flex;
+		gap: 16px;
+		flex-direction: column;
+		justify-content: center;
+
+		button.button#srfm-add-note {
+			width: 116px;
+			padding: 8px 16px;
+			border-radius: 6px;
+			border: 1px solid;
+			box-shadow: 0px 1px 2px 0px #0000000d;
+			font-size: 14px;
+			font-weight: 500;
+			line-height: 20px;
+		}
+	}
+}
+
+.sureforms-plugins-go-pro {
+	color: #d54407;
+	font-weight: bold;
+
+	&:hover,
+	&:active,
+	&:focus {
+		color: #d54407;
+		opacity: 0.8;
+	}
+}
+
+@import "tooltip";

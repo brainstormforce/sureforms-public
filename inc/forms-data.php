@@ -8,10 +8,9 @@
 
 namespace SRFM\Inc;
 
-use WP_REST_Response;
-use WP_Error;
 use SRFM\Inc\Traits\Get_Instance;
-use SRFM\Inc\Helper;
+use WP_Error;
+use WP_REST_Response;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -55,11 +54,10 @@ class Forms_Data {
 	/**
 	 * Checks whether a given request has permission to read the form.
 	 *
-	 * @param \WP_REST_Request $request Full details about the request.
 	 * @return true|WP_Error True if the request has read access, WP_Error object otherwise.
 	 * @since 0.0.1
 	 */
-	public function get_form_permissions_check( $request ) {
+	public function get_form_permissions_check() {
 		if ( current_user_can( 'edit_posts' ) ) {
 			return true;
 		}

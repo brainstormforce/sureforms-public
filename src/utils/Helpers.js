@@ -1,14 +1,16 @@
+import apiFetch from '@wordpress/api-fetch';
+import { __ } from '@wordpress/i18n';
+import { Toaster, ToastBar } from 'react-hot-toast';
+import { store as editorStore } from '@wordpress/editor';
+import { select } from '@wordpress/data';
+import { cleanForSlug } from '@wordpress/url';
+
 /**
  * Get Image Sizes and return an array of Size.
  *
  * @param {Object} sizes - The sizes object.
  * @return {Object} sizeArr - The sizeArr object.
  */
-
-import apiFetch from '@wordpress/api-fetch';
-import { __ } from '@wordpress/i18n';
-import { Toaster, ToastBar } from 'react-hot-toast';
-
 export function getImageSize( sizes ) {
 	const sizeArr = [];
 	for ( const size in sizes ) {
@@ -56,7 +58,9 @@ export const srfmDeepClone = ( arrayOrObject ) =>
 export const handleAddNewPost = async (
 	formData,
 	templateName,
-	templateMetas
+	templateMetas,
+	isConversational = false,
+	formType = ''
 ) => {
 	if ( '1' !== srfm_admin.capability ) {
 		console.error( 'User does not have permission to create posts' );
@@ -75,6 +79,8 @@ export const handleAddNewPost = async (
 				form_data: formData,
 				template_name: templateName,
 				template_metas: templateMetas,
+				is_conversational: isConversational,
+				form_type: formType,
 			},
 		} );
 
@@ -117,15 +123,6 @@ export const randomNiceColor = () => {
 	return `hsla(${ h },${ s }%,${ l }%,${ 0.2 })`;
 };
 
-export const generateSmartTagsDropDown = ( setInputData ) => {
-	const smartTagList = srfm_block_data.smart_tags_array;
-	if ( ! smartTagList ) {
-		return;
-	}
-	const entries = Object.entries( smartTagList );
-	return generateDropDownOptions( setInputData, entries );
-};
-
 export const generateDropDownOptions = (
 	setInputData,
 	optionsArray = [],
@@ -157,19 +154,6 @@ export const generateDropDownOptions = (
 
 	return data;
 };
-
-export async function getServerGeneratedBlockSlugs( formID, content ) {
-	const option = {
-		path: `/sureforms/v1/generate-block-slugs`,
-		method: 'POST',
-		data: {
-			formID,
-			content,
-		},
-	};
-
-	return await apiFetch( option );
-}
 
 // Creates excerpt.
 export function trimTextToWords( text, wordLimit, ending = '...' ) {
@@ -220,9 +204,14 @@ const pushSmartTagToArray = (
 			return;
 		}
 
+		// Verify if `block.attributes.block_id` is defined and not empty.
+		if ( ! block?.attributes?.block_id ) {
+			return;
+		}
+
 		const fieldSlug = blockSlugs[ block.attributes.block_id ];
 
-		if ( 'undefined' === typeof fieldSlug ) {
+		if ( 'undefined' === typeof fieldSlug || ! fieldSlug ) {
 			// If we are here, then field is invalid and we don't need to process it.
 			return;
 		}
@@ -247,20 +236,24 @@ const pushSmartTagToArray = (
 	} );
 };
 
-export const setFormSpecificSmartTags = ( savedBlocks, blockSlugs ) => {
+export const withoutSlugBlocks = [
+	'srfm/inline-button',
+	'srfm/hidden',
+	'srfm/page-break',
+	'srfm/separator',
+	'srfm/advanced-heading',
+	'srfm/image',
+	'srfm/icon',
+];
+
+export const setFormSpecificSmartTags = ( updateBlockAttributes ) => {
+	const { getBlocks } = select( editorStore );
+	let savedBlocks = getBlocks();
+	const blockSlugs = prepareBlockSlugs( updateBlockAttributes, savedBlocks );
+
 	if ( ! Object.keys( blockSlugs )?.length ) {
 		return;
 	}
-
-	const excludedBlocks = [
-		'srfm/inline-button',
-		'srfm/hidden',
-		'srfm/page-break',
-		'srfm/separator',
-		'srfm/advanced-heading',
-		'srfm/image',
-		'srfm/icon',
-	];
 
 	const formSmartTags = [];
 	const formEmailSmartTags = [];
@@ -279,7 +272,7 @@ export const setFormSpecificSmartTags = ( savedBlocks, blockSlugs ) => {
 	}
 
 	savedBlocks = savedBlocks.filter(
-		( savedBlock ) => ! excludedBlocks.includes( savedBlock?.name )
+		( savedBlock ) => ! withoutSlugBlocks.includes( savedBlock?.name )
 	);
 
 	pushSmartTagToArray(
@@ -375,3 +368,82 @@ export const SRFMToaster = ( {
 // Using for the icon picker component.
 export const uagbClassNames = ( classes ) =>
 	classes.filter( Boolean ).join( ' ' );
+
+export const addQueryParam = ( url, paramValue, paramKey = 'utm_medium' ) => {
+	try {
+		const urlObj = new URL( url );
+		urlObj.searchParams.set( paramKey, paramValue );
+		return urlObj.toString();
+	} catch ( error ) {
+		console.error( 'Invalid URL:', error );
+		return url; // Return the original URL in case of error
+	}
+};
+
+const generateSlug = ( label, existingSlugs ) => {
+	const baseSlug = cleanForSlug( label );
+
+	let slug = baseSlug;
+	let counter = 1;
+
+	while ( existingSlugs.has( slug ) ) {
+		slug = `${ baseSlug }-${ counter }`;
+		counter++;
+	}
+
+	return slug;
+};
+
+const prepareBlockSlugs = ( updateBlockAttributes, srfmBlocks ) => {
+	const blockSlugs = {};
+	const existingSlugs = new Set();
+
+	const processBlocks = ( blocks ) => {
+		for ( const block of blocks ) {
+			let { slug, label, block_id } = block.attributes;
+
+			if ( ! slug ) {
+				slug = generateSlug( label, existingSlugs );
+
+				// Update the block attributes with the generated slug.
+				updateBlockAttributes( block.clientId, { slug } );
+			}
+
+			blockSlugs[ block_id ] = slug;
+			existingSlugs.add( slug );
+
+			if (
+				Array.isArray( block.innerBlocks ) &&
+				block.innerBlocks.length > 0
+			) {
+				processBlocks( block.innerBlocks );
+			}
+		}
+	};
+
+	processBlocks( srfmBlocks );
+
+	return blockSlugs;
+};
+
+/**
+ * Check if the given element is a valid React element.
+ *
+ * @param {Object} element - The element to check.
+ * @return {boolean} Returns true if the element is a valid React element, otherwise returns false.
+ */
+export const isValidReactElement = ( element ) => {
+	if ( ! element || typeof element !== 'object' ) {
+		return false;
+	}
+	return Symbol.for( 'react.element' ) === element.$$typeof;
+};
+
+// Add the CSS properties to the root element.
+export const addStyleInRoot = ( root, cssProperties ) => {
+	if ( Object.keys( cssProperties ).length > 0 ) {
+		for ( const [ key, objValue ] of Object.entries( cssProperties ) ) {
+			root.style.setProperty( key, objValue );
+		}
+	}
+};

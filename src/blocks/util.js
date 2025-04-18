@@ -49,6 +49,7 @@ const getBlockTypes = ( exclude = '' ) => {
 		'srfm/multi-choice',
 		'srfm/url',
 		'srfm/inline-button',
+		'srfm/signature',
 	] );
 
 	if ( exclude ) {
@@ -74,7 +75,7 @@ const validationMessage = ( key, message ) => {
 		return message;
 	}
 
-	return srfm_block_data?.get_default_dynamic_block_option?.[ key ] ?? '';
+	return srfm_block_data?.srfm_default_dynamic_block_option?.[ key ] ?? '';
 };
 
 /**
@@ -104,7 +105,7 @@ function getDefaultMessage( optionName ) {
 	return {
 		type: 'string',
 		default:
-			srfm_block_data?.get_default_dynamic_block_option?.[ optionName ],
+			srfm_block_data?.srfm_default_dynamic_block_option?.[ optionName ],
 	};
 }
 

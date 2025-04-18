@@ -380,17 +380,94 @@ $sidebar_width: 290px;
 			display: flex;
 			flex-direction: column;
 			width: 768px;
-			min-height: 420px;
+			min-height: 680px;
 			gap: 32px;
 			padding: 40px;
 			background: #ffffff;
 
+			.srfm-ai-builder-form-type-selector {
+				width: 100%;
+
+				.srfm-ai-builder-form-type-label {
+					font-size: 20px;
+					font-weight: 600;
+					color: #121826;
+					margin: 0 0 18px 0;
+					line-height: 28px;
+				}
+
+				.srfm-ai-builder-form-type-selector {
+					display: flex;
+					align-items: center;
+					background-color: #f3f4f6;
+					position: relative;
+					width: 100%;
+					height: 48px;
+					border-radius: 8px;
+					border: 0.5px solid #e5e7eb;
+
+					.srfm-ai-builder-form-type-highlight {
+						position: absolute;
+						width: calc( 50% - 4px );
+						height: 40px;
+						border-radius: 6px;
+						padding: 6px;
+						background-color: #ffffff;
+						box-shadow: 0px 1px 2px 0px #0000000d;
+						left: 4px;
+						transition: left 0.3s ease-in-out;
+					}
+
+					.srfm-ai-builder-form-type-option {
+						flex: 1;
+						font-weight: 500;
+						font-size: 18px;
+						line-height: 28px;
+						cursor: pointer;
+						padding: 6px;
+						position: relative;
+						z-index: 2;
+						transition: color 0.3s ease-in-out;
+						color: #bdc1c7;
+
+						svg {
+							path {
+								stroke: #bdc1c7;
+							}
+						}
+
+						.srfm-ai-builder-form-type-text {
+							display: flex;
+							justify-content: center;
+							align-items: center;
+						}
+
+						&.active {
+							cursor: default;
+							color: #111827;
+
+							svg {
+								path {
+									stroke: #111827;
+								}
+							}
+						}
+
+						&.disabled {
+							cursor: default;
+							display: flex;
+							align-items: center;
+							justify-content: center;
+							gap: 8px;
+						}
+					}
+				}
+			}
+
 			.srfm-ai-builder-header-title {
-				width: 688px;
-				height: 36px;
-				font-size: 30px;
+				font-size: 20px;
+				line-height: 28px;
 				font-weight: 600;
-				line-height: 36px;
 				text-align: left;
 				margin: 0;
 				padding: 0;
@@ -400,7 +477,15 @@ $sidebar_width: 290px;
 			.srfm-ai-builder-textarea-ctn {
 				display: flex;
 				flex-direction: column;
-				gap: 12px;
+				gap: 16px;
+
+				.srfm-ai-builder-header-subtitle {
+					font-size: 12px;
+					line-height: 16px;
+					margin-top: -8px;
+					margin-bottom: -8px;
+					color: #6b7280;
+				}
 
 				textarea {
 					width: 688px;
@@ -439,6 +524,78 @@ $sidebar_width: 290px;
 					padding: 0;
 					color: #cd1a1a;
 				}
+
+				.srfm-ai-conversational-form-toggle {
+					display: flex;
+					align-items: center;
+					gap: 8px;
+					padding-top: 4px;
+					padding-bottom: 4px;
+					font-size: 14px;
+					font-weight: 500;
+					line-height: 20px;
+					color: #0f172a;
+
+					.srfm-ai-conversational-form-toggle-btn {
+						display: flex;
+						align-items: center;
+						cursor: pointer;
+						width: 32px;
+						height: 16px;
+						border-radius: 10px;
+						padding: 3px;
+						position: relative;
+						transition: background-color 0.3s ease;
+
+						.srfm-ai-conversational-form-toggle-thumb {
+							width: 10px;
+							height: 10px;
+							border-radius: 50%;
+							position: absolute;
+							top: 2px;
+							transition: left 0.3s ease;
+						}
+					}
+
+					.srfm-ai-conversational-form-pro-plan-badge {
+						min-width: 16px;
+						max-height: 16px;
+						padding: 2px;
+						border-radius: 9999px;
+						background: #1f2937;
+						color: #fff;
+						border: 0.5px solid #374151;
+						font-size: 9px;
+						font-weight: 600;
+						line-height: normal;
+						text-align: center;
+					}
+				}
+
+				.srfm-ai-voice-input-ctn {
+					display: flex;
+					justify-content: space-between;
+					align-items: center;
+					gap: 16px;
+				}
+
+				.srfm-ai-voice-input-toggle-btn {
+					display: flex;
+					justify-content: center;
+					align-items: center;
+					gap: 2px;
+					cursor: pointer;
+					height: 24px;
+					padding: 4px 6px;
+					border-radius: 9999px;
+				}
+
+				.srfm-ai-voice-input-text {
+					font-size: 12px;
+					font-weight: 500;
+					line-height: 16px;
+					text-align: center;
+				}
 			}
 
 			.srfm-ai-form-ideas-toggle {
@@ -455,6 +612,7 @@ $sidebar_width: 290px;
 				color: #64748b;
 				background: none;
 				border: none;
+				padding: 0;
 			}
 
 			.srfm-ai-form-ideas-ctn {
@@ -497,7 +655,6 @@ $sidebar_width: 290px;
 				justify-content: center;
 				background-color: #d54407;
 				color: white;
-				width: 183px;
 				height: 56px;
 				padding: 12px 16px 12px 24px;
 				gap: 8px;
@@ -685,7 +842,7 @@ $sidebar_width: 290px;
 				gap: 24px;
 				align-items: center;
 				justify-content: space-between;
-				width: 271px;
+				width: fit-content;
 
 				.srfm-tp-header-credits {
 					display: flex;
@@ -900,11 +1057,21 @@ $sidebar_width: 290px;
 
 				.srfm-tp-starting-point-card {
 					padding: 2.5em 2em 2em 2em;
+					// Keep the card structure aligned evenly, so the button will always be at the bottom.
+					height: 100%;
+					display: flex;
+					flex-direction: column;
+					justify-content: space-between;
+					align-items: stretch;
 
 					svg {
 						margin-bottom: 2em;
 					}
 
+					// Keep the Title and Description evenly aligned.
+					.srfm-tp-sp-text-container {
+						flex-grow: 1; // This will make the text container to occupy the remaining space.
+					}
 					.srfm-tp-sp-title {
 						font-size: 1.25em;
 						font-weight: 600;
@@ -917,8 +1084,9 @@ $sidebar_width: 290px;
 					.srfm-tp-sp-description {
 						font-size: 0.875em;
 						color: $desc_color;
-						margin-bottom: 0;
 						padding-bottom: 1.143em;
+						margin: 0;
+						flex-grow: 1;
 					}
 				}
 

@@ -11,7 +11,7 @@ on:
 jobs:
   build-artifact:
     name: Build Release Artifact
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     outputs:
       current_version: ${{ steps.get_version.outputs.current_version }}
     steps:
@@ -30,6 +30,9 @@ jobs:
         run: |
           CURRENT_VERSION=$(jq --raw-output '.version' package.json)
           echo "::set-output name=current_version::$(echo $CURRENT_VERSION)"
+
+      - name: Clear npm cache
+        run: npm cache clean --force
 
       - name: Install Node.js and npm
         uses: actions/setup-node@v2

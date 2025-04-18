@@ -84,7 +84,6 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 			'srfm/dropdown',
 			{
 				label: 'Country',
-
 				options: [
 					...countries.map( ( country ) => {
 						return { label: country.name, icon: '' };

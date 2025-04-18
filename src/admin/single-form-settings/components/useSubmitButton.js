@@ -1,103 +1,84 @@
-import { useEffect, useState } from '@wordpress/element';
+import { useEffect, useRef } from '@wordpress/element';
+import { useSelect } from '@wordpress/data';
+import { store as editorStore } from '@wordpress/editor';
 import { createRoot } from 'react-dom/client';
 import { RichText } from '@wordpress/block-editor';
 import { __ } from '@wordpress/i18n';
 import { BlockInserterWrapper } from '../Inserter.js';
+import { filterSubmitButton } from '@Components/hooks';
 
-export default function useSubmitButton( args ) {
-	const {
-		sureformsKeys,
-		blockCount,
-		isInlineButtonBlockPresent,
-		updateMeta,
-	} = args;
-
-	const [ codeEditor, setCodeEditor ] = useState( null );
-	const [ submitBtnContainer, setSubmitBtnContainer ] = useState( null );
+const SubmitButton = ( props ) => {
+	const metaValues = useSelect( ( select ) => select( editorStore ).getEditedPostAttribute( 'meta' ) );
+	const buttonElement = useRef( null );
+	const labelText = metaValues?._srfm_submit_button_text || __( 'Submit', 'sureforms' );
 
 	useEffect( () => {
-		setCodeEditor( document.querySelector( '.editor-post-text-editor' ) );
-		setSubmitBtnContainer( document.querySelector( '.srfm-submit-btn-container' ) );
+		const eventToButton = () => {
+			// need multiple timeouts for DOM elements to find.
+			// click on form section
+			setTimeout( () => {
+				const editPostTab = document.getElementById( 'tabs-0-edit-post/document' );
+
+				editPostTab?.click();
+			}, 100 );
+
+			// click on style tab
+			setTimeout( () => {
+				// elements for submit button event listener
+				const styleTabElement = document.querySelectorAll( '.srfm-inspector-tabs div' )[ 1 ]; // Style Tab
+				styleTabElement?.click();
+			}, 150 );
+		};
+
+		if ( buttonElement.current ) {
+			buttonElement.current.addEventListener( 'click', eventToButton );
+		}
+
+		return () => {
+			if ( buttonElement.current ) {
+				buttonElement.current.removeEventListener( 'click', eventToButton );
+			}
+		};
 	}, [] );
 
+	const submitButton = <button className="srfm-submit-richtext srfm-button srfm-submit-button srfm-btn-alignment srfm-btn-bg-color" ref={ buttonElement }>
+		<RichText
+			tagName="label"
+			value={ labelText }
+			onChange={ ( value ) => props.updateMeta( '_srfm_submit_button_text', value ) }
+			placeholder={ __( 'Submit', 'sureforms' ) }
+		/>
+	</button>;
+
+	return filterSubmitButton( submitButton, metaValues );
+};
+
+export default function useSubmitButton( args ) {
+	const { isInlineButtonBlockPresent, updateMeta, editorMode } = args;
+
 	function addSubmitButton( elm ) {
-		const inheritClass = 'srfm-btn-alignment wp-block-button__link';
-		const customClass =
-			'srfm-button srfm-submit-button srfm-btn-alignment srfm-btn-bg-color';
-		const btnClass =
-			sureformsKeys?._srfm_inherit_theme_button &&
-			sureformsKeys._srfm_inherit_theme_button
-				? inheritClass
-				: customClass;
-		const btnCtnClass =
-			sureformsKeys?._srfm_inherit_theme_button &&
-			sureformsKeys._srfm_inherit_theme_button
-				? 'wp-block-button'
-				: 'srfm-submit-btn-font-size';
+		if ( ! elm.closest( 'body' ).querySelector( '.srfm-submit-btn-container' ) ) {
+			const appendHtml = `<div class="srfm-custom-block-inserter"></div><div class="srfm-submit-btn-container srfm-submit-btn-font-size"></div>`;
 
-		const appendHtml = `<div class="srfm-custom-block-inserter"></div><div class="srfm-submit-btn-container ${ btnCtnClass }"><button class="srfm-submit-richtext ${ btnClass }"></button></div>`;
+			elm.insertAdjacentHTML( 'afterend', appendHtml );
+			// Add block inserter in the srfm-custom-block-inserter div.
+			const getBlockInserterDiv = elm.parentElement.querySelector(
+				'.srfm-custom-block-inserter'
+			);
 
-		if ( elm ) {
-			if (
-				! elm
-					.closest( 'body' )
-					.querySelector( '.srfm-submit-btn-container' )
-			) {
-				elm.insertAdjacentHTML( 'afterend', appendHtml );
+			if ( getBlockInserterDiv ) {
+				createRoot( getBlockInserterDiv ).render( <BlockInserterWrapper /> );
+			}
+		}
 
-				// If the normal button is present, add RichText to the button.
-				const elementParent = elm.parentElement;
+		const buttonCtn = elm.parentElement.querySelector(
+			'.srfm-submit-btn-container'
+		);
 
-				const buttonContainer = elementParent.querySelector(
-					'.srfm-submit-btn-container'
-				);
-
-				const button = buttonContainer.querySelector(
-					'.srfm-submit-richtext'
-				);
-
-				const submitBtnText = sureformsKeys._srfm_submit_button_text;
-
-				// Add block inserter in the srfm-custom-block-inserter div.
-				const getBlockInserterDiv = elementParent.querySelector(
-					'.srfm-custom-block-inserter'
-				);
-
-				if ( getBlockInserterDiv ) {
-					createRoot( getBlockInserterDiv ).render( <BlockInserterWrapper /> );
-				}
-
-				createRoot( button ).render(
-					<RichText
-						tagName="label"
-						value={
-							submitBtnText
-								? submitBtnText
-								: __( 'Submit', 'sureforms' )
-						}
-						onChange={ ( value ) =>
-							updateMeta( '_srfm_submit_button_text', value )
-						}
-						placeholder={ __( 'Submit', 'sureforms' ) }
-					/>
-				);
-
-				button.addEventListener( 'click', () => {
-					// need multiple timeouts for DOM elements to find.
-					// click on form section
-					setTimeout( () => {
-						const editPostTab = document.getElementById( 'tabs-0-edit-post/document' );
-
-						editPostTab?.click();
-					}, 100 );
-
-					// click on style tab
-					setTimeout( () => {
-						// elements for submit button event listener
-						const styleTabElement = document.querySelectorAll( '.srfm-inspector-tabs div' )[ 1 ]; // Style Tab
-						styleTabElement?.click();
-					}, 150 );
-				} );
+		if ( buttonCtn ) {
+			const getButton = buttonCtn?.querySelector( 'button' );
+			if ( ! getButton ) {
+				createRoot( buttonCtn ).render( <SubmitButton updateMeta={ updateMeta } /> );
 			}
 		}
 	}
@@ -119,8 +100,10 @@ export default function useSubmitButton( args ) {
 			}
 
 			// If Custom Button is not present, add the default button. Remove the default button if there are more than one.
-			if ( ! submitBtnContainer && ! isInlineButtonBlockPresent ) {
-				addSubmitButton( elm );
+			if ( ! isInlineButtonBlockPresent && 'visual' === editorMode ) {
+				if ( elm ) {
+					addSubmitButton( elm );
+				}
 
 				// remove duplicated submit button from the view after inline button is removed
 				const submitBtn = document.querySelectorAll(
@@ -139,11 +122,5 @@ export default function useSubmitButton( args ) {
 				}
 			}
 		}, 200 );
-	}, [
-		sureformsKeys,
-		codeEditor,
-		blockCount,
-		isInlineButtonBlockPresent,
-		submitBtnContainer,
-	] );
+	}, [ isInlineButtonBlockPresent, editorMode ] );
 }

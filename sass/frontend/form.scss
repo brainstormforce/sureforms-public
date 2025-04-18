@@ -1,8 +1,13 @@
+@import "../blocks/default/utils/mixins.scss";
+
 .srfm-form-container {
 	// This is the parent form class. Adds specificity so that there is no conflict.
 	position: relative;
 	padding: 0;
 	height: 100%;
+	padding: 32px;
+
+	@include srfm-background-control-styles;
 
 	// styles for core paragraph block
 	.srfm-custom-wp-paragraph {
@@ -77,14 +82,16 @@
 			width: 100%;
 			padding: 0 var( --srfm-col-gap-between-blocks ) !important;
 			margin-bottom: var( --srfm-row-gap-between-blocks );
+
+			// Adding a default fixed height to the h-captcha container to manage the error spacing.
+			.h-captcha {
+				height: 78px;
+			}
 		}
 
 		.srfm-validation-error {
-			font-size: 0.7em;
-			margin-top: 0.571em;
-			font-weight: 400;
-			line-height: normal;
-			color: var( --srfm-error-color );
+			@include srfm-error-styles;
+			margin: var( --srfm-input-field-margin ) 0 0;
 		}
 
 		.uagb-block {
@@ -97,25 +104,6 @@
 		}
 
 		.srfm-block {
-			&.srfm-phone-block {
-				.iti__country-list {
-					display: block;
-					border: var( --srfm-border ) solid var( --srfm-border-color );
-					border-radius: var( --srfm-border-radius );
-					transform: translateY( 0 );
-					opacity: 1;
-					transition: 0.2s cubic-bezier( 0.5, 0, 0, 1.25 ), opacity 0.15s ease-out;
-					font-size: 0.8em;
-
-					&.iti__hide {
-						display: block;
-						transform: translateY( 1em );
-						opacity: 0;
-						visibility: hidden;
-					}
-				}
-			}
-
 			.srfm-error-message {
 				display: none;
 			}
@@ -157,6 +145,40 @@
 				height: 100%;
 			}
 		}
+
+		p {
+			&:not( [hidden="true"] ) {
+				&.srfm-error-message {
+					.srfm-icon {
+						line-height: 1;
+						display: flex;
+						color: #dc2626;
+					}
+
+					line-height: 20px;
+					color: #111827;
+					font-size: 14px;
+					font-weight: var( --srfm-error-font-weight );
+					margin: 0;
+					display: flex;
+					align-items: center;
+					border: 1px solid #fecaca;
+					width: 100%;
+					padding: 12px;
+					border-radius: 8px;
+					background-color: #fef2f2;
+					gap: 8px;
+				}
+
+				&.srfm-footer-error {
+					margin-top: var( --srfm-row-gap-between-blocks );
+				}
+
+				&.srfm-head-error {
+					margin-bottom: var( --srfm-row-gap-between-blocks );
+				}
+			}
+		}
 	}
 
 	.srfm-success-box {
@@ -188,5 +210,16 @@
 
 	.srfm-display-none {
 		display: none;
+	}
+}
+
+/*
+ * To show reCAPTCHA v3 & v2 badge in bricks theme 
+ */
+.brx-body {
+	.srfm-form-container {
+		.grecaptcha-badge {
+			visibility: revert !important;
+		}
 	}
 }

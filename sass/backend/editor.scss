@@ -1,4 +1,27 @@
+@import "../blocks/default/utils/mixins.scss";
+
 body.post-type-sureforms_form {
+	/**
+	 * Hide the Patterns and Media tabs in the block editor.
+	 * Using the ^= and $= selectors to target the tabs that start with "tabs-" and end with "-patterns" or "-media".
+	 * This is because the tabs number is dynamic and changes but the start and end part is static.
+	 */
+	.block-editor-tabbed-sidebar__tablist{
+		[id^="tabs-"][id$="-patterns"],
+		[id^="tabs-"][id$="-media"] {
+			visibility: hidden;
+		}
+	}
+
+	.srfm-bg-component {
+		.srfm-responsive-common-button {
+			display: none;
+		}
+	}
+
+	.editor-styles-wrapper {
+		@include srfm-background-control-styles( true );
+	}
 	// Added to align the icon picker component with the option text field.
 	.srfm-size-type-field-tabs {
 		// Astra theme adds a top padding which distorts the layout.
@@ -65,6 +88,18 @@ body.post-type-sureforms_form {
 			.components-base-control {
 				margin-bottom: 0 !important;
 			}
+		}
+
+		.srfm-option-value {
+			width: 75px;
+		}
+
+		.srfm-options-delete {
+			font-size: 12px;
+			font-weight: 600;
+			line-height: 1.4;
+			color: #357ab5;
+			cursor: pointer;
 		}
 	}
 
@@ -139,6 +174,12 @@ body.post-type-sureforms_form {
 		}
 	}
 
+	.srfm-inspector-tabs-container {
+		.srfm-inspector-tabs > div {
+			padding: 0 5px;
+		}
+	}
+
 	.srfm-inspector-tab .components-panel__body .srfm-instant-form-settings-separator {
 		width: auto;
 		margin: 25px ( -16px );
@@ -147,6 +188,11 @@ body.post-type-sureforms_form {
 	.edit-post-sidebar__panel,
 	.editor-sidebar__panel {
 		margin-top: 1px;
+
+		// change the toggle switch border color.
+		.components-form-toggle .components-form-toggle__track {
+			border: 1px solid #1e1e1e;
+		}
 	}
 
 	.srfm-single-form-settings-description {
@@ -366,6 +412,10 @@ body.post-type-sureforms_form {
 		.srfm-header-title-input {
 			width: 100%;
 			max-width: 500px;
+
+			.components-base-control__field {
+				margin-top: 0;
+			}
 		}
 
 		.components-text-control__input {
@@ -410,8 +460,8 @@ body.post-type-sureforms_form {
 
 	// Hide block inserter below wordpress version 6.6.
 	// This default appender is not available from 6.6.
-	.srfm-form-container {
-		> div:last-child.block-list-appender.wp-block {
+	#srfm-form-container {
+		> div.block-list-appender.wp-block {
 			display: none;
 		}
 	}
@@ -476,7 +526,6 @@ body.post-type-sureforms_form {
 			position: absolute;
 			transform: translateX( var( --srfm-submit-alignment-backend ) );
 			right: var( --srfm-submit-alignment-backend );
-			transform: translateX( var( --srfm-submit-alignment-backend ) );
 			max-width: var( --srfm-submit-width-backend );
 			width: 100%;
 
@@ -529,9 +578,6 @@ body.post-type-sureforms_form {
 		}
 	}
 
-	.wpforms-edit-post-education-notice {
-		display: none;
-	}
 	// Override style coming from astra theme.
 	.sureform-add-option-button {
 		box-shadow: 0 0 0 1px var( --wp-components-color-accent, var( --wp-admin-theme-color, #3858e9 ) ) !important;
@@ -546,7 +592,7 @@ body.post-type-sureforms_form {
 		cursor: pointer;
 	}
 
-	/* 
+	/*
 	* Allow pointer events for elements with the attribute content-editable set to "true".
 	* This is crucial because some elements may inherit pointer-events: none from their parent,
 	* which can lead to issues in certain browsers, such as Firefox, preventing user interaction.
@@ -554,11 +600,84 @@ body.post-type-sureforms_form {
 	label[contenteditable="true"] {
 		pointer-events: auto;
 	}
+
+	/*
+	* Conversational Form Settings Styles
+	*/
+	.srfm-conversational-placeholder-label-ctn {
+		display: flex;
+		gap: 8px;
+		align-items: center;
+	}
 }
 
 // TODO: Adding style fot the temprary hide spectra QAB.
 body.post-type-sureforms_form {
 	.spectra-ee-quick-access-container {
 		display: none !important;
+	}
+}
+
+html[dir="rtl"] body.post-type-sureforms_form {
+	.srfm-submit-btn-container {
+		max-width: calc( 620px - 20em );
+		.srfm-button {
+			// New variable is required as the value was getting evaluated to positive (-1 * -1) if used directly in translateX().
+			--srfm-submit-alignment-backend-rtl: calc( -1 * ( var( --srfm-submit-alignment-backend ) ) );
+			transform: translateX( var( --srfm-submit-alignment-backend-rtl ) );
+		}
+	}
+}
+
+.srfm-panel-preview {
+	.components-panel__body {
+		display: flex;
+		gap: 12px;
+		padding: 16px 48px 16px 16px;
+		cursor: pointer;
+		align-items: center;
+
+		.components-panel__body-title:hover {
+			background: unset;
+		}
+
+		.srfm-tooltip {
+			.tooltip-wrap {
+				width: auto;
+				min-width: 200px;
+			}
+		}
+		svg {
+			height: 24px;
+			width: 24px;
+			align-self: center;
+			right: 15px;
+			position: absolute;
+		}
+	}
+	.components-panel__body-content {
+		padding: 16px;
+		border-bottom: 1px solid #e0e0e0;
+	}
+}
+// The following are used for conditional logic preview as well as actual settings.
+.srfm-show-hide-select {
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	gap: 8px;
+	margin-bottom: 18px;
+
+	.components-base-control {
+		margin-bottom: 0 !important;
+		.components-base-control__field {
+			margin-bottom: 0 !important;
+		}
+	}
+
+	p {
+		margin-bottom: 0;
+		padding: 0;
+		color: #50575e;
 	}
 }

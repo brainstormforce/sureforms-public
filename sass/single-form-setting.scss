@@ -310,7 +310,7 @@ $req_err_color: #dc2625;
 								align-self: flex-start;
 
 								& + .components-dropdown {
-									bottom: 30%;
+									top: 33px;
 								}
 							}
 
@@ -529,12 +529,12 @@ $req_err_color: #dc2625;
 							}
 
 							.srfm-editor-wrap {
-								margin-top: -44px;
+								position: relative;
 
 								.srfm-editor-dropdown {
-									position: relative;
-									left: 610px;
-									top: 38px;
+									position: absolute;
+									right: 0;
+									top: 0;
 									color: var( --dashboard-heading, #1e293b );
 									border: 1px solid #dce0e6;
 									border-radius: 6px;
@@ -813,9 +813,6 @@ $req_err_color: #dc2625;
 			.srfm-validation-error {
 				color: var( --srfm-error-color );
 			}
-			.srfm-validation-error {
-				color: var( --srfm-error-color );
-			}
 		}
 
 		.components-tab-panel__tabs {
@@ -855,6 +852,11 @@ $req_err_color: #dc2625;
 
 			// Toggle control.
 			&.components-toggle-control {
+				// change the toggle switch border color.
+				.components-form-toggle .components-form-toggle__track {
+					border: 1px solid #1e1e1e;
+				}
+
 				.components-form-toggle.is-checked .components-form-toggle__track {
 					background-color: $primary_color;
 					box-shadow: none;
@@ -869,7 +871,6 @@ $req_err_color: #dc2625;
 				.components-base-control__help {
 					font-size: 0.6em;
 					margin-top: 0.2em;
-					margin-left: 4em;
 					color: $help_color;
 				}
 			}
@@ -880,6 +881,11 @@ $req_err_color: #dc2625;
 
 			.components-form-toggle.is-checked .components-form-toggle__track {
 				border: #d54407;
+			}
+
+			// Change the font size of the checkbox control to make check mark in center.
+			.components-checkbox-control__input-container {
+				font-size: 13px;
 			}
 
 			.components-checkbox-control__input[type="checkbox"]:checked {
@@ -963,11 +969,18 @@ $req_err_color: #dc2625;
 			}
 		}
 	}
+
+	// counter css for the margin added by zip-images library when UAGB or Starter Templates plugin is active.
+	.components-base-control__field {
+		margin-top: 0;
+	}
 }
 
 .components-popover__fallback-container {
-	.components-dropdown-menu__menu[aria-label="Select Shortcodes"] {
-		.components-button.components-dropdown-menu__menu-item:disabled {
+	.components-dropdown-menu__menu {
+		.components-button:disabled,
+		.components-button[aria-disabled="true"] {
+			color: #000000;
 			opacity: 1;
 			font-weight: bolder;
 		}
@@ -1067,7 +1080,7 @@ $req_err_color: #dc2625;
 			margin-right: 10px;
 			> svg > path {
 				fill: #d54407;
-			} 
+			}
 		}
 		.srfm-modal-title {
 			h1 {
@@ -1113,14 +1126,14 @@ $req_err_color: #dc2625;
 			justify-content: flex-end;
 			margin-top: 10px;
 			.srfm-cancel-button,
-			.srfm-insert-button{
+			.srfm-insert-button {
 				border-radius: 6px;
 				padding: 10px;
 				font-size: 14px;
 				font-weight: 600;
 				line-height: 20px;
 			}
-			.srfm-cancel-button{
+			.srfm-cancel-button {
 				background-color: #fff;
 				border-color: #dce0e6;
 				color: #4b5563;
@@ -1128,7 +1141,7 @@ $req_err_color: #dc2625;
 				border: 1px solid #dce0e6;
 			}
 
-			.srfm-insert-button{
+			.srfm-insert-button {
 				background-color: #007cba;
 				border-color: #007cba;
 				color: #fff;

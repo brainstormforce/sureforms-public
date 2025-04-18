@@ -8,15 +8,14 @@
 
 namespace SRFM\API;
 
+use SRFM\Inc\Helper;
 use SRFM\Inc\Traits\Get_Instance;
+use WP_Block_Patterns_Registry;
 use WP_Error;
 use WP_Post_Type;
 use WP_REST_Controller;
 use WP_REST_Request;
 use WP_REST_Response;
-use WP_REST_Server;
-use WP_Block_Patterns_Registry;
-use SRFM\Inc\Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -29,7 +28,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 0.0.1
  */
 class Block_Patterns extends WP_REST_Controller {
-
 	use Get_Instance;
 
 	/**
@@ -73,6 +71,7 @@ class Block_Patterns extends WP_REST_Controller {
 	 * @since 0.0.1
 	 */
 	public function get_items_permissions_check( $request ) {
+		unset( $request );
 		if ( current_user_can( 'edit_posts' ) ) {
 			return true;
 		}
@@ -119,7 +118,7 @@ class Block_Patterns extends WP_REST_Controller {
 		$filtered = array_filter(
 			$patterns,
 			static function( $pattern ) {
-				return in_array( 'sureforms_form', isset( $pattern['categories'] ) ? $pattern['categories'] : [], true );
+				return in_array( 'sureforms_form', $pattern['categories'] ?? [], true );
 			}
 		);
 
