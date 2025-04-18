@@ -39,8 +39,8 @@ class Admin {
 		add_action( 'admin_menu', [ $this, 'add_new_form' ] );
 		if ( ! defined( 'SRFM_PRO_VER' ) ) {
 			add_action( 'admin_menu', [ $this, 'add_upgrade_to_pro' ] );
+			add_action( 'admin_footer', [ $this, 'add_upgrade_to_pro_target_attr' ] );
 		}
-		add_action( 'admin_footer', [ $this, 'add_upgrade_to_pro_target_attr' ] );
 
 		add_filter( 'plugin_action_links', [ $this, 'add_settings_link' ], 10, 2 );
 		add_action( 'enqueue_block_assets', [ $this, 'enqueue_styles' ] );
@@ -228,7 +228,7 @@ class Admin {
 			document.addEventListener('DOMContentLoaded', function () {
 				// Upgrade link handler.
 				// IMPORTANT: If this URL changes, also update it in the `add_upgrade_to_pro` function.
-				const upgradeLink = document.querySelector('a[href*="https://sureforms.com/upgrade/?utm_medium=submenu_link_upgrade"]');
+				const upgradeLink = document.querySelector('a[href*="https://sureforms.com/upgrade"]');
 				if (upgradeLink) {
 					upgradeLink.addEventListener('click', e => {
 						e.preventDefault();
@@ -247,15 +247,13 @@ class Admin {
 	 * @since x.x.x
 	 */
 	public function add_upgrade_to_pro() {
-		$upgrade_url = esc_url( 'https://sureforms.com/upgrade/' );
-
 		// The url used here is used as a selector for css to style the upgrade to pro submenu.
 		// If you are changing this url, please make sure to update the css as well.
 		$upgrade_url = add_query_arg(
 			[
 				'utm_medium' => 'submenu_link_upgrade',
 			],
-			$upgrade_url
+			Helper::get_sureforms_website_url( 'upgrade' )
 		);
 
 		add_submenu_page(
