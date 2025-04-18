@@ -228,7 +228,7 @@ class Admin {
 			document.addEventListener('DOMContentLoaded', function () {
 				// Select all links with the specific href.
 				// If you are changing this url, please make sure to update the url in the add_upgrade_to_pro function as well.
-				const links = document.querySelectorAll('a[href*="https://sureforms.com/upgrade-pro/?utm_medium=submenu_link_upgrade"]');
+				const links = document.querySelectorAll('a[href*="https://sureforms.com/upgrade/?utm_medium=submenu_link_upgrade"]');
 
 				links.forEach(link => {
 					// Skip if already opens in new tab.
@@ -251,7 +251,7 @@ class Admin {
 	 * @since x.x.x
 	 */
 	public function add_upgrade_to_pro() {
-		$upgrade_url = esc_url( 'https://sureforms.com/upgrade-pro/' );
+		$upgrade_url = esc_url( 'https://sureforms.com/upgrade/' );
 
 		// The url used here is used as a selector for css to style the upgrade to pro submenu.
 		// If you are changing this url, please make sure to update the css as well.
