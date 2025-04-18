@@ -457,9 +457,8 @@ class Single_Entry {
 									<td><a target="_blank" href="<?php echo esc_url( $value ); ?>"><?php echo esc_url( $value ); ?></a></td>
 									<?php
 									// we need to html_entity_decode the value to display the html content. and check field textarea.
-								} elseif ( strpos( $field_name, 'srfm-textarea' ) !== false ) {
-										$value = "<div class='sureform_entry_meta_textarea'>" . html_entity_decode( $value ) . '</div>';
-									?>
+								} elseif ( strpos( $field_name, 'srfm-textarea' ) !== false ) { ?>
+										<td><div class='sureform_entry_meta_textarea'><?php echo html_entity_decode( $value ); ?></div></td>
 							<?php } elseif ( apply_filters( 'srfm_entry_render_field_custom_value', false, $field_name ) ) { ?>
 								<?php echo wp_kses_post( apply_filters( 'srfm_entry_custom_value', '', $value ) ); ?>
 							<?php } else { ?>

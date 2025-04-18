@@ -24,6 +24,12 @@
 					}
 				}
 
+				// Remove extra spacing between rich text editor toolbar items.
+				.quill-editor-container {
+					.ql-formats {
+						margin-right: 0;
+					}
+				}
 				.ql-editor {
 					min-height: 200px;
 					transition: 0.5s all ease;

@@ -198,7 +198,7 @@ class Helper {
 				'input'    => 'sanitize_text_field',
 				'number'   => [ self::class, 'sanitize_number' ],
 				'email'    => 'sanitize_email',
-				'textarea' => 'wp_kses_post',
+				'textarea' => [ self::class, 'sanitize_rich_textarea' ],
 			]
 		);
 
@@ -1225,4 +1225,37 @@ class Helper {
 
 		return self::join_strings( [ $background_type_class, $overlay_class ] );
 	}
+
+	/**
+	 * Custom sanitization function for the textarea with rich text support.
+	 * 
+	 * @param string $content The content submitted by the user in the textarea block.
+	 * @since x.x.x
+	 * 
+	 * @return string Sanitized content.
+	 */
+	public static function sanitize_rich_textarea( $content ) {
+		// Disable the safe style attribute parsing for the textarea block.
+		add_filter( 'safe_style_css', [ self::class, 'disable_style_attr_parsing' ], 10, 1 );
+		$sanitized_data = wp_kses_post( $content );
+
+		// Remove the filter after sanitization to avoid affecting other blocks.
+		remove_filter( 'safe_style_css', [ self::class, 'disable_style_attr_parsing' ], 10 );
+
+		return $sanitized_data;
+	}
+
+	/**
+	 * Disable parsing of style attributes for the textarea block.
+	 * 
+	 * @param array $allowed_styles The allowed styles.
+	 * @since x.x.x
+	 * 
+	 * @return array An empty array to disable style attribute parsing.
+	 */
+	public static function disable_style_attr_parsing( $allowed_styles ) {
+		// Disable parsing of style attributes.
+		return [];
+	}
+
 }

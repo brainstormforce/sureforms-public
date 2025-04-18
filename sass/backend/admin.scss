@@ -336,6 +336,12 @@ $placeholder_color: #9ca3af;
 	}
 }
 
+.sureforms_page_sureforms_entries {
+	.sureform_entry_meta_textarea {
+		max-width: 500px;
+	}
+}
+
 // css for whats-new
 .srfm_whats_new_flyout {
 	.whats-new-rss-flyout-contents {
