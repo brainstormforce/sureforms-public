@@ -36,6 +36,31 @@ function initializeTextarea() {
 				if ( isRichText === 'true' ) {
 					// Initialize Quill editor on the textarea
 					addQuillEditor( areaField );
+
+					const quillEditorContainer =
+						areaField?.parentElement?.querySelector(
+							'.quill-editor-container'
+						);
+					const quillEditor =
+						quillEditorContainer?.querySelector( '.ql-editor' );
+					quillEditor?.addEventListener( 'focus', function () {
+						// Add focus class to the textarea block wrapper.
+						quillEditorContainer.classList.add(
+							'srfm-quill-editor-focused'
+						);
+					} );
+					quillEditor?.addEventListener( 'click', function () {
+						// Add focus class to the textarea block wrapper.
+						quillEditorContainer.classList.add(
+							'srfm-quill-editor-focused'
+						);
+					} );
+					quillEditor?.addEventListener( 'blur', function () {
+						// Remove focus class from the textarea block wrapper.
+						quillEditorContainer.classList.remove(
+							'srfm-quill-editor-focused'
+						);
+					} );
 				}
 			}
 		}
@@ -86,6 +111,8 @@ function addQuillEditor( areaField ) {
 	// Set default content from the textarea to the Quill editor
 	const quillDefaultContent = areaField.value;
 	quillEditor.clipboard.dangerouslyPasteHTML( quillDefaultContent ); // Populate Quill with initial content
+
+	quillEditor.blur(); // Ensure the editor is not focused initially.
 
 	// Listen for changes in the Quill editor and update the corresponding textarea
 	quillEditor.on( 'text-change', function () {

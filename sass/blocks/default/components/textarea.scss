@@ -12,6 +12,9 @@
 			}
 
 			&.srfm-richtext {
+				.ql-container.ql-snow {
+					border: none;
+				}
 				.srfm-input-textarea {
 					display: none;
 				}
@@ -24,15 +27,36 @@
 					}
 				}
 
-				// Remove extra spacing between rich text editor toolbar items.
 				.quill-editor-container {
+					// Add the border radius for the complete quill editor container.
+					border: 1px solid var( --srfm-color-input-border );
+					border-radius: var( --srfm-input-field-border-radius );
+					transition: 0.2s ease-out;
+					// Removed the toolbar border and add only the bottom border.
+					.ql-toolbar.ql-snow {
+						border: none; // Adding to override the border shorthand applied by the library.
+						border-bottom: 1px solid var( --srfm-color-input-border );
+					}
+					// Remove extra spacing between rich text editor toolbar items.
 					.ql-formats {
 						margin-right: 0;
+					}
+
+					// Add hover effect styles.
+					&:hover {
+						border-color: var( --srfm-color-input-border-hover );
+					}
+					// Add focus effect styles.
+					&.srfm-quill-editor-focused {
+						box-shadow: 0px 0px 0px 3px var( --srfm-color-input-border-focus-glow );
+						border-color: var( --srfm-color-input-border-hover );
 					}
 				}
 				.ql-editor {
 					min-height: 200px;
 					transition: 0.5s all ease;
+					// Add the background color for the quill textarea input.
+					background-color: var( --srfm-color-input-background );
 				}
 
 				.ql-picker-options {
