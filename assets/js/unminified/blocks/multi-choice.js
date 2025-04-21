@@ -53,7 +53,7 @@ function initializeMultichoice() {
 						.closest( '.srfm-multi-choice-single' )
 						.querySelector( 'label' ).innerText;
 
-					let hiddenInput = single.querySelector(
+					const hiddenInput = single.querySelector(
 						'.srfm-input-multi-choice-hidden'
 					);
 
@@ -62,13 +62,14 @@ function initializeMultichoice() {
 					}
 
 					let setValue = null;
-					
+
 					// For Radio Mode / single select.
 					if ( single.classList.contains( 'srfm-radio-mode' ) ) {
 						if ( e.target.checked ) {
 							setValue = getValue;
 						}
-					} else if ( // For checkbox mode / multi select.
+					} else if (
+						// For checkbox mode / multi select.
 						single.classList.contains( 'srfm-checkbox-mode' )
 					) {
 						if ( e.target.checked ) {
@@ -84,7 +85,7 @@ function initializeMultichoice() {
 					}
 
 					// Set the value of the hidden input field.
-					if ( setValue ){
+					if ( setValue ) {
 						hiddenInput.setAttribute( 'value', setValue );
 					}
 

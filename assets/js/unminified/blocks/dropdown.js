@@ -69,7 +69,9 @@ function initializeDropdown() {
 					if ( hiddenInputField ) {
 						hiddenInputField.setAttribute(
 							'value',
-							Array.isArray( value ) ? srfmUtility.prepareValue( value ) : value
+							Array.isArray( value )
+								? srfmUtility.prepareValue( value )
+								: value
 						);
 
 						// Dispatch the change event on the hidden input field.

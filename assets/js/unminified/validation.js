@@ -607,7 +607,9 @@ export async function fieldValidation(
 
 					if ( minSelection || maxSelection ) {
 						// create array from dropdownInput.value
-						const selectedOptions = srfmUtility.extractValue( dropdownInput.value );
+						const selectedOptions = srfmUtility.extractValue(
+							dropdownInput.value
+						);
 						// If some value is selected but less than minSelection.
 						if (
 							minSelection &&
@@ -835,7 +837,9 @@ function validateMultiChoiceMinMax() {
 		const errorMessages = window?.srfm_submit?.messages || {};
 
 		container.addEventListener( 'input', () => {
-			const selectedOptions = srfmUtility.extractValue( multiChoiceHiddenInput.value ).filter( Boolean );
+			const selectedOptions = srfmUtility
+				.extractValue( multiChoiceHiddenInput.value )
+				.filter( Boolean );
 
 			const selectedCount = selectedOptions.length;
 

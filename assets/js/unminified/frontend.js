@@ -497,16 +497,16 @@ function onSuccess( response ) {
 	);
 
 	const UTILITY = {
-		prepareValue: function ( value = [] ) {
+		prepareValue ( value = [] ) {
 			// We have value like ["value 1", "value 2"]
 			// We need to join them with "|"" so this will be robust solution. then if add label like "some text, another text" then problem will not occur.
 			return value.join( ' | ' );
 		},
-		extractValue: function ( value = '' ) {
+		extractValue ( value = '' ) {
 			// We have value like "value 1 | value 2"
 			// We need to split them with "|"" so this will be robust solution. then if add label like "some text, another text" then problem will not occur.
 			return value.split( ' | ' );
-		}
+		},
 	};
 
 	// Adding the `UTILITY` object to the global `srfm` object.
