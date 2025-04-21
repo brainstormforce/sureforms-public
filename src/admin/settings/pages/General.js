@@ -26,7 +26,9 @@ const GeneralPage = ( {
 		return (
 			<>
 				<Switch
-					label={ { heading: __( 'Enable Email Summaries ', 'sureforms' ) } }
+					label={ {
+						heading: __( 'Enable Email Summaries ', 'sureforms' ),
+					} }
 					value={ emailTabOptions.srfm_email_summary }
 					onChange={ ( value ) =>
 						updateGlobalSettings(
@@ -107,7 +109,10 @@ const GeneralPage = ( {
 							<Select.Portal>
 								<Select.Options>
 									{ days.map( ( day ) => (
-										<Select.Option key={ day.value } value={ day.value }>
+										<Select.Option
+											key={ day.value }
+											value={ day.value }
+										>
 											{ day.label }
 										</Select.Option>
 									) ) }
@@ -144,6 +149,30 @@ const GeneralPage = ( {
 		);
 	};
 
+	const UsageTrackingContent = () => {
+		return (
+			<>
+				<Switch
+					label={ {
+						heading: __( 'Enable Usage Tracking', 'sureforms' ),
+						description: __(
+							'Allow SureForms to track non-sensitive usage tracking data. Learn More',
+							'sureforms'
+						),
+					} }
+					value={ generalTabOptions.srfm_form_analytics }
+					onChange={ ( value ) =>
+						updateGlobalSettings(
+							'srfm_form_analytics',
+							value,
+							'general-settings'
+						)
+					}
+				/>
+			</>
+		);
+	};
+
 	return (
 		<div className="space-y-6">
 			<ContentSection
@@ -156,6 +185,13 @@ const GeneralPage = ( {
 				title={ __( 'IP Logging', 'sureforms' ) }
 				content={ IPLoggingContent() }
 			/>
+			{ ! srfm_admin?.is_pro_active && (
+				<ContentSection
+					loading={ loading }
+					title={ __( 'Usage Tracking', 'sureforms' ) }
+					content={ UsageTrackingContent() }
+				/>
+			) }
 		</div>
 	);
 };
