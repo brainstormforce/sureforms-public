@@ -19,6 +19,7 @@ use SRFM\Inc\AI_Form_Builder\AI_Helper;
 use SRFM\Inc\AI_Form_Builder\Field_Mapping;
 use SRFM\Inc\Background_Process;
 use SRFM\Inc\Blocks\Register;
+use SRFM\Inc\Compatibility\Themes\Astra;
 use SRFM\Inc\Create_New_Form;
 use SRFM\Inc\Database\Register as DatabaseRegister;
 use SRFM\Inc\Events_Scheduler;
@@ -290,6 +291,8 @@ class Plugin_Loader {
 		AI_Auth::get_instance();
 		Updater::get_instance();
 		DatabaseRegister::init();
+		// Initializing Compatibilities.
+		Astra::get_instance();
 		/**
 		 * Required to add the if check for the class existence to resolve phpstan error,
 		 * as the phpstan configuration ignores the inc/lib directory which gives error
