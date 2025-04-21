@@ -150,15 +150,27 @@ const GeneralPage = ( {
 	};
 
 	const UsageTrackingContent = () => {
+
+		const description =
+		<>
+			<p>
+				{ __( 'Allow SureForms to track non-sensitive usage tracking data.', 'sureforms' ) }
+			</p>
+			<a
+				href="#"
+				target="_blank"
+				rel="noopener noreferrer"
+			>
+				{ __( ' Learn More', 'sureforms' ) }
+			</a>
+		</>
+
 		return (
 			<>
 				<Switch
 					label={ {
 						heading: __( 'Enable Usage Tracking', 'sureforms' ),
-						description: __(
-							'Allow SureForms to track non-sensitive usage tracking data. Learn More',
-							'sureforms'
-						),
+						description: description,
 					} }
 					value={ generalTabOptions.srfm_form_analytics }
 					onChange={ ( value ) =>
