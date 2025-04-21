@@ -1,5 +1,5 @@
 import { __ } from '@wordpress/i18n';
-import { useState } from '@wordpress/element';
+import { useState, memo } from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
 import { Button, Input, Loader, Select, Switch, toast } from '@bsf/force-ui';
 import ContentSection from '../components/ContentSection';
@@ -149,39 +149,45 @@ const GeneralPage = ( {
 		);
 	};
 
-	const UsageTrackingContent = () => {
-
-		const description =
-		<>
-			<p>
-				{ __( 'Allow SureForms to track non-sensitive usage tracking data.', 'sureforms' ) }
-			</p>
-			<a
-				href="#"
-				target="_blank"
-				rel="noopener noreferrer"
-			>
-				{ __( ' Learn More', 'sureforms' ) }
-			</a>
-		</>
+	const UsageTrackingContent = memo(() => {
+		const description = (
+			<>
+				<p>
+					{ __( 'Allow SureForms to track non-sensitive usage tracking data.', 'sureforms' ) }
+				</p>
+				<a
+					href="#"
+					target="_blank"
+					rel="noopener noreferrer"
+				>
+					{ __( ' Learn More', 'sureforms' ) }
+				</a>
+			</>
+		);
 
 		return (
-			<>
-				<Switch
-					label={ {
-						heading: __( 'Enable Usage Tracking', 'sureforms' ),
-						description: description,
-					} }
-					value={ generalTabOptions.srfm_form_analytics }
-					onChange={ ( value ) =>
-						updateGlobalSettings(
-							'srfm_form_analytics',
-							value,
-							'general-settings'
-						)
-					}
-				/>
-			</>
+			<Switch
+				label={{
+					heading: __( 'Enable Usage Tracking', 'sureforms' ),
+					description: description,
+				}}
+				value={ generalTabOptions.srfm_form_analytics }
+				onChange={ (value) =>
+					updateGlobalSettings('srfm_form_analytics', value, 'general-settings')
+				}
+			/>
+		);
+	});
+
+	const ShowUsageTrackingSection = ({ isProActive, loading }) => {
+		if (isProActive) return null;
+
+		return (
+			<ContentSection
+				loading={loading}
+				title={__( 'Usage Tracking', 'sureforms' )}
+				content={<UsageTrackingContent />}
+			/>
 		);
 	};
 
@@ -197,13 +203,10 @@ const GeneralPage = ( {
 				title={ __( 'IP Logging', 'sureforms' ) }
 				content={ IPLoggingContent() }
 			/>
-			{ ! srfm_admin?.is_pro_active && (
-				<ContentSection
-					loading={ loading }
-					title={ __( 'Usage Tracking', 'sureforms' ) }
-					content={ UsageTrackingContent() }
-				/>
-			) }
+			<ShowUsageTrackingSection
+				isProActive={srfm_admin?.is_pro_active}
+				loading={loading}
+			/>
 		</div>
 	);
 };
