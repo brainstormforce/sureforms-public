@@ -220,7 +220,7 @@ class Admin {
 	 * Open to Upgrade to Pro submenu link in new tab.
 	 *
 	 * @return void
-	 * @since x.x.x
+	 * @since 1.6.1
 	 */
 	public function add_upgrade_to_pro_target_attr() {
 		?>
@@ -244,7 +244,7 @@ class Admin {
 	 * Add Upgrade to pro menu item.
 	 *
 	 * @return void
-	 * @since x.x.x
+	 * @since 1.6.1
 	 */
 	public function add_upgrade_to_pro() {
 		// The url used here is used as a selector for css to style the upgrade to pro submenu.
