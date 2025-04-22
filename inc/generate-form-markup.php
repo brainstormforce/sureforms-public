@@ -142,10 +142,14 @@ class Generate_Form_Markup {
 
 			$background_classes = apply_filters( 'srfm_add_background_classes', Helper::get_background_classes( $bg_type, $overlay_type, $bg_image ) );
 
+			$neve_theme_margin_class_name = 'srfm-neve-theme-add-margin-bottom';
+			$theme_name                   = wp_get_theme()->get( 'Name' );
+
 			$form_classes = [
 				'srfm-form-container',
 				$container_id,
 				$sf_classname,
+				'Neve' === $theme_name ? $neve_theme_margin_class_name : '', // compatibility with Neve theme for margin between main content and footer.
 				$background_classes,
 			];
 
@@ -411,7 +415,7 @@ class Generate_Form_Markup {
 				do_action( 'srfm_after_field_content', $post, $id );
 
 				?>
-					<?php if ( $should_show_submit_button && ! empty( $security_type ) && 'none' !== $security_type ) { ?>
+					<?php if ( $should_show_submit_button && ! empty( $security_type ) && 'none' !== $security_type && ! empty( $recaptcha_version ) && 'none' !== $recaptcha_version ) { ?>
 						<div class="srfm-captcha-container <?php echo esc_attr( 'v3-reCAPTCHA' === $recaptcha_version || 'v2-invisible' === $recaptcha_version ? 'srfm-display-none' : '' ); ?>">
 						<?php if ( is_string( $google_captcha_site_key ) && ! empty( $google_captcha_site_key ) && 'g-recaptcha' === $security_type ) { ?>
 

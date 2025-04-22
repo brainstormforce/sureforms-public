@@ -39,6 +39,14 @@ class Form_Submit {
 	protected $namespace = 'sureforms/v1';
 
 	/**
+	 * Addresses.
+	 *
+	 * @var string
+	 * @since x.x.x
+	 */
+	private $addresses = '';
+
+	/**
 	 * Constructor
 	 *
 	 * @since  0.0.1
@@ -478,6 +486,14 @@ class Form_Submit {
 			$do_not_store_entries = $compliance[0]['do_not_store_entries'] ?? '';
 		}
 
+		// Check if the form data contains 'srfm_addresses' and is not empty.
+		if ( ! empty( $form_data['srfm_addresses'] ) ) {
+			// Assign the addresses to the class property for further processing.
+			$this->addresses = $form_data['srfm_addresses'];
+			// Remove the address data from the form data to avoid redundancy.
+			unset( $form_data['srfm_addresses'] );
+		}
+
 		$submission_data = [];
 
 		$form_data_keys  = array_keys( $form_data );
@@ -667,6 +683,18 @@ class Form_Submit {
 				} else {
 					$modified_message[ $label ] = html_entity_decode( esc_attr( Helper::get_string_value( $value ) ) );
 				}
+			}
+		}
+
+		// If the address is not empty, add it to the submission data.
+		// We are providing this for third-party integrations like Ottokit.
+		// They can use compact addresses such as permanent address, temporary address, etc.
+		// The address will be structured as field 1, field 2, and so on.
+		if ( ! empty( $this->addresses ) ) {
+			// Address will be JSON stringified, so decode it.
+			$address = json_decode( wp_unslash( $this->addresses ), true );
+			if ( ! empty( $address ) && is_array( $address ) ) {
+				$modified_message = array_merge( $modified_message, $address );
 			}
 		}
 
