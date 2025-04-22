@@ -14,8 +14,8 @@ msgstr ""
 #. Plugin Name of the plugin
 #. Author of the plugin
 #: sureforms.php
-#: admin/admin.php:167
-#: admin/admin.php:168
+#: admin/admin.php:172
+#: admin/admin.php:173
 #: inc/gutenberg-hooks.php:107
 #: inc/nps-notice.php:108
 #: inc/page-builders/bricks/elements/form-widget.php:66
@@ -42,38 +42,38 @@ msgstr "Een eenvoudige maar krachtige manier om moderne formulieren voor uw webs
 msgid "https://sureforms.com/"
 msgstr ""
 
-#: admin/admin.php:180
-#: admin/admin.php:181
+#: admin/admin.php:185
+#: admin/admin.php:186
 msgid "Dashboard"
 msgstr "Dashboard"
 
-#: admin/admin.php:198
-#: admin/admin.php:199
-#: admin/admin.php:316
+#: admin/admin.php:203
+#: admin/admin.php:204
+#: admin/admin.php:370
 msgid "Settings"
 msgstr "Instellingen"
 
-#: admin/admin.php:243
-#: admin/admin.php:244
+#: admin/admin.php:297
+#: admin/admin.php:298
 #: inc/post-types.php:129
 msgid "New Form"
 msgstr "Nieuw formulier"
 
-#: admin/admin.php:252
-#: admin/admin.php:253
-#: admin/admin.php:289
+#: admin/admin.php:306
+#: admin/admin.php:307
+#: admin/admin.php:343
 #: inc/global-settings/email-summary.php:107
-#: inc/post-types.php:881
+#: inc/post-types.php:889
 #: assets/build/dashboard.js:2
 msgid "Entries"
 msgstr "Inzendingen"
 
 #. Translators: Post Title.
-#: admin/admin.php:396
+#: admin/admin.php:450
 msgid "Edit %1$s"
 msgstr "Bewerk %1$s"
 
-#: admin/admin.php:764
+#: admin/admin.php:818
 #: api/block-patterns.php:110
 #: inc/ai-form-builder/ai-auth.php:45
 #: inc/ai-form-builder/ai-auth.php:81
@@ -82,8 +82,8 @@ msgstr "Bewerk %1$s"
 #: inc/create-new-form.php:126
 #: inc/export.php:62
 #: inc/export.php:127
-#: inc/form-submit.php:200
-#: inc/form-submit.php:838
+#: inc/form-submit.php:208
+#: inc/form-submit.php:866
 #: inc/forms-data.php:87
 #: inc/global-settings/global-settings.php:86
 #: inc/global-settings/global-settings.php:294
@@ -91,17 +91,17 @@ msgstr "Bewerk %1$s"
 msgid "Nonce verification failed."
 msgstr "Verificatie van nonce mislukt."
 
-#: admin/admin.php:773
+#: admin/admin.php:827
 msgid "You cannot view this entry because it is in trash."
 msgstr "U kunt deze invoer niet bekijken omdat deze in de prullenbak staat."
 
 #. translators: %1$s: Opening anchor tag with URL, %2$s: Closing anchor tag, %3$s: SureForms Pro Plugin Name.
-#: admin/admin.php:818
+#: admin/admin.php:872
 msgid "Please %1$sactivate%2$s your copy of %3$s to get new features, access support, receive update notifications, and more."
 msgstr "Gelieve %1$suw exemplaar van %3$s te activeren%2$s om nieuwe functies te krijgen, toegang tot ondersteuning, update-meldingen te ontvangen en meer."
 
 #: admin/views/entries-list-table.php:92
-#: admin/views/entries-list-table.php:497
+#: admin/views/entries-list-table.php:1472
 msgid "ID"
 msgstr ""
 "The term \"ID\" is commonly used and understood in Dutch as well, so it remains \"ID\". \n"
@@ -155,88 +155,88 @@ msgstr "Geen items gevonden."
 msgid "Search"
 msgstr "Zoeken"
 
-#: admin/views/entries-list-table.php:386
+#: admin/views/entries-list-table.php:358
 msgid "Entries export failed. You have file permission issue. Temporary directory is not writable."
 msgstr "Exporteren van items is mislukt. U heeft een probleem met bestandsrechten. De tijdelijke map is niet beschrijfbaar."
 
-#: admin/views/entries-list-table.php:404
+#: admin/views/entries-list-table.php:376
 msgid "Entries export failed. Your server does not support the ZipArchive library."
 msgstr "Exporteren van items mislukt. Uw server ondersteunt de ZipArchive-bibliotheek niet."
 
-#: admin/views/entries-list-table.php:426
+#: admin/views/entries-list-table.php:398
 msgid "Entries export failed. Unable to create the ZIP file."
 msgstr "Exporteren van items mislukt. Kan het ZIP-bestand niet maken."
 
-#: admin/views/entries-list-table.php:568
+#: admin/views/entries-list-table.php:487
 msgid "Entries export failed."
 msgstr "Exporteren van items is mislukt."
 
-#: admin/views/entries-list-table.php:583
+#: admin/views/entries-list-table.php:502
 msgid "Entries export failed. Problem occured while closing the ZIP file."
 msgstr "Exporteren van items mislukt. Er is een probleem opgetreden bij het sluiten van het ZIP-bestand."
 
 #. translators: %1$d refers to the number of entries, %2$s refers to the status (read or unread).
-#: admin/views/entries-list-table.php:659
+#: admin/views/entries-list-table.php:578
 msgid "%1$d entry was successfully marked as %2$s."
 msgid_plural "%1$d entries were successfully marked as %2$s."
 msgstr[0] "%1$d item is succesvol gemarkeerd als %2$s."
 msgstr[1] ""
 
 #. translators: %1$d refers to the number of entries, %2$s refers to the action (trash).
-#: admin/views/entries-list-table.php:663
+#: admin/views/entries-list-table.php:582
 msgid "%1$d entry was successfully moved to trash."
 msgid_plural "%1$d entries were successfully moved to trash."
 msgstr[0] "%1$d item is succesvol naar de prullenbak verplaatst."
 msgstr[1] ""
 
 #. translators: %1$d refers to the number of entries, %2$s refers to the action (restore).
-#: admin/views/entries-list-table.php:667
+#: admin/views/entries-list-table.php:586
 msgid "%1$d entry was successfully restored."
 msgid_plural "%1$d entries were successfully restored."
 msgstr[0] "%1$d item is succesvol hersteld."
 msgstr[1] ""
 
 #. translators: %1$d refers to the number of entries, %2$s refers to the action (delete).
-#: admin/views/entries-list-table.php:671
+#: admin/views/entries-list-table.php:590
 msgid "%1$d entry was permanently deleted."
 msgid_plural "%1$d entries were permanently deleted."
 msgstr[0] "%1$d item is permanent verwijderd."
 msgstr[1] ""
 
-#: admin/views/entries-list-table.php:801
+#: admin/views/entries-list-table.php:720
 msgid "Entry #"
 msgstr "Invoer #"
 
 #. translators: %1$s is the word "form", %2$d is the form ID.
-#: admin/views/entries-list-table.php:817
-#: admin/views/entries-list-table.php:1108
+#: admin/views/entries-list-table.php:736
+#: admin/views/entries-list-table.php:1027
 #: inc/page-builders/bricks/elements/form-widget.php:96
 #: assets/build/dashboard.js:2
 #: assets/build/formEditor.js:172
 msgid "Form"
 msgstr "Formulier"
 
-#: admin/views/entries-list-table.php:833
+#: admin/views/entries-list-table.php:752
 msgid "Read"
 msgstr "Lezen"
 
-#: admin/views/entries-list-table.php:836
-#: admin/views/entries-list-table.php:1195
+#: admin/views/entries-list-table.php:755
+#: admin/views/entries-list-table.php:1114
 msgid "Unread"
 msgstr "Ongelezen"
 
-#: admin/views/entries-list-table.php:839
-#: admin/views/entries-list-table.php:943
-#: admin/views/entries-list-table.php:1206
+#: admin/views/entries-list-table.php:758
+#: admin/views/entries-list-table.php:862
+#: admin/views/entries-list-table.php:1125
 #: modules/gutenberg/icons/icons-v6-3.php:2916
 msgid "Trash"
 msgstr "Afval"
 
-#: admin/views/entries-list-table.php:903
+#: admin/views/entries-list-table.php:822
 msgid "Published"
 msgstr "Gepubliceerd"
 
-#: admin/views/entries-list-table.php:942
+#: admin/views/entries-list-table.php:861
 #: inc/email/email-template.php:157
 #: inc/email/email-template.php:163
 #: inc/smart-tags.php:338
@@ -244,25 +244,25 @@ msgstr "Gepubliceerd"
 msgid "View"
 msgstr "Bekijken"
 
-#: admin/views/entries-list-table.php:976
-#: admin/views/entries-list-table.php:1401
+#: admin/views/entries-list-table.php:895
+#: admin/views/entries-list-table.php:1320
 msgid "Restore"
 msgstr "Herstellen"
 
-#: admin/views/entries-list-table.php:977
-#: admin/views/entries-list-table.php:1402
+#: admin/views/entries-list-table.php:896
+#: admin/views/entries-list-table.php:1321
 msgid "Delete Permanently"
 msgstr "Permanent verwijderen"
 
-#: admin/views/entries-list-table.php:1106
+#: admin/views/entries-list-table.php:1025
 msgid "All Form Entries"
 msgstr "Alle formulierinvoeren"
 
-#: admin/views/entries-list-table.php:1136
+#: admin/views/entries-list-table.php:1055
 msgid "All Dates"
 msgstr "Alle datums"
 
-#: admin/views/entries-list-table.php:1188
+#: admin/views/entries-list-table.php:1107
 msgid "All"
 msgstr "Alle"
 
@@ -454,7 +454,7 @@ msgid "Form ID is required."
 msgstr "Formulier-ID is vereist."
 
 #: inc/admin-ajax.php:242
-#: inc/form-submit.php:850
+#: inc/form-submit.php:878
 msgid "Invalid form ID."
 msgstr "Ongeldige formulier-ID."
 
@@ -660,8 +660,8 @@ msgstr "Selectievakje"
 
 #: inc/fields/checkbox-markup.php:60
 #: inc/fields/gdpr-markup.php:59
-#: inc/helper.php:303
-#: inc/helper.php:319
+#: inc/helper.php:326
+#: inc/helper.php:342
 #: assets/build/blocks.js:172
 msgid "Required"
 msgstr "Vereist"
@@ -692,7 +692,7 @@ msgid "I consent to have this website store my submitted information so they can
 msgstr "Ik geef toestemming aan deze website om mijn ingediende informatie op te slaan zodat ze op mijn vraag kunnen reageren."
 
 #: inc/fields/inlinebutton-markup.php:182
-#: inc/generate-form-markup.php:464
+#: inc/generate-form-markup.php:468
 msgid "Please verify that you are not a robot."
 msgstr "Controleer alstublieft dat u geen robot bent."
 
@@ -721,58 +721,58 @@ msgstr "Tekstvak"
 msgid "Url"
 msgstr "Url"
 
-#: inc/form-submit.php:81
+#: inc/form-submit.php:89
 msgid "Sorry, you cannot access this route"
 msgstr "Sorry, je hebt geen toegang tot deze route"
 
-#: inc/form-submit.php:99
+#: inc/form-submit.php:107
 msgid "Cloudflare Turnstile secret key is invalid."
 msgstr "Cloudflare Turnstile geheime sleutel is ongeldig."
 
-#: inc/form-submit.php:106
+#: inc/form-submit.php:114
 msgid "Cloudflare Turnstile response is missing."
 msgstr "Cloudflare Turnstile-reactie ontbreekt."
 
-#: inc/form-submit.php:150
+#: inc/form-submit.php:158
 msgid "hCaptcha secret key is invalid."
 msgstr "hCaptcha geheime sleutel is ongeldig."
 
-#: inc/form-submit.php:157
+#: inc/form-submit.php:165
 msgid "hCaptcha response is missing."
 msgstr "hCaptcha-reactie ontbreekt."
 
-#: inc/form-submit.php:210
+#: inc/form-submit.php:218
 msgid "Form data is not found."
 msgstr "Formuliergegevens zijn niet gevonden."
 
-#: inc/form-submit.php:250
+#: inc/form-submit.php:258
 msgid "File is not uploaded"
 msgstr "Bestand is niet geüpload"
 
-#: inc/form-submit.php:264
+#: inc/form-submit.php:272
 msgid "Form Id is missing."
 msgstr "Formulier-ID ontbreekt."
 
-#: inc/form-submit.php:321
+#: inc/form-submit.php:329
 msgid "Cloudflare Turnstile validation failed."
 msgstr "Cloudflare Turnstile-validatie mislukt."
 
-#: inc/form-submit.php:351
+#: inc/form-submit.php:359
 msgid "hCaptcha validation failed."
 msgstr "hCaptcha-validatie mislukt."
 
-#: inc/form-submit.php:381
-#: inc/form-submit.php:391
-#: inc/form-submit.php:421
-#: inc/form-submit.php:431
+#: inc/form-submit.php:389
+#: inc/form-submit.php:399
+#: inc/form-submit.php:429
+#: inc/form-submit.php:439
 msgid "reCAPTCHA error."
 msgstr "reCAPTCHA-fout."
 
-#: inc/form-submit.php:441
+#: inc/form-submit.php:449
 msgid "Spam Detected"
 msgstr "Spam gedetecteerd"
 
-#: inc/form-submit.php:636
+#: inc/form-submit.php:652
 msgid "Error submitting form"
 msgstr "Fout bij het indienen van het formulier"
 
@@ -780,9 +780,9 @@ msgstr "Fout bij het indienen van het formulier"
 msgid "Sorry, you are not allowed to view the form."
 msgstr "Sorry, je mag het formulier niet bekijken."
 
-#: inc/generate-form-markup.php:516
+#: inc/generate-form-markup.php:520
 #: assets/build/formSubmit.js:2
-#: assets/js/unminified/form-submit.js:205
+#: assets/js/unminified/form-submit.js:256
 msgid "There was an error trying to submit your form. Please try again."
 msgstr "Er is een fout opgetreden bij het indienen van uw formulier. Probeer het alstublieft opnieuw."
 
@@ -845,7 +845,7 @@ msgstr "Dit veld is verplicht."
 msgid "Value needs to be unique."
 msgstr "Waarde moet uniek zijn."
 
-#: inc/helper.php:534
+#: inc/helper.php:557
 msgid "Sorry, you are not allowed to perform this action."
 msgstr "Sorry, je mag deze actie niet uitvoeren."
 
@@ -911,7 +911,7 @@ msgstr "Nieuw formulier maken"
 msgid "Create"
 msgstr "Maken"
 
-#: admin/admin.php:582
+#: admin/admin.php:636
 #: inc/post-types.php:88
 msgid "Import Form"
 msgstr "Importformulier"
@@ -970,28 +970,28 @@ msgstr "Formulier gepubliceerd."
 msgid "Form updated."
 msgstr "Formulier bijgewerkt."
 
-#: inc/post-types.php:723
+#: inc/post-types.php:729
 msgid "Admin Notification Email"
 msgstr "Beheerdersmelding E-mail"
 
 #. translators: %s: Form title smart tag
-#: inc/post-types.php:728
+#: inc/post-types.php:736
 msgid "New Form Submission - %s"
 msgstr "Nieuwe formulierinzending - %s"
 
-#: inc/post-types.php:880
+#: inc/post-types.php:888
 msgid "Shortcode"
 msgstr "Kortingscode"
 
-#: inc/post-types.php:944
+#: inc/post-types.php:952
 msgid "Please choose the SureForms export file (.json) that you wish to import."
 msgstr "Kies het SureForms-exportbestand (.json) dat u wilt importeren."
 
-#: inc/post-types.php:947
+#: inc/post-types.php:955
 msgid "Import Now"
 msgstr "Nu importeren"
 
-#: inc/post-types.php:949
+#: inc/post-types.php:957
 msgid "There is some error in json file, please export the SureForms Forms again."
 msgstr "Er is een fout in het json-bestand, exporteer de SureForms-formulieren opnieuw."
 
@@ -4134,7 +4134,7 @@ msgstr "Alternatieve GitHub"
 
 #: modules/gutenberg/icons/icons-v6-1.php:3483
 msgid "GitKraken"
-msgstr ""
+msgstr "GitKraken"
 
 #: modules/gutenberg/icons/icons-v6-1.php:3494
 msgid "GitLab"
@@ -5117,7 +5117,7 @@ msgstr "Link Slash"
 
 #: modules/gutenberg/icons/icons-v6-2.php:915
 msgid "LinkedIn"
-msgstr ""
+msgstr "LinkedIn"
 
 #: modules/gutenberg/icons/icons-v6-2.php:926
 msgid "LinkedIn In"
@@ -9720,7 +9720,7 @@ msgstr "Pagina-einde"
 msgid "Previous"
 msgstr "Vorige"
 
-#: inc/post-types.php:828
+#: inc/post-types.php:836
 #: assets/build/formEditor.js:172
 msgid "Thank you"
 msgstr "Dank je"
@@ -11072,11 +11072,11 @@ msgid "icon"
 msgstr "icoon"
 
 #. translators: %1$s: SureForms version, %2$s: SureForms Pro Plugin Name, %3$s: SureForms Pro Version, %4$s: Anchor tag open, %5$s: Closing anchor tag.
-#: admin/admin.php:828
+#: admin/admin.php:882
 msgid "SureForms %1$s requires minimum %2$s %3$s to work properly. Please update to the latest version from %4$shere%5$s."
 msgstr "SureForms %1$s vereist minimaal %2$s %3$s om goed te functioneren. Werk alstublieft bij naar de nieuwste versie van %4$shier%5$s."
 
-#: admin/views/entries-list-table.php:1011
+#: admin/views/entries-list-table.php:930
 msgid "Clear Filter"
 msgstr "Filter wissen"
 
@@ -11100,7 +11100,7 @@ msgstr "Honeypot"
 msgid "You do not have permission to export forms."
 msgstr "U heeft geen toestemming om formulieren te exporteren."
 
-#: inc/form-submit.php:797
+#: inc/form-submit.php:825
 msgid "Unknown"
 msgstr "Onbekend"
 
@@ -11217,21 +11217,21 @@ msgstr "Ontgrendel Notitie Toevoegen"
 msgid "With the SureForms Starter plan, enhance your submitted form entries by adding personalized notes for better clarity and tracking."
 msgstr "Met het SureForms Starter-plan kunt u uw ingediende formulierinzendingen verbeteren door gepersonaliseerde notities toe te voegen voor meer duidelijkheid en betere tracking."
 
-#: inc/form-submit.php:731
+#: inc/form-submit.php:759
 msgid "Email notification passed to the sending server"
 msgstr "E-mailmelding doorgestuurd naar de verzendserver"
 
 #. translators: Here, %s is the comma separated emails list.
-#: inc/form-submit.php:785
+#: inc/form-submit.php:813
 msgid "Email notification recipient: %s"
 msgstr "E-mail notificatie ontvanger: %s"
 
 #. translators: Here, %1$s is the comma separated emails list and %2$s is error report ( if any ).
-#: inc/form-submit.php:795
+#: inc/form-submit.php:823
 msgid "Email server was unable to send the email notification. Recipient: %1$s. Reason: %2$s"
 msgstr "E-mailserver kon de e-mailmelding niet verzenden. Ontvanger: %1$s. Reden: %2$s"
 
-#: inc/form-submit.php:820
+#: inc/form-submit.php:848
 msgid "No emails were sent"
 msgstr "Er zijn geen e-mails verzonden"
 
@@ -11321,7 +11321,7 @@ msgstr "Met het SureForms Pro Plan kun je je formulieren omzetten in boeiende, c
 msgid "Create Conversational Form"
 msgstr "Maak een conversatieformulier"
 
-#: admin/admin.php:88
+#: admin/admin.php:93
 msgid "Get SureForms Pro"
 msgstr "Verkrijg SureForms Pro"
 
@@ -11472,6 +11472,47 @@ msgstr "Het door AI gegenereerde formulier kan handmatige controle en aanpassing
 #: assets/build/formEditor.js:172
 msgid "SUREFORMS PREMIUM FIELDS"
 msgstr "SUREFORMS PREMIUM VELDEN"
+
+#: admin/admin.php:261
+#: admin/admin.php:262
+msgid "Upgrade SureForms"
+msgstr "Upgrade SureForms"
+
+#: assets/build/formEditor.js:172
+msgid "The current 'From Email' address does not match your website domain name (%1$s). This can cause your notification emails to be blocked or marked as spam. Alternately, try using a From Address that matches your website domain (admin@%2$s)."
+msgstr "Het huidige 'Van E-mailadres' komt niet overeen met de domeinnaam van uw website (%1$s). Dit kan ervoor zorgen dat uw notificatie-e-mails worden geblokkeerd of als spam worden gemarkeerd. Probeer in plaats daarvan een Van-adres te gebruiken dat overeenkomt met uw website-domein (admin@%2$s)."
+
+#: assets/build/formEditor.js:172
+msgid "The current 'From Email' address does not match your website domain name (%s). This can cause your notification emails to be blocked or marked as spam. "
+msgstr "Het huidige 'Van E-mailadres' komt niet overeen met de domeinnaam van uw website (%s). Dit kan ervoor zorgen dat uw notificatie-e-mails worden geblokkeerd of als spam worden gemarkeerd. "
+
+#: assets/build/formEditor.js:172
+msgid "We strongly recommend that you install the free "
+msgstr "We raden ten zeerste aan dat u de gratis installeert "
+
+#: assets/build/formEditor.js:172
+msgid " plugin! The Setup Wizard makes it easy to fix your emails. "
+msgstr " plugin! De Setup Wizard maakt het gemakkelijk om je e-mails te repareren. "
+
+#: assets/build/formEditor.js:172
+msgid " Alternately, try using a From Address that matches your website domain (admin@%s)."
+msgstr " Probeer afwisselend een Van-adres te gebruiken dat overeenkomt met uw website-domein (admin@%s)."
+
+#: assets/build/formEditor.js:172
+msgid "Please enter a valid email address. Your notifications won't be sent if the field is not filled in correctly."
+msgstr "Voer een geldig e-mailadres in. Uw meldingen worden niet verzonden als het veld niet correct is ingevuld."
+
+#: assets/build/formEditor.js:172
+msgid "From Name"
+msgstr "Van Naam"
+
+#: assets/build/formEditor.js:172
+msgid "From Email"
+msgstr "Van e-mail"
+
+#: assets/build/formEditor.js:172
+msgid "Notifications can only use 1 From Email. Please do not enter multiple addresses."
+msgstr "Meldingen kunnen slechts één Van E-mailadres gebruiken. Voer alstublieft niet meerdere adressen in."
 
 #: inc/post-types.php:124
 msgctxt "post type general name"
