@@ -1328,7 +1328,7 @@ class Entries_List_Table extends \WP_List_Table {
 	 * @param array $entry_ids The entry IDs to fetch.
 	 * @param int   $form_id The form ID to fetch entries for.
 	 *
-	 * @since x.x.x
+	 * @since 1.6.1
 	 * @return array The entries data.
 	 */
 	private static function get_entries_data( $entry_ids, $form_id ) {
@@ -1361,7 +1361,7 @@ class Entries_List_Table extends \WP_List_Table {
 	/**
 	 * Get all the entries data except the ones which are in trash.
 	 *
-	 * @since x.x.x
+	 * @since 1.6.1
 	 * @return array The entries data.
 	 */
 	private static function get_all_entries_except_trash() {
@@ -1387,7 +1387,7 @@ class Entries_List_Table extends \WP_List_Table {
 	 *
 	 * @param string $search_term The search term to filter entries.
 	 *
-	 * @since x.x.x
+	 * @since 1.6.1
 	 * @return array The entries data.
 	 */
 	private static function get_entries_based_on_search( $search_term ) {
@@ -1413,7 +1413,7 @@ class Entries_List_Table extends \WP_List_Table {
 	 *
 	 * @param array $results The results to process.
 	 *
-	 * @since x.x.x
+	 * @since 1.6.1
 	 * @return array the map of block_id => key and block labels.
 	 */
 	private static function build_block_key_map_and_labels( $results ) {
@@ -1461,7 +1461,7 @@ class Entries_List_Table extends \WP_List_Table {
 	 * @param resource $stream The file stream to write to.
 	 * @param array    $block_labels The labels for the blocks.
 	 *
-	 * @since x.x.x
+	 * @since 1.6.1
 	 * @return void
 	 */
 	private static function write_csv_header( $stream, $block_labels ) {
@@ -1483,7 +1483,7 @@ class Entries_List_Table extends \WP_List_Table {
 	 * @param array    $results The results to write to the CSV.
 	 * @param array    $block_key_map The map of block IDs to SureForms keys.
 	 *
-	 * @since x.x.x
+	 * @since 1.6.1
 	 * @return void
 	 */
 	private static function write_csv_rows( $stream, $results, $block_key_map ) {
@@ -1527,7 +1527,7 @@ class Entries_List_Table extends \WP_List_Table {
 	 * @param string $srfm_key The SureForms key for the field.
 	 * @param mixed  $field_value The field value to normalize.
 	 *
-	 * @since x.x.x
+	 * @since 1.6.1
 	 * @return string The normalized field value.
 	 */
 	private static function normalize_field_values( $srfm_key, $field_value ) {

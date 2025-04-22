@@ -42,7 +42,7 @@ class Form_Submit {
 	 * Addresses.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 1.6.1
 	 */
 	private $addresses = '';
 
@@ -966,7 +966,7 @@ class Form_Submit {
 	 * @param array<mixed>  $submission_data Submission data.
 	 * @param array<string> $item An associative array containing email settings, such as 'email_to', 'subject', 'email_body', and optional headers like 'email_reply_to', 'email_cc', and 'email_bcc'.
 	 * @param Smart_Tags    $smart_tags Smart Tags instance.
-	 * @since x.x.x
+	 * @since 1.6.1
 	 * @return string The formatted "From" email header.
 	 */
 	private static function add_from_data_in_header( $submission_data, $item, $smart_tags ) {
