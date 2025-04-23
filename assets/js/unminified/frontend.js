@@ -498,13 +498,23 @@ function onSuccess( response ) {
 
 	const UTILITY = {
 		prepareValue( value = [] ) {
-			// We have value like ["value 1", "value 2"]
-			// We need to join them with "|"" so this will be robust solution. then if add label like "some text, another text" then problem will not occur.
+			// Validates the input value to ensure it is an array.
+			// If the value is not an array or is empty, return an empty string.
+			// Otherwise, join the array elements with " | " as a delimiter.
+			if ( ! value?.length || ! Array.isArray( value ) ) {
+				return '';
+			}
+
 			return value.join( ' | ' );
 		},
 		extractValue( value = '' ) {
-			// We have value like "value 1 | value 2"
-			// We need to split them with "|"" so this will be robust solution. then if add label like "some text, another text" then problem will not occur.
+			// Validates the input value to ensure it is a non-empty string.
+			// If the value is not a string or is empty, return an empty array.
+			// Otherwise, split the string by " | " to return an array of values.
+			if ( typeof value !== 'string' || value.trim() === '' ) {
+				return [];
+			}
+
 			return value.split( ' | ' );
 		},
 	};
