@@ -263,7 +263,7 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 = 1.6.1 - 23rd April 2025 =
 * New: Added From Name and From Email fields to the Email Notification settings.
 * Improvement: Added bottom margin to the form container for better compatibility with the Neve theme.
-* Improvement: Enhanced Address field output with structured submission of components (Street, City, State, ZIP, etc.) for improved integration with services like SureTriggers and Google Sheets.
+* Improvement: Enhanced Address field output with structured submission of components (Street, City, State, ZIP, etc.) for improved integration with services like OttoKit and Google Sheets.
 * Fix: Resolved an issue where exporting entries after form edits resulted in misaligned columns in the CSV file.
 = 1.6.0 - 16th April 2025 =
 * New: Added Signature block in Pro Plan.
