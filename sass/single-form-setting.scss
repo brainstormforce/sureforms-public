@@ -76,6 +76,30 @@ $req_err_color: #dc2625;
 		display: flex;
 		height: 100%;
 
+		.srfm-modal-warning-box {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			border-radius: 8px;
+			border: 1px solid #fef08a;
+			padding: 12px;
+			background-color: #fefce8;
+			width: 100%;
+
+			.srfm-modal-warning-icon {
+				width: 20x;
+				height: 20px;
+			}
+
+			.srfm-modal-warning-text {
+				font-weight: 400;
+				font-size: 14px;
+				line-height: 20px;
+				color: #111827;
+				width: 100%;
+			}
+		}
+
 		.srfm-modal-sidebar {
 			display: flex;
 			width: 290px;
@@ -351,6 +375,21 @@ $req_err_color: #dc2625;
 								box-shadow: 0 0 0 0.5px $req_err_color !important;
 								outline-color: $req_err_color;
 							}
+						}
+
+						.srfm-modal-from-name-box {
+							margin-bottom: 20px;
+						}
+
+						.srfm-modal-from-email-box {
+							margin-bottom: 10px;
+						}
+
+						.srfm-modal-from-email-warning-box {
+							display: flex;
+							align-items: center;
+							gap: 10px;
+							margin-bottom: 20px;
 						}
 
 						.components-tab-panel__tabs-item.active-tab {
