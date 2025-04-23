@@ -27,16 +27,31 @@ class Register {
 	 * @since  0.0.1
 	 */
 	public function __construct() {
-		$namespace  = 'SRFM\\Inc\\Blocks';
-		$blocks_dir = glob( SRFM_DIR . 'inc/blocks/**/*.php' );
-		$base       = 'Block';
-		$this->register_block( $blocks_dir, $namespace, $base );
+		$blocks = [
+			[
+				'dir'       => SRFM_DIR . 'inc/blocks/**/*.php',
+				'namespace' => 'SRFM\\Inc\\Blocks',
+			],
+		];
 
 		if ( defined( 'SRFM_PRO_VER' ) ) {
-			$blocks_dir = glob( SRFM_PRO_DIR . 'inc/blocks/**/*.php' );
-			$namespace  = 'SRFM_PRO\\Inc\\Blocks';
-			$base       = 'Block';
-			$this->register_block( $blocks_dir, $namespace, $base );
+			$blocks[] = [
+				'dir'       => SRFM_PRO_DIR . 'inc/blocks/**/*.php',
+				'namespace' => 'SRFM_PRO\\Inc\\Blocks',
+			];
+		}
+
+		// Filter to add and register additional blocks. Like Signature block.
+		$additional_blocks = apply_filters( 'srfm_register_additional_blocks', [] );
+
+		// Merge additional blocks with the default blocks. When the additional blocks are not empty.
+		if ( ! empty( $additional_blocks ) && count( $additional_blocks ) > 0 ) {
+			$blocks = [ ...$blocks, ...$additional_blocks ];
+		}
+
+		foreach ( $blocks as $block ) {
+			// Register the block.
+			$this->register_block( glob( $block['dir'] ), $block['namespace'], 'Block' );
 		}
 	}
 

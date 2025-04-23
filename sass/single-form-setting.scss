@@ -76,6 +76,30 @@ $req_err_color: #dc2625;
 		display: flex;
 		height: 100%;
 
+		.srfm-modal-warning-box {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			border-radius: 8px;
+			border: 1px solid #fef08a;
+			padding: 12px;
+			background-color: #fefce8;
+			width: 100%;
+
+			.srfm-modal-warning-icon {
+				width: 20x;
+				height: 20px;
+			}
+
+			.srfm-modal-warning-text {
+				font-weight: 400;
+				font-size: 14px;
+				line-height: 20px;
+				color: #111827;
+				width: 100%;
+			}
+		}
+
 		.srfm-modal-sidebar {
 			display: flex;
 			width: 290px;

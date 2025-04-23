@@ -369,11 +369,7 @@ class Single_Entry {
 						$label = explode( '-', $label )[0];
 						?>
 						<tr>
-							<td><b><?php echo $label ? wp_kses_post( html_entity_decode( Helper::decrypt( $label ) ) ) : ''; ?></b></td>
-							<?php
-							if ( false !== strpos( $field_name, 'srfm-upload' ) ) {
-								?>
-										<style>
+						<style>
 											.file-cards-container {
 												display: flex;
 												flex-wrap: wrap;
@@ -410,6 +406,10 @@ class Single_Entry {
 												text-decoration: underline;
 											}
 										</style>
+							<td><b><?php echo $label ? wp_kses_post( html_entity_decode( Helper::decrypt( $label ) ) ) : ''; ?></b></td>
+							<?php
+							if ( false !== strpos( $field_name, 'srfm-upload' ) ) {
+								?>
 										<td>
 											<div class="file-cards-container">
 											<?php
@@ -455,6 +455,8 @@ class Single_Entry {
 										</td>
 							<?php } elseif ( false !== strpos( $field_name, 'srfm-url' ) ) { ?>
 									<td><a target="_blank" href="<?php echo esc_url( $value ); ?>"><?php echo esc_url( $value ); ?></a></td>
+							<?php } elseif ( apply_filters( 'srfm_entry_render_field_custom_value', false, $field_name ) ) { ?>
+								<?php echo wp_kses_post( apply_filters( 'srfm_entry_custom_value', '', $value ) ); ?>
 							<?php } else { ?>
 									<td><?php echo false !== strpos( $value, PHP_EOL ) ? wp_kses_post( wpautop( $value ) ) : wp_kses_post( $value ); ?></td>
 							<?php } ?>

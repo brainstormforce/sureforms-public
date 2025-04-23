@@ -179,8 +179,9 @@ class Gutenberg_Hooks {
 			SRFM_SLUG . $form_editor_script,
 			SRFM_SLUG . '_block_data',
 			[
-				'plugin_url'  => SRFM_URL,
-				'admin_email' => get_option( 'admin_email' ),
+				'plugin_url'      => SRFM_URL,
+				'admin_email'     => get_option( 'admin_email' ),
+				'pro_plugin_name' => defined( 'SRFM_PRO_VER' ) && defined( 'SRFM_PRO_PRODUCT' ) ? SRFM_PRO_PRODUCT : 'free',
 			]
 		);
 
@@ -225,6 +226,8 @@ class Gutenberg_Hooks {
 				'srfm_default_dynamic_block_option' => get_option( 'srfm_default_dynamic_block_option', Helper::default_dynamic_block_option() ),
 				'form_selector_nonce'               => current_user_can( 'edit_posts' ) ? wp_create_nonce( 'wp_rest' ) : '',
 				'is_admin_user'                     => current_user_can( 'manage_options' ),
+				'site_url'                          => wp_parse_url( esc_url( get_site_url() ), PHP_URL_HOST ),
+				'is_suremails_active'               => is_plugin_active( 'suremails/suremails.php' ),
 			]
 		);
 

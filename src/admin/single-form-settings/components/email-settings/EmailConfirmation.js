@@ -24,6 +24,8 @@ const EmailConfirmation = ( props ) => {
 		email_bcc: data.email_bcc || '',
 		email_cc: data.email_cc || '',
 		email_body: data.email_body || '',
+		from_name: data.from_name || '{site_title}',
+		from_email: data.from_email || '{admin_email}',
 	} );
 
 	const [ prevData, setPrevData ] = useState( {} ); // Previous saved data before making any changes.
