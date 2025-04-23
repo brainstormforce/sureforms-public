@@ -261,6 +261,8 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 
 == Changelog ==
 = x.x.x =
+* New: Added Upgrade SureForms section in the submenu.
+* Improvement: Update Astra menu priority to show right below the dashboard menu.
 * Improvement: Added margin bottom for the form container for Neve theme compatibility.
 * Improvement: Enhanced Address Field Output: Address components (Street, City, State, ZIP, etc.) are now submitted in a structured format for better integration with services like SureTriggers and Google Sheets.
 = 1.6.0 - 16th April 2025 =
