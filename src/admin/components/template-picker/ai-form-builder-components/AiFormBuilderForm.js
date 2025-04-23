@@ -14,6 +14,7 @@ import { applyFilters } from '@wordpress/hooks';
 import PremiumBadge from '@Admin/components/PremiumBadge';
 import { cn, srfmClassNames } from '@Utils/Helpers';
 import ConnectWithAIBanner from '../ai-form-builder-components/ConnectWithAIBanner.js';
+import FormTypeSelector from '../components/FormTypeSelector.js';
 
 export default ( props ) => {
 	const {
@@ -23,6 +24,8 @@ export default ( props ) => {
 		setFormTypeObj,
 		showEmptyError,
 		setShowEmptyError,
+		setFormType,
+		formType,
 	} = props;
 
 	const [ isListening, setIsListening ] = useState( false ); // State to manage voice recording
@@ -30,12 +33,15 @@ export default ( props ) => {
 	const [ characterCount, setCharacterCount ] = useState( 0 );
 	const [ text, setText ] = useState( '' );
 	const recognitionRef = useRef( null ); // To store SpeechRecognition instance
+	const [ formLayout, setformLayout ] = useState( {} );
 	const showAiConversationalFormToggle = false;
 	const conversationalFormAiToggle = applyFilters(
 		'srfm.aiFormScreen.conversational.toggle',
 		showAiConversationalFormToggle,
 		formTypeObj,
-		setFormTypeObj
+		setFormTypeObj,
+		formLayout,
+		setformLayout
 	);
 
 	const handlePromptClick = ( prompt ) => {
@@ -145,7 +151,15 @@ export default ( props ) => {
 				title: __( 'Make an event registration form', 'sureforms' ),
 			},
 		],
-		formTypeObj
+		formTypeObj,
+		formType
+	);
+
+	const aiPromptPlaceholder = applyFilters(
+		'srfm.aiFormScreen.aiPromptPlaceholder',
+		'',
+		formLayout,
+		formType
 	);
 
 	// conversational form toggle
@@ -217,12 +231,17 @@ export default ( props ) => {
 		);
 	};
 
+	const textAreaPlaceholder =
+		formType === 'simple'
+			? __(
+				"E.g. Form to gather feedback from our customer for our product functionality, usability , how much you will rate it and what you don't like about it.",
+				'sureforms'
+			  )
+			: aiPromptPlaceholder;
+
 	return (
 		<Container
-			className={ cn(
-				'pb-8 gap-8',
-				is_pro_active && 'mt-12'
-			) }
+			className={ cn( 'pb-8 gap-8', is_pro_active && 'mt-12' ) }
 			direction="column"
 		>
 			<Container.Item>
@@ -233,6 +252,11 @@ export default ( props ) => {
 					className="p-4 gap-1.5 bg-background-primary border-0.5 border-solid border-border-subtle shadow-sm-blur-2 rounded-xl w-full h-full max-w-[42.5rem] mx-auto"
 					direction="column"
 				>
+					<FormTypeSelector
+						formType={ formType }
+						setFormType={ setFormType }
+						setformLayout={ setformLayout }
+					/>
 					<Container.Item className="flex p-2 gap-6">
 						<Title
 							tag="h4"
@@ -243,16 +267,21 @@ export default ( props ) => {
 							) }
 						/>
 					</Container.Item>
-					<Container.Item className="p-2 gap-6">
+					<Container.Item className="flex flex-col px-2 gap-1">
+						{ formType !== 'simple' && (
+							<Label size="xs" variant="help">
+								{ __(
+									'The AI-generated form may require manual review and adjustments. Please verify all fields before publishing the form.',
+									'sureforms'
+								) }
+							</Label>
+						) }
 						<TextArea
 							aria-label={ __(
 								'Describe the form you want to create',
 								'sureforms'
 							) }
-							placeholder={ __(
-								"E.g. Form to gather feedback from our customer for our product functionality, usability , how much you will rate it and what you don't like about it.",
-								'sureforms'
-							) }
+							placeholder={ textAreaPlaceholder }
 							id="textarea"
 							value={ text }
 							size="lg"
@@ -275,46 +304,61 @@ export default ( props ) => {
 								{ __( 'Prompt cannot be empty.', 'sureforms' ) }
 							</Label>
 						) }
-						<Container className="flex-wrap" align="center" justify="between">
-							{ false === conversationalFormAiToggle
-								? conversationalAiToggle
-								: conversationalFormAiToggle }
-							<Container.Item className="py-2 gap-2">
-								<VoiceToggleButton />
-							</Container.Item>
-						</Container>
+						{ 'simple' === formType && (
+							<Container
+								className="flex-wrap"
+								align="center"
+								justify="between"
+							>
+								{ false === conversationalFormAiToggle
+									? conversationalAiToggle
+									: conversationalFormAiToggle }
+								<Container.Item className="py-2 gap-2">
+									<VoiceToggleButton />
+								</Container.Item>
+							</Container>
+						) }
 					</Container.Item>
 					<Container.Item className="p-2 gap-6">
 						<Container direction="column">
 							<Container.Item>
-								<Container align="center" justify="between" className="flex-wrap p-1">
-									<Label
-										variant="neutral"
-										size="sm"
-										className="gap-1 flex items-center cursor-pointer"
-										onClick={ () =>
-											setShowFormIdeas(
-												! showFormIdeas
-											)
-										}
-									>
-										{ __(
-											'Some Form Ideas',
-											'sureforms'
+								<Container
+									className="flex-wrap p-1"
+									align="center"
+									justify="between"
+								>
+									<Container.Item>
+										<Label
+											variant="neutral"
+											size="sm"
+											className="gap-1 flex items-center cursor-pointer"
+											onClick={ () =>
+												setShowFormIdeas(
+													! showFormIdeas
+												)
+											}
+										>
+											{ __(
+												'Some Form Ideas',
+												'sureforms'
+											) }
+											{ showFormIdeas ? (
+												<ChevronUp className="!text-icon-secondary !size-5" />
+											) : (
+												<ChevronDown className="!text-icon-secondary !size-5" />
+											) }
+										</Label>
+									</Container.Item>
+									<Container.Item className="gap-2">
+										{ 'simple' !== formType && (
+											<VoiceToggleButton />
 										) }
-										{ showFormIdeas ? (
-											<ChevronUp className="!text-icon-secondary !size-5" />
-										) : (
-											<ChevronDown className="!text-icon-secondary !size-5" />
-										) }
-									</Label>
+									</Container.Item>
 								</Container>
 							</Container.Item>
 							{ showFormIdeas && (
 								<Container.Item>
-									<Container
-										className="gap-2 flex-wrap"
-									>
+									<Container className="gap-2 flex-wrap">
 										{ examplePrompts.map(
 											( prompt, index ) => (
 												<Label
@@ -348,9 +392,7 @@ export default ( props ) => {
 						</Label>
 						<Button
 							className="gap-1"
-							icon={
-								<ArrowRight size={ 20 } />
-							}
+							icon={ <ArrowRight size={ 20 } /> }
 							iconPosition="right"
 							size="md"
 							variant="primary"
