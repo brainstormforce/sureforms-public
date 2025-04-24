@@ -39,6 +39,14 @@ class Form_Submit {
 	protected $namespace = 'sureforms/v1';
 
 	/**
+	 * Addresses.
+	 *
+	 * @var string
+	 * @since 1.6.1
+	 */
+	private $addresses = '';
+
+	/**
 	 * Constructor
 	 *
 	 * @since  0.0.1
@@ -478,6 +486,14 @@ class Form_Submit {
 			$do_not_store_entries = $compliance[0]['do_not_store_entries'] ?? '';
 		}
 
+		// Check if the form data contains 'srfm_addresses' and is not empty.
+		if ( ! empty( $form_data['srfm_addresses'] ) ) {
+			// Assign the addresses to the class property for further processing.
+			$this->addresses = $form_data['srfm_addresses'];
+			// Remove the address data from the form data to avoid redundancy.
+			unset( $form_data['srfm_addresses'] );
+		}
+
 		$submission_data = [];
 
 		$form_data_keys  = array_keys( $form_data );
@@ -670,6 +686,18 @@ class Form_Submit {
 			}
 		}
 
+		// If the address is not empty, add it to the submission data.
+		// We are providing this for third-party integrations like Ottokit.
+		// They can use compact addresses such as permanent address, temporary address, etc.
+		// The address will be structured as field 1, field 2, and so on.
+		if ( ! empty( $this->addresses ) ) {
+			// Address will be JSON stringified, so decode it.
+			$address = json_decode( wp_unslash( $this->addresses ), true );
+			if ( ! empty( $address ) && is_array( $address ) ) {
+				$modified_message = array_merge( $modified_message, $address );
+			}
+		}
+
 		return $modified_message;
 	}
 
@@ -685,19 +713,19 @@ class Form_Submit {
 	public static function parse_email_notification_template( $submission_data, $item, $form_data = [] ) {
 		$smart_tags = Smart_Tags::get_instance();
 
-		$from           = Helper::get_string_value( get_option( 'admin_email' ) );
 		$to             = $smart_tags->process_smart_tags( $item['email_to'], $submission_data );
 		$subject        = $smart_tags->process_smart_tags( $item['subject'], $submission_data, $form_data );
 		$email_body     = $smart_tags->process_smart_tags( $item['email_body'], $submission_data, $form_data );
 		$email_template = new Email_Template();
 		$message        = $email_template->render( $submission_data, $email_body );
-		$headers        = "From: {$from}\r\n";
-		$headers       .= 'X-Mailer: PHP/' . phpversion() . "\r\n";
+		$headers        = 'X-Mailer: PHP/' . phpversion() . "\r\n";
 		$headers       .= "Content-Type: text/html; charset=utf-8\r\n";
+
+		// Add the From: to the headers.
+		$headers .= self::add_from_data_in_header( $submission_data, $item, $smart_tags );
+
 		if ( isset( $item['email_reply_to'] ) && ! empty( $item['email_reply_to'] ) ) {
 			$headers .= 'Reply-To:' . $smart_tags->process_smart_tags( $item['email_reply_to'], $submission_data ) . "\r\n";
-		} else {
-			$headers .= "Reply-To: {$from}\r\n";
 		}
 		if ( isset( $item['email_cc'] ) && ! empty( $item['email_cc'] ) ) {
 			$headers .= 'Cc:' . $smart_tags->process_smart_tags( $item['email_cc'], $submission_data ) . "\r\n";
@@ -930,5 +958,31 @@ class Form_Submit {
 			wp_send_json_success();
 		}
 		wp_send_json_error();
+	}
+
+	/**
+	 * Add From email and name in the header.
+	 *
+	 * @param array<mixed>  $submission_data Submission data.
+	 * @param array<string> $item An associative array containing email settings, such as 'email_to', 'subject', 'email_body', and optional headers like 'email_reply_to', 'email_cc', and 'email_bcc'.
+	 * @param Smart_Tags    $smart_tags Smart Tags instance.
+	 * @since 1.6.1
+	 * @return string The formatted "From" email header.
+	 */
+	private static function add_from_data_in_header( $submission_data, $item, $smart_tags ) {
+		$from_name  = is_array( $item ) && ! empty( $item['from_name'] ) ? sanitize_text_field( Helper::get_string_value( $item['from_name'] ) ) : '{site_title}';
+		$from_email = is_array( $item ) && ! empty( $item['from_email'] ) ? Helper::get_string_value( $item['from_email'] ) : '{admin_email}';
+
+		// Check if the email contains smart tags. If not, validate the email.
+		$is_valid_email = true;
+		if ( ! str_contains( $from_email, '{' ) && ! str_contains( $from_email, '}' ) ) {
+			$is_valid_email = filter_var( $from_email, FILTER_VALIDATE_EMAIL );
+		}
+		// if the email is not valid, set it to the admin email.
+		if ( ! $is_valid_email ) {
+			$from_email = Helper::get_string_value( get_option( 'admin_email' ) );
+		}
+
+		return 'From: ' . esc_html( $smart_tags->process_smart_tags( $from_name, $submission_data ) ) . ' <' . esc_html( $smart_tags->process_smart_tags( $from_email, $submission_data ) ) . '>' . "\r\n";
 	}
 }

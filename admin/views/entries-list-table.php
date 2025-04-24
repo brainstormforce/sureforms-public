@@ -335,39 +335,11 @@ class Entries_List_Table extends \WP_List_Table {
 					 */
 					$all_entry_ids = Entries::get_all_entry_ids_for_form( $filter_form_id );
 				} elseif ( ! empty( $_GET['search_filter'] ) ) {
-					// Export all the available ( but not trashed ) entries.
-					$all_entry_ids = Entries::get_all(
-						[
-							'where'   => [
-								[
-									[
-										'key'     => 'ID',
-										'compare' => 'LIKE',
-										'value'   => sanitize_text_field( wp_unslash( $_GET['search_filter'] ) ),
-									],
-								],
-							],
-							'columns' => 'ID',
-						],
-						false
-					);
+					// Export entries based on the search filter.
+					$all_entry_ids = self::get_entries_based_on_search( sanitize_text_field( wp_unslash( $_GET['search_filter'] ) ) );
 				} else {
 					// Export all the available ( but not trashed ) entries.
-					$all_entry_ids = Entries::get_all(
-						[
-							'where'   => [
-								[
-									[
-										'key'     => 'status',
-										'compare' => '!=',
-										'value'   => 'trash',
-									],
-								],
-							],
-							'columns' => 'ID',
-						],
-						false
-					);
+					$all_entry_ids = self::get_all_entries_except_trash();
 				}
 				$entry_ids = array_map( 'absint', array_column( $all_entry_ids, 'ID' ) );
 			}
@@ -438,27 +410,7 @@ class Entries_List_Table extends \WP_List_Table {
 			$csv_files = [];  // Array of csv files to delete after zip file is closed.
 
 			foreach ( $form_ids as $form_id ) {
-				// SELECT * FROM %1s WHERE ID IN (%2s) AND form_id=%d.
-				$results = Entries::get_all(
-					[
-						'where'   => [
-							[
-								[
-									'key'     => 'ID',
-									'compare' => 'IN',
-									'value'   => $entry_ids,
-								],
-								[
-									'key'     => 'form_id',
-									'compare' => '=',
-									'value'   => $form_id,
-								],
-							],
-						],
-						'columns' => 'ID, form_data', // Query only needed columns for the performance.
-					],
-					false
-				);
+				$results = self::get_entries_data( $entry_ids, $form_id );
 
 				if ( empty( $results ) ) {
 					continue;
@@ -483,49 +435,16 @@ class Entries_List_Table extends \WP_List_Table {
 
 				$csv_files[] = $csv_filepath;
 
-				foreach ( $results as $index => $result ) {
-					if ( empty( $result['form_data'] ) ) {
-						// Probably invalid submission.
-						continue;
-					}
+				// Step 1: Build consistent map of block_id => latest key and label.
+				$block_key_map_and_labels = self::build_block_key_map_and_labels( $results );
+				$block_key_map            = $block_key_map_and_labels['map'];
+				$block_labels             = $block_key_map_and_labels['labels'];
 
-					$form_data = $result['form_data'];
+				// Step 2: Build CSV header using block_labels.
+				self::write_csv_header( $stream, $block_labels );
 
-					if ( ! empty( $form_data ) && is_array( $form_data ) ) {
-						if ( 0 === $index ) {
-							$labels = array_merge(
-								[ __( 'ID', 'sureforms' ) ],
-								array_map(
-									[ Helper::class, 'get_field_label_from_key' ],
-									array_keys( $form_data )
-								)
-							);
-							fputcsv( $stream, $labels );
-						}
-
-						$values = [ '#' . absint( $result['ID'] ) ]; // Add entry id for first element.
-
-						/**
-						 * Lets normalize field values for the CSV file.
-						 * 1. If it is array then first check if it is from upload field value. Process the upload file urls and convert array into comma separated string.
-						 * 2. If it is not upload field value then convert array into comma separated string.
-						 */
-						foreach ( $form_data as $field_name => $field_value ) {
-							if ( false !== strpos( $field_name, 'srfm-upload' ) ) {
-								// Decode the URLs, then create a comma separated string.
-								$_value = implode( ', ', array_map( 'urldecode', $field_value ) );
-							} else {
-								$_value = is_array( $field_value ) ? implode( ', ', $field_value ) : $field_value;
-							}
-
-							$values[] = $_value ? $_value : '';
-						}
-
-						fputcsv( $stream, $values );
-					}
-
-					$form_data = []; // Reset form data.
-				}
+				// Step 3: Write each row using block_id -> matched key.
+				self::write_csv_rows( $stream, $results, $block_key_map );
 
 				fclose( $stream ); // phpcs:ignore -- Using fclose as we have used fopen above to decrease the memory use.
 
@@ -1401,5 +1320,227 @@ class Entries_List_Table extends \WP_List_Table {
 			'restore' => __( 'Restore', 'sureforms' ),
 			'delete'  => __( 'Delete Permanently', 'sureforms' ),
 		];
+	}
+
+	/**
+	 * Get the entries data for export.
+	 *
+	 * @param array $entry_ids The entry IDs to fetch.
+	 * @param int   $form_id The form ID to fetch entries for.
+	 *
+	 * @since 1.6.1
+	 * @return array The entries data.
+	 */
+	private static function get_entries_data( $entry_ids, $form_id ) {
+		if ( empty( $entry_ids ) || empty( $form_id ) ) {
+			return [];
+		}
+		// SELECT * FROM %1s WHERE ID IN (%2s) AND form_id=%d.
+		return Entries::get_all(
+			[
+				'where'   => [
+					[
+						[
+							'key'     => 'ID',
+							'compare' => 'IN',
+							'value'   => $entry_ids,
+						],
+						[
+							'key'     => 'form_id',
+							'compare' => '=',
+							'value'   => $form_id,
+						],
+					],
+				],
+				'columns' => 'ID, form_data', // Query only needed columns for the performance.
+			],
+			false
+		);
+	}
+
+	/**
+	 * Get all the entries data except the ones which are in trash.
+	 *
+	 * @since 1.6.1
+	 * @return array The entries data.
+	 */
+	private static function get_all_entries_except_trash() {
+		return Entries::get_all(
+			[
+				'where'   => [
+					[
+						[
+							'key'     => 'status',
+							'compare' => '!=',
+							'value'   => 'trash',
+						],
+					],
+				],
+				'columns' => 'ID',
+			],
+			false
+		);
+	}
+
+	/**
+	 * Get the entries based on the search term.
+	 *
+	 * @param string $search_term The search term to filter entries.
+	 *
+	 * @since 1.6.1
+	 * @return array The entries data.
+	 */
+	private static function get_entries_based_on_search( $search_term ) {
+		return Entries::get_all(
+			[
+				'where'   => [
+					[
+						[
+							'key'     => 'ID',
+							'compare' => 'LIKE',
+							'value'   => $search_term,
+						],
+					],
+				],
+				'columns' => 'ID',
+			],
+			false
+		);
+	}
+
+	/**
+	 * Step 1: Build consistent map of block_id => latest key and label.
+	 *
+	 * @param array $results The results to process.
+	 *
+	 * @since 1.6.1
+	 * @return array the map of block_id => key and block labels.
+	 */
+	private static function build_block_key_map_and_labels( $results ) {
+		// If there are no results, return empty map and labels.
+		if ( empty( $results ) ) {
+			return [
+				'map'    => [],
+				'labels' => [],
+			];
+		}
+
+		$block_key_map = [];
+		$block_labels  = [];
+		foreach ( $results as $result ) {
+			if ( empty( $result['form_data'] ) || ! is_array( $result['form_data'] ) ) {
+				// Probably invalid submission.
+				continue;
+			}
+
+			/**
+			 * The structure of the keys is like srfm-[block_type]-[block_id]-lbl-[label].
+			 * We need to get the block_id and label from the key and create a map of block_id => key.
+			 * This will help us to create a consistent CSV file with the same order of columns.
+			 */
+			foreach ( $result['form_data'] as $key => $value ) {
+				$block_id = Helper::get_block_id_from_key( $key );
+				$label    = Helper::get_field_label_from_key( $key );
+				// Only store latest key for each block_id.
+				$block_key_map[ $block_id ] = $key;
+				// Only update the label if it is not already set.
+				if ( ! isset( $block_labels[ $block_id ] ) ) {
+					$block_labels[ $block_id ] = $label;
+				}
+			}
+		}
+		return [
+			'map'    => $block_key_map,
+			'labels' => $block_labels,
+		];
+	}
+
+	/**
+	 * Step 2: Build CSV header using block_labels.
+	 *
+	 * @param resource $stream The file stream to write to.
+	 * @param array    $block_labels The labels for the blocks.
+	 *
+	 * @since 1.6.1
+	 * @return void
+	 */
+	private static function write_csv_header( $stream, $block_labels ) {
+		if ( empty( $stream ) || empty( $block_labels ) ) {
+			return;
+		}
+		$labels = array_merge(
+			[ __( 'ID', 'sureforms' ) ],
+			array_values( $block_labels )
+		);
+
+		fputcsv( $stream, $labels );
+	}
+
+	/**
+	 * Step 3: Write each row using block_id -> matched key.
+	 *
+	 * @param resource $stream The file stream to write to.
+	 * @param array    $results The results to write to the CSV.
+	 * @param array    $block_key_map The map of block IDs to SureForms keys.
+	 *
+	 * @since 1.6.1
+	 * @return void
+	 */
+	private static function write_csv_rows( $stream, $results, $block_key_map ) {
+		if ( empty( $stream ) || empty( $results ) || empty( $block_key_map ) ) {
+			return;
+		}
+
+		foreach ( $results as $result ) {
+			if ( empty( $result['form_data'] ) || ! is_array( $result['form_data'] ) ) {
+				continue;
+			}
+
+			$form_data = $result['form_data'];
+			$values    = [ '#' . absint( $result['ID'] ) ];
+
+			foreach ( $block_key_map as $block_id => $srfm_key ) {
+				$field_value = '';
+
+				// Try to find a key that matches this block ID in current form_data and use it's value.
+				foreach ( $form_data as $key => $value ) {
+					if ( strpos( $key, $block_id ) !== false ) {
+						$field_value = $value;
+						break;
+					}
+				}
+
+				$_value = self::normalize_field_values( $srfm_key, $field_value );
+
+				$values[] = $_value ? $_value : '';
+			}
+
+			fputcsv( $stream, $values );
+		}
+	}
+
+	/**
+	 * Normalize the field values for the CSV file.
+	 * 1. If it is array then first check if it is from upload field value. Process the upload file urls and convert array into comma separated string.
+	 * 2. If it is not upload field value then convert array into comma separated string.
+	 *
+	 * @param string $srfm_key The SureForms key for the field.
+	 * @param mixed  $field_value The field value to normalize.
+	 *
+	 * @since 1.6.1
+	 * @return string The normalized field value.
+	 */
+	private static function normalize_field_values( $srfm_key, $field_value ) {
+		if ( empty( $srfm_key ) || empty( $field_value ) ) {
+			return '';
+		}
+
+		// Check if the field value is an array and if it is from an upload field.
+		if ( false !== strpos( $srfm_key, 'srfm-upload' ) && is_array( $field_value ) ) {
+			// Decode the URLs, then create a comma separated string.
+			return implode( ', ', array_map( 'urldecode', $field_value ) );
+		}
+
+		return is_array( $field_value ) ? implode( ', ', $field_value ) : $field_value;
 	}
 }
