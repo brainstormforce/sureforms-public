@@ -106,6 +106,7 @@
 						align-items: center;
 						// Adding the transition for specific properties to avoid unintended animations.
 						transition: border-color 0.2s ease-out, box-shadow 0.2s ease-out, background-color 0.2s ease-out !important;
+						flex-wrap: nowrap;
 
 						&:hover {
 							border-color: var( --srfm-color-input-border-hover );
