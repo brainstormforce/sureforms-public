@@ -37,6 +37,11 @@ class Admin {
 		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_scripts' ] );
 		add_action( 'admin_menu', [ $this, 'settings_page' ] );
 		add_action( 'admin_menu', [ $this, 'add_new_form' ] );
+		if ( ! defined( 'SRFM_PRO_VER' ) ) {
+			add_action( 'admin_menu', [ $this, 'add_upgrade_to_pro' ] );
+			add_action( 'admin_footer', [ $this, 'add_upgrade_to_pro_target_attr' ] );
+		}
+
 		add_filter( 'plugin_action_links', [ $this, 'add_settings_link' ], 10, 2 );
 		add_action( 'enqueue_block_assets', [ $this, 'enqueue_styles' ] );
 		add_action( 'admin_head', [ $this, 'enqueue_header_styles' ] );
@@ -209,6 +214,55 @@ class Admin {
 			wp_safe_redirect( admin_url( 'admin.php?page=sureforms_form_settings&tab=general-settings' ) );
 			exit;
 		}
+	}
+
+	/**
+	 * Open to Upgrade to Pro submenu link in new tab.
+	 *
+	 * @return void
+	 * @since 1.6.1
+	 */
+	public function add_upgrade_to_pro_target_attr() {
+		?>
+		<script type="text/javascript">
+			document.addEventListener('DOMContentLoaded', function () {
+				// Upgrade link handler.
+				// IMPORTANT: If this URL changes, also update it in the `add_upgrade_to_pro` function.
+				const upgradeLink = document.querySelector('a[href*="https://sureforms.com/upgrade"]');
+				if (upgradeLink) {
+					upgradeLink.addEventListener('click', e => {
+						e.preventDefault();
+						window.open(upgradeLink.href, '_blank');
+					});
+				}
+			});
+		</script>
+		<?php
+	}
+
+	/**
+	 * Add Upgrade to pro menu item.
+	 *
+	 * @return void
+	 * @since 1.6.1
+	 */
+	public function add_upgrade_to_pro() {
+		// The url used here is used as a selector for css to style the upgrade to pro submenu.
+		// If you are changing this url, please make sure to update the css as well.
+		$upgrade_url = add_query_arg(
+			[
+				'utm_medium' => 'submenu_link_upgrade',
+			],
+			Helper::get_sureforms_website_url( 'upgrade' )
+		);
+
+		add_submenu_page(
+			'sureforms_menu',
+			__( 'Upgrade SureForms', 'sureforms' ),
+			__( 'Upgrade SureForms', 'sureforms' ),
+			'edit_others_posts',
+			$upgrade_url
+		);
 	}
 
 	/**

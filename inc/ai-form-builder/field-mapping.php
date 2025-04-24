@@ -184,8 +184,14 @@ class Field_Mapping {
 				case 'upload':
 				case 'hidden':
 				case 'rating':
+				case 'signature':
 					// If pro version is not active then do not add pro fields.
 					if ( ! defined( 'SRFM_PRO_VER' ) ) {
+						break;
+					}
+
+					if ( 'signature' === $field_type && defined( 'SRFM_PRO_PRODUCT' ) && SRFM_PRO_PRODUCT === 'SureForms Starter' ) {
+						// If the product is SureForms Starter then skip the signature field.
 						break;
 					}
 
