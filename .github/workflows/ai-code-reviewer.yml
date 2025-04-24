@@ -8,7 +8,7 @@ permissions: write-all
 
 jobs:
   CHECK_SHORTCODE:
-    if: ${{ github.event.action == 'edited' || contains(github.event.pull_request.body, '[BSF-PR-SUMMARY]') && !contains(join(github.event.pull_request.labels.*.name, ','), 'Release PR') }}
+    if: ${{ github.event.action == 'synchronize' || github.event.action == 'edited' || contains(github.event.pull_request.body, '[BSF-PR-SUMMARY]') && !contains(join(github.event.pull_request.labels.*.name, ','), 'Release PR') }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
