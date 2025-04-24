@@ -228,16 +228,14 @@ const EmailConfirmation = ( props ) => {
 					/>
 				</div>
 
-				<div className="py-2 gap-6">
-					<FromEmail
-						formData={ formData }
-						setFormData={ setFormData }
-						genericSmartTags={ genericSmartTags }
-						genericEmailSmartTags={ genericEmailSmartTags }
-						formSmartTags={ formSmartTags }
-						formEmailSmartTags={ formEmailSmartTags }
-					/>
-				</div>
+				<FromEmail
+					formData={ formData }
+					setFormData={ setFormData }
+					genericSmartTags={ genericSmartTags }
+					genericEmailSmartTags={ genericEmailSmartTags }
+					formSmartTags={ formSmartTags }
+					formEmailSmartTags={ formEmailSmartTags }
+				/>
 
 				<Container className="gap-2">
 					<ModalInputBox
