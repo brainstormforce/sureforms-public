@@ -26,6 +26,7 @@ const AiFormBuilder = () => {
 	const urlParams = new URLSearchParams( window.location.search );
 	const accessKey = urlParams.get( 'access_key' );
 	const [ formTypeObj, setFormTypeObj ] = useState( {} );
+	const [ formType, setFormType ] = useState( 'simple' );
 
 	const handleCreateAiForm = async (
 		userCommand,
@@ -56,7 +57,7 @@ const AiFormBuilder = () => {
 			message_array: messageArray,
 			use_system_message: useSystemMessage,
 			is_conversional: formTypeObj?.isConversationalForm,
-			// form_type: formType, // check this variable in next-release
+			form_type: formType,
 		};
 
 		// add a pause of 2 seconds and set percentBuild to 25 without using setTimeout
@@ -180,6 +181,8 @@ const AiFormBuilder = () => {
 				showEmptyError={ showEmptyError }
 				setShowEmptyError={ setShowEmptyError }
 				setFormTypeObj={ setFormTypeObj }
+				setFormType={ setFormType }
+				formType={ formType }
 			/>
 		</div>
 	);
