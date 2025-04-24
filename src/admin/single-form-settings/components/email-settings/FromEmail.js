@@ -1,10 +1,9 @@
 import { __, sprintf } from '@wordpress/i18n';
 import { useEffect, useState } from '@wordpress/element';
-import SmartTagList from '@Components/misc/SmartTagList';
 import svg from '@Svg/svgs.json';
 import parse from 'html-react-parser';
 import ModalInputBox from './ModalInputBox';
-import { Container, Label } from '@bsf/force-ui';
+import { Container } from '@bsf/force-ui';
 
 const FromEmail = ( {
 	formData,
