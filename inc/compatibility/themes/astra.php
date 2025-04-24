@@ -3,7 +3,7 @@
  * Astra Compatibility.
  *
  * @package sureforms
- * @since   x.x.x
+ * @since   1.6.1
  */
 
 namespace SRFM\Inc\Compatibility\Themes;
@@ -17,7 +17,7 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Sureforms Astra Compatibility.
  *
- * @since x.x.x
+ * @since 1.6.1
  */
 class Astra {
 	use Get_Instance;
@@ -25,7 +25,7 @@ class Astra {
 	/**
 	 * Constructor
 	 *
-	 * @since x.x.x
+	 * @since 1.6.1
 	 */
 	public function __construct() {
 		// Update Astra's menu priority to show after Dashboard menu.
@@ -39,7 +39,7 @@ class Astra {
 	 * @param int $astra_priority Astra menu priority.
 	 *
 	 * @return float
-	 * @since x.x.x
+	 * @since 1.6.1
 	 */
 	public function update_admin_menu_position( $astra_priority ) {
 		global $menu;
