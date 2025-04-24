@@ -699,6 +699,12 @@ class Post_Types {
 								'email_reply_to' => [
 									'type' => 'string',
 								],
+								'from_name'      => [
+									'type' => 'string',
+								],
+								'from_email'     => [
+									'type' => 'string',
+								],
 								'email_cc'       => [
 									'type' => 'string',
 								],
@@ -723,6 +729,8 @@ class Post_Types {
 						'name'           => __( 'Admin Notification Email', 'sureforms' ),
 						'email_to'       => '{admin_email}',
 						'email_reply_to' => '{admin_email}',
+						'from_name'      => '{site_title}',
+						'from_email'     => '{admin_email}',
 						'email_cc'       => '{admin_email}',
 						'email_bcc'      => '{admin_email}',
 						'subject'        => sprintf( /* translators: %s: Form title smart tag */ __( 'New Form Submission - %s', 'sureforms' ), '{form_title}' ),
