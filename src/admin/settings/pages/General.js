@@ -149,17 +149,16 @@ const GeneralPage = ( {
 		);
 	};
 
-	const UsageTrackingContent = memo(() => {
+	const UsageTrackingContent = memo( () => {
 		const description = (
 			<>
 				<p>
-					{ __( 'Allow SureForms to track non-sensitive usage tracking data.', 'sureforms' ) }
+					{ __(
+						'Allow SureForms to track non-sensitive usage tracking data.',
+						'sureforms'
+					) }
 				</p>
-				<a
-					href="#"
-					target="_blank"
-					rel="noopener noreferrer"
-				>
+				<a href="https://sureforms.com/docs/" target="_blank" rel="noopener noreferrer">
 					{ __( ' Learn More', 'sureforms' ) }
 				</a>
 			</>
@@ -167,26 +166,32 @@ const GeneralPage = ( {
 
 		return (
 			<Switch
-				label={{
+				label={ {
 					heading: __( 'Enable Usage Tracking', 'sureforms' ),
-					description: description,
-				}}
+					description,
+				} }
 				value={ generalTabOptions.srfm_form_analytics }
-				onChange={ (value) =>
-					updateGlobalSettings('srfm_form_analytics', value, 'general-settings')
+				onChange={ ( value ) =>
+					updateGlobalSettings(
+						'srfm_form_analytics',
+						value,
+						'general-settings'
+					)
 				}
 			/>
 		);
-	});
+	} );
 
-	const ShowUsageTrackingSection = ({ isProActive, loading }) => {
-		if (isProActive) return null;
+	const ShowUsageTrackingSection = ( { isProActive, loading } ) => {
+		if ( isProActive ) {
+			return null;
+		}
 
 		return (
 			<ContentSection
-				loading={loading}
-				title={__( 'Usage Tracking', 'sureforms' )}
-				content={<UsageTrackingContent />}
+				loading={ loading }
+				title={ __( 'Usage Tracking', 'sureforms' ) }
+				content={ <UsageTrackingContent /> }
 			/>
 		);
 	};
@@ -204,8 +209,8 @@ const GeneralPage = ( {
 				content={ IPLoggingContent() }
 			/>
 			<ShowUsageTrackingSection
-				isProActive={srfm_admin?.is_pro_active}
-				loading={loading}
+				isProActive={ srfm_admin?.is_pro_active }
+				loading={ loading }
 			/>
 		</div>
 	);
