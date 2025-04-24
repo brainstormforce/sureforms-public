@@ -182,14 +182,14 @@ const GeneralPage = ( {
 		);
 	} );
 
-	const ShowUsageTrackingSection = ( { isProActive, loading } ) => {
+	const ShowUsageTrackingSection = ( { isProActive, isLoading } ) => {
 		if ( isProActive ) {
 			return null;
 		}
 
 		return (
 			<ContentSection
-				loading={ loading }
+				loading={ isLoading }
 				title={ __( 'Usage Tracking', 'sureforms' ) }
 				content={ <UsageTrackingContent /> }
 			/>
@@ -210,7 +210,7 @@ const GeneralPage = ( {
 			/>
 			<ShowUsageTrackingSection
 				isProActive={ srfm_admin?.is_pro_active }
-				loading={ loading }
+				isLoading={ loading }
 			/>
 		</div>
 	);
