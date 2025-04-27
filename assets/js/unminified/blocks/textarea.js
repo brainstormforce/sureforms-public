@@ -102,6 +102,11 @@ function addQuillEditor( areaField ) {
 					[ 'link' ], // Add links and images
 				],
 			},
+			keyboard: {
+				bindings: {
+					tab: true, // Allow tab key for exiting the editor.
+				},
+			},
 		},
 	} );
 
