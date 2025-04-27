@@ -942,36 +942,10 @@ class Form_Submit {
 	}
 
 	/**
-	 * Add From email and name in the header.
-	 *
-	 * @param array<mixed>  $submission_data Submission data.
-	 * @param array<string> $item An associative array containing email settings, such as 'email_to', 'subject', 'email_body', and optional headers like 'email_reply_to', 'email_cc', and 'email_bcc'.
-	 * @param Smart_Tags    $smart_tags Smart Tags instance.
-	 * @since 1.6.1
-	 * @return string The formatted "From" email header.
-	 */
-	private static function add_from_data_in_header( $submission_data, $item, $smart_tags ) {
-		$from_name  = is_array( $item ) && ! empty( $item['from_name'] ) ? sanitize_text_field( Helper::get_string_value( $item['from_name'] ) ) : '{site_title}';
-		$from_email = is_array( $item ) && ! empty( $item['from_email'] ) ? Helper::get_string_value( $item['from_email'] ) : '{admin_email}';
-
-		// Check if the email contains smart tags. If not, validate the email.
-		$is_valid_email = true;
-		if ( ! str_contains( $from_email, '{' ) && ! str_contains( $from_email, '}' ) ) {
-			$is_valid_email = filter_var( $from_email, FILTER_VALIDATE_EMAIL );
-		}
-		// if the email is not valid, set it to the admin email.
-		if ( ! $is_valid_email ) {
-			$from_email = Helper::get_string_value( get_option( 'admin_email' ) );
-		}
-
-		return 'From: ' . esc_html( $smart_tags->process_smart_tags( $from_name, $submission_data ) ) . ' <' . esc_html( $smart_tags->process_smart_tags( $from_email, $submission_data ) ) . '>' . "\r\n";
-	}
-
-	/**
 	 * Send error response for reCAPTCHA validation failure.
 	 *
-	 * @param string $type         The type of CAPTCHA used. Accepted values: 'g-recaptcha', 'hcaptcha', 'cf-turnstile'.
-	 * @param array  $api_response The response returned from the CAPTCHA validation API.
+	 * @param string       $type         The type of CAPTCHA used. Accepted values: 'g-recaptcha', 'hcaptcha', 'cf-turnstile'.
+	 * @param array<mixed> $api_response The response returned from the CAPTCHA validation API.
 	 *
 	 * @return void
 	 */
@@ -989,8 +963,8 @@ class Form_Submit {
 	/**
 	 * Get the error message for a CAPTCHA validation failure based on the service type and API response.
 	 *
-	 * @param string $type         The type of CAPTCHA used. Accepted values: 'g-recaptcha', 'hcaptcha', 'cf-turnstile'.
-	 * @param array  $api_response The response returned from the CAPTCHA validation API.
+	 * @param string       $type         The type of CAPTCHA used. Accepted values: 'g-recaptcha', 'hcaptcha', 'cf-turnstile'.
+	 * @param array<mixed> $api_response The response returned from the CAPTCHA validation API.
 	 *
 	 * @return string A human-readable error message with context.
 	 */
@@ -1074,13 +1048,37 @@ class Form_Submit {
 				break;
 		}
 
-		$error_message = sprintf(
+		return sprintf(
 			"%s: %s\nError Code: %s",
 			$captcha_title,
 			$captcha_message ?? __( 'Unknown error occurred.', 'sureforms' ),
 			$error_code
 		);
+	}
 
-		return $error_message;
+	/**
+	 * Add From email and name in the header.
+	 *
+	 * @param array<mixed>  $submission_data Submission data.
+	 * @param array<string> $item An associative array containing email settings, such as 'email_to', 'subject', 'email_body', and optional headers like 'email_reply_to', 'email_cc', and 'email_bcc'.
+	 * @param Smart_Tags    $smart_tags Smart Tags instance.
+	 * @since 1.6.1
+	 * @return string The formatted "From" email header.
+	 */
+	private static function add_from_data_in_header( $submission_data, $item, $smart_tags ) {
+		$from_name  = is_array( $item ) && ! empty( $item['from_name'] ) ? sanitize_text_field( Helper::get_string_value( $item['from_name'] ) ) : '{site_title}';
+		$from_email = is_array( $item ) && ! empty( $item['from_email'] ) ? Helper::get_string_value( $item['from_email'] ) : '{admin_email}';
+
+		// Check if the email contains smart tags. If not, validate the email.
+		$is_valid_email = true;
+		if ( ! str_contains( $from_email, '{' ) && ! str_contains( $from_email, '}' ) ) {
+			$is_valid_email = filter_var( $from_email, FILTER_VALIDATE_EMAIL );
+		}
+		// if the email is not valid, set it to the admin email.
+		if ( ! $is_valid_email ) {
+			$from_email = Helper::get_string_value( get_option( 'admin_email' ) );
+		}
+
+		return 'From: ' . esc_html( $smart_tags->process_smart_tags( $from_name, $submission_data ) ) . ' <' . esc_html( $smart_tags->process_smart_tags( $from_email, $submission_data ) ) . '>' . "\r\n";
 	}
 }
