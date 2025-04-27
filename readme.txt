@@ -260,6 +260,8 @@ Yes! You can certainly use SureForms on yours as well as your client’s website
 When you use SureForms, you get an easy-to-use AI-powered form builder that can be used to build your forms fast.
 
 == Changelog ==
+= x.x.x =
+* Improvement: Improved reCAPTCHA handling by adding detailed logging for failure responses.
 = 1.6.1 - 23rd April 2025 =
 * New: Added From Name and From Email fields to the Email Notification settings.
 * Improvement: Added bottom margin to the form container for better compatibility with the Neve theme.
