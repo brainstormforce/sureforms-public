@@ -326,12 +326,17 @@ class Form_Submit {
 
 			// If the cloudflare validation fails, return an error.
 			if ( is_array( $turnstile_validation_result ) && isset( $turnstile_validation_result['success'] ) && false === $turnstile_validation_result['success'] ) {
-				$error_message = $turnstile_validation_result['error'] ?? __( 'Cloudflare Turnstile validation failed.', 'sureforms' );
-				wp_send_json_error(
-					[
-						'message' => $error_message,
-					]
-				);
+				// $error_message = $turnstile_validation_result['error'] ?? __( 'Cloudflare Turnstile validation failed.', 'sureforms' );
+
+				// $error_message = $this->recaptcha_error_message( 'cf-turnstile', $turnstile_validation_result );
+
+				// wp_send_json_error(
+				// 	[
+				// 		'message'      => $error_message,
+				// 		'api_response' => $turnstile_validation_result,
+				// 	]
+				// );
+				$this->recaptcha_error_response( 'cf-turnstile', $turnstile_validation_result );
 			}
 		}
 
@@ -356,12 +361,18 @@ class Form_Submit {
 
 			// If the hcaptcha validation fails, return an error.
 			if ( is_array( $hcaptcha_validation_result ) && isset( $hcaptcha_validation_result['success'] ) && false === $hcaptcha_validation_result['success'] ) {
-				$error_message = $hcaptcha_validation_result['error'] ?? __( 'hCaptcha validation failed.', 'sureforms' );
-				wp_send_json_error(
-					[
-						'message' => $error_message,
-					]
-				);
+				// $error_message = $hcaptcha_validation_result['error'] ?? __( 'hCaptcha validation failed.', 'sureforms' );
+
+				// $error_message = $this->recaptcha_error_message( 'hcaptcha', $hcaptcha_validation_result );
+
+				// wp_send_json_error(
+				// 	[
+				// 		'message'      => $error_message,
+				// 		'api_response' => $hcaptcha_validation_result,
+				// 	]
+				// );
+
+				$this->recaptcha_error_response( 'hcaptcha', $hcaptcha_validation_result );
 			}
 		}
 
@@ -386,7 +397,7 @@ class Form_Submit {
 				} else {
 					wp_send_json_error(
 						[
-							'message' => __( 'reCAPTCHA error.', 'sureforms' ),
+							'message' => __( 'reCAPTCHA error: Submit nonce is not available.', 'sureforms' ),
 						]
 					);
 				}
@@ -394,12 +405,16 @@ class Form_Submit {
 					return rest_ensure_response( $this->handle_form_entry( $form_data ) );
 				}
 
-				wp_send_json_error(
-					[
-						'message' => __( 'reCAPTCHA error.', 'sureforms' ),
-					]
-				);
+				// $error_message = $this->recaptcha_error_message( 'g-recaptcha', $sureforms_captcha_data );
 
+				// wp_send_json_error(
+				// 	[
+				// 		'message'      => $error_message,
+				// 		'api_response' => $sureforms_captcha_data,
+				// 	]
+				// );
+
+				$this->recaptcha_error_response( 'g-recaptcha', $sureforms_captcha_data );
 			}
 
 			return rest_ensure_response( $this->handle_form_entry( $form_data ) );
@@ -426,7 +441,7 @@ class Form_Submit {
 				} else {
 					wp_send_json_error(
 						[
-							'message' => __( 'reCAPTCHA error.', 'sureforms' ),
+							'message' => __( 'reCAPTCHA error: Submit nonce is not available.', 'sureforms' ),
 						]
 					);
 				}
@@ -434,11 +449,15 @@ class Form_Submit {
 					return rest_ensure_response( $this->handle_form_entry( $form_data ) );
 				}
 
-				wp_send_json_error(
-					[
-						'message' => __( 'reCAPTCHA error.', 'sureforms' ),
-					]
-				);
+				// $error_message = $this->recaptcha_error_message( 'g-recaptcha', $sureforms_captcha_data );
+
+				// wp_send_json_error(
+				// 	[
+				// 		'message'      => $error_message,
+				// 		'api_response' => $sureforms_captcha_data,
+				// 	]
+				// );
+				$this->recaptcha_error_response( 'g-recaptcha', $sureforms_captcha_data );
 			}
 
 			return rest_ensure_response( $this->handle_form_entry( $form_data ) );
@@ -449,6 +468,123 @@ class Form_Submit {
 				'message' => __( 'Spam Detected', 'sureforms' ),
 			]
 		);
+	}
+
+	/**
+	 * Send error response for reCAPTCHA validation failure.
+	 *
+	 * @param string $type         The type of CAPTCHA used. Accepted values: 'g-recaptcha', 'hcaptcha', 'cf-turnstile'.
+	 * @param array  $api_response The response returned from the CAPTCHA validation API.
+	 *
+	 * @return void
+	 */
+	public function recaptcha_error_response( $type, $api_response ) {
+		$error_message = $this->recaptcha_error_message( $type, $api_response );
+
+		wp_send_json_error(
+			[
+				'message'      => $error_message,
+				'api_response' => $api_response,
+			]
+		);
+	}
+
+	/**
+	 * Get the error message for a CAPTCHA validation failure based on the service type and API response.
+	 *
+	 * @param string $type         The type of CAPTCHA used. Accepted values: 'g-recaptcha', 'hcaptcha', 'cf-turnstile'.
+	 * @param array  $api_response The response returned from the CAPTCHA validation API.
+	 *
+	 * @return string A human-readable error message with context.
+	 */
+	public function recaptcha_error_message( $type, $api_response ) {
+
+		if ( empty( $api_response['error-codes'] ) || ! is_array( $api_response['error-codes'] ) ) {
+			return __( 'Captcha validation failed. No error code provided.', 'sureforms' );
+		}
+
+		// Google reCAPTCHA error codes.
+		// Reference: (https://developers.google.com/recaptcha/docs/verify#error-code-reference).
+		$google_recaptcha_error = [
+			'missing-input-secret'   => __( 'The secret parameter is missing.', 'sureforms' ),
+			'invalid-input-secret'   => __( 'The secret parameter is invalid or malformed.', 'sureforms' ),
+			'missing-input-response' => __( 'The response parameter is missing.', 'sureforms' ),
+			'invalid-input-response' => __( 'The response parameter is invalid or malformed.', 'sureforms' ),
+			'bad-request'            => __( 'The request is invalid or malformed.', 'sureforms' ),
+			'timeout-or-duplicate'   => __( 'The response is no longer valid: either is too old or has been used previously.', 'sureforms' ),
+		];
+
+		// hCaptcha error codes.
+		// Reference: (https://docs.hcaptcha.com/#siteverify-error-codes).
+		$hcaptcha_errors = [
+			'missing-input-secret'     => __( 'Your secret key is missing.', 'sureforms' ),
+			'invalid-input-secret'     => __( 'Your secret key is invalid or malformed.', 'sureforms' ),
+			'missing-input-response'   => __( 'The response parameter (verification token) is missing.', 'sureforms' ),
+			'invalid-input-response'   => __( 'The response parameter (verification token) is invalid or malformed.', 'sureforms' ),
+			'expired-input-response'   => __( 'The response parameter (verification token) is expired. (120s default)', 'sureforms' ),
+			'already-seen-response'    => __( 'The response parameter (verification token) was already verified once.', 'sureforms' ),
+			'bad-request'              => __( 'The request is invalid or malformed.', 'sureforms' ),
+			'missing-remoteip'         => __( 'The remoteip parameter is missing.', 'sureforms' ),
+			'invalid-remoteip'         => __( 'The remoteip parameter is not a valid IP address or blinded value.', 'sureforms' ),
+			'not-using-dummy-passcode' => __( 'You have used a testing sitekey but have not used its matching secret.', 'sureforms' ),
+			'sitekey-secret-mismatch'  => __( 'The sitekey is not registered with the provided secret.', 'sureforms' ),
+		];
+
+		// Cloudflare Turnstile error codes.
+		// Reference: (https://developers.cloudflare.com/turnstile/troubleshooting/).
+		$cf_turnstile_errors = [
+			'100***' => __( 'Initialization Problems: There was a problem initializing Turnstile before a challenge could be started.', 'sureforms' ),
+			'102***' => __( 'Invalid Parameters: The visitor sent an invalid parameter as part of the challenge towards Turnstile.', 'sureforms' ),
+			'103***' => __( 'Invalid Parameters: The visitor sent an invalid parameter as part of the challenge towards Turnstile.', 'sureforms' ),
+			'104***' => __( 'Invalid Parameters: The visitor sent an invalid parameter as part of the challenge towards Turnstile.', 'sureforms' ),
+			'105***' => __( 'Turnstile API Compatibility: Turnstile was invoked in a deprecated or invalid way.', 'sureforms' ),
+			'106***' => __( 'Invalid Parameters: The visitor sent an invalid parameter as part of the challenge towards Turnstile.', 'sureforms' ),
+			'110100' => __( 'Invalid sitekey: Turnstile was invoked with an invalid sitekey or a sitekey that is no longer active.', 'sureforms' ),
+			'110110' => __( 'Unknown domain: Domain not allowed.', 'sureforms' ),
+			'110200' => __( 'Invalid action: This error occurs when an unsupported or incorrectly formatted action is submitted.', 'sureforms' ),
+			'110420' => __( 'Invalid cData: This error in Turnstile refers to an issue encountered when processing Custom Data (cData). This error occurs when the cData provided does not adhere to the expected format or contains invalid characters.', 'sureforms' ),
+			'110500' => __( 'Unsupported browser: The visitor is using an unsupported browser.', 'sureforms' ),
+			'110510' => __( 'Inconsistent user-agent: The visitor provided an inconsistent user-agent throughout the process of solving Turnstile.', 'sureforms' ),
+			'11060*' => __( 'Challenge timed out: The visitor took too long to solve the challenge and the challenge timed out.', 'sureforms' ),
+			'11062*' => __( 'Challenge timed out: This error is for visible mode only. The visitor took too long to solve the interactive challenge and the challenge became outdated.', 'sureforms' ),
+			'120***' => __( 'Internal Errors for Cloudflare Employees.', 'sureforms' ),
+			'200010' => __( 'Invalid caching: Some portion of Turnstile was accidentally cached.', 'sureforms' ),
+			'200100' => __( 'Time problem: The visitor\'s clock is incorrect.', 'sureforms' ),
+			'300***' => __( 'Generic client execution error: An unspecified error occurred in the visitor while they were solving a challenge.', 'sureforms' ),
+			'600***' => __( 'Challenge execution failure: A visitor failed to solve a Turnstile Challenge. Also used by failing testing sitekey.', 'sureforms' ),
+		];
+
+		$error_code = $api_response['error-codes'][0] ?? 'no-error-code';
+
+		$captcha_title = '';
+		$captcha_message = '';
+		switch ( $type ) {
+			case 'g-recaptcha':
+				$captcha_title = __( 'Google reCAPTCHA', 'sureforms' );
+				$captcha_message = $google_recaptcha_error[ $error_code ];
+				break;
+			case 'hcaptcha':
+				$captcha_title = __( 'hCaptcha', 'sureforms' );
+				$captcha_message = $hcaptcha_errors[ $error_code ];
+				break;
+			case 'cf-turnstile':
+				$captcha_title = __( 'Cloudflare Turnstile', 'sureforms' );
+				$captcha_message = $cf_turnstile_errors[ $error_code ];
+				break;
+			default:
+				$captcha_title = __( 'Unknown Captcha', 'sureforms' );
+				$captcha_message = __( 'Invalid captcha type.', 'sureforms' );
+				break;
+		}
+
+		$error_message = sprintf(
+			"%s: %s\nError Code: %s",
+			$captcha_title,
+			$captcha_message ?? __( 'Unknown error occurred.', 'sureforms' ),
+			$error_code
+		);
+
+		return $error_message;
 	}
 
 	/**
