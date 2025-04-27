@@ -131,6 +131,8 @@ function decodeHtmlEntities( str ) {
 	return str;
 }
 
+const checkInvalidCharacter = ( value ) => value.includes( '|' );
+
 export {
 	stripHTML,
 	getSpacingPresetCssVar,
@@ -139,4 +141,5 @@ export {
 	useErrMessage,
 	getDefaultMessage,
 	decodeHtmlEntities,
+	checkInvalidCharacter,
 };

@@ -109,7 +109,9 @@ function prepareAddressesData( form ) {
 		}
 
 		// Select all input fields within the block (text inputs and dropdowns).
-		const addressFields = block.querySelectorAll( '.srfm-input-input, .srfm-dropdown-input' );
+		const addressFields = block.querySelectorAll(
+			'.srfm-input-input, .srfm-dropdown-input'
+		);
 
 		// Build a compact address string in the format: "address_1, address_2, city, state, country".
 		const compactAddress = Array.from( addressFields )
@@ -156,7 +158,10 @@ async function submitFormData( form ) {
 
 	const addresses = prepareAddressesData( form );
 	if ( addresses ) {
-		filteredFormData.append( 'srfm_addresses', JSON.stringify( addresses ) );
+		filteredFormData.append(
+			'srfm_addresses',
+			JSON.stringify( addresses )
+		);
 	}
 
 	try {
