@@ -5,6 +5,7 @@ import { useDebouncedCallback } from 'use-debounce';
 import { Container } from '@bsf/force-ui';
 import ModalInputBox from './ModalInputBox';
 import TabContentWrapper from '@Components/tab-content-wrapper';
+import FromEmail from './FromEmail';
 
 const EmailConfirmation = ( props ) => {
 	const {
@@ -132,10 +133,7 @@ const EmailConfirmation = ( props ) => {
 			onClickAction={ onCancel }
 			onClickBack={ onClickBack }
 		>
-			<Container
-				direction="column"
-				className="gap-4 px-2"
-			>
+			<Container direction="column" className="gap-4 px-2">
 				<ModalInputBox
 					label={ __( 'Name', 'sureforms' ) }
 					id="srfm-email-notification-name"
@@ -229,6 +227,15 @@ const EmailConfirmation = ( props ) => {
 						allData={ true }
 					/>
 				</div>
+
+				<FromEmail
+					formData={ formData }
+					setFormData={ setFormData }
+					genericSmartTags={ genericSmartTags }
+					genericEmailSmartTags={ genericEmailSmartTags }
+					formSmartTags={ formSmartTags }
+					formEmailSmartTags={ formEmailSmartTags }
+				/>
 
 				<Container className="gap-2">
 					<ModalInputBox
