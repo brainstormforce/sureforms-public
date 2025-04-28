@@ -260,8 +260,8 @@ Yes! You can certainly use SureForms on yours as well as your client’s website
 When you use SureForms, you get an easy-to-use AI-powered form builder that can be used to build your forms fast.
 
 ## Changelog ##
-### 1.6.2 - 28th April 2025 ###
-* Improvement: Improved Value Handling for Dropdown & MultiChoice Fields: Switched from comma (,) to pipe (|) as the value separator to avoid conflicts with labels containing commas. This resolves selection and calculation issues.
+### 1.6.2 - 29th April 2025 ###
+* Improvement: Enhanced value handling for Dropdown and MultiChoice fields by switching the value separator from a comma (,) to a pipe (|) to prevent conflicts with labels containing commas. This update resolves related selection and calculation issues.
 * Fix: Cloudflare Turnstile not working with version 1.6.1.
 ### 1.6.1 - 23rd April 2025 ###
 * New: Added From Name and From Email fields to the Email Notification settings.
