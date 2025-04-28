@@ -1037,7 +1037,7 @@ class Form_Submit {
 		}
 
 		return sprintf(
-			'%s: %s <br> Error Code: %s',
+			'%s: %s <br> Error Code: <b>%s</b>',
 			$captcha_title,
 			$captcha_message ?? __( 'Unknown error occurred.', 'sureforms' ),
 			$error_code
