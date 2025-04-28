@@ -261,7 +261,7 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 
 ## Changelog ##
 ### 1.6.2 - 29th April 2025 ###
-* Improvement: Enhanced value handling for Dropdown and MultiChoice fields by switching the value separator from a comma (,) to a pipe (|) to prevent conflicts with labels containing commas. This update resolves related selection and calculation issues.
+* Improvement: Changed the value separator for Dropdown and Multiple Choice field from a comma (,) to a pipe (|) to fix selection and calculation issues.
 * Fix: Cloudflare Turnstile not working with version 1.6.1.
 ### 1.6.1 - 23rd April 2025 ###
 * New: Added From Name and From Email fields to the Email Notification settings.
