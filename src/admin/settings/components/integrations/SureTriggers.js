@@ -1,11 +1,11 @@
 import IntegrationCard from './Card';
 import SureTriggersIcon from '@Image/suretriggers.svg';
 import { __ } from '@wordpress/i18n';
-import { Badge, Button, toast } from '@bsf/force-ui';
+import { Badge, Button } from '@bsf/force-ui';
 import { getPluginStatusText, handlePluginActionTrigger } from '@Utils/Helpers';
 
 const SureTriggers = () => {
-	const plugin = srfm_admin?.integrations?.[ 'sure_triggers' ];
+	const plugin = srfm_admin?.integrations?.sure_triggers;
 
 	return (
 		<IntegrationCard>

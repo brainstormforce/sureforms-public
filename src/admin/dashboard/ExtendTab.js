@@ -1,7 +1,10 @@
 import { __ } from '@wordpress/i18n';
-import { Button, Container, Label, Toaster, toast } from '@bsf/force-ui';
-import { cn } from '@Utils/Helpers';
-import { getPluginStatusText, handlePluginActionTrigger } from '@Utils/Helpers';
+import { Button, Container, Label, Toaster } from '@bsf/force-ui';
+import {
+	cn,
+	getPluginStatusText,
+	handlePluginActionTrigger,
+} from '@Utils/Helpers';
 
 export default () => {
 	const integrations = Object.entries( srfm_admin?.integrations );

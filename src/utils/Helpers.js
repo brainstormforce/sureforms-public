@@ -29,9 +29,9 @@ export function getImageSize( sizes ) {
 export function getIdFromString( label ) {
 	return label
 		? label
-				.toLowerCase()
-				.replace( /[^a-zA-Z ]/g, '' )
-				.replace( /\s+/g, '-' )
+			.toLowerCase()
+			.replace( /[^a-zA-Z ]/g, '' )
+			.replace( /\s+/g, '-' )
 		: '';
 }
 
@@ -602,8 +602,8 @@ export const getAction = ( status ) => {
 	return status === 'Installed'
 		? PLUGIN_ACTIONS.ACTIVATE
 		: status === 'Activated'
-		? ''
-		: PLUGIN_ACTIONS.INSTALL;
+			? ''
+			: PLUGIN_ACTIONS.INSTALL;
 };
 
 // Helper function for API requests
