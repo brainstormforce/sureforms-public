@@ -1002,27 +1002,15 @@ class Form_Submit {
 		];
 
 		// Cloudflare Turnstile error codes.
-		// Reference: (https://developers.cloudflare.com/turnstile/troubleshooting/).
+		// Reference: (https://developers.cloudflare.com/turnstile/get-started/server-side-validation/).
 		$cf_turnstile_errors = [
-			'100***' => __( 'Initialization Problems: There was a problem initializing Turnstile before a challenge could be started.', 'sureforms' ),
-			'102***' => __( 'Invalid Parameters: The visitor sent an invalid parameter as part of the challenge towards Turnstile.', 'sureforms' ),
-			'103***' => __( 'Invalid Parameters: The visitor sent an invalid parameter as part of the challenge towards Turnstile.', 'sureforms' ),
-			'104***' => __( 'Invalid Parameters: The visitor sent an invalid parameter as part of the challenge towards Turnstile.', 'sureforms' ),
-			'105***' => __( 'Turnstile API Compatibility: Turnstile was invoked in a deprecated or invalid way.', 'sureforms' ),
-			'106***' => __( 'Invalid Parameters: The visitor sent an invalid parameter as part of the challenge towards Turnstile.', 'sureforms' ),
-			'110100' => __( 'Invalid sitekey: Turnstile was invoked with an invalid sitekey or a sitekey that is no longer active.', 'sureforms' ),
-			'110110' => __( 'Unknown domain: Domain not allowed.', 'sureforms' ),
-			'110200' => __( 'Invalid action: This error occurs when an unsupported or incorrectly formatted action is submitted.', 'sureforms' ),
-			'110420' => __( 'Invalid cData: This error in Turnstile refers to an issue encountered when processing Custom Data (cData). This error occurs when the cData provided does not adhere to the expected format or contains invalid characters.', 'sureforms' ),
-			'110500' => __( 'Unsupported browser: The visitor is using an unsupported browser.', 'sureforms' ),
-			'110510' => __( 'Inconsistent user-agent: The visitor provided an inconsistent user-agent throughout the process of solving Turnstile.', 'sureforms' ),
-			'11060*' => __( 'Challenge timed out: The visitor took too long to solve the challenge and the challenge timed out.', 'sureforms' ),
-			'11062*' => __( 'Challenge timed out: This error is for visible mode only. The visitor took too long to solve the interactive challenge and the challenge became outdated.', 'sureforms' ),
-			'120***' => __( 'Internal Errors for Cloudflare Employees.', 'sureforms' ),
-			'200010' => __( 'Invalid caching: Some portion of Turnstile was accidentally cached.', 'sureforms' ),
-			'200100' => __( 'Time problem: The visitor\'s clock is incorrect.', 'sureforms' ),
-			'300***' => __( 'Generic client execution error: An unspecified error occurred in the visitor while they were solving a challenge.', 'sureforms' ),
-			'600***' => __( 'Challenge execution failure: A visitor failed to solve a Turnstile Challenge. Also used by failing testing sitekey.', 'sureforms' ),
+			'missing-input-secret'   => __( 'The secret parameter was not passed.', 'sureforms' ),
+			'invalid-input-secret'   => __( 'The secret parameter was invalid, did not exist, or is a testing secret key with a non-testing response.', 'sureforms' ),
+			'missing-input-response' => __( 'The response parameter (token) was not passed.', 'sureforms' ),
+			'invalid-input-response' => __( 'The response parameter (token) is invalid or has expired. Most of the time, this means a fake token has been used. If the error persists, contact customer support.', 'sureforms' ),
+			'bad-request'            => __( 'The request was rejected because it was malformed.', 'sureforms' ),
+			'timeout-or-duplicate'   => __( 'The response parameter (token) has already been validated before. This means that the token was issued five minutes ago and is no longer valid, or it was already redeemed.', 'sureforms' ),
+			'internal-error'         => __( 'An internal error happened while validating the response. The request can be retried.', 'sureforms' ),
 		];
 
 		$error_code = $api_response['error-codes'][0] ?? 'no-error-code';
@@ -1049,7 +1037,7 @@ class Form_Submit {
 		}
 
 		return sprintf(
-			"%s: %s\nError Code: %s",
+			'%s: %s <br> Error Code: %s',
 			$captcha_title,
 			$captcha_message ?? __( 'Unknown error occurred.', 'sureforms' ),
 			$error_code

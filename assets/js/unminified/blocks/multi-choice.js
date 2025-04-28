@@ -2,7 +2,6 @@ function initializeMultichoice() {
 	const multiChoices = document.querySelectorAll(
 		'.srfm-multi-choice-block'
 	);
-	const { srfmUtility } = window.srfm;
 
 	if ( multiChoices ) {
 		multiChoices.forEach( ( single ) => {
@@ -81,7 +80,7 @@ function initializeMultichoice() {
 							savedValues = arr;
 						}
 
-						setValue = srfmUtility.prepareValue( savedValues );
+						setValue = window.srfm.srfmUtility.prepareValue( savedValues );
 					}
 
 					// Set the value of the hidden input field.

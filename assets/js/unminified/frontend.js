@@ -148,9 +148,17 @@ if ( submitButton ) {
 }
 // eslint-disable-next-line
 function onSuccess( response ) {
+
+	console.log({ "turnstileResponse": response })
+
 	if ( 0 !== response.length ) {
 		document.querySelector( '#captcha-error' ).style.display = 'none';
 	}
+}
+
+function onTurnstileError( error ) {
+	console.log({ "turnstileError": error })
+	// Handle the error as needed
 }
 
 /**
