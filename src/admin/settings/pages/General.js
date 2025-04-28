@@ -158,7 +158,7 @@ const GeneralPage = ( {
 						'sureforms'
 					) }
 				</p>
-				<a href="https://sureforms.com/docs/" target="_blank" rel="noopener noreferrer">
+				<a href="https://store.brainstormforce.com/usage-tracking/?utm_source=sureforms_global_settings&utm_medium=surefroms_general_settings&utm_campaign=usage_tracking" target="_blank" rel="noopener noreferrer">
 					{ __( ' Learn More', 'sureforms' ) }
 				</a>
 			</>
