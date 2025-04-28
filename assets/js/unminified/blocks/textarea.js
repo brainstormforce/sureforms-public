@@ -36,6 +36,8 @@ function initializeTextarea() {
 				if ( isRichText === 'true' ) {
 					// Initialize Quill editor on the textarea
 					addQuillEditor( areaField );
+					// Handle the screen readraccessibility of the Quill editor for screen reader.
+					handleQuillEditorA11Y( areaField );
 
 					const quillEditorContainer =
 						areaField?.parentElement?.querySelector(
@@ -130,6 +132,30 @@ function addQuillEditor( areaField ) {
 		// to ensure the textarea's value is updated in the DOM.
 		areaField.dispatchEvent( new Event( 'input' ) );
 	} );
+}
+
+/**
+ * Function to handle a11y for the rich text editor.
+ *
+ * It is responsible to add the aria-labelledby attribute to the Quill editor container.
+ * This will ensure the label is read by the screen reader.
+ *
+ * @param {HTMLElement} areaField - The textarea element.
+ */
+function handleQuillEditorA11Y( areaField ) {
+	const block = areaField.closest( '.srfm-textarea-block' );
+	// If block is not found, return early.
+	if ( ! block ) {
+		return;
+	}
+	const quillEditorContainer = block.querySelector(
+		'.quill-editor-container'
+	);
+	const qlContainer = block.querySelector( '.ql-container' );
+	const label = block.querySelector( 'label' );
+	const labelID = label?.getAttribute( 'id' );
+	qlContainer?.setAttribute( 'aria-labelledby', labelID );
+	quillEditorContainer?.setAttribute( 'aria-labelledby', labelID );
 }
 
 document.addEventListener( 'DOMContentLoaded', initializeTextarea );
