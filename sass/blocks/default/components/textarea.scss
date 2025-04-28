@@ -28,15 +28,8 @@
 				}
 
 				.quill-editor-container {
-					// Add the border radius for the complete quill editor container.
-					border: 1px solid var( --srfm-color-input-border );
-					border-radius: var( --srfm-input-field-border-radius );
 					transition: 0.2s ease-out;
-					// Removed the toolbar border and add only the bottom border.
-					.ql-toolbar.ql-snow {
-						border: none; // Adding to override the border shorthand applied by the library.
-						border-bottom: 1px solid var( --srfm-color-input-border );
-					}
+					@include srfm-textarea-quill-styles;
 					// Remove extra spacing between rich text editor toolbar items.
 					.ql-formats {
 						margin-right: 0;

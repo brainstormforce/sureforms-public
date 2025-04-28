@@ -65,6 +65,8 @@
 	}
 
 	.srfm-textarea-quill {
+		@include srfm-textarea-quill-styles;
+
 		// Add the background color for the quill textarea input.
 		.quill {
 			background-color: var( --srfm-color-input-background );
@@ -72,7 +74,7 @@
 		margin: var( --srfm-input-field-margin );
 
 		.ql-container.ql-snow {
-			border-top: none;
+			border: none;
 		}
 		.ql-editor {
 			min-height: 200px;

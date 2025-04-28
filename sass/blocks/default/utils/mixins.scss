@@ -407,3 +407,15 @@
 		background: var( --srfm-bg-overlay-gradient );
 	}
 }
+
+@mixin srfm-textarea-quill-styles {
+	// Add the border and border radius for the complete quill editor container.
+	border: 1px solid var(--srfm-color-input-border);
+	border-radius: var(--srfm-input-field-border-radius);
+
+	// Removed the toolbar border and add only the bottom border.
+	.ql-toolbar {
+		border: none; // Adding to override the border shorthand applied by the library.
+		border-bottom: 1px solid var( --srfm-color-input-border );
+	}
+}
