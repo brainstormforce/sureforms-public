@@ -11,7 +11,7 @@ import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
 	SRFMTabs,
 } from '@Components/inspector-tabs/InspectorTab.js';
-import { useErrMessage } from '@Blocks/util';
+import { useErrMessage, checkInvalidCharacter } from '@Blocks/util';
 import svgIcons from '@Svg/svgs.json';
 import parse from 'html-react-parser';
 import { MdDragIndicator } from 'react-icons/md';
@@ -56,7 +56,7 @@ const Edit = ( props ) => {
 	} = attributes;
 
 	const currentFormId = useGetCurrentFormId( clientId );
-	const [ newOption, setNewOption ] = useState( options );
+	const [ newOption, setNewOption ] = useState();
 	const [ error, setError ] = useState( false );
 	const blockProps = useBlockProps();
 
@@ -89,6 +89,10 @@ const Edit = ( props ) => {
 			return;
 		}
 
+		if ( checkInvalidCharacter( value ) ) {
+			return;
+		}
+
 		const newEditOptions = options.map( ( item, thisIndex ) => {
 			if ( i === thisIndex ) {
 				item = { ...item, ...{ optionTitle: value } };
@@ -108,7 +112,7 @@ const Edit = ( props ) => {
 				},
 			],
 		} );
-		setNewOption( { optionTitle: '' } );
+		setNewOption( '' );
 	};
 
 	useEffect( () => {
@@ -353,28 +357,29 @@ const Edit = ( props ) => {
 			<div
 				className="sureform-add-option-container"
 				onKeyDown={ ( event ) => {
-					if ( event.key === 'Enter' && newOption?.optionTitle ) {
-						addOption( newOption.optionTitle );
+					if ( event.key === 'Enter' && newOption ) {
+						addOption( newOption );
 					}
 				} }
 			>
 				<SRFMTextControl
 					showHeaderControls={ false }
 					label={ __( 'Add New Option', 'sureforms' ) }
-					value={ newOption.optionTitle }
-					onChange={ ( value ) =>
-						setNewOption( { optionTitle: value } )
-					}
+					value={ newOption }
+					onChange={ ( value ) => {
+						if ( checkInvalidCharacter( value ) ) {
+							return;
+						}
+
+						setNewOption( value );
+					} }
 				/>
 				<Button
 					className="sureform-add-option-button"
 					variant="secondary"
 					onClick={ () => {
-						if (
-							newOption?.optionTitle &&
-							newOption?.optionTitle
-						) {
-							addOption( newOption.optionTitle );
+						if ( newOption ) {
+							addOption( newOption );
 						} else {
 							// TODO: May be add a tooltip here
 						}

@@ -8457,6 +8457,16 @@ namespace SRFM\Inc {
         {
         }
         /**
+         * Extracts the block ID from the dynamic field key ( or field slug ).
+         *
+         * @param string $field_key Dynamic field key.
+         * @since 1.6.1
+         * @return string Extracted block ID.
+         */
+        public static function get_block_id_from_key( $field_key )
+        {
+        }
+        /**
          * Returns the proper sanitize callback functions according to the field type.
          *
          * @param string $field_type HTML field type.

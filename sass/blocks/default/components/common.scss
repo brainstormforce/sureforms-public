@@ -1,5 +1,10 @@
 @import "../utils/mixins.scss";
 
+// Adding margin for neve theme between main content and footer
+.srfm-neve-theme-add-margin-bottom {
+	margin-bottom: var( --srfm-row-gap-between-blocks );
+}
+
 .srfm-form-container {
 	&.srfm-has-dark-bg {
 		// We are treating these colors as static here because it will be the fixed color as suggested in Figma.
@@ -96,7 +101,6 @@
 
 		.srfm-submit-container {
 			width: 100%;
-			margin-bottom: 1.2em;
 
 			// Retaining this .hide class for backward compatibility with older versions of the pro plugin.
 			&.hide {
