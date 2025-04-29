@@ -3,6 +3,7 @@ import { __ } from '@wordpress/i18n';
 import { Modal, Button } from '@wordpress/components';
 import svgIcons from '@Image/single-form-logo.json';
 import parse from 'html-react-parser';
+import { checkInvalidCharacter } from '@Blocks/util';
 
 /**
  * BulkInserterPopup component for bulk editing options in a modal.
@@ -119,7 +120,12 @@ export const BulkInserterPopup = ( props ) => {
 						) }
 					</p>
 					<textarea
-						onChange={ ( e ) => setOptions( e.target.value ) }
+						onChange={ ( e ) => {
+							if ( checkInvalidCharacter( e.target.value ) ) {
+								return;
+							}
+							setOptions( e.target.value );
+						} }
 						value={ tempOptions }
 						className="srfm-bulk-edit-textarea"
 					></textarea>

@@ -12,7 +12,7 @@ import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
 	SRFMTabs,
 } from '@Components/inspector-tabs/InspectorTab.js';
-import { useErrMessage } from '@Blocks/util';
+import { useErrMessage, checkInvalidCharacter } from '@Blocks/util';
 import svgIcons from '@Svg/svgs.json';
 import parse from 'html-react-parser';
 import { MdDragIndicator } from 'react-icons/md';
@@ -69,6 +69,10 @@ const Edit = ( props ) => {
 	function editOption( value, i ) {
 		if ( value === '' ) {
 			handleDelete( i );
+			return;
+		}
+
+		if ( checkInvalidCharacter( value ) ) {
 			return;
 		}
 
@@ -301,7 +305,13 @@ const Edit = ( props ) => {
 					showHeaderControls={ false }
 					label={ __( 'Add New Option', 'sureforms' ) }
 					value={ newOption }
-					onChange={ ( value ) => setNewOption( value ) }
+					onChange={ ( value ) => {
+						if ( checkInvalidCharacter( value ) ) {
+							return;
+						}
+
+						setNewOption( value );
+					} }
 				/>
 				<Button
 					className="sureform-add-option-button"
