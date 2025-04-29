@@ -164,7 +164,11 @@ function onTurnstileError( error, x, y ) {
 	getTheTurnStileElement.forEach( ( element ) => {
 		const getTheForm = element.closest( '.srfm-form' );
 		if ( getTheForm ) {
+			
 			// document.addEventListener( 'srfm_show_common_form_error', dispatchErrorEvent );
+
+			// Add class
+			getTheTurnStileElement.classList.add( 'turnstile-error-added' );
 		}
 	} );
 }
