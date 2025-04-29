@@ -779,7 +779,7 @@ class Entries_List_Table extends \WP_List_Table {
 	 */
 	protected function column_first_field( $item ) {
 		// Get the first field key.
-		$first_key = key( $item['form_data'] );
+		$first_key       = key( $item['form_data'] );
 		$excluded_fields = Helper::get_excluded_fields();
 		$form_data       = array_diff_key( $item['form_data'], array_flip( $excluded_fields ) );
 		$first_field     = reset( $form_data );

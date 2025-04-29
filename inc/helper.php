@@ -221,7 +221,7 @@ class Helper {
 				'input'    => 'sanitize_text_field',
 				'number'   => [ self::class, 'sanitize_number' ],
 				'email'    => 'sanitize_email',
-				'textarea' => [ self::class, 'sanitize_rich_textarea' ],
+				'textarea' => [ self::class, 'sanitize_textarea' ],
 			]
 		);
 
@@ -1250,35 +1250,58 @@ class Helper {
 	}
 
 	/**
-	 * Custom sanitization function for the textarea with rich text support.
-	 * 
+	 * Custom escape function for the textarea with rich text support.
+	 *
 	 * @param string $content The content submitted by the user in the textarea block.
 	 * @since x.x.x
-	 * 
+	 *
+	 * @return string Escaped content.
+	 */
+	public static function esc_textarea( $content ) {
+		$content = wpautop( self::sanitize_textarea( $content ) );
+
+		return trim( str_replace( [ "\r\n", "\r", "\n" ], '', $content ) );
+	}
+
+	/**
+	 * Custom sanitization function for the textarea with rich text support.
+	 *
+	 * @param string $content The content submitted by the user in the textarea block.
+	 * @since x.x.x
+	 *
 	 * @return string Sanitized content.
 	 */
-	public static function sanitize_rich_textarea( $content ) {
+	public static function sanitize_textarea( $content ) {
+		$count   = 1;
+		$content = convert_invalid_entities( $content );
+
+		// Remove the 'script' and 'style' tags recursively from the content.
+		while ( $count ) {
+			$content = preg_replace( '@<(script|style)[^>]*?>.*?</\\1>@si', '', self::get_string_value( $content ), - 1, $count );
+		}
+
 		// Disable the safe style attribute parsing for the textarea block.
 		add_filter( 'safe_style_css', [ self::class, 'disable_style_attr_parsing' ], 10, 1 );
-		$sanitized_data = wp_kses_post( $content );
+		$content = wp_kses_post( self::get_string_value( $content ) );
 
 		// Remove the filter after sanitization to avoid affecting other blocks.
 		remove_filter( 'safe_style_css', [ self::class, 'disable_style_attr_parsing' ], 10 );
 
-		return $sanitized_data;
+		// Ensure all tags are balanced.
+		return force_balance_tags( $content );
 	}
 
 	/**
 	 * Disable parsing of style attributes for the textarea block.
-	 * 
-	 * @param array $allowed_styles The allowed styles.
+	 *
+	 * @param array<string> $allowed_styles The allowed styles.
 	 * @since x.x.x
-	 * 
+	 *
 	 * @return array An empty array to disable style attribute parsing.
 	 */
 	public static function disable_style_attr_parsing( $allowed_styles ) {
+		unset( $allowed_styles );
 		// Disable parsing of style attributes.
 		return [];
 	}
-
 }

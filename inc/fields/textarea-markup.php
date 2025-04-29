@@ -63,7 +63,7 @@ class Textarea_Markup extends Base {
 	/**
 	 * Indicates whether the textarea is a rich text editor.
 	 *
-	 * @var boolean
+	 * @var bool
 	 * @since x.x.x
 	 */
 	protected $is_richtext;
@@ -90,7 +90,7 @@ class Textarea_Markup extends Base {
 		$this->set_markup_properties( $this->input_label );
 		$this->set_aria_described_by();
 		$this->set_label_as_placeholder( $this->input_label );
-		$this->is_richtext = isset( $attributes['isRichText'] ) ? $attributes['isRichText'] : false;
+		$this->is_richtext = $attributes['isRichText'] ?? false;
 	}
 
 	/**
@@ -126,11 +126,11 @@ class Textarea_Markup extends Base {
 					data-required="<?php echo esc_attr( $this->data_require_attr ); ?>" <?php echo wp_kses_post( $this->max_length_attr . '' . $this->rows_attr ); ?> <?php echo wp_kses_post( $this->placeholder_attr ); ?>
 					<?php echo $this->is_richtext ? 'data-is-richtext="true"' : ''; ?>
 					><?php echo esc_html( $this->default ); ?></textarea>
-					<?php if ( $this->is_richtext ) : ?>
+					<?php if ( $this->is_richtext ) { ?>
 					<div class="quill-editor-container">
 						<div id="quill-<?php echo esc_attr( $this->unique_slug ); ?>"></div>
 					</div>
-					<?php endif; ?>
+					<?php } ?>
 			</div>
 			<div class="srfm-error-wrap">
 				<?php echo wp_kses_post( $this->error_msg_markup ); ?>
