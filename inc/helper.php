@@ -184,6 +184,29 @@ class Helper {
 	}
 
 	/**
+	 * Extracts the block ID from the dynamic field key ( or field slug ).
+	 *
+	 * @param string $field_key Dynamic field key.
+	 * @since 1.6.1
+	 * @return string Extracted block ID.
+	 */
+	public static function get_block_id_from_key( $field_key ) {
+		// Check if the key contains the block ID identifier.
+		if ( strpos( $field_key, 'srfm-' ) === 0 && strpos( $field_key, '-lbl-' ) === false ) {
+			return '';  // Return empty if the key format is invalid.
+		}
+
+		$parts = explode( '-lbl-', $field_key );
+		if ( isset( $parts[0] ) ) {
+			$block_id = explode( '-', $parts[0] );
+			if ( is_array( $block_id ) && ! empty( $block_id ) ) {
+				return end( $block_id );
+			}
+		}
+		return '';
+	}
+
+	/**
 	 * Returns the proper sanitize callback functions according to the field type.
 	 *
 	 * @param string $field_type HTML field type.

@@ -18,6 +18,7 @@ import { addStyleInRoot, getGradientCSS } from '@Utils/Helpers';
 import { chevronDown } from '@wordpress/icons';
 import PremiumBadge from '@Admin/components/PremiumBadge';
 import Background from '@Components/enhanced-background';
+import Spacing from '@Components/spacing';
 
 function StyleSettings( props ) {
 	const { editPost } = useDispatch( editorStore );
@@ -89,6 +90,21 @@ function StyleSettings( props ) {
 		bg_overlay_gradient_angle,
 		bg_overlay_gradient_type,
 		bg_overlay_gradient,
+		// Form Properties.
+		// Padding.
+		form_padding_top,
+		form_padding_right,
+		form_padding_bottom,
+		form_padding_left,
+		form_padding_unit,
+		form_padding_link,
+		// Border Radius.
+		form_border_radius_top,
+		form_border_radius_right,
+		form_border_radius_bottom,
+		form_border_radius_left,
+		form_border_radius_unit,
+		form_border_radius_link,
 	} = formStyling;
 
 	// Apply the sizings when field spacing changes.
@@ -780,6 +796,72 @@ function StyleSettings( props ) {
 				</>
 			),
 		},
+		{
+			id: 'padding',
+			component: (
+				<Spacing
+					label={ __( 'Padding', 'sureforms' ) }
+					valueTop={ {
+						value: form_padding_top,
+						label: 'form_padding_top',
+					} }
+					valueRight={ {
+						value: form_padding_right,
+						label: 'form_padding_right',
+					} }
+					valueBottom={ {
+						value: form_padding_bottom,
+						label: 'form_padding_bottom',
+					} }
+					valueLeft={ {
+						value: form_padding_left,
+						label: 'form_padding_left',
+					} }
+					unit={ {
+						value: form_padding_unit,
+						label: 'form_padding_unit',
+					} }
+					link={ {
+						value: form_padding_link,
+						label: 'form_padding_link',
+					} }
+					setAttributes={ onHandleChange }
+				/>
+			),
+		},
+		{
+			id: 'border_radius',
+			component: (
+				<Spacing
+					label={ __( 'Border Radius', 'sureforms' ) }
+					valueTop={ {
+						value: form_border_radius_top,
+						label: 'form_border_radius_top',
+					} }
+					valueRight={ {
+						value: form_border_radius_right,
+						label: 'form_border_radius_right',
+					} }
+					valueBottom={ {
+						value: form_border_radius_bottom,
+						label: 'form_border_radius_bottom',
+					} }
+					valueLeft={ {
+						value: form_border_radius_left,
+						label: 'form_border_radius_left',
+					} }
+					unit={ {
+						value: form_border_radius_unit,
+						label: 'form_border_radius_unit',
+					} }
+					link={ {
+						value: form_border_radius_link,
+						label: 'form_border_radius_link',
+					} }
+					setAttributes={ onHandleChange }
+				/>
+			),
+		},
 	];
 
 	const fields = [
@@ -914,7 +996,7 @@ function StyleSettings( props ) {
 		] : [] ),
 	];
 
-	const enhancedStylePanels = getStylePanels( baseStylePanels, { props } );
+	const enhancedStylePanels = getStylePanels( baseStylePanels, { props, sureformsKeys, editPost, formStyling, updateFormStyling } );
 
 	const presetPreview = (
 		<>

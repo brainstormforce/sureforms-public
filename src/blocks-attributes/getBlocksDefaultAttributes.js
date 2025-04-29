@@ -49,6 +49,21 @@ const defaultKeys = {
 	bg_overlay_gradient_color_2: { default: '#C7CBFF' },
 	bg_overlay_gradient_location_1: { default: 0 },
 	bg_overlay_gradient_location_2: { default: 100 },
+	// Form Properties.
+	// Padding.
+	form_padding_top: { default: 32 },
+	form_padding_right: { default: 32 },
+	form_padding_bottom: { default: 32 },
+	form_padding_left: { default: 32 },
+	form_padding_unit: { default: 'px' },
+	form_padding_link: { default: true },
+	// Border Radius.
+	form_border_radius_top: { default: 12 },
+	form_border_radius_right: { default: 12 },
+	form_border_radius_bottom: { default: 12 },
+	form_border_radius_left: { default: 12 },
+	form_border_radius_unit: { default: 'px' },
+	form_border_radius_link: { default: true },
 };
 
 export const blocksAttributes = {

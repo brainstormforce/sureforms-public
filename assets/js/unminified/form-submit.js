@@ -79,6 +79,54 @@ document.addEventListener( 'DOMContentLoaded', function () {
 	}
 } );
 
+/**
+ * Prepares and formats address data from a form for submission.
+ *
+ * This function extracts address information from blocks within the form that have the class `.srfm-address-block`.
+ * It builds a compact address string for each block in the format: "address_1, address_2, city, state, country".
+ * If the address is not empty, it is added to the submission data. This is particularly useful for third-party
+ * integrations like third-party services, which can utilize compact addresses such as permanent address, temporary address, etc.
+ * The address will be structured as field 1, field 2, and so on.
+ *
+ * @param {HTMLFormElement} form - The form element containing address blocks.
+ * @return {Object|null} - An object containing address data, or null if no addresses are found.
+ */
+function prepareAddressesData( form ) {
+	const addressBlocks = form.querySelectorAll( '.srfm-address-block' );
+	if ( ! addressBlocks ) {
+		return null;
+	}
+
+	const addresses = {};
+
+	// Iterate over each address block to extract and format address data.
+	addressBlocks.forEach( ( block ) => {
+		const addressSlug = block.getAttribute( 'data-slug' );
+
+		// Skip processing if the block does not have a `data-slug` attribute.
+		if ( ! addressSlug ) {
+			return;
+		}
+
+		// Select all input fields within the block (text inputs and dropdowns).
+		const addressFields = block.querySelectorAll(
+			'.srfm-input-input, .srfm-dropdown-input'
+		);
+
+		// Build a compact address string in the format: "address_1, address_2, city, state, country".
+		const compactAddress = Array.from( addressFields )
+			.map( ( field ) => field?.value?.trim() )
+			.filter( Boolean ) // Remove empty or undefined values.
+			.join( ', ' );
+
+		// Add the compact address to the addresses object using the slug as the key.
+		addresses[ addressSlug ] = compactAddress;
+	} );
+
+	// Check if the addresses object is not empty.
+	return Object.keys( addresses ).length > 0 ? addresses : null;
+}
+
 async function submitFormData( form ) {
 	const formData = new FormData( form );
 	const filteredFormData = new FormData();
@@ -106,6 +154,14 @@ async function submitFormData( form ) {
 
 		// Append the (possibly modified) key-value pair to filteredFormData
 		filteredFormData.append( key, value );
+	}
+
+	const addresses = prepareAddressesData( form );
+	if ( addresses ) {
+		filteredFormData.append(
+			'srfm_addresses',
+			JSON.stringify( addresses )
+		);
 	}
 
 	try {
@@ -405,7 +461,7 @@ function extractFormAttributesAndElements( form ) {
 	const submitType = form.getAttribute( 'message-type' );
 	const successUrl = form.getAttribute( 'success-url' );
 	const ajaxUrl = form.getAttribute( 'ajaxurl' );
-	const nonce = form.getAttribute( 'nonce' );
+	const nonce = form.getAttribute( 'data-nonce' );
 	const loader = form.querySelector( '.srfm-loader' );
 	const successContainer = form.parentElement.querySelector(
 		'.srfm-single-form.srfm-success-box'

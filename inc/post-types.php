@@ -613,6 +613,44 @@ class Post_Types {
 							'bg_overlay_gradient_location_2' => [
 								'type' => 'integer',
 							],
+							// Form Padding.
+							'form_padding_top'            => [
+								'type' => 'number',
+							],
+							'form_padding_right'          => [
+								'type' => 'number',
+							],
+							'form_padding_bottom'         => [
+								'type' => 'number',
+							],
+							'form_padding_left'           => [
+								'type' => 'number',
+							],
+							'form_padding_unit'           => [
+								'type' => 'string',
+							],
+							'form_padding_link'           => [
+								'type' => 'boolean',
+							],
+							// Border Radius.
+							'form_border_radius_top'      => [
+								'type' => 'number',
+							],
+							'form_border_radius_right'    => [
+								'type' => 'number',
+							],
+							'form_border_radius_bottom'   => [
+								'type' => 'number',
+							],
+							'form_border_radius_left'     => [
+								'type' => 'number',
+							],
+							'form_border_radius_unit'     => [
+								'type' => 'string',
+							],
+							'form_border_radius_link'     => [
+								'type' => 'boolean',
+							],
 						],
 					],
 				],
@@ -663,6 +701,21 @@ class Post_Types {
 					'bg_overlay_gradient_angle'      => 90,
 					'bg_overlay_gradient_location_1' => 0,
 					'bg_overlay_gradient_location_2' => 100,
+					// Form Properties.
+					// Padding.
+					'form_padding_top'               => 32,
+					'form_padding_right'             => 32,
+					'form_padding_bottom'            => 32,
+					'form_padding_left'              => 32,
+					'form_padding_unit'              => 'px',
+					'form_padding_link'              => true,
+					// Border Radius.
+					'form_border_radius_top'         => 12,
+					'form_border_radius_right'       => 12,
+					'form_border_radius_bottom'      => 12,
+					'form_border_radius_left'        => 12,
+					'form_border_radius_unit'        => 'px',
+					'form_border_radius_link'        => true,
 				],
 			]
 		);
@@ -699,6 +752,12 @@ class Post_Types {
 								'email_reply_to' => [
 									'type' => 'string',
 								],
+								'from_name'      => [
+									'type' => 'string',
+								],
+								'from_email'     => [
+									'type' => 'string',
+								],
 								'email_cc'       => [
 									'type' => 'string',
 								],
@@ -723,6 +782,8 @@ class Post_Types {
 						'name'           => __( 'Admin Notification Email', 'sureforms' ),
 						'email_to'       => '{admin_email}',
 						'email_reply_to' => '{admin_email}',
+						'from_name'      => '{site_title}',
+						'from_email'     => '{admin_email}',
 						'email_cc'       => '{admin_email}',
 						'email_bcc'      => '{admin_email}',
 						'subject'        => sprintf( /* translators: %s: Form title smart tag */ __( 'New Form Submission - %s', 'sureforms' ), '{form_title}' ),
@@ -1014,6 +1075,50 @@ class Post_Types {
 	}
 
 	/**
+	 * Restrict unwanted insertions from the AIOSEO plugin.
+	 *
+	 * This method ensures that the SureForms post type is excluded from AIOSEO's
+	 * public post types unless the current page is related to AIOSEO settings.
+	 *
+	 * @return void
+	 * @since 1.6.0
+	 */
+	public function restrict_in_aioseo_plugin() {
+		/**
+		 * Checks if the AIOSEO plugin is installed and excludes the SureForms post type from AIOSEO's public post types.
+		 *
+		 * - Verifies the presence of the AIOSEO_DIR constant to ensure AIOSEO is installed.
+		 * - Allows AIOSEO functionality on its own settings pages by checking the `REQUEST_URI` and `page` query parameter.
+		 * - Excludes the SureForms post type from AIOSEO's public post types using the `aioseo_public_post_types` filter.
+		 *
+		 * Security Note:
+		 * - Nonce verification is intentionally skipped (`phpcs:ignore WordPress.Security.NonceVerification.Recommended`)
+		 *   because this code is only performing a read operation to check the current request URI and query parameters.
+		 *   It does not modify or process sensitive data, making nonce verification unnecessary in this context.
+		 */
+		// Check if AIOSEO is installed by verifying the AIOSEO_DIR constant.
+		if ( ! defined( 'AIOSEO_DIR' ) ) {
+			return;
+		}
+
+		// Allow AIOSEO functionality on its own settings pages.
+		if ( isset( $_SERVER['REQUEST_URI'] ) ) {
+			$request_uri = sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) );
+			if ( strpos( $request_uri, 'admin.php' ) !== false ) {
+				if ( isset( $_GET['page'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verification is not required here because Safe here as we're only reading the `page` parameter.
+					$page = sanitize_text_field( wp_unslash( $_GET['page'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verification is not required here because only we are reading the `page` parameter.
+					if ( strpos( $page, 'aioseo' ) !== false ) {
+						return;
+					}
+				}
+			}
+		}
+
+		// Exclude the SureForms post type from AIOSEO's public post types.
+		add_filter( 'aioseo_public_post_types', [ $this, 'unset_sureforms_post_type' ] );
+	}
+
+	/**
 	 * Restrict interference of other plugins with SureForms.
 	 *
 	 * @since 0.0.5
@@ -1028,6 +1133,6 @@ class Post_Types {
 		add_filter( 'wpseo_metabox_prio', '__return_false' );
 
 		// Restrict AIOSEO columns.
-		add_filter( 'aioseo_public_post_types', [ $this, 'unset_sureforms_post_type' ] );
+		$this->restrict_in_aioseo_plugin();
 	}
 }

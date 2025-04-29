@@ -133,6 +133,21 @@ class Generate_Form_Markup {
 			$bg_overlay_gradient_location_1 = $is_overlay_advanced_gradient && isset( $form_styling['bg_overlay_gradient_location_1'] ) ? $form_styling['bg_overlay_gradient_location_1'] : '';
 			$bg_overlay_gradient_location_2 = $is_overlay_advanced_gradient && isset( $form_styling['bg_overlay_gradient_location_2'] ) ? $form_styling['bg_overlay_gradient_location_2'] : '';
 			$bg_overlay_gradient_angle      = $is_overlay_advanced_gradient && isset( $form_styling['bg_overlay_gradient_angle'] ) ? $form_styling['bg_overlay_gradient_angle'] : '';
+			// Form Settings.
+			$form = [
+				// Padding.
+				'padding_top'          => isset( $form_styling['form_padding_top'] ) ? floatval( $form_styling['form_padding_top'] ) : 32,
+				'padding_right'        => isset( $form_styling['form_padding_right'] ) ? floatval( $form_styling['form_padding_right'] ) : 32,
+				'padding_bottom'       => isset( $form_styling['form_padding_bottom'] ) ? floatval( $form_styling['form_padding_bottom'] ) : 32,
+				'padding_left'         => isset( $form_styling['form_padding_left'] ) ? floatval( $form_styling['form_padding_left'] ) : 32,
+				'padding_unit'         => Helper::get_string_value( $form_styling['form_padding_unit'] ) ?? 'px',
+				// Border Radius.
+				'border_radius_top'    => isset( $form_styling['form_border_radius_top'] ) ? floatval( $form_styling['form_border_radius_top'] ) : 12,
+				'border_radius_right'  => isset( $form_styling['form_border_radius_right'] ) ? floatval( $form_styling['form_border_radius_right'] ) : 12,
+				'border_radius_bottom' => isset( $form_styling['form_border_radius_bottom'] ) ? floatval( $form_styling['form_border_radius_bottom'] ) : 12,
+				'border_radius_left'   => isset( $form_styling['form_border_radius_left'] ) ? floatval( $form_styling['form_border_radius_left'] ) : 12,
+				'border_radius_unit'   => Helper::get_string_value( $form_styling['form_border_radius_unit'] ) ?? 'px',
+			];
 
 			if ( 'custom' === $overlay_size ) {
 				$bg_overlay_custom_size      = $form_styling['bg_overlay_custom_size'] ?? 100;
@@ -142,10 +157,14 @@ class Generate_Form_Markup {
 
 			$background_classes = apply_filters( 'srfm_add_background_classes', Helper::get_background_classes( $bg_type, $overlay_type, $bg_image ), $id );
 
+			$neve_theme_margin_class_name = 'srfm-neve-theme-add-margin-bottom';
+			$theme_name                   = wp_get_theme()->get( 'Name' );
+
 			$form_classes = [
 				'srfm-form-container',
 				$container_id,
 				$sf_classname,
+				'Neve' === $theme_name ? $neve_theme_margin_class_name : '', // compatibility with Neve theme for margin between main content and footer.
 				$background_classes,
 			];
 
@@ -299,59 +318,71 @@ class Generate_Form_Markup {
 
 					/* Background Control Variables */
 					<?php
-						$styling_vars = [];
+						// Form Styles.
+						$styling_vars = [
+							// Padding.
+							'--srfm-form-padding-top'    => sanitize_text_field( "{$form['padding_top']}{$form['padding_unit']}" ),
+							'--srfm-form-padding-right'  => sanitize_text_field( "{$form['padding_right']}{$form['padding_unit']}" ),
+							'--srfm-form-padding-bottom' => sanitize_text_field( "{$form['padding_bottom']}{$form['padding_unit']}" ),
+							'--srfm-form-padding-left'   => sanitize_text_field( "{$form['padding_left']}{$form['padding_unit']}" ),
+							// Border Radius.
+							'--srfm-form-border-radius-top' => sanitize_text_field( "{$form['border_radius_top']}{$form['border_radius_unit']}" ),
+							'--srfm-form-border-radius-right' => sanitize_text_field( "{$form['border_radius_right']}{$form['border_radius_unit']}" ),
+							'--srfm-form-border-radius-bottom' => sanitize_text_field( "{$form['border_radius_bottom']}{$form['border_radius_unit']}" ),
+							'--srfm-form-border-radius-left' => sanitize_text_field( "{$form['border_radius_left']}{$form['border_radius_unit']}" ),
+						];
 						// Background Styles.
-					if ( 'image' === $bg_type && ! empty( $bg_image ) ) {
-						$bg_size_merged = 'custom' === $bg_image_size ? "{$bg_image_size_custom}{$bg_image_size_custom_unit}" : $bg_image_size;
-						$styling_vars  += [
-							'--srfm-bg-image'      => 'url(' . esc_url_raw( $bg_image ) . ')',
-							'--srfm-bg-position'   => sanitize_text_field(
-								( ( ! empty( $bg_image_position['x'] ) ? $bg_image_position['x'] : 0.5 ) * 100 ) . '% ' .
-								( ( ! empty( $bg_image_position['y'] ) ? $bg_image_position['y'] : 0.5 ) * 100 ) . '% '
-							),
-							'--srfm-bg-attachment' => sanitize_text_field( $bg_image_attachment ),
-							'--srfm-bg-repeat'     => sanitize_text_field( $bg_image_repeat ),
-							'--srfm-bg-size'       => sanitize_text_field( $bg_size_merged ),
-						];
-					} elseif ( 'color' === $bg_type && ! empty( $bg_color ) ) {
-						$styling_vars['--srfm-bg-color'] = sanitize_text_field( $bg_color );
-					} elseif ( 'gradient' === $bg_type && ! empty( $bg_gradient ) ) {
-						if ( $is_advanced_gradient ) {
-							$bg_gradient = Helper::get_gradient_css( $bg_gradient_type, $bg_gradient_color_1, $bg_gradient_color_2, $bg_gradient_location_1, $bg_gradient_location_2, $bg_gradient_angle );
+						if ( 'image' === $bg_type && ! empty( $bg_image ) ) {
+							$bg_size_merged = 'custom' === $bg_image_size ? "{$bg_image_size_custom}{$bg_image_size_custom_unit}" : $bg_image_size;
+							$styling_vars  += [
+								'--srfm-bg-image'      => 'url(' . esc_url_raw( $bg_image ) . ')',
+								'--srfm-bg-position'   => sanitize_text_field(
+									( ( ! empty( $bg_image_position['x'] ) ? $bg_image_position['x'] : 0.5 ) * 100 ) . '% ' .
+									( ( ! empty( $bg_image_position['y'] ) ? $bg_image_position['y'] : 0.5 ) * 100 ) . '% '
+								),
+								'--srfm-bg-attachment' => sanitize_text_field( $bg_image_attachment ),
+								'--srfm-bg-repeat'     => sanitize_text_field( $bg_image_repeat ),
+								'--srfm-bg-size'       => sanitize_text_field( $bg_size_merged ),
+							];
+						} elseif ( 'color' === $bg_type && ! empty( $bg_color ) ) {
+							$styling_vars['--srfm-bg-color'] = sanitize_text_field( $bg_color );
+						} elseif ( 'gradient' === $bg_type && ! empty( $bg_gradient ) ) {
+							if ( $is_advanced_gradient ) {
+								$bg_gradient = Helper::get_gradient_css( $bg_gradient_type, $bg_gradient_color_1, $bg_gradient_color_2, $bg_gradient_location_1, $bg_gradient_location_2, $bg_gradient_angle );
+							}
+							$styling_vars['--srfm-bg-gradient'] = sanitize_text_field( $bg_gradient );
 						}
-						$styling_vars['--srfm-bg-gradient'] = sanitize_text_field( $bg_gradient );
-					}
 							// Overlay Variables.
-					if ( 'image' === $bg_type && 'image' === $overlay_type && ! empty( $overlay_image ) ) {
-						$styling_vars += [
-							'--srfm-bg-overlay-image'      => 'url(' . esc_url_raw( $overlay_image ) . ')',
-							'--srfm-bg-overlay-position'   => sanitize_text_field(
-								( ( ! empty( $overlay_position['x'] ) ? $overlay_position['x'] : 0.5 ) * 100 ) . '% ' .
-								( ( ! empty( $overlay_position['y'] ) ? $overlay_position['y'] : 0.5 ) * 100 ) . '%'
-							),
-							'--srfm-bg-overlay-attachment' => sanitize_text_field( $overlay_attachment ),
-							'--srfm-bg-overlay-repeat'     => sanitize_text_field( $overlay_repeat ),
-							'--srfm-bg-overlay-size'       => sanitize_text_field( $overlay_size ),
-							'--srfm-bg-overlay-blend-mode' => sanitize_text_field( $overlay_blend_mode ),
-						];
-					} elseif ( 'image' === $bg_type && 'color' === $overlay_type && ! empty( $overlay_color ) ) {
-						$styling_vars += [
-							'--srfm-bg-overlay-color' => sanitize_text_field( $overlay_color ),
-						];
-					} elseif ( 'image' === $bg_type && 'gradient' === $overlay_type && ! empty( $bg_overlay_gradient ) ) {
-						if ( $is_overlay_advanced_gradient ) {
-							$bg_overlay_gradient = Helper::get_gradient_css( $bg_overlay_gradient_type, $bg_overlay_gradient_color_1, $bg_overlay_gradient_color_2, $bg_overlay_gradient_location_1, $bg_overlay_gradient_location_2, $bg_overlay_gradient_angle );
+						if ( 'image' === $bg_type && 'image' === $overlay_type && ! empty( $overlay_image ) ) {
+							$styling_vars += [
+								'--srfm-bg-overlay-image'  => 'url(' . esc_url_raw( $overlay_image ) . ')',
+								'--srfm-bg-overlay-position' => sanitize_text_field(
+									( ( ! empty( $overlay_position['x'] ) ? $overlay_position['x'] : 0.5 ) * 100 ) . '% ' .
+									( ( ! empty( $overlay_position['y'] ) ? $overlay_position['y'] : 0.5 ) * 100 ) . '%'
+								),
+								'--srfm-bg-overlay-attachment' => sanitize_text_field( $overlay_attachment ),
+								'--srfm-bg-overlay-repeat' => sanitize_text_field( $overlay_repeat ),
+								'--srfm-bg-overlay-size'   => sanitize_text_field( $overlay_size ),
+								'--srfm-bg-overlay-blend-mode' => sanitize_text_field( $overlay_blend_mode ),
+							];
+						} elseif ( 'image' === $bg_type && 'color' === $overlay_type && ! empty( $overlay_color ) ) {
+							$styling_vars += [
+								'--srfm-bg-overlay-color' => sanitize_text_field( $overlay_color ),
+							];
+						} elseif ( 'image' === $bg_type && 'gradient' === $overlay_type && ! empty( $bg_overlay_gradient ) ) {
+							if ( $is_overlay_advanced_gradient ) {
+								$bg_overlay_gradient = Helper::get_gradient_css( $bg_overlay_gradient_type, $bg_overlay_gradient_color_1, $bg_overlay_gradient_color_2, $bg_overlay_gradient_location_1, $bg_overlay_gradient_location_2, $bg_overlay_gradient_angle );
+							}
+							$styling_vars += [
+								'--srfm-bg-overlay-gradient' => sanitize_text_field( $bg_overlay_gradient ),
+							];
 						}
-						$styling_vars += [
-							'--srfm-bg-overlay-gradient' => sanitize_text_field( $bg_overlay_gradient ),
-						];
-					}
 						$styling_vars['--srfm-bg-overlay-opacity'] = floatval( $overlay_opacity );
 						// Output the CSS variables.
-					foreach ( $styling_vars as $key => $value ) {
-						echo esc_html( Helper::get_string_value( $key ) ) . ': ' . esc_html( Helper::get_string_value( $value ) ) . ';';
-					}
-					?>
+						foreach ( $styling_vars as $key => $value ) {
+							echo esc_html( Helper::get_string_value( $key ) ) . ': ' . esc_html( Helper::get_string_value( $value ) ) . ';';
+						}
+						?>
 					<?php
 					// Echo the CSS variables for the form according to the field spacing selected.
 					foreach ( $selected_size as $variable => $value ) {
@@ -382,7 +413,7 @@ class Generate_Form_Markup {
 			}
 			?>
 				<form method="post" enctype="multipart/form-data" id="srfm-form-<?php echo esc_attr( Helper::get_string_value( $id ) ); ?>" class="srfm-form <?php echo esc_attr( 'sureforms_form' === $post_type ? 'srfm-single-form ' : '' ); ?>"
-				form-id="<?php echo esc_attr( Helper::get_string_value( $id ) ); ?>" after-submission="<?php echo esc_attr( $submission_action ); ?>" message-type="<?php echo esc_attr( $confirmation_type ? $confirmation_type : 'same page' ); ?>" success-url="<?php echo esc_attr( $success_url ? $success_url : '' ); ?>" ajaxurl="<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>" nonce="<?php echo esc_attr( wp_create_nonce( 'unique_validation_nonce' ) ); ?>"
+				form-id="<?php echo esc_attr( Helper::get_string_value( $id ) ); ?>" after-submission="<?php echo esc_attr( $submission_action ); ?>" message-type="<?php echo esc_attr( $confirmation_type ? $confirmation_type : 'same page' ); ?>" success-url="<?php echo esc_attr( $success_url ? $success_url : '' ); ?>" ajaxurl="<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>" data-nonce="<?php echo esc_attr( wp_create_nonce( 'unique_validation_nonce' ) ); ?>"
 				>
 				<?php
 					wp_nonce_field( 'srfm-form-submit', 'sureforms_form_submit' );
@@ -415,7 +446,7 @@ class Generate_Form_Markup {
 				?>
 					<?php if ( $should_show_submit_button && ! empty( $security_type ) && 'none' !== $security_type ) { ?>
 						<div class="srfm-captcha-container <?php echo esc_attr( 'v3-reCAPTCHA' === $recaptcha_version || 'v2-invisible' === $recaptcha_version ? 'srfm-display-none' : '' ); ?>">
-						<?php if ( is_string( $google_captcha_site_key ) && ! empty( $google_captcha_site_key ) && 'g-recaptcha' === $security_type ) { ?>
+						<?php if ( is_string( $google_captcha_site_key ) && ! empty( $google_captcha_site_key ) && 'g-recaptcha' === $security_type && ! empty( $recaptcha_version ) && 'none' !== $recaptcha_version ) { ?>
 
 							<?php if ( 'v2-checkbox' === $recaptcha_version ) { ?>
 								<?php

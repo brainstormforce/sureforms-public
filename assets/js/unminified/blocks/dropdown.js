@@ -67,7 +67,9 @@ function initializeDropdown() {
 					if ( hiddenInputField ) {
 						hiddenInputField.setAttribute(
 							'value',
-							Array.isArray( value ) ? value.join( ',' ) : value
+							Array.isArray( value )
+								? window.srfm.srfmUtility.prepareValue( value )
+								: value
 						);
 
 						// Dispatch the change event on the hidden input field.
@@ -231,7 +233,6 @@ function handleInputState( element ) {
 		}
 	}
 }
-
 // make dropdown initialization function available globally
 window.srfmInitializeDropdown = initializeDropdown;
 

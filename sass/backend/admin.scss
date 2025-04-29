@@ -66,13 +66,41 @@ $placeholder_color: #9ca3af;
 }
 
 /* Add the separator after the second last item in the SureForms Settings Submenu */
-#toplevel_page_sureforms_menu .wp-submenu li:nth-last-child( 2 )::after {
+/* This css has been modified form nth-last child to nth-child */
+/* This is done because when the upgrade to pro is added, which is at the bottom, the nth last child will be changed */
+/* This will cause the css to be applied after the settings submenu instead of the entires */
+/* But using nth child will always count from the top and entires will always be at position 5 */
+#toplevel_page_sureforms_menu .wp-submenu li:nth-child( 5 )::after {
 	content: "";
 	border-bottom: 1px solid rgb( 255 255 255 / 0.2 );
 	display: block;
 	float: left;
 	margin: 8px 0;
 	width: 100%;
+}
+
+/* The url used here as the selector is the url for the upgrade to pro submenu */
+/* If url is updated here then please make sure to update it for the submenu as well  */
+#toplevel_page_sureforms_menu .wp-submenu li a[href*="https://sureforms.com/upgrade"]
+{
+	background-color: #04a382;
+	color: #ffffff;
+	font-size: 14px;
+	font-weight: 500;
+	line-height: 20px;
+	padding-right: 12px !important;
+	padding-left: 14px !important;
+}
+
+#toplevel_page_sureforms_menu .wp-submenu li a[href*="https://sureforms.com/upgrade"]:hover
+{
+	background-color: #018d71;
+	color: #ffffff;
+	font-size: 14px;
+	font-weight: 500;
+	line-height: 20px;
+	padding-right: 12px !important;
+	padding-left: 14px !important;
 }
 
 /* Add negative margins to the top separator if this is not the current submenu */

@@ -1,3 +1,5 @@
+import { applyFilters } from '@wordpress/hooks';
+
 async function getUniqueValidationData( checkData, formId, ajaxUrl, nonce ) {
 	let queryString =
 		'action=validation_ajax_action&nonce=' +
@@ -605,7 +607,9 @@ export async function fieldValidation(
 					if ( minSelection || maxSelection ) {
 						// create array from dropdownInput.value
 						const selectedOptions =
-							dropdownInput.value.split( ',' );
+							window.srfm.srfmUtility.extractValue(
+								dropdownInput.value
+							);
 						// If some value is selected but less than minSelection.
 						if (
 							minSelection &&
@@ -745,6 +749,14 @@ export async function fieldValidation(
 				}
 			}
 		}
+
+		// filter to modify the validation result and set the first error input
+		validateResult = applyFilters(
+			'srfm.modifyFieldValidationResult',
+			validateResult,
+			container,
+			setFirstErrorInput
+		);
 	}
 
 	/**
@@ -825,9 +837,10 @@ function validateMultiChoiceMinMax() {
 		const errorMessages = window?.srfm_submit?.messages || {};
 
 		container.addEventListener( 'input', () => {
-			const selectedOptions = multiChoiceHiddenInput.value
-				.split( ',' )
+			const selectedOptions = window.srfm.srfmUtility
+				.extractValue( multiChoiceHiddenInput.value )
 				.filter( Boolean );
+
 			const selectedCount = selectedOptions.length;
 
 			if ( selectedCount === 0 ) {
@@ -1095,7 +1108,7 @@ const fieldValidationInit = async ( areaField, blockClass ) => {
 	const form = formTextarea.closest( 'form' );
 	const formId = form.getAttribute( 'form-id' );
 	const ajaxUrl = form.getAttribute( 'ajaxurl' );
-	const nonce = form.getAttribute( 'nonce' );
+	const nonce = form.getAttribute( 'data-nonce' );
 	const singleField = true;
 
 	await fieldValidation( formId, ajaxUrl, nonce, formTextarea, singleField );

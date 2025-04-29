@@ -294,7 +294,7 @@
 		background-color: var( --srfm-color-input-background );
 		height: var( --srfm-input-height );
 		outline: 0;
-		margin: var( --srfm-input-field-margin );
+		margin: var( --srfm-input-field-margin ) 0;
 		transition: 0.2s ease-out;
 		padding-top: 0;
 		padding-bottom: 0;
@@ -303,9 +303,21 @@
 		&.srfm-input-focused {
 			box-shadow: 0px 0px 0px 3px var( --srfm-color-input-border-focus-glow );
 			border-color: var( --srfm-color-input-border-hover );
+
+			// Adding border color to the prefix and suffix elements on focus.
+			.srfm-number-prefix,
+			.srfm-number-suffix {
+				border-color: var( --srfm-color-input-border-hover );
+			}
 		}
 		&.srfm-input-hovered {
 			border-color: var( --srfm-color-input-border-hover );
+
+			// Adding border color to the prefix and suffix elements on hover.
+			.srfm-number-prefix,
+			.srfm-number-suffix {
+				border-color: var( --srfm-color-input-border-hover );
+			}
 		}
 
 		.srfm-input-number,
