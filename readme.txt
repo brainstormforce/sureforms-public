@@ -4,7 +4,7 @@ Tags: contact form, custom form, forms, contact form plugin, form builder
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 1.6.1
+Stable tag: 1.6.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -260,8 +260,9 @@ Yes! You can certainly use SureForms on yours as well as your client’s website
 When you use SureForms, you get an easy-to-use AI-powered form builder that can be used to build your forms fast.
 
 == Changelog ==
-= x.x.x =
-* Improvement: Improved Value Handling for Dropdown & MultiChoice Fields: Switched from comma (,) to pipe (|) as the value separator to avoid conflicts with labels containing commas. This resolves selection and calculation issues.
+= 1.6.2 - 29th April 2025 =
+* Improvement: Changed the value separator for Dropdown and Multiple Choice field from a comma (,) to a pipe (|) to fix selection and calculation issues.
+* Fix: Fixed Cloudflare Turnstile compatibility with version 1.6.1.
 = 1.6.1 - 23rd April 2025 =
 * New: Added From Name and From Email fields to the Email Notification settings.
 * Improvement: Added bottom margin to the form container for better compatibility with the Neve theme.
