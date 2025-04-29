@@ -1,5 +1,4 @@
 import { applyFilters } from '@wordpress/hooks';
-const { srfmUtility } = window.srfm;
 
 async function getUniqueValidationData( checkData, formId, ajaxUrl, nonce ) {
 	let queryString =
@@ -607,9 +606,10 @@ export async function fieldValidation(
 
 					if ( minSelection || maxSelection ) {
 						// create array from dropdownInput.value
-						const selectedOptions = srfmUtility.extractValue(
-							dropdownInput.value
-						);
+						const selectedOptions =
+							window.srfm.srfmUtility.extractValue(
+								dropdownInput.value
+							);
 						// If some value is selected but less than minSelection.
 						if (
 							minSelection &&
@@ -837,7 +837,7 @@ function validateMultiChoiceMinMax() {
 		const errorMessages = window?.srfm_submit?.messages || {};
 
 		container.addEventListener( 'input', () => {
-			const selectedOptions = srfmUtility
+			const selectedOptions = window.srfm.srfmUtility
 				.extractValue( multiChoiceHiddenInput.value )
 				.filter( Boolean );
 

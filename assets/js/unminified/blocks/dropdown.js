@@ -3,8 +3,6 @@ function initializeDropdown() {
 		'.srfm-dropdown-common'
 	);
 
-	const { srfmUtility } = window.srfm;
-
 	dropDownSelector.forEach( ( element ) => {
 		if ( element ) {
 			let additionalConfig = {};
@@ -70,7 +68,7 @@ function initializeDropdown() {
 						hiddenInputField.setAttribute(
 							'value',
 							Array.isArray( value )
-								? srfmUtility.prepareValue( value )
+								? window.srfm.srfmUtility.prepareValue( value )
 								: value
 						);
 
