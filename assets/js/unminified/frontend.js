@@ -156,9 +156,17 @@ function onSuccess( response ) {
 	}
 }
 
-function onTurnstileError( error ) {
-	console.log({ "turnstileError": error })
+function onTurnstileError( error, x, y ) {
+	console.log({ "turnstileError": { error, x, y, this: this } })
 	// Handle the error as needed
+
+	const getTheTurnStileElement = document.querySelectorAll( '#srfm-cf-sitekey:not(.turnstile-error-added)' );
+	getTheTurnStileElement.forEach( ( element ) => {
+		const getTheForm = element.closest( '.srfm-form' );
+		if ( getTheForm ) {
+			// document.addEventListener( 'srfm_show_common_form_error', dispatchErrorEvent );
+		}
+	} );
 }
 
 /**
