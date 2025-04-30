@@ -6,7 +6,7 @@ body.post-type-sureforms_form {
 	 * Using the ^= and $= selectors to target the tabs that start with "tabs-" and end with "-patterns" or "-media".
 	 * This is because the tabs number is dynamic and changes but the start and end part is static.
 	 */
-	.block-editor-tabbed-sidebar__tablist{
+	.block-editor-tabbed-sidebar__tablist {
 		[id^="tabs-"][id$="-patterns"],
 		[id^="tabs-"][id$="-media"] {
 			visibility: hidden;
