@@ -415,9 +415,9 @@ class Generate_Form_Markup {
 				do_action( 'srfm_after_field_content', $post, $id );
 
 				?>
-					<?php if ( $should_show_submit_button && ! empty( $security_type ) && 'none' !== $security_type && ! empty( $recaptcha_version ) && 'none' !== $recaptcha_version ) { ?>
+					<?php if ( $should_show_submit_button && ! empty( $security_type ) && 'none' !== $security_type ) { ?>
 						<div class="srfm-captcha-container <?php echo esc_attr( 'v3-reCAPTCHA' === $recaptcha_version || 'v2-invisible' === $recaptcha_version ? 'srfm-display-none' : '' ); ?>">
-						<?php if ( is_string( $google_captcha_site_key ) && ! empty( $google_captcha_site_key ) && 'g-recaptcha' === $security_type ) { ?>
+						<?php if ( is_string( $google_captcha_site_key ) && ! empty( $google_captcha_site_key ) && 'g-recaptcha' === $security_type && ! empty( $recaptcha_version ) && 'none' !== $recaptcha_version ) { ?>
 
 							<?php if ( 'v2-checkbox' === $recaptcha_version ) { ?>
 								<?php
