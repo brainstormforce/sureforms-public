@@ -316,11 +316,11 @@ const UpsellSureTriggers = ( {
 			</IntegrationCard.Header>
 			<IntegrationCard.Content>
 				<IntegrationCard.Title
-					title={ __( 'SureTriggers', 'sureforms' ) }
+					title={ __( 'OttoKit', 'sureforms' ) }
 				/>
 				<IntegrationCard.Description
 					description={ __(
-						'Effortlessly connects your forms to hundreds of apps, automating tasks like sending entries to your favourite CRM.',
+						'Effortlessly connect your forms to hundreds of apps, automating tasks like sending entries to your favourite CRM.',
 						'sureforms'
 					) }
 				/>

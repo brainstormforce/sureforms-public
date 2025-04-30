@@ -7,6 +7,7 @@ import { cleanForSlug } from '@wordpress/url';
 import clsx from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { format as format_date } from 'date-fns';
+import { toast } from '@bsf/force-ui';
 
 /**
  * Get Image Sizes and return an array of Size.
@@ -578,3 +579,132 @@ export const addStyleInRoot = ( root, cssProperties ) => {
 		}
 	}
 };
+
+// Constants for plugin action types
+export const PLUGIN_ACTIONS = {
+	ACTIVATE: 'sureforms_recommended_plugin_activate',
+	INSTALL: 'sureforms_recommended_plugin_install',
+};
+
+// Get plugin button text
+export const getPluginStatusText = ( plugin_data ) => {
+	const statusTextMap = {
+		Installed: srfm_admin.plugin_activate_text,
+		Install: __( 'Install & Activate', 'sureforms' ),
+		Activated: srfm_admin.plugin_activated_text,
+	};
+
+	return statusTextMap[ plugin_data.status ] || plugin_data.status;
+};
+
+// Get action type based on plugin status
+export const getAction = ( status ) => {
+	return status === 'Installed'
+		? PLUGIN_ACTIONS.ACTIVATE
+		: status === 'Activated'
+			? ''
+			: PLUGIN_ACTIONS.INSTALL;
+};
+
+// Helper function for API requests
+export const performApiAction = async ( {
+	url,
+	formData,
+	successCallback,
+	errorCallback,
+} ) => {
+	try {
+		const response = await apiFetch( {
+			url,
+			method: 'POST',
+			body: formData,
+		} );
+
+		if ( response.success ) {
+			successCallback( response );
+		} else {
+			errorCallback( response );
+		}
+	} catch ( error ) {
+		console.error( 'API Error:', error );
+		toast.error(
+			__( 'An error occurred. Please try again later.', 'sureforms' ),
+			{
+				duration: 5000,
+			}
+		);
+	}
+};
+
+// Function to activate a plugin
+export function activatePlugin( { plugin, event } ) {
+	const formData = new window.FormData();
+	formData.append( 'action', PLUGIN_ACTIONS.ACTIVATE );
+	formData.append(
+		'security',
+		srfm_admin.sfPluginManagerNonce ?? srfm_admin.sf_plugin_manager_nonce
+	);
+	formData.append( 'init', plugin.path );
+	formData.append( 'slug', plugin.slug );
+
+	event.target.innerText = srfm_admin.plugin_activating_text;
+
+	performApiAction( {
+		url: srfm_admin.ajax_url,
+		formData,
+		successCallback: () => {
+			event.target.style.color = '#16A34A';
+			event.target.innerText = srfm_admin.plugin_activated_text;
+			window.location = plugin.redirection;
+		},
+		errorCallback: () => {
+			toast.error(
+				__(
+					'Plugin activation failed, Please try again later.',
+					'sureforms'
+				),
+				{
+					duration: 5000,
+				}
+			);
+			event.target.innerText = srfm_admin.plugin_activate_text;
+		},
+	} );
+}
+
+export function handlePluginActionTrigger( { plugin, event } ) {
+	const action = getAction( plugin.status );
+	if ( ! action ) {
+		return;
+	}
+
+	const formData = new window.FormData();
+
+	if ( action === PLUGIN_ACTIONS.INSTALL ) {
+		formData.append( 'action', PLUGIN_ACTIONS.INSTALL );
+		formData.append( '_ajax_nonce', srfm_admin.plugin_installer_nonce );
+		formData.append( 'slug', plugin.slug );
+
+		event.target.innerText = srfm_admin.plugin_installing_text;
+
+		performApiAction( {
+			url: srfm_admin.ajax_url,
+			formData,
+			successCallback: () => {
+				event.target.innerText = srfm_admin.plugin_installed_text;
+				activatePlugin( { plugin, event } );
+			},
+			errorCallback: () => {
+				event.target.innerText = __( 'Install', 'sureforms' );
+				alert(
+					__(
+						'Plugin Installation failed, Please try again later.',
+						'sureforms'
+					)
+				);
+			},
+		} );
+	} else if ( action === PLUGIN_ACTIONS.ACTIVATE ) {
+		activatePlugin( { plugin, event } );
+	}
+}
