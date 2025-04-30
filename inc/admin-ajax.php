@@ -142,7 +142,6 @@ class Admin_Ajax {
 				'ajax_url'               => admin_url( 'admin-ajax.php' ),
 				'sfPluginManagerNonce'   => wp_create_nonce( 'sf_plugin_manager_nonce' ),
 				'plugin_installer_nonce' => wp_create_nonce( 'updates' ),
-				'integrations'           => Helper::sureforms_get_integration(),
 				'isRTL'                  => is_rtl(),
 				'current_screen_id'      => $is_screen_sureforms_menu ? 'sureforms_menu' : '',
 				'form_id'                => get_post() ? get_post()->ID : '',

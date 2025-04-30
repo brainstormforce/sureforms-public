@@ -1262,9 +1262,11 @@ class Helper {
 
 	/**
 	 * Get plugin status
-	 * Moved from admin class to here.
+	 *
+	 * @since 0.0.1
 	 *
 	 * @since x.x.x
+	 * Moved from admin class to helper class.
 	 *
 	 * @param  string $plugin_init_file Plugin init file.
 	 * @return string
@@ -1284,9 +1286,12 @@ class Helper {
 
 	/**
 	 * Get sureforms recommended integrations.
-	 * MOved from admin class to here.
+	 *
+	 * @since 0.0.1
 	 *
 	 * @since x.x.x
+	 * Moved from admin class to helper class.
+	 *
 	 * @return array<mixed>
 	 */
 	public static function sureforms_get_integration() {
