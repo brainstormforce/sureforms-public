@@ -1264,9 +1264,7 @@ class Helper {
 	 * Get plugin status
 	 *
 	 * @since 0.0.1
-	 *
-	 * @since x.x.x
-	 * Moved from admin class to helper class.
+	 * @since x.x.x moved to inc/helper.php from inc/admin-ajax.php
 	 *
 	 * @param  string $plugin_init_file Plugin init file.
 	 * @return string
@@ -1288,9 +1286,7 @@ class Helper {
 	 * Get sureforms recommended integrations.
 	 *
 	 * @since 0.0.1
-	 *
-	 * @since x.x.x
-	 * Moved from admin class to helper class.
+	 * @since x.x.x moved to inc/helper.php from inc/admin-ajax.php
 	 *
 	 * @return array<mixed>
 	 */
