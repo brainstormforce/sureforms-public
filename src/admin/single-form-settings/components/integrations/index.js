@@ -311,7 +311,7 @@ const UpsellSureTriggers = ( {
 					/>
 				</div>
 				<div>
-					<Badge label={ __( 'Free', 'sureforms' ) } variant="green" disableHover />
+					<Badge label={ __( 'Free', 'sureforms' ) } variant="green" disableHover size="xs" />
 				</div>
 			</IntegrationCard.Header>
 			<IntegrationCard.Content>

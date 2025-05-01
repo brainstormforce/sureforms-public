@@ -74,7 +74,7 @@ const FormCustomCssPanel = ( { formCustomCssData } ) => {
 						'sureforms'
 					) }
 				</Label>
-				<div className="p-2">
+				<div>
 					<TextArea
 						aria-label={ __( 'Custom CSS Panel', 'sureforms' ) }
 						id="srfm-css-editor"

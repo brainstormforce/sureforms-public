@@ -708,3 +708,28 @@ export function handlePluginActionTrigger( { plugin, event } ) {
 		activatePlugin( { plugin, event } );
 	}
 }
+
+/**
+ * Sets a cookie with the specified name, value, and expiration days.
+ *
+ * @param {string} name  - The name of the cookie.
+ * @param {string} value - The value of the cookie.
+ * @param {number} days  - The number of days until the cookie expires.
+ */
+export function setCookie( name, value, days ) {
+	const date = new Date();
+	date.setTime( date.getTime() + ( days * 24 * 60 * 60 * 1000 ) );
+	document.cookie = `${ name }=${ value }; expires=${ date.toUTCString() }; path=/`;
+}
+
+/**
+ * Retrieves the value of a cookie by its name.
+ *
+ * @param {string} name - The name of the cookie to retrieve.
+ * @return {string|null} - The value of the cookie, or null if not found.
+ */
+export function getCookie( name ) {
+	const value = `; ${ document.cookie }`;
+	const parts = value.split( `; ${ name }=` );
+	return parts.length === 2 ? parts.pop().split( ';' ).shift() : null;
+}

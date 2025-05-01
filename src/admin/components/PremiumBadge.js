@@ -32,6 +32,7 @@ const PremiumBadge = ( { tooltipHeading = '', tooltipContent = '', tooltipPositi
 					closable={ false }
 					disableHover
 					variant="inverse"
+					size="xs"
 				/>
 			</Tooltip>
 		</div>

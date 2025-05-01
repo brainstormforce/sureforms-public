@@ -1,11 +1,26 @@
 import { __ } from '@wordpress/i18n';
-import { useState } from '@wordpress/element';
+import { useState, useEffect } from '@wordpress/element';
 import { Button, Container } from '@bsf/force-ui';
 import { XIcon } from 'lucide-react';
-import { addQueryParam } from '@Utils/Helpers';
+import { addQueryParam, setCookie, getCookie } from '@Utils/Helpers';
+
+const COOKIE_NAME = 'srfm_upgrade_notice_seen';
 
 const UpgradeNotice = ( { onClose } ) => {
 	const [ isVisible, setIsVisible ] = useState( true );
+	const [ showNotice, setShowNotice ] = useState( false );
+
+	useEffect( () => {
+		const hasSeenNotice = getCookie( COOKIE_NAME );
+		if ( ! hasSeenNotice ) {
+			setShowNotice( true );
+			setCookie( COOKIE_NAME, 'true', 10 ); // Expires in 10 days
+		}
+	}, [] );
+
+	if ( ! showNotice ) {
+		return null;
+	}
 
 	const handleClose = () => {
 		setIsVisible( false );

@@ -41,7 +41,7 @@ const TabContentWrapper = ( {
 							icon={ <ArrowLeftIcon /> }
 						/>
 					) }
-					<Title tag="h4" title={ title } />
+					<Title tag="h4" title={ title } size="md" />
 				</Container>
 				{ onClickAction && (
 					<Button
@@ -56,7 +56,7 @@ const TabContentWrapper = ( {
 			</Container>
 			<div
 				className={ cn(
-					'bg-background-primary rounded-xl p-6 shadow-sm',
+					'bg-background-primary rounded-xl p-4 shadow-sm',
 					className
 				) }
 			>

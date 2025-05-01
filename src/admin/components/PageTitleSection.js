@@ -23,6 +23,7 @@ const PageTitleSection = ( { title } ) => {
 				tag="h4"
 				className="inline-block"
 				title={ title }
+				size="md"
 			/>
 			{ ! exclusionList.includes( getCurrentPage() ) && (
 				<Button>

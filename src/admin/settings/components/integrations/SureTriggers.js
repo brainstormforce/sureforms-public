@@ -22,6 +22,7 @@ const SureTriggers = () => {
 						label={ __( 'Free', 'sureforms' ) }
 						variant="green"
 						disableHover
+						size="xs"
 					/>
 				</div>
 			</IntegrationCard.Header>

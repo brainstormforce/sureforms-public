@@ -1,10 +1,7 @@
 import { __ } from '@wordpress/i18n';
 import { Link, useLocation } from 'react-router-dom';
-import parse from 'html-react-parser';
-import svgIcons from '@Svg/svgs.json';
 import { applyFilters } from '@wordpress/hooks';
 import { cn } from '@Utils/Helpers';
-import UpgradeToProButton from '@Admin/components/UpgradeToProButton';
 import { Cpu, Settings, ShieldCheck, TriangleAlert } from 'lucide-react';
 import { Accordion } from '@bsf/force-ui';
 
@@ -52,8 +49,6 @@ export const navigation = applyFilters( 'srfm.settings.navigation', [
 		icon: <Cpu />,
 	},
 ] );
-
-const isProActive = srfm_admin.is_pro_active;
 
 const NavLink = ( { label, path, icon: Icon, subPage = '' } ) => {
 	const activatedTab = useQuery();
@@ -105,7 +100,7 @@ const SubmenuAccordion = ( { label, path, icon: Icon, submenu } ) => {
 			<Accordion.Item value="subpage">
 				<Accordion.Trigger
 					iconType="arrow"
-					className={ cn( 'p-2 pl-2.5 text-base font-normal [&_svg]:text-icon-secondary hover:bg-background-secondary rounded-md no-underline cursor-pointer focus:outline-none focus:shadow-none transition ease-in-out duration-150 [&_svg]:size-5 [&_div]:font-normal [&_div]:text-text-secondary', isActive() && '[&_div]:text-text-primary [&>div>svg]:!text-icon-interactive' ) }
+					className={ cn( 'p-2 pl-2.5 text-base font-normal [&_svg]:text-icon-secondary hover:bg-brand-background-50 rounded-md no-underline cursor-pointer focus:outline-none focus:shadow-none transition ease-in-out duration-150 [&_svg]:size-5 [&_div]:font-normal [&_div]:text-text-secondary', isActive() && '[&_div]:text-text-primary [&>div>svg]:!text-icon-interactive' ) }
 					aria-label={ `${ label } submenu` }
 				>
 					{ !! Icon && Icon }
@@ -143,26 +138,6 @@ const Navigation = () => {
 						)
 					) ) }
 				</nav>
-				{ ! isProActive && (
-					<div className="mt-6 p-4 bg-background-primary border border-solid border-border-interactive rounded-lg">
-						<div className="flex items-center gap-2 mb-2">
-							<span className="w-5 h-5 text-icon-interactive contents">{ parse( svgIcons.message ) }</span>
-							<div className="font-medium text-text-primary">
-								{ __( 'Want More?', 'sureforms' ) }
-							</div>
-						</div>
-						<div className="text-sm text-text-secondary mb-4">
-							{ __(
-								'Unlock revenue boosting features when you upgrade.',
-								'sureforms'
-							) }
-						</div>
-						<UpgradeToProButton
-							className="w-full"
-							location="settings_page_upgrade_button"
-						/>
-					</div>
-				) }
 			</div>
 		</div>
 	);

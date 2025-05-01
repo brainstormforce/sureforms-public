@@ -81,7 +81,7 @@ const Header = () => {
 	return (
 		<div className="top-8 sticky z-[1]">
 			{ ( ! isProActive && ! isLicenseActive ) && <UpgradeNotice /> }
-			<Topbar className="py-0 px-8 pt-0 pb-0 min-h-0 h-14 gap-4 shadow-sm bg-background-primary/75 backdrop-blur-[5px]">
+			<Topbar className="py-0 px-4 pt-0 pb-0 min-h-0 h-14 gap-4 shadow-sm bg-background-primary/75 backdrop-blur-[5px]">
 				<Topbar.Left className="gap-3">
 					<Topbar.Item className="w-auto h-auto lg:hidden">
 						<HamburgerMenu>
