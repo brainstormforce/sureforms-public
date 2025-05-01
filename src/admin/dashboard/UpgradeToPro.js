@@ -6,7 +6,7 @@ import { addQueryParam } from '@Utils/Helpers';
 
 export default () => {
 	const featuresText = [
-		{ title: __( 'FileUpload', 'sureforms' ) },
+		{ title: __( 'File Upload', 'sureforms' ) },
 		{ title: __( 'Page Break', 'sureforms' ) },
 		{ title: __( 'Rating Fields', 'sureforms' ) },
 		{ title: __( 'Date & Time Pickers', 'sureforms' ) },

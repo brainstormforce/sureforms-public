@@ -41,13 +41,14 @@ const UpgradeNotice = ( { onClose } ) => {
 			align="center"
 		>
 			<p className="text-text-primary w-full mx-7 lg:mx-0">
-				<span className=" font-semibold">
+				<span className=" font-semibold text-xs">
 					{ __( 'Ready to go beyond free plan?', 'sureforms' ) }
 				</span>{ ' ' }
 				<Button
 					tag="a"
 					variant="link"
-					className="p-0 [&>span]:p-0 underline underline-offset-2"
+					className="p-0 [&>span]:p-0 underline underline-offset-2 font-normal"
+					size="xs"
 					onClick={ () =>
 						window.open(
 							addQueryParam(
@@ -62,7 +63,7 @@ const UpgradeNotice = ( { onClose } ) => {
 				>
 					{ __( 'Upgrade now', 'sureforms' ) }
 				</Button>{ ' ' }
-				<span className="font-normal">
+				<span className="font-normal text-xs">
 					{ __(
 						'and unlock the full power of SureForms!',
 						'sureforms'
@@ -74,7 +75,7 @@ const UpgradeNotice = ( { onClose } ) => {
 					variant="ghost"
 					size="xs"
 					className="p-1 hover:bg-transparent"
-					icon={ <XIcon /> }
+					icon={ <XIcon className="size-4" /> }
 					onClick={ handleClose }
 				/>
 			</Container.Item>

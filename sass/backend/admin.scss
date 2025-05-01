@@ -79,28 +79,31 @@ $placeholder_color: #9ca3af;
 	width: 100%;
 }
 
-/* The url used here as the selector is the url for the upgrade to pro submenu */
-/* If url is updated here then please make sure to update it for the submenu as well  */
-#toplevel_page_sureforms_menu .wp-submenu li a[href*="https://sureforms.com/upgrade"]
-{
-	background-color: #04a382;
-	color: #ffffff;
-	font-size: 14px;
-	font-weight: 500;
-	line-height: 20px;
-	padding-right: 12px !important;
-	padding-left: 14px !important;
+/* Adding margin button to the setting submenu item which will always be in the 6th position */
+#toplevel_page_sureforms_menu .wp-submenu li:nth-child(6) {
+	margin-bottom: 4px;
 }
 
-#toplevel_page_sureforms_menu .wp-submenu li a[href*="https://sureforms.com/upgrade"]:hover
-{
-	background-color: #018d71;
-	color: #ffffff;
-	font-size: 14px;
+/* The url used here as the selector is the url for the upgrade to pro submenu */
+/* If url is updated here then please make sure to update it for the submenu as well  */
+#toplevel_page_sureforms_menu .wp-submenu li a[href*="https://sureforms.com/upgrade"] {
+	background-color: #04A382;
+	color: #FFFFFF;
+	font-size: 13px;
 	font-weight: 500;
 	line-height: 20px;
 	padding-right: 12px !important;
-	padding-left: 14px !important;
+	padding-left: 12px !important
+}
+
+#toplevel_page_sureforms_menu .wp-submenu li a[href*="https://sureforms.com/upgrade"]:hover {
+	background-color: #018D71;
+	color: #FFFFFF;
+	font-size: 13px;
+	font-weight: 500;
+	line-height: 20px;
+	padding-right: 12px !important;
+	padding-left: 12px !important
 }
 
 /* Add negative margins to the top separator if this is not the current submenu */

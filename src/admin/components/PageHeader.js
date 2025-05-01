@@ -3,7 +3,9 @@ import { render } from '@wordpress/element';
 
 const FormPageHeader = () => {
 	return (
-		<Header />
+		<div className="z-50 relative">
+			<Header />
+		</div>
 	);
 };
 
