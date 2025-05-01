@@ -84,7 +84,7 @@
 
 		.srfm-validation-error {
 			@include srfm-error-styles;
-			margin: var( --srfm-input-field-margin ) 0 0;
+			margin: var( --srfm-input-field-margin-top ) 0 0;
 		}
 
 		.uagb-block {

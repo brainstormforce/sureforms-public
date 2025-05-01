@@ -294,7 +294,10 @@
 		background-color: var( --srfm-color-input-background );
 		height: var( --srfm-input-height );
 		outline: 0;
-		margin: var( --srfm-input-field-margin ) 0;
+		margin-top: var( --srfm-input-field-margin-top );
+		margin-bottom: var( --srfm-input-field-margin-bottom );
+		margin-left: 0;
+		margin-right: 0;
 		transition: 0.2s ease-out;
 		padding-top: 0;
 		padding-bottom: 0;
@@ -439,15 +442,15 @@
 	border-bottom-left-radius: var( --srfm-form-border-radius-left, 12px );
 }
 
-@mixin srfm-input-margin-styles( $important: false ) {
-	@if ( $important ) {
-		margin-top: var( --srfm-input-label-gap, var( --srfm-input-field-margin ) ) !important;
-		margin-bottom: var( --srfm-input-field-margin ) !important;
+@mixin srfm-input-margin-styles($important: false) {
+	@if ($important) {
+		margin-top: var(--srfm-input-label-gap, var(--srfm-input-field-margin-top)) !important;
+		margin-bottom: var(--srfm-input-field-margin-bottom) !important;
 		margin-right: 0 !important;
 		margin-left: 0 !important;
 	} @else {
-		margin-top: var( --srfm-input-label-gap, var( --srfm-input-field-margin ) );
-		margin-bottom: var( --srfm-input-field-margin );
+		margin-top: var(--srfm-input-label-gap, var(--srfm-input-field-margin-top));
+		margin-bottom: var(--srfm-input-field-margin-bottom);
 		margin-right: 0;
 		margin-left: 0;
 	}
