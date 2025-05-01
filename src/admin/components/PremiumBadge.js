@@ -7,15 +7,15 @@ const PremiumBadge = ( { tooltipHeading = '', tooltipContent = '', tooltipPositi
 	return (
 		<div className="tooltip">
 			<Tooltip
-				className="z-999999"
+				className="z-999999 max-w-[268px]"
 				content={ (
 					<div className="tooltip-content space-y-1">
 						<div className="tooltip-text space-y-1">
-							<p className="text-text-inverse text-xs font-medium">{ tooltipHeading }</p>
+							<p className="text-text-inverse text-xs font-semibold">{ tooltipHeading }</p>
 							<p className="text-text-inverse text-xs">{ tooltipContent }</p>
 						</div>
 						<a
-							className="block w-fit tooltip-link text-link-inverse text-xs no-underline hover:no-underline"
+							className="block w-fit tooltip-link text-link-inverse text-xs font-semibold no-underline hover:no-underline"
 							target="_blank"
 							href={ addQueryParam( srfm_admin?.pricing_page_url || srfm_admin?.sureforms_pricing_page, utmMedium ) }
 							rel="noreferrer"

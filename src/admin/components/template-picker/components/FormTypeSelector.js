@@ -87,7 +87,7 @@ const FormTypeSelector = ( { formType, setFormType, setformLayout } ) => {
 							<PremiumBadge
 								tooltipHeading={
 									option?.upgradeTooltipContent
-										?.tooltipHeading
+										?.tooltipHeadin
 								}
 								tooltipContent={
 									option?.upgradeTooltipContent
