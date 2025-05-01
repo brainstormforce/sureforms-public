@@ -442,15 +442,15 @@
 	border-bottom-left-radius: var( --srfm-form-border-radius-left, 12px );
 }
 
-@mixin srfm-input-margin-styles($important: false) {
-	@if ($important) {
-		margin-top: var(--srfm-input-label-gap, var(--srfm-input-field-margin-top)) !important;
-		margin-bottom: var(--srfm-input-field-margin-bottom) !important;
+@mixin srfm-input-margin-styles( $important: false ) {
+	@if ( $important ) {
+		margin-top: var( --srfm-input-label-gap, var( --srfm-input-field-margin-top ) ) !important;
+		margin-bottom: var( --srfm-input-field-margin-bottom ) !important;
 		margin-right: 0 !important;
 		margin-left: 0 !important;
 	} @else {
-		margin-top: var(--srfm-input-label-gap, var(--srfm-input-field-margin-top));
-		margin-bottom: var(--srfm-input-field-margin-bottom);
+		margin-top: var( --srfm-input-label-gap, var( --srfm-input-field-margin-top ) );
+		margin-bottom: var( --srfm-input-field-margin-bottom );
 		margin-right: 0;
 		margin-left: 0;
 	}
