@@ -171,7 +171,7 @@ module.exports = withTW( {
 				'toggle-on': '#DC4809',
 				'toggle-dial-background': '#FFFFFF',
 				'toggle-off-hover': '#D1D5DB',
-				'toggle-off-border': '#D1D5DB',
+				'toggle-off-border': '#BDC1C7',
 				'toggle-on-hover': '#F18E63',
 				'toggle-on-border': '#F8A581',
 				'toggle-on-disabled': '#EEF2FF',

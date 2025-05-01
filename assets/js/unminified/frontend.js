@@ -495,4 +495,32 @@ function onSuccess( response ) {
 		'handleInstantFormWrapperHeight',
 		handleInstantFormWrapperHeight
 	);
+
+	const UTILITY = {
+		prepareValue( value = [] ) {
+			// Validates the input value to ensure it is an array.
+			// If the value is not an array or is empty, return an empty string.
+			// Otherwise, join the array elements with " | " as a delimiter.
+			if ( ! value?.length || ! Array.isArray( value ) ) {
+				return '';
+			}
+
+			return value.join( ' | ' );
+		},
+		extractValue( value = '' ) {
+			// Validates the input value to ensure it is a non-empty string.
+			// If the value is not a string or is empty, return an empty array.
+			// Otherwise, split the string by " | " to return an array of values.
+			if ( typeof value !== 'string' || value.trim() === '' ) {
+				return [];
+			}
+
+			return value.split( ' | ' );
+		},
+	};
+
+	// Adding the `UTILITY` object to the global `srfm` object.
+	// This allows the object to be accessed from other parts of the application,
+	// enabling consistent handling of utility functions across different modules.
+	addGlobalSrfmObject( 'srfmUtility', UTILITY );
 }() );

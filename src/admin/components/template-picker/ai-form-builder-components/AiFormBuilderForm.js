@@ -169,7 +169,7 @@ export default ( props ) => {
 				aria-label={ __( 'Create Conversational Form', 'sureforms' ) }
 				id="switch-element"
 				size="sm"
-				className="shadow-sm-blur-2"
+				className="shadow-sm-blur-2 bg-toggle-off border border-solid border-toggle-off-border"
 				disabled={ true }
 			/>
 			<Label variant="neutral" size="sm">
@@ -249,7 +249,7 @@ export default ( props ) => {
 			</Container.Item>
 			<Container.Item>
 				<Container
-					className="p-4 gap-1.5 bg-background-primary border-0.5 border-solid border-border-subtle shadow-sm-blur-2 rounded-xl w-full h-full max-w-[42.5rem] mx-auto"
+					className="p-4 gap-2 bg-background-primary border-0.5 border-solid border-border-subtle shadow-sm-blur-2 rounded-xl w-full h-full max-w-[42.5rem] mx-auto"
 					direction="column"
 				>
 					<FormTypeSelector
@@ -267,7 +267,7 @@ export default ( props ) => {
 							) }
 						/>
 					</Container.Item>
-					<Container.Item className="flex flex-col px-2 gap-1">
+					<Container.Item className="flex flex-col px-2 gap-2">
 						{ formType !== 'simple' && (
 							<Label size="xs" variant="help">
 								{ __(

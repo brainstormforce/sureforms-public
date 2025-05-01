@@ -142,107 +142,12 @@ class Admin_Ajax {
 				'ajax_url'               => admin_url( 'admin-ajax.php' ),
 				'sfPluginManagerNonce'   => wp_create_nonce( 'sf_plugin_manager_nonce' ),
 				'plugin_installer_nonce' => wp_create_nonce( 'updates' ),
-				'plugin_activating_text' => __( 'Activating...', 'sureforms' ),
-				'plugin_activated_text'  => __( 'Activated', 'sureforms' ),
-				'plugin_activate_text'   => __( 'Activate', 'sureforms' ),
-				'integrations'           => self::sureforms_get_integration(),
-				'plugin_installing_text' => __( 'Installing...', 'sureforms' ),
-				'plugin_installed_text'  => __( 'Installed', 'sureforms' ),
 				'isRTL'                  => is_rtl(),
 				'current_screen_id'      => $is_screen_sureforms_menu ? 'sureforms_menu' : '',
 				'form_id'                => get_post() ? get_post()->ID : '',
 				'suretriggers_nonce'     => wp_create_nonce( 'suretriggers_nonce' ),
 			]
 		);
-	}
-
-	/**
-	 *  Get sureforms recommended integrations.
-	 *
-	 * @since 0.0.1
-	 * @return array<mixed>
-	 */
-	public function sureforms_get_integration() {
-		$suretrigger_connected  = apply_filters( 'suretriggers_is_user_connected', '' );
-		$logo_sure_triggers     = file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/suretriggers.svg' );
-		$logo_full              = file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/suretriggers_full.svg' );
-		$logo_sure_mails        = file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/suremails.svg' );
-		$logo_sure_cart         = file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/surecart.svg' );
-		$logo_starter_templates = file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/starterTemplates.svg' );
-		return apply_filters(
-			'srfm_integrated_plugins',
-			[
-				'sure_triggers'     => [
-					'title'       => __( 'OttoKit', 'sureforms' ),
-					'subtitle'    => __( 'Connect SureForms to hundreds of apps, CRMs and tools such as Slack, Mailchimp, etc.', 'sureforms' ),
-					'description' => __( 'OttoKit is a powerful automation platform that helps you connect your various plugins and apps together. It allows you to automate repetitive tasks, so you can focus on more important work.', 'sureforms' ),
-					'status'      => self::get_plugin_status( 'suretriggers/suretriggers.php' ),
-					'slug'        => 'suretriggers',
-					'path'        => 'suretriggers/suretriggers.php',
-					'redirection' => admin_url( 'admin.php?page=suretriggers' ),
-					'logo'        => self::encode_svg( is_string( $logo_sure_triggers ) ? $logo_sure_triggers : '' ),
-					'logo_full'   => self::encode_svg( is_string( $logo_full ) ? $logo_full : '' ),
-					'connected'   => $suretrigger_connected,
-				],
-				'sure_mails'        => [
-					'title'       => __( 'SureMail', 'sureforms' ),
-					'subtitle'    => __( 'Free and easy SMTP mails plugin.', 'sureforms' ),
-					'status'      => self::get_plugin_status( 'suremails/suremails.php' ),
-					'slug'        => 'suremails',
-					'path'        => 'suremails/suremails.php',
-					'redirection' => admin_url( 'options-general.php?page=suremail#/dashboard' ),
-					'logo'        => self::encode_svg( is_string( $logo_sure_mails ) ? $logo_sure_mails : '' ),
-				],
-				'sure_cart'         => [
-					'title'       => __( 'SureCart', 'sureforms' ),
-					'subtitle'    => __( 'The new way to sell on WordPress.', 'sureforms' ),
-					'status'      => self::get_plugin_status( 'surecart/surecart.php' ),
-					'slug'        => 'surecart',
-					'path'        => 'surecart/surecart.php',
-					'redirection' => admin_url( 'admin.php?page=sc-getting-started' ),
-					'logo'        => self::encode_svg( is_string( $logo_sure_cart ) ? $logo_sure_cart : '' ),
-				],
-				'starter_templates' => [
-					'title'       => __( 'Starter Templates', 'sureforms' ),
-					'subtitle'    => __( 'Build your dream website in minutes with AI.', 'sureforms' ),
-					'status'      => self::get_plugin_status( 'astra-sites/astra-sites.php' ),
-					'slug'        => 'astra-sites',
-					'path'        => 'astra-sites/astra-sites.php',
-					'redirection' => admin_url( 'admin.php?page=starter-templates' ),
-					'logo'        => self::encode_svg( is_string( $logo_starter_templates ) ? $logo_starter_templates : '' ),
-				],
-			]
-		);
-	}
-
-	/**
-	 * Encodes the given string with base64.
-	 *
-	 * @param  string $logo contains svg's.
-	 * @return string
-	 */
-	public function encode_svg( $logo ) {
-		return 'data:image/svg+xml;base64,' . base64_encode( $logo ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
-	}
-	/**
-	 * Get plugin status
-	 *
-	 * @since 0.0.1
-	 *
-	 * @param  string $plugin_init_file Plugin init file.
-	 * @return string
-	 */
-	public static function get_plugin_status( $plugin_init_file ) {
-
-		$installed_plugins = get_plugins();
-
-		if ( ! isset( $installed_plugins[ $plugin_init_file ] ) ) {
-			return 'Install';
-		}
-		if ( is_plugin_active( $plugin_init_file ) ) {
-			return 'Activated';
-		}
-			return 'Installed';
 	}
 
 	/**

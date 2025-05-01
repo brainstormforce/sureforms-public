@@ -7,10 +7,8 @@ import { CircleHelp, ArrowUpRight, Megaphone } from 'lucide-react';
 import { addQueryParam, cn } from '@Utils/Helpers';
 import UpgradeNotice from './UpgradeNotice';
 
-const {
-	site_url: siteURL = '',
-	is_pro_active: isProActive = false,
-} = srfm_admin;
+const { site_url: siteURL = '', is_pro_active: isProActive = false } =
+	srfm_admin;
 
 const NAV_ITEMS = [
 	{
@@ -79,9 +77,9 @@ const Header = () => {
 	}, [] );
 
 	return (
-		<div className="top-8 sticky z-[1]">
-			{ ( ! isProActive && ! isLicenseActive ) && <UpgradeNotice /> }
-			<Topbar className="py-0 px-8 pt-0 pb-0 min-h-0 h-14 gap-4 shadow-sm bg-background-primary/75 backdrop-blur-[5px]">
+		<div className="top-8 z-[1]">
+			{ ! isProActive && ! isLicenseActive && activePage?.slug === 'sureforms_menu' && <UpgradeNotice /> }
+			<Topbar className="py-0 px-4 pt-0 pb-0 min-h-0 h-14 gap-4 shadow-sm bg-background-primary/75 backdrop-blur-[5px]">
 				<Topbar.Left className="gap-3">
 					<Topbar.Item className="w-auto h-auto lg:hidden">
 						<HamburgerMenu>
@@ -102,17 +100,22 @@ const Header = () => {
 										{ item.text }
 									</HamburgerMenu.Option>
 								) ) }
-								<HamburgerMenu.Option
-									href={ NAV_ITEMS[ 0 ].link }
-									iconPosition="left"
-									rel="noopener noreferrer"
-									tag="a"
-									target="_blank"
-									className="text-link-primary gap-1"
-								>
-									{ __( 'Upgrade to Pro', 'sureforms' ) }{ ' ' }
-									<ArrowUpRight className="size-4" />
-								</HamburgerMenu.Option>
+								{ ! isProActive && ! isLicenseActive && (
+									<HamburgerMenu.Option
+										href={ NAV_ITEMS[ 0 ].link }
+										iconPosition="left"
+										rel="noopener noreferrer"
+										tag="a"
+										target="_blank"
+										className="text-link-primary gap-1"
+									>
+										{ __(
+											'Upgrade SureForms',
+											'sureforms'
+										) }{ ' ' }
+										<ArrowUpRight className="size-4" />
+									</HamburgerMenu.Option>
+								) }
 							</HamburgerMenu.Options>
 						</HamburgerMenu>
 					</Topbar.Item>
@@ -138,28 +141,30 @@ const Header = () => {
 							) ) }
 						</nav>
 					</Topbar.Item>
-					<Topbar.Item>
-						<Button
-							icon={ <ArrowUpRight /> }
-							iconPosition="right"
-							variant="link"
-							size="sm"
-							className="h-full text-link-primary text-sm font-semibold no-underline hover:no-underline px-1 content-center [box-shadow:none] focus:[box-shadow:none] focus:outline-none"
-							onClick={ () =>
-								window.open(
-									addQueryParam(
-										srfm_admin?.pricing_page_url ||
-											srfm_admin?.sureforms_pricing_page,
-										'dashboard-header-cta'
-									),
-									'_blank',
-									'noreferrer'
-								)
-							}
-						>
-							{ __( 'Upgrade to Pro', 'sureforms' ) }
-						</Button>
-					</Topbar.Item>
+					{ ! isProActive && ! isLicenseActive && (
+						<Topbar.Item>
+							<Button
+								icon={ <ArrowUpRight /> }
+								iconPosition="right"
+								variant="link"
+								size="sm"
+								className="h-full text-link-primary text-sm font-semibold no-underline hover:no-underline px-1 content-center [box-shadow:none] focus:[box-shadow:none] focus:outline-none"
+								onClick={ () =>
+									window.open(
+										addQueryParam(
+											srfm_admin?.pricing_page_url ||
+												srfm_admin?.sureforms_pricing_page,
+											'dashboard-header-cta'
+										),
+										'_blank',
+										'noreferrer'
+									)
+								}
+							>
+								{ __( 'Upgrade SureForms', 'sureforms' ) }
+							</Button>
+						</Topbar.Item>
+					) }
 				</Topbar.Middle>
 				<Topbar.Right>
 					<Topbar.Item>

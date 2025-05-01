@@ -15,7 +15,7 @@ export default () => {
 		variant,
 	} ) => (
 		<Container.Item className="flex flex-col gap-0 flex-1 border-0.5 border-solid border-border-subtle rounded-lg shadow-sm-blur-2">
-			<Container direction="column">
+			<Container direction="column" className="gap-0">
 				<Container.Item>
 					<Container
 						direction="column"
@@ -28,7 +28,7 @@ export default () => {
 								title={ title }
 								className="font-medium"
 							/>
-							<Label size="xs" variant="help">
+							<Label size="sm" variant="help">
 								{ description }
 							</Label>
 						</Container.Item>

@@ -10,7 +10,7 @@ import {
 	AreaChart,
 	Select,
 } from '@bsf/force-ui';
-import { FileChartColumnIncreasing, Calendar, X } from 'lucide-react';
+import { ChartLine, Calendar, X } from 'lucide-react';
 import apiFetch from '@wordpress/api-fetch';
 import {
 	format,
@@ -22,8 +22,8 @@ import {
 import { useState, useEffect, useRef } from '@wordpress/element';
 
 // Text for chart when data is loading or no data is available
-const ChartText = ( { text, color = '', weight = '' } ) => (
-	<Label tag="p" size="sm" className={ cn( 'text-center', color, weight ) }>
+const ChartText = ( { text, color = '', weight = '', size = 'md' } ) => (
+	<Label tag="p" size={ size } className={ cn( 'text-center  max-w-sm mx-auto font-semibold', color, weight ) }>
 		{ text ||
 			__( 'This is where your form views will appear', 'sureforms' ) }
 	</Label>
@@ -353,7 +353,7 @@ export default () => {
 						direction="column"
 						justify="center"
 						align="center"
-						className="min-h-[256px] gap-6"
+						className="min-h-[256px] gap-4"
 					>
 						<Loader size="xl" variant="primary" />
 						<Container
@@ -370,6 +370,7 @@ export default () => {
 							<ChartText
 								color="text-text-secondary"
 								weight="font-normal"
+								size="sm"
 							/>
 						</Container>
 					</Container>
@@ -387,8 +388,8 @@ export default () => {
 							showCartesianGrid={ true }
 							colors={ [
 								{
-									fill: '#E879F9',
-									stroke: '#E879F9',
+									fill: '#A855F7',
+									stroke: '#A855F7',
 								},
 							] }
 							showXAxis={ true }
@@ -403,9 +404,9 @@ export default () => {
 						direction="column"
 						align="center"
 						justify="center"
-						className="min-h-[256px] gap-6"
+						className="min-h-[256px] gap-4"
 					>
-						<FileChartColumnIncreasing />
+						<ChartLine />
 						<Container
 							direction="column"
 							align="center"
@@ -413,13 +414,18 @@ export default () => {
 						>
 							<ChartText
 								text={ __(
-									'There is no data on this view',
+									'No entries to display',
 									'sureforms'
 								) }
 							/>
 							<ChartText
 								color="text-text-secondary"
 								weight="font-normal"
+								size="sm"
+								text={ __(
+									'Once you create a form and start receiving submissions, the data will appear here.',
+									'sureforms'
+								) }
 							/>
 						</Container>
 					</Container>

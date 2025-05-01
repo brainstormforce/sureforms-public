@@ -231,7 +231,7 @@ const Component = ( { path } ) => {
 			{ pageTitle && (
 				<PageTitleSection title={ pageTitle } />
 			) }
-			<div className="max-w-content-container mx-auto p-6 rounded-xl bg-background-primary shadow-sm">
+			<div className="max-w-content-container mx-auto p-4 rounded-xl bg-background-primary shadow-sm">
 				{ 'general-settings' === path && (
 					<GeneralPage
 						loading={ loading }
