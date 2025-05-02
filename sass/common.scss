@@ -128,11 +128,6 @@ button.srfm-toolbar-width-setting-button {
 		.srfm-block-wrap {
 			position: relative;
 			line-height: 0;
-			// Label Gap between label/help text and the input field.
-			// Exclude the address block and phone block wrap as they include inner blocks and intl library container which has the same stylings applied.
-			&:not( .srfm-address-block > fieldset > .srfm-block-wrap, .srfm-phone-block .srfm-block-wrap, .srfm-gdpr-block .srfm-block-wrap, .srfm-checkbox-block .srfm-block-wrap ) {
-				@include srfm-input-margin-styles;
-			}
 		}
 
 		.srfm-description {
