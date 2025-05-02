@@ -170,10 +170,10 @@ const GeneralPage = ( {
 					heading: __( 'Enable Usage Tracking', 'sureforms' ),
 					description,
 				} }
-				value={ generalTabOptions.srfm_form_analytics }
+				value={ generalTabOptions.srfm_bsf_analytics }
 				onChange={ ( value ) =>
 					updateGlobalSettings(
-						'srfm_form_analytics',
+						'srfm_bsf_analytics',
 						value,
 						'general-settings'
 					)

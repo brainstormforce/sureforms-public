@@ -19,6 +19,7 @@ const Component = ( { path } ) => {
 	const [ generalTabOptions, setGeneralTabOptions ] = useState( {
 		srfm_ip_log: false,
 		srfm_form_analytics: false,
+		srfm_bsf_analytics: false,
 	} );
 	const [ emailTabOptions, setEmailTabOptions ] = useState( {
 		srfm_email_summary: false,
@@ -87,11 +88,12 @@ const Component = ( { path } ) => {
 				} = data;
 
 				if ( srfm_general_settings_options ) {
-					const { srfm_ip_log, srfm_form_analytics } =
+					const { srfm_ip_log, srfm_form_analytics, srfm_bsf_analytics } =
 						srfm_general_settings_options;
 					setGeneralTabOptions( {
 						srfm_ip_log,
 						srfm_form_analytics,
+						srfm_bsf_analytics,
 					} );
 				}
 
