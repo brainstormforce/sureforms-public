@@ -245,6 +245,16 @@
 				width: 100%;
 			}
 		}
+		/**
+		 * For the dropdown block, the margin is added to the srfm-block-wrap
+		 * instead of the input to maintain the icon layout.
+		 */
+		.srfm-block-wrap {
+			@include srfm-input-margin-styles( true );
+		}
+		.srfm-input-common {
+			margin: 0 !important;
+		}
 	}
 }
 
