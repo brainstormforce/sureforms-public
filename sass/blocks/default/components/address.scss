@@ -30,12 +30,12 @@
 			.srfm-block-wrap {
 				.srfm-block-legend,
 				.srfm-block-label {
-					font-size: var(--srfm-address-label-font-size);
-					line-height: var(--srfm-address-label-line-height);
+					font-size: var( --srfm-address-label-font-size );
+					line-height: var( --srfm-address-label-line-height );
 				}
 				.srfm-description {
-					font-size: var(--srfm-address-description-font-size);
-					line-height: var(--srfm-address-description-line-height);
+					font-size: var( --srfm-address-description-font-size );
+					line-height: var( --srfm-address-description-line-height );
 				}
 			}
 		}
