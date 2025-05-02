@@ -729,6 +729,10 @@ class Helper {
 				'small'  => [
 					'--srfm-row-gap-between-blocks'        => '16px',
 					// Address block gap and spacing variables.
+					'--srfm-address-label-font-size'       => '14px',
+					'--srfm-address-label-line-height'     => '20px',
+					'--srfm-address-description-font-size' => '12px',
+					'--srfm-address-description-line-height' => '16px',
 					'--srfm-col-gap-between-fields'        => '12px',
 					'--srfm-row-gap-between-fields'        => '12px',
 					'--srfm-gap-below-address-label'       => '12px',
@@ -750,6 +754,10 @@ class Helper {
 					'--srfm-input-field-margin-top'        => '4px',
 					'--srfm-input-field-margin-bottom'     => '4px',
 					// Checkbox and GDPR Variables.
+					'--srfm-checkbox-label-font-size'      => '14px',
+					'--srfm-checkbox-label-line-height'    => '20px',
+					'--srfm-checkbox-description-font-size' => '12px',
+					'--srfm-checkbox-description-line-height' => '16px',
 					'--srfm-check-ctn-width'               => '16px',
 					'--srfm-check-ctn-height'              => '16px',
 					'--srfm-check-svg-size'                => '10px',
@@ -782,6 +790,10 @@ class Helper {
 				'medium' => [
 					'--srfm-row-gap-between-blocks'        => '18px',
 					// Address block gap and spacing variables.
+					'--srfm-address-label-font-size'       => '16px',
+					'--srfm-address-label-line-height'     => '24px',
+					'--srfm-address-description-font-size' => '14px',
+					'--srfm-address-description-line-height' => '20px',
 					'--srfm-col-gap-between-fields'        => '16px',
 					'--srfm-row-gap-between-fields'        => '16px',
 					'--srfm-gap-below-address-label'       => '14px',
@@ -792,6 +804,10 @@ class Helper {
 					'--srfm-input-field-margin-top'        => '6px',
 					'--srfm-input-field-margin-bottom'     => '6px',
 					// Checkbox and GDPR Variables.
+					'--srfm-checkbox-label-font-size'      => '16px',
+					'--srfm-checkbox-label-line-height'    => '24px',
+					'--srfm-checkbox-description-font-size' => '14px',
+					'--srfm-checkbox-description-line-height' => '20px',
 					'--srfm-checkbox-margin-top-frontend'  => '4px',
 					'--srfm-checkbox-margin-top-editor'    => '6px',
 					'--srfm-checkbox-description-margin-left' => '24px',
@@ -816,6 +832,10 @@ class Helper {
 				'large'  => [
 					'--srfm-row-gap-between-blocks'        => '20px',
 					// Address Block Gap and Spacing Variables.
+					'--srfm-address-label-font-size'       => '18px',
+					'--srfm-address-label-line-height'     => '28px',
+					'--srfm-address-description-font-size' => '16px',
+					'--srfm-address-description-line-height' => '24px',
 					'--srfm-col-gap-between-fields'        => '16px',
 					'--srfm-row-gap-between-fields'        => '20px',
 					'--srfm-gap-below-address-label'       => '16px',
@@ -834,6 +854,10 @@ class Helper {
 					'--srfm-input-field-margin-top'        => '8px',
 					'--srfm-input-field-margin-bottom'     => '8px',
 					// Checkbox and GDPR Variables.
+					'--srfm-checkbox-label-font-size'      => '18px',
+					'--srfm-checkbox-label-line-height'    => '28px',
+					'--srfm-checkbox-description-font-size' => '16px',
+					'--srfm-checkbox-description-line-height' => '24px',
 					'--srfm-check-ctn-width'               => '20px',
 					'--srfm-check-ctn-height'              => '20px',
 					'--srfm-check-svg-size'                => '14px',
