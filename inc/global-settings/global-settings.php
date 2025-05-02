@@ -50,7 +50,7 @@ class Global_Settings {
 	 * @since x.x.x
 	 */
 	public function update_bsf_analytics( $settings ) {
-		if ( isset( $settings['srfm_bsf_analytics'] ) && $settings['srfm_bsf_analytics'] === true ) {
+		if ( isset( $settings['srfm_bsf_analytics'] ) && true === $settings['srfm_bsf_analytics'] ) {
 			$enable_tracking = 'yes';
 		} else {
 			$enable_tracking = '';
