@@ -520,7 +520,7 @@ const InstantFormComponent = () => {
 									</div>
 									<div className="srfm-instant-form-settings">
 										<Spacing
-											label={ __( 'Padding', 'sureforms' ) }
+											label={ __( 'Instant Form Padding', 'sureforms' ) }
 											valueTop={ {
 												value: instant_form_padding_top,
 												label: 'instant_form_padding_top',
@@ -550,7 +550,7 @@ const InstantFormComponent = () => {
 									</div>
 									<div className="srfm-instant-form-settings">
 										<Spacing
-											label={ __( 'Border Radius', 'sureforms' ) }
+											label={ __( 'Instant Form Border Radius', 'sureforms' ) }
 											valueTop={ {
 												value: instant_form_border_radius_top,
 												label: 'instant_form_border_radius_top',

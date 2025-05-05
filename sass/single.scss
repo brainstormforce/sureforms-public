@@ -67,7 +67,7 @@
 				@include srfm-background-control-styles;
 				// Maintain the border radius for the overlays.
 				&[class*="srfm-overlay"]::before {
-					@include srfm-form-border-radius-styles;
+					@include srfm-form-border-radius-styles( --srfm-instant-form-border-radius-top, --srfm-instant-form-border-radius-right, --srfm-instant-form-border-radius-bottom, --srfm-instant-form-border-radius-left, 12px );
 				}
 				// Retaining this .hide class for backward compatibility with older versions of the pro plugin.
 				&.hide {
