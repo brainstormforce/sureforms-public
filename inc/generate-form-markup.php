@@ -440,22 +440,7 @@ class Generate_Form_Markup {
 						<?php } ?>
 						<?php
 
-						if ( 'cf-turnstile' === $security_type ) {
-							// Cloudflare Turnstile script.
-							wp_enqueue_script( // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
-								SRFM_SLUG . '-cf-turnstile',
-								'https://challenges.cloudflare.com/turnstile/v0/api.js',
-								[],
-								null,
-								[
-									false,
-									'defer' => true,
-								]
-							);
-							?>
-						<div id="srfm-cf-sitekey" class="cf-turnstile" data-callback="onSuccess" data-error-callback="onTurnstileError" data-theme="<?php echo esc_attr( $srfm_cf_appearance_mode ); ?>" data-sitekey="<?php echo esc_attr( $srfm_cf_turnstile_site_key ); ?>"></div>
-							<?php
-						}
+						self::get_cf_turnstile_script( $security_type, $srfm_cf_appearance_mode, $srfm_cf_turnstile_site_key );
 
 						if ( 'hcaptcha' === $security_type ) {
 							// hCaptcha script.
@@ -504,6 +489,40 @@ class Generate_Form_Markup {
 			</div>
 		<?php
 		return ob_get_clean();
+	}
+
+	/**
+	 * Generate Cloudflare Turnstile script markup
+	 *
+	 * @param string $security_type security type.
+	 * @param string $srfm_cf_appearance_mode appearance mode.
+	 * @param string $srfm_cf_turnstile_site_key site key.
+	 * @since x.x.x
+	 * @return void
+	 */
+	public static function get_cf_turnstile_script( $security_type, $srfm_cf_appearance_mode, $srfm_cf_turnstile_site_key ) {
+		if ( 'cf-turnstile' === $security_type && ! empty( $srfm_cf_turnstile_site_key ) ) {
+			// Cloudflare Turnstile script.
+			wp_enqueue_script( // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
+				SRFM_SLUG . '-cf-turnstile',
+				'https://challenges.cloudflare.com/turnstile/v0/api.js',
+				[],
+				null,
+				[
+					false,
+					'defer' => true,
+				]
+			);
+			?>
+			<!-- The callback methods below are available on frontend.js. onTurnstileError displays and error in place of recaptcha dialog.  -->
+		<div id="srfm-cf-sitekey" class="cf-turnstile" data-callback="onSuccess" data-error-callback="onTurnstileError" data-theme="<?php echo esc_attr( $srfm_cf_appearance_mode ); ?>" data-sitekey="<?php echo esc_attr( $srfm_cf_turnstile_site_key ); ?>"></div>
+			<?php
+		} else {
+			$icon = Helper::fetch_svg( 'info_circle', '', 'aria-hidden="true"' );
+			?>
+			<p id="sitekey-error" class="srfm-common-error-message srfm-error-message" hidden="false"><?php echo wp_kses( $icon, Helper::$allowed_tags_svg ); ?><span class="srfm-error-content"><?php echo esc_html__( 'Turnstile sitekey cannot be empty. Please notify your site admin.', 'sureforms' ); ?></span></p>
+			<?php
+		}
 	}
 
 	/**

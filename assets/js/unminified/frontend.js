@@ -148,27 +148,47 @@ if ( submitButton ) {
 }
 // eslint-disable-next-line
 function onSuccess( response ) {
-
-	console.log({ "turnstileResponse": response })
-
 	if ( 0 !== response.length ) {
 		document.querySelector( '#captcha-error' ).style.display = 'none';
 	}
 }
 
+function showErrorMessage( args ) {
+	const { form, message = '', position = 'footer' } = args;
+
+	const errorEvent = new CustomEvent( 'srfm_show_common_form_error', {
+		detail: {
+			form,
+			message,
+			position,
+		},
+	} );
+
+	document.dispatchEvent( errorEvent );
+}
+
+// eslint-disable-next-line
 function onTurnstileError( error, x, y ) {
-	console.log({ "turnstileError": { error, x, y, this: this } })
 	// Handle the error as needed
 
-	const getTheTurnStileElement = document.querySelectorAll( '#srfm-cf-sitekey:not(.turnstile-error-added)' );
+	const getTheTurnStileElement = document.querySelectorAll(
+		'.cf-turnstile:not(.turnstile-error-added)'
+	);
+
+	if ( ! getTheTurnStileElement?.length ) {
+		return;
+	}
+
 	getTheTurnStileElement.forEach( ( element ) => {
 		const getTheForm = element.closest( '.srfm-form' );
 		if ( getTheForm ) {
-			
-			// document.addEventListener( 'srfm_show_common_form_error', dispatchErrorEvent );
+			// eslint-disable-next-line
+			const message = srfm_submit?.messages?.srfm_turnstile_error_message;
+
+			showErrorMessage( { form: getTheForm, message } );
 
 			// Add class
-			getTheTurnStileElement.classList.add( 'turnstile-error-added' );
+			element.classList.add( 'turnstile-error-added' );
 		}
 	} );
 }

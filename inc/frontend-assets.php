@@ -127,7 +127,12 @@ class Frontend_Assets {
 			[
 				'site_url' => site_url(),
 				'nonce'    => wp_create_nonce( 'wp_rest' ),
-				'messages' => Translatable::get_frontend_validation_messages(),
+				'messages' => array_merge(
+					Translatable::get_frontend_validation_messages(),
+					[
+						'srfm_turnstile_error_message' => __( 'Turnstile sitekey verification failed.  Please notify your site admin.', 'sureforms' ),
+					]
+				),
 				'is_rtl'   => $is_rtl,
 			]
 		);
