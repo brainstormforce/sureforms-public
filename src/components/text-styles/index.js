@@ -15,6 +15,8 @@ const TextStylesControl = ( props ) => {
 		lineHeightUnit,
 		setAttributes,
 		help = false,
+		disableFontSize = false,
+		disableLineHeight = false,
 	} = props;
 	const [ isPopUpActive, setIsPopUpActive ] = useState( false );
 	const activeClass = isPopUpActive ? 'srfm-active' : '';
@@ -61,56 +63,64 @@ const TextStylesControl = ( props ) => {
 	const popUpContent = () => {
 		return (
 			<div className="srfm-control-popup srfm-control-popup__content">
-				<div>
-					<Range
-						label={ __( 'Font Size', 'sureforms' ) }
-						value={ textSize?.value }
-						data={ {
-							value: textSize?.value,
-							label: textSize?.label,
-						} }
-						min={ 0 }
-						max={ 200 }
-						step={ textSizeUnit?.value === 'em' ? 0.1 : 1 }
-						unit={ {
-							value: textSizeUnit?.value,
-							label: textSizeUnit?.label,
-						} }
-						units={ props?.units ? props.units : defaultUnits }
-						displayUnit={
-							props?.displayUnit ? props.displayUnit : true
-						}
-						isFormSpecific={
-							props?.isFormSpecific ? props.isFormSpecific : true
-						}
-						setAttributes={ setAttributes }
-					/>
-				</div>
-				<div>
-					<Range
-						label={ __( 'Line Height', 'sureforms' ) }
-						value={ lineHeight?.value }
-						data={ {
-							value: lineHeight?.value,
-							label: lineHeight?.label,
-						} }
-						min={ 0 }
-						max={ 200 }
-						step={ lineHeightUnit?.value === 'em' ? 0.1 : 1 }
-						unit={ {
-							value: lineHeightUnit?.value,
-							label: lineHeightUnit?.label,
-						} }
-						units={ props?.units ? props.units : defaultUnits }
-						displayUnit={
-							props?.displayUnit ? props.displayUnit : true
-						}
-						isFormSpecific={
-							props?.isFormSpecific ? props.isFormSpecific : true
-						}
-						setAttributes={ setAttributes }
-					/>
-				</div>
+				{ ! disableFontSize && (
+					<div>
+						<Range
+							label={ __( 'Font Size', 'sureforms' ) }
+							value={ textSize?.value }
+							data={ {
+								value: textSize?.value,
+								label: textSize?.label,
+							} }
+							min={ 0 }
+							max={ 200 }
+							step={ textSizeUnit?.value === 'em' ? 0.1 : 1 }
+							unit={ {
+								value: textSizeUnit?.value,
+								label: textSizeUnit?.label,
+							} }
+							units={ props?.units ? props.units : defaultUnits }
+							displayUnit={
+								props?.displayUnit ? props.displayUnit : true
+							}
+							isFormSpecific={
+								props?.isFormSpecific
+									? props.isFormSpecific
+									: true
+							}
+							setAttributes={ setAttributes }
+						/>
+					</div>
+				) }
+				{ ! disableLineHeight && (
+					<div>
+						<Range
+							label={ __( 'Line Height', 'sureforms' ) }
+							value={ lineHeight?.value }
+							data={ {
+								value: lineHeight?.value,
+								label: lineHeight?.label,
+							} }
+							min={ 0 }
+							max={ 200 }
+							step={ lineHeightUnit?.value === 'em' ? 0.1 : 1 }
+							unit={ {
+								value: lineHeightUnit?.value,
+								label: lineHeightUnit?.label,
+							} }
+							units={ props?.units ? props.units : defaultUnits }
+							displayUnit={
+								props?.displayUnit ? props.displayUnit : true
+							}
+							isFormSpecific={
+								props?.isFormSpecific
+									? props.isFormSpecific
+									: true
+							}
+							setAttributes={ setAttributes }
+						/>
+					</div>
+				) }
 			</div>
 		);
 	};

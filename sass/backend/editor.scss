@@ -378,6 +378,7 @@ body.post-type-sureforms_form {
 				margin-left: 0 !important; // This is needed to get the field width working.
 				margin-right: 0 !important; // This is needed to get the field width working.
 				margin-top: 0 !important; // Had to add as various themes distort the layout.
+				padding: 0 6px; // Adding the padding to the block so it does not overlap with the selection border.
 			}
 			max-width: 100%;
 		}
