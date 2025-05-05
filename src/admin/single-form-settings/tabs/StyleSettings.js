@@ -206,6 +206,7 @@ function StyleSettings( props ) {
 			'srfm-button',
 			'srfm-submit-button',
 			'srfm-btn-alignment',
+			'srfm-btn-bg-color',
 		];
 		const btnClass =
 			sureformsKeys?._srfm_inherit_theme_button &&
