@@ -140,13 +140,13 @@ class Generate_Form_Markup {
 				'padding_right'        => isset( $form_styling['form_padding_right'] ) ? floatval( $form_styling['form_padding_right'] ) : 0,
 				'padding_bottom'       => isset( $form_styling['form_padding_bottom'] ) ? floatval( $form_styling['form_padding_bottom'] ) : 0,
 				'padding_left'         => isset( $form_styling['form_padding_left'] ) ? floatval( $form_styling['form_padding_left'] ) : 0,
-				'padding_unit'         => Helper::get_string_value( $form_styling['form_padding_unit'] ) ?? 'px',
+				'padding_unit'         => isset( $form_styling['form_padding_unit'] ) ? Helper::get_string_value( $form_styling['form_padding_unit'] ) : 'px',
 				// Border Radius.
 				'border_radius_top'    => isset( $form_styling['form_border_radius_top'] ) ? floatval( $form_styling['form_border_radius_top'] ) : 0,
 				'border_radius_right'  => isset( $form_styling['form_border_radius_right'] ) ? floatval( $form_styling['form_border_radius_right'] ) : 0,
 				'border_radius_bottom' => isset( $form_styling['form_border_radius_bottom'] ) ? floatval( $form_styling['form_border_radius_bottom'] ) : 0,
 				'border_radius_left'   => isset( $form_styling['form_border_radius_left'] ) ? floatval( $form_styling['form_border_radius_left'] ) : 0,
-				'border_radius_unit'   => Helper::get_string_value( $form_styling['form_border_radius_unit'] ) ?? 'px',
+				'border_radius_unit'   => isset( $form_styling['form_border_radius_unit'] ) ? Helper::get_string_value( $form_styling['form_border_radius_unit'] ) : 'px',
 			];
 			// Instant Form Settings.
 			$instant_form = [
@@ -155,13 +155,13 @@ class Generate_Form_Markup {
 				'padding_right'        => isset( $form_styling['instant_form_padding_right'] ) ? floatval( $form_styling['instant_form_padding_right'] ) : 32,
 				'padding_bottom'       => isset( $form_styling['instant_form_padding_bottom'] ) ? floatval( $form_styling['instant_form_padding_bottom'] ) : 32,
 				'padding_left'         => isset( $form_styling['instant_form_padding_left'] ) ? floatval( $form_styling['instant_form_padding_left'] ) : 32,
-				'padding_unit'         => Helper::get_string_value( $form_styling['instant_form_padding_unit'] ) ?? 'px',
+				'padding_unit'         => isset( $form_styling['instant_form_padding_unit'] ) ? Helper::get_string_value( $form_styling['instant_form_padding_unit'] ) : 'px',
 				// Border Radius.
 				'border_radius_top'    => isset( $form_styling['instant_form_border_radius_top'] ) ? floatval( $form_styling['instant_form_border_radius_top'] ) : 12,
 				'border_radius_right'  => isset( $form_styling['instant_form_border_radius_right'] ) ? floatval( $form_styling['instant_form_border_radius_right'] ) : 12,
 				'border_radius_bottom' => isset( $form_styling['instant_form_border_radius_bottom'] ) ? floatval( $form_styling['instant_form_border_radius_bottom'] ) : 12,
 				'border_radius_left'   => isset( $form_styling['instant_form_border_radius_left'] ) ? floatval( $form_styling['instant_form_border_radius_left'] ) : 12,
-				'border_radius_unit'   => Helper::get_string_value( $form_styling['instant_form_border_radius_unit'] ) ?? 'px',
+				'border_radius_unit'   => isset( $form_styling['instant_form_border_radius_unit'] ) ? Helper::get_string_value( $form_styling['instant_form_border_radius_unit'] ) : 'px',
 			];
 
 			if ( 'custom' === $overlay_size ) {
