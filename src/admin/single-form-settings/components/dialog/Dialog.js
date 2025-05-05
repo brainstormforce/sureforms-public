@@ -174,10 +174,14 @@ const Dialog = ( {
 					<Container
 						direction="column"
 						gap="none"
-						className="w-full h-full p-3 divide-y divide-x-0 divide-solid divide-border-subtle"
+						className="w-full h-full py-3 divide-y divide-x-0 divide-solid divide-border-subtle"
 					>
-						<Container className="px-2 pt-2 pb-4" justify="between">
-							<Title tag="h6" title={ __( 'Form Behavior', 'sureforms' ) } size="xs" />
+						<Container className="py-2 px-4" justify="between">
+							<Title
+								tag="h6"
+								title={ __( 'Form Behavior', 'sureforms' ) }
+								size="xs"
+							/>
 							<Button
 								variant="ghost"
 								size="sm"
@@ -186,7 +190,7 @@ const Dialog = ( {
 								icon={ <XIcon /> }
 							/>
 						</Container>
-						<div className="px-2 pb-2 pt-2 w-full h-[calc(100%-3rem)] flex justify-start items-stretch">
+						<div className="w-full h-[calc(100%-3rem)] flex justify-start items-stretch">
 							{ /* Sidebar Navigation */ }
 							<SidebarNav
 								tabs={ tabs }

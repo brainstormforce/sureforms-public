@@ -5,22 +5,21 @@ const INPUT_FIELDS = [
 	{
 		id: 'site_key',
 		label: __( 'Site Key', 'sureforms' ),
+		s_key: 'srfm_hcaptcha_site_key',
 	},
 	{
 		id: 'secret_key',
 		label: __( 'Secret Key', 'sureforms' ),
+		s_key: 'srfm_hcaptcha_secret_key',
 	},
 ];
 
-const Hcaptcha = () => {
+const Hcaptcha = ( { securitytabOptions, updateGlobalSettings } ) => {
 	return (
 		<div className="w-full space-y-6">
 			<div className="space-y-2">
 				<div className="space-y-0.5">
-					<Title
-						title={ __( 'hCaptcha', 'sureforms' ) }
-						size="xs"
-					/>
+					<Title title={ __( 'hCaptcha', 'sureforms' ) } size="xs" />
 					<p>
 						{ __(
 							'To enable hCAPTCHA, please add your site key and secret key. Configure these settings within the individual form.',
@@ -59,7 +58,7 @@ const Hcaptcha = () => {
 			{ INPUT_FIELDS.map( ( field ) => (
 				<Input
 					key={ field.id }
-					type="password"
+					type={ field.id === 'site_key' ? 'text' : 'password' }
 					label={ field.label }
 					name={ field.id }
 					size="md"
@@ -68,6 +67,14 @@ const Hcaptcha = () => {
 						__( 'Enter your %s key here', 'sureforms' ),
 						field.label
 					) }
+					value={ securitytabOptions[ field.s_key ] || '' }
+					onChange={ ( value ) => {
+						updateGlobalSettings(
+							field.s_key,
+							value,
+							'security-settings'
+						);
+					} }
 				/>
 			) ) }
 		</div>

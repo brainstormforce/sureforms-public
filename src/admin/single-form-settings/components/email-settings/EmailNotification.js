@@ -255,6 +255,7 @@ const EmailNotification = ( {
 										name: el.name,
 										subject: el.subject,
 									} }
+									className="hover:bg-background-primary"
 								>
 									<Table.Cell>
 										<Switch
@@ -313,9 +314,7 @@ const EmailNotification = ( {
 																'sureforms'
 															) }
 														</p>
-														<Container
-															className="gap-3"
-														>
+														<Container className="gap-3">
 															<CustomButton
 																ariaLabel={ __(
 																	'Cancel',

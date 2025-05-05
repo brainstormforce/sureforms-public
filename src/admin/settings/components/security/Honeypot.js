@@ -1,7 +1,7 @@
 import { Switch } from '@bsf/force-ui';
 import { __ } from '@wordpress/i18n';
 
-const Honeypot = () => {
+const Honeypot = ( { securitytabOptions, updateGlobalSettings } ) => {
 	return (
 		<div className="w-full">
 			<Switch
@@ -13,6 +13,14 @@ const Honeypot = () => {
 					),
 				} }
 				size="sm"
+				checked={ securitytabOptions.srfm_honeypot }
+				onChange={ ( value ) =>
+					updateGlobalSettings(
+						'srfm_honeypot',
+						value,
+						'security-settings'
+					)
+				}
 			/>
 		</div>
 	);
