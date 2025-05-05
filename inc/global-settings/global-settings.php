@@ -153,27 +153,35 @@ class Global_Settings {
 		$srfm_form_analytics = $setting_options['srfm_form_analytics'] ?? false;
 		$srfm_bsf_analytics  = $setting_options['srfm_bsf_analytics'] ?? false;
 
-		$old_setting = get_option( 'srfm_general_settings_options' );
-
 		$settings = [
 			'srfm_ip_log'         => $srfm_ip_log,
 			'srfm_form_analytics' => $srfm_form_analytics,
 		];
 
-		self::update_bsf_analytics( $srfm_bsf_analytics );
+		/**
+		 * We are updating sureforms_analytics_optin option from the general settings as it has been introduced
+		 * as part of general settings. Since the option sureforms_analytics_optin is already available from BSF analytics library
+		 * We are updating this independently.
+		 *
+		 * @since x.x.x
+		 */
+		$analytics_result = self::update_bsf_analytics( $srfm_bsf_analytics );
 
-		if ( ! empty( $old_setting ) && $old_setting === $settings ) {
-			return true;
-		}
+		$general_result = update_option( 'srfm_general_settings_options', $settings );
 
-		return update_option( 'srfm_general_settings_options', $settings );
+		/**
+		 * Returns the output of update_bsf_analytics or srfm_general_settings_options option.
+		 *
+		 * @since x.x.x
+		 */
+		return $analytics_result || $general_result;
 	}
 
 	/**
 	 * Toggle BSF analytics usage tracking in WP general settings.
 	 *
 	 * @param array<mixed> $settings general settings array.
-	 * @return void
+	 * @return bool
 	 * @since x.x.x
 	 */
 	public static function update_bsf_analytics( $settings ) {
@@ -182,7 +190,8 @@ class Global_Settings {
 		} else {
 			$enable_tracking = '';
 		}
-		update_option( 'sureforms_analytics_optin', $enable_tracking );
+
+		return update_option( 'sureforms_analytics_optin', $enable_tracking );
 	}
 
 	/**
@@ -335,8 +344,13 @@ class Global_Settings {
 			];
 		}
 
-		$srfm_bsf_analytics = get_option( 'sureforms_analytics_optin' ) === 'yes' ? true : false;
-
+		/**
+		 * We have introduced toggle for analytics optin in the general settings.
+		 * Hence retrieving the option sureforms_analytics_optin to get current status.
+		 *
+		 * @since x.x.x
+		 */
+		$srfm_bsf_analytics = get_option( 'sureforms_analytics_optin', false ) === 'yes' ? true : false;
 		$global_setting_options['srfm_general_settings_options']['srfm_bsf_analytics'] = $srfm_bsf_analytics;
 
 		if ( empty( $global_setting_options['srfm_default_dynamic_block_option'] ) ) {
