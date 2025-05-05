@@ -19,6 +19,7 @@ import { chevronDown } from '@wordpress/icons';
 import PremiumBadge from '@Admin/components/PremiumBadge';
 import Background from '@Components/enhanced-background';
 import Spacing from '@Components/spacing';
+import { embedFormAttributes } from '@Attributes/getBlocksDefaultAttributes';
 
 function StyleSettings( props ) {
 	const { editPost } = useDispatch( editorStore );
@@ -48,6 +49,12 @@ function StyleSettings( props ) {
 		document.querySelector( '.srfm-submit-btn-container' )
 	);
 	const [ fieldSpacing, setFieldSpacing ] = useState( formStyling?.field_spacing || 'medium' );
+
+	Object.keys( embedFormAttributes ).forEach( ( key ) => {
+		if ( ! ( key in formStyling ) ) {
+			formStyling[ key ] = embedFormAttributes[ key ].default;
+		}
+	} );
 
 	const {
 		// Background Properties
