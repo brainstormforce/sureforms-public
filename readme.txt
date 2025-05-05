@@ -2,9 +2,9 @@
 Contributors: brainstormforce
 Tags: contact form, custom form, forms, contact form plugin, form builder
 Requires at least: 6.4
-Tested up to: 6.8
+Tested up to: 6.8.1
 Requires PHP: 7.4
-Stable tag: 1.6.2
+Stable tag: 1.6.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -260,6 +260,9 @@ Yes! You can certainly use SureForms on yours as well as your client’s website
 When you use SureForms, you get an easy-to-use AI-powered form builder that can be used to build your forms fast.
 
 == Changelog ==
+= 1.6.3 - 1st May 2025 =
+* Improvement: Removed extra padding from embedded forms for cleaner layout.
+* Fix: Fixed multiple choice block label styling and improved mobile responsiveness.
 = 1.6.2 - 29th April 2025 =
 * Improvement: Changed the value separator for Dropdown and Multiple Choice field from a comma (,) to a pipe (|) to fix selection and calculation issues.
 * Fix: Fixed Cloudflare Turnstile compatibility with version 1.6.1.
