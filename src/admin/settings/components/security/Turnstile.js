@@ -20,14 +20,16 @@ const INPUT_FIELDS = [
 	{
 		id: 'site_key',
 		label: __( 'Site Key', 'sureforms' ),
+		s_key: 'srfm_cf_turnstile_site_key',
 	},
 	{
 		id: 'secret_key',
 		label: __( 'Secret Key', 'sureforms' ),
+		s_key: 'srfm_cf_turnstile_secret_key',
 	},
 ];
 
-const Turnstile = () => {
+const Turnstile = ( { securitytabOptions, updateGlobalSettings } ) => {
 	return (
 		<div className="w-full space-y-6">
 			<div className="space-y-2">
@@ -75,10 +77,7 @@ const Turnstile = () => {
 				<Label tag="p" size="sm">
 					{ __( 'Appearance Mode', 'sureforms' ) }
 				</Label>
-				<RadioButton.Group
-					size="sm"
-					columns={ 3 }
-				>
+				<RadioButton.Group size="sm" columns={ 3 }>
 					{ APPEARANCE_MODES.map( ( mode ) => (
 						<RadioButton.Button
 							key={ mode.value }
@@ -86,6 +85,17 @@ const Turnstile = () => {
 							label={ { heading: mode.label } }
 							borderOn
 							borderOnActive
+							onClick={ () => {
+								updateGlobalSettings(
+									'srfm_cf_appearance_mode',
+									mode.value,
+									'security-settings'
+								);
+							} }
+							checked={
+								securitytabOptions.srfm_cf_appearance_mode ===
+								mode.value
+							}
 						/>
 					) ) }
 				</RadioButton.Group>
@@ -94,7 +104,7 @@ const Turnstile = () => {
 			{ INPUT_FIELDS.map( ( field ) => (
 				<Input
 					key={ field.id }
-					type="password"
+					type={ field.id === 'site_key' ? 'text' : 'password' }
 					label={ field.label }
 					name={ field.id }
 					size="md"
@@ -103,6 +113,14 @@ const Turnstile = () => {
 						__( 'Enter your %s key here', 'sureforms' ),
 						field.label
 					) }
+					value={ securitytabOptions[ field.s_key ] || '' }
+					onChange={ ( value ) => {
+						updateGlobalSettings(
+							field.s_key,
+							value,
+							'security-settings'
+						);
+					} }
 				/>
 			) ) }
 		</div>

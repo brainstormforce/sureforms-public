@@ -3,45 +3,33 @@ import { Title } from '@bsf/force-ui';
 
 const IntegrationCard = ( { className, children } ) => {
 	return (
-		<div className={ cn(
-			'bg-background-primary rounded-md shadow-sm p-4',
-			className
-		) }>
-			<div className="space-y-4">
-				{ children }
-			</div>
+		<div
+			className={ cn(
+				'bg-background-primary rounded-md shadow-sm p-3',
+				className
+			) }
+		>
+			<div className="space-y-4">{ children }</div>
 		</div>
 	);
 };
 
 const IntegrationHeader = ( { className, children } ) => {
 	return (
-		<div className={ cn(
-			'flex justify-between items-center',
-			className
-		) }>
+		<div className={ cn( 'flex justify-between items-center', className ) }>
 			{ children }
 		</div>
 	);
 };
 
 const IntegrationContent = ( { className, children } ) => {
-	return (
-		<div className={ cn(
-			className
-		) }>
-			{ children }
-		</div>
-	);
+	return <div className={ cn( className ) }>{ children }</div>;
 };
 
 const IntegrationTitle = ( { className, title } ) => {
 	return (
 		<Title
-			className={ cn(
-				'[&_*]:font-medium',
-				className
-			) }
+			className={ cn( '[&_*]:font-medium', className ) }
 			title={ title }
 			size="xs"
 		/>
@@ -63,14 +51,7 @@ const IntegrationDescription = ( { className, description } ) => {
 };
 
 const IntegrationCTA = ( { className, children } ) => {
-	return (
-		<div className={ cn(
-			'mt-2',
-			className
-		) }>
-			{ children }
-		</div>
-	);
+	return <div className={ cn( 'mt-2', className ) }>{ children }</div>;
 };
 
 Object.assign( IntegrationCard, {

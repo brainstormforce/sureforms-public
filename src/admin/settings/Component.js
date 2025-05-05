@@ -167,7 +167,7 @@ const Component = ( { path } ) => {
 				);
 				if ( hasEmptyValue ) {
 					toast.error(
-						__( 'This field cannot be left blank.', 'sureforms' ),
+						__( 'This field cannot be left blank.', 'sureforms' )
 					);
 					setDynamicBlockOptions( { ...preDynamicBlockOptions } );
 					return;
@@ -230,9 +230,7 @@ const Component = ( { path } ) => {
 
 	return (
 		<>
-			{ pageTitle && (
-				<PageTitleSection title={ pageTitle } />
-			) }
+			{ pageTitle && <PageTitleSection title={ pageTitle } /> }
 			<div className="max-w-content-container mx-auto p-4 rounded-xl bg-background-primary shadow-sm">
 				{ 'general-settings' === path && (
 					<GeneralPage

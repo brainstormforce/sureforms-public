@@ -6,14 +6,20 @@ const RECAPTCHA_TYPES = [
 	{
 		label: __( 'reCaptcha v2', 'sureforms' ),
 		value: 'v2',
+		site_key: 'srfm_v2_checkbox_site_key',
+		secret_key: 'srfm_v2_checkbox_secret_key',
 	},
 	{
 		label: __( 'reCaptcha v2 Invisible', 'sureforms' ),
 		value: 'invisible',
+		site_key: 'srfm_v2_invisible_site_key',
+		secret_key: 'srfm_v2_invisible_secret_key',
 	},
 	{
 		label: __( 'reCaptcha v3', 'sureforms' ),
 		value: 'v3',
+		site_key: 'srfm_v3_site_key',
+		secret_key: 'srfm_v3_secret_key',
 	},
 ];
 
@@ -28,7 +34,7 @@ const INPUT_FIELDS = [
 	},
 ];
 
-const Recaptcha = () => {
+const Recaptcha = ( { securitytabOptions, updateGlobalSettings } ) => {
 	const [ activeTab, setActiveTab ] = useState( RECAPTCHA_TYPES[ 0 ].value );
 
 	return (
@@ -75,31 +81,54 @@ const Recaptcha = () => {
 			</div>
 
 			<Tabs activeItem={ activeTab }>
-				<Tabs.Group variant="rounded" onChange={ ( { value: { slug } } ) => setActiveTab( slug ) }>
+				<Tabs.Group
+					variant="rounded"
+					onChange={ ( { value: { slug } } ) => setActiveTab( slug ) }
+				>
 					{ RECAPTCHA_TYPES.map( ( type ) => (
-						<Tabs.Tab key={ type.value } slug={ type.value } text={ type.label } />
+						<Tabs.Tab
+							key={ type.value }
+							slug={ type.value }
+							text={ type.label }
+						/>
 					) ) }
 				</Tabs.Group>
-				{
-					RECAPTCHA_TYPES.map( ( type ) => (
-						<Tabs.Panel key={ type.value } slug={ type.value }>
-							{ INPUT_FIELDS.map( ( field ) => (
-								<Input
-									key={ field.id }
-									type="password"
-									label={ field.label }
-									name={ field.id }
-									size="md"
-									placeholder={ sprintf(
-										// translators: %s is the label of the input field.
-										__( 'Enter your %s key here', 'sureforms' ),
-										field.label
-									) }
-								/>
-							) ) }
-						</Tabs.Panel>
-					) )
-				}
+				{ RECAPTCHA_TYPES.map( ( type ) => (
+					<Tabs.Panel key={ type.value } slug={ type.value }>
+						{ INPUT_FIELDS.map( ( field ) => (
+							<Input
+								key={ field.id }
+								type={
+									field.id === 'site_key'
+										? 'text'
+										: 'password'
+								}
+								label={ field.label }
+								name={ field.id }
+								size="md"
+								placeholder={ sprintf(
+									// translators: %s is the label of the input field.
+									__( 'Enter your %s key here', 'sureforms' ),
+									field.label
+								) }
+								value={
+									field.id === 'site_key'
+										? securitytabOptions[ type.site_key ]
+										: securitytabOptions[ type.secret_key ]
+								}
+								onChange={ ( value ) => {
+									updateGlobalSettings(
+										field.id === 'site_key'
+											? `${ type.site_key }`
+											: `${ type.secret_key }`,
+										value,
+										'security-settings'
+									);
+								} }
+							/>
+						) ) }
+					</Tabs.Panel>
+				) ) }
 			</Tabs>
 		</div>
 	);

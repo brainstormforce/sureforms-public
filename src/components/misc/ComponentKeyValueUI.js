@@ -2,7 +2,7 @@ import { useState, useEffect } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import SmartTagList from '@Components/misc/SmartTagList';
 import { Button, Checkbox, Input, Label } from '@bsf/force-ui';
-import { Trash2Icon } from 'lucide-react';
+import { Trash2Icon, PlusIcon } from 'lucide-react';
 import { cn } from '@Utils/Helpers';
 
 const ComponentKeyValueUI = ( {
@@ -85,7 +85,10 @@ const ComponentKeyValueUI = ( {
 								<div className="flex gap-3 items-center w-full">
 									<TextControl
 										type="text"
-										placeholder={ __( 'Add Key', 'sureforms' ) }
+										placeholder={ __(
+											'Add Key',
+											'sureforms'
+										) }
 										defaultValue={
 											Object.keys( dataItem )[ 0 ] ?? ''
 										}
@@ -109,7 +112,13 @@ const ComponentKeyValueUI = ( {
 									/>
 								</div>
 								<div className="flex gap-3 items-center justify-end">
-									<Button size="sm" onClick={ () => addNew( index ) }>
+									<Button
+										size="sm"
+										variant="outline"
+										onClick={ () => addNew( index ) }
+										icon={ <PlusIcon /> }
+										iconPosition="left"
+									>
 										{ __( 'Add', 'sureforms' ) }
 									</Button>
 									<Button
@@ -145,31 +154,34 @@ const TextControl = ( {
 	};
 	return (
 		<div className="space-y-1.5 flex-1">
-			{ label && (
-				<Label>{ label }</Label>
-			) }
+			{ label && <Label>{ label }</Label> }
 			<Input
-				className={ cn( withSmartTags && '[&>input]:pr-9 [&>input+div]:right-0 [&>input+div]:pr-2' ) }
+				className={ cn(
+					withSmartTags &&
+						'[&>input]:pr-9 [&>input+div]:right-0 [&>input+div]:pr-2'
+				) }
 				onChange={ ( value ) => {
 					setData( value );
 				} }
 				value={ input }
 				type={ type ?? 'text' }
 				placeholder={ placeholder ?? '' }
-				suffix={ withSmartTags && (
-					<SmartTagList
-						tagsArray={ [
-							{
-								tags: formSmartTags,
-								label: __( 'Form input tags', 'sureforms' ),
-							},
-						] }
-						setTargetData={ setData }
-						triggerSize="xs"
-						triggerClassName="!pointer-events-auto [box-shadow:none]"
-						dropdownPlacement="bottom-end"
-					/>
-				) }
+				suffix={
+					withSmartTags && (
+						<SmartTagList
+							tagsArray={ [
+								{
+									tags: formSmartTags,
+									label: __( 'Form input tags', 'sureforms' ),
+								},
+							] }
+							setTargetData={ setData }
+							triggerSize="xs"
+							triggerClassName="!pointer-events-auto [box-shadow:none]"
+							dropdownPlacement="bottom-end"
+						/>
+					)
+				}
 			/>
 		</div>
 	);

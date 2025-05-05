@@ -29,7 +29,7 @@ const Settings = () => {
 					</div>
 				</div>
 			</Router>
-			<Toaster />
+			<Toaster className="z-[999999]" />
 		</>
 	);
 };
