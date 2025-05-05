@@ -133,20 +133,35 @@ class Generate_Form_Markup {
 			$bg_overlay_gradient_location_1 = $is_overlay_advanced_gradient && isset( $form_styling['bg_overlay_gradient_location_1'] ) ? $form_styling['bg_overlay_gradient_location_1'] : '';
 			$bg_overlay_gradient_location_2 = $is_overlay_advanced_gradient && isset( $form_styling['bg_overlay_gradient_location_2'] ) ? $form_styling['bg_overlay_gradient_location_2'] : '';
 			$bg_overlay_gradient_angle      = $is_overlay_advanced_gradient && isset( $form_styling['bg_overlay_gradient_angle'] ) ? $form_styling['bg_overlay_gradient_angle'] : '';
-			// Form Settings.
+			// Embed Form Settings.
 			$form = [
 				// Padding.
-				'padding_top'          => isset( $form_styling['form_padding_top'] ) ? floatval( $form_styling['form_padding_top'] ) : 32,
-				'padding_right'        => isset( $form_styling['form_padding_right'] ) ? floatval( $form_styling['form_padding_right'] ) : 32,
-				'padding_bottom'       => isset( $form_styling['form_padding_bottom'] ) ? floatval( $form_styling['form_padding_bottom'] ) : 32,
-				'padding_left'         => isset( $form_styling['form_padding_left'] ) ? floatval( $form_styling['form_padding_left'] ) : 32,
+				'padding_top'          => isset( $form_styling['form_padding_top'] ) ? floatval( $form_styling['form_padding_top'] ) : 0,
+				'padding_right'        => isset( $form_styling['form_padding_right'] ) ? floatval( $form_styling['form_padding_right'] ) : 0,
+				'padding_bottom'       => isset( $form_styling['form_padding_bottom'] ) ? floatval( $form_styling['form_padding_bottom'] ) : 0,
+				'padding_left'         => isset( $form_styling['form_padding_left'] ) ? floatval( $form_styling['form_padding_left'] ) : 0,
 				'padding_unit'         => Helper::get_string_value( $form_styling['form_padding_unit'] ) ?? 'px',
 				// Border Radius.
-				'border_radius_top'    => isset( $form_styling['form_border_radius_top'] ) ? floatval( $form_styling['form_border_radius_top'] ) : 12,
-				'border_radius_right'  => isset( $form_styling['form_border_radius_right'] ) ? floatval( $form_styling['form_border_radius_right'] ) : 12,
-				'border_radius_bottom' => isset( $form_styling['form_border_radius_bottom'] ) ? floatval( $form_styling['form_border_radius_bottom'] ) : 12,
-				'border_radius_left'   => isset( $form_styling['form_border_radius_left'] ) ? floatval( $form_styling['form_border_radius_left'] ) : 12,
+				'border_radius_top'    => isset( $form_styling['form_border_radius_top'] ) ? floatval( $form_styling['form_border_radius_top'] ) : 0,
+				'border_radius_right'  => isset( $form_styling['form_border_radius_right'] ) ? floatval( $form_styling['form_border_radius_right'] ) : 0,
+				'border_radius_bottom' => isset( $form_styling['form_border_radius_bottom'] ) ? floatval( $form_styling['form_border_radius_bottom'] ) : 0,
+				'border_radius_left'   => isset( $form_styling['form_border_radius_left'] ) ? floatval( $form_styling['form_border_radius_left'] ) : 0,
 				'border_radius_unit'   => Helper::get_string_value( $form_styling['form_border_radius_unit'] ) ?? 'px',
+			];
+			// Instant Form Settings.
+			$instant_form = [
+				// Padding.
+				'padding_top'          => isset( $form_styling['instant_form_padding_top'] ) ? floatval( $form_styling['instant_form_padding_top'] ) : 32,
+				'padding_right'        => isset( $form_styling['instant_form_padding_right'] ) ? floatval( $form_styling['instant_form_padding_right'] ) : 32,
+				'padding_bottom'       => isset( $form_styling['instant_form_padding_bottom'] ) ? floatval( $form_styling['instant_form_padding_bottom'] ) : 32,
+				'padding_left'         => isset( $form_styling['instant_form_padding_left'] ) ? floatval( $form_styling['instant_form_padding_left'] ) : 32,
+				'padding_unit'         => Helper::get_string_value( $form_styling['instant_form_padding_unit'] ) ?? 'px',
+				// Border Radius.
+				'border_radius_top'    => isset( $form_styling['instant_form_border_radius_top'] ) ? floatval( $form_styling['instant_form_border_radius_top'] ) : 12,
+				'border_radius_right'  => isset( $form_styling['instant_form_border_radius_right'] ) ? floatval( $form_styling['instant_form_border_radius_right'] ) : 12,
+				'border_radius_bottom' => isset( $form_styling['instant_form_border_radius_bottom'] ) ? floatval( $form_styling['instant_form_border_radius_bottom'] ) : 12,
+				'border_radius_left'   => isset( $form_styling['instant_form_border_radius_left'] ) ? floatval( $form_styling['instant_form_border_radius_left'] ) : 12,
+				'border_radius_unit'   => Helper::get_string_value( $form_styling['instant_form_border_radius_unit'] ) ?? 'px',
 			];
 
 			if ( 'custom' === $overlay_size ) {
@@ -320,12 +335,22 @@ class Generate_Form_Markup {
 					<?php
 						// Form Styles.
 						$styling_vars = [
-							// Padding.
+							// Instant Form Padding.
+							'--srfm-instant-form-padding-top' => sanitize_text_field( "{$instant_form['padding_top']}{$instant_form['padding_unit']}" ),
+							'--srfm-instant-form-padding-right' => sanitize_text_field( "{$instant_form['padding_right']}{$instant_form['padding_unit']}" ),
+							'--srfm-instant-form-padding-bottom' => sanitize_text_field( "{$instant_form['padding_bottom']}{$instant_form['padding_unit']}" ),
+							'--srfm-instant-form-padding-left' => sanitize_text_field( "{$instant_form['padding_left']}{$instant_form['padding_unit']}" ),
+							// Instant Form Border Radius.
+							'--srfm-instant-form-border-radius-top' => sanitize_text_field( "{$instant_form['border_radius_top']}{$instant_form['border_radius_unit']}" ),
+							'--srfm-instant-form-border-radius-right' => sanitize_text_field( "{$instant_form['border_radius_right']}{$instant_form['border_radius_unit']}" ),
+							'--srfm-instant-form-border-radius-bottom' => sanitize_text_field( "{$instant_form['border_radius_bottom']}{$instant_form['border_radius_unit']}" ),
+							'--srfm-instant-form-border-radius-left' => sanitize_text_field( "{$instant_form['border_radius_left']}{$instant_form['border_radius_unit']}" ),
+							// Embed Form Padding.
 							'--srfm-form-padding-top'    => sanitize_text_field( "{$form['padding_top']}{$form['padding_unit']}" ),
 							'--srfm-form-padding-right'  => sanitize_text_field( "{$form['padding_right']}{$form['padding_unit']}" ),
 							'--srfm-form-padding-bottom' => sanitize_text_field( "{$form['padding_bottom']}{$form['padding_unit']}" ),
 							'--srfm-form-padding-left'   => sanitize_text_field( "{$form['padding_left']}{$form['padding_unit']}" ),
-							// Border Radius.
+							// Embed Form Border Radius.
 							'--srfm-form-border-radius-top' => sanitize_text_field( "{$form['border_radius_top']}{$form['border_radius_unit']}" ),
 							'--srfm-form-border-radius-right' => sanitize_text_field( "{$form['border_radius_right']}{$form['border_radius_unit']}" ),
 							'--srfm-form-border-radius-bottom' => sanitize_text_field( "{$form['border_radius_bottom']}{$form['border_radius_unit']}" ),

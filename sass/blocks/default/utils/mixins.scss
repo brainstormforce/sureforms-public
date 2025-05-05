@@ -430,18 +430,18 @@
 }
 
 // Form Container Padding Mixin.
-@mixin srfm-form-padding-styles {
-	padding-top: var( --srfm-form-padding-top, 32px );
-	padding-right: var( --srfm-form-padding-right, 32px );
-	padding-bottom: var( --srfm-form-padding-bottom, 32px );
-	padding-left: var( --srfm-form-padding-left, 32px );
+@mixin srfm-form-padding-styles( $top: --srfm-form-padding-top, $right: --srfm-form-padding-right, $bottom: --srfm-form-padding-bottom, $left: --srfm-form-padding-left, $default: 0 ) {
+	padding-top: var( $top, $default );
+	padding-right: var( $right, $default );
+	padding-bottom: var( $bottom, $default );
+	padding-left: var( $left, $default );
 }
 // Form Container Border Radius Mixin.
-@mixin srfm-form-border-radius-styles {
-	border-top-left-radius: var( --srfm-form-border-radius-top, 12px );
-	border-top-right-radius: var( --srfm-form-border-radius-right, 12px );
-	border-bottom-right-radius: var( --srfm-form-border-radius-bottom, 12px );
-	border-bottom-left-radius: var( --srfm-form-border-radius-left, 12px );
+@mixin srfm-form-border-radius-styles( $top: --srfm-form-border-radius-top, $right: --srfm-form-border-radius-right, $bottom: --srfm-form-border-radius-bottom, $left: --srfm-form-border-radius-left, $default: 0 ) {
+	border-top-left-radius: var( $top, $default );
+	border-top-right-radius: var( $right, $default );
+	border-bottom-right-radius: var( $bottom, $default );
+	border-bottom-left-radius: var( $left, $default );
 }
 
 @mixin srfm-input-margin-styles( $important: false ) {

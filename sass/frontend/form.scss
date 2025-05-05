@@ -12,6 +12,10 @@
 
 	@include srfm-background-control-styles;
 
+	&[class*="srfm-overlay"]::before {
+		@include srfm-form-border-radius-styles;
+	}
+
 	// styles for core paragraph block
 	.srfm-custom-wp-paragraph {
 		width: 100% !important;
