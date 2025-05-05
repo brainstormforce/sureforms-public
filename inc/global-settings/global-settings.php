@@ -38,25 +38,6 @@ class Global_Settings {
 	 */
 	public function __construct() {
 		add_action( 'rest_api_init', [ $this, 'register_custom_endpoint' ] );
-
-		add_action( 'srfm_before_save_general_settings', [ $this, 'update_bsf_analytics' ] );
-	}
-
-	/**
-	 * Toggle BSF analytics usage tracking in WP general settings.
-	 *
-	 * @param array<mixed> $settings general settings array.
-	 * @return void
-	 * @since x.x.x
-	 */
-	public function update_bsf_analytics( $settings ) {
-		if ( isset( $settings['srfm_bsf_analytics'] ) && true === $settings['srfm_bsf_analytics'] ) {
-			$enable_tracking = 'yes';
-		} else {
-			$enable_tracking = '';
-		}
-
-		update_option( 'sureforms_analytics_optin', $enable_tracking );
 	}
 
 	/**
@@ -172,22 +153,36 @@ class Global_Settings {
 		$srfm_form_analytics = $setting_options['srfm_form_analytics'] ?? false;
 		$srfm_bsf_analytics  = $setting_options['srfm_bsf_analytics'] ?? false;
 
+		$old_setting = get_option( 'srfm_general_settings_options' );
+
 		$settings = [
 			'srfm_ip_log'         => $srfm_ip_log,
 			'srfm_form_analytics' => $srfm_form_analytics,
-			'srfm_bsf_analytics'  => $srfm_bsf_analytics,
 		];
 
-		/**
-		 * Fires before the general SRFM settings are saved.
-		 *
-		 * @since x.x.x
-		 *
-		 * @param array<mixed> $settings
-		 */
-		do_action( 'srfm_before_save_general_settings', $settings );
+		self::update_bsf_analytics( $srfm_bsf_analytics );
+
+		if ( ! empty( $old_setting ) && $old_setting === $settings ) {
+			return true;
+		}
 
 		return update_option( 'srfm_general_settings_options', $settings );
+	}
+
+	/**
+	 * Toggle BSF analytics usage tracking in WP general settings.
+	 *
+	 * @param array<mixed> $settings general settings array.
+	 * @return void
+	 * @since x.x.x
+	 */
+	public static function update_bsf_analytics( $settings ) {
+		if ( true === $settings ) {
+			$enable_tracking = 'yes';
+		} else {
+			$enable_tracking = '';
+		}
+		update_option( 'sureforms_analytics_optin', $enable_tracking );
 	}
 
 	/**
@@ -337,9 +332,13 @@ class Global_Settings {
 			$global_setting_options['srfm_general_settings_options'] = [
 				'srfm_ip_log'         => false,
 				'srfm_form_analytics' => false,
-				'srfm_bsf_analytics'  => false,
 			];
 		}
+
+		$srfm_bsf_analytics = get_option( 'sureforms_analytics_optin' ) === 'yes' ? true : false;
+
+		$global_setting_options['srfm_general_settings_options']['srfm_bsf_analytics'] = $srfm_bsf_analytics;
+
 		if ( empty( $global_setting_options['srfm_default_dynamic_block_option'] ) ) {
 			$global_setting_options['srfm_default_dynamic_block_option'] = Helper::default_dynamic_block_option();
 		}
