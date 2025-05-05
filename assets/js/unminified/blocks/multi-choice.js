@@ -80,7 +80,8 @@ function initializeMultichoice() {
 							savedValues = arr;
 						}
 
-						setValue = window.srfm.srfmUtility.prepareValue( savedValues );
+						setValue =
+							window.srfm.srfmUtility.prepareValue( savedValues );
 					}
 
 					// Set the value of the hidden input field.

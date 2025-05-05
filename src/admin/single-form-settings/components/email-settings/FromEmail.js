@@ -25,7 +25,43 @@ const FromEmail = ( {	formData,
 		let warningMessage = '';
 
 		if ( fromEmail.startsWith( '{' ) && fromEmail.endsWith( '}' ) ) {
-			warningMessage = undefined;
+			if ( srfm_block_data?.is_suremails_active ) {
+				warningMessage = sprintf(
+					// Translators: %1$s is the website domain, %2$s is the suggested admin email.
+					__(
+						"The current 'From Email' address may not match your website domain name (%1$s). This can cause your notification emails to be blocked or marked as spam. Alternately, try using a From Address that matches your website domain (admin@%2$s).",
+						'sureforms'
+					),
+					siteUrl,
+					siteUrl
+				);
+			} else {
+				warningMessage = (
+					<>
+						{ sprintf(
+							// Translators: %s is the website domain.
+							__(
+								"The current 'From Email' address may not match your website domain name (%s). This can cause your notification emails to be blocked or marked as spam. ",
+								'sureforms'
+							),
+							siteUrl
+						) }
+						{ __( 'We strongly recommend that you install the free ', 'sureforms' ) }
+						<a href="https://suremails.com?utm_medium=sureforms" target="_blank" rel="noopener noreferrer">
+							SureMails
+						</a>
+						{ __( ' plugin! The Setup Wizard makes it easy to fix your emails. ', 'sureforms' ) }
+						{ sprintf(
+							// Translators: %s is the website domain.
+							__(
+								' Alternately, try using a From Address that matches your website domain (admin@%s).',
+								'sureforms'
+							),
+							siteUrl
+						) }
+					</>
+				);
+			}
 		} else if ( fromEmail === '' || ! isValidEmail ) {
 			warningMessage = __(
 				"Please enter a valid email address. Your notifications won't be sent if the field is not filled in correctly.",

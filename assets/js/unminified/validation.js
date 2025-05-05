@@ -606,9 +606,10 @@ export async function fieldValidation(
 
 					if ( minSelection || maxSelection ) {
 						// create array from dropdownInput.value
-						const selectedOptions = window.srfm.srfmUtility.extractValue(
-							dropdownInput.value
-						);
+						const selectedOptions =
+							window.srfm.srfmUtility.extractValue(
+								dropdownInput.value
+							);
 						// If some value is selected but less than minSelection.
 						if (
 							minSelection &&

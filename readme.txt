@@ -2,9 +2,9 @@
 Contributors: brainstormforce
 Tags: contact form, custom form, forms, contact form plugin, form builder
 Requires at least: 6.4
-Tested up to: 6.8
+Tested up to: 6.8.1
 Requires PHP: 7.4
-Stable tag: 1.6.1
+Stable tag: 1.6.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -261,8 +261,13 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 
 == Changelog ==
 = x.x.x =
-* Improvement: Improved Value Handling for Dropdown & MultiChoice Fields: Switched from comma (,) to pipe (|) as the value separator to avoid conflicts with labels containing commas. This resolves selection and calculation issues.
 * Improvement: Improved reCAPTCHA handling by adding detailed logging for failure responses.
+= 1.6.3 - 1st May 2025 =
+* Improvement: Removed extra padding from embedded forms for cleaner layout.
+* Fix: Fixed multiple choice block label styling and improved mobile responsiveness.
+= 1.6.2 - 29th April 2025 =
+* Improvement: Changed the value separator for Dropdown and Multiple Choice field from a comma (,) to a pipe (|) to fix selection and calculation issues.
+* Fix: Fixed Cloudflare Turnstile compatibility with version 1.6.1.
 = 1.6.1 - 23rd April 2025 =
 * New: Added From Name and From Email fields to the Email Notification settings.
 * Improvement: Added bottom margin to the form container for better compatibility with the Neve theme.
