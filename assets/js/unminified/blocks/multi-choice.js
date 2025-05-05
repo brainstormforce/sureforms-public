@@ -56,6 +56,8 @@ function initializeMultichoice() {
 						'.srfm-input-multi-choice-hidden'
 					);
 
+					console.log( 'hiddenInput', {hiddenInput, getValue, isCheck : e.target.checked } );
+
 					if ( ! hiddenInput || ! getValue ) {
 						return;
 					}
@@ -85,7 +87,7 @@ function initializeMultichoice() {
 					}
 
 					// Set the value of the hidden input field.
-					if ( setValue ) {
+					if ( null !== setValue ) {
 						hiddenInput.setAttribute( 'value', setValue );
 					}
 
