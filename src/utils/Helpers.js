@@ -471,3 +471,26 @@ export const getGradientCSS = (
 	}
 	return `linear-gradient( ${ angle }deg, ${ color1 } ${ loc1 }%, ${ color2 } ${ loc2 }%)`;
 };
+
+/**
+ * Sets default values for form attributes in the post meta object.
+ *
+ * This helper function iterates over the provided `formAttributes` object and checks
+ * if each attribute key is present in the `postMeta` object. If a key is missing,
+ * it assigns the corresponding default value from `formAttributes` to `postMeta`.
+ *
+ * @param {Object} formAttributes - An object containing form attribute definitions,
+ *                                where each key maps to an object that includes a `default` property.
+ * @param {Object} postMeta       - The metadata object to be updated with default values
+ *                                for any missing attributes.
+ */
+export const setDefaultFormAttributes = ( formAttributes, postMeta ) => {
+	if ( ! formAttributes ) {
+		return;
+	}
+	Object.keys( formAttributes ).forEach( ( key ) => {
+		if ( ! ( key in postMeta ) ) {
+			postMeta[ key ] = formAttributes[ key ].default;
+		}
+	} );
+};

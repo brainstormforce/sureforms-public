@@ -17,6 +17,7 @@ import { applyFilters } from '@wordpress/hooks';
 import { getInstantFormAdditionalSettings } from '@Components/hooks';
 import Spacing from '@Components/spacing';
 import { instantFormAttributes } from '@Attributes/getBlocksDefaultAttributes';
+import { setDefaultFormAttributes } from '@Utils/Helpers';
 
 let live_mode_prev_srfm_instant_form_settings = {};
 
@@ -70,11 +71,8 @@ const InstantFormComponent = () => {
 		use_banner_as_page_background,
 	} = _srfm_instant_form_settings;
 
-	Object.keys( instantFormAttributes ).forEach( ( key ) => {
-		if ( ! ( key in _srfm_forms_styling ) ) {
-			_srfm_forms_styling[ key ] = instantFormAttributes[ key ].default;
-		}
-	} );
+	// Set the default keys in the meta object if they are not present.
+	setDefaultFormAttributes( instantFormAttributes, _srfm_forms_styling );
 
 	const {
 		// Form Properties.

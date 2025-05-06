@@ -14,7 +14,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { useDeviceType } from '@Controls/getPreviewType';
 import { getStylePanels } from '@Components/hooks';
-import { addStyleInRoot, getGradientCSS } from '@Utils/Helpers';
+import { addStyleInRoot, getGradientCSS, setDefaultFormAttributes } from '@Utils/Helpers';
 import { chevronDown } from '@wordpress/icons';
 import PremiumBadge from '@Admin/components/PremiumBadge';
 import Background from '@Components/enhanced-background';
@@ -50,11 +50,8 @@ function StyleSettings( props ) {
 	);
 	const [ fieldSpacing, setFieldSpacing ] = useState( formStyling?.field_spacing || 'medium' );
 
-	Object.keys( embedFormAttributes ).forEach( ( key ) => {
-		if ( ! ( key in formStyling ) ) {
-			formStyling[ key ] = embedFormAttributes[ key ].default;
-		}
-	} );
+	// Set the default keys in the meta object if they are not present.
+	setDefaultFormAttributes( embedFormAttributes, formStyling );
 
 	const {
 		// Background Properties
