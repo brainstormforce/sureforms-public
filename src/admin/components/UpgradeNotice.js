@@ -14,7 +14,6 @@ const UpgradeNotice = ( { onClose } ) => {
 		const hasSeenNotice = getCookie( COOKIE_NAME );
 		if ( ! hasSeenNotice ) {
 			setShowNotice( true );
-			setCookie( COOKIE_NAME, 'true', 10 ); // Expires in 10 days
 		}
 	}, [] );
 
@@ -24,7 +23,7 @@ const UpgradeNotice = ( { onClose } ) => {
 
 	const handleClose = () => {
 		setIsVisible( false );
-
+		setCookie( COOKIE_NAME, 'true', 10 ); // Expires in 10 days
 		if ( typeof onClose !== 'function' ) {
 			return;
 		}
