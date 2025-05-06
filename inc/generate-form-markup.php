@@ -440,7 +440,9 @@ class Generate_Form_Markup {
 						<?php } ?>
 						<?php
 
-						self::get_cf_turnstile_script( $security_type, $srfm_cf_appearance_mode, $srfm_cf_turnstile_site_key );
+						if ( 'cf-turnstile' === $security_type ) {
+							self::get_cf_turnstile_script( $srfm_cf_appearance_mode, $srfm_cf_turnstile_site_key );
+						}
 
 						if ( 'hcaptcha' === $security_type ) {
 							// hCaptcha script.
@@ -494,14 +496,13 @@ class Generate_Form_Markup {
 	/**
 	 * Generate Cloudflare Turnstile script markup
 	 *
-	 * @param string $security_type security type.
 	 * @param string $srfm_cf_appearance_mode appearance mode.
 	 * @param string $srfm_cf_turnstile_site_key site key.
 	 * @since x.x.x
 	 * @return void
 	 */
-	public static function get_cf_turnstile_script( $security_type, $srfm_cf_appearance_mode, $srfm_cf_turnstile_site_key ) {
-		if ( 'cf-turnstile' === $security_type && ! empty( $srfm_cf_turnstile_site_key ) ) {
+	public static function get_cf_turnstile_script( $srfm_cf_appearance_mode, $srfm_cf_turnstile_site_key ) {
+		if ( ! empty( $srfm_cf_turnstile_site_key ) ) {
 			// Cloudflare Turnstile script.
 			wp_enqueue_script( // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
 				SRFM_SLUG . '-cf-turnstile',
