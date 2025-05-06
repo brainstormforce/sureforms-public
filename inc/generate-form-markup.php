@@ -520,7 +520,7 @@ class Generate_Form_Markup {
 		} else {
 			$icon = Helper::fetch_svg( 'info_circle', '', 'aria-hidden="true"' );
 			?>
-			<p id="sitekey-error" class="srfm-common-error-message srfm-error-message" hidden="false"><?php echo wp_kses( $icon, Helper::$allowed_tags_svg ); ?><span class="srfm-error-content"><?php echo esc_html__( 'Turnstile sitekey cannot be empty. Please notify your site admin.', 'sureforms' ); ?></span></p>
+			<p id="sitekey-error" class="srfm-common-error-message srfm-error-message" hidden="false"><?php echo wp_kses( $icon, Helper::$allowed_tags_svg ); ?><span class="srfm-error-content"><?php echo esc_html__( 'Turnstile sitekey is missing. Please contact your site administrator.', 'sureforms' ); ?></span></p>
 			<?php
 		}
 	}

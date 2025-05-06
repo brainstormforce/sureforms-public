@@ -130,7 +130,7 @@ class Frontend_Assets {
 				'messages' => array_merge(
 					Translatable::get_frontend_validation_messages(),
 					[
-						'srfm_turnstile_error_message' => __( 'Turnstile sitekey verification failed.  Please notify your site admin.', 'sureforms' ),
+						'srfm_turnstile_error_message' => __( 'Turnstile sitekey verification failed. Please contact your site administrator.', 'sureforms' ),
 					]
 				),
 				'is_rtl'   => $is_rtl,
