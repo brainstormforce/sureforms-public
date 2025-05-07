@@ -2,7 +2,11 @@ import IntegrationCard from './Card';
 import SureTriggersIcon from '@Image/suretriggers.svg';
 import { __ } from '@wordpress/i18n';
 import { Badge, Button } from '@bsf/force-ui';
-import { getPluginStatusText, handlePluginActionTrigger } from '@Utils/Helpers';
+import {
+	cn,
+	getPluginStatusText,
+	handlePluginActionTrigger,
+} from '@Utils/Helpers';
 
 const SureTriggers = () => {
 	const plugin = srfm_admin?.integrations?.sure_triggers;
@@ -37,6 +41,12 @@ const SureTriggers = () => {
 				<IntegrationCard.CTA>
 					<Button
 						size="xs"
+						className={ cn(
+							'focus:[box-shadow:none]',
+							plugin.status === 'Activated' &&
+								'bg-badge-background-green hover:bg-badge-background-green'
+						) }
+						variant="outline"
 						onClick={ ( event ) =>
 							handlePluginActionTrigger( {
 								plugin,
