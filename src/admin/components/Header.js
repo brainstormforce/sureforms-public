@@ -113,7 +113,7 @@ const Header = () => {
 											'Upgrade SureForms',
 											'sureforms'
 										) }{ ' ' }
-										<ArrowUpRight className="size-4" />
+										<ArrowUpRight className="size-5" />
 									</HamburgerMenu.Option>
 								) }
 							</HamburgerMenu.Options>
@@ -129,7 +129,7 @@ const Header = () => {
 							{ NAV_ITEMS.map( ( item ) => (
 								<a
 									className={ cn(
-										'h-full text-text-secondary text-sm font-medium no-underline px-1 content-center relative focus:outline-none',
+										'h-full text-text-secondary text-sm font-medium no-underline px-1 content-center relative focus:outline-none hover:text-text-primary focus:[box-shadow:none]',
 										activePage?.slug === item?.slug &&
 											'text-text-primary before:content-[""] before:absolute before:h-px before:bg-border-interactive before:bottom-0 before:inset-x-0'
 									) }
@@ -144,7 +144,7 @@ const Header = () => {
 					{ ! isProActive && ! isLicenseActive && (
 						<Topbar.Item>
 							<Button
-								icon={ <ArrowUpRight /> }
+								icon={ <ArrowUpRight className="size-5" /> }
 								iconPosition="right"
 								variant="link"
 								size="sm"
