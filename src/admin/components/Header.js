@@ -148,7 +148,7 @@ const Header = () => {
 								iconPosition="right"
 								variant="link"
 								size="sm"
-								className="h-full text-link-primary text-sm font-semibold no-underline hover:no-underline px-1 content-center [box-shadow:none] focus:[box-shadow:none] focus:outline-none"
+								className="h-full text-link-primary text-sm font-semibold no-underline hover:no-underline hover:text-link-primary-hover px-1 content-center [box-shadow:none] focus:[box-shadow:none] focus:outline-none"
 								onClick={ () =>
 									window.open(
 										addQueryParam(
