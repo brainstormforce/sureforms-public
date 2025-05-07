@@ -260,6 +260,9 @@ Yes! You can certainly use SureForms on yours as well as your client’s website
 When you use SureForms, you get an easy-to-use AI-powered form builder that can be used to build your forms fast.
 
 == Changelog ==
+= x.x.x =
+* Fix: Resolved issue where SureForm scripts were not working inside Elementor popups by reinitializing the form after the popup is triggered.
+* Improvement: Added support for a custom event (srfm-form-init) to manually reinitialize forms when dynamically inserted or relocated by third-party scripts.
 = 1.6.3 - 1st May 2025 =
 * Improvement: Removed extra padding from embedded forms for cleaner layout.
 * Fix: Fixed multiple choice block label styling and improved mobile responsiveness.
