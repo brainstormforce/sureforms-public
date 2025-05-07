@@ -41,7 +41,7 @@ export default () => {
 					<Container.Item className="flex">{ icon }</Container.Item>
 					<Container.Item className="flex px-1 gap-2">
 						<a
-							className="no-underline"
+							className="no-underline hover:underline"
 							href={ link }
 							target="_blank"
 							rel="noreferrer"
