@@ -104,7 +104,7 @@ const GeneralPage = ( {
 								type="button"
 								label={ __( 'Schedule Reports', 'sureforms' ) }
 							/>
-							<Select.Portal>
+							<Select.Portal id="srfm-settings-container">
 								<Select.Options>
 									{ days.map( ( day ) => (
 										<Select.Option key={ day.value } value={ day.value }>
