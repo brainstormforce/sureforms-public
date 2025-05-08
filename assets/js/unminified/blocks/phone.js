@@ -40,6 +40,18 @@ function initializePhoneField() {
 		const selectedCountry = element.querySelector(
 			'.iti__selected-country-primary'
 		);
+
+		/**
+		 * Set the aria-hidden attribute to true for the selected dial code element,
+		 * so that it is not read by screen readers. This is because the selected country
+		 * has the dial code as well, and we don't want to repeat the information.
+		 */
+		const selectedDialCode = element.querySelector(
+			'.iti__selected-dial-code'
+		);
+		if ( selectedDialCode ) {
+			selectedDialCode.setAttribute( 'aria-hidden', true );
+		}
 		if ( srfm_submit?.is_rtl ) {
 			selectedCountry.style.paddingLeft = '0';
 		} else {
