@@ -41,12 +41,8 @@ const SureTriggers = () => {
 				<IntegrationCard.CTA>
 					<Button
 						size="xs"
-						className={ cn(
-							'focus:[box-shadow:none]',
-							plugin.status === 'Activated' &&
-								'bg-badge-background-green hover:bg-badge-background-green'
-						) }
-						variant="outline"
+						className={ plugin.status === 'Activated' ? 'bg-badge-background-green hover:bg-badge-background-green' : '' }
+						variant={ plugin.status === 'Activated' ? "outline" : "primary"}
 						onClick={ ( event ) =>
 							handlePluginActionTrigger( {
 								plugin,
