@@ -206,14 +206,19 @@ const Header = () => {
 						</Topbar.Item>
 					) }
 					<Topbar.Item className="p-1">
-						<a
-							href="https://sureforms.com/docs/"
-							target="_blank"
-							rel="noopener noreferrer"
-							className="cursor-pointer no-underline hover:no-underline focus:[box-shadow:none] text-text-primary"
-						>
-							<CircleHelp className="size-4" />
-						</a>
+						<Button
+							size="xs"
+							variant="ghost"
+							className="p-0 focus:[box-shadow:none] [box-shadow:none] text-text-primary"
+							onClick={ () => {
+								window.open(
+									'https://sureforms.com/docs/',
+									'_blank',
+									'noopener noreferrer'
+								);
+							} }
+							icon={ <CircleHelp className="size-4" /> }
+						></Button>
 					</Topbar.Item>
 					<Topbar.Item className="gap-2">
 						<div id="srfm_whats_new" className="[&_a]:!p-1" />
