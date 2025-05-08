@@ -50,7 +50,7 @@ function initializePhoneField() {
 			'.iti__selected-dial-code'
 		);
 		if ( selectedDialCode ) {
-			selectedDialCode.setAttribute( 'aria-hidden', true );
+			selectedDialCode.setAttribute( 'aria-hidden', 'true' );
 		}
 		if ( srfm_submit?.is_rtl ) {
 			selectedCountry.style.paddingLeft = '0';
