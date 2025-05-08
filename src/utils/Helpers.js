@@ -653,7 +653,7 @@ export function activatePlugin( { plugin, event } ) {
 		url: srfm_admin.ajax_url,
 		formData,
 		successCallback: () => {
-			if( srfm_admin?.current_screen_id === 'sureforms_menu' ) {
+			if ( srfm_admin?.current_screen_id === 'sureforms_menu' ) {
 				event.target.style.color = '#16A34A';
 			}
 			event.target.innerText = srfm_admin.plugin_activated_text;

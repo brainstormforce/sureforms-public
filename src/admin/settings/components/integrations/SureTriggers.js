@@ -3,7 +3,6 @@ import SureTriggersIcon from '@Image/suretriggers.svg';
 import { __ } from '@wordpress/i18n';
 import { Badge, Button } from '@bsf/force-ui';
 import {
-	cn,
 	getPluginStatusText,
 	handlePluginActionTrigger,
 } from '@Utils/Helpers';
@@ -42,7 +41,7 @@ const SureTriggers = () => {
 					<Button
 						size="xs"
 						className={ plugin.status === 'Activated' ? 'bg-badge-background-green hover:bg-badge-background-green' : '' }
-						variant={ plugin.status === 'Activated' ? "outline" : "primary"}
+						variant={ plugin.status === 'Activated' ? 'outline' : 'primary' }
 						onClick={ ( event ) =>
 							handlePluginActionTrigger( {
 								plugin,
