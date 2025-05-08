@@ -504,6 +504,9 @@ class Generate_Form_Markup {
 	public static function get_cf_turnstile_script( $srfm_cf_appearance_mode, $srfm_cf_turnstile_site_key ) {
 		if ( ! empty( $srfm_cf_turnstile_site_key ) ) {
 			// Cloudflare Turnstile script.
+			// Ignoring PHPCS warning because this is a third-party script,
+			// and we don't control its version. Using `null` prevents WordPress
+			// from appending a `?ver=` query string.
 			wp_enqueue_script( // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
 				SRFM_SLUG . '-cf-turnstile',
 				'https://challenges.cloudflare.com/turnstile/v0/api.js',

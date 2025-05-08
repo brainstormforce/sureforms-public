@@ -946,7 +946,7 @@ class Form_Submit {
 	 *
 	 * @param string       $type         The type of CAPTCHA used. Accepted values: 'g-recaptcha', 'hcaptcha', 'cf-turnstile'.
 	 * @param array<mixed> $api_response The response returned from the CAPTCHA validation API.
-	 *
+	 * @since x.x.x
 	 * @return void
 	 */
 	public function recaptcha_error_response( $type, $api_response ) {
@@ -966,7 +966,7 @@ class Form_Submit {
 	 *
 	 * @param string       $type         The type of CAPTCHA used. Accepted values: 'g-recaptcha', 'hcaptcha', 'cf-turnstile'.
 	 * @param array<mixed> $api_response The response returned from the CAPTCHA validation API.
-	 *
+	 * @since x.x.x
 	 * @return array<string,string> An associative array containing the error message and a detailed message.
 	 */
 	public function recaptcha_error_message( $type, $api_response ) {
