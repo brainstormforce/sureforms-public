@@ -68,6 +68,14 @@ const iconBlocks = [
 			'starter',
 		],
 	},
+	{
+		icon: parse( svgIcons.signature ),
+		label: __( 'Password', 'sureforms' ),
+		showIn: [
+			'free',
+			'starter',
+		],
+	},
 ];
 
 const filterIconBlocks = iconBlocks.filter( ( block ) => {
