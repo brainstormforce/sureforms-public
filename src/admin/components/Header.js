@@ -2,7 +2,7 @@ import { renderToString, useEffect, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import Logo from '../dashboard/templates/Logo';
 import useWhatsNewRSS from '../../lib/whats-new/useWhatsNewRSS';
-import { Topbar, Badge, Button, HamburgerMenu } from '@bsf/force-ui';
+import { Topbar, Badge, Button, HamburgerMenu, Label } from '@bsf/force-ui';
 import { CircleHelp, ArrowUpRight, Megaphone } from 'lucide-react';
 import { addQueryParam, cn } from '@Utils/Helpers';
 import UpgradeNotice from './UpgradeNotice';
@@ -170,13 +170,16 @@ const Header = () => {
 				</Topbar.Middle>
 				<Topbar.Right>
 					<Topbar.Item className="flex gap-1 items-center">
-						<Badge
-							label={ `V ${ srfm_admin?.plugin_version }` }
+						<Label
 							size="xs"
 							variant="neutral"
-						/>
+							className="text-text-tertiary"
+						>
+							{ srfm_admin?.plugin_version }
+						</Label>
 						<Badge
 							label={ __( 'Core', 'sureforms' ) }
+							className="text-text-tertiary"
 							size="xs"
 							type="rounded"
 							variant="neutral"
@@ -184,11 +187,13 @@ const Header = () => {
 						{ isProActive && (
 							<>
 								<span className="text-text-tertiary">|</span>
-								<Badge
-									label={ `V ${ srfm_admin?.pro_plugin_version }` }
+								<Label
 									size="xs"
 									variant="neutral"
-								/>
+									className="text-text-tertiary"
+								>
+									{ srfm_admin?.pro_plugin_version }
+								</Label>
 								<Badge
 									label={
 										srfm_admin?.pro_plugin_name.split(
