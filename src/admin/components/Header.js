@@ -169,7 +169,7 @@ const Header = () => {
 					) }
 				</Topbar.Middle>
 				<Topbar.Right>
-					<Topbar.Item className="flex gap-1 items-center">
+					<Topbar.Item className="flex gap-3 items-center">
 						<Label
 							size="xs"
 							variant="neutral"
