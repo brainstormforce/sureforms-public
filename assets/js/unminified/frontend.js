@@ -183,9 +183,10 @@ function showErrorMessageOnRecaptchaError( args ) {
 			// Add class
 			element.classList.add( 'captcha-error-added' );
 		}
-	});
+	} );
 }
 
+// eslint-disable-next-line
 function onTurnstileError() {
 	showErrorMessageOnRecaptchaError( {
 		containerSelector: '.cf-turnstile:not(.captcha-error-added)',
@@ -193,6 +194,7 @@ function onTurnstileError() {
 	} );
 }
 
+// eslint-disable-next-line
 function onGCaptchaV2CheckBoxError() {
 	showErrorMessageOnRecaptchaError( {
 		containerSelector: '.g-recaptcha[recaptcha-type="v2-checkbox"]:not(.captcha-error-added)',
@@ -200,6 +202,7 @@ function onGCaptchaV2CheckBoxError() {
 	} );
 }
 
+// eslint-disable-next-line
 function onGCaptchaV2InvisibleError() {
 	showErrorMessageOnRecaptchaError( {
 		containerSelector: '.g-recaptcha[recaptcha-type="v2-invisible"]:not(.captcha-error-added)',
@@ -207,6 +210,7 @@ function onGCaptchaV2InvisibleError() {
 	} );
 }
 
+// eslint-disable-next-line
 function onHCaptchaError() {
 	showErrorMessageOnRecaptchaError( {
 		containerSelector: '.h-captcha:not(.captcha-error-added)',
