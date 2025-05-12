@@ -131,6 +131,8 @@ class Frontend_Assets {
 					Translatable::get_frontend_validation_messages(),
 					[
 						'srfm_turnstile_error_message' => __( 'Turnstile sitekey verification failed. Please contact your site administrator.', 'sureforms' ),
+						'srfm_google_captcha_error_message' => __( 'Google Captcha sitekey verification failed. Please contact your site administrator.', 'sureforms' ),
+						'srfm_captcha_h_error_message' => __( 'HCaptcha sitekey verification failed. Please contact your site administrator.', 'sureforms' ),
 					]
 				),
 				'is_rtl'   => $is_rtl,

@@ -167,29 +167,50 @@ function showErrorMessage( args ) {
 	document.dispatchEvent( errorEvent );
 }
 
-// eslint-disable-next-line
-function onTurnstileError( error, x, y ) {
-	// Handle the error as needed
+function showErrorMessageOnRecaptchaError( args ) {
+	const { containerSelector, message = '' } = args;
 
-	const getTheTurnStileElement = document.querySelectorAll(
-		'.cf-turnstile:not(.turnstile-error-added)'
-	);
-
-	if ( ! getTheTurnStileElement?.length ) {
+	const getCaptchaContainer = document.querySelector( containerSelector );
+	if ( ! getCaptchaContainer ) {
 		return;
 	}
 
-	getTheTurnStileElement.forEach( ( element ) => {
+	getCaptchaContainer.forEach( ( element ) => {
 		const getTheForm = element.closest( '.srfm-form' );
 		if ( getTheForm ) {
-			// eslint-disable-next-line
-			const message = srfm_submit?.messages?.srfm_turnstile_error_message;
-
 			showErrorMessage( { form: getTheForm, message } );
 
 			// Add class
-			element.classList.add( 'turnstile-error-added' );
+			element.classList.add( 'captcha-error-added' );
 		}
+	});
+}
+
+function onTurnstileError() {
+	showErrorMessageOnRecaptchaError( {
+		containerSelector: '.cf-turnstile:not(.captcha-error-added)',
+		message: srfm_submit?.messages?.srfm_turnstile_error_message,
+	} );
+}
+
+function onGCaptchaV2CheckBoxError() {
+	showErrorMessageOnRecaptchaError( {
+		containerSelector: '.g-recaptcha[recaptcha-type="v2-checkbox"]:not(.captcha-error-added)',
+		message: srfm_submit?.messages?.srfm_google_captcha_error_message,
+	} );
+}
+
+function onGCaptchaV2InvisibleError() {
+	showErrorMessageOnRecaptchaError( {
+		containerSelector: '.g-recaptcha[recaptcha-type="v2-invisible"]:not(.captcha-error-added)',
+		message: srfm_submit?.messages?.srfm_google_captcha_error_message,
+	} );
+}
+
+function onHCaptchaError() {
+	showErrorMessageOnRecaptchaError( {
+		containerSelector: '.h-captcha:not(.captcha-error-added)',
+		message: srfm_submit?.messages?.srfm_captcha_h_error_message,
 	} );
 }
 
