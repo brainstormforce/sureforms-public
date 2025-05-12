@@ -67,6 +67,7 @@ const iconBlocks = [
 		showIn: [
 			'free',
 			'starter',
+			'pro',
 		],
 	},
 	{
