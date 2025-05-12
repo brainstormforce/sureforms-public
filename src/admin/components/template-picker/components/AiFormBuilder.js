@@ -115,7 +115,6 @@ const AiFormBuilder = () => {
 					'Error creating sureforms form using AI: ',
 					response.message
 				);
-				return;
 			}
 		} catch ( error ) {
 			console.log( error );
