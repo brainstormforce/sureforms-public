@@ -613,56 +613,163 @@ class Post_Types {
 							'bg_overlay_gradient_location_2' => [
 								'type' => 'integer',
 							],
+							// Form Padding.
+							'form_padding_top'            => [
+								'type' => 'number',
+							],
+							'form_padding_right'          => [
+								'type' => 'number',
+							],
+							'form_padding_bottom'         => [
+								'type' => 'number',
+							],
+							'form_padding_left'           => [
+								'type' => 'number',
+							],
+							'form_padding_unit'           => [
+								'type' => 'string',
+							],
+							'form_padding_link'           => [
+								'type' => 'boolean',
+							],
+							// Border Radius.
+							'form_border_radius_top'      => [
+								'type' => 'number',
+							],
+							'form_border_radius_right'    => [
+								'type' => 'number',
+							],
+							'form_border_radius_bottom'   => [
+								'type' => 'number',
+							],
+							'form_border_radius_left'     => [
+								'type' => 'number',
+							],
+							'form_border_radius_unit'     => [
+								'type' => 'string',
+							],
+							'form_border_radius_link'     => [
+								'type' => 'boolean',
+							],
+							// Form Padding and Border Radius.
+							// Form Padding.
+							'instant_form_padding_top'    => [
+								'type' => 'number',
+							],
+							'instant_form_padding_right'  => [
+								'type' => 'number',
+							],
+							'instant_form_padding_bottom' => [
+								'type' => 'number',
+							],
+							'instant_form_padding_left'   => [
+								'type' => 'number',
+							],
+							'instant_form_padding_unit'   => [
+								'type' => 'string',
+							],
+							'instant_form_padding_link'   => [
+								'type' => 'boolean',
+							],
+							// Border Radius.
+							'instant_form_border_radius_top' => [
+								'type' => 'number',
+							],
+							'instant_form_border_radius_right' => [
+								'type' => 'number',
+							],
+							'instant_form_border_radius_bottom' => [
+								'type' => 'number',
+							],
+							'instant_form_border_radius_left' => [
+								'type' => 'number',
+							],
+							'instant_form_border_radius_unit' => [
+								'type' => 'string',
+							],
+							'instant_form_border_radius_link' => [
+								'type' => 'boolean',
+							],
 						],
 					],
 				],
 				'default'       => [
-					'primary_color'                  => '#111C44',
-					'text_color'                     => '#1E1E1E',
-					'text_color_on_primary'          => '#FFFFFF',
-					'field_spacing'                  => 'medium',
-					'submit_button_alignment'        => 'left',
-					'bg_type'                        => 'color',
-					'bg_color'                       => '#ffffff',
-					'bg_image'                       => '',
-					'bg_image_position'              => [
+					'primary_color'                     => '#111C44',
+					'text_color'                        => '#1E1E1E',
+					'text_color_on_primary'             => '#FFFFFF',
+					'field_spacing'                     => 'medium',
+					'submit_button_alignment'           => 'left',
+					'bg_type'                           => 'color',
+					'bg_color'                          => '#ffffff',
+					'bg_image'                          => '',
+					'bg_image_position'                 => [
 						'x' => 0.5,
 						'y' => 0.5,
 					],
-					'bg_image_attachment'            => 'scroll',
-					'bg_image_repeat'                => 'no-repeat',
-					'bg_image_size'                  => 'cover',
-					'bg_image_size_custom'           => 100, // Image width when set to custom.
-					'bg_image_size_custom_unit'      => '%',
-					'gradient_type'                  => 'basic',
-					'bg_gradient_type'               => 'linear',
-					'bg_gradient_color_1'            => '#FFC9B2',
-					'bg_gradient_color_2'            => '#C7CBFF',
-					'bg_gradient_angle'              => 90,
-					'bg_gradient_location_1'         => 0,
-					'bg_gradient_location_2'         => 100,
-					'bg_overlay_size'                => 'cover',
-					'bg_gradient_overlay_type'       => '',
-					'bg_overlay_opacity'             => 1,
-					'bg_overlay_image'               => '',
-					'bg_image_overlay_color'         => '#FFFFFF75',
-					'bg_overlay_custom_size_unit'    => '%',
-					'bg_overlay_custom_size'         => 100,
-					'bg_overlay_position'            => [
+					'bg_image_attachment'               => 'scroll',
+					'bg_image_repeat'                   => 'no-repeat',
+					'bg_image_size'                     => 'cover',
+					'bg_image_size_custom'              => 100, // Image width when set to custom.
+					'bg_image_size_custom_unit'         => '%',
+					'gradient_type'                     => 'basic',
+					'bg_gradient_type'                  => 'linear',
+					'bg_gradient_color_1'               => '#FFC9B2',
+					'bg_gradient_color_2'               => '#C7CBFF',
+					'bg_gradient_angle'                 => 90,
+					'bg_gradient_location_1'            => 0,
+					'bg_gradient_location_2'            => 100,
+					'bg_overlay_size'                   => 'cover',
+					'bg_gradient_overlay_type'          => '',
+					'bg_overlay_opacity'                => 1,
+					'bg_overlay_image'                  => '',
+					'bg_image_overlay_color'            => '#FFFFFF75',
+					'bg_overlay_custom_size_unit'       => '%',
+					'bg_overlay_custom_size'            => 100,
+					'bg_overlay_position'               => [
 						'x' => 0.5,
 						'y' => 0.5,
 					],
-					'bg_overlay_attachment'          => 'scroll',
-					'bg_overlay_repeat'              => 'no-repeat',
-					'bg_overlay_blend_mode'          => 'normal',
+					'bg_overlay_attachment'             => 'scroll',
+					'bg_overlay_repeat'                 => 'no-repeat',
+					'bg_overlay_blend_mode'             => 'normal',
 					// Gradient Overlay Properties.
-					'overlay_gradient_type'          => 'basic',
-					'bg_overlay_gradient_type'       => 'linear',
-					'bg_overlay_gradient_color_1'    => '#FFC9B2',
-					'bg_overlay_gradient_color_2'    => '#C7CBFF',
-					'bg_overlay_gradient_angle'      => 90,
-					'bg_overlay_gradient_location_1' => 0,
-					'bg_overlay_gradient_location_2' => 100,
+					'overlay_gradient_type'             => 'basic',
+					'bg_overlay_gradient_type'          => 'linear',
+					'bg_overlay_gradient_color_1'       => '#FFC9B2',
+					'bg_overlay_gradient_color_2'       => '#C7CBFF',
+					'bg_overlay_gradient_angle'         => 90,
+					'bg_overlay_gradient_location_1'    => 0,
+					'bg_overlay_gradient_location_2'    => 100,
+					// Form Properties.
+					// Padding.
+					'form_padding_top'                  => 0,
+					'form_padding_right'                => 0,
+					'form_padding_bottom'               => 0,
+					'form_padding_left'                 => 0,
+					'form_padding_unit'                 => 'px',
+					'form_padding_link'                 => true,
+					// Border Radius.
+					'form_border_radius_top'            => 0,
+					'form_border_radius_right'          => 0,
+					'form_border_radius_bottom'         => 0,
+					'form_border_radius_left'           => 0,
+					'form_border_radius_unit'           => 'px',
+					'form_border_radius_link'           => true,
+					// Form Properties.
+					// Padding.
+					'instant_form_padding_top'          => 32,
+					'instant_form_padding_right'        => 32,
+					'instant_form_padding_bottom'       => 32,
+					'instant_form_padding_left'         => 32,
+					'instant_form_padding_unit'         => 'px',
+					'instant_form_padding_link'         => true,
+					// Border Radius.
+					'instant_form_border_radius_top'    => 12,
+					'instant_form_border_radius_right'  => 12,
+					'instant_form_border_radius_bottom' => 12,
+					'instant_form_border_radius_left'   => 12,
+					'instant_form_border_radius_unit'   => 'px',
+					'instant_form_border_radius_link'   => true,
 				],
 			]
 		);

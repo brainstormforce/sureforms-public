@@ -14,8 +14,12 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { useDeviceType } from '@Controls/getPreviewType';
 import { getStylePanels } from '@Components/hooks';
-import { addStyleInRoot } from '@Utils/Helpers';
+import { addStyleInRoot, getGradientCSS, setDefaultFormAttributes } from '@Utils/Helpers';
+import { chevronDown } from '@wordpress/icons';
+import PremiumBadge from '@Admin/components/PremiumBadge';
 import Background from '@Components/enhanced-background';
+import Spacing from '@Components/spacing';
+import { embedFormAttributes } from '@Attributes/getBlocksDefaultAttributes';
 
 function StyleSettings( props ) {
 	const { editPost } = useDispatch( editorStore );
@@ -45,6 +49,9 @@ function StyleSettings( props ) {
 		document.querySelector( '.srfm-submit-btn-container' )
 	);
 	const [ fieldSpacing, setFieldSpacing ] = useState( formStyling?.field_spacing || 'medium' );
+
+	// Set the default keys in the meta object if they are not present.
+	setDefaultFormAttributes( embedFormAttributes, formStyling );
 
 	const {
 		// Background Properties
@@ -87,6 +94,21 @@ function StyleSettings( props ) {
 		bg_overlay_gradient_angle,
 		bg_overlay_gradient_type,
 		bg_overlay_gradient,
+		// Form Properties.
+		// Padding.
+		form_padding_top,
+		form_padding_right,
+		form_padding_bottom,
+		form_padding_left,
+		form_padding_unit,
+		form_padding_link,
+		// Border Radius.
+		form_border_radius_top,
+		form_border_radius_right,
+		form_border_radius_bottom,
+		form_border_radius_left,
+		form_border_radius_unit,
+		form_border_radius_link,
 	} = formStyling;
 
 	// Apply the sizings when field spacing changes.
@@ -510,13 +532,6 @@ function StyleSettings( props ) {
 		return cssProperties;
 	}
 
-	function getGradientCSS( type = 'linear', color1 = '#FFC9B2', color2 = '#C7CBFF', loc1 = 0, loc2 = 100, angle = 90 ) {
-		if ( type === 'radial' ) {
-			return `radial-gradient(${ color1 } ${ loc1 }%, ${ color2 } ${ loc2 }% )`;
-		}
-		return `linear-gradient( ${ angle }deg, ${ color1 } ${ loc1 }%, ${ color2 } ${ loc2 }%)`;
-	}
-
 	/**
 	 * Updates the editor's background and overlay classes based on the selected types.
 	 *
@@ -595,7 +610,6 @@ function StyleSettings( props ) {
 							label: 'bg_image_size_custom_unit',
 						} }
 						// Gradient Properties
-						gradientOverlay={ { value: true } }
 						gradientType={ {
 							value: gradient_type || 'basic',
 							label: 'gradient_type',
@@ -787,6 +801,72 @@ function StyleSettings( props ) {
 				</>
 			),
 		},
+		{
+			id: 'padding',
+			component: (
+				<Spacing
+					label={ __( 'Padding', 'sureforms' ) }
+					valueTop={ {
+						value: form_padding_top,
+						label: 'form_padding_top',
+					} }
+					valueRight={ {
+						value: form_padding_right,
+						label: 'form_padding_right',
+					} }
+					valueBottom={ {
+						value: form_padding_bottom,
+						label: 'form_padding_bottom',
+					} }
+					valueLeft={ {
+						value: form_padding_left,
+						label: 'form_padding_left',
+					} }
+					unit={ {
+						value: form_padding_unit,
+						label: 'form_padding_unit',
+					} }
+					link={ {
+						value: form_padding_link,
+						label: 'form_padding_link',
+					} }
+					setAttributes={ onHandleChange }
+				/>
+			),
+		},
+		{
+			id: 'border_radius',
+			component: (
+				<Spacing
+					label={ __( 'Border Radius', 'sureforms' ) }
+					valueTop={ {
+						value: form_border_radius_top,
+						label: 'form_border_radius_top',
+					} }
+					valueRight={ {
+						value: form_border_radius_right,
+						label: 'form_border_radius_right',
+					} }
+					valueBottom={ {
+						value: form_border_radius_bottom,
+						label: 'form_border_radius_bottom',
+					} }
+					valueLeft={ {
+						value: form_border_radius_left,
+						label: 'form_border_radius_left',
+					} }
+					unit={ {
+						value: form_border_radius_unit,
+						label: 'form_border_radius_unit',
+					} }
+					link={ {
+						value: form_border_radius_link,
+						label: 'form_border_radius_link',
+					} }
+					setAttributes={ onHandleChange }
+				/>
+			),
+		},
 	];
 
 	const fields = [
@@ -911,18 +991,47 @@ function StyleSettings( props ) {
 			content: fields,
 			initialOpen: false,
 		},
-		{
-			panelId: 'button',
-			title: __( 'Button', 'sureforms' ),
-			content: button,
-			initialOpen: false,
-		},
+		...( button.some( ( setting ) => setting.component ) ? [
+			{
+				panelId: 'button',
+				title: __( 'Button', 'sureforms' ),
+				content: button,
+				initialOpen: false,
+			},
+		] : [] ),
 	];
 
 	const enhancedStylePanels = getStylePanels( baseStylePanels, { props, sureformsKeys, editPost, formStyling, updateFormStyling } );
 
+	const presetPreview = (
+		<>
+			<div className="srfm-panel-preview">
+				<div className="components-panel__body" style={ { 'border-bottom': 'unset' } }>
+					<h2 className="components-panel__body-title">
+						{ __( 'Form Theme', 'sureforms' ) }
+					</h2>
+					<PremiumBadge
+						tooltipHeading={ __(
+							'Unlock Form Theme',
+							'sureforms'
+						) }
+						tooltipContent={ __(
+							'With the SureForms Starter Plan, access essential form styling options to personalize the look and feel of your forms, ensuring a seamless and engaging user experience.',
+							'sureforms'
+						) }
+						tooltipPosition={ 'bottom' }
+						utmMedium={ 'editor_form_themes' }
+					/>
+					{ chevronDown }
+				</div>
+			</div>
+		</>
+	);
+
+	const isPresetPanelPresent = enhancedStylePanels.find( ( panel ) => panel.panelId === 'themes' );
 	return (
 		<>
+			{ ! isPresetPanelPresent && presetPreview }
 			{ enhancedStylePanels.map( ( panel ) => {
 				const { panelId, title, content, initialOpen } = panel;
 				const panelOptions = content.map( ( item ) => item.component );
