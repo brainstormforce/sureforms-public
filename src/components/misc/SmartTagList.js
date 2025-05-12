@@ -43,36 +43,38 @@ export default function SmartTagList( {
 				</Button>
 			</DropdownMenu.Trigger>
 			<DropdownMenu.Portal id="srfm-dialog-root">
-				<DropdownMenu.Content className={ cn( 'w-60 max-h-80 overflow-y-auto', className ) }>
-					<DropdownMenu.List>
-						{ controls.map( ( section, sectionIndx ) =>
-							section.map( ( control, indx ) =>
-								indx === 0 ? (
-									<Label
-										key={ `${ sectionIndx }-${ indx }-control-${ control?.title }` }
-										variant="help"
-										size="xs"
-										className="p-2"
-										tabIndex={ -1 }
-									>
-										{ control?.title }
-									</Label>
-								) : (
-									<DropdownMenu.Item
-										key={ `${ sectionIndx }-${ indx }-control-${ control?.title }` }
-										className="text-sm font-normal"
-										{ ...( typeof control?.onClick ===
-										'function'
-											? { onClick: control?.onClick }
-											: {} ) }
-									>
-										{ control?.title }
-									</DropdownMenu.Item>
+				<DropdownMenu.ContentWrapper>
+					<DropdownMenu.Content className={ cn( 'w-60 max-h-80 overflow-y-auto', className ) }>
+						<DropdownMenu.List>
+							{ controls.map( ( section, sectionIndx ) =>
+								section.map( ( control, indx ) =>
+									indx === 0 ? (
+										<Label
+											key={ `${ sectionIndx }-${ indx }-control-${ control?.title }` }
+											variant="help"
+											size="xs"
+											className="p-2"
+											tabIndex={ -1 }
+										>
+											{ control?.title }
+										</Label>
+									) : (
+										<DropdownMenu.Item
+											key={ `${ sectionIndx }-${ indx }-control-${ control?.title }` }
+											className="text-sm font-normal"
+											{ ...( typeof control?.onClick ===
+											'function'
+												? { onClick: control?.onClick }
+												: {} ) }
+										>
+											{ control?.title }
+										</DropdownMenu.Item>
+									)
 								)
-							)
-						) }
-					</DropdownMenu.List>
-				</DropdownMenu.Content>
+							) }
+						</DropdownMenu.List>
+					</DropdownMenu.Content>
+				</DropdownMenu.ContentWrapper>
 			</DropdownMenu.Portal>
 		</DropdownMenu>
 	);
