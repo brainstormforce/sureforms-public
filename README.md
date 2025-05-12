@@ -4,7 +4,7 @@
 **Requires at least:** 6.4  
 **Tested up to:** 6.8.1  
 **Requires PHP:** 7.4  
-**Stable tag:** 1.6.3  
+**Stable tag:** 1.6.4  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -260,6 +260,8 @@ Yes! You can certainly use SureForms on yours as well as your client’s website
 When you use SureForms, you get an easy-to-use AI-powered form builder that can be used to build your forms fast.
 
 ## Changelog ##
+### 1.6.4 - 13th May 2025 ###
+* Fix: Resolved an issue where deselecting all options in the multi-choice block incorrectly retained the last selected value.
 ### 1.6.3 - 1st May 2025 ###
 * Improvement: Removed extra padding from embedded forms for cleaner layout.
 * Fix: Fixed multiple choice block label styling and improved mobile responsiveness.
