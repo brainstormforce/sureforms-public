@@ -1,6 +1,7 @@
 import { __, sprintf } from '@wordpress/i18n';
 import { useEffect, useRef } from '@wordpress/element';
 import { Button, Tooltip, ProgressBar } from '@bsf/force-ui';
+import { addQueryParam } from '@Utils/Helpers';
 
 const CreditDetailsPopup = ( {
 	setShowRevokePopover,
@@ -83,12 +84,17 @@ const CreditDetailsPopup = ( {
 					</div>
 					<Button
 						className="w-full"
-						onClick={ () => {
+						onClick={ () =>
 							window.open(
-								srfm_admin?.pricing_page_url,
-								'_blank'
-							);
-						} }
+								addQueryParam(
+									srfm_admin?.pricing_page_url ||
+										srfm_admin?.sureforms_pricing_page,
+									'ai-form-builder-notice-cta'
+								),
+								'_blank',
+								'noreferrer'
+							)
+						}
 						size="sm"
 					>
 						{ __( 'Upgrade Plan', 'sureforms' ) }

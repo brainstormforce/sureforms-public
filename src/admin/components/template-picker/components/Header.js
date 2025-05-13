@@ -38,7 +38,18 @@ const Header = () => {
 			<Topbar className="fixed inset-x-0 top-0 z-[1] py-0 px-0 pt-0 pb-0 min-h-0 h-14 gap-4 shadow-sm bg-background-primary/75 backdrop-blur-[5px]">
 				<Topbar.Left className="gap-3 pl-8">
 					<Topbar.Item>
-						<Logo />
+						<Button
+							variant="ghost"
+							icon={<Logo />}
+							iconPosition="left"
+							onClick={() => {
+								window.location.href =
+									'/wp-admin/admin.php?page=sureforms_menu';
+							}}
+							className="focus:[box-shadow:none] p-0"
+						>
+							{''}
+						</Button>
 					</Topbar.Item>
 				</Topbar.Left>
 				<Topbar.Right>
