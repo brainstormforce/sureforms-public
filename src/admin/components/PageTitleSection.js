@@ -15,7 +15,7 @@ const PageTitleSection = ( { title } ) => {
 		}
 	};
 
-	const exclusionList = [ 'account-settings', 'integration-settings' ];
+	const exclusionList = [ 'account-settings', 'integration-settings', 'general-settings', 'validation-settings', 'security-settings' ];
 
 	return (
 		<div className="max-w-content-container mx-auto flex items-center justify-between mb-6">

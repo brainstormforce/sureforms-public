@@ -128,7 +128,7 @@ const Navigation = () => {
 		<div
 			className="flex-shrink-0 bg-white"
 		>
-			<div className="p-4 sticky top-[5.5rem]">
+			<div className="px-4 pb-4 pt-2 absolute">
 				<nav className="space-y-2">
 					{ navigation.map( ( item ) => (
 						item.submenu ? (

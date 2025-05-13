@@ -2,7 +2,7 @@ import { renderToString, useEffect, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import Logo from '../dashboard/templates/Logo';
 import useWhatsNewRSS from '../../lib/whats-new/useWhatsNewRSS';
-import { Topbar, Badge, Button, HamburgerMenu } from '@bsf/force-ui';
+import { Topbar, Badge, Button, HamburgerMenu, Label } from '@bsf/force-ui';
 import { CircleHelp, ArrowUpRight, Megaphone } from 'lucide-react';
 import { addQueryParam, cn } from '@Utils/Helpers';
 import UpgradeNotice from './UpgradeNotice';
@@ -78,7 +78,9 @@ const Header = () => {
 
 	return (
 		<div className="top-8 z-[1]">
-			{ ! isProActive && ! isLicenseActive && <UpgradeNotice /> }
+			{ ! isProActive &&
+				! isLicenseActive &&
+				activePage?.slug === 'sureforms_menu' && <UpgradeNotice /> }
 			<Topbar className="py-0 px-4 pt-0 pb-0 min-h-0 h-14 gap-4 shadow-sm bg-background-primary/75 backdrop-blur-[5px]">
 				<Topbar.Left className="gap-3">
 					<Topbar.Item className="w-auto h-auto lg:hidden">
@@ -167,12 +169,43 @@ const Header = () => {
 					) }
 				</Topbar.Middle>
 				<Topbar.Right>
-					<Topbar.Item>
-						<Badge
-							label={ `V ${ srfm_admin?.plugin_version }` }
+					<Topbar.Item className="flex gap-3 items-center">
+						<Label
 							size="xs"
 							variant="neutral"
+							className="text-text-tertiary"
+						>
+							{ srfm_admin?.plugin_version }
+						</Label>
+						<Badge
+							label={ __( 'Core', 'sureforms' ) }
+							className="text-text-tertiary"
+							size="xs"
+							type="rounded"
+							variant="neutral"
 						/>
+						{ isProActive && (
+							<>
+								<span className="text-text-tertiary">|</span>
+								<Label
+									size="xs"
+									variant="neutral"
+									className="text-text-tertiary"
+								>
+									{ srfm_admin?.pro_plugin_version }
+								</Label>
+								<Badge
+									label={
+										srfm_admin?.pro_plugin_name.split(
+											' '
+										)[ 1 ]
+									}
+									size="xs"
+									variant="inverse"
+									type="rounded"
+								/>
+							</>
+						) }
 					</Topbar.Item>
 					{ ( isProActive || isLicenseActive ) && (
 						<Topbar.Item>
@@ -194,7 +227,10 @@ const Header = () => {
 										label={
 											isLicenseActive
 												? __( 'Activated', 'sureforms' )
-												: __( 'Activate', 'sureforms' )
+												: __(
+													'Unlicensed',
+													'sureforms'
+												  )
 										}
 										size="xs"
 										variant={
