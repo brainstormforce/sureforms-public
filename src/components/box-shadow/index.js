@@ -171,8 +171,8 @@ const BoxShadowControl = ( props ) => {
 			<Range
 				label={ boxShadowHOffset.title }
 				value={ boxShadowHOffset.value }
-				min={ -100 }
-				max={ 100 }
+				min={ -30 }
+				max={ 30 }
 				displayUnit={ false }
 				setAttributes={ setAttributes }
 				data={ {
@@ -184,8 +184,8 @@ const BoxShadowControl = ( props ) => {
 			<Range
 				label={ boxShadowVOffset.title }
 				value={ boxShadowVOffset.value }
-				min={ -100 }
-				max={ 100 }
+				min={ -30 }
+				max={ 30 }
 				displayUnit={ false }
 				setAttributes={ setAttributes }
 				data={ {
@@ -210,8 +210,8 @@ const BoxShadowControl = ( props ) => {
 			<Range
 				label={ boxShadowSpread.title }
 				value={ boxShadowSpread.value }
-				min={ -100 }
-				max={ 100 }
+				min={ -30 }
+				max={ 30 }
 				displayUnit={ false }
 				setAttributes={ setAttributes }
 				data={ {
