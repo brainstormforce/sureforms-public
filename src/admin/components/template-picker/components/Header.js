@@ -40,15 +40,15 @@ const Header = () => {
 					<Topbar.Item>
 						<Button
 							variant="ghost"
-							icon={<Logo />}
+							icon={ <Logo /> }
 							iconPosition="left"
-							onClick={() => {
+							onClick={ () => {
 								window.location.href =
 									'/wp-admin/admin.php?page=sureforms_menu';
-							}}
+							} }
 							className="focus:[box-shadow:none] p-0"
 						>
-							{''}
+							{ '' }
 						</Button>
 					</Topbar.Item>
 				</Topbar.Left>
