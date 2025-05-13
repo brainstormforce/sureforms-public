@@ -1302,7 +1302,7 @@ class Helper {
 			[
 				'sure_triggers'     => [
 					'title'       => __( 'OttoKit', 'sureforms' ),
-					'subtitle'    => __( 'No-code automation tool for WordPress', 'sureforms' ),
+					'subtitle'    => __( 'No-code automation tool for WordPress.', 'sureforms' ),
 					'description' => __( 'OttoKit is a powerful automation platform that helps you connect your various plugins and apps together. It allows you to automate repetitive tasks, so you can focus on more important work.', 'sureforms' ),
 					'status'      => self::get_plugin_status( 'suretriggers/suretriggers.php' ),
 					'slug'        => 'suretriggers',
