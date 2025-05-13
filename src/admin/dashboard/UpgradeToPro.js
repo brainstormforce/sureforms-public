@@ -25,7 +25,7 @@ export default () => {
 					<Container align="center" className="gap-1">
 						<Zap className="size-4 text-brand-800" />
 						<Label size="xs" className="font-semibold text-brand-800">
-							{ __( 'Upgrade to Pro', 'sureforms' ) }
+							{ __( 'Upgrade to Premium', 'sureforms' ) }
 						</Label>
 					</Container>
 					<Container direction="column" className="gap-1 py-1">

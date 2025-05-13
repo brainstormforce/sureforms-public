@@ -18,7 +18,7 @@ const NAV_ITEMS = [
 	},
 	{
 		slug: 'sureforms_form',
-		text: __( 'All Forms', 'sureforms' ),
+		text: __( 'Forms', 'sureforms' ),
 		link: `${ siteURL }/wp-admin/edit.php?post_type=sureforms_form`,
 	},
 	{
@@ -115,7 +115,7 @@ const Header = () => {
 											'Upgrade SureForms',
 											'sureforms'
 										) }{ ' ' }
-										<ArrowUpRight className="size-4" />
+										<ArrowUpRight className="size-5" />
 									</HamburgerMenu.Option>
 								) }
 							</HamburgerMenu.Options>
@@ -131,7 +131,7 @@ const Header = () => {
 							{ NAV_ITEMS.map( ( item ) => (
 								<a
 									className={ cn(
-										'h-full text-text-secondary text-sm font-medium no-underline px-1 content-center relative focus:outline-none',
+										'h-full text-text-secondary text-sm font-medium no-underline px-1 content-center relative focus:outline-none hover:text-text-primary focus:[box-shadow:none]',
 										activePage?.slug === item?.slug &&
 											'text-text-primary before:content-[""] before:absolute before:h-px before:bg-border-interactive before:bottom-0 before:inset-x-0'
 									) }
@@ -146,11 +146,11 @@ const Header = () => {
 					{ ! isProActive && ! isLicenseActive && (
 						<Topbar.Item>
 							<Button
-								icon={ <ArrowUpRight /> }
+								icon={ <ArrowUpRight className="size-5" /> }
 								iconPosition="right"
 								variant="link"
 								size="sm"
-								className="h-full text-link-primary text-sm font-semibold no-underline hover:no-underline px-1 content-center [box-shadow:none] focus:[box-shadow:none] focus:outline-none"
+								className="h-full text-link-primary text-sm font-semibold no-underline hover:no-underline hover:text-link-primary-hover px-1 content-center [box-shadow:none] focus:[box-shadow:none] focus:outline-none"
 								onClick={ () =>
 									window.open(
 										addQueryParam(
@@ -242,7 +242,19 @@ const Header = () => {
 						</Topbar.Item>
 					) }
 					<Topbar.Item className="p-1">
-						<CircleHelp className="size-4" />
+						<Button
+							size="xs"
+							variant="ghost"
+							className="p-0 focus:[box-shadow:none] [box-shadow:none] text-text-primary"
+							onClick={ () => {
+								window.open(
+									'https://sureforms.com/docs/',
+									'_blank',
+									'noopener noreferrer'
+								);
+							} }
+							icon={ <CircleHelp className="size-4" /> }
+						></Button>
 					</Topbar.Item>
 					<Topbar.Item className="gap-2">
 						<div id="srfm_whats_new" className="[&_a]:!p-1" />
