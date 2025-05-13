@@ -59,7 +59,7 @@ export default () => {
 										{ plugin[ 1 ].subtitle }
 									</Label>
 								</Container.Item>
-								<Container.Item className="flex gap-0.5 pt-2 pb-1 px-1">
+								<Container.Item className="flex gap-0.5 pt-2 pb-1 px-1 mt-auto">
 									<Button
 										className={ cn(
 											'w-fit focus:[box-shadow:none]',
