@@ -170,7 +170,7 @@ function showErrorMessage( args ) {
 function showErrorMessageOnRecaptchaError( args ) {
 	const { containerSelector, message = '' } = args;
 
-	const getCaptchaContainer = document.querySelector( containerSelector );
+	const getCaptchaContainer = document.querySelectorAll( containerSelector );
 	if ( ! getCaptchaContainer ) {
 		return;
 	}
@@ -203,9 +203,9 @@ function onGCaptchaV2CheckBoxError() {
 }
 
 // eslint-disable-next-line
-function onGCaptchaV2InvisibleError() {
+function onGCaptchaV3Error() {
 	showErrorMessageOnRecaptchaError( {
-		containerSelector: '.g-recaptcha[recaptcha-type="v2-invisible"]:not(.captcha-error-added)',
+		containerSelector: '.g-recaptcha[recaptcha-type="v3-reCAPTCHA"]:not(.captcha-error-added)',
 		message: srfm_submit?.messages?.srfm_google_captcha_error_message,
 	} );
 }

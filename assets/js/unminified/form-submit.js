@@ -556,6 +556,12 @@ function recaptchaCallback( token = '' ) {
 					);
 					isRecaptchaRender = true;
 				},
+				'error-callback': () => {
+					showErrorMessageOnRecaptchaError( {
+						containerSelector: '.g-recaptcha[recaptcha-type="v2-invisible"]:not(.captcha-error-added)',
+						message: srfm_submit?.messages?.srfm_google_captcha_error_message,
+					} );
+				},
 			} );
 
 			submitBtn.addEventListener( 'click', () => {
@@ -592,6 +598,25 @@ function recaptchaCallback( token = '' ) {
 				submitType,
 				afterSubmission
 			);
+		}
+	} );
+}
+
+function showErrorMessageOnRecaptchaError( args ) {
+	const { containerSelector, message = '' } = args;
+
+	const getCaptchaContainer = document.querySelectorAll( containerSelector );
+	if ( ! getCaptchaContainer ) {
+		return;
+	}
+
+	getCaptchaContainer.forEach( ( element ) => {
+		const getTheForm = element.closest( '.srfm-form' );
+		if ( getTheForm ) {
+			showErrorMessage( { form: getTheForm, message } );
+
+			// Add class
+			element.classList.add( 'captcha-error-added' );
 		}
 	} );
 }
