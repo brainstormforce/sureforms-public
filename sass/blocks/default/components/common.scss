@@ -11,7 +11,7 @@
 	* The class had static variables for error message color which were used in dark mode.
 	* Since we introduced customization for error color, there is no need for this variables.
 	*
-	* @deprecated x.x.x
+	* @deprecated 1.6.4
 	*/
 
 	.srfm-form {

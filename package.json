@@ -1,6 +1,6 @@
 {
 	"name": "sureforms",
-	"version": "1.6.3",
+	"version": "1.6.4",
 	"description": "A simple yet powerful way to add forms to your website.",
 	"main": "index.js",
 	"scripts": {
