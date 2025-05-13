@@ -261,6 +261,7 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 
 ## Changelog ##
 ### 1.6.4 - 14th May 2025 ###
+* New: Introduced Advanced Form Styling.
 * Fix: Resolved an issue where deselecting all options in the multi-choice block incorrectly retained the last selected value.
 ### 1.6.3 - 1st May 2025 ###
 * Improvement: Removed extra padding from embedded forms for cleaner layout.
