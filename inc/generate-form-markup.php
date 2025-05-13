@@ -238,6 +238,9 @@ class Generate_Form_Markup {
 				}
 			}
 
+			// Ensure $google_captcha_site_key is not empty, and if not, trim any leading or trailing whitespace.
+			$google_captcha_site_key = is_string( $google_captcha_site_key ) && ! empty( $google_captcha_site_key ) ? trim( $google_captcha_site_key ) : '';
+
 			$primary_color    = $form_styling['primary_color'];
 			$help_color_var   = $form_styling['text_color'];
 			$label_text_color = $form_styling['text_color_on_primary'];
@@ -414,7 +417,7 @@ class Generate_Form_Markup {
 
 				do_action( 'srfm_after_field_content', $post, $id );
 
-				$captcha_container_hidden_class = is_string( $google_captcha_site_key ) && ! empty( $google_captcha_site_key ) && ( 'v3-reCAPTCHA' === $recaptcha_version || 'v2-invisible' === $recaptcha_version ) ? 'srfm-display-none' : '';
+				$captcha_container_hidden_class = ! empty( $google_captcha_site_key ) && ( 'v3-reCAPTCHA' === $recaptcha_version || 'v2-invisible' === $recaptcha_version ) ? 'srfm-display-none' : '';
 
 				?>
 					<?php if ( $should_show_submit_button && ! empty( $security_type ) && 'none' !== $security_type ) { ?>
@@ -552,7 +555,15 @@ class Generate_Form_Markup {
 		<?php } ?>
 
 		<?php if ( 'v3-reCAPTCHA' === $recaptcha_version ) { ?>
-			<?php wp_enqueue_script( 'srfm-google-recaptchaV3', 'https://www.google.com/recaptcha/api.js', [], SRFM_VER, true ); ?>
+			<?php
+				wp_enqueue_script(
+					'srfm-google-recaptchaV3',
+					'https://www.google.com/recaptcha/api.js?render=' . $google_captcha_site_key,
+					[],
+					null, // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion -- This is a third-party script, and specifying a version may lead to caching issues. Using null ensures the latest version is always loaded.
+					true
+				);
+			?>
 			<?php
 		}
 	}
