@@ -38,10 +38,15 @@
 		a {
 			margin: 0;
 			padding: 0;
-			color: #28afed;
+			color: #F8A581;
 			font-size: 12px;
 			font-weight: 600;
 			line-height: 16px;
+			text-decoration: none;
+
+			&:hover {
+				text-decoration: none;
+			}
 		}
 	}
 
@@ -234,6 +239,43 @@
 		&.left,
 		&.right {
 			width: 195px;
+		}
+	}
+}
+
+/*
+ * Styles for the badge text.
+ */
+.srfm-premium-badge-text {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	min-width: 16px;
+	cursor: pointer;
+	padding: 2px 8px;
+	border-radius: 9999px;
+	background: #111827;
+	color: #fff;
+	border: 0.5px solid #374151;
+	font-size: 12px;
+	font-weight: 500;
+	line-height: 16px;
+	text-align: center;
+	// !important is used to override the default styles.
+	opacity: 1 !important;
+	pointer-events: visible !important;
+	white-space: nowrap; // Prevent the text from wrapping.
+
+	.srfm-premium-svg-wrapper {
+		display: flex;
+		align-items: center;
+		// Using unset to reset the existing styles from components.
+		svg {
+			position: unset;
+			align-self: unset;
+			right: unset;
+			height: 12px;
+			width: 12px;
 		}
 	}
 }
