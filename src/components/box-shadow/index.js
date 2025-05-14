@@ -93,6 +93,7 @@ const BoxShadowControl = ( props ) => {
 		popup = false,
 		blockId,
 		help = false,
+		isFormSpecific = false,
 	} = props;
 
 	let advancedControls;
@@ -166,6 +167,8 @@ const BoxShadowControl = ( props ) => {
 					label: boxShadowColor.label,
 				} }
 				setAttributes={ setAttributes }
+				isFormSpecific={ isFormSpecific }
+				value={ boxShadowColor.value }
 			/>
 			{ /* Horizontal Positioning */ }
 			<Range
@@ -179,6 +182,7 @@ const BoxShadowControl = ( props ) => {
 					value: boxShadowHOffset.value,
 					label: boxShadowHOffset.label,
 				} }
+				isFormSpecific={ isFormSpecific }
 			/>
 			{ /* Vertical Positioning */ }
 			<Range
@@ -192,6 +196,7 @@ const BoxShadowControl = ( props ) => {
 					value: boxShadowVOffset.value,
 					label: boxShadowVOffset.label,
 				} }
+				isFormSpecific={ isFormSpecific }
 			/>
 			{ /* Blur */ }
 			<Range
@@ -205,6 +210,7 @@ const BoxShadowControl = ( props ) => {
 					value: boxShadowBlur.value,
 					label: boxShadowBlur.label,
 				} }
+				isFormSpecific={ isFormSpecific }
 			/>
 			{ /* Spread */ }
 			<Range
@@ -218,6 +224,7 @@ const BoxShadowControl = ( props ) => {
 					value: boxShadowSpread.value,
 					label: boxShadowSpread.label,
 				} }
+				isFormSpecific={ isFormSpecific }
 			/>
 			{ /* Shadow Position */ }
 			<MultiButtonsControl
