@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: SureForms 1.6.3\n"
+"Project-Id-Version: SureForms 1.6.4\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/sureforms\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-05-01T04:34:40+00:00\n"
+"POT-Creation-Date: 2025-05-14T07:33:17+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: sureforms\n"
@@ -62,7 +62,13 @@ msgstr ""
 
 #: admin/admin.php:261
 #: admin/admin.php:262
-msgid "Upgrade SureForms"
+#: admin/views/single-entry.php:157
+#: assets/build/blocks.js:172
+#: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
+#: assets/build/templatePicker.js:172
+#: modules/gutenberg/build/blocks.js:181
+msgid "Upgrade"
 msgstr ""
 
 #: admin/admin.php:297
@@ -75,7 +81,7 @@ msgstr ""
 #: admin/admin.php:307
 #: admin/admin.php:343
 #: inc/global-settings/email-summary.php:107
-#: inc/post-types.php:889
+#: inc/post-types.php:996
 #: assets/build/dashboard.js:2
 msgid "Entries"
 msgstr ""
@@ -97,8 +103,8 @@ msgstr ""
 #: inc/ai-form-builder/ai-auth.php:145
 #: inc/background-process.php:101
 #: inc/create-new-form.php:126
-#: inc/export.php:62
-#: inc/export.php:127
+#: inc/export.php:63
+#: inc/export.php:128
 #: inc/form-submit.php:208
 #: inc/form-submit.php:866
 #: inc/forms-data.php:87
@@ -297,15 +303,6 @@ msgstr ""
 #. Translators: %s is the entry id.
 #: admin/views/single-entry.php:77
 msgid "Entry #%s"
-msgstr ""
-
-#: admin/views/single-entry.php:157
-#: assets/build/blocks.js:172
-#: assets/build/formEditor.js:172
-#: assets/build/settings.js:172
-#: assets/build/templatePicker.js:172
-#: modules/gutenberg/build/blocks.js:181
-msgid "Upgrade"
 msgstr ""
 
 #: admin/views/single-entry.php:186
@@ -724,7 +721,7 @@ msgid "You must be logged in to make this request."
 msgstr ""
 
 #: inc/create-new-form.php:144
-#: inc/export.php:137
+#: inc/export.php:138
 #: inc/global-settings/global-settings.php:104
 msgid "You do not have permissions to manage options."
 msgstr ""
@@ -749,14 +746,14 @@ msgstr ""
 msgid "New form submission"
 msgstr ""
 
-#: inc/export.php:74
+#: inc/export.php:75
 msgid "You do not have permission to export forms."
 msgstr ""
 
-#: inc/export.php:146
-#: inc/export.php:150
-#: inc/export.php:185
-#: inc/export.php:202
+#: inc/export.php:147
+#: inc/export.php:151
+#: inc/export.php:186
+#: inc/export.php:203
 msgid "Failed to import form."
 msgstr ""
 
@@ -802,7 +799,7 @@ msgid "I consent to have this website store my submitted information so they can
 msgstr ""
 
 #: inc/fields/inlinebutton-markup.php:182
-#: inc/generate-form-markup.php:468
+#: inc/generate-form-markup.php:522
 msgid "Please verify that you are not a robot."
 msgstr ""
 
@@ -912,7 +909,7 @@ msgstr ""
 msgid "Sorry, you are not allowed to view the form."
 msgstr ""
 
-#: inc/generate-form-markup.php:520
+#: inc/generate-form-markup.php:575
 #: assets/build/formSubmit.js:2
 #: assets/js/unminified/form-submit.js:261
 msgid "There was an error trying to submit your form. Please try again."
@@ -1136,33 +1133,33 @@ msgstr ""
 msgid "Form updated."
 msgstr ""
 
-#: inc/post-types.php:729
+#: inc/post-types.php:836
 msgid "Admin Notification Email"
 msgstr ""
 
 #. translators: %s: Form title smart tag
-#: inc/post-types.php:736
+#: inc/post-types.php:843
 msgid "New Form Submission - %s"
 msgstr ""
 
-#: inc/post-types.php:836
+#: inc/post-types.php:943
 #: assets/build/formEditor.js:172
 msgid "Thank you"
 msgstr ""
 
-#: inc/post-types.php:888
+#: inc/post-types.php:995
 msgid "Shortcode"
 msgstr ""
 
-#: inc/post-types.php:952
+#: inc/post-types.php:1059
 msgid "Please choose the SureForms export file (.json) that you wish to import."
 msgstr ""
 
-#: inc/post-types.php:955
+#: inc/post-types.php:1062
 msgid "Import Now"
 msgstr ""
 
-#: inc/post-types.php:957
+#: inc/post-types.php:1064
 msgid "There is some error in json file, please export the SureForms Forms again."
 msgstr ""
 
@@ -10041,6 +10038,30 @@ msgstr ""
 
 #: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:181
+msgid "Top"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+#: modules/gutenberg/build/blocks.js:181
+#: modules/gutenberg/build/blocks.js:185
+#: modules/gutenberg/build/blocks.js:187
+msgid "Right"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+#: modules/gutenberg/build/blocks.js:181
+msgid "Bottom"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+#: modules/gutenberg/build/blocks.js:181
+#: modules/gutenberg/build/blocks.js:185
+#: modules/gutenberg/build/blocks.js:187
+msgid "Left"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+#: modules/gutenberg/build/blocks.js:181
 #: modules/gutenberg/build/blocks.js:185
 msgid "Background"
 msgstr ""
@@ -10056,6 +10077,16 @@ msgstr ""
 
 #: assets/build/formEditor.js:172
 msgid "Text Color on Primary"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+#: modules/gutenberg/build/blocks.js:181
+#: modules/gutenberg/build/blocks.js:187
+msgid "Padding"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+msgid "Border Radius"
 msgstr ""
 
 #: assets/build/formEditor.js:172
@@ -10078,25 +10109,23 @@ msgstr ""
 #: modules/gutenberg/build/blocks.js:181
 #: modules/gutenberg/build/blocks.js:185
 #: modules/gutenberg/build/blocks.js:187
-msgid "Left"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:181
-#: modules/gutenberg/build/blocks.js:185
-#: modules/gutenberg/build/blocks.js:187
 msgid "Center"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:181
-#: modules/gutenberg/build/blocks.js:185
-#: modules/gutenberg/build/blocks.js:187
-msgid "Right"
+msgid "Button"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-msgid "Button"
+msgid "Form Theme"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+msgid "Unlock Form Theme"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+msgid "With the SureForms Starter Plan, access essential form styling options to personalize the look and feel of your forms, ensuring a seamless and engaging user experience."
 msgstr ""
 
 #: assets/build/formEditor.js:172
@@ -10253,6 +10282,14 @@ msgstr ""
 
 #: assets/build/formEditor.js:172
 msgid "Form Width"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+msgid "Instant Form Padding"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+msgid "Instant Form Border Radius"
 msgstr ""
 
 #: assets/build/formEditor.js:172
@@ -10908,14 +10945,6 @@ msgid "Line Through"
 msgstr ""
 
 #: modules/gutenberg/build/blocks.js:181
-msgid "Top"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:181
-msgid "Bottom"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:181
 msgid "Note: Please set Separator Height for proper thickness."
 msgstr ""
 
@@ -11020,11 +11049,6 @@ msgstr ""
 #: modules/gutenberg/build/blocks.js:181
 #: modules/gutenberg/build/blocks.js:187
 msgid "Spacing"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:181
-#: modules/gutenberg/build/blocks.js:187
-msgid "Padding"
 msgstr ""
 
 #: modules/gutenberg/build/blocks.js:181

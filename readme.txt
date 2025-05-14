@@ -4,7 +4,7 @@ Tags: contact form, custom form, forms, contact form plugin, form builder
 Requires at least: 6.4
 Tested up to: 6.8.1
 Requires PHP: 7.4
-Stable tag: 1.6.3
+Stable tag: 1.6.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -260,146 +260,18 @@ Yes! You can certainly use SureForms on yours as well as your client’s website
 When you use SureForms, you get an easy-to-use AI-powered form builder that can be used to build your forms fast.
 
 == Changelog ==
+= 1.6.4 - 14th May 2025 =
+* New: Introduced Advanced Form Styling.
+* Improvement: Updated Phone Number field to announce the country code only once for better accessibility.
+* Fix: Resolved an issue where deselecting all options in the multi-choice block incorrectly retained the last selected value.
 = 1.6.3 - 1st May 2025 =
 * Improvement: Removed extra padding from embedded forms for cleaner layout.
 * Fix: Fixed multiple choice block label styling and improved mobile responsiveness.
 = 1.6.2 - 29th April 2025 =
 * Improvement: Changed the value separator for Dropdown and Multiple Choice field from a comma (,) to a pipe (|) to fix selection and calculation issues.
 * Fix: Fixed Cloudflare Turnstile compatibility with version 1.6.1.
-= 1.6.1 - 23rd April 2025 =
-* New: Added From Name and From Email fields to the Email Notification settings.
-* Improvement: Added bottom margin to the form container for better compatibility with the Neve theme.
-* Improvement: Enhanced Address field output with structured submission of components (Street, City, State, ZIP, etc.) for improved integration with services like OttoKit and Google Sheets.
-* Fix: Resolved an issue where exporting entries after form edits resulted in misaligned columns in the CSV file.
-= 1.6.0 - 16th April 2025 =
-* New: Added Signature block in Pro Plan.
-* Fix: Ensured compatibility with WordPress 6.8 by fixing a UI glitch where a fade overlay appeared on the Block option in the block inserter panel.
-* Fix: Improved compatibility with WordPress 6.8 by resolving an issue where width options overlapped or didn't update correctly when switching between them though they displayed correctly on the front end.
-* Fix: Resolved a compatibility issue with Astra Pro and All in One SEO Plugin where SEO preview was not working due to the SureForms post type being unregistered.
-* Fix: Resolved styling conflicts in UAGB blocks (Heading, Icon, Image, Separator) caused by duplicate block IDs on duplication.
-= 1.5.0 - 9th April 2025 =
-* New: Added support for Calculators in Business Plan.
-* New: Added support for prefix and suffix in the Number field.
-* New: Multiple hooks for email and form submission were added.
-* Improvement: Enabled editing of the "Confirm Email" text for greater flexibility.
-* Improvement: Smart Tags now dynamically detect fields with default labels.
-* Improvement: SureTriggers is rebranded to OttoKit, added compatibility changes for a smooth transition.
-* Fix: Resolved an issue where an optional email field blocked form submission after clearing the input.
-* Fix: Resolved an import issue for Bedrock and similar setups.
-= 1.4.4 - 27th March 2025 =
-* New: Introduced background styling for the form.
-* Improvement: Enhanced the SureForms branding color on instant form.
-* Improvement: Modified the AI form generation limit.
-* Fix: Resolved a text visibility issue in buttons within form settings.
-* Fix: Addressed a security bug. Props to Dmitrii Ignatyev for privately reporting it.
-= 1.4.3 - 18th March 2025 =
-* Fix: Addressed an issue where minimum and maximum selection errors in the Multiple Choice field were not displayed in real-time and were only shown upon form submission.
-* Fix: This update addressed a security bug. Please make sure you are using the latest version on your website.
-= 1.4.2 - 4th March 2025 =
-* Improvement: Made the form submission text translatable.
-* Fix: Resolved a recursive pattern insertion issue in Gutenberg that was causing a 502 error due to an infinite loop.
-* Fix: Fixed block inserter issues when using the Spectra One theme.
-* Fix: Prevented the WPForms notice from appearing on the SureForms edit page.
-* Fix: Fixed an issue where dropdown conditional logic was not working in page builders.
-* Fix: Resolved an issue where long URLs without breaks caused UI overflow in the edit entries popup.
-= 1.4.1 - 25th February 2025 =
-* Fix: Addressed a security bug. Props to Naresh Dhanuk for privately reporting it.
-= 1.4.0 - 12th February 2025 =
-* Improvement: Prevented public access to the form archive page.
-* Improvement: Simplified the form confirmation message.
-* Improvement: Updated the primary color for new forms.
-* Fix: Addressed an issue with the Bricks theme where reCAPTCHA v2 Invisible and v3 were being hidden.
-= 1.3.1 - 28th January 2025 =
-* Improvement: Enhanced compatibility with FSE themes.
-* Fix: Addressed an issue where CAPTCHA errors were displayed before field validation errors.
-* Fix: Corrected the spelling of “SureForms” in field descriptions.
-* Fix: Ensured compatibility with Divi and Enfold’s Classic Editor settings.
-* Fix: Fixed an issue where forms inside tabs or accordions were not displaying correctly. The form height is now properly adjusted when it becomes visible on the page.
-* Fix: Resolved an issue where the “Import Form” button was not visible when all forms were moved to the Trash.
-* Fix: Resolved an issue where the Cancel button in the form Email Notification settings was not functioning correctly.
-= 1.3.0 - 21st January 2025 =
-* Improvement: Stopped storing confirmation email setting's data of the Email field in the database.
-* Fix: Resolved an issue where forms were not being submitted in some instances with v3 reCAPTCHA.
-* Fix: Addressed an issue where selecting a field in the editor would hide the Settings icon.
-* Fix: Fixed a UI glitch on the initial load and refresh of Instant Forms.
-* Fix: Ensured the Submit button works consistently when switching between Visual and Text modes in the Gutenberg editor.
-= 1.2.4 - 7th January 2025 =
-* New: Added translations for the Italian, Portuguese, and Polish languages.
-* Fix: Addressed an issue where forms were not submitting in a page-cached environment.
-= 1.2.3 - 31st December 2024 =
-* New: Added translations for the Spanish, German, French, and Dutch languages.
-* Fix: Resolved an issue where the minimum value error was not displayed for the Number field.
-* Fix: Addressed an issue where forms were submitted even when the Number field contained values outside the defined minimum and maximum range.
-= 1.2.2 - 24th December 2024 =
-* Fix: Resolved an issue where the email template failed to render in the inbox when a third-party plugin overrode the email headers in the wp_mail() function.
-* Fix: Addressed a security bug. Props to Lucio Sá for privately reporting it.
-= 1.2.1 - 17th December 2024 =
-* Improvement: Revamped the General and Spam Protection settings for an improved user experience.
-* Improvement: Enhanced screen reader announcements for validation messages.
-* Improvement: Improved screen reader accessibility to announce block labels and help text on tab navigation.
-* Improvement: Made global validation messages dynamic for better adaptability.
-* Improvement: Added translation compatibility for validation message input labels in admin settings.
-* Improvement: Resolved CSS conflicts for checkboxes in forms with WooCommerce and Elementor installed.
-* Fix: Resolved an issue where the Mac screen reader stopped reading form fields, pausing at the Dropdown field.
-* Fix: Addressed a compatibility issue between the date filter and the entries export functionality.
-* Fix: Resolved an issue where phonewords were not accepted.
-= 1.2.0 - 11th December 2024 =
-* New: Added Zapier integration for SureForms Pro.
-* Improvement: Added support for including the Entry ID in SureTriggers' workflows, enhancing integration capabilities.
-* Improvement: Updated styling to ensure proper focus borders for the Checkbox and GDPR fields when navigating with a screen reader.
-* Fix: Resolved a conflict with the WPCode Plugin.
-* Fix: Fixed an issue where the Phone Number field unique validation wasn't triggering correctly.
-= 1.1.1 - 5th December 2024 =
-* New: Added an option to export entries in CSV format.
-* Improvement: Introduced a "What's New" notifier to highlight updates.
-* Improvement: Redesigned the search input for the Phone Number field to enhance user experience.
-* Improvement: Updated the SureForms Gutenberg block to API v3 for compatibility with the WordPress zoom feature.
-* Fix: Addressed an issue where the first field was left empty when using Honeypot Security, and refined the form submission logic.
-* Fix: Fixed form submission failures on sites with WordPress installed in a non-root directory.
-* Fix: Fixed an issue where settings pages were hidden when the plugin title was translated.
-* Fix: Resolved a validation error in the Multiple Choice field for minimum and maximum selections.
-* Fix: Resolved an issue where the dropdown search query wasn't cleared after selecting an option.
-= 1.1.0 - 28th November 2024 =
-* New: Support for generating multiple choice fields with icons while creating forms with AI.
-* Improvement: Added search option for phone number country code list.
-* Improvement: Accessibility fixes for using the Dropdown field's clear button with keyboard.
-= 1.0.6 - 20th November 2024 =
-* Fix: Fixed Webhook functionality for GDPR-enabled forms and other submission options.
-* Fix: Resolved an issue where Icon, Heading, Image, and Separator fields were not displaying on the front end.
-= 1.0.5 - 19th November 2024 =
-* New: Introduced the {form_title} smart tag to dynamically insert the form's title.
-* Improvement: Added an action triggered before form submission.
-* Improvement: Enabled translation support for hardcoded UI text to enhance localization.
-* Improvement: Improved accessibility of form confirmation messages.
-* Improvement: Refactored logic for the dashboard entries chart.
-* Improvement: Values of fields hidden by conditional logic no longer get saved in the entry.
-* Fix: Resolved issue where multichoice field images were cut off on the front end.
-* Fix: Corrected RTL alignment for all blocks.
-= 1.0.4 - 12th November 2024 =
-* New: Voice input added for AI Form Builder.
-* Improvement: Added compatibility check for SureForms Pro version.
-* Improvement: Increased entries per page and updated form redirect link.
-* Fix: Ensured compatibility with WordPress 6.7.
-* Fix: Labels now process HTML tags correctly in emails and entries.
-= 1.0.3 - 6th November 2024 =
-* Improvement: Optimized screen reader announcements for field labels, required status and descriptions.
-= 1.0.2 - 31st October 2024  =
-* New: Support for query parameters in form confirmation.
-* New: Updated plugin branding.
-* Improvement: Added filters for confirmation messages and redirect URLs.
-* Improvement: Bulk edit options added for the dropdown and multichoice field.
-* Improvement: Emits custom event srfm_form_submission_success on successful form submission.
-* Improvement: Merged form confirmation redirect settings.
-* Fix: Blank entries screen no longer displays after moving all entries to trash.
-* Fix: Resolved PHP fatal error caused by incorrect argument count in form submission.
-* Fix: Uploaded files are now removed when an entry is permanently deleted.
-= 1.0.1 - 24th October 2024 =
-* Fix: Extra space from the v3 reCAPTCHA container has been removed.
-* Fix: GDPR and checkbox labels are now editable across Chrome, Firefox, Safari, Arc etc.
-* Fix: Gutenberg blocks now display correctly for posts, pages, and custom post types (CPT).
-* Fix: Styling issues resolved for specific blocks in Elementor and Bricks.
-= 1.0.0 - 22nd October 2024 =
-* Initial release
+
+The full changelog is available [here](https://sureforms.com/whats-new/).
 
 == Upgrade Notice ==
 

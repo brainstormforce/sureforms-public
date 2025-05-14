@@ -6,16 +6,18 @@
 }
 
 .srfm-form-container {
-	&.srfm-has-dark-bg {
-		// We are treating these colors as static here because it will be the fixed color as suggested in Figma.
-		--srfm-error-color: #f87171;
-		--srfm-error-color-border: hsl( from var( --srfm-error-color ) h s l / 0.65 );
-		--srfm-error-color-border-glow: hsl( from var( --srfm-error-color ) h s l / 0.15 );
-	}
+	/**
+	* Removed .srfm-has-dark-bg class and it's associated css which had error color variables.
+	* The class had static variables for error message color which were used in dark mode.
+	* Since we introduced customization for error color, there is no need for this variables.
+	*
+	* @deprecated 1.6.4
+	*/
 
 	.srfm-form {
 		display: flex;
 		flex-wrap: wrap;
+		@include srfm-gap-styles;
 
 		.conditional-logic {
 			display: none;
@@ -39,6 +41,10 @@
 			}
 		}
 
+		// Set hidden block display to none so that it does not take up space.
+		.srfm-hidden-block {
+			display: none;
+		}
 		.srfm-block:not( .srfm-number-block ) {
 			&.srfm-error,
 			&.srfm-valid-email-error {
