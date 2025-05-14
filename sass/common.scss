@@ -39,23 +39,23 @@ button.srfm-toolbar-width-setting-button {
 	}
 
 	.srfm-block-width-25 {
-		width: 25%;
+		flex: 0 1 calc( 25% - ( 3 / 4 ) * var( --srfm-column-gap-between-blocks ) );
 	}
 
 	.srfm-block-width-33-33 {
-		width: 33.33%;
+		flex: 0 1 calc( 33.33% - ( 2 / 3 ) * var( --srfm-column-gap-between-blocks ) );
 	}
 
 	.srfm-block-width-50 {
-		width: 50%;
+		flex: 0 1 calc( 50% - var( --srfm-column-gap-between-blocks ) / 2 );
 	}
 
 	.srfm-block-width-75 {
-		width: 75%;
+		flex: 0 1 calc( 75% - var( --srfm-column-gap-between-blocks ) / 4 );
 	}
 
 	.srfm-block-width-100 {
-		width: 100%;
+		flex: 0 1 100%;
 	}
 
 	@media ( max-width: 576px ) {
@@ -73,25 +73,6 @@ button.srfm-toolbar-width-setting-button {
 		max-width: 100%;
 	}
 
-	.srfm-button {
-		padding: var( --srfm-btn-padding ) !important;
-		font-size: var( --srfm-btn-font-size ) !important;
-		font-weight: var( --srfm-btn-font-weight ) !important;
-		line-height: var( --srfm-btn-line-height ) !important;
-		border-radius: var( --srfm-btn-border-radius ) !important;
-		background: var( --srfm-color-scheme-primary ) !important;
-		color: var( --srfm-color-scheme-text-on-primary ) !important;
-		border: 1px solid var( --srfm-color-scheme-primary ) !important;
-
-		&:hover {
-			background: var( --srfm-btn-color-hover ) !important;
-		}
-
-		&:focus {
-			box-shadow: 0px 0px 0px 3px var( --srfm-color-input-border-focus-glow );
-		}
-	}
-
 	.srfm-submit-button {
 		cursor: pointer;
 	}
@@ -107,8 +88,7 @@ button.srfm-toolbar-width-setting-button {
 		align-items: flex-end;
 		justify-content: flex-end;
 		.srfm-button {
-			margin: var( --srfm-input-field-margin );
-			padding: 9px 0px !important;
+			@include srfm-input-margin-styles;
 		}
 		&.srfm-block {
 			height: auto;
@@ -139,8 +119,6 @@ button.srfm-toolbar-width-setting-button {
 	}
 
 	.srfm-block {
-		padding: 0 var( --srfm-col-gap-between-blocks ) !important;
-		margin-bottom: var( --srfm-row-gap-between-blocks );
 		.srfm-block-label,
 		.srfm-block-legend {
 			display: block;
@@ -277,6 +255,27 @@ button.srfm-toolbar-width-setting-button {
 	}
 }
 
+.editor-styles-wrapper,
+.srfm-form-container {
+	.srfm-button {
+		padding: var( --srfm-btn-padding );
+		font-size: var( --srfm-btn-font-size );
+		font-weight: var( --srfm-btn-font-weight );
+		line-height: var( --srfm-btn-line-height );
+		border-radius: var( --srfm-btn-border-radius );
+		background: var( --srfm-color-scheme-primary );
+		color: var( --srfm-color-scheme-text-on-primary );
+		border: 1px solid var( --srfm-color-scheme-primary );
+
+		&:hover {
+			background: var( --srfm-btn-color-hover );
+		}
+
+		&:focus {
+			box-shadow: 0px 0px 0px 3px var( --srfm-color-input-border-focus-glow );
+		}
+	}
+}
 // Temporary fix for the uneven spacing when we hide the submit button. This will be removed once we have a better solution.
 .srfm-submit-button-hidden .srfm-form .srfm-block-single:has( + .srfm-submit-container ) {
 	margin-bottom: 0 !important;
