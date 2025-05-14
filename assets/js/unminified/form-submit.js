@@ -16,6 +16,14 @@ function initializeFormHandlers() {
 
 	const forms = Array.from( document.querySelectorAll( '.srfm-form' ) );
 	for ( const form of forms ) {
+		// Add the event before the form initialization to ensure that the all third party libraries are loaded and initialized.
+		// Dispatch a custom event *before* the form is submitted.
+		document.dispatchEvent(
+			new CustomEvent( 'srfm_form_before_submission', {
+				detail: { form },
+			} )
+		);
+
 		const {
 			formId,
 			submitType,
