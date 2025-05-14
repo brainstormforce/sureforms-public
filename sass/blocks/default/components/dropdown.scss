@@ -1,3 +1,4 @@
+@import "../utils/mixins.scss";
 .srfm-form-container {
 	.srfm-form {
 		.srfm-block {
@@ -105,6 +106,7 @@
 						align-items: center;
 						// Adding the transition for specific properties to avoid unintended animations.
 						transition: border-color 0.2s ease-out, box-shadow 0.2s ease-out, background-color 0.2s ease-out !important;
+						flex-wrap: nowrap;
 
 						&:hover {
 							border-color: var( --srfm-color-input-border-hover );
@@ -155,6 +157,11 @@
 						@include srfm-dropdown-styles;
 						color: var( --srfm-dropdown-option-text-color );
 						.option {
+							// Add 4px gap between the options except the last one.
+							// This is to distinguish between the options when selected.
+							&:not( :last-child ) {
+								margin-bottom: 4px;
+							}
 							display: flex;
 							align-items: center;
 							border-radius: 4px;
@@ -207,7 +214,7 @@
 				select {
 					display: block;
 					padding: var( --srfm-input-field-padding );
-					margin: var( --srfm-input-field-margin );
+					@include srfm-input-margin-styles;
 					width: 100%;
 					font-size: 0.7em;
 				}
