@@ -200,7 +200,7 @@ const SRFMNumberControl = ( props ) => {
 		'',
 		blockNameForHook
 	);
-	
+
 	const inputSteps = ( value ) => {
 		if ( isNaN( value ) ) {
 			return 1;
