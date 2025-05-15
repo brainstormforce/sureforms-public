@@ -85,7 +85,7 @@ function initializeMultichoice() {
 					}
 
 					// Set the value of the hidden input field.
-					if ( setValue ) {
+					if ( null !== setValue ) {
 						hiddenInput.setAttribute( 'value', setValue );
 					}
 

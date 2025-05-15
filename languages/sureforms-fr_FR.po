@@ -63,7 +63,7 @@ msgstr "Nouveau formulaire"
 #: admin/admin.php:307
 #: admin/admin.php:343
 #: inc/global-settings/email-summary.php:107
-#: inc/post-types.php:889
+#: inc/post-types.php:996
 #: assets/build/dashboard.js:2
 msgid "Entries"
 msgstr "Entrées"
@@ -80,8 +80,8 @@ msgstr "Modifier %1$s"
 #: inc/ai-form-builder/ai-auth.php:145
 #: inc/background-process.php:101
 #: inc/create-new-form.php:126
-#: inc/export.php:62
-#: inc/export.php:127
+#: inc/export.php:63
+#: inc/export.php:128
 #: inc/form-submit.php:208
 #: inc/form-submit.php:866
 #: inc/forms-data.php:87
@@ -640,10 +640,10 @@ msgstr "Erreur lors de la création du formulaire SureForms,"
 msgid "New form submission"
 msgstr "Nouvelle soumission de formulaire"
 
-#: inc/export.php:146
-#: inc/export.php:150
-#: inc/export.php:185
-#: inc/export.php:202
+#: inc/export.php:147
+#: inc/export.php:151
+#: inc/export.php:186
+#: inc/export.php:203
 msgid "Failed to import form."
 msgstr "Échec de l'importation du formulaire."
 
@@ -689,7 +689,7 @@ msgid "I consent to have this website store my submitted information so they can
 msgstr "Je consens à ce que ce site web stocke les informations que j'ai soumises afin qu'ils puissent répondre à ma demande."
 
 #: inc/fields/inlinebutton-markup.php:182
-#: inc/generate-form-markup.php:468
+#: inc/generate-form-markup.php:522
 msgid "Please verify that you are not a robot."
 msgstr "Veuillez vérifier que vous n'êtes pas un robot."
 
@@ -777,9 +777,9 @@ msgstr "Erreur lors de la soumission du formulaire"
 msgid "Sorry, you are not allowed to view the form."
 msgstr "Désolé, vous n'êtes pas autorisé à voir le formulaire."
 
-#: inc/generate-form-markup.php:520
+#: inc/generate-form-markup.php:575
 #: assets/build/formSubmit.js:2
-#: assets/js/unminified/form-submit.js:256
+#: assets/js/unminified/form-submit.js:261
 msgid "There was an error trying to submit your form. Please try again."
 msgstr "Une erreur s'est produite lors de la soumission de votre formulaire. Veuillez réessayer."
 
@@ -967,28 +967,28 @@ msgstr "Formulaire publié."
 msgid "Form updated."
 msgstr "Formulaire mis à jour."
 
-#: inc/post-types.php:729
+#: inc/post-types.php:836
 msgid "Admin Notification Email"
 msgstr "Email de notification d'administration"
 
 #. translators: %s: Form title smart tag
-#: inc/post-types.php:736
+#: inc/post-types.php:843
 msgid "New Form Submission - %s"
 msgstr "Nouvelle soumission de formulaire - %s"
 
-#: inc/post-types.php:888
+#: inc/post-types.php:995
 msgid "Shortcode"
 msgstr "Code court"
 
-#: inc/post-types.php:952
+#: inc/post-types.php:1059
 msgid "Please choose the SureForms export file (.json) that you wish to import."
 msgstr "Veuillez choisir le fichier d'exportation SureForms (.json) que vous souhaitez importer."
 
-#: inc/post-types.php:955
+#: inc/post-types.php:1062
 msgid "Import Now"
 msgstr "Importer maintenant"
 
-#: inc/post-types.php:957
+#: inc/post-types.php:1064
 msgid "There is some error in json file, please export the SureForms Forms again."
 msgstr "Il y a une erreur dans le fichier JSON, veuillez exporter à nouveau les formulaires SureForms."
 
@@ -4699,7 +4699,7 @@ msgstr "Eau d'inondation de la maison"
 
 #: modules/gutenberg/icons/icons-v6-1.php:5169
 msgid "House Flood Water Circle Arrow Right"
-msgstr ""
+msgstr "Maison Inondation Eau Cercle Flèche Droite"
 
 #: modules/gutenberg/icons/icons-v6-1.php:5180
 msgid "House Laptop"
@@ -8252,7 +8252,7 @@ msgstr "Verre à whisky"
 
 #: modules/gutenberg/icons/icons-v6-3.php:4675
 msgid "WHMCS"
-msgstr ""
+msgstr "WHMCS"
 
 #: modules/gutenberg/icons/icons-v6-3.php:4686
 msgid "Wifi"
@@ -9216,6 +9216,8 @@ msgstr "Ajouter des blocs à la barre d'action rapide"
 msgid "Re-arrange block inside Quick Action Bar"
 msgstr "Réorganiser le bloc dans la barre d'action rapide"
 
+#: admin/admin.php:261
+#: admin/admin.php:262
 #: admin/views/single-entry.php:157
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
@@ -9717,7 +9719,7 @@ msgstr "Saut de page"
 msgid "Previous"
 msgstr "Précédent"
 
-#: inc/post-types.php:836
+#: inc/post-types.php:943
 #: assets/build/formEditor.js:172
 msgid "Thank you"
 msgstr "Merci"
@@ -10335,10 +10337,12 @@ msgstr "Barrer"
 msgid "%"
 msgstr "%"
 
+#: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:181
 msgid "Top"
 msgstr "Haut"
 
+#: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:181
 msgid "Bottom"
 msgstr "Bas"
@@ -10467,6 +10471,7 @@ msgstr ""
 msgid "Spacing"
 msgstr "Espacement"
 
+#: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:181
 #: modules/gutenberg/build/blocks.js:187
 msgid "Padding"
@@ -11093,7 +11098,7 @@ msgstr "Message d'erreur de blocage de numéro de téléphone invalide"
 msgid "Honeypot"
 msgstr "Pot de miel"
 
-#: inc/export.php:74
+#: inc/export.php:75
 msgid "You do not have permission to export forms."
 msgstr "Vous n'avez pas la permission d'exporter des formulaires."
 
@@ -11336,7 +11341,7 @@ msgid "You must be logged in to make this request."
 msgstr "Vous devez être connecté pour faire cette demande."
 
 #: inc/create-new-form.php:144
-#: inc/export.php:137
+#: inc/export.php:138
 #: inc/global-settings/global-settings.php:104
 msgid "You do not have permissions to manage options."
 msgstr "Vous n'avez pas l'autorisation de gérer les options."
@@ -11470,30 +11475,25 @@ msgstr "Le formulaire généré par l'IA peut nécessiter une révision et des a
 msgid "SUREFORMS PREMIUM FIELDS"
 msgstr "CHAMPS PREMIUM SUREFORMS"
 
-#: admin/admin.php:261
-#: admin/admin.php:262
-msgid "Upgrade SureForms"
-msgstr "Mettre à niveau SureForms"
-
 #: assets/build/formEditor.js:172
 msgid "The current 'From Email' address does not match your website domain name (%1$s). This can cause your notification emails to be blocked or marked as spam. Alternately, try using a From Address that matches your website domain (admin@%2$s)."
 msgstr "L'adresse e-mail 'De' actuelle ne correspond pas au nom de domaine de votre site web (%1$s). Cela peut entraîner le blocage ou le marquage de vos e-mails de notification comme spam. Alternativement, essayez d'utiliser une adresse De qui correspond au nom de domaine de votre site web (admin@%2$s)."
 
 #: assets/build/formEditor.js:172
 msgid "The current 'From Email' address does not match your website domain name (%s). This can cause your notification emails to be blocked or marked as spam. "
-msgstr "L'adresse e-mail 'De' actuelle ne correspond pas au nom de domaine de votre site web (%s). Cela peut entraîner le blocage de vos e-mails de notification ou leur classement en tant que spam. "
+msgstr "L'adresse e-mail 'De' actuelle ne correspond pas au nom de domaine de votre site web (%s). Cela peut entraîner le blocage de vos e-mails de notification ou leur classement en tant que spam."
 
 #: assets/build/formEditor.js:172
 msgid "We strongly recommend that you install the free "
-msgstr "Nous vous recommandons vivement d'installer le gratuit "
+msgstr "Nous vous recommandons vivement d'installer le gratuit"
 
 #: assets/build/formEditor.js:172
 msgid " plugin! The Setup Wizard makes it easy to fix your emails. "
-msgstr " plugin ! L'assistant de configuration facilite la correction de vos e-mails. "
+msgstr "plugin ! L'assistant de configuration facilite la correction de vos e-mails."
 
 #: assets/build/formEditor.js:172
 msgid " Alternately, try using a From Address that matches your website domain (admin@%s)."
-msgstr " Alternativement, essayez d'utiliser une adresse d'expéditeur qui correspond au domaine de votre site web (admin@%s)."
+msgstr "Alternativement, essayez d'utiliser une adresse d'expéditeur qui correspond au domaine de votre site web (admin@%s)."
 
 #: assets/build/formEditor.js:172
 msgid "Please enter a valid email address. Your notifications won't be sent if the field is not filled in correctly."
@@ -11510,6 +11510,38 @@ msgstr "De l'email"
 #: assets/build/formEditor.js:172
 msgid "Notifications can only use 1 From Email. Please do not enter multiple addresses."
 msgstr "Les notifications ne peuvent utiliser qu'une seule adresse e-mail d'expéditeur. Veuillez ne pas entrer plusieurs adresses."
+
+#: assets/build/formEditor.js:172
+msgid "The current 'From Email' address may not match your website domain name (%1$s). This can cause your notification emails to be blocked or marked as spam. Alternately, try using a From Address that matches your website domain (admin@%2$s)."
+msgstr "L'adresse e-mail actuelle de l'expéditeur peut ne pas correspondre au nom de domaine de votre site web (%1$s). Cela peut entraîner le blocage ou le marquage comme spam de vos e-mails de notification. Alternativement, essayez d'utiliser une adresse de l'expéditeur qui correspond au nom de domaine de votre site web (admin@%2$s)."
+
+#: assets/build/formEditor.js:172
+msgid "The current 'From Email' address may not match your website domain name (%s). This can cause your notification emails to be blocked or marked as spam. "
+msgstr "L'adresse e-mail actuelle 'De' peut ne pas correspondre au nom de domaine de votre site web (%s). Cela peut entraîner le blocage de vos e-mails de notification ou leur marquage comme spam. "
+
+#: assets/build/formEditor.js:172
+msgid "Border Radius"
+msgstr "Rayon de bordure"
+
+#: assets/build/formEditor.js:172
+msgid "Form Theme"
+msgstr "Thème du formulaire"
+
+#: assets/build/formEditor.js:172
+msgid "Unlock Form Theme"
+msgstr "Déverrouiller le thème du formulaire"
+
+#: assets/build/formEditor.js:172
+msgid "With the SureForms Starter Plan, access essential form styling options to personalize the look and feel of your forms, ensuring a seamless and engaging user experience."
+msgstr "Avec le plan de démarrage SureForms, accédez aux options essentielles de style de formulaire pour personnaliser l'apparence et la convivialité de vos formulaires, garantissant une expérience utilisateur fluide et engageante."
+
+#: assets/build/formEditor.js:172
+msgid "Instant Form Padding"
+msgstr "Remplissage instantané de formulaire"
+
+#: assets/build/formEditor.js:172
+msgid "Instant Form Border Radius"
+msgstr "Rayon de bordure de formulaire instantané"
 
 #: inc/post-types.php:124
 msgctxt "post type general name"

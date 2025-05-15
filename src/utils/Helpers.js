@@ -735,3 +735,50 @@ export function getCookie( name ) {
 	const parts = value.split( `; ${ name }=` );
 	return parts.length === 2 ? parts.pop().split( ';' ).shift() : null;
 }
+
+// Remove the CSS properties from the root element.
+export const removeStylesFromRoot = ( root, cssProperties ) => {
+	if ( Object.keys( cssProperties ).length > 0 ) {
+		for ( const [ key ] of Object.entries( cssProperties ) ) {
+			root.style.removeProperty( key );
+		}
+	}
+};
+
+// Get the advanced gradient css styles.
+export const getGradientCSS = (
+	type = 'linear',
+	color1 = '#FFC9B2',
+	color2 = '#C7CBFF',
+	loc1 = 0,
+	loc2 = 100,
+	angle = 90
+) => {
+	if ( type === 'radial' ) {
+		return `radial-gradient(${ color1 } ${ loc1 }%, ${ color2 } ${ loc2 }% )`;
+	}
+	return `linear-gradient( ${ angle }deg, ${ color1 } ${ loc1 }%, ${ color2 } ${ loc2 }%)`;
+};
+
+/**
+ * Sets default values for form attributes in the post meta object.
+ *
+ * This helper function iterates over the provided `formAttributes` object and checks
+ * if each attribute key is present in the `postMeta` object. If a key is missing,
+ * it assigns the corresponding default value from `formAttributes` to `postMeta`.
+ *
+ * @param {Object} formAttributes - An object containing form attribute definitions,
+ *                                where each key maps to an object that includes a `default` property.
+ * @param {Object} postMeta       - The metadata object to be updated with default values
+ *                                for any missing attributes.
+ */
+export const setDefaultFormAttributes = ( formAttributes, postMeta ) => {
+	if ( ! formAttributes ) {
+		return;
+	}
+	Object.keys( formAttributes ).forEach( ( key ) => {
+		if ( ! ( key in postMeta ) ) {
+			postMeta[ key ] = formAttributes[ key ].default;
+		}
+	} );
+};
