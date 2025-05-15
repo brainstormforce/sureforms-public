@@ -386,7 +386,7 @@ export default ( props ) => {
 						<Label
 							variant="help"
 							size="sm"
-							className="font-semibold cursor-pointer"
+							className="font-semibold"
 						>
 							{ characterCount }/2000
 						</Label>
