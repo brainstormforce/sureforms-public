@@ -108,7 +108,7 @@ const Recaptcha = ( { securitytabOptions, updateGlobalSettings } ) => {
 								size="md"
 								placeholder={ sprintf(
 									// translators: %s is the label of the input field.
-									__( 'Enter your %s key here', 'sureforms' ),
+									__( 'Enter your %s here', 'sureforms' ),
 									field.label
 								) }
 								value={
