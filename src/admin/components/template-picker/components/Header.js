@@ -5,7 +5,9 @@ import { Wand, X } from 'lucide-react';
 import { Topbar, Button } from '@bsf/force-ui';
 import { cn } from '@Utils/Helpers';
 import CreditDetailsPopup from './CreditDetailsPopup.js';
-import Logo from '@Admin/dashboard/templates/Logo.js';
+import Breadcrumbs from './Breadcrumbs';
+import ICONS from './icons';
+
 const Header = () => {
 	const [ showRevokePopover, setShowRevokePopover ] = useState( true );
 	const formCreationleft = srfm_admin?.srfm_ai_usage_details?.remaining ?? 0;
@@ -36,9 +38,21 @@ const Header = () => {
 	return (
 		<div>
 			<Topbar className="fixed inset-x-0 top-0 z-[1] py-0 px-0 pt-0 pb-0 min-h-0 h-14 gap-4 shadow-sm bg-background-primary/75 backdrop-blur-[5px]">
-				<Topbar.Left className="gap-3 pl-8">
+				<Topbar.Left className="gap-3 pl-5">
 					<Topbar.Item>
-						<Logo />
+						<Button
+							variant="ghost"
+							onClick={ () => {
+								window.location.href =
+									'/wp-admin/admin.php?page=sureforms_menu';
+							} }
+							className="focus:[box-shadow:none] p-0"
+						>
+							{ ICONS.logo }
+						</Button>
+					</Topbar.Item>
+					<Topbar.Item>
+						<Breadcrumbs />
 					</Topbar.Item>
 				</Topbar.Left>
 				<Topbar.Right>
