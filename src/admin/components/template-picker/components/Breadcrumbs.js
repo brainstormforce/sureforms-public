@@ -17,15 +17,6 @@ const Breadcrumbs = () => {
 			<Breadcrumb.List>
 				{ page === 'add-new-form' && (
 					<Breadcrumb.Item>
-						<Breadcrumb.Link
-							href={ `${ srfm_admin.site_url }/wp-admin/admin.php?page=sureforms_menu` }
-						>
-							{ __( 'Dashboard', 'sureforms' ) }
-						</Breadcrumb.Link>
-					</Breadcrumb.Item>
-				) }
-				{ page === 'add-new-form' && (
-					<Breadcrumb.Item>
 						<ChevronRight color="#bdc1c7" className="size-3" />
 						<Breadcrumb.Link
 							href={ `${ srfm_admin.site_url }/wp-admin/admin.php?page=add-new-form` }
@@ -33,12 +24,12 @@ const Breadcrumbs = () => {
 							{ method !== 'ai' ? (
 								<>
 									<Breadcrumb.Page>
-										{ __( 'Create New Form', 'sureforms' ) }
+										{ __( 'Add New Form', 'sureforms' ) }
 									</Breadcrumb.Page>
 								</>
 							) : (
 								<span>
-									{ __( 'Create New Form', 'sureforms' ) }
+									{ __( 'Add New Form', 'sureforms' ) }
 								</span>
 							) }
 						</Breadcrumb.Link>
@@ -51,7 +42,7 @@ const Breadcrumbs = () => {
 							href={ `${ srfm_admin.site_url }/wp-admin/admin.php?page=add-new-form&method=ai` }
 						>
 							<Breadcrumb.Page>
-								{ __( 'Generate with AI', 'sureforms' ) }
+								{ __( 'Describe your Form', 'sureforms' ) }
 							</Breadcrumb.Page>
 						</Breadcrumb.Link>
 					</Breadcrumb.Item>
