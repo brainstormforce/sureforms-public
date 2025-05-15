@@ -177,13 +177,15 @@ const Range = ( props ) => {
 								onReset={ resetValues }
 								attributeNames={ [
 									props.data.label,
-									props.displayUnit
-										? props.unit.label
-										: false,
-								] }
+									props.displayUnit ? props.unit.label : null,
+								].filter( Boolean ) }
 								setAttributes={ props?.setAttributes }
 								isFormSpecific={ props?.isFormSpecific }
-								value={ props?.value }
+								isValueArray={ true }
+								value={ [
+									props?.value,
+									props.displayUnit ? props.unit.value : null,
+								].filter( Boolean ) }
 							/>
 						) }
 						{ props.displayUnit && (

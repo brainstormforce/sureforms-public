@@ -21,8 +21,8 @@
 		border-radius: var( --srfm-input-field-border-radius ) !important;
 		background-color: var( --srfm-color-input-background ) !important;
 		height: var( --srfm-input-height ) !important;
+		@include srfm-input-margin-styles( true );
 		outline: 0 !important;
-		margin: var( --srfm-input-field-margin ) !important;
 	} @else {
 		font-size: var( --srfm-input-field-font-size );
 		font-weight: var( --srfm-input-field-font-weight );
@@ -33,8 +33,8 @@
 		border-radius: var( --srfm-input-field-border-radius );
 		background-color: var( --srfm-color-input-background );
 		height: var( --srfm-input-height );
+		@include srfm-input-margin-styles;
 		outline: 0;
-		margin: var( --srfm-input-field-margin );
 	}
 
 	&::placeholder {
@@ -96,7 +96,7 @@
 	margin: 0 -4px;
 	padding: var( --srfm-multi-choice-outer-padding ) 0;
 
-	@media ( min-width: 431px ) {
+	@media ( min-width: 481px ) {
 		&.srfm-choice-width-100 {
 			.srfm-multi-choice-single {
 				width: 100%;
@@ -209,7 +209,8 @@
 		height: auto;
 	}
 
-	p {
+	p,
+	label {
 		font-size: 1em;
 		line-height: var( --srfm-input-field-line-height );
 		margin-top: 0;
@@ -258,7 +259,7 @@
 	svg {
 		path {
 			stroke: var( --srfm-color-multi-choice-svg );
-			stroke-opacity: 0.7;
+			stroke-opacity: 1;
 		}
 	}
 }
@@ -296,7 +297,10 @@
 		background-color: var( --srfm-color-input-background );
 		height: var( --srfm-input-height );
 		outline: 0;
-		margin: var( --srfm-input-field-margin );
+		margin-top: var( --srfm-input-field-margin-top );
+		margin-bottom: var( --srfm-input-field-margin-bottom );
+		margin-left: 0;
+		margin-right: 0;
 		transition: 0.2s ease-out;
 		padding-top: 0;
 		padding-bottom: 0;
@@ -305,9 +309,21 @@
 		&.srfm-input-focused {
 			box-shadow: 0px 0px 0px 3px var( --srfm-color-input-border-focus-glow );
 			border-color: var( --srfm-color-input-border-hover );
+
+			// Adding border color to the prefix and suffix elements on focus.
+			.srfm-number-prefix,
+			.srfm-number-suffix {
+				border-color: var( --srfm-color-input-border-hover );
+			}
 		}
 		&.srfm-input-hovered {
 			border-color: var( --srfm-color-input-border-hover );
+
+			// Adding border color to the prefix and suffix elements on hover.
+			.srfm-number-prefix,
+			.srfm-number-suffix {
+				border-color: var( --srfm-color-input-border-hover );
+			}
 		}
 
 		.srfm-input-number,
@@ -405,5 +421,40 @@
 	// Gradient Overlay Specific Styles.
 	&.srfm-overlay-gradient::before {
 		background: var( --srfm-bg-overlay-gradient );
+	}
+}
+
+// Row Gap and Column Gap Mixin.
+@mixin srfm-gap-styles {
+	row-gap: var( --srfm-row-gap-between-blocks );
+	column-gap: var( --srfm-column-gap-between-blocks );
+}
+
+// Form Container Padding Mixin.
+@mixin srfm-form-padding-styles( $top: --srfm-form-padding-top, $right: --srfm-form-padding-right, $bottom: --srfm-form-padding-bottom, $left: --srfm-form-padding-left, $default: 0 ) {
+	padding-top: var( $top, $default );
+	padding-right: var( $right, $default );
+	padding-bottom: var( $bottom, $default );
+	padding-left: var( $left, $default );
+}
+// Form Container Border Radius Mixin.
+@mixin srfm-form-border-radius-styles( $top: --srfm-form-border-radius-top, $right: --srfm-form-border-radius-right, $bottom: --srfm-form-border-radius-bottom, $left: --srfm-form-border-radius-left, $default: 0 ) {
+	border-top-left-radius: var( $top, $default );
+	border-top-right-radius: var( $right, $default );
+	border-bottom-right-radius: var( $bottom, $default );
+	border-bottom-left-radius: var( $left, $default );
+}
+
+@mixin srfm-input-margin-styles( $important: false ) {
+	@if ( $important ) {
+		margin-top: var( --srfm-input-label-gap, var( --srfm-input-field-margin-top ) ) !important;
+		margin-bottom: var( --srfm-input-field-margin-bottom ) !important;
+		margin-right: 0 !important;
+		margin-left: 0 !important;
+	} @else {
+		margin-top: var( --srfm-input-label-gap, var( --srfm-input-field-margin-top ) );
+		margin-bottom: var( --srfm-input-field-margin-bottom );
+		margin-right: 0;
+		margin-left: 0;
 	}
 }

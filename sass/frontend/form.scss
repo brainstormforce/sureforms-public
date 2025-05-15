@@ -5,9 +5,16 @@
 	position: relative;
 	padding: 0;
 	height: 100%;
-	padding: 32px;
+	// Form Container Padding.
+	@include srfm-form-padding-styles;
+	// Form Container Border Radius.
+	@include srfm-form-border-radius-styles;
 
 	@include srfm-background-control-styles;
+
+	&[class*="srfm-overlay"]::before {
+		@include srfm-form-border-radius-styles;
+	}
 
 	// styles for core paragraph block
 	.srfm-custom-wp-paragraph {
@@ -70,18 +77,8 @@
 	}
 
 	.srfm-form {
-		.srfm-block-single,
-		.srfm-submit-container,
-		.uagb-block
-		// .srfm-captcha-container:not( .srfm-submit-button, .srfm-custom-button )
-		{
-			padding: 0 0.5em;
-		}
-
 		.srfm-captcha-container {
 			width: 100%;
-			padding: 0 var( --srfm-col-gap-between-blocks ) !important;
-			margin-bottom: var( --srfm-row-gap-between-blocks );
 
 			// Adding a default fixed height to the h-captcha container to manage the error spacing.
 			.h-captcha {
@@ -91,7 +88,7 @@
 
 		.srfm-validation-error {
 			@include srfm-error-styles;
-			margin: var( --srfm-input-field-margin ) 0 0;
+			margin: var( --srfm-input-field-margin-top ) 0 0;
 		}
 
 		.uagb-block {
@@ -100,7 +97,8 @@
 		}
 
 		.srfm-required {
-			color: var( --srfm-error-color );
+			// Keeping this color static to avoid changing with error message color.
+			color: #dc2626;
 		}
 
 		.srfm-block {

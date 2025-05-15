@@ -865,6 +865,18 @@ button.components-button.srfm-review-select-btn.is-secondary {
 	flex: 1;
 }
 
+// Text Styles Popup Stylings.
+.components-base-control {
+	.srfm-text-style-options {
+		margin-bottom: 0;
+		.srfm-control-popup {
+			display: flex;
+			flex-direction: column;
+			gap: 15px;
+		}
+	}
+}
+
 @import "styles/gutenberg-override";
 @import "styles/control-responsive";
 @import "styles/control-header";

@@ -2,7 +2,7 @@ import { renderToString, useEffect, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import Logo from '../dashboard/templates/Logo';
 import useWhatsNewRSS from '../../lib/whats-new/useWhatsNewRSS';
-import { Topbar, Badge, Button, HamburgerMenu } from '@bsf/force-ui';
+import { Topbar, Badge, Button, HamburgerMenu, Label } from '@bsf/force-ui';
 import { CircleHelp, ArrowUpRight, Megaphone } from 'lucide-react';
 import { addQueryParam, cn } from '@Utils/Helpers';
 import UpgradeNotice from './UpgradeNotice';
@@ -18,7 +18,7 @@ const NAV_ITEMS = [
 	},
 	{
 		slug: 'sureforms_form',
-		text: __( 'All Forms', 'sureforms' ),
+		text: __( 'Forms', 'sureforms' ),
 		link: `${ siteURL }/wp-admin/edit.php?post_type=sureforms_form`,
 	},
 	{
@@ -78,7 +78,9 @@ const Header = () => {
 
 	return (
 		<div className="top-8 z-[1]">
-			{ ! isProActive && ! isLicenseActive && activePage?.slug === 'sureforms_menu' && <UpgradeNotice /> }
+			{ ! isProActive &&
+				! isLicenseActive &&
+				activePage?.slug === 'sureforms_menu' && <UpgradeNotice /> }
 			<Topbar className="py-0 px-4 pt-0 pb-0 min-h-0 h-14 gap-4 shadow-sm bg-background-primary/75 backdrop-blur-[5px]">
 				<Topbar.Left className="gap-3">
 					<Topbar.Item className="w-auto h-auto lg:hidden">
@@ -113,7 +115,7 @@ const Header = () => {
 											'Upgrade SureForms',
 											'sureforms'
 										) }{ ' ' }
-										<ArrowUpRight className="size-4" />
+										<ArrowUpRight className="size-5" />
 									</HamburgerMenu.Option>
 								) }
 							</HamburgerMenu.Options>
@@ -129,7 +131,7 @@ const Header = () => {
 							{ NAV_ITEMS.map( ( item ) => (
 								<a
 									className={ cn(
-										'h-full text-text-secondary text-sm font-medium no-underline px-1 content-center relative focus:outline-none',
+										'h-full text-text-secondary text-sm font-medium no-underline px-1 content-center relative focus:outline-none hover:text-text-primary focus:[box-shadow:none]',
 										activePage?.slug === item?.slug &&
 											'text-text-primary before:content-[""] before:absolute before:h-px before:bg-border-interactive before:bottom-0 before:inset-x-0'
 									) }
@@ -144,11 +146,11 @@ const Header = () => {
 					{ ! isProActive && ! isLicenseActive && (
 						<Topbar.Item>
 							<Button
-								icon={ <ArrowUpRight /> }
+								icon={ <ArrowUpRight className="size-5" /> }
 								iconPosition="right"
 								variant="link"
 								size="sm"
-								className="h-full text-link-primary text-sm font-semibold no-underline hover:no-underline px-1 content-center [box-shadow:none] focus:[box-shadow:none] focus:outline-none"
+								className="h-full text-link-primary text-sm font-semibold no-underline hover:no-underline hover:text-link-primary-hover px-1 content-center [box-shadow:none] focus:[box-shadow:none] focus:outline-none"
 								onClick={ () =>
 									window.open(
 										addQueryParam(
@@ -167,12 +169,43 @@ const Header = () => {
 					) }
 				</Topbar.Middle>
 				<Topbar.Right>
-					<Topbar.Item>
-						<Badge
-							label={ `V ${ srfm_admin?.plugin_version }` }
+					<Topbar.Item className="flex gap-3 items-center">
+						<Label
 							size="xs"
 							variant="neutral"
+							className="text-text-tertiary"
+						>
+							{ srfm_admin?.plugin_version }
+						</Label>
+						<Badge
+							label={ __( 'Core', 'sureforms' ) }
+							className="text-text-tertiary"
+							size="xs"
+							type="rounded"
+							variant="neutral"
 						/>
+						{ isProActive && (
+							<>
+								<span className="text-text-tertiary">|</span>
+								<Label
+									size="xs"
+									variant="neutral"
+									className="text-text-tertiary"
+								>
+									{ srfm_admin?.pro_plugin_version }
+								</Label>
+								<Badge
+									label={
+										srfm_admin?.pro_plugin_name.split(
+											' '
+										)[ 1 ]
+									}
+									size="xs"
+									variant="inverse"
+									type="rounded"
+								/>
+							</>
+						) }
 					</Topbar.Item>
 					{ ( isProActive || isLicenseActive ) && (
 						<Topbar.Item>
@@ -194,7 +227,10 @@ const Header = () => {
 										label={
 											isLicenseActive
 												? __( 'Activated', 'sureforms' )
-												: __( 'Activate', 'sureforms' )
+												: __(
+													'Unlicensed',
+													'sureforms'
+												  )
 										}
 										size="xs"
 										variant={
@@ -206,7 +242,19 @@ const Header = () => {
 						</Topbar.Item>
 					) }
 					<Topbar.Item className="p-1">
-						<CircleHelp className="size-4" />
+						<Button
+							size="xs"
+							variant="ghost"
+							className="p-0 focus:[box-shadow:none] [box-shadow:none] text-text-primary"
+							onClick={ () => {
+								window.open(
+									'https://sureforms.com/docs/',
+									'_blank',
+									'noopener noreferrer'
+								);
+							} }
+							icon={ <CircleHelp className="size-4" /> }
+						></Button>
 					</Topbar.Item>
 					<Topbar.Item className="gap-2">
 						<div id="srfm_whats_new" className="[&_a]:!p-1" />

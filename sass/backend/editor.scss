@@ -19,6 +19,17 @@ body.post-type-sureforms_form {
 		}
 	}
 
+	/**
+	 * Setting the cursor to default for the range control with only pixel units.
+	 * This is applicable for only the row gap and column gap component as it has only single unit.
+	 */
+	.srfm-form-row-gap-component,
+	.srfm-form-column-gap-component {
+		.srfm-control__units .srfm-range-control__units--Pixel {
+			cursor: unset;
+		}
+	}
+
 	.editor-styles-wrapper {
 		@include srfm-background-control-styles( true );
 	}
@@ -346,6 +357,8 @@ body.post-type-sureforms_form {
 		max-width: calc( 620px + 0.6em ) !important; //Astra theme compatibility. It overrides the width.
 		margin: 0 auto;
 		margin-top: 2em;
+		// Removed the margin-bottom from blocks, will be handled using the gap property.
+		@include srfm-gap-styles;
 
 		// apply width to all blocks except the address block.
 		.block-list-appender,
@@ -365,8 +378,8 @@ body.post-type-sureforms_form {
 				margin-left: 0 !important; // This is needed to get the field width working.
 				margin-right: 0 !important; // This is needed to get the field width working.
 				margin-top: 0 !important; // Had to add as various themes distort the layout.
+				padding: 0 6px; // Adding the padding to the block so it does not overlap with the selection border.
 			}
-			padding: 0 0.5rem;
 			max-width: 100%;
 		}
 	}
@@ -509,25 +522,14 @@ body.post-type-sureforms_form {
 		padding: 0;
 		margin: 0 auto 6em auto;
 
-		.srfm-btn-bg-color {
-			font-family: inherit;
-			text-decoration: none;
-			border: 0px;
-			padding: var( --srfm-btn-padding ) !important;
-			font-size: var( --srfm-btn-font-size ) !important;
-			font-weight: var( --srfm-btn-font-weight ) !important;
-			line-height: var( --srfm-btn-line-height ) !important;
-			border-radius: var( --srfm-btn-border-radius ) !important;
-			background: var( --srfm-color-scheme-primary ) !important;
-			color: var( --srfm-color-scheme-text-on-primary ) !important;
-			border: 1px solid var( --srfm-color-scheme-primary ) !important;
-		}
 		.srfm-btn-alignment {
 			position: absolute;
 			transform: translateX( var( --srfm-submit-alignment-backend ) );
 			right: var( --srfm-submit-alignment-backend );
 			max-width: var( --srfm-submit-width-backend );
 			width: 100%;
+			font-family: inherit;
+			text-decoration: none;
 
 			label {
 				display: inline-block;
@@ -608,6 +610,22 @@ body.post-type-sureforms_form {
 		display: flex;
 		gap: 8px;
 		align-items: center;
+	}
+	/*
+	* Custom Styling Component Styles.
+	*/
+	.srfm-btn-bg {
+		.srfm-bg-type-container {
+			.srfm-multi-buttons-control {
+				display: flex;
+				flex-direction: column;
+				align-items: flex-start;
+				row-gap: 10px;
+			}
+		}
+		.srfm-control-tabs {
+			margin-bottom: 25px; // Same as .components-base-control
+		}
 	}
 }
 

@@ -63,7 +63,7 @@ msgstr "Nuovo modulo"
 #: admin/admin.php:307
 #: admin/admin.php:343
 #: inc/global-settings/email-summary.php:107
-#: inc/post-types.php:889
+#: inc/post-types.php:996
 #: assets/build/dashboard.js:2
 msgid "Entries"
 msgstr "Voci"
@@ -80,8 +80,8 @@ msgstr "Modifica %1$s"
 #: inc/ai-form-builder/ai-auth.php:145
 #: inc/background-process.php:101
 #: inc/create-new-form.php:126
-#: inc/export.php:62
-#: inc/export.php:127
+#: inc/export.php:63
+#: inc/export.php:128
 #: inc/form-submit.php:208
 #: inc/form-submit.php:866
 #: inc/forms-data.php:87
@@ -649,14 +649,14 @@ msgstr "Errore nella creazione del modulo SureForms,"
 msgid "New form submission"
 msgstr "Nuova invio del modulo"
 
-#: inc/export.php:74
+#: inc/export.php:75
 msgid "You do not have permission to export forms."
 msgstr "Non hai il permesso di esportare i moduli."
 
-#: inc/export.php:146
-#: inc/export.php:150
-#: inc/export.php:185
-#: inc/export.php:202
+#: inc/export.php:147
+#: inc/export.php:151
+#: inc/export.php:186
+#: inc/export.php:203
 msgid "Failed to import form."
 msgstr "Importazione del modulo non riuscita."
 
@@ -702,7 +702,7 @@ msgid "I consent to have this website store my submitted information so they can
 msgstr "Acconsento a che questo sito web memorizzi le informazioni che ho inviato in modo che possano rispondere alla mia richiesta."
 
 #: inc/fields/inlinebutton-markup.php:182
-#: inc/generate-form-markup.php:468
+#: inc/generate-form-markup.php:522
 msgid "Please verify that you are not a robot."
 msgstr "Per favore verifica che tu non sia un robot."
 
@@ -794,9 +794,9 @@ msgstr "Sconosciuto"
 msgid "Sorry, you are not allowed to view the form."
 msgstr "Spiacente, non sei autorizzato a visualizzare il modulo."
 
-#: inc/generate-form-markup.php:520
+#: inc/generate-form-markup.php:575
 #: assets/build/formSubmit.js:2
-#: assets/js/unminified/form-submit.js:256
+#: assets/js/unminified/form-submit.js:261
 msgid "There was an error trying to submit your form. Please try again."
 msgstr "C'è stato un errore nel tentativo di inviare il modulo. Per favore riprova."
 
@@ -1004,28 +1004,28 @@ msgstr "Modulo pubblicato."
 msgid "Form updated."
 msgstr "Modulo aggiornato."
 
-#: inc/post-types.php:729
+#: inc/post-types.php:836
 msgid "Admin Notification Email"
 msgstr "Email di notifica amministrativa"
 
 #. translators: %s: Form title smart tag
-#: inc/post-types.php:736
+#: inc/post-types.php:843
 msgid "New Form Submission - %s"
 msgstr "Nuova presentazione del modulo - %s"
 
-#: inc/post-types.php:888
+#: inc/post-types.php:995
 msgid "Shortcode"
 msgstr "Codice breve"
 
-#: inc/post-types.php:952
+#: inc/post-types.php:1059
 msgid "Please choose the SureForms export file (.json) that you wish to import."
 msgstr "Si prega di scegliere il file di esportazione SureForms (.json) che si desidera importare."
 
-#: inc/post-types.php:955
+#: inc/post-types.php:1062
 msgid "Import Now"
 msgstr "Importa ora"
 
-#: inc/post-types.php:957
+#: inc/post-types.php:1064
 msgid "There is some error in json file, please export the SureForms Forms again."
 msgstr "C'è un errore nel file json, per favore esporta di nuovo i moduli SureForms."
 
@@ -2036,7 +2036,7 @@ msgstr "Ponte Cerchio Esclamazione"
 
 #: modules/gutenberg/icons/icons-v6-0.php:2482
 msgid "Bridge Circle Xmark"
-msgstr ""
+msgstr "Cerchio del ponte Xmark"
 
 #: modules/gutenberg/icons/icons-v6-0.php:2493
 msgid "Bridge Lock"
@@ -6491,7 +6491,7 @@ msgstr "Repubblicano"
 
 #: modules/gutenberg/icons/icons-v6-2.php:4714
 msgid "Researchgate"
-msgstr ""
+msgstr "Researchgate"
 
 #: modules/gutenberg/icons/icons-v6-2.php:4725
 msgid "Resolving"
@@ -9253,6 +9253,8 @@ msgstr "Aggiungi blocchi alla barra delle azioni rapide"
 msgid "Re-arrange block inside Quick Action Bar"
 msgstr "Riorganizza il blocco all'interno della Barra delle Azioni Rapide"
 
+#: admin/admin.php:261
+#: admin/admin.php:262
 #: admin/views/single-entry.php:157
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
@@ -9754,7 +9756,7 @@ msgstr "Interruzione di pagina"
 msgid "Previous"
 msgstr "Precedente"
 
-#: inc/post-types.php:836
+#: inc/post-types.php:943
 #: assets/build/formEditor.js:172
 msgid "Thank you"
 msgstr "Grazie"
@@ -10432,10 +10434,12 @@ msgstr "Linea attraverso"
 msgid "%"
 msgstr "%"
 
+#: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:181
 msgid "Top"
 msgstr "In alto"
 
+#: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:181
 msgid "Bottom"
 msgstr "Fondo"
@@ -10564,6 +10568,7 @@ msgstr ""
 msgid "Spacing"
 msgstr "Spaziatura"
 
+#: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:181
 #: modules/gutenberg/build/blocks.js:187
 msgid "Padding"
@@ -11336,7 +11341,7 @@ msgid "You must be logged in to make this request."
 msgstr "Devi essere connesso per effettuare questa richiesta."
 
 #: inc/create-new-form.php:144
-#: inc/export.php:137
+#: inc/export.php:138
 #: inc/global-settings/global-settings.php:104
 msgid "You do not have permissions to manage options."
 msgstr "Non hai i permessi per gestire le opzioni."
@@ -11470,30 +11475,25 @@ msgstr "Il modulo generato dall'IA potrebbe richiedere una revisione manuale e d
 msgid "SUREFORMS PREMIUM FIELDS"
 msgstr "CAMPI PREMIUM DI SUREFORMS"
 
-#: admin/admin.php:261
-#: admin/admin.php:262
-msgid "Upgrade SureForms"
-msgstr "Aggiorna SureForms"
-
 #: assets/build/formEditor.js:172
 msgid "The current 'From Email' address does not match your website domain name (%1$s). This can cause your notification emails to be blocked or marked as spam. Alternately, try using a From Address that matches your website domain (admin@%2$s)."
 msgstr "L'attuale indirizzo 'Da Email' non corrisponde al nome di dominio del tuo sito web (%1$s). Questo può causare il blocco o la classificazione come spam delle tue email di notifica. In alternativa, prova a utilizzare un indirizzo Da che corrisponda al dominio del tuo sito web (admin@%2$s)."
 
 #: assets/build/formEditor.js:172
 msgid "The current 'From Email' address does not match your website domain name (%s). This can cause your notification emails to be blocked or marked as spam. "
-msgstr "L'indirizzo email 'Da' attuale non corrisponde al nome di dominio del tuo sito web (%s). Questo può causare il blocco o la classificazione come spam delle tue email di notifica. "
+msgstr "L'indirizzo email 'Da' attuale non corrisponde al nome di dominio del tuo sito web (%s). Questo può causare il blocco o la classificazione come spam delle tue email di notifica."
 
 #: assets/build/formEditor.js:172
 msgid "We strongly recommend that you install the free "
-msgstr "Consigliamo vivamente di installare il gratuito "
+msgstr "Consigliamo vivamente di installare il gratuito"
 
 #: assets/build/formEditor.js:172
 msgid " plugin! The Setup Wizard makes it easy to fix your emails. "
-msgstr " plugin! Il Wizard di configurazione rende facile correggere le tue email. "
+msgstr "plugin! Il Wizard di configurazione rende facile correggere le tue email."
 
 #: assets/build/formEditor.js:172
 msgid " Alternately, try using a From Address that matches your website domain (admin@%s)."
-msgstr " In alternativa, prova a utilizzare un indirizzo mittente che corrisponda al dominio del tuo sito web (admin@%s)."
+msgstr "In alternativa, prova a utilizzare un indirizzo mittente che corrisponda al dominio del tuo sito web (admin@%s)."
 
 #: assets/build/formEditor.js:172
 msgid "Please enter a valid email address. Your notifications won't be sent if the field is not filled in correctly."
@@ -11510,6 +11510,38 @@ msgstr "Da Email"
 #: assets/build/formEditor.js:172
 msgid "Notifications can only use 1 From Email. Please do not enter multiple addresses."
 msgstr "Le notifiche possono utilizzare solo 1 indirizzo email del mittente. Si prega di non inserire più indirizzi."
+
+#: assets/build/formEditor.js:172
+msgid "The current 'From Email' address may not match your website domain name (%1$s). This can cause your notification emails to be blocked or marked as spam. Alternately, try using a From Address that matches your website domain (admin@%2$s)."
+msgstr "L'attuale indirizzo 'Da Email' potrebbe non corrispondere al nome di dominio del tuo sito web (%1$s). Questo può causare il blocco o la classificazione come spam delle tue email di notifica. In alternativa, prova a utilizzare un indirizzo Da che corrisponda al dominio del tuo sito web (admin@%2$s)."
+
+#: assets/build/formEditor.js:172
+msgid "The current 'From Email' address may not match your website domain name (%s). This can cause your notification emails to be blocked or marked as spam. "
+msgstr "L'attuale indirizzo 'Da Email' potrebbe non corrispondere al nome di dominio del tuo sito web (%s). Questo può causare il blocco o la classificazione come spam delle tue email di notifica. "
+
+#: assets/build/formEditor.js:172
+msgid "Border Radius"
+msgstr "Raggio del bordo"
+
+#: assets/build/formEditor.js:172
+msgid "Form Theme"
+msgstr "Tema del modulo"
+
+#: assets/build/formEditor.js:172
+msgid "Unlock Form Theme"
+msgstr "Sblocca tema modulo"
+
+#: assets/build/formEditor.js:172
+msgid "With the SureForms Starter Plan, access essential form styling options to personalize the look and feel of your forms, ensuring a seamless and engaging user experience."
+msgstr "Con il piano Starter di SureForms, accedi alle opzioni essenziali di stile dei moduli per personalizzare l'aspetto e la sensazione dei tuoi moduli, garantendo un'esperienza utente fluida e coinvolgente."
+
+#: assets/build/formEditor.js:172
+msgid "Instant Form Padding"
+msgstr "Riempimento istantaneo del modulo"
+
+#: assets/build/formEditor.js:172
+msgid "Instant Form Border Radius"
+msgstr "Raggio del bordo del modulo istantaneo"
 
 #: inc/post-types.php:124
 msgctxt "post type general name"
