@@ -1,5 +1,5 @@
 import { __ } from '@wordpress/i18n';
-import { useState } from '@wordpress/element';
+import { useState, memo } from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
 import { Button, Input, Loader, Select, Switch, toast } from '@bsf/force-ui';
 import ContentSection from '../components/ContentSection';
@@ -26,7 +26,9 @@ const GeneralPage = ( {
 		return (
 			<>
 				<Switch
-					label={ { heading: __( 'Enable Email Summaries ', 'sureforms' ) } }
+					label={ {
+						heading: __( 'Enable Email Summaries ', 'sureforms' ),
+					} }
 					value={ emailTabOptions.srfm_email_summary }
 					onChange={ ( value ) =>
 						updateGlobalSettings(
@@ -107,7 +109,10 @@ const GeneralPage = ( {
 							<Select.Portal id="srfm-settings-container">
 								<Select.Options>
 									{ days.map( ( day ) => (
-										<Select.Option key={ day.value } value={ day.value }>
+										<Select.Option
+											key={ day.value }
+											value={ day.value }
+										>
 											{ day.label }
 										</Select.Option>
 									) ) }
@@ -144,6 +149,53 @@ const GeneralPage = ( {
 		);
 	};
 
+	const UsageTrackingContent = memo( () => {
+		const description = (
+			<>
+				<p>
+					{ __(
+						'Allow SureForms to track non-sensitive usage tracking data.',
+						'sureforms'
+					) }
+				</p>
+				<a href="https://store.brainstormforce.com/usage-tracking/?utm_source=sureforms_global_settings&utm_medium=surefroms_general_settings&utm_campaign=usage_tracking" target="_blank" rel="noopener noreferrer">
+					{ __( ' Learn More', 'sureforms' ) }
+				</a>
+			</>
+		);
+
+		return (
+			<Switch
+				label={ {
+					heading: __( 'Enable Usage Tracking', 'sureforms' ),
+					description,
+				} }
+				value={ generalTabOptions.srfm_bsf_analytics }
+				onChange={ ( value ) =>
+					updateGlobalSettings(
+						'srfm_bsf_analytics',
+						value,
+						'general-settings'
+					)
+				}
+			/>
+		);
+	} );
+
+	const ShowUsageTrackingSection = ( { isProActive, isLoading } ) => {
+		if ( isProActive ) {
+			return null;
+		}
+
+		return (
+			<ContentSection
+				loading={ isLoading }
+				title={ __( 'Usage Tracking', 'sureforms' ) }
+				content={ <UsageTrackingContent /> }
+			/>
+		);
+	};
+
 	return (
 		<div className="space-y-6">
 			<ContentSection
@@ -155,6 +207,10 @@ const GeneralPage = ( {
 				loading={ loading }
 				title={ __( 'IP Logging', 'sureforms' ) }
 				content={ IPLoggingContent() }
+			/>
+			<ShowUsageTrackingSection
+				isProActive={ srfm_admin?.is_pro_active }
+				isLoading={ loading }
 			/>
 		</div>
 	);
