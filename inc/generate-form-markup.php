@@ -103,7 +103,7 @@ class Generate_Form_Markup {
 			$bg_image_repeat           = $form_styling['bg_image_repeat'] ?? 'no-repeat';
 			$bg_image_size             = $form_styling['bg_image_size'] ?? 'cover';
 			$bg_image_size_custom      = $form_styling['bg_image_size_custom'] ?? 100;
-			$bg_image_size_custom_type = $form_styling['bg_image_size_custom_type'] ?? '%';
+			$bg_image_size_custom_unit = $form_styling['bg_image_size_custom_unit'] ?? '%';
 			$bg_gradient               = $form_styling['bg_gradient'] ?? 'linear-gradient(90deg, #FFC9B2 0%, #C7CBFF 100%)';
 			$gradient_type             = $form_styling['gradient_type'] ?? 'basic'; // Basic or advanced.
 			$is_advanced_gradient      = 'advanced' === $gradient_type ? true : false;
@@ -133,6 +133,36 @@ class Generate_Form_Markup {
 			$bg_overlay_gradient_location_1 = $is_overlay_advanced_gradient && isset( $form_styling['bg_overlay_gradient_location_1'] ) ? $form_styling['bg_overlay_gradient_location_1'] : '';
 			$bg_overlay_gradient_location_2 = $is_overlay_advanced_gradient && isset( $form_styling['bg_overlay_gradient_location_2'] ) ? $form_styling['bg_overlay_gradient_location_2'] : '';
 			$bg_overlay_gradient_angle      = $is_overlay_advanced_gradient && isset( $form_styling['bg_overlay_gradient_angle'] ) ? $form_styling['bg_overlay_gradient_angle'] : '';
+			// Embed Form Settings.
+			$form = [
+				// Padding.
+				'padding_top'          => isset( $form_styling['form_padding_top'] ) ? floatval( $form_styling['form_padding_top'] ) : 0,
+				'padding_right'        => isset( $form_styling['form_padding_right'] ) ? floatval( $form_styling['form_padding_right'] ) : 0,
+				'padding_bottom'       => isset( $form_styling['form_padding_bottom'] ) ? floatval( $form_styling['form_padding_bottom'] ) : 0,
+				'padding_left'         => isset( $form_styling['form_padding_left'] ) ? floatval( $form_styling['form_padding_left'] ) : 0,
+				'padding_unit'         => isset( $form_styling['form_padding_unit'] ) ? Helper::get_string_value( $form_styling['form_padding_unit'] ) : 'px',
+				// Border Radius.
+				'border_radius_top'    => isset( $form_styling['form_border_radius_top'] ) ? floatval( $form_styling['form_border_radius_top'] ) : 0,
+				'border_radius_right'  => isset( $form_styling['form_border_radius_right'] ) ? floatval( $form_styling['form_border_radius_right'] ) : 0,
+				'border_radius_bottom' => isset( $form_styling['form_border_radius_bottom'] ) ? floatval( $form_styling['form_border_radius_bottom'] ) : 0,
+				'border_radius_left'   => isset( $form_styling['form_border_radius_left'] ) ? floatval( $form_styling['form_border_radius_left'] ) : 0,
+				'border_radius_unit'   => isset( $form_styling['form_border_radius_unit'] ) ? Helper::get_string_value( $form_styling['form_border_radius_unit'] ) : 'px',
+			];
+			// Instant Form Settings.
+			$instant_form = [
+				// Padding.
+				'padding_top'          => isset( $form_styling['instant_form_padding_top'] ) ? floatval( $form_styling['instant_form_padding_top'] ) : 32,
+				'padding_right'        => isset( $form_styling['instant_form_padding_right'] ) ? floatval( $form_styling['instant_form_padding_right'] ) : 32,
+				'padding_bottom'       => isset( $form_styling['instant_form_padding_bottom'] ) ? floatval( $form_styling['instant_form_padding_bottom'] ) : 32,
+				'padding_left'         => isset( $form_styling['instant_form_padding_left'] ) ? floatval( $form_styling['instant_form_padding_left'] ) : 32,
+				'padding_unit'         => isset( $form_styling['instant_form_padding_unit'] ) ? Helper::get_string_value( $form_styling['instant_form_padding_unit'] ) : 'px',
+				// Border Radius.
+				'border_radius_top'    => isset( $form_styling['instant_form_border_radius_top'] ) ? floatval( $form_styling['instant_form_border_radius_top'] ) : 12,
+				'border_radius_right'  => isset( $form_styling['instant_form_border_radius_right'] ) ? floatval( $form_styling['instant_form_border_radius_right'] ) : 12,
+				'border_radius_bottom' => isset( $form_styling['instant_form_border_radius_bottom'] ) ? floatval( $form_styling['instant_form_border_radius_bottom'] ) : 12,
+				'border_radius_left'   => isset( $form_styling['instant_form_border_radius_left'] ) ? floatval( $form_styling['instant_form_border_radius_left'] ) : 12,
+				'border_radius_unit'   => isset( $form_styling['instant_form_border_radius_unit'] ) ? Helper::get_string_value( $form_styling['instant_form_border_radius_unit'] ) : 'px',
+			];
 
 			if ( 'custom' === $overlay_size ) {
 				$bg_overlay_custom_size      = $form_styling['bg_overlay_custom_size'] ?? 100;
@@ -140,7 +170,7 @@ class Generate_Form_Markup {
 				$overlay_size                = $bg_overlay_custom_size . $bg_overlay_custom_size_unit;
 			}
 
-			$background_classes = apply_filters( 'srfm_add_background_classes', Helper::get_background_classes( $bg_type, $overlay_type, $bg_image ) );
+			$background_classes = apply_filters( 'srfm_add_background_classes', Helper::get_background_classes( $bg_type, $overlay_type, $bg_image ), $id );
 
 			$neve_theme_margin_class_name = 'srfm-neve-theme-add-margin-bottom';
 			$theme_name                   = wp_get_theme()->get( 'Name' );
@@ -300,61 +330,84 @@ class Generate_Form_Markup {
 					--srfm-dropdown-placeholder-color: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.50 );
 					--srfm-dropdown-icon-color: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.65 );
 					--srfm-dropdown-icon-disabled: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.25 );
+
 					/* Background Control Variables */
 					<?php
-						$styling_vars = [];
+						// Form Styles.
+						$styling_vars = [
+							// Instant Form Padding.
+							'--srfm-instant-form-padding-top' => sanitize_text_field( "{$instant_form['padding_top']}{$instant_form['padding_unit']}" ),
+							'--srfm-instant-form-padding-right' => sanitize_text_field( "{$instant_form['padding_right']}{$instant_form['padding_unit']}" ),
+							'--srfm-instant-form-padding-bottom' => sanitize_text_field( "{$instant_form['padding_bottom']}{$instant_form['padding_unit']}" ),
+							'--srfm-instant-form-padding-left' => sanitize_text_field( "{$instant_form['padding_left']}{$instant_form['padding_unit']}" ),
+							// Instant Form Border Radius.
+							'--srfm-instant-form-border-radius-top' => sanitize_text_field( "{$instant_form['border_radius_top']}{$instant_form['border_radius_unit']}" ),
+							'--srfm-instant-form-border-radius-right' => sanitize_text_field( "{$instant_form['border_radius_right']}{$instant_form['border_radius_unit']}" ),
+							'--srfm-instant-form-border-radius-bottom' => sanitize_text_field( "{$instant_form['border_radius_bottom']}{$instant_form['border_radius_unit']}" ),
+							'--srfm-instant-form-border-radius-left' => sanitize_text_field( "{$instant_form['border_radius_left']}{$instant_form['border_radius_unit']}" ),
+							// Embed Form Padding.
+							'--srfm-form-padding-top'    => sanitize_text_field( "{$form['padding_top']}{$form['padding_unit']}" ),
+							'--srfm-form-padding-right'  => sanitize_text_field( "{$form['padding_right']}{$form['padding_unit']}" ),
+							'--srfm-form-padding-bottom' => sanitize_text_field( "{$form['padding_bottom']}{$form['padding_unit']}" ),
+							'--srfm-form-padding-left'   => sanitize_text_field( "{$form['padding_left']}{$form['padding_unit']}" ),
+							// Embed Form Border Radius.
+							'--srfm-form-border-radius-top' => sanitize_text_field( "{$form['border_radius_top']}{$form['border_radius_unit']}" ),
+							'--srfm-form-border-radius-right' => sanitize_text_field( "{$form['border_radius_right']}{$form['border_radius_unit']}" ),
+							'--srfm-form-border-radius-bottom' => sanitize_text_field( "{$form['border_radius_bottom']}{$form['border_radius_unit']}" ),
+							'--srfm-form-border-radius-left' => sanitize_text_field( "{$form['border_radius_left']}{$form['border_radius_unit']}" ),
+						];
 						// Background Styles.
-					if ( 'image' === $bg_type && ! empty( $bg_image ) ) {
-						$bg_size_merged = 'custom' === $bg_image_size ? "{$bg_image_size_custom}{$bg_image_size_custom_type}" : $bg_image_size;
-						$styling_vars  += [
-							'--srfm-bg-image'      => 'url(' . esc_html( $bg_image ) . ')',
-							'--srfm-bg-position'   => esc_html(
-								( ( ! empty( $bg_image_position['x'] ) ? $bg_image_position['x'] : 0.5 ) * 100 ) . '% ' .
-								( ( ! empty( $bg_image_position['y'] ) ? $bg_image_position['y'] : 0.5 ) * 100 ) . '% '
-							),
-							'--srfm-bg-attachment' => esc_html( $bg_image_attachment ),
-							'--srfm-bg-repeat'     => esc_html( $bg_image_repeat ),
-							'--srfm-bg-size'       => esc_html( $bg_size_merged ),
-						];
-					} elseif ( 'color' === $bg_type && ! empty( $bg_color ) ) {
-						$styling_vars['--srfm-bg-color'] = esc_html( $bg_color );
-					} elseif ( 'gradient' === $bg_type && ! empty( $bg_gradient ) ) {
-						if ( $is_advanced_gradient ) {
-							$bg_gradient = Helper::get_gradient_css( $bg_gradient_type, $bg_gradient_color_1, $bg_gradient_color_2, $bg_gradient_location_1, $bg_gradient_location_2, $bg_gradient_angle );
+						if ( 'image' === $bg_type && ! empty( $bg_image ) ) {
+							$bg_size_merged = 'custom' === $bg_image_size ? "{$bg_image_size_custom}{$bg_image_size_custom_unit}" : $bg_image_size;
+							$styling_vars  += [
+								'--srfm-bg-image'      => 'url(' . esc_url_raw( $bg_image ) . ')',
+								'--srfm-bg-position'   => sanitize_text_field(
+									( ( ! empty( $bg_image_position['x'] ) ? $bg_image_position['x'] : 0.5 ) * 100 ) . '% ' .
+									( ( ! empty( $bg_image_position['y'] ) ? $bg_image_position['y'] : 0.5 ) * 100 ) . '% '
+								),
+								'--srfm-bg-attachment' => sanitize_text_field( $bg_image_attachment ),
+								'--srfm-bg-repeat'     => sanitize_text_field( $bg_image_repeat ),
+								'--srfm-bg-size'       => sanitize_text_field( $bg_size_merged ),
+							];
+						} elseif ( 'color' === $bg_type && ! empty( $bg_color ) ) {
+							$styling_vars['--srfm-bg-color'] = sanitize_text_field( $bg_color );
+						} elseif ( 'gradient' === $bg_type && ! empty( $bg_gradient ) ) {
+							if ( $is_advanced_gradient ) {
+								$bg_gradient = Helper::get_gradient_css( $bg_gradient_type, $bg_gradient_color_1, $bg_gradient_color_2, $bg_gradient_location_1, $bg_gradient_location_2, $bg_gradient_angle );
+							}
+							$styling_vars['--srfm-bg-gradient'] = sanitize_text_field( $bg_gradient );
 						}
-						$styling_vars['--srfm-bg-gradient'] = esc_html( $bg_gradient );
-					}
 							// Overlay Variables.
-					if ( 'image' === $bg_type && 'image' === $overlay_type && ! empty( $overlay_image ) ) {
-						$styling_vars += [
-							'--srfm-bg-overlay-image'      => 'url(' . esc_html( $overlay_image ) . ')',
-							'--srfm-bg-overlay-position'   => esc_html(
-								( ( ! empty( $overlay_position['x'] ) ? $overlay_position['x'] : 0.5 ) * 100 ) . '% ' .
-								( ( ! empty( $overlay_position['y'] ) ? $overlay_position['y'] : 0.5 ) * 100 ) . '%'
-							),
-							'--srfm-bg-overlay-attachment' => esc_html( $overlay_attachment ),
-							'--srfm-bg-overlay-repeat'     => esc_html( $overlay_repeat ),
-							'--srfm-bg-overlay-size'       => esc_html( $overlay_size ),
-							'--srfm-bg-overlay-blend-mode' => esc_html( $overlay_blend_mode ),
-						];
-					} elseif ( 'image' === $bg_type && 'color' === $overlay_type && ! empty( $overlay_color ) ) {
-						$styling_vars += [
-							'--srfm-bg-overlay-color' => esc_html( $overlay_color ),
-						];
-					} elseif ( 'image' === $bg_type && 'gradient' === $overlay_type && ! empty( $bg_overlay_gradient ) ) {
-						if ( $is_overlay_advanced_gradient ) {
-							$bg_overlay_gradient = Helper::get_gradient_css( $bg_overlay_gradient_type, $bg_overlay_gradient_color_1, $bg_overlay_gradient_color_2, $bg_overlay_gradient_location_1, $bg_overlay_gradient_location_2, $bg_overlay_gradient_angle );
+						if ( 'image' === $bg_type && 'image' === $overlay_type && ! empty( $overlay_image ) ) {
+							$styling_vars += [
+								'--srfm-bg-overlay-image'  => 'url(' . esc_url_raw( $overlay_image ) . ')',
+								'--srfm-bg-overlay-position' => sanitize_text_field(
+									( ( ! empty( $overlay_position['x'] ) ? $overlay_position['x'] : 0.5 ) * 100 ) . '% ' .
+									( ( ! empty( $overlay_position['y'] ) ? $overlay_position['y'] : 0.5 ) * 100 ) . '%'
+								),
+								'--srfm-bg-overlay-attachment' => sanitize_text_field( $overlay_attachment ),
+								'--srfm-bg-overlay-repeat' => sanitize_text_field( $overlay_repeat ),
+								'--srfm-bg-overlay-size'   => sanitize_text_field( $overlay_size ),
+								'--srfm-bg-overlay-blend-mode' => sanitize_text_field( $overlay_blend_mode ),
+							];
+						} elseif ( 'image' === $bg_type && 'color' === $overlay_type && ! empty( $overlay_color ) ) {
+							$styling_vars += [
+								'--srfm-bg-overlay-color' => sanitize_text_field( $overlay_color ),
+							];
+						} elseif ( 'image' === $bg_type && 'gradient' === $overlay_type && ! empty( $bg_overlay_gradient ) ) {
+							if ( $is_overlay_advanced_gradient ) {
+								$bg_overlay_gradient = Helper::get_gradient_css( $bg_overlay_gradient_type, $bg_overlay_gradient_color_1, $bg_overlay_gradient_color_2, $bg_overlay_gradient_location_1, $bg_overlay_gradient_location_2, $bg_overlay_gradient_angle );
+							}
+							$styling_vars += [
+								'--srfm-bg-overlay-gradient' => sanitize_text_field( $bg_overlay_gradient ),
+							];
 						}
-						$styling_vars += [
-							'--srfm-bg-overlay-gradient' => esc_html( $bg_overlay_gradient ),
-						];
-					}
-						$styling_vars['--srfm-bg-overlay-opacity'] = esc_html( $overlay_opacity );
+						$styling_vars['--srfm-bg-overlay-opacity'] = floatval( $overlay_opacity );
 						// Output the CSS variables.
-					foreach ( $styling_vars as $key => $value ) {
-						echo esc_html( Helper::get_string_value( $key ) ) . ': ' . esc_html( $value ) . ';';
-					}
-					?>
+						foreach ( $styling_vars as $key => $value ) {
+							echo esc_html( Helper::get_string_value( $key ) ) . ': ' . esc_html( Helper::get_string_value( $value ) ) . ';';
+						}
+						?>
 					<?php
 					// Echo the CSS variables for the form according to the field spacing selected.
 					foreach ( $selected_size as $variable => $value ) {
@@ -366,6 +419,7 @@ class Generate_Form_Markup {
 							'id'            => $id,
 							'primary_color' => $primary_color_var,
 							'help_color'    => $help_color_var,
+							'form_styling'  => $form_styling,
 						]
 					);
 					// echo custom css on page/post.
@@ -473,12 +527,13 @@ class Generate_Form_Markup {
 					if ( $is_page_break ) {
 						do_action( 'srfm_page_break_btn', $id );
 					}
+					$srfm_button_classes = apply_filters( 'srfm_add_button_classes', [ '1' === $btn_from_theme ? 'wp-block-button__link' : 'srfm-btn-frontend srfm-button srfm-submit-button', 'v3-reCAPTCHA' === $recaptcha_version ? ' g-recaptcha' : '' ] );
 					?>
 
 					<div class="srfm-submit-container <?php echo esc_attr( $is_page_break ? 'srfm-hide' : '' ); ?>" style="<?php echo ! $should_show_submit_button ? 'visibility:hidden;position:absolute;' : ''; ?>">
 						<div style="width: <?php echo esc_attr( $full ? '100%' : '' ); ?>; text-align: <?php echo esc_attr( $submit_button_alignment ); ?>" class="wp-block-button">
 						<?php do_action( 'srfm_before_submit_button', $id ); ?>
-						<button style="width:<?php echo esc_attr( $full ? '100%;' : '' ); ?>" id="srfm-submit-btn"class="<?php echo esc_attr( '1' === $btn_from_theme ? 'wp-block-button__link' : 'srfm-btn-frontend srfm-button srfm-submit-button' ); ?><?php echo 'v3-reCAPTCHA' === $recaptcha_version ? ' g-recaptcha' : ''; ?>"
+						<button style="<?php echo esc_attr( $full ? 'width: 100%;' : '' ); ?>" id="srfm-submit-btn" class="<?php echo esc_attr( implode( ' ', array_filter( $srfm_button_classes ) ) ); ?>"
 						<?php if ( 'v3-reCAPTCHA' === $recaptcha_version ) { ?>
 							data-callback="recaptchaCallback"
 							recaptcha-type="<?php echo esc_attr( $recaptcha_version ); ?>"

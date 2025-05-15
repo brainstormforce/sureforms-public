@@ -61,7 +61,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 					className={ `${
 						is_inherit_from_theme
 							? 'wp-block-button__link'
-							: 'srfm-button srfm-submit-button srfm-inline-submit-button srfm-btn-bg-color'
+							: 'srfm-button srfm-submit-button srfm-inline-submit-button'
 					}` }
 				>
 					<RichText
