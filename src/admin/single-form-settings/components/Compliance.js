@@ -21,13 +21,16 @@ const Compliance = ( { complianceData } ) => {
 		} );
 	};
 
-	const ComplianceSwitch = ( { id, label, value, onChange } ) => (
-		<Switch
-			label={ label }
-			value={ value }
-			onChange={ ( val ) => onChange( id, val ) }
-		/>
-	);
+	const ComplianceSwitch = ( { id, label, value, onChange, key } ) => {
+		return (
+			<Switch
+				key={ key }
+				label={ label }
+				value={ value }
+				onChange={ ( val ) => onChange( id, val ) }
+			/>
+		);
+	};
 
 	const switches = [
 		{
@@ -74,15 +77,14 @@ const Compliance = ( { complianceData } ) => {
 			<Container direction="column" className="gap-6">
 				{ switches.map(
 					( { id, label, condition = true } ) =>
-						condition && (
-							<ComplianceSwitch
-								key={ id }
-								id={ id }
-								label={ label }
-								value={ complianceData[ 0 ]?.[ id ] }
-								onChange={ handleToggle }
-							/>
-						)
+						condition &&
+						ComplianceSwitch( {
+							id,
+							label,
+							value: complianceData[ 0 ]?.[ id ],
+							onChange: handleToggle,
+							key: id,
+						} )
 				) }
 				{ complianceData[ 0 ]?.auto_delete_entries &&
 					! complianceData[ 0 ]?.do_not_store_entries &&
