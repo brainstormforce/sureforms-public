@@ -15,6 +15,9 @@ import { createRoot } from 'react-dom/client';
 import ConversationalFormSettingsPreview from './components/ConversationalFormSettingsPreview';
 import { applyFilters } from '@wordpress/hooks';
 import { getInstantFormAdditionalSettings } from '@Components/hooks';
+import Spacing from '@Components/spacing';
+import { instantFormAttributes } from '@Attributes/getBlocksDefaultAttributes';
+import { setDefaultFormAttributes } from '@Utils/Helpers';
 
 let live_mode_prev_srfm_instant_form_settings = {};
 
@@ -44,12 +47,14 @@ const InstantFormComponent = () => {
 		return {
 			_srfm_submit_button_text: metaValue?._srfm_submit_button_text,
 			_srfm_instant_form_settings: metaValue?._srfm_instant_form_settings,
+			_srfm_forms_styling: metaValue?._srfm_forms_styling,
 			getPermalinkParts,
 		};
 	}, [] );
 
 	const _srfm_submit_button_text = getMetaValue._srfm_submit_button_text || '';
 	const _srfm_instant_form_settings = getMetaValue._srfm_instant_form_settings || {};
+	const _srfm_forms_styling = getMetaValue._srfm_forms_styling || {};
 	const prefix = getMetaValue?.getPermalinkParts?.prefix;
 	const postName = getMetaValue?.getPermalinkParts?.postName;
 
@@ -65,6 +70,27 @@ const InstantFormComponent = () => {
 		single_page_form_title,
 		use_banner_as_page_background,
 	} = _srfm_instant_form_settings;
+
+	// Set the default keys in the meta object if they are not present.
+	setDefaultFormAttributes( instantFormAttributes, _srfm_forms_styling );
+
+	const {
+		// Form Properties.
+		// Padding.
+		instant_form_padding_top,
+		instant_form_padding_right,
+		instant_form_padding_bottom,
+		instant_form_padding_left,
+		instant_form_padding_unit,
+		instant_form_padding_link,
+		// Border Radius.
+		instant_form_border_radius_top,
+		instant_form_border_radius_right,
+		instant_form_border_radius_bottom,
+		instant_form_border_radius_left,
+		instant_form_border_radius_unit,
+		instant_form_border_radius_link,
+	} = _srfm_forms_styling;
 
 	const { editPost } = useDispatch( editorStore );
 
@@ -257,6 +283,18 @@ const InstantFormComponent = () => {
 		editPost( {
 			meta: {
 				_srfm_instant_form_settings: instantFormSettings,
+			},
+		} );
+	};
+
+	// Custom setAttributes function to update the form styling related settings.
+	const customSetAttributes = ( updatedSettings ) => {
+		editPost( {
+			meta: {
+				_srfm_forms_styling: {
+					..._srfm_forms_styling,
+					...updatedSettings,
+				},
 			},
 		} );
 	};
@@ -483,6 +521,66 @@ const InstantFormComponent = () => {
 											responsive={ false }
 											isFormSpecific={ true }
 											onChange={ ( value ) => onHandleChange( 'form_container_width', value ) }
+										/>
+									</div>
+									<div className="srfm-instant-form-settings">
+										<Spacing
+											label={ __( 'Instant Form Padding', 'sureforms' ) }
+											valueTop={ {
+												value: instant_form_padding_top,
+												label: 'instant_form_padding_top',
+											} }
+											valueRight={ {
+												value: instant_form_padding_right,
+												label: 'instant_form_padding_right',
+											} }
+											valueBottom={ {
+												value: instant_form_padding_bottom,
+												label: 'instant_form_padding_bottom',
+											} }
+											valueLeft={ {
+												value: instant_form_padding_left,
+												label: 'instant_form_padding_left',
+											} }
+											unit={ {
+												value: instant_form_padding_unit,
+												label: 'instant_form_padding_unit',
+											} }
+											link={ {
+												value: instant_form_padding_link,
+												label: 'instant_form_padding_link',
+											} }
+											setAttributes={ customSetAttributes }
+										/>
+									</div>
+									<div className="srfm-instant-form-settings">
+										<Spacing
+											label={ __( 'Instant Form Border Radius', 'sureforms' ) }
+											valueTop={ {
+												value: instant_form_border_radius_top,
+												label: 'instant_form_border_radius_top',
+											} }
+											valueRight={ {
+												value: instant_form_border_radius_right,
+												label: 'instant_form_border_radius_right',
+											} }
+											valueBottom={ {
+												value: instant_form_border_radius_bottom,
+												label: 'instant_form_border_radius_bottom',
+											} }
+											valueLeft={ {
+												value: instant_form_border_radius_left,
+												label: 'instant_form_border_radius_left',
+											} }
+											unit={ {
+												value: instant_form_border_radius_unit,
+												label: 'instant_form_border_radius_unit',
+											} }
+											link={ {
+												value: instant_form_border_radius_link,
+												label: 'instant_form_border_radius_link',
+											} }
+											setAttributes={ customSetAttributes }
 										/>
 									</div>
 								</div>
