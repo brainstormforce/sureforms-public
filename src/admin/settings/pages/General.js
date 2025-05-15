@@ -1,5 +1,5 @@
 import { __ } from '@wordpress/i18n';
-import { useState, memo } from '@wordpress/element';
+import { useState } from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
 import { Button, Input, Loader, Select, Switch, toast } from '@bsf/force-ui';
 import ContentSection from '../components/ContentSection';
@@ -149,7 +149,7 @@ const GeneralPage = ( {
 		);
 	};
 
-	const UsageTrackingContent = memo( () => {
+	const UsageTrackingContent = () => {
 		const description = (
 			<>
 				<p>
@@ -180,20 +180,6 @@ const GeneralPage = ( {
 				}
 			/>
 		);
-	} );
-
-	const ShowUsageTrackingSection = ( { isProActive, isLoading } ) => {
-		if ( isProActive ) {
-			return null;
-		}
-
-		return (
-			<ContentSection
-				loading={ isLoading }
-				title={ __( 'Usage Tracking', 'sureforms' ) }
-				content={ <UsageTrackingContent /> }
-			/>
-		);
 	};
 
 	return (
@@ -208,10 +194,13 @@ const GeneralPage = ( {
 				title={ __( 'IP Logging', 'sureforms' ) }
 				content={ IPLoggingContent() }
 			/>
-			<ShowUsageTrackingSection
-				isProActive={ srfm_admin?.is_pro_active }
-				isLoading={ loading }
-			/>
+			{ ! srfm_admin?.is_pro_active &&
+				<ContentSection
+					loading={ loading }
+					title={ __( 'Usage Tracking', 'sureforms' ) }
+					content={ UsageTrackingContent() }
+				/>
+			}
 		</div>
 	);
 };
