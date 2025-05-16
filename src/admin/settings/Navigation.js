@@ -69,20 +69,31 @@ const NavLink = ( { label, path, icon: Icon, subPage = '' } ) => {
 		<Link
 			to={ {
 				location: `${ srfm_admin.site_url }/wp-admin/admin.php`,
-				search: `?page=sureforms_form_settings&tab=${ path }${ subPage ? `&subpage=${ subPage }` : '' }`,
+				search: `?page=sureforms_form_settings&tab=${ path }${
+					subPage ? `&subpage=${ subPage }` : ''
+				}`,
 			} }
 			className={ cn(
 				'flex items-center gap-3.5 px-2.5 py-2 rounded-md transition-[colors,box-shadow] text-text-secondary hover:bg-brand-background-50 no-underline hover:no-underline focus:outline-none focus:ring-1 focus:ring-focus',
 				( isActive() ||
-									applyFilters(
-										'srfm.settings.nav.addActiveClass',
-										addActiveClass,
-										label,
-										activatedTab.get( 'tab' )
-									) ) && 'active bg-brand-background-50 text-text-primary'
+					applyFilters(
+						'srfm.settings.nav.addActiveClass',
+						addActiveClass,
+						label,
+						activatedTab.get( 'tab' )
+					) ) &&
+					'active bg-brand-background-50 text-text-primary'
 			) }
 		>
-			<span className={ cn( 'contents [&>svg]:size-5 text-icon-secondary [&>svg]:!text-icon-secondary', isActive() && 'text-icon-interactive [&>svg]:!text-icon-interactive' ) }>{ Icon }</span>
+			<span
+				className={ cn(
+					'contents [&>svg]:size-5 text-icon-secondary [&>svg]:!text-icon-secondary',
+					isActive() &&
+						'text-icon-interactive [&>svg]:!text-icon-interactive'
+				) }
+			>
+				{ Icon }
+			</span>
 			<span className="text-base font-normal">{ label }</span>
 		</Link>
 	);
@@ -97,14 +108,23 @@ const SubmenuAccordion = ( { label, path, icon: Icon, submenu } ) => {
 
 	return (
 		<Accordion iconType="arrow" type="simple" defaultValue="subpage">
-			<Accordion.Item value="subpage">
+			<Accordion.Item value="subpage" className="max-w-[230px] ">
 				<Accordion.Trigger
 					iconType="arrow"
-					className={ cn( 'p-2 pl-2.5 text-base font-normal [&_svg]:text-icon-secondary hover:bg-brand-background-50 rounded-md no-underline cursor-pointer focus:outline-none focus:shadow-none transition ease-in-out duration-150 [&_svg]:size-5 [&_div]:font-normal [&_div]:text-text-secondary', isActive() && '[&_div]:text-text-primary [&>div>svg]:!text-icon-interactive' ) }
+					className={ cn(
+						'p-2 pl-2.5 text-base font-normal hover:bg-brand-background-50 rounded-md no-underline cursor-pointer focus:outline-none focus:shadow-none transition ease-in-out duration-150',
+						'flex items-start gap-2 text-left',
+						'[&_svg]:text-icon-secondary [&_svg]:size-5',
+						'[&_div]:font-normal [&_div]:text-text-secondary',
+						isActive() &&
+							'[&_div]:text-text-primary [&>div>svg]:!text-icon-interactive'
+					) }
 					aria-label={ `${ label } submenu` }
 				>
-					{ !! Icon && Icon }
-					{ label }
+					<span className="shrink-0">{ !! Icon && Icon }</span>
+					<span className="whitespace-normal break-words text-left">
+						{ label }
+					</span>
 				</Accordion.Trigger>
 				<Accordion.Content className="p-2 [&>div]:pb-0">
 					<div
@@ -112,8 +132,18 @@ const SubmenuAccordion = ( { label, path, icon: Icon, submenu } ) => {
 						role="menu"
 					>
 						{ submenu.map(
-							( { slug: subpage, name: subLabel, icon: SubIcon } ) => (
-								<NavLink key={ subpage } path={ path } label={ subLabel } icon={ SubIcon } subPage={ subpage } />
+							( {
+								slug: subpage,
+								name: subLabel,
+								icon: SubIcon,
+							} ) => (
+								<NavLink
+									key={ subpage }
+									path={ path }
+									label={ subLabel }
+									icon={ SubIcon }
+									subPage={ subpage }
+								/>
 							)
 						) }
 					</div>
@@ -125,18 +155,27 @@ const SubmenuAccordion = ( { label, path, icon: Icon, submenu } ) => {
 
 const Navigation = () => {
 	return (
-		<div
-			className="flex-shrink-0 bg-white"
-		>
+		<div className="flex-shrink-0 bg-white">
 			<div className="px-4 pb-4 pt-2 absolute">
 				<nav className="space-y-2">
-					{ navigation.map( ( item ) => (
+					{ navigation.map( ( item ) =>
 						item.submenu ? (
-							<SubmenuAccordion key={ item.name } label={ item.name } path={ item.slug } icon={ item.icon } submenu={ item.submenu } />
+							<SubmenuAccordion
+								key={ item.name }
+								label={ item.name }
+								path={ item.slug }
+								icon={ item.icon }
+								submenu={ item.submenu }
+							/>
 						) : (
-							<NavLink key={ item.name } label={ item.name } path={ item.slug } icon={ item.icon } />
+							<NavLink
+								key={ item.name }
+								label={ item.name }
+								path={ item.slug }
+								icon={ item.icon }
+							/>
 						)
-					) ) }
+					) }
 				</nav>
 			</div>
 		</div>
