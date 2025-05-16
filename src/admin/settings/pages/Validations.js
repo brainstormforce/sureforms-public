@@ -7,12 +7,12 @@ import { Input, Label, Tabs } from '@bsf/force-ui';
 
 const TABS = [
 	{
-		label: __( 'Error Messages', 'sureforms' ),
-		slug: 'error-messages',
+		label: __( 'Required Error Messages', 'sureforms' ),
+		slug: 'required-error-messages',
 	},
 	{
-		label: __( 'Unique Error Messages', 'sureforms' ),
-		slug: 'unique-error-messages',
+		label: __( 'Other Error Messages', 'sureforms' ),
+		slug: 'other-error-messages',
 	},
 ];
 
@@ -28,106 +28,26 @@ const ValidationsPage = ( {
 			'srfm.general.tab.validationFields',
 			[
 				{
-					key: 'srfm_url_block_required_text',
-					label: __(
-						'URL Block Required Error Message',
-						'sureforms'
-					),
-				},
-				{
-					key: 'srfm_input_block_required_text',
-					label: __(
-						'Input Block Required Error Message',
-						'sureforms'
-					),
-				},
-				{
 					key: 'srfm_input_block_unique_text',
-					label: __(
-						'Input Block Unique Error Message',
-						'sureforms'
-					),
-				},
-				{
-					key: 'srfm_address_block_required_text',
-					label: __(
-						'Address Block Required Error Message',
-						'sureforms'
-					),
-				},
-				{
-					key: 'srfm_phone_block_required_text',
-					label: __(
-						'Phone Block Required Error Message',
-						'sureforms'
-					),
+					label: __( 'Input Field Unique', 'sureforms' ),
 				},
 				{
 					key: 'srfm_phone_block_unique_text',
-					label: __(
-						'Phone Block Unique Error Message',
-						'sureforms'
-					),
+					label: __( 'Phone Field Unique', 'sureforms' ),
 				},
-				{
-					key: 'srfm_number_block_required_text',
-					label: __(
-						'Number Block Required Error Message',
-						'sureforms'
-					),
-				},
-				{
-					key: 'srfm_textarea_block_required_text',
-					label: __(
-						'Textarea Block Required Error Message',
-						'sureforms'
-					),
-				},
-				{
-					key: 'srfm_multi_choice_block_required_text',
-					label: __(
-						'Multiple Choice Block Required Error Message',
-						'sureforms'
-					),
-				},
-				{
-					key: 'srfm_checkbox_block_required_text',
-					label: __(
-						'Checkbox Block Required Error Message',
-						'sureforms'
-					),
-				},
-				{
-					key: 'srfm_email_block_required_text',
-					label: __(
-						'Email Block Required Error Message',
-						'sureforms'
-					),
-				},
+
 				{
 					key: 'srfm_email_block_unique_text',
-					label: __(
-						'Email Block Unique Error Message',
-						'sureforms'
-					),
+					label: __( 'Email Field Unique', 'sureforms' ),
 				},
-				{
-					key: 'srfm_dropdown_block_required_text',
-					label: __(
-						'Dropdown Block Required Error Message',
-						'sureforms'
-					),
-				},
+
 				{
 					key: 'srfm_valid_phone_number',
-					label: __(
-						'Invalid Phone Number Block Error Message',
-						'sureforms'
-					),
+					label: __( 'Invalid Field Number Block', 'sureforms' ),
 				},
 				{
 					key: 'srfm_valid_url',
-					label: __( 'Invalid URL Error Message', 'sureforms' ),
+					label: __( 'Invalid URL', 'sureforms' ),
 				},
 				{
 					key: 'srfm_confirm_email_same',
@@ -138,20 +58,11 @@ const ValidationsPage = ( {
 				},
 				{
 					key: 'srfm_valid_email',
-					label: __( 'Invalid Email Error Message', 'sureforms' ),
+					label: __( 'Invalid Email', 'sureforms' ),
 				},
-			]
-		);
-
-		const uniqueValidationFields = applyFilters(
-			'srfm.general.tab.uniqueValidationFields',
-			[
 				{
 					key: 'srfm_input_min_value',
-					label: __(
-						'Number Minimum Value Error Message',
-						'sureforms'
-					),
+					label: __( 'Number Minimum Value', 'sureforms' ),
 					// Translators: %s represents the minimum input value.
 					description: __(
 						'%s represents the minimum input value. For example: "Minimum value is 10."',
@@ -160,10 +71,7 @@ const ValidationsPage = ( {
 				},
 				{
 					key: 'srfm_input_max_value',
-					label: __(
-						'Number Maximum Value Error Message',
-						'sureforms'
-					),
+					label: __( 'Number Maximum Value', 'sureforms' ),
 					// Translators: %s represents the maximum input value.
 					description: __(
 						'%s represents the maximum input value. For example: "Maximum value is 100."',
@@ -172,10 +80,7 @@ const ValidationsPage = ( {
 				},
 				{
 					key: 'srfm_dropdown_min_selections',
-					label: __(
-						'Dropdown Minimum Selections Error Message',
-						'sureforms'
-					),
+					label: __( 'Dropdown Minimum Selections', 'sureforms' ),
 					// Translators: %s represents the minimum input length.
 					description: __(
 						'%s represents the minimum selections needed. For example: “Minimum 2 selections are required.”',
@@ -184,10 +89,7 @@ const ValidationsPage = ( {
 				},
 				{
 					key: 'srfm_dropdown_max_selections',
-					label: __(
-						'Dropdown Maximum Selections Error Message',
-						'sureforms'
-					),
+					label: __( 'Dropdown Maximum Selections', 'sureforms' ),
 					// Translators: %s represents the maximum input length.
 					description: __(
 						'%s represents the maximum selections allowed. For example: “Maximum 4 selections are allowed.”',
@@ -197,7 +99,7 @@ const ValidationsPage = ( {
 				{
 					key: 'srfm_multi_choice_min_selections',
 					label: __(
-						'Multiple Choice Minimum Selections Error Message',
+						'Multiple Choice Minimum Selections',
 						'sureforms'
 					),
 					// Translators: %s represents the minimum input length.
@@ -209,7 +111,7 @@ const ValidationsPage = ( {
 				{
 					key: 'srfm_multi_choice_max_selections',
 					label: __(
-						'Multiple Choice Maximum Selections Error Message',
+						'Multiple Choice Maximum Selections',
 						'sureforms'
 					),
 					// Translators: %s represents the maximum input length.
@@ -217,6 +119,52 @@ const ValidationsPage = ( {
 						'%s represents the maximum choices allowed. For example: “Maximum 3 selections are allowed.”',
 						'sureforms'
 					),
+				},
+			]
+		);
+
+		const requiredValidationFields = applyFilters(
+			'srfm.general.tab.requiredValidationFields',
+			[
+				{
+					key: 'srfm_url_block_required_text',
+					label: __( 'URL Field', 'sureforms' ),
+				},
+				{
+					key: 'srfm_input_block_required_text',
+					label: __( 'Input Field', 'sureforms' ),
+				},
+				{
+					key: 'srfm_address_block_required_text',
+					label: __( 'Address Field', 'sureforms' ),
+				},
+				{
+					key: 'srfm_phone_block_required_text',
+					label: __( 'Phone Field', 'sureforms' ),
+				},
+				{
+					key: 'srfm_dropdown_block_required_text',
+					label: __( 'Dropdown Field', 'sureforms' ),
+				},
+				{
+					key: 'srfm_number_block_required_text',
+					label: __( 'Number Field', 'sureforms' ),
+				},
+				{
+					key: 'srfm_textarea_block_required_text',
+					label: __( 'Textarea Field', 'sureforms' ),
+				},
+				{
+					key: 'srfm_multi_choice_block_required_text',
+					label: __( 'Multiple Choice Field', 'sureforms' ),
+				},
+				{
+					key: 'srfm_checkbox_block_required_text',
+					label: __( 'Checkbox Field', 'sureforms' ),
+				},
+				{
+					key: 'srfm_email_block_required_text',
+					label: __( 'Email Field', 'sureforms' ),
 				},
 			]
 		);
@@ -245,10 +193,10 @@ const ValidationsPage = ( {
 				<Input
 					key={ field }
 					label={ `${
-						( fieldLabel === 'Area Block Required '
-							? __( 'Textarea Block Required', 'sureforms' )
-							: fieldLabel === 'Url Block Required '
-								? __( 'URL Block Required', 'sureforms' )
+						( fieldLabel === 'Area Field'
+							? __( 'Textarea Field', 'sureforms' )
+							: fieldLabel === 'Url Field'
+								? __( 'URL Field', 'sureforms' )
 								: fieldLabel ) + __( ' Error Message', 'sureforms' )
 					}` }
 					type="text"
@@ -267,9 +215,9 @@ const ValidationsPage = ( {
 
 		return (
 			<>
-				{ ( activeTab === 'error-messages'
+				{ ( activeTab === 'other-error-messages'
 					? validationFields
-					: uniqueValidationFields
+					: requiredValidationFields
 				).map( ( field ) => {
 					// Ensure compatibility for validation fields in Pro version.
 					// If the key is not available in dynamicBlockOptions, treat it as a Pro-specific field.
