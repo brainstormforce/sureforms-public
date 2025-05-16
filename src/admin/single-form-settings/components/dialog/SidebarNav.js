@@ -30,14 +30,14 @@ const SidebarNav = ( {
 								>
 									<span
 										className={ cn(
-											'contents [&>svg]:size-5 text-icon-secondary [&>svg]:!text-icon-secondary',
+											'[&>svg]:size-5 text-icon-secondary [&>svg]:!text-icon-secondary shrink-0',
 											isActive &&
 												'text-icon-interactive [&>svg]:!text-icon-interactive'
 										) }
 									>
 										{ link.icon }
 									</span>
-									<span className="text-base font-normal">
+									<span className="text-base font-normal text-left  break-words whitespace-normal">
 										{ link.label }
 									</span>
 								</button>
