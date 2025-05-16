@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-05-14T07:33:17+00:00\n"
+"POT-Creation-Date: 2025-05-16T06:31:57+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: sureforms\n"
@@ -91,12 +91,33 @@ msgstr ""
 msgid "Edit %1$s"
 msgstr ""
 
-#: admin/admin.php:636
+#: admin/admin.php:511
+msgid "Activating..."
+msgstr ""
+
+#: admin/admin.php:512
+msgid "Activated"
+msgstr ""
+
+#: admin/admin.php:513
+#: assets/build/formEditor.js:172
+msgid "Activate"
+msgstr ""
+
+#: admin/admin.php:514
+msgid "Installing..."
+msgstr ""
+
+#: admin/admin.php:515
+msgid "Installed"
+msgstr ""
+
+#: admin/admin.php:631
 #: inc/post-types.php:88
 msgid "Import Form"
 msgstr ""
 
-#: admin/admin.php:818
+#: admin/admin.php:813
 #: api/block-patterns.php:110
 #: inc/ai-form-builder/ai-auth.php:45
 #: inc/ai-form-builder/ai-auth.php:81
@@ -109,22 +130,23 @@ msgstr ""
 #: inc/form-submit.php:866
 #: inc/forms-data.php:87
 #: inc/global-settings/global-settings.php:86
-#: inc/global-settings/global-settings.php:294
+#: inc/global-settings/global-settings.php:327
 #: inc/rest-api.php:92
+#: inc/rest-api.php:151
 msgid "Nonce verification failed."
 msgstr ""
 
-#: admin/admin.php:827
+#: admin/admin.php:822
 msgid "You cannot view this entry because it is in trash."
 msgstr ""
 
 #. translators: %1$s: Opening anchor tag with URL, %2$s: Closing anchor tag, %3$s: SureForms Pro Plugin Name.
-#: admin/admin.php:872
+#: admin/admin.php:867
 msgid "Please %1$sactivate%2$s your copy of %3$s to get new features, access support, receive update notifications, and more."
 msgstr ""
 
 #. translators: %1$s: SureForms version, %2$s: SureForms Pro Plugin Name, %3$s: SureForms Pro Version, %4$s: Anchor tag open, %5$s: Closing anchor tag.
-#: admin/admin.php:882
+#: admin/admin.php:877
 msgid "SureForms %1$s requires minimum %2$s %3$s to work properly. Please update to the latest version from %4$shere%5$s."
 msgstr ""
 
@@ -487,120 +509,86 @@ msgstr ""
 msgid "Determines whether the pattern is visible in inserter."
 msgstr ""
 
-#: inc/admin-ajax.php:78
+#: inc/admin-ajax.php:79
 msgid "No plugin specified"
 msgstr ""
 
-#: inc/admin-ajax.php:99
+#: inc/admin-ajax.php:107
 msgid "Plugin Successfully Activated"
 msgstr ""
 
-#: inc/admin-ajax.php:137
-msgid "Activating..."
-msgstr ""
-
-#: inc/admin-ajax.php:138
-msgid "Activated"
-msgstr ""
-
-#: inc/admin-ajax.php:139
-#: assets/build/formEditor.js:172
-msgid "Activate"
-msgstr ""
-
-#: inc/admin-ajax.php:141
-msgid "Installing..."
-msgstr ""
-
-#: inc/admin-ajax.php:142
-msgid "Installed"
-msgstr ""
-
-#: inc/admin-ajax.php:165
-#: assets/build/formEditor.js:172
-msgid "OttoKit"
-msgstr ""
-
-#: inc/admin-ajax.php:166
-msgid "Connect SureForms to hundreds of apps, CRMs and tools such as Slack, Mailchimp, etc."
-msgstr ""
-
-#: inc/admin-ajax.php:167
-msgid "OttoKit is a powerful automation platform that helps you connect your various plugins and apps together. It allows you to automate repetitive tasks, so you can focus on more important work."
-msgstr ""
-
-#: inc/admin-ajax.php:218
+#: inc/admin-ajax.php:161
 msgid "You do not have permission to access this page."
 msgstr ""
 
-#: inc/admin-ajax.php:222
+#: inc/admin-ajax.php:165
 msgid "Invalid nonce."
 msgstr ""
 
-#: inc/admin-ajax.php:226
+#: inc/admin-ajax.php:169
 msgid "Form ID is required."
 msgstr ""
 
-#: inc/admin-ajax.php:233
+#: inc/admin-ajax.php:176
 msgid "OttoKit is not configured properly."
 msgstr ""
 
-#: inc/admin-ajax.php:242
+#: inc/admin-ajax.php:185
 #: inc/form-submit.php:878
 msgid "Invalid form ID."
 msgstr ""
 
 #. Translators: %s: Form ID.
-#: inc/admin-ajax.php:246
+#: inc/admin-ajax.php:189
 msgid "SureForms id: %s"
 msgstr ""
 
-#: inc/admin-ajax.php:256
+#: inc/admin-ajax.php:199
 msgid "Form Submitted"
 msgstr ""
 
-#: inc/admin-ajax.php:258
+#: inc/admin-ajax.php:201
 msgid "Runs when a form is submitted"
 msgstr ""
 
-#: inc/admin-ajax.php:350
-#: inc/admin-ajax.php:379
+#: inc/admin-ajax.php:293
+#: inc/admin-ajax.php:322
 msgid "Sample data"
 msgstr ""
 
-#: inc/admin-ajax.php:354
+#: inc/admin-ajax.php:297
 msgid "Sample input data"
 msgstr ""
 
-#: inc/admin-ajax.php:356
+#: inc/admin-ajax.php:299
 msgid "Sample textarea data"
 msgstr ""
 
-#: inc/admin-ajax.php:361
-#: inc/admin-ajax.php:362
+#: inc/admin-ajax.php:304
+#: inc/admin-ajax.php:305
 msgid "Address data"
 msgstr ""
 
-#: inc/admin-ajax.php:363
+#: inc/admin-ajax.php:306
 msgid "Selected dropdown option"
 msgstr ""
 
-#: inc/admin-ajax.php:364
+#: inc/admin-ajax.php:307
 msgid "Selected Multichoice option"
 msgstr ""
 
-#: inc/admin-ajax.php:365
+#: inc/admin-ajax.php:308
 msgid "Selected radio option"
 msgstr ""
 
-#: inc/admin-ajax.php:366
+#: inc/admin-ajax.php:309
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 #: inc/lib/nps-survey/dist/main.js:1
 msgid "Submit"
 msgstr ""
 
-#: inc/admin-ajax.php:369
+#: inc/admin-ajax.php:312
 msgid "Hidden Value"
 msgstr ""
 
@@ -938,8 +926,8 @@ msgid "SureForms Email Summary - %s"
 msgstr ""
 
 #: inc/global-settings/email-summary.php:206
-#: inc/global-settings/global-settings.php:221
-#: inc/global-settings/global-settings.php:320
+#: inc/global-settings/global-settings.php:254
+#: inc/global-settings/global-settings.php:363
 #: assets/build/settings.js:172
 msgid "Monday"
 msgstr ""
@@ -976,6 +964,43 @@ msgstr ""
 
 #: inc/helper.php:557
 msgid "Sorry, you are not allowed to perform this action."
+msgstr ""
+
+#: inc/helper.php:1331
+#: assets/build/formEditor.js:172
+msgid "OttoKit"
+msgstr ""
+
+#: inc/helper.php:1332
+msgid "No-code automation tool for WordPress."
+msgstr ""
+
+#: inc/helper.php:1333
+msgid "OttoKit is a powerful automation platform that helps you connect your various plugins and apps together. It allows you to automate repetitive tasks, so you can focus on more important work."
+msgstr ""
+
+#: inc/helper.php:1343
+msgid "SureMail"
+msgstr ""
+
+#: inc/helper.php:1344
+msgid "Free and easy SMTP mails plugin."
+msgstr ""
+
+#: inc/helper.php:1352
+msgid "SureCart"
+msgstr ""
+
+#: inc/helper.php:1353
+msgid "The new way to sell on WordPress."
+msgstr ""
+
+#: inc/helper.php:1361
+msgid "Starter Templates"
+msgstr ""
+
+#: inc/helper.php:1362
+msgid "Build your dream website in minutes with AI."
 msgstr ""
 
 #: inc/nps-notice.php:109
@@ -1167,7 +1192,7 @@ msgstr ""
 msgid "Request could not be processed."
 msgstr ""
 
-#: inc/rest-api.php:104
+#: inc/rest-api.php:105
 msgid "Invalid date."
 msgstr ""
 
