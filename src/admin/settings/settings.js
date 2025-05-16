@@ -16,7 +16,6 @@ function QueryScreen() {
 }
 
 const Settings = () => {
-
 	const isRTL = srfm_admin?.is_rtl;
 	const toasterPosition = isRTL
 		? 'top-left'
