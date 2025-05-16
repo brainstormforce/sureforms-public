@@ -169,9 +169,14 @@ const AiFormBuilder = () => {
 		return <AuthErrorPopup initiateAuth={ initiateAuth } />;
 	}
 
+	const isRTL = srfm_admin?.is_rtl;
+	const toasterPosition = isRTL
+		? 'bottom-left'
+		: 'bottom-right';
+
 	return (
 		<div className="max-h-screen overflow-y-auto">
-			<Toaster position="bottom-right" design="stack" theme="light" autoDismiss={ true } dismissAfter={ 5000 } />
+			<Toaster position={ toasterPosition } design="stack" theme="light" autoDismiss={ true } dismissAfter={ 5000 } />
 			<Header />
 			<AiFormBuilderForm
 				handleCreateAiForm={ handleCreateAiForm }

@@ -16,6 +16,12 @@ function QueryScreen() {
 }
 
 const Settings = () => {
+
+	const isRTL = srfm_admin?.is_rtl;
+	const toasterPosition = isRTL
+		? 'top-left'
+		: 'top-right';
+
 	return (
 		<>
 			<Router>
@@ -29,7 +35,7 @@ const Settings = () => {
 					</div>
 				</div>
 			</Router>
-			<Toaster className="z-[999999]" />
+			<Toaster className="z-[999999]" position={ toasterPosition } />
 		</>
 	);
 };

@@ -185,6 +185,11 @@ const EmailNotification = ( {
 		},
 	];
 
+	const isRTL = srfm_admin?.is_rtl;
+	const toasterPosition = isRTL
+		? 'top-left'
+		: 'top-right';
+
 	useEffect( () => {
 		function handleClickOutside() {
 			setIsPopup( null );
@@ -202,7 +207,7 @@ const EmailNotification = ( {
 		return (
 			<>
 				<Toaster
-					position="top-right"
+					position={ toasterPosition }
 					design="stack"
 					theme="light"
 					autoDismiss={ true }
@@ -226,7 +231,7 @@ const EmailNotification = ( {
 			className="gap-2"
 		>
 			<Toaster
-				position="top-right"
+				position={ toasterPosition }
 				design="stack"
 				theme="light"
 				autoDismiss={ true }

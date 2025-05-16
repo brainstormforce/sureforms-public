@@ -9,13 +9,18 @@ import {
 export default () => {
 	const integrations = Object.entries( srfm_admin?.integrations );
 
+	const isRTL = srfm_admin?.is_rtl;
+	const toasterPosition = isRTL
+		? 'bottom-left'
+		: 'bottom-right';
+
 	return (
 		<Container
 			className="bg-background-primary border-0.5 border-solid rounded-xl border-border-subtle p-3 gap-2 shadow-sm-blur-1"
 			direction="column"
 		>
 			<Toaster
-				position="bottom-right"
+				position={ toasterPosition }
 				design="stack"
 				theme="light"
 				autoDismiss={ true }

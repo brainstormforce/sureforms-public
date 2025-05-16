@@ -513,6 +513,7 @@ class Admin {
 			'plugin_activate_text'    => __( 'Activate', 'sureforms' ),
 			'plugin_installing_text'  => __( 'Installing...', 'sureforms' ),
 			'plugin_installed_text'   => __( 'Installed', 'sureforms' ),
+			'is_rtl'                  => $is_rtl,
 		];
 
 		$is_screen_sureforms_menu          = Helper::validate_request_context( 'sureforms_menu', 'page' );
