@@ -108,7 +108,7 @@ const SubmenuAccordion = ( { label, path, icon: Icon, submenu } ) => {
 
 	return (
 		<Accordion iconType="arrow" type="simple" defaultValue="subpage">
-			<Accordion.Item value="subpage" className="max-w-[230px] ">
+			<Accordion.Item value="subpage" className="max-w-[230px]">
 				<Accordion.Trigger
 					iconType="arrow"
 					className={ cn(
@@ -155,7 +155,7 @@ const SubmenuAccordion = ( { label, path, icon: Icon, submenu } ) => {
 
 const Navigation = () => {
 	return (
-		<div className="flex-shrink-0 bg-white">
+		<div className="flex-shrink-0 bg-background-primary">
 			<div className="px-4 pb-4 pt-2 absolute">
 				<nav className="space-y-2">
 					{ navigation.map( ( item ) =>

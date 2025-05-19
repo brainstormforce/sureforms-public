@@ -76,7 +76,7 @@ export default () => {
 							)
 						}
 					>
-						{ __( 'Upgrade now', 'sureforms' ) }
+						{ __( 'Upgrade Now', 'sureforms' ) }
 					</Button>
 				</Container>
 			</Container.Item>
