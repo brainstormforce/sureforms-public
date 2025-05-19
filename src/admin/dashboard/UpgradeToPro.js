@@ -38,7 +38,7 @@ export default () => {
 						/>
 						<Label size="sm" className="text-text-secondary font-normal">
 							{ __(
-								'Upgrade to SureForms Premium and access advanced fields and features that enhance your form-building experience:',
+								'Access smarter fields, powerful tools, and advanced features that help you build better forms, faster than ever.',
 								'sureforms'
 							) }
 						</Label>

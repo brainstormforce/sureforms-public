@@ -135,7 +135,7 @@ const FromEmail = ( {
 	}, [ formData ] );
 
 	const fromEmailHelpText = __(
-		'Notifications can only use 1 From Email. Please do not enter multiple addresses.',
+		'Notifications can use only one From Email so please enter a single address.',
 		'sureforms'
 	);
 

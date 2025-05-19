@@ -18,13 +18,13 @@ export default () => {
 		},
 		{
 			key: 'join-community',
-			label: __( 'Join the Community', 'sureforms' ),
+			label: __( 'Join our Community on Facebook', 'sureforms' ),
 			icon: <MessagesSquare size={ 16 } />,
 			link: 'https://www.facebook.com/groups/surecrafted',
 		},
 		{
 			key: 'rate-us',
-			label: __( 'Rate Us', 'sureforms' ),
+			label: __( 'Leave Us a Review', 'sureforms' ),
 			icon: <Star size={ 16 } />,
 			link: 'https://wordpress.org/support/plugin/sureforms/reviews/?rate=5#new-post',
 		},

@@ -23,7 +23,15 @@ import { useState, useEffect, useRef } from '@wordpress/element';
 
 // Text for chart when data is loading or no data is available
 const ChartText = ( { text, color = '', weight = '', size = 'md' } ) => (
-	<Label tag="p" size={ size } className={ cn( 'text-center  max-w-sm mx-auto font-semibold', color, weight ) }>
+	<Label
+		tag="p"
+		size={ size }
+		className={ cn(
+			'text-center  max-w-sm mx-auto font-semibold',
+			color,
+			weight
+		) }
+	>
 		{ text ||
 			__( 'This is where your form views will appear', 'sureforms' ) }
 	</Label>
@@ -332,17 +340,28 @@ export default () => {
 					</Container>
 				</Container>
 			</Container.Item>
-			<Container.Item className="flex justify-between p-1 gap-2">
-				<Label size="sm" variant="help" className="font-semibold">
-					{ getFormLabel( selectedForm ) || 'All Forms' }
-				</Label>
-				<Container align="center" className="gap-2 p-1">
-					<div className="w-2 h-2 bg-chart-purple-500 rounded-sm"></div>
-					<Label size="xs" variant="help" className="font-medium">
-						{ __( 'Entries', 'sureforms' ) }
+			{ ! loading &&
+				( selectedForm !== '' || dataToShow.length !== 0 ) && (
+				<Container.Item className="flex justify-between p-1 gap-2">
+					<Label
+						size="sm"
+						variant="help"
+						className="font-semibold"
+					>
+						{ getFormLabel( selectedForm ) || 'All Forms' }
 					</Label>
-				</Container>
-			</Container.Item>
+					<Container align="center" className="gap-2 p-1">
+						<div className="w-2 h-2 bg-chart-purple-500 rounded-sm"></div>
+						<Label
+							size="xs"
+							variant="help"
+							className="font-medium"
+						>
+							{ __( 'Entries', 'sureforms' ) }
+						</Label>
+					</Container>
+				</Container.Item>
+			) }
 			<Container.Item
 				className={
 					'w-full flex flex-col flex-1 items-stretch justify-between rounded-md mt-2'

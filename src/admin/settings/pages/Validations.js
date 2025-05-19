@@ -32,22 +32,20 @@ const ValidationsPage = ( {
 					label: __( 'Input Field Unique', 'sureforms' ),
 				},
 				{
-					key: 'srfm_phone_block_unique_text',
-					label: __( 'Phone Field Unique', 'sureforms' ),
-				},
-
-				{
 					key: 'srfm_email_block_unique_text',
 					label: __( 'Email Field Unique', 'sureforms' ),
-				},
-
-				{
-					key: 'srfm_valid_phone_number',
-					label: __( 'Invalid Field Number Block', 'sureforms' ),
 				},
 				{
 					key: 'srfm_valid_url',
 					label: __( 'Invalid URL', 'sureforms' ),
+				},
+				{
+					key: 'srfm_phone_block_unique_text',
+					label: __( 'Phone Field Unique', 'sureforms' ),
+				},
+				{
+					key: 'srfm_valid_phone_number',
+					label: __( 'Invalid Field Number Block', 'sureforms' ),
 				},
 				{
 					key: 'srfm_confirm_email_same',
@@ -127,44 +125,44 @@ const ValidationsPage = ( {
 			'srfm.general.tab.requiredValidationFields',
 			[
 				{
-					key: 'srfm_url_block_required_text',
-					label: __( 'URL Field', 'sureforms' ),
-				},
-				{
 					key: 'srfm_input_block_required_text',
 					label: __( 'Input Field', 'sureforms' ),
 				},
 				{
-					key: 'srfm_address_block_required_text',
-					label: __( 'Address Field', 'sureforms' ),
+					key: 'srfm_email_block_required_text',
+					label: __( 'Email Field', 'sureforms' ),
+				},
+				{
+					key: 'srfm_url_block_required_text',
+					label: __( 'URL Field', 'sureforms' ),
 				},
 				{
 					key: 'srfm_phone_block_required_text',
 					label: __( 'Phone Field', 'sureforms' ),
 				},
 				{
-					key: 'srfm_dropdown_block_required_text',
-					label: __( 'Dropdown Field', 'sureforms' ),
-				},
-				{
-					key: 'srfm_number_block_required_text',
-					label: __( 'Number Field', 'sureforms' ),
-				},
-				{
 					key: 'srfm_textarea_block_required_text',
 					label: __( 'Textarea Field', 'sureforms' ),
-				},
-				{
-					key: 'srfm_multi_choice_block_required_text',
-					label: __( 'Multiple Choice Field', 'sureforms' ),
 				},
 				{
 					key: 'srfm_checkbox_block_required_text',
 					label: __( 'Checkbox Field', 'sureforms' ),
 				},
 				{
-					key: 'srfm_email_block_required_text',
-					label: __( 'Email Field', 'sureforms' ),
+					key: 'srfm_dropdown_block_required_text',
+					label: __( 'Dropdown Field', 'sureforms' ),
+				},
+				{
+					key: 'srfm_multi_choice_block_required_text',
+					label: __( 'Multiple Choice Field', 'sureforms' ),
+				},
+				{
+					key: 'srfm_address_block_required_text',
+					label: __( 'Address Field', 'sureforms' ),
+				},
+				{
+					key: 'srfm_number_block_required_text',
+					label: __( 'Number Field', 'sureforms' ),
 				},
 			]
 		);

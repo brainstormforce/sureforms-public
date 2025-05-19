@@ -4,19 +4,19 @@ import { useState } from '@wordpress/element';
 
 const RECAPTCHA_TYPES = [
 	{
-		label: __( 'reCaptcha v2', 'sureforms' ),
+		label: __( 'reCAPTCHA v2', 'sureforms' ),
 		value: 'v2',
 		site_key: 'srfm_v2_checkbox_site_key',
 		secret_key: 'srfm_v2_checkbox_secret_key',
 	},
 	{
-		label: __( 'reCaptcha v2 Invisible', 'sureforms' ),
+		label: __( 'reCAPTCHA v2 Invisible', 'sureforms' ),
 		value: 'invisible',
 		site_key: 'srfm_v2_invisible_site_key',
 		secret_key: 'srfm_v2_invisible_secret_key',
 	},
 	{
-		label: __( 'reCaptcha v3', 'sureforms' ),
+		label: __( 'reCAPTCHA v3', 'sureforms' ),
 		value: 'v3',
 		site_key: 'srfm_v3_site_key',
 		secret_key: 'srfm_v3_secret_key',
