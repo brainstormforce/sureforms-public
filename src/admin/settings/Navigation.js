@@ -108,7 +108,7 @@ const SubmenuAccordion = ( { label, path, icon: Icon, submenu } ) => {
 
 	return (
 		<Accordion iconType="arrow" type="simple" defaultValue="subpage">
-			<Accordion.Item value="subpage" className="max-w-[230px]">
+			<Accordion.Item value="subpage" className="max-w-[215px]">
 				<Accordion.Trigger
 					iconType="arrow"
 					className={ cn(
