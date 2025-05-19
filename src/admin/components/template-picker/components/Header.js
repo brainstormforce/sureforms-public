@@ -46,7 +46,7 @@ const Header = () => {
 								window.location.href =
 									'/wp-admin/admin.php?page=sureforms_menu';
 							} }
-							className="focus:[box-shadow:none] p-0"
+							className="focus:[box-shadow:none] p-0 pt-1"
 						>
 							{ ICONS.logo }
 						</Button>

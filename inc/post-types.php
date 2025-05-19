@@ -290,7 +290,7 @@ class Post_Types {
 			?>
 		<style>
 			.srfm-page-header {
-				min-height: 65px;
+				min-height: 56px;
 				@media screen and ( max-width: 600px ) {
 					padding-top: 46px;
 				}
