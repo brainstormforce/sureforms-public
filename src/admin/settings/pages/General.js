@@ -88,6 +88,7 @@ const GeneralPage = ( {
 										);
 									}
 								} }
+								className="bg-background-secondary"
 							>
 								{ __( 'Test Email', 'sureforms' ) }
 							</Button>
