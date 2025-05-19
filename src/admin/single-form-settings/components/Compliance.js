@@ -115,7 +115,6 @@ const Compliance = ( { complianceData } ) => {
 							} }
 						/>
 						<Container gap="0" align="center">
-							<Info className="w-4 h-4 mr-1 cursor-pointer text-icon-secondary" />
 							<Label tag="p" size="sm" variant="help">
 								{ __(
 									'Entries older than the days set will be deleted automatically.',
