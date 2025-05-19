@@ -181,7 +181,7 @@ const UpsellSureTriggers = ( {
 							top: ( screen.height - windowDimension.height ) / 2,
 						};
 						const sureTriggersAuthenticationWindow = window.open(
-							srfm_admin.integrations[ 0 ].redirection,
+							plugin.redirection,
 							'',
 							`width=${ windowDimension.width },height=${ windowDimension.height },top=${ positioning.top },left=${ positioning.left },scrollbars=0`
 						);

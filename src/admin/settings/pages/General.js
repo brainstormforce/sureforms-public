@@ -155,7 +155,7 @@ const GeneralPage = ( {
 			<>
 				<p>
 					{ __(
-						'Allow SureForms to track non-sensitive usage tracking data.',
+						'Allow SureForms to track non-sensitive usage tracking data',
 						'sureforms'
 					) }
 				</p>
