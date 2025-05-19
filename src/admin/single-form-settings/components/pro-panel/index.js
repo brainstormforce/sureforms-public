@@ -62,15 +62,6 @@ const iconBlocks = [
 		label: __( 'Upload', 'sureforms' ),
 	},
 	{
-		icon: <MdOutlinePassword size={ 24 } color="#B4B4B4" />,
-		label: __( 'Password', 'sureforms' ),
-		showIn: [
-			'free',
-			'starter',
-			'pro',
-		],
-	},
-	{
 		icon: parse( svgIcons.signature ),
 		label: __( 'Signature', 'sureforms' ),
 		showIn: [
