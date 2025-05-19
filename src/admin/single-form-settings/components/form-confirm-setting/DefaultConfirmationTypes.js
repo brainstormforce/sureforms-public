@@ -102,21 +102,19 @@ const DefaultConfirmationTypes = ( { data, setData, pageOptions, setErrorMessage
 											option.value === data?.page_url
 									)?.label }
 								</Select.Button>
-								<Select.Portal id="srfm-dialog-root">
-									<Select.Options>
-										{ pageOptions?.map( ( option ) => (
-											<Select.Option
-												key={ option.value }
-												value={ option.value }
-												selected={
-													option.value === data?.page_url
-												}
-											>
-												{ option.label }
-											</Select.Option>
-										) ) }
-									</Select.Options>
-								</Select.Portal>
+								<Select.Options>
+									{ pageOptions?.map( ( option ) => (
+										<Select.Option
+											key={ option.value }
+											value={ option.value }
+											selected={
+												option.value === data?.page_url
+											}
+										>
+											{ option.label }
+										</Select.Option>
+									) ) }
+								</Select.Options>
 							</Select>
 						</div>
 					</div>

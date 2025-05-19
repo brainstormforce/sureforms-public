@@ -113,7 +113,7 @@ const ComponentKeyValueUI = ( {
 								</div>
 								<div className="flex gap-3 items-center justify-end">
 									<Button
-										size="sm"
+										size="md"
 										variant="outline"
 										onClick={ () => addNew( index ) }
 										icon={ <PlusIcon /> }
@@ -182,6 +182,7 @@ const TextControl = ( {
 						/>
 					)
 				}
+				size="md"
 			/>
 		</div>
 	);

@@ -122,7 +122,7 @@ const SubmenuAccordion = ( { label, path, icon: Icon, submenu } ) => {
 					aria-label={ `${ label } submenu` }
 				>
 					<span className="shrink-0">{ !! Icon && Icon }</span>
-					<span className="whitespace-normal break-words text-left">
+					<span className="whitespace-normal break-words text-left pl-1">
 						{ label }
 					</span>
 				</Accordion.Trigger>

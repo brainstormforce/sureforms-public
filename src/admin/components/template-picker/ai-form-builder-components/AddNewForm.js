@@ -14,7 +14,7 @@ export default () => {
 		btnIcon,
 		variant,
 	} ) => (
-		<Container.Item className="flex flex-col justify-between gap-0 flex-1 min-h-[260px] border-0.5 border-solid border-border-subtle rounded-lg shadow-sm-blur-2">
+		<Container.Item className="flex flex-col justify-between gap-0 flex-1 min-h-[228px] border-0.5 border-solid border-border-subtle rounded-lg shadow-sm-blur-2">
 			<Container
 				direction="column"
 				className="flex flex-col gap-0 p-3 flex-grow"

@@ -28,6 +28,7 @@ const ModalInputBox = ( {
 						label={ label }
 						required={ required }
 						size="md"
+						className="[&>input]:text-text-tertiary"
 					/>
 				</div>
 				{ showSmartTagList && (
