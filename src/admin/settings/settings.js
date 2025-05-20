@@ -26,7 +26,7 @@ const Settings = () => {
 		<>
 			<Router>
 				<FormPageHeader />
-				<div className="grid grid-cols-[15rem_1fr] auto-rows-fr bg-background-secondary before:content-['_'] before:fixed before:inset-0 before:h-full before:w-[17rem] before:bg-background-primary before:shadow-sm">
+				<div className="grid grid-cols-[15rem_1fr] auto-rows-fr bg-background-secondary before:content-['_'] before:fixed before:inset-0 before:h-full before:w-[26rem] before:bg-background-primary before:shadow-sm">
 					<Navigation />
 					<div className="max-h-full h-full overflow-y-auto">
 						<div className="p-8">
