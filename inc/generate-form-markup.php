@@ -538,7 +538,7 @@ class Generate_Form_Markup {
 	 * Render a site key missing error message.
 	 *
 	 * @param string $provider_name Name of the captcha provider (e.g., HCaptcha, Google reCAPTCHA, Turnstile).
-	 * @since x.x.x
+	 * @since 1.7.0
 	 * @return void
 	 */
 	public static function render_missing_sitekey_error( $provider_name ) {
@@ -565,7 +565,7 @@ class Generate_Form_Markup {
 	 * Generate HCaptcha script markup
 	 *
 	 * @param string $srfm_hcaptcha_site_key site key.
-	 * @since x.x.x
+	 * @since 1.7.0
 	 * @return void
 	 */
 	public static function get_h_captcha_script( $srfm_hcaptcha_site_key ) {
@@ -585,7 +585,7 @@ class Generate_Form_Markup {
 	 *
 	 * @param string $recaptcha_version reCAPTCHA version.
 	 * @param string $google_captcha_site_key site key.
-	 * @since x.x.x
+	 * @since 1.7.0
 	 * @return void
 	 */
 	public static function get_google_captcha_script( $recaptcha_version, $google_captcha_site_key ) {
@@ -629,7 +629,7 @@ class Generate_Form_Markup {
 	 *
 	 * @param string $srfm_cf_appearance_mode appearance mode.
 	 * @param string $srfm_cf_turnstile_site_key site key.
-	 * @since x.x.x
+	 * @since 1.7.0
 	 * @return void
 	 */
 	public static function get_cf_turnstile_script( $srfm_cf_appearance_mode, $srfm_cf_turnstile_site_key ) {

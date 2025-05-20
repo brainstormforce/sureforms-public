@@ -163,7 +163,7 @@ class Global_Settings {
 		 * as part of general settings. Since the option sureforms_analytics_optin is already available from BSF analytics library
 		 * We are updating this independently.
 		 *
-		 * @since x.x.x
+		 * @since 1.7.0
 		 */
 		$analytics_result = self::update_bsf_analytics( $srfm_bsf_analytics );
 
@@ -172,7 +172,7 @@ class Global_Settings {
 		/**
 		 * Returns the output of update_bsf_analytics or srfm_general_settings_options option.
 		 *
-		 * @since x.x.x
+		 * @since 1.7.0
 		 */
 		return $analytics_result || $general_result;
 	}
@@ -182,7 +182,7 @@ class Global_Settings {
 	 *
 	 * @param array<mixed> $settings general settings array.
 	 * @return bool
-	 * @since x.x.x
+	 * @since 1.7.0
 	 */
 	public static function update_bsf_analytics( $settings ) {
 		if ( true === $settings ) {
@@ -348,7 +348,7 @@ class Global_Settings {
 		 * We have introduced toggle for analytics optin in the general settings.
 		 * Hence retrieving the option sureforms_analytics_optin to get current status.
 		 *
-		 * @since x.x.x
+		 * @since 1.7.0
 		 */
 		$srfm_bsf_analytics = get_option( 'sureforms_analytics_optin', false ) === 'yes' ? true : false;
 		$global_setting_options['srfm_general_settings_options']['srfm_bsf_analytics'] = $srfm_bsf_analytics;
