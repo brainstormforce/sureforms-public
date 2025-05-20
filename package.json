@@ -99,7 +99,7 @@
 		"clsx": "^2.1.1",
 		"cssnano": "^6.0.1",
 		"date-fns": "^4.1.0",
-		"gpt-po": "^1.1.1",
+		"gpt-po": "1.1.1",
 		"html-react-parser": "^5.0.7",
 		"lucide-react": "^0.475.0",
 		"postcss": "^8.5.1",
