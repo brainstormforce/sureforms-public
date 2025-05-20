@@ -261,7 +261,7 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 
 ## Changelog ##
 ### 1.7.0 - 21st May 2025 ###
-* New: Redesigned dashboard, global settings, single form settings, and "Add New Form" page for a more modern and intuitive experience.
+* New: Revamped admin UI for a more modern and intuitive experience.
 * Improvement: Improved reCAPTCHA handling by adding detailed logging for failure responses.
 * Improvement: Number and range components now support float values.
 * Improvement: Added BSF Analytics toggle in general tab of global settings.
