@@ -262,6 +262,8 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 == Changelog ==
 = x.x.x =
 * New: Redesigned dashboard, global settings, single form settings, and "Add New Form" page for a more modern and intuitive experience.
+* Improvement: Improved reCAPTCHA handling by adding detailed logging for failure responses.
+* Improvement: Number and range components now support float values.
 = 1.6.4 - 14th May 2025 =
 * New: Introduced Advanced Form Styling.
 * Improvement: Updated Phone Number field to announce the country code only once for better accessibility.
