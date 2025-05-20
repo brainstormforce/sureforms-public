@@ -4,7 +4,7 @@ import {
 } from '@wordpress/i18n';
 import apiFetch from '@wordpress/api-fetch';
 import { useState, useEffect } from '@wordpress/element';
-import { handleAddNewPost, initiateAuth } from '@Utils/Helpers';
+import { handleAddNewPost, initiateAuth, cn } from '@Utils/Helpers';
 import Header from './Header.js';
 import LimitReachedPopup from './LimitReachedPopup.js';
 import ErrorPopup from './ErrorPopup.js';
@@ -176,7 +176,7 @@ const AiFormBuilder = () => {
 
 	return (
 		<div className="max-h-screen overflow-y-auto">
-			<Toaster position={ toasterPosition } design="stack" theme="light" autoDismiss={ true } dismissAfter={ 5000 } />
+			<Toaster className={ cn( 'z-[999999]', isRTL ? '[&>li>div>div.absolute]:right-auto [&>li>div>div.absolute]:left-[0.75rem!important]' : '' ) } position={ toasterPosition } design="stack" theme="light" dismissAfter={ 5000 } />
 			<Header />
 			<AiFormBuilderForm
 				handleCreateAiForm={ handleCreateAiForm }

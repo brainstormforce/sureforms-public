@@ -321,7 +321,7 @@ function AdvancedSettings( props ) {
 						'Before selecting the security type, please make sure you have configured the API keys ',
 						'sureforms'
 					) }
-					<ExternalLink href={ `${srfm_admin.security_settings_url}&subpage=recaptcha` }>
+					<ExternalLink href={ `${ srfm_admin.security_settings_url }&subpage=recaptcha` }>
 						{ __( 'here', 'sureforms' ) }
 					</ExternalLink>
 				</p>

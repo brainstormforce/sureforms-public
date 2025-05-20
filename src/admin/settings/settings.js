@@ -5,6 +5,7 @@ import FormPageHeader from '../components/PageHeader';
 import Navigation from './Navigation';
 import Component from './Component';
 import { Toaster } from '@bsf/force-ui';
+import { cn } from '@Utils/Helpers';
 
 function useQuery() {
 	return new URLSearchParams( useLocation().search );
@@ -34,7 +35,7 @@ const Settings = () => {
 					</div>
 				</div>
 			</Router>
-			<Toaster className="z-[999999]" position={ toasterPosition } />
+			<Toaster className={ cn( 'z-[999999]', isRTL ? '[&>li>div>div.absolute]:right-auto [&>li>div>div.absolute]:left-[0.75rem!important]' : '' ) } position={ toasterPosition } />
 		</>
 	);
 };

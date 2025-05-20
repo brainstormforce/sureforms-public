@@ -14,6 +14,7 @@ import {
 } from '@bsf/force-ui';
 import { Copy, PenLine, Trash } from 'lucide-react';
 import TabContentWrapper from '@Components/tab-content-wrapper';
+import { cn } from '@Utils/Helpers';
 
 const CustomButton = forwardRef(
 	(
@@ -212,6 +213,7 @@ const EmailNotification = ( {
 					theme="light"
 					autoDismiss={ true }
 					dismissAfter={ 5000 }
+					className={ cn( 'z-[999999]', isRTL ? '[&>li>div>div.absolute]:right-auto [&>li>div>div.absolute]:left-[0.75rem!important]' : '' ) }
 				/>
 				<EmailConfirmation
 					setHasValidationErrors={ setHasValidationErrors }
@@ -236,6 +238,7 @@ const EmailNotification = ( {
 				theme="light"
 				autoDismiss={ true }
 				dismissAfter={ 5000 }
+				className={ cn( 'z-[999999]', isRTL ? '[&>li>div>div.absolute]:right-auto [&>li>div>div.absolute]:left-[0.75rem!important]' : '' ) }
 			/>
 			<Table className="rounded-md">
 				<Table.Head>

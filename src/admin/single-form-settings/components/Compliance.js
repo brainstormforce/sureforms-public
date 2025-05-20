@@ -1,7 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import { store as editorStore } from '@wordpress/editor';
 import { useDispatch } from '@wordpress/data';
-import { Info } from 'lucide-react';
 import { Input, Switch, Label, Container } from '@bsf/force-ui';
 import TabContentWrapper from '@Components/tab-content-wrapper';
 
