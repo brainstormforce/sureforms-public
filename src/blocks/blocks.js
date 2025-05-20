@@ -20,6 +20,9 @@ import { ToolbarGroup, ToolbarButton } from '@wordpress/components';
 import { getBlockTypes } from '@Blocks/util';
 import { __, sprintf } from '@wordpress/i18n';
 
+// Register store.
+import '../store/store.js';
+
 const registerBlock = [
 	text,
 	email,
