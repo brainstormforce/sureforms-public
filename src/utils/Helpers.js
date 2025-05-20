@@ -494,3 +494,25 @@ export const setDefaultFormAttributes = ( formAttributes, postMeta ) => {
 		}
 	} );
 };
+
+/**
+ * Dispatches a custom event responsible for displaying the error message.
+ * 
+ * @param {Object} args 
+ */
+export const showErrorMessage = ( args ) => {
+	if ( ! args ) {
+		return;
+	}
+	const { form, message = '', position = 'footer' } = args;
+
+	const errorEvent = new CustomEvent( 'srfm_show_common_form_error', {
+		detail: {
+			form,
+			message,
+			position,
+		},
+	} );
+
+	document.dispatchEvent( errorEvent );
+}
