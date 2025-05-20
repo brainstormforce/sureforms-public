@@ -53,7 +53,7 @@ export default function SmartTagList( {
 											key={ `${ sectionIndx }-${ indx }-control-${ control?.title }` }
 											variant="help"
 											size="xs"
-											className="p-2"
+											className="p-2 text-text-primary font-medium text-sm"
 											tabIndex={ -1 }
 										>
 											{ control?.title }
@@ -61,7 +61,7 @@ export default function SmartTagList( {
 									) : (
 										<DropdownMenu.Item
 											key={ `${ sectionIndx }-${ indx }-control-${ control?.title }` }
-											className="text-sm font-normal"
+											className="text-sm font-normal text-text-secondary hover:bg-background-secondary hover:text-text-primary focus:bg-background-secondary focus:text-text-primary"
 											{ ...( typeof control?.onClick ===
 											'function'
 												? { onClick: control?.onClick }
