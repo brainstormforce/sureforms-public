@@ -26,7 +26,7 @@ export const navigation = applyFilters( 'srfm.settings.navigation', [
 		icon: <TriangleAlert />,
 		submenu: [
 			{
-				name: __( 'reCaptcha', 'sureforms' ),
+				name: __( 'reCAPTCHA', 'sureforms' ),
 				slug: 'recaptcha',
 			},
 			{
@@ -113,8 +113,8 @@ const SubmenuAccordion = ( { label, path, icon: Icon, submenu } ) => {
 					iconType="arrow"
 					className={ cn(
 						'p-2 pl-2.5 text-base font-normal hover:bg-brand-background-50 rounded-md no-underline cursor-pointer focus:outline-none focus:shadow-none transition ease-in-out duration-150',
-						'flex items-start gap-2 text-left',
-						'[&_svg]:text-icon-secondary [&_svg]:size-5',
+						'flex items-center gap-2 text-left',
+						'[&_svg]:text-icon-secondary [&_svg]:size-5 [&_svg]:block',
 						'[&_div]:font-normal [&_div]:text-text-secondary',
 						isActive() &&
 							'[&_div]:text-text-primary [&>div>svg]:!text-icon-interactive'
