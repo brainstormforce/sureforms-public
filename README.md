@@ -264,8 +264,7 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 * New: Revamped admin UI for a more modern and intuitive experience.
 * Improvement: Improved reCAPTCHA handling by adding detailed logging for failure responses.
 * Improvement: Number and range components now support float values.
-* Improvement: Added BSF Analytics toggle in general tab of global settings.
-* Improvement: Added box shadow control for fields styling.
+* Improvement: Added BSF Analytics opt-in option in Global Settings.
 ### 1.6.4 - 14th May 2025 ###
 * New: Introduced Advanced Form Styling.
 * Improvement: Updated Phone Number field to announce the country code only once for better accessibility.
