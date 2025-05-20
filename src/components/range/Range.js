@@ -162,6 +162,14 @@ const Range = ( props ) => {
 		blockNameForHook
 	);
 
+	const inputSteps = ( value ) => {
+		if ( isNaN( value ) ) {
+			return 1;
+		}
+
+		return Number( value ) % 1 === 0 ? 1 : 0.1;
+	};
+
 	return (
 		<div ref={ panelRef } className="components-base-control">
 			{ controlBeforeDomElement }
@@ -206,7 +214,7 @@ const Range = ( props ) => {
 						allowReset={ false }
 						max={ max }
 						min={ min }
-						step={ props?.step || 1 }
+						step={ props?.step || inputSteps( inputValue ) }
 						initialPosition={ inputValue }
 						marks={ props?.marks || false }
 					/>
@@ -218,7 +226,7 @@ const Range = ( props ) => {
 							min={ min }
 							onChange={ handleOnChange }
 							value={ inputValue }
-							step={ props?.step || 1 }
+							step={ props?.step || inputSteps( inputValue ) }
 						/>
 					) }
 				</div>
