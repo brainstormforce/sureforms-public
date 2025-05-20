@@ -3039,7 +3039,7 @@ msgstr "dailymotion"
 
 #: modules/gutenberg/icons/icons-v6-1.php:202
 msgid "DashCube"
-msgstr ""
+msgstr "DashCube"
 
 #: modules/gutenberg/icons/icons-v6-1.php:213
 msgid "Database"
@@ -3078,7 +3078,7 @@ msgstr "Escritorio"
 
 #: modules/gutenberg/icons/icons-v6-1.php:301
 msgid "DEV"
-msgstr ""
+msgstr "DEV"
 
 #: modules/gutenberg/icons/icons-v6-1.php:312
 msgid "deviantART"
@@ -4901,7 +4901,7 @@ msgstr "Java"
 
 #: modules/gutenberg/icons/icons-v6-2.php:268
 msgid "Jedi"
-msgstr ""
+msgstr "Jedi"
 
 #: modules/gutenberg/icons/icons-v6-2.php:279
 msgid "Jedi Order"
@@ -5123,7 +5123,7 @@ msgstr "Enlace Slash"
 
 #: modules/gutenberg/icons/icons-v6-2.php:915
 msgid "LinkedIn"
-msgstr ""
+msgstr "LinkedIn"
 
 #: modules/gutenberg/icons/icons-v6-2.php:926
 msgid "LinkedIn In"
@@ -9071,50 +9071,6 @@ msgid "%s Width"
 msgstr "Ancho %s"
 
 #: assets/build/dashboard.js:2
-msgid "Get started with SureForms"
-msgstr "Comienza con SureForms"
-
-#: assets/build/dashboard.js:2
-msgid "Setup"
-msgstr "Configuración"
-
-#: assets/build/dashboard.js:2
-msgid "Create a Form"
-msgstr "Crear un formulario"
-
-#: assets/build/dashboard.js:2
-msgid "Effortlessly design visually stunning forms with our user-friendly form builder."
-msgstr "Diseña sin esfuerzo formularios visualmente impresionantes con nuestro creador de formularios fácil de usar."
-
-#: assets/build/dashboard.js:2
-msgid "All Forms"
-msgstr "Todas las formas"
-
-#: assets/build/dashboard.js:2
-msgid "Check out your created forms, and easily edit and customize the settings as needed."
-msgstr "Consulta tus formularios creados y edita y personaliza fácilmente los ajustes según sea necesario."
-
-#: assets/build/dashboard.js:2
-msgid "View All Forms"
-msgstr "Ver todos los formularios"
-
-#: assets/build/dashboard.js:2
-msgid "View Entries"
-msgstr "Ver entradas"
-
-#: assets/build/dashboard.js:2
-msgid "Explore your entire form submission list and effortlessly manage each entry."
-msgstr "Explore toda su lista de envíos de formularios y gestione cada entrada sin esfuerzo."
-
-#: assets/build/dashboard.js:2
-msgid "View All Entries"
-msgstr "Ver todas las entradas"
-
-#: assets/build/dashboard.js:2
-msgid "There is no data on this view"
-msgstr "No hay datos en esta vista"
-
-#: assets/build/dashboard.js:2
 msgid "This is where your form views will appear"
 msgstr "Aquí es donde aparecerán las vistas de su formulario"
 
@@ -9144,18 +9100,6 @@ msgid "Rate Us"
 msgstr "Califícanos"
 
 #: assets/build/dashboard.js:2
-msgid "We love to hear from you, we would appreciate every single review."
-msgstr "Nos encanta saber de ti, agradeceríamos cada reseña."
-
-#: assets/build/dashboard.js:2
-msgid "Submit a Review"
-msgstr "Enviar una reseña"
-
-#: assets/build/dashboard.js:2
-msgid "Overview"
-msgstr "Resumen"
-
-#: assets/build/dashboard.js:2
 #: assets/build/entries.js:2
 #: assets/build/page_header.js:2
 #: assets/build/settings.js:2
@@ -9168,13 +9112,6 @@ msgstr "¿Qué hay de nuevo?"
 #: assets/build/settings.js:2
 msgid "Core"
 msgstr "Núcleo"
-
-#: assets/build/dashboard.js:2
-#: assets/build/entries.js:2
-#: assets/build/page_header.js:2
-#: assets/build/settings.js:2
-msgid "Licensed"
-msgstr "Con licencia"
 
 #: assets/build/dashboard.js:2
 #: assets/build/entries.js:2
@@ -9278,10 +9215,6 @@ msgid "Compliance Settings"
 msgstr "Configuración de Cumplimiento"
 
 #: assets/build/formEditor.js:172
-msgid "GDPR Settings"
-msgstr "Configuración de GDPR"
-
-#: assets/build/formEditor.js:172
 msgid "Enable GDPR Compliance"
 msgstr "Habilitar el cumplimiento del RGPD"
 
@@ -9304,10 +9237,6 @@ msgstr "Eliminar automáticamente las entradas"
 #: assets/build/formEditor.js:172
 msgid "When enabled this form will automatically delete entries after a certain period of time."
 msgstr "Cuando esté habilitado, este formulario eliminará automáticamente las entradas después de un cierto período de tiempo."
-
-#: assets/build/formEditor.js:172
-msgid "Set the automatic deletion period for entries of this form (in days)"
-msgstr "Establezca el período de eliminación automática para las entradas de este formulario (en días)"
 
 #: assets/build/formEditor.js:172
 msgid "Entries older than the days set will be deleted automatically."
@@ -9350,10 +9279,6 @@ msgid "Email Notification"
 msgstr "Notificación de correo electrónico"
 
 #: assets/build/formEditor.js:172
-msgid "Notification Settings"
-msgstr "Configuración de notificaciones"
-
-#: assets/build/formEditor.js:172
 msgid "Name"
 msgstr "Nombre"
 
@@ -9365,10 +9290,6 @@ msgstr "Enviar correo electrónico a"
 #: assets/build/formEditor.js:172
 msgid "Subject"
 msgstr "Asunto"
-
-#: assets/build/formEditor.js:172
-msgid "Email Body"
-msgstr "Cuerpo del correo electrónico"
 
 #: assets/build/formEditor.js:172
 msgid "CC"
@@ -9389,18 +9310,6 @@ msgstr "Por favor, complete el campo obligatorio."
 #: assets/build/formEditor.js:172
 msgid "Add Notification"
 msgstr "Agregar notificación"
-
-#: assets/build/formEditor.js:172
-msgid "Notification"
-msgstr "Notificación"
-
-#: assets/build/formEditor.js:172
-msgid "No data"
-msgstr "No hay datos"
-
-#: assets/build/formEditor.js:172
-msgid "Action"
-msgstr "Acción"
 
 #: assets/build/formEditor.js:172
 msgid "Email Notification disabled successfully."
@@ -9449,10 +9358,6 @@ msgstr "Ocultar formulario"
 #: assets/build/formEditor.js:172
 msgid "Reset Form"
 msgstr "Restablecer formulario"
-
-#: assets/build/formEditor.js:172
-msgid "Select Page"
-msgstr "Seleccionar página"
 
 #: assets/build/formEditor.js:172
 msgid "Custom URL"
@@ -9509,10 +9414,6 @@ msgstr "Página"
 #: assets/build/formEditor.js:172
 msgid "Form Confirmation"
 msgstr "Confirmación de formulario"
-
-#: assets/build/formEditor.js:172
-msgid "Confirmation"
-msgstr "Confirmación"
 
 #: assets/build/formEditor.js:172
 msgid "Confirmation Type"
@@ -9827,14 +9728,6 @@ msgid "Spam Protection"
 msgstr "Protección contra el spam"
 
 #: assets/build/settings.js:172
-msgid "Want More?"
-msgstr "¿Quieres más?"
-
-#: assets/build/settings.js:172
-msgid "Unlock revenue boosting features when you upgrade."
-msgstr "Desbloquea funciones que aumentan los ingresos cuando actualizas."
-
-#: assets/build/settings.js:172
 msgid "Email Summaries"
 msgstr "Resúmenes de correo electrónico"
 
@@ -9985,28 +9878,12 @@ msgid "Dark"
 msgstr "Oscuro"
 
 #: assets/build/settings.js:172
-msgid "Captcha"
-msgstr "Captcha"
-
-#: assets/build/settings.js:172
-msgid "reCAPTCHA"
-msgstr ""
-
-#: assets/build/settings.js:172
 msgid "Turnstile"
 msgstr "Torniquete"
 
 #: assets/build/settings.js:172
 msgid "Honeypot"
 msgstr "Honeypot"
-
-#: assets/build/settings.js:172
-msgid "To enable Google reCAPTCHA, please add your site key and secret key. Configure these settings within the individual form. "
-msgstr "Para habilitar Google reCAPTCHA, por favor añade tu clave de sitio y clave secreta. Configura estos ajustes dentro del formulario individual."
-
-#: assets/build/settings.js:172
-msgid "Learn more"
-msgstr "Aprende más"
 
 #: assets/build/settings.js:172
 msgid "Get Keys"
@@ -10017,52 +9894,20 @@ msgid "Documentation"
 msgstr "Documentación"
 
 #: assets/build/settings.js:172
-msgid "reCAPTCHA Type"
-msgstr "Tipo de reCAPTCHA"
-
-#: assets/build/settings.js:172
-msgid "v2 Checkbox"
-msgstr "Casilla de verificación v2"
-
-#: assets/build/settings.js:172
-msgid "v2 Invisible"
-msgstr "v2 Invisible"
-
-#: assets/build/settings.js:172
-msgid "v3 reCAPTCHA"
-msgstr "reCAPTCHA v3"
-
-#: assets/build/settings.js:172
 msgid "Site Key"
 msgstr "Clave del sitio"
-
-#: assets/build/settings.js:172
-msgid "Enter your site key here"
-msgstr "Ingrese su clave del sitio aquí"
 
 #: assets/build/settings.js:172
 msgid "Secret Key"
 msgstr "Clave secreta"
 
 #: assets/build/settings.js:172
-msgid "Enter your secret key here"
-msgstr "Introduce tu clave secreta aquí"
-
-#: assets/build/settings.js:172
 msgid "Cloudflare Turnstile"
 msgstr "Cloudflare Turnstile"
 
 #: assets/build/settings.js:172
-msgid "To enable Cloudflare Turnstile, please add your site key and secret key. Configure these settings within the individual form. "
-msgstr "Para habilitar Cloudflare Turnstile, por favor añade tu clave del sitio y clave secreta. Configura estos ajustes dentro del formulario individual."
-
-#: assets/build/settings.js:172
 msgid "Appearance Mode"
 msgstr "Modo de apariencia"
-
-#: assets/build/settings.js:172
-msgid "To enable hCAPTCHA, please add your site key and secret key. Configure these settings within the individual form. "
-msgstr "Para habilitar hCAPTCHA, por favor añade tu clave de sitio y clave secreta. Configura estos ajustes dentro del formulario individual."
 
 #: assets/build/settings.js:172
 msgid "Enable Honeypot Security"
@@ -10109,14 +9954,6 @@ msgstr "Actualizar plan"
 msgid "%d AI form generations left"
 msgstr "%d generaciones de formularios de IA restantes"
 
-#: assets/build/templatePicker.js:2
-msgid "Coming Soon…"
-msgstr "Próximamente…"
-
-#: assets/build/templatePicker.js:2
-msgid "Beta"
-msgstr "Beta"
-
 #: assets/build/templatePicker.js:172
 msgid "Limit Reached"
 msgstr "Límite alcanzado"
@@ -10140,10 +9977,6 @@ msgstr "¡Inténtalo de nuevo!"
 #: assets/build/templatePicker.js:172
 msgid "Authentication Failed"
 msgstr "Autenticación fallida"
-
-#: assets/build/templatePicker.js:172
-msgid "Please check your username and password for the account, and try to reconnect again. Need help? "
-msgstr "Por favor, verifica tu nombre de usuario y contraseña para la cuenta, e intenta reconectar de nuevo. ¿Necesitas ayuda?"
 
 #: assets/build/templatePicker.js:172
 msgid "Contact Support"
@@ -10194,20 +10027,12 @@ msgid "Redirecting to Editor"
 msgstr "Redirigiendo al Editor"
 
 #: assets/build/templatePicker.js:172
-msgid "We are building your Form…"
-msgstr "Estamos construyendo su formulario…"
-
-#: assets/build/templatePicker.js:172
 msgid "AI Form Builder"
 msgstr "Constructor de Formularios de IA"
 
 #: assets/build/templatePicker.js:172
 msgid "Please describe the form you want to create"
 msgstr "Por favor describe el formulario que deseas crear"
-
-#: assets/build/templatePicker.js:172
-msgid "E.g. Form to gather feedback from our customers for our product functionality, usability, how much you will rate it, and what you don’t like about it."
-msgstr "Por ejemplo, formulario para recopilar comentarios de nuestros clientes sobre la funcionalidad de nuestro producto, su usabilidad, cuánto lo calificarían y qué no les gusta de él."
 
 #: assets/build/templatePicker.js:172
 msgid "Prompt cannot be empty."
@@ -11440,10 +11265,6 @@ msgid "Connect with OttoKit"
 msgstr "Conéctate con OttoKit"
 
 #: assets/build/formEditor.js:172
-msgid "OttoKit lets you connect your forms to hundreds of apps. With this integration you can automatically send form entries to your CRM, add subscribers to you email marketing platform, etc. Whatever you want SureForms and OttoKit has you covered."
-msgstr "OttoKit te permite conectar tus formularios con cientos de aplicaciones. Con esta integración, puedes enviar automáticamente las entradas de formularios a tu CRM, agregar suscriptores a tu plataforma de marketing por correo electrónico, etc. Lo que quieras, SureForms y OttoKit te tienen cubierto."
-
-#: assets/build/formEditor.js:172
 msgid "Integrations via OttoKit"
 msgstr "Integraciones a través de OttoKit"
 
@@ -11517,7 +11338,7 @@ msgstr "La dirección de 'Correo Electrónico del Remitente' actual puede no coi
 
 #: assets/build/formEditor.js:172
 msgid "The current 'From Email' address may not match your website domain name (%s). This can cause your notification emails to be blocked or marked as spam. "
-msgstr "La dirección de 'Correo Electrónico del Remitente' actual puede no coincidir con el nombre de dominio de su sitio web (%s). Esto puede hacer que sus correos electrónicos de notificación sean bloqueados o marcados como spam. "
+msgstr "La dirección de 'Correo Electrónico del Remitente' actual puede no coincidir con el nombre de dominio de su sitio web (%s). Esto puede hacer que sus correos electrónicos de notificación sean bloqueados o marcados como spam."
 
 #: assets/build/formEditor.js:172
 msgid "Border Radius"
@@ -11542,6 +11363,189 @@ msgstr "Relleno Instantáneo de Formularios"
 #: assets/build/formEditor.js:172
 msgid "Instant Form Border Radius"
 msgstr "Radio de Borde de Formulario Instantáneo"
+
+#: assets/build/dashboard.js:2
+msgid "Get started with SureForms"
+msgstr "Comienza con SureForms"
+
+#: assets/build/dashboard.js:2
+msgid "Setup"
+msgstr "Configuración"
+
+#: assets/build/dashboard.js:2
+msgid "Create a Form"
+msgstr "Crear un formulario"
+
+#: assets/build/dashboard.js:2
+msgid "Effortlessly design visually stunning forms with our user-friendly form builder."
+msgstr "Diseña sin esfuerzo formularios visualmente impresionantes con nuestro creador de formularios fácil de usar."
+
+#: assets/build/dashboard.js:2
+msgid "All Forms"
+msgstr "Todas las formas"
+
+#: assets/build/dashboard.js:2
+msgid "Check out your created forms, and easily edit and customize the settings as needed."
+msgstr "Consulta tus formularios creados y edita y personaliza fácilmente los ajustes según sea necesario."
+
+#: assets/build/dashboard.js:2
+msgid "View All Forms"
+msgstr "Ver todos los formularios"
+
+#: assets/build/dashboard.js:2
+msgid "View Entries"
+msgstr "Ver entradas"
+
+#: assets/build/dashboard.js:2
+msgid "Explore your entire form submission list and effortlessly manage each entry."
+msgstr "Explore toda su lista de envíos de formularios y gestione cada entrada sin esfuerzo."
+
+#: assets/build/dashboard.js:2
+msgid "View All Entries"
+msgstr "Ver todas las entradas"
+
+#: assets/build/dashboard.js:2
+msgid "There is no data on this view"
+msgstr "No hay datos en esta vista"
+
+#: assets/build/dashboard.js:2
+msgid "We love to hear from you, we would appreciate every single review."
+msgstr "Nos encanta saber de ti, agradeceríamos cada reseña."
+
+#: assets/build/dashboard.js:2
+msgid "Submit a Review"
+msgstr "Enviar una reseña"
+
+#: assets/build/dashboard.js:2
+msgid "Overview"
+msgstr "Resumen"
+
+#: assets/build/dashboard.js:2
+#: assets/build/entries.js:2
+#: assets/build/page_header.js:2
+#: assets/build/settings.js:2
+msgid "Licensed"
+msgstr "Con licencia"
+
+#: assets/build/formEditor.js:172
+msgid "OttoKit lets you connect your forms to hundreds of apps. With this integration you can automatically send form entries to your CRM, add subscribers to you email marketing platform, etc. Whatever you want SureForms and OttoKit has you covered."
+msgstr "OttoKit te permite conectar tus formularios con cientos de aplicaciones. Con esta integración, puedes enviar automáticamente las entradas de formularios a tu CRM, agregar suscriptores a tu plataforma de marketing por correo electrónico, etc. Lo que quieras, SureForms y OttoKit te tienen cubierto."
+
+#: assets/build/formEditor.js:172
+msgid "GDPR Settings"
+msgstr "Configuración de GDPR"
+
+#: assets/build/formEditor.js:172
+msgid "Set the automatic deletion period for entries of this form (in days)"
+msgstr "Establezca el período de eliminación automática para las entradas de este formulario (en días)"
+
+#: assets/build/formEditor.js:172
+msgid "Notification Settings"
+msgstr "Configuración de notificaciones"
+
+#: assets/build/formEditor.js:172
+msgid "Email Body"
+msgstr "Cuerpo del correo electrónico"
+
+#: assets/build/formEditor.js:172
+msgid "Notification"
+msgstr "Notificación"
+
+#: assets/build/formEditor.js:172
+msgid "No data"
+msgstr "Sin datos"
+
+#: assets/build/formEditor.js:172
+msgid "Action"
+msgstr "Acción"
+
+#: assets/build/formEditor.js:172
+msgid "Select Page"
+msgstr "Seleccionar página"
+
+#: assets/build/formEditor.js:172
+msgid "Confirmation"
+msgstr "Confirmación"
+
+#: assets/build/formEditor.js:172
+msgid "Select Gradient"
+msgstr "Seleccionar degradado"
+
+#: assets/build/settings.js:172
+msgid "Want More?"
+msgstr "¿Quieres más?"
+
+#: assets/build/settings.js:172
+msgid "Unlock revenue boosting features when you upgrade."
+msgstr "Desbloquea funciones que aumentan los ingresos cuando actualizas."
+
+#: assets/build/settings.js:172
+msgid "Captcha"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "reCAPTCHA"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "To enable Google reCAPTCHA, please add your site key and secret key. Configure these settings within the individual form. "
+msgstr "Para habilitar Google reCAPTCHA, por favor añade tu clave de sitio y clave secreta. Configura estos ajustes dentro del formulario individual. "
+
+#: assets/build/settings.js:172
+msgid "Learn more"
+msgstr "Aprende más"
+
+#: assets/build/settings.js:172
+msgid "reCAPTCHA Type"
+msgstr "Tipo de reCAPTCHA"
+
+#: assets/build/settings.js:172
+msgid "v2 Checkbox"
+msgstr "v2 Casilla de verificación"
+
+#: assets/build/settings.js:172
+msgid "v2 Invisible"
+msgstr "v2 Invisible"
+
+#: assets/build/settings.js:172
+msgid "v3 reCAPTCHA"
+msgstr "reCAPTCHA v3"
+
+#: assets/build/settings.js:172
+msgid "Enter your site key here"
+msgstr "Ingrese su clave del sitio aquí"
+
+#: assets/build/settings.js:172
+msgid "Enter your secret key here"
+msgstr "Introduce tu clave secreta aquí"
+
+#: assets/build/settings.js:172
+msgid "To enable Cloudflare Turnstile, please add your site key and secret key. Configure these settings within the individual form. "
+msgstr "Para habilitar Cloudflare Turnstile, por favor añade tu clave del sitio y clave secreta. Configura estos ajustes dentro del formulario individual. "
+
+#: assets/build/settings.js:172
+msgid "To enable hCAPTCHA, please add your site key and secret key. Configure these settings within the individual form. "
+msgstr "Para habilitar hCAPTCHA, por favor añade tu clave del sitio y clave secreta. Configura estos ajustes dentro del formulario individual. "
+
+#: assets/build/templatePicker.js:2
+msgid "Coming Soon…"
+msgstr "Próximamente…"
+
+#: assets/build/templatePicker.js:2
+msgid "Beta"
+msgstr "Beta"
+
+#: assets/build/templatePicker.js:172
+msgid "Please check your username and password for the account, and try to reconnect again. Need help? "
+msgstr "Por favor, verifica tu nombre de usuario y contraseña para la cuenta, e intenta reconectar de nuevo. ¿Necesitas ayuda? "
+
+#: assets/build/templatePicker.js:172
+msgid "We are building your Form…"
+msgstr "Estamos construyendo su formulario…"
+
+#: assets/build/templatePicker.js:172
+msgid "E.g. Form to gather feedback from our customers for our product functionality, usability, how much you will rate it, and what you don’t like about it."
+msgstr "Por ejemplo, formulario para recopilar comentarios de nuestros clientes sobre la funcionalidad de nuestro producto, su usabilidad, cuánto lo calificarían y qué no les gusta de él."
 
 #: inc/post-types.php:124
 msgctxt "post type general name"

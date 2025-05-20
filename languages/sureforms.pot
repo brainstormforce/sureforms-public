@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-05-16T06:34:54+00:00\n"
+"POT-Creation-Date: 2025-05-16T05:21:39+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: sureforms\n"
@@ -10000,6 +10000,10 @@ msgstr ""
 #: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:177
 msgid "Select Color"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+msgid "Select Gradient"
 msgstr ""
 
 #: assets/build/formEditor.js:172
