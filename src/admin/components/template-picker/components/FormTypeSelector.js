@@ -49,10 +49,6 @@ const FormTypeSelector = ( { formType, setFormType, setformLayout } ) => {
 				title={ __( 'Please select form type', 'sureforms' ) }
 			/>
 			<Container className="p-1 gap-1 bg-tab-background border-0.5 border-solid border-tab-border rounded-md">
-				<div
-					className="srfm-ai-builder-form-type-highlight"
-					style={ { left: formType === 'simple' ? '4px' : '50%' } }
-				/>
 				{ formTypeOptions.map( ( option, index ) =>
 					option.isAvailable ? (
 						<div
