@@ -141,7 +141,7 @@ class Rest_Api {
 	 * Get the data for all the forms.
 	 *
 	 * @param \WP_REST_Request $request Full details about the request.
-	 * @since x.x.x
+	 * @since 1.7.0
 	 * @return array<mixed>
 	 */
 	public function get_form_data( $request ) {
