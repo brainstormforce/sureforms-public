@@ -1,5 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import { addQueryParam } from '@Utils/Helpers';
+import { Button } from '@bsf/force-ui';
 
 // Renders a button that links to the upgrade page for SureForms Pro.
 const UpgradeToProButton = ( props ) => {
@@ -8,9 +9,9 @@ const UpgradeToProButton = ( props ) => {
 		window.open( addQueryParam( url, props?.location || 'settings_page' ) );
 	};
 	return (
-		<button onClick={ handleClick } { ...props }>
+		<Button onClick={ handleClick } { ...props }>
 			{ __( 'Upgrade', 'sureforms' ) }
-		</button>
+		</Button>
 	);
 };
 

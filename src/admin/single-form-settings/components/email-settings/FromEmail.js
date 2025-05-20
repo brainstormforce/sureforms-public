@@ -1,16 +1,20 @@
 import { __, sprintf } from '@wordpress/i18n';
 import { useEffect, useState } from '@wordpress/element';
-import SmartTagList from '@Components/misc/SmartTagList';
 import svg from '@Svg/svgs.json';
 import parse from 'html-react-parser';
+import ModalInputBox from './ModalInputBox';
+import { Container } from '@bsf/force-ui';
 
-const FromEmail = ( {	formData,
+const FromEmail = ( {
+	formData,
 	setFormData,
 	genericSmartTags,
 	genericEmailSmartTags,
 	formSmartTags,
-	formEmailSmartTags } ) => {
-	const [ fromEmailWarningMessage, setFromEmailWarningMessage ] = useState( '' );
+	formEmailSmartTags,
+} ) => {
+	const [ fromEmailWarningMessage, setFromEmailWarningMessage ] =
+		useState( '' );
 
 	/**
 	 * Validate and show warning message for From Email
@@ -19,7 +23,10 @@ const FromEmail = ( {	formData,
 		const fromEmail = formData?.from_email || '';
 		const userEnteredUrl = fromEmail?.split( '@' )[ 1 ] || '';
 		const siteUrl = window?.srfm_block_data?.site_url || '';
-		const isValidEmail = /^[\p{L}\p{N}._%+-]+@[\p{L}\p{N}.-]+\.[\p{L}]{2,}$/u.test( fromEmail );
+		const isValidEmail =
+			/^[\p{L}\p{N}._%+-]+@[\p{L}\p{N}.-]+\.[\p{L}]{2,}$/u.test(
+				fromEmail
+			);
 
 		// If value starts with '{', no warning should be displayed. To avoid issue with smart tags.
 		let warningMessage = '';
@@ -89,11 +96,21 @@ const FromEmail = ( {	formData,
 							),
 							siteUrl
 						) }
-						{ __( 'We strongly recommend that you install the free ', 'sureforms' ) }
-						<a href="https://suremails.com?utm_medium=sureforms" target="_blank" rel="noopener noreferrer">
+						{ __(
+							'We strongly recommend that you install the free ',
+							'sureforms'
+						) }
+						<a
+							href="https://suremails.com?utm_medium=sureforms"
+							target="_blank"
+							rel="noopener noreferrer"
+						>
 							SureMails
 						</a>
-						{ __( ' plugin! The Setup Wizard makes it easy to fix your emails. ', 'sureforms' ) }
+						{ __(
+							' plugin! The Setup Wizard makes it easy to fix your emails. ',
+							'sureforms'
+						) }
 						{ sprintf(
 							// Translators: %s is the website domain.
 							__(
@@ -112,124 +129,96 @@ const FromEmail = ( {	formData,
 		setFromEmailWarningMessage( warningMessage );
 	};
 
-	useEffect(
-		() => {
-			// Validate and show warning message for From Email
-			validateAndShowFromEmailWarning();
-		}
-		, [ formData ] );
+	useEffect( () => {
+		// Validate and show warning message for From Email
+		validateAndShowFromEmailWarning();
+	}, [ formData ] );
+
+	const fromEmailHelpText = __(
+		'Notifications can use only one From Email so please enter a single address.',
+		'sureforms'
+	);
 
 	return (
 		<>
-			<div className="srfm-modal-input-box srfm-modal-from-name-box">
-				<div className="srfm-modal-label">
-					<label htmlFor="srfm-email-notification-from-name">
-						{ __( 'From Name', 'sureforms' ) }
-					</label>
-				</div>
-				<input
-					id="srfm-email-notification-from-name"
-					onChange={ ( e ) =>
-						setFormData( {
-							...formData,
-							from_name: e.target.value,
-						} )
-					}
-					value={ formData?.from_name }
-					className="srfm-modal-input"
-				/>
-				<SmartTagList
-					tagFor="emailConfirmation.fromName"
-					tagsArray={ [
-						{
-							tags: formSmartTags,
-							label: __(
-								'Form input tags',
-								'sureforms'
-							),
-						},
-						{
-							tags: genericSmartTags,
-							label: __(
-								'Generic tags',
-								'sureforms'
-							),
-						},
-					] }
-					setTargetData={ ( tag ) =>
-						setFormData( {
-							...formData,
-							from_name:
-                            formData?.from_name + tag,
-						} )
-					}
-				/>
-			</div>
-			<div className="srfm-modal-input-box srfm-modal-from-email-box"
-			>
-				<div className="srfm-modal-label">
-					<label htmlFor="srfm-email-notification-from-email">
-						{ __( 'From Email', 'sureforms' ) }
-					</label>
-				</div>
-				<input
-					id="srfm-email-notification-from-email"
-					onChange={ ( e ) => {
-						setFormData( {
-							...formData,
-							from_email: e.target.value.trim(),
-						} );
-					} }
-					value={ formData?.from_email }
-					className="srfm-modal-input srfm-modal-from-email"
-				/>
-				<SmartTagList
-					tagFor="emailConfirmation.fromEmail"
-					tagsArray={ [
-						{
-							tags: formEmailSmartTags,
-							label: __(
-								'Form input tags',
-								'sureforms'
-							),
-						},
-						{
-							tags: genericEmailSmartTags,
-							label: __(
-								'Generic tags',
-								'sureforms'
-							),
-						},
-					] }
-					setTargetData={ ( tag ) =>
-						setFormData( {
-							...formData,
-							from_email:
-                                formData?.from_email + tag,
-						} )
-					}
-				/>
-			</div>
-			<div className="srfm-modal-input-box srfm-modal-from-email-warning-box">
-				<p className="components-base-control__help">
+			<ModalInputBox
+				label={ __( 'From Name', 'sureforms' ) }
+				id="srfm-email-notification-from-name"
+				value={ formData?.from_name }
+				onChange={ ( e ) =>
+					setFormData( {
+						...formData,
+						from_name: e,
+					} )
+				}
+				required={ false }
+				smartTagList={ [
 					{
-						__( 'Notifications can only use 1 From Email. Please do not enter multiple addresses.', 'sureforms' )
-					}
-				</p>
-				{ fromEmailWarningMessage && <ModalWarning message={ fromEmailWarningMessage } /> }
-			</div>
+						tags: formSmartTags,
+						label: __( 'Form input tags', 'sureforms' ),
+					},
+					{
+						tags: genericSmartTags,
+						label: __( 'Generic tags', 'sureforms' ),
+					},
+				] }
+				tagFor="emailConfirmation.fromName"
+				setTargetData={ ( tag ) =>
+					setFormData( {
+						...formData,
+						from_name: formData?.from_name + tag,
+					} )
+				}
+			/>
+
+			<ModalInputBox
+				label={ __( 'From Email', 'sureforms' ) }
+				id="srfm-email-notification-from-email"
+				value={ formData?.from_email }
+				onChange={ ( e ) => {
+					setFormData( {
+						...formData,
+						from_email: e.trim(),
+					} );
+				} }
+				required={ false }
+				smartTagList={ [
+					{
+						tags: formEmailSmartTags,
+						label: __( 'Form input tags', 'sureforms' ),
+					},
+					{
+						tags: genericEmailSmartTags,
+						label: __( 'Generic tags', 'sureforms' ),
+					},
+				] }
+				tagFor="emailConfirmation.fromEmail"
+				setTargetData={ ( tag ) =>
+					setFormData( {
+						...formData,
+						from_email: formData?.from_email + tag,
+					} )
+				}
+				helpText={ fromEmailHelpText }
+			/>
+
+			<Container direction="column" className="gap-0" align="stretch">
+				{ fromEmailWarningMessage && (
+					<ModalWarning message={ fromEmailWarningMessage } />
+				) }
+			</Container>
 		</>
 	);
 };
 
 const ModalWarning = ( { message } ) => {
 	return (
-		<div className="srfm-modal-warning-box">
-			<span className="srfm-modal-warning-icon">
-				{ parse( svg?.warning ) }
-			</span>
-			<span className="srfm-modal-warning-text">{ message }</span>
-		</div>
+		<Container
+			className="w-full p-3 gap-2 border border-solid border-alert-border-warning bg-alert-background-warning"
+		>
+			<span className="size-5">{ parse( svg?.warning ) }</span>
+			<span className="text-sm font-normal">{ message }</span>
+		</Container>
 	);
 };
 

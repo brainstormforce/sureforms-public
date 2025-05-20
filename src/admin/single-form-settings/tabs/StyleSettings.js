@@ -16,7 +16,7 @@ import { useDeviceType } from '@Controls/getPreviewType';
 import { getStylePanels } from '@Components/hooks';
 import { addStyleInRoot, getGradientCSS, setDefaultFormAttributes } from '@Utils/Helpers';
 import { chevronDown } from '@wordpress/icons';
-import PremiumBadge from '@Admin/components/PremiumBadge';
+import EditorPremiumBadge from '@Admin/components/EditorPremiumBadge';
 import Background from '@Components/enhanced-background';
 import Spacing from '@Components/spacing';
 import { embedFormAttributes } from '@Attributes/getBlocksDefaultAttributes';
@@ -1010,7 +1010,7 @@ function StyleSettings( props ) {
 					<h2 className="components-panel__body-title">
 						{ __( 'Form Theme', 'sureforms' ) }
 					</h2>
-					<PremiumBadge
+					<EditorPremiumBadge
 						tooltipHeading={ __(
 							'Unlock Form Theme',
 							'sureforms'
