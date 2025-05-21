@@ -261,7 +261,7 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 
 == Changelog ==
 = 1.7.0 - 21st May 2025 =
-* New: Revamped admin UI for a more modern and intuitive experience.
+* New: Revamped user interface for Dashboard and Settings with a more modern and intuitive experience.
 * Improvement: Improved reCAPTCHA handling by adding detailed logging for failure responses.
 * Improvement: Number and range components now support float values.
 = 1.6.4 - 14th May 2025 =
