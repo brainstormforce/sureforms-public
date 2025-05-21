@@ -497,8 +497,8 @@ export const setDefaultFormAttributes = ( formAttributes, postMeta ) => {
 
 /**
  * Dispatches a custom event responsible for displaying the error message.
- * 
- * @param {Object} args 
+ *
+ * @param {Object} args
  */
 export const showErrorMessage = ( args ) => {
 	if ( ! args ) {
@@ -515,4 +515,4 @@ export const showErrorMessage = ( args ) => {
 	} );
 
 	document.dispatchEvent( errorEvent );
-}
+};
