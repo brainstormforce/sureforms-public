@@ -55,7 +55,7 @@ const FromEmail = ( {
 						) }
 						{ __( 'We strongly recommend that you install the free ', 'sureforms' ) }
 						<a href="https://suremails.com?utm_medium=sureforms" target="_blank" rel="noopener noreferrer">
-							SureMails
+							SureMail
 						</a>
 						{ __( ' plugin! The Setup Wizard makes it easy to fix your emails. ', 'sureforms' ) }
 						{ sprintf(
@@ -105,7 +105,7 @@ const FromEmail = ( {
 							target="_blank"
 							rel="noopener noreferrer"
 						>
-							SureMails
+							SureMail
 						</a>
 						{ __(
 							' plugin! The Setup Wizard makes it easy to fix your emails. ',
