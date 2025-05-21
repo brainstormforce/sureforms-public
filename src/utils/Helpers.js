@@ -657,7 +657,7 @@ export function activatePlugin( { plugin, event } ) {
 				event.target.style.color = '#16A34A';
 			}
 			event.target.innerText = srfm_admin.plugin_activated_text;
-			if ( plugin.title !== 'SureCart' ) {
+			if ( plugin.slug !== 'surecart' ) {
 				window.location = plugin.redirection;
 			}
 		},
