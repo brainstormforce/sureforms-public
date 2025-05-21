@@ -657,7 +657,9 @@ export function activatePlugin( { plugin, event } ) {
 				event.target.style.color = '#16A34A';
 			}
 			event.target.innerText = srfm_admin.plugin_activated_text;
-			window.location = plugin.redirection;
+			if ( plugin?.redirection ) {
+   				window.location = plugin.redirection;
+			}
 		},
 		errorCallback: () => {
 			toast.error(
