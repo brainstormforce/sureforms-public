@@ -660,15 +660,6 @@ export function activatePlugin( { plugin, event } ) {
 			if ( plugin?.redirection ) {
    				window.location = plugin.redirection;
 			}
-			toast.success(
-				__(
-					'Plugin activation successful.',
-					'sureforms'
-				),
-				{
-					duration: 5000,
-				}
-			);
 		},
 		errorCallback: () => {
 			toast.error(
