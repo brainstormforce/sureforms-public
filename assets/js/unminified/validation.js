@@ -752,6 +752,7 @@ export function initializeInlineFieldValidation() {
 		'srfm-textarea-block',
 		'srfm-dropdown-block',
 		'srfm-slider-block',
+		'srfm-password-block-wrap',
 	];
 
 	srfmFields.forEach( ( block ) => addBlurListener( block, `.${ block }` ) );
