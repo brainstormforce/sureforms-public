@@ -1,28 +1,72 @@
-/** @jsx jsx */
-import { css, jsx } from '@emotion/react';
-import {
-	ScBreadcrumb,
-	ScBreadcrumbs,
-} from '@surecart/components-react';
-import { useState, useEffect } from '@wordpress/element';
+import { renderToString, useEffect, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import Logo from '../dashboard/templates/Logo';
 import useWhatsNewRSS from '../../lib/whats-new/useWhatsNewRSS';
+import { Topbar, Badge, Button, HamburgerMenu, Label } from '@bsf/force-ui';
+import { CircleHelp, ArrowUpRight, Megaphone } from 'lucide-react';
+import { addQueryParam, cn } from '@Utils/Helpers';
+import UpgradeNotice from './UpgradeNotice';
 
-export default () => {
-	const [ showNotifications, setShowNotifications ] = useState( false );
-	const [ isLicenseActive, setIsLicenseActive ] = useState( srfm_admin?.is_license_active || false );
+const { site_url: siteURL = '', is_pro_active: isProActive = false } =
+	srfm_admin;
 
-	const currentPage = new URL( window.location.href ).searchParams.get( 'page' );
+const NAV_ITEMS = [
+	{
+		slug: 'sureforms_menu',
+		text: __( 'Dashboard', 'sureforms' ),
+		link: `${ siteURL }/wp-admin/admin.php?page=sureforms_menu`,
+	},
+	{
+		slug: 'sureforms_form',
+		text: __( 'Forms', 'sureforms' ),
+		link: `${ siteURL }/wp-admin/edit.php?post_type=sureforms_form`,
+	},
+	{
+		slug: 'sureforms_entries',
+		text: __( 'Entries', 'sureforms' ),
+		link: `${ siteURL }/wp-admin/admin.php?page=sureforms_entries`,
+	},
+	{
+		slug: 'sureforms_form_settings',
+		text: __( 'Settings', 'sureforms' ),
+		link: `${ siteURL }/wp-admin/admin.php?page=sureforms_form_settings&tab=general-settings`,
+	},
+];
 
-	const handleUnlicensedRedirection = () => {
-		if ( currentPage === 'sureforms_form_settings' ) {
-			// in future if the tab slug is not account-settings, will have to change this.
-			document.querySelector( 'a[href*="tab=account-settings"].srfm-settings-sidebar-category' )?.click();
-		} else {
-			window.location.href = `${ srfm_admin.site_url }/wp-admin/admin.php?page=sureforms_form_settings&tab=account-settings`;
+const Header = () => {
+	const [ activePage, setActivePage ] = useState( null );
+	const [ isLicenseActive, setIsLicenseActive ] = useState(
+		srfm_admin?.is_license_active || false
+	);
+	useEffect( () => {
+		const searchParams = new URLSearchParams( window.location.search );
+		let currentPage = searchParams.get( 'page' );
+
+		// If 'page' parameter is not present, check for 'post_type' parameter
+		if ( ! currentPage ) {
+			currentPage = searchParams.get( 'post_type' );
 		}
-	};
+
+		// Set the active page based on the current URL parameter
+		setActivePage(
+			NAV_ITEMS.find( ( item ) => item.slug === currentPage )
+		);
+	}, [] );
+
+	useWhatsNewRSS( {
+		uniqueKey: 'sureforms',
+		rssFeedURL: 'https://sureforms.com/whats-new/feed/',
+		selector: '#srfm_whats_new',
+		icon: renderToString( <Megaphone className="size-4" /> ),
+		flyout: {
+			title: __( "What's New?", 'sureforms' ),
+		},
+		triggerButton: {
+			icon: renderToString(
+				<Megaphone className="size-4 text-text-primary" />
+			),
+		},
+	} );
 
 	useEffect( () => {
 		window.addEventListener( 'srfm_license_status_updated', ( event ) => {
@@ -32,199 +76,193 @@ export default () => {
 		} );
 	}, [] );
 
-	useWhatsNewRSS( {
-		uniqueKey: 'sureforms',
-		rssFeedURL: 'https://sureforms.com/whats-new/feed/',
-		selector: '#srfm_whats_new',
-		flyout: {
-			title: __( "What's New?", 'sureforms' ),
-			className: 'srfm_whats_new_flyout',
-			onOpen: () => {
-				setShowNotifications( true );
-			},
-			onClose: () => {
-				setShowNotifications( false );
-			},
-		},
-
-	} );
-
 	return (
-		<>
-			<div
-				css={ css`
-					position: sticky;
-					background-color: rgba( 255, 255, 255, 0.75 );
-					backdrop-filter: blur( 5px );
-					top: ${ showNotifications &&
-					'sureforms_menu' !==
-						srfm_admin.current_screen_id
-			? '0'
-			: '32px' };
-					width: 100%;
-					z-index: 4;
-					@media screen and ( max-width: 782px ) {
-						top: 46px;
-					}
-					@media screen and ( max-width: 460px ) {
-						top: 0px;
-					}
-					border-bottom: 1px solid rgb( 229, 231, 235 );
-				` }
-			>
-				<div
-					css={ css`
-						padding: 20px;
-						display: flex;
-						align-items: center;
-						justify-content: space-between;
-					` }
-				>
-					<div
-						css={ css`
-							display: flex;
-							align-items: center;
-							column-gap: 1em;
-						` }
-					>
-						<h1
-							css={ css`
-								margin: 0;
-								font-size: var( --sc-font-size-large );
-								min-height: 24px;
-							` }
-						>
-							<ScBreadcrumbs>
-								<ScBreadcrumb>
-									<Logo display="block" />
-								</ScBreadcrumb>
-								{ srfm_admin?.breadcrumbs &&
-									srfm_admin.breadcrumbs.length > 0 &&
-									srfm_admin.breadcrumbs.map(
-										( breadcrumb, index ) => (
-											<ScBreadcrumb
-												key={ index }
-												href={ breadcrumb.link }
-											>
-												{ breadcrumb.title }
-											</ScBreadcrumb>
-										)
-									) }
-							</ScBreadcrumbs>
-						</h1>
-					</div>
-					<div
-						css={ css`
-							display: flex;
-							align-items: center;
-							gap: 15px;
-						` }
-					>
-						<article
-							css={ css`
-								color: #94a3b8;
-								font-size: 14px;
-								font-weight: 400;
-								line-height: 20px;
-								display: flex;
-								align-items: center;
-							` }
-						>
-							{ ' ' }
-							{ srfm_admin?.plugin_version }
-							<span
-								css={ css`
-									padding: 2px 5px 3px 6px;
-									border-radius: 4px;
-									border: 1px solid #e2e8f0;
-									margin-left: 12px;
-									font-weight: 500;
-									line-height: 11px;
-									font-size: 11px;
-								` }
-							>
-								{ __( 'Core', 'sureforms' ) }
-							</span>
-						</article>
-						{ srfm_admin?.is_pro_active && (
-							<>
-								<div
-									css={ css`
-										width: 1px;
-										background: #e2e8f0;
-										height: 20px;
-									` }
-								></div>
-
-								<article
-									css={ css`
-										color: #94a3b8;
-										font-size: 14px;
-										font-weight: 500;
-										line-height: 20px;
-										display: flex;
-										align-items: center;
-									` }
-								>
-									{ ' ' }
-									{ srfm_admin?.pro_plugin_version }
-									<span
-										css={ css`
-											background-color: #0F172A;
-											color: #ffffff;
-											padding: 2px 5px 3px 6px;
-											border-radius: 4px;
-											border: 1px solid #0F172A;
-											margin-left: 12px;
-											font-weight: 500;
-											line-height: 11px;
-											font-size: 11px;
-										` }
+		<div className="top-8 z-[1]">
+			{ ! isProActive &&
+				! isLicenseActive &&
+				activePage?.slug === 'sureforms_menu' && <UpgradeNotice /> }
+			<Topbar className="py-0 px-4 pt-0 pb-0 min-h-0 h-14 gap-4 shadow-sm bg-background-primary/75 backdrop-blur-[5px]">
+				<Topbar.Left className="gap-3">
+					<Topbar.Item className="w-auto h-auto lg:hidden">
+						<HamburgerMenu>
+							<HamburgerMenu.Toggle className="size-6" />
+							<HamburgerMenu.Options>
+								{ NAV_ITEMS.map( ( item ) => (
+									<HamburgerMenu.Option
+										key={ item.slug }
+										active={
+											activePage?.slug === item.slug
+										}
+										href={ item.link }
+										iconPosition="left"
+										rel="noopener noreferrer"
+										tag="a"
+										target="_self"
 									>
-										{ srfm_admin?.pro_plugin_name.split( ' ' )[ 1 ] }
-									</span>
-								</article>
-								<div
-									css={ css`
-										width: 1px;
-										background: #e2e8f0;
-										height: 20px;
-									` }
-								></div>
-								<article
-									css={ css`
-										color: ${ isLicenseActive ? '#16A34A' : '#DC2626' };
-										font-size: 14px;
-										font-weight: 400;
-										line-height: 20px;
-										display: flex;
-										align-items: center;
-									` }
-								>
-									{ ' ' }
-									{ isLicenseActive ? ( __( 'Licensed', 'sureforms' ) ) : (
-										<>
-											<span
-												css={ css`
-													cursor: pointer;
-												` }
-												onClick={ handleUnlicensedRedirection }>{ __( 'Unlicensed', 'sureforms' ) }</span>
-										</>
+										{ item.text }
+									</HamburgerMenu.Option>
+								) ) }
+								{ ! isProActive && ! isLicenseActive && (
+									<HamburgerMenu.Option
+										href={ NAV_ITEMS[ 0 ].link }
+										iconPosition="left"
+										rel="noopener noreferrer"
+										tag="a"
+										target="_blank"
+										className="text-link-primary gap-1"
+									>
+										{ __(
+											'Upgrade SureForms',
+											'sureforms'
+										) }{ ' ' }
+										<ArrowUpRight className="!size-5" />
+									</HamburgerMenu.Option>
+								) }
+							</HamburgerMenu.Options>
+						</HamburgerMenu>
+					</Topbar.Item>
+					<Topbar.Item>
+						<Logo />
+					</Topbar.Item>
+				</Topbar.Left>
+				<Topbar.Middle align="left" className="h-full hidden lg:flex">
+					<Topbar.Item>
+						<nav className="flex items-center gap-4 h-full">
+							{ NAV_ITEMS.map( ( item ) => (
+								<a
+									className={ cn(
+										'h-full text-text-secondary text-sm font-medium no-underline px-1 content-center relative focus:outline-none hover:text-text-primary focus:[box-shadow:none]',
+										activePage?.slug === item?.slug &&
+											'text-text-primary before:content-[""] before:absolute before:h-px before:bg-border-interactive before:bottom-0 before:inset-x-0'
 									) }
-								</article>
+									href={ item.link }
+									key={ item.slug }
+								>
+									{ item.text }
+								</a>
+							) ) }
+						</nav>
+					</Topbar.Item>
+					{ ! isProActive && ! isLicenseActive && (
+						<Topbar.Item>
+							<Button
+								icon={ <ArrowUpRight className="!size-5" /> }
+								iconPosition="right"
+								variant="link"
+								size="sm"
+								className="h-full text-link-primary text-sm font-semibold no-underline hover:no-underline hover:text-link-primary-hover px-1 content-center [box-shadow:none] focus:[box-shadow:none] focus:outline-none"
+								onClick={ () =>
+									window.open(
+										addQueryParam(
+											srfm_admin?.pricing_page_url ||
+												srfm_admin?.sureforms_pricing_page,
+											'dashboard-header-cta'
+										),
+										'_blank',
+										'noreferrer'
+									)
+								}
+							>
+								{ __( 'Upgrade SureForms', 'sureforms' ) }
+							</Button>
+						</Topbar.Item>
+					) }
+				</Topbar.Middle>
+				<Topbar.Right>
+					<Topbar.Item className="flex gap-3 items-center">
+						<Label
+							size="xs"
+							variant="neutral"
+							className="text-text-tertiary"
+						>
+							{ srfm_admin?.plugin_version }
+						</Label>
+						<Badge
+							label={ __( 'Core', 'sureforms' ) }
+							className="text-text-tertiary"
+							size="xs"
+							type="rounded"
+							variant="neutral"
+						/>
+						{ isProActive && (
+							<>
+								<span className="text-text-tertiary">|</span>
+								<Label
+									size="xs"
+									variant="neutral"
+									className="text-text-tertiary"
+								>
+									{ srfm_admin?.pro_plugin_version }
+								</Label>
+								<Badge
+									label={
+										srfm_admin?.pro_plugin_name.split(
+											' '
+										)[ 1 ]
+									}
+									size="xs"
+									variant="inverse"
+									type="rounded"
+								/>
 							</>
 						) }
-						<div
-							css={ css`
-								width: 1px;
-								background: #e2e8f0;
-								height: 20px;
-							` }
-						></div>
-						<div id="srfm_whats_new"></div>
-					</div>
-				</div>
-			</div>
-		</>
+					</Topbar.Item>
+					{ ( isProActive || isLicenseActive ) && (
+						<Topbar.Item>
+							<Button
+								variant="ghost"
+								className="p-0 hover:bg-transparent focus:[box-shadow:none] [box-shadow:none]"
+								onClick={ () => {
+									if ( isLicenseActive ) {
+										return;
+									}
+									window.open(
+										`${ siteURL }/wp-admin/admin.php?page=sureforms_form_settings&tab=account-settings`,
+										'_self',
+										'noopener noreferrer'
+									);
+								} }
+								icon={
+									<Badge
+										label={
+											isLicenseActive
+												? __( 'Activated', 'sureforms' )
+												: __(
+													'Unlicensed',
+													'sureforms'
+												  )
+										}
+										size="xs"
+										variant={
+											isLicenseActive ? 'green' : 'red'
+										}
+									/>
+								}
+							></Button>
+						</Topbar.Item>
+					) }
+					<Topbar.Item className="p-1">
+						<Button
+							size="xs"
+							variant="ghost"
+							className="p-0 focus:[box-shadow:none] [box-shadow:none] text-text-primary"
+							onClick={ () => {
+								window.open(
+									'https://sureforms.com/docs/',
+									'_blank',
+									'noopener noreferrer'
+								);
+							} }
+							icon={ <CircleHelp className="size-4" /> }
+						></Button>
+					</Topbar.Item>
+					<Topbar.Item className="gap-2">
+						<div id="srfm_whats_new" className="[&_a]:!p-1" />
+					</Topbar.Item>
+				</Topbar.Right>
+			</Topbar>
+		</div>
 	);
 };
+
+export default Header;

@@ -1,31 +1,37 @@
 import { __ } from '@wordpress/i18n';
-import svgIcons from '@Image/single-form-logo.json';
-import parse from 'html-react-parser';
+import { Button, Container, Title } from '@bsf/force-ui';
+import { ArrowLeftIcon } from 'lucide-react';
 
 const Suretriggers = ( { setSelectedTab } ) => {
-	const backArrow = parse( svgIcons.leftArrow );
-
 	// Adding validation for the SureTriggersConfig and SureTriggers object
 	if ( window?.SureTriggers && window?.SureTriggersConfig ) {
 		window.SureTriggers.init( window.SureTriggersConfig );
 	}
 
 	return (
-		<div className="srfm-modal-content" style={ { height: '100%' } }>
-			<div className="srfm-modal-inner-content" style={ { height: '100%' } }>
-				<div className="srfm-modal-inner-heading">
-					<div onClick={ () => setSelectedTab( 'integrations' ) } className="srfm-modal-inner-heading-text srfm-modal-inner-heading-back-button">
-						<span className="srfm-back-btn">{ backArrow }</span>
-						<h4>{ __( 'Integrations', 'sureforms' ) }</h4>
-					</div>
-				</div>
-				<div className="srfm-modal-inner-box" style={ { height: '100%' } }>
-					<div className="srfm-modal-inner-box-text">
-						<h5>{ __( 'OttoKit Integrations', 'sureforms' ) }</h5>
-					</div>
-
-					<div className="srfm-modal-separator" />
-					<div id="suretriggers-iframe-wrapper" style={ { width: '100%', height: '100%' } } ></div>
+		<div className="space-y-7 h-full pb-10">
+			<Container align="center" className="gap-2">
+				<Button
+					className="p-0"
+					size="md"
+					variant="ghost"
+					onClick={ () => setSelectedTab( 'integrations' ) }
+					icon={ <ArrowLeftIcon /> }
+				/>
+				<Title
+					tag="h5"
+					title={ __(
+						'OttoKit Integrations',
+						'sureforms'
+					) }
+				/>
+			</Container>
+			<div className="h-full bg-background-primary rounded-xl p-4 shadow-sm mb-6">
+				<div className="h-full flex flex-col gap-1 bg-background-secondary rounded-lg p-2">
+					<div
+						id="suretriggers-iframe-wrapper"
+						className="size-full [&>iframe]:border [&>iframe]:border-solid [&>iframe]:border-border-subtle [&>iframe]:rounded-md"
+					/>
 				</div>
 			</div>
 		</div>

@@ -70,7 +70,7 @@ const GradientSettings = ( props ) => {
 			{ undefined !== gradientType && (
 				<MultiButtonsControl
 					setAttributes={ setAttributes }
-					label={ 'Select Gradient' }
+					label={ __( 'Select Gradient', 'sureforms' ) }
 					data={ {
 						value: gradientType.value,
 						label: gradientType.label,
