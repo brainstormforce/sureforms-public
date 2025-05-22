@@ -29,7 +29,7 @@ import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
 import EmailNotification from '../email-settings/EmailNotification';
 import FormConfirmSetting from '../form-confirm-setting';
-import { setFormSpecificSmartTags } from '@Utils/Helpers';
+import { setFormSpecificSmartTags, cn } from '@Utils/Helpers';
 import toast from 'react-hot-toast';
 import { useDispatch } from '@wordpress/data';
 import { store as blockEditorStore } from '@wordpress/block-editor';
@@ -158,6 +158,8 @@ const Dialog = ( {
 		setSelectedTab( targetTab );
 	}, [ targetTab, open ] );
 
+	const containerClassName = cn( 'w-full h-full mx-auto', selectedTab === 'suretriggers' ? 'min-w-[800px]' : 'max-w-[43.5rem]' );
+
 	return (
 		renderRoot &&
 		createPortal(
@@ -200,7 +202,7 @@ const Dialog = ( {
 							/>
 							{ /* Content Area */ }
 							<div className="p-8 w-full h-full bg-background-secondary overflow-y-auto">
-								<div className="w-full max-w-[43.5rem] h-full mx-auto">
+								<div className={ containerClassName }>
 									{
 										tabs.find(
 											( { id } ) => id === selectedTab
