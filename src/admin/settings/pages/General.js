@@ -23,6 +23,11 @@ const GeneralPage = ( {
 			{ label: __( 'Sunday', 'sureforms' ), value: 'Sunday' },
 		];
 
+		const getReportsLabel = ( value ) => {
+			const selectedDay = days.find( ( day ) => day.value === value );
+			return selectedDay ? selectedDay.label : '';
+		};
+
 		return (
 			<>
 				<Switch
@@ -94,7 +99,7 @@ const GeneralPage = ( {
 							</Button>
 						</div>
 						<Select
-							value={ emailTabOptions.srfm_schedule_report }
+							value={ getReportsLabel( emailTabOptions.srfm_schedule_report ) }
 							onChange={ ( value ) =>
 								updateGlobalSettings(
 									'srfm_schedule_report',
