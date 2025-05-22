@@ -1,6 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
-import PremiumBadge from '../../admin/components/PremiumBadge';
+import EditorPremiumBadge from '../../admin/components/EditorPremiumBadge';
 import { chevronDown, chevronUp } from '@wordpress/icons';
 import { SelectControl, Button, ToggleControl } from '@wordpress/components';
 import { useState } from '@wordpress/element';
@@ -20,9 +20,9 @@ const ConditionalLogicPreview = () => {
 					{ ' ' }
 					{ __( 'Conditional Logic', 'sureforms' ) }{ ' ' }
 				</h2>
-				<PremiumBadge
+				<EditorPremiumBadge
 					tooltipHeading={ __(
-						'Unlock Conditional Logic',
+						'Unlock Conditional Logic Editor',
 						'sureforms'
 					) }
 					tooltipContent={ __(

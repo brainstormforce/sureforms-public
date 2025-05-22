@@ -186,14 +186,18 @@ const Range = ( props ) => {
 								attributeNames={ [
 									props.data.label,
 									props.displayUnit ? props.unit.label : null,
-								].filter( Boolean ) }
+								].filter(
+									( val ) => val !== null && val !== undefined
+								) }
 								setAttributes={ props?.setAttributes }
 								isFormSpecific={ props?.isFormSpecific }
 								isValueArray={ true }
 								value={ [
 									props?.value,
 									props.displayUnit ? props.unit.value : null,
-								].filter( Boolean ) }
+								].filter(
+									( val ) => val !== null && val !== undefined
+								) }
 							/>
 						) }
 						{ props.displayUnit && (

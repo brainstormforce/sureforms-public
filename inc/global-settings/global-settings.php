@@ -151,14 +151,47 @@ class Global_Settings {
 
 		$srfm_ip_log         = $setting_options['srfm_ip_log'] ?? false;
 		$srfm_form_analytics = $setting_options['srfm_form_analytics'] ?? false;
+		$srfm_bsf_analytics  = $setting_options['srfm_bsf_analytics'] ?? false;
 
-		return update_option(
-			'srfm_general_settings_options',
-			[
-				'srfm_ip_log'         => $srfm_ip_log,
-				'srfm_form_analytics' => $srfm_form_analytics,
-			]
-		);
+		$settings = [
+			'srfm_ip_log'         => $srfm_ip_log,
+			'srfm_form_analytics' => $srfm_form_analytics,
+		];
+
+		/**
+		 * We are updating sureforms_analytics_optin option from the general settings as it has been introduced
+		 * as part of general settings. Since the option sureforms_analytics_optin is already available from BSF analytics library
+		 * We are updating this independently.
+		 *
+		 * @since 1.7.0
+		 */
+		$analytics_result = self::update_bsf_analytics( $srfm_bsf_analytics );
+
+		$general_result = update_option( 'srfm_general_settings_options', $settings );
+
+		/**
+		 * Returns the output of update_bsf_analytics or srfm_general_settings_options option.
+		 *
+		 * @since 1.7.0
+		 */
+		return $analytics_result || $general_result;
+	}
+
+	/**
+	 * Toggle BSF analytics usage tracking in WP general settings.
+	 *
+	 * @param array<mixed> $settings general settings array.
+	 * @return bool
+	 * @since 1.7.0
+	 */
+	public static function update_bsf_analytics( $settings ) {
+		if ( true === $settings ) {
+			$enable_tracking = 'yes';
+		} else {
+			$enable_tracking = '';
+		}
+
+		return update_option( 'sureforms_analytics_optin', $enable_tracking );
 	}
 
 	/**
@@ -310,6 +343,16 @@ class Global_Settings {
 				'srfm_form_analytics' => false,
 			];
 		}
+
+		/**
+		 * We have introduced toggle for analytics optin in the general settings.
+		 * Hence retrieving the option sureforms_analytics_optin to get current status.
+		 *
+		 * @since 1.7.0
+		 */
+		$srfm_bsf_analytics = get_option( 'sureforms_analytics_optin', false ) === 'yes' ? true : false;
+		$global_setting_options['srfm_general_settings_options']['srfm_bsf_analytics'] = $srfm_bsf_analytics;
+
 		if ( empty( $global_setting_options['srfm_default_dynamic_block_option'] ) ) {
 			$global_setting_options['srfm_default_dynamic_block_option'] = Helper::default_dynamic_block_option();
 		}
