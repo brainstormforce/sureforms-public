@@ -633,4 +633,52 @@ class Test_Helper extends TestCase {
             );
         }
     }
+
+    /**
+     * Test the strip_js_attributes method with various inputs.
+     */
+    public function testStripJSAttributes() {
+        $testCases = [
+            'removes script tag' => [
+            'input' => '<div>Hello<script>alert("x")</script>World</div>',
+            'expected' => '<body><div>HelloWorld</div></body>',
+            ],
+            'removes onclick attribute' => [
+                'input' => '<button onclick="doSomething()">Click</button>',
+                'expected' => '<body><button>Click</button></body>',
+            ],
+            'multiple on* attributes removed' => [
+                'input' => '<div onmouseover="x" onload="y">Text</div>',
+                'expected' => '<body><div>Text</div></body>',
+            ],
+            'preserves safe attributes' => [
+                'input' => '<img src="test.jpg" alt="image">',
+                'expected' => '<body><img src="test.jpg" alt="image"></body>',
+            ],
+            'mixed safe and unsafe attributes' => [
+                'input' => '<a href="#" onclick="bad()">Link</a>',
+                'expected' => '<body><a href="#">Link</a></body>',
+            ],
+            'nested script and event attributes' => [
+                'input' => '<div><script>alert(1)</script><span onclick="x()">Test</span></div>',
+                'expected' => '<body><div><span>Test</span></div></body>',
+            ],
+            'invalid html gracefully handled' => [
+                'input' => '<div><button onclick="bad()">Click',
+                'expected' => '<body><div><button>Click</button></div></body>',
+            ],
+            'image tag with onerror attribute' => [
+                'input' => '<img src=x onerror=alert(1)>',
+                'expected' => '<body><img src="x"></body>',
+            ],
+        ];
+        // Iterate through test cases and assert results.
+        foreach ($testCases as $description => $testCase) {
+            $this->assertSame(
+                $testCase['expected'],
+                Helper::strip_js_attributes($testCase['input']),
+                "Failed asserting for case: {$description}"
+            );
+        }
+    }
 }
