@@ -127,7 +127,14 @@ class Frontend_Assets {
 			[
 				'site_url' => site_url(),
 				'nonce'    => wp_create_nonce( 'wp_rest' ),
-				'messages' => Translatable::get_frontend_validation_messages(),
+				'messages' => array_merge(
+					Translatable::get_frontend_validation_messages(),
+					[
+						'srfm_turnstile_error_message' => __( 'Turnstile sitekey verification failed. Please contact your site administrator.', 'sureforms' ),
+						'srfm_google_captcha_error_message' => __( 'Google Captcha sitekey verification failed. Please contact your site administrator.', 'sureforms' ),
+						'srfm_captcha_h_error_message' => __( 'HCaptcha sitekey verification failed. Please contact your site administrator.', 'sureforms' ),
+					]
+				),
 				'is_rtl'   => $is_rtl,
 			]
 		);
@@ -239,6 +246,16 @@ class Frontend_Assets {
 				// Input mask JS.
 				wp_enqueue_script( SRFM_SLUG . '-inputmask', $js_vendor_uri . 'inputmask.min.js', [], SRFM_VER, true );
 			}
+		}
+		/**
+		 * Enqueueing the input mask JS for input and date-picker blocks.
+		 * This is a workaround for the input mask JS to work with the date-picker block.
+		 * Not adding in the above existing condition because code only runs when free block are added in the form.
+		 * Aim is to reduce redundant code and library file duplication.
+		 */
+		if ( 'date-picker' === $block_name ) {
+			// Input mask JS.
+			wp_enqueue_script( SRFM_SLUG . '-inputmask', SRFM_URL . 'assets/js/minified/deps/inputmask.min.js', [], SRFM_VER, true );
 		}
 	}
 

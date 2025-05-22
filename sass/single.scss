@@ -57,14 +57,17 @@
 				max-width: var( --srfm-form-container-width );
 				width: 90%; // Maintains better spacing on the both side of the form for the responsive devices.
 				height: auto;
-				border-radius: 12px;
 				box-shadow: 0px 10px 15px -3px rgba( 0, 0, 0, 0.1 );
-				padding: 32px;
+
+				// Form padding styles for the form container.
+				@include srfm-form-padding-styles( --srfm-instant-form-padding-top, --srfm-instant-form-padding-right, --srfm-instant-form-padding-bottom, --srfm-instant-form-padding-left, 32px );
+				// Form border radius styles for the form container.
+				@include srfm-form-border-radius-styles( --srfm-instant-form-border-radius-top, --srfm-instant-form-border-radius-right, --srfm-instant-form-border-radius-bottom, --srfm-instant-form-border-radius-left, 12px );
 
 				@include srfm-background-control-styles;
 				// Maintain the border radius for the overlays.
 				&[class*="srfm-overlay"]::before {
-					border-radius: 12px;
+					@include srfm-form-border-radius-styles( --srfm-instant-form-border-radius-top, --srfm-instant-form-border-radius-right, --srfm-instant-form-border-radius-bottom, --srfm-instant-form-border-radius-left, 12px );
 				}
 				// Retaining this .hide class for backward compatibility with older versions of the pro plugin.
 				&.hide {

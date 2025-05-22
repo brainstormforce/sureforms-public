@@ -35,6 +35,15 @@
 						margin-top: var( --srfm-checkbox-margin-top-editor ) !important;
 					}
 				}
+				// Need to add !important to override the existing styles.
+				.srfm-block-label {
+					font-size: var( --srfm-checkbox-label-font-size ) !important;
+					line-height: var( --srfm-checkbox-label-line-height ) !important;
+				}
+				.srfm-description {
+					font-size: var( --srfm-checkbox-description-font-size ) !important;
+					line-height: var( --srfm-checkbox-description-line-height ) !important;
+				}
 			}
 		}
 	}
@@ -78,6 +87,15 @@
 
 				.block-editor-block-list__block {
 					@include srfm-no-margin-padding;
+					.srfm-block-legend,
+					.srfm-block-label {
+						font-size: var( --srfm-address-label-font-size );
+						line-height: var( --srfm-address-label-line-height );
+					}
+					.srfm-description {
+						font-size: var( --srfm-address-description-font-size );
+						line-height: var( --srfm-address-description-line-height );
+					}
 				}
 			}
 		}
@@ -174,7 +192,10 @@
 	.srfm-phone-block-wrap {
 		// Adding margin to srfm-block-wrap because the library styles are overriding the input styles.
 		.srfm-block-wrap {
-			margin: var( --srfm-input-field-margin ) !important;
+			@include srfm-input-margin-styles( true );
+		}
+		.srfm-input-phone {
+			margin: 0 !important; // Adding !important to override the library styles for the input.
 		}
 		.iti-flag {
 			margin-right: 4px; // Fixed gap between the flag and the country code.
@@ -226,6 +247,16 @@
 			.srfm-input-common {
 				width: 100%;
 			}
+		}
+		/**
+		 * For the dropdown block, the margin is added to the srfm-block-wrap
+		 * instead of the input to maintain the icon layout.
+		 */
+		.srfm-block-wrap {
+			@include srfm-input-margin-styles( true );
+		}
+		.srfm-input-common {
+			margin: 0 !important;
 		}
 	}
 }

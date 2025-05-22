@@ -35,6 +35,18 @@
 					}
 				}
 			}
+			/**
+			 * The checkbox label and description font size and line height are set to the same value as the main label font size and line height.
+			 * The variables are kept separate to accommodate custom form styling.
+			 */
+			.srfm-block-label {
+				font-size: var( --srfm-checkbox-label-font-size );
+				line-height: var( --srfm-checkbox-label-line-height );
+			}
+			.srfm-description {
+				font-size: var( --srfm-checkbox-description-font-size );
+				line-height: var( --srfm-checkbox-description-line-height );
+			}
 		}
 	}
 }
