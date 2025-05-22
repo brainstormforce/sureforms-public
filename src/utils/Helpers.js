@@ -4,6 +4,10 @@ import { Toaster, ToastBar } from 'react-hot-toast';
 import { store as editorStore } from '@wordpress/editor';
 import { select } from '@wordpress/data';
 import { cleanForSlug } from '@wordpress/url';
+import clsx from 'clsx';
+import { twMerge } from 'tailwind-merge';
+import { format as format_date } from 'date-fns';
+import { toast } from '@bsf/force-ui';
 
 /**
  * Get Image Sizes and return an array of Size.
@@ -380,6 +384,134 @@ export const addQueryParam = ( url, paramValue, paramKey = 'utm_medium' ) => {
 	}
 };
 
+/**
+ * Utility function to merge Tailwind CSS and conditional class names.
+ *
+ * @param {...any} args
+ * @return {string} - The concatenated class string.
+ */
+export const cn = ( ...args ) => twMerge( clsx( ...args ) );
+
+/**
+ * Formats a given date string based on the provided options.
+ *
+ * @param {string}  dateString       - The date string to format.
+ * @param {Object}  options          - Formatting options to customize the output.
+ * @param {boolean} [options.day]    - Whether to include the day in the output.
+ * @param {boolean} [options.month]  - Whether to include the month in the output.
+ * @param {boolean} [options.year]   - Whether to include the year in the output.
+ * @param {boolean} [options.hour]   - Whether to include the hour in the output.
+ * @param {boolean} [options.minute] - Whether to include the minute in the output.
+ * @param {boolean} [options.hour12] - Whether to use a 12-hour clock format.
+ * @return {string} - The formatted date string or a fallback if the input is invalid.
+ */
+export const formatDate = ( dateString, options = {} ) => {
+	if ( ! dateString || isNaN( new Date( dateString ).getTime() ) ) {
+		return __( 'No Date', 'sureforms' );
+	}
+
+	const optionMap = {
+		day: '2-digit',
+		month: 'short',
+		year: 'numeric',
+		hour: '2-digit',
+		minute: '2-digit',
+		hour12: true, // Note: hour12 is a boolean directly
+	};
+
+	const formattingOptions = Object.keys( optionMap ).reduce( ( acc, key ) => {
+		if ( options[ key ] === true ) {
+			acc[ key ] = optionMap[ key ];
+		} else if ( options[ key ] === false ) {
+		} else if ( options[ key ] !== undefined ) {
+			acc[ key ] = options[ key ];
+		}
+		return acc;
+	}, {} );
+
+	return new Intl.DateTimeFormat( 'en-US', formattingOptions ).format(
+		new Date( dateString )
+	);
+};
+
+/**
+ *
+ * @return {string} - The formatted date string.
+ */
+export const getDatePlaceholder = () => {
+	const currentDate = new Date();
+	const pastDate = new Date();
+	pastDate.setDate( currentDate.getDate() - 30 ); // Set to 30 days ago
+
+	const formattedPastDate = formatDate( pastDate, 'MM/dd/yyyy' );
+	const formattedCurrentDate = formatDate( currentDate, 'MM/dd/yyyy' );
+
+	return `${ formattedPastDate } - ${ formattedCurrentDate }`;
+};
+
+/**
+ * Formats a given date string based on the provided options.
+ * If no options are provided, it defaults to 'yyyy-MM-dd' format.
+ *
+ * @param {string|Date} date                      - The date string or Date object to format.
+ * @param {string}      [dateFormat='yyyy-MM-dd'] - The date format string for `date-fns`.
+ * @return {string} - The formatted date string or a fallback if the input is invalid.
+ */
+export const format = ( date, dateFormat = 'yyyy-MM-dd' ) => {
+	try {
+		if ( ! date || isNaN( new Date( date ).getTime() ) ) {
+			throw new Error( __( 'Invalid Date', 'sureforms' ) );
+		}
+		return format_date( new Date( date ), dateFormat );
+	} catch ( error ) {
+		return __( 'No Date', 'sureforms' );
+	}
+};
+
+/**
+ * Returns selected date in string format
+ *
+ * @param {*} selectedDates
+ * @return {string} - Formatted string.
+ */
+export const getSelectedDate = ( selectedDates ) => {
+	if ( ! selectedDates.from ) {
+		return '';
+	}
+	if ( ! selectedDates.to ) {
+		return `${ format( selectedDates.from, 'MM/dd/yyyy' ) }`;
+	}
+	return `${ format( selectedDates.from, 'MM/dd/yyyy' ) } - ${ format(
+		selectedDates.to,
+		'MM/dd/yyyy'
+	) }`;
+};
+
+/**
+ *
+ * @param {Object} dates - The date object.
+ * @return {string} - The formatted date string.
+ */
+export const getLastNDays = ( dates ) => {
+	const { from, to } = dates;
+
+	if ( ! from || ! to ) {
+		const currentDate = new Date();
+		const pastDate = new Date();
+		pastDate.setDate( currentDate.getDate() - 30 );
+
+		return {
+			from: pastDate,
+			to: currentDate,
+		};
+	}
+
+	return {
+		from: new Date( from ),
+		to: new Date( to ),
+	};
+};
+
 const generateSlug = ( label, existingSlugs ) => {
 	const baseSlug = cleanForSlug( label );
 
@@ -447,6 +579,164 @@ export const addStyleInRoot = ( root, cssProperties ) => {
 		}
 	}
 };
+
+// Constants for plugin action types
+export const PLUGIN_ACTIONS = {
+	ACTIVATE: 'sureforms_recommended_plugin_activate',
+	INSTALL: 'sureforms_recommended_plugin_install',
+};
+
+// Get plugin button text
+export const getPluginStatusText = ( plugin_data ) => {
+	const statusTextMap = {
+		Installed: srfm_admin.plugin_activate_text,
+		Install: __( 'Install & Activate', 'sureforms' ),
+		Activated: srfm_admin.plugin_activated_text,
+	};
+
+	return statusTextMap[ plugin_data.status ] || plugin_data.status;
+};
+
+// Get action type based on plugin status
+export const getAction = ( status ) => {
+	return status === 'Installed'
+		? PLUGIN_ACTIONS.ACTIVATE
+		: status === 'Activated'
+			? ''
+			: PLUGIN_ACTIONS.INSTALL;
+};
+
+// Helper function for API requests
+export const performApiAction = async ( {
+	url,
+	formData,
+	successCallback,
+	errorCallback,
+} ) => {
+	try {
+		const response = await apiFetch( {
+			url,
+			method: 'POST',
+			body: formData,
+		} );
+
+		if ( response.success ) {
+			successCallback( response );
+		} else {
+			errorCallback( response );
+		}
+	} catch ( error ) {
+		console.error( 'API Error:', error );
+		toast.error(
+			__( 'An error occurred. Please try again later.', 'sureforms' ),
+			{
+				duration: 5000,
+			}
+		);
+	}
+};
+
+// Function to activate a plugin
+export function activatePlugin( { plugin, event } ) {
+	const formData = new window.FormData();
+	formData.append( 'action', PLUGIN_ACTIONS.ACTIVATE );
+	formData.append(
+		'security',
+		srfm_admin.sfPluginManagerNonce ?? srfm_admin.sf_plugin_manager_nonce
+	);
+	formData.append( 'init', plugin.path );
+	formData.append( 'slug', plugin.slug );
+
+	event.target.innerText = srfm_admin.plugin_activating_text;
+
+	performApiAction( {
+		url: srfm_admin.ajax_url,
+		formData,
+		successCallback: () => {
+			if ( srfm_admin?.current_screen_id === 'sureforms_menu' ) {
+				event.target.style.color = '#16A34A';
+			}
+			event.target.innerText = srfm_admin.plugin_activated_text;
+			if ( plugin?.redirection ) {
+   				window.location = plugin.redirection;
+			}
+		},
+		errorCallback: () => {
+			toast.error(
+				__(
+					'Plugin activation failed, Please try again later.',
+					'sureforms'
+				),
+				{
+					duration: 5000,
+				}
+			);
+			event.target.innerText = srfm_admin.plugin_activate_text;
+		},
+	} );
+}
+
+export function handlePluginActionTrigger( { plugin, event } ) {
+	const action = getAction( plugin.status );
+	if ( ! action ) {
+		return;
+	}
+
+	const formData = new window.FormData();
+
+	if ( action === PLUGIN_ACTIONS.INSTALL ) {
+		formData.append( 'action', PLUGIN_ACTIONS.INSTALL );
+		formData.append( '_ajax_nonce', srfm_admin.plugin_installer_nonce );
+		formData.append( 'slug', plugin.slug );
+
+		event.target.innerText = srfm_admin.plugin_installing_text;
+
+		performApiAction( {
+			url: srfm_admin.ajax_url,
+			formData,
+			successCallback: () => {
+				event.target.innerText = srfm_admin.plugin_installed_text;
+				activatePlugin( { plugin, event } );
+			},
+			errorCallback: () => {
+				event.target.innerText = __( 'Install', 'sureforms' );
+				alert(
+					__(
+						'Plugin Installation failed, Please try again later.',
+						'sureforms'
+					)
+				);
+			},
+		} );
+	} else if ( action === PLUGIN_ACTIONS.ACTIVATE ) {
+		activatePlugin( { plugin, event } );
+	}
+}
+
+/**
+ * Sets a cookie with the specified name, value, and expiration days.
+ *
+ * @param {string} name  - The name of the cookie.
+ * @param {string} value - The value of the cookie.
+ * @param {number} days  - The number of days until the cookie expires.
+ */
+export function setCookie( name, value, days ) {
+	const date = new Date();
+	date.setTime( date.getTime() + ( days * 24 * 60 * 60 * 1000 ) );
+	document.cookie = `${ name }=${ value }; expires=${ date.toUTCString() }; path=/`;
+}
+
+/**
+ * Retrieves the value of a cookie by its name.
+ *
+ * @param {string} name - The name of the cookie to retrieve.
+ * @return {string|null} - The value of the cookie, or null if not found.
+ */
+export function getCookie( name ) {
+	const value = `; ${ document.cookie }`;
+	const parts = value.split( `; ${ name }=` );
+	return parts.length === 2 ? parts.pop().split( ';' ).shift() : null;
+}
 
 // Remove the CSS properties from the root element.
 export const removeStylesFromRoot = ( root, cssProperties ) => {

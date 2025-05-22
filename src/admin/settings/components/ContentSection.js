@@ -1,26 +1,22 @@
-import Skeleton from 'react-loading-skeleton';
+import LoadingSkeleton from '@Admin/components/LoadingSkeleton';
 
 const ContentSection = ( { loading, title, content } ) => {
 	return (
 		<>
-			<div className="srfm-section-container">
-				<div className="srfm-content-title">
+			<div>
+				<div>
 					{ loading ? (
-						<Skeleton count={ 1 } height={ 30 } width={ 200 } />
+						<LoadingSkeleton count={ 1 } className="w-48 h-8 rounded-sm" />
 					) : (
-						title
+						<span className="sr-only">{ title }</span>
 					) }
 				</div>
-				<div className="srfm-section-content">
+				<div className="space-y-6">
 					{ loading ? (
-						<>
-							<Skeleton
-								className="srfm-skeleton-container"
-								count={ 3 }
-								height={ 25 }
-							/>
-							<Skeleton count={ 1 } height={ 25 } />
-						</>
+						<div>
+							<LoadingSkeleton count={ 3 } className="h-6 rounded-sm" />
+							<LoadingSkeleton count={ 1 } className="h-6 rounded-sm" />
+						</div>
 					) : (
 						content
 					) }

@@ -98,11 +98,14 @@ class Rest_Api {
 			wp_send_json_error( __( 'Request could not be processed.', 'sureforms' ) );
 		}
 
-		$after = is_array( $params ) && ! empty( $params['after'] ) ? sanitize_text_field( Helper::get_string_value( $params['after'] ) ) : '';
+		$after  = is_array( $params ) && ! empty( $params['after'] ) ? sanitize_text_field( Helper::get_string_value( $params['after'] ) ) : '';
+		$before = is_array( $params ) && ! empty( $params['before'] ) ? sanitize_text_field( Helper::get_string_value( $params['before'] ) ) : '';
 
-		if ( empty( $after ) ) {
+		if ( empty( $after ) || empty( $before ) ) {
 			wp_send_json_error( __( 'Invalid date.', 'sureforms' ) );
 		}
+
+		$form = is_array( $params ) && ! empty( $params['form'] ) ? sanitize_text_field( Helper::get_string_value( $params['form'] ) ) : '';
 
 		$where = [
 			[
@@ -111,15 +114,46 @@ class Rest_Api {
 					'value'   => $after,
 					'compare' => '>=',
 				],
-
+				[
+					'key'     => 'created_at',
+					'value'   => $before,
+					'compare' => '<=',
+				],
 			],
 		];
+
+		if ( ! empty( $form ) ) {
+			$where[0][] = [
+				'key'     => 'form_id',
+				'value'   => $form,
+				'compare' => '=',
+			];
+		}
 
 		return Entries::get_instance()->get_results(
 			$where,
 			'created_at',
 			[ 'ORDER BY created_at DESC' ]
 		);
+	}
+
+	/**
+	 * Get the data for all the forms.
+	 *
+	 * @param \WP_REST_Request $request Full details about the request.
+	 * @since 1.7.0
+	 * @return array<mixed>
+	 */
+	public function get_form_data( $request ) {
+		$nonce = Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) );
+
+		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
+			wp_send_json_error( __( 'Nonce verification failed.', 'sureforms' ) );
+		}
+
+		$forms = Helper::get_instance()->get_sureforms();
+
+		return ! empty( $forms ) ? $forms : [];
 	}
 
 	/**
@@ -169,6 +203,12 @@ class Rest_Api {
 				'entries-chart-data' => [
 					'methods'             => 'GET',
 					'callback'            => [ $this, 'get_entries_chart_data' ],
+					'permission_callback' => [ $this, 'can_edit_posts' ],
+				],
+				// This route is to get all forms data.
+				'form-data'          => [
+					'methods'             => 'GET',
+					'callback'            => [ $this, 'get_form_data' ],
 					'permission_callback' => [ $this, 'can_edit_posts' ],
 				],
 			]

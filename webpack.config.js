@@ -24,20 +24,6 @@ module.exports = {
 	},
 	plugins: [
 		...defaultConfig.plugins,
-		new CopyPlugin( {
-			patterns: [
-				{
-					from: path.resolve(
-						__dirname,
-						'node_modules/@surecart/components/dist/surecart/icon-assets'
-					),
-					to: path.resolve( __dirname, 'assets/build/icon-assets' ),
-				},
-			],
-		} ),
-		new webpack.optimize.LimitChunkCountPlugin( {
-			maxChunks: 1,
-		} ),
 	],
 	entry: {
 		formEditor: path.resolve(
@@ -86,7 +72,12 @@ module.exports = {
 			...defaultConfig.module.rules,
 			{
 				test: /\.(scss|css)$/,
-				exclude: [ /node_modules/, /style/, /admin.scss/ ],
+				exclude: [
+					/node_modules/,
+					/style/,
+					/admin.scss/,
+					/tw-base.scss/,
+				],
 				use: [
 					{
 						loader: 'style-loader',

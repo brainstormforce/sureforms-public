@@ -268,6 +268,9 @@ class Generate_Form_Markup {
 				}
 			}
 
+			// Ensure $google_captcha_site_key is not empty, and if not, trim any leading or trailing whitespace.
+			$google_captcha_site_key = is_string( $google_captcha_site_key ) && ! empty( $google_captcha_site_key ) ? trim( $google_captcha_site_key ) : '';
+
 			$primary_color    = $form_styling['primary_color'];
 			$help_color_var   = $form_styling['text_color'];
 			$label_text_color = $form_styling['text_color_on_primary'];
@@ -468,55 +471,24 @@ class Generate_Form_Markup {
 
 				do_action( 'srfm_after_field_content', $post, $id );
 
+				$captcha_container_hidden_class = ! empty( $google_captcha_site_key ) && ( 'v3-reCAPTCHA' === $recaptcha_version || 'v2-invisible' === $recaptcha_version ) ? 'srfm-display-none' : '';
+
 				?>
 					<?php if ( $should_show_submit_button && ! empty( $security_type ) && 'none' !== $security_type ) { ?>
-						<div class="srfm-captcha-container <?php echo esc_attr( 'v3-reCAPTCHA' === $recaptcha_version || 'v2-invisible' === $recaptcha_version ? 'srfm-display-none' : '' ); ?>">
-						<?php if ( is_string( $google_captcha_site_key ) && ! empty( $google_captcha_site_key ) && 'g-recaptcha' === $security_type && ! empty( $recaptcha_version ) && 'none' !== $recaptcha_version ) { ?>
+						<div class="srfm-captcha-container <?php echo esc_attr( $captcha_container_hidden_class ); ?>">
 
-							<?php if ( 'v2-checkbox' === $recaptcha_version ) { ?>
-								<?php
-								wp_enqueue_script( 'google-recaptcha', 'https://www.google.com/recaptcha/api.js', [], SRFM_VER, true );
-								?>
-							<div class='g-recaptcha' data-callback="onSuccess" recaptcha-type="<?php echo esc_attr( $recaptcha_version ); ?>" data-sitekey="<?php echo esc_attr( strval( $google_captcha_site_key ) ); ?>" ></div>
-							<?php } ?>
-
-							<?php if ( 'v2-invisible' === $recaptcha_version ) { ?>
-								<?php
-								wp_enqueue_script( 'google-recaptcha-invisible', 'https://www.google.com/recaptcha/api.js?onload=recaptchaCallback&render=explicit', [ SRFM_SLUG . '-form-submit' ], SRFM_VER, true );
-								?>
-							<div class='g-recaptcha' recaptcha-type="<?php echo esc_attr( $recaptcha_version ); ?>" data-sitekey="<?php echo esc_attr( $google_captcha_site_key ); ?>" data-size="invisible"></div>
-							<?php } ?>
-
-							<?php if ( 'v3-reCAPTCHA' === $recaptcha_version ) { ?>
-								<?php wp_enqueue_script( 'srfm-google-recaptchaV3', 'https://www.google.com/recaptcha/api.js', [], SRFM_VER, true ); ?>
-							<?php } ?>
-
-						<?php } ?>
 						<?php
 
+						if ( 'g-recaptcha' === $security_type ) {
+							self::get_google_captcha_script( $recaptcha_version, $google_captcha_site_key );
+						}
+
 						if ( 'cf-turnstile' === $security_type ) {
-							// Cloudflare Turnstile script.
-							wp_enqueue_script( // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
-								SRFM_SLUG . '-cf-turnstile',
-								'https://challenges.cloudflare.com/turnstile/v0/api.js',
-								[],
-								null,
-								[
-									false,
-									'defer' => true,
-								]
-							);
-							?>
-						<div id="srfm-cf-sitekey" class="cf-turnstile" data-callback="onSuccess" data-theme="<?php echo esc_attr( $srfm_cf_appearance_mode ); ?>" data-sitekey="<?php echo esc_attr( $srfm_cf_turnstile_site_key ); ?>"></div>
-							<?php
+							self::get_cf_turnstile_script( $srfm_cf_appearance_mode, $srfm_cf_turnstile_site_key );
 						}
 
 						if ( 'hcaptcha' === $security_type ) {
-							// hCaptcha script.
-							wp_enqueue_script( 'hcaptcha', 'https://js.hcaptcha.com/1/api.js', [], null, [ 'strategy' => 'defer' ] ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
-							?>
-						<div id="srfm-hcaptcha-sitekey" data-callback="onSuccess" class="h-captcha" data-sitekey="<?php echo esc_attr( $srfm_hcaptcha_site_key ); ?>"></div>
-							<?php
+							self::get_h_captcha_script( $srfm_hcaptcha_site_key );
 						}
 						?>
 						<div class="srfm-validation-error" id="captcha-error" style="display: none;"><?php echo esc_attr__( 'Please verify that you are not a robot.', 'sureforms' ); ?></div>
@@ -536,6 +508,7 @@ class Generate_Form_Markup {
 						<button style="<?php echo esc_attr( $full ? 'width: 100%;' : '' ); ?>" id="srfm-submit-btn" class="<?php echo esc_attr( implode( ' ', array_filter( $srfm_button_classes ) ) ); ?>"
 						<?php if ( 'v3-reCAPTCHA' === $recaptcha_version ) { ?>
 							data-callback="recaptchaCallback"
+							data-error-callback="onGCaptchaV3Error"
 							recaptcha-type="<?php echo esc_attr( $recaptcha_version ); ?>"
 							data-sitekey="<?php echo esc_attr( $google_captcha_site_key ); ?>"
 						<?php } ?>
@@ -559,6 +532,126 @@ class Generate_Form_Markup {
 			</div>
 		<?php
 		return ob_get_clean();
+	}
+
+	/**
+	 * Render a site key missing error message.
+	 *
+	 * @param string $provider_name Name of the captcha provider (e.g., HCaptcha, Google reCAPTCHA, Turnstile).
+	 * @since 1.7.0
+	 * @return void
+	 */
+	public static function render_missing_sitekey_error( $provider_name ) {
+		$icon = Helper::fetch_svg( 'info_circle', '', 'aria-hidden="true"' );
+		?>
+		<p id="sitekey-error" class="srfm-common-error-message srfm-error-message" hidden="false">
+			<?php echo wp_kses( $icon, Helper::$allowed_tags_svg ); ?>
+			<span class="srfm-error-content">
+				<?php
+				echo esc_html(
+					sprintf(
+					/* translators: %s: Provider name like HCaptcha, Google reCAPTCHA, Turnstile */
+						__( '%s sitekey is missing. Please contact your site administrator.', 'sureforms' ),
+						$provider_name
+					)
+				);
+				?>
+			</span>
+		</p>
+		<?php
+	}
+
+	/**
+	 * Generate HCaptcha script markup
+	 *
+	 * @param string $srfm_hcaptcha_site_key site key.
+	 * @since 1.7.0
+	 * @return void
+	 */
+	public static function get_h_captcha_script( $srfm_hcaptcha_site_key ) {
+		if ( ! empty( $srfm_hcaptcha_site_key ) ) {
+			// hCaptcha script.
+				wp_enqueue_script( 'hcaptcha', 'https://js.hcaptcha.com/1/api.js', [], null, [ 'strategy' => 'defer' ] ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
+			?>
+			<div id="srfm-hcaptcha-sitekey" data-callback="onSuccess" data-error-callback="onHCaptchaError" class="h-captcha" data-sitekey="<?php echo esc_attr( $srfm_hcaptcha_site_key ); ?>"></div>
+				<?php
+		} else {
+			self::render_missing_sitekey_error( 'HCaptcha' );
+		}
+	}
+
+	/**
+	 * Generate Google Recaptcha script markup
+	 *
+	 * @param string $recaptcha_version reCAPTCHA version.
+	 * @param string $google_captcha_site_key site key.
+	 * @since 1.7.0
+	 * @return void
+	 */
+	public static function get_google_captcha_script( $recaptcha_version, $google_captcha_site_key ) {
+
+		if ( empty( $google_captcha_site_key ) ) {
+			self::render_missing_sitekey_error( 'Google reCAPTCHA' );
+			return;
+		}
+
+		if ( 'v2-checkbox' === $recaptcha_version ) {
+			?>
+			<?php
+			wp_enqueue_script( 'google-recaptcha', 'https://www.google.com/recaptcha/api.js', [], SRFM_VER, true );
+			?>
+		<div class='g-recaptcha' data-callback="onSuccess" data-error-callback="onGCaptchaV2CheckBoxError" recaptcha-type="<?php echo esc_attr( $recaptcha_version ); ?>" data-sitekey="<?php echo esc_attr( strval( $google_captcha_site_key ) ); ?>" ></div>
+		<?php } ?>
+
+		<?php if ( 'v2-invisible' === $recaptcha_version ) { ?>
+			<?php
+			wp_enqueue_script( 'google-recaptcha-invisible', 'https://www.google.com/recaptcha/api.js?onload=recaptchaCallback&render=explicit', [ SRFM_SLUG . '-form-submit' ], SRFM_VER, true );
+			?>
+		<div class='g-recaptcha' recaptcha-type="<?php echo esc_attr( $recaptcha_version ); ?>" data-sitekey="<?php echo esc_attr( $google_captcha_site_key ); ?>" data-size="invisible"></div>
+		<?php } ?>
+
+		<?php if ( 'v3-reCAPTCHA' === $recaptcha_version ) { ?>
+			<?php
+				wp_enqueue_script( // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion -- This is a third-party script, and specifying a version may lead to caching issues. Using null ensures the latest version is always loaded.
+					'srfm-google-recaptchaV3',
+					'https://www.google.com/recaptcha/api.js?render=' . $google_captcha_site_key,
+					[],
+					null,
+					true
+				);
+			?>
+			<?php
+		}
+	}
+
+	/**
+	 * Generate Cloudflare Turnstile script markup
+	 *
+	 * @param string $srfm_cf_appearance_mode appearance mode.
+	 * @param string $srfm_cf_turnstile_site_key site key.
+	 * @since 1.7.0
+	 * @return void
+	 */
+	public static function get_cf_turnstile_script( $srfm_cf_appearance_mode, $srfm_cf_turnstile_site_key ) {
+		if ( ! empty( $srfm_cf_turnstile_site_key ) ) {
+			// Cloudflare Turnstile script.
+			wp_enqueue_script( // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion -- Third-party script; version not under our control.
+				SRFM_SLUG . '-cf-turnstile',
+				'https://challenges.cloudflare.com/turnstile/v0/api.js',
+				[],
+				null,
+				[
+					false,
+					'defer' => true,
+				]
+			);
+			?>
+			<!-- The callback methods below are available on frontend.js. onTurnstileError displays and error in place of recaptcha dialog.  -->
+		<div id="srfm-cf-sitekey" class="cf-turnstile" data-callback="onSuccess" data-error-callback="onTurnstileError" data-theme="<?php echo esc_attr( $srfm_cf_appearance_mode ); ?>" data-sitekey="<?php echo esc_attr( $srfm_cf_turnstile_site_key ); ?>"></div>
+			<?php
+		} else {
+			self::render_missing_sitekey_error( 'Turnstile' );
+		}
 	}
 
 	/**

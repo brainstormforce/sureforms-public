@@ -1,17 +1,18 @@
-import Skeleton from 'react-loading-skeleton';
+import LoadingSkeleton from '@Admin/components/LoadingSkeleton';
 
 const ContentCard = ( { loading, content } ) => {
 	return (
 		<>
-
 			{ loading ? (
 				<>
-					<Skeleton
-						className="srfm-skeleton-container"
+					<LoadingSkeleton
 						count={ 3 }
 						height={ 25 }
 					/>
-					<Skeleton count={ 1 } height={ 25 } />
+					<LoadingSkeleton
+						count={ 1 }
+						height={ 25 }
+					/>
 				</>
 			) : (
 				content

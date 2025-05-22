@@ -272,7 +272,7 @@ class Admin {
 	 * @since 0.0.1
 	 */
 	public function render_dashboard() {
-		echo '<div id="srfm-dashboard-container"></div>';
+		echo '<div id="srfm-dashboard-container" class="srfm-admin-wrapper"></div>';
 	}
 
 	/**
@@ -282,7 +282,7 @@ class Admin {
 	 * @since 0.0.1
 	 */
 	public function settings_page_callback() {
-		echo '<div id="srfm-settings-container"></div>';
+		echo '<div id="srfm-settings-container" class="srfm-admin-wrapper"></div>';
 	}
 
 	/**
@@ -319,7 +319,7 @@ class Admin {
 	 * @since 0.0.1
 	 */
 	public function add_new_form_callback() {
-		echo '<div id="srfm-add-new-form-container"></div>';
+		echo '<div id="srfm-add-new-form-container" class="srfm-admin-wrapper"></div>';
 	}
 
 	/**
@@ -504,6 +504,16 @@ class Admin {
 			'sureforms_pricing_page'  => Helper::get_sureforms_website_url( 'pricing' ),
 			'field_spacing_vars'      => Helper::get_css_vars(),
 			'is_ver_lower_than_6_7'   => version_compare( $wp_version, '6.6.2', '<=' ),
+			'integrations'            => Helper::sureforms_get_integration(),
+			'ajax_url'                => admin_url( 'admin-ajax.php' ),
+			'sf_plugin_manager_nonce' => wp_create_nonce( 'sf_plugin_manager_nonce' ),
+			'plugin_installer_nonce'  => wp_create_nonce( 'updates' ),
+			'plugin_activating_text'  => __( 'Activating...', 'sureforms' ),
+			'plugin_activated_text'   => __( 'Activated', 'sureforms' ),
+			'plugin_activate_text'    => __( 'Activate', 'sureforms' ),
+			'plugin_installing_text'  => __( 'Installing...', 'sureforms' ),
+			'plugin_installed_text'   => __( 'Installed', 'sureforms' ),
+			'is_rtl'                  => $is_rtl,
 		];
 
 		$is_screen_sureforms_menu          = Helper::validate_request_context( 'sureforms_menu', 'page' );
@@ -558,20 +568,6 @@ class Admin {
 
 		if ( $is_screen_sureforms_form_settings ) {
 			wp_enqueue_style( SRFM_SLUG . '-settings', $css_uri . 'backend/settings' . $file_prefix . $rtl . '.css', [], SRFM_VER );
-
-			// if version is equal to or lower than 6.6.2 then add compatibility css.
-			if ( version_compare( $wp_version, '6.6.2', '<=' ) ) {
-				$srfm_inline_css = '
-				.srfm-settings-page-container
-					.components-toggle-control {
-						.components-base-control__help{
-							margin-left: 4em;
-						}
-					}
-				}
-				';
-				wp_add_inline_style( SRFM_SLUG . '-settings', $srfm_inline_css );
-			}
 		}
 
 		// Enqueue styles for the entries page.
