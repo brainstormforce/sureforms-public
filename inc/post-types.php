@@ -899,7 +899,9 @@ class Post_Types {
 			[
 				'single'        => true,
 				'type'          => 'array',
-				'auth_callback' => '__return_true',
+				'auth_callback' => static function() {
+					return current_user_can( 'manage_options' );
+				},
 				'show_in_rest'  => [
 					'schema' => [
 						'type'  => 'array',
