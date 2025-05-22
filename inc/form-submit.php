@@ -326,12 +326,7 @@ class Form_Submit {
 
 			// If the cloudflare validation fails, return an error.
 			if ( is_array( $turnstile_validation_result ) && isset( $turnstile_validation_result['success'] ) && false === $turnstile_validation_result['success'] ) {
-				$error_message = $turnstile_validation_result['error'] ?? __( 'Cloudflare Turnstile validation failed.', 'sureforms' );
-				wp_send_json_error(
-					[
-						'message' => $error_message,
-					]
-				);
+				$this->recaptcha_error_response( 'cf-turnstile', $turnstile_validation_result );
 			}
 		}
 
@@ -356,12 +351,7 @@ class Form_Submit {
 
 			// If the hcaptcha validation fails, return an error.
 			if ( is_array( $hcaptcha_validation_result ) && isset( $hcaptcha_validation_result['success'] ) && false === $hcaptcha_validation_result['success'] ) {
-				$error_message = $hcaptcha_validation_result['error'] ?? __( 'hCaptcha validation failed.', 'sureforms' );
-				wp_send_json_error(
-					[
-						'message' => $error_message,
-					]
-				);
+				$this->recaptcha_error_response( 'hcaptcha', $hcaptcha_validation_result );
 			}
 		}
 
@@ -386,7 +376,7 @@ class Form_Submit {
 				} else {
 					wp_send_json_error(
 						[
-							'message' => __( 'reCAPTCHA error.', 'sureforms' ),
+							'message' => __( 'reCAPTCHA error: Submit nonce is not available.', 'sureforms' ),
 						]
 					);
 				}
@@ -394,12 +384,7 @@ class Form_Submit {
 					return rest_ensure_response( $this->handle_form_entry( $form_data ) );
 				}
 
-				wp_send_json_error(
-					[
-						'message' => __( 'reCAPTCHA error.', 'sureforms' ),
-					]
-				);
-
+				$this->recaptcha_error_response( 'g-recaptcha', $sureforms_captcha_data );
 			}
 
 			return rest_ensure_response( $this->handle_form_entry( $form_data ) );
@@ -426,7 +411,7 @@ class Form_Submit {
 				} else {
 					wp_send_json_error(
 						[
-							'message' => __( 'reCAPTCHA error.', 'sureforms' ),
+							'message' => __( 'reCAPTCHA error: Submit nonce is not available.', 'sureforms' ),
 						]
 					);
 				}
@@ -434,11 +419,7 @@ class Form_Submit {
 					return rest_ensure_response( $this->handle_form_entry( $form_data ) );
 				}
 
-				wp_send_json_error(
-					[
-						'message' => __( 'reCAPTCHA error.', 'sureforms' ),
-					]
-				);
+				$this->recaptcha_error_response( 'g-recaptcha', $sureforms_captcha_data );
 			}
 
 			return rest_ensure_response( $this->handle_form_entry( $form_data ) );
@@ -958,6 +939,130 @@ class Form_Submit {
 			wp_send_json_success();
 		}
 		wp_send_json_error();
+	}
+
+	/**
+	 * Send error response for reCAPTCHA validation failure.
+	 *
+	 * @param string       $type         The type of CAPTCHA used. Accepted values: 'g-recaptcha', 'hcaptcha', 'cf-turnstile'.
+	 * @param array<mixed> $api_response The response returned from the CAPTCHA validation API.
+	 * @since 1.7.0
+	 * @return void
+	 */
+	public function recaptcha_error_response( $type, $api_response ) {
+		$error_message = $this->recaptcha_error_message( $type, $api_response );
+		$response      = array_merge(
+			[
+				'api_response' => $api_response,
+			],
+			$error_message
+		);
+
+		wp_send_json_error( $response );
+	}
+
+	/**
+	 * Get the error message for a CAPTCHA validation failure based on the service type and API response.
+	 *
+	 * @param string       $type         The type of CAPTCHA used. Accepted values: 'g-recaptcha', 'hcaptcha', 'cf-turnstile'.
+	 * @param array<mixed> $api_response The response returned from the CAPTCHA validation API.
+	 * @since 1.7.0
+	 * @return array<string,string> An associative array containing the error message and a detailed message.
+	 */
+	public function recaptcha_error_message( $type, $api_response ) {
+
+		if ( empty( $api_response['error-codes'] ) || ! is_array( $api_response['error-codes'] ) ) {
+			return [
+				'detail_message' => __( 'Captcha validation failed. No error code provided.', 'sureforms' ),
+				'message'        => __( 'Captcha validation failed.', 'sureforms' ),
+			];
+		}
+
+		/**
+		 * Note: The error codes are not translated because these messages are intended for debugging purposes.
+		 * Translating them would make debugging difficult. These error messages are primarily for developers or administrators.
+		 * A generic message will be displayed to the user, while detailed error information will be logged or shown in the console.
+		 */
+
+		// Google reCAPTCHA error codes.
+		// Reference: (https://developers.google.com/recaptcha/docs/verify#error-code-reference).
+		$google_recaptcha_error = [
+			'missing-input-secret'   => 'The secret parameter is missing.',
+			'invalid-input-secret'   => 'The secret parameter is invalid or malformed.',
+			'missing-input-response' => 'The response parameter is missing.',
+			'invalid-input-response' => 'The response parameter is invalid or malformed.',
+			'bad-request'            => 'The request is invalid or malformed.',
+			'timeout-or-duplicate'   => 'The response is no longer valid: either is too old or has been used previously.',
+		];
+
+		// hCaptcha error codes.
+		// Reference: (https://docs.hcaptcha.com/#siteverify-error-codes).
+		$hcaptcha_errors = [
+			'missing-input-secret'     => 'Your secret key is missing.',
+			'invalid-input-secret'     => 'Your secret key is invalid or malformed.',
+			'missing-input-response'   => 'The response parameter (verification token) is missing.',
+			'invalid-input-response'   => 'The response parameter (verification token) is invalid or malformed.',
+			'expired-input-response'   => 'The response parameter (verification token) is expired. (120s default)',
+			'already-seen-response'    => 'The response parameter (verification token) was already verified once.',
+			'bad-request'              => 'The request is invalid or malformed.',
+			'missing-remoteip'         => 'The remoteip parameter is missing.',
+			'invalid-remoteip'         => 'The remoteip parameter is not a valid IP address or blinded value.',
+			'not-using-dummy-passcode' => 'You have used a testing sitekey but have not used its matching secret.',
+			'sitekey-secret-mismatch'  => 'The sitekey is not registered with the provided secret.',
+		];
+
+		// Cloudflare Turnstile error codes.
+		// Reference: (https://developers.cloudflare.com/turnstile/get-started/server-side-validation/).
+		$cf_turnstile_errors = [
+			'missing-input-secret'   => 'The secret parameter was not passed.',
+			'invalid-input-secret'   => 'The secret parameter was invalid, did not exist, or is a testing secret key with a non-testing response.',
+			'missing-input-response' => 'The response parameter (token) was not passed.',
+			'invalid-input-response' => 'The response parameter (token) is invalid or has expired. Most of the time, this means a fake token has been used. If the error persists, contact customer support.',
+			'bad-request'            => 'The request was rejected because it was malformed.',
+			'timeout-or-duplicate'   => 'The response parameter (token) has already been validated before. This means that the token was issued five minutes ago and is no longer valid, or it was already redeemed.',
+			'internal-error'         => 'An internal error happened while validating the response. The request can be retried.',
+		];
+
+		$error_code = $api_response['error-codes'][0] ?? 'no-error-code';
+
+		$captcha_title   = '';
+		$captcha_message = '';
+		switch ( $type ) {
+			case 'g-recaptcha':
+				$captcha_title   = __( 'Google reCAPTCHA', 'sureforms' );
+				$captcha_message = $google_recaptcha_error[ $error_code ];
+				break;
+			case 'hcaptcha':
+				$captcha_title   = __( 'hCaptcha', 'sureforms' );
+				$captcha_message = $hcaptcha_errors[ $error_code ];
+				break;
+			case 'cf-turnstile':
+				$captcha_title   = __( 'Cloudflare Turnstile', 'sureforms' );
+				$captcha_message = $cf_turnstile_errors[ $error_code ];
+				break;
+			default:
+				$captcha_title   = __( 'Unknown Captcha', 'sureforms' );
+				$captcha_message = __( 'Invalid captcha type.', 'sureforms' );
+				break;
+		}
+
+		$detail_message = sprintf(
+			'%s: %s <br> Error Code: %s',
+			$captcha_title,
+			$captcha_message ?? 'Unknown error occurred.',
+			$error_code
+		);
+
+		$message = sprintf(
+			/* translators: %s is the captcha title. */
+			__( '%s verification failed. Please contact your site administrator.', 'sureforms' ),
+			$captcha_title
+		);
+
+		return [
+			'log_message' => $detail_message, // This variable is used for logging purposes, such as displaying detailed error information in the console on the front end.
+			'message'     => $message,
+		];
 	}
 
 	/**

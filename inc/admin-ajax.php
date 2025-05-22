@@ -9,6 +9,7 @@
 
 namespace SRFM\Inc;
 
+use BSF_UTM_Analytics;
 use SRFM\Inc\Traits\Get_Instance;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -82,6 +83,8 @@ class Admin_Ajax {
 
 		$plugin_init = isset( $_POST['init'] ) ? sanitize_text_field( wp_unslash( $_POST['init'] ) ) : '';
 
+		$plugin_slug = isset( $_POST['slug'] ) ? sanitize_text_field( wp_unslash( $_POST['slug'] ) ) : '';
+
 		$activate = activate_plugin( $plugin_init, '', false, true );
 
 		if ( is_wp_error( $activate ) ) {
@@ -91,6 +94,11 @@ class Admin_Ajax {
 					'message' => $activate->get_error_message(),
 				]
 			);
+		}
+
+		if ( class_exists( 'BSF_UTM_Analytics' ) && is_callable( 'BSF_UTM_Analytics::update_referer' ) ) {
+			$plugin_slug = pathinfo( $plugin_slug, PATHINFO_FILENAME );
+			BSF_UTM_Analytics::update_referer( 'sureforms', $plugin_slug );
 		}
 
 		wp_send_json_success(
@@ -134,77 +142,12 @@ class Admin_Ajax {
 				'ajax_url'               => admin_url( 'admin-ajax.php' ),
 				'sfPluginManagerNonce'   => wp_create_nonce( 'sf_plugin_manager_nonce' ),
 				'plugin_installer_nonce' => wp_create_nonce( 'updates' ),
-				'plugin_activating_text' => __( 'Activating...', 'sureforms' ),
-				'plugin_activated_text'  => __( 'Activated', 'sureforms' ),
-				'plugin_activate_text'   => __( 'Activate', 'sureforms' ),
-				'integrations'           => self::sureforms_get_integration(),
-				'plugin_installing_text' => __( 'Installing...', 'sureforms' ),
-				'plugin_installed_text'  => __( 'Installed', 'sureforms' ),
 				'isRTL'                  => is_rtl(),
 				'current_screen_id'      => $is_screen_sureforms_menu ? 'sureforms_menu' : '',
 				'form_id'                => get_post() ? get_post()->ID : '',
 				'suretriggers_nonce'     => wp_create_nonce( 'suretriggers_nonce' ),
 			]
 		);
-	}
-
-	/**
-	 *  Get sureforms recommended integrations.
-	 *
-	 * @since 0.0.1
-	 * @return array<mixed>
-	 */
-	public function sureforms_get_integration() {
-		$suretrigger_connected = apply_filters( 'suretriggers_is_user_connected', '' );
-		$logo                  = file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/suretriggers.svg' );
-		$logo_full             = file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/suretriggers_full.svg' );
-		return apply_filters(
-			'srfm_integrated_plugins',
-			[
-				[
-					'title'       => __( 'OttoKit', 'sureforms' ),
-					'subtitle'    => __( 'Connect SureForms to hundreds of apps, CRMs and tools such as Slack, Mailchimp, etc.', 'sureforms' ),
-					'description' => __( 'OttoKit is a powerful automation platform that helps you connect your various plugins and apps together. It allows you to automate repetitive tasks, so you can focus on more important work.', 'sureforms' ),
-					'status'      => self::get_plugin_status( 'suretriggers/suretriggers.php' ),
-					'slug'        => 'suretriggers',
-					'path'        => 'suretriggers/suretriggers.php',
-					'redirection' => admin_url( 'admin.php?page=suretriggers' ),
-					'logo'        => self::encode_svg( is_string( $logo ) ? $logo : '' ),
-					'logo_full'   => self::encode_svg( is_string( $logo_full ) ? $logo_full : '' ),
-					'connected'   => $suretrigger_connected,
-				],
-			]
-		);
-	}
-
-	/**
-	 * Encodes the given string with base64.
-	 *
-	 * @param  string $logo contains svg's.
-	 * @return string
-	 */
-	public function encode_svg( $logo ) {
-		return 'data:image/svg+xml;base64,' . base64_encode( $logo ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
-	}
-	/**
-	 * Get plugin status
-	 *
-	 * @since 0.0.1
-	 *
-	 * @param  string $plugin_init_file Plugin init file.
-	 * @return string
-	 */
-	public static function get_plugin_status( $plugin_init_file ) {
-
-		$installed_plugins = get_plugins();
-
-		if ( ! isset( $installed_plugins[ $plugin_init_file ] ) ) {
-			return 'Install';
-		}
-		if ( is_plugin_active( $plugin_init_file ) ) {
-			return 'Activated';
-		}
-			return 'Installed';
 	}
 
 	/**

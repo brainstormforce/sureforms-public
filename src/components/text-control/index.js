@@ -12,10 +12,10 @@ import ResponsiveToggle from '../responsive-toggle';
 import styles from './editor.lazy.scss';
 import classnames from 'classnames';
 import { getIdFromString, getPanelIdFromRef } from '@Utils/Helpers';
-import SmartTagList from '@Components/misc/SmartTagList';
 import SRFMReset from '../reset';
 import SRFMHelpText from '@Components/help-text';
 import { applyFilters } from '@wordpress/hooks';
+import EditorSmartTagList from '@Components/misc/EditorSmartTagList';
 
 const SRFMTextControl = ( props ) => {
 	const [ panelNameForHook, setPanelNameForHook ] = useState( null );
@@ -185,7 +185,7 @@ const SRFMTextControl = ( props ) => {
 							) }
 
 							{ props?.withSmartTagDropdown === true && (
-								<SmartTagList
+								<EditorSmartTagList
 									tagsArray={ [
 										{
 											tags: genericSmartTags,
