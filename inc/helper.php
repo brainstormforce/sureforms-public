@@ -1332,7 +1332,7 @@ class Helper {
 		return [];
 	}
 
-	/*
+	/**
 	 * Encodes the given string with base64.
 	 * Moved from admin class to here.
 	 *
