@@ -225,7 +225,7 @@ export default () => {
 	return (
 		<Container
 			direction="column"
-			className="p-4 gap-2 rounded-xl bg-background-primary border-0.5 border-solid border-border-subtle shadow-sm-blur-2"
+			className="w-full p-4 gap-2 rounded-xl bg-background-primary border-0.5 border-solid border-border-subtle shadow-sm-blur-2"
 		>
 			<Container.Item className="flex flex-wrap items-center justify-between p-1 gap-6 sm:flex-row sm:gap-2">
 				<Title

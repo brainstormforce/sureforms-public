@@ -16,7 +16,7 @@ export default () => {
 
 	return (
 		<Container
-			className="bg-background-primary p-4 gap-2 shadow-sm-blur-1 rounded-xl border-0.5 border-solid border-border-subtle"
+			className="w-full bg-background-primary p-4 gap-2 shadow-sm-blur-1 rounded-xl border-0.5 border-solid border-border-subtle"
 			containerType="grid"
 			cols={ 12 }
 		>

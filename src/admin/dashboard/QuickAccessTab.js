@@ -59,7 +59,7 @@ export default () => {
 
 	return (
 		<Container
-			className="bg-background-primary border-0.5 border-solid rounded-xl border-border-subtle p-3 gap-2 shadow-sm"
+			className="w-full bg-background-primary border-0.5 border-solid rounded-xl border-border-subtle p-3 gap-2 shadow-sm"
 			direction="column"
 		>
 			<Container.Item className="p-1 gap-2">
