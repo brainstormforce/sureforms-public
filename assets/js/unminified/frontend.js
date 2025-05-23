@@ -153,6 +153,71 @@ function onSuccess( response ) {
 	}
 }
 
+function showErrorMessage( args ) {
+	const { form, message = '', position = 'footer' } = args;
+
+	const errorEvent = new CustomEvent( 'srfm_show_common_form_error', {
+		detail: {
+			form,
+			message,
+			position,
+		},
+	} );
+
+	document.dispatchEvent( errorEvent );
+}
+
+function showErrorMessageOnRecaptchaError( args ) {
+	const { containerSelector, message = '' } = args;
+
+	const getCaptchaContainer = document.querySelectorAll( containerSelector );
+	if ( ! getCaptchaContainer ) {
+		return;
+	}
+
+	getCaptchaContainer.forEach( ( element ) => {
+		const getTheForm = element.closest( '.srfm-form' );
+		if ( getTheForm ) {
+			showErrorMessage( { form: getTheForm, message } );
+
+			// Add class
+			element.classList.add( 'captcha-error-added' );
+		}
+	} );
+}
+
+// eslint-disable-next-line
+function onTurnstileError() {
+	showErrorMessageOnRecaptchaError( {
+		containerSelector: '.cf-turnstile:not(.captcha-error-added)',
+		message: srfm_submit?.messages?.srfm_turnstile_error_message,
+	} );
+}
+
+// eslint-disable-next-line
+function onGCaptchaV2CheckBoxError() {
+	showErrorMessageOnRecaptchaError( {
+		containerSelector: '.g-recaptcha[recaptcha-type="v2-checkbox"]:not(.captcha-error-added)',
+		message: srfm_submit?.messages?.srfm_google_captcha_error_message,
+	} );
+}
+
+// eslint-disable-next-line
+function onGCaptchaV3Error() {
+	showErrorMessageOnRecaptchaError( {
+		containerSelector: '.g-recaptcha[recaptcha-type="v3-reCAPTCHA"]:not(.captcha-error-added)',
+		message: srfm_submit?.messages?.srfm_google_captcha_error_message,
+	} );
+}
+
+// eslint-disable-next-line
+function onHCaptchaError() {
+	showErrorMessageOnRecaptchaError( {
+		containerSelector: '.h-captcha:not(.captcha-error-added)',
+		message: srfm_submit?.messages?.srfm_captcha_h_error_message,
+	} );
+}
+
 /**
  * An Immediately Invoked Function Expression (IIFE) is a function that is defined
  * and executed immediately after its creation. It is used to create a new scope,

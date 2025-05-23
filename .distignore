@@ -45,6 +45,7 @@ multisite.xml
 multisite.xml.dist
 phpcs.xml
 phpcs.xml.dist
+phpcs-report.xml
 README.md
 wp-cli.local.yml
 yarn.lock
