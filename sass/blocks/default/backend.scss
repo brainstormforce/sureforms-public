@@ -73,20 +73,29 @@
 		}
 	}
 
-	.srfm-textarea-quill {
-		@include srfm-textarea-quill-styles;
-
-		// Add the background color for the quill textarea input.
-		.quill {
-			background-color: var( --srfm-color-input-background );
+	.srfm-textarea-block-wrap {
+		.srfm-richtext {
+			@include srfm-input-margin-styles;
+			border-radius: var( --srfm-input-field-border-radius );
+			border: 1px solid var( --srfm-color-input-border );
 		}
-		margin: var( --srfm-input-field-margin );
 
-		.ql-container.ql-snow {
-			border: none;
-		}
-		.ql-editor {
-			min-height: 200px;
+		.srfm-textarea-quill {
+			@include srfm-textarea-quill-styles;
+
+			// Add the background color for the quill textarea input.
+			.quill {
+				background-color: var( --srfm-color-input-background );
+				border-radius: var( --srfm-input-field-border-radius );
+			}
+			margin: var( --srfm-input-field-margin );
+	
+			.ql-container.ql-snow {
+				border: none;
+			}
+			.ql-editor {
+				min-height: 200px;
+			}
 		}
 	}
 

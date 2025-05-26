@@ -1,3 +1,4 @@
+@import "../utils/mixins.scss";
 .srfm-form-container {
 	.srfm-form {
 		.srfm-textarea-block {
@@ -12,6 +13,29 @@
 			}
 
 			&.srfm-richtext {
+				.srfm-block-wrap {
+					@include srfm-input-margin-styles;
+					border: 1px solid var( --srfm-color-input-border );
+					border-radius: var( --srfm-input-field-border-radius );
+					transition: 0.2s ease-out;
+
+					// Add hover effect styles.
+					&:hover {
+						.ql-toolbar {
+							border-color: var( --srfm-color-input-border-hover );
+						}
+						border-color: var( --srfm-color-input-border-hover );
+					}
+
+					// Add focus effect styles.
+					&.srfm-quill-editor-focused {
+						box-shadow: 0px 0px 0px 3px var( --srfm-color-input-border-focus-glow );
+						border-color: var( --srfm-color-input-border-hover );
+						.ql-toolbar {
+							border-color: var( --srfm-color-input-border-hover );
+						}
+					}
+				}
 				.ql-container.ql-snow {
 					border: none;
 				}
@@ -30,19 +54,10 @@
 				.quill-editor-container {
 					transition: 0.2s ease-out;
 					@include srfm-textarea-quill-styles;
+					border: 0;
 					// Remove extra spacing between rich text editor toolbar items.
 					.ql-formats {
 						margin-right: 0;
-					}
-
-					// Add hover effect styles.
-					&:hover {
-						border-color: var( --srfm-color-input-border-hover );
-					}
-					// Add focus effect styles.
-					&.srfm-quill-editor-focused {
-						box-shadow: 0px 0px 0px 3px var( --srfm-color-input-border-focus-glow );
-						border-color: var( --srfm-color-input-border-hover );
 					}
 				}
 				.ql-editor {

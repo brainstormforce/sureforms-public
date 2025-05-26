@@ -47,19 +47,19 @@ function initializeTextarea() {
 						quillEditorContainer?.querySelector( '.ql-editor' );
 					quillEditor?.addEventListener( 'focus', function () {
 						// Add focus class to the textarea block wrapper.
-						quillEditorContainer.classList.add(
+						quillEditorContainer.parentElement.classList.add(
 							'srfm-quill-editor-focused'
 						);
 					} );
 					quillEditor?.addEventListener( 'click', function () {
 						// Add focus class to the textarea block wrapper.
-						quillEditorContainer.classList.add(
+						quillEditorContainer.parentElement.classList.add(
 							'srfm-quill-editor-focused'
 						);
 					} );
 					quillEditor?.addEventListener( 'blur', function () {
 						// Remove focus class from the textarea block wrapper.
-						quillEditorContainer.classList.remove(
+						quillEditorContainer.parentElement.classList.remove(
 							'srfm-quill-editor-focused'
 						);
 					} );
