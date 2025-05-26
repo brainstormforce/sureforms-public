@@ -100,8 +100,8 @@ function addQuillEditor( areaField ) {
 					[ 'blockquote' ], // Blockquote
 					[ { align: [] } ], // Alignment (registered as inline style)
 					[ { color: [] }, { background: [] } ], // Color and background
-					[ 'clean' ], // Remove formatting
 					[ 'link' ], // Add links and images
+					[ 'clean' ], // Remove formatting
 				],
 			},
 			keyboard: {
