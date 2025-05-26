@@ -171,7 +171,7 @@ class Inlinebutton_Markup extends Base {
 				<?php if ( $this->captcha_security_type && 'none' !== $this->captcha_security_type ) { ?>
 			<div class="srfm-captcha-container <?php echo esc_attr( 'v3-reCAPTCHA' === $this->recaptcha_version || 'v2-invisible' === $this->recaptcha_version ? 'srfm-display-none' : '' ); ?>">
 					<?php if ( 'g-recaptcha' === $this->captcha_security_type && 'v2-checkbox' === $this->recaptcha_version ) { ?>
-						<?php echo "<div class='g-recaptcha' data-callback='onSuccess' recaptcha-type='" . esc_attr( $this->recaptcha_version ) . "' data-sitekey='" . esc_attr( strval( $this->google_captcha_site_key ) ) . "'></div>"; ?>
+						<?php echo "<div class='g-recaptcha' data-callback='onSuccess' data-error-callback='onGCaptchaV2CheckBoxError' recaptcha-type='" . esc_attr( $this->recaptcha_version ) . "' data-sitekey='" . esc_attr( strval( $this->google_captcha_site_key ) ) . "'></div>"; ?>
 					<?php } ?>
 					<?php if ( 'cf-turnstile' === $this->captcha_security_type && $this->cf_turnstile_site_key ) { ?>
 						<?php echo "<div id='srfm-cf-sitekey' class='cf-turnstile' data-callback='onSuccess' data-theme='" . esc_attr( strval( $this->cf_appearance_mode ) ) . "' data-sitekey='" . esc_attr( strval( $this->cf_turnstile_site_key ) ) . "'></div>"; ?>
@@ -186,7 +186,7 @@ class Inlinebutton_Markup extends Base {
 				<?php
 				if ( 'g-recaptcha' === $this->captcha_security_type ) {
 					if ( 'v3-reCAPTCHA' === $this->recaptcha_version ) {
-						wp_enqueue_script( 'srfm-google-recaptchaV3', 'https://www.google.com/recaptcha/api.js', [], SRFM_VER, true );
+						wp_enqueue_script( 'srfm-google-recaptchaV3', 'https://www.google.com/recaptcha/api.js?render=' . $this->google_captcha_site_key, [], null, true );
 					}
 
 					if ( 'v2-checkbox' === $this->recaptcha_version ) {
