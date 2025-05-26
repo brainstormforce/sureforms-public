@@ -1,3 +1,6 @@
+import parse from 'html-react-parser';
+import svgIcons from '@Svg/svgs.json';
+
 export const modules = ( id ) => ( {
 	toolbar: {
 		container: `#${ id }`,
@@ -21,8 +24,14 @@ export const QuillToolbar = ( { id } ) => {
 				<select className="ql-align" />
 				<select className="ql-color" />
 				<select className="ql-background" />
-				<button className="ql-clean" />
 				<button className="ql-link" />
+				<button className="ql-clean" />
+				<button className="ql-undo">
+					{ parse( svgIcons.undo ) }
+				</button>
+				<button className="ql-redo">
+					{ parse( svgIcons.redo ) }
+				</button>
 			</span>
 		</div>
 	);

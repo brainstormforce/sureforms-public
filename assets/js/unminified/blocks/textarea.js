@@ -81,6 +81,9 @@ function addQuillEditor( areaField ) {
 	// Import the Style Attributors for inline styling (align and direction)
 	const AlignStyle = Quill.import( 'attributors/style/align' ); // Import align style attributor
 	const DirectionStyle = Quill.import( 'attributors/style/direction' ); // Import direction style attributor
+	const icons = Quill.import( 'ui/icons' ); // Import Quill icons for toolbar
+	icons.undo = '<svg viewBox="0 0 18 18"><polygon class="ql-fill ql-stroke" points="6 10 4 12 2 10 6 10" /><path class="ql-stroke" d="M8.09,13.91A4.6,4.6,0,0,0,9,14,5,5,0,1,0,4,9" /></svg>';
+	icons.redo = '<svg viewBox="0 0 18 18"><polygon class="ql-fill ql-stroke" points="12 10 14 12 16 10 12 10" /><path class="ql-stroke" d="M9.91,13.91A4.6,4.6,0,0,1,9,14a5,5,0,1,1,5-5"/></svg>';
 
 	// Register the imported Attributors for inline styles
 	Quill.register( AlignStyle, true ); // Register align style
@@ -102,12 +105,26 @@ function addQuillEditor( areaField ) {
 					[ { color: [] }, { background: [] } ], // Color and background
 					[ 'link' ], // Add links and images
 					[ 'clean' ], // Remove formatting
+					[ 'undo', 'redo' ], // Undo and redo actions
 				],
+				handlers: {
+					undo () {
+						this.quill.history.undo(); // Undo action
+					},
+					redo () {
+						this.quill.history.redo(); // Redo action
+					},
+				},
 			},
 			keyboard: {
 				bindings: {
 					tab: true, // Allow tab key for exiting the editor.
 				},
+			},
+			history: {
+				delay: 1000, // Delay for history actions
+				maxStack: 100, // Maximum number of history actions to keep
+				userOnly: true, // Only user-initiated changes are recorded
 			},
 		},
 	} );
