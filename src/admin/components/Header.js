@@ -115,7 +115,7 @@ const Header = () => {
 											'Upgrade SureForms',
 											'sureforms'
 										) }{ ' ' }
-										<ArrowUpRight className="size-5" />
+										<ArrowUpRight className="!size-5" />
 									</HamburgerMenu.Option>
 								) }
 							</HamburgerMenu.Options>
@@ -146,7 +146,7 @@ const Header = () => {
 					{ ! isProActive && ! isLicenseActive && (
 						<Topbar.Item>
 							<Button
-								icon={ <ArrowUpRight className="size-5" /> }
+								icon={ <ArrowUpRight className="!size-5" /> }
 								iconPosition="right"
 								variant="link"
 								size="sm"
