@@ -927,6 +927,34 @@ class Helper {
 	}
 
 	/**
+	 * Render a site key missing error message.
+	 *
+	 * @param string $provider_name Name of the captcha provider (e.g., HCaptcha, Google reCAPTCHA, Turnstile).
+	 * @since 1.7.0
+	 * @since x.x.x moved to inc/helper.php from inc/generate-form-markup.php
+	 * @return void
+	 */
+	public static function render_missing_sitekey_error( $provider_name ) {
+		$icon = self::fetch_svg( 'info_circle', '', 'aria-hidden="true"' );
+		?>
+		<p id="sitekey-error" class="srfm-common-error-message srfm-error-message" hidden="false">
+			<?php echo wp_kses( $icon, self::$allowed_tags_svg ); ?>
+			<span class="srfm-error-content">
+				<?php
+				echo esc_html(
+					sprintf(
+					/* translators: %s: Provider name like HCaptcha, Google reCAPTCHA, Turnstile */
+						__( '%s sitekey is missing. Please contact your site administrator.', 'sureforms' ),
+						$provider_name
+					)
+				);
+				?>
+			</span>
+		</p>
+		<?php
+	}
+
+	/**
 	 * Process blocks and inner blocks.
 	 *
 	 * @param array<mixed>  $blocks The block data.
