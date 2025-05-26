@@ -39,7 +39,7 @@ export const TextareaComponent = ( { attributes, blockID, setAttributes } ) => {
 				setAttributes={ setAttributes }
 				block_id={ blockID }
 			/>
-			<div className={`srfm-block-wrap${ isRichText ? ' srfm-richtext' : '' }`}>
+			<div className={ `srfm-block-wrap${ isRichText ? ' srfm-richtext' : '' }` }>
 				{ isRichText ? (
 					<div className="srfm-textarea-quill">
 						<QuillToolbar id={ quillId } />
