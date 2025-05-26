@@ -46,8 +46,14 @@
 					margin: var( --srfm-input-field-margin );
 				}
 				&.srfm-error {
-					.quill-editor-container {
+					.srfm-block-wrap {
 						border: 1px solid var( --srfm-error-color-border );
+						.ql-toolbar {
+							border-color: var( --srfm-error-color-border );
+						}
+						&.srfm-quill-editor-focused {
+							box-shadow: 0px 0px 0px 3px var( --srfm-error-color-border-glow );
+						}
 					}
 				}
 
