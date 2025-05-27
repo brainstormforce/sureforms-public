@@ -1,6 +1,7 @@
 import { __ } from '@wordpress/i18n';
-import { useLocation, Link } from 'react-router-dom';
-import ICONS from './icons';
+import { useLocation } from 'react-router-dom';
+import { Breadcrumb } from '@bsf/force-ui';
+import { ChevronRight } from 'lucide-react';
 
 const Breadcrumbs = () => {
 	function useQuery() {
@@ -8,50 +9,55 @@ const Breadcrumbs = () => {
 	}
 
 	const query = useQuery();
-
 	const page = query.get( 'page' );
 	const method = query.get( 'method' );
 
 	return (
-		<div className="srfm-header-breadcrumb-container">
-			<div
-				className="srfm-tp-logo"
-				onClick={ () =>
-					( window.location.href =
-						srfm_admin.admin_url + '?page=sureforms_menu' )
-				}
-			>
-				{ ICONS.logo }
-			</div>
-			{ page === 'add-new-form' && (
-				<Link
-					className="srfm-tp-breadcrumb-url"
-					to={ {
-						location: `${ srfm_admin.site_url }/wp-admin/admin.php`,
-						search: `?page=add-new-form`,
-					} }
-				>
-					<span className="srfm-header-breadcrumb">
-						{ ICONS.breadcrumb }
-						{ __( 'Add New Form', 'sureforms' ) }
-					</span>
-				</Link>
-			) }
-			{ method === 'ai' && (
-				<Link
-					className="srfm-tp-breadcrumb-url"
-					to={ {
-						location: `${ srfm_admin.site_url }/wp-admin/admin.php`,
-						search: `?page=add-new-form&method=ai`,
-					} }
-				>
-					<span className="srfm-header-breadcrumb">
-						{ ICONS.breadcrumb }
-						{ __( 'Describe your Form', 'sureforms' ) }
-					</span>
-				</Link>
-			) }
-		</div>
+		<Breadcrumb>
+			<Breadcrumb.List>
+				{ page === 'add-new-form' && (
+					<Breadcrumb.Item>
+						<Breadcrumb.Link
+							href={ `${ srfm_admin.site_url }/wp-admin/admin.php?page=sureforms_menu` }
+						>
+							{ __( 'Dashboard', 'sureforms' ) }
+						</Breadcrumb.Link>
+					</Breadcrumb.Item>
+				) }
+				{ page === 'add-new-form' && (
+					<Breadcrumb.Item>
+						<ChevronRight color="#bdc1c7" className="size-3" />
+						<Breadcrumb.Link
+							href={ `${ srfm_admin.site_url }/wp-admin/admin.php?page=add-new-form` }
+						>
+							{ method !== 'ai' ? (
+								<>
+									<Breadcrumb.Page>
+										{ __( 'Add New Form', 'sureforms' ) }
+									</Breadcrumb.Page>
+								</>
+							) : (
+								<span>
+									{ __( 'Add New Form', 'sureforms' ) }
+								</span>
+							) }
+						</Breadcrumb.Link>
+					</Breadcrumb.Item>
+				) }
+				{ method === 'ai' && (
+					<Breadcrumb.Item>
+						<ChevronRight color="#bdc1c7" className="size-3" />
+						<Breadcrumb.Link
+							href={ `${ srfm_admin.site_url }/wp-admin/admin.php?page=add-new-form&method=ai` }
+						>
+							<Breadcrumb.Page>
+								{ __( 'Generate with AI', 'sureforms' ) }
+							</Breadcrumb.Page>
+						</Breadcrumb.Link>
+					</Breadcrumb.Item>
+				) }
+			</Breadcrumb.List>
+		</Breadcrumb>
 	);
 };
 

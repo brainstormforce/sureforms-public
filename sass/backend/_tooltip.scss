@@ -38,10 +38,15 @@
 		a {
 			margin: 0;
 			padding: 0;
-			color: #28afed;
+			color: #F8A581;
 			font-size: 12px;
 			font-weight: 600;
 			line-height: 16px;
+			text-decoration: none;
+
+			&:hover {
+				text-decoration: none;
+			}
 		}
 	}
 
@@ -247,13 +252,13 @@
 	gap: 4px;
 	min-width: 16px;
 	cursor: pointer;
-	padding: 4px 8px;
+	padding: 2px 8px;
 	border-radius: 9999px;
 	background: #111827;
 	color: #fff;
 	border: 0.5px solid #374151;
 	font-size: 12px;
-	font-weight: 600;
+	font-weight: 500;
 	line-height: 16px;
 	text-align: center;
 	// !important is used to override the default styles.
