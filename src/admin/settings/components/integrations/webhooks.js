@@ -33,9 +33,7 @@ const Webhooks = () => {
 							utmMedium={ 'global_integration_settings_webhooks' }
 						/>
 					) }
-					{ false !== switchWebhook && (
-						switchWebhook
-					) }
+					{ false !== switchWebhook && switchWebhook }
 				</div>
 			</IntegrationCard.Header>
 			<IntegrationCard.Content>

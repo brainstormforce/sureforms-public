@@ -57,7 +57,10 @@ function GeneralSettings( props ) {
 		if ( btoa( JSON.stringify( sureformsKeys ) ) !== prevMetaHash ) {
 			createNotice(
 				'warning',
-				__( 'There are few unsaved changes. Please save your changes to reflect the updates.', 'sureforms' ),
+				__(
+					'There are few unsaved changes. Please save your changes to reflect the updates.',
+					'sureforms'
+				),
 				{
 					id: 'srfm-unsaved-changes-warning',
 					isDismissible: true,
@@ -71,7 +74,13 @@ function GeneralSettings( props ) {
 			return;
 		}
 
-		if ( select( 'core/notices' ).getNotices()?.filter( ( notice ) => 'srfm-unsaved-changes-warning' === notice?.id ).length > 0 ) {
+		if (
+			select( 'core/notices' )
+				.getNotices()
+				?.filter(
+					( notice ) => 'srfm-unsaved-changes-warning' === notice?.id
+				).length > 0
+		) {
 			// Remove SRFM unsaved changes notice if user is saving the current form.
 			removeNotice( 'srfm-unsaved-changes-warning' );
 		}
@@ -180,7 +189,10 @@ function GeneralSettings( props ) {
 	function updatePageBreakSettings( option, value ) {
 		editPost( {
 			meta: {
-				_srfm_page_break_settings: { ...pageBreakSettings, [ option ]: value },
+				_srfm_page_break_settings: {
+					...pageBreakSettings,
+					[ option ]: value,
+				},
 			},
 		} );
 	}

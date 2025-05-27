@@ -68,7 +68,11 @@ const FormCustomCssPanel = ( { formCustomCssData } ) => {
 	return (
 		<TabContentWrapper title={ __( 'Custom CSS', 'sureforms' ) }>
 			<Container direction="column" className="gap-2">
-				<Label variant="neutral" size="md" className="font-normal text-text-secondary">
+				<Label
+					variant="neutral"
+					size="md"
+					className="font-normal text-text-secondary"
+				>
 					{ __(
 						'The following CSS styles added below will only apply to this form container.',
 						'sureforms'

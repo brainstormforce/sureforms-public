@@ -63,20 +63,17 @@ const iconBlocks = [
 	{
 		icon: parse( svgIcons.signature ),
 		label: __( 'Signature', 'sureforms' ),
-		showIn: [
-			'free',
-			'starter',
-		],
+		showIn: [ 'free', 'starter' ],
 	},
 ];
 
 const filterIconBlocks = iconBlocks.filter( ( block ) => {
-	const srfmProduct = srfm_block_data?.pro_plugin_name.split( ' ' )[ 1 ]?.toLowerCase();
+	const srfmProduct = srfm_block_data?.pro_plugin_name
+		.split( ' ' )[ 1 ]
+		?.toLowerCase();
 
 	if ( ! block.showIn ) {
-		block.showIn = [
-			'free',
-		];
+		block.showIn = [ 'free' ];
 	}
 
 	// if current package is mathcing with the block package, add the block to the list.
@@ -101,11 +98,19 @@ const IconGrid = () => (
 				// if the index is divisible by 3, create a new group to show 3 blocks in a row
 				if ( index % 3 === 0 ) {
 					// in accumulator, create a new group
-					acc.push( <div role="presentation" key={ `group-${ index }` }>{ [] }</div> );
+					acc.push(
+						<div role="presentation" key={ `group-${ index }` }>
+							{ [] }
+						</div>
+					);
 				}
 				// add the block to the last group
 				acc[ acc.length - 1 ].props.children.push(
-					<IconBlock key={ index } icon={ block.icon } label={ block.label } />
+					<IconBlock
+						key={ index }
+						icon={ block.icon }
+						label={ block.label }
+					/>
 				);
 				return acc;
 			}, [] ) }
@@ -131,7 +136,13 @@ const index = () => {
 					style={ {} }
 					className="srfm-upgrade-pro-btn"
 					onClick={ () => {
-						window.open( addQueryParam( srfm_admin?.sureforms_pricing_page, 'sureforms_editor' ), '_blank' );
+						window.open(
+							addQueryParam(
+								srfm_admin?.sureforms_pricing_page,
+								'sureforms_editor'
+							),
+							'_blank'
+						);
 					} }
 				>
 					{ __( 'Upgrade to Unlock These Fields', 'sureforms' ) }

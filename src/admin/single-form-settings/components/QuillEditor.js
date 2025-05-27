@@ -9,11 +9,7 @@ import EditorToolbar, {
 import { ChevronDownIcon } from 'lucide-react';
 import { Label, Tabs, TextArea } from '@bsf/force-ui';
 
-const Editor = ( {
-	handleContentChange,
-	content,
-	allData = false,
-} ) => {
+const Editor = ( { handleContentChange, content, allData = false } ) => {
 	const quillRef = useRef( null );
 	const textAreaRef = useRef( null );
 
@@ -95,7 +91,10 @@ const Editor = ( {
 	const formSmartTags = window.sureforms?.formSpecificSmartTags ?? [];
 	let formSmartTagsAllData = {};
 	if ( allData ) {
-		formSmartTagsAllData = [ ...formSmartTags, [ '{all_data}', __( 'All Data', 'sureforms' ) ] ];
+		formSmartTagsAllData = [
+			...formSmartTags,
+			[ '{all_data}', __( 'All Data', 'sureforms' ) ],
+		];
 	}
 
 	// Add inline style instead of classes.
@@ -194,9 +193,7 @@ const Editor = ( {
 					<TextArea
 						id="srfm-editor-html"
 						ref={ textAreaRef }
-						onChange={ ( value ) =>
-							handleContentChange( value )
-						}
+						onChange={ ( value ) => handleContentChange( value ) }
 						className="w-full min-h-[18.75rem] border border-field-border border-solid rounded-lg transition"
 						value={ content }
 						size="md"
