@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-05-20T13:46:25+00:00\n"
+"POT-Creation-Date: 2025-05-23T09:17:06+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: sureforms\n"
@@ -1056,11 +1056,11 @@ msgstr ""
 msgid "The new way to sell on WordPress."
 msgstr ""
 
-#: inc/helper.php:1361
+#: inc/helper.php:1360
 msgid "Starter Templates"
 msgstr ""
 
-#: inc/helper.php:1362
+#: inc/helper.php:1361
 msgid "Build your dream website in minutes with AI."
 msgstr ""
 
