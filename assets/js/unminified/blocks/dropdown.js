@@ -3,8 +3,6 @@ function initializeDropdown() {
 		'.srfm-dropdown-common'
 	);
 
-	console.log( 'initializeDropdown initializeDropdown', dropDownSelector );
-
 	dropDownSelector.forEach( ( element ) => {
 		if ( element ) {
 			let additionalConfig = {};
@@ -124,8 +122,6 @@ function initializeDropdown() {
 				},
 			};
 
-			console.log( 'config', { config, element, inputName, errorContainerID } );
-
 			/**
 			 * Creates a new TomSelect instance for the given input element and adds it to the global `window.srfm` object.
 			 *
@@ -237,10 +233,6 @@ function handleInputState( element ) {
 		}
 	}
 }
-// make dropdown initialization function available globally
-// window.srfmInitializeDropdown = initializeDropdown;
-
-// document.addEventListener( 'DOMContentLoaded', initializeDropdown );
 
 // Re-initialize dropdowns when the block is updated in the editor.
 // srfm_form_before_submission
@@ -254,21 +246,11 @@ document.addEventListener( 'srfm_form_before_submission', ( e ) => {
 
 	// Destroy the existing TomSelect instances before re-initializing.
 	dropdowns.forEach( ( dropdown ) => {
-
 		const getTheWrapper = dropdown.closest( '.srfm-block-wrap.srfm-dropdown-common-wrap' );
 
-		if( getTheWrapper ) {
-			// remove from the window.srfm name 
+		if ( getTheWrapper ) {
+			// remove from the window.srfm name
 			const inputName = dropdown.getAttribute( 'name' );
-
-			// Remove these classes from the getTheWrapper "tomselected ts-hidden-accessible".
-			// console.log( 'inputName----> ', {
-			// 	dropdown,
-			// 	inputName,
-			// 	wi: window?.srfm?.[ inputName ],
-			// 	id: dropdown.getAttribute( 'id' ),
-			// 	classList: dropdown.classList,
-			// } );
 
 			dropdown.classList.remove( 'tomselected' );
 			dropdown.classList.remove( 'ts-hidden-accessible' );
@@ -281,16 +263,17 @@ document.addEventListener( 'srfm_form_before_submission', ( e ) => {
 			dropdown?.TomSelect?.destroy();
 
 			const getTheTSWrapper = getTheWrapper.querySelectorAll( 'div.ts-wrapper' );
-			// console.log( 'getTheTSWrapper', {getTheTSWrapper} );
 
 			getTheTSWrapper?.forEach( ( wrapper ) => {
 				wrapper.remove();
 			} );
+
+			// Enable the select element.
+			dropdown.disabled = false;
 		}
 	} );
 
 	setTimeout( () => {
 		initializeDropdown();
 	}, 100 );
-	
 } );
