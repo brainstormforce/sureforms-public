@@ -897,10 +897,34 @@ class Post_Types {
 			'sureforms_form',
 			'_srfm_form_confirmation',
 			[
-				'single'        => true,
-				'type'          => 'array',
-				'auth_callback' => '__return_true',
-				'show_in_rest'  => [
+				'single'            => true,
+				'type'              => 'array',
+				'auth_callback'     => static function() {
+					return current_user_can( 'manage_options' );
+				},
+				'sanitize_callback' => static function( $meta_value ) {
+					if ( ! is_array( $meta_value ) ) {
+						return [];
+					}
+					$sanitized = [];
+					foreach ( $meta_value as $item ) {
+						if ( ! is_array( $item ) ) {
+							continue;
+						}
+						$sanitized[] = [
+							'id'                  => isset( $item['id'] ) ? intval( $item['id'] ) : 0,
+							'confirmation_type'   => isset( $item['confirmation_type'] ) ? sanitize_text_field( $item['confirmation_type'] ) : '',
+							'page_url'            => isset( $item['page_url'] ) ? esc_url_raw( $item['page_url'] ) : '',
+							'custom_url'          => isset( $item['custom_url'] ) ? esc_url_raw( $item['custom_url'] ) : '',
+							'message'             => isset( $item['message'] ) ? Helper::strip_js_attributes( $item['message'] ) : '',
+							'submission_action'   => isset( $item['submission_action'] ) ? sanitize_text_field( $item['submission_action'] ) : '',
+							'enable_query_params' => isset( $item['enable_query_params'] ) ? filter_var( $item['enable_query_params'], FILTER_VALIDATE_BOOLEAN ) : false,
+							'query_params'        => isset( $item['query_params'] ) ? array_map( 'sanitize_text_field', (array) $item['query_params'] ) : [],
+						];
+					}
+					return $sanitized;
+				},
+				'show_in_rest'      => [
 					'schema' => [
 						'type'  => 'array',
 						'items' => [
@@ -934,7 +958,7 @@ class Post_Types {
 						],
 					],
 				],
-				'default'       => [
+				'default'           => [
 					[
 						'id'                => 1,
 						'confirmation_type' => 'same page',
