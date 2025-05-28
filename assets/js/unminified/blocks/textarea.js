@@ -82,8 +82,10 @@ function addQuillEditor( areaField ) {
 	const AlignStyle = Quill.import( 'attributors/style/align' ); // Import align style attributor
 	const DirectionStyle = Quill.import( 'attributors/style/direction' ); // Import direction style attributor
 	const icons = Quill.import( 'ui/icons' ); // Import Quill icons for toolbar
-	icons.undo = '<svg viewBox="0 0 18 18"><polygon class="ql-fill ql-stroke" points="6 10 4 12 2 10 6 10" /><path class="ql-stroke" d="M8.09,13.91A4.6,4.6,0,0,0,9,14,5,5,0,1,0,4,9" /></svg>';
-	icons.redo = '<svg viewBox="0 0 18 18"><polygon class="ql-fill ql-stroke" points="12 10 14 12 16 10 12 10" /><path class="ql-stroke" d="M9.91,13.91A4.6,4.6,0,0,1,9,14a5,5,0,1,1,5-5"/></svg>';
+	icons.undo =
+		'<svg viewBox="0 0 18 18"><polygon class="ql-fill ql-stroke" points="6 10 4 12 2 10 6 10" /><path class="ql-stroke" d="M8.09,13.91A4.6,4.6,0,0,0,9,14,5,5,0,1,0,4,9" /></svg>';
+	icons.redo =
+		'<svg viewBox="0 0 18 18"><polygon class="ql-fill ql-stroke" points="12 10 14 12 16 10 12 10" /><path class="ql-stroke" d="M9.91,13.91A4.6,4.6,0,0,1,9,14a5,5,0,1,1,5-5"/></svg>';
 
 	// Register the imported Attributors for inline styles
 	Quill.register( AlignStyle, true ); // Register align style
@@ -102,16 +104,57 @@ function addQuillEditor( areaField ) {
 					[ { list: 'ordered' }, { list: 'bullet' } ], // Ordered and bullet lists
 					[ 'blockquote' ], // Blockquote
 					[ { align: [] } ], // Alignment (registered as inline style)
-					[ { color: [] }, { background: [] } ], // Color and background
+					[
+						{
+							color: [
+								'#000000',
+								'#e60000',
+								'#ff9900',
+								'#ffff00',
+								'#008a00',
+								'#0066cc',
+								'#9933ff',
+								'#ffffff',
+								'#facccc',
+								'#ffebcc',
+								'#ffffcc',
+								'#cce8cc',
+								'#cce0f5',
+								'#ebd6ff',
+								'#bbbbbb',
+								'#f06666',
+								'#ffc266',
+								'#ffff66',
+								'#66b966',
+								'#66a3e0',
+								'#c285ff',
+								'#888888',
+								'#a10000',
+								'#b26b00',
+								'#b2b200',
+								'#006100',
+								'#0047b2',
+								'#6b24b2',
+								'#444444',
+								'#5c0000',
+								'#663d00',
+								'#666600',
+								'#003700',
+								'#002966',
+								'#3d1466',
+							],
+						},
+						{ background: [] },
+					], // Color and background
 					[ 'link' ], // Add links and images
 					[ 'clean' ], // Remove formatting
 					[ 'undo', 'redo' ], // Undo and redo actions
 				],
 				handlers: {
-					undo () {
+					undo() {
 						this.quill.history.undo(); // Undo action
 					},
-					redo () {
+					redo() {
 						this.quill.history.redo(); // Redo action
 					},
 				},
