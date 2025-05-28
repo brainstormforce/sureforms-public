@@ -165,7 +165,7 @@ class Email_Template {
 						} else {
 							if ( is_string( $value ) ) {
 								if ( false !== strpos( $field_name, 'srfm-textarea' ) ) {
-									echo Helper::esc_textarea( html_entity_decode( $value ) );
+									echo Helper::esc_textarea( html_entity_decode( $value ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- using a custom escaping function.
 								} else {
 									echo false !== strpos( $value, PHP_EOL ) ? wp_kses_post( wpautop( $value ) ) : wp_kses(
 										$value,
