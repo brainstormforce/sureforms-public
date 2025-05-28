@@ -438,9 +438,6 @@
 			box-shadow: none; // Override astra theme styling for the box shadow
 		}
 	}
-	.ql-editor {
-		border-radius: var( --srfm-input-field-border-radius );
-	}
 }
 // Row Gap and Column Gap Mixin.
 @mixin srfm-gap-styles {

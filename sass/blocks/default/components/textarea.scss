@@ -16,9 +16,9 @@
 				.srfm-block-wrap {
 					@include srfm-input-margin-styles;
 					border: 1px solid var( --srfm-color-input-border );
-					border-radius: var( --srfm-input-field-border-radius );
 					transition: 0.2s ease-out;
 					min-height: 243px;
+					border-radius: 6px;
 
 					// Add hover effect styles.
 					&:hover {
@@ -35,6 +35,11 @@
 						.ql-toolbar {
 							border-color: var( --srfm-color-input-border-hover );
 						}
+					}
+
+					// Reducing the bottom border for the quill editor text area.
+					.ql-editor {
+						border-radius: 0 0 5px 5px;
 					}
 				}
 				.ql-container.ql-snow {
