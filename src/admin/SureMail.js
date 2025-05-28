@@ -33,8 +33,6 @@ const FeatureCard = ( { icon: IconComponent, title, description } ) => (
 	</div>
 );
 
-<Heart strokeWidth={ 1 } />;
-
 const YouTubeVideo = () => (
 	<div className="relative bg-gray-900 rounded-lg overflow-hidden shadow-2xl aspect-video w-full">
 		<iframe
@@ -48,25 +46,43 @@ const YouTubeVideo = () => (
 	</div>
 );
 
-const InstallSureMailButton = ( { isInstalling, onClick, activated } ) => (
-	<Button
-		variant="primary"
-		onClick={ onClick }
-		disabled={ isInstalling }
-		loading={ isInstalling }
-		size="lg"
-	>
-		{ isInstalling && activated
-			? __( 'Redirecting to SureMail Dashboard…', 'sureforms' )
-			: isInstalling
-				? __( 'Installing SureMail Now…', 'sureforms' )
-				: __( 'Install SureMail Now', 'sureforms' ) }
-	</Button>
-);
+const InstallSureMailButton = ( { pluginStatus, onClick } ) => {
+	const getButtonText = () => {
+		switch ( pluginStatus ) {
+			case 'installing':
+				return __( 'Installing SureMail Now…', 'sureforms' );
+			case 'activating':
+				return __( 'Activating SureMail Now…', 'sureforms' );
+			case 'redirecting':
+				return __( 'Redirecting to SureMail Dashboard…', 'sureforms' );
+			case 'installed':
+				return __( 'Activate SureMail Now', 'sureforms' );
+			default:
+				return __( 'Install SureMail Now', 'sureforms' );
+		}
+	};
+
+	return (
+		<Button
+			variant="primary"
+			onClick={ onClick }
+			disabled={ [ 'installing', 'activating', 'redirecting' ].includes(
+				pluginStatus
+			) }
+			loading={ [ 'installing', 'activating', 'redirecting' ].includes(
+				pluginStatus
+			) }
+			size="lg"
+		>
+			{ getButtonText() }
+		</Button>
+	);
+};
 
 const SureMail = () => {
-	const [ isInstalling, setIsInstalling ] = useState( false );
-	const [ activated, setActivated ] = useState( false );
+	const [ pluginStatus, setPluginStatus ] = useState(
+		window.srfm_admin?.suremail_status || 'not_installed'
+	);
 
 	const mainFeatures = [
 		{
@@ -119,60 +135,83 @@ const SureMail = () => {
 		},
 	];
 
-	const handleInstallSureMail = async () => {
-		setIsInstalling( true );
+	const activateSureMail = async () => {
+		const activateFormData = new FormData();
+		activateFormData.append(
+			'action',
+			'sureforms_recommended_plugin_activate'
+		);
+		activateFormData.append( 'security', srfm_admin.sfPluginManagerNonce );
+		activateFormData.append( 'init', 'suremails/suremails.php' );
+
+		const activateResponse = await wp.apiFetch( {
+			url: srfm_admin.ajax_url,
+			method: 'POST',
+			body: activateFormData,
+		} );
+
+		if ( ! activateResponse.success ) {
+			throw new Error( 'Activation failed' );
+		}
+
+		return activateResponse;
+	};
+
+	const installSureMail = async () => {
+		console.log( 'working' );
+		console.log( pluginStatus );
 		try {
-			const formData = new FormData();
-			formData.append( 'action', 'sureforms_recommended_plugin_install' );
-			formData.append(
-				'_ajax_nonce',
-				srfm_admin?.plugin_installer_nonce
-			);
-			formData.append( 'slug', 'suremails' );
-
-			const response = await wp.apiFetch( {
-				url: srfm_admin.ajax_url,
-				method: 'POST',
-				body: formData,
-			} );
-
-			if ( response.success ) {
-				const activateFormData = new FormData();
-				activateFormData.append(
+			// Check if plugin is already installed
+			const isPluginInstalled = pluginStatus === 'installed';
+			console.log( pluginStatus );
+			if ( ! isPluginInstalled ) {
+				setPluginStatus( 'installing' );
+				// Install plugin
+				const formData = new FormData();
+				formData.append(
 					'action',
-					'sureforms_recommended_plugin_activate'
+					'sureforms_recommended_plugin_install'
 				);
-				activateFormData.append(
-					'security',
-					srfm_admin.sfPluginManagerNonce
+				formData.append(
+					'_ajax_nonce',
+					srfm_admin?.plugin_installer_nonce
 				);
-				activateFormData.append( 'init', 'suremails/suremails.php' );
+				formData.append( 'slug', 'suremails' );
 
-				const activateResponse = await wp.apiFetch( {
+				const response = await wp.apiFetch( {
 					url: srfm_admin.ajax_url,
 					method: 'POST',
-					body: activateFormData,
+					body: formData,
 				} );
 
-				if ( activateResponse.success ) {
-					setActivated( true );
-					setTimeout( () => {
-						window.location.href =
-							srfm_admin.admin_url +
-							'options-general.php?page=suremail#/dashboard';
-					}, 1000 );
+				if ( ! response.success ) {
+					throw new Error( 'Installation failed' );
 				}
 			}
+
+			// Activate plugin
+			setPluginStatus( 'activating' );
+			const activateResponse = await activateSureMail();
+
+			if ( activateResponse.success ) {
+				setPluginStatus( 'redirecting' );
+				setTimeout( () => {
+					window.location.href =
+						srfm_admin.admin_url +
+						'options-general.php?page=suremail#/dashboard';
+				}, 1000 );
+			}
 		} catch ( error ) {
-			console.error( 'Error installing SureMail:', error );
+			console.error( 'Error installing/activating SureMail:', error );
 			alert(
 				__(
-					'Plugin installation failed. Please try again later.',
+					'Plugin installation/activation failed. Please try again later.',
 					'sureforms'
 				)
 			);
-		} finally {
-			setIsInstalling( false );
+			setPluginStatus(
+				pluginStatus ? 'installed' : 'not_installed'
+			);
 		}
 	};
 
@@ -282,9 +321,8 @@ const SureMail = () => {
 					</div>
 					<div className="flex justify-center gap-6 p-2">
 						<InstallSureMailButton
-							isInstalling={ isInstalling }
-							onClick={ handleInstallSureMail }
-							activated={ activated }
+							pluginStatus={ pluginStatus }
+							onClick={ installSureMail }
 						/>
 					</div>
 				</div>
@@ -336,9 +374,8 @@ const SureMail = () => {
 					</div>
 					<div className="p-2 gap-6">
 						<InstallSureMailButton
-							isInstalling={ isInstalling }
-							onClick={ handleInstallSureMail }
-							activated={ activated }
+							pluginStatus={ pluginStatus }
+							onClick={ installSureMail }
 						/>
 					</div>
 				</div>

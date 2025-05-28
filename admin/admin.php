@@ -42,10 +42,7 @@ class Admin {
 			add_action( 'admin_footer', [ $this, 'add_upgrade_to_pro_target_attr' ] );
 		}
 
-		// Add SureForms promotional page only when SureMail is not active.
-		if ( ! $this->is_suremail_active() ) {
-			add_action( 'admin_menu', [ $this, 'add_suremail_page' ] );
-		}
+		add_action( 'admin_menu', [ $this, 'add_suremail_page' ] );
 
 		add_filter( 'plugin_action_links', [ $this, 'add_settings_link' ], 10, 2 );
 		add_action( 'enqueue_block_assets', [ $this, 'enqueue_styles' ] );
@@ -271,16 +268,6 @@ class Admin {
 	}
 
 	/**
-	 * Check if SureMail plugin is active.
-	 *
-	 * @return bool
-	 * @since x.x.x
-	 */
-	private function is_suremail_active() {
-		return is_plugin_active( 'suremails/suremails.php' );
-	}
-
-	/**
 	 * Add SMTP promotional submenu page.
 	 *
 	 * @return void
@@ -296,6 +283,16 @@ class Admin {
 			[ $this, 'suremail_page_callback' ],
 			4 // Position after Settings (which should be at position 3).
 		);
+
+		// Get the current submenu page.
+		$submenu_page = isset( $_GET['page'] ) ? sanitize_text_field( wp_unslash( $_GET['page'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- $_GET['page'] does not provide nonce.
+
+		// Check if SureMail is installed and active.
+		if ( 'sureforms_smtp' === $submenu_page && file_exists( WP_PLUGIN_DIR . '/suremails/suremails.php' ) && is_plugin_active( 'suremails/suremails.php' ) ) {
+			// Plugin is installed and active - redirect to SureMail dashboard.
+			wp_safe_redirect( admin_url( 'options-general.php?page=suremail#/dashboard' ) );
+			exit;
+		}
 	}
 
 	/**
@@ -644,6 +641,9 @@ class Admin {
 				'suremail_url'           => 'https://sureforms.com/suremail/',
 				'plugin_installer_nonce' => wp_create_nonce( 'updates' ),
 				'sfPluginManagerNonce'   => wp_create_nonce( 'sf_plugin_manager_nonce' ),
+				'suremail_status'        => file_exists( WP_PLUGIN_DIR . '/suremails/suremails.php' )
+					? ( is_plugin_active( 'suremails/suremails.php' ) ? 'active' : 'installed' )
+					: 'not_installed',
 			];
 
 			wp_localize_script(
