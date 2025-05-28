@@ -502,7 +502,7 @@ class Test_Helper extends TestCase {
     /**
      * Test the join_strings method with various inputs.
      */
-    public function testJoinStrings() {
+    public function test_join_strings() {
         $testCases = [
             'normal strings' => [
                 'input' => ['class1', 'class2', 'class3'],
@@ -543,7 +543,7 @@ class Test_Helper extends TestCase {
     /**
      * Test the get_gradient_css function with various inputs.
      */
-    public function testGetGradientCss() {
+    public function test_get_gradient_css() {
         $testCases = [
             'default values' => [
                 'input' => [],
@@ -580,7 +580,7 @@ class Test_Helper extends TestCase {
     /**
      * Test the get_background_classes method with various inputs.
      */
-    public function testGetBackgroundClasses() {
+    public function test_get_background_classes() {
         $testCases = [
             'default background type' => [
                 'input' => ['', '', ''],
