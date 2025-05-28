@@ -14,6 +14,7 @@ const ModalInputBox = ( {
 	showSmartTagList = true,
 	helpText,
 	padding = '',
+	inputProps = {},
 } ) => {
 	return (
 		<Container direction="column" className={ cn( 'w-full gap-2', padding ) }>
@@ -28,7 +29,7 @@ const ModalInputBox = ( {
 						label={ label }
 						required={ required }
 						size="md"
-						className="[&>input]:text-text-tertiary"
+						{ ...inputProps }
 					/>
 				</div>
 				{ showSmartTagList && (
