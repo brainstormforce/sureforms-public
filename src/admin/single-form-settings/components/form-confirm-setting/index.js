@@ -10,6 +10,7 @@ import DefaultConfirmationTypes from './DefaultConfirmationTypes';
 import { Label } from '@bsf/force-ui';
 import RadioGroup from '@Admin/components/RadioGroup';
 import TabContentWrapper from '@Components/tab-content-wrapper';
+import { getWordPressPages } from '@Utils/Helpers';
 
 const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 	const sureforms_keys = useSelect( ( select ) =>
@@ -131,23 +132,8 @@ const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 	}
 
 	useEffect( () => {
-		apiFetch( { path: '/wp/v2/pages' } )
-			.then( ( pages ) => {
-				if ( pages ) {
-					const createFormat = pages.map( ( page ) => {
-						let label;
-						if ( page.title?.rendered ) {
-							label = page.title?.rendered;
-						} else {
-							label = page.id.toString();
-						}
-						const value = page.link;
-						return { label, value };
-					} );
-					setPageOptions( createFormat );
-				}
-			} )
-			.catch( ( error ) => console.error( 'Error:', error ) );
+		// Fetch the page options.
+		getWordPressPages( setPageOptions )
 		const formConfirmationData = sureforms_keys._srfm_form_confirmation;
 		if ( formConfirmationData ) {
 			setData( formConfirmationData[ 0 ] );
