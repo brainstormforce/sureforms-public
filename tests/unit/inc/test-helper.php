@@ -637,7 +637,7 @@ class Test_Helper extends TestCase {
     /**
      * Test the strip_js_attributes method with various inputs.
      */
-    public function testStripJSAttributes() {
+    public function test_strip_js_attributes() {
         $testCases = [
             'removes script tag' => [
             'input' => '<div>Hello<script>alert("x")</script>World</div>',
