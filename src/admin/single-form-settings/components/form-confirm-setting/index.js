@@ -1,4 +1,3 @@
-import apiFetch from '@wordpress/api-fetch';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { store as editorStore } from '@wordpress/editor';
 import { useEffect, useState } from '@wordpress/element';
@@ -133,7 +132,7 @@ const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 
 	useEffect( () => {
 		// Fetch the page options.
-		getWordPressPages( setPageOptions )
+		getWordPressPages( setPageOptions );
 		const formConfirmationData = sureforms_keys._srfm_form_confirmation;
 		if ( formConfirmationData ) {
 			setData( formConfirmationData[ 0 ] );

@@ -816,7 +816,7 @@ export const showErrorMessage = ( args ) => {
 
 /**
  * Fetch the wordpress pages.
- * 
+ *
  * @param {Function} setPageOptions - The function to set the page options state.
  */
 export const getWordPressPages = ( setPageOptions ) => {
