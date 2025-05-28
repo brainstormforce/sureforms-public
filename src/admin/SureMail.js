@@ -19,25 +19,21 @@ import {
 import './tw-base.scss';
 
 // Reusable components using available Force UI components and HTML
-const FeatureCard = ( {
-	icon: IconComponent,
-	title,
-	description,
-} ) => (
+const FeatureCard = ( { icon: IconComponent, title, description } ) => (
 	<div className="flex flex-col items-start text-left gap-2">
-			<div className="text-[#0D7EE8]">
-				<IconComponent size={24} strokeWidth={1}/>
-				<Text size={18} lineHeight={28} weight={600} color='primary'>
-					{ title }
-				</Text>
-			</div>
-		<Text size={14} lineHeight={20} weight={400} color='secondary'>
+		<div className="text-[#0D7EE8]">
+			<IconComponent size={ 24 } strokeWidth={ 1 } />
+			<Text size={ 18 } lineHeight={ 28 } weight={ 600 } color="primary">
+				{ title }
+			</Text>
+		</div>
+		<Text size={ 14 } lineHeight={ 20 } weight={ 400 } color="secondary">
 			{ description }
 		</Text>
 	</div>
 );
 
-<Heart strokeWidth={1} />
+<Heart strokeWidth={ 1 } />;
 
 const YouTubeVideo = () => (
 	<div className="relative bg-gray-900 rounded-lg overflow-hidden shadow-2xl aspect-video w-full">
@@ -52,28 +48,25 @@ const YouTubeVideo = () => (
 	</div>
 );
 
-const InstallSureMailButton = ( { isInstalling, onClick } ) => (
+const InstallSureMailButton = ( { isInstalling, onClick, activated } ) => (
 	<Button
 		variant="primary"
 		onClick={ onClick }
 		disabled={ isInstalling }
 		loading={ isInstalling }
-		size='lg'
+		size="lg"
 	>
-		{ isInstalling
-			? __(
-				'Installing SureMail Now…',
-				'sureforms'
-			  )
-			: __(
-				'Install SureMail Now',
-				'sureforms'
-			  ) }
+		{ isInstalling && activated
+			? __( 'Redirecting to SureMail Dashboard…', 'sureforms' )
+			: isInstalling
+				? __( 'Installing SureMail Now…', 'sureforms' )
+				: __( 'Install SureMail Now', 'sureforms' ) }
 	</Button>
 );
 
 const SureMail = () => {
 	const [ isInstalling, setIsInstalling ] = useState( false );
+	const [ activated, setActivated ] = useState( false );
 
 	const mainFeatures = [
 		{
@@ -133,40 +126,41 @@ const SureMail = () => {
 			formData.append( 'action', 'sureforms_recommended_plugin_install' );
 			formData.append(
 				'_ajax_nonce',
-				sureforms_admin?.plugin_installer_nonce
+				srfm_admin?.plugin_installer_nonce
 			);
 			formData.append( 'slug', 'suremails' );
 
 			const response = await wp.apiFetch( {
-				url: sureforms_admin.admin_url + 'admin-ajax.php',
+				url: srfm_admin.ajax_url,
 				method: 'POST',
 				body: formData,
 			} );
 
 			if ( response.success ) {
-				// After installation, activate the plugin
 				const activateFormData = new FormData();
 				activateFormData.append(
 					'action',
 					'sureforms_recommended_plugin_activate'
 				);
 				activateFormData.append(
-					'_ajax_nonce',
-					sureforms_admin.plugin_installer_nonce
+					'security',
+					srfm_admin.sfPluginManagerNonce
 				);
-				activateFormData.append(
-					'plugin_file',
-					'suremails/suremails.php'
-				);
+				activateFormData.append( 'init', 'suremails/suremails.php' );
 
 				const activateResponse = await wp.apiFetch( {
-					url: sureforms_admin.admin_url + 'admin-ajax.php',
+					url: srfm_admin.ajax_url,
 					method: 'POST',
 					body: activateFormData,
 				} );
 
 				if ( activateResponse.success ) {
-					window.location.reload();
+					setActivated( true );
+					setTimeout( () => {
+						window.location.href =
+							srfm_admin.admin_url +
+							'options-general.php?page=suremail#/dashboard';
+					}, 1000 );
 				}
 			}
 		} catch ( error ) {
@@ -192,7 +186,7 @@ const SureMail = () => {
 				{ /* Header Section */ }
 				<div className="text-center gap-3">
 					<div className="flex justify-center gap-6 p-2">
-						<div className='flex items-center gap-8'>
+						<div className="flex items-center gap-8">
 							<svg
 								width="48"
 								height="48"
@@ -214,7 +208,14 @@ const SureMail = () => {
 									fill="white"
 								/>
 							</svg>
-							<Text size={30} lineHeight={38} weight={600} color='primary'>+</Text>
+							<Text
+								size={ 30 }
+								lineHeight={ 38 }
+								weight={ 600 }
+								color="primary"
+							>
+								+
+							</Text>
 							<svg
 								width="48"
 								height="48"
@@ -239,7 +240,14 @@ const SureMail = () => {
 									fill="white"
 								/>
 							</svg>
-							<Text size={30} lineHeight={38} weight={600} color='primary'>=</Text>
+							<Text
+								size={ 30 }
+								lineHeight={ 38 }
+								weight={ 600 }
+								color="primary"
+							>
+								=
+							</Text>
 							<Heart
 								size={ 32 }
 								className="text-black fill-current"
@@ -247,14 +255,24 @@ const SureMail = () => {
 						</div>
 					</div>
 					<div className="flex justify-center gap-6 p-2">
-						<div className='flex flex-col'>
-							<Text size={20} lineHeight={30} letterSpacing={-0.5} weight={600}>
+						<div className="flex flex-col">
+							<Text
+								size={ 20 }
+								lineHeight={ 30 }
+								letterSpacing={ -0.5 }
+								weight={ 600 }
+							>
 								{ __(
 									'Ensure Every Form Submission Reaches the Inbox with SureMail',
 									'sureforms'
 								) }
 							</Text>
-							<Text size={16} lineHeight={24} weight={400} color='secondary'>
+							<Text
+								size={ 16 }
+								lineHeight={ 24 }
+								weight={ 400 }
+								color="secondary"
+							>
 								{ __(
 									'SureForms and SureMail are the perfect pair! SureMail ensures that every form submission you receive is reliably delivered to your inbox—no more missing leads, support requests, or customer inquiries.',
 									'sureforms'
@@ -266,6 +284,7 @@ const SureMail = () => {
 						<InstallSureMailButton
 							isInstalling={ isInstalling }
 							onClick={ handleInstallSureMail }
+							activated={ activated }
 						/>
 					</div>
 				</div>
@@ -277,38 +296,51 @@ const SureMail = () => {
 
 				{ /* Features Section */ }
 				<div className="flex flex-col p-2 gap-3">
-					{/* Group features into pairs */}
-					{Array.from({ length: Math.ceil(mainFeatures.length / 2) }).map((_, groupIndex) => (
-						<div key={groupIndex} className="flex gap-6">
-							{mainFeatures.slice(groupIndex * 2, groupIndex * 2 + 2).map((feature, index) => (
-								<div key={index} className="flex-1 p-4 gap-2">
-									<FeatureCard
-										icon={feature.icon}
-										title={feature.title}
-										description={feature.description}
-									/>
-								</div>
-							))}
+					{ /* Group features into pairs */ }
+					{ Array.from( {
+						length: Math.ceil( mainFeatures.length / 2 ),
+					} ).map( ( _, groupIndex ) => (
+						<div key={ groupIndex } className="flex gap-6">
+							{ mainFeatures
+								.slice( ( groupIndex * 2 ), ( ( groupIndex * 2 ) + 2 ) )
+								.map( ( feature, index ) => (
+									<div
+										key={ index }
+										className="flex-1 p-4 gap-2"
+									>
+										<FeatureCard
+											icon={ feature.icon }
+											title={ feature.title }
+											description={ feature.description }
+										/>
+									</div>
+								) ) }
 						</div>
-					))}
+					) ) }
 				</div>
 
 				{ /* Final CTA Section */ }
-				<div className='flex flex-col justify-center gap-3 text-center'>
+				<div className="flex flex-col justify-center gap-3 text-center">
 					<div className="p-2 gap-6">
-						<Text size={24} lineHeight={32} weight={600} letterSpacing={-0.6}>
+						<Text
+							size={ 24 }
+							lineHeight={ 32 }
+							weight={ 600 }
+							letterSpacing={ -0.6 }
+						>
 							{ __(
 								'Forms Submitted. Emails Delivered. Every Time.',
 								'sureforms'
 							) }
 						</Text>
 					</div>
-				<div className="p-2 gap-6">
-					<InstallSureMailButton
-						isInstalling={ isInstalling }
-						onClick={ handleInstallSureMail }
-					/>
-				</div>
+					<div className="p-2 gap-6">
+						<InstallSureMailButton
+							isInstalling={ isInstalling }
+							onClick={ handleInstallSureMail }
+							activated={ activated }
+						/>
+					</div>
 				</div>
 			</div>
 		</div>

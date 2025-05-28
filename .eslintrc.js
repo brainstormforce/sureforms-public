@@ -91,6 +91,5 @@ module.exports = {
 		hcaptcha: true,
 		turnstile: true,
 		ResizeObserver: true,
-		sureforms_admin: true,
 	},
 };

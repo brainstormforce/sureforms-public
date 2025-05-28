@@ -642,8 +642,8 @@ class Admin {
 				'ajax_url'               => admin_url( 'admin-ajax.php' ),
 				'admin_url'              => admin_url(),
 				'suremail_url'           => 'https://sureforms.com/suremail/',
-				'install_plugin_nonce'   => wp_create_nonce( 'install-plugin' ),
-				'plugin_installer_nonce' => wp_create_nonce( 'plugin-installer' ),
+				'plugin_installer_nonce' => wp_create_nonce( 'updates' ),
+				'sfPluginManagerNonce'   => wp_create_nonce( 'sf_plugin_manager_nonce' ),
 			];
 
 			wp_localize_script(
