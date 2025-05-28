@@ -6,12 +6,11 @@
 
 import { __ } from '@wordpress/i18n';
 import { useState, createRoot } from '@wordpress/element';
-import { Button, Container, Title, Text } from '@bsf/force-ui';
+import { Button, Text } from '@bsf/force-ui';
 import {
 	Shield,
 	RotateCcw,
 	Heart,
-	Plus,
 	ClipboardList,
 	DatabaseBackup,
 	MailCheck,
@@ -24,22 +23,21 @@ const FeatureCard = ( {
 	icon: IconComponent,
 	title,
 	description,
-	className = '',
 } ) => (
-	<div className={ `bg-white p-6 h-full ${ className }` }>
-		<div className="flex flex-col items-start text-left">
-			<div className="text-blue-500 mb-4">
-				<IconComponent size={ 32 } />
+	<div className="flex flex-col items-start text-left gap-2">
+			<div className="text-[#0D7EE8]">
+				<IconComponent size={24} strokeWidth={1}/>
+				<Text size={18} lineHeight={28} weight={600} color='primary'>
+					{ title }
+				</Text>
 			</div>
-			<Title className="text-lg font-semibold mb-3 text-gray-900">
-				{ title }
-			</Title>
-			<Text className="text-gray-600 leading-relaxed text-sm">
-				{ description }
-			</Text>
-		</div>
+		<Text size={14} lineHeight={20} weight={400} color='secondary'>
+			{ description }
+		</Text>
 	</div>
 );
+
+<Heart strokeWidth={1} />
 
 const YouTubeVideo = () => (
 	<div className="relative bg-gray-900 rounded-lg overflow-hidden shadow-2xl aspect-video w-full">
@@ -52,6 +50,26 @@ const YouTubeVideo = () => (
 			allowFullScreen
 		/>
 	</div>
+);
+
+const InstallSureMailButton = ( { isInstalling, onClick } ) => (
+	<Button
+		variant="primary"
+		onClick={ onClick }
+		disabled={ isInstalling }
+		loading={ isInstalling }
+		size='lg'
+	>
+		{ isInstalling
+			? __(
+				'Installing SureMail Now…',
+				'sureforms'
+			  )
+			: __(
+				'Install SureMail Now',
+				'sureforms'
+			  ) }
+	</Button>
 );
 
 const SureMail = () => {
@@ -165,146 +183,134 @@ const SureMail = () => {
 	};
 
 	return (
-		<div className="min-h-screen">
+		<div className="min-h-screen mt-14">
 			<style>{ `
 				.notice, .update-nag, #wpfooter { display: none !important; }
 				.wrap { margin: 0 !important; }
 			` }</style>
-			<Container className="max-w-6xl mx-auto px-5">
-				<div className="bg-white rounded-xl shadow-sm">
-					<div className="space-y-16 p-10">
-						{ /* Header Section */ }
-						<div className="text-center space-y-6 pt-8">
-							<div className="flex items-center justify-center gap-4 mb-6">
-								<svg
-									width="48"
-									height="48"
-									viewBox="0 0 24 24"
-									fill="none"
-									xmlns="http://www.w3.org/2000/svg"
-								>
-									<path d="M24 0H0V24H24V0Z" fill="#D54407" />
-									<path
-										d="M6.8501 5.14209H17.1358V8.57068H8.56439L6.8501 10.285V8.57068V5.14209Z"
-										fill="white"
-									/>
-									<path
-										d="M6.8501 10.2866H15.4215V13.7152H8.56439L6.8501 15.4294V13.7152V10.2866Z"
-										fill="white"
-									/>
-									<path
-										d="M6.8501 15.4272H11.9929V18.8558H6.8501V15.4272Z"
-										fill="white"
-									/>
-								</svg>
-								<Plus size={ 24 } className="text-gray-800" />
-								<svg
-									width="48"
-									height="48"
-									viewBox="0 0 48 48"
-									fill="none"
-									xmlns="http://www.w3.org/2000/svg"
-								>
-									<path
-										d="M46.5 0H1.5C0.671573 0 0 0.671573 0 1.5V46.5C0 47.3284 0.671573 48 1.5 48H46.5C47.3284 48 48 47.3284 48 46.5V1.5C48 0.671573 47.3284 0 46.5 0Z"
-										fill="#0D7EE8"
-									/>
-									<path
-										d="M12.8058 23.327C13.2233 23.6289 13.816 23.5298 14.0891 23.1236C14.391 22.7062 14.2918 22.1134 13.8857 21.8403L9.86562 18.9603C9.72275 18.8501 9.7352 18.7122 9.74142 18.6433C9.74772 18.5744 9.8003 18.4541 9.97325 18.3863L36.7218 11.5667C36.8772 11.5391 36.9687 11.603 37.0314 11.6781C37.0941 11.7533 37.1568 11.8285 37.0866 11.9889L26.952 37.6323C26.8818 37.7928 26.7552 37.8091 26.6976 37.8317C26.6286 37.8254 26.4908 37.8129 26.4055 37.6802L23.3421 32.0652C23.2455 31.9036 23.1666 31.7018 23.07 31.5402C21.871 28.8185 21.5684 26.8103 23.8186 24.832L29.6121 19.4706C30.0054 19.1171 30.0441 18.5368 29.7018 18.1722C29.3484 17.7788 28.7681 17.7401 28.4034 18.0824L22.3186 23.327C19.2527 26.0237 19.7632 29.3781 21.7032 32.9731L24.7665 38.588C25.1578 39.3323 25.9537 39.7519 26.8047 39.7178C27.029 39.6965 27.2709 39.635 27.4726 39.5559C28.0202 39.3415 28.4487 38.9077 28.6941 38.3462L38.8289 12.7028C39.1332 11.9519 38.9901 11.0772 38.4485 10.4583C37.9068 9.83934 37.0809 9.59769 36.2864 9.77589L9.509 16.6068C8.69697 16.8251 8.08302 17.4645 7.91037 18.2967C7.73765 19.1289 8.09382 19.9535 8.78577 20.447L12.8058 23.327Z"
-										fill="white"
-									/>
-									<path
-										d="M11.5395 31.0511C11.6148 31.0216 11.7053 30.9572 11.7708 30.9027L15.8196 27.349C16.1621 27.0412 16.1958 26.536 15.8978 26.2186C15.59 25.8761 15.0849 25.8424 14.7675 26.1404L10.7186 29.6941C10.3761 30.0019 10.3425 30.5071 10.6404 30.8245C10.8685 31.1113 11.2133 31.1788 11.5395 31.0511Z"
-										fill="white"
-									/>
-									<path
-										d="M11.0218 36.7353C11.0971 36.706 11.1879 36.6419 11.2534 36.5875L18.1346 30.5614C18.478 30.2546 18.5131 29.7496 18.216 29.4313C17.9092 29.0879 17.4041 29.0528 17.0859 29.3499L10.2047 35.376C9.86136 35.6828 9.82626 36.1879 10.1233 36.5061C10.3409 36.7685 10.7203 36.8524 11.0218 36.7353Z"
-										fill="white"
-									/>
-								</svg>
-								<Text className="text-2xl">=</Text>
-								<Heart
-									size={ 32 }
-									className="text-black fill-current"
+			<div className="flex flex-col max-w-4xl mx-auto bg-white rounded-xl shadow-sm p-10 gap-6">
+				{ /* Header Section */ }
+				<div className="text-center gap-3">
+					<div className="flex justify-center gap-6 p-2">
+						<div className='flex items-center gap-8'>
+							<svg
+								width="48"
+								height="48"
+								viewBox="0 0 24 24"
+								fill="none"
+								xmlns="http://www.w3.org/2000/svg"
+							>
+								<path d="M24 0H0V24H24V0Z" fill="#D54407" />
+								<path
+									d="M6.8501 5.14209H17.1358V8.57068H8.56439L6.8501 10.285V8.57068V5.14209Z"
+									fill="white"
 								/>
-							</div>
-							<Title className="text-4xl font-bold text-gray-900 mb-4">
+								<path
+									d="M6.8501 10.2866H15.4215V13.7152H8.56439L6.8501 15.4294V13.7152V10.2866Z"
+									fill="white"
+								/>
+								<path
+									d="M6.8501 15.4272H11.9929V18.8558H6.8501V15.4272Z"
+									fill="white"
+								/>
+							</svg>
+							<Text size={30} lineHeight={38} weight={600} color='primary'>+</Text>
+							<svg
+								width="48"
+								height="48"
+								viewBox="0 0 48 48"
+								fill="none"
+								xmlns="http://www.w3.org/2000/svg"
+							>
+								<path
+									d="M46.5 0H1.5C0.671573 0 0 0.671573 0 1.5V46.5C0 47.3284 0.671573 48 1.5 48H46.5C47.3284 48 48 47.3284 48 46.5V1.5C48 0.671573 47.3284 0 46.5 0Z"
+									fill="#0D7EE8"
+								/>
+								<path
+									d="M12.8058 23.327C13.2233 23.6289 13.816 23.5298 14.0891 23.1236C14.391 22.7062 14.2918 22.1134 13.8857 21.8403L9.86562 18.9603C9.72275 18.8501 9.7352 18.7122 9.74142 18.6433C9.74772 18.5744 9.8003 18.4541 9.97325 18.3863L36.7218 11.5667C36.8772 11.5391 36.9687 11.603 37.0314 11.6781C37.0941 11.7533 37.1568 11.8285 37.0866 11.9889L26.952 37.6323C26.8818 37.7928 26.7552 37.8091 26.6976 37.8317C26.6286 37.8254 26.4908 37.8129 26.4055 37.6802L23.3421 32.0652C23.2455 31.9036 23.1666 31.7018 23.07 31.5402C21.871 28.8185 21.5684 26.8103 23.8186 24.832L29.6121 19.4706C30.0054 19.1171 30.0441 18.5368 29.7018 18.1722C29.3484 17.7788 28.7681 17.7401 28.4034 18.0824L22.3186 23.327C19.2527 26.0237 19.7632 29.3781 21.7032 32.9731L24.7665 38.588C25.1578 39.3323 25.9537 39.7519 26.8047 39.7178C27.029 39.6965 27.2709 39.635 27.4726 39.5559C28.0202 39.3415 28.4487 38.9077 28.6941 38.3462L38.8289 12.7028C39.1332 11.9519 38.9901 11.0772 38.4485 10.4583C37.9068 9.83934 37.0809 9.59769 36.2864 9.77589L9.509 16.6068C8.69697 16.8251 8.08302 17.4645 7.91037 18.2967C7.73765 19.1289 8.09382 19.9535 8.78577 20.447L12.8058 23.327Z"
+									fill="white"
+								/>
+								<path
+									d="M11.5395 31.0511C11.6148 31.0216 11.7053 30.9572 11.7708 30.9027L15.8196 27.349C16.1621 27.0412 16.1958 26.536 15.8978 26.2186C15.59 25.8761 15.0849 25.8424 14.7675 26.1404L10.7186 29.6941C10.3761 30.0019 10.3425 30.5071 10.6404 30.8245C10.8685 31.1113 11.2133 31.1788 11.5395 31.0511Z"
+									fill="white"
+								/>
+								<path
+									d="M11.0218 36.7353C11.0971 36.706 11.1879 36.6419 11.2534 36.5875L18.1346 30.5614C18.478 30.2546 18.5131 29.7496 18.216 29.4313C17.9092 29.0879 17.4041 29.0528 17.0859 29.3499L10.2047 35.376C9.86136 35.6828 9.82626 36.1879 10.1233 36.5061C10.3409 36.7685 10.7203 36.8524 11.0218 36.7353Z"
+									fill="white"
+								/>
+							</svg>
+							<Text size={30} lineHeight={38} weight={600} color='primary'>=</Text>
+							<Heart
+								size={ 32 }
+								className="text-black fill-current"
+							/>
+						</div>
+					</div>
+					<div className="flex justify-center gap-6 p-2">
+						<div className='flex flex-col'>
+							<Text size={20} lineHeight={30} letterSpacing={-0.5} weight={600}>
 								{ __(
 									'Ensure Every Form Submission Reaches the Inbox with SureMail',
 									'sureforms'
 								) }
-							</Title>
-							<Text className="text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed">
+							</Text>
+							<Text size={16} lineHeight={24} weight={400} color='secondary'>
 								{ __(
 									'SureForms and SureMail are the perfect pair! SureMail ensures that every form submission you receive is reliably delivered to your inbox—no more missing leads, support requests, or customer inquiries.',
 									'sureforms'
 								) }
 							</Text>
-							<Button
-								variant="primary"
-								className="bg-orange-600 hover:bg-orange-700 border-orange-600 hover:border-orange-700 px-8 py-3 text-lg"
-								onClick={ handleInstallSureMail }
-								disabled={ isInstalling }
-							>
-								{ isInstalling
-									? __(
-										'Installing SureMail Now…',
-										'sureforms'
-									  )
-									: __(
-										'Install SureMail Now',
-										'sureforms'
-									  ) }
-							</Button>
-						</div>
-
-						{ /* Video Section */ }
-						<div className="flex justify-center">
-							<YouTubeVideo />
-						</div>
-
-						{ /* Features Section */ }
-						<div className="space-y-12">
-							<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-								{ mainFeatures.map( ( feature, index ) => (
-									<FeatureCard
-										key={ index }
-										icon={ feature.icon }
-										title={ feature.title }
-										description={ feature.description }
-									/>
-								) ) }
-							</div>
-						</div>
-
-						{ /* Final CTA Section */ }
-						<div className="text-center space-y-6 pb-8">
-							<Title className="text-3xl font-bold text-gray-900">
-								{ __(
-									'Forms Submitted. Emails Delivered. Every Time.',
-									'sureforms'
-								) }
-							</Title>
-							<Button
-								variant="primary"
-								className="bg-orange-600 hover:bg-orange-700 border-orange-600 hover:border-orange-700 px-8 py-3 text-lg"
-								onClick={ handleInstallSureMail }
-								disabled={ isInstalling }
-							>
-								{ isInstalling
-									? __(
-										'Installing SureMail Now…',
-										'sureforms'
-									  )
-									: __(
-										'Install SureMail Now',
-										'sureforms'
-									  ) }
-							</Button>
 						</div>
 					</div>
+					<div className="flex justify-center gap-6 p-2">
+						<InstallSureMailButton
+							isInstalling={ isInstalling }
+							onClick={ handleInstallSureMail }
+						/>
+					</div>
 				</div>
-			</Container>
+
+				{ /* Video Section */ }
+				<div className="flex justify-center p-2 gap-2">
+					<YouTubeVideo />
+				</div>
+
+				{ /* Features Section */ }
+				<div className="flex flex-col p-2 gap-3">
+					{/* Group features into pairs */}
+					{Array.from({ length: Math.ceil(mainFeatures.length / 2) }).map((_, groupIndex) => (
+						<div key={groupIndex} className="flex gap-6">
+							{mainFeatures.slice(groupIndex * 2, groupIndex * 2 + 2).map((feature, index) => (
+								<div key={index} className="flex-1 p-4 gap-2">
+									<FeatureCard
+										icon={feature.icon}
+										title={feature.title}
+										description={feature.description}
+									/>
+								</div>
+							))}
+						</div>
+					))}
+				</div>
+
+				{ /* Final CTA Section */ }
+				<div className='flex flex-col justify-center gap-3 text-center'>
+					<div className="p-2 gap-6">
+						<Text size={24} lineHeight={32} weight={600} letterSpacing={-0.6}>
+							{ __(
+								'Forms Submitted. Emails Delivered. Every Time.',
+								'sureforms'
+							) }
+						</Text>
+					</div>
+				<div className="p-2 gap-6">
+					<InstallSureMailButton
+						isInstalling={ isInstalling }
+						onClick={ handleInstallSureMail }
+					/>
+				</div>
+				</div>
+			</div>
 		</div>
 	);
 };
