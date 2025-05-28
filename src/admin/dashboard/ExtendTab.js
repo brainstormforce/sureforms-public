@@ -16,7 +16,7 @@ export default () => {
 
 	return (
 		<Container
-			className="bg-background-primary border-0.5 border-solid rounded-xl border-border-subtle p-3 gap-2 shadow-sm-blur-1"
+			className="w-full bg-background-primary border-0.5 border-solid rounded-xl border-border-subtle p-3 gap-2 shadow-sm-blur-1"
 			direction="column"
 		>
 			<Toaster
