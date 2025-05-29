@@ -3,7 +3,6 @@ import { decodeHtmlEntities } from '@Blocks/util';
 import HelpText from '@Components/misc/HelpText';
 import ReactQuill from 'react-quill';
 import { QuillToolbar, modules, formats } from './utils';
-import { v4 as uuidv4 } from 'uuid';
 import { useRef } from '@wordpress/element';
 
 export const TextareaComponent = ( { attributes, blockID, setAttributes } ) => {
@@ -21,7 +20,7 @@ export const TextareaComponent = ( { attributes, blockID, setAttributes } ) => {
 	const isRequired = required ? ' srfm-required' : '';
 	const slug = 'textarea';
 
-	const uniqueIDRef = useRef( uuidv4() );
+	const uniqueIDRef = useRef( Math.random().toString( 36 ).substring( 2, 8 ) );
 	const quillId = `quill-id-${ uniqueIDRef.current }`;
 
 	return (
