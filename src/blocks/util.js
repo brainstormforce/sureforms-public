@@ -50,7 +50,6 @@ const getBlockTypes = ( exclude = '' ) => {
 		'srfm/url',
 		'srfm/inline-button',
 		'srfm/signature',
-		'srfm/password',
 	] );
 
 	if ( exclude ) {

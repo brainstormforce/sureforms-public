@@ -27,6 +27,7 @@ document.addEventListener( 'DOMContentLoaded', function () {
 			captchaErrorElement,
 			hCaptchaDiv,
 			turnstileDiv,
+			hasLoginBlock,
 		} = extractFormAttributesAndElements( form );
 
 		const hasCaptcha =
@@ -59,6 +60,20 @@ document.addEventListener( 'DOMContentLoaded', function () {
 				}
 			}
 
+			/**
+			 * Check for the form login completion status.
+			 * If the login is not completed, dispatch a custom event to handle the login request.
+			 * This allows for a two-step process where the login is handled separately before form submission.
+			 */
+			if ( hasLoginBlock && ! form.__loginSuccess ) {
+				const loginEvent = new CustomEvent( 'srfm_login_request', {
+					cancelable: true,
+					detail: { form },
+				} );
+				form.dispatchEvent( loginEvent );
+				return;
+			}
+
 			handleFormSubmission(
 				form,
 				formId,
@@ -75,6 +90,8 @@ document.addEventListener( 'DOMContentLoaded', function () {
 				hasCaptcha ? turnstileDiv : undefined,
 				hasCaptcha ? captchaErrorElement : undefined
 			);
+			// Set the login completion status to true after form submission.
+			form.__loginSuccess = true;
 		} );
 	}
 } );
@@ -493,6 +510,7 @@ function extractFormAttributesAndElements( form ) {
 	const captchaErrorElement = form.querySelector( '#captcha-error' );
 	const hCaptchaDiv = form.querySelector( '.h-captcha' );
 	const turnstileDiv = form.querySelector( '.cf-turnstile' );
+	const hasLoginBlock = form.querySelector( '.srfm-login-block' );
 
 	return {
 		formId,
@@ -510,6 +528,7 @@ function extractFormAttributesAndElements( form ) {
 		captchaErrorElement,
 		hCaptchaDiv,
 		turnstileDiv,
+		hasLoginBlock,
 	};
 }
 

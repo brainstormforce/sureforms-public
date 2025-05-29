@@ -215,7 +215,13 @@ const pushSmartTagToArray = (
 
 		const fieldSlug = blockSlugs[ block.attributes.block_id ];
 
-		if ( 'undefined' === typeof fieldSlug || ! fieldSlug ) {
+		/**
+		 * Added the '-1' === fieldSlug to avoid the error when login block is added in the form.
+		 * This is because the field slug gets set to -1 for the inline button in the login block.
+		 *
+		 * @since x.x.x
+		 */
+		if ( 'undefined' === typeof fieldSlug || ! fieldSlug || '-1' === fieldSlug ) {
 			// If we are here, then field is invalid and we don't need to process it.
 			return;
 		}
@@ -248,6 +254,7 @@ export const withoutSlugBlocks = [
 	'srfm/advanced-heading',
 	'srfm/image',
 	'srfm/icon',
+	'srfm/link',
 ];
 
 export const setFormSpecificSmartTags = ( updateBlockAttributes ) => {
@@ -783,4 +790,26 @@ export const setDefaultFormAttributes = ( formAttributes, postMeta ) => {
 			postMeta[ key ] = formAttributes[ key ].default;
 		}
 	} );
+};
+
+/**
+ * Dispatches a custom event responsible for displaying the error message.
+ *
+ * @param {Object} args
+ */
+export const showErrorMessage = ( args ) => {
+	if ( ! args ) {
+		return;
+	}
+	const { form, message = '', position = 'footer' } = args;
+
+	const errorEvent = new CustomEvent( 'srfm_show_common_form_error', {
+		detail: {
+			form,
+			message,
+			position,
+		},
+	} );
+
+	document.dispatchEvent( errorEvent );
 };

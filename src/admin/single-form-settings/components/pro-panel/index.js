@@ -5,13 +5,13 @@ import {
 	MdOutlineStarBorder,
 	MdOutlineCloudUpload,
 	MdAccessTime,
-	MdOutlinePassword,
 } from 'react-icons/md';
 import { FaRegEyeSlash } from 'react-icons/fa';
 import svgIcons from '@Svg/svgs.json';
 import parse from 'html-react-parser';
 import { RxSlider } from 'react-icons/rx';
 import { addQueryParam } from '@Utils/Helpers';
+import { CiLogin } from 'react-icons/ci';
 
 const IconBlock = ( { icon, label } ) => (
 	<div className="block-editor-block-types-list__list-item">
@@ -62,20 +62,20 @@ const iconBlocks = [
 		label: __( 'Upload', 'sureforms' ),
 	},
 	{
-		icon: <MdOutlinePassword size={ 24 } color="#B4B4B4" />,
-		label: __( 'Password', 'sureforms' ),
-		showIn: [
-			'free',
-			'starter',
-			'pro',
-		],
-	},
-	{
 		icon: parse( svgIcons.signature ),
 		label: __( 'Signature', 'sureforms' ),
 		showIn: [
 			'free',
 			'starter',
+		],
+	},
+	{
+		icon: <CiLogin size={ 24 } color="#B4B4B4" />,
+		label: __( 'Login', 'sureforms' ),
+		showIn: [
+			'free',
+			'starter',
+			'pro',
 		],
 	},
 ];
