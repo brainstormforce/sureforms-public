@@ -111,7 +111,7 @@ class Textarea_Markup extends Base {
 			$this->is_richtext ? 'srfm-richtext' : '',
 		];
 
-		$classes = Helper::join_strings( $classes );
+		$classes   = Helper::join_strings( $classes );
 		$random_id = $this->unique_slug . '-' . wp_rand( 1000, 9999 );
 
 		ob_start(); ?>
