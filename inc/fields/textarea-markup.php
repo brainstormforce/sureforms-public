@@ -112,6 +112,7 @@ class Textarea_Markup extends Base {
 		];
 
 		$classes = Helper::join_strings( $classes );
+		$random_id = $this->unique_slug . '-' . wp_rand( 1000, 9999 );
 
 		ob_start(); ?>
 		<div data-block-id="<?php echo esc_attr( $this->block_id ); ?>" class="<?php echo esc_attr( $classes ); ?>">
@@ -121,14 +122,14 @@ class Textarea_Markup extends Base {
 				<textarea
 					class="srfm-input-common srfm-input-<?php echo esc_attr( $this->slug ); ?>"
 					name="<?php echo esc_attr( $this->field_name ); ?>"
-					id="<?php echo esc_attr( $this->unique_slug ); ?>"
+					id="<?php echo esc_attr( $random_id ); ?>"
 					<?php echo ! empty( $this->aria_described_by ) ? "aria-describedby='" . esc_attr( trim( $this->aria_described_by ) ) . "'" : ''; ?>
 					data-required="<?php echo esc_attr( $this->data_require_attr ); ?>" <?php echo wp_kses_post( $this->max_length_attr . '' . $this->rows_attr ); ?> <?php echo wp_kses_post( $this->placeholder_attr ); ?>
 					<?php echo $this->is_richtext ? 'data-is-richtext="true"' : ''; ?>
 					><?php echo esc_html( $this->default ); ?></textarea>
 					<?php if ( $this->is_richtext ) { ?>
 					<div class="quill-editor-container">
-						<div id="quill-<?php echo esc_attr( $this->unique_slug ); ?>"></div>
+						<div id="quill-<?php echo esc_attr( $random_id ); ?>"></div>
 					</div>
 					<?php } ?>
 			</div>
