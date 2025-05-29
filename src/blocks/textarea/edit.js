@@ -88,7 +88,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 								}
 							/>
 							<ToggleControl
-								label={ __( 'Rich Text', 'sureforms' ) }
+								label={ __( 'Rich Text Editor', 'sureforms' ) }
 								checked={ isRichText }
 								onChange={ ( checked ) =>
 									setAttributes( { isRichText: checked } )
