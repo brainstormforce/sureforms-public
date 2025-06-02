@@ -302,6 +302,7 @@ class Generate_Form_Markup {
 					--srfm-color-scheme-primary: <?php echo esc_html( $primary_color_var ); ?>;
 					--srfm-color-scheme-text-on-primary: <?php echo esc_html( $label_text_color_var ); ?>;
 					--srfm-color-scheme-text: <?php echo esc_html( $help_color_var ); ?>;
+					--srfm-quill-editor-color: <?php echo esc_html( $primary_color_var ); ?>;
 
 					--srfm-color-input-label: <?php echo esc_html( $help_color_var ); ?>;
 					--srfm-color-input-description: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.65 );
