@@ -114,10 +114,14 @@ const withToolbarButton = createHigherOrderComponent( ( BlockEdit ) => {
 					<BlockControls>
 						<ToolbarGroup>
 							{ [ 100, 75, 66.66, 50, 33.33, 25 ].map( ( width ) => {
-								const labelText =
-									33.33 === width ? '33%' : 
-							66.66 === width ? '67%' : 
-							`${ width }%`;
+								let labelText;
+								if ( width === 33.33 ) {
+									labelText = '33%';
+								} else if ( width === 66.66 ) {
+									labelText = '67%';
+								} else {
+									labelText = `${ width }%`;
+								}
 								const labelWithText = sprintf(
 									// translators: %s: Width of the block
 									__( '%s Width', 'sureforms' ),
