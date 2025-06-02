@@ -89,11 +89,15 @@ class Textarea_Markup extends Base {
 	 * @return string|bool
 	 */
 	public function markup() {
+		// Reset styles for Bricks Builder compatibility.
+		$bricks_reset_style = 'style="all: revert;"';
+		$theme_name = wp_get_theme()->get('Name');
+
 		ob_start(); ?>
 		<div data-block-id="<?php echo esc_attr( $this->block_id ); ?>" class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $this->slug ); ?>-block srf-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?>-block<?php echo esc_attr( $this->block_width ); ?><?php echo esc_attr( $this->class_name ); ?> <?php echo esc_attr( $this->conditional_class ); ?>">
 			<?php echo wp_kses_post( $this->label_markup ); ?>
 			<?php echo wp_kses_post( $this->help_markup ); ?>
-			<div class="srfm-block-wrap">
+			<div class="srfm-block-wrap"  <?php echo $theme_name === 'Bricks' ? $bricks_reset_style : ''; ?>>
 				<textarea class="srfm-input-common srfm-input-<?php echo esc_attr( $this->slug ); ?>" name="<?php echo esc_attr( $this->field_name ); ?>" id="<?php echo esc_attr( $this->unique_slug ); ?>"
 				<?php echo ! empty( $this->aria_described_by ) ? "aria-describedby='" . esc_attr( trim( $this->aria_described_by ) ) . "'" : ''; ?>
 				data-required="<?php echo esc_attr( $this->data_require_attr ); ?>" <?php echo wp_kses_post( $this->max_length_attr . '' . $this->rows_attr ); ?> <?php echo wp_kses_post( $this->placeholder_attr ); ?>><?php echo esc_html( $this->default ); ?></textarea>
