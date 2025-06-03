@@ -89,9 +89,9 @@ class Textarea_Markup extends Base {
 	 * @return string|bool
 	 */
 	public function markup() {
-		//Styles for Bricks Builder compatibility.
+		// Styles for Bricks Builder compatibility.
 		$bricks_style = 'line-height: 1.4;';
-		$theme_name         = wp_get_theme()->get( 'Name' );
+		$theme_name   = wp_get_theme()->get( 'Name' );
 
 		ob_start(); ?>
 		<div data-block-id="<?php echo esc_attr( $this->block_id ); ?>" class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $this->slug ); ?>-block srf-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?>-block<?php echo esc_attr( $this->block_width ); ?><?php echo esc_attr( $this->class_name ); ?> <?php echo esc_attr( $this->conditional_class ); ?>">
