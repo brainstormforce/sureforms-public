@@ -89,7 +89,6 @@ class Textarea_Markup extends Base {
 	 * @return string|bool
 	 */
 	public function markup() {
-
 		ob_start(); ?>
 		<div data-block-id="<?php echo esc_attr( $this->block_id ); ?>" class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $this->slug ); ?>-block srf-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?>-block<?php echo esc_attr( $this->block_width ); ?><?php echo esc_attr( $this->class_name ); ?> <?php echo esc_attr( $this->conditional_class ); ?>">
 			<?php echo wp_kses_post( $this->label_markup ); ?>
