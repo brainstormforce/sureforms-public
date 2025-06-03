@@ -90,7 +90,7 @@ class Textarea_Markup extends Base {
 	 */
 	public function markup() {
 		// Reset styles for Bricks Builder compatibility.
-		$bricks_reset_style = 'all: revert;';
+		$bricks_reset_style = 'all: revert;line-height: 1.4;';
 		$theme_name         = wp_get_theme()->get( 'Name' );
 
 		ob_start(); ?>
