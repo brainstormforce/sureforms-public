@@ -433,6 +433,21 @@
 	}
 }
 
+@mixin srfm-textarea-quill-styles {
+	// Removed the toolbar border and add only the bottom border.
+	.ql-toolbar {
+		border: none; // Adding to override the border shorthand applied by the library.
+		border-bottom: 1px solid var( --srfm-color-input-border );
+		background-color: white;
+		border-top-left-radius: 5px;
+		border-top-right-radius: 5px;
+	}
+	.ql-formats {
+		button {
+			box-shadow: none; // Override astra theme styling for the box shadow
+		}
+	}
+}
 // Row Gap and Column Gap Mixin.
 @mixin srfm-gap-styles {
 	row-gap: var( --srfm-row-gap-between-blocks );

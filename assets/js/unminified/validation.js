@@ -929,6 +929,31 @@ function addBlurListener( containerClass, blockClass ) {
 				}, 500 );
 			}
 
+			// Check textarea block has .srfm-richtext class present in container.
+			if (
+				containerClass === 'srfm-textarea-block' &&
+				areaInput.classList.contains( 'srfm-richtext' )
+			) {
+				// Get id of the textarea block.
+				areaField = areaInput.querySelector(
+					'textarea.srfm-input-textarea'
+				);
+
+				const blockId = areaField.getAttribute( 'id' );
+				setTimeout( () => {
+					// Add event listener on editor change.
+					window?.srfm?.[ blockId ]?.on(
+						'editor-change',
+						function () {
+							const getFocus =
+								window?.srfm?.[ blockId ]?.hasFocus();
+							if ( ! getFocus ) {
+								fieldValidationInit( areaField, blockClass );
+							}
+						}
+					);
+				}, 500 );
+			}
 			// First input element is search for phone number block so reassigning it with phone number input for proper validation.
 			if ( containerClass === 'srfm-phone-block' ) {
 				areaField = areaInput.querySelector( '.srfm-input-phone' );
