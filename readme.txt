@@ -261,7 +261,8 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 
 == Changelog ==
 = x.x.x =
-* New: Added rich text support for the textarea block.
+* New: Added rich text support for the textarea block
+* Improvement: Added an option to disable input field with default values.
 = 1.7.0 - 22nd May 2025 =
 * New: Revamped user interface for Dashboard and Settings with a more modern and intuitive experience.
 * Improvement: Improved reCAPTCHA handling by adding detailed logging for failure responses.
