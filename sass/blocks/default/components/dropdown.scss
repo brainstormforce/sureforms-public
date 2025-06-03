@@ -9,6 +9,11 @@
 					border-radius: var( --srfm-input-field-border-radius ) !important;
 					transition: 0.2s ease-out;
 
+					&.has-items .ts-control {
+						height: auto;
+						flex-wrap: wrap;
+					}
+
 					&.input-active {
 						// Add the glow and border color to the dropdown when it is focused.
 						.ts-control {
@@ -54,7 +59,7 @@
 						.item {
 							position: relative;
 							top: 50%;
-							transform: translateY( -50% );
+							transform: translateY( 0% ) !important;
 
 							// Hide the remove icon for individual option in single selection dropdown.
 							.remove {
@@ -70,6 +75,11 @@
 							padding: var( --srfm-dropdown-multiselect-padding ) !important; // Override the default padding.
 							line-height: var( --srfm-dropdown-multiselect-line-height );
 						}
+
+						&.has-items .item {
+							white-space: normal;
+						}
+
 						.item {
 							border-radius: 4px;
 							margin: 0;
