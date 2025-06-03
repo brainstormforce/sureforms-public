@@ -4,7 +4,12 @@ import {
 } from '@wordpress/i18n';
 import apiFetch from '@wordpress/api-fetch';
 import { useState, useEffect } from '@wordpress/element';
-import { handleAddNewPost, initiateAuth, cn } from '@Utils/Helpers';
+import {
+	handleAddNewPost,
+	initiateAuth,
+	cn,
+	addQueryParam,
+} from '@Utils/Helpers';
 import Header from './Header.js';
 import LimitReachedPopup from './LimitReachedPopup.js';
 import ErrorPopup from './ErrorPopup.js';
@@ -245,22 +250,59 @@ export const getLimitReachedPopup = () => {
 		);
 	}
 
+	// Check if the user has a premium plan and not activated the license
+	const activateProPlugin =
+		srfm_admin?.is_pro_active && ! srfm_admin?.is_pro_license_active;
+
+	const buttonText = activateProPlugin
+		? __( 'Activate your License', 'sureforms' )
+		: __( 'Upgrade Plan', 'sureforms' );
+
+	const paraOne = activateProPlugin
+		? __(
+			'You have reached the AI form generation limit for your current plan.',
+			'sureforms'
+		  )
+		: __(
+			'You have reached the maximum number of form generations in your Free Plan.',
+			'sureforms'
+		  );
+
+	const paraTwo = activateProPlugin
+		? __(
+			'It looks like you already have the Premium plugin installed, but your license has not been activated yet.',
+			'sureforms'
+		  )
+		: __(
+			'Please upgrade your free plan to keep creating more forms with AI.',
+			'sureforms'
+		  );
+
+	const onClickHandler = activateProPlugin
+		? () => {
+			window.location.assign(
+				`${ srfm_admin.admin_url }?page=sureforms_form_settings&tab=account-settings`
+			);
+		  }
+		: () => {
+			window.open(
+				addQueryParam(
+					srfm_admin?.pricing_page_url,
+					'limit-reached-popup-cta'
+				),
+				'_blank',
+				'noreferrer'
+			);
+		  };
+
 	// When registered limit is consumed
 	if ( type === 'registered' && formCreationleft === 0 ) {
 		return (
 			<LimitReachedPopup
-				paraOne={ __(
-					'You have reached the maximum number of form generations in your Free Plan.',
-					'sureforms'
-				) }
-				paraTwo={ __(
-					'Please upgrade your free plan to keep creating more forms with AI.',
-					'sureforms'
-				) }
-				buttonText={ __( 'Upgrade Plan', 'sureforms' ) }
-				onclick={ () => {
-					window.open( srfm_admin?.pricing_page_url, '_blank' );
-				} }
+				paraOne={ paraOne }
+				paraTwo={ paraTwo }
+				buttonText={ buttonText }
+				onclick={ onClickHandler }
 			/>
 		);
 	}
