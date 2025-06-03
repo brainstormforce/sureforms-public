@@ -12,6 +12,7 @@ import parse from 'html-react-parser';
 import { RxSlider } from 'react-icons/rx';
 import { addQueryParam } from '@Utils/Helpers';
 import { CiLogin } from 'react-icons/ci';
+import { LuUserPlus } from 'react-icons/lu';
 
 const IconBlock = ( { icon, label } ) => (
 	<div className="block-editor-block-types-list__list-item">
@@ -72,6 +73,15 @@ const iconBlocks = [
 	{
 		icon: <CiLogin size={ 24 } color="#B4B4B4" />,
 		label: __( 'Login', 'sureforms' ),
+		showIn: [
+			'free',
+			'starter',
+			'pro',
+		],
+	},
+	{
+		icon: <LuUserPlus size={ 24 } color="#B4B4B4" />,
+		label: __( 'Register', 'sureforms' ),
 		showIn: [
 			'free',
 			'starter',

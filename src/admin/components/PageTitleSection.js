@@ -1,5 +1,6 @@
 import { Button, Title } from '@bsf/force-ui';
 import { __ } from '@wordpress/i18n';
+import { applyFilters } from '@wordpress/hooks';
 
 const PageTitleSection = ( { title } ) => {
 	if ( ! title ) {
@@ -15,7 +16,7 @@ const PageTitleSection = ( { title } ) => {
 		}
 	};
 
-	const exclusionList = [ 'account-settings', 'integration-settings', 'general-settings', 'validation-settings', 'security-settings' ];
+	const exclusionList = applyFilters( 'srfm.settings.exclusionList', [ 'account-settings', 'integration-settings', 'general-settings', 'validation-settings', 'security-settings' ] );
 
 	return (
 		<div className="max-w-content-container mx-auto flex items-center justify-between mb-6">
