@@ -12,6 +12,10 @@
 					&.has-items .ts-control {
 						height: auto;
 						flex-wrap: wrap;
+
+						input[id^="tomselect-"] {
+							height: 0;
+						}
 					}
 
 					&.input-active {
