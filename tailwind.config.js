@@ -215,5 +215,5 @@ module.exports = withTW( {
 		preflight: false,
 	},
 	important:
-		':is(#srfm-dashboard-container, #srfm-settings-container, #srfm-page-header, #srfm-dialog-root, #srfm-add-new-form-container)',
+		':is(#srfm-dashboard-container, #srfm-settings-container, #srfm-page-header, #srfm-dialog-root, #srfm-add-new-form-container, #srfm-suremail-container)',
 } );

@@ -187,9 +187,7 @@ const EmailNotification = ( {
 	];
 
 	const isRTL = srfm_admin?.is_rtl;
-	const toasterPosition = isRTL
-		? 'top-left'
-		: 'top-right';
+	const toasterPosition = isRTL ? 'top-left' : 'top-right';
 
 	useEffect( () => {
 		function handleClickOutside() {
@@ -213,7 +211,12 @@ const EmailNotification = ( {
 					theme="light"
 					autoDismiss={ true }
 					dismissAfter={ 5000 }
-					className={ cn( 'z-[999999]', isRTL ? '[&>li>div>div.absolute]:right-auto [&>li>div>div.absolute]:left-[0.75rem!important]' : '' ) }
+					className={ cn(
+						'z-[999999]',
+						isRTL
+							? '[&>li>div>div.absolute]:right-auto [&>li>div>div.absolute]:left-[0.75rem!important]'
+							: ''
+					) }
 				/>
 				<EmailConfirmation
 					setHasValidationErrors={ setHasValidationErrors }
@@ -238,7 +241,12 @@ const EmailNotification = ( {
 				theme="light"
 				autoDismiss={ true }
 				dismissAfter={ 5000 }
-				className={ cn( 'z-[999999]', isRTL ? '[&>li>div>div.absolute]:right-auto [&>li>div>div.absolute]:left-[0.75rem!important]' : '' ) }
+				className={ cn(
+					'z-[999999]',
+					isRTL
+						? '[&>li>div>div.absolute]:right-auto [&>li>div>div.absolute]:left-[0.75rem!important]'
+						: ''
+				) }
 			/>
 			<Table className="rounded-md">
 				<Table.Head>

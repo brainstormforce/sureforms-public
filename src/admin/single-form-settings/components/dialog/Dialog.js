@@ -158,7 +158,10 @@ const Dialog = ( {
 		setSelectedTab( targetTab );
 	}, [ targetTab, open ] );
 
-	const containerClassName = cn( 'w-full h-full mx-auto', selectedTab === 'suretriggers' ? 'min-w-[800px]' : 'max-w-[43.5rem]' );
+	const containerClassName = cn(
+		'w-full h-full mx-auto',
+		selectedTab === 'suretriggers' ? 'min-w-[800px]' : 'max-w-[43.5rem]'
+	);
 
 	return (
 		renderRoot &&
