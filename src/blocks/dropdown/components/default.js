@@ -4,12 +4,12 @@ import { decodeHtmlEntities } from '@Blocks/util';
 import HelpText from '@Components/misc/HelpText';
 
 export const DropdownComponent = ( { attributes, setAttributes, blockID } ) => {
-       const { required, label, placeholder, help } = attributes;
-       const isRequired = required ? ' srfm-required' : '';
-       const placeholderText =
-               placeholder === 'Select an option'
-                       ? __( 'Select an option', 'sureforms' )
-                       : placeholder;
+	const { required, label, placeholder, help } = attributes;
+	const isRequired = required ? ' srfm-required' : '';
+	const placeholderText =
+		placeholder === 'Select an option'
+			? __( 'Select an option', 'sureforms' )
+			: placeholder;
 	const slug = 'dropdown';
 
 	return (
@@ -36,8 +36,8 @@ export const DropdownComponent = ( { attributes, setAttributes, blockID } ) => {
 					className={ `srfm-input-common srfm-${ slug }-input` }
 					id={ `srfm-${ slug }-state-${ blockID }` }
 					aria-required={ required ? 'true' : 'false' }
-                                       placeholder={ placeholderText }
-                                       readOnly
+					placeholder={ placeholderText }
+					readOnly
 				/>
 				<div className="ts-dropdown-icon">
 					<svg
