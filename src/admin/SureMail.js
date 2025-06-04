@@ -89,7 +89,7 @@ const SureMail = () => {
 			icon: DatabaseBackup,
 			title: __( 'Multiple Backup Connections', 'sureforms' ),
 			description: __(
-				'Never worry about email failures—SureMail automatically reroutes through backup SMTP providers.',
+				'Never worry about email failures. SureMail automatically reroutes through backup SMTP providers.',
 				'sureforms'
 			),
 		},
@@ -97,7 +97,7 @@ const SureMail = () => {
 			icon: ClipboardList,
 			title: __( 'Email Logs & Resending', 'sureforms' ),
 			description: __(
-				'Keep a complete record of every email sent from your WordPress site and resend all the email messages with ease.',
+				'Keep a complete record of every email sent from your WordPress site, and resend any email message with ease.',
 				'sureforms'
 			),
 		},
@@ -129,7 +129,7 @@ const SureMail = () => {
 			icon: Mails,
 			title: __( 'Multiple SMTP Providers', 'sureforms' ),
 			description: __(
-				'Integrate and switch between leading SMTP services like Amazon SES, Postmark, SendGrid, Mailgun, and many more.',
+				'Integrate and switch between leading SMTP services like Amazon SES, Gmail, SendGrid, SMTP2GO, and many more.',
 				'sureforms'
 			),
 		},
@@ -313,7 +313,7 @@ const SureMail = () => {
 								color="secondary"
 							>
 								{ __(
-									'SureForms and SureMail are the perfect pair! SureMail ensures that every form submission you receive is reliably delivered to your inbox—no more missing leads, support requests, or customer inquiries.',
+									'SureForms and SureMail are the perfect pair! SureMail ensures that every form submission you receive is reliably delivered to your inbox. You\'ll never lose a lead, miss a support request, or overlook a customer inquiry again.',
 									'sureforms'
 								) }
 							</Text>
