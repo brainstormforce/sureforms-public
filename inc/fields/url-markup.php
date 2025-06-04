@@ -19,6 +19,14 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class Url_Markup extends Base {
 	/**
+	 * Read-only attribute for the URL field.
+	 *
+	 * @var bool
+	 * @since x.x.x
+	 */
+	protected $read_only;
+
+	/**
 	 * Initialize the properties based on block attributes.
 	 *
 	 * @param array<mixed> $attributes Block attributes.
@@ -29,6 +37,7 @@ class Url_Markup extends Base {
 		$this->set_properties( $attributes );
 		$this->set_input_label( __( 'Url', 'sureforms' ) );
 		$this->set_error_msg( $attributes, 'srfm_url_block_required_text' );
+		$this->read_only = isset( $attributes['readOnly'] ) ? $attributes['readOnly'] : false;
 		$this->set_unique_slug();
 		$this->set_field_name( $this->unique_slug );
 		$this->set_markup_properties( $this->input_label, true );
@@ -50,7 +59,7 @@ class Url_Markup extends Base {
 				<div class="srfm-block-wrap">
 					<input class="srfm-input-common srfm-input-<?php echo esc_attr( $this->slug ); ?>" type="text" name="<?php echo esc_attr( $this->field_name ); ?>" id="<?php echo esc_attr( $this->unique_slug ); ?>"
 					<?php echo ! empty( $this->aria_described_by ) ? "aria-describedby='" . esc_attr( trim( $this->aria_described_by ) ) . "'" : ''; ?>
-					data-required="<?php echo esc_attr( $this->data_require_attr ); ?>" value="<?php echo esc_attr( $this->default ); ?>" <?php echo wp_kses_post( $this->placeholder_attr ); ?>/>
+					data-required="<?php echo esc_attr( $this->data_require_attr ); ?>" value="<?php echo esc_attr( $this->default ); ?>" <?php echo wp_kses_post( $this->placeholder_attr ); ?> <?php echo $this->read_only ? 'readonly' : ''; ?> />
 				</div>
 				<div class="srfm-error-wrap">
 					<?php echo wp_kses_post( $this->error_msg_markup ); ?>

@@ -69,6 +69,14 @@ class Textarea_Markup extends Base {
 	protected $is_richtext;
 
 	/**
+	 * Read-only attribute for the textarea field.
+	 *
+	 * @var bool
+	 * @since x.x.x
+	 */
+	protected $read_only;
+
+	/**
 	 * Initialize the properties based on block attributes.
 	 *
 	 * @param array<mixed> $attributes Block attributes.
@@ -81,6 +89,7 @@ class Textarea_Markup extends Base {
 		$this->slug       = 'textarea';
 		$this->max_length = $attributes['maxLength'] ?? '';
 		$this->rows       = $attributes['rows'] ?? '';
+		$this->read_only  = isset( $attributes['readOnly'] ) ? $attributes['readOnly'] : false;
 		// html attributes.
 		$this->max_length_attr = $this->max_length ? ' maxLength="' . $this->max_length . '" ' : '';
 		$this->rows_attr       = $this->rows ? ' rows="' . $this->rows . '" ' : '';
@@ -126,6 +135,7 @@ class Textarea_Markup extends Base {
 					<?php echo ! empty( $this->aria_described_by ) ? "aria-describedby='" . esc_attr( trim( $this->aria_described_by ) ) . "'" : ''; ?>
 					data-required="<?php echo esc_attr( $this->data_require_attr ); ?>" <?php echo wp_kses_post( $this->max_length_attr . '' . $this->rows_attr ); ?> <?php echo wp_kses_post( $this->placeholder_attr ); ?>
 					<?php echo $this->is_richtext ? 'data-is-richtext="true"' : ''; ?>
+					<?php echo $this->read_only ? 'readonly' : ''; ?>
 					><?php echo esc_html( $this->default ); ?></textarea>
 					<?php if ( $this->is_richtext ) { ?>
 					<div class="quill-editor-container">

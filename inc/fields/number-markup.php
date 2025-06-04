@@ -83,6 +83,14 @@ class Number_Markup extends Base {
 	protected $suffix;
 
 	/**
+	 * Read-only attribute for the number field.
+	 *
+	 * @var bool
+	 * @since x.x.x
+	 */
+	protected $read_only;
+
+	/**
 	 * Initialize the properties based on block attributes.
 	 *
 	 * @param array<mixed> $attributes Block attributes.
@@ -99,6 +107,7 @@ class Number_Markup extends Base {
 		$this->max_value_attr = $this->max_value ? ' max="' . $this->max_value . '" ' : '';
 		$this->prefix         = $attributes['prefix'] ?? '';
 		$this->suffix         = $attributes['suffix'] ?? '';
+		$this->read_only      = isset( $attributes['readOnly'] ) ? $attributes['readOnly'] : false;
 		$this->set_input_label( __( 'Number', 'sureforms' ) );
 		$this->set_error_msg( $attributes, 'srfm_number_block_required_text' );
 		$this->set_unique_slug();
@@ -129,7 +138,7 @@ class Number_Markup extends Base {
 						<?php } ?>
 						<input class="srfm-input-common srfm-input-<?php echo esc_attr( $this->slug ); ?>" type="text" name="<?php echo esc_attr( $this->field_name ); ?>" id="<?php echo esc_attr( $this->unique_slug ); ?>"
 						<?php echo ! empty( $this->aria_described_by ) ? "aria-describedby='" . esc_attr( trim( $this->aria_described_by ) ) . "'" : ''; ?>
-						data-required="<?php echo esc_attr( $this->data_require_attr ); ?>" <?php echo wp_kses_post( $this->placeholder_attr . '' . $this->default_value_attr . '' . $this->format_attr . '' . $this->min_value_attr . '' . $this->max_value_attr ); ?> />
+						data-required="<?php echo esc_attr( $this->data_require_attr ); ?>" <?php echo wp_kses_post( $this->placeholder_attr . '' . $this->default_value_attr . '' . $this->format_attr . '' . $this->min_value_attr . '' . $this->max_value_attr ); ?> <?php echo $this->read_only ? 'readonly' : ''; ?> />
 						<?php if ( ! empty( $this->suffix ) ) { ?>
 							<span class="srfm-number-suffix" aria-hidden="true"><?php echo esc_html( $this->suffix ); ?></span>
 						<?php } ?>

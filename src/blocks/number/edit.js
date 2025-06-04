@@ -85,6 +85,7 @@ const SureformInput = ( props ) => {
 		className,
 		prefix,
 		suffix,
+		readOnly,
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
 	const [ error, setError ] = useState( false );
@@ -129,6 +130,18 @@ const SureformInput = ( props ) => {
 					showControlHeader={ false }
 				/>
 			),
+		},
+		{
+			id: 'read-only',
+			component: defaultValue ? (
+				<ToggleControl
+					label={ __( 'Read Only', 'sureforms' ) }
+					checked={ readOnly }
+					onChange={ ( checked ) =>
+						setAttributes( { readOnly: checked } )
+					}
+				/>
+			) : null,
 		},
 		{
 			id: 'prefix',
