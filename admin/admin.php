@@ -37,12 +37,11 @@ class Admin {
 		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_scripts' ] );
 		add_action( 'admin_menu', [ $this, 'settings_page' ] );
 		add_action( 'admin_menu', [ $this, 'add_new_form' ] );
+		add_action( 'admin_menu', [ $this, 'add_suremail_page' ] );
 		if ( ! defined( 'SRFM_PRO_VER' ) ) {
 			add_action( 'admin_menu', [ $this, 'add_upgrade_to_pro' ] );
 			add_action( 'admin_footer', [ $this, 'add_upgrade_to_pro_target_attr' ] );
 		}
-
-		add_action( 'admin_menu', [ $this, 'add_suremail_page' ] );
 
 		add_filter( 'plugin_action_links', [ $this, 'add_settings_link' ], 10, 2 );
 		add_action( 'enqueue_block_assets', [ $this, 'enqueue_styles' ] );
@@ -280,8 +279,7 @@ class Admin {
 			__( 'SMTP', 'sureforms' ),
 			'edit_others_posts',
 			'sureforms_smtp',
-			[ $this, 'suremail_page_callback' ],
-			4 // Position after Settings (which should be at position 3).
+			[ $this, 'suremail_page_callback' ]
 		);
 
 		// Get the current submenu page.
