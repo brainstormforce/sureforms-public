@@ -84,7 +84,7 @@ class Email_Markup extends Base {
 		$this->input_confirm_label_fallback = __( 'Confirm ', 'sureforms' ) . $this->input_label_fallback;
 		$this->input_confirm_label          = '-lbl-' . Helper::encrypt( $this->input_confirm_label_fallback );
 		$this->unique_confirm_slug          = 'srfm-' . $this->slug . '-confirm-' . $this->block_id . $this->input_confirm_label;
-		$this->read_only                    = isset( $attributes['readOnly'] ) ? $attributes['readOnly'] : false;
+		$this->read_only                    = $attributes['readOnly'] ?? false;
 		$this->set_unique_slug();
 		$this->set_field_name( $this->unique_slug );
 		$this->set_markup_properties( $this->input_label, true );

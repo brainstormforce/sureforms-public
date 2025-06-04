@@ -37,7 +37,7 @@ class Url_Markup extends Base {
 		$this->set_properties( $attributes );
 		$this->set_input_label( __( 'Url', 'sureforms' ) );
 		$this->set_error_msg( $attributes, 'srfm_url_block_required_text' );
-		$this->read_only = isset( $attributes['readOnly'] ) ? $attributes['readOnly'] : false;
+		$this->read_only = $attributes['readOnly'] ?? false;
 		$this->set_unique_slug();
 		$this->set_field_name( $this->unique_slug );
 		$this->set_markup_properties( $this->input_label, true );

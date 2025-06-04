@@ -89,7 +89,7 @@ class Textarea_Markup extends Base {
 		$this->slug       = 'textarea';
 		$this->max_length = $attributes['maxLength'] ?? '';
 		$this->rows       = $attributes['rows'] ?? '';
-		$this->read_only  = isset( $attributes['readOnly'] ) ? $attributes['readOnly'] : false;
+		$this->read_only  = $attributes['readOnly'] ?? false;
 		// html attributes.
 		$this->max_length_attr = $this->max_length ? ' maxLength="' . $this->max_length . '" ' : '';
 		$this->rows_attr       = $this->rows ? ' rows="' . $this->rows . '" ' : '';
