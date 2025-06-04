@@ -261,6 +261,7 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 
 == Changelog ==
 = x.x.x =
+* Fix: Addressed an issue preventing text input in textareas when Bricks Builder's Cascade Layers feature was enabled.
 * Fix: Resolved an issue where multiple entry log message were recorded when none of the email notifications are enabled.
 * Fix: Resolved an issue where the text formatting of the form confirmation message was not preserved on the frontend.
 = 1.7.0 - 22nd May 2025 =
