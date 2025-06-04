@@ -9,13 +9,18 @@
 					border-radius: var( --srfm-input-field-border-radius ) !important;
 					transition: 0.2s ease-out;
 
+					&.single.full {
+						.ts-control{
+							gap: 0;
+								input[id^="tomselect-"] {
+									height: 0;
+								}
+					}}
+
 					&.has-items .ts-control {
 						height: auto;
 						flex-wrap: wrap;
-
-						input[id^="tomselect-"] {
-							height: 0;
-						}
+						word-break: break-word;
 					}
 
 					&.input-active {
