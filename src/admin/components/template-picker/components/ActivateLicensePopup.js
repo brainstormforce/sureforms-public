@@ -16,16 +16,20 @@ const ActivateLicensePopup = ( {
 		window.srfm_admin?.is_license_active || false
 	);
 	const [ activating, setActivating ] = useState( false );
+	const [ showError, setShowError ] = useState( false );
+	const [ errorMessage, setErrorMessage ] = useState( '' );
 
 	const activateLicense = () => {
 		if ( ! licenseKey.trim() ) {
+			setErrorMessage( __( 'Please enter a license key', 'sureforms' ) );
+			setShowError( true );
 			return;
 		}
 
 		if ( activating ) {
 			return;
 		}
-
+		setShowError( false );
 		setActivating( true );
 
 		const formData = new window.FormData();
@@ -44,6 +48,8 @@ const ActivateLicensePopup = ( {
 				checkLicense( true );
 				window.location.reload();
 			} else {
+				setErrorMessage( data.data.message );
+				setShowError( true );
 				console.error( data.data.message );
 			}
 			setActivating( false );
@@ -105,19 +111,36 @@ const ActivateLicensePopup = ( {
 					</Container.Item>
 					<Container.Item className="flex flex-col w-full gap-5 pb-2">
 						{ ! isActivated && (
-							<Input
-								aria-label="License Key"
-								size="md"
-								type="text"
-								value={ licenseKey }
-								placeholder={ __(
-									'Paste your license key here',
-									'sureforms'
+							<div>
+								<Input
+									aria-label="License Key"
+									size="md"
+									type="text"
+									value={ licenseKey }
+									error={ showError }
+									placeholder={ __(
+										'Paste your license key here',
+										'sureforms'
+									) }
+									onChange={ ( value ) => {
+										setShowError( false );
+										setLicenseKey( value.trim() );
+									} }
+								/>
+								{ showError && (
+									<Label
+										size="sm"
+										variant="error"
+										className="font-semibold"
+									>
+										{ errorMessage ||
+											__(
+												'An error occurred. Please try again.',
+												'sureforms'
+											) }
+									</Label>
 								) }
-								onChange={ ( value ) => {
-									setLicenseKey( value.trim() );
-								} }
-							/>
+							</div>
 						) }
 						<Button
 							size="md"
