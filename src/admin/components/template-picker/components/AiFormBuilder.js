@@ -18,6 +18,7 @@ import { applyFilters } from '@wordpress/hooks';
 import { Container, Toaster } from '@bsf/force-ui';
 import AiFormBuilderForm from '../ai-form-builder-components/AiFormBuilderForm.js';
 import AiFormProgressPage from '../ai-form-builder-components/AiFormProgressPage.js';
+import ActivateLicensePopup from './ActivateLicensePopup.js';
 
 const AiFormBuilder = () => {
 	const [ message, setMessage ] = useState(
@@ -254,55 +255,40 @@ export const getLimitReachedPopup = () => {
 	const activateProPlugin =
 		srfm_admin?.is_pro_active && ! srfm_admin?.is_pro_license_active;
 
-	const buttonText = activateProPlugin
-		? __( 'Activate your License', 'sureforms' )
-		: __( 'Upgrade Plan', 'sureforms' );
-
-	const paraOne = activateProPlugin
-		? __(
-			'You have reached the AI form generation limit for your current plan.',
-			'sureforms'
-		  )
-		: __(
-			'You have reached the maximum number of form generations in your Free Plan.',
-			'sureforms'
-		  );
-
-	const paraTwo = activateProPlugin
-		? __(
-			'It looks like you already have the Premium plugin installed, but your license has not been activated yet.',
-			'sureforms'
-		  )
-		: __(
-			'Please upgrade your free plan to keep creating more forms with AI.',
-			'sureforms'
-		  );
-
-	const onClickHandler = activateProPlugin
-		? () => {
-			window.location.assign(
-				`${ srfm_admin.admin_url }?page=sureforms_form_settings&tab=account-settings`
-			);
-		  }
-		: () => {
-			window.open(
-				addQueryParam(
-					srfm_admin?.pricing_page_url,
-					'limit-reached-popup-cta'
-				),
-				'_blank',
-				'noreferrer'
-			);
-		  };
-
 	// When registered limit is consumed
 	if ( type === 'registered' && formCreationleft === 0 ) {
-		return (
+		return activateProPlugin ? (
+			<ActivateLicensePopup
+				paraOne={ __(
+					'You have reached the AI form generation limit for your current plan.',
+					'sureforms'
+				) }
+				paraTwo={ __(
+					'It looks like you already have the Premium plugin installed, but your license has not been activated yet.',
+					'sureforms'
+				) }
+			/>
+		) : (
 			<LimitReachedPopup
-				paraOne={ paraOne }
-				paraTwo={ paraTwo }
-				buttonText={ buttonText }
-				onclick={ onClickHandler }
+				paraOne={ __(
+					'You have reached the maximum number of form generations in your Free Plan.',
+					'sureforms'
+				) }
+				paraTwo={ __(
+					'Please upgrade your free plan to keep creating more forms with AI.',
+					'sureforms'
+				) }
+				buttonText={ __( 'Upgrade Plan', 'sureforms' ) }
+				onclick={ () => {
+					window.open(
+						addQueryParam(
+							srfm_admin?.pricing_page_url,
+							'limit-reached-popup-cta'
+						),
+						'_blank',
+						'noreferrer'
+					);
+				} }
 			/>
 		);
 	}
