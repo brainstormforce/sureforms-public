@@ -1305,6 +1305,62 @@ class Helper {
 	}
 
 	/**
+	 * Strips JavaScript attributes from HTML content.
+	 *
+	 * @param string $html The HTML content to process.
+	 * @since x.x.x
+	 * @return string The cleaned HTML content without JavaScript attributes.
+	 */
+	public static function strip_js_attributes( $html ) {
+		$dom = new \DOMDocument();
+
+		// Suppress warnings due to malformed HTML.
+		libxml_use_internal_errors( true );
+		$loaded = $dom->loadHTML( '<?xml encoding="utf-8" ?>' . $html );
+		libxml_clear_errors();
+
+		if ( ! $loaded ) {
+			return $html; // Return original HTML if loading fails.
+		}
+
+		$xpath = new \DOMXPath( $dom );
+
+		// 1. Remove all <script> tags.
+		$script_nodes = $xpath->query( '//script' );
+		if ( $script_nodes instanceof \DOMNodeList ) {
+			foreach ( $script_nodes as $script ) {
+				// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase -- This is a DOM element.
+				$parent_node = $script->parentNode;
+				if ( $parent_node instanceof \DOMNode ) {
+					$parent_node->removeChild( $script );
+				}
+			}
+		}
+
+		// 2. Remove all attributes that start with "on" (like onclick, onmouseover, etc.).
+		$elements_with_on_attrs = $xpath->query( '//*[@*[starts-with(name(), "on")]]' );
+		if ( $elements_with_on_attrs instanceof \DOMNodeList ) {
+			foreach ( $elements_with_on_attrs as $element ) {
+				if ( $element instanceof \DOMElement && $element->hasAttributes() ) {
+					foreach ( iterator_to_array( $element->attributes ) as $attr ) {
+						if ( $attr instanceof \DOMAttr && stripos( $attr->name, 'on' ) === 0 ) {
+							$element->removeAttribute( $attr->name );
+						}
+					}
+				}
+			}
+		}
+
+		// Return cleaned HTML.
+		$body = $dom->getElementsByTagName( 'body' )->item( 0 );
+		if ( $body instanceof \DOMNode ) {
+			$cleaned_html = $dom->saveHTML( $body );
+			return is_string( $cleaned_html ) ? $cleaned_html : '';
+		}
+		return '';
+	}
+
+	/**
 	 * Encodes the given string with base64.
 	 * Moved from admin class to here.
 	 *

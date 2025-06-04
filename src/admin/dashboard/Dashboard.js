@@ -34,17 +34,15 @@ export default () => {
 		{ nav }
 		<Container.Item>
 			<Container
-				className="p-5 pb-8 xl:p-8 max-[1920px]:max-w-full max-w-[92rem] mx-auto box-content bg-background-secondary"
+				className="p-5 pb-8 xl:p-8 w-full bg-background-secondary"
 				containerType="grid"
 				cols={ 12 }
 				gap="2xl"
 			>
 				<Container.Item className="flex flex-col gap-8 col-span-12 xl:col-span-8">
-					{ /* left sidebar */ }
 					{ leftSidebar }
 				</Container.Item>
 				<Container.Item className="flex flex-col gap-8 col-span-12 xl:col-span-4">
-					{ /* right sidebar */ }
 					{ rightSidebar }
 				</Container.Item>
 			</Container>
