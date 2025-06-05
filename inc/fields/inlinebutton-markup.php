@@ -171,13 +171,13 @@ class Inlinebutton_Markup extends Base {
 				<?php if ( $this->captcha_security_type && 'none' !== $this->captcha_security_type ) { ?>
 			<div class="srfm-captcha-container <?php echo esc_attr( 'v3-reCAPTCHA' === $this->recaptcha_version || 'v2-invisible' === $this->recaptcha_version ? 'srfm-display-none' : '' ); ?>">
 					<?php if ( 'g-recaptcha' === $this->captcha_security_type && 'v2-checkbox' === $this->recaptcha_version ) { ?>
-						<?php echo "<div class='g-recaptcha' data-callback='onSuccess' recaptcha-type='" . esc_attr( $this->recaptcha_version ) . "' data-sitekey='" . esc_attr( strval( $this->google_captcha_site_key ) ) . "'></div>"; ?>
+						<?php echo "<div class='g-recaptcha' data-callback='onSuccess' data-error-callback='onGCaptchaV2CheckBoxError' recaptcha-type='" . esc_attr( $this->recaptcha_version ) . "' data-sitekey='" . esc_attr( strval( $this->google_captcha_site_key ) ) . "'></div>"; ?>
 					<?php } ?>
 					<?php if ( 'cf-turnstile' === $this->captcha_security_type && $this->cf_turnstile_site_key ) { ?>
-						<?php echo "<div id='srfm-cf-sitekey' class='cf-turnstile' data-callback='onSuccess' data-theme='" . esc_attr( strval( $this->cf_appearance_mode ) ) . "' data-sitekey='" . esc_attr( strval( $this->cf_turnstile_site_key ) ) . "'></div>"; ?>
+						<?php echo "<div id='srfm-cf-sitekey' class='cf-turnstile' data-callback='onSuccess' data-error-callback='onTurnstileError' data-theme='" . esc_attr( strval( $this->cf_appearance_mode ) ) . "' data-sitekey='" . esc_attr( strval( $this->cf_turnstile_site_key ) ) . "'></div>"; ?>
 					<?php } ?>
 					<?php if ( 'hcaptcha' === $this->captcha_security_type && $this->hcaptcha_site_key ) { ?>
-						<?php echo "<div id='srfm-hcaptcha-sitekey' data-callback='onSuccess' class='h-captcha' data-sitekey='" . esc_attr( strval( $this->hcaptcha_site_key ) ) . "'></div>"; ?>
+						<?php echo "<div id='srfm-hcaptcha-sitekey' data-callback='onSuccess' data-error-callback='onHCaptchaError' class='h-captcha' data-sitekey='" . esc_attr( strval( $this->hcaptcha_site_key ) ) . "'></div>"; ?>
 					<?php } ?>
 			<div class="srfm-validation-error" id="captcha-error" style="display: none;"><?php echo esc_attr__( 'Please verify that you are not a robot.', 'sureforms' ); ?></div>
 			</div>
@@ -185,34 +185,47 @@ class Inlinebutton_Markup extends Base {
 			<div data-block-id="<?php echo esc_attr( $this->block_id ); ?>" class="<?php echo esc_attr( $this->class_name ); ?> <?php echo esc_attr( $this->conditional_class ); ?> srf-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?>-block<?php echo esc_attr( $this->block_width ); ?> srfm-block srfm-custom-button-ctn <?php echo esc_attr( '1' === $this->btn_from_theme ? 'wp-block-button' : '' ); ?>">
 				<?php
 				if ( 'g-recaptcha' === $this->captcha_security_type ) {
-					if ( 'v3-reCAPTCHA' === $this->recaptcha_version ) {
-						wp_enqueue_script( 'srfm-google-recaptchaV3', 'https://www.google.com/recaptcha/api.js', [], SRFM_VER, true );
-					}
 
-					if ( 'v2-checkbox' === $this->recaptcha_version ) {
-						wp_enqueue_script( 'google-recaptcha', 'https://www.google.com/recaptcha/api.js', [], SRFM_VER, true );
-					}
+					if ( empty( $this->google_captcha_site_key ) ) {
+						Helper::render_missing_sitekey_error( 'Google reCAPTCHA' );
+					} else {
+						if ( 'v3-reCAPTCHA' === $this->recaptcha_version ) {
+							wp_enqueue_script( 'srfm-google-recaptchaV3', 'https://www.google.com/recaptcha/api.js?render=' . $this->google_captcha_site_key, [], null, true ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion -- This is a third-party script, and specifying a version may lead to caching issues. Using null ensures the latest version is always loaded.
+						}
 
-					if ( 'v2-invisible' === $this->recaptcha_version ) {
-						wp_enqueue_script( 'google-recaptcha-invisible', 'https://www.google.com/recaptcha/api.js?onload=recaptchaCallback&render=explicit', [ SRFM_SLUG . '-form-submit' ], SRFM_VER, true );
+						if ( 'v2-checkbox' === $this->recaptcha_version ) {
+							wp_enqueue_script( 'google-recaptcha', 'https://www.google.com/recaptcha/api.js', [], SRFM_VER, true );
+						}
+
+						if ( 'v2-invisible' === $this->recaptcha_version ) {
+							wp_enqueue_script( 'google-recaptcha-invisible', 'https://www.google.com/recaptcha/api.js?onload=recaptchaCallback&render=explicit', [ SRFM_SLUG . '-form-submit' ], SRFM_VER, true );
+						}
 					}
 				}
 
 				if ( 'cf-turnstile' === $this->captcha_security_type ) {
-					// Cloudflare Turnstile script.
-					wp_enqueue_script( // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
-						SRFM_SLUG . '-cf-turnstile',
-						'https://challenges.cloudflare.com/turnstile/v0/api.js',
-						[],
-						null,
-						[
-							false,
-							'defer' => true,
-						]
-					);
+					if ( ! empty( $this->cf_turnstile_site_key ) ) {
+						// Cloudflare Turnstile script.
+						wp_enqueue_script( // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
+							SRFM_SLUG . '-cf-turnstile',
+							'https://challenges.cloudflare.com/turnstile/v0/api.js',
+							[],
+							null,
+							[
+								false,
+								'defer' => true,
+							]
+						);
+					} else {
+						Helper::render_missing_sitekey_error( 'Cloudflare Turnstile' );
+					}
 				}
 				if ( 'hcaptcha' === $this->captcha_security_type ) {
-					wp_enqueue_script( 'hcaptcha', 'https://js.hcaptcha.com/1/api.js', [], null, [ 'strategy' => 'defer' ] ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
+					if ( ! empty( $this->hcaptcha_site_key ) ) {
+						wp_enqueue_script( 'hcaptcha', 'https://js.hcaptcha.com/1/api.js', [], null, [ 'strategy' => 'defer' ] ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
+					} else {
+						Helper::render_missing_sitekey_error( 'HCaptcha' );
+					}
 				}
 				$srfm_custom_button_classes = apply_filters( 'srfm_add_button_classes', [ 'v2-invisible' === $this->recaptcha_version || 'v3-reCAPTCHA' === $this->recaptcha_version ? 'g-recaptcha ' : '', '1' === $this->btn_from_theme ? 'wp-block-button__link' : 'srfm-button srfm-submit-button srfm-btn-frontend srfm-custom-button' ], $this->form_id );
 				?>

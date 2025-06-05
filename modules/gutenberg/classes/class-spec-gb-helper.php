@@ -150,7 +150,13 @@ if ( ! class_exists( 'Spec_Gb_Helper' ) ) {
 			 */
 			add_action( 'init', [ $this, 'init_block_attributes' ] );
 
-			add_action( 'wp', [ $this, 'wp_actions' ], 10 );
+			$theme_name = wp_get_theme()->get( 'Name' );
+
+			if ( 'Divi' === $theme_name ) {
+				add_action( 'et_after_main_content', [ $this, 'wp_actions' ], 10 );
+			} else {
+				add_action( 'wp', [ $this, 'wp_actions' ], 10 );
+			}
 
 			add_filter( 'render_block', [ $this, 'generate_render_styles' ], 10, 2 );
 		}

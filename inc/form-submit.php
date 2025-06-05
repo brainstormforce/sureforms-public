@@ -826,6 +826,7 @@ class Form_Submit {
 			}
 
 			if ( empty( $emails ) ) {
+				$entries_db_instance->reset_logs();
 				$entries_db_instance->add_log( __( 'No emails were sent', 'sureforms' ) );
 			}
 		}
