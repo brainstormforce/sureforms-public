@@ -3,7 +3,7 @@ import Editor from '../QuillEditor';
 import { useState, useEffect } from '@wordpress/element';
 import { useDebouncedCallback } from 'use-debounce';
 import { Container } from '@bsf/force-ui';
-import ModalInputBox from './ModalInputBox';
+import ModalInputBox from '@Components/force-ui-components/ModalInputBox';
 import TabContentWrapper from '@Components/tab-content-wrapper';
 import FromEmail from './FromEmail';
 

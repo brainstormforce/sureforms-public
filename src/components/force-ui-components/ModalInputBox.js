@@ -14,6 +14,8 @@ const ModalInputBox = ( {
 	showSmartTagList = true,
 	helpText,
 	padding = '',
+	smartTagTopMargin = 'mt-6',
+	inputProps = {},
 } ) => {
 	return (
 		<Container
@@ -31,11 +33,11 @@ const ModalInputBox = ( {
 						label={ label }
 						required={ required }
 						size="md"
-						className="[&>input]:text-text-tertiary"
+						{ ...inputProps }
 					/>
 				</div>
 				{ showSmartTagList && (
-					<div className="mt-6">
+					<div className={ cn( smartTagTopMargin ) }>
 						<SmartTagList
 							className="shrink-0"
 							tagFor={ tagFor }
