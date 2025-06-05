@@ -1,7 +1,7 @@
 /**
  * SureMail promotional page component.
  *
- * @since x.x.x
+ * @since 1.7.1
  */
 
 import { __ } from '@wordpress/i18n';

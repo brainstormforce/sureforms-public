@@ -270,7 +270,7 @@ class Admin {
 	 * Add SMTP promotional submenu page.
 	 *
 	 * @return void
-	 * @since x.x.x
+	 * @since 1.7.1
 	 */
 	public function add_suremail_page() {
 		add_submenu_page(
@@ -297,7 +297,7 @@ class Admin {
 	 * SMTP promotional page callback.
 	 *
 	 * @return void
-	 * @since x.x.x
+	 * @since 1.7.1
 	 */
 	public function suremail_page_callback() {
 		echo '<div id="srfm-suremail-container" class="srfm-admin-wrapper"></div>';
