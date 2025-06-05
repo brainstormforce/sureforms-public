@@ -64,7 +64,7 @@ class Textarea_Markup extends Base {
 	 * Indicates whether the textarea is a rich text editor.
 	 *
 	 * @var bool
-	 * @since x.x.x
+	 * @since 1.7.1
 	 */
 	protected $is_richtext;
 

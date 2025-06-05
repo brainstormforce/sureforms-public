@@ -931,7 +931,7 @@ class Helper {
 	 *
 	 * @param string $provider_name Name of the captcha provider (e.g., HCaptcha, Google reCAPTCHA, Turnstile).
 	 * @since 1.7.0
-	 * @since x.x.x moved to inc/helper.php from inc/generate-form-markup.php
+	 * @since 1.7.1 moved to inc/helper.php from inc/generate-form-markup.php
 	 * @return void
 	 */
 	public static function render_missing_sitekey_error( $provider_name ) {
@@ -1308,7 +1308,7 @@ class Helper {
 	 * Custom escape function for the textarea with rich text support.
 	 *
 	 * @param string $content The content submitted by the user in the textarea block.
-	 * @since x.x.x
+	 * @since 1.7.1
 	 *
 	 * @return string Escaped content.
 	 */
@@ -1322,7 +1322,7 @@ class Helper {
 	 * Custom sanitization function for the textarea with rich text support.
 	 *
 	 * @param string $content The content submitted by the user in the textarea block.
-	 * @since x.x.x
+	 * @since 1.7.1
 	 *
 	 * @return string Sanitized content.
 	 */
@@ -1350,7 +1350,7 @@ class Helper {
 	 * Disable parsing of style attributes for the textarea block.
 	 *
 	 * @param array<string> $allowed_styles The allowed styles.
-	 * @since x.x.x
+	 * @since 1.7.1
 	 *
 	 * @return array An empty array to disable style attribute parsing.
 	 */
@@ -1363,7 +1363,7 @@ class Helper {
 	 * Strips JavaScript attributes from HTML content.
 	 *
 	 * @param string $html The HTML content to process.
-	 * @since x.x.x
+	 * @since 1.7.1
 	 * @return string The cleaned HTML content without JavaScript attributes.
 	 */
 	public static function strip_js_attributes( $html ) {
