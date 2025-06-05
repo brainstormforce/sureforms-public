@@ -263,6 +263,11 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 = x.x.x =
 * New: Added rich text support for the textarea block.
 * Improvement: Added 67% width option for SureForms blocks to provide more layout flexibility.
+* Improvement: Improved reCAPTCHA handling by adding detailed logging for failure responses with custom button.
+* Fix: Resolved an issue for dropdown options overflow when string is too long.
+* Fix: Addressed an issue preventing text input in textareas when Bricks Builder's Cascade Layers feature was enabled.
+* Fix: Resolved an issue where multiple entry log message were recorded when none of the email notifications are enabled.
+* Fix: Resolved an issue where the text formatting of the form confirmation message was not preserved on the frontend.
 = 1.7.0 - 22nd May 2025 =
 * New: Revamped user interface for Dashboard and Settings with a more modern and intuitive experience.
 * Improvement: Improved reCAPTCHA handling by adding detailed logging for failure responses.
