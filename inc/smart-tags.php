@@ -100,6 +100,7 @@ class Smart_Tags {
 				'{embed_post_title}'       => __( 'Embedded Post/Page Title', 'sureforms' ),
 				'{get_input:param}'        => __( 'Populate by GET Param', 'sureforms' ),
 				'{get_cookie:cookie_name}' => __( 'Cookie Value', 'sureforms' ),
+				'{current_page_url}'       => __( 'Current Page URL', 'sureforms' ),
 			]
 		);
 	}
@@ -221,6 +222,12 @@ class Smart_Tags {
 			case '{embed_post_title}':
 			case '{embed_post_url}':
 				return self::parse_post_props( $tag );
+			case '{current_page_url}':
+				if ( isset( $_SERVER['REQUEST_URI'] ) ) {
+					$request_uri = sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) );
+					return esc_url( site_url( $request_uri ) );
+				}
+				return '';
 
 			default:
 				if ( strpos( $tag, 'get_input:' ) || strpos( $tag, 'get_cookie:' ) ) {
