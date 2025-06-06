@@ -81,6 +81,7 @@ class Smart_Tags {
 			'srfm_smart_tag_list',
 			[
 				'{site_url}'               => __( 'Site URL', 'sureforms' ),
+				'{current_page_url}'       => __( 'Current Page URL', 'sureforms' ),
 				'{admin_email}'            => __( 'Admin Email', 'sureforms' ),
 				'{site_title}'             => __( 'Site Title', 'sureforms' ),
 				'{form_title}'             => __( 'Form Title', 'sureforms' ),
@@ -100,7 +101,6 @@ class Smart_Tags {
 				'{embed_post_title}'       => __( 'Embedded Post/Page Title', 'sureforms' ),
 				'{get_input:param}'        => __( 'Populate by GET Param', 'sureforms' ),
 				'{get_cookie:cookie_name}' => __( 'Cookie Value', 'sureforms' ),
-				'{current_page_url}'       => __( 'Current Page URL', 'sureforms' ),
 			]
 		);
 	}
