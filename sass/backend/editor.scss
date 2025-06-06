@@ -45,6 +45,7 @@ body.post-type-sureforms_form {
 			&::before {
 				background: unset;
 				transform: translate(0);
+				max-width: unset;
 			}
 		}
 	}
