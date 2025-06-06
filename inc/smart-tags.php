@@ -174,10 +174,6 @@ class Smart_Tags {
 			return $parsed_tag;
 		}
 
-		error_log(print_r($tag, true));
-		error_log(print_r($submission_data, true));
-		error_log(print_r($form_data, true));
-
 		switch ( $tag ) {
 			case '{site_url}':
 				return site_url();
