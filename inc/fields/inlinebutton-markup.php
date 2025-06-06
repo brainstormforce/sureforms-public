@@ -231,7 +231,7 @@ class Inlinebutton_Markup extends Base {
 				$srfm_custom_button_classes = apply_filters( 'srfm_add_button_classes', [ 'v2-invisible' === $this->recaptcha_version || 'v3-reCAPTCHA' === $this->recaptcha_version ? 'g-recaptcha ' : '', '1' === $this->btn_from_theme ? 'wp-block-button__link' : 'srfm-button srfm-submit-button srfm-btn-frontend srfm-custom-button' ], $this->form_id );
 
 				$button_style = $this->btn_from_theme ? '' : ' font-family: inherit; font-weight: var(--wp--custom--font-weight--medium); line-height: normal;';
-				$button_style = $button_style . 'width:100%;';
+				$button_style .= 'width:100%;';
 
 				$button_attributes = '';
 				if ( 'g-recaptcha' === $this->captcha_security_type && ( 'v2-invisible' === $this->recaptcha_version || 'v3-reCAPTCHA' === $this->recaptcha_version ) ) {
