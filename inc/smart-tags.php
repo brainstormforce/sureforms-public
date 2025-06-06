@@ -174,6 +174,10 @@ class Smart_Tags {
 			return $parsed_tag;
 		}
 
+		error_log(print_r($tag, true));
+		error_log(print_r($submission_data, true));
+		error_log(print_r($form_data, true));
+
 		switch ( $tag ) {
 			case '{site_url}':
 				return site_url();
@@ -223,6 +227,11 @@ class Smart_Tags {
 			case '{embed_post_url}':
 				return self::parse_post_props( $tag );
 			case '{current_page_url}':
+				if ( isset( $form_data['_wp_http_referer'] ) ) {
+					$request_uri = sanitize_text_field( wp_unslash( $form_data['_wp_http_referer'] ) );
+					return esc_url( site_url( $request_uri ) );
+				}
+
 				if ( isset( $_SERVER['REQUEST_URI'] ) ) {
 					$request_uri = sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) );
 					return esc_url( site_url( $request_uri ) );
