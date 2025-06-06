@@ -18,7 +18,6 @@ import { applyFilters } from '@wordpress/hooks';
 import { Container, Toaster } from '@bsf/force-ui';
 import AiFormBuilderForm from '../ai-form-builder-components/AiFormBuilderForm.js';
 import AiFormProgressPage from '../ai-form-builder-components/AiFormProgressPage.js';
-import ActivateLicensePopup from './ActivateLicensePopup.js';
 
 const AiFormBuilder = () => {
 	const [ message, setMessage ] = useState(
@@ -111,7 +110,7 @@ const AiFormBuilder = () => {
 						formTypeObj,
 						content
 					);
-					handleAddNewPost( postContent, formTitle, metasToUpdate, formTypeObj?.isConversationalForm, formType ); // Check for the formType variable
+					handleAddNewPost( postContent, formTitle, metasToUpdate, formTypeObj?.isConversationalForm, formType );
 				} else {
 					setShowFormCreationErr( true );
 				}
@@ -257,18 +256,7 @@ export const getLimitReachedPopup = () => {
 
 	// When registered limit is consumed
 	if ( type === 'registered' && formCreationleft === 0 ) {
-		return activateProPlugin ? (
-			<ActivateLicensePopup
-				paraOne={ __(
-					'You have reached the AI form generation limit for your current plan.',
-					'sureforms'
-				) }
-				paraTwo={ __(
-					'It looks like you already have the Premium plugin installed, but your license has not been activated yet.',
-					'sureforms'
-				) }
-			/>
-		) : (
+		return (
 			<LimitReachedPopup
 				paraOne={ __(
 					'You have reached the maximum number of form generations in your Free Plan.',
@@ -289,6 +277,7 @@ export const getLimitReachedPopup = () => {
 						'noreferrer'
 					);
 				} }
+				activateProPlugin={ activateProPlugin }
 			/>
 		);
 	}
