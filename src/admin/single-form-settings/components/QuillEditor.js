@@ -1,22 +1,15 @@
+import { useState, useRef } from '@wordpress/element';
 import SmartTagList from '@Components/misc/SmartTagList';
-import svgIcons from '@Image/single-form-logo.json';
-import { TabPanel } from '@wordpress/components';
-import { useRef } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
-import parse from 'html-react-parser';
 import ReactQuill, { Quill } from 'react-quill';
 import EditorToolbar, {
 	formats,
 	modules,
 } from './email-settings/EditorToolbar';
+import { ChevronDownIcon } from 'lucide-react';
+import { Label, Tabs, TextArea } from '@bsf/force-ui';
 
-const Editor = ( {
-	handleContentChange,
-	content,
-	allData = false,
-} ) => {
-	const dropdownIcon = parse( svgIcons.downArrow );
-
+const Editor = ( { handleContentChange, content, allData = false } ) => {
 	const quillRef = useRef( null );
 	const textAreaRef = useRef( null );
 
@@ -35,6 +28,8 @@ const Editor = ( {
 		},
 	];
 	const activeTabRef = useRef( 'srfm-editor-visual' );
+
+	const [ activeTab, setActiveTab ] = useState( 'visual' );
 
 	const visualEditorInsertText = ( text ) => {
 		const quillInstance = quillRef.current.getEditor();
@@ -96,7 +91,10 @@ const Editor = ( {
 	const formSmartTags = window.sureforms?.formSpecificSmartTags ?? [];
 	let formSmartTagsAllData = {};
 	if ( allData ) {
-		formSmartTagsAllData = [ ...formSmartTags, [ '{all_data}', __( 'All Data', 'sureforms' ) ] ];
+		formSmartTagsAllData = [
+			...formSmartTags,
+			[ '{all_data}', __( 'All Data', 'sureforms' ) ],
+		];
 	}
 
 	// Add inline style instead of classes.
@@ -132,66 +130,76 @@ const Editor = ( {
 
 	return (
 		<>
-			<SmartTagList
-				tagFor="formSettings.quillEditor"
-				icon={ dropdownIcon }
-				text={ __( 'Add Shortcode', 'sureforms' ) }
-				cssClass={ 'srfm-editor-dropdown' }
-				tagsArray={
-					[
-						{
-							tags: allData ? formSmartTagsAllData : formSmartTags,
-							label: __( 'Form input tags', 'sureforms' ),
-						},
-						{
-							tags: genericSmartTags,
-							label: __( 'Generic tags', 'sureforms' ),
-						},
-					]
-
-				}
-				setTargetData={ insertSmartTag }
-			/>
-			<TabPanel
-				activeClass="srfm-active-editor"
-				onSelect={ ( tabName ) => ( activeTabRef.current = tabName ) }
-				tabs={ editorTabs }
-				initialTabName={ activeTabRef.current }
-			>
-				{ ( tab ) => {
-					switch ( tab.value ) {
-						case 'visual':
-							return (
-								<div className="srfm-editor-visual">
-									<EditorToolbar />
-									<ReactQuill
-										ref={ quillRef }
-										formats={ formats }
-										modules={ modules }
-										value={ content }
-										onChange={ ( newContent ) => {
-											handleContentChange( newContent );
-										} }
-									/>
-								</div>
-							);
-						case 'html':
-							return (
-								<textarea
-									id="srfm-editor-html"
-									ref={ textAreaRef }
-									onChange={ ( e ) =>
-										handleContentChange( e.target.value )
-									}
-									className="srfm-editor-textarea"
-									value={ content }
-								></textarea>
-							);
-						default:
-							return null;
-					}
-				} }
-			</TabPanel>
+			<Tabs activeItem={ activeTab }>
+				<div className="flex items-center justify-between mb-1.5">
+					<Label>{ __( 'Confirmation Message', 'sureforms' ) }</Label>
+					<div className="flex items-center gap-2 min-w-fit">
+						<Tabs.Group
+							variant="rounded"
+							size="xs"
+							onChange={ ( { value: { slug } } ) => {
+								setActiveTab( slug );
+								activeTabRef.current = editorTabs.find(
+									( tab ) => tab.value === slug
+								)?.name;
+							} }
+						>
+							{ editorTabs.map( ( tab ) => (
+								<Tabs.Tab
+									className="text-sm font-medium"
+									key={ tab.value }
+									text={ tab.title }
+									slug={ tab.value }
+								/>
+							) ) }
+						</Tabs.Group>
+						<SmartTagList
+							tagFor="formSettings.quillEditor"
+							icon={ <ChevronDownIcon /> }
+							label={ __( 'Add Shortcode', 'sureforms' ) }
+							tagsArray={ [
+								{
+									tags: allData
+										? formSmartTagsAllData
+										: formSmartTags,
+									label: __( 'Form input tags', 'sureforms' ),
+								},
+								{
+									tags: genericSmartTags,
+									label: __( 'Generic tags', 'sureforms' ),
+								},
+							] }
+							setTargetData={ insertSmartTag }
+							dropdownPlacement="bottom-end"
+						/>
+					</div>
+				</div>
+				<Tabs.Panel slug="visual">
+					<div className="">
+						<EditorToolbar />
+						<ReactQuill
+							ref={ quillRef }
+							formats={ formats }
+							modules={ modules }
+							value={ content }
+							onChange={ ( newContent ) => {
+								handleContentChange( newContent );
+							} }
+							className="[&>div]:border [&>div]:border-field-border [&>div]:border-solid [&>div]:rounded-b-lg [&_.ql-editor]:min-h-[18.75rem]"
+						/>
+					</div>
+				</Tabs.Panel>
+				<Tabs.Panel slug="html">
+					<TextArea
+						id="srfm-editor-html"
+						ref={ textAreaRef }
+						onChange={ ( value ) => handleContentChange( value ) }
+						className="w-full min-h-[18.75rem] border border-field-border border-solid rounded-lg transition"
+						value={ content }
+						size="md"
+					></TextArea>
+				</Tabs.Panel>
+			</Tabs>
 		</>
 	);
 };

@@ -20,6 +20,9 @@ import { ToolbarGroup, ToolbarButton } from '@wordpress/components';
 import { getBlockTypes } from '@Blocks/util';
 import { __, sprintf } from '@wordpress/i18n';
 
+// Register store.
+import '../store/store.js';
+
 const registerBlock = [
 	text,
 	email,
@@ -110,9 +113,15 @@ const withToolbarButton = createHigherOrderComponent( ( BlockEdit ) => {
 				<>
 					<BlockControls>
 						<ToolbarGroup>
-							{ [ 100, 75, 50, 33.33, 25 ].map( ( width ) => {
-								const labelText =
-									33.33 === width ? '33%' : `${ width }%`;
+							{ [ 100, 75, 66.66, 50, 33.33, 25 ].map( ( width ) => {
+								let labelText;
+								if ( width === 33.33 ) {
+									labelText = '33%';
+								} else if ( width === 66.66 ) {
+									labelText = '67%';
+								} else {
+									labelText = `${ width }%`;
+								}
 								const labelWithText = sprintf(
 									// translators: %s: Width of the block
 									__( '%s Width', 'sureforms' ),

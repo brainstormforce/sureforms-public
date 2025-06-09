@@ -221,7 +221,7 @@ class Helper {
 				'input'    => 'sanitize_text_field',
 				'number'   => [ self::class, 'sanitize_number' ],
 				'email'    => 'sanitize_email',
-				'textarea' => 'sanitize_textarea_field',
+				'textarea' => [ self::class, 'sanitize_textarea' ],
 			]
 		);
 
@@ -927,6 +927,34 @@ class Helper {
 	}
 
 	/**
+	 * Render a site key missing error message.
+	 *
+	 * @param string $provider_name Name of the captcha provider (e.g., HCaptcha, Google reCAPTCHA, Turnstile).
+	 * @since 1.7.0
+	 * @since 1.7.1 moved to inc/helper.php from inc/generate-form-markup.php
+	 * @return void
+	 */
+	public static function render_missing_sitekey_error( $provider_name ) {
+		$icon = self::fetch_svg( 'info_circle', '', 'aria-hidden="true"' );
+		?>
+		<p id="sitekey-error" class="srfm-common-error-message srfm-error-message" hidden="false">
+			<?php echo wp_kses( $icon, self::$allowed_tags_svg ); ?>
+			<span class="srfm-error-content">
+				<?php
+				echo esc_html(
+					sprintf(
+					/* translators: %s: Provider name like HCaptcha, Google reCAPTCHA, Turnstile */
+						__( '%s sitekey is missing. Please contact your site administrator.', 'sureforms' ),
+						$provider_name
+					)
+				);
+				?>
+			</span>
+		</p>
+		<?php
+	}
+
+	/**
 	 * Process blocks and inner blocks.
 	 *
 	 * @param array<mixed>  $blocks The block data.
@@ -1274,5 +1302,209 @@ class Helper {
 		}
 
 		return self::join_strings( [ $background_type_class, $overlay_class ] );
+	}
+
+	/**
+	 * Custom escape function for the textarea with rich text support.
+	 *
+	 * @param string $content The content submitted by the user in the textarea block.
+	 * @since 1.7.1
+	 *
+	 * @return string Escaped content.
+	 */
+	public static function esc_textarea( $content ) {
+		$content = wpautop( self::sanitize_textarea( $content ) );
+
+		return trim( str_replace( [ "\r\n", "\r", "\n" ], '', $content ) );
+	}
+
+	/**
+	 * Custom sanitization function for the textarea with rich text support.
+	 *
+	 * @param string $content The content submitted by the user in the textarea block.
+	 * @since 1.7.1
+	 *
+	 * @return string Sanitized content.
+	 */
+	public static function sanitize_textarea( $content ) {
+		$count   = 1;
+		$content = convert_invalid_entities( $content );
+
+		// Remove the 'script' and 'style' tags recursively from the content.
+		while ( $count ) {
+			$content = preg_replace( '@<(script|style)[^>]*?>.*?</\\1>@si', '', self::get_string_value( $content ), - 1, $count );
+		}
+
+		// Disable the safe style attribute parsing for the textarea block.
+		add_filter( 'safe_style_css', [ self::class, 'disable_style_attr_parsing' ], 10, 1 );
+		$content = wp_kses_post( self::get_string_value( $content ) );
+
+		// Remove the filter after sanitization to avoid affecting other blocks.
+		remove_filter( 'safe_style_css', [ self::class, 'disable_style_attr_parsing' ], 10 );
+
+		// Ensure all tags are balanced.
+		return force_balance_tags( $content );
+	}
+
+	/**
+	 * Disable parsing of style attributes for the textarea block.
+	 *
+	 * @param array<string> $allowed_styles The allowed styles.
+	 * @since 1.7.1
+	 *
+	 * @return array An empty array to disable style attribute parsing.
+	 */
+	public static function disable_style_attr_parsing( $allowed_styles ) {
+		unset( $allowed_styles );
+		// Disable parsing of style attributes.
+		return [];
+	}
+	/**
+	 * Strips JavaScript attributes from HTML content.
+	 *
+	 * @param string $html The HTML content to process.
+	 * @since 1.7.1
+	 * @return string The cleaned HTML content without JavaScript attributes.
+	 */
+	public static function strip_js_attributes( $html ) {
+		$dom = new \DOMDocument();
+
+		// Suppress warnings due to malformed HTML.
+		libxml_use_internal_errors( true );
+		$loaded = $dom->loadHTML( '<?xml encoding="utf-8" ?>' . $html );
+		libxml_clear_errors();
+
+		if ( ! $loaded ) {
+			return $html; // Return original HTML if loading fails.
+		}
+
+		$xpath = new \DOMXPath( $dom );
+
+		// 1. Remove all <script> tags.
+		$script_nodes = $xpath->query( '//script' );
+		if ( $script_nodes instanceof \DOMNodeList ) {
+			foreach ( $script_nodes as $script ) {
+				// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase -- This is a DOM element.
+				$parent_node = $script->parentNode;
+				if ( $parent_node instanceof \DOMNode ) {
+					$parent_node->removeChild( $script );
+				}
+			}
+		}
+
+		// 2. Remove all attributes that start with "on" (like onclick, onmouseover, etc.).
+		$elements_with_on_attrs = $xpath->query( '//*[@*[starts-with(name(), "on")]]' );
+		if ( $elements_with_on_attrs instanceof \DOMNodeList ) {
+			foreach ( $elements_with_on_attrs as $element ) {
+				if ( $element instanceof \DOMElement && $element->hasAttributes() ) {
+					foreach ( iterator_to_array( $element->attributes ) as $attr ) {
+						if ( $attr instanceof \DOMAttr && stripos( $attr->name, 'on' ) === 0 ) {
+							$element->removeAttribute( $attr->name );
+						}
+					}
+				}
+			}
+		}
+
+		// Return cleaned HTML.
+		$body = $dom->getElementsByTagName( 'body' )->item( 0 );
+		if ( $body instanceof \DOMNode ) {
+			$cleaned_html = $dom->saveHTML( $body );
+			return is_string( $cleaned_html ) ? $cleaned_html : '';
+		}
+		return '';
+	}
+
+	/**
+	 * Encodes the given string with base64.
+	 * Moved from admin class to here.
+	 *
+	 * @param  string $logo contains svg's.
+	 * @return string
+	 */
+	public static function encode_svg( $logo ) {
+		return 'data:image/svg+xml;base64,' . base64_encode( $logo ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
+	}
+
+	/**
+	 * Get plugin status
+	 *
+	 * @since 0.0.1
+	 * @since 1.7.0 moved to inc/helper.php from inc/admin-ajax.php
+	 *
+	 * @param  string $plugin_init_file Plugin init file.
+	 * @return string
+	 */
+	public static function get_plugin_status( $plugin_init_file ) {
+
+		$installed_plugins = get_plugins();
+
+		if ( ! isset( $installed_plugins[ $plugin_init_file ] ) ) {
+			return 'Install';
+		}
+		if ( is_plugin_active( $plugin_init_file ) ) {
+			return 'Activated';
+		}
+			return 'Installed';
+	}
+
+	/**
+	 * Get sureforms recommended integrations.
+	 *
+	 * @since 0.0.1
+	 * @since 1.7.0 moved to inc/helper.php from inc/admin-ajax.php
+	 *
+	 * @return array<mixed>
+	 */
+	public static function sureforms_get_integration() {
+		$suretrigger_connected  = apply_filters( 'suretriggers_is_user_connected', '' );
+		$logo_sure_triggers     = file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/suretriggers.svg' );
+		$logo_full              = file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/suretriggers_full.svg' );
+		$logo_sure_mails        = file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/suremails.svg' );
+		$logo_sure_cart         = file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/surecart.svg' );
+		$logo_starter_templates = file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/starterTemplates.svg' );
+		return apply_filters(
+			'srfm_integrated_plugins',
+			[
+				'sure_triggers'     => [
+					'title'       => __( 'OttoKit', 'sureforms' ),
+					'subtitle'    => __( 'No-code automation tool for WordPress.', 'sureforms' ),
+					'description' => __( 'OttoKit is a powerful automation platform that helps you connect your various plugins and apps together. It allows you to automate repetitive tasks, so you can focus on more important work.', 'sureforms' ),
+					'status'      => self::get_plugin_status( 'suretriggers/suretriggers.php' ),
+					'slug'        => 'suretriggers',
+					'path'        => 'suretriggers/suretriggers.php',
+					'redirection' => admin_url( 'admin.php?page=suretriggers' ),
+					'logo'        => self::encode_svg( is_string( $logo_sure_triggers ) ? $logo_sure_triggers : '' ),
+					'logo_full'   => self::encode_svg( is_string( $logo_full ) ? $logo_full : '' ),
+					'connected'   => $suretrigger_connected,
+				],
+				'sure_mails'        => [
+					'title'       => __( 'SureMail', 'sureforms' ),
+					'subtitle'    => __( 'Free and easy SMTP mails plugin.', 'sureforms' ),
+					'status'      => self::get_plugin_status( 'suremails/suremails.php' ),
+					'slug'        => 'suremails',
+					'path'        => 'suremails/suremails.php',
+					'redirection' => admin_url( 'options-general.php?page=suremail#/dashboard' ),
+					'logo'        => self::encode_svg( is_string( $logo_sure_mails ) ? $logo_sure_mails : '' ),
+				],
+				'sure_cart'         => [
+					'title'    => __( 'SureCart', 'sureforms' ),
+					'subtitle' => __( 'The new way to sell on WordPress.', 'sureforms' ),
+					'status'   => self::get_plugin_status( 'surecart/surecart.php' ),
+					'slug'     => 'surecart',
+					'path'     => 'surecart/surecart.php',
+					'logo'     => self::encode_svg( is_string( $logo_sure_cart ) ? $logo_sure_cart : '' ),
+				],
+				'starter_templates' => [
+					'title'       => __( 'Starter Templates', 'sureforms' ),
+					'subtitle'    => __( 'Build your dream website in minutes with AI.', 'sureforms' ),
+					'status'      => self::get_plugin_status( 'astra-sites/astra-sites.php' ),
+					'slug'        => 'astra-sites',
+					'path'        => 'astra-sites/astra-sites.php',
+					'redirection' => admin_url( 'admin.php?page=starter-templates' ),
+					'logo'        => self::encode_svg( is_string( $logo_starter_templates ) ? $logo_starter_templates : '' ),
+				],
+			]
+		);
 	}
 }

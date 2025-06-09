@@ -185,11 +185,12 @@ class Frontend_Assets {
 	/**
 	 * Enqueue block scripts
 	 *
-	 * @param string $block_type block name.
+	 * @param string               $block_type block name.
+	 * @param array<string, mixed> $attr Array of block attributes.
 	 * @since 0.0.1
 	 * @return void
 	 */
-	public function enqueue_srfm_script( $block_type ) {
+	public function enqueue_srfm_script( $block_type, $attr ) {
 		$block_name = str_replace( 'srfm/', '', $block_type );
 		// associative array to keep the count of block that requires scripts to work.
 		$script_dep_blocks = [
@@ -213,7 +214,7 @@ class Frontend_Assets {
 			$script_dep_blocks[ $block_name ] += 1;
 			$js_uri                            = SRFM_URL . 'assets/js/' . $dir_name . '/blocks/';
 			$js_vendor_uri                     = SRFM_URL . 'assets/js/minified/deps/';
-
+			$css_vendor_uri                    = SRFM_URL . 'assets/css/minified/deps/';
 			if ( 'phone' === $block_name
 			) {
 				wp_enqueue_script( SRFM_SLUG . "-{$block_name}-intl-input-deps", $js_vendor_uri . 'intl/intTelInputWithUtils.min.js', [], SRFM_VER, true );
@@ -246,6 +247,13 @@ class Frontend_Assets {
 				// Input mask JS.
 				wp_enqueue_script( SRFM_SLUG . '-inputmask', $js_vendor_uri . 'inputmask.min.js', [], SRFM_VER, true );
 			}
+
+			// Adding js for the input textarea block.
+			if ( 'textarea' === $block_name && ! empty( $attr['isRichText'] ) ) {
+				wp_enqueue_script( SRFM_SLUG . '-quill-editor', $js_vendor_uri . '/quill.min.js', [], SRFM_VER, true );
+
+				wp_enqueue_style( SRFM_SLUG . '-quill-editor', $css_vendor_uri . 'quill/quill.snow.css', [], SRFM_VER );
+			}
 		}
 		/**
 		 * Enqueueing the input mask JS for input and date-picker blocks.
@@ -274,7 +282,9 @@ class Frontend_Assets {
 		}
 
 		if ( isset( $block['blockName'] ) ) {
-			self::enqueue_srfm_script( $block['blockName'] );
+			$attr = is_array( $block['attrs'] ) ? $block['attrs'] : [];
+
+			self::enqueue_srfm_script( $block['blockName'], $attr );
 		}
 		return $block_content;
 	}

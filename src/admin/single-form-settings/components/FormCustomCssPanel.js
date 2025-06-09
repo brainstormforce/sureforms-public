@@ -7,6 +7,8 @@ import {
 	useLayoutEffect,
 } from '@wordpress/element';
 import editorStyles from './editor.lazy.scss';
+import { TextArea, Label, Container } from '@bsf/force-ui';
+import TabContentWrapper from '@Components/tab-content-wrapper';
 
 const FormCustomCssPanel = ( { formCustomCssData } ) => {
 	const tabRef = useRef( null );
@@ -64,34 +66,29 @@ const FormCustomCssPanel = ( { formCustomCssData } ) => {
 	}, [ tabRef ] );
 
 	return (
-		<div className="srfm-modal-content srfm-custom-css-panel">
-			<div className="srfm-modal-inner-content">
-				<div className="srfm-modal-inner-heading">
-					<span className="srfm-modal-inner-heading-text">
-						<h4>{ __( 'Custom CSS', 'sureforms' ) }</h4>
-					</span>
+		<TabContentWrapper title={ __( 'Custom CSS', 'sureforms' ) }>
+			<Container direction="column" className="gap-2">
+				<Label
+					variant="neutral"
+					size="md"
+					className="font-normal text-text-secondary"
+				>
+					{ __(
+						'The following CSS styles added below will only apply to this form container.',
+						'sureforms'
+					) }
+				</Label>
+				<div className="srfm-custom-css-panel srfm-css-editor">
+					<TextArea
+						aria-label={ __( 'Custom CSS Panel', 'sureforms' ) }
+						id="srfm-css-editor"
+						size="sm"
+						value={ customCSS }
+						ref={ tabRef }
+					/>
 				</div>
-				<div className="srfm-modal-inner-box">
-					<div className="srfm-modal-inner-box-table">
-						<span>
-							{ __(
-								'The following CSS styles added below will only apply to this form container.',
-								'sureforms'
-							) }
-						</span>
-						<div
-							id="srfm-css-editor"
-							className="srfm-css-editor"
-							style={ {
-								width: '100%',
-							} }
-						>
-							<textarea value={ customCSS } ref={ tabRef } />
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
+			</Container>
+		</TabContentWrapper>
 	);
 };
 

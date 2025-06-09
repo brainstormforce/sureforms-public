@@ -1,8 +1,9 @@
 import { applyFilters } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
-import WebhookIcon from '@Image/webhook.js';
+import { WebhookIcon } from 'lucide-react';
 import UpgradeToProButton from '@Admin/components/UpgradeToProButton';
 import PremiumBadge from '@Admin/components/PremiumBadge';
+import IntegrationCard from './Card';
 
 const Webhooks = () => {
 	const showSwitch = false;
@@ -12,35 +13,50 @@ const Webhooks = () => {
 	);
 
 	return (
-		<>
-			<div className="srfm-integration-content">
-				<div className="srfm-integration-content-inner">
-					<WebhookIcon />
-					<div>
-						<div className="srfm-integration-title">
-							{ __( 'Webhooks', 'sureforms' ) }
-						</div>
-						<p className="srfm-integration-description">
-							{ __( 'Broadcast your SureForms submission to any web API endpoint with the powerful webhook module.', 'sureforms' ) }
-						</p>
-					</div>
+		<IntegrationCard>
+			<IntegrationCard.Header>
+				<div className="inline-grid place-items-center">
+					<WebhookIcon className="size-6 text-icon-primary" />
 				</div>
-			</div>
-			<div className="srfm-integration-cta">
-				{ false === switchWebhook ? <UpgradeToProButton className="srfm-button-secondary srfm-button-xs" location="settings_integrations_webhooks" /> : switchWebhook }
-				{ false === switchWebhook && (
-					<PremiumBadge
-						tooltipHeading={ __( 'Unlock Webhooks', 'sureforms' ) }
-						tooltipContent={ __(
-							'With the SureForms Starter Plan, you can enable webhooks to seamlessly connect with your favorite apps for real-time data transfer and automation.',
-							'sureforms'
-						) }
-						tooltipPosition={ 'bottom' }
-						utmMedium={ 'global_integration_settings_webhooks' }
+				<div className="flex items-center gap-2">
+					{ false === switchWebhook && (
+						<PremiumBadge
+							tooltipHeading={ __(
+								'Unlock Webhooks',
+								'sureforms'
+							) }
+							tooltipContent={ __(
+								'With the SureForms Starter Plan, you can enable webhooks to seamlessly connect with your favorite apps for real-time data transfer and automation.',
+								'sureforms'
+							) }
+							tooltipPosition={ 'bottom' }
+							utmMedium={ 'global_integration_settings_webhooks' }
+						/>
+					) }
+					{ false !== switchWebhook && switchWebhook }
+				</div>
+			</IntegrationCard.Header>
+			<IntegrationCard.Content>
+				<IntegrationCard.Title
+					title={ __( 'Webhooks', 'sureforms' ) }
+				/>
+				<IntegrationCard.Description
+					description={ __(
+						'Broadcast your SureForms submission to any web API endpoint with the powerful webhook module.',
+						'sureforms'
+					) }
+				/>
+			</IntegrationCard.Content>
+			{ false === switchWebhook && (
+				<IntegrationCard.CTA>
+					<UpgradeToProButton
+						size="xs"
+						location="settings_integrations_webhooks"
 					/>
-				) }
-			</div>
-		</> );
+				</IntegrationCard.CTA>
+			) }
+		</IntegrationCard>
+	);
 };
 
 export default Webhooks;

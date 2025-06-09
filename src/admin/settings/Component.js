@@ -2,25 +2,24 @@ import { useState, useEffect } from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
 import { __ } from '@wordpress/i18n';
 import { useDebouncedCallback } from 'use-debounce';
-import 'react-loading-skeleton/dist/skeleton.css';
-import toast, { Toaster, ToastBar } from 'react-hot-toast';
-
+import { toast } from '@bsf/force-ui';
 import { navigation } from './Navigation';
 import GeneralPage from './pages/General';
 import ValidationsPage from './pages/Validations';
 import SecurityPage from './pages/Security';
 import IntegrationPage from './pages/Integrations';
 import { applyFilters } from '@wordpress/hooks';
+import PageTitleSection from '@Admin/components/PageTitleSection';
 
 const Component = ( { path } ) => {
 	const [ pageTitle, setPageTitle ] = useState( '' );
-	const [ pageIcon, setPageIcon ] = useState( '' );
 	const [ loading, setLoading ] = useState( false );
 
 	// Global settings states.
 	const [ generalTabOptions, setGeneralTabOptions ] = useState( {
 		srfm_ip_log: false,
 		srfm_form_analytics: false,
+		srfm_bsf_analytics: false,
 	} );
 	const [ emailTabOptions, setEmailTabOptions ] = useState( {
 		srfm_email_summary: false,
@@ -60,11 +59,9 @@ const Component = ( { path } ) => {
 			navigation.forEach( ( single ) => {
 				const slug = single?.slug && single.slug ? single.slug : '';
 				const title = single?.name && single.name ? single.name : '';
-				const icon = single?.icon && single.icon ? single.icon : '';
 				if ( slug ) {
 					if ( slug === path ) {
 						setPageTitle( title );
-						setPageIcon( icon );
 					}
 				}
 			} );
@@ -91,11 +88,15 @@ const Component = ( { path } ) => {
 				} = data;
 
 				if ( srfm_general_settings_options ) {
-					const { srfm_ip_log, srfm_form_analytics } =
-						srfm_general_settings_options;
+					const {
+						srfm_ip_log,
+						srfm_form_analytics,
+						srfm_bsf_analytics,
+					} = srfm_general_settings_options;
 					setGeneralTabOptions( {
 						srfm_ip_log,
 						srfm_form_analytics,
+						srfm_bsf_analytics,
 					} );
 				}
 
@@ -168,17 +169,10 @@ const Component = ( { path } ) => {
 					( value ) => value.trim() === ''
 				);
 				if ( hasEmptyValue ) {
-					toast.dismiss();
 					toast.error(
-						__( 'This field cannot be left blank.', 'sureforms' ),
-						{
-							duration: 0,
-						}
+						__( 'This field cannot be left blank.', 'sureforms' )
 					);
 					setDynamicBlockOptions( { ...preDynamicBlockOptions } );
-					setTimeout( () => {
-						toast.dismiss();
-					}, 1500 );
 					return;
 				}
 			}
@@ -191,14 +185,8 @@ const Component = ( { path } ) => {
 					'X-WP-Nonce': srfm_admin.global_settings_nonce,
 				},
 			} ).then( ( response ) => {
-				toast.dismiss();
-				toast.success( response?.data, {
-					duration: 1500,
-				} );
+				toast.success( response?.data );
 				setPreDynamicBlockOptions( newFormData );
-				setTimeout( () => {
-					toast.dismiss();
-				}, 1500 );
 			} );
 		} catch ( error ) {
 			console.error( error );
@@ -245,34 +233,8 @@ const Component = ( { path } ) => {
 
 	return (
 		<>
-			<Toaster
-				containerClassName="srfm-toast-container"
-				position="top-right"
-			>
-				{ ( t ) => (
-					<ToastBar
-						toast={ t }
-						style={ {
-							...t.style,
-							animation: t.visible
-								? 'slide-in-left 0.5s ease'
-								: 'slide-out-right 0.5s ease',
-						} }
-					/>
-				) }
-			</Toaster>
-			{ pageIcon && pageTitle && <div className="srfm-page-heading">
-				<div className="srfm-page-icon">{ pageIcon }</div>
-				<h4
-					style={ {
-						margin: '0',
-						color: '#0F172A',
-					} }
-				>
-					{ pageTitle }
-				</h4>
-			</div> }
-			<div className="srfm-page-content">
+			{ pageTitle && <PageTitleSection title={ pageTitle } /> }
+			<div className="max-w-content-container mx-auto p-4 rounded-xl bg-background-primary shadow-sm">
 				{ 'general-settings' === path && (
 					<GeneralPage
 						loading={ loading }

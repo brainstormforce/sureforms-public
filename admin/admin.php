@@ -37,6 +37,7 @@ class Admin {
 		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_scripts' ] );
 		add_action( 'admin_menu', [ $this, 'settings_page' ] );
 		add_action( 'admin_menu', [ $this, 'add_new_form' ] );
+		add_action( 'admin_menu', [ $this, 'add_suremail_page' ] );
 		if ( ! defined( 'SRFM_PRO_VER' ) ) {
 			add_action( 'admin_menu', [ $this, 'add_upgrade_to_pro' ] );
 			add_action( 'admin_footer', [ $this, 'add_upgrade_to_pro_target_attr' ] );
@@ -266,13 +267,50 @@ class Admin {
 	}
 
 	/**
+	 * Add SMTP promotional submenu page.
+	 *
+	 * @return void
+	 * @since 1.7.1
+	 */
+	public function add_suremail_page() {
+		add_submenu_page(
+			'sureforms_menu',
+			__( 'SMTP', 'sureforms' ),
+			__( 'SMTP', 'sureforms' ),
+			'edit_others_posts',
+			'sureforms_smtp',
+			[ $this, 'suremail_page_callback' ]
+		);
+
+		// Get the current submenu page.
+		$submenu_page = isset( $_GET['page'] ) ? sanitize_text_field( wp_unslash( $_GET['page'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- $_GET['page'] does not provide nonce.
+
+		// Check if SureMail is installed and active.
+		if ( 'sureforms_smtp' === $submenu_page && file_exists( WP_PLUGIN_DIR . '/suremails/suremails.php' ) && is_plugin_active( 'suremails/suremails.php' ) ) {
+			// Plugin is installed and active - redirect to SureMail dashboard.
+			wp_safe_redirect( admin_url( 'options-general.php?page=suremail#/dashboard' ) );
+			exit;
+		}
+	}
+
+	/**
+	 * SMTP promotional page callback.
+	 *
+	 * @return void
+	 * @since 1.7.1
+	 */
+	public function suremail_page_callback() {
+		echo '<div id="srfm-suremail-container" class="srfm-admin-wrapper"></div>';
+	}
+
+	/**
 	 * Render Admin Dashboard.
 	 *
 	 * @return void
 	 * @since 0.0.1
 	 */
 	public function render_dashboard() {
-		echo '<div id="srfm-dashboard-container"></div>';
+		echo '<div id="srfm-dashboard-container" class="srfm-admin-wrapper"></div>';
 	}
 
 	/**
@@ -282,7 +320,7 @@ class Admin {
 	 * @since 0.0.1
 	 */
 	public function settings_page_callback() {
-		echo '<div id="srfm-settings-container"></div>';
+		echo '<div id="srfm-settings-container" class="srfm-admin-wrapper"></div>';
 	}
 
 	/**
@@ -319,7 +357,7 @@ class Admin {
 	 * @since 0.0.1
 	 */
 	public function add_new_form_callback() {
-		echo '<div id="srfm-add-new-form-container"></div>';
+		echo '<div id="srfm-add-new-form-container" class="srfm-admin-wrapper"></div>';
 	}
 
 	/**
@@ -504,6 +542,16 @@ class Admin {
 			'sureforms_pricing_page'  => Helper::get_sureforms_website_url( 'pricing' ),
 			'field_spacing_vars'      => Helper::get_css_vars(),
 			'is_ver_lower_than_6_7'   => version_compare( $wp_version, '6.6.2', '<=' ),
+			'integrations'            => Helper::sureforms_get_integration(),
+			'ajax_url'                => admin_url( 'admin-ajax.php' ),
+			'sf_plugin_manager_nonce' => wp_create_nonce( 'sf_plugin_manager_nonce' ),
+			'plugin_installer_nonce'  => wp_create_nonce( 'updates' ),
+			'plugin_activating_text'  => __( 'Activating...', 'sureforms' ),
+			'plugin_activated_text'   => __( 'Activated', 'sureforms' ),
+			'plugin_activate_text'    => __( 'Activate', 'sureforms' ),
+			'plugin_installing_text'  => __( 'Installing...', 'sureforms' ),
+			'plugin_installed_text'   => __( 'Installed', 'sureforms' ),
+			'is_rtl'                  => $is_rtl,
 		];
 
 		$is_screen_sureforms_menu          = Helper::validate_request_context( 'sureforms_menu', 'page' );
@@ -558,20 +606,6 @@ class Admin {
 
 		if ( $is_screen_sureforms_form_settings ) {
 			wp_enqueue_style( SRFM_SLUG . '-settings', $css_uri . 'backend/settings' . $file_prefix . $rtl . '.css', [], SRFM_VER );
-
-			// if version is equal to or lower than 6.6.2 then add compatibility css.
-			if ( version_compare( $wp_version, '6.6.2', '<=' ) ) {
-				$srfm_inline_css = '
-				.srfm-settings-page-container
-					.components-toggle-control {
-						.components-base-control__help{
-							margin-left: 4em;
-						}
-					}
-				}
-				';
-				wp_add_inline_style( SRFM_SLUG . '-settings', $srfm_inline_css );
-			}
 		}
 
 		// Enqueue styles for the entries page.
@@ -580,6 +614,46 @@ class Admin {
 			wp_enqueue_script( SRFM_SLUG . $asset_handle, SRFM_URL . 'assets/build/entries.js', $script_info['dependencies'], SRFM_VER, true );
 
 			$script_translations_handlers[] = SRFM_SLUG . $asset_handle;
+		}
+
+		// Enqueue scripts for the SureMail promotional page.
+		$is_screen_sureforms_smtp = Helper::validate_request_context( 'sureforms_smtp', 'page' );
+		if ( $is_screen_sureforms_smtp ) {
+			$asset_handle = 'suremail';
+
+			$script_asset_path = SRFM_DIR . 'assets/build/' . $asset_handle . '.asset.php';
+			$script_info       = file_exists( $script_asset_path )
+				? include $script_asset_path
+				: [
+					'dependencies' => [],
+					'version'      => SRFM_VER,
+				];
+
+			wp_enqueue_script( SRFM_SLUG . '-suremail', SRFM_URL . 'assets/build/' . $asset_handle . '.js', $script_info['dependencies'], SRFM_VER, true );
+			wp_enqueue_style( SRFM_SLUG . '-suremail', SRFM_URL . 'assets/build/suremail.css', [], SRFM_VER, 'all' );
+
+			// Localize script for SureMail page.
+			$suremail_localization_data = [
+				'ajax_url'               => admin_url( 'admin-ajax.php' ),
+				'admin_url'              => admin_url(),
+				'suremail_url'           => 'https://sureforms.com/suremail/',
+				'plugin_installer_nonce' => wp_create_nonce( 'updates' ),
+				'sfPluginManagerNonce'   => wp_create_nonce( 'sf_plugin_manager_nonce' ),
+				'suremail_status'        => file_exists( WP_PLUGIN_DIR . '/suremails/suremails.php' )
+					? ( is_plugin_active( 'suremails/suremails.php' ) ? 'active' : 'installed' )
+					: 'not_installed',
+			];
+
+			wp_localize_script(
+				SRFM_SLUG . '-suremail',
+				SRFM_SLUG . '_admin',
+				apply_filters(
+					SRFM_SLUG . '_suremail_admin_filter',
+					$suremail_localization_data
+				)
+			);
+
+			$script_translations_handlers[] = SRFM_SLUG . '-suremail';
 		}
 
 		// Admin Submenu Styles.

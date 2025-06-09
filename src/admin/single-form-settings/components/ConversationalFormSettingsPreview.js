@@ -1,7 +1,7 @@
 import { __ } from '@wordpress/i18n';
 import { FormToggle } from '@wordpress/components';
 import { applyFilters } from '@wordpress/hooks';
-import PremiumBadge from '@Admin/components/PremiumBadge';
+import EditorPremiumBadge from '@Admin/components/EditorPremiumBadge';
 
 const ConversationalFormSettingsPreview = ( { setHidePopover } ) => {
 	const showCoversationalFormSettings = false;
@@ -13,8 +13,8 @@ const ConversationalFormSettingsPreview = ( { setHidePopover } ) => {
 
 	return (
 		<>
-			{ false === conversationalFormSettings
-				? <>
+			{ false === conversationalFormSettings ? (
+				<>
 					<div className="srfm-instant-form-settings srfm-instant-form-settings-inline">
 						<div className="srfm-conversational-placeholder-label-ctn">
 							<label
@@ -23,9 +23,15 @@ const ConversationalFormSettingsPreview = ( { setHidePopover } ) => {
 							>
 								{ __( 'Conversational Layout', 'sureforms' ) }
 							</label>
-							<PremiumBadge
-								tooltipHeading={ __( 'Unlock Conversational Forms', 'sureforms' ) }
-								tooltipContent={ __( 'With the SureForms Pro Plan, you can transform your forms into engaging conversational layouts for a seamless user experience.', 'sureforms' ) }
+							<EditorPremiumBadge
+								tooltipHeading={ __(
+									'Unlock Conversational Forms',
+									'sureforms'
+								) }
+								tooltipContent={ __(
+									'With the SureForms Pro Plan, you can transform your forms into engaging conversational layouts for a seamless user experience.',
+									'sureforms'
+								) }
 								utmMedium="sureforms_editor"
 							/>
 						</div>
@@ -37,7 +43,9 @@ const ConversationalFormSettingsPreview = ( { setHidePopover } ) => {
 						/>
 					</div>
 				</>
-			 : conversationalFormSettings }
+			) : (
+				conversationalFormSettings
+			) }
 		</>
 	);
 };

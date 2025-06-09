@@ -33,6 +33,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 		formId,
 		preview,
 		className,
+		isRichText,
 	} = attributes;
 
 	const currentFormId = useGetCurrentFormId( clientId );
@@ -86,6 +87,13 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 									setAttributes( { required: checked } )
 								}
 							/>
+							<ToggleControl
+								label={ __( 'Rich Text Editor', 'sureforms' ) }
+								checked={ isRichText }
+								onChange={ ( checked ) =>
+									setAttributes( { isRichText: checked } )
+								}
+							/>
 							{ required && (
 								<SRFMTextControl
 									label={ __( 'Error Message', 'sureforms' ) }
@@ -100,39 +108,45 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 									} }
 								/>
 							) }
-							<SRFMNumberControl
-								label={ __(
-									'Text Maximum Length',
-									'sureforms'
-								) }
-								value={ maxLength }
-								displayUnit={ false }
-								data={ {
-									value: maxLength,
-									label: 'maxLength',
-								} }
-								onChange={ ( value ) => {
-									setAttributes( {
-										maxLength: Number( value ),
-									} );
-								} }
-								min={ 0 }
-								showControlHeader={ false }
-							/>
-							<Range
-								label={ __( 'Rows', 'sureforms' ) }
-								value={ rows }
-								displayUnit={ false }
-								min={ 1 }
-								max={ 100 }
-								data={ {
-									value: rows,
-									label: 'rows',
-								} }
-								onChange={ ( value ) => {
-									setAttributes( { rows: Number( value ) } );
-								} }
-							/>
+							{ ! isRichText && (
+								<>
+									<SRFMNumberControl
+										label={ __(
+											'Text Maximum Length',
+											'sureforms'
+										) }
+										value={ maxLength }
+										displayUnit={ false }
+										data={ {
+											value: maxLength,
+											label: 'maxLength',
+										} }
+										onChange={ ( value ) => {
+											setAttributes( {
+												maxLength: Number( value ),
+											} );
+										} }
+										min={ 0 }
+										showControlHeader={ false }
+									/>
+									<Range
+										label={ __( 'Rows', 'sureforms' ) }
+										value={ rows }
+										displayUnit={ false }
+										min={ 1 }
+										max={ 100 }
+										data={ {
+											value: rows,
+											label: 'rows',
+										} }
+										onChange={ ( value ) => {
+											setAttributes( {
+												rows: Number( value ),
+											} );
+										} }
+									/>
+								</>
+							) }
 							<SRFMTextControl
 								label={ __( 'Help Text', 'sureforms' ) }
 								value={ help }

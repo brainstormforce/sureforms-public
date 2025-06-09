@@ -1,4 +1,4 @@
-import { SelectControl, PanelRow, ExternalLink, Modal } from '@wordpress/components';
+import { SelectControl, PanelRow, ExternalLink } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import { useState, useEffect } from '@wordpress/element';
 import { useSelect, useDispatch } from '@wordpress/data';
@@ -6,10 +6,8 @@ import { store as editorStore } from '@wordpress/editor';
 import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
 import SRFMTextControl from '@Components/text-control';
 import apiFetch from '@wordpress/api-fetch';
-import svgIcons from '@Image/single-form-logo.json';
-import parse from 'html-react-parser';
 import FormBehaviorPopupButton from '../../components/FormBehaviorPopupButton';
-import SingleFormSettingsPopup from '../components/SingleFormSettingPopup';
+import Dialog from '../components/dialog/Dialog';
 
 let prevMetaHash = '';
 
@@ -38,7 +36,8 @@ function AdvancedSettings( props ) {
 	const [ showRecaptchaConflictNotice, setsShowRecaptchaConflictNotice ] =
 		useState( false );
 	const [ sureformsHCaptchaSite, setSureformsHCaptchaSite ] = useState( '' );
-	const [ sureformsHCaptchaSecret, setSureformsHCaptchaSecret ] = useState( '' );
+	const [ sureformsHCaptchaSecret, setSureformsHCaptchaSecret ] =
+		useState( '' );
 
 	const [ showErr, setShowErr ] = useState( false );
 
@@ -69,7 +68,10 @@ function AdvancedSettings( props ) {
 		if ( btoa( JSON.stringify( sureformsKeys ) ) !== prevMetaHash ) {
 			createNotice(
 				'warning',
-				__( 'There are few unsaved changes. Please save your changes to reflect the updates.', 'sureforms' ),
+				__(
+					'There are few unsaved changes. Please save your changes to reflect the updates.',
+					'sureforms'
+				),
 				{
 					id: 'srfm-unsaved-changes-warning',
 					isDismissible: true,
@@ -77,7 +79,6 @@ function AdvancedSettings( props ) {
 			);
 		}
 	};
-	const modalIcon = parse( svgIcons.modalLogo );
 
 	let sureformsKeys = useSelect( ( select ) =>
 		select( editorStore ).getEditedPostAttribute( 'meta' )
@@ -157,7 +158,9 @@ function AdvancedSettings( props ) {
 
 					// hCaptcha
 					setSureformsHCaptchaSite( srfm_hcaptcha_site_key || '' );
-					setSureformsHCaptchaSecret( srfm_hcaptcha_secret_key || '' );
+					setSureformsHCaptchaSecret(
+						srfm_hcaptcha_secret_key || ''
+					);
 
 					// show the notice if 2 recaptcha site and secret keys are not empty.
 					const v2_checkbox =
@@ -215,20 +218,26 @@ function AdvancedSettings( props ) {
 						if ( value === 'cf-turnstile' ) {
 							if (
 								sureformsCfTurnstileSite !== '' &&
-							sureformsCfTurnstileSecret !== ''
+								sureformsCfTurnstileSecret !== ''
 							) {
 								setShowErr( false );
-								updateMeta( '_srfm_captcha_security_type', value );
+								updateMeta(
+									'_srfm_captcha_security_type',
+									value
+								);
 							} else {
 								setShowErr( true );
 							}
 						} else if ( value === 'hcaptcha' ) {
 							if (
 								sureformsHCaptchaSite !== '' &&
-							sureformsHCaptchaSecret !== ''
+								sureformsHCaptchaSecret !== ''
 							) {
 								setShowErr( false );
-								updateMeta( '_srfm_captcha_security_type', value );
+								updateMeta(
+									'_srfm_captcha_security_type',
+									value
+								);
 							} else {
 								setShowErr( true );
 							}
@@ -239,7 +248,8 @@ function AdvancedSettings( props ) {
 					} }
 					__nextHasNoMarginBottom
 				/>
-				{ sureformsKeys._srfm_captcha_security_type === 'g-recaptcha' && (
+				{ sureformsKeys._srfm_captcha_security_type ===
+					'g-recaptcha' && (
 					<>
 						{ showRecaptchaConflictNotice && (
 							<PanelRow>
@@ -258,7 +268,10 @@ function AdvancedSettings( props ) {
 							) }
 							value={ sureformsKeys._srfm_form_recaptcha }
 							options={ [
-								{ label: __( 'None', 'sureforms' ), value: 'none' },
+								{
+									label: __( 'None', 'sureforms' ),
+									value: 'none',
+								},
 								{
 									label: __(
 										'reCAPTCHA v2 Checkbox',
@@ -282,30 +295,39 @@ function AdvancedSettings( props ) {
 								if ( value === 'v2-checkbox' ) {
 									if (
 										sureformsV2CheckboxSite !== '' &&
-									sureformsV2CheckboxSecret !== ''
+										sureformsV2CheckboxSecret !== ''
 									) {
 										setShowErr( false );
-										updateMeta( '_srfm_form_recaptcha', value );
+										updateMeta(
+											'_srfm_form_recaptcha',
+											value
+										);
 									} else {
 										setShowErr( true );
 									}
 								} else if ( value === 'v2-invisible' ) {
 									if (
 										sureformsV2InvisibleSecret !== '' &&
-									sureformsV2InvisibleSite !== ''
+										sureformsV2InvisibleSite !== ''
 									) {
 										setShowErr( false );
-										updateMeta( '_srfm_form_recaptcha', value );
+										updateMeta(
+											'_srfm_form_recaptcha',
+											value
+										);
 									} else {
 										setShowErr( true );
 									}
 								} else if ( value === 'v3-reCAPTCHA' ) {
 									if (
 										sureformsV3Secret !== '' &&
-									sureformsV3Site !== ''
+										sureformsV3Site !== ''
 									) {
 										setShowErr( false );
-										updateMeta( '_srfm_form_recaptcha', value );
+										updateMeta(
+											'_srfm_form_recaptcha',
+											value
+										);
 									} else {
 										setShowErr( true );
 									}
@@ -324,7 +346,9 @@ function AdvancedSettings( props ) {
 						'Before selecting the security type, please make sure you have configured the API keys ',
 						'sureforms'
 					) }
-					<ExternalLink href={ srfm_admin.security_settings_url }>
+					<ExternalLink
+						href={ `${ srfm_admin.security_settings_url }&subpage=recaptcha` }
+					>
 						{ __( 'here', 'sureforms' ) }
 					</ExternalLink>
 				</p>
@@ -368,21 +392,14 @@ function AdvancedSettings( props ) {
 				popupId={ 'form_custom_css' }
 				openModal={ openModal }
 			/>
-			{ isOpen && (
-				<Modal
-					onRequestClose={ closeModal }
-					title={ __( 'Form Behavior', 'sureforms' ) }
-					className="srfm-settings-modal"
-					icon={ modalIcon }
-					isFullScreen={ true }
-				>
-					<SingleFormSettingsPopup
-						sureformsKeys={ sureformsKeys }
-						targetTab={ popupTab }
-						setHasValidationErrors={ setHasValidationErrors }
-					/>
-				</Modal>
-			) }
+			<Dialog
+				open={ isOpen }
+				setOpen={ setOpen }
+				close={ closeModal }
+				sureformsKeys={ sureformsKeys }
+				targetTab={ popupTab }
+				setHasValidationErrors={ setHasValidationErrors }
+			/>
 		</>
 	);
 }

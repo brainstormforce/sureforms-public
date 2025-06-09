@@ -21,7 +21,9 @@
 		border: 1px solid #dadada;
 		color: #898e95;
 		background-color: #f0f0f1;
-		transition: background 0.08s ease, box-shadow 0.08s ease;
+		transition:
+			background 0.08s ease,
+			box-shadow 0.08s ease;
 	}
 
 	.srfm-presets-radio-input:checked + .srfm-presets-radio-input-label svg {

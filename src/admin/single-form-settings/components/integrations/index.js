@@ -1,11 +1,22 @@
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
 import apiFetch from '@wordpress/api-fetch';
-import { useEffect, useState } from '@wordpress/element';
+import { Fragment, useEffect, useState } from '@wordpress/element';
 import './webhooks';
-import IntegrationIcons from '@Image/integration-icons.js';
+import SureTriggersIcon from '@Image/suretriggers.svg';
+import { Badge, Button, Label } from '@bsf/force-ui';
+import IntegrationCard from '@Admin/settings/components/integrations/Card';
+import TabContentWrapper from '@Components/tab-content-wrapper';
 
-const Integrations = ( { setSelectedTab, action, setAction, CTA, setCTA, pluginConnected, setPluginConnected } ) => {
+const Integrations = ( {
+	setSelectedTab,
+	action,
+	setAction,
+	CTA,
+	setCTA,
+	pluginConnected,
+	setPluginConnected,
+} ) => {
 	const cards = [
 		{
 			title: __( 'All Integrations', 'sureforms' ),
@@ -13,43 +24,34 @@ const Integrations = ( { setSelectedTab, action, setAction, CTA, setCTA, pluginC
 		},
 		{
 			title: __( 'Integrations via OttoKit', 'sureforms' ),
-			component: <UpsellSureTriggers
-				{ ...{
-					setSelectedTab,
-					action,
-					setAction,
-					CTA,
-					setCTA,
-					pluginConnected,
-					setPluginConnected,
-				}
-				}
-			/>,
+			component: (
+				<UpsellSureTriggers
+					{ ...{
+						setSelectedTab,
+						action,
+						setAction,
+						CTA,
+						setCTA,
+						pluginConnected,
+						setPluginConnected,
+					} }
+				/>
+			),
 		},
 	];
 	return (
-		<div className="srfm-modal-content">
-			<div className="srfm-modal-inner-content">
-				<div className="srfm-modal-inner-heading">
-					<span className="srfm-modal-inner-heading-text">
-						<h4>{ __( 'Integrations', 'sureforms' ) }</h4>
-					</span>
-				</div>
-				{
-					cards.map( ( cardItem, cardIndex ) => (
-						<div key={ cardIndex } className="srfm-modal-inner-box">
-							<div className="srfm-modal-inner-box-text">
-								<h5>{ cardItem.title }</h5>
-							</div>
-							<div className="srfm-modal-separator" />
-							<div className="srfm-modal-inner-box-content">
-								{ cardItem.component }
-							</div>
-						</div>
-					) )
-				}
+		<TabContentWrapper
+			title={ __( 'Integrations', 'sureforms' ) }
+			className="p-4"
+		>
+			<div className="flex flex-col gap-1 bg-background-secondary rounded-lg p-1">
+				{ cards.map( ( cardItem, cardIndex ) => (
+					<Fragment key={ cardIndex }>
+						{ cardItem.component }
+					</Fragment>
+				) ) }
 			</div>
-		</div>
+		</TabContentWrapper>
 	);
 };
 
@@ -62,52 +64,51 @@ const AllIntegrations = ( { setSelectedTab } ) => {
 	if ( 0 === integrationCards.length ) {
 		return <EnableIntegrations />;
 	}
-	return (
-		<>
-			{
-				integrationCards.map( ( card ) => ( card.component ) )
-			}
-		</>
-	);
+	return <>{ integrationCards.map( ( card ) => card.component ) }</>;
 };
 
 const EnableIntegrations = () => {
 	return (
-		<>
-			<div className="srfm-modal-card-content">
-				<div className="srfm-modal-card-content-inner">
-					<div>
-						<div className="srfm-modal-card-title">
-							{ __( 'No Integrations Enabled', 'sureforms' ) }
-						</div>
-						<p className="srfm-modal-card-description">
-							{ __( 'Please enable Integrations from Global Settings.', 'sureforms' ) }
-						</p>
-					</div>
-				</div>
-				<div className="srfm-buttons">
-					<button
-						className="srfm-button-primary"
-						onClick={ () => {
-							window.open( 'admin.php?page=sureforms_form_settings&tab=integration-settings' );
-						} }
-
-					>
-						{
-							__( 'Enable from Settings', 'sureforms' )
-						}
-					</button>
-				</div>
-
+		<div className="flex justify-between border border-solid border-border-subtle rounded-lg p-4 bg-background-primary shadow-sm">
+			<div>
+				<Label tag="p">
+					{ __( 'No Integrations Enabled', 'sureforms' ) }
+				</Label>
+				<Label tag="p">
+					{ __(
+						'Please enable Integrations from Global Settings.',
+						'sureforms'
+					) }
+				</Label>
 			</div>
-		</>
+			<div>
+				<Button
+					onClick={ () => {
+						window.open(
+							'admin.php?page=sureforms_form_settings&tab=integration-settings'
+						);
+					} }
+				>
+					{ __( 'Enable from Settings', 'sureforms' ) }
+				</Button>
+			</div>
+		</div>
 	);
 };
 
-const UpsellSureTriggers = ( { setSelectedTab, action, setAction, CTA, setCTA, pluginConnected, setPluginConnected } ) => {
-	const plugin = srfm_admin?.integrations?.find( ( item ) => {
-		return 'suretriggers' === item.slug;
-	} );
+const UpsellSureTriggers = ( {
+	setSelectedTab,
+	action,
+	setAction,
+	CTA,
+	setCTA,
+	pluginConnected,
+	setPluginConnected,
+} ) => {
+	const integrations = Object.entries( srfm_admin?.integrations );
+	const plugin = integrations?.find(
+		( item ) => 'suretriggers' === item[ 1 ].slug
+	)?.[ 1 ];
 
 	const [ btnDisabled, setBtnDisabled ] = useState( false );
 
@@ -143,7 +144,12 @@ const UpsellSureTriggers = ( { setSelectedTab, action, setAction, CTA, setCTA, p
 					} else {
 						setAction( 'sureforms_recommended_plugin_install' );
 						setCTA( __( 'Install', 'sureforms' ) );
-						alert( __( `Plugin Installation failed, Please try again later.`, 'sureforms' ) );
+						alert(
+							__(
+								`Plugin Installation failed, Please try again later.`,
+								'sureforms'
+							)
+						);
 					}
 				} );
 				break;
@@ -179,7 +185,11 @@ const UpsellSureTriggers = ( { setSelectedTab, action, setAction, CTA, setCTA, p
 							left: ( screen.width - windowDimension.width ) / 2,
 							top: ( screen.height - windowDimension.height ) / 2,
 						};
-						const sureTriggersAuthenticationWindow = window.open( srfm_admin.integrations[ 0 ].redirection, '', `width=${ windowDimension.width },height=${ windowDimension.height },top=${ positioning.top },left=${ positioning.left },scrollbars=0` );
+						const sureTriggersAuthenticationWindow = window.open(
+							plugin.redirection,
+							'',
+							`width=${ windowDimension.width },height=${ windowDimension.height },top=${ positioning.top },left=${ positioning.left },scrollbars=0`
+						);
 
 						let iterations = 0;
 
@@ -192,7 +202,8 @@ const UpsellSureTriggers = ( { setSelectedTab, action, setAction, CTA, setCTA, p
 								body: formData,
 							} ).then( ( authResponse ) => {
 								if ( authResponse.success ) {
-									window.SureTriggersConfig = authResponse.data.data;
+									window.SureTriggersConfig =
+										authResponse.data.data;
 									sureTriggersAuthenticationWindow.close();
 									clearInterval( suretriggersAuthInterval );
 									setPluginConnected( true );
@@ -207,8 +218,13 @@ const UpsellSureTriggers = ( { setSelectedTab, action, setAction, CTA, setCTA, p
 							 * Giving 2 minutes of time for authentication process.
 							 * If user closes the window auth validation loop stops.
 							 */
-							if ( iterations >= 240 || sureTriggersAuthenticationWindow.closed ) {
-								if ( ! sureTriggersAuthenticationWindow.closed ) {
+							if (
+								iterations >= 240 ||
+								sureTriggersAuthenticationWindow.closed
+							) {
+								if (
+									! sureTriggersAuthenticationWindow.closed
+								) {
 									sureTriggersAuthenticationWindow.close();
 								}
 								clearInterval( suretriggersAuthInterval );
@@ -245,7 +261,12 @@ const UpsellSureTriggers = ( { setSelectedTab, action, setAction, CTA, setCTA, p
 					}
 				}, 2000 );
 			} else {
-				alert( __( 'Plugin activation failed, Please try again later.', 'sureforms' ) );
+				alert(
+					__(
+						'Plugin activation failed, Please try again later.',
+						'sureforms'
+					)
+				);
 				setCTA( srfm_admin.plugin_activate_text );
 			}
 		} );
@@ -285,33 +306,43 @@ const UpsellSureTriggers = ( { setSelectedTab, action, setAction, CTA, setCTA, p
 	}, [] );
 
 	return (
-		plugin && (
-			<div className="srfm-modal-upsell-message">
-				<div className="srfm-modal-upsell-message-content">
-					<img height="24px" src={ plugin.logo_full } alt="logo" />
-					<p>
-						{ __(
-							'OttoKit lets you connect your forms to hundreds of apps. With this integration you can automatically send form entries to your CRM, add subscribers to you email marketing platform, etc. Whatever you want SureForms and OttoKit has you covered.',
-							'sureforms'
-						) }
-					</p>
-					<div className="srfm-buttons">
-						{
-							<button
-								className="srfm-button-primary"
-								onClick={ handlePluginActionTrigger }
-								disabled={ btnDisabled }
-							>
-								{ CTA }
-							</button>
-						}
-					</div>
+		<IntegrationCard>
+			<IntegrationCard.Header>
+				<div className="inline-grid place-items-center">
+					<img
+						src={ SureTriggersIcon }
+						className="size-6"
+						alt={ __( 'SureTriggers', 'sureforms' ) }
+					/>
 				</div>
 				<div>
-					<IntegrationIcons />
+					<Badge
+						label={ __( 'Free', 'sureforms' ) }
+						variant="green"
+						disableHover
+						size="xs"
+					/>
 				</div>
-			</div>
-		)
+			</IntegrationCard.Header>
+			<IntegrationCard.Content>
+				<IntegrationCard.Title title={ __( 'OttoKit', 'sureforms' ) } />
+				<IntegrationCard.Description
+					description={ __(
+						'Effortlessly connect your forms to hundreds of apps, automating tasks like sending entries to your favourite CRM.',
+						'sureforms'
+					) }
+				/>
+				<IntegrationCard.CTA>
+					<Button
+						size="xs"
+						onClick={ handlePluginActionTrigger }
+						disabled={ btnDisabled }
+					>
+						{ CTA }
+					</Button>
+				</IntegrationCard.CTA>
+			</IntegrationCard.Content>
+		</IntegrationCard>
 	);
 };
 

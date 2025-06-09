@@ -826,6 +826,7 @@ class Form_Submit {
 			}
 
 			if ( empty( $emails ) ) {
+				$entries_db_instance->reset_logs();
 				$entries_db_instance->add_log( __( 'No emails were sent', 'sureforms' ) );
 			}
 		}
@@ -946,7 +947,7 @@ class Form_Submit {
 	 *
 	 * @param string       $type         The type of CAPTCHA used. Accepted values: 'g-recaptcha', 'hcaptcha', 'cf-turnstile'.
 	 * @param array<mixed> $api_response The response returned from the CAPTCHA validation API.
-	 * @since x.x.x
+	 * @since 1.7.0
 	 * @return void
 	 */
 	public function recaptcha_error_response( $type, $api_response ) {
@@ -966,7 +967,7 @@ class Form_Submit {
 	 *
 	 * @param string       $type         The type of CAPTCHA used. Accepted values: 'g-recaptcha', 'hcaptcha', 'cf-turnstile'.
 	 * @param array<mixed> $api_response The response returned from the CAPTCHA validation API.
-	 * @since x.x.x
+	 * @since 1.7.0
 	 * @return array<string,string> An associative array containing the error message and a detailed message.
 	 */
 	public function recaptcha_error_message( $type, $api_response ) {

@@ -1,16 +1,21 @@
-import { Button } from '@wordpress/components';
 import { __, sprintf } from '@wordpress/i18n';
 import { useEffect, useRef } from '@wordpress/element';
+import { Button, Tooltip, ProgressBar } from '@bsf/force-ui';
+import { addQueryParam } from '@Utils/Helpers';
 
 const CreditDetailsPopup = ( {
 	setShowRevokePopover,
 	finalFormCreationCountRemaining,
+	children,
+	showRevokePopover,
 } ) => {
 	const revokePopover = useRef( null );
 
 	const formCreationleft = srfm_admin?.srfm_ai_usage_details?.remaining ?? 0;
 	const totalFormCount = srfm_admin?.srfm_ai_usage_details?.limit ?? 0;
 	const aiFormCreationCount = totalFormCount - formCreationleft;
+	const isRegistered =
+		srfm_admin?.srfm_ai_usage_details?.type === 'registered';
 	const aiFormsConsumed = totalFormCount - finalFormCreationCountRemaining;
 
 	useEffect( () => {
@@ -33,50 +38,72 @@ const CreditDetailsPopup = ( {
 		};
 	}, [ revokePopover ] );
 	return (
-		<div className="srfm-tp-header-credits-popover" ref={ revokePopover }>
-			<div className="srfm-tp-header-credits-popover-stats-ctn">
-				<div className="srfm-tp-header-credits-popover-stats">
-					<span>{ __( 'Usage ', 'sureforms' ) }</span>
-					<span>{ aiFormsConsumed + '/' + totalFormCount }</span>
+		<Tooltip
+			tooltipPortalId="srfm-add-new-form-container"
+			className="border border-solid border-border-subtle shadow-sm max-w-64 p-4"
+			open={ showRevokePopover }
+			setOpen={ setShowRevokePopover }
+			placement="bottom-end"
+			variant="light"
+			content={
+				<div className="space-y-3" ref={ revokePopover }>
+					<div className="space-y-1">
+						<div className="text-sm text-text-tertiary flex items-center justify-between">
+							<span>{ __( 'Usage ', 'sureforms' ) }</span>
+							<span>
+								{ isRegistered
+									? aiFormsConsumed + '/' + 20
+									: aiFormCreationCount +
+									  '/' +
+									  totalFormCount }
+							</span>
+						</div>
+						<ProgressBar
+							progress={
+								isRegistered
+									? ( aiFormsConsumed / 20 ) * 100
+									: aiFormCreationCount < totalFormCount
+										? ( aiFormCreationCount / totalFormCount ) *
+									  100
+										: 100
+							}
+							className="h-1 [&>div]:h-1"
+						/>
+					</div>
+					<div className="text-sm text-text-tertiary">
+						<span>
+							{ sprintf(
+								// translators: %s: Number of AI form generations
+								__(
+									'Free plan only allows %s AI form generations. Need to create more forms with AI?',
+									'sureforms'
+								),
+								isRegistered ? 20 : totalFormCount
+							) }
+						</span>
+					</div>
+					<Button
+						className="w-full"
+						onClick={ () =>
+							window.open(
+								addQueryParam(
+									srfm_admin?.pricing_page_url ||
+										srfm_admin?.sureforms_pricing_page,
+									'ai-form-builder-notice-cta'
+								),
+								'_blank',
+								'noreferrer'
+							)
+						}
+						size="sm"
+					>
+						{ __( 'Upgrade Plan', 'sureforms' ) }
+					</Button>
 				</div>
-				<div className="srfm-progress-bar bg-slate-200">
-					<div
-						className="progress"
-						style={ {
-							width: `${
-								// Convert to percentage
-								( aiFormCreationCount / totalFormCount ) * 100
-							}%`,
-						} }
-					/>
-				</div>
-			</div>
-			<div className="srfm-tp-header-credits-popover-title">
-				<span className="srfm-tp-header-credits-popover-description">
-					{
-						sprintf(
-							// translators: %s: Number of AI form generations
-							__(
-								'Free plan only allows %s AI form generations. Need to create more forms with AI?',
-								'sureforms'
-							),
-							totalFormCount
-						)
-					}
-				</span>
-			</div>
-			<Button
-				className="srfm-credits-popover-more-btn"
-				onClick={ () => {
-					window.open(
-						srfm_admin?.pricing_page_url,
-						'_blank'
-					);
-				} }
-			>
-				{ __( 'Upgrade Plan', 'sureforms' ) }
-			</Button>
-		</div>
+			}
+		>
+			{ children }
+		</Tooltip>
 	);
 };
 
