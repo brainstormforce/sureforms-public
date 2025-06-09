@@ -1,3 +1,4 @@
+@import "../utils/mixins.scss";
 .srfm-form-container {
 	.srfm-form {
 		.srfm-textarea-block {
@@ -8,6 +9,80 @@
 					height: unset;
 					// Marking line-height as important specific to textarea to override the bricks styling.
 					line-height: var( --srfm-input-field-line-height ) !important;
+				}
+			}
+
+			&.srfm-richtext {
+				.srfm-block-wrap {
+					@include srfm-input-margin-styles;
+					border: 1px solid var( --srfm-color-input-border );
+					transition: 0.2s ease-out;
+					min-height: 243px;
+					border-radius: 6px;
+
+					// Add hover effect styles.
+					&:hover {
+						.ql-toolbar {
+							border-color: var( --srfm-color-input-border-hover );
+						}
+						border-color: var( --srfm-color-input-border-hover );
+					}
+
+					// Add focus effect styles.
+					&.srfm-quill-editor-focused {
+						box-shadow: 0px 0px 0px 3px var( --srfm-color-input-border-focus-glow );
+						border-color: var( --srfm-color-input-border-hover );
+						.ql-toolbar {
+							border-color: var( --srfm-color-input-border-hover );
+						}
+					}
+
+					// Reducing the bottom border for the quill editor text area.
+					.ql-editor {
+						border-radius: 0 0 5px 5px;
+					}
+				}
+				.ql-container.ql-snow {
+					border: none;
+				}
+				.srfm-input-textarea {
+					display: none;
+				}
+				.quill-editor-container {
+					margin: var( --srfm-input-field-margin );
+				}
+				&.srfm-error {
+					.srfm-block-wrap {
+						border: 1px solid var( --srfm-error-color-border );
+						.ql-toolbar {
+							border-color: var( --srfm-error-color-border );
+						}
+						&.srfm-quill-editor-focused {
+							box-shadow: 0px 0px 0px 3px var( --srfm-error-color-border-glow );
+						}
+					}
+				}
+
+				.quill-editor-container {
+					transition: 0.2s ease-out;
+					@include srfm-textarea-quill-styles;
+					border: 0;
+					// Remove extra spacing between rich text editor toolbar items.
+					.ql-formats {
+						margin-right: 0;
+					}
+				}
+				.ql-editor {
+					min-height: 200px;
+					transition: 0.5s all ease;
+					// Add the background color for the quill textarea input.
+					background-color: var( --srfm-color-input-background );
+				}
+
+				.ql-picker-options {
+					.ql-picker-item {
+						line-height: 1;
+					}
 				}
 			}
 		}

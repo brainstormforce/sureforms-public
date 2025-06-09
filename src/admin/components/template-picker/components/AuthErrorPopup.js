@@ -18,22 +18,29 @@ export const AuthErrorPopup = ( { initiateAuth } ) => {
 					className="bg-background-primary gap-4 py-4 px-5 rounded-lg max-w-md shadow-lg"
 				>
 					<Container.Item>
-						<Label variant="neutral" className="text-lg font-bold flex gap-3">
-							<span className="pt-1">
-								{ ICONS.warning }
-							</span>
+						<Label
+							variant="neutral"
+							className="text-lg font-bold flex gap-3"
+						>
+							<span className="pt-1">{ ICONS.warning }</span>
 							{ __( 'Authentication Failed', 'sureforms' ) }
 						</Label>
 					</Container.Item>
 					<Container.Item>
-						<Label size="sm" className="inline text-text-secondary font-normal">
+						<Label
+							size="sm"
+							className="inline text-text-secondary font-normal"
+						>
 							{ __(
 								'Please check your username and password for the account, and try to reconnect again. Need help?',
 								'sureforms'
-							) } { ' ' }
+							) }{ ' ' }
 							<Label
 								onClick={ () => {
-									window.open( 'https://sureforms.com/contact/', '_blank' );
+									window.open(
+										'https://sureforms.com/contact/',
+										'_blank'
+									);
 								} }
 								size="sm"
 								className="cursor-pointer inline underline font-normal !text-link-primary"
@@ -46,9 +53,7 @@ export const AuthErrorPopup = ( { initiateAuth } ) => {
 						<Button
 							size="md"
 							variant="primary"
-							onClick={
-								initiateAuth
-							}
+							onClick={ initiateAuth }
 							className="text-sm font-semibold bg-brand-800 hover:bg-brand-800"
 						>
 							{ __( 'Click Here to Retry', 'sureforms' ) }
@@ -58,8 +63,10 @@ export const AuthErrorPopup = ( { initiateAuth } ) => {
 							variant="outline"
 							className="text-sm font-semibold"
 							onClick={ () => {
-								window.location.href = '/wp-admin/admin.php?page=sureforms_menu';
-							} }>
+								window.location.href =
+									'/wp-admin/admin.php?page=sureforms_menu';
+							} }
+						>
 							{ __( 'Exit to Dashboard', 'sureforms' ) }
 						</Button>
 					</Container.Item>
@@ -68,4 +75,3 @@ export const AuthErrorPopup = ( { initiateAuth } ) => {
 		</>
 	);
 };
-

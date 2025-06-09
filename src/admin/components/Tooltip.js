@@ -1,6 +1,15 @@
 import { Tooltip as TooltipComponent } from '@bsf/force-ui';
 
-const Tooltip = ( { title, content, placement = 'bottom', arrow = true, interactive = false, portalId = 'srfm-settings-container', children, ...props } ) => {
+const Tooltip = ( {
+	title,
+	content,
+	placement = 'bottom',
+	arrow = true,
+	interactive = false,
+	portalId = 'srfm-settings-container',
+	children,
+	...props
+} ) => {
 	if ( ! children ) {
 		return null;
 	}

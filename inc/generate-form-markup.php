@@ -302,6 +302,7 @@ class Generate_Form_Markup {
 					--srfm-color-scheme-primary: <?php echo esc_html( $primary_color_var ); ?>;
 					--srfm-color-scheme-text-on-primary: <?php echo esc_html( $label_text_color_var ); ?>;
 					--srfm-color-scheme-text: <?php echo esc_html( $help_color_var ); ?>;
+					--srfm-quill-editor-color: <?php echo esc_html( $primary_color_var ); ?>;
 
 					--srfm-color-input-label: <?php echo esc_html( $help_color_var ); ?>;
 					--srfm-color-input-description: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.65 );
@@ -506,7 +507,7 @@ class Generate_Form_Markup {
 						<div style="width: <?php echo esc_attr( $full ? '100%' : '' ); ?>; text-align: <?php echo esc_attr( $submit_button_alignment ); ?>" class="wp-block-button">
 						<?php do_action( 'srfm_before_submit_button', $id ); ?>
 						<button style="<?php echo esc_attr( $full ? 'width: 100%;' : '' ); ?>" id="srfm-submit-btn" class="<?php echo esc_attr( implode( ' ', array_filter( $srfm_button_classes ) ) ); ?>"
-						<?php if ( 'v3-reCAPTCHA' === $recaptcha_version ) { ?>
+						<?php if ( $should_show_submit_button && 'v3-reCAPTCHA' === $recaptcha_version ) { ?>
 							data-callback="recaptchaCallback"
 							data-error-callback="onGCaptchaV3Error"
 							recaptcha-type="<?php echo esc_attr( $recaptcha_version ); ?>"

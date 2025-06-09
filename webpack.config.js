@@ -22,9 +22,7 @@ module.exports = {
 	optimization: {
 		usedExports: true,
 	},
-	plugins: [
-		...defaultConfig.plugins,
-	],
+	plugins: [ ...defaultConfig.plugins ],
 	entry: {
 		formEditor: path.resolve(
 			__dirname,
@@ -49,6 +47,7 @@ module.exports = {
 			'src/admin/components/PageHeader.js'
 		),
 		dashboard: path.resolve( __dirname, 'src/admin/dashboard/index.js' ),
+		suremail: path.resolve( __dirname, 'src/admin/SureMail.js' ),
 		blocks: path.resolve( __dirname, 'src/blocks/blocks.js' ),
 		entries: path.resolve( __dirname, 'src/admin/entries/index.js' ),
 	},

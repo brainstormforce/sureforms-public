@@ -38,7 +38,7 @@
 		a {
 			margin: 0;
 			padding: 0;
-			color: #F8A581;
+			color: #f8a581;
 			font-size: 12px;
 			font-weight: 600;
 			line-height: 16px;
@@ -214,7 +214,9 @@
 	.left {
 		visibility: hidden;
 		opacity: 0;
-		transition: opacity 0.3s ease-in-out, visibility 0s linear 0.3s; /* Delay visibility until after fade-out */
+		transition:
+			opacity 0.3s ease-in-out,
+			visibility 0s linear 0.3s; /* Delay visibility until after fade-out */
 	}
 
 	&:hover {
@@ -224,7 +226,9 @@
 		.left {
 			opacity: 1;
 			visibility: visible;
-			transition: opacity 0.3s ease-in-out, visibility 0s linear 0s;
+			transition:
+				opacity 0.3s ease-in-out,
+				visibility 0s linear 0s;
 		}
 	}
 }

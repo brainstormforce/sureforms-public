@@ -221,7 +221,7 @@ class Helper {
 				'input'    => 'sanitize_text_field',
 				'number'   => [ self::class, 'sanitize_number' ],
 				'email'    => 'sanitize_email',
-				'textarea' => 'sanitize_textarea_field',
+				'textarea' => [ self::class, 'sanitize_textarea' ],
 			]
 		);
 
@@ -931,7 +931,7 @@ class Helper {
 	 *
 	 * @param string $provider_name Name of the captcha provider (e.g., HCaptcha, Google reCAPTCHA, Turnstile).
 	 * @since 1.7.0
-	 * @since x.x.x moved to inc/helper.php from inc/generate-form-markup.php
+	 * @since 1.7.1 moved to inc/helper.php from inc/generate-form-markup.php
 	 * @return void
 	 */
 	public static function render_missing_sitekey_error( $provider_name ) {
@@ -1305,10 +1305,65 @@ class Helper {
 	}
 
 	/**
+	 * Custom escape function for the textarea with rich text support.
+	 *
+	 * @param string $content The content submitted by the user in the textarea block.
+	 * @since 1.7.1
+	 *
+	 * @return string Escaped content.
+	 */
+	public static function esc_textarea( $content ) {
+		$content = wpautop( self::sanitize_textarea( $content ) );
+
+		return trim( str_replace( [ "\r\n", "\r", "\n" ], '', $content ) );
+	}
+
+	/**
+	 * Custom sanitization function for the textarea with rich text support.
+	 *
+	 * @param string $content The content submitted by the user in the textarea block.
+	 * @since 1.7.1
+	 *
+	 * @return string Sanitized content.
+	 */
+	public static function sanitize_textarea( $content ) {
+		$count   = 1;
+		$content = convert_invalid_entities( $content );
+
+		// Remove the 'script' and 'style' tags recursively from the content.
+		while ( $count ) {
+			$content = preg_replace( '@<(script|style)[^>]*?>.*?</\\1>@si', '', self::get_string_value( $content ), - 1, $count );
+		}
+
+		// Disable the safe style attribute parsing for the textarea block.
+		add_filter( 'safe_style_css', [ self::class, 'disable_style_attr_parsing' ], 10, 1 );
+		$content = wp_kses_post( self::get_string_value( $content ) );
+
+		// Remove the filter after sanitization to avoid affecting other blocks.
+		remove_filter( 'safe_style_css', [ self::class, 'disable_style_attr_parsing' ], 10 );
+
+		// Ensure all tags are balanced.
+		return force_balance_tags( $content );
+	}
+
+	/**
+	 * Disable parsing of style attributes for the textarea block.
+	 *
+	 * @param array<string> $allowed_styles The allowed styles.
+	 * @since 1.7.1
+	 *
+	 * @return array An empty array to disable style attribute parsing.
+	 */
+	public static function disable_style_attr_parsing( $allowed_styles ) {
+		unset( $allowed_styles );
+		// Disable parsing of style attributes.
+		return [];
+	}
+	/**
 	 * Strips JavaScript attributes from HTML content.
 	 *
 	 * @param string $html The HTML content to process.
-	 * @since x.x.x
+	 * @since 1.7.1
 	 * @return string The cleaned HTML content without JavaScript attributes.
 	 */
 	public static function strip_js_attributes( $html ) {

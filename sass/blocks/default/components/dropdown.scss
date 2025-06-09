@@ -123,7 +123,10 @@
 						padding-right: var( --srfm-dropdown-padding-right-icon ) !important; // Override the default right padding to include the spacing before dropdown arrow.
 						align-items: center;
 						// Adding the transition for specific properties to avoid unintended animations.
-						transition: border-color 0.2s ease-out, box-shadow 0.2s ease-out, background-color 0.2s ease-out !important;
+						transition:
+							border-color 0.2s ease-out,
+							box-shadow 0.2s ease-out,
+							background-color 0.2s ease-out !important;
 						flex-wrap: nowrap;
 
 						&:hover {
