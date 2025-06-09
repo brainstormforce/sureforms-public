@@ -85,11 +85,13 @@ module.exports = {
 		screen: true,
 		SureTriggers: true,
 		Inputmask: true,
+		Quill: true,
 		FileReader: true,
 		srfm_submit: true,
 		grecaptcha: true,
 		hcaptcha: true,
 		turnstile: true,
 		ResizeObserver: true,
+		MutationObserver: true,
 	},
 };

@@ -16,7 +16,7 @@ export default () => {
 
 	return (
 		<Container
-			className="bg-background-primary p-4 gap-2 shadow-sm-blur-1 rounded-xl border-0.5 border-solid border-border-subtle"
+			className="w-full bg-background-primary p-4 gap-2 shadow-sm-blur-1 rounded-xl border-0.5 border-solid border-border-subtle"
 			containerType="grid"
 			cols={ 12 }
 		>
@@ -24,7 +24,10 @@ export default () => {
 				<Container direction="column" className="gap-2 p-2">
 					<Container align="center" className="gap-1">
 						<Zap className="size-4 text-brand-800" />
-						<Label size="xs" className="font-semibold text-brand-800">
+						<Label
+							size="xs"
+							className="font-semibold text-brand-800"
+						>
 							{ __( 'Upgrade to Premium', 'sureforms' ) }
 						</Label>
 					</Container>
@@ -36,7 +39,10 @@ export default () => {
 								'sureforms'
 							) }
 						/>
-						<Label size="sm" className="text-text-secondary font-normal">
+						<Label
+							size="sm"
+							className="text-text-secondary font-normal"
+						>
 							{ __(
 								'Access smarter fields, powerful tools, and advanced features that help you build better forms, faster than ever.',
 								'sureforms'
@@ -44,16 +50,17 @@ export default () => {
 						</Label>
 					</Container>
 					<Container.Item>
-						<Container containerType="gird" className="grid-cols-1 sm:grid-cols-2 gap-1.5 rounded-lg py-1">
+						<Container
+							containerType="gird"
+							className="grid-cols-1 sm:grid-cols-2 gap-1.5 rounded-lg py-1"
+						>
 							{ featuresText.map( ( prompt, index ) => (
 								<Container.Item
 									className="flex flex-row items-center gap-2"
 									key={ index }
 								>
 									<Check className="size-3.5 text-brand-800" />
-									<Label size="sm">
-										{ prompt.title }
-									</Label>
+									<Label size="sm">{ prompt.title }</Label>
 								</Container.Item>
 							) ) }
 						</Container>

@@ -15,7 +15,13 @@ const PageTitleSection = ( { title } ) => {
 		}
 	};
 
-	const exclusionList = [ 'account-settings', 'integration-settings', 'general-settings', 'validation-settings', 'security-settings' ];
+	const exclusionList = [
+		'account-settings',
+		'integration-settings',
+		'general-settings',
+		'validation-settings',
+		'security-settings',
+	];
 
 	return (
 		<div className="max-w-content-container mx-auto flex items-center justify-between mb-6">
@@ -26,9 +32,7 @@ const PageTitleSection = ( { title } ) => {
 				size="md"
 			/>
 			{ ! exclusionList.includes( getCurrentPage() ) && (
-				<Button>
-					{ __( 'Save', 'sureforms' ) }
-				</Button>
+				<Button>{ __( 'Save', 'sureforms' ) }</Button>
 			) }
 		</div>
 	);

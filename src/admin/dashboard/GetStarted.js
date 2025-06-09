@@ -8,7 +8,7 @@ export default () => {
 
 	return (
 		<Container
-			className="bg-background-primary p-4 gap-8 shadow-sm-blur-1 rounded-xl border-0.5 border-solid border-border-subtle"
+			className="w-full bg-background-primary p-4 gap-8 shadow-sm-blur-1 rounded-xl border-0.5 border-solid border-border-subtle"
 			containerType="grid"
 			cols={ 12 }
 			align="center"
@@ -35,7 +35,12 @@ export default () => {
 					<Button
 						className="shadow-sm-blur-1 gap-1"
 						icon={
-							<Plus aria-label={ __( 'Create New Form', 'sureforms' ) } />
+							<Plus
+								aria-label={ __(
+									'Create New Form',
+									'sureforms'
+								) }
+							/>
 						}
 						iconPosition="right"
 						size="md"
@@ -49,7 +54,12 @@ export default () => {
 					<Button
 						className="gap-1"
 						icon={
-							<ExternalLinkIcon aria-label={ __( 'Read Full Guide', 'sureforms' ) } />
+							<ExternalLinkIcon
+								aria-label={ __(
+									'Read Full Guide',
+									'sureforms'
+								) }
+							/>
 						}
 						iconPosition="right"
 						size="md"
@@ -69,7 +79,10 @@ export default () => {
 				<iframe
 					className="w-full h-full rounded border border-solid border-border-subtle"
 					src="https://www.youtube.com/embed/it16jGnZBus"
-					title={ __( 'SureForms: Custom WordPress Forms MADE SIMPLE', 'sureforms' ) }
+					title={ __(
+						'SureForms: Custom WordPress Forms MADE SIMPLE',
+						'sureforms'
+					) }
 					allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
 					referrerPolicy="strict-origin-when-cross-origin"
 					allowFullScreen

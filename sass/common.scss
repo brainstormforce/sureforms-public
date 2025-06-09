@@ -50,6 +50,10 @@ button.srfm-toolbar-width-setting-button {
 		flex: 0 1 calc( 50% - var( --srfm-column-gap-between-blocks ) / 2 );
 	}
 
+	.srfm-block-width-66-66 {
+		flex: 0 1 calc( 66.66% - ( 1 / 3 ) * var( --srfm-column-gap-between-blocks ) );
+	}
+
 	.srfm-block-width-75 {
 		flex: 0 1 calc( 75% - var( --srfm-column-gap-between-blocks ) / 4 );
 	}
@@ -62,6 +66,7 @@ button.srfm-toolbar-width-setting-button {
 		.srfm-block-width-25,
 		.srfm-block-width-33-33,
 		.srfm-block-width-50,
+		.srfm-block-width-66-66,
 		.srfm-block-width-75 {
 			min-width: 100%; // Added min-width to override the flex property for address block.
 			width: 100%;

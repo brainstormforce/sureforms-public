@@ -49,7 +49,9 @@ export const addHeaderCenterContainer = () => {
 			clearInterval( intervalToClear );
 
 			// remove the command bar and add our custom header title editor
-			const header = document.querySelector( '.editor-post-title__block' );
+			const header = document.querySelector(
+				'.editor-post-title__block'
+			);
 			if ( header ) {
 				header.remove();
 			}
