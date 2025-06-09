@@ -1,7 +1,4 @@
-import {
-	__,
-	sprintf,
-} from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import apiFetch from '@wordpress/api-fetch';
 import { useState, useEffect } from '@wordpress/element';
 import {
@@ -97,7 +94,10 @@ const AiFormBuilder = () => {
 				const postContent = await apiFetch( {
 					path: 'sureforms/v1/map-fields',
 					method: 'POST',
-					data: { form_data: content, is_conversional: formTypeObj?.isConversationalForm },
+					data: {
+						form_data: content,
+						is_conversional: formTypeObj?.isConversationalForm,
+					},
 				} );
 
 				if ( postContent ) {
@@ -110,7 +110,13 @@ const AiFormBuilder = () => {
 						formTypeObj,
 						content
 					);
-					handleAddNewPost( postContent, formTitle, metasToUpdate, formTypeObj?.isConversationalForm, formType );
+					handleAddNewPost(
+						postContent,
+						formTitle,
+						metasToUpdate,
+						formTypeObj?.isConversationalForm,
+						formType
+					);
 				} else {
 					setShowFormCreationErr( true );
 				}
@@ -162,7 +168,10 @@ const AiFormBuilder = () => {
 		return (
 			<>
 				<Container className="h-screen bg-background-secondary p-8 gap-8">
-					<AiFormProgressPage message={ message } percentBuild={ percentBuild } />
+					<AiFormProgressPage
+						message={ message }
+						percentBuild={ percentBuild }
+					/>
 				</Container>
 				{ showFormCreationErr && <ErrorPopup /> }
 			</>
@@ -175,13 +184,22 @@ const AiFormBuilder = () => {
 	}
 
 	const isRTL = srfm_admin?.is_rtl;
-	const toasterPosition = isRTL
-		? 'bottom-left'
-		: 'bottom-right';
+	const toasterPosition = isRTL ? 'bottom-left' : 'bottom-right';
 
 	return (
 		<div className="max-h-screen overflow-y-auto">
-			<Toaster className={ cn( 'z-[999999]', isRTL ? '[&>li>div>div.absolute]:right-auto [&>li>div>div.absolute]:left-[0.75rem!important]' : '' ) } position={ toasterPosition } design="stack" theme="light" dismissAfter={ 5000 } />
+			<Toaster
+				className={ cn(
+					'z-[999999]',
+					isRTL
+						? '[&>li>div>div.absolute]:right-auto [&>li>div>div.absolute]:left-[0.75rem!important]'
+						: ''
+				) }
+				position={ toasterPosition }
+				design="stack"
+				theme="light"
+				dismissAfter={ 5000 }
+			/>
 			<Header />
 			<AiFormBuilderForm
 				handleCreateAiForm={ handleCreateAiForm }
@@ -225,7 +243,8 @@ export const getLimitReachedPopup = () => {
 		srfm_admin?.is_pro_active &&
 		srfm_admin?.is_pro_license_active &&
 		formCreationleft === 0 &&
-		resetAt && resetAt > Date.now() / 1000
+		resetAt &&
+		resetAt > Date.now() / 1000
 	) {
 		return (
 			<LimitReachedPopup
@@ -236,9 +255,7 @@ export const getLimitReachedPopup = () => {
 				paraTwo={ sprintf(
 					/* translators: %s: reset time */
 					__( 'Please try again after %s.', 'sureforms' ),
-					new Date(
-						resetAt * 1000
-					).toLocaleString()
+					new Date( resetAt * 1000 ).toLocaleString()
 				) }
 				buttonText={ __( 'Try Again', 'sureforms' ) }
 				onclick={ () => {

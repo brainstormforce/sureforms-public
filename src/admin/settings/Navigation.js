@@ -74,7 +74,7 @@ const NavLink = ( { label, path, icon: Icon, subPage = '' } ) => {
 				}`,
 			} }
 			className={ cn(
-				'flex items-center gap-3.5 px-2.5 py-2 rounded-md transition-[colors,box-shadow] text-text-secondary hover:bg-brand-background-50 no-underline hover:no-underline focus:outline-none focus:ring-1 focus:ring-focus',
+				'flex items-start gap-3.5 px-2.5 py-2 rounded-md transition-[colors,box-shadow] text-text-secondary hover:bg-brand-background-50 no-underline hover:no-underline focus:outline-none focus:ring-1 focus:ring-focus w-full',
 				( isActive() ||
 					applyFilters(
 						'srfm.settings.nav.addActiveClass',
@@ -87,14 +87,14 @@ const NavLink = ( { label, path, icon: Icon, subPage = '' } ) => {
 		>
 			<span
 				className={ cn(
-					'contents [&>svg]:size-5 text-icon-secondary [&>svg]:!text-icon-secondary',
+					'flex-shrink-0 mt-0.5 [&>svg]:size-5 text-icon-secondary [&>svg]:!text-icon-secondary',
 					isActive() &&
 						'text-icon-interactive [&>svg]:!text-icon-interactive'
 				) }
 			>
 				{ Icon }
 			</span>
-			<span className="text-base font-normal">{ label }</span>
+			<span className="text-base font-normal break-words">{ label }</span>
 		</Link>
 	);
 };
@@ -108,12 +108,12 @@ const SubmenuAccordion = ( { label, path, icon: Icon, submenu } ) => {
 
 	return (
 		<Accordion iconType="arrow" type="simple" defaultValue="subpage">
-			<Accordion.Item value="subpage" className="max-w-[215px]">
+			<Accordion.Item value="subpage" className="w-full">
 				<Accordion.Trigger
 					iconType="arrow"
 					className={ cn(
 						'p-2 pl-2.5 text-base font-normal hover:bg-brand-background-50 rounded-md no-underline cursor-pointer focus:outline-none focus:shadow-none transition ease-in-out duration-150',
-						'flex items-center gap-2 text-left',
+						'flex items-center gap-2 text-left w-full',
 						'[&_svg]:text-icon-secondary [&_svg]:size-5 [&_svg]:block',
 						'[&_div]:font-normal [&_div]:text-text-secondary',
 						isActive() &&
@@ -121,8 +121,8 @@ const SubmenuAccordion = ( { label, path, icon: Icon, submenu } ) => {
 					) }
 					aria-label={ `${ label } submenu` }
 				>
-					<span className="shrink-0">{ !! Icon && Icon }</span>
-					<span className="whitespace-normal break-words text-left pl-1">
+					<span className="flex-shrink-0 mt-0.5">{ !! Icon && Icon }</span>
+					<span className="break-words text-left pl-1 flex-1">
 						{ label }
 					</span>
 				</Accordion.Trigger>
@@ -157,7 +157,7 @@ const Navigation = () => {
 	return (
 		<div className="flex-shrink-0 bg-background-primary">
 			<div className="px-4 pb-4 pt-2 absolute">
-				<nav className="space-y-2">
+				<nav className="space-y-2 w-[215px]">
 					{ navigation.map( ( item ) =>
 						item.submenu ? (
 							<SubmenuAccordion

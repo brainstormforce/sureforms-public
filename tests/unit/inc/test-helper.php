@@ -635,6 +635,77 @@ class Test_Helper extends TestCase {
     }
 
     /**
+     * Test the sanitize_textarea method with various inputs.
+     */
+    public function test_sanitize_textarea() {
+        $testCases = [
+            'plain text' => [
+                'input'    => 'Hello, World!',
+                'expected' => 'Hello, World!',
+            ],
+            'simple HTML tags' => [
+                'input'    => '<p>Hello, <strong>World!</strong></p>',
+                'expected' => '<p>Hello, <strong>World!</strong></p>',
+            ],
+            'special characters with newlines' => [
+                'input'    => "Hello, World!\nThis is a test.",
+                'expected' => "Hello, World!\nThis is a test.",
+            ],
+            'disallowed tags (script)' => [
+                'input'    => 'Hello<script>alert("Hack");</script>World!',
+                'expected' => 'HelloWorld!',
+            ],
+            'rich text with style' => [
+                'input'    => '<h1><span style="color: rgb(230, 0, 0);">Rich text content</span></h1>',
+                'expected' => '<h1><span style="color: rgb(230, 0, 0);">Rich text content</span></h1>',
+            ],
+            'empty input' => [
+                'input'    => '',
+                'expected' => '',
+            ],
+        ];
+    
+
+        // Iterate through test cases and assert results.
+        foreach ($testCases as $description => $testCase) {
+            $this->assertEquals(
+                $testCase['expected'],
+                Helper::sanitize_textarea($testCase['input']),
+                "Failed asserting for case: {$description}"
+            );
+        }
+    }
+
+    /**
+     * Test the esc_textarea method with various inputs.
+     */
+    public function test_esc_textarea() {
+        $testCases = [
+            'plain text' => [
+                'input'    => 'Hello, World!',
+                'expected' => '<p>Hello, World!</p>',
+            ],
+            'special characters with newlines' => [
+                'input'    => "Hello, World!\nThis is a test.",
+                'expected' => "<p>Hello, World!<br />This is a test.</p>",
+            ],
+            'empty input' => [
+                'input'    => '',
+                'expected' => '',
+            ],
+        ];
+    
+
+        // Iterate through test cases and assert results.
+        foreach ($testCases as $description => $testCase) {
+            $this->assertEquals(
+                $testCase['expected'],
+                Helper::esc_textarea($testCase['input']),
+                "Failed asserting for case: {$description}"
+            );
+        }
+    }
+    /**
      * Test the strip_js_attributes method with various inputs.
      */
     public function test_strip_js_attributes() {

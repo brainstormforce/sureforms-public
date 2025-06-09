@@ -8,16 +8,21 @@ import { BlockInserterWrapper } from '../Inserter.js';
 import { filterSubmitButton } from '@Components/hooks';
 
 const SubmitButton = ( props ) => {
-	const metaValues = useSelect( ( select ) => select( editorStore ).getEditedPostAttribute( 'meta' ) );
+	const metaValues = useSelect( ( select ) =>
+		select( editorStore ).getEditedPostAttribute( 'meta' )
+	);
 	const buttonElement = useRef( null );
-	const labelText = metaValues?._srfm_submit_button_text || __( 'Submit', 'sureforms' );
+	const labelText =
+		metaValues?._srfm_submit_button_text || __( 'Submit', 'sureforms' );
 
 	useEffect( () => {
 		const eventToButton = () => {
 			// need multiple timeouts for DOM elements to find.
 			// click on form section
 			setTimeout( () => {
-				const editPostTab = document.getElementById( 'tabs-0-edit-post/document' );
+				const editPostTab = document.getElementById(
+					'tabs-0-edit-post/document'
+				);
 
 				editPostTab?.click();
 			}, 100 );
@@ -25,7 +30,9 @@ const SubmitButton = ( props ) => {
 			// click on style tab
 			setTimeout( () => {
 				// elements for submit button event listener
-				const styleTabElement = document.querySelectorAll( '.srfm-inspector-tabs div' )[ 1 ]; // Style Tab
+				const styleTabElement = document.querySelectorAll(
+					'.srfm-inspector-tabs div'
+				)[ 1 ]; // Style Tab
 				styleTabElement?.click();
 			}, 150 );
 		};
@@ -36,19 +43,29 @@ const SubmitButton = ( props ) => {
 
 		return () => {
 			if ( buttonElement.current ) {
-				buttonElement.current.removeEventListener( 'click', eventToButton );
+				buttonElement.current.removeEventListener(
+					'click',
+					eventToButton
+				);
 			}
 		};
 	}, [] );
 
-	const submitButton = <button className="srfm-submit-richtext srfm-button srfm-submit-button srfm-btn-alignment srfm-btn-bg-color" ref={ buttonElement }>
-		<RichText
-			tagName="label"
-			value={ labelText }
-			onChange={ ( value ) => props.updateMeta( '_srfm_submit_button_text', value ) }
-			placeholder={ __( 'Submit', 'sureforms' ) }
-		/>
-	</button>;
+	const submitButton = (
+		<button
+			className="srfm-submit-richtext srfm-button srfm-submit-button srfm-btn-alignment srfm-btn-bg-color"
+			ref={ buttonElement }
+		>
+			<RichText
+				tagName="label"
+				value={ labelText }
+				onChange={ ( value ) =>
+					props.updateMeta( '_srfm_submit_button_text', value )
+				}
+				placeholder={ __( 'Submit', 'sureforms' ) }
+			/>
+		</button>
+	);
 
 	return filterSubmitButton( submitButton, metaValues );
 };
@@ -57,7 +74,11 @@ export default function useSubmitButton( args ) {
 	const { isInlineButtonBlockPresent, updateMeta, editorMode } = args;
 
 	function addSubmitButton( elm ) {
-		if ( ! elm.closest( 'body' ).querySelector( '.srfm-submit-btn-container' ) ) {
+		if (
+			! elm
+				.closest( 'body' )
+				.querySelector( '.srfm-submit-btn-container' )
+		) {
 			const appendHtml = `<div class="srfm-custom-block-inserter"></div><div class="srfm-submit-btn-container srfm-submit-btn-font-size"></div>`;
 
 			elm.insertAdjacentHTML( 'afterend', appendHtml );
@@ -67,7 +88,9 @@ export default function useSubmitButton( args ) {
 			);
 
 			if ( getBlockInserterDiv ) {
-				createRoot( getBlockInserterDiv ).render( <BlockInserterWrapper /> );
+				createRoot( getBlockInserterDiv ).render(
+					<BlockInserterWrapper />
+				);
 			}
 		}
 
@@ -78,7 +101,9 @@ export default function useSubmitButton( args ) {
 		if ( buttonCtn ) {
 			const getButton = buttonCtn?.querySelector( 'button' );
 			if ( ! getButton ) {
-				createRoot( buttonCtn ).render( <SubmitButton updateMeta={ updateMeta } /> );
+				createRoot( buttonCtn ).render(
+					<SubmitButton updateMeta={ updateMeta } />
+				);
 			}
 		}
 	}

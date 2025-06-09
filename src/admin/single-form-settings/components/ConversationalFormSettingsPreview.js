@@ -13,8 +13,8 @@ const ConversationalFormSettingsPreview = ( { setHidePopover } ) => {
 
 	return (
 		<>
-			{ false === conversationalFormSettings
-				? <>
+			{ false === conversationalFormSettings ? (
+				<>
 					<div className="srfm-instant-form-settings srfm-instant-form-settings-inline">
 						<div className="srfm-conversational-placeholder-label-ctn">
 							<label
@@ -24,8 +24,14 @@ const ConversationalFormSettingsPreview = ( { setHidePopover } ) => {
 								{ __( 'Conversational Layout', 'sureforms' ) }
 							</label>
 							<EditorPremiumBadge
-								tooltipHeading={ __( 'Unlock Conversational Forms', 'sureforms' ) }
-								tooltipContent={ __( 'With the SureForms Pro Plan, you can transform your forms into engaging conversational layouts for a seamless user experience.', 'sureforms' ) }
+								tooltipHeading={ __(
+									'Unlock Conversational Forms',
+									'sureforms'
+								) }
+								tooltipContent={ __(
+									'With the SureForms Pro Plan, you can transform your forms into engaging conversational layouts for a seamless user experience.',
+									'sureforms'
+								) }
 								utmMedium="sureforms_editor"
 							/>
 						</div>
@@ -37,7 +43,9 @@ const ConversationalFormSettingsPreview = ( { setHidePopover } ) => {
 						/>
 					</div>
 				</>
-			 : conversationalFormSettings }
+			) : (
+				conversationalFormSettings
+			) }
 		</>
 	);
 };

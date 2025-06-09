@@ -15,16 +15,23 @@ const ErrorPopup = () => {
 				className="bg-background-primary gap-5 px-5 py-4 rounded-lg max-w-sm shadow-lg"
 			>
 				<Container.Item className="pt-2">
-					<Label variant="neutral" className="text-lg font-bold flex gap-3">
-						<span className="pt-1">
-							{ ICONS.warning }
-						</span>
+					<Label
+						variant="neutral"
+						className="text-lg font-bold flex gap-3"
+					>
+						<span className="pt-1">{ ICONS.warning }</span>
 						{ __( 'Error Creating Form', 'sureforms' ) }
 					</Label>
 				</Container.Item>
 				<Container.Item className="flex flex-col gap-4">
-					<Label size="sm" className="text-text-secondary font-normal">
-						{ __( 'There was an error mapping the AI response to Fields. Please try again.', 'sureforms' ) }
+					<Label
+						size="sm"
+						className="text-text-secondary font-normal"
+					>
+						{ __(
+							'There was an error mapping the AI response to Fields. Please try again.',
+							'sureforms'
+						) }
 					</Label>
 				</Container.Item>
 				<Container.Item className="flex flex-col w-full gap-4 pb-2">

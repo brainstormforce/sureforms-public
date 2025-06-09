@@ -1,0 +1,59 @@
+/**
+ * SureMail promotional page styles.
+ *
+ * @since 1.7.1
+ */
+
+// Basic reset and container styles for the SureMail promotional page
+.srfm-suremail-page {
+	// Most styling is handled by Tailwind CSS classes in the component
+	// This file provides minimal base styles and admin compatibility
+
+	// Ensure proper spacing in admin context
+	margin: 0;
+	padding: 0;
+
+	// Admin page wrapper compatibility
+	.srfm-admin-wrapper & {
+		margin: 0;
+		padding: 0;
+	}
+
+	// Force UI Container overrides for admin context
+	.force-ui-container {
+		margin: 0 auto;
+	}
+
+	// Ensure buttons work properly in admin context
+	button {
+		cursor: pointer;
+
+		&:disabled {
+			cursor: not-allowed;
+			opacity: 0.6;
+		}
+	}
+
+	// Responsive image handling
+	img {
+		max-width: 100%;
+		height: auto;
+	}
+
+	// Admin compatibility for Force UI components
+	.force-ui-button {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		border: none;
+		border-radius: 4px;
+		font-weight: 500;
+		text-decoration: none;
+		transition: all 0.2s ease;
+
+		&:focus {
+			outline: 2px solid #007cba;
+			outline-offset: 2px;
+		}
+	}
+}

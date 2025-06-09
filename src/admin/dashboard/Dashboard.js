@@ -1,8 +1,6 @@
 import GetStarted from './GetStarted';
 
-import {
-	Container,
-} from '@bsf/force-ui';
+import { Container } from '@bsf/force-ui';
 import ExtendTab from './ExtendTab';
 
 import Header from '../components/Header';
@@ -13,16 +11,20 @@ import FormsOverview from './FormsOverview';
 export default () => {
 	const nav = <Header />;
 
-	const leftSidebar = <>
-		<GetStarted />
-		<FormsOverview />
-		{ ! srfm_admin?.is_pro_active && <UpgradeToPro /> }
-	</>;
+	const leftSidebar = (
+		<>
+			<GetStarted />
+			<FormsOverview />
+			{ ! srfm_admin?.is_pro_active && <UpgradeToPro /> }
+		</>
+	);
 
-	const rightSidebar = <>
-		<ExtendTab />
-		<QuickAccessTab />
-	</>;
+	const rightSidebar = (
+		<>
+			<ExtendTab />
+			<QuickAccessTab />
+		</>
+	);
 
 	return <Container
 		className="h-full"

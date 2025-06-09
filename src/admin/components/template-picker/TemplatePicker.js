@@ -1,7 +1,9 @@
 import { useEffect, render } from '@wordpress/element';
 import Header from './components/Header.js';
 import { BrowserRouter as Router, useLocation } from 'react-router-dom';
-import AiFormBuilder, { getLimitReachedPopup } from './components/AiFormBuilder.js';
+import AiFormBuilder, {
+	getLimitReachedPopup,
+} from './components/AiFormBuilder.js';
 import AddNewForm from './ai-form-builder-components/AddNewForm.js';
 import { Container } from '@bsf/force-ui';
 
@@ -23,9 +25,12 @@ const TemplatePicker = () => {
 			case 'ai':
 				return (
 					// Check if the user has reached the limit of AI usage. If not, show the AI form builder.
-					srfm_admin?.srfm_ai_usage_details?.remaining === 0 || srfm_admin?.srfm_ai_usage_details?.code ? getLimitReachedPopup(
-					)
-						: ( <AiFormBuilder /> )
+					srfm_admin?.srfm_ai_usage_details?.remaining === 0 ||
+						srfm_admin?.srfm_ai_usage_details?.code ? (
+							getLimitReachedPopup()
+						) : (
+							<AiFormBuilder />
+						)
 				);
 
 			default:

@@ -10,7 +10,11 @@ import { __ } from '@wordpress/i18n';
 import { useState, useEffect, render } from '@wordpress/element';
 
 import { useSelect, useDispatch } from '@wordpress/data';
-import { store as editorStore, PluginDocumentSettingPanel, PluginPostPublishPanel } from '@wordpress/editor';
+import {
+	store as editorStore,
+	PluginDocumentSettingPanel,
+	PluginPostPublishPanel,
+} from '@wordpress/editor';
 import { store as blockEditorStore } from '@wordpress/block-editor';
 import { store as preferencesStore } from '@wordpress/preferences';
 
@@ -19,7 +23,9 @@ import StyleSettings from './tabs/StyleSettings.js';
 import AdvancedSettings from './tabs/AdvancedSettings.js';
 
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
-import InspectorTab, { SRFMTabs } from '@Components/inspector-tabs/InspectorTab.js';
+import InspectorTab, {
+	SRFMTabs,
+} from '@Components/inspector-tabs/InspectorTab.js';
 import { addHeaderCenterContainer } from './components/SRFMEditorHeader.js';
 import {
 	attachSidebar,
@@ -39,22 +45,19 @@ const SureformsFormSpecificSettings = ( props ) => {
 	const [ enableQuickActionSidebar, setEnableQuickActionSidebar ] =
 		useState( 'enabled' );
 
-	const {
-		postId,
-		sureformsKeys,
-		blockCount,
-		blocks,
-		editorMode,
-	} = useSelect( ( select ) => {
-		const { get } = select( preferencesStore );
-		return {
-			editorMode: get( 'core', 'editorMode' ) ?? 'visual',
-			postId: select( 'core/editor' ).getCurrentPostId(),
-			sureformsKeys: select( editorStore ).getEditedPostAttribute( 'meta' ),
-			blockCount: select( blockEditorStore ).getBlockCount(),
-			blocks: select( 'core/block-editor' ).getBlocks(),
-		};
-	} );
+	const { postId, sureformsKeys, blockCount, blocks, editorMode } = useSelect(
+		( select ) => {
+			const { get } = select( preferencesStore );
+			return {
+				editorMode: get( 'core', 'editorMode' ) ?? 'visual',
+				postId: select( 'core/editor' ).getCurrentPostId(),
+				sureformsKeys:
+					select( editorStore ).getEditedPostAttribute( 'meta' ),
+				blockCount: select( blockEditorStore ).getBlockCount(),
+				blocks: select( 'core/block-editor' ).getBlocks(),
+			};
+		}
+	);
 
 	const { editPost } = useDispatch( editorStore );
 	const [ rootContainer, setRootContainer ] = useState( null );
@@ -62,7 +65,9 @@ const SureformsFormSpecificSettings = ( props ) => {
 
 	useEffect( () => {
 		setRootContainer( document.querySelector( '.is-root-container' ) );
-		setRootContainerDiv( document.querySelector( '.edit-post-visual-editor__content-area' ) );
+		setRootContainerDiv(
+			document.querySelector( '.edit-post-visual-editor__content-area' )
+		);
 	}, [] );
 
 	const isPageBreak = blocks.some(
@@ -92,7 +97,11 @@ const SureformsFormSpecificSettings = ( props ) => {
 		}
 	};
 
-	useEffect( addFormStylingClass, [ rootContainer, rootContainerDiv, deviceType ] );
+	useEffect( addFormStylingClass, [
+		rootContainer,
+		rootContainerDiv,
+		deviceType,
+	] );
 
 	useContainerDynamicClass( sureformsKeys );
 
@@ -121,7 +130,10 @@ const SureformsFormSpecificSettings = ( props ) => {
 	}, [ formCustomCssData ] );
 
 	useEffect( () => {
-		if ( typeof sureformsKeys?._srfm_page_break_settings?.is_page_break === 'boolean' ) {
+		if (
+			typeof sureformsKeys?._srfm_page_break_settings?.is_page_break ===
+			'boolean'
+		) {
 			const updatedPageBreakSettings = {
 				...sureformsKeys._srfm_page_break_settings,
 				is_page_break: isPageBreak,

@@ -221,7 +221,7 @@ class Helper {
 				'input'    => 'sanitize_text_field',
 				'number'   => [ self::class, 'sanitize_number' ],
 				'email'    => 'sanitize_email',
-				'textarea' => 'sanitize_textarea_field',
+				'textarea' => [ self::class, 'sanitize_textarea' ],
 			]
 		);
 
@@ -927,6 +927,34 @@ class Helper {
 	}
 
 	/**
+	 * Render a site key missing error message.
+	 *
+	 * @param string $provider_name Name of the captcha provider (e.g., HCaptcha, Google reCAPTCHA, Turnstile).
+	 * @since 1.7.0
+	 * @since 1.7.1 moved to inc/helper.php from inc/generate-form-markup.php
+	 * @return void
+	 */
+	public static function render_missing_sitekey_error( $provider_name ) {
+		$icon = self::fetch_svg( 'info_circle', '', 'aria-hidden="true"' );
+		?>
+		<p id="sitekey-error" class="srfm-common-error-message srfm-error-message" hidden="false">
+			<?php echo wp_kses( $icon, self::$allowed_tags_svg ); ?>
+			<span class="srfm-error-content">
+				<?php
+				echo esc_html(
+					sprintf(
+					/* translators: %s: Provider name like HCaptcha, Google reCAPTCHA, Turnstile */
+						__( '%s sitekey is missing. Please contact your site administrator.', 'sureforms' ),
+						$provider_name
+					)
+				);
+				?>
+			</span>
+		</p>
+		<?php
+	}
+
+	/**
 	 * Process blocks and inner blocks.
 	 *
 	 * @param array<mixed>  $blocks The block data.
@@ -1277,10 +1305,65 @@ class Helper {
 	}
 
 	/**
+	 * Custom escape function for the textarea with rich text support.
+	 *
+	 * @param string $content The content submitted by the user in the textarea block.
+	 * @since 1.7.1
+	 *
+	 * @return string Escaped content.
+	 */
+	public static function esc_textarea( $content ) {
+		$content = wpautop( self::sanitize_textarea( $content ) );
+
+		return trim( str_replace( [ "\r\n", "\r", "\n" ], '', $content ) );
+	}
+
+	/**
+	 * Custom sanitization function for the textarea with rich text support.
+	 *
+	 * @param string $content The content submitted by the user in the textarea block.
+	 * @since 1.7.1
+	 *
+	 * @return string Sanitized content.
+	 */
+	public static function sanitize_textarea( $content ) {
+		$count   = 1;
+		$content = convert_invalid_entities( $content );
+
+		// Remove the 'script' and 'style' tags recursively from the content.
+		while ( $count ) {
+			$content = preg_replace( '@<(script|style)[^>]*?>.*?</\\1>@si', '', self::get_string_value( $content ), - 1, $count );
+		}
+
+		// Disable the safe style attribute parsing for the textarea block.
+		add_filter( 'safe_style_css', [ self::class, 'disable_style_attr_parsing' ], 10, 1 );
+		$content = wp_kses_post( self::get_string_value( $content ) );
+
+		// Remove the filter after sanitization to avoid affecting other blocks.
+		remove_filter( 'safe_style_css', [ self::class, 'disable_style_attr_parsing' ], 10 );
+
+		// Ensure all tags are balanced.
+		return force_balance_tags( $content );
+	}
+
+	/**
+	 * Disable parsing of style attributes for the textarea block.
+	 *
+	 * @param array<string> $allowed_styles The allowed styles.
+	 * @since 1.7.1
+	 *
+	 * @return array An empty array to disable style attribute parsing.
+	 */
+	public static function disable_style_attr_parsing( $allowed_styles ) {
+		unset( $allowed_styles );
+		// Disable parsing of style attributes.
+		return [];
+	}
+	/**
 	 * Strips JavaScript attributes from HTML content.
 	 *
 	 * @param string $html The HTML content to process.
-	 * @since x.x.x
+	 * @since 1.7.1
 	 * @return string The cleaned HTML content without JavaScript attributes.
 	 */
 	public static function strip_js_attributes( $html ) {

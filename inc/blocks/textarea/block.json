@@ -64,9 +64,13 @@
 			"type":"boolean",
 			"default":false
 		},
-    "slug":{
+    	"slug":{
 			"type":"string",
 			"default":""
+		},
+		"isRichText": {
+			"type": "boolean",
+			"default": false
 		}
 	}
 }
