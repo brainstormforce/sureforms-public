@@ -18,14 +18,7 @@
 		display: flex;
 		flex-wrap: wrap;
 		@include srfm-gap-styles;
-
-		// For the readonly inputs, setting the background to the one with 5% opacity instead of the usual 2%.
-		.srfm-read-only {
-			.srfm-input-content,
-			.srfm-input-common {
-				--srfm-color-input-background: var( --srfm-color-input-background-hover );
-			}
-		}
+		@include srfm-read-only-styles;
 
 		.conditional-logic {
 			display: none;

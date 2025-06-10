@@ -26,7 +26,7 @@ export const InputComponent = ( { attributes, blockID, setAttributes } ) => {
 				setAttributes={ setAttributes }
 				block_id={ blockID }
 			/>
-			<div className="srfm-block-wrap">
+			<div className={ `srfm-block-wrap${ readOnly ? ' srfm-read-only' : '' }` }>
 				<input
 					id={ `srfm-${ slug }-confirm-${ blockID }` }
 					type="text"
