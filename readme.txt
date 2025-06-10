@@ -262,7 +262,7 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 == Changelog ==
 = x.x.x =
 * Fix: Added editor background compatibility with Kadence theme.
-= 1.7.1 - 5th June 2025 =
+= 1.7.1 - 9th June 2025 =
 * New: Added rich text support for Textarea field.
 * Improvement: Introduced a 67% width option for form fields, providing enhanced layout flexibility.
 * Improvement: Enhanced reCAPTCHA with detailed failure logging for custom button implementations.
