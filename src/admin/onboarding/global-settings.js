@@ -1,6 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import { useState, useEffect } from '@wordpress/element';
-import { Switch, Input, Button, Select, toast } from '@bsf/force-ui';
+import { Switch, Input, Button, Select, toast, Loader } from '@bsf/force-ui';
 import { useOnboardingNavigation } from './hooks';
 import { useOnboardingState } from './onboarding-state';
 import NavigationButtons from './navigation-buttons';

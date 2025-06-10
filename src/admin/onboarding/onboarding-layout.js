@@ -9,6 +9,7 @@ import {
 	ONBOARDING_SESSION_STORAGE_KEY,
 } from './onboarding-state';
 import ONBOARDING_ROUTES_CONFIG from './onboarding-routes-config';
+import ICONS from '@Admin/components/template-picker/components/icons';
 
 const NavBar = () => {
 	const { getCurrentStepNumber } = useOnboardingNavigation();
@@ -17,9 +18,7 @@ const NavBar = () => {
 		<Topbar className="p-5 bg-background-secondary">
 			<Topbar.Left>
 				<Topbar.Item>
-					<div className="text-xl font-semibold text-text-primary">
-						{ __( 'SureForms', 'sureforms' ) }
-					</div>
+					{ ICONS.logo }
 				</Topbar.Item>
 			</Topbar.Left>
 			<Topbar.Middle align="center">
