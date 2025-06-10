@@ -4,6 +4,7 @@ import { Check } from 'lucide-react';
 import { useOnboardingNavigation } from './hooks';
 import { Divider } from './components';
 import NavigationButtons from './navigation-buttons';
+import { initiateAuth } from '@Utils/Helpers';
 
 const features = [
 	__( 'Create beautiful, responsive forms with ease', 'sureforms' ),
@@ -18,12 +19,24 @@ const Welcome = () => {
 	const { navigateToNextRoute } = useOnboardingNavigation();
 
 	const handleConnect = async () => {
-		// Handle connection logic here if needed
-		navigateToNextRoute();
+		try {
+			// Check if user has not connected their account yet.
+			if ( 'non-registered' !== srfm_admin?.srfm_ai_usage_details?.type ) {
+				navigateToNextRoute();
+				return;
+			}
+
+			// Use the initiateAuth helper function
+			await initiateAuth();
+			
+			// Navigate to next route after successful authentication
+			navigateToNextRoute();
+		} catch ( error ) {
+			console.error( 'Error during authentication:', error );
+		}
 	};
 
 	const handleSkip = async () => {
-		// Skip the connection step and go to next
 		navigateToNextRoute();
 	};
 
@@ -71,7 +84,10 @@ const Welcome = () => {
 				} }
 				skipProps={ {
 					onClick: handleSkip,
-					text: __( 'Skip this step', 'sureforms' ),
+					text: __( 'Skip', 'sureforms' ),
+				} }
+				buttonGroupProps={ {
+					className: 'flex-row-reverse'
 				} }
 			/>
 		</form>
