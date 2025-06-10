@@ -40,7 +40,10 @@ const Integrations = ( {
 		},
 	];
 	return (
-		<TabContentWrapper title={ __( 'Integrations', 'sureforms' ) } className="p-4">
+		<TabContentWrapper
+			title={ __( 'Integrations', 'sureforms' ) }
+			className="p-4"
+		>
 			<div className="flex flex-col gap-1 bg-background-secondary rounded-lg p-1">
 				{ cards.map( ( cardItem, cardIndex ) => (
 					<Fragment key={ cardIndex }>
@@ -103,7 +106,9 @@ const UpsellSureTriggers = ( {
 	setPluginConnected,
 } ) => {
 	const integrations = Object.entries( srfm_admin?.integrations );
-	const plugin = integrations?.find( ( item ) => 'suretriggers' === item[ 1 ].slug )?.[ 1 ];
+	const plugin = integrations?.find(
+		( item ) => 'suretriggers' === item[ 1 ].slug
+	)?.[ 1 ];
 
 	const [ btnDisabled, setBtnDisabled ] = useState( false );
 
@@ -311,13 +316,16 @@ const UpsellSureTriggers = ( {
 					/>
 				</div>
 				<div>
-					<Badge label={ __( 'Free', 'sureforms' ) } variant="green" disableHover size="xs" />
+					<Badge
+						label={ __( 'Free', 'sureforms' ) }
+						variant="green"
+						disableHover
+						size="xs"
+					/>
 				</div>
 			</IntegrationCard.Header>
 			<IntegrationCard.Content>
-				<IntegrationCard.Title
-					title={ __( 'OttoKit', 'sureforms' ) }
-				/>
+				<IntegrationCard.Title title={ __( 'OttoKit', 'sureforms' ) } />
 				<IntegrationCard.Description
 					description={ __(
 						'Effortlessly connect your forms to hundreds of apps, automating tasks like sending entries to your favourite CRM.',
@@ -325,7 +333,11 @@ const UpsellSureTriggers = ( {
 					) }
 				/>
 				<IntegrationCard.CTA>
-					<Button size="xs" onClick={ handlePluginActionTrigger } disabled={ btnDisabled }>
+					<Button
+						size="xs"
+						onClick={ handlePluginActionTrigger }
+						disabled={ btnDisabled }
+					>
 						{ CTA }
 					</Button>
 				</IntegrationCard.CTA>

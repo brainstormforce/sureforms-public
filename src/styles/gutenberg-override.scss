@@ -223,7 +223,9 @@
 			}
 
 			.components-form-toggle__input:focus + .components-form-toggle__track {
-				box-shadow: 0 0 0 2px $srfm-color-plain-background, 0 0 0 4px $srfm-color-primary;
+				box-shadow:
+					0 0 0 2px $srfm-color-plain-background,
+					0 0 0 4px $srfm-color-primary;
 			}
 
 			&.is-checked {

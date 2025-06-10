@@ -37,14 +37,22 @@ export default function SmartTagList( {
 					size={ triggerSize }
 					icon={ icon ?? <EllipsisVerticalIcon /> }
 					iconPosition="right"
-					className={ cn( 'min-w-fit [&_svg]:shrink-0', triggerClassName ) }
+					className={ cn(
+						'min-w-fit [&_svg]:shrink-0',
+						triggerClassName
+					) }
 				>
 					{ !! label && label }
 				</Button>
 			</DropdownMenu.Trigger>
 			<DropdownMenu.Portal id="srfm-dialog-root">
 				<DropdownMenu.ContentWrapper>
-					<DropdownMenu.Content className={ cn( 'w-60 max-h-80 overflow-y-auto', className ) }>
+					<DropdownMenu.Content
+						className={ cn(
+							'w-60 max-h-80 overflow-y-auto',
+							className
+						) }
+					>
 						<DropdownMenu.List>
 							{ controls.map( ( section, sectionIndx ) =>
 								section.map( ( control, indx ) =>

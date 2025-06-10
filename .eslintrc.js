@@ -92,5 +92,6 @@ module.exports = {
 		hcaptcha: true,
 		turnstile: true,
 		ResizeObserver: true,
+		MutationObserver: true,
 	},
 };

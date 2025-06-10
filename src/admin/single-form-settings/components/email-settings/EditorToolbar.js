@@ -75,9 +75,7 @@ export const modules = {
 	},
 	clipboard: {
 		matchVisual: false,
-		matchers: [
-			[ 'img', imageAttributeMatcher ],
-		],
+		matchers: [ [ 'img', imageAttributeMatcher ] ],
 	},
 };
 
@@ -105,7 +103,10 @@ export const formats = [
 
 // Quill Toolbar component
 export const QuillToolbar = () => (
-	<div id="toolbar" className="border-x border-t border-b-0 border-field-border border-solid rounded-t-lg">
+	<div
+		id="toolbar"
+		className="border-x border-t border-b-0 border-field-border border-solid rounded-t-lg"
+	>
 		<span className="ql-formats">
 			<select className="ql-header" defaultValue="false">
 				<option value="1">Heading 1</option>

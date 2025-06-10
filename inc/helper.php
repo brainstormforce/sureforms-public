@@ -927,6 +927,34 @@ class Helper {
 	}
 
 	/**
+	 * Render a site key missing error message.
+	 *
+	 * @param string $provider_name Name of the captcha provider (e.g., HCaptcha, Google reCAPTCHA, Turnstile).
+	 * @since 1.7.0
+	 * @since 1.7.1 moved to inc/helper.php from inc/generate-form-markup.php
+	 * @return void
+	 */
+	public static function render_missing_sitekey_error( $provider_name ) {
+		$icon = self::fetch_svg( 'info_circle', '', 'aria-hidden="true"' );
+		?>
+		<p id="sitekey-error" class="srfm-common-error-message srfm-error-message" hidden="false">
+			<?php echo wp_kses( $icon, self::$allowed_tags_svg ); ?>
+			<span class="srfm-error-content">
+				<?php
+				echo esc_html(
+					sprintf(
+					/* translators: %s: Provider name like HCaptcha, Google reCAPTCHA, Turnstile */
+						__( '%s sitekey is missing. Please contact your site administrator.', 'sureforms' ),
+						$provider_name
+					)
+				);
+				?>
+			</span>
+		</p>
+		<?php
+	}
+
+	/**
 	 * Process blocks and inner blocks.
 	 *
 	 * @param array<mixed>  $blocks The block data.
@@ -1280,7 +1308,7 @@ class Helper {
 	 * Custom escape function for the textarea with rich text support.
 	 *
 	 * @param string $content The content submitted by the user in the textarea block.
-	 * @since x.x.x
+	 * @since 1.7.1
 	 *
 	 * @return string Escaped content.
 	 */
@@ -1294,7 +1322,7 @@ class Helper {
 	 * Custom sanitization function for the textarea with rich text support.
 	 *
 	 * @param string $content The content submitted by the user in the textarea block.
-	 * @since x.x.x
+	 * @since 1.7.1
 	 *
 	 * @return string Sanitized content.
 	 */
@@ -1322,7 +1350,7 @@ class Helper {
 	 * Disable parsing of style attributes for the textarea block.
 	 *
 	 * @param array<string> $allowed_styles The allowed styles.
-	 * @since x.x.x
+	 * @since 1.7.1
 	 *
 	 * @return array An empty array to disable style attribute parsing.
 	 */
@@ -1330,6 +1358,61 @@ class Helper {
 		unset( $allowed_styles );
 		// Disable parsing of style attributes.
 		return [];
+	}
+	/**
+	 * Strips JavaScript attributes from HTML content.
+	 *
+	 * @param string $html The HTML content to process.
+	 * @since 1.7.1
+	 * @return string The cleaned HTML content without JavaScript attributes.
+	 */
+	public static function strip_js_attributes( $html ) {
+		$dom = new \DOMDocument();
+
+		// Suppress warnings due to malformed HTML.
+		libxml_use_internal_errors( true );
+		$loaded = $dom->loadHTML( '<?xml encoding="utf-8" ?>' . $html );
+		libxml_clear_errors();
+
+		if ( ! $loaded ) {
+			return $html; // Return original HTML if loading fails.
+		}
+
+		$xpath = new \DOMXPath( $dom );
+
+		// 1. Remove all <script> tags.
+		$script_nodes = $xpath->query( '//script' );
+		if ( $script_nodes instanceof \DOMNodeList ) {
+			foreach ( $script_nodes as $script ) {
+				// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase -- This is a DOM element.
+				$parent_node = $script->parentNode;
+				if ( $parent_node instanceof \DOMNode ) {
+					$parent_node->removeChild( $script );
+				}
+			}
+		}
+
+		// 2. Remove all attributes that start with "on" (like onclick, onmouseover, etc.).
+		$elements_with_on_attrs = $xpath->query( '//*[@*[starts-with(name(), "on")]]' );
+		if ( $elements_with_on_attrs instanceof \DOMNodeList ) {
+			foreach ( $elements_with_on_attrs as $element ) {
+				if ( $element instanceof \DOMElement && $element->hasAttributes() ) {
+					foreach ( iterator_to_array( $element->attributes ) as $attr ) {
+						if ( $attr instanceof \DOMAttr && stripos( $attr->name, 'on' ) === 0 ) {
+							$element->removeAttribute( $attr->name );
+						}
+					}
+				}
+			}
+		}
+
+		// Return cleaned HTML.
+		$body = $dom->getElementsByTagName( 'body' )->item( 0 );
+		if ( $body instanceof \DOMNode ) {
+			$cleaned_html = $dom->saveHTML( $body );
+			return is_string( $cleaned_html ) ? $cleaned_html : '';
+		}
+		return '';
 	}
 
 	/**

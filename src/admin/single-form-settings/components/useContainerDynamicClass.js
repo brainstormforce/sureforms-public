@@ -10,10 +10,14 @@ const useContainerDynamicClass = ( sureformsKeys ) => {
 		if ( formRootContainer && sureformsKeys?._srfm_additional_classes ) {
 			if ( ! formRootContainer.hasAttribute( 'data-existing-classes' ) ) {
 				// Add existing classes in the root container by creating an attribute data-existing-classes.
-				const getExistingClasses = formRootContainer.getAttribute( 'class' );
+				const getExistingClasses =
+					formRootContainer.getAttribute( 'class' );
 
 				if ( getExistingClasses ) {
-					formRootContainer.setAttribute( 'data-existing-classes', getExistingClasses );
+					formRootContainer.setAttribute(
+						'data-existing-classes',
+						getExistingClasses
+					);
 				}
 			}
 
@@ -21,10 +25,15 @@ const useContainerDynamicClass = ( sureformsKeys ) => {
 			let classesArray =
 				sureformsKeys._srfm_additional_classes.split( ' ' );
 
-			const getExistingClassAttribute = formRootContainer.getAttribute( 'data-existing-classes' );
+			const getExistingClassAttribute = formRootContainer.getAttribute(
+				'data-existing-classes'
+			);
 
 			if ( getExistingClassAttribute ) {
-				classesArray = [ ...getExistingClassAttribute.split( ' ' ), ...classesArray ];
+				classesArray = [
+					...getExistingClassAttribute.split( ' ' ),
+					...classesArray,
+				];
 			}
 
 			let classString = '';
