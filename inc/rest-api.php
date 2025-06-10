@@ -11,6 +11,7 @@ use SRFM\Inc\AI_Form_Builder\AI_Auth;
 use SRFM\Inc\AI_Form_Builder\AI_Form_Builder;
 use SRFM\Inc\AI_Form_Builder\Field_Mapping;
 use SRFM\Inc\Database\Tables\Entries;
+use SRFM\Inc\Onboarding;
 use SRFM\Inc\Traits\Get_Instance;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -157,6 +158,51 @@ class Rest_Api {
 	}
 
 	/**
+	 * Set onboarding completion status.
+	 *
+	 * @param \WP_REST_Request $request Full details about the request.
+	 * @since 1.7.0
+	 * @return \WP_REST_Response
+	 */
+	public function set_onboarding_status( $request ) {
+		$nonce = Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) );
+
+		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
+			return new \WP_REST_Response(
+				[ 'error' => __( 'Nonce verification failed.', 'sureforms' ) ],
+				403
+			);
+		}
+
+		// Set the onboarding status to yes always.
+		Onboarding::get_instance()->set_onboarding_status( 'yes' );
+
+		return new \WP_REST_Response( [ 'success' => true ] );
+	}
+
+	/**
+	 * Get onboarding completion status.
+	 *
+	 * @param \WP_REST_Request $request Full details about the request.
+	 * @since 1.7.0
+	 * @return \WP_REST_Response
+	 */
+	public function get_onboarding_status( $request ) {
+		$nonce = Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) );
+
+		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
+			return new \WP_REST_Response(
+				[ 'error' => __( 'Nonce verification failed.', 'sureforms' ) ],
+				403
+			);
+		}
+
+		$status = Onboarding::get_instance()->get_onboarding_status();
+
+		return new \WP_REST_Response( [ 'completed' => $status ] );
+	}
+
+	/**
 	 * Get endpoints
 	 *
 	 * @since 0.0.7
@@ -209,6 +255,17 @@ class Rest_Api {
 				'form-data'          => [
 					'methods'             => 'GET',
 					'callback'            => [ $this, 'get_form_data' ],
+					'permission_callback' => [ $this, 'can_edit_posts' ],
+				],
+				// Onboarding endpoints.
+				'onboarding/set-status' => [
+					'methods'             => 'POST',
+					'callback'            => [ $this, 'set_onboarding_status' ],
+					'permission_callback' => [ $this, 'can_edit_posts' ],
+				],
+				'onboarding/get-status' => [
+					'methods'             => 'GET',
+					'callback'            => [ $this, 'get_onboarding_status' ],
 					'permission_callback' => [ $this, 'can_edit_posts' ],
 				],
 			]

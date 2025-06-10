@@ -12,6 +12,7 @@ use SRFM\Admin\Views\Single_Entry;
 use SRFM\Inc\AI_Form_Builder\AI_Helper;
 use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Helper;
+use SRFM\Inc\Onboarding;
 use SRFM\Inc\Post_Types;
 use SRFM\Inc\Traits\Get_Instance;
 
@@ -552,6 +553,9 @@ class Admin {
 			'plugin_installing_text'  => __( 'Installing...', 'sureforms' ),
 			'plugin_installed_text'   => __( 'Installed', 'sureforms' ),
 			'is_rtl'                  => $is_rtl,
+			'onboarding_completed'    => Onboarding::get_instance()->get_onboarding_status(),
+			'onboarding_redirect'     => isset( $_GET['srfm-activation-redirect'] ),
+			'nonce'                   => current_user_can( 'manage_options' ) ? wp_create_nonce( 'wp_rest' ) : '',
 		];
 
 		$is_screen_sureforms_menu          = Helper::validate_request_context( 'sureforms_menu', 'page' );

@@ -1,0 +1,169 @@
+import { __ } from '@wordpress/i18n';
+import { Button, Text, Container } from '@bsf/force-ui';
+import { Crown, ExternalLink } from 'lucide-react';
+import { useOnboardingNavigation } from './hooks';
+import NavigationButtons from './navigation-buttons';
+
+const premiumFeatures = [
+	{
+		id: 'advanced-fields',
+		title: __( 'Advanced Form Fields', 'sureforms' ),
+		description: __( 'Access premium field types like file uploads, date pickers, signature fields, and more.', 'sureforms' ),
+		icon: '📝',
+	},
+	{
+		id: 'conditional-logic',
+		title: __( 'Conditional Logic', 'sureforms' ),
+		description: __( 'Show or hide fields based on user responses to create dynamic, intelligent forms.', 'sureforms' ),
+		icon: '🔀',
+	},
+	{
+		id: 'payment-integration',
+		title: __( 'Payment Integration', 'sureforms' ),
+		description: __( 'Accept payments through Stripe, PayPal, and other popular payment gateways.', 'sureforms' ),
+		icon: '💳',
+	},
+	{
+		id: 'advanced-styling',
+		title: __( 'Advanced Styling', 'sureforms' ),
+		description: __( 'Custom CSS, advanced themes, and complete design control for your forms.', 'sureforms' ),
+		icon: '🎨',
+	},
+	{
+		id: 'multi-step-forms',
+		title: __( 'Multi-Step Forms', 'sureforms' ),
+		description: __( 'Break long forms into multiple steps to improve user experience and completion rates.', 'sureforms' ),
+		icon: '📊',
+	},
+	{
+		id: 'advanced-integrations',
+		title: __( 'Advanced Integrations', 'sureforms' ),
+		description: __( 'Connect with CRM systems, email marketing tools, and hundreds of third-party services.', 'sureforms' ),
+		icon: '🔗',
+	},
+	{
+		id: 'form-analytics',
+		title: __( 'Form Analytics', 'sureforms' ),
+		description: __( 'Detailed insights, conversion tracking, and performance analytics for your forms.', 'sureforms' ),
+		icon: '📈',
+	},
+	{
+		id: 'priority-support',
+		title: __( 'Priority Support', 'sureforms' ),
+		description: __( 'Get priority email support and access to our premium support team.', 'sureforms' ),
+		icon: '🎧',
+	},
+];
+
+const PremiumFeatures = () => {
+	const { navigateToPreviousRoute } = useOnboardingNavigation();
+
+	const handleCreateForm = async () => {
+		// Complete onboarding and redirect to create new form
+		await wp.apiFetch( {
+			path: '/sureforms/v1/onboarding/set-status',
+			method: 'POST',
+			headers: {
+				'X-WP-Nonce': srfm_admin.nonce,
+			},
+		} );
+		
+		// Redirect to create new form page
+		window.location.href = srfm_admin.sureforms_dashboard_url + '&action=create-form';
+	};
+
+	const handleBack = async () => {
+		navigateToPreviousRoute();
+	};
+
+	const handleUpgradeToPro = () => {
+		window.open( 'https://sureforms.com/pricing/', '_blank', 'noopener,noreferrer' );
+	};
+
+	return (
+		<div className="space-y-6">
+			<div className="space-y-1.5 text-center">
+				<div className="flex justify-center mb-4">
+					<Crown className="size-12 text-yellow-500" />
+				</div>
+				<Text as="h2" size={ 30 } weight={ 600 }>
+					{ __( 'Unlock Premium Features', 'sureforms' ) }
+				</Text>
+				<Text size={ 16 } weight={ 500 } color="secondary">
+					{ __( 'Take your forms to the next level with SureForms Pro and access powerful premium features.', 'sureforms' ) }
+				</Text>
+			</div>
+
+			<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+				{ premiumFeatures.map( ( feature ) => (
+					<div
+						key={ feature.id }
+						className="p-4 border border-border-subtle rounded-lg bg-white hover:shadow-md transition-shadow"
+					>
+						<div className="flex items-start gap-3">
+							<div className="text-2xl flex-shrink-0">{ feature.icon }</div>
+							<div>
+								<Text size={ 16 } weight={ 600 } color="primary">
+									{ feature.title }
+								</Text>
+								<Text size={ 14 } color="secondary" className="mt-1">
+									{ feature.description }
+								</Text>
+							</div>
+						</div>
+					</div>
+				) ) }
+			</div>
+
+			<Container className="p-6 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg border border-blue-200">
+				<div className="text-center space-y-4">
+					<Text size={ 20 } weight={ 600 } color="primary">
+						{ __( '🚀 Special Launch Offer', 'sureforms' ) }
+					</Text>
+					<Text size={ 14 } color="secondary">
+						{ __( 'Get 30% off SureForms Pro for the first year. Limited time offer for new users!', 'sureforms' ) }
+					</Text>
+					<div className="flex justify-center gap-3">
+						<Button
+							variant="outline"
+							icon={ <ExternalLink /> }
+							iconPosition="right"
+							onClick={ handleUpgradeToPro }
+						>
+							{ __( 'View Pricing', 'sureforms' ) }
+						</Button>
+					</div>
+				</div>
+			</Container>
+
+			<Container className="p-6 bg-background-secondary rounded-lg">
+				<div className="space-y-4">
+					<Text size={ 18 } weight={ 600 }>
+						{ __( 'Ready to Get Started?', 'sureforms' ) }
+					</Text>
+					<Text size={ 14 } color="secondary">
+						{ __( 'You can start creating forms right away with the free version. Upgrade to Pro anytime to unlock premium features.', 'sureforms' ) }
+					</Text>
+					<ul className="space-y-2 text-sm text-gray-600">
+						<li>• { __( '30-day money-back guarantee', 'sureforms' ) }</li>
+						<li>• { __( 'No setup fees or hidden costs', 'sureforms' ) }</li>
+						<li>• { __( 'Cancel anytime with full refund', 'sureforms' ) }</li>
+						<li>• { __( 'Priority support included', 'sureforms' ) }</li>
+					</ul>
+				</div>
+			</Container>
+
+			<NavigationButtons
+				backProps={ {
+					onClick: handleBack,
+				} }
+				continueProps={ {
+					onClick: handleCreateForm,
+					text: __( 'Create Your First Form', 'sureforms' ),
+				} }
+			/>
+		</div>
+	);
+};
+
+export default PremiumFeatures;
