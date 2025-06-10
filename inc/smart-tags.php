@@ -150,7 +150,7 @@ class Smart_Tags {
 				continue;
 			}
 
-			$replace = Helper::get_string_value( self::smart_tags_callback( $tag, $submission_data, $form_data ) );
+			$replace = esc_attr( Helper::get_string_value( self::smart_tags_callback( $tag, $submission_data, $form_data ) ) );
 			$content = str_replace( $tag, $replace, $content );
 		}
 
@@ -288,11 +288,11 @@ class Smart_Tags {
 				$var = Helper::get_string_value( filter_var( wp_unslash( $_SERVER['QUERY_STRING'] ), FILTER_SANITIZE_URL ) );
 			}
 			parse_str( $var, $parameters );
-			return isset( $parameters[ $param ] ) ? esc_attr( sanitize_text_field( Helper::get_string_value( $parameters[ $param ] ) ) ) : '';
+			return isset( $parameters[ $param ] ) ? sanitize_text_field( Helper::get_string_value( $parameters[ $param ] ) ) : '';
 		}
 
 		if ( $param && strpos( $value, 'get_cookie:' ) !== false ) {
-			return isset( $_COOKIE[ $param ] ) ? esc_attr( sanitize_text_field( wp_unslash( $_COOKIE[ $param ] ) ) ) : '';
+			return isset( $_COOKIE[ $param ] ) ? sanitize_text_field( wp_unslash( $_COOKIE[ $param ] ) ) : '';
 		}
 
 		return '';
