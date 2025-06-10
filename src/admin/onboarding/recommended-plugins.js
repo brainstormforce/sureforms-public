@@ -12,7 +12,11 @@ const RecommendedPlugins = () => {
 	const { navigateToNextRoute, navigateToPreviousRoute } = useOnboardingNavigation();
 
 	// Get integrations from localized data
-	const integrations = Object.entries( srfm_admin?.integrations ?? {} );
+	let integrations = Object.entries( srfm_admin?.integrations ?? {} );
+	integrations = integrations.filter(
+		( plugin ) =>
+			plugin[ 0 ] === 'sure_mails' || plugin[ 0 ] === 'sure_triggers'
+	);
 
 	const handleContinue = async () => {
 		navigateToNextRoute();
@@ -106,23 +110,6 @@ const RecommendedPlugins = () => {
 					</Container>
 				) ) }
 			</div>
-
-			<Container className="p-6 bg-background-secondary rounded-lg">
-				<div className="space-y-4">
-					<Text size={ 18 } weight={ 600 }>
-						{ __( 'Why These Plugins?', 'sureforms' ) }
-					</Text>
-					<Text size={ 14 } color="secondary">
-						{ __( 'These plugins are specifically designed to work seamlessly with SureForms, providing enhanced functionality and better user experience.', 'sureforms' ) }
-					</Text>
-					<ul className="space-y-2 text-sm text-gray-600">
-						<li>• { __( 'Built by the same team for perfect compatibility', 'sureforms' ) }</li>
-						<li>• { __( 'Regular updates and dedicated support', 'sureforms' ) }</li>
-						<li>• { __( 'Optimized performance and security', 'sureforms' ) }</li>
-						<li>• { __( 'Easy setup and configuration', 'sureforms' ) }</li>
-					</ul>
-				</div>
-			</Container>
 
 			<NavigationButtons
 				backProps={ {

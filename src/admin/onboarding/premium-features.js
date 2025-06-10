@@ -1,6 +1,6 @@
 import { __ } from '@wordpress/i18n';
-import { Button, Text, Container } from '@bsf/force-ui';
-import { Crown, ExternalLink } from 'lucide-react';
+import { Text } from '@bsf/force-ui';
+import { Crown } from 'lucide-react';
 import { useOnboardingNavigation } from './hooks';
 import NavigationButtons from './navigation-buttons';
 
@@ -114,44 +114,6 @@ const PremiumFeatures = () => {
 					</div>
 				) ) }
 			</div>
-
-			<Container className="p-6 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg border border-blue-200">
-				<div className="text-center space-y-4">
-					<Text size={ 20 } weight={ 600 } color="primary">
-						{ __( '🚀 Special Launch Offer', 'sureforms' ) }
-					</Text>
-					<Text size={ 14 } color="secondary">
-						{ __( 'Get 30% off SureForms Pro for the first year. Limited time offer for new users!', 'sureforms' ) }
-					</Text>
-					<div className="flex justify-center gap-3">
-						<Button
-							variant="outline"
-							icon={ <ExternalLink /> }
-							iconPosition="right"
-							onClick={ handleUpgradeToPro }
-						>
-							{ __( 'View Pricing', 'sureforms' ) }
-						</Button>
-					</div>
-				</div>
-			</Container>
-
-			<Container className="p-6 bg-background-secondary rounded-lg">
-				<div className="space-y-4">
-					<Text size={ 18 } weight={ 600 }>
-						{ __( 'Ready to Get Started?', 'sureforms' ) }
-					</Text>
-					<Text size={ 14 } color="secondary">
-						{ __( 'You can start creating forms right away with the free version. Upgrade to Pro anytime to unlock premium features.', 'sureforms' ) }
-					</Text>
-					<ul className="space-y-2 text-sm text-gray-600">
-						<li>• { __( '30-day money-back guarantee', 'sureforms' ) }</li>
-						<li>• { __( 'No setup fees or hidden costs', 'sureforms' ) }</li>
-						<li>• { __( 'Cancel anytime with full refund', 'sureforms' ) }</li>
-						<li>• { __( 'Priority support included', 'sureforms' ) }</li>
-					</ul>
-				</div>
-			</Container>
 
 			<NavigationButtons
 				backProps={ {

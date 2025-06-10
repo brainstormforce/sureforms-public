@@ -1,37 +1,140 @@
 import { __ } from '@wordpress/i18n';
-import { useState } from '@wordpress/element';
-import { Text, Container } from '@bsf/force-ui';
+import { useState, useEffect } from '@wordpress/element';
+import { Text, Switch, Input, Button, Select, toast } from '@bsf/force-ui';
 import { useOnboardingNavigation } from './hooks';
 import { useOnboardingState } from './onboarding-state';
 import NavigationButtons from './navigation-buttons';
+import ContentSection from '@Admin/settings/components/ContentSection';
+import apiFetch from '@wordpress/api-fetch';
+import { useDebouncedCallback } from 'use-debounce';
 
 const GlobalSettings = () => {
-	const [ settings, setSettings ] = useState( {
-		ipLogging: false,
-		emailSummaries: true,
+	const [ emailSettings, setEmailSettings ] = useState( {
+		srfm_email_summary: false,
+		srfm_email_sent_to: srfm_admin.admin_email,
+		srfm_schedule_report: 'Monday',
 	} );
+
+	const [ generalSettings, setGeneralSettings ] = useState( {
+		srfm_ip_log: false,
+		srfm_form_analytics: false,
+		srfm_bsf_analytics: false,
+	} );
+
 	const [ , actions ] = useOnboardingState();
 	const { navigateToNextRoute, navigateToPreviousRoute } = useOnboardingNavigation();
 
-	const handleSettingToggle = ( settingKey, enabled ) => {
-		setSettings( prevSettings => ( {
-			...prevSettings,
-			[ settingKey ]: enabled,
-		} ) );
+	// Options to fetch from API.
+	const optionsToFetch = [
+		'srfm_general_settings_options',
+		'srfm_email_summary_settings_options',
+	];
+
+	// Fetch existing global settings
+	useEffect( () => {
+		const fetchData = async () => {
+			try {
+				const data = await apiFetch( {
+					path: `sureforms/v1/srfm-global-settings?options_to_fetch=${ optionsToFetch }`,
+					method: 'GET',
+					headers: {
+						'content-type': 'application/json',
+						'X-WP-Nonce': srfm_admin.global_settings_nonce,
+					},
+				} );
+
+				const {
+					srfm_general_settings_options,
+					srfm_email_summary_settings_options,
+				} = data;
+
+				if ( srfm_general_settings_options ) {
+					setGeneralSettings( prevSettings => ( {
+						...prevSettings,
+						...srfm_general_settings_options,
+					} ) );
+				}
+
+				if ( srfm_email_summary_settings_options ) {
+					setEmailSettings( prevSettings => ( {
+						...prevSettings,
+						...srfm_email_summary_settings_options
+					} ) );
+				}
+			} catch ( error ) {
+				console.error( 'Error fetching global settings:', error );
+			}
+		};
+
+		fetchData();
+	}, [] );
+
+	const handleSettingToggle = async ( settingKey, value ) => {
+		try {
+			// Determine which settings object to update
+			const isEmailSetting = [
+				'srfm_email_summary',
+				'srfm_email_sent_to',
+				'srfm_schedule_report'
+			].includes( settingKey );
+
+			// Update local state
+			if ( isEmailSetting ) {
+				setEmailSettings( prevSettings => ( {
+					...prevSettings,
+					[ settingKey ]: value,
+				} ) );
+			} else {
+				setGeneralSettings( prevSettings => ( {
+					...prevSettings,
+					[ settingKey ]: value,
+				} ) );
+			}
+
+			// Save to database
+			await apiFetch( {
+				path: 'sureforms/v1/srfm-global-settings',
+				method: 'POST',
+				body: JSON.stringify( {
+					srfm_general_settings_options: {
+						...generalSettings,
+						srfm_tab: 'general-settings'
+					},
+					srfm_email_summary_settings_options: {
+						...emailSettings,
+						srfm_tab: 'email-settings'
+					},
+				} ),
+				headers: {
+					'content-type': 'application/json',
+					'X-WP-Nonce': srfm_admin.global_settings_nonce,
+				},
+			} );
+		} catch ( error ) {
+			console.error( 'Error saving setting:', error );
+			toast.error( __( 'Error saving setting', 'sureforms' ) );
+		}
 	};
 
 	const handleContinue = async () => {
 		try {
-			// Save global settings
-			await wp.apiFetch( {
-				path: '/wp/v2/settings',
+			// Save global settings to the database
+			await apiFetch( {
+				path: 'sureforms/v1/srfm-global-settings',
 				method: 'POST',
-				data: {
-					srfm_ip_logging: settings.ipLogging,
-					srfm_email_summaries: settings.emailSummaries,
-				},
+				body: JSON.stringify( {
+					srfm_general_settings_options: {
+						...generalSettings,
+						srfm_tab: 'general-settings'
+					},
+					srfm_email_summary_settings_options: {
+						...emailSettings,
+						srfm_tab: 'email-settings'
+					},
+				} ),
 				headers: {
-					'X-WP-Nonce': srfm_admin.nonce,
+					'content-type': 'application/json',
+					'X-WP-Nonce': srfm_admin.global_settings_nonce,
 				},
 			} );
 
@@ -51,6 +154,126 @@ const GlobalSettings = () => {
 		navigateToNextRoute();
 	};
 
+	const EmailSummariesContent = () => {
+		const [ sendingTestEmail, setSendingTestEmail ] = useState( false );
+
+		const days = [
+			{ label: __( 'Monday', 'sureforms' ), value: 'Monday' },
+			{ label: __( 'Tuesday', 'sureforms' ), value: 'Tuesday' },
+			{ label: __( 'Wednesday', 'sureforms' ), value: 'Wednesday' },
+			{ label: __( 'Thursday', 'sureforms' ), value: 'Thursday' },
+			{ label: __( 'Friday', 'sureforms' ), value: 'Friday' },
+			{ label: __( 'Saturday', 'sureforms' ), value: 'Saturday' },
+			{ label: __( 'Sunday', 'sureforms' ), value: 'Sunday' },
+		];
+
+		const getReportsLabel = ( value ) => {
+			const selectedDay = days.find( ( day ) => day.value === value );
+			return selectedDay ? selectedDay.label : '';
+		};
+
+		return (
+			<>
+				<Switch
+					label={ {
+						heading: __( 'Enable Email Summaries ', 'sureforms' ),
+					} }
+					value={ emailSettings.srfm_email_summary }
+					onChange={ ( value ) => handleSettingToggle( 'srfm_email_summary', value ) }
+				/>
+				{ emailSettings.srfm_email_summary && (
+					<>
+						<div className="flex items-end gap-2">
+							<div className="flex-1">
+								<Input
+									size="md"
+									label={ __( 'Send Email To', 'sureforms' ) }
+									type="email"
+									value={ emailSettings.srfm_email_sent_to || '' }
+									onChange={ ( value ) => handleSettingToggle( 'srfm_email_sent_to', value ) }
+									required
+									autoComplete="off"
+								/>
+							</div>
+							<Button
+								variant="outline"
+								size="md"
+								icon={ sendingTestEmail && <Loader /> }
+								iconPosition="left"
+								onClick={ async () => {
+									if ( sendingTestEmail ) {
+										return;
+									}
+
+									setSendingTestEmail( true );
+									try {
+										await apiFetch( {
+											path: '/sureforms/v1/send-test-email-summary',
+											method: 'POST',
+											data: {
+												srfm_email_sent_to: emailSettings.srfm_email_sent_to,
+											},
+										} ).then( ( response ) => {
+											setSendingTestEmail( false );
+											toast.success( response?.data );
+										} );
+									} catch ( error ) {
+										console.error(
+											'Error Sending Test Email Summary:',
+											error
+										);
+									}
+								} }
+								className="bg-background-secondary"
+							>
+								{ __( 'Test Email', 'sureforms' ) }
+							</Button>
+						</div>
+						<Select
+							value={ getReportsLabel( emailSettings.srfm_schedule_report ) }
+							onChange={ ( value ) => handleSettingToggle( 'srfm_schedule_report', value ) }
+						>
+							<Select.Button
+								type="button"
+								label={ __( 'Schedule Reports', 'sureforms' ) }
+							/>
+							<Select.Portal id="srfm-settings-container">
+								<Select.Options>
+									{ days.map( ( day ) => (
+										<Select.Option
+											key={ day.value }
+											value={ day.value }
+										>
+											{ day.label }
+										</Select.Option>
+									) ) }
+								</Select.Options>
+							</Select.Portal>
+						</Select>
+					</>
+				) }
+			</>
+		);
+	};
+
+	const IPLoggingContent = () => {
+		return (
+			<>
+				<Switch
+					label={ {
+						heading: __( 'Enable IP Logging', 'sureforms' ),
+						description: __(
+							"If this option is turned on, the user's IP address will be saved with the form data",
+							'sureforms'
+						),
+					} }
+					value={ generalSettings.srfm_ip_log }
+					onChange={ ( value ) => handleSettingToggle( 'srfm_ip_log', value ) }
+				/>
+			</>
+		);
+	};
+
 	return (
 		<div className="space-y-6">
 			<div className="space-y-1.5">
@@ -61,98 +284,16 @@ const GlobalSettings = () => {
 					{ __( 'Configure your global form settings to enhance security and get insights about your forms.', 'sureforms' ) }
 				</Text>
 			</div>
-
 			<div className="space-y-4">
-				{/* IP Logging Setting */}
-				<div className="flex items-start justify-between p-6 border border-border-subtle rounded-lg bg-white">
-					<div className="flex items-start gap-4">
-						<div className="text-2xl">🔒</div>
-						<div className="flex-1">
-							<Text size={ 18 } weight={ 600 } color="primary">
-								{ __( 'IP Address Logging', 'sureforms' ) }
-							</Text>
-							<Text size={ 14 } color="secondary" className="mt-1">
-								{ __( 'Log IP addresses of form submissions for security and analytics purposes. This helps track form abuse and provides geographical insights.', 'sureforms' ) }
-							</Text>
-							<div className="mt-3">
-								<Text size={ 12 } color="tertiary">
-									{ __( '• Helps prevent spam and abuse', 'sureforms' ) }
-								</Text>
-								<Text size={ 12 } color="tertiary">
-									{ __( '• Provides geographical analytics', 'sureforms' ) }
-								</Text>
-								<Text size={ 12 } color="tertiary">
-									{ __( '• Complies with GDPR when properly disclosed', 'sureforms' ) }
-								</Text>
-							</div>
-						</div>
-					</div>
-					<div className="flex-shrink-0 ml-4">
-						<label className="relative inline-flex items-center cursor-pointer">
-							<input
-								type="checkbox"
-								className="sr-only peer"
-								checked={ settings.ipLogging }
-								onChange={ ( e ) => handleSettingToggle( 'ipLogging', e.target.checked ) }
-							/>
-							<div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-						</label>
-					</div>
-				</div>
-
-				{/* Email Summaries Setting */}
-				<div className="flex items-start justify-between p-6 border border-border-subtle rounded-lg bg-white">
-					<div className="flex items-start gap-4">
-						<div className="text-2xl">📧</div>
-						<div className="flex-1">
-							<Text size={ 18 } weight={ 600 } color="primary">
-								{ __( 'Email Summaries', 'sureforms' ) }
-							</Text>
-							<Text size={ 14 } color="secondary" className="mt-1">
-								{ __( 'Receive weekly email summaries with form submission statistics, popular forms, and performance insights directly in your inbox.', 'sureforms' ) }
-							</Text>
-							<div className="mt-3">
-								<Text size={ 12 } color="tertiary">
-									{ __( '• Weekly submission statistics', 'sureforms' ) }
-								</Text>
-								<Text size={ 12 } color="tertiary">
-									{ __( '• Form performance insights', 'sureforms' ) }
-								</Text>
-								<Text size={ 12 } color="tertiary">
-									{ __( '• Popular forms and trends', 'sureforms' ) }
-								</Text>
-							</div>
-						</div>
-					</div>
-					<div className="flex-shrink-0 ml-4">
-						<label className="relative inline-flex items-center cursor-pointer">
-							<input
-								type="checkbox"
-								className="sr-only peer"
-								checked={ settings.emailSummaries }
-								onChange={ ( e ) => handleSettingToggle( 'emailSummaries', e.target.checked ) }
-							/>
-							<div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-						</label>
-					</div>
-				</div>
+				<ContentSection
+					title={ __( 'Email Summaries', 'sureforms' ) }
+					content={ <EmailSummariesContent /> }
+				/>
+				<ContentSection
+					title={ __( 'IP Logging', 'sureforms' ) }
+					content={ <IPLoggingContent /> }
+				/>
 			</div>
-
-			<Container className="p-6 bg-background-secondary rounded-lg">
-				<div className="space-y-4">
-					<Text size={ 18 } weight={ 600 }>
-						{ __( 'Privacy & Compliance', 'sureforms' ) }
-					</Text>
-					<Text size={ 14 } color="secondary">
-						{ __( 'These settings can be changed at any time from the global settings page. We recommend enabling both features for better form management and security.', 'sureforms' ) }
-					</Text>
-					<ul className="space-y-2 text-sm text-gray-600">
-						<li>• { __( 'All data is stored securely on your server', 'sureforms' ) }</li>
-						<li>• { __( 'IP logging can be disabled for GDPR compliance', 'sureforms' ) }</li>
-						<li>• { __( 'Email summaries help you stay informed about form performance', 'sureforms' ) }</li>
-					</ul>
-				</div>
-			</Container>
 
 			<NavigationButtons
 				backProps={ {
