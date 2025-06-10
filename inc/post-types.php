@@ -911,16 +911,19 @@ class Post_Types {
 						if ( ! is_array( $item ) ) {
 							continue;
 						}
-						$sanitized[] = [
-							'id'                    => isset( $item['id'] ) ? intval( $item['id'] ) : 0,
-							'confirmation_type'     => isset( $item['confirmation_type'] ) ? sanitize_text_field( $item['confirmation_type'] ) : '',
-							'page_url'              => isset( $item['page_url'] ) ? esc_url_raw( $item['page_url'] ) : '',
-							'custom_url'            => isset( $item['custom_url'] ) ? esc_url_raw( $item['custom_url'] ) : '',
-							'message'               => isset( $item['message'] ) ? Helper::strip_js_attributes( $item['message'] ) : '',
-							'submission_action'     => isset( $item['submission_action'] ) ? sanitize_text_field( $item['submission_action'] ) : '',
-							'enable_query_params'   => isset( $item['enable_query_params'] ) ? filter_var( $item['enable_query_params'], FILTER_VALIDATE_BOOLEAN ) : false,
-							'response_loading_text' => isset( $item['response_loading_text'] ) ? sanitize_text_field( $item['response_loading_text'] ) : '',
+						$sanitized_item = [
+							'id'                  => isset( $item['id'] ) ? intval( $item['id'] ) : 0,
+							'confirmation_type'   => isset( $item['confirmation_type'] ) ? sanitize_text_field( $item['confirmation_type'] ) : '',
+							'page_url'            => isset( $item['page_url'] ) ? esc_url_raw( $item['page_url'] ) : '',
+							'custom_url'          => isset( $item['custom_url'] ) ? esc_url_raw( $item['custom_url'] ) : '',
+							'message'             => isset( $item['message'] ) ? Helper::strip_js_attributes( $item['message'] ) : '',
+							'submission_action'   => isset( $item['submission_action'] ) ? sanitize_text_field( $item['submission_action'] ) : '',
+							'enable_query_params' => isset( $item['enable_query_params'] ) ? filter_var( $item['enable_query_params'], FILTER_VALIDATE_BOOLEAN ) : false,
 						];
+
+						$sanitized_item = apply_filters( 'srfm_form_confirmation_query_params', $sanitized_item, $item );
+
+						$sanitized[] = $sanitized_item;
 					}
 					return $sanitized;
 				},
@@ -930,32 +933,29 @@ class Post_Types {
 						'items' => [
 							'type'       => 'object',
 							'properties' => [
-								'id'                    => [
+								'id'                  => [
 									'type' => 'integer',
 								],
-								'confirmation_type'     => [
+								'confirmation_type'   => [
 									'type' => 'string',
 								],
-								'page_url'              => [
+								'page_url'            => [
 									'type' => 'string',
 								],
-								'custom_url'            => [
+								'custom_url'          => [
 									'type' => 'string',
 								],
-								'message'               => [
+								'message'             => [
 									'type' => 'string',
 								],
-								'submission_action'     => [
+								'submission_action'   => [
 									'type' => 'string',
 								],
-								'enable_query_params'   => [
+								'enable_query_params' => [
 									'type' => 'boolean',
 								],
-								'query_params'          => [
+								'query_params'        => [
 									'type' => 'array',
-								],
-								'response_loading_text' => [
-									'type' => 'string',
 								],
 							],
 						],
@@ -963,13 +963,12 @@ class Post_Types {
 				],
 				'default'           => [
 					[
-						'id'                    => 1,
-						'confirmation_type'     => 'same page',
-						'page_url'              => '',
-						'custom_url'            => '',
-						'message'               => '<p style="text-align: center;"><img src="' . esc_attr( $check_icon ) . '" alt="" aria-hidden="true"></img></p><h2 style="text-align: center;">' . esc_html__( 'Thank you', 'sureforms' ) . '</h2>',
-						'submission_action'     => 'hide form',
-						'response_loading_text' => __( 'We are generating your response', 'sureforms' ),
+						'id'                => 1,
+						'confirmation_type' => 'same page',
+						'page_url'          => '',
+						'custom_url'        => '',
+						'message'           => '<p style="text-align: center;"><img src="' . esc_attr( $check_icon ) . '" alt="" aria-hidden="true"></img></p><h2 style="text-align: center;">' . esc_html__( 'Thank you', 'sureforms' ) . '</h2>',
+						'submission_action' => 'hide form',
 					],
 				],
 			]
