@@ -921,7 +921,7 @@ class Post_Types {
 							'enable_query_params' => isset( $item['enable_query_params'] ) ? filter_var( $item['enable_query_params'], FILTER_VALIDATE_BOOLEAN ) : false,
 						];
 
-						$sanitized_item = apply_filters( 'srfm_form_confirmation_query_params', $sanitized_item, $item );
+						$sanitized_item = apply_filters( 'srfm_form_confirmation_params', $sanitized_item, $item );
 
 						$sanitized[] = $sanitized_item;
 					}
