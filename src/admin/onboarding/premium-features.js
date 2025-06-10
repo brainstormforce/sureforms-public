@@ -3,6 +3,7 @@ import { Text } from '@bsf/force-ui';
 import { Crown } from 'lucide-react';
 import { useOnboardingNavigation } from './hooks';
 import NavigationButtons from './navigation-buttons';
+import { Header, Divider } from './components'
 
 const premiumFeatures = [
 	{
@@ -82,17 +83,10 @@ const PremiumFeatures = () => {
 
 	return (
 		<div className="space-y-6">
-			<div className="space-y-1.5 text-center">
-				<div className="flex justify-center mb-4">
-					<Crown className="size-12 text-yellow-500" />
-				</div>
-				<Text as="h2" size={ 30 } weight={ 600 }>
-					{ __( 'Unlock Premium Features', 'sureforms' ) }
-				</Text>
-				<Text size={ 16 } weight={ 500 } color="secondary">
-					{ __( 'Take your forms to the next level with SureForms Pro and access powerful premium features.', 'sureforms' ) }
-				</Text>
-			</div>
+			<Header
+				title={ __( 'Unlock Premium Features', 'sureforms' ) }
+				description={ __( 'Take your forms to the next level with SureForms Pro and access powerful premium features.', 'sureforms' ) }
+			/>
 
 			<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 				{ premiumFeatures.map( ( feature ) => (
@@ -114,6 +108,8 @@ const PremiumFeatures = () => {
 					</div>
 				) ) }
 			</div>
+
+			<Divider />
 
 			<NavigationButtons
 				backProps={ {

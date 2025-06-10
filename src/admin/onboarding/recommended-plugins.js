@@ -5,6 +5,7 @@ import { useOnboardingNavigation } from './hooks';
 import { useOnboardingState } from './onboarding-state';
 import NavigationButtons from './navigation-buttons';
 import { handlePluginActionTrigger } from '@Utils/Helpers';
+import { Header, Divider } from './components'
 
 const RecommendedPlugins = () => {
 	const [ isPluginsDataLoading, setIsPluginsDataLoading ] = useState( false );
@@ -28,14 +29,16 @@ const RecommendedPlugins = () => {
 
 	return (
 		<div className="space-y-6">
-			<div className="space-y-1.5">
-				<Text as="h2" size={ 30 } weight={ 600 }>
-					{ __( 'Add More Power to Your Website', 'sureforms' ) }
-				</Text>
-				<Text size={ 16 } weight={ 500 } color="secondary">
-					{ __( 'These tools can help you build your website faster and easier. Try them out and see how they can help your website grow.', 'sureforms' ) }
-				</Text>
-			</div>
+			<Header
+				title={ __(
+					'Add More Power to Your Website',
+					'sureforms'
+				) }
+				description={ __(
+					'These tools can help you build your website faster and easier. Try them out and see how they can help your website grow.',
+					'sureforms'
+				) }
+			/>
 
 			<div className="grid grid-cols-1 sm:grid-cols-2 gap-1 p-1 rounded-lg bg-background-secondary">
 				{ integrations?.map( ( plugin, index ) => (
@@ -106,6 +109,8 @@ const RecommendedPlugins = () => {
 					</Container>
 				) ) }
 			</div>
+
+			<Divider />
 
 			<NavigationButtons
 				backProps={ {

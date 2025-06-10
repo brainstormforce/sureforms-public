@@ -1,11 +1,12 @@
 import { __ } from '@wordpress/i18n';
 import { useState, useEffect } from '@wordpress/element';
-import { Text, Switch, Input, Button, Select, toast } from '@bsf/force-ui';
+import { Switch, Input, Button, Select, toast } from '@bsf/force-ui';
 import { useOnboardingNavigation } from './hooks';
 import { useOnboardingState } from './onboarding-state';
 import NavigationButtons from './navigation-buttons';
 import ContentSection from '@Admin/settings/components/ContentSection';
 import apiFetch from '@wordpress/api-fetch';
+import { Header, Divider } from './components';
 
 const GlobalSettings = () => {
 	const [ emailSettings, setEmailSettings ] = useState( {
@@ -241,14 +242,10 @@ const GlobalSettings = () => {
 
 	return (
 		<div className="space-y-6">
-			<div className="space-y-1.5">
-				<Text as="h2" size={ 30 } weight={ 600 }>
-					{ __( 'Global Settings', 'sureforms' ) }
-				</Text>
-				<Text size={ 16 } weight={ 500 } color="secondary">
-					{ __( 'Configure your global form settings to enhance security and get insights about your forms.', 'sureforms' ) }
-				</Text>
-			</div>
+			<Header
+				title={ __( 'Global Settings', 'sureforms' ) }
+				description={ __( 'Configure your global form settings to enhance security and get insights about your forms.', 'sureforms' ) }
+			/>
 			<div className="space-y-4">
 				<ContentSection
 					title={ __( 'Email Summaries', 'sureforms' ) }
@@ -259,6 +256,8 @@ const GlobalSettings = () => {
 					content={ <IPLoggingContent /> }
 				/>
 			</div>
+
+			<Divider />
 
 			<NavigationButtons
 				backProps={ {
