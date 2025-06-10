@@ -69,7 +69,7 @@ const PremiumFeatures = () => {
 		} );
 		
 		// Redirect to create new form page
-		window.location.href = srfm_admin.sureforms_dashboard_url + '&action=create-form';
+		window.location.href = `${ srfm_admin.site_url }/wp-admin/admin.php?page=add-new-form`;
 	};
 
 	const handleBack = async () => {

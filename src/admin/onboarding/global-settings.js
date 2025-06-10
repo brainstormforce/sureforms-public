@@ -6,7 +6,6 @@ import { useOnboardingState } from './onboarding-state';
 import NavigationButtons from './navigation-buttons';
 import ContentSection from '@Admin/settings/components/ContentSection';
 import apiFetch from '@wordpress/api-fetch';
-import { useDebouncedCallback } from 'use-debounce';
 
 const GlobalSettings = () => {
 	const [ emailSettings, setEmailSettings ] = useState( {
@@ -118,10 +117,6 @@ const GlobalSettings = () => {
 
 	const handleBack = async () => {
 		navigateToPreviousRoute();
-	};
-
-	const handleSkip = async () => {
-		navigateToNextRoute();
 	};
 
 	const EmailSummariesContent = () => {
@@ -271,9 +266,6 @@ const GlobalSettings = () => {
 				} }
 				continueProps={ {
 					onClick: handleContinue,
-				} }
-				skipProps={ {
-					onClick: handleSkip,
 				} }
 			/>
 		</div>
