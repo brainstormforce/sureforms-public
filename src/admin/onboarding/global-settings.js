@@ -96,14 +96,9 @@ const GlobalSettings = () => {
 				path: 'sureforms/v1/srfm-global-settings',
 				method: 'POST',
 				body: JSON.stringify( {
-					srfm_general_settings_options: {
-						...generalSettings,
-						srfm_tab: 'general-settings'
-					},
-					srfm_email_summary_settings_options: {
-						...emailSettings,
-						srfm_tab: 'email-settings'
-					},
+					...( isEmailSetting ? emailSettings : generalSettings ),
+					[ settingKey ]: value,
+					srfm_tab: isEmailSetting ? 'email-settings' : 'general-settings'
 				} ),
 				headers: {
 					'content-type': 'application/json',
@@ -117,33 +112,8 @@ const GlobalSettings = () => {
 	};
 
 	const handleContinue = async () => {
-		try {
-			// Save global settings to the database
-			await apiFetch( {
-				path: 'sureforms/v1/srfm-global-settings',
-				method: 'POST',
-				body: JSON.stringify( {
-					srfm_general_settings_options: {
-						...generalSettings,
-						srfm_tab: 'general-settings'
-					},
-					srfm_email_summary_settings_options: {
-						...emailSettings,
-						srfm_tab: 'email-settings'
-					},
-				} ),
-				headers: {
-					'content-type': 'application/json',
-					'X-WP-Nonce': srfm_admin.global_settings_nonce,
-				},
-			} );
-
-			// Update onboarding state
-			actions.setGlobalSettingsConfigured( true );
-			navigateToNextRoute();
-		} catch ( error ) {
-			console.error( 'Error saving global settings:', error );
-		}
+		actions.setGlobalSettingsConfigured( true );
+		navigateToNextRoute();
 	};
 
 	const handleBack = async () => {
