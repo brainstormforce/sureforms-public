@@ -60,8 +60,8 @@ class Input_Markup extends Base {
 		$this->max_text_length   = $attributes['textLength'] ?? '';
 		$this->input_mask        = $attributes['inputMask'] ?? '';
 		$this->custom_input_mask = 'custom-mask' === $this->input_mask && isset( $attributes['customInputMask'] ) ? $attributes['customInputMask'] : '';
-		$this->read_only         = $attributes['readOnly'] ?? false;
 		$this->set_properties( $attributes );
+		$this->read_only = ! empty( $this->default ) && $attributes['readOnly'];
 		$this->set_input_label( __( 'Text Field', 'sureforms' ) );
 		$this->set_error_msg( $attributes, 'srfm_input_block_required_text' );
 		$this->set_duplicate_msg( $attributes, 'srfm_input_block_unique_text' );

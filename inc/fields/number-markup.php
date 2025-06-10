@@ -107,7 +107,7 @@ class Number_Markup extends Base {
 		$this->max_value_attr = $this->max_value ? ' max="' . $this->max_value . '" ' : '';
 		$this->prefix         = $attributes['prefix'] ?? '';
 		$this->suffix         = $attributes['suffix'] ?? '';
-		$this->read_only      = $attributes['readOnly'] ?? false;
+		$this->read_only      = ! empty( trim( $this->default ) ) && $attributes['readOnly'];
 		$this->set_input_label( __( 'Number', 'sureforms' ) );
 		$this->set_error_msg( $attributes, 'srfm_number_block_required_text' );
 		$this->set_unique_slug();
