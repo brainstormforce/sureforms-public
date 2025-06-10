@@ -53,7 +53,7 @@ class Url_Markup extends Base {
 	 */
 	public function markup() {
 		ob_start(); ?>
-		<div data-block-id="<?php echo esc_attr( $this->block_id ); ?>" class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $this->slug ); ?>-block<?php echo esc_attr( $this->block_width ); ?><?php echo esc_attr( $this->class_name ); ?> <?php echo esc_attr( $this->conditional_class ); ?>">
+		<div data-block-id="<?php echo esc_attr( $this->block_id ); ?>" class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $this->slug ); ?>-block<?php echo esc_attr( $this->block_width ); ?><?php echo esc_attr( $this->class_name ); ?> <?php echo esc_attr( $this->conditional_class ); ?><?php echo esc_attr( $this->read_only ? ' srfm-read-only' : '' ); ?>">
 			<?php echo wp_kses_post( $this->label_markup ); ?>
 			<?php echo wp_kses_post( $this->help_markup ); ?>
 				<div class="srfm-block-wrap">

@@ -19,6 +19,14 @@
 		flex-wrap: wrap;
 		@include srfm-gap-styles;
 
+		// For the readonly inputs, setting the background to the one with 5% opacity instead of the usual 2%.
+		.srfm-read-only {
+			.srfm-input-content,
+			.srfm-input-common {
+				--srfm-color-input-background: var( --srfm-color-input-background-hover );
+			}
+		}
+
 		.conditional-logic {
 			display: none;
 			// This is for the compatibility of sureforms-pro version 1.0.3 and below and will be removed in future versions.
