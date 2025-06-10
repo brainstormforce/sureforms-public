@@ -118,6 +118,7 @@ class Textarea_Markup extends Base {
 			$this->class_name,
 			$this->conditional_class,
 			$this->is_richtext ? 'srfm-richtext' : '',
+			$this->read_only ? 'srfm-read-only' : '',
 		];
 
 		$classes   = Helper::join_strings( $classes );
