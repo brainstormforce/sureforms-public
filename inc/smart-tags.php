@@ -300,11 +300,11 @@ class Smart_Tags {
 				$var = Helper::get_string_value( filter_var( wp_unslash( $_SERVER['QUERY_STRING'] ), FILTER_SANITIZE_URL ) );
 			}
 			parse_str( $var, $parameters );
-			return isset( $parameters[ $param ] ) ? sanitize_text_field( Helper::get_string_value( $parameters[ $param ] ) ) : '';
+			return isset( $parameters[ $param ] ) ? esc_attr( sanitize_text_field( Helper::get_string_value( $parameters[ $param ] ) ) ) : '';
 		}
 
 		if ( $param && strpos( $value, 'get_cookie:' ) !== false ) {
-			return isset( $_COOKIE[ $param ] ) ? sanitize_text_field( wp_unslash( $_COOKIE[ $param ] ) ) : '';
+			return isset( $_COOKIE[ $param ] ) ? esc_attr( sanitize_text_field( wp_unslash( $_COOKIE[ $param ] ) ) ) : '';
 		}
 
 		return '';
@@ -408,15 +408,15 @@ class Smart_Tags {
 		}
 
 		if ( '{user_display_name}' === $value ) {
-			return $user->data->display_name ?? '';
+			return esc_attr( $user->data->display_name ?? '' );
 		}
 
 		if ( '{user_first_name}' === $value ) {
-			return is_array( $user_info ) && isset( $user_info['first_name'][0] ) ? $user_info['first_name'][0] : '';
+			return is_array( $user_info ) && isset( $user_info['first_name'][0] ) ? esc_attr( $user_info['first_name'][0] ) : '';
 		}
 
 		if ( '{user_last_name}' === $value ) {
-			return is_array( $user_info ) && isset( $user_info['last_name'][0] ) ? $user_info['last_name'][0] : '';
+			return is_array( $user_info ) && isset( $user_info['last_name'][0] ) ? esc_attr( $user_info['last_name'][0] ) : '';
 		}
 
 		if ( '{user_email}' === $value ) {
