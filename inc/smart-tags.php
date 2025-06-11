@@ -404,7 +404,7 @@ class Smart_Tags {
 		}
 
 		if ( '{user_last_name}' === $value ) {
-			return is_array( $user_info ) && isset( $user_info['last_name'][0] ) ? esc_attr( $user_info['last_name'][0] ): '';
+			return is_array( $user_info ) && isset( $user_info['last_name'][0] ) ? esc_attr( $user_info['last_name'][0] ) : '';
 		}
 
 		if ( '{user_email}' === $value ) {
