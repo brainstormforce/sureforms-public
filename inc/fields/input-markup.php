@@ -45,7 +45,7 @@ class Input_Markup extends Base {
 	 * Read-only attribute for the input field.
 	 *
 	 * @var bool
-	 * @since x.x.x
+	 * @since 1.7.2
 	 */
 	protected $read_only;
 
