@@ -4,7 +4,7 @@ Tags: contact form, custom form, forms, contact form plugin, form builder
 Requires at least: 6.4
 Tested up to: 6.8.1
 Requires PHP: 7.4
-Stable tag: 1.7.1
+Stable tag: 1.7.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -260,7 +260,7 @@ Yes! You can certainly use SureForms on yours as well as your client’s website
 When you use SureForms, you get an easy-to-use AI-powered form builder that can be used to build your forms fast.
 
 == Changelog ==
-= x.x.x =
+= 1.7.2 - 11th June 2025 =
 * New: Added {current_page_url} smart tag under generic tags.
 * Improvement: Added an option to disable input fields with default values.
 * Fix: Added editor background compatibility with Kadence theme.
@@ -277,10 +277,6 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 * New: Revamped user interface for Dashboard and Settings with a more modern and intuitive experience.
 * Improvement: Improved reCAPTCHA handling by adding detailed logging for failure responses.
 * Improvement: Number and range components now support float values.
-= 1.6.4 - 14th May 2025 =
-* New: Introduced Advanced Form Styling.
-* Improvement: Updated Phone Number field to announce the country code only once for better accessibility.
-* Fix: Resolved an issue where deselecting all options in the multi-choice block incorrectly retained the last selected value.
 
 The full changelog is available [here](https://sureforms.com/whats-new/).
 
