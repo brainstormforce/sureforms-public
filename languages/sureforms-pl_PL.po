@@ -14,8 +14,8 @@ msgstr ""
 #. Plugin Name of the plugin
 #. Author of the plugin
 #: sureforms.php
-#: admin/admin.php:172
 #: admin/admin.php:173
+#: admin/admin.php:174
 #: inc/gutenberg-hooks.php:107
 #: inc/nps-notice.php:108
 #: inc/page-builders/bricks/elements/form-widget.php:66
@@ -42,8 +42,8 @@ msgstr "Prosty, ale potężny sposób na tworzenie nowoczesnych formularzy na Tw
 msgid "https://sureforms.com/"
 msgstr ""
 
-#: admin/admin.php:185
 #: admin/admin.php:186
+#: admin/admin.php:187
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:2
 #: assets/build/page_header.js:172
@@ -52,9 +52,9 @@ msgstr ""
 msgid "Dashboard"
 msgstr "Panel sterowania"
 
-#: admin/admin.php:203
 #: admin/admin.php:204
-#: admin/admin.php:370
+#: admin/admin.php:205
+#: admin/admin.php:408
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:2
 #: assets/build/page_header.js:172
@@ -62,17 +62,17 @@ msgstr "Panel sterowania"
 msgid "Settings"
 msgstr "Ustawienia"
 
-#: admin/admin.php:297
-#: admin/admin.php:298
+#: admin/admin.php:335
+#: admin/admin.php:336
 #: inc/post-types.php:129
 msgid "New Form"
 msgstr "Nowy formularz"
 
-#: admin/admin.php:306
-#: admin/admin.php:307
-#: admin/admin.php:343
+#: admin/admin.php:344
+#: admin/admin.php:345
+#: admin/admin.php:381
 #: inc/global-settings/email-summary.php:107
-#: inc/post-types.php:996
+#: inc/post-types.php:1020
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:2
 #: assets/build/page_header.js:172
@@ -81,11 +81,11 @@ msgid "Entries"
 msgstr "Wpisy"
 
 #. Translators: Post Title.
-#: admin/admin.php:450
+#: admin/admin.php:488
 msgid "Edit %1$s"
 msgstr "Edytuj %1$s"
 
-#: admin/admin.php:814
+#: admin/admin.php:892
 #: api/block-patterns.php:110
 #: inc/ai-form-builder/ai-auth.php:45
 #: inc/ai-form-builder/ai-auth.php:81
@@ -95,7 +95,7 @@ msgstr "Edytuj %1$s"
 #: inc/export.php:63
 #: inc/export.php:128
 #: inc/form-submit.php:208
-#: inc/form-submit.php:847
+#: inc/form-submit.php:848
 #: inc/forms-data.php:87
 #: inc/global-settings/global-settings.php:86
 #: inc/global-settings/global-settings.php:327
@@ -104,22 +104,22 @@ msgstr "Edytuj %1$s"
 msgid "Nonce verification failed."
 msgstr "Weryfikacja nonce nie powiodła się."
 
-#: admin/admin.php:823
+#: admin/admin.php:901
 msgid "You cannot view this entry because it is in trash."
 msgstr "Nie możesz wyświetlić tego wpisu, ponieważ znajduje się w koszu."
 
 #. translators: %1$s: Opening anchor tag with URL, %2$s: Closing anchor tag, %3$s: SureForms Pro Plugin Name.
-#: admin/admin.php:868
+#: admin/admin.php:946
 msgid "Please %1$sactivate%2$s your copy of %3$s to get new features, access support, receive update notifications, and more."
 msgstr "Proszę %1$saktywować%2$s swoją kopię %3$s, aby uzyskać nowe funkcje, dostęp do wsparcia, otrzymywać powiadomienia o aktualizacjach i więcej."
 
 #. translators: %1$s: SureForms version, %2$s: SureForms Pro Plugin Name, %3$s: SureForms Pro Version, %4$s: Anchor tag open, %5$s: Closing anchor tag.
-#: admin/admin.php:878
+#: admin/admin.php:956
 msgid "SureForms %1$s requires minimum %2$s %3$s to work properly. Please update to the latest version from %4$shere%5$s."
 msgstr "SureForms %1$s wymaga co najmniej %2$s %3$s, aby działać poprawnie. Proszę zaktualizować do najnowszej wersji z %4$stąd%5$s."
 
 #: admin/views/entries-list-table.php:92
-#: admin/views/entries-list-table.php:1472
+#: admin/views/entries-list-table.php:1495
 msgid "ID"
 msgstr "ID"
 
@@ -224,7 +224,7 @@ msgstr "Wpis #"
 
 #. translators: %1$s is the word "form", %2$d is the form ID.
 #: admin/views/entries-list-table.php:736
-#: admin/views/entries-list-table.php:1027
+#: admin/views/entries-list-table.php:1050
 #: inc/page-builders/bricks/elements/form-widget.php:96
 #: assets/build/formEditor.js:172
 msgid "Form"
@@ -235,22 +235,22 @@ msgid "Read"
 msgstr "Czytaj"
 
 #: admin/views/entries-list-table.php:755
-#: admin/views/entries-list-table.php:1114
+#: admin/views/entries-list-table.php:1137
 msgid "Unread"
 msgstr "Nieprzeczytane"
 
 #: admin/views/entries-list-table.php:758
-#: admin/views/entries-list-table.php:862
-#: admin/views/entries-list-table.php:1125
+#: admin/views/entries-list-table.php:885
+#: admin/views/entries-list-table.php:1148
 #: modules/gutenberg/icons/icons-v6-3.php:2916
 msgid "Trash"
 msgstr "Śmieci"
 
-#: admin/views/entries-list-table.php:822
+#: admin/views/entries-list-table.php:845
 msgid "Published"
 msgstr "Opublikowano"
 
-#: admin/views/entries-list-table.php:861
+#: admin/views/entries-list-table.php:884
 #: inc/email/email-template.php:157
 #: inc/email/email-template.php:163
 #: inc/smart-tags.php:338
@@ -258,29 +258,29 @@ msgstr "Opublikowano"
 msgid "View"
 msgstr "Widok"
 
-#: admin/views/entries-list-table.php:895
-#: admin/views/entries-list-table.php:1320
+#: admin/views/entries-list-table.php:918
+#: admin/views/entries-list-table.php:1343
 msgid "Restore"
 msgstr "Przywróć"
 
-#: admin/views/entries-list-table.php:896
-#: admin/views/entries-list-table.php:1321
+#: admin/views/entries-list-table.php:919
+#: admin/views/entries-list-table.php:1344
 msgid "Delete Permanently"
 msgstr "Usuń na stałe"
 
-#: admin/views/entries-list-table.php:930
+#: admin/views/entries-list-table.php:953
 msgid "Clear Filter"
 msgstr "Wyczyść filtr"
 
-#: admin/views/entries-list-table.php:1025
+#: admin/views/entries-list-table.php:1048
 msgid "All Form Entries"
 msgstr "Wszystkie wpisy formularza"
 
-#: admin/views/entries-list-table.php:1055
+#: admin/views/entries-list-table.php:1078
 msgid "All Dates"
 msgstr "Wszystkie daty"
 
-#: admin/views/entries-list-table.php:1107
+#: admin/views/entries-list-table.php:1130
 msgid "All"
 msgstr "Wszystko"
 
@@ -354,11 +354,11 @@ msgstr "Obraz"
 msgid "Open"
 msgstr "Otwórz"
 
-#: admin/views/single-entry.php:484
+#: admin/views/single-entry.php:489
 msgid "Entry Logs"
 msgstr "Dzienniki wejść"
 
-#: admin/views/single-entry.php:508
+#: admin/views/single-entry.php:513
 msgid "No logs found for this entry."
 msgstr "Nie znaleziono logów dla tego wpisu."
 
@@ -434,11 +434,11 @@ msgstr "Nie określono wtyczki"
 msgid "Plugin Successfully Activated"
 msgstr "Wtyczka została pomyślnie aktywowana"
 
-#: admin/admin.php:511
+#: admin/admin.php:549
 msgid "Activating..."
 msgstr "Aktywowanie..."
 
-#: admin/admin.php:512
+#: admin/admin.php:550
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:2
 #: assets/build/page_header.js:172
@@ -446,16 +446,16 @@ msgstr "Aktywowanie..."
 msgid "Activated"
 msgstr "Aktywowany"
 
-#: admin/admin.php:513
+#: admin/admin.php:551
 #: assets/build/formEditor.js:172
 msgid "Activate"
 msgstr "Aktywuj"
 
-#: admin/admin.php:514
+#: admin/admin.php:552
 msgid "Installing..."
 msgstr "Instalowanie..."
 
-#: admin/admin.php:515
+#: admin/admin.php:553
 msgid "Installed"
 msgstr "Zainstalowano"
 
@@ -472,7 +472,7 @@ msgid "Form ID is required."
 msgstr "Wymagany jest identyfikator formularza."
 
 #: inc/admin-ajax.php:185
-#: inc/form-submit.php:859
+#: inc/form-submit.php:860
 msgid "Invalid form ID."
 msgstr "Nieprawidłowy identyfikator formularza."
 
@@ -714,7 +714,7 @@ msgid "I consent to have this website store my submitted information so they can
 msgstr "Wyrażam zgodę na przechowywanie przez tę stronę moich przesłanych informacji, aby mogli odpowiedzieć na moje zapytanie."
 
 #: inc/fields/inlinebutton-markup.php:182
-#: inc/generate-form-markup.php:494
+#: inc/generate-form-markup.php:495
 msgid "Please verify that you are not a robot."
 msgstr "Proszę zweryfikować, że nie jesteś robotem."
 
@@ -735,7 +735,7 @@ msgstr "Numer"
 msgid "Phone"
 msgstr "Telefon"
 
-#: inc/fields/textarea-markup.php:69
+#: inc/fields/textarea-markup.php:79
 msgid "Textarea"
 msgstr "Pole tekstowe"
 
@@ -791,7 +791,7 @@ msgstr "Nieznany"
 msgid "Sorry, you are not allowed to view the form."
 msgstr "Przepraszam, nie masz uprawnień do przeglądania formularza."
 
-#: inc/generate-form-markup.php:668
+#: inc/generate-form-markup.php:642
 #: assets/build/formSubmit.js:2
 #: assets/js/unminified/form-submit.js:271
 msgid "There was an error trying to submit your form. Please try again."
@@ -943,7 +943,7 @@ msgstr "Utwórz nowy formularz"
 msgid "Create"
 msgstr "Utwórz"
 
-#: admin/admin.php:632
+#: admin/admin.php:710
 #: inc/post-types.php:88
 msgid "Import Form"
 msgstr "Formularz importu"
@@ -1015,19 +1015,19 @@ msgstr "Powiadomienie e-mail dla administratora"
 msgid "New Form Submission - %s"
 msgstr "Nowe przesłanie formularza - %s"
 
-#: inc/post-types.php:995
+#: inc/post-types.php:1019
 msgid "Shortcode"
 msgstr "Kod krótki"
 
-#: inc/post-types.php:1059
+#: inc/post-types.php:1083
 msgid "Please choose the SureForms export file (.json) that you wish to import."
 msgstr "Proszę wybrać plik eksportu SureForms (.json), który chcesz zaimportować."
 
-#: inc/post-types.php:1062
+#: inc/post-types.php:1086
 msgid "Import Now"
 msgstr "Importuj teraz"
 
-#: inc/post-types.php:1064
+#: inc/post-types.php:1088
 msgid "There is some error in json file, please export the SureForms Forms again."
 msgstr "W pliku JSON wystąpił błąd, proszę ponownie wyeksportować formularze SureForms."
 
@@ -8086,7 +8086,7 @@ msgstr "Naszywki na kamizelkę"
 
 #: modules/gutenberg/icons/icons-v6-3.php:4070
 msgid "Viacoin"
-msgstr ""
+msgstr "Viacoin"
 
 #: modules/gutenberg/icons/icons-v6-3.php:4081
 msgid "Viadeo"
@@ -9191,8 +9191,8 @@ msgstr "Dodaj bloki do paska szybkich akcji"
 msgid "Re-arrange block inside Quick Action Bar"
 msgstr "Przestaw blok wewnątrz paska szybkich akcji"
 
-#: admin/admin.php:261
 #: admin/admin.php:262
+#: admin/admin.php:263
 #: admin/views/single-entry.php:157
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
@@ -9575,7 +9575,7 @@ msgstr "Ustawienia antyspamowe"
 msgid "Security Type"
 msgstr "Typ zabezpieczeń"
 
-#: inc/form-submit.php:1032
+#: inc/form-submit.php:1033
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
 msgid "Google reCAPTCHA"
@@ -9585,7 +9585,7 @@ msgstr "Google reCAPTCHA"
 msgid "CloudFlare Turnstile"
 msgstr "CloudFlare Turnstile"
 
-#: inc/form-submit.php:1036
+#: inc/form-submit.php:1037
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
 msgid "hCaptcha"
@@ -9665,7 +9665,7 @@ msgstr "Podział strony"
 msgid "Previous"
 msgstr "Poprzedni"
 
-#: inc/post-types.php:943
+#: inc/post-types.php:967
 #: assets/build/formEditor.js:172
 msgid "Thank you"
 msgstr "Dziękuję"
@@ -9885,7 +9885,7 @@ msgstr "Klucz strony"
 msgid "Secret Key"
 msgstr "Klucz tajny"
 
-#: inc/form-submit.php:1040
+#: inc/form-submit.php:1041
 #: assets/build/settings.js:172
 msgid "Cloudflare Turnstile"
 msgstr "Cloudflare Turnstile"
@@ -10966,7 +10966,7 @@ msgstr "Odbiorca powiadomienia e-mail: %s"
 msgid "Email server was unable to send the email notification. Recipient: %1$s. Reason: %2$s"
 msgstr "Serwer poczty nie mógł wysłać powiadomienia e-mail. Odbiorca: %1$s. Powód: %2$s"
 
-#: inc/form-submit.php:829
+#: inc/form-submit.php:830
 msgid "No emails were sent"
 msgstr "Nie wysłano żadnych e-maili"
 
@@ -11056,7 +11056,7 @@ msgstr "Dzięki planowi SureForms Pro możesz przekształcić swoje formularze w
 msgid "Create Conversational Form"
 msgstr "Utwórz formularz konwersacyjny"
 
-#: admin/admin.php:93
+#: admin/admin.php:94
 msgid "Get SureForms Pro"
 msgstr "Pobierz SureForms Pro"
 
@@ -11147,13 +11147,13 @@ msgstr "Przycisk"
 msgid "Please connect your website with SureForms AI to create 10 more forms with AI."
 msgstr "Proszę połączyć swoją stronę internetową z SureForms AI, aby utworzyć 10 dodatkowych formularzy za pomocą AI."
 
-#: inc/helper.php:1331
+#: inc/helper.php:1470
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
 msgid "OttoKit"
 msgstr "OttoKit"
 
-#: inc/helper.php:1333
+#: inc/helper.php:1472
 msgid "OttoKit is a powerful automation platform that helps you connect your various plugins and apps together. It allows you to automate repetitive tasks, so you can focus on more important work."
 msgstr "OttoKit to potężna platforma automatyzacji, która pomaga połączyć różne wtyczki i aplikacje. Umożliwia automatyzację powtarzalnych zadań, dzięki czemu możesz skupić się na ważniejszej pracy."
 
@@ -11282,24 +11282,24 @@ msgstr ""
 msgid "reCAPTCHA error: Submit nonce is not available."
 msgstr "Błąd reCAPTCHA: Token przesyłania nie jest dostępny."
 
-#: inc/form-submit.php:976
+#: inc/form-submit.php:977
 msgid "Captcha validation failed. No error code provided."
 msgstr "Weryfikacja Captcha nie powiodła się. Nie podano kodu błędu."
 
-#: inc/form-submit.php:977
+#: inc/form-submit.php:978
 msgid "Captcha validation failed."
 msgstr "Weryfikacja Captcha nie powiodła się."
 
-#: inc/form-submit.php:1044
+#: inc/form-submit.php:1045
 msgid "Unknown Captcha"
 msgstr "Nieznana Captcha"
 
-#: inc/form-submit.php:1045
+#: inc/form-submit.php:1046
 msgid "Invalid captcha type."
 msgstr "Nieprawidłowy typ captcha."
 
 #. translators: %s is the captcha title.
-#: inc/form-submit.php:1058
+#: inc/form-submit.php:1059
 msgid "%s verification failed. Please contact your site administrator."
 msgstr "Weryfikacja %s nie powiodła się. Proszę skontaktować się z administratorem strony."
 
@@ -11316,35 +11316,35 @@ msgid "HCaptcha sitekey verification failed. Please contact your site administra
 msgstr "Weryfikacja klucza witryny HCaptcha nie powiodła się. Proszę skontaktować się z administratorem witryny."
 
 #. translators: %s: Provider name like HCaptcha, Google reCAPTCHA, Turnstile
-#: inc/generate-form-markup.php:554
+#: inc/helper.php:947
 msgid "%s sitekey is missing. Please contact your site administrator."
 msgstr "Brakuje klucza witryny %s. Proszę skontaktować się z administratorem witryny."
 
-#: inc/helper.php:1332
+#: inc/helper.php:1471
 msgid "No-code automation tool for WordPress."
 msgstr "Narzędzie automatyzacji bez kodu dla WordPress."
 
-#: inc/helper.php:1343
+#: inc/helper.php:1482
 msgid "SureMail"
 msgstr "SureMail"
 
-#: inc/helper.php:1344
+#: inc/helper.php:1483
 msgid "Free and easy SMTP mails plugin."
 msgstr "Bezpłatna i łatwa w użyciu wtyczka do poczty SMTP."
 
-#: inc/helper.php:1352
+#: inc/helper.php:1491
 msgid "SureCart"
 msgstr "SureCart"
 
-#: inc/helper.php:1353
+#: inc/helper.php:1492
 msgid "The new way to sell on WordPress."
 msgstr "Nowy sposób sprzedaży na WordPressie."
 
-#: inc/helper.php:1361
+#: inc/helper.php:1499
 msgid "Starter Templates"
 msgstr "Szablony startowe"
 
-#: inc/helper.php:1362
+#: inc/helper.php:1500
 msgid "Build your dream website in minutes with AI."
 msgstr "Zbuduj swoją wymarzoną stronę internetową w kilka minut dzięki AI."
 
@@ -11734,6 +11734,107 @@ msgstr "Opisz formularz, który chcesz utworzyć"
 #: assets/build/templatePicker.js:172
 msgid "We are building your form…"
 msgstr "Budujemy Twój formularz…"
+
+#: admin/admin.php:278
+#: admin/admin.php:279
+msgid "SMTP"
+msgstr ""
+
+#: assets/build/suremail.js:2
+msgid "SureMail Introduction Video"
+msgstr "Film wprowadzający SureMail"
+
+#: assets/build/suremail.js:2
+msgid "Installing SureMail Now…"
+msgstr "Instalowanie SureMail teraz…"
+
+#: assets/build/suremail.js:2
+msgid "Activating SureMail Now…"
+msgstr "Aktywowanie SureMail teraz…"
+
+#: assets/build/suremail.js:2
+msgid "Redirecting to SureMail Dashboard…"
+msgstr "Przekierowywanie do pulpitu nawigacyjnego SureMail…"
+
+#: assets/build/suremail.js:2
+msgid "Activate SureMail Now"
+msgstr "Aktywuj SureMail teraz"
+
+#: assets/build/suremail.js:2
+msgid "Install SureMail Now"
+msgstr "Zainstaluj SureMail teraz"
+
+#: assets/build/suremail.js:2
+msgid "Multiple Backup Connections"
+msgstr "Wiele połączeń zapasowych"
+
+#: assets/build/suremail.js:2
+msgid "Never worry about email failures. SureMail automatically reroutes through backup SMTP providers."
+msgstr "Nigdy nie martw się o awarie e-maili. SureMail automatycznie przekierowuje przez zapasowych dostawców SMTP."
+
+#: assets/build/suremail.js:2
+msgid "Email Logs & Resending"
+msgstr "Dzienniki e-maili i ponowne wysyłanie"
+
+#: assets/build/suremail.js:2
+msgid "Keep a complete record of every email sent from your WordPress site, and resend any email message with ease."
+msgstr "Przechowuj pełny zapis każdego e-maila wysłanego z Twojej strony WordPress i z łatwością wyślij ponownie dowolną wiadomość e-mail."
+
+#: assets/build/suremail.js:2
+msgid "Reputation Shield"
+msgstr "Tarcza Reputacji"
+
+#: assets/build/suremail.js:2
+msgid "Reputation Shield protects your sender reputation by identifying and blocking potentially problematic emails before they're sent."
+msgstr "Tarcza Reputacji chroni Twoją reputację nadawcy, identyfikując i blokując potencjalnie problematyczne e-maile, zanim zostaną wysłane."
+
+#: assets/build/suremail.js:2
+msgid "Advanced Retry Logic"
+msgstr "Zaawansowana logika ponawiania"
+
+#: assets/build/suremail.js:2
+msgid "Failed emails are automatically retried through all of the configured connections to ensure seamless delivery."
+msgstr "Nieudane e-maile są automatycznie ponownie wysyłane przez wszystkie skonfigurowane połączenia, aby zapewnić bezproblemowe dostarczenie."
+
+#: assets/build/suremail.js:2
+msgid "Built-In Email Testing Tool"
+msgstr "Wbudowane narzędzie do testowania e-maili"
+
+#: assets/build/suremail.js:2
+msgid "Easily send test emails for verifying your SMTP configuration before sending live emails to your customers and subscribers."
+msgstr "Łatwo wysyłaj testowe e-maile w celu weryfikacji konfiguracji SMTP przed wysyłaniem wiadomości na żywo do swoich klientów i subskrybentów."
+
+#: assets/build/suremail.js:2
+msgid "Multiple SMTP Providers"
+msgstr "Wielu dostawców SMTP"
+
+#: assets/build/suremail.js:2
+msgid "Integrate and switch between leading SMTP services like Amazon SES, Gmail, SendGrid, SMTP2GO, and many more."
+msgstr "Zintegruj i przełączaj się między wiodącymi usługami SMTP, takimi jak Amazon SES, Gmail, SendGrid, SMTP2GO i wieloma innymi."
+
+#: assets/build/suremail.js:2
+msgid "Plugin installation/activation failed. Please try again later."
+msgstr "Instalacja/aktywacja wtyczki nie powiodła się. Proszę spróbować ponownie później."
+
+#: assets/build/suremail.js:2
+msgid "Ensure Every Form Submission Reaches the Inbox with SureMail"
+msgstr "Upewnij się, że każde przesłanie formularza trafia do skrzynki odbiorczej dzięki SureMail"
+
+#: assets/build/suremail.js:2
+msgid "SureForms and SureMail are the perfect pair! SureMail ensures that every form submission you receive is reliably delivered to your inbox. You'll never lose a lead, miss a support request, or overlook a customer inquiry again."
+msgstr "SureForms i SureMail to idealna para! SureMail zapewnia, że każde przesłane formularze są niezawodnie dostarczane do Twojej skrzynki odbiorczej. Nigdy nie stracisz potencjalnego klienta, nie przegapisz prośby o wsparcie ani nie przeoczysz zapytania od klienta."
+
+#: assets/build/suremail.js:2
+msgid "Forms Submitted. Emails Delivered. Every Time."
+msgstr "Formularze przesłane. E-maile dostarczone. Za każdym razem."
+
+#: assets/build/blocks.js:172
+msgid "Rich Text Editor"
+msgstr "Edytor tekstu sformatowanego"
+
+#: assets/build/dashboard.js:172
+msgid "All Forms"
+msgstr "Wszystkie formularze"
 
 #: inc/post-types.php:124
 msgctxt "post type general name"

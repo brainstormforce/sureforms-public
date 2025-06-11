@@ -302,6 +302,7 @@ class Generate_Form_Markup {
 					--srfm-color-scheme-primary: <?php echo esc_html( $primary_color_var ); ?>;
 					--srfm-color-scheme-text-on-primary: <?php echo esc_html( $label_text_color_var ); ?>;
 					--srfm-color-scheme-text: <?php echo esc_html( $help_color_var ); ?>;
+					--srfm-quill-editor-color: <?php echo esc_html( $primary_color_var ); ?>;
 
 					--srfm-color-input-label: <?php echo esc_html( $help_color_var ); ?>;
 					--srfm-color-input-description: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.65 );
@@ -537,33 +538,6 @@ class Generate_Form_Markup {
 	}
 
 	/**
-	 * Render a site key missing error message.
-	 *
-	 * @param string $provider_name Name of the captcha provider (e.g., HCaptcha, Google reCAPTCHA, Turnstile).
-	 * @since 1.7.0
-	 * @return void
-	 */
-	public static function render_missing_sitekey_error( $provider_name ) {
-		$icon = Helper::fetch_svg( 'info_circle', '', 'aria-hidden="true"' );
-		?>
-		<p id="sitekey-error" class="srfm-common-error-message srfm-error-message" hidden="false">
-			<?php echo wp_kses( $icon, Helper::$allowed_tags_svg ); ?>
-			<span class="srfm-error-content">
-				<?php
-				echo esc_html(
-					sprintf(
-					/* translators: %s: Provider name like HCaptcha, Google reCAPTCHA, Turnstile */
-						__( '%s sitekey is missing. Please contact your site administrator.', 'sureforms' ),
-						$provider_name
-					)
-				);
-				?>
-			</span>
-		</p>
-		<?php
-	}
-
-	/**
 	 * Generate HCaptcha script markup
 	 *
 	 * @param string $srfm_hcaptcha_site_key site key.
@@ -578,7 +552,7 @@ class Generate_Form_Markup {
 			<div id="srfm-hcaptcha-sitekey" data-callback="onSuccess" data-error-callback="onHCaptchaError" class="h-captcha" data-sitekey="<?php echo esc_attr( $srfm_hcaptcha_site_key ); ?>"></div>
 				<?php
 		} else {
-			self::render_missing_sitekey_error( 'HCaptcha' );
+			Helper::render_missing_sitekey_error( 'HCaptcha' );
 		}
 	}
 
@@ -593,7 +567,7 @@ class Generate_Form_Markup {
 	public static function get_google_captcha_script( $recaptcha_version, $google_captcha_site_key ) {
 
 		if ( empty( $google_captcha_site_key ) ) {
-			self::render_missing_sitekey_error( 'Google reCAPTCHA' );
+			Helper::render_missing_sitekey_error( 'Google reCAPTCHA' );
 			return;
 		}
 
@@ -652,7 +626,7 @@ class Generate_Form_Markup {
 		<div id="srfm-cf-sitekey" class="cf-turnstile" data-callback="onSuccess" data-error-callback="onTurnstileError" data-theme="<?php echo esc_attr( $srfm_cf_appearance_mode ); ?>" data-sitekey="<?php echo esc_attr( $srfm_cf_turnstile_site_key ); ?>"></div>
 			<?php
 		} else {
-			self::render_missing_sitekey_error( 'Turnstile' );
+			Helper::render_missing_sitekey_error( 'Turnstile' );
 		}
 	}
 
@@ -705,7 +679,7 @@ class Generate_Form_Markup {
 		$smart_tags           = new Smart_Tags();
 		$confirmation_message = $smart_tags->process_smart_tags( $confirmation_message, $submission_data, $form_data );
 
-		$markup = wp_kses_post( apply_filters( 'srfm_after_submit_confirmation_message', $confirmation_message ) );
+		$markup = Helper::strip_js_attributes( apply_filters( 'srfm_after_submit_confirmation_message', $confirmation_message ) );
 
 		if ( false !== strpos( $markup, 'src="image/svg+xml;base64' ) ) {
 			// Handle Form Confirmation SVGs separately. We have planned to improve it in the future replacing it with image URL.

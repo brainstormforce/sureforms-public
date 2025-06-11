@@ -20,7 +20,9 @@
 		border: 1px solid #dadada;
 		color: #898e95;
 		background-color: #f0f0f1;
-		transition: background 0.08s ease, box-shadow 0.08s ease;
+		transition:
+			background 0.08s ease,
+			box-shadow 0.08s ease;
 		// New styling for presets.
 		border-radius: 5px 5px 3px 3px;
 

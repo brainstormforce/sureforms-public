@@ -53,11 +53,21 @@ const FromEmail = ( {
 							),
 							siteUrl
 						) }
-						{ __( 'We strongly recommend that you install the free ', 'sureforms' ) }
-						<a href="https://suremails.com?utm_medium=sureforms" target="_blank" rel="noopener noreferrer">
+						{ __(
+							'We strongly recommend that you install the free ',
+							'sureforms'
+						) }
+						<a
+							href="https://suremails.com?utm_medium=sureforms"
+							target="_blank"
+							rel="noopener noreferrer"
+						>
 							SureMail
 						</a>
-						{ __( ' plugin! The Setup Wizard makes it easy to fix your emails. ', 'sureforms' ) }
+						{ __(
+							' plugin! The Setup Wizard makes it easy to fix your emails. ',
+							'sureforms'
+						) }
 						{ sprintf(
 							// Translators: %s is the website domain.
 							__(
@@ -213,9 +223,7 @@ const FromEmail = ( {
 
 const ModalWarning = ( { message } ) => {
 	return (
-		<Container
-			className="w-full p-3 gap-2 border border-solid border-alert-border-warning bg-alert-background-warning"
-		>
+		<Container className="w-full p-3 gap-2 border border-solid border-alert-border-warning bg-alert-background-warning">
 			<span className="size-5">{ parse( svg?.warning ) }</span>
 			<span className="text-sm font-normal">{ message }</span>
 		</Container>

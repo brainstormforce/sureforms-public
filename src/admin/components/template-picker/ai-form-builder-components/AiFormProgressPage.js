@@ -14,10 +14,7 @@ export default ( props ) => {
 			justify="center"
 		>
 			<Container.Item>
-				<Container
-					className="gap-6"
-					align="center"
-				>
+				<Container className="gap-6" align="center">
 					<Container.Item>
 						<CircularProgressBar
 							colorCircle="#eee3e1"

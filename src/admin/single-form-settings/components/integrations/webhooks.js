@@ -20,10 +20,7 @@ const WebhooksCard = ( { setSelectedTab } ) => {
 				<WebhookIcon className="size-6 text-icon-primary" />
 				{ ! srfm_admin?.is_pro_active && (
 					<PremiumBadge
-						tooltipHeading={ __(
-							'Unlock Webhooks',
-							'sureforms'
-						) }
+						tooltipHeading={ __( 'Unlock Webhooks', 'sureforms' ) }
 						tooltipContent={ __(
 							'With the SureForms Starter Plan, you can enable webhooks to seamlessly connect with your favorite apps for real-time data transfer and automation.',
 							'sureforms'
@@ -43,9 +40,7 @@ const WebhooksCard = ( { setSelectedTab } ) => {
 						'sureforms'
 					) }
 				/>
-				<IntegrationCard.CTA>
-					{ primaryButton }
-				</IntegrationCard.CTA>
+				<IntegrationCard.CTA>{ primaryButton }</IntegrationCard.CTA>
 			</IntegrationCard.Content>
 		</IntegrationCard>
 	);

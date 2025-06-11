@@ -99,7 +99,9 @@ const GeneralPage = ( {
 							</Button>
 						</div>
 						<Select
-							value={ getReportsLabel( emailTabOptions.srfm_schedule_report ) }
+							value={ getReportsLabel(
+								emailTabOptions.srfm_schedule_report
+							) }
 							onChange={ ( value ) =>
 								updateGlobalSettings(
 									'srfm_schedule_report',
@@ -164,7 +166,11 @@ const GeneralPage = ( {
 						'sureforms'
 					) }
 				</p>
-				<a href="https://store.brainstormforce.com/usage-tracking/?utm_source=sureforms_global_settings&utm_medium=surefroms_general_settings&utm_campaign=usage_tracking" target="_blank" rel="noopener noreferrer">
+				<a
+					href="https://store.brainstormforce.com/usage-tracking/?utm_source=sureforms_global_settings&utm_medium=surefroms_general_settings&utm_campaign=usage_tracking"
+					target="_blank"
+					rel="noopener noreferrer"
+				>
 					{ __( ' Learn More', 'sureforms' ) }
 				</a>
 			</>
@@ -200,13 +206,13 @@ const GeneralPage = ( {
 				title={ __( 'IP Logging', 'sureforms' ) }
 				content={ IPLoggingContent() }
 			/>
-			{ ! srfm_admin?.is_pro_active &&
+			{ ! srfm_admin?.is_pro_active && (
 				<ContentSection
 					loading={ loading }
 					title={ __( 'Usage Tracking', 'sureforms' ) }
 					content={ UsageTrackingContent() }
 				/>
-			}
+			) }
 		</div>
 	);
 };

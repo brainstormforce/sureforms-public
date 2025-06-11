@@ -17,7 +17,10 @@ const ModalInputBox = ( {
 	placeholder = '',
 } ) => {
 	return (
-		<Container direction="column" className={ cn( 'w-full gap-2', padding ) }>
+		<Container
+			direction="column"
+			className={ cn( 'w-full gap-2', padding ) }
+		>
 			<Container align="center" className="gap-1.5">
 				<div className="flex-1">
 					<Input

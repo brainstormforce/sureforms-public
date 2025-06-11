@@ -20,10 +20,7 @@ const Suretriggers = ( { setSelectedTab } ) => {
 				/>
 				<Title
 					tag="h5"
-					title={ __(
-						'OttoKit Integrations',
-						'sureforms'
-					) }
+					title={ __( 'OttoKit Integrations', 'sureforms' ) }
 				/>
 			</Container>
 			<div className="h-full bg-background-primary rounded-xl p-4 shadow-sm mb-6">

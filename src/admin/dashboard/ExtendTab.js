@@ -10,13 +10,11 @@ export default () => {
 	const integrations = Object.entries( srfm_admin?.integrations );
 
 	const isRTL = srfm_admin?.is_rtl;
-	const toasterPosition = isRTL
-		? 'bottom-left'
-		: 'bottom-right';
+	const toasterPosition = isRTL ? 'bottom-left' : 'bottom-right';
 
 	return (
 		<Container
-			className="bg-background-primary border-0.5 border-solid rounded-xl border-border-subtle p-3 gap-2 shadow-sm-blur-1"
+			className="w-full bg-background-primary border-0.5 border-solid rounded-xl border-border-subtle p-3 gap-2 shadow-sm-blur-1"
 			direction="column"
 		>
 			<Toaster
@@ -25,7 +23,12 @@ export default () => {
 				theme="light"
 				autoDismiss={ true }
 				dismissAfter={ 5000 }
-				className={ cn( 'z-[999999]', isRTL ? '[&>li>div>div.absolute]:right-auto [&>li>div>div.absolute]:left-[0.75rem!important]' : '' ) }
+				className={ cn(
+					'z-[999999]',
+					isRTL
+						? '[&>li>div>div.absolute]:right-auto [&>li>div>div.absolute]:left-[0.75rem!important]'
+						: ''
+				) }
 			/>
 			<Container.Item>
 				<Label size="sm" className="font-semibold p-1">
