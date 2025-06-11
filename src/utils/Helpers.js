@@ -665,7 +665,7 @@ export function activatePlugin( { plugin, event } ) {
 			}
 			event.target.innerText = srfm_admin.plugin_activated_text;
 			if ( plugin?.redirection ) {
-   				window.location = plugin.redirection;
+				window.location = plugin.redirection;
 			}
 		},
 		errorCallback: () => {
@@ -729,7 +729,8 @@ export function handlePluginActionTrigger( { plugin, event } ) {
  */
 export function setCookie( name, value, days ) {
 	const date = new Date();
-	date.setTime( date.getTime() + ( days * 24 * 60 * 60 * 1000 ) );
+	const additionalDuration = days * 24 * 60 * 60 * 1000;
+	date.setTime( date.getTime() + additionalDuration );
 	document.cookie = `${ name }=${ value }; expires=${ date.toUTCString() }; path=/`;
 }
 

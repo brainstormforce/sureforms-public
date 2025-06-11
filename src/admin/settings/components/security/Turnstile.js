@@ -77,7 +77,11 @@ const Turnstile = ( { securitytabOptions, updateGlobalSettings } ) => {
 				<Label tag="p" size="sm">
 					{ __( 'Appearance Mode', 'sureforms' ) }
 				</Label>
-				<RadioButton.Group size="sm" columns={ 3 } className="flex flex-wrap gap-2">
+				<RadioButton.Group
+					size="sm"
+					columns={ 3 }
+					className="flex flex-wrap gap-2"
+				>
 					{ APPEARANCE_MODES.map( ( mode ) => (
 						<RadioButton.Button
 							key={ mode.value }

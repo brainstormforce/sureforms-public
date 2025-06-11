@@ -577,8 +577,11 @@ function recaptchaCallback( token = '' ) {
 				},
 				'error-callback': () => {
 					showErrorMessageOnRecaptchaError( {
-						containerSelector: '.g-recaptcha[recaptcha-type="v2-invisible"]:not(.captcha-error-added)',
-						message: srfm_submit?.messages?.srfm_google_captcha_error_message,
+						containerSelector:
+							'.g-recaptcha[recaptcha-type="v2-invisible"]:not(.captcha-error-added)',
+						message:
+							srfm_submit?.messages
+								?.srfm_google_captcha_error_message,
 					} );
 				},
 			} );

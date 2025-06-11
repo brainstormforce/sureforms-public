@@ -96,7 +96,8 @@ export default ( props ) => {
 			setIsListening( true );
 			recognition.onresult = ( event ) => {
 				// keep on appending the result to the textarea
-				const speechResult = event.results[ event.results.length - 1 ][ 0 ].transcript;
+				const speechResult =
+					event.results[ event.results.length - 1 ][ 0 ].transcript;
 				setText( ( prevText ) => {
 					const updatedText = prevText + speechResult;
 					setCharacterCount( updatedText.length );

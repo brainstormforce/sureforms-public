@@ -27,9 +27,7 @@ const PageTitleSection = ( { title } ) => {
 				size="md"
 			/>
 			{ ! exclusionList.includes( getCurrentPage() ) && (
-				<Button>
-					{ __( 'Save', 'sureforms' ) }
-				</Button>
+				<Button>{ __( 'Save', 'sureforms' ) }</Button>
 			) }
 		</div>
 	);

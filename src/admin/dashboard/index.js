@@ -3,9 +3,7 @@ import Dashboard from './Dashboard';
 import '../tw-base.scss';
 
 const APP = () => {
-	return (
-		<Dashboard />
-	);
+	return <Dashboard />;
 };
 
 ( function () {

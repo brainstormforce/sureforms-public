@@ -41,6 +41,7 @@ const Edit = ( props ) => {
 		className,
 		inputMask,
 		customInputMask,
+		readOnly,
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
 
@@ -159,6 +160,18 @@ const Edit = ( props ) => {
 					}
 				/>
 			),
+		},
+		{
+			id: 'read-only',
+			component: defaultValue ? (
+				<ToggleControl
+					label={ __( 'Read Only', 'sureforms' ) }
+					checked={ readOnly }
+					onChange={ ( checked ) =>
+						setAttributes( { readOnly: checked } )
+					}
+				/>
+			) : null,
 		},
 		{
 			id: 'required',

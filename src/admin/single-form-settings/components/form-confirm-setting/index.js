@@ -192,15 +192,22 @@ const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 	);
 
 	// Find the selected confirmation type and sub type (if any).
-	const confirmationOption = confirmationTypeInputs.find( ( option ) =>
-		option.value === data?.confirmation_type ||
-		option.subOptions?.some( ( subOption ) => subOption.value === data?.confirmation_type )
+	const confirmationOption = confirmationTypeInputs.find(
+		( option ) =>
+			option.value === data?.confirmation_type ||
+			option.subOptions?.some(
+				( subOption ) => subOption.value === data?.confirmation_type
+			)
 	);
 
 	// Check if the option or any of its sub-options matches the confirmation type.
 	const isOptionActive = ( option, confirmationType ) => {
-		return option.value === confirmationType ||
-			option.subOptions?.some( ( subOption ) => subOption.value === confirmationType );
+		return (
+			option.value === confirmationType ||
+			option.subOptions?.some(
+				( subOption ) => subOption.value === confirmationType
+			)
+		);
 	};
 
 	// Set the default confirmation type if the selected option is no longer available.
@@ -214,42 +221,35 @@ const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 		<TabContentWrapper title={ __( 'Form Confirmation', 'sureforms' ) }>
 			<div className="space-y-6">
 				<div className="space-y-2">
-					<Label>
-						{ __( 'Confirmation Type', 'sureforms' ) }
-					</Label>
+					<Label>{ __( 'Confirmation Type', 'sureforms' ) }</Label>
 					<div>
 						<RadioGroup>
-							{ confirmationTypeInputs.map(
-								( option, index ) => {
-									const isActive = isOptionActive(
-										option,
-										data?.confirmation_type
-									);
-									return (
-										<RadioGroup.Option
-											key={ index }
-											label={ option.label }
-											onChange={ () =>
-												setData( {
-													...data,
-													confirmation_type:
-															option.value,
-												} )
-											}
-											value={ option.value }
-											checked={ isActive }
-										/>
-									);
-								}
-							) }
+							{ confirmationTypeInputs.map( ( option, index ) => {
+								const isActive = isOptionActive(
+									option,
+									data?.confirmation_type
+								);
+								return (
+									<RadioGroup.Option
+										key={ index }
+										label={ option.label }
+										onChange={ () =>
+											setData( {
+												...data,
+												confirmation_type: option.value,
+											} )
+										}
+										value={ option.value }
+										checked={ isActive }
+									/>
+								);
+							} ) }
 						</RadioGroup>
 					</div>
 				</div>
 				{ confirmationOption?.subOptionLabel && (
 					<div className="space-y-2">
-						<Label>
-							{ confirmationOption?.subOptionLabel }
-						</Label>
+						<Label>{ confirmationOption?.subOptionLabel }</Label>
 						<RadioGroup cols={ 2 }>
 							{ confirmationOption?.subOptions?.map(
 								( subOption, index ) => {
@@ -260,13 +260,13 @@ const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 											value={ subOption.value }
 											checked={
 												data?.confirmation_type ===
-													subOption.value
+												subOption.value
 											}
 											onChange={ () =>
 												setData( {
 													...data,
 													confirmation_type:
-															subOption.value,
+														subOption.value,
 												} )
 											}
 										/>

@@ -1,6 +1,11 @@
 import { __ } from '@wordpress/i18n';
 import { useSelect, useDispatch } from '@wordpress/data';
-import { useState, useEffect, useRef, useLayoutEffect } from '@wordpress/element';
+import {
+	useState,
+	useEffect,
+	useRef,
+	useLayoutEffect,
+} from '@wordpress/element';
 import { store as editorStore } from '@wordpress/editor';
 import AdvancedPopColorControl from '@Components/color-control/advanced-pop-color-control.js';
 import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
@@ -14,7 +19,11 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { useDeviceType } from '@Controls/getPreviewType';
 import { getStylePanels } from '@Components/hooks';
-import { addStyleInRoot, getGradientCSS, setDefaultFormAttributes } from '@Utils/Helpers';
+import {
+	addStyleInRoot,
+	getGradientCSS,
+	setDefaultFormAttributes,
+} from '@Utils/Helpers';
 import { chevronDown } from '@wordpress/icons';
 import EditorPremiumBadge from '@Admin/components/EditorPremiumBadge';
 import Background from '@Components/enhanced-background';
@@ -39,7 +48,9 @@ function StyleSettings( props ) {
 
 	useLayoutEffect( () => {
 		rootRef.current = document.documentElement.querySelector( 'body' );
-		editorRef.current = rootRef.current?.querySelector( '.editor-styles-wrapper' );
+		editorRef.current = rootRef.current?.querySelector(
+			'.editor-styles-wrapper'
+		);
 	}, [] );
 	const deviceType = useDeviceType();
 	const [ submitBtn, setSubmitBtn ] = useState(
@@ -48,7 +59,9 @@ function StyleSettings( props ) {
 	const [ submitBtnCtn, setSubmitBtnCtn ] = useState(
 		document.querySelector( '.srfm-submit-btn-container' )
 	);
-	const [ fieldSpacing, setFieldSpacing ] = useState( formStyling?.field_spacing || 'medium' );
+	const [ fieldSpacing, setFieldSpacing ] = useState(
+		formStyling?.field_spacing || 'medium'
+	);
 
 	// Set the default keys in the meta object if they are not present.
 	setDefaultFormAttributes( embedFormAttributes, formStyling );
@@ -244,59 +257,134 @@ function StyleSettings( props ) {
 
 			// Form Container
 			const cssProperties = {
-				'--srfm-color-scheme-primary': formStyling?.primary_color || '#111C44',
-				'--srfm-btn-color-hover': `hsl( from ${ formStyling?.primary_color || '#111C44' } h s l / 0.9)`,
-				'--srfm-color-scheme-text-on-primary': formStyling?.text_color_on_primary || '#FFFFFF',
-				'--srfm-color-scheme-text': formStyling?.text_color || defaultTextColor,
-				'--srfm-color-input-label': formStyling?.text_color || defaultTextColor,
-				'--srfm-color-input-placeholder': `hsl( from ${ formStyling?.text_color || defaultTextColor } h s l / 0.5)`,
-				'--srfm-color-input-text': formStyling?.text_color || defaultTextColor,
-				'--srfm-color-input-description': `hsl( from ${ formStyling?.text_color || defaultTextColor } h s l / 0.65)`,
-				'--srfm-color-input-prefix': `hsl( from ${ formStyling?.text_color || defaultTextColor } h s l / 0.65)`,
-				'--srfm-color-input-background': `hsl( from ${ formStyling?.text_color || defaultTextColor } h s l / 0.02)`,
-				'--srfm-color-input-background-disabled': `hsl( from ${ formStyling?.text_color || defaultTextColor } h s l / 0.05)`,
-				'--srfm-color-input-border': `hsl( from ${ formStyling?.text_color || defaultTextColor } h s l / 0.25)`,
-				'--srfm-color-input-border-disabled': `hsl( from ${ formStyling?.text_color || defaultTextColor } h s l / 0.15)`,
-				'--srfm-color-input-border-focus-glow': `hsl( from ${ formStyling?.primary_color || '#FAE4DC' } h s l / 0.15 )`,
+				'--srfm-color-scheme-primary':
+					formStyling?.primary_color || '#111C44',
+				'--srfm-btn-color-hover': `hsl( from ${
+					formStyling?.primary_color || '#111C44'
+				} h s l / 0.9)`,
+				'--srfm-color-scheme-text-on-primary':
+					formStyling?.text_color_on_primary || '#FFFFFF',
+				'--srfm-color-scheme-text':
+					formStyling?.text_color || defaultTextColor,
+				'--srfm-color-input-label':
+					formStyling?.text_color || defaultTextColor,
+				'--srfm-color-input-placeholder': `hsl( from ${
+					formStyling?.text_color || defaultTextColor
+				} h s l / 0.5)`,
+				'--srfm-color-input-text':
+					formStyling?.text_color || defaultTextColor,
+				'--srfm-color-input-description': `hsl( from ${
+					formStyling?.text_color || defaultTextColor
+				} h s l / 0.65)`,
+				'--srfm-color-input-prefix': `hsl( from ${
+					formStyling?.text_color || defaultTextColor
+				} h s l / 0.65)`,
+				'--srfm-color-input-background': `hsl( from ${
+					formStyling?.text_color || defaultTextColor
+				} h s l / 0.02)`,
+				'--srfm-color-input-background-disabled': `hsl( from ${
+					formStyling?.text_color || defaultTextColor
+				} h s l / 0.05)`,
+				'--srfm-color-input-border': `hsl( from ${
+					formStyling?.text_color || defaultTextColor
+				} h s l / 0.25)`,
+				'--srfm-color-input-border-disabled': `hsl( from ${
+					formStyling?.text_color || defaultTextColor
+				} h s l / 0.15)`,
+				'--srfm-color-input-border-focus-glow': `hsl( from ${
+					formStyling?.primary_color || '#FAE4DC'
+				} h s l / 0.15 )`,
 				// checkbox and gdpr - for small, medium and large checkbox sizes
 				'--srfm-checkbox-input-border-radius': '4px',
-				'--srfm-color-multi-choice-svg': `hsl( from ${ formStyling?.text_color || defaultTextColor } h s l / 0.7)`,
+				'--srfm-color-multi-choice-svg': `hsl( from ${
+					formStyling?.text_color || defaultTextColor
+				} h s l / 0.7)`,
 				// Button
 				// Button text color
-				'--srfm-btn-text-color': formStyling?.text_color_on_primary || '#FFFFFF',
+				'--srfm-btn-text-color':
+					formStyling?.text_color_on_primary || '#FFFFFF',
 				// btn border color
-				'--srfm-btn-border-color': formStyling?.primary_color || '#111C44',
+				'--srfm-btn-border-color':
+					formStyling?.primary_color || '#111C44',
 
 				// Button alignment
-				'--srfm-submit-alignment': formStyling?.submit_button_alignment || 'left',
+				'--srfm-submit-alignment':
+					formStyling?.submit_button_alignment || 'left',
 				'--srfm-submit-width': sureformsKeys?._srfm_submit_width || '',
-				'--srfm-submit-alignment-backend': sureformsKeys._srfm_submit_alignment_backend || '',
-				'--srfm-submit-width-backend': sureformsKeys._srfm_submit_width_backend || '',
+				'--srfm-submit-alignment-backend':
+					sureformsKeys._srfm_submit_alignment_backend || '',
+				'--srfm-submit-width-backend':
+					sureformsKeys._srfm_submit_width_backend || '',
 				// Background Control Settings.
 				'--srfm-bg-color': bg_color || '#FFFFFF',
 				'--srfm-bg-image': bg_image ? `url(${ bg_image })` : 'none',
-				'--srfm-bg-position': `${ bg_image_position?.x * 100 }% ${ bg_image_position?.y * 100 }%` || '50% 50%',
+				'--srfm-bg-position':
+					`${ bg_image_position?.x * 100 }% ${
+						bg_image_position?.y * 100
+					}%` || '50% 50%',
 				'--srfm-bg-attachment': bg_image_attachment || 'scroll',
 				'--srfm-bg-repeat': bg_image_repeat || 'no-repeat',
-				'--srfm-bg-size': bg_image_size === 'custom' ? `${ bg_image_size_custom ?? 100 }${ bg_image_size_custom_unit ?? '%' }` : bg_image_size || 'cover',
+				'--srfm-bg-size':
+					bg_image_size === 'custom'
+						? `${ bg_image_size_custom ?? 100 }${
+							bg_image_size_custom_unit ?? '%'
+						  }`
+						: bg_image_size || 'cover',
 				'--srfm-bg-size-custom': bg_image_size_custom || 100,
 				'--srfm-bg-size-custom-unit': bg_image_size_custom_unit || '%',
 				// Gradient Variables.
-				'--srfm-bg-gradient': gradient_type === 'basic' || gradient_type === undefined ? bg_gradient || 'linear-gradient(90deg, #FFC9B2 0%, #C7CBFF 100%)' : getGradientCSS( gradientOptions.type, gradientOptions.color_1, gradientOptions.color_2, gradientOptions.location_1, gradientOptions.location_2, gradientOptions.angle ),
+				'--srfm-bg-gradient':
+					gradient_type === 'basic' || gradient_type === undefined
+						? bg_gradient ||
+						  'linear-gradient(90deg, #FFC9B2 0%, #C7CBFF 100%)'
+						: getGradientCSS(
+							gradientOptions.type,
+							gradientOptions.color_1,
+							gradientOptions.color_2,
+							gradientOptions.location_1,
+							gradientOptions.location_2,
+							gradientOptions.angle
+						  ),
 				// Overlay Variables - Image.
-				'--srfm-bg-overlay-image': bg_overlay_image ? `url(${ bg_overlay_image })` : 'none',
-				'--srfm-bg-overlay-position': `${ bg_overlay_position?.x * 100 }% ${ bg_overlay_position?.y * 100 }%` || '50% 50%',
-				'--srfm-bg-overlay-attachment': bg_overlay_attachment || 'scroll',
+				'--srfm-bg-overlay-image': bg_overlay_image
+					? `url(${ bg_overlay_image })`
+					: 'none',
+				'--srfm-bg-overlay-position':
+					`${ bg_overlay_position?.x * 100 }% ${
+						bg_overlay_position?.y * 100
+					}%` || '50% 50%',
+				'--srfm-bg-overlay-attachment':
+					bg_overlay_attachment || 'scroll',
 				'--srfm-bg-overlay-repeat': bg_overlay_repeat || 'no-repeat',
-				'--srfm-bg-overlay-blend-mode': bg_overlay_blend_mode || 'normal',
-				'--srfm-bg-overlay-size': bg_overlay_size === 'custom' ? `${ bg_overlay_custom_size ?? 100 }${ bg_overlay_custom_size_unit ?? '%' }` : bg_overlay_size || 'cover',
+				'--srfm-bg-overlay-blend-mode':
+					bg_overlay_blend_mode || 'normal',
+				'--srfm-bg-overlay-size':
+					bg_overlay_size === 'custom'
+						? `${ bg_overlay_custom_size ?? 100 }${
+							bg_overlay_custom_size_unit ?? '%'
+						  }`
+						: bg_overlay_size || 'cover',
 				'--srfm-bg-overlay-custom-size': bg_overlay_custom_size || 100,
-				'--srfm-bg-overlay-custom-size-unit': bg_overlay_custom_size_unit || '%',
+				'--srfm-bg-overlay-custom-size-unit':
+					bg_overlay_custom_size_unit || '%',
 				'--srfm-bg-overlay-opacity': bg_overlay_opacity ?? 1,
 				// Overlay Variables - Color.
-				'--srfm-bg-overlay-color': bg_image_overlay_color || '#FFFFFF75',
+				'--srfm-bg-overlay-color':
+					bg_image_overlay_color || '#FFFFFF75',
 				// Overlay Variables - Gradient.
-				'--srfm-bg-overlay-gradient': overlay_gradient_type === 'basic' || overlay_gradient_type === undefined ? bg_overlay_gradient || 'linear-gradient(90deg, #FFC9B2 0%, #C7CBFF 100%)' : getGradientCSS( overlayGradientOptions.type, overlayGradientOptions.color_1, overlayGradientOptions.color_2, overlayGradientOptions.location_1, overlayGradientOptions.location_2, overlayGradientOptions.angle ),
+				'--srfm-bg-overlay-gradient':
+					overlay_gradient_type === 'basic' ||
+					overlay_gradient_type === undefined
+						? bg_overlay_gradient ||
+						  'linear-gradient(90deg, #FFC9B2 0%, #C7CBFF 100%)'
+						: getGradientCSS(
+							overlayGradientOptions.type,
+							overlayGradientOptions.color_1,
+							overlayGradientOptions.color_2,
+							overlayGradientOptions.location_1,
+							overlayGradientOptions.location_2,
+							overlayGradientOptions.angle
+						  ),
 			};
 
 			addStyleInRoot( rootRef.current, cssProperties );
@@ -306,7 +394,13 @@ function StyleSettings( props ) {
 				meta: sureformsKeys,
 			} );
 		}
-	}, [ sureformsKeys, gradientOptions, overlayGradientOptions, bg_gradient, bg_overlay_gradient ] );
+	}, [
+		sureformsKeys,
+		gradientOptions,
+		overlayGradientOptions,
+		bg_gradient,
+		bg_overlay_gradient,
+	] );
 
 	function updateMeta( option, value ) {
 		const value_id = 0;
@@ -316,10 +410,14 @@ function StyleSettings( props ) {
 		// Button
 		switch ( option ) {
 			case '_srfm_button_border_width':
-				cssProperties[ '--srfm-btn-border-width' ] = value ? value + 'px' : '0px';
+				cssProperties[ '--srfm-btn-border-width' ] = value
+					? value + 'px'
+					: '0px';
 				break;
 			case '_srfm_button_border_color':
-				cssProperties[ '--srfm-btn-border-color' ] = value ? value : '#000000';
+				cssProperties[ '--srfm-btn-border-color' ] = value
+					? value
+					: '#000000';
 				break;
 		}
 
@@ -349,7 +447,8 @@ function StyleSettings( props ) {
 	 */
 	function applyFieldSpacing( sizingValue ) {
 		const baseSize = srfm_admin?.field_spacing_vars?.small;
-		const overrideSize = srfm_admin?.field_spacing_vars[ sizingValue ] || {};
+		const overrideSize =
+			srfm_admin?.field_spacing_vars[ sizingValue ] || {};
 		const finalSize = { ...baseSize, ...overrideSize };
 
 		addStyleInRoot( rootRef.current, finalSize );
@@ -378,24 +477,44 @@ function StyleSettings( props ) {
 		const cssProperties = {};
 		switch ( option ) {
 			case 'primary_color':
-				cssProperties[ '--srfm-color-scheme-primary' ] = value || '#111C44';
-				cssProperties[ '--srfm-btn-color-hover' ] = `hsl( from ${ value || '#111C44' } h s l / 0.9)`;
+				cssProperties[ '--srfm-color-scheme-primary' ] =
+					value || '#111C44';
+				cssProperties[ '--srfm-btn-color-hover' ] = `hsl( from ${
+					value || '#111C44'
+				} h s l / 0.9)`;
 				break;
 			case 'text_color':
 				const defaultTextColor = '#1E1E1E';
-				cssProperties[ '--srfm-color-scheme-text' ] = value || defaultTextColor;
-				cssProperties[ '--srfm-color-input-label' ] = value || defaultTextColor;
-				cssProperties[ '--srfm-color-input-placeholder' ] = value || defaultTextColor;
-				cssProperties[ '--srfm-color-input-text' ] = value || defaultTextColor;
-				cssProperties[ '--srfm-color-input-description' ] = `hsl( from ${ value || defaultTextColor } h s l / 0.65)`;
-				cssProperties[ '--srfm-color-input-prefix' ] = `hsl( from ${ value || defaultTextColor } h s l / 0.65)`;
-				cssProperties[ '--srfm-color-input-background' ] = `hsl( from ${ value || defaultTextColor } h s l / 0.02)`;
-				cssProperties[ '--srfm-color-input-background-disabled' ] = `hsl( from ${ value || defaultTextColor } h s l / 0.05)`;
-				cssProperties[ '--srfm-color-input-border' ] = `hsl( from ${ value || defaultTextColor } h s l / 0.25)`;
-				cssProperties[ '--srfm-color-input-border-disabled' ] = `hsl( from ${ value || defaultTextColor } h s l / 0.15)`;
+				cssProperties[ '--srfm-color-scheme-text' ] =
+					value || defaultTextColor;
+				cssProperties[ '--srfm-color-input-label' ] =
+					value || defaultTextColor;
+				cssProperties[ '--srfm-color-input-placeholder' ] =
+					value || defaultTextColor;
+				cssProperties[ '--srfm-color-input-text' ] =
+					value || defaultTextColor;
+				cssProperties[
+					'--srfm-color-input-description'
+				] = `hsl( from ${ value || defaultTextColor } h s l / 0.65)`;
+				cssProperties[ '--srfm-color-input-prefix' ] = `hsl( from ${
+					value || defaultTextColor
+				} h s l / 0.65)`;
+				cssProperties[ '--srfm-color-input-background' ] = `hsl( from ${
+					value || defaultTextColor
+				} h s l / 0.02)`;
+				cssProperties[
+					'--srfm-color-input-background-disabled'
+				] = `hsl( from ${ value || defaultTextColor } h s l / 0.05)`;
+				cssProperties[ '--srfm-color-input-border' ] = `hsl( from ${
+					value || defaultTextColor
+				} h s l / 0.25)`;
+				cssProperties[
+					'--srfm-color-input-border-disabled'
+				] = `hsl( from ${ value || defaultTextColor } h s l / 0.15)`;
 				break;
 			case 'text_color_on_primary':
-				cssProperties[ '--srfm-color-scheme-text-on-primary' ] = value || '#FFFFFF';
+				cssProperties[ '--srfm-color-scheme-text-on-primary' ] =
+					value || '#FFFFFF';
 				break;
 			case 'field_spacing':
 				cssProperties[ '--srfm-field-spacing' ] = value || 'medium';
@@ -425,7 +544,9 @@ function StyleSettings( props ) {
 				break;
 			// Image Variables.
 			case 'bg_image':
-				cssProperties[ '--srfm-bg-image' ] = value ? `url(${ value })` : 'none';
+				cssProperties[ '--srfm-bg-image' ] = value
+					? `url(${ value })`
+					: 'none';
 				break;
 			case 'bg_image_position':
 				cssProperties[ '--srfm-bg-position' ] = value || '50% 50%';
@@ -437,17 +558,24 @@ function StyleSettings( props ) {
 				cssProperties[ '--srfm-bg-repeat' ] = value || 'no-repeat';
 				break;
 			case 'bg_image_size':
-				cssProperties[ '--srfm-bg-size' ] = value === 'custom'
-					? `${ bg_image_size_custom ?? 100 }${ bg_image_size_custom ?? '%' }`
-					: value || 'cover';
+				cssProperties[ '--srfm-bg-size' ] =
+					value === 'custom'
+						? `${ bg_image_size_custom ?? 100 }${
+							bg_image_size_custom ?? '%'
+						  }`
+						: value || 'cover';
 				break;
 			case 'bg_image_size_custom':
 				cssProperties[ '--srfm-bg-size-custom' ] = value ?? 100;
-				cssProperties[ '--srfm-bg-size' ] = `${ value ?? 100 }${ bg_image_size_custom ?? '%' }`;
+				cssProperties[ '--srfm-bg-size' ] = `${ value ?? 100 }${
+					bg_image_size_custom ?? '%'
+				}`;
 				break;
 			case 'bg_image_size_custom_unit':
 				cssProperties[ '--srfm-bg-size-custom-unit' ] = value ?? '%';
-				cssProperties[ '--srfm-bg-size' ] = `${ bg_image_size_custom ?? 100 }${ value ?? '%' }`;
+				cssProperties[ '--srfm-bg-size' ] = `${
+					bg_image_size_custom ?? 100
+				}${ value ?? '%' }`;
 				break;
 			// Gradient Variables.
 			case 'gradient_type':
@@ -458,7 +586,10 @@ function StyleSettings( props ) {
 			case 'bg_gradient_location_1':
 			case 'bg_gradient_location_2':
 			case 'bg_gradient_angle':
-				if ( ( option === 'gradient_type' && value === 'basic' ) || option === 'bg_gradient' ) {
+				if (
+					( option === 'gradient_type' && value === 'basic' ) ||
+					option === 'bg_gradient'
+				) {
 					cssProperties[ '--srfm-bg-gradient' ] = bg_gradient;
 					break;
 				}
@@ -470,42 +601,58 @@ function StyleSettings( props ) {
 				break;
 			// Overlay Variables - Image.
 			case 'bg_gradient_overlay_type': // might be used in future.
-				cssProperties[ '--srfm-bg-gradient-overlay-type' ] = value || 'none';
+				cssProperties[ '--srfm-bg-gradient-overlay-type' ] =
+					value || 'none';
 				break;
 			case 'bg_overlay_image':
-				cssProperties[ '--srfm-bg-overlay-image' ] = value ? `url(${ value })` : 'none';
+				cssProperties[ '--srfm-bg-overlay-image' ] = value
+					? `url(${ value })`
+					: 'none';
 				break;
 			case 'bg_overlay_position':
-				cssProperties[ '--srfm-bg-overlay-position' ] = value || '50% 50%';
+				cssProperties[ '--srfm-bg-overlay-position' ] =
+					value || '50% 50%';
 				break;
 			case 'bg_overlay_attachment':
-				cssProperties[ '--srfm-bg-overlay-attachment' ] = value || 'scroll';
+				cssProperties[ '--srfm-bg-overlay-attachment' ] =
+					value || 'scroll';
 				break;
 			case 'bg_overlay_repeat':
-				cssProperties[ '--srfm-bg-overlay-repeat' ] = value || 'no-repeat';
+				cssProperties[ '--srfm-bg-overlay-repeat' ] =
+					value || 'no-repeat';
 				break;
 			case 'bg_overlay_blend_mode':
-				cssProperties[ '--srfm-bg-overlay-blend-mode' ] = value || 'normal';
+				cssProperties[ '--srfm-bg-overlay-blend-mode' ] =
+					value || 'normal';
 				break;
 			case 'bg_overlay_size':
-				cssProperties[ '--srfm-bg-overlay-size' ] = value === 'custom'
-					? `${ bg_overlay_custom_size ?? 100 }${ bg_overlay_custom_size_unit ?? '%' }`
-					: value || 'cover';
+				cssProperties[ '--srfm-bg-overlay-size' ] =
+					value === 'custom'
+						? `${ bg_overlay_custom_size ?? 100 }${
+							bg_overlay_custom_size_unit ?? '%'
+						  }`
+						: value || 'cover';
 				break;
 			case 'bg_overlay_custom_size':
 				cssProperties[ '--srfm-bg-overlay-custom-size' ] = value ?? 100;
-				cssProperties[ '--srfm-bg-overlay-size' ] = `${ value ?? 100 }${ bg_overlay_custom_size_unit ?? '%' }`;
+				cssProperties[ '--srfm-bg-overlay-size' ] = `${ value ?? 100 }${
+					bg_overlay_custom_size_unit ?? '%'
+				}`;
 				break;
 			case 'bg_overlay_custom_size_unit':
-				cssProperties[ '--srfm-bg-overlay-custom-size-unit' ] = value ?? '%';
-				cssProperties[ '--srfm-bg-overlay-size' ] = `${ bg_overlay_custom_size ?? 100 }${ value ?? '%' }`;
+				cssProperties[ '--srfm-bg-overlay-custom-size-unit' ] =
+					value ?? '%';
+				cssProperties[ '--srfm-bg-overlay-size' ] = `${
+					bg_overlay_custom_size ?? 100
+				}${ value ?? '%' }`;
 				break;
 			case 'bg_overlay_opacity':
 				cssProperties[ '--srfm-bg-overlay-opacity' ] = value ?? 1; // Using nullish coalescing operator to handle 0 case. If value is 0, it should be 0.
 				break;
 			// Overlay Variables - Color.
 			case 'bg_image_overlay_color':
-				cssProperties[ '--srfm-bg-overlay-color' ] = value || '#FFFFFF75';
+				cssProperties[ '--srfm-bg-overlay-color' ] =
+					value || '#FFFFFF75';
 				break;
 			// Overlay Variables - Gradient.
 			// Gradient Variables.
@@ -517,8 +664,13 @@ function StyleSettings( props ) {
 			case 'bg_overlay_gradient_location_1':
 			case 'bg_overlay_gradient_location_2':
 			case 'bg_overlay_gradient_angle':
-				if ( ( option === 'overlay_gradient_type' && value === 'basic' ) || option === 'bg_overlay_gradient' ) {
-					cssProperties[ '--srfm-bg-overlay-gradient' ] = bg_overlay_gradient;
+				if (
+					( option === 'overlay_gradient_type' &&
+						value === 'basic' ) ||
+					option === 'bg_overlay_gradient'
+				) {
+					cssProperties[ '--srfm-bg-overlay-gradient' ] =
+						bg_overlay_gradient;
 					break;
 				}
 				const updatedOverlayGradientOptions = {
@@ -556,12 +708,23 @@ function StyleSettings( props ) {
 			color: 'srfm-overlay-color',
 		};
 
-		editorRef.current?.classList.remove( ...Object.values( backgroundClasses ) );
-		editorRef.current?.classList.remove( ...Object.values( overlayClasses ) );
+		editorRef.current?.classList.remove(
+			...Object.values( backgroundClasses )
+		);
+		editorRef.current?.classList.remove(
+			...Object.values( overlayClasses )
+		);
 
-		editorRef.current?.classList.add( backgroundClasses[ backgroundType ] || backgroundClasses.default );
+		editorRef.current?.classList.add(
+			backgroundClasses[ backgroundType ] || backgroundClasses.default
+		);
 
-		if ( backgroundType === 'image' && bg_image && overlayType && overlayClasses[ overlayType ] ) {
+		if (
+			backgroundType === 'image' &&
+			bg_image &&
+			overlayType &&
+			overlayClasses[ overlayType ]
+		) {
 			editorRef.current?.classList.add( overlayClasses[ overlayType ] );
 		}
 	};
@@ -639,7 +802,9 @@ function StyleSettings( props ) {
 							label: 'bg_gradient_type',
 						} }
 						backgroundGradient={ {
-							value: bg_gradient || 'linear-gradient(90deg, #FFC9B2 0%, #C7CBFF 100%)',
+							value:
+								bg_gradient ||
+								'linear-gradient(90deg, #FFC9B2 0%, #C7CBFF 100%)',
 							label: 'bg_gradient',
 						} }
 						// Overlay Properties
@@ -717,7 +882,9 @@ function StyleSettings( props ) {
 							label: 'bg_overlay_gradient_type',
 						} }
 						overlayBackgroundGradient={ {
-							value: bg_overlay_gradient || 'linear-gradient(90deg, #FFC9B2 0%, #C7CBFF 100%)',
+							value:
+								bg_overlay_gradient ||
+								'linear-gradient(90deg, #FFC9B2 0%, #C7CBFF 100%)',
 							label: 'bg_overlay_gradient',
 						} }
 						label={ __( 'Background', 'sureforms' ) }
@@ -741,7 +908,10 @@ function StyleSettings( props ) {
 						} }
 						onColorChange={ ( colorValue ) => {
 							if ( colorValue !== formStyling?.primary_color ) {
-								updateFormStyling( 'primary_color', colorValue );
+								updateFormStyling(
+									'primary_color',
+									colorValue
+								);
 							}
 						} }
 						value={ formStyling?.primary_color }
@@ -771,7 +941,8 @@ function StyleSettings( props ) {
 						isFormSpecific={ true }
 					/>
 					<p className="components-base-control__help" />
-				</> ),
+				</>
+			),
 		},
 		{
 			id: 'text_color_on_primary',
@@ -786,7 +957,8 @@ function StyleSettings( props ) {
 						} }
 						onColorChange={ ( colorValue ) => {
 							if (
-								colorValue !== formStyling?.text_color_on_primary
+								colorValue !==
+								formStyling?.text_color_on_primary
 							) {
 								updateFormStyling(
 									'text_color_on_primary',
@@ -906,74 +1078,59 @@ function StyleSettings( props ) {
 	const button = [
 		{
 			id: 'submit_button_alignment',
-			component: (
-				! isInlineButtonBlockPresent && (
-					<>
-						<p className="components-base-control__help" />
-						<MultiButtonsControl
-							label={ __(
-								'Submit Button Alignment',
-								'sureforms'
-							) }
-							data={ {
-								value: formStyling?.submit_button_alignment,
-								label: 'submit_button_alignment',
-							} }
-							options={ [
-								{
-									value: 'left',
-									icon: (
-										<FontAwesomeIcon icon={ faAlignLeft } />
-									),
-									tooltip: __( 'Left', 'sureforms' ),
-								},
-								{
-									value: 'center',
-									icon: (
-										<FontAwesomeIcon
-											icon={ faAlignCenter }
-										/>
-									),
-									tooltip: __( 'Center', 'sureforms' ),
-								},
-								{
-									value: 'right',
-									icon: (
-										<FontAwesomeIcon
-											icon={ faAlignRight }
-										/>
-									),
-									tooltip: __( 'Right', 'sureforms' ),
-								},
-								{
-									value: 'justify',
-									icon: (
-										<FontAwesomeIcon
-											icon={ faAlignJustify }
-										/>
-									),
-									tooltip: __( 'Full Width', 'sureforms' ),
-								},
-							] }
-							showIcons={ true }
-							onChange={ ( value ) => {
-								updateFormStyling(
-									'submit_button_alignment',
-									value || 'left'
+			component: ! isInlineButtonBlockPresent && (
+				<>
+					<p className="components-base-control__help" />
+					<MultiButtonsControl
+						label={ __( 'Submit Button Alignment', 'sureforms' ) }
+						data={ {
+							value: formStyling?.submit_button_alignment,
+							label: 'submit_button_alignment',
+						} }
+						options={ [
+							{
+								value: 'left',
+								icon: <FontAwesomeIcon icon={ faAlignLeft } />,
+								tooltip: __( 'Left', 'sureforms' ),
+							},
+							{
+								value: 'center',
+								icon: (
+									<FontAwesomeIcon icon={ faAlignCenter } />
+								),
+								tooltip: __( 'Center', 'sureforms' ),
+							},
+							{
+								value: 'right',
+								icon: <FontAwesomeIcon icon={ faAlignRight } />,
+								tooltip: __( 'Right', 'sureforms' ),
+							},
+							{
+								value: 'justify',
+								icon: (
+									<FontAwesomeIcon icon={ faAlignJustify } />
+								),
+								tooltip: __( 'Full Width', 'sureforms' ),
+							},
+						] }
+						showIcons={ true }
+						onChange={ ( value ) => {
+							updateFormStyling(
+								'submit_button_alignment',
+								value || 'left'
+							);
+							if ( 'justify' === value ) {
+								updateMeta( '_srfm_submit_width', '100%' );
+								updateMeta(
+									'_srfm_submit_width_backend',
+									'auto'
 								);
-								if ( 'justify' === value ) {
-									updateMeta( '_srfm_submit_width', '100%' );
-									updateMeta(
-										'_srfm_submit_width_backend',
-										'auto'
-									);
-								} else {
-									updateMeta( '_srfm_submit_width', '' );
-								}
-							} }
-						/>
-					</>
-				)
+							} else {
+								updateMeta( '_srfm_submit_width', '' );
+							}
+						} }
+					/>
+				</>
 			),
 		},
 	];
@@ -991,22 +1148,33 @@ function StyleSettings( props ) {
 			content: fields,
 			initialOpen: false,
 		},
-		...( button.some( ( setting ) => setting.component ) ? [
-			{
-				panelId: 'button',
-				title: __( 'Button', 'sureforms' ),
-				content: button,
-				initialOpen: false,
-			},
-		] : [] ),
+		...( button.some( ( setting ) => setting.component )
+			? [
+				{
+					panelId: 'button',
+					title: __( 'Button', 'sureforms' ),
+					content: button,
+					initialOpen: false,
+				},
+			  ]
+			: [] ),
 	];
 
-	const enhancedStylePanels = getStylePanels( baseStylePanels, { props, sureformsKeys, editPost, formStyling, updateFormStyling } );
+	const enhancedStylePanels = getStylePanels( baseStylePanels, {
+		props,
+		sureformsKeys,
+		editPost,
+		formStyling,
+		updateFormStyling,
+	} );
 
 	const presetPreview = (
 		<>
 			<div className="srfm-panel-preview">
-				<div className="components-panel__body" style={ { 'border-bottom': 'unset' } }>
+				<div
+					className="components-panel__body"
+					style={ { 'border-bottom': 'unset' } }
+				>
 					<h2 className="components-panel__body-title">
 						{ __( 'Form Theme', 'sureforms' ) }
 					</h2>
@@ -1028,7 +1196,9 @@ function StyleSettings( props ) {
 		</>
 	);
 
-	const isPresetPanelPresent = enhancedStylePanels.find( ( panel ) => panel.panelId === 'themes' );
+	const isPresetPanelPresent = enhancedStylePanels.find(
+		( panel ) => panel.panelId === 'themes'
+	);
 	return (
 		<>
 			{ ! isPresetPanelPresent && presetPreview }
