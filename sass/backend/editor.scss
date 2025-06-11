@@ -36,7 +36,7 @@ body.post-type-sureforms_form {
 	 * which causes the background color set in the SureForms editor to be overridden.
 	 * The below styles will unset the background color and transform properties of the ::before pseudo-element.
 	 *
-	 * @since x.x.x
+	 * @since 1.7.2
 	 */
 	&.wp-theme-kadence {
 		.srfm-bg-color,
@@ -44,7 +44,7 @@ body.post-type-sureforms_form {
 		.srfm-bg-gradient {
 			&::before {
 				background: unset;
-				transform: translate(0);
+				transform: translate( 0 );
 				max-width: unset;
 			}
 		}
