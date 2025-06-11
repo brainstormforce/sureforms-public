@@ -1,6 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import { useState, useEffect } from '@wordpress/element';
-import { Switch, Input, Button, Select, toast, Loader } from '@bsf/force-ui';
+import { Switch } from '@bsf/force-ui';
 import { useOnboardingNavigation } from './hooks';
 import { useOnboardingState } from './onboarding-state';
 import NavigationButtons from './navigation-buttons';
@@ -110,7 +110,6 @@ const GlobalSettings = () => {
 			} );
 		} catch ( error ) {
 			console.error( 'Error saving setting:', error );
-			toast.error( __( 'Error saving setting', 'sureforms' ) );
 		}
 	};
 
@@ -124,23 +123,6 @@ const GlobalSettings = () => {
 	};
 
 	const EmailSummariesContent = () => {
-		const [ sendingTestEmail, setSendingTestEmail ] = useState( false );
-
-		const days = [
-			{ label: __( 'Monday', 'sureforms' ), value: 'Monday' },
-			{ label: __( 'Tuesday', 'sureforms' ), value: 'Tuesday' },
-			{ label: __( 'Wednesday', 'sureforms' ), value: 'Wednesday' },
-			{ label: __( 'Thursday', 'sureforms' ), value: 'Thursday' },
-			{ label: __( 'Friday', 'sureforms' ), value: 'Friday' },
-			{ label: __( 'Saturday', 'sureforms' ), value: 'Saturday' },
-			{ label: __( 'Sunday', 'sureforms' ), value: 'Sunday' },
-		];
-
-		const getReportsLabel = ( value ) => {
-			const selectedDay = days.find( ( day ) => day.value === value );
-			return selectedDay ? selectedDay.label : '';
-		};
-
 		return (
 			<>
 				<Switch
@@ -152,92 +134,6 @@ const GlobalSettings = () => {
 						handleSettingToggle( 'srfm_email_summary', value )
 					}
 				/>
-				{ emailSettings.srfm_email_summary && (
-					<>
-						<div className="flex items-end gap-2">
-							<div className="flex-1">
-								<Input
-									size="md"
-									label={ __( 'Send Email To', 'sureforms' ) }
-									type="email"
-									value={
-										emailSettings.srfm_email_sent_to || ''
-									}
-									onChange={ ( value ) =>
-										handleSettingToggle(
-											'srfm_email_sent_to',
-											value
-										)
-									}
-									required
-									autoComplete="off"
-								/>
-							</div>
-							<Button
-								variant="outline"
-								size="md"
-								icon={ sendingTestEmail && <Loader /> }
-								iconPosition="left"
-								onClick={ async () => {
-									if ( sendingTestEmail ) {
-										return;
-									}
-
-									setSendingTestEmail( true );
-									try {
-										await apiFetch( {
-											path: '/sureforms/v1/send-test-email-summary',
-											method: 'POST',
-											data: {
-												srfm_email_sent_to:
-													emailSettings.srfm_email_sent_to,
-											},
-										} ).then( ( response ) => {
-											setSendingTestEmail( false );
-											toast.success( response?.data );
-										} );
-									} catch ( error ) {
-										console.error(
-											'Error Sending Test Email Summary:',
-											error
-										);
-									}
-								} }
-								className="bg-background-secondary"
-							>
-								{ __( 'Test Email', 'sureforms' ) }
-							</Button>
-						</div>
-						<Select
-							value={ getReportsLabel(
-								emailSettings.srfm_schedule_report
-							) }
-							onChange={ ( value ) =>
-								handleSettingToggle(
-									'srfm_schedule_report',
-									value
-								)
-							}
-						>
-							<Select.Button
-								type="button"
-								label={ __( 'Schedule Reports', 'sureforms' ) }
-							/>
-							<Select.Portal id="srfm-settings-container">
-								<Select.Options>
-									{ days.map( ( day ) => (
-										<Select.Option
-											key={ day.value }
-											value={ day.value }
-										>
-											{ day.label }
-										</Select.Option>
-									) ) }
-								</Select.Options>
-							</Select.Portal>
-						</Select>
-					</>
-				) }
 			</>
 		);
 	};
