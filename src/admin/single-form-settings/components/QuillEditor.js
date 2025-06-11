@@ -8,6 +8,7 @@ import EditorToolbar, {
 } from './email-settings/EditorToolbar';
 import { ChevronDownIcon } from 'lucide-react';
 import { Label, Tabs, TextArea } from '@bsf/force-ui';
+import { applyFilters } from '@wordpress/hooks';
 
 const Editor = ( { handleContentChange, content, allData = false } ) => {
 	const quillRef = useRef( null );
@@ -128,11 +129,24 @@ const Editor = ( { handleContentChange, content, allData = false } ) => {
 	CustomImageBlot.tagName = 'img';
 	Quill.register( CustomImageBlot );
 
+	const formConfirmationSmartTags = applyFilters( 'srfm.formSettings.formConfirmationSmartTags', [
+		{
+			tags: allData
+				? formSmartTagsAllData
+				: formSmartTags,
+			label: __( 'Form input tags', 'sureforms' ),
+		},
+		{
+			tags: genericSmartTags,
+			label: __( 'Generic tags', 'sureforms' ),
+		},
+	] );
+
 	return (
 		<>
 			<Tabs activeItem={ activeTab }>
 				<div className="flex items-center justify-between mb-1.5">
-					<Label>{ __( 'Confirmation Message', 'sureforms' ) }</Label>
+					<Label>{ __( 'Confirmation Message thissss', 'sureforms' ) }</Label>
 					<div className="flex items-center gap-2 min-w-fit">
 						<Tabs.Group
 							variant="rounded"
@@ -157,18 +171,19 @@ const Editor = ( { handleContentChange, content, allData = false } ) => {
 							tagFor="formSettings.quillEditor"
 							icon={ <ChevronDownIcon /> }
 							label={ __( 'Add Shortcode', 'sureforms' ) }
-							tagsArray={ [
-								{
-									tags: allData
-										? formSmartTagsAllData
-										: formSmartTags,
-									label: __( 'Form input tags', 'sureforms' ),
-								},
-								{
-									tags: genericSmartTags,
-									label: __( 'Generic tags', 'sureforms' ),
-								},
-							] }
+							// tagsArray={ [
+							// 	{
+							// 		tags: allData
+							// 			? formSmartTagsAllData
+							// 			: formSmartTags,
+							// 		label: __( 'Form input tags', 'sureforms' ),
+							// 	},
+							// 	{
+							// 		tags: genericSmartTags,
+							// 		label: __( 'Generic tags', 'sureforms' ),
+							// 	},
+							// ] }
+							tagsArray={ formConfirmationSmartTags }
 							setTargetData={ insertSmartTag }
 							dropdownPlacement="bottom-end"
 						/>
