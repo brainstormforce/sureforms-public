@@ -81,6 +81,7 @@ class Smart_Tags {
 			'srfm_smart_tag_list',
 			[
 				'{site_url}'               => __( 'Site URL', 'sureforms' ),
+				'{current_page_url}'       => __( 'Current Page URL', 'sureforms' ),
 				'{admin_email}'            => __( 'Admin Email', 'sureforms' ),
 				'{site_title}'             => __( 'Site Title', 'sureforms' ),
 				'{form_title}'             => __( 'Form Title', 'sureforms' ),
@@ -221,6 +222,17 @@ class Smart_Tags {
 			case '{embed_post_title}':
 			case '{embed_post_url}':
 				return self::parse_post_props( $tag );
+			case '{current_page_url}':
+				if ( isset( $form_data['_wp_http_referer'] ) ) {
+					$request_uri = sanitize_text_field( Helper::get_string_value( wp_unslash( $form_data['_wp_http_referer'] ) ) );
+					return esc_url( site_url( $request_uri ) );
+				}
+
+				if ( isset( $_SERVER['REQUEST_URI'] ) ) {
+					$request_uri = sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) );
+					return esc_url( site_url( $request_uri ) );
+				}
+				return '';
 
 			default:
 				if ( strpos( $tag, 'get_input:' ) || strpos( $tag, 'get_cookie:' ) ) {
@@ -288,11 +300,11 @@ class Smart_Tags {
 				$var = Helper::get_string_value( filter_var( wp_unslash( $_SERVER['QUERY_STRING'] ), FILTER_SANITIZE_URL ) );
 			}
 			parse_str( $var, $parameters );
-			return isset( $parameters[ $param ] ) ? sanitize_text_field( Helper::get_string_value( $parameters[ $param ] ) ) : '';
+			return isset( $parameters[ $param ] ) ? esc_attr( sanitize_text_field( Helper::get_string_value( $parameters[ $param ] ) ) ) : '';
 		}
 
 		if ( $param && strpos( $value, 'get_cookie:' ) !== false ) {
-			return isset( $_COOKIE[ $param ] ) ? sanitize_text_field( wp_unslash( $_COOKIE[ $param ] ) ) : '';
+			return isset( $_COOKIE[ $param ] ) ? esc_attr( sanitize_text_field( wp_unslash( $_COOKIE[ $param ] ) ) ) : '';
 		}
 
 		return '';
@@ -396,15 +408,15 @@ class Smart_Tags {
 		}
 
 		if ( '{user_display_name}' === $value ) {
-			return $user->data->display_name ?? '';
+			return esc_attr( $user->data->display_name ?? '' );
 		}
 
 		if ( '{user_first_name}' === $value ) {
-			return is_array( $user_info ) && isset( $user_info['first_name'][0] ) ? $user_info['first_name'][0] : '';
+			return is_array( $user_info ) && isset( $user_info['first_name'][0] ) ? esc_attr( $user_info['first_name'][0] ) : '';
 		}
 
 		if ( '{user_last_name}' === $value ) {
-			return is_array( $user_info ) && isset( $user_info['last_name'][0] ) ? $user_info['last_name'][0] : '';
+			return is_array( $user_info ) && isset( $user_info['last_name'][0] ) ? esc_attr( $user_info['last_name'][0] ) : '';
 		}
 
 		if ( '{user_email}' === $value ) {

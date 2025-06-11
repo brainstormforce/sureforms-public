@@ -34,6 +34,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 		preview,
 		className,
 		isRichText,
+		readOnly,
 	} = attributes;
 
 	const currentFormId = useGetCurrentFormId( clientId );
@@ -80,6 +81,15 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 									setAttributes( { defaultValue: value } )
 								}
 							/>
+							{ defaultValue && (
+								<ToggleControl
+									label={ __( 'Read Only', 'sureforms' ) }
+									checked={ readOnly }
+									onChange={ ( checked ) =>
+										setAttributes( { readOnly: checked } )
+									}
+								/>
+							) }
 							<ToggleControl
 								label={ __( 'Required', 'sureforms' ) }
 								checked={ required }

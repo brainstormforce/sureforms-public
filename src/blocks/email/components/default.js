@@ -11,6 +11,7 @@ export const EmailComponent = ( { attributes, blockID, setAttributes } ) => {
 		isConfirmEmail,
 		confirmLabel,
 		help,
+		readOnly,
 	} = attributes;
 
 	const slug = 'email';
@@ -35,7 +36,7 @@ export const EmailComponent = ( { attributes, blockID, setAttributes } ) => {
 					setAttributes={ setAttributes }
 					block_id={ blockID }
 				/>
-				<div className="srfm-block-wrap">
+				<div className={ `srfm-block-wrap${ readOnly ? ' srfm-read-only' : '' }` }>
 					<input
 						id={ `srfm-${ slug }-${ blockID }` }
 						type="email"
@@ -63,7 +64,7 @@ export const EmailComponent = ( { attributes, blockID, setAttributes } ) => {
 						id={ blockID }
 						allowedFormats={ [] }
 					/>
-					<div className="srfm-block-wrap">
+					<div className={ `srfm-block-wrap${ readOnly ? ' srfm-read-only' : '' }` }>
 						<input
 							id={ `srfm-${ slug }-confirm-${ blockID }` }
 							type="email"

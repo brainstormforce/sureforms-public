@@ -83,6 +83,14 @@ class Number_Markup extends Base {
 	protected $suffix;
 
 	/**
+	 * Read-only attribute for the number field.
+	 *
+	 * @var bool
+	 * @since 1.7.2
+	 */
+	protected $read_only;
+
+	/**
 	 * Initialize the properties based on block attributes.
 	 *
 	 * @param array<mixed> $attributes Block attributes.
@@ -99,6 +107,7 @@ class Number_Markup extends Base {
 		$this->max_value_attr = $this->max_value ? ' max="' . $this->max_value . '" ' : '';
 		$this->prefix         = $attributes['prefix'] ?? '';
 		$this->suffix         = $attributes['suffix'] ?? '';
+		$this->read_only      = ! empty( trim( $this->default ) ) && $attributes['readOnly'];
 		$this->set_input_label( __( 'Number', 'sureforms' ) );
 		$this->set_error_msg( $attributes, 'srfm_number_block_required_text' );
 		$this->set_unique_slug();
@@ -116,7 +125,7 @@ class Number_Markup extends Base {
 	 */
 	public function markup() {
 		$data_config      = $this->field_config;
-		$this->class_name = $this->get_field_classes();
+		$this->class_name = $this->get_field_classes( $this->read_only ? [ 'srfm-read-only' ] : [] );
 
 		ob_start(); ?>
 			<div data-block-id="<?php echo esc_attr( $this->block_id ); ?>" class="<?php echo esc_attr( $this->class_name ); ?>" <?php echo $data_config ? "data-field-config='" . esc_attr( $data_config ) . "'" : ''; ?>>
@@ -129,7 +138,7 @@ class Number_Markup extends Base {
 						<?php } ?>
 						<input class="srfm-input-common srfm-input-<?php echo esc_attr( $this->slug ); ?>" type="text" name="<?php echo esc_attr( $this->field_name ); ?>" id="<?php echo esc_attr( $this->unique_slug ); ?>"
 						<?php echo ! empty( $this->aria_described_by ) ? "aria-describedby='" . esc_attr( trim( $this->aria_described_by ) ) . "'" : ''; ?>
-						data-required="<?php echo esc_attr( $this->data_require_attr ); ?>" <?php echo wp_kses_post( $this->placeholder_attr . '' . $this->default_value_attr . '' . $this->format_attr . '' . $this->min_value_attr . '' . $this->max_value_attr ); ?> />
+						data-required="<?php echo esc_attr( $this->data_require_attr ); ?>" <?php echo wp_kses_post( $this->placeholder_attr . '' . $this->default_value_attr . '' . $this->format_attr . '' . $this->min_value_attr . '' . $this->max_value_attr ); ?> <?php echo $this->read_only ? 'readonly' : ''; ?> />
 						<?php if ( ! empty( $this->suffix ) ) { ?>
 							<span class="srfm-number-suffix" aria-hidden="true"><?php echo esc_html( $this->suffix ); ?></span>
 						<?php } ?>
