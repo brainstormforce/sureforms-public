@@ -93,5 +93,6 @@ module.exports = {
 		turnstile: true,
 		ResizeObserver: true,
 		MutationObserver: true,
+		sessionStorage: true,
 	},
 };

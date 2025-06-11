@@ -1,6 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import { useEffect, useLayoutEffect } from '@wordpress/element';
-import { useLocation, useNavigate, Outlet, Link } from 'react-router-dom';
+import { useLocation, useNavigate, Outlet } from 'react-router-dom';
 import { Topbar, ProgressSteps, Button } from '@bsf/force-ui';
 import { XIcon } from 'lucide-react';
 import { useOnboardingNavigation } from './hooks';
@@ -17,9 +17,7 @@ const NavBar = () => {
 	return (
 		<Topbar className="p-5 bg-background-secondary">
 			<Topbar.Left>
-				<Topbar.Item>
-					{ ICONS.logo }
-				</Topbar.Item>
+				<Topbar.Item>{ ICONS.logo }</Topbar.Item>
 			</Topbar.Left>
 			<Topbar.Middle align="center">
 				<Topbar.Item className="md:block hidden">
@@ -30,9 +28,12 @@ const NavBar = () => {
 						type="inline"
 						variant="number"
 					>
-						{ Array.from( { length: ONBOARDING_ROUTES_CONFIG.length }, ( _, index ) => (
-							<ProgressSteps.Step key={ index } size="md" />
-						) ) }
+						{ Array.from(
+							{ length: ONBOARDING_ROUTES_CONFIG.length },
+							( _, index ) => (
+								<ProgressSteps.Step key={ index } size="md" />
+							)
+						) }
 					</ProgressSteps>
 				</Topbar.Item>
 			</Topbar.Middle>
@@ -49,7 +50,8 @@ const NavBar = () => {
 									'X-WP-Nonce': srfm_admin.nonce,
 								},
 							} ).then( () => {
-								window.location.href = srfm_admin.sureforms_dashboard_url;
+								window.location.href =
+									srfm_admin.sureforms_dashboard_url;
 							} );
 						} }
 						icon={ <XIcon /> }

@@ -1,16 +1,18 @@
 import { __ } from '@wordpress/i18n';
-import { useState } from '@wordpress/element';
-import { Button, Text, Container, Badge, Loader, Skeleton } from '@bsf/force-ui';
+import {
+	Button,
+	Text,
+	Container,
+	Badge,
+} from '@bsf/force-ui';
 import { useOnboardingNavigation } from './hooks';
-import { useOnboardingState } from './onboarding-state';
 import NavigationButtons from './navigation-buttons';
 import { handlePluginActionTrigger } from '@Utils/Helpers';
-import { Header, Divider } from './components'
+import { Header, Divider } from './components';
 
 const RecommendedPlugins = () => {
-	const [ isPluginsDataLoading, setIsPluginsDataLoading ] = useState( false );
-	const [ , actions ] = useOnboardingState();
-	const { navigateToNextRoute, navigateToPreviousRoute } = useOnboardingNavigation();
+	const { navigateToNextRoute, navigateToPreviousRoute } =
+		useOnboardingNavigation();
 
 	// Get integrations from localized data
 	let integrations = Object.entries( srfm_admin?.integrations ?? {} );
@@ -30,10 +32,7 @@ const RecommendedPlugins = () => {
 	return (
 		<div className="space-y-6">
 			<Header
-				title={ __(
-					'Add More Power to Your Website',
-					'sureforms'
-				) }
+				title={ __( 'Add More Power to Your Website', 'sureforms' ) }
 				description={ __(
 					'These tools can help you build your website faster and easier. Try them out and see how they can help your website grow.',
 					'sureforms'
@@ -55,7 +54,10 @@ const RecommendedPlugins = () => {
 								alt={ plugin[ 1 ].title }
 							/>
 							<Badge
-								label={ plugin[ 1 ].badge_text ?? __( 'Free', 'sureforms' ) }
+								label={
+									plugin[ 1 ].badge_text ??
+									__( 'Free', 'sureforms' )
+								}
 								variant="green"
 								className="ml-auto"
 							/>
@@ -80,31 +82,29 @@ const RecommendedPlugins = () => {
 									{ plugin[ 1 ].subtitle }
 								</Text>
 							</div>
-							{ isPluginsDataLoading ? (
-								<Skeleton className="w-28 h-6" variant="rectangular" />
-							) : (
-								<Button
-									className={ `w-fit focus:[box-shadow:none] ${ 
-										plugin[ 1 ].status === 'Activated' &&
-										'bg-badge-background-green hover:bg-badge-background-green'
-									}` }
-									variant="outline"
-									onClick={ ( event ) =>
-										handlePluginActionTrigger( {
-											plugin: plugin[ 1 ],
-											event,
-										} )
-									}
-									size="xs"
-								>
-									{ plugin[ 1 ].status === 'Activated'
-										? __( 'Activated', 'sureforms' )
-										: plugin[ 1 ].status === 'Installed'
+							<Button
+								className={ `w-fit focus:[box-shadow:none] ${
+									plugin[ 1 ].status === 'Activated' &&
+									'bg-badge-background-green hover:bg-badge-background-green'
+								}` }
+								variant="outline"
+								onClick={ ( event ) =>
+									handlePluginActionTrigger( {
+										plugin: plugin[ 1 ],
+										event,
+									} )
+								}
+								size="xs"
+							>
+								{ plugin[ 1 ].status === 'Activated'
+									? __( 'Activated', 'sureforms' )
+									: plugin[ 1 ].status === 'Installed'
 										? __( 'Activate', 'sureforms' )
-										: __( 'Install & Activate', 'sureforms' )
-									}
-								</Button>
-							) }
+										: __(
+											'Install & Activate',
+											'sureforms'
+										) }
+							</Button>
 						</Container>
 					</Container>
 				) ) }

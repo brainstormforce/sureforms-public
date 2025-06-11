@@ -22,7 +22,8 @@ const GlobalSettings = () => {
 	} );
 
 	const [ , actions ] = useOnboardingState();
-	const { navigateToNextRoute, navigateToPreviousRoute } = useOnboardingNavigation();
+	const { navigateToNextRoute, navigateToPreviousRoute } =
+		useOnboardingNavigation();
 
 	// Options to fetch from API.
 	const optionsToFetch = [
@@ -49,16 +50,16 @@ const GlobalSettings = () => {
 				} = data;
 
 				if ( srfm_general_settings_options ) {
-					setGeneralSettings( prevSettings => ( {
+					setGeneralSettings( ( prevSettings ) => ( {
 						...prevSettings,
 						...srfm_general_settings_options,
 					} ) );
 				}
 
 				if ( srfm_email_summary_settings_options ) {
-					setEmailSettings( prevSettings => ( {
+					setEmailSettings( ( prevSettings ) => ( {
 						...prevSettings,
-						...srfm_email_summary_settings_options
+						...srfm_email_summary_settings_options,
 					} ) );
 				}
 			} catch ( error ) {
@@ -75,17 +76,17 @@ const GlobalSettings = () => {
 			const isEmailSetting = [
 				'srfm_email_summary',
 				'srfm_email_sent_to',
-				'srfm_schedule_report'
+				'srfm_schedule_report',
 			].includes( settingKey );
 
 			// Update local state
 			if ( isEmailSetting ) {
-				setEmailSettings( prevSettings => ( {
+				setEmailSettings( ( prevSettings ) => ( {
 					...prevSettings,
 					[ settingKey ]: value,
 				} ) );
 			} else {
-				setGeneralSettings( prevSettings => ( {
+				setGeneralSettings( ( prevSettings ) => ( {
 					...prevSettings,
 					[ settingKey ]: value,
 				} ) );
@@ -98,7 +99,9 @@ const GlobalSettings = () => {
 				body: JSON.stringify( {
 					...( isEmailSetting ? emailSettings : generalSettings ),
 					[ settingKey ]: value,
-					srfm_tab: isEmailSetting ? 'email-settings' : 'general-settings'
+					srfm_tab: isEmailSetting
+						? 'email-settings'
+						: 'general-settings',
 				} ),
 				headers: {
 					'content-type': 'application/json',
@@ -145,7 +148,9 @@ const GlobalSettings = () => {
 						heading: __( 'Enable Email Summaries ', 'sureforms' ),
 					} }
 					value={ emailSettings.srfm_email_summary }
-					onChange={ ( value ) => handleSettingToggle( 'srfm_email_summary', value ) }
+					onChange={ ( value ) =>
+						handleSettingToggle( 'srfm_email_summary', value )
+					}
 				/>
 				{ emailSettings.srfm_email_summary && (
 					<>
@@ -155,8 +160,15 @@ const GlobalSettings = () => {
 									size="md"
 									label={ __( 'Send Email To', 'sureforms' ) }
 									type="email"
-									value={ emailSettings.srfm_email_sent_to || '' }
-									onChange={ ( value ) => handleSettingToggle( 'srfm_email_sent_to', value ) }
+									value={
+										emailSettings.srfm_email_sent_to || ''
+									}
+									onChange={ ( value ) =>
+										handleSettingToggle(
+											'srfm_email_sent_to',
+											value
+										)
+									}
 									required
 									autoComplete="off"
 								/>
@@ -177,7 +189,8 @@ const GlobalSettings = () => {
 											path: '/sureforms/v1/send-test-email-summary',
 											method: 'POST',
 											data: {
-												srfm_email_sent_to: emailSettings.srfm_email_sent_to,
+												srfm_email_sent_to:
+													emailSettings.srfm_email_sent_to,
 											},
 										} ).then( ( response ) => {
 											setSendingTestEmail( false );
@@ -196,8 +209,15 @@ const GlobalSettings = () => {
 							</Button>
 						</div>
 						<Select
-							value={ getReportsLabel( emailSettings.srfm_schedule_report ) }
-							onChange={ ( value ) => handleSettingToggle( 'srfm_schedule_report', value ) }
+							value={ getReportsLabel(
+								emailSettings.srfm_schedule_report
+							) }
+							onChange={ ( value ) =>
+								handleSettingToggle(
+									'srfm_schedule_report',
+									value
+								)
+							}
 						>
 							<Select.Button
 								type="button"
@@ -234,7 +254,9 @@ const GlobalSettings = () => {
 						),
 					} }
 					value={ generalSettings.srfm_ip_log }
-					onChange={ ( value ) => handleSettingToggle( 'srfm_ip_log', value ) }
+					onChange={ ( value ) =>
+						handleSettingToggle( 'srfm_ip_log', value )
+					}
 				/>
 			</>
 		);
@@ -244,7 +266,10 @@ const GlobalSettings = () => {
 		<div className="space-y-6">
 			<Header
 				title={ __( 'Global Settings', 'sureforms' ) }
-				description={ __( 'Configure your global form settings to enhance security and get insights about your forms.', 'sureforms' ) }
+				description={ __(
+					'Configure your global form settings to enhance security and get insights about your forms.',
+					'sureforms'
+				) }
 			/>
 			<div className="space-y-4">
 				<ContentSection

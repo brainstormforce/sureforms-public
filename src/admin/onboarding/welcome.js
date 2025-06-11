@@ -84,7 +84,7 @@ const Welcome = () => {
 					text: __( 'Skip', 'sureforms' ),
 				} }
 				buttonGroupProps={ {
-					className: 'flex-row-reverse'
+					className: 'flex-row-reverse',
 				} }
 			/>
 		</form>

@@ -97,22 +97,22 @@ const NavigationButtons = ( {
 	 */
 	const createActionHandler =
 		( actionType, actionCallback ) =>
-		async ( ...args ) => {
-			if ( typeof actionCallback !== 'function' ) {
-				return;
-			}
-			if ( isLoading[ actionType ] ) {
-				return;
-			}
-			try {
-				handleSetIsLoading( actionType, true );
-				await actionCallback( ...args );
-			} catch ( error ) {
+			async ( ...args ) => {
+				if ( typeof actionCallback !== 'function' ) {
+					return;
+				}
+				if ( isLoading[ actionType ] ) {
+					return;
+				}
+				try {
+					handleSetIsLoading( actionType, true );
+					await actionCallback( ...args );
+				} catch ( error ) {
 				// Silent error handling - could be enhanced with a toast notification
-			} finally {
-				handleSetIsLoading( actionType, false );
-			}
-		};
+				} finally {
+					handleSetIsLoading( actionType, false );
+				}
+			};
 
 	/**
 	 * Generic button prop getter

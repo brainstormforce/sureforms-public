@@ -1,6 +1,12 @@
 import { __ } from '@wordpress/i18n';
 import { Container, Label } from '@bsf/force-ui';
-import { Ticket, CircleHelp, MessagesSquare, Star, Settings } from 'lucide-react';
+import {
+	Ticket,
+	CircleHelp,
+	MessagesSquare,
+	Star,
+	Settings,
+} from 'lucide-react';
 
 export default () => {
 	const baseOptions = [
@@ -31,15 +37,17 @@ export default () => {
 	];
 
 	// Add Guided Setup option only if onboarding is not completed
-	const quickAccessOptions = ! srfm_admin?.onboarding_completed ? [
-		...baseOptions,
-		{
-			key: 'onboarding',
-			label: __( 'Guided Setup', 'sureforms' ),
-			icon: <Settings size={ 16 } />,
-			link: `${ srfm_admin.sureforms_dashboard_url }&srfm-activation-redirect=1`,
-		},
-	] : baseOptions;
+	const quickAccessOptions = ! srfm_admin?.onboarding_completed
+		? [
+			...baseOptions,
+			{
+				key: 'onboarding',
+				label: __( 'Guided Setup', 'sureforms' ),
+				icon: <Settings size={ 16 } />,
+				link: `${ srfm_admin.sureforms_dashboard_url }&srfm-activation-redirect=1`,
+			},
+		  ]
+		: baseOptions;
 
 	const QuickAccessButtons = () => {
 		return quickAccessOptions.map( ( { key, label, icon, link } ) => (
