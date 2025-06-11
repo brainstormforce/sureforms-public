@@ -261,8 +261,10 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 
 == Changelog ==
 = x.x.x =
+* New: Added {current_page_url} smart tag under generic tags.
 * Improvement: Added an option to disable input fields with default values.
 * Fix: Added editor background compatibility with Kadence theme.
+* Fix: This update addressed a security bug. Props to Dmitrii Ignatyev from CleanTalk for reporting it responsibly to our team.
 = 1.7.1 - 9th June 2025 =
 * New: Added rich text support for Textarea field.
 * Improvement: Introduced a 67% width option for form fields, providing enhanced layout flexibility.
