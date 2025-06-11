@@ -162,7 +162,7 @@ const GeneralPage = ( {
 			<Switch
 				label={ {
 					heading: __( 'Enable Anonymous Analytics', 'sureforms' ),
-					description: __( 'Collect non-sensitive information from website — like PHP version, features used — so we can fix bugs faster, make smarter decisions, and build features that actually matter to you.', 'sureforms' ),
+					description: __( 'Collect non-sensitive information from your website, such as the PHP version and features used, to help us fix bugs faster, make smarter decisions, and build features that actually matter to you.', 'sureforms' ),
 				} }
 				value={ generalTabOptions.srfm_bsf_analytics }
 				onChange={ ( value ) =>

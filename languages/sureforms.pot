@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-06-11T12:46:35+00:00\n"
+"POT-Creation-Date: 2025-06-11T13:08:57+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: sureforms\n"
@@ -10625,7 +10625,7 @@ msgid "Enable Anonymous Analytics"
 msgstr ""
 
 #: assets/build/settings.js:172
-msgid "Collect non-sensitive information from website — like PHP version, features used — so we can fix bugs faster, make smarter decisions, and build features that actually matter to you."
+msgid "Collect non-sensitive information from your website, such as the PHP version and features used, to help us fix bugs faster, make smarter decisions, and build features that actually matter to you."
 msgstr ""
 
 #: assets/build/settings.js:172
