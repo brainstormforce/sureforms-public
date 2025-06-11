@@ -36,7 +36,7 @@ class Onboarding {
 	 * Constructor
 	 */
 	public function __construct() {
-		// Constructor can be used for future initialization if needed
+		// Constructor can be used for future initialization if needed.
 	}
 
 	/**

@@ -48,9 +48,19 @@ class AI_Auth {
 		// Generate a random key of 16 characters.
 		$this->key = wp_generate_password( 16, false );
 
+		// Get the source parameter from the query.
+		$source = sanitize_text_field( Helper::get_string_value( $request->get_param( 'source' ) ) );
+		switch ( $source ) {
+			case 'onboarding':
+				$redirect_back = site_url() . '/wp-admin/admin.php?page=sureforms_menu#/onboarding/global-settings';
+				break;
+			default:
+				$redirect_back = site_url() . '/wp-admin/admin.php?page=add-new-form&method=ai';
+		}
+
 		// Prepare the token data.
 		$token_data = [
-			'redirect-back' => site_url() . '/wp-admin/admin.php?page=add-new-form&method=ai',
+			'redirect-back' => $redirect_back,
 			'key'           => $this->key,
 			'site-url'      => site_url(),
 			'nonce'         => wp_create_nonce( 'ai_auth_nonce' ),

@@ -21,16 +21,13 @@ const Welcome = () => {
 	const handleConnect = async () => {
 		try {
 			// Check if user has not connected their account yet.
-			if ( 'non-registered' !== srfm_admin?.srfm_ai_usage_details?.type ) {
+			if ( 'non-registered' !== srfm_admin?.srfm_ai_details?.type ) {
 				navigateToNextRoute();
 				return;
 			}
 
 			// Use the initiateAuth helper function
-			await initiateAuth();
-			
-			// Navigate to next route after successful authentication
-			navigateToNextRoute();
+			await initiateAuth( 'onboarding' );
 		} catch ( error ) {
 			console.error( 'Error during authentication:', error );
 		}
