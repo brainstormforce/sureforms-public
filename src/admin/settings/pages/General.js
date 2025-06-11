@@ -161,7 +161,7 @@ const GeneralPage = ( {
 		return (
 			<Switch
 				label={ {
-					heading: __( 'Enable Autonomous Analytics', 'sureforms' ),
+					heading: __( 'Enable Anonymous Analytics', 'sureforms' ),
 					description: __( 'Collect non-sensitive information from website — like PHP version, features used — so we can fix bugs faster, make smarter decisions, and build features that actually matter to you.', 'sureforms' ),
 				} }
 				value={ generalTabOptions.srfm_bsf_analytics }
@@ -190,7 +190,7 @@ const GeneralPage = ( {
 			/>
 			<ContentSection
 				loading={ loading }
-				title={ __( 'Autonomous Analytics', 'sureforms' ) }
+				title={ __( 'Anonymous Analytics', 'sureforms' ) }
 				content={ UsageTrackingContent() }
 			/>
 		</div>
