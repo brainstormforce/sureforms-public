@@ -28,7 +28,7 @@ const BUTTON_TYPES = {
 			variant: 'primary',
 			icon: <ChevronRight />,
 			iconPosition: 'right',
-			text: __( 'Continue Setup', 'sureforms' ),
+			text: __( 'Next', 'sureforms' ),
 		},
 		loaderProps: {
 			variant: 'secondary',
