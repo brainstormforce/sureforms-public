@@ -1002,11 +1002,11 @@ class Post_Types {
 		$id   = intval( $atts['id'] );
 		$post = get_post( $id );
 
-		if ( ! empty( $id ) && $post ) {
+		if ( ! empty( $id ) && $post && 'trash' !== $post->post_status ) {
 			return Generate_Form_Markup::get_form_markup( $id, ! filter_var( $atts['show_title'], FILTER_VALIDATE_BOOLEAN ), '', 'post', true );
 		}
 
-		return '';
+		return __( 'This form has been deleted or is unavailable.', 'sureforms' );	
 	}
 
 	/**
