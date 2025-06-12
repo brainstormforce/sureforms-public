@@ -14,6 +14,7 @@ const ModalInputBox = ( {
 	showSmartTagList = true,
 	helpText,
 	padding = '',
+	placeholder = '',
 } ) => {
 	return (
 		<Container
@@ -30,6 +31,7 @@ const ModalInputBox = ( {
 						value={ value }
 						label={ label }
 						required={ required }
+						placeholder={ placeholder }
 						size="md"
 						className="[&>input]:text-text-tertiary"
 					/>
