@@ -602,9 +602,11 @@ class Form_Submit {
 		$entry_id = Entries::add( $entries_data );
 		if ( $entry_id ) {
 
+			$confirmation_message = Generate_Form_Markup::get_confirmation_markup( $form_data, $submission_data );
+
 			$response = [
 				'success'      => true,
-				'message'      => Generate_Form_Markup::get_confirmation_markup( $form_data, $submission_data ),
+				'message'      => $confirmation_message,
 				'data'         => [
 					'name'          => $name,
 					'submission_id' => $entry_id,
@@ -621,7 +623,7 @@ class Form_Submit {
 					'entry_id'  => intval( $entry_id ),
 					'to_emails' => $emails,
 					'form_name' => $name ? esc_attr( $name ) : '',
-					'message'   => Generate_Form_Markup::get_confirmation_markup( $form_data, $submission_data ),
+					'message'   => $confirmation_message,
 					'data'      => $modified_message,
 				]
 			);
