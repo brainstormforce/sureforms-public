@@ -911,7 +911,7 @@ class Post_Types {
 						if ( ! is_array( $item ) ) {
 							continue;
 						}
-						$sanitized[] = [
+						$sanitized_item = [
 							'id'                  => isset( $item['id'] ) ? intval( $item['id'] ) : 0,
 							'confirmation_type'   => isset( $item['confirmation_type'] ) ? sanitize_text_field( $item['confirmation_type'] ) : '',
 							'page_url'            => isset( $item['page_url'] ) ? esc_url_raw( $item['page_url'] ) : '',
@@ -921,6 +921,10 @@ class Post_Types {
 							'enable_query_params' => isset( $item['enable_query_params'] ) ? filter_var( $item['enable_query_params'], FILTER_VALIDATE_BOOLEAN ) : false,
 							'query_params'        => isset( $item['query_params'] ) ? array_map( 'sanitize_text_field', (array) $item['query_params'] ) : [],
 						];
+
+						$sanitized_item = apply_filters( 'srfm_form_confirmation_params', $sanitized_item, $item );
+
+						$sanitized[] = $sanitized_item;
 					}
 					return $sanitized;
 				},
