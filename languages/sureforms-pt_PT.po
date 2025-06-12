@@ -11838,8 +11838,12 @@ msgid "Enable Anonymous Analytics"
 msgstr "Ativar Análise Anônima"
 
 #: assets/build/settings.js:172
-msgid "Collect non-sensitive information from your website, such as the PHP version and features used, to help us fix bugs faster, make smarter decisions, and build features that actually matter to you."
-msgstr "Recolha informações não sensíveis do seu site, como a versão do PHP e as funcionalidades utilizadas, para nos ajudar a corrigir erros mais rapidamente, tomar decisões mais inteligentes e desenvolver funcionalidades que realmente importam para você."
+msgid "Collect non-sensitive information from your website, such as the PHP version and features used, to help us fix bugs faster, make smarter decisions, and build features that actually matter to you. "
+msgstr "Coletar informações não sensíveis do seu site, como a versão do PHP e os recursos utilizados, para nos ajudar a corrigir bugs mais rapidamente, tomar decisões mais inteligentes e desenvolver funcionalidades que realmente importam para você. "
+
+#: assets/build/settings.js:172
+msgid "Learn More"
+msgstr "Saiba mais"
 
 #: inc/post-types.php:124
 msgctxt "post type general name"

@@ -1686,7 +1686,7 @@ msgstr "Zakupy torby"
 
 #: modules/gutenberg/icons/icons-v6-0.php:1488
 msgid "Bahai"
-msgstr ""
+msgstr "Bahai"
 
 #: modules/gutenberg/icons/icons-v6-0.php:1499
 msgid "Baht Sign"
@@ -11838,8 +11838,12 @@ msgid "Enable Anonymous Analytics"
 msgstr "Włącz anonimową analitykę"
 
 #: assets/build/settings.js:172
-msgid "Collect non-sensitive information from your website, such as the PHP version and features used, to help us fix bugs faster, make smarter decisions, and build features that actually matter to you."
-msgstr "Zbieraj niesensytywne informacje z Twojej strony internetowej, takie jak wersja PHP i używane funkcje, aby pomóc nam szybciej naprawiać błędy, podejmować mądrzejsze decyzje i tworzyć funkcje, które naprawdę mają dla Ciebie znaczenie."
+msgid "Collect non-sensitive information from your website, such as the PHP version and features used, to help us fix bugs faster, make smarter decisions, and build features that actually matter to you. "
+msgstr "Zbieraj niesensytywne informacje z Twojej strony internetowej, takie jak wersja PHP i używane funkcje, aby pomóc nam szybciej naprawiać błędy, podejmować mądrzejsze decyzje i tworzyć funkcje, które naprawdę mają dla Ciebie znaczenie. "
+
+#: assets/build/settings.js:172
+msgid "Learn More"
+msgstr "Dowiedz się więcej"
 
 #: inc/post-types.php:124
 msgctxt "post type general name"

@@ -3562,7 +3562,7 @@ msgstr "Cara Sonrisa Estrellas"
 
 #: modules/gutenberg/icons/icons-v6-1.php:1645
 msgid "Face Grin Tears"
-msgstr ""
+msgstr "Cara Sonrisa Lágrimas"
 
 #: modules/gutenberg/icons/icons-v6-1.php:1661
 msgid "Face Grin Tongue"
@@ -11838,8 +11838,12 @@ msgid "Enable Anonymous Analytics"
 msgstr "Habilitar análisis anónimos"
 
 #: assets/build/settings.js:172
-msgid "Collect non-sensitive information from your website, such as the PHP version and features used, to help us fix bugs faster, make smarter decisions, and build features that actually matter to you."
-msgstr "Recopila información no sensible de tu sitio web, como la versión de PHP y las características utilizadas, para ayudarnos a corregir errores más rápidamente, tomar decisiones más inteligentes y desarrollar funciones que realmente te importen."
+msgid "Collect non-sensitive information from your website, such as the PHP version and features used, to help us fix bugs faster, make smarter decisions, and build features that actually matter to you. "
+msgstr "Recopila información no sensible de tu sitio web, como la versión de PHP y las características utilizadas, para ayudarnos a corregir errores más rápidamente, tomar decisiones más inteligentes y desarrollar funciones que realmente te importen. "
+
+#: assets/build/settings.js:172
+msgid "Learn More"
+msgstr "Aprende más"
 
 #: inc/post-types.php:124
 msgctxt "post type general name"

@@ -6983,7 +6983,7 @@ msgstr "SoundCloud"
 
 #: modules/gutenberg/icons/icons-v6-3.php:993
 msgid "Sourcetree"
-msgstr ""
+msgstr "Sourcetree"
 
 #: modules/gutenberg/icons/icons-v6-3.php:1004
 msgid "Spa"
@@ -8398,7 +8398,7 @@ msgstr "Yammer"
 
 #: modules/gutenberg/icons/icons-v6-3.php:5086
 msgid "Yandex"
-msgstr ""
+msgstr "Yandex"
 
 #: modules/gutenberg/icons/icons-v6-3.php:5097
 msgid "Yandex International"
@@ -11841,8 +11841,12 @@ msgid "Enable Anonymous Analytics"
 msgstr "Anonimiteitsanalyse inschakelen"
 
 #: assets/build/settings.js:172
-msgid "Collect non-sensitive information from your website, such as the PHP version and features used, to help us fix bugs faster, make smarter decisions, and build features that actually matter to you."
-msgstr "Verzamel niet-gevoelige informatie van uw website, zoals de gebruikte PHP-versie en functies, om ons te helpen sneller bugs op te lossen, slimmere beslissingen te nemen en functies te bouwen die echt voor u van belang zijn."
+msgid "Collect non-sensitive information from your website, such as the PHP version and features used, to help us fix bugs faster, make smarter decisions, and build features that actually matter to you. "
+msgstr "Verzamel niet-gevoelige informatie van uw website, zoals de PHP-versie en gebruikte functies, om ons te helpen bugs sneller op te lossen, slimmere beslissingen te nemen en functies te bouwen die echt belangrijk voor u zijn. "
+
+#: assets/build/settings.js:172
+msgid "Learn More"
+msgstr "Meer informatie"
 
 #: inc/post-types.php:124
 msgctxt "post type general name"

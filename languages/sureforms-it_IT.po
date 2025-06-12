@@ -7293,7 +7293,7 @@ msgstr "Striscia S"
 
 #: modules/gutenberg/icons/icons-v6-3.php:1834
 msgid "Stroopwafel"
-msgstr ""
+msgstr "Stroopwafel"
 
 #: modules/gutenberg/icons/icons-v6-3.php:1845
 msgid "Studio Vinari"
@@ -8797,7 +8797,7 @@ msgstr "23:59:59"
 
 #: assets/build/blocks.js:172
 msgid "27/08/2024 23:59:59"
-msgstr ""
+msgstr "27/08/2024 23:59:59"
 
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
@@ -10430,7 +10430,7 @@ msgstr "Contenuto"
 
 #: modules/gutenberg/build/blocks.js:181
 msgid "Div"
-msgstr ""
+msgstr "Div"
 
 #: modules/gutenberg/build/blocks.js:181
 msgid "Heading Wrapper"
@@ -11838,8 +11838,12 @@ msgid "Enable Anonymous Analytics"
 msgstr "Abilita l'analisi anonima"
 
 #: assets/build/settings.js:172
-msgid "Collect non-sensitive information from your website, such as the PHP version and features used, to help us fix bugs faster, make smarter decisions, and build features that actually matter to you."
-msgstr "Raccogli informazioni non sensibili dal tuo sito web, come la versione di PHP e le funzionalità utilizzate, per aiutarci a correggere i bug più velocemente, prendere decisioni più intelligenti e sviluppare funzionalità che siano davvero importanti per te."
+msgid "Collect non-sensitive information from your website, such as the PHP version and features used, to help us fix bugs faster, make smarter decisions, and build features that actually matter to you. "
+msgstr "Raccogli informazioni non sensibili dal tuo sito web, come la versione di PHP e le funzionalità utilizzate, per aiutarci a correggere i bug più velocemente, prendere decisioni più intelligenti e sviluppare funzionalità che contano davvero per te. "
+
+#: assets/build/settings.js:172
+msgid "Learn More"
+msgstr "Scopri di più"
 
 #: inc/post-types.php:124
 msgctxt "post type general name"
