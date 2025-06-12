@@ -170,7 +170,7 @@ const GeneralPage = ( {
 									'sureforms'
 								) }
 								<a
-									href="https://store.brainstormforce.com/usage-tracking/?utm_source=sureforms_global_settings&utm_medium=sureforms_general_settings&utm_campaign=anonymous_analytics"
+									href="https://sureforms.com/share-usage-data/"
 									target="_blank"
 									rel="noopener noreferrer"
 									className="text-field-helper"
