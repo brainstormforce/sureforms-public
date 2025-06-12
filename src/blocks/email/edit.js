@@ -34,6 +34,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 		duplicateMsg,
 		preview,
 		className,
+		readOnly,
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
 
@@ -84,6 +85,15 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 									setAttributes( { defaultValue: value } )
 								}
 							/>
+							{ defaultValue && (
+								<ToggleControl
+									label={ __( 'Read Only', 'sureforms' ) }
+									checked={ readOnly }
+									onChange={ ( checked ) =>
+										setAttributes( { readOnly: checked } )
+									}
+								/>
+							) }
 							<ToggleControl
 								label={ __( 'Required', 'sureforms' ) }
 								checked={ required }

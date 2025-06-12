@@ -57,9 +57,13 @@
 			"type":"boolean",
 			"default":false
 		},
-    "slug":{
+		"slug":{
 			"type":"string",
 			"default":""
+		},
+		"readOnly": {
+			"type": "boolean",
+			"default": false
 		}
 	}
 }
