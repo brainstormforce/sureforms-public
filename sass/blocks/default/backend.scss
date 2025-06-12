@@ -285,6 +285,7 @@
 			margin: 0 !important;
 		}
 	}
+	@include srfm-read-only-styles;
 }
 
 .editor-styles-wrapper {

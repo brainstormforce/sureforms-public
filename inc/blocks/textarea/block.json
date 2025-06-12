@@ -71,6 +71,10 @@
 		"isRichText": {
 			"type": "boolean",
 			"default": false
+		},
+		"readOnly": {
+			"type": "boolean",
+			"default": false
 		}
 	}
 }
