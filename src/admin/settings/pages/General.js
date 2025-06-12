@@ -162,7 +162,24 @@ const GeneralPage = ( {
 			<Switch
 				label={ {
 					heading: __( 'Enable Anonymous Analytics', 'sureforms' ),
-					description: __( 'Collect non-sensitive information from your website, such as the PHP version and features used, to help us fix bugs faster, make smarter decisions, and build features that actually matter to you.', 'sureforms' ),
+					description: (
+						<>
+							<p>
+								{ __(
+									'Collect non-sensitive information from your website, such as the PHP version and features used, to help us fix bugs faster, make smarter decisions, and build features that actually matter to you. ',
+									'sureforms'
+								) }
+								<a
+									href="https://store.brainstormforce.com/usage-tracking/?utm_source=sureforms_global_settings&utm_medium=sureforms_general_settings&utm_campaign=anonymous_analytics"
+									target="_blank"
+									rel="noopener noreferrer"
+									className="text-field-helper"
+								>
+									{ __( 'Learn More', 'sureforms' ) }
+								</a>
+							</p>
+						</>
+					),
 				} }
 				value={ generalTabOptions.srfm_bsf_analytics }
 				onChange={ ( value ) =>
