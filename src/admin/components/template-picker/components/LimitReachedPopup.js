@@ -14,7 +14,8 @@ const LimitReachedPopup = ( {
 	activateProPlugin = false,
 } ) => {
 	const activateLicensePopup = applyFilters(
-		'srfm.aiFormScreen.license.popup'
+		'srfm.aiFormScreen.license.popup',
+		null
 	);
 
 	return (
