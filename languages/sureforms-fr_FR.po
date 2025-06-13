@@ -72,7 +72,7 @@ msgstr "Nouveau formulaire"
 #: admin/admin.php:345
 #: admin/admin.php:381
 #: inc/global-settings/email-summary.php:107
-#: inc/post-types.php:1020
+#: inc/post-types.php:1024
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:2
 #: assets/build/page_header.js:172
@@ -248,8 +248,8 @@ msgstr "Publié"
 #: admin/views/entries-list-table.php:884
 #: inc/email/email-template.php:157
 #: inc/email/email-template.php:163
-#: inc/smart-tags.php:338
-#: inc/smart-tags.php:344
+#: inc/smart-tags.php:350
+#: inc/smart-tags.php:356
 msgid "View"
 msgstr "Voir"
 
@@ -680,19 +680,20 @@ msgid "Dropdown"
 msgstr "Menu déroulant"
 
 #: inc/fields/dropdown-markup.php:66
+#: assets/build/blocks.js:172
 msgid "Select an option"
 msgstr "Sélectionnez une option"
 
-#: inc/fields/email-markup.php:71
+#: inc/fields/email-markup.php:79
 msgid "Email"
 msgstr "Email"
 
-#: inc/fields/email-markup.php:76
+#: inc/fields/email-markup.php:84
 msgid "Confirm "
 msgstr "Confirmer"
 
 #. Translators: %s is label of block.
-#: inc/fields/email-markup.php:84
+#: inc/fields/email-markup.php:93
 msgid "Confirm %s"
 msgstr "Confirmer %s"
 
@@ -700,12 +701,12 @@ msgstr "Confirmer %s"
 msgid "I consent to have this website store my submitted information so they can respond to my inquiry."
 msgstr "Je consens à ce que ce site web stocke les informations que j'ai soumises afin qu'ils puissent répondre à ma demande."
 
-#: inc/fields/inlinebutton-markup.php:182
+#: inc/fields/inlinebutton-markup.php:183
 #: inc/generate-form-markup.php:495
 msgid "Please verify that you are not a robot."
 msgstr "Veuillez vérifier que vous n'êtes pas un robot."
 
-#: inc/fields/input-markup.php:56
+#: inc/fields/input-markup.php:65
 msgid "Text Field"
 msgstr "Champ de texte"
 
@@ -713,7 +714,7 @@ msgstr "Champ de texte"
 msgid "Multi Choice"
 msgstr "Choix multiple"
 
-#: inc/fields/number-markup.php:102
+#: inc/fields/number-markup.php:111
 msgid "Number"
 msgstr "Nombre"
 
@@ -722,11 +723,11 @@ msgstr "Nombre"
 msgid "Phone"
 msgstr "Téléphone"
 
-#: inc/fields/textarea-markup.php:79
+#: inc/fields/textarea-markup.php:87
 msgid "Textarea"
 msgstr "Zone de texte"
 
-#: inc/fields/url-markup.php:30
+#: inc/fields/url-markup.php:38
 msgid "Url"
 msgstr "URL"
 
@@ -867,7 +868,7 @@ msgid "Select the form that you wish to add here."
 msgstr "Sélectionnez le formulaire que vous souhaitez ajouter ici."
 
 #: inc/page-builders/elementor/form-widget.php:160
-#: inc/smart-tags.php:86
+#: inc/smart-tags.php:87
 #: assets/build/blocks.js:2
 #: assets/build/formEditor.js:172
 msgid "Form Title"
@@ -978,19 +979,19 @@ msgstr "Email de notification d'administration"
 msgid "New Form Submission - %s"
 msgstr "Nouvelle soumission de formulaire - %s"
 
-#: inc/post-types.php:1019
+#: inc/post-types.php:1023
 msgid "Shortcode"
 msgstr "Code court"
 
-#: inc/post-types.php:1083
+#: inc/post-types.php:1087
 msgid "Please choose the SureForms export file (.json) that you wish to import."
 msgstr "Veuillez choisir le fichier d'exportation SureForms (.json) que vous souhaitez importer."
 
-#: inc/post-types.php:1086
+#: inc/post-types.php:1090
 msgid "Import Now"
 msgstr "Importer maintenant"
 
-#: inc/post-types.php:1088
+#: inc/post-types.php:1092
 msgid "There is some error in json file, please export the SureForms Forms again."
 msgstr "Il y a une erreur dans le fichier JSON, veuillez exporter à nouveau les formulaires SureForms."
 
@@ -1006,77 +1007,77 @@ msgstr "Date invalide."
 msgid "Site URL"
 msgstr "URL du site"
 
-#: inc/smart-tags.php:84
-#: inc/smart-tags.php:115
+#: inc/smart-tags.php:85
+#: inc/smart-tags.php:116
 msgid "Admin Email"
 msgstr "Email de l'administrateur"
 
-#: inc/smart-tags.php:85
+#: inc/smart-tags.php:86
 msgid "Site Title"
 msgstr "Titre du site"
 
-#: inc/smart-tags.php:87
+#: inc/smart-tags.php:88
 msgid "IP Address"
 msgstr "Adresse IP"
 
-#: inc/smart-tags.php:88
+#: inc/smart-tags.php:89
 msgid "HTTP Referer URL"
 msgstr "URL de référent HTTP"
 
-#: inc/smart-tags.php:89
+#: inc/smart-tags.php:90
 msgid "Date (mm/dd/yyyy)"
 msgstr "Date (mm/jj/aaaa)"
 
-#: inc/smart-tags.php:90
+#: inc/smart-tags.php:91
 msgid "Date (dd/mm/yyyy)"
 msgstr "Date (jj/mm/aaaa)"
 
-#: inc/smart-tags.php:91
+#: inc/smart-tags.php:92
 msgid "User ID"
 msgstr "ID utilisateur"
 
-#: inc/smart-tags.php:92
+#: inc/smart-tags.php:93
 msgid "User Display Name"
 msgstr "Nom d'affichage de l'utilisateur"
 
-#: inc/smart-tags.php:93
+#: inc/smart-tags.php:94
 msgid "User First Name"
 msgstr "Prénom de l'utilisateur"
 
-#: inc/smart-tags.php:94
+#: inc/smart-tags.php:95
 msgid "User Last Name"
 msgstr "Nom de famille de l'utilisateur"
 
-#: inc/smart-tags.php:95
-#: inc/smart-tags.php:116
+#: inc/smart-tags.php:96
+#: inc/smart-tags.php:117
 msgid "User Email"
 msgstr "Email de l'utilisateur"
 
-#: inc/smart-tags.php:96
+#: inc/smart-tags.php:97
 msgid "User Username"
 msgstr "Utilisateur Nom d'utilisateur"
 
-#: inc/smart-tags.php:97
+#: inc/smart-tags.php:98
 msgid "Browser Name"
 msgstr "Nom du navigateur"
 
-#: inc/smart-tags.php:98
+#: inc/smart-tags.php:99
 msgid "Browser Platform"
 msgstr "Plateforme de navigateur"
 
-#: inc/smart-tags.php:99
+#: inc/smart-tags.php:100
 msgid "Embedded Post/Page ID"
 msgstr "ID de publication/page intégrée"
 
-#: inc/smart-tags.php:100
+#: inc/smart-tags.php:101
 msgid "Embedded Post/Page Title"
 msgstr "Titre de l'article/page intégré"
 
-#: inc/smart-tags.php:101
+#: inc/smart-tags.php:102
 msgid "Populate by GET Param"
 msgstr "Remplir par paramètre GET"
 
-#: inc/smart-tags.php:102
+#: inc/smart-tags.php:103
 msgid "Cookie Value"
 msgstr "Valeur du cookie"
 
@@ -3552,7 +3553,7 @@ msgstr "Visage Étoiles Souriant"
 
 #: modules/gutenberg/icons/icons-v6-1.php:1645
 msgid "Face Grin Tears"
-msgstr ""
+msgstr "Visage sourire larmes"
 
 #: modules/gutenberg/icons/icons-v6-1.php:1661
 msgid "Face Grin Tongue"
@@ -6310,7 +6311,7 @@ msgstr "Q"
 
 #: modules/gutenberg/icons/icons-v6-2.php:4292
 msgid "QQ"
-msgstr ""
+msgstr "QQ"
 
 #: modules/gutenberg/icons/icons-v6-2.php:4303
 msgid "Qrcode"
@@ -9628,7 +9629,7 @@ msgstr "Saut de page"
 msgid "Previous"
 msgstr "Précédent"
 
-#: inc/post-types.php:967
+#: inc/post-types.php:971
 #: assets/build/formEditor.js:172
 msgid "Thank you"
 msgstr "Merci"
@@ -11572,22 +11573,6 @@ msgid "Form Validation"
 msgstr "Validation de formulaire"
 
 #: assets/build/settings.js:172
-msgid "Usage Tracking"
-msgstr "Suivi de l'utilisation"
-
-#: assets/build/settings.js:172
-msgid "Allow SureForms to track non-sensitive usage tracking data"
-msgstr "Autoriser SureForms à suivre les données d'utilisation non sensibles"
-
-#: assets/build/settings.js:172
-msgid " Learn More"
-msgstr "En savoir plus"
-
-#: assets/build/settings.js:172
-msgid "Enable Usage Tracking"
-msgstr "Activer le suivi d'utilisation"
-
-#: assets/build/settings.js:172
 msgid "Required Error Messages"
 msgstr "Messages d'erreur requis"
 
@@ -11835,6 +11820,30 @@ msgstr "Éditeur de texte enrichi"
 #: assets/build/dashboard.js:172
 msgid "All Forms"
 msgstr "Tous les formulaires"
+
+#: inc/smart-tags.php:84
+msgid "Current Page URL"
+msgstr "URL de la page actuelle"
+
+#: assets/build/blocks.js:172
+msgid "Read Only"
+msgstr "Lecture seule"
+
+#: assets/build/settings.js:172
+msgid "Anonymous Analytics"
+msgstr "Analytique Anonyme"
+
+#: assets/build/settings.js:172
+msgid "Enable Anonymous Analytics"
+msgstr "Activer l'analyse anonyme"
+
+#: assets/build/settings.js:172
+msgid "Collect non-sensitive information from your website, such as the PHP version and features used, to help us fix bugs faster, make smarter decisions, and build features that actually matter to you. "
+msgstr "Collectez des informations non sensibles de votre site web, telles que la version PHP et les fonctionnalités utilisées, pour nous aider à corriger les bugs plus rapidement, prendre des décisions plus éclairées et développer des fonctionnalités qui comptent réellement pour vous. "
+
+#: assets/build/settings.js:172
+msgid "Learn More"
+msgstr "En savoir plus"
 
 #: inc/post-types.php:124
 msgctxt "post type general name"

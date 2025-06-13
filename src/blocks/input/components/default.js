@@ -3,7 +3,7 @@ import { decodeHtmlEntities } from '@Blocks/util';
 import HelpText from '@Components/misc/HelpText';
 
 export const InputComponent = ( { attributes, blockID, setAttributes } ) => {
-	const { label, placeholder, required, defaultValue, help } = attributes;
+	const { label, placeholder, required, defaultValue, help, readOnly } = attributes;
 
 	const isRequired = required ? ' srfm-required' : '';
 	const slug = 'input';
@@ -26,7 +26,7 @@ export const InputComponent = ( { attributes, blockID, setAttributes } ) => {
 				setAttributes={ setAttributes }
 				block_id={ blockID }
 			/>
-			<div className="srfm-block-wrap">
+			<div className={ `srfm-block-wrap${ readOnly ? ' srfm-read-only' : '' }` }>
 				<input
 					id={ `srfm-${ slug }-confirm-${ blockID }` }
 					type="text"
@@ -34,6 +34,7 @@ export const InputComponent = ( { attributes, blockID, setAttributes } ) => {
 					className={ `srfm-input-common srfm-input-${ slug }` }
 					placeholder={ placeholder }
 					required={ required }
+					readOnly={ readOnly }
 				/>
 			</div>
 		</>

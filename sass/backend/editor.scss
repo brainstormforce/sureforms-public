@@ -30,6 +30,26 @@ body.post-type-sureforms_form {
 		}
 	}
 
+	/**
+	 * Adding the below styles to provide compatibility with Kadence Theme.
+	 * Kadence theme uses the ::before pseudo-element to add a background color to the editor styles wrapper,
+	 * which causes the background color set in the SureForms editor to be overridden.
+	 * The below styles will unset the background color and transform properties of the ::before pseudo-element.
+	 *
+	 * @since 1.7.2
+	 */
+	&.wp-theme-kadence {
+		.srfm-bg-color,
+		.srfm-bg-image,
+		.srfm-bg-gradient {
+			&::before {
+				background: unset;
+				transform: translate( 0 );
+				max-width: unset;
+			}
+		}
+	}
+
 	.editor-styles-wrapper {
 		@include srfm-background-control-styles( true );
 	}
