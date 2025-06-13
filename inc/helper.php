@@ -1460,14 +1460,12 @@ class Helper {
 			require_once ABSPATH . 'wp-admin/includes/plugin.php';
 		}
 
-		$plugins = get_plugins();
-
 		$plugin_file = 'astra-pro-sites/astra-pro-sites.php';
-		if ( isset( $plugins[ $plugin_file ] ) ) {
-			return 'astra-pro-sites/astra-pro-sites.php';
-		} else {
-			return 'astra-sites/astra-sites.php';
-		}
+
+		// Return premium plugin if available, else fallback to free plugin.
+		return isset( get_plugins()[ $plugin_file ] )
+			? $plugin_file
+			: 'astra-sites/astra-sites.php';
 	}
 
 	/**
