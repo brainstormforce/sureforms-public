@@ -152,7 +152,7 @@ export default ( { attributes, setAttributes } ) => {
 	}, [ id, iframeRef, hasResolved ] );
 
 	// If form is in draft or trash then show the warning.
-	if ( isMissing || 'trash' === status[ 0 ] || 'draft' === status[ 0 ] ) {
+	if ( isMissing || 'publish' !== status[ 0 ] ) {
 		return (
 			<>
 				<InspectorControls>
