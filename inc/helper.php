@@ -1456,16 +1456,18 @@ class Helper {
 	 * @return string The plugin file path if premium is installed, otherwise the default starter sites plugin file path.
 	 */
 	public static function check_starter_template_plugin() {
-		if ( ! function_exists( 'get_plugins' ) ) {
-			require_once ABSPATH . 'wp-admin/includes/plugin.php';
+		static $plugins = null;
+
+		if ( null === $plugins ) {
+			if ( ! function_exists( 'get_plugins' ) ) {
+				require_once ABSPATH . 'wp-admin/includes/plugin.php';
+			}
+			$plugins = get_plugins();
 		}
 
-		$plugin_file = 'astra-pro-sites/astra-pro-sites.php';
+		$premium = 'astra-pro-sites/astra-pro-sites.php';
 
-		// Return premium plugin if available, else fallback to free plugin.
-		return isset( get_plugins()[ $plugin_file ] )
-			? $plugin_file
-			: 'astra-sites/astra-sites.php';
+		return isset( $plugins[ $premium ] ) ? $premium : 'astra-sites/astra-sites.php';
 	}
 
 	/**
