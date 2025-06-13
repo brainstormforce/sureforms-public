@@ -368,7 +368,7 @@ class Entries extends Base {
 	 * @since 0.0.13
 	 * @return int The total number of entries with the specified status.
 	 */
-	public static function get_total_entries_by_status( $status = 'all', $form_id = 0, $where_clause = [] ) {
+        public static function get_total_entries_by_status( $status = 'all', $form_id = 0, $where_clause = [] ) {
 		switch ( $status ) {
 			case 'all':
 				$where_clause[] =
@@ -401,8 +401,36 @@ class Entries extends Base {
 				return self::get_instance()->get_total_count( $where_clause );
 			default:
 				return self::get_instance()->get_total_count();
-		}
-	}
+                }
+        }
+
+       /**
+        * Get the total number of entries created after the given timestamp.
+        *
+        * @param int $timestamp Timestamp in seconds.
+        * @param int $form_id   Optional. The ID of the form to count entries for. Default 0 for all forms.
+        * @since 1.7.3
+        * @return int Total number of entries created after the timestamp.
+        */
+       public static function get_entries_count_after( $timestamp, $form_id = 0 ) {
+               $timestamp = absint( $timestamp );
+
+               if ( ! $timestamp ) {
+                       return self::get_total_entries_by_status( 'all', $form_id );
+               }
+
+               $where_clause = [
+                       [
+                               [
+                                       'key'     => 'created_at',
+                                       'compare' => '>',
+                                       'value'   => gmdate( 'Y-m-d H:i:s', $timestamp ),
+                               ],
+                       ],
+               ];
+
+               return self::get_total_entries_by_status( 'all', $form_id, $where_clause );
+       }
 
 	/**
 	 * Get the available months for entries.

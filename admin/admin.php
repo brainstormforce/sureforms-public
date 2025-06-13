@@ -45,8 +45,8 @@ class Admin {
 
 		add_filter( 'plugin_action_links', [ $this, 'add_settings_link' ], 10, 2 );
 		add_action( 'enqueue_block_assets', [ $this, 'enqueue_styles' ] );
-		add_action( 'admin_head', [ $this, 'enqueue_header_styles' ] );
-		add_filter( 'admin_body_class', [ $this, 'admin_template_picker_body_class' ] );
+               add_action( 'admin_head', [ $this, 'enqueue_header_styles' ] );
+               add_filter( 'admin_body_class', [ $this, 'admin_template_picker_body_class' ] );
 
 		// this action is used to restrict Spectra's quick action bar on SureForms CPTS.
 		add_action( 'uag_enable_quick_action_sidebar', [ $this, 'restrict_spectra_quick_action_bar' ] );
@@ -71,9 +71,11 @@ class Admin {
 		add_filter( 'avf_use_block_editor_for_post', [ $this, 'enable_block_editor_in_enfold_theme' ] );
 
 		// Add action links to the plugin page.
-		add_filter( 'plugin_action_links_' . SRFM_BASENAME, [ $this, 'add_action_links' ] );
-		add_filter( 'wpforms_current_user_can', [ $this, 'disable_wpforms_capabilities' ], 10, 3 );
-	}
+               add_filter( 'plugin_action_links_' . SRFM_BASENAME, [ $this, 'add_action_links' ] );
+               add_filter( 'wpforms_current_user_can', [ $this, 'disable_wpforms_capabilities' ], 10, 3 );
+
+               add_action( 'admin_menu', [ $this, 'maybe_add_entries_badge' ], 99 );
+       }
 
 	/**
 	 * Show action on plugin page.
@@ -366,7 +368,7 @@ class Admin {
 	 * @since 0.0.13
 	 * @return void
 	 */
-	public function render_entries() {
+        public function render_entries() {
 		// Render single entry view.
 		// Adding the phpcs ignore nonce verification as no database operations are performed in this function, it is used to display the single entry view.
 		if ( isset( $_GET['entry_id'] ) && is_numeric( $_GET['entry_id'] ) && isset( $_GET['view'] ) && 'details' === $_GET['view'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verification is not needed here and explained in the comments above as well.
@@ -387,10 +389,42 @@ class Admin {
 		}
 		echo '<form method="get">';
 		echo '<input type="hidden" name="page" value="sureforms_entries">';
-		$entries_table->display();
-		echo '</form>';
-		echo '</div>';
-	}
+               $entries_table->display();
+               echo '</form>';
+               echo '</div>';
+
+               update_user_meta( get_current_user_id(), 'srfm_last_entries_visit', time() );
+       }
+
+       /**
+        * Add notification badge to SureForms menu when there are new entries.
+        *
+        * @since 1.7.3
+        * @return void
+        */
+       public function maybe_add_entries_badge() {
+               if ( ! current_user_can( 'edit_others_posts' ) ) {
+                       return;
+               }
+
+               $last_visit = absint( get_user_meta( get_current_user_id(), 'srfm_last_entries_visit', true ) );
+               $new_entries = Entries::get_entries_count_after( $last_visit );
+
+               if ( $new_entries <= 0 ) {
+                       return;
+               }
+
+               global $menu;
+               foreach ( $menu as $index => $item ) {
+                       if ( isset( $item[2] ) && 'sureforms_menu' === $item[2] ) {
+                               $menu[ $index ][0] .= sprintf(
+                                       ' <span class="update-plugins count-%1$d"><span class="plugin-count">%1$d</span></span>',
+                                       absint( $new_entries )
+                               );
+                               break;
+                       }
+               }
+       }
 
 	/**
 	 * Adds a settings link to the plugin action links on the plugins page.
