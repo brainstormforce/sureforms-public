@@ -151,7 +151,7 @@ export default ( { attributes, setAttributes } ) => {
 		}
 	}, [ id, iframeRef, hasResolved ] );
 
-	// If form is in draft or trash then show the warning.
+	// If the form is not published or is missing, show a warning and allow the user to change the form.
 	if ( isMissing || 'publish' !== status[ 0 ] ) {
 		return (
 			<>
