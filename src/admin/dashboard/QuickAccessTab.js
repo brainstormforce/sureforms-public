@@ -62,7 +62,7 @@ export default () => {
 						<a
 							className="no-underline hover:underline"
 							href={ link }
-							target="_blank"
+							target={ key !== 'onboarding' ? '_blank' : '_self' }
 							rel="noreferrer"
 							aria-label={ label }
 						>

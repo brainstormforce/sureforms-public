@@ -20,8 +20,8 @@ import '../onboarding/styles.scss';
 const APP = () => {
 	const { onboarding_completed, onboarding_redirect } = srfm_admin || {};
 
-	// If onboarding is not completed or this is an activation redirect, show onboarding
-	const shouldShowOnboarding = ! onboarding_completed || onboarding_redirect;
+	// If onboarding is not completed and this is an activation redirect, show onboarding.
+	const shouldShowOnboarding = ! onboarding_completed && onboarding_redirect;
 
 	if ( shouldShowOnboarding ) {
 		return (
