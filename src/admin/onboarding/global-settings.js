@@ -161,9 +161,9 @@ const GlobalSettings = () => {
 	return (
 		<div className="space-y-6">
 			<Header
-				title={ __( 'Global Settings', 'sureforms' ) }
+				title={ __( 'Configure Global Settings', 'sureforms' ) }
 				description={ __(
-					'Configure your global form settings to enhance security and get insights about your forms.',
+					"Let's personalize your form experience",
 					'sureforms'
 				) }
 			/>

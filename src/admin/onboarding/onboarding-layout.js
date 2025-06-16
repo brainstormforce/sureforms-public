@@ -29,7 +29,7 @@ const NavBar = () => {
 						variant="number"
 					>
 						{ Array.from(
-							{ length: ONBOARDING_ROUTES_CONFIG.length },
+							{ length: 4 },
 							( _, index ) => (
 								<ProgressSteps.Step key={ index } size="md" />
 							)

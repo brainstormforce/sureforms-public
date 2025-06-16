@@ -12,6 +12,7 @@ import {
 	GlobalSettings,
 	RecommendedPlugins,
 	PremiumFeatures,
+	Done,
 } from '../onboarding';
 import '../tw-base.scss';
 import '../onboarding/styles.scss';
@@ -39,6 +40,10 @@ const APP = () => {
 						<Route
 							path="premium-features"
 							element={ <PremiumFeatures /> }
+						/>
+						<Route
+							path="done"
+							element={ <Done /> }
 						/>
 					</Route>
 					<Route

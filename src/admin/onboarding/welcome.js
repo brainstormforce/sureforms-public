@@ -7,12 +7,10 @@ import NavigationButtons from './navigation-buttons';
 import { initiateAuth } from '@Utils/Helpers';
 
 const features = [
-	__( 'Create beautiful, responsive forms with ease', 'sureforms' ),
-	__( 'AI-powered form generation for quick setup', 'sureforms' ),
-	__( 'Advanced form fields and validation options', 'sureforms' ),
-	__( 'Seamless integrations with popular services', 'sureforms' ),
-	__( 'Comprehensive form analytics and insights', 'sureforms' ),
-	__( 'GDPR compliant and security-focused', 'sureforms' ),
+	__( 'Build beautiful forms visually', 'sureforms' ),
+	__( 'Works perfectly on mobile', 'sureforms' ),
+	__( 'Spam protection built-in', 'sureforms' ),
+	__( 'Easy to connect with automation tools', 'sureforms' ),
 ];
 
 const Welcome = () => {
@@ -37,6 +35,8 @@ const Welcome = () => {
 		navigateToNextRoute();
 	};
 
+	const isRegistered = srfm_admin?.srfm_ai_details?.type !== 'non-registered';
+	
 	return (
 		<form
 			onSubmit={ ( event ) => event.preventDefault() }
@@ -47,12 +47,12 @@ const Welcome = () => {
 					{ __( 'Welcome to SureForms', 'sureforms' ) }
 				</Text>
 				<Text size={ 16 } weight={ 500 }>
-					{ __( 'The Ultimate WordPress Form Builder', 'sureforms' ) }
+					{ __( 'Smart, Quick and Powerful Forms.', 'sureforms' ) }
 				</Text>
 			</div>
 			<iframe
 				className="w-full aspect-video rounded-lg"
-				src="https://www.youtube.com/embed/it16jGnZBus"
+				src="https://www.youtube.com/embed/qLpnm4GdXks"
 				title="YouTube video player"
 				frameBorder="0"
 				allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -62,7 +62,7 @@ const Welcome = () => {
 				{ features.map( ( feature, index ) => (
 					<li key={ index } className="flex items-center gap-1">
 						<Check
-							className="size-3 text-icon-primary"
+							className="size-3 text-icon-interactive"
 							strokeWidth={ 1.5 }
 						/>
 						<Text size={ 14 } weight={ 500 } color="label">
@@ -77,12 +77,19 @@ const Welcome = () => {
 			<NavigationButtons
 				continueProps={ {
 					onClick: handleConnect,
-					text: __( 'Connect', 'sureforms' ),
+					text: isRegistered ? __( 'Let\'s Get Started', 'sureforms' ) : __( 'Connect', 'sureforms' ),
+					...(
+						isRegistered && {
+							icon: () => {}
+						}
+					)
 				} }
-				skipProps={ {
-					onClick: handleSkip,
-					text: __( 'Skip', 'sureforms' ),
-				} }
+				{ ...( ! isRegistered && {
+					skipProps: {
+						onClick: handleSkip,
+						text: __( 'Skip', 'sureforms' ),
+					}
+				} ) }
 				buttonGroupProps={ {
 					className: 'flex-row-reverse',
 				} }

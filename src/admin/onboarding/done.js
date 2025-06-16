@@ -1,28 +1,22 @@
 import { Button, Container, Text, Title } from '@bsf/force-ui';
 import { __ } from '@wordpress/i18n';
-import { CheckIcon, ExternalLink } from 'lucide-react';
+import { CheckIcon, ChevronRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-
-// Import logo or use existing icon if available
-// If WelcomeImage is not available in SureForms, you can use an appropriate icon from the plugin
-// For this example, I'll assume there's a similar component or we can use a placeholder
 import ICONS from '@Admin/components/template-picker/components/icons';
+import { Divider } from './components';
 
 const features = [
 	[
-		__( 'Modern form builder:', 'sureforms' ),
-		__( 'Create beautiful, responsive forms with ease!', 'sureforms' ),
+		__( 'Generate forms instantly with AI.', 'sureforms' ),
+		''
 	],
 	[
-		__( 'Easy management:', 'sureforms' ),
-		__( 'View and manage all your form submissions in one place', 'sureforms' ),
+		__( 'Manage your entries easily in one place.', 'sureforms' ),
+		''
 	],
 	[
-		__( 'Powerful integrations:', 'sureforms' ),
-		__(
-			'Connect your forms with other services and automate your workflow',
-			'sureforms'
-		),
+		__( 'Monitor form submissions from your dashboard.', 'sureforms' ),
+		''
 	],
 ];
 
@@ -66,19 +60,19 @@ const Done = () => {
 					/>
 					<Text size={ 14 } weight={ 400 } color="secondary">
 						{ __(
-							"You've successfully set up SureForms, and your site is ready to create amazing forms! Now you can focus on your business and let us handle the rest.",
+							"Setup complete! SureForms is now ready to use. Build your first form visually, get instant feedback, and grow your website faster.",
 							'sureforms'
 						) }
 					</Text>
 				</div>
 				<div className="w-full h-full max-w-32 mx-auto">
-					{ICONS.logo}
+					{ ICONS.onboardingDoneScreen }
 				</div>
 			</Container>
 			<div className="space-y-2">
 				<Text size={ 14 } weight={ 600 } color="primary">
 					{ __(
-						"Here's What SureForms Will Do for You Now:",
+						"What's Next:",
 						'sureforms'
 					) }
 				</Text>
@@ -98,12 +92,12 @@ const Done = () => {
 				) ) }
 			</div>
 
-			<hr className="border-t border-border-subtle my-4" />
+			<Divider />
 
 			<Container align="start" className="h-auto gap-3">
 				<Button 
 					onClick={ handleBuildForm }
-					icon={ <ExternalLink /> }
+					icon={ <ChevronRight /> }
 					iconPosition="right"
 				>
 					{ __( 'Build Your Form', 'sureforms' ) }
