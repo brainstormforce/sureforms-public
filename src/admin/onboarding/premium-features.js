@@ -1,81 +1,70 @@
 import { __ } from '@wordpress/i18n';
-import { Text } from '@bsf/force-ui';
+import { Text, Container, Badge } from '@bsf/force-ui';
 import { useOnboardingNavigation } from './hooks';
 import NavigationButtons from './navigation-buttons';
 import { Header, Divider } from './components';
+import { MessageCircle, Calculator, GitCompare, RectangleEllipsis, Signature, Webhook } from 'lucide-react';
 
 const premiumFeatures = [
 	{
-		id: 'advanced-fields',
-		title: __( 'Advanced Form Fields', 'sureforms' ),
+		id: 'conversational-forms',
+		title: __( 'Conversational Forms', 'sureforms' ),
 		description: __(
-			'Access premium field types like file uploads, date pickers, signature fields, and more.',
+			'Create forms that feel more like a conversation. With one-question-at-a-time interaction, you\'ll keep users engaged.',
 			'sureforms'
 		),
-		icon: '📝',
+		icon: <MessageCircle size={ 18 } />,
+		badge: __( 'Pro', 'sureforms' ),
+	},
+	{
+		id: 'calculations',
+		title: __( 'Calculations', 'sureforms' ),
+		description: __(
+			'Need calculations in real-time? Perform complex math based on user input, perfect for calculators requiring real-time results.',
+			'sureforms'
+		),
+		icon: <Calculator size={ 18 } />,
+		badge: __( 'Pro', 'sureforms' ),
 	},
 	{
 		id: 'conditional-logic',
-		title: __( 'Conditional Logic', 'sureforms' ),
+		title: __( 'Conditional Fields', 'sureforms' ),
 		description: __(
-			'Show or hide fields based on user responses to create dynamic, intelligent forms.',
+			'Show or hide fields based on previous answers. You ask the right questions, and we make sure only the necessary ones are displayed.',
 			'sureforms'
 		),
-		icon: '🔀',
+		icon: <GitCompare size={ 18 } />,
+		badge: __( 'Pro', 'sureforms' ),
 	},
 	{
-		id: 'payment-integration',
-		title: __( 'Payment Integration', 'sureforms' ),
+		id: 'multi-step-form',
+		title: __( 'Multi Step Form', 'sureforms' ),
 		description: __(
-			'Accept payments through Stripe, PayPal, and other popular payment gateways.',
+			'Break complex forms into easy-to-follow steps, reducing overwhelm and increasing completion rates and guide your users smoothly.',
 			'sureforms'
 		),
-		icon: '💳',
+		icon: <RectangleEllipsis size={ 18 } />,
+		badge: __( 'Pro', 'sureforms' ),
 	},
 	{
-		id: 'advanced-styling',
-		title: __( 'Advanced Styling', 'sureforms' ),
+		id: 'digital-signature',
+		title: __( 'Digital Signatures', 'sureforms' ),
 		description: __(
-			'Custom CSS, advanced themes, and complete design control for your forms.',
+			'Need signatures for contracts or agreements? Capture legally binding digital signatures directly within your forms, making paperwork painless.',
 			'sureforms'
 		),
-		icon: '🎨',
+		icon: <Signature size={ 18 } />,
+		badge: __( 'Pro', 'sureforms' ),
 	},
 	{
-		id: 'multi-step-forms',
-		title: __( 'Multi-Step Forms', 'sureforms' ),
+		id: 'webhook-integration',
+		title: __( 'Webhooks', 'sureforms' ),
 		description: __(
-			'Break long forms into multiple steps to improve user experience and completion rates.',
+			'Connect forms to third-party services with webhooks. Automate data transfer and notifications in real time, saving effort.',
 			'sureforms'
 		),
-		icon: '📊',
-	},
-	{
-		id: 'advanced-integrations',
-		title: __( 'Advanced Integrations', 'sureforms' ),
-		description: __(
-			'Connect with CRM systems, email marketing tools, and hundreds of third-party services.',
-			'sureforms'
-		),
-		icon: '🔗',
-	},
-	{
-		id: 'form-analytics',
-		title: __( 'Form Analytics', 'sureforms' ),
-		description: __(
-			'Detailed insights, conversion tracking, and performance analytics for your forms.',
-			'sureforms'
-		),
-		icon: '📈',
-	},
-	{
-		id: 'priority-support',
-		title: __( 'Priority Support', 'sureforms' ),
-		description: __(
-			'Get priority email support and access to our premium support team.',
-			'sureforms'
-		),
-		icon: '🎧',
+		icon: <Webhook size={ 18 } />,
+		badge: __( 'Pro', 'sureforms' ),
 	},
 ];
 
@@ -101,34 +90,45 @@ const PremiumFeatures = () => {
 				) }
 			/>
 
-			<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+			<div className="grid grid-cols-1 sm:grid-cols-2 gap-1 p-1 rounded-lg bg-background-secondary">
 				{ premiumFeatures.map( ( feature ) => (
-					<div
+					<Container
 						key={ feature.id }
-						className="p-4 border border-border-subtle rounded-lg bg-white hover:shadow-md transition-shadow"
+						gap="none"
+						direction="column"
+						className="p-3 bg-background-primary rounded-md shadow-sm w-full hover:shadow-md transition-shadow"
 					>
-						<div className="flex items-start gap-3">
-							<div className="text-2xl flex-shrink-0">
+						<Container align="start" className="p-1 w-full">
+							<div className="text-2xl flex-shrink-0 text-icon-interactive">
 								{ feature.icon }
 							</div>
-							<div>
+							<Badge
+								label={ feature.badge }
+								className="ml-auto"
+							/>
+						</Container>
+						<Container
+							direction="column"
+							className="gap-1.5 flex-1"
+						>
+							<div className="space-y-0.5">
 								<Text
-									size={ 16 }
-									weight={ 600 }
+									size={ 14 }
+									weight={ 500 }
 									color="primary"
 								>
 									{ feature.title }
 								</Text>
 								<Text
 									size={ 14 }
-									color="secondary"
-									className="mt-1"
+									weight={ 400 }
+									color="tertiary"
 								>
 									{ feature.description }
 								</Text>
 							</div>
-						</div>
-					</div>
+						</Container>
+					</Container>
 				) ) }
 			</div>
 
@@ -140,7 +140,7 @@ const PremiumFeatures = () => {
 				} }
 				continueProps={ {
 					onClick: handleNext,
-					text: __( 'Next', 'sureforms' ),
+					text: __( 'Finish Setup', 'sureforms' ),
 				} }
 			/>
 		</div>
