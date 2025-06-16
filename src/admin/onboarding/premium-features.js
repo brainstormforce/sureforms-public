@@ -80,23 +80,13 @@ const premiumFeatures = [
 ];
 
 const PremiumFeatures = () => {
-	const { navigateToPreviousRoute } = useOnboardingNavigation();
+	const { navigateToPreviousRoute, navigateToNextRoute } = useOnboardingNavigation();
 
-	const handleCreateForm = async () => {
-		// Complete onboarding and redirect to create new form
-		await wp.apiFetch( {
-			path: '/sureforms/v1/onboarding/set-status',
-			method: 'POST',
-			headers: {
-				'X-WP-Nonce': srfm_admin.nonce,
-			},
-		} );
-
-		// Redirect to create new form page
-		window.location.href = `${ srfm_admin.site_url }/wp-admin/admin.php?page=add-new-form`;
+	const handleNext = () => {
+		navigateToNextRoute();
 	};
 
-	const handleBack = async () => {
+	const handleBack = () => {
 		navigateToPreviousRoute();
 	};
 
@@ -148,8 +138,8 @@ const PremiumFeatures = () => {
 					onClick: handleBack,
 				} }
 				continueProps={ {
-					onClick: handleCreateForm,
-					text: __( 'Create Your First Form', 'sureforms' ),
+					onClick: handleNext,
+					text: __( 'Next', 'sureforms' ),
 				} }
 			/>
 		</div>

@@ -12,6 +12,9 @@ const ONBOARDING_ROUTES_CONFIG = [
 	{
 		url: '/onboarding/premium-features',
 	},
+	{
+		url: '/onboarding/done',
+	},
 ];
 
 export default ONBOARDING_ROUTES_CONFIG;
