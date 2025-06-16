@@ -355,9 +355,8 @@ class Smart_Tags {
 					// Step 1 - Sanitize raw input.
 					$sanitized_content = Helper::sanitize_textarea( Helper::get_string_value( $submission_item_value ) );
 					// Step 2 - Decode HTML entities to preserve formatting.
-					$decoded_content = html_entity_decode( $sanitized_content );
-					// Step 3 - Escape the content for textarea.
-					$replacement_data .= Helper::esc_textarea( $decoded_content );
+					$decoded_content   = html_entity_decode( $sanitized_content );
+					$replacement_data .= $decoded_content;
 				} else {
 					// if $submission_item_value is a url then add <a> tag. with view text.
 					if ( is_string( $submission_item_value ) && filter_var( $submission_item_value, FILTER_VALIDATE_URL ) ) {
