@@ -64,7 +64,7 @@ class Email_Markup extends Base {
 	 * Read-only attribute for the email field.
 	 *
 	 * @var bool
-	 * @since x.x.x
+	 * @since 1.7.2
 	 */
 	protected $read_only;
 
