@@ -1,28 +1,16 @@
 import { Button, Container, Text, Title } from '@bsf/force-ui';
 import { __ } from '@wordpress/i18n';
 import { CheckIcon, ChevronRight } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
 import ICONS from '@Admin/components/template-picker/components/icons';
 import { Divider } from './components';
 
 const features = [
-	[
-		__( 'Generate forms instantly with AI.', 'sureforms' ),
-		''
-	],
-	[
-		__( 'Manage your entries easily in one place.', 'sureforms' ),
-		''
-	],
-	[
-		__( 'Monitor form submissions from your dashboard.', 'sureforms' ),
-		''
-	],
+	[ __( 'Generate forms instantly with AI.', 'sureforms' ), '' ],
+	[ __( 'Manage your entries easily in one place.', 'sureforms' ), '' ],
+	[ __( 'Monitor form submissions from your dashboard.', 'sureforms' ), '' ],
 ];
 
 const Done = () => {
-	const navigate = useNavigate();
-
 	const handleBuildForm = () => {
 		// Complete onboarding and redirect to create new form page
 		wp.apiFetch( {
@@ -60,7 +48,7 @@ const Done = () => {
 					/>
 					<Text size={ 14 } weight={ 400 } color="secondary">
 						{ __(
-							"Setup complete! SureForms is now ready to use. Build your first form visually, get instant feedback, and grow your website faster.",
+							'Setup complete! SureForms is now ready to use. Build your first form visually, get instant feedback, and grow your website faster.',
 							'sureforms'
 						) }
 					</Text>
@@ -71,10 +59,7 @@ const Done = () => {
 			</Container>
 			<div className="space-y-2">
 				<Text size={ 14 } weight={ 600 } color="primary">
-					{ __(
-						"What's Next:",
-						'sureforms'
-					) }
+					{ __( "What's Next:", 'sureforms' ) }
 				</Text>
 				{ features.map( ( feature, index ) => (
 					<Container
@@ -95,17 +80,14 @@ const Done = () => {
 			<Divider />
 
 			<Container align="start" className="h-auto gap-3">
-				<Button 
+				<Button
 					onClick={ handleBuildForm }
 					icon={ <ChevronRight /> }
 					iconPosition="right"
 				>
 					{ __( 'Build Your Form', 'sureforms' ) }
 				</Button>
-				<Button
-					variant="ghost"
-					onClick={ handleGoToDashboard }
-				>
+				<Button variant="ghost" onClick={ handleGoToDashboard }>
 					{ __( 'Go To Dashboard', 'sureforms' ) }
 				</Button>
 			</Container>

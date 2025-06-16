@@ -36,7 +36,7 @@ const Welcome = () => {
 	};
 
 	const isRegistered = srfm_admin?.srfm_ai_details?.type !== 'non-registered';
-	
+
 	return (
 		<form
 			onSubmit={ ( event ) => event.preventDefault() }
@@ -77,18 +77,18 @@ const Welcome = () => {
 			<NavigationButtons
 				continueProps={ {
 					onClick: handleConnect,
-					text: isRegistered ? __( 'Let\'s Get Started', 'sureforms' ) : __( 'Connect', 'sureforms' ),
-					...(
-						isRegistered && {
-							icon: () => {}
-						}
-					)
+					text: isRegistered
+						? __( "Let's Get Started", 'sureforms' )
+						: __( 'Connect', 'sureforms' ),
+					...( isRegistered && {
+						icon: () => {},
+					} ),
 				} }
 				{ ...( ! isRegistered && {
 					skipProps: {
 						onClick: handleSkip,
 						text: __( 'Skip', 'sureforms' ),
-					}
+					},
 				} ) }
 				buttonGroupProps={ {
 					className: 'flex-row-reverse',

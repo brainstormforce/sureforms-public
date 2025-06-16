@@ -8,7 +8,6 @@ import {
 	OnboardingProvider,
 	ONBOARDING_SESSION_STORAGE_KEY,
 } from './onboarding-state';
-import ONBOARDING_ROUTES_CONFIG from './onboarding-routes-config';
 import ICONS from '@Admin/components/template-picker/components/icons';
 
 const NavBar = () => {
@@ -28,12 +27,9 @@ const NavBar = () => {
 						type="inline"
 						variant="number"
 					>
-						{ Array.from(
-							{ length: 4 },
-							( _, index ) => (
-								<ProgressSteps.Step key={ index } size="md" />
-							)
-						) }
+						{ Array.from( { length: 4 }, ( _, index ) => (
+							<ProgressSteps.Step key={ index } size="md" />
+						) ) }
 					</ProgressSteps>
 				</Topbar.Item>
 			</Topbar.Middle>

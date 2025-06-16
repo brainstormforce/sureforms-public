@@ -80,7 +80,8 @@ const premiumFeatures = [
 ];
 
 const PremiumFeatures = () => {
-	const { navigateToPreviousRoute, navigateToNextRoute } = useOnboardingNavigation();
+	const { navigateToPreviousRoute, navigateToNextRoute } =
+		useOnboardingNavigation();
 
 	const handleNext = () => {
 		navigateToNextRoute();

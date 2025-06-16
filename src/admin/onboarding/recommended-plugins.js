@@ -1,10 +1,5 @@
 import { __ } from '@wordpress/i18n';
-import {
-	Button,
-	Text,
-	Container,
-	Badge,
-} from '@bsf/force-ui';
+import { Button, Text, Container, Badge } from '@bsf/force-ui';
 import { useOnboardingNavigation } from './hooks';
 import NavigationButtons from './navigation-buttons';
 import { handlePluginActionTrigger } from '@Utils/Helpers';
@@ -100,10 +95,7 @@ const RecommendedPlugins = () => {
 									? __( 'Activated', 'sureforms' )
 									: plugin[ 1 ].status === 'Installed'
 										? __( 'Activate', 'sureforms' )
-										: __(
-											'Install & Activate',
-											'sureforms'
-										) }
+										: __( 'Install & Activate', 'sureforms' ) }
 							</Button>
 						</Container>
 					</Container>
