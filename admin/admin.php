@@ -341,16 +341,20 @@ class Admin {
 			[ $this, 'add_new_form_callback' ],
 			2
 		);
-		add_submenu_page(
-			'sureforms_menu',
-			__( 'Entries', 'sureforms' ),
-			__( 'Entries', 'sureforms' ),
-			'edit_others_posts',
-			SRFM_ENTRIES,
-			[ $this, 'render_entries' ],
-			3
-		);
-	}
+               $entries_hook = add_submenu_page(
+                       'sureforms_menu',
+                       __( 'Entries', 'sureforms' ),
+                       __( 'Entries', 'sureforms' ),
+                       'edit_others_posts',
+                       SRFM_ENTRIES,
+                       [ $this, 'render_entries' ],
+                       3
+               );
+
+               if ( $entries_hook ) {
+                       add_action( 'load-' . $entries_hook, [ $this, 'mark_entries_page_visit' ] );
+               }
+       }
 
 	/**
 	 * Add new form mentu item callback.
@@ -392,8 +396,6 @@ class Admin {
                $entries_table->display();
                echo '</form>';
                echo '</div>';
-
-               update_user_meta( get_current_user_id(), 'srfm_last_entries_visit', time() );
        }
 
        /**
@@ -423,6 +425,31 @@ class Admin {
                                );
                                break;
                        }
+               }
+
+               global $submenu;
+               if ( isset( $submenu['sureforms_menu'] ) ) {
+                       foreach ( $submenu['sureforms_menu'] as $index => $sub_item ) {
+                               if ( isset( $sub_item[2] ) && SRFM_ENTRIES === $sub_item[2] ) {
+                                       $submenu['sureforms_menu'][ $index ][0] .= sprintf(
+                                               ' <span class="update-plugins count-%1$d"><span class="plugin-count">%1$d</span></span>',
+                                               absint( $new_entries )
+                                       );
+                                       break;
+                               }
+                       }
+               }
+       }
+
+       /**
+        * Mark the user's visit to the entries page.
+        *
+        * @since 1.7.3
+        * @return void
+        */
+       public function mark_entries_page_visit() {
+               if ( current_user_can( 'edit_others_posts' ) ) {
+                       update_user_meta( get_current_user_id(), 'srfm_last_entries_visit', time() );
                }
        }
 
