@@ -409,6 +409,12 @@ class Admin {
                        return;
                }
 
+                // If currently viewing the entries listing page, mark it as visited and skip the badge.
+                if ( isset( $_GET['page'] ) && SRFM_ENTRIES === $_GET['page'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Only checking the page slug.
+                        $this->mark_entries_page_visit();
+                        return;
+                }
+
                $last_visit = absint( get_user_meta( get_current_user_id(), 'srfm_last_entries_visit', true ) );
                $new_entries = Entries::get_entries_count_after( $last_visit );
 
