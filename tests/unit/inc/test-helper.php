@@ -384,16 +384,16 @@ class Test_Helper extends TestCase {
     /**
     * Test validate_request_context method.
     *
-    * This method tests various scenarios for the validate_request_context function, 
-    * including single key-value pair validations and multiple condition validations. 
+    * This method tests various scenarios for the validate_request_context function,
+    * including single key-value pair validations and multiple condition validations.
     * It covers the following cases:
-    * 
+    *
     * - A single key-value pair that matches (valid).
     * - A single key-value pair that does not match (invalid).
     * - Multiple conditions where all conditions match (valid).
     * - Multiple conditions where at least one condition does not match (invalid).
     * - Empty conditions with no matching request values.
-    * 
+    *
     * Each case ensures that the function behaves as expected in different scenarios
     * by asserting the returned boolean value.
     *
@@ -497,6 +497,57 @@ class Test_Helper extends TestCase {
                 "Expected '$class_name' to be an invalid CSS class name."
             );
         }
+    }
+
+    /**
+     * Test the check_starter_template_plugin method with mock plugin data.
+     */
+    public function test_check_starter_template_plugin() {
+        // Backup original get_plugins function if defined
+        if ( ! function_exists( 'get_plugins' ) ) {
+            require_once ABSPATH . 'wp-admin/includes/plugin.php';
+        }
+
+        // Case 1 : simulate only premium plugin available
+        $mock_plugins_premium = [
+            'astra-pro-sites/astra-pro-sites.php' => [ 'Name' => 'Starter Templates Pro' ],
+        ];
+        $this->assertEquals(
+            'astra-pro-sites/astra-pro-sites.php',
+            Helper::check_starter_template_plugin( $mock_plugins_premium ),
+            'Failed when premium plugin is available'
+        );
+
+        // Case 2 : simulate only free plugin available
+        $mock_plugins_free = [
+            'astra-sites/astra-sites.php' => [ 'Name' => 'Starter Templates' ],
+        ];
+        $this->assertEquals(
+            'astra-sites/astra-sites.php',
+            Helper::check_starter_template_plugin( $mock_plugins_free ),
+            'Failed when only free plugin is available'
+        );
+
+        // Case 3 : simulate both plugins available
+        $mock_plugins_both = [
+            'astra-pro-sites/astra-pro-sites.php' => [],
+            'astra-sites/astra-sites.php' => [],
+        ];
+        $this->assertEquals(
+            'astra-pro-sites/astra-pro-sites.php',
+            Helper::check_starter_template_plugin( $mock_plugins_both ),
+            'Failed when both plugins are available (should prefer premium)'
+        );
+
+        // Case 4 : simulate neither plugin available
+        $mock_plugins_none = [
+            'hello-dolly/hello.php' => [],
+        ];
+        $this->assertEquals(
+            'astra-sites/astra-sites.php',
+            Helper::check_starter_template_plugin( $mock_plugins_none ),
+            'Failed when no starter template plugin is found'
+        );
     }
 
     /**
@@ -664,7 +715,7 @@ class Test_Helper extends TestCase {
                 'expected' => '',
             ],
         ];
-    
+
 
         // Iterate through test cases and assert results.
         foreach ($testCases as $description => $testCase) {
@@ -694,7 +745,7 @@ class Test_Helper extends TestCase {
                 'expected' => '',
             ],
         ];
-    
+
 
         // Iterate through test cases and assert results.
         foreach ($testCases as $description => $testCase) {
