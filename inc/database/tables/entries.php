@@ -491,4 +491,19 @@ class Entries extends Base {
 		);
 		return isset( $result[0] ) && is_array( $result[0] ) ? Helper::get_array_value( $result[0]['form_data'] ) : [];
 	}
+
+	/**
+	 * Get the entry data for a specific entry.
+	 *
+	 * @param int $entry_id The ID of the entry to get the entry data for.
+	 * @since x.x.x
+	 * @return array<string,mixed> An associative array representing the entry's data.
+	 */
+	public static function get_entry_data( $entry_id ) {
+		$result = self::get_instance()->get_results(
+			[ 'ID' => $entry_id ],
+			'extras'
+		);
+		return isset( $result[0] ) && is_array( $result[0] ) ? $result[0] : [];
+	}
 }

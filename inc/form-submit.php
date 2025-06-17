@@ -599,6 +599,16 @@ class Form_Submit {
 			// If user is logged in then save their user id.
 			$entries_data['user_id'] = get_current_user_id();
 		}
+
+		$entries_data = apply_filters(
+			'srfm_before_entry_data',
+			$entries_data,
+			[
+				'form_data'       => $form_data,
+				'submission_data' => $submission_data,
+			]
+		);
+
 		$entry_id = Entries::add( $entries_data );
 		if ( $entry_id ) {
 
