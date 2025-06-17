@@ -284,11 +284,11 @@ function destroyTomSelect( dropdown ) {
 	dropdown.disabled = false;
 
 	// Find and remove TomSelect wrapper elements
-	const wrapper = dropdown.closest(
+	const getTheWrapper = dropdown.closest(
 		'.srfm-block-wrap.srfm-dropdown-common-wrap'
 	);
-	if ( wrapper ) {
-		const tsWrappers = wrapper.querySelectorAll( 'div.ts-wrapper' );
+	if ( getTheWrapper ) {
+		const tsWrappers = getTheWrapper.querySelectorAll( 'div.ts-wrapper' );
 		tsWrappers?.forEach( ( wrapper ) => wrapper.remove() );
 	}
 }
