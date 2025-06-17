@@ -5,6 +5,10 @@ function initializeDropdown() {
 
 	dropDownSelector.forEach( ( element ) => {
 		if ( element ) {
+			// Skip if element already has TomSelect initialized
+			if ( element.classList.contains( 'tomselected' ) ) {
+				destroyTomSelect( element );
+			}
 			let additionalConfig = {};
 			const inputName = element.getAttribute( 'name' );
 			const errorContainerID = element
@@ -133,6 +137,10 @@ function initializeDropdown() {
 			 * @param {Object}      config    - The configuration options for the TomSelect instance.
 			 * @param {string}      inputName - The key under which the TomSelect instance is stored in the `window.srfm` object.
 			 */
+			// Check if TomSelect is already initialized on this element
+			if ( element.classList.contains( 'tomselected' ) ) {
+				destroyTomSelect( element );
+			}
 			const tomInputInstance = new TomSelect( element, config );
 			/**
 			 * `keydown` & `click` event listeners to open the dropdown menu programmatically
@@ -234,6 +242,57 @@ function handleInputState( element ) {
 	}
 }
 
+/**
+ * Destroys a TomSelect instance and cleans up related DOM elements.
+ *
+ * @param {HTMLElement} dropdown - The dropdown element with TomSelect initialized.
+ */
+function destroyTomSelect( dropdown ) {
+	if ( ! dropdown ) {
+		return;
+	}
+
+	// Get the input name to remove from global registry
+	const inputName = dropdown.getAttribute( 'name' );
+
+	// Check if there's an instance in the global registry
+	if ( window?.srfm && window.srfm[ inputName ] ) {
+		try {
+			// Destroy the instance from the registry
+			window.srfm[ inputName ].destroy();
+			// Remove from registry
+			delete window.srfm[ inputName ];
+		} catch ( e ) {
+			// Silent catch in case destroy fails
+		}
+	}
+
+	// Try to access TomSelect directly on the element as a fallback
+	try {
+		if ( dropdown.tomSelect ) {
+			dropdown.tomSelect.destroy();
+		}
+	} catch ( e ) {
+		// Silent catch in case destroy fails
+	}
+
+	// Reset the element state
+	dropdown.classList.remove( 'tomselected' );
+	dropdown.classList.remove( 'ts-hidden-accessible' );
+	dropdown.removeAttribute( 'tabindex' );
+	dropdown.removeAttribute( 'id' );
+	dropdown.disabled = false;
+
+	// Find and remove TomSelect wrapper elements
+	const wrapper = dropdown.closest(
+		'.srfm-block-wrap.srfm-dropdown-common-wrap'
+	);
+	if ( wrapper ) {
+		const tsWrappers = wrapper.querySelectorAll( 'div.ts-wrapper' );
+		tsWrappers?.forEach( ( wrapper ) => wrapper.remove() );
+	}
+}
+
 // Re-initialize dropdowns when the block is updated in the editor.
 // srfm_form_before_submission
 document.addEventListener( 'srfm_form_before_submission', ( e ) => {
@@ -246,34 +305,12 @@ document.addEventListener( 'srfm_form_before_submission', ( e ) => {
 
 	// Destroy the existing TomSelect instances before re-initializing.
 	dropdowns.forEach( ( dropdown ) => {
-		const getTheWrapper = dropdown.closest( '.srfm-block-wrap.srfm-dropdown-common-wrap' );
-
-		if ( getTheWrapper ) {
-			// remove from the window.srfm name
-			const inputName = dropdown.getAttribute( 'name' );
-
-			dropdown.classList.remove( 'tomselected' );
-			dropdown.classList.remove( 'ts-hidden-accessible' );
-			dropdown.removeAttribute( 'id' );
-
-			if ( window?.srfm?.[ inputName ] ) {
-				delete window.srfm[ inputName ];
-			}
-			// Destroy the TomSelect instance.
-			dropdown?.TomSelect?.destroy();
-
-			const getTheTSWrapper = getTheWrapper.querySelectorAll( 'div.ts-wrapper' );
-
-			getTheTSWrapper?.forEach( ( wrapper ) => {
-				wrapper.remove();
-			} );
-
-			// Enable the select element.
-			dropdown.disabled = false;
-		}
+		// Ensure we completely clean up before reinitializing
+		destroyTomSelect( dropdown );
 	} );
 
+	// Use a slightly longer timeout to ensure DOM is ready
 	setTimeout( () => {
 		initializeDropdown();
-	}, 100 );
+	}, 150 );
 } );
