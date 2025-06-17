@@ -4,7 +4,7 @@ const ONBOARDING_ROUTES_CONFIG = [
 		index: true,
 	},
 	{
-		url: '/onboarding/global-settings',
+		url: '/onboarding/email-delivery',
 	},
 	{
 		url: '/onboarding/recommended-plugins',

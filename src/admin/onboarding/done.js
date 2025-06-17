@@ -1,7 +1,6 @@
 import { Button, Container, Text, Title } from '@bsf/force-ui';
 import { __ } from '@wordpress/i18n';
 import { CheckIcon, ChevronRight } from 'lucide-react';
-import ICONS from '@Admin/components/template-picker/components/icons';
 import { Divider } from './components';
 
 const features = [
@@ -52,9 +51,6 @@ const Done = () => {
 							'sureforms'
 						) }
 					</Text>
-				</div>
-				<div className="w-full h-full max-w-32 mx-auto">
-					{ ICONS.onboardingDoneScreen }
 				</div>
 			</Container>
 			<div className="space-y-2">

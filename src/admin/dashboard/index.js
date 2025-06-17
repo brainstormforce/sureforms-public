@@ -9,7 +9,7 @@ import Dashboard from './Dashboard';
 import {
 	OnboardingLayout,
 	Welcome,
-	GlobalSettings,
+	EmailDelivery,
 	RecommendedPlugins,
 	PremiumFeatures,
 	Done,
@@ -30,8 +30,8 @@ const APP = () => {
 					<Route path="/onboarding" element={ <OnboardingLayout /> }>
 						<Route path="welcome" element={ <Welcome /> } />
 						<Route
-							path="global-settings"
-							element={ <GlobalSettings /> }
+							path="email-delivery"
+							element={ <EmailDelivery /> }
 						/>
 						<Route
 							path="recommended-plugins"
@@ -62,8 +62,8 @@ const APP = () => {
 				<Route path="/onboarding" element={ <OnboardingLayout /> }>
 					<Route path="welcome" element={ <Welcome /> } />
 					<Route
-						path="global-settings"
-						element={ <GlobalSettings /> }
+						path="email-delivery"
+						element={ <EmailDelivery /> }
 					/>
 					<Route
 						path="recommended-plugins"

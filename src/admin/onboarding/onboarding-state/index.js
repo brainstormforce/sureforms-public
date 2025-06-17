@@ -5,13 +5,13 @@ export const ONBOARDING_SESSION_STORAGE_KEY = 'sureforms_onboarding_state';
 
 // Initial state
 const initialState = {
-	globalSettingsConfigured: false,
+	emailDeliveryConfigured: false,
 	pluginsInstalled: [],
 };
 
 // Action types
 const ACTIONS = {
-	SET_GLOBAL_SETTINGS_CONFIGURED: 'SET_GLOBAL_SETTINGS_CONFIGURED',
+	SET_EMAIL_DELIVERY_CONFIGURED: 'SET_EMAIL_DELIVERY_CONFIGURED',
 	SET_PLUGIN_INSTALLED: 'SET_PLUGIN_INSTALLED',
 	RESET_STATE: 'RESET_STATE',
 };
@@ -19,8 +19,8 @@ const ACTIONS = {
 // Reducer
 const onboardingReducer = ( state, action ) => {
 	switch ( action.type ) {
-		case ACTIONS.SET_GLOBAL_SETTINGS_CONFIGURED:
-			return { ...state, globalSettingsConfigured: action.payload };
+		case ACTIONS.SET_EMAIL_DELIVERY_CONFIGURED:
+			return { ...state, emailDeliveryConfigured: action.payload };
 		case ACTIONS.SET_PLUGIN_INSTALLED:
 			return {
 				...state,
@@ -45,9 +45,9 @@ export const OnboardingProvider = ( { children } ) => {
 	const [ state, dispatch ] = useReducer( onboardingReducer, initialState );
 
 	const actions = {
-		setGlobalSettingsConfigured: ( value ) =>
+		setEmailDeliveryConfigured: ( value ) =>
 			dispatch( {
-				type: ACTIONS.SET_GLOBAL_SETTINGS_CONFIGURED,
+				type: ACTIONS.SET_EMAIL_DELIVERY_CONFIGURED,
 				payload: value,
 			} ),
 		setPluginInstalled: ( pluginId ) =>

@@ -89,6 +89,7 @@ const OnboardingLayout = () => {
 
 	const widthClassKey =
 		location.pathname === '/onboarding/welcome' ||
+		location.pathname === '/onboarding/email-delivery' ||
 		location.pathname === '/onboarding/done'
 			? 1
 			: 2;
