@@ -1,5 +1,6 @@
 import { __ } from '@wordpress/i18n';
-import { Text, Container, Badge } from '@bsf/force-ui';
+import { Text, Container, Checkbox } from '@bsf/force-ui';
+import { useState } from '@wordpress/element';
 import { useOnboardingNavigation } from './hooks';
 import NavigationButtons from './navigation-buttons';
 import { Header, Divider } from './components';
@@ -14,7 +15,7 @@ const premiumFeatures = [
 			'sureforms'
 		),
 		icon: <MessageCircle size={ 18 } />,
-		badge: __( 'Pro', 'sureforms' ),
+		plan: 'pro',
 	},
 	{
 		id: 'calculations',
@@ -24,7 +25,7 @@ const premiumFeatures = [
 			'sureforms'
 		),
 		icon: <Calculator size={ 18 } />,
-		badge: __( 'Pro', 'sureforms' ),
+		plan: 'business',
 	},
 	{
 		id: 'conditional-logic',
@@ -34,7 +35,7 @@ const premiumFeatures = [
 			'sureforms'
 		),
 		icon: <GitCompare size={ 18 } />,
-		badge: __( 'Pro', 'sureforms' ),
+		plan: 'starter',
 	},
 	{
 		id: 'multi-step-form',
@@ -44,7 +45,7 @@ const premiumFeatures = [
 			'sureforms'
 		),
 		icon: <RectangleEllipsis size={ 18 } />,
-		badge: __( 'Pro', 'sureforms' ),
+		plan: 'starter',
 	},
 	{
 		id: 'digital-signature',
@@ -54,7 +55,7 @@ const premiumFeatures = [
 			'sureforms'
 		),
 		icon: <Signature size={ 18 } />,
-		badge: __( 'Pro', 'sureforms' ),
+		plan: 'pro',
 	},
 	{
 		id: 'webhook-integration',
@@ -64,13 +65,19 @@ const premiumFeatures = [
 			'sureforms'
 		),
 		icon: <Webhook size={ 18 } />,
-		badge: __( 'Pro', 'sureforms' ),
+		plan: 'starter',
 	},
 ];
+
+// Define plan hierarchy (higher index = higher tier)
+const planHierarchy = ['free', 'starter', 'pro', 'business'];
 
 const PremiumFeatures = () => {
 	const { navigateToPreviousRoute, navigateToNextRoute } =
 		useOnboardingNavigation();
+	
+	// State to track selected features
+	const [selectedFeatures, setSelectedFeatures] = useState({});
 
 	const handleNext = () => {
 		navigateToNextRoute();
@@ -80,12 +87,68 @@ const PremiumFeatures = () => {
 		navigateToPreviousRoute();
 	};
 
+	// Function to handle checkbox changes
+	const handleCheckboxChange = (featureId) => {
+		setSelectedFeatures(prev => ({
+			...prev,
+			[featureId]: !prev[featureId]
+		}));
+	};
+
+	// Function to render the checkbox based on the plan
+	const renderPlanCheckbox = (featureId) => {
+		return (
+			<div className="ml-auto">
+				<Checkbox
+					checked={!!selectedFeatures[featureId]}
+					onChange={() => handleCheckboxChange(featureId)}
+					size="sm"
+				/>
+			</div>
+		);
+	};
+
+	// Function to get the highest plan needed based on selected features
+	const getHighestRequiredPlan = () => {
+		// Get selected features
+		const selectedFeaturesList = premiumFeatures.filter(feature => 
+			selectedFeatures[feature.id]
+		);
+
+		if (selectedFeaturesList.length === 0) {
+			return null;
+		}
+
+		// Find the highest plan in the hierarchy
+		let highestPlanIndex = -1;
+		let highestPlan = null;
+
+		selectedFeaturesList.forEach(feature => {
+			const planIndex = planHierarchy.indexOf(feature.plan);
+			if (planIndex > highestPlanIndex) {
+				highestPlanIndex = planIndex;
+				highestPlan = feature.plan;
+			}
+		});
+
+		if (highestPlan) {
+			// Format the plan name for display
+			const planName = highestPlan.charAt(0).toUpperCase() + highestPlan.slice(1);
+			return __(`Upgrade to ${planName} Plan to access all selected features.`, 'sureforms');
+		}
+
+		return null;
+	};
+
+	// Get the upgrade message
+	const upgradeMessage = getHighestRequiredPlan();
+
 	return (
 		<div className="space-y-6">
 			<Header
 				title={ __( 'Unlock Premium Features', 'sureforms' ) }
 				description={ __(
-					'Take your forms to the next level with SureForms Pro and access powerful premium features.',
+					'Take your forms to the next level with SureForms premium plans and access powerful features. Select the features you\'re interested in.',
 					'sureforms'
 				) }
 			/>
@@ -102,10 +165,7 @@ const PremiumFeatures = () => {
 							<div className="text-2xl flex-shrink-0 text-icon-interactive">
 								{ feature.icon }
 							</div>
-							<Badge
-								label={ feature.badge }
-								className="ml-auto"
-							/>
+							{renderPlanCheckbox(feature.id)}
 						</Container>
 						<Container
 							direction="column"
@@ -131,6 +191,15 @@ const PremiumFeatures = () => {
 					</Container>
 				) ) }
 			</div>
+
+			{/* Single line upgrade message */}
+			{upgradeMessage && (
+				<div className="bg-background-secondary p-4 rounded-lg">
+					<Text size={14} weight={600} className="text-badge-text-green">
+						{upgradeMessage}
+					</Text>
+				</div>
+			)}
 
 			<Divider />
 

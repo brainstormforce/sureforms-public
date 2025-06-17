@@ -27,7 +27,7 @@ const NavBar = () => {
 						type="inline"
 						variant="number"
 					>
-						{ Array.from( { length: 4 }, ( _, index ) => (
+						{ Array.from( { length: 3 }, ( _, index ) => (
 							<ProgressSteps.Step key={ index } size="md" />
 						) ) }
 					</ProgressSteps>
