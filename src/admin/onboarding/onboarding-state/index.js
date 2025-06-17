@@ -6,13 +6,11 @@ export const ONBOARDING_SESSION_STORAGE_KEY = 'sureforms_onboarding_state';
 // Initial state
 const initialState = {
 	emailDeliveryConfigured: false,
-	pluginsInstalled: [],
 };
 
 // Action types
 const ACTIONS = {
 	SET_EMAIL_DELIVERY_CONFIGURED: 'SET_EMAIL_DELIVERY_CONFIGURED',
-	SET_PLUGIN_INSTALLED: 'SET_PLUGIN_INSTALLED',
 	RESET_STATE: 'RESET_STATE',
 };
 
@@ -21,15 +19,6 @@ const onboardingReducer = ( state, action ) => {
 	switch ( action.type ) {
 		case ACTIONS.SET_EMAIL_DELIVERY_CONFIGURED:
 			return { ...state, emailDeliveryConfigured: action.payload };
-		case ACTIONS.SET_PLUGIN_INSTALLED:
-			return {
-				...state,
-				pluginsInstalled: state.pluginsInstalled.includes(
-					action.payload
-				)
-					? state.pluginsInstalled
-					: [ ...state.pluginsInstalled, action.payload ],
-			};
 		case ACTIONS.RESET_STATE:
 			return initialState;
 		default:
@@ -49,11 +38,6 @@ export const OnboardingProvider = ( { children } ) => {
 			dispatch( {
 				type: ACTIONS.SET_EMAIL_DELIVERY_CONFIGURED,
 				payload: value,
-			} ),
-		setPluginInstalled: ( pluginId ) =>
-			dispatch( {
-				type: ACTIONS.SET_PLUGIN_INSTALLED,
-				payload: pluginId,
 			} ),
 		resetState: () => dispatch( { type: ACTIONS.RESET_STATE } ),
 	};

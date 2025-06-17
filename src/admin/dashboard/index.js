@@ -10,7 +10,6 @@ import {
 	OnboardingLayout,
 	Welcome,
 	EmailDelivery,
-	RecommendedPlugins,
 	PremiumFeatures,
 	Done,
 } from '../onboarding';
@@ -32,10 +31,6 @@ const APP = () => {
 						<Route
 							path="email-delivery"
 							element={ <EmailDelivery /> }
-						/>
-						<Route
-							path="recommended-plugins"
-							element={ <RecommendedPlugins /> }
 						/>
 						<Route
 							path="premium-features"
@@ -64,10 +59,6 @@ const APP = () => {
 					<Route
 						path="email-delivery"
 						element={ <EmailDelivery /> }
-					/>
-					<Route
-						path="recommended-plugins"
-						element={ <RecommendedPlugins /> }
 					/>
 					<Route
 						path="premium-features"

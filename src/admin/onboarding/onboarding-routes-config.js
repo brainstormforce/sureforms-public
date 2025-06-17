@@ -7,9 +7,6 @@ const ONBOARDING_ROUTES_CONFIG = [
 		url: '/onboarding/email-delivery',
 	},
 	{
-		url: '/onboarding/recommended-plugins',
-	},
-	{
 		url: '/onboarding/premium-features',
 	},
 	{
