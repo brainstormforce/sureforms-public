@@ -25,7 +25,11 @@ export const UrlComponent = ( { attributes, blockID, setAttributes } ) => {
 				setAttributes={ setAttributes }
 				block_id={ blockID }
 			/>
-			<div className={ `srfm-block-wrap${ readOnly ? ' srfm-read-only' : '' }` }>
+			<div
+				className={ `srfm-block-wrap${
+					readOnly ? ' srfm-read-only' : ''
+				}` }
+			>
 				<input
 					id={ `srfm-${ slug }-${ blockID }` }
 					type="text"
