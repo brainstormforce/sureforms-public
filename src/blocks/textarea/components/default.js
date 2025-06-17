@@ -16,11 +16,14 @@ export const TextareaComponent = ( { attributes, blockID, setAttributes } ) => {
 		cols,
 		help,
 		isRichText,
+		readOnly,
 	} = attributes;
 	const isRequired = required ? ' srfm-required' : '';
 	const slug = 'textarea';
 
-	const uniqueIDRef = useRef( Math.random().toString( 36 ).substring( 2, 8 ) );
+	const uniqueIDRef = useRef(
+		Math.random().toString( 36 ).substring( 2, 8 )
+	);
 	const quillId = `quill-id-${ uniqueIDRef.current }`;
 
 	return (
@@ -41,7 +44,11 @@ export const TextareaComponent = ( { attributes, blockID, setAttributes } ) => {
 				setAttributes={ setAttributes }
 				block_id={ blockID }
 			/>
-			<div className={ `srfm-block-wrap${ isRichText ? ' srfm-richtext' : '' }` }>
+			<div
+				className={ `srfm-block-wrap${
+					isRichText ? ' srfm-richtext' : ''
+				}${ readOnly ? ' srfm-read-only' : '' }` }
+			>
 				{ isRichText ? (
 					<div className="srfm-textarea-quill">
 						<QuillToolbar id={ quillId } />

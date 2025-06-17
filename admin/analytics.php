@@ -70,6 +70,7 @@ class Analytics {
 							],
 						]
 					),
+					'hide_optin_checkbox' => true,
 				],
 			]
 		);

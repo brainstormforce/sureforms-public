@@ -18,6 +18,7 @@
 		display: flex;
 		flex-wrap: wrap;
 		@include srfm-gap-styles;
+		@include srfm-read-only-styles;
 
 		.conditional-logic {
 			display: none;

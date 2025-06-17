@@ -26,12 +26,8 @@ export const QuillToolbar = ( { id } ) => {
 				<select className="ql-background" />
 				<button className="ql-link" />
 				<button className="ql-clean" />
-				<button className="ql-undo">
-					{ parse( svgIcons.undo ) }
-				</button>
-				<button className="ql-redo">
-					{ parse( svgIcons.redo ) }
-				</button>
+				<button className="ql-undo">{ parse( svgIcons.undo ) }</button>
+				<button className="ql-redo">{ parse( svgIcons.redo ) }</button>
 			</span>
 		</div>
 	);

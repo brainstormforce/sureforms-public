@@ -89,7 +89,7 @@
 				border-radius: 0 0 5px 5px;
 			}
 			margin: var( --srfm-input-field-margin );
-	
+
 			.ql-container.ql-snow {
 				border: none;
 			}
@@ -285,6 +285,7 @@
 			margin: 0 !important;
 		}
 	}
+	@include srfm-read-only-styles;
 }
 
 .editor-styles-wrapper {
