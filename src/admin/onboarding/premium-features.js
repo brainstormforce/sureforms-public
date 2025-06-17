@@ -86,15 +86,22 @@ const PremiumFeatures = () => {
 	// State to track selected features
 	const [ selectedFeatures, setSelectedFeatures ] = useState( {} );
 
-	const handleNext = () => {
-		navigateToNextRoute();
-	};
+	// Check if any feature is selected
+	const hasSelectedFeatures = Object.values( selectedFeatures ).some(
+		( value ) => value === true
+	);
 
 	const handleBack = () => {
 		navigateToPreviousRoute();
 	};
 
-	// Function to handle checkbox changes.
+	// Function to handle upgrade button click
+	const handleUpgrade = () => {
+		// Redirect to SureForms pricing page
+		window.open( srfm_admin.sureforms_pricing_page, '_blank' );
+	};
+
+	// Function to handle checkbox changes
 	const handleCheckboxChange = ( featureId ) => {
 		setSelectedFeatures( ( prev ) => ( {
 			...prev,
@@ -102,7 +109,7 @@ const PremiumFeatures = () => {
 		} ) );
 	};
 
-	// Function to render the checkbox based on the plan.
+	// Function to render the checkbox based on the plan
 	const renderPlanCheckbox = ( featureId ) => {
 		return (
 			<div className="ml-auto">
@@ -115,9 +122,9 @@ const PremiumFeatures = () => {
 		);
 	};
 
-	// Function to get the highest plan needed based on selected features.
+	// Function to get the highest plan needed based on selected features
 	const getHighestRequiredPlan = () => {
-		// Get selected features.
+		// Get selected features
 		const selectedFeaturesList = premiumFeatures.filter(
 			( feature ) => selectedFeatures[ feature.id ]
 		);
@@ -142,7 +149,6 @@ const PremiumFeatures = () => {
 			// Format the plan name for display
 			const planName =
 				highestPlan.charAt( 0 ).toUpperCase() + highestPlan.slice( 1 );
-
 			return sprintf(
 				// translators: %s: The name of the plan (e.g. "Pro", "Business").
 				__(
@@ -228,8 +234,13 @@ const PremiumFeatures = () => {
 					onClick: handleBack,
 				} }
 				continueProps={ {
-					onClick: handleNext,
-					text: __( 'Finish Setup', 'sureforms' ),
+					onClick: handleUpgrade,
+					text: __( 'Upgrade', 'sureforms' ),
+					disabled: ! hasSelectedFeatures,
+				} }
+				skipProps={ {
+					onClick: navigateToNextRoute,
+					text: __( 'Skip', 'sureforms' ),
 				} }
 			/>
 		</div>
