@@ -61,6 +61,14 @@ class Email_Markup extends Base {
 	protected $confirm_label;
 
 	/**
+	 * Read-only attribute for the email field.
+	 *
+	 * @var bool
+	 * @since 1.7.2
+	 */
+	protected $read_only;
+
+	/**
 	 * Initialize the properties based on block attributes.
 	 *
 	 * @param array<mixed> $attributes Block attributes.
@@ -76,6 +84,7 @@ class Email_Markup extends Base {
 		$this->input_confirm_label_fallback = __( 'Confirm ', 'sureforms' ) . $this->input_label_fallback;
 		$this->input_confirm_label          = '-lbl-' . Helper::encrypt( $this->input_confirm_label_fallback );
 		$this->unique_confirm_slug          = 'srfm-' . $this->slug . '-confirm-' . $this->block_id . $this->input_confirm_label;
+		$this->read_only                    = ! empty( trim( $this->default ) ) && $attributes['readOnly'];
 		$this->set_unique_slug();
 		$this->set_field_name( $this->unique_slug );
 		$this->set_markup_properties( $this->input_label, true );
@@ -93,14 +102,14 @@ class Email_Markup extends Base {
 	 */
 	public function markup() {
 		ob_start(); ?>
-			<div data-block-id="<?php echo esc_attr( $this->block_id ); ?>" class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $this->slug ); ?>-block-wrap<?php echo esc_attr( $this->block_width ); ?><?php echo esc_attr( $this->class_name ); ?> <?php echo esc_attr( $this->conditional_class ); ?>">
+			<div data-block-id="<?php echo esc_attr( $this->block_id ); ?>" class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $this->slug ); ?>-block-wrap<?php echo esc_attr( $this->block_width ); ?><?php echo esc_attr( $this->class_name ); ?> <?php echo esc_attr( $this->conditional_class ); ?><?php echo esc_attr( $this->read_only ? ' srfm-read-only' : '' ); ?>">
 				<div class="srfm-<?php echo esc_attr( $this->slug ); ?>-block srf-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?>-block">
 					<?php echo wp_kses_post( $this->label_markup ); ?>
 					<?php echo wp_kses_post( $this->help_markup ); ?>
 					<div class="srfm-block-wrap">
 						<input class="srfm-input-common srfm-input-<?php echo esc_attr( $this->slug ); ?>" type="email" name="<?php echo esc_attr( $this->field_name ); ?>" id="<?php echo esc_attr( $this->unique_slug ); ?>"
 						<?php echo ! empty( $this->aria_described_by ) ? "aria-describedby='" . esc_attr( trim( $this->aria_described_by ) ) . "'" : ''; ?>
-						data-required="<?php echo esc_attr( strval( $this->data_require_attr ) ); ?>" data-unique="<?php echo esc_attr( $this->aria_unique ); ?>" value="<?php echo esc_attr( $this->default ); ?>" <?php echo wp_kses_post( $this->placeholder_attr ); ?> />
+						data-required="<?php echo esc_attr( strval( $this->data_require_attr ) ); ?>" data-unique="<?php echo esc_attr( $this->aria_unique ); ?>" value="<?php echo esc_attr( $this->default ); ?>" <?php echo wp_kses_post( $this->placeholder_attr ); ?> <?php echo $this->read_only ? 'readonly' : ''; ?> />
 					</div>
 					<div class="srfm-error-wrap">
 						<?php echo wp_kses_post( $this->duplicate_msg_markup ); ?>
@@ -122,7 +131,7 @@ class Email_Markup extends Base {
 						<div class="srfm-block-wrap">
 							<input class="srfm-input-common srfm-input-<?php echo esc_attr( $this->slug ); ?>-confirm" type="email" id="<?php echo esc_attr( $this->unique_confirm_slug ); ?>"
 						<?php echo ! empty( $this->aria_described_by ) ? "aria-describedby='" . esc_attr( trim( $this->aria_described_by ) ) . "'" : ''; ?>
-							data-required="<?php echo esc_attr( $this->data_require_attr ); ?>" value="<?php echo esc_attr( $this->default ); ?>" <?php echo wp_kses_post( $this->placeholder_attr ); ?>  />
+							data-required="<?php echo esc_attr( $this->data_require_attr ); ?>" value="<?php echo esc_attr( $this->default ); ?>" <?php echo wp_kses_post( $this->placeholder_attr ); ?> <?php echo $this->read_only ? 'readonly' : ''; ?> />
 						</div>
 						<div class="srfm-error-wrap">
 						<?php echo wp_kses_post( $this->error_msg_markup ); ?>

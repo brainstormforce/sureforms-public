@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: SureForms 1.7.1\n"
+"Project-Id-Version: SureForms 1.7.2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/sureforms\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-06-05T06:48:56+00:00\n"
+"POT-Creation-Date: 2025-06-12T07:20:09+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: sureforms\n"
@@ -95,7 +95,7 @@ msgstr ""
 #: admin/admin.php:345
 #: admin/admin.php:381
 #: inc/global-settings/email-summary.php:107
-#: inc/post-types.php:1020
+#: inc/post-types.php:1024
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:2
 #: assets/build/page_header.js:172
@@ -306,8 +306,8 @@ msgstr ""
 #: admin/views/entries-list-table.php:884
 #: inc/email/email-template.php:157
 #: inc/email/email-template.php:163
-#: inc/smart-tags.php:338
-#: inc/smart-tags.php:344
+#: inc/smart-tags.php:350
+#: inc/smart-tags.php:356
 msgid "View"
 msgstr ""
 
@@ -787,19 +787,20 @@ msgid "Dropdown"
 msgstr ""
 
 #: inc/fields/dropdown-markup.php:66
+#: assets/build/blocks.js:172
 msgid "Select an option"
 msgstr ""
 
-#: inc/fields/email-markup.php:71
+#: inc/fields/email-markup.php:79
 msgid "Email"
 msgstr ""
 
-#: inc/fields/email-markup.php:76
+#: inc/fields/email-markup.php:84
 msgid "Confirm "
 msgstr ""
 
 #. Translators: %s is label of block.
-#: inc/fields/email-markup.php:84
+#: inc/fields/email-markup.php:93
 msgid "Confirm %s"
 msgstr ""
 
@@ -807,12 +808,12 @@ msgstr ""
 msgid "I consent to have this website store my submitted information so they can respond to my inquiry."
 msgstr ""
 
-#: inc/fields/inlinebutton-markup.php:182
+#: inc/fields/inlinebutton-markup.php:183
 #: inc/generate-form-markup.php:495
 msgid "Please verify that you are not a robot."
 msgstr ""
 
-#: inc/fields/input-markup.php:56
+#: inc/fields/input-markup.php:65
 msgid "Text Field"
 msgstr ""
 
@@ -820,7 +821,7 @@ msgstr ""
 msgid "Multi Choice"
 msgstr ""
 
-#: inc/fields/number-markup.php:102
+#: inc/fields/number-markup.php:111
 msgid "Number"
 msgstr ""
 
@@ -829,11 +830,11 @@ msgstr ""
 msgid "Phone"
 msgstr ""
 
-#: inc/fields/textarea-markup.php:79
+#: inc/fields/textarea-markup.php:87
 msgid "Textarea"
 msgstr ""
 
-#: inc/fields/url-markup.php:30
+#: inc/fields/url-markup.php:38
 msgid "Url"
 msgstr ""
 
@@ -1118,7 +1119,7 @@ msgid "Select the form that you wish to add here."
 msgstr ""
 
 #: inc/page-builders/elementor/form-widget.php:160
-#: inc/smart-tags.php:86
+#: inc/smart-tags.php:87
 #: assets/build/blocks.js:2
 #: assets/build/formEditor.js:172
 msgid "Form Title"
@@ -1238,24 +1239,24 @@ msgstr ""
 msgid "New Form Submission - %s"
 msgstr ""
 
-#: inc/post-types.php:967
+#: inc/post-types.php:971
 #: assets/build/formEditor.js:172
 msgid "Thank you"
 msgstr ""
 
-#: inc/post-types.php:1019
+#: inc/post-types.php:1023
 msgid "Shortcode"
 msgstr ""
 
-#: inc/post-types.php:1083
+#: inc/post-types.php:1087
 msgid "Please choose the SureForms export file (.json) that you wish to import."
 msgstr ""
 
-#: inc/post-types.php:1086
+#: inc/post-types.php:1090
 msgid "Import Now"
 msgstr ""
 
-#: inc/post-types.php:1088
+#: inc/post-types.php:1092
 msgid "There is some error in json file, please export the SureForms Forms again."
 msgstr ""
 
@@ -1272,76 +1273,80 @@ msgid "Site URL"
 msgstr ""
 
 #: inc/smart-tags.php:84
-#: inc/smart-tags.php:115
-msgid "Admin Email"
+msgid "Current Page URL"
 msgstr ""
 
 #: inc/smart-tags.php:85
+#: inc/smart-tags.php:116
+msgid "Admin Email"
+msgstr ""
+
+#: inc/smart-tags.php:86
 msgid "Site Title"
 msgstr ""
 
-#: inc/smart-tags.php:87
+#: inc/smart-tags.php:88
 msgid "IP Address"
 msgstr ""
 
-#: inc/smart-tags.php:88
+#: inc/smart-tags.php:89
 msgid "HTTP Referer URL"
 msgstr ""
 
-#: inc/smart-tags.php:89
+#: inc/smart-tags.php:90
 msgid "Date (mm/dd/yyyy)"
 msgstr ""
 
-#: inc/smart-tags.php:90
+#: inc/smart-tags.php:91
 msgid "Date (dd/mm/yyyy)"
 msgstr ""
 
-#: inc/smart-tags.php:91
+#: inc/smart-tags.php:92
 msgid "User ID"
 msgstr ""
 
-#: inc/smart-tags.php:92
+#: inc/smart-tags.php:93
 msgid "User Display Name"
 msgstr ""
 
-#: inc/smart-tags.php:93
+#: inc/smart-tags.php:94
 msgid "User First Name"
 msgstr ""
 
-#: inc/smart-tags.php:94
+#: inc/smart-tags.php:95
 msgid "User Last Name"
 msgstr ""
 
-#: inc/smart-tags.php:95
-#: inc/smart-tags.php:116
+#: inc/smart-tags.php:96
+#: inc/smart-tags.php:117
 msgid "User Email"
 msgstr ""
 
-#: inc/smart-tags.php:96
+#: inc/smart-tags.php:97
 msgid "User Username"
 msgstr ""
 
-#: inc/smart-tags.php:97
+#: inc/smart-tags.php:98
 msgid "Browser Name"
 msgstr ""
 
-#: inc/smart-tags.php:98
+#: inc/smart-tags.php:99
 msgid "Browser Platform"
 msgstr ""
 
-#: inc/smart-tags.php:99
+#: inc/smart-tags.php:100
 msgid "Embedded Post/Page ID"
 msgstr ""
 
-#: inc/smart-tags.php:100
+#: inc/smart-tags.php:101
 msgid "Embedded Post/Page Title"
 msgstr ""
 
-#: inc/smart-tags.php:101
+#: inc/smart-tags.php:102
 msgid "Populate by GET Param"
 msgstr ""
 
-#: inc/smart-tags.php:102
+#: inc/smart-tags.php:103
 msgid "Cookie Value"
 msgstr ""
 
@@ -9084,6 +9089,10 @@ msgid "Default Value"
 msgstr ""
 
 #: assets/build/blocks.js:172
+msgid "Read Only"
+msgstr ""
+
+#: assets/build/blocks.js:172
 msgid "Error Message"
 msgstr ""
 
@@ -10608,19 +10617,19 @@ msgid "If this option is turned on, the user's IP address will be saved with the
 msgstr ""
 
 #: assets/build/settings.js:172
-msgid "Usage Tracking"
+msgid "Anonymous Analytics"
 msgstr ""
 
 #: assets/build/settings.js:172
-msgid "Allow SureForms to track non-sensitive usage tracking data"
+msgid "Enable Anonymous Analytics"
 msgstr ""
 
 #: assets/build/settings.js:172
-msgid " Learn More"
+msgid "Collect non-sensitive information from your website, such as the PHP version and features used, to help us fix bugs faster, make smarter decisions, and build features that actually matter to you. "
 msgstr ""
 
 #: assets/build/settings.js:172
-msgid "Enable Usage Tracking"
+msgid "Learn More"
 msgstr ""
 
 #: assets/build/settings.js:172

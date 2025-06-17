@@ -158,29 +158,28 @@ const GeneralPage = ( {
 	};
 
 	const UsageTrackingContent = () => {
-		const description = (
-			<>
-				<p>
-					{ __(
-						'Allow SureForms to track non-sensitive usage tracking data',
-						'sureforms'
-					) }
-				</p>
-				<a
-					href="https://store.brainstormforce.com/usage-tracking/?utm_source=sureforms_global_settings&utm_medium=surefroms_general_settings&utm_campaign=usage_tracking"
-					target="_blank"
-					rel="noopener noreferrer"
-				>
-					{ __( ' Learn More', 'sureforms' ) }
-				</a>
-			</>
-		);
-
 		return (
 			<Switch
 				label={ {
-					heading: __( 'Enable Usage Tracking', 'sureforms' ),
-					description,
+					heading: __( 'Enable Anonymous Analytics', 'sureforms' ),
+					description: (
+						<>
+							<p>
+								{ __(
+									'Collect non-sensitive information from your website, such as the PHP version and features used, to help us fix bugs faster, make smarter decisions, and build features that actually matter to you. ',
+									'sureforms'
+								) }
+								<a
+									href="https://sureforms.com/share-usage-data/"
+									target="_blank"
+									rel="noopener noreferrer"
+									className="text-field-helper"
+								>
+									{ __( 'Learn More', 'sureforms' ) }
+								</a>
+							</p>
+						</>
+					),
 				} }
 				value={ generalTabOptions.srfm_bsf_analytics }
 				onChange={ ( value ) =>
@@ -206,13 +205,11 @@ const GeneralPage = ( {
 				title={ __( 'IP Logging', 'sureforms' ) }
 				content={ IPLoggingContent() }
 			/>
-			{ ! srfm_admin?.is_pro_active && (
-				<ContentSection
-					loading={ loading }
-					title={ __( 'Usage Tracking', 'sureforms' ) }
-					content={ UsageTrackingContent() }
-				/>
-			) }
+			<ContentSection
+				loading={ loading }
+				title={ __( 'Anonymous Analytics', 'sureforms' ) }
+				content={ UsageTrackingContent() }
+			/>
 		</div>
 	);
 };

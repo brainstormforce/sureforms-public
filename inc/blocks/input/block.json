@@ -81,6 +81,10 @@
 		"customInputMask": {
 			"type": "string",
 			"default": ""
+		},
+		"readOnly": {
+			"type": "boolean",
+			"default": false
 		}
 	}
 }

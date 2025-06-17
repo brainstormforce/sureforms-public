@@ -482,3 +482,13 @@
 		margin-left: 0;
 	}
 }
+
+// For the readonly inputs, setting the background to the one with 5% opacity instead of the usual 2%.
+@mixin srfm-read-only-styles {
+	.srfm-read-only {
+		.srfm-input-content,
+		.srfm-input-common {
+			background-color: hsl( from var( --srfm-color-input-background ) h s l / 0.05 ) !important;
+		}
+	}
+}
