@@ -608,7 +608,7 @@ class Form_Submit {
 				'submission_data' => $submission_data,
 			]
 		);
-		
+
 		$entry_id = Entries::add( $entries_data );
 		if ( $entry_id ) {
 
