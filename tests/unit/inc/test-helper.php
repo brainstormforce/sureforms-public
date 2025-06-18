@@ -18,9 +18,31 @@ use Yoast\PHPUnitPolyfills\TestCases\TestCase;
 
 use SRFM\Inc\Helper;
 
+// Serialization of 'Closure' is not allowed prevention
+// Callback function to convert values to uppercase
+// This function is used in the sanitize_recursively tests.
+function srfm_uppercase_callback($value) {
+    return strtoupper($value);
+}
+
+// Serialization of 'Closure' is not allowed prevention
+// This function is used to filter translations in tests.
+// It simulates the translation of specific strings used in the SureForms plugin.
+function sureforms_translation_filter($translation, $text, $domain) {
+    if ($domain !== 'sureforms') {
+        return $translation;
+    }
+
+    $translations = [
+        'This field is required.' => 'Este campo es obligatorio.',
+        'Value needs to be unique.' => 'El valor debe ser único.',
+    ];
+
+    return $translations[$text] ?? $translation;
+}
+
 /**
  * Tests Plugin Initialization.
- *
  */
 class Test_Helper extends TestCase {
 
@@ -109,25 +131,6 @@ class Test_Helper extends TestCase {
 		// Restore original locale
 		switch_to_locale($current_locale);
 	}
-
-    /**
-     * Test sureforms_translation_filter returns translated strings
-     *
-     * This test simulates the translation filter for the 'sureforms' domain.
-     * It checks if the translations are applied correctly.
-     */
-    public function sureforms_translation_filter($translation, $text, $domain) {
-        if ($domain !== 'sureforms') {
-            return $translation;
-        }
-
-        $translations = [
-            'This field is required.' => 'Este campo es obligatorio.',
-            'Value needs to be unique.' => 'El valor debe ser único.',
-        ];
-
-        return $translations[$text] ?? $translation;
-    }
 
 	/**
 	 * Test get_common_err_msg translations work
@@ -306,7 +309,7 @@ class Test_Helper extends TestCase {
             ],
 
             'custom sanitization' => [
-                function($value) { return strtoupper($value); },
+                'srfm_uppercase_callback',
                 ['hello', 'world'],
                 ['HELLO', 'WORLD'],
                 'Should work with custom callbacks'
