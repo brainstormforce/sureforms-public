@@ -7,6 +7,8 @@
 
 namespace SRFM\Inc;
 
+use stdClass; // Fixes "Class not found" error
+
 // Override get_plugins in the same namespace.
 function get_plugins() {
     return \SRFM\Inc\Test_Helper::$mock_plugins;
@@ -510,6 +512,7 @@ class Test_Helper extends TestCase {
     }
 
     /**
+     * @runInSeparateProcess
      * Test the check_starter_template_plugin method with mock plugin data.
      */
     public function test_check_starter_template_plugin() {
@@ -554,6 +557,7 @@ class Test_Helper extends TestCase {
             'Failed when no starter template plugin is found'
         );
     }
+
 
     /**
      * Test the join_strings method with various inputs.
