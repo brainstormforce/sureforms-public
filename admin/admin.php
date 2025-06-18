@@ -72,7 +72,13 @@ class Admin {
 
 		// Add action links to the plugin page.
                add_action( 'admin_init', [ $this, 'maybe_mark_entries_page_visit' ] );
-		add_filter( 'plugin_action_links_' . SRFM_BASENAME, [ $this, 'add_action_links' ] );
+
+               $general_options       = get_option( 'srfm_general_settings_options', [] );
+               $admin_notification_on = isset( $general_options['srfm_admin_notification'] ) ? (bool) $general_options['srfm_admin_notification'] : true;
+
+               if ( $admin_notification_on ) {
+                       add_action( 'admin_menu', [ $this, 'maybe_add_entries_badge' ], 99 );
+               }
 		add_filter( 'wpforms_current_user_can', [ $this, 'disable_wpforms_capabilities' ], 10, 3 );
 
 		add_action( 'admin_menu', [ $this, 'maybe_add_entries_badge' ], 99 );
