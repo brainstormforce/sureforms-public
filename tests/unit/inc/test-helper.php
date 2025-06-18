@@ -5,11 +5,11 @@
  * @package sureforms
  */
 
-namespace SureForms\Inc;
+namespace SRFM\Inc;
 
 // Override get_plugins in the same namespace.
 function get_plugins() {
-    return \SureForms\Inc\Test_Helper::$mock_plugins;
+    return \SRFM\Inc\Test_Helper::$mock_plugins;
 }
 
 use Yoast\PHPUnitPolyfills\TestCases\TestCase;
@@ -514,14 +514,14 @@ class Test_Helper extends TestCase {
      */
     public function test_check_starter_template_plugin() {
         // Case 1: Only premium plugin available
-        // self::$mock_plugins = [
-        //     'astra-pro-sites/astra-pro-sites.php' => [ 'Name' => 'Starter Templates Pro' ],
-        // ];
-        // $this->assertEquals(
-        //     'astra-pro-sites/astra-pro-sites.php',
-        //     Helper::check_starter_template_plugin(),
-        //     'Failed when premium plugin is available'
-        // );
+        self::$mock_plugins = [
+            'astra-pro-sites/astra-pro-sites.php' => [ 'Name' => 'Starter Templates Pro' ],
+        ];
+        $this->assertEquals(
+            'astra-pro-sites/astra-pro-sites.php',
+            Helper::check_starter_template_plugin(),
+            'Failed when premium plugin is available'
+        );
 
         // Case 2: Only free plugin available
         self::$mock_plugins = [
@@ -535,8 +535,8 @@ class Test_Helper extends TestCase {
 
         // Case 3: Both plugins available (prefer premium)
         self::$mock_plugins = [
-            'astra-pro-sites/astra-pro-sites.php' => [],
-            'astra-sites/astra-sites.php' => [],
+            'astra-pro-sites/astra-pro-sites.php' => [ 'Name' => 'Starter Templates Pro' ],
+            'astra-sites/astra-sites.php' => [ 'Name' => 'Starter Templates' ],
         ];
         $this->assertEquals(
             'astra-pro-sites/astra-pro-sites.php',
