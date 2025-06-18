@@ -26,36 +26,31 @@ const EmailDelivery = () => {
 		( plugin ) => plugin[ 0 ] === 'sure_mails'
 	);
 
-	const sureMailsPlugin = sureMails ? sureMails[ 1 ] : null;
+	const suremailsPlugin = sureMails ? sureMails[ 1 ] : null;
+	if ( suremailsPlugin && suremailsPlugin.hasOwnProperty( 'redirection' ) ) {
+		delete suremailsPlugin.redirection;
+	}
 
 	const handleInstallSureMails = async () => {
-		if ( sureMailsPlugin ) {
+		if ( suremailsPlugin ) {
 			// Check if the plugin is already activated or installed.
 			if (
-				sureMailsPlugin.status === 'Activated' ||
-				sureMailsPlugin.status === 'Installed'
+				suremailsPlugin.status === 'Activated' ||
+				suremailsPlugin.status === 'Installed'
 			) {
 				// If already activated, just proceed to the next step
-				actions.setEmailDeliveryConfigured( true );
-				navigateToNextRoute();
+				handleSkip();
 				return;
 			}
 
 			// Otherwise, trigger plugin installation/activation
 			await handlePluginActionTrigger( {
-				plugin: sureMailsPlugin,
-				event: new Event( 'click' ),
-				onSuccess: () => {
-					// Continue to next step after successful installation/activation
-					actions.setEmailDeliveryConfigured( true );
-					navigateToNextRoute();
-				},
+				plugin: suremailsPlugin,
+				event: { target: { innerText: '', style: { color: '' } } }, // Dummy event object.
 			} );
-		} else {
-			// If plugin info is not available, just continue
-			actions.setEmailDeliveryConfigured( true );
-			navigateToNextRoute();
 		}
+		// Continue to next step.
+		handleSkip();
 	};
 
 	const handleSkip = () => {
