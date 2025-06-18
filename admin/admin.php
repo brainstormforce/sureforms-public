@@ -71,6 +71,7 @@ class Admin {
 		add_filter( 'avf_use_block_editor_for_post', [ $this, 'enable_block_editor_in_enfold_theme' ] );
 
 		// Add action links to the plugin page.
+               add_action( 'admin_init', [ $this, 'maybe_mark_entries_page_visit' ] );
 		add_filter( 'plugin_action_links_' . SRFM_BASENAME, [ $this, 'add_action_links' ] );
 		add_filter( 'wpforms_current_user_can', [ $this, 'disable_wpforms_capabilities' ], 10, 3 );
 
@@ -400,10 +401,21 @@ class Admin {
                        return;
                }
 
-		$entries_table->display();
-		echo '</form>';
-		echo '</div>';
-	}
+               // Skip showing the badge while on the entries page.
+               if ( isset( $_GET['page'] ) && SRFM_ENTRIES === $_GET['page'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Only checking the page slug.
+                       return;
+               }
+       /**
+        * Check current page and update last visit timestamp when viewing entries.
+        *
+        * @since 1.7.3
+        * @return void
+        */
+       public function maybe_mark_entries_page_visit() {
+               if ( isset( $_GET['page'] ) && SRFM_ENTRIES === $_GET['page'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Only checking the page slug.
+                       $this->mark_entries_page_visit();
+               }
+       }
 
 	/**
 	 * Add notification badge to SureForms menu when there are new entries.
