@@ -1451,17 +1451,14 @@ class Helper {
 	/**
 	 * Check if the starter template premium plugin is installed and return its file path.
 	 *
-	 * @param string|null $plugin_override Optional. If provided, this will override the default plugin list.
 	 * @since x.x.x
 	 *
 	 * @return string The plugin file path if premium is installed, otherwise the default starter sites plugin file path.
 	 */
-	public static function check_starter_template_plugin( $plugin_override = null ) {
+	public static function check_starter_template_plugin() {
 		static $plugins = null;
 
-		if ( null !== $plugin_override ) {
-			$plugins = $plugin_override;
-		} elseif ( null === $plugins ) {
+		if ( null === $plugins ) {
 			if ( ! function_exists( 'get_plugins' ) ) {
 				require_once ABSPATH . 'wp-admin/includes/plugin.php';
 			}

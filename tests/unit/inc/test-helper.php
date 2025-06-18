@@ -5,6 +5,13 @@
  * @package sureforms
  */
 
+namespace SureForms\Inc;
+
+// Override get_plugins in the same namespace.
+function get_plugins() {
+    return \SureForms\Inc\Test_Helper::$mock_plugins;
+}
+
 use Yoast\PHPUnitPolyfills\TestCases\TestCase;
 
 use SRFM\Inc\Helper;
@@ -14,6 +21,9 @@ use SRFM\Inc\Helper;
  *
  */
 class Test_Helper extends TestCase {
+
+    public static $mock_plugins = [];
+
     /**
      * Test if get_field_label_from_key is converting field key to label properly.
      */
@@ -503,49 +513,44 @@ class Test_Helper extends TestCase {
      * Test the check_starter_template_plugin method with mock plugin data.
      */
     public function test_check_starter_template_plugin() {
-        // Backup original get_plugins function if defined
-        if ( ! function_exists( 'get_plugins' ) ) {
-            require_once ABSPATH . 'wp-admin/includes/plugin.php';
-        }
-
-        // Case 1 : simulate only premium plugin available
-        $mock_plugins_premium = [
+        // Case 1: Only premium plugin available
+        self::$mock_plugins = [
             'astra-pro-sites/astra-pro-sites.php' => [ 'Name' => 'Starter Templates Pro' ],
         ];
         $this->assertEquals(
             'astra-pro-sites/astra-pro-sites.php',
-            Helper::check_starter_template_plugin( $mock_plugins_premium ),
+            Helper::check_starter_template_plugin(),
             'Failed when premium plugin is available'
         );
 
-        // Case 2 : simulate only free plugin available
-        $mock_plugins_free = [
+        // Case 2: Only free plugin available
+        self::$mock_plugins = [
             'astra-sites/astra-sites.php' => [ 'Name' => 'Starter Templates' ],
         ];
         $this->assertEquals(
             'astra-sites/astra-sites.php',
-            Helper::check_starter_template_plugin( $mock_plugins_free ),
+            Helper::check_starter_template_plugin(),
             'Failed when only free plugin is available'
         );
 
-        // Case 3 : simulate both plugins available
-        $mock_plugins_both = [
+        // Case 3: Both plugins available (prefer premium)
+        self::$mock_plugins = [
             'astra-pro-sites/astra-pro-sites.php' => [],
             'astra-sites/astra-sites.php' => [],
         ];
         $this->assertEquals(
             'astra-pro-sites/astra-pro-sites.php',
-            Helper::check_starter_template_plugin( $mock_plugins_both ),
+            Helper::check_starter_template_plugin(),
             'Failed when both plugins are available (should prefer premium)'
         );
 
-        // Case 4 : simulate neither plugin available
-        $mock_plugins_none = [
+        // Case 4: Neither plugin available
+        self::$mock_plugins = [
             'hello-dolly/hello.php' => [],
         ];
         $this->assertEquals(
             'astra-sites/astra-sites.php',
-            Helper::check_starter_template_plugin( $mock_plugins_none ),
+            Helper::check_starter_template_plugin(),
             'Failed when no starter template plugin is found'
         );
     }
