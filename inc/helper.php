@@ -1456,14 +1456,10 @@ class Helper {
 	 * @return string The plugin file path if premium is installed, otherwise the default starter sites plugin file path.
 	 */
 	public static function check_starter_template_plugin() {
-		static $plugins = null;
-
-		if ( null === $plugins ) {
-			if ( ! function_exists( 'get_plugins' ) ) {
-				require_once ABSPATH . 'wp-admin/includes/plugin.php';
-			}
-			$plugins = get_plugins();
+		if ( ! function_exists( 'get_plugins' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/plugin.php';
 		}
+		$plugins = get_plugins();
 
 		$premium = 'astra-pro-sites/astra-pro-sites.php';
 

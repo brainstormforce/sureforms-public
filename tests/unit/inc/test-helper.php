@@ -18,31 +18,9 @@ use Yoast\PHPUnitPolyfills\TestCases\TestCase;
 
 use SRFM\Inc\Helper;
 
-// Serialization of 'Closure' is not allowed prevention
-// Callback function to convert values to uppercase
-// This function is used in the sanitize_recursively tests.
-function srfm_uppercase_callback($value) {
-    return strtoupper($value);
-}
-
-// Serialization of 'Closure' is not allowed prevention
-// This function is used to filter translations in tests.
-// It simulates the translation of specific strings used in the SureForms plugin.
-function sureforms_translation_filter($translation, $text, $domain) {
-    if ($domain !== 'sureforms') {
-        return $translation;
-    }
-
-    $translations = [
-        'This field is required.' => 'Este campo es obligatorio.',
-        'Value needs to be unique.' => 'El valor debe ser único.',
-    ];
-
-    return $translations[$text] ?? $translation;
-}
-
 /**
  * Tests Plugin Initialization.
+ *
  */
 class Test_Helper extends TestCase {
 
@@ -143,7 +121,18 @@ class Test_Helper extends TestCase {
 		switch_to_locale('es_ES');
 
 		// Register translations
-        add_filter('gettext', 'sureforms_translation_filter', 10, 3);
+		add_filter('gettext', function($translation, $text, $domain) {
+			if ($domain !== 'sureforms') {
+				return $translation;
+			}
+
+			$translations = [
+				'This field is required.' => 'Este campo es obligatorio.',
+				'Value needs to be unique.' => 'El valor debe ser único.',
+			];
+
+			return isset($translations[$text]) ? $translations[$text] : $translation;
+		}, 10, 3);
 
 		$result = Helper::get_common_err_msg();
 
@@ -309,7 +298,7 @@ class Test_Helper extends TestCase {
             ],
 
             'custom sanitization' => [
-                'srfm_uppercase_callback',
+                function($value) { return strtoupper($value); },
                 ['hello', 'world'],
                 ['HELLO', 'WORLD'],
                 'Should work with custom callbacks'
@@ -523,7 +512,6 @@ class Test_Helper extends TestCase {
     }
 
     /**
-     * @runInSeparateProcess
      * Test the check_starter_template_plugin method with mock plugin data.
      */
     public function test_check_starter_template_plugin() {
