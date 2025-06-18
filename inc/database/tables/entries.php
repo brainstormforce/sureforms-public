@@ -413,23 +413,37 @@ class Entries extends Base {
 	 * @return int Total number of entries created after the timestamp.
 	 */
 	public static function get_entries_count_after( $timestamp, $form_id = 0 ) {
-			$timestamp = absint( $timestamp );
+		$timestamp = absint( $timestamp );
 
 		if ( ! $timestamp ) {
 			return self::get_total_entries_by_status( 'all', $form_id );
 		}
 
-			$where_clause = [
-				[
-					[
-						'key'     => 'created_at',
-						'compare' => '>',
-						'value'   => gmdate( 'Y-m-d H:i:s', $timestamp ),
-					],
-				],
-			];
+		global $wpdb;
 
-			return self::get_total_entries_by_status( 'all', $form_id, $where_clause );
+		$mysql_time = $wpdb->get_var( "SELECT NOW()" );
+		$php_time = current_time( 'mysql' ); // In WP, this respects site time zone
+
+		// Convert to timestamps
+		$mysql_timestamp = strtotime( $mysql_time );
+		$php_timestamp   = time();
+
+		// Offset between MySQL and PHP
+		$offset_seconds = $mysql_timestamp - $php_timestamp;
+
+		$adjusted_timestamp = $timestamp + $offset_seconds;
+
+		$where_clause = [
+			[
+				[
+					'key'     => 'created_at',
+					'compare' => '>',
+					'value'   => gmdate( 'Y-m-d H:i:s', $adjusted_timestamp ),
+				],
+			],
+		];
+
+		return self::get_total_entries_by_status( 'all', $form_id, $where_clause );
 	}
 
 	/**
