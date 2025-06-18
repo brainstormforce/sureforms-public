@@ -149,14 +149,16 @@ class Global_Settings {
 	 */
 	public static function srfm_save_general_settings( $setting_options ) {
 
-		$srfm_ip_log         = $setting_options['srfm_ip_log'] ?? false;
-		$srfm_form_analytics = $setting_options['srfm_form_analytics'] ?? false;
-		$srfm_bsf_analytics  = $setting_options['srfm_bsf_analytics'] ?? false;
+               $srfm_ip_log            = $setting_options['srfm_ip_log'] ?? false;
+               $srfm_form_analytics    = $setting_options['srfm_form_analytics'] ?? false;
+               $srfm_bsf_analytics     = $setting_options['srfm_bsf_analytics'] ?? false;
+               $srfm_admin_notification = isset( $setting_options['srfm_admin_notification'] ) ? (bool) $setting_options['srfm_admin_notification'] : true;
 
-		$settings = [
-			'srfm_ip_log'         => $srfm_ip_log,
-			'srfm_form_analytics' => $srfm_form_analytics,
-		];
+               $settings = [
+                       'srfm_ip_log'            => $srfm_ip_log,
+                       'srfm_form_analytics'    => $srfm_form_analytics,
+                       'srfm_admin_notification' => $srfm_admin_notification,
+               ];
 
 		/**
 		 * We are updating sureforms_analytics_optin option from the general settings as it has been introduced
@@ -337,12 +339,17 @@ class Global_Settings {
 
 		$global_setting_options = get_options( $options_to_get );
 
-		if ( empty( $global_setting_options['srfm_general_settings_options'] ) ) {
-			$global_setting_options['srfm_general_settings_options'] = [
-				'srfm_ip_log'         => false,
-				'srfm_form_analytics' => false,
-			];
-		}
+               if ( empty( $global_setting_options['srfm_general_settings_options'] ) ) {
+                       $global_setting_options['srfm_general_settings_options'] = [
+                               'srfm_ip_log'            => false,
+                               'srfm_form_analytics'    => false,
+                               'srfm_admin_notification' => true,
+                       ];
+               }
+
+               if ( ! isset( $global_setting_options['srfm_general_settings_options']['srfm_admin_notification'] ) ) {
+                       $global_setting_options['srfm_general_settings_options']['srfm_admin_notification'] = true;
+               }
 
 		/**
 		 * We have introduced toggle for analytics optin in the general settings.

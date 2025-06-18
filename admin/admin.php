@@ -393,6 +393,13 @@ class Admin {
 		}
 		echo '<form method="get">';
 		echo '<input type="hidden" name="page" value="sureforms_entries">';
+               $general_options       = get_option( 'srfm_general_settings_options', [] );
+               $admin_notification_on = isset( $general_options['srfm_admin_notification'] ) ? (bool) $general_options['srfm_admin_notification'] : true;
+
+               if ( ! $admin_notification_on ) {
+                       return;
+               }
+
 		$entries_table->display();
 		echo '</form>';
 		echo '</div>';

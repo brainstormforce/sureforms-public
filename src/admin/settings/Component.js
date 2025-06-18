@@ -16,11 +16,12 @@ const Component = ( { path } ) => {
 	const [ loading, setLoading ] = useState( false );
 
 	// Global settings states.
-	const [ generalTabOptions, setGeneralTabOptions ] = useState( {
-		srfm_ip_log: false,
-		srfm_form_analytics: false,
-		srfm_bsf_analytics: false,
-	} );
+const [ generalTabOptions, setGeneralTabOptions ] = useState( {
+               srfm_ip_log: false,
+               srfm_form_analytics: false,
+               srfm_bsf_analytics: false,
+               srfm_admin_notification: true,
+       } );
 	const [ emailTabOptions, setEmailTabOptions ] = useState( {
 		srfm_email_summary: false,
 		srfm_emails_send_to: srfm_admin.admin_email,
@@ -88,16 +89,18 @@ const Component = ( { path } ) => {
 				} = data;
 
 				if ( srfm_general_settings_options ) {
-					const {
-						srfm_ip_log,
-						srfm_form_analytics,
-						srfm_bsf_analytics,
-					} = srfm_general_settings_options;
-					setGeneralTabOptions( {
-						srfm_ip_log,
-						srfm_form_analytics,
-						srfm_bsf_analytics,
-					} );
+                               const {
+                                       srfm_ip_log,
+                                       srfm_form_analytics,
+                                       srfm_bsf_analytics,
+                                       srfm_admin_notification,
+                               } = srfm_general_settings_options;
+                               setGeneralTabOptions( {
+                                       srfm_ip_log,
+                                       srfm_form_analytics,
+                                       srfm_bsf_analytics,
+                                       srfm_admin_notification,
+                               } );
 				}
 
 				if ( srfm_email_summary_settings_options ) {
