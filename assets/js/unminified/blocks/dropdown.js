@@ -12,8 +12,8 @@ function initializeDropdown() {
 			let additionalConfig = {};
 			const inputName = element.getAttribute( 'name' );
 			const errorContainerID = element
-				.closest( '.srfm-dropdown-block' )
-				.querySelector( '.srfm-error-message' )
+				?.closest( '.srfm-dropdown-block' )
+				?.querySelector( '.srfm-error-message' )
 				?.getAttribute( 'data-srfm-id' );
 
 			if ( element.getAttribute( 'data-multiple' ) === 'true' ) {
@@ -137,10 +137,6 @@ function initializeDropdown() {
 			 * @param {Object}      config    - The configuration options for the TomSelect instance.
 			 * @param {string}      inputName - The key under which the TomSelect instance is stored in the `window.srfm` object.
 			 */
-			// Check if TomSelect is already initialized on this element
-			if ( element.classList.contains( 'tomselected' ) ) {
-				destroyTomSelect( element );
-			}
 			const tomInputInstance = new TomSelect( element, config );
 			/**
 			 * `keydown` & `click` event listeners to open the dropdown menu programmatically
