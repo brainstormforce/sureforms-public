@@ -1450,8 +1450,8 @@ class Helper {
 
 	/**
 	 * Check if the starter template premium plugin is installed and return its file path.
-	 * @param string|null $plugin_override Optional. If provided, this will override the default plugin list.
 	 *
+	 * @param string|null $plugin_override Optional. If provided, this will override the default plugin list.
 	 * @since x.x.x
 	 *
 	 * @return string The plugin file path if premium is installed, otherwise the default starter sites plugin file path.
