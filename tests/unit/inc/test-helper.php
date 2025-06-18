@@ -110,6 +110,25 @@ class Test_Helper extends TestCase {
 		switch_to_locale($current_locale);
 	}
 
+    /**
+     * Test sureforms_translation_filter returns translated strings
+     *
+     * This test simulates the translation filter for the 'sureforms' domain.
+     * It checks if the translations are applied correctly.
+     */
+    public function sureforms_translation_filter($translation, $text, $domain) {
+        if ($domain !== 'sureforms') {
+            return $translation;
+        }
+
+        $translations = [
+            'This field is required.' => 'Este campo es obligatorio.',
+            'Value needs to be unique.' => 'El valor debe ser único.',
+        ];
+
+        return $translations[$text] ?? $translation;
+    }
+
 	/**
 	 * Test get_common_err_msg translations work
 	 */
@@ -121,18 +140,7 @@ class Test_Helper extends TestCase {
 		switch_to_locale('es_ES');
 
 		// Register translations
-		add_filter('gettext', function($translation, $text, $domain) {
-			if ($domain !== 'sureforms') {
-				return $translation;
-			}
-
-			$translations = [
-				'This field is required.' => 'Este campo es obligatorio.',
-				'Value needs to be unique.' => 'El valor debe ser único.',
-			];
-
-			return isset($translations[$text]) ? $translations[$text] : $translation;
-		}, 10, 3);
+        add_filter('gettext', 'sureforms_translation_filter', 10, 3);
 
 		$result = Helper::get_common_err_msg();
 
@@ -557,7 +565,6 @@ class Test_Helper extends TestCase {
             'Failed when no starter template plugin is found'
         );
     }
-
 
     /**
      * Test the join_strings method with various inputs.
