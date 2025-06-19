@@ -52,7 +52,7 @@ const Welcome = () => {
 			</div>
 			<iframe
 				className="w-full aspect-video rounded-lg"
-				src="https://www.youtube.com/embed/qLpnm4GdXks"
+				src="https://www.youtube.com/embed/qLpnm4GdXks?autoplay=1&mute=1"
 				title="YouTube video player"
 				frameBorder="0"
 				allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

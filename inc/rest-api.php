@@ -202,6 +202,53 @@ class Rest_Api {
 	}
 
 	/**
+	 * Get plugin status for specified plugin.
+	 *
+	 * @param \WP_REST_Request $request Full details about the request.
+	 * @since 1.7.0
+	 * @return \WP_REST_Response
+	 */
+	public function get_plugin_status( $request ) {
+		$nonce = Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) );
+
+		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
+			return new \WP_REST_Response(
+				[ 'error' => __( 'Nonce verification failed.', 'sureforms' ) ],
+				403
+			);
+		}
+
+		$params = $request->get_params();
+		$plugin_slug = is_array( $params ) && ! empty( $params['plugin'] ) ? 
+			sanitize_text_field( Helper::get_string_value( $params['plugin'] ) ) : '';
+
+		if ( empty( $plugin_slug ) ) {
+			return new \WP_REST_Response(
+				[ 'error' => __( 'Plugin slug is required.', 'sureforms' ) ],
+				400
+			);
+		}
+
+		$integrations = Helper::sureforms_get_integration();
+		
+		if ( ! isset( $integrations[ $plugin_slug ] ) ) {
+			return new \WP_REST_Response(
+				[ 'error' => __( 'Plugin not found.', 'sureforms' ) ],
+				404
+			);
+		}
+
+		$plugin_data = $integrations[ $plugin_slug ];
+		
+		// Get fresh status
+		if ( isset( $plugin_data['path'] ) ) {
+			$plugin_data['status'] = Helper::get_plugin_status( $plugin_data['path'] );
+		}
+
+		return new \WP_REST_Response( $plugin_data );
+	}
+
+	/**
 	 * Get endpoints
 	 *
 	 * @since 0.0.7
@@ -266,6 +313,18 @@ class Rest_Api {
 					'methods'             => 'GET',
 					'callback'            => [ $this, 'get_onboarding_status' ],
 					'permission_callback' => [ $this, 'can_edit_posts' ],
+				],
+				// Plugin status endpoint
+				'plugin-status'         => [
+					'methods'             => 'GET',
+					'callback'            => [ $this, 'get_plugin_status' ],
+					'permission_callback' => [ $this, 'can_edit_posts' ],
+					'args'                => [
+						'plugin' => [
+							'required'          => true,
+							'sanitize_callback' => 'sanitize_text_field',
+						],
+					],
 				],
 			]
 		);

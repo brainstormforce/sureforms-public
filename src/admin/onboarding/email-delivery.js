@@ -1,6 +1,8 @@
 import { __ } from '@wordpress/i18n';
 import { Container, Text, Title } from '@bsf/force-ui';
 import { CheckIcon } from 'lucide-react';
+import { useState, useEffect } from '@wordpress/element';
+import apiFetch from '@wordpress/api-fetch';
 import { useOnboardingNavigation } from './hooks';
 import { useOnboardingState } from './onboarding-state';
 import { handlePluginActionTrigger } from '@Utils/Helpers';
@@ -25,33 +27,75 @@ const EmailDelivery = () => {
 		( plugin ) => plugin[ 0 ] === 'sure_mails'
 	);
 
-	const suremailsPlugin = sureMails ? sureMails[ 1 ] : null;
-	if ( suremailsPlugin && suremailsPlugin.hasOwnProperty( 'redirection' ) ) {
-		delete suremailsPlugin.redirection;
+	const initialSuremailsPlugin = sureMails ? sureMails[ 1 ] : null;
+	if ( initialSuremailsPlugin && initialSuremailsPlugin.hasOwnProperty( 'redirection' ) ) {
+		delete initialSuremailsPlugin.redirection;
 	}
+
+	const [ suremailsPlugin, setSuremailsPlugin ] = useState( initialSuremailsPlugin );
+
 	const pluginStatus = [ 'Activate', 'Activated', 'Installed' ];
 
-	const handleInstallSureMail = async () => {
+	// Function to refresh plugin status
+	const refreshPluginStatus = async () => {
+		if ( ! suremailsPlugin ) return null;
+
+		try {
+			const updatedPlugin = await apiFetch( {
+				path: '/sureforms/v1/plugin-status?plugin=sure_mails',
+				method: 'GET',
+			} );
+
+			// Remove redirection key if it exists
+			if ( updatedPlugin && updatedPlugin.hasOwnProperty( 'redirection' ) ) {
+				delete updatedPlugin.redirection;
+			}
+
+			setSuremailsPlugin( updatedPlugin );
+			return updatedPlugin;
+		} catch ( error ) {
+			console.error( 'Failed to refresh plugin status:', error );
+			return null;
+		}
+	};
+
+	// Refresh plugin status on component mount to ensure we have the latest status
+	useEffect( () => {
+		refreshPluginStatus();
+	}, [] );
+
+	const handleInstallSureMail = () => {
+		// Always navigate to next step first, regardless of plugin status
+		handleSkip();
+
+		// Then handle plugin installation in background if needed
 		if ( suremailsPlugin ) {
 			// Check if the plugin is already activated or installed.
 			if ( pluginStatus.includes( suremailsPlugin.status ) ) {
-				// If already activated, just proceed to the next step
-				handleSkip();
+				// Plugin already installed, nothing more to do
 				return;
 			}
 
-			// Otherwise, trigger plugin installation/activation
-			await handlePluginActionTrigger( {
+			// Start background installation (fire and forget)
+			handlePluginActionTrigger( {
 				plugin: suremailsPlugin,
 				event: { target: { innerText: '', style: { color: '' } } }, // Dummy event object.
+			} ).then( () => {
+				// Refresh status after installation completes (background process)
+				setTimeout( async () => {
+					await refreshPluginStatus();
+				}, 2000 );
+			} ).catch( ( error ) => {
+				console.error( 'Plugin installation failed:', error );
 			} );
 		}
-		// Continue to next step.
-		handleSkip();
 	};
 
 	const handleSkip = () => {
+		// Set email delivery as configured
 		actions.setEmailDeliveryConfigured( true );
+		
+		// Navigate to next route
 		navigateToNextRoute();
 	};
 
@@ -103,7 +147,9 @@ const EmailDelivery = () => {
 				} }
 				continueProps={ {
 					onClick: handleInstallSureMail,
-					text: pluginStatus.includes( suremailsPlugin?.status ) ? __( 'Continue', 'sureforms' ) : __( 'Install SureMail', 'sureforms' ),
+					text: pluginStatus.includes( suremailsPlugin?.status ) 
+						? __( 'Continue', 'sureforms' ) 
+						: __( 'Install SureMail', 'sureforms' ),
 				} }
 				skipProps={ {
 					onClick: handleSkip,
