@@ -530,6 +530,7 @@ class Admin {
 		 * List of the handles in which we need to add translation compatibility.
 		 */
 		$script_translations_handlers = [];
+		$onboarding_instance          = Onboarding::get_instance();
 
 		$localization_data = [
 			'site_url'                => get_site_url(),
@@ -553,7 +554,7 @@ class Admin {
 			'plugin_installing_text'  => __( 'Installing...', 'sureforms' ),
 			'plugin_installed_text'   => __( 'Installed', 'sureforms' ),
 			'is_rtl'                  => $is_rtl,
-			'onboarding_completed'    => Onboarding::get_instance()->get_onboarding_status(),
+			'onboarding_completed'    => method_exists( $onboarding_instance, 'get_onboarding_status' ) ? $onboarding_instance->get_onboarding_status() : false,
 			'onboarding_redirect'     => isset( $_GET['srfm-activation-redirect'] ), // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce is not required for the activation redirection.
 			'srfm_ai_details'         => AI_Helper::get_current_usage_details(),
 			'nonce'                   => current_user_can( 'manage_options' ) ? wp_create_nonce( 'wp_rest' ) : '',
