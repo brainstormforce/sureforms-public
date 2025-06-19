@@ -362,9 +362,9 @@ class Entries extends Base {
 		/**
 		 * Get the total count of entries by status.
 		 *
-		 * @param string              $status The status of the entries to count.
-		 * @param int|null            $form_id The ID of the form to count entries for.
-		 * @param array<string,mixed> $where_clause Additional where clause to add to the query.
+		 * @param string       $status The status of the entries to count.
+		 * @param int|null     $form_id The ID of the form to count entries for.
+		 * @param array<mixed> $where_clause Additional where clause to add to the query.
 		 * @since 0.0.13
 		 * @return int The total number of entries with the specified status.
 		 */
