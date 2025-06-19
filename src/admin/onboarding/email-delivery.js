@@ -9,11 +9,10 @@ import NavigationButtons from './navigation-buttons';
 import ICONS from '@Admin/components/template-picker/components/icons';
 
 const features = [
-	__( 'Reduce the chances of your emails getting lost in spam', 'sureforms' ),
 	__( 'Quick and easy setup, no technical skills needed', 'sureforms' ),
 	__( 'Track, log, and resend emails with ease', 'sureforms' ),
 	__( 'Connect to multiple email providers', 'sureforms' ),
-	__( 'Auto-retry failed emails', 'sureforms' ),
+	__( 'Shield Your Emails. Protect Every Submission.', 'sureforms' ),
 ];
 
 const EmailDelivery = () => {
@@ -30,14 +29,12 @@ const EmailDelivery = () => {
 	if ( suremailsPlugin && suremailsPlugin.hasOwnProperty( 'redirection' ) ) {
 		delete suremailsPlugin.redirection;
 	}
+	const pluginStatus = [ 'Activate', 'Activated', 'Installed' ];
 
-	const handleInstallSureMails = async () => {
+	const handleInstallSureMail = async () => {
 		if ( suremailsPlugin ) {
 			// Check if the plugin is already activated or installed.
-			if (
-				suremailsPlugin.status === 'Activated' ||
-				suremailsPlugin.status === 'Installed'
-			) {
+			if ( pluginStatus.includes( suremailsPlugin.status ) ) {
 				// If already activated, just proceed to the next step
 				handleSkip();
 				return;
@@ -66,17 +63,12 @@ const EmailDelivery = () => {
 		<div className="space-y-6">
 			<Container gap="sm" align="center" className="h-auto">
 				<div className="space-y-2 max-w-[22.5rem]">
-					<Title
-						tag="h3"
-						title={ __(
-							'Emails that always reach the inbox.',
-							'sureforms'
-						) }
-						size="lg"
-					/>
+					<Text as="h2" size={ 20 } lineHeight={ 30 } weight={ 600 }>
+						{ __( 'No More Missed Notifications or Lost Leads', 'sureforms' ) }
+					</Text>
 					<Text size={ 14 } weight={ 400 } color="secondary">
 						{ __(
-							"SureMail is the easiest way to ensure your form notifications land safely in your user's inbox not the spam folder.",
+							"SureMail is the easiest way to ensure your form notifications land safely in the inbox, not in spam folder.",
 							'sureforms'
 						) }
 					</Text>
@@ -88,7 +80,7 @@ const EmailDelivery = () => {
 
 			<div className="space-y-2">
 				<Text size={ 14 } weight={ 600 } color="primary">
-					{ __( 'With SureMails, you get:', 'sureforms' ) }
+					{ __( 'What you will get:', 'sureforms' ) }
 				</Text>
 				{ features.map( ( feature, index ) => (
 					<Container
@@ -97,9 +89,7 @@ const EmailDelivery = () => {
 					>
 						<CheckIcon className="size-4 text-icon-interactive" />
 						<Text size={ 14 } weight={ 400 } color="label">
-							<Text as="b" weight={ 500 }>
-								{ feature }
-							</Text>
+							{ feature }
 						</Text>
 					</Container>
 				) ) }
@@ -112,8 +102,8 @@ const EmailDelivery = () => {
 					onClick: handleBack,
 				} }
 				continueProps={ {
-					onClick: handleInstallSureMails,
-					text: __( 'Continue with SureMails', 'sureforms' ),
+					onClick: handleInstallSureMail,
+					text: pluginStatus.includes( suremailsPlugin?.status ) ? __( 'Continue', 'sureforms' ) : __( 'Install SureMail', 'sureforms' ),
 				} }
 				skipProps={ {
 					onClick: handleSkip,

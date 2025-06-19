@@ -18,7 +18,7 @@ const premiumFeatures = [
 		id: 'conversational-forms',
 		title: __( 'Conversational Forms', 'sureforms' ),
 		description: __(
-			"Create forms that feel more like a conversation. With one-question-at-a-time interaction, you'll keep users engaged.",
+			"Create forms that feel like a chat. One question at a time keeps users engaged.",
 			'sureforms'
 		),
 		icon: <MessageCircle size={ 18 } />,
@@ -28,7 +28,7 @@ const premiumFeatures = [
 		id: 'calculations',
 		title: __( 'Calculations', 'sureforms' ),
 		description: __(
-			'Need calculations in real-time? Perform complex math based on user input, perfect for calculators requiring real-time results.',
+			'Perform real-time math based on user input. Great for dynamic calculators.',
 			'sureforms'
 		),
 		icon: <Calculator size={ 18 } />,
@@ -38,7 +38,7 @@ const premiumFeatures = [
 		id: 'conditional-logic',
 		title: __( 'Conditional Fields', 'sureforms' ),
 		description: __(
-			'Show or hide fields based on previous answers. You ask the right questions, and we make sure only the necessary ones are displayed.',
+			'Show or hide fields based on previous answers. Only display what\'s needed.',
 			'sureforms'
 		),
 		icon: <GitCompare size={ 18 } />,
@@ -48,7 +48,7 @@ const premiumFeatures = [
 		id: 'multi-step-form',
 		title: __( 'Multi Step Form', 'sureforms' ),
 		description: __(
-			'Break complex forms into easy-to-follow steps, reducing overwhelm and increasing completion rates and guide your users smoothly.',
+			'Split long forms into steps. Reduce overwhelm and guide users smoothly.',
 			'sureforms'
 		),
 		icon: <RectangleEllipsis size={ 18 } />,
@@ -58,7 +58,7 @@ const premiumFeatures = [
 		id: 'digital-signature',
 		title: __( 'Digital Signatures', 'sureforms' ),
 		description: __(
-			'Need signatures for contracts or agreements? Capture legally binding digital signatures directly within your forms, making paperwork painless.',
+			'Collect legally binding signatures within your forms. Simple and paperless.',
 			'sureforms'
 		),
 		icon: <Signature size={ 18 } />,
@@ -152,7 +152,7 @@ const PremiumFeatures = () => {
 			return sprintf(
 				// translators: %s: The name of the plan (e.g. "Pro", "Business").
 				__(
-					'Upgrade to %s Plan to access all selected features.',
+					'You have selected the %s Plan',
 					'sureforms'
 				),
 				planName
@@ -170,7 +170,7 @@ const PremiumFeatures = () => {
 			<Header
 				title={ __( 'Unlock Premium Features', 'sureforms' ) }
 				description={ __(
-					"Take your forms to the next level with SureForms premium plans and access powerful features. Select the features you're interested in.",
+					"Take your forms to the next level with SureForms Pro and access powerful premium features.",
 					'sureforms'
 				) }
 			/>
@@ -214,20 +214,20 @@ const PremiumFeatures = () => {
 				) ) }
 			</div>
 
+			<Divider />
+
 			{ /* Single line upgrade message */ }
 			{ upgradeMessage && (
-				<div className="bg-background-secondary p-4 rounded-lg">
+				<div className='p-1'>
 					<Text
 						size={ 14 }
-						weight={ 600 }
-						className="text-badge-text-green"
+						weight={ 400 }
+						className='text-secondary'
 					>
 						{ upgradeMessage }
 					</Text>
 				</div>
 			) }
-
-			<Divider />
 
 			<NavigationButtons
 				backProps={ {
@@ -235,7 +235,7 @@ const PremiumFeatures = () => {
 				} }
 				continueProps={ {
 					onClick: handleUpgrade,
-					text: __( 'Upgrade', 'sureforms' ),
+					text: __( 'Upgrade Now', 'sureforms' ),
 					disabled: ! hasSelectedFeatures,
 				} }
 				skipProps={ {

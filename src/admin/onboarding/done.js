@@ -2,11 +2,12 @@ import { Button, Container, Text, Title } from '@bsf/force-ui';
 import { __ } from '@wordpress/i18n';
 import { CheckIcon, ChevronRight } from 'lucide-react';
 import { Divider } from './components';
+import NavigationButtons from './navigation-buttons';
 
 const features = [
-	[ __( 'Generate forms instantly with AI.', 'sureforms' ), '' ],
-	[ __( 'Manage your entries easily in one place.', 'sureforms' ), '' ],
-	[ __( 'Monitor form submissions from your dashboard.', 'sureforms' ), '' ],
+	__( 'Use your AI credits to create forms by writing prompts.', 'sureforms' ),
+	__( 'Create forms like conversational, calculation-based, or multi-step.', 'sureforms' ),
+	__( 'Manage submissions and track form performance in one place.', 'sureforms' ),
 ];
 
 const Done = () => {
@@ -39,15 +40,15 @@ const Done = () => {
 	return (
 		<div className="space-y-6">
 			<Container gap="sm" align="center" className="h-auto">
-				<div className="space-y-2 max-w-[22.5rem]">
+				<div className="space-y-2">
 					<Title
 						tag="h3"
-						title={ __( "You're Good to Go! 🚀", 'sureforms' ) }
+						title={ __( "You're All Set! 🚀", 'sureforms' ) }
 						size="lg"
 					/>
 					<Text size={ 14 } weight={ 400 } color="secondary">
 						{ __(
-							'Setup complete! SureForms is now ready to use. Build your first form visually, get instant feedback, and grow your website faster.',
+							"SureForms is ready to go. Start building your first form, whether it's a simple form, calculator, or conversational form.",
 							'sureforms'
 						) }
 					</Text>
@@ -55,7 +56,7 @@ const Done = () => {
 			</Container>
 			<div className="space-y-2">
 				<Text size={ 14 } weight={ 600 } color="primary">
-					{ __( "What's Next:", 'sureforms' ) }
+					{ __( "What You Can Do Next:", 'sureforms' ) }
 				</Text>
 				{ features.map( ( feature, index ) => (
 					<Container
@@ -63,11 +64,8 @@ const Done = () => {
 						className="flex items-center gap-1.5"
 					>
 						<CheckIcon className="size-4 text-icon-interactive" />
-						<Text size={ 14 } weight={ 400 } color="label">
-							<Text as="b" weight={ 500 }>
-								{ feature[ 0 ] }{ ' ' }
-							</Text>
-							{ feature[ 1 ] }
+						<Text size={ 14 } weight={ 500 } color="label">
+							{ feature }
 						</Text>
 					</Container>
 				) ) }
@@ -75,18 +73,12 @@ const Done = () => {
 
 			<Divider />
 
-			<Container align="start" className="h-auto gap-3">
-				<Button
-					onClick={ handleBuildForm }
-					icon={ <ChevronRight /> }
-					iconPosition="right"
-				>
-					{ __( 'Build Your Form', 'sureforms' ) }
-				</Button>
-				<Button variant="ghost" onClick={ handleGoToDashboard }>
-					{ __( 'Go To Dashboard', 'sureforms' ) }
-				</Button>
-			</Container>
+			<NavigationButtons
+				continueProps={ {
+					onClick: handleBuildForm,
+					text: __( 'Build Your First Form', 'sureforms' ),
+				} }
+			/>
 		</div>
 	);
 };

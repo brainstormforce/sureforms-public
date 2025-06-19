@@ -43,7 +43,7 @@ const Welcome = () => {
 			className="space-y-6"
 		>
 			<div className="space-y-1.5">
-				<Text as="h2" size={ 30 } weight={ 600 }>
+				<Text as="h2" size={ 30 } lineHeight={ 38 } weight={ 600 }>
 					{ __( 'Welcome to SureForms', 'sureforms' ) }
 				</Text>
 				<Text size={ 16 } weight={ 500 }>
@@ -69,7 +69,7 @@ const Welcome = () => {
 								className="size-3 text-icon-interactive"
 								strokeWidth={ 1.5 }
 							/>
-							<Text size={ 14 } weight={ 500 } color="label">
+							<Text size={ 14 } weight={ 400 } color="label">
 								{ feature }
 							</Text>
 						</li>
