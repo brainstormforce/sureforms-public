@@ -157,7 +157,26 @@ const GeneralPage = ( {
 		);
 	};
 
-const UsageTrackingContent = () => {
+	const AdminNotificationContent = () => {
+		return (
+			<Switch
+				label={ {
+					heading: __( 'Enable Admin Notification', 'sureforms' ),
+					description: __( 'Admin notifications keep you informed about new form entries since your last visit.', 'sureforms' ),
+				} }
+				value={ generalTabOptions.srfm_admin_notification }
+				onChange={ ( value ) =>
+					updateGlobalSettings(
+						'srfm_admin_notification',
+						value,
+						'general-settings'
+					)
+				}
+			/>
+		);
+	};
+
+	const UsageTrackingContent = () => {
 		return (
 			<Switch
 				label={ {
@@ -181,35 +200,17 @@ const UsageTrackingContent = () => {
 						</>
 					),
 				} }
-                               value={ generalTabOptions.srfm_bsf_analytics }
-                               onChange={ ( value ) =>
-                                       updateGlobalSettings(
-                                               'srfm_bsf_analytics',
-                                               value,
-                                               'general-settings'
-                                       )
-                               }
-                       />
-               );
-       };
-
-       const AdminNotificationContent = () => {
-               return (
-                       <Switch
-                               label={ {
-                                       heading: __( 'Enable Admin Notification', 'sureforms' ),
-                               } }
-                               value={ generalTabOptions.srfm_admin_notification }
-                               onChange={ ( value ) =>
-                                       updateGlobalSettings(
-                                               'srfm_admin_notification',
-                                               value,
-                                               'general-settings'
-                                       )
-                               }
-                       />
-               );
-       };
+				value={ generalTabOptions.srfm_bsf_analytics }
+				onChange={ ( value ) =>
+					updateGlobalSettings(
+						'srfm_bsf_analytics',
+						value,
+						'general-settings'
+					)
+				}
+			/>
+		);
+	};
 
 	return (
 		<div className="space-y-6">
@@ -223,18 +224,18 @@ const UsageTrackingContent = () => {
 				title={ __( 'IP Logging', 'sureforms' ) }
 				content={ IPLoggingContent() }
 			/>
-                        <ContentSection
-                                loading={ loading }
-                                title={ __( 'Anonymous Analytics', 'sureforms' ) }
-                                content={ UsageTrackingContent() }
-                        />
-                       <ContentSection
-                               loading={ loading }
-                               title={ __( 'Admin Notification', 'sureforms' ) }
-                               content={ AdminNotificationContent() }
-                       />
-                </div>
-        );
+			<ContentSection
+				loading={ loading }
+				title={ __( 'Admin Notification', 'sureforms' ) }
+				content={ AdminNotificationContent() }
+			/>
+			<ContentSection
+				loading={ loading }
+				title={ __( 'Anonymous Analytics', 'sureforms' ) }
+				content={ UsageTrackingContent() }
+			/>
+		</div>
+	);
 };
 
 export default GeneralPage;

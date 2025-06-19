@@ -409,7 +409,7 @@ class Entries extends Base {
 	 *
 	 * @param int $timestamp Timestamp in seconds.
 	 * @param int $form_id   Optional. The ID of the form to count entries for. Default 0 for all forms.
-	 * @since 1.7.3
+	 * @since x.x.x
 	 * @return int Total number of entries created after the timestamp.
 	 */
 	public static function get_entries_count_after( $timestamp, $form_id = 0 ) {
@@ -421,14 +421,14 @@ class Entries extends Base {
 
 		global $wpdb;
 
-		$mysql_time = $wpdb->get_var( "SELECT NOW()" );
-		$php_time = current_time( 'mysql' ); // In WP, this respects site time zone
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct DB access is required here to get the most accurate server time for menu badge logic. Caching is not suitable as this is used for real-time admin notifications.
+		$mysql_time = $wpdb->get_var( 'SELECT NOW()' );
 
-		// Convert to timestamps
+		// Convert to timestamps.
 		$mysql_timestamp = strtotime( $mysql_time );
 		$php_timestamp   = time();
 
-		// Offset between MySQL and PHP
+		// Offset between MySQL and PHP.
 		$offset_seconds = $mysql_timestamp - $php_timestamp;
 
 		$adjusted_timestamp = $timestamp + $offset_seconds;

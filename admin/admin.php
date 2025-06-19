@@ -71,17 +71,13 @@ class Admin {
 		add_filter( 'avf_use_block_editor_for_post', [ $this, 'enable_block_editor_in_enfold_theme' ] );
 
 		// Add action links to the plugin page.
-               add_action( 'admin_init', [ $this, 'maybe_mark_entries_page_visit' ] );
+		$general_options       = get_option( 'srfm_general_settings_options', [] );
+		$admin_notification_on = isset( $general_options['srfm_admin_notification'] ) ? (bool) $general_options['srfm_admin_notification'] : true;
 
-               $general_options       = get_option( 'srfm_general_settings_options', [] );
-               $admin_notification_on = isset( $general_options['srfm_admin_notification'] ) ? (bool) $general_options['srfm_admin_notification'] : true;
-
-               if ( $admin_notification_on ) {
-                       add_action( 'admin_menu', [ $this, 'maybe_add_entries_badge' ], 99 );
-               }
+		if ( $admin_notification_on ) {
+			add_action( 'admin_menu', [ $this, 'maybe_add_entries_badge' ], 99 );
+		}
 		add_filter( 'wpforms_current_user_can', [ $this, 'disable_wpforms_capabilities' ], 10, 3 );
-
-		add_action( 'admin_menu', [ $this, 'maybe_add_entries_badge' ], 99 );
 	}
 
 	/**
@@ -400,33 +396,15 @@ class Admin {
 		}
 		echo '<form method="get">';
 		echo '<input type="hidden" name="page" value="sureforms_entries">';
-               $general_options       = get_option( 'srfm_general_settings_options', [] );
-               $admin_notification_on = isset( $general_options['srfm_admin_notification'] ) ? (bool) $general_options['srfm_admin_notification'] : true;
-
-               if ( ! $admin_notification_on ) {
-                       return;
-               }
-
-               // Skip showing the badge while on the entries page.
-               if ( isset( $_GET['page'] ) && SRFM_ENTRIES === $_GET['page'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Only checking the page slug.
-                       return;
-               }
-       /**
-        * Check current page and update last visit timestamp when viewing entries.
-        *
-        * @since 1.7.3
-        * @return void
-        */
-       public function maybe_mark_entries_page_visit() {
-               if ( isset( $_GET['page'] ) && SRFM_ENTRIES === $_GET['page'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Only checking the page slug.
-                       $this->mark_entries_page_visit();
-               }
-       }
+		$entries_table->display();
+		echo '</form>';
+		echo '</div>';
+	}
 
 	/**
 	 * Add notification badge to SureForms menu when there are new entries.
 	 *
-	 * @since 1.7.3
+	 * @since x.x.x
 	 * @return void
 	 */
 	public function maybe_add_entries_badge() {
@@ -440,8 +418,9 @@ class Admin {
 			return;
 		}
 
-			$last_visit  = absint( get_user_meta( get_current_user_id(), 'srfm_last_entries_visit', true ) );
-			$new_entries = Entries::get_entries_count_after( $last_visit );
+		$srfm_options = get_option( 'srfm_options', [] );
+		$last_visit   = isset( $srfm_options['entries_last_visited'] ) ? absint( $srfm_options['entries_last_visited'] ) : 0;
+		$new_entries  = Entries::get_entries_count_after( $last_visit );
 
 		if ( $new_entries <= 0 ) {
 			return;
@@ -450,11 +429,11 @@ class Admin {
 		global $menu;
 		foreach ( $menu as $index => $item ) {
 			if ( isset( $item[2] ) && 'sureforms_menu' === $item[2] ) {
-					$menu[ $index ][0] .= sprintf(
-						' <span class="update-plugins count-%1$d"><span class="plugin-count">%1$d</span></span>',
-						absint( $new_entries )
-					);
-					break;
+				$menu[ $index ][0] .= sprintf( // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- Adding notifications for menu item.
+					' <span class="update-plugins count-%1$d"><span class="plugin-count">%1$d</span></span>',
+					absint( $new_entries )
+				);
+				break;
 			}
 		}
 
@@ -462,10 +441,10 @@ class Admin {
 		if ( isset( $submenu['sureforms_menu'] ) ) {
 			foreach ( $submenu['sureforms_menu'] as $index => $sub_item ) {
 				if ( isset( $sub_item[2] ) && SRFM_ENTRIES === $sub_item[2] ) {
-						$submenu['sureforms_menu'][ $index ][0] .= sprintf(
-							' <span class="update-plugins count-%1$d"><span class="plugin-count">%1$d</span></span>',
-							absint( $new_entries )
-						);
+					$submenu['sureforms_menu'][ $index ][0] .= sprintf( // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- Adding notifications for submenu item.
+						' <span class="update-plugins count-%1$d"><span class="plugin-count">%1$d</span></span>',
+						absint( $new_entries )
+					);
 					break;
 				}
 			}
@@ -475,12 +454,14 @@ class Admin {
 	/**
 	 * Mark the user's visit to the entries page.
 	 *
-	 * @since 1.7.3
+	 * @since x.x.x
 	 * @return void
 	 */
 	public function mark_entries_page_visit() {
 		if ( current_user_can( 'edit_others_posts' ) ) {
-			update_user_meta( get_current_user_id(), 'srfm_last_entries_visit', time() );
+			$srfm_options                         = get_option( 'srfm_options', [] );
+			$srfm_options['entries_last_visited'] = time();
+			\SRFM\Inc\Helper::update_admin_settings_option( 'srfm_options', $srfm_options );
 		}
 	}
 
