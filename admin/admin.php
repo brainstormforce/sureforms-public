@@ -71,6 +71,8 @@ class Admin {
 		add_filter( 'avf_use_block_editor_for_post', [ $this, 'enable_block_editor_in_enfold_theme' ] );
 
 		// Add action links to the plugin page.
+		add_filter( 'plugin_action_links_' . SRFM_BASENAME, [ $this, 'add_action_links' ] );
+		// Check if admin notification is enabled and add entries badge.
 		$general_options       = get_option( 'srfm_general_settings_options', [] );
 		$admin_notification_on = isset( $general_options['srfm_admin_notification'] ) ? (bool) $general_options['srfm_admin_notification'] : true;
 
