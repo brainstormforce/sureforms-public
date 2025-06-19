@@ -162,7 +162,10 @@ const GeneralPage = ( {
 			<Switch
 				label={ {
 					heading: __( 'Enable Admin Notification', 'sureforms' ),
-					description: __( 'Admin notifications keep you informed about new form entries since your last visit.', 'sureforms' ),
+					description: __(
+						'Admin notifications keep you informed about new form entries since your last visit.',
+						'sureforms'
+					),
 				} }
 				value={ generalTabOptions.srfm_admin_notification }
 				onChange={ ( value ) =>

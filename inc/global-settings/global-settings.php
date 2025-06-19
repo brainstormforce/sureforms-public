@@ -161,21 +161,21 @@ class Global_Settings {
 		];
 
 		/**
-		* We are updating sureforms_analytics_optin option from the general settings as it has been introduced
-		* as part of general settings. Since the option sureforms_analytics_optin is already available from BSF analytics library
-		* We are updating this independently.
-		*
-		* @since 1.7.0
-		*/
+		 * We are updating sureforms_analytics_optin option from the general settings as it has been introduced
+		 * as part of general settings. Since the option sureforms_analytics_optin is already available from BSF analytics library
+		 * We are updating this independently.
+		 *
+		 * @since 1.7.0
+		 */
 		$analytics_result = self::update_bsf_analytics( $srfm_bsf_analytics );
 
 		$general_result = update_option( 'srfm_general_settings_options', $settings );
 
 		/**
-		* Returns the output of update_bsf_analytics or srfm_general_settings_options option.
-		*
-		* @since 1.7.0
-		*/
+		 * Returns the output of update_bsf_analytics or srfm_general_settings_options option.
+		 *
+		 * @since 1.7.0
+		 */
 		return $analytics_result || $general_result;
 	}
 
