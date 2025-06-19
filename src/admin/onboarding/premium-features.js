@@ -12,6 +12,7 @@ import {
 	Signature,
 	Webhook,
 } from 'lucide-react';
+import { addQueryParam } from '@Utils/Helpers';
 
 const premiumFeatures = [
 	{
@@ -98,7 +99,13 @@ const PremiumFeatures = () => {
 	// Function to handle upgrade button click
 	const handleUpgrade = () => {
 		// Redirect to SureForms pricing page
-		window.open( srfm_admin.sureforms_pricing_page, '_blank' );
+		window.open(
+			addQueryParam(
+				srfm_admin?.sureforms_pricing_page,
+				'onboarding_premium_features'
+			),
+			'_blank'
+		);
 	};
 
 	// Function to handle checkbox changes
