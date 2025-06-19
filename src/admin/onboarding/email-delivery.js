@@ -1,5 +1,5 @@
 import { __ } from '@wordpress/i18n';
-import { Container, Text } from '@bsf/force-ui';
+import { Container, Text, Title } from '@bsf/force-ui';
 import { CheckIcon } from 'lucide-react';
 import { useState, useEffect } from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
@@ -119,12 +119,14 @@ const EmailDelivery = () => {
 		<div className="space-y-6">
 			<Container gap="sm" align="center" className="h-auto">
 				<div className="space-y-2 max-w-[22.5rem]">
-					<Text as="h2" size={ 20 } lineHeight={ 30 } weight={ 600 }>
-						{ __(
+					<Title
+						tag="h4"
+						title={ __(
 							'No More Missed Notifications or Lost Leads',
 							'sureforms'
 						) }
-					</Text>
+						size="md"
+					/>
 					<Text size={ 14 } weight={ 400 } color="secondary">
 						{ __(
 							'SureMail is the easiest way to ensure your form notifications land safely in the inbox, not in spam folder.',
