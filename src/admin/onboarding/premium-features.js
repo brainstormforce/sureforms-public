@@ -18,7 +18,7 @@ const premiumFeatures = [
 		id: 'conversational-forms',
 		title: __( 'Conversational Forms', 'sureforms' ),
 		description: __(
-			"Create forms that feel like a chat. One question at a time keeps users engaged.",
+			'Create forms that feel like a chat. One question at a time keeps users engaged.',
 			'sureforms'
 		),
 		icon: <MessageCircle size={ 18 } />,
@@ -38,7 +38,7 @@ const premiumFeatures = [
 		id: 'conditional-logic',
 		title: __( 'Conditional Fields', 'sureforms' ),
 		description: __(
-			'Show or hide fields based on previous answers. Only display what\'s needed.',
+			"Show or hide fields based on previous answers. Only display what's needed.",
 			'sureforms'
 		),
 		icon: <GitCompare size={ 18 } />,
@@ -151,10 +151,7 @@ const PremiumFeatures = () => {
 				highestPlan.charAt( 0 ).toUpperCase() + highestPlan.slice( 1 );
 			return sprintf(
 				// translators: %s: The name of the plan (e.g. "Pro", "Business").
-				__(
-					'You have selected the %s Plan',
-					'sureforms'
-				),
+				__( 'You have selected the %s Plan', 'sureforms' ),
 				planName
 			);
 		}
@@ -170,7 +167,7 @@ const PremiumFeatures = () => {
 			<Header
 				title={ __( 'Unlock Premium Features', 'sureforms' ) }
 				description={ __(
-					"Take your forms to the next level with SureForms Pro and access powerful premium features.",
+					'Take your forms to the next level with SureForms Pro and access powerful premium features.',
 					'sureforms'
 				) }
 			/>
@@ -218,12 +215,8 @@ const PremiumFeatures = () => {
 
 			{ /* Single line upgrade message */ }
 			{ upgradeMessage && (
-				<div className='p-1'>
-					<Text
-						size={ 14 }
-						weight={ 400 }
-						className='text-secondary'
-					>
+				<div className="p-1">
+					<Text size={ 14 } weight={ 400 } className="text-secondary">
 						{ upgradeMessage }
 					</Text>
 				</div>

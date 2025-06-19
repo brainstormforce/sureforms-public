@@ -60,7 +60,10 @@ const Welcome = () => {
 			></iframe>
 			<div>
 				<Text size={ 16 } weight={ 400 }>
-					{ __( 'Connect your account to unlock the full SureForms experience, including 10 free AI form generations to help you build forms faster than ever.', 'sureforms' ) }
+					{ __(
+						'Connect your account to unlock the full SureForms experience, including 10 free AI form generations to help you build forms faster than ever.',
+						'sureforms'
+					) }
 				</Text>
 				<ul>
 					{ features.map( ( feature, index ) => (

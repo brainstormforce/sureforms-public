@@ -1,13 +1,22 @@
-import { Button, Container, Text, Title } from '@bsf/force-ui';
+import { Container, Text, Title } from '@bsf/force-ui';
 import { __ } from '@wordpress/i18n';
-import { CheckIcon, ChevronRight } from 'lucide-react';
+import { CheckIcon } from 'lucide-react';
 import { Divider } from './components';
 import NavigationButtons from './navigation-buttons';
 
 const features = [
-	__( 'Use your AI credits to create forms by writing prompts.', 'sureforms' ),
-	__( 'Create forms like conversational, calculation-based, or multi-step.', 'sureforms' ),
-	__( 'Manage submissions and track form performance in one place.', 'sureforms' ),
+	__(
+		'Use your AI credits to create forms by writing prompts.',
+		'sureforms'
+	),
+	__(
+		'Create forms like conversational, calculation-based, or multi-step.',
+		'sureforms'
+	),
+	__(
+		'Manage submissions and track form performance in one place.',
+		'sureforms'
+	),
 ];
 
 const Done = () => {
@@ -21,19 +30,6 @@ const Done = () => {
 			},
 		} ).then( () => {
 			window.location.href = `${ srfm_admin.site_url }/wp-admin/admin.php?page=add-new-form`;
-		} );
-	};
-
-	const handleGoToDashboard = () => {
-		// Complete onboarding and redirect to dashboard
-		wp.apiFetch( {
-			path: '/sureforms/v1/onboarding/set-status',
-			method: 'POST',
-			headers: {
-				'X-WP-Nonce': srfm_admin.nonce,
-			},
-		} ).then( () => {
-			window.location.href = srfm_admin.sureforms_dashboard_url;
 		} );
 	};
 
@@ -56,7 +52,7 @@ const Done = () => {
 			</Container>
 			<div className="space-y-2">
 				<Text size={ 14 } weight={ 600 } color="primary">
-					{ __( "What You Can Do Next:", 'sureforms' ) }
+					{ __( 'What You Can Do Next:', 'sureforms' ) }
 				</Text>
 				{ features.map( ( feature, index ) => (
 					<Container

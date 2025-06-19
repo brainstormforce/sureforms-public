@@ -1,5 +1,5 @@
 import { __ } from '@wordpress/i18n';
-import { Container, Text, Title } from '@bsf/force-ui';
+import { Container, Text } from '@bsf/force-ui';
 import { CheckIcon } from 'lucide-react';
 import { useState, useEffect } from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
@@ -28,17 +28,24 @@ const EmailDelivery = () => {
 	);
 
 	const initialSuremailsPlugin = sureMails ? sureMails[ 1 ] : null;
-	if ( initialSuremailsPlugin && initialSuremailsPlugin.hasOwnProperty( 'redirection' ) ) {
+	if (
+		initialSuremailsPlugin &&
+		initialSuremailsPlugin.hasOwnProperty( 'redirection' )
+	) {
 		delete initialSuremailsPlugin.redirection;
 	}
 
-	const [ suremailsPlugin, setSuremailsPlugin ] = useState( initialSuremailsPlugin );
+	const [ suremailsPlugin, setSuremailsPlugin ] = useState(
+		initialSuremailsPlugin
+	);
 
 	const pluginStatus = [ 'Activate', 'Activated', 'Installed' ];
 
 	// Function to refresh plugin status
 	const refreshPluginStatus = async () => {
-		if ( ! suremailsPlugin ) return null;
+		if ( ! suremailsPlugin ) {
+			return null;
+		}
 
 		try {
 			const updatedPlugin = await apiFetch( {
@@ -47,7 +54,10 @@ const EmailDelivery = () => {
 			} );
 
 			// Remove redirection key if it exists
-			if ( updatedPlugin && updatedPlugin.hasOwnProperty( 'redirection' ) ) {
+			if (
+				updatedPlugin &&
+				updatedPlugin.hasOwnProperty( 'redirection' )
+			) {
 				delete updatedPlugin.redirection;
 			}
 
@@ -80,21 +90,23 @@ const EmailDelivery = () => {
 			handlePluginActionTrigger( {
 				plugin: suremailsPlugin,
 				event: { target: { innerText: '', style: { color: '' } } }, // Dummy event object.
-			} ).then( () => {
-				// Refresh status after installation completes (background process)
-				setTimeout( async () => {
-					await refreshPluginStatus();
-				}, 2000 );
-			} ).catch( ( error ) => {
-				console.error( 'Plugin installation failed:', error );
-			} );
+			} )
+				.then( () => {
+					// Refresh status after installation completes (background process)
+					setTimeout( async () => {
+						await refreshPluginStatus();
+					}, 2000 );
+				} )
+				.catch( ( error ) => {
+					console.error( 'Plugin installation failed:', error );
+				} );
 		}
 	};
 
 	const handleSkip = () => {
 		// Set email delivery as configured
 		actions.setEmailDeliveryConfigured( true );
-		
+
 		// Navigate to next route
 		navigateToNextRoute();
 	};
@@ -108,11 +120,14 @@ const EmailDelivery = () => {
 			<Container gap="sm" align="center" className="h-auto">
 				<div className="space-y-2 max-w-[22.5rem]">
 					<Text as="h2" size={ 20 } lineHeight={ 30 } weight={ 600 }>
-						{ __( 'No More Missed Notifications or Lost Leads', 'sureforms' ) }
+						{ __(
+							'No More Missed Notifications or Lost Leads',
+							'sureforms'
+						) }
 					</Text>
 					<Text size={ 14 } weight={ 400 } color="secondary">
 						{ __(
-							"SureMail is the easiest way to ensure your form notifications land safely in the inbox, not in spam folder.",
+							'SureMail is the easiest way to ensure your form notifications land safely in the inbox, not in spam folder.',
 							'sureforms'
 						) }
 					</Text>
@@ -147,8 +162,8 @@ const EmailDelivery = () => {
 				} }
 				continueProps={ {
 					onClick: handleInstallSureMail,
-					text: pluginStatus.includes( suremailsPlugin?.status ) 
-						? __( 'Continue', 'sureforms' ) 
+					text: pluginStatus.includes( suremailsPlugin?.status )
+						? __( 'Continue', 'sureforms' )
 						: __( 'Install SureMail', 'sureforms' ),
 				} }
 				skipProps={ {
