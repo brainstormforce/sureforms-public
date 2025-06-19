@@ -58,7 +58,7 @@ const premiumFeatures = [
 		id: 'digital-signature',
 		title: __( 'Digital Signatures', 'sureforms' ),
 		description: __(
-			'Collect legally binding signatures within your forms. Simple and paperless.',
+			'Easily collect signatures for forms, agreements, or approvals, right inside your form.',
 			'sureforms'
 		),
 		icon: <Signature size={ 18 } />,
@@ -68,7 +68,7 @@ const premiumFeatures = [
 		id: 'webhook-integration',
 		title: __( 'Webhooks', 'sureforms' ),
 		description: __(
-			'Connect forms to third-party services with webhooks. Automate data transfer and notifications in real time, saving effort.',
+			'Send form data to other tools instantly. Automate workflows in real time.',
 			'sureforms'
 		),
 		icon: <Webhook size={ 18 } />,
