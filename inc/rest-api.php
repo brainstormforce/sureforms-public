@@ -218,8 +218,8 @@ class Rest_Api {
 			);
 		}
 
-		$params = $request->get_params();
-		$plugin_slug = is_array( $params ) && ! empty( $params['plugin'] ) ? 
+		$params      = $request->get_params();
+		$plugin_slug = is_array( $params ) && ! empty( $params['plugin'] ) ?
 			sanitize_text_field( Helper::get_string_value( $params['plugin'] ) ) : '';
 
 		if ( empty( $plugin_slug ) ) {
@@ -230,7 +230,7 @@ class Rest_Api {
 		}
 
 		$integrations = Helper::sureforms_get_integration();
-		
+
 		if ( ! isset( $integrations[ $plugin_slug ] ) ) {
 			return new \WP_REST_Response(
 				[ 'error' => __( 'Plugin not found.', 'sureforms' ) ],
@@ -239,10 +239,10 @@ class Rest_Api {
 		}
 
 		$plugin_data = $integrations[ $plugin_slug ];
-		
-		// Get fresh status
-		if ( isset( $plugin_data['path'] ) ) {
-			$plugin_data['status'] = Helper::get_plugin_status( $plugin_data['path'] );
+
+		// Get fresh status.
+		if ( is_array( $plugin_data ) && isset( $plugin_data['path'] ) ) {
+			$plugin_data['status'] = Helper::get_plugin_status( Helper::get_string_value( $plugin_data['path'] ) );
 		}
 
 		return new \WP_REST_Response( $plugin_data );
@@ -314,7 +314,7 @@ class Rest_Api {
 					'callback'            => [ $this, 'get_onboarding_status' ],
 					'permission_callback' => [ $this, 'can_edit_posts' ],
 				],
-				// Plugin status endpoint
+				// Plugin status endpoint.
 				'plugin-status'         => [
 					'methods'             => 'GET',
 					'callback'            => [ $this, 'get_plugin_status' ],
