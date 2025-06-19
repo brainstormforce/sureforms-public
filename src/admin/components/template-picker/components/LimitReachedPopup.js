@@ -11,12 +11,27 @@ const LimitReachedPopup = ( {
 	paraTwo,
 	buttonText,
 	onclick,
-	activateProPlugin = false,
+	deactivatedLicense = false,
 } ) => {
-	const activateLicensePopup = applyFilters(
-		'srfm.aiFormScreen.license.popup',
-		null
-	);
+	// Get filter values
+	const {
+		paraOne: filteredParaOne,
+		paraTwo: filteredParaTwo,
+		title: filteredTitle,
+		activateLicenseButton: ActivateLicenseButton,
+	} = applyFilters( 'srfm.aiFormScreen.freeCreds.expired', null ) || {};
+
+	const finalTitle = deactivatedLicense ? filteredTitle : title;
+	const finalParaOne = deactivatedLicense ? filteredParaOne : paraOne;
+	const finalParaTwo = deactivatedLicense ? filteredParaTwo : paraTwo;
+	const FinalButton =
+		deactivatedLicense && ActivateLicenseButton ? (
+			<ActivateLicenseButton />
+		) : (
+			<Button size="md" variant="primary" onClick={ onclick }>
+				{ buttonText ?? __( 'Connect Now', 'sureforms' ) }
+			</Button>
+		);
 
 	const renderLimitReachedContent = () => (
 		<Container
@@ -34,8 +49,10 @@ const LimitReachedPopup = ( {
 						variant="neutral"
 						className="text-lg font-bold flex gap-3"
 					>
-						<span className="pt-1">{ ICONS.warning }</span>
-						{ title }
+						{ ! deactivatedLicense && (
+							<span className="pt-1">{ ICONS.warning }</span>
+						) }
+						{ finalTitle }
 						<span
 							className="absolute top-[-10px] right-[-15px] cursor-pointer"
 							onClick={ () =>
@@ -54,24 +71,18 @@ const LimitReachedPopup = ( {
 						size="md"
 						className="text-text-secondary font-normal"
 					>
-						{ paraOne }
+						{ finalParaOne }
 					</Label>
 					<Label
 						size="md"
 						className="text-text-secondary font-normal"
 					>
-						{ paraTwo }
+						{ finalParaTwo }
 					</Label>
 				</Container.Item>
 
 				<Container.Item className="flex flex-col w-full gap-4 pb-2">
-					<Button
-						size="md"
-						variant="primary"
-						onClick={ onclick }
-					>
-						{ buttonText ?? __( 'Connect Now', 'sureforms' ) }
-					</Button>
+					{ FinalButton }
 				</Container.Item>
 			</Container>
 		</Container>
@@ -80,7 +91,7 @@ const LimitReachedPopup = ( {
 	return (
 		<>
 			<Header />
-			{ activateProPlugin ? activateLicensePopup : renderLimitReachedContent() }
+			{ renderLimitReachedContent() }
 			<AiFormBuilder />
 		</>
 	);

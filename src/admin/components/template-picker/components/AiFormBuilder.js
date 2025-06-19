@@ -268,7 +268,7 @@ export const getLimitReachedPopup = () => {
 	}
 
 	// Check if the user has a premium plan and not activated the license
-	const activateProPlugin =
+	const deactivatedLicense =
 		srfm_admin?.is_pro_active && ! srfm_admin?.is_pro_license_active;
 
 	// When registered limit is consumed
@@ -294,7 +294,7 @@ export const getLimitReachedPopup = () => {
 						'noreferrer'
 					);
 				} }
-				activateProPlugin={ activateProPlugin }
+				deactivatedLicense={ deactivatedLicense }
 			/>
 		);
 	}
