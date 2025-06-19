@@ -209,9 +209,7 @@ const SureMail = () => {
 					'sureforms'
 				)
 			);
-			setPluginStatus(
-				pluginStatus ? 'installed' : 'not_installed'
-			);
+			setPluginStatus( pluginStatus ? 'installed' : 'not_installed' );
 		}
 	};
 
@@ -313,7 +311,7 @@ const SureMail = () => {
 								color="secondary"
 							>
 								{ __(
-									'SureForms and SureMail are the perfect pair! SureMail ensures that every form submission you receive is reliably delivered to your inbox. You\'ll never lose a lead, miss a support request, or overlook a customer inquiry again.',
+									"SureForms and SureMail are the perfect pair! SureMail ensures that every form submission you receive is reliably delivered to your inbox. You'll never lose a lead, miss a support request, or overlook a customer inquiry again.",
 									'sureforms'
 								) }
 							</Text>
@@ -337,24 +335,30 @@ const SureMail = () => {
 					{ /* Group features into pairs */ }
 					{ Array.from( {
 						length: Math.ceil( mainFeatures.length / 2 ),
-					} ).map( ( _, groupIndex ) => (
-						<div key={ groupIndex } className="flex gap-6">
-							{ mainFeatures
-								.slice( ( groupIndex * 2 ), ( ( groupIndex * 2 ) + 2 ) )
-								.map( ( feature, index ) => (
-									<div
-										key={ index }
-										className="flex-1 p-4 gap-2"
-									>
-										<FeatureCard
-											icon={ feature.icon }
-											title={ feature.title }
-											description={ feature.description }
-										/>
-									</div>
-								) ) }
-						</div>
-					) ) }
+					} ).map( ( _, groupIndex ) => {
+						const start = groupIndex * 2;
+						const end = start + 2;
+						return (
+							<div key={ groupIndex } className="flex gap-6">
+								{ mainFeatures
+									.slice( start, end )
+									.map( ( feature, index ) => (
+										<div
+											key={ index }
+											className="flex-1 p-4 gap-2"
+										>
+											<FeatureCard
+												icon={ feature.icon }
+												title={ feature.title }
+												description={
+													feature.description
+												}
+											/>
+										</div>
+									) ) }
+							</div>
+						);
+					} ) }
 				</div>
 
 				{ /* Final CTA Section */ }

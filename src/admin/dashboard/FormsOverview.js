@@ -348,7 +348,8 @@ export default () => {
 						variant="help"
 						className="font-semibold"
 					>
-						{ getFormLabel( selectedForm ) || __( 'All Forms', 'sureforms' ) }
+						{ getFormLabel( selectedForm ) ||
+								__( 'All Forms', 'sureforms' ) }
 					</Label>
 					<Container align="center" className="gap-2 p-1">
 						<div className="w-2 h-2 bg-chart-purple-500 rounded-sm"></div>
