@@ -58,19 +58,24 @@ const Welcome = () => {
 				allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
 				allowFullScreen
 			></iframe>
-			<ul>
-				{ features.map( ( feature, index ) => (
-					<li key={ index } className="flex items-center gap-1">
-						<Check
-							className="size-3 text-icon-interactive"
-							strokeWidth={ 1.5 }
-						/>
-						<Text size={ 14 } weight={ 500 } color="label">
-							{ feature }
-						</Text>
-					</li>
-				) ) }
-			</ul>
+			<div>
+				<Text size={ 16 } weight={ 400 }>
+					{ __( 'Connect your account to unlock the full SureForms experience, including 10 free AI form generations to help you build forms faster than ever.', 'sureforms' ) }
+				</Text>
+				<ul>
+					{ features.map( ( feature, index ) => (
+						<li key={ index } className="flex items-center gap-1">
+							<Check
+								className="size-3 text-icon-interactive"
+								strokeWidth={ 1.5 }
+							/>
+							<Text size={ 14 } weight={ 500 } color="label">
+								{ feature }
+							</Text>
+						</li>
+					) ) }
+				</ul>
+			</div>
 
 			<Divider />
 
