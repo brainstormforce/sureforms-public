@@ -98,6 +98,7 @@ const PremiumFeatures = () => {
 
 	// Function to handle upgrade button click
 	const handleUpgrade = () => {
+		navigateToNextRoute();
 		// Redirect to SureForms pricing page
 		window.open(
 			addQueryParam(
