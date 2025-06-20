@@ -1,6 +1,6 @@
 import { Container, Text, Title } from '@bsf/force-ui';
 import { __ } from '@wordpress/i18n';
-import { CheckIcon } from 'lucide-react';
+import { Check } from 'lucide-react';
 import { Divider } from './components';
 import NavigationButtons from './navigation-buttons';
 
@@ -59,7 +59,7 @@ const Done = () => {
 						key={ index }
 						className="flex items-center gap-1.5"
 					>
-						<CheckIcon className="size-4 text-icon-interactive" />
+						<Check className="size-4 text-icon-interactive" />
 						<Text size={ 14 } weight={ 500 } color="label">
 							{ feature }
 						</Text>

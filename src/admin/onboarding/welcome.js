@@ -70,10 +70,7 @@ const Welcome = () => {
 				<ul>
 					{ features.map( ( feature, index ) => (
 						<li key={ index } className="flex items-center gap-1">
-							<Check
-								className="size-3 text-icon-interactive"
-								strokeWidth={ 1.5 }
-							/>
+							<Check className="size-4 text-icon-interactive" />
 							<Text size={ 14 } weight={ 400 } color="label">
 								{ feature }
 							</Text>
