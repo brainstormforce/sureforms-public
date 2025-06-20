@@ -9,6 +9,20 @@ function initializeDropdown() {
 			if ( element.classList.contains( 'tomselected' ) ) {
 				destroyTomSelect( element );
 			}
+
+			// Check for at least one valid option (skip placeholder)
+			const checkOptions = Array.from( element.options || [] );
+			const hasValidOption = checkOptions.some(
+				( opt ) =>
+					opt.value &&
+					typeof opt.text === 'string' &&
+					opt.text.trim() !== '' &&
+					! opt.disabled // skip disabled placeholder
+			);
+			if ( ! hasValidOption ) {
+				return; // Skip initialization if no valid options
+			}
+
 			let additionalConfig = {};
 			const inputName = element.getAttribute( 'name' );
 			const errorContainerID = element
@@ -125,6 +139,11 @@ function initializeDropdown() {
 					} );
 				},
 			};
+
+			// Check if TomSelect is already initialized on this element
+			if ( element.classList.contains( 'tomselected' ) ) {
+				destroyTomSelect( element );
+			}
 
 			/**
 			 * Creates a new TomSelect instance for the given input element and adds it to the global `window.srfm` object.
