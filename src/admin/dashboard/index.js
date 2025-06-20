@@ -64,6 +64,7 @@ const APP = () => {
 						path="premium-features"
 						element={ <PremiumFeatures /> }
 					/>
+					<Route path="done" element={ <Done /> } />
 				</Route>
 				<Route path="*" element={ <Dashboard /> } />
 			</Routes>
