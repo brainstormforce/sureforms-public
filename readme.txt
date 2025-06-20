@@ -261,6 +261,7 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 
 == Changelog ==
 = x.x.x =
+* Improvement: Dashboard now checks if the premium plugin is active before allowing Starter Templates to be installed via the Extend Plugin section.
 * Fix: Addressed the accessibility issue associated with the Textarea field label.
 = 1.7.2 - 12th June 2025 =
 * New: Added {current_page_url} smart tag under generic tags.
