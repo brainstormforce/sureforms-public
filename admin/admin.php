@@ -73,6 +73,10 @@ class Admin {
 		// Add action links to the plugin page.
 		add_filter( 'plugin_action_links_' . SRFM_BASENAME, [ $this, 'add_action_links' ] );
 		add_filter( 'wpforms_current_user_can', [ $this, 'disable_wpforms_capabilities' ], 10, 3 );
+
+		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_admin_pointer' ] );
+		add_action( 'wp_ajax_sureforms_should_show_pointer', [ $this, 'ajax_pointer_should_show' ] );
+		add_action( 'wp_ajax_sureforms_dismiss_pointer', [ $this, 'ajax_pointer_dismiss' ] );
 	}
 
 	/**
@@ -990,5 +994,64 @@ class Admin {
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$post_type = $post_id ? get_post_type( $post_id ) : sanitize_text_field( wp_unslash( $_REQUEST['post_type'] ?? '' ) );
 		return SRFM_FORMS_POST_TYPE === $post_type ? false : $user_can;
+	}
+
+	/**
+	 * Determine if the admin pointer should be visible on this page.
+	 *
+	 * @return bool
+	 */
+	private function is_admin_pointer_visible() {
+		global $pagenow;
+		$allowed_pages = [ 'index.php', 'options-general.php' ];
+		if ( in_array( $pagenow, $allowed_pages, true ) ) {
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Enqueue the pointer popup script and styles for SureForms admin pages.
+	 */
+	public function enqueue_admin_pointer( $hook_suffix ) {
+		if ( ! $this->is_admin_pointer_visible() ) {
+			return;
+		}
+		wp_enqueue_style( 'wp-pointer' );
+		wp_enqueue_script( 'wp-pointer' );
+		wp_enqueue_script(
+			'sureforms-admin-pointer',
+			plugins_url( 'admin/assets/js/sureforms-pointer.js', SRFM_FILE ),
+			[ 'wp-pointer', 'jquery' ],
+			'1.0',
+			true
+		);
+		wp_localize_script( 'sureforms-admin-pointer', 'ajaxurl', admin_url( 'admin-ajax.php' ) );
+	}
+
+	/**
+	 * AJAX handler: Should show pointer?
+	 */
+	public function ajax_pointer_should_show() {
+		wp_send_json([
+			'show' => true,
+			'title' => __( 'SureForms is waiting for you!', 'sureforms' ),
+			'content' => sprintf(
+				'<span style="display:block;margin-bottom:8px;">%s</span><strong style="font-size:1.1em;">%s</strong>',
+				__( 'Get started by <strong>building your first form</strong>.', 'sureforms' ),
+				__( 'Experience the power of our intuitive <strong>AI Form Builder</strong>.', 'sureforms' ),
+			),
+			'button_text' => __( 'Build My First Form', 'sureforms' ),
+			'button_url' => admin_url( 'admin.php?page=add-new-form' ),
+		]);
+	}
+
+	/**
+	 * AJAX handler: Dismiss pointer.
+	 */
+	public function ajax_pointer_dismiss() {
+		update_user_meta( get_current_user_id(), 'sureforms_pointer_dismissed', 1 );
+		wp_send_json_success();
 	}
 }
