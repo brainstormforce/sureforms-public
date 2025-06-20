@@ -52,7 +52,7 @@ class AI_Auth {
 		$source = sanitize_text_field( Helper::get_string_value( $request->get_param( 'source' ) ) );
 		switch ( $source ) {
 			case 'onboarding':
-				$redirect_back = site_url() . '/wp-admin/admin.php?page=sureforms_menu#/onboarding/global-settings';
+				$redirect_back = site_url() . '/wp-admin/admin.php?page=sureforms_menu#/onboarding/email-delivery';
 				break;
 			default:
 				$redirect_back = site_url() . '/wp-admin/admin.php?page=add-new-form&method=ai';
