@@ -255,6 +255,7 @@ export const withoutSlugBlocks = [
 	'srfm/image',
 	'srfm/icon',
 	'srfm/link',
+	'srfm/login',
 ];
 
 export const setFormSpecificSmartTags = ( updateBlockAttributes ) => {
