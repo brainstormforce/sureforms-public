@@ -1006,7 +1006,7 @@ class Post_Types {
 			return Generate_Form_Markup::get_form_markup( $id, ! filter_var( $atts['show_title'], FILTER_VALIDATE_BOOLEAN ), '', 'post', true );
 		}
 
-		return __( 'This form has been deleted or is unavailable.', 'sureforms' );
+		return esc_html__( 'This form has been deleted or is unavailable.', 'sureforms' );
 	}
 
 	/**
