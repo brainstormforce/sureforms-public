@@ -113,44 +113,46 @@ const withToolbarButton = createHigherOrderComponent( ( BlockEdit ) => {
 				<>
 					<BlockControls>
 						<ToolbarGroup>
-							{ [ 100, 75, 66.66, 50, 33.33, 25 ].map( ( width ) => {
-								let labelText;
-								if ( width === 33.33 ) {
-									labelText = '33%';
-								} else if ( width === 66.66 ) {
-									labelText = '67%';
-								} else {
-									labelText = `${ width }%`;
+							{ [ 100, 75, 66.66, 50, 33.33, 25 ].map(
+								( width ) => {
+									let labelText;
+									if ( width === 33.33 ) {
+										labelText = '33%';
+									} else if ( width === 66.66 ) {
+										labelText = '67%';
+									} else {
+										labelText = `${ width }%`;
+									}
+									const labelWithText = sprintf(
+										// translators: %s: Width of the block
+										__( '%s Width', 'sureforms' ),
+										labelText
+									);
+
+									const selectedClass =
+										attributes?.fieldWidth === width
+											? 'is-selected srfm-toolbar-width-setting-button'
+											: 'srfm-toolbar-width-setting-button';
+
+									return (
+										<ToolbarButton
+											key={ width }
+											className={ selectedClass }
+											icon={
+												<span className="srfm-toolbar-width-setting-icon">
+													{ labelText }
+												</span>
+											}
+											label={ labelWithText }
+											onClick={ () =>
+												setAttributes( {
+													fieldWidth: Number( width ),
+												} )
+											}
+										/>
+									);
 								}
-								const labelWithText = sprintf(
-									// translators: %s: Width of the block
-									__( '%s Width', 'sureforms' ),
-									labelText
-								);
-
-								const selectedClass =
-									attributes?.fieldWidth === width
-										? 'is-selected srfm-toolbar-width-setting-button'
-										: 'srfm-toolbar-width-setting-button';
-
-								return (
-									<ToolbarButton
-										key={ width }
-										className={ selectedClass }
-										icon={
-											<span className="srfm-toolbar-width-setting-icon">
-												{ labelText }
-											</span>
-										}
-										label={ labelWithText }
-										onClick={ () =>
-											setAttributes( {
-												fieldWidth: Number( width ),
-											} )
-										}
-									/>
-								);
-							} ) }
+							) }
 						</ToolbarGroup>
 					</BlockControls>
 					<BlockEdit { ...props } />
