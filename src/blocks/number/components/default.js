@@ -37,7 +37,11 @@ export const NumberComponent = ( { attributes, blockID, setAttributes } ) => {
 				setAttributes={ setAttributes }
 				block_id={ blockID }
 			/>
-			<div className={ `srfm-block-wrap${ readOnly ? ' srfm-read-only' : '' }` }>
+			<div
+				className={ `srfm-block-wrap${
+					readOnly ? ' srfm-read-only' : ''
+				}` }
+			>
 				<div className="srfm-input-content">
 					{ prefix && (
 						<span className="srfm-number-prefix"> { prefix } </span>
