@@ -1081,7 +1081,7 @@ function StyleSettings( props ) {
 		! isInlineButtonBlockPresent,
 		{
 			isInlineButtonBlockPresent,
-			context: 'form-settings'
+			context: 'form-settings',
 		}
 	);
 

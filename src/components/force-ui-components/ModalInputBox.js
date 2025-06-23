@@ -33,7 +33,7 @@ const ModalInputBox = ( {
 						required={ required }
 						placeholder={ placeholder }
 						size="md"
-						className="[&>input]:text-text-tertiary"
+						className="[&>input]:text-field-input"
 					/>
 				</div>
 				{ showSmartTagList && (
