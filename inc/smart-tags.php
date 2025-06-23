@@ -33,7 +33,9 @@ class Smart_Tags {
 	/**
 	 * Constructor
 	 *
+	 * @param array<mixed> $config Smart tag config.
 	 * @since  0.0.1
+	 * @since x.x.x Add $config to the smart tag config.
 	 */
 	public function __construct( $config = [] ) {
 		self::$smart_tag_config = $config;
@@ -364,16 +366,18 @@ class Smart_Tags {
 						$view_link = '<a href=' . urldecode( $submission_item_value ) . ' target="_blank">' . __( 'View', 'sureforms' ) . '</a>';
 
 						// Add filter to modify the view link.
-						$view_link = apply_filters( 
-							'srfm_smart_tag_view_link', $view_link, [
-								'config' => self::$smart_tag_config,
-								'submission_item_key' => $submission_item_key,
+						$view_link = apply_filters(
+							'srfm_smart_tag_view_link',
+							$view_link,
+							[
+								'config'                => self::$smart_tag_config,
+								'submission_item_key'   => $submission_item_key,
 								'submission_item_value' => $submission_item_value,
-								'target_slug' => $target_slug,
-								'block_type' => $block_type,
-								'form_data' => $form_data,
-								'submission_data' => $submission_data,
-								'value' => $value,
+								'target_slug'           => $target_slug,
+								'block_type'            => $block_type,
+								'form_data'             => $form_data,
+								'submission_data'       => $submission_data,
+								'value'                 => $value,
 							]
 						);
 
