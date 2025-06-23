@@ -3,6 +3,7 @@ import { __ } from '@wordpress/i18n';
 import { Check } from 'lucide-react';
 import { Divider } from './components';
 import NavigationButtons from './navigation-buttons';
+import apiFetch from '@wordpress/api-fetch';
 
 const features = [
 	__(
@@ -22,7 +23,7 @@ const features = [
 const Done = () => {
 	const handleBuildForm = () => {
 		// Complete onboarding and redirect to create new form page
-		wp.apiFetch( {
+		apiFetch( {
 			path: '/sureforms/v1/onboarding/set-status',
 			method: 'POST',
 			headers: {

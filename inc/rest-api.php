@@ -219,7 +219,7 @@ class Rest_Api {
 		}
 
 		$params      = $request->get_params();
-		$plugin_slug = is_array( $params ) && ! empty( $params['plugin'] ) ?
+		$plugin_slug = is_array( $params ) && isset( $params['plugin'] ) ?
 			sanitize_text_field( Helper::get_string_value( $params['plugin'] ) ) : '';
 
 		if ( empty( $plugin_slug ) ) {

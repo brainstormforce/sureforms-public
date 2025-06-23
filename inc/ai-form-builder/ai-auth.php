@@ -49,7 +49,7 @@ class AI_Auth {
 		$this->key = wp_generate_password( 16, false );
 
 		// Get the source parameter from the query.
-		$source = sanitize_text_field( Helper::get_string_value( $request->get_param( 'source' ) ) );
+		$source = sanitize_text_field( Helper::get_string_value( $request->get_param( 'source' ) ?? '' ) );
 		switch ( $source ) {
 			case 'onboarding':
 				$redirect_back = site_url() . '/wp-admin/admin.php?page=sureforms_menu#/onboarding/email-delivery';

@@ -4,7 +4,7 @@
  *
  * Handles the onboarding process for the SureForms plugin.
  *
- * @package SRFM\Inc
+ * @package sureforms
  */
 
 namespace SRFM\Inc;
@@ -19,8 +19,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Onboarding Class
  *
  * Handles the onboarding process for the SureForms plugin.
- *
- * @package SRFM\Inc\Onboarding
  */
 class Onboarding {
 	use Get_Instance;
@@ -30,19 +28,12 @@ class Onboarding {
 	 *
 	 * @var string
 	 */
-	private $onboarding_status_option = 'sureforms_onboarding_completed';
-
-	/**
-	 * Constructor
-	 */
-	public function __construct() {
-		// Constructor can be used for future initialization if needed.
-	}
+	private $onboarding_status_option = 'srfm_onboarding_completed';
 
 	/**
 	 * Set onboarding completion status.
 	 *
-	 * @since 1.7.0
+	 * @since x.x.x
 	 * @param string $completed Whether the onboarding is completed.
 	 * @return bool
 	 */
@@ -53,7 +44,7 @@ class Onboarding {
 	/**
 	 * Get onboarding completion status.
 	 *
-	 * @since 1.7.0
+	 * @since x.x.x
 	 * @return bool
 	 */
 	public function get_onboarding_status() {
