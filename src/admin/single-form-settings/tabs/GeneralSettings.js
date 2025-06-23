@@ -7,6 +7,7 @@ import { store as editorStore } from '@wordpress/editor';
 import { useEffect, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import FormBehaviorPopupButton from '../../components/FormBehaviorPopupButton';
+import {applyFilters} from '@wordpress/hooks';
 
 // Force-UI
 import Dialog from '../components/dialog/Dialog';
@@ -167,7 +168,10 @@ function GeneralSettings( props ) {
 		} );
 	}
 
-	const singleSettings = [
+	const singleSettings = 
+	applyFilters(
+ 'srfm.singleSettings',
+	[
 		{
 			id: 'form_confirmation',
 			title: __( 'Form Confirmation', 'sureforms' ),
@@ -184,7 +188,8 @@ function GeneralSettings( props ) {
 			id: 'integrations',
 			title: __( 'Integrations', 'sureforms' ),
 		},
-	];
+	]
+)
 
 	function updatePageBreakSettings( option, value ) {
 		editPost( {
