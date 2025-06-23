@@ -44,6 +44,45 @@ class Post_Types {
 		add_action( 'admin_bar_menu', [ $this, 'remove_admin_bar_menu_item' ], 80, 1 );
 		add_action( 'template_redirect', [ $this, 'srfm_instant_form_redirect' ] );
 		add_action( 'template_redirect', [ $this, 'disable_sureforms_archive_page' ], 9 );
+
+		add_filter( 'rest_prepare_sureforms_form', [ $this, 'sureforms_normalize_meta_for_rest' ], 10, 2 );
+	}
+
+	/**
+	 * Normalize the _srfm_form_confirmation meta before it's sent to the REST API.
+	 *
+	 * Ensures the meta data is type-safe and includes necessary defaults like `hide_copy`.
+	 *
+	 * @param WP_REST_Response $response The REST response object.
+	 * @param WP_Post          $post     The post object.
+	 * @param WP_REST_Request  $request  The current request object.
+	 *
+	 * @return WP_REST_Response Modified REST response with normalized meta.
+	 * @since x.x.x
+	 */
+	public function sureforms_normalize_meta_for_rest( $response, $post ) {
+		$meta_raw          = get_post_meta( $post->ID, '_srfm_form_confirmation', true );
+		$form_confirmation = maybe_unserialize( $meta_raw );
+
+		if ( ! is_array( $form_confirmation ) ) {
+			return $response;
+		}
+
+		foreach ( $form_confirmation as $index => $item ) {
+			if ( ! is_array( $item ) ) {
+				continue;
+			}
+
+			$form_confirmation[ $index ]['hide_copy'] = isset( $item['hide_copy'] ) && ! empty( $item['hide_copy'] );
+
+			$form_confirmation[ $index ]['hide_download_all'] = isset( $item['hide_download_all'] ) && ! empty( $item['hide_download_all'] );
+		}
+
+		$response_data                                    = $response->get_data();
+		$response_data['meta']['_srfm_form_confirmation'] = $form_confirmation;
+		$response->set_data( $response_data );
+
+		return $response;
 	}
 
 	/**
