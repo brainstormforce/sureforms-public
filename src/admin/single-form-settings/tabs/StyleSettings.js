@@ -1076,6 +1076,12 @@ function StyleSettings( props ) {
 		},
 	];
 
+	/**
+	 * The filter is used to conditionally show the button styling options.
+	 * In case of inline button, hide the button alignment options.
+	 * Along with it, for the login block hide the button alignment options because
+	 * it contains the inline button as well.
+	 */
 	const showButtonStylings = applyFilters(
 		'srfm.show.button.styling',
 		! isInlineButtonBlockPresent,
