@@ -11,6 +11,7 @@ const TabContentWrapper = ( {
 	actionBtnText,
 	actionBtnIcon,
 	actionBtnVariant = 'primary',
+	actionLeftContent,
 } ) => {
 	const handleBack = () => {
 		if ( typeof onClickBack !== 'function' ) {
@@ -43,16 +44,19 @@ const TabContentWrapper = ( {
 					) }
 					<Title tag="h4" title={ title } size="md" />
 				</Container>
-				{ onClickAction && (
-					<Button
-						size="md"
-						onClick={ handleClickAction }
-						icon={ actionBtnIcon }
-						variant={ actionBtnVariant }
-					>
-						{ actionBtnText }
-					</Button>
-				) }
+				<Container align="center" className="gap-3">
+					{ actionLeftContent }
+					{ onClickAction && (
+						<Button
+							size="md"
+							onClick={ handleClickAction }
+							icon={ actionBtnIcon }
+							variant={ actionBtnVariant }
+						>
+							{ actionBtnText }
+						</Button>
+					) }
+				</Container>
 			</Container>
 			<div
 				className={ cn(
