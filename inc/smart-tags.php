@@ -38,7 +38,10 @@ class Smart_Tags {
 	 * @since x.x.x Add $config to the smart tag config.
 	 */
 	public function __construct( $config = [] ) {
-		self::$smart_tag_config = $config;
+		if ( ! empty( $config ) && is_array( $config ) ) {
+			self::$smart_tag_config = $config;
+		}
+
 		add_filter( 'render_block', [ $this, 'render_form' ], 10, 2 );
 	}
 
