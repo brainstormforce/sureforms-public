@@ -24,24 +24,11 @@ class Smart_Tags {
 	use Get_Instance;
 
 	/**
-	 * Smart tag config.
-	 *
-	 * @var array
-	 */
-	private static $smart_tag_config = [];
-
-	/**
 	 * Constructor
 	 *
-	 * @param array<mixed> $config Smart tag config.
 	 * @since  0.0.1
-	 * @since x.x.x Add $config to the smart tag config.
 	 */
-	public function __construct( $config = [] ) {
-		if ( ! empty( $config ) && is_array( $config ) ) {
-			self::$smart_tag_config = $config;
-		}
-
+	public function __construct() {
 		add_filter( 'render_block', [ $this, 'render_form' ], 10, 2 );
 	}
 
@@ -360,20 +347,19 @@ class Smart_Tags {
 						$replacement_data = urldecode( implode( ', ', $submission_item_value ) );
 					} else {
 						foreach ( $submission_item_value as $value ) {
-							$replacement_data .= '<a href=' . urldecode( $value ) . ' target="_blank">' . __( 'View', 'sureforms' ) . '</a><br>';
+							$replacement_data .= '<a href=' . esc_url( urldecode( $value ) ) . ' target="_blank">' . __( 'View', 'sureforms' ) . '</a><br>';
 						}
 					}
 				} else {
 					// if $submission_item_value is a url then add <a> tag. with view text.
 					if ( is_string( $submission_item_value ) && filter_var( $submission_item_value, FILTER_VALIDATE_URL ) ) {
-						$view_link = '<a href=' . urldecode( $submission_item_value ) . ' target="_blank">' . __( 'View', 'sureforms' ) . '</a>';
+						$view_link = '<a href=' . esc_url( urldecode( $submission_item_value ) ) . ' target="_blank">' . __( 'View', 'sureforms' ) . '</a>';
 
 						// Add filter to modify the view link.
 						$view_link = apply_filters(
 							'srfm_smart_tag_view_link',
 							$view_link,
 							[
-								'config'                => self::$smart_tag_config,
 								'submission_item_key'   => $submission_item_key,
 								'submission_item_value' => $submission_item_value,
 								'target_slug'           => $target_slug,
