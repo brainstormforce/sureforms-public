@@ -11,6 +11,8 @@ namespace SRFM\Inc;
 use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Traits\Get_Instance;
 use WP_Admin_Bar;
+use WP_Post;
+use WP_REST_Response;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -55,14 +57,13 @@ class Post_Types {
 	 *
 	 * @param WP_REST_Response $response The REST response object.
 	 * @param WP_Post          $post     The post object.
-	 * @param WP_REST_Request  $request  The current request object.
 	 *
 	 * @return WP_REST_Response Modified REST response with normalized meta.
 	 * @since x.x.x
 	 */
-	public function sureforms_normalize_meta_for_rest( $response, $post ) {
+	public function sureforms_normalize_meta_for_rest( WP_REST_Response $response, WP_Post $post ) {
 		$meta_raw          = get_post_meta( $post->ID, '_srfm_form_confirmation', true );
-		$form_confirmation = maybe_unserialize( $meta_raw );
+		$form_confirmation = maybe_unserialize( is_string( $meta_raw ) ? $meta_raw : '' );
 
 		if ( ! is_array( $form_confirmation ) ) {
 			return $response;
@@ -73,15 +74,19 @@ class Post_Types {
 				continue;
 			}
 
-			$form_confirmation[ $index ]['hide_copy'] = isset( $item['hide_copy'] ) && ! empty( $item['hide_copy'] );
-
+			$form_confirmation[ $index ]['hide_copy']         = isset( $item['hide_copy'] ) && ! empty( $item['hide_copy'] );
 			$form_confirmation[ $index ]['hide_download_all'] = isset( $item['hide_download_all'] ) && ! empty( $item['hide_download_all'] );
 		}
 
-		$response_data                                    = $response->get_data();
-		$response_data['meta']['_srfm_form_confirmation'] = $form_confirmation;
-		$response->set_data( $response_data );
+		$response_data = $response->get_data();
+		if ( is_array( $response_data ) ) {
+			if ( ! isset( $response_data['meta'] ) || ! is_array( $response_data['meta'] ) ) {
+				$response_data['meta'] = [];
+			}
 
+			$response_data['meta']['_srfm_form_confirmation'] = $form_confirmation;
+			$response->set_data( $response_data );
+		}
 		return $response;
 	}
 
