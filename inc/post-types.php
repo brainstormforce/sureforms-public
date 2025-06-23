@@ -51,8 +51,7 @@ class Post_Types {
 	}
 
 	/**
-	 * TODO : Remove this method in the future once _srfm_form_confirmation meta is updated.
-	 * 
+	 * Remove this method in the future once _srfm_form_confirmation meta is updated.
 	 * Normalize the _srfm_form_confirmation meta before it's sent to the REST API.
 	 * Ensures the meta data is type-safe and includes necessary defaults like `hide_copy`.
 	 *
