@@ -258,6 +258,10 @@ Absolutely not! SureForms is built with ease and performance in mind. Its module
 Yes! You can certainly use SureForms on yours as well as your client’s websites.
 = What more do I get with SureForms? =
 When you use SureForms, you get an easy-to-use AI-powered form builder that can be used to build your forms fast.
+= How can I report a security bug? =
+We take plugin security extremely seriously. If you discover a security vulnerability, please report it in a safe and responsible manner.
+
+You can report the issue through our [Bug Bounty Program](https://brainstormforce.com/bug-bounty-program/). We collaborate with Patchstack to provide opportunities for researchers to report vulnerabilities. The Patchstack team will help validate, triage, and handle any reported security issues.
 
 == Changelog ==
 = 1.7.2 - 12th June 2025 =
