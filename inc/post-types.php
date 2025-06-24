@@ -74,8 +74,8 @@ class Post_Types {
 				continue;
 			}
 
-			$form_confirmation[ $index ]['hide_copy']         = isset( $item['hide_copy'] ) && ! empty( $item['hide_copy'] );
-			$form_confirmation[ $index ]['hide_download_all'] = isset( $item['hide_download_all'] ) && ! empty( $item['hide_download_all'] );
+			$form_confirmation[ $index ]['hide_copy']         = ! empty( $item['hide_copy'] );
+			$form_confirmation[ $index ]['hide_download_all'] = ! empty( $item['hide_download_all'] );
 		}
 
 		$response_data = $response->get_data();
