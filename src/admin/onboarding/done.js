@@ -26,9 +26,6 @@ const Done = () => {
 		apiFetch( {
 			path: '/sureforms/v1/onboarding/set-status',
 			method: 'POST',
-			headers: {
-				'X-WP-Nonce': srfm_admin.nonce,
-			},
 		} ).then( () => {
 			window.location.href = `${ srfm_admin.site_url }/wp-admin/admin.php?page=add-new-form`;
 		} );

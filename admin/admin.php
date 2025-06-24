@@ -557,7 +557,6 @@ class Admin {
 			'onboarding_completed'    => method_exists( $onboarding_instance, 'get_onboarding_status' ) ? $onboarding_instance->get_onboarding_status() : false,
 			'onboarding_redirect'     => isset( $_GET['srfm-activation-redirect'] ), // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce is not required for the activation redirection.
 			'srfm_ai_details'         => AI_Helper::get_current_usage_details(),
-			'nonce'                   => current_user_can( 'manage_options' ) ? wp_create_nonce( 'wp_rest' ) : '',
 		];
 
 		$is_screen_sureforms_menu          = Helper::validate_request_context( 'sureforms_menu', 'page' );

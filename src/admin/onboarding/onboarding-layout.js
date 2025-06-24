@@ -42,9 +42,6 @@ const NavBar = () => {
 							wp.apiFetch( {
 								path: '/sureforms/v1/onboarding/set-status',
 								method: 'POST',
-								headers: {
-									'X-WP-Nonce': srfm_admin.nonce,
-								},
 							} ).then( () => {
 								window.location.href =
 									srfm_admin.sureforms_dashboard_url;
