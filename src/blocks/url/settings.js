@@ -14,7 +14,7 @@ import { useErrMessage } from '@Blocks/util';
 import ConditionalLogic from '@Components/conditional-logic';
 
 export default ( { attributes, setAttributes } ) => {
-	const { help, required, defaultValue, errorMsg } = attributes;
+	const { help, required, defaultValue, errorMsg, readOnly } = attributes;
 
 	const {
 		currentMessage: currentErrorMsg,
@@ -45,6 +45,15 @@ export default ( { attributes, setAttributes } ) => {
 								setAttributes( { defaultValue: value } )
 							}
 						/>
+						{ defaultValue && (
+							<ToggleControl
+								label={ __( 'Read Only', 'sureforms' ) }
+								checked={ readOnly }
+								onChange={ ( checked ) =>
+									setAttributes( { readOnly: checked } )
+								}
+							/>
+						) }
 						<ToggleControl
 							label={ __( 'Required', 'sureforms' ) }
 							checked={ required }

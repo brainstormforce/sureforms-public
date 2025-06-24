@@ -52,8 +52,10 @@ const InstantFormComponent = () => {
 		};
 	}, [] );
 
-	const _srfm_submit_button_text = getMetaValue._srfm_submit_button_text || '';
-	const _srfm_instant_form_settings = getMetaValue._srfm_instant_form_settings || {};
+	const _srfm_submit_button_text =
+		getMetaValue._srfm_submit_button_text || '';
+	const _srfm_instant_form_settings =
+		getMetaValue._srfm_instant_form_settings || {};
 	const _srfm_forms_styling = getMetaValue._srfm_forms_styling || {};
 	const prefix = getMetaValue?.getPermalinkParts?.prefix;
 	const postName = getMetaValue?.getPermalinkParts?.postName;
@@ -131,10 +133,12 @@ const InstantFormComponent = () => {
 
 			const toggleElementsStyle = document.createElement( 'style' );
 			toggleElementsStyle.id = styleTagID;
-			toggleElementsStyle.innerText = toggleElements.join( ', ' ) + '{ display:none !important; }';
+			toggleElementsStyle.innerText =
+				toggleElements.join( ', ' ) + '{ display:none !important; }';
 
 			// Adding visibility:hidden separately so that it don't create visual disturbance.
-			toggleElementsStyle.innerText += '.editor-header__settings > :not(.srfm-instant-form-root) { visibility:hidden !important; }';
+			toggleElementsStyle.innerText +=
+				'.editor-header__settings > :not(.srfm-instant-form-root) { visibility:hidden !important; }';
 
 			document.head.append( toggleElementsStyle );
 		}
@@ -145,10 +149,19 @@ const InstantFormComponent = () => {
 		const instantStyles = [];
 
 		// Instantly display changes inside iframe without refreshing the iframe.
-		switch ( findDifferentKeyValue( live_mode_prev_srfm_instant_form_settings, _srfm_instant_form_settings ) ) {
+		switch (
+			findDifferentKeyValue(
+				live_mode_prev_srfm_instant_form_settings,
+				_srfm_instant_form_settings
+			)
+		) {
 			case 'cover_color':
 				instantStyles.push( `
-					${ ! use_banner_as_page_background ? '.single-sureforms_form .srfm-single-page-container .srfm-page-banner' : 'html body.single-sureforms_form' } {
+					${
+	! use_banner_as_page_background
+		? '.single-sureforms_form .srfm-single-page-container .srfm-page-banner'
+		: 'html body.single-sureforms_form'
+} {
 						background-color: ${ cover_color };
 					}
 				` );
@@ -170,11 +183,14 @@ const InstantFormComponent = () => {
 	};
 
 	// Filter to add additional metas for live preview.
-	const additionalMetasForLivePreview = applyFilters( 'srfm.instantFormLivePreviewAdditionalMetas', {
-		isLiveMode,
-		_srfm_submit_button_text,
-		 _srfm_instant_form_settings,
-	} );
+	const additionalMetasForLivePreview = applyFilters(
+		'srfm.instantFormLivePreviewAdditionalMetas',
+		{
+			isLiveMode,
+			_srfm_submit_button_text,
+			_srfm_instant_form_settings,
+		}
+	);
 
 	const liveModeDependencies = Object.values( additionalMetasForLivePreview );
 
@@ -195,8 +211,7 @@ const InstantFormComponent = () => {
 		liveModeDependencies.forEach( ( value ) => {
 			Object.keys( value ).forEach( ( key ) => {
 				params.set( key, value[ key ] );
-			}
-			);
+			} );
 		} );
 
 		url.search = params.toString();
@@ -208,14 +223,18 @@ const InstantFormComponent = () => {
 	 * Manage live preview mode.
 	 */
 	useEffect( () => {
-		const contentArea = document.querySelector( '#editor .interface-interface-skeleton__editor' );
+		const contentArea = document.querySelector(
+			'#editor .interface-interface-skeleton__editor'
+		);
 
 		if ( ! contentArea ) {
 			live_mode_prev_srfm_instant_form_settings = {};
 			return;
 		}
 
-		let iframe = contentArea.querySelector( '.srfm-instant-form-live-mode-iframe' );
+		let iframe = contentArea.querySelector(
+			'.srfm-instant-form-live-mode-iframe'
+		);
 
 		if ( ! isLiveMode ) {
 			// Unload live mode iframe is live mode is disabled.
@@ -233,7 +252,10 @@ const InstantFormComponent = () => {
 		if ( ! iframe ) {
 			iframe = document.createElement( 'iframe' );
 			iframe.className = 'srfm-instant-form-live-mode-iframe';
-			iframe.setAttribute( 'style', 'height:100vh;background-color:#ffffff;' );
+			iframe.setAttribute(
+				'style',
+				'height:100vh;background-color:#ffffff;'
+			);
 			contentArea.append( iframe );
 		}
 
@@ -243,7 +265,9 @@ const InstantFormComponent = () => {
 
 		if ( instantStyles.length > 0 ) {
 			/** @type {HTMLStyleElement} */
-			let styleTag = iframeContentDocument.head.querySelector( '#srfm-instant-form-live-mode-styles' );
+			let styleTag = iframeContentDocument.head.querySelector(
+				'#srfm-instant-form-live-mode-styles'
+			);
 
 			if ( ! styleTag ) {
 				styleTag = document.createElement( 'style' );
@@ -263,9 +287,7 @@ const InstantFormComponent = () => {
 		}
 
 		live_mode_prev_srfm_instant_form_settings = _srfm_instant_form_settings;
-	}, [
-		...liveModeDependencies,
-	] );
+	}, [ ...liveModeDependencies ] );
 
 	const onHandleChange = ( key, value ) => {
 		if ( _srfm_instant_form_settings?.[ key ] === value ) {
@@ -346,19 +368,36 @@ const InstantFormComponent = () => {
 	};
 
 	// apply filters to show/hide instant form components.
-	const { showInstantFormSiteLogoGroup, showInstantFormStylingGroup, showInstantFormTitleSetting } = applyFilters( 'srfm.instantFormComponent', {
+	const {
+		showInstantFormSiteLogoGroup,
+		showInstantFormStylingGroup,
+		showInstantFormTitleSetting,
+	} = applyFilters( 'srfm.instantFormComponent', {
 		showInstantFormSiteLogoGroup: true,
 		showInstantFormStylingGroup: true,
 		showInstantFormTitleSetting: true,
 	} );
 
 	// Filter to add additional settings to instant form popup.
-	const additionalSettings = getInstantFormAdditionalSettings( [], { setHidePopover } );
+	const additionalSettings = getInstantFormAdditionalSettings( [], {
+		setHidePopover,
+	} );
 
 	return (
 		<>
-			<button ref={ setPopoverAnchor } onClick={ () => setOpenPopover( ! openPopover ) } className="srfm-instant-form-button">
-				<div className="srfm-instant-form-status" style={ !! enable_instant_form ? { backgroundColor: '#22C55E' } : {} } />
+			<button
+				ref={ setPopoverAnchor }
+				onClick={ () => setOpenPopover( ! openPopover ) }
+				className="srfm-instant-form-button"
+			>
+				<div
+					className="srfm-instant-form-status"
+					style={
+						!! enable_instant_form
+							? { backgroundColor: '#22C55E' }
+							: {}
+					}
+				/>
 				<span>{ __( 'Instant Form', 'sureforms' ) }</span>
 			</button>
 
@@ -369,12 +408,19 @@ const InstantFormComponent = () => {
 					placement="bottom-end"
 					anchor={ popoverAnchor }
 					onFocusOutside={ ( event ) => {
-						if ( event.relatedTarget?.className === popoverAnchor.className ) {
+						if (
+							event.relatedTarget?.className ===
+							popoverAnchor.className
+						) {
 							// Bail if clicked on the Instant Form toggle button, and remove Live Preview.
 							return;
 						}
 
-						if ( event.relatedTarget?.className?.includes( 'media-modal' ) ) {
+						if (
+							event.relatedTarget?.className?.includes(
+								'media-modal'
+							)
+						) {
 							// Unloading the Popover triggers error when media uploader modal is opened.
 							// Don't close the Popover when media uploader is opened, instead just hide the popover.
 							setHidePopover( true );
@@ -386,12 +432,19 @@ const InstantFormComponent = () => {
 					className="srfm-instant-form-popover"
 				>
 					<div className="srfm-instant-form-settings-container">
-
 						<div className="srfm-instant-form-settings-group">
 							<InstantFormToggle
-								label={ __( 'Enable Instant Form', 'sureforms' ) }
+								label={ __(
+									'Enable Instant Form',
+									'sureforms'
+								) }
 								checked={ true === enable_instant_form }
-								onChange={ () => onHandleChange( 'enable_instant_form', ! enable_instant_form ) }
+								onChange={ () =>
+									onHandleChange(
+										'enable_instant_form',
+										! enable_instant_form
+									)
+								}
 							/>
 
 							<InstantFormToggle
@@ -400,49 +453,67 @@ const InstantFormComponent = () => {
 								onChange={ () => setIsLiveMode( ! isLiveMode ) }
 							/>
 
-							<ConversationalFormSettingsPreview setHidePopover={ setHidePopover } />
+							<ConversationalFormSettingsPreview
+								setHidePopover={ setHidePopover }
+							/>
 
-							{
-								showInstantFormTitleSetting &&
+							{ showInstantFormTitleSetting && (
 								<InstantFormToggle
 									label={ __( 'Show Title', 'sureforms' ) }
 									checked={ true === single_page_form_title }
-									onChange={ () => onHandleChange( 'single_page_form_title', ! single_page_form_title ) }
+									onChange={ () =>
+										onHandleChange(
+											'single_page_form_title',
+											! single_page_form_title
+										)
+									}
 								/>
-							}
-
+							) }
 						</div>
 
 						<div className="srfm-instant-form-settings-separator" />
 
-						{
-							additionalSettings.length > 0 && (
-								additionalSettings.map( ( setting, index ) => (
-									<div key={ index }>
-										{ setting }
-									</div>
-								) )
-							)
-						}
+						{ additionalSettings.length > 0 &&
+							additionalSettings.map( ( setting, index ) => (
+								<div key={ index }>{ setting }</div>
+							) ) }
 
-						{
-						 showInstantFormSiteLogoGroup &&
+						{ showInstantFormSiteLogoGroup && (
 							<>
 								<div className="srfm-instant-form-settings-group">
 									<div className="srfm-instant-form-settings">
-										<label>{ __( 'Site Logo', 'sureforms' ) }</label>
+										<label>
+											{ __( 'Site Logo', 'sureforms' ) }
+										</label>
 										<SRFMMediaPicker
 											label={ '' }
-											onModalClose={ () => setHidePopover( false ) }
-											onSelectImage={ ( media ) => onImageSelect( 'site_logo', media ) }
+											onModalClose={ () =>
+												setHidePopover( false )
+											}
+											onSelectImage={ ( media ) =>
+												onImageSelect(
+													'site_logo',
+													media
+												)
+											}
 											backgroundImage={ site_logo }
-											onRemoveImage={ () => onHandleChange( 'site_logo', '' ) }
+											onRemoveImage={ () =>
+												onHandleChange(
+													'site_logo',
+													''
+												)
+											}
 											isFormSpecific={ true }
 										/>
 									</div>
 
 									<div className="srfm-instant-form-settings">
-										<label>{ __( 'Banner Background', 'sureforms' ) }</label>
+										<label>
+											{ __(
+												'Banner Background',
+												'sureforms'
+											) }
+										</label>
 										<MultiButtonsControl
 											data={ {
 												value: cover_type,
@@ -451,65 +522,116 @@ const InstantFormComponent = () => {
 											options={ [
 												{
 													value: 'color',
-													label: __( 'Color', 'sureforms' ),
+													label: __(
+														'Color',
+														'sureforms'
+													),
 												},
 												{
 													value: 'image',
-													label: __( 'Image', 'sureforms' ),
+													label: __(
+														'Image',
+														'sureforms'
+													),
 												},
 											] }
 											showIcons={ false }
-											onChange={ ( value ) => onHandleChange( 'cover_type', value ) }
+											onChange={ ( value ) =>
+												onHandleChange(
+													'cover_type',
+													value
+												)
+											}
 										/>
 									</div>
 
-									{
-										'image' === cover_type ? (
-											<div className="srfm-instant-form-settings">
-												<label>{ __( 'Upload Image', 'sureforms' ) }</label>
-												<SRFMMediaPicker
-													label={ '' }
-													onModalClose={ () => setHidePopover( false ) }
-													onSelectImage={ ( media ) => onImageSelect( 'cover_image', media ) }
-													backgroundImage={ cover_image }
-													onRemoveImage={ () => onHandleChange( 'cover_image', '' ) }
-													isFormSpecific={ true }
-												/>
-											</div>
-										) : (
-											<div className="srfm-instant-form-settings srfm-instant-form-settings-inline">
-												<label>{ __( 'Background Color', 'sureforms' ) }</label>
-												<AdvancedPopColorControl
-													colorValue={ cover_color }
-													data={ {
-														value: cover_color,
-														label: 'cover_color',
-													} }
-													onColorChange={ ( colorValue ) => onHandleChange( 'cover_color', colorValue ) }
-													value={ cover_color }
-													isFormSpecific={ true }
-												/>
-											</div>
-										)
-									}
+									{ 'image' === cover_type ? (
+										<div className="srfm-instant-form-settings">
+											<label>
+												{ __(
+													'Upload Image',
+													'sureforms'
+												) }
+											</label>
+											<SRFMMediaPicker
+												label={ '' }
+												onModalClose={ () =>
+													setHidePopover( false )
+												}
+												onSelectImage={ ( media ) =>
+													onImageSelect(
+														'cover_image',
+														media
+													)
+												}
+												backgroundImage={ cover_image }
+												onRemoveImage={ () =>
+													onHandleChange(
+														'cover_image',
+														''
+													)
+												}
+												isFormSpecific={ true }
+											/>
+										</div>
+									) : (
+										<div className="srfm-instant-form-settings srfm-instant-form-settings-inline">
+											<label>
+												{ __(
+													'Background Color',
+													'sureforms'
+												) }
+											</label>
+											<AdvancedPopColorControl
+												colorValue={ cover_color }
+												data={ {
+													value: cover_color,
+													label: 'cover_color',
+												} }
+												onColorChange={ (
+													colorValue
+												) =>
+													onHandleChange(
+														'cover_color',
+														colorValue
+													)
+												}
+												value={ cover_color }
+												isFormSpecific={ true }
+											/>
+										</div>
+									) }
 								</div>
 								<div className="srfm-instant-form-settings-separator" />
 							</>
-						}
+						) }
 
-						{
-						 showInstantFormStylingGroup &&
+						{ showInstantFormStylingGroup && (
 							<>
 								<div className="srfm-instant-form-settings-group">
 									<InstantFormToggle
-										label={ __( 'Use banner as page background', 'sureforms' ) }
-										checked={ true === use_banner_as_page_background }
-										onChange={ () => onHandleChange( 'use_banner_as_page_background', ! use_banner_as_page_background ) }
+										label={ __(
+											'Use banner as page background',
+											'sureforms'
+										) }
+										checked={
+											true ===
+											use_banner_as_page_background
+										}
+										onChange={ () =>
+											onHandleChange(
+												'use_banner_as_page_background',
+												! use_banner_as_page_background
+											)
+										}
 									/>
 
 									<div className="srfm-instant-form-settings">
 										<Range
-											label={ __( 'Form Width', 'sureforms' ) }
+											label={ __(
+												'Form Width',
+												'sureforms'
+											) }
 											data={ {
 												value: form_container_width,
 												label: 'form_container_width',
@@ -520,12 +642,20 @@ const InstantFormComponent = () => {
 											displayUnit={ false }
 											responsive={ false }
 											isFormSpecific={ true }
-											onChange={ ( value ) => onHandleChange( 'form_container_width', value ) }
+											onChange={ ( value ) =>
+												onHandleChange(
+													'form_container_width',
+													value
+												)
+											}
 										/>
 									</div>
 									<div className="srfm-instant-form-settings">
 										<Spacing
-											label={ __( 'Instant Form Padding', 'sureforms' ) }
+											label={ __(
+												'Instant Form Padding',
+												'sureforms'
+											) }
 											valueTop={ {
 												value: instant_form_padding_top,
 												label: 'instant_form_padding_top',
@@ -550,12 +680,17 @@ const InstantFormComponent = () => {
 												value: instant_form_padding_link,
 												label: 'instant_form_padding_link',
 											} }
-											setAttributes={ customSetAttributes }
+											setAttributes={
+												customSetAttributes
+											}
 										/>
 									</div>
 									<div className="srfm-instant-form-settings">
 										<Spacing
-											label={ __( 'Instant Form Border Radius', 'sureforms' ) }
+											label={ __(
+												'Instant Form Border Radius',
+												'sureforms'
+											) }
 											valueTop={ {
 												value: instant_form_border_radius_top,
 												label: 'instant_form_border_radius_top',
@@ -580,13 +715,15 @@ const InstantFormComponent = () => {
 												value: instant_form_border_radius_link,
 												label: 'instant_form_border_radius_link',
 											} }
-											setAttributes={ customSetAttributes }
+											setAttributes={
+												customSetAttributes
+											}
 										/>
 									</div>
 								</div>
 								<div className="srfm-instant-form-settings-separator" />
 							</>
-						}
+						) }
 
 						<div className="srfm-instant-form-settings-group">
 							<div className="srfm-instant-form-settings">
@@ -597,65 +734,120 @@ const InstantFormComponent = () => {
 										disabled={ editPostSlug.edit }
 										type="url"
 										value={ link }
-										onClick={ () => setEditPostSlug( { ...editPostSlug, ...{ edit: ! editPostSlug.edit } } ) }
+										onClick={ () =>
+											setEditPostSlug( {
+												...editPostSlug,
+												...{
+													edit: ! editPostSlug.edit,
+												},
+											} )
+										}
 									/>
-									<button
-										type="button"
-										ref={ clipboardRef }
-									>
-										{ isLinkCopied ? parse( svgIcons[ 'square-checked' ] ) : parse( svgIcons.copy ) }
+									<button type="button" ref={ clipboardRef }>
+										{ isLinkCopied
+											? parse(
+												svgIcons[ 'square-checked' ]
+											  )
+											: parse( svgIcons.copy ) }
 									</button>
 								</div>
 
-								{
-									!! editPostSlug.edit && (
-										<Popover
-											variant="toolbar"
-											noArrow={ false }
-											focusOnMount={ true }
-											onFocusOutside={ () => setEditPostSlug( { ...editPostSlug, ...{ edit: false } } ) }
-										>
-											<div className="srfm-instant-form-settings-container">
-												<div className="srfm-instant-form-settings-group">
-													<div className="srfm-instant-form-settings">
-														<label>{ __( 'URL Slug', 'sureforms' ) }</label>
+								{ !! editPostSlug.edit && (
+									<Popover
+										variant="toolbar"
+										noArrow={ false }
+										focusOnMount={ true }
+										onFocusOutside={ () =>
+											setEditPostSlug( {
+												...editPostSlug,
+												...{ edit: false },
+											} )
+										}
+									>
+										<div className="srfm-instant-form-settings-container">
+											<div className="srfm-instant-form-settings-group">
+												<div className="srfm-instant-form-settings">
+													<label>
+														{ __(
+															'URL Slug',
+															'sureforms'
+														) }
+													</label>
 
-														<input
-															type="text"
-															value={ ! editPostSlug.forceEmptyField ? postName : '' }
-															spellCheck={ false }
-															autoComplete={ 'off' }
-															onChange={ ( e ) => {
-																editPost( {
-																	slug: e.target.value,
-																} );
+													<input
+														type="text"
+														value={
+															! editPostSlug.forceEmptyField
+																? postName
+																: ''
+														}
+														spellCheck={ false }
+														autoComplete={ 'off' }
+														onChange={ ( e ) => {
+															editPost( {
+																slug: e.target
+																	.value,
+															} );
 
-																if ( e.target.value ) {
-																	return setEditPostSlug( { ...editPostSlug, ...{ forceEmptyField: false } } );
-																}
+															if (
+																e.target.value
+															) {
+																return setEditPostSlug(
+																	{
+																		...editPostSlug,
+																		...{
+																			forceEmptyField: false,
+																		},
+																	}
+																);
+															}
 
-																// Force empty field of this input field.
-																setEditPostSlug( { ...editPostSlug, ...{ forceEmptyField: true } } );
-															} }
-															onBlur={ ( e ) => {
-																editPost( {
-																	slug: cleanForSlug( e.target.value.replace( prefix, '' ) ),
-																} );
-																setEditPostSlug( { ...editPostSlug, ...{ forceEmptyField: false } } );
-															} }
-														/>
-														<small>
-															{ __( 'The last part of the URL.', 'sureforms' ) }{ ' ' }
-															<ExternalLink href={ 'https://wordpress.org/documentation/article/page-post-settings-sidebar/#permalink' }>
-																{ __( 'Learn more.', 'sureforms' ) }
-															</ExternalLink>
-														</small>
-													</div>
+															// Force empty field of this input field.
+															setEditPostSlug( {
+																...editPostSlug,
+																...{
+																	forceEmptyField: true,
+																},
+															} );
+														} }
+														onBlur={ ( e ) => {
+															editPost( {
+																slug: cleanForSlug(
+																	e.target.value.replace(
+																		prefix,
+																		''
+																	)
+																),
+															} );
+															setEditPostSlug( {
+																...editPostSlug,
+																...{
+																	forceEmptyField: false,
+																},
+															} );
+														} }
+													/>
+													<small>
+														{ __(
+															'The last part of the URL.',
+															'sureforms'
+														) }{ ' ' }
+														<ExternalLink
+															href={
+																'https://wordpress.org/documentation/article/page-post-settings-sidebar/#permalink'
+															}
+														>
+															{ __(
+																'Learn more.',
+																'sureforms'
+															) }
+														</ExternalLink>
+													</small>
 												</div>
 											</div>
-										</Popover>
-									)
-								}
+										</div>
+									</Popover>
+								) }
 							</div>
 						</div>
 					</div>
@@ -670,12 +862,10 @@ export const InstantFormToggle = ( props ) => {
 
 	return (
 		<div className="srfm-instant-form-settings srfm-instant-form-settings-inline">
-			<label htmlFor={ toggleID } style={ { cursor: 'pointer' } }>{ props.label }</label>
-			<FormToggle
-				{ ...props }
-				label=""
-				id={ toggleID }
-			/>
+			<label htmlFor={ toggleID } style={ { cursor: 'pointer' } }>
+				{ props.label }
+			</label>
+			<FormToggle { ...props } label="" id={ toggleID } />
 		</div>
 	);
 };
@@ -698,7 +888,9 @@ export default () => {
 			if ( document.querySelector( '.srfm-instant-form-root' ) ) {
 				return;
 			}
-			const toolbarElement = editorEl.querySelector( '.edit-post-header__settings' ) || editorEl.querySelector( '.editor-header__settings' );
+			const toolbarElement =
+				editorEl.querySelector( '.edit-post-header__settings' ) ||
+				editorEl.querySelector( '.editor-header__settings' );
 			if ( !! toolbarElement ) {
 				toolbarElement.prepend( rootDiv );
 			}

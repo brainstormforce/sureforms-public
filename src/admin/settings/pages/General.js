@@ -99,7 +99,9 @@ const GeneralPage = ( {
 							</Button>
 						</div>
 						<Select
-							value={ getReportsLabel( emailTabOptions.srfm_schedule_report ) }
+							value={ getReportsLabel(
+								emailTabOptions.srfm_schedule_report
+							) }
 							onChange={ ( value ) =>
 								updateGlobalSettings(
 									'srfm_schedule_report',
@@ -155,26 +157,51 @@ const GeneralPage = ( {
 		);
 	};
 
-	const UsageTrackingContent = () => {
-		const description = (
-			<>
-				<p>
-					{ __(
-						'Allow SureForms to track non-sensitive usage tracking data',
-						'sureforms'
-					) }
-				</p>
-				<a href="https://store.brainstormforce.com/usage-tracking/?utm_source=sureforms_global_settings&utm_medium=surefroms_general_settings&utm_campaign=usage_tracking" target="_blank" rel="noopener noreferrer">
-					{ __( ' Learn More', 'sureforms' ) }
-				</a>
-			</>
-		);
-
+	const AdminNotificationContent = () => {
 		return (
 			<Switch
 				label={ {
-					heading: __( 'Enable Usage Tracking', 'sureforms' ),
-					description,
+					heading: __( 'Enable Admin Notification', 'sureforms' ),
+					description: __(
+						'Admin notifications keep you informed about new form entries since your last visit.',
+						'sureforms'
+					),
+				} }
+				value={ generalTabOptions.srfm_admin_notification }
+				onChange={ ( value ) =>
+					updateGlobalSettings(
+						'srfm_admin_notification',
+						value,
+						'general-settings'
+					)
+				}
+			/>
+		);
+	};
+
+	const UsageTrackingContent = () => {
+		return (
+			<Switch
+				label={ {
+					heading: __( 'Enable Anonymous Analytics', 'sureforms' ),
+					description: (
+						<>
+							<p>
+								{ __(
+									'Collect non-sensitive information from your website, such as the PHP version and features used, to help us fix bugs faster, make smarter decisions, and build features that actually matter to you. ',
+									'sureforms'
+								) }
+								<a
+									href="https://sureforms.com/share-usage-data/"
+									target="_blank"
+									rel="noopener noreferrer"
+									className="text-field-helper"
+								>
+									{ __( 'Learn More', 'sureforms' ) }
+								</a>
+							</p>
+						</>
+					),
 				} }
 				value={ generalTabOptions.srfm_bsf_analytics }
 				onChange={ ( value ) =>
@@ -200,13 +227,16 @@ const GeneralPage = ( {
 				title={ __( 'IP Logging', 'sureforms' ) }
 				content={ IPLoggingContent() }
 			/>
-			{ ! srfm_admin?.is_pro_active &&
-				<ContentSection
-					loading={ loading }
-					title={ __( 'Usage Tracking', 'sureforms' ) }
-					content={ UsageTrackingContent() }
-				/>
-			}
+			<ContentSection
+				loading={ loading }
+				title={ __( 'Admin Notification', 'sureforms' ) }
+				content={ AdminNotificationContent() }
+			/>
+			<ContentSection
+				loading={ loading }
+				title={ __( 'Anonymous Analytics', 'sureforms' ) }
+				content={ UsageTrackingContent() }
+			/>
 		</div>
 	);
 };

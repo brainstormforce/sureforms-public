@@ -15,7 +15,14 @@ const AFTER_SUBMISSION_OPTIONS = [
 	},
 ];
 
-const DefaultConfirmationTypes = ( { data, setData, pageOptions, setErrorMessage, errorMessage, keyValueComponent } ) => {
+const DefaultConfirmationTypes = ( {
+	data,
+	setData,
+	pageOptions,
+	setErrorMessage,
+	errorMessage,
+	keyValueComponent,
+} ) => {
 	const [ canDisplayError, setCanDisplayError ] = useState( false );
 	const handleEditorChange = ( newContent ) => {
 		setData( { ...data, message: newContent } );
@@ -68,10 +75,7 @@ const DefaultConfirmationTypes = ( { data, setData, pageOptions, setErrorMessage
 					<div className="space-y-6">
 						<div className="space-y-1.5">
 							<Label htmlFor="select-page">
-								{ __(
-									'Select Page to redirect',
-									'sureforms'
-								) }
+								{ __( 'Select Page to redirect', 'sureforms' ) }
 							</Label>
 							<Select
 								options={ pageOptions }
@@ -97,10 +101,12 @@ const DefaultConfirmationTypes = ( { data, setData, pageOptions, setErrorMessage
 										'sureforms'
 									) }
 								>
-									{ pageOptions?.find(
-										( option ) =>
-											option.value === data?.page_url
-									)?.label }
+									{
+										pageOptions?.find(
+											( option ) =>
+												option.value === data?.page_url
+										)?.label
+									}
 								</Select.Button>
 								<Select.Options>
 									{ pageOptions?.map( ( option ) => (
@@ -137,7 +143,9 @@ const DefaultConfirmationTypes = ( { data, setData, pageOptions, setErrorMessage
 							size="md"
 						/>
 						{ canDisplayError && errorMessage && (
-							<Label variant="error" size="sm">{ errorMessage }</Label>
+							<Label variant="error" size="sm">
+								{ errorMessage }
+							</Label>
 						) }
 					</div>
 					{ keyValueComponent() }

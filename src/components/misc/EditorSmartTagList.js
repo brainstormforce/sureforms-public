@@ -18,17 +18,19 @@ export default function EditorSmartTagList( {
 	const controls = [];
 
 	// list of smart tags shown in the editor side menu
-	applyFilters( 'srfm.editorSmartTagList.editorTagsArray', tagsArray, tagFor ).forEach(
-		( tagsArrayItem ) => {
-			controls.push(
-				generateDropDownOptions(
-					setTargetData,
-					tagsArrayItem.tags,
-					tagsArrayItem.label
-				)
-			);
-		}
-	);
+	applyFilters(
+		'srfm.editorSmartTagList.editorTagsArray',
+		tagsArray,
+		tagFor
+	).forEach( ( tagsArrayItem ) => {
+		controls.push(
+			generateDropDownOptions(
+				setTargetData,
+				tagsArrayItem.tags,
+				tagsArrayItem.label
+			)
+		);
+	} );
 
 	return (
 		<DropdownMenu

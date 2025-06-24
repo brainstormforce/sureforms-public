@@ -197,7 +197,8 @@ function onTurnstileError() {
 // eslint-disable-next-line
 function onGCaptchaV2CheckBoxError() {
 	showErrorMessageOnRecaptchaError( {
-		containerSelector: '.g-recaptcha[recaptcha-type="v2-checkbox"]:not(.captcha-error-added)',
+		containerSelector:
+			'.g-recaptcha[recaptcha-type="v2-checkbox"]:not(.captcha-error-added)',
 		message: srfm_submit?.messages?.srfm_google_captcha_error_message,
 	} );
 }
@@ -205,7 +206,8 @@ function onGCaptchaV2CheckBoxError() {
 // eslint-disable-next-line
 function onGCaptchaV3Error() {
 	showErrorMessageOnRecaptchaError( {
-		containerSelector: '.g-recaptcha[recaptcha-type="v3-reCAPTCHA"]:not(.captcha-error-added)',
+		containerSelector:
+			'.g-recaptcha[recaptcha-type="v3-reCAPTCHA"]:not(.captcha-error-added)',
 		message: srfm_submit?.messages?.srfm_google_captcha_error_message,
 	} );
 }

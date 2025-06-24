@@ -225,7 +225,7 @@ export default () => {
 	return (
 		<Container
 			direction="column"
-			className="p-4 gap-2 rounded-xl bg-background-primary border-0.5 border-solid border-border-subtle shadow-sm-blur-2"
+			className="w-full p-4 gap-2 rounded-xl bg-background-primary border-0.5 border-solid border-border-subtle shadow-sm-blur-2"
 		>
 			<Container.Item className="flex flex-wrap items-center justify-between p-1 gap-6 sm:flex-row sm:gap-2">
 				<Title
@@ -348,7 +348,8 @@ export default () => {
 						variant="help"
 						className="font-semibold"
 					>
-						{ getFormLabel( selectedForm ) || 'All Forms' }
+						{ getFormLabel( selectedForm ) ||
+								__( 'All Forms', 'sureforms' ) }
 					</Label>
 					<Container align="center" className="gap-2 p-1">
 						<div className="w-2 h-2 bg-chart-purple-500 rounded-sm"></div>
