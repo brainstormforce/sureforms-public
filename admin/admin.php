@@ -687,7 +687,6 @@ class Admin {
 			];
 
 			wp_enqueue_script( SRFM_SLUG . '-settings', SRFM_URL . 'assets/build/' . $asset_handle . '.js', $script_info['dependencies'], SRFM_VER, true );
-			wp_enqueue_style( SRFM_SLUG . '-setting-styles', SRFM_URL . 'assets/build/' . $asset_handle . '.css', [ 'wp-components' ], SRFM_VER, 'all' );
 			wp_localize_script(
 				SRFM_SLUG . '-settings',
 				SRFM_SLUG . '_admin',
