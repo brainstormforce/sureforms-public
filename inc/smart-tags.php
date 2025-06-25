@@ -350,6 +350,13 @@ class Smart_Tags {
 							$replacement_data .= '<a href=' . urldecode( $value ) . ' target="_blank">' . __( 'View', 'sureforms' ) . '</a><br>';
 						}
 					}
+				} elseif ( 0 === strpos( $block_type, 'srfm-textarea' ) ) {
+					// Special handling for textarea blocks to preserve HTML formatting.
+					// Step 1 - Sanitize raw input.
+					$sanitized_content = Helper::sanitize_textarea( Helper::get_string_value( $submission_item_value ) );
+					// Step 2 - Decode HTML entities to preserve formatting.
+					$decoded_content   = html_entity_decode( $sanitized_content );
+					$replacement_data .= $decoded_content;
 				} else {
 					// if $submission_item_value is a url then add <a> tag. with view text.
 					if ( is_string( $submission_item_value ) && filter_var( $submission_item_value, FILTER_VALIDATE_URL ) ) {
