@@ -266,11 +266,11 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 * Improvement: Added premium plugin detection in Dashboard, preventing Starter Templates installation when premium version is already active.
 * Fix: Addressed the accessibility issue associated with the Textarea field label.
 * Fix: Elementor popup compatibility by ensuring SureForms scripts properly initialize when forms are displayed within popups.
+* Fix: Shortcode renders form when form is in trash.
 = 1.7.2 - 12th June 2025 =
 * New: Added {current_page_url} smart tag under generic tags.
 * Improvement: Added an option to disable input fields with default values.
 * Fix: Added editor background compatibility with Kadence theme.
-* Fix: Shortcode renders form when form is in trash
 * Fix: This update addressed a security bug. Props to Dmitrii Ignatyev from CleanTalk for reporting it responsibly to our team.
 = 1.7.1 - 9th June 2025 =
 * New: Added rich text support for Textarea field.
