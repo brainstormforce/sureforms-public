@@ -75,8 +75,10 @@ class Admin {
 		add_filter( 'wpforms_current_user_can', [ $this, 'disable_wpforms_capabilities' ], 10, 3 );
 
 		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_admin_pointer' ] );
-		add_action( 'wp_ajax_sureforms_should_show_pointer', [ $this, 'ajax_pointer_should_show' ] );
-		add_action( 'wp_ajax_sureforms_dismiss_pointer', [ $this, 'ajax_pointer_dismiss' ] );
+		// Ajax callbacks for wp-pointer functionality.
+		add_action( 'wp_ajax_should_show_pointer', [ $this, 'pointer_should_show' ] );
+		add_action( 'wp_ajax_sureforms_dismiss_pointer', [ $this, 'pointer_dismissed' ] );
+		add_action( 'wp_ajax_sureforms_accept_cta', [ $this, 'pointer_accepted_cta' ] );
 	}
 
 	/**
@@ -999,11 +1001,22 @@ class Admin {
 	/**
 	 * Determine if the admin pointer should be visible on this page.
 	 *
+	 * @since x.x.x
 	 * @return bool
 	 */
 	private function is_admin_pointer_visible() {
 		global $pagenow;
 		$allowed_pages = [ 'index.php', 'options-general.php' ];
+
+		// Do not show if pointer dismissed, accepted, or more than 1 form exists.
+		if (
+			! empty( Helper::get_srfm_option( 'pointer_popup_dismissed' ) ) ||
+			! empty( Helper::get_srfm_option( 'pointer_popup_accepted' ) ) ||
+			(int) ( wp_count_posts( SRFM_FORMS_POST_TYPE )->publish ?? 0 ) > 1
+		) {
+			return false;
+		}
+
 		if ( in_array( $pagenow, $allowed_pages, true ) ) {
 			return true;
 		}
@@ -1012,9 +1025,12 @@ class Admin {
 	}
 
 	/**
-	 * Enqueue the pointer popup script and styles for SureForms admin pages.
+	 * Enqueueus the admin pointer script and styles.
+	 *
+	 * @return void
+	 * @since x.x.x
 	 */
-	public function enqueue_admin_pointer( $hook_suffix ) {
+	public function enqueue_admin_pointer() {
 		if ( ! $this->is_admin_pointer_visible() ) {
 			return;
 		}
@@ -1031,27 +1047,50 @@ class Admin {
 	}
 
 	/**
-	 * AJAX handler: Should show pointer?
+	 * Ajax handler for pointer popup visibility.
+	 *
+	 * @return void
+	 * @since x.x.x
 	 */
-	public function ajax_pointer_should_show() {
-		wp_send_json([
-			'show' => true,
-			'title' => __( 'SureForms is waiting for you!', 'sureforms' ),
-			'content' => sprintf(
-				'<span style="display:block;margin-bottom:8px;">%s</span><strong style="font-size:1.1em;">%s</strong>',
-				__( 'Get started by <strong>building your first form</strong>.', 'sureforms' ),
-				__( 'Experience the power of our intuitive <strong>AI Form Builder</strong>.', 'sureforms' ),
-			),
-			'button_text' => __( 'Build My First Form', 'sureforms' ),
-			'button_url' => admin_url( 'admin.php?page=add-new-form' ),
-		]);
+	public function pointer_should_show() {
+		wp_send_json(
+			[
+				'show'        => true,
+				'title'       => __( 'SureForms is waiting for you!', 'sureforms' ),
+				'content'     => sprintf(
+					'<span style="display:block;margin-bottom:8px;">%s</span><strong style="font-size:1.1em;">%s</strong>',
+					__( 'Get started by <strong>building your first form</strong>.', 'sureforms' ),
+					__( 'Experience the power of our intuitive <strong>AI Form Builder</strong>.', 'sureforms' ),
+				),
+				'button_text' => __( 'Build My First Form', 'sureforms' ),
+				'button_url'  => admin_url( 'admin.php?page=add-new-form' ),
+			]
+		);
 	}
 
 	/**
-	 * AJAX handler: Dismiss pointer.
+	 * Ajax callback for pointer popup dismissed action.
+	 *
+	 * @return void
+	 * @since x.x.x
 	 */
-	public function ajax_pointer_dismiss() {
-		update_user_meta( get_current_user_id(), 'sureforms_pointer_dismissed', 1 );
+	public function pointer_dismissed() {
+		// Use Helper to update srfm_options key.
+		Helper::update_srfm_option( 'pointer_popup_dismissed', time() );
+
+		wp_send_json_success();
+	}
+
+	/**
+	 * Ajax pointer accepted CTA callback.
+	 *
+	 * @return void
+	 * @since x.x.x
+	 */
+	public function pointer_accepted_cta() {
+		// Use Helper to update srfm_options key.
+		Helper::update_srfm_option( 'pointer_popup_accepted', time() );
+
 		wp_send_json_success();
 	}
 }
