@@ -168,7 +168,7 @@ function GeneralSettings( props ) {
 		} );
 	}
 
-	const singleSettings = applyFilters( 'srfm.singleSettings', [
+	const singleSettings = applyFilters( 'srfm.singleFormModalTabs', [
 		{
 			id: 'form_confirmation',
 			title: __( 'Form Confirmation', 'sureforms' ),
