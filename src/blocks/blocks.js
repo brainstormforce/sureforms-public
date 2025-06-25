@@ -19,6 +19,7 @@ import { BlockControls } from '@wordpress/block-editor';
 import { ToolbarGroup, ToolbarButton } from '@wordpress/components';
 import { getBlockTypes } from '@Blocks/util';
 import { __, sprintf } from '@wordpress/i18n';
+import ConditionalLogic from '@Components/conditional-logic';
 
 // Register store.
 import '../store/store.js';
@@ -190,4 +191,24 @@ addFilter(
 	'srfm.enable.responsiveToggle',
 	'srfm/disable-responsive-toggle',
 	() => false
+);
+
+/**
+ * Add conditional logic to the advanced heading settings.
+ */
+addFilter(
+	'srfm.advanced-heading.settings.advance',
+	'srfm/advanced-heading-settings-advance',
+	( items, props ) => {
+		const { setAttributes, attributes } = props;
+		return [
+			...items,
+			{
+				id: 'conditional-logic',
+				content: (
+					<ConditionalLogic { ...{ setAttributes, attributes } } />
+				),
+			},
+		];
+	}
 );
