@@ -77,7 +77,7 @@ const iconBlocks = [
 		],
 	},
 	{
-		icon: <LuUserPlus size={ 24 } color="#B4B4B4" />,
+		icon: <LuUserPlus size={ 24 } color="#B4B4B4" style={ { fill: 'none' } } />,
 		label: __( 'Register', 'sureforms' ),
 		showIn: [
 			'free',
