@@ -544,7 +544,7 @@ class Form_Submit {
 				'data'      => $modified_message,
 			];
 
-			do_action( 'srfm_form_submit', $form_submit_response, $submission_data, $form_data );
+			do_action( 'srfm_form_submit', $form_submit_response );
 
 			/**
 			 * Hook for enabling background processes.
@@ -626,7 +626,7 @@ class Form_Submit {
 				]
 			);
 
-			do_action( 'srfm_form_submit', $form_submit_response, $submission_data, $form_data );
+			do_action( 'srfm_form_submit', $form_submit_response );
 		} else {
 			$response = [
 				'success' => false,
