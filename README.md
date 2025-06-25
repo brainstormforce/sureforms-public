@@ -262,7 +262,7 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 ## Changelog ##
 ### 1.7.3 - 26th June 2025 ###
 * New: Introduced admin notifications to keep administrators informed about important updates and announcements.
-* Improvement: Enhanced form initialization with custom event support (srfm-form-init) for better compatibility with third-party scripts.
+* Improvement: Enhanced form initialization with custom event support (srfm_form_initialize) for better compatibility with third-party scripts.
 * Improvement: Added premium plugin detection in Dashboard, preventing Starter Templates installation when premium version is already active.
 * Fix: Addressed the accessibility issue associated with the Textarea field label.
 * Fix: Elementor popup compatibility by ensuring SureForms scripts properly initialize when forms are displayed within popups.
