@@ -14,8 +14,8 @@ msgstr ""
 #. Plugin Name of the plugin
 #. Author of the plugin
 #: sureforms.php
-#: admin/admin.php:173
-#: admin/admin.php:174
+#: admin/admin.php:180
+#: admin/admin.php:181
 #: inc/gutenberg-hooks.php:107
 #: inc/nps-notice.php:108
 #: inc/page-builders/bricks/elements/form-widget.php:66
@@ -42,8 +42,8 @@ msgstr "Un modo semplice ma potente per creare moduli moderni per il tuo sito we
 msgid "https://sureforms.com/"
 msgstr ""
 
-#: admin/admin.php:186
-#: admin/admin.php:187
+#: admin/admin.php:193
+#: admin/admin.php:194
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:2
 #: assets/build/page_header.js:172
@@ -52,9 +52,9 @@ msgstr ""
 msgid "Dashboard"
 msgstr "Cruscotto"
 
-#: admin/admin.php:204
-#: admin/admin.php:205
-#: admin/admin.php:408
+#: admin/admin.php:211
+#: admin/admin.php:212
+#: admin/admin.php:483
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:2
 #: assets/build/page_header.js:172
@@ -62,17 +62,17 @@ msgstr "Cruscotto"
 msgid "Settings"
 msgstr "Impostazioni"
 
-#: admin/admin.php:335
-#: admin/admin.php:336
-#: inc/post-types.php:129
+#: admin/admin.php:342
+#: admin/admin.php:343
+#: inc/post-types.php:173
 msgid "New Form"
 msgstr "Nuovo modulo"
 
-#: admin/admin.php:344
-#: admin/admin.php:345
-#: admin/admin.php:381
+#: admin/admin.php:351
+#: admin/admin.php:352
+#: admin/admin.php:392
 #: inc/global-settings/email-summary.php:107
-#: inc/post-types.php:1024
+#: inc/post-types.php:1068
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:2
 #: assets/build/page_header.js:172
@@ -81,11 +81,11 @@ msgid "Entries"
 msgstr "Voci"
 
 #. Translators: Post Title.
-#: admin/admin.php:488
+#: admin/admin.php:563
 msgid "Edit %1$s"
 msgstr "Modifica %1$s"
 
-#: admin/admin.php:892
+#: admin/admin.php:966
 #: api/block-patterns.php:110
 #: inc/ai-form-builder/ai-auth.php:45
 #: inc/ai-form-builder/ai-auth.php:81
@@ -98,23 +98,23 @@ msgstr "Modifica %1$s"
 #: inc/form-submit.php:848
 #: inc/forms-data.php:87
 #: inc/global-settings/global-settings.php:86
-#: inc/global-settings/global-settings.php:327
+#: inc/global-settings/global-settings.php:329
 #: inc/rest-api.php:92
 #: inc/rest-api.php:151
 msgid "Nonce verification failed."
 msgstr "Verifica del nonce fallita."
 
-#: admin/admin.php:901
+#: admin/admin.php:975
 msgid "You cannot view this entry because it is in trash."
 msgstr "Non puoi visualizzare questa voce perché è nel cestino."
 
 #. translators: %1$s: Opening anchor tag with URL, %2$s: Closing anchor tag, %3$s: SureForms Pro Plugin Name.
-#: admin/admin.php:946
+#: admin/admin.php:1020
 msgid "Please %1$sactivate%2$s your copy of %3$s to get new features, access support, receive update notifications, and more."
 msgstr "Per favore %1$sattiva%2$s la tua copia di %3$s per ottenere nuove funzionalità, accedere al supporto, ricevere notifiche di aggiornamento e altro ancora."
 
 #. translators: %1$s: SureForms version, %2$s: SureForms Pro Plugin Name, %3$s: SureForms Pro Version, %4$s: Anchor tag open, %5$s: Closing anchor tag.
-#: admin/admin.php:956
+#: admin/admin.php:1030
 msgid "SureForms %1$s requires minimum %2$s %3$s to work properly. Please update to the latest version from %4$shere%5$s."
 msgstr "SureForms %1$s richiede almeno %2$s %3$s per funzionare correttamente. Si prega di aggiornare all'ultima versione da %4$squi%5$s."
 
@@ -155,8 +155,8 @@ msgid "Mark as Unread"
 msgstr "Segna come non letto"
 
 #: admin/views/entries-list-table.php:125
-#: inc/post-types.php:206
-#: inc/post-types.php:233
+#: inc/post-types.php:250
+#: inc/post-types.php:277
 msgid "Export"
 msgstr "Esporta"
 
@@ -254,7 +254,7 @@ msgstr "Pubblicato"
 #: inc/email/email-template.php:157
 #: inc/email/email-template.php:163
 #: inc/smart-tags.php:350
-#: inc/smart-tags.php:356
+#: inc/smart-tags.php:363
 msgid "View"
 msgstr "Visualizza"
 
@@ -434,11 +434,11 @@ msgstr "Nessun plugin specificato"
 msgid "Plugin Successfully Activated"
 msgstr "Plugin attivato con successo"
 
-#: admin/admin.php:549
+#: admin/admin.php:624
 msgid "Activating..."
 msgstr "Attivazione in corso..."
 
-#: admin/admin.php:550
+#: admin/admin.php:625
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:2
 #: assets/build/page_header.js:172
@@ -446,16 +446,16 @@ msgstr "Attivazione in corso..."
 msgid "Activated"
 msgstr "Attivato"
 
-#: admin/admin.php:551
+#: admin/admin.php:626
 #: assets/build/formEditor.js:172
 msgid "Activate"
 msgstr "Attiva"
 
-#: admin/admin.php:552
+#: admin/admin.php:627
 msgid "Installing..."
 msgstr "Installazione in corso..."
 
-#: admin/admin.php:553
+#: admin/admin.php:628
 msgid "Installed"
 msgstr "Installato"
 
@@ -736,7 +736,7 @@ msgstr "Numero"
 msgid "Phone"
 msgstr "Telefono"
 
-#: inc/fields/textarea-markup.php:87
+#: inc/fields/textarea-markup.php:95
 msgid "Textarea"
 msgstr "Area di testo"
 
@@ -794,7 +794,7 @@ msgstr "Spiacente, non sei autorizzato a visualizzare il modulo."
 
 #: inc/generate-form-markup.php:642
 #: assets/build/formSubmit.js:2
-#: assets/js/unminified/form-submit.js:271
+#: assets/js/unminified/form-submit.js:287
 msgid "There was an error trying to submit your form. Please try again."
 msgstr "C'è stato un errore nel tentativo di inviare il modulo. Per favore riprova."
 
@@ -811,7 +811,7 @@ msgid "Let's see how your forms performed in the last week"
 msgstr "Vediamo come si sono comportati i tuoi moduli nell'ultima settimana"
 
 #: inc/global-settings/email-summary.php:148
-#: inc/post-types.php:136
+#: inc/post-types.php:180
 msgid "No forms found."
 msgstr "Nessun modulo trovato."
 
@@ -821,8 +821,8 @@ msgid "SureForms Email Summary - %s"
 msgstr "Riepilogo Email di SureForms - %s"
 
 #: inc/global-settings/email-summary.php:206
-#: inc/global-settings/global-settings.php:254
-#: inc/global-settings/global-settings.php:363
+#: inc/global-settings/global-settings.php:256
+#: inc/global-settings/global-settings.php:370
 #: assets/build/settings.js:172
 msgid "Monday"
 msgstr "Lunedì"
@@ -924,7 +924,7 @@ msgid "Hide"
 msgstr "Nascondi"
 
 #: inc/page-builders/elementor/form-widget.php:174
-#: inc/post-types.php:130
+#: inc/post-types.php:174
 #: assets/build/blocks.js:2
 msgid "Edit Form"
 msgstr "Modifica modulo"
@@ -944,42 +944,42 @@ msgstr "Crea nuovo modulo"
 msgid "Create"
 msgstr "Crea"
 
-#: admin/admin.php:710
-#: inc/post-types.php:88
+#: admin/admin.php:784
+#: inc/post-types.php:132
 msgid "Import Form"
 msgstr "Modulo di importazione"
 
-#: inc/post-types.php:91
+#: inc/post-types.php:135
 msgid "Let’s build your first form"
 msgstr "Costruiamo il tuo primo modulo"
 
-#: inc/post-types.php:92
+#: inc/post-types.php:136
 msgid "Craft beautiful and functional forms in minutes"
 msgstr "Crea moduli belli e funzionali in pochi minuti"
 
-#: inc/post-types.php:97
-#: inc/post-types.php:128
+#: inc/post-types.php:141
+#: inc/post-types.php:172
 #: assets/build/templatePicker.js:172
 msgid "Add New Form"
 msgstr "Aggiungi nuovo modulo"
 
-#: inc/post-types.php:106
+#: inc/post-types.php:150
 msgid "No records found"
 msgstr "Nessun record trovato"
 
-#: inc/post-types.php:107
+#: inc/post-types.php:151
 msgid "This is where your form entries will appear"
 msgstr "Qui è dove appariranno le voci del tuo modulo"
 
-#: inc/post-types.php:131
+#: inc/post-types.php:175
 msgid "View Form"
 msgstr "Visualizza modulo"
 
-#: inc/post-types.php:132
+#: inc/post-types.php:176
 msgid "View Forms"
 msgstr "Visualizza moduli"
 
-#: inc/post-types.php:133
+#: inc/post-types.php:177
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:2
 #: assets/build/page_header.js:172
@@ -987,48 +987,48 @@ msgstr "Visualizza moduli"
 msgid "Forms"
 msgstr "Moduli"
 
-#: inc/post-types.php:134
+#: inc/post-types.php:178
 msgid "Search Forms"
 msgstr "Moduli di ricerca"
 
-#: inc/post-types.php:135
+#: inc/post-types.php:179
 msgid "Parent Forms:"
 msgstr "Moduli genitori:"
 
-#: inc/post-types.php:137
+#: inc/post-types.php:181
 msgid "No forms found in Trash."
 msgstr "Nessun modulo trovato nel Cestino."
 
-#: inc/post-types.php:138
+#: inc/post-types.php:182
 msgid "Form published."
 msgstr "Modulo pubblicato."
 
-#: inc/post-types.php:139
+#: inc/post-types.php:183
 msgid "Form updated."
 msgstr "Modulo aggiornato."
 
-#: inc/post-types.php:836
+#: inc/post-types.php:880
 msgid "Admin Notification Email"
 msgstr "Email di notifica amministrativa"
 
 #. translators: %s: Form title smart tag
-#: inc/post-types.php:843
+#: inc/post-types.php:887
 msgid "New Form Submission - %s"
 msgstr "Nuova presentazione del modulo - %s"
 
-#: inc/post-types.php:1023
+#: inc/post-types.php:1067
 msgid "Shortcode"
 msgstr "Codice breve"
 
-#: inc/post-types.php:1087
+#: inc/post-types.php:1131
 msgid "Please choose the SureForms export file (.json) that you wish to import."
 msgstr "Si prega di scegliere il file di esportazione SureForms (.json) che si desidera importare."
 
-#: inc/post-types.php:1090
+#: inc/post-types.php:1134
 msgid "Import Now"
 msgstr "Importa ora"
 
-#: inc/post-types.php:1092
+#: inc/post-types.php:1136
 msgid "There is some error in json file, please export the SureForms Forms again."
 msgstr "C'è un errore nel file json, per favore esporta di nuovo i moduli SureForms."
 
@@ -3078,7 +3078,7 @@ msgstr "Database"
 
 #: modules/gutenberg/icons/icons-v6-1.php:224
 msgid "Deezer"
-msgstr ""
+msgstr "Deezer"
 
 #: modules/gutenberg/icons/icons-v6-1.php:235
 msgid "Delete Left"
@@ -8630,6 +8630,8 @@ msgstr "Crea Nuovo"
 msgid "Change Form"
 msgstr "Modifica modulo"
 
+#: inc/blocks/sform/block.php:42
+#: inc/post-types.php:1053
 #: assets/build/blocks.js:2
 msgid "This form has been deleted or is unavailable."
 msgstr "Questo modulo è stato eliminato o non è disponibile."
@@ -9192,8 +9194,8 @@ msgstr "Aggiungi blocchi alla barra delle azioni rapide"
 msgid "Re-arrange block inside Quick Action Bar"
 msgstr "Riorganizza il blocco all'interno della Barra delle Azioni Rapide"
 
-#: admin/admin.php:262
-#: admin/admin.php:263
+#: admin/admin.php:269
+#: admin/admin.php:270
 #: admin/views/single-entry.php:157
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
@@ -9666,7 +9668,7 @@ msgstr "Interruzione di pagina"
 msgid "Previous"
 msgstr "Precedente"
 
-#: inc/post-types.php:971
+#: inc/post-types.php:1015
 #: assets/build/formEditor.js:172
 msgid "Thank you"
 msgstr "Grazie"
@@ -11057,7 +11059,7 @@ msgstr "Con il piano SureForms Pro, puoi trasformare i tuoi moduli in layout con
 msgid "Create Conversational Form"
 msgstr "Crea modulo conversazionale"
 
-#: admin/admin.php:94
+#: admin/admin.php:101
 msgid "Get SureForms Pro"
 msgstr "Ottieni SureForms Pro"
 
@@ -11148,13 +11150,13 @@ msgstr "Pulsante"
 msgid "Please connect your website with SureForms AI to create 10 more forms with AI."
 msgstr "Si prega di collegare il proprio sito web con SureForms AI per creare altri 10 moduli con l'AI."
 
-#: inc/helper.php:1470
+#: inc/helper.php:1488
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
 msgid "OttoKit"
 msgstr "OttoKit"
 
-#: inc/helper.php:1472
+#: inc/helper.php:1490
 msgid "OttoKit is a powerful automation platform that helps you connect your various plugins and apps together. It allows you to automate repetitive tasks, so you can focus on more important work."
 msgstr "OttoKit è una potente piattaforma di automazione che ti aiuta a collegare insieme i tuoi vari plugin e app. Ti consente di automatizzare le attività ripetitive, così puoi concentrarti su lavori più importanti."
 
@@ -11321,31 +11323,31 @@ msgstr "La verifica del sitekey di HCaptcha non è riuscita. Si prega di contatt
 msgid "%s sitekey is missing. Please contact your site administrator."
 msgstr "Manca il sitekey %s. Si prega di contattare l'amministratore del sito."
 
-#: inc/helper.php:1471
+#: inc/helper.php:1489
 msgid "No-code automation tool for WordPress."
 msgstr "Strumento di automazione senza codice per WordPress."
 
-#: inc/helper.php:1482
+#: inc/helper.php:1500
 msgid "SureMail"
 msgstr "SureMail"
 
-#: inc/helper.php:1483
+#: inc/helper.php:1501
 msgid "Free and easy SMTP mails plugin."
 msgstr "Plugin per email SMTP gratuito e facile."
 
-#: inc/helper.php:1491
+#: inc/helper.php:1509
 msgid "SureCart"
 msgstr "SureCart"
 
-#: inc/helper.php:1492
+#: inc/helper.php:1510
 msgid "The new way to sell on WordPress."
 msgstr "Il nuovo modo di vendere su WordPress."
 
-#: inc/helper.php:1499
+#: inc/helper.php:1517
 msgid "Starter Templates"
 msgstr "Modelli di partenza"
 
-#: inc/helper.php:1500
+#: inc/helper.php:1518
 msgid "Build your dream website in minutes with AI."
 msgstr "Costruisci il tuo sito web dei sogni in pochi minuti con l'IA."
 
@@ -11720,10 +11722,10 @@ msgstr "Descrivi il modulo che desideri creare"
 msgid "We are building your form…"
 msgstr "Stiamo creando il tuo modulo…"
 
-#: admin/admin.php:278
-#: admin/admin.php:279
+#: admin/admin.php:285
+#: admin/admin.php:286
 msgid "SMTP"
-msgstr ""
+msgstr "SMTP"
 
 #: assets/build/suremail.js:2
 msgid "SureMail Introduction Video"
@@ -11834,33 +11836,45 @@ msgid "Anonymous Analytics"
 msgstr "Analisi Anonime"
 
 #: assets/build/settings.js:172
-msgid "Enable Anonymous Analytics"
-msgstr "Abilita l'analisi anonima"
-
-#: assets/build/settings.js:172
 msgid "Collect non-sensitive information from your website, such as the PHP version and features used, to help us fix bugs faster, make smarter decisions, and build features that actually matter to you. "
-msgstr "Raccogli informazioni non sensibili dal tuo sito web, come la versione di PHP e le funzionalità utilizzate, per aiutarci a correggere i bug più velocemente, prendere decisioni più intelligenti e sviluppare funzionalità che contano davvero per te. "
+msgstr "Raccogli informazioni non sensibili dal tuo sito web, come la versione di PHP e le funzionalità utilizzate, per aiutarci a correggere i bug più velocemente, prendere decisioni più intelligenti e sviluppare funzionalità che contano davvero per te."
 
 #: assets/build/settings.js:172
 msgid "Learn More"
 msgstr "Scopri di più"
 
-#: inc/post-types.php:124
+#: assets/build/settings.js:172
+msgid "Admin Notification"
+msgstr "Notifica dell'amministratore"
+
+#: assets/build/settings.js:172
+msgid "Enable Admin Notification"
+msgstr "Abilita la Notifica Amministratore"
+
+#: assets/build/settings.js:172
+msgid "Admin notifications keep you informed about new form entries since your last visit."
+msgstr "Le notifiche dell'amministratore ti tengono informato sui nuovi invii di moduli dalla tua ultima visita."
+
+#: assets/build/settings.js:172
+msgid "Contribute to SureForms"
+msgstr "Contribuisci a SureForms"
+
+#: inc/post-types.php:168
 msgctxt "post type general name"
 msgid "Forms"
 msgstr "Moduli"
 
-#: inc/post-types.php:125
+#: inc/post-types.php:169
 msgctxt "post type singular name"
 msgid "Form"
 msgstr "Modulo"
 
-#: inc/post-types.php:126
+#: inc/post-types.php:170
 msgctxt "admin menu"
 msgid "Forms"
 msgstr "Moduli"
 
-#: inc/post-types.php:127
+#: inc/post-types.php:171
 msgctxt "form"
 msgid "Add New"
 msgstr "Aggiungi nuovo"
