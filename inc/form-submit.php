@@ -594,6 +594,7 @@ class Form_Submit {
 			'form_id'         => $id,
 			'form_data'       => $submission_data,
 			'submission_info' => $submission_info,
+			'created_at'      => current_time( 'mysql' ),
 		];
 		if ( is_user_logged_in() ) {
 			// If user is logged in then save their user id.
