@@ -5,7 +5,9 @@ function initializePhoneField() {
 		const phoneNumber = element.querySelector( '.srfm-input-phone' );
 
 		// Check if already initialized and clean up if needed
-		if ( phoneNumber.getAttribute( 'data-srfm-phone-initialized' ) === 'true' ) {
+		if (
+			phoneNumber.getAttribute( 'data-srfm-phone-initialized' ) === 'true'
+		) {
 			cleanupPhoneFields( element );
 		}
 
@@ -182,7 +184,10 @@ function cleanupPhoneFields( container = document ) {
 		try {
 			const itiContainer = phoneNumber.closest( '.iti' );
 			if ( itiContainer && itiContainer.parentNode ) {
-				itiContainer.parentNode.insertBefore( phoneNumber, itiContainer );
+				itiContainer.parentNode.insertBefore(
+					phoneNumber,
+					itiContainer
+				);
 				itiContainer.remove();
 			}
 
