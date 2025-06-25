@@ -1451,7 +1451,7 @@ class Helper {
 	/**
 	 * Check if the starter template premium plugin is installed and return its file path.
 	 *
-	 * @since x.x.x
+	 * @since 1.7.3
 	 *
 	 * @return string The plugin file path if premium is installed, otherwise the default starter sites plugin file path.
 	 */

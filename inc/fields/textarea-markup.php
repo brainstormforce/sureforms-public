@@ -80,7 +80,7 @@ class Textarea_Markup extends Base {
 	 * Append random ID to the textarea for uniqueness.
 	 *
 	 * @var int
-	 * @since x.x.x
+	 * @since 1.7.3
 	 */
 	protected $random_id;
 

@@ -406,7 +406,7 @@ class Admin {
 	/**
 	 * Add notification badge to SureForms menu when there are new entries.
 	 *
-	 * @since x.x.x
+	 * @since 1.7.3
 	 * @return void
 	 */
 	public function maybe_add_entries_badge() {
@@ -456,7 +456,7 @@ class Admin {
 	/**
 	 * Mark the user's visit to the entries page.
 	 *
-	 * @since x.x.x
+	 * @since 1.7.3
 	 * @return void
 	 */
 	public function mark_entries_page_visit() {

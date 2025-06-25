@@ -59,7 +59,7 @@ class Post_Types {
 	 * @param WP_Post          $post     The post object.
 	 *
 	 * @return WP_REST_Response Modified REST response with normalized meta.
-	 * @since x.x.x
+	 * @since 1.7.3
 	 */
 	public function sureforms_normalize_meta_for_rest( WP_REST_Response $response, WP_Post $post ) {
 		$meta_raw          = get_post_meta( $post->ID, '_srfm_form_confirmation', true );

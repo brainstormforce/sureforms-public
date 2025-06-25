@@ -4,7 +4,7 @@
 **Requires at least:** 6.4  
 **Tested up to:** 6.8.1  
 **Requires PHP:** 7.4  
-**Stable tag:** 1.7.2  
+**Stable tag:** 1.7.3  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -260,10 +260,17 @@ Yes! You can certainly use SureForms on yours as well as your client’s website
 When you use SureForms, you get an easy-to-use AI-powered form builder that can be used to build your forms fast.
 
 ## Changelog ##
+### 1.7.3 - 26th June 2025 ###
+* New: Introduced admin notifications to keep administrators informed about important updates and announcements.
+* Improvement: Enhanced form initialization with custom event support (srfm_form_initialize) for better compatibility with third-party scripts.
+* Improvement: Added premium plugin detection in Dashboard, preventing Starter Templates installation when premium version is already active.
+* Fix: Addressed the accessibility issue associated with the Textarea field label.
+* Fix: Elementor popup compatibility by ensuring SureForms scripts properly initialize when forms are displayed within popups.
 ### 1.7.2 - 12th June 2025 ###
 * New: Added {current_page_url} smart tag under generic tags.
 * Improvement: Added an option to disable input fields with default values.
 * Fix: Added editor background compatibility with Kadence theme.
+* Fix: Shortcode renders form when form is in trash
 * Fix: This update addressed a security bug. Props to Dmitrii Ignatyev from CleanTalk for reporting it responsibly to our team.
 ### 1.7.1 - 9th June 2025 ###
 * New: Added rich text support for Textarea field.
@@ -273,10 +280,6 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 * Fix: Addressed compatibility issues between Textarea fields and Bricks Builder's Cascade Layers feature.
 * Fix: Eliminated duplicate entry logging that occurred when email notifications were disabled.
 * Fix: Preserved text formatting in form confirmation messages when displayed on the frontend.
-### 1.7.0 - 22nd May 2025 ###
-* New: Revamped user interface for Dashboard and Settings with a more modern and intuitive experience.
-* Improvement: Improved reCAPTCHA handling by adding detailed logging for failure responses.
-* Improvement: Number and range components now support float values.
 
 The full changelog is available [here](https://sureforms.com/whats-new/).
 
