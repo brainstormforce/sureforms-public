@@ -409,7 +409,7 @@ class Entries extends Base {
 	 *
 	 * @param int $timestamp Timestamp in seconds.
 	 * @param int $form_id   Optional. The ID of the form to count entries for. Default 0 for all forms.
-	 * @since x.x.x
+	 * @since 1.7.3
 	 * @return int Total number of entries created after the timestamp.
 	 */
 	public static function get_entries_count_after( $timestamp, $form_id = 0 ) {
