@@ -362,9 +362,9 @@ class Entries extends Base {
 	/**
 	 * Get the total count of entries by status.
 	 *
-	 * @param string              $status The status of the entries to count.
-	 * @param int|null            $form_id The ID of the form to count entries for.
-	 * @param array<string,mixed> $where_clause Additional where clause to add to the query.
+	 * @param string       $status The status of the entries to count.
+	 * @param int|null     $form_id The ID of the form to count entries for.
+	 * @param array<mixed> $where_clause Additional where clause to add to the query.
 	 * @since 0.0.13
 	 * @return int The total number of entries with the specified status.
 	 */
@@ -402,6 +402,48 @@ class Entries extends Base {
 			default:
 				return self::get_instance()->get_total_count();
 		}
+	}
+
+	/**
+	 * Get the total number of entries created after the given timestamp.
+	 *
+	 * @param int $timestamp Timestamp in seconds.
+	 * @param int $form_id   Optional. The ID of the form to count entries for. Default 0 for all forms.
+	 * @since 1.7.3
+	 * @return int Total number of entries created after the timestamp.
+	 */
+	public static function get_entries_count_after( $timestamp, $form_id = 0 ) {
+		$timestamp = absint( $timestamp );
+
+		if ( ! $timestamp ) {
+			return self::get_total_entries_by_status( 'all', $form_id );
+		}
+
+		global $wpdb;
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct DB access is required here to get the most accurate server time for menu badge logic. Caching is not suitable as this is used for real-time admin notifications.
+		$mysql_time = $wpdb->get_var( 'SELECT NOW()' );
+
+		// Convert to timestamps.
+		$mysql_timestamp = strtotime( $mysql_time );
+		$php_timestamp   = time();
+
+		// Offset between MySQL and PHP.
+		$offset_seconds = $mysql_timestamp - $php_timestamp;
+
+		$adjusted_timestamp = $timestamp + $offset_seconds;
+
+		$where_clause = [
+			[
+				[
+					'key'     => 'created_at',
+					'compare' => '>',
+					'value'   => gmdate( 'Y-m-d H:i:s', $adjusted_timestamp ),
+				],
+			],
+		];
+
+		return self::get_total_entries_by_status( 'all', $form_id, $where_clause );
 	}
 
 	/**
