@@ -1449,6 +1449,24 @@ class Helper {
 	}
 
 	/**
+	 * Check if the starter template premium plugin is installed and return its file path.
+	 *
+	 * @since 1.7.3
+	 *
+	 * @return string The plugin file path if premium is installed, otherwise the default starter sites plugin file path.
+	 */
+	public static function check_starter_template_plugin() {
+		if ( ! function_exists( 'get_plugins' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/plugin.php';
+		}
+		$plugins = get_plugins();
+
+		$premium = 'astra-pro-sites/astra-pro-sites.php';
+
+		return isset( $plugins[ $premium ] ) ? $premium : 'astra-sites/astra-sites.php';
+	}
+
+	/**
 	 * Get sureforms recommended integrations.
 	 *
 	 * @since 0.0.1
@@ -1498,9 +1516,9 @@ class Helper {
 				'starter_templates' => [
 					'title'       => __( 'Starter Templates', 'sureforms' ),
 					'subtitle'    => __( 'Build your dream website in minutes with AI.', 'sureforms' ),
-					'status'      => self::get_plugin_status( 'astra-sites/astra-sites.php' ),
+					'status'      => self::get_plugin_status( self::check_starter_template_plugin() ),
 					'slug'        => 'astra-sites',
-					'path'        => 'astra-sites/astra-sites.php',
+					'path'        => self::check_starter_template_plugin(),
 					'redirection' => admin_url( 'admin.php?page=starter-templates' ),
 					'logo'        => self::encode_svg( is_string( $logo_starter_templates ) ? $logo_starter_templates : '' ),
 				],
