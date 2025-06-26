@@ -1073,32 +1073,6 @@ class Admin {
 	}
 
 	/**
-	 * Determine if the admin pointer should be visible on this page.
-	 *
-	 * @since x.x.x
-	 * @return bool
-	 */
-	private function is_admin_pointer_visible() {
-		global $pagenow;
-		$allowed_pages = [ 'index.php', 'options-general.php' ];
-
-		// Do not show if pointer dismissed, accepted, or more than 1 form exists.
-		if (
-			! empty( Helper::get_srfm_option( 'pointer_popup_dismissed' ) ) ||
-			! empty( Helper::get_srfm_option( 'pointer_popup_accepted' ) ) ||
-			(int) ( wp_count_posts( SRFM_FORMS_POST_TYPE )->publish ?? 0 ) > 1
-		) {
-			return false;
-		}
-
-		if ( in_array( $pagenow, $allowed_pages, true ) ) {
-			return true;
-		}
-
-		return false;
-	}
-
-	/**
 	 * Enqueueus the admin pointer script and styles.
 	 *
 	 * @return void
@@ -1166,5 +1140,31 @@ class Admin {
 		Helper::update_srfm_option( 'pointer_popup_accepted', time() );
 
 		wp_send_json_success();
+	}
+
+	/**
+	 * Determine if the admin pointer should be visible on this page.
+	 *
+	 * @since x.x.x
+	 * @return bool
+	 */
+	private function is_admin_pointer_visible() {
+		global $pagenow;
+		$allowed_pages = [ 'index.php', 'options-general.php' ];
+
+		// Do not show if pointer dismissed, accepted, or more than 1 form exists.
+		if (
+			! empty( Helper::get_srfm_option( 'pointer_popup_dismissed' ) ) ||
+			! empty( Helper::get_srfm_option( 'pointer_popup_accepted' ) ) ||
+			(int) ( wp_count_posts( SRFM_FORMS_POST_TYPE )->publish ?? 0 ) > 1
+		) {
+			return false;
+		}
+
+		if ( in_array( $pagenow, $allowed_pages, true ) ) {
+			return true;
+		}
+
+		return false;
 	}
 }
