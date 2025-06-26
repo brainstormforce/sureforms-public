@@ -183,7 +183,7 @@ const GeneralPage = ( {
 		return (
 			<Switch
 				label={ {
-					heading: __( 'Enable Anonymous Analytics', 'sureforms' ),
+					heading: __( 'Contribute to SureForms', 'sureforms' ),
 					description: (
 						<>
 							<p>
