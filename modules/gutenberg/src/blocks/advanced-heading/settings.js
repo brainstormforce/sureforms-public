@@ -21,7 +21,6 @@ import ResponsiveSlider from '@Components/responsive-slider';
 import UAGSelectControl from '@Components/select-control';
 // Extend component
 import UAGAdvancedPanelBody from '@Components/advanced-panel-body';
-// import ConditionalLogic from '@SrfmComponents/conditional-logic';
 import { applyFilters } from '@wordpress/hooks';
 
 const Settings = ( props ) => {
