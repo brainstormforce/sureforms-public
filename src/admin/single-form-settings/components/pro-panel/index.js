@@ -70,20 +70,12 @@ const iconBlocks = [
 	{
 		icon: <CiLogin size={ 24 } color="#B4B4B4" />,
 		label: __( 'Login', 'sureforms' ),
-		showIn: [
-			'free',
-			'starter',
-			'pro',
-		],
+		showIn: [ 'free', 'starter', 'pro' ],
 	},
 	{
 		icon: <LuUserPlus size={ 24 } color="#B4B4B4" />,
 		label: __( 'Register', 'sureforms' ),
-		showIn: [
-			'free',
-			'starter',
-			'pro',
-		],
+		showIn: [ 'free', 'starter', 'pro' ],
 	},
 ];
 
