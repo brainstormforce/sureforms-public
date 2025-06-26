@@ -109,14 +109,18 @@ class Email_Summary {
 		$table_html .= '</thead>';
 		$table_html .= '<tbody>';
 
+		$total_entries      = 0;
+		$forms_with_entries = 0;
+		$forms_table_rows   = '';
+		$row_index          = 0;
+
 		if ( $query->have_posts() ) {
-			$row_index = 0;
 			while ( $query->have_posts() ) {
 				$query->the_post();
 				global $post;
 
-				$previous_week_start = gmdate( 'Y-m-d', strtotime( '-1 week last monday' ) );
-				$previous_week_end   = gmdate( 'Y-m-d', strtotime( '-1 week next sunday' ) );
+				$previous_week_start = gmdate( 'Y-m-d', strtotime( 'monday last week' ) );
+				$previous_week_end   = gmdate( 'Y-m-d', strtotime( 'sunday last week' ) );
 
 				$entries_args = [
 					'where' => [
@@ -134,22 +138,35 @@ class Email_Summary {
 				];
 				$entry_count  = Entries::get_total_entries_by_status( 'all', Helper::get_integer_value( $post->ID ), $entries_args );
 
-				$bg_color = 0 === $row_index % 2 ? '#ffffff' : '#f2f2f2;';
-
-				$table_html .= '<tr style="background-color: ' . $bg_color . ';">';
-				$table_html .= '<td style="padding: 10px;">' . esc_html( get_the_title() ) . '</td>';
-				$table_html .= '<td style="padding: 10px;">' . esc_html( Helper::get_string_value( $entry_count ) ) . '</td>';
-				$table_html .= '</tr>';
-
-				$row_index++;
+				if ( $entry_count > 0 ) {
+					$forms_with_entries++;
+					$total_entries   += $entry_count;
+					$bg_color         = 0 === $row_index % 2 ? '#ffffff' : '#f2f2f2;';
+					$forms_table_rows .= '<tr style="background-color: ' . $bg_color . ';">';
+					$forms_table_rows .= '<td style="padding: 10px;">' . esc_html( get_the_title() ) . '</td>';
+					$forms_table_rows .= '<td style="padding: 10px;">' . esc_html( Helper::get_string_value( $entry_count ) ) . '</td>';
+					$forms_table_rows .= '</tr>';
+					$row_index++;
+				}
 			}
-		} else {
-			$table_html .= '<tr>';
-			$table_html .= '<td colspan="2" style="padding: 10px;">' . __( 'No forms found.', 'sureforms' ) . '</td>';
-			$table_html .= '</tr>';
 		}
 
-		$table_html .= '</tbody>';
+		if ( $forms_with_entries > 0 ) {
+			$table_html .= $forms_table_rows;
+			$table_html .= '</tbody>';
+			$table_html .= '<tfoot>';
+			$table_html .= '<tr style="background-color: #333; color: #fff; text-align: left; font-weight: bold;">';
+			$table_html .= '<td style="padding: 10px;">' . __( 'Total Entries', 'sureforms' ) . '</td>';
+			$table_html .= '<td style="padding: 10px;">' . esc_html( Helper::get_string_value( $total_entries ) ) . '</td>';
+			$table_html .= '</tr>';
+			$table_html .= '</tfoot>';
+		} else {
+			$table_html .= '<tr>';
+			$table_html .= '<td colspan="2" style="padding: 10px;">' . __( 'No entries found in the last week.', 'sureforms' ) . '</td>';
+			$table_html .= '</tr>';
+			$table_html .= '</tbody>';
+		}
+
 		$table_html .= '</table>';
 
 		wp_reset_postdata();
