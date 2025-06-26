@@ -8,11 +8,22 @@ import {
 import { applyFilters } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
 
-document.addEventListener( 'DOMContentLoaded', function () {
+/**
+ * Initializes form handlers for all forms with the class `.srfm-form`.
+ */
+function initializeFormHandlers() {
 	initializeInlineFieldValidation();
 
 	const forms = Array.from( document.querySelectorAll( '.srfm-form' ) );
 	for ( const form of forms ) {
+		// Add the event before the form initialization to ensure that the all third party libraries are loaded and initialized.
+		// Dispatch a custom event *before* the form is submitted.
+		document.dispatchEvent(
+			new CustomEvent( 'srfm_form_before_submission', {
+				detail: { form },
+			} )
+		);
+
 		const {
 			formId,
 			submitType,
@@ -94,6 +105,11 @@ document.addEventListener( 'DOMContentLoaded', function () {
 			form.__loginSuccess = true;
 		} );
 	}
+}
+
+document.addEventListener( 'DOMContentLoaded', function () {
+	// Initialize the form submission script.
+	initializeFormHandlers();
 } );
 
 /**
@@ -683,3 +699,23 @@ window.handleBricksPreviewFormSubmission = function () {
 		} );
 	}
 };
+
+// Listen for the Elementor popup show event
+window.addEventListener( 'elementor/popup/show', function ( e ) {
+	// Check if the popup contains a SureForms form container
+	const formContainer = e?.detail?.instance?.$element?.[ 0 ]?.querySelector(
+		'.srfm-form-container'
+	);
+
+	// If a form container is found, initialize form handlers
+	if ( formContainer ) {
+		initializeFormHandlers();
+	}
+} );
+
+// Listen for a custom event named 'srfm_form_initialize'
+// This event should be dispatched whenever a form is dynamically initialized
+document.addEventListener( 'srfm_form_initialize', function () {
+	// Call a function to attach event listeners, validation, or other custom logic
+	initializeFormHandlers();
+} );

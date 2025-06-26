@@ -4,7 +4,7 @@ Tags: contact form, custom form, forms, contact form plugin, form builder
 Requires at least: 6.4
 Tested up to: 6.8.1
 Requires PHP: 7.4
-Stable tag: 1.7.2
+Stable tag: 1.7.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -258,8 +258,19 @@ Absolutely not! SureForms is built with ease and performance in mind. Its module
 Yes! You can certainly use SureForms on yours as well as your client’s websites.
 = What more do I get with SureForms? =
 When you use SureForms, you get an easy-to-use AI-powered form builder that can be used to build your forms fast.
+= How can I report a security bug? =
+We take plugin security extremely seriously. If you discover a security vulnerability, please report it in a safe and responsible manner.
+
+You can report the issue through our [Bug Bounty Program](https://brainstormforce.com/bug-bounty-program/). We collaborate with Patchstack to provide opportunities for researchers to report vulnerabilities. The Patchstack team will help validate, triage, and handle any reported security issues.
 
 == Changelog ==
+= 1.7.3 - 26th June 2025 =
+* New: Introduced admin notifications to keep administrators informed about important updates and announcements.
+* Improvement: Enhanced form initialization with custom event support (srfm_form_initialize) for better compatibility with third-party scripts.
+* Improvement: Added premium plugin detection in Dashboard, preventing Starter Templates installation when premium version is already active.
+* Fix: Addressed the accessibility issue associated with the Textarea field label.
+* Fix: Elementor popup compatibility by ensuring SureForms scripts properly initialize when forms are displayed within popups.
+* Fix: Shortcode renders form when form is in trash.
 = 1.7.2 - 12th June 2025 =
 * New: Added {current_page_url} smart tag under generic tags.
 * Improvement: Added an option to disable input fields with default values.
@@ -273,10 +284,6 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 * Fix: Addressed compatibility issues between Textarea fields and Bricks Builder's Cascade Layers feature.
 * Fix: Eliminated duplicate entry logging that occurred when email notifications were disabled.
 * Fix: Preserved text formatting in form confirmation messages when displayed on the frontend.
-= 1.7.0 - 22nd May 2025 =
-* New: Revamped user interface for Dashboard and Settings with a more modern and intuitive experience.
-* Improvement: Improved reCAPTCHA handling by adding detailed logging for failure responses.
-* Improvement: Number and range components now support float values.
 
 The full changelog is available [here](https://sureforms.com/whats-new/).
 

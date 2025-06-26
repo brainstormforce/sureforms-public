@@ -221,7 +221,11 @@ const pushSmartTagToArray = (
 		 *
 		 * @since x.x.x
 		 */
-		if ( 'undefined' === typeof fieldSlug || ! fieldSlug || '-1' === fieldSlug ) {
+		if (
+			'undefined' === typeof fieldSlug ||
+			! fieldSlug ||
+			'-1' === fieldSlug
+		) {
 			// If we are here, then field is invalid and we don't need to process it.
 			return;
 		}
