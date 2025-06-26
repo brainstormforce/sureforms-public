@@ -121,7 +121,9 @@ const SubmenuAccordion = ( { label, path, icon: Icon, submenu } ) => {
 					) }
 					aria-label={ `${ label } submenu` }
 				>
-					<span className="flex-shrink-0 mt-0.5">{ !! Icon && Icon }</span>
+					<span className="flex-shrink-0 mt-0.5">
+						{ !! Icon && Icon }
+					</span>
 					<span className="break-words text-left pl-1 flex-1">
 						{ label }
 					</span>
