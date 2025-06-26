@@ -264,6 +264,8 @@ We take plugin security extremely seriously. If you discover a security vulnerab
 You can report the issue through our [Bug Bounty Program](https://brainstormforce.com/bug-bounty-program/). We collaborate with Patchstack to provide opportunities for researchers to report vulnerabilities. The Patchstack team will help validate, triage, and handle any reported security issues.
 
 == Changelog ==
+= x.x.x =
+* Improvement: Resolved an issue where reCAPTCHA was not functioning correctly, ensuring proper verification and user form protection.
 = 1.7.3 - 26th June 2025 =
 * New: Introduced admin notifications to keep administrators informed about important updates and announcements.
 * Improvement: Enhanced form initialization with custom event support (srfm_form_initialize) for better compatibility with third-party scripts.
