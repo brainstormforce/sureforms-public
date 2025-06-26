@@ -694,9 +694,9 @@ window.addEventListener( 'elementor/popup/show', function ( e ) {
 	}
 } );
 
-// Listen for a custom event named 'srfm-form-init'
+// Listen for a custom event named 'srfm_form_initialize'
 // This event should be dispatched whenever a form is dynamically initialized
-document.addEventListener( 'srfm-form-init', function () {
+document.addEventListener( 'srfm_form_initialize', function () {
 	// Call a function to attach event listeners, validation, or other custom logic
 	initializeFormHandlers();
 } );
