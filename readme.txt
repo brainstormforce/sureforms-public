@@ -263,6 +263,7 @@ When you use SureForms, you get an easy-to-use AI-powered form builder that can 
 = x.x.x =
 * Improvement: Added support for a custom event (srfm-form-init) to manually reinitialize forms when dynamically inserted or relocated by third-party scripts.
 * Improvement: Dashboard now checks if the premium plugin is active before allowing Starter Templates to be installed via the Extend Plugin section.
+* Improvement: Removed the “Edit as HTML” option for blocks like Heading, Image, Separator, and Icon when used inside SureForms, as it’s not supported for dynamic blocks.
 * Fix: Addressed the accessibility issue associated with the Textarea field label.
 * Fix: Resolved issue where SureForm scripts were not working inside Elementor popups by reinitializing the form after the popup is triggered.
 = 1.7.2 - 12th June 2025 =
