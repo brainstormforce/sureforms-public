@@ -11,6 +11,8 @@ namespace SRFM\Inc;
 use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Traits\Get_Instance;
 use WP_Admin_Bar;
+use WP_Post;
+use WP_REST_Response;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -44,6 +46,48 @@ class Post_Types {
 		add_action( 'admin_bar_menu', [ $this, 'remove_admin_bar_menu_item' ], 80, 1 );
 		add_action( 'template_redirect', [ $this, 'srfm_instant_form_redirect' ] );
 		add_action( 'template_redirect', [ $this, 'disable_sureforms_archive_page' ], 9 );
+
+		add_filter( 'rest_prepare_sureforms_form', [ $this, 'sureforms_normalize_meta_for_rest' ], 10, 2 );
+	}
+
+	/**
+	 * Remove this method in the future once _srfm_form_confirmation meta is updated.
+	 * Normalize the _srfm_form_confirmation meta before it's sent to the REST API.
+	 * Ensures the meta data is type-safe and includes necessary defaults like `hide_copy`.
+	 *
+	 * @param WP_REST_Response $response The REST response object.
+	 * @param WP_Post          $post     The post object.
+	 *
+	 * @return WP_REST_Response Modified REST response with normalized meta.
+	 * @since 1.7.3
+	 */
+	public function sureforms_normalize_meta_for_rest( WP_REST_Response $response, WP_Post $post ) {
+		$meta_raw          = get_post_meta( $post->ID, '_srfm_form_confirmation', true );
+		$form_confirmation = maybe_unserialize( is_string( $meta_raw ) ? $meta_raw : '' );
+
+		if ( ! is_array( $form_confirmation ) ) {
+			return $response;
+		}
+
+		foreach ( $form_confirmation as $index => $item ) {
+			if ( ! is_array( $item ) ) {
+				continue;
+			}
+
+			$form_confirmation[ $index ]['hide_copy']         = ! empty( $item['hide_copy'] );
+			$form_confirmation[ $index ]['hide_download_all'] = ! empty( $item['hide_download_all'] );
+		}
+
+		$response_data = $response->get_data();
+		if ( is_array( $response_data ) ) {
+			if ( ! isset( $response_data['meta'] ) || ! is_array( $response_data['meta'] ) ) {
+				$response_data['meta'] = [];
+			}
+
+			$response_data['meta']['_srfm_form_confirmation'] = $form_confirmation;
+			$response->set_data( $response_data );
+		}
+		return $response;
 	}
 
 	/**
@@ -1002,11 +1046,11 @@ class Post_Types {
 		$id   = intval( $atts['id'] );
 		$post = get_post( $id );
 
-		if ( ! empty( $id ) && $post ) {
+		if ( ! empty( $id ) && $post && 'publish' === $post->post_status ) {
 			return Generate_Form_Markup::get_form_markup( $id, ! filter_var( $atts['show_title'], FILTER_VALIDATE_BOOLEAN ), '', 'post', true );
 		}
 
-		return '';
+		return esc_html__( 'This form has been deleted or is unavailable.', 'sureforms' );
 	}
 
 	/**

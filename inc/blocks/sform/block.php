@@ -39,7 +39,7 @@ class Block extends Base {
 		$form = get_post( $id );
 
 		if ( ! $form || SRFM_FORMS_POST_TYPE !== $form->post_type || 'publish' !== $form->post_status || ! empty( $form->post_password ) ) {
-			return '';
+			return esc_html__( 'This form has been deleted or is unavailable.', 'sureforms' );
 		}
 
 		return Generate_Form_Markup::get_form_markup( $id, $show_title_current_page, $sf_classname );
