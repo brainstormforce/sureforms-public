@@ -34,7 +34,7 @@ jQuery( document ).ready( function ( $ ) {
 						const dismissBtn = $(
 							'<a class="close" href="#" style="margin-left:8px;"></a>'
 						)
-							.text( wp.i18n.__( 'Dismiss', 'sureforms' ) )
+							.text( response.dismiss )
 							.on( 'click.pointer', function ( e ) {
 								e.preventDefault();
 								t.element.pointer( 'close' );

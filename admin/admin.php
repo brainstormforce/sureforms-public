@@ -1111,6 +1111,7 @@ class Admin {
 					__( 'Experience the power of our intuitive <strong>AI Form Builder</strong>.', 'sureforms' ),
 				),
 				'button_text' => __( 'Build My First Form', 'sureforms' ),
+				'dismiss'     => __( 'Dismiss', 'sureforms' ),
 				'button_url'  => admin_url( 'admin.php?page=add-new-form' ),
 			]
 		);
@@ -1154,9 +1155,9 @@ class Admin {
 
 		// Do not show if pointer dismissed, accepted, or more than 1 form exists.
 		if (
-			! empty( Helper::get_srfm_option( 'pointer_popup_dismissed' ) ) ||
-			! empty( Helper::get_srfm_option( 'pointer_popup_accepted' ) ) ||
-			(int) ( wp_count_posts( SRFM_FORMS_POST_TYPE )->publish ?? 0 ) > 1
+			! empty( Helper::get_srfm_option( 'pointer_popup_dismissed' ) )
+			|| ! empty( Helper::get_srfm_option( 'pointer_popup_accepted' ) )
+			// || (int) ( wp_count_posts( SRFM_FORMS_POST_TYPE )->publish ?? 0 ) > 1
 		) {
 			return false;
 		}
