@@ -1,7 +1,7 @@
 jQuery( document ).ready( function ( $ ) {
 	// Check with the server if the pointer should be shown
 	$.post(
-		ajaxurl,
+		sureformsPointerData.ajaxurl,
 		{
 			action: 'should_show_pointer',
 		},
@@ -23,6 +23,8 @@ jQuery( document ).ready( function ( $ ) {
 				response.content +
 				'</p>';
 
+			let pointerClosedBy = null; // 'cta' or 'dismiss' or null
+
 			$target
 				.pointer( {
 					content: pointerContent,
@@ -37,9 +39,11 @@ jQuery( document ).ready( function ( $ ) {
 							.text( response.dismiss )
 							.on( 'click.pointer', function ( e ) {
 								e.preventDefault();
+								pointerClosedBy = 'dismiss';
 								t.element.pointer( 'close' );
-								$.post( ajaxurl, {
+								$.post( sureformsPointerData.ajaxurl, {
 									action: 'sureforms_dismiss_pointer',
+									pointer_nonce: sureformsPointerData.pointer_nonce,
 								} );
 							} );
 
@@ -50,9 +54,11 @@ jQuery( document ).ready( function ( $ ) {
 								response.button_text +
 								'</a>'
 						).on( 'click.pointer', function () {
+							pointerClosedBy = 'cta';
 							t.element.pointer( 'close' );
-							$.post( ajaxurl, {
+							$.post( sureformsPointerData.ajaxurl, {
 								action: 'sureforms_accept_cta',
+								pointer_nonce: sureformsPointerData.pointer_nonce,
 							} );
 						} );
 
@@ -64,9 +70,10 @@ jQuery( document ).ready( function ( $ ) {
 							.append( dismissBtn );
 					},
 					close() {
-						$.post( ajaxurl, {
-							action: 'sureforms_dismiss_pointer',
-						} );
+						if ( ! pointerClosedBy ) {
+							// Only run if closed by other means (not by our buttons)
+							$.post( sureformsPointerData.ajaxurl, { action: 'sureforms_dismiss_pointer', pointer_nonce: sureformsPointerData.pointer_nonce } );
+						}
 					},
 				} )
 				.pointer( 'open' );

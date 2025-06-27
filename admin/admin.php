@@ -1091,7 +1091,14 @@ class Admin {
 			'1.0',
 			true
 		);
-		wp_localize_script( 'sureforms-admin-pointer', 'ajaxurl', admin_url( 'admin-ajax.php' ) );
+		wp_localize_script(
+			'sureforms-admin-pointer',
+			'sureformsPointerData',
+			[
+				'ajaxurl'       => admin_url( 'admin-ajax.php' ),
+				'pointer_nonce' => wp_create_nonce( 'sureforms_pointer_action' ),
+			]
+		);
 	}
 
 	/**
@@ -1124,6 +1131,14 @@ class Admin {
 	 * @since x.x.x
 	 */
 	public function pointer_dismissed() {
+		// Security: Check user capability.
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( [ 'message' => __( 'Unauthorized user.', 'sureforms' ) ], 403 );
+		}
+		// Security: Nonce check.
+		if ( empty( $_POST['pointer_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['pointer_nonce'] ) ), 'sureforms_pointer_action' ) ) {
+			wp_send_json_error( [ 'message' => __( 'Invalid nonce.', 'sureforms' ) ], 403 );
+		}
 		// Use Helper to update srfm_options key.
 		Helper::update_srfm_option( 'pointer_popup_dismissed', time() );
 
@@ -1137,6 +1152,14 @@ class Admin {
 	 * @since x.x.x
 	 */
 	public function pointer_accepted_cta() {
+		// Security: Check user capability.
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( [ 'message' => __( 'Unauthorized user.', 'sureforms' ) ], 403 );
+		}
+		// Security: Nonce check.
+		if ( empty( $_POST['pointer_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['pointer_nonce'] ) ), 'sureforms_pointer_action' ) ) {
+			wp_send_json_error( [ 'message' => __( 'Invalid nonce.', 'sureforms' ) ], 403 );
+		}
 		// Use Helper to update srfm_options key.
 		Helper::update_srfm_option( 'pointer_popup_accepted', time() );
 
@@ -1157,7 +1180,7 @@ class Admin {
 		if (
 			! empty( Helper::get_srfm_option( 'pointer_popup_dismissed' ) )
 			|| ! empty( Helper::get_srfm_option( 'pointer_popup_accepted' ) )
-			// || (int) ( wp_count_posts( SRFM_FORMS_POST_TYPE )->publish ?? 0 ) > 1
+			|| (int) ( wp_count_posts( SRFM_FORMS_POST_TYPE )->publish ?? 0 ) > 1
 		) {
 			return false;
 		}
