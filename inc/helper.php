@@ -1529,7 +1529,7 @@ class Helper {
 	/**
 	 * Get the WordPress file types.
 	 *
-	 * @since x.x.x
+	 * @since 1.7.4
 	 * @return array<string,mixed> An associative array representing the file types.
 	 */
 	public static function get_wp_file_types() {
@@ -1557,7 +1557,7 @@ class Helper {
 	 * @param string $file_url The file URL to delete.
 	 * @param string $subdir The subdirectory to delete the file from.
 	 *
-	 * @since x.x.x
+	 * @since 1.7.4
 	 * @return bool
 	 */
 	public static function delete_upload_file_from_subdir( $file_url, $subdir = 'sureforms/' ) {
