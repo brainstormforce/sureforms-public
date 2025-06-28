@@ -220,52 +220,6 @@ class Form_Submit {
 			);
 		}
 
-		if ( isset( $_SERVER['REQUEST_METHOD'] ) && 'POST' === $_SERVER['REQUEST_METHOD'] && ! empty( $_FILES ) ) {
-			add_filter( 'upload_dir', [ $this, 'change_upload_dir' ] );
-
-			foreach ( $_FILES as $field => $file ) {
-				if ( is_array( $file['name'] ) ) {
-					foreach ( $file['name'] as $key => $filename ) {
-						$temp_path  = $file['tmp_name'][ $key ];
-						$file_size  = $file['size'][ $key ];
-						$file_type  = $file['type'][ $key ];
-						$file_error = $file['error'][ $key ];
-
-						if ( ! $filename && ! $temp_path && ! $file_size && ! $file_type ) {
-							$form_data[ $field ][] = '';
-							continue;
-						}
-
-						$uploaded_file = [
-							'name'     => $filename,
-							'type'     => $file_type,
-							'tmp_name' => $temp_path,
-							'error'    => $file_error,
-							'size'     => $file_size,
-						];
-
-						$upload_overrides = [
-							'test_form' => false,
-						];
-						$move_file        = wp_handle_upload( $uploaded_file, $upload_overrides );
-						remove_filter( 'upload_dir', [ $this, 'change_upload_dir' ] );
-
-						if ( $move_file && ! isset( $move_file['error'] ) ) {
-							$form_data[ $field ][] = $move_file['url'];
-						} else {
-							wp_send_json_error(
-								[
-									'message' => __( 'File is not uploaded', 'sureforms' ),
-								]
-							);
-						}
-					}
-				} else {
-					$form_data[ $field ][] = '';
-				}
-			}
-		}
-
 		if ( ! $form_data['form-id'] ) {
 			wp_send_json_error(
 				[
@@ -454,6 +408,51 @@ class Form_Submit {
 	 * @return array<mixed> Array containing the response data.
 	 */
 	public function handle_form_entry( $form_data ) {
+		if ( defined( 'SRFM_PRO_VER' ) && isset( $_SERVER['REQUEST_METHOD'] ) && 'POST' === $_SERVER['REQUEST_METHOD'] && ! empty( $_FILES ) ) {
+			add_filter( 'upload_dir', [ $this, 'change_upload_dir' ] );
+
+			foreach ( $_FILES as $field => $file ) {
+				if ( is_array( $file['name'] ) ) {
+					foreach ( $file['name'] as $key => $filename ) {
+						$temp_path  = $file['tmp_name'][ $key ];
+						$file_size  = $file['size'][ $key ];
+						$file_type  = $file['type'][ $key ];
+						$file_error = $file['error'][ $key ];
+
+						if ( ! $filename && ! $temp_path && ! $file_size && ! $file_type ) {
+							$form_data[ $field ][] = '';
+							continue;
+						}
+
+						$uploaded_file = [
+							'name'     => sanitize_file_name( $filename ),
+							'type'     => $file_type,
+							'tmp_name' => $temp_path,
+							'error'    => $file_error,
+							'size'     => $file_size,
+						];
+
+						$upload_overrides = [
+							'test_form' => false,
+						];
+						$move_file        = wp_handle_upload( $uploaded_file, $upload_overrides );
+						remove_filter( 'upload_dir', [ $this, 'change_upload_dir' ] );
+
+						if ( $move_file && ! isset( $move_file['error'] ) ) {
+							$form_data[ $field ][] = $move_file['url'];
+						} else {
+							wp_send_json_error(
+								[
+									'message' => __( 'File is not uploaded', 'sureforms' ),
+								]
+							);
+						}
+					}
+				} else {
+					$form_data[ $field ][] = '';
+				}
+			}
+		}
 
 		$id = sanitize_text_field( $form_data['form-id'] );
 

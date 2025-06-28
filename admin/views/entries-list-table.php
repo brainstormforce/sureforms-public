@@ -628,7 +628,10 @@ class Entries_List_Table extends \WP_List_Table {
 				Entries::update( $entry_id, [ 'status' => $action ] );
 				break;
 			case 'delete':
-				self::delete_entry_files( $entry_id );
+				// Check is pro plugin is active.
+				if ( defined( 'SRFM_PRO_VER' ) ) {
+					self::delete_entry_files( $entry_id );
+				}
 				Entries::delete( $entry_id );
 				break;
 			default:
@@ -679,6 +682,10 @@ class Entries_List_Table extends \WP_List_Table {
 				}
 				$file_path = Helper::convert_fileurl_to_filepath( urldecode( $file_url ) );
 
+				// Ensure file is within the expected uploads/sureforms directory to prevent unauthorized file deletion.
+				if ( false === strpos( $file_path, 'uploads/sureforms/' ) ) {
+					continue;
+				}
 				// Delete the file if it exists.
 				if ( file_exists( $file_path ) ) {
 					unlink( $file_path );
