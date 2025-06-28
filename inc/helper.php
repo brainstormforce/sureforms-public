@@ -1558,7 +1558,7 @@ class Helper {
 	 * @param string $subdir The subdirectory to delete the file from.
 	 *
 	 * @since x.x.x
-	 * @return bool|WP_Error
+	 * @return bool
 	 */
 	public static function delete_upload_file_from_subdir( $file_url, $subdir = 'sureforms/' ) {
 		// Decode the file URL.
