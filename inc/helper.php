@@ -1553,38 +1553,49 @@ class Helper {
 
 	/**
 	 * Summary of delete_upload_file_from_subdir
-	 * @param mixed $file_url
-	 * @param mixed $subdir
+	 *
+	 * @param string $file_url The file URL to delete.
+	 * @param string $subdir The subdirectory to delete the file from.
+	 *
+	 * @since x.x.x
 	 * @return bool|WP_Error
 	 */
-	public static function delete_upload_file_from_subdir($file_url, $subdir = 'sureforms/') {
-		// Normalize and sanitize the subdirectory
-		$subdir = trailingslashit(sanitize_text_field($subdir));
-	
-		// Get the base upload directory
-		$upload_dir = wp_upload_dir();
-		$base_upload_path = trailingslashit($upload_dir['basedir']) . $subdir;
-	
-		// Extract only the filename from URL
-		$filename = basename($file_url);
-	
-		// Construct the full file path
-		$file_path = $base_upload_path . $filename;
-	
-		// Resolve real paths
-		$real_file_path = realpath($file_path);
-		$real_base_path = realpath($base_upload_path);
-	
-		// Security check: ensure file is inside the target subdir
-		if (!$real_file_path || !$real_base_path || strpos($real_file_path, $real_base_path) !== 0) {
+	public static function delete_upload_file_from_subdir( $file_url, $subdir = 'sureforms/' ) {
+		// Decode the file URL.
+		$file_url = urldecode( $file_url );
+
+		// Check if the file URL is empty.
+		if ( empty( $file_url ) || ! is_string( $file_url ) ) {
 			return false;
 		}
-	
-		// Delete if file exists
-		if (file_exists($real_file_path)) {
-			return unlink($real_file_path);
+
+		// Normalize and sanitize the subdirectory.
+		$subdir = trailingslashit( sanitize_text_field( $subdir ) );
+
+		// Get the base upload directory.
+		$upload_dir       = wp_upload_dir();
+		$base_upload_path = trailingslashit( $upload_dir['basedir'] ) . $subdir;
+
+		// Extract only the filename from URL.
+		$filename = basename( $file_url );
+
+		// Construct the full file path.
+		$file_path = $base_upload_path . $filename;
+
+		// Resolve real paths.
+		$real_file_path = realpath( $file_path );
+		$real_base_path = realpath( $base_upload_path );
+
+		// Security check: ensure file is inside the target subdir.
+		if ( ! $real_file_path || ! $real_base_path || strpos( $real_file_path, $real_base_path ) !== 0 ) {
+			return false;
 		}
-	
+
+		// Delete if file exists.
+		if ( file_exists( $real_file_path ) ) {
+			return unlink( $real_file_path );
+		}
+
 		return false;
 	}
 }
