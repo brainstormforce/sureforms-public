@@ -1525,4 +1525,29 @@ class Helper {
 			]
 		);
 	}
+
+	/**
+	 * Get the WordPress file types.
+	 *
+	 * @since x.x.x
+	 * @return array<string,mixed> An associative array representing the file types.
+	 */
+	public static function get_wp_file_types() {
+		$formats = [];
+		$mimes   = get_allowed_mime_types();
+		$maxsize = wp_max_upload_size() / 1048576;
+		if ( ! empty( $mimes ) ) {
+			foreach ( $mimes as $type => $mime ) {
+				$multiple = explode( '|', $type );
+				foreach ( $multiple as $single ) {
+					$formats[] = $single;
+				}
+			}
+		}
+
+		return [
+			'formats' => $formats,
+			'maxsize' => $maxsize,
+		];
+	}
 }

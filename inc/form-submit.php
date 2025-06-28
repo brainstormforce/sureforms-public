@@ -408,8 +408,25 @@ class Form_Submit {
 	 * @return array<mixed> Array containing the response data.
 	 */
 	public function handle_form_entry( $form_data ) {
+		$is_error = false;
 		if ( defined( 'SRFM_PRO_VER' ) && isset( $_SERVER['REQUEST_METHOD'] ) && 'POST' === $_SERVER['REQUEST_METHOD'] && ! empty( $_FILES ) ) {
 			add_filter( 'upload_dir', [ $this, 'change_upload_dir' ] );
+
+			// Get the file types.
+			$file_types = Helper::get_wp_file_types();
+
+			// Get the allowed file types.
+			$allowed_file_types = $file_types['formats'];
+
+			// Allowed file types should be array.
+			if ( ! is_array( $allowed_file_types ) ) {
+				$is_error = true;
+				wp_send_json_error(
+					[
+						'message' => __( 'File types are not allowed', 'sureforms' ),
+					]
+				);
+			}
 
 			foreach ( $_FILES as $field => $file ) {
 				if ( is_array( $file['name'] ) ) {
@@ -421,6 +438,27 @@ class Form_Submit {
 
 						if ( ! $filename && ! $temp_path && ! $file_size && ! $file_type ) {
 							$form_data[ $field ][] = '';
+							continue;
+						}
+
+						// Check if the file type is allowed.
+						$get_file_type = explode( '/', $file_type );
+
+						// Check isset $get_file_type[1] it should be string.
+						if ( ! isset( $get_file_type[1] ) ) {
+							$is_error = true;
+							continue;
+						}
+
+						// $get_file_type[1] should be string.
+						if ( ! is_string( $get_file_type[1] ) ) {
+							$is_error = true;
+							continue;
+						}
+
+						// Check if the file type is allowed.
+						if ( ! in_array( $get_file_type[1], $allowed_file_types, true ) ) {
+							$is_error = true;
 							continue;
 						}
 
@@ -441,17 +479,22 @@ class Form_Submit {
 						if ( $move_file && ! isset( $move_file['error'] ) ) {
 							$form_data[ $field ][] = $move_file['url'];
 						} else {
-							wp_send_json_error(
-								[
-									'message' => __( 'File is not uploaded', 'sureforms' ),
-								]
-							);
+							$is_error = true;
+							continue;
 						}
 					}
 				} else {
 					$form_data[ $field ][] = '';
 				}
 			}
+		}
+
+		if ( $is_error ) {
+			wp_send_json_error(
+				[
+					'message' => __( 'File is not uploaded', 'sureforms' ),
+				]
+			);
 		}
 
 		$id = sanitize_text_field( $form_data['form-id'] );
