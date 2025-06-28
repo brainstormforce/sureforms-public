@@ -1557,7 +1557,7 @@ class Helper {
 	 * @param mixed $subdir
 	 * @return bool|WP_Error
 	 */
-	function delete_upload_file_from_subdir($file_url, $subdir = 'sureforms/') {
+	public static function delete_upload_file_from_subdir($file_url, $subdir = 'sureforms/') {
 		// Normalize and sanitize the subdirectory
 		$subdir = trailingslashit(sanitize_text_field($subdir));
 	

@@ -680,16 +680,8 @@ class Entries_List_Table extends \WP_List_Table {
 				if ( empty( $file_url ) ) {
 					continue;
 				}
-				$file_path = Helper::convert_fileurl_to_filepath( urldecode( $file_url ) );
-
-				// Ensure file is within the expected uploads/sureforms directory to prevent unauthorized file deletion.
-				if ( false === strpos( $file_path, 'uploads/sureforms/' ) ) {
-					continue;
-				}
-				// Delete the file if it exists.
-				if ( file_exists( $file_path ) ) {
-					unlink( $file_path );
-				}
+				// Delete the file from the uploads directory.
+				Helper::delete_upload_file_from_subdir( $file_url, 'sureforms/' );
 			}
 		}
 
