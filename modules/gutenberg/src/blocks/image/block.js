@@ -38,6 +38,7 @@ registerBlockType( 'srfm/image', {
 			background: false,
 		},
 		align: true,
+		html: false,
 	},
 
 	attributes,
