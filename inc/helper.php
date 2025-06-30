@@ -339,7 +339,7 @@ class Helper {
 				break;
 			case 'label_text':
 				// This has been added for generating label text for the form markup instead of adding it in the label tag.
-				$markup = $label ? htmlspecialchars_decode( esc_html( $label ) ) . ( $required ? '<span class="srfm-required" aria-label=",' . esc_attr__( 'Required', 'sureforms' ) . ',"><span aria-hidden="true"> *</span></span>' : '' ) . '</label>' : '';
+				$markup = $label ? htmlspecialchars_decode( esc_html( $label ) ) . ( $required ? '<span class="srfm-required" aria-hidden="true"> *</span>' : '' ) . '</label>' : '';
 				break;
 			default:
 				$markup = '';

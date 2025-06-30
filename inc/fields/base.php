@@ -108,7 +108,7 @@ class Base {
 	/**
 	 * Indicates whether the attribute should be set to true or false.
 	 *
-	 * @var string $data_require_attr Value of the data-required attribute.
+	 * @var string $data_require_attr Value of the aria-required attribute.
 	 * @since 0.0.2
 	 */
 	protected $data_require_attr;
