@@ -965,7 +965,7 @@ class Post_Types {
 							'enable_query_params' => isset( $item['enable_query_params'] ) ? filter_var( $item['enable_query_params'], FILTER_VALIDATE_BOOLEAN ) : false,
 							'query_params'        => isset( $item['query_params'] ) && is_array( $item['query_params'] )
 								? array_map(
-									function ( $pair ) {
+									static function ( $pair ) {
 										if ( ! is_array( $pair ) ) {
 											return [];
 										}
@@ -973,7 +973,7 @@ class Post_Types {
 										$value = current( $pair );
 
 										return [
-											sanitize_text_field( $key ) => sanitize_text_field( $value ),
+											sanitize_text_field( Helper::get_string_value( $key ) ) => sanitize_text_field( Helper::get_string_value( $value ) ),
 										];
 									},
 									$item['query_params']
