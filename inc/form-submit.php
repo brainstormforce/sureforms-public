@@ -517,6 +517,8 @@ class Form_Submit {
 			unset( $form_data['srfm_addresses'] );
 		}
 
+		$form_data = apply_filters( 'srfm_before_fields_processing', $form_data );
+
 		$submission_data = [];
 
 		$form_data_keys  = array_keys( $form_data );
