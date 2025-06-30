@@ -198,10 +198,20 @@ async function submitFormData( form ) {
 	}
 
 	// Allow pro plugins to add additional form data
-	const additionalData = applyFilters( 'srfm.prepareAdditionalFormData', {}, form );
-	Object.keys( additionalData ).forEach( key => {
-		if ( additionalData[ key ] !== null && additionalData[ key ] !== undefined ) {
-			filteredFormData.append( key, JSON.stringify( additionalData[ key ] ) );
+	const additionalData = applyFilters(
+		'srfm.prepareAdditionalFormData',
+		{},
+		form
+	);
+	Object.keys( additionalData ).forEach( ( key ) => {
+		if (
+			additionalData[ key ] !== null &&
+			additionalData[ key ] !== undefined
+		) {
+			filteredFormData.append(
+				key,
+				JSON.stringify( additionalData[ key ] )
+			);
 		}
 	} );
 
