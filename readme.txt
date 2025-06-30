@@ -4,7 +4,7 @@ Tags: contact form, custom form, forms, contact form plugin, form builder
 Requires at least: 6.4
 Tested up to: 6.8.1
 Requires PHP: 7.4
-Stable tag: 1.7.3
+Stable tag: 1.7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -264,6 +264,8 @@ We take plugin security extremely seriously. If you discover a security vulnerab
 You can report the issue through our [Bug Bounty Program](https://brainstormforce.com/bug-bounty-program/). We collaborate with Patchstack to provide opportunities for researchers to report vulnerabilities. The Patchstack team will help validate, triage, and handle any reported security issues.
 
 == Changelog ==
+= 1.7.4 - 30th June 2025 =
+* Fix: Important fixes.
 = 1.7.3 - 26th June 2025 =
 * New: Introduced admin notifications to keep administrators informed about important updates and announcements.
 * Improvement: Enhanced form initialization with custom event support (srfm_form_initialize) for better compatibility with third-party scripts.
