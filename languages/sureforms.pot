@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: SureForms 1.7.3\n"
+"Project-Id-Version: SureForms 1.7.4\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/sureforms\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-06-25T07:40:27+00:00\n"
+"POT-Creation-Date: 2025-06-30T06:06:27+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: sureforms\n"
@@ -148,7 +148,7 @@ msgstr ""
 #: inc/export.php:63
 #: inc/export.php:128
 #: inc/form-submit.php:208
-#: inc/form-submit.php:848
+#: inc/form-submit.php:890
 #: inc/forms-data.php:87
 #: inc/global-settings/global-settings.php:86
 #: inc/global-settings/global-settings.php:329
@@ -172,7 +172,7 @@ msgid "SureForms %1$s requires minimum %2$s %3$s to work properly. Please update
 msgstr ""
 
 #: admin/views/entries-list-table.php:92
-#: admin/views/entries-list-table.php:1495
+#: admin/views/entries-list-table.php:1494
 msgid "ID"
 msgstr ""
 
@@ -271,39 +271,39 @@ msgid_plural "%1$d entries were permanently deleted."
 msgstr[0] ""
 msgstr[1] ""
 
-#: admin/views/entries-list-table.php:720
+#: admin/views/entries-list-table.php:719
 msgid "Entry #"
 msgstr ""
 
 #. translators: %1$s is the word "form", %2$d is the form ID.
-#: admin/views/entries-list-table.php:736
-#: admin/views/entries-list-table.php:1050
+#: admin/views/entries-list-table.php:735
+#: admin/views/entries-list-table.php:1049
 #: inc/page-builders/bricks/elements/form-widget.php:96
 #: assets/build/formEditor.js:172
 msgid "Form"
 msgstr ""
 
-#: admin/views/entries-list-table.php:752
+#: admin/views/entries-list-table.php:751
 msgid "Read"
 msgstr ""
 
-#: admin/views/entries-list-table.php:755
-#: admin/views/entries-list-table.php:1137
+#: admin/views/entries-list-table.php:754
+#: admin/views/entries-list-table.php:1136
 msgid "Unread"
 msgstr ""
 
-#: admin/views/entries-list-table.php:758
-#: admin/views/entries-list-table.php:885
-#: admin/views/entries-list-table.php:1148
+#: admin/views/entries-list-table.php:757
+#: admin/views/entries-list-table.php:884
+#: admin/views/entries-list-table.php:1147
 #: modules/gutenberg/icons/icons-v6-3.php:2916
 msgid "Trash"
 msgstr ""
 
-#: admin/views/entries-list-table.php:845
+#: admin/views/entries-list-table.php:844
 msgid "Published"
 msgstr ""
 
-#: admin/views/entries-list-table.php:884
+#: admin/views/entries-list-table.php:883
 #: inc/email/email-template.php:157
 #: inc/email/email-template.php:163
 #: inc/smart-tags.php:350
@@ -311,29 +311,29 @@ msgstr ""
 msgid "View"
 msgstr ""
 
-#: admin/views/entries-list-table.php:918
-#: admin/views/entries-list-table.php:1343
+#: admin/views/entries-list-table.php:917
+#: admin/views/entries-list-table.php:1342
 msgid "Restore"
 msgstr ""
 
-#: admin/views/entries-list-table.php:919
-#: admin/views/entries-list-table.php:1344
+#: admin/views/entries-list-table.php:918
+#: admin/views/entries-list-table.php:1343
 msgid "Delete Permanently"
 msgstr ""
 
-#: admin/views/entries-list-table.php:953
+#: admin/views/entries-list-table.php:952
 msgid "Clear Filter"
 msgstr ""
 
-#: admin/views/entries-list-table.php:1048
+#: admin/views/entries-list-table.php:1047
 msgid "All Form Entries"
 msgstr ""
 
-#: admin/views/entries-list-table.php:1078
+#: admin/views/entries-list-table.php:1077
 msgid "All Dates"
 msgstr ""
 
-#: admin/views/entries-list-table.php:1130
+#: admin/views/entries-list-table.php:1129
 msgid "All"
 msgstr ""
 
@@ -555,7 +555,7 @@ msgid "OttoKit is not configured properly."
 msgstr ""
 
 #: inc/admin-ajax.php:185
-#: inc/form-submit.php:860
+#: inc/form-submit.php:902
 msgid "Invalid form ID."
 msgstr ""
 
@@ -868,84 +868,88 @@ msgstr ""
 msgid "Form data is not found."
 msgstr ""
 
-#: inc/form-submit.php:258
-msgid "File is not uploaded"
-msgstr ""
-
-#: inc/form-submit.php:272
+#: inc/form-submit.php:226
 msgid "Form Id is missing."
 msgstr ""
 
-#: inc/form-submit.php:379
-#: inc/form-submit.php:414
+#: inc/form-submit.php:333
+#: inc/form-submit.php:368
 msgid "reCAPTCHA error: Submit nonce is not available."
 msgstr ""
 
-#: inc/form-submit.php:430
+#: inc/form-submit.php:384
 msgid "Spam Detected"
 msgstr ""
 
-#: inc/form-submit.php:633
+#: inc/form-submit.php:426
+msgid "File types are not allowed"
+msgstr ""
+
+#: inc/form-submit.php:495
+msgid "File is not uploaded"
+msgstr ""
+
+#: inc/form-submit.php:675
 msgid "Error submitting form"
 msgstr ""
 
-#: inc/form-submit.php:740
+#: inc/form-submit.php:782
 msgid "Email notification passed to the sending server"
 msgstr ""
 
 #. translators: Here, %s is the comma separated emails list.
-#: inc/form-submit.php:794
+#: inc/form-submit.php:836
 msgid "Email notification recipient: %s"
 msgstr ""
 
 #. translators: Here, %1$s is the comma separated emails list and %2$s is error report ( if any ).
-#: inc/form-submit.php:804
+#: inc/form-submit.php:846
 msgid "Email server was unable to send the email notification. Recipient: %1$s. Reason: %2$s"
 msgstr ""
 
-#: inc/form-submit.php:806
+#: inc/form-submit.php:848
 msgid "Unknown"
 msgstr ""
 
-#: inc/form-submit.php:830
+#: inc/form-submit.php:872
 msgid "No emails were sent"
 msgstr ""
 
-#: inc/form-submit.php:977
+#: inc/form-submit.php:1019
 msgid "Captcha validation failed. No error code provided."
 msgstr ""
 
-#: inc/form-submit.php:978
+#: inc/form-submit.php:1020
 msgid "Captcha validation failed."
 msgstr ""
 
-#: inc/form-submit.php:1033
+#: inc/form-submit.php:1075
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
 msgid "Google reCAPTCHA"
 msgstr ""
 
-#: inc/form-submit.php:1037
+#: inc/form-submit.php:1079
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
 msgid "hCaptcha"
 msgstr ""
 
-#: inc/form-submit.php:1041
+#: inc/form-submit.php:1083
 #: assets/build/settings.js:172
 msgid "Cloudflare Turnstile"
 msgstr ""
 
-#: inc/form-submit.php:1045
+#: inc/form-submit.php:1087
 msgid "Unknown Captcha"
 msgstr ""
 
-#: inc/form-submit.php:1046
+#: inc/form-submit.php:1088
 msgid "Invalid captcha type."
 msgstr ""
 
 #. translators: %s is the captcha title.
-#: inc/form-submit.php:1059
+#: inc/form-submit.php:1101
 msgid "%s verification failed. Please contact your site administrator."
 msgstr ""
 
