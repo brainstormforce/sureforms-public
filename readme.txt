@@ -4,7 +4,7 @@ Tags: contact form, custom form, forms, contact form plugin, form builder
 Requires at least: 6.4
 Tested up to: 6.8.1
 Requires PHP: 7.4
-Stable tag: 1.7.3
+Stable tag: 1.7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -266,6 +266,10 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 == Changelog ==
 = x.x.x =
 * New: CPT Creation in Business Plan.
+* Improvement: Resolved an issue where reCAPTCHA was not functioning correctly, ensuring proper verification and user form protection.
+* Improvement: Removed HTML support for blocks such as Heading, Image, Separator, and Icon when used inside SureForms, as dynamic blocks do not support HTML editing.
+= 1.7.4 - 30th June 2025 =
+* Fix: Important fixes.
 = 1.7.3 - 26th June 2025 =
 * New: Introduced admin notifications to keep administrators informed about important updates and announcements.
 * Improvement: Enhanced form initialization with custom event support (srfm_form_initialize) for better compatibility with third-party scripts.

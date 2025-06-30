@@ -21,7 +21,6 @@ import ResponsiveSlider from '@Components/responsive-slider';
 import UAGSelectControl from '@Components/select-control';
 // Extend component
 import UAGAdvancedPanelBody from '@Components/advanced-panel-body';
-import ConditionalLogic from '@SrfmComponents/conditional-logic';
 import { applyFilters } from '@wordpress/hooks';
 
 const Settings = ( props ) => {
@@ -1338,6 +1337,22 @@ const Settings = ( props ) => {
 		);
 	};
 
+	/**
+	 * Apply filters to add advanced settings to the heading block.
+	 * It should return an array of objects with the following structure:
+	 * [
+	 * 	{
+	 * 		id: string,
+	 * 		content: React.Component,
+	 * 	},
+	 * ]
+	 */
+	const advancedPanel = applyFilters(
+		'srfm.advanced-heading.settings.advance',
+		[],
+		props
+	);
+
 	return (
 		<div>
 			<InspectorControls>
@@ -1357,9 +1372,7 @@ const Settings = ( props ) => {
 						{ spacingStylePanel() }
 					</InspectorTab>
 					<InspectorTab { ...UAGTabs.advance }>
-						<ConditionalLogic
-							{ ...{ setAttributes, attributes } }
-						/>
+						{ advancedPanel.map( ( item ) => item.content ) }
 					</InspectorTab>
 				</InspectorTabs>
 			</InspectorControls>
