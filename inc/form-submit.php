@@ -723,7 +723,7 @@ class Form_Submit {
 			}
 		}
 
-		return $modified_message;
+		return apply_filters( 'srfm_update_prepared_submission_data', $modified_message );
 	}
 
 	/**
