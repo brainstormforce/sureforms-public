@@ -161,6 +161,7 @@ function initializeDropdown() {
 			/**
 			 * Add the aria required attribute for the dropdown input element.
 			 * This is to announce the required state of the field for screen readers.
+			 * If not correctly implemented, it can lead to a non-compliant experience for users relying on assistive technology.
 			 */
 			if ( tomInputInstance.control_input ) {
 				tomInputInstance.control_input.setAttribute(
