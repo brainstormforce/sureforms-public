@@ -48,7 +48,7 @@ class GDPR_Markup extends Base {
 				<div class="srfm-block-wrap">
 					<input class="srfm-input-common screen-reader-text srfm-input-<?php echo esc_attr( $this->slug ); ?>" id="<?php echo esc_attr( $label_random_id ); ?>" name="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?><?php echo esc_attr( $this->field_name ); ?>"
 					<?php echo ! empty( $this->aria_described_by ) ? "aria-describedby='" . esc_attr( trim( $this->aria_described_by ) ) . "'" : ''; ?>
-					aria-required="<?php echo esc_attr( $this->data_require_attr ); ?>" type="checkbox" <?php echo esc_attr( $this->checked_attr ); ?>/>
+					data-required="<?php echo esc_attr( $this->data_require_attr ); ?>" aria-required="<?php echo esc_attr( $this->data_require_attr ); ?>" type="checkbox" <?php echo esc_attr( $this->checked_attr ); ?>/>
 					<label class="srfm-cbx" for="<?php echo esc_attr( $label_random_id ); ?>">
 						<span class="srfm-span-wrap">
 							<svg class="srfm-check-icon" width="12px" height="10px" aria-hidden="true">
