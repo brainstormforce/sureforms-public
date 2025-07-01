@@ -412,7 +412,7 @@ class Admin {
 	/**
 	 * Add notification badge to SureForms menu when there are new entries.
 	 *
-	 * @since x.x.x
+	 * @since 1.7.3
 	 * @return void
 	 */
 	public function maybe_add_entries_badge() {
@@ -462,7 +462,7 @@ class Admin {
 	/**
 	 * Mark the user's visit to the entries page.
 	 *
-	 * @since x.x.x
+	 * @since 1.7.3
 	 * @return void
 	 */
 	public function mark_entries_page_visit() {
@@ -835,6 +835,7 @@ class Admin {
 					'is_pro_license_active'        => AI_Helper::is_pro_license_active(),
 					'srfm_ai_auth_user_email'      => get_option( 'srfm_ai_auth_user_email' ),
 					'pricing_page_url'             => Helper::get_sureforms_website_url( 'pricing' ),
+					'licensing_nonce'              => wp_create_nonce( 'srfm_pro_licensing_nonce' ),
 				]
 			);
 
