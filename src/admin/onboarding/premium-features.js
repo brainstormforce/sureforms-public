@@ -199,7 +199,7 @@ const PremiumFeatures = () => {
 						content={ __( "You've picked Premium features — upgrade to start using them.", "sureforms" ) }
 						className='bg-background-secondary'
 						variant='neutral'
-						icon={ null }
+						icon={ <></> }
 					/>
 				</div>
 			) }
