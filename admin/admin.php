@@ -1109,18 +1109,24 @@ class Admin {
 	 * @since x.x.x
 	 */
 	public function pointer_should_show() {
+		$content_markup = sprintf(
+			/* translators: 1: opening span, 2: opening strong (inline), 3: closing strong, 4: closing span, 5: opening strong (block), 6: closing strong */
+			__( '%1$sGet started by %2$sbuilding your first form%3$s.%4$s%5$sExperience the power of our intuitive AI Form Builder%6$s', 'sureforms' ),
+			'<span>',
+			'<strong>',
+			'</strong>',
+			'</span><br/>',
+			'<strong style="font-size:1.1em;">',
+			'</strong>'
+		);
 		wp_send_json(
 			[
 				'show'        => true,
-				'title'       => __( 'SureForms is waiting for you!', 'sureforms' ),
-				'content'     => sprintf(
-					'<span style="display:block;margin-bottom:8px;">%s</span><strong style="font-size:1.1em;">%s</strong>',
-					__( 'Get started by <strong>building your first form</strong>.', 'sureforms' ),
-					__( 'Experience the power of our intuitive <strong>AI Form Builder</strong>.', 'sureforms' ),
-				),
-				'button_text' => __( 'Build My First Form', 'sureforms' ),
-				'dismiss'     => __( 'Dismiss', 'sureforms' ),
-				'button_url'  => admin_url( 'admin.php?page=add-new-form' ),
+				'title'       => esc_html( __( 'SureForms is waiting for you!', 'sureforms' ) ),
+				'content'     => wp_kses_post( $content_markup ),
+				'button_text' => esc_html( __( 'Build My First Form', 'sureforms' ) ),
+				'dismiss'     => esc_html( __( 'Dismiss', 'sureforms' ) ),
+				'button_url'  => esc_html( admin_url( 'admin.php?page=add-new-form' ) ),
 			]
 		);
 	}
@@ -1181,7 +1187,7 @@ class Admin {
 		if (
 			! empty( Helper::get_srfm_option( 'pointer_popup_dismissed' ) )
 			|| ! empty( Helper::get_srfm_option( 'pointer_popup_accepted' ) )
-			|| (int) ( wp_count_posts( SRFM_FORMS_POST_TYPE )->publish ?? 0 ) > 1
+			// || (int) ( wp_count_posts( SRFM_FORMS_POST_TYPE )->publish ?? 0 ) > 1
 		) {
 			return false;
 		}
