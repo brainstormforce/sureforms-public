@@ -537,7 +537,7 @@ class Entries extends Base {
 		);
 		return isset( $result[0] ) && is_array( $result[0] ) ? Helper::get_array_value( $result[0]['form_data'] ) : [];
 	}
-	
+
 	/**
 	 * Get the entry data for a specific entry.
 	 *
