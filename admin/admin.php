@@ -1109,6 +1109,15 @@ class Admin {
 	 * @since x.x.x
 	 */
 	public function pointer_should_show() {
+		// Security: Check user capability.
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( [ 'message' => __( 'Unauthorized user.', 'sureforms' ) ], 403 );
+		}
+		// Security: Nonce check.
+		if ( empty( $_POST['pointer_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['pointer_nonce'] ) ), 'sureforms_pointer_action' ) ) {
+			wp_send_json_error( [ 'message' => __( 'Invalid nonce.', 'sureforms' ) ], 403 );
+		}
+
 		$content_markup = sprintf(
 			/* translators: 1: opening span, 2: opening strong (inline), 3: closing strong, 4: closing span, 5: opening strong (block), 6: closing strong */
 			__( '%1$sGet started by %2$sbuilding your first form%3$s.%4$s%5$sExperience the power of our intuitive AI Form Builder%6$s', 'sureforms' ),
@@ -1187,7 +1196,7 @@ class Admin {
 		if (
 			! empty( Helper::get_srfm_option( 'pointer_popup_dismissed' ) )
 			|| ! empty( Helper::get_srfm_option( 'pointer_popup_accepted' ) )
-			// || (int) ( wp_count_posts( SRFM_FORMS_POST_TYPE )->publish ?? 0 ) > 1
+			|| (int) ( wp_count_posts( SRFM_FORMS_POST_TYPE )->publish ?? 0 ) > 1
 		) {
 			return false;
 		}

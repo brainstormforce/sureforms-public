@@ -4,6 +4,7 @@ jQuery( document ).ready( function ( $ ) {
 		sureformsPointerData.ajaxurl,
 		{
 			action: 'should_show_pointer',
+			pointer_nonce: sureformsPointerData.pointer_nonce,
 		},
 		function ( response ) {
 			if ( ! response || ! response.show ) {
