@@ -1089,7 +1089,7 @@ class Admin {
 			'sureforms-admin-pointer',
 			plugins_url( 'admin/assets/js/sureforms-pointer.js', SRFM_FILE ),
 			[ 'wp-pointer', 'jquery' ],
-			'1.0',
+			SRFM_VER,
 			true
 		);
 		wp_localize_script(
