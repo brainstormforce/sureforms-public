@@ -134,6 +134,9 @@ const PremiumFeatures = () => {
 	// Extract plan name if pro version exists
 	const [ currentPlan, setCurrentPlan ] = useState( '' );
 
+	// State to track if component is ready to render
+	const [ isReady, setIsReady ] = useState( false );
+
 	useEffect( () => {
 		if ( hasProVersion ) {
 			// Extract plan name from "SureForms <plan name>"
@@ -142,14 +145,16 @@ const PremiumFeatures = () => {
 				setCurrentPlan( planMatch[ 1 ].trim().toLowerCase() );
 			}
 		}
+		// Mark component as ready to render after plan is determined
+		setIsReady( true );
 	}, [ currentProVersion, hasProVersion ] );
 
-	// Filter features based on current plan
-	const getFilteredFeatures = () => {
+	// Filter features based on current plan - memoized to prevent recalculation on every render
+	const filteredFeatures = ( () => {
 		// Specific features to show for free and business plans
 		const specificFeatureIds = [
 			'ai-form-generation',
-			'recaptcha',
+			'entries',
 			'conditional-logic',
 			'conversational-forms',
 			'calculations',
@@ -195,33 +200,41 @@ const PremiumFeatures = () => {
 			);
 		}
 
-		// Default: show all features
-		return allFeatures;
-	};
+		// Default: show specific features
+		return allFeatures.filter( ( feature ) =>
+			specificFeatureIds.includes( feature.id )
+		);
+	} )();
 
-	const filteredFeatures = getFilteredFeatures();
-
-	// Initialize state with features pre-checked based on plan
-	const getInitialSelectedFeatures = () => {
+	// Initialize state with features pre-checked based on plan - memoized
+	const initialSelectedFeatures = ( () => {
 		const initialState = {};
 
-		filteredFeatures.forEach( ( feature ) => {
-			// Check all features if business plan
-			if ( currentPlan === 'business' ) {
-				initialState[ feature.id ] = true;
-			} else if ( feature.type === 'free' ) {
-				// Otherwise only check free features
-				initialState[ feature.id ] = true;
-			}
-		} );
+		// Only initialize if we're ready
+		if ( isReady ) {
+			filteredFeatures.forEach( ( feature ) => {
+				// Check all features if business plan
+				if ( currentPlan === 'business' ) {
+					initialState[ feature.id ] = true;
+				} else if ( feature.type === 'free' ) {
+					// Otherwise only check free features
+					initialState[ feature.id ] = true;
+				}
+			} );
+		}
 
 		return initialState;
-	};
+	} )();
 
-	// State to track selected features
-	const [ selectedFeatures, setSelectedFeatures ] = useState(
-		getInitialSelectedFeatures
-	);
+	// State to track selected features - initialize with empty object and update when ready
+	const [ selectedFeatures, setSelectedFeatures ] = useState( {} );
+
+	// Update selected features when initialization is complete
+	useEffect( () => {
+		if ( isReady ) {
+			setSelectedFeatures( initialSelectedFeatures );
+		}
+	}, [ isReady ] );
 
 	// Check if any premium feature is selected
 	const hasSelectedPremiumFeatures = filteredFeatures
@@ -296,93 +309,103 @@ const PremiumFeatures = () => {
 				) }
 			/>
 
-			{ filteredFeatures.length > 0 ? (
-				<div>
-					{ filteredFeatures.map( ( feature, index ) => (
-						<div key={ feature.id }>
-							<div className="p-1 bg-background-primary flex items-start justify-between">
-								<div className="flex-grow">
-									<div className="flex items-center gap-3">
-										<Text
-											size={ 16 }
-											weight={ 500 }
-											color="primary"
-										>
-											{ feature.title }
-										</Text>
-										{ getPlanBadge( feature.type ) }
+			{ isReady && (
+				<>
+					{ filteredFeatures.length > 0 ? (
+						<div>
+							{ filteredFeatures.map( ( feature, index ) => (
+								<div key={ feature.id }>
+									<div className="p-1 bg-background-primary flex items-start justify-between">
+										<div className="flex-grow">
+											<div className="flex items-center gap-3">
+												<Text
+													size={ 16 }
+													weight={ 500 }
+													color="primary"
+												>
+													{ feature.title }
+												</Text>
+												{ getPlanBadge( feature.type ) }
+											</div>
+											<Text
+												size={ 14 }
+												weight={ 400 }
+												color="tertiary"
+												className="mt-1"
+											>
+												{ feature.description }
+											</Text>
+										</div>
+										<div className="ml-4 mt-1">
+											<Checkbox
+												checked={
+													!! selectedFeatures[
+														feature.id
+													]
+												}
+												onChange={ () =>
+													handleCheckboxChange(
+														feature.id,
+														feature.type
+													)
+												}
+												size="sm"
+											/>
+										</div>
 									</div>
-									<Text
-										size={ 14 }
-										weight={ 400 }
-										color="tertiary"
-										className="mt-1"
-									>
-										{ feature.description }
-									</Text>
+									{ index < filteredFeatures.length - 1 && (
+										<Divider className="m-2 w-auto" />
+									) }
 								</div>
-								<div className="ml-4 mt-1">
-									<Checkbox
-										checked={
-											!! selectedFeatures[ feature.id ]
-										}
-										onChange={ () =>
-											handleCheckboxChange(
-												feature.id,
-												feature.type
-											)
-										}
-										size="sm"
-									/>
-								</div>
-							</div>
-							{ index < filteredFeatures.length - 1 && (
-								<Divider className="m-2 w-auto" />
-							) }
+							) ) }
 						</div>
-					) ) }
-				</div>
-			) : (
-				<div className="p-4 bg-background-secondary rounded-md">
-					<Text size={ 14 } weight={ 500 } color="primary">
-						{ __(
-							'You already have access to all premium features with your current plan!',
-							'sureforms'
-						) }
-					</Text>
-				</div>
+					) : (
+						<div className="p-4 bg-background-secondary rounded-md">
+							<Text size={ 14 } weight={ 500 } color="primary">
+								{ __(
+									'You already have access to all premium features with your current plan!',
+									'sureforms'
+								) }
+							</Text>
+						</div>
+					) }
+				</>
 			) }
 
-			<Divider />
+			{ isReady && (
+				<>
+					<Divider />
 
-			<NavigationButtons
-				backProps={ {
-					onClick: handleBack,
-				} }
-				continueProps={ {
-					onClick: handleContinue,
-					text: showUpgradeButton
-						? __( 'Upgrade', 'sureforms' )
-						: __( 'Next', 'sureforms' ),
-				} }
-				skipProps={ {
-					onClick: navigateToNextRoute,
-					text: __( 'Skip', 'sureforms' ),
-				} }
-			/>
-
-			{ showUpgradeButton && (
-				<div className="p-1">
-					<Alert
-						content={ __(
-							"You've picked Premium features — upgrade to start using them.",
-							'sureforms'
-						) }
-						className="bg-background-secondary"
-						variant="neutral"
-						icon={ <></> }
+					<NavigationButtons
+						backProps={ {
+							onClick: handleBack,
+						} }
+						continueProps={ {
+							onClick: handleContinue,
+							text: showUpgradeButton
+								? __( 'Upgrade', 'sureforms' )
+								: __( 'Next', 'sureforms' ),
+						} }
+						skipProps={ {
+							onClick: navigateToNextRoute,
+							text: __( 'Skip', 'sureforms' ),
+						} }
 					/>
-				</div>
+
+					{ showUpgradeButton && (
+						<div className="p-1">
+							<Alert
+								content={ __(
+									"You've picked Premium features — upgrade to start using them.",
+									'sureforms'
+								) }
+								className="bg-background-secondary shadow-none"
+								variant="neutral"
+								icon={ <></> }
+							/>
+						</div>
+					) }
+				</>
 			) }
 		</div>
 	);

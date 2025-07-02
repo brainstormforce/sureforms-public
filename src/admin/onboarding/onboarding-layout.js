@@ -80,16 +80,11 @@ const OnboardingLayout = () => {
 	const location = useLocation();
 
 	const widthClassNames = {
-		1: 'max-w-[35rem]', // 560px converted to rem (assuming 1rem = 16px)
-		2: 'max-w-[46.875rem]', // 750px converted to rem (assuming 1rem = 16px)
+		1: 'max-w-xl', // 560px converted to rem (assuming 1rem = 16px)
+		2: 'max-w-2xl', // 750px converted to rem (assuming 1rem = 16px)
 	};
 
-	const widthClassKey =
-		location.pathname === '/onboarding/welcome' ||
-		location.pathname === '/onboarding/email-delivery' ||
-		location.pathname === '/onboarding/done'
-			? 1
-			: 2;
+	const widthClassKey = location.pathname === '/onboarding/welcome' ? 1 : 2;
 
 	// Add body class for onboarding-specific styles
 	useEffect( () => {
