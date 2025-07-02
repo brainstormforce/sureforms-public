@@ -282,7 +282,7 @@ class Form_Submit {
 		if ( 'cf-turnstile' === $security_type ) {
 			// Turnstile validation.
 			$srfm_cf_turnstile_secret_key = is_array( $global_setting_options ) && isset( $global_setting_options['srfm_cf_turnstile_secret_key'] ) ? Helper::get_string_value( $global_setting_options['srfm_cf_turnstile_secret_key'] ) : '';
-			$cf_response                  = ! empty( $form_data['cf-turnstile-response'] ) ? $form_data['cf-turnstile-response'] : false;
+			$cf_response                  = ! empty( $form_data['cf-turnstile-response'] ) && is_string( $form_data['cf-turnstile-response'] ) ? $form_data['cf-turnstile-response'] : '';
 
 			// if gdpr is enabled then set remote ip to empty.
 			$compliance = get_post_meta( Helper::get_integer_value( $current_form_id ), '_srfm_compliance', true );
@@ -308,7 +308,7 @@ class Form_Submit {
 
 		if ( 'hcaptcha' === $security_type ) {
 			$srfm_hcaptcha_secret_key = is_array( $global_setting_options ) && isset( $global_setting_options['srfm_hcaptcha_secret_key'] ) ? Helper::get_string_value( $global_setting_options['srfm_hcaptcha_secret_key'] ) : '';
-			$hcaptcha_response        = ! empty( $form_data['h-captcha-response'] ) ? $form_data['h-captcha-response'] : false;
+			$hcaptcha_response        = ! empty( $form_data['h-captcha-response'] ) && is_string( $form_data['h-captcha-response'] ) ? $form_data['h-captcha-response'] : '';
 
 			// if gdpr is enabled then set remote ip to empty.
 			$compliance = get_post_meta( Helper::get_integer_value( $current_form_id ), '_srfm_compliance', true );

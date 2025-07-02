@@ -142,19 +142,18 @@ class Plugin_Loader {
 			return;
 		}
 
-		$filename = strtolower( $filename );
-
 		// Check for directory traversal.
 		if ( strpos( $filename, '..' ) !== false ) {
 			return;
 		}
 
-		$file      = SRFM_DIR . $filename . '.php';
-		$real_file = realpath( $file );
-		$real_dir  = realpath( SRFM_DIR );
+		$filename = strtolower( $filename );
 
-		if ( $real_file && strpos( $real_file, $real_dir ) === 0 ) {
-			require_once $real_file;
+		$file = SRFM_DIR . $filename . '.php';
+
+		// if the file is readable, include it.
+		if ( is_readable( $file ) ) {
+			require_once $file;
 		}
 	}
 
