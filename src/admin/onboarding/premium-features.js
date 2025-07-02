@@ -1,19 +1,9 @@
-import { __, sprintf } from '@wordpress/i18n';
-import { Text, Container, Checkbox, Badge } from '@bsf/force-ui';
+import { __ } from '@wordpress/i18n';
+import { Text, Checkbox, Badge } from '@bsf/force-ui';
 import { useState } from '@wordpress/element';
 import { useOnboardingNavigation } from './hooks';
 import NavigationButtons from './navigation-buttons';
 import { Header, Divider } from './components';
-import {
-	MessageCircle,
-	Calculator,
-	GitCompare,
-	RectangleEllipsis,
-	Signature,
-	Webhook,
-	Shield,
-	FileText,
-} from 'lucide-react';
 import { addQueryParam } from '@Utils/Helpers';
 
 const premiumFeatures = [
@@ -120,15 +110,14 @@ const PremiumFeatures = () => {
 		} ) );
 	};
 
-	// Function to get badge for plan
+	// Function to get badge for plan.
 	const getPlanBadge = ( plan ) => {
-		const planName = plan === 'free' ? 'Free' : 'Premium';
+		const planName = plan === 'free' ? __( 'Free', 'sureforms' ) : __( 'Premium', 'sureforms' );
 		return (
 			<Badge
 				variant={ planBadgeColors[plan] }
-				size="sm"
-				className="ml-2"
 				label={ planName }
+				size="xs"
 			/>
 		);
 	};
@@ -136,9 +125,9 @@ const PremiumFeatures = () => {
 	return (
 		<div className="space-y-6">
 			<Header
-				title={ __( 'Available Features', 'sureforms' ) }
+				title={ __( 'Select Your Features', 'sureforms' ) }
 				description={ __(
-					'Explore the features available in SureForms. Select premium features you\'re interested in to enhance your form building experience.',
+					'Get more control, faster workflows, and deeper customization — all designed to help you build better websites with less effort.',
 					'sureforms'
 				) }
 			/>
@@ -149,7 +138,7 @@ const PremiumFeatures = () => {
 						<div className="p-1 bg-background-primary">
 							<div className="flex items-start justify-between">
 								<div className="flex-grow">
-									<div className="flex items-center">
+									<div className="flex items-center gap-3">
 										<Text
 											size={ 16 }
 											weight={ 500 }
