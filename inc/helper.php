@@ -1449,6 +1449,24 @@ class Helper {
 	}
 
 	/**
+	 * Check if the starter template premium plugin is installed and return its file path.
+	 *
+	 * @since 1.7.3
+	 *
+	 * @return string The plugin file path if premium is installed, otherwise the default starter sites plugin file path.
+	 */
+	public static function check_starter_template_plugin() {
+		if ( ! function_exists( 'get_plugins' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/plugin.php';
+		}
+		$plugins = get_plugins();
+
+		$premium = 'astra-pro-sites/astra-pro-sites.php';
+
+		return isset( $plugins[ $premium ] ) ? $premium : 'astra-sites/astra-sites.php';
+	}
+
+	/**
 	 * Get sureforms recommended integrations.
 	 *
 	 * @since 0.0.1
@@ -1498,13 +1516,86 @@ class Helper {
 				'starter_templates' => [
 					'title'       => __( 'Starter Templates', 'sureforms' ),
 					'subtitle'    => __( 'Build your dream website in minutes with AI.', 'sureforms' ),
-					'status'      => self::get_plugin_status( 'astra-sites/astra-sites.php' ),
+					'status'      => self::get_plugin_status( self::check_starter_template_plugin() ),
 					'slug'        => 'astra-sites',
-					'path'        => 'astra-sites/astra-sites.php',
+					'path'        => self::check_starter_template_plugin(),
 					'redirection' => admin_url( 'admin.php?page=starter-templates' ),
 					'logo'        => self::encode_svg( is_string( $logo_starter_templates ) ? $logo_starter_templates : '' ),
 				],
 			]
 		);
+	}
+
+	/**
+	 * Get the WordPress file types.
+	 *
+	 * @since 1.7.4
+	 * @return array<string,mixed> An associative array representing the file types.
+	 */
+	public static function get_wp_file_types() {
+		$formats = [];
+		$mimes   = get_allowed_mime_types();
+		$maxsize = wp_max_upload_size() / 1048576;
+		if ( ! empty( $mimes ) ) {
+			foreach ( $mimes as $type => $mime ) {
+				$multiple = explode( '|', $type );
+				foreach ( $multiple as $single ) {
+					$formats[] = $single;
+				}
+			}
+		}
+
+		return [
+			'formats' => $formats,
+			'maxsize' => $maxsize,
+		];
+	}
+
+	/**
+	 * Summary of delete_upload_file_from_subdir
+	 *
+	 * @param string $file_url The file URL to delete.
+	 * @param string $subdir The subdirectory to delete the file from.
+	 *
+	 * @since 1.7.4
+	 * @return bool
+	 */
+	public static function delete_upload_file_from_subdir( $file_url, $subdir = 'sureforms/' ) {
+		// Decode the file URL.
+		$file_url = urldecode( $file_url );
+
+		// Check if the file URL is empty.
+		if ( empty( $file_url ) || ! is_string( $file_url ) ) {
+			return false;
+		}
+
+		// Normalize and sanitize the subdirectory.
+		$subdir = trailingslashit( sanitize_text_field( $subdir ) );
+
+		// Get the base upload directory.
+		$upload_dir       = wp_upload_dir();
+		$base_upload_path = trailingslashit( $upload_dir['basedir'] ) . $subdir;
+
+		// Extract only the filename from URL.
+		$filename = basename( $file_url );
+
+		// Construct the full file path.
+		$file_path = $base_upload_path . $filename;
+
+		// Resolve real paths.
+		$real_file_path = realpath( $file_path );
+		$real_base_path = realpath( $base_upload_path );
+
+		// Security check: ensure file is inside the target subdir.
+		if ( ! $real_file_path || ! $real_base_path || strpos( $real_file_path, $real_base_path ) !== 0 ) {
+			return false;
+		}
+
+		// Delete if file exists.
+		if ( file_exists( $real_file_path ) ) {
+			return unlink( $real_file_path );
+		}
+
+		return false;
 	}
 }

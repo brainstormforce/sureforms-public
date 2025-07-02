@@ -77,6 +77,14 @@ class Textarea_Markup extends Base {
 	protected $read_only;
 
 	/**
+	 * Append random ID to the textarea for uniqueness.
+	 *
+	 * @var int
+	 * @since 1.7.3
+	 */
+	protected $random_id;
+
+	/**
 	 * Initialize the properties based on block attributes.
 	 *
 	 * @param array<mixed> $attributes Block attributes.
@@ -94,9 +102,10 @@ class Textarea_Markup extends Base {
 		$this->max_length_attr = $this->max_length ? ' maxLength="' . $this->max_length . '" ' : '';
 		$this->rows_attr       = $this->rows ? ' rows="' . $this->rows . '" ' : '';
 		$this->max_length_html = '' !== $this->max_length ? '0/' . $this->max_length : '';
+		$this->random_id       = wp_rand( 1000, 9999 );
 		$this->set_unique_slug();
 		$this->set_field_name( $this->unique_slug );
-		$this->set_markup_properties( $this->input_label );
+		$this->set_markup_properties( $this->input_label . '-' . $this->random_id );
 		$this->set_aria_described_by();
 		$this->set_label_as_placeholder( $this->input_label );
 		$this->is_richtext = $attributes['isRichText'] ?? false;
@@ -122,7 +131,7 @@ class Textarea_Markup extends Base {
 		];
 
 		$classes   = Helper::join_strings( $classes );
-		$random_id = $this->unique_slug . '-' . wp_rand( 1000, 9999 );
+		$random_id = $this->unique_slug . '-' . $this->random_id;
 
 		ob_start(); ?>
 		<div data-block-id="<?php echo esc_attr( $this->block_id ); ?>" class="<?php echo esc_attr( $classes ); ?>">
@@ -138,11 +147,11 @@ class Textarea_Markup extends Base {
 					<?php echo $this->is_richtext ? 'data-is-richtext="true"' : ''; ?>
 					<?php echo $this->read_only ? 'readonly' : ''; ?>
 					><?php echo esc_html( $this->default ); ?></textarea>
-					<?php if ( $this->is_richtext ) { ?>
-					<div class="quill-editor-container">
-						<div id="quill-<?php echo esc_attr( $random_id ); ?>"></div>
-					</div>
-					<?php } ?>
+				<?php if ( $this->is_richtext ) { ?>
+				<div class="quill-editor-container">
+					<div id="quill-<?php echo esc_attr( $random_id ); ?>"></div>
+				</div>
+				<?php } ?>
 			</div>
 			<div class="srfm-error-wrap">
 				<?php echo wp_kses_post( $this->error_msg_markup ); ?>

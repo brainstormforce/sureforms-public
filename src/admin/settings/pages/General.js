@@ -157,11 +157,33 @@ const GeneralPage = ( {
 		);
 	};
 
+	const AdminNotificationContent = () => {
+		return (
+			<Switch
+				label={ {
+					heading: __( 'Enable Admin Notification', 'sureforms' ),
+					description: __(
+						'Admin notifications keep you informed about new form entries since your last visit.',
+						'sureforms'
+					),
+				} }
+				value={ generalTabOptions.srfm_admin_notification }
+				onChange={ ( value ) =>
+					updateGlobalSettings(
+						'srfm_admin_notification',
+						value,
+						'general-settings'
+					)
+				}
+			/>
+		);
+	};
+
 	const UsageTrackingContent = () => {
 		return (
 			<Switch
 				label={ {
-					heading: __( 'Enable Anonymous Analytics', 'sureforms' ),
+					heading: __( 'Contribute to SureForms', 'sureforms' ),
 					description: (
 						<>
 							<p>
@@ -204,6 +226,11 @@ const GeneralPage = ( {
 				loading={ loading }
 				title={ __( 'IP Logging', 'sureforms' ) }
 				content={ IPLoggingContent() }
+			/>
+			<ContentSection
+				loading={ loading }
+				title={ __( 'Admin Notification', 'sureforms' ) }
+				content={ AdminNotificationContent() }
 			/>
 			<ContentSection
 				loading={ loading }
