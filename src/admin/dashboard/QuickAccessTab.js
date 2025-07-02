@@ -37,17 +37,19 @@ export default () => {
 	];
 
 	// Add Guided Setup option only if onboarding is not completed
-	const quickAccessOptions = ! srfm_admin?.onboarding_completed
-		? [
-			{
-				key: 'onboarding',
-				label: __( 'Guided Setup', 'sureforms' ),
-				icon: <Settings size={ 16 } />,
-				link: `${ srfm_admin.sureforms_dashboard_url }&srfm-activation-redirect=1`,
-			},
-			...baseOptions,
-		  ]
-		: baseOptions;
+	const quickAccessOptions =
+		! srfm_admin?.onboarding_completed &&
+		srfm_admin?.pro_plugin_name !== 'SureForms Business'
+			? [
+				{
+					key: 'onboarding',
+					label: __( 'Guided Setup', 'sureforms' ),
+					icon: <Settings size={ 16 } />,
+					link: `${ srfm_admin.sureforms_dashboard_url }&srfm-activation-redirect=1`,
+				},
+				...baseOptions,
+			  ]
+			: baseOptions;
 
 	const QuickAccessButtons = () => {
 		return quickAccessOptions.map( ( { key, label, icon, link } ) => (
