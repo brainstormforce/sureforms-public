@@ -1,5 +1,5 @@
 import { __ } from '@wordpress/i18n';
-import { Text, Checkbox, Badge } from '@bsf/force-ui';
+import { Text, Checkbox, Badge, Alert } from '@bsf/force-ui';
 import { useState } from '@wordpress/element';
 import { useOnboardingNavigation } from './hooks';
 import NavigationButtons from './navigation-buttons';
@@ -36,7 +36,7 @@ const premiumFeatures = [
 	},
 	{
 		id: 'multi-step-form',
-		title: __( 'Multi Step Form', 'sureforms' ),
+		title: __( 'Multi-step Forms', 'sureforms' ),
 		description: __(
 			'Break complex forms into simple steps, reducing overwhelm and boosting completion. Guide users smoothly through the process.',
 			'sureforms'
@@ -84,17 +84,21 @@ const PremiumFeatures = () => {
 		navigateToPreviousRoute();
 	};
 
-	// Function to handle upgrade button click
-	const handleUpgrade = () => {
+	// Function to handle button click based on premium feature selection
+	const handleContinue = () => {
+		// Always navigate to next route
 		navigateToNextRoute();
-		// Redirect to SureForms pricing page
-		window.open(
-			addQueryParam(
-				srfm_admin?.sureforms_pricing_page,
-				'onboarding_premium_features'
-			),
-			'_blank'
-		);
+		
+		// If premium features are selected, also open pricing page
+		if (hasSelectedPremiumFeatures) {
+			window.open(
+				addQueryParam(
+					srfm_admin?.sureforms_pricing_page,
+					'onboarding_premium_features'
+				),
+				'_blank'
+			);
+		}
 	};
 
 	// Function to handle checkbox changes
@@ -135,39 +139,37 @@ const PremiumFeatures = () => {
 			<div>
 				{ premiumFeatures.map( ( feature, index ) => (
 					<div key={ feature.id }>
-						<div className="p-1 bg-background-primary">
-							<div className="flex items-start justify-between">
-								<div className="flex-grow">
-									<div className="flex items-center gap-3">
-										<Text
-											size={ 16 }
-											weight={ 500 }
-											color="primary"
-										>
-											{ feature.title }
-										</Text>
-										{ getPlanBadge( feature.plan ) }
-									</div>
+						<div className="p-1 bg-background-primary flex items-start justify-between">
+							<div className="flex-grow">
+								<div className="flex items-center gap-3">
 									<Text
-										size={ 14 }
-										weight={ 400 }
-										color="tertiary"
-										className="mt-1"
+										size={ 16 }
+										weight={ 500 }
+										color="primary"
 									>
-										{ feature.description }
+										{ feature.title }
 									</Text>
+									{ getPlanBadge( feature.plan ) }
 								</div>
-								<div className="ml-4 mt-1">
-									<Checkbox
-										checked={ !! selectedFeatures[ feature.id ] }
-										onChange={ () => handleCheckboxChange( feature.id, feature.plan ) }
-										size="sm"
-									/>
-								</div>
+								<Text
+									size={ 14 }
+									weight={ 400 }
+									color="tertiary"
+									className="mt-1"
+								>
+									{ feature.description }
+								</Text>
+							</div>
+							<div className="ml-4 mt-1">
+								<Checkbox
+									checked={ !! selectedFeatures[ feature.id ] }
+									onChange={ () => handleCheckboxChange( feature.id, feature.plan ) }
+									size="sm"
+								/>
 							</div>
 						</div>
 						{ index < premiumFeatures.length - 1 && (
-							<Divider />
+							<Divider className="m-2 w-auto" />
 						) }
 					</div>
 				) ) }
@@ -175,28 +177,32 @@ const PremiumFeatures = () => {
 
 			<Divider />
 
-			{hasSelectedPremiumFeatures && (
-				<div className="p-1">
-					<Text size={ 14 } weight={ 500 } className="text-secondary">
-						{__('You\'ve selected Premium features. Upgrade to access them!', 'sureforms')}
-					</Text>
-				</div>
-			)}
-
 			<NavigationButtons
 				backProps={ {
 					onClick: handleBack,
 				} }
 				continueProps={ {
-					onClick: handleUpgrade,
-					text: __( 'Upgrade to Premium', 'sureforms' ),
-					disabled: !hasSelectedPremiumFeatures,
+					onClick: handleContinue,
+					text: hasSelectedPremiumFeatures 
+						? __( 'Upgrade', 'sureforms' ) 
+						: __( 'Next', 'sureforms' ),
 				} }
 				skipProps={ {
 					onClick: navigateToNextRoute,
 					text: __( 'Skip', 'sureforms' ),
 				} }
 			/>
+
+			{ hasSelectedPremiumFeatures && (
+				<div className="p-1">
+					<Alert
+						content={ __( "You've picked Premium features — upgrade to start using them.", "sureforms" ) }
+						className='bg-background-secondary'
+						variant='neutral'
+						icon={ null }
+					/>
+				</div>
+			) }
 		</div>
 	);
 };
