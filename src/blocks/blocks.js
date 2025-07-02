@@ -19,6 +19,7 @@ import { BlockControls } from '@wordpress/block-editor';
 import { ToolbarGroup, ToolbarButton } from '@wordpress/components';
 import { getBlockTypes } from '@Blocks/util';
 import { __, sprintf } from '@wordpress/i18n';
+import ConditionalLogic from '@Components/conditional-logic';
 
 // Register store.
 import '../store/store.js';
@@ -113,44 +114,46 @@ const withToolbarButton = createHigherOrderComponent( ( BlockEdit ) => {
 				<>
 					<BlockControls>
 						<ToolbarGroup>
-							{ [ 100, 75, 66.66, 50, 33.33, 25 ].map( ( width ) => {
-								let labelText;
-								if ( width === 33.33 ) {
-									labelText = '33%';
-								} else if ( width === 66.66 ) {
-									labelText = '67%';
-								} else {
-									labelText = `${ width }%`;
+							{ [ 100, 75, 66.66, 50, 33.33, 25 ].map(
+								( width ) => {
+									let labelText;
+									if ( width === 33.33 ) {
+										labelText = '33%';
+									} else if ( width === 66.66 ) {
+										labelText = '67%';
+									} else {
+										labelText = `${ width }%`;
+									}
+									const labelWithText = sprintf(
+										// translators: %s: Width of the block
+										__( '%s Width', 'sureforms' ),
+										labelText
+									);
+
+									const selectedClass =
+										attributes?.fieldWidth === width
+											? 'is-selected srfm-toolbar-width-setting-button'
+											: 'srfm-toolbar-width-setting-button';
+
+									return (
+										<ToolbarButton
+											key={ width }
+											className={ selectedClass }
+											icon={
+												<span className="srfm-toolbar-width-setting-icon">
+													{ labelText }
+												</span>
+											}
+											label={ labelWithText }
+											onClick={ () =>
+												setAttributes( {
+													fieldWidth: Number( width ),
+												} )
+											}
+										/>
+									);
 								}
-								const labelWithText = sprintf(
-									// translators: %s: Width of the block
-									__( '%s Width', 'sureforms' ),
-									labelText
-								);
-
-								const selectedClass =
-									attributes?.fieldWidth === width
-										? 'is-selected srfm-toolbar-width-setting-button'
-										: 'srfm-toolbar-width-setting-button';
-
-								return (
-									<ToolbarButton
-										key={ width }
-										className={ selectedClass }
-										icon={
-											<span className="srfm-toolbar-width-setting-icon">
-												{ labelText }
-											</span>
-										}
-										label={ labelWithText }
-										onClick={ () =>
-											setAttributes( {
-												fieldWidth: Number( width ),
-											} )
-										}
-									/>
-								);
-							} ) }
+							) }
 						</ToolbarGroup>
 					</BlockControls>
 					<BlockEdit { ...props } />
@@ -190,4 +193,24 @@ addFilter(
 	'srfm.enable.responsiveToggle',
 	'srfm/disable-responsive-toggle',
 	() => false
+);
+
+/**
+ * Add conditional logic to the advanced heading settings.
+ */
+addFilter(
+	'srfm.advanced-heading.settings.advance',
+	'srfm/advanced-heading-settings-advance',
+	( items, props ) => {
+		const { setAttributes, attributes } = props;
+		return [
+			...items,
+			{
+				id: 'conditional-logic',
+				content: (
+					<ConditionalLogic { ...{ setAttributes, attributes } } />
+				),
+			},
+		];
+	}
 );

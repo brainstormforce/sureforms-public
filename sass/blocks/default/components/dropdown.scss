@@ -10,12 +10,13 @@
 					transition: 0.2s ease-out;
 
 					&.single.full {
-						.ts-control{
+						.ts-control {
 							gap: 0;
-								input[id^="tomselect-"] {
-									height: 0;
-								}
-					}}
+							input[id^="tomselect-"] {
+								height: 0;
+							}
+						}
+					}
 
 					&.has-items .ts-control {
 						height: auto;
