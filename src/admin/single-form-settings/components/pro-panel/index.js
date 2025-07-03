@@ -11,7 +11,7 @@ import svgIcons from '@Svg/svgs.json';
 import parse from 'html-react-parser';
 import { RxSlider } from 'react-icons/rx';
 import { addQueryParam } from '@Utils/Helpers';
-import { LuLogIn } from "react-icons/lu";
+import { LuLogIn } from 'react-icons/lu';
 import { LuUserPlus } from 'react-icons/lu';
 
 const IconBlock = ( { icon, label } ) => (
@@ -68,7 +68,9 @@ const iconBlocks = [
 		showIn: [ 'free', 'starter' ],
 	},
 	{
-		icon: <LuLogIn size={ 24 } color="#B4B4B4" style={ { fill: 'none' } } />,
+		icon: (
+			<LuLogIn size={ 24 } color="#B4B4B4" style={ { fill: 'none' } } />
+		),
 		label: __( 'Login', 'sureforms' ),
 		showIn: [ 'free', 'starter', 'pro' ],
 	},
