@@ -1525,4 +1525,15 @@ class Helper {
 			]
 		);
 	}
+
+	/**
+	 * Check if the sureforms pro plugin is installed.
+	 *
+	 * @since x.x.x
+	 *
+	 * @return bool
+	 */
+	public static function has_pro() {
+		return defined( 'SRFM_PRO_VER' );
+	}
 }
