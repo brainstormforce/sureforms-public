@@ -73,9 +73,49 @@ class Form_Submit {
 			[
 				'methods'             => WP_REST_Server::EDITABLE,
 				'callback'            => [ $this, 'handle_form_submission' ],
-				'permission_callback' => '__return_true',
+				'permission_callback' => [ $this, 'submit_form_permissions_check' ],
 			]
 		);
+	}
+
+	/**
+	 * Check whether a given request has permission access route.
+	 *
+	 * @param \WP_REST_Request $request Request object or array containing form data.
+	 * @since x.x.x
+	 * @return WP_Error|bool
+	 */
+	public function submit_form_permissions_check( $request ) {
+		$nonce = Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) );
+
+		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
+			wp_send_json_error(
+				[
+					'message' => __( 'Nonce verification failed.', 'sureforms' ),
+				]
+			);
+		}
+
+		$form_data = Helper::sanitize_by_field_type( $request->get_params() );
+
+		if ( empty( $form_data ) || ! is_array( $form_data ) ) {
+			wp_send_json_error(
+				[
+					'message' => __( 'Form data is not found.', 'sureforms' ),
+				]
+			);
+		}
+
+		if ( ! $form_data['form-id'] ) {
+			wp_send_json_error(
+				[
+					'message'  => __( 'Form Id is missing.', 'sureforms' ),
+					'position' => 'header',
+				]
+			);
+		}
+
+		return true;
 	}
 
 	/**
@@ -200,34 +240,16 @@ class Form_Submit {
 	 * @return \WP_REST_Response|\WP_Error Response object on success, or WP_Error object on failure.
 	 */
 	public function handle_form_submission( $request ) {
-		$nonce = Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) );
-
-		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
-			wp_send_json_error(
-				[
-					'message' => __( 'Nonce verification failed.', 'sureforms' ),
-				]
-			);
-		}
-
+		/**
+		 * All checks are done in submit_form_permissions_check method:
+		 * - Nonce verification
+		 * - Form data validation
+		 * - Form ID validation
+		 *
+		 * @since x.x.x
+		 */
 		$form_data = Helper::sanitize_by_field_type( $request->get_params() );
 
-		if ( empty( $form_data ) || ! is_array( $form_data ) ) {
-			wp_send_json_error(
-				[
-					'message' => __( 'Form data is not found.', 'sureforms' ),
-				]
-			);
-		}
-
-		if ( ! $form_data['form-id'] ) {
-			wp_send_json_error(
-				[
-					'message'  => __( 'Form Id is missing.', 'sureforms' ),
-					'position' => 'header',
-				]
-			);
-		}
 		$current_form_id       = $form_data['form-id'];
 		$security_type         = Helper::get_meta_value( Helper::get_integer_value( $current_form_id ), '_srfm_captcha_security_type' );
 		$selected_captcha_type = get_post_meta( Helper::get_integer_value( $current_form_id ), '_srfm_form_recaptcha', true ) ? Helper::get_string_value( get_post_meta( Helper::get_integer_value( $current_form_id ), '_srfm_form_recaptcha', true ) ) : '';
@@ -260,7 +282,7 @@ class Form_Submit {
 		if ( 'cf-turnstile' === $security_type ) {
 			// Turnstile validation.
 			$srfm_cf_turnstile_secret_key = is_array( $global_setting_options ) && isset( $global_setting_options['srfm_cf_turnstile_secret_key'] ) ? Helper::get_string_value( $global_setting_options['srfm_cf_turnstile_secret_key'] ) : '';
-			$cf_response                  = ! empty( $form_data['cf-turnstile-response'] ) ? $form_data['cf-turnstile-response'] : false;
+			$cf_response                  = ! empty( $form_data['cf-turnstile-response'] ) && is_string( $form_data['cf-turnstile-response'] ) ? $form_data['cf-turnstile-response'] : '';
 
 			// if gdpr is enabled then set remote ip to empty.
 			$compliance = get_post_meta( Helper::get_integer_value( $current_form_id ), '_srfm_compliance', true );
@@ -286,7 +308,7 @@ class Form_Submit {
 
 		if ( 'hcaptcha' === $security_type ) {
 			$srfm_hcaptcha_secret_key = is_array( $global_setting_options ) && isset( $global_setting_options['srfm_hcaptcha_secret_key'] ) ? Helper::get_string_value( $global_setting_options['srfm_hcaptcha_secret_key'] ) : '';
-			$hcaptcha_response        = ! empty( $form_data['h-captcha-response'] ) ? $form_data['h-captcha-response'] : false;
+			$hcaptcha_response        = ! empty( $form_data['h-captcha-response'] ) && is_string( $form_data['h-captcha-response'] ) ? $form_data['h-captcha-response'] : '';
 
 			// if gdpr is enabled then set remote ip to empty.
 			$compliance = get_post_meta( Helper::get_integer_value( $current_form_id ), '_srfm_compliance', true );
