@@ -1,5 +1,5 @@
 import { __ } from '@wordpress/i18n';
-import { useEffect, useLayoutEffect } from '@wordpress/element';
+import { useEffect, useLayoutEffect, useState } from '@wordpress/element';
 import { useLocation, useNavigate, Outlet } from 'react-router-dom';
 import { Topbar, ProgressSteps, Button } from '@bsf/force-ui';
 import { XIcon } from 'lucide-react';
@@ -13,8 +13,45 @@ import ICONS from '@Admin/components/template-picker/components/icons';
 
 const NavBar = () => {
 	const { getCurrentStepNumber } = useOnboardingNavigation();
-	const [onboardingState, actions] = useOnboardingState();
+	const [ onboardingState, actions ] = useOnboardingState();
 	const location = useLocation();
+	const [ isExiting, setIsExiting ] = useState( false );
+
+	// Function to handle exit with proper state updates
+	const handleExit = () => {
+		// Prevent multiple clicks
+		if ( isExiting ) {
+			return;
+		}
+		setIsExiting( true );
+
+		// Mark as exited early
+		actions.setExitedEarly( true );
+
+		// If exiting from premium features screen, clear selected features
+		if ( location.pathname === '/onboarding/premium-features' ) {
+			actions.setSelectedPremiumFeatures( [] );
+		}
+
+		// Use setTimeout to ensure state updates are processed
+		setTimeout( () => {
+			// Complete onboarding and save analytics data
+			wp.apiFetch( {
+				path: '/sureforms/v1/onboarding/set-status',
+				method: 'POST',
+				data: {
+					completed: 'yes',
+					analyticsData: {
+						...onboardingState.analytics,
+						exitedEarly: true,
+						completed: false,
+					},
+				},
+			} ).then( () => {
+				window.location.href = srfm_admin.sureforms_dashboard_url;
+			} );
+		}, 100 );
+	};
 
 	return (
 		<Topbar className="p-5 bg-background-secondary">
@@ -40,32 +77,12 @@ const NavBar = () => {
 				<Topbar.Item>
 					<Button
 						className="no-underline"
-						onClick={ () => {
-							// Mark as exited early
-							actions.setExitedEarly(true);
-							
-							// If exiting from premium features screen, clear selected features
-							if (location.pathname === '/onboarding/premium-features') {
-								actions.setSelectedPremiumFeatures([]);
-							}
-							
-							// Complete onboarding and save analytics data
-							wp.apiFetch( {
-								path: '/sureforms/v1/onboarding/set-status',
-								method: 'POST',
-								data: {
-									completed: 'yes',
-									analyticsData: onboardingState.analytics
-								}
-							} ).then( () => {
-								window.location.href =
-									srfm_admin.sureforms_dashboard_url;
-							} );
-						} }
+						onClick={ handleExit }
 						icon={ <XIcon /> }
 						size="xs"
 						variant="ghost"
 						iconPosition="right"
+						disabled={ isExiting }
 					>
 						{ __( 'Exit Guided Setup', 'sureforms' ) }
 					</Button>

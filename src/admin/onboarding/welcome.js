@@ -15,23 +15,25 @@ const features = [
 ];
 
 const Welcome = () => {
-	const [onboardingState, actions] = useOnboardingState();
+	const [ , actions ] = useOnboardingState();
 	const { navigateToNextRoute } = useOnboardingNavigation();
 
 	const handleConnect = async () => {
 		try {
 			// Check if user has not connected their account yet.
 			if ( 'non-registered' !== srfm_admin?.srfm_ai_details?.type ) {
+				// User is already connected, but we don't update accountConnected here as we only want to track connections made during onboarding.
 				navigateToNextRoute();
 				return;
 			}
 
 			// Use the initiateAuth helper function
 			const result = await initiateAuth( 'onboarding' );
-			
-			// If authentication was successful, update analytics
-			if (result && result.success) {
-				actions.setAccountConnected(true);
+
+			// If authentication was successful, update analytics.
+			if ( result && result.success ) {
+				// Only update accountConnected if the user explicitly connects during onboarding.
+				actions.setAccountConnected( true );
 			}
 		} catch ( error ) {
 			console.error( 'Error during authentication:', error );

@@ -18,7 +18,7 @@ const features = [
 ];
 
 const EmailDelivery = () => {
-	const [onboardingState, actions] = useOnboardingState();
+	const [ , actions ] = useOnboardingState();
 	const { navigateToNextRoute, navigateToPreviousRoute } =
 		useOnboardingNavigation();
 
@@ -38,9 +38,9 @@ const EmailDelivery = () => {
 	const [ suremailsPlugin, setSuremailsPlugin ] = useState(
 		initialSuremailsPlugin
 	);
-	
+
 	// Track if SureMail was already installed before onboarding
-	const [wasAlreadyInstalled, setWasAlreadyInstalled] = useState(false);
+	const [ wasAlreadyInstalled, setWasAlreadyInstalled ] = useState( false );
 
 	const pluginStatus = [ 'Activate', 'Activated', 'Installed' ];
 
@@ -74,13 +74,16 @@ const EmailDelivery = () => {
 
 	// Refresh plugin status on component mount to ensure we have the latest status
 	useEffect( () => {
-		refreshPluginStatus().then(updatedPlugin => {
+		refreshPluginStatus().then( ( updatedPlugin ) => {
 			// Check if SureMail is already installed/activated
-			if (updatedPlugin && pluginStatus.includes(updatedPlugin.status)) {
+			if (
+				updatedPlugin &&
+				pluginStatus.includes( updatedPlugin.status )
+			) {
 				// Mark as already installed, but don't track in analytics
-				setWasAlreadyInstalled(true);
+				setWasAlreadyInstalled( true );
 			}
-		});
+		} );
 	}, [] );
 
 	const handleInstallSureMail = () => {
@@ -92,10 +95,10 @@ const EmailDelivery = () => {
 			// Check if the plugin is already activated or installed.
 			if ( pluginStatus.includes( suremailsPlugin.status ) ) {
 				// Plugin already installed, but only update analytics if it wasn't installed before onboarding
-				if (!wasAlreadyInstalled) {
-					actions.setSuremailInstalled(true);
+				if ( ! wasAlreadyInstalled ) {
+					actions.setSuremailInstalled( true );
 					// If email-delivery was previously skipped, remove it from skippedSteps
-					actions.unmarkStepSkipped('emailDelivery');
+					actions.unmarkStepSkipped( 'emailDelivery' );
 				}
 				return;
 			}
@@ -109,11 +112,14 @@ const EmailDelivery = () => {
 					// Refresh status after installation completes (background process)
 					setTimeout( async () => {
 						const updatedPlugin = await refreshPluginStatus();
-						if (updatedPlugin && pluginStatus.includes(updatedPlugin.status)) {
+						if (
+							updatedPlugin &&
+							pluginStatus.includes( updatedPlugin.status )
+						) {
 							// Only update analytics if it wasn't installed before onboarding
-							actions.setSuremailInstalled(true);
+							actions.setSuremailInstalled( true );
 							// If email-delivery was previously skipped, remove it from skippedSteps
-							actions.unmarkStepSkipped('emailDelivery');
+							actions.unmarkStepSkipped( 'emailDelivery' );
 						}
 					}, 2000 );
 				} )
@@ -125,8 +131,8 @@ const EmailDelivery = () => {
 
 	const handleSkip = () => {
 		// Mark email delivery as skipped in analytics
-		actions.markStepSkipped('emailDelivery');
-		
+		actions.markStepSkipped( 'emailDelivery' );
+
 		// Set email delivery as configured
 		actions.setEmailDeliveryConfigured( true );
 

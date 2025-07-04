@@ -1,4 +1,4 @@
-import { createContext, useContext, useReducer, useEffect } from '@wordpress/element';
+import { createContext, useContext, useReducer } from '@wordpress/element';
 
 // Session storage key for onboarding state
 export const ONBOARDING_SESSION_STORAGE_KEY = 'sureforms_onboarding_state';
@@ -10,13 +10,13 @@ const initialState = {
 	analytics: {
 		skippedSteps: [],
 		premiumFeatures: {
-			selectedFeatures: []
+			selectedFeatures: [],
 		},
 		suremailInstalled: false,
 		accountConnected: false,
 		completed: false,
-		exitedEarly: false
-	}
+		exitedEarly: false,
+	},
 };
 
 // Action types
@@ -38,67 +38,78 @@ const onboardingReducer = ( state, action ) => {
 		case ACTIONS.SET_EMAIL_DELIVERY_CONFIGURED:
 			return { ...state, emailDeliveryConfigured: action.payload };
 		case ACTIONS.MARK_STEP_SKIPPED:
-			return { 
-				...state, 
+			return {
+				...state,
 				analytics: {
 					...state.analytics,
-					skippedSteps: [...state.analytics.skippedSteps, action.payload]
-				}
+					skippedSteps: [
+						...state.analytics.skippedSteps,
+						action.payload,
+					],
+				},
 			};
 		case ACTIONS.UNMARK_STEP_SKIPPED:
-			return { 
-				...state, 
+			return {
+				...state,
 				analytics: {
 					...state.analytics,
-					skippedSteps: state.analytics.skippedSteps.filter(step => step !== action.payload)
-				}
+					skippedSteps: state.analytics.skippedSteps.filter(
+						( step ) => step !== action.payload
+					),
+				},
 			};
 		case ACTIONS.SET_SUREMAIL_INSTALLED:
-			return { 
-				...state, 
+			return {
+				...state,
 				analytics: {
 					...state.analytics,
 					suremailInstalled: action.payload,
 					// If SureMail is installed and email-delivery was previously skipped, remove it
-					skippedSteps: action.payload 
-						? state.analytics.skippedSteps.filter(step => step !== 'emailDelivery')
-						: state.analytics.skippedSteps
-				}
+					skippedSteps: action.payload
+						? state.analytics.skippedSteps.filter(
+							( step ) => step !== 'emailDelivery'
+						  )
+						: state.analytics.skippedSteps,
+				},
 			};
 		case ACTIONS.SET_SELECTED_PREMIUM_FEATURES:
-			return { 
-				...state, 
+			return {
+				...state,
 				analytics: {
 					...state.analytics,
 					premiumFeatures: {
 						...state.analytics.premiumFeatures,
-						selectedFeatures: action.payload
-					}
-				}
+						selectedFeatures: action.payload,
+					},
+				},
 			};
 		case ACTIONS.SET_ACCOUNT_CONNECTED:
-			return { 
-				...state, 
+			return {
+				...state,
 				analytics: {
 					...state.analytics,
-					accountConnected: action.payload
-				}
+					accountConnected: action.payload,
+				},
 			};
 		case ACTIONS.SET_COMPLETED:
-			return { 
-				...state, 
+			return {
+				...state,
 				analytics: {
 					...state.analytics,
-					completed: action.payload
-				}
+					completed: action.payload,
+					// When marking as completed, ensure exitedEarly is false
+					exitedEarly: false,
+				},
 			};
 		case ACTIONS.SET_EXITED_EARLY:
-			return { 
-				...state, 
+			return {
+				...state,
 				analytics: {
 					...state.analytics,
-					exitedEarly: action.payload
-				}
+					exitedEarly: action.payload,
+					// When marking as exited early, ensure completed is false
+					completed: false,
+				},
 			};
 		case ACTIONS.RESET_STATE:
 			return initialState;
@@ -113,16 +124,6 @@ const OnboardingContext = createContext();
 // Provider component
 export const OnboardingProvider = ( { children } ) => {
 	const [ state, dispatch ] = useReducer( onboardingReducer, initialState );
-
-	// Check if user is already connected to account
-	useEffect(() => {
-		if (srfm_admin?.srfm_ai_details?.type !== 'non-registered') {
-			dispatch({
-				type: ACTIONS.SET_ACCOUNT_CONNECTED,
-				payload: true,
-			});
-		}
-	}, []);
 
 	const actions = {
 		setEmailDeliveryConfigured: ( value ) =>

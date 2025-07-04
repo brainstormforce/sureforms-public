@@ -1,6 +1,7 @@
 import { Container, Text, Title } from '@bsf/force-ui';
 import { __ } from '@wordpress/i18n';
 import { Check } from 'lucide-react';
+import { useState } from '@wordpress/element';
 import { Divider } from './components';
 import NavigationButtons from './navigation-buttons';
 import { useOnboardingState } from './onboarding-state';
@@ -22,23 +23,37 @@ const features = [
 ];
 
 const Done = () => {
-	const [onboardingState, actions] = useOnboardingState();
+	const [ onboardingState, actions ] = useOnboardingState();
+	const [ isCompleting, setIsCompleting ] = useState( false );
 
 	const handleBuildForm = () => {
+		// Prevent multiple clicks
+		if ( isCompleting ) {
+			return;
+		}
+		setIsCompleting( true );
+
 		// Mark as completed
-		actions.setCompleted(true);
-		
-		// Complete onboarding and save analytics data
-		apiFetch({
-			path: '/sureforms/v1/onboarding/set-status',
-			method: 'POST',
-			data: {
-				completed: 'yes',
-				analyticsData: onboardingState.analytics
-			}
-		}).then(() => {
-			window.location.href = `${srfm_admin.site_url}/wp-admin/admin.php?page=add-new-form`;
-		});
+		actions.setCompleted( true );
+
+		// Use setTimeout to ensure state updates are processed
+		setTimeout( () => {
+			// Complete onboarding and save analytics data
+			apiFetch( {
+				path: '/sureforms/v1/onboarding/set-status',
+				method: 'POST',
+				data: {
+					completed: 'yes',
+					analyticsData: {
+						...onboardingState.analytics,
+						completed: true,
+						exitedEarly: false,
+					},
+				},
+			} ).then( () => {
+				window.location.href = `${ srfm_admin.site_url }/wp-admin/admin.php?page=add-new-form`;
+			} );
+		}, 100 );
 	};
 
 	return (
@@ -81,6 +96,7 @@ const Done = () => {
 				continueProps={ {
 					onClick: handleBuildForm,
 					text: __( 'Build Your First Form', 'sureforms' ),
+					disabled: isCompleting,
 				} }
 			/>
 		</div>

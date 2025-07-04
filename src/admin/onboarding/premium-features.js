@@ -125,7 +125,7 @@ const planBadgeColors = {
 };
 
 const PremiumFeatures = () => {
-	const [onboardingState, actions] = useOnboardingState();
+	const [ , actions ] = useOnboardingState();
 	const { navigateToPreviousRoute, navigateToNextRoute } =
 		useOnboardingNavigation();
 
@@ -250,14 +250,14 @@ const PremiumFeatures = () => {
 	// Function to handle button click based on premium feature selection
 	const handleContinue = () => {
 		// If premium features are selected, save them to analytics and open pricing page
-		if (hasSelectedPremiumFeatures) {
-			const selectedFeatureIds = Object.entries(selectedFeatures)
-				.filter(([, isSelected]) => isSelected)
-				.map(([featureId]) => featureId);
-			
+		if ( hasSelectedPremiumFeatures ) {
+			const selectedFeatureIds = Object.entries( selectedFeatures )
+				.filter( ( [ , isSelected ] ) => isSelected )
+				.map( ( [ featureId ] ) => featureId );
+
 			// Only save selected features if user clicks Upgrade
-			actions.setSelectedPremiumFeatures(selectedFeatureIds);
-			
+			actions.setSelectedPremiumFeatures( selectedFeatureIds );
+
 			// Open pricing page
 			window.open(
 				addQueryParam(
@@ -268,9 +268,9 @@ const PremiumFeatures = () => {
 			);
 		} else {
 			// Clear selected premium features if continuing without premium features
-			actions.setSelectedPremiumFeatures([]);
+			actions.setSelectedPremiumFeatures( [] );
 		}
-		
+
 		// Always navigate to next route
 		navigateToNextRoute();
 	};
@@ -278,11 +278,11 @@ const PremiumFeatures = () => {
 	// Function to handle skip
 	const handleSkip = () => {
 		// Mark premium features as skipped
-		actions.markStepSkipped('premiumFeatures');
-		
+		actions.markStepSkipped( 'premiumFeatures' );
+
 		// Clear selected premium features when skipping
-		actions.setSelectedPremiumFeatures([]);
-		
+		actions.setSelectedPremiumFeatures( [] );
+
 		// Navigate to next route
 		navigateToNextRoute();
 	};
