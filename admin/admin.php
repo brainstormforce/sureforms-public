@@ -38,7 +38,7 @@ class Admin {
 		add_action( 'admin_menu', [ $this, 'settings_page' ] );
 		add_action( 'admin_menu', [ $this, 'add_new_form' ] );
 		add_action( 'admin_menu', [ $this, 'add_suremail_page' ] );
-		if ( ! defined( 'SRFM_PRO_VER' ) ) {
+		if ( ! Helper::has_pro() ) {
 			add_action( 'admin_menu', [ $this, 'add_upgrade_to_pro' ] );
 			add_action( 'admin_footer', [ $this, 'add_upgrade_to_pro_target_attr' ] );
 		}
@@ -52,7 +52,6 @@ class Admin {
 		add_action( 'uag_enable_quick_action_sidebar', [ $this, 'restrict_spectra_quick_action_bar' ] );
 
 		add_action( 'current_screen', [ $this, 'enable_gutenberg_for_sureforms' ], 100 );
-		add_action( 'admin_notices', [ $this, 'srfm_pro_version_compatibility' ] );
 
 		// Handle entry actions.
 		add_action( 'admin_init', [ $this, 'handle_entry_actions' ] );
@@ -90,7 +89,7 @@ class Admin {
 	 * @since 1.4.2
 	 */
 	public function add_action_links( $links ) {
-		if ( ! defined( 'SRFM_PRO_FILE' ) && ! file_exists( WP_PLUGIN_DIR . '/sureforms-pro/sureforms-pro.php' ) ) {
+		if ( ! Helper::has_pro() ) {
 			// Display upsell link if SureForms Pro is not installed.
 			$upsell_link = add_query_arg(
 				[
@@ -611,9 +610,9 @@ class Admin {
 			'sureforms_dashboard_url' => admin_url( '/admin.php?page=sureforms_menu' ),
 			'plugin_version'          => SRFM_VER,
 			'global_settings_nonce'   => current_user_can( 'manage_options' ) ? wp_create_nonce( 'wp_rest' ) : '',
-			'is_pro_active'           => defined( 'SRFM_PRO_VER' ),
-			'pro_plugin_version'      => defined( 'SRFM_PRO_VER' ) ? SRFM_PRO_VER : '',
-			'pro_plugin_name'         => defined( 'SRFM_PRO_VER' ) && defined( 'SRFM_PRO_PRODUCT' ) ? SRFM_PRO_PRODUCT : 'SureForms Pro',
+			'is_pro_active'           => Helper::has_pro(),
+			'pro_plugin_version'      => Helper::has_pro() ? SRFM_PRO_VER : '',
+			'pro_plugin_name'         => Helper::has_pro() && defined( 'SRFM_PRO_PRODUCT' ) ? SRFM_PRO_PRODUCT : 'SureForms Pro',
 			'sureforms_pricing_page'  => Helper::get_sureforms_website_url( 'pricing' ),
 			'field_spacing_vars'      => Helper::get_css_vars(),
 			'is_ver_lower_than_6_7'   => version_compare( $wp_version, '6.6.2', '<=' ),
@@ -824,7 +823,7 @@ class Admin {
 					'new_template_picker_base_url' => admin_url( 'post-new.php?post_type=sureforms_form' ),
 					'capability'                   => current_user_can( 'edit_posts' ),
 					'template_picker_nonce'        => current_user_can( 'edit_posts' ) ? wp_create_nonce( 'wp_rest' ) : '',
-					'is_pro_active'                => defined( 'SRFM_PRO_VER' ),
+					'is_pro_active'                => Helper::has_pro(),
 					'srfm_ai_usage_details'        => AI_Helper::get_current_usage_details(),
 					'is_pro_license_active'        => AI_Helper::is_pro_license_active(),
 					'srfm_ai_auth_user_email'      => get_option( 'srfm_ai_auth_user_email' ),
@@ -976,69 +975,6 @@ class Admin {
 				}
 			}
 			Entries_List_Table::handle_entry_status( $entry_id, $action, $view );
-		}
-	}
-
-	/**
-	 * Admin Notice Callback if sureforms pro is out of date.
-	 *
-	 * Hooked - admin_notices
-	 *
-	 * @return void
-	 * @since 1.0.4
-	 */
-	public function srfm_pro_version_compatibility() {
-		$plugin_file = 'sureforms-pro/sureforms-pro.php';
-		if ( ! is_plugin_active( $plugin_file ) || ! defined( 'SRFM_PRO_VER' ) ) {
-			return;
-		}
-
-		if ( empty( get_current_screen() ) ) {
-			return;
-		}
-
-		if ( ! current_user_can( 'update_plugins' ) ) {
-			return;
-		}
-
-		$srfm_pro_license_status = get_option( 'srfm_pro_license_status', '' );
-		/**
-		 * If the license status is not set then get the license status and update the option accordingly.
-		 * This will be executed only once. Subsequently, the option status is updated by the licensing class on license activation or deactivation.
-		 */
-		if ( empty( $srfm_pro_license_status ) && class_exists( 'SRFM_PRO\Admin\Licensing' ) ) {
-			$srfm_pro_license_status = \SRFM_PRO\Admin\Licensing::is_license_active() ? 'licensed' : 'unlicensed';
-			update_option( 'srfm_pro_license_status', $srfm_pro_license_status );
-		}
-
-		$pro_plugin_name = defined( 'SRFM_PRO_PRODUCT' ) ? SRFM_PRO_PRODUCT : 'SureForms Pro';
-		$message         = '';
-		$url             = admin_url( 'admin.php?page=sureforms_form_settings&tab=account-settings' );
-		if ( 'unlicensed' === $srfm_pro_license_status ) {
-			$message = '<p>' . sprintf(
-				// translators: %1$s: Opening anchor tag with URL, %2$s: Closing anchor tag, %3$s: SureForms Pro Plugin Name.
-				esc_html__( 'Please %1$sactivate%2$s your copy of %3$s to get new features, access support, receive update notifications, and more.', 'sureforms' ),
-				'<a href="' . esc_url( $url ) . '">',
-				'</a>',
-				'<i>' . esc_html( $pro_plugin_name ) . '</i>'
-			) . '</p>';
-		}
-
-		if ( ! version_compare( SRFM_PRO_VER, SRFM_PRO_RECOMMENDED_VER, '>=' ) ) {
-			$message .= '<p>' . sprintf(
-				// translators: %1$s: SureForms version, %2$s: SureForms Pro Plugin Name, %3$s: SureForms Pro Version, %4$s: Anchor tag open, %5$s: Closing anchor tag.
-				esc_html__( 'SureForms %1$s requires minimum %2$s %3$s to work properly. Please update to the latest version from %4$shere%5$s.', 'sureforms' ),
-				esc_html( SRFM_VER ),
-				esc_html( $pro_plugin_name ),
-				esc_html( SRFM_PRO_RECOMMENDED_VER ),
-				'<a href=' . esc_url( admin_url( 'update-core.php' ) ) . '>',
-				'</a>'
-			) . '</p>';
-		}
-
-		if ( ! empty( $message ) ) {
-			// Phpcs ignore comment is required as $message variable is already escaped.
-			echo '<div class="notice notice-warning">' . wp_kses_post( $message ) . '</div>';
 		}
 	}
 

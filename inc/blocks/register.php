@@ -8,6 +8,7 @@
 namespace SRFM\Inc\Blocks;
 
 use SRFM\Inc\Traits\Get_Instance;
+use SRFM\Inc\Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -34,7 +35,7 @@ class Register {
 			],
 		];
 
-		if ( defined( 'SRFM_PRO_VER' ) ) {
+		if ( Helper::has_pro() ) {
 			$blocks[] = [
 				'dir'       => SRFM_PRO_DIR . 'inc/blocks/**/*.php',
 				'namespace' => 'SRFM_PRO\\Inc\\Blocks',
