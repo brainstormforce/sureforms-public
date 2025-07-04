@@ -175,6 +175,14 @@ class Rest_Api {
 
 		// Set the onboarding status to yes always.
 		Onboarding::get_instance()->set_onboarding_status( 'yes' );
+		
+		// Get analytics data from request
+		$analytics_data = $request->get_param( 'analyticsData' );
+		
+		// Save analytics data if provided
+		if ( $analytics_data ) {
+			update_option( 'srfm_onboarding_analytics', $analytics_data );
+		}
 
 		return new \WP_REST_Response( [ 'success' => true ] );
 	}

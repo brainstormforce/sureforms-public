@@ -18,7 +18,7 @@ const features = [
 ];
 
 const EmailDelivery = () => {
-	const [ , actions ] = useOnboardingState();
+	const [onboardingState, actions] = useOnboardingState();
 	const { navigateToNextRoute, navigateToPreviousRoute } =
 		useOnboardingNavigation();
 
@@ -71,7 +71,12 @@ const EmailDelivery = () => {
 
 	// Refresh plugin status on component mount to ensure we have the latest status
 	useEffect( () => {
-		refreshPluginStatus();
+		refreshPluginStatus().then(updatedPlugin => {
+			// Check if SureMail is already installed/activated
+			if (updatedPlugin && pluginStatus.includes(updatedPlugin.status)) {
+				actions.setSuremailInstalled(true);
+			}
+		});
 	}, [] );
 
 	const handleInstallSureMail = () => {
@@ -82,7 +87,10 @@ const EmailDelivery = () => {
 		if ( suremailsPlugin ) {
 			// Check if the plugin is already activated or installed.
 			if ( pluginStatus.includes( suremailsPlugin.status ) ) {
-				// Plugin already installed, nothing more to do
+				// Plugin already installed, update analytics
+				actions.setSuremailInstalled(true);
+				// If email-delivery was previously skipped, remove it from skippedSteps
+				actions.unmarkStepSkipped('emailDelivery');
 				return;
 			}
 
@@ -94,7 +102,12 @@ const EmailDelivery = () => {
 				.then( () => {
 					// Refresh status after installation completes (background process)
 					setTimeout( async () => {
-						await refreshPluginStatus();
+						const updatedPlugin = await refreshPluginStatus();
+						if (updatedPlugin && pluginStatus.includes(updatedPlugin.status)) {
+							actions.setSuremailInstalled(true);
+							// If email-delivery was previously skipped, remove it from skippedSteps
+							actions.unmarkStepSkipped('emailDelivery');
+						}
 					}, 2000 );
 				} )
 				.catch( ( error ) => {
@@ -104,6 +117,9 @@ const EmailDelivery = () => {
 	};
 
 	const handleSkip = () => {
+		// Mark email delivery as skipped in analytics
+		actions.markStepSkipped('emailDelivery');
+		
 		// Set email delivery as configured
 		actions.setEmailDeliveryConfigured( true );
 

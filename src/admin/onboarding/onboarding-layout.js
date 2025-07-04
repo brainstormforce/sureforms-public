@@ -7,11 +7,13 @@ import { useOnboardingNavigation } from './hooks';
 import {
 	OnboardingProvider,
 	ONBOARDING_SESSION_STORAGE_KEY,
+	useOnboardingState,
 } from './onboarding-state';
 import ICONS from '@Admin/components/template-picker/components/icons';
 
 const NavBar = () => {
 	const { getCurrentStepNumber } = useOnboardingNavigation();
+	const [onboardingState, actions] = useOnboardingState();
 
 	return (
 		<Topbar className="p-5 bg-background-secondary">
@@ -38,10 +40,17 @@ const NavBar = () => {
 					<Button
 						className="no-underline"
 						onClick={ () => {
-							// Complete onboarding and redirect to dashboard
+							// Mark as exited early
+							actions.setExitedEarly(true);
+							
+							// Complete onboarding and save analytics data
 							wp.apiFetch( {
 								path: '/sureforms/v1/onboarding/set-status',
 								method: 'POST',
+								data: {
+									completed: 'yes',
+									analyticsData: onboardingState.analytics
+								}
 							} ).then( () => {
 								window.location.href =
 									srfm_admin.sureforms_dashboard_url;

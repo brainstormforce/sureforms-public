@@ -2,6 +2,7 @@ import { __ } from '@wordpress/i18n';
 import { Text, Checkbox, Badge, Alert } from '@bsf/force-ui';
 import { useState, useEffect } from '@wordpress/element';
 import { useOnboardingNavigation } from './hooks';
+import { useOnboardingState } from './onboarding-state';
 import NavigationButtons from './navigation-buttons';
 import { Header, Divider } from './components';
 import { addQueryParam } from '@Utils/Helpers';
@@ -124,6 +125,7 @@ const planBadgeColors = {
 };
 
 const PremiumFeatures = () => {
+	const [onboardingState, actions] = useOnboardingState();
 	const { navigateToPreviousRoute, navigateToNextRoute } =
 		useOnboardingNavigation();
 
@@ -236,6 +238,17 @@ const PremiumFeatures = () => {
 		}
 	}, [ isReady ] );
 
+	// Update onboarding state when selections change
+	useEffect(() => {
+		if (isReady) {
+			const selectedFeatureIds = Object.entries(selectedFeatures)
+				.filter(([, isSelected]) => isSelected)
+				.map(([featureId]) => featureId);
+			
+			actions.setSelectedPremiumFeatures(selectedFeatureIds);
+		}
+	}, [selectedFeatures, isReady]);
+
 	// Check if any premium feature is selected
 	const hasSelectedPremiumFeatures = filteredFeatures
 		.filter( ( feature ) => feature.type === 'premium' )
@@ -260,6 +273,15 @@ const PremiumFeatures = () => {
 				'_blank'
 			);
 		}
+	};
+
+	// Function to handle skip
+	const handleSkip = () => {
+		// Mark premium features as skipped, but don't clear selections
+		actions.markStepSkipped('premiumFeatures');
+		
+		// Navigate to next route
+		navigateToNextRoute();
 	};
 
 	// Function to handle checkbox changes
@@ -387,7 +409,7 @@ const PremiumFeatures = () => {
 								: __( 'Next', 'sureforms' ),
 						} }
 						skipProps={ {
-							onClick: navigateToNextRoute,
+							onClick: handleSkip,
 							text: __( 'Skip', 'sureforms' ),
 						} }
 					/>

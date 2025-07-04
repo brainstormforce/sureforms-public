@@ -2,6 +2,7 @@ import { __ } from '@wordpress/i18n';
 import { Text } from '@bsf/force-ui';
 import { Check } from 'lucide-react';
 import { useOnboardingNavigation } from './hooks';
+import { useOnboardingState } from './onboarding-state';
 import { Divider } from './components';
 import NavigationButtons from './navigation-buttons';
 import { initiateAuth } from '@Utils/Helpers';
@@ -14,24 +15,33 @@ const features = [
 ];
 
 const Welcome = () => {
+	const [onboardingState, actions] = useOnboardingState();
 	const { navigateToNextRoute } = useOnboardingNavigation();
 
 	const handleConnect = async () => {
 		try {
 			// Check if user has not connected their account yet.
 			if ( 'non-registered' !== srfm_admin?.srfm_ai_details?.type ) {
+				// User is already connected
+				actions.setAccountConnected(true);
 				navigateToNextRoute();
 				return;
 			}
 
 			// Use the initiateAuth helper function
-			await initiateAuth( 'onboarding' );
+			const result = await initiateAuth( 'onboarding' );
+			
+			// If authentication was successful, update analytics
+			if (result && result.success) {
+				actions.setAccountConnected(true);
+			}
 		} catch ( error ) {
 			console.error( 'Error during authentication:', error );
 		}
 	};
 
 	const handleSkip = async () => {
+		// Skip without connecting account
 		navigateToNextRoute();
 	};
 

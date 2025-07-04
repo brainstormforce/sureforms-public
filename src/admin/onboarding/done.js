@@ -3,6 +3,7 @@ import { __ } from '@wordpress/i18n';
 import { Check } from 'lucide-react';
 import { Divider } from './components';
 import NavigationButtons from './navigation-buttons';
+import { useOnboardingState } from './onboarding-state';
 import apiFetch from '@wordpress/api-fetch';
 
 const features = [
@@ -21,14 +22,23 @@ const features = [
 ];
 
 const Done = () => {
+	const [onboardingState, actions] = useOnboardingState();
+
 	const handleBuildForm = () => {
-		// Complete onboarding and redirect to create new form page
-		apiFetch( {
+		// Mark as completed
+		actions.setCompleted(true);
+		
+		// Complete onboarding and save analytics data
+		apiFetch({
 			path: '/sureforms/v1/onboarding/set-status',
 			method: 'POST',
-		} ).then( () => {
-			window.location.href = `${ srfm_admin.site_url }/wp-admin/admin.php?page=add-new-form`;
-		} );
+			data: {
+				completed: 'yes',
+				analyticsData: onboardingState.analytics
+			}
+		}).then(() => {
+			window.location.href = `${srfm_admin.site_url}/wp-admin/admin.php?page=add-new-form`;
+		});
 	};
 
 	return (
