@@ -94,5 +94,7 @@ module.exports = {
 		ResizeObserver: true,
 		MutationObserver: true,
 		sessionStorage: true,
+		jQuery: true,
+		sureformsPointerData: true,
 	},
 };
