@@ -185,7 +185,7 @@ class Entries extends Base {
 		$log = [
 			'title'     => Helper::get_string_value( trim( $title ) ),
 			'messages'  => Helper::get_array_value( $messages ),
-			'timestamp' => time(),
+			'timestamp' => current_time( 'timestamp' ),
 		];
 
 		$this->logs = array_merge( [ $log ], $this->logs );
