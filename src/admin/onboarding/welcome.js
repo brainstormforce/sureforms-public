@@ -22,8 +22,6 @@ const Welcome = () => {
 		try {
 			// Check if user has not connected their account yet.
 			if ( 'non-registered' !== srfm_admin?.srfm_ai_details?.type ) {
-				// User is already connected
-				actions.setAccountConnected(true);
 				navigateToNextRoute();
 				return;
 			}

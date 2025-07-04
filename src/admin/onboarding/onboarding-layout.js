@@ -14,6 +14,7 @@ import ICONS from '@Admin/components/template-picker/components/icons';
 const NavBar = () => {
 	const { getCurrentStepNumber } = useOnboardingNavigation();
 	const [onboardingState, actions] = useOnboardingState();
+	const location = useLocation();
 
 	return (
 		<Topbar className="p-5 bg-background-secondary">
@@ -42,6 +43,11 @@ const NavBar = () => {
 						onClick={ () => {
 							// Mark as exited early
 							actions.setExitedEarly(true);
+							
+							// If exiting from premium features screen, clear selected features
+							if (location.pathname === '/onboarding/premium-features') {
+								actions.setSelectedPremiumFeatures([]);
+							}
 							
 							// Complete onboarding and save analytics data
 							wp.apiFetch( {

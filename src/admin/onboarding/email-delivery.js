@@ -38,6 +38,9 @@ const EmailDelivery = () => {
 	const [ suremailsPlugin, setSuremailsPlugin ] = useState(
 		initialSuremailsPlugin
 	);
+	
+	// Track if SureMail was already installed before onboarding
+	const [wasAlreadyInstalled, setWasAlreadyInstalled] = useState(false);
 
 	const pluginStatus = [ 'Activate', 'Activated', 'Installed' ];
 
@@ -74,7 +77,8 @@ const EmailDelivery = () => {
 		refreshPluginStatus().then(updatedPlugin => {
 			// Check if SureMail is already installed/activated
 			if (updatedPlugin && pluginStatus.includes(updatedPlugin.status)) {
-				actions.setSuremailInstalled(true);
+				// Mark as already installed, but don't track in analytics
+				setWasAlreadyInstalled(true);
 			}
 		});
 	}, [] );
@@ -87,10 +91,12 @@ const EmailDelivery = () => {
 		if ( suremailsPlugin ) {
 			// Check if the plugin is already activated or installed.
 			if ( pluginStatus.includes( suremailsPlugin.status ) ) {
-				// Plugin already installed, update analytics
-				actions.setSuremailInstalled(true);
-				// If email-delivery was previously skipped, remove it from skippedSteps
-				actions.unmarkStepSkipped('emailDelivery');
+				// Plugin already installed, but only update analytics if it wasn't installed before onboarding
+				if (!wasAlreadyInstalled) {
+					actions.setSuremailInstalled(true);
+					// If email-delivery was previously skipped, remove it from skippedSteps
+					actions.unmarkStepSkipped('emailDelivery');
+				}
 				return;
 			}
 
@@ -104,6 +110,7 @@ const EmailDelivery = () => {
 					setTimeout( async () => {
 						const updatedPlugin = await refreshPluginStatus();
 						if (updatedPlugin && pluginStatus.includes(updatedPlugin.status)) {
+							// Only update analytics if it wasn't installed before onboarding
 							actions.setSuremailInstalled(true);
 							// If email-delivery was previously skipped, remove it from skippedSteps
 							actions.unmarkStepSkipped('emailDelivery');
