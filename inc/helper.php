@@ -1527,6 +1527,39 @@ class Helper {
 	}
 
 	/**
+	 * Get a value from the srfm_options array.
+	 *
+	 * @param string $key The key to retrieve.
+	 * @param mixed  $default The default value to return if the key does not exist.
+	 * @since x.x.x
+	 * @return mixed
+	 */
+	public static function get_srfm_option( $key, $default = null ) {
+		$options = get_option( 'srfm_options', [] );
+		if ( ! is_array( $options ) ) {
+			$options = [];
+		}
+		return array_key_exists( $key, $options ) ? $options[ $key ] : $default;
+	}
+
+	/**
+	 * Update a value in the srfm_options array.
+	 *
+	 * @param string $key   The key to update.
+	 * @param mixed  $value The value to set.
+	 * @since x.x.x
+	 * @return void
+	 */
+	public static function update_srfm_option( $key, $value ) {
+		$options = get_option( 'srfm_options', [] );
+		if ( ! is_array( $options ) ) {
+			$options = [];
+		}
+		$options[ $key ] = $value;
+		update_option( 'srfm_options', $options );
+	}
+
+	/**
 	 * Get the WordPress file types.
 	 *
 	 * @since 1.7.4
