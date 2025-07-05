@@ -11,6 +11,7 @@ use SRFM\Inc\AI_Form_Builder\AI_Auth;
 use SRFM\Inc\AI_Form_Builder\AI_Form_Builder;
 use SRFM\Inc\AI_Form_Builder\Field_Mapping;
 use SRFM\Inc\Database\Tables\Entries;
+use SRFM\Inc\Helper;
 use SRFM\Inc\Traits\Get_Instance;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -181,7 +182,8 @@ class Rest_Api {
 		
 		// Save analytics data if provided
 		if ( $analytics_data ) {
-			update_option( 'srfm_onboarding_analytics', $analytics_data );
+			// Use Helper::update_srfm_option instead of update_option
+			Helper::update_srfm_option( 'onboarding_analytics', $analytics_data );
 		}
 
 		return new \WP_REST_Response( [ 'success' => true ] );
