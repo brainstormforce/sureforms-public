@@ -11,7 +11,6 @@ use SRFM\Inc\AI_Form_Builder\AI_Auth;
 use SRFM\Inc\AI_Form_Builder\AI_Form_Builder;
 use SRFM\Inc\AI_Form_Builder\Field_Mapping;
 use SRFM\Inc\Database\Tables\Entries;
-use SRFM\Inc\Helper;
 use SRFM\Inc\Traits\Get_Instance;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -176,13 +175,13 @@ class Rest_Api {
 
 		// Set the onboarding status to yes always.
 		Onboarding::get_instance()->set_onboarding_status( 'yes' );
-		
-		// Get analytics data from request
+
+		// Get analytics data from request.
 		$analytics_data = $request->get_param( 'analyticsData' );
-		
-		// Save analytics data if provided
+
+		// Save analytics data if provided.
 		if ( $analytics_data ) {
-			// Use Helper::update_srfm_option instead of update_option
+			// Use Helper::update_srfm_option instead of update_option.
 			Helper::update_srfm_option( 'onboarding_analytics', $analytics_data );
 		}
 

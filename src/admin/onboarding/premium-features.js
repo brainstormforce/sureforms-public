@@ -31,89 +31,90 @@ const allFeatures = [
 		plan: 'free',
 	},
 
-	// Starter features
+	// Starter features - 'premium' is now the default type when not specified
 	{
-		id: 'multi-step-form',
+		id: 'multi_step_form',
 		title: __( 'Multi-step Forms', 'sureforms' ),
 		description: __(
-			'Break complex forms into simple steps, reducing overwhelm and boosting completion. Guide users smoothly through the process.',
+			'Break complex forms into simple steps, reducing overwhelm and boosting completion rates. Guide users smoothly through the process',
 			'sureforms'
 		),
-		type: 'premium',
 		plan: 'starter',
 	},
 	{
-		id: 'conditional-logic',
+		id: 'conditional_logic',
 		title: __( 'Conditional Fields', 'sureforms' ),
 		description: __(
-			'Show or hide fields based on previous answers. You ask the right questions, and we make sure only the necessary ones are displayed.',
+			"Show or hide fields based on user answers. Ask the right questions and display only what's needed to keep forms clean and relevant.",
 			'sureforms'
 		),
-		type: 'premium',
+		plan: 'starter',
+	},
+	{
+		id: 'webhooks',
+		title: __( 'Webhooks', 'sureforms' ),
+		description: __(
+			'Send form submissions instantly to any external system or endpoint to power advanced workflows.',
+			'sureforms'
+		),
+		plan: 'starter',
+	},
+	{
+		id: 'advanced_fields',
+		title: __( 'Advanced Fields', 'sureforms' ),
+		description: __(
+			'Enhance your forms with advanced fields like multi-file upload, rating fields, and date & time pickers to collect richer, flexible data.',
+			'sureforms'
+		),
 		plan: 'starter',
 	},
 
-	// Pro features
+	// Pro features - 'premium' is now the default type when not specified
 	{
-		id: 'conversational-forms',
+		id: 'conversational_forms',
 		title: __( 'Conversational Forms', 'sureforms' ),
 		description: __(
-			'Create forms that feel like a conversation. One question at a time keeps users engaged, making form completion easy.',
+			'Create forms that feel like a conversation. One question at a time keeps users engaged and makes form completion easy.',
 			'sureforms'
 		),
-		type: 'premium',
 		plan: 'pro',
 	},
 	{
-		id: 'digital-signatures',
+		id: 'digital_signatures',
 		title: __( 'Digital Signatures', 'sureforms' ),
 		description: __(
-			'Collect legally binding signatures directly in your forms. Perfect for contracts, agreements, and approvals.',
+			'Collect legally binding digital signatures directly in your forms for agreements, approvals, and contracts.',
 			'sureforms'
 		),
-		type: 'premium',
-		plan: 'pro',
-	},
-	{
-		id: 'file-uploads',
-		title: __( 'File Uploads', 'sureforms' ),
-		description: __(
-			'Allow users to upload files directly through your forms. Collect documents, images, and more with ease.',
-			'sureforms'
-		),
-		type: 'premium',
 		plan: 'pro',
 	},
 
-	// Business features
+	// Business features - 'premium' is now the default type when not specified
 	{
 		id: 'calculations',
-		title: __( 'Advanced Calculations', 'sureforms' ),
+		title: __( 'Calculators', 'sureforms' ),
 		description: __(
-			'Perform complex mathematical operations based on form inputs. Perfect for price calculators, quote generators, and more.',
+			'Add interactive calculators to your forms for instant estimates, quotes, and calculations for your users.',
 			'sureforms'
 		),
-		type: 'premium',
 		plan: 'business',
 	},
 	{
-		id: 'user-registration',
-		title: __( 'User Registration', 'sureforms' ),
+		id: 'user_registration',
+		title: __( 'User Registration and Login', 'sureforms' ),
 		description: __(
-			'Create custom user registration forms that automatically create WordPress user accounts. Streamline your onboarding process.',
+			'Allow visitors to register and log in to your site. Useful for membership, community, or any site that needs user access.',
 			'sureforms'
 		),
-		type: 'premium',
 		plan: 'business',
 	},
 	{
-		id: 'custom-app-integration',
-		title: __( 'Custom App Integration', 'sureforms' ),
+		id: 'custom_app',
+		title: __( 'Custom App', 'sureforms' ),
 		description: __(
-			'Connect your forms to any custom application or service. Build your own integrations and automate complex workflows across your entire tech stack.',
+			'Collect data, send it to external applications for processing, and display results instantly—all seamlessly integrated to create dynamic, interactive user experiences.',
 			'sureforms'
 		),
-		type: 'premium',
 		plan: 'business',
 	},
 ];
@@ -153,12 +154,12 @@ const PremiumFeatures = () => {
 
 	// Filter features based on current plan - memoized to prevent recalculation on every render
 	const filteredFeatures = ( () => {
-		// Specific features to show for free and business plans
+		// Specific features to show for free and business plans.
 		const specificFeatureIds = [
-			'ai-form-generation',
+			'ai_form_generation',
 			'entries',
-			'conditional-logic',
-			'conversational-forms',
+			'conditional_logic',
+			'conversational_forms',
 			'calculations',
 		];
 
@@ -240,7 +241,7 @@ const PremiumFeatures = () => {
 
 	// Check if any premium feature is selected
 	const hasSelectedPremiumFeatures = filteredFeatures
-		.filter( ( feature ) => feature.type === 'premium' )
+		.filter( ( feature ) => feature.type !== 'free' ) // Consider features without type as premium
 		.some( ( feature ) => selectedFeatures[ feature.id ] );
 
 	const handleBack = () => {
@@ -252,7 +253,13 @@ const PremiumFeatures = () => {
 		// If premium features are selected, save them to analytics and open pricing page
 		if ( hasSelectedPremiumFeatures ) {
 			const selectedFeatureIds = Object.entries( selectedFeatures )
-				.filter( ( [ , isSelected ] ) => isSelected )
+				.filter( ( [ featureId, isSelected ] ) => {
+					// Only include selected premium features (exclude free features)
+					const feature = allFeatures.find(
+						( f ) => f.id === featureId
+					);
+					return isSelected && feature && feature.type !== 'free';
+				} )
 				.map( ( [ featureId ] ) => featureId );
 
 			// Only save selected features if user clicks Upgrade
@@ -307,13 +314,15 @@ const PremiumFeatures = () => {
 
 	// Function to get badge for plan.
 	const getPlanBadge = ( type ) => {
+		// Default to 'premium' if type is not specified
+		const featureType = type || 'premium';
 		const planName =
-			type === 'free'
+			featureType === 'free'
 				? __( 'Free', 'sureforms' )
 				: __( 'Premium', 'sureforms' );
 		return (
 			<Badge
-				variant={ planBadgeColors[ type ] }
+				variant={ planBadgeColors[ featureType ] }
 				label={ planName }
 				size="xs"
 			/>
