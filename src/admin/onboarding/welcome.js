@@ -2,7 +2,6 @@ import { __ } from '@wordpress/i18n';
 import { Text } from '@bsf/force-ui';
 import { Check } from 'lucide-react';
 import { useOnboardingNavigation } from './hooks';
-import { useOnboardingState } from './onboarding-state';
 import { Divider } from './components';
 import NavigationButtons from './navigation-buttons';
 import { initiateAuth } from '@Utils/Helpers';
@@ -15,26 +14,19 @@ const features = [
 ];
 
 const Welcome = () => {
-	const [ , actions ] = useOnboardingState();
 	const { navigateToNextRoute } = useOnboardingNavigation();
 
 	const handleConnect = async () => {
 		try {
 			// Check if user has not connected their account yet.
 			if ( 'non-registered' !== srfm_admin?.srfm_ai_details?.type ) {
-				// User is already connected, but we don't update accountConnected here as we only want to track connections made during onboarding.
+				// User is already connected, just navigate to next step
 				navigateToNextRoute();
 				return;
 			}
 
-			// Use the initiateAuth helper function
-			const result = await initiateAuth( 'onboarding' );
-
-			// If authentication was successful, update analytics.
-			if ( result && result.success ) {
-				// Only update accountConnected if the user explicitly connects during onboarding.
-				actions.setAccountConnected( true );
-			}
+			// Use the initiateAuth helper function which will redirect to auth page.
+			await initiateAuth( 'onboarding' );
 		} catch ( error ) {
 			console.error( 'Error during authentication:', error );
 		}

@@ -35,6 +35,55 @@ const EmailDelivery = () => {
 		delete initialSuremailsPlugin.redirection;
 	}
 
+	// Check for access_key parameter on mount
+	useEffect( () => {
+		// Parse the URL to check for access_key parameter
+		const urlParams = new URLSearchParams( window.location.search );
+		const accessKey = urlParams.get( 'access_key' );
+
+		if ( accessKey ) {
+			// Handle access key by sending it to the server
+			const handleAccessKey = async () => {
+				try {
+					const response = await apiFetch( {
+						path: '/sureforms/v1/handle-access-key',
+						headers: {
+							'Content-Type': 'application/json',
+							'X-WP-Nonce': srfm_admin.template_picker_nonce,
+						},
+						method: 'POST',
+						body: JSON.stringify( {
+							accessKey,
+						} ),
+					} );
+
+					if ( response?.success ) {
+						// Update local state to indicate account was connected during onboarding
+						actions.setAccountConnected( true );
+
+						// Clean up URL parameter to avoid duplicate tracking on page refresh
+						const newUrl =
+							window.location.pathname + window.location.hash;
+						window.history.replaceState(
+							{},
+							document.title,
+							newUrl
+						);
+					} else {
+						console.error(
+							'Error handling access key:',
+							response?.message
+						);
+					}
+				} catch ( error ) {
+					console.error( 'Error handling access key:', error );
+				}
+			};
+
+			handleAccessKey();
+		}
+	}, [] );
+
 	const [ suremailsPlugin, setSuremailsPlugin ] = useState(
 		initialSuremailsPlugin
 	);
@@ -87,10 +136,7 @@ const EmailDelivery = () => {
 	}, [] );
 
 	const handleInstallSureMail = () => {
-		// Always navigate to next step first, regardless of plugin status
-		handleSkip();
-
-		// Then handle plugin installation in background if needed
+		// Check if the plugin exists
 		if ( suremailsPlugin ) {
 			// Check if the plugin is already activated or installed.
 			if ( pluginStatus.includes( suremailsPlugin.status ) ) {
@@ -100,8 +146,26 @@ const EmailDelivery = () => {
 					// If email-delivery was previously skipped, remove it from skippedSteps
 					actions.unmarkStepSkipped( 'emailDelivery' );
 				}
+				// Navigate to next step
+				handleSkip( 'install' );
 				return;
 			}
+
+			// Set a flag to indicate installation has started
+			localStorage.setItem(
+				'srfm_suremail_installation_started',
+				'true'
+			);
+
+			// Update analytics state before navigation
+			// This ensures the analytics are updated even if the component unmounts
+			if ( ! wasAlreadyInstalled ) {
+				actions.setSuremailInstalled( true );
+				actions.unmarkStepSkipped( 'emailDelivery' );
+			}
+
+			// Navigate to next step
+			handleSkip( 'install' );
 
 			// Start background installation (fire and forget)
 			handlePluginActionTrigger( {
@@ -109,29 +173,28 @@ const EmailDelivery = () => {
 				event: { target: { innerText: '', style: { color: '' } } }, // Dummy event object.
 			} )
 				.then( () => {
-					// Refresh status after installation completes (background process)
-					setTimeout( async () => {
-						const updatedPlugin = await refreshPluginStatus();
-						if (
-							updatedPlugin &&
-							pluginStatus.includes( updatedPlugin.status )
-						) {
-							// Only update analytics if it wasn't installed before onboarding
-							actions.setSuremailInstalled( true );
-							// If email-delivery was previously skipped, remove it from skippedSteps
-							actions.unmarkStepSkipped( 'emailDelivery' );
-						}
-					}, 2000 );
+					// Installation completed successfully
+					localStorage.removeItem(
+						'srfm_suremail_installation_started'
+					);
 				} )
 				.catch( ( error ) => {
 					console.error( 'Plugin installation failed:', error );
+					localStorage.removeItem(
+						'srfm_suremail_installation_started'
+					);
 				} );
+		} else {
+			// No plugin info available, just navigate to next step
+			handleSkip( 'install' );
 		}
 	};
 
-	const handleSkip = () => {
+	const handleSkip = ( action = '' ) => {
 		// Mark email delivery as skipped in analytics
-		actions.markStepSkipped( 'emailDelivery' );
+		if ( action !== 'install' ) {
+			actions.markStepSkipped( 'emailDelivery' );
+		}
 
 		// Set email delivery as configured
 		actions.setEmailDeliveryConfigured( true );
