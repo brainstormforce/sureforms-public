@@ -38,6 +38,10 @@ const onboardingReducer = ( state, action ) => {
 		case ACTIONS.SET_EMAIL_DELIVERY_CONFIGURED:
 			return { ...state, emailDeliveryConfigured: action.payload };
 		case ACTIONS.MARK_STEP_SKIPPED:
+			// Only add the step if it's not already in the skippedSteps array
+			if ( state.analytics.skippedSteps.includes( action.payload ) ) {
+				return state; // Return unchanged state if already skipped
+			}
 			return {
 				...state,
 				analytics: {
@@ -73,13 +77,15 @@ const onboardingReducer = ( state, action ) => {
 				},
 			};
 		case ACTIONS.SET_SELECTED_PREMIUM_FEATURES:
+			// Filter out any duplicate features before setting them
+			const uniqueFeatures = [ ...new Set( action.payload ) ];
 			return {
 				...state,
 				analytics: {
 					...state.analytics,
 					premiumFeatures: {
 						...state.analytics.premiumFeatures,
-						selectedFeatures: action.payload,
+						selectedFeatures: uniqueFeatures,
 					},
 				},
 			};

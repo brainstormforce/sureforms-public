@@ -140,14 +140,19 @@ const EmailDelivery = () => {
 		if ( suremailsPlugin ) {
 			// Check if the plugin is already activated or installed.
 			if ( pluginStatus.includes( suremailsPlugin.status ) ) {
-				// Plugin already installed, but only update analytics if it wasn't installed before onboarding
-				if ( ! wasAlreadyInstalled ) {
+				// If the plugin was already installed before onboarding started,
+				// don't mark it as installed during onboarding - just navigate to next step
+				if ( wasAlreadyInstalled ) {
+					// Navigate to next step without marking as installed
+					navigateToNextRoute();
+				} else {
+					// Plugin was installed during onboarding, update analytics
 					actions.setSuremailInstalled( true );
 					// If email-delivery was previously skipped, remove it from skippedSteps
 					actions.unmarkStepSkipped( 'emailDelivery' );
+					// Navigate to next step
+					handleSkip( 'install' );
 				}
-				// Navigate to next step
-				handleSkip( 'install' );
 				return;
 			}
 
@@ -159,10 +164,8 @@ const EmailDelivery = () => {
 
 			// Update analytics state before navigation
 			// This ensures the analytics are updated even if the component unmounts
-			if ( ! wasAlreadyInstalled ) {
-				actions.setSuremailInstalled( true );
-				actions.unmarkStepSkipped( 'emailDelivery' );
-			}
+			actions.setSuremailInstalled( true );
+			actions.unmarkStepSkipped( 'emailDelivery' );
 
 			// Navigate to next step
 			handleSkip( 'install' );

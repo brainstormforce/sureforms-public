@@ -263,7 +263,10 @@ const PremiumFeatures = () => {
 				.map( ( [ featureId ] ) => featureId );
 
 			// Only save selected features if user clicks Upgrade
-			actions.setSelectedPremiumFeatures( selectedFeatureIds );
+			// Use Set to ensure uniqueness of feature IDs
+			actions.setSelectedPremiumFeatures( [
+				...new Set( selectedFeatureIds ),
+			] );
 
 			// Open pricing page
 			window.open(

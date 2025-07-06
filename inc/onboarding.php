@@ -24,11 +24,11 @@ class Onboarding {
 	use Get_Instance;
 
 	/**
-	 * Onboarding completion setting.
+	 * Onboarding completion setting key.
 	 *
 	 * @var string
 	 */
-	private $onboarding_status_option = 'srfm_onboarding_completed';
+	private $onboarding_status_key = 'onboarding_completed';
 
 	/**
 	 * Set onboarding completion status.
@@ -38,7 +38,7 @@ class Onboarding {
 	 * @return bool
 	 */
 	public function set_onboarding_status( $completed = 'no' ) {
-		return update_option( $this->onboarding_status_option, $completed );
+		return Helper::update_srfm_option( $this->onboarding_status_key, $completed );
 	}
 
 	/**
@@ -48,6 +48,6 @@ class Onboarding {
 	 * @return bool
 	 */
 	public function get_onboarding_status() {
-		return get_option( $this->onboarding_status_option, 'no' ) === 'yes';
+		return Helper::get_srfm_option( $this->onboarding_status_key, 'no' ) === 'yes';
 	}
 }
