@@ -6,8 +6,8 @@ import { XIcon } from 'lucide-react';
 import { useOnboardingNavigation } from './hooks';
 import {
 	OnboardingProvider,
-	ONBOARDING_SESSION_STORAGE_KEY,
 	useOnboardingState,
+	clearOnboardingStorage,
 } from './onboarding-state';
 import ICONS from '@Admin/components/template-picker/components/icons';
 
@@ -32,6 +32,9 @@ const NavBar = () => {
 		if ( location.pathname === '/onboarding/premium-features' ) {
 			actions.setSelectedPremiumFeatures( [] );
 		}
+
+		// Clear all onboarding storage data
+		actions.clearStorage();
 
 		// Use setTimeout to ensure state updates are processed
 		setTimeout( () => {
@@ -108,8 +111,10 @@ const NavigationGuard = () => {
 	return null;
 };
 
-const OnboardingLayout = () => {
+// Inner component that uses onboarding state
+const OnboardingContent = () => {
 	const location = useLocation();
+	const [ , actions ] = useOnboardingState();
 
 	const widthClassNames = {
 		1: 'max-w-xl', // 560px converted to rem (assuming 1rem = 16px)
@@ -130,14 +135,33 @@ const OnboardingLayout = () => {
 	// Clear when on the done page
 	useEffect( () => {
 		if ( location.pathname === '/onboarding/done' ) {
-			sessionStorage.removeItem( ONBOARDING_SESSION_STORAGE_KEY );
+			actions.clearStorage();
 		}
-	}, [ location.pathname ] );
+	}, [ location.pathname, actions ] );
 
-	// Clear session storage when the user navigates away from the onboarding page
+	return (
+		<div className="bg-background-secondary h-full space-y-7 pb-10">
+			{ /* Header */ }
+			<NavBar />
+			{ /* Content */ }
+			<div className="p-7 w-full h-full">
+				<div
+					className={ `w-full h-full border-0.5 border-solid border-border-subtle bg-background-primary shadow-sm rounded-xl mx-auto p-7 ${ widthClassNames[ widthClassKey ] }` }
+				>
+					<Outlet />
+				</div>
+			</div>
+		</div>
+	);
+};
+
+// Main layout component that provides the context
+const OnboardingLayout = () => {
+	// Clear session storage when unmounting the entire layout
 	useEffect( () => {
 		return () => {
-			sessionStorage.removeItem( ONBOARDING_SESSION_STORAGE_KEY );
+			// Use the imported clearOnboardingStorage directly
+			clearOnboardingStorage();
 		};
 	}, [] );
 
@@ -145,19 +169,7 @@ const OnboardingLayout = () => {
 		<OnboardingProvider>
 			{ /* Navigation guard to check required state for each step */ }
 			<NavigationGuard />
-
-			<div className="bg-background-secondary h-full space-y-7 pb-10">
-				{ /* Header */ }
-				<NavBar />
-				{ /* Content */ }
-				<div className="p-7 w-full h-full">
-					<div
-						className={ `w-full h-full border-0.5 border-solid border-border-subtle bg-background-primary shadow-sm rounded-xl mx-auto p-7 ${ widthClassNames[ widthClassKey ] }` }
-					>
-						<Outlet />
-					</div>
-				</div>
-			</div>
+			<OnboardingContent />
 		</OnboardingProvider>
 	);
 };

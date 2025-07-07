@@ -36,6 +36,9 @@ const Done = () => {
 		// Mark as completed
 		actions.setCompleted( true );
 
+		// Clear all onboarding storage data
+		actions.clearStorage();
+
 		// Use setTimeout to ensure state updates are processed
 		setTimeout( () => {
 			// Complete onboarding and save analytics data

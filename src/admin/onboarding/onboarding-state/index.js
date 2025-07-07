@@ -3,6 +3,14 @@ import { createContext, useContext, useReducer } from '@wordpress/element';
 // Session storage key for onboarding state
 export const ONBOARDING_SESSION_STORAGE_KEY = 'sureforms_onboarding_state';
 
+// Storage keys used in onboarding process
+export const ONBOARDING_STORAGE_KEYS = [
+	'srfm_onboarding_premium_features',
+	'srfm_onboarding_premium_selections',
+	'srfm_onboarding_current_plan',
+	'srfm_onboarding_user_id',
+];
+
 // Initial state
 const initialState = {
 	emailDeliveryConfigured: false,
@@ -124,6 +132,25 @@ const onboardingReducer = ( state, action ) => {
 	}
 };
 
+// Function to clear all onboarding localStorage data
+export const clearOnboardingStorage = () => {
+	// Clear session storage
+	try {
+		sessionStorage.removeItem( ONBOARDING_SESSION_STORAGE_KEY );
+	} catch ( error ) {
+		console.error( `Error clearing session storage:`, error );
+	}
+
+	// Clear local storage keys
+	ONBOARDING_STORAGE_KEYS.forEach( ( key ) => {
+		try {
+			localStorage.removeItem( key );
+		} catch ( error ) {
+			console.error( `Error clearing localStorage key ${ key }:`, error );
+		}
+	} );
+};
+
 // Context
 const OnboardingContext = createContext();
 
@@ -173,6 +200,7 @@ export const OnboardingProvider = ( { children } ) => {
 				payload: exited,
 			} ),
 		resetState: () => dispatch( { type: ACTIONS.RESET_STATE } ),
+		clearStorage: clearOnboardingStorage,
 	};
 
 	return (

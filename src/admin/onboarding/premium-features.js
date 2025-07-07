@@ -1,6 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import { Text, Checkbox, Badge, Alert } from '@bsf/force-ui';
-import { useState, useEffect } from '@wordpress/element';
+import { useState, useEffect, useMemo } from '@wordpress/element';
 import { useOnboardingNavigation } from './hooks';
 import { useOnboardingState } from './onboarding-state';
 import NavigationButtons from './navigation-buttons';
@@ -11,7 +11,7 @@ import { addQueryParam } from '@Utils/Helpers';
 const allFeatures = [
 	// Free features
 	{
-		id: 'ai-form-generation',
+		id: 'ai_form_generation',
 		title: __( 'AI Form Generation', 'sureforms' ),
 		description: __(
 			'Tired of building forms manually? Let AI do the work for you. Just describe and our AI will create your perfect form in seconds.',
@@ -119,10 +119,125 @@ const allFeatures = [
 	},
 ];
 
+// Create a map of feature IDs for quick lookup
+const featureMap = {};
+allFeatures.forEach( ( feature ) => {
+	featureMap[ feature.id ] = feature;
+} );
+
 // Plan badge colors
 const planBadgeColors = {
 	free: 'green',
 	premium: 'inverse',
+};
+
+// Storage keys for localStorage
+const FEATURES_STORAGE_KEY = 'srfm_onboarding_premium_features';
+const SELECTIONS_STORAGE_KEY = 'srfm_onboarding_premium_selections';
+const PLAN_STORAGE_KEY = 'srfm_onboarding_current_plan';
+
+// Helper function to shuffle an array (Fisher-Yates algorithm)
+const shuffleArray = ( array ) => {
+	const shuffled = [ ...array ];
+	for ( let i = shuffled.length - 1; i > 0; i-- ) {
+		const j = Math.floor( Math.random() * ( i + 1 ) );
+		[ shuffled[ i ], shuffled[ j ] ] = [ shuffled[ j ], shuffled[ i ] ];
+	}
+	return shuffled;
+};
+
+// Helper function to get a random subset of features
+const getRandomFeatures = ( featuresArray, count ) => {
+	return shuffleArray( featuresArray ).slice( 0, count );
+};
+
+// Helper functions for localStorage
+const getFromLocalStorage = ( key, defaultValue ) => {
+	try {
+		const storedValue = localStorage.getItem( key );
+		if ( ! storedValue ) {
+			return defaultValue;
+		}
+
+		try {
+			return JSON.parse( storedValue );
+		} catch ( parseError ) {
+			console.error( 'Error parsing stored value:', parseError );
+			return defaultValue;
+		}
+	} catch ( error ) {
+		console.error( 'Error reading from local storage:', error );
+		return defaultValue;
+	}
+};
+
+const saveToLocalStorage = ( key, value ) => {
+	try {
+		localStorage.setItem( key, JSON.stringify( value ) );
+	} catch ( error ) {
+		console.error( 'Error saving to local storage:', error );
+	}
+};
+
+// Generate features based on plan
+const generateFeatures = ( currentPlan ) => {
+	// Always include free features
+	const freeFeatures = allFeatures.filter(
+		( feature ) => feature.plan === 'free'
+	);
+
+	// For Starter plan: Display 2 random Pro features and 1 random Business feature
+	if ( currentPlan === 'starter' ) {
+		const randomProFeatures = getRandomFeatures(
+			allFeatures.filter( ( feature ) => feature.plan === 'pro' ),
+			2
+		);
+
+		const randomBusinessFeatures = getRandomFeatures(
+			allFeatures.filter( ( feature ) => feature.plan === 'business' ),
+			1
+		);
+
+		return [
+			...freeFeatures,
+			...randomProFeatures,
+			...randomBusinessFeatures,
+		];
+	} else if ( currentPlan === 'pro' ) {
+		// For Pro plan: Display 3 random Business features
+		const randomBusinessFeatures = getRandomFeatures(
+			allFeatures.filter( ( feature ) => feature.plan === 'business' ),
+			3
+		);
+
+		return [ ...freeFeatures, ...randomBusinessFeatures ];
+	}
+	// Default case (free plan, business plan, or any other):
+
+	// Get 1 random starter feature
+	const randomStarterFeatures = getRandomFeatures(
+		allFeatures.filter( ( feature ) => feature.plan === 'starter' ),
+		1
+	);
+
+	// Get 1 random pro feature
+	const randomProFeatures = getRandomFeatures(
+		allFeatures.filter( ( feature ) => feature.plan === 'pro' ),
+		1
+	);
+
+	// Get 1 random business feature
+	const randomBusinessFeatures = getRandomFeatures(
+		allFeatures.filter( ( feature ) => feature.plan === 'business' ),
+		1
+	);
+
+	return [
+		...freeFeatures,
+		...randomStarterFeatures,
+		...randomProFeatures,
+		...randomBusinessFeatures,
+	];
 };
 
 const PremiumFeatures = () => {
@@ -140,109 +255,104 @@ const PremiumFeatures = () => {
 	// State to track if component is ready to render
 	const [ isReady, setIsReady ] = useState( false );
 
+	// State to store the filtered features - will be set only once
+	const [ stableFilteredFeatures, setStableFilteredFeatures ] = useState(
+		[]
+	);
+
+	// State to track selected features
+	const [ selectedFeatures, setSelectedFeatures ] = useState( {} );
+
 	useEffect( () => {
 		if ( hasProVersion ) {
 			// Extract plan name from "SureForms <plan name>"
 			const planMatch = currentProVersion.match( /SureForms\s+(.*)/ );
 			if ( planMatch && planMatch[ 1 ] ) {
-				setCurrentPlan( planMatch[ 1 ].trim().toLowerCase() );
+				const plan = planMatch[ 1 ].trim().toLowerCase();
+				setCurrentPlan( plan );
+
+				// Check if plan has changed from stored plan
+				const storedPlan = getFromLocalStorage( PLAN_STORAGE_KEY, '' );
+				if ( plan !== storedPlan ) {
+					// Clear stored features if plan changed
+					localStorage.removeItem( FEATURES_STORAGE_KEY );
+					localStorage.removeItem( SELECTIONS_STORAGE_KEY );
+					saveToLocalStorage( PLAN_STORAGE_KEY, plan );
+				}
 			}
 		}
 		// Mark component as ready to render after plan is determined
 		setIsReady( true );
 	}, [ currentProVersion, hasProVersion ] );
 
-	// Filter features based on current plan - memoized to prevent recalculation on every render
-	const filteredFeatures = ( () => {
-		// Specific features to show for free and business plans.
-		const specificFeatureIds = [
-			'ai_form_generation',
-			'entries',
-			'conditional_logic',
-			'conversational_forms',
-			'calculations',
-		];
-
-		// If no pro version or free plan, show specific features
-		if ( ! hasProVersion ) {
-			return allFeatures.filter( ( feature ) =>
-				specificFeatureIds.includes( feature.id )
-			);
-		}
-
-		// For Starter plan: Display 2 Pro features and 1 Business feature
-		if ( currentPlan === 'starter' ) {
-			const proFeatures = allFeatures
-				.filter( ( feature ) => feature.plan === 'pro' )
-				.slice( 0, 2 );
-			const businessFeatures = allFeatures
-				.filter( ( feature ) => feature.plan === 'business' )
-				.slice( 0, 1 );
-			return [
-				...allFeatures.filter( ( feature ) => feature.plan === 'free' ),
-				...proFeatures,
-				...businessFeatures,
-			];
-		}
-
-		// For Pro plan: Display 3 Business features
-		if ( currentPlan === 'pro' ) {
-			const businessFeatures = allFeatures.filter(
-				( feature ) => feature.plan === 'business'
-			);
-			return [
-				...allFeatures.filter( ( feature ) => feature.plan === 'free' ),
-				...businessFeatures,
-			];
-		}
-
-		// For Business plan: Display specific features
-		if ( currentPlan === 'business' ) {
-			return allFeatures.filter( ( feature ) =>
-				specificFeatureIds.includes( feature.id )
-			);
-		}
-
-		// Default: show specific features
-		return allFeatures.filter( ( feature ) =>
-			specificFeatureIds.includes( feature.id )
-		);
-	} )();
-
-	// Initialize state with features pre-checked based on plan - memoized
-	const initialSelectedFeatures = ( () => {
-		const initialState = {};
-
-		// Only initialize if we're ready
-		if ( isReady ) {
-			filteredFeatures.forEach( ( feature ) => {
-				// Check all features if business plan
-				if ( currentPlan === 'business' ) {
-					initialState[ feature.id ] = true;
-				} else if ( feature.type === 'free' ) {
-					// Otherwise only check free features
-					initialState[ feature.id ] = true;
-				}
-			} );
-		}
-
-		return initialState;
-	} )();
-
-	// State to track selected features - initialize with empty object and update when ready
-	const [ selectedFeatures, setSelectedFeatures ] = useState( {} );
-
-	// Update selected features when initialization is complete
+	// Load or generate filtered features when component is ready
 	useEffect( () => {
 		if ( isReady ) {
-			setSelectedFeatures( initialSelectedFeatures );
+			// Try to load features from localStorage
+			const storedFeatures = getFromLocalStorage(
+				FEATURES_STORAGE_KEY,
+				null
+			);
+
+			if (
+				storedFeatures &&
+				Array.isArray( storedFeatures ) &&
+				storedFeatures.length > 0
+			) {
+				// Use stored features if available
+				setStableFilteredFeatures( storedFeatures );
+			} else {
+				// Generate new features if not available in storage
+				// Generate features based on current plan
+				const features = generateFeatures( currentPlan );
+
+				// Save to localStorage for persistence
+				saveToLocalStorage( FEATURES_STORAGE_KEY, features );
+
+				// Update state
+				setStableFilteredFeatures( features );
+			}
+
+			// Load stored selections if available
+			const storedSelections = getFromLocalStorage(
+				SELECTIONS_STORAGE_KEY,
+				null
+			);
+			if ( storedSelections && typeof storedSelections === 'object' ) {
+				setSelectedFeatures( storedSelections );
+			}
 		}
-	}, [ isReady ] );
+	}, [ isReady, currentPlan ] );
+
+	// Initialize selected features when features are loaded
+	useEffect( () => {
+		if ( isReady && stableFilteredFeatures.length > 0 ) {
+			// Only initialize if we don't have stored selections
+			if ( Object.keys( selectedFeatures ).length === 0 ) {
+				const initialState = {};
+
+				stableFilteredFeatures.forEach( ( feature ) => {
+					// Check all features if business plan
+					if ( currentPlan === 'business' ) {
+						initialState[ feature.id ] = true;
+					} else if ( feature.type === 'free' ) {
+						// Otherwise only check free features
+						initialState[ feature.id ] = true;
+					}
+				} );
+
+				setSelectedFeatures( initialState );
+				saveToLocalStorage( SELECTIONS_STORAGE_KEY, initialState );
+			}
+		}
+	}, [ isReady, stableFilteredFeatures, currentPlan, selectedFeatures ] );
 
 	// Check if any premium feature is selected
-	const hasSelectedPremiumFeatures = filteredFeatures
-		.filter( ( feature ) => feature.type !== 'free' ) // Consider features without type as premium
-		.some( ( feature ) => selectedFeatures[ feature.id ] );
+	const hasSelectedPremiumFeatures = useMemo( () => {
+		return stableFilteredFeatures
+			.filter( ( feature ) => feature.type !== 'free' ) // Consider features without type as premium
+			.some( ( feature ) => selectedFeatures[ feature.id ] );
+	}, [ stableFilteredFeatures, selectedFeatures ] );
 
 	const handleBack = () => {
 		navigateToPreviousRoute();
@@ -255,9 +365,7 @@ const PremiumFeatures = () => {
 			const selectedFeatureIds = Object.entries( selectedFeatures )
 				.filter( ( [ featureId, isSelected ] ) => {
 					// Only include selected premium features (exclude free features)
-					const feature = allFeatures.find(
-						( f ) => f.id === featureId
-					);
+					const feature = featureMap[ featureId ];
 					return isSelected && feature && feature.type !== 'free';
 				} )
 				.map( ( [ featureId ] ) => featureId );
@@ -268,14 +376,16 @@ const PremiumFeatures = () => {
 				...new Set( selectedFeatureIds ),
 			] );
 
-			// Open pricing page
-			window.open(
-				addQueryParam(
-					srfm_admin?.sureforms_pricing_page,
-					'onboarding_premium_features'
-				),
-				'_blank'
-			);
+			if ( showUpgradeButton ) {
+				// Open pricing page
+				window.open(
+					addQueryParam(
+						srfm_admin?.sureforms_pricing_page,
+						'onboarding_premium_features'
+					),
+					'_blank'
+				);
+			}
 		} else {
 			// Clear selected premium features if continuing without premium features
 			actions.setSelectedPremiumFeatures( [] );
@@ -293,6 +403,9 @@ const PremiumFeatures = () => {
 		// Clear selected premium features when skipping
 		actions.setSelectedPremiumFeatures( [] );
 
+		// Clear storage when skipping
+		actions.clearStorage();
+
 		// Navigate to next route
 		navigateToNextRoute();
 	};
@@ -309,10 +422,13 @@ const PremiumFeatures = () => {
 			return;
 		}
 
-		setSelectedFeatures( ( prev ) => ( {
-			...prev,
-			[ featureId ]: ! prev[ featureId ],
-		} ) );
+		const newSelections = {
+			...selectedFeatures,
+			[ featureId ]: ! selectedFeatures[ featureId ],
+		};
+
+		setSelectedFeatures( newSelections );
+		saveToLocalStorage( SELECTIONS_STORAGE_KEY, newSelections );
 	};
 
 	// Function to get badge for plan.
@@ -346,67 +462,67 @@ const PremiumFeatures = () => {
 				) }
 			/>
 
-			{ isReady && (
+			{ isReady && stableFilteredFeatures.length > 0 && (
 				<>
-					{ filteredFeatures.length > 0 ? (
-						<div>
-							{ filteredFeatures.map( ( feature, index ) => (
-								<div key={ feature.id }>
-									<div className="p-1 bg-background-primary flex items-start justify-between">
-										<div className="flex-grow">
-											<div className="flex items-center gap-3">
-												<Text
-													size={ 16 }
-													weight={ 500 }
-													color="primary"
-												>
-													{ feature.title }
-												</Text>
-												{ getPlanBadge( feature.type ) }
-											</div>
+					<div>
+						{ stableFilteredFeatures.map( ( feature, index ) => (
+							<div key={ feature.id }>
+								<div className="p-1 bg-background-primary flex items-start justify-between">
+									<div className="flex-grow">
+										<div className="flex items-center gap-3">
 											<Text
-												size={ 14 }
-												weight={ 400 }
-												color="tertiary"
-												className="mt-1"
+												size={ 16 }
+												weight={ 500 }
+												color="primary"
 											>
-												{ feature.description }
+												{ feature.title }
 											</Text>
+											{ getPlanBadge( feature.type ) }
 										</div>
-										<div className="ml-4 mt-1">
-											<Checkbox
-												checked={
-													!! selectedFeatures[
-														feature.id
-													]
-												}
-												onChange={ () =>
-													handleCheckboxChange(
-														feature.id,
-														feature.type
-													)
-												}
-												size="sm"
-											/>
-										</div>
+										<Text
+											size={ 14 }
+											weight={ 400 }
+											color="tertiary"
+											className="mt-1"
+										>
+											{ feature.description }
+										</Text>
 									</div>
-									{ index < filteredFeatures.length - 1 && (
-										<Divider className="m-2 w-auto" />
-									) }
+									<div className="ml-4 mt-1">
+										<Checkbox
+											checked={
+												!! selectedFeatures[
+													feature.id
+												]
+											}
+											onChange={ () =>
+												handleCheckboxChange(
+													feature.id,
+													feature.type
+												)
+											}
+											size="sm"
+										/>
+									</div>
 								</div>
-							) ) }
-						</div>
-					) : (
-						<div className="p-4 bg-background-secondary rounded-md">
-							<Text size={ 14 } weight={ 500 } color="primary">
-								{ __(
-									'You already have access to all premium features with your current plan!',
-									'sureforms'
+								{ index < stableFilteredFeatures.length - 1 && (
+									<Divider className="m-2 w-auto" />
 								) }
-							</Text>
-						</div>
-					) }
+							</div>
+						) ) }
+					</div>
 				</>
+			) }
+
+			{ isReady && stableFilteredFeatures.length === 0 && (
+				<div className="p-4 bg-background-secondary rounded-md">
+					<Text size={ 14 } weight={ 500 } color="primary">
+						{ __(
+							'You already have access to all premium features with your current plan!',
+							'sureforms'
+						) }
+					</Text>
+				</div>
 			) }
 
 			{ isReady && (
