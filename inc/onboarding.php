@@ -35,10 +35,10 @@ class Onboarding {
 	 *
 	 * @since x.x.x
 	 * @param string $completed Whether the onboarding is completed.
-	 * @return bool
+	 * @return void
 	 */
 	public function set_onboarding_status( $completed = 'no' ) {
-		return Helper::update_srfm_option( $this->onboarding_status_key, $completed );
+		Helper::update_srfm_option( $this->onboarding_status_key, $completed );
 	}
 
 	/**

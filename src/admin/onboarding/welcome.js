@@ -2,6 +2,7 @@ import { __ } from '@wordpress/i18n';
 import { Text } from '@bsf/force-ui';
 import { Check } from 'lucide-react';
 import { useOnboardingNavigation } from './hooks';
+import { useOnboardingState } from './onboarding-state';
 import { Divider } from './components';
 import NavigationButtons from './navigation-buttons';
 import { initiateAuth } from '@Utils/Helpers';
@@ -15,6 +16,7 @@ const features = [
 
 const Welcome = () => {
 	const { navigateToNextRoute } = useOnboardingNavigation();
+	const [ , actions ] = useOnboardingState();
 
 	const handleConnect = async () => {
 		try {
@@ -33,6 +35,9 @@ const Welcome = () => {
 	};
 
 	const handleSkip = async () => {
+		// Mark welcome step as skipped in analytics
+		actions.markStepSkipped( 'welcome' );
+
 		// Skip without connecting account
 		navigateToNextRoute();
 	};
