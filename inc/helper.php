@@ -1527,11 +1527,13 @@ class Helper {
 	}
 
 	/**
-	 * Check if the sureforms pro plugin is installed.
+	 * Determines if the SureForms Pro plugin is installed and active.
+	 *
+	 * Checks for the presence of the SRFM_PRO_VER constant.
 	 *
 	 * @since x.x.x
 	 *
-	 * @return bool
+	 * @return bool True if the Pro plugin is active; false otherwise.
 	 */
 	public static function has_pro() {
 		return defined( 'SRFM_PRO_VER' );
