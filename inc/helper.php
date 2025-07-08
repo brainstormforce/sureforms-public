@@ -323,10 +323,10 @@ class Helper {
 
 		switch ( $type ) {
 			case 'label':
-				$markup = $label ? '<label id="srfm-label-' . esc_attr( $block_id ) . '" for="srfm-' . $slug . '-' . esc_attr( $block_id ) . '" class="srfm-block-label">' . htmlspecialchars_decode( esc_html( $label ) ) . ( $required ? '<span class="srfm-required" aria-hidden="true"> *</span>' : '' ) . '</label>' : '';
+				$markup = $label ? '<label id="srfm-label-' . esc_attr( $block_id ) . '" for="srfm-' . $slug . '-' . esc_attr( $block_id ) . '" class="srfm-block-label">' . wp_kses_post( $label ) . ( $required ? '<span class="srfm-required" aria-label="' . esc_attr__( 'Required', 'sureforms' ) . '"><span aria-hidden="true"> *</span></span>' : '' ) . '</label>' : '';
 				break;
 			case 'help':
-				$markup = $help ? '<div class="srfm-description" id="srfm-description-' . esc_attr( $block_id ) . '">' . wp_kses_post( htmlspecialchars_decode( $help ) ) . '</div>' : '';
+				$markup = $help ? '<div class="srfm-description" id="srfm-description-' . esc_attr( $block_id ) . '">' . wp_kses_post( $help ) . '</div>' : '';
 				break;
 			case 'error':
 				$markup = $required || $override ? '<div class="srfm-error-message" data-srfm-id="srfm-error-' . esc_attr( $block_id ) . '" data-error-msg="' . esc_attr( $error_msg ) . '"' . $duplicate_msg . '>' . esc_html( $error_msg ) . '</div>' : '';
@@ -335,11 +335,11 @@ class Helper {
 				$markup = $is_unique ? '<div class="srfm-error">' . esc_html( $duplicate_msg ) . '</div>' : '';
 				break;
 			case 'placeholder':
-				$markup = $label && '1' === $show_labels_as_placeholder ? htmlspecialchars_decode( esc_html( $label ) ) . ( $required ? ' *' : '' ) : '';
+				$markup = $label && '1' === $show_labels_as_placeholder ? wp_kses_post( $label ) . ( $required ? ' *' : '' ) : '';
 				break;
 			case 'label_text':
 				// This has been added for generating label text for the form markup instead of adding it in the label tag.
-				$markup = $label ? htmlspecialchars_decode( esc_html( $label ) ) . ( $required ? '<span class="srfm-required" aria-hidden="true"> *</span>' : '' ) . '</label>' : '';
+				$markup = $label ? wp_kses_post( $label ) . ( $required ? '<span class="srfm-required" aria-label=",' . esc_attr__( 'Required', 'sureforms' ) . ',"><span aria-hidden="true"> *</span></span>' : '' ) . '</label>' : '';
 				break;
 			default:
 				$markup = '';
@@ -1524,78 +1524,5 @@ class Helper {
 				],
 			]
 		);
-	}
-
-	/**
-	 * Get the WordPress file types.
-	 *
-	 * @since 1.7.4
-	 * @return array<string,mixed> An associative array representing the file types.
-	 */
-	public static function get_wp_file_types() {
-		$formats = [];
-		$mimes   = get_allowed_mime_types();
-		$maxsize = wp_max_upload_size() / 1048576;
-		if ( ! empty( $mimes ) ) {
-			foreach ( $mimes as $type => $mime ) {
-				$multiple = explode( '|', $type );
-				foreach ( $multiple as $single ) {
-					$formats[] = $single;
-				}
-			}
-		}
-
-		return [
-			'formats' => $formats,
-			'maxsize' => $maxsize,
-		];
-	}
-
-	/**
-	 * Summary of delete_upload_file_from_subdir
-	 *
-	 * @param string $file_url The file URL to delete.
-	 * @param string $subdir The subdirectory to delete the file from.
-	 *
-	 * @since 1.7.4
-	 * @return bool
-	 */
-	public static function delete_upload_file_from_subdir( $file_url, $subdir = 'sureforms/' ) {
-		// Decode the file URL.
-		$file_url = urldecode( $file_url );
-
-		// Check if the file URL is empty.
-		if ( empty( $file_url ) || ! is_string( $file_url ) ) {
-			return false;
-		}
-
-		// Normalize and sanitize the subdirectory.
-		$subdir = trailingslashit( sanitize_text_field( $subdir ) );
-
-		// Get the base upload directory.
-		$upload_dir       = wp_upload_dir();
-		$base_upload_path = trailingslashit( $upload_dir['basedir'] ) . $subdir;
-
-		// Extract only the filename from URL.
-		$filename = basename( $file_url );
-
-		// Construct the full file path.
-		$file_path = $base_upload_path . $filename;
-
-		// Resolve real paths.
-		$real_file_path = realpath( $file_path );
-		$real_base_path = realpath( $base_upload_path );
-
-		// Security check: ensure file is inside the target subdir.
-		if ( ! $real_file_path || ! $real_base_path || strpos( $real_file_path, $real_base_path ) !== 0 ) {
-			return false;
-		}
-
-		// Delete if file exists.
-		if ( file_exists( $real_file_path ) ) {
-			return unlink( $real_file_path );
-		}
-
-		return false;
 	}
 }

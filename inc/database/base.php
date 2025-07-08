@@ -84,6 +84,14 @@ abstract class Base {
 	private $caches = [];
 
 	/**
+	 * Allowed operators for the database.
+	 *
+	 * @var array<string>
+	 * @since x.x.x
+	 */
+	private $allowed_where_operators = [ 'LIKE', 'IN', '=', '!=', '>', '<', '>=', '<=' ];
+
+	/**
 	 * Init class.
 	 *
 	 * @since 0.0.10
@@ -734,6 +742,11 @@ abstract class Base {
 				if ( is_int( $key ) ) {
 					foreach ( $value as $_key => $_value ) {
 						if ( is_int( $_key ) ) {
+							// Check if the operator is allowed.
+							if ( ! in_array( $_value['compare'], $this->allowed_where_operators, true ) ) {
+								continue;
+							}
+
 							switch ( $_value['compare'] ) {
 								case 'LIKE':
 									$where   .= ' ' . $_value['key'] . ' ' . $_value['compare'] . ' "%%' . $this->get_format_by_datatype( Helper::get_string_value( $schema[ $_value['key'] ]['type'] ) ) . '%%" ' . $relation;
