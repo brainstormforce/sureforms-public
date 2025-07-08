@@ -267,6 +267,7 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 = x.x.x =
 * Improvement: Removed HTML support for blocks such as Heading, Image, Separator, and Icon when used inside SureForms, as dynamic blocks do not support HTML editing.
 * Improvement: Resolved an issue where reCAPTCHA was not functioning correctly, ensuring proper verification and user form protection.
+* Fix: Fixed email summary report to show the correct number of entries for the last week.
 = 1.7.4 - 30th June 2025 =
 * Fix: Important fixes.
 = 1.7.3 - 26th June 2025 =
