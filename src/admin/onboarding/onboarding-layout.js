@@ -12,10 +12,13 @@ import {
 import ICONS from '@Admin/components/template-picker/components/icons';
 
 const NavBar = () => {
-	const { getCurrentStepNumber } = useOnboardingNavigation();
+	const { getCurrentStepNumber, hasBusinessPlan } = useOnboardingNavigation();
 	const [ onboardingState, actions ] = useOnboardingState();
 	const location = useLocation();
 	const [ isExiting, setIsExiting ] = useState( false );
+
+	// Determine total steps based on plan
+	const totalSteps = hasBusinessPlan() ? 2 : 3;
 
 	// Function to handle exit with proper state updates
 	const handleExit = () => {
@@ -70,7 +73,7 @@ const NavBar = () => {
 						type="inline"
 						variant="number"
 					>
-						{ Array.from( { length: 3 }, ( _, index ) => (
+						{ Array.from( { length: totalSteps }, ( _, index ) => (
 							<ProgressSteps.Step key={ index } size="md" />
 						) ) }
 					</ProgressSteps>
