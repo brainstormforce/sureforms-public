@@ -1,7 +1,12 @@
 import { __, sprintf } from '@wordpress/i18n';
 import apiFetch from '@wordpress/api-fetch';
 import { useState, useEffect } from '@wordpress/element';
-import { handleAddNewPost, initiateAuth, cn } from '@Utils/Helpers';
+import {
+	handleAddNewPost,
+	initiateAuth,
+	cn,
+	addQueryParam,
+} from '@Utils/Helpers';
 import Header from './Header.js';
 import LimitReachedPopup from './LimitReachedPopup.js';
 import ErrorPopup from './ErrorPopup.js';
@@ -111,7 +116,7 @@ const AiFormBuilder = () => {
 						metasToUpdate,
 						formTypeObj?.isConversationalForm,
 						formType
-					); // Check for the formType variable
+					);
 				} else {
 					setShowFormCreationErr( true );
 				}
@@ -262,6 +267,10 @@ export const getLimitReachedPopup = () => {
 		);
 	}
 
+	// Check if the user has a premium plan and not activated the license
+	const deactivatedLicense =
+		srfm_admin?.is_pro_active && ! srfm_admin?.is_pro_license_active;
+
 	// When registered limit is consumed
 	if ( type === 'registered' && formCreationleft === 0 ) {
 		return (
@@ -276,8 +285,16 @@ export const getLimitReachedPopup = () => {
 				) }
 				buttonText={ __( 'Upgrade Plan', 'sureforms' ) }
 				onclick={ () => {
-					window.open( srfm_admin?.pricing_page_url, '_blank' );
+					window.open(
+						addQueryParam(
+							srfm_admin?.pricing_page_url,
+							'limit-reached-popup-cta'
+						),
+						'_blank',
+						'noreferrer'
+					);
 				} }
+				deactivatedLicense={ deactivatedLicense }
 			/>
 		);
 	}
