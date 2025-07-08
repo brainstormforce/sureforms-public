@@ -7,7 +7,6 @@
 
 namespace SRFM\Inc\Blocks;
 
-use SRFM\Inc\Helper;
 use SRFM\Inc\Traits\Get_Instance;
 
 if ( ! defined( 'ABSPATH' ) ) {
