@@ -45,8 +45,6 @@ export default ( { attributes, setAttributes } ) => {
 		id
 	);
 
-	const status = useEntityProp( 'postType', 'sureforms_form', 'status', id );
-
 	const { isMissing, hasResolved } = useSelect( ( select ) => {
 		const hasResolvedValue = select( coreStore ).hasFinishedResolution(
 			'getEntityRecord',
@@ -152,7 +150,7 @@ export default ( { attributes, setAttributes } ) => {
 	}, [ id, iframeRef, hasResolved ] );
 
 	// If the form is not published or is missing, show a warning and allow the user to change the form.
-	if ( isMissing || 'publish' !== status[ 0 ] ) {
+	if ( isMissing ) {
 		return (
 			<>
 				<InspectorControls>
