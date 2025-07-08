@@ -89,11 +89,6 @@ class Translatable {
 			'srfm_valid_url'                   => __( 'Please enter a valid URL.', 'sureforms' ),
 			'srfm_confirm_email_same'          => __( 'Confirmation email does not match.', 'sureforms' ),
 			'srfm_valid_email'                 => __( 'Please enter a valid email address.', 'sureforms' ),
-			// Note: These password strength messages are prepared for the password block.
-			// As of now, the password block is not registered in SureForms. Once registered, these messages should be used.
-			// phpcs:ignore
-			// 'srfm_confirm_password_same'       => __( 'Confirmation password does not match.', 'sureforms' ),
-			// phpcs:enable
 
 			/* translators: %s represents the minimum acceptable value */
 			'srfm_input_min_value'             => __( 'Minimum value is %s', 'sureforms' ),
