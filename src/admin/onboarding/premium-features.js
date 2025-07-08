@@ -246,7 +246,7 @@ const PremiumFeatures = () => {
 		useOnboardingNavigation();
 
 	// Get current active pro version if available
-	const currentProVersion = srfm_admin?.pro_plugin_name || '';
+	const currentProVersion = srfm_admin?.is_pro_active && srfm_admin?.pro_plugin_name || '';
 	const hasProVersion = currentProVersion.includes( 'SureForms' );
 
 	// Extract plan name if pro version exists
@@ -332,11 +332,8 @@ const PremiumFeatures = () => {
 				const initialState = {};
 
 				stableFilteredFeatures.forEach( ( feature ) => {
-					// Check all features if business plan
-					if ( currentPlan === 'business' ) {
-						initialState[ feature.id ] = true;
-					} else if ( feature.type === 'free' ) {
-						// Otherwise only check free features
+					// check free features
+					if ( feature.type === 'free' ) {
 						initialState[ feature.id ] = true;
 					}
 				} );
@@ -414,11 +411,6 @@ const PremiumFeatures = () => {
 	const handleCheckboxChange = ( featureId, type ) => {
 		// Don't allow unchecking free features
 		if ( type === 'free' ) {
-			return;
-		}
-
-		// Don't allow unchecking if business plan
-		if ( currentPlan === 'business' ) {
 			return;
 		}
 
