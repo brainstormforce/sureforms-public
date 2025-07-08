@@ -882,6 +882,7 @@ abstract class Base {
 	 *               - 'number': Encoded as an integer.
 	 *               - 'boolean': Encoded as a boolean.
 	 *               - 'array': Encoded as a JSON string.
+	 * @since x.x.x  - 'datetime': Returns the value as it is, assuming it is already in SQL DATETIME format.
 	 */
 	protected function encode_by_datatype( $value, $type ) {
 		switch ( $type ) {
@@ -897,6 +898,10 @@ abstract class Base {
 			case 'array':
 				// Lets json_encode array values instead of serializing it.
 				return Helper::encode_json( Helper::get_array_value( $value ) );
+
+			case 'datetime':
+				// For datetime, we will return the value as it is because we are using sql DATETIME format.
+				return $value;
 		}
 	}
 }
