@@ -34,13 +34,6 @@ class Register {
 			],
 		];
 
-		if ( defined( 'SRFM_PRO_VER' ) ) {
-			$blocks[] = [
-				'dir'       => SRFM_PRO_DIR . 'inc/blocks/**/*.php',
-				'namespace' => 'SRFM_PRO\\Inc\\Blocks',
-			];
-		}
-
 		// Filter to add and register additional blocks. Like Signature block.
 		$additional_blocks = apply_filters( 'srfm_register_additional_blocks', [] );
 
