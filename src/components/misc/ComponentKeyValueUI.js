@@ -18,7 +18,7 @@ const ComponentKeyValueUI = ( {
 	const [ localData, setLocalData ] = useState( data );
 
 	useEffect( () => {
-		if ( Array.isArray( data ) ) {
+		if ( Array.isArray( data ) && data.length ) {
 			setLocalData( data );
 		} else if ( data && typeof data === 'object' ) {
 			setLocalData( [ data ] );

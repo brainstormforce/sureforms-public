@@ -90,7 +90,7 @@ class Input_Markup extends Base {
 				<div class="srfm-block-wrap">
 				<input class="srfm-input-common srfm-input-<?php echo esc_attr( $this->slug ); ?>" type="text" name="<?php echo esc_attr( $this->field_name ); ?>" id="<?php echo esc_attr( $this->unique_slug ); ?>"
 					<?php echo ! empty( $this->aria_described_by ) ? "aria-describedby='" . esc_attr( trim( $this->aria_described_by ) ) . "'" : ''; ?>
-					data-required="<?php echo esc_attr( strval( $this->data_require_attr ) ); ?>" data-unique="<?php echo esc_attr( $this->aria_unique ); ?>" maxlength="<?php echo esc_attr( $this->max_text_length ); ?>" value="<?php echo esc_attr( $this->default ); ?>" <?php echo wp_kses_post( $this->placeholder_attr ); ?> data-srfm-mask="<?php echo esc_attr( $this->input_mask ); ?>" <?php echo ! empty( $this->custom_input_mask ) ? 'data-custom-srfm-mask="' . esc_attr( $this->custom_input_mask ) . '"' : ''; ?> <?php echo $this->read_only ? 'readonly' : ''; ?> />
+					data-required="<?php echo esc_attr( strval( $this->data_require_attr ) ); ?>" aria-required="<?php echo esc_attr( $this->data_require_attr ); ?>" data-unique="<?php echo esc_attr( $this->aria_unique ); ?>" maxlength="<?php echo esc_attr( $this->max_text_length ); ?>" value="<?php echo esc_attr( $this->default ); ?>" <?php echo wp_kses_post( $this->placeholder_attr ); ?> data-srfm-mask="<?php echo esc_attr( $this->input_mask ); ?>" <?php echo ! empty( $this->custom_input_mask ) ? 'data-custom-srfm-mask="' . esc_attr( $this->custom_input_mask ) . '"' : ''; ?> <?php echo $this->read_only ? 'readonly' : ''; ?> />
 				</div>
 				<div class="srfm-error-wrap">
 					<?php echo wp_kses_post( $this->duplicate_msg_markup ); ?>

@@ -235,7 +235,7 @@ class Inlinebutton_Markup extends Base {
 
 				$button_attributes = '';
 				if ( 'g-recaptcha' === $this->captcha_security_type && ( 'v2-invisible' === $this->recaptcha_version || 'v3-reCAPTCHA' === $this->recaptcha_version ) ) {
-					$button_attributes = 'recaptcha-type=' . $this->recaptcha_version . ' data-sitekey=' . $this->google_captcha_site_key . ' data-callback="recaptchaCallback"';
+					$button_attributes = 'recaptcha-type=' . $this->recaptcha_version . ' data-sitekey=' . $this->google_captcha_site_key . ' data-callback=recaptchaCallback';
 				}
 				?>
 				<button style="<?php echo esc_attr( $button_style ); ?>" id="srfm-submit-btn" class="<?php echo esc_attr( Helper::join_strings( $srfm_custom_button_classes ) ); ?>" <?php echo esc_attr( $button_attributes ); ?>>
