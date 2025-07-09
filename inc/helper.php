@@ -1479,11 +1479,29 @@ class Helper {
 		$logo_sure_triggers     = file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/suretriggers.svg' );
 		$logo_full              = file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/suretriggers_full.svg' );
 		$logo_sure_mails        = file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/suremails.svg' );
-		$logo_sure_cart         = file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/surecart.svg' );
+		$logo_sure_rank         = file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/surerank.svg' );
 		$logo_starter_templates = file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/starterTemplates.svg' );
 		return apply_filters(
 			'srfm_integrated_plugins',
 			[
+				'sure_rank'         => [
+					'title'       => __( 'SureRank', 'sureforms' ),
+					'subtitle'    => __( 'Simple SEO plugin that works without the bloat.', 'sureforms' ),
+					'status'      => self::get_plugin_status( 'surerank/surerank.php' ),
+					'slug'        => 'surerank',
+					'path'        => 'surerank/surerank.php',
+					'redirection' => admin_url( 'admin.php?page=surerank#/dashboard' ),
+					'logo'        => self::encode_svg( is_string( $logo_sure_rank ) ? $logo_sure_rank : '' ),
+				],
+				'sure_mails'        => [
+					'title'       => __( 'SureMail', 'sureforms' ),
+					'subtitle'    => __( 'Free and easy SMTP mails plugin.', 'sureforms' ),
+					'status'      => self::get_plugin_status( 'suremails/suremails.php' ),
+					'slug'        => 'suremails',
+					'path'        => 'suremails/suremails.php',
+					'redirection' => admin_url( 'options-general.php?page=suremail#/dashboard' ),
+					'logo'        => self::encode_svg( is_string( $logo_sure_mails ) ? $logo_sure_mails : '' ),
+				],
 				'sure_triggers'     => [
 					'title'       => __( 'OttoKit', 'sureforms' ),
 					'subtitle'    => __( 'No-code automation tool for WordPress.', 'sureforms' ),
@@ -1495,23 +1513,6 @@ class Helper {
 					'logo'        => self::encode_svg( is_string( $logo_sure_triggers ) ? $logo_sure_triggers : '' ),
 					'logo_full'   => self::encode_svg( is_string( $logo_full ) ? $logo_full : '' ),
 					'connected'   => $suretrigger_connected,
-				],
-				'sure_mails'        => [
-					'title'       => __( 'SureMail', 'sureforms' ),
-					'subtitle'    => __( 'Free and easy SMTP mails plugin.', 'sureforms' ),
-					'status'      => self::get_plugin_status( 'suremails/suremails.php' ),
-					'slug'        => 'suremails',
-					'path'        => 'suremails/suremails.php',
-					'redirection' => admin_url( 'options-general.php?page=suremail#/dashboard' ),
-					'logo'        => self::encode_svg( is_string( $logo_sure_mails ) ? $logo_sure_mails : '' ),
-				],
-				'sure_cart'         => [
-					'title'    => __( 'SureCart', 'sureforms' ),
-					'subtitle' => __( 'The new way to sell on WordPress.', 'sureforms' ),
-					'status'   => self::get_plugin_status( 'surecart/surecart.php' ),
-					'slug'     => 'surecart',
-					'path'     => 'surecart/surecart.php',
-					'logo'     => self::encode_svg( is_string( $logo_sure_cart ) ? $logo_sure_cart : '' ),
 				],
 				'starter_templates' => [
 					'title'       => __( 'Starter Templates', 'sureforms' ),
