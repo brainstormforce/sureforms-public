@@ -8,8 +8,8 @@
 namespace SRFM\Admin;
 
 use SRFM\Inc\Database\Tables\Entries;
-use SRFM\Inc\Traits\Get_Instance;
 use SRFM\Inc\Helper;
+use SRFM\Inc\Traits\Get_Instance;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -260,30 +260,6 @@ class Analytics {
 	}
 
 	/**
-	 * Runs custom WP_Query to fetch data as per requirement
-	 *
-	 * @param array $meta_query meta query array for WP_Query.
-	 * @since 1.4.0
-	 * @return int
-	 */
-	private function custom_wp_query_total_posts( $meta_query ) {
-
-		$args = [
-			'post_type'      => SRFM_FORMS_POST_TYPE,
-			'post_status'    => 'publish',
-			'posts_per_page' => -1,
-			'meta_query'     => $meta_query, //phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Meta query required as we need to fetch count of nested data.
-		];
-
-		$query       = new \WP_Query( $args );
-		$posts_count = $query->found_posts;
-
-		wp_reset_postdata();
-
-		return $posts_count;
-	}
-
-	/**
 	 * Returns user status.
 	 *
 	 * @since 1.8.0
@@ -334,9 +310,9 @@ class Analytics {
 			// Compare timestamps.
 			if ( $accepted > $dismissed ) {
 				return 'accepted';
-			} else {
-				return 'dismissed';
 			}
+				return 'dismissed';
+
 		}
 
 		if ( $accepted ) {
@@ -346,5 +322,29 @@ class Analytics {
 			return 'dismissed';
 		}
 		return '';
+	}
+
+	/**
+	 * Runs custom WP_Query to fetch data as per requirement
+	 *
+	 * @param array $meta_query meta query array for WP_Query.
+	 * @since 1.4.0
+	 * @return int
+	 */
+	private function custom_wp_query_total_posts( $meta_query ) {
+
+		$args = [
+			'post_type'      => SRFM_FORMS_POST_TYPE,
+			'post_status'    => 'publish',
+			'posts_per_page' => -1,
+			'meta_query'     => $meta_query, //phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Meta query required as we need to fetch count of nested data.
+		];
+
+		$query       = new \WP_Query( $args );
+		$posts_count = $query->found_posts;
+
+		wp_reset_postdata();
+
+		return $posts_count;
 	}
 }
