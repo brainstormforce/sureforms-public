@@ -548,4 +548,16 @@ $placeholder_color: #9ca3af;
 	}
 }
 
+.srfm-update-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background: #d63638;
+    border-radius: 50%;
+    margin-left: 6px;
+    vertical-align: middle;
+    position: relative;
+    left: -4px;
+}
+
 @import "tooltip";

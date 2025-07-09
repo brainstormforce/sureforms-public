@@ -438,7 +438,7 @@ class Admin {
 		foreach ( $menu as $index => $item ) {
 			if ( isset( $item[2] ) && 'sureforms_menu' === $item[2] ) {
 				$menu[ $index ][0] .= sprintf( // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- Adding notifications for menu item.
-					' <span class="update-plugins count-%1$d"><span class="plugin-count">%1$d</span></span>',
+					' <span class="srfm-update-dot"></span>',
 					absint( $new_entries )
 				);
 				break;
