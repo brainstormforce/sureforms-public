@@ -1486,7 +1486,7 @@ class Helper {
 			[
 				'sure_rank'         => [
 					'title'       => __( 'SureRank', 'sureforms' ),
-					'subtitle'    => __( 'Simple and lightweight SEO that helps your site rank without the clutter or confusion.', 'sureforms' ),
+					'subtitle'    => __( 'Simple SEO that works without the bloat.', 'sureforms' ),
 					'status'      => self::get_plugin_status( 'surerank/surerank.php' ),
 					'slug'        => 'surerank',
 					'path'        => 'surerank/surerank.php',
