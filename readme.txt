@@ -272,9 +272,8 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 * Fix: Corrected the email summary report to display the accurate number of entries for the past week.
 * Fix: Resolved a display issue with form confirmation query parameters on new forms.
 * Fix: Resolved a fatal error from incorrect InnerBlocks usage that caused editor and frontend crashes.
-* Fix: This update addressed a security bug. Please make sure you are using the latest version on your website. Props to Phat RiO from BlueRock and Wordfence for reporting it responsibly to our team.
 = 1.7.4 - 30th June 2025 =
-* Fix: Important fixes.
+* Fix: This update addressed a security bug. Please make sure you are using the latest version on your website. Props to Phat RiO from BlueRock and Wordfence for reporting it responsibly to our team.
 = 1.7.3 - 26th June 2025 =
 * New: Introduced admin notifications to keep administrators informed about important updates and announcements.
 * Improvement: Enhanced form initialization with custom event support (srfm_form_initialize) for better compatibility with third-party scripts.
