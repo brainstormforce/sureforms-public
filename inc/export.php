@@ -40,6 +40,7 @@ class Export {
 		'_srfm_conversational_form',
 		'_srfm_premium_common',
 		'_srfm_forms_styling_starter',
+		'_srfm_user_registration_settings',
 	];
 
 	/**

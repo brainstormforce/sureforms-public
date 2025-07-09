@@ -268,11 +268,12 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 * Improvement: SureForms entries 'published at' date matches timezone set from WordPress general settings.
 * Improvement: Removed HTML support for blocks such as Heading, Image, Separator, and Icon when used inside SureForms, as dynamic blocks do not support HTML editing.
 * Improvement: Resolved an issue where reCAPTCHA was not functioning correctly, ensuring proper verification and user form protection.
+* Fix: Fixed email summary report to show the correct number of entries for the last week.
 * Fix: Addressed the accessibility issues related to required field announcements.
 * Fix: Resolved a fatal error caused by incorrect InnerBlocks implementation to prevent editor and frontend crashes.
 * Fix: Resolved a display issue with form confirmation query parameters on new forms.
 = 1.7.4 - 30th June 2025 =
-* Fix: Important fixes.
+* Fix: This update addressed a security bug. Please make sure you are using the latest version on your website. Props to Phat RiO from BlueRock and Wordfence for reporting it responsibly to our team.
 = 1.7.3 - 26th June 2025 =
 * New: Introduced admin notifications to keep administrators informed about important updates and announcements.
 * Improvement: Enhanced form initialization with custom event support (srfm_form_initialize) for better compatibility with third-party scripts.

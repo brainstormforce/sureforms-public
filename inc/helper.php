@@ -1527,6 +1527,112 @@ class Helper {
 	}
 
 	/**
+	 * Get a value from the srfm_options array.
+	 *
+	 * @param string $key The key to retrieve.
+	 * @param mixed  $default The default value to return if the key does not exist.
+	 * @since x.x.x
+	 * @return mixed
+	 */
+	public static function get_srfm_option( $key, $default = null ) {
+		$options = get_option( 'srfm_options', [] );
+		if ( ! is_array( $options ) ) {
+			$options = [];
+		}
+		return array_key_exists( $key, $options ) ? $options[ $key ] : $default;
+	}
+
+	/**
+	 * Update a value in the srfm_options array.
+	 *
+	 * @param string $key   The key to update.
+	 * @param mixed  $value The value to set.
+	 * @since x.x.x
+	 * @return void
+	 */
+	public static function update_srfm_option( $key, $value ) {
+		$options = get_option( 'srfm_options', [] );
+		if ( ! is_array( $options ) ) {
+			$options = [];
+		}
+		$options[ $key ] = $value;
+		update_option( 'srfm_options', $options );
+	}
+
+	/**
+	 * Get the WordPress file types.
+	 *
+	 * @since 1.7.4
+	 * @return array<string,mixed> An associative array representing the file types.
+	 */
+	public static function get_wp_file_types() {
+		$formats = [];
+		$mimes   = get_allowed_mime_types();
+		$maxsize = wp_max_upload_size() / 1048576;
+		if ( ! empty( $mimes ) ) {
+			foreach ( $mimes as $type => $mime ) {
+				$multiple = explode( '|', $type );
+				foreach ( $multiple as $single ) {
+					$formats[] = $single;
+				}
+			}
+		}
+
+		return [
+			'formats' => $formats,
+			'maxsize' => $maxsize,
+		];
+	}
+
+	/**
+	 * Summary of delete_upload_file_from_subdir
+	 *
+	 * @param string $file_url The file URL to delete.
+	 * @param string $subdir The subdirectory to delete the file from.
+	 *
+	 * @since 1.7.4
+	 * @return bool
+	 */
+	public static function delete_upload_file_from_subdir( $file_url, $subdir = 'sureforms/' ) {
+		// Decode the file URL.
+		$file_url = urldecode( $file_url );
+
+		// Check if the file URL is empty.
+		if ( empty( $file_url ) || ! is_string( $file_url ) ) {
+			return false;
+		}
+
+		// Normalize and sanitize the subdirectory.
+		$subdir = trailingslashit( sanitize_text_field( $subdir ) );
+
+		// Get the base upload directory.
+		$upload_dir       = wp_upload_dir();
+		$base_upload_path = trailingslashit( $upload_dir['basedir'] ) . $subdir;
+
+		// Extract only the filename from URL.
+		$filename = basename( $file_url );
+
+		// Construct the full file path.
+		$file_path = $base_upload_path . $filename;
+
+		// Resolve real paths.
+		$real_file_path = realpath( $file_path );
+		$real_base_path = realpath( $base_upload_path );
+
+		// Security check: ensure file is inside the target subdir.
+		if ( ! $real_file_path || ! $real_base_path || strpos( $real_file_path, $real_base_path ) !== 0 ) {
+			return false;
+		}
+
+		// Delete if file exists.
+		if ( file_exists( $real_file_path ) ) {
+			return unlink( $real_file_path );
+		}
+
+		return false;
+	}
+	
+	/**
 	 * Determines if the SureForms Pro plugin is installed and active.
 	 *
 	 * Checks for the presence of the SRFM_PRO_VER constant.
