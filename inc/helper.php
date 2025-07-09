@@ -1631,7 +1631,7 @@ class Helper {
 
 		return false;
 	}
-	
+
 	/**
 	 * Determines if the SureForms Pro plugin is installed and active.
 	 *
