@@ -1013,7 +1013,7 @@ class Admin {
 	 * Enqueueus the admin pointer script and styles.
 	 *
 	 * @return void
-	 * @since x.x.x
+	 * @since 1.8.0
 	 */
 	public function enqueue_admin_pointer() {
 		if ( ! $this->is_admin_pointer_visible() ) {
@@ -1042,7 +1042,7 @@ class Admin {
 	 * Ajax handler for pointer popup visibility.
 	 *
 	 * @return void
-	 * @since x.x.x
+	 * @since 1.8.0
 	 */
 	public function pointer_should_show() {
 		// Security: Check user capability.
@@ -1080,7 +1080,7 @@ class Admin {
 	 * Ajax callback for pointer popup dismissed action.
 	 *
 	 * @return void
-	 * @since x.x.x
+	 * @since 1.8.0
 	 */
 	public function pointer_dismissed() {
 		// Security: Check user capability.
@@ -1101,7 +1101,7 @@ class Admin {
 	 * Ajax pointer accepted CTA callback.
 	 *
 	 * @return void
-	 * @since x.x.x
+	 * @since 1.8.0
 	 */
 	public function pointer_accepted_cta() {
 		// Security: Check user capability.
@@ -1121,7 +1121,7 @@ class Admin {
 	/**
 	 * Determine if the admin pointer should be visible on this page.
 	 *
-	 * @since x.x.x
+	 * @since 1.8.0
 	 * @return bool
 	 */
 	private function is_admin_pointer_visible() {
