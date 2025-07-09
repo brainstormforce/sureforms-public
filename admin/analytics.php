@@ -8,6 +8,7 @@
 namespace SRFM\Admin;
 
 use SRFM\Inc\Database\Tables\Entries;
+use SRFM\Inc\Helper;
 use SRFM\Inc\Traits\Get_Instance;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -87,9 +88,11 @@ class Analytics {
 	 */
 	public function add_srfm_analytics_data( $stats_data ) {
 		$stats_data['plugin_data']['sureforms']                   = [
-			'free_version'        => SRFM_VER,
-			'site_language'       => get_locale(),
-			'most_used_anti_spam' => $this->most_used_anti_spam(),
+			'free_version'          => SRFM_VER,
+			'site_language'         => get_locale(),
+			'most_used_anti_spam'   => $this->most_used_anti_spam(),
+			'user_status'           => $this->user_status(),
+			'pointer_popup_clicked' => $this->pointer_popup_clicked(),
 		];
 		$stats_data['plugin_data']['sureforms']['numeric_values'] = [
 			'total_forms'            => wp_count_posts( SRFM_FORMS_POST_TYPE )->publish ?? 0,
@@ -254,6 +257,62 @@ class Analytics {
 		$global_data['boolean_values']['custom_validation_message'] = ! empty( $validation_messages ) && is_array( $validation_messages );
 
 		return $global_data;
+	}
+
+	/**
+	 * Returns user status.
+	 *
+	 * @since 1.8.0
+	 * @return string
+	 */
+	public function user_status() {
+		// First, check if user_active is already set in srfm_options.
+		if ( Helper::get_srfm_option( 'user_active', false ) ) {
+			return 'active';
+		}
+		// Get up to 10 published SureForms.
+		$forms = get_posts(
+			[
+				'post_type'      => SRFM_FORMS_POST_TYPE,
+				'posts_per_page' => 10,
+				'post_status'    => 'publish',
+			]
+		);
+		if ( empty( $forms ) ) {
+			return 'inactive';
+		}
+		foreach ( $forms as $form ) {
+			if ( ! get_post_meta( $form->ID, '_astra_sites_imported_post', true ) ) {
+				// Mark user as active in srfm_options.
+				Helper::update_srfm_option( 'user_active', true );
+				return 'active';
+			}
+		}
+		return 'inactive';
+	}
+
+	/**
+	 * Return pointer popup clicked status.
+	 *
+	 * @return string pointer click status.
+	 * @since 1.8.0
+	 */
+	public function pointer_popup_clicked() {
+		// Get both values from srfm_options.
+		$accepted  = Helper::get_srfm_option( 'pointer_popup_accepted', false );
+		$dismissed = Helper::get_srfm_option( 'pointer_popup_dismissed', false );
+		// If neither action has occurred.
+		if ( ! $accepted && ! $dismissed ) {
+			return '';
+		}
+
+		// If both are set, return the most recent one.
+		if ( $accepted && $dismissed ) {
+			return $accepted > $dismissed ? 'accepted' : 'dismissed';
+		}
+
+		// If only one is set, return it.
+		return $accepted ? 'accepted' : 'dismissed';
 	}
 
 	/**
