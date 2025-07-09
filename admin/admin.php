@@ -437,10 +437,8 @@ class Admin {
 		global $menu;
 		foreach ( $menu as $index => $item ) {
 			if ( isset( $item[2] ) && 'sureforms_menu' === $item[2] ) {
-				$menu[ $index ][0] .= sprintf( // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- Adding notifications for menu item.
-					' <span class="srfm-update-dot"></span>',
-					absint( $new_entries )
-				);
+				// phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- Adding notifications for menu item.
+				$menu[ $index ][0] .= ' <span class="srfm-update-dot"></span>';
 				break;
 			}
 		}
