@@ -308,7 +308,7 @@ class Analytics {
 
 		// If both are set, return the most recent one.
 		if ( $accepted && $dismissed ) {
-			return ( $accepted > $dismissed ) ? 'accepted' : 'dismissed';
+			return $accepted > $dismissed ? 'accepted' : 'dismissed';
 		}
 
 		// If only one is set, return it.
