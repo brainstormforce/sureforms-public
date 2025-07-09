@@ -301,27 +301,18 @@ class Analytics {
 		// Get both values from srfm_options.
 		$accepted  = Helper::get_srfm_option( 'pointer_popup_accepted', false );
 		$dismissed = Helper::get_srfm_option( 'pointer_popup_dismissed', false );
-
+		// If neither action has occurred.
 		if ( ! $accepted && ! $dismissed ) {
 			return '';
 		}
 
+		// If both are set, return the most recent one.
 		if ( $accepted && $dismissed ) {
-			// Compare timestamps.
-			if ( $accepted > $dismissed ) {
-				return 'accepted';
-			}
-				return 'dismissed';
-
+			return ( $accepted > $dismissed ) ? 'accepted' : 'dismissed';
 		}
 
-		if ( $accepted ) {
-			return 'accepted';
-		}
-		if ( $dismissed ) {
-			return 'dismissed';
-		}
-		return '';
+		// If only one is set, return it.
+		return $accepted ? 'accepted' : 'dismissed';
 	}
 
 	/**
