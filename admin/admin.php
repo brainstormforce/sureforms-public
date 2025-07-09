@@ -52,6 +52,7 @@ class Admin {
 		add_action( 'uag_enable_quick_action_sidebar', [ $this, 'restrict_spectra_quick_action_bar' ] );
 
 		add_action( 'current_screen', [ $this, 'enable_gutenberg_for_sureforms' ], 100 );
+		add_action( 'admin_notices', [ $this, 'srfm_pro_version_compatibility' ] );
 
 		// Handle entry actions.
 		add_action( 'admin_init', [ $this, 'handle_entry_actions' ] );
@@ -982,6 +983,68 @@ class Admin {
 				}
 			}
 			Entries_List_Table::handle_entry_status( $entry_id, $action, $view );
+		}
+	}
+
+	/**
+	 * Admin Notice Callback if sureforms pro is out of date.
+	 *
+	 * Hooked - admin_notices
+	 *
+	 * @return void
+	 * @since 1.0.4
+	 */
+	public function srfm_pro_version_compatibility() {
+		if ( ! Helper::has_pro() ) {
+			return;
+		}
+
+		if ( empty( get_current_screen() ) ) {
+			return;
+		}
+
+		if ( ! current_user_can( 'update_plugins' ) ) {
+			return;
+		}
+
+		$srfm_pro_license_status = get_option( 'srfm_pro_license_status', '' );
+		/**
+		 * If the license status is not set then get the license status and update the option accordingly.
+		 * This will be executed only once. Subsequently, the option status is updated by the licensing class on license activation or deactivation.
+		 */
+		if ( empty( $srfm_pro_license_status ) && class_exists( 'SRFM_PRO\Admin\Licensing' ) ) {
+			$srfm_pro_license_status = \SRFM_PRO\Admin\Licensing::is_license_active() ? 'licensed' : 'unlicensed';
+			update_option( 'srfm_pro_license_status', $srfm_pro_license_status );
+		}
+
+		$pro_plugin_name = defined( 'SRFM_PRO_PRODUCT' ) ? SRFM_PRO_PRODUCT : 'SureForms Pro';
+		$message         = '';
+		$url             = admin_url( 'admin.php?page=sureforms_form_settings&tab=account-settings' );
+		if ( 'unlicensed' === $srfm_pro_license_status ) {
+			$message = '<p>' . sprintf(
+				// translators: %1$s: Opening anchor tag with URL, %2$s: Closing anchor tag, %3$s: SureForms Pro Plugin Name.
+				esc_html__( 'Please %1$sactivate%2$s your copy of %3$s to get new features, access support, receive update notifications, and more.', 'sureforms' ),
+				'<a href="' . esc_url( $url ) . '">',
+				'</a>',
+				'<i>' . esc_html( $pro_plugin_name ) . '</i>'
+			) . '</p>';
+		}
+
+		if ( ! version_compare( SRFM_PRO_VER, SRFM_PRO_RECOMMENDED_VER, '>=' ) ) {
+			$message .= '<p>' . sprintf(
+				// translators: %1$s: SureForms version, %2$s: SureForms Pro Plugin Name, %3$s: SureForms Pro Version, %4$s: Anchor tag open, %5$s: Closing anchor tag.
+				esc_html__( 'SureForms %1$s requires minimum %2$s %3$s to work properly. Please update to the latest version from %4$shere%5$s.', 'sureforms' ),
+				esc_html( SRFM_VER ),
+				esc_html( $pro_plugin_name ),
+				esc_html( SRFM_PRO_RECOMMENDED_VER ),
+				'<a href=' . esc_url( admin_url( 'update-core.php' ) ) . '>',
+				'</a>'
+			) . '</p>';
+		}
+
+		if ( ! empty( $message ) ) {
+			// Phpcs ignore comment is required as $message variable is already escaped.
+			echo '<div class="notice notice-warning">' . wp_kses_post( $message ) . '</div>';
 		}
 	}
 
