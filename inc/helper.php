@@ -1531,7 +1531,7 @@ class Helper {
 	 *
 	 * @param string $key The key to retrieve.
 	 * @param mixed  $default The default value to return if the key does not exist.
-	 * @since x.x.x
+	 * @since 1.8.0
 	 * @return mixed
 	 */
 	public static function get_srfm_option( $key, $default = null ) {
@@ -1547,7 +1547,7 @@ class Helper {
 	 *
 	 * @param string $key   The key to update.
 	 * @param mixed  $value The value to set.
-	 * @since x.x.x
+	 * @since 1.8.0
 	 * @return void
 	 */
 	public static function update_srfm_option( $key, $value ) {
@@ -1637,7 +1637,7 @@ class Helper {
 	 *
 	 * Checks for the presence of the SRFM_PRO_VER constant.
 	 *
-	 * @since x.x.x
+	 * @since 1.8.0
 	 *
 	 * @return bool True if the Pro plugin is active; false otherwise.
 	 */

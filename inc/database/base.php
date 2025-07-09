@@ -87,7 +87,7 @@ abstract class Base {
 	 * Allowed operators for the database.
 	 *
 	 * @var array<string>
-	 * @since x.x.x
+	 * @since 1.8.0
 	 */
 	private $allowed_where_operators = [ 'LIKE', 'IN', '=', '!=', '>', '<', '>=', '<=' ];
 
@@ -882,7 +882,7 @@ abstract class Base {
 	 *               - 'number': Encoded as an integer.
 	 *               - 'boolean': Encoded as a boolean.
 	 *               - 'array': Encoded as a JSON string.
-	 * @since x.x.x  - 'datetime': Returns the value as it is, assuming it is already in SQL DATETIME format.
+	 * @since 1.8.0  - 'datetime': Returns the value as it is, assuming it is already in SQL DATETIME format.
 	 */
 	protected function encode_by_datatype( $value, $type ) {
 		switch ( $type ) {
