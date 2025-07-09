@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-07-09T06:02:19+00:00\n"
+"POT-Creation-Date: 2025-07-09T13:10:05+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: sureforms\n"
@@ -17,8 +17,8 @@ msgstr ""
 #. Plugin Name of the plugin
 #. Author of the plugin
 #: sureforms.php
-#: admin/admin.php:185
 #: admin/admin.php:186
+#: admin/admin.php:187
 #: inc/gutenberg-hooks.php:107
 #: inc/nps-notice.php:108
 #: inc/page-builders/bricks/elements/form-widget.php:66
@@ -45,12 +45,12 @@ msgstr ""
 msgid "https://sureforms.com/"
 msgstr ""
 
-#: admin/admin.php:106
+#: admin/admin.php:107
 msgid "Get SureForms Pro"
 msgstr ""
 
-#: admin/admin.php:198
 #: admin/admin.php:199
+#: admin/admin.php:200
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:2
 #: assets/build/page_header.js:172
@@ -59,9 +59,9 @@ msgstr ""
 msgid "Dashboard"
 msgstr ""
 
-#: admin/admin.php:216
 #: admin/admin.php:217
-#: admin/admin.php:488
+#: admin/admin.php:218
+#: admin/admin.php:487
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:2
 #: assets/build/page_header.js:172
@@ -69,8 +69,8 @@ msgstr ""
 msgid "Settings"
 msgstr ""
 
-#: admin/admin.php:274
 #: admin/admin.php:275
+#: admin/admin.php:276
 #: admin/views/single-entry.php:157
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
@@ -79,20 +79,20 @@ msgstr ""
 msgid "Upgrade"
 msgstr ""
 
-#: admin/admin.php:290
 #: admin/admin.php:291
+#: admin/admin.php:292
 msgid "SMTP"
 msgstr ""
 
-#: admin/admin.php:347
 #: admin/admin.php:348
+#: admin/admin.php:349
 #: inc/post-types.php:173
 msgid "New Form"
 msgstr ""
 
-#: admin/admin.php:356
 #: admin/admin.php:357
-#: admin/admin.php:397
+#: admin/admin.php:358
+#: admin/admin.php:398
 #: inc/global-settings/email-summary.php:113
 #: inc/post-types.php:1083
 #: assets/build/dashboard.js:172
@@ -103,15 +103,15 @@ msgid "Entries"
 msgstr ""
 
 #. Translators: Post Title.
-#: admin/admin.php:568
+#: admin/admin.php:567
 msgid "Edit %1$s"
 msgstr ""
 
-#: admin/admin.php:629
+#: admin/admin.php:628
 msgid "Activating..."
 msgstr ""
 
-#: admin/admin.php:630
+#: admin/admin.php:629
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:2
 #: assets/build/page_header.js:172
@@ -119,25 +119,25 @@ msgstr ""
 msgid "Activated"
 msgstr ""
 
-#: admin/admin.php:631
+#: admin/admin.php:630
 #: assets/build/formEditor.js:172
 msgid "Activate"
 msgstr ""
 
-#: admin/admin.php:632
+#: admin/admin.php:631
 msgid "Installing..."
 msgstr ""
 
-#: admin/admin.php:633
+#: admin/admin.php:632
 msgid "Installed"
 msgstr ""
 
-#: admin/admin.php:789
+#: admin/admin.php:788
 #: inc/post-types.php:132
 msgid "Import Form"
 msgstr ""
 
-#: admin/admin.php:972
+#: admin/admin.php:971
 #: api/block-patterns.php:110
 #: inc/ai-form-builder/ai-auth.php:45
 #: inc/ai-form-builder/ai-auth.php:81
@@ -156,37 +156,47 @@ msgstr ""
 msgid "Nonce verification failed."
 msgstr ""
 
-#: admin/admin.php:981
+#: admin/admin.php:980
 msgid "You cannot view this entry because it is in trash."
 msgstr ""
 
-#: admin/admin.php:1050
-#: admin/admin.php:1088
-#: admin/admin.php:1109
+#. translators: %1$s: Opening anchor tag with URL, %2$s: Closing anchor tag, %3$s: SureForms Pro Plugin Name.
+#: admin/admin.php:1024
+msgid "Please %1$sactivate%2$s your copy of %3$s to get new features, access support, receive update notifications, and more."
+msgstr ""
+
+#. translators: %1$s: SureForms version, %2$s: SureForms Pro Plugin Name, %3$s: SureForms Pro Version, %4$s: Anchor tag open, %5$s: Closing anchor tag.
+#: admin/admin.php:1034
+msgid "SureForms %1$s requires minimum %2$s %3$s to work properly. Please update to the latest version from %4$shere%5$s."
+msgstr ""
+
+#: admin/admin.php:1111
+#: admin/admin.php:1149
+#: admin/admin.php:1170
 msgid "Unauthorized user."
 msgstr ""
 
-#: admin/admin.php:1054
-#: admin/admin.php:1092
-#: admin/admin.php:1113
+#: admin/admin.php:1115
+#: admin/admin.php:1153
+#: admin/admin.php:1174
 #: inc/admin-ajax.php:165
 msgid "Invalid nonce."
 msgstr ""
 
 #. translators: 1: opening span, 2: opening strong (inline), 3: closing strong, 4: closing span, 5: opening strong (block), 6: closing strong
-#: admin/admin.php:1059
+#: admin/admin.php:1120
 msgid "%1$sGet started by %2$sbuilding your first form%3$s.%4$s%5$sExperience the power of our intuitive AI Form Builder%6$s"
 msgstr ""
 
-#: admin/admin.php:1070
+#: admin/admin.php:1131
 msgid "SureForms is waiting for you!"
 msgstr ""
 
-#: admin/admin.php:1072
+#: admin/admin.php:1133
 msgid "Build My First Form"
 msgstr ""
 
-#: admin/admin.php:1073
+#: admin/admin.php:1134
 msgid "Dismiss"
 msgstr ""
 
@@ -1056,40 +1066,40 @@ msgid "%s sitekey is missing. Please contact your site administrator."
 msgstr ""
 
 #: inc/helper.php:1488
+msgid "SureRank"
+msgstr ""
+
+#: inc/helper.php:1489
+msgid "Simple SEO plugin that works without the bloat."
+msgstr ""
+
+#: inc/helper.php:1497
+msgid "SureMail"
+msgstr ""
+
+#: inc/helper.php:1498
+msgid "Free and easy SMTP mails plugin."
+msgstr ""
+
+#: inc/helper.php:1506
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
 msgid "OttoKit"
 msgstr ""
 
-#: inc/helper.php:1489
+#: inc/helper.php:1507
 msgid "No-code automation tool for WordPress."
 msgstr ""
 
-#: inc/helper.php:1490
+#: inc/helper.php:1508
 msgid "OttoKit is a powerful automation platform that helps you connect your various plugins and apps together. It allows you to automate repetitive tasks, so you can focus on more important work."
 msgstr ""
 
-#: inc/helper.php:1500
-msgid "SureMail"
-msgstr ""
-
-#: inc/helper.php:1501
-msgid "Free and easy SMTP mails plugin."
-msgstr ""
-
-#: inc/helper.php:1509
-msgid "SureCart"
-msgstr ""
-
-#: inc/helper.php:1510
-msgid "The new way to sell on WordPress."
-msgstr ""
-
-#: inc/helper.php:1517
+#: inc/helper.php:1518
 msgid "Starter Templates"
 msgstr ""
 
-#: inc/helper.php:1518
+#: inc/helper.php:1519
 msgid "Build your dream website in minutes with AI."
 msgstr ""
 
