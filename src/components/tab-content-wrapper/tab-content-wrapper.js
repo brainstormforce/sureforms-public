@@ -12,6 +12,7 @@ const TabContentWrapper = ( {
 	actionBtnIcon,
 	actionBtnVariant = 'primary',
 	actionLeftContent,
+	actionBtnDisabled = false,
 } ) => {
 	const handleBack = () => {
 		if ( typeof onClickBack !== 'function' ) {
@@ -52,6 +53,7 @@ const TabContentWrapper = ( {
 							onClick={ handleClickAction }
 							icon={ actionBtnIcon }
 							variant={ actionBtnVariant }
+							disabled={ actionBtnDisabled }
 						>
 							{ actionBtnText }
 						</Button>

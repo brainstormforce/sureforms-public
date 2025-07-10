@@ -93,5 +93,7 @@ module.exports = {
 		turnstile: true,
 		ResizeObserver: true,
 		MutationObserver: true,
+		jQuery: true,
+		sureformsPointerData: true,
 	},
 };

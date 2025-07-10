@@ -16,6 +16,7 @@ const ModalInputBox = ( {
 	padding = '',
 	smartTagTopMargin = 'mt-6',
 	inputProps = {},
+	placeholder = '',
 } ) => {
 	return (
 		<Container
@@ -32,7 +33,9 @@ const ModalInputBox = ( {
 						value={ value }
 						label={ label }
 						required={ required }
+						placeholder={ placeholder }
 						size="md"
+						className="[&>input]:text-field-input"
 						{ ...inputProps }
 					/>
 				</div>

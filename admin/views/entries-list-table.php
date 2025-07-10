@@ -628,8 +628,6 @@ class Entries_List_Table extends \WP_List_Table {
 				Entries::update( $entry_id, [ 'status' => $action ] );
 				break;
 			case 'delete':
-				self::get_entry_before_deleting( $entry_id );
-				self::delete_entry_files( $entry_id ); // In future we can replace this with a above get_entry_before_deleting function.
 				Entries::delete( $entry_id );
 				break;
 			default:
@@ -650,45 +648,6 @@ class Entries_List_Table extends \WP_List_Table {
 			);
 		}
 		wp_safe_redirect( $url );
-	}
-
-	/**
-	 * Delete the entry files when an entry is deleted.
-	 *
-	 * @param int $entry_id The ID of the entry to delete files for.
-	 * @since 1.0.2
-	 * @return void
-	 */
-	public static function delete_entry_files( $entry_id ) {
-		if ( ! $entry_id ) {
-			return;
-		}
-		// Get the entry data to get the file URLs.
-		$form_data = Entries::get_form_data( $entry_id );
-		if ( empty( $form_data ) ) {
-			return;
-		}
-		foreach ( $form_data as $field_name => $value ) {
-			// Continue to the next iteration if the field name does not contain 'srfm-upload' and value is not an array.
-			if ( false === strpos( $field_name, 'srfm-upload' ) && ! is_array( $value ) ) {
-				continue;
-			}
-			foreach ( $value as $file_url ) {
-				// If the file URL is empty, skip to the next iteration.
-				if ( empty( $file_url ) ) {
-					continue;
-				}
-				$file_path = Helper::convert_fileurl_to_filepath( urldecode( $file_url ) );
-
-				// Delete the file if it exists.
-				if ( file_exists( $file_path ) ) {
-					unlink( $file_path );
-				}
-			}
-		}
-
-		// Action to run after deleting the entry files.
-		do_action( 'srfm_after_deleting_entry_files', $form_data, $entry_id );
 	}
 
 	/**

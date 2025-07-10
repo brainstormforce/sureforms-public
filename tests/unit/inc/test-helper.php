@@ -810,4 +810,30 @@ class Test_Helper extends TestCase {
             );
         }
     }
+
+    /**
+     * Test the has_pro method to check if SureForms Pro plugin is installed.
+     */
+    public function test_has_pro() {
+        // Case 1: When SRFM_PRO_VER is not defined (should return false)
+        if (defined('SRFM_PRO_VER')) {
+            // If constant is already defined, we need to test differently
+            $this->assertTrue(
+                Helper::has_pro(),
+                'Failed: has_pro should return true when SRFM_PRO_VER is defined'
+            );
+        } else {
+            $this->assertFalse(
+                Helper::has_pro(),
+                'Failed: has_pro should return false when SRFM_PRO_VER is not defined'
+            );
+
+            // Case 2: Define the constant and test again
+            define('SRFM_PRO_VER', '1.0.0');
+            $this->assertTrue(
+                Helper::has_pro(),
+                'Failed: has_pro should return true when SRFM_PRO_VER is defined'
+            );
+        }
+    }
 }

@@ -7,6 +7,7 @@ import {
 	useLayoutEffect,
 } from '@wordpress/element';
 import { store as editorStore } from '@wordpress/editor';
+import { applyFilters } from '@wordpress/hooks';
 import AdvancedPopColorControl from '@Components/color-control/advanced-pop-color-control.js';
 import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
 import MultiButtonsControl from '@Components/multi-buttons-control';
@@ -1075,10 +1076,25 @@ function StyleSettings( props ) {
 		},
 	];
 
+	/**
+	 * The filter is used to conditionally show the button styling options.
+	 * In case of inline button, hide the button alignment options.
+	 * Along with it, for the login block hide the button alignment options because
+	 * it contains the inline button as well.
+	 */
+	const showButtonStylings = applyFilters(
+		'srfm.show.button.styling',
+		! isInlineButtonBlockPresent,
+		{
+			isInlineButtonBlockPresent,
+			context: 'form-settings',
+		}
+	);
+
 	const button = [
 		{
 			id: 'submit_button_alignment',
-			component: ! isInlineButtonBlockPresent && (
+			component: showButtonStylings && (
 				<>
 					<p className="components-base-control__help" />
 					<MultiButtonsControl

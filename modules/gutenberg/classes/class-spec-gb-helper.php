@@ -832,18 +832,16 @@ if ( ! class_exists( 'Spec_Gb_Helper' ) ) {
 
 			$block = (array) $block;
 
-			$name     = $block['blockName'];
+			$name     = isset( $block['blockName'] ) ? $block['blockName'] : '';
 			$css      = [];
 			$js       = '';
 			$block_id = '';
 
-			if ( isset( $name ) ) {
+			if ( ! empty( $name ) && isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
 
-				if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
-					$blockattr = $block['attrs'];
-					if ( isset( $blockattr['block_id'] ) ) {
-						$block_id = $blockattr['block_id'];
-					}
+				$blockattr = $block['attrs'];
+				if ( isset( $blockattr['block_id'] ) ) {
+					$block_id = $blockattr['block_id'];
 				}
 
 				self::$current_block_list[] = $name;

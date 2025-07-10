@@ -157,6 +157,18 @@ function initializeDropdown() {
 			 * @param {string}      inputName - The key under which the TomSelect instance is stored in the `window.srfm` object.
 			 */
 			const tomInputInstance = new TomSelect( element, config );
+
+			/**
+			 * Add the aria required attribute for the dropdown input element.
+			 * This is to announce the required state of the field for screen readers.
+			 * If not correctly implemented, it can lead to a non-compliant experience for users relying on assistive technology.
+			 */
+			if ( tomInputInstance.control_input ) {
+				tomInputInstance.control_input.setAttribute(
+					'aria-required',
+					element.getAttribute( 'aria-required' )
+				);
+			}
 			/**
 			 * `keydown` & `click` event listeners to open the dropdown menu programmatically
 			 * since we set the `openOnFocus` option to false for the dropdown.
