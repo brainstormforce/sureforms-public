@@ -264,6 +264,8 @@ We take plugin security extremely seriously. If you discover a security vulnerab
 You can report the issue through our [Bug Bounty Program](https://brainstormforce.com/bug-bounty-program/). We collaborate with Patchstack to provide opportunities for researchers to report vulnerabilities. The Patchstack team will help validate, triage, and handle any reported security issues.
 
 == Changelog ==
+= x.x.x =
+* Fix: Resolved an issue where forms display an error message on load when the LMS Optimize plugin is active.
 = 1.8.0 - 10th July 2025 =
 * Improvement: Removed HTML support for blocks such as Heading, Image, Separator, and Icon when used inside SureForms, as dynamic blocks do not support HTML editing.
 * Improvement: Resolved an issue where reCAPTCHA was not functioning correctly, ensuring proper verification and improved form security.
