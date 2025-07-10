@@ -19,6 +19,10 @@ export const attributeOptionsWithFilter = ( options, props ) => {
 	return applyFilters( 'srfm.block.attributes.panel.body', options, props );
 };
 
+export const singleFormOptionsWithFilter = ( options, props ) => {
+	return applyFilters( 'srfm.singleForm.settings', options, props );
+};
+
 /**
  * Enhances the dropdown options with the provided filter.
  *

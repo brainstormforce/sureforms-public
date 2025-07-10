@@ -15,6 +15,7 @@ import {
 import { Copy, PenLine, Trash } from 'lucide-react';
 import TabContentWrapper from '@Components/tab-content-wrapper';
 import { cn } from '@Utils/Helpers';
+import { applyFilters, doAction } from '@wordpress/hooks';
 
 const CustomButton = forwardRef(
 	(
@@ -57,8 +58,13 @@ const EmailNotification = ( {
 	const handleEdit = ( data ) => {
 		setShowConfirmation( true );
 		setCurrData( data );
+
+		doAction( 'srfm_email_notification_updated', data );
+
 	};
 	const handleDelete = ( data ) => {
+
+		doAction( 'srfm_email_notification_deleted', data );
 		const filterData = emailNotificationData.filter(
 			( el ) => el.id !== data.id
 		);
@@ -68,6 +74,7 @@ const EmailNotification = ( {
 			__( 'Email Notification deleted successfully.', 'sureforms' ),
 			{ duration: 500 }
 		);
+
 	};
 	const handleDuplicate = ( data ) => {
 		const duplicateData = { ...data };
@@ -227,6 +234,11 @@ const EmailNotification = ( {
 			</>
 		);
 	}
+
+	const attachNecassaryHooks = applyFilters(
+		'srfm_email_notification_loaded',
+		[]
+	);
 
 	return (
 		<TabContentWrapper
@@ -403,6 +415,9 @@ const EmailNotification = ( {
 						} ) }
 				</Table.Body>
 			</Table>
+				{ attachNecassaryHooks.map(
+								( option ) => option.component
+							) }
 		</TabContentWrapper>
 	);
 };
