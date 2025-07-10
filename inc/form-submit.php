@@ -1056,7 +1056,7 @@ class Form_Submit {
 			}
 
 			/**
-			 * Todo: Refactor array value handling.
+			 * Need to remove this refactor array value handling.
 			 *
 			 * The current array-based value handling needs to be replaced with:
 			 * 1. Block-specific value processing based on block type.
