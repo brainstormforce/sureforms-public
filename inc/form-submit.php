@@ -586,78 +586,6 @@ class Form_Submit {
 	}
 
 	/**
-	 * Process and sanitize SureForms field data from submitted form data.
-	 *
-	 * @param array $form_data Raw form data from submission.
-	 *
-	 * @since x.x.x
-	 * @return array Processed and sanitized submission data.
-	 */
-	private function process_form_fields( $form_data ) {
-		$submission_data = [];
-
-		$form_data_keys  = array_keys( $form_data );
-		$form_data_count = count( $form_data );
-
-		for ( $i = 0; $i < $form_data_count; $i++ ) {
-			$key = strval( $form_data_keys[ $i ] );
-
-			/**
-			 * This will allow to pass only sureforms fields
-			 * checking -lbl- as thats mandatory for in key of sureforms fields.
-			 */
-			if ( false === str_contains( $key, '-lbl-' ) ) {
-				continue;
-			}
-
-			$value = $form_data[ $key ];
-
-			$field_name = htmlspecialchars( str_replace( '_', ' ', $key ) );
-
-			$field_block_name = implode(
-				'-',
-				array_slice( explode( '-', explode( '-lbl-', $field_name )[0] ), 0, 2 )
-			);
-
-			$process_field_value = apply_filters( 'srfm_process_field_value', $value, $field_name, $field_block_name );
-
-			if ( ! empty( $process_field_value['is_processed'] ) ) {
-				$submission_data[ $field_name ] = $process_field_value['value'];
-				continue;
-			}
-
-			/**
-			 * Todo: Refactor array value handling.
-			 *
-			 * The current array-based value handling needs to be replaced with:
-			 * 1. Block-specific value processing based on block type.
-			 * 2. Move premium features to pro version.
-			 * 3. Implement value processing through filters for extensibility.
-			 *
-			 * This will improve code organization and maintainability while properly
-			 * separating free/pro functionality.
-			 */
-
-			// If the field is an array, encode the values. This is to add support for multi-upload field.
-			if ( is_array( $value ) ) {
-				$submission_data[ $field_name ] =
-					array_map(
-						static function ( $val ) {
-							return rawurlencode( $val );
-						},
-						$value
-					);
-			} else {
-				$submission_data[ $field_name ] = htmlspecialchars( $value );
-			}
-		}
-
-		$submission_data = apply_filters( 'srfm_before_prepare_submission_data', $submission_data );
-
-		return $submission_data;
-	}
-
-	/**
 	 * Prepare submission data.
 	 *
 	 * @param array<mixed> $submission_data Submission data.
@@ -1084,6 +1012,76 @@ class Form_Submit {
 			'log_message' => $detail_message, // This variable is used for logging purposes, such as displaying detailed error information in the console on the front end.
 			'message'     => $message,
 		];
+	}
+
+	/**
+	 * Process and sanitize SureForms field data from submitted form data.
+	 *
+	 * @param array<mixed> $form_data Raw form data from submission.
+	 *
+	 * @since x.x.x
+	 * @return array Processed and sanitized submission data.
+	 */
+	private function process_form_fields( $form_data ) {
+		$submission_data = [];
+
+		$form_data_keys  = array_keys( $form_data );
+		$form_data_count = count( $form_data );
+
+		for ( $i = 0; $i < $form_data_count; $i++ ) {
+			$key = strval( $form_data_keys[ $i ] );
+
+			/**
+			 * This will allow to pass only sureforms fields
+			 * checking -lbl- as thats mandatory for in key of sureforms fields.
+			 */
+			if ( false === str_contains( $key, '-lbl-' ) ) {
+				continue;
+			}
+
+			$value = $form_data[ $key ];
+
+			$field_name = htmlspecialchars( str_replace( '_', ' ', $key ) );
+
+			$field_block_name = implode(
+				'-',
+				array_slice( explode( '-', explode( '-lbl-', $field_name )[0] ), 0, 2 )
+			);
+
+			$process_field_value = apply_filters( 'srfm_process_field_value', $value, $field_name, $field_block_name );
+
+			if ( ! empty( $process_field_value['is_processed'] ) ) {
+				$submission_data[ $field_name ] = $process_field_value['value'];
+				continue;
+			}
+
+			/**
+			 * Todo: Refactor array value handling.
+			 *
+			 * The current array-based value handling needs to be replaced with:
+			 * 1. Block-specific value processing based on block type.
+			 * 2. Move premium features to pro version.
+			 * 3. Implement value processing through filters for extensibility.
+			 *
+			 * This will improve code organization and maintainability while properly
+			 * separating free/pro functionality.
+			 */
+
+			// If the field is an array, encode the values. This is to add support for multi-upload field.
+			if ( is_array( $value ) ) {
+				$submission_data[ $field_name ] =
+					array_map(
+						static function ( $val ) {
+							return rawurlencode( $val );
+						},
+						$value
+					);
+			} else {
+				$submission_data[ $field_name ] = is_string( $value ) ? htmlspecialchars( $value ) : $value;
+			}
+		}
+
+		return apply_filters( 'srfm_before_prepare_submission_data', $submission_data );
 	}
 
 	/**
