@@ -246,7 +246,8 @@ const PremiumFeatures = () => {
 		useOnboardingNavigation();
 
 	// Get current active pro version if available
-	const currentProVersion = srfm_admin?.is_pro_active && srfm_admin?.pro_plugin_name || '';
+	const currentProVersion =
+		( srfm_admin?.is_pro_active && srfm_admin?.pro_plugin_name ) || '';
 	const hasProVersion = currentProVersion.includes( 'SureForms' );
 
 	// Extract plan name if pro version exists
