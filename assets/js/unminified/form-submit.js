@@ -185,6 +185,18 @@ async function submitFormData( form ) {
 			}
 		}
 
+		const shouldSkipField = applyFilters( 'srfm.shouldSkipField', false, {
+			key,
+			value,
+			form,
+		} );
+
+		console.log( 'shouldSkipField->', {key, value, shouldSkipField} );
+
+		if ( shouldSkipField ) {
+			continue;
+		}
+
 		// Append the (possibly modified) key-value pair to filteredFormData
 		filteredFormData.append( key, value );
 	}
