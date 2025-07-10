@@ -9443,16 +9443,6 @@ namespace SRFM\Inc {
         {
         }
         /**
-         * Change the upload directory
-         *
-         * @param array<mixed> $dirs upload directory.
-         * @return array<mixed>
-         * @since 0.0.1
-         */
-        public function change_upload_dir($dirs)
-        {
-        }
-        /**
          * Send Email and Create Entry.
          *
          * @param array<string> $form_data Request object or array containing form data.

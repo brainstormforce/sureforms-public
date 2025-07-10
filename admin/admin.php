@@ -39,7 +39,7 @@ class Admin {
 		add_action( 'admin_menu', [ $this, 'settings_page' ] );
 		add_action( 'admin_menu', [ $this, 'add_new_form' ] );
 		add_action( 'admin_menu', [ $this, 'add_suremail_page' ] );
-		if ( ! defined( 'SRFM_PRO_VER' ) ) {
+		if ( ! Helper::has_pro() ) {
 			add_action( 'admin_menu', [ $this, 'add_upgrade_to_pro' ] );
 			add_action( 'admin_footer', [ $this, 'add_upgrade_to_pro_target_attr' ] );
 		}
@@ -97,7 +97,7 @@ class Admin {
 	 * @since 1.4.2
 	 */
 	public function add_action_links( $links ) {
-		if ( ! defined( 'SRFM_PRO_FILE' ) && ! file_exists( WP_PLUGIN_DIR . '/sureforms-pro/sureforms-pro.php' ) ) {
+		if ( ! Helper::has_pro() ) {
 			// Display upsell link if SureForms Pro is not installed.
 			$upsell_link = add_query_arg(
 				[
@@ -438,10 +438,8 @@ class Admin {
 		global $menu;
 		foreach ( $menu as $index => $item ) {
 			if ( isset( $item[2] ) && 'sureforms_menu' === $item[2] ) {
-				$menu[ $index ][0] .= sprintf( // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- Adding notifications for menu item.
-					' <span class="update-plugins count-%1$d"><span class="plugin-count">%1$d</span></span>',
-					absint( $new_entries )
-				);
+				// phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- Adding notifications for menu item.
+				$menu[ $index ][0] .= ' <span class="srfm-update-dot"></span>';
 				break;
 			}
 		}
@@ -619,9 +617,9 @@ class Admin {
 			'sureforms_dashboard_url' => admin_url( '/admin.php?page=sureforms_menu' ),
 			'plugin_version'          => SRFM_VER,
 			'global_settings_nonce'   => current_user_can( 'manage_options' ) ? wp_create_nonce( 'wp_rest' ) : '',
-			'is_pro_active'           => defined( 'SRFM_PRO_VER' ),
-			'pro_plugin_version'      => defined( 'SRFM_PRO_VER' ) ? SRFM_PRO_VER : '',
-			'pro_plugin_name'         => defined( 'SRFM_PRO_VER' ) && defined( 'SRFM_PRO_PRODUCT' ) ? SRFM_PRO_PRODUCT : 'SureForms Pro',
+			'is_pro_active'           => Helper::has_pro(),
+			'pro_plugin_version'      => Helper::has_pro() ? SRFM_PRO_VER : '',
+			'pro_plugin_name'         => Helper::has_pro() && defined( 'SRFM_PRO_PRODUCT' ) ? SRFM_PRO_PRODUCT : 'SureForms Pro',
 			'sureforms_pricing_page'  => Helper::get_sureforms_website_url( 'pricing' ),
 			'field_spacing_vars'      => Helper::get_css_vars(),
 			'is_ver_lower_than_6_7'   => version_compare( $wp_version, '6.6.2', '<=' ),
@@ -835,7 +833,7 @@ class Admin {
 					'new_template_picker_base_url' => admin_url( 'post-new.php?post_type=sureforms_form' ),
 					'capability'                   => current_user_can( 'edit_posts' ),
 					'template_picker_nonce'        => current_user_can( 'edit_posts' ) ? wp_create_nonce( 'wp_rest' ) : '',
-					'is_pro_active'                => defined( 'SRFM_PRO_VER' ),
+					'is_pro_active'                => Helper::has_pro(),
 					'srfm_ai_usage_details'        => AI_Helper::get_current_usage_details(),
 					'is_pro_license_active'        => AI_Helper::is_pro_license_active(),
 					'srfm_ai_auth_user_email'      => get_option( 'srfm_ai_auth_user_email' ),
@@ -1000,8 +998,7 @@ class Admin {
 	 * @since 1.0.4
 	 */
 	public function srfm_pro_version_compatibility() {
-		$plugin_file = 'sureforms-pro/sureforms-pro.php';
-		if ( ! is_plugin_active( $plugin_file ) || ! defined( 'SRFM_PRO_VER' ) ) {
+		if ( ! Helper::has_pro() ) {
 			return;
 		}
 
@@ -1082,7 +1079,7 @@ class Admin {
 	 * Enqueueus the admin pointer script and styles.
 	 *
 	 * @return void
-	 * @since x.x.x
+	 * @since 1.8.0
 	 */
 	public function enqueue_admin_pointer() {
 		if ( ! $this->is_admin_pointer_visible() ) {
@@ -1111,7 +1108,7 @@ class Admin {
 	 * Ajax handler for pointer popup visibility.
 	 *
 	 * @return void
-	 * @since x.x.x
+	 * @since 1.8.0
 	 */
 	public function pointer_should_show() {
 		// Security: Check user capability.
@@ -1149,7 +1146,7 @@ class Admin {
 	 * Ajax callback for pointer popup dismissed action.
 	 *
 	 * @return void
-	 * @since x.x.x
+	 * @since 1.8.0
 	 */
 	public function pointer_dismissed() {
 		// Security: Check user capability.
@@ -1170,7 +1167,7 @@ class Admin {
 	 * Ajax pointer accepted CTA callback.
 	 *
 	 * @return void
-	 * @since x.x.x
+	 * @since 1.8.0
 	 */
 	public function pointer_accepted_cta() {
 		// Security: Check user capability.
@@ -1190,7 +1187,7 @@ class Admin {
 	/**
 	 * Determine if the admin pointer should be visible on this page.
 	 *
-	 * @since x.x.x
+	 * @since 1.8.0
 	 * @return bool
 	 */
 	private function is_admin_pointer_visible() {

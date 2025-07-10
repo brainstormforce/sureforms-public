@@ -84,6 +84,14 @@ abstract class Base {
 	private $caches = [];
 
 	/**
+	 * Allowed operators for the database.
+	 *
+	 * @var array<string>
+	 * @since 1.8.0
+	 */
+	private $allowed_where_operators = [ 'LIKE', 'IN', '=', '!=', '>', '<', '>=', '<=' ];
+
+	/**
 	 * Init class.
 	 *
 	 * @since 0.0.10
@@ -734,6 +742,11 @@ abstract class Base {
 				if ( is_int( $key ) ) {
 					foreach ( $value as $_key => $_value ) {
 						if ( is_int( $_key ) ) {
+							// Check if the operator is allowed.
+							if ( ! in_array( $_value['compare'], $this->allowed_where_operators, true ) ) {
+								continue;
+							}
+
 							switch ( $_value['compare'] ) {
 								case 'LIKE':
 									$where   .= ' ' . $_value['key'] . ' ' . $_value['compare'] . ' "%%' . $this->get_format_by_datatype( Helper::get_string_value( $schema[ $_value['key'] ]['type'] ) ) . '%%" ' . $relation;
@@ -869,6 +882,7 @@ abstract class Base {
 	 *               - 'number': Encoded as an integer.
 	 *               - 'boolean': Encoded as a boolean.
 	 *               - 'array': Encoded as a JSON string.
+	 * @since 1.8.0  - 'datetime': Returns the value as it is, assuming it is already in SQL DATETIME format.
 	 */
 	protected function encode_by_datatype( $value, $type ) {
 		switch ( $type ) {
@@ -884,6 +898,10 @@ abstract class Base {
 			case 'array':
 				// Lets json_encode array values instead of serializing it.
 				return Helper::encode_json( Helper::get_array_value( $value ) );
+
+			case 'datetime':
+				// For datetime, we will return the value as it is because we are using sql DATETIME format.
+				return $value;
 		}
 	}
 }
