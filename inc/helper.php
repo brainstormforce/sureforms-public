@@ -937,7 +937,7 @@ class Helper {
 	public static function render_missing_sitekey_error( $provider_name ) {
 		$icon = self::fetch_svg( 'info_circle', '', 'aria-hidden="true"' );
 		?>
-		<p id="sitekey-error" class="srfm-common-error-message srfm-error-message" hidden="false">
+		<p id="sitekey-error" class="srfm-common-error-message srfm-error-message">
 			<?php echo wp_kses( $icon, self::$allowed_tags_svg ); ?>
 			<span class="srfm-error-content">
 				<?php
