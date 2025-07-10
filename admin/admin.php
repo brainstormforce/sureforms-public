@@ -38,7 +38,7 @@ class Admin {
 		add_action( 'admin_menu', [ $this, 'settings_page' ] );
 		add_action( 'admin_menu', [ $this, 'add_new_form' ] );
 		add_action( 'admin_menu', [ $this, 'add_suremail_page' ] );
-		if ( ! defined( 'SRFM_PRO_VER' ) ) {
+		if ( ! Helper::has_pro() ) {
 			add_action( 'admin_menu', [ $this, 'add_upgrade_to_pro' ] );
 			add_action( 'admin_footer', [ $this, 'add_upgrade_to_pro_target_attr' ] );
 		}
@@ -80,6 +80,12 @@ class Admin {
 			add_action( 'admin_menu', [ $this, 'maybe_add_entries_badge' ], 99 );
 		}
 		add_filter( 'wpforms_current_user_can', [ $this, 'disable_wpforms_capabilities' ], 10, 3 );
+
+		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_admin_pointer' ] );
+		// Ajax callbacks for wp-pointer functionality.
+		add_action( 'wp_ajax_should_show_pointer', [ $this, 'pointer_should_show' ] );
+		add_action( 'wp_ajax_sureforms_dismiss_pointer', [ $this, 'pointer_dismissed' ] );
+		add_action( 'wp_ajax_sureforms_accept_cta', [ $this, 'pointer_accepted_cta' ] );
 	}
 
 	/**
@@ -90,7 +96,7 @@ class Admin {
 	 * @since 1.4.2
 	 */
 	public function add_action_links( $links ) {
-		if ( ! defined( 'SRFM_PRO_FILE' ) && ! file_exists( WP_PLUGIN_DIR . '/sureforms-pro/sureforms-pro.php' ) ) {
+		if ( ! Helper::has_pro() ) {
 			// Display upsell link if SureForms Pro is not installed.
 			$upsell_link = add_query_arg(
 				[
@@ -431,10 +437,8 @@ class Admin {
 		global $menu;
 		foreach ( $menu as $index => $item ) {
 			if ( isset( $item[2] ) && 'sureforms_menu' === $item[2] ) {
-				$menu[ $index ][0] .= sprintf( // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- Adding notifications for menu item.
-					' <span class="update-plugins count-%1$d"><span class="plugin-count">%1$d</span></span>',
-					absint( $new_entries )
-				);
+				// phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- Adding notifications for menu item.
+				$menu[ $index ][0] .= ' <span class="srfm-update-dot"></span>';
 				break;
 			}
 		}
@@ -611,9 +615,9 @@ class Admin {
 			'sureforms_dashboard_url' => admin_url( '/admin.php?page=sureforms_menu' ),
 			'plugin_version'          => SRFM_VER,
 			'global_settings_nonce'   => current_user_can( 'manage_options' ) ? wp_create_nonce( 'wp_rest' ) : '',
-			'is_pro_active'           => defined( 'SRFM_PRO_VER' ),
-			'pro_plugin_version'      => defined( 'SRFM_PRO_VER' ) ? SRFM_PRO_VER : '',
-			'pro_plugin_name'         => defined( 'SRFM_PRO_VER' ) && defined( 'SRFM_PRO_PRODUCT' ) ? SRFM_PRO_PRODUCT : 'SureForms Pro',
+			'is_pro_active'           => Helper::has_pro(),
+			'pro_plugin_version'      => Helper::has_pro() ? SRFM_PRO_VER : '',
+			'pro_plugin_name'         => Helper::has_pro() && defined( 'SRFM_PRO_PRODUCT' ) ? SRFM_PRO_PRODUCT : 'SureForms Pro',
 			'sureforms_pricing_page'  => Helper::get_sureforms_website_url( 'pricing' ),
 			'field_spacing_vars'      => Helper::get_css_vars(),
 			'is_ver_lower_than_6_7'   => version_compare( $wp_version, '6.6.2', '<=' ),
@@ -824,11 +828,12 @@ class Admin {
 					'new_template_picker_base_url' => admin_url( 'post-new.php?post_type=sureforms_form' ),
 					'capability'                   => current_user_can( 'edit_posts' ),
 					'template_picker_nonce'        => current_user_can( 'edit_posts' ) ? wp_create_nonce( 'wp_rest' ) : '',
-					'is_pro_active'                => defined( 'SRFM_PRO_VER' ),
+					'is_pro_active'                => Helper::has_pro(),
 					'srfm_ai_usage_details'        => AI_Helper::get_current_usage_details(),
 					'is_pro_license_active'        => AI_Helper::is_pro_license_active(),
 					'srfm_ai_auth_user_email'      => get_option( 'srfm_ai_auth_user_email' ),
 					'pricing_page_url'             => Helper::get_sureforms_website_url( 'pricing' ),
+					'licensing_nonce'              => wp_create_nonce( 'srfm_pro_licensing_nonce' ),
 				]
 			);
 
@@ -988,8 +993,7 @@ class Admin {
 	 * @since 1.0.4
 	 */
 	public function srfm_pro_version_compatibility() {
-		$plugin_file = 'sureforms-pro/sureforms-pro.php';
-		if ( ! is_plugin_active( $plugin_file ) || ! defined( 'SRFM_PRO_VER' ) ) {
+		if ( ! Helper::has_pro() ) {
 			return;
 		}
 
@@ -1064,5 +1068,140 @@ class Admin {
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$post_type = $post_id ? get_post_type( $post_id ) : sanitize_text_field( wp_unslash( $_REQUEST['post_type'] ?? '' ) );
 		return SRFM_FORMS_POST_TYPE === $post_type ? false : $user_can;
+	}
+
+	/**
+	 * Enqueueus the admin pointer script and styles.
+	 *
+	 * @return void
+	 * @since 1.8.0
+	 */
+	public function enqueue_admin_pointer() {
+		if ( ! $this->is_admin_pointer_visible() ) {
+			return;
+		}
+		wp_enqueue_style( 'wp-pointer' );
+		wp_enqueue_script( 'wp-pointer' );
+		wp_enqueue_script(
+			'sureforms-admin-pointer',
+			plugins_url( 'admin/assets/js/sureforms-pointer.js', SRFM_FILE ),
+			[ 'wp-pointer', 'jquery' ],
+			SRFM_VER,
+			true
+		);
+		wp_localize_script(
+			'sureforms-admin-pointer',
+			'sureformsPointerData',
+			[
+				'ajaxurl'       => admin_url( 'admin-ajax.php' ),
+				'pointer_nonce' => wp_create_nonce( 'sureforms_pointer_action' ),
+			]
+		);
+	}
+
+	/**
+	 * Ajax handler for pointer popup visibility.
+	 *
+	 * @return void
+	 * @since 1.8.0
+	 */
+	public function pointer_should_show() {
+		// Security: Check user capability.
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( [ 'message' => __( 'Unauthorized user.', 'sureforms' ) ], 403 );
+		}
+		// Security: Nonce check.
+		if ( empty( $_POST['pointer_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['pointer_nonce'] ) ), 'sureforms_pointer_action' ) ) {
+			wp_send_json_error( [ 'message' => __( 'Invalid nonce.', 'sureforms' ) ], 403 );
+		}
+
+		$content_markup = sprintf(
+			/* translators: 1: opening span, 2: opening strong (inline), 3: closing strong, 4: closing span, 5: opening strong (block), 6: closing strong */
+			__( '%1$sGet started by %2$sbuilding your first form%3$s.%4$s%5$sExperience the power of our intuitive AI Form Builder%6$s', 'sureforms' ),
+			'<span>',
+			'<strong>',
+			'</strong>',
+			'</span><br/>',
+			'<strong style="font-size:1.1em;">',
+			'</strong>'
+		);
+		wp_send_json(
+			[
+				'show'        => true,
+				'title'       => esc_html( __( 'SureForms is waiting for you!', 'sureforms' ) ),
+				'content'     => wp_kses_post( $content_markup ),
+				'button_text' => esc_html( __( 'Build My First Form', 'sureforms' ) ),
+				'dismiss'     => esc_html( __( 'Dismiss', 'sureforms' ) ),
+				'button_url'  => admin_url( 'admin.php?page=add-new-form' ),
+			]
+		);
+	}
+
+	/**
+	 * Ajax callback for pointer popup dismissed action.
+	 *
+	 * @return void
+	 * @since 1.8.0
+	 */
+	public function pointer_dismissed() {
+		// Security: Check user capability.
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( [ 'message' => __( 'Unauthorized user.', 'sureforms' ) ], 403 );
+		}
+		// Security: Nonce check.
+		if ( empty( $_POST['pointer_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['pointer_nonce'] ) ), 'sureforms_pointer_action' ) ) {
+			wp_send_json_error( [ 'message' => __( 'Invalid nonce.', 'sureforms' ) ], 403 );
+		}
+		// Use Helper to update srfm_options key.
+		Helper::update_srfm_option( 'pointer_popup_dismissed', time() );
+
+		wp_send_json_success();
+	}
+
+	/**
+	 * Ajax pointer accepted CTA callback.
+	 *
+	 * @return void
+	 * @since 1.8.0
+	 */
+	public function pointer_accepted_cta() {
+		// Security: Check user capability.
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( [ 'message' => __( 'Unauthorized user.', 'sureforms' ) ], 403 );
+		}
+		// Security: Nonce check.
+		if ( empty( $_POST['pointer_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['pointer_nonce'] ) ), 'sureforms_pointer_action' ) ) {
+			wp_send_json_error( [ 'message' => __( 'Invalid nonce.', 'sureforms' ) ], 403 );
+		}
+		// Use Helper to update srfm_options key.
+		Helper::update_srfm_option( 'pointer_popup_accepted', time() );
+
+		wp_send_json_success();
+	}
+
+	/**
+	 * Determine if the admin pointer should be visible on this page.
+	 *
+	 * @since 1.8.0
+	 * @return bool
+	 */
+	private function is_admin_pointer_visible() {
+		global $pagenow;
+		$allowed_pages = [ 'index.php', 'options-general.php' ];
+
+		// Do not show if pointer dismissed, accepted, or more than 1 form exists.
+		if (
+			! empty( Helper::get_srfm_option( 'pointer_popup_dismissed' ) )
+			|| ! empty( Helper::get_srfm_option( 'pointer_popup_accepted' ) )
+			|| (int) ( wp_count_posts( SRFM_FORMS_POST_TYPE )->publish ?? 0 ) > 1
+		) {
+			return false;
+		}
+
+		if ( in_array( $pagenow, $allowed_pages, true ) ) {
+			return true;
+		}
+
+		return false;
 	}
 }

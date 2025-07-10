@@ -60,7 +60,7 @@ class Phone_Markup extends Base {
 			<div class="srfm-block-wrap">
 				<input type="tel" class="srfm-input-common srfm-input-<?php echo esc_attr( $this->slug ); ?>" name="<?php echo esc_attr( $this->field_name ); ?>" id="<?php echo esc_attr( $this->unique_slug ); ?>"
 				<?php echo ! empty( $this->aria_described_by ) ? "aria-describedby='" . esc_attr( trim( $this->aria_described_by ) ) . "'" : ''; ?>
-				data-required="<?php echo esc_attr( $this->data_require_attr ); ?>" auto-country="<?php echo esc_attr( $this->auto_country ? 'true' : 'false' ); ?>" value="<?php echo esc_attr( $this->default ); ?>" <?php echo wp_kses_post( $this->placeholder_attr ); ?> data-unique="<?php echo esc_attr( $this->aria_unique ); ?>">
+				data-required="<?php echo esc_attr( $this->data_require_attr ); ?>" aria-required="<?php echo esc_attr( $this->data_require_attr ); ?>" auto-country="<?php echo esc_attr( $this->auto_country ? 'true' : 'false' ); ?>" value="<?php echo esc_attr( $this->default ); ?>" <?php echo wp_kses_post( $this->placeholder_attr ); ?> data-unique="<?php echo esc_attr( $this->aria_unique ); ?>">
 			</div>
 			<div class="srfm-error-wrap">
 				<?php echo wp_kses_post( $this->duplicate_msg_markup ); ?>

@@ -38,6 +38,7 @@ function initializeFormHandlers() {
 			captchaErrorElement,
 			hCaptchaDiv,
 			turnstileDiv,
+			hasLoginBlock,
 		} = extractFormAttributesAndElements( form );
 
 		const hasCaptcha =
@@ -70,6 +71,20 @@ function initializeFormHandlers() {
 				}
 			}
 
+			/**
+			 * Check for the form login completion status.
+			 * If the login is not completed, dispatch a custom event to handle the login request.
+			 * This allows for a two-step process where the login is handled separately before form submission.
+			 */
+			if ( hasLoginBlock && ! form.__loginSuccess ) {
+				const loginEvent = new CustomEvent( 'srfm_login_request', {
+					cancelable: true,
+					detail: { form },
+				} );
+				form.dispatchEvent( loginEvent );
+				return;
+			}
+
 			handleFormSubmission(
 				form,
 				formId,
@@ -86,6 +101,8 @@ function initializeFormHandlers() {
 				hasCaptcha ? turnstileDiv : undefined,
 				hasCaptcha ? captchaErrorElement : undefined
 			);
+			// Set the login completion status to true after form submission.
+			form.__loginSuccess = true;
 		} );
 	}
 }
@@ -179,6 +196,24 @@ async function submitFormData( form ) {
 			JSON.stringify( addresses )
 		);
 	}
+
+	// Allow pro plugins to add additional form data
+	const additionalData = applyFilters(
+		'srfm.prepareAdditionalFormData',
+		{},
+		form
+	);
+	Object.keys( additionalData ).forEach( ( key ) => {
+		if (
+			additionalData[ key ] !== null &&
+			additionalData[ key ] !== undefined
+		) {
+			filteredFormData.append(
+				key,
+				JSON.stringify( additionalData[ key ] )
+			);
+		}
+	} );
 
 	try {
 		return await wp.apiFetch( {
@@ -509,6 +544,7 @@ function extractFormAttributesAndElements( form ) {
 	const captchaErrorElement = form.querySelector( '#captcha-error' );
 	const hCaptchaDiv = form.querySelector( '.h-captcha' );
 	const turnstileDiv = form.querySelector( '.cf-turnstile' );
+	const hasLoginBlock = form.querySelector( '.srfm-login-block' );
 
 	return {
 		formId,
@@ -526,6 +562,7 @@ function extractFormAttributesAndElements( form ) {
 		captchaErrorElement,
 		hCaptchaDiv,
 		turnstileDiv,
+		hasLoginBlock,
 	};
 }
 

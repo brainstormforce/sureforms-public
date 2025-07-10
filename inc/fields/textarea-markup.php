@@ -143,7 +143,7 @@ class Textarea_Markup extends Base {
 					name="<?php echo esc_attr( $this->field_name ); ?>"
 					id="<?php echo esc_attr( $random_id ); ?>"
 					<?php echo ! empty( $this->aria_described_by ) ? "aria-describedby='" . esc_attr( trim( $this->aria_described_by ) ) . "'" : ''; ?>
-					data-required="<?php echo esc_attr( $this->data_require_attr ); ?>" <?php echo wp_kses_post( $this->max_length_attr . '' . $this->rows_attr ); ?> <?php echo wp_kses_post( $this->placeholder_attr ); ?>
+					data-required="<?php echo esc_attr( $this->data_require_attr ); ?>" aria-required="<?php echo esc_attr( $this->data_require_attr ); ?>" <?php echo wp_kses_post( $this->max_length_attr . '' . $this->rows_attr ); ?> <?php echo wp_kses_post( $this->placeholder_attr ); ?>
 					<?php echo $this->is_richtext ? 'data-is-richtext="true"' : ''; ?>
 					<?php echo $this->read_only ? 'readonly' : ''; ?>
 					><?php echo esc_html( $this->default ); ?></textarea>

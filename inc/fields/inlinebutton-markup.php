@@ -119,7 +119,7 @@ class Inlinebutton_Markup extends Base {
 		$this->slug                    = 'inline-button';
 		$this->button_text             = $attributes['buttonText'] ?? '';
 		$this->btn_from_theme          = Helper::get_meta_value( $this->form_id, '_srfm_inherit_theme_button' );
-		$page_break_settings           = defined( 'SRFM_PRO_VER' ) ? get_post_meta( (int) $this->form_id, '_srfm_page_break_settings', true ) : [];
+		$page_break_settings           = Helper::has_pro() ? get_post_meta( (int) $this->form_id, '_srfm_page_break_settings', true ) : [];
 		$page_break_settings           = is_array( $page_break_settings ) ? $page_break_settings : [];
 		$this->is_page_break           = $page_break_settings['is_page_break'] ?? false;
 		$this->captcha_security_type   = Helper::get_meta_value( $this->form_id, '_srfm_captcha_security_type' );
@@ -235,7 +235,7 @@ class Inlinebutton_Markup extends Base {
 
 				$button_attributes = '';
 				if ( 'g-recaptcha' === $this->captcha_security_type && ( 'v2-invisible' === $this->recaptcha_version || 'v3-reCAPTCHA' === $this->recaptcha_version ) ) {
-					$button_attributes = 'recaptcha-type=' . $this->recaptcha_version . ' data-sitekey=' . $this->google_captcha_site_key . ' data-callback="recaptchaCallback"';
+					$button_attributes = 'recaptcha-type=' . $this->recaptcha_version . ' data-sitekey=' . $this->google_captcha_site_key . ' data-callback=recaptchaCallback';
 				}
 				?>
 				<button style="<?php echo esc_attr( $button_style ); ?>" id="srfm-submit-btn" class="<?php echo esc_attr( Helper::join_strings( $srfm_custom_button_classes ) ); ?>" <?php echo esc_attr( $button_attributes ); ?>>
