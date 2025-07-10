@@ -750,7 +750,15 @@ class Entries_List_Table extends \WP_List_Table {
 			array_slice( explode( '-', explode( '-lbl-', $field_name )[0] ), 0, 2 )
 		);
 		// Add the field name from the filter.
-		$set_entry_first_field = apply_filters( 'srfm_set_entry_first_field', '', $first_field, $field_block_name );
+		$set_entry_first_field = apply_filters(
+			'srfm_set_entry_first_field',
+			'',
+			[
+				'field_name'       => $field_name,
+				'field_block_name' => $field_block_name,
+			]
+		);
+
 		if ( ! empty( $set_entry_first_field ) ) {
 			$first_field = $set_entry_first_field;
 		}

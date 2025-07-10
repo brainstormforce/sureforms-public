@@ -1048,7 +1048,14 @@ class Form_Submit {
 				array_slice( explode( '-', explode( '-lbl-', $field_name )[0] ), 0, 2 )
 			);
 
-			$process_field_value = apply_filters( 'srfm_process_field_value', $value, $field_name, $field_block_name );
+			$process_field_value = apply_filters(
+				'srfm_process_field_value',
+				$value,
+				[
+					'field_name'       => $field_name,
+					'field_block_name' => $field_block_name,
+				]
+			);
 
 			if ( ! empty( $process_field_value['is_processed'] ) ) {
 				$submission_data[ $field_name ] = $process_field_value['value'];
