@@ -73,15 +73,14 @@ export const useOnboardingNavigation = () => {
 	};
 
 	const getCurrentStepNumber = () => {
-		const currentIndex = ONBOARDING_ROUTES_CONFIG.findIndex(
-			( route ) => route.url === currentRoute
-		);
-
 		// Adjust step number for business users to account for skipped premium features page
 		if ( hasBusinessPlan() && currentRoute === '/onboarding/done' ) {
 			return 3; // Show as step 3 instead of 4
 		}
 
+		const currentIndex = ONBOARDING_ROUTES_CONFIG.findIndex(
+			( route ) => route.url === currentRoute
+		);
 		return currentIndex + 1;
 	};
 
