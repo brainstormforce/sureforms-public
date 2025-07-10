@@ -745,6 +745,16 @@ class Entries_List_Table extends \WP_List_Table {
 		$first_field     = reset( $form_data );
 		$field_name      = array_keys( $form_data )[0];
 
+		$field_block_name = implode(
+			'-',
+			array_slice( explode( '-', explode( '-lbl-', $field_name )[0] ), 0, 2 )
+		);
+		// Add the field name from the filter.
+		$set_entry_first_field = apply_filters( 'srfm_set_entry_first_field', '', $first_field, $field_block_name );
+		if ( ! empty( $set_entry_first_field ) ) {
+			$first_field = $set_entry_first_field;
+		}
+
 		if ( false !== strpos( $field_name, 'srfm-upload' ) ) {
 			$filenames = [];
 			if ( ! empty( $first_field ) && is_array( $first_field ) ) {
@@ -779,7 +789,7 @@ class Entries_List_Table extends \WP_List_Table {
 			}
 		} else {
 			// Get the first field value directly.
-			$first_field = reset( $item['form_data'] );
+			$first_field = ! empty( $set_entry_first_field ) ? $set_entry_first_field : reset( $item['form_data'] );
 		}
 
 		// Return the first field value in a paragraph element.
