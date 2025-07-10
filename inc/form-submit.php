@@ -456,41 +456,6 @@ class Form_Submit {
 
 		$form_data = apply_filters( 'srfm_before_fields_processing', $form_data );
 
-		// $submission_data = [];
-
-		// $form_data_keys  = array_keys( $form_data );
-		// $form_data_count = count( $form_data );
-
-		// for ( $i = 0; $i < $form_data_count; $i++ ) {
-		// $key = strval( $form_data_keys[ $i ] );
-
-		// **
-		// * This will allow to pass only sureforms fields
-		// * checking -lbl- as thats mandatory for in key of sureforms fields.
-		// */
-		// if ( false === str_contains( $key, '-lbl-' ) ) {
-		// continue;
-		// }
-
-		// $value = $form_data[ $key ];
-
-		// $field_name = htmlspecialchars( str_replace( '_', ' ', $key ) );
-
-		// If the field is an array, encode the values. This is to add support for multi-upload field.
-		// if ( is_array( $value ) ) {
-		// $submission_data[ $field_name ] =
-		// array_map(
-		// static function ( $val ) {
-		// return rawurlencode( $val );
-		// },
-		// $value
-		// );
-		// } else {
-		// $submission_data[ $field_name ] = htmlspecialchars( $value );
-		// }
-		// }
-
-		// $submission_data = apply_filters( 'srfm_before_prepare_submission_data', $submission_data );
 		$submission_data = $this->process_form_fields( $form_data );
 
 		$modified_message = $this->prepare_submission_data( $submission_data );
@@ -662,7 +627,7 @@ class Form_Submit {
 			}
 
 			/**
-			 * todo: Refactor array value handling.
+			 * Todo: Refactor array value handling.
 			 *
 			 * The current array-based value handling needs to be replaced with:
 			 * 1. Block-specific value processing based on block type.

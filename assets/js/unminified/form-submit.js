@@ -185,13 +185,24 @@ async function submitFormData( form ) {
 			}
 		}
 
+		/**
+		 * Filters whether a field should be skipped during form submission.
+		 *
+		 * @since x.x.x
+		 * hook srfm.shouldSkipField
+		 *
+		 * @param {boolean} false            Default value indicating field should not be skipped.
+		 * @param {Object}  filterArgs       Arguments passed to the filter.
+		 * @param {string}  filterArgs.key   The field key/name.
+		 * @param {*}       filterArgs.value The field value.
+		 * @param {Element} filterArgs.form  The form DOM element.
+		 * @return {boolean} Whether to skip the field.
+		 */
 		const shouldSkipField = applyFilters( 'srfm.shouldSkipField', false, {
 			key,
 			value,
 			form,
 		} );
-
-		console.log( 'shouldSkipField->', {key, value, shouldSkipField} );
 
 		if ( shouldSkipField ) {
 			continue;

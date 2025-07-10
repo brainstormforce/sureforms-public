@@ -412,18 +412,25 @@ class Single_Entry {
 							array_slice( explode( '-', explode( '-lbl-', $field_name )[0] ), 0, 2 )
 						);
 
-						do_action( 'srfm_entry_render_field', [
-							'value' => $value,
-							'label' => $field_name,
-							'block_name' => $field_block_name,
-							'processed_label' => $label,
-						] );
+						do_action(
+							'srfm_entry_render_field',
+							[
+								'value'           => $value,
+								'label'           => $field_name,
+								'block_name'      => $field_block_name,
+								'processed_label' => $label,
+							]
+						);
 
-						$should_add_field_row = apply_filters( 'srfm_should_add_field_row', true, [
-							'value' => $value,
-							'field_name' => $field_name,
-							'block_name' => $field_block_name,
-						] );
+						$should_add_field_row = apply_filters(
+							'srfm_should_add_field_row',
+							true,
+							[
+								'value'      => $value,
+								'field_name' => $field_name,
+								'block_name' => $field_block_name,
+							]
+						);
 
 						if ( ! $should_add_field_row ) {
 							continue;
