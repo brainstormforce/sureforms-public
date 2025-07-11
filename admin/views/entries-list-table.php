@@ -1526,22 +1526,4 @@ class Entries_List_Table extends \WP_List_Table {
 
 		return is_array( $field_value ) ? implode( ', ', $field_value ) : $field_value;
 	}
-
-	/**
-	 * Get the entry data before deleting.
-	 *
-	 * @param int $entry_id The ID of the entry to get the data for.
-	 *
-	 * @since x.x.x
-	 * @return void
-	 */
-	private static function get_entry_before_deleting( $entry_id ) {
-		$entry = Entries::get_entry_data( $entry_id );
-		if ( empty( $entry ) ) {
-			return;
-		}
-
-		// Do action to delete the entry files.
-		do_action( 'srfm_before_deleting_entry', $entry );
-	}
 }
