@@ -542,7 +542,7 @@ class Entries extends Base {
 	 * Get the entry data for a specific entry.
 	 *
 	 * @param int $entry_id The ID of the entry to get the entry data for.
-	 * @since x.x.x
+	 * @since 1.8.0
 	 * @return array<string,mixed> An associative array representing the entry's data.
 	 */
 	public static function get_entry_data( $entry_id ) {

@@ -4,7 +4,7 @@ Tags: contact form, custom form, forms, contact form plugin, form builder
 Requires at least: 6.4
 Tested up to: 6.8.1
 Requires PHP: 7.4
-Stable tag: 1.7.4
+Stable tag: 1.8.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -264,15 +264,16 @@ We take plugin security extremely seriously. If you discover a security vulnerab
 You can report the issue through our [Bug Bounty Program](https://brainstormforce.com/bug-bounty-program/). We collaborate with Patchstack to provide opportunities for researchers to report vulnerabilities. The Patchstack team will help validate, triage, and handle any reported security issues.
 
 == Changelog ==
-= x.x.x =
-* Improvement: SureForms entries 'published at' date matches timezone set from WordPress general settings.
+= 1.8.0 - 10th July 2025 =
 * Improvement: Removed HTML support for blocks such as Heading, Image, Separator, and Icon when used inside SureForms, as dynamic blocks do not support HTML editing.
-* Improvement: Resolved an issue where reCAPTCHA was not functioning correctly, ensuring proper verification and user form protection.
-* Fix: Addressed the accessibility issues related to required field announcements.
-* Fix: Resolved a fatal error caused by incorrect InnerBlocks implementation to prevent editor and frontend crashes.
+* Improvement: Resolved an issue where reCAPTCHA was not functioning correctly, ensuring proper verification and improved form security.
+* Improvement: SureForms entries now use the timezone set in WordPress General Settings.
+* Fix: Addressed accessibility issues related to required field announcements.
+* Fix: Corrected the email summary report to display the accurate number of entries for the past week.
 * Fix: Resolved a display issue with form confirmation query parameters on new forms.
+* Fix: Resolved a fatal error from incorrect InnerBlocks usage that caused editor and frontend crashes.
 = 1.7.4 - 30th June 2025 =
-* Fix: Important fixes.
+* Fix: This update addressed a security bug. Please make sure you are using the latest version on your website. Props to Phat RiO from BlueRock and Wordfence for reporting it responsibly to our team.
 = 1.7.3 - 26th June 2025 =
 * New: Introduced admin notifications to keep administrators informed about important updates and announcements.
 * Improvement: Enhanced form initialization with custom event support (srfm_form_initialize) for better compatibility with third-party scripts.
@@ -280,19 +281,6 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 * Fix: Addressed the accessibility issue associated with the Textarea field label.
 * Fix: Elementor popup compatibility by ensuring SureForms scripts properly initialize when forms are displayed within popups.
 * Fix: Shortcode renders form when form is in trash.
-= 1.7.2 - 12th June 2025 =
-* New: Added {current_page_url} smart tag under generic tags.
-* Improvement: Added an option to disable input fields with default values.
-* Fix: Added editor background compatibility with Kadence theme.
-* Fix: This update addressed a security bug. Props to Dmitrii Ignatyev from CleanTalk for reporting it responsibly to our team.
-= 1.7.1 - 9th June 2025 =
-* New: Added rich text support for Textarea field.
-* Improvement: Introduced a 67% width option for form fields, providing enhanced layout flexibility.
-* Improvement: Enhanced reCAPTCHA with detailed failure logging for custom button implementations.
-* Fix: Resolved an issue where dropdown options with long text would display outside their boundaries.
-* Fix: Addressed compatibility issues between Textarea fields and Bricks Builder's Cascade Layers feature.
-* Fix: Eliminated duplicate entry logging that occurred when email notifications were disabled.
-* Fix: Preserved text formatting in form confirmation messages when displayed on the frontend.
 
 The full changelog is available [here](https://sureforms.com/whats-new/).
 
