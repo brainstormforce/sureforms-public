@@ -221,3 +221,8 @@
 		}
 	}
 }
+
+// Compatibility with Bricks Builder
+.wp-theme-kadence .srfm-form-container {
+	height: auto !important;
+}
