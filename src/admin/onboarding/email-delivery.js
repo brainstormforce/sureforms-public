@@ -138,6 +138,14 @@ const EmailDelivery = () => {
 	const handleInstallSureMail = () => {
 		// Check if the plugin exists
 		if ( suremailsPlugin ) {
+			if (
+				localStorage.getItem( 'srfm_suremail_installation_started' ) ===
+				'true'
+			) {
+				// Installation already started, just navigate to next step
+				navigateToNextRoute();
+				return;
+			}
 			// Check if the plugin is already activated or installed.
 			if ( pluginStatus.includes( suremailsPlugin.status ) ) {
 				// If the plugin was already installed before onboarding started,
