@@ -840,7 +840,7 @@ export const decodeJson = ( obj ) => {
  */
 export const deepCopy = ( arrayOrObject ) => {
 	return JSON.parse( JSON.stringify( arrayOrObject, null, 2 ) );
-}
+};
 
 /**
  * Dispatches a custom event responsible for displaying the error message.
