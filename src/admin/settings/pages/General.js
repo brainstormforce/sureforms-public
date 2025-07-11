@@ -87,6 +87,8 @@ const GeneralPage = ( {
 											toast.success( response?.data );
 										} );
 									} catch ( error ) {
+										setSendingTestEmail( false );
+										toast.error( error?.data );
 										console.error(
 											'Error Sending Test Email Summary:',
 											error

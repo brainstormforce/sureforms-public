@@ -185,7 +185,7 @@ class Entries extends Base {
 		$log = [
 			'title'     => Helper::get_string_value( trim( $title ) ),
 			'messages'  => Helper::get_array_value( $messages ),
-			'timestamp' => time(),
+			'timestamp' => current_time( 'timestamp' ), //phpcs:ignore WordPress.DateTime.CurrentTimeTimestamp -- Using current_time() to match the WordPress timezone.
 		];
 
 		$this->logs = array_merge( [ $log ], $this->logs );
@@ -293,6 +293,10 @@ class Entries extends Base {
 	 * @return int|false The number of rows deleted, or false on error.
 	 */
 	public static function delete( $entry_id ) {
+		// Add action before deleting the entry.
+		do_action( 'srfm_before_delete_entry', $entry_id );
+
+		// Delete the entry.
 		return self::get_instance()->use_delete( [ 'ID' => absint( $entry_id ) ], [ '%d' ] );
 	}
 
@@ -532,5 +536,20 @@ class Entries extends Base {
 			'form_data'
 		);
 		return isset( $result[0] ) && is_array( $result[0] ) ? Helper::get_array_value( $result[0]['form_data'] ) : [];
+	}
+
+	/**
+	 * Get the entry data for a specific entry.
+	 *
+	 * @param int $entry_id The ID of the entry to get the entry data for.
+	 * @since 1.8.0
+	 * @return array<string,mixed> An associative array representing the entry's data.
+	 */
+	public static function get_entry_data( $entry_id ) {
+		$result = self::get_instance()->get_results(
+			[ 'ID' => $entry_id ],
+			'form_data, extras'
+		);
+		return isset( $result[0] ) && is_array( $result[0] ) ? $result[0] : [];
 	}
 }

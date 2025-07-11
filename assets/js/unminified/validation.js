@@ -307,49 +307,6 @@ export async function fieldValidation(
 			} );
 		}
 
-		//Password field
-		if ( container.classList.contains( 'srfm-password-block-wrap' ) ) {
-			const parent = container;
-
-			if ( parent ) {
-				const confirmParent = parent.querySelector(
-					'.srfm-password-confirm-block'
-				);
-
-				if ( confirmParent ) {
-					const confirmValue = confirmParent.querySelector(
-						'.srfm-input-password-confirm'
-					).value;
-					const confirmError = confirmParent.querySelector(
-						'.srfm-error-message'
-					);
-
-					if (
-						! confirmValue &&
-						confirmError &&
-						isRequired === 'true'
-					) {
-						confirmError.textContent =
-							confirmError.getAttribute( 'data-error-msg' );
-						window?.srfm?.toggleErrorState( confirmParent, true );
-						// Set the first error input.
-						setFirstErrorInput( confirmValue, confirmParent );
-						validateResult = true;
-					} else if ( confirmValue !== inputValue ) {
-						window?.srfm?.toggleErrorState( confirmParent, true );
-						confirmError.textContent =
-							window?.srfm_submit?.messages?.srfm_confirm_password_same;
-
-						// Set the first error input.
-						setFirstErrorInput( confirmValue, confirmParent );
-						validateResult = true;
-					} else {
-						window?.srfm?.toggleErrorState( confirmParent, false );
-					}
-				}
-			}
-		}
-
 		//Check for email
 		if ( container.classList.contains( 'srfm-email-block-wrap' ) ) {
 			const parent = container;
@@ -795,6 +752,7 @@ export function initializeInlineFieldValidation() {
 		'srfm-textarea-block',
 		'srfm-dropdown-block',
 		'srfm-slider-block',
+		'srfm-password-block',
 	];
 
 	srfmFields.forEach( ( block ) => addBlurListener( block, `.${ block }` ) );

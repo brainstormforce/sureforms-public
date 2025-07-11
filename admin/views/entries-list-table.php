@@ -628,10 +628,6 @@ class Entries_List_Table extends \WP_List_Table {
 				Entries::update( $entry_id, [ 'status' => $action ] );
 				break;
 			case 'delete':
-				// Check is pro plugin is active.
-				if ( defined( 'SRFM_PRO_VER' ) ) {
-					self::delete_entry_files( $entry_id );
-				}
 				Entries::delete( $entry_id );
 				break;
 			default:
@@ -652,41 +648,6 @@ class Entries_List_Table extends \WP_List_Table {
 			);
 		}
 		wp_safe_redirect( $url );
-	}
-
-	/**
-	 * Delete the entry files when an entry is deleted.
-	 *
-	 * @param int $entry_id The ID of the entry to delete files for.
-	 * @since 1.0.2
-	 * @return void
-	 */
-	public static function delete_entry_files( $entry_id ) {
-		if ( ! $entry_id ) {
-			return;
-		}
-		// Get the entry data to get the file URLs.
-		$form_data = Entries::get_form_data( $entry_id );
-		if ( empty( $form_data ) ) {
-			return;
-		}
-		foreach ( $form_data as $field_name => $value ) {
-			// Continue to the next iteration if the field name does not contain 'srfm-upload' and value is not an array.
-			if ( false === strpos( $field_name, 'srfm-upload' ) && ! is_array( $value ) ) {
-				continue;
-			}
-			foreach ( $value as $file_url ) {
-				// If the file URL is empty, skip to the next iteration.
-				if ( empty( $file_url ) ) {
-					continue;
-				}
-				// Delete the file from the uploads directory.
-				Helper::delete_upload_file_from_subdir( $file_url, 'sureforms/' );
-			}
-		}
-
-		// Action to run after deleting the entry files.
-		do_action( 'srfm_after_deleting_entry_files', $form_data, $entry_id );
 	}
 
 	/**

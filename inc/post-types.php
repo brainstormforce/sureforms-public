@@ -963,7 +963,22 @@ class Post_Types {
 							'message'             => isset( $item['message'] ) ? Helper::strip_js_attributes( $item['message'] ) : '',
 							'submission_action'   => isset( $item['submission_action'] ) ? sanitize_text_field( $item['submission_action'] ) : '',
 							'enable_query_params' => isset( $item['enable_query_params'] ) ? filter_var( $item['enable_query_params'], FILTER_VALIDATE_BOOLEAN ) : false,
-							'query_params'        => isset( $item['query_params'] ) ? array_map( 'sanitize_text_field', (array) $item['query_params'] ) : [],
+							'query_params'        => isset( $item['query_params'] ) && is_array( $item['query_params'] )
+								? array_map(
+									static function ( $pair ) {
+										if ( ! is_array( $pair ) ) {
+											return [];
+										}
+										$key   = key( $pair );
+										$value = current( $pair );
+
+										return [
+											sanitize_text_field( Helper::get_string_value( $key ) ) => sanitize_text_field( Helper::get_string_value( $value ) ),
+										];
+									},
+									$item['query_params']
+								)
+								: [],
 						];
 
 						$sanitized_item = apply_filters( 'srfm_form_confirmation_params', $sanitized_item, $item );

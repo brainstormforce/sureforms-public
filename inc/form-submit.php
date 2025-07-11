@@ -73,9 +73,49 @@ class Form_Submit {
 			[
 				'methods'             => WP_REST_Server::EDITABLE,
 				'callback'            => [ $this, 'handle_form_submission' ],
-				'permission_callback' => '__return_true',
+				'permission_callback' => [ $this, 'submit_form_permissions_check' ],
 			]
 		);
+	}
+
+	/**
+	 * Check whether a given request has permission access route.
+	 *
+	 * @param \WP_REST_Request $request Request object or array containing form data.
+	 * @since 1.8.0
+	 * @return WP_Error|bool
+	 */
+	public function submit_form_permissions_check( $request ) {
+		$nonce = Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) );
+
+		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
+			wp_send_json_error(
+				[
+					'message' => __( 'Nonce verification failed.', 'sureforms' ),
+				]
+			);
+		}
+
+		$form_data = Helper::sanitize_by_field_type( $request->get_params() );
+
+		if ( empty( $form_data ) || ! is_array( $form_data ) ) {
+			wp_send_json_error(
+				[
+					'message' => __( 'Form data is not found.', 'sureforms' ),
+				]
+			);
+		}
+
+		if ( ! $form_data['form-id'] ) {
+			wp_send_json_error(
+				[
+					'message'  => __( 'Form Id is missing.', 'sureforms' ),
+					'position' => 'header',
+				]
+			);
+		}
+
+		return true;
 	}
 
 	/**
@@ -200,34 +240,16 @@ class Form_Submit {
 	 * @return \WP_REST_Response|\WP_Error Response object on success, or WP_Error object on failure.
 	 */
 	public function handle_form_submission( $request ) {
-		$nonce = Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) );
-
-		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
-			wp_send_json_error(
-				[
-					'message' => __( 'Nonce verification failed.', 'sureforms' ),
-				]
-			);
-		}
-
+		/**
+		 * All checks are done in submit_form_permissions_check method:
+		 * - Nonce verification
+		 * - Form data validation
+		 * - Form ID validation
+		 *
+		 * @since 1.8.0
+		 */
 		$form_data = Helper::sanitize_by_field_type( $request->get_params() );
 
-		if ( empty( $form_data ) || ! is_array( $form_data ) ) {
-			wp_send_json_error(
-				[
-					'message' => __( 'Form data is not found.', 'sureforms' ),
-				]
-			);
-		}
-
-		if ( ! $form_data['form-id'] ) {
-			wp_send_json_error(
-				[
-					'message'  => __( 'Form Id is missing.', 'sureforms' ),
-					'position' => 'header',
-				]
-			);
-		}
 		$current_form_id       = $form_data['form-id'];
 		$security_type         = Helper::get_meta_value( Helper::get_integer_value( $current_form_id ), '_srfm_captcha_security_type' );
 		$selected_captcha_type = get_post_meta( Helper::get_integer_value( $current_form_id ), '_srfm_form_recaptcha', true ) ? Helper::get_string_value( get_post_meta( Helper::get_integer_value( $current_form_id ), '_srfm_form_recaptcha', true ) ) : '';
@@ -260,7 +282,7 @@ class Form_Submit {
 		if ( 'cf-turnstile' === $security_type ) {
 			// Turnstile validation.
 			$srfm_cf_turnstile_secret_key = is_array( $global_setting_options ) && isset( $global_setting_options['srfm_cf_turnstile_secret_key'] ) ? Helper::get_string_value( $global_setting_options['srfm_cf_turnstile_secret_key'] ) : '';
-			$cf_response                  = ! empty( $form_data['cf-turnstile-response'] ) ? $form_data['cf-turnstile-response'] : false;
+			$cf_response                  = ! empty( $form_data['cf-turnstile-response'] ) && is_string( $form_data['cf-turnstile-response'] ) ? $form_data['cf-turnstile-response'] : '';
 
 			// if gdpr is enabled then set remote ip to empty.
 			$compliance = get_post_meta( Helper::get_integer_value( $current_form_id ), '_srfm_compliance', true );
@@ -286,7 +308,7 @@ class Form_Submit {
 
 		if ( 'hcaptcha' === $security_type ) {
 			$srfm_hcaptcha_secret_key = is_array( $global_setting_options ) && isset( $global_setting_options['srfm_hcaptcha_secret_key'] ) ? Helper::get_string_value( $global_setting_options['srfm_hcaptcha_secret_key'] ) : '';
-			$hcaptcha_response        = ! empty( $form_data['h-captcha-response'] ) ? $form_data['h-captcha-response'] : false;
+			$hcaptcha_response        = ! empty( $form_data['h-captcha-response'] ) && is_string( $form_data['h-captcha-response'] ) ? $form_data['h-captcha-response'] : '';
 
 			// if gdpr is enabled then set remote ip to empty.
 			$compliance = get_post_meta( Helper::get_integer_value( $current_form_id ), '_srfm_compliance', true );
@@ -387,20 +409,6 @@ class Form_Submit {
 	}
 
 	/**
-	 * Change the upload directory
-	 *
-	 * @param array<mixed> $dirs upload directory.
-	 * @return array<mixed>
-	 * @since 0.0.1
-	 */
-	public function change_upload_dir( $dirs ) {
-		$dirs['subdir'] = '/sureforms';
-		$dirs['path']   = $dirs['basedir'] . $dirs['subdir'];
-		$dirs['url']    = $dirs['baseurl'] . $dirs['subdir'];
-		return $dirs;
-	}
-
-	/**
 	 * Send Email and Create Entry.
 	 *
 	 * @param array<string> $form_data Request object or array containing form data.
@@ -408,91 +416,20 @@ class Form_Submit {
 	 * @return array<mixed> Array containing the response data.
 	 */
 	public function handle_form_entry( $form_data ) {
-		$is_error = false;
-		if ( defined( 'SRFM_PRO_VER' ) && isset( $_SERVER['REQUEST_METHOD'] ) && 'POST' === $_SERVER['REQUEST_METHOD'] && ! empty( $_FILES ) ) {
-			add_filter( 'upload_dir', [ $this, 'change_upload_dir' ] );
-
-			// Get the file types.
-			$file_types = Helper::get_wp_file_types();
-
-			// Get the allowed file types.
-			$allowed_file_types = $file_types['formats'];
-
-			// Allowed file types should be array.
-			if ( ! is_array( $allowed_file_types ) ) {
-				$is_error = true;
-				wp_send_json_error(
-					[
-						'message' => __( 'File types are not allowed', 'sureforms' ),
-					]
-				);
-			}
-
-			foreach ( $_FILES as $field => $file ) {
-				if ( is_array( $file['name'] ) ) {
-					foreach ( $file['name'] as $key => $filename ) {
-						$temp_path  = $file['tmp_name'][ $key ];
-						$file_size  = $file['size'][ $key ];
-						$file_type  = $file['type'][ $key ];
-						$file_error = $file['error'][ $key ];
-
-						if ( ! $filename && ! $temp_path && ! $file_size && ! $file_type ) {
-							$form_data[ $field ][] = '';
-							continue;
-						}
-
-						// Check if the file type is allowed.
-						$get_file_type = explode( '/', $file_type );
-
-						// Check isset $get_file_type[1] it should be string.
-						if ( ! isset( $get_file_type[1] ) ) {
-							$is_error = true;
-							continue;
-						}
-
-						// $get_file_type[1] should be string.
-						if ( ! is_string( $get_file_type[1] ) ) {
-							$is_error = true;
-							continue;
-						}
-
-						// Check if the file type is allowed.
-						if ( ! in_array( $get_file_type[1], $allowed_file_types, true ) ) {
-							$is_error = true;
-							continue;
-						}
-
-						$uploaded_file = [
-							'name'     => sanitize_file_name( $filename ),
-							'type'     => $file_type,
-							'tmp_name' => $temp_path,
-							'error'    => $file_error,
-							'size'     => $file_size,
-						];
-
-						$upload_overrides = [
-							'test_form' => false,
-						];
-						$move_file        = wp_handle_upload( $uploaded_file, $upload_overrides );
-						remove_filter( 'upload_dir', [ $this, 'change_upload_dir' ] );
-
-						if ( $move_file && ! isset( $move_file['error'] ) ) {
-							$form_data[ $field ][] = $move_file['url'];
-						} else {
-							$is_error = true;
-							continue;
-						}
-					}
-				} else {
-					$form_data[ $field ][] = '';
-				}
-			}
-		}
-
-		if ( $is_error ) {
+		// Filter the form data.
+		$form_data = apply_filters( 'srfm_form_submit_data', $form_data );
+		if ( empty( $form_data ) || ! is_array( $form_data ) ) {
 			wp_send_json_error(
 				[
-					'message' => __( 'File is not uploaded', 'sureforms' ),
+					'message'  => __( 'Form data is not found.', 'sureforms' ),
+					'position' => 'header',
+				]
+			);
+		} elseif ( isset( $form_data['error'] ) ) {
+			wp_send_json_error(
+				[
+					'message'  => is_string( $form_data['error'] ) ? $form_data['error'] : __( 'Form data is not found.', 'sureforms' ),
+					'position' => 'header',
 				]
 			);
 		}
@@ -516,6 +453,8 @@ class Form_Submit {
 			// Remove the address data from the form data to avoid redundancy.
 			unset( $form_data['srfm_addresses'] );
 		}
+
+		$form_data = apply_filters( 'srfm_before_fields_processing', $form_data );
 
 		$submission_data = [];
 
@@ -636,6 +575,7 @@ class Form_Submit {
 			'form_id'         => $id,
 			'form_data'       => $submission_data,
 			'submission_info' => $submission_info,
+			'created_at'      => current_time( 'mysql' ),
 		];
 		if ( is_user_logged_in() ) {
 			// If user is logged in then save their user id.
@@ -721,7 +661,7 @@ class Form_Submit {
 			}
 		}
 
-		return $modified_message;
+		return apply_filters( 'srfm_update_prepared_submission_data', $modified_message );
 	}
 
 	/**
