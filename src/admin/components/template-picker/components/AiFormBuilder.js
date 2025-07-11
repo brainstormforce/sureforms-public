@@ -74,6 +74,14 @@ const AiFormBuilder = () => {
 			} );
 
 			if ( response ) {
+				// If the response contains an error code, handle it.
+				if ( response && response?.code === 'invalid_json' ) {
+					setShowFormCreationErr( true );
+					setMessage(
+						__( 'Invalid JSON response from AI', 'sureforms' )
+					);
+					return;
+				}
 				setMessage(
 					__( 'Just doing some final touches…', 'sureforms' )
 				);
