@@ -53,6 +53,7 @@ class Admin {
 
 		add_action( 'current_screen', [ $this, 'enable_gutenberg_for_sureforms' ], 100 );
 		add_action( 'admin_notices', [ $this, 'srfm_pro_version_compatibility' ] );
+		add_action( 'admin_notices', [ $this, 'add_smtp_warning_notice' ] );
 
 		// Handle entry actions.
 		add_action( 'admin_init', [ $this, 'handle_entry_actions' ] );
@@ -1043,6 +1044,59 @@ class Admin {
 		if ( ! empty( $message ) ) {
 			// Phpcs ignore comment is required as $message variable is already escaped.
 			echo '<div class="notice notice-warning">' . wp_kses_post( $message ) . '</div>';
+		}
+	}
+
+	/**
+	 * Add SMTP warning admin notice if no SMTP plugin is active
+	 *
+	 * Hooked - admin_notices
+	 *
+	 * @return void
+	 * @since x.x.x
+	 */
+	public function add_smtp_warning_notice() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+		// Only show on dashboard or SureForms admin pages
+		$screen = get_current_screen();
+		if ( ! $screen || ( strpos( $screen->id, 'sureforms' ) === false && $screen->id !== 'dashboard' ) ) {
+			return;
+		}
+		// Dismiss logic
+		if ( isset( $_GET['srfm_dismiss_smtp_notice'] ) && $_GET['srfm_dismiss_smtp_notice'] === '1' ) {
+			update_user_meta( get_current_user_id(), 'srfm_dismiss_smtp_notice', 1 );
+			return;
+		}
+		if ( get_user_meta( get_current_user_id(), 'srfm_dismiss_smtp_notice', true ) ) {
+			return;
+		}
+		// Determine SureMail plugin status and link.
+		$plugin_file = 'suremails/suremails.php';
+		if ( file_exists( WP_PLUGIN_DIR . '/suremails/suremails.php' ) && is_plugin_active( $plugin_file ) ) {
+			// SureMail is active, do not show the notice.
+			return;
+		}
+		if ( ! Helper::is_any_smtp_plugin_active() ) {
+			if ( file_exists( WP_PLUGIN_DIR . '/suremails/suremails.php' ) ) {
+				if ( is_plugin_active( $plugin_file ) ) {
+					$suremail_url = admin_url( 'options-general.php?page=suremail#/dashboard' );
+				} else {
+					$suremail_url = wp_nonce_url( admin_url( 'plugins.php?action=activate&plugin=' . $plugin_file ), 'activate-plugin_' . $plugin_file );
+				}
+			} else {
+				$suremail_url = admin_url( 'plugin-install.php?s=suremail&tab=search&type=term' );
+			}
+			$dismiss_url = add_query_arg( 'srfm_dismiss_smtp_notice', '1' );
+			echo '<div class="notice notice-warning is-dismissible srfm-smtp-warning"><p>';
+			echo esc_html__( 'We were not able to detect any SMTP plugin activated on your site. This may affect email delivery for SureForms.', 'sureforms' );
+			echo '<br />';
+			echo esc_html__( 'We suggest using', 'sureforms' ) . ' ';
+			echo '<a href="' . esc_url( $suremail_url ) . '" target="_blank">SureMail</a>';
+			echo esc_html__( ' for smooth email delivery.', 'sureforms' );
+			echo ' <a href="' . esc_url( $dismiss_url ) . '" style="float:right;">Dismiss</a>';
+			echo '</p></div>';
 		}
 	}
 
