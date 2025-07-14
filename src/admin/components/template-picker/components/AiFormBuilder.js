@@ -80,9 +80,6 @@ const AiFormBuilder = () => {
 				 */
 				if ( response?.code === 'invalid_json' ) {
 					setShowFormCreationErr( true );
-					setMessage(
-						__( 'Invalid JSON response from AI', 'sureforms' )
-					);
 					return;
 				}
 				setMessage(
