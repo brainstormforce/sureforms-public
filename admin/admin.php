@@ -635,6 +635,7 @@ class Admin {
 			'is_rtl'                  => $is_rtl,
 			'onboarding_completed'    => method_exists( $onboarding_instance, 'get_onboarding_status' ) ? $onboarding_instance->get_onboarding_status() : false,
 			'onboarding_redirect'     => isset( $_GET['srfm-activation-redirect'] ), // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce is not required for the activation redirection.
+			'pointer_nonce'           => wp_create_nonce( 'sureforms_pointer_action' ),
 			'srfm_ai_details'         => AI_Helper::get_current_usage_details(),
 		];
 

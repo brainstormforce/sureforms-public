@@ -43,9 +43,14 @@ const Done = () => {
 		apiFetch( {
 			url: srfm_admin.ajax_url,
 			method: 'POST',
-			data: {
-				action: 'sureforms_accept_cta',
+			headers: {
+				'Content-Type':
+					'application/x-www-form-urlencoded; charset=UTF-8',
 			},
+			body: new URLSearchParams( {
+				action: 'sureforms_accept_cta',
+				pointer_nonce: srfm_admin.pointer_nonce,
+			} ).toString(),
 		} );
 
 		// Use setTimeout to ensure state updates are processed

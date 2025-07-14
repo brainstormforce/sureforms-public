@@ -42,11 +42,16 @@ const NavBar = () => {
 
 		// Run the sureforms_dismiss_pointer AJAX action to properly dismiss the pointer
 		apiFetch( {
-			url: ajaxurl,
+			url: srfm_admin?.ajax_url,
 			method: 'POST',
-			data: {
-				action: 'sureforms_dismiss_pointer',
+			headers: {
+				'Content-Type':
+					'application/x-www-form-urlencoded; charset=UTF-8',
 			},
+			body: new URLSearchParams( {
+				action: 'sureforms_dismiss_pointer',
+				pointer_nonce: srfm_admin?.pointer_nonce,
+			} ).toString(),
 		} );
 
 		// Use setTimeout to ensure state updates are processed
