@@ -9,6 +9,7 @@ import {
 	useOnboardingState,
 	clearOnboardingStorage,
 } from './onboarding-state';
+import apiFetch from '@wordpress/api-fetch';
 import ICONS from '@Admin/components/template-picker/components/icons';
 
 const NavBar = () => {
@@ -39,10 +40,19 @@ const NavBar = () => {
 		// Clear all onboarding storage data
 		actions.clearStorage();
 
+		// Run the sureforms_dismiss_pointer AJAX action to properly dismiss the pointer
+		apiFetch( {
+			url: ajaxurl,
+			method: 'POST',
+			data: {
+				action: 'sureforms_dismiss_pointer',
+			},
+		} );
+
 		// Use setTimeout to ensure state updates are processed
 		setTimeout( () => {
 			// Complete onboarding and save analytics data
-			wp.apiFetch( {
+			apiFetch( {
 				path: '/sureforms/v1/onboarding/set-status',
 				method: 'POST',
 				data: {

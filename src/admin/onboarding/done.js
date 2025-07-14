@@ -39,6 +39,15 @@ const Done = () => {
 		// Clear all onboarding storage data
 		actions.clearStorage();
 
+		// Run the sureforms_accept_cta AJAX action to track user accepting the CTA
+		apiFetch( {
+			url: srfm_admin.ajax_url,
+			method: 'POST',
+			data: {
+				action: 'sureforms_accept_cta',
+			},
+		} );
+
 		// Use setTimeout to ensure state updates are processed
 		setTimeout( () => {
 			// Complete onboarding and save analytics data
