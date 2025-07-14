@@ -221,3 +221,8 @@
 		}
 	}
 }
+
+// To prevent horizontal scroll with spectra container.
+body .uagb-container-inner-blocks-wrap {
+	flex-wrap: inherit !important;
+}
