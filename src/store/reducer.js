@@ -7,6 +7,7 @@
 /**
  * Initial state for the SureForms store.
  * This state can be extended by other plugins like "sureforms-pro".
+ * This will be used to store data that is shared across the SureForms plugin.
  *
  * @type {Object}
  * @property {Object} srfmGlobalData - The global data for SureForms.
@@ -30,8 +31,10 @@ function reducer( state = defaultState, action ) {
 				...state,
 				srfmGlobalData: action.payload,
 			};
+		default:
+			// If the action type is not recognized, return the current state unchanged.
+			return state;
 	}
-	return state;
 }
 
 export default reducer;
