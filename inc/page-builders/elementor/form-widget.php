@@ -52,7 +52,7 @@ class Form_Widget extends Widget_Base {
 				'srfm-elementor-preview',
 				'srfmElementorData',
 				[
-					'isProActive' => defined( 'SRFM_PRO_VER' ),
+					'isProActive' => Helper::has_pro(),
 				]
 			);
 

@@ -170,7 +170,7 @@ class Single_Entry {
 	 * @return void
 	 */
 	protected function render_upsell_placeholder( $for ) {
-		if ( defined( 'SRFM_PRO_VER' ) ) {
+		if ( Helper::has_pro() ) {
 			return;
 		}
 

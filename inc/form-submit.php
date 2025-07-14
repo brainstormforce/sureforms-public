@@ -82,7 +82,7 @@ class Form_Submit {
 	 * Check whether a given request has permission access route.
 	 *
 	 * @param \WP_REST_Request $request Request object or array containing form data.
-	 * @since x.x.x
+	 * @since 1.8.0
 	 * @return WP_Error|bool
 	 */
 	public function submit_form_permissions_check( $request ) {
@@ -246,7 +246,7 @@ class Form_Submit {
 		 * - Form data validation
 		 * - Form ID validation
 		 *
-		 * @since x.x.x
+		 * @since 1.8.0
 		 */
 		$form_data = Helper::sanitize_by_field_type( $request->get_params() );
 

@@ -58,6 +58,7 @@ node_modules
 *.zip
 *.neon
 *.config.js
+*.md
 codesniffer.ruleset.xml
 jsconfig.json
 admin/assets/src
