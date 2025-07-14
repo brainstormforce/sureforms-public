@@ -1045,6 +1045,27 @@ class Form_Submit {
 
 			$field_block_name = Helper::get_block_name_from_field( $field_name );
 
+			/**
+			 * Filters the field value during form submission processing.
+			 *
+			 * This filter allows the Pro plugin to process and modify field values before they are saved.
+			 * The Pro plugin can implement custom sanitization, validation and escaping logic for its
+			 * specialized field types. When this filter is used by Pro, the core plugin will skip its
+			 * default validation.
+			 *
+			 * @since x.x.x
+			 *
+			 * @param mixed $value            The raw field value from form submission.
+			 * @param array $field_data       Field information array containing:
+			 *                                - 'field_name': The field name/key
+			 *                                - 'field_block_name': The block type identifier
+			 * @return array {
+			 *     Processed field value data
+			 *
+			 *     @type bool   $is_processed Whether the value was processed by Pro plugin
+			 *     @type mixed  $value        The processed and sanitized field value
+			 * }
+			 */
 			$process_field_value = apply_filters(
 				'srfm_process_field_value',
 				$value,
@@ -1054,7 +1075,7 @@ class Form_Submit {
 				]
 			);
 
-			if ( ! empty( $process_field_value['is_processed'] ) ) {
+			if ( is_array( $process_field_value ) && ! empty( $process_field_value['is_processed'] ) && ! empty( $process_field_value['value'] ) ) {
 				$submission_data[ $field_name ] = $process_field_value['value'];
 				continue;
 			}
