@@ -745,11 +745,33 @@ class Entries_List_Table extends \WP_List_Table {
 		$first_field     = reset( $form_data );
 		$field_name      = array_keys( $form_data )[0];
 
-		$field_block_name = implode(
-			'-',
-			array_slice( explode( '-', explode( '-lbl-', $field_name )[0] ), 0, 2 )
-		);
-		// Add the field name from the filter.
+		$field_block_name = Helper::get_block_name_from_field( $field_name );
+
+		/**
+		 * Filters the first field value for entries list table display.
+		 *
+		 * This filter allows the pro plugin to process and modify the first field value
+		 * that appears in the entries list table. Since pro plugin fields may contain
+		 * complex data structures or special formatting requirements that the core plugin
+		 * cannot anticipate, this filter provides a mechanism for the pro plugin to:
+		 *
+		 * - Transform complex field data into displayable format
+		 * - Apply custom formatting for pro-specific field types
+		 * - Handle data sanitization and validation
+		 * - Ensure consistent display across different field types
+		 *
+		 * The filter is called after the core plugin determines the first field but before
+		 * it's displayed, allowing pro plugin to override the value entirely.
+		 *
+		 * @since x.x.x
+		 *
+		 * @param string $first_field         The current first field value (empty string by default).
+		 * @param array  $field_data          Field information array containing:
+		 *                                    - 'field_name': The internal field name/key
+		 *                                    - 'field_block_name': The block type identifier
+		 *
+		 * @return string The processed first field value ready for display in the entries table.
+		 */
 		$set_entry_first_field = apply_filters(
 			'srfm_set_entry_first_field',
 			'',

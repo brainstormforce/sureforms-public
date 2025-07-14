@@ -1043,10 +1043,7 @@ class Form_Submit {
 
 			$field_name = htmlspecialchars( str_replace( '_', ' ', $key ) );
 
-			$field_block_name = implode(
-				'-',
-				array_slice( explode( '-', explode( '-lbl-', $field_name )[0] ), 0, 2 )
-			);
+			$field_block_name = Helper::get_block_name_from_field( $field_name );
 
 			$process_field_value = apply_filters(
 				'srfm_process_field_value',

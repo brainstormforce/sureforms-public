@@ -407,11 +407,24 @@ class Single_Entry {
 
 						$label = $label ? Helper::decrypt( $label ) : '';
 
-						$field_block_name = implode(
-							'-',
-							array_slice( explode( '-', explode( '-lbl-', $field_name )[0] ), 0, 2 )
-						);
+						$field_block_name = Helper::get_block_name_from_field( $field_name );
 
+						/**
+						 * Fires before rendering a field in the entry details view.
+						 *
+						 * This action allows other packages (like Pro, Business) to process and render fields
+						 * with custom data structures that the core plugin cannot handle. Since the core plugin
+						 * does not know the structure of data from other packages, this action provides a way
+						 * for those packages to properly process and display their field data.
+						 *
+						 * @since x.x.x
+						 *
+						 * @param array $field_data Field data containing:
+						 *                         'value'           => mixed  The field value
+						 *                         'label'           => string The field name/key
+						 *                         'block_name'      => string The block type identifier
+						 *                         'processed_label' => string The decrypted human readable label
+						 */
 						do_action(
 							'srfm_entry_render_field',
 							[
@@ -422,6 +435,25 @@ class Single_Entry {
 							]
 						);
 
+						/**
+						 * Filters whether to add a field row in the entry details table.
+						 *
+						 * This filter allows skipping rows for fields that cannot be processed with the
+						 * core plugin's structure. Fields from other packages may have complex data structures
+						 * that could cause fatal errors if processed normally. Those packages can use the
+						 * 'srfm_entry_render_field' action to render their fields and return false here
+						 * to prevent the core plugin from attempting to process them.
+						 *
+						 * @since x.x.x
+						 *
+						 * @param bool  $should_add_field_row Whether to add the field row. Default true.
+						 * @param array $field_data          Field data containing:
+						 *                                   'value'      => mixed  The field value
+						 *                                   'field_name' => string The field name/key
+						 *                                   'block_name' => string The block type identifier
+						 *
+						 * @return bool Whether to add the field row to the table.
+						 */
 						$should_add_field_row = apply_filters(
 							'srfm_should_add_field_row',
 							true,
