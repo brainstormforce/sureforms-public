@@ -8872,17 +8872,7 @@ namespace SRFM\Inc {
 	    public static function get_background_classes( $background_type, $overlay_type, $bg_image = '' )
         {
         }
-        /**
-         * Verifies the request by checking the nonce and user capabilities.
-         *
-         * @param string $nonce_action The action name for the nonce.
-         * @param string $nonce_name   The name of the nonce field.
-         * @param string $capability   The capability required to perform the action. Default is 'manage_options'.
-         *
-         * @since x.x.x
-         */
-        public static function verify_nonce_and_capabilities( $request_type = 'rest', $nonce_action, $nonce_name, $capability = 'manage_options' ) {
-        }
+    }
 }
 namespace SRFM\Inc\Global_Settings {
     /**
