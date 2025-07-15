@@ -29,7 +29,10 @@ function reducer( state = defaultState, action ) {
 		case 'UPDATE_SRFM_GLOBAL_DATA':
 			return {
 				...state,
-				srfmGlobalData: action.payload,
+				srfmGlobalData: {
+					...state.srfmGlobalData,
+					...action.payload,
+				},
 			};
 		default:
 			// If the action type is not recognized, return the current state unchanged.
