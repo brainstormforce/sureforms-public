@@ -1645,4 +1645,16 @@ class Helper {
 	public static function has_pro() {
 		return defined( 'SRFM_PRO_VER' );
 	}
+
+	/**
+	 * Get the block name from a field name by extracting the first two parts.
+	 *
+	 * @param string $field_name The full field name (e.g., 'srfm-text-lbl-123').
+	 *
+	 * @since x.x.x
+	 * @return string The block name (e.g., 'srfm-text').
+	 */
+	public static function get_block_name_from_field( $field_name ) {
+		return implode( '-', array_slice( explode( '-', explode( '-lbl-', $field_name )[0] ), 0, 2 ) );
+	}
 }
