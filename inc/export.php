@@ -41,6 +41,7 @@ class Export {
 		'_srfm_premium_common',
 		'_srfm_forms_styling_starter',
 		'_srfm_user_registration_settings',
+		'_srfm_raw_cpt_meta',
 	];
 
 	/**
