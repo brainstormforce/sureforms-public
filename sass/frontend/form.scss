@@ -223,6 +223,6 @@
 }
 
 // To prevent horizontal scroll with spectra container.
-body .uagb-container-inner-blocks-wrap {
-	flex-wrap: inherit !important;
+.wp-block-uagb-container .uagb-container-inner-blocks-wrap .srfm-form-container {
+	height: auto;
 }
