@@ -41,15 +41,15 @@ const formatNumber = ( number, formatType ) => {
 	}
 
 	// Check if number has decimal part with trailing zeros
-	const preserveTrailingZeros = (num, formatType) => {
-		if ('eu-style' === formatType) {
-			const parts = num.split(',');
-			if (parts.length === 2 && parts[1].includes('0')) {
+	const preserveTrailingZeros = ( num, format ) => {
+		if ( 'eu-style' === format ) {
+			const parts = num.split( ',' );
+			if ( parts.length === 2 && parts[ 1 ].includes( '0' ) ) {
 				return true;
 			}
 		} else {
-			const parts = num.split('.');
-			if (parts.length === 2 && parts[1].includes('0')) {
+			const parts = num.split( '.' );
+			if ( parts.length === 2 && parts[ 1 ].includes( '0' ) ) {
 				return true;
 			}
 		}
@@ -58,11 +58,11 @@ const formatNumber = ( number, formatType ) => {
 
 	// Store original decimal part if it has trailing zeros
 	let originalDecimalPart = '';
-	if (preserveTrailingZeros(number, formatType)) {
-		if ('eu-style' === formatType) {
-			originalDecimalPart = number.split(',')[1];
+	if ( preserveTrailingZeros( number, formatType ) ) {
+		if ( 'eu-style' === formatType ) {
+			originalDecimalPart = number.split( ',' )[ 1 ];
 		} else {
-			originalDecimalPart = number.split('.')[1];
+			originalDecimalPart = number.split( '.' )[ 1 ];
 		}
 	}
 
@@ -81,8 +81,9 @@ const formatNumber = ( number, formatType ) => {
 		).format( normalizeNumber );
 
 		// Preserve trailing zeros if needed
-		if (originalDecimalPart) {
-			formattedNumber = formattedNumber.split(',')[0] + ',' + originalDecimalPart;
+		if ( originalDecimalPart ) {
+			formattedNumber =
+				formattedNumber.split( ',' )[ 0 ] + ',' + originalDecimalPart;
 		}
 	} else {
 		// US style number format. Default.
@@ -92,8 +93,9 @@ const formatNumber = ( number, formatType ) => {
 		).format( parseFloat( number.replace( /,/g, '' ) ) );
 
 		// Preserve trailing zeros if needed
-		if (originalDecimalPart) {
-			formattedNumber = formattedNumber.split('.')[0] + '.' + originalDecimalPart;
+		if ( originalDecimalPart ) {
+			formattedNumber =
+				formattedNumber.split( '.' )[ 0 ] + '.' + originalDecimalPart;
 		}
 	}
 
