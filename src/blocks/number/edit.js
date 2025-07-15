@@ -40,6 +40,32 @@ const formatNumber = ( number, formatType ) => {
 		return number;
 	}
 
+	// Check if number has decimal part with trailing zeros
+	const preserveTrailingZeros = (num, formatType) => {
+		if ('eu-style' === formatType) {
+			const parts = num.split(',');
+			if (parts.length === 2 && parts[1].includes('0')) {
+				return true;
+			}
+		} else {
+			const parts = num.split('.');
+			if (parts.length === 2 && parts[1].includes('0')) {
+				return true;
+			}
+		}
+		return false;
+	};
+
+	// Store original decimal part if it has trailing zeros
+	let originalDecimalPart = '';
+	if (preserveTrailingZeros(number, formatType)) {
+		if ('eu-style' === formatType) {
+			originalDecimalPart = number.split(',')[1];
+		} else {
+			originalDecimalPart = number.split('.')[1];
+		}
+	}
+
 	let formattedNumber = '';
 	const formatOptions = { style: 'decimal', maximumFractionDigits: 20 };
 
@@ -53,12 +79,22 @@ const formatNumber = ( number, formatType ) => {
 			'de-DE',
 			formatOptions
 		).format( normalizeNumber );
+
+		// Preserve trailing zeros if needed
+		if (originalDecimalPart) {
+			formattedNumber = formattedNumber.split(',')[0] + ',' + originalDecimalPart;
+		}
 	} else {
 		// US style number format. Default.
 		formattedNumber = new Intl.NumberFormat(
 			'en-US',
 			formatOptions
 		).format( parseFloat( number.replace( /,/g, '' ) ) );
+
+		// Preserve trailing zeros if needed
+		if (originalDecimalPart) {
+			formattedNumber = formattedNumber.split('.')[0] + '.' + originalDecimalPart;
+		}
 	}
 
 	if ( 'NaN' === formattedNumber ) {
