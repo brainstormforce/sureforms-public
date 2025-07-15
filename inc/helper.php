@@ -1649,6 +1649,7 @@ class Helper {
 	/**
 	 * Verifies the request by checking the nonce and user capabilities.
 	 *
+	 * @param string $request_type The type of request, either 'rest' or 'ajax'.
 	 * @param string $nonce_action The action name for the nonce.
 	 * @param string $nonce_name   The name of the nonce field.
 	 * @param string $capability   The capability required to perform the action. Default is 'manage_options'.
