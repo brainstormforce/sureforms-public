@@ -1655,7 +1655,7 @@ class Helper {
 	 *
 	 * @since x.x.x
 	 */
-	public static function verify_nonce_and_capabilities( $request_type = 'rest', $nonce_action, $nonce_name, $capability = 'manage_options' ) {
+	public static function verify_nonce_and_capabilities( $request_type, $nonce_action, $nonce_name, $capability = 'manage_options' ) {
 
 		if ( ! is_string( $nonce_action ) || ! is_string( $nonce_name ) || empty( $nonce_action ) || empty( $nonce_name ) ) {
 			wp_send_json_error(
@@ -1673,7 +1673,7 @@ class Helper {
 					403
 				);
 			}
-		} else if ( 'ajax' === $request_type ) {
+		} elseif ( 'ajax' === $request_type ) {
 			// For non-REST requests, use the standard nonce verification.
 			if ( ! check_ajax_referer( $nonce_action, $nonce_name, false ) ) {
 				wp_send_json_error(
@@ -1688,7 +1688,6 @@ class Helper {
 				400
 			);
 		}
-
 
 		// Check user capabilities.
 		if ( ! current_user_can( $capability ) ) {
