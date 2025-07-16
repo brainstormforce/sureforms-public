@@ -112,7 +112,7 @@ const allFeatures = [
 		id: 'custom_app',
 		title: __( 'Custom App', 'sureforms' ),
 		description: __(
-			'Collect data, send it to external applications for processing, and display results instantly—all seamlessly integrated to create dynamic, interactive user experiences.',
+			'Collect data, send it to external applications for processing, and display results instantly — all seamlessly integrated to create dynamic, interactive user experiences.',
 			'sureforms'
 		),
 		plan: 'business',
