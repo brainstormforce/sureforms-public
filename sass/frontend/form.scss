@@ -4,7 +4,6 @@
 	// This is the parent form class. Adds specificity so that there is no conflict.
 	position: relative;
 	padding: 0;
-	height: 100%;
 	// Form Container Padding.
 	@include srfm-form-padding-styles;
 	// Form Container Border Radius.
@@ -220,9 +219,4 @@
 			visibility: revert !important;
 		}
 	}
-}
-
-// To prevent horizontal scroll with spectra container.
-.wp-block-uagb-container .uagb-container-inner-blocks-wrap .srfm-form-container {
-	height: auto;
 }
