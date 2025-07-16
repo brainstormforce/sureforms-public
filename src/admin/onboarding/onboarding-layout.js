@@ -87,6 +87,7 @@ const NavBar = () => {
 						size="md"
 						type="inline"
 						variant="number"
+						lineClassName='w-[128px]'
 					>
 						{ Array.from( { length: totalSteps }, ( _, index ) => (
 							<ProgressSteps.Step key={ index } size="md" />
