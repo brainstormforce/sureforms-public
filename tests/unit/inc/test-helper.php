@@ -854,21 +854,56 @@ class Test_Helper extends TestCase {
     }
 
     /**
+     * Helper function to set up SMTP plugin mocks
+     *
+     * @param array $active_plugins Array of active plugins to mock
+     * @param array $network_plugins Array of network plugins to mock (for multisite)
+     * @param bool  $is_multisite Whether to simulate multisite environment
+     */
+    public function setup_smtp_plugin_mocks( $active_plugins = [], $network_plugins = [], $is_multisite = false ) {
+        // Clear any existing filters
+        remove_all_filters('pre_option_active_plugins');
+        remove_all_filters('pre_site_option_active_sitewide_plugins');
+        remove_all_filters('pre_option_is_multisite');
+        
+        // Set up new filters
+        add_filter('pre_option_active_plugins', function() use ($active_plugins) {
+            return $active_plugins;
+        });
+        
+        add_filter('pre_site_option_active_sitewide_plugins', function() use ($network_plugins) {
+            return $network_plugins;
+        });
+        
+        if ($is_multisite) {
+            add_filter('pre_option_is_multisite', '__return_true');
+        } else {
+            add_filter('pre_option_is_multisite', '__return_false');
+        }
+    }
+
+    /**
+     * Helper function to set up multisite SMTP plugin mocks with time-based values
+     *
+     * @param array $active_plugins Array of site-level active plugins
+     * @param array $network_plugins Array of network-activated plugins (without time values)
+     */
+    public function setup_multisite_smtp_mocks( $active_plugins = [], $network_plugins = [] ) {
+        // Convert network plugins array to time-based format
+        $network_with_time = [];
+        foreach ($network_plugins as $plugin) {
+            $network_with_time[$plugin] = time();
+        }
+        
+        $this->setup_smtp_plugin_mocks($active_plugins, $network_with_time, true);
+    }
+
+    /**
      * Test is_any_smtp_plugin_active - should return false when no plugins are active
      */
     public function test_is_any_smtp_plugin_active_no_plugins() {
         $this->reset_smtp_test_data();
-        
-        // Mock get_option to return empty array
-        add_filter('pre_option_active_plugins', function() {
-            return [];
-        });
-        
-        add_filter('pre_site_option_active_sitewide_plugins', function() {
-            return [];
-        });
-        
-        add_filter('pre_option_is_multisite', '__return_false');
+        $this->setup_smtp_plugin_mocks();
         
         $result = Helper::is_any_smtp_plugin_active();
         
@@ -880,20 +915,10 @@ class Test_Helper extends TestCase {
      */
     public function test_is_any_smtp_plugin_active_wp_mail_smtp() {
         $this->reset_smtp_test_data();
-        
-        // Mock get_option to return wp-mail-smtp with correct file path
-        add_filter('pre_option_active_plugins', function() {
-            return [
-                'wp-mail-smtp/wp_mail_smtp.php', // Correct file path with underscores
-                'akismet/akismet.php'
-            ];
-        });
-        
-        add_filter('pre_site_option_active_sitewide_plugins', function() {
-            return [];
-        });
-        
-        add_filter('pre_option_is_multisite', '__return_false');
+        $this->setup_smtp_plugin_mocks([
+            'wp-mail-smtp/wp_mail_smtp.php',
+            'akismet/akismet.php'
+        ]);
         
         $result = Helper::is_any_smtp_plugin_active();
         
@@ -905,20 +930,10 @@ class Test_Helper extends TestCase {
      */
     public function test_is_any_smtp_plugin_active_old_wp_mail_smtp_path() {
         $this->reset_smtp_test_data();
-        
-        // Mock get_option to return wp-mail-smtp with old incorrect file path
-        add_filter('pre_option_active_plugins', function() {
-            return [
-                'wp-mail-smtp/wp-mail-smtp.php', // Old incorrect path with hyphens
-                'akismet/akismet.php'
-            ];
-        });
-        
-        add_filter('pre_site_option_active_sitewide_plugins', function() {
-            return [];
-        });
-        
-        add_filter('pre_option_is_multisite', '__return_false');
+        $this->setup_smtp_plugin_mocks([
+            'wp-mail-smtp/wp-mail-smtp.php', // Old incorrect path with hyphens
+            'akismet/akismet.php'
+        ]);
         
         $result = Helper::is_any_smtp_plugin_active();
         
@@ -930,20 +945,10 @@ class Test_Helper extends TestCase {
      */
     public function test_is_any_smtp_plugin_active_newsletter() {
         $this->reset_smtp_test_data();
-        
-        // Mock get_option to return newsletter with correct file path
-        add_filter('pre_option_active_plugins', function() {
-            return [
-                'newsletter/plugin.php', // Correct file path is plugin.php not newsletter.php
-                'akismet/akismet.php'
-            ];
-        });
-        
-        add_filter('pre_site_option_active_sitewide_plugins', function() {
-            return [];
-        });
-        
-        add_filter('pre_option_is_multisite', '__return_false');
+        $this->setup_smtp_plugin_mocks([
+            'newsletter/plugin.php', // Correct file path is plugin.php not newsletter.php
+            'akismet/akismet.php'
+        ]);
         
         $result = Helper::is_any_smtp_plugin_active();
         
@@ -955,20 +960,10 @@ class Test_Helper extends TestCase {
      */
     public function test_is_any_smtp_plugin_active_old_newsletter_path() {
         $this->reset_smtp_test_data();
-        
-        // Mock get_option to return newsletter with old incorrect file path
-        add_filter('pre_option_active_plugins', function() {
-            return [
-                'newsletter/newsletter.php', // Old incorrect path
-                'akismet/akismet.php'
-            ];
-        });
-        
-        add_filter('pre_site_option_active_sitewide_plugins', function() {
-            return [];
-        });
-        
-        add_filter('pre_option_is_multisite', '__return_false');
+        $this->setup_smtp_plugin_mocks([
+            'newsletter/newsletter.php', // Old incorrect path
+            'akismet/akismet.php'
+        ]);
         
         $result = Helper::is_any_smtp_plugin_active();
         
@@ -980,19 +975,10 @@ class Test_Helper extends TestCase {
      */
     public function test_is_any_smtp_plugin_active_suremails() {
         $this->reset_smtp_test_data();
-        
-        add_filter('pre_option_active_plugins', function() {
-            return [
-                'suremails/suremails.php',
-                'akismet/akismet.php'
-            ];
-        });
-        
-        add_filter('pre_site_option_active_sitewide_plugins', function() {
-            return [];
-        });
-        
-        add_filter('pre_option_is_multisite', '__return_false');
+        $this->setup_smtp_plugin_mocks([
+            'suremails/suremails.php',
+            'akismet/akismet.php'
+        ]);
         
         $result = Helper::is_any_smtp_plugin_active();
         
@@ -1004,19 +990,10 @@ class Test_Helper extends TestCase {
      */
     public function test_is_any_smtp_plugin_active_site_mailer() {
         $this->reset_smtp_test_data();
-        
-        add_filter('pre_option_active_plugins', function() {
-            return [
-                'site-mailer/site-mailer.php',
-                'akismet/akismet.php'
-            ];
-        });
-        
-        add_filter('pre_site_option_active_sitewide_plugins', function() {
-            return [];
-        });
-        
-        add_filter('pre_option_is_multisite', '__return_false');
+        $this->setup_smtp_plugin_mocks([
+            'site-mailer/site-mailer.php',
+            'akismet/akismet.php'
+        ]);
         
         $result = Helper::is_any_smtp_plugin_active();
         
@@ -1028,21 +1005,12 @@ class Test_Helper extends TestCase {
      */
     public function test_is_any_smtp_plugin_active_multiple() {
         $this->reset_smtp_test_data();
-        
-        add_filter('pre_option_active_plugins', function() {
-            return [
-                'wp-mail-smtp/wp_mail_smtp.php',
-                'newsletter/plugin.php',
-                'fluent-smtp/fluent-smtp.php',
-                'akismet/akismet.php'
-            ];
-        });
-        
-        add_filter('pre_site_option_active_sitewide_plugins', function() {
-            return [];
-        });
-        
-        add_filter('pre_option_is_multisite', '__return_false');
+        $this->setup_smtp_plugin_mocks([
+            'wp-mail-smtp/wp_mail_smtp.php',
+            'newsletter/plugin.php',
+            'fluent-smtp/fluent-smtp.php',
+            'akismet/akismet.php'
+        ]);
         
         $result = Helper::is_any_smtp_plugin_active();
         
@@ -1054,20 +1022,11 @@ class Test_Helper extends TestCase {
      */
     public function test_is_any_smtp_plugin_active_non_smtp_plugins() {
         $this->reset_smtp_test_data();
-        
-        add_filter('pre_option_active_plugins', function() {
-            return [
-                'akismet/akismet.php',
-                'jetpack/jetpack.php',
-                'contact-form-7/wp-contact-form-7.php'
-            ];
-        });
-        
-        add_filter('pre_site_option_active_sitewide_plugins', function() {
-            return [];
-        });
-        
-        add_filter('pre_option_is_multisite', '__return_false');
+        $this->setup_smtp_plugin_mocks([
+            'akismet/akismet.php',
+            'jetpack/jetpack.php',
+            'contact-form-7/wp-contact-form-7.php'
+        ]);
         
         $result = Helper::is_any_smtp_plugin_active();
         
@@ -1113,25 +1072,16 @@ class Test_Helper extends TestCase {
     public function test_is_any_smtp_plugin_active_multisite_both() {
         $this->reset_smtp_test_data();
         
-        add_filter('pre_option_active_plugins', function() {
-            return [
-                'newsletter/plugin.php',
-                'akismet/akismet.php'
-            ];
-        });
-        
-        add_filter('pre_site_option_active_sitewide_plugins', function() {
-            return [
-                'fluent-smtp/fluent-smtp.php' => time(),
-                'some-network-plugin/plugin.php' => time()
-            ];
-        });
-        
         // Skip test if not in multisite environment
         if ( ! is_multisite() ) {
             $this->markTestSkipped( 'This test requires a multisite environment.' );
             return;
         }
+        
+        $this->setup_multisite_smtp_mocks(
+            ['newsletter/plugin.php', 'akismet/akismet.php'], // site plugins
+            ['fluent-smtp/fluent-smtp.php', 'some-network-plugin/plugin.php'] // network plugins
+        );
         
         $result = Helper::is_any_smtp_plugin_active();
         
