@@ -8,12 +8,13 @@
  */
 
 const { test, expect } = require('@playwright/test');
+const { loginAsAdmin } = require('../utils/loginAsAdmin');
 
-// Test configuration
-const ADMIN_URL = process.env.WP_BASE_URL + '/wp-admin/';
-const PLUGINS_URL = ADMIN_URL + 'plugins.php';
-const SUREFORMS_URL = ADMIN_URL + 'admin.php?page=sureforms_menu';
-const DASHBOARD_URL = ADMIN_URL + 'index.php';
+// Test configuration - using relative URLs like other tests
+const ADMIN_URL = '/wp-admin/';
+const PLUGINS_URL = '/wp-admin/plugins.php';
+const SUREFORMS_URL = '/wp-admin/admin.php?page=sureforms_menu';
+const DASHBOARD_URL = '/wp-admin/index.php';
 
 // Known SMTP plugins to test
 const SMTP_PLUGINS = [
@@ -27,18 +28,9 @@ const SMTP_PLUGINS = [
 ];
 
 test.describe('SMTP Detection Feature', () => {
-	// Helper function to login to WordPress admin
-	async function loginToAdmin(page) {
-		await page.goto(ADMIN_URL);
-		
-		// Check if already logged in
-		if (page.url().includes('wp-login.php')) {
-			await page.fill('#user_login', process.env.WP_USERNAME || 'admin');
-			await page.fill('#user_pass', process.env.WP_PASSWORD || 'password');
-			await page.click('#wp-submit');
-			await page.waitForURL(ADMIN_URL + '**');
-		}
-	}
+	test.beforeEach(async ({ page }) => {
+		await loginAsAdmin(page);
+	});
 
 	// Helper function to activate a plugin
 	async function activatePlugin(page, pluginSlug) {
@@ -94,11 +86,11 @@ test.describe('SMTP Detection Feature', () => {
 		}
 	}
 
-	// Setup before all tests
+	// Setup before all tests  
 	test.beforeAll(async ({ browser }) => {
 		const context = await browser.newContext();
 		const page = await context.newPage();
-		await loginToAdmin(page);
+		await loginAsAdmin(page);
 		
 		// Deactivate all SMTP plugins to start with clean state
 		for (const plugin of SMTP_PLUGINS) {
@@ -109,7 +101,6 @@ test.describe('SMTP Detection Feature', () => {
 	});
 
 	test('Should show SMTP warning when no SMTP plugin is active', async ({ page }) => {
-		await loginToAdmin(page);
 		
 		// Navigate to SureForms dashboard
 		await page.goto(SUREFORMS_URL);
@@ -125,7 +116,6 @@ test.describe('SMTP Detection Feature', () => {
 	});
 
 	test('Should NOT show SMTP warning when SureMails is active', async ({ page }) => {
-		await loginToAdmin(page);
 		
 		// Activate SureMails if available
 		const activated = await activatePlugin(page, 'suremails');
@@ -147,7 +137,6 @@ test.describe('SMTP Detection Feature', () => {
 	});
 
 	test('Should NOT show SMTP warning when WP Mail SMTP is active', async ({ page }) => {
-		await loginToAdmin(page);
 		
 		// Activate WP Mail SMTP if available
 		const activated = await activatePlugin(page, 'wp-mail-smtp');
@@ -169,7 +158,6 @@ test.describe('SMTP Detection Feature', () => {
 	});
 
 	test('Should detect multiple SMTP plugins correctly', async ({ page }) => {
-		await loginToAdmin(page);
 		
 		// Track which plugins we've activated
 		const activatedPlugins = [];
@@ -201,7 +189,6 @@ test.describe('SMTP Detection Feature', () => {
 	});
 
 	test('Warning should be dismissible and remember dismissal', async ({ page }) => {
-		await loginToAdmin(page);
 		
 		// Ensure no SMTP plugins are active
 		for (const plugin of SMTP_PLUGINS) {
@@ -234,7 +221,6 @@ test.describe('SMTP Detection Feature', () => {
 	});
 
 	test('Should show correct SureMail link based on plugin status', async ({ page }) => {
-		await loginToAdmin(page);
 		
 		// Ensure no SMTP plugins are active
 		for (const plugin of SMTP_PLUGINS) {
@@ -264,7 +250,6 @@ test.describe('SMTP Detection Feature', () => {
 	});
 
 	test('Warning should appear on dashboard and SureForms pages only', async ({ page }) => {
-		await loginToAdmin(page);
 		
 		// Ensure no SMTP plugins are active
 		for (const plugin of SMTP_PLUGINS) {
@@ -305,7 +290,6 @@ test.describe('SMTP Detection Feature', () => {
 	test('Multisite support - should detect network-activated SMTP plugins', async ({ page }) => {
 		// This test requires multisite setup
 		// Skip if not in multisite environment
-		await loginToAdmin(page);
 		await page.goto(ADMIN_URL);
 		
 		// Check if this is a multisite installation
@@ -339,7 +323,6 @@ test.describe('SMTP Detection Feature', () => {
 	});
 
 	test('Performance test - SMTP detection should not slow down page load', async ({ page }) => {
-		await loginToAdmin(page);
 		
 		// Measure page load time with SMTP detection
 		const startTime = Date.now();
@@ -355,22 +338,12 @@ test.describe('SMTP Detection Feature', () => {
 
 // Additional test for wp-smtp specific issue mentioned by user
 test.describe('WP-SMTP Plugin Specific Tests', () => {
-	// Helper function to login to WordPress admin
-	async function loginToAdmin(page) {
-		await page.goto(process.env.WP_BASE_URL + '/wp-admin/');
-		
-		// Check if already logged in
-		if (page.url().includes('wp-login.php')) {
-			await page.fill('#user_login', process.env.WP_USERNAME || 'admin');
-			await page.fill('#user_pass', process.env.WP_PASSWORD || 'password');
-			await page.click('#wp-submit');
-			await page.waitForURL(process.env.WP_BASE_URL + '/wp-admin/**');
-		}
-	}
-
+	test.beforeEach(async ({ page }) => {
+		await loginAsAdmin(page);
+	});
 	// Helper function to activate a plugin
 	async function activatePlugin(page, pluginSlug) {
-		await page.goto(process.env.WP_BASE_URL + '/wp-admin/plugins.php');
+		await page.goto('/wp-admin/plugins.php');
 		const pluginRow = page.locator(`tr[data-slug="${pluginSlug}"]`);
 		
 		if (await pluginRow.count() === 0) {
@@ -389,7 +362,7 @@ test.describe('WP-SMTP Plugin Specific Tests', () => {
 
 	// Helper function to deactivate a plugin
 	async function deactivatePlugin(page, pluginSlug) {
-		await page.goto(process.env.WP_BASE_URL + '/wp-admin/plugins.php');
+		await page.goto('/wp-admin/plugins.php');
 		const pluginRow = page.locator(`tr[data-slug="${pluginSlug}"]`);
 		
 		if (await pluginRow.count() === 0) {
@@ -413,10 +386,9 @@ test.describe('WP-SMTP Plugin Specific Tests', () => {
 	}
 
 	test('Should correctly detect wp-smtp plugin', async ({ page }) => {
-		await loginToAdmin(page);
 		
 		// Check if wp-smtp is installed
-		await page.goto(process.env.WP_BASE_URL + '/wp-admin/plugins.php');
+		await page.goto('/wp-admin/plugins.php');
 		const wpSmtpRow = page.locator('tr[data-slug="wp-smtp"]');
 		
 		if (await wpSmtpRow.count() === 0) {
@@ -435,7 +407,7 @@ test.describe('WP-SMTP Plugin Specific Tests', () => {
 		await activatePlugin(page, 'wp-smtp');
 		
 		// Navigate to SureForms and verify no warning
-		await page.goto(process.env.WP_BASE_URL + '/wp-admin/admin.php?page=sureforms_menu');
+		await page.goto('/wp-admin/admin.php?page=sureforms_menu');
 		const warningVisible = await isSmtpWarningVisible(page);
 		expect(warningVisible).toBeFalsy();
 		

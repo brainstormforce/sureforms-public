@@ -1059,13 +1059,13 @@ class Admin {
 		if ( ! current_user_can( 'manage_options' ) ) {
 			return;
 		}
-		// Only show on dashboard or SureForms admin pages
+		// Only show on dashboard or SureForms admin pages.
 		$screen = get_current_screen();
-		if ( ! $screen || ( strpos( $screen->id, 'sureforms' ) === false && $screen->id !== 'dashboard' ) ) {
+		if ( ! $screen || ( false === strpos( $screen->id, 'sureforms' ) && 'dashboard' !== $screen->id ) ) {
 			return;
 		}
-		// Dismiss logic
-		if ( isset( $_GET['srfm_dismiss_smtp_notice'] ) && $_GET['srfm_dismiss_smtp_notice'] === '1' ) {
+		// Dismiss logic.
+		if ( isset( $_GET['srfm_dismiss_smtp_notice'] ) && '1' === $_GET['srfm_dismiss_smtp_notice'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			update_user_meta( get_current_user_id(), 'srfm_dismiss_smtp_notice', 1 );
 			return;
 		}
