@@ -265,6 +265,7 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 
 == Changelog ==
 = x.x.x =
+* Fix: Resolved an issue where horizontal scrollbar is present in mobile view when form is used inside spectra container.
 * Fix: Resolved and issue with number field where 0's are not accepted after decimal in default value.
 * Fix: Displaying "form deleted or unavailable" error when changing form in SureForms form block.
 * Fix: Fallback error message for AI form generation.
