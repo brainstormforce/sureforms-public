@@ -1647,32 +1647,33 @@ class Helper {
 	}
 
 	/**
-     * Check if any of the top 10 popular WordPress SMTP plugins is active using array_intersect.
-     *
-     * @since x.x.x
-     * @return bool True if any SMTP plugin is active, false otherwise.
-     */
-    public static function is_any_smtp_plugin_active() {
-        $smtp_plugins = [
-            'wp-mail-smtp/wp-mail-smtp.php',
-            'post-smtp/postman-smtp.php',
-            'easy-wp-smtp/easy-wp-smtp.php',
-            'wp-smtp/wp-smtp.php',
-            'newsletter/newsletter.php',
-            'fluent-smtp/fluent-smtp.php',
-            'pepipost-smtp/pepipost-smtp.php',
-            'mail-bank/wp-mail-bank.php',
-            'smtp-mailer/smtp-mailer.php',
-            'suremails/suremails.php',
-        ];
+	 * Check if any of the top 10 popular WordPress SMTP plugins is active using array_intersect.
+	 *
+	 * @since x.x.x
+	 * @return bool True if any SMTP plugin is active, false otherwise.
+	 */
+	public static function is_any_smtp_plugin_active() {
+		$smtp_plugins = [
+			'wp-mail-smtp/wp_mail_smtp.php',
+			'post-smtp/postman-smtp.php',
+			'easy-wp-smtp/easy-wp-smtp.php',
+			'wp-smtp/wp-smtp.php',
+			'newsletter/plugin.php',
+			'fluent-smtp/fluent-smtp.php',
+			'pepipost-smtp/pepipost-smtp.php',
+			'mail-bank/wp-mail-bank.php',
+			'smtp-mailer/smtp-mailer.php',
+			'suremails/suremails.php',
+			'site-mailer/site-mailer.php',
+		];
 
-        $active_plugins = (array) get_option( 'active_plugins', [] );
-        // For multisite, merge sitewide active plugins.
-        if ( is_multisite() ) {
-            $network_plugins = (array) get_site_option( 'active_sitewide_plugins', [] );
-            $active_plugins = array_merge( $active_plugins, array_keys( $network_plugins ) );
-        }
+		$active_plugins = (array) get_option( 'active_plugins', [] );
+		// For multisite, merge sitewide active plugins.
+		if ( is_multisite() ) {
+			$network_plugins = (array) get_site_option( 'active_sitewide_plugins', [] );
+			$active_plugins  = array_merge( $active_plugins, array_keys( $network_plugins ) );
+		}
 
-        return (bool) array_intersect( $smtp_plugins, $active_plugins );
-    }
+		return (bool) array_intersect( $smtp_plugins, $active_plugins );
+	}
 }
