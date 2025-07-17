@@ -62,8 +62,17 @@ const EmailDelivery = () => {
 						actions.setAccountConnected( true );
 
 						// Clean up URL parameter to avoid duplicate tracking on page refresh
-						const newUrl =
-							window.location.pathname + window.location.hash;
+						const url = new URL( window.location.href );
+
+						// Only remove the access_key parameter
+						url.searchParams.delete( 'access_key' );
+
+						// Build the cleaned-up URL with remaining query params and hash
+						const newUrl = `${
+							url.pathname
+						}?${ url.searchParams.toString() }${ url.hash }`;
+						console.log( 'newUrl', newUrl );
+
 						window.history.replaceState(
 							{},
 							document.title,
