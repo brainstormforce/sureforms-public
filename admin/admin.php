@@ -1065,7 +1065,11 @@ class Admin {
 			return;
 		}
 		// Dismiss logic.
-		if ( isset( $_GET['srfm_dismiss_smtp_notice'] ) && '1' === $_GET['srfm_dismiss_smtp_notice'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		if ( isset( $_GET['srfm_dismiss_smtp_notice'] ) && '1' === $_GET['srfm_dismiss_smtp_notice'] ) {
+			// Verify nonce for security.
+			if ( ! isset( $_GET['_wpnonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'srfm_dismiss_smtp_notice' ) ) {
+				return;
+			}
 			update_user_meta( get_current_user_id(), 'srfm_dismiss_smtp_notice', 1 );
 			return;
 		}
@@ -1088,7 +1092,7 @@ class Admin {
 			} else {
 				$suremail_url = admin_url( 'plugin-install.php?s=suremail&tab=search&type=term' );
 			}
-			$dismiss_url = add_query_arg( 'srfm_dismiss_smtp_notice', '1' );
+			$dismiss_url = wp_nonce_url( add_query_arg( 'srfm_dismiss_smtp_notice', '1' ), 'srfm_dismiss_smtp_notice' );
 			echo '<div class="notice notice-warning is-dismissible srfm-smtp-warning"><p>';
 			echo esc_html__( 'We were not able to detect any SMTP plugin activated on your site. This may affect email delivery for SureForms.', 'sureforms' );
 			echo '<br />';
