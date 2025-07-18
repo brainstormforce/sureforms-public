@@ -61,7 +61,7 @@ class Register {
 		$tables = apply_filters(
 			'srfm_db_tables',
 			[
-				Entries::get_instance(),
+				'entries' => Entries::get_instance(),
 			]
 		);
 
