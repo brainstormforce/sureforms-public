@@ -2,7 +2,7 @@
 **Contributors:** [brainstormforce](https://profiles.wordpress.org/brainstormforce/)  
 **Tags:** contact form, custom form, forms, contact form plugin, form builder  
 **Requires at least:** 6.4  
-**Tested up to:** 6.8.1  
+**Tested up to:** 6.8.2  
 **Requires PHP:** 7.4  
 **Stable tag:** 1.9.0  
 **License:** GPLv2 or later  
