@@ -17,14 +17,14 @@ const IntegrationsPage = ( { loading } ) => {
 			<ContentCard loading={ loading } content={ <Webhooks /> } />
 			<ContentCard loading={ loading } content={ <Zapier /> } />
 
-			{/* Additional integrations from Pro plugin */}
-			{additionalContent.map((content, index) => (
-				<ContentCard 
-					key={`additional-integration-${index}`} 
-					loading={loading} 
-					content={content} 
+			{ /* Additional integrations from Pro plugin */ }
+			{ additionalContent.map( ( content, index ) => (
+				<ContentCard
+					key={ `additional-integration-${ index }` }
+					loading={ loading }
+					content={ content }
 				/>
-			))}
+			) ) }
 		</div>
 	);
 };

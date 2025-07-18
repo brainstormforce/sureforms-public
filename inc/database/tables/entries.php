@@ -185,7 +185,7 @@ class Entries extends Base {
 		$log = [
 			'title'     => Helper::get_string_value( trim( $title ) ),
 			'messages'  => Helper::get_array_value( $messages ),
-			'timestamp' => time(),
+			'timestamp' => current_time( 'timestamp' ), //phpcs:ignore WordPress.DateTime.CurrentTimeTimestamp -- Using current_time() to match the WordPress timezone.
 		];
 
 		$this->logs = array_merge( [ $log ], $this->logs );
@@ -293,6 +293,10 @@ class Entries extends Base {
 	 * @return int|false The number of rows deleted, or false on error.
 	 */
 	public static function delete( $entry_id ) {
+		// Add action before deleting the entry.
+		do_action( 'srfm_before_delete_entry', $entry_id );
+
+		// Delete the entry.
 		return self::get_instance()->use_delete( [ 'ID' => absint( $entry_id ) ], [ '%d' ] );
 	}
 
@@ -362,9 +366,9 @@ class Entries extends Base {
 	/**
 	 * Get the total count of entries by status.
 	 *
-	 * @param string              $status The status of the entries to count.
-	 * @param int|null            $form_id The ID of the form to count entries for.
-	 * @param array<string,mixed> $where_clause Additional where clause to add to the query.
+	 * @param string       $status The status of the entries to count.
+	 * @param int|null     $form_id The ID of the form to count entries for.
+	 * @param array<mixed> $where_clause Additional where clause to add to the query.
 	 * @since 0.0.13
 	 * @return int The total number of entries with the specified status.
 	 */
@@ -402,6 +406,48 @@ class Entries extends Base {
 			default:
 				return self::get_instance()->get_total_count();
 		}
+	}
+
+	/**
+	 * Get the total number of entries created after the given timestamp.
+	 *
+	 * @param int $timestamp Timestamp in seconds.
+	 * @param int $form_id   Optional. The ID of the form to count entries for. Default 0 for all forms.
+	 * @since 1.7.3
+	 * @return int Total number of entries created after the timestamp.
+	 */
+	public static function get_entries_count_after( $timestamp, $form_id = 0 ) {
+		$timestamp = absint( $timestamp );
+
+		if ( ! $timestamp ) {
+			return self::get_total_entries_by_status( 'all', $form_id );
+		}
+
+		global $wpdb;
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct DB access is required here to get the most accurate server time for menu badge logic. Caching is not suitable as this is used for real-time admin notifications.
+		$mysql_time = $wpdb->get_var( 'SELECT NOW()' );
+
+		// Convert to timestamps.
+		$mysql_timestamp = strtotime( $mysql_time );
+		$php_timestamp   = time();
+
+		// Offset between MySQL and PHP.
+		$offset_seconds = $mysql_timestamp - $php_timestamp;
+
+		$adjusted_timestamp = $timestamp + $offset_seconds;
+
+		$where_clause = [
+			[
+				[
+					'key'     => 'created_at',
+					'compare' => '>',
+					'value'   => gmdate( 'Y-m-d H:i:s', $adjusted_timestamp ),
+				],
+			],
+		];
+
+		return self::get_total_entries_by_status( 'all', $form_id, $where_clause );
 	}
 
 	/**
@@ -490,5 +536,20 @@ class Entries extends Base {
 			'form_data'
 		);
 		return isset( $result[0] ) && is_array( $result[0] ) ? Helper::get_array_value( $result[0]['form_data'] ) : [];
+	}
+
+	/**
+	 * Get the entry data for a specific entry.
+	 *
+	 * @param int $entry_id The ID of the entry to get the entry data for.
+	 * @since 1.8.0
+	 * @return array<string,mixed> An associative array representing the entry's data.
+	 */
+	public static function get_entry_data( $entry_id ) {
+		$result = self::get_instance()->get_results(
+			[ 'ID' => $entry_id ],
+			'form_data, extras'
+		);
+		return isset( $result[0] ) && is_array( $result[0] ) ? $result[0] : [];
 	}
 }

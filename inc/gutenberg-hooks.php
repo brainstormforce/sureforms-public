@@ -136,7 +136,7 @@ class Gutenberg_Hooks {
 			// Attempt to register block pattern from the main directory.
 			if ( ! $this->register_block_pattern_from_directory( $block_pattern, plugin_dir_path( SRFM_FILE ) . 'templates/forms/' ) ) {
 				// If unsuccessful, attempt to register block pattern from the pro directory.
-				if ( defined( 'SRFM_PRO_VER' ) && defined( 'SRFM_PRO_DIR' ) ) {
+				if ( Helper::has_pro() ) {
 					$this->register_block_pattern_from_directory( $block_pattern, SRFM_PRO_DIR . 'templates/forms/' );
 				}
 			}
@@ -222,7 +222,7 @@ class Gutenberg_Hooks {
 				'smart_tags_array_email'            => Smart_Tags::email_smart_tag_list(),
 				'srfm_form_markup_nonce'            => wp_create_nonce( 'srfm_form_markup' ),
 				'get_form_markup_url'               => 'sureforms/v1/generate-form-markup',
-				'is_pro_active'                     => defined( 'SRFM_PRO_VER' ),
+				'is_pro_active'                     => Helper::has_pro(),
 				'srfm_default_dynamic_block_option' => get_option( 'srfm_default_dynamic_block_option', Helper::default_dynamic_block_option() ),
 				'form_selector_nonce'               => current_user_can( 'edit_posts' ) ? wp_create_nonce( 'wp_rest' ) : '',
 				'is_admin_user'                     => current_user_can( 'manage_options' ),

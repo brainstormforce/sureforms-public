@@ -8,11 +8,22 @@ import {
 import { applyFilters } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
 
-document.addEventListener( 'DOMContentLoaded', function () {
+/**
+ * Initializes form handlers for all forms with the class `.srfm-form`.
+ */
+function initializeFormHandlers() {
 	initializeInlineFieldValidation();
 
 	const forms = Array.from( document.querySelectorAll( '.srfm-form' ) );
 	for ( const form of forms ) {
+		// Add the event before the form initialization to ensure that the all third party libraries are loaded and initialized.
+		// Dispatch a custom event *before* the form is submitted.
+		document.dispatchEvent(
+			new CustomEvent( 'srfm_form_before_submission', {
+				detail: { form },
+			} )
+		);
+
 		const {
 			formId,
 			submitType,
@@ -27,6 +38,7 @@ document.addEventListener( 'DOMContentLoaded', function () {
 			captchaErrorElement,
 			hCaptchaDiv,
 			turnstileDiv,
+			hasLoginBlock,
 		} = extractFormAttributesAndElements( form );
 
 		const hasCaptcha =
@@ -59,6 +71,20 @@ document.addEventListener( 'DOMContentLoaded', function () {
 				}
 			}
 
+			/**
+			 * Check for the form login completion status.
+			 * If the login is not completed, dispatch a custom event to handle the login request.
+			 * This allows for a two-step process where the login is handled separately before form submission.
+			 */
+			if ( hasLoginBlock && ! form.__loginSuccess ) {
+				const loginEvent = new CustomEvent( 'srfm_login_request', {
+					cancelable: true,
+					detail: { form },
+				} );
+				form.dispatchEvent( loginEvent );
+				return;
+			}
+
 			handleFormSubmission(
 				form,
 				formId,
@@ -75,8 +101,15 @@ document.addEventListener( 'DOMContentLoaded', function () {
 				hasCaptcha ? turnstileDiv : undefined,
 				hasCaptcha ? captchaErrorElement : undefined
 			);
+			// Set the login completion status to true after form submission.
+			form.__loginSuccess = true;
 		} );
 	}
+}
+
+document.addEventListener( 'DOMContentLoaded', function () {
+	// Initialize the form submission script.
+	initializeFormHandlers();
 } );
 
 /**
@@ -163,6 +196,24 @@ async function submitFormData( form ) {
 			JSON.stringify( addresses )
 		);
 	}
+
+	// Allow pro plugins to add additional form data
+	const additionalData = applyFilters(
+		'srfm.prepareAdditionalFormData',
+		{},
+		form
+	);
+	Object.keys( additionalData ).forEach( ( key ) => {
+		if (
+			additionalData[ key ] !== null &&
+			additionalData[ key ] !== undefined
+		) {
+			filteredFormData.append(
+				key,
+				JSON.stringify( additionalData[ key ] )
+			);
+		}
+	} );
 
 	try {
 		return await wp.apiFetch( {
@@ -493,6 +544,7 @@ function extractFormAttributesAndElements( form ) {
 	const captchaErrorElement = form.querySelector( '#captcha-error' );
 	const hCaptchaDiv = form.querySelector( '.h-captcha' );
 	const turnstileDiv = form.querySelector( '.cf-turnstile' );
+	const hasLoginBlock = form.querySelector( '.srfm-login-block' );
 
 	return {
 		formId,
@@ -510,6 +562,7 @@ function extractFormAttributesAndElements( form ) {
 		captchaErrorElement,
 		hCaptchaDiv,
 		turnstileDiv,
+		hasLoginBlock,
 	};
 }
 
@@ -664,3 +717,23 @@ window.handleBricksPreviewFormSubmission = function () {
 		} );
 	}
 };
+
+// Listen for the Elementor popup show event
+window.addEventListener( 'elementor/popup/show', function ( e ) {
+	// Check if the popup contains a SureForms form container
+	const formContainer = e?.detail?.instance?.$element?.[ 0 ]?.querySelector(
+		'.srfm-form-container'
+	);
+
+	// If a form container is found, initialize form handlers
+	if ( formContainer ) {
+		initializeFormHandlers();
+	}
+} );
+
+// Listen for a custom event named 'srfm_form_initialize'
+// This event should be dispatched whenever a form is dynamically initialized
+document.addEventListener( 'srfm_form_initialize', function () {
+	// Call a function to attach event listeners, validation, or other custom logic
+	initializeFormHandlers();
+} );

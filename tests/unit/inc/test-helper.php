@@ -5,6 +5,15 @@
  * @package sureforms
  */
 
+namespace SRFM\Inc;
+
+use stdClass; // Fixes "Class not found" error
+
+// Override get_plugins in the same namespace.
+function get_plugins() {
+    return \SRFM\Inc\Test_Helper::$mock_plugins;
+}
+
 use Yoast\PHPUnitPolyfills\TestCases\TestCase;
 
 use SRFM\Inc\Helper;
@@ -14,6 +23,9 @@ use SRFM\Inc\Helper;
  *
  */
 class Test_Helper extends TestCase {
+
+    public static $mock_plugins = [];
+
     /**
      * Test if get_field_label_from_key is converting field key to label properly.
      */
@@ -384,16 +396,16 @@ class Test_Helper extends TestCase {
     /**
     * Test validate_request_context method.
     *
-    * This method tests various scenarios for the validate_request_context function, 
-    * including single key-value pair validations and multiple condition validations. 
+    * This method tests various scenarios for the validate_request_context function,
+    * including single key-value pair validations and multiple condition validations.
     * It covers the following cases:
-    * 
+    *
     * - A single key-value pair that matches (valid).
     * - A single key-value pair that does not match (invalid).
     * - Multiple conditions where all conditions match (valid).
     * - Multiple conditions where at least one condition does not match (invalid).
     * - Empty conditions with no matching request values.
-    * 
+    *
     * Each case ensures that the function behaves as expected in different scenarios
     * by asserting the returned boolean value.
     *
@@ -497,6 +509,52 @@ class Test_Helper extends TestCase {
                 "Expected '$class_name' to be an invalid CSS class name."
             );
         }
+    }
+
+    /**
+     * Test the check_starter_template_plugin method with mock plugin data.
+     */
+    public function test_check_starter_template_plugin() {
+        // Case 1: Only premium plugin available
+        self::$mock_plugins = [
+            'astra-pro-sites/astra-pro-sites.php' => [ 'Name' => 'Starter Templates Pro' ],
+        ];
+        $this->assertEquals(
+            'astra-pro-sites/astra-pro-sites.php',
+            Helper::check_starter_template_plugin(),
+            'Failed when premium plugin is available'
+        );
+
+        // Case 2: Only free plugin available
+        self::$mock_plugins = [
+            'astra-sites/astra-sites.php' => [ 'Name' => 'Starter Templates' ],
+        ];
+        $this->assertEquals(
+            'astra-sites/astra-sites.php',
+            Helper::check_starter_template_plugin(),
+            'Failed when only free plugin is available'
+        );
+
+        // Case 3: Both plugins available (prefer premium)
+        self::$mock_plugins = [
+            'astra-pro-sites/astra-pro-sites.php' => [ 'Name' => 'Starter Templates Pro' ],
+            'astra-sites/astra-sites.php' => [ 'Name' => 'Starter Templates' ],
+        ];
+        $this->assertEquals(
+            'astra-pro-sites/astra-pro-sites.php',
+            Helper::check_starter_template_plugin(),
+            'Failed when both plugins are available (should prefer premium)'
+        );
+
+        // Case 4: Neither plugin available
+        self::$mock_plugins = [
+            'hello-dolly/hello.php' => [],
+        ];
+        $this->assertEquals(
+            'astra-sites/astra-sites.php',
+            Helper::check_starter_template_plugin(),
+            'Failed when no starter template plugin is found'
+        );
     }
 
     /**
@@ -664,7 +722,7 @@ class Test_Helper extends TestCase {
                 'expected' => '',
             ],
         ];
-    
+
 
         // Iterate through test cases and assert results.
         foreach ($testCases as $description => $testCase) {
@@ -694,7 +752,7 @@ class Test_Helper extends TestCase {
                 'expected' => '',
             ],
         ];
-    
+
 
         // Iterate through test cases and assert results.
         foreach ($testCases as $description => $testCase) {
@@ -749,6 +807,32 @@ class Test_Helper extends TestCase {
                 $testCase['expected'],
                 Helper::strip_js_attributes($testCase['input']),
                 "Failed asserting for case: {$description}"
+            );
+        }
+    }
+
+    /**
+     * Test the has_pro method to check if SureForms Pro plugin is installed.
+     */
+    public function test_has_pro() {
+        // Case 1: When SRFM_PRO_VER is not defined (should return false)
+        if (defined('SRFM_PRO_VER')) {
+            // If constant is already defined, we need to test differently
+            $this->assertTrue(
+                Helper::has_pro(),
+                'Failed: has_pro should return true when SRFM_PRO_VER is defined'
+            );
+        } else {
+            $this->assertFalse(
+                Helper::has_pro(),
+                'Failed: has_pro should return false when SRFM_PRO_VER is not defined'
+            );
+
+            // Case 2: Define the constant and test again
+            define('SRFM_PRO_VER', '1.0.0');
+            $this->assertTrue(
+                Helper::has_pro(),
+                'Failed: has_pro should return true when SRFM_PRO_VER is defined'
             );
         }
     }

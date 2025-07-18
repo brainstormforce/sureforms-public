@@ -5,11 +5,29 @@ function initializeDropdown() {
 
 	dropDownSelector.forEach( ( element ) => {
 		if ( element ) {
+			// Skip if element already has TomSelect initialized
+			if ( element.classList.contains( 'tomselected' ) ) {
+				destroyTomSelect( element );
+			}
+
+			// Check for at least one valid option (skip placeholder)
+			const checkOptions = Array.from( element.options || [] );
+			const hasValidOption = checkOptions.some(
+				( opt ) =>
+					opt.value &&
+					typeof opt.text === 'string' &&
+					opt.text.trim() !== '' &&
+					! opt.disabled // skip disabled placeholder
+			);
+			if ( ! hasValidOption ) {
+				return; // Skip initialization if no valid options
+			}
+
 			let additionalConfig = {};
 			const inputName = element.getAttribute( 'name' );
 			const errorContainerID = element
-				.closest( '.srfm-dropdown-block' )
-				.querySelector( '.srfm-error-message' )
+				?.closest( '.srfm-dropdown-block' )
+				?.querySelector( '.srfm-error-message' )
 				?.getAttribute( 'data-srfm-id' );
 
 			if ( element.getAttribute( 'data-multiple' ) === 'true' ) {
@@ -122,6 +140,11 @@ function initializeDropdown() {
 				},
 			};
 
+			// Check if TomSelect is already initialized on this element
+			if ( element.classList.contains( 'tomselected' ) ) {
+				destroyTomSelect( element );
+			}
+
 			/**
 			 * Creates a new TomSelect instance for the given input element and adds it to the global `window.srfm` object.
 			 *
@@ -134,6 +157,18 @@ function initializeDropdown() {
 			 * @param {string}      inputName - The key under which the TomSelect instance is stored in the `window.srfm` object.
 			 */
 			const tomInputInstance = new TomSelect( element, config );
+
+			/**
+			 * Add the aria required attribute for the dropdown input element.
+			 * This is to announce the required state of the field for screen readers.
+			 * If not correctly implemented, it can lead to a non-compliant experience for users relying on assistive technology.
+			 */
+			if ( tomInputInstance.control_input ) {
+				tomInputInstance.control_input.setAttribute(
+					'aria-required',
+					element.getAttribute( 'aria-required' )
+				);
+			}
 			/**
 			 * `keydown` & `click` event listeners to open the dropdown menu programmatically
 			 * since we set the `openOnFocus` option to false for the dropdown.
@@ -233,7 +268,76 @@ function handleInputState( element ) {
 		}
 	}
 }
-// make dropdown initialization function available globally
-window.srfmInitializeDropdown = initializeDropdown;
 
-document.addEventListener( 'DOMContentLoaded', initializeDropdown );
+/**
+ * Destroys a TomSelect instance and cleans up related DOM elements.
+ *
+ * @param {HTMLElement} dropdown - The dropdown element with TomSelect initialized.
+ */
+function destroyTomSelect( dropdown ) {
+	if ( ! dropdown ) {
+		return;
+	}
+
+	// Get the input name to remove from global registry
+	const inputName = dropdown.getAttribute( 'name' );
+
+	// Check if there's an instance in the global registry
+	if ( window?.srfm && window.srfm[ inputName ] ) {
+		try {
+			// Destroy the instance from the registry
+			window.srfm[ inputName ].destroy();
+			// Remove from registry
+			delete window.srfm[ inputName ];
+		} catch ( e ) {
+			// Silent catch in case destroy fails
+		}
+	}
+
+	// Try to access TomSelect directly on the element as a fallback
+	try {
+		if ( dropdown.tomSelect ) {
+			dropdown.tomSelect.destroy();
+		}
+	} catch ( e ) {
+		// Silent catch in case destroy fails
+	}
+
+	// Reset the element state
+	dropdown.classList.remove( 'tomselected' );
+	dropdown.classList.remove( 'ts-hidden-accessible' );
+	dropdown.removeAttribute( 'tabindex' );
+	dropdown.removeAttribute( 'id' );
+	dropdown.disabled = false;
+
+	// Find and remove TomSelect wrapper elements
+	const getTheWrapper = dropdown.closest(
+		'.srfm-block-wrap.srfm-dropdown-common-wrap'
+	);
+	if ( getTheWrapper ) {
+		const tsWrappers = getTheWrapper.querySelectorAll( 'div.ts-wrapper' );
+		tsWrappers?.forEach( ( wrapper ) => wrapper.remove() );
+	}
+}
+
+// Re-initialize dropdowns when the block is updated in the editor.
+// srfm_form_before_submission
+document.addEventListener( 'srfm_form_before_submission', ( e ) => {
+	const dropdowns = e.detail?.form.querySelectorAll(
+		'.srfm-dropdown-common'
+	);
+	if ( ! dropdowns ) {
+		return;
+	}
+
+	// Destroy the existing TomSelect instances before re-initializing.
+	dropdowns.forEach( ( dropdown ) => {
+		// Ensure we completely clean up before reinitializing
+		destroyTomSelect( dropdown );
+	} );
+
+	// Use a slightly longer timeout to ensure DOM is ready
+	setTimeout( () => {
+		initializeDropdown();
+	}, 150 );
+} );
