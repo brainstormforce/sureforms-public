@@ -323,10 +323,10 @@ class Helper {
 
 		switch ( $type ) {
 			case 'label':
-				$markup = $label ? '<label id="srfm-label-' . esc_attr( $block_id ) . '" for="srfm-' . $slug . '-' . esc_attr( $block_id ) . '" class="srfm-block-label">' . htmlspecialchars_decode( esc_html( $label ) ) . ( $required ? '<span class="srfm-required" aria-label="' . esc_attr__( 'Required', 'sureforms' ) . '"><span aria-hidden="true"> *</span></span>' : '' ) . '</label>' : '';
+				$markup = $label ? '<label id="srfm-label-' . esc_attr( $block_id ) . '" for="srfm-' . $slug . '-' . esc_attr( $block_id ) . '" class="srfm-block-label">' . wp_kses_post( $label ) . ( $required ? '<span class="srfm-required" aria-hidden="true"> *</span>' : '' ) . '</label>' : '';
 				break;
 			case 'help':
-				$markup = $help ? '<div class="srfm-description" id="srfm-description-' . esc_attr( $block_id ) . '">' . wp_kses_post( htmlspecialchars_decode( $help ) ) . '</div>' : '';
+				$markup = $help ? '<div class="srfm-description" id="srfm-description-' . esc_attr( $block_id ) . '">' . wp_kses_post( $help ) . '</div>' : '';
 				break;
 			case 'error':
 				$markup = $required || $override ? '<div class="srfm-error-message" data-srfm-id="srfm-error-' . esc_attr( $block_id ) . '" data-error-msg="' . esc_attr( $error_msg ) . '"' . $duplicate_msg . '>' . esc_html( $error_msg ) . '</div>' : '';
@@ -335,11 +335,11 @@ class Helper {
 				$markup = $is_unique ? '<div class="srfm-error">' . esc_html( $duplicate_msg ) . '</div>' : '';
 				break;
 			case 'placeholder':
-				$markup = $label && '1' === $show_labels_as_placeholder ? htmlspecialchars_decode( esc_html( $label ) ) . ( $required ? ' *' : '' ) : '';
+				$markup = $label && '1' === $show_labels_as_placeholder ? wp_kses_post( $label ) . ( $required ? ' *' : '' ) : '';
 				break;
 			case 'label_text':
 				// This has been added for generating label text for the form markup instead of adding it in the label tag.
-				$markup = $label ? htmlspecialchars_decode( esc_html( $label ) ) . ( $required ? '<span class="srfm-required" aria-label=",' . esc_attr__( 'Required', 'sureforms' ) . ',"><span aria-hidden="true"> *</span></span>' : '' ) . '</label>' : '';
+				$markup = $label ? wp_kses_post( $label ) . ( $required ? '<span class="srfm-required" aria-hidden="true"> *</span>' : '' ) . '</label>' : '';
 				break;
 			default:
 				$markup = '';
@@ -1449,6 +1449,24 @@ class Helper {
 	}
 
 	/**
+	 * Check if the starter template premium plugin is installed and return its file path.
+	 *
+	 * @since 1.7.3
+	 *
+	 * @return string The plugin file path if premium is installed, otherwise the default starter sites plugin file path.
+	 */
+	public static function check_starter_template_plugin() {
+		if ( ! function_exists( 'get_plugins' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/plugin.php';
+		}
+		$plugins = get_plugins();
+
+		$premium = 'astra-pro-sites/astra-pro-sites.php';
+
+		return isset( $plugins[ $premium ] ) ? $premium : 'astra-sites/astra-sites.php';
+	}
+
+	/**
 	 * Get sureforms recommended integrations.
 	 *
 	 * @since 0.0.1
@@ -1461,11 +1479,29 @@ class Helper {
 		$logo_sure_triggers     = file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/suretriggers.svg' );
 		$logo_full              = file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/suretriggers_full.svg' );
 		$logo_sure_mails        = file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/suremails.svg' );
-		$logo_sure_cart         = file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/surecart.svg' );
+		$logo_sure_rank         = file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/surerank.svg' );
 		$logo_starter_templates = file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/starterTemplates.svg' );
 		return apply_filters(
 			'srfm_integrated_plugins',
 			[
+				'sure_rank'         => [
+					'title'       => __( 'SureRank', 'sureforms' ),
+					'subtitle'    => __( 'Simple SEO plugin that works without the bloat.', 'sureforms' ),
+					'status'      => self::get_plugin_status( 'surerank/surerank.php' ),
+					'slug'        => 'surerank',
+					'path'        => 'surerank/surerank.php',
+					'redirection' => admin_url( 'admin.php?page=surerank#/dashboard' ),
+					'logo'        => self::encode_svg( is_string( $logo_sure_rank ) ? $logo_sure_rank : '' ),
+				],
+				'sure_mails'        => [
+					'title'       => __( 'SureMail', 'sureforms' ),
+					'subtitle'    => __( 'Free and easy SMTP mails plugin.', 'sureforms' ),
+					'status'      => self::get_plugin_status( 'suremails/suremails.php' ),
+					'slug'        => 'suremails',
+					'path'        => 'suremails/suremails.php',
+					'redirection' => admin_url( 'options-general.php?page=suremail#/dashboard' ),
+					'logo'        => self::encode_svg( is_string( $logo_sure_mails ) ? $logo_sure_mails : '' ),
+				],
 				'sure_triggers'     => [
 					'title'       => __( 'OttoKit', 'sureforms' ),
 					'subtitle'    => __( 'No-code automation tool for WordPress.', 'sureforms' ),
@@ -1478,33 +1514,135 @@ class Helper {
 					'logo_full'   => self::encode_svg( is_string( $logo_full ) ? $logo_full : '' ),
 					'connected'   => $suretrigger_connected,
 				],
-				'sure_mails'        => [
-					'title'       => __( 'SureMail', 'sureforms' ),
-					'subtitle'    => __( 'Free and easy SMTP mails plugin.', 'sureforms' ),
-					'status'      => self::get_plugin_status( 'suremails/suremails.php' ),
-					'slug'        => 'suremails',
-					'path'        => 'suremails/suremails.php',
-					'redirection' => admin_url( 'options-general.php?page=suremail#/dashboard' ),
-					'logo'        => self::encode_svg( is_string( $logo_sure_mails ) ? $logo_sure_mails : '' ),
-				],
-				'sure_cart'         => [
-					'title'    => __( 'SureCart', 'sureforms' ),
-					'subtitle' => __( 'The new way to sell on WordPress.', 'sureforms' ),
-					'status'   => self::get_plugin_status( 'surecart/surecart.php' ),
-					'slug'     => 'surecart',
-					'path'     => 'surecart/surecart.php',
-					'logo'     => self::encode_svg( is_string( $logo_sure_cart ) ? $logo_sure_cart : '' ),
-				],
 				'starter_templates' => [
 					'title'       => __( 'Starter Templates', 'sureforms' ),
 					'subtitle'    => __( 'Build your dream website in minutes with AI.', 'sureforms' ),
-					'status'      => self::get_plugin_status( 'astra-sites/astra-sites.php' ),
+					'status'      => self::get_plugin_status( self::check_starter_template_plugin() ),
 					'slug'        => 'astra-sites',
-					'path'        => 'astra-sites/astra-sites.php',
+					'path'        => self::check_starter_template_plugin(),
 					'redirection' => admin_url( 'admin.php?page=starter-templates' ),
 					'logo'        => self::encode_svg( is_string( $logo_starter_templates ) ? $logo_starter_templates : '' ),
 				],
 			]
 		);
+	}
+
+	/**
+	 * Get a value from the srfm_options array.
+	 *
+	 * @param string $key The key to retrieve.
+	 * @param mixed  $default The default value to return if the key does not exist.
+	 * @since 1.8.0
+	 * @return mixed
+	 */
+	public static function get_srfm_option( $key, $default = null ) {
+		$options = get_option( 'srfm_options', [] );
+		if ( ! is_array( $options ) ) {
+			$options = [];
+		}
+		return array_key_exists( $key, $options ) ? $options[ $key ] : $default;
+	}
+
+	/**
+	 * Update a value in the srfm_options array.
+	 *
+	 * @param string $key   The key to update.
+	 * @param mixed  $value The value to set.
+	 * @since 1.8.0
+	 * @return void
+	 */
+	public static function update_srfm_option( $key, $value ) {
+		$options = get_option( 'srfm_options', [] );
+		if ( ! is_array( $options ) ) {
+			$options = [];
+		}
+		$options[ $key ] = $value;
+		update_option( 'srfm_options', $options );
+	}
+
+	/**
+	 * Get the WordPress file types.
+	 *
+	 * @since 1.7.4
+	 * @return array<string,mixed> An associative array representing the file types.
+	 */
+	public static function get_wp_file_types() {
+		$formats = [];
+		$mimes   = get_allowed_mime_types();
+		$maxsize = wp_max_upload_size() / 1048576;
+		if ( ! empty( $mimes ) ) {
+			foreach ( $mimes as $type => $mime ) {
+				$multiple = explode( '|', $type );
+				foreach ( $multiple as $single ) {
+					$formats[] = $single;
+				}
+			}
+		}
+
+		return [
+			'formats' => $formats,
+			'maxsize' => $maxsize,
+		];
+	}
+
+	/**
+	 * Summary of delete_upload_file_from_subdir
+	 *
+	 * @param string $file_url The file URL to delete.
+	 * @param string $subdir The subdirectory to delete the file from.
+	 *
+	 * @since 1.7.4
+	 * @return bool
+	 */
+	public static function delete_upload_file_from_subdir( $file_url, $subdir = 'sureforms/' ) {
+		// Decode the file URL.
+		$file_url = urldecode( $file_url );
+
+		// Check if the file URL is empty.
+		if ( empty( $file_url ) || ! is_string( $file_url ) ) {
+			return false;
+		}
+
+		// Normalize and sanitize the subdirectory.
+		$subdir = trailingslashit( sanitize_text_field( $subdir ) );
+
+		// Get the base upload directory.
+		$upload_dir       = wp_upload_dir();
+		$base_upload_path = trailingslashit( $upload_dir['basedir'] ) . $subdir;
+
+		// Extract only the filename from URL.
+		$filename = basename( $file_url );
+
+		// Construct the full file path.
+		$file_path = $base_upload_path . $filename;
+
+		// Resolve real paths.
+		$real_file_path = realpath( $file_path );
+		$real_base_path = realpath( $base_upload_path );
+
+		// Security check: ensure file is inside the target subdir.
+		if ( ! $real_file_path || ! $real_base_path || strpos( $real_file_path, $real_base_path ) !== 0 ) {
+			return false;
+		}
+
+		// Delete if file exists.
+		if ( file_exists( $real_file_path ) ) {
+			return unlink( $real_file_path );
+		}
+
+		return false;
+	}
+
+	/**
+	 * Determines if the SureForms Pro plugin is installed and active.
+	 *
+	 * Checks for the presence of the SRFM_PRO_VER constant.
+	 *
+	 * @since 1.8.0
+	 *
+	 * @return bool True if the Pro plugin is active; false otherwise.
+	 */
+	public static function has_pro() {
+		return defined( 'SRFM_PRO_VER' );
 	}
 }

@@ -3,6 +3,17 @@ function initializePhoneField() {
 
 	phone.forEach( ( element ) => {
 		const phoneNumber = element.querySelector( '.srfm-input-phone' );
+
+		// Check if already initialized and clean up if needed
+		if (
+			phoneNumber.getAttribute( 'data-srfm-phone-initialized' ) === 'true'
+		) {
+			cleanupPhoneFields( element );
+		}
+
+		// Mark as being initialized to prevent double initialization
+		phoneNumber.setAttribute( 'data-srfm-phone-initialized', 'true' );
+
 		const errorMessage = element.querySelector( '.srfm-error-message' );
 		const isAutoCountry = phoneNumber.getAttribute( 'auto-country' );
 		const phoneFieldName = phoneNumber.getAttribute( 'name' );
@@ -165,7 +176,48 @@ function itiContainerClass( element ) {
 	} );
 }
 
+// Cleanup function for phone fields
+function cleanupPhoneFields( container = document ) {
+	const phoneNumbers = container.querySelectorAll( '.srfm-input-phone' );
+
+	phoneNumbers.forEach( ( phoneNumber ) => {
+		try {
+			const itiContainer = phoneNumber.closest( '.iti' );
+			if ( itiContainer && itiContainer.parentNode ) {
+				itiContainer.parentNode.insertBefore(
+					phoneNumber,
+					itiContainer
+				);
+				itiContainer.remove();
+			}
+
+			// Reset initialization flag
+			phoneNumber.removeAttribute( 'data-srfm-phone-initialized' );
+		} catch ( cleanupError ) {
+			console.warn( 'Error cleaning up phone field:', cleanupError );
+		}
+	} );
+}
+
 // make phone field initialization function available globally
 window.srfmInitializePhoneField = initializePhoneField;
+window.srfmCleanupPhoneFields = cleanupPhoneFields;
 
-document.addEventListener( 'DOMContentLoaded', initializePhoneField );
+document.addEventListener( 'srfm_form_before_submission', ( e ) => {
+	const form = e.detail?.form;
+	if ( ! form ) {
+		return;
+	}
+
+	const phones = form.querySelectorAll( '.srfm-input-phone' );
+	if ( ! phones || phones.length === 0 ) {
+		return;
+	}
+
+	// Clean up existing instances first
+	cleanupPhoneFields( form );
+
+	setTimeout( () => {
+		initializePhoneField();
+	}, 100 );
+} );

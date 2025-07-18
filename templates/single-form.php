@@ -169,7 +169,7 @@ if ( $use_banner_as_page_background ) {
 						?>
 					</div>
 					<?php
-					if ( ! defined( 'SRFM_PRO_VER' ) ) {
+					if ( ! Helper::has_pro() ) {
 						// Display SureForms branding if SureForms Pro is not activated.
 						echo wp_kses_post(
 							sprintf(

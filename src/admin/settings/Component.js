@@ -20,6 +20,7 @@ const Component = ( { path } ) => {
 		srfm_ip_log: false,
 		srfm_form_analytics: false,
 		srfm_bsf_analytics: false,
+		srfm_admin_notification: true,
 	} );
 	const [ emailTabOptions, setEmailTabOptions ] = useState( {
 		srfm_email_summary: false,
@@ -92,11 +93,13 @@ const Component = ( { path } ) => {
 						srfm_ip_log,
 						srfm_form_analytics,
 						srfm_bsf_analytics,
+						srfm_admin_notification,
 					} = srfm_general_settings_options;
 					setGeneralTabOptions( {
 						srfm_ip_log,
 						srfm_form_analytics,
 						srfm_bsf_analytics,
+						srfm_admin_notification,
 					} );
 				}
 
