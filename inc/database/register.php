@@ -58,8 +58,18 @@ class Register {
 	 * @return array<string,\SRFM\Inc\Database\Base>
 	 */
 	public static function get_db_tables() {
-		return [
-			'entries' => Entries::get_instance(),
-		];
+		$tables = apply_filters(
+			'srfm_db_tables',
+			[
+				Entries::get_instance(),
+			]
+		);
+		// Ensure all tables are instances of Base class.
+		foreach ( $tables as $key => $table ) {
+			if ( ! $table instanceof Base ) {
+				unset( $tables[ $key ] );
+			}
+		}
+		return $tables;
 	}
 }
