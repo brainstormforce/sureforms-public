@@ -103,7 +103,7 @@ class Single_Entry {
 							/**
 							 * Action hook right after the entry notes.
 							 *
-							 * @since x.x.x
+							 * @since 1.9.0
 							 */
 							do_action( 'srfm_after_entry_notes', $this->entry, $this );
 
