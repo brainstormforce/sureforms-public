@@ -64,12 +64,14 @@ class Register {
 				Entries::get_instance(),
 			]
 		);
+
 		// Ensure all tables are instances of Base class.
+		$valid_tables = [];
 		foreach ( $tables as $key => $table ) {
-			if ( ! $table instanceof Base ) {
-				unset( $tables[ $key ] );
+			if ( $table instanceof Base ) {
+				$valid_tables[ $key ] = $table;
 			}
 		}
-		return $tables;
+		return $valid_tables;
 	}
 }
