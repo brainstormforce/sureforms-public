@@ -44,7 +44,8 @@ jQuery( document ).ready( function ( $ ) {
 								t.element.pointer( 'close' );
 								$.post( sureformsPointerData.ajaxurl, {
 									action: 'sureforms_dismiss_pointer',
-									pointer_nonce: sureformsPointerData.pointer_nonce,
+									pointer_nonce:
+										sureformsPointerData.pointer_nonce,
 								} );
 							} );
 
@@ -59,7 +60,8 @@ jQuery( document ).ready( function ( $ ) {
 							t.element.pointer( 'close' );
 							$.post( sureformsPointerData.ajaxurl, {
 								action: 'sureforms_accept_cta',
-								pointer_nonce: sureformsPointerData.pointer_nonce,
+								pointer_nonce:
+									sureformsPointerData.pointer_nonce,
 							} );
 						} );
 
@@ -73,7 +75,11 @@ jQuery( document ).ready( function ( $ ) {
 					close() {
 						if ( ! pointerClosedBy ) {
 							// Only run if closed by other means (not by our buttons)
-							$.post( sureformsPointerData.ajaxurl, { action: 'sureforms_dismiss_pointer', pointer_nonce: sureformsPointerData.pointer_nonce } );
+							$.post( sureformsPointerData.ajaxurl, {
+								action: 'sureforms_dismiss_pointer',
+								pointer_nonce:
+									sureformsPointerData.pointer_nonce,
+							} );
 						}
 					},
 				} )

@@ -4,9 +4,39 @@ import {
 	initializeInlineFieldValidation,
 	handleScrollAndFocusOnError,
 	handleCaptchaValidation,
+	srfmFields,
 } from './validation';
 import { applyFilters } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
+
+/**
+ * Event listener for external validation initialization.
+ *
+ * Allows external code to trigger form validation initialization by dispatching
+ * the 'srfm_initialize_validation' custom event. When triggered, this will
+ * initialize inline field validation for specified fields or all fields if none specified.
+ *
+ * @param {CustomEvent} event                 - The custom event object
+ * @param {Object}      event.detail          - Event details
+ * @param {Array}       [event.detail.fields] - Optional array of field types to initialize validation for
+ */
+document.addEventListener( 'srfm_initialize_validation', ( event ) => {
+	const fields = event?.detail?.fields;
+
+	if ( ! fields || ! Array.isArray( fields ) ) {
+		// If no fields specified, initialize validation for all field types
+		initializeInlineFieldValidation();
+		return;
+	}
+
+	// Filter the fields array to only include valid field types
+	const validFields = fields.filter( ( field ) =>
+		srfmFields().includes( field )
+	);
+
+	// Initialize validation with the filtered fields
+	initializeInlineFieldValidation( validFields );
+} );
 
 /**
  * Initializes form handlers for all forms with the class `.srfm-form`.
