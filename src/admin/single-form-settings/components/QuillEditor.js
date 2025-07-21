@@ -89,7 +89,14 @@ const Editor = ( { handleContentChange, content, allData = false } ) => {
 	const genericSmartTags = window.srfm_block_data?.smart_tags_array
 		? Object.entries( window.srfm_block_data.smart_tags_array )
 		: [];
-	const formSmartTags = window.sureforms?.formSpecificSmartTags ?? [];
+	let formSmartTags = window.sureforms?.formSpecificSmartTags ?? [];
+
+	// Add repeater smart tags.
+	formSmartTags = [
+		...formSmartTags,
+		...( window.sureforms?.formRepeaterSmartTags ?? [] ),
+	];
+	
 	let formSmartTagsAllData = {};
 	if ( allData ) {
 		formSmartTagsAllData = [
