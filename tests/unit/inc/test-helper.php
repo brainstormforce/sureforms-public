@@ -810,4 +810,89 @@ class Test_Helper extends TestCase {
             );
         }
     }
+
+    /**
+     * Test the has_pro method to check if SureForms Pro plugin is installed.
+     */
+    public function test_has_pro() {
+        // Case 1: When SRFM_PRO_VER is not defined (should return false)
+        if (defined('SRFM_PRO_VER')) {
+            // If constant is already defined, we need to test differently
+            $this->assertTrue(
+                Helper::has_pro(),
+                'Failed: has_pro should return true when SRFM_PRO_VER is defined'
+            );
+        } else {
+            $this->assertFalse(
+                Helper::has_pro(),
+                'Failed: has_pro should return false when SRFM_PRO_VER is not defined'
+            );
+
+            // Case 2: Define the constant and test again
+            define('SRFM_PRO_VER', '1.0.0');
+            $this->assertTrue(
+                Helper::has_pro(),
+                'Failed: has_pro should return true when SRFM_PRO_VER is defined'
+            );
+        }
+    }
+
+    /**
+     * Test apply_filters_as_array method.
+     */
+    public function test_apply_filters_as_array() {
+        // Test case 1: Empty filter name should return default array
+        $default = ['test'];
+        $result = Helper::apply_filters_as_array('', $default);
+        $this->assertTrue(
+            is_array($result),
+            'Empty filter name should return array'
+        );
+        $this->assertSame(
+            $default,
+            $result,
+            'Empty filter name should return default array unchanged'
+        );
+
+        // Test case 2: Non-array default should be converted to empty array
+        $result = Helper::apply_filters_as_array('test_filter', 'string');
+        $this->assertTrue(
+            is_array($result),
+            'Non-array default should be converted to array'
+        );
+        $this->assertEmpty(
+            $result,
+            'Non-array default should be converted to empty array'
+        );
+
+        // Test case 3: Valid filter returning non-empty array should return that array
+        $expected = ['filtered'];
+        add_filter('test_filter_valid', function($value) use ($expected) {
+            return $expected;
+        });
+        
+        $result = Helper::apply_filters_as_array('test_filter_valid', ['default']);
+        $this->assertTrue(
+            is_array($result),
+            'Filter result should be array'
+        );
+        $this->assertSame(
+            $expected,
+            $result,
+            'Should return array from filter'
+        );
+
+        // Test case 4: Filter returning non-array should return default
+        add_filter('test_filter_invalid', function($value) {
+            return 'not an array';
+        });
+        
+        $default = ['default'];
+        $result = Helper::apply_filters_as_array('test_filter_invalid', $default);
+        $this->assertSame(
+            $default,
+            $result,
+            'Should return default when filter returns non-array'
+        );
+    }
 }

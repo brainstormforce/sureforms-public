@@ -219,7 +219,7 @@ const pushSmartTagToArray = (
 		 * Added the '-1' === fieldSlug to avoid the error when login block is added in the form.
 		 * This is because the field slug gets set to -1 for the inline button in the login block.
 		 *
-		 * @since x.x.x
+		 * @since 1.8.0
 		 */
 		if (
 			'undefined' === typeof fieldSlug ||

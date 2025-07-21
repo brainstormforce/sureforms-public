@@ -54,6 +54,19 @@ class Export {
 	}
 
 	/**
+	 * Get unserialized post meta keys.
+	 *
+	 * Retrieves the list of post meta keys that need to be unserialized during export.
+	 * Allows filtering of meta keys via 'srfm_export_and_import_post_meta_keys' filter.
+	 *
+	 * @since 1.9.0
+	 * @return array<string> Array of post meta keys to unserialize.
+	 */
+	public function get_unserialized_post_metas() {
+		return Helper::apply_filters_as_array( 'srfm_export_and_import_post_meta_keys', $this->unserialized_post_metas );
+	}
+
+	/**
 	 * Handle Export form
 	 *
 	 * @since 0.0.1
@@ -100,7 +113,8 @@ class Export {
 		// This is needed because the post metas are serialized before saving.
 		foreach ( $posts as $key => $post ) {
 			$post_metas = isset( $post['post_meta'] ) && is_array( $post['post_meta'] ) ? $post['post_meta'] : [];
-			foreach ( $this->unserialized_post_metas as $meta_key ) {
+
+			foreach ( $this->get_unserialized_post_metas() as $meta_key ) {
 				if ( isset( $post_metas[ $meta_key ] ) && is_array( $post_metas[ $meta_key ] ) ) {
 					$post_metas[ $meta_key ] = maybe_unserialize( $post_metas[ $meta_key ][0] );
 				}
@@ -189,7 +203,7 @@ class Export {
 				// Update post meta.
 				foreach ( $post_meta as $meta_key => $meta_value ) {
 					// Check if the meta key is one of the unserialized post metas then add it as is.
-					if ( in_array( $meta_key, $this->unserialized_post_metas, true ) ) {
+					if ( in_array( $meta_key, $this->get_unserialized_post_metas(), true ) ) {
 						add_post_meta( $post_id, $meta_key, $meta_value );
 					} else {
 						if ( is_array( $meta_value ) && isset( $meta_value[0] ) ) {
