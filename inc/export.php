@@ -122,9 +122,7 @@ class Export {
 		foreach ( $posts as $key => $post ) {
 			$post_metas = isset( $post['post_meta'] ) && is_array( $post['post_meta'] ) ? $post['post_meta'] : [];
 
-			$srfm_post_meta_keys = $this->get_unserialized_post_metas();
-
-			foreach ( $srfm_post_meta_keys as $meta_key ) {
+			foreach ( $this->get_unserialized_post_metas() as $meta_key ) {
 				if ( isset( $post_metas[ $meta_key ] ) && is_array( $post_metas[ $meta_key ] ) ) {
 					$post_metas[ $meta_key ] = maybe_unserialize( $post_metas[ $meta_key ][0] );
 				}
@@ -212,10 +210,8 @@ class Export {
 				}
 				// Update post meta.
 				foreach ( $post_meta as $meta_key => $meta_value ) {
-					$srfm_post_meta_keys = $this->get_unserialized_post_metas();
-
 					// Check if the meta key is one of the unserialized post metas then add it as is.
-					if ( in_array( $meta_key, $srfm_post_meta_keys, true ) ) {
+					if ( in_array( $meta_key, $this->get_unserialized_post_metas(), true ) ) {
 						add_post_meta( $post_id, $meta_key, $meta_value );
 					} else {
 						if ( is_array( $meta_value ) && isset( $meta_value[0] ) ) {
