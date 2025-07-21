@@ -95,7 +95,7 @@ msgstr "Bewerk %1$s"
 #: inc/export.php:64
 #: inc/export.php:129
 #: inc/form-submit.php:94
-#: inc/form-submit.php:830
+#: inc/form-submit.php:842
 #: inc/forms-data.php:87
 #: inc/global-settings/global-settings.php:86
 #: inc/global-settings/global-settings.php:329
@@ -148,7 +148,7 @@ msgid "Mark as Read"
 msgstr "Markeren als gelezen"
 
 #: admin/views/entries-list-table.php:124
-#: admin/views/single-entry.php:313
+#: admin/views/single-entry.php:320
 msgid "Mark as Unread"
 msgstr "Markeren als ongelezen"
 
@@ -283,56 +283,56 @@ msgstr "Alle"
 msgid "SureForms Form #%d"
 msgstr "SureForms Formulier #%d"
 
-#: admin/views/single-entry.php:272
+#: admin/views/single-entry.php:279
 msgid "Submission Info"
 msgstr "Inzendingsinformatie"
 
-#: admin/views/single-entry.php:279
+#: admin/views/single-entry.php:286
 msgid "Entry:"
 msgstr "Invoer:"
 
-#: admin/views/single-entry.php:283
+#: admin/views/single-entry.php:290
 msgid "Form Name:"
 msgstr "Formuliernaam:"
 
-#: admin/views/single-entry.php:288
+#: admin/views/single-entry.php:295
 msgid "User IP:"
 msgstr "Gebruikers-IP:"
 
-#: admin/views/single-entry.php:293
+#: admin/views/single-entry.php:300
 msgid "Browser:"
 msgstr "Browser:"
 
-#: admin/views/single-entry.php:297
+#: admin/views/single-entry.php:304
 msgid "Device:"
 msgstr "Apparaat:"
 
-#: admin/views/single-entry.php:302
+#: admin/views/single-entry.php:309
 msgid "User:"
 msgstr "Gebruiker:"
 
-#: admin/views/single-entry.php:307
+#: admin/views/single-entry.php:314
 msgid "Status:"
 msgstr "Status:"
 
-#: admin/views/single-entry.php:318
+#: admin/views/single-entry.php:325
 msgid "Submitted On:"
 msgstr "Ingediend op:"
 
-#: admin/views/single-entry.php:341
+#: admin/views/single-entry.php:348
 msgid "Form Data"
 msgstr "Formuliergegevens"
 
-#: admin/views/single-entry.php:356
+#: admin/views/single-entry.php:363
 #: assets/build/formEditor.js:172
 msgid "Fields"
 msgstr "Velden"
 
-#: admin/views/single-entry.php:357
+#: admin/views/single-entry.php:364
 msgid "Values"
 msgstr "Waarden"
 
-#: admin/views/single-entry.php:433
+#: admin/views/single-entry.php:440
 #: modules/gutenberg/classes/class-spec-block-config.php:562
 #: modules/gutenberg/icons/icons-v6-1.php:5470
 #: assets/build/blocks.js:172
@@ -344,15 +344,15 @@ msgstr "Waarden"
 msgid "Image"
 msgstr "Afbeelding"
 
-#: admin/views/single-entry.php:446
+#: admin/views/single-entry.php:453
 msgid "Open"
 msgstr "Open"
 
-#: admin/views/single-entry.php:489
+#: admin/views/single-entry.php:496
 msgid "Entry Logs"
 msgstr "Invoerlijsten"
 
-#: admin/views/single-entry.php:513
+#: admin/views/single-entry.php:520
 msgid "No logs found for this entry."
 msgstr "Geen logs gevonden voor deze invoer."
 
@@ -469,7 +469,7 @@ msgid "Form ID is required."
 msgstr "Formulier-ID is vereist."
 
 #: inc/admin-ajax.php:185
-#: inc/form-submit.php:842
+#: inc/form-submit.php:854
 msgid "Invalid form ID."
 msgstr "Ongeldige formulier-ID."
 
@@ -672,8 +672,6 @@ msgstr "Adres"
 msgid "Checkbox"
 msgstr "Selectievakje"
 
-#: inc/helper.php:326
-#: inc/helper.php:342
 #: assets/build/blocks.js:172
 msgid "Required"
 msgstr "Vereist"
@@ -768,7 +766,7 @@ msgstr "Formulier-ID ontbreekt."
 msgid "Spam Detected"
 msgstr "Spam gedetecteerd"
 
-#: inc/form-submit.php:615
+#: inc/form-submit.php:627
 msgid "Error submitting form"
 msgstr "Fout bij het indienen van het formulier"
 
@@ -890,7 +888,7 @@ msgstr "Verbergen"
 msgid "Edit Form"
 msgstr "Formulier bewerken"
 
-#: admin/views/single-entry.php:186
+#: admin/views/single-entry.php:193
 #: inc/page-builders/elementor/form-widget.php:177
 #: assets/build/formEditor.js:172
 msgid "Edit"
@@ -4917,7 +4915,7 @@ msgstr "Jira"
 
 #: modules/gutenberg/icons/icons-v6-2.php:334
 msgid "Joget"
-msgstr ""
+msgstr "Joget"
 
 #: modules/gutenberg/icons/icons-v6-2.php:345
 msgid "Joint"
@@ -9156,7 +9154,7 @@ msgstr "Blok herschikken in de Snelle Actiebalk"
 
 #: admin/admin.php:275
 #: admin/admin.php:276
-#: admin/views/single-entry.php:157
+#: admin/views/single-entry.php:164
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
@@ -9537,7 +9535,7 @@ msgstr "Anti-spaminstellingen"
 msgid "Security Type"
 msgstr "Beveiligingstype"
 
-#: inc/form-submit.php:1015
+#: inc/form-submit.php:1027
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
 msgid "Google reCAPTCHA"
@@ -9547,7 +9545,7 @@ msgstr "Google reCAPTCHA"
 msgid "CloudFlare Turnstile"
 msgstr "CloudFlare Turnstile"
 
-#: inc/form-submit.php:1019
+#: inc/form-submit.php:1031
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
 msgid "hCaptcha"
@@ -9831,7 +9829,7 @@ msgstr "Sitecode"
 msgid "Secret Key"
 msgstr "Geheime Sleutel"
 
-#: inc/form-submit.php:1023
+#: inc/form-submit.php:1035
 #: assets/build/settings.js:172
 msgid "Cloudflare Turnstile"
 msgstr "Cloudflare Turnstile"
@@ -10866,7 +10864,7 @@ msgstr "Honeypot"
 msgid "You do not have permission to export forms."
 msgstr "U heeft geen toestemming om formulieren te exporteren."
 
-#: inc/form-submit.php:788
+#: inc/form-submit.php:800
 msgid "Unknown"
 msgstr "Onbekend"
 
@@ -10902,70 +10900,66 @@ msgstr "%s vertegenwoordigt de minimale invoerwaarde. Bijvoorbeeld: \"Minimale w
 msgid "%s represents the maximum input value. For example: \"Maximum value is 100.\""
 msgstr "%s vertegenwoordigt de maximale invoerwaarde. Bijvoorbeeld: \"Maximale waarde is 100.\""
 
-#: inc/nps-notice.php:111
-msgid "Could you please do us a favor and give us a 5-star rating on WordPress? It would help others choose SureForms with confidence. Thank you!"
-msgstr "Zou je ons alstublieft een plezier willen doen en ons een 5-sterrenbeoordeling op WordPress willen geven? Het zou anderen helpen om met vertrouwen voor SureForms te kiezen. Dank je!"
-
 #. Translators: %s is the entry id.
 #: admin/views/single-entry.php:77
 msgid "Entry #%s"
 msgstr "Invoer #%s"
 
-#: admin/views/single-entry.php:192
+#: admin/views/single-entry.php:199
 msgid "Unlock Edit Form Entires"
 msgstr "Formulierinvoer ontgrendelen"
 
-#: admin/views/single-entry.php:193
+#: admin/views/single-entry.php:200
 msgid "With the SureForms Starter plan, you can easily edit your entries to suit your needs."
 msgstr "Met het SureForms Starter-plan kun je eenvoudig je invoer bewerken om aan je behoeften te voldoen."
 
-#: admin/views/single-entry.php:202
+#: admin/views/single-entry.php:209
 msgid "Resend Notification"
 msgstr "Notificatie opnieuw verzenden"
 
-#: admin/views/single-entry.php:207
+#: admin/views/single-entry.php:214
 msgid "Unlock Resend Email Notification"
 msgstr "Ontgrendel E-mailmelding Opnieuw Verzenden"
 
-#: admin/views/single-entry.php:208
+#: admin/views/single-entry.php:215
 msgid "With the SureForms Starter plan, you can effortlessly resend email notifications, ensuring your important updates reach their recipients with ease."
 msgstr "Met het SureForms Starter-plan kun je moeiteloos e-mailmeldingen opnieuw verzenden, zodat je belangrijke updates gemakkelijk hun ontvangers bereiken."
 
-#: admin/views/single-entry.php:219
+#: admin/views/single-entry.php:226
 msgid "Entry Notes"
 msgstr "Invoernotities"
 
-#: admin/views/single-entry.php:221
+#: admin/views/single-entry.php:228
 msgid "Add Note"
 msgstr "Notitie toevoegen"
 
-#: admin/views/single-entry.php:230
+#: admin/views/single-entry.php:237
 msgid "Submit Note"
 msgstr "Notitie indienen"
 
-#: admin/views/single-entry.php:239
+#: admin/views/single-entry.php:246
 msgid "Unlock Add Note"
 msgstr "Ontgrendel Notitie Toevoegen"
 
-#: admin/views/single-entry.php:240
+#: admin/views/single-entry.php:247
 msgid "With the SureForms Starter plan, enhance your submitted form entries by adding personalized notes for better clarity and tracking."
 msgstr "Met het SureForms Starter-plan kunt u uw ingediende formulierinzendingen verbeteren door gepersonaliseerde notities toe te voegen voor meer duidelijkheid en betere tracking."
 
-#: inc/form-submit.php:722
+#: inc/form-submit.php:734
 msgid "Email notification passed to the sending server"
 msgstr "E-mailmelding doorgestuurd naar de verzendserver"
 
 #. translators: Here, %s is the comma separated emails list.
-#: inc/form-submit.php:776
+#: inc/form-submit.php:788
 msgid "Email notification recipient: %s"
 msgstr "E-mail notificatie ontvanger: %s"
 
 #. translators: Here, %1$s is the comma separated emails list and %2$s is error report ( if any ).
-#: inc/form-submit.php:786
+#: inc/form-submit.php:798
 msgid "Email server was unable to send the email notification. Recipient: %1$s. Reason: %2$s"
 msgstr "E-mailserver kon de e-mailmelding niet verzenden. Ontvanger: %1$s. Reden: %2$s"
 
-#: inc/form-submit.php:812
+#: inc/form-submit.php:824
 msgid "No emails were sent"
 msgstr "Er zijn geen e-mails verzonden"
 
@@ -11255,24 +11249,24 @@ msgstr ""
 msgid "reCAPTCHA error: Submit nonce is not available."
 msgstr "reCAPTCHA-fout: Submit nonce is niet beschikbaar."
 
-#: inc/form-submit.php:959
+#: inc/form-submit.php:971
 msgid "Captcha validation failed. No error code provided."
 msgstr "Captcha-validatie mislukt. Geen foutcode opgegeven."
 
-#: inc/form-submit.php:960
+#: inc/form-submit.php:972
 msgid "Captcha validation failed."
 msgstr "Captcha-validatie mislukt."
 
-#: inc/form-submit.php:1027
+#: inc/form-submit.php:1039
 msgid "Unknown Captcha"
 msgstr "Onbekende Captcha"
 
-#: inc/form-submit.php:1028
+#: inc/form-submit.php:1040
 msgid "Invalid captcha type."
 msgstr "Ongeldig captcha-type."
 
 #. translators: %s is the captcha title.
-#: inc/form-submit.php:1041
+#: inc/form-submit.php:1053
 msgid "%s verification failed. Please contact your site administrator."
 msgstr "%s verificatie mislukt. Neem contact op met uw sitebeheerder."
 
@@ -11871,6 +11865,10 @@ msgstr "Inloggen"
 #: assets/build/formEditor.js:172
 msgid "Register"
 msgstr "Registreren"
+
+#: inc/nps-notice.php:111
+msgid "Thanks for being part of the SureForms community! Got feedback or suggestions? We'd love to hear it."
+msgstr "Bedankt dat je deel uitmaakt van de SureForms-gemeenschap! Heb je feedback of suggesties? We horen het graag."
 
 #: inc/post-types.php:168
 msgctxt "post type general name"

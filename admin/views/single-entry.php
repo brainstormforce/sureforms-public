@@ -100,6 +100,13 @@ class Single_Entry {
 							do_action( 'srfm_before_entry_submission_info', $this->entry, $this );
 							$this->render_upsell_placeholder( 'notes' );
 
+							/**
+							 * Action hook right after the entry notes.
+							 *
+							 * @since 1.9.0
+							 */
+							do_action( 'srfm_after_entry_notes', $this->entry, $this );
+
 							$this->render_submission_info( $form_name, $entry_status, $submitted_on );
 
 							/**

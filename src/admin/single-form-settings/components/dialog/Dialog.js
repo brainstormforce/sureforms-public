@@ -172,7 +172,7 @@ const Dialog = ( {
 				scrollLock
 				open={ open }
 				setOpen={ setOpen }
-				className="[&>div>div]:h-full"
+				className="[&>div>div]:h-full z-99999"
 			>
 				<ForceUIDialog.Backdrop />
 				<ForceUIDialog.Panel className="size-[calc(100%-80px)] m-auto">
