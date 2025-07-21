@@ -63,15 +63,7 @@ class Export {
 	 * @return array<string> Array of post meta keys to unserialize.
 	 */
 	public function get_unserialized_post_metas() {
-		// Filter the default list of meta keys that need unserialization.
-		$filtered_metas = apply_filters( 'srfm_export_and_import_post_meta_keys', $this->unserialized_post_metas );
-
-		// Return default list if filtered result is empty or invalid.
-		if ( empty( $filtered_metas ) || ! is_array( $filtered_metas ) ) {
-			return $this->unserialized_post_metas;
-		}
-
-		return $filtered_metas;
+		return Helper::apply_filters_as_array( 'srfm_export_and_import_post_meta_keys', $this->unserialized_post_metas );
 	}
 
 	/**

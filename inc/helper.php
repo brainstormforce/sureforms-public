@@ -1597,4 +1597,32 @@ class Helper {
 	public static function has_pro() {
 		return defined( 'SRFM_PRO_VER' );
 	}
+
+	/**
+	 * Apply a filter and return the filtered value only if it's a non-empty array.
+	 * Otherwise, return the default array.
+	 *
+	 * @param string $filter_name The name of the filter to apply.
+	 * @param mixed  $default     The default array to return if the filtered result is invalid.
+	 * @param mixed  ...$args     Additional arguments to pass to the filter.
+	 *
+	 * @return array The filtered array if valid, otherwise the default.
+	 */
+	public static function apply_filters_as_array( $filter_name, $default, ...$args ) {
+		// Ensure $default is an array.
+		if ( ! is_array( $default ) ) {
+			$default = [];
+		}
+
+		// Validate the filter name.
+		if ( ! is_string( $filter_name ) || empty( $filter_name ) ) {
+			return $default;
+		}
+
+		// Apply the filter with additional arguments.
+		$filtered = apply_filters( $filter_name, $default, ...$args );
+
+		// Return filtered result if it's a non-empty array.
+		return ( is_array( $filtered ) && ! empty( $filtered ) ) ? $filtered : $default;
+	}
 }
