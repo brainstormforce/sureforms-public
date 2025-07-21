@@ -59,7 +59,7 @@ class Export {
 	 * Retrieves the list of post meta keys that need to be unserialized during export.
 	 * Allows filtering of meta keys via 'srfm_export_and_import_post_meta_keys' filter.
 	 *
-	 * @since x.x.x
+	 * @since 1.9.0
 	 * @return array<string> Array of post meta keys to unserialize.
 	 */
 	public function get_unserialized_post_metas() {
