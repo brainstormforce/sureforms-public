@@ -252,7 +252,6 @@ const pushSmartTagToArray = (
 
 export const withoutSlugBlocks = [
 	'srfm/inline-button',
-	'srfm/hidden',
 	'srfm/page-break',
 	'srfm/separator',
 	'srfm/advanced-heading',
@@ -265,6 +264,7 @@ export const withoutSlugBlocks = [
 export const setFormSpecificSmartTags = ( updateBlockAttributes ) => {
 	const { getBlocks } = select( editorStore );
 	let savedBlocks = getBlocks();
+	console.log( 'Saved Blocks:', savedBlocks );
 	const blockSlugs = prepareBlockSlugs( updateBlockAttributes, savedBlocks );
 
 	if ( ! Object.keys( blockSlugs )?.length ) {
