@@ -1623,6 +1623,6 @@ class Helper {
 		$filtered = apply_filters( $filter_name, $default, ...$args );
 
 		// Return filtered result if it's a non-empty array.
-		return ( is_array( $filtered ) && ! empty( $filtered ) ) ? $filtered : $default;
+		return is_array( $filtered ) && ! empty( $filtered ) ? $filtered : $default;
 	}
 }
