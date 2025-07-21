@@ -96,7 +96,6 @@ const EmailConfirmation = ( props ) => {
 			handleBackNotification();
 		}
 
-		doAction( 'srfm_email_notification_back', formData );
 	};
 
 	// On cancel button clicked.

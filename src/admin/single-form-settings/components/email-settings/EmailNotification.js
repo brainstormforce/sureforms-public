@@ -63,12 +63,15 @@ const EmailNotification = ( {
 
 	};
 	const handleDelete = ( data ) => {
-
 		doAction( 'srfm_email_notification_deleted', data );
+
 		const filterData = emailNotificationData.filter(
 			( el ) => el.id !== data.id
 		);
 		updateMeta( '_srfm_email_notification', filterData );
+
+
+
 		toast.dismiss();
 		toast.success(
 			__( 'Email Notification deleted successfully.', 'sureforms' ),
@@ -83,6 +86,9 @@ const EmailNotification = ( {
 		}
 		const allData = [ ...emailNotificationData, duplicateData ];
 		updateMeta( '_srfm_email_notification', allData );
+
+		doAction( 'srfm_email_notification_duplicated', data, duplicateData );
+
 		toast.dismiss();
 		toast.success(
 			__( 'Email Notification duplicated successfully.', 'sureforms' ),
@@ -140,7 +146,11 @@ const EmailNotification = ( {
 				return el;
 			} );
 		}
+		doAction( 'srfm_email_notification_save', currEmailData );
 		updateMeta( '_srfm_email_notification', currEmailData );
+
+
+
 		toast.dismiss();
 		return true;
 	};
