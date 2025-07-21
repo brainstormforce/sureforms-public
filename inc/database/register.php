@@ -65,6 +65,13 @@ class Register {
 			]
 		);
 
+		// If the filter returns an empty array or not an array, return default entries table.
+		if ( ! is_array( $tables ) || empty( $tables ) ) {
+			return [
+				'entries' => Entries::get_instance(),
+			];
+		}
+
 		// Ensure all tables are instances of Base class.
 		$valid_tables = [];
 		foreach ( $tables as $key => $table ) {
@@ -72,6 +79,12 @@ class Register {
 				$valid_tables[ $key ] = $table;
 			}
 		}
+
+		// Ensure the 'entries' table exists in the $valid_tables array.
+		if ( ! isset( $valid_tables['entries'] ) ) {
+			$valid_tables['entries'] = Entries::get_instance();
+		}
+
 		return $valid_tables;
 	}
 }
