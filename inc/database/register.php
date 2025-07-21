@@ -35,8 +35,11 @@ class Register {
 		 * 3. Init maybe_add_new_columns, it only runs if we have new columns definition and DB is upgradable ( has new version ).
 		 * 4. Init maybe_rename_columns, it only runs if got any columns to rename and DB is upgradable ( has new version ).
 		 * 5. Finally, stop the DB upgrade and update the current version in option table.
+		 *
+		 * Replaced self::get_db_tables() to static::get_db_tables() for allowing overrides.
+		 * @since x.x.x
 		 */
-		foreach ( self::get_db_tables() as $instance ) {
+		foreach ( static::get_db_tables() as $instance ) {
 			$instance->start_db_upgrade();
 
 			if ( $instance->is_db_upgradable() ) {
@@ -58,33 +61,8 @@ class Register {
 	 * @return array<string,\SRFM\Inc\Database\Base>
 	 */
 	public static function get_db_tables() {
-		$tables = apply_filters(
-			'srfm_db_tables',
-			[
-				'entries' => Entries::get_instance(),
-			]
-		);
-
-		// If the filter returns an empty array or not an array, return default entries table.
-		if ( ! is_array( $tables ) || empty( $tables ) ) {
-			return [
-				'entries' => Entries::get_instance(),
-			];
-		}
-
-		// Ensure all tables are instances of Base class.
-		$valid_tables = [];
-		foreach ( $tables as $key => $table ) {
-			if ( $table instanceof Base ) {
-				$valid_tables[ $key ] = $table;
-			}
-		}
-
-		// Ensure the 'entries' table exists in the $valid_tables array.
-		if ( ! isset( $valid_tables['entries'] ) ) {
-			$valid_tables['entries'] = Entries::get_instance();
-		}
-
-		return $valid_tables;
+		return [
+			'entries' => Entries::get_instance(),
+		];
 	}
 }
