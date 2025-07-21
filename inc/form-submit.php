@@ -715,12 +715,11 @@ class Form_Submit {
 		$emails             = [];
 
 		$conditional_email_notification_data = get_post_meta( intval( $id ), '_srfm_raw_email_conditional_meta', true );
-
-
-							if ( empty( $conditional_email_notification_data ) || ! is_string( $conditional_email_notification_data ) ) {
+		if ( empty( $conditional_email_notification_data ) || ! is_string( $conditional_email_notification_data ) ) {
 			// return []; // Return empty array if no feeds found or invalid type.
 			$conditional_email_notification_data = [];
 		}
+		$conditional_email_notification_data = json_decode( $conditional_email_notification_data, true );
 
 		// Filter to determine whether the email notification should be sent.
 		$email_notification = apply_filters( 'srfm_email_notification_should_send', $email_notification, $submission_data, $form_data );
@@ -741,33 +740,33 @@ class Form_Submit {
 						// Trigger an action before sending the email, allowing additional processing or logging.
 						do_action( 'srfm_before_email_send', $parsed, $submission_data, $item, $form_data );
 
-	
-
-		$conditional_email_notification_data = json_decode( $conditional_email_notification_data, true );
-
-
-		// filter out the conditional email notification data based on id
-		if ( is_array( $conditional_email_notification_data ) && ! empty( $conditional_email_notification_data ) ) {
-
-			foreach ( $conditional_email_notification_data as $item ) {
-				// $email_notification[] = $item;
-				$notificationID = isset( $notification[0]['id'] ) ? intval( $notification[0]['id'] ) : 0;
-				$conditionalID = isset( $item['conditionalLogic']['id'] ) ? intval( $item['conditionalLogic']['id'] ) : 0;
-
-				$conditional_email_notification_data = intval( $notificationID) === $conditionalID ? $item : [];
-			}
-		}
-
-		// parse conditional email notification data and check wether to send the email or not.
-		if ( ! empty( $conditional_email_notification_data ) && is_array( $conditional_email_notification_data ) ) {
-			$should_send_email = self::check_trigger_conditions( $conditional_email_notification_data, $submission_data );
-
-			if ( ! $should_send_email ) {
-				continue;
-			}
+						$should_send_email = apply_filters(
+							'srfm_should_send_email',
+							true,
+							$notification
+						);
 
 
-		}
+						// filter out the conditional email notification data based on id
+						// if ( is_array( $conditional_email_notification_data ) && ! empty( $conditional_email_notification_data ) ) {
+
+							foreach ( $conditional_email_notification_data as $item ) {
+								// $email_notification[] = $item;
+								$notificationID = isset( $notification[0]['id'] ) ? intval( $notification[0]['id'] ) : 0;
+								$conditionalID  = isset( $item['conditionalLogic']['id'] ) ? intval( $item['conditionalLogic']['id'] ) : 0;
+
+								$conditional_email_notification_data = intval( $notificationID ) === $conditionalID ? $item : [];
+							}
+						// }
+
+						// parse conditional email notification data and check wether to send the email or not.
+						if ( ! empty( $conditional_email_notification_data ) && is_array( $conditional_email_notification_data ) ) {
+							$should_send_email = self::check_trigger_conditions( $conditional_email_notification_data, $submission_data );
+
+							if ( ! $should_send_email ) {
+								continue;
+							}
+						}
 
 						/**
 						 * Temporary override the content type for wp_mail.
@@ -856,12 +855,12 @@ class Form_Submit {
 	}
 
 		/**
-	 * Check conditional logic for trigger
-	 *
-	 * @param array $feed Feed configuration.
-	 * @since x.x.x
-	 * @return bool True if conditions are met, false otherwise.
-	 */
+		 * Check conditional logic for trigger
+		 *
+		 * @param array $feed Feed configuration.
+		 * @since x.x.x
+		 * @return bool True if conditions are met, false otherwise.
+		 */
 	public function check_trigger_conditions( $feed, $submission_data = [] ) {
 		$trigger = true;
 
@@ -897,7 +896,7 @@ class Form_Submit {
 		switch ( $rules['logic'] ) {
 			case '_AND_':
 				foreach ( $rules['rules'] as $rule ) {
-					if ( ! self::process_condition( $rule , $submission_data ) ) {
+					if ( ! self::process_condition( $rule, $submission_data ) ) {
 						$trigger = false;
 						break;
 					}
@@ -905,11 +904,11 @@ class Form_Submit {
 				break;
 			case '_OR_':
 				foreach ( $rules['rules'] as $rule ) {
-					if ( true === self::process_condition( $rule , $submission_data ) ) {
+					if ( true === self::process_condition( $rule, $submission_data ) ) {
 						$trigger = true;
 						break;
 					}
-					if ( false === self::process_condition( $rule , $submission_data ) ) {
+					if ( false === self::process_condition( $rule, $submission_data ) ) {
 						$trigger = false;
 					}
 				}
@@ -931,20 +930,10 @@ class Form_Submit {
 			return 'field_not_found';
 		}
 
-		// Check if field has ":" then split and get the field and value. this is in case of form:field present. in that time we need to get only field.
-		// $rule['field'] = is_string( $rule['field'] ) && strpos( $rule['field'], ':' ) ? explode( ':', $rule['field'] )[1] : $rule['field'];
-
-		// // From the field label remove {, }.
-		// $rule['field'] = str_replace( [ '{', '}' ], '', Helper::get_string_value( $rule['field'] ) );
-
-
-
-		// if ( ! isset( $submission_data[ $rule['field'] ] ) ) {
-		// 	return 'field_not_found';
-		// }
+		$smart_tags = new Smart_Tags();
 
 		$value = Helper::get_string_value( $rule['value'] );
-		$field = Helper::get_string_value( $submission_data[ $rule['field'] ] );
+		$field = $smart_tags->process_smart_tags( $rule['field'], $submission_data );
 
 		switch ( $rule['operator'] ) {
 			case '_EQUAL_':
