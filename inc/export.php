@@ -55,7 +55,7 @@ class Export {
 
 	/**
 	 * Get unserialized post meta keys.
-	 * 
+	 *
 	 * Retrieves the list of post meta keys that need to be unserialized during export.
 	 * Allows filtering of meta keys via 'srfm_export_and_import_post_meta_keys' filter.
 	 *
@@ -65,7 +65,7 @@ class Export {
 	public function get_unserialized_post_metas() {
 		// Filter the default list of meta keys that need unserialization.
 		$filtered_metas = apply_filters( 'srfm_export_and_import_post_meta_keys', $this->unserialized_post_metas );
-		
+
 		// Return default list if filtered result is empty or invalid.
 		if ( empty( $filtered_metas ) || ! is_array( $filtered_metas ) ) {
 			return $this->unserialized_post_metas;
