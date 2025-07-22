@@ -241,7 +241,7 @@ const EmailDelivery = () => {
 					/>
 					<Text size={ 14 } weight={ 400 } color="secondary">
 						{ __(
-							'Most WordPress sites struggle to send emails reliably, which means form submissions from your site might not reach your inbox—or end up in spam.',
+							'Most WordPress sites struggle to send emails reliably, which means form submissions from your site might not reach your inbox — or end up in spam.',
 							'sureforms'
 						) }
 					</Text>

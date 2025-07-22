@@ -31,10 +31,24 @@ export const useOnboardingNavigation = () => {
 		return false;
 	};
 
+	// Check if user is already connected
+	const isUserConnected = () => {
+		return srfm_admin?.srfm_ai_details?.type !== 'non-registered';
+	};
+
 	const getNextRoute = ( currentPath ) => {
 		const currentIndex = ONBOARDING_ROUTES_CONFIG.findIndex(
 			( route ) => route.url === currentPath
 		);
+
+		// If current path is welcome and user is already connected, skip connect screen
+		if (
+			currentPath === '/onboarding/welcome' &&
+			isUserConnected()
+		) {
+			// Skip to email-delivery page (index + 2)
+			return ONBOARDING_ROUTES_CONFIG[ currentIndex + 2 ].url;
+		}
 
 		// If current path is email-delivery and user has business plan, skip premium-features
 		if (
@@ -52,6 +66,15 @@ export const useOnboardingNavigation = () => {
 		const currentIndex = ONBOARDING_ROUTES_CONFIG.findIndex(
 			( route ) => route.url === currentPath
 		);
+
+		// If current path is email-delivery and user is connected, skip back past connect screen
+		if (
+			currentPath === '/onboarding/email-delivery' &&
+			isUserConnected()
+		) {
+			// Skip back to welcome page (index - 2)
+			return ONBOARDING_ROUTES_CONFIG[ currentIndex - 2 ].url;
+		}
 
 		// If current path is done and user has business plan, skip back past premium-features
 		if ( currentPath === '/onboarding/done' && hasBusinessPlan() ) {
@@ -73,15 +96,22 @@ export const useOnboardingNavigation = () => {
 	};
 
 	const getCurrentStepNumber = () => {
-		// Adjust step number for business users to account for skipped premium features page
-		if ( hasBusinessPlan() && currentRoute === '/onboarding/done' ) {
-			return 3; // Show as step 3 instead of 4
-		}
-
 		const currentIndex = ONBOARDING_ROUTES_CONFIG.findIndex(
 			( route ) => route.url === currentRoute
 		);
-		return currentIndex + 1;
+		let stepNumber = currentIndex + 1;
+
+		// Adjust step number if connect screen is skipped for connected users
+		if ( isUserConnected() && currentIndex > 1 ) {
+			stepNumber -= 1; // Reduce by 1 since connect step is skipped
+		}
+
+		// Adjust step number for business users to account for skipped premium features page
+		if ( hasBusinessPlan() && currentIndex > 2 ) {
+			stepNumber -= 1; // Reduce by 1 since premium features step is skipped
+		}
+
+		return stepNumber;
 	};
 
 	/**
@@ -99,6 +129,14 @@ export const useOnboardingNavigation = () => {
 		// If we're on the first step or route not found, no redirection needed
 		if ( currentIndex <= 0 ) {
 			return '';
+		}
+
+		// If user is already connected and tries to access connect page, redirect to email-delivery
+		if (
+			isUserConnected() &&
+			currentRoute === '/onboarding/connect'
+		) {
+			return '/onboarding/email-delivery';
 		}
 
 		// If user has business plan and tries to access premium features page, redirect to done page
@@ -144,5 +182,6 @@ export const useOnboardingNavigation = () => {
 		getCurrentStepNumber,
 		checkRequiredStep,
 		hasBusinessPlan,
+		isUserConnected,
 	};
 };
