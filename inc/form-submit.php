@@ -726,13 +726,6 @@ class Form_Submit {
 		$is_mail_sent       = false;
 		$emails             = [];
 
-		$conditional_email_notification_data = get_post_meta( intval( $id ), '_srfm_raw_email_conditional_meta', true );
-		if ( empty( $conditional_email_notification_data ) || ! is_string( $conditional_email_notification_data ) ) {
-			// return []; // Return empty array if no feeds found or invalid type.
-			$conditional_email_notification_data = [];
-		}
-		$conditional_email_notification_data = json_decode( $conditional_email_notification_data, true );
-
 		// Filter to determine whether the email notification should be sent.
 		$email_notification = apply_filters( 'srfm_email_notification_should_send', $email_notification, $submission_data, $form_data );
 
@@ -755,39 +748,15 @@ class Form_Submit {
 						$should_send_email = apply_filters(
 							'srfm_should_send_email',
 							true,
-							$notification
+							$notification,
+							$id,
+							$submission_data,
 						);
 
 
-						// filter out the conditional email notification data based on id
-						// if ( is_array( $conditional_email_notification_data ) && ! empty( $conditional_email_notification_data ) ) {
-
-							// foreach ( $conditional_email_notification_data as $item ) {
-							// 	// $email_notification[] = $item;
-							// 	$conditionalID  = isset( $item['conditionalLogic']['id'] ) ? intval( $item['conditionalLogic']['id'] ) : 0;
-
-							// 	$conditional_email_notification_data = intval( $notificationID ) === $conditionalID ? $item : [];
-							// }
-						// }
-
-								$notification_id = isset( $item['id'] ) ? intval( $item['id'] ) : 0;
-
-
-						foreach ($conditional_email_notification_data as $item) {
-							if (isset($item['conditionalLogic']['id']) && $item['conditionalLogic']['id'] == $notification_id) {
-								$conditionalLogic = $item ?? null;
-								break;
-							}
-						}
-
-						// parse conditional email notification data and check wether to send the email or not.
-						if ( ! empty( $conditionalLogic ) && is_array( $conditionalLogic ) ) {
-							$should_send_email = self::check_trigger_conditions( $conditionalLogic, $submission_data );
-
-							if ( ! $should_send_email ) {
-								continue;
-							}
-						}
+		if ( ! $should_send_email ) {
+				continue;
+			}
 
 						/**
 						 * Temporary override the content type for wp_mail.
@@ -894,148 +863,6 @@ class Form_Submit {
 		) {
 			return self::process_logic( $feed['conditionalLogic'], $submission_data );
 		}
-		return $trigger;
-	}
-
-	/**
-	 * Process conditional logic.
-	 *
-	 * @param array<string, mixed> $rules logical conditions.
-	 * @since x.x.x
-	 * @return bool True if conditions are met, false otherwise.
-	 */
-	public function process_logic( $rules, $submission_data = [] ) {
-		// By default trigger is true.
-		$trigger = true;
-
-		// If rules are not set, return true.
-		if ( ! is_array( $rules ) || ! isset( $rules['logic'] ) || ! isset( $rules['rules'] ) || ! is_array( $rules['rules'] ) ) {
-			return $trigger; // If rules are not set, return true.
-		}
-
-		// Check conditions in the rules. if conditions are not empty then process the conditions.
-		switch ( $rules['logic'] ) {
-			case '_AND_':
-				foreach ( $rules['rules'] as $rule ) {
-					if ( ! self::process_condition( $rule, $submission_data ) ) {
-						$trigger = false;
-						break;
-					}
-				}
-				break;
-			case '_OR_':
-				foreach ( $rules['rules'] as $rule ) {
-					if ( true === self::process_condition( $rule, $submission_data ) ) {
-						$trigger = true;
-						break;
-					}
-					if ( false === self::process_condition( $rule, $submission_data ) ) {
-						$trigger = false;
-					}
-				}
-				break;
-		}
-
-		return $trigger;
-	}
-
-	/**
-	 * Process conditional logic.
-	 *
-	 * @param array<string, mixed> $rule logical condition.
-	 * @since x.x.x
-	 * @return string|bool Returns 'field_not_found' if field is not found,
-	 */
-	public static function process_condition( $rule, $submission_data ) {
-		if ( ! is_array( $rule ) || ! isset( $rule['field'] ) ) {
-			return 'field_not_found';
-		}
-
-		$smart_tags = new Smart_Tags();
-
-		$value = Helper::get_string_value( $rule['value'] );
-		$field = $smart_tags->process_smart_tags( $rule['field'], $submission_data );
-
-		switch ( $rule['operator'] ) {
-			case '_EQUAL_':
-				$trigger = (
-					$value === $field
-				);
-				break;
-
-			case '_NOT_EQUAL_':
-				$trigger = (
-					$value !== $field
-				);
-				break;
-
-			case '_GREATER_':
-				$trigger = (
-					$value < $field
-				);
-				break;
-
-			case '_GREATER_OR_EQUAL_':
-				$trigger = (
-					$value <= $field
-				);
-				break;
-
-			case '_LESSER_':
-				$trigger = (
-					$value > $field
-				);
-				break;
-
-			case '_LESSER_OR_EQUAL_':
-				$trigger = (
-					$value >= $field
-				);
-				break;
-
-			case '_STARTS_WITH_':
-				$trigger = 0 === substr_compare(
-					$field,
-					$value,
-					0,
-					strlen( $value )
-				);
-				break;
-
-			case '_ENDS_WITH_':
-				$trigger = (
-					0 === substr_compare(
-						$field,
-						$value,
-						-strlen( $value )
-					)
-				);
-				break;
-
-			case '_CONTAINS_':
-				$trigger = false !== strpos(
-					$field,
-					$value
-				);
-				break;
-			case '_NOT_CONTAINS_':
-				$trigger = false === strpos(
-					$field,
-					$value
-				);
-				break;
-
-			case '_REGEX_':
-				$trigger = 1 === preg_match(
-					$value,
-					$field
-				);
-				break;
-			default:
-				$trigger = true;
-				break;
-		}
-
 		return $trigger;
 	}
 
