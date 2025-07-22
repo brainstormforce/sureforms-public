@@ -339,6 +339,25 @@ class Smart_Tags {
 			$slug       = implode( '-', array_slice( explode( '-', $label ), 1 ) );
 			$block_type = explode( '-lbl-', $submission_item_key )[0];
 			if ( $slug === $target_slug ) {
+
+				$is_processed_externally = apply_filters(
+					'srfm_smart_tags_is_block_processed_externally',
+					[
+						'submission_item_key'   => $submission_item_key,
+						'submission_item_value' => $submission_item_value,
+						'target_slug'           => $target_slug,
+						'block_type'            => $block_type,
+						'form_data'             => $form_data,
+						'submission_data'       => $submission_data,
+						'value'                 => $value,
+					]
+				);
+
+				if ( isset( $is_processed_externally['processed_value'] ) && ! empty( $is_processed_externally['processed_value'] ) ) {
+					$replacement_data = $is_processed_externally['processed_value'];
+					break;
+				}
+
 					// if $submission_item_value is an array, make a tag for each item.
 				if ( 0 === strpos( $block_type, 'srfm-upload' ) && is_array( $submission_item_value ) ) {
 					// Implemented key upload_format_type to determine what to return for urls.
