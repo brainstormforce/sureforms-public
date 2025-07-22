@@ -60,7 +60,6 @@ const EmailNotification = ( {
 		setCurrData( data );
 
 		doAction( 'srfm_email_notification_updated', data );
-
 	};
 	const handleDelete = ( data ) => {
 		doAction( 'srfm_email_notification_deleted', data );
@@ -70,14 +69,11 @@ const EmailNotification = ( {
 		);
 		updateMeta( '_srfm_email_notification', filterData );
 
-
-
 		toast.dismiss();
 		toast.success(
 			__( 'Email Notification deleted successfully.', 'sureforms' ),
 			{ duration: 500 }
 		);
-
 	};
 	const handleDuplicate = ( data ) => {
 		const duplicateData = { ...data };
@@ -148,8 +144,6 @@ const EmailNotification = ( {
 		}
 		doAction( 'srfm_email_notification_save', currEmailData );
 		updateMeta( '_srfm_email_notification', currEmailData );
-
-
 
 		toast.dismiss();
 		return true;
@@ -425,9 +419,7 @@ const EmailNotification = ( {
 						} ) }
 				</Table.Body>
 			</Table>
-				{ attachNecassaryHooks.map(
-								( option ) => option.component
-							) }
+			{ attachNecassaryHooks.map( ( option ) => option.component ) }
 		</TabContentWrapper>
 	);
 };

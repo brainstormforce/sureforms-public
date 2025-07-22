@@ -844,35 +844,3 @@ export const getWordPressPages = ( setPageOptions ) => {
 		} )
 		.catch( ( error ) => console.error( 'Error:', error ) );
 };
-
-/**
- * Converts a JSON-encoded string to an object if valid, otherwise returns null.
- *
- * @param {string} obj - The JSON-encoded string to decode.
- * @return {Object|null} The decoded object value for the given key, or null if invalid JSON or key not found.
- */
-export const decodeJson = ( obj ) => {
-	if ( ! obj ) {
-		return null;
-	}
-
-	try {
-		const decoded = JSON.parse( obj );
-		if ( decoded && typeof decoded === 'object' ) {
-			return decoded;
-		}
-	} catch ( e ) {
-		console.warn( 'SRFM message: Invalid JSON string:', obj, e );
-	}
-	return null;
-};
-
-/**
- * * Creates a deep copy of an array or object using JSON serialization.
- *
- * @param {Array|Object} arrayOrObject - The array or object to copy.
- * @return {Array|Object} - A deep copy of the input array or object.
- */
-export const deepCopy = ( arrayOrObject ) => {
-	return JSON.parse( JSON.stringify( arrayOrObject, null, 2 ) );
-};

@@ -19,8 +19,8 @@ export const attributeOptionsWithFilter = ( options, props ) => {
 	return applyFilters( 'srfm.block.attributes.panel.body', options, props );
 };
 
-export const singleFormOptionsWithFilter = ( options, props ) => {
-	return applyFilters( 'srfm.singleForm.settings', options, props );
+export const singleFormEmailOptionsWithFilter = ( options, props ) => {
+	return applyFilters( 'srfm.singleFormEmail.settings', options, props );
 };
 
 /**
