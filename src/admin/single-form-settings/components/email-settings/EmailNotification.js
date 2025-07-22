@@ -58,16 +58,15 @@ const EmailNotification = ( {
 	const handleEdit = ( data ) => {
 		setShowConfirmation( true );
 		setCurrData( data );
-
 		doAction( 'srfm_email_notification_updated', data );
 	};
 	const handleDelete = ( data ) => {
-		doAction( 'srfm_email_notification_deleted', data );
-
 		const filterData = emailNotificationData.filter(
 			( el ) => el.id !== data.id
 		);
 		updateMeta( '_srfm_email_notification', filterData );
+
+		doAction( 'srfm.emailNotification.deleted', data );
 
 		toast.dismiss();
 		toast.success(
@@ -83,7 +82,7 @@ const EmailNotification = ( {
 		const allData = [ ...emailNotificationData, duplicateData ];
 		updateMeta( '_srfm_email_notification', allData );
 
-		doAction( 'srfm_email_notification_duplicated', data, duplicateData );
+		doAction( 'srfm.emailNotification.duplicated', data, duplicateData );
 
 		toast.dismiss();
 		toast.success(
