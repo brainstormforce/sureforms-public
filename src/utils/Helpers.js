@@ -217,7 +217,7 @@ const pushSmartTagToArray = (
 		if ( isBlockProcessedExternally ) {
 			return;
 		}
-		
+
 		const isInnerBlock =
 			Array.isArray( block?.innerBlocks ) &&
 			0 !== block?.innerBlocks.length;
