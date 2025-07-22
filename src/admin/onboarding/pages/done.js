@@ -2,10 +2,10 @@ import { Container, Text, Title } from '@bsf/force-ui';
 import { __ } from '@wordpress/i18n';
 import { Check } from 'lucide-react';
 import { useState } from '@wordpress/element';
-import { Divider } from './components';
-import NavigationButtons from './navigation-buttons';
-import { useOnboardingState } from './onboarding-state';
-import { useOnboardingNavigation } from './hooks';
+import { Divider } from '../components';
+import NavigationButtons from '../components/navigation-buttons';
+import { useOnboardingState } from '../onboarding-state';
+import { useOnboardingNavigation } from '../hooks';
 import apiFetch from '@wordpress/api-fetch';
 
 const features = [

@@ -3,11 +3,11 @@ import { Container, Text, Title } from '@bsf/force-ui';
 import { Check } from 'lucide-react';
 import { useState, useEffect } from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
-import { useOnboardingNavigation } from './hooks';
-import { useOnboardingState } from './onboarding-state';
+import { useOnboardingNavigation } from '../hooks';
+import { useOnboardingState } from '../onboarding-state';
 import { handlePluginActionTrigger } from '@Utils/Helpers';
-import { Divider } from './components';
-import NavigationButtons from './navigation-buttons';
+import { Divider } from '../components';
+import NavigationButtons from '../components/navigation-buttons';
 import ICONS from '@Admin/components/template-picker/components/icons';
 
 const features = [

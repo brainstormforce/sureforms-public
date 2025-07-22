@@ -1,9 +1,9 @@
 import { __ } from '@wordpress/i18n';
 import { Text } from '@bsf/force-ui';
 import { Check } from 'lucide-react';
-import { useOnboardingNavigation } from './hooks';
-import { Divider } from './components';
-import NavigationButtons from './navigation-buttons';
+import { useOnboardingNavigation } from '../hooks';
+import { Divider } from '../components';
+import NavigationButtons from '../components/navigation-buttons';
 import ICONS from '@Admin/components/template-picker/components/icons';
 
 const features = [

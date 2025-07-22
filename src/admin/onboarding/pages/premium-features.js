@@ -1,10 +1,10 @@
 import { __ } from '@wordpress/i18n';
 import { Text, Checkbox, Badge, Alert } from '@bsf/force-ui';
 import { useState, useEffect, useMemo } from '@wordpress/element';
-import { useOnboardingNavigation } from './hooks';
-import { useOnboardingState } from './onboarding-state';
-import NavigationButtons from './navigation-buttons';
-import { Header, Divider } from './components';
+import { useOnboardingNavigation } from '../hooks';
+import { useOnboardingState } from '../onboarding-state';
+import NavigationButtons from '../components/navigation-buttons';
+import { Header, Divider } from '../components';
 import { addQueryParam } from '@Utils/Helpers';
 
 // Define all available features with their respective plans.

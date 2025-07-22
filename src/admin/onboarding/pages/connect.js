@@ -1,10 +1,10 @@
 import { __ } from '@wordpress/i18n';
 import { Container, Text, Title } from '@bsf/force-ui';
 import { Check } from 'lucide-react';
-import { useOnboardingNavigation } from './hooks';
-import { useOnboardingState } from './onboarding-state';
-import { Divider } from './components';
-import NavigationButtons from './navigation-buttons';
+import { useOnboardingNavigation } from '../hooks';
+import { useOnboardingState } from '../onboarding-state';
+import { Divider } from '../components';
+import NavigationButtons from '../components/navigation-buttons';
 import { initiateAuth } from '@Utils/Helpers';
 import ICONS from '@Admin/components/template-picker/components/icons';
 
