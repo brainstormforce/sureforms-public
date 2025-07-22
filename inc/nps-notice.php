@@ -108,7 +108,7 @@ if ( ! class_exists( 'Nps_Notice' ) ) {
 						'plugin_name'                 => __( 'SureForms', 'sureforms' ),
 						'nps_rating_message'          => __( 'How likely are you to recommend SureForms to your friends or colleagues?', 'sureforms' ),
 						'feedback_title'              => __( 'Thanks a lot for your feedback! 😍', 'sureforms' ),
-						'feedback_content'            => __( 'Could you please do us a favor and give us a 5-star rating on WordPress? It would help others choose SureForms with confidence. Thank you!', 'sureforms' ),
+						'feedback_content'            => __( 'Thanks for being part of the SureForms community! Got feedback or suggestions? We\'d love to hear it.', 'sureforms' ),
 						'plugin_rating_link'          => esc_url( 'https://wordpress.org/support/plugin/sureforms/reviews/#new-post' ),
 						'plugin_rating_title'         => __( 'Thank you for your feedback', 'sureforms' ),
 						'plugin_rating_content'       => __( 'We value your input. How can we improve your experience?', 'sureforms' ),
