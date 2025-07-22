@@ -281,6 +281,7 @@ class Analytics {
 			// Map step keys to more descriptive names.
 			$step_mapping = [
 				'welcome'         => 'Welcome',
+				'connect'         => 'Connect',
 				'emailDelivery'   => 'SureMail',
 				'premiumFeatures' => 'Features',
 				'done'            => 'Done',

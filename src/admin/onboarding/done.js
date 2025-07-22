@@ -5,25 +5,19 @@ import { useState } from '@wordpress/element';
 import { Divider } from './components';
 import NavigationButtons from './navigation-buttons';
 import { useOnboardingState } from './onboarding-state';
+import { useOnboardingNavigation } from './hooks';
 import apiFetch from '@wordpress/api-fetch';
 
 const features = [
-	__(
-		'Use your AI credits to create forms by writing prompts.',
-		'sureforms'
-	),
-	__(
-		'Create forms like conversational, calculation-based, or multi-step.',
-		'sureforms'
-	),
-	__(
-		'Manage submissions and track form performance in one place.',
-		'sureforms'
-	),
+	__( 'Style your form to better match your site\'s design', 'sureforms' ),
+	__( 'Set up confirmation messages and email notifications for each submission', 'sureforms' ),
+	__( 'Add spam protection to block common bot submissions', 'sureforms' ),
+	__( 'Get weekly email reports with a summary of form activity', 'sureforms' ),
 ];
 
 const Done = () => {
 	const [ onboardingState, actions ] = useOnboardingState();
+	const { navigateToPreviousRoute } = useOnboardingNavigation();
 	const [ isCompleting, setIsCompleting ] = useState( false );
 
 	const handleBuildForm = () => {
@@ -68,7 +62,7 @@ const Done = () => {
 					},
 				},
 			} ).then( () => {
-				window.location.href = `${ srfm_admin.site_url }/wp-admin/admin.php?page=add-new-form`;
+				window.location.href = `${ srfm_admin.site_url }/wp-admin/admin.php?page=add-new-form&method=ai`;
 			} );
 		}, 100 );
 	};
@@ -84,7 +78,7 @@ const Done = () => {
 					/>
 					<Text size={ 14 } weight={ 400 } color="secondary">
 						{ __(
-							"SureForms is ready to go. Start building your first form, whether it's a simple form, calculator, or conversational form.",
+							"Try AI if you want a quick head start or start from scratch if you have a clear idea in mind. Forms are ready to be created, shared, and connected to your audience.",
 							'sureforms'
 						) }
 					</Text>
@@ -92,7 +86,7 @@ const Done = () => {
 			</Container>
 			<div className="space-y-2">
 				<Text size={ 14 } weight={ 600 } color="primary">
-					{ __( 'What You Can Do Next:', 'sureforms' ) }
+					{ __( 'Final Touches That Make a Difference:', 'sureforms' ) }
 				</Text>
 				{ features.map( ( feature, index ) => (
 					<Container
@@ -110,6 +104,9 @@ const Done = () => {
 			<Divider />
 
 			<NavigationButtons
+				backProps={ {
+					onClick: navigateToPreviousRoute,
+				} }
 				continueProps={ {
 					onClick: handleBuildForm,
 					text: __( 'Build Your First Form', 'sureforms' ),

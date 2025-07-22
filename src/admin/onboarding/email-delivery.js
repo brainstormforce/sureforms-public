@@ -11,10 +11,10 @@ import NavigationButtons from './navigation-buttons';
 import ICONS from '@Admin/components/template-picker/components/icons';
 
 const features = [
-	__( 'Quick and easy setup, no technical skills needed', 'sureforms' ),
-	__( 'Track, log, and resend emails with ease', 'sureforms' ),
-	__( 'Connect to multiple email providers', 'sureforms' ),
-	__( 'Shield Your Emails. Protect Every Submission.', 'sureforms' ),
+	__( 'Works smoothly with forms made using SureForms', 'sureforms' ),
+	__( 'Helps your emails reach the inbox instead of spam', 'sureforms' ),
+	__( 'Setup is straightforward, even if you\'re not technical', 'sureforms' ),
+	__( 'Lightweight and easy to use without adding clutter', 'sureforms' ),
 ];
 
 const EmailDelivery = () => {
@@ -230,23 +230,29 @@ const EmailDelivery = () => {
 	return (
 		<div className="space-y-6">
 			<Container gap="sm" align="center" className="h-auto">
-				<div className="space-y-2 max-w-[22.5rem]">
+				<div className="space-y-2">
 					<Title
-						tag="h4"
+						tag="h3"
 						title={ __(
-							'No More Missed Notifications or Lost Leads',
+							'Make Sure Your Emails Get Delivered',
 							'sureforms'
 						) }
-						size="md"
+						size="lg"
 					/>
 					<Text size={ 14 } weight={ 400 } color="secondary">
 						{ __(
-							'SureMail is the easiest way to ensure your form notifications land safely in the inbox, not in spam folder.',
+							'Most WordPress sites struggle to send emails reliably, which means form submissions from your site might not reach your inbox—or end up in spam.',
+							'sureforms'
+						) }
+					</Text>
+					<Text size={ 14 } weight={ 400 } color="secondary">
+						{ __(
+							'SureMail is a simple SMTP plugin that helps make sure your emails actually get delivered.',
 							'sureforms'
 						) }
 					</Text>
 				</div>
-				<div className="w-full h-full max-w-32 mx-auto">
+				<div className="h-full mx-auto">
 					{ ICONS.onboardingSureMailsScreen }
 				</div>
 			</Container>
