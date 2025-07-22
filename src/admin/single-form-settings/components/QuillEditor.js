@@ -89,7 +89,7 @@ const Editor = ( { handleContentChange, content, allData = false } ) => {
 	const genericSmartTags = window.srfm_block_data?.smart_tags_array
 		? Object.entries( window.srfm_block_data.smart_tags_array )
 		: [];
-	let formSmartTags = window.sureforms?.formSpecificSmartTags ?? [];
+	const formSmartTags = window.sureforms?.formSpecificSmartTags ?? [];
 
 	let formSmartTagsAllData = {};
 	if ( allData ) {
