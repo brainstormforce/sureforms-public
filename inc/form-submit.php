@@ -762,18 +762,27 @@ class Form_Submit {
 						// filter out the conditional email notification data based on id
 						// if ( is_array( $conditional_email_notification_data ) && ! empty( $conditional_email_notification_data ) ) {
 
-							foreach ( $conditional_email_notification_data as $item ) {
-								// $email_notification[] = $item;
-								$notificationID = isset( $notification[0]['id'] ) ? intval( $notification[0]['id'] ) : 0;
-								$conditionalID  = isset( $item['conditionalLogic']['id'] ) ? intval( $item['conditionalLogic']['id'] ) : 0;
+							// foreach ( $conditional_email_notification_data as $item ) {
+							// 	// $email_notification[] = $item;
+							// 	$conditionalID  = isset( $item['conditionalLogic']['id'] ) ? intval( $item['conditionalLogic']['id'] ) : 0;
 
-								$conditional_email_notification_data = intval( $notificationID ) === $conditionalID ? $item : [];
-							}
+							// 	$conditional_email_notification_data = intval( $notificationID ) === $conditionalID ? $item : [];
+							// }
 						// }
 
+								$notification_id = isset( $item['id'] ) ? intval( $item['id'] ) : 0;
+
+
+						foreach ($conditional_email_notification_data as $item) {
+							if (isset($item['conditionalLogic']['id']) && $item['conditionalLogic']['id'] == $notification_id) {
+								$conditionalLogic = $item ?? null;
+								break;
+							}
+						}
+
 						// parse conditional email notification data and check wether to send the email or not.
-						if ( ! empty( $conditional_email_notification_data ) && is_array( $conditional_email_notification_data ) ) {
-							$should_send_email = self::check_trigger_conditions( $conditional_email_notification_data, $submission_data );
+						if ( ! empty( $conditionalLogic ) && is_array( $conditionalLogic ) ) {
+							$should_send_email = self::check_trigger_conditions( $conditionalLogic, $submission_data );
 
 							if ( ! $should_send_email ) {
 								continue;
