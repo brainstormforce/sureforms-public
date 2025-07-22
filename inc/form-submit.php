@@ -745,12 +745,14 @@ class Form_Submit {
 						// Trigger an action before sending the email, allowing additional processing or logging.
 						do_action( 'srfm_before_email_send', $parsed, $submission_data, $item, $form_data );
 
+						$notification_id = isset( $item['id'] ) ? intval( $item['id'] ) : 0;
+
 						$should_send_email = apply_filters(
 							'srfm_should_send_email',
 							true,
-							$notification,
+							$notification_id,
 							$id,
-							$submission_data,
+							$form_data,
 						);
 
 						if ( ! $should_send_email ) {
