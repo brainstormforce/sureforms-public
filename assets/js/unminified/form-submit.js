@@ -213,6 +213,27 @@ async function submitFormData( form ) {
 			if ( parentBlock?.classList.contains( 'hide-element' ) ) {
 				value = '';
 			}
+
+			/**
+			 * Filters the field value during form submission.
+			 *
+			 * Allows modifying or clearing field values before they are submitted.
+			 * Similar to how hidden fields are cleared, this filter enables custom handling
+			 * for specific field types like repeater fields.
+			 *
+			 * @since x.x.x
+			 * hook srfm.filterFieldValue
+			 *
+			 * @param {*}       value           The current field value.
+			 * @param {Object}  filterArgs      Arguments passed to the filter.
+			 * @param {string}  filterArgs.key  The field key/name.
+			 * @param {Element} filterArgs.form The form DOM element.
+			 * @return {*} The filtered field value.
+			 */
+			value = applyFilters( 'srfm.filterFieldValue', value, {
+				key,
+				form,
+			} );
 		}
 
 		/**
