@@ -4,6 +4,9 @@ const ONBOARDING_ROUTES_CONFIG = [
 		index: true,
 	},
 	{
+		url: '/onboarding/connect',
+	},
+	{
 		url: '/onboarding/email-delivery',
 	},
 	{

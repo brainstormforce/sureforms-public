@@ -9,6 +9,7 @@ import Dashboard from './Dashboard';
 import {
 	OnboardingLayout,
 	Welcome,
+	Connect,
 	EmailDelivery,
 	PremiumFeatures,
 	Done,
@@ -28,6 +29,7 @@ const APP = () => {
 				<Routes>
 					<Route path="/onboarding" element={ <OnboardingLayout /> }>
 						<Route path="welcome" element={ <Welcome /> } />
+						<Route path="connect" element={ <Connect /> } />
 						<Route
 							path="email-delivery"
 							element={ <EmailDelivery /> }
@@ -56,6 +58,7 @@ const APP = () => {
 				<Route path="/" element={ <Dashboard /> } />
 				<Route path="/onboarding" element={ <OnboardingLayout /> }>
 					<Route path="welcome" element={ <Welcome /> } />
+					<Route path="connect" element={ <Connect /> } />
 					<Route
 						path="email-delivery"
 						element={ <EmailDelivery /> }

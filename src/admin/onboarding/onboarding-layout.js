@@ -19,7 +19,7 @@ const NavBar = () => {
 	const [ isExiting, setIsExiting ] = useState( false );
 
 	// Determine total steps based on plan
-	const totalSteps = hasBusinessPlan() ? 2 : 3;
+	const totalSteps = hasBusinessPlan() ? 3 : 4;
 
 	// Function to handle exit with proper state updates
 	const handleExit = () => {
