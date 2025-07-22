@@ -844,28 +844,6 @@ class Form_Submit {
 		];
 	}
 
-		/**
-		 * Check conditional logic for trigger
-		 *
-		 * @param array $feed Feed configuration.
-		 * @since x.x.x
-		 * @return bool True if conditions are met, false otherwise.
-		 */
-	public function check_trigger_conditions( $feed, $submission_data = [] ) {
-		$trigger = true;
-
-		$conditional_logic_status = $feed['conditionalLogic']['status'] ?? false;
-
-		if ( $conditional_logic_status
-		&& ! empty( $feed['conditionalLogic']['logic'] ) &&
-			isset( $feed['conditionalLogic']['rules'] ) &&
-			is_array( $feed['conditionalLogic']['rules'] )
-		) {
-			return self::process_logic( $feed['conditionalLogic'], $submission_data );
-		}
-		return $trigger;
-	}
-
 	/**
 	 * Retrieve all entries data for a specific form ID to check for unique values.
 	 *
