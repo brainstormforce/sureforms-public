@@ -13,18 +13,19 @@ import apiFetch from '@wordpress/api-fetch';
 import ICONS from '@Admin/components/template-picker/components/icons';
 
 const NavBar = () => {
-	const { getCurrentStepNumber, hasBusinessPlan, isUserConnected } = useOnboardingNavigation();
+	const { getCurrentStepNumber, hasBusinessPlan, isUserConnected } =
+		useOnboardingNavigation();
 	const [ onboardingState, actions ] = useOnboardingState();
 	const location = useLocation();
 	const [ isExiting, setIsExiting ] = useState( false );
 
 	// Determine total steps based on plan and connection status
 	let totalSteps = 4; // Base steps: welcome, connect, email-delivery, premium-features, done
-	
+
 	if ( isUserConnected() ) {
 		totalSteps -= 1; // Skip connect step
 	}
-	
+
 	if ( hasBusinessPlan() ) {
 		totalSteps -= 1; // Skip premium features step
 	}

@@ -13,7 +13,7 @@ import ICONS from '@Admin/components/template-picker/components/icons';
 const features = [
 	__( 'Works smoothly with forms made using SureForms', 'sureforms' ),
 	__( 'Helps your emails reach the inbox instead of spam', 'sureforms' ),
-	__( 'Setup is straightforward, even if you\'re not technical', 'sureforms' ),
+	__( "Setup is straightforward, even if you're not technical", 'sureforms' ),
 	__( 'Lightweight and easy to use without adding clutter', 'sureforms' ),
 ];
 

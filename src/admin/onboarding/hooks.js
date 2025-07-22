@@ -42,10 +42,7 @@ export const useOnboardingNavigation = () => {
 		);
 
 		// If current path is welcome and user is already connected, skip connect screen
-		if (
-			currentPath === '/onboarding/welcome' &&
-			isUserConnected()
-		) {
+		if ( currentPath === '/onboarding/welcome' && isUserConnected() ) {
 			// Skip to email-delivery page (index + 2)
 			return ONBOARDING_ROUTES_CONFIG[ currentIndex + 2 ].url;
 		}
@@ -132,10 +129,7 @@ export const useOnboardingNavigation = () => {
 		}
 
 		// If user is already connected and tries to access connect page, redirect to email-delivery
-		if (
-			isUserConnected() &&
-			currentRoute === '/onboarding/connect'
-		) {
+		if ( isUserConnected() && currentRoute === '/onboarding/connect' ) {
 			return '/onboarding/email-delivery';
 		}
 

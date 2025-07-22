@@ -9,10 +9,16 @@ import { useOnboardingNavigation } from '../hooks';
 import apiFetch from '@wordpress/api-fetch';
 
 const features = [
-	__( 'Style your form to better match your site\'s design', 'sureforms' ),
-	__( 'Set up confirmation messages and email notifications for each submission', 'sureforms' ),
+	__( "Style your form to better match your site's design", 'sureforms' ),
+	__(
+		'Set up confirmation messages and email notifications for each submission',
+		'sureforms'
+	),
 	__( 'Add spam protection to block common bot submissions', 'sureforms' ),
-	__( 'Get weekly email reports with a summary of form activity', 'sureforms' ),
+	__(
+		'Get weekly email reports with a summary of form activity',
+		'sureforms'
+	),
 ];
 
 const Done = () => {
@@ -78,7 +84,7 @@ const Done = () => {
 					/>
 					<Text size={ 14 } weight={ 400 } color="secondary">
 						{ __(
-							"Try AI if you want a quick head start or start from scratch if you have a clear idea in mind. Forms are ready to be created, shared, and connected to your audience.",
+							'Try AI if you want a quick head start or start from scratch if you have a clear idea in mind. Forms are ready to be created, shared, and connected to your audience.',
 							'sureforms'
 						) }
 					</Text>
@@ -86,7 +92,10 @@ const Done = () => {
 			</Container>
 			<div className="space-y-2">
 				<Text size={ 14 } weight={ 600 } color="primary">
-					{ __( 'Final Touches That Make a Difference:', 'sureforms' ) }
+					{ __(
+						'Final Touches That Make a Difference:',
+						'sureforms'
+					) }
 				</Text>
 				{ features.map( ( feature, index ) => (
 					<Container

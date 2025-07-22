@@ -26,9 +26,7 @@ const Welcome = () => {
 					{ __( 'Smart, Quick and Powerful Forms.', 'sureforms' ) }
 				</Text>
 			</div>
-			<div>
-				{ ICONS.onboardingWelcome }
-			</div>
+			<div>{ ICONS.onboardingWelcome }</div>
 			<div>
 				<ul>
 					{ features.map( ( feature, index ) => (

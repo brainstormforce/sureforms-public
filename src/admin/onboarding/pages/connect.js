@@ -15,7 +15,8 @@ const features = [
 ];
 
 const Welcome = () => {
-	const { navigateToNextRoute, navigateToPreviousRoute } = useOnboardingNavigation();
+	const { navigateToNextRoute, navigateToPreviousRoute } =
+		useOnboardingNavigation();
 	const [ , actions ] = useOnboardingState();
 
 	const handleConnect = async () => {
@@ -46,10 +47,16 @@ const Welcome = () => {
 	const description = (
 		<>
 			<p>
-				{ __( "Starting from a blank form isn't always easy. Our AI can help by creating a draft form based on what you're trying to do — saving you time and giving you a clear direction.", 'sureforms' ) }
-				<br/>
-				<br/>
-				{ __( "To do this, you'll need to connect your account.", 'sureforms' ) }
+				{ __(
+					"Starting from a blank form isn't always easy. Our AI can help by creating a draft form based on what you're trying to do — saving you time and giving you a clear direction.",
+					'sureforms'
+				) }
+				<br />
+				<br />
+				{ __(
+					"To do this, you'll need to connect your account.",
+					'sureforms'
+				) }
 			</p>
 		</>
 	);
@@ -61,15 +68,18 @@ const Welcome = () => {
 		>
 			<div>{ ICONS.onboardingConnect }</div>
 			<Title
-				title={ __( 'Let AI Help You Build Smarter, Faster Forms', 'sureforms' ) }
+				title={ __(
+					'Let AI Help You Build Smarter, Faster Forms',
+					'sureforms'
+				) }
 				description={ description }
-				tag='h3'
-				size='lg'
-				className='flex flex-col gap-2'
+				tag="h3"
+				size="lg"
+				className="flex flex-col gap-2"
 			/>
 			<div className="space-y-2">
 				<Text size={ 14 } weight={ 500 } color="primary">
-					{ __( "Here's what that gives you:", "sureforms" ) }
+					{ __( "Here's what that gives you:", 'sureforms' ) }
 				</Text>
 				{ features.map( ( feature, index ) => (
 					<Container
@@ -93,7 +103,7 @@ const Welcome = () => {
 				continueProps={ {
 					onClick: handleConnect,
 					text: isRegistered
-						? __( "Continue", 'sureforms' )
+						? __( 'Continue', 'sureforms' )
 						: __( 'Connect', 'sureforms' ),
 				} }
 				skipProps={ {
