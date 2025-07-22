@@ -58,7 +58,6 @@ const EmailNotification = ( {
 	const handleEdit = ( data ) => {
 		setShowConfirmation( true );
 		setCurrData( data );
-		doAction( 'srfm_email_notification_updated', data );
 	};
 	const handleDelete = ( data ) => {
 		const filterData = emailNotificationData.filter(
@@ -141,9 +140,7 @@ const EmailNotification = ( {
 				return el;
 			} );
 		}
-		doAction( 'srfm_email_notification_save', currEmailData );
 		updateMeta( '_srfm_email_notification', currEmailData );
-
 		toast.dismiss();
 		return true;
 	};
