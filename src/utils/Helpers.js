@@ -264,7 +264,6 @@ export const withoutSlugBlocks = [
 export const setFormSpecificSmartTags = ( updateBlockAttributes ) => {
 	const { getBlocks } = select( editorStore );
 	let savedBlocks = getBlocks();
-	console.log( 'Saved Blocks:', savedBlocks );
 	const blockSlugs = prepareBlockSlugs( updateBlockAttributes, savedBlocks );
 
 	if ( ! Object.keys( blockSlugs )?.length ) {
