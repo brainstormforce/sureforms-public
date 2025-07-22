@@ -728,7 +728,7 @@ export async function fieldValidation(
 			firstErrorInput,
 			scrollElement,
 			...additionalValidationObject,
-		}
+		  }
 		: false;
 }
 
