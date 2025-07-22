@@ -753,10 +753,9 @@ class Form_Submit {
 							$submission_data,
 						);
 
-
-		if ( ! $should_send_email ) {
-				continue;
-			}
+						if ( ! $should_send_email ) {
+								continue;
+						}
 
 						/**
 						 * Temporary override the content type for wp_mail.
