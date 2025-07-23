@@ -339,6 +339,44 @@ class Smart_Tags {
 			$slug       = implode( '-', array_slice( explode( '-', $label ), 1 ) );
 			$block_type = explode( '-lbl-', $submission_item_key )[0];
 			if ( $slug === $target_slug ) {
+
+				/**
+				 * Filter to allow external processing of specific block types.
+				 *
+				 * Allows other components to process certain block types differently by providing
+				 * their own processing logic. If a block is processed externally, the filter should
+				 * return an array containing 'processed_value'.
+				 *
+				 * @param array $args {
+				 *     Arguments passed to the filter.
+				 *
+				 *     @type string       $submission_item_key   The key of the current submission item
+				 *     @type mixed        $submission_item_value The value of the current submission item
+				 *     @type string       $target_slug          The target field slug being processed
+				 *     @type string       $block_type           The type of block being processed
+				 *     @type array        $form_data            The complete form configuration data
+				 *     @type array        $submission_data      The complete form submission data
+				 *     @type string       $value                The original smart tag value
+				 * }
+				 */
+				$is_processed_externally = Helper::apply_filters_as_array(
+					'srfm_smart_tags_is_block_processed_externally',
+					[
+						'submission_item_key'   => $submission_item_key,
+						'submission_item_value' => $submission_item_value,
+						'target_slug'           => $target_slug,
+						'block_type'            => $block_type,
+						'form_data'             => $form_data,
+						'submission_data'       => $submission_data,
+						'value'                 => $value,
+					]
+				);
+
+				if ( isset( $is_processed_externally['processed_value'] ) ) {
+					$replacement_data = $is_processed_externally['processed_value'];
+					break;
+				}
+
 					// if $submission_item_value is an array, make a tag for each item.
 				if ( 0 === strpos( $block_type, 'srfm-upload' ) && is_array( $submission_item_value ) ) {
 					// Implemented key upload_format_type to determine what to return for urls.

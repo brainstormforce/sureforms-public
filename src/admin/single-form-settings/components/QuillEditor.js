@@ -90,6 +90,7 @@ const Editor = ( { handleContentChange, content, allData = false } ) => {
 		? Object.entries( window.srfm_block_data.smart_tags_array )
 		: [];
 	const formSmartTags = window.sureforms?.formSpecificSmartTags ?? [];
+
 	let formSmartTagsAllData = {};
 	if ( allData ) {
 		formSmartTagsAllData = [
@@ -129,18 +130,19 @@ const Editor = ( { handleContentChange, content, allData = false } ) => {
 	CustomImageBlot.tagName = 'img';
 	Quill.register( CustomImageBlot );
 
-	const formConfirmationSmartTags = applyFilters( 'srfm.formSettings.formConfirmationSmartTags', [
-		{
-			tags: allData
-				? formSmartTagsAllData
-				: formSmartTags,
-			label: __( 'Form input tags', 'sureforms' ),
-		},
-		{
-			tags: genericSmartTags,
-			label: __( 'Generic tags', 'sureforms' ),
-		},
-	] );
+	const formConfirmationSmartTags = applyFilters(
+		'srfm.formSettings.formConfirmationSmartTags',
+		[
+			{
+				tags: allData ? formSmartTagsAllData : formSmartTags,
+				label: __( 'Form input tags', 'sureforms' ),
+			},
+			{
+				tags: genericSmartTags,
+				label: __( 'Generic tags', 'sureforms' ),
+			},
+		]
+	);
 
 	return (
 		<>
