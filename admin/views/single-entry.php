@@ -471,7 +471,7 @@ class Single_Entry {
 							]
 						);
 
-						if ( false === $should_add_field_row ) {
+						if ( true !== $should_add_field_row ) {
 							continue;
 						}
 

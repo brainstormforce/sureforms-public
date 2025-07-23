@@ -359,7 +359,7 @@ class Smart_Tags {
 				 *     @type string       $value                The original smart tag value
 				 * }
 				 */
-				$is_processed_externally = apply_filters(
+				$is_processed_externally = Helper::apply_filters_as_array(
 					'srfm_smart_tags_is_block_processed_externally',
 					[
 						'submission_item_key'   => $submission_item_key,
