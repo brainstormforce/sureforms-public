@@ -1206,8 +1206,6 @@ class Admin {
 	 * @since x.x.x
 	 */
 	public function register_dashboard_widget() {
-		// We already know there are entries from maybe_register_dashboard_widget check.
-
 		// Add the widget with high priority to position it at the top.
 		wp_add_dashboard_widget(
 			'sureforms_recent_entries',
@@ -1229,7 +1227,7 @@ class Admin {
 	public function render_dashboard_widget() {
 		// Get entries from the last 7 days.
 		$seven_days_ago = strtotime( '-7 days' );
-		$entries_data   = Helper::get_forms_with_entry_counts( $seven_days_ago, 4, true );
+		$entries_data   = Helper::get_forms_with_entry_counts( $seven_days_ago, 4 );
 
 		// Display the widget content.
 		?>

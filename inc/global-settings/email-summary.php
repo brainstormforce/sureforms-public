@@ -97,7 +97,7 @@ class Email_Summary {
 		$week_ago_timestamp = strtotime( '-7 days' );
 
 		// Use the common helper function to get forms with entry counts.
-		$forms_data = Helper::get_forms_with_entry_counts( $week_ago_timestamp, 0, true );
+		$forms_data = Helper::get_forms_with_entry_counts( $week_ago_timestamp );
 
 		$admin_user_name = get_user_by( 'id', 1 ) ? get_user_by( 'id', 1 )->display_name : 'Admin';
 
