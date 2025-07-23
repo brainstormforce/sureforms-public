@@ -235,10 +235,15 @@ const EmailNotification = ( {
 		);
 	}
 
-	const attachNecassaryHooks = applyFilters(
-		'srfm_email_notification_loaded',
+	// hook to make delete, duplicate feature work with conditional logic.
+	let attachNecassaryHooks = applyFilters(
+		'srfm.emailNotification.loaded',
 		[]
 	);
+
+	if ( ! attachNecassaryHooks || attachNecassaryHooks.length === 0 ) {
+		attachNecassaryHooks = []
+	}
 
 	return (
 		<TabContentWrapper
