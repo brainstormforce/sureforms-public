@@ -155,7 +155,7 @@ class Email_Template {
 						 *                         'processed_label' => string The decrypted human readable label
 						 */
 						do_action(
-							'srfm_all_data_render_field',
+							'srfm_before_processing_all_data_field',
 							[
 								'value'           => $value,
 								'label'           => $field_name,
@@ -170,7 +170,7 @@ class Email_Template {
 						 * This filter allows skipping rows for fields that cannot be processed with the
 						 * core plugin's structure. Fields from other packages may have complex data structures
 						 * that could cause fatal errors if processed normally. Those packages can use the
-						 * 'srfm_all_data_render_field' action to render their fields and return false here
+						 * 'srfm_before_processing_all_data_field' action to render their fields and return false here
 						 * to prevent the core plugin from attempting to process them.
 						 *
 						 * @since x.x.x
@@ -193,7 +193,7 @@ class Email_Template {
 							]
 						);
 
-						if ( ! $should_add_field_row ) {
+						if ( false === $should_add_field_row ) {
 							continue;
 						}
 
