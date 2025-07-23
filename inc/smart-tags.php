@@ -47,12 +47,12 @@ class Smart_Tags {
 		$form_data = [ 'form-id' => $id ];
 
 		if ( self::check_form_by_id( $id ) ) {
-			return self::process_smart_tags( $block_content, null, $form_data );
+			return Helper::get_string_value( self::process_smart_tags( $block_content, null, $form_data ) );
 		}
 
 		if ( isset( $block['blockName'] ) && ( 'srfm/form' === $block['blockName'] ) ) {
 			if ( isset( $block['attrs']['id'] ) && $block['attrs']['id'] ) {
-				return self::process_smart_tags( $block_content, null, $form_data );
+				return Helper::get_string_value( self::process_smart_tags( $block_content, null, $form_data ) );
 			}
 		}
 
