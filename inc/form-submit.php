@@ -747,6 +747,11 @@ class Form_Submit {
 
 						$notification_id = isset( $item['id'] ) ? intval( $item['id'] ) : 0;
 
+						/**
+						 * Filter to determine whether the email should be sent.
+						 *
+						 * @since x.x.x
+						 */
 						$should_send_email = apply_filters(
 							'srfm_should_send_email',
 							true,
@@ -754,6 +759,8 @@ class Form_Submit {
 							$id,
 							$form_data,
 						);
+
+						$should_send_email = filter_var( $should_send_email, FILTER_VALIDATE_BOOLEAN );
 
 						if ( ! $should_send_email ) {
 								continue;
