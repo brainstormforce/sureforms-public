@@ -1229,7 +1229,7 @@ class Admin {
 	public function render_dashboard_widget() {
 		// Get entries from the last 7 days.
 		$seven_days_ago = strtotime( '-7 days' );
-		$entries_data   = $this->get_recent_entries_data( $seven_days_ago );
+		$entries_data   = Helper::get_forms_with_entry_counts( $seven_days_ago, 4, true );
 
 		// Display the widget content.
 		?>
@@ -1337,65 +1337,4 @@ class Admin {
 		return false;
 	}
 
-	/**
-	 * Get recent entries data grouped by form.
-	 *
-	 * @param int $timestamp The timestamp to get entries after.
-	 * @return array Array of form data with entry counts.
-	 * @since x.x.x
-	 */
-	private function get_recent_entries_data( $timestamp ) {
-		// Get all published forms.
-		$args = [
-			'post_type'      => SRFM_FORMS_POST_TYPE,
-			'posts_per_page' => -1,
-			'post_status'    => 'publish',
-			'orderby'        => 'ID',
-			'order'          => 'DESC',
-		];
-
-		$query = new \WP_Query( $args );
-
-		if ( ! $query->have_posts() ) {
-			return [];
-		}
-
-		$all_forms = [];
-
-		while ( $query->have_posts() ) {
-			$query->the_post();
-			$form_id = get_the_ID();
-
-			// Get entries count after the timestamp for this specific form.
-			$entry_count = Entries::get_entries_count_after( $timestamp, $form_id );
-
-			// Get form title, use "Blank Form" if empty.
-			$form_title = get_the_title();
-			if ( empty( trim( $form_title ) ) ) {
-				$form_title = __( 'Blank Form', 'sureforms' );
-			}
-
-			$all_forms[] = [
-				'form_id' => $form_id,
-				'title'   => $form_title,
-				'count'   => $entry_count,
-			];
-		}
-
-		wp_reset_postdata();
-
-		// Sort by count descending, then by form_id descending for consistency.
-		usort(
-			$all_forms,
-			static function( $a, $b ) {
-				if ( $a['count'] === $b['count'] ) {
-					return $b['form_id'] - $a['form_id'];
-				}
-				return $b['count'] - $a['count'];
-			}
-		);
-
-		// Return exactly 4 forms (or all if less than 4 exist).
-		return array_slice( $all_forms, 0, 4 );
-	}
 }
