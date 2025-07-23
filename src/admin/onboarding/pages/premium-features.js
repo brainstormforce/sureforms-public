@@ -1,4 +1,4 @@
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { Text, Checkbox, Badge, Alert } from '@bsf/force-ui';
 import { useState, useEffect, useMemo } from '@wordpress/element';
 import { useOnboardingNavigation } from '../hooks';
@@ -6,6 +6,7 @@ import { useOnboardingState } from '../onboarding-state';
 import NavigationButtons from '../components/navigation-buttons';
 import { Header, Divider } from '../components';
 import { addQueryParam } from '@Utils/Helpers';
+import { ExternalLink } from 'lucide-react';
 
 // Define all available features with their respective plans.
 const allFeatures = [
@@ -135,6 +136,9 @@ const planBadgeColors = {
 const FEATURES_STORAGE_KEY = 'srfm_onboarding_premium_features';
 const SELECTIONS_STORAGE_KEY = 'srfm_onboarding_premium_selections';
 const PLAN_STORAGE_KEY = 'srfm_onboarding_current_plan';
+
+// Coupon code constant
+const COUPON_CODE = 'ONB10';
 
 // Helper function to shuffle an array (Fisher-Yates algorithm)
 const shuffleArray = ( array ) => {
@@ -445,6 +449,37 @@ const PremiumFeatures = () => {
 	const showUpgradeButton =
 		hasSelectedPremiumFeatures && currentPlan !== 'business';
 
+	// Determine the highest plan required based on selected features
+	const getHighestPlanRequired = () => {
+		let highestPlan = 'starter'; // Default to starter if any premium feature is selected
+
+		// Check selected features to determine highest plan needed
+		stableFilteredFeatures.forEach( ( feature ) => {
+			if ( selectedFeatures[ feature.id ] && feature.type !== 'free' ) {
+				if ( feature.plan === 'business' ) {
+					highestPlan = 'business';
+				} else if (
+					feature.plan === 'pro' &&
+					highestPlan !== 'business'
+				) {
+					highestPlan = 'pro';
+				}
+			}
+		} );
+
+		return highestPlan;
+	};
+
+	// Get the display name for the plan
+	const getPlanDisplayName = ( plan ) => {
+		const planNames = {
+			starter: __( 'Starter', 'sureforms' ),
+			pro: __( 'Pro', 'sureforms' ),
+			business: __( 'Business', 'sureforms' ),
+		};
+		return planNames[ plan ] || __( 'Premium', 'sureforms' );
+	};
+
 	return (
 		<div className="space-y-6">
 			<Header
@@ -507,17 +542,6 @@ const PremiumFeatures = () => {
 				</>
 			) }
 
-			{ isReady && stableFilteredFeatures.length === 0 && (
-				<div className="p-4 bg-background-secondary rounded-md">
-					<Text size={ 14 } weight={ 500 } color="primary">
-						{ __(
-							'You already have access to all premium features with your current plan!',
-							'sureforms'
-						) }
-					</Text>
-				</div>
-			) }
-
 			{ isReady && (
 				<>
 					<Divider />
@@ -531,6 +555,10 @@ const PremiumFeatures = () => {
 							text: showUpgradeButton
 								? __( 'Upgrade', 'sureforms' )
 								: __( 'Next', 'sureforms' ),
+							...( showUpgradeButton && {
+								icon: <ExternalLink />,
+								className: '[&>svg]:size-4',
+							} ),
 						} }
 						skipProps={ {
 							onClick: handleSkip,
@@ -541,13 +569,73 @@ const PremiumFeatures = () => {
 					{ showUpgradeButton && (
 						<div className="p-1">
 							<Alert
-								content={ __(
-									"You've picked Premium features — upgrade to start using them.",
-									'sureforms'
+								content={ sprintf(
+									/* translators: 1: Plan name (Starter, Pro, or Business), 2: Coupon code */
+									__(
+										'Selected features require SureForms %1$s - use code %2$s to get 10%% off on any plan.',
+										'sureforms'
+									),
+									getPlanDisplayName(
+										getHighestPlanRequired()
+									),
+									COUPON_CODE
 								) }
 								className="bg-background-secondary shadow-none"
 								variant="neutral"
 								icon={ <></> }
+								action={ {
+									label: __( 'Copy', 'sureforms' ),
+									type: 'link',
+									onClick: () => {
+										const copyToClipboard = async () => {
+											try {
+												await navigator.clipboard.writeText(
+													COUPON_CODE
+												);
+												console.log(
+													'Coupon code copied to clipboard'
+												);
+											} catch ( err ) {
+												console.error(
+													'Failed to copy using Clipboard API:',
+													err
+												);
+												try {
+													const textArea =
+														document.createElement(
+															'textarea'
+														);
+													textArea.value =
+														COUPON_CODE;
+													textArea.style.position =
+														'fixed'; // prevent scrolling to bottom
+													textArea.style.opacity =
+														'0';
+													document.body.appendChild(
+														textArea
+													);
+													textArea.focus();
+													textArea.select();
+													document.execCommand(
+														'copy'
+													);
+													document.body.removeChild(
+														textArea
+													);
+													console.log(
+														'Fallback: Coupon code copied using execCommand'
+													);
+												} catch ( fallbackErr ) {
+													console.error(
+														'Fallback copy failed:',
+														fallbackErr
+													);
+												}
+											}
+										};
+										copyToClipboard();
+									},
+								} }
 							/>
 						</div>
 					) }
