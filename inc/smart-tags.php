@@ -126,6 +126,8 @@ class Smart_Tags {
 	 * @param array<mixed>|null $form_data data from form.
 	 * @since 0.0.1
 	 * @return string
+	 * @since x.x.x
+	 * @return string|array<mixed>
 	 */
 	public function process_smart_tags( $content, $submission_data = null, $form_data = null ) {
 
@@ -151,7 +153,27 @@ class Smart_Tags {
 				continue;
 			}
 
-			$replace = Helper::get_string_value( self::smart_tags_callback( $tag, $submission_data, $form_data ) );
+			// Get the only smart tag value.
+			$smart_tag_value = self::smart_tags_callback( $tag, $submission_data, $form_data );
+
+			if ( is_array( $smart_tag_value ) ) {
+				$is_verified_value = apply_filters(
+					'srfm_is_smart_tag_value_verified_as_array',
+					false,
+					[
+						'tag'             => $tag,
+						'submission_data' => $submission_data,
+						'form_data'       => $form_data,
+						'value'           => $smart_tag_value,
+					]
+				);
+
+				if ( true === $is_verified_value ) {
+					return $smart_tag_value;
+				}
+			}
+
+			$replace = Helper::get_string_value( $smart_tag_value );
 			$content = str_replace( $tag, $replace, $content );
 		}
 
