@@ -126,7 +126,7 @@ const EmailConfirmation = ( props ) => {
 		'sureforms'
 	);
 
-	const emailOptions = [
+	const emailNotificationOptions = [
 		{
 			id: 'name',
 			component: (
@@ -357,14 +357,16 @@ const EmailConfirmation = ( props ) => {
 		},
 	];
 
+	// Apply filters to the email options.
+	// This allows us to modify the email notification options.
 	let filterOptions = singleFormEmailOptionsWithFilter(
-		emailOptions,
+		emailNotificationOptions,
 		props
 	);
 
 	// if filterOptions is empty, return null to avoid rendering
 	if ( ! filterOptions || filterOptions.length === 0 ) {
-		filterOptions = emailOptions
+		filterOptions = emailNotificationOptions
 	}
 
 	return (
