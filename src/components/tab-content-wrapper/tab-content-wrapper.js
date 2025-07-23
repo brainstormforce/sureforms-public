@@ -11,6 +11,7 @@ const TabContentWrapper = ( {
 	actionBtnText,
 	actionBtnIcon,
 	actionBtnVariant = 'primary',
+	actionLeftContent,
 	actionBtnDisabled = false,
 } ) => {
 	const handleBack = () => {
@@ -44,17 +45,20 @@ const TabContentWrapper = ( {
 					) }
 					<Title tag="h4" title={ title } size="md" />
 				</Container>
-				{ onClickAction && (
-					<Button
-						size="md"
-						onClick={ handleClickAction }
-						icon={ actionBtnIcon }
-						variant={ actionBtnVariant }
-						disabled={ actionBtnDisabled }
-					>
-						{ actionBtnText }
-					</Button>
-				) }
+				<Container align="center" className="gap-3">
+					{ actionLeftContent }
+					{ onClickAction && (
+						<Button
+							size="md"
+							onClick={ handleClickAction }
+							icon={ actionBtnIcon }
+							variant={ actionBtnVariant }
+							disabled={ actionBtnDisabled }
+						>
+							{ actionBtnText }
+						</Button>
+					) }
+				</Container>
 			</Container>
 			<div
 				className={ cn(

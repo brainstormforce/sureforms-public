@@ -95,7 +95,7 @@ msgstr "Modifica %1$s"
 #: inc/export.php:64
 #: inc/export.php:129
 #: inc/form-submit.php:94
-#: inc/form-submit.php:830
+#: inc/form-submit.php:842
 #: inc/forms-data.php:87
 #: inc/global-settings/global-settings.php:86
 #: inc/global-settings/global-settings.php:329
@@ -150,7 +150,7 @@ msgid "Mark as Read"
 msgstr "Segna come letto"
 
 #: admin/views/entries-list-table.php:124
-#: admin/views/single-entry.php:313
+#: admin/views/single-entry.php:320
 msgid "Mark as Unread"
 msgstr "Segna come non letto"
 
@@ -289,56 +289,56 @@ msgstr "Tutti"
 msgid "SureForms Form #%d"
 msgstr "Modulo SureForms n.%d"
 
-#: admin/views/single-entry.php:272
+#: admin/views/single-entry.php:279
 msgid "Submission Info"
 msgstr "Informazioni sulla presentazione"
 
-#: admin/views/single-entry.php:279
+#: admin/views/single-entry.php:286
 msgid "Entry:"
 msgstr "Ingresso:"
 
-#: admin/views/single-entry.php:283
+#: admin/views/single-entry.php:290
 msgid "Form Name:"
 msgstr "Nome del modulo:"
 
-#: admin/views/single-entry.php:288
+#: admin/views/single-entry.php:295
 msgid "User IP:"
 msgstr "IP utente:"
 
-#: admin/views/single-entry.php:293
+#: admin/views/single-entry.php:300
 msgid "Browser:"
 msgstr "Browser:"
 
-#: admin/views/single-entry.php:297
+#: admin/views/single-entry.php:304
 msgid "Device:"
 msgstr "Dispositivo:"
 
-#: admin/views/single-entry.php:302
+#: admin/views/single-entry.php:309
 msgid "User:"
 msgstr "Utente:"
 
-#: admin/views/single-entry.php:307
+#: admin/views/single-entry.php:314
 msgid "Status:"
 msgstr "Stato:"
 
-#: admin/views/single-entry.php:318
+#: admin/views/single-entry.php:325
 msgid "Submitted On:"
 msgstr "Inviato il:"
 
-#: admin/views/single-entry.php:341
+#: admin/views/single-entry.php:348
 msgid "Form Data"
 msgstr "Dati del modulo"
 
-#: admin/views/single-entry.php:356
+#: admin/views/single-entry.php:363
 #: assets/build/formEditor.js:172
 msgid "Fields"
 msgstr "Campi"
 
-#: admin/views/single-entry.php:357
+#: admin/views/single-entry.php:364
 msgid "Values"
 msgstr "Valori"
 
-#: admin/views/single-entry.php:433
+#: admin/views/single-entry.php:440
 #: modules/gutenberg/classes/class-spec-block-config.php:562
 #: modules/gutenberg/icons/icons-v6-1.php:5470
 #: assets/build/blocks.js:172
@@ -350,15 +350,15 @@ msgstr "Valori"
 msgid "Image"
 msgstr "Immagine"
 
-#: admin/views/single-entry.php:446
+#: admin/views/single-entry.php:453
 msgid "Open"
 msgstr "Apri"
 
-#: admin/views/single-entry.php:489
+#: admin/views/single-entry.php:496
 msgid "Entry Logs"
 msgstr "Registri di ingresso"
 
-#: admin/views/single-entry.php:513
+#: admin/views/single-entry.php:520
 msgid "No logs found for this entry."
 msgstr "Nessun registro trovato per questa voce."
 
@@ -475,7 +475,7 @@ msgid "Form ID is required."
 msgstr "L'ID del modulo è obbligatorio."
 
 #: inc/admin-ajax.php:185
-#: inc/form-submit.php:842
+#: inc/form-submit.php:854
 msgid "Invalid form ID."
 msgstr "ID modulo non valido."
 
@@ -682,8 +682,6 @@ msgstr "Indirizzo"
 msgid "Checkbox"
 msgstr "Casella di controllo"
 
-#: inc/helper.php:326
-#: inc/helper.php:342
 #: assets/build/blocks.js:172
 msgid "Required"
 msgstr "Richiesto"
@@ -778,11 +776,11 @@ msgstr "Manca l'ID del modulo."
 msgid "Spam Detected"
 msgstr "Spam rilevato"
 
-#: inc/form-submit.php:615
+#: inc/form-submit.php:627
 msgid "Error submitting form"
 msgstr "Errore nell'invio del modulo"
 
-#: inc/form-submit.php:788
+#: inc/form-submit.php:800
 msgid "Unknown"
 msgstr "Sconosciuto"
 
@@ -924,7 +922,7 @@ msgstr "Nascondi"
 msgid "Edit Form"
 msgstr "Modifica modulo"
 
-#: admin/views/single-entry.php:186
+#: admin/views/single-entry.php:193
 #: inc/page-builders/elementor/form-widget.php:177
 #: assets/build/formEditor.js:172
 msgid "Edit"
@@ -9190,7 +9188,7 @@ msgstr "Riorganizza il blocco all'interno della Barra delle Azioni Rapide"
 
 #: admin/admin.php:275
 #: admin/admin.php:276
-#: admin/views/single-entry.php:157
+#: admin/views/single-entry.php:164
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
@@ -9571,7 +9569,7 @@ msgstr "Impostazioni Anti-Spam"
 msgid "Security Type"
 msgstr "Tipo di sicurezza"
 
-#: inc/form-submit.php:1015
+#: inc/form-submit.php:1027
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
 msgid "Google reCAPTCHA"
@@ -9581,7 +9579,7 @@ msgstr "Google reCAPTCHA"
 msgid "CloudFlare Turnstile"
 msgstr "CloudFlare Turnstile"
 
-#: inc/form-submit.php:1019
+#: inc/form-submit.php:1031
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
 msgid "hCaptcha"
@@ -9881,7 +9879,7 @@ msgstr "Chiave del sito"
 msgid "Secret Key"
 msgstr "Chiave segreta"
 
-#: inc/form-submit.php:1023
+#: inc/form-submit.php:1035
 #: assets/build/settings.js:172
 msgid "Cloudflare Turnstile"
 msgstr "Cloudflare Turnstile"
@@ -10899,70 +10897,66 @@ msgstr "Aggiungi icone personalizzabili straordinarie al tuo sito web."
 msgid "icon"
 msgstr "icona"
 
-#: inc/nps-notice.php:111
-msgid "Could you please do us a favor and give us a 5-star rating on WordPress? It would help others choose SureForms with confidence. Thank you!"
-msgstr "Potresti per favore farci un favore e darci una valutazione di 5 stelle su WordPress? Aiuterebbe gli altri a scegliere SureForms con fiducia. Grazie!"
-
 #. Translators: %s is the entry id.
 #: admin/views/single-entry.php:77
 msgid "Entry #%s"
 msgstr "Voce #%s"
 
-#: admin/views/single-entry.php:192
+#: admin/views/single-entry.php:199
 msgid "Unlock Edit Form Entires"
 msgstr "Sblocca le voci del modulo di modifica"
 
-#: admin/views/single-entry.php:193
+#: admin/views/single-entry.php:200
 msgid "With the SureForms Starter plan, you can easily edit your entries to suit your needs."
 msgstr "Con il piano SureForms Starter, puoi facilmente modificare le tue voci per soddisfare le tue esigenze."
 
-#: admin/views/single-entry.php:202
+#: admin/views/single-entry.php:209
 msgid "Resend Notification"
 msgstr "Invia nuovamente la notifica"
 
-#: admin/views/single-entry.php:207
+#: admin/views/single-entry.php:214
 msgid "Unlock Resend Email Notification"
 msgstr "Sblocca l'invio della notifica email"
 
-#: admin/views/single-entry.php:208
+#: admin/views/single-entry.php:215
 msgid "With the SureForms Starter plan, you can effortlessly resend email notifications, ensuring your important updates reach their recipients with ease."
 msgstr "Con il piano SureForms Starter, puoi reinviare facilmente le notifiche email, garantendo che i tuoi aggiornamenti importanti raggiungano i destinatari con facilità."
 
-#: admin/views/single-entry.php:219
+#: admin/views/single-entry.php:226
 msgid "Entry Notes"
 msgstr "Note di ingresso"
 
-#: admin/views/single-entry.php:221
+#: admin/views/single-entry.php:228
 msgid "Add Note"
 msgstr "Aggiungi nota"
 
-#: admin/views/single-entry.php:230
+#: admin/views/single-entry.php:237
 msgid "Submit Note"
 msgstr "Invia nota"
 
-#: admin/views/single-entry.php:239
+#: admin/views/single-entry.php:246
 msgid "Unlock Add Note"
 msgstr "Sblocca Aggiungi Nota"
 
-#: admin/views/single-entry.php:240
+#: admin/views/single-entry.php:247
 msgid "With the SureForms Starter plan, enhance your submitted form entries by adding personalized notes for better clarity and tracking."
 msgstr "Con il piano SureForms Starter, migliora le tue voci di modulo inviate aggiungendo note personalizzate per una maggiore chiarezza e tracciabilità."
 
-#: inc/form-submit.php:722
+#: inc/form-submit.php:734
 msgid "Email notification passed to the sending server"
 msgstr "Notifica email passata al server di invio"
 
 #. translators: Here, %s is the comma separated emails list.
-#: inc/form-submit.php:776
+#: inc/form-submit.php:788
 msgid "Email notification recipient: %s"
 msgstr "Destinatario della notifica email: %s"
 
 #. translators: Here, %1$s is the comma separated emails list and %2$s is error report ( if any ).
-#: inc/form-submit.php:786
+#: inc/form-submit.php:798
 msgid "Email server was unable to send the email notification. Recipient: %1$s. Reason: %2$s"
 msgstr "Il server di posta elettronica non è riuscito a inviare la notifica email. Destinatario: %1$s. Motivo: %2$s"
 
-#: inc/form-submit.php:812
+#: inc/form-submit.php:824
 msgid "No emails were sent"
 msgstr "Nessuna email è stata inviata"
 
@@ -11252,24 +11246,24 @@ msgstr ""
 msgid "reCAPTCHA error: Submit nonce is not available."
 msgstr "Errore reCAPTCHA: il nonce di invio non è disponibile."
 
-#: inc/form-submit.php:959
+#: inc/form-submit.php:971
 msgid "Captcha validation failed. No error code provided."
 msgstr "La validazione del captcha non è riuscita. Nessun codice di errore fornito."
 
-#: inc/form-submit.php:960
+#: inc/form-submit.php:972
 msgid "Captcha validation failed."
 msgstr "La validazione del captcha è fallita."
 
-#: inc/form-submit.php:1027
+#: inc/form-submit.php:1039
 msgid "Unknown Captcha"
 msgstr "Captcha sconosciuto"
 
-#: inc/form-submit.php:1028
+#: inc/form-submit.php:1040
 msgid "Invalid captcha type."
 msgstr "Tipo di captcha non valido."
 
 #. translators: %s is the captcha title.
-#: inc/form-submit.php:1041
+#: inc/form-submit.php:1053
 msgid "%s verification failed. Please contact your site administrator."
 msgstr "La verifica di %s non è riuscita. Si prega di contattare l'amministratore del sito."
 
@@ -11868,6 +11862,10 @@ msgstr "Accesso"
 #: assets/build/formEditor.js:172
 msgid "Register"
 msgstr "Registrati"
+
+#: inc/nps-notice.php:111
+msgid "Thanks for being part of the SureForms community! Got feedback or suggestions? We'd love to hear it."
+msgstr "Grazie per far parte della comunità di SureForms! Hai feedback o suggerimenti? Ci piacerebbe sentirli."
 
 #: inc/post-types.php:168
 msgctxt "post type general name"
