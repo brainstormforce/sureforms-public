@@ -357,10 +357,15 @@ const EmailConfirmation = ( props ) => {
 		},
 	];
 
-	const filterOptions = singleFormEmailOptionsWithFilter(
+	let filterOptions = singleFormEmailOptionsWithFilter(
 		emailOptions,
 		props
 	);
+
+	// if filterOptions is empty, return null to avoid rendering
+	if ( ! filterOptions || filterOptions.length === 0 ) {
+		filterOptions = emailOptions
+	}
 
 	return (
 		<TabContentWrapper
