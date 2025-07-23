@@ -21,7 +21,7 @@ export const attributeOptionsWithFilter = ( options, props ) => {
 
 /**
  * Filters the single form email options with the provided filter.
- * 
+ *
  * @param {Array}  options - The email options to filter.
  * @param {Object} props   - Additional properties for the filter.
  * @return {Array} - The filtered email options.

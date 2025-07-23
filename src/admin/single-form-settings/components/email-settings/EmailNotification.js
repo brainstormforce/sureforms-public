@@ -242,7 +242,7 @@ const EmailNotification = ( {
 	);
 
 	if ( ! attachNecassaryHooks || attachNecassaryHooks.length === 0 ) {
-		attachNecassaryHooks = []
+		attachNecassaryHooks = [];
 	}
 
 	return (

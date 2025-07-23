@@ -366,7 +366,7 @@ const EmailConfirmation = ( props ) => {
 
 	// if filterOptions is empty, return null to avoid rendering
 	if ( ! filterOptions || filterOptions.length === 0 ) {
-		filterOptions = emailNotificationOptions
+		filterOptions = emailNotificationOptions;
 	}
 
 	return (
