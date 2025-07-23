@@ -836,4 +836,63 @@ class Test_Helper extends TestCase {
             );
         }
     }
+
+    /**
+     * Test apply_filters_as_array method.
+     */
+    public function test_apply_filters_as_array() {
+        // Test case 1: Empty filter name should return default array
+        $default = ['test'];
+        $result = Helper::apply_filters_as_array('', $default);
+        $this->assertTrue(
+            is_array($result),
+            'Empty filter name should return array'
+        );
+        $this->assertSame(
+            $default,
+            $result,
+            'Empty filter name should return default array unchanged'
+        );
+
+        // Test case 2: Non-array default should be converted to empty array
+        $result = Helper::apply_filters_as_array('test_filter', 'string');
+        $this->assertTrue(
+            is_array($result),
+            'Non-array default should be converted to array'
+        );
+        $this->assertEmpty(
+            $result,
+            'Non-array default should be converted to empty array'
+        );
+
+        // Test case 3: Valid filter returning non-empty array should return that array
+        $expected = ['filtered'];
+        add_filter('test_filter_valid', function($value) use ($expected) {
+            return $expected;
+        });
+        
+        $result = Helper::apply_filters_as_array('test_filter_valid', ['default']);
+        $this->assertTrue(
+            is_array($result),
+            'Filter result should be array'
+        );
+        $this->assertSame(
+            $expected,
+            $result,
+            'Should return array from filter'
+        );
+
+        // Test case 4: Filter returning non-array should return default
+        add_filter('test_filter_invalid', function($value) {
+            return 'not an array';
+        });
+        
+        $default = ['default'];
+        $result = Helper::apply_filters_as_array('test_filter_invalid', $default);
+        $this->assertSame(
+            $default,
+            $result,
+            'Should return default when filter returns non-array'
+        );
+    }
 }
