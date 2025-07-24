@@ -1107,30 +1107,31 @@ class Admin {
 			?>
 			<script type="text/javascript">
 			document.addEventListener('DOMContentLoaded', function() {
-				// Handle SMTP notice dismissal
-				const smtpNotice = document.querySelector('.srfm-smtp-warning');
-				if (smtpNotice) {
-					const dismissButton = smtpNotice.querySelector('.notice-dismiss');
-					if (dismissButton) {
-						dismissButton.addEventListener('click', function(e) {
-							const dismissUrl = smtpNotice.dataset.dismissUrl;
-							if (dismissUrl) {
-								// Security: Validate URL is safe before redirecting
-								try {
-									const url = new URL(dismissUrl, window.location.origin);
-									// Only allow same-origin URLs for security
-									if (url.origin === window.location.origin && url.protocol === window.location.protocol) {
-										window.location.href = url.href;
-									}
-								} catch (error) {
-									// Invalid URL - ignore the redirect for security
-									console.warn('Invalid dismiss URL detected:', dismissUrl);
+				// Handle SMTP notice dismissal using event delegation
+				// This works even if the dismiss button is added dynamically by WordPress
+				document.addEventListener('click', function(e) {
+					// Check if clicked element is a dismiss button within our SMTP notice
+					if (e.target.classList.contains('notice-dismiss') && e.target.closest('.srfm-smtp-warning')) {
+						const smtpNotice = e.target.closest('.srfm-smtp-warning');
+						const dismissUrl = smtpNotice.dataset.dismissUrl;
+
+						if (dismissUrl) {
+							// Security: Validate URL is safe before redirecting
+							try {
+								const url = new URL(dismissUrl, window.location.origin);
+								// Only allow same-origin URLs for security
+								if (url.origin === window.location.origin && url.protocol === window.location.protocol) {
+									window.location.href = url.href;
 								}
-								e.preventDefault();
+							} catch (error) {
+								// Invalid URL - ignore the redirect for security
+								console.warn('Invalid dismiss URL detected:', dismissUrl);
 							}
-						});
+							e.preventDefault();
+							e.stopPropagation();
+						}
 					}
-				}
+				});
 			});
 			</script>
 			<?php
