@@ -337,6 +337,7 @@ class Analytics {
 				'calculations'         => 'Calculators',
 				'user_registration'    => 'User Registration and Login',
 				'custom_app'           => 'Custom App',
+				'pdf_generation'       => 'PDF Generation',
 			];
 
 			// Filter out any free features that might have been included.

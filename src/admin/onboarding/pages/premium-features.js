@@ -110,6 +110,15 @@ const allFeatures = [
 		plan: 'business',
 	},
 	{
+		id: 'pdf_generation',
+		title: __( 'PDF Generation Made Simple', 'sureforms' ),
+		description: __(
+			'Automatically turn form submissions into clean, ready-to-download PDFs. Perfect for records, sharing, archiving, or keeping things organized.',
+			'sureforms'
+		),
+		plan: 'business',
+	},
+	{
 		id: 'custom_app',
 		title: __( 'Custom App', 'sureforms' ),
 		description: __(
