@@ -1,5 +1,5 @@
 import { __, sprintf } from '@wordpress/i18n';
-import { Text, Checkbox, Badge, Alert } from '@bsf/force-ui';
+import { Text, Checkbox, Badge } from '@bsf/force-ui';
 import { useState, useEffect, useMemo } from '@wordpress/element';
 import { useOnboardingNavigation } from '../hooks';
 import { useOnboardingState } from '../onboarding-state';
@@ -268,6 +268,9 @@ const PremiumFeatures = () => {
 	// State to track selected features
 	const [ selectedFeatures, setSelectedFeatures ] = useState( {} );
 
+	// State to track copy status
+	const [ isCopied, setIsCopied ] = useState( false );
+
 	useEffect( () => {
 		if ( hasProVersion ) {
 			// Extract plan name from "SureForms <plan name>"
@@ -477,7 +480,9 @@ const PremiumFeatures = () => {
 			pro: __( 'Pro', 'sureforms' ),
 			business: __( 'Business', 'sureforms' ),
 		};
-		return planNames[ plan ] || __( 'Premium', 'sureforms' );
+		return `SureForms ${
+			planNames[ plan ] || __( 'Premium', 'sureforms' )
+		}`;
 	};
 
 	return (
@@ -567,26 +572,50 @@ const PremiumFeatures = () => {
 					/>
 
 					{ showUpgradeButton && (
-						<div className="p-1">
-							<Alert
-								content={ sprintf(
-									/* translators: 1: Plan name (Starter, Pro, or Business), 2: Coupon code */
-									__(
-										'Selected features require SureForms %1$s - use code %2$s to get 10%% off on any plan.',
-										'sureforms'
-									),
-									getPlanDisplayName(
-										getHighestPlanRequired()
-									),
-									COUPON_CODE
-								) }
-								className="bg-background-secondary shadow-none"
-								variant="neutral"
-								icon={ <></> }
-								action={ {
-									label: __( 'Copy', 'sureforms' ),
-									type: 'link',
-									onClick: () => {
+						<div className="flex items-center justify-between p-3 gap-2 relative ring-1 rounded-lg ring-alert-border-neutral bg-background-secondary shadow-none">
+							<div className="flex items-center justify-between">
+								<span className="text-text-primary text-sm [&_*]:text-sm leading-5 [&_*]:leading-5 font-normal [word-break:break-word] inline px-1 mr-4">
+									{ ( () => {
+										const translatedText = sprintf(
+											/* translators: 1: Plan name (Starter, Pro, or Business), 2: Coupon code */
+											__(
+												'Selected features require %1$s - use code %2$s to get 10% off on any plan.',
+												'sureforms'
+											),
+											'%1$s',
+											'%2$s'
+										);
+										const planName = getPlanDisplayName(
+											getHighestPlanRequired()
+										);
+
+										const parts = translatedText
+											.split( '%1$s' )
+											.flatMap( ( part, index ) => {
+												if ( index === 0 ) {
+													return [ part ];
+												}
+												const [
+													beforeCoupon,
+													afterCoupon,
+												] = part.split( '%2$s' );
+												return [
+													<strong key="plan">
+														{ planName }
+													</strong>,
+													beforeCoupon,
+													<strong key="coupon">
+														{ COUPON_CODE }
+													</strong>,
+													afterCoupon,
+												];
+											} );
+										return parts;
+									} )() }
+								</span>
+								<button
+									className="outline-1 border-none cursor-pointer transition-colors duration-300 ease-in-out text-xs font-semibold focus:ring-toggle-on disabled:text-text-disabled rounded [&>svg]:size-4 outline-none bg-transparent hover:underline p-0 border-0 leading-none focus:ring-0 focus:ring-offset-0 ring-offset-0 focus:outline-none text-button-primary border-button-primary hover:border-button-primary hover:text-button-primary-hover"
+									onClick={ () => {
 										const copyToClipboard = async () => {
 											try {
 												await navigator.clipboard.writeText(
@@ -594,6 +623,11 @@ const PremiumFeatures = () => {
 												);
 												console.log(
 													'Coupon code copied to clipboard'
+												);
+												setIsCopied( true );
+												setTimeout(
+													() => setIsCopied( false ),
+													1000
 												);
 											} catch ( err ) {
 												console.error(
@@ -625,6 +659,14 @@ const PremiumFeatures = () => {
 													console.log(
 														'Fallback: Coupon code copied using execCommand'
 													);
+													setIsCopied( true );
+													setTimeout(
+														() =>
+															setIsCopied(
+																false
+															),
+														1000
+													);
 												} catch ( fallbackErr ) {
 													console.error(
 														'Fallback copy failed:',
@@ -634,9 +676,15 @@ const PremiumFeatures = () => {
 											}
 										};
 										copyToClipboard();
-									},
-								} }
-							/>
+									} }
+								>
+									<span className="px-1">
+										{ isCopied
+											? __( 'Copied', 'sureforms' )
+											: __( 'Copy', 'sureforms' ) }
+									</span>
+								</button>
+							</div>
 						</div>
 					) }
 				</>
