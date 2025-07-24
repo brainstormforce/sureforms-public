@@ -1093,14 +1093,47 @@ class Admin {
 				$suremail_url = admin_url( 'plugin-install.php?s=suremail&tab=search&type=term' );
 			}
 			$dismiss_url = wp_nonce_url( add_query_arg( 'srfm_dismiss_smtp_notice', '1' ), 'srfm_dismiss_smtp_notice' );
-			echo '<div class="notice notice-warning is-dismissible srfm-smtp-warning"><p>';
-			echo esc_html__( 'We were not able to detect any SMTP plugin activated on your site. This may affect email delivery for SureForms.', 'sureforms' );
-			echo '<br />';
-			echo esc_html__( 'We suggest using', 'sureforms' ) . ' ';
-			echo '<a href="' . esc_url( $suremail_url ) . '" target="_blank">SureMail</a>';
-			echo esc_html__( ' for smooth email delivery.', 'sureforms' );
-			echo ' <a href="' . esc_url( $dismiss_url ) . '" style="float:right;">Dismiss</a>';
-			echo '</p></div>';
+			printf(
+				'<div class="notice notice-warning is-dismissible srfm-smtp-warning" data-dismiss-url="%1$s"><p>%2$s</p></div>',
+				esc_url( $dismiss_url ),
+				sprintf(
+					/* translators: 1: line break, 2: SureMail link opening tag, 3: SureMail link closing tag */
+					esc_html__( 'It looks like there\'s no SMTP plugin running on your site. That means emails sent from SureForms might not go through.%1$sYou can use %2$sSureMail%3$s to get email delivery working.', 'sureforms' ),
+					'<br />',
+					'<a href="' . esc_url( $suremail_url ) . '" target="_blank">',
+					'</a>'
+				)
+			);
+			?>
+			<script type="text/javascript">
+			document.addEventListener('DOMContentLoaded', function() {
+				// Handle SMTP notice dismissal
+				const smtpNotice = document.querySelector('.srfm-smtp-warning');
+				if (smtpNotice) {
+					const dismissButton = smtpNotice.querySelector('.notice-dismiss');
+					if (dismissButton) {
+						dismissButton.addEventListener('click', function(e) {
+							const dismissUrl = smtpNotice.dataset.dismissUrl;
+							if (dismissUrl) {
+								// Security: Validate URL is safe before redirecting
+								try {
+									const url = new URL(dismissUrl, window.location.origin);
+									// Only allow same-origin URLs for security
+									if (url.origin === window.location.origin && url.protocol === window.location.protocol) {
+										window.location.href = url.href;
+									}
+								} catch (error) {
+									// Invalid URL - ignore the redirect for security
+									console.warn('Invalid dismiss URL detected:', dismissUrl);
+								}
+								e.preventDefault();
+							}
+						});
+					}
+				}
+			});
+			</script>
+			<?php
 		}
 	}
 
