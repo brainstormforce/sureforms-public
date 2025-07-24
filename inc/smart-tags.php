@@ -347,7 +347,7 @@ class Smart_Tags {
 						$replacement_data = urldecode( implode( ', ', $submission_item_value ) );
 					} else {
 						foreach ( $submission_item_value as $value ) {
-							$replacement_data .= '<a href=' . urldecode( $value ) . ' target="_blank">' . __( 'View', 'sureforms' ) . '</a><br>';
+							$replacement_data .= '<a href=' . esc_url( urldecode( $value ) ) . ' target="_blank">' . __( 'View', 'sureforms' ) . '</a><br>';
 						}
 					}
 				} elseif ( 0 === strpos( $block_type, 'srfm-textarea' ) ) {
@@ -360,11 +360,29 @@ class Smart_Tags {
 				} else {
 					// if $submission_item_value is a url then add <a> tag. with view text.
 					if ( is_string( $submission_item_value ) && filter_var( $submission_item_value, FILTER_VALIDATE_URL ) ) {
-						$replacement_data .= '<a href=' . urldecode( $submission_item_value ) . ' target="_blank">' . __( 'View', 'sureforms' ) . '</a>';
+						$view_link = '<a href=' . esc_url( urldecode( $submission_item_value ) ) . ' target="_blank">' . __( 'View', 'sureforms' ) . '</a>';
+
+						// Add filter to modify the view link.
+						$view_link = apply_filters(
+							'srfm_smart_tag_view_link',
+							$view_link,
+							[
+								'submission_item_key'   => $submission_item_key,
+								'submission_item_value' => $submission_item_value,
+								'target_slug'           => $target_slug,
+								'block_type'            => $block_type,
+								'form_data'             => $form_data,
+								'submission_data'       => $submission_data,
+								'value'                 => $value,
+							]
+						);
+
+						$replacement_data .= $view_link;
 					} else {
 						$replacement_data .= $submission_item_value;
 					}
 				}
+
 				break;
 			}
 		}
