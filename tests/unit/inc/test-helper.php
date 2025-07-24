@@ -865,16 +865,16 @@ class Test_Helper extends TestCase {
         remove_all_filters('pre_option_active_plugins');
         remove_all_filters('pre_site_option_active_sitewide_plugins');
         remove_all_filters('pre_option_is_multisite');
-        
+
         // Set up new filters
         add_filter('pre_option_active_plugins', function() use ($active_plugins) {
             return $active_plugins;
         });
-        
+
         add_filter('pre_site_option_active_sitewide_plugins', function() use ($network_plugins) {
             return $network_plugins;
         });
-        
+
         if ($is_multisite) {
             add_filter('pre_option_is_multisite', '__return_true');
         } else {
@@ -894,7 +894,7 @@ class Test_Helper extends TestCase {
         foreach ($network_plugins as $plugin) {
             $network_with_time[$plugin] = time();
         }
-        
+
         $this->setup_smtp_plugin_mocks($active_plugins, $network_with_time, true);
     }
 
@@ -904,9 +904,9 @@ class Test_Helper extends TestCase {
     public function test_is_any_smtp_plugin_active_no_plugins() {
         $this->reset_smtp_test_data();
         $this->setup_smtp_plugin_mocks();
-        
+
         $result = Helper::is_any_smtp_plugin_active();
-        
+
         $this->assertFalse($result);
     }
 
@@ -919,9 +919,9 @@ class Test_Helper extends TestCase {
             'wp-mail-smtp/wp_mail_smtp.php',
             'akismet/akismet.php'
         ]);
-        
+
         $result = Helper::is_any_smtp_plugin_active();
-        
+
         $this->assertTrue($result);
     }
 
@@ -934,9 +934,9 @@ class Test_Helper extends TestCase {
             'wp-mail-smtp/wp-mail-smtp.php', // Old incorrect path with hyphens
             'akismet/akismet.php'
         ]);
-        
+
         $result = Helper::is_any_smtp_plugin_active();
-        
+
         $this->assertFalse($result);
     }
 
@@ -949,9 +949,9 @@ class Test_Helper extends TestCase {
             'newsletter/plugin.php', // Correct file path is plugin.php not newsletter.php
             'akismet/akismet.php'
         ]);
-        
+
         $result = Helper::is_any_smtp_plugin_active();
-        
+
         $this->assertTrue($result);
     }
 
@@ -964,9 +964,9 @@ class Test_Helper extends TestCase {
             'newsletter/newsletter.php', // Old incorrect path
             'akismet/akismet.php'
         ]);
-        
+
         $result = Helper::is_any_smtp_plugin_active();
-        
+
         $this->assertFalse($result);
     }
 
@@ -979,9 +979,9 @@ class Test_Helper extends TestCase {
             'suremails/suremails.php',
             'akismet/akismet.php'
         ]);
-        
+
         $result = Helper::is_any_smtp_plugin_active();
-        
+
         $this->assertTrue($result);
     }
 
@@ -994,9 +994,9 @@ class Test_Helper extends TestCase {
             'site-mailer/site-mailer.php',
             'akismet/akismet.php'
         ]);
-        
+
         $result = Helper::is_any_smtp_plugin_active();
-        
+
         $this->assertTrue($result);
     }
 
@@ -1011,9 +1011,9 @@ class Test_Helper extends TestCase {
             'fluent-smtp/fluent-smtp.php',
             'akismet/akismet.php'
         ]);
-        
+
         $result = Helper::is_any_smtp_plugin_active();
-        
+
         $this->assertTrue($result);
     }
 
@@ -1027,9 +1027,9 @@ class Test_Helper extends TestCase {
             'jetpack/jetpack.php',
             'contact-form-7/wp-contact-form-7.php'
         ]);
-        
+
         $result = Helper::is_any_smtp_plugin_active();
-        
+
         $this->assertFalse($result);
     }
 
@@ -1038,31 +1038,31 @@ class Test_Helper extends TestCase {
      */
     public function test_is_any_smtp_plugin_active_multisite_network() {
         $this->reset_smtp_test_data();
-        
+
         // Mock is_multisite() to return true
         add_filter('ms_is_switched', '__return_false');
-        
+
         add_filter('pre_option_active_plugins', function() {
             return [
                 'akismet/akismet.php'
             ];
         });
-        
+
         add_filter('pre_site_option_active_sitewide_plugins', function() {
             return [
                 'wp-mail-smtp/wp_mail_smtp.php' => time(),
                 'some-network-plugin/plugin.php' => time()
             ];
         });
-        
+
         // Skip test if not in multisite environment
         if ( ! is_multisite() ) {
             $this->markTestSkipped( 'This test requires a multisite environment.' );
             return;
         }
-        
+
         $result = Helper::is_any_smtp_plugin_active();
-        
+
         $this->assertTrue($result);
     }
 
@@ -1071,20 +1071,20 @@ class Test_Helper extends TestCase {
      */
     public function test_is_any_smtp_plugin_active_multisite_both() {
         $this->reset_smtp_test_data();
-        
+
         // Skip test if not in multisite environment
         if ( ! is_multisite() ) {
             $this->markTestSkipped( 'This test requires a multisite environment.' );
             return;
         }
-        
+
         $this->setup_multisite_smtp_mocks(
             ['newsletter/plugin.php', 'akismet/akismet.php'], // site plugins
             ['fluent-smtp/fluent-smtp.php', 'some-network-plugin/plugin.php'] // network plugins
         );
-        
+
         $result = Helper::is_any_smtp_plugin_active();
-        
+
         $this->assertTrue($result);
     }
 
@@ -1093,27 +1093,27 @@ class Test_Helper extends TestCase {
      */
     public function test_is_any_smtp_plugin_active_multisite_no_smtp() {
         $this->reset_smtp_test_data();
-        
+
         add_filter('pre_option_active_plugins', function() {
             return [
                 'akismet/akismet.php'
             ];
         });
-        
+
         add_filter('pre_site_option_active_sitewide_plugins', function() {
             return [
                 'some-network-plugin/plugin.php' => time()
             ];
         });
-        
+
         // Skip test if not in multisite environment
         if ( ! is_multisite() ) {
             $this->markTestSkipped( 'This test requires a multisite environment.' );
             return;
         }
-        
+
         $result = Helper::is_any_smtp_plugin_active();
-        
+
         $this->assertFalse($result);
     }
 
@@ -1137,21 +1137,21 @@ class Test_Helper extends TestCase {
 
         foreach ($smtp_plugins as $plugin) {
             $this->reset_smtp_test_data();
-            
+
             add_filter('pre_option_active_plugins', function() use ($plugin) {
                 return [$plugin, 'akismet/akismet.php'];
             });
-            
+
             add_filter('pre_site_option_active_sitewide_plugins', function() {
                 return [];
             });
-            
+
             add_filter('pre_option_is_multisite', '__return_false');
-            
+
             $result = Helper::is_any_smtp_plugin_active();
-            
+
             $this->assertTrue($result, "Plugin $plugin should be detected as SMTP plugin");
-            
+
             // Clean up filters for next iteration
             remove_all_filters('pre_option_active_plugins');
             remove_all_filters('pre_site_option_active_sitewide_plugins');
@@ -1164,38 +1164,38 @@ class Test_Helper extends TestCase {
      */
     public function test_is_any_smtp_plugin_active_return_type() {
         $this->reset_smtp_test_data();
-        
+
         // Test with no plugins
         add_filter('pre_option_active_plugins', function() {
             return [];
         });
-        
+
         add_filter('pre_site_option_active_sitewide_plugins', function() {
             return [];
         });
-        
+
         add_filter('pre_option_is_multisite', '__return_false');
-        
+
         $result_false = Helper::is_any_smtp_plugin_active();
         $this->assertIsBool($result_false);
         $this->assertFalse($result_false);
-        
+
         // Clean up filters
         remove_all_filters('pre_option_active_plugins');
         remove_all_filters('pre_site_option_active_sitewide_plugins');
         remove_all_filters('pre_option_is_multisite');
-        
+
         // Test with SMTP plugin
         add_filter('pre_option_active_plugins', function() {
             return ['wp-mail-smtp/wp_mail_smtp.php'];
         });
-        
+
         add_filter('pre_site_option_active_sitewide_plugins', function() {
             return [];
         });
-        
+
         add_filter('pre_option_is_multisite', '__return_false');
-        
+
         $result_true = Helper::is_any_smtp_plugin_active();
         $this->assertIsBool($result_true);
         $this->assertTrue($result_true);
@@ -1206,20 +1206,20 @@ class Test_Helper extends TestCase {
      */
     public function test_is_any_smtp_plugin_active_empty_options() {
         $this->reset_smtp_test_data();
-        
+
         // Mock get_option to return false (option doesn't exist)
         add_filter('pre_option_active_plugins', function() {
             return false;
         });
-        
+
         add_filter('pre_site_option_active_sitewide_plugins', function() {
             return false;
         });
-        
+
         add_filter('pre_option_is_multisite', '__return_false');
-        
+
         $result = Helper::is_any_smtp_plugin_active();
-        
+
         $this->assertFalse($result);
     }
 
@@ -1228,7 +1228,7 @@ class Test_Helper extends TestCase {
      */
     public function test_is_any_smtp_plugin_active_performance() {
         $this->reset_smtp_test_data();
-        
+
         // Create a large list of non-SMTP plugins
         $large_plugin_list = [];
         for ($i = 0; $i < 100; $i++) {
@@ -1236,24 +1236,83 @@ class Test_Helper extends TestCase {
         }
         // Add one SMTP plugin at the end
         $large_plugin_list[] = 'wp-mail-smtp/wp_mail_smtp.php';
-        
+
         add_filter('pre_option_active_plugins', function() use ($large_plugin_list) {
             return $large_plugin_list;
         });
-        
+
         add_filter('pre_site_option_active_sitewide_plugins', function() {
             return [];
         });
-        
+
         add_filter('pre_option_is_multisite', '__return_false');
-        
+
         $start_time = microtime(true);
         $result = Helper::is_any_smtp_plugin_active();
         $end_time = microtime(true);
-        
+
         $execution_time = $end_time - $start_time;
-        
+
         $this->assertTrue($result);
         $this->assertLessThan(0.1, $execution_time, 'Function should execute quickly even with many plugins');
+	}
+
+	/**
+     * Test apply_filters_as_array method.
+     */
+    public function test_apply_filters_as_array() {
+        // Test case 1: Empty filter name should return default array
+        $default = ['test'];
+        $result = Helper::apply_filters_as_array('', $default);
+        $this->assertTrue(
+            is_array($result),
+            'Empty filter name should return array'
+        );
+        $this->assertSame(
+            $default,
+            $result,
+            'Empty filter name should return default array unchanged'
+        );
+
+        // Test case 2: Non-array default should be converted to empty array
+        $result = Helper::apply_filters_as_array('test_filter', 'string');
+        $this->assertTrue(
+            is_array($result),
+            'Non-array default should be converted to array'
+        );
+        $this->assertEmpty(
+            $result,
+            'Non-array default should be converted to empty array'
+        );
+
+        // Test case 3: Valid filter returning non-empty array should return that array
+        $expected = ['filtered'];
+        add_filter('test_filter_valid', function($value) use ($expected) {
+            return $expected;
+        });
+
+        $result = Helper::apply_filters_as_array('test_filter_valid', ['default']);
+        $this->assertTrue(
+            is_array($result),
+            'Filter result should be array'
+        );
+        $this->assertSame(
+            $expected,
+            $result,
+            'Should return array from filter'
+        );
+
+        // Test case 4: Filter returning non-array should return default
+        add_filter('test_filter_invalid', function($value) {
+            return 'not an array';
+        });
+
+        $default = ['default'];
+        $result = Helper::apply_filters_as_array('test_filter_invalid', $default);
+        $this->assertSame(
+            $default,
+            $result,
+            'Should return default when filter returns non-array'
+        );
     }
 }

@@ -40,6 +40,23 @@ const formatNumber = ( number, formatType ) => {
 		return number;
 	}
 
+	const decimalSeparator = formatType === 'eu-style' ? ',' : '.';
+
+	// Check if number has decimal part with trailing zeros
+	const preserveTrailingZeros = ( num ) => {
+		const parts = num.split( decimalSeparator );
+		if ( parts.length === 2 && parts[ 1 ].includes( '0' ) ) {
+			return true;
+		}
+		return false;
+	};
+
+	// Store original decimal part if it has trailing zeros
+	let originalDecimalPart = '';
+	if ( preserveTrailingZeros( number ) ) {
+		originalDecimalPart = number.split( decimalSeparator )[ 1 ];
+	}
+
 	let formattedNumber = '';
 	const formatOptions = { style: 'decimal', maximumFractionDigits: 20 };
 
@@ -59,6 +76,14 @@ const formatNumber = ( number, formatType ) => {
 			'en-US',
 			formatOptions
 		).format( parseFloat( number.replace( /,/g, '' ) ) );
+	}
+
+	// Preserve trailing zeros if needed
+	if ( originalDecimalPart ) {
+		formattedNumber =
+			formattedNumber.split( decimalSeparator )[ 0 ] +
+			decimalSeparator +
+			originalDecimalPart;
 	}
 
 	if ( 'NaN' === formattedNumber ) {
