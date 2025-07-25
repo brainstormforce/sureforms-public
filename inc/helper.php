@@ -656,7 +656,6 @@ class Helper {
 			if ( is_array( $value ) && ! empty( $value ) ) {
 				// Apply filter to allow external packages to process array values.
 				// Returns processed data with 'is_processed' flag if successfully handled.
-				// @since x.x.x
 				$filtered_submission_data = apply_filters(
 					'srfm_map_slug_to_submission_data_array',
 					[
