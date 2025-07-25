@@ -85,12 +85,24 @@
 
 		&.has-form-title {
 			.srfm-single-banner-title {
-				max-width: var( --srfm-form-container-width );
+				width: 100%;
 				margin: 0 auto;
 				color: #ffffff;
 				font-weight: 600;
 				font-size: 40px;
 				line-height: 44px;
+
+				// Tablet Styles
+				@media screen and (max-width: 1025px) {
+					font-size: 30px;
+					line-height: 38px;
+				}
+
+				// Mobile Styles
+				@media screen and (max-width: 599px) {
+					font-size: 20px;
+					line-height: 30px;
+				}
 			}
 
 			.srfm-form-container {
