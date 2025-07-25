@@ -84,7 +84,7 @@ const Done = () => {
 					/>
 					<Text size={ 14 } weight={ 400 } color="secondary">
 						{ __(
-							'Try AI if you want a quick head start or start from scratch if you have a clear idea in mind. Forms are ready to be created, shared, and connected to your audience.',
+							'Use our AI form builder to get started quickly, or build your form from scratch if you already know what you need. Your forms are ready to create, share, and connect with your site visitors.',
 							'sureforms'
 						) }
 					</Text>
