@@ -58,26 +58,20 @@ const EmailNotification = ( {
 	const handleEdit = ( data ) => {
 		setShowConfirmation( true );
 		setCurrData( data );
-
-		doAction( 'srfm_email_notification_updated', data );
-
 	};
 	const handleDelete = ( data ) => {
-		doAction( 'srfm_email_notification_deleted', data );
-
 		const filterData = emailNotificationData.filter(
 			( el ) => el.id !== data.id
 		);
 		updateMeta( '_srfm_email_notification', filterData );
 
-
+		doAction( 'srfm.emailNotification.deleted', data );
 
 		toast.dismiss();
 		toast.success(
 			__( 'Email Notification deleted successfully.', 'sureforms' ),
 			{ duration: 500 }
 		);
-
 	};
 	const handleDuplicate = ( data ) => {
 		const duplicateData = { ...data };
@@ -87,7 +81,7 @@ const EmailNotification = ( {
 		const allData = [ ...emailNotificationData, duplicateData ];
 		updateMeta( '_srfm_email_notification', allData );
 
-		doAction( 'srfm_email_notification_duplicated', data, duplicateData );
+		doAction( 'srfm.emailNotification.duplicated', data, duplicateData );
 
 		toast.dismiss();
 		toast.success(
@@ -146,11 +140,7 @@ const EmailNotification = ( {
 				return el;
 			} );
 		}
-		doAction( 'srfm_email_notification_save', currEmailData );
 		updateMeta( '_srfm_email_notification', currEmailData );
-
-
-
 		toast.dismiss();
 		return true;
 	};
@@ -245,10 +235,15 @@ const EmailNotification = ( {
 		);
 	}
 
-	const attachNecassaryHooks = applyFilters(
-		'srfm_email_notification_loaded',
+	// hook to make delete, duplicate feature work with conditional logic.
+	let attachNecassaryHooks = applyFilters(
+		'srfm.emailNotification.loaded',
 		[]
 	);
+
+	if ( ! attachNecassaryHooks || attachNecassaryHooks.length === 0 ) {
+		attachNecassaryHooks = [];
+	}
 
 	return (
 		<TabContentWrapper
@@ -425,9 +420,7 @@ const EmailNotification = ( {
 						} ) }
 				</Table.Body>
 			</Table>
-				{ attachNecassaryHooks.map(
-								( option ) => option.component
-							) }
+			{ attachNecassaryHooks.map( ( option ) => option.component ) }
 		</TabContentWrapper>
 	);
 };

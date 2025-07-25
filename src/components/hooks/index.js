@@ -19,8 +19,15 @@ export const attributeOptionsWithFilter = ( options, props ) => {
 	return applyFilters( 'srfm.block.attributes.panel.body', options, props );
 };
 
-export const singleFormOptionsWithFilter = ( options, props ) => {
-	return applyFilters( 'srfm.singleForm.settings', options, props );
+/**
+ * Filters the single form email options with the provided filter.
+ *
+ * @param {Array}  options - The email options to filter.
+ * @param {Object} props   - Additional properties for the filter.
+ * @return {Array} - The filtered email options.
+ */
+export const singleFormEmailOptionsWithFilter = ( options, props ) => {
+	return applyFilters( 'srfm.singleFormEmail.settings', options, props );
 };
 
 /**
