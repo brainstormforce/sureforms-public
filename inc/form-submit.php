@@ -250,13 +250,13 @@ class Form_Submit {
 		 */
 		$form_data = Helper::sanitize_by_field_type( $request->get_params() );
 
-		$current_form_id       = $form_data['form-id'];
+		$current_form_id = $form_data['form-id'];
 
 		// Check whether the form is valid.
 		if ( ! Helper::is_valid_form( $current_form_id ) ) {
 			wp_send_json_error(
 				[
-					'message'  => __( 'Form does not exist. Please provide a valid form ID.', 'sureforms' ),
+					'message' => __( 'Form does not exist. Please provide a valid form ID.', 'sureforms' ),
 				]
 			);
 		}
