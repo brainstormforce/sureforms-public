@@ -895,4 +895,142 @@ class Test_Helper extends TestCase {
             'Should return default when filter returns non-array'
         );
     }
+
+    /**
+     * Test get_forms_with_entry_counts method.
+     *
+     * @since x.x.x
+     */
+    public function test_get_forms_with_entry_counts() {
+        // Skip test if SRFM_FORMS_POST_TYPE is not defined.
+        if ( ! defined( 'SRFM_FORMS_POST_TYPE' ) ) {
+            $this->markTestSkipped( 'SRFM_FORMS_POST_TYPE constant is not defined' );
+        }
+        
+        // Create mock forms.
+        $form1_id = wp_insert_post([
+            'post_type' => SRFM_FORMS_POST_TYPE,
+            'post_status' => 'publish',
+            'post_title' => 'Contact Form'
+        ]);
+        
+        $form2_id = wp_insert_post([
+            'post_type' => SRFM_FORMS_POST_TYPE,
+            'post_status' => 'publish',
+            'post_title' => 'Newsletter Signup'
+        ]);
+        
+        $form3_id = wp_insert_post([
+            'post_type' => SRFM_FORMS_POST_TYPE,
+            'post_status' => 'publish',
+            'post_title' => ''  // Test blank title
+        ]);
+        
+        // Create a draft form (should not be included).
+        $draft_form_id = wp_insert_post([
+            'post_type' => SRFM_FORMS_POST_TYPE,
+            'post_status' => 'draft',
+            'post_title' => 'Draft Form'
+        ]);
+        
+        // Mock the Entries class method by creating a mock class in the same namespace.
+        $mock_entries_code = '
+        namespace SRFM\Inc\Database\Tables;
+        class Entries {
+            private static $mock_counts = [];
+            public static function set_mock_counts($counts) {
+                self::$mock_counts = $counts;
+            }
+            public static function get_entries_count_after($timestamp, $form_id = 0) {
+                return isset(self::$mock_counts[$form_id]) ? self::$mock_counts[$form_id] : 0;
+            }
+        }';
+        
+        // Only define the mock if class doesn't exist.
+        if ( ! class_exists( '\SRFM\Inc\Database\Tables\Entries' ) ) {
+            eval($mock_entries_code);
+        }
+        
+        // Set mock counts.
+        $mock_counts = [
+            $form1_id => 10,
+            $form2_id => 5,
+            $form3_id => 15,
+            $draft_form_id => 20  // Should not be included
+        ];
+        
+        \SRFM\Inc\Database\Tables\Entries::set_mock_counts($mock_counts);
+        
+        // Test with sorting enabled and no limit.
+        $result = Helper::get_forms_with_entry_counts(strtotime('-7 days'));
+        
+        $this->assertCount(3, $result, 'Should return only published forms');
+        
+        // Check sorting (highest count first).
+        $this->assertEquals(15, $result[0]['count'], 'First form should have highest count');
+        $this->assertEquals('Blank Form', $result[0]['title'], 'Empty title should be replaced with "Blank Form"');
+        $this->assertEquals(10, $result[1]['count']);
+        $this->assertEquals(5, $result[2]['count']);
+        
+        // Test with limit.
+        $result_limited = Helper::get_forms_with_entry_counts(strtotime('-7 days'), 2);
+        $this->assertCount(2, $result_limited, 'Should respect the limit parameter');
+        
+        // Test without sorting.
+        $result_unsorted = Helper::get_forms_with_entry_counts(strtotime('-7 days'), 0, false);
+        $this->assertCount(3, $result_unsorted, 'Should return all forms when sort is false');
+        
+        // Test when no forms exist.
+        // Delete all posts.
+        wp_delete_post($form1_id, true);
+        wp_delete_post($form2_id, true);
+        wp_delete_post($form3_id, true);
+        wp_delete_post($draft_form_id, true);
+        
+        $result_empty = Helper::get_forms_with_entry_counts(strtotime('-7 days'));
+        $this->assertEmpty($result_empty, 'Should return empty array when no forms exist');
+    }
+
+    /**
+     * Test get_forms_with_entry_counts with same entry counts.
+     *
+     * @since x.x.x
+     */
+    public function test_get_forms_with_entry_counts_same_counts() {
+        // Skip test if SRFM_FORMS_POST_TYPE is not defined.
+        if ( ! defined( 'SRFM_FORMS_POST_TYPE' ) ) {
+            $this->markTestSkipped( 'SRFM_FORMS_POST_TYPE constant is not defined' );
+        }
+        
+        // Create forms with IDs that we can predict the order.
+        $form1_id = wp_insert_post([
+            'post_type' => SRFM_FORMS_POST_TYPE,
+            'post_status' => 'publish',
+            'post_title' => 'Form A'
+        ]);
+        
+        $form2_id = wp_insert_post([
+            'post_type' => SRFM_FORMS_POST_TYPE,
+            'post_status' => 'publish',
+            'post_title' => 'Form B'
+        ]);
+        
+        // Set same entry counts for all forms.
+        if ( class_exists( '\SRFM\Inc\Database\Tables\Entries' ) && method_exists( '\SRFM\Inc\Database\Tables\Entries', 'set_mock_counts' ) ) {
+            \SRFM\Inc\Database\Tables\Entries::set_mock_counts([
+                $form1_id => 10,
+                $form2_id => 10
+            ]);
+        }
+        
+        $result = Helper::get_forms_with_entry_counts(strtotime('-7 days'));
+        
+        // When counts are the same, should sort by form_id descending.
+        $this->assertEquals($form2_id, $result[0]['form_id'], 'Should sort by form_id desc when counts are equal');
+        $this->assertEquals($form1_id, $result[1]['form_id']);
+        
+        // Clean up.
+        wp_delete_post($form1_id, true);
+        wp_delete_post($form2_id, true);
+    }
 }
