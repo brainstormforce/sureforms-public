@@ -1625,4 +1625,31 @@ class Helper {
 		// Return filtered result if it's a non-empty array.
 		return is_array( $filtered ) && ! empty( $filtered ) ? $filtered : $default;
 	}
+
+	/**
+	 * Check if the given form ID is valid SureForms form ID.
+	 * A valid form ID is a numeric value that corresponds to an existing SureForms form in the database.
+	 *
+	 * @since x.x.x
+	 *
+	 * @param int|string $form_id The form ID to validate.
+	 * @return bool True if the form ID is valid, false otherwise.
+	 */
+	public static function is_valid_form( $form_id ) {
+
+		// Check for a valid form ID.
+		if ( empty( $form_id ) || ! is_numeric( $form_id ) ) {
+			return false;
+		}
+
+		// Check if the form ID exists in the database.
+		$form = get_post( $form_id );
+
+		// If the form does not exist or is not of the correct post type, return false.
+		if ( ! $form || 'sureforms_form' !== $form->post_type ) {
+			return false;
+		}
+
+		return true;
+	}
 }
