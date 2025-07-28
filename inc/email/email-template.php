@@ -118,13 +118,15 @@ class Email_Template {
 		$message         = $this->get_header();
 		$excluded_fields = [ 'srfm-honeypot-field', 'g-recaptcha-response', 'srfm-sender-email-field' ];
 
+		$td_style = 'font-weight: 500;font-size: 14px;line-height: 20px;padding: 12px;border-bottom: 1px solid #E5E7EB;text-align:left;';
+
 		$message .= $email_body;
 		if ( strpos( $email_body, '{all_data}' ) !== false ) {
 
 			ob_start();
 
 			?>
-			<table class="srfm_all_data" width="536" cellpadding="0" cellspacing="0" style="border: 1px solid #dce0e6;border-radius: 6px;margin-top: 25px;margin-bottom: 25px;">
+			<table class="srfm_all_data" width="536" cellpadding="0" cellspacing="0" style="border: 1px solid #dce0e6;border-radius: 6px;margin-top: 25px;margin-bottom: 25px;overflow:hidden;">
 				<tbody>
 					<?php
 					foreach ( $fields as $field_name => $value ) {
@@ -205,12 +207,12 @@ class Email_Template {
 
 						?>
 					<tr class="field-label">
-						<th style="font-weight: 500;font-size: 14px;color: #1E293B;padding: 8px 16px;background-color: #F1F5F9;text-align: left;">
+						<th style="<?php echo esc_attr( $td_style ); ?>color: #1E293B;background-color: #F1F5F9;">
 							<strong><?php echo wp_kses_post( html_entity_decode( $field_label ) ); ?>:</strong>
 						</th>
 					</tr>
 					<tr class="field-value">
-						<td style="font-size: 14px;color: #475569;padding: 8px 16px 16px 16px;padding-bottom: 10px;">
+						<td style="<?php echo esc_attr( $td_style ); ?>color: #475569;">
 						<?php
 						if ( ! empty( $values_array ) && is_array( $values_array ) ) {
 							foreach ( $values_array as $value ) {
