@@ -47,12 +47,12 @@ class Smart_Tags {
 		$form_data = [ 'form-id' => $id ];
 
 		if ( self::check_form_by_id( $id ) ) {
-			return self::process_smart_tags( $block_content, null, $form_data );
+			return Helper::get_string_value( self::process_smart_tags( $block_content, null, $form_data ) );
 		}
 
 		if ( isset( $block['blockName'] ) && ( 'srfm/form' === $block['blockName'] ) ) {
 			if ( isset( $block['attrs']['id'] ) && $block['attrs']['id'] ) {
-				return self::process_smart_tags( $block_content, null, $form_data );
+				return Helper::get_string_value( self::process_smart_tags( $block_content, null, $form_data ) );
 			}
 		}
 
@@ -124,8 +124,9 @@ class Smart_Tags {
 	 * @param string            $content Form content.
 	 * @param array<mixed>|null $submission_data data from submission.
 	 * @param array<mixed>|null $form_data data from form.
-	 * @since 0.0.1
-	 * @return string
+	 * @since 0.0.1 - return string
+	 * @since x.x.x - return array<mixed>
+	 * @return string|array<mixed>
 	 */
 	public function process_smart_tags( $content, $submission_data = null, $form_data = null ) {
 
@@ -151,7 +152,53 @@ class Smart_Tags {
 				continue;
 			}
 
-			$replace = Helper::get_string_value( self::smart_tags_callback( $tag, $submission_data, $form_data ) );
+			// Get the only smart tag value.
+			$smart_tag_value = self::smart_tags_callback( $tag, $submission_data, $form_data );
+
+			/**
+			 * Check if smart tag value is an array, which can happen for special field types
+			 * like repeater fields that need to preserve their array structure.
+			 */
+			if ( is_array( $smart_tag_value ) ) {
+				/**
+				 * Filters whether a smart tag value should be returned as an array.
+				 *
+				 * Default is false to maintain backwards compatibility.
+				 * Filter must explicitly return true to allow array values.
+				 *
+				 * @since x.x.x
+				 *
+				 * @param bool  $is_verified_value Default false
+				 * @param array $args {
+				 *     Arguments passed to the filter.
+				 *
+				 *     @type string     $tag             The smart tag being processed
+				 *     @type array|null $submission_data The form submission data
+				 *     @type array|null $form_data       The form configuration data
+				 *     @type mixed      $value           The smart tag value
+				 * }
+				 */
+				$is_verified_value = apply_filters(
+					'srfm_is_smart_tag_value_verified_as_array',
+					false,
+					[
+						'tag'             => $tag,
+						'submission_data' => $submission_data,
+						'form_data'       => $form_data,
+						'value'           => $smart_tag_value,
+					]
+				);
+
+				/**
+				 * If filter verification passes, return the original array value.
+				 * This allows special field types to maintain their data structure.
+				 */
+				if ( true === $is_verified_value ) {
+					return $smart_tag_value;
+				}
+			}
+
+			$replace = Helper::get_string_value( $smart_tag_value );
 			$content = str_replace( $tag, $replace, $content );
 		}
 
