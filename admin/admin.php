@@ -12,6 +12,7 @@ use SRFM\Admin\Views\Single_Entry;
 use SRFM\Inc\AI_Form_Builder\AI_Helper;
 use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Helper;
+use SRFM\Inc\Onboarding;
 use SRFM\Inc\Post_Types;
 use SRFM\Inc\Traits\Get_Instance;
 
@@ -619,6 +620,7 @@ class Admin {
 		 * List of the handles in which we need to add translation compatibility.
 		 */
 		$script_translations_handlers = [];
+		$onboarding_instance          = Onboarding::get_instance();
 
 		$localization_data = [
 			'site_url'                => get_site_url(),
@@ -642,6 +644,10 @@ class Admin {
 			'plugin_installing_text'  => __( 'Installing...', 'sureforms' ),
 			'plugin_installed_text'   => __( 'Installed', 'sureforms' ),
 			'is_rtl'                  => $is_rtl,
+			'onboarding_completed'    => method_exists( $onboarding_instance, 'get_onboarding_status' ) ? $onboarding_instance->get_onboarding_status() : false,
+			'onboarding_redirect'     => isset( $_GET['srfm-activation-redirect'] ), // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce is not required for the activation redirection.
+			'pointer_nonce'           => wp_create_nonce( 'sureforms_pointer_action' ),
+			'srfm_ai_details'         => AI_Helper::get_current_usage_details(),
 		];
 
 		$is_screen_sureforms_menu          = Helper::validate_request_context( 'sureforms_menu', 'page' );
