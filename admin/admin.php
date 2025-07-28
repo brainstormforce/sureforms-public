@@ -27,6 +27,14 @@ class Admin {
 	use Get_Instance;
 
 	/**
+	 * Dashboard widget entries data.
+	 *
+	 * @var array
+	 * @since x.x.x
+	 */
+	private $dashboard_widget_data = [];
+
+	/**
 	 * Class constructor.
 	 *
 	 * @return void
@@ -1195,7 +1203,13 @@ class Admin {
 
 		// Only add the dashboard setup hook if there are entries.
 		if ( $total_entries > 0 ) {
-			add_action( 'wp_dashboard_setup', [ $this, 'register_dashboard_widget' ] );
+			// Get forms with entries (limit 4 for dashboard widget).
+			$this->dashboard_widget_data = Helper::get_forms_with_entry_counts( $seven_days_ago, 4 );
+
+			// Only show dashboard widget if there are forms with entries.
+			if ( ! empty( $this->dashboard_widget_data ) ) {
+				add_action( 'wp_dashboard_setup', [ $this, 'register_dashboard_widget' ] );
+			}
 		}
 	}
 
@@ -1225,9 +1239,8 @@ class Admin {
 	 * @since x.x.x
 	 */
 	public function render_dashboard_widget() {
-		// Get entries from the last 7 days.
-		$seven_days_ago = strtotime( '-7 days' );
-		$entries_data   = Helper::get_forms_with_entry_counts( $seven_days_ago, 4 );
+		// Use the pre-fetched data to avoid duplicate queries.
+		$entries_data = $this->dashboard_widget_data;
 
 		// Display the widget content.
 		?>
@@ -1262,51 +1275,65 @@ class Admin {
 			</div>
 
 			<?php
-			// Show footer only if Pro is not active AND (3+ entries received OR 3+ forms published).
-			if ( ! Helper::has_pro() ) {
-				// Count total entries in last 7 days.
-				$total_entries = 0;
-				foreach ( $entries_data as $form_data ) {
-					$total_entries += $form_data['count'];
-				}
-
-				// Count total published forms.
-				$published_forms_count = wp_count_posts( SRFM_FORMS_POST_TYPE )->publish;
-
-				// Show footer only if 3+ entries received OR 3+ forms published.
-				if ( $total_entries >= 3 || $published_forms_count >= 3 ) {
-					?>
-					<div class="sureforms-widget-footer">
-						<div class="sureforms-upgrade-content">
-							<svg class="sureforms-logo-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-								<rect width="20" height="20" fill="#D54407"/>
-								<path d="M5.7139 4.2854H14.2853V7.1425H7.1424L5.7139 8.5711V7.1425V4.2854Z" fill="white"/>
-								<path d="M5.7139 4.2854H14.2853V7.1425H7.1424L5.7139 8.5711V7.1425V4.2854Z" fill="white"/>
-								<path d="M5.7148 8.5713H12.8577V11.4284H7.1434L5.7148 12.857V11.4284V8.5713Z" fill="white"/>
-								<path d="M5.7148 8.5713H12.8577V11.4284H7.1434L5.7148 12.857V11.4284V8.5713Z" fill="white"/>
-								<path d="M5.7148 12.8569H10.0006V15.7141H5.7148V12.8569Z" fill="white"/>
-								<path d="M5.7148 12.8569H10.0006V15.7141H5.7148V12.8569Z" fill="white"/>
-							</svg>
-							<span><?php esc_html_e( 'Edit your Entries with SureForms Premium', 'sureforms' ); ?></span>
-						</div>
-						<?php
-						$upgrade_url = add_query_arg(
-							[
-								'utm_medium' => 'dashboard-widget',
-							],
-							Helper::get_sureforms_website_url( 'pricing' )
-						);
-						?>
-						<a href="<?php echo esc_url( $upgrade_url ); ?>" class="sureforms-upgrade-link" target="_blank">
-							<?php esc_html_e( 'Upgrade', 'sureforms' ); ?>
-						</a>
-					</div>
-					<?php
-				}
-			}
+			// Render footer if applicable.
+			$this->render_dashboard_widget_footer( $entries_data );
 			?>
 		</div>
 		<?php
+	}
+
+	/**
+	 * Render the dashboard widget footer for upsell.
+	 *
+	 * @param array $entries_data The entries data array.
+	 * @return void
+	 * @since x.x.x
+	 */
+	private function render_dashboard_widget_footer( $entries_data ) {
+		// Only show footer if Pro is not active.
+		if ( Helper::has_pro() ) {
+			return;
+		}
+
+		// Count total entries in last 7 days.
+		$total_entries = 0;
+		foreach ( $entries_data as $form_data ) {
+			$total_entries += $form_data['count'];
+		}
+
+		// Count total published forms.
+		$published_forms_count = wp_count_posts( SRFM_FORMS_POST_TYPE )->publish;
+
+		// Show footer only if 3+ entries received OR 3+ forms published.
+		if ( $total_entries >= 3 || $published_forms_count >= 3 ) {
+			?>
+			<div class="sureforms-widget-footer">
+				<div class="sureforms-upgrade-content">
+					<svg class="sureforms-logo-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<rect width="20" height="20" fill="#D54407"/>
+						<path d="M5.7139 4.2854H14.2853V7.1425H7.1424L5.7139 8.5711V7.1425V4.2854Z" fill="white"/>
+						<path d="M5.7139 4.2854H14.2853V7.1425H7.1424L5.7139 8.5711V7.1425V4.2854Z" fill="white"/>
+						<path d="M5.7148 8.5713H12.8577V11.4284H7.1434L5.7148 12.857V11.4284V8.5713Z" fill="white"/>
+						<path d="M5.7148 8.5713H12.8577V11.4284H7.1434L5.7148 12.857V11.4284V8.5713Z" fill="white"/>
+						<path d="M5.7148 12.8569H10.0006V15.7141H5.7148V12.8569Z" fill="white"/>
+						<path d="M5.7148 12.8569H10.0006V15.7141H5.7148V12.8569Z" fill="white"/>
+					</svg>
+					<span><?php esc_html_e( 'Edit your Entries with SureForms Premium', 'sureforms' ); ?></span>
+				</div>
+				<?php
+				$upgrade_url = add_query_arg(
+					[
+						'utm_medium' => 'dashboard-widget',
+					],
+					Helper::get_sureforms_website_url( 'pricing' )
+				);
+				?>
+				<a href="<?php echo esc_url( $upgrade_url ); ?>" class="sureforms-upgrade-link" target="_blank">
+					<?php esc_html_e( 'Upgrade', 'sureforms' ); ?>
+				</a>
+			</div>
+			<?php
+		}
 	}
 
 	/**
