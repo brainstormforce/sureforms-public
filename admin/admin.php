@@ -1283,6 +1283,31 @@ class Admin {
 	}
 
 	/**
+	 * Get random premium feature text.
+	 *
+	 * @return string Random feature text.
+	 * @since x.x.x
+	 */
+	private function get_random_premium_feature_text() {
+		$features = [
+			__( 'Use Conditional Logic to show only what matters', 'sureforms' ),
+			__( 'Split your form into steps to keep it easy', 'sureforms' ),
+			__( 'Let people upload files directly to your form', 'sureforms' ),
+			__( 'Turn responses into downloadable PDFs automatically', 'sureforms' ),
+			__( 'Let users sign with a simple signature field', 'sureforms' ),
+			__( 'Connect your form to other tools using webhooks', 'sureforms' ),
+			__( 'Use Conversational Forms for a chat-like experience', 'sureforms' ),
+			__( 'Let users register or log in through your form', 'sureforms' ),
+			__( 'Build forms that create WordPress user accounts', 'sureforms' ),
+			__( 'Add calculations to auto-total scores or prices', 'sureforms' ),
+		];
+
+		// Get a random feature.
+		$random_key = array_rand( $features );
+		return $features[ $random_key ];
+	}
+
+	/**
 	 * Render the dashboard widget footer for upsell.
 	 *
 	 * @param array $entries_data The entries data array.
@@ -1318,7 +1343,7 @@ class Admin {
 						<path d="M5.7148 12.8569H10.0006V15.7141H5.7148V12.8569Z" fill="white"/>
 						<path d="M5.7148 12.8569H10.0006V15.7141H5.7148V12.8569Z" fill="white"/>
 					</svg>
-					<span><?php esc_html_e( 'Edit your Entries with SureForms Premium', 'sureforms' ); ?></span>
+					<span><?php echo esc_html( $this->get_random_premium_feature_text() ); ?></span>
 				</div>
 				<?php
 				$upgrade_url = add_query_arg(
