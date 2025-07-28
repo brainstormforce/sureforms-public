@@ -654,9 +654,9 @@ class Form_Submit {
 	public static function parse_email_notification_template( $submission_data, $item, $form_data = [] ) {
 		$smart_tags = Smart_Tags::get_instance();
 
-		$to             = $smart_tags->process_smart_tags( $item['email_to'], $submission_data );
-		$subject        = $smart_tags->process_smart_tags( $item['subject'], $submission_data, $form_data );
-		$email_body     = $smart_tags->process_smart_tags( $item['email_body'], $submission_data, $form_data );
+		$to             = Helper::get_string_value( $smart_tags->process_smart_tags( $item['email_to'], $submission_data ) );
+		$subject        = Helper::get_string_value( $smart_tags->process_smart_tags( $item['subject'], $submission_data, $form_data ) );
+		$email_body     = Helper::get_string_value( $smart_tags->process_smart_tags( $item['email_body'], $submission_data, $form_data ) );
 		$email_template = new Email_Template();
 		$message        = $email_template->render( $submission_data, $email_body );
 		$headers        = 'X-Mailer: PHP/' . phpversion() . "\r\n";
@@ -666,13 +666,13 @@ class Form_Submit {
 		$headers .= self::add_from_data_in_header( $submission_data, $item, $smart_tags );
 
 		if ( isset( $item['email_reply_to'] ) && ! empty( $item['email_reply_to'] ) ) {
-			$headers .= 'Reply-To:' . $smart_tags->process_smart_tags( $item['email_reply_to'], $submission_data ) . "\r\n";
+			$headers .= 'Reply-To:' . Helper::get_string_value( $smart_tags->process_smart_tags( $item['email_reply_to'], $submission_data ) ) . "\r\n";
 		}
 		if ( isset( $item['email_cc'] ) && ! empty( $item['email_cc'] ) ) {
-			$headers .= 'Cc:' . $smart_tags->process_smart_tags( $item['email_cc'], $submission_data ) . "\r\n";
+			$headers .= 'Cc:' . Helper::get_string_value( $smart_tags->process_smart_tags( $item['email_cc'], $submission_data ) ) . "\r\n";
 		}
 		if ( isset( $item['email_bcc'] ) && ! empty( $item['email_bcc'] ) ) {
-			$headers .= 'Bcc:' . $smart_tags->process_smart_tags( $item['email_bcc'], $submission_data ) . "\r\n";
+			$headers .= 'Bcc:' . Helper::get_string_value( $smart_tags->process_smart_tags( $item['email_bcc'], $submission_data ) ) . "\r\n";
 		}
 
 		return compact( 'to', 'subject', 'message', 'headers' );
@@ -1144,6 +1144,6 @@ class Form_Submit {
 			$from_email = Helper::get_string_value( get_option( 'admin_email' ) );
 		}
 
-		return 'From: ' . esc_html( $smart_tags->process_smart_tags( $from_name, $submission_data ) ) . ' <' . esc_html( $smart_tags->process_smart_tags( $from_email, $submission_data ) ) . '>' . "\r\n";
+		return 'From: ' . esc_html( Helper::get_string_value( $smart_tags->process_smart_tags( $from_name, $submission_data ) ) ) . ' <' . esc_html( Helper::get_string_value( $smart_tags->process_smart_tags( $from_email, $submission_data ) ) ) . '>' . "\r\n";
 	}
 }

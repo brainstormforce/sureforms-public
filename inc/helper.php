@@ -648,8 +648,28 @@ class Helper {
 			if ( false === strpos( $key, '-lbl-' ) ) {
 				continue;
 			}
-			$label                = explode( '-lbl-', $key )[1];
-			$slug                 = implode( '-', array_slice( explode( '-', $label ), 1 ) );
+			$label = explode( '-lbl-', $key )[1];
+			$slug  = implode( '-', array_slice( explode( '-', $label ), 1 ) );
+
+			// Check if value is array to handle external package field functionality.
+			// like repeater fields that need special processing.
+			if ( is_array( $value ) && ! empty( $value ) ) {
+				// Apply filter to allow external packages to process array values.
+				// Returns processed data with 'is_processed' flag if successfully handled.
+				$filtered_submission_data = apply_filters(
+					'srfm_map_slug_to_submission_data_array',
+					[
+						'value' => $value,
+						'key'   => $key,
+						'slug'  => $slug,
+					]
+				);
+				if ( isset( $filtered_submission_data['is_processed'] ) && true === $filtered_submission_data['is_processed'] ) {
+					$mapped_data[ $slug ] = $filtered_submission_data['value'];
+					continue;
+				}
+			}
+
 			$mapped_data[ $slug ] = is_string( $value ) ? html_entity_decode( esc_attr( $value ) ) : $value;
 		}
 		return $mapped_data;
