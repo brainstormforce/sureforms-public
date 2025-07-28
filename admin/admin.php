@@ -1250,19 +1250,19 @@ class Admin {
 
 		// Display the widget content.
 		?>
-		<div class="sureforms-dashboard-widget">
-			<div class="sureforms-widget-header">
-				<h3 class="sureforms-widget-title">
+		<div class="srfm-dashboard-widget">
+			<div class="srfm-widget-header">
+				<h3 class="srfm-widget-title">
 					<?php esc_html_e( 'Recent Entries', 'sureforms' ); ?>
-					<span class="sureforms-widget-subtitle"><?php esc_html_e( '( Last 7 days )', 'sureforms' ); ?></span>
+					<span class="srfm-widget-subtitle"><?php esc_html_e( '( Last 7 days )', 'sureforms' ); ?></span>
 				</h3>
-				<a href="<?php echo esc_url( admin_url( 'admin.php?page=sureforms_entries' ) ); ?>" class="sureforms-widget-view-link">
+				<a href="<?php echo esc_url( admin_url( 'admin.php?page=sureforms_entries' ) ); ?>" class="srfm-widget-view-link">
 					<?php esc_html_e( 'View', 'sureforms' ); ?>
 				</a>
 			</div>
 
-			<div class="sureforms-table-wrapper">
-				<table class="sureforms-entries-table">
+			<div class="srfm-table-wrapper">
+				<table class="srfm-entries-table">
 					<thead>
 						<tr>
 							<th><?php esc_html_e( 'Form Name', 'sureforms' ); ?></th>
@@ -1338,9 +1338,9 @@ class Admin {
 		// Show footer only if 3+ entries received OR 3+ forms published.
 		if ( $total_entries >= 3 || $published_forms_count >= 3 ) {
 			?>
-			<div class="sureforms-widget-footer">
-				<div class="sureforms-upgrade-content">
-					<svg class="sureforms-logo-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+			<div class="srfm-widget-footer">
+				<div class="srfm-upgrade-content">
+					<svg class="srfm-logo-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
 						<rect width="20" height="20" fill="#D54407"/>
 						<path d="M5.7139 4.2854H14.2853V7.1425H7.1424L5.7139 8.5711V7.1425V4.2854Z" fill="white"/>
 						<path d="M5.7139 4.2854H14.2853V7.1425H7.1424L5.7139 8.5711V7.1425V4.2854Z" fill="white"/>
@@ -1359,7 +1359,7 @@ class Admin {
 					Helper::get_sureforms_website_url( 'pricing' )
 				);
 				?>
-				<a href="<?php echo esc_url( $upgrade_url ); ?>" class="sureforms-upgrade-link" target="_blank">
+				<a href="<?php echo esc_url( $upgrade_url ); ?>" class="srfm-upgrade-link" target="_blank">
 					<?php esc_html_e( 'Upgrade', 'sureforms' ); ?>
 				</a>
 			</div>
