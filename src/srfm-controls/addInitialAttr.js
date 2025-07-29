@@ -58,9 +58,10 @@ const copyConditionalLogic = ( originalBlockId, newBlockId ) => {
 		if ( originalLogic ) {
 			// Check if logic for the newBlockId already exists and is the same.
 			const exists = conditionalLogicData.some(
-				(entry) =>
+				( entry ) =>
 					entry[ newBlockId ] &&
-					JSON.stringify(entry[ newBlockId ]) === JSON.stringify(originalLogic)
+					JSON.stringify( entry[ newBlockId ] ) ===
+						JSON.stringify( originalLogic )
 			);
 
 			if ( exists ) {
