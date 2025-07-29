@@ -266,7 +266,9 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 == Changelog ==
 = x.x.x =
 * Improvement: Email notifications now show the full submitted URL as the clickable link instead of a "View" label.
+* Fix: Resolved an issue where long titles in forms were getting hidden under the form container.
 * Fix: Resolved an issue where hidden fields were not available in shortcode as smart tags.
+* Fix: Resolved an issue where forms display an error message on load when the LMS Optimize plugin is active.
 = 1.9.0 - 22nd July 2025 =
 * Fix: Added a fallback error message for AI form generation.
 * Fix: Resolved background overflow issue with Kadence theme on embedded pages.
