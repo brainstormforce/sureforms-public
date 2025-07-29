@@ -253,7 +253,8 @@ class Form_Submit {
 		$current_form_id = $form_data['form-id'];
 
 		// Check whether the form is valid.
-		if ( ! Helper::is_valid_form( $current_form_id ) ) {
+		$form_id = (int) $current_form_id;
+		if ( ! Helper::is_valid_form( $form_id ) ) {
 			wp_send_json_error(
 				[
 					'message' => __( 'Form does not exist. Please provide a valid form ID.', 'sureforms' ),
