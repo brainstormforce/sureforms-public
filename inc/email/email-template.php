@@ -154,13 +154,17 @@ class Email_Template {
 								$value = Helper::get_string_value( $value );
 								if ( ! empty( $value ) && is_string( $value ) ) {
 									?>
-									<a target="_blank" href="<?php echo esc_attr( urldecode( $value ) ); ?>"><?php echo esc_html__( 'View', 'sureforms' ); ?></a>
+									<a target="_blank" href="<?php echo esc_attr( urldecode( $value ) ); ?>">
+    									<?php echo esc_html( urldecode( $value ) ); ?>
+									</a>
 									<?php
 								}
 							}
 						} elseif ( ! empty( $value ) && is_string( $value ) && filter_var( $value, FILTER_VALIDATE_URL ) ) {
 							?>
-							<a target="_blank" href="<?php echo esc_attr( urldecode( $value ) ); ?>"><?php echo esc_html__( 'View', 'sureforms' ); ?></a>
+							<a target="_blank" href="<?php echo esc_attr( urldecode( $value ) ); ?>">
+    							<?php echo esc_html( urldecode( $value ) ); ?>
+							</a>
 							<?php
 						} else {
 							if ( is_string( $value ) ) {
