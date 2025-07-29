@@ -1632,13 +1632,13 @@ class Helper {
 	 *
 	 * @since x.x.x
 	 *
-	 * @param int $form_id The form ID to validate.
+	 * @param int|string|mixed $form_id The form ID to validate.
 	 * @return bool True if the form ID is valid, false otherwise.
 	 */
 	public static function is_valid_form( $form_id ) {
 
 		// Check for a valid form ID.
-		if ( empty( $form_id ) || ! is_int( $form_id ) ) {
+		if ( empty( $form_id ) || ! is_numeric( $form_id ) ) {
 			return false;
 		}
 
