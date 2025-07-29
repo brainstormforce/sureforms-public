@@ -47,7 +47,7 @@ jobs:
             - name: Install composer dependencies
               env:
                   COMPOSER_AUTH: '{"github-oauth": {"github.com": "${{ secrets.PRIVATE_ACCESS_TOKEN }}"}}'
-              run: composer install --prefer-dist --no-progress && npm ci
+              run: composer install --prefer-dist --no-progress
 
             # - name: PHPCS check
             #   if: always()
