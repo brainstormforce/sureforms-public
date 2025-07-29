@@ -236,13 +236,13 @@ const EmailNotification = ( {
 	}
 
 	// hook to make delete, duplicate feature work with conditional logic.
-	let attachNecassaryHooks = applyFilters(
+	let attachNecessaryHooks = applyFilters(
 		'srfm.emailNotification.loaded',
 		[]
 	);
 
-	if ( ! attachNecassaryHooks || attachNecassaryHooks.length === 0 ) {
-		attachNecassaryHooks = [];
+	if ( ! attachNecessaryHooks || attachNecessaryHooks.length === 0 ) {
+		attachNecessaryHooks = [];
 	}
 
 	return (
@@ -420,7 +420,7 @@ const EmailNotification = ( {
 						} ) }
 				</Table.Body>
 			</Table>
-			{ attachNecassaryHooks.map( ( option ) => option.component ) }
+			{ attachNecessaryHooks.map( ( option ) => option.component ) }
 		</TabContentWrapper>
 	);
 };

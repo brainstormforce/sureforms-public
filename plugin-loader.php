@@ -34,6 +34,7 @@ use SRFM\Inc\Gutenberg_Hooks;
 use SRFM\Inc\Helper;
 use SRFM\Inc\Lib\SRFM_Nps_Survey;
 use SRFM\Inc\Nps_Notice;
+use SRFM\Inc\Onboarding;
 use SRFM\Inc\Page_Builders\Page_Builders;
 use SRFM\Inc\Post_Types;
 use SRFM\Inc\Rest_Api;
@@ -296,6 +297,7 @@ class Plugin_Loader {
 		AI_Helper::get_instance();
 		AI_Auth::get_instance();
 		Updater::get_instance();
+		Onboarding::get_instance();
 		DatabaseRegister::init();
 		// Initializing Compatibilities.
 		Astra::get_instance();
