@@ -37,7 +37,7 @@ jobs:
           php-version: ${{ matrix.php }}
           coverage: none
           tools: composer, cs2pr
-      
+
       - name: Install WordPress test setup
         env:
           WP_VERSION: ${{ matrix.wordpress }}
@@ -58,7 +58,9 @@ jobs:
             ${{ runner.os }}-composer-
 
       - name: Install dependencies
-        run: composer config github-oauth.github.com ${{ secrets.PRIVATE_ACCESS_TOKEN }} && composer install --no-progress --prefer-dist --optimize-autoloader
+        env:
+            COMPOSER_AUTH: '{"github-oauth": {"github.com": "${{ secrets.PRIVATE_ACCESS_TOKEN }}"}}'
+        run: composer install --prefer-dist --no-progress --prefer-dist --optimize-autoloader
 
       - name: Setup problem matchers for PHPUnit
         run: echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
