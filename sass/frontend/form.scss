@@ -144,7 +144,7 @@
 		}
 
 		p {
-			&:not( [hidden="true"] ) {
+			&:not( [hidden] ) {
 				&.srfm-error-message {
 					.srfm-icon {
 						line-height: 1;
