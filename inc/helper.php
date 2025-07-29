@@ -1643,7 +1643,7 @@ class Helper {
 		}
 
 		// Check if the form ID exists in the database.
-		$form = get_post( $form_id );
+		$form = get_post( Helper::get_integer_value( $form_id ) );
 
 		// If the form does not exist or is not of the correct post type, return false.
 		if ( ! $form || 'sureforms_form' !== $form->post_type ) {
