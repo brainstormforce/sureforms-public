@@ -1646,7 +1646,7 @@ class Helper {
 		$form = get_post( self::get_integer_value( $form_id ) );
 
 		// If the form does not exist or is not of the correct post type, return false.
-		if ( ! $form || 'sureforms_form' !== $form->post_type ) {
+		if ( ! $form || ! is_a( $form, 'WP_Post' ) || SRFM_FORMS_POST_TYPE !== $form->post_type ) {
 			return false;
 		}
 

@@ -256,7 +256,8 @@ class Form_Submit {
 		if ( ! Helper::is_valid_form( $current_form_id ) ) {
 			wp_send_json_error(
 				[
-					'message' => __( 'Form does not exist. Please provide a valid form ID.', 'sureforms' ),
+					'code'    => 'srfm_invalid_form_id',
+					'message' => __( 'Form does not exist.', 'sureforms' ),
 				]
 			);
 		}
