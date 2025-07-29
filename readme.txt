@@ -264,6 +264,8 @@ We take plugin security extremely seriously. If you discover a security vulnerab
 You can report the issue through our [Bug Bounty Program](https://brainstormforce.com/bug-bounty-program/). We collaborate with Patchstack to provide opportunities for researchers to report vulnerabilities. The Patchstack team will help validate, triage, and handle any reported security issues.
 
 == Changelog ==
+= x.x.x =
+* Fix: Resolved an issue where conditional logic is not preserved for duplicated blocks.
 = 1.9.0 - 22nd July 2025 =
 * Fix: Added a fallback error message for AI form generation.
 * Fix: Resolved background overflow issue with Kadence theme on embedded pages.
