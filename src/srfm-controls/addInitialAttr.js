@@ -33,33 +33,43 @@ const checkDuplicate = ( blockIds, block_id, currentIndex ) => {
 };
 
 const copyConditionalLogic = ( originalBlockId, newBlockId ) => {
-	const { getEditedPostAttribute } = select( 'core/editor' );
-	const { editPost } = dispatch( 'core/editor' );
-	const postMeta = getEditedPostAttribute( 'meta' );
-	const conditionalLogicData = postMeta?._srfm_conditional_logic;
+	try {
+		const { getEditedPostAttribute } = select( 'core/editor' );
+		const { editPost } = dispatch( 'core/editor' );
+		const postMeta = getEditedPostAttribute( 'meta' );
+		const conditionalLogicData = postMeta?._srfm_conditional_logic;
 
-	if ( ! conditionalLogicData || ! Array.isArray( conditionalLogicData ) ) {
-		return;
-	}
-
-	let originalLogic = null;
-	for ( let i = 0; i < conditionalLogicData.length; i++ ) {
-		if ( conditionalLogicData[ i ][ originalBlockId ] ) {
-			originalLogic = conditionalLogicData[ i ][ originalBlockId ];
-			break;
+		if (
+			! conditionalLogicData ||
+			! Array.isArray( conditionalLogicData )
+		) {
+			console.warn( 'Conditional logic metadata is not an array.' );
+			return;
 		}
-	}
 
-	if ( originalLogic ) {
-		const newConditionalLogicData = [ ...conditionalLogicData ];
-		newConditionalLogicData.push( { [ newBlockId ]: { ...originalLogic } } );
+		let originalLogic = null;
+		for ( let i = 0; i < conditionalLogicData.length; i++ ) {
+			if ( conditionalLogicData[ i ][ originalBlockId ] ) {
+				originalLogic = conditionalLogicData[ i ][ originalBlockId ];
+				break;
+			}
+		}
 
-		editPost( {
-			meta: {
-				_srfm_conditional_logic: newConditionalLogicData,
-				meta_modified: new Date().toISOString(),
-			},
-		} );
+		if ( originalLogic ) {
+			const newConditionalLogicData = [ ...conditionalLogicData ];
+			newConditionalLogicData.push( {
+				[ newBlockId ]: { ...originalLogic },
+			} );
+
+			editPost( {
+				meta: {
+					_srfm_conditional_logic: newConditionalLogicData,
+					meta_modified: new Date().toISOString(),
+				},
+			} );
+		}
+	} catch ( error ) {
+		console.warn( 'Failed to copy conditional logic:', error );
 	}
 };
 
