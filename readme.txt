@@ -265,6 +265,7 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 
 == Changelog ==
 = x.x.x =
+* Improvement: Email notifications now show the full submitted URL as the clickable link instead of a "View" label.
 * Fix: Resolved an issue where hidden fields were not available in shortcode as smart tags.
 = 1.9.0 - 22nd July 2025 =
 * Fix: Added a fallback error message for AI form generation.
