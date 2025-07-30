@@ -937,7 +937,7 @@ class Helper {
 	public static function render_missing_sitekey_error( $provider_name ) {
 		$icon = self::fetch_svg( 'info_circle', '', 'aria-hidden="true"' );
 		?>
-		<p id="sitekey-error" class="srfm-common-error-message srfm-error-message" hidden="false">
+		<p id="sitekey-error" class="srfm-common-error-message srfm-error-message">
 			<?php echo wp_kses( $icon, self::$allowed_tags_svg ); ?>
 			<span class="srfm-error-content">
 				<?php
@@ -1730,5 +1730,32 @@ class Helper {
 		}
 
 		return $all_forms;
+	}
+
+	/**
+	 * Check if the given form ID is valid SureForms form ID.
+	 * A valid form ID is a numeric value that corresponds to an existing SureForms form in the database.
+	 *
+	 * @since x.x.x
+	 *
+	 * @param int|string|mixed $form_id The form ID to validate.
+	 * @return bool True if the form ID is valid, false otherwise.
+	 */
+	public static function is_valid_form( $form_id ) {
+
+		// Check for a valid form ID.
+		if ( empty( $form_id ) || ! is_numeric( $form_id ) ) {
+			return false;
+		}
+
+		// Check if the form ID exists in the database.
+		$form = get_post( self::get_integer_value( $form_id ) );
+
+		// If the form does not exist or is not of the correct post type, return false.
+		if ( ! $form || ! is_a( $form, 'WP_Post' ) || SRFM_FORMS_POST_TYPE !== $form->post_type ) {
+			return false;
+		}
+
+		return true;
 	}
 }
