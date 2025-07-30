@@ -521,7 +521,7 @@ class Base {
 		$placeholder            = Helper::generate_common_form_markup( $this->form_id, 'placeholder', $this->label, $this->slug, $this->block_id . $input_label, boolval( $this->required ) );
 		if ( ! empty( $placeholder ) ) {
 			$this->label_markup     = '';
-			$this->placeholder_attr = ' placeholder="' . $placeholder . '" ';
+			$this->placeholder_attr = ' placeholder="' . esc_attr( $placeholder ) . '" ';
 		}
 	}
 
