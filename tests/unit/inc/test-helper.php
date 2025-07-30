@@ -1319,7 +1319,7 @@ class Test_Helper extends TestCase {
     /**
      * Test get_forms_with_entry_counts method.
      *
-     * @since x.x.x
+     * @since 1.9.1
      */
     public function test_get_forms_with_entry_counts() {
         // Skip test if SRFM_FORMS_POST_TYPE is not defined.
@@ -1404,7 +1404,7 @@ class Test_Helper extends TestCase {
     /**
      * Test get_forms_with_entry_counts sorting behavior.
      *
-     * @since x.x.x
+     * @since 1.9.1
      */
     public function test_get_forms_with_entry_counts_sorting() {
         // Skip test if SRFM_FORMS_POST_TYPE is not defined.

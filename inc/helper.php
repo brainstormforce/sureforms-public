@@ -1601,7 +1601,7 @@ class Helper {
 	/**
 	 * Check if any of the top 10 popular WordPress SMTP plugins is active using array_intersect.
 	 *
-	 * @since x.x.x
+	 * @since 1.9.1
 	 * @return bool True if any SMTP plugin is active, false otherwise.
 	 */
 	public static function is_any_smtp_plugin_active() {
@@ -1664,7 +1664,7 @@ class Helper {
 	 * @param int  $limit     Maximum number of forms to return (0 for all).
 	 * @param bool $sort      Whether to sort by entry count descending.
 	 * @return array Array of form data with entry counts.
-	 * @since x.x.x
+	 * @since 1.9.1
 	 */
 	public static function get_forms_with_entry_counts( $timestamp, $limit = 0, $sort = true ) {
 		// Get all published forms.
@@ -1736,7 +1736,7 @@ class Helper {
 	 * Check if the given form ID is valid SureForms form ID.
 	 * A valid form ID is a numeric value that corresponds to an existing SureForms form in the database.
 	 *
-	 * @since x.x.x
+	 * @since 1.9.1
 	 *
 	 * @param int|string|mixed $form_id The form ID to validate.
 	 * @return bool True if the form ID is valid, false otherwise.
