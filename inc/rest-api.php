@@ -160,7 +160,7 @@ class Rest_Api {
 	 * Set onboarding completion status.
 	 *
 	 * @param \WP_REST_Request $request Full details about the request.
-	 * @since x.x.x
+	 * @since 1.9.1
 	 * @return \WP_REST_Response
 	 */
 	public function set_onboarding_status( $request ) {
@@ -192,7 +192,7 @@ class Rest_Api {
 	 * Get onboarding completion status.
 	 *
 	 * @param \WP_REST_Request $request Full details about the request.
-	 * @since x.x.x
+	 * @since 1.9.1
 	 * @return \WP_REST_Response
 	 */
 	public function get_onboarding_status( $request ) {
@@ -214,7 +214,7 @@ class Rest_Api {
 	 * Get plugin status for specified plugin.
 	 *
 	 * @param \WP_REST_Request $request Full details about the request.
-	 * @since x.x.x
+	 * @since 1.9.1
 	 * @return \WP_REST_Response
 	 */
 	public function get_plugin_status( $request ) {
