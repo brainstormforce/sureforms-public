@@ -838,6 +838,426 @@ class Test_Helper extends TestCase {
     }
 
     /**
+     * Mock data for SMTP detection tests
+     */
+    public static $mock_active_plugins = [];
+    public static $mock_network_plugins = [];
+    public static $mock_is_multisite = false;
+
+    /**
+     * Reset SMTP test data
+     */
+    public function reset_smtp_test_data() {
+        self::$mock_active_plugins = [];
+        self::$mock_network_plugins = [];
+        self::$mock_is_multisite = false;
+    }
+
+    /**
+     * Helper function to set up SMTP plugin mocks
+     *
+     * @param array $active_plugins Array of active plugins to mock
+     * @param array $network_plugins Array of network plugins to mock (for multisite)
+     * @param bool  $is_multisite Whether to simulate multisite environment
+     */
+    public function setup_smtp_plugin_mocks( $active_plugins = [], $network_plugins = [], $is_multisite = false ) {
+        // Clear any existing filters
+        remove_all_filters('pre_option_active_plugins');
+        remove_all_filters('pre_site_option_active_sitewide_plugins');
+        remove_all_filters('pre_option_is_multisite');
+
+        // Set up new filters
+        add_filter('pre_option_active_plugins', function() use ($active_plugins) {
+            return $active_plugins;
+        });
+
+        add_filter('pre_site_option_active_sitewide_plugins', function() use ($network_plugins) {
+            return $network_plugins;
+        });
+
+        if ($is_multisite) {
+            add_filter('pre_option_is_multisite', '__return_true');
+        } else {
+            add_filter('pre_option_is_multisite', '__return_false');
+        }
+    }
+
+    /**
+     * Helper function to set up multisite SMTP plugin mocks with time-based values
+     *
+     * @param array $active_plugins Array of site-level active plugins
+     * @param array $network_plugins Array of network-activated plugins (without time values)
+     */
+    public function setup_multisite_smtp_mocks( $active_plugins = [], $network_plugins = [] ) {
+        // Convert network plugins array to time-based format
+        $network_with_time = [];
+        foreach ($network_plugins as $plugin) {
+            $network_with_time[$plugin] = time();
+        }
+
+        $this->setup_smtp_plugin_mocks($active_plugins, $network_with_time, true);
+    }
+
+    /**
+     * Test is_any_smtp_plugin_active - should return false when no plugins are active
+     */
+    public function test_is_any_smtp_plugin_active_no_plugins() {
+        $this->reset_smtp_test_data();
+        $this->setup_smtp_plugin_mocks();
+
+        $result = Helper::is_any_smtp_plugin_active();
+
+        $this->assertFalse($result);
+    }
+
+    /**
+     * Test is_any_smtp_plugin_active - should return true when WP Mail SMTP is active
+     */
+    public function test_is_any_smtp_plugin_active_wp_mail_smtp() {
+        $this->reset_smtp_test_data();
+        $this->setup_smtp_plugin_mocks([
+            'wp-mail-smtp/wp_mail_smtp.php',
+            'akismet/akismet.php'
+        ]);
+
+        $result = Helper::is_any_smtp_plugin_active();
+
+        $this->assertTrue($result);
+    }
+
+    /**
+     * Test is_any_smtp_plugin_active - should return false with old incorrect WP Mail SMTP path
+     */
+    public function test_is_any_smtp_plugin_active_old_wp_mail_smtp_path() {
+        $this->reset_smtp_test_data();
+        $this->setup_smtp_plugin_mocks([
+            'wp-mail-smtp/wp-mail-smtp.php', // Old incorrect path with hyphens
+            'akismet/akismet.php'
+        ]);
+
+        $result = Helper::is_any_smtp_plugin_active();
+
+        $this->assertFalse($result);
+    }
+
+    /**
+     * Test is_any_smtp_plugin_active - should return true when Newsletter plugin is active
+     */
+    public function test_is_any_smtp_plugin_active_newsletter() {
+        $this->reset_smtp_test_data();
+        $this->setup_smtp_plugin_mocks([
+            'newsletter/plugin.php', // Correct file path is plugin.php not newsletter.php
+            'akismet/akismet.php'
+        ]);
+
+        $result = Helper::is_any_smtp_plugin_active();
+
+        $this->assertTrue($result);
+    }
+
+    /**
+     * Test is_any_smtp_plugin_active - should return false with old incorrect Newsletter path
+     */
+    public function test_is_any_smtp_plugin_active_old_newsletter_path() {
+        $this->reset_smtp_test_data();
+        $this->setup_smtp_plugin_mocks([
+            'newsletter/newsletter.php', // Old incorrect path
+            'akismet/akismet.php'
+        ]);
+
+        $result = Helper::is_any_smtp_plugin_active();
+
+        $this->assertFalse($result);
+    }
+
+    /**
+     * Test is_any_smtp_plugin_active - should return true when SureMails is active
+     */
+    public function test_is_any_smtp_plugin_active_suremails() {
+        $this->reset_smtp_test_data();
+        $this->setup_smtp_plugin_mocks([
+            'suremails/suremails.php',
+            'akismet/akismet.php'
+        ]);
+
+        $result = Helper::is_any_smtp_plugin_active();
+
+        $this->assertTrue($result);
+    }
+
+    /**
+     * Test is_any_smtp_plugin_active - should return true when Site Mailer is active
+     */
+    public function test_is_any_smtp_plugin_active_site_mailer() {
+        $this->reset_smtp_test_data();
+        $this->setup_smtp_plugin_mocks([
+            'site-mailer/site-mailer.php',
+            'akismet/akismet.php'
+        ]);
+
+        $result = Helper::is_any_smtp_plugin_active();
+
+        $this->assertTrue($result);
+    }
+
+    /**
+     * Test is_any_smtp_plugin_active - should return true when multiple SMTP plugins are active
+     */
+    public function test_is_any_smtp_plugin_active_multiple() {
+        $this->reset_smtp_test_data();
+        $this->setup_smtp_plugin_mocks([
+            'wp-mail-smtp/wp_mail_smtp.php',
+            'newsletter/plugin.php',
+            'fluent-smtp/fluent-smtp.php',
+            'akismet/akismet.php'
+        ]);
+
+        $result = Helper::is_any_smtp_plugin_active();
+
+        $this->assertTrue($result);
+    }
+
+    /**
+     * Test is_any_smtp_plugin_active - should return false when only non-SMTP plugins are active
+     */
+    public function test_is_any_smtp_plugin_active_non_smtp_plugins() {
+        $this->reset_smtp_test_data();
+        $this->setup_smtp_plugin_mocks([
+            'akismet/akismet.php',
+            'jetpack/jetpack.php',
+            'contact-form-7/wp-contact-form-7.php'
+        ]);
+
+        $result = Helper::is_any_smtp_plugin_active();
+
+        $this->assertFalse($result);
+    }
+
+    /**
+     * Test is_any_smtp_plugin_active - multisite with network active SMTP plugins
+     */
+    public function test_is_any_smtp_plugin_active_multisite_network() {
+        $this->reset_smtp_test_data();
+
+        // Mock is_multisite() to return true
+        add_filter('ms_is_switched', '__return_false');
+
+        add_filter('pre_option_active_plugins', function() {
+            return [
+                'akismet/akismet.php'
+            ];
+        });
+
+        add_filter('pre_site_option_active_sitewide_plugins', function() {
+            return [
+                'wp-mail-smtp/wp_mail_smtp.php' => time(),
+                'some-network-plugin/plugin.php' => time()
+            ];
+        });
+
+        // Skip test if not in multisite environment
+        if ( ! is_multisite() ) {
+            $this->markTestSkipped( 'This test requires a multisite environment.' );
+            return;
+        }
+
+        $result = Helper::is_any_smtp_plugin_active();
+
+        $this->assertTrue($result);
+    }
+
+    /**
+     * Test is_any_smtp_plugin_active - multisite with both site and network plugins
+     */
+    public function test_is_any_smtp_plugin_active_multisite_both() {
+        $this->reset_smtp_test_data();
+
+        // Skip test if not in multisite environment
+        if ( ! is_multisite() ) {
+            $this->markTestSkipped( 'This test requires a multisite environment.' );
+            return;
+        }
+
+        $this->setup_multisite_smtp_mocks(
+            ['newsletter/plugin.php', 'akismet/akismet.php'], // site plugins
+            ['fluent-smtp/fluent-smtp.php', 'some-network-plugin/plugin.php'] // network plugins
+        );
+
+        $result = Helper::is_any_smtp_plugin_active();
+
+        $this->assertTrue($result);
+    }
+
+    /**
+     * Test is_any_smtp_plugin_active - multisite with no SMTP plugins
+     */
+    public function test_is_any_smtp_plugin_active_multisite_no_smtp() {
+        $this->reset_smtp_test_data();
+
+        add_filter('pre_option_active_plugins', function() {
+            return [
+                'akismet/akismet.php'
+            ];
+        });
+
+        add_filter('pre_site_option_active_sitewide_plugins', function() {
+            return [
+                'some-network-plugin/plugin.php' => time()
+            ];
+        });
+
+        // Skip test if not in multisite environment
+        if ( ! is_multisite() ) {
+            $this->markTestSkipped( 'This test requires a multisite environment.' );
+            return;
+        }
+
+        $result = Helper::is_any_smtp_plugin_active();
+
+        $this->assertFalse($result);
+    }
+
+    /**
+     * Test is_any_smtp_plugin_active - should test all SMTP plugins in the detection array
+     */
+    public function test_is_any_smtp_plugin_active_all_smtp_plugins() {
+        $smtp_plugins = [
+            'wp-mail-smtp/wp_mail_smtp.php',
+            'post-smtp/postman-smtp.php',
+            'easy-wp-smtp/easy-wp-smtp.php',
+            'wp-smtp/wp-smtp.php',
+            'newsletter/plugin.php',
+            'fluent-smtp/fluent-smtp.php',
+            'pepipost-smtp/pepipost-smtp.php',
+            'mail-bank/wp-mail-bank.php',
+            'smtp-mailer/smtp-mailer.php',
+            'suremails/suremails.php',
+            'site-mailer/site-mailer.php',
+        ];
+
+        foreach ($smtp_plugins as $plugin) {
+            $this->reset_smtp_test_data();
+
+            add_filter('pre_option_active_plugins', function() use ($plugin) {
+                return [$plugin, 'akismet/akismet.php'];
+            });
+
+            add_filter('pre_site_option_active_sitewide_plugins', function() {
+                return [];
+            });
+
+            add_filter('pre_option_is_multisite', '__return_false');
+
+            $result = Helper::is_any_smtp_plugin_active();
+
+            $this->assertTrue($result, "Plugin $plugin should be detected as SMTP plugin");
+
+            // Clean up filters for next iteration
+            remove_all_filters('pre_option_active_plugins');
+            remove_all_filters('pre_site_option_active_sitewide_plugins');
+            remove_all_filters('pre_option_is_multisite');
+        }
+    }
+
+    /**
+     * Test is_any_smtp_plugin_active - should return correct type (boolean)
+     */
+    public function test_is_any_smtp_plugin_active_return_type() {
+        $this->reset_smtp_test_data();
+
+        // Test with no plugins
+        add_filter('pre_option_active_plugins', function() {
+            return [];
+        });
+
+        add_filter('pre_site_option_active_sitewide_plugins', function() {
+            return [];
+        });
+
+        add_filter('pre_option_is_multisite', '__return_false');
+
+        $result_false = Helper::is_any_smtp_plugin_active();
+        $this->assertIsBool($result_false);
+        $this->assertFalse($result_false);
+
+        // Clean up filters
+        remove_all_filters('pre_option_active_plugins');
+        remove_all_filters('pre_site_option_active_sitewide_plugins');
+        remove_all_filters('pre_option_is_multisite');
+
+        // Test with SMTP plugin
+        add_filter('pre_option_active_plugins', function() {
+            return ['wp-mail-smtp/wp_mail_smtp.php'];
+        });
+
+        add_filter('pre_site_option_active_sitewide_plugins', function() {
+            return [];
+        });
+
+        add_filter('pre_option_is_multisite', '__return_false');
+
+        $result_true = Helper::is_any_smtp_plugin_active();
+        $this->assertIsBool($result_true);
+        $this->assertTrue($result_true);
+    }
+
+    /**
+     * Test is_any_smtp_plugin_active - should handle empty/false plugin options
+     */
+    public function test_is_any_smtp_plugin_active_empty_options() {
+        $this->reset_smtp_test_data();
+
+        // Mock get_option to return false (option doesn't exist)
+        add_filter('pre_option_active_plugins', function() {
+            return false;
+        });
+
+        add_filter('pre_site_option_active_sitewide_plugins', function() {
+            return false;
+        });
+
+        add_filter('pre_option_is_multisite', '__return_false');
+
+        $result = Helper::is_any_smtp_plugin_active();
+
+        $this->assertFalse($result);
+    }
+
+    /**
+     * Test is_any_smtp_plugin_active - performance test with large plugin list
+     */
+    public function test_is_any_smtp_plugin_active_performance() {
+        $this->reset_smtp_test_data();
+
+        // Create a large list of non-SMTP plugins
+        $large_plugin_list = [];
+        for ($i = 0; $i < 100; $i++) {
+            $large_plugin_list[] = "plugin-$i/plugin-$i.php";
+        }
+        // Add one SMTP plugin at the end
+        $large_plugin_list[] = 'wp-mail-smtp/wp_mail_smtp.php';
+
+        add_filter('pre_option_active_plugins', function() use ($large_plugin_list) {
+            return $large_plugin_list;
+        });
+
+        add_filter('pre_site_option_active_sitewide_plugins', function() {
+            return [];
+        });
+
+        add_filter('pre_option_is_multisite', '__return_false');
+
+        $start_time = microtime(true);
+        $result = Helper::is_any_smtp_plugin_active();
+        $end_time = microtime(true);
+
+        $execution_time = $end_time - $start_time;
+
+        $this->assertTrue($result);
+        $this->assertLessThan(0.1, $execution_time, 'Function should execute quickly even with many plugins');
+	}
+
+	/**
      * Test apply_filters_as_array method.
      */
     public function test_apply_filters_as_array() {
@@ -870,7 +1290,7 @@ class Test_Helper extends TestCase {
         add_filter('test_filter_valid', function($value) use ($expected) {
             return $expected;
         });
-        
+
         $result = Helper::apply_filters_as_array('test_filter_valid', ['default']);
         $this->assertTrue(
             is_array($result),
@@ -886,7 +1306,7 @@ class Test_Helper extends TestCase {
         add_filter('test_filter_invalid', function($value) {
             return 'not an array';
         });
-        
+
         $default = ['default'];
         $result = Helper::apply_filters_as_array('test_filter_invalid', $default);
         $this->assertSame(
@@ -894,5 +1314,138 @@ class Test_Helper extends TestCase {
             $result,
             'Should return default when filter returns non-array'
         );
+    }
+
+    /**
+     * Test get_forms_with_entry_counts method.
+     *
+     * @since x.x.x
+     */
+    public function test_get_forms_with_entry_counts() {
+        // Skip test if SRFM_FORMS_POST_TYPE is not defined.
+        if ( ! defined( 'SRFM_FORMS_POST_TYPE' ) ) {
+            $this->markTestSkipped( 'SRFM_FORMS_POST_TYPE constant is not defined' );
+        }
+        
+        // Since we cannot easily mock the static Entries::get_entries_count_after method,
+        // we'll test the method's behavior with forms only (without entry counts).
+        // This still tests the core functionality: filtering published forms, handling blank titles,
+        // sorting, and limiting results.
+        
+        // Create mock forms.
+        $form1_id = wp_insert_post([
+            'post_type' => SRFM_FORMS_POST_TYPE,
+            'post_status' => 'publish',
+            'post_title' => 'Contact Form'
+        ]);
+        
+        $form2_id = wp_insert_post([
+            'post_type' => SRFM_FORMS_POST_TYPE,
+            'post_status' => 'publish',
+            'post_title' => 'Newsletter Signup'
+        ]);
+        
+        $form3_id = wp_insert_post([
+            'post_type' => SRFM_FORMS_POST_TYPE,
+            'post_status' => 'publish',
+            'post_title' => ''  // Test blank title
+        ]);
+        
+        // Create a draft form (should not be included).
+        $draft_form_id = wp_insert_post([
+            'post_type' => SRFM_FORMS_POST_TYPE,
+            'post_status' => 'draft',
+            'post_title' => 'Draft Form'
+        ]);
+        
+        // Test basic functionality.
+        $result = Helper::get_forms_with_entry_counts(strtotime('-7 days'));
+        
+        // Should return only published forms.
+        $this->assertCount(3, $result, 'Should return only published forms');
+        
+        // Check that all results have the expected structure.
+        foreach ($result as $form) {
+            $this->assertArrayHasKey('form_id', $form, 'Each result should have form_id');
+            $this->assertArrayHasKey('title', $form, 'Each result should have title');
+            $this->assertArrayHasKey('count', $form, 'Each result should have count');
+        }
+        
+        // Find the form with blank title to verify it was replaced.
+        $blank_title_found = false;
+        foreach ($result as $form) {
+            if ($form['form_id'] === $form3_id) {
+                $this->assertEquals('Blank Form', $form['title'], 'Empty title should be replaced with "Blank Form"');
+                $blank_title_found = true;
+                break;
+            }
+        }
+        $this->assertTrue($blank_title_found, 'Form with blank title should be in results');
+        
+        // Test with limit.
+        $result_limited = Helper::get_forms_with_entry_counts(strtotime('-7 days'), 2);
+        $this->assertCount(2, $result_limited, 'Should respect the limit parameter');
+        
+        // Test without sorting.
+        $result_unsorted = Helper::get_forms_with_entry_counts(strtotime('-7 days'), 0, false);
+        $this->assertCount(3, $result_unsorted, 'Should return all forms when sort is false');
+        
+        // Clean up.
+        wp_delete_post($form1_id, true);
+        wp_delete_post($form2_id, true);
+        wp_delete_post($form3_id, true);
+        wp_delete_post($draft_form_id, true);
+        
+        // Test when no forms exist.
+        $result_empty = Helper::get_forms_with_entry_counts(strtotime('-7 days'));
+        $this->assertEmpty($result_empty, 'Should return empty array when no forms exist');
+    }
+
+    /**
+     * Test get_forms_with_entry_counts sorting behavior.
+     *
+     * @since x.x.x
+     */
+    public function test_get_forms_with_entry_counts_sorting() {
+        // Skip test if SRFM_FORMS_POST_TYPE is not defined.
+        if ( ! defined( 'SRFM_FORMS_POST_TYPE' ) ) {
+            $this->markTestSkipped( 'SRFM_FORMS_POST_TYPE constant is not defined' );
+        }
+        
+        // Create multiple forms to test sorting.
+        $form_ids = [];
+        for ($i = 1; $i <= 3; $i++) {
+            $form_ids[] = wp_insert_post([
+                'post_type' => SRFM_FORMS_POST_TYPE,
+                'post_status' => 'publish',
+                'post_title' => 'Form ' . $i
+            ]);
+        }
+        
+        // Test that results are returned (even if all counts are 0).
+        $result = Helper::get_forms_with_entry_counts(strtotime('-7 days'));
+        
+        $this->assertCount(3, $result, 'Should return all published forms');
+        
+        // When all entry counts are the same (likely 0 in test environment),
+        // forms should be sorted by form_id descending.
+        if ($result[0]['count'] === $result[1]['count'] && $result[1]['count'] === $result[2]['count']) {
+            // Check form_id descending order when counts are equal.
+            $this->assertGreaterThan(
+                $result[1]['form_id'], 
+                $result[0]['form_id'], 
+                'When counts are equal, should sort by form_id descending'
+            );
+            $this->assertGreaterThan(
+                $result[2]['form_id'], 
+                $result[1]['form_id'], 
+                'When counts are equal, should sort by form_id descending'
+            );
+        }
+        
+        // Clean up.
+        foreach ($form_ids as $form_id) {
+            wp_delete_post($form_id, true);
+        }
     }
 }

@@ -1650,6 +1650,38 @@ class Helper {
 				403
 			);
 		}
+
+	}
+
+	/**
+	 * Check if any of the top 10 popular WordPress SMTP plugins is active using array_intersect.
+	 *
+	 * @since x.x.x
+	 * @return bool True if any SMTP plugin is active, false otherwise.
+	 */
+	public static function is_any_smtp_plugin_active() {
+		$smtp_plugins = [
+			'wp-mail-smtp/wp_mail_smtp.php',
+			'post-smtp/postman-smtp.php',
+			'easy-wp-smtp/easy-wp-smtp.php',
+			'wp-smtp/wp-smtp.php',
+			'newsletter/plugin.php',
+			'fluent-smtp/fluent-smtp.php',
+			'pepipost-smtp/pepipost-smtp.php',
+			'mail-bank/wp-mail-bank.php',
+			'smtp-mailer/smtp-mailer.php',
+			'suremails/suremails.php',
+			'site-mailer/site-mailer.php',
+		];
+
+		$active_plugins = (array) get_option( 'active_plugins', [] );
+		// For multisite, merge sitewide active plugins.
+		if ( is_multisite() ) {
+			$network_plugins = (array) get_site_option( 'active_sitewide_plugins', [] );
+			$active_plugins  = array_merge( $active_plugins, array_keys( $network_plugins ) );
+		}
+
+		return (bool) array_intersect( $smtp_plugins, $active_plugins );
 	}
 
 	/**
@@ -1678,5 +1710,80 @@ class Helper {
 
 		// Return filtered result if it's a non-empty array.
 		return is_array( $filtered ) && ! empty( $filtered ) ? $filtered : $default;
+	}
+
+	/**
+	 * Get forms with entry counts for a specific time period.
+	 *
+	 * @param int  $timestamp The timestamp to get entries after.
+	 * @param int  $limit     Maximum number of forms to return (0 for all).
+	 * @param bool $sort      Whether to sort by entry count descending.
+	 * @return array Array of form data with entry counts.
+	 * @since x.x.x
+	 */
+	public static function get_forms_with_entry_counts( $timestamp, $limit = 0, $sort = true ) {
+		// Get all published forms.
+		$args = [
+			'post_type'      => SRFM_FORMS_POST_TYPE,
+			'posts_per_page' => -1,
+			'post_status'    => 'publish',
+			'orderby'        => 'ID',
+			'order'          => 'DESC',
+		];
+
+		$query = new \WP_Query( $args );
+
+		if ( ! $query->have_posts() ) {
+			return [];
+		}
+
+		$all_forms = [];
+
+		while ( $query->have_posts() ) {
+			$query->the_post();
+			$form_id = get_the_ID();
+
+			// Skip if form_id is false.
+			if ( false === $form_id ) {
+				continue;
+			}
+
+			// Get entries count after the timestamp for this specific form.
+			$entry_count = Entries::get_entries_count_after( $timestamp, $form_id );
+
+			// Get form title, use "Blank Form" if empty.
+			$form_title = get_the_title();
+			if ( empty( trim( $form_title ) ) ) {
+				$form_title = __( 'Blank Form', 'sureforms' );
+			}
+
+			$all_forms[] = [
+				'form_id' => $form_id,
+				'title'   => $form_title,
+				'count'   => $entry_count,
+			];
+		}
+
+		wp_reset_postdata();
+
+		// Sort by count descending, then by form_id descending for consistency.
+		if ( $sort ) {
+			usort(
+				$all_forms,
+				static function( $a, $b ) {
+					if ( $a['count'] === $b['count'] ) {
+						return $b['form_id'] - $a['form_id'];
+					}
+					return $b['count'] - $a['count'];
+				}
+			);
+		}
+
+		// Return limited results if specified.
+		if ( $limit > 0 ) {
+			return array_slice( $all_forms, 0, $limit );
+		}
+
+		return $all_forms;
 	}
 }
