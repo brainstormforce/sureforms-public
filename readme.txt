@@ -266,6 +266,7 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 == Changelog ==
 = 1.9.1 - 31st July 2025 =
 * New: Added a dashboard widget to display form submission statistics and recent entries.
+* New: Introduced a guided onboarding experience to help users set up SureForms with ease.
 * Improvement: Email notifications now display the full submitted URL as a clickable link instead of a "View" label.
 * Fix: This update addressed a security bug. Props to Dmitrii Ignatyev from CleanTalk for reporting it responsibly to our team.
 * Fix: Prevented form submission when the form ID is invalid.
