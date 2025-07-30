@@ -267,7 +267,7 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 ### 1.9.1 - 31st July 2025 ###
 * New: Added a dashboard widget to display form submission statistics and recent entries.
 * Improvement: Email notifications now display the full submitted URL as a clickable link instead of a "View" label.
-* Fix: Addressed a security vulnerability. Props to Dmitrii Ignatyev from CleanTalk for reporting it responsibly.
+* Fix: This update addressed a security bug. Props to Dmitrii Ignatyev from CleanTalk for reporting it responsibly to our team.
 * Fix: Prevented form submission when the form ID is invalid.
 * Fix: Resolved an issue where forms displayed an error message on load when the LMS Optimize plugin was active.
 * Fix: Resolved an issue where hidden fields were not available in shortcodes as smart tags.
