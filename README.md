@@ -286,8 +286,6 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 * Fix: Corrected the email summary report to display the accurate number of entries for the past week.
 * Fix: Resolved a display issue with form confirmation query parameters on new forms.
 * Fix: Resolved a fatal error from incorrect InnerBlocks usage that caused editor and frontend crashes.
-### 1.7.4 - 30th June 2025 ###
-* Fix: This update addressed a security bug. Please make sure you are using the latest version on your website. Props to Phat RiO from BlueRock and Wordfence for reporting it responsibly to our team.
 
 The full changelog is available [here](https://sureforms.com/whats-new/).
 
