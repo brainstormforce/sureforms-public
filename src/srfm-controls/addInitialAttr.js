@@ -1,6 +1,7 @@
 import { useEffect } from '@wordpress/element';
-import { select, dispatch } from '@wordpress/data';
+import { select } from '@wordpress/data';
 import { withoutSlugBlocks } from '@Utils/Helpers';
+import { hasAction, doAction } from '@wordpress/hooks';
 
 const getUniqId = ( blocks ) =>
 	blocks.reduce(
@@ -30,59 +31,6 @@ const checkDuplicate = ( blockIds, block_id, currentIndex ) => {
 		getFiltered.length > 1 &&
 		currentIndex === blockIds.lastIndexOf( block_id )
 	);
-};
-
-const copyConditionalLogic = ( originalBlockId, newBlockId ) => {
-	try {
-		const { getEditedPostAttribute } = select( 'core/editor' );
-		const { editPost } = dispatch( 'core/editor' );
-		const postMeta = getEditedPostAttribute( 'meta' );
-		const conditionalLogicData = postMeta?._srfm_conditional_logic;
-
-		if (
-			! conditionalLogicData ||
-			! Array.isArray( conditionalLogicData )
-		) {
-			console.warn( 'Conditional logic metadata is not an array.' );
-			return;
-		}
-
-		let originalLogic = null;
-		for ( let i = 0; i < conditionalLogicData.length; i++ ) {
-			if ( conditionalLogicData[ i ][ originalBlockId ] ) {
-				originalLogic = conditionalLogicData[ i ][ originalBlockId ];
-				break;
-			}
-		}
-
-		if ( originalLogic ) {
-			// Check if logic for the newBlockId already exists and is the same.
-			const exists = conditionalLogicData.some(
-				( entry ) =>
-					entry[ newBlockId ] &&
-					JSON.stringify( entry[ newBlockId ] ) ===
-						JSON.stringify( originalLogic )
-			);
-
-			if ( exists ) {
-				return;
-			}
-
-			const newConditionalLogicData = [ ...conditionalLogicData ];
-			newConditionalLogicData.push( {
-				[ newBlockId ]: { ...originalLogic },
-			} );
-
-			editPost( {
-				meta: {
-					_srfm_conditional_logic: newConditionalLogicData,
-					meta_modified: new Date().toISOString(),
-				},
-			} );
-		}
-	} catch ( error ) {
-		console.warn( 'Failed to copy conditional logic:', error );
-	}
 };
 
 const addInitialAttr = ( ChildComponent ) => {
@@ -117,7 +65,10 @@ const addInitialAttr = ( ChildComponent ) => {
 					attributeObject.slug = '';
 				}
 
-				copyConditionalLogic( block_id, newBlockId );
+				// Only copy conditional logic if pro is active (action is registered).
+				if ( hasAction( 'srfm.copyConditionalLogic' ) ) {
+					doAction( 'srfm.copyConditionalLogic', block_id, newBlockId );
+				}
 			}
 
 			if (
