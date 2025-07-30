@@ -1,9 +1,21 @@
 import { __ } from '@wordpress/i18n';
 import { Container, Label } from '@bsf/force-ui';
-import { Ticket, CircleHelp, MessagesSquare, Star } from 'lucide-react';
+import {
+	Ticket,
+	CircleHelp,
+	MessagesSquare,
+	Star,
+	Settings,
+} from 'lucide-react';
 
 export default () => {
 	const quickAccessOptions = [
+		{
+			key: 'onboarding',
+			label: __( 'Guided Setup', 'sureforms' ),
+			icon: <Settings size={ 16 } />,
+			link: `${ srfm_admin.sureforms_dashboard_url }&srfm-activation-redirect=1`,
+		},
 		{
 			key: 'support-ticket',
 			label: __( 'Open Support Ticket', 'sureforms' ),
@@ -43,7 +55,7 @@ export default () => {
 						<a
 							className="no-underline hover:underline"
 							href={ link }
-							target="_blank"
+							target={ key !== 'onboarding' ? '_blank' : '_self' }
 							rel="noreferrer"
 							aria-label={ label }
 						>
