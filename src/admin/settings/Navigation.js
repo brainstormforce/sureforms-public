@@ -2,7 +2,13 @@ import { __ } from '@wordpress/i18n';
 import { Link, useLocation } from 'react-router-dom';
 import { applyFilters } from '@wordpress/hooks';
 import { cn } from '@Utils/Helpers';
-import { Cpu, CreditCard, Settings, ShieldCheck, TriangleAlert } from 'lucide-react';
+import {
+	Cpu,
+	CreditCard,
+	Settings,
+	ShieldCheck,
+	TriangleAlert,
+} from 'lucide-react';
 import { Accordion } from '@bsf/force-ui';
 
 function useQuery() {

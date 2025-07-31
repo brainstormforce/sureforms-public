@@ -5,8 +5,12 @@ import apiFetch from '@wordpress/api-fetch';
 import { Button, Loader, Select, Switch, toast } from '@bsf/force-ui';
 import ContentSection from '@Admin/settings/components/ContentSection';
 
-const Payments = ( { loading, paymentsSettings: initialSettings, updateGlobalSettings } ) => {
-	const [ paymentsSettings, setPaymentsSettings ] = useState( 
+const Payments = ( {
+	loading,
+	paymentsSettings: initialSettings,
+	updateGlobalSettings,
+} ) => {
+	const [ paymentsSettings, setPaymentsSettings ] = useState(
 		initialSettings || {
 			stripe_connected: false,
 			stripe_account_id: '',
@@ -29,18 +33,30 @@ const Payments = ( { loading, paymentsSettings: initialSettings, updateGlobalSet
 	useEffect( () => {
 		// Check URL parameters for OAuth callback status
 		const urlParams = new URLSearchParams( window.location.search );
-		
+
 		if ( urlParams.get( 'connected' ) === '1' ) {
-			toast.success( __( 'Successfully connected to Stripe!', 'sureforms' ) );
+			toast.success(
+				__( 'Successfully connected to Stripe!', 'sureforms' )
+			);
 			// Clean URL
-			window.history.replaceState( {}, '', window.location.pathname + '?page=sureforms_form_settings&tab=payments-settings' );
+			window.history.replaceState(
+				{},
+				'',
+				window.location.pathname +
+					'?page=sureforms_form_settings&tab=payments-settings'
+			);
 		}
-		
+
 		if ( urlParams.get( 'error' ) ) {
 			const errorMessage = decodeURIComponent( urlParams.get( 'error' ) );
 			toast.error( errorMessage );
 			// Clean URL
-			window.history.replaceState( {}, '', window.location.pathname + '?page=sureforms_form_settings&tab=payments-settings' );
+			window.history.replaceState(
+				{},
+				'',
+				window.location.pathname +
+					'?page=sureforms_form_settings&tab=payments-settings'
+			);
 		}
 	}, [] );
 
@@ -64,7 +80,14 @@ const Payments = ( { loading, paymentsSettings: initialSettings, updateGlobalSet
 
 	// Handle Stripe Disconnect
 	const handleStripeDisconnect = async () => {
-		if ( ! confirm( __( 'Are you sure you want to disconnect your Stripe account?', 'sureforms' ) ) ) {
+		if (
+			! confirm(
+				__(
+					'Are you sure you want to disconnect your Stripe account?',
+					'sureforms'
+				)
+			)
+		) {
 			return;
 		}
 
@@ -82,9 +105,13 @@ const Payments = ( { loading, paymentsSettings: initialSettings, updateGlobalSet
 				stripe_account_email: '',
 			} );
 
-			toast.success( __( 'Stripe account disconnected successfully.', 'sureforms' ) );
+			toast.success(
+				__( 'Stripe account disconnected successfully.', 'sureforms' )
+			);
 		} catch ( error ) {
-			toast.error( __( 'Failed to disconnect Stripe account.', 'sureforms' ) );
+			toast.error(
+				__( 'Failed to disconnect Stripe account.', 'sureforms' )
+			);
 		} finally {
 			setIsDisconnecting( false );
 		}
@@ -135,8 +162,10 @@ const Payments = ( { loading, paymentsSettings: initialSettings, updateGlobalSet
 
 	// Get current currency label
 	const getCurrentCurrencyLabel = () => {
-		const currency = currencies.find( c => c.value === paymentsSettings.currency );
-		return currency ? currency.label : currencies[0].label;
+		const currency = currencies.find(
+			( c ) => c.value === paymentsSettings.currency
+		);
+		return currency ? currency.label : currencies[ 0 ].label;
 	};
 
 	// Content for Stripe Connect section
@@ -145,9 +174,12 @@ const Payments = ( { loading, paymentsSettings: initialSettings, updateGlobalSet
 			{ ! paymentsSettings.stripe_connected ? (
 				<div className="space-y-4">
 					<p className="text-text-tertiary">
-						{ __( 'Connect your Stripe account to start accepting payments through your forms.', 'sureforms' ) }
+						{ __(
+							'Connect your Stripe account to start accepting payments through your forms.',
+							'sureforms'
+						) }
 					</p>
-					
+
 					<Button
 						onClick={ handleStripeConnect }
 						disabled={ isConnecting || loading }
@@ -158,7 +190,7 @@ const Payments = ( { loading, paymentsSettings: initialSettings, updateGlobalSet
 						className="bg-[#635bff] hover:bg-[#5043d7] text-white border-[#635bff] hover:border-[#5043d7]"
 					>
 						{ isConnecting ? (
-							__( 'Connecting...', 'sureforms' )
+							__( 'Connecting…', 'sureforms' )
 						) : (
 							<>
 								<ExternalLink className="w-4 h-4 mr-2" />
@@ -182,7 +214,7 @@ const Payments = ( { loading, paymentsSettings: initialSettings, updateGlobalSet
 							</p>
 						</div>
 					</div>
-					
+
 					<Button
 						onClick={ handleStripeDisconnect }
 						disabled={ isDisconnecting || loading }
@@ -193,7 +225,7 @@ const Payments = ( { loading, paymentsSettings: initialSettings, updateGlobalSet
 						className="text-red-600 border-red-200 hover:border-red-300 hover:text-red-700"
 					>
 						{ isDisconnecting ? (
-							__( 'Disconnecting...', 'sureforms' )
+							__( 'Disconnecting…', 'sureforms' )
 						) : (
 							<>
 								<X className="w-3.5 h-3.5 mr-1.5" />
@@ -209,11 +241,13 @@ const Payments = ( { loading, paymentsSettings: initialSettings, updateGlobalSet
 	// Content for Payment Settings section
 	const PaymentSettingsContent = () => (
 		<div className="space-y-6">
-			{/* Currency Selection */}
+			{ /* Currency Selection */ }
 			<div>
 				<Select
 					value={ paymentsSettings.currency }
-					onChange={ ( value ) => handleSettingChange( 'currency', value ) }
+					onChange={ ( value ) =>
+						handleSettingChange( 'currency', value )
+					}
 				>
 					<Select.Button
 						type="button"
@@ -225,7 +259,10 @@ const Payments = ( { loading, paymentsSettings: initialSettings, updateGlobalSet
 					<Select.Portal id="srfm-settings-container">
 						<Select.Options>
 							{ currencies.map( ( currency ) => (
-								<Select.Option key={ currency.value } value={ currency.value }>
+								<Select.Option
+									key={ currency.value }
+									value={ currency.value }
+								>
 									{ currency.label }
 								</Select.Option>
 							) ) }
@@ -233,19 +270,30 @@ const Payments = ( { loading, paymentsSettings: initialSettings, updateGlobalSet
 					</Select.Portal>
 				</Select>
 				<p className="mt-1 text-sm text-text-tertiary">
-					{ __( 'Select the default currency for payment forms.', 'sureforms' ) }
+					{ __(
+						'Select the default currency for payment forms.',
+						'sureforms'
+					) }
 				</p>
 			</div>
 
-			{/* Payment Mode */}
+			{ /* Payment Mode */ }
 			<div>
 				<Switch
 					label={ {
 						heading: __( 'Live Mode', 'sureforms' ),
-						description: __( 'Toggle between test and live payment processing. Use test mode to test payments without processing real transactions.', 'sureforms' )
+						description: __(
+							'Toggle between test and live payment processing. Use test mode to test payments without processing real transactions.',
+							'sureforms'
+						),
 					} }
 					value={ paymentsSettings.payment_mode === 'live' }
-					onChange={ ( value ) => handleSettingChange( 'payment_mode', value ? 'live' : 'test' ) }
+					onChange={ ( value ) =>
+						handleSettingChange(
+							'payment_mode',
+							value ? 'live' : 'test'
+						)
+					}
 				/>
 			</div>
 		</div>
@@ -253,14 +301,14 @@ const Payments = ( { loading, paymentsSettings: initialSettings, updateGlobalSet
 
 	return (
 		<div className="space-y-6">
-			{/* Stripe Connect Section */}
+			{ /* Stripe Connect Section */ }
 			<ContentSection
 				loading={ loading }
 				title={ __( 'Stripe Connect', 'sureforms' ) }
 				content={ <StripeConnectContent /> }
 			/>
 
-			{/* Payment Settings Section - Only show if connected */}
+			{ /* Payment Settings Section - Only show if connected */ }
 			{ paymentsSettings.stripe_connected && (
 				<ContentSection
 					loading={ loading }

@@ -18,6 +18,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
+// Load Composer autoloader for libraries in inc/lib directory.
+if ( file_exists( __DIR__ . '/inc/lib/vendor/autoload.php' ) ) {
+	require_once __DIR__ . '/inc/lib/vendor/autoload.php';
+}
+
 /**
  * Set constants
  */

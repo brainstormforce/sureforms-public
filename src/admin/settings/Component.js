@@ -287,8 +287,8 @@ const Component = ( { path } ) => {
 					<IntegrationPage loading={ loading } />
 				) }
 				{ 'payments-settings' === path && (
-					<PaymentsPage 
-						loading={ loading } 
+					<PaymentsPage
+						loading={ loading }
 						paymentsSettings={ paymentsSettings }
 						updateGlobalSettings={ updateGlobalSettings }
 					/>

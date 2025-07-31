@@ -41,6 +41,7 @@ use SRFM\Inc\Single_Form_Settings\Compliance_Settings;
 use SRFM\Inc\Smart_Tags;
 use SRFM\Inc\Updater;
 use SRFM\Inc\Payments_Settings;
+use SRFM\Inc\Stripe_Payment_Handler;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -298,6 +299,7 @@ class Plugin_Loader {
 		AI_Auth::get_instance();
 		Updater::get_instance();
 		Payments_Settings::get_instance();
+		Stripe_Payment_Handler::get_instance();
 		DatabaseRegister::init();
 		// Initializing Compatibilities.
 		Astra::get_instance();
