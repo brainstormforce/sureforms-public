@@ -232,6 +232,44 @@ class Form_Submit {
 		return json_decode( wp_remote_retrieve_body( $response ), true );
 	}
 
+	public function validate_form_data( $form_data, $current_form_id ) {
+		$not_valid_fields = [];
+
+		// ! empty( $_FILES )
+		// Merge the form data with the files data so we can process the validation for the all fields.
+		if( ! empty( $_FILES ) ) {
+			$form_data = array_merge( $form_data, $_FILES );
+		}
+
+		foreach ( $form_data as $key => $value ) {
+			/**
+			 * This will allow to pass only sureforms fields
+			 * checking -lbl- as thats mandatory for in key of sureforms fields.
+			 */
+			if ( false === str_contains( $key, '-lbl-' ) ) {
+				continue;
+			}
+
+			$field_validated = apply_filters( 'srfm_validate_form_data', [
+				'field_key' => $key,
+				'field_value' => $value,
+				'form_id' => $current_form_id,
+			] );
+
+			if ( isset( $field_validated['validated'] ) ) {
+				if( true === $field_validated['validated'] ) {
+					continue;
+				}
+
+				if( false === $field_validated['validated'] ) {
+					$not_valid_fields[$key] = isset( $field_validated['error'] ) ? $field_validated['error'] : __( 'Field is not valid.', 'sureforms' );
+				}
+			}
+		}
+
+		return $not_valid_fields;
+	}
+
 	/**
 	 * Handle Form Submission
 	 *
@@ -251,6 +289,17 @@ class Form_Submit {
 		$form_data = Helper::sanitize_by_field_type( $request->get_params() );
 
 		$current_form_id = $form_data['form-id'];
+
+		$validated_form_data = $this->validate_form_data( $form_data, $current_form_id );
+
+		if( ! empty( $validated_form_data ) ) {
+			wp_send_json_error(
+				[
+					'message' => __( 'Form data is not valid.', 'sureforms' ),
+					'field_errors' => $validated_form_data,
+				]
+			);
+		}
 
 		// Check whether the form is valid.
 		if ( ! Helper::is_valid_form( $current_form_id ) ) {
