@@ -588,7 +588,7 @@ const PremiumFeatures = () => {
 										const translatedText = sprintf(
 											/* translators: 1: Plan name (Starter, Pro, or Business), 2: Coupon code */
 											__(
-												'Selected features require %1$s - use code %2$s to get 10% off on any plan.',
+												'Selected features require %1$s - use code %2$s to get additional 10% off on any plan.',
 												'sureforms'
 											),
 											'%1$s',
