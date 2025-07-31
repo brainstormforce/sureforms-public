@@ -9,6 +9,7 @@ import { Input, DatePicker } from '@bsf/force-ui';
  * @param {Object}   props              1Code has alerts. Press enter to view.
  * @param {string}   props.date         The date in a specific format (e.g., '2025.10.01').
  * @param {Function} props.onDateChange Callback function to handle date changes
+ * @param {string}   props.label        The label for the date input field
  * @return {JSX.Element} Rendered DatePicker Modal
  */
 const DatePickerModal = ( { label, date, onDateChange } ) => {
@@ -90,9 +91,7 @@ const DatePickerModal = ( { label, date, onDateChange } ) => {
 				size="md"
 				className="w-full cursor-pointer"
 				// label={ __( 'Date', 'sureforms' ) }
-                label={
-                    label || __( 'Date', 'sureforms' )
-                }
+				label={ label || __( 'Date', 'sureforms' ) }
 				value={ getFormattedDate( date ) }
 				readOnly
 				onClick={ () => setIsOpen( true ) }
