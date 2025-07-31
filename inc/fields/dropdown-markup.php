@@ -24,14 +24,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class Dropdown_Markup extends Base {
 	/**
-	 * Static counter for generating unique dropdown instances.
-	 *
-	 * @var int
-	 * @since x.x.x
-	 */
-	private static $instance_counter = 0;
-
-	/**
 	 * Unique instance identifier for this dropdown.
 	 *
 	 * @var string
@@ -62,6 +54,14 @@ class Dropdown_Markup extends Base {
 	 * @since 1.5.0
 	 */
 	protected $show_values;
+
+	/**
+	 * Static counter for generating unique dropdown instances.
+	 *
+	 * @var int
+	 * @since x.x.x
+	 */
+	private static $instance_counter = 0;
 
 	/**
 	 * Initialize the properties based on block attributes.
