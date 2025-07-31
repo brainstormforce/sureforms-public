@@ -101,9 +101,9 @@ export const handleAddNewPost = async (
 	}
 };
 
-export const initiateAuth = async () => {
+export const initiateAuth = async ( source = 'default' ) => {
 	const response = await apiFetch( {
-		path: '/sureforms/v1/initiate-auth',
+		path: `/sureforms/v1/initiate-auth?source=${ source }`,
 		headers: {
 			'Content-Type': 'application/json',
 			'X-WP-Nonce': srfm_admin.template_picker_nonce,
@@ -252,7 +252,6 @@ const pushSmartTagToArray = (
 
 export const withoutSlugBlocks = [
 	'srfm/inline-button',
-	'srfm/hidden',
 	'srfm/page-break',
 	'srfm/separator',
 	'srfm/advanced-heading',
