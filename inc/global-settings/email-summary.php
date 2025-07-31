@@ -134,7 +134,7 @@ class Email_Summary {
 				<div style="background-color:#FFFFFF;padding-bottom:40px;">
 					<div style="padding:24px;">
 						<p style="font-size:18px;font-weight:600;color:#111827;margin:0 0 8px;">
-							<?php echo esc_html__( 'Hey There,', 'sureforms' ); ?>
+							<?php echo esc_html__( 'Hey', 'sureforms' ) . ' ' . esc_html( $admin_user_name ) . ','; ?>
 						</p>
 						<p style="font-size:14px;color:#4B5563;margin:0 0 16px;">
 							<?php
