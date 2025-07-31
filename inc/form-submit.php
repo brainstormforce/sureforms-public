@@ -235,6 +235,8 @@ class Form_Submit {
 	public function validate_form_data( $form_data, $current_form_id ) {
 		$not_valid_fields = [];
 
+		$get_form_config = get_post_meta( $current_form_id, '_srfm_block_config', true );
+
 		// ! empty( $_FILES )
 		// Merge the form data with the files data so we can process the validation for the all fields.
 		if( ! empty( $_FILES ) ) {
@@ -254,6 +256,7 @@ class Form_Submit {
 				'field_key' => $key,
 				'field_value' => $value,
 				'form_id' => $current_form_id,
+				'form_config' => $get_form_config,
 			] );
 
 			if ( isset( $field_validated['validated'] ) ) {
@@ -290,8 +293,6 @@ class Form_Submit {
 
 		$current_form_id = $form_data['form-id'];
 
-		$validated_form_data = $this->validate_form_data( $form_data, $current_form_id );
-
 		if( ! empty( $validated_form_data ) ) {
 			wp_send_json_error(
 				[
@@ -310,6 +311,8 @@ class Form_Submit {
 				]
 			);
 		}
+
+		$validated_form_data = $this->validate_form_data( $form_data, $current_form_id );
 
 		$security_type         = Helper::get_meta_value( Helper::get_integer_value( $current_form_id ), '_srfm_captcha_security_type' );
 		$selected_captcha_type = get_post_meta( Helper::get_integer_value( $current_form_id ), '_srfm_form_recaptcha', true ) ? Helper::get_string_value( get_post_meta( Helper::get_integer_value( $current_form_id ), '_srfm_form_recaptcha', true ) ) : '';
