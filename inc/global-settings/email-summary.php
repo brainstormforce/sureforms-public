@@ -118,7 +118,10 @@ class Email_Summary {
 			<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 			<meta http-equiv="X-UA-Compatible" content="IE=edge">
 			<title><?php esc_html_e( 'Weekly Summary', 'sureforms' ); ?></title>
-			<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+			<?php
+				// phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- Required in email HTML; wp_enqueue_style() can't be used for emails.
+				echo '<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">';
+			?>
 		</head>
 		<body style="font-family:Figtree,Arial,sans-serif;background-color:#F1F5F9;margin:0;padding:32px;">
 			<div style="max-width:640px;margin:0 auto;">
@@ -154,7 +157,7 @@ class Email_Summary {
 							<tbody>';
 
 						$total_entries = 0;
-						$row_index      = 0;
+						$row_index     = 0;
 
 						if ( $query->have_posts() ) {
 							while ( $query->have_posts() ) {
@@ -166,7 +169,7 @@ class Email_Summary {
 
 								if ( $entry_count > 0 ) {
 									$total_entries += $entry_count;
-									$bg_color       = $row_index % 2 === 0 ? '#FFFFFF' : '#F9FAFB';
+									$bg_color       = 0 === $row_index % 2 ? '#FFFFFF' : '#F9FAFB';
 									$table_html    .= '<tr style="background-color:' . esc_attr( $bg_color ) . ';">
 										<td style="padding:12px;font-size:14px;color:#4B5563;">' . esc_html( get_the_title() ) . '</td>
 										<td style="padding:12px;font-size:14px;color:#4B5563;text-align:right;">' . esc_html( Helper::get_string_value( $entry_count ) ) . '</td>
@@ -216,7 +219,7 @@ class Email_Summary {
 							<?php esc_html_e( 'Manage Email Summaries from your SureForms settings', 'sureforms' ); ?>
 						</a>
 					</p>
-					
+
 					<hr style="margin:24px 24px;border:none;border-top:1px solid #eee;">
 
 					<div style="text-align:center;margin-top:16px;">
@@ -231,7 +234,8 @@ class Email_Summary {
 		</html>
 		<?php
 		wp_reset_postdata();
-		return ob_get_clean();
+		$content = ob_get_clean();
+		return false !== $content ? $content : '';
 	}
 
 	/**
