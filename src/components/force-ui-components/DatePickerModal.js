@@ -44,6 +44,16 @@ const DatePickerModal = ( { label, date, onDateChange } ) => {
 		} );
 	};
 
+	const selectedDate = ( value ) => {
+		if ( value ) {
+			const year = value.getFullYear();
+			const month = String( value.getMonth() + 1 ).padStart( 2, '0' );
+			const day = String( value.getDate() ).padStart( 2, '0' );
+			const formattedDate = `${ year }-${ month }-${ day }`;
+			onDateChange( formattedDate );
+		}
+	};
+
 	return (
 		<>
 			<div className="relative w-full z-50" ref={ ref }>
@@ -57,7 +67,6 @@ const DatePickerModal = ( { label, date, onDateChange } ) => {
 						<DatePicker
 							selectionType="single"
 							variant="normal"
-							// selected={ date ?? '' }
 							selected={ date ? new Date( date ) : null }
 							cancelButtonText={
 								// if the input is empty, show "Cancel" button
@@ -65,18 +74,9 @@ const DatePickerModal = ( { label, date, onDateChange } ) => {
 									? __( 'Clear', 'sureforms' )
 									: __( 'Cancel', 'sureforms' )
 							}
+							onDateSelect={ selectedDate }
 							onApply={ ( value ) => {
-								if ( value ) {
-									const year = value.getFullYear();
-									const month = String(
-										value.getMonth() + 1
-									).padStart( 2, '0' );
-									const day = String(
-										value.getDate()
-									).padStart( 2, '0' );
-									const formattedDate = `${ year }-${ month }-${ day }`;
-									onDateChange( formattedDate );
-								}
+								selectedDate( value );
 								setIsOpen( false );
 							} }
 							onCancel={ () => {

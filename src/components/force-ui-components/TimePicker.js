@@ -13,8 +13,9 @@ const TimePicker = ( {
 
 	// create array of hours from 1 to 12
 	const hourOptions = Array.from( { length: 12 }, ( _, i ) =>
-		( i + 1 ).toString()
+		String( i + 1 ).padStart( 2, '0' )
 	);
+
 	// create array of minutes from 00 to 59
 	const minuteOptions = Array.from( { length: 60 }, ( _, i ) =>
 		String( i ).padStart( 2, '0' )
