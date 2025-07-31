@@ -33,7 +33,7 @@ class Onboarding {
 	/**
 	 * Set onboarding completion status.
 	 *
-	 * @since x.x.x
+	 * @since 1.9.1
 	 * @param string $completed Whether the onboarding is completed.
 	 * @return void
 	 */
@@ -44,7 +44,7 @@ class Onboarding {
 	/**
 	 * Get onboarding completion status.
 	 *
-	 * @since x.x.x
+	 * @since 1.9.1
 	 * @return bool
 	 */
 	public function get_onboarding_status() {

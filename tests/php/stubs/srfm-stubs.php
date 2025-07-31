@@ -8862,7 +8862,6 @@ namespace SRFM\Inc {
         /**
 	     * Return the classes based on background and overlay type to add to the form container.
          *
-         * @param string $request_type The type of request, either 'rest' or 'ajax'. Default is 'rest'.
 	     * @param string $background_type The background type.
 	     * @param string $overlay_type The overlay type.
          * @param string $bg_image The background image url.
