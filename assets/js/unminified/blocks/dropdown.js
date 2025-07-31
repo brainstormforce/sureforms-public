@@ -24,7 +24,11 @@ function initializeDropdown() {
 			}
 
 			let additionalConfig = {};
-			const inputName = element.getAttribute( 'name' );
+			const block = element.closest( '.srfm-dropdown-block' );
+			const inputName =
+				block?.getAttribute( 'data-block-id' ) ||
+				element.getAttribute( 'name' );
+
 			const errorContainerID = element
 				?.closest( '.srfm-dropdown-block' )
 				?.querySelector( '.srfm-error-message' )
@@ -280,7 +284,10 @@ function destroyTomSelect( dropdown ) {
 	}
 
 	// Get the input name to remove from global registry
-	const inputName = dropdown.getAttribute( 'name' );
+	const block = dropdown.closest( '.srfm-dropdown-block' );
+	const inputName =
+		block?.getAttribute( 'data-block-id' ) ||
+		dropdown.getAttribute( 'name' );
 
 	// Check if there's an instance in the global registry
 	if ( window?.srfm && window.srfm[ inputName ] ) {
