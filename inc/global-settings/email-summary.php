@@ -104,67 +104,134 @@ class Email_Summary {
 
 		$admin_user_name = get_user_by( 'id', 1 ) ? get_user_by( 'id', 1 )->display_name : 'Admin';
 
-		$table_html  = '<b>' . __( 'Hello', 'sureforms' ) . ' ' . $admin_user_name . ',</b><br><br>';
-		$table_html .= '<span>' . __( 'Let\'s see how your forms performed in the last week', 'sureforms' ) . '</span><br><br>';
-		$table_html .= '<table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">';
-		$table_html .= '<thead>';
-		$table_html .= '<tr style="background-color: #333; color: #fff; text-align: left;">';
-		$table_html .= '<th style="padding: 10px;">' . __( 'Form Name', 'sureforms' ) . '</th>';
-		$table_html .= '<th style="padding: 10px;">' . __( 'Entries', 'sureforms' ) . '</th>';
-		$table_html .= '</tr>';
-		$table_html .= '</thead>';
-		$table_html .= '<tbody>';
+		$from_date = date_i18n( 'F j, Y', strtotime( '-7 days' ) );
+		$to_date   = date_i18n( 'F j, Y' );
+		$logs_url  = admin_url( 'admin.php?page=sureforms#/entries' );
 
-		$total_entries      = 0;
-		$forms_with_entries = 0;
-		$forms_table_rows   = '';
-		$row_index          = 0;
+		ob_start();
+		?>
+		<!DOCTYPE html>
+		<html lang="en">
+		<head>
+			<meta charset="UTF-8">
+			<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+			<meta http-equiv="X-UA-Compatible" content="IE=edge">
+			<title><?php esc_html_e( 'Weekly Summary', 'sureforms' ); ?></title>
+			<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+		</head>
+		<body style="font-family:Figtree,Arial,sans-serif;background-color:#F1F5F9;margin:0;padding:32px;">
+			<div style="max-width:640px;margin:0 auto;">
+				<div style="margin-bottom:24px;text-align:left;">
+					<img src="<?php echo esc_url( SRFM_URL . 'admin/assets/sureforms-logo-full.png' ); ?>"
+						alt="<?php esc_attr_e( 'SureForms Logo', 'sureforms' ); ?>"
+						width="162" height="32"
+						style="display:inline-block;">
+				</div>
+				<div style="background-color:#FFFFFF;padding-bottom:40px;">
+					<div style="padding:24px;">
+						<p style="font-size:18px;font-weight:600;color:#111827;margin:0 0 8px;">
+							<?php echo esc_html__( 'Hello', 'sureforms' ) . ' ' . esc_html( $admin_user_name ) . ','; ?>
+						</p>
+						<p style="font-size:14px;color:#4B5563;margin:0 0 16px;">
+							<?php
+							printf(
+								esc_html__( "Here's your SureForms report for the last 7 days, from %1\$s to %2\$s.", 'sureforms' ),
+								'<strong>' . esc_html( $from_date ) . '</strong>',
+								'<strong>' . esc_html( $to_date ) . '</strong>'
+							);
+							?>
+						</p>
 
-		if ( $query->have_posts() ) {
-			while ( $query->have_posts() ) {
-				$query->the_post();
-				global $post;
+						<?php
+						$table_html = '<table style="border:1px solid #E5E7EB;border-radius:8px;box-shadow:0 1px 1px rgba(0,0,0,0.05);margin-top:16px;width:100%;border-collapse:separate;border-spacing:0;">
+							<thead>
+								<tr style="background-color:#F9FAFB;">
+									<th style="padding:8px 12px;font-size:14px;font-weight:500;color:#111827;text-align:left;border-top-left-radius:8px;">' . esc_html__( 'Form Name', 'sureforms' ) . '</th>
+									<th style="padding:8px 12px;font-size:14px;font-weight:500;color:#111827;text-align:right;width:146px;border-top-right-radius:8px;">' . esc_html__( 'Entries', 'sureforms' ) . '</th>
+								</tr>
+							</thead>
+							<tbody>';
 
-				// Calculate timestamp for 7 days ago (last week).
-				$week_ago_timestamp = strtotime( '-7 days' );
+						$total_entries = 0;
+						$row_index      = 0;
 
-				// Get entries count after the timestamp for this specific form.
-				$entry_count = Entries::get_entries_count_after( $week_ago_timestamp, Helper::get_integer_value( $post->ID ) );
+						if ( $query->have_posts() ) {
+							while ( $query->have_posts() ) {
+								$query->the_post();
+								global $post;
 
-				if ( $entry_count > 0 ) {
-					$forms_with_entries++;
-					$total_entries    += $entry_count;
-					$bg_color          = 0 === $row_index % 2 ? '#ffffff' : '#f2f2f2;';
-					$forms_table_rows .= '<tr style="background-color: ' . $bg_color . ';">';
-					$forms_table_rows .= '<td style="padding: 10px;">' . esc_html( get_the_title() ) . '</td>';
-					$forms_table_rows .= '<td style="padding: 10px;">' . esc_html( Helper::get_string_value( $entry_count ) ) . '</td>';
-					$forms_table_rows .= '</tr>';
-					$row_index++;
-				}
-			}
-		}
+								$week_ago_timestamp = strtotime( '-7 days' );
+								$entry_count        = Entries::get_entries_count_after( $week_ago_timestamp, Helper::get_integer_value( $post->ID ) );
 
-		if ( $forms_with_entries > 0 ) {
-			$table_html .= $forms_table_rows;
-			$table_html .= '</tbody>';
-			$table_html .= '<tfoot>';
-			$table_html .= '<tr style="background-color: #333; color: #fff; text-align: left; font-weight: bold;">';
-			$table_html .= '<td style="padding: 10px;">' . esc_html__( 'Total Entries', 'sureforms' ) . '</td>';
-			$table_html .= '<td style="padding: 10px;">' . esc_html( Helper::get_string_value( $total_entries ) ) . '</td>';
-			$table_html .= '</tr>';
-			$table_html .= '</tfoot>';
-		} else {
-			$table_html .= '<tr>';
-			$table_html .= '<td colspan="2" style="padding: 10px;">' . esc_html__( 'No entries found in the last week.', 'sureforms' ) . '</td>';
-			$table_html .= '</tr>';
-			$table_html .= '</tbody>';
-		}
+								if ( $entry_count > 0 ) {
+									$total_entries += $entry_count;
+									$bg_color       = $row_index % 2 === 0 ? '#FFFFFF' : '#F9FAFB';
+									$table_html    .= '<tr style="background-color:' . esc_attr( $bg_color ) . ';">
+										<td style="padding:12px;font-size:14px;color:#4B5563;">' . esc_html( get_the_title() ) . '</td>
+										<td style="padding:12px;font-size:14px;color:#4B5563;text-align:right;">' . esc_html( Helper::get_string_value( $entry_count ) ) . '</td>
+									</tr>';
+									$row_index++;
+								}
+							}
+							$table_html .= '</tbody><tfoot><tr style="background-color:#F9FAFB;font-weight:bold;">
+								<td style="padding:12px;font-size:14px;color:#111827;">' . esc_html__( 'Total Entries', 'sureforms' ) . '</td>
+								<td style="padding:12px;font-size:14px;color:#111827;text-align:right;">' . esc_html( Helper::get_string_value( $total_entries ) ) . '</td>
+							</tr></tfoot>';
+						} else {
+							$table_html .= '<tr><td colspan="2" style="padding:12px;font-size:14px;color:#4B5563;">' . esc_html__( 'No entries found in the last week.', 'sureforms' ) . '</td></tr></tbody>';
+						}
+						$table_html .= '</table>';
 
-		$table_html .= '</table>';
+						echo wp_kses_post( $table_html );
+						?>
 
+						<a href="<?php echo esc_url( $logs_url ); ?>"
+						style="display:inline-block;background-color:#2563EB;color:#FFFFFF;padding:8px 12px;border-radius:4px;text-decoration:none;font-size:12px;font-weight:600;margin-top:16px;">
+							<?php esc_html_e( 'View Entries', 'sureforms' ); ?>
+						</a>
+					</div>
+
+					<hr style="margin:24px 24px;border:none;border-top:1px solid #eee;">
+					<!-- OttoKit Promotion Section -->
+					<div style="margin:32px 24px;padding:24px;border:1px solid #E5E7EB;border-radius:12px;background:#FAFAFA;text-align:left;">
+						<div style="margin-bottom:16px;">
+							<img src="<?php echo esc_url( SRFM_URL . 'admin/assets/ottokit.png' ); ?>" alt="OttoKit Logo" width="48" height="48" style="border-radius:6px;">
+						</div>
+						<p style="font-size:16px;font-weight:600;color:#111827;margin:0 0 8px;">
+							<?php esc_html_e( 'Automate Workflows with OttoKit', 'sureforms' ); ?>
+						</p>
+						<p style="font-size:14px;color:#4B5563;margin:0 0 16px;line-height:1.5;">
+							<?php esc_html_e( 'Connect your apps and automate repetitive tasks with ease. Build workflows that save time, reduce errors, and keep your business running smoothly around the clock.', 'sureforms' ); ?>
+						</p>
+						<a href="https://ottokit.com" target="_blank" rel="noopener noreferrer"
+							style="font-size:14px;font-weight:600;color:#EF4444;text-decoration:none;">
+							<?php esc_html_e( 'Explore OttoKit', 'sureforms' ); ?> →
+						</a>
+					</div>
+
+					<p style="font-size:12px;color:#9CA3AF;text-align:center;margin:16px 0;">
+						<a href="<?php echo esc_url( admin_url( 'admin.php?page=sureforms_form_settings&tab=general-settings' ) ); ?>"
+						style="color:#9CA3AF;text-decoration:none;">
+							<?php esc_html_e( 'Manage Email Summaries from your SureForms settings', 'sureforms' ); ?>
+						</a>
+					</p>
+					
+					<hr style="margin:24px 24px;border:none;border-top:1px solid #eee;">
+
+					<div style="text-align:center;margin-top:16px;">
+						<img src="<?php echo esc_url( SRFM_URL . 'admin/assets/sureforms-logo-full.png' ); ?>"
+							alt="<?php esc_attr_e( 'SureForms Logo', 'sureforms' ); ?>"
+							height="20"
+							style="display:block;margin:0 auto;">
+					</div>
+				</div>
+			</div>
+		</body>
+		</html>
+		<?php
 		wp_reset_postdata();
-
-		return $table_html;
+		return ob_get_clean();
 	}
 
 	/**
