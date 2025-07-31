@@ -265,6 +265,7 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 
 == Changelog ==
 = x.x.x =
+* Improvement: Redesigned email summary template with updated layout and styling.
 * Fix: Resolved an issue where long titles in forms were getting hidden under the form container.
 * Fix: Resolved an issue where hidden fields were not available in shortcode as smart tags.
 * Fix: Resolved an issue where forms display an error message on load when the LMS Optimize plugin is active.
