@@ -4,7 +4,7 @@
  * Test suite for the SMTP detection functionality introduced in the smtp-detection branch.
  * This tests the is_any_smtp_plugin_active() function and the admin notice behavior.
  * 
- * @since x.x.x
+ * @since 1.9.1
  */
 
 const { test, expect } = require('@playwright/test');

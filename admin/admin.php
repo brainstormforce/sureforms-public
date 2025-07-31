@@ -31,7 +31,7 @@ class Admin {
 	 * Dashboard widget entries data.
 	 *
 	 * @var array
-	 * @since x.x.x
+	 * @since 1.9.1
 	 */
 	private $dashboard_widget_data = [];
 
@@ -1070,7 +1070,7 @@ class Admin {
 	 * Hooked - admin_notices
 	 *
 	 * @return void
-	 * @since x.x.x
+	 * @since 1.9.1
 	 */
 	public function add_smtp_warning_notice() {
 		if ( ! current_user_can( 'manage_options' ) ) {
@@ -1292,7 +1292,7 @@ class Admin {
 	 * Maybe register the dashboard widget based on entries.
 	 *
 	 * @return void
-	 * @since x.x.x
+	 * @since 1.9.1
 	 */
 	public function maybe_register_dashboard_widget() {
 		// Quick check if there are any entries in the last 7 days.
@@ -1315,7 +1315,7 @@ class Admin {
 	 * Register the dashboard widget.
 	 *
 	 * @return void
-	 * @since x.x.x
+	 * @since 1.9.1
 	 */
 	public function register_dashboard_widget() {
 		// Add the widget with high priority to position it at the top.
@@ -1334,7 +1334,7 @@ class Admin {
 	 * Render the dashboard widget content.
 	 *
 	 * @return void
-	 * @since x.x.x
+	 * @since 1.9.1
 	 */
 	public function render_dashboard_widget() {
 		// Use the pre-fetched data to avoid duplicate queries.
@@ -1384,7 +1384,7 @@ class Admin {
 	 * Get random premium feature text.
 	 *
 	 * @return string Random feature text.
-	 * @since x.x.x
+	 * @since 1.9.1
 	 */
 	private function get_random_premium_feature_text() {
 		$features = [
@@ -1410,7 +1410,7 @@ class Admin {
 	 *
 	 * @param array $entries_data The entries data array.
 	 * @return void
-	 * @since x.x.x
+	 * @since 1.9.1
 	 */
 	private function render_dashboard_widget_footer( $entries_data ) {
 		// Only show footer if Pro is not active.
