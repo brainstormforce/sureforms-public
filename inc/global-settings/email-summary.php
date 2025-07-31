@@ -106,7 +106,7 @@ class Email_Summary {
 
 		$from_date = date_i18n( 'F j, Y', strtotime( '-7 days' ) );
 		$to_date   = date_i18n( 'F j, Y' );
-		$logs_url  = admin_url( 'admin.php?page=sureforms#/entries' );
+		$logs_url  = admin_url( 'admin.php?page=sureforms_entries' );
 
 		ob_start();
 		?>
@@ -128,13 +128,13 @@ class Email_Summary {
 				<div style="margin-bottom:24px;text-align:left;">
 					<img src="<?php echo esc_url( SRFM_URL . 'admin/assets/sureforms-logo-full.png' ); ?>"
 						alt="<?php esc_attr_e( 'SureForms Logo', 'sureforms' ); ?>"
-						width="162" height="32"
+						width="192" height="32"
 						style="display:inline-block;">
 				</div>
 				<div style="background-color:#FFFFFF;padding-bottom:40px;">
 					<div style="padding:24px;">
 						<p style="font-size:18px;font-weight:600;color:#111827;margin:0 0 8px;">
-							<?php echo esc_html__( 'Hello', 'sureforms' ) . ' ' . esc_html( $admin_user_name ) . ','; ?>
+							<?php echo esc_html__( 'Hey There,', 'sureforms' ); ?>
 						</p>
 						<p style="font-size:14px;color:#4B5563;margin:0 0 16px;">
 							<?php
@@ -195,20 +195,20 @@ class Email_Summary {
 						</a>
 					</div>
 
-					<hr style="margin:24px 24px;border:none;border-top:1px solid #eee;">
+					<hr style="border:none;border-top:1px solid #eee;">
 					<!-- OttoKit Promotion Section -->
-					<div style="margin:32px 24px;padding:24px;border:1px solid #E5E7EB;border-radius:12px;background:#FAFAFA;text-align:left;">
-						<div style="margin-bottom:16px;">
-							<img src="<?php echo esc_url( SRFM_URL . 'admin/assets/ottokit.png' ); ?>" alt="OttoKit Logo" width="48" height="48" style="border-radius:6px;">
+					<div style="margin:32px 24px;padding:16px;border:0.5px solid #E5E7EB;border-radius:8px;background:#FFFFFF;text-align:left;">
+						<div style="margin-bottom:4px;">
+							<img src="<?php echo esc_url( SRFM_URL . 'admin/assets/ottokit.png' ); ?>" alt="OttoKit Logo" width="20" height="20" style="border-radius:6px;">
 						</div>
-						<p style="font-size:16px;font-weight:600;color:#111827;margin:0 0 8px;">
+						<p style="font-size:14px;line-height:20px;font-weight:600;color:#111827;margin:0 0 4px;">
 							<?php esc_html_e( 'Automate Workflows with OttoKit', 'sureforms' ); ?>
 						</p>
-						<p style="font-size:14px;color:#4B5563;margin:0 0 16px;line-height:1.5;">
+						<p style="font-size:12px;color:#4B5563;margin:0 0 4px;line-height:16px;font-weight:400;">
 							<?php esc_html_e( 'Connect your apps and automate repetitive tasks with ease. Build workflows that save time, reduce errors, and keep your business running smoothly around the clock.', 'sureforms' ); ?>
 						</p>
 						<a href="https://ottokit.com" target="_blank" rel="noopener noreferrer"
-							style="font-size:14px;font-weight:600;color:#EF4444;text-decoration:none;">
+							style="font-size:12px;font-weight:600;color:#EF4444;text-decoration:none;line-height:16px;">
 							<?php esc_html_e( 'Explore OttoKit', 'sureforms' ); ?> →
 						</a>
 					</div>
@@ -220,7 +220,7 @@ class Email_Summary {
 						</a>
 					</p>
 
-					<hr style="margin:24px 24px;border:none;border-top:1px solid #eee;">
+					<hr style="margin:16px 24px;border:none;border-top:1px solid #eee;">
 
 					<div style="text-align:center;margin-top:16px;">
 						<img src="<?php echo esc_url( SRFM_URL . 'admin/assets/sureforms-logo-full.png' ); ?>"
