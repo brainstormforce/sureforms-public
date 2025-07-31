@@ -250,7 +250,18 @@ class Form_Submit {
 		 */
 		$form_data = Helper::sanitize_by_field_type( $request->get_params() );
 
-		$current_form_id       = $form_data['form-id'];
+		$current_form_id = $form_data['form-id'];
+
+		// Check whether the form is valid.
+		if ( ! Helper::is_valid_form( $current_form_id ) ) {
+			wp_send_json_error(
+				[
+					'code'    => 'srfm_invalid_form_id',
+					'message' => __( 'Form does not exist.', 'sureforms' ),
+				]
+			);
+		}
+
 		$security_type         = Helper::get_meta_value( Helper::get_integer_value( $current_form_id ), '_srfm_captcha_security_type' );
 		$selected_captcha_type = get_post_meta( Helper::get_integer_value( $current_form_id ), '_srfm_form_recaptcha', true ) ? Helper::get_string_value( get_post_meta( Helper::get_integer_value( $current_form_id ), '_srfm_form_recaptcha', true ) ) : '';
 
