@@ -82,7 +82,7 @@ class Dropdown_Markup extends Base {
 		$this->placeholder = ! empty( $this->placeholder_attr ) ? $this->label : __( 'Select an option', 'sureforms' );
 		$this->show_values = apply_filters( 'srfm_show_options_values', false, $attributes['showValues'] ?? false );
 
-		// Generate unique instance identifier
+		// Generate unique instance identifier.
 		self::$instance_counter++;
 		$this->unique_instance_id = $this->block_id . '-' . self::$instance_counter;
 	}
