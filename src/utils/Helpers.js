@@ -285,7 +285,6 @@ const pushSmartTagToArray = (
 
 export const withoutSlugBlocks = [
 	'srfm/inline-button',
-	'srfm/hidden',
 	'srfm/page-break',
 	'srfm/separator',
 	'srfm/advanced-heading',

@@ -641,7 +641,7 @@ class Generate_Form_Markup {
 		$icon    = Helper::fetch_svg( 'info_circle', '', 'aria-hidden="true"' );
 		$classes = "srfm-common-error-message srfm-error-message srfm-{$position}-error";
 		?>
-		<p id="srfm-error-message" class="<?php echo esc_attr( $classes ); ?>" hidden="true"><?php echo wp_kses( $icon, Helper::$allowed_tags_svg ); ?><span class="srfm-error-content"><?php echo esc_html__( 'There was an error trying to submit your form. Please try again.', 'sureforms' ); ?></span></p>
+		<p id="srfm-error-message" class="<?php echo esc_attr( $classes ); ?>" hidden><?php echo wp_kses( $icon, Helper::$allowed_tags_svg ); ?><span class="srfm-error-content"><?php echo esc_html__( 'There was an error trying to submit your form. Please try again.', 'sureforms' ); ?></span></p>
 		<?php
 	}
 

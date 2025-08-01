@@ -1319,7 +1319,7 @@ class Test_Helper extends TestCase {
     /**
      * Test get_forms_with_entry_counts method.
      *
-     * @since x.x.x
+     * @since 1.9.1
      */
     public function test_get_forms_with_entry_counts() {
         // Skip test if SRFM_FORMS_POST_TYPE is not defined.
@@ -1404,7 +1404,7 @@ class Test_Helper extends TestCase {
     /**
      * Test get_forms_with_entry_counts sorting behavior.
      *
-     * @since x.x.x
+     * @since 1.9.1
      */
     public function test_get_forms_with_entry_counts_sorting() {
         // Skip test if SRFM_FORMS_POST_TYPE is not defined.
@@ -1448,4 +1448,43 @@ class Test_Helper extends TestCase {
             wp_delete_post($form_id, true);
         }
     }
+
+    /**
+     * Test the is_valid_form method to validate form IDs.
+     */
+    public function test_is_valid_form() {
+        // Case 1: Empty form ID
+        $this->assertFalse(Helper::is_valid_form(''), 'Empty form ID should be invalid');
+
+        // Case 2: Non-numeric form ID
+        $this->assertFalse(Helper::is_valid_form('abc'), 'Non-numeric form ID should be invalid');
+
+        // Case 3: Non-existent post ID
+        $this->assertFalse(Helper::is_valid_form(999999), 'Non-existent form ID should be invalid');
+
+        // Define post type constant if not already defined
+        if (!defined('SRFM_FORMS_POST_TYPE')) {
+            define('SRFM_FORMS_POST_TYPE', 'sureform');
+        }
+
+        // Case 4: Create a post with wrong post type
+        $invalid_post_id = wp_insert_post([
+            'post_title'  => 'Invalid Type',
+            'post_type'   => 'post',
+            'post_status' => 'publish',
+        ]);
+        $this->assertFalse(Helper::is_valid_form($invalid_post_id), 'Wrong post type should be invalid');
+
+        // Case 5: Create a valid SureForms form post
+        $valid_form_id = wp_insert_post([
+            'post_title'  => 'Valid SureForm',
+            'post_type'   => SRFM_FORMS_POST_TYPE,
+            'post_status' => 'publish',
+        ]);
+        $this->assertTrue(Helper::is_valid_form($valid_form_id), 'Valid SureForms form ID should return true');
+
+        // Case 6: Numeric string form ID
+        $this->assertTrue(Helper::is_valid_form((string) $valid_form_id), 'String numeric form ID should return true');
+    }
+
 }

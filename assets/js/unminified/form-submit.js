@@ -446,7 +446,7 @@ function hideErrorMessage( form ) {
 		'.srfm-common-error-message'
 	);
 	getErrorMessages.forEach( ( errorMessage ) => {
-		errorMessage.setAttribute( 'hidden', true );
+		errorMessage.setAttribute( 'hidden', '' );
 	} );
 }
 
