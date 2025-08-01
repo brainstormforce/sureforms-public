@@ -265,7 +265,7 @@ class Analytics {
 	/**
 	 * Generates onboarding analytics data
 	 *
-	 * @since x.x.x
+	 * @since 1.9.1
 	 * @return array
 	 */
 	public function onboarding_analytics_data() {

@@ -28,6 +28,14 @@ class Admin {
 	use Get_Instance;
 
 	/**
+	 * Dashboard widget entries data.
+	 *
+	 * @var array
+	 * @since 1.9.1
+	 */
+	private $dashboard_widget_data = [];
+
+	/**
 	 * Class constructor.
 	 *
 	 * @return void
@@ -88,6 +96,9 @@ class Admin {
 		add_action( 'wp_ajax_should_show_pointer', [ $this, 'pointer_should_show' ] );
 		add_action( 'wp_ajax_sureforms_dismiss_pointer', [ $this, 'pointer_dismissed' ] );
 		add_action( 'wp_ajax_sureforms_accept_cta', [ $this, 'pointer_accepted_cta' ] );
+
+		// Register dashboard widget only if there are recent entries.
+		add_action( 'admin_init', [ $this, 'maybe_register_dashboard_widget' ] );
 	}
 
 	/**
@@ -1059,7 +1070,7 @@ class Admin {
 	 * Hooked - admin_notices
 	 *
 	 * @return void
-	 * @since x.x.x
+	 * @since 1.9.1
 	 */
 	public function add_smtp_warning_notice() {
 		if ( ! current_user_can( 'manage_options' ) ) {
@@ -1278,6 +1289,177 @@ class Admin {
 	}
 
 	/**
+	 * Maybe register the dashboard widget based on entries.
+	 *
+	 * @return void
+	 * @since 1.9.1
+	 */
+	public function maybe_register_dashboard_widget() {
+		// Quick check if there are any entries in the last 7 days.
+		$seven_days_ago = strtotime( '-7 days' );
+		$total_entries  = Entries::get_entries_count_after( $seven_days_ago );
+
+		// Only add the dashboard setup hook if there are entries.
+		if ( $total_entries > 0 ) {
+			// Get forms with entries (limit 4 for dashboard widget).
+			$this->dashboard_widget_data = Helper::get_forms_with_entry_counts( $seven_days_ago, 4 );
+
+			// Only show dashboard widget if there are forms with entries.
+			if ( ! empty( $this->dashboard_widget_data ) ) {
+				add_action( 'wp_dashboard_setup', [ $this, 'register_dashboard_widget' ] );
+			}
+		}
+	}
+
+	/**
+	 * Register the dashboard widget.
+	 *
+	 * @return void
+	 * @since 1.9.1
+	 */
+	public function register_dashboard_widget() {
+		// Add the widget with high priority to position it at the top.
+		wp_add_dashboard_widget(
+			'sureforms_recent_entries',
+			__( 'SureForms', 'sureforms' ),
+			[ $this, 'render_dashboard_widget' ],
+			null,
+			null,
+			'normal',
+			'high'
+		);
+	}
+
+	/**
+	 * Render the dashboard widget content.
+	 *
+	 * @return void
+	 * @since 1.9.1
+	 */
+	public function render_dashboard_widget() {
+		// Use the pre-fetched data to avoid duplicate queries.
+		$entries_data = $this->dashboard_widget_data;
+
+		// Display the widget content.
+		?>
+		<div class="srfm-dashboard-widget">
+			<div class="srfm-widget-header">
+				<h3 class="srfm-widget-title">
+					<?php esc_html_e( 'Recent Entries', 'sureforms' ); ?>
+					<span class="srfm-widget-subtitle"><?php esc_html_e( '( Last 7 days )', 'sureforms' ); ?></span>
+				</h3>
+				<a href="<?php echo esc_url( admin_url( 'admin.php?page=sureforms_entries' ) ); ?>" class="srfm-widget-view-link">
+					<?php esc_html_e( 'View', 'sureforms' ); ?>
+				</a>
+			</div>
+
+			<div class="srfm-table-wrapper">
+				<table class="srfm-entries-table">
+					<thead>
+						<tr>
+							<th><?php esc_html_e( 'Form Name', 'sureforms' ); ?></th>
+							<th><?php esc_html_e( 'Entries', 'sureforms' ); ?></th>
+						</tr>
+					</thead>
+					<tbody>
+						<?php foreach ( $entries_data as $form_data ) { ?>
+							<tr>
+								<td class="form-name"><?php echo esc_html( $form_data['title'] ); ?></td>
+								<td class="entry-count"><?php echo esc_html( $form_data['count'] ); ?></td>
+							</tr>
+						<?php } ?>
+					</tbody>
+				</table>
+			</div>
+
+			<?php
+			// Render footer if applicable.
+			$this->render_dashboard_widget_footer( $entries_data );
+			?>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Get random premium feature text.
+	 *
+	 * @return string Random feature text.
+	 * @since 1.9.1
+	 */
+	private function get_random_premium_feature_text() {
+		$features = [
+			__( 'Use Conditional Logic to show only what matters', 'sureforms' ),
+			__( 'Split your form into steps to keep it easy', 'sureforms' ),
+			__( 'Let people upload files directly to your form', 'sureforms' ),
+			__( 'Turn responses into downloadable PDFs automatically', 'sureforms' ),
+			__( 'Let users sign with a simple signature field', 'sureforms' ),
+			__( 'Connect your form to other tools using webhooks', 'sureforms' ),
+			__( 'Use Conversational Forms for a chat-like experience', 'sureforms' ),
+			__( 'Let users register or log in through your form', 'sureforms' ),
+			__( 'Build forms that create WordPress user accounts', 'sureforms' ),
+			__( 'Add calculations to auto-total scores or prices', 'sureforms' ),
+		];
+
+		// Get a random feature.
+		$random_key = array_rand( $features );
+		return $features[ $random_key ];
+	}
+
+	/**
+	 * Render the dashboard widget footer for upsell.
+	 *
+	 * @param array $entries_data The entries data array.
+	 * @return void
+	 * @since 1.9.1
+	 */
+	private function render_dashboard_widget_footer( $entries_data ) {
+		// Only show footer if Pro is not active.
+		if ( Helper::has_pro() ) {
+			return;
+		}
+
+		// Count total entries in last 7 days.
+		$total_entries = 0;
+		foreach ( $entries_data as $form_data ) {
+			$total_entries += $form_data['count'];
+		}
+
+		// Count total published forms.
+		$published_forms_count = wp_count_posts( SRFM_FORMS_POST_TYPE )->publish;
+
+		// Show footer only if 3+ entries received OR 3+ forms published.
+		if ( $total_entries >= 3 || $published_forms_count >= 3 ) {
+			?>
+			<div class="srfm-widget-footer">
+				<div class="srfm-upgrade-content">
+					<svg class="srfm-logo-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<rect width="20" height="20" fill="#D54407"/>
+						<path d="M5.7139 4.2854H14.2853V7.1425H7.1424L5.7139 8.5711V7.1425V4.2854Z" fill="white"/>
+						<path d="M5.7139 4.2854H14.2853V7.1425H7.1424L5.7139 8.5711V7.1425V4.2854Z" fill="white"/>
+						<path d="M5.7148 8.5713H12.8577V11.4284H7.1434L5.7148 12.857V11.4284V8.5713Z" fill="white"/>
+						<path d="M5.7148 8.5713H12.8577V11.4284H7.1434L5.7148 12.857V11.4284V8.5713Z" fill="white"/>
+						<path d="M5.7148 12.8569H10.0006V15.7141H5.7148V12.8569Z" fill="white"/>
+						<path d="M5.7148 12.8569H10.0006V15.7141H5.7148V12.8569Z" fill="white"/>
+					</svg>
+					<span><?php echo esc_html( $this->get_random_premium_feature_text() ); ?></span>
+				</div>
+				<?php
+				$upgrade_url = add_query_arg(
+					[
+						'utm_medium' => 'dashboard-widget',
+					],
+					Helper::get_sureforms_website_url( 'pricing' )
+				);
+				?>
+				<a href="<?php echo esc_url( $upgrade_url ); ?>" class="srfm-upgrade-link" target="_blank">
+					<?php esc_html_e( 'Upgrade', 'sureforms' ); ?>
+				</a>
+			</div>
+			<?php
+		}
+	}
+
+	/**
 	 * Determine if the admin pointer should be visible on this page.
 	 *
 	 * @since 1.8.0
@@ -1302,4 +1484,5 @@ class Admin {
 
 		return false;
 	}
+
 }
