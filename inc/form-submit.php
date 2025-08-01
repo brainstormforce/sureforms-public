@@ -771,9 +771,7 @@ class Form_Submit {
 							$form_data,
 						);
 
-						$should_send_email = filter_var( $should_send_email, FILTER_VALIDATE_BOOLEAN );
-
-						if ( ! $should_send_email ) {
+						if ( ! wp_validate_boolean( $should_send_email ) ) {
 								continue;
 						}
 
