@@ -261,7 +261,6 @@ class Form_Submit {
 			$form_restriction = Helper::get_form_restriction_setting( $form_id );
 			// If the form is restricted, return an error response.
 			$form_restriction_message = $form_restriction['description'] ?? esc_html__( 'Oops! This form is now closed as we\'ve received all the entries. Stay tuned for more!', 'sureforms' );
-			// return Helper::display_form_restriction_message( $form_id );
 			wp_send_json_error(
 				[
 					'message' => $form_restriction_message,
