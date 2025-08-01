@@ -1040,6 +1040,63 @@ class Post_Types {
 		 * Hook for registering additional Post Meta
 		 */
 		do_action( 'srfm_register_additional_post_meta' );
+
+		register_meta(
+			'post',
+			'_srfm_form_restriction',
+			[
+				'type'              => 'string',  // Will store as JSON string.
+				'single'            => true,    // Store as single value.
+				'show_in_rest'      => true, // Make available in REST API.
+				// Custom callback to sanitize the data.
+				'sanitize_callback' => [ $this, 'form_restriction_data_sanitizer' ],
+				'auth_callback'     => static function () {
+					return current_user_can( 'manage_options' );
+				},
+				'default'           => wp_json_encode(
+					[
+						'status'      => false,
+						'maxEntries'  => 0,
+						'date'        => '',
+						'hours'       => '12',
+						'minutes'     => '00',
+						'meridiem'    => 'AM',
+						'message' => __( 'Oops! This form is now closed as we\'ve received all the entries. Stay tuned for more!', 'sureforms' ),
+					]
+				),
+			]
+		);
+	}
+
+	/**
+	 * Sanitizes the form restriction data.
+	 *
+	 * @param mixed $meta_value The meta value to sanitize.
+	 * @return string|false Sanitized JSON string.
+	 */
+	public function form_restriction_data_sanitizer( $meta_value ) {
+		if ( empty( $meta_value ) || ! is_string( $meta_value ) ) {
+			return wp_json_encode( [] );
+		}
+
+		$meta_value = json_decode( $meta_value, true );
+
+		if ( ! is_array( $meta_value ) ) {
+			return wp_json_encode( [] );
+		}
+
+		$sanitized = [
+			'status'      => isset( $meta_value['status'] ) ? filter_var( $meta_value['status'], FILTER_VALIDATE_BOOLEAN ) : false,
+			'maxEntries'  => isset( $meta_value['maxEntries'] ) ? filter_var( $meta_value['maxEntries'], FILTER_VALIDATE_INT ) : 0,
+			'date'        => isset( $meta_value['date'] ) ? sanitize_text_field( $meta_value['date'] ) : '',
+			'hours'       => isset( $meta_value['hours'] ) ? sanitize_text_field( $meta_value['hours'] ) : '12',
+			'minutes'     => isset( $meta_value['minutes'] ) ? sanitize_text_field( $meta_value['minutes'] ) : '00',
+			'meridiem'    => isset( $meta_value['meridiem'] ) ? sanitize_text_field( $meta_value['meridiem'] ) : 'AM',
+			'message' => isset( $meta_value['message'] ) ? sanitize_textarea_field( $meta_value['message'] ) : __( 'Oops! This form is now closed as we\'ve received all the entries. Stay tuned for more!', 'sureforms' ),
+		];
+
+		// Return the sanitized data as a JSON string.
+		return wp_json_encode( $sanitized );
 	}
 
 	/**

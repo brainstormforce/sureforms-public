@@ -170,16 +170,16 @@ function GeneralSettings( props ) {
 
 	const singleSettings = applyFilters( 'srfm.formSettings.singleSettings', [
 		{
+			id: 'general-settings',
+			title: __( 'General Settings', 'sureforms' ),
+		},
+		{
 			id: 'form_confirmation',
 			title: __( 'Form Confirmation', 'sureforms' ),
 		},
 		{
 			id: 'email_notification',
 			title: __( 'Email Notification', 'sureforms' ),
-		},
-		{
-			id: 'compliance_settings',
-			title: __( 'Compliance Settings', 'sureforms' ),
 		},
 		{
 			id: 'integrations',

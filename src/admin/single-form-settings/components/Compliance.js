@@ -1,7 +1,7 @@
 import { __ } from '@wordpress/i18n';
 import { store as editorStore } from '@wordpress/editor';
 import { useDispatch } from '@wordpress/data';
-import { Input, Switch, Label, Container } from '@bsf/force-ui';
+import { Input, Switch, Label, Container, Title } from '@bsf/force-ui';
 import TabContentWrapper from '@Components/tab-content-wrapper';
 
 const Compliance = ( { complianceData } ) => {
@@ -72,58 +72,70 @@ const Compliance = ( { complianceData } ) => {
 	];
 
 	return (
-		<TabContentWrapper title={ __( 'Compliance Settings', 'sureforms' ) }>
-			<Container direction="column" className="gap-6">
-				{ switches.map(
-					( { id, label, condition = true } ) =>
-						condition &&
-						ComplianceSwitch( {
-							id,
-							label,
-							value: complianceData[ 0 ]?.[ id ],
-							onChange: handleToggle,
-							key: id,
-						} )
-				) }
-				{ complianceData[ 0 ]?.auto_delete_entries &&
-					! complianceData[ 0 ]?.do_not_store_entries &&
-					complianceData[ 0 ]?.gdpr && (
-					<Container direction="column" className="gap-1.5">
-						<Input
-							aria-label={ __(
-								'Entries older than the selected days will be deleted.',
-								'sureforms'
-							) }
-							size="md"
-							type="number"
-							value={ complianceData[ 0 ]?.auto_delete_days }
-							label={ __(
-								'Entries Time Period',
-								'sureforms'
-							) }
-							onChange={ ( value ) => {
-								value = parseInt( value );
-
-								if ( value < 0 ) {
-									value = 1;
-								}
-
-								value = value.toString();
-
-								handleToggle( 'auto_delete_days', value );
-							} }
-						/>
-						<Container gap="0" align="center">
-							<Label tag="p" size="sm" variant="help">
-								{ __(
-									'Entries older than the days set will be deleted automatically.',
+		<TabContentWrapper title={ __( 'General Settings', 'sureforms' ) }>
+			<>
+				<Title
+					size="xs"
+					className="mb-4"
+					title={ __( 'Compliance Settings', 'sureforms' ) }
+				/>
+				<Container direction="column" className="gap-6">
+					{ switches.map(
+						( { id, label, condition = true } ) =>
+							condition &&
+							ComplianceSwitch( {
+								id,
+								label,
+								value: complianceData[ 0 ]?.[ id ],
+								onChange: handleToggle,
+								key: id,
+							} )
+					) }
+					{ complianceData[ 0 ]?.auto_delete_entries &&
+						! complianceData[ 0 ]?.do_not_store_entries &&
+						complianceData[ 0 ]?.gdpr && (
+						<Container direction="column" className="gap-1.5">
+							<Input
+								aria-label={ __(
+									'Entries older than the selected days will be deleted.',
 									'sureforms'
 								) }
-							</Label>
+								size="md"
+								type="number"
+								value={
+									complianceData[ 0 ]?.auto_delete_days
+								}
+								label={ __(
+									'Entries Time Period',
+									'sureforms'
+								) }
+								onChange={ ( value ) => {
+									value = parseInt( value );
+
+									if ( value < 0 ) {
+										value = 1;
+									}
+
+									value = value.toString();
+
+									handleToggle(
+										'auto_delete_days',
+										value
+									);
+								} }
+							/>
+							<Container gap="0" align="center">
+								<Label tag="p" size="sm" variant="help">
+									{ __(
+										'Entries older than the days set will be deleted automatically.',
+										'sureforms'
+									) }
+								</Label>
+							</Container>
 						</Container>
-					</Container>
-				) }
-			</Container>
+					) }
+				</Container>
+			</>
 		</TabContentWrapper>
 	);
 };
