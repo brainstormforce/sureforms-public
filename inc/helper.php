@@ -1009,6 +1009,10 @@ class Helper {
 
 				// Made it associative array, so that we can directly check it using block_id rather than mapping or using "in_array" for the checks.
 				$slugs[ $block['attrs']['block_id'] ] = self::get_string_value( $block['attrs']['slug'] );
+
+				if ( is_array( $block['innerBlocks'] ) && ! empty( $block['innerBlocks'] ) ) {
+					[ $blocks[ $index ]['innerBlocks'], $slugs, $updated ] = self::process_blocks( $block['innerBlocks'], $slugs, $updated, '' );
+				}
 				continue;
 			}
 
