@@ -250,7 +250,24 @@ class Form_Submit {
 		 */
 		$form_data = Helper::sanitize_by_field_type( $request->get_params() );
 
-		$current_form_id = $form_data['form-id'];
+		$current_form_id       = $form_data['form-id'];
+
+		/**
+		 * If someone tries to access the form submit endpoint directly, we need to check if the form is restricted.
+		 * If a form is loaded in a browser window and the limit exceeds then the form will not be submitted.
+		 */
+		$form_id = Helper::get_integer_value( $current_form_id );
+		if ( Helper::is_form_restricted( $form_id ) ) {
+			$form_restriction = Helper::get_form_restriction_setting( $form_id );
+			// If the form is restricted, return an error response.
+			$form_restriction_message = $form_restriction['description'] ?? esc_html__( 'Oops! This form is now closed as we\'ve received all the entries. Stay tuned for more!', 'sureforms' );
+			// return Helper::display_form_restriction_message( $form_id );
+			wp_send_json_error(
+				[
+					'message' => $form_restriction_message,
+				]
+			);
+		}
 
 		// Check whether the form is valid.
 		if ( ! Helper::is_valid_form( $current_form_id ) ) {

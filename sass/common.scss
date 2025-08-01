@@ -285,3 +285,35 @@ button.srfm-toolbar-width-setting-button {
 .srfm-submit-button-hidden .srfm-form .srfm-block-single:has( + .srfm-submit-container ) {
 	margin-bottom: 0 !important;
 }
+
+/**
+ * Styles for the form restriction message.
+ * This is used to display a message when the form is restricted.
+ */
+.srfm-form-restriction-wrapper {
+	background-color: #fff;
+
+	.srfm-form-restriction-message {
+		background: #fefce8;
+		border: 1px solid #fef08a;
+		border-radius: 8px;
+		padding: 16px;
+		display: flex;
+		align-items: flex-start; // Align to top
+		gap: 8px; // Space between icon and text
+
+		span {
+			color: #faad14;
+			line-height: 1;
+			display: inline-block;
+			vertical-align: top; // Align icon to top of text
+			margin-top: 2px; // Optional fine-tuning
+		}
+
+		p {
+			font-size: 16px;
+			color: #333333;
+			margin: 0;
+		}
+	}
+}
