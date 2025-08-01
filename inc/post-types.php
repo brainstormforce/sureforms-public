@@ -1055,13 +1055,13 @@ class Post_Types {
 				},
 				'default'           => wp_json_encode(
 					[
-						'status'      => false,
-						'maxEntries'  => 0,
-						'date'        => '',
-						'hours'       => '12',
-						'minutes'     => '00',
-						'meridiem'    => 'AM',
-						'message' => __( 'Oops! This form is now closed as we\'ve received all the entries. Stay tuned for more!', 'sureforms' ),
+						'status'     => false,
+						'maxEntries' => 0,
+						'date'       => '',
+						'hours'      => '12',
+						'minutes'    => '00',
+						'meridiem'   => 'AM',
+						'message'    => __( 'Oops! This form is now closed as we\'ve received all the entries. Stay tuned for more!', 'sureforms' ),
 					]
 				),
 			]
@@ -1086,13 +1086,13 @@ class Post_Types {
 		}
 
 		$sanitized = [
-			'status'      => isset( $meta_value['status'] ) ? filter_var( $meta_value['status'], FILTER_VALIDATE_BOOLEAN ) : false,
-			'maxEntries'  => isset( $meta_value['maxEntries'] ) ? filter_var( $meta_value['maxEntries'], FILTER_VALIDATE_INT ) : 0,
-			'date'        => isset( $meta_value['date'] ) ? sanitize_text_field( $meta_value['date'] ) : '',
-			'hours'       => isset( $meta_value['hours'] ) ? sanitize_text_field( $meta_value['hours'] ) : '12',
-			'minutes'     => isset( $meta_value['minutes'] ) ? sanitize_text_field( $meta_value['minutes'] ) : '00',
-			'meridiem'    => isset( $meta_value['meridiem'] ) ? sanitize_text_field( $meta_value['meridiem'] ) : 'AM',
-			'message' => isset( $meta_value['message'] ) ? sanitize_textarea_field( $meta_value['message'] ) : __( 'Oops! This form is now closed as we\'ve received all the entries. Stay tuned for more!', 'sureforms' ),
+			'status'     => isset( $meta_value['status'] ) ? filter_var( $meta_value['status'], FILTER_VALIDATE_BOOLEAN ) : false,
+			'maxEntries' => isset( $meta_value['maxEntries'] ) ? filter_var( $meta_value['maxEntries'], FILTER_VALIDATE_INT ) : 0,
+			'date'       => isset( $meta_value['date'] ) ? sanitize_text_field( $meta_value['date'] ) : '',
+			'hours'      => isset( $meta_value['hours'] ) ? sanitize_text_field( $meta_value['hours'] ) : '12',
+			'minutes'    => isset( $meta_value['minutes'] ) ? sanitize_text_field( $meta_value['minutes'] ) : '00',
+			'meridiem'   => isset( $meta_value['meridiem'] ) ? sanitize_text_field( $meta_value['meridiem'] ) : 'AM',
+			'message'    => isset( $meta_value['message'] ) ? sanitize_textarea_field( $meta_value['message'] ) : __( 'Oops! This form is now closed as we\'ve received all the entries. Stay tuned for more!', 'sureforms' ),
 		];
 
 		// Return the sanitized data as a JSON string.
