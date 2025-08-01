@@ -250,7 +250,7 @@ class Form_Submit {
 		 */
 		$form_data = Helper::sanitize_by_field_type( $request->get_params() );
 
-		$current_form_id       = $form_data['form-id'];
+		$current_form_id = $form_data['form-id'];
 
 		/**
 		 * If someone tries to access the form submit endpoint directly, we need to check if the form is restricted.

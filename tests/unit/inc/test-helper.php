@@ -1487,4 +1487,77 @@ class Test_Helper extends TestCase {
         $this->assertTrue(Helper::is_valid_form((string) $valid_form_id), 'String numeric form ID should return true');
     }
 
+    public function test_get_form_restriction_setting_returns_valid_array() {
+        $form_id = 101;
+        $meta = json_encode(['status' => true, 'maxEntries' => 5]);
+
+        add_filter('get_post_metadata', function($value, $object_id, $meta_key) use ($form_id, $meta) {
+            if ($object_id === $form_id && $meta_key === '_srfm_form_restriction') {
+                return [$meta];
+            }
+            return null;
+        }, 10, 3);
+
+        $result = Helper::get_form_restriction_setting($form_id);
+        $this->assertIsArray($result);
+        $this->assertEquals(5, $result['maxEntries']);
+        $this->assertTrue($result['status']);
+    }
+
+    public function test_is_form_restricted_returns_true_if_limits_reached() {
+        $form_id = 202;
+
+        add_filter('get_post_metadata', function($value, $object_id, $meta_key) use ($form_id) {
+            if ($object_id === $form_id && $meta_key === '_srfm_form_restriction') {
+                return [json_encode([
+                    'status' => true,
+                    'maxEntries' => 1,
+                    'date' => '2000-01-01',
+                    'hours' => '12',
+                    'minutes' => '00',
+                    'meridiem' => 'AM',
+                ])];
+            }
+            return null;
+        }, 10, 3);
+
+        add_filter('srfm_is_form_restricted_check_for_live_mode', fn($val) => true);
+        add_filter('srfm_get_instant_form_live_data', fn() => []);
+        add_filter('srfm_total_entries_by_status', fn() => 2); // simulate over the limit
+
+        $this->assertTrue(Helper::is_form_restricted($form_id));
+    }
+
+    public function test_has_time_limit_reached_returns_true_if_expired() {
+        $restriction = [
+            'date' => '2000-01-01',
+            'hours' => '12',
+            'minutes' => '00',
+            'meridiem' => 'AM',
+        ];
+        $this->assertTrue(Helper::has_time_limit_reached($restriction));
+    }
+
+    public function test_display_form_restriction_message_returns_markup() {
+        $form_id = 303;
+        $expected_msg = 'Custom restriction message.';
+
+        add_filter('get_post_metadata', function($value, $object_id, $meta_key) use ($form_id, $expected_msg) {
+            if ($object_id === $form_id && $meta_key === '_srfm_form_restriction') {
+                return [json_encode(['message' => $expected_msg])];
+            }
+            return null;
+        }, 10, 3);
+
+        $output = Helper::display_form_restriction_message($form_id);
+        $this->assertStringContainsString($expected_msg, $output);
+        $this->assertStringContainsString('srfm-form-restriction-wrapper', $output);
+    }
+
+    public function test_get_timestamp_from_string_returns_valid_timestamp() {
+        $result = Helper::get_timestamp_from_string('2025-12-31', '10', '30', 'AM');
+        $this->assertIsInt($result);
+        $this->assertGreaterThan(0, $result);
+    }
+
 }
