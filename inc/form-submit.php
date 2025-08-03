@@ -232,44 +232,99 @@ class Form_Submit {
 		return json_decode( wp_remote_retrieve_body( $response ), true );
 	}
 
-	public function validate_form_data( $form_data, $current_form_id ) {
-		$not_valid_fields = [];
-
+	/**
+	 * Prepare validation data for a given form.
+	 *
+	 * Retrieves the form block configuration from post meta and adds a 'name_with_id'
+	 * key to each block, which is a unique identifier for the field (used for validation).
+	 *
+	 * @param int $current_form_id The ID of the form post.
+	 * @since x.x.x
+	 * @return array|null The processed form configuration array, or null if not found.
+	 */
+	public function prepared_validation_data( $current_form_id ) {
+		// Retrieve the form block configuration from post meta.
 		$get_form_config = get_post_meta( $current_form_id, '_srfm_block_config', true );
 
-		// ! empty( $_FILES )
-		// Merge the form data with the files data so we can process the validation for the all fields.
-		if( ! empty( $_FILES ) ) {
+		// If the configuration is an array, add a 'name_with_id' key to each block.
+		if ( is_array( $get_form_config ) ) {
+			foreach ( $get_form_config as $index => $block ) {
+				// Ensure both 'blockName' and 'block_id' exist before creating the identifier.
+				if ( isset( $block['blockName'] ) && isset( $block['block_id'] ) ) {
+					// 'name_with_id' is used as a unique field identifier for validation.
+					$get_form_config[ $index ]['name_with_id'] = str_replace( '/', '-', $block['blockName'] ) . '-' . $block['block_id'];
+				}
+			}
+		}
+
+		return is_array( $get_form_config ) ? $get_form_config : [];
+	}
+
+	/**
+	 * Validate form data for a given form.
+	 *
+	 * This function checks each field in the submitted form data (including uploaded files)
+	 * and applies the 'srfm_validate_form_data' filter to validate each field according to
+	 * its configuration. Only fields with keys containing '-lbl-' (SureForms fields) are processed.
+	 * If a field fails validation, its error message is added to the $not_valid_fields array.
+	 *
+	 * @param array<mixed> $form_data        The submitted form data (sanitized).
+	 * @param int|mixed    $current_form_id  The ID of the form being validated.
+	 * @since x.x.x
+	 * @return array An array of invalid fields and their error messages. Empty if all fields are valid.
+	 */
+	public function validate_form_data( $form_data, $current_form_id ) {
+		if ( ! is_array( $form_data ) || ! is_int( $current_form_id ) ) {
+			return [];
+		}
+
+		// Initialize an array to hold fields that are not valid.
+		$not_valid_fields = [];
+
+		// Retrieve the processed form configuration for validation.
+		$get_form_config = $this->prepared_validation_data( Helper::get_integer_value( $current_form_id ) );
+
+		// Merge uploaded files into the form data for validation, if any files were uploaded.
+		if ( ! empty( $_FILES ) ) {
 			$form_data = array_merge( $form_data, $_FILES );
 		}
 
+		// Iterate over each field in the form data.
 		foreach ( $form_data as $key => $value ) {
 			/**
-			 * This will allow to pass only sureforms fields
-			 * checking -lbl- as thats mandatory for in key of sureforms fields.
+			 * Only process SureForms fields.
+			 * The '-lbl-' substring is mandatory in SureForms field keys.
 			 */
 			if ( false === str_contains( $key, '-lbl-' ) ) {
 				continue;
 			}
 
-			$field_validated = apply_filters( 'srfm_validate_form_data', [
-				'field_key' => $key,
-				'field_value' => $value,
-				'form_id' => $current_form_id,
-				'form_config' => $get_form_config,
-			] );
+			// Apply the validation filter for the current field.
+			$field_validated = apply_filters(
+				'srfm_validate_form_data',
+				[
+					'field_key'   => $key,
+					'field_value' => $value,
+					'form_id'     => $current_form_id,
+					'form_config' => $get_form_config,
+				]
+			);
 
+			// Check the result of the validation.
 			if ( isset( $field_validated['validated'] ) ) {
-				if( true === $field_validated['validated'] ) {
+				// If the field is valid, skip to the next field.
+				if ( true === $field_validated['validated'] ) {
 					continue;
 				}
 
-				if( false === $field_validated['validated'] ) {
-					$not_valid_fields[$key] = isset( $field_validated['error'] ) ? $field_validated['error'] : __( 'Field is not valid.', 'sureforms' );
+				// If the field is not valid, add the error message to the result array.
+				if ( false === $field_validated['validated'] ) {
+					$not_valid_fields[ $key ] = isset( $field_validated['error'] ) ? $field_validated['error'] : __( 'Field is not valid.', 'sureforms' );
 				}
 			}
 		}
 
+		// Return the array of invalid fields and their error messages.
 		return $not_valid_fields;
 	}
 
@@ -293,15 +348,6 @@ class Form_Submit {
 
 		$current_form_id = $form_data['form-id'];
 
-		if( ! empty( $validated_form_data ) ) {
-			wp_send_json_error(
-				[
-					'message' => __( 'Form data is not valid.', 'sureforms' ),
-					'field_errors' => $validated_form_data,
-				]
-			);
-		}
-
 		// Check whether the form is valid.
 		if ( ! Helper::is_valid_form( $current_form_id ) ) {
 			wp_send_json_error(
@@ -313,6 +359,15 @@ class Form_Submit {
 		}
 
 		$validated_form_data = $this->validate_form_data( $form_data, $current_form_id );
+
+		if ( ! empty( $validated_form_data ) ) {
+			wp_send_json_error(
+				[
+					'message'      => __( 'Form data is not valid.', 'sureforms' ),
+					'field_errors' => $validated_form_data,
+				]
+			);
+		}
 
 		$security_type         = Helper::get_meta_value( Helper::get_integer_value( $current_form_id ), '_srfm_captcha_security_type' );
 		$selected_captcha_type = get_post_meta( Helper::get_integer_value( $current_form_id ), '_srfm_form_recaptcha', true ) ? Helper::get_string_value( get_post_meta( Helper::get_integer_value( $current_form_id ), '_srfm_form_recaptcha', true ) ) : '';
