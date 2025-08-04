@@ -104,6 +104,9 @@ class Analytics {
 
 		$stats_data['plugin_data']['sureforms'] = array_merge_recursive( $stats_data['plugin_data']['sureforms'], $this->global_settings_data() );
 
+		// Add onboarding analytics data.
+		$stats_data['plugin_data']['sureforms'] = array_merge_recursive( $stats_data['plugin_data']['sureforms'], $this->onboarding_analytics_data() );
+
 		return $stats_data;
 	}
 
@@ -257,6 +260,108 @@ class Analytics {
 		$global_data['boolean_values']['custom_validation_message'] = ! empty( $validation_messages ) && is_array( $validation_messages );
 
 		return $global_data;
+	}
+
+	/**
+	 * Generates onboarding analytics data
+	 *
+	 * @since 1.9.1
+	 * @return array
+	 */
+	public function onboarding_analytics_data() {
+		$onboarding_data  = [];
+		$analytics_option = Helper::get_srfm_option( 'onboarding_analytics', [] );
+
+		if ( empty( $analytics_option ) ) {
+			return $onboarding_data;
+		}
+
+		// Process skipped steps - store as an array.
+		if ( ! empty( $analytics_option['skippedSteps'] ) && is_array( $analytics_option['skippedSteps'] ) ) {
+			// Map step keys to more descriptive names.
+			$step_mapping = [
+				'welcome'         => 'Welcome',
+				'connect'         => 'Connect',
+				'emailDelivery'   => 'SureMail',
+				'premiumFeatures' => 'Features',
+				'done'            => 'Done',
+			];
+
+			// Transform the step keys to their descriptive names.
+			$mapped_steps = array_map(
+				static function( $step ) use ( $step_mapping ) {
+					return $step_mapping[ $step ] ?? $step;
+				},
+				$analytics_option['skippedSteps']
+			);
+
+			// Store as an array.
+			$onboarding_data['onboarding_skipped_steps'] = $mapped_steps;
+		}
+
+		// SureMail Installation Status.
+		if ( isset( $analytics_option['suremailInstalled'] ) ) {
+			$onboarding_data['boolean_values']['onboarding_suremail_installed'] = (bool) $analytics_option['suremailInstalled'];
+		}
+
+		// Account Connection Status.
+		if ( isset( $analytics_option['accountConnected'] ) ) {
+			$onboarding_data['boolean_values']['onboarding_account_connected'] = (bool) $analytics_option['accountConnected'];
+		}
+
+		// Onboarding Completion Status.
+		if ( isset( $analytics_option['completed'] ) ) {
+			$onboarding_data['boolean_values']['onboarding_completed'] = (bool) $analytics_option['completed'];
+		}
+
+		// Onboarding Early Exit Status.
+		if ( isset( $analytics_option['exitedEarly'] ) ) {
+			$onboarding_data['boolean_values']['onboarding_exited_early'] = (bool) $analytics_option['exitedEarly'];
+		}
+
+		// Onboarding Selected Premium Features.
+		if ( ! empty( $analytics_option['premiumFeatures'] ) && ! empty( $analytics_option['premiumFeatures']['selectedFeatures'] ) ) {
+			// Map feature IDs to more descriptive names - exclude free features.
+			$feature_mapping = [
+				// Starter features.
+				'multi_step_form'      => 'Multi-step Forms',
+				'conditional_logic'    => 'Conditional Fields',
+				'webhooks'             => 'Webhooks',
+				'advanced_fields'      => 'Advanced Fields',
+
+				// Pro features.
+				'conversational_forms' => 'Conversational Forms',
+				'digital_signatures'   => 'Digital Signatures',
+
+				// Business features.
+				'calculations'         => 'Calculators',
+				'user_registration'    => 'User Registration and Login',
+				'custom_app'           => 'Custom App',
+				'pdf_generation'       => 'PDF Generation',
+			];
+
+			// Filter out any free features that might have been included.
+			$premium_features = array_filter(
+				$analytics_option['premiumFeatures']['selectedFeatures'],
+				static function( $feature ) {
+					// Exclude free features (ai-form-generation and entries).
+					return 'ai-form-generation' !== $feature && 'entries' !== $feature;
+				}
+			);
+
+			// Transform the feature IDs to their descriptive names.
+			$mapped_features = array_map(
+				static function( $feature ) use ( $feature_mapping ) {
+					return $feature_mapping[ $feature ] ?? $feature;
+				},
+				$premium_features
+			);
+
+			// Store as an array.
+			$onboarding_data['onboarding_selected_premium_features'] = $mapped_features;
+		}
+
+		return $onboarding_data;
 	}
 
 	/**

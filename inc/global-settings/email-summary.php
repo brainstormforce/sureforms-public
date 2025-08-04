@@ -8,10 +8,8 @@
 
 namespace SRFM\Inc\Global_Settings;
 
-use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Helper;
 use SRFM\Inc\Traits\Get_Instance;
-use WP_Query;
 use WP_REST_Request;
 use WP_REST_Response;
 
@@ -95,12 +93,11 @@ class Email_Summary {
 	 * @return string HTML table with entries count.
 	 */
 	public static function get_total_entries_for_week() {
-		$args = [
-			'post_type'      => SRFM_FORMS_POST_TYPE,
-			'posts_per_page' => -1,
-		];
+		// Calculate timestamp for 7 days ago (last week).
+		$week_ago_timestamp = strtotime( '-7 days' );
 
-		$query = new WP_Query( $args );
+		// Use the common helper function to get forms with entry counts.
+		$forms_data = Helper::get_forms_with_entry_counts( $week_ago_timestamp );
 
 		$admin_user_name = get_user_by( 'id', 1 ) ? get_user_by( 'id', 1 )->display_name : 'Admin';
 

@@ -12,6 +12,7 @@ use SRFM\Admin\Views\Single_Entry;
 use SRFM\Inc\AI_Form_Builder\AI_Helper;
 use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Helper;
+use SRFM\Inc\Onboarding;
 use SRFM\Inc\Post_Types;
 use SRFM\Inc\Traits\Get_Instance;
 
@@ -25,6 +26,14 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class Admin {
 	use Get_Instance;
+
+	/**
+	 * Dashboard widget entries data.
+	 *
+	 * @var array
+	 * @since 1.9.1
+	 */
+	private $dashboard_widget_data = [];
 
 	/**
 	 * Class constructor.
@@ -53,6 +62,7 @@ class Admin {
 
 		add_action( 'current_screen', [ $this, 'enable_gutenberg_for_sureforms' ], 100 );
 		add_action( 'admin_notices', [ $this, 'srfm_pro_version_compatibility' ] );
+		add_action( 'admin_notices', [ $this, 'add_smtp_warning_notice' ] );
 
 		// Handle entry actions.
 		add_action( 'admin_init', [ $this, 'handle_entry_actions' ] );
@@ -86,6 +96,9 @@ class Admin {
 		add_action( 'wp_ajax_should_show_pointer', [ $this, 'pointer_should_show' ] );
 		add_action( 'wp_ajax_sureforms_dismiss_pointer', [ $this, 'pointer_dismissed' ] );
 		add_action( 'wp_ajax_sureforms_accept_cta', [ $this, 'pointer_accepted_cta' ] );
+
+		// Register dashboard widget only if there are recent entries.
+		add_action( 'admin_init', [ $this, 'maybe_register_dashboard_widget' ] );
 	}
 
 	/**
@@ -608,6 +621,7 @@ class Admin {
 		 * List of the handles in which we need to add translation compatibility.
 		 */
 		$script_translations_handlers = [];
+		$onboarding_instance          = Onboarding::get_instance();
 
 		$localization_data = [
 			'site_url'                => get_site_url(),
@@ -631,6 +645,10 @@ class Admin {
 			'plugin_installing_text'  => __( 'Installing...', 'sureforms' ),
 			'plugin_installed_text'   => __( 'Installed', 'sureforms' ),
 			'is_rtl'                  => $is_rtl,
+			'onboarding_completed'    => method_exists( $onboarding_instance, 'get_onboarding_status' ) ? $onboarding_instance->get_onboarding_status() : false,
+			'onboarding_redirect'     => isset( $_GET['srfm-activation-redirect'] ), // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce is not required for the activation redirection.
+			'pointer_nonce'           => wp_create_nonce( 'sureforms_pointer_action' ),
+			'srfm_ai_details'         => AI_Helper::get_current_usage_details(),
 		];
 
 		$is_screen_sureforms_menu          = Helper::validate_request_context( 'sureforms_menu', 'page' );
@@ -1047,6 +1065,97 @@ class Admin {
 	}
 
 	/**
+	 * Add SMTP warning admin notice if no SMTP plugin is active
+	 *
+	 * Hooked - admin_notices
+	 *
+	 * @return void
+	 * @since 1.9.1
+	 */
+	public function add_smtp_warning_notice() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+		// Only show on dashboard or SureForms admin pages.
+		$screen = get_current_screen();
+		if ( ! $screen || ( false === strpos( $screen->id, 'sureforms' ) && 'dashboard' !== $screen->id ) ) {
+			return;
+		}
+		// Dismiss logic.
+		if ( isset( $_GET['srfm_dismiss_smtp_notice'] ) && '1' === $_GET['srfm_dismiss_smtp_notice'] ) {
+			// Verify nonce for security.
+			if ( ! isset( $_GET['_wpnonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'srfm_dismiss_smtp_notice' ) ) {
+				return;
+			}
+			update_user_meta( get_current_user_id(), 'srfm_dismiss_smtp_notice', 1 );
+			return;
+		}
+		if ( get_user_meta( get_current_user_id(), 'srfm_dismiss_smtp_notice', true ) ) {
+			return;
+		}
+		// Determine SureMail plugin status and link.
+		$plugin_file = 'suremails/suremails.php';
+		if ( file_exists( WP_PLUGIN_DIR . '/suremails/suremails.php' ) && is_plugin_active( $plugin_file ) ) {
+			// SureMail is active, do not show the notice.
+			return;
+		}
+		if ( ! Helper::is_any_smtp_plugin_active() ) {
+			if ( file_exists( WP_PLUGIN_DIR . '/suremails/suremails.php' ) ) {
+				if ( is_plugin_active( $plugin_file ) ) {
+					$suremail_url = admin_url( 'options-general.php?page=suremail#/dashboard' );
+				} else {
+					$suremail_url = wp_nonce_url( admin_url( 'plugins.php?action=activate&plugin=' . $plugin_file ), 'activate-plugin_' . $plugin_file );
+				}
+			} else {
+				$suremail_url = admin_url( 'plugin-install.php?s=suremail&tab=search&type=term' );
+			}
+			$dismiss_url = wp_nonce_url( add_query_arg( 'srfm_dismiss_smtp_notice', '1' ), 'srfm_dismiss_smtp_notice' );
+			printf(
+				'<div class="notice notice-warning is-dismissible srfm-smtp-warning" data-dismiss-url="%1$s"><p>%2$s</p></div>',
+				esc_url( $dismiss_url ),
+				sprintf(
+					/* translators: 1: line break, 2: SureMail link opening tag, 3: SureMail link closing tag */
+					esc_html__( 'It looks like there\'s no SMTP plugin running on your site. That means emails sent from SureForms might not go through.%1$sYou can use %2$sSureMail%3$s to get email delivery working.', 'sureforms' ),
+					'<br />',
+					'<a href="' . esc_url( $suremail_url ) . '" target="_blank">',
+					'</a>'
+				)
+			);
+			?>
+			<script type="text/javascript">
+			document.addEventListener('DOMContentLoaded', function() {
+				// Handle SMTP notice dismissal using event delegation
+				// This works even if the dismiss button is added dynamically by WordPress
+				document.addEventListener('click', function(e) {
+					// Check if clicked element is a dismiss button within our SMTP notice
+					if (e.target.classList.contains('notice-dismiss') && e.target.closest('.srfm-smtp-warning')) {
+						const smtpNotice = e.target.closest('.srfm-smtp-warning');
+						const dismissUrl = smtpNotice.dataset.dismissUrl;
+
+						if (dismissUrl) {
+							// Security: Validate URL is safe before redirecting
+							try {
+								const url = new URL(dismissUrl, window.location.origin);
+								// Only allow same-origin URLs for security
+								if (url.origin === window.location.origin && url.protocol === window.location.protocol) {
+									window.location.href = url.href;
+								}
+							} catch (error) {
+								// Invalid URL - ignore the redirect for security
+								console.warn('Invalid dismiss URL detected:', dismissUrl);
+							}
+							e.preventDefault();
+							e.stopPropagation();
+						}
+					}
+				});
+			});
+			</script>
+			<?php
+		}
+	}
+
+	/**
 	 * Disables the capabilities for WPForms to avoid conflicts when enqueueing
 	 * scripts and styles for WPForms.
 	 *
@@ -1180,6 +1289,177 @@ class Admin {
 	}
 
 	/**
+	 * Maybe register the dashboard widget based on entries.
+	 *
+	 * @return void
+	 * @since 1.9.1
+	 */
+	public function maybe_register_dashboard_widget() {
+		// Quick check if there are any entries in the last 7 days.
+		$seven_days_ago = strtotime( '-7 days' );
+		$total_entries  = Entries::get_entries_count_after( $seven_days_ago );
+
+		// Only add the dashboard setup hook if there are entries.
+		if ( $total_entries > 0 ) {
+			// Get forms with entries (limit 4 for dashboard widget).
+			$this->dashboard_widget_data = Helper::get_forms_with_entry_counts( $seven_days_ago, 4 );
+
+			// Only show dashboard widget if there are forms with entries.
+			if ( ! empty( $this->dashboard_widget_data ) ) {
+				add_action( 'wp_dashboard_setup', [ $this, 'register_dashboard_widget' ] );
+			}
+		}
+	}
+
+	/**
+	 * Register the dashboard widget.
+	 *
+	 * @return void
+	 * @since 1.9.1
+	 */
+	public function register_dashboard_widget() {
+		// Add the widget with high priority to position it at the top.
+		wp_add_dashboard_widget(
+			'sureforms_recent_entries',
+			__( 'SureForms', 'sureforms' ),
+			[ $this, 'render_dashboard_widget' ],
+			null,
+			null,
+			'normal',
+			'high'
+		);
+	}
+
+	/**
+	 * Render the dashboard widget content.
+	 *
+	 * @return void
+	 * @since 1.9.1
+	 */
+	public function render_dashboard_widget() {
+		// Use the pre-fetched data to avoid duplicate queries.
+		$entries_data = $this->dashboard_widget_data;
+
+		// Display the widget content.
+		?>
+		<div class="srfm-dashboard-widget">
+			<div class="srfm-widget-header">
+				<h3 class="srfm-widget-title">
+					<?php esc_html_e( 'Recent Entries', 'sureforms' ); ?>
+					<span class="srfm-widget-subtitle"><?php esc_html_e( '( Last 7 days )', 'sureforms' ); ?></span>
+				</h3>
+				<a href="<?php echo esc_url( admin_url( 'admin.php?page=sureforms_entries' ) ); ?>" class="srfm-widget-view-link">
+					<?php esc_html_e( 'View', 'sureforms' ); ?>
+				</a>
+			</div>
+
+			<div class="srfm-table-wrapper">
+				<table class="srfm-entries-table">
+					<thead>
+						<tr>
+							<th><?php esc_html_e( 'Form Name', 'sureforms' ); ?></th>
+							<th><?php esc_html_e( 'Entries', 'sureforms' ); ?></th>
+						</tr>
+					</thead>
+					<tbody>
+						<?php foreach ( $entries_data as $form_data ) { ?>
+							<tr>
+								<td class="form-name"><?php echo esc_html( $form_data['title'] ); ?></td>
+								<td class="entry-count"><?php echo esc_html( $form_data['count'] ); ?></td>
+							</tr>
+						<?php } ?>
+					</tbody>
+				</table>
+			</div>
+
+			<?php
+			// Render footer if applicable.
+			$this->render_dashboard_widget_footer( $entries_data );
+			?>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Get random premium feature text.
+	 *
+	 * @return string Random feature text.
+	 * @since 1.9.1
+	 */
+	private function get_random_premium_feature_text() {
+		$features = [
+			__( 'Use Conditional Logic to show only what matters', 'sureforms' ),
+			__( 'Split your form into steps to keep it easy', 'sureforms' ),
+			__( 'Let people upload files directly to your form', 'sureforms' ),
+			__( 'Turn responses into downloadable PDFs automatically', 'sureforms' ),
+			__( 'Let users sign with a simple signature field', 'sureforms' ),
+			__( 'Connect your form to other tools using webhooks', 'sureforms' ),
+			__( 'Use Conversational Forms for a chat-like experience', 'sureforms' ),
+			__( 'Let users register or log in through your form', 'sureforms' ),
+			__( 'Build forms that create WordPress user accounts', 'sureforms' ),
+			__( 'Add calculations to auto-total scores or prices', 'sureforms' ),
+		];
+
+		// Get a random feature.
+		$random_key = array_rand( $features );
+		return $features[ $random_key ];
+	}
+
+	/**
+	 * Render the dashboard widget footer for upsell.
+	 *
+	 * @param array $entries_data The entries data array.
+	 * @return void
+	 * @since 1.9.1
+	 */
+	private function render_dashboard_widget_footer( $entries_data ) {
+		// Only show footer if Pro is not active.
+		if ( Helper::has_pro() ) {
+			return;
+		}
+
+		// Count total entries in last 7 days.
+		$total_entries = 0;
+		foreach ( $entries_data as $form_data ) {
+			$total_entries += $form_data['count'];
+		}
+
+		// Count total published forms.
+		$published_forms_count = wp_count_posts( SRFM_FORMS_POST_TYPE )->publish;
+
+		// Show footer only if 3+ entries received OR 3+ forms published.
+		if ( $total_entries >= 3 || $published_forms_count >= 3 ) {
+			?>
+			<div class="srfm-widget-footer">
+				<div class="srfm-upgrade-content">
+					<svg class="srfm-logo-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<rect width="20" height="20" fill="#D54407"/>
+						<path d="M5.7139 4.2854H14.2853V7.1425H7.1424L5.7139 8.5711V7.1425V4.2854Z" fill="white"/>
+						<path d="M5.7139 4.2854H14.2853V7.1425H7.1424L5.7139 8.5711V7.1425V4.2854Z" fill="white"/>
+						<path d="M5.7148 8.5713H12.8577V11.4284H7.1434L5.7148 12.857V11.4284V8.5713Z" fill="white"/>
+						<path d="M5.7148 8.5713H12.8577V11.4284H7.1434L5.7148 12.857V11.4284V8.5713Z" fill="white"/>
+						<path d="M5.7148 12.8569H10.0006V15.7141H5.7148V12.8569Z" fill="white"/>
+						<path d="M5.7148 12.8569H10.0006V15.7141H5.7148V12.8569Z" fill="white"/>
+					</svg>
+					<span><?php echo esc_html( $this->get_random_premium_feature_text() ); ?></span>
+				</div>
+				<?php
+				$upgrade_url = add_query_arg(
+					[
+						'utm_medium' => 'dashboard-widget',
+					],
+					Helper::get_sureforms_website_url( 'pricing' )
+				);
+				?>
+				<a href="<?php echo esc_url( $upgrade_url ); ?>" class="srfm-upgrade-link" target="_blank">
+					<?php esc_html_e( 'Upgrade', 'sureforms' ); ?>
+				</a>
+			</div>
+			<?php
+		}
+	}
+
+	/**
 	 * Determine if the admin pointer should be visible on this page.
 	 *
 	 * @since 1.8.0
@@ -1204,4 +1484,5 @@ class Admin {
 
 		return false;
 	}
+
 }

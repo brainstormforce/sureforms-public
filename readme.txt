@@ -4,7 +4,7 @@ Tags: contact form, custom form, forms, contact form plugin, form builder
 Requires at least: 6.4
 Tested up to: 6.8.2
 Requires PHP: 7.4
-Stable tag: 1.9.0
+Stable tag: 1.9.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -266,12 +266,15 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 == Changelog ==
 = x.x.x =
 * Improvement: Redesigned email summary template with updated layout and styling.
-* Improvement: Email notifications now show the full submitted URL as the clickable link instead of a "View" label.
-* Fix: Form getting submitted even if form ID is not valid.
-* Fix: Addressed a security bug. Props to Dmitrii Ignatyev from CleanTalk for reporting it responsibly.
-* Fix: Resolved an issue where long titles in forms were getting hidden under the form container.
-* Fix: Resolved an issue where hidden fields were not available in shortcode as smart tags.
-* Fix: Resolved an issue where forms display an error message on load when the LMS Optimize plugin is active.
+= 1.9.1 - 31st July 2025 =
+* New: Added a dashboard widget to display form submission statistics and recent entries.
+* New: Introduced a guided onboarding experience to help users set up SureForms with ease.
+* Improvement: Email notifications now display the full submitted URL as a clickable link instead of a "View" label.
+* Fix: This update addressed a security bug. Props to Dmitrii Ignatyev from CleanTalk for reporting it responsibly to our team.
+* Fix: Prevented form submission when the form ID is invalid.
+* Fix: Resolved an issue where forms displayed an error message on load when the LMS Optimize plugin was active.
+* Fix: Resolved an issue where hidden fields were not available in shortcodes as smart tags.
+* Fix: Resolved an issue where long form titles were hidden beneath the form container.
 = 1.9.0 - 22nd July 2025 =
 * Fix: Added a fallback error message for AI form generation.
 * Fix: Resolved background overflow issue with Kadence theme on embedded pages.
@@ -286,8 +289,6 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 * Fix: Corrected the email summary report to display the accurate number of entries for the past week.
 * Fix: Resolved a display issue with form confirmation query parameters on new forms.
 * Fix: Resolved a fatal error from incorrect InnerBlocks usage that caused editor and frontend crashes.
-= 1.7.4 - 30th June 2025 =
-* Fix: This update addressed a security bug. Please make sure you are using the latest version on your website. Props to Phat RiO from BlueRock and Wordfence for reporting it responsibly to our team.
 
 The full changelog is available [here](https://sureforms.com/whats-new/).
 
