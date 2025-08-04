@@ -157,6 +157,107 @@ class Rest_Api {
 	}
 
 	/**
+	 * Set onboarding completion status.
+	 *
+	 * @param \WP_REST_Request $request Full details about the request.
+	 * @since 1.9.1
+	 * @return \WP_REST_Response
+	 */
+	public function set_onboarding_status( $request ) {
+		$nonce = Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) );
+
+		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
+			return new \WP_REST_Response(
+				[ 'error' => __( 'Nonce verification failed.', 'sureforms' ) ],
+				403
+			);
+		}
+
+		// Set the onboarding status to yes always.
+		Onboarding::get_instance()->set_onboarding_status( 'yes' );
+
+		// Get analytics data from request.
+		$analytics_data = $request->get_param( 'analyticsData' );
+
+		// Save analytics data if provided.
+		if ( $analytics_data ) {
+			// Use Helper::update_srfm_option instead of update_option.
+			Helper::update_srfm_option( 'onboarding_analytics', $analytics_data );
+		}
+
+		return new \WP_REST_Response( [ 'success' => true ] );
+	}
+
+	/**
+	 * Get onboarding completion status.
+	 *
+	 * @param \WP_REST_Request $request Full details about the request.
+	 * @since 1.9.1
+	 * @return \WP_REST_Response
+	 */
+	public function get_onboarding_status( $request ) {
+		$nonce = Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) );
+
+		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
+			return new \WP_REST_Response(
+				[ 'error' => __( 'Nonce verification failed.', 'sureforms' ) ],
+				403
+			);
+		}
+
+		$status = Onboarding::get_instance()->get_onboarding_status();
+
+		return new \WP_REST_Response( [ 'completed' => $status ] );
+	}
+
+	/**
+	 * Get plugin status for specified plugin.
+	 *
+	 * @param \WP_REST_Request $request Full details about the request.
+	 * @since 1.9.1
+	 * @return \WP_REST_Response
+	 */
+	public function get_plugin_status( $request ) {
+		$nonce = Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) );
+
+		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
+			return new \WP_REST_Response(
+				[ 'error' => __( 'Nonce verification failed.', 'sureforms' ) ],
+				403
+			);
+		}
+
+		$params      = $request->get_params();
+		$plugin_slug = is_array( $params ) && isset( $params['plugin'] ) ?
+			sanitize_text_field( Helper::get_string_value( $params['plugin'] ) ) : '';
+
+		if ( empty( $plugin_slug ) ) {
+			return new \WP_REST_Response(
+				[ 'error' => __( 'Plugin slug is required.', 'sureforms' ) ],
+				400
+			);
+		}
+
+		$integrations = Helper::sureforms_get_integration();
+
+		if ( ! isset( $integrations[ $plugin_slug ] ) ) {
+			return new \WP_REST_Response(
+				[ 'error' => __( 'Plugin not found.', 'sureforms' ) ],
+				404
+			);
+		}
+
+		$plugin_data = $integrations[ $plugin_slug ];
+
+		// Get fresh status.
+		if ( is_array( $plugin_data ) && isset( $plugin_data['path'] ) ) {
+			$plugin_data['status'] = Helper::get_plugin_status( Helper::get_string_value( $plugin_data['path'] ) );
+		}
+
+		return new \WP_REST_Response( $plugin_data );
+	}
+
+	/**
 	 * Get endpoints
 	 *
 	 * @since 0.0.7
@@ -171,7 +272,7 @@ class Rest_Api {
 		return apply_filters(
 			'srfm_rest_api_endpoints',
 			[
-				'generate-form'      => [
+				'generate-form'         => [
 					'methods'             => 'POST',
 					'callback'            => [ AI_Form_Builder::get_instance(), 'generate_ai_form' ],
 					'permission_callback' => [ $this, 'can_edit_posts' ],
@@ -182,34 +283,57 @@ class Rest_Api {
 					],
 				],
 				// This route is used to map the AI response to SureForms fields markup.
-				'map-fields'         => [
+				'map-fields'            => [
 					'methods'             => 'POST',
 					'callback'            => [ Field_Mapping::get_instance(), 'generate_gutenberg_fields_from_questions' ],
 					'permission_callback' => [ $this, 'can_edit_posts' ],
 				],
 				// This route is used to initiate auth process when user tries to authenticate on billing portal.
-				'initiate-auth'      => [
+				'initiate-auth'         => [
 					'methods'             => 'GET',
 					'callback'            => [ AI_Auth::get_instance(), 'get_auth_url' ],
 					'permission_callback' => [ $this, 'can_edit_posts' ],
 				],
 				// This route is to used to decrypt the access key and save it in the database.
-				'handle-access-key'  => [
+				'handle-access-key'     => [
 					'methods'             => 'POST',
 					'callback'            => [ AI_Auth::get_instance(), 'handle_access_key' ],
 					'permission_callback' => [ $this, 'can_edit_posts' ],
 				],
 				// This route is to get the form submissions for the last 30 days.
-				'entries-chart-data' => [
+				'entries-chart-data'    => [
 					'methods'             => 'GET',
 					'callback'            => [ $this, 'get_entries_chart_data' ],
 					'permission_callback' => [ $this, 'can_edit_posts' ],
 				],
 				// This route is to get all forms data.
-				'form-data'          => [
+				'form-data'             => [
 					'methods'             => 'GET',
 					'callback'            => [ $this, 'get_form_data' ],
 					'permission_callback' => [ $this, 'can_edit_posts' ],
+				],
+				// Onboarding endpoints.
+				'onboarding/set-status' => [
+					'methods'             => 'POST',
+					'callback'            => [ $this, 'set_onboarding_status' ],
+					'permission_callback' => [ $this, 'can_edit_posts' ],
+				],
+				'onboarding/get-status' => [
+					'methods'             => 'GET',
+					'callback'            => [ $this, 'get_onboarding_status' ],
+					'permission_callback' => [ $this, 'can_edit_posts' ],
+				],
+				// Plugin status endpoint.
+				'plugin-status'         => [
+					'methods'             => 'GET',
+					'callback'            => [ $this, 'get_plugin_status' ],
+					'permission_callback' => [ $this, 'can_edit_posts' ],
+					'args'                => [
+						'plugin' => [
+							'required'          => true,
+							'sanitize_callback' => 'sanitize_text_field',
+						],
+					],
 				],
 			]
 		);

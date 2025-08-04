@@ -12,7 +12,7 @@ export default () => {
 		>
 			<Label variant="neutral" size="xs" className="font-normal">
 				{ __(
-					'Connect your website with SureForms AI to get 20 more AI form generations.',
+					'Connect your website with SureForms AI to get 10 more AI form generations.',
 					'sureforms'
 				) }
 				<Label
