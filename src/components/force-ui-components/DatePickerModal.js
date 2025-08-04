@@ -10,11 +10,15 @@ import { Input, DatePicker } from '@bsf/force-ui';
  * @param {string}   props.date         The date in a specific format (e.g., '2025.10.01').
  * @param {Function} props.onDateChange Callback function to handle date changes
  * @param {string}   props.label        The label for the date input field
+ * @param {string}   props.topValue     The top value for the date picker modal
  * @return {JSX.Element} Rendered DatePicker Modal
  */
-const DatePickerModal = ( { label, date, onDateChange, 
-topValue = '4.5rem'
- } ) => {
+const DatePickerModal = ( {
+	label,
+	date,
+	onDateChange,
+	topValue = '4.5rem',
+} ) => {
 	const [ isOpen, setIsOpen ] = useState( false );
 	const ref = useRef( null );
 

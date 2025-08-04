@@ -23,7 +23,7 @@ const FormRestriction = () => {
 	}, [] );
 
 	return (
-			<TabContentWrapper title={ __( 'General Settings', 'sureforms' ) }>
+		<TabContentWrapper title={ __( 'General Settings', 'sureforms' ) }>
 			<Title
 				size="xs"
 				className="mb-4"
