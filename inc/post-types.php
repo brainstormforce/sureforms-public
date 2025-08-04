@@ -1050,6 +1050,7 @@ class Post_Types {
 				'show_in_rest'      => true, // Make available in REST API.
 				// Custom callback to sanitize the data.
 				'sanitize_callback' => [ $this, 'form_restriction_data_sanitizer' ],
+				'object_subtype'    => SRFM_FORMS_POST_TYPE,
 				'auth_callback'     => static function () {
 					return current_user_can( 'manage_options' );
 				},
@@ -1081,12 +1082,12 @@ class Post_Types {
 
 		$meta_value = json_decode( $meta_value, true );
 
-		if ( ! is_array( $meta_value ) ) {
+		if ( JSON_ERROR_NONE !== json_last_error() || ! is_array( $meta_value ) ) {
 			return wp_json_encode( [] );
 		}
 
 		$sanitized = [
-			'status'     => isset( $meta_value['status'] ) ? filter_var( $meta_value['status'], FILTER_VALIDATE_BOOLEAN ) : false,
+			'status'     => isset( $meta_value['status'] ) ? wp_validate_boolean( $meta_value['status'] ) : false,
 			'maxEntries' => isset( $meta_value['maxEntries'] ) ? filter_var( $meta_value['maxEntries'], FILTER_VALIDATE_INT ) : 0,
 			'date'       => isset( $meta_value['date'] ) ? sanitize_text_field( $meta_value['date'] ) : '',
 			'hours'      => isset( $meta_value['hours'] ) ? sanitize_text_field( $meta_value['hours'] ) : '12',

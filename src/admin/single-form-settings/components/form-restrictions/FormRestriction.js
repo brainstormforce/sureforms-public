@@ -60,11 +60,14 @@ const FormRestriction = () => {
 										'sureforms'
 									) }
 									onChange={ ( value ) => {
-										value = parseInt( value );
-										if ( value < 0 ) {
-											value = 1;
+										let parsedValue = parseInt( value, 10 );
+										if (
+											isNaN( parsedValue ) ||
+											parsedValue < 0
+										) {
+											parsedValue = 0;
 										}
-										updateMeta( 'maxEntries', value );
+										updateMeta( 'maxEntries', parsedValue );
 									} }
 								/>
 							</div>

@@ -19,7 +19,7 @@ export const useFormRestrictionMeta = () => {
 	const meta = useSelect( ( select ) =>
 		select( 'core/editor' ).getEditedPostAttribute( 'meta' )
 	);
-	return decodeJson( meta?._srfm_form_restriction ) || [];
+	return decodeJson( meta?._srfm_form_restriction ) || {};
 };
 
 /**
