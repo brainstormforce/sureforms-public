@@ -264,6 +264,8 @@ We take plugin security extremely seriously. If you discover a security vulnerab
 You can report the issue through our [Bug Bounty Program](https://brainstormforce.com/bug-bounty-program/). We collaborate with Patchstack to provide opportunities for researchers to report vulnerabilities. The Patchstack team will help validate, triage, and handle any reported security issues.
 
 == Changelog ==
+= x.x.x =
+* Fix: Resolved an issue with dropdown block when same form is embedded twice in a single page.
 = 1.9.1 - 31st July 2025 =
 * New: Added a dashboard widget to display form submission statistics and recent entries.
 * New: Introduced a guided onboarding experience to help users set up SureForms with ease.
