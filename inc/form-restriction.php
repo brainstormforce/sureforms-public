@@ -8,8 +8,8 @@
 
 namespace SRFM\Inc;
 
-use SRFM\Inc\Traits\Get_Instance;
 use SRFM\Inc\Database\Tables\Entries;
+use SRFM\Inc\Traits\Get_Instance;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.

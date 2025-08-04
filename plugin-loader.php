@@ -24,6 +24,7 @@ use SRFM\Inc\Create_New_Form;
 use SRFM\Inc\Database\Register as DatabaseRegister;
 use SRFM\Inc\Events_Scheduler;
 use SRFM\Inc\Export;
+use SRFM\Inc\Form_Restriction;
 use SRFM\Inc\Form_Submit;
 use SRFM\Inc\Forms_Data;
 use SRFM\Inc\Frontend_Assets;
@@ -41,7 +42,6 @@ use SRFM\Inc\Rest_Api;
 use SRFM\Inc\Single_Form_Settings\Compliance_Settings;
 use SRFM\Inc\Smart_Tags;
 use SRFM\Inc\Updater;
-use SRFM\Inc\Form_Restriction;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
