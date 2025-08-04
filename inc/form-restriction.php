@@ -53,7 +53,7 @@ class Form_Restriction {
 	/**
 	 * Check if the form has reached the entry limit.
 	 *
-	 * @param int  $form_id The ID of the form.
+	 * @param int $form_id The ID of the form.
 	 * @since x.x.x
 	 * @return bool True if form is restricted, false otherwise.
 	 */
@@ -85,8 +85,6 @@ class Form_Restriction {
 
 		$has_entries_limit_reached = self::has_entries_limit_reached( $form_id, $form_restriction );
 		$has_time_limit_reached    = self::has_time_limit_reached( $form_restriction );
-
-        var_dump( $has_entries_limit_reached, $has_time_limit_reached ); // Debugging line to check the values.
 
 		/**
 		 * If the form has reached the entries limit or the time limit, return true.

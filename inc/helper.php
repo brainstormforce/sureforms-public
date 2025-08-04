@@ -1776,10 +1776,10 @@ class Helper {
 			return false; // Invalid input.
 		}
 
-       // Ensure the date is in a valid format of YYYY-MM-DD.
-       if ( ! preg_match( '/^\d{4}-\d{2}-\d{2}$/', $date ) ) {
-            return false; // Invalid date format.
-        }
+		// Ensure the date is in a valid format of YYYY-MM-DD.
+		if ( ! preg_match( '/^\d{4}-\d{2}-\d{2}$/', $date ) ) {
+			return false; // Invalid date format.
+		}
 
 		$time_string = $date . ' ' . $hours . ':' . $minutes . ' ' . $meridiem;
 
