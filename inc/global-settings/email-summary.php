@@ -96,14 +96,13 @@ class Email_Summary {
 		// Calculate timestamp for 7 days ago (last week).
 		$week_ago_timestamp = strtotime( '-7 days' );
 
-		// Use the common helper function to get forms with entry counts.
+		// Use the helper function to get forms with entry counts.
 		$forms_data = Helper::get_forms_with_entry_counts( $week_ago_timestamp );
 
 		$admin_user_name = get_user_by( 'id', 1 ) ? get_user_by( 'id', 1 )->display_name : 'Admin';
-
-		$from_date = date_i18n( 'F j, Y', strtotime( '-7 days' ) );
-		$to_date   = date_i18n( 'F j, Y' );
-		$logs_url  = admin_url( 'admin.php?page=sureforms_entries' );
+		$from_date       = date_i18n( 'F j, Y', $week_ago_timestamp );
+		$to_date         = date_i18n( 'F j, Y' );
+		$logs_url        = admin_url( 'admin.php?page=sureforms_entries' );
 
 		ob_start();
 		?>
@@ -154,26 +153,22 @@ class Email_Summary {
 							<tbody>';
 
 						$total_entries = 0;
-						$row_index     = 0;
 
-						if ( $query->have_posts() ) {
-							while ( $query->have_posts() ) {
-								$query->the_post();
-								global $post;
-
-								$week_ago_timestamp = strtotime( '-7 days' );
-								$entry_count        = Entries::get_entries_count_after( $week_ago_timestamp, Helper::get_integer_value( $post->ID ) );
-
-								if ( $entry_count > 0 ) {
-									$total_entries += $entry_count;
-									$bg_color       = 0 === $row_index % 2 ? '#FFFFFF' : '#F9FAFB';
-									$table_html    .= '<tr style="background-color:' . esc_attr( $bg_color ) . ';">
-										<td style="padding:12px;font-size:14px;color:#4B5563;">' . esc_html( get_the_title() ) . '</td>
-										<td style="padding:12px;font-size:14px;color:#4B5563;text-align:right;">' . esc_html( Helper::get_string_value( $entry_count ) ) . '</td>
-									</tr>';
-									$row_index++;
+						if ( ! empty( $forms_data ) ) {
+							foreach ( $forms_data as $index => $form ) {
+								if ( $form['count'] <= 0 ) {
+									continue;
 								}
+
+								$total_entries += $form['count'];
+								$bg_color       = 0 === $index % 2 ? '#FFFFFF' : '#F9FAFB';
+
+								$table_html .= '<tr style="background-color:' . esc_attr( $bg_color ) . ';">
+									<td style="padding:12px;font-size:14px;color:#4B5563;">' . esc_html( $form['title'] ) . '</td>
+									<td style="padding:12px;font-size:14px;color:#4B5563;text-align:right;">' . esc_html( Helper::get_string_value( $form['count'] ) ) . '</td>
+								</tr>';
 							}
+
 							$table_html .= '</tbody><tfoot><tr style="background-color:#F9FAFB;font-weight:bold;">
 								<td style="padding:12px;font-size:14px;color:#111827;">' . esc_html__( 'Total Entries', 'sureforms' ) . '</td>
 								<td style="padding:12px;font-size:14px;color:#111827;text-align:right;">' . esc_html( Helper::get_string_value( $total_entries ) ) . '</td>
@@ -181,6 +176,7 @@ class Email_Summary {
 						} else {
 							$table_html .= '<tr><td colspan="2" style="padding:12px;font-size:14px;color:#4B5563;">' . esc_html__( 'No entries found in the last week.', 'sureforms' ) . '</td></tr></tbody>';
 						}
+
 						$table_html .= '</table>';
 
 						echo wp_kses_post( $table_html );
@@ -193,6 +189,7 @@ class Email_Summary {
 					</div>
 
 					<hr style="border:none;border-top:1px solid #eee;">
+
 					<!-- OttoKit Promotion Section -->
 					<div style="margin:32px 24px;padding:16px;border:0.5px solid #E5E7EB;border-radius:8px;background:#FFFFFF;text-align:left;">
 						<div style="margin-bottom:4px;">
@@ -230,7 +227,6 @@ class Email_Summary {
 		</body>
 		</html>
 		<?php
-		wp_reset_postdata();
 		$content = ob_get_clean();
 		return false !== $content ? $content : '';
 	}
