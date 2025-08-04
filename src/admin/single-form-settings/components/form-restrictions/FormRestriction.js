@@ -23,7 +23,7 @@ const FormRestriction = () => {
 	}, [] );
 
 	return (
-		<TabContentWrapper className="!mt-0">
+			<TabContentWrapper title={ __( 'General Settings', 'sureforms' ) }>
 			<Title
 				size="xs"
 				className="mb-4"
@@ -78,6 +78,7 @@ const FormRestriction = () => {
 									onDateChange={ ( formattedDate ) => {
 										updateMeta( 'date', formattedDate );
 									} }
+									topValue={ '2.5rem' }
 								/>
 							</div>
 

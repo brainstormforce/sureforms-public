@@ -71,8 +71,8 @@ class Generate_Form_Markup {
 
 		// Check for any form restrictions.
 		$form_id = Helper::get_integer_value( $id );
-		if ( Helper::is_form_restricted( $form_id ) ) {
-			return Helper::display_form_restriction_message( $form_id );
+		if ( Form_Restriction::is_form_restricted( $form_id ) ) {
+			return Form_Restriction::display_form_restriction_message( $form_id );
 		}
 
 		do_action( 'srfm_localize_conditional_logic_data', $id );

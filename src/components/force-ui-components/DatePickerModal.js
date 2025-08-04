@@ -12,7 +12,9 @@ import { Input, DatePicker } from '@bsf/force-ui';
  * @param {string}   props.label        The label for the date input field
  * @return {JSX.Element} Rendered DatePicker Modal
  */
-const DatePickerModal = ( { label, date, onDateChange } ) => {
+const DatePickerModal = ( { label, date, onDateChange, 
+topValue = '4.5rem'
+ } ) => {
 	const [ isOpen, setIsOpen ] = useState( false );
 	const ref = useRef( null );
 
@@ -61,7 +63,8 @@ const DatePickerModal = ( { label, date, onDateChange } ) => {
 					<div
 						className="absolute left-0 bg-white shadow-lg rounded z-999999 overflow-hidden"
 						style={ {
-							top: '4.5rem',
+							top: topValue,
+							// bottom: '0',
 						} }
 					>
 						<DatePicker

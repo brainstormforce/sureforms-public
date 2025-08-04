@@ -79,10 +79,10 @@ const Dialog = ( {
 				icon: <Settings />,
 				component: (
 					<>
-						<Compliance { ...{ complianceData } } />
 						<FormRestrictionProvider>
 							<FormRestriction />
 						</FormRestrictionProvider>
+						<Compliance { ...{ complianceData } } />
 					</>
 				),
 			},

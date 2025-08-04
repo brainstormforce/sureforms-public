@@ -41,6 +41,7 @@ use SRFM\Inc\Rest_Api;
 use SRFM\Inc\Single_Form_Settings\Compliance_Settings;
 use SRFM\Inc\Smart_Tags;
 use SRFM\Inc\Updater;
+use SRFM\Inc\Form_Restriction;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -299,6 +300,7 @@ class Plugin_Loader {
 		Updater::get_instance();
 		Onboarding::get_instance();
 		DatabaseRegister::init();
+		Form_Restriction::get_instance();
 		// Initializing Compatibilities.
 		Astra::get_instance();
 		/**
