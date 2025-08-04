@@ -66,8 +66,8 @@ const addInitialAttr = ( ChildComponent ) => {
 				}
 
 				// Only copy conditional logic if pro is active (action is registered).
-				if ( hasAction( 'srfm.copyConditionalLogic' ) ) {
-					doAction( 'srfm.copyConditionalLogic', block_id, newBlockId );
+				if ( hasAction( 'srfm.duplicateBlock' ) ) {
+					doAction( 'srfm.duplicateBlock', block_id, newBlockId );
 				}
 			}
 
