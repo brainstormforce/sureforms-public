@@ -59,7 +59,7 @@ const DatePickerModal = ( { label, date, onDateChange } ) => {
 			<div className="relative w-full z-50" ref={ ref }>
 				{ isOpen && (
 					<div
-						className="absolute right-0 bg-white shadow-lg rounded z-999999"
+						className="absolute left-0 bg-white shadow-lg rounded z-999999 overflow-hidden"
 						style={ {
 							top: '4.5rem',
 						} }
