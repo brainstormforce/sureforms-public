@@ -185,7 +185,7 @@ class Form_Restriction {
 							);
 						?>
 					</span>
-					<p>
+					<p class="srfm-form-restriction-text">
 						<?php echo esc_html( $form_restriction_message ); ?>
 					</p>
 				</div>

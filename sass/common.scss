@@ -297,23 +297,23 @@ button.srfm-toolbar-width-setting-button {
 		background: #fefce8;
 		border: 1px solid #fef08a;
 		border-radius: 8px;
-		padding: 16px;
+		padding: 12px;
 		display: flex;
-		align-items: flex-start; // Align to top
-		gap: 8px; // Space between icon and text
+		align-items: flex-start;
+		gap: 8px;
 
-		span {
+		.srfm-form-restriction-icon {
 			color: #faad14;
-			line-height: 1;
-			display: inline-block;
-			vertical-align: top; // Align icon to top of text
-			margin-top: 2px; // Optional fine-tuning
 		}
 
-		p {
-			font-size: 16px;
+		.srfm-form-restriction-text {
 			color: #333333;
 			margin: 0;
+			font-weight: 400;
+			font-size: 14px;
+			line-height: 20px;
+			letter-spacing: 0%;
+
 		}
 	}
 }
