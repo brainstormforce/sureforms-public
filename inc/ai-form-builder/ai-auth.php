@@ -48,9 +48,19 @@ class AI_Auth {
 		// Generate a random key of 16 characters.
 		$this->key = wp_generate_password( 16, false );
 
+		// Get the source parameter from the query.
+		$source = sanitize_text_field( Helper::get_string_value( $request->get_param( 'source' ) ?? '' ) );
+		switch ( $source ) {
+			case 'onboarding':
+				$redirect_back = site_url() . '/wp-admin/admin.php?page=sureforms_menu#/onboarding/email-delivery';
+				break;
+			default:
+				$redirect_back = site_url() . '/wp-admin/admin.php?page=add-new-form&method=ai';
+		}
+
 		// Prepare the token data.
 		$token_data = [
-			'redirect-back' => site_url() . '/wp-admin/admin.php?page=add-new-form&method=ai',
+			'redirect-back' => $redirect_back,
 			'key'           => $this->key,
 			'site-url'      => site_url(),
 			'nonce'         => wp_create_nonce( 'ai_auth_nonce' ),
@@ -150,6 +160,25 @@ class AI_Auth {
 			wp_send_json_error( [ 'message' => __( 'No user email found in the decrypted data.', 'sureforms' ) ] );
 		}
 
+		// Extract is_subscribed value if present.
+		$is_subscribed = false;
+		if ( isset( $decrypted_data_array['is_subscribed'] ) ) {
+			// Convert string 'true'/'false' to boolean if needed.
+			if ( is_string( $decrypted_data_array['is_subscribed'] ) ) {
+				$is_subscribed = 'true' === $decrypted_data_array['is_subscribed'];
+			} else {
+				$is_subscribed = (bool) $decrypted_data_array['is_subscribed'];
+			}
+
+			// Update the analytics option based on the preference.
+			// Set 'yes' if opted in, empty string if not.
+			$enable_contribution = $is_subscribed ? 'yes' : '';
+			update_option( 'sureforms_analytics_optin', $enable_contribution );
+
+			// Remove is_subscribed from the decrypted data.
+			unset( $decrypted_data_array['is_subscribed'] );
+		}
+
 		// remove the nonce from the decrypted data before saving it to the options.
 		unset( $decrypted_data_array['nonce'] );
 
@@ -158,5 +187,4 @@ class AI_Auth {
 
 		wp_send_json_success();
 	}
-
 }
