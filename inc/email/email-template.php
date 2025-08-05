@@ -161,11 +161,34 @@ class Email_Template {
 								}
 							}
 						} elseif ( ! empty( $value ) && is_string( $value ) && filter_var( $value, FILTER_VALIDATE_URL ) ) {
-							?>
-							<a target="_blank" href="<?php echo esc_attr( urldecode( $value ) ); ?>">
-								<?php echo esc_html( esc_url( $value ) ); ?>
-							</a>
-							<?php
+							$render_url = apply_filters(
+								'srfm_email_template_render_url',
+								'<a target="_blank" href="' . esc_attr( urldecode( $value ) ) . '">' . esc_html( esc_url( $value ) ) . '</a>',
+								[
+									'block_type' => $field_name,
+									'submission_item_value' => $value,
+								]
+							);
+
+							// validate the rendered URL.
+							if ( empty( $render_url ) || ! is_string( $render_url ) ) {
+								$render_url = '<a target="_blank" href="' . esc_attr( urldecode( $value ) ) . '">' . esc_html( esc_url( $value ) ) . '</a>';
+							}
+
+							echo wp_kses(
+								$render_url,
+								[
+									'a' => [
+										'href'   => [],
+										'target' => [],
+									],
+									'img' => [
+										'src' => [],
+										'alt' => [],
+									],
+								]
+							);
+
 						} else {
 							if ( is_string( $value ) ) {
 								if ( false !== strpos( $field_name, 'srfm-textarea' ) ) {
