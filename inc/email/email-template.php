@@ -178,7 +178,7 @@ class Email_Template {
 							echo wp_kses(
 								$render_url,
 								[
-									'a' => [
+									'a'   => [
 										'href'   => [],
 										'target' => [],
 									],
