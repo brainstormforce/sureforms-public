@@ -132,6 +132,7 @@ class Email_Summary {
 						<p style="font-size:18px;font-weight:600;color:#111827;margin:0 0 8px;">
 							<?php
 								printf(
+									/* translators: %1$s is the admin user name */
 									esc_html__( 'Hey %1$s,', 'sureforms' ),
 									esc_html( $admin_user_name )
 								);
