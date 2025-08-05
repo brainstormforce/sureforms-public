@@ -1767,7 +1767,7 @@ class Helper {
 	 * values for blocks that need special handling (like upload fields).
 	 *
 	 * @param array<mixed> $blocks  Array of blocks to process.
-	 * @param integer      $form_id Form post ID.
+	 * @param int          $form_id Form post ID.
 	 * @return void
 	 * @since x.x.x
 	 */

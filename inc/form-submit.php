@@ -233,6 +233,49 @@ class Form_Submit {
 	}
 
 	/**
+	 * Retrieve or migrate the block configuration for legacy forms.
+	 *
+	 * This function checks if the _srfm_block_config post meta exists for the given form ID.
+	 * If not, it attempts to parse the form's post content and generate the block config.
+	 *
+	 * @param int $form_id The ID of the form post.
+	 * @since x.x.x
+	 * @return array|null The block configuration array, or null if not found or invalid.
+	 */
+	public function get_or_migrate_block_config_for_legacy_form( $form_id ) {
+		// Validate that $form_id is a positive integer.
+		if ( ! is_int( $form_id ) || $form_id <= 0 ) {
+			return null;
+		}
+
+		// Retrieve the block config from post meta.
+		$block_config = get_post_meta( $form_id, '_srfm_block_config', true );
+		if ( ! empty( $block_config ) && is_array( $block_config ) ) {
+			// If it exists and is an array, return it directly (no migration needed).
+			return $block_config;
+		}
+
+		// Get the post by ID and validate.
+		$post = get_post( $form_id );
+		if ( ! ( $post instanceof \WP_Post ) || empty( $post->post_content ) ) {
+			return null;
+		}
+
+		// Parse the blocks from the post content and attempt migration.
+		if ( function_exists( 'parse_blocks' ) ) {
+			$blocks = parse_blocks( $post->post_content );
+			if ( is_array( $blocks ) && ! empty( $blocks ) ) {
+				Helper::add_block_config( $blocks, $form_id );
+			}
+		}
+
+		// Retrieve the block config again after migration attempt.
+		$block_config = get_post_meta( $form_id, '_srfm_block_config', true );
+
+		return ! empty( $block_config ) && is_array( $block_config ) ? $block_config : null;
+	}
+
+	/**
 	 * Prepare validation data for a given form.
 	 *
 	 * Retrieves the form block configuration from post meta and adds a 'name_with_id'
@@ -244,7 +287,7 @@ class Form_Submit {
 	 */
 	public function prepared_validation_data( $current_form_id ) {
 		// Retrieve the form block configuration from post meta.
-		$get_form_config = get_post_meta( $current_form_id, '_srfm_block_config', true );
+		$get_form_config = $this->get_or_migrate_block_config_for_legacy_form( $current_form_id );
 
 		// If the configuration is an array, add a 'name_with_id' key to each block.
 		if ( is_array( $get_form_config ) ) {
@@ -319,7 +362,7 @@ class Form_Submit {
 
 				// If the field is not valid, add the error message to the result array.
 				if ( false === $field_validated['validated'] ) {
-					$not_valid_fields[ $key ] = isset( $field_validated['error'] ) ? $field_validated['error'] : __( 'Field is not valid.', 'sureforms' );
+					$not_valid_fields[ $key ] = $field_validated['error'] ?? __( 'Field is not valid.', 'sureforms' );
 				}
 			}
 		}
