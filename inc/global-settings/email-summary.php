@@ -199,7 +199,7 @@ class Email_Summary {
 					<!-- OttoKit Promotion Section -->
 					<div style="margin:32px 24px;padding:16px;border:0.5px solid #E5E7EB;border-radius:8px;background:#FFFFFF;text-align:left;">
 						<div style="margin-bottom:4px;">
-							<img src="<?php echo esc_url( SRFM_URL . 'admin/assets/ottokit.png' ); ?>" alt="OttoKit Logo" width="20" height="20" style="border-radius:6px;">
+							<img src="<?php echo esc_url( SRFM_URL . 'images/suretriggers.svg' ); ?>" alt="OttoKit Logo" width="20" height="20" style="border-radius:6px;">
 						</div>
 						<p style="font-size:14px;line-height:20px;font-weight:600;color:#111827;margin:0 0 4px;">
 							<?php esc_html_e( 'Automate Workflows with OttoKit', 'sureforms' ); ?>
