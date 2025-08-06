@@ -54,8 +54,8 @@ class Field_Validation {
 			$config = apply_filters( 'srfm_block_config', [ 'block' => $block ] );
 
 			// If block was processed by a filter, add its processed value.
-			if ( isset( $config['process_value'] ) && ! empty( $config['process_value'] ) ) {
-				$block_config[ $block_id ] = $config['process_value'];
+			if ( isset( $config['processed_value'] ) && ! empty( $config['processed_value'] ) ) {
+				$block_config[ $block_id ] = $config['processed_value'];
 				continue;
 			}
 		}
