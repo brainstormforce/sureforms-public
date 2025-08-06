@@ -183,8 +183,8 @@ class Email_Template {
 										'target' => [],
 									],
 									'img' => [
-										'src' => [],
-										'alt' => [],
+										'src'   => [],
+										'alt'   => [],
 										'width' => [],
 									],
 								]
