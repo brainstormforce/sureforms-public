@@ -47,7 +47,7 @@ class Admin {
 		add_action( 'admin_menu', [ $this, 'settings_page' ] );
 		add_action( 'admin_menu', [ $this, 'add_new_form' ] );
 		add_action( 'admin_menu', [ $this, 'add_suremail_page' ] );
-		if ( ! Helper::has_pro() && $this->is_first_form_created() ) {
+		if ( ! Helper::has_pro() && self::is_first_form_created() ) {
 			add_action( 'admin_menu', [ $this, 'add_upgrade_to_pro' ] );
 			add_action( 'admin_footer', [ $this, 'add_upgrade_to_pro_target_attr' ] );
 		}
@@ -100,28 +100,43 @@ class Admin {
 		// Register dashboard widget only if there are recent entries.
 		add_action( 'admin_init', [ $this, 'maybe_register_dashboard_widget' ] );
 
-		// run a action whenever admin
+		// run a action whenever admin.
 		add_action( 'admin_init', [ $this, 'save_first_form_creation_time_stamp' ] );
 	}
 
+	/**
+	 * Get the first form creation time stamp.
+	 *
+	 * @since x.x.x
+	 * @return int|false
+	 */
 	public static function get_first_form_creation_time_stamp() {
 		return Helper::get_srfm_option( 'srfm_first_form_created_at', false );
 	}
 
+	/**
+	 * Check and save the first form creation time stamp.
+	 * If not already saved.
+	 *
+	 * @since x.x.x
+	 * @return void
+	 */
 	public static function save_first_form_creation_time_stamp() {
 		if ( ! current_user_can( 'manage_options' ) || self::is_first_form_created() ) {
 			return;
 		}
 
-		$query = new \WP_Query( [
-			'post_type'      => SRFM_FORMS_POST_TYPE,
-			'posts_per_page' => 1,
-			'orderby'        => 'date',
-			'order'          => 'ASC',
-			'fields'         => 'ids',
-			// status is set to 'publish' to ensure we only get published forms.
-			'post_status'    => 'publish',
-		] );
+		$query = new \WP_Query(
+			[
+				'post_type'      => SRFM_FORMS_POST_TYPE,
+				'posts_per_page' => 1,
+				'orderby'        => 'date',
+				'order'          => 'ASC',
+				'fields'         => 'ids',
+				// status is set to 'publish' to ensure we only get published forms.
+				'post_status'    => 'publish',
+			]
+		);
 
 		if ( ! empty( $query->posts ) ) {
 			$post_id       = $query->posts[0];
@@ -132,10 +147,23 @@ class Admin {
 		}
 	}
 
+	/**
+	 * Check if the first form has been created.
+	 *
+	 * @since x.x.x
+	 * @return bool
+	 */
 	public static function is_first_form_created() {
 		return (bool) self::get_first_form_creation_time_stamp();
 	}
 
+	/**
+	 * Check if n days have passed since the first form creation.
+	 * This is used to determine if the dynamic nudges should be shown.
+	 *
+	 * @param int $days Number of days to check.
+	 * @return bool
+	 */
 	public static function has_n_days_passed_since_first_form_creation( $days = 3 ) {
 		$first_form_creation_time = self::get_first_form_creation_time_stamp();
 
@@ -688,7 +716,7 @@ class Admin {
 			'plugin_version'          => SRFM_VER,
 			'global_settings_nonce'   => current_user_can( 'manage_options' ) ? wp_create_nonce( 'wp_rest' ) : '',
 			'is_pro_active'           => Helper::has_pro(),
-			'is_first_form_created' => $this->is_first_form_created(),
+			'is_first_form_created'   => self::is_first_form_created(),
 			'has_three_days_passed_since_first_form_creation' => $this->has_n_days_passed_since_first_form_creation(),
 			'pro_plugin_version'      => Helper::has_pro() ? SRFM_PRO_VER : '',
 			'pro_plugin_name'         => Helper::has_pro() && defined( 'SRFM_PRO_PRODUCT' ) ? SRFM_PRO_PRODUCT : 'SureForms Pro',
