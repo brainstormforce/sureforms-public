@@ -121,6 +121,7 @@ class Admin {
 	 * @return bool
 	 */
 	public static function is_first_form_created() {
+		// Convert the first form creation time stamp to a boolean. If it exists, it will return true, otherwise false.
 		return (bool) self::get_first_form_creation_time_stamp();
 	}
 
@@ -136,6 +137,7 @@ class Admin {
 			return;
 		}
 
+		// Get the first form creation time from the database that is published.
 		$query = new \WP_Query(
 			[
 				'post_type'      => SRFM_FORMS_POST_TYPE,
@@ -143,15 +145,17 @@ class Admin {
 				'orderby'        => 'date',
 				'order'          => 'ASC',
 				'fields'         => 'ids',
-				// status is set to 'publish' to ensure we only get published forms.
 				'post_status'    => 'publish',
 			]
 		);
 
 		if ( ! empty( $query->posts ) ) {
-			$post_id       = $query->posts[0];
+			// Get the first post from the query result.
+			$post_id = $query->posts[0];
+			// Get the post creation time in GMT.
 			$creation_time = get_post_field( 'post_date_gmt', $post_id );
-			$timestamp     = strtotime( $creation_time );
+			// Convert the creation time to a timestamp.
+			$timestamp = strtotime( $creation_time );
 
 			Helper::update_srfm_option( 'srfm_first_form_created_at', $timestamp );
 		}
@@ -165,14 +169,18 @@ class Admin {
 	 * @return bool
 	 */
 	public static function has_n_days_passed_since_first_form_creation( $days = 3 ) {
-		$first_form_creation_time = self::get_first_form_creation_time_stamp();
+		$first_form_creation_time_stamp = self::get_first_form_creation_time_stamp();
 
-		if ( ! $first_form_creation_time ) {
+		if ( ! $first_form_creation_time_stamp ) {
 			return false; // No forms created yet.
 		}
 
-		$days_from_creation = ( strtotime( current_time( 'mysql' ) ) - $first_form_creation_time ) / DAY_IN_SECONDS;
+		/**
+		 * Calculate the number of days since the first form was created.
+		 */
+		$days_from_creation = ( strtotime( current_time( 'mysql' ) ) - $first_form_creation_time_stamp ) / DAY_IN_SECONDS;
 
+		// Return a boolean indicating if the number of days since creation is greater than the specified days.
 		return $days_from_creation > $days;
 	}
 
@@ -327,7 +335,7 @@ class Admin {
 	public function add_upgrade_to_pro_target_attr() {
 
 		// only add if first form was created more than 8 days ago.
-		if ( ! $this->has_n_days_passed_since_first_form_creation( 8 ) ) {
+		if ( ! self::has_n_days_passed_since_first_form_creation( 8 ) ) {
 			return;
 		}
 
@@ -356,7 +364,8 @@ class Admin {
 	 */
 	public function add_upgrade_to_pro() {
 
-		if ( ! $this->has_n_days_passed_since_first_form_creation( 8 ) ) {
+		// only add if first form was created more than 8 days ago.
+		if ( ! self::has_n_days_passed_since_first_form_creation( 8 ) ) {
 			return;
 		}
 
@@ -717,7 +726,8 @@ class Admin {
 			'global_settings_nonce'   => current_user_can( 'manage_options' ) ? wp_create_nonce( 'wp_rest' ) : '',
 			'is_pro_active'           => Helper::has_pro(),
 			'is_first_form_created'   => self::is_first_form_created(),
-			'has_three_days_passed_since_first_form_creation' => $this->has_n_days_passed_since_first_form_creation(),
+			'has_three_days_passed_since_first_form_creation' => self::has_n_days_passed_since_first_form_creation(),
+			'has_eight_days_passed_since_first_form_creation' => self::has_n_days_passed_since_first_form_creation( 8 ),
 			'pro_plugin_version'      => Helper::has_pro() ? SRFM_PRO_VER : '',
 			'pro_plugin_name'         => Helper::has_pro() && defined( 'SRFM_PRO_PRODUCT' ) ? SRFM_PRO_PRODUCT : 'SureForms Pro',
 			'sureforms_pricing_page'  => Helper::get_sureforms_website_url( 'pricing' ),

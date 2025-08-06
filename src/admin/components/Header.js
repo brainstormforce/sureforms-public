@@ -147,7 +147,7 @@ const Header = () => {
 							) ) }
 						</nav>
 					</Topbar.Item>
-					{ ! isProActive && ! isLicenseActive && (
+					{ ! isProActive && ! isLicenseActive && srfm_admin?.is_first_form_created && srfm_admin?.has_eight_days_passed_since_first_form_creation && (
 						<Topbar.Item>
 							<Button
 								icon={ <ArrowUpRight className="!size-5" /> }

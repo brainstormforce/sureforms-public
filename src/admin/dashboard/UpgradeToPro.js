@@ -37,7 +37,7 @@ export default () => {
 			</Container.Item>
 
 			<Container className="gap-1 p-2 w-[22rem]" direction="column">
-				{ /* 🚀 Unlock Premium Features */ }
+				{ /* Unlock Premium Features */ }
 				<Container.Item className="gap-2 text-brand-800 capitalize font-semibold text-xs flex items-center">
 					{ parse( svgIcons.rocket ) }
 					{ __( 'Unlock Premium Features', 'sureforms' ) }
