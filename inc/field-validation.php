@@ -7,8 +7,8 @@
  * @package SureForms
  * @since x.x.x
  */
-namespace SRFM\Inc;
 
+namespace SRFM\Inc;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -36,13 +36,15 @@ class Field_Validation {
 
 		// Loop through each block.
 		foreach ( $blocks as $block ) {
-			// Skip if block name is not set.
-			if ( is_array( $block ) && ! isset( $block['blockName'] ) ) {
+			// Ensure $block is an array and has the required structure.
+			if ( ! is_array( $block ) ) {
 				continue;
 			}
-
+			if ( ! isset( $block['blockName'] ) || ! isset( $block['attrs'] ) || ! is_array( $block['attrs'] ) ) {
+				continue;
+			}
 			// Validate block id.
-			if ( ! isset( $block['attrs']['block_id'] ) || empty( $block['attrs']['block_id'] ) ) {
+			if ( ! array_key_exists( 'block_id', $block['attrs'] ) || empty( $block['attrs']['block_id'] ) || ! is_string( $block['attrs']['block_id'] ) ) {
 				continue;
 			}
 
@@ -68,7 +70,10 @@ class Field_Validation {
 	 * Retrieve or migrate the block configuration for legacy forms.
 	 *
 	 * This function checks if the _srfm_block_config post meta exists for the given form ID.
-	 * If not, it attempts to parse the form's post content and generate the block config.
+	 * Example: get_post_meta( 123, '_srfm_block_config', true ) might return an array of block configs.
+	 * If not found, it attempts to parse the form's post content and generate the block config.
+	 * Example: If a legacy form with ID 123 has no _srfm_block_config, but its post_content contains blocks,
+	 *          the function will parse those blocks and call add_block_config() to generate and store the config.
 	 *
 	 * @param int $form_id The ID of the form post.
 	 * @since x.x.x
@@ -76,24 +81,29 @@ class Field_Validation {
 	 */
 	public static function get_or_migrate_block_config_for_legacy_form( $form_id ) {
 		// Validate that $form_id is a positive integer.
+		// Example: $form_id = 123 is valid; $form_id = -1 or 'abc' is not.
 		if ( ! is_int( $form_id ) || $form_id <= 0 ) {
 			return null;
 		}
 
 		// Retrieve the block config from post meta.
+		// Example: $block_config = [ 'block-1' => [ ... ], 'block-2' => [ ... ] ].
 		$block_config = get_post_meta( $form_id, '_srfm_block_config', true );
 		if ( ! empty( $block_config ) && is_array( $block_config ) ) {
 			// If it exists and is an array, return it directly (no migration needed).
+			// Example: Returning the existing $block_config array.
 			return $block_config;
 		}
 
 		// Get the post by ID and validate.
+		// Example: $post = get_post( 123 ); $post->post_content should contain block markup.
 		$post = get_post( $form_id );
 		if ( ! ( $post instanceof \WP_Post ) || empty( $post->post_content ) ) {
 			return null;
 		}
 
 		// Parse the blocks from the post content and attempt migration.
+		// Example: $blocks = parse_blocks( $post->post_content ); $blocks is an array of block arrays.
 		if ( function_exists( 'parse_blocks' ) ) {
 			$blocks = parse_blocks( $post->post_content );
 			if ( is_array( $blocks ) && ! empty( $blocks ) ) {
@@ -102,6 +112,7 @@ class Field_Validation {
 		}
 
 		// Retrieve the block config again after migration attempt.
+		// Example: After migration, $block_config should now be an array if successful.
 		$block_config = get_post_meta( $form_id, '_srfm_block_config', true );
 
 		return ! empty( $block_config ) && is_array( $block_config ) ? $block_config : null;
@@ -127,11 +138,13 @@ class Field_Validation {
 				// Ensure both 'blockName' and 'block_id' exist before creating the identifier.
 				if ( isset( $block['blockName'] ) ) {
 					// 'name_with_id' is used as a unique field identifier for validation.
+					// Example: 'sureforms-input-abc123' for blockName 'sureforms/input' and block_id 'abc123'
 					$get_form_config[ $index ]['name_with_id'] = str_replace( '/', '-', $block['blockName'] ) . '-' . $index;
 				}
 			}
 		}
 
+		// Return the processed configuration array, or an empty array if not found.
 		return is_array( $get_form_config ) ? $get_form_config : [];
 	}
 
@@ -153,19 +166,20 @@ class Field_Validation {
 			return [];
 		}
 
-		// Initialize an array to hold fields that are not valid.
+		// Holds fields that are not valid. Example: [ 'srfm-email-c867d9d9-lbl-email' => 'This field is required.' ].
 		$not_valid_fields = [];
 
 		// Retrieve the processed form configuration for validation.
 		$get_form_config = self::prepared_validation_data( Helper::get_integer_value( $current_form_id ) );
 
-        $form_data = apply_filters( 'srfm_field_validation_data', $form_data );
+		$form_data = apply_filters( 'srfm_field_validation_data', $form_data );
 
 		// Iterate over each field in the form data.
 		foreach ( $form_data as $key => $value ) {
 			/**
 			 * Only process SureForms fields.
 			 * The '-lbl-' substring is mandatory in SureForms field keys.
+			 * Example: $key = 'srfm-email-c867d9d9-lbl-email'
 			 */
 			if ( false === str_contains( $key, '-lbl-' ) ) {
 				continue;
@@ -173,33 +187,40 @@ class Field_Validation {
 
 			$get_name_with_id = explode( '-lbl-', $key );
 			// Extract the part after the last '-' in the key, if it matches the pattern.
-			// Example: "srfm-input-c867d9d9" => "c867d9d9"
+			// Example: $get_name_with_id[0] = "srfm-email-c867d9d9".
+			// $extracted_id = "c867d9d9".
 			$extracted_id = '';
 			if ( is_string( $key ) && preg_match( '/-([a-zA-Z0-9]+)$/', $get_name_with_id[0], $matches ) ) {
 				$extracted_id = $matches[1];
-				// Now $extracted_id contains "c867d9d9" for "srfm-input-c867d9d9"
+				// Now $extracted_id contains "c867d9d9" for "srfm-email-c867d9d9".
 			}
 
+			// $get_slug will be the slug after the first hyphen in the second part.
+			// Example: $get_name_with_id[1] = "email" or "field-email", $get_slug = "email".
 			$get_slug = isset( $get_name_with_id[1] ) ? preg_replace( '/^[^-]+-/', '', $get_name_with_id[1] ) : '';
 
-            $get_field_name = str_replace( '-' . $extracted_id, '', $get_name_with_id[0] );
+			// $get_field_name is the field name without the block id.
+			// Example: "srfm-email-c867d9d9" => "srfm-email".
+			$get_field_name = str_replace( '-' . $extracted_id, '', $get_name_with_id[0] );
 
 			// Apply the validation filter for the current field.
+			// Example: Passes all relevant field data to the filter for validation.
 			$field_validated = apply_filters(
 				'srfm_validate_form_data',
 				[
-					'field_key'   => $key,
-					'field_value' => $value,
-					'form_id'     => $current_form_id,
-					'form_config' => $get_form_config,
-					'block_id'    => $extracted_id,
-					'block_slug'  => $get_slug,
+					'field_key'    => $key,
+					'field_value'  => $value,
+					'form_id'      => $current_form_id,
+					'form_config'  => $get_form_config,
+					'block_id'     => $extracted_id,
+					'block_slug'   => $get_slug,
 					'name_with_id' => $get_name_with_id[0],
-					'field_name'  => $get_field_name,
+					'field_name'   => $get_field_name,
 				]
 			);
 
 			// Check the result of the validation.
+			// Example: $field_validated = [ 'validated' => false, 'error' => 'This field is required.' ].
 			if ( isset( $field_validated['validated'] ) ) {
 				// If the field is valid, skip to the next field.
 				if ( true === $field_validated['validated'] ) {
@@ -207,6 +228,7 @@ class Field_Validation {
 				}
 
 				// If the field is not valid, add the error message to the result array.
+				// Example: $not_valid_fields[ 'srfm-email-c867d9d9-lbl-email' ] = 'This field is required.'.
 				if ( false === $field_validated['validated'] ) {
 					$not_valid_fields[ $key ] = $field_validated['error'] ?? __( 'Field is not valid.', 'sureforms' );
 				}
@@ -214,6 +236,7 @@ class Field_Validation {
 		}
 
 		// Return the array of invalid fields and their error messages.
+		// Example: [ 'srfm-email-c867d9d9-lbl-email' => 'This field is required.' ].
 		return $not_valid_fields;
 	}
 }
