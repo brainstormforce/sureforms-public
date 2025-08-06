@@ -105,11 +105,11 @@ class Admin {
 	}
 
 	public static function get_first_form_creation_time_stamp() {
-		return get_option( 'srfm_first_form_created_at	' );
+		return Helper::get_srfm_option( 'srfm_first_form_created_at', false );
 	}
 
-	public function save_first_form_creation_time_stamp() {
-		if ( ! current_user_can( 'manage_options' ) || $this->is_first_form_created() ) {
+	public static function save_first_form_creation_time_stamp() {
+		if ( ! current_user_can( 'manage_options' ) || self::is_first_form_created() ) {
 			return;
 		}
 
@@ -128,12 +128,12 @@ class Admin {
 			$creation_time = get_post_field( 'post_date_gmt', $post_id );
 			$timestamp     = strtotime( $creation_time );
 
-			update_option( 'srfm_first_form_created_at	', $timestamp );
+			Helper::update_srfm_option( 'srfm_first_form_created_at', $timestamp );
 		}
 	}
 
-	public function is_first_form_created() {
-		return (bool) $this->get_first_form_creation_time_stamp();
+	public static function is_first_form_created() {
+		return (bool) self::get_first_form_creation_time_stamp();
 	}
 
 	public static function has_n_days_passed_since_first_form_creation( $days = 3 ) {

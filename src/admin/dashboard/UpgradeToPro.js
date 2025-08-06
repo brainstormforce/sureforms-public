@@ -8,14 +8,15 @@ export default () => {
 	const features = [
 		[
 			__( 'Conversational Forms', 'sureforms' ),
+			__( 'File Uploads', 'sureforms' ),
+
+		],
+		[
 			__( 'Conditional Logic', 'sureforms' ),
+			__( 'Signature & Rating Fields', 'sureforms' ),
 		],
 		[
 			__( 'Calculation Forms', 'sureforms' ),
-			__( 'File Uploads', 'sureforms' ),
-		],
-		[
-			__( 'Signature & Rating Fields', 'sureforms' ),
 			__( 'And Much More..', 'sureforms' ),
 		],
 	];
@@ -23,7 +24,7 @@ export default () => {
 	return (
 		<Container
 			direction="column"
-			className="bg-white p-3 rounded-xl shadow-sm-blur-1 border-0.5 border-solid border-border-subtle max-w-md gap-2"
+			className="bg-white p-3 rounded-xl shadow-sm-blur-1 border-0.5 border-solid border-border-subtle gap-2"
 		>
 			{ /* Illustration */ }
 			<Container.Item className="flex justify-center p-2">
@@ -34,7 +35,7 @@ export default () => {
 				/>
 			</Container.Item>
 
-			<Container className="gap-1 p-2 w-full" direction="column">
+			<Container className="gap-1 p-2 w-[22rem]" direction="column">
 				{ /* 🚀 Unlock Premium Features */ }
 				<Container.Item className="gap-2 text-brand-800 capitalize font-semibold text-xs flex items-center">
 					<svg
