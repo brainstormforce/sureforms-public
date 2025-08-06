@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: SureForms 1.9.1\n"
+"Project-Id-Version: SureForms 1.10.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/sureforms\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-07-30T14:53:13+00:00\n"
+"POT-Creation-Date: 2025-08-06T11:16:09+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: sureforms\n"
@@ -862,11 +862,11 @@ msgstr ""
 msgid "Checkbox"
 msgstr ""
 
-#: inc/fields/dropdown-markup.php:59
+#: inc/fields/dropdown-markup.php:75
 msgid "Dropdown"
 msgstr ""
 
-#: inc/fields/dropdown-markup.php:66
+#: inc/fields/dropdown-markup.php:82
 #: assets/build/blocks.js:172
 msgid "Select an option"
 msgstr ""
@@ -1160,7 +1160,24 @@ msgstr ""
 msgid "Build your dream website in minutes with AI."
 msgstr ""
 
-#: inc/helper.php:1702
+#: inc/helper.php:1616
+msgid "Invalid nonce action or name."
+msgstr ""
+
+#: inc/helper.php:1626
+#: inc/helper.php:1634
+msgid "Invalid security token."
+msgstr ""
+
+#: inc/helper.php:1641
+msgid "Invalid request type."
+msgstr ""
+
+#: inc/helper.php:1649
+msgid "You do not have permission to perform this action."
+msgstr ""
+
+#: inc/helper.php:1756
 #: templates/forms/blank-form.php:16
 msgid "Blank Form"
 msgstr ""
