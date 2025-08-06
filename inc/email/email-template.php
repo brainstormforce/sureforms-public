@@ -185,6 +185,7 @@ class Email_Template {
 									'img' => [
 										'src' => [],
 										'alt' => [],
+										'width' => [],
 									],
 								]
 							);
