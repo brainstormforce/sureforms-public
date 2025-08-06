@@ -1,6 +1,7 @@
 import { useEffect } from '@wordpress/element';
 import { select } from '@wordpress/data';
 import { withoutSlugBlocks } from '@Utils/Helpers';
+import { hasAction, doAction } from '@wordpress/hooks';
 
 const getUniqId = ( blocks ) =>
 	blocks.reduce(
@@ -43,7 +44,8 @@ const addInitialAttr = ( ChildComponent ) => {
 		} = props;
 
 		useEffect( () => {
-			const attributeObject = { block_id: clientId.substr( 0, 8 ) };
+			const newBlockId = clientId.substr( 0, 8 );
+			const attributeObject = { block_id: newBlockId };
 			const getAllBlocks = select( 'core/editor' )?.getBlocks();
 			const { blockIds, clientIds } = getAllBlocks
 				? getUniqId( getAllBlocks )
@@ -62,6 +64,11 @@ const addInitialAttr = ( ChildComponent ) => {
 				) {
 					attributeObject.slug = '';
 				}
+
+				// Only copy conditional logic if pro is active (action is registered).
+				if ( hasAction( 'srfm.duplicateBlock' ) ) {
+					doAction( 'srfm.duplicateBlock', block_id, newBlockId );
+				}
 			}
 
 			if (
@@ -78,4 +85,5 @@ const addInitialAttr = ( ChildComponent ) => {
 	};
 	return WrappedComponent;
 };
+
 export default addInitialAttr;
