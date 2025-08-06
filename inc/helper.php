@@ -1758,43 +1758,4 @@ class Helper {
 
 		return true;
 	}
-
-	/**
-	 * Add block configuration for form fields.
-	 *
-	 * This function processes blocks in a form and stores their configuration as post meta.
-	 * It applies filters to allow extensions to modify block configs and stores processed
-	 * values for blocks that need special handling (like upload fields).
-	 *
-	 * @param array<mixed> $blocks  Array of blocks to process.
-	 * @param int          $form_id Form post ID.
-	 * @return void
-	 * @since x.x.x
-	 */
-	public static function add_block_config( $blocks, $form_id ) {
-		// Initialize array to store processed block configurations.
-		$block_config = [];
-
-		// Loop through each block.
-		foreach ( $blocks as $block ) {
-			// Skip if block name is not set.
-			if ( is_array( $block ) && ! isset( $block['blockName'] ) ) {
-				continue;
-			}
-
-			// Allow extensions to process and modify block config.
-			$config = apply_filters( 'srfm_block_config', [ 'block' => $block ] );
-
-			// If block was processed by a filter, add its processed value.
-			if ( isset( $config['is_processed'] ) && true === $config['is_processed'] ) {
-				$block_config[] = $config['process_value'];
-				continue;
-			}
-		}
-
-		// Only update meta if we have processed configurations.
-		if ( ! empty( $block_config ) ) {
-			update_post_meta( $form_id, '_srfm_block_config', $block_config );
-		}
-	}
 }

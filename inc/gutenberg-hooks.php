@@ -379,7 +379,7 @@ class Gutenberg_Hooks {
 		}
 
 		// Process and store block configurations for form fields.
-		Helper::add_block_config( $blocks, $post_id );
+		Field_Validation::add_block_config( $blocks, $post_id );
 	}
 
 	/**
