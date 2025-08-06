@@ -80,7 +80,11 @@ const Header = () => {
 		<div className="top-8 z-[1]">
 			{ ! isProActive &&
 				! isLicenseActive &&
-				activePage?.slug === 'sureforms_menu' && <UpgradeNotice /> }
+				activePage?.slug === 'sureforms_menu' &&
+				srfm_admin?.is_first_form_created &&
+				srfm_admin?.has_three_days_passed_since_first_form_creation && (
+				<UpgradeNotice />
+			) }
 			<Topbar className="py-0 px-4 pt-0 pb-0 min-h-0 h-14 gap-4 shadow-sm bg-background-primary/75 backdrop-blur-[5px]">
 				<Topbar.Left className="gap-3">
 					<Topbar.Item className="w-auto h-auto lg:hidden">

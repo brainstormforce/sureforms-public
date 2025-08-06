@@ -47,7 +47,7 @@ class Admin {
 		add_action( 'admin_menu', [ $this, 'settings_page' ] );
 		add_action( 'admin_menu', [ $this, 'add_new_form' ] );
 		add_action( 'admin_menu', [ $this, 'add_suremail_page' ] );
-		if ( ! Helper::has_pro() ) {
+		if ( ! Helper::has_pro() && $this->is_first_form_created() ) {
 			add_action( 'admin_menu', [ $this, 'add_upgrade_to_pro' ] );
 			add_action( 'admin_footer', [ $this, 'add_upgrade_to_pro_target_attr' ] );
 		}
@@ -99,6 +99,53 @@ class Admin {
 
 		// Register dashboard widget only if there are recent entries.
 		add_action( 'admin_init', [ $this, 'maybe_register_dashboard_widget' ] );
+
+		// run a action whenever admin
+		add_action( 'admin_init', [ $this, 'save_first_form_creation_time_stamp' ] );
+	}
+
+	public static function get_first_form_creation_time_stamp() {
+		return get_option( 'srfm_first_form_created_at	' );
+	}
+
+	public function save_first_form_creation_time_stamp() {
+		if ( ! current_user_can( 'manage_options' ) || $this->is_first_form_created() ) {
+			return;
+		}
+
+		$query = new \WP_Query( [
+			'post_type'      => SRFM_FORMS_POST_TYPE,
+			'posts_per_page' => 1,
+			'orderby'        => 'date',
+			'order'          => 'ASC',
+			'fields'         => 'ids',
+			// status is set to 'publish' to ensure we only get published forms.
+			'post_status'    => 'publish',
+		] );
+
+		if ( ! empty( $query->posts ) ) {
+			$post_id       = $query->posts[0];
+			$creation_time = get_post_field( 'post_date_gmt', $post_id );
+			$timestamp     = strtotime( $creation_time );
+
+			update_option( 'srfm_first_form_created_at	', $timestamp );
+		}
+	}
+
+	public function is_first_form_created() {
+		return (bool) $this->get_first_form_creation_time_stamp();
+	}
+
+	public static function has_n_days_passed_since_first_form_creation( $days = 3 ) {
+		$first_form_creation_time = self::get_first_form_creation_time_stamp();
+
+		if ( ! $first_form_creation_time ) {
+			return false; // No forms created yet.
+		}
+
+		$days_from_creation = ( strtotime( current_time( 'mysql' ) ) - $first_form_creation_time ) / DAY_IN_SECONDS;
+
+		return $days_from_creation > $days;
 	}
 
 	/**
@@ -250,6 +297,12 @@ class Admin {
 	 * @since 1.6.1
 	 */
 	public function add_upgrade_to_pro_target_attr() {
+
+		// only add if first form was created more than 8 days ago.
+		if ( ! $this->has_n_days_passed_since_first_form_creation( 8 ) ) {
+			return;
+		}
+
 		?>
 		<script type="text/javascript">
 			document.addEventListener('DOMContentLoaded', function () {
@@ -274,6 +327,11 @@ class Admin {
 	 * @since 1.6.1
 	 */
 	public function add_upgrade_to_pro() {
+
+		if ( ! $this->has_n_days_passed_since_first_form_creation( 8 ) ) {
+			return;
+		}
+
 		// The url used here is used as a selector for css to style the upgrade to pro submenu.
 		// If you are changing this url, please make sure to update the css as well.
 		$upgrade_url = add_query_arg(
@@ -285,8 +343,8 @@ class Admin {
 
 		add_submenu_page(
 			'sureforms_menu',
-			__( 'Upgrade', 'sureforms' ),
-			__( 'Upgrade', 'sureforms' ),
+			__( 'Upgrade SureForms', 'sureforms' ),
+			__( 'Upgrade SureForms', 'sureforms' ),
 			'edit_others_posts',
 			$upgrade_url
 		);
@@ -630,6 +688,8 @@ class Admin {
 			'plugin_version'          => SRFM_VER,
 			'global_settings_nonce'   => current_user_can( 'manage_options' ) ? wp_create_nonce( 'wp_rest' ) : '',
 			'is_pro_active'           => Helper::has_pro(),
+			'is_first_form_created' => $this->is_first_form_created(),
+			'has_three_days_passed_since_first_form_creation' => $this->has_n_days_passed_since_first_form_creation(),
 			'pro_plugin_version'      => Helper::has_pro() ? SRFM_PRO_VER : '',
 			'pro_plugin_name'         => Helper::has_pro() && defined( 'SRFM_PRO_PRODUCT' ) ? SRFM_PRO_PRODUCT : 'SureForms Pro',
 			'sureforms_pricing_page'  => Helper::get_sureforms_website_url( 'pricing' ),

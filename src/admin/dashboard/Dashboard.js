@@ -15,13 +15,19 @@ export default () => {
 		<>
 			<GetStarted />
 			<FormsOverview />
-			{ ! srfm_admin?.is_pro_active && <UpgradeToPro /> }
+			{ ! srfm_admin?.is_pro_active &&
+				srfm_admin?.is_first_form_created && <ExtendTab /> }
 		</>
 	);
 
 	const rightSidebar = (
 		<>
-			<ExtendTab />
+			{ srfm_admin?.is_pro_active ||
+			! srfm_admin?.is_first_form_created ? (
+					<ExtendTab />
+				) : null }
+			{ ! srfm_admin?.is_pro_active &&
+				srfm_admin?.is_first_form_created && <UpgradeToPro /> }
 			<QuickAccessTab />
 		</>
 	);
