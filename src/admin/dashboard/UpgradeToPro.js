@@ -3,13 +3,14 @@ import { Button, Container, Label } from '@bsf/force-ui';
 import { Check } from 'lucide-react';
 import upgradeToProPlaceholder from '@Image/upgrade-to-pro.svg';
 import { addQueryParam } from '@Utils/Helpers';
+import svgIcons from '@Svg/svgs.json';
+import parse from 'html-react-parser';
 
 export default () => {
 	const features = [
 		[
 			__( 'Conversational Forms', 'sureforms' ),
 			__( 'File Uploads', 'sureforms' ),
-
 		],
 		[
 			__( 'Conditional Logic', 'sureforms' ),
@@ -38,42 +39,7 @@ export default () => {
 			<Container className="gap-1 p-2 w-[22rem]" direction="column">
 				{ /* 🚀 Unlock Premium Features */ }
 				<Container.Item className="gap-2 text-brand-800 capitalize font-semibold text-xs flex items-center">
-					<svg
-						width="16"
-						height="16"
-						viewBox="0 0 16 16"
-						fill="none"
-						xmlns="http://www.w3.org/2000/svg"
-					>
-						<path
-							d="M3.00033 11C2.00033 11.84 1.66699 14.3333 1.66699 14.3333C1.66699 14.3333 4.16033 14 5.00033 13C5.47366 12.44 5.46699 11.58 4.94033 11.06C4.6812 10.8126 4.33985 10.6697 3.98181 10.6587C3.62376 10.6476 3.27424 10.7691 3.00033 11Z"
-							stroke="#D54407"
-							strokeWidth="1.25"
-							strokeLinecap="round"
-							strokeLinejoin="round"
-						/>
-						<path
-							d="M8 10.0001L6 8.00008C6.35476 7.0797 6.80147 6.19746 7.33333 5.36675C8.11012 4.12474 9.19175 3.10212 10.4753 2.39614C11.7589 1.69017 13.2018 1.32433 14.6667 1.33342C14.6667 3.14675 14.1467 6.33342 10.6667 8.66675C9.82459 9.19923 8.93123 9.64591 8 10.0001Z"
-							stroke="#D54407"
-							strokeWidth="1.25"
-							strokeLinecap="round"
-							strokeLinejoin="round"
-						/>
-						<path
-							d="M6.00033 8.00009H2.66699C2.66699 8.00009 3.03366 5.98009 4.00033 5.33343C5.08033 4.61343 7.33366 5.33343 7.33366 5.33343"
-							stroke="#D54407"
-							strokeWidth="1.25"
-							strokeLinecap="round"
-							strokeLinejoin="round"
-						/>
-						<path
-							d="M8 10.0001V13.3334C8 13.3334 10.02 12.9667 10.6667 12.0001C11.3867 10.9201 10.6667 8.66675 10.6667 8.66675"
-							stroke="#D54407"
-							strokeWidth="1.25"
-							strokeLinecap="round"
-							strokeLinejoin="round"
-						/>
-					</svg>
+					{ parse( svgIcons.rocket ) }
 					{ __( 'Unlock Premium Features', 'sureforms' ) }
 				</Container.Item>
 
