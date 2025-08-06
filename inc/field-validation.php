@@ -19,13 +19,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class Field_Validation {
 	/**
-	 * Constructor
-	 */
-	public function __construct() {
-		// $this->init_hooks();
-	}
-
-	/**
 	 * Add block configuration for form fields.
 	 *
 	 * This function processes blocks in a form and stores their configuration as post meta.
@@ -48,12 +41,19 @@ class Field_Validation {
 				continue;
 			}
 
+			// Validate block id.
+			if ( ! isset( $block['attrs']['block_id'] ) || empty( $block['attrs']['block_id'] ) ) {
+				continue;
+			}
+
+			$block_id = sanitize_text_field( $block['attrs']['block_id'] );
+
 			// Allow extensions to process and modify block config.
 			$config = apply_filters( 'srfm_block_config', [ 'block' => $block ] );
 
 			// If block was processed by a filter, add its processed value.
-			if ( isset( $config['is_processed'] ) && true === $config['is_processed'] ) {
-				$block_config[] = $config['process_value'];
+			if ( isset( $config['process_value'] ) && ! empty( $config['process_value'] ) ) {
+				$block_config[ $block_id ] = $config['process_value'];
 				continue;
 			}
 		}
@@ -97,8 +97,7 @@ class Field_Validation {
 		if ( function_exists( 'parse_blocks' ) ) {
 			$blocks = parse_blocks( $post->post_content );
 			if ( is_array( $blocks ) && ! empty( $blocks ) ) {
-				// Helper::add_block_config( $blocks, $form_id );
-				Field_Validation::add_block_config( $blocks, $form_id );
+				self::add_block_config( $blocks, $form_id );
 			}
 		}
 
@@ -126,9 +125,9 @@ class Field_Validation {
 		if ( is_array( $get_form_config ) ) {
 			foreach ( $get_form_config as $index => $block ) {
 				// Ensure both 'blockName' and 'block_id' exist before creating the identifier.
-				if ( isset( $block['blockName'] ) && isset( $block['block_id'] ) ) {
+				if ( isset( $block['blockName'] ) ) {
 					// 'name_with_id' is used as a unique field identifier for validation.
-					$get_form_config[ $index ]['name_with_id'] = str_replace( '/', '-', $block['blockName'] ) . '-' . $block['block_id'];
+					$get_form_config[ $index ]['name_with_id'] = str_replace( '/', '-', $block['blockName'] ) . '-' . $index;
 				}
 			}
 		}
@@ -160,10 +159,7 @@ class Field_Validation {
 		// Retrieve the processed form configuration for validation.
 		$get_form_config = self::prepared_validation_data( Helper::get_integer_value( $current_form_id ) );
 
-		// Merge uploaded files into the form data for validation, if any files were uploaded.
-		if ( ! empty( $_FILES ) ) {
-			$form_data = array_merge( $form_data, $_FILES );
-		}
+        $form_data = apply_filters( 'srfm_field_validation_data', $form_data );
 
 		// Iterate over each field in the form data.
 		foreach ( $form_data as $key => $value ) {
@@ -175,6 +171,19 @@ class Field_Validation {
 				continue;
 			}
 
+			$get_name_with_id = explode( '-lbl-', $key );
+			// Extract the part after the last '-' in the key, if it matches the pattern.
+			// Example: "srfm-input-c867d9d9" => "c867d9d9"
+			$extracted_id = '';
+			if ( is_string( $key ) && preg_match( '/-([a-zA-Z0-9]+)$/', $get_name_with_id[0], $matches ) ) {
+				$extracted_id = $matches[1];
+				// Now $extracted_id contains "c867d9d9" for "srfm-input-c867d9d9"
+			}
+
+			$get_slug = isset( $get_name_with_id[1] ) ? preg_replace( '/^[^-]+-/', '', $get_name_with_id[1] ) : '';
+
+            $get_field_name = str_replace( '-' . $extracted_id, '', $get_name_with_id[0] );
+
 			// Apply the validation filter for the current field.
 			$field_validated = apply_filters(
 				'srfm_validate_form_data',
@@ -183,6 +192,10 @@ class Field_Validation {
 					'field_value' => $value,
 					'form_id'     => $current_form_id,
 					'form_config' => $get_form_config,
+					'block_id'    => $extracted_id,
+					'block_slug'  => $get_slug,
+					'name_with_id' => $get_name_with_id[0],
+					'field_name'  => $get_field_name,
 				]
 			);
 
