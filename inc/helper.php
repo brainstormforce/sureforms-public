@@ -1606,7 +1606,7 @@ class Helper {
 	 * @param string $nonce_name   The name of the nonce field.
 	 * @param string $capability   The capability required to perform the action. Default is 'manage_options'.
 	 *
-	 * @since x.x.x
+	 * @since 1.10.0
 	 * @return void
 	 */
 	public static function verify_nonce_and_capabilities( $request_type, $nonce_action, $nonce_name, $capability = 'manage_options' ) {
