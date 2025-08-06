@@ -115,6 +115,16 @@ class Admin {
 	}
 
 	/**
+	 * Check if the first form has been created.
+	 *
+	 * @since x.x.x
+	 * @return bool
+	 */
+	public static function is_first_form_created() {
+		return (bool) self::get_first_form_creation_time_stamp();
+	}
+
+	/**
 	 * Check and save the first form creation time stamp.
 	 * If not already saved.
 	 *
@@ -145,16 +155,6 @@ class Admin {
 
 			Helper::update_srfm_option( 'srfm_first_form_created_at', $timestamp );
 		}
-	}
-
-	/**
-	 * Check if the first form has been created.
-	 *
-	 * @since x.x.x
-	 * @return bool
-	 */
-	public static function is_first_form_created() {
-		return (bool) self::get_first_form_creation_time_stamp();
 	}
 
 	/**
