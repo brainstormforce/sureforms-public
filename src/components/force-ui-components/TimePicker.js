@@ -5,7 +5,7 @@ const TimePicker = ( {
 	hours = '12',
 	minutes = '00',
 	meridiem = 'AM',
-	onChange,
+	onChange = () => {},
 } ) => {
 	const [ hour, setHour ] = useState( hours );
 	const [ minute, setMinute ] = useState( minutes );
@@ -51,7 +51,7 @@ const TimePicker = ( {
 				</Select.Options>
 			</Select>
 
-			<span>:</span>
+			<span aria-hidden="true">:</span>
 
 			<Select value={ minute } onChange={ handleMinuteChange }>
 				<Select.Button className="w-20" />
