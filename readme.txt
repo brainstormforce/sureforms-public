@@ -266,6 +266,7 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 == Changelog ==
 = x.x.x =
 * Improvement: Redesigned email summary template with updated layout and styling.
+* Fix: Resolved an issue with dropdown block when same form is embedded twice in a single page.
 = 1.9.1 - 31st July 2025 =
 * New: Added a dashboard widget to display form submission statistics and recent entries.
 * New: Introduced a guided onboarding experience to help users set up SureForms with ease.
