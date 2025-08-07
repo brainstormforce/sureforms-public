@@ -113,7 +113,7 @@ const FormRestriction = () => {
 								value={
 									preserveMetaData?.message ??
 									__(
-										"Oops! This form is now closed as we've received all the entries. Stay tuned for more!",
+										"This form is now closed as we've received all the entries.",
 										'sureforms'
 									)
 								}

@@ -1062,7 +1062,7 @@ class Post_Types {
 						'hours'      => '12',
 						'minutes'    => '00',
 						'meridiem'   => 'AM',
-						'message'    => __( 'Oops! This form is now closed as we\'ve received all the entries. Stay tuned for more!', 'sureforms' ),
+						'message'    => __( 'This form is now closed as we\'ve received all the entries.', 'sureforms' ),
 					]
 				),
 			]
@@ -1093,7 +1093,7 @@ class Post_Types {
 			'hours'      => isset( $meta_value['hours'] ) ? sanitize_text_field( $meta_value['hours'] ) : '12',
 			'minutes'    => isset( $meta_value['minutes'] ) ? sanitize_text_field( $meta_value['minutes'] ) : '00',
 			'meridiem'   => isset( $meta_value['meridiem'] ) ? sanitize_text_field( $meta_value['meridiem'] ) : 'AM',
-			'message'    => isset( $meta_value['message'] ) ? sanitize_textarea_field( $meta_value['message'] ) : __( 'Oops! This form is now closed as we\'ve received all the entries. Stay tuned for more!', 'sureforms' ),
+			'message'    => isset( $meta_value['message'] ) ? sanitize_textarea_field( $meta_value['message'] ) : __( 'This form is now closed as we\'ve received all the entries.', 'sureforms' ),
 		];
 
 		// Return the sanitized data as a JSON string.
