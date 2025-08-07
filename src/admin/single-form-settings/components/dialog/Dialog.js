@@ -16,7 +16,7 @@ import {
 	Settings,
 	Code2Icon,
 	CpuIcon,
-	SettingsIcon,
+	CircleCheckBig,
 	ShieldCheckIcon,
 	XIcon,
 } from 'lucide-react';
@@ -90,7 +90,7 @@ const Dialog = ( {
 			{
 				id: 'form_confirmation',
 				label: __( 'Form Confirmation', 'sureforms' ),
-				icon: <SettingsIcon />,
+				icon: <CircleCheckBig />,
 				component: (
 					<FormConfirmSetting
 						setHasValidationErrors={ setHasValidationErrors }
