@@ -68,7 +68,6 @@ const DatePickerModal = ( {
 						className="absolute left-0 bg-white shadow-lg rounded z-999999 overflow-hidden"
 						style={ {
 							top: topValue,
-							// bottom: '0',
 						} }
 					>
 						<DatePicker

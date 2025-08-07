@@ -3,7 +3,7 @@
  * Create new Form with Template and return the form ID.
  *
  * @package sureforms.
- * @since 0.0.1
+ * @since x.x.x
  */
 
 namespace SRFM\Inc;
@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Create New Form.
  *
- * @since 0.0.1
+ * @since x.x.x
  */
 class Form_Restriction {
 	use Get_Instance;
@@ -95,6 +95,8 @@ class Form_Restriction {
 			'srfm_is_form_restricted',
 			$has_entries_limit_reached || $has_time_limit_reached,
 			$form_id,
+			$form_restriction,
+			$has_entries_limit_reached,
 			$has_time_limit_reached
 		);
 	}
