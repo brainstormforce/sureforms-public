@@ -87,7 +87,7 @@ const FormRestriction = () => {
 							{ preserveMetaData?.date && (
 								<div className="w-1/3">
 									<TimePicker
-										hours={ preserveMetaData?.hours ?? '1' }
+										hours={ preserveMetaData?.hours ?? '12' }
 										minutes={
 											preserveMetaData?.minutes ?? '00'
 										}

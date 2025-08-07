@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from '@wordpress/element';
 import { Input, DatePicker } from '@bsf/force-ui';
 
 /**
- * 1Code has alerts. Press enter to view.
  * Custom DatePicker Modal Component
  * That opens on the click of an input field
  * @param {Object}   props              1Code has alerts. Press enter to view.
@@ -90,7 +89,6 @@ const DatePickerModal = ( { label, date, onDateChange } ) => {
 			<Input
 				size="md"
 				className="w-full cursor-pointer"
-				// label={ __( 'Date', 'sureforms' ) }
 				label={ label || __( 'Date', 'sureforms' ) }
 				value={ getFormattedDate( date ) }
 				readOnly

@@ -1049,7 +1049,7 @@ class Post_Types {
 				'single'            => true,    // Store as single value.
 				'show_in_rest'      => true, // Make available in REST API.
 				// Custom callback to sanitize the data.
-				'sanitize_callback' => [ $this, 'form_restriction_data_sanitizer' ],
+				'sanitize_callback' => [ $this, 'sanitize_form_restriction_data' ],
 				'object_subtype'    => SRFM_FORMS_POST_TYPE,
 				'auth_callback'     => static function () {
 					return current_user_can( 'manage_options' );
@@ -1075,7 +1075,7 @@ class Post_Types {
 	 * @param mixed $meta_value The meta value to sanitize.
 	 * @return string|false Sanitized JSON string.
 	 */
-	public function form_restriction_data_sanitizer( $meta_value ) {
+	public function sanitize_form_restriction_data( $meta_value ) {
 		if ( empty( $meta_value ) || ! is_string( $meta_value ) ) {
 			return wp_json_encode( [] );
 		}
