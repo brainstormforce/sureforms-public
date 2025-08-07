@@ -1599,6 +1599,60 @@ class Helper {
 	}
 
 	/**
+	 * Verifies the request by checking the nonce and user capabilities.
+	 *
+	 * @param string $request_type The type of request, either 'rest' or 'ajax'.
+	 * @param string $nonce_action The action name for the nonce.
+	 * @param string $nonce_name   The name of the nonce field.
+	 * @param string $capability   The capability required to perform the action. Default is 'manage_options'.
+	 *
+	 * @since 1.10.0
+	 * @return void
+	 */
+	public static function verify_nonce_and_capabilities( $request_type, $nonce_action, $nonce_name, $capability = 'manage_options' ) {
+
+		if ( ! is_string( $nonce_action ) || ! is_string( $nonce_name ) || empty( $nonce_action ) || empty( $nonce_name ) ) {
+			wp_send_json_error(
+				[ 'message' => __( 'Invalid nonce action or name.', 'sureforms' ) ],
+				400
+			);
+		}
+
+		// Verify nonce for security.
+		if ( 'rest' === $request_type ) {
+			// For REST API requests, use the WP_REST_Request object to verify the nonce.
+			if ( ! wp_verify_nonce( $nonce_action, $nonce_name ) ) {
+				wp_send_json_error(
+					[ 'message' => __( 'Invalid security token.', 'sureforms' ) ],
+					403
+				);
+			}
+		} elseif ( 'ajax' === $request_type ) {
+			// For non-REST requests, use the standard nonce verification.
+			if ( ! check_ajax_referer( $nonce_action, $nonce_name, false ) ) {
+				wp_send_json_error(
+					[ 'message' => __( 'Invalid security token.', 'sureforms' ) ],
+					403
+				);
+			}
+		} else {
+			// If the request type is not recognized, return an error.
+			wp_send_json_error(
+				[ 'message' => __( 'Invalid request type.', 'sureforms' ) ],
+				400
+			);
+		}
+
+		// Check user capabilities.
+		if ( ! current_user_can( $capability ) ) {
+			wp_send_json_error(
+				[ 'message' => esc_html__( 'You do not have permission to perform this action.', 'sureforms' ) ],
+				403
+			);
+		}
+	}
+
+	/**
 	 * Check if any of the top 10 popular WordPress SMTP plugins is active using array_intersect.
 	 *
 	 * @since 1.9.1

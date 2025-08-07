@@ -1049,7 +1049,7 @@ class Post_Types {
 				'single'            => true,    // Store as single value.
 				'show_in_rest'      => true, // Make available in REST API.
 				// Custom callback to sanitize the data.
-				'sanitize_callback' => [ $this, 'form_restriction_data_sanitizer' ],
+				'sanitize_callback' => [ $this, 'sanitize_form_restriction_data' ],
 				'object_subtype'    => SRFM_FORMS_POST_TYPE,
 				'auth_callback'     => static function () {
 					return current_user_can( 'manage_options' );
@@ -1062,7 +1062,7 @@ class Post_Types {
 						'hours'      => '12',
 						'minutes'    => '00',
 						'meridiem'   => 'AM',
-						'message'    => __( 'Oops! This form is now closed as we\'ve received all the entries. Stay tuned for more!', 'sureforms' ),
+						'message'    => __( 'This form is now closed as we\'ve received all the entries.', 'sureforms' ),
 					]
 				),
 			]
@@ -1075,7 +1075,7 @@ class Post_Types {
 	 * @param mixed $meta_value The meta value to sanitize.
 	 * @return string|false Sanitized JSON string.
 	 */
-	public function form_restriction_data_sanitizer( $meta_value ) {
+	public function sanitize_form_restriction_data( $meta_value ) {
 		if ( empty( $meta_value ) || ! is_string( $meta_value ) ) {
 			return wp_json_encode( [] );
 		}
@@ -1094,7 +1094,7 @@ class Post_Types {
 			'hours'      => isset( $meta_value['hours'] ) ? sanitize_text_field( $meta_value['hours'] ) : '12',
 			'minutes'    => isset( $meta_value['minutes'] ) ? sanitize_text_field( $meta_value['minutes'] ) : '00',
 			'meridiem'   => isset( $meta_value['meridiem'] ) ? sanitize_text_field( $meta_value['meridiem'] ) : 'AM',
-			'message'    => isset( $meta_value['message'] ) ? sanitize_textarea_field( $meta_value['message'] ) : __( 'Oops! This form is now closed as we\'ve received all the entries. Stay tuned for more!', 'sureforms' ),
+			'message'    => isset( $meta_value['message'] ) ? sanitize_textarea_field( $meta_value['message'] ) : __( 'This form is now closed as we\'ve received all the entries.', 'sureforms' ),
 		];
 
 		// Return the sanitized data as a JSON string.

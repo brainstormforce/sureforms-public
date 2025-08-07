@@ -168,7 +168,7 @@ function GeneralSettings( props ) {
 		} );
 	}
 
-	const singleSettings = applyFilters( 'srfm.formSettings.singleSettings', [
+	const singleFormSettingsComponents = [
 		{
 			id: 'general-settings',
 			title: __( 'General Settings', 'sureforms' ),
@@ -185,7 +185,17 @@ function GeneralSettings( props ) {
 			id: 'integrations',
 			title: __( 'Integrations', 'sureforms' ),
 		},
-	] );
+	];
+
+	let singleSettings = applyFilters(
+		'srfm.formSettings.singleSettings',
+		singleFormSettingsComponents
+	);
+
+	// validate the singleSettings should only contain array of objects with id and title if it fails then reset to default singleSettings.
+	if ( ! Array.isArray( singleSettings ) ) {
+		singleSettings = singleFormSettingsComponents;
+	}
 
 	function updatePageBreakSettings( option, value ) {
 		editPost( {

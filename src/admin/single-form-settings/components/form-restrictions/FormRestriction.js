@@ -88,7 +88,7 @@ const FormRestriction = () => {
 							{ preserveMetaData?.date && (
 								<div className="w-1/3">
 									<TimePicker
-										hours={ preserveMetaData?.hours ?? '1' }
+										hours={ preserveMetaData?.hours ?? '12' }
 										minutes={
 											preserveMetaData?.minutes ?? '00'
 										}
@@ -114,7 +114,7 @@ const FormRestriction = () => {
 								value={
 									preserveMetaData?.message ??
 									__(
-										"Oops! This form is now closed as we've received all the entries. Stay tuned for more!",
+										"This form is now closed as we've received all the entries.",
 										'sureforms'
 									)
 								}

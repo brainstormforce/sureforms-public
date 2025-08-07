@@ -272,8 +272,10 @@ export const setFormSpecificSmartTags = ( updateBlockAttributes ) => {
 
 	const formSmartTags = [];
 	const formEmailSmartTags = [];
+	const formUploadSmartTags = [];
 	const formSmartTagsUniqueSlugs = [];
 	const formEmailSmartTagsUniqueSlugs = [];
+	const formUploadSmartTagsUniqueSlugs = [];
 
 	if ( typeof window.sureforms === 'undefined' ) {
 		window.sureforms = {};
@@ -281,6 +283,7 @@ export const setFormSpecificSmartTags = ( updateBlockAttributes ) => {
 
 	window.sureforms.formSpecificSmartTags = formSmartTags;
 	window.sureforms.formSpecificEmailSmartTags = formEmailSmartTags;
+	window.sureforms.formSpecificUploadSmartTags = formUploadSmartTags;
 
 	if ( ! savedBlocks?.length ) {
 		return;
@@ -304,8 +307,17 @@ export const setFormSpecificSmartTags = ( updateBlockAttributes ) => {
 		[ 'srfm/email' ]
 	);
 
+	pushSmartTagToArray(
+		savedBlocks,
+		blockSlugs,
+		formUploadSmartTags,
+		formUploadSmartTagsUniqueSlugs,
+		[ 'srfm/upload' ]
+	);
+
 	window.sureforms.formSpecificSmartTags = formSmartTags;
 	window.sureforms.formSpecificEmailSmartTags = formEmailSmartTags;
+	window.sureforms.formSpecificUploadSmartTags = formUploadSmartTags;
 };
 
 /**
