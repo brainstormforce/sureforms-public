@@ -938,7 +938,7 @@ class Helper {
 	public static function render_missing_sitekey_error( $provider_name ) {
 		$icon = self::fetch_svg( 'info_circle', '', 'aria-hidden="true"' );
 		?>
-		<p id="sitekey-error" class="srfm-common-error-message srfm-error-message" hidden="false">
+		<p id="sitekey-error" class="srfm-common-error-message srfm-error-message">
 			<?php echo wp_kses( $icon, self::$allowed_tags_svg ); ?>
 			<span class="srfm-error-content">
 				<?php
@@ -1600,6 +1600,91 @@ class Helper {
 	}
 
 	/**
+	 * Verifies the request by checking the nonce and user capabilities.
+	 *
+	 * @param string $request_type The type of request, either 'rest' or 'ajax'.
+	 * @param string $nonce_action The action name for the nonce.
+	 * @param string $nonce_name   The name of the nonce field.
+	 * @param string $capability   The capability required to perform the action. Default is 'manage_options'.
+	 *
+	 * @since 1.10.0
+	 * @return void
+	 */
+	public static function verify_nonce_and_capabilities( $request_type, $nonce_action, $nonce_name, $capability = 'manage_options' ) {
+
+		if ( ! is_string( $nonce_action ) || ! is_string( $nonce_name ) || empty( $nonce_action ) || empty( $nonce_name ) ) {
+			wp_send_json_error(
+				[ 'message' => __( 'Invalid nonce action or name.', 'sureforms' ) ],
+				400
+			);
+		}
+
+		// Verify nonce for security.
+		if ( 'rest' === $request_type ) {
+			// For REST API requests, use the WP_REST_Request object to verify the nonce.
+			if ( ! wp_verify_nonce( $nonce_action, $nonce_name ) ) {
+				wp_send_json_error(
+					[ 'message' => __( 'Invalid security token.', 'sureforms' ) ],
+					403
+				);
+			}
+		} elseif ( 'ajax' === $request_type ) {
+			// For non-REST requests, use the standard nonce verification.
+			if ( ! check_ajax_referer( $nonce_action, $nonce_name, false ) ) {
+				wp_send_json_error(
+					[ 'message' => __( 'Invalid security token.', 'sureforms' ) ],
+					403
+				);
+			}
+		} else {
+			// If the request type is not recognized, return an error.
+			wp_send_json_error(
+				[ 'message' => __( 'Invalid request type.', 'sureforms' ) ],
+				400
+			);
+		}
+
+		// Check user capabilities.
+		if ( ! current_user_can( $capability ) ) {
+			wp_send_json_error(
+				[ 'message' => esc_html__( 'You do not have permission to perform this action.', 'sureforms' ) ],
+				403
+			);
+		}
+	}
+
+	/**
+	 * Check if any of the top 10 popular WordPress SMTP plugins is active using array_intersect.
+	 *
+	 * @since 1.9.1
+	 * @return bool True if any SMTP plugin is active, false otherwise.
+	 */
+	public static function is_any_smtp_plugin_active() {
+		$smtp_plugins = [
+			'wp-mail-smtp/wp_mail_smtp.php',
+			'post-smtp/postman-smtp.php',
+			'easy-wp-smtp/easy-wp-smtp.php',
+			'wp-smtp/wp-smtp.php',
+			'newsletter/plugin.php',
+			'fluent-smtp/fluent-smtp.php',
+			'pepipost-smtp/pepipost-smtp.php',
+			'mail-bank/wp-mail-bank.php',
+			'smtp-mailer/smtp-mailer.php',
+			'suremails/suremails.php',
+			'site-mailer/site-mailer.php',
+		];
+
+		$active_plugins = (array) get_option( 'active_plugins', [] );
+		// For multisite, merge sitewide active plugins.
+		if ( is_multisite() ) {
+			$network_plugins = (array) get_site_option( 'active_sitewide_plugins', [] );
+			$active_plugins  = array_merge( $active_plugins, array_keys( $network_plugins ) );
+		}
+
+		return (bool) array_intersect( $smtp_plugins, $active_plugins );
+	}
+
+	/**
 	 * Apply a filter and return the filtered value only if it's a non-empty array.
 	 * Otherwise, return the default array.
 	 *
@@ -1625,5 +1710,107 @@ class Helper {
 
 		// Return filtered result if it's a non-empty array.
 		return is_array( $filtered ) && ! empty( $filtered ) ? $filtered : $default;
+	}
+
+	/**
+	 * Get forms with entry counts for a specific time period.
+	 *
+	 * @param int  $timestamp The timestamp to get entries after.
+	 * @param int  $limit     Maximum number of forms to return (0 for all).
+	 * @param bool $sort      Whether to sort by entry count descending.
+	 * @return array Array of form data with entry counts.
+	 * @since 1.9.1
+	 */
+	public static function get_forms_with_entry_counts( $timestamp, $limit = 0, $sort = true ) {
+		// Get all published forms.
+		$args = [
+			'post_type'      => SRFM_FORMS_POST_TYPE,
+			'posts_per_page' => -1,
+			'post_status'    => 'publish',
+			'orderby'        => 'ID',
+			'order'          => 'DESC',
+		];
+
+		$query = new \WP_Query( $args );
+
+		if ( ! $query->have_posts() ) {
+			return [];
+		}
+
+		$all_forms = [];
+
+		while ( $query->have_posts() ) {
+			$query->the_post();
+			$form_id = get_the_ID();
+
+			// Skip if form_id is false.
+			if ( false === $form_id ) {
+				continue;
+			}
+
+			// Get entries count after the timestamp for this specific form.
+			$entry_count = Entries::get_entries_count_after( $timestamp, $form_id );
+
+			// Get form title, use "Blank Form" if empty.
+			$form_title = get_the_title();
+			if ( empty( trim( $form_title ) ) ) {
+				$form_title = __( 'Blank Form', 'sureforms' );
+			}
+
+			$all_forms[] = [
+				'form_id' => $form_id,
+				'title'   => $form_title,
+				'count'   => $entry_count,
+			];
+		}
+
+		wp_reset_postdata();
+
+		// Sort by count descending, then by form_id descending for consistency.
+		if ( $sort ) {
+			usort(
+				$all_forms,
+				static function( $a, $b ) {
+					if ( $a['count'] === $b['count'] ) {
+						return $b['form_id'] - $a['form_id'];
+					}
+					return $b['count'] - $a['count'];
+				}
+			);
+		}
+
+		// Return limited results if specified.
+		if ( $limit > 0 ) {
+			return array_slice( $all_forms, 0, $limit );
+		}
+
+		return $all_forms;
+	}
+
+	/**
+	 * Check if the given form ID is valid SureForms form ID.
+	 * A valid form ID is a numeric value that corresponds to an existing SureForms form in the database.
+	 *
+	 * @since 1.9.1
+	 *
+	 * @param int|string|mixed $form_id The form ID to validate.
+	 * @return bool True if the form ID is valid, false otherwise.
+	 */
+	public static function is_valid_form( $form_id ) {
+
+		// Check for a valid form ID.
+		if ( empty( $form_id ) || ! is_numeric( $form_id ) ) {
+			return false;
+		}
+
+		// Check if the form ID exists in the database.
+		$form = get_post( self::get_integer_value( $form_id ) );
+
+		// If the form does not exist or is not of the correct post type, return false.
+		if ( ! $form || ! is_a( $form, 'WP_Post' ) || SRFM_FORMS_POST_TYPE !== $form->post_type ) {
+			return false;
+		}
+
+		return true;
 	}
 }

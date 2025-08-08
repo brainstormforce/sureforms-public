@@ -197,7 +197,7 @@ class Stripe_Payment_Handler {
 
 			// Create payment intent.
 			$payment_intent_data = [
-				'amount'                    => $amount + $application_fee_amount,
+				'amount'                    => $amount,
 				'currency'                  => strtolower( $currency ),
 				'description'               => $description,
 				'automatic_payment_methods' => [

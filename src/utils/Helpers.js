@@ -101,9 +101,9 @@ export const handleAddNewPost = async (
 	}
 };
 
-export const initiateAuth = async () => {
+export const initiateAuth = async ( source = 'default' ) => {
 	const response = await apiFetch( {
-		path: '/sureforms/v1/initiate-auth',
+		path: `/sureforms/v1/initiate-auth?source=${ source }`,
 		headers: {
 			'Content-Type': 'application/json',
 			'X-WP-Nonce': srfm_admin.template_picker_nonce,
@@ -252,7 +252,6 @@ const pushSmartTagToArray = (
 
 export const withoutSlugBlocks = [
 	'srfm/inline-button',
-	'srfm/hidden',
 	'srfm/page-break',
 	'srfm/separator',
 	'srfm/advanced-heading',
@@ -273,8 +272,10 @@ export const setFormSpecificSmartTags = ( updateBlockAttributes ) => {
 
 	const formSmartTags = [];
 	const formEmailSmartTags = [];
+	const formUploadSmartTags = [];
 	const formSmartTagsUniqueSlugs = [];
 	const formEmailSmartTagsUniqueSlugs = [];
+	const formUploadSmartTagsUniqueSlugs = [];
 
 	if ( typeof window.sureforms === 'undefined' ) {
 		window.sureforms = {};
@@ -282,6 +283,7 @@ export const setFormSpecificSmartTags = ( updateBlockAttributes ) => {
 
 	window.sureforms.formSpecificSmartTags = formSmartTags;
 	window.sureforms.formSpecificEmailSmartTags = formEmailSmartTags;
+	window.sureforms.formSpecificUploadSmartTags = formUploadSmartTags;
 
 	if ( ! savedBlocks?.length ) {
 		return;
@@ -305,8 +307,17 @@ export const setFormSpecificSmartTags = ( updateBlockAttributes ) => {
 		[ 'srfm/email' ]
 	);
 
+	pushSmartTagToArray(
+		savedBlocks,
+		blockSlugs,
+		formUploadSmartTags,
+		formUploadSmartTagsUniqueSlugs,
+		[ 'srfm/upload' ]
+	);
+
 	window.sureforms.formSpecificSmartTags = formSmartTags;
 	window.sureforms.formSpecificEmailSmartTags = formEmailSmartTags;
+	window.sureforms.formSpecificUploadSmartTags = formUploadSmartTags;
 };
 
 /**
@@ -796,6 +807,38 @@ export const setDefaultFormAttributes = ( formAttributes, postMeta ) => {
 			postMeta[ key ] = formAttributes[ key ].default;
 		}
 	} );
+};
+
+/**
+ * Converts a JSON-encoded string to an object if valid, otherwise returns null.
+ *
+ * @param {string} obj - The JSON-encoded string to decode.
+ * @return {Object|null} The decoded object value for the given key, or null if invalid JSON or key not found.
+ */
+export const decodeJson = ( obj ) => {
+	if ( ! obj ) {
+		return null;
+	}
+
+	try {
+		const decoded = JSON.parse( obj );
+		if ( decoded && typeof decoded === 'object' ) {
+			return decoded;
+		}
+	} catch ( e ) {
+		console.warn( 'SRFM message: Invalid JSON string:', obj, e );
+	}
+	return null;
+};
+
+/**
+ * * Creates a deep copy of an array or object using JSON serialization.
+ *
+ * @param {Array|Object} arrayOrObject - The array or object to copy.
+ * @return {Array|Object} - A deep copy of the input array or object.
+ */
+export const deepCopy = ( arrayOrObject ) => {
+	return JSON.parse( JSON.stringify( arrayOrObject, null, 2 ) );
 };
 
 /**

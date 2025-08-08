@@ -8,10 +8,8 @@
 
 namespace SRFM\Inc\Global_Settings;
 
-use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Helper;
 use SRFM\Inc\Traits\Get_Instance;
-use WP_Query;
 use WP_REST_Request;
 use WP_REST_Response;
 
@@ -95,12 +93,11 @@ class Email_Summary {
 	 * @return string HTML table with entries count.
 	 */
 	public static function get_total_entries_for_week() {
-		$args = [
-			'post_type'      => SRFM_FORMS_POST_TYPE,
-			'posts_per_page' => -1,
-		];
+		// Calculate timestamp for 7 days ago (last week).
+		$week_ago_timestamp = strtotime( '-7 days' );
 
-		$query = new WP_Query( $args );
+		// Use the common helper function to get forms with entry counts.
+		$forms_data = Helper::get_forms_with_entry_counts( $week_ago_timestamp );
 
 		$admin_user_name = get_user_by( 'id', 1 ) ? get_user_by( 'id', 1 )->display_name : 'Admin';
 
@@ -120,27 +117,17 @@ class Email_Summary {
 		$forms_table_rows   = '';
 		$row_index          = 0;
 
-		if ( $query->have_posts() ) {
-			while ( $query->have_posts() ) {
-				$query->the_post();
-				global $post;
-
-				// Calculate timestamp for 7 days ago (last week).
-				$week_ago_timestamp = strtotime( '-7 days' );
-
-				// Get entries count after the timestamp for this specific form.
-				$entry_count = Entries::get_entries_count_after( $week_ago_timestamp, Helper::get_integer_value( $post->ID ) );
-
-				if ( $entry_count > 0 ) {
-					$forms_with_entries++;
-					$total_entries    += $entry_count;
-					$bg_color          = 0 === $row_index % 2 ? '#ffffff' : '#f2f2f2;';
-					$forms_table_rows .= '<tr style="background-color: ' . $bg_color . ';">';
-					$forms_table_rows .= '<td style="padding: 10px;">' . esc_html( get_the_title() ) . '</td>';
-					$forms_table_rows .= '<td style="padding: 10px;">' . esc_html( Helper::get_string_value( $entry_count ) ) . '</td>';
-					$forms_table_rows .= '</tr>';
-					$row_index++;
-				}
+		// Process forms data from the helper function.
+		foreach ( $forms_data as $form_data ) {
+			if ( $form_data['count'] > 0 ) {
+				$forms_with_entries++;
+				$total_entries    += $form_data['count'];
+				$bg_color          = 0 === $row_index % 2 ? '#ffffff' : '#f2f2f2;';
+				$forms_table_rows .= '<tr style="background-color: ' . $bg_color . ';">';
+				$forms_table_rows .= '<td style="padding: 10px;">' . esc_html( $form_data['title'] ) . '</td>';
+				$forms_table_rows .= '<td style="padding: 10px;">' . esc_html( Helper::get_string_value( $form_data['count'] ) ) . '</td>';
+				$forms_table_rows .= '</tr>';
+				$row_index++;
 			}
 		}
 
@@ -161,8 +148,6 @@ class Email_Summary {
 		}
 
 		$table_html .= '</table>';
-
-		wp_reset_postdata();
 
 		return $table_html;
 	}
