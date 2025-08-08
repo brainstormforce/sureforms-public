@@ -14,7 +14,7 @@ export default () => {
 		],
 		[
 			__( 'Conditional Logic', 'sureforms' ),
-			__( 'Signature & Rating Fields', 'sureforms' ),
+			__( 'Signature & Rating', 'sureforms' ),
 		],
 		[
 			__( 'Calculation Forms', 'sureforms' ),
