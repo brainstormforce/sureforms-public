@@ -27,9 +27,9 @@ class Dropdown_Markup extends Base {
 	 * Unique instance identifier for this dropdown.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 1.10.0
 	 */
-	protected $unique_instance_id;
+	protected $unique_slug;
 
 	/**
 	 * Stores the multi select attribute value.
@@ -59,7 +59,7 @@ class Dropdown_Markup extends Base {
 	 * Static counter for generating unique dropdown instances.
 	 *
 	 * @var int
-	 * @since x.x.x
+	 * @since 1.10.0
 	 */
 	private static $instance_counter = 0;
 

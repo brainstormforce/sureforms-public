@@ -4,7 +4,7 @@ Tags: contact form, custom form, forms, contact form plugin, form builder
 Requires at least: 6.4
 Tested up to: 6.8.2
 Requires PHP: 7.4
-Stable tag: 1.9.1
+Stable tag: 1.10.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -266,6 +266,8 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 == Changelog ==
 = x.x.x =
 * Improvement: Redesigned email summary template with updated layout and styling.
+= 1.10.0 - 7th August 2025 =
+* New: Introduced CPT Creation in Business Plan.
 * Fix: Resolved an issue with dropdown block when same form is embedded twice in a single page.
 = 1.9.1 - 31st July 2025 =
 * New: Added a dashboard widget to display form submission statistics and recent entries.
@@ -282,14 +284,6 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 * Fix: Resolved number field not accepting zeros after the decimal in default values.
 * Fix: Resolved the "Form deleted or unavailable" error when changing the form in the SureForms form block.
 * Fix: Resolved an issue where a horizontal scrollbar appeared in mobile view when the form was used inside a Spectra container.
-= 1.8.0 - 10th July 2025 =
-* Improvement: Removed HTML support for blocks such as Heading, Image, Separator, and Icon when used inside SureForms, as dynamic blocks do not support HTML editing.
-* Improvement: Resolved an issue where reCAPTCHA was not functioning correctly, ensuring proper verification and improved form security.
-* Improvement: SureForms entries now use the timezone set in WordPress General Settings.
-* Fix: Addressed accessibility issues related to required field announcements.
-* Fix: Corrected the email summary report to display the accurate number of entries for the past week.
-* Fix: Resolved a display issue with form confirmation query parameters on new forms.
-* Fix: Resolved a fatal error from incorrect InnerBlocks usage that caused editor and frontend crashes.
 
 The full changelog is available [here](https://sureforms.com/whats-new/).
 
