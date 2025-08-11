@@ -161,22 +161,35 @@ class Email_Template {
 								}
 							}
 						} elseif ( ! empty( $value ) && is_string( $value ) && filter_var( $value, FILTER_VALIDATE_URL ) ) {
+							ob_start();
+							?>
+								<a target="_blank" href="<?php echo esc_attr( urldecode( $value ) ); ?>">
+									<?php echo esc_html( esc_url( $value ) ); ?>
+								</a>
+							<?php
+							$template_html = ob_get_clean();
+							// Apply filter.
 							$render_url = apply_filters(
 								'srfm_email_template_render_url',
-								'<a target="_blank" href="' . esc_attr( urldecode( $value ) ) . '">' . esc_html( esc_url( $value ) ) . '</a>',
+								$template_html,
 								[
 									'block_type' => $field_name,
 									'submission_item_value' => $value,
 								]
 							);
-
-							// validate the rendered URL.
-							if ( empty( $render_url ) || ! is_string( $render_url ) ) {
-								$render_url = '<a target="_blank" href="' . esc_attr( urldecode( $value ) ) . '">' . esc_html( esc_url( $value ) ) . '</a>';
+							// Validate fallback.
+							if ( empty( $render_url ) ) {
+								ob_start();
+								?>
+									<a target="_blank" href="<?php echo esc_attr( urldecode( $value ) ); ?>">
+										<?php echo esc_html( esc_url( $value ) ); ?>
+									</a>
+								<?php
+								$render_url = ob_get_clean();
 							}
 
 							echo wp_kses(
-								$render_url,
+								Helper::get_string_value( $render_url ),
 								[
 									'a'   => [
 										'href'   => [],
