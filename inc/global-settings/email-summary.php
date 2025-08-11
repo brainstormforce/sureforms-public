@@ -133,32 +133,31 @@ class Email_Summary {
 				</tr>
 			</thead>
 			<tbody>
-				<?php if ( $forms_with_entries > 0 ) : ?>
-					<?php foreach ( $forms_table_rows as $row_data ) : ?>
+				<?php if ( $forms_with_entries > 0 ) { ?>
+					<?php foreach ( $forms_table_rows as $row_data ) { ?>
 						<tr style="background-color: <?php echo esc_attr( $row_data['bg_color'] ); ?>;">
 							<td style="padding: 10px;"><?php echo esc_html( $row_data['title'] ); ?></td>
 							<td style="padding: 10px;"><?php echo esc_html( Helper::get_string_value( $row_data['count'] ) ); ?></td>
 						</tr>
-					<?php endforeach; ?>
-				<?php else : ?>
+					<?php } ?>
+				<?php } else { ?>
 					<tr>
 						<td colspan="2" style="padding: 10px;"><?php echo esc_html__( 'No entries found in the last week.', 'sureforms' ); ?></td>
 					</tr>
-				<?php endif; ?>
+				<?php } ?>
 			</tbody>
-			<?php if ( $forms_with_entries > 0 ) : ?>
+			<?php if ( $forms_with_entries > 0 ) { ?>
 				<tfoot>
 					<tr style="background-color: #333; color: #fff; text-align: left; font-weight: bold;">
 						<td style="padding: 10px;"><?php echo esc_html__( 'Total Entries', 'sureforms' ); ?></td>
 						<td style="padding: 10px;"><?php echo esc_html( Helper::get_string_value( $total_entries ) ); ?></td>
 					</tr>
 				</tfoot>
-			<?php endif; ?>
+			<?php } ?>
 		</table>
 		<?php
-		$table_html = ob_get_clean();
-
-		return $table_html;
+		$output = ob_get_clean();
+		return is_string( $output ) ? $output : '';
 	}
 
 	/**

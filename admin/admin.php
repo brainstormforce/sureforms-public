@@ -469,12 +469,12 @@ class Admin {
 		global $menu;
 		foreach ( $menu as $index => $item ) {
 			if ( isset( $item[2] ) && 'sureforms_menu' === $item[2] ) {
-				// phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- Adding notifications for menu item.
 				ob_start();
 				?>
 				<span class="srfm-update-dot"></span>
 				<?php
-				$dot_html           = ob_get_clean();
+				$dot_html = ob_get_clean();
+				// phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- Adding notifications for menu item.
 				$menu[ $index ][0] .= $dot_html;
 				break;
 			}
@@ -484,14 +484,14 @@ class Admin {
 		if ( isset( $submenu['sureforms_menu'] ) ) {
 			foreach ( $submenu['sureforms_menu'] as $index => $sub_item ) {
 				if ( isset( $sub_item[2] ) && SRFM_ENTRIES === $sub_item[2] ) {
-					// phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- Adding notifications for submenu item.
 					ob_start();
 					?>
 					<span class="update-plugins count-<?php echo absint( $new_entries ); ?>">
 						<span class="plugin-count"><?php echo absint( $new_entries ); ?></span>
 					</span>
 					<?php
-					$badge_html                              = ob_get_clean();
+					$badge_html = ob_get_clean();
+					// phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- Adding notifications for submenu item.
 					$submenu['sureforms_menu'][ $index ][0] .= $badge_html;
 					break;
 				}

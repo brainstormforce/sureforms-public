@@ -187,8 +187,8 @@ class Export {
 
 				// Update the post content formId to the new post id.
 				$post_content = str_replace(
-					'\"formId\":' . esc_attr( $form_data['post']['ID'] ),
-					'\"formId\":' . esc_attr( $post_id ),
+					'\"formId\":' . intval( $form_data['post']['ID'] ),
+					'\"formId\":' . intval( $post_id ),
 					$post_content
 				);
 

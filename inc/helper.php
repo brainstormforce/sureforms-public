@@ -328,9 +328,9 @@ class Helper {
 					?>
 					<label id="srfm-label-<?php echo esc_attr( $block_id ); ?>" for="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>" class="srfm-block-label">
 						<?php echo wp_kses_post( $label ); ?>
-						<?php if ( $required ) : ?>
+						<?php if ( $required ) { ?>
 							<span class="srfm-required" aria-hidden="true"> *</span>
-						<?php endif; ?>
+						<?php } ?>
 					</label>
 					<?php
 					$markup = ob_get_clean();
@@ -378,21 +378,19 @@ class Helper {
 					ob_start();
 					?>
 					<?php echo wp_kses_post( $label ); ?>
-					<?php if ( $required ) : ?>
+					<?php if ( $required ) { ?>
 						<span class="srfm-required" aria-hidden="true"> *</span>
-					<?php endif; ?>
+					<?php } ?>
 					</label>
 					<?php
 					$markup = ob_get_clean();
-				} else {
-					$markup = '';
 				}
 				break;
 			default:
 				$markup = '';
 		}
 
-		return $markup;
+		return is_string( $markup ) ? $markup : '';
 	}
 
 	/**
@@ -421,7 +419,8 @@ class Helper {
 			<?php echo self::$srfm_svgs[ $icon ] ?? ''; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 		</span>
 		<?php
-		return ob_get_clean();
+		$output = ob_get_clean();
+		return is_string( $output ) ? $output : '';
 	}
 
 	/**

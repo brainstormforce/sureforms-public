@@ -108,14 +108,14 @@ class Post_Types {
 			<p class="sureform-blank-page-title"><?php echo esc_html( $title ); ?></p>
 			<p class="sureform-blank-page-subtitle"><?php echo esc_html( $subtitle ); ?></p>
 			<img src="<?php echo esc_url( SRFM_URL . '/images/' . $image . '.svg' ); ?>">
-			<?php if ( ! empty( $button_text ) && ! empty( $button_url ) ) : ?>
+			<?php if ( ! empty( $button_text ) && ! empty( $button_url ) ) { ?>
 				<div class="sureforms-add-new-form-container">
 					<a class="sf-add-new-form-button" href="<?php echo esc_url( $button_url ); ?>">
 						<div class="button-secondary"><?php echo esc_html( $button_text ); ?></div>
 					</a>
 					<?php echo wp_kses_post( $after_button ); ?>
 				</div>
-			<?php endif; ?>
+			<?php } ?>
 		</div>
 		<?php
 	}
@@ -147,7 +147,7 @@ class Post_Types {
 				'add-new-form',
 				esc_html__( 'Add New Form', 'sureforms' ),
 				$new_form_url,
-				$import_button
+				$import_button ? $import_button : ''
 			);
 		}
 
@@ -256,7 +256,7 @@ class Post_Types {
 		if ( 'sureforms_form' === $post->post_type ) {
 			ob_start();
 			?>
-			<a href="#" onclick="exportForm(<?php echo esc_attr( $post->ID ); ?>)"><?php echo esc_html__( 'Export', 'sureforms' ); ?></a>
+			<a href="#" onclick="exportForm(<?php echo esc_attr( strval( $post->ID ) ); ?>)"><?php echo esc_html__( 'Export', 'sureforms' ); ?></a>
 			<?php
 			$export_link       = ob_get_clean();
 			$actions['export'] = $export_link;
