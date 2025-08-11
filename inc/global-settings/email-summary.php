@@ -95,35 +95,39 @@ class Email_Summary {
 	 *
 	 * @since x.x.x
 	 */
-	private static function get_public_image_url( $filename, $source_path ) {
-		// Get upload directory info.
+	public static function get_public_image_url( $filename, $source_path ) {
+		// Sanitize filename.
+		$filename = basename( $filename );
+
+		// Validate allowed extensions.
+		$allowed_ext = [ 'png', 'jpg', 'jpeg', 'gif', 'svg' ];
+		$ext         = strtolower( pathinfo( $filename, PATHINFO_EXTENSION ) );
+		if ( ! in_array( $ext, $allowed_ext, true ) ) {
+			return '';
+		}
+
+		// Whitelist or sanitize source_path if possible.
+		$source_path = trailingslashit( ltrim( $source_path, '/' ) );
+
+		// Upload directory info.
 		$upload_dir           = wp_upload_dir();
 		$sureforms_upload_dir = trailingslashit( $upload_dir['basedir'] ) . 'sureforms/images/';
 		$sureforms_upload_url = trailingslashit( $upload_dir['baseurl'] ) . 'sureforms/images/';
 
 		// Create directory if it doesn't exist.
-		if ( ! file_exists( $sureforms_upload_dir ) ) {
-			if ( ! wp_mkdir_p( $sureforms_upload_dir ) ) {
-				// Fallback to plugin URL.
-				return esc_url( SRFM_URL . $source_path . $filename );
-			}
+		if ( ! file_exists( $sureforms_upload_dir ) && ! wp_mkdir_p( $sureforms_upload_dir ) ) {
+			// Fallback URL.
+			return esc_url( SRFM_URL . $source_path . $filename );
 		}
 
 		$target_file = $sureforms_upload_dir . $filename;
 		$target_url  = $sureforms_upload_url . $filename;
 
-		// If file doesn't exist in uploads, copy it from plugin assets.
+		// Copy if doesn't exist.
 		if ( ! file_exists( $target_file ) ) {
 			$source_file = SRFM_DIR . $source_path . $filename;
-			if ( file_exists( $source_file ) ) {
-				// Attempt to copy the file.
-				$copy_result = copy( $source_file, $target_file );
-				if ( ! $copy_result ) {
-					// Fallback to plugin URL.
-					return esc_url( SRFM_URL . $source_path . $filename );
-				}
-			} else {
-				// Fallback to plugin URL.
+			if ( ! file_exists( $source_file ) || ! copy( $source_file, $target_file ) ) {
+				// Fallback URL.
 				return esc_url( SRFM_URL . $source_path . $filename );
 			}
 		}
