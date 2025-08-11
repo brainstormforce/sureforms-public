@@ -186,7 +186,11 @@ class Export {
 				$post_id = wp_insert_post( $new_post );
 
 				// Update the post content formId to the new post id.
-				$post_content = str_replace( '\"formId\":' . $form_data['post']['ID'], '\"formId\":' . $post_id, $post_content );
+				$post_content = str_replace(
+					'\"formId\":' . esc_attr( $form_data['post']['ID'] ),
+					'\"formId\":' . esc_attr( $post_id ),
+					$post_content
+				);
 
 				// update the post content.
 				wp_update_post(

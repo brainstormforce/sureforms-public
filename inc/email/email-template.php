@@ -143,7 +143,7 @@ class Email_Template {
 						?>
 					<tr class="field-label">
 						<th style="font-weight: 500;font-size: 14px;color: #1E293B;padding: 8px 16px;background-color: #F1F5F9;text-align: left;">
-							<strong><?php echo wp_kses_post( html_entity_decode( $field_label ) ); ?>:<strong/>
+							<strong><?php echo wp_kses_post( html_entity_decode( $field_label ) ); ?>:</strong>
 						</th>
 					</tr>
 					<tr class="field-value">

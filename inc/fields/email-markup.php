@@ -122,7 +122,7 @@ class Email_Markup extends Base {
 					$this->placeholder_attr = '';
 					if ( ! empty( $placeholder ) ) {
 						$confirm_label_markup   = '';
-						$this->placeholder_attr = ' placeholder="' . $placeholder . '" ';
+						$this->placeholder_attr = ' placeholder="' . esc_attr( $placeholder ) . '" ';
 					}
 
 					?>

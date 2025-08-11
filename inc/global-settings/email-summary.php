@@ -101,53 +101,62 @@ class Email_Summary {
 
 		$admin_user_name = get_user_by( 'id', 1 ) ? get_user_by( 'id', 1 )->display_name : 'Admin';
 
-		$table_html  = '<b>' . __( 'Hello', 'sureforms' ) . ' ' . $admin_user_name . ',</b><br><br>';
-		$table_html .= '<span>' . __( 'Let\'s see how your forms performed in the last week', 'sureforms' ) . '</span><br><br>';
-		$table_html .= '<table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">';
-		$table_html .= '<thead>';
-		$table_html .= '<tr style="background-color: #333; color: #fff; text-align: left;">';
-		$table_html .= '<th style="padding: 10px;">' . __( 'Form Name', 'sureforms' ) . '</th>';
-		$table_html .= '<th style="padding: 10px;">' . __( 'Entries', 'sureforms' ) . '</th>';
-		$table_html .= '</tr>';
-		$table_html .= '</thead>';
-		$table_html .= '<tbody>';
-
 		$total_entries      = 0;
 		$forms_with_entries = 0;
-		$forms_table_rows   = '';
+		$forms_table_rows   = [];
 		$row_index          = 0;
 
 		// Process forms data from the helper function.
 		foreach ( $forms_data as $form_data ) {
 			if ( $form_data['count'] > 0 ) {
 				$forms_with_entries++;
-				$total_entries    += $form_data['count'];
-				$bg_color          = 0 === $row_index % 2 ? '#ffffff' : '#f2f2f2;';
-				$forms_table_rows .= '<tr style="background-color: ' . $bg_color . ';">';
-				$forms_table_rows .= '<td style="padding: 10px;">' . esc_html( $form_data['title'] ) . '</td>';
-				$forms_table_rows .= '<td style="padding: 10px;">' . esc_html( Helper::get_string_value( $form_data['count'] ) ) . '</td>';
-				$forms_table_rows .= '</tr>';
+				$total_entries     += $form_data['count'];
+				$bg_color           = 0 === $row_index % 2 ? '#ffffff' : '#f2f2f2;';
+				$forms_table_rows[] = [
+					'title'    => $form_data['title'],
+					'count'    => $form_data['count'],
+					'bg_color' => $bg_color,
+				];
 				$row_index++;
 			}
 		}
 
-		if ( $forms_with_entries > 0 ) {
-			$table_html .= $forms_table_rows;
-			$table_html .= '</tbody>';
-			$table_html .= '<tfoot>';
-			$table_html .= '<tr style="background-color: #333; color: #fff; text-align: left; font-weight: bold;">';
-			$table_html .= '<td style="padding: 10px;">' . esc_html__( 'Total Entries', 'sureforms' ) . '</td>';
-			$table_html .= '<td style="padding: 10px;">' . esc_html( Helper::get_string_value( $total_entries ) ) . '</td>';
-			$table_html .= '</tr>';
-			$table_html .= '</tfoot>';
-		} else {
-			$table_html .= '<tr>';
-			$table_html .= '<td colspan="2" style="padding: 10px;">' . esc_html__( 'No entries found in the last week.', 'sureforms' ) . '</td>';
-			$table_html .= '</tr>';
-			$table_html .= '</tbody>';
-		}
-
-		$table_html .= '</table>';
+		ob_start();
+		?>
+		<b><?php echo esc_html__( 'Hello', 'sureforms' ); ?> <?php echo esc_html( $admin_user_name ); ?>,</b><br><br>
+		<span><?php echo esc_html__( 'Let\'s see how your forms performed in the last week', 'sureforms' ); ?></span><br><br>
+		<table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+			<thead>
+				<tr style="background-color: #333; color: #fff; text-align: left;">
+					<th style="padding: 10px;"><?php echo esc_html__( 'Form Name', 'sureforms' ); ?></th>
+					<th style="padding: 10px;"><?php echo esc_html__( 'Entries', 'sureforms' ); ?></th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php if ( $forms_with_entries > 0 ) : ?>
+					<?php foreach ( $forms_table_rows as $row_data ) : ?>
+						<tr style="background-color: <?php echo esc_attr( $row_data['bg_color'] ); ?>;">
+							<td style="padding: 10px;"><?php echo esc_html( $row_data['title'] ); ?></td>
+							<td style="padding: 10px;"><?php echo esc_html( Helper::get_string_value( $row_data['count'] ) ); ?></td>
+						</tr>
+					<?php endforeach; ?>
+				<?php else : ?>
+					<tr>
+						<td colspan="2" style="padding: 10px;"><?php echo esc_html__( 'No entries found in the last week.', 'sureforms' ); ?></td>
+					</tr>
+				<?php endif; ?>
+			</tbody>
+			<?php if ( $forms_with_entries > 0 ) : ?>
+				<tfoot>
+					<tr style="background-color: #333; color: #fff; text-align: left; font-weight: bold;">
+						<td style="padding: 10px;"><?php echo esc_html__( 'Total Entries', 'sureforms' ); ?></td>
+						<td style="padding: 10px;"><?php echo esc_html( Helper::get_string_value( $total_entries ) ); ?></td>
+					</tr>
+				</tfoot>
+			<?php endif; ?>
+		</table>
+		<?php
+		$table_html = ob_get_clean();
 
 		return $table_html;
 	}
