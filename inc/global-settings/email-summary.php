@@ -175,10 +175,14 @@ class Email_Summary {
 								</tr>';
 							}
 
-							$table_html .= '</tbody><tfoot><tr style="background-color:#F9FAFB;font-weight:bold;">
-								<td style="padding:12px;font-size:14px;color:#111827;">' . esc_html__( 'Total Entries', 'sureforms' ) . '</td>
-								<td style="padding:12px;font-size:14px;color:#111827;text-align:right;">' . esc_html( Helper::get_string_value( $total_entries ) ) . '</td>
-							</tr></tfoot>';
+							$table_html .= '</tbody>
+							<tfoot>
+								<tr style="background-color:#F9FAFB;font-weight:bold;">
+									<td style="padding:12px;font-size:14px;color:#111827;border-bottom-left-radius:8px;">' . esc_html__( 'Total Entries', 'sureforms' ) . '</td>
+									<td style="padding:12px;font-size:14px;color:#111827;text-align:right;border-bottom-right-radius:8px;">' . esc_html( Helper::get_string_value( $total_entries ) ) . '</td>
+								</tr>
+							</tfoot>';
+
 						} else {
 							$table_html .= '<tr><td colspan="2" style="padding:12px;font-size:14px;color:#4B5563;">' . esc_html__( 'No entries found in the last week.', 'sureforms' ) . '</td></tr></tbody>';
 						}
