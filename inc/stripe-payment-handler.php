@@ -189,9 +189,9 @@ class Stripe_Payment_Handler {
 
 			\Stripe\Stripe::setApiKey( $secret_key );
 
-			// Calculate application fee.
+			// Calculate application fee - set to 0 if Pro license is active.
 			$application_fee_amount = 0;
-			if ( $application_fee > 0 ) {
+			if ( $application_fee > 0 && ! $this->is_pro_license_active() ) {
 				$application_fee_amount = intval( ( $amount * $application_fee ) / 100 );
 			}
 
@@ -215,7 +215,6 @@ class Stripe_Payment_Handler {
 			$stripe_account_id = $payment_settings['stripe_account_id'] ?? '';
 			if ( ! empty( $stripe_account_id ) && $application_fee_amount > 0 ) {
 				$payment_intent_data['application_fee_amount'] = $application_fee_amount;
-				// $payment_intent_data['on_behalf_of']           = $stripe_account_id;
 			}
 
 			$payment_intent = \Stripe\PaymentIntent::create( $payment_intent_data );
@@ -311,6 +310,101 @@ class Stripe_Payment_Handler {
 			error_log( 'SureForms Payment Verification Error: ' . $e->getMessage() );
 			return false;
 		}
+	}
+
+	/**
+	 * Check if the SureForms Pro license is active
+	 *
+	 * @return bool True if the SureForms Pro license is active, false otherwise.
+	 * @since x.x.x
+	 */
+	private function is_pro_license_active() {
+		// First check if Pro version is installed.
+		if ( ! defined( 'SRFM_PRO_VER' ) ) {
+			return false;
+		}
+
+		// Check if the licensing class exists and license is active.
+		if ( class_exists( 'SRFM_Pro\Admin\Licensing' ) ) {
+			$licensing = \SRFM_Pro\Admin\Licensing::get_instance();
+			if ( $licensing && method_exists( $licensing, 'is_license_active' ) ) {
+				return $licensing->is_license_active();
+			}
+		}
+
+		// Fallback: Check license status via API (similar to AI form builder).
+		return $this->check_license_via_api();
+	}
+
+	/**
+	 * Check license status via credits.startertemplates.com API
+	 *
+	 * @return bool True if license is active, false otherwise.
+	 * @since x.x.x
+	 */
+	private function check_license_via_api() {
+		// Get license key for API authentication.
+		$license_key = $this->get_license_key();
+		if ( empty( $license_key ) ) {
+			return false;
+		}
+
+		// Make API request to check license status.
+		$api_url = SRFM_AI_MIDDLEWARE . 'license/verify';
+		$response = wp_remote_post(
+			$api_url,
+			[
+				'headers' => [
+					'X-Token'      => base64_encode( $license_key ), // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
+					'Content-Type' => 'application/json',
+					'Referer'      => site_url(),
+				],
+				'timeout' => 30,
+				'body'    => wp_json_encode( [
+					'action' => 'verify_license',
+					'domain' => site_url(),
+				] ),
+			]
+		);
+
+		// Default to inactive if API call fails.
+		$is_active = false;
+
+		if ( ! is_wp_error( $response ) && 200 === wp_remote_retrieve_response_code( $response ) ) {
+			$response_body = wp_remote_retrieve_body( $response );
+			$data = json_decode( $response_body, true );
+
+			if ( is_array( $data ) && isset( $data['license_active'] ) ) {
+				$is_active = (bool) $data['license_active'];
+			}
+		}
+
+		return $is_active;
+	}
+
+	/**
+	 * Get license key for API authentication
+	 *
+	 * @return string License key or empty string if not available.
+	 * @since x.x.x
+	 */
+	private function get_license_key() {
+		// Only proceed if Pro version is installed.
+		if ( ! defined( 'SRFM_PRO_VER' ) || ! class_exists( 'SRFM_Pro\Admin\Licensing' ) ) {
+			return '';
+		}
+
+		$licensing = \SRFM_Pro\Admin\Licensing::get_instance();
+		if ( ! $licensing || ! method_exists( $licensing, 'licensing_setup' ) ) {
+			return '';
+		}
+
+		$license_setup = $licensing->licensing_setup();
+		if ( ! is_object( $license_setup ) || ! method_exists( $license_setup, 'settings' ) ) {
+			return '';
+		}
+
+		return $license_setup->settings()->license_key ?? '';
 	}
 }
 
