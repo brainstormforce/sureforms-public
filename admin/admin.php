@@ -62,7 +62,6 @@ class Admin {
 
 		add_action( 'current_screen', [ $this, 'enable_gutenberg_for_sureforms' ], 100 );
 		add_action( 'admin_notices', [ $this, 'srfm_pro_version_compatibility' ] );
-		add_action( 'admin_notices', [ $this, 'add_smtp_warning_notice' ] );
 
 		// Handle entry actions.
 		add_action( 'admin_init', [ $this, 'handle_entry_actions' ] );
@@ -1061,97 +1060,6 @@ class Admin {
 		if ( ! empty( $message ) ) {
 			// Phpcs ignore comment is required as $message variable is already escaped.
 			echo '<div class="notice notice-warning">' . wp_kses_post( $message ) . '</div>';
-		}
-	}
-
-	/**
-	 * Add SMTP warning admin notice if no SMTP plugin is active
-	 *
-	 * Hooked - admin_notices
-	 *
-	 * @return void
-	 * @since 1.9.1
-	 */
-	public function add_smtp_warning_notice() {
-		if ( ! current_user_can( 'manage_options' ) ) {
-			return;
-		}
-		// Only show on dashboard or SureForms admin pages.
-		$screen = get_current_screen();
-		if ( ! $screen || ( false === strpos( $screen->id, 'sureforms' ) && 'dashboard' !== $screen->id ) ) {
-			return;
-		}
-		// Dismiss logic.
-		if ( isset( $_GET['srfm_dismiss_smtp_notice'] ) && '1' === $_GET['srfm_dismiss_smtp_notice'] ) {
-			// Verify nonce for security.
-			if ( ! isset( $_GET['_wpnonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'srfm_dismiss_smtp_notice' ) ) {
-				return;
-			}
-			update_user_meta( get_current_user_id(), 'srfm_dismiss_smtp_notice', 1 );
-			return;
-		}
-		if ( get_user_meta( get_current_user_id(), 'srfm_dismiss_smtp_notice', true ) ) {
-			return;
-		}
-		// Determine SureMail plugin status and link.
-		$plugin_file = 'suremails/suremails.php';
-		if ( file_exists( WP_PLUGIN_DIR . '/suremails/suremails.php' ) && is_plugin_active( $plugin_file ) ) {
-			// SureMail is active, do not show the notice.
-			return;
-		}
-		if ( ! Helper::is_any_smtp_plugin_active() ) {
-			if ( file_exists( WP_PLUGIN_DIR . '/suremails/suremails.php' ) ) {
-				if ( is_plugin_active( $plugin_file ) ) {
-					$suremail_url = admin_url( 'options-general.php?page=suremail#/dashboard' );
-				} else {
-					$suremail_url = wp_nonce_url( admin_url( 'plugins.php?action=activate&plugin=' . $plugin_file ), 'activate-plugin_' . $plugin_file );
-				}
-			} else {
-				$suremail_url = admin_url( 'plugin-install.php?s=suremail&tab=search&type=term' );
-			}
-			$dismiss_url = wp_nonce_url( add_query_arg( 'srfm_dismiss_smtp_notice', '1' ), 'srfm_dismiss_smtp_notice' );
-			printf(
-				'<div class="notice notice-warning is-dismissible srfm-smtp-warning" data-dismiss-url="%1$s"><p>%2$s</p></div>',
-				esc_url( $dismiss_url ),
-				sprintf(
-					/* translators: 1: line break, 2: SureMail link opening tag, 3: SureMail link closing tag */
-					esc_html__( 'It looks like there\'s no SMTP plugin running on your site. That means emails sent from SureForms might not go through.%1$sYou can use %2$sSureMail%3$s to get email delivery working.', 'sureforms' ),
-					'<br />',
-					'<a href="' . esc_url( $suremail_url ) . '" target="_blank">',
-					'</a>'
-				)
-			);
-			?>
-			<script type="text/javascript">
-			document.addEventListener('DOMContentLoaded', function() {
-				// Handle SMTP notice dismissal using event delegation
-				// This works even if the dismiss button is added dynamically by WordPress
-				document.addEventListener('click', function(e) {
-					// Check if clicked element is a dismiss button within our SMTP notice
-					if (e.target.classList.contains('notice-dismiss') && e.target.closest('.srfm-smtp-warning')) {
-						const smtpNotice = e.target.closest('.srfm-smtp-warning');
-						const dismissUrl = smtpNotice.dataset.dismissUrl;
-
-						if (dismissUrl) {
-							// Security: Validate URL is safe before redirecting
-							try {
-								const url = new URL(dismissUrl, window.location.origin);
-								// Only allow same-origin URLs for security
-								if (url.origin === window.location.origin && url.protocol === window.location.protocol) {
-									window.location.href = url.href;
-								}
-							} catch (error) {
-								// Invalid URL - ignore the redirect for security
-								console.warn('Invalid dismiss URL detected:', dismissUrl);
-							}
-							e.preventDefault();
-							e.stopPropagation();
-						}
-					}
-				});
-			});
-			</script>
-			<?php
 		}
 	}
 
