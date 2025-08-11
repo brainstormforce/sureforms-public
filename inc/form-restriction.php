@@ -173,7 +173,7 @@ class Form_Restriction {
 		$form_restriction = self::get_form_restriction_setting( $form_id );
 
 		// Get the description text.
-		$form_restriction_message = $form_restriction['message'] ?? esc_html__( 'Oops! This form is now closed as we\'ve received all the entries. Stay tuned for more!', 'sureforms' );
+		$form_restriction_message = $form_restriction['message'] ?? Translatable::get_default_form_restriction_message();
 
 		ob_start();
 		?>
