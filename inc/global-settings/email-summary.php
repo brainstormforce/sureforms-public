@@ -87,6 +87,51 @@ class Email_Summary {
 	}
 
 	/**
+	 * Get or copy image to uploads folder.
+	 *
+	 * @param string $filename The image filename.
+	 * @param string $source_path The source path relative to plugin directory.
+	 * @return string The public URL of the image.
+	 *
+	 * @since x.x.x
+	 */
+	private static function get_public_image_url( $filename, $source_path ) {
+		// Get upload directory info.
+		$upload_dir           = wp_upload_dir();
+		$sureforms_upload_dir = trailingslashit( $upload_dir['basedir'] ) . 'sureforms/images/';
+		$sureforms_upload_url = trailingslashit( $upload_dir['baseurl'] ) . 'sureforms/images/';
+
+		// Create directory if it doesn't exist.
+		if ( ! file_exists( $sureforms_upload_dir ) ) {
+			if ( ! wp_mkdir_p( $sureforms_upload_dir ) ) {
+				// Fallback to plugin URL.
+				return esc_url( SRFM_URL . $source_path . $filename );
+			}
+		}
+
+		$target_file = $sureforms_upload_dir . $filename;
+		$target_url  = $sureforms_upload_url . $filename;
+
+		// If file doesn't exist in uploads, copy it from plugin assets.
+		if ( ! file_exists( $target_file ) ) {
+			$source_file = SRFM_DIR . $source_path . $filename;
+			if ( file_exists( $source_file ) ) {
+				// Attempt to copy the file.
+				$copy_result = copy( $source_file, $target_file );
+				if ( ! $copy_result ) {
+					// Fallback to plugin URL.
+					return esc_url( SRFM_URL . $source_path . $filename );
+				}
+			} else {
+				// Fallback to plugin URL.
+				return esc_url( SRFM_URL . $source_path . $filename );
+			}
+		}
+
+		return esc_url( $target_url );
+	}
+
+	/**
 	 * Function to get the total number of entries for the last week.
 	 *
 	 * @since 0.0.2
@@ -122,7 +167,7 @@ class Email_Summary {
 		<body style="font-family:Figtree,Arial,sans-serif;background-color:#F1F5F9;margin:0;padding:32px;">
 			<div style="max-width:640px;margin:0 auto;">
 				<div style="margin-bottom:24px;text-align:left;">
-					<img src="<?php echo esc_url( SRFM_URL . 'admin/assets/sureforms-logo-full.png' ); ?>"
+					<img src="<?php echo esc_url( self::get_public_image_url( 'sureforms-logo-full.png', 'admin/assets/' ) ); ?>"
 						alt="<?php esc_attr_e( 'SureForms Logo', 'sureforms' ); ?>"
 						width="192" height="32"
 						style="display:inline-block;">
@@ -203,7 +248,7 @@ class Email_Summary {
 					<!-- OttoKit Promotion Section -->
 					<div style="margin:32px 24px;padding:16px;border:0.5px solid #E5E7EB;border-radius:8px;background:#FFFFFF;text-align:left;">
 						<div style="margin-bottom:4px;">
-							<img src="<?php echo esc_url( SRFM_URL . 'images/suretriggers.svg' ); ?>" alt="OttoKit Logo" width="20" height="20" style="border-radius:6px;">
+							<img src="<?php echo esc_url( self::get_public_image_url( 'ottokit.png', 'admin/assets/' ) ); ?>" alt="OttoKit Logo" width="20" height="20" style="border-radius:6px;">
 						</div>
 						<p style="font-size:14px;line-height:20px;font-weight:600;color:#111827;margin:0 0 4px;">
 							<?php esc_html_e( 'Automate Workflows with OttoKit', 'sureforms' ); ?>
@@ -227,7 +272,7 @@ class Email_Summary {
 					<hr style="margin:16px 24px;border:none;border-top:1px solid #eee;">
 
 					<div style="text-align:center;margin-top:16px;">
-						<img src="<?php echo esc_url( SRFM_URL . 'admin/assets/sureforms-logo-full.png' ); ?>"
+						<img src="<?php echo esc_url( self::get_public_image_url( 'sureforms-logo-full.png', 'admin/assets/' ) ); ?>"
 							alt="<?php esc_attr_e( 'SureForms Logo', 'sureforms' ); ?>"
 							height="20"
 							style="display:block;margin:0 auto;">
