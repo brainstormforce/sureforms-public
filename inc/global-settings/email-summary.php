@@ -194,7 +194,7 @@ class Email_Summary {
 						<p style="font-size:14px;color:#4B5563;margin:0 0 16px;">
 							<?php
 							printf(
-								esc_html__( "Here's your SureForms weekly email summary of form submissions for %1\$s to %2\$s.", 'sureforms' ),
+								__( "Here's your SureForms weekly email summary of form submissions for %1\$s to %2\$s.", 'sureforms' ),
 								'<strong>' . esc_html( $from_date ) . '</strong>',
 								'<strong>' . esc_html( $to_date ) . '</strong>'
 							);
