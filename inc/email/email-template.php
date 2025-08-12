@@ -142,7 +142,7 @@ class Email_Template {
 						$field_label = $label ? Helper::decrypt( $label ) : '';
 						?>
 					<tr class="field-label">
-						<th style="font-weight: 500;font-size: 14px;color: #1E293B;padding: 8px 16px;background-color: #F1F5F9;text-align: left;">
+						<th style="font-weight: 500;font-size: 14px;color: #1E293B;padding: 8px 16px;background-color: #F1F5F9;text-align: left;word-break: break-word;">
 							<strong><?php echo wp_kses_post( html_entity_decode( $field_label ) ); ?>:</strong>
 						</th>
 					</tr>
