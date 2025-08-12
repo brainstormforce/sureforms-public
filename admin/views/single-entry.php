@@ -413,7 +413,7 @@ class Single_Entry {
 												text-decoration: underline;
 											}
 										</style>
-							<td><b><?php echo $label ? wp_kses_post( html_entity_decode( Helper::decrypt( $label ) ) ) : ''; ?></b></td>
+							<td style="word-break: break-word;"><b><?php echo $label ? wp_kses_post( html_entity_decode( Helper::decrypt( $label ) ) ) : ''; ?></b></td>
 							<?php
 							if ( false !== strpos( $field_name, 'srfm-upload' ) ) {
 								?>
