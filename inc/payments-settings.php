@@ -139,7 +139,7 @@ class Payments_Settings {
 		$client_id = 'ca_KOXfLe7jv1m4L0iC4KNEMc5fT8AXWWuL';
 
 		// Use the same redirect URI pattern as checkout-plugins-stripe-woo.
-		$redirect_url        = admin_url( 'admin.php?page=wc-settings&tab=cpsw_api_settings' );
+		$redirect_url        = admin_url( 'admin.php?page=sureforms_form_settings&tab=payments-settings' );
 		$nonce               = wp_create_nonce( 'stripe-connect' );
 		$redirect_with_nonce = add_query_arg( 'cpsw_connect_nonce', $nonce, $redirect_url );
 
@@ -179,12 +179,12 @@ class Payments_Settings {
 	public function intercept_stripe_callback() {
 		// Check if this is a Stripe callback for our flow.
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
-		if ( ! isset( $_GET['page'] ) || 'wc-settings' !== $_GET['page'] ) {
+		if ( ! isset( $_GET['page'] ) || 'sureforms_form_settings' !== $_GET['page'] ) {
 			return;
 		}
 
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
-		if ( ! isset( $_GET['tab'] ) || 'cpsw_api_settings' !== $_GET['tab'] ) {
+		if ( ! isset( $_GET['tab'] ) || 'payments-settings' !== $_GET['tab'] ) {
 			return;
 		}
 
