@@ -138,15 +138,16 @@ class Email_Summary {
 	/**
 	 * Function to get the total number of entries for the last week.
 	 *
-	 * @param array<mixed>|null $forms_data Optional. Forms data with entry counts. If null, fetches from database.
+	 * @param array<array{form_id:int,title:string,count:int}>|null $forms_data Optional. Forms data with entry counts. If null, fetches from database.
 	 *
 	 * @since 0.0.2
 	 * @return string HTML table with entries count.
 	 */
 	public static function get_total_entries_for_week( $forms_data = null ) {
+		// Calculate timestamp for 7 days ago (last week).
+		$week_ago_timestamp = strtotime( '-7 days' );
+
 		if ( null === $forms_data ) {
-			// Calculate timestamp for 7 days ago (last week).
-			$week_ago_timestamp = strtotime( '-7 days' );
 			// Use the helper function to get forms with entry counts.
 			$forms_data = Helper::get_forms_with_entry_counts( $week_ago_timestamp );
 		}
