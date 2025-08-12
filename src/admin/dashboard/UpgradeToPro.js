@@ -18,7 +18,7 @@ export default () => {
 		],
 		[
 			__( 'Calculation Forms', 'sureforms' ),
-			__( 'And Much More..', 'sureforms' ),
+			__( 'And Much More…', 'sureforms' ),
 		],
 	];
 

@@ -111,7 +111,7 @@ class Admin {
 	 * @return int|false
 	 */
 	public static function get_first_form_creation_time_stamp() {
-		return Helper::get_srfm_option( 'srfm_first_form_created_at', false );
+		return Helper::get_srfm_option( 'first_form_created_at', false );
 	}
 
 	/**
@@ -169,7 +169,7 @@ class Admin {
 				return;
 			}
 
-			Helper::update_srfm_option( 'srfm_first_form_created_at', $timestamp );
+			Helper::update_srfm_option( 'first_form_created_at', $timestamp );
 		}
 	}
 
