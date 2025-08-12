@@ -252,6 +252,22 @@ class Form_Submit {
 
 		$current_form_id = $form_data['form-id'];
 
+		/**
+		 * If someone tries to access the form submit endpoint directly, we need to check if the form is restricted.
+		 * If a form is loaded in a browser window and the limit exceeds then the form will not be submitted.
+		 */
+		$form_id = Helper::get_integer_value( $current_form_id );
+		if ( Form_Restriction::is_form_restricted( $form_id ) ) {
+			$form_restriction = Form_Restriction::get_form_restriction_setting( $form_id );
+			// If the form is restricted, return an error response.
+			$form_restriction_message = $form_restriction['description'] ?? esc_html__( 'Oops! This form is now closed as we\'ve received all the entries. Stay tuned for more!', 'sureforms' );
+			wp_send_json_error(
+				[
+					'message' => $form_restriction_message,
+				]
+			);
+		}
+
 		// Check whether the form is valid.
 		if ( ! Helper::is_valid_form( $current_form_id ) ) {
 			wp_send_json_error(

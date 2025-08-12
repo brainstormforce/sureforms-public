@@ -1082,7 +1082,8 @@ class Post_Types {
 
 		$meta_value = json_decode( $meta_value, true );
 
-		if ( JSON_ERROR_NONE !== json_last_error() || ! is_array( $meta_value ) ) {
+		if ( ! is_array( $meta_value ) || json_last_error() !== JSON_ERROR_NONE ) {
+			// If the JSON is invalid, return an empty array as JSON.
 			return wp_json_encode( [] );
 		}
 

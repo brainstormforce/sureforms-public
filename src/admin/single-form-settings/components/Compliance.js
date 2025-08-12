@@ -72,7 +72,7 @@ const Compliance = ( { complianceData } ) => {
 	];
 
 	return (
-		<TabContentWrapper title={ __( 'General Settings', 'sureforms' ) }>
+		<TabContentWrapper className="!mt-0">
 			<>
 				<Title
 					size="xs"
