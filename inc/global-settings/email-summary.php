@@ -138,15 +138,18 @@ class Email_Summary {
 	/**
 	 * Function to get the total number of entries for the last week.
 	 *
+	 * @param array<mixed>|null $forms_data Optional. Forms data with entry counts. If null, fetches from database.
+	 *
 	 * @since 0.0.2
 	 * @return string HTML table with entries count.
 	 */
-	public static function get_total_entries_for_week() {
-		// Calculate timestamp for 7 days ago (last week).
-		$week_ago_timestamp = strtotime( '-7 days' );
-
-		// Use the helper function to get forms with entry counts.
-		$forms_data = Helper::get_forms_with_entry_counts( $week_ago_timestamp );
+	public static function get_total_entries_for_week( $forms_data = null ) {
+		if ( null === $forms_data ) {
+			// Calculate timestamp for 7 days ago (last week).
+			$week_ago_timestamp = strtotime( '-7 days' );
+			// Use the helper function to get forms with entry counts.
+			$forms_data = Helper::get_forms_with_entry_counts( $week_ago_timestamp );
+		}
 
 		$admin_user_name = get_user_by( 'id', 1 ) ? get_user_by( 'id', 1 )->display_name : 'Admin';
 		$from_date       = date_i18n( 'F j, Y', $week_ago_timestamp );
@@ -190,7 +193,7 @@ class Email_Summary {
 						<p style="font-size:14px;color:#4B5563;margin:0 0 16px;">
 							<?php
 							printf(
-								esc_html__( "Here's your SureForms report for the last 7 days, from %1\$s to %2\$s.", 'sureforms' ),
+								esc_html__( "Here's your SureForms weekly email summary of form submissions for %1\$s to %2\$s.", 'sureforms' ),
 								'<strong>' . esc_html( $from_date ) . '</strong>',
 								'<strong>' . esc_html( $to_date ) . '</strong>'
 							);
@@ -201,8 +204,8 @@ class Email_Summary {
 						$table_html = '<table style="border:1px solid #E5E7EB;border-radius:8px;box-shadow:0 1px 1px rgba(0,0,0,0.05);margin-top:16px;width:100%;border-collapse:separate;border-spacing:0;">
 							<thead>
 								<tr style="background-color:#F9FAFB;">
-									<th style="padding:8px 12px;font-size:14px;font-weight:500;color:#111827;text-align:left;border-top-left-radius:8px;">' . esc_html__( 'Form Name', 'sureforms' ) . '</th>
-									<th style="padding:8px 12px;font-size:14px;font-weight:500;color:#111827;text-align:right;width:146px;border-top-right-radius:8px;">' . esc_html__( 'Entries', 'sureforms' ) . '</th>
+									<th style="padding:8px 12px;font-size:14px;font-weight:500;color:#111827;text-align:left;border-top-left-radius:8px;border-bottom:0.5px solid #E5E7EB;">' . esc_html__( 'Form Name', 'sureforms' ) . '</th>
+									<th style="padding:8px 12px;font-size:14px;font-weight:500;color:#111827;text-align:right;width:146px;border-top-right-radius:8px;border-bottom:0.5px solid #E5E7EB;">' . esc_html__( 'Entries', 'sureforms' ) . '</th>
 								</tr>
 							</thead>
 							<tbody>';
@@ -210,17 +213,16 @@ class Email_Summary {
 						$total_entries = 0;
 
 						if ( ! empty( $forms_data ) ) {
-							foreach ( $forms_data as $index => $form ) {
+							foreach ( $forms_data as $form ) {
 								if ( $form['count'] <= 0 ) {
 									continue;
 								}
 
 								$total_entries += $form['count'];
-								$bg_color       = 0 === $index % 2 ? '#FFFFFF' : '#F9FAFB';
 
-								$table_html .= '<tr style="background-color:' . esc_attr( $bg_color ) . ';">
-									<td style="padding:12px;font-size:14px;color:#4B5563;">' . esc_html( $form['title'] ) . '</td>
-									<td style="padding:12px;font-size:14px;color:#4B5563;text-align:right;">' . esc_html( Helper::get_string_value( $form['count'] ) ) . '</td>
+								$table_html .= '<tr style="background-color:#FFFFFF;">
+									<td style="padding:12px;font-size:14px;color:#4B5563;border-bottom:0.5px solid #E5E7EB;">' . esc_html( $form['title'] ) . '</td>
+									<td style="padding:12px;font-size:14px;color:#4B5563;text-align:right;border-bottom:0.5px solid #E5E7EB;">' . esc_html( Helper::get_string_value( $form['count'] ) ) . '</td>
 								</tr>';
 							}
 
@@ -267,10 +269,14 @@ class Email_Summary {
 					</div>
 
 					<p style="font-size:12px;color:#9CA3AF;text-align:center;margin:16px 0;">
-						<a href="<?php echo esc_url( admin_url( 'admin.php?page=sureforms_form_settings&tab=general-settings' ) ); ?>"
-						style="color:#9CA3AF;text-decoration:none;">
-							<?php esc_html_e( 'Manage Email Summaries from your SureForms settings', 'sureforms' ); ?>
-						</a>
+						<?php
+						printf(
+							/* translators: %s: opening and closing anchor tag for SureForms settings link */
+							esc_html__( 'Manage Email Summaries from your %1$sSureForms settings%2$s', 'sureforms' ),
+							'<a href="' . esc_url( admin_url( 'admin.php?page=sureforms_form_settings&tab=general-settings' ) ) . '" style="color:#9CA3AF;text-decoration:underline;">',
+							'</a>'
+						);
+						?>
 					</p>
 
 					<hr style="margin:16px 24px;border:none;border-top:1px solid #eee;">
@@ -298,7 +304,20 @@ class Email_Summary {
 	 * @return void
 	 */
 	public static function send_entries_to_admin( $email_summary_options ) {
-		$entries_count_table = self::get_total_entries_for_week();
+		// Calculate timestamp for 7 days ago (last week).
+		$week_ago_timestamp = strtotime( '-7 days' );
+
+		$forms_data = Helper::get_forms_with_entry_counts( $week_ago_timestamp );
+
+		// Calculate total entries.
+		$total_entries = array_sum( wp_list_pluck( $forms_data, 'count' ) );
+
+		// If no entries at all, don't send the email.
+		if ( $total_entries <= 0 ) {
+			return;
+		}
+
+		$entries_count_table = self::get_total_entries_for_week( $forms_data );
 
 		$recipients_string = '';
 
