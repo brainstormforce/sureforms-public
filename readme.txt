@@ -266,6 +266,7 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 == Changelog ==
 = x.x.x =
 * Improvement: Redesigned email summary template with updated layout and styling.
+* Fix: Resolved an issue where long label strings would overflow causing the form ui to break.
 = 1.10.0 - 7th August 2025 =
 * New: Introduced CPT Creation in Business Plan.
 * Fix: Resolved an issue with dropdown block when same form is embedded twice in a single page.
