@@ -78,12 +78,12 @@ const OttoKitPage = ( { loading } ) => {
 										<Button
 											size="md"
 											className={
-												plugin.status === 'Activated'
+												plugin?.status === 'Activated'
 													? 'bg-badge-background-green hover:bg-badge-background-green'
 													: ''
 											}
 											variant={
-												plugin.status === 'Activated'
+												plugin?.status === 'Activated'
 													? 'outline'
 													: 'primary'
 											}
