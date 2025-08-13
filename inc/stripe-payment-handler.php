@@ -183,11 +183,11 @@ class Stripe_Payment_Handler {
 			}
 
 			// Initialize Stripe.
-			if ( ! class_exists( '\Stripe\Stripe' ) ) {
-				throw new \Exception( __( 'Stripe library not found.', 'sureforms' ) );
-			}
+			// if ( ! class_exists( '\Stripe\Stripe' ) ) {
+			// 	throw new \Exception( __( 'Stripe library not found.', 'sureforms' ) );
+			// }
 
-			\Stripe\Stripe::setApiKey( $secret_key );
+			// \Stripe\Stripe::setApiKey( $secret_key );
 
 			// Calculate application fee - set to 0 if Pro license is active.
 			$application_fee_amount = 0;
@@ -195,11 +195,15 @@ class Stripe_Payment_Handler {
 				$application_fee_amount = intval( ( $amount * $application_fee ) / 100 );
 			}
 
+			$license_key = $this->is_pro_license_active() ? $this->get_license_key() : '';
+
 			// Create payment intent.
 			$payment_intent_data = [
+				'secret_key'                => $secret_key,
 				'amount'                    => $amount,
 				'currency'                  => strtolower( $currency ),
 				'description'               => $description,
+					'license_key' => $license_key,
 				'automatic_payment_methods' => [
 					'enabled' => true,
 				],
@@ -207,7 +211,6 @@ class Stripe_Payment_Handler {
 					'source'          => 'SureForms',
 					'block_id'        => $block_id,
 					'original_amount' => $amount,
-					'application_fee' => $application_fee_amount,
 				],
 			];
 
@@ -217,12 +220,29 @@ class Stripe_Payment_Handler {
 				$payment_intent_data['application_fee_amount'] = $application_fee_amount;
 			}
 
-			$payment_intent = \Stripe\PaymentIntent::create( $payment_intent_data );
+			// $payment_intent = \Stripe\PaymentIntent::create( $payment_intent_data );
+
+			$payment_intent = wp_remote_request(
+				// get_rest_url( null, 'sureforms-middleware/v1/payment-intent' ),
+				// 'http://sureforms/wp-json/sureforms-middleware/v1/payment-intent/create',
+				'http://middleware.test/payment-intent/create',
+				[
+					'method'    => 'POST',
+					'body'     => wp_json_encode( $payment_intent_data ),
+					'headers'  => [
+						'Content-Type' => 'application/json',
+					],
+				]
+			);
+
+			$payment_intent = json_decode( wp_remote_retrieve_body( $payment_intent ), true );
 
 			wp_send_json_success(
 				[
-					'client_secret'     => $payment_intent->client_secret,
-					'payment_intent_id' => $payment_intent->id,
+					// 'client_secret'     => $payment_intent->client_secret,
+					// 'payment_intent_id' => $payment_intent->id,
+					'client_secret'     => $payment_intent['client_secret'],
+					'payment_intent_id' => $payment_intent['id'],
 				]
 			);
 
