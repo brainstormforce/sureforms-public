@@ -93,7 +93,11 @@ const OttoKitPage = ( { loading } ) => {
 													event,
 												} )
 											}
-											icon={ plugin?.status === 'Install' ? <Plus className="size-5" /> : null }
+											icon={
+												plugin?.status === 'Install' ? (
+													<Plus className="size-5" />
+												) : null
+											}
 										>
 											{ getPluginStatusText( plugin ) }
 										</Button>

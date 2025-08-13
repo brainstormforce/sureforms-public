@@ -249,7 +249,7 @@ const Component = ( { path } ) => {
 					hidePageTitle={ hidePageTitle }
 				/>
 			) }
-			{/* Added the below check to make the container full width for the OttoKit tab. */}
+			{ /* Added the below check to make the container full width for the OttoKit tab. */ }
 			<div
 				className={ cn(
 					'mx-auto p-4 rounded-xl bg-background-primary shadow-sm',
