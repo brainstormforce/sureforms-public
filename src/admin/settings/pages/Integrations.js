@@ -1,24 +1,18 @@
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
 import { Button, Container, Text, Title } from '@bsf/force-ui';
-import ContentCard from '../components/ContentCard';
 import IntegrationPlaceholder from '@Image/integrations-placeholder.svg';
 import { addQueryParam } from '@Utils/Helpers';
 
 const IntegrationsPage = ( { loading } ) => {
-	// Apply filter to allow Pro plugin to add additional integrations
-	const additionalContent = applyFilters(
-		'srfm.settings.integrations.additional.content',
-		[]
-	);
-
-	return (
+	// Default free plugin UI
+	const freePluginUI = (
 		<Container className="flex flex-col items-center justify-center bg-background-primary">
-				<img 
-					src={ IntegrationPlaceholder } 
-					alt={ __( 'Integrations', 'sureforms' ) } 
-					className="h-20 w-20 mx-auto"
-				/>
+			<img 
+				src={ IntegrationPlaceholder } 
+				alt={ __( 'Integrations', 'sureforms' ) } 
+				className="h-20 w-20 mx-auto"
+			/>
 
 			{/* Title */}
 			<Title
@@ -59,23 +53,17 @@ const IntegrationsPage = ( { loading } ) => {
 			>
 				{ __( 'Upgrade Now', 'sureforms' ) }
 			</Button>
-
-			{/* Hidden content for now - can be shown when integrations are available */}
-			<div className="hidden">
-				{/* <ContentCard loading={ loading } content={ <Webhooks /> } /> */}
-				{/* <ContentCard loading={ loading } content={ <Zapier /> } /> */}
-
-				{ /* Additional integrations from Pro plugin */ }
-				{ additionalContent.map( ( content, index ) => (
-					<ContentCard
-						key={ `additional-integration-${ index }` }
-						loading={ loading }
-						content={ content }
-					/>
-				) ) }
-			</div>
 		</Container>
 	);
+
+	// Apply filter to allow Pro plugin to completely replace the UI
+	const integrationsUI = applyFilters(
+		'srfm.settings.integrations.page.content',
+		freePluginUI,
+		loading
+	);
+
+	return integrationsUI;
 };
 
 export default IntegrationsPage;
