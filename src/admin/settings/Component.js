@@ -15,6 +15,7 @@ import PageTitleSection from '@Admin/components/PageTitleSection';
 
 const Component = ( { path } ) => {
 	const [ pageTitle, setPageTitle ] = useState( '' );
+	// State to maintain whether to hide the page title.
 	const [ hidePageTitle, setHidePageTitle ] = useState( false );
 	const [ loading, setLoading ] = useState( false );
 
@@ -63,11 +64,12 @@ const Component = ( { path } ) => {
 			navigation.forEach( ( single ) => {
 				const slug = single?.slug && single.slug ? single.slug : '';
 				const title = single?.name && single.name ? single.name : '';
-				const hidePageTitle = !!single?.hidePageTitle;
+				// Check for the property to hide the page title.
+				const hideTitle = !! single?.hidePageTitle;
 				if ( slug ) {
 					if ( slug === path ) {
 						setPageTitle( title );
-						setHidePageTitle( hidePageTitle );
+						setHidePageTitle( hideTitle );
 					}
 				}
 			} );
@@ -241,11 +243,20 @@ const Component = ( { path } ) => {
 
 	return (
 		<>
-			{ pageTitle && <PageTitleSection title={ pageTitle } hidePageTitle={ hidePageTitle } /> }
-			<div className={ cn(
-				'mx-auto p-4 rounded-xl bg-background-primary shadow-sm',
-				'ottokit-settings' === path ? 'w-full' : 'max-w-content-container'
-			) }>
+			{ pageTitle && (
+				<PageTitleSection
+					title={ pageTitle }
+					hidePageTitle={ hidePageTitle }
+				/>
+			) }
+			<div
+				className={ cn(
+					'mx-auto p-4 rounded-xl bg-background-primary shadow-sm',
+					'ottokit-settings' === path
+						? 'w-full'
+						: 'max-w-content-container'
+				) }
+			>
 				{ 'general-settings' === path && (
 					<GeneralPage
 						loading={ loading }

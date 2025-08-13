@@ -26,6 +26,7 @@ const PageTitleSection = ( { title, hidePageTitle } ) => {
 	] );
 
 	return (
+		// Do not render the title section if hidePageTitle is true.
 		! hidePageTitle && (
 			<div className="max-w-content-container mx-auto flex items-center justify-between mb-6">
 				<Title

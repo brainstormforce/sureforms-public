@@ -54,7 +54,7 @@ export const navigation = applyFilters( 'srfm.settings.navigation', [
 				alt={ __( 'OttoKit', 'sureforms' ) }
 			/>
 		),
-		hidePageTitle: true,
+		hidePageTitle: true, // Hide the page title for the OttoKit tab.
 	},
 	{
 		name: __( 'Integrations', 'sureforms' ),
