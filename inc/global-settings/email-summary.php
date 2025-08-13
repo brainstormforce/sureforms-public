@@ -171,18 +171,49 @@ class Email_Summary {
 				// phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- Required in email HTML; wp_enqueue_style() can't be used for emails.
 				echo '<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">';
 			?>
+			<style>
+				@media (prefers-color-scheme: dark) {
+					.logo-light { display: none !important; }
+					.logo-dark { display: block !important; }
+				}
+				@media (prefers-color-scheme: light) {
+					.logo-dark { display: none !important; }
+					.logo-light { display: block !important; }
+				}
+
+				/* Mobile-specific styles */
+				@media only screen and (max-width: 600px) {
+					.email-greeting {
+						font-size: 16px !important;
+					}
+
+					/* Padding reductions */
+					.pad-32 { padding: 32px !important; }
+					.pad-24 { padding: 24px !important; }
+					.pad-16 { padding: 16px !important; }
+					.margin-mob { margin: 24px 16px !important; }
+				}
+			</style>
 		</head>
-		<body style="font-family:Figtree,Arial,sans-serif;background-color:#F1F5F9;margin:0;padding:32px;">
+		<body class="pad-24" style="font-family:Figtree,Arial,sans-serif;background-color:#F1F5F9;margin:0;padding:32px;">
 			<div style="max-width:640px;margin:0 auto;">
 				<div style="margin-bottom:24px;text-align:left;">
-					<img src="<?php echo esc_url( self::get_public_image_url( 'sureforms-logo-full.png', 'admin/assets/' ) ); ?>"
+					<!-- Light logo -->
+					<img class="logo-light"
+						src="<?php echo esc_url( self::get_public_image_url( 'sureforms-logo-full.png', 'admin/assets/' ) ); ?>"
 						alt="<?php esc_attr_e( 'SureForms Logo', 'sureforms' ); ?>"
 						width="192" height="32"
-						style="display:inline-block;">
+						style="display:block;">
+					<!-- Dark logo -->
+					<img class="logo-dark"
+						src="<?php echo esc_url( self::get_public_image_url( 'sureforms-logo-dark.png', 'admin/assets/' ) ); ?>"
+						alt="<?php esc_attr_e( 'SureForms Logo Dark', 'sureforms' ); ?>"
+						width="192" height="32"
+						style="display:none;">
 				</div>
 				<div style="background-color:#FFFFFF;padding-bottom:40px;">
-					<div style="padding:24px;">
-						<p style="font-size:18px;font-weight:600;color:#111827;margin:0 0 8px;">
+					<div class="pad-16" style="padding:24px;">
+						<p class="email-greeting" style="font-size:18px;font-weight:600;color:#111827;margin:0 0 8px;">
 							<?php
 								printf(
 									/* translators: %1$s is the admin user name */
@@ -191,10 +222,14 @@ class Email_Summary {
 								);
 							?>
 						</p>
-						<p style="font-size:14px;color:#4B5563;margin:0 0 16px;">
+						<p style="font-size:14px;color:#4B5563;margin:0 0 16px;line-height:20px;">
 							<?php
 							printf(
-								__( "Here's your SureForms weekly email summary of form submissions for %1\$s to %2\$s.", 'sureforms' ),
+								wp_kses(
+								/* translators: %1$s is from date, %2$s is to date. */
+									__( "Here's your SureForms weekly email summary of form submissions for %1\$s to %2\$s.", 'sureforms' ),
+									[ 'strong' => [] ]
+								),
 								'<strong>' . esc_html( $from_date ) . '</strong>',
 								'<strong>' . esc_html( $to_date ) . '</strong>'
 							);
@@ -202,11 +237,11 @@ class Email_Summary {
 						</p>
 
 						<?php
-						$table_html = '<table style="border:1px solid #E5E7EB;border-radius:8px;box-shadow:0 1px 1px rgba(0,0,0,0.05);margin-top:16px;width:100%;border-collapse:separate;border-spacing:0;">
+						$table_html = '<table style="border:1px solid #E5E7EB;border-radius:8px;box-shadow:0 1px 1px rgba(0,0,0,0.05);margin-top:16px;width:100%;border-collapse:separate;border-spacing:0;table-layout:fixed;">
 							<thead>
 								<tr style="background-color:#F9FAFB;">
-									<th style="padding:8px 12px;font-size:14px;font-weight:500;color:#111827;text-align:left;border-top-left-radius:8px;border-bottom:0.5px solid #E5E7EB;">' . esc_html__( 'Form Name', 'sureforms' ) . '</th>
-									<th style="padding:8px 12px;font-size:14px;font-weight:500;color:#111827;text-align:right;width:146px;border-top-right-radius:8px;border-bottom:0.5px solid #E5E7EB;">' . esc_html__( 'Entries', 'sureforms' ) . '</th>
+									<th style="padding:8px 12px;font-size:14px;font-weight:500;color:#111827;text-align:left;border-top-left-radius:8px;border-bottom:0.5px solid #E5E7EB;white-space:nowrap;width:auto;">' . esc_html__( 'Form Name', 'sureforms' ) . '</th>
+									<th style="padding:8px 12px;font-size:14px;font-weight:500;color:#111827;text-align:right;width:80px;border-top-right-radius:8px;border-bottom:0.5px solid #E5E7EB;white-space:nowrap;">' . esc_html__( 'Entries', 'sureforms' ) . '</th>
 								</tr>
 							</thead>
 							<tbody>';
@@ -222,21 +257,18 @@ class Email_Summary {
 								$total_entries += $form['count'];
 
 								$table_html .= '<tr style="background-color:#FFFFFF;">
-									<td style="padding:12px;font-size:14px;color:#4B5563;border-bottom:0.5px solid #E5E7EB;">' . esc_html( $form['title'] ) . '</td>
-									<td style="padding:12px;font-size:14px;color:#4B5563;text-align:right;border-bottom:0.5px solid #E5E7EB;">' . esc_html( Helper::get_string_value( $form['count'] ) ) . '</td>
+									<td style="padding:12px;font-size:14px;color:#4B5563;border-bottom:0.5px solid #E5E7EB;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' . esc_html( $form['title'] ) . '</td>
+									<td style="padding:12px;font-size:14px;color:#4B5563;text-align:right;border-bottom:0.5px solid #E5E7EB;white-space:nowrap;width:80px;">' . esc_html( Helper::get_string_value( $form['count'] ) ) . '</td>
 								</tr>';
 							}
 
 							$table_html .= '</tbody>
 							<tfoot>
 								<tr style="background-color:#F9FAFB;font-weight:bold;">
-									<td style="padding:12px;font-size:14px;color:#111827;border-bottom-left-radius:8px;">' . esc_html__( 'Total Entries', 'sureforms' ) . '</td>
-									<td style="padding:12px;font-size:14px;color:#111827;text-align:right;border-bottom-right-radius:8px;">' . esc_html( Helper::get_string_value( $total_entries ) ) . '</td>
+									<td style="padding:8px 12px;font-size:14px;color:#111827;border-bottom-left-radius:8px;white-space:nowrap;">' . esc_html__( 'Total Entries', 'sureforms' ) . '</td>
+									<td style="padding:8px 12px;font-size:14px;color:#111827;text-align:right;border-bottom-right-radius:8px;white-space:nowrap;width:80px;">' . esc_html( Helper::get_string_value( $total_entries ) ) . '</td>
 								</tr>
 							</tfoot>';
-
-						} else {
-							$table_html .= '<tr><td colspan="2" style="padding:12px;font-size:14px;color:#4B5563;">' . esc_html__( 'No entries found in the last week.', 'sureforms' ) . '</td></tr></tbody>';
 						}
 
 						$table_html .= '</table>';
@@ -253,9 +285,12 @@ class Email_Summary {
 					<hr style="border:none;border-top:1px solid #eee;">
 
 					<!-- OttoKit Promotion Section -->
-					<div style="margin:32px 24px;padding:16px;border:0.5px solid #E5E7EB;border-radius:8px;background:#FFFFFF;text-align:left;">
+					<div class="margin-mob" style="margin:32px 24px;padding:16px;border:0.5px solid #E5E7EB;border-radius:8px;background:#FFFFFF;text-align:left;">
 						<div style="margin-bottom:4px;">
-							<img src="<?php echo esc_url( self::get_public_image_url( 'ottokit.png', 'admin/assets/' ) ); ?>" alt="OttoKit Logo" width="20" height="20" style="border-radius:6px;">
+							<!-- Light OttoKit logo -->
+							<img class="logo-light" src="<?php echo esc_url( self::get_public_image_url( 'ottokit.png', 'admin/assets/' ) ); ?>" alt="OttoKit Logo" width="20" height="20" style="border-radius:6px;display:block;">
+							<!-- Dark OttoKit logo -->
+							<img class="logo-dark" src="<?php echo esc_url( self::get_public_image_url( 'ottokit-dark.png', 'admin/assets/' ) ); ?>" alt="OttoKit Logo Dark" width="20" height="20" style="border-radius:6px;display:none;">
 						</div>
 						<p style="font-size:14px;line-height:20px;font-weight:600;color:#111827;margin:0 0 4px;">
 							<?php esc_html_e( 'Automate Workflows with OttoKit', 'sureforms' ); ?>
@@ -269,7 +304,7 @@ class Email_Summary {
 						</a>
 					</div>
 
-					<p style="font-size:12px;color:#9CA3AF;text-align:center;margin:16px 0;">
+					<p style="font-size:12px;color:#9CA3AF;text-align:center;margin:16px 16px;">
 						<?php
 						printf(
 							/* translators: %s: opening and closing anchor tag for SureForms settings link */
@@ -283,10 +318,10 @@ class Email_Summary {
 					<hr style="margin:16px 24px;border:none;border-top:1px solid #eee;">
 
 					<div style="text-align:center;margin-top:16px;">
-						<img src="<?php echo esc_url( self::get_public_image_url( 'sureforms-logo-full.png', 'admin/assets/' ) ); ?>"
-							alt="<?php esc_attr_e( 'SureForms Logo', 'sureforms' ); ?>"
-							height="20"
-							style="display:block;margin:0 auto;">
+						<!-- Light footer logo -->
+						<img class="logo-light" src="<?php echo esc_url( self::get_public_image_url( 'sureforms-logo-full.png', 'admin/assets/' ) ); ?>" alt="<?php esc_attr_e( 'SureForms Logo', 'sureforms' ); ?>" height="20" style="display:block;margin:0 auto;">
+						<!-- Dark footer logo -->
+						<img class="logo-dark" src="<?php echo esc_url( self::get_public_image_url( 'sureforms-logo-dark.png', 'admin/assets/' ) ); ?>" alt="<?php esc_attr_e( 'SureForms Logo Dark', 'sureforms' ); ?>" height="20" style="display:none;margin:0 auto;">
 					</div>
 				</div>
 			</div>
