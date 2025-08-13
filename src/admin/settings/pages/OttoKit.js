@@ -1,7 +1,7 @@
 import { __ } from '@wordpress/i18n';
 import { Button, Container, Text, Title } from '@bsf/force-ui';
 import { getPluginStatusText, handlePluginActionTrigger } from '@Utils/Helpers';
-import { Dot } from 'lucide-react';
+import { Dot, Plus } from 'lucide-react';
 import ottoKitImage from '@Image/ottokit-integration.svg';
 import LoadingSkeleton from '@Admin/components/LoadingSkeleton';
 
@@ -93,6 +93,7 @@ const OttoKitPage = ( { loading } ) => {
 													event,
 												} )
 											}
+											icon={ plugin?.status === 'Install' ? <Plus className="size-5" /> : null }
 										>
 											{ getPluginStatusText( plugin ) }
 										</Button>
