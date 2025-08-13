@@ -60,6 +60,7 @@ export const navigation = applyFilters( 'srfm.settings.navigation', [
 		name: __( 'Integrations', 'sureforms' ),
 		slug: 'integration-settings',
 		icon: <Cpu />,
+		hidePageTitle: true, // Hide the page title for the Integrations tab.
 	},
 ] );
 

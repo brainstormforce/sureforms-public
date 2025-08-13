@@ -253,7 +253,7 @@ const Component = ( { path } ) => {
 			<div
 				className={ cn(
 					'mx-auto p-4 rounded-xl bg-background-primary shadow-sm',
-					'ottokit-settings' === path
+					'ottokit-settings' === path || 'integration-settings' === path
 						? 'w-full'
 						: 'max-w-content-container'
 				) }
