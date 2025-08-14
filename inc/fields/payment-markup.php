@@ -77,6 +77,14 @@ class Payment_Markup extends Base {
 	protected $payment_mode;
 
 	/**
+	 * Payment items.
+	 *
+	 * @var array
+	 * @since x.x.x
+	 */
+	protected $payment_items;
+
+	/**
 	 * Constructor for the Payment Markup class.
 	 *
 	 * @param array<mixed> $attributes Block attributes.
@@ -90,6 +98,8 @@ class Payment_Markup extends Base {
 		$this->set_unique_slug();
 		$this->set_markup_properties();
 		$this->set_aria_described_by();
+
+		$this->set_field_name( $this->unique_slug );
 
 		// Set payment-specific properties.
 		$this->amount           = $attributes['amount'] ?? 10;
@@ -114,6 +124,8 @@ class Payment_Markup extends Base {
 		} else {
 			$this->stripe_publishable_key = $payment_settings['stripe_test_publishable_key'] ?? '';
 		}
+
+		$this->payment_items = $attributes['paymentItems'] ?? [];
 	}
 
 	/**
@@ -128,12 +140,16 @@ class Payment_Markup extends Base {
 		}
 
 		$field_classes   = $this->get_field_classes();
-		$field_config    = $this->field_config ? ' data-field-config="' . $this->field_config . '"' : '';
 		$amount_in_cents = intval( $this->amount * 100 ); // Convert to cents for Stripe.
+		$payment_config = [];
+		if ( ! empty( $this->payment_items ) ) {
+			$payment_config['paymentItems'] = $this->payment_items;
+		}
+		$payment_config = json_encode( $payment_config );
 		
 		ob_start();
 		?>
-		<div class="<?php echo esc_attr( $field_classes ); ?>" <?php echo $field_config; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
+		<div data-block-id="<?php echo esc_attr( $this->block_id ); ?>" class="<?php echo esc_attr( $field_classes ); ?>">
 			<?php echo $this->label_markup; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 			
 			<div class="srfm-payment-field-wrapper">
@@ -152,18 +168,18 @@ class Payment_Markup extends Base {
 
 				<!-- Hidden fields for payment data -->
 				<input type="hidden" 
-					   name="<?php echo esc_attr( $this->field_name ); ?>" 
-					   class="srfm-payment-input"
-					   data-payment-amount="<?php echo esc_attr( $amount_in_cents ); ?>"
-					   data-currency="<?php echo esc_attr( strtolower( $this->currency ) ); ?>"
-					   data-description="<?php echo esc_attr( $this->description ); ?>"
-					   data-application-fee="<?php echo esc_attr( $this->application_fee ); ?>"
-					   data-block-id="<?php echo esc_attr( $this->block_id ); ?>"
-					   data-required="<?php echo esc_attr( $this->data_require_attr ); ?>"
-					   data-stripe-key="<?php echo esc_attr( $this->stripe_publishable_key ); ?>"
-					   data-payment-mode="<?php echo esc_attr( $this->payment_mode ); ?>"
-					   aria-describedby="<?php echo esc_attr( trim( $this->aria_described_by ) ); ?>"
-					   <?php echo $this->required ? 'required' : ''; ?>
+					name="<?php echo esc_attr( $this->field_name ); ?>" 
+					class="srfm-payment-input"
+					data-payment-amount="<?php echo esc_attr( $amount_in_cents ); ?>"
+					data-currency="<?php echo esc_attr( strtolower( $this->currency ) ); ?>"
+					data-description="<?php echo esc_attr( $this->description ); ?>"
+					data-application-fee="<?php echo esc_attr( $this->application_fee ); ?>"
+					data-required="<?php echo esc_attr( $this->data_require_attr ); ?>"
+					data-stripe-key="<?php echo esc_attr( $this->stripe_publishable_key ); ?>"
+					data-payment-mode="<?php echo esc_attr( $this->payment_mode ); ?>"
+					aria-describedby="<?php echo esc_attr( trim( $this->aria_described_by ) ); ?>"
+					data-payment-items="<?php echo esc_attr( $payment_config ); ?>"
+					<?php echo $this->required ? 'required' : ''; ?>
 				/>
 
 				<!-- Payment processing status -->
@@ -178,15 +194,6 @@ class Payment_Markup extends Base {
 			<?php echo $this->help_markup; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 			<?php echo $this->error_msg_markup; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 		</div>
-
-		<script>
-		document.addEventListener('DOMContentLoaded', function() {
-			// Initialize Stripe payment for block <?php echo esc_js( $this->block_id ); ?>
-			if (typeof window.srfmInitializeStripePayment === 'function') {
-				window.srfmInitializeStripePayment('<?php echo esc_js( $this->block_id ); ?>');
-			}
-		});
-		</script>
 		<?php
 		return ob_get_clean();
 	}

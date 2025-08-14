@@ -69,6 +69,10 @@
 		"applicationFee": {
 			"type": "number",
 			"default": 3
+		},
+		"paymentItems": {
+			"type": "array",
+			"default": []
 		}
 	}
 }
