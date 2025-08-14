@@ -30,6 +30,8 @@ class Stripe_Payment_Handler {
 	public function __construct() {
 		add_action( 'wp_ajax_srfm_create_payment_intent', [ $this, 'create_payment_intent' ] );
 		add_action( 'wp_ajax_nopriv_srfm_create_payment_intent', [ $this, 'create_payment_intent' ] ); // For non-logged-in users.
+		add_action( 'wp_ajax_srfm_update_payment_intent_amount', [ $this, 'update_payment_intent_amount' ] );
+		add_action( 'wp_ajax_nopriv_srfm_update_payment_intent_amount', [ $this, 'update_payment_intent_amount' ] ); // For non-logged-in users.
 		add_filter( 'srfm_form_submit_data', [ $this, 'validate_payment_fields' ], 5, 1 );
 		add_action( 'wp_head', [ $this, 'add_payment_styles' ] );
 	}
@@ -200,6 +202,7 @@ class Stripe_Payment_Handler {
 				'amount'                    => $amount,
 				'currency'                  => strtolower( $currency ),
 				'description'               => $description,
+				'capture_method'            => 'manual',
 				'automatic_payment_methods' => [
 					'enabled' => true,
 				],
