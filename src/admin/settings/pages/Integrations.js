@@ -1,7 +1,7 @@
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
 import { Button, Container, Text, Title } from '@bsf/force-ui';
-import IntegrationPlaceholder from '@Image/integrations-placeholder.svg';
+import NoIntegrations from '@Image/no-integrations.svg';
 import { addQueryParam } from '@Utils/Helpers';
 
 const IntegrationsPage = ( { loading } ) => {
@@ -9,7 +9,7 @@ const IntegrationsPage = ( { loading } ) => {
 	const freePluginUI = (
 		<Container className="flex flex-col items-center justify-center bg-background-primary">
 			<img 
-				src={ IntegrationPlaceholder } 
+				src={ NoIntegrations } 
 				alt={ __( 'Integrations', 'sureforms' ) } 
 				className="h-20 w-20 mx-auto"
 			/>
