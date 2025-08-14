@@ -64,7 +64,7 @@ const iconBlocks = [
 	},
 	{
 		icon: <MdCode size={ 24 } color="#B4B4B4" />,
-		label: __( 'Custom HTML', 'sureforms' ),
+		label: __( 'HTML', 'sureforms' ),
 	},
 	{
 		icon: parse( svgIcons.signature ),
