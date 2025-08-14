@@ -23,7 +23,7 @@ const FormRestriction = () => {
 	}, [] );
 
 	return (
-		<TabContentWrapper title={ __( 'General Settings', 'sureforms' ) }>
+		<TabContentWrapper title={ __( 'Advanced Settings', 'sureforms' ) }>
 			<Title
 				size="xs"
 				className="mb-4"
@@ -81,14 +81,15 @@ const FormRestriction = () => {
 									onDateChange={ ( formattedDate ) => {
 										updateMeta( 'date', formattedDate );
 									} }
-									topValue={ '2.5rem' }
 								/>
 							</div>
 
 							{ preserveMetaData?.date && (
 								<div className="w-1/3">
 									<TimePicker
-										hours={ preserveMetaData?.hours ?? '12' }
+										hours={
+											preserveMetaData?.hours ?? '12'
+										}
 										minutes={
 											preserveMetaData?.minutes ?? '00'
 										}

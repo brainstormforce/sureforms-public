@@ -170,16 +170,16 @@ function GeneralSettings( props ) {
 
 	const singleFormSettingsComponents = [
 		{
-			id: 'general-settings',
-			title: __( 'General Settings', 'sureforms' ),
-		},
-		{
 			id: 'form_confirmation',
 			title: __( 'Form Confirmation', 'sureforms' ),
 		},
 		{
 			id: 'email_notification',
 			title: __( 'Email Notification', 'sureforms' ),
+		},
+		{
+			id: 'advanced-settings',
+			title: __( 'Advanced Settings', 'sureforms' ),
 		},
 		{
 			id: 'integrations',

@@ -73,19 +73,6 @@ const Dialog = ( {
 	const tabs = applyFilters(
 		'srfm.formSettings.tabs',
 		[
-			{
-				id: 'general-settings',
-				label: __( 'General Settings', 'sureforms' ),
-				icon: <Settings />,
-				component: (
-					<>
-						<FormRestrictionProvider>
-							<FormRestriction />
-						</FormRestrictionProvider>
-						<Compliance { ...{ complianceData } } />
-					</>
-				),
-			},
 			/*parent tabs linked to nav*/
 			{
 				id: 'form_confirmation',
@@ -106,6 +93,19 @@ const Dialog = ( {
 					<EmailNotification
 						{ ...{ setHasValidationErrors, emailNotificationData } }
 					/>
+				),
+			},
+			{
+				id: 'advanced-settings',
+				label: __( 'Advanced Settings', 'sureforms' ),
+				icon: <Settings />,
+				component: (
+					<>
+						<FormRestrictionProvider>
+							<FormRestriction />
+						</FormRestrictionProvider>
+						<Compliance { ...{ complianceData } } />
+					</>
 				),
 			},
 			{
