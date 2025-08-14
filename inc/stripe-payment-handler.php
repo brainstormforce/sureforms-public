@@ -182,13 +182,6 @@ class Stripe_Payment_Handler {
 				throw new \Exception( __( 'Stripe secret key not found.', 'sureforms' ) );
 			}
 
-			// Initialize Stripe.
-			// if ( ! class_exists( '\Stripe\Stripe' ) ) {
-			// 	throw new \Exception( __( 'Stripe library not found.', 'sureforms' ) );
-			// }
-
-			// \Stripe\Stripe::setApiKey( $secret_key );
-
 			// Calculate application fee - set to 0 if Pro license is active.
 			$application_fee_amount = 0;
 			if ( $application_fee > 0 && ! $this->is_pro_license_active() ) {
@@ -203,7 +196,7 @@ class Stripe_Payment_Handler {
 				'amount'                    => $amount,
 				'currency'                  => strtolower( $currency ),
 				'description'               => $description,
-					'license_key' => $license_key,
+				'license_key'               => $license_key,
 				'automatic_payment_methods' => [
 					'enabled' => true,
 				],
@@ -220,8 +213,6 @@ class Stripe_Payment_Handler {
 				$payment_intent_data['application_fee_amount'] = $application_fee_amount;
 			}
 
-			// $payment_intent = \Stripe\PaymentIntent::create( $payment_intent_data );
-
 			$payment_intent = wp_remote_post(
 				'https://payments.sureforms.com/payment-intent/create',
 				[
@@ -232,12 +223,14 @@ class Stripe_Payment_Handler {
 				]
 			);
 
+			if ( is_wp_error( $payment_intent ) ) {
+				throw new \Exception( __( 'Failed to create payment intent.', 'sureforms' ) );
+			}
+
 			$payment_intent = json_decode( wp_remote_retrieve_body( $payment_intent ), true );
 
 			wp_send_json_success(
 				[
-					// 'client_secret'     => $payment_intent->client_secret,
-					// 'payment_intent_id' => $payment_intent->id,
 					'client_secret'     => $payment_intent['client_secret'],
 					'payment_intent_id' => $payment_intent['id'],
 				]
@@ -318,10 +311,6 @@ class Stripe_Payment_Handler {
 				return false;
 			}
 
-			// \Stripe\Stripe::setApiKey( $secret_key );
-			// $payment_intent = \Stripe\PaymentIntent::retrieve( $payment_intent_id );
-
-			// $payment_intent = wp_remote_post( 'http://sureforms-payments-middleware.test/payment-intent/retrieve', [
 			$payment_intent = wp_remote_post(
 				'https://payments.sureforms.com/payment-intent/retrieve',
 				[
@@ -331,6 +320,10 @@ class Stripe_Payment_Handler {
 						'Content-Type' => 'application/json',
 					],
 			] );
+
+			if ( is_wp_error( $payment_intent ) ) {
+				return false;
+			}
 
 			$payment_intent = json_decode( wp_remote_retrieve_body( $payment_intent ), true );
 
