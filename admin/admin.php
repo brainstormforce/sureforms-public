@@ -100,7 +100,7 @@ class Admin {
 		// Register dashboard widget only if there are recent entries.
 		add_action( 'admin_init', [ $this, 'maybe_register_dashboard_widget' ] );
 
-		// run a action whenever admin.
+		// Save first form creation time stamp.
 		add_action( 'admin_init', [ $this, 'save_first_form_creation_time_stamp' ] );
 	}
 
@@ -122,7 +122,15 @@ class Admin {
 	 */
 	public static function is_first_form_created() {
 		// Convert the first form creation time stamp to a boolean. If it exists, it will return true, otherwise false.
-		return (bool) self::get_first_form_creation_time_stamp();
+		$first_form_creation_time_stamp = self::get_first_form_creation_time_stamp();
+
+		// If the first form creation time stamp is not set, return false.
+		if ( ! $first_form_creation_time_stamp ) {
+			return false; // No forms created yet.
+		}
+
+		// Check if the first form creation time stamp is a valid integer and greater than zero.
+		return is_int( $first_form_creation_time_stamp ) && $first_form_creation_time_stamp > 0;
 	}
 
 	/**
@@ -133,7 +141,7 @@ class Admin {
 	 * @return void
 	 */
 	public static function save_first_form_creation_time_stamp() {
-		if ( ! current_user_can( 'manage_options' ) || self::is_first_form_created() ) {
+		if ( ! current_user_can( 'manage_options' ) || self::is_first_form_created() || ! defined( 'SRFM_FORMS_POST_TYPE' ) || ! post_type_exists( SRFM_FORMS_POST_TYPE ) ) {
 			return;
 		}
 
@@ -149,13 +157,17 @@ class Admin {
 			]
 		);
 
-		if ( ! empty( $query->posts ) ) {
+		if ( ! empty( $query->posts ) && isset( $query->posts[0] ) ) {
 			// Get the first post from the query result.
 			$post_id = $query->posts[0];
 			// Get the post creation time in GMT.
 			$creation_time = get_post_field( 'post_date_gmt', $post_id );
 			// Convert the creation time to a timestamp.
 			$timestamp = strtotime( $creation_time );
+
+			if ( ! $timestamp ) {
+				return;
+			}
 
 			Helper::update_srfm_option( 'srfm_first_form_created_at', $timestamp );
 		}
@@ -166,9 +178,10 @@ class Admin {
 	 * This is used to determine if the dynamic nudges should be shown.
 	 *
 	 * @param int $days Number of days to check.
+	 * @since x.x.x
 	 * @return bool
 	 */
-	public static function has_n_days_passed_since_first_form_creation( $days = 3 ) {
+	public static function check_first_form_creation_threshold( $days = 3 ) {
 		$first_form_creation_time_stamp = self::get_first_form_creation_time_stamp();
 
 		if ( ! $first_form_creation_time_stamp ) {
@@ -335,7 +348,7 @@ class Admin {
 	public function add_upgrade_to_pro_target_attr() {
 
 		// only add if first form was created more than 8 days ago.
-		if ( ! self::has_n_days_passed_since_first_form_creation( 8 ) ) {
+		if ( ! self::check_first_form_creation_threshold( 8 ) ) {
 			return;
 		}
 
@@ -365,7 +378,7 @@ class Admin {
 	public function add_upgrade_to_pro() {
 
 		// only add if first form was created more than 8 days ago.
-		if ( ! self::has_n_days_passed_since_first_form_creation( 8 ) ) {
+		if ( ! self::check_first_form_creation_threshold( 8 ) ) {
 			return;
 		}
 
@@ -719,34 +732,34 @@ class Admin {
 		$onboarding_instance          = Onboarding::get_instance();
 
 		$localization_data = [
-			'site_url'                => get_site_url(),
-			'breadcrumbs'             => $this->get_breadcrumbs_for_current_page(),
-			'sureforms_dashboard_url' => admin_url( '/admin.php?page=sureforms_menu' ),
-			'plugin_version'          => SRFM_VER,
-			'global_settings_nonce'   => current_user_can( 'manage_options' ) ? wp_create_nonce( 'wp_rest' ) : '',
-			'is_pro_active'           => Helper::has_pro(),
-			'is_first_form_created'   => self::is_first_form_created(),
-			'has_three_days_passed_since_first_form_creation' => self::has_n_days_passed_since_first_form_creation(),
-			'has_eight_days_passed_since_first_form_creation' => self::has_n_days_passed_since_first_form_creation( 8 ),
-			'pro_plugin_version'      => Helper::has_pro() ? SRFM_PRO_VER : '',
-			'pro_plugin_name'         => Helper::has_pro() && defined( 'SRFM_PRO_PRODUCT' ) ? SRFM_PRO_PRODUCT : 'SureForms Pro',
-			'sureforms_pricing_page'  => Helper::get_sureforms_website_url( 'pricing' ),
-			'field_spacing_vars'      => Helper::get_css_vars(),
-			'is_ver_lower_than_6_7'   => version_compare( $wp_version, '6.6.2', '<=' ),
-			'integrations'            => Helper::sureforms_get_integration(),
-			'ajax_url'                => admin_url( 'admin-ajax.php' ),
-			'sf_plugin_manager_nonce' => wp_create_nonce( 'sf_plugin_manager_nonce' ),
-			'plugin_installer_nonce'  => wp_create_nonce( 'updates' ),
-			'plugin_activating_text'  => __( 'Activating...', 'sureforms' ),
-			'plugin_activated_text'   => __( 'Activated', 'sureforms' ),
-			'plugin_activate_text'    => __( 'Activate', 'sureforms' ),
-			'plugin_installing_text'  => __( 'Installing...', 'sureforms' ),
-			'plugin_installed_text'   => __( 'Installed', 'sureforms' ),
-			'is_rtl'                  => $is_rtl,
-			'onboarding_completed'    => method_exists( $onboarding_instance, 'get_onboarding_status' ) ? $onboarding_instance->get_onboarding_status() : false,
-			'onboarding_redirect'     => isset( $_GET['srfm-activation-redirect'] ), // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce is not required for the activation redirection.
-			'pointer_nonce'           => wp_create_nonce( 'sureforms_pointer_action' ),
-			'srfm_ai_details'         => AI_Helper::get_current_usage_details(),
+			'site_url'                   => get_site_url(),
+			'breadcrumbs'                => $this->get_breadcrumbs_for_current_page(),
+			'sureforms_dashboard_url'    => admin_url( '/admin.php?page=sureforms_menu' ),
+			'plugin_version'             => SRFM_VER,
+			'global_settings_nonce'      => current_user_can( 'manage_options' ) ? wp_create_nonce( 'wp_rest' ) : '',
+			'is_pro_active'              => Helper::has_pro(),
+			'is_first_form_created'      => self::is_first_form_created(),
+			'check_three_days_threshold' => self::check_first_form_creation_threshold(),
+			'check_eight_days_threshold' => self::check_first_form_creation_threshold( 8 ),
+			'pro_plugin_version'         => Helper::has_pro() ? SRFM_PRO_VER : '',
+			'pro_plugin_name'            => Helper::has_pro() && defined( 'SRFM_PRO_PRODUCT' ) ? SRFM_PRO_PRODUCT : 'SureForms Pro',
+			'sureforms_pricing_page'     => Helper::get_sureforms_website_url( 'pricing' ),
+			'field_spacing_vars'         => Helper::get_css_vars(),
+			'is_ver_lower_than_6_7'      => version_compare( $wp_version, '6.6.2', '<=' ),
+			'integrations'               => Helper::sureforms_get_integration(),
+			'ajax_url'                   => admin_url( 'admin-ajax.php' ),
+			'sf_plugin_manager_nonce'    => wp_create_nonce( 'sf_plugin_manager_nonce' ),
+			'plugin_installer_nonce'     => wp_create_nonce( 'updates' ),
+			'plugin_activating_text'     => __( 'Activating...', 'sureforms' ),
+			'plugin_activated_text'      => __( 'Activated', 'sureforms' ),
+			'plugin_activate_text'       => __( 'Activate', 'sureforms' ),
+			'plugin_installing_text'     => __( 'Installing...', 'sureforms' ),
+			'plugin_installed_text'      => __( 'Installed', 'sureforms' ),
+			'is_rtl'                     => $is_rtl,
+			'onboarding_completed'       => method_exists( $onboarding_instance, 'get_onboarding_status' ) ? $onboarding_instance->get_onboarding_status() : false,
+			'onboarding_redirect'        => isset( $_GET['srfm-activation-redirect'] ), // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce is not required for the activation redirection.
+			'pointer_nonce'              => wp_create_nonce( 'sureforms_pointer_action' ),
+			'srfm_ai_details'            => AI_Helper::get_current_usage_details(),
 		];
 
 		$is_screen_sureforms_menu          = Helper::validate_request_context( 'sureforms_menu', 'page' );

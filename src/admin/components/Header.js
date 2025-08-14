@@ -82,7 +82,7 @@ const Header = () => {
 				! isLicenseActive &&
 				activePage?.slug === 'sureforms_menu' &&
 				srfm_admin?.is_first_form_created &&
-				srfm_admin?.has_three_days_passed_since_first_form_creation && (
+				srfm_admin?.check_three_days_threshold && (
 				<UpgradeNotice />
 			) }
 			<Topbar className="py-0 px-4 pt-0 pb-0 min-h-0 h-14 gap-4 shadow-sm bg-background-primary/75 backdrop-blur-[5px]">
@@ -147,7 +147,7 @@ const Header = () => {
 							) ) }
 						</nav>
 					</Topbar.Item>
-					{ ! isProActive && ! isLicenseActive && srfm_admin?.is_first_form_created && srfm_admin?.has_eight_days_passed_since_first_form_creation && (
+					{ ! isProActive && ! isLicenseActive && srfm_admin?.is_first_form_created && srfm_admin?.check_eight_days_threshold && (
 						<Topbar.Item>
 							<Button
 								icon={ <ArrowUpRight className="!size-5" /> }
