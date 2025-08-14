@@ -772,6 +772,25 @@ class Form_Submit {
 						// Trigger an action before sending the email, allowing additional processing or logging.
 						do_action( 'srfm_before_email_send', $parsed, $submission_data, $item, $form_data );
 
+						$notification_id = isset( $item['id'] ) ? intval( $item['id'] ) : 0;
+
+						/**
+						 * Filter to determine whether the email should be sent.
+						 *
+						 * @since x.x.x
+						 */
+						$should_send_email = apply_filters(
+							'srfm_should_send_email',
+							true,
+							$notification_id,
+							$id,
+							$form_data,
+						);
+
+						if ( ! wp_validate_boolean( $should_send_email ) ) {
+								continue;
+						}
+
 						/**
 						 * Temporary override the content type for wp_mail.
 						 * This helps us from breaking of content type from other plugins.
