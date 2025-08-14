@@ -123,7 +123,7 @@ if ( ! class_exists( 'Spec_Gb_Helper' ) ) {
 		private static $seen_refs = [];
 
 		/**
-		 * Processed SRFM IDs Array
+		 * Processed form IDs Array
 		 * This array will store the SRFM form IDs which have already been processed to prevent duplicate styles.
 		 *
 		 * @since x.x.x
