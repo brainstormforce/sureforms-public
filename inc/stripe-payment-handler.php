@@ -222,13 +222,10 @@ class Stripe_Payment_Handler {
 
 			// $payment_intent = \Stripe\PaymentIntent::create( $payment_intent_data );
 
-			$payment_intent = wp_remote_request(
-				// get_rest_url( null, 'sureforms-middleware/v1/payment-intent' ),
-				// 'http://sureforms/wp-json/sureforms-middleware/v1/payment-intent/create',
-				'http://middleware.test/payment-intent/create',
+			$payment_intent = wp_remote_post(
+				'https://payments.sureforms.com/payment-intent/create',
 				[
-					'method'    => 'POST',
-					'body'     => wp_json_encode( $payment_intent_data ),
+					'body'     => base64_encode( wp_json_encode( $payment_intent_data ) ),
 					'headers'  => [
 						'Content-Type' => 'application/json',
 					],
@@ -321,10 +318,23 @@ class Stripe_Payment_Handler {
 				return false;
 			}
 
-			\Stripe\Stripe::setApiKey( $secret_key );
-			$payment_intent = \Stripe\PaymentIntent::retrieve( $payment_intent_id );
+			// \Stripe\Stripe::setApiKey( $secret_key );
+			// $payment_intent = \Stripe\PaymentIntent::retrieve( $payment_intent_id );
 
-			return 'succeeded' === $payment_intent->status;
+			// $payment_intent = wp_remote_post( 'http://sureforms-payments-middleware.test/payment-intent/retrieve', [
+			$payment_intent = wp_remote_post(
+				'https://payments.sureforms.com/payment-intent/retrieve',
+				[
+					'method'    => 'POST',
+					'body'     => base64_encode( wp_json_encode( [ 'payment_intent_id' => $payment_intent_id, 'secret_key' => $secret_key ] ) ),
+					'headers'  => [
+						'Content-Type' => 'application/json',
+					],
+			] );
+
+			$payment_intent = json_decode( wp_remote_retrieve_body( $payment_intent ), true );
+
+			return 'succeeded' === $payment_intent['status'];
 
 		} catch ( \Exception $e ) {
 			error_log( 'SureForms Payment Verification Error: ' . $e->getMessage() );
