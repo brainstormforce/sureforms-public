@@ -29,7 +29,7 @@ class Dropdown_Markup extends Base {
 	 * @var string
 	 * @since 1.10.0
 	 */
-	protected $unique_instance_id;
+	protected $unique_slug;
 
 	/**
 	 * Stores the multi select attribute value.

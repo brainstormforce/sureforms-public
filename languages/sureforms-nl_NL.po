@@ -14,9 +14,9 @@ msgstr ""
 #. Plugin Name of the plugin
 #. Author of the plugin
 #: sureforms.php
+#: admin/admin.php:198
 #: admin/admin.php:199
-#: admin/admin.php:200
-#: admin/admin.php:1324
+#: admin/admin.php:1232
 #: inc/gutenberg-hooks.php:107
 #: inc/nps-notice.php:108
 #: inc/page-builders/bricks/elements/form-widget.php:66
@@ -43,8 +43,8 @@ msgstr "Een eenvoudige maar krachtige manier om moderne formulieren voor uw webs
 msgid "https://sureforms.com/"
 msgstr ""
 
+#: admin/admin.php:211
 #: admin/admin.php:212
-#: admin/admin.php:213
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:2
 #: assets/build/page_header.js:172
@@ -53,9 +53,9 @@ msgstr ""
 msgid "Dashboard"
 msgstr "Dashboard"
 
+#: admin/admin.php:229
 #: admin/admin.php:230
-#: admin/admin.php:231
-#: admin/admin.php:500
+#: admin/admin.php:499
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:2
 #: assets/build/page_header.js:172
@@ -63,16 +63,16 @@ msgstr "Dashboard"
 msgid "Settings"
 msgstr "Instellingen"
 
+#: admin/admin.php:360
 #: admin/admin.php:361
-#: admin/admin.php:362
 #: inc/post-types.php:173
 msgid "New Form"
 msgstr "Nieuw formulier"
 
+#: admin/admin.php:369
 #: admin/admin.php:370
-#: admin/admin.php:371
-#: admin/admin.php:411
-#: admin/admin.php:1361
+#: admin/admin.php:410
+#: admin/admin.php:1269
 #: inc/global-settings/email-summary.php:110
 #: inc/post-types.php:1083
 #: assets/build/dashboard.js:172
@@ -83,11 +83,11 @@ msgid "Entries"
 msgstr "Inzendingen"
 
 #. Translators: Post Title.
-#: admin/admin.php:580
+#: admin/admin.php:579
 msgid "Edit %1$s"
 msgstr "Bewerk %1$s"
 
-#: admin/admin.php:989
+#: admin/admin.php:988
 #: api/block-patterns.php:110
 #: inc/ai-form-builder/ai-auth.php:45
 #: inc/ai-form-builder/ai-auth.php:91
@@ -109,12 +109,12 @@ msgstr "Bewerk %1$s"
 msgid "Nonce verification failed."
 msgstr "Verificatie van nonce mislukt."
 
-#: admin/admin.php:998
+#: admin/admin.php:997
 msgid "You cannot view this entry because it is in trash."
 msgstr "U kunt deze invoer niet bekijken omdat deze in de prullenbak staat."
 
 #. translators: %1$s: Opening anchor tag with URL, %2$s: Closing anchor tag, %3$s: SureForms Pro Plugin Name.
-#: admin/admin.php:1042
+#: admin/admin.php:1041
 msgid "Please %1$sactivate%2$s your copy of %3$s to get new features, access support, receive update notifications, and more."
 msgstr "Gelieve %1$suw exemplaar van %3$s te activeren%2$s om nieuwe functies te krijgen, toegang tot ondersteuning, update-meldingen te ontvangen en meer."
 
@@ -126,7 +126,7 @@ msgstr ""
 "\n"
 "ID"
 
-#: admin/admin.php:1360
+#: admin/admin.php:1268
 #: admin/views/entries-list-table.php:93
 #: inc/global-settings/email-summary.php:109
 msgid "Form Name"
@@ -254,7 +254,7 @@ msgstr "Afval"
 msgid "Published"
 msgstr "Gepubliceerd"
 
-#: admin/admin.php:1352
+#: admin/admin.php:1260
 #: admin/views/entries-list-table.php:844
 msgid "View"
 msgstr "Bekijken"
@@ -431,11 +431,11 @@ msgstr "Geen plugin opgegeven"
 msgid "Plugin Successfully Activated"
 msgstr "Plugin succesvol geactiveerd"
 
-#: admin/admin.php:642
+#: admin/admin.php:641
 msgid "Activating..."
 msgstr "Activeren..."
 
-#: admin/admin.php:643
+#: admin/admin.php:642
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:2
 #: assets/build/page_header.js:172
@@ -443,16 +443,16 @@ msgstr "Activeren..."
 msgid "Activated"
 msgstr "Geactiveerd"
 
-#: admin/admin.php:644
+#: admin/admin.php:643
 #: assets/build/formEditor.js:172
 msgid "Activate"
 msgstr "Activeren"
 
-#: admin/admin.php:645
+#: admin/admin.php:644
 msgid "Installing..."
 msgstr "Installeren..."
 
-#: admin/admin.php:646
+#: admin/admin.php:645
 msgid "Installed"
 msgstr "Geïnstalleerd"
 
@@ -460,9 +460,9 @@ msgstr "Geïnstalleerd"
 msgid "You do not have permission to access this page."
 msgstr "U heeft geen toestemming om deze pagina te openen."
 
-#: admin/admin.php:1224
-#: admin/admin.php:1262
-#: admin/admin.php:1283
+#: admin/admin.php:1132
+#: admin/admin.php:1170
+#: admin/admin.php:1191
 #: inc/admin-ajax.php:165
 msgid "Invalid nonce."
 msgstr "Ongeldige nonce."
@@ -679,11 +679,11 @@ msgstr "Selectievakje"
 msgid "Required"
 msgstr "Vereist"
 
-#: inc/fields/dropdown-markup.php:59
+#: inc/fields/dropdown-markup.php:75
 msgid "Dropdown"
 msgstr "Keuzemenu"
 
-#: inc/fields/dropdown-markup.php:66
+#: inc/fields/dropdown-markup.php:82
 #: assets/build/blocks.js:172
 msgid "Select an option"
 msgstr "Selecteer een optie"
@@ -907,7 +907,7 @@ msgstr "Nieuw formulier maken"
 msgid "Create"
 msgstr "Maken"
 
-#: admin/admin.php:806
+#: admin/admin.php:805
 #: inc/post-types.php:132
 msgid "Import Form"
 msgstr "Importformulier"
@@ -4703,7 +4703,7 @@ msgstr "Huis Overstromingswater"
 
 #: modules/gutenberg/icons/icons-v6-1.php:5169
 msgid "House Flood Water Circle Arrow Right"
-msgstr ""
+msgstr "Huis Overstroming Water Cirkel Pijl Rechts"
 
 #: modules/gutenberg/icons/icons-v6-1.php:5180
 msgid "House Laptop"
@@ -8475,7 +8475,7 @@ msgstr "Sociaal"
 msgid "Travel"
 msgstr "Reizen"
 
-#: inc/helper.php:1702
+#: inc/helper.php:1756
 #: templates/forms/blank-form.php:16
 msgid "Blank Form"
 msgstr "Leeg formulier"
@@ -9161,9 +9161,9 @@ msgstr "Blokken toevoegen aan de Snelle Actiebalk"
 msgid "Re-arrange block inside Quick Action Bar"
 msgstr "Blok herschikken in de Snelle Actiebalk"
 
+#: admin/admin.php:287
 #: admin/admin.php:288
-#: admin/admin.php:289
-#: admin/admin.php:1455
+#: admin/admin.php:1363
 #: admin/views/single-entry.php:164
 #: assets/build/blocks.js:172
 #: assets/build/dashboard.js:172
@@ -10852,7 +10852,7 @@ msgid "icon"
 msgstr "icoon"
 
 #. translators: %1$s: SureForms version, %2$s: SureForms Pro Plugin Name, %3$s: SureForms Pro Version, %4$s: Anchor tag open, %5$s: Closing anchor tag.
-#: admin/admin.php:1052
+#: admin/admin.php:1051
 msgid "SureForms %1$s requires minimum %2$s %3$s to work properly. Please update to the latest version from %4$shere%5$s."
 msgstr "SureForms %1$s vereist minimaal %2$s %3$s om goed te functioneren. Werk alstublieft bij naar de nieuwste versie van %4$shier%5$s."
 
@@ -11036,7 +11036,7 @@ msgstr "Met het SureForms Pro Plan kun je je formulieren omzetten in boeiende, c
 msgid "Create Conversational Form"
 msgstr "Maak een conversatieformulier"
 
-#: admin/admin.php:120
+#: admin/admin.php:119
 msgid "Get SureForms Pro"
 msgstr "Verkrijg SureForms Pro"
 
@@ -11688,8 +11688,8 @@ msgstr "Beschrijf het formulier dat je wilt maken"
 msgid "We are building your form…"
 msgstr "We zijn uw formulier aan het maken…"
 
+#: admin/admin.php:303
 #: admin/admin.php:304
-#: admin/admin.php:305
 msgid "SMTP"
 msgstr ""
 
@@ -11825,26 +11825,26 @@ msgstr "Beheerdersmeldingen houden je op de hoogte van nieuwe formulierinzending
 msgid "Contribute to SureForms"
 msgstr "Draag bij aan SureForms"
 
-#: admin/admin.php:1220
-#: admin/admin.php:1258
-#: admin/admin.php:1279
+#: admin/admin.php:1128
+#: admin/admin.php:1166
+#: admin/admin.php:1187
 msgid "Unauthorized user."
 msgstr "Ongeautoriseerde gebruiker."
 
 #. translators: 1: opening span, 2: opening strong (inline), 3: closing strong, 4: closing span, 5: opening strong (block), 6: closing strong
-#: admin/admin.php:1229
+#: admin/admin.php:1137
 msgid "%1$sGet started by %2$sbuilding your first form%3$s.%4$s%5$sExperience the power of our intuitive AI Form Builder%6$s"
 msgstr "%1$sBegin met %2$shet bouwen van je eerste formulier%3$s.%4$s%5$sErvaar de kracht van onze intuïtieve AI Form Builder%6$s"
 
-#: admin/admin.php:1240
+#: admin/admin.php:1148
 msgid "SureForms is waiting for you!"
 msgstr "SureForms wacht op je!"
 
-#: admin/admin.php:1242
+#: admin/admin.php:1150
 msgid "Build My First Form"
 msgstr "Bouw Mijn Eerste Formulier"
 
-#: admin/admin.php:1243
+#: admin/admin.php:1151
 msgid "Dismiss"
 msgstr "Afwijzen"
 
@@ -11880,56 +11880,51 @@ msgstr "Registreren"
 msgid "Thanks for being part of the SureForms community! Got feedback or suggestions? We'd love to hear it."
 msgstr "Bedankt dat je deel uitmaakt van de SureForms-gemeenschap! Heb je feedback of suggesties? We horen het graag."
 
-#. translators: 1: line break, 2: SureMail link opening tag, 3: SureMail link closing tag
-#: admin/admin.php:1118
-msgid "It looks like there's no SMTP plugin running on your site. That means emails sent from SureForms might not go through.%1$sYou can use %2$sSureMail%3$s to get email delivery working."
-msgstr "Het lijkt erop dat er geen SMTP-plugin op uw site draait. Dat betekent dat e-mails verzonden vanuit SureForms mogelijk niet worden afgeleverd.%1$sU kunt %2$sSureMail%3$s gebruiken om e-mailbezorging te laten werken."
-
-#: admin/admin.php:1348
+#: admin/admin.php:1256
 msgid "Recent Entries"
 msgstr "Recente items"
 
-#: admin/admin.php:1349
+#: admin/admin.php:1257
 msgid "( Last 7 days )"
 msgstr "( Laatste 7 dagen )"
 
-#: admin/admin.php:1391
+#: admin/admin.php:1299
 msgid "Use Conditional Logic to show only what matters"
 msgstr "Gebruik voorwaardelijke logica om alleen te tonen wat ertoe doet"
 
-#: admin/admin.php:1392
+#: admin/admin.php:1300
 msgid "Split your form into steps to keep it easy"
 msgstr "Verdeel uw formulier in stappen om het eenvoudig te houden"
 
-#: admin/admin.php:1393
+#: admin/admin.php:1301
 msgid "Let people upload files directly to your form"
 msgstr "Laat mensen bestanden direct naar uw formulier uploaden"
 
-#: admin/admin.php:1394
+#: admin/admin.php:1302
 msgid "Turn responses into downloadable PDFs automatically"
 msgstr "Zet reacties automatisch om in downloadbare PDF's"
 
-#: admin/admin.php:1395
+#: admin/admin.php:1303
 msgid "Let users sign with a simple signature field"
 msgstr "Laat gebruikers ondertekenen met een eenvoudig handtekeningveld"
 
-#: admin/admin.php:1396
+#: admin/admin.php:1304
 msgid "Connect your form to other tools using webhooks"
 msgstr "Verbind uw formulier met andere tools via webhooks"
 
-#: admin/admin.php:1397
+#: admin/admin.php:1305
 msgid "Use Conversational Forms for a chat-like experience"
 msgstr "Gebruik Conversational Forms voor een chat-achtige ervaring"
 
-#: admin/admin.php:1398
+#: admin/admin.php:1306
 msgid "Let users register or log in through your form"
 msgstr "Laat gebruikers zich registreren of inloggen via uw formulier"
 
-#: admin/admin.php:1399
+#: admin/admin.php:1307
 msgid "Build forms that create WordPress user accounts"
 msgstr "Bouw formulieren die WordPress-gebruikersaccounts aanmaken"
 
-#: admin/admin.php:1400
+#: admin/admin.php:1308
 msgid "Add calculations to auto-total scores or prices"
 msgstr "Berekeningen toevoegen om scores of prijzen automatisch op te tellen"
 
@@ -12204,6 +12199,23 @@ msgstr "Bouw je eerste formulier"
 #: assets/build/templatePicker.js:172
 msgid "Connect your website with SureForms AI to get 10 more AI form generations."
 msgstr "Verbind je website met SureForms AI om 10 extra AI-formulieren te genereren."
+
+#: inc/helper.php:1616
+msgid "Invalid nonce action or name."
+msgstr "Ongeldige nonce-actie of naam."
+
+#: inc/helper.php:1626
+#: inc/helper.php:1634
+msgid "Invalid security token."
+msgstr "Ongeldig beveiligingstoken."
+
+#: inc/helper.php:1641
+msgid "Invalid request type."
+msgstr "Ongeldig verzoektype."
+
+#: inc/helper.php:1649
+msgid "You do not have permission to perform this action."
+msgstr "U heeft geen toestemming om deze actie uit te voeren."
 
 #: inc/post-types.php:168
 msgctxt "post type general name"
