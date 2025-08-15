@@ -622,21 +622,20 @@ class Form_Submit {
 			$label = '';
 
 			/**
-			 * Filters whether to add a field row to the submission data.
+			 * Filters submission data for field processing.
 			 *
-			 * This filter allows plugins to control whether a specific field should be
-			 * included in the prepared submission data. Useful for custom field types
-			 * that need special handling or should be excluded from standard processing.
+			 * This filter allows customization of how individual fields are processed
+			 * during submission data preparation. Plugins can modify field values,
+			 * labels, or exclude specific fields from the final submission data.
 			 *
 			 * @since x.x.x
 			 *
-			 * @param bool   $should_add_field_row Whether to add the field row. Default true.
-			 * @param array  $args {
-			 *     Arguments containing field information.
+			 * @param array $field_data {
+			 *     Field data for processing.
 			 *
-			 *     @type string $field_key   The field key from submission data.
-			 *     @type mixed  $field_value The field value from submission data.
-			 *     @type string $block_name  The block name extracted from field key.
+			 *     @type array  $block_parts  The field key split by '-lbl-' delimiter.
+			 *     @type string $field_key    The original field key from submission data.
+			 *     @type mixed  $field_value  The field value from submission data.
 			 * }
 			 */
 			$should_add_field_row = apply_filters(
