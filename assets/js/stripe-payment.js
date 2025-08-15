@@ -11,6 +11,7 @@ class StripePayment {
 	static paymentElements = {};
 	static paymentIntents = {};
 	static slugForPayment = [];
+	static debounceTimers = {};
 
 	/**
 	 * Constructor for the Calculations class.
@@ -59,24 +60,87 @@ class StripePayment {
 
 		for ( const paymentWrapper of getPaymentWrapper ) {
 			const getTheSlug = this.getSlugForPayment( paymentWrapper );
-			console.log("getTheSlug->", {getTheSlug, slug});
+
 			// If in the slug array, then update the payment intent
 			if ( getTheSlug.includes( slug ) ) {
+				// Block wrapper
+				const blockWrapper = paymentWrapper.closest('.srfm-block');
 				// get Wrapper block id
-				const blockId = paymentWrapper.closest('.srfm-block').getAttribute('data-block-id');
-					console.log("blockId->", blockId);
+				const blockId = blockWrapper.getAttribute('data-block-id');
 
 				// new amount
 				const newAmount = input.value;
-				console.log("newAmount->", newAmount);
+
+				// Set amount in the ".srfm-payment-value"
+				const paymentValue = blockWrapper.querySelector('.srfm-payment-value');
+				paymentValue.textContent = `$${newAmount}`;
 
 				this.updatePaymentIntentAmount( blockId, newAmount );
 			}
 		}
 	}
 
+	debounce( func, delay, key ) {
+		return function( ...args ) {
+			clearTimeout( StripePayment.debounceTimers[ key ] );
+			StripePayment.debounceTimers[ key ] = setTimeout( () => func.apply( this, args ), delay );
+		};
+	}
+
 	updatePaymentIntentAmount( blockId, newAmount ) {
 		console.log("updatePaymentIntentAmount->", {blockId, newAmount});
+		
+		// Create a unique key for this block
+		const debounceKey = `payment_update_${blockId}`;
+		
+		// Create debounced function if it doesn't exist
+		if ( ! this[ `debouncedUpdate_${blockId}` ] ) {
+			this[ `debouncedUpdate_${blockId}` ] = this.debounce( 
+				this.performUpdatePaymentIntent.bind( this ), 
+				500, 
+				debounceKey 
+			);
+		}
+		
+		// Call the debounced function
+		this[ `debouncedUpdate_${blockId}` ]( blockId, newAmount );
+	}
+
+	async performUpdatePaymentIntent( blockId, newAmount ) {
+		console.log("performUpdatePaymentIntent->", {blockId, newAmount});
+		
+		// Get the payment intent ID for this block
+		const paymentIntentId = StripePayment.paymentIntents[ blockId ];
+		
+		if ( ! paymentIntentId ) {
+			console.error( `No payment intent found for block ${blockId}` );
+			return;
+		}
+		
+		// Prepare data for API call
+		const data = new FormData();
+		data.append( 'action', 'srfm_update_payment_intent_amount' );
+		data.append( 'nonce', srfm_ajax.nonce );
+		data.append( 'payment_intent_id', paymentIntentId );
+		data.append( 'new_amount', parseInt( newAmount * 100 ) ); // Convert to cents
+		data.append( 'block_id', blockId );
+		
+		try {
+			const response = await fetch( srfm_ajax.ajax_url, {
+				method: 'POST',
+				body: data,
+			} );
+			
+			const responseData = await response.json();
+			
+			if ( responseData.success ) {
+				console.log( `Payment intent updated successfully for block ${blockId}` );
+			} else {
+				console.error( `Failed to update payment intent for block ${blockId}:`, responseData.data );
+			}
+		} catch ( error ) {
+			console.error( `Error updating payment intent for block ${blockId}:`, error );
+		}
 	}
 
 	listen_the_form_submit_event() {
