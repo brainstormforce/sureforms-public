@@ -12,7 +12,7 @@ use SRFM\Admin\Admin;
 /**
  * Tests first form creation timestamp logic.
  */
-class Test_First_Form_Creation extends TestCase {
+class Test_Admin extends TestCase {
 
     protected function setUp(): void {
         parent::setUp();
