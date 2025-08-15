@@ -127,6 +127,11 @@ class Email_Template {
 
 			?>
 			<table class="srfm_all_data" width="536" cellpadding="0" cellspacing="0" style="border: 1px solid #dce0e6;border-radius: 6px;margin-top: 25px;margin-bottom: 25px;overflow:hidden;">
+				<style>
+					.srfm_all_data tr:last-child td {
+						border-bottom: none !important;
+					}
+				</style>
 				<tbody>
 					<?php
 					foreach ( $fields as $field_name => $value ) {
