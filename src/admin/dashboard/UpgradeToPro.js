@@ -1,99 +1,108 @@
 import { __ } from '@wordpress/i18n';
-import { Button, Container, Title, Label } from '@bsf/force-ui';
-import { Check, Zap } from 'lucide-react';
+import { Button, Container, Label } from '@bsf/force-ui';
+import { Check } from 'lucide-react';
 import upgradeToProPlaceholder from '@Image/upgrade-to-pro.svg';
 import { addQueryParam } from '@Utils/Helpers';
+import svgIcons from '@Svg/svgs.json';
+import parse from 'html-react-parser';
 
 export default () => {
-	const featuresText = [
-		{ title: __( 'File Upload', 'sureforms' ) },
-		{ title: __( 'Page Break', 'sureforms' ) },
-		{ title: __( 'Rating Fields', 'sureforms' ) },
-		{ title: __( 'Date & Time Pickers', 'sureforms' ) },
-		{ title: __( 'Conditional Logic', 'sureforms' ) },
-		{ title: __( 'And much more…', 'sureforms' ) },
+	const features = [
+		[
+			__( 'Conversational Forms', 'sureforms' ),
+			__( 'File Uploads', 'sureforms' ),
+		],
+		[
+			__( 'Conditional Logic', 'sureforms' ),
+			__( 'Signature & Rating', 'sureforms' ),
+		],
+		[
+			__( 'Calculation Forms', 'sureforms' ),
+			__( 'And Much More…', 'sureforms' ),
+		],
 	];
 
 	return (
 		<Container
-			className="w-full bg-background-primary p-4 gap-2 shadow-sm-blur-1 rounded-xl border-0.5 border-solid border-border-subtle"
-			containerType="grid"
-			cols={ 12 }
+			direction="column"
+			className="bg-white p-3 rounded-xl shadow-sm-blur-1 border-0.5 border-solid border-border-subtle gap-2"
 		>
-			<Container.Item className="flex flex-col gap-2 col-span-12 md:col-span-6">
-				<Container direction="column" className="gap-2 p-2">
-					<Container align="center" className="gap-1">
-						<Zap className="size-4 text-brand-800" />
-						<Label
-							size="xs"
-							className="font-semibold text-brand-800"
-						>
-							{ __( 'Upgrade to Premium', 'sureforms' ) }
-						</Label>
-					</Container>
-					<Container direction="column" className="gap-1 py-1">
-						<Title
-							tag="h5"
-							title={ __(
-								'Upgrade to Unlock SureForms Premium Features!',
-								'sureforms'
-							) }
-						/>
-						<Label
-							size="sm"
-							className="text-text-secondary font-normal"
-						>
-							{ __(
-								'Access smarter fields, powerful tools, and advanced features that help you build better forms, faster than ever.',
-								'sureforms'
-							) }
-						</Label>
-					</Container>
-					<Container.Item>
-						<Container
-							containerType="gird"
-							className="grid-cols-1 sm:grid-cols-2 gap-1.5 rounded-lg py-1"
-						>
-							{ featuresText.map( ( prompt, index ) => (
-								<Container.Item
-									className="flex flex-row items-center gap-2"
-									key={ index }
-								>
-									<Check className="size-3.5 text-brand-800" />
-									<Label size="sm">{ prompt.title }</Label>
-								</Container.Item>
-							) ) }
-						</Container>
-					</Container.Item>
-				</Container>
-				<Container className="p-2 gap-3">
-					<Button
-						variant="secondary"
-						size="md"
-						className="shadow-sm-blur-2"
-						onClick={ () =>
-							window.open(
-								addQueryParam(
-									srfm_admin?.pricing_page_url ||
-										srfm_admin?.sureforms_pricing_page,
-									'dashboard-upgrade-to-pro-banner-cta'
-								),
-								'_blank',
-								'noreferrer'
-							)
-						}
-					>
-						{ __( 'Upgrade Now', 'sureforms' ) }
-					</Button>
-				</Container>
-			</Container.Item>
-			<Container.Item className="gap-1.5 p-2 flex justify-center items-center col-span-12 md:col-span-6">
+			{ /* Illustration */ }
+			<Container.Item className="flex justify-center p-2">
 				<img
 					src={ upgradeToProPlaceholder }
-					alt={ __( 'Upgrade To Pro', 'sureforms' ) }
-					className="max-w-full h-auto"
+					alt={ __( 'Upgrade to Pro', 'sureforms' ) }
+					className="w-60 h-auto"
 				/>
 			</Container.Item>
+
+			<Container className="gap-1 p-2 w-[22rem]" direction="column">
+				{ /* Unlock Premium Features */ }
+				<Container.Item className="gap-2 text-brand-800 capitalize font-semibold text-xs flex items-center">
+					{ parse( svgIcons.rocket ) }
+					{ __( 'Unlock Premium Features', 'sureforms' ) }
+				</Container.Item>
+
+				{ /* Title */ }
+				<Label
+					as="h2"
+					size="lg"
+					className="text-[#141338] font-semibold text-lg"
+				>
+					{ __( 'Build Better Forms with SureForms', 'sureforms' ) }
+				</Label>
+
+				{ /* Paragraph */ }
+				<Label
+					size="sm"
+					className="text-[#4F4E7C] text-sm font-normal leading-relaxed"
+				>
+					{ __(
+						'Add advanced fields, conversational layouts, and smart logic to create forms that engage users and capture better data.',
+						'sureforms'
+					) }
+				</Label>
+			</Container>
+
+			{ /* Features Grid */ }
+			<Container
+				containerType="grid"
+				className="grid-cols-2 gap-y-3 gap-x-6 w-full p-2"
+			>
+				{ features.flat().map( ( item, index ) => (
+					<Container.Item
+						key={ index }
+						className="flex items-start gap-2 text-base text-[#141338]"
+					>
+						<Check className="w-4 h-4 text-brand-800 mt-0.5" />
+						<Label size="sm" className="font-normal">
+							{ item }
+						</Label>
+					</Container.Item>
+				) ) }
+			</Container>
+
+			{ /* Upgrade Button */ }
+			<Container className="pt-1.5 w-full p-2">
+				<Button
+					className="shadow-sm-blur-1 gap-1 w-full"
+					size="md"
+					variant="primary"
+					onClick={ () =>
+						window.open(
+							addQueryParam(
+								srfm_admin?.pricing_page_url ||
+									srfm_admin?.sureforms_pricing_page,
+								'dashboard-upgrade-to-pro-banner-cta'
+							),
+							'_blank',
+							'noreferrer'
+						)
+					}
+				>
+					{ __( 'Upgrade Now', 'sureforms' ) }
+				</Button>
+			</Container>
 		</Container>
 	);
 };
