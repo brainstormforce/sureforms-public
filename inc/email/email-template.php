@@ -163,7 +163,7 @@ class Email_Template {
 						} elseif ( ! empty( $value ) && is_string( $value ) && filter_var( $value, FILTER_VALIDATE_URL ) ) {
 							ob_start();
 							?>
-								<a target="_blank" href="<?php echo esc_attr( urldecode( $value ) ); ?>">
+								<a target="_blank" href="<?php echo esc_url( $value ); ?>">
 									<?php echo esc_html( esc_url( $value ) ); ?>
 								</a>
 							<?php
@@ -181,7 +181,7 @@ class Email_Template {
 							if ( empty( $render_url ) ) {
 								ob_start();
 								?>
-									<a target="_blank" href="<?php echo esc_attr( urldecode( $value ) ); ?>">
+									<a target="_blank" href="<?php echo esc_url( $value ); ?>">
 										<?php echo esc_html( esc_url( $value ) ); ?>
 									</a>
 								<?php
