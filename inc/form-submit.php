@@ -621,6 +621,39 @@ class Form_Submit {
 			$parts = explode( '-lbl-', $key );
 			$label = '';
 
+			/**
+			 * Filters whether to add a field row to the submission data.
+			 *
+			 * This filter allows plugins to control whether a specific field should be
+			 * included in the prepared submission data. Useful for custom field types
+			 * that need special handling or should be excluded from standard processing.
+			 *
+			 * @since x.x.x
+			 *
+			 * @param bool   $should_add_field_row Whether to add the field row. Default true.
+			 * @param array  $args {
+			 *     Arguments containing field information.
+			 *
+			 *     @type string $field_key   The field key from submission data.
+			 *     @type mixed  $field_value The field value from submission data.
+			 *     @type string $block_name  The block name extracted from field key.
+			 * }
+			 */
+			$should_add_field_row = apply_filters(
+				'srfm_prepare_submission_data',
+				[
+					'block_parts' => $parts,
+					'field_key'   => $key,
+					'field_value' => $value,
+				]
+			);
+
+			// If we get the label and value from the filter, then use it.
+			if ( ! empty( $should_add_field_row['label'] ) && ! empty( $should_add_field_row['value'] ) ) {
+				$modified_message[ $should_add_field_row['label'] ] = $should_add_field_row['value'];
+				continue;
+			}
+
 			if ( ! empty( $parts[1] ) ) {
 				$tokens = explode( '-', $parts[1] );
 				if ( count( $tokens ) > 1 ) {
