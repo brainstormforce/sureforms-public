@@ -178,8 +178,8 @@ function GeneralSettings( props ) {
 			title: __( 'Email Notification', 'sureforms' ),
 		},
 		{
-			id: 'compliance_settings',
-			title: __( 'Compliance Settings', 'sureforms' ),
+			id: 'advanced-settings',
+			title: __( 'Advanced Settings', 'sureforms' ),
 		},
 		{
 			id: 'integrations',

@@ -24,6 +24,7 @@ use SRFM\Inc\Create_New_Form;
 use SRFM\Inc\Database\Register as DatabaseRegister;
 use SRFM\Inc\Events_Scheduler;
 use SRFM\Inc\Export;
+use SRFM\Inc\Form_Restriction;
 use SRFM\Inc\Form_Submit;
 use SRFM\Inc\Forms_Data;
 use SRFM\Inc\Frontend_Assets;
@@ -299,6 +300,7 @@ class Plugin_Loader {
 		Updater::get_instance();
 		Onboarding::get_instance();
 		DatabaseRegister::init();
+		Form_Restriction::get_instance();
 		// Initializing Compatibilities.
 		Astra::get_instance();
 		/**
