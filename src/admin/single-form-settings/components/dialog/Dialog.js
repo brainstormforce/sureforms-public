@@ -13,10 +13,10 @@ import {
 } from '@bsf/force-ui';
 import SidebarNav from './SidebarNav';
 import {
-	AlertTriangleIcon,
+	Settings,
 	Code2Icon,
 	CpuIcon,
-	SettingsIcon,
+	CircleCheckBig,
 	ShieldCheckIcon,
 	XIcon,
 } from 'lucide-react';
@@ -33,6 +33,8 @@ import { setFormSpecificSmartTags, cn } from '@Utils/Helpers';
 import toast from 'react-hot-toast';
 import { useDispatch } from '@wordpress/data';
 import { store as blockEditorStore } from '@wordpress/block-editor';
+import FormRestriction from '../form-restrictions/FormRestriction';
+import { FormRestrictionProvider } from '../form-restrictions/context';
 
 const Dialog = ( {
 	open,
@@ -75,7 +77,7 @@ const Dialog = ( {
 			{
 				id: 'form_confirmation',
 				label: __( 'Form Confirmation', 'sureforms' ),
-				icon: <SettingsIcon />,
+				icon: <CircleCheckBig />,
 				component: (
 					<FormConfirmSetting
 						setHasValidationErrors={ setHasValidationErrors }
@@ -94,10 +96,17 @@ const Dialog = ( {
 				),
 			},
 			{
-				id: 'compliance_settings',
-				label: __( 'Compliance Settings', 'sureforms' ),
-				icon: <AlertTriangleIcon />,
-				component: <Compliance { ...{ complianceData } } />,
+				id: 'advanced-settings',
+				label: __( 'Advanced Settings', 'sureforms' ),
+				icon: <Settings />,
+				component: (
+					<>
+						<FormRestrictionProvider>
+							<FormRestriction />
+						</FormRestrictionProvider>
+						<Compliance { ...{ complianceData } } />
+					</>
+				),
 			},
 			{
 				id: 'integrations',

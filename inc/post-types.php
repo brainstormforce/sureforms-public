@@ -1040,6 +1040,65 @@ class Post_Types {
 		 * Hook for registering additional Post Meta
 		 */
 		do_action( 'srfm_register_additional_post_meta' );
+
+		register_meta(
+			'post',
+			'_srfm_form_restriction',
+			[
+				'type'              => 'string',  // Will store as JSON string.
+				'single'            => true,    // Store as single value.
+				'show_in_rest'      => true, // Make available in REST API.
+				// Custom callback to sanitize the data.
+				'sanitize_callback' => [ $this, 'sanitize_form_restriction_data' ],
+				'object_subtype'    => SRFM_FORMS_POST_TYPE,
+				'auth_callback'     => static function () {
+					return current_user_can( 'manage_options' );
+				},
+				'default'           => wp_json_encode(
+					[
+						'status'     => false,
+						'maxEntries' => 0,
+						'date'       => '',
+						'hours'      => '12',
+						'minutes'    => '00',
+						'meridiem'   => 'AM',
+						'message'    => Translatable::get_default_form_restriction_message(),
+					]
+				),
+			]
+		);
+	}
+
+	/**
+	 * Sanitizes the form restriction data.
+	 *
+	 * @param mixed $meta_value The meta value to sanitize.
+	 * @return string|false Sanitized JSON string.
+	 */
+	public function sanitize_form_restriction_data( $meta_value ) {
+		if ( empty( $meta_value ) || ! is_string( $meta_value ) ) {
+			return wp_json_encode( [] );
+		}
+
+		$meta_value = json_decode( $meta_value, true );
+
+		if ( ! is_array( $meta_value ) || json_last_error() !== JSON_ERROR_NONE ) {
+			// If the JSON is invalid, return an empty array as JSON.
+			return wp_json_encode( [] );
+		}
+
+		$sanitized = [
+			'status'     => isset( $meta_value['status'] ) ? wp_validate_boolean( $meta_value['status'] ) : false,
+			'maxEntries' => isset( $meta_value['maxEntries'] ) ? absint( $meta_value['maxEntries'] ) : 0,
+			'date'       => isset( $meta_value['date'] ) ? sanitize_text_field( $meta_value['date'] ) : '',
+			'hours'      => isset( $meta_value['hours'] ) ? sanitize_text_field( $meta_value['hours'] ) : '12',
+			'minutes'    => isset( $meta_value['minutes'] ) ? sanitize_text_field( $meta_value['minutes'] ) : '00',
+			'meridiem'   => isset( $meta_value['meridiem'] ) ? sanitize_text_field( $meta_value['meridiem'] ) : 'AM',
+			'message'    => isset( $meta_value['message'] ) ? sanitize_textarea_field( $meta_value['message'] ) : Translatable::get_default_form_restriction_message(),
+		];
+
+		// Return the sanitized data as a JSON string.
+		return wp_json_encode( $sanitized );
 	}
 
 	/**
