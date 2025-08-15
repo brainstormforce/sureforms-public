@@ -402,7 +402,6 @@ if ( ! class_exists( 'Spec_Gb_Helper' ) ) {
 		 *
 		 * @return array Collected SRFM form blocks.
 		 * @since x.x.x
-		 * TODO: Add PHPUnit test cases for `get_srfm_form_blocks`.
 		 */
 		public function get_srfm_form_blocks( $blocks, $blocks_to_return = [] ) {
 			// Ensure $blocks is an array and has required structure.
