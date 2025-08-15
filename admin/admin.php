@@ -648,6 +648,7 @@ class Admin {
 			'onboarding_redirect'     => isset( $_GET['srfm-activation-redirect'] ), // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce is not required for the activation redirection.
 			'pointer_nonce'           => wp_create_nonce( 'sureforms_pointer_action' ),
 			'srfm_ai_details'         => AI_Helper::get_current_usage_details(),
+			'general_settings_url'    => admin_url( '/options-general.php' )
 		];
 
 		$is_screen_sureforms_menu          = Helper::validate_request_context( 'sureforms_menu', 'page' );

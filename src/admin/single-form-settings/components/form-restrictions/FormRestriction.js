@@ -1,5 +1,9 @@
 import { __ } from '@wordpress/i18n';
-import { useEffect, useContext } from '@wordpress/element';
+import {
+	useEffect,
+	useContext,
+	createInterpolateElement,
+} from '@wordpress/element';
 import { FormRestrictionContext } from './context';
 import {
 	Container,
@@ -8,7 +12,9 @@ import {
 	Switch,
 	Label,
 	TextArea,
+	Tooltip,
 } from '@bsf/force-ui';
+import { Info } from 'lucide-react';
 import TabContentWrapper from '@Components/tab-content-wrapper';
 import DatePickerModal from '@Components/force-ui-components/DatePickerModal';
 import TimePicker from '@Components/force-ui-components/TimePicker';
@@ -24,6 +30,7 @@ const FormRestriction = () => {
 
 	return (
 		<TabContentWrapper title={ __( 'Advanced Settings', 'sureforms' ) }>
+			<div id="srfm-form-restriction-panel" />
 			<Title
 				size="xs"
 				className="mb-4"
@@ -76,7 +83,52 @@ const FormRestriction = () => {
 						<div className="flex gap-2 w-1/2">
 							<div className="w-2/3">
 								<DatePickerModal
-									label={ __( 'Date & Time', 'sureforms' ) }
+									label={
+										<>
+											{ __( 'Date & Time', 'sureforms' ) }
+											<Tooltip
+												tooltipPortalId="srfm-form-restriction-panel"
+												arrow
+												interactive
+												content={
+													<span>
+														{ createInterpolateElement(
+															__(
+																"The Time Period setting works according to your WordPress site's time zone. <a>Click here</a> to open your WordPress General Settings, where you can check and update it.",
+																'sureforms'
+															),
+															{
+																a: (
+																	<a
+																		href={
+																			srfm_admin?.general_settings_url ||
+																			'/wp-admin/options-general.php'
+																		}
+																		target="_blank"
+																		rel="noopener noreferrer"
+																		className="tooltip-link text-link-inverse text-xs font-semibold no-underline hover:no-underline"
+																	>
+																		{ __(
+																			'Click here',
+																			'sureforms'
+																		) }
+																	</a>
+																),
+															}
+														) }
+													</span>
+												}
+												placement="top"
+												triggers={ [
+													'hover',
+													'focus',
+												] }
+												variant="dark"
+											>
+												<Info className="size-4 !text-icon-secondary" />
+											</Tooltip>
+										</>
+									}
 									date={ preserveMetaData?.date }
 									onDateChange={ ( formattedDate ) => {
 										updateMeta( 'date', formattedDate );
