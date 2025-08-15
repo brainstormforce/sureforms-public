@@ -265,7 +265,7 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 
 == Changelog ==
 = x.x.x = 
-* New: Introduced Form restriction functionality
+* New: Introduced Form restriction functionality.
 = 1.10.0 - 7th August 2025 =
 * New: Introduced CPT Creation in Business Plan.
 * Fix: Resolved an issue with dropdown block when same form is embedded twice in a single page.
