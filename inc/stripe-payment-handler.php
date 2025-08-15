@@ -157,7 +157,6 @@ class Stripe_Payment_Handler {
 		$amount          = intval( $_POST['amount'] ?? 0 );
 		$currency        = sanitize_text_field( wp_unslash( $_POST['currency'] ?? 'usd' ) );
 		$description     = sanitize_text_field( wp_unslash( $_POST['description'] ?? 'SureForms Payment' ) );
-		$application_fee = floatval( $_POST['application_fee'] ?? 0 );
 		$block_id        = sanitize_text_field( wp_unslash( $_POST['block_id'] ?? '' ) );
 
 		if ( $amount <= 0 ) {
@@ -182,12 +181,6 @@ class Stripe_Payment_Handler {
 				throw new \Exception( __( 'Stripe secret key not found.', 'sureforms' ) );
 			}
 
-			// Calculate application fee - set to 0 if Pro license is active.
-			$application_fee_amount = 0;
-			if ( $application_fee > 0 && ! $this->is_pro_license_active() ) {
-				$application_fee_amount = intval( ( $amount * $application_fee ) / 100 );
-			}
-
 			$license_key = $this->is_pro_license_active() ? $this->get_license_key() : '';
 
 			// Create payment intent.
@@ -206,12 +199,6 @@ class Stripe_Payment_Handler {
 					'original_amount' => $amount,
 				],
 			];
-
-			// Add application fee for connected accounts if needed.
-			$stripe_account_id = $payment_settings['stripe_account_id'] ?? '';
-			if ( ! empty( $stripe_account_id ) && $application_fee_amount > 0 ) {
-				$payment_intent_data['application_fee_amount'] = $application_fee_amount;
-			}
 
 			$payment_intent = wp_remote_post(
 				'https://payments.sureforms.com/payment-intent/create',

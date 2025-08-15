@@ -19,7 +19,6 @@ export const PaymentComponent = ( props ) => {
 		label = 'Payment Details',
 		help = '',
 		required = true,
-		applicationFee = 3,
 	} = attributes;
 
 	// Format currency for display
@@ -73,15 +72,6 @@ export const PaymentComponent = ( props ) => {
 							{ formatCurrency( amount, currency ) }
 						</span>
 					</div>
-					{ applicationFee > 0 && (
-						<div className="srfm-payment-fee-info">
-							<small>
-								{ __( 'Includes', 'sureforms' ) }{ ' ' }
-								{ applicationFee }%{ ' ' }
-								{ __( 'processing fee', 'sureforms' ) }
-							</small>
-						</div>
-					) }
 				</div>
 
 				{ /* Stripe Elements Placeholder */ }

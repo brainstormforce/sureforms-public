@@ -65,10 +65,6 @@
 		"slug": {
 			"type": "string",
 			"default": ""
-		},
-		"applicationFee": {
-			"type": "number",
-			"default": 3
 		}
 	}
 }
