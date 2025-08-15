@@ -93,7 +93,7 @@ class Email_Summary {
 	 * @param string $source_path The source path relative to plugin directory.
 	 * @return string The public URL of the image.
 	 *
-	 * @since x.x.x
+	 * @since 1.11.0
 	 */
 	public static function get_public_image_url( $filename, $source_path ) {
 		// Sanitize filename.

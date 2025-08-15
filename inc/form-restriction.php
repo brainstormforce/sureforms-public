@@ -3,7 +3,7 @@
  * Create new Form with Template and return the form ID.
  *
  * @package sureforms.
- * @since x.x.x
+ * @since 1.11.0
  */
 
 namespace SRFM\Inc;
@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Create New Form.
  *
- * @since x.x.x
+ * @since 1.11.0
  */
 class Form_Restriction {
 	use Get_Instance;
@@ -27,7 +27,7 @@ class Form_Restriction {
 	 * Get the restriction settings for a given form.
 	 *
 	 * @param int $form_id The ID of the form.
-	 * @since x.x.x
+	 * @since 1.11.0
 	 * @return array Associative array of restriction settings or empty array if invalid.
 	 */
 	public static function get_form_restriction_setting( $form_id ) {
@@ -54,7 +54,7 @@ class Form_Restriction {
 	 * Check if the form has reached the entry limit.
 	 *
 	 * @param int $form_id The ID of the form.
-	 * @since x.x.x
+	 * @since 1.11.0
 	 * @return bool True if form is restricted, false otherwise.
 	 */
 	public static function is_form_restricted( $form_id ) {
@@ -89,7 +89,7 @@ class Form_Restriction {
 		/**
 		 * If the form has reached the entries limit or the time limit, return true.
 		 *
-		 * @since x.x.x
+		 * @since 1.11.0
 		 */
 		return apply_filters(
 			'srfm_is_form_restricted',
@@ -106,7 +106,7 @@ class Form_Restriction {
 	 *
 	 * @param int                  $form_id The ID of the form.
 	 * @param array<string, mixed> $form_restriction The form restriction settings.
-	 * @since x.x.x
+	 * @since 1.11.0
 	 * @return bool True if the entries limit is reached, false otherwise.
 	 */
 	public static function has_entries_limit_reached( $form_id, $form_restriction = [] ) {
@@ -130,7 +130,7 @@ class Form_Restriction {
 	 *
 	 * @param array<string, mixed> $form_restriction The form restriction settings containing date, hours, minutes, and meridiem.
 	 *
-	 * @since x.x.x
+	 * @since 1.11.0
 	 * @return bool True if the time limit has been reached, false otherwise.
 	 */
 	public static function has_time_limit_reached( $form_restriction ) {
@@ -165,7 +165,7 @@ class Form_Restriction {
 	 * Display the form restriction message.
 	 *
 	 * @param int $form_id The ID of the form.
-	 * @since x.x.x
+	 * @since 1.11.0
 	 * @return string|false The HTML markup for the restriction message or false if no restriction is set.
 	 */
 	public static function display_form_restriction_message( $form_id ) {

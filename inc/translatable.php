@@ -113,7 +113,7 @@ class Translatable {
 	/**
 	 * Get default form restriction message.
 	 *
-	 * @since x.x.x
+	 * @since 1.11.0
 	 * @return string Translated default form restriction message.
 	 */
 	public static function get_default_form_restriction_message() {
