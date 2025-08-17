@@ -32,7 +32,7 @@ class StripePayment {
 		this.listen_the_form_input_changes();
 
 		// listen the form submit event
-		this.listen_the_form_submit_event();
+		// this.listen_the_form_submit_event();
 	}
 
 	listen_the_form_input_changes() {
