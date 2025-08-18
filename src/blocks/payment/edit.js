@@ -35,8 +35,7 @@ const Edit = ( props ) => {
 		formId,
 		preview,
 		className,
-		applicationFee,
-		paymentItems,
+		paymentItems
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
 	const [ availableNumberFields, setAvailableNumberFields ] = useState( [] );
@@ -211,30 +210,6 @@ const Edit = ( props ) => {
 					}
 					help={ __(
 						'This will appear on the payment receipt and in Stripe dashboard.',
-						'sureforms'
-					) }
-				/>
-			),
-		},
-		{
-			id: 'application-fee',
-			component: (
-				<Range
-					label={ __( 'Application Fee (%)', 'sureforms' ) }
-					displayUnit={ false }
-					value={ applicationFee }
-					min={ 0 }
-					max={ 10 }
-					step={ 0.1 }
-					data={ {
-						value: applicationFee,
-						label: 'applicationFee',
-					} }
-					onChange={ ( value ) =>
-						setAttributes( { applicationFee: parseFloat( value ) } )
-					}
-					help={ __(
-						'Percentage fee to be added to the payment amount.',
 						'sureforms'
 					) }
 				/>

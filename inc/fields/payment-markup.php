@@ -43,14 +43,6 @@ class Payment_Markup extends Base {
 	protected $description;
 
 	/**
-	 * Application fee percentage.
-	 *
-	 * @var float
-	 * @since x.x.x
-	 */
-	protected $application_fee;
-
-	/**
 	 * Stripe publishable key.
 	 *
 	 * @var string
@@ -100,10 +92,9 @@ class Payment_Markup extends Base {
 		$this->set_field_name( $this->unique_slug );
 
 		// Set payment-specific properties.
-		$this->amount          = $attributes['amount'] ?? 10;
-		$this->currency        = $attributes['currency'] ?? 'USD';
-		$this->description     = $attributes['description'] ?? 'Payment';
-		$this->application_fee = $attributes['applicationFee'] ?? 3;
+		$this->amount      = $attributes['amount'] ?? 10;
+		$this->currency    = $attributes['currency'] ?? 'USD';
+		$this->description = $attributes['description'] ?? 'Payment';
 
 		// Get payment settings from SureForms settings.
 		$payment_settings = get_option( 'srfm_payments_settings', [] );
@@ -171,7 +162,7 @@ class Payment_Markup extends Base {
 					data-payment-amount="<?php echo esc_attr( $amount_in_cents ); ?>"
 					data-currency="<?php echo esc_attr( strtolower( $this->currency ) ); ?>"
 					data-description="<?php echo esc_attr( $this->description ); ?>"
-					data-application-fee="<?php echo esc_attr( $this->application_fee ); ?>"
+					data-block-id="<?php echo esc_attr( $this->block_id ); ?>"
 					data-required="<?php echo esc_attr( $this->data_require_attr ); ?>"
 					data-stripe-key="<?php echo esc_attr( $this->stripe_publishable_key ); ?>"
 					data-payment-mode="<?php echo esc_attr( $this->payment_mode ); ?>"
