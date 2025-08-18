@@ -13,6 +13,11 @@ class StripePayment {
 	static slugForPayment = [];
 	static debounceTimers = {};
 
+	// Initialize on page load
+	static {
+		window.srfmPaymentElements = this.paymentElements;
+	}
+
 	/**
 	 * Constructor for the Calculations class.
 	 * @param {HTMLElement} form - The form element containing calculation fields.
@@ -30,9 +35,6 @@ class StripePayment {
 
 		// Listen the form input changes.
 		this.listen_the_form_input_changes();
-
-		// listen the form submit event
-		// this.listen_the_form_submit_event();
 	}
 
 	listen_the_form_input_changes() {
@@ -143,35 +145,6 @@ class StripePayment {
 		}
 	}
 
-	listen_the_form_submit_event() {
-		document.addEventListener( 'srfm_on_trigger_form_submission', async ( event ) => {
-			event.preventDefault();
-			console.log("form submitted - processing payment first");
-
-			const { form } = event.detail;
-			
-			// Check if form has payment blocks
-			const paymentBlocks = form.querySelectorAll( '.srfm-block.srfm-payment-block' );
-			
-			if ( paymentBlocks.length === 0 ) {
-				return;
-			}
-
-			// Process payment for all payment blocks
-			try {
-				await this.processAllPayments( paymentBlocks );
-				// Payment successful, continue with form submission
-			} catch ( error ) {
-				console.error( 'Payment failed 1122:', error );
-				// Show error and don't submit form
-				const { loader } = event.detail;
-				if ( loader ) {
-					loader.classList.remove( 'srfm-active' );
-				}
-			}
-		} );
-	}
-
 	getSlugForPayment( input ) {
 		try {
 			const slugForPayment = input.dataset.paymentItems;
@@ -192,6 +165,8 @@ class StripePayment {
 		const paymentInput = field.querySelector('input.srfm-payment-input');
 		const blockId = field.getAttribute('data-block-id');
 
+		console.log("processPayment ddd->", {paymentInput, blockId});
+
 		if ( ! paymentInput ) {
 			console.error(
 				'SureForms: Payment input not found for block',
@@ -206,7 +181,7 @@ class StripePayment {
 
 		if ( ! slugForPayment ) {
 			console.error(
-				'SureForms: Payment items not found for block' + blockId,
+				'SureForms: Payment items like data-payment-items not found for block' + blockId,
 				blockId
 			);
 			return;
@@ -268,6 +243,9 @@ class StripePayment {
 					paymentElement,
 					clientSecret,
 				};
+
+				// Update window object
+				window.srfmPaymentElements = StripePayment.paymentElements;
 
 				// Handle payment element events
 				paymentElement.on( 'ready', () => {
@@ -340,65 +318,6 @@ class StripePayment {
 		} catch ( error ) {
 			console.error( 'Error creating payment intent:', error );
 			throw error;
-		}
-	}
-
-	async processAllPayments( paymentBlocks ) {
-		const paymentPromises = [];
-		
-		paymentBlocks.forEach( ( block ) => {
-			const blockId = block.getAttribute( 'data-block-id' );
-
-			const paymentData = StripePayment.paymentElements[ blockId ];
-
-			console.log("paymentData->", {paymentBlocks, block,paymentData, blockId});
-			
-			if ( paymentData ) {
-				paymentPromises.push( this.processForConfirmPayment( blockId, paymentData ) );
-			}
-		} );
-
-		console.log("paymentPromises->", paymentPromises);
-		
-		return Promise.all( paymentPromises );
-	}
-
-	async processForConfirmPayment( blockId, paymentData ) {
-		const { stripe, elements, clientSecret } = paymentData;
-
-		console.log("confirmPayment->", {stripe, elements, clientSecret});
-		
-		// First submit the elements
-		const { error: submitError } = await elements.submit();
-		
-		if ( submitError ) {
-			console.error( `Elements submit failed for block ${blockId}:`, submitError );
-			throw new Error( submitError.message );
-		}
-		
-		// Then confirm the payment
-		const confirmationObject = await stripe.confirmPayment( {
-			elements,
-			clientSecret,
-			confirmParams: {
-				return_url: window.location.href,
-			},
-			redirect: 'if_required'
-		} );
-		const { error, paymentIntent } = confirmationObject;
-
-		console.log("paymentIntent->", {error, paymentIntent, confirmationObject});
-		
-		if ( error ) {
-			console.error( `Payment failed for block ${blockId}:`, error );
-			throw new Error( error.message );
-		}
-		
-		if ( paymentIntent.status === 'succeeded' || paymentIntent.status === 'requires_capture' ) {
-			console.log( `Payment succeeded for block ${blockId}` );
-			return paymentIntent;
-		} else {
-			throw new Error( `Payment not completed for block ${blockId}` );
 		}
 	}
 }

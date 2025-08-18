@@ -5,6 +5,7 @@ import {
 	handleScrollAndFocusOnError,
 	handleCaptchaValidation,
 } from './validation';
+import { handleFormPayment } from './validation';
 import { applyFilters } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
 
@@ -453,12 +454,19 @@ async function handleFormSubmission(
 			},
 		} );
 
-		console.log("event->", event);
-
 		if ( ! document.dispatchEvent( event ) ) {
 			loader.classList.remove( 'srfm-active' );
 			return; // Stop further execution if event.preventDefault() was called.
 		}
+
+		// Process payment submission
+		const paymentResult = await handleFormPayment( form );
+		console.log("paymentResult->", paymentResult);
+		if( ! paymentResult ) {
+			return;
+		}
+
+		// return;
 
 		const formStatus = await submitFormData( form );
 		if ( formStatus?.success ) {
