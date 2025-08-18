@@ -36,7 +36,7 @@ export default () => {
 				/>
 			</Container.Item>
 
-			<Container className="gap-1 p-2 w-[22rem]" direction="column">
+			<Container className="gap-1 p-2 w-full" direction="column">
 				{ /* Unlock Premium Features */ }
 				<Container.Item className="gap-2 text-brand-800 capitalize font-semibold text-xs flex items-center">
 					{ parse( svgIcons.rocket ) }
@@ -55,7 +55,7 @@ export default () => {
 				{ /* Paragraph */ }
 				<Label
 					size="sm"
-					className="text-[#4F4E7C] text-sm font-normal leading-relaxed"
+					className="text-[#4F4E7C] text-sm font-normal leading-relaxed w-full"
 				>
 					{ __(
 						'Add advanced fields, conversational layouts, and smart logic to create forms that engage users and capture better data.',

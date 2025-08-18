@@ -1821,7 +1821,7 @@ class Helper {
 	 * @param string $minutes The minutes in a specific format (e.g., '00').
 	 * @param string $meridiem The meridiem in a specific format (e.g., 'AM' or 'PM').
 	 *
-	 * @since x.x.x
+	 * @since 1.10.1
 	 * @return int|false The timestamp if successful, false otherwise.
 	 */
 	public static function get_timestamp_from_string( $date, $hours = '12', $minutes = '00', $meridiem = 'AM' ) {
