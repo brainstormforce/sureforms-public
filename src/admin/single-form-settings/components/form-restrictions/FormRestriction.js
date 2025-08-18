@@ -1,9 +1,5 @@
 import { __ } from '@wordpress/i18n';
-import {
-	useEffect,
-	useContext,
-	createInterpolateElement,
-} from '@wordpress/element';
+import { useContext, createInterpolateElement } from '@wordpress/element';
 import { FormRestrictionContext } from './context';
 import {
 	Container,
@@ -20,13 +16,9 @@ import DatePickerModal from '@Components/force-ui-components/DatePickerModal';
 import TimePicker from '@Components/force-ui-components/TimePicker';
 
 const FormRestriction = () => {
-	const { updateMeta, preserveMetaData, editMeta } = useContext(
+	const { updateMeta, preserveMetaData } = useContext(
 		FormRestrictionContext
 	);
-
-	useEffect( () => {
-		editMeta();
-	}, [] );
 
 	return (
 		<TabContentWrapper title={ __( 'Advanced Settings', 'sureforms' ) }>

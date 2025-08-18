@@ -4,6 +4,7 @@ import {
 	createPortal,
 	useEffect,
 	memo,
+	useContext,
 } from '@wordpress/element';
 import {
 	Dialog as ForceUIDialog,
@@ -34,7 +35,7 @@ import toast from 'react-hot-toast';
 import { useDispatch } from '@wordpress/data';
 import { store as blockEditorStore } from '@wordpress/block-editor';
 import FormRestriction from '../form-restrictions/FormRestriction';
-import { FormRestrictionProvider } from '../form-restrictions/context';
+import { FormRestrictionContext } from '../form-restrictions/context';
 
 const Dialog = ( {
 	open,
@@ -46,6 +47,12 @@ const Dialog = ( {
 } ) => {
 	const [ renderRoot, setRenderRoot ] = useState( null );
 	const { updateBlockAttributes } = useDispatch( blockEditorStore );
+
+	// Load Form restrictions setting early.
+	const { editMeta } = useContext( FormRestrictionContext );
+	useEffect( () => {
+		editMeta();
+	}, [] );
 
 	// Create a root element for the dialog
 	useLayoutEffect( () => {
@@ -101,9 +108,7 @@ const Dialog = ( {
 				icon: <Settings />,
 				component: (
 					<>
-						<FormRestrictionProvider>
-							<FormRestriction />
-						</FormRestrictionProvider>
+						<FormRestriction />
 						<Compliance { ...{ complianceData } } />
 					</>
 				),
