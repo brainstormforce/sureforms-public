@@ -113,7 +113,8 @@ if ( ! class_exists( 'Nps_Notice' ) ) {
 						'plugin_rating_title'         => __( 'Thank you for your feedback', 'sureforms' ),
 						'plugin_rating_content'       => __( 'We value your input. How can we improve your experience?', 'sureforms' ),
 						'plugin_rating_button_string' => __( 'Rate SureForms', 'sureforms' ),
-
+						'rating_min_label'            => __( 'Hate it!', 'sureforms' ),
+						'rating_max_label'            => __( 'Love it!', 'sureforms' ),
 					],
 
 				]

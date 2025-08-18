@@ -1,4 +1,8 @@
-Version 1.0.13 - 12-08-2025
+Version 1.0.14 - 18-08-2025
+- Improvement:
+  - Added `rating_min_label` and `rating_max_label` text options for customizable rating labels.
+
+Version 1.0.13 - 18-08-2025
 - Fix:
   - Fixed issue where incorrect Content-Type header caused NPS survey close and rating submission requests to fail.
 - Dev:

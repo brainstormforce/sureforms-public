@@ -113,16 +113,16 @@
 		},
 		{
 			"name": "brainstormforce/nps-survey",
-			"version": "1.0.13",
+			"version": "1.0.14",
 			"source": {
 				"type": "git",
 				"url": "git@github.com:brainstormforce/nps-survey.git",
-				"reference": "7cb0bd16bb492015c5d5a16c09b4c9e1b55a149a"
+				"reference": "32935e3385bf262b1b55583e15345eec29c8f1d5"
 			},
 			"dist": {
 				"type": "zip",
-				"url": "https://api.github.com/repos/brainstormforce/nps-survey/zipball/7cb0bd16bb492015c5d5a16c09b4c9e1b55a149a",
-				"reference": "7cb0bd16bb492015c5d5a16c09b4c9e1b55a149a",
+				"url": "https://api.github.com/repos/brainstormforce/nps-survey/zipball/32935e3385bf262b1b55583e15345eec29c8f1d5",
+				"reference": "32935e3385bf262b1b55583e15345eec29c8f1d5",
 				"shasum": ""
 			},
 			"require-dev": {
@@ -166,10 +166,10 @@
 			},
 			"description": "NPS Survey Plugin",
 			"support": {
-				"source": "https://github.com/brainstormforce/nps-survey/tree/1.0.13",
+				"source": "https://github.com/brainstormforce/nps-survey/tree/1.0.14",
 				"issues": "https://github.com/brainstormforce/nps-survey/issues"
 			},
-			"time": "2025-08-18T09:48:59+00:00"
+			"time": "2025-08-18T12:36:33+00:00"
 		},
 		{
 			"name": "composer/ca-bundle",
