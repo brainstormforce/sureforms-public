@@ -30,9 +30,9 @@ class Frontend_Assets {
 	 * @var array<string>
 	 */
 	public static $js_assets = [
-		'form-submit'     => 'formSubmit',
-		'frontend'        => 'frontend',
-		'stripe-payment'  => 'stripe-payment',
+		'form-submit'    => 'formSubmit',
+		'frontend'       => 'frontend',
+		'stripe-payment' => 'stripe-payment',
 	];
 
 	/**
@@ -208,9 +208,9 @@ class Frontend_Assets {
 		foreach ( self::$js_assets as $handle => $path ) {
 			// Only load stripe payment script if there are payment blocks.
 			if ( 'stripe-payment' === $handle ) {
-				$current_post = get_post();
+				$current_post      = get_post();
 				$has_payment_block = $current_post && ( false !== strpos( $current_post->post_content, 'wp:srfm/payment' ) );
-				
+
 				if ( $has_payment_block ) {
 					wp_enqueue_script( SRFM_SLUG . '-' . $handle );
 				}

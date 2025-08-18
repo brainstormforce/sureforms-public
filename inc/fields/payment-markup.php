@@ -8,8 +8,6 @@
 
 namespace SRFM\Inc\Fields;
 
-use SRFM\Inc\Helper;
-
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
@@ -102,17 +100,17 @@ class Payment_Markup extends Base {
 		$this->set_field_name( $this->unique_slug );
 
 		// Set payment-specific properties.
-		$this->amount           = $attributes['amount'] ?? 10;
-		$this->currency         = $attributes['currency'] ?? 'USD';
-		$this->description      = $attributes['description'] ?? 'Payment';
-		$this->application_fee  = $attributes['applicationFee'] ?? 3;
+		$this->amount          = $attributes['amount'] ?? 10;
+		$this->currency        = $attributes['currency'] ?? 'USD';
+		$this->description     = $attributes['description'] ?? 'Payment';
+		$this->application_fee = $attributes['applicationFee'] ?? 3;
 
 		// Get payment settings from SureForms settings.
 		$payment_settings = get_option( 'srfm_payments_settings', [] );
-		
-		$this->stripe_connected      = $payment_settings['stripe_connected'] ?? false;
-		$this->payment_mode          = $payment_settings['payment_mode'] ?? 'test';
-		
+
+		$this->stripe_connected = $payment_settings['stripe_connected'] ?? false;
+		$this->payment_mode     = $payment_settings['payment_mode'] ?? 'test';
+
 		// Use currency from settings if not specified in block.
 		if ( empty( $this->currency ) || 'USD' === $this->currency ) {
 			$this->currency = $payment_settings['currency'] ?? 'USD';
@@ -141,12 +139,12 @@ class Payment_Markup extends Base {
 
 		$field_classes   = $this->get_field_classes();
 		$amount_in_cents = intval( $this->amount * 100 ); // Convert to cents for Stripe.
-		$payment_config = [];
+		$payment_config  = [];
 		if ( ! empty( $this->payment_items ) ) {
 			$payment_config['paymentItems'] = $this->payment_items;
 		}
 		$payment_config = json_encode( $payment_config );
-		
+
 		ob_start();
 		?>
 		<div data-block-id="<?php echo esc_attr( $this->block_id ); ?>" class="<?php echo esc_attr( $field_classes ); ?>">
@@ -207,7 +205,7 @@ class Payment_Markup extends Base {
 	private function render_not_connected_message() {
 		if ( current_user_can( 'manage_options' ) ) {
 			$settings_url = admin_url( 'admin.php?page=sureforms_form_settings&tab=payments-settings' );
-			$message = sprintf(
+			$message      = sprintf(
 				/* translators: %s: Link to payment settings */
 				__( 'Payment field is not configured. Please <a href="%s">connect your Stripe account</a> in the settings.', 'sureforms' ),
 				esc_url( $settings_url )
@@ -253,7 +251,7 @@ class Payment_Markup extends Base {
 		];
 
 		$symbol = $currency_symbols[ $currency ] ?? $currency . ' ';
-		
+
 		// Format based on currency.
 		if ( in_array( $currency, [ 'JPY', 'KRW' ], true ) ) {
 			// No decimal places for these currencies.

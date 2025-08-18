@@ -36,13 +36,13 @@ use SRFM\Inc\Lib\SRFM_Nps_Survey;
 use SRFM\Inc\Nps_Notice;
 use SRFM\Inc\Onboarding;
 use SRFM\Inc\Page_Builders\Page_Builders;
+use SRFM\Inc\Payments_Settings;
 use SRFM\Inc\Post_Types;
 use SRFM\Inc\Rest_Api;
 use SRFM\Inc\Single_Form_Settings\Compliance_Settings;
 use SRFM\Inc\Smart_Tags;
-use SRFM\Inc\Updater;
-use SRFM\Inc\Payments_Settings;
 use SRFM\Inc\Stripe_Payment_Handler;
+use SRFM\Inc\Updater;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.

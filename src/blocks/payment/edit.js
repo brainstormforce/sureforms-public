@@ -2,11 +2,7 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import {
-	ToggleControl,
-	SelectControl,
-	Button,
-} from '@wordpress/components';
+import { ToggleControl, SelectControl, Button } from '@wordpress/components';
 import { InspectorControls } from '@wordpress/block-editor';
 import { useEffect, useState } from '@wordpress/element';
 import { useSelect } from '@wordpress/data';
@@ -43,51 +39,61 @@ const Edit = ( props ) => {
 		paymentItems,
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
-	const [availableNumberFields, setAvailableNumberFields] = useState([]);
+	const [ availableNumberFields, setAvailableNumberFields ] = useState( [] );
 
 	// Get all blocks from the current form
-	const { getBlocks } = useSelect(select => select('core/block-editor'), []);
-	
+	const { getBlocks } = useSelect(
+		( select ) => select( 'core/block-editor' ),
+		[]
+	);
+
 	// Function to extract number input field slugs from form blocks
 	const extractNumberFieldSlugs = () => {
-		if (!currentFormId) return [];
-		
+		if ( ! currentFormId ) {
+			return [];
+		}
+
 		try {
 			const blocks = getBlocks();
 			const numberFields = [];
-			
-			const findNumberFields = (blockList) => {
-				blockList.forEach(block => {
+
+			const findNumberFields = ( blockList ) => {
+				blockList.forEach( ( block ) => {
 					// Check if block is a number input field
-					if (block.name === 'srfm/number' && block.attributes?.slug) {
+					if (
+						block.name === 'srfm/number' &&
+						block.attributes?.slug
+					) {
 						const slug = block.attributes.slug;
-						const label = block.attributes.label || __('Number Field', 'sureforms');
-						numberFields.push({
-							slug: slug,
-							label: label,
-							selected: paymentItems?.includes(slug) || false
-						});
+						const label =
+							block.attributes.label ||
+							__( 'Number Field', 'sureforms' );
+						numberFields.push( {
+							slug,
+							label,
+							selected: paymentItems?.includes( slug ) || false,
+						} );
 					}
 					// Recursively check inner blocks
-					if (block.innerBlocks?.length > 0) {
-						findNumberFields(block.innerBlocks);
+					if ( block.innerBlocks?.length > 0 ) {
+						findNumberFields( block.innerBlocks );
 					}
-				});
+				} );
 			};
-			
-			findNumberFields(blocks);
+
+			findNumberFields( blocks );
 			return numberFields;
-		} catch (error) {
-			console.error('Error extracting number field slugs:', error);
+		} catch ( error ) {
+			console.error( 'Error extracting number field slugs:', error );
 			return [];
 		}
 	};
 
 	// Update available fields when form changes
-	useEffect(() => {
+	useEffect( () => {
 		const fields = extractNumberFieldSlugs();
-		setAvailableNumberFields(fields);
-	}, [currentFormId, paymentItems]);
+		setAvailableNumberFields( fields );
+	}, [ currentFormId, paymentItems ] );
 
 	useEffect( () => {
 		if ( formId !== currentFormId ) {
@@ -101,25 +107,25 @@ const Edit = ( props ) => {
 	} = useErrMessage( 'srfm_payment_block_required_text', errorMsg );
 
 	// Handler for updating selected items
-	const handleItemToggle = (fieldSlug) => {
+	const handleItemToggle = ( fieldSlug ) => {
 		const currentItems = paymentItems || [];
 		let newItems;
-		
-		if (currentItems.includes(fieldSlug)) {
+
+		if ( currentItems.includes( fieldSlug ) ) {
 			// Remove item from array
-			newItems = currentItems.filter(item => item !== fieldSlug);
+			newItems = currentItems.filter( ( item ) => item !== fieldSlug );
 		} else {
 			// Add item to array
-			newItems = [...currentItems, fieldSlug];
+			newItems = [ ...currentItems, fieldSlug ];
 		}
-		
-		setAttributes({ paymentItems: newItems });
+
+		setAttributes( { paymentItems: newItems } );
 	};
 
 	// Handler for refreshing available fields
 	const refreshNumberFields = () => {
 		const fields = extractNumberFieldSlugs();
-		setAvailableNumberFields(fields);
+		setAvailableNumberFields( fields );
 	};
 
 	// Show the block preview on hover.
@@ -238,49 +244,93 @@ const Edit = ( props ) => {
 			id: 'payment-items',
 			component: (
 				<div>
-					<div style={{ marginBottom: '16px' }}>
-						<label style={{ display: 'block', marginBottom: '8px', fontWeight: '600' }}>
-							{__('Payment Items Configuration', 'sureforms')}
+					<div style={ { marginBottom: '16px' } }>
+						<label
+							style={ {
+								display: 'block',
+								marginBottom: '8px',
+								fontWeight: '600',
+							} }
+						>
+							{ __( 'Payment Items Configuration', 'sureforms' ) }
 						</label>
-						<p style={{ fontSize: '12px', color: '#757575', margin: '0 0 12px 0' }}>
-							{__('Select number fields to include in payment calculations.', 'sureforms')}
+						<p
+							style={ {
+								fontSize: '12px',
+								color: '#757575',
+								margin: '0 0 12px 0',
+							} }
+						>
+							{ __(
+								'Select number fields to include in payment calculations.',
+								'sureforms'
+							) }
 						</p>
 						<Button
 							variant="secondary"
 							size="small"
-							onClick={refreshNumberFields}
-							style={{ marginBottom: '12px' }}
+							onClick={ refreshNumberFields }
+							style={ { marginBottom: '12px' } }
 						>
-							{__('Refresh Available Fields', 'sureforms')}
+							{ __( 'Refresh Available Fields', 'sureforms' ) }
 						</Button>
 					</div>
-					
-					{availableNumberFields.length === 0 ? (
-						<p style={{ fontSize: '12px', color: '#757575', fontStyle: 'italic' }}>
-							{__('No number fields found in the form. Add number input fields to configure payment items.', 'sureforms')}
+
+					{ availableNumberFields.length === 0 ? (
+						<p
+							style={ {
+								fontSize: '12px',
+								color: '#757575',
+								fontStyle: 'italic',
+							} }
+						>
+							{ __(
+								'No number fields found in the form. Add number input fields to configure payment items.',
+								'sureforms'
+							) }
 						</p>
 					) : (
 						<div>
-							{availableNumberFields.map((field) => (
-								<div key={field.slug} style={{ marginBottom: '8px' }}>
+							{ availableNumberFields.map( ( field ) => (
+								<div
+									key={ field.slug }
+									style={ { marginBottom: '8px' } }
+								>
 									<ToggleControl
-										label={`${field.label} (${field.slug})`}
-										checked={paymentItems?.includes(field.slug) || false}
-										onChange={() => handleItemToggle(field.slug)}
-										help={__('Include this field in payment calculations', 'sureforms')}
+										label={ `${ field.label } (${ field.slug })` }
+										checked={
+											paymentItems?.includes(
+												field.slug
+											) || false
+										}
+										onChange={ () =>
+											handleItemToggle( field.slug )
+										}
+										help={ __(
+											'Include this field in payment calculations',
+											'sureforms'
+										) }
 									/>
 								</div>
-							))}
+							) ) }
 						</div>
-					)}
-					
-					{paymentItems && paymentItems.length > 0 && (
-						<div style={{ marginTop: '12px', padding: '8px', backgroundColor: '#f0f6fc', borderRadius: '4px' }}>
-							<strong style={{ fontSize: '12px' }}>
-								{__('Selected Items:', 'sureforms')} {paymentItems.join(', ')}
+					) }
+
+					{ paymentItems && paymentItems.length > 0 && (
+						<div
+							style={ {
+								marginTop: '12px',
+								padding: '8px',
+								backgroundColor: '#f0f6fc',
+								borderRadius: '4px',
+							} }
+						>
+							<strong style={ { fontSize: '12px' } }>
+								{ __( 'Selected Items:', 'sureforms' ) }{ ' ' }
+								{ paymentItems.join( ', ' ) }
 							</strong>
 						</div>
-					)}
+					) }
 				</div>
 			),
 		},

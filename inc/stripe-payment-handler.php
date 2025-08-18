@@ -194,7 +194,7 @@ class Stripe_Payment_Handler {
 			// Calculate application fee - set to 0 if Pro license is active.
 			$application_fee_amount = 0;
 			if ( $application_fee > 0 && ! $this->is_pro_license_active() ) {
-				$application_fee_amount = intval( ( $amount * $application_fee ) / 100 );
+				$application_fee_amount = intval( $amount * $application_fee / 100 );
 			}
 
 			// Create payment intent.
@@ -286,6 +286,106 @@ class Stripe_Payment_Handler {
 	}
 
 	/**
+	 * Update payment intent amount
+	 *
+	 * @return void
+	 * @since x.x.x
+	 */
+	public function update_payment_intent_amount() {
+		// Verify nonce.
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ?? '' ) ), 'srfm_stripe_payment_nonce' ) ) {
+			wp_send_json_error( __( 'Invalid nonce.', 'sureforms' ) );
+			return;
+		}
+
+		$payment_intent_id = sanitize_text_field( wp_unslash( $_POST['payment_intent_id'] ?? '' ) );
+		$new_amount        = intval( $_POST['new_amount'] ?? 0 );
+		$block_id          = sanitize_text_field( wp_unslash( $_POST['block_id'] ?? '' ) );
+
+		if ( empty( $payment_intent_id ) || $new_amount <= 0 ) {
+			wp_send_json_error( __( 'Invalid payment intent ID or amount.', 'sureforms' ) );
+			return;
+		}
+
+		try {
+			// Get payment settings.
+			$payment_settings = get_option( 'srfm_payments_settings', [] );
+
+			if ( empty( $payment_settings['stripe_connected'] ) ) {
+				throw new \Exception( __( 'Stripe is not connected.', 'sureforms' ) );
+			}
+
+			$payment_mode = $payment_settings['payment_mode'] ?? 'test';
+			$secret_key   = 'live' === $payment_mode
+				? $payment_settings['stripe_live_secret_key'] ?? ''
+				: $payment_settings['stripe_test_secret_key'] ?? '';
+
+			if ( empty( $secret_key ) ) {
+				throw new \Exception( __( 'Stripe secret key not found.', 'sureforms' ) );
+			}
+
+			// Initialize Stripe.
+			if ( ! class_exists( '\\Stripe\\Stripe' ) ) {
+				throw new \Exception( __( 'Stripe library not found.', 'sureforms' ) );
+			}
+
+			\Stripe\Stripe::setApiKey( $secret_key );
+
+			// Retrieve the existing payment intent.
+			$payment_intent = \Stripe\PaymentIntent::retrieve( $payment_intent_id );
+
+			// Check if payment intent can be updated (not yet confirmed).
+			if ( 'requires_payment_method' !== $payment_intent->status && 'requires_confirmation' !== $payment_intent->status ) {
+				throw new \Exception( __( 'Payment intent cannot be updated at this stage.', 'sureforms' ) );
+			}
+
+			// Calculate application fee for the new amount.
+			$application_fee_amount = 0;
+			if ( isset( $payment_intent->metadata->application_fee ) && $payment_intent->metadata->application_fee > 0 ) {
+				if ( ! $this->is_pro_license_active() ) {
+					$application_fee_amount = intval( $new_amount * floatval( $payment_intent->metadata->application_fee ) / 100 );
+				}
+			}
+
+			// Update payment intent with new amount.
+			$update_data = [
+				'amount' => $new_amount,
+			];
+
+			// Add application fee if needed.
+			$stripe_account_id = $payment_settings['stripe_account_id'] ?? '';
+			if ( ! empty( $stripe_account_id ) && $application_fee_amount > 0 ) {
+				$update_data['application_fee_amount'] = $application_fee_amount;
+			}
+
+			// Update metadata to track the change.
+			$update_data['metadata'] = [
+				'source'          => 'SureForms',
+				'block_id'        => $block_id,
+				'original_amount' => $payment_intent->metadata->original_amount ?? $payment_intent->amount,
+				'application_fee' => $payment_intent->metadata->application_fee ?? 0,
+				'updated_amount'  => $new_amount,
+				'updated_at'      => time(),
+			];
+
+			$updated_payment_intent = \Stripe\PaymentIntent::update( $payment_intent_id, $update_data );
+
+			wp_send_json_success(
+				[
+					'message'           => __( 'Payment intent updated successfully.', 'sureforms' ),
+					'payment_intent_id' => $updated_payment_intent->id,
+					'new_amount'        => $updated_payment_intent->amount,
+					'client_secret'     => $updated_payment_intent->client_secret,
+				]
+			);
+
+		} catch ( \Exception $e ) {
+			error_log( 'SureForms Update Payment Intent Error: ' . $e->getMessage() );
+			wp_send_json_error( __( 'Failed to update payment intent. Please try again.', 'sureforms' ) );
+		}
+	}
+
+	/**
 	 * Verify payment intent status
 	 *
 	 * @param string $payment_intent_id Payment intent ID.
@@ -353,7 +453,7 @@ class Stripe_Payment_Handler {
 		}
 
 		// Make API request to check license status.
-		$api_url = SRFM_AI_MIDDLEWARE . 'license/verify';
+		$api_url  = SRFM_AI_MIDDLEWARE . 'license/verify';
 		$response = wp_remote_post(
 			$api_url,
 			[
@@ -363,10 +463,12 @@ class Stripe_Payment_Handler {
 					'Referer'      => site_url(),
 				],
 				'timeout' => 30,
-				'body'    => wp_json_encode( [
-					'action' => 'verify_license',
-					'domain' => site_url(),
-				] ),
+				'body'    => wp_json_encode(
+					[
+						'action' => 'verify_license',
+						'domain' => site_url(),
+					]
+				),
 			]
 		);
 
@@ -375,7 +477,7 @@ class Stripe_Payment_Handler {
 
 		if ( ! is_wp_error( $response ) && 200 === wp_remote_retrieve_response_code( $response ) ) {
 			$response_body = wp_remote_retrieve_body( $response );
-			$data = json_decode( $response_body, true );
+			$data          = json_decode( $response_body, true );
 
 			if ( is_array( $data ) && isset( $data['license_active'] ) ) {
 				$is_active = (bool) $data['license_active'];
@@ -409,105 +511,4 @@ class Stripe_Payment_Handler {
 
 		return $license_setup->settings()->license_key ?? '';
 	}
-
-	/**
-	 * Update payment intent amount
-	 *
-	 * @return void
-	 * @since x.x.x
-	 */
-	public function update_payment_intent_amount() {
-		// Verify nonce.
-		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ?? '' ) ), 'srfm_stripe_payment_nonce' ) ) {
-			wp_send_json_error( __( 'Invalid nonce.', 'sureforms' ) );
-			return;
-		}
-
-		$payment_intent_id = sanitize_text_field( wp_unslash( $_POST['payment_intent_id'] ?? '' ) );
-		$new_amount        = intval( $_POST['new_amount'] ?? 0 );
-		$block_id          = sanitize_text_field( wp_unslash( $_POST['block_id'] ?? '' ) );
-
-		if ( empty( $payment_intent_id ) || $new_amount <= 0 ) {
-			wp_send_json_error( __( 'Invalid payment intent ID or amount.', 'sureforms' ) );
-			return;
-		}
-
-		try {
-			// Get payment settings.
-			$payment_settings = get_option( 'srfm_payments_settings', [] );
-
-			if ( empty( $payment_settings['stripe_connected'] ) ) {
-				throw new \Exception( __( 'Stripe is not connected.', 'sureforms' ) );
-			}
-
-			$payment_mode = $payment_settings['payment_mode'] ?? 'test';
-			$secret_key   = 'live' === $payment_mode
-				? $payment_settings['stripe_live_secret_key'] ?? ''
-				: $payment_settings['stripe_test_secret_key'] ?? '';
-
-			if ( empty( $secret_key ) ) {
-				throw new \Exception( __( 'Stripe secret key not found.', 'sureforms' ) );
-			}
-
-			// Initialize Stripe.
-			if ( ! class_exists( '\\Stripe\\Stripe' ) ) {
-				throw new \Exception( __( 'Stripe library not found.', 'sureforms' ) );
-			}
-
-			\Stripe\Stripe::setApiKey( $secret_key );
-
-			// Retrieve the existing payment intent.
-			$payment_intent = \Stripe\PaymentIntent::retrieve( $payment_intent_id );
-
-			// Check if payment intent can be updated (not yet confirmed).
-			if ( 'requires_payment_method' !== $payment_intent->status && 'requires_confirmation' !== $payment_intent->status ) {
-				throw new \Exception( __( 'Payment intent cannot be updated at this stage.', 'sureforms' ) );
-			}
-
-			// Calculate application fee for the new amount.
-			$application_fee_amount = 0;
-			if ( isset( $payment_intent->metadata->application_fee ) && $payment_intent->metadata->application_fee > 0 ) {
-				if ( ! $this->is_pro_license_active() ) {
-					$application_fee_amount = intval( ( $new_amount * floatval( $payment_intent->metadata->application_fee ) ) / 100 );
-				}
-			}
-
-			// Update payment intent with new amount.
-			$update_data = [
-				'amount' => $new_amount,
-			];
-
-			// Add application fee if needed.
-			$stripe_account_id = $payment_settings['stripe_account_id'] ?? '';
-			if ( ! empty( $stripe_account_id ) && $application_fee_amount > 0 ) {
-				$update_data['application_fee_amount'] = $application_fee_amount;
-			}
-
-			// Update metadata to track the change.
-			$update_data['metadata'] = [
-				'source'          => 'SureForms',
-				'block_id'        => $block_id,
-				'original_amount' => $payment_intent->metadata->original_amount ?? $payment_intent->amount,
-				'application_fee' => $payment_intent->metadata->application_fee ?? 0,
-				'updated_amount'  => $new_amount,
-				'updated_at'      => time(),
-			];
-
-			$updated_payment_intent = \Stripe\PaymentIntent::update( $payment_intent_id, $update_data );
-
-			wp_send_json_success(
-				[
-					'message'           => __( 'Payment intent updated successfully.', 'sureforms' ),
-					'payment_intent_id' => $updated_payment_intent->id,
-					'new_amount'        => $updated_payment_intent->amount,
-					'client_secret'     => $updated_payment_intent->client_secret,
-				]
-			);
-
-		} catch ( \Exception $e ) {
-			error_log( 'SureForms Update Payment Intent Error: ' . $e->getMessage() );
-			wp_send_json_error( __( 'Failed to update payment intent. Please try again.', 'sureforms' ) );
-		}
-	}
 }
-

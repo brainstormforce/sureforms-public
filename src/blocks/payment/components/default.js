@@ -65,7 +65,10 @@ export const PaymentComponent = ( props ) => {
 				{ /* Payment Amount Display */ }
 				<div className="srfm-payment-amount">
 					<div className="srfm-payment-amount-display">
-						<MdOutlinePayment className="srfm-payment-icon" size={ 16 } />
+						<MdOutlinePayment
+							className="srfm-payment-icon"
+							size={ 16 }
+						/>
 						<span className="srfm-payment-label">
 							{ description }:
 						</span>
