@@ -201,7 +201,7 @@ class Stripe_Payment_Handler {
 			];
 
 			$payment_intent = wp_remote_post(
-				'https://payments.sureforms.com/payment-intent/create',
+				'prod' === SRFM_PAYMENTS_ENV ? SRFM_PAYMENTS_PROD . 'payment-intent/create' : SRFM_PAYMENTS_LOCAL . 'payment-intent/create',
 				[
 					'body'     => base64_encode( wp_json_encode( $payment_intent_data ) ),
 					'headers'  => [
@@ -299,7 +299,7 @@ class Stripe_Payment_Handler {
 			}
 
 			$payment_intent = wp_remote_post(
-				'https://payments.sureforms.com/payment-intent/retrieve',
+				'prod' === SRFM_PAYMENTS_ENV ? SRFM_PAYMENTS_PROD . 'payment-intent/retrieve' : SRFM_PAYMENTS_LOCAL . 'payment-intent/retrieve',
 				[
 					'method'    => 'POST',
 					'body'     => base64_encode( wp_json_encode( [ 'payment_intent_id' => $payment_intent_id, 'secret_key' => $secret_key ] ) ),
@@ -342,54 +342,7 @@ class Stripe_Payment_Handler {
 			}
 		}
 
-		// Fallback: Check license status via API (similar to AI form builder).
-		return $this->check_license_via_api();
-	}
-
-	/**
-	 * Check license status via credits.startertemplates.com API
-	 *
-	 * @return bool True if license is active, false otherwise.
-	 * @since x.x.x
-	 */
-	private function check_license_via_api() {
-		// Get license key for API authentication.
-		$license_key = $this->get_license_key();
-		if ( empty( $license_key ) ) {
-			return false;
-		}
-
-		// Make API request to check license status.
-		$api_url = SRFM_AI_MIDDLEWARE . 'license/verify';
-		$response = wp_remote_post(
-			$api_url,
-			[
-				'headers' => [
-					'X-Token'      => base64_encode( $license_key ), // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
-					'Content-Type' => 'application/json',
-					'Referer'      => site_url(),
-				],
-				'timeout' => 30,
-				'body'    => wp_json_encode( [
-					'action' => 'verify_license',
-					'domain' => site_url(),
-				] ),
-			]
-		);
-
-		// Default to inactive if API call fails.
-		$is_active = false;
-
-		if ( ! is_wp_error( $response ) && 200 === wp_remote_retrieve_response_code( $response ) ) {
-			$response_body = wp_remote_retrieve_body( $response );
-			$data = json_decode( $response_body, true );
-
-			if ( is_array( $data ) && isset( $data['license_active'] ) ) {
-				$is_active = (bool) $data['license_active'];
-			}
-		}
-
-		return $is_active;
+		return false;
 	}
 
 	/**
