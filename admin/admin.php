@@ -106,7 +106,7 @@ class Admin {
 	/**
 	 * Get the first form creation time stamp.
 	 *
-	 * @since 1.11.0
+	 * @since 1.10.1
 	 * @return int|false
 	 */
 	public static function get_first_form_creation_time_stamp() {
@@ -116,7 +116,7 @@ class Admin {
 	/**
 	 * Check if the first form has been created.
 	 *
-	 * @since 1.11.0
+	 * @since 1.10.1
 	 * @return bool
 	 */
 	public static function is_first_form_created() {
@@ -136,7 +136,7 @@ class Admin {
 	 * Check and save the first form creation time stamp.
 	 * If not already saved.
 	 *
-	 * @since 1.11.0
+	 * @since 1.10.1
 	 * @return void
 	 */
 	public static function save_first_form_creation_time_stamp() {
@@ -177,7 +177,7 @@ class Admin {
 	 * This is used to determine if the dynamic nudges should be shown.
 	 *
 	 * @param int $days Number of days to check.
-	 * @since 1.11.0
+	 * @since 1.10.1
 	 * @return bool
 	 */
 	public static function check_first_form_creation_threshold( $days = 3 ) {

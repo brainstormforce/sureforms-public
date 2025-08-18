@@ -777,7 +777,7 @@ class Form_Submit {
 						/**
 						 * Filter to determine whether the email should be sent.
 						 *
-						 * @since 1.11.0
+						 * @since 1.10.1
 						 */
 						$should_send_email = apply_filters(
 							'srfm_should_send_email',
