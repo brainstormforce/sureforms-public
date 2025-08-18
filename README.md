@@ -4,7 +4,7 @@
 **Requires at least:** 6.4  
 **Tested up to:** 6.8.2  
 **Requires PHP:** 7.4  
-**Stable tag:** 1.11.0  
+**Stable tag:** 1.10.1  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -264,7 +264,7 @@ We take plugin security extremely seriously. If you discover a security vulnerab
 You can report the issue through our [Bug Bounty Program](https://brainstormforce.com/bug-bounty-program/). We collaborate with Patchstack to provide opportunities for researchers to report vulnerabilities. The Patchstack team will help validate, triage, and handle any reported security issues.
 
 ## Changelog ##
-### 1.11.0 - 20th August 2025 ###
+### 1.10.1 - 20th August 2025 ###
 * New: Introduced Form Restriction.
 * Improvement: Redesigned email summary template with an updated layout and styling.
 * Fix: Resolved an issue where long label strings would overflow, causing the form layout to break.
