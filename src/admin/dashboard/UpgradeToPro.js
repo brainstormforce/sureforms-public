@@ -55,7 +55,7 @@ export default () => {
 				{ /* Paragraph */ }
 				<Label
 					size="sm"
-					className="text-[#4F4E7C] text-sm font-normal leading-relaxed"
+					className="text-[#4F4E7C] text-sm font-normal leading-relaxed w-full"
 				>
 					{ __(
 						'Add advanced fields, conversational layouts, and smart logic to create forms that engage users and capture better data.',
