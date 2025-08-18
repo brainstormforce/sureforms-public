@@ -181,24 +181,23 @@ class Stripe_Payment_Handler {
 				throw new \Exception( __( 'Stripe secret key not found.', 'sureforms' ) );
 			}
 
-			$license_key = $this->is_pro_license_active() ? $this->get_license_key() : '';
-
 			// Create payment intent.
-			$payment_intent_data = [
-				'secret_key'                => $secret_key,
-				'amount'                    => $amount,
-				'currency'                  => strtolower( $currency ),
-				'description'               => $description,
-				'license_key'               => $license_key,
-				'automatic_payment_methods' => [
-					'enabled' => true,
-				],
-				'metadata'                  => [
-					'source'          => 'SureForms',
-					'block_id'        => $block_id,
-					'original_amount' => $amount,
-				],
-			];
+			$payment_intent_data = apply_filters(
+				'srfm_create_payment_intent_data',
+				[
+					'secret_key'                => $secret_key,
+					'amount'                    => $amount,
+					'currency'                  => strtolower( $currency ),
+					'description'               => $description,
+					'automatic_payment_methods' => [
+						'enabled' => true,
+					],
+					'metadata'                  => [
+						'source'          => 'SureForms',
+						'block_id'        => $block_id,
+						'original_amount' => $amount,
+					],
+			] );
 
 			$payment_intent = wp_remote_post(
 				'prod' === SRFM_PAYMENTS_ENV ? SRFM_PAYMENTS_PROD . 'payment-intent/create' : SRFM_PAYMENTS_LOCAL . 'payment-intent/create',
@@ -322,52 +321,5 @@ class Stripe_Payment_Handler {
 		}
 	}
 
-	/**
-	 * Check if the SureForms Pro license is active
-	 *
-	 * @return bool True if the SureForms Pro license is active, false otherwise.
-	 * @since x.x.x
-	 */
-	private function is_pro_license_active() {
-		// First check if Pro version is installed.
-		if ( ! defined( 'SRFM_PRO_VER' ) ) {
-			return false;
-		}
-
-		// Check if the licensing class exists and license is active.
-		if ( class_exists( 'SRFM_Pro\Admin\Licensing' ) ) {
-			$licensing = \SRFM_Pro\Admin\Licensing::get_instance();
-			if ( $licensing && method_exists( $licensing, 'is_license_active' ) ) {
-				return $licensing->is_license_active();
-			}
-		}
-
-		return false;
-	}
-
-	/**
-	 * Get license key for API authentication
-	 *
-	 * @return string License key or empty string if not available.
-	 * @since x.x.x
-	 */
-	private function get_license_key() {
-		// Only proceed if Pro version is installed.
-		if ( ! defined( 'SRFM_PRO_VER' ) || ! class_exists( 'SRFM_Pro\Admin\Licensing' ) ) {
-			return '';
-		}
-
-		$licensing = \SRFM_Pro\Admin\Licensing::get_instance();
-		if ( ! $licensing || ! method_exists( $licensing, 'licensing_setup' ) ) {
-			return '';
-		}
-
-		$license_setup = $licensing->licensing_setup();
-		if ( ! is_object( $license_setup ) || ! method_exists( $license_setup, 'settings' ) ) {
-			return '';
-		}
-
-		return $license_setup->settings()->license_key ?? '';
-	}
 }
 
