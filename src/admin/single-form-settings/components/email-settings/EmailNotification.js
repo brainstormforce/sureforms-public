@@ -15,6 +15,7 @@ import {
 import { Copy, PenLine, Trash } from 'lucide-react';
 import TabContentWrapper from '@Components/tab-content-wrapper';
 import { cn } from '@Utils/Helpers';
+import { applyFilters, doAction } from '@wordpress/hooks';
 
 const CustomButton = forwardRef(
 	(
@@ -63,6 +64,9 @@ const EmailNotification = ( {
 			( el ) => el.id !== data.id
 		);
 		updateMeta( '_srfm_email_notification', filterData );
+
+		doAction( 'srfm.emailNotification.deleted', data );
+
 		toast.dismiss();
 		toast.success(
 			__( 'Email Notification deleted successfully.', 'sureforms' ),
@@ -76,6 +80,9 @@ const EmailNotification = ( {
 		}
 		const allData = [ ...emailNotificationData, duplicateData ];
 		updateMeta( '_srfm_email_notification', allData );
+
+		doAction( 'srfm.emailNotification.duplicated', data, duplicateData );
+
 		toast.dismiss();
 		toast.success(
 			__( 'Email Notification duplicated successfully.', 'sureforms' ),
@@ -226,6 +233,16 @@ const EmailNotification = ( {
 				/>
 			</>
 		);
+	}
+
+	// hook to make delete, duplicate feature work with conditional logic.
+	let attachNecessaryHooks = applyFilters(
+		'srfm.emailNotification.loaded',
+		[]
+	);
+
+	if ( ! attachNecessaryHooks || attachNecessaryHooks.length === 0 ) {
+		attachNecessaryHooks = [];
 	}
 
 	return (
@@ -403,6 +420,7 @@ const EmailNotification = ( {
 						} ) }
 				</Table.Body>
 			</Table>
+			{ attachNecessaryHooks.map( ( option ) => option.component ) }
 		</TabContentWrapper>
 	);
 };

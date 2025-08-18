@@ -3,16 +3,21 @@ import { useEffect, useRef, useState } from '@wordpress/element';
 import { Input, DatePicker } from '@bsf/force-ui';
 
 /**
- * 1Code has alerts. Press enter to view.
  * Custom DatePicker Modal Component
  * That opens on the click of an input field
  * @param {Object}   props              1Code has alerts. Press enter to view.
  * @param {string}   props.date         The date in a specific format (e.g., '2025.10.01').
  * @param {Function} props.onDateChange Callback function to handle date changes
  * @param {string}   props.label        The label for the date input field
+ * @param {string}   props.topValue     The top value for the date picker modal
  * @return {JSX.Element} Rendered DatePicker Modal
  */
-const DatePickerModal = ( { label, date, onDateChange } ) => {
+const DatePickerModal = ( {
+	label,
+	date,
+	onDateChange,
+	topValue = '4.5rem',
+} ) => {
 	const [ isOpen, setIsOpen ] = useState( false );
 	const ref = useRef( null );
 
@@ -59,9 +64,9 @@ const DatePickerModal = ( { label, date, onDateChange } ) => {
 			<div className="relative w-full z-50" ref={ ref }>
 				{ isOpen && (
 					<div
-						className="absolute right-0 bg-white shadow-lg rounded z-999999"
+						className="absolute left-0 bg-white shadow-lg rounded z-999999 overflow-hidden"
 						style={ {
-							top: '4.5rem',
+							top: topValue,
 						} }
 					>
 						<DatePicker
@@ -90,7 +95,6 @@ const DatePickerModal = ( { label, date, onDateChange } ) => {
 			<Input
 				size="md"
 				className="w-full cursor-pointer"
-				// label={ __( 'Date', 'sureforms' ) }
 				label={ label || __( 'Date', 'sureforms' ) }
 				value={ getFormattedDate( date ) }
 				readOnly
