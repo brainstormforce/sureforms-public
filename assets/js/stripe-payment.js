@@ -132,9 +132,6 @@
 		const amount = parseInt( paymentInput.dataset.paymentAmount );
 		const currency = paymentInput.dataset.currency;
 		const description = paymentInput.dataset.description;
-		const applicationFee = parseFloat(
-			paymentInput.dataset.applicationFee
-		);
 
 		const data = new FormData();
 		data.append( 'action', 'srfm_create_payment_intent' );
@@ -142,7 +139,6 @@
 		data.append( 'amount', amount );
 		data.append( 'currency', currency );
 		data.append( 'description', description );
-		data.append( 'application_fee', applicationFee );
 		data.append( 'block_id', blockId );
 
 		return fetch( srfm_ajax.ajax_url, {
