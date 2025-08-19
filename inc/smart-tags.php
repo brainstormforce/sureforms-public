@@ -349,7 +349,7 @@ class Smart_Tags {
 						foreach ( $submission_item_value as $value ) {
 							ob_start();
 							?>
-							<a href="<?php echo esc_url( urldecode( $value ) ); ?>" target="_blank"><?php echo esc_html( esc_url( $value ) ); ?></a><br>
+							<a href="<?php echo esc_url( urldecode( $value ) ); ?>" target="_blank" rel="noopener noreferrer><?php echo esc_html( esc_url( $value ) ); ?></a><br>
 							<?php
 							$replacement_data .= ob_get_clean();
 						}

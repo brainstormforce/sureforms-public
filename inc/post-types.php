@@ -107,7 +107,7 @@ class Post_Types {
 		<div class="sureform-add-new-form">
 			<p class="sureform-blank-page-title"><?php echo esc_html( $title ); ?></p>
 			<p class="sureform-blank-page-subtitle"><?php echo esc_html( $subtitle ); ?></p>
-			<img src="<?php echo esc_url( SRFM_URL . '/images/' . $image . '.svg' ); ?>">
+			<img src="<?php echo esc_url( SRFM_URL . '/images/' . $image . '.svg' ); ?>" alt=""/>
 			<?php if ( ! empty( $button_text ) && ! empty( $button_url ) ) { ?>
 				<div class="sureforms-add-new-form-container">
 					<a class="sf-add-new-form-button" href="<?php echo esc_url( $button_url ); ?>">

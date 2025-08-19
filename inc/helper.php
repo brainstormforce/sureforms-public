@@ -381,7 +381,6 @@ class Helper {
 					<?php if ( $required ) { ?>
 						<span class="srfm-required" aria-hidden="true"> *</span>
 					<?php } ?>
-					</label>
 					<?php
 					$markup = ob_get_clean();
 				}

@@ -1045,7 +1045,7 @@ class Entries_List_Table extends \WP_List_Table {
 			// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			$selected = isset( $_GET['form_filter'] ) && Helper::get_integer_value( sanitize_text_field( wp_unslash( $_GET['form_filter'] ) ) ) === $form_id ? ' selected="selected"' : '';
 			?>
-			<option value="<?php echo esc_attr( $form_id ); ?>"<?php echo esc_attr( $selected ); ?>><?php echo esc_html( $form_name ); ?></option>
+			<option value="<?php echo esc_attr( $form_id ); ?>"<?php echo $selected; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>><?php echo esc_html( $form_name ); ?></option>
 			<?php
 		}
 		?>
@@ -1078,7 +1078,7 @@ class Entries_List_Table extends \WP_List_Table {
 			foreach ( $months as $month_value => $month_label ) {
 				$selected = isset( $_GET['month_filter'] ) && Helper::get_string_value( $month_value ) === sanitize_text_field( wp_unslash( $_GET['month_filter'] ) ) ? ' selected="selected"' : '';
 				?>
-				<option value="<?php echo esc_attr( $month_value ); ?>"<?php echo esc_attr( $selected ); ?>><?php echo esc_html( $month_label ); ?></option>
+				<option value="<?php echo esc_attr( $month_value ); ?>" <?php echo $selected; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>><?php echo esc_html( $month_label ); ?></option>
 				<?php
 			}
 			?>
