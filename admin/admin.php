@@ -758,7 +758,6 @@ class Admin {
 			'onboarding_completed'       => method_exists( $onboarding_instance, 'get_onboarding_status' ) ? $onboarding_instance->get_onboarding_status() : false,
 			'onboarding_redirect'        => isset( $_GET['srfm-activation-redirect'] ), // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce is not required for the activation redirection.
 			'pointer_nonce'              => wp_create_nonce( 'sureforms_pointer_action' ),
-			'srfm_ai_details'            => AI_Helper::get_current_usage_details(),
 			'general_settings_url'       => admin_url( '/options-general.php' ),
 		];
 
@@ -767,6 +766,17 @@ class Admin {
 		$is_screen_sureforms_form_settings = Helper::validate_request_context( 'sureforms_form_settings', 'page' );
 		$is_screen_sureforms_entries       = Helper::validate_request_context( SRFM_ENTRIES, 'page' );
 		$is_post_type_sureforms_form       = SRFM_FORMS_POST_TYPE === $current_screen->post_type;
+
+		/**
+		 * Check if the current screen is the SureForms Menu and if the user is redirected after activation for onboarding,
+		 * if the user is redirected after activation and AI Auth Email is present then we will add user type as registered.
+		 * Compatibility with existing UI code that checks for this condition.
+		 */
+		if ( $is_screen_sureforms_menu && isset( $_GET['srfm-activation-redirect'] ) && false !== get_option( 'srfm_ai_auth_user_email' ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce is not required for the activation redirection.
+			$localization_data['srfm_ai_details'] = [
+				'type' => 'registered',
+			];
+		}
 
 		if ( $is_screen_sureforms_menu || $is_post_type_sureforms_form || $is_screen_add_new_form || $is_screen_sureforms_form_settings || $is_screen_sureforms_entries ) {
 			$asset_handle = '-dashboard';
