@@ -93,7 +93,7 @@ class Email_Summary {
 	 * @param string $source_path The source path relative to plugin directory.
 	 * @return string The public URL of the image.
 	 *
-	 * @since x.x.x
+	 * @since 1.10.1
 	 */
 	public static function get_public_image_url( $filename, $source_path ) {
 		// Sanitize filename.
@@ -314,7 +314,7 @@ class Email_Summary {
 						<p style="font-size:12px;color:#4B5563;margin:0 0 4px;line-height:16px;font-weight:400;">
 							<?php esc_html_e( 'Connect your apps and automate repetitive tasks with ease. Build workflows that save time, reduce errors, and keep your business running smoothly around the clock.', 'sureforms' ); ?>
 						</p>
-						<a href="https://ottokit.com" target="_blank" rel="noopener noreferrer"
+						<a href="https://ottokit.com?utm_medium=sureforms-email-summary" target="_blank" rel="noopener noreferrer"
 							style="font-size:12px;font-weight:600;color:#EF4444;text-decoration:none;line-height:16px;">
 							<?php esc_html_e( 'Explore OttoKit', 'sureforms' ); ?> →
 						</a>
