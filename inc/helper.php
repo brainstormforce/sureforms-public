@@ -1812,4 +1812,39 @@ class Helper {
 
 		return true;
 	}
+
+	/**
+	 * Get the timestamp from a string.
+	 *
+	 * @param string $date The date in a specific format (e.g., '2025.10.01').
+	 * @param string $hours The hours in a specific format (e.g., '12').
+	 * @param string $minutes The minutes in a specific format (e.g., '00').
+	 * @param string $meridiem The meridiem in a specific format (e.g., 'AM' or 'PM').
+	 *
+	 * @since 1.10.1
+	 * @return int|false The timestamp if successful, false otherwise.
+	 */
+	public static function get_timestamp_from_string( $date, $hours = '12', $minutes = '00', $meridiem = 'AM' ) {
+
+		if ( empty( $date ) || ! is_string( $date ) ) {
+			return false; // Invalid input.
+		}
+
+		// Ensure the date is in a valid format of YYYY-MM-DD.
+		if ( ! preg_match( '/^\d{4}-\d{2}-\d{2}$/', $date ) ) {
+			return false; // Invalid date format.
+		}
+
+		$time_string = $date . ' ' . $hours . ':' . $minutes . ' ' . $meridiem;
+
+		// Convert to timestamp.
+		$timestamp = strtotime( $time_string );
+
+		if ( false !== $timestamp && is_int( $timestamp ) && $timestamp > 0 ) {
+			return $timestamp;
+		}
+
+		// If conversion fails, return false.
+		return false;
+	}
 }

@@ -38,6 +38,8 @@ const Header = () => {
 	const [ isLicenseActive, setIsLicenseActive ] = useState(
 		srfm_admin?.is_license_active || false
 	);
+	const isFirstFormCreated = srfm_admin?.is_first_form_created || false;
+
 	useEffect( () => {
 		const searchParams = new URLSearchParams( window.location.search );
 		let currentPage = searchParams.get( 'page' );
@@ -80,7 +82,9 @@ const Header = () => {
 		<div className="top-8 z-[1]">
 			{ ! isProActive &&
 				! isLicenseActive &&
-				activePage?.slug === 'sureforms_menu' && <UpgradeNotice /> }
+				activePage?.slug === 'sureforms_menu' &&
+				isFirstFormCreated &&
+				srfm_admin?.check_three_days_threshold && <UpgradeNotice /> }
 			<Topbar className="py-0 px-4 pt-0 pb-0 min-h-0 h-14 gap-4 shadow-sm bg-background-primary/75 backdrop-blur-[5px]">
 				<Topbar.Left className="gap-3">
 					<Topbar.Item className="w-auto h-auto lg:hidden">
@@ -143,10 +147,15 @@ const Header = () => {
 							) ) }
 						</nav>
 					</Topbar.Item>
-					{ ! isProActive && ! isLicenseActive && (
+					{ ! isProActive &&
+						! isLicenseActive &&
+						isFirstFormCreated &&
+						srfm_admin?.check_eight_days_threshold && (
 						<Topbar.Item>
 							<Button
-								icon={ <ArrowUpRight className="!size-5" /> }
+								icon={
+									<ArrowUpRight className="!size-5" />
+								}
 								iconPosition="right"
 								variant="link"
 								size="sm"
@@ -155,7 +164,7 @@ const Header = () => {
 									window.open(
 										addQueryParam(
 											srfm_admin?.pricing_page_url ||
-												srfm_admin?.sureforms_pricing_page,
+													srfm_admin?.sureforms_pricing_page,
 											'dashboard-header-cta'
 										),
 										'_blank',

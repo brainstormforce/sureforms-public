@@ -8,6 +8,7 @@ import SRFMTextControl from '@Components/text-control';
 import apiFetch from '@wordpress/api-fetch';
 import FormBehaviorPopupButton from '../../components/FormBehaviorPopupButton';
 import Dialog from '../components/dialog/Dialog';
+import { FormRestrictionProvider } from '../components/form-restrictions/context';
 
 let prevMetaHash = '';
 
@@ -392,14 +393,16 @@ function AdvancedSettings( props ) {
 				popupId={ 'form_custom_css' }
 				openModal={ openModal }
 			/>
-			<Dialog
-				open={ isOpen }
-				setOpen={ setOpen }
-				close={ closeModal }
-				sureformsKeys={ sureformsKeys }
-				targetTab={ popupTab }
-				setHasValidationErrors={ setHasValidationErrors }
-			/>
+			<FormRestrictionProvider>
+				<Dialog
+					open={ isOpen }
+					setOpen={ setOpen }
+					close={ closeModal }
+					sureformsKeys={ sureformsKeys }
+					targetTab={ popupTab }
+					setHasValidationErrors={ setHasValidationErrors }
+				/>
+			</FormRestrictionProvider>
 		</>
 	);
 }
