@@ -266,6 +266,7 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 ## Changelog ##
 ### 1.10.1 - 19th August 2025 ###
 * New: Introduced Form Restriction.
+* Improvement: Optimized API usage for better performance in SureForms.
 * Improvement: Redesigned email summary template with an updated layout and styling.
 * Fix: Resolved an issue where long label strings would overflow, causing the form layout to break.
 ### 1.10.0 - 7th August 2025 ###
