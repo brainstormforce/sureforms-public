@@ -100,6 +100,7 @@ class Analytics {
 			'forms_using_custom_css' => $this->forms_using_custom_css(),
 			'ai_generated_forms'     => $this->ai_generated_forms(),
 			'total_entries'          => Entries::get_total_entries_by_status(),
+			'restricted_forms'       => $this->get_restricted_forms(),
 		];
 
 		$stats_data['plugin_data']['sureforms'] = array_merge_recursive( $stats_data['plugin_data']['sureforms'], $this->global_settings_data() );
@@ -223,6 +224,24 @@ class Analytics {
 				'key'     => '_srfm_form_custom_css',
 				'value'   => '',
 				'compare' => '!=', // Checks if the value is NOT empty.
+			],
+		];
+
+		return $this->custom_wp_query_total_posts( $meta_query );
+	}
+
+	/**
+	 * Return total number of restricted forms.
+	 *
+	 * @since 1.10.1
+	 * @return int
+	 */
+	public function get_restricted_forms() {
+		$meta_query = [
+			[
+				'key'     => '_srfm_form_restriction',
+				'value'   => '"status":true',
+				'compare' => 'LIKE',
 			],
 		];
 

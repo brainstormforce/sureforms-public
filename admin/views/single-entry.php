@@ -477,7 +477,7 @@ class Single_Entry {
 
 						?>
 						<tr>
-							<td><b><?php echo wp_kses_post( $label ); ?></b></td>
+							<td style="word-break: break-word;"><b><?php echo $label ? wp_kses_post( html_entity_decode( Helper::decrypt( $label ) ) ) : ''; ?></b></td>
 							<?php
 							if ( false !== strpos( $field_name, 'srfm-upload' ) ) {
 								?>
