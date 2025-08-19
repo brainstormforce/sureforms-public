@@ -8,8 +8,6 @@
 
 namespace SRFM\Inc\Fields;
 
-use SRFM\Inc\Helper;
-
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
@@ -69,6 +67,14 @@ class Payment_Markup extends Base {
 	protected $payment_mode;
 
 	/**
+	 * Payment items.
+	 *
+	 * @var array
+	 * @since x.x.x
+	 */
+	protected $payment_items;
+
+	/**
 	 * Constructor for the Payment Markup class.
 	 *
 	 * @param array<mixed> $attributes Block attributes.
@@ -83,17 +89,19 @@ class Payment_Markup extends Base {
 		$this->set_markup_properties();
 		$this->set_aria_described_by();
 
+		$this->set_field_name( $this->unique_slug );
+
 		// Set payment-specific properties.
-		$this->amount           = $attributes['amount'] ?? 10;
-		$this->currency         = $attributes['currency'] ?? 'USD';
-		$this->description      = $attributes['description'] ?? 'Payment';
+		$this->amount      = $attributes['amount'] ?? 10;
+		$this->currency    = $attributes['currency'] ?? 'USD';
+		$this->description = $attributes['description'] ?? 'Payment';
 
 		// Get payment settings from SureForms settings.
 		$payment_settings = get_option( 'srfm_payments_settings', [] );
-		
-		$this->stripe_connected      = $payment_settings['stripe_connected'] ?? false;
-		$this->payment_mode          = $payment_settings['payment_mode'] ?? 'test';
-		
+
+		$this->stripe_connected = $payment_settings['stripe_connected'] ?? false;
+		$this->payment_mode     = $payment_settings['payment_mode'] ?? 'test';
+
 		// Use currency from settings if not specified in block.
 		if ( empty( $this->currency ) || 'USD' === $this->currency ) {
 			$this->currency = $payment_settings['currency'] ?? 'USD';
@@ -105,6 +113,8 @@ class Payment_Markup extends Base {
 		} else {
 			$this->stripe_publishable_key = $payment_settings['stripe_test_publishable_key'] ?? '';
 		}
+
+		$this->payment_items = $attributes['paymentItems'] ?? [];
 	}
 
 	/**
@@ -119,12 +129,16 @@ class Payment_Markup extends Base {
 		}
 
 		$field_classes   = $this->get_field_classes();
-		$field_config    = $this->field_config ? ' data-field-config="' . $this->field_config . '"' : '';
 		$amount_in_cents = intval( $this->amount * 100 ); // Convert to cents for Stripe.
-		
+		$payment_config  = [];
+		if ( ! empty( $this->payment_items ) ) {
+			$payment_config['paymentItems'] = $this->payment_items;
+		}
+		$payment_config = json_encode( $payment_config );
+
 		ob_start();
 		?>
-		<div class="<?php echo esc_attr( $field_classes ); ?>" <?php echo $field_config; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
+		<div data-block-id="<?php echo esc_attr( $this->block_id ); ?>" class="<?php echo esc_attr( $field_classes ); ?>">
 			<?php echo $this->label_markup; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 			
 			<div class="srfm-payment-field-wrapper">
@@ -143,17 +157,18 @@ class Payment_Markup extends Base {
 
 				<!-- Hidden fields for payment data -->
 				<input type="hidden" 
-					   name="<?php echo esc_attr( $this->field_name ); ?>" 
-					   class="srfm-payment-input"
-					   data-payment-amount="<?php echo esc_attr( $amount_in_cents ); ?>"
-					   data-currency="<?php echo esc_attr( strtolower( $this->currency ) ); ?>"
-					   data-description="<?php echo esc_attr( $this->description ); ?>"
-					   data-block-id="<?php echo esc_attr( $this->block_id ); ?>"
-					   data-required="<?php echo esc_attr( $this->data_require_attr ); ?>"
-					   data-stripe-key="<?php echo esc_attr( $this->stripe_publishable_key ); ?>"
-					   data-payment-mode="<?php echo esc_attr( $this->payment_mode ); ?>"
-					   aria-describedby="<?php echo esc_attr( trim( $this->aria_described_by ) ); ?>"
-					   <?php echo $this->required ? 'required' : ''; ?>
+					name="<?php echo esc_attr( $this->field_name ); ?>" 
+					class="srfm-payment-input"
+					data-payment-amount="<?php echo esc_attr( $amount_in_cents ); ?>"
+					data-currency="<?php echo esc_attr( strtolower( $this->currency ) ); ?>"
+					data-description="<?php echo esc_attr( $this->description ); ?>"
+					data-block-id="<?php echo esc_attr( $this->block_id ); ?>"
+					data-required="<?php echo esc_attr( $this->data_require_attr ); ?>"
+					data-stripe-key="<?php echo esc_attr( $this->stripe_publishable_key ); ?>"
+					data-payment-mode="<?php echo esc_attr( $this->payment_mode ); ?>"
+					aria-describedby="<?php echo esc_attr( trim( $this->aria_described_by ) ); ?>"
+					data-payment-items="<?php echo esc_attr( $payment_config ); ?>"
+					<?php echo $this->required ? 'required' : ''; ?>
 				/>
 
 				<!-- Payment processing status -->
@@ -168,15 +183,6 @@ class Payment_Markup extends Base {
 			<?php echo $this->help_markup; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 			<?php echo $this->error_msg_markup; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 		</div>
-
-		<script>
-		document.addEventListener('DOMContentLoaded', function() {
-			// Initialize Stripe payment for block <?php echo esc_js( $this->block_id ); ?>
-			if (typeof window.srfmInitializeStripePayment === 'function') {
-				window.srfmInitializeStripePayment('<?php echo esc_js( $this->block_id ); ?>');
-			}
-		});
-		</script>
 		<?php
 		return ob_get_clean();
 	}
@@ -190,7 +196,7 @@ class Payment_Markup extends Base {
 	private function render_not_connected_message() {
 		if ( current_user_can( 'manage_options' ) ) {
 			$settings_url = admin_url( 'admin.php?page=sureforms_form_settings&tab=payments-settings' );
-			$message = sprintf(
+			$message      = sprintf(
 				/* translators: %s: Link to payment settings */
 				__( 'Payment field is not configured. Please <a href="%s">connect your Stripe account</a> in the settings.', 'sureforms' ),
 				esc_url( $settings_url )
@@ -236,7 +242,7 @@ class Payment_Markup extends Base {
 		];
 
 		$symbol = $currency_symbols[ $currency ] ?? $currency . ' ';
-		
+
 		// Format based on currency.
 		if ( in_array( $currency, [ 'JPY', 'KRW' ], true ) ) {
 			// No decimal places for these currencies.

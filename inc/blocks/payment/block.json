@@ -65,6 +65,10 @@
 		"slug": {
 			"type": "string",
 			"default": ""
+		},
+		"paymentItems": {
+			"type": "array",
+			"default": []
 		}
 	}
 }
