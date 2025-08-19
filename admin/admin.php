@@ -771,8 +771,8 @@ class Admin {
 		 * Check if the current screen is the SureForms Menu and AI Auth Email is present then we will add user type as registered.
 		 * Compatibility with existing UI code that checks for this condition.
 		 */
-		if ( $is_screen_sureforms_menu ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce is not required for the activation redirection.
-			// If email is stored send the user type as registered else not-registered.
+		if ( $is_screen_sureforms_menu ) {
+			// If email is stored send the user type as registered else non-registered.
 			if ( ! empty( get_option( 'srfm_ai_auth_user_email' ) ) ) {
 				$localization_data['srfm_ai_details'] = [
 					'type' => 'registered',
