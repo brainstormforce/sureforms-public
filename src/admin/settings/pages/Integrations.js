@@ -8,13 +8,13 @@ const IntegrationsPage = ( { loading } ) => {
 	// Default free plugin UI
 	const freePluginUI = (
 		<Container className="flex flex-col items-center justify-center bg-background-primary">
-			<img 
-				src={ NoIntegrations } 
-				alt={ __( 'Integrations', 'sureforms' ) } 
+			<img
+				src={ NoIntegrations }
+				alt={ __( 'Integrations', 'sureforms' ) }
 				className="h-20 w-20 mx-auto"
 			/>
 
-			{/* Title */}
+			{ /* Title */ }
 			<Title
 				tag="h3"
 				title={ __( 'Unlock Powerful Integrations', 'sureforms' ) }
@@ -22,11 +22,11 @@ const IntegrationsPage = ( { loading } ) => {
 				className="text-center text-text-primary"
 			/>
 
-			{/* Description Text */}
-			<Text 
-				size={ 16 } 
-				weight={ 400 } 
-				color="secondary" 
+			{ /* Description Text */ }
+			<Text
+				size={ 16 }
+				weight={ 400 }
+				color="secondary"
 				className="text-center max-w-2xl"
 			>
 				{ __(
@@ -35,7 +35,7 @@ const IntegrationsPage = ( { loading } ) => {
 				) }
 			</Text>
 
-			{/* Upgrade Button */}
+			{ /* Upgrade Button */ }
 			<Button
 				variant="primary"
 				size="md"
@@ -48,7 +48,7 @@ const IntegrationsPage = ( { loading } ) => {
 						),
 						'_blank',
 						'noreferrer'
-					)
+					);
 				} }
 			>
 				{ __( 'Upgrade Now', 'sureforms' ) }
