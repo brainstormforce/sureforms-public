@@ -769,7 +769,7 @@ class Admin {
 
 		/**
 		 * Check if the current screen is the SureForms Menu and if the user is redirected after activation for onboarding,
-		 * if the user is redirected after activation and AI Auth Email is present then we will add user type as registered.
+		 * and AI Auth Email is present then we will add user type as registered.
 		 * Compatibility with existing UI code that checks for this condition.
 		 */
 		if ( $is_screen_sureforms_menu && isset( $_GET['srfm-activation-redirect'] ) && false !== get_option( 'srfm_ai_auth_user_email' ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce is not required for the activation redirection.
