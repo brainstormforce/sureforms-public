@@ -60,7 +60,7 @@ class Register {
 	 */
 	public static function get_db_tables() {
 		return [
-			'entries' => Entries::get_instance(),
+			'entries'  => Entries::get_instance(),
 			'payments' => Payments::get_instance(),
 		];
 	}

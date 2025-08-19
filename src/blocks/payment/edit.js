@@ -14,7 +14,6 @@ import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
 import SRFMTextControl from '@Components/text-control';
 import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
 import { PaymentComponent } from './components/default.js';
-import Range from '@Components/range/Range.js';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
 import { FieldsPreview } from '../FieldsPreview.jsx';
@@ -244,10 +243,7 @@ const Edit = ( props ) => {
 							}
 							options={ [
 								{
-									label: __(
-										'Select a field…',
-										'sureforms'
-									),
+									label: __( 'Select a field…', 'sureforms' ),
 									value: '',
 								},
 								...availableNumberFields.map( ( field ) => ( {

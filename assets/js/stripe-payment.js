@@ -58,7 +58,8 @@ class StripePayment {
 		}
 	}
 
-	updatePaymentIntent( { slug } ) {
+	updatePaymentIntent( args ) {
+		const fieldSlug = args.slug;
 		const getPaymentHiddenInputs = this.form.querySelectorAll(
 			'.srfm-payment-input[data-payment-items]'
 		);
@@ -69,7 +70,7 @@ class StripePayment {
 			const paymentDetails = [];
 
 			// If in the slug array, then update the payment intent
-			if ( getTheSlug.includes( slug ) ) {
+			if ( getTheSlug.includes( fieldSlug ) ) {
 				// paymentHiddenInput is the payment configuration wrapper in which we need to add all the payment details.
 				for ( const slug of getTheSlug ) {
 					const getThePaymentItem = this.form.querySelector(
@@ -352,10 +353,6 @@ class StripePayment {
 				} );
 
 				paymentElement.on( 'change', ( event ) => {
-					const statusElement = document.getElementById(
-						`srfm-payment-status-${ blockId }`
-					);
-
 					console.log( 'paymentElement on change event->', event );
 				} );
 			} )

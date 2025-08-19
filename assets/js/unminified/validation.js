@@ -36,7 +36,7 @@ async function getUniqueValidationData( checkData, formId, ajaxUrl, nonce ) {
 
 /**
  * Process all payments when form is submitted
- * @param form
+ * @param {HTMLElement} form - The form element.
  */
 async function processAllPayments( form ) {
 	const paymentBlocks = form.querySelectorAll(
@@ -75,9 +75,9 @@ async function processAllPayments( form ) {
 
 /**
  * Confirm payment for a specific block
- * @param blockId
- * @param paymentData
- * @param form
+ * @param {string}      blockId     - The block ID.
+ * @param {Object}      paymentData - The payment data.
+ * @param {HTMLElement} form        - The form element.
  */
 async function confirmPayment( blockId, paymentData, form ) {
 	const { stripe, elements, clientSecret } = paymentData;
@@ -142,7 +142,7 @@ async function confirmPayment( blockId, paymentData, form ) {
 
 /**
  * Main payment handler function called from form submission
- * @param form
+ * @param {HTMLElement} form - The form element.
  */
 export async function handleFormPayment( form ) {
 	try {
