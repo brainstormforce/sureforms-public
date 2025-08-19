@@ -11,6 +11,7 @@ import { applyFilters } from '@wordpress/hooks';
 
 // Force-UI
 import Dialog from '../components/dialog/Dialog';
+import { FormRestrictionProvider } from '../components/form-restrictions/context';
 
 let prevMetaHash = '';
 
@@ -178,8 +179,8 @@ function GeneralSettings( props ) {
 			title: __( 'Email Notification', 'sureforms' ),
 		},
 		{
-			id: 'compliance_settings',
-			title: __( 'Compliance Settings', 'sureforms' ),
+			id: 'advanced-settings',
+			title: __( 'Advanced Settings', 'sureforms' ),
 		},
 		{
 			id: 'integrations',
@@ -332,14 +333,16 @@ function GeneralSettings( props ) {
 				);
 			} ) }
 
-			<Dialog
-				open={ isOpen }
-				setOpen={ setOpen }
-				close={ closeModal }
-				sureformsKeys={ sureformsKeys }
-				targetTab={ popupTab }
-				setHasValidationErrors={ setHasValidationErrors }
-			/>
+			<FormRestrictionProvider>
+				<Dialog
+					open={ isOpen }
+					setOpen={ setOpen }
+					close={ closeModal }
+					sureformsKeys={ sureformsKeys }
+					targetTab={ popupTab }
+					setHasValidationErrors={ setHasValidationErrors }
+				/>
+			</FormRestrictionProvider>
 		</>
 	);
 }
