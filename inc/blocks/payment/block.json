@@ -22,10 +22,6 @@
 		"block_id": {
 			"type": "string"
 		},
-		"amount": {
-			"type": "number",
-			"default": 10
-		},
 		"currency": {
 			"type": "string",
 			"default": "USD"
@@ -65,10 +61,6 @@
 		"slug": {
 			"type": "string",
 			"default": ""
-		},
-		"applicationFee": {
-			"type": "number",
-			"default": 3
 		},
 		"paymentItems": {
 			"type": "array",

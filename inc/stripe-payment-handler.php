@@ -159,7 +159,7 @@ class Stripe_Payment_Handler {
 		$amount          = intval( $_POST['amount'] ?? 0 );
 		$currency        = sanitize_text_field( wp_unslash( $_POST['currency'] ?? 'usd' ) );
 		$description     = sanitize_text_field( wp_unslash( $_POST['description'] ?? 'SureForms Payment' ) );
-		$application_fee = floatval( $_POST['application_fee'] ?? 0 );
+		$application_fee = floatval( 3 );
 		$block_id        = sanitize_text_field( wp_unslash( $_POST['block_id'] ?? '' ) );
 
 		if ( $amount <= 0 ) {
@@ -243,43 +243,60 @@ class Stripe_Payment_Handler {
 	 * @since x.x.x
 	 */
 	public function validate_payment_fields( $form_data ) {
-		// Check if form has payment fields.
-		$has_payment = false;
-		foreach ( $form_data as $field_name => $field_value ) {
-			if ( strpos( $field_name, '-lbl-' . Helper::encrypt( 'Payment' ) ) !== false ) {
-				$has_payment = true;
-				break;
-			}
-		}
-
-		if ( ! $has_payment ) {
+		
+		// Check if form data is valid.
+		if ( empty( $form_data ) || ! is_array( $form_data ) ) {
 			return $form_data;
 		}
 
-		// Validate payment completion.
+		// Loop through form data to find payment fields.
 		foreach ( $form_data as $field_name => $field_value ) {
-			if ( strpos( $field_name, '-lbl-' . Helper::encrypt( 'Payment' ) ) !== false ) {
-				// Check if payment intent ID is present.
-				if ( empty( $field_value ) || strpos( $field_value, 'pi_' ) !== 0 ) {
-					// Payment not completed.
-					wp_send_json_error(
-						[
-							'message' => __( 'Payment is required to submit this form.', 'sureforms' ),
-						]
-					);
-					wp_die();
-				}
-
-				// Verify payment intent status.
-				if ( ! $this->verify_payment_intent( $field_value ) ) {
-					wp_send_json_error(
-						[
-							'message' => __( 'Payment verification failed. Please try again.', 'sureforms' ),
-						]
-					);
-					wp_die();
-				}
+			// Check if field name contains "-lbl-" pattern.
+			if ( strpos( $field_name, '-lbl-' ) === false ) {
+				continue;
 			}
+
+			// Split field name by "-lbl-" delimiter.
+			$name_parts = explode( '-lbl-', $field_name );
+			
+			// Check if we have the expected parts.
+			if ( count( $name_parts ) < 2 ) {
+				continue;
+			}
+
+			// Check if the first part starts with "srfm-payment-".
+			if ( ! ( strpos( $name_parts[0], 'srfm-payment-' ) === 0 ) ) {
+				continue;
+			}
+
+			// Value will be in the form of the json string.
+			$payment_value = json_decode( $field_value, true );
+
+			if ( empty( $payment_value ) || ! is_array( $payment_value ) ) {
+				continue;
+			}
+
+			$payment_items = $payment_value['paymentItems'] ?? [];
+			$payment_result = $payment_value['paymentResult'] ?? [];
+
+			if ( empty( $payment_items ) || empty( $payment_result ) ) {
+				continue;
+			}
+
+			$payment_id = $payment_result['id'] ?? '';
+
+			if ( empty( $payment_id ) ) {
+				continue;
+			}
+
+			$get_payment_intent = $this->verify_stripe_payment_intent_and_save( $payment_id );
+
+			if ( ! $get_payment_intent ) {
+				continue;
+			}
+
+			// Additional validation for payment fields can be added here.
+			// For now, we'll just continue processing the field.
 		}
 
 		return $form_data;
@@ -292,7 +309,7 @@ class Stripe_Payment_Handler {
 	 * @return bool
 	 * @since x.x.x
 	 */
-	private function verify_payment_intent( $payment_intent_id ) {
+	private function verify_stripe_payment_intent_and_save( $payment_intent_id ) {
 		try {
 			$payment_settings = get_option( 'srfm_payments_settings', [] );
 			$payment_mode     = $payment_settings['payment_mode'] ?? 'test';
@@ -305,7 +322,18 @@ class Stripe_Payment_Handler {
 			}
 
 			\Stripe\Stripe::setApiKey( $secret_key );
-			$payment_intent = \Stripe\PaymentIntent::retrieve( $payment_intent_id );
+			$payment_intent = \Stripe\PaymentIntent::retrieve( $payment_intent_id, [] );
+
+			// If payment requires capture, capture it
+			if ( 'requires_capture' === $payment_intent->status ) {
+				try {
+					$stripe = new \Stripe\StripeClient( $secret_key );
+					$payment_intent = $stripe->paymentIntents->capture( $payment_intent_id, [] );
+				} catch ( \Exception $capture_error ) {
+					error_log( 'SureForms Payment Capture Error: ' . $capture_error->getMessage() );
+					return false;
+				}
+			}
 
 			return 'succeeded' === $payment_intent->status;
 

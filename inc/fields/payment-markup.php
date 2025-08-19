@@ -140,7 +140,6 @@ class Payment_Markup extends Base {
 		}
 
 		$field_classes   = $this->get_field_classes();
-		$amount_in_cents = intval( $this->amount * 100 ); // Convert to cents for Stripe.
 		$payment_config = [];
 		if ( ! empty( $this->payment_items ) ) {
 			$payment_config['paymentItems'] = $this->payment_items;
@@ -153,6 +152,7 @@ class Payment_Markup extends Base {
 			<?php echo $this->label_markup; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 			
 			<div class="srfm-payment-field-wrapper">
+				<div class="srfm-payment-items-wrapper"></div>
 				<!-- Payment Amount Display -->
 				<div class="srfm-payment-amount">
 					<span class="srfm-payment-label"><?php echo esc_html( $this->description ); ?>:</span>
@@ -170,10 +170,8 @@ class Payment_Markup extends Base {
 				<input type="hidden" 
 					name="<?php echo esc_attr( $this->field_name ); ?>" 
 					class="srfm-payment-input"
-					data-payment-amount="<?php echo esc_attr( $amount_in_cents ); ?>"
 					data-currency="<?php echo esc_attr( strtolower( $this->currency ) ); ?>"
 					data-description="<?php echo esc_attr( $this->description ); ?>"
-					data-application-fee="<?php echo esc_attr( $this->application_fee ); ?>"
 					data-required="<?php echo esc_attr( $this->data_require_attr ); ?>"
 					data-stripe-key="<?php echo esc_attr( $this->stripe_publishable_key ); ?>"
 					data-payment-mode="<?php echo esc_attr( $this->payment_mode ); ?>"

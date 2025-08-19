@@ -461,8 +461,8 @@ async function handleFormSubmission(
 
 		// Process payment submission
 		const paymentResult = await handleFormPayment( form );
-		console.log("paymentResult->", paymentResult);
-		if( ! paymentResult ) {
+		console.log( 'paymentResult->', paymentResult );
+		if ( ! paymentResult ) {
 			return;
 		}
 

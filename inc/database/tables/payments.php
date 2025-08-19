@@ -30,7 +30,7 @@ class Payments extends Base {
 	 *
 	 * @var string
 	 */
-	protected $table_suffix = 'payment';
+	protected $table_suffix = 'payments';
 
 	/**
 	 * {@inheritDoc}
@@ -100,20 +100,14 @@ class Payments extends Base {
 			'form_id'             => [
 				'type' => 'number',
 			],
+            'block_id'            => [
+				'type'    => 'string',
+				'default' => '',
+			],
 			// Payment status (Stripe).
 			'status'              => [
 				'type'    => 'string',
 				'default' => 'pending',
-			],
-			// Subtotal amount before discount.
-			'subtotal_amount'     => [
-				'type'    => 'string',
-				'default' => '0.00000000',
-			],
-			// Discount amount applied.
-			'discount_amount'     => [
-				'type'    => 'string',
-				'default' => '0.00000000',
 			],
 			// Total amount after discount.
 			'total_amount'        => [
@@ -165,29 +159,24 @@ class Payments extends Base {
 				'type'    => 'string',
 				'default' => '',
 			],
-			// Payment title/description.
-			'title'               => [
-				'type'    => 'string',
-				'default' => '',
-			],
 			// Created date.
-			'date_created_gmt'    => [
+			'created_at'    => [
 				'type' => 'datetime',
 			],
 			// Updated date.
-			'date_updated_gmt'    => [
+			'updated_at'    => [
 				'type' => 'datetime',
-			],
-			// Published status.
-			'is_published'        => [
-				'type'    => 'number',
-				'default' => 1,
 			],
 			// Extra data (JSON).
 			'extra'               => [
 				'type'    => 'array',
 				'default' => [],
 			],
+            // Payment log.
+            'log'                 => [
+                'type'    => 'array',
+                'default' => [],
+            ],
 		];
 	}
 
@@ -198,24 +187,22 @@ class Payments extends Base {
 		return [
 			'id BIGINT(20) UNSIGNED AUTO_INCREMENT PRIMARY KEY',
 			'form_id BIGINT(20) UNSIGNED',
-			'status VARCHAR(10) NOT NULL DEFAULT ""',
-			'subtotal_amount DECIMAL(26,8) NOT NULL DEFAULT "0.00000000"',
-			'discount_amount DECIMAL(26,8) NOT NULL DEFAULT "0.00000000"',
-			'total_amount DECIMAL(26,8) NOT NULL DEFAULT "0.00000000"',
-			'currency VARCHAR(3) NOT NULL DEFAULT ""',
-			'entry_id BIGINT(20) UNSIGNED NOT NULL DEFAULT 0',
-			'gateway VARCHAR(20) NOT NULL DEFAULT ""',
-			'type VARCHAR(12) NOT NULL DEFAULT ""',
-			'mode VARCHAR(4) NOT NULL DEFAULT ""',
-			'transaction_id VARCHAR(40) NOT NULL DEFAULT ""',
-			'customer_id VARCHAR(40) NOT NULL DEFAULT ""',
-			'subscription_id VARCHAR(40) NOT NULL DEFAULT ""',
-			'subscription_status VARCHAR(10) NOT NULL DEFAULT ""',
-			'title VARCHAR(255) NOT NULL DEFAULT ""',
-			'date_created_gmt DATETIME NOT NULL',
-			'date_updated_gmt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP',
-			'is_published TINYINT(1) NOT NULL DEFAULT 1',
+			'block_id VARCHAR(255) NOT NULL',
+			'status VARCHAR(10) NOT NULL',
+			'total_amount DECIMAL(26,8) NOT NULL',
+			'currency VARCHAR(3) NOT NULL',
+			'entry_id BIGINT(20) UNSIGNED NOT NULL',
+			'gateway VARCHAR(20) NOT NULL',
+			'type VARCHAR(12) NOT NULL',
+			'mode VARCHAR(4) NOT NULL',
+			'transaction_id VARCHAR(40) NOT NULL',
+			'customer_id VARCHAR(40) NOT NULL',
+			'subscription_id VARCHAR(40) NOT NULL',
+			'subscription_status VARCHAR(10) NOT NULL',
+			'created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP',
+			'updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP',
 			'extra LONGTEXT',
+            'log LONGTEXT',
 		];
 	}
 
@@ -1129,16 +1116,5 @@ class Payments extends Base {
 		}
 
 		return $result;
-	}
-
-	/**
-	 * Get total count of payments.
-	 *
-	 * @param array<string,mixed> $where_clauses WHERE clauses.
-	 * @since x.x.x
-	 * @return int Total count.
-	 */
-	public static function get_total_count( $where_clauses = [] ) {
-		return self::get_instance()->get_total_count( $where_clauses );
 	}
 }

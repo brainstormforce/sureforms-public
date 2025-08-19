@@ -36,28 +36,33 @@ async function getUniqueValidationData( checkData, formId, ajaxUrl, nonce ) {
 
 /**
  * Process all payments when form is submitted
+ * @param form
  */
 async function processAllPayments( form ) {
-	const paymentBlocks = form.querySelectorAll( '.srfm-block.srfm-payment-block' );
-	
+	const paymentBlocks = form.querySelectorAll(
+		'.srfm-block.srfm-payment-block'
+	);
+
 	if ( paymentBlocks.length === 0 ) {
 		return true; // No payment blocks, return success
 	}
 
 	const paymentPromises = [];
-	
+
 	paymentBlocks.forEach( ( block ) => {
 		const blockId = block.getAttribute( 'data-block-id' );
 		const paymentData = window.srfmPaymentElements?.[ blockId ];
 
-		console.log("paymentData->", paymentData);
-		
+		console.log( 'paymentData->', paymentData );
+
 		if ( paymentData ) {
-			paymentPromises.push( confirmPayment( blockId, paymentData ) );
+			paymentPromises.push(
+				confirmPayment( blockId, paymentData, form )
+			);
 		}
 	} );
 
-	console.log("paymentPromises->", paymentPromises);
+	console.log( 'paymentPromises->', paymentPromises );
 
 	try {
 		await Promise.all( paymentPromises );
@@ -70,54 +75,89 @@ async function processAllPayments( form ) {
 
 /**
  * Confirm payment for a specific block
+ * @param blockId
+ * @param paymentData
+ * @param form
  */
-async function confirmPayment( blockId, paymentData ) {
+async function confirmPayment( blockId, paymentData, form ) {
 	const { stripe, elements, clientSecret } = paymentData;
-	
+
 	// First submit the elements
 	const { error: submitError } = await elements.submit();
-	
+
 	if ( submitError ) {
 		throw new Error( submitError.message );
 	}
-	
+
 	// Then confirm the payment
-	const { error, paymentIntent } = await stripe.confirmPayment( {
+	const confirmPaymentResult = await stripe.confirmPayment( {
 		elements,
 		clientSecret,
 		confirmParams: {
 			return_url: window.location.href,
 		},
-		redirect: 'if_required'
+		redirect: 'if_required',
 	} );
-	
+
+	console.log( 'confirmPaymentResult->', confirmPaymentResult );
+
+	const { error, paymentIntent } = confirmPaymentResult;
+
 	if ( error ) {
 		throw new Error( error.message );
 	}
-	
-	if ( paymentIntent.status === 'succeeded' || paymentIntent.status === 'requires_capture' ) {
-		console.log( `Payment succeeded for block ${blockId}` );
+
+	if (
+		paymentIntent.status === 'succeeded' ||
+		paymentIntent.status === 'requires_capture'
+	) {
+		console.log( `Payment succeeded for block ${ blockId }` );
+
+		// update the payment detail in the input value by the json stringify.
+		const getPaymentBlock = form.querySelector(
+			`[data-block-id="${ blockId }"]`
+		);
+		const getPaymentInput = getPaymentBlock.querySelector(
+			'.srfm-payment-input'
+		);
+
+		const getItems = getPaymentInput.getAttribute( 'data-payment-items' );
+		const jsonParseItems = JSON.parse( getItems );
+
+		let prepareInputValueData = {
+			paymentItems: jsonParseItems,
+			paymentId: paymentIntent.id,
+			blockId,
+			paymentType: 'stripe',
+		};
+
+		prepareInputValueData = JSON.stringify( prepareInputValueData );
+
+		getPaymentInput.value = prepareInputValueData;
+
 		return paymentIntent;
-	} else {
-		throw new Error( `Payment not completed for block ${blockId}` );
 	}
+	throw new Error( `Payment not completed for block ${ blockId }` );
 }
 
 /**
  * Main payment handler function called from form submission
+ * @param form
  */
 export async function handleFormPayment( form ) {
 	try {
 		// Check if form has payment blocks
-		const paymentBlocks = form.querySelectorAll( '.srfm-block.srfm-payment-block' );
-		
+		const paymentBlocks = form.querySelectorAll(
+			'.srfm-block.srfm-payment-block'
+		);
+
 		if ( paymentBlocks.length === 0 ) {
 			return true; // No payment blocks, continue with form submission
 		}
 
 		// Process all payments
 		const paymentResult = await processAllPayments( form );
-		
+
 		return paymentResult;
 	} catch ( error ) {
 		console.error( 'Payment processing failed:', error );
