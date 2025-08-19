@@ -773,15 +773,9 @@ class Admin {
 		 */
 		if ( $is_screen_sureforms_menu ) {
 			// If email is stored send the user type as registered else non-registered.
-			if ( ! empty( get_option( 'srfm_ai_auth_user_email' ) ) ) {
-				$localization_data['srfm_ai_details'] = [
-					'type' => 'registered',
-				];
-			} else {
-				$localization_data['srfm_ai_details'] = [
-					'type' => 'non-registered',
-				];
-			}
+			$localization_data['srfm_ai_details'] = [
+				'type' => ! empty( get_option( 'srfm_ai_auth_user_email' ) ) ? 'registered' : 'non-registered',
+			];
 		}
 
 		if ( $is_screen_sureforms_menu || $is_post_type_sureforms_form || $is_screen_add_new_form || $is_screen_sureforms_form_settings || $is_screen_sureforms_entries ) {
