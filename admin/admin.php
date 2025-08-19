@@ -768,14 +768,20 @@ class Admin {
 		$is_post_type_sureforms_form       = SRFM_FORMS_POST_TYPE === $current_screen->post_type;
 
 		/**
-		 * Check if the current screen is the SureForms Menu and if the user is redirected after activation for onboarding,
-		 * and AI Auth Email is present then we will add user type as registered.
+		 * Check if the current screen is the SureForms Menu and AI Auth Email is present then we will add user type as registered.
 		 * Compatibility with existing UI code that checks for this condition.
 		 */
-		if ( $is_screen_sureforms_menu && isset( $_GET['srfm-activation-redirect'] ) && false !== get_option( 'srfm_ai_auth_user_email' ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce is not required for the activation redirection.
-			$localization_data['srfm_ai_details'] = [
-				'type' => 'registered',
-			];
+		if ( $is_screen_sureforms_menu ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce is not required for the activation redirection.
+			// If email is stored send the user type as registered else not-registered.
+			if ( ! empty( get_option( 'srfm_ai_auth_user_email' ) ) ) {
+				$localization_data['srfm_ai_details'] = [
+					'type' => 'registered',
+				];
+			} else {
+				$localization_data['srfm_ai_details'] = [
+					'type' => 'non-registered',
+				];
+			}
 		}
 
 		if ( $is_screen_sureforms_menu || $is_post_type_sureforms_form || $is_screen_add_new_form || $is_screen_sureforms_form_settings || $is_screen_sureforms_entries ) {
