@@ -25,10 +25,9 @@ class Payments_Settings {
 	/**
 	 * Option name for storing payment settings
 	 *
-	 * @var string
 	 * @since x.x.x
 	 */
-	const OPTION_NAME = 'srfm_payments_settings';
+	public const OPTION_NAME = 'srfm_payments_settings';
 
 	/**
 	 * Constructor
@@ -109,26 +108,6 @@ class Payments_Settings {
 	}
 
 	/**
-	 * Get default settings
-	 *
-	 * @return array
-	 * @since x.x.x
-	 */
-	private function get_default_settings() {
-		return [
-			'stripe_connected'            => false,
-			'stripe_account_id'           => '',
-			'stripe_account_email'        => '',
-			'stripe_live_publishable_key' => '',
-			'stripe_live_secret_key'      => '',
-			'stripe_test_publishable_key' => '',
-			'stripe_test_secret_key'      => '',
-			'currency'                    => 'USD',
-			'payment_mode'                => 'test',
-		];
-	}
-
-	/**
 	 * Get Stripe Connect URL
 	 *
 	 * @return \WP_REST_Response
@@ -139,7 +118,7 @@ class Payments_Settings {
 		$client_id = 'ca_KOXfLe7jv1m4L0iC4KNEMc5fT8AXWWuL';
 
 		// Use the same redirect URI pattern as checkout-plugins-stripe-woo.
-		$redirect_url        = admin_url( 'admin.php?page=wc-settings&tab=cpsw_api_settings' );
+		$redirect_url        = admin_url( 'admin.php?page=sureforms_form_settings&tab=payments-settings' );
 		$nonce               = wp_create_nonce( 'stripe-connect' );
 		$redirect_with_nonce = add_query_arg( 'cpsw_connect_nonce', $nonce, $redirect_url );
 
@@ -179,12 +158,12 @@ class Payments_Settings {
 	public function intercept_stripe_callback() {
 		// Check if this is a Stripe callback for our flow.
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
-		if ( ! isset( $_GET['page'] ) || 'wc-settings' !== $_GET['page'] ) {
+		if ( ! isset( $_GET['page'] ) || 'sureforms_form_settings' !== $_GET['page'] ) {
 			return;
 		}
 
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
-		if ( ! isset( $_GET['tab'] ) || 'cpsw_api_settings' !== $_GET['tab'] ) {
+		if ( ! isset( $_GET['tab'] ) || 'payments-settings' !== $_GET['tab'] ) {
 			return;
 		}
 
@@ -238,6 +217,83 @@ class Payments_Settings {
 
 		wp_safe_redirect( $redirect_url );
 		exit;
+	}
+
+	/**
+	 * Disconnect Stripe account
+	 *
+	 * @return \WP_REST_Response
+	 * @since x.x.x
+	 */
+	public function disconnect_stripe() {
+		$settings                                = get_option( self::OPTION_NAME, $this->get_default_settings() );
+		$settings['stripe_connected']            = false;
+		$settings['stripe_account_id']           = '';
+		$settings['stripe_account_email']        = '';
+		$settings['stripe_live_publishable_key'] = '';
+		$settings['stripe_live_secret_key']      = '';
+		$settings['stripe_test_publishable_key'] = '';
+		$settings['stripe_test_secret_key']      = '';
+
+		update_option( self::OPTION_NAME, $settings );
+
+		return rest_ensure_response( [ 'success' => true ] );
+	}
+
+	/**
+	 * Get available currencies
+	 *
+	 * @return array
+	 * @since x.x.x
+	 */
+	public static function get_currencies() {
+		return [
+			'USD' => __( 'US Dollar', 'sureforms' ),
+			'EUR' => __( 'Euro', 'sureforms' ),
+			'GBP' => __( 'British Pound', 'sureforms' ),
+			'JPY' => __( 'Japanese Yen', 'sureforms' ),
+			'AUD' => __( 'Australian Dollar', 'sureforms' ),
+			'CAD' => __( 'Canadian Dollar', 'sureforms' ),
+			'CHF' => __( 'Swiss Franc', 'sureforms' ),
+			'CNY' => __( 'Chinese Yuan', 'sureforms' ),
+			'SEK' => __( 'Swedish Krona', 'sureforms' ),
+			'NZD' => __( 'New Zealand Dollar', 'sureforms' ),
+			'MXN' => __( 'Mexican Peso', 'sureforms' ),
+			'SGD' => __( 'Singapore Dollar', 'sureforms' ),
+			'HKD' => __( 'Hong Kong Dollar', 'sureforms' ),
+			'NOK' => __( 'Norwegian Krone', 'sureforms' ),
+			'KRW' => __( 'South Korean Won', 'sureforms' ),
+			'TRY' => __( 'Turkish Lira', 'sureforms' ),
+			'RUB' => __( 'Russian Ruble', 'sureforms' ),
+			'INR' => __( 'Indian Rupee', 'sureforms' ),
+			'BRL' => __( 'Brazilian Real', 'sureforms' ),
+			'ZAR' => __( 'South African Rand', 'sureforms' ),
+			'AED' => __( 'UAE Dirham', 'sureforms' ),
+			'PHP' => __( 'Philippine Peso', 'sureforms' ),
+			'IDR' => __( 'Indonesian Rupiah', 'sureforms' ),
+			'MYR' => __( 'Malaysian Ringgit', 'sureforms' ),
+			'THB' => __( 'Thai Baht', 'sureforms' ),
+		];
+	}
+
+	/**
+	 * Get default settings
+	 *
+	 * @return array
+	 * @since x.x.x
+	 */
+	private function get_default_settings() {
+		return [
+			'stripe_connected'            => false,
+			'stripe_account_id'           => '',
+			'stripe_account_email'        => '',
+			'stripe_live_publishable_key' => '',
+			'stripe_live_secret_key'      => '',
+			'stripe_test_publishable_key' => '',
+			'stripe_test_secret_key'      => '',
+			'currency'                    => 'USD',
+			'payment_mode'                => 'test',
+		];
 	}
 
 	/**
@@ -325,63 +381,6 @@ class Payments_Settings {
 
 		wp_safe_redirect( $redirect_url );
 		exit;
-	}
-
-	/**
-	 * Disconnect Stripe account
-	 *
-	 * @return \WP_REST_Response
-	 * @since x.x.x
-	 */
-	public function disconnect_stripe() {
-		$settings                                = get_option( self::OPTION_NAME, $this->get_default_settings() );
-		$settings['stripe_connected']            = false;
-		$settings['stripe_account_id']           = '';
-		$settings['stripe_account_email']        = '';
-		$settings['stripe_live_publishable_key'] = '';
-		$settings['stripe_live_secret_key']      = '';
-		$settings['stripe_test_publishable_key'] = '';
-		$settings['stripe_test_secret_key']      = '';
-
-		update_option( self::OPTION_NAME, $settings );
-
-		return rest_ensure_response( [ 'success' => true ] );
-	}
-
-	/**
-	 * Get available currencies
-	 *
-	 * @return array
-	 * @since x.x.x
-	 */
-	public static function get_currencies() {
-		return [
-			'USD' => __( 'US Dollar', 'sureforms' ),
-			'EUR' => __( 'Euro', 'sureforms' ),
-			'GBP' => __( 'British Pound', 'sureforms' ),
-			'JPY' => __( 'Japanese Yen', 'sureforms' ),
-			'AUD' => __( 'Australian Dollar', 'sureforms' ),
-			'CAD' => __( 'Canadian Dollar', 'sureforms' ),
-			'CHF' => __( 'Swiss Franc', 'sureforms' ),
-			'CNY' => __( 'Chinese Yuan', 'sureforms' ),
-			'SEK' => __( 'Swedish Krona', 'sureforms' ),
-			'NZD' => __( 'New Zealand Dollar', 'sureforms' ),
-			'MXN' => __( 'Mexican Peso', 'sureforms' ),
-			'SGD' => __( 'Singapore Dollar', 'sureforms' ),
-			'HKD' => __( 'Hong Kong Dollar', 'sureforms' ),
-			'NOK' => __( 'Norwegian Krone', 'sureforms' ),
-			'KRW' => __( 'South Korean Won', 'sureforms' ),
-			'TRY' => __( 'Turkish Lira', 'sureforms' ),
-			'RUB' => __( 'Russian Ruble', 'sureforms' ),
-			'INR' => __( 'Indian Rupee', 'sureforms' ),
-			'BRL' => __( 'Brazilian Real', 'sureforms' ),
-			'ZAR' => __( 'South African Rand', 'sureforms' ),
-			'AED' => __( 'UAE Dirham', 'sureforms' ),
-			'PHP' => __( 'Philippine Peso', 'sureforms' ),
-			'IDR' => __( 'Indonesian Rupiah', 'sureforms' ),
-			'MYR' => __( 'Malaysian Ringgit', 'sureforms' ),
-			'THB' => __( 'Thai Baht', 'sureforms' ),
-		];
 	}
 }
 

@@ -4,27 +4,197 @@
  * @since x.x.x
  */
 /* global Stripe, srfm_ajax */
-
-( function () {
-	'use strict';
-
-	console.log( 'SureForms Stripe Payment script loaded' );
-	console.log( 'srfm_ajax object:', typeof srfm_ajax !== 'undefined' ? srfm_ajax : 'undefined' );
-
+class StripePayment {
 	// Store Stripe instances
-	const stripeInstances = {};
-	const paymentElements = {};
-	const paymentIntents = {};
+	static stripeInstances = {};
+	static paymentElements = {};
+	static paymentIntents = {};
+	static slugForPayment = [];
+	static debounceTimers = {};
+
+	// Initialize on page load
+	static {
+		window.srfmPaymentElements = this.paymentElements;
+	}
 
 	/**
-	 * Initialize Stripe payment for a specific block
-	 *
-	 * @param {string} blockId Block ID
+	 * Constructor for the Calculations class.
+	 * @param {HTMLElement} form - The form element containing calculation fields.
 	 */
-	window.srfmInitializeStripePayment = function ( blockId ) {
-		const paymentInput = document.querySelector(
-			`[data-block-id="${ blockId }"]`
+	constructor( form ) {
+		this.form = form;
+
+		// Find all payment blocks within the form.
+		const getPaymentFields = this.form.querySelectorAll(
+			'.srfm-block.srfm-payment-block'
 		);
+
+		// Initialize Stripe payment for each payment field.
+		getPaymentFields.forEach( ( field ) => {
+			this.processPayment( field );
+		} );
+
+		// Listen the form input changes.
+		this.listen_the_form_input_changes();
+	}
+
+	listen_the_form_input_changes() {
+		console.log(
+			'listen_the_form_input_changes->',
+			StripePayment.slugForPayment
+		);
+
+		// if the slug is in the slugForPayment array, then listen the input change
+		if ( StripePayment.slugForPayment.length > 0 ) {
+			StripePayment.slugForPayment.forEach( ( slug ) => {
+				this.form
+					.querySelectorAll(
+						`.srfm-slug-${ slug } .srfm-input-number`
+					)
+					.forEach( ( input ) => {
+						input.addEventListener( 'input', ( event ) => {
+							console.log(
+								'form input changed',
+								event.target.value
+							);
+
+							// // Update payment intent when value changes
+							this.updatePaymentIntent( {
+								input: event.target,
+								slug,
+							} );
+						} );
+					} );
+			} );
+		}
+	}
+
+	updatePaymentIntent( { input, slug } ) {
+		console.log( 'updatePaymentIntent->', { input, slug } );
+
+		const getPaymentWrapper = this.form.querySelectorAll(
+			'.srfm-payment-input[data-payment-items]'
+		);
+
+		for ( const paymentWrapper of getPaymentWrapper ) {
+			const getTheSlug = this.getSlugForPayment( paymentWrapper );
+
+			// If in the slug array, then update the payment intent
+			if ( getTheSlug.includes( slug ) ) {
+				// Block wrapper
+				const blockWrapper = paymentWrapper.closest( '.srfm-block' );
+				// get Wrapper block id
+				const blockId = blockWrapper.getAttribute( 'data-block-id' );
+
+				// new amount
+				const newAmount = input.value;
+
+				// Set amount in the ".srfm-payment-value"
+				const paymentValue = blockWrapper.querySelector(
+					'.srfm-payment-value'
+				);
+				paymentValue.textContent = `$${ newAmount }`;
+
+				this.updatePaymentIntentAmount( blockId, newAmount );
+			}
+		}
+	}
+
+	debounce( func, delay, key ) {
+		return function ( ...args ) {
+			clearTimeout( StripePayment.debounceTimers[ key ] );
+			StripePayment.debounceTimers[ key ] = setTimeout(
+				() => func.apply( this, args ),
+				delay
+			);
+		};
+	}
+
+	updatePaymentIntentAmount( blockId, newAmount ) {
+		console.log( 'updatePaymentIntentAmount->', { blockId, newAmount } );
+
+		// Create a unique key for this block
+		const debounceKey = `payment_update_${ blockId }`;
+
+		// Create debounced function if it doesn't exist
+		if ( ! this[ `debouncedUpdate_${ blockId }` ] ) {
+			this[ `debouncedUpdate_${ blockId }` ] = this.debounce(
+				this.performUpdatePaymentIntent.bind( this ),
+				500,
+				debounceKey
+			);
+		}
+
+		// Call the debounced function
+		this[ `debouncedUpdate_${ blockId }` ]( blockId, newAmount );
+	}
+
+	async performUpdatePaymentIntent( blockId, newAmount ) {
+		console.log( 'performUpdatePaymentIntent->', { blockId, newAmount } );
+
+		// Get the payment intent ID for this block
+		const paymentIntentId = StripePayment.paymentIntents[ blockId ];
+
+		if ( ! paymentIntentId ) {
+			console.error( `No payment intent found for block ${ blockId }` );
+			return;
+		}
+
+		// Prepare data for API call
+		const data = new FormData();
+		data.append( 'action', 'srfm_update_payment_intent_amount' );
+		data.append( 'nonce', srfm_ajax.nonce );
+		data.append( 'payment_intent_id', paymentIntentId );
+		data.append( 'new_amount', parseInt( newAmount * 100 ) ); // Convert to cents
+		data.append( 'block_id', blockId );
+
+		try {
+			const response = await fetch( srfm_ajax.ajax_url, {
+				method: 'POST',
+				body: data,
+			} );
+
+			const responseData = await response.json();
+
+			if ( responseData.success ) {
+				console.log(
+					`Payment intent updated successfully for block ${ blockId }`
+				);
+			} else {
+				console.error(
+					`Failed to update payment intent for block ${ blockId }:`,
+					responseData.data
+				);
+			}
+		} catch ( error ) {
+			console.error(
+				`Error updating payment intent for block ${ blockId }:`,
+				error
+			);
+		}
+	}
+
+	getSlugForPayment( input ) {
+		try {
+			const slugForPayment = input.dataset.paymentItems;
+			if ( ! slugForPayment ) {
+				return null;
+			}
+
+			const paymentItems = JSON.parse( slugForPayment );
+
+			return paymentItems?.paymentItems || null;
+		} catch ( error ) {
+			return null;
+		}
+	}
+
+	processPayment( field ) {
+		const paymentInput = field.querySelector( 'input.srfm-payment-input' );
+		const blockId = field.getAttribute( 'data-block-id' );
+
+		console.log( 'processPayment ddd->', { paymentInput, blockId } );
+
 		if ( ! paymentInput ) {
 			console.error(
 				'SureForms: Payment input not found for block',
@@ -34,9 +204,25 @@
 		}
 
 		const stripeKey = paymentInput.dataset.stripeKey;
-		const elementContainer = document.getElementById(
-			`srfm-payment-element-${ blockId }`
+		const elementContainer = field.querySelector(
+			'.srfm-stripe-payment-element'
 		);
+		const slugForPayment = this.getSlugForPayment( paymentInput );
+
+		if ( ! slugForPayment ) {
+			console.error(
+				'SureForms: Payment items like data-payment-items not found for block' +
+					blockId,
+				blockId
+			);
+			return;
+		}
+
+		// push the slugs in the variables
+		StripePayment.slugForPayment = [
+			...StripePayment.slugForPayment,
+			...slugForPayment,
+		];
 
 		if ( ! stripeKey || ! elementContainer ) {
 			console.error(
@@ -47,15 +233,17 @@
 		}
 
 		// Initialize Stripe
-		if ( ! stripeInstances[ blockId ] ) {
-			stripeInstances[ blockId ] = Stripe( stripeKey );
+		if ( ! StripePayment.stripeInstances[ blockId ] ) {
+			StripePayment.stripeInstances[ blockId ] = Stripe( stripeKey );
 		}
 
-		const stripe = stripeInstances[ blockId ];
+		const stripe = StripePayment.stripeInstances[ blockId ];
 
 		// Create payment intent
-		createPaymentIntent( blockId, paymentInput )
+		this.createPaymentIntent( blockId, paymentInput )
 			.then( ( clientSecret ) => {
+				console.log( 'clientSecret cl->', clientSecret );
+
 				if ( ! clientSecret ) {
 					throw new Error( 'Failed to create payment intent' );
 				}
@@ -82,12 +270,15 @@
 				paymentElement.mount( elementContainer );
 
 				// Store references
-				paymentElements[ blockId ] = {
+				StripePayment.paymentElements[ blockId ] = {
 					stripe,
 					elements,
 					paymentElement,
 					clientSecret,
 				};
+
+				// Update window object
+				window.srfmPaymentElements = StripePayment.paymentElements;
 
 				// Handle payment element events
 				paymentElement.on( 'ready', () => {
@@ -101,11 +292,14 @@
 					const statusElement = document.getElementById(
 						`srfm-payment-status-${ blockId }`
 					);
-					if ( event.error ) {
-						showPaymentError( blockId, event.error.message );
-					} else if ( statusElement ) {
-						statusElement.style.display = 'none';
-					}
+
+					console.log( 'paymentElement on change event->', event );
+
+					// if ( event.error ) {
+					// 	StripePayment.showPaymentError( blockId, event.error.message );
+					// } else if ( statusElement ) {
+					// 	statusElement.style.display = 'none';
+					// }
 				} );
 			} )
 			.catch( ( error ) => {
@@ -119,22 +313,12 @@
 					'Failed to initialize payment. Please try again.'
 				);
 			} );
-	};
+	}
 
-	/**
-	 * Create payment intent via AJAX
-	 *
-	 * @param {string}      blockId      Block ID
-	 * @param {HTMLElement} paymentInput Payment input element
-	 * @return {Promise<string>} Client secret
-	 */
-	function createPaymentIntent( blockId, paymentInput ) {
+	async createPaymentIntent( blockId, paymentInput ) {
 		const amount = parseInt( paymentInput.dataset.paymentAmount );
 		const currency = paymentInput.dataset.currency;
 		const description = paymentInput.dataset.description;
-		const applicationFee = parseFloat(
-			paymentInput.dataset.applicationFee
-		);
 
 		const data = new FormData();
 		data.append( 'action', 'srfm_create_payment_intent' );
@@ -142,306 +326,40 @@
 		data.append( 'amount', amount );
 		data.append( 'currency', currency );
 		data.append( 'description', description );
-		data.append( 'application_fee', applicationFee );
 		data.append( 'block_id', blockId );
 
-		return fetch( srfm_ajax.ajax_url, {
-			method: 'POST',
-			body: data,
-		} )
-			.then( ( response ) => response.json() )
-			.then( ( responseData ) => {
-				if ( responseData.success ) {
-					paymentIntents[ blockId ] = responseData.data.payment_intent_id;
-					return responseData.data.client_secret;
-				}
-				throw new Error(
-					responseData.data || 'Failed to create payment intent'
-				);
+		try {
+			const response = await fetch( srfm_ajax.ajax_url, {
+				method: 'POST',
+				body: data,
 			} );
-	}
 
-	/**
-	 * Process payment for a specific block
-	 *
-	 * @param {string} blockId Block ID
-	 * @return {Promise<boolean>} Payment success status
-	 */
-	window.srfmProcessPayment = function ( blockId ) {
-		return new Promise( ( resolve, reject ) => {
-			const paymentData = paymentElements[ blockId ];
-			if ( ! paymentData ) {
-				reject( new Error( 'Payment not initialized' ) );
-				return;
+			const responseData = await response.json();
+
+			if ( responseData.success ) {
+				StripePayment.paymentIntents[ blockId ] =
+					responseData.data.payment_intent_id;
+				return responseData.data.client_secret;
 			}
-
-			const { stripe, elements } = paymentData;
-
-			showPaymentProcessing( blockId );
-
-			stripe
-				.confirmPayment( {
-					elements,
-					confirmParams: {
-						return_url: window.location.href,
-					},
-					redirect: 'if_required',
-				} )
-				.then( ( result ) => {
-					hidePaymentProcessing( blockId );
-
-					if ( result.error ) {
-						showPaymentError( blockId, result.error.message );
-						reject( result.error );
-					} else if ( result.paymentIntent && result.paymentIntent.status === 'succeeded' ) {
-						console.log(
-							'SureForms: Payment successful for block',
-							blockId,
-							'Payment Intent:',
-							result.paymentIntent.id
-						);
-
-						// Mark payment as completed
-						const paymentInput = document.querySelector(
-							`[data-block-id="${ blockId }"]`
-						);
-						if ( paymentInput ) {
-							paymentInput.value = result.paymentIntent.id;
-							paymentInput.dataset.paymentStatus = 'succeeded';
-							console.log( 'SureForms: Payment input updated with intent ID:', result.paymentIntent.id );
-						}
-
-						resolve( true );
-					} else {
-						console.error( 'SureForms: Unexpected payment result', result );
-						showPaymentError( blockId, 'Payment processing incomplete. Please try again.' );
-						reject( new Error( 'Payment incomplete' ) );
-					}
-				} )
-				.catch( ( error ) => {
-					hidePaymentProcessing( blockId );
-					console.error(
-						'SureForms: Payment error for block',
-						blockId,
-						error
-					);
-					showPaymentError(
-						blockId,
-						'Payment failed. Please try again.'
-					);
-					reject( error );
-				} );
-		} );
-	};
-
-	/**
-	 * Show payment processing status
-	 *
-	 * @param {string} blockId Block ID
-	 */
-	function showPaymentProcessing( blockId ) {
-		const statusElement = document.getElementById(
-			`srfm-payment-status-${ blockId }`
-		);
-		if ( statusElement ) {
-			statusElement.style.display = 'block';
+			throw new Error(
+				responseData.data || 'Failed to create payment intent'
+			);
+		} catch ( error ) {
+			console.error( 'Error creating payment intent:', error );
+			throw error;
 		}
 	}
+}
 
-	/**
-	 * Hide payment processing status
-	 *
-	 * @param {string} blockId Block ID
-	 */
-	function hidePaymentProcessing( blockId ) {
-		const statusElement = document.getElementById(
-			`srfm-payment-status-${ blockId }`
+document.addEventListener( 'srfm_form_after_initialization', ( event ) => {
+	const form = event?.detail?.form;
+	if ( form ) {
+		// Check if form has payment blocks before initializing
+		const paymentBlocks = form.querySelectorAll(
+			'.srfm-block.srfm-payment-block'
 		);
-		if ( statusElement ) {
-			statusElement.style.display = 'none';
+		if ( paymentBlocks.length > 0 ) {
+			new StripePayment( form );
 		}
 	}
-
-	/**
-	 * Show payment error
-	 *
-	 * @param {string} blockId Block ID
-	 * @param {string} message Error message
-	 */
-	function showPaymentError( blockId, message ) {
-		const errorElement = document.querySelector(
-			`.srf-payment-${ blockId }-block .srfm-error-wrap`
-		);
-		if ( errorElement ) {
-			errorElement.innerHTML = `<div class="srfm-error-message">${ message }</div>`;
-			errorElement.style.display = 'block';
-		}
-	}
-
-	/**
-	 * Validate payment fields before form submission
-	 *
-	 * @param {HTMLFormElement} form Form element
-	 * @return {boolean} Validation status
-	 */
-	window.srfmValidatePayments = function ( form ) {
-		const paymentInputs = form.querySelectorAll(
-			'.srfm-payment-input[data-required="true"]'
-		);
-
-		for ( const input of paymentInputs ) {
-			const blockId = input.dataset.blockId;
-			const paymentStatus = input.dataset.paymentStatus;
-
-			if ( paymentStatus !== 'succeeded' ) {
-				showPaymentError(
-					blockId,
-					'Please complete the payment before submitting the form.'
-				);
-				input.scrollIntoView( { behavior: 'smooth', block: 'center' } );
-				return false;
-			}
-		}
-
-		return true;
-	};
-
-	/**
-	 * Process all payments in form before submission
-	 *
-	 * @param {HTMLFormElement} form Form element
-	 * @return {Promise<boolean>} Payment processing status
-	 */
-	window.srfmProcessAllPayments = function ( form ) {
-		const paymentInputs = form.querySelectorAll( '.srfm-payment-input' );
-		const paymentPromises = [];
-
-		for ( const input of paymentInputs ) {
-			const blockId = input.dataset.blockId;
-			const paymentStatus = input.dataset.paymentStatus;
-
-			// Only process payments that haven't been completed yet
-			if ( paymentStatus !== 'succeeded' && paymentElements[ blockId ] ) {
-				paymentPromises.push( window.srfmProcessPayment( blockId ) );
-			}
-		}
-
-		if ( paymentPromises.length === 0 ) {
-			return Promise.resolve( true );
-		}
-
-		return Promise.all( paymentPromises )
-			.then( () => true )
-			.catch( ( error ) => {
-				console.error( 'SureForms: Payment processing failed', error );
-				return false;
-			} );
-	};
-
-	// Hook into form submission to process payments
-	document.addEventListener( 'submit', function ( event ) {
-		const form = event.target;
-		
-		// Only handle SureForms forms
-		if ( ! form.classList.contains( 'srfm-form' ) ) {
-			return;
-		}
-
-		const paymentInputs = form.querySelectorAll( '.srfm-payment-input' );
-		
-		// Skip if no payment fields or payment already processed
-		if ( paymentInputs.length === 0 || form.dataset.paymentProcessing === 'true' ) {
-			return;
-		}
-
-		// Check if any payment needs processing
-		let needsPaymentProcessing = false;
-		for ( const input of paymentInputs ) {
-			if ( input.dataset.paymentStatus !== 'succeeded' ) {
-				needsPaymentProcessing = true;
-				break;
-			}
-		}
-
-		if ( ! needsPaymentProcessing ) {
-			console.log( 'SureForms: All payments already processed' );
-			return;
-		}
-
-		// Prevent default submission to process payment first
-		event.preventDefault();
-		event.stopPropagation();
-
-		console.log( 'SureForms: Processing payments before form submission' );
-
-		// Mark form as processing payment
-		form.dataset.paymentProcessing = 'true';
-
-		// Find and activate loader
-		const loader = form.querySelector( '.srfm-loader' );
-		if ( loader ) {
-			loader.classList.add( 'srfm-active' );
-		}
-
-		// Process payments
-		window.srfmProcessAllPayments( form )
-			.then( function ( success ) {
-				if ( success ) {
-					console.log( 'SureForms: Payment successful, submitting form' );
-					// Remove the processing flag
-					delete form.dataset.paymentProcessing;
-					// Submit the form programmatically
-					// Use HTMLFormElement.submit() to bypass event listeners
-					form.submit();
-				} else {
-					console.error( 'SureForms: Payment processing failed' );
-					delete form.dataset.paymentProcessing;
-					if ( loader ) {
-						loader.classList.remove( 'srfm-active' );
-					}
-				}
-			} )
-			.catch( function ( error ) {
-				console.error( 'SureForms: Payment error:', error );
-				delete form.dataset.paymentProcessing;
-				if ( loader ) {
-					loader.classList.remove( 'srfm-active' );
-				}
-			} );
-	}, true ); // Use capture phase to run before other handlers
-
-	// Initialize payments when DOM is ready
-	document.addEventListener( 'DOMContentLoaded', function () {
-		// Find all payment blocks and initialize them
-		const paymentInputs = document.querySelectorAll(
-			'.srfm-payment-input'
-		);
-		paymentInputs.forEach( ( input ) => {
-			const blockId = input.dataset.blockId;
-			if (
-				blockId &&
-				typeof window.srfmInitializeStripePayment === 'function'
-			) {
-				window.srfmInitializeStripePayment( blockId );
-			}
-		} );
-	} );
-
-	// Initialize payments for dynamically loaded forms
-	document.addEventListener( 'srfm_form_initialize', function () {
-		// Find all payment blocks and initialize them
-		const paymentInputs = document.querySelectorAll(
-			'.srfm-payment-input'
-		);
-		paymentInputs.forEach( ( input ) => {
-			const blockId = input.dataset.blockId;
-			if (
-				blockId &&
-				! paymentElements[ blockId ] &&
-				typeof window.srfmInitializeStripePayment === 'function'
-			) {
-				window.srfmInitializeStripePayment( blockId );
-			}
-		} );
-	} );
-}() );
+} );

@@ -2,12 +2,10 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import {
-	ToggleControl,
-	SelectControl,
-} from '@wordpress/components';
+import { ToggleControl, SelectControl, Button } from '@wordpress/components';
 import { InspectorControls } from '@wordpress/block-editor';
-import { useEffect } from '@wordpress/element';
+import { useEffect, useState } from '@wordpress/element';
+import { useSelect } from '@wordpress/data';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
 	SRFMTabs,
@@ -37,9 +35,64 @@ const Edit = ( props ) => {
 		formId,
 		preview,
 		className,
-		applicationFee,
+		paymentItems
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
+	const [ availableNumberFields, setAvailableNumberFields ] = useState( [] );
+
+	// Get all blocks from the current form
+	const { getBlocks } = useSelect(
+		( select ) => select( 'core/block-editor' ),
+		[]
+	);
+
+	// Function to extract number input field slugs from form blocks
+	const extractNumberFieldSlugs = () => {
+		if ( ! currentFormId ) {
+			return [];
+		}
+
+		try {
+			const blocks = getBlocks();
+			const numberFields = [];
+
+			const findNumberFields = ( blockList ) => {
+				blockList.forEach( ( block ) => {
+					// Check if block is a number input field
+					if (
+						block.name === 'srfm/number' &&
+						block.attributes?.slug
+					) {
+						const slug = block.attributes.slug;
+						const label =
+							block.attributes.label ||
+							__( 'Number Field', 'sureforms' );
+						numberFields.push( {
+							slug,
+							label,
+							selected: paymentItems?.includes( slug ) || false,
+						} );
+					}
+					// Recursively check inner blocks
+					if ( block.innerBlocks?.length > 0 ) {
+						findNumberFields( block.innerBlocks );
+					}
+				} );
+			};
+
+			findNumberFields( blocks );
+			return numberFields;
+		} catch ( error ) {
+			console.error( 'Error extracting number field slugs:', error );
+			return [];
+		}
+	};
+
+	// Update available fields when form changes
+	useEffect( () => {
+		const fields = extractNumberFieldSlugs();
+		setAvailableNumberFields( fields );
+	}, [ currentFormId, paymentItems ] );
 
 	useEffect( () => {
 		if ( formId !== currentFormId ) {
@@ -51,6 +104,28 @@ const Edit = ( props ) => {
 		currentMessage: currentErrorMsg,
 		setCurrentMessage: setCurrentErrorMsg,
 	} = useErrMessage( 'srfm_payment_block_required_text', errorMsg );
+
+	// Handler for updating selected items
+	const handleItemToggle = ( fieldSlug ) => {
+		const currentItems = paymentItems || [];
+		let newItems;
+
+		if ( currentItems.includes( fieldSlug ) ) {
+			// Remove item from array
+			newItems = currentItems.filter( ( item ) => item !== fieldSlug );
+		} else {
+			// Add item to array
+			newItems = [ ...currentItems, fieldSlug ];
+		}
+
+		setAttributes( { paymentItems: newItems } );
+	};
+
+	// Handler for refreshing available fields
+	const refreshNumberFields = () => {
+		const fields = extractNumberFieldSlugs();
+		setAvailableNumberFields( fields );
+	};
 
 	// Show the block preview on hover.
 	if ( preview ) {
@@ -141,27 +216,97 @@ const Edit = ( props ) => {
 			),
 		},
 		{
-			id: 'application-fee',
+			id: 'payment-items',
 			component: (
-				<Range
-					label={ __( 'Application Fee (%)', 'sureforms' ) }
-					displayUnit={ false }
-					value={ applicationFee }
-					min={ 0 }
-					max={ 10 }
-					step={ 0.1 }
-					data={ {
-						value: applicationFee,
-						label: 'applicationFee',
-					} }
-					onChange={ ( value ) =>
-						setAttributes( { applicationFee: parseFloat( value ) } )
-					}
-					help={ __(
-						'Percentage fee to be added to the payment amount.',
-						'sureforms'
+				<div>
+					<div style={ { marginBottom: '16px' } }>
+						<label
+							style={ {
+								display: 'block',
+								marginBottom: '8px',
+								fontWeight: '600',
+							} }
+						>
+							{ __( 'Payment Items Configuration', 'sureforms' ) }
+						</label>
+						<p
+							style={ {
+								fontSize: '12px',
+								color: '#757575',
+								margin: '0 0 12px 0',
+							} }
+						>
+							{ __(
+								'Select number fields to include in payment calculations.',
+								'sureforms'
+							) }
+						</p>
+						<Button
+							variant="secondary"
+							size="small"
+							onClick={ refreshNumberFields }
+							style={ { marginBottom: '12px' } }
+						>
+							{ __( 'Refresh Available Fields', 'sureforms' ) }
+						</Button>
+					</div>
+
+					{ availableNumberFields.length === 0 ? (
+						<p
+							style={ {
+								fontSize: '12px',
+								color: '#757575',
+								fontStyle: 'italic',
+							} }
+						>
+							{ __(
+								'No number fields found in the form. Add number input fields to configure payment items.',
+								'sureforms'
+							) }
+						</p>
+					) : (
+						<div>
+							{ availableNumberFields.map( ( field ) => (
+								<div
+									key={ field.slug }
+									style={ { marginBottom: '8px' } }
+								>
+									<ToggleControl
+										label={ `${ field.label } (${ field.slug })` }
+										checked={
+											paymentItems?.includes(
+												field.slug
+											) || false
+										}
+										onChange={ () =>
+											handleItemToggle( field.slug )
+										}
+										help={ __(
+											'Include this field in payment calculations',
+											'sureforms'
+										) }
+									/>
+								</div>
+							) ) }
+						</div>
 					) }
-				/>
+
+					{ paymentItems && paymentItems.length > 0 && (
+						<div
+							style={ {
+								marginTop: '12px',
+								padding: '8px',
+								backgroundColor: '#f0f6fc',
+								borderRadius: '4px',
+							} }
+						>
+							<strong style={ { fontSize: '12px' } }>
+								{ __( 'Selected Items:', 'sureforms' ) }{ ' ' }
+								{ paymentItems.join( ', ' ) }
+							</strong>
+						</div>
+					) }
+				</div>
 			),
 		},
 		{

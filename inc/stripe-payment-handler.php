@@ -30,6 +30,8 @@ class Stripe_Payment_Handler {
 	public function __construct() {
 		add_action( 'wp_ajax_srfm_create_payment_intent', [ $this, 'create_payment_intent' ] );
 		add_action( 'wp_ajax_nopriv_srfm_create_payment_intent', [ $this, 'create_payment_intent' ] ); // For non-logged-in users.
+		// add_action( 'wp_ajax_srfm_update_payment_intent_amount', [ $this, 'update_payment_intent_amount' ] );
+		// add_action( 'wp_ajax_nopriv_srfm_update_payment_intent_amount', [ $this, 'update_payment_intent_amount' ] ); // For non-logged-in users.
 		add_filter( 'srfm_form_submit_data', [ $this, 'validate_payment_fields' ], 5, 1 );
 		add_action( 'wp_head', [ $this, 'add_payment_styles' ] );
 	}
@@ -154,11 +156,10 @@ class Stripe_Payment_Handler {
 			return;
 		}
 
-		$amount          = intval( $_POST['amount'] ?? 0 );
-		$currency        = sanitize_text_field( wp_unslash( $_POST['currency'] ?? 'usd' ) );
-		$description     = sanitize_text_field( wp_unslash( $_POST['description'] ?? 'SureForms Payment' ) );
-		$application_fee = floatval( $_POST['application_fee'] ?? 0 );
-		$block_id        = sanitize_text_field( wp_unslash( $_POST['block_id'] ?? '' ) );
+		$amount      = intval( $_POST['amount'] ?? 0 );
+		$currency    = sanitize_text_field( wp_unslash( $_POST['currency'] ?? 'usd' ) );
+		$description = sanitize_text_field( wp_unslash( $_POST['description'] ?? 'SureForms Payment' ) );
+		$block_id    = sanitize_text_field( wp_unslash( $_POST['block_id'] ?? '' ) );
 
 		if ( $amount <= 0 ) {
 			wp_send_json_error( __( 'Invalid payment amount.', 'sureforms' ) );
@@ -182,47 +183,46 @@ class Stripe_Payment_Handler {
 				throw new \Exception( __( 'Stripe secret key not found.', 'sureforms' ) );
 			}
 
-			// Initialize Stripe.
-			if ( ! class_exists( '\Stripe\Stripe' ) ) {
-				throw new \Exception( __( 'Stripe library not found.', 'sureforms' ) );
-			}
-
-			\Stripe\Stripe::setApiKey( $secret_key );
-
-			// Calculate application fee - set to 0 if Pro license is active.
-			$application_fee_amount = 0;
-			if ( $application_fee > 0 && ! $this->is_pro_license_active() ) {
-				$application_fee_amount = intval( ( $amount * $application_fee ) / 100 );
-			}
-
 			// Create payment intent.
-			$payment_intent_data = [
-				'amount'                    => $amount,
-				'currency'                  => strtolower( $currency ),
-				'description'               => $description,
-				'automatic_payment_methods' => [
-					'enabled' => true,
-				],
-				'metadata'                  => [
-					'source'          => 'SureForms',
-					'block_id'        => $block_id,
-					'original_amount' => $amount,
-					'application_fee' => $application_fee_amount,
-				],
-			];
+			$payment_intent_data = apply_filters(
+				'srfm_create_payment_intent_data',
+				[
+					'secret_key'                => $secret_key,
+					'amount'                    => $amount,
+					'currency'                  => strtolower( $currency ),
+					'description'               => $description,
+					'capture_method'            => 'manual',
+					'automatic_payment_methods' => [
+						'enabled' => true,
+					],
+					'metadata'                  => [
+						'source'          => 'SureForms',
+						'block_id'        => $block_id,
+						'original_amount' => $amount,
+					],
+				]
+			);
 
-			// Add application fee for connected accounts if needed.
-			$stripe_account_id = $payment_settings['stripe_account_id'] ?? '';
-			if ( ! empty( $stripe_account_id ) && $application_fee_amount > 0 ) {
-				$payment_intent_data['application_fee_amount'] = $application_fee_amount;
+			$payment_intent = wp_remote_post(
+				'prod' === SRFM_PAYMENTS_ENV ? SRFM_PAYMENTS_PROD . 'payment-intent/create' : SRFM_PAYMENTS_LOCAL . 'payment-intent/create',
+				[
+					'body'    => base64_encode( wp_json_encode( $payment_intent_data ) ),
+					'headers' => [
+						'Content-Type' => 'application/json',
+					],
+				]
+			);
+
+			if ( is_wp_error( $payment_intent ) ) {
+				throw new \Exception( __( 'Failed to create payment intent.', 'sureforms' ) );
 			}
 
-			$payment_intent = \Stripe\PaymentIntent::create( $payment_intent_data );
+			$payment_intent = json_decode( wp_remote_retrieve_body( $payment_intent ), true );
 
 			wp_send_json_success(
 				[
-					'client_secret'     => $payment_intent->client_secret,
-					'payment_intent_id' => $payment_intent->id,
+					'client_secret'     => $payment_intent['client_secret'],
+					'payment_intent_id' => $payment_intent['id'],
 				]
 			);
 
@@ -283,6 +283,106 @@ class Stripe_Payment_Handler {
 	}
 
 	/**
+	 * Update payment intent amount
+	 *
+	 * @return void
+	 * @since x.x.x
+	 */
+	public function update_payment_intent_amount() {
+		// Verify nonce.
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ?? '' ) ), 'srfm_stripe_payment_nonce' ) ) {
+			wp_send_json_error( __( 'Invalid nonce.', 'sureforms' ) );
+			return;
+		}
+
+		$payment_intent_id = sanitize_text_field( wp_unslash( $_POST['payment_intent_id'] ?? '' ) );
+		$new_amount        = intval( $_POST['new_amount'] ?? 0 );
+		$block_id          = sanitize_text_field( wp_unslash( $_POST['block_id'] ?? '' ) );
+
+		if ( empty( $payment_intent_id ) || $new_amount <= 0 ) {
+			wp_send_json_error( __( 'Invalid payment intent ID or amount.', 'sureforms' ) );
+			return;
+		}
+
+		try {
+			// Get payment settings.
+			$payment_settings = get_option( 'srfm_payments_settings', [] );
+
+			if ( empty( $payment_settings['stripe_connected'] ) ) {
+				throw new \Exception( __( 'Stripe is not connected.', 'sureforms' ) );
+			}
+
+			$payment_mode = $payment_settings['payment_mode'] ?? 'test';
+			$secret_key   = 'live' === $payment_mode
+				? $payment_settings['stripe_live_secret_key'] ?? ''
+				: $payment_settings['stripe_test_secret_key'] ?? '';
+
+			if ( empty( $secret_key ) ) {
+				throw new \Exception( __( 'Stripe secret key not found.', 'sureforms' ) );
+			}
+
+			// Initialize Stripe.
+			if ( ! class_exists( '\\Stripe\\Stripe' ) ) {
+				throw new \Exception( __( 'Stripe library not found.', 'sureforms' ) );
+			}
+
+			\Stripe\Stripe::setApiKey( $secret_key );
+
+			// Retrieve the existing payment intent.
+			$payment_intent = \Stripe\PaymentIntent::retrieve( $payment_intent_id );
+
+			// Check if payment intent can be updated (not yet confirmed).
+			if ( 'requires_payment_method' !== $payment_intent->status && 'requires_confirmation' !== $payment_intent->status ) {
+				throw new \Exception( __( 'Payment intent cannot be updated at this stage.', 'sureforms' ) );
+			}
+
+			// Calculate application fee for the new amount.
+			$application_fee_amount = 0;
+			if ( isset( $payment_intent->metadata->application_fee ) && $payment_intent->metadata->application_fee > 0 ) {
+				if ( ! $this->is_pro_license_active() ) {
+					$application_fee_amount = intval( $new_amount * floatval( $payment_intent->metadata->application_fee ) / 100 );
+				}
+			}
+
+			// Update payment intent with new amount.
+			$update_data = [
+				'amount' => $new_amount,
+			];
+
+			// Add application fee if needed.
+			$stripe_account_id = $payment_settings['stripe_account_id'] ?? '';
+			if ( ! empty( $stripe_account_id ) && $application_fee_amount > 0 ) {
+				$update_data['application_fee_amount'] = $application_fee_amount;
+			}
+
+			// Update metadata to track the change.
+			$update_data['metadata'] = [
+				'source'          => 'SureForms',
+				'block_id'        => $block_id,
+				'original_amount' => $payment_intent->metadata->original_amount ?? $payment_intent->amount,
+				'application_fee' => $payment_intent->metadata->application_fee ?? 0,
+				'updated_amount'  => $new_amount,
+				'updated_at'      => time(),
+			];
+
+			$updated_payment_intent = \Stripe\PaymentIntent::update( $payment_intent_id, $update_data );
+
+			wp_send_json_success(
+				[
+					'message'           => __( 'Payment intent updated successfully.', 'sureforms' ),
+					'payment_intent_id' => $updated_payment_intent->id,
+					'new_amount'        => $updated_payment_intent->amount,
+					'client_secret'     => $updated_payment_intent->client_secret,
+				]
+			);
+
+		} catch ( \Exception $e ) {
+			error_log( 'SureForms Update Payment Intent Error: ' . $e->getMessage() );
+			wp_send_json_error( __( 'Failed to update payment intent. Please try again.', 'sureforms' ) );
+		}
+	}
+
+	/**
 	 * Verify payment intent status
 	 *
 	 * @param string $payment_intent_id Payment intent ID.
@@ -301,110 +401,35 @@ class Stripe_Payment_Handler {
 				return false;
 			}
 
-			\Stripe\Stripe::setApiKey( $secret_key );
-			$payment_intent = \Stripe\PaymentIntent::retrieve( $payment_intent_id );
+			$payment_intent = wp_remote_post(
+				'prod' === SRFM_PAYMENTS_ENV ? SRFM_PAYMENTS_PROD . 'payment-intent/retrieve' : SRFM_PAYMENTS_LOCAL . 'payment-intent/retrieve',
+				[
+					'method'  => 'POST',
+					'body'    => base64_encode(
+						wp_json_encode(
+							[
+								'payment_intent_id' => $payment_intent_id,
+								'secret_key'        => $secret_key,
+							]
+						)
+					),
+					'headers' => [
+						'Content-Type' => 'application/json',
+					],
+				]
+			);
 
-			return 'succeeded' === $payment_intent->status;
+			if ( is_wp_error( $payment_intent ) ) {
+				return false;
+			}
+
+			$payment_intent = json_decode( wp_remote_retrieve_body( $payment_intent ), true );
+
+			return 'succeeded' === $payment_intent['status'];
 
 		} catch ( \Exception $e ) {
 			error_log( 'SureForms Payment Verification Error: ' . $e->getMessage() );
 			return false;
 		}
 	}
-
-	/**
-	 * Check if the SureForms Pro license is active
-	 *
-	 * @return bool True if the SureForms Pro license is active, false otherwise.
-	 * @since x.x.x
-	 */
-	private function is_pro_license_active() {
-		// First check if Pro version is installed.
-		if ( ! defined( 'SRFM_PRO_VER' ) ) {
-			return false;
-		}
-
-		// Check if the licensing class exists and license is active.
-		if ( class_exists( 'SRFM_Pro\Admin\Licensing' ) ) {
-			$licensing = \SRFM_Pro\Admin\Licensing::get_instance();
-			if ( $licensing && method_exists( $licensing, 'is_license_active' ) ) {
-				return $licensing->is_license_active();
-			}
-		}
-
-		// Fallback: Check license status via API (similar to AI form builder).
-		return $this->check_license_via_api();
-	}
-
-	/**
-	 * Check license status via credits.startertemplates.com API
-	 *
-	 * @return bool True if license is active, false otherwise.
-	 * @since x.x.x
-	 */
-	private function check_license_via_api() {
-		// Get license key for API authentication.
-		$license_key = $this->get_license_key();
-		if ( empty( $license_key ) ) {
-			return false;
-		}
-
-		// Make API request to check license status.
-		$api_url = SRFM_AI_MIDDLEWARE . 'license/verify';
-		$response = wp_remote_post(
-			$api_url,
-			[
-				'headers' => [
-					'X-Token'      => base64_encode( $license_key ), // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
-					'Content-Type' => 'application/json',
-					'Referer'      => site_url(),
-				],
-				'timeout' => 30,
-				'body'    => wp_json_encode( [
-					'action' => 'verify_license',
-					'domain' => site_url(),
-				] ),
-			]
-		);
-
-		// Default to inactive if API call fails.
-		$is_active = false;
-
-		if ( ! is_wp_error( $response ) && 200 === wp_remote_retrieve_response_code( $response ) ) {
-			$response_body = wp_remote_retrieve_body( $response );
-			$data = json_decode( $response_body, true );
-
-			if ( is_array( $data ) && isset( $data['license_active'] ) ) {
-				$is_active = (bool) $data['license_active'];
-			}
-		}
-
-		return $is_active;
-	}
-
-	/**
-	 * Get license key for API authentication
-	 *
-	 * @return string License key or empty string if not available.
-	 * @since x.x.x
-	 */
-	private function get_license_key() {
-		// Only proceed if Pro version is installed.
-		if ( ! defined( 'SRFM_PRO_VER' ) || ! class_exists( 'SRFM_Pro\Admin\Licensing' ) ) {
-			return '';
-		}
-
-		$licensing = \SRFM_Pro\Admin\Licensing::get_instance();
-		if ( ! $licensing || ! method_exists( $licensing, 'licensing_setup' ) ) {
-			return '';
-		}
-
-		$license_setup = $licensing->licensing_setup();
-		if ( ! is_object( $license_setup ) || ! method_exists( $license_setup, 'settings' ) ) {
-			return '';
-		}
-
-		return $license_setup->settings()->license_key ?? '';
-	}
 }
-
