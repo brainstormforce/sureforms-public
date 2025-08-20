@@ -399,13 +399,13 @@ class Payments_Settings {
 					]
 				);
 
-				// Store webhook data.
+				// Store webhook data in settings
 				if ( 'live' === $mode ) {
-					update_option( 'srfm_live_webhook_secret', $webhook->secret );
-					update_option( 'srfm_live_webhook_id', $webhook->id );
+					$settings['webhook_live_secret'] = $webhook->secret;
+					$settings['webhook_live_id']     = $webhook->id;
 				} else {
-					update_option( 'srfm_test_webhook_secret', $webhook->secret );
-					update_option( 'srfm_test_webhook_id', $webhook->id );
+					$settings['webhook_test_secret'] = $webhook->secret;
+					$settings['webhook_test_id']     = $webhook->id;
 				}
 
 				$webhooks_created++;
@@ -423,22 +423,12 @@ class Payments_Settings {
 		if ( $webhooks_created > 0 ) {
 			$webhook_url = esc_url( get_home_url() . '/wp-json/sureforms/webhook' );
 			
-			// Store test webhook details.
-			$test_webhook_secret = get_option( 'srfm_test_webhook_secret', '' );
-			$test_webhook_id     = get_option( 'srfm_test_webhook_id', '' );
-			if ( ! empty( $test_webhook_secret ) ) {
-				$settings['webhook_test_secret'] = $test_webhook_secret;
-				$settings['webhook_test_id']     = $test_webhook_id;
-				$settings['webhook_test_url']    = $webhook_url;
+			// Set webhook URLs for created webhooks
+			if ( ! empty( $settings['webhook_test_secret'] ) ) {
+				$settings['webhook_test_url'] = $webhook_url;
 			}
-			
-			// Store live webhook details.
-			$live_webhook_secret = get_option( 'srfm_live_webhook_secret', '' );
-			$live_webhook_id     = get_option( 'srfm_live_webhook_id', '' );
-			if ( ! empty( $live_webhook_secret ) ) {
-				$settings['webhook_live_secret'] = $live_webhook_secret;
-				$settings['webhook_live_id']     = $live_webhook_id;
-				$settings['webhook_live_url']    = $webhook_url;
+			if ( ! empty( $settings['webhook_live_secret'] ) ) {
+				$settings['webhook_live_url'] = $webhook_url;
 			}
 			
 			update_option( self::OPTION_NAME, $settings );
@@ -455,13 +445,13 @@ class Payments_Settings {
 			$response_data['webhook_details'] = [
 				'webhook_url' => $webhook_url,
 				'test' => [
-					'webhook_secret' => get_option( 'srfm_test_webhook_secret', '' ),
-					'webhook_id'     => get_option( 'srfm_test_webhook_id', '' ),
+					'webhook_secret' => $settings['webhook_test_secret'] ?? '',
+					'webhook_id'     => $settings['webhook_test_id'] ?? '',
 					'webhook_url'    => $webhook_url,
 				],
 				'live' => [
-					'webhook_secret' => get_option( 'srfm_live_webhook_secret', '' ),
-					'webhook_id'     => get_option( 'srfm_live_webhook_id', '' ),
+					'webhook_secret' => $settings['webhook_live_secret'] ?? '',
+					'webhook_id'     => $settings['webhook_live_id'] ?? '',
 					'webhook_url'    => $webhook_url,
 				],
 			];
@@ -558,7 +548,7 @@ class Payments_Settings {
 				? $settings['stripe_live_secret_key'] 
 				: $settings['stripe_test_secret_key'];
 
-			$webhook_id = get_option( 'live' === $mode ? 'srfm_live_webhook_id' : 'srfm_test_webhook_id', '' );
+			$webhook_id = 'live' === $mode ? $settings['webhook_live_id'] ?? '' : $settings['webhook_test_id'] ?? '';
 
 			if ( empty( $secret_key ) || empty( $webhook_id ) ) {
 				continue;
@@ -571,25 +561,29 @@ class Payments_Settings {
 				// Delete webhook endpoint.
 				\Stripe\WebhookEndpoint::retrieve( $webhook_id )->delete();
 
-				// Clean up stored webhook data.
+				// Clean up stored webhook data from settings
 				if ( 'live' === $mode ) {
-					delete_option( 'srfm_live_webhook_secret' );
-					delete_option( 'srfm_live_webhook_id' );
+					$settings['webhook_live_secret'] = '';
+					$settings['webhook_live_id']     = '';
+					$settings['webhook_live_url']    = '';
 				} else {
-					delete_option( 'srfm_test_webhook_secret' );
-					delete_option( 'srfm_test_webhook_id' );
+					$settings['webhook_test_secret'] = '';
+					$settings['webhook_test_id']     = '';
+					$settings['webhook_test_url']    = '';
 				}
 
 				$webhooks_deleted++;
 
 			} catch ( \Stripe\Exception\InvalidRequestException $e ) {
-				// Webhook might already be deleted, consider it successful.
+				// Webhook might already be deleted, consider it successful and clean up settings
 				if ( 'live' === $mode ) {
-					delete_option( 'srfm_live_webhook_secret' );
-					delete_option( 'srfm_live_webhook_id' );
+					$settings['webhook_live_secret'] = '';
+					$settings['webhook_live_id']     = '';
+					$settings['webhook_live_url']    = '';
 				} else {
-					delete_option( 'srfm_test_webhook_secret' );
-					delete_option( 'srfm_test_webhook_id' );
+					$settings['webhook_test_secret'] = '';
+					$settings['webhook_test_id']     = '';
+					$settings['webhook_test_url']    = '';
 				}
 				$webhooks_deleted++;
 			} catch ( \Stripe\Exception\ApiErrorException $e ) {
@@ -601,22 +595,8 @@ class Payments_Settings {
 			}
 		}
 
-		// Update settings to clear webhook details.
+		// Update settings if any webhooks were deleted.
 		if ( $webhooks_deleted > 0 ) {
-			// Clear test webhook details if test webhook was deleted.
-			if ( empty( get_option( 'srfm_test_webhook_secret', '' ) ) ) {
-				$settings['webhook_test_secret'] = '';
-				$settings['webhook_test_id']     = '';
-				$settings['webhook_test_url']    = '';
-			}
-			
-			// Clear live webhook details if live webhook was deleted.
-			if ( empty( get_option( 'srfm_live_webhook_secret', '' ) ) ) {
-				$settings['webhook_live_secret'] = '';
-				$settings['webhook_live_id']     = '';
-				$settings['webhook_live_url']    = '';
-			}
-			
 			update_option( self::OPTION_NAME, $settings );
 		}
 
