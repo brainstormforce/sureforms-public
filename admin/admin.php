@@ -12,6 +12,7 @@ use SRFM\Admin\Views\Single_Entry;
 use SRFM\Inc\AI_Form_Builder\AI_Helper;
 use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Helper;
+use SRFM\Inc\Onboarding;
 use SRFM\Inc\Post_Types;
 use SRFM\Inc\Traits\Get_Instance;
 
@@ -27,6 +28,14 @@ class Admin {
 	use Get_Instance;
 
 	/**
+	 * Dashboard widget entries data.
+	 *
+	 * @var array
+	 * @since 1.9.1
+	 */
+	private $dashboard_widget_data = [];
+
+	/**
 	 * Class constructor.
 	 *
 	 * @return void
@@ -38,7 +47,7 @@ class Admin {
 		add_action( 'admin_menu', [ $this, 'settings_page' ] );
 		add_action( 'admin_menu', [ $this, 'add_new_form' ] );
 		add_action( 'admin_menu', [ $this, 'add_suremail_page' ] );
-		if ( ! Helper::has_pro() ) {
+		if ( ! Helper::has_pro() && self::is_first_form_created() ) {
 			add_action( 'admin_menu', [ $this, 'add_upgrade_to_pro' ] );
 			add_action( 'admin_footer', [ $this, 'add_upgrade_to_pro_target_attr' ] );
 		}
@@ -86,6 +95,105 @@ class Admin {
 		add_action( 'wp_ajax_should_show_pointer', [ $this, 'pointer_should_show' ] );
 		add_action( 'wp_ajax_sureforms_dismiss_pointer', [ $this, 'pointer_dismissed' ] );
 		add_action( 'wp_ajax_sureforms_accept_cta', [ $this, 'pointer_accepted_cta' ] );
+
+		// Register dashboard widget only if there are recent entries.
+		add_action( 'admin_init', [ $this, 'maybe_register_dashboard_widget' ] );
+
+		// Save first form creation time stamp.
+		add_action( 'admin_init', [ $this, 'save_first_form_creation_time_stamp' ] );
+	}
+
+	/**
+	 * Get the first form creation time stamp.
+	 *
+	 * @since 1.10.1
+	 * @return int|false
+	 */
+	public static function get_first_form_creation_time_stamp() {
+		return Helper::get_srfm_option( 'first_form_created_at', false );
+	}
+
+	/**
+	 * Check if the first form has been created.
+	 *
+	 * @since 1.10.1
+	 * @return bool
+	 */
+	public static function is_first_form_created() {
+		// Convert the first form creation time stamp to a boolean. If it exists, it will return true, otherwise false.
+		$first_form_creation_time_stamp = self::get_first_form_creation_time_stamp();
+
+		// If the first form creation time stamp is not set, return false.
+		if ( ! $first_form_creation_time_stamp ) {
+			return false; // No forms created yet.
+		}
+
+		// Check if the first form creation time stamp is a valid integer and greater than zero.
+		return is_int( $first_form_creation_time_stamp ) && $first_form_creation_time_stamp > 0;
+	}
+
+	/**
+	 * Check and save the first form creation time stamp.
+	 * If not already saved.
+	 *
+	 * @since 1.10.1
+	 * @return void
+	 */
+	public static function save_first_form_creation_time_stamp() {
+		if ( ! current_user_can( 'manage_options' ) || self::is_first_form_created() || ! defined( 'SRFM_FORMS_POST_TYPE' ) || ! post_type_exists( SRFM_FORMS_POST_TYPE ) ) {
+			return;
+		}
+
+		// Get the first form creation time from the database that is published.
+		$query = new \WP_Query(
+			[
+				'post_type'      => SRFM_FORMS_POST_TYPE,
+				'posts_per_page' => 1,
+				'orderby'        => 'date',
+				'order'          => 'ASC',
+				'fields'         => 'ids',
+				'post_status'    => 'publish',
+			]
+		);
+
+		if ( ! empty( $query->posts ) && isset( $query->posts[0] ) ) {
+			// Get the first post from the query result.
+			$post_id = $query->posts[0];
+			// Get the post creation time in GMT.
+			$creation_time = get_post_field( 'post_date_gmt', $post_id );
+			// Convert the creation time to a timestamp.
+			$timestamp = strtotime( $creation_time );
+
+			if ( ! $timestamp ) {
+				return;
+			}
+
+			Helper::update_srfm_option( 'first_form_created_at', $timestamp );
+		}
+	}
+
+	/**
+	 * Check if n days have passed since the first form creation.
+	 * This is used to determine if the dynamic nudges should be shown.
+	 *
+	 * @param int $days Number of days to check.
+	 * @since 1.10.1
+	 * @return bool
+	 */
+	public static function check_first_form_creation_threshold( $days = 3 ) {
+		$first_form_creation_time_stamp = self::get_first_form_creation_time_stamp();
+
+		if ( ! $first_form_creation_time_stamp ) {
+			return false; // No forms created yet.
+		}
+
+		/**
+		 * Calculate the number of days since the first form was created.
+		 */
+		$days_from_creation = ( strtotime( current_time( 'mysql' ) ) - $first_form_creation_time_stamp ) / DAY_IN_SECONDS;
+
+		// Return a boolean indicating if the number of days since creation is greater than the specified days.
+		return $days_from_creation > $days;
 	}
 
 	/**
@@ -237,6 +345,12 @@ class Admin {
 	 * @since 1.6.1
 	 */
 	public function add_upgrade_to_pro_target_attr() {
+
+		// only add if first form was created more than 8 days ago.
+		if ( ! self::check_first_form_creation_threshold( 8 ) ) {
+			return;
+		}
+
 		?>
 		<script type="text/javascript">
 			document.addEventListener('DOMContentLoaded', function () {
@@ -261,6 +375,12 @@ class Admin {
 	 * @since 1.6.1
 	 */
 	public function add_upgrade_to_pro() {
+
+		// only add if first form was created more than 8 days ago.
+		if ( ! self::check_first_form_creation_threshold( 8 ) ) {
+			return;
+		}
+
 		// The url used here is used as a selector for css to style the upgrade to pro submenu.
 		// If you are changing this url, please make sure to update the css as well.
 		$upgrade_url = add_query_arg(
@@ -608,29 +728,37 @@ class Admin {
 		 * List of the handles in which we need to add translation compatibility.
 		 */
 		$script_translations_handlers = [];
+		$onboarding_instance          = Onboarding::get_instance();
 
 		$localization_data = [
-			'site_url'                => get_site_url(),
-			'breadcrumbs'             => $this->get_breadcrumbs_for_current_page(),
-			'sureforms_dashboard_url' => admin_url( '/admin.php?page=sureforms_menu' ),
-			'plugin_version'          => SRFM_VER,
-			'global_settings_nonce'   => current_user_can( 'manage_options' ) ? wp_create_nonce( 'wp_rest' ) : '',
-			'is_pro_active'           => Helper::has_pro(),
-			'pro_plugin_version'      => Helper::has_pro() ? SRFM_PRO_VER : '',
-			'pro_plugin_name'         => Helper::has_pro() && defined( 'SRFM_PRO_PRODUCT' ) ? SRFM_PRO_PRODUCT : 'SureForms Pro',
-			'sureforms_pricing_page'  => Helper::get_sureforms_website_url( 'pricing' ),
-			'field_spacing_vars'      => Helper::get_css_vars(),
-			'is_ver_lower_than_6_7'   => version_compare( $wp_version, '6.6.2', '<=' ),
-			'integrations'            => Helper::sureforms_get_integration(),
-			'ajax_url'                => admin_url( 'admin-ajax.php' ),
-			'sf_plugin_manager_nonce' => wp_create_nonce( 'sf_plugin_manager_nonce' ),
-			'plugin_installer_nonce'  => wp_create_nonce( 'updates' ),
-			'plugin_activating_text'  => __( 'Activating...', 'sureforms' ),
-			'plugin_activated_text'   => __( 'Activated', 'sureforms' ),
-			'plugin_activate_text'    => __( 'Activate', 'sureforms' ),
-			'plugin_installing_text'  => __( 'Installing...', 'sureforms' ),
-			'plugin_installed_text'   => __( 'Installed', 'sureforms' ),
-			'is_rtl'                  => $is_rtl,
+			'site_url'                   => get_site_url(),
+			'breadcrumbs'                => $this->get_breadcrumbs_for_current_page(),
+			'sureforms_dashboard_url'    => admin_url( '/admin.php?page=sureforms_menu' ),
+			'plugin_version'             => SRFM_VER,
+			'global_settings_nonce'      => current_user_can( 'manage_options' ) ? wp_create_nonce( 'wp_rest' ) : '',
+			'is_pro_active'              => Helper::has_pro(),
+			'is_first_form_created'      => self::is_first_form_created(),
+			'check_three_days_threshold' => self::check_first_form_creation_threshold(),
+			'check_eight_days_threshold' => self::check_first_form_creation_threshold( 8 ),
+			'pro_plugin_version'         => Helper::has_pro() ? SRFM_PRO_VER : '',
+			'pro_plugin_name'            => Helper::has_pro() && defined( 'SRFM_PRO_PRODUCT' ) ? SRFM_PRO_PRODUCT : 'SureForms Pro',
+			'sureforms_pricing_page'     => Helper::get_sureforms_website_url( 'pricing' ),
+			'field_spacing_vars'         => Helper::get_css_vars(),
+			'is_ver_lower_than_6_7'      => version_compare( $wp_version, '6.6.2', '<=' ),
+			'integrations'               => Helper::sureforms_get_integration(),
+			'ajax_url'                   => admin_url( 'admin-ajax.php' ),
+			'sf_plugin_manager_nonce'    => wp_create_nonce( 'sf_plugin_manager_nonce' ),
+			'plugin_installer_nonce'     => wp_create_nonce( 'updates' ),
+			'plugin_activating_text'     => __( 'Activating...', 'sureforms' ),
+			'plugin_activated_text'      => __( 'Activated', 'sureforms' ),
+			'plugin_activate_text'       => __( 'Activate', 'sureforms' ),
+			'plugin_installing_text'     => __( 'Installing...', 'sureforms' ),
+			'plugin_installed_text'      => __( 'Installed', 'sureforms' ),
+			'is_rtl'                     => $is_rtl,
+			'onboarding_completed'       => method_exists( $onboarding_instance, 'get_onboarding_status' ) ? $onboarding_instance->get_onboarding_status() : false,
+			'onboarding_redirect'        => isset( $_GET['srfm-activation-redirect'] ), // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce is not required for the activation redirection.
+			'pointer_nonce'              => wp_create_nonce( 'sureforms_pointer_action' ),
+			'general_settings_url'       => admin_url( '/options-general.php' ),
 		];
 
 		$is_screen_sureforms_menu          = Helper::validate_request_context( 'sureforms_menu', 'page' );
@@ -638,6 +766,17 @@ class Admin {
 		$is_screen_sureforms_form_settings = Helper::validate_request_context( 'sureforms_form_settings', 'page' );
 		$is_screen_sureforms_entries       = Helper::validate_request_context( SRFM_ENTRIES, 'page' );
 		$is_post_type_sureforms_form       = SRFM_FORMS_POST_TYPE === $current_screen->post_type;
+
+		/**
+		 * Check if the current screen is the SureForms Menu and AI Auth Email is present then we will add user type as registered.
+		 * Compatibility with existing UI code that checks for this condition.
+		 */
+		if ( $is_screen_sureforms_menu ) {
+			// If email is stored send the user type as registered else non-registered.
+			$localization_data['srfm_ai_details'] = [
+				'type' => ! empty( get_option( 'srfm_ai_auth_user_email' ) ) ? 'registered' : 'non-registered',
+			];
+		}
 
 		if ( $is_screen_sureforms_menu || $is_post_type_sureforms_form || $is_screen_add_new_form || $is_screen_sureforms_form_settings || $is_screen_sureforms_entries ) {
 			$asset_handle = '-dashboard';
@@ -1180,6 +1319,177 @@ class Admin {
 	}
 
 	/**
+	 * Maybe register the dashboard widget based on entries.
+	 *
+	 * @return void
+	 * @since 1.9.1
+	 */
+	public function maybe_register_dashboard_widget() {
+		// Quick check if there are any entries in the last 7 days.
+		$seven_days_ago = strtotime( '-7 days' );
+		$total_entries  = Entries::get_entries_count_after( $seven_days_ago );
+
+		// Only add the dashboard setup hook if there are entries.
+		if ( $total_entries > 0 ) {
+			// Get forms with entries (limit 4 for dashboard widget).
+			$this->dashboard_widget_data = Helper::get_forms_with_entry_counts( $seven_days_ago, 4 );
+
+			// Only show dashboard widget if there are forms with entries.
+			if ( ! empty( $this->dashboard_widget_data ) ) {
+				add_action( 'wp_dashboard_setup', [ $this, 'register_dashboard_widget' ] );
+			}
+		}
+	}
+
+	/**
+	 * Register the dashboard widget.
+	 *
+	 * @return void
+	 * @since 1.9.1
+	 */
+	public function register_dashboard_widget() {
+		// Add the widget with high priority to position it at the top.
+		wp_add_dashboard_widget(
+			'sureforms_recent_entries',
+			__( 'SureForms', 'sureforms' ),
+			[ $this, 'render_dashboard_widget' ],
+			null,
+			null,
+			'normal',
+			'high'
+		);
+	}
+
+	/**
+	 * Render the dashboard widget content.
+	 *
+	 * @return void
+	 * @since 1.9.1
+	 */
+	public function render_dashboard_widget() {
+		// Use the pre-fetched data to avoid duplicate queries.
+		$entries_data = $this->dashboard_widget_data;
+
+		// Display the widget content.
+		?>
+		<div class="srfm-dashboard-widget">
+			<div class="srfm-widget-header">
+				<h3 class="srfm-widget-title">
+					<?php esc_html_e( 'Recent Entries', 'sureforms' ); ?>
+					<span class="srfm-widget-subtitle"><?php esc_html_e( '( Last 7 days )', 'sureforms' ); ?></span>
+				</h3>
+				<a href="<?php echo esc_url( admin_url( 'admin.php?page=sureforms_entries' ) ); ?>" class="srfm-widget-view-link">
+					<?php esc_html_e( 'View', 'sureforms' ); ?>
+				</a>
+			</div>
+
+			<div class="srfm-table-wrapper">
+				<table class="srfm-entries-table">
+					<thead>
+						<tr>
+							<th><?php esc_html_e( 'Form Name', 'sureforms' ); ?></th>
+							<th><?php esc_html_e( 'Entries', 'sureforms' ); ?></th>
+						</tr>
+					</thead>
+					<tbody>
+						<?php foreach ( $entries_data as $form_data ) { ?>
+							<tr>
+								<td class="form-name"><?php echo esc_html( $form_data['title'] ); ?></td>
+								<td class="entry-count"><?php echo esc_html( $form_data['count'] ); ?></td>
+							</tr>
+						<?php } ?>
+					</tbody>
+				</table>
+			</div>
+
+			<?php
+			// Render footer if applicable.
+			$this->render_dashboard_widget_footer( $entries_data );
+			?>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Get random premium feature text.
+	 *
+	 * @return string Random feature text.
+	 * @since 1.9.1
+	 */
+	private function get_random_premium_feature_text() {
+		$features = [
+			__( 'Use Conditional Logic to show only what matters', 'sureforms' ),
+			__( 'Split your form into steps to keep it easy', 'sureforms' ),
+			__( 'Let people upload files directly to your form', 'sureforms' ),
+			__( 'Turn responses into downloadable PDFs automatically', 'sureforms' ),
+			__( 'Let users sign with a simple signature field', 'sureforms' ),
+			__( 'Connect your form to other tools using webhooks', 'sureforms' ),
+			__( 'Use Conversational Forms for a chat-like experience', 'sureforms' ),
+			__( 'Let users register or log in through your form', 'sureforms' ),
+			__( 'Build forms that create WordPress user accounts', 'sureforms' ),
+			__( 'Add calculations to auto-total scores or prices', 'sureforms' ),
+		];
+
+		// Get a random feature.
+		$random_key = array_rand( $features );
+		return $features[ $random_key ];
+	}
+
+	/**
+	 * Render the dashboard widget footer for upsell.
+	 *
+	 * @param array $entries_data The entries data array.
+	 * @return void
+	 * @since 1.9.1
+	 */
+	private function render_dashboard_widget_footer( $entries_data ) {
+		// Only show footer if Pro is not active.
+		if ( Helper::has_pro() ) {
+			return;
+		}
+
+		// Count total entries in last 7 days.
+		$total_entries = 0;
+		foreach ( $entries_data as $form_data ) {
+			$total_entries += $form_data['count'];
+		}
+
+		// Count total published forms.
+		$published_forms_count = wp_count_posts( SRFM_FORMS_POST_TYPE )->publish;
+
+		// Show footer only if 3+ entries received OR 3+ forms published.
+		if ( $total_entries >= 3 || $published_forms_count >= 3 ) {
+			?>
+			<div class="srfm-widget-footer">
+				<div class="srfm-upgrade-content">
+					<svg class="srfm-logo-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<rect width="20" height="20" fill="#D54407"/>
+						<path d="M5.7139 4.2854H14.2853V7.1425H7.1424L5.7139 8.5711V7.1425V4.2854Z" fill="white"/>
+						<path d="M5.7139 4.2854H14.2853V7.1425H7.1424L5.7139 8.5711V7.1425V4.2854Z" fill="white"/>
+						<path d="M5.7148 8.5713H12.8577V11.4284H7.1434L5.7148 12.857V11.4284V8.5713Z" fill="white"/>
+						<path d="M5.7148 8.5713H12.8577V11.4284H7.1434L5.7148 12.857V11.4284V8.5713Z" fill="white"/>
+						<path d="M5.7148 12.8569H10.0006V15.7141H5.7148V12.8569Z" fill="white"/>
+						<path d="M5.7148 12.8569H10.0006V15.7141H5.7148V12.8569Z" fill="white"/>
+					</svg>
+					<span><?php echo esc_html( $this->get_random_premium_feature_text() ); ?></span>
+				</div>
+				<?php
+				$upgrade_url = add_query_arg(
+					[
+						'utm_medium' => 'dashboard-widget',
+					],
+					Helper::get_sureforms_website_url( 'pricing' )
+				);
+				?>
+				<a href="<?php echo esc_url( $upgrade_url ); ?>" class="srfm-upgrade-link" target="_blank">
+					<?php esc_html_e( 'Upgrade', 'sureforms' ); ?>
+				</a>
+			</div>
+			<?php
+		}
+	}
+
+	/**
 	 * Determine if the admin pointer should be visible on this page.
 	 *
 	 * @since 1.8.0
@@ -1204,4 +1514,5 @@ class Admin {
 
 		return false;
 	}
+
 }
