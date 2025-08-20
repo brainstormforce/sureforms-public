@@ -328,7 +328,10 @@ class Payments_Settings {
 			);
 		}
 
-		$modes            = [ 'test', 'live' ];
+		$modes = [
+			$settings['payment_mode'] ?? 'test',
+		];
+
 		$webhooks_created = 0;
 		$error_message    = '';
 
@@ -349,7 +352,7 @@ class Payments_Settings {
 				$webhook = \Stripe\WebhookEndpoint::create(
 					[
 						// 'api_version'    => '2020-03-02',
-						'api_version'    => '2025-06-30.basil',
+						'api_version'    => '2025-07-30.basil',
 						'url'            => esc_url( get_home_url() . '/wp-json/sureforms/webhook' ),
 						'enabled_events' => [
 							'charge.failed',
@@ -384,54 +387,78 @@ class Payments_Settings {
 			}
 		}
 
-		// Update settings with webhook secret if any webhooks were created.
+		// Update settings with webhook details if any webhooks were created.
 		if ( $webhooks_created > 0 ) {
-			$current_mode        = $settings['payment_mode'] ?? 'test';
-			$webhook_secret_key  = 'live' === $current_mode ? 'srfm_live_webhook_secret' : 'srfm_test_webhook_secret';
-			$webhook_secret      = get_option( $webhook_secret_key, '' );
+			$webhook_url = esc_url( get_home_url() . '/wp-json/sureforms/webhook' );
 			
-			if ( ! empty( $webhook_secret ) ) {
-				$settings['webhook_secret'] = $webhook_secret;
-				update_option( self::OPTION_NAME, $settings );
+			// Store test webhook details.
+			$test_webhook_secret = get_option( 'srfm_test_webhook_secret', '' );
+			$test_webhook_id     = get_option( 'srfm_test_webhook_id', '' );
+			if ( ! empty( $test_webhook_secret ) ) {
+				$settings['webhook_test_secret'] = $test_webhook_secret;
+				$settings['webhook_test_id']     = $test_webhook_id;
+				$settings['webhook_test_url']    = $webhook_url;
 			}
+			
+			// Store live webhook details.
+			$live_webhook_secret = get_option( 'srfm_live_webhook_secret', '' );
+			$live_webhook_id     = get_option( 'srfm_live_webhook_id', '' );
+			if ( ! empty( $live_webhook_secret ) ) {
+				$settings['webhook_live_secret'] = $live_webhook_secret;
+				$settings['webhook_live_id']     = $live_webhook_id;
+				$settings['webhook_live_url']    = $webhook_url;
+			}
+			
+			update_option( self::OPTION_NAME, $settings );
+		}
+
+		// Prepare response with webhook details.
+		$response_data = [
+			'success' => $webhooks_created > 0,
+		];
+
+		if ( $webhooks_created > 0 ) {
+			$webhook_url = esc_url( get_home_url() . '/wp-json/sureforms/webhook' );
+			
+			$response_data['webhook_details'] = [
+				'webhook_url' => $webhook_url,
+				'test' => [
+					'webhook_secret' => get_option( 'srfm_test_webhook_secret', '' ),
+					'webhook_id'     => get_option( 'srfm_test_webhook_id', '' ),
+					'webhook_url'    => $webhook_url,
+				],
+				'live' => [
+					'webhook_secret' => get_option( 'srfm_live_webhook_secret', '' ),
+					'webhook_id'     => get_option( 'srfm_live_webhook_id', '' ),
+					'webhook_url'    => $webhook_url,
+				],
+			];
 		}
 
 		if ( count( $modes ) === $webhooks_created ) {
-			return rest_ensure_response(
-				[
-					'success' => true,
-					'message' => __( 'Webhooks created successfully for both test and live modes.', 'sureforms' ),
-				]
-			);
+			$response_data['message'] = __( 'Webhooks created successfully for both test and live modes.', 'sureforms' );
 		} elseif ( $webhooks_created > 0 ) {
-			return rest_ensure_response(
-				[
-					'success' => true,
-					'message' => sprintf( 
-						/* translators: %1$d: number of webhooks created, %2$s: error message */
-						__( 'Webhooks created for %1$d mode(s). Some modes may have failed: %2$s', 'sureforms' ), 
-						$webhooks_created, 
-						$error_message 
-					),
-				]
+			$response_data['message'] = sprintf( 
+				/* translators: %1$d: number of webhooks created, %2$s: error message */
+				__( 'Webhooks created for %1$d mode(s). Some modes may have failed: %2$s', 'sureforms' ), 
+				$webhooks_created, 
+				$error_message 
 			);
 		} else {
-			return rest_ensure_response(
-				[
-					'success' => false,
-					'message' => $error_message ?: __( 'Failed to create webhooks.', 'sureforms' ),
-				]
-			);
+			$response_data['message'] = $error_message ?: __( 'Failed to create webhooks.', 'sureforms' );
 		}
+
+		return rest_ensure_response( $response_data );
 	}
 
 	/**
 	 * Delete payment webhooks
 	 *
+	 * @param \WP_REST_Request $request Request object.
 	 * @return \WP_REST_Response
 	 * @since x.x.x
 	 */
-	public function delete_payment_webhooks() {
+	public function delete_payment_webhooks( $request ) {
 		$settings = get_option( self::OPTION_NAME, $this->get_default_settings() );
 
 		if ( empty( $settings['stripe_connected'] ) ) {
@@ -453,7 +480,20 @@ class Payments_Settings {
 			);
 		}
 
-		$modes            = [ 'test', 'live' ];
+		// Get mode parameter from request, default to current payment mode.
+		$mode_to_delete = $request->get_param( 'mode' ) ?? $settings['payment_mode'] ?? 'test';
+		
+		// Validate mode parameter.
+		if ( ! in_array( $mode_to_delete, [ 'test', 'live' ], true ) ) {
+			return rest_ensure_response(
+				[
+					'success' => false,
+					'message' => __( 'Invalid payment mode specified.', 'sureforms' ),
+				]
+			);
+		}
+
+		$modes            = [ $mode_to_delete ];
 		$webhooks_deleted = 0;
 		$error_message    = '';
 
@@ -505,28 +545,34 @@ class Payments_Settings {
 			}
 		}
 
-		// Update settings to clear webhook secret.
+		// Update settings to clear webhook details.
 		if ( $webhooks_deleted > 0 ) {
-			$settings['webhook_secret'] = '';
+			// Clear test webhook details if test webhook was deleted.
+			if ( empty( get_option( 'srfm_test_webhook_secret', '' ) ) ) {
+				$settings['webhook_test_secret'] = '';
+				$settings['webhook_test_id']     = '';
+				$settings['webhook_test_url']    = '';
+			}
+			
+			// Clear live webhook details if live webhook was deleted.
+			if ( empty( get_option( 'srfm_live_webhook_secret', '' ) ) ) {
+				$settings['webhook_live_secret'] = '';
+				$settings['webhook_live_id']     = '';
+				$settings['webhook_live_url']    = '';
+			}
+			
 			update_option( self::OPTION_NAME, $settings );
 		}
 
-		if ( count( $modes ) === $webhooks_deleted ) {
-			return rest_ensure_response(
-				[
-					'success' => true,
-					'message' => __( 'Webhooks deleted successfully for both test and live modes.', 'sureforms' ),
-				]
-			);
-		} elseif ( $webhooks_deleted > 0 ) {
+		if ( $webhooks_deleted > 0 ) {
+			$mode_label = 'live' === $mode_to_delete ? __( 'live', 'sureforms' ) : __( 'test', 'sureforms' );
 			return rest_ensure_response(
 				[
 					'success' => true,
 					'message' => sprintf( 
-						/* translators: %1$d: number of webhooks deleted, %2$s: error message */
-						__( 'Webhooks deleted for %1$d mode(s). Some modes may have failed: %2$s', 'sureforms' ), 
-						$webhooks_deleted, 
-						$error_message 
+						/* translators: %s: mode name (test/live) */
+						__( 'Webhook deleted successfully for %s mode.', 'sureforms' ), 
+						$mode_label 
 					),
 				]
 			);
@@ -534,7 +580,7 @@ class Payments_Settings {
 			return rest_ensure_response(
 				[
 					'success' => false,
-					'message' => $error_message ?: __( 'Failed to delete webhooks.', 'sureforms' ),
+					'message' => $error_message ?: __( 'Failed to delete webhook.', 'sureforms' ),
 				]
 			);
 		}
@@ -567,7 +613,12 @@ class Payments_Settings {
 			'stripe_test_secret_key'      => '',
 			'currency'                    => 'USD',
 			'payment_mode'                => 'test',
-			'webhook_secret'              => '',
+			'webhook_test_secret'         => '',
+			'webhook_test_url'            => '',
+			'webhook_test_id'             => '',
+			'webhook_live_secret'         => '',
+			'webhook_live_url'            => '',
+			'webhook_live_id'             => '',
 		];
 	}
 
