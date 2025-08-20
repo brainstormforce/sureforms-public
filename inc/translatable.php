@@ -109,4 +109,14 @@ class Translatable {
 			'srfm_multi_choice_max_selections' => __( 'Maximum %s selections are allowed', 'sureforms' ),
 		];
 	}
+
+	/**
+	 * Get default form restriction message.
+	 *
+	 * @since 1.10.1
+	 * @return string Translated default form restriction message.
+	 */
+	public static function get_default_form_restriction_message() {
+		return __( 'This form is now closed as we\'ve received all the entries.', 'sureforms' );
+	}
 }

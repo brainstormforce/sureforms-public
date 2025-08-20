@@ -142,7 +142,7 @@ class Email_Template {
 						$field_label = $label ? Helper::decrypt( $label ) : '';
 						?>
 					<tr class="field-label">
-						<th style="font-weight: 500;font-size: 14px;color: #1E293B;padding: 8px 16px;background-color: #F1F5F9;text-align: left;">
+						<th style="font-weight: 500;font-size: 14px;color: #1E293B;padding: 8px 16px;background-color: #F1F5F9;text-align: left;word-break: break-word;">
 							<strong><?php echo wp_kses_post( html_entity_decode( $field_label ) ); ?>:<strong/>
 						</th>
 					</tr>
@@ -161,11 +161,48 @@ class Email_Template {
 								}
 							}
 						} elseif ( ! empty( $value ) && is_string( $value ) && filter_var( $value, FILTER_VALIDATE_URL ) ) {
+							ob_start();
 							?>
-							<a target="_blank" href="<?php echo esc_attr( urldecode( $value ) ); ?>">
-								<?php echo esc_html( esc_url( $value ) ); ?>
-							</a>
+								<a target="_blank" href="<?php echo esc_url( $value ); ?>">
+									<?php echo esc_html( esc_url( $value ) ); ?>
+								</a>
 							<?php
+							$template_html = ob_get_clean();
+							// Apply filter.
+							$render_url = apply_filters(
+								'srfm_email_template_render_url',
+								$template_html,
+								[
+									'block_type' => $field_name,
+									'submission_item_value' => $value,
+								]
+							);
+							// Validate fallback.
+							if ( empty( $render_url ) ) {
+								ob_start();
+								?>
+									<a target="_blank" href="<?php echo esc_url( $value ); ?>">
+										<?php echo esc_html( esc_url( $value ) ); ?>
+									</a>
+								<?php
+								$render_url = ob_get_clean();
+							}
+
+							echo wp_kses(
+								Helper::get_string_value( $render_url ),
+								[
+									'a'   => [
+										'href'   => [],
+										'target' => [],
+									],
+									'img' => [
+										'src'   => [],
+										'alt'   => [],
+										'width' => [],
+									],
+								]
+							);
+
 						} else {
 							if ( is_string( $value ) ) {
 								if ( false !== strpos( $field_name, 'srfm-textarea' ) ) {

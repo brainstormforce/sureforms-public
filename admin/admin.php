@@ -47,7 +47,7 @@ class Admin {
 		add_action( 'admin_menu', [ $this, 'settings_page' ] );
 		add_action( 'admin_menu', [ $this, 'add_new_form' ] );
 		add_action( 'admin_menu', [ $this, 'add_suremail_page' ] );
-		if ( ! Helper::has_pro() ) {
+		if ( ! Helper::has_pro() && self::is_first_form_created() ) {
 			add_action( 'admin_menu', [ $this, 'add_upgrade_to_pro' ] );
 			add_action( 'admin_footer', [ $this, 'add_upgrade_to_pro_target_attr' ] );
 		}
@@ -98,6 +98,102 @@ class Admin {
 
 		// Register dashboard widget only if there are recent entries.
 		add_action( 'admin_init', [ $this, 'maybe_register_dashboard_widget' ] );
+
+		// Save first form creation time stamp.
+		add_action( 'admin_init', [ $this, 'save_first_form_creation_time_stamp' ] );
+	}
+
+	/**
+	 * Get the first form creation time stamp.
+	 *
+	 * @since 1.10.1
+	 * @return int|false
+	 */
+	public static function get_first_form_creation_time_stamp() {
+		return Helper::get_srfm_option( 'first_form_created_at', false );
+	}
+
+	/**
+	 * Check if the first form has been created.
+	 *
+	 * @since 1.10.1
+	 * @return bool
+	 */
+	public static function is_first_form_created() {
+		// Convert the first form creation time stamp to a boolean. If it exists, it will return true, otherwise false.
+		$first_form_creation_time_stamp = self::get_first_form_creation_time_stamp();
+
+		// If the first form creation time stamp is not set, return false.
+		if ( ! $first_form_creation_time_stamp ) {
+			return false; // No forms created yet.
+		}
+
+		// Check if the first form creation time stamp is a valid integer and greater than zero.
+		return is_int( $first_form_creation_time_stamp ) && $first_form_creation_time_stamp > 0;
+	}
+
+	/**
+	 * Check and save the first form creation time stamp.
+	 * If not already saved.
+	 *
+	 * @since 1.10.1
+	 * @return void
+	 */
+	public static function save_first_form_creation_time_stamp() {
+		if ( ! current_user_can( 'manage_options' ) || self::is_first_form_created() || ! defined( 'SRFM_FORMS_POST_TYPE' ) || ! post_type_exists( SRFM_FORMS_POST_TYPE ) ) {
+			return;
+		}
+
+		// Get the first form creation time from the database that is published.
+		$query = new \WP_Query(
+			[
+				'post_type'      => SRFM_FORMS_POST_TYPE,
+				'posts_per_page' => 1,
+				'orderby'        => 'date',
+				'order'          => 'ASC',
+				'fields'         => 'ids',
+				'post_status'    => 'publish',
+			]
+		);
+
+		if ( ! empty( $query->posts ) && isset( $query->posts[0] ) ) {
+			// Get the first post from the query result.
+			$post_id = $query->posts[0];
+			// Get the post creation time in GMT.
+			$creation_time = get_post_field( 'post_date_gmt', $post_id );
+			// Convert the creation time to a timestamp.
+			$timestamp = strtotime( $creation_time );
+
+			if ( ! $timestamp ) {
+				return;
+			}
+
+			Helper::update_srfm_option( 'first_form_created_at', $timestamp );
+		}
+	}
+
+	/**
+	 * Check if n days have passed since the first form creation.
+	 * This is used to determine if the dynamic nudges should be shown.
+	 *
+	 * @param int $days Number of days to check.
+	 * @since 1.10.1
+	 * @return bool
+	 */
+	public static function check_first_form_creation_threshold( $days = 3 ) {
+		$first_form_creation_time_stamp = self::get_first_form_creation_time_stamp();
+
+		if ( ! $first_form_creation_time_stamp ) {
+			return false; // No forms created yet.
+		}
+
+		/**
+		 * Calculate the number of days since the first form was created.
+		 */
+		$days_from_creation = ( strtotime( current_time( 'mysql' ) ) - $first_form_creation_time_stamp ) / DAY_IN_SECONDS;
+
+		// Return a boolean indicating if the number of days since creation is greater than the specified days.
+		return $days_from_creation > $days;
 	}
 
 	/**
@@ -249,6 +345,12 @@ class Admin {
 	 * @since 1.6.1
 	 */
 	public function add_upgrade_to_pro_target_attr() {
+
+		// only add if first form was created more than 8 days ago.
+		if ( ! self::check_first_form_creation_threshold( 8 ) ) {
+			return;
+		}
+
 		?>
 		<script type="text/javascript">
 			document.addEventListener('DOMContentLoaded', function () {
@@ -273,6 +375,12 @@ class Admin {
 	 * @since 1.6.1
 	 */
 	public function add_upgrade_to_pro() {
+
+		// only add if first form was created more than 8 days ago.
+		if ( ! self::check_first_form_creation_threshold( 8 ) ) {
+			return;
+		}
+
 		// The url used here is used as a selector for css to style the upgrade to pro submenu.
 		// If you are changing this url, please make sure to update the css as well.
 		$upgrade_url = add_query_arg(
@@ -623,31 +731,34 @@ class Admin {
 		$onboarding_instance          = Onboarding::get_instance();
 
 		$localization_data = [
-			'site_url'                => get_site_url(),
-			'breadcrumbs'             => $this->get_breadcrumbs_for_current_page(),
-			'sureforms_dashboard_url' => admin_url( '/admin.php?page=sureforms_menu' ),
-			'plugin_version'          => SRFM_VER,
-			'global_settings_nonce'   => current_user_can( 'manage_options' ) ? wp_create_nonce( 'wp_rest' ) : '',
-			'is_pro_active'           => Helper::has_pro(),
-			'pro_plugin_version'      => Helper::has_pro() ? SRFM_PRO_VER : '',
-			'pro_plugin_name'         => Helper::has_pro() && defined( 'SRFM_PRO_PRODUCT' ) ? SRFM_PRO_PRODUCT : 'SureForms Pro',
-			'sureforms_pricing_page'  => Helper::get_sureforms_website_url( 'pricing' ),
-			'field_spacing_vars'      => Helper::get_css_vars(),
-			'is_ver_lower_than_6_7'   => version_compare( $wp_version, '6.6.2', '<=' ),
-			'integrations'            => Helper::sureforms_get_integration(),
-			'ajax_url'                => admin_url( 'admin-ajax.php' ),
-			'sf_plugin_manager_nonce' => wp_create_nonce( 'sf_plugin_manager_nonce' ),
-			'plugin_installer_nonce'  => wp_create_nonce( 'updates' ),
-			'plugin_activating_text'  => __( 'Activating...', 'sureforms' ),
-			'plugin_activated_text'   => __( 'Activated', 'sureforms' ),
-			'plugin_activate_text'    => __( 'Activate', 'sureforms' ),
-			'plugin_installing_text'  => __( 'Installing...', 'sureforms' ),
-			'plugin_installed_text'   => __( 'Installed', 'sureforms' ),
-			'is_rtl'                  => $is_rtl,
-			'onboarding_completed'    => method_exists( $onboarding_instance, 'get_onboarding_status' ) ? $onboarding_instance->get_onboarding_status() : false,
-			'onboarding_redirect'     => isset( $_GET['srfm-activation-redirect'] ), // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce is not required for the activation redirection.
-			'pointer_nonce'           => wp_create_nonce( 'sureforms_pointer_action' ),
-			'srfm_ai_details'         => AI_Helper::get_current_usage_details(),
+			'site_url'                   => get_site_url(),
+			'breadcrumbs'                => $this->get_breadcrumbs_for_current_page(),
+			'sureforms_dashboard_url'    => admin_url( '/admin.php?page=sureforms_menu' ),
+			'plugin_version'             => SRFM_VER,
+			'global_settings_nonce'      => current_user_can( 'manage_options' ) ? wp_create_nonce( 'wp_rest' ) : '',
+			'is_pro_active'              => Helper::has_pro(),
+			'is_first_form_created'      => self::is_first_form_created(),
+			'check_three_days_threshold' => self::check_first_form_creation_threshold(),
+			'check_eight_days_threshold' => self::check_first_form_creation_threshold( 8 ),
+			'pro_plugin_version'         => Helper::has_pro() ? SRFM_PRO_VER : '',
+			'pro_plugin_name'            => Helper::has_pro() && defined( 'SRFM_PRO_PRODUCT' ) ? SRFM_PRO_PRODUCT : 'SureForms Pro',
+			'sureforms_pricing_page'     => Helper::get_sureforms_website_url( 'pricing' ),
+			'field_spacing_vars'         => Helper::get_css_vars(),
+			'is_ver_lower_than_6_7'      => version_compare( $wp_version, '6.6.2', '<=' ),
+			'integrations'               => Helper::sureforms_get_integration(),
+			'ajax_url'                   => admin_url( 'admin-ajax.php' ),
+			'sf_plugin_manager_nonce'    => wp_create_nonce( 'sf_plugin_manager_nonce' ),
+			'plugin_installer_nonce'     => wp_create_nonce( 'updates' ),
+			'plugin_activating_text'     => __( 'Activating...', 'sureforms' ),
+			'plugin_activated_text'      => __( 'Activated', 'sureforms' ),
+			'plugin_activate_text'       => __( 'Activate', 'sureforms' ),
+			'plugin_installing_text'     => __( 'Installing...', 'sureforms' ),
+			'plugin_installed_text'      => __( 'Installed', 'sureforms' ),
+			'is_rtl'                     => $is_rtl,
+			'onboarding_completed'       => method_exists( $onboarding_instance, 'get_onboarding_status' ) ? $onboarding_instance->get_onboarding_status() : false,
+			'onboarding_redirect'        => isset( $_GET['srfm-activation-redirect'] ), // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce is not required for the activation redirection.
+			'pointer_nonce'              => wp_create_nonce( 'sureforms_pointer_action' ),
+			'general_settings_url'       => admin_url( '/options-general.php' ),
 		];
 
 		$is_screen_sureforms_menu          = Helper::validate_request_context( 'sureforms_menu', 'page' );
@@ -655,6 +766,17 @@ class Admin {
 		$is_screen_sureforms_form_settings = Helper::validate_request_context( 'sureforms_form_settings', 'page' );
 		$is_screen_sureforms_entries       = Helper::validate_request_context( SRFM_ENTRIES, 'page' );
 		$is_post_type_sureforms_form       = SRFM_FORMS_POST_TYPE === $current_screen->post_type;
+
+		/**
+		 * Check if the current screen is the SureForms Menu and AI Auth Email is present then we will add user type as registered.
+		 * Compatibility with existing UI code that checks for this condition.
+		 */
+		if ( $is_screen_sureforms_menu ) {
+			// If email is stored send the user type as registered else non-registered.
+			$localization_data['srfm_ai_details'] = [
+				'type' => ! empty( get_option( 'srfm_ai_auth_user_email' ) ) ? 'registered' : 'non-registered',
+			];
+		}
 
 		if ( $is_screen_sureforms_menu || $is_post_type_sureforms_form || $is_screen_add_new_form || $is_screen_sureforms_form_settings || $is_screen_sureforms_entries ) {
 			$asset_handle = '-dashboard';
