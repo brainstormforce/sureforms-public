@@ -698,7 +698,7 @@ class Entries_List_Table extends \WP_List_Table {
 		$form_name = ! empty( $form_name ) ? $form_name : sprintf( 'SureForms %1$s #%2$d', esc_html__( 'Form', 'sureforms' ), Helper::get_integer_value( $item['form_id'] ) );
 		ob_start();
 		?>
-		<strong><a class="row-title" href="<?php echo esc_url( get_the_permalink( $item['form_id'] ) ); ?>" target="_blank"><?php echo esc_html( $form_name ); ?></a></strong>
+  <strong><a class="row-title" href="<?php echo esc_url( get_the_permalink( $item['form_id'] ) ); ?>" target="_blank" rel="noopener noreferrer"><?php echo esc_html( $form_name ); ?></a></strong>
 		<?php
 		return ob_get_clean();
 	}
