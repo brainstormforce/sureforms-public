@@ -250,6 +250,9 @@ class Payments_Settings {
 	 * @since x.x.x
 	 */
 	public function disconnect_stripe() {
+		// Delete Stripe webhook endpoints for both test and live modes
+		$this->delete_payment_webhooks( [ 'test', 'live' ] );
+
 		$settings                                = get_option( self::OPTION_NAME, $this->get_default_settings() );
 		$settings['stripe_connected']            = false;
 		$settings['stripe_account_id']           = '';
@@ -258,12 +261,6 @@ class Payments_Settings {
 		$settings['stripe_live_secret_key']      = '';
 		$settings['stripe_test_publishable_key'] = '';
 		$settings['stripe_test_secret_key']      = '';
-		$settings['webhook_test_secret']       = '';
-		$settings['webhook_test_url']          = '';
-		$settings['webhook_test_id']          = '';
-		$settings['webhook_live_secret']      = '';
-		$settings['webhook_live_url']         = '';
-		$settings['webhook_live_id']         = '';
 
 		update_option( self::OPTION_NAME, $settings );
 
@@ -309,10 +306,11 @@ class Payments_Settings {
 	/**
 	 * Create payment webhooks
 	 *
+	 * @param \WP_REST_Request|array $request_or_modes REST request or array of modes to create webhooks for.
 	 * @return \WP_REST_Response
 	 * @since x.x.x
 	 */
-	public function create_payment_webhooks() {
+	public function create_payment_webhooks( $request_or_modes = [] ) {
 		$settings = get_option( self::OPTION_NAME, $this->get_default_settings() );
 
 		if ( empty( $settings['stripe_connected'] ) ) {
@@ -334,10 +332,37 @@ class Payments_Settings {
 			);
 		}
 
-		$modes = apply_filters(
-			'sureforms_webhook_payment_modes',
-			[ $settings['payment_mode'] ?? 'test' ]
-		);
+		// Determine modes to create webhooks for
+		$modes = [];
+		
+		if ( is_array( $request_or_modes ) ) {
+			// Direct array of modes passed
+			$modes = $request_or_modes;
+		} elseif ( $request_or_modes && method_exists( $request_or_modes, 'get_param' ) ) {
+			// REST request object - check for modes parameter
+			$request_modes = $request_or_modes->get_param( 'modes' );
+			if ( ! empty( $request_modes ) && is_array( $request_modes ) ) {
+				$modes = $request_modes;
+			} else {
+				// Default to current payment mode for API requests
+				$modes = [ $settings['payment_mode'] ?? 'test' ];
+			}
+		} else {
+			// Default to current payment mode
+			$modes = [ $settings['payment_mode'] ?? 'test' ];
+		}
+
+		// Validate modes
+		foreach ( $modes as $mode ) {
+			if ( ! in_array( $mode, [ 'test', 'live' ], true ) ) {
+				return rest_ensure_response(
+					[
+						'success' => false,
+						'message' => __( 'Invalid payment mode specified.', 'sureforms' ),
+					]
+				);
+			}
+		}
 
 		$webhooks_created = 0;
 		$error_message    = '';
@@ -466,11 +491,11 @@ class Payments_Settings {
 	/**
 	 * Delete payment webhooks
 	 *
-	 * @param \WP_REST_Request $request Request object.
+	 * @param \WP_REST_Request|array $request_or_modes Request object or array of modes to delete.
 	 * @return \WP_REST_Response
 	 * @since x.x.x
 	 */
-	public function delete_payment_webhooks( $request ) {
+	public function delete_payment_webhooks( $request_or_modes = null ) {
 		$settings = get_option( self::OPTION_NAME, $this->get_default_settings() );
 
 		if ( empty( $settings['stripe_connected'] ) ) {
@@ -492,20 +517,39 @@ class Payments_Settings {
 			);
 		}
 
-		// Get mode parameter from request, default to current payment mode.
-		$mode_to_delete = $request->get_param( 'mode' ) ?? $settings['payment_mode'] ?? 'test';
+		// Determine modes to delete
+		$modes = [];
 		
-		// Validate mode parameter.
-		if ( ! in_array( $mode_to_delete, [ 'test', 'live' ], true ) ) {
-			return rest_ensure_response(
-				[
-					'success' => false,
-					'message' => __( 'Invalid payment mode specified.', 'sureforms' ),
-				]
-			);
+		if ( is_array( $request_or_modes ) ) {
+			// Direct array of modes passed
+			$modes = $request_or_modes;
+		} elseif ( $request_or_modes && method_exists( $request_or_modes, 'get_param' ) ) {
+			// REST request object - check for modes parameter first, then mode parameter
+			$request_modes = $request_or_modes->get_param( 'modes' );
+			if ( ! empty( $request_modes ) && is_array( $request_modes ) ) {
+				$modes = $request_modes;
+			} else {
+				// Fallback to single mode parameter for backward compatibility
+				$mode_to_delete = $request_or_modes->get_param( 'mode' ) ?? $settings['payment_mode'] ?? 'test';
+				$modes = [ $mode_to_delete ];
+			}
+		} else {
+			// Default to current payment mode
+			$modes = [ $settings['payment_mode'] ?? 'test' ];
 		}
 
-		$modes            = [ $mode_to_delete ];
+		// Validate modes
+		foreach ( $modes as $mode ) {
+			if ( ! in_array( $mode, [ 'test', 'live' ], true ) ) {
+				return rest_ensure_response(
+					[
+						'success' => false,
+						'message' => __( 'Invalid payment mode specified.', 'sureforms' ),
+					]
+				);
+			}
+		}
+		
 		$webhooks_deleted = 0;
 		$error_message    = '';
 
@@ -577,15 +621,24 @@ class Payments_Settings {
 		}
 
 		if ( $webhooks_deleted > 0 ) {
-			$mode_label = 'live' === $mode_to_delete ? __( 'live', 'sureforms' ) : __( 'test', 'sureforms' );
+			if ( count( $modes ) === 1 ) {
+				$mode_label = 'live' === $modes[0] ? __( 'live', 'sureforms' ) : __( 'test', 'sureforms' );
+				$message = sprintf( 
+					/* translators: %s: mode name (test/live) */
+					__( 'Webhook deleted successfully for %s mode.', 'sureforms' ), 
+					$mode_label 
+				);
+			} else {
+				$message = sprintf(
+					/* translators: %d: number of modes */
+					__( 'Webhooks deleted successfully for %d mode(s).', 'sureforms' ),
+					$webhooks_deleted
+				);
+			}
 			return rest_ensure_response(
 				[
 					'success' => true,
-					'message' => sprintf( 
-						/* translators: %s: mode name (test/live) */
-						__( 'Webhook deleted successfully for %s mode.', 'sureforms' ), 
-						$mode_label 
-					),
+					'message' => $message,
 				]
 			);
 		} else {
@@ -679,17 +732,8 @@ class Payments_Settings {
 		// Clean up transients.
 		delete_transient( 'srfm_stripe_connect_nonce_' . get_current_user_id() );
 
-		// create webhooks for both live and test mode
-		add_filter(
-				'sureforms_webhook_payment_modes',
-				function( $modes ) {
-					$modes[] = 'live';
-					$modes[] = 'test';
-					return $modes;
-				}
-		);
-
-		$this->create_payment_webhooks();
+		// Create webhooks for both live and test mode
+		$this->create_payment_webhooks( [ 'test', 'live' ] );
 
 		// Redirect to SureForms payments settings.
 		wp_safe_redirect( admin_url( 'admin.php?page=sureforms_form_settings&tab=payments-settings&connected=1' ) );
