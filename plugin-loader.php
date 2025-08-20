@@ -24,6 +24,7 @@ use SRFM\Inc\Create_New_Form;
 use SRFM\Inc\Database\Register as DatabaseRegister;
 use SRFM\Inc\Events_Scheduler;
 use SRFM\Inc\Export;
+use SRFM\Inc\Form_Restriction;
 use SRFM\Inc\Form_Submit;
 use SRFM\Inc\Forms_Data;
 use SRFM\Inc\Frontend_Assets;
@@ -34,6 +35,7 @@ use SRFM\Inc\Gutenberg_Hooks;
 use SRFM\Inc\Helper;
 use SRFM\Inc\Lib\SRFM_Nps_Survey;
 use SRFM\Inc\Nps_Notice;
+use SRFM\Inc\Onboarding;
 use SRFM\Inc\Page_Builders\Page_Builders;
 use SRFM\Inc\Post_Types;
 use SRFM\Inc\Rest_Api;
@@ -298,7 +300,9 @@ class Plugin_Loader {
 		AI_Auth::get_instance();
 		Updater::get_instance();
 		Payments_Settings::get_instance();
+		Onboarding::get_instance();
 		DatabaseRegister::init();
+		Form_Restriction::get_instance();
 		// Initializing Compatibilities.
 		Astra::get_instance();
 		/**
