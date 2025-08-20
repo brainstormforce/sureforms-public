@@ -68,6 +68,13 @@ class Generate_Form_Markup {
 		} else {
 			$id = Helper::get_integer_value( $id );
 		}
+
+		// Check for any form restrictions.
+		$form_id = Helper::get_integer_value( $id );
+		if ( Form_Restriction::is_form_restricted( $form_id ) ) {
+			return Form_Restriction::display_form_restriction_message( $form_id );
+		}
+
 		do_action( 'srfm_localize_conditional_logic_data', $id );
 		$post = get_post( Helper::get_integer_value( $id ) );
 
@@ -641,7 +648,7 @@ class Generate_Form_Markup {
 		$icon    = Helper::fetch_svg( 'info_circle', '', 'aria-hidden="true"' );
 		$classes = "srfm-common-error-message srfm-error-message srfm-{$position}-error";
 		?>
-		<p id="srfm-error-message" class="<?php echo esc_attr( $classes ); ?>" hidden="true"><?php echo wp_kses( $icon, Helper::$allowed_tags_svg ); ?><span class="srfm-error-content"><?php echo esc_html__( 'There was an error trying to submit your form. Please try again.', 'sureforms' ); ?></span></p>
+		<p id="srfm-error-message" class="<?php echo esc_attr( $classes ); ?>" hidden><?php echo wp_kses( $icon, Helper::$allowed_tags_svg ); ?><span class="srfm-error-content"><?php echo esc_html__( 'There was an error trying to submit your form. Please try again.', 'sureforms' ); ?></span></p>
 		<?php
 	}
 
