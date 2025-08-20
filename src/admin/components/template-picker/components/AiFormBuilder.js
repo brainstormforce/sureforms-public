@@ -14,6 +14,7 @@ import { AuthErrorPopup } from './AuthErrorPopup.js';
 import { applyFilters } from '@wordpress/hooks';
 import { Container, Toaster } from '@bsf/force-ui';
 import AiFormBuilderForm from '../ai-form-builder-components/AiFormBuilderForm.js';
+import AiFormBuilderFormNew from '../ai-form-builder-components/AiFormBuilderFormNew.js';
 import AiFormProgressPage from '../ai-form-builder-components/AiFormProgressPage.js';
 
 const AiFormBuilder = () => {
@@ -209,7 +210,17 @@ const AiFormBuilder = () => {
 				dismissAfter={ 5000 }
 			/>
 			<Header />
-			<AiFormBuilderForm
+			{/* <AiFormBuilderForm
+				handleCreateAiForm={ handleCreateAiForm }
+				setIsBuildingForm={ setIsBuildingForm }
+				formTypeObj={ formTypeObj }
+				showEmptyError={ showEmptyError }
+				setShowEmptyError={ setShowEmptyError }
+				setFormTypeObj={ setFormTypeObj }
+				setFormType={ setFormType }
+				formType={ formType }
+			/> */}
+			<AiFormBuilderFormNew
 				handleCreateAiForm={ handleCreateAiForm }
 				setIsBuildingForm={ setIsBuildingForm }
 				formTypeObj={ formTypeObj }

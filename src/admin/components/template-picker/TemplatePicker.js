@@ -21,26 +21,36 @@ const TemplatePicker = () => {
 	function QueryScreen() {
 		const query = useQuery();
 		const method = query.get( 'method' );
-		switch ( method ) {
-			case 'ai':
-				return (
-					// Check if the user has reached the limit of AI usage. If not, show the AI form builder.
-					srfm_admin?.srfm_ai_usage_details?.remaining === 0 ||
-						srfm_admin?.srfm_ai_usage_details?.code ? (
-							getLimitReachedPopup()
-						) : (
-							<AiFormBuilder />
-						)
-				);
+		return (
+			// Check if the user has reached the limit of AI usage. If not, show the AI form builder.
+			srfm_admin?.srfm_ai_usage_details?.remaining === 0 ||
+				srfm_admin?.srfm_ai_usage_details?.code ? (
+					getLimitReachedPopup()
+				) : (
+					<AiFormBuilder />
+				)
+		);
+		// switch ( method ) {
+		// 	case 'ai':
+		// 		return (
+		// 			// Check if the user has reached the limit of AI usage. If not, show the AI form builder.
+		// 			srfm_admin?.srfm_ai_usage_details?.remaining === 0 ||
+		// 				srfm_admin?.srfm_ai_usage_details?.code ? (
+		// 					getLimitReachedPopup()
+		// 				) : (
+		// 					<AiFormBuilder />
+		// 				)
+		// 		);
 
-			default:
-				return (
-					<Container className="max-h-screen overflow-y-auto">
-						<Header />
-						<AddNewForm />
-					</Container>
-				);
-		}
+		// 	default:
+		// 		return (
+		// 			<Container className="max-h-screen overflow-y-auto">
+		// 				<Header />
+		// 				{/* <AddNewForm /> */}
+		// 				<AiFormBuilder />
+		// 			</Container>
+		// 		);
+		// }
 	}
 
 	return (

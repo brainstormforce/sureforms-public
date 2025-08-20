@@ -203,6 +203,7 @@ module.exports = withTW( {
 			boxShadow: {
 				'sm-blur-1': '0 1px 1px rgba(0, 0, 0, 0.05)',
 				'sm-blur-2': '0 1px 2px rgba(0, 0, 0, 0.05)',
+				'md-blur-32': '0px 10px 32px -12px rgba(149,160,178,0.2)',
 			},
 		},
 	},
