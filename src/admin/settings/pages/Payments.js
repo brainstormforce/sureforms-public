@@ -448,7 +448,7 @@ const Payments = ( {
 									{ isCreatingWebhook ? (
 										__( 'Creating…', 'sureforms' )
 									) : (
-										__( 'Create Webhook', 'sureforms' )
+										__( 'Create Webhook Automatically', 'sureforms' )
 									) }
 								</Button>
 							);

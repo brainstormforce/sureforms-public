@@ -258,6 +258,12 @@ class Payments_Settings {
 		$settings['stripe_live_secret_key']      = '';
 		$settings['stripe_test_publishable_key'] = '';
 		$settings['stripe_test_secret_key']      = '';
+		$settings['webhook_test_secret']       = '';
+		$settings['webhook_test_url']          = '';
+		$settings['webhook_test_id']          = '';
+		$settings['webhook_live_secret']      = '';
+		$settings['webhook_live_url']         = '';
+		$settings['webhook_live_id']         = '';
 
 		update_option( self::OPTION_NAME, $settings );
 
@@ -328,9 +334,10 @@ class Payments_Settings {
 			);
 		}
 
-		$modes = [
-			$settings['payment_mode'] ?? 'test',
-		];
+		$modes = apply_filters(
+			'sureforms_webhook_payment_modes',
+			[ $settings['payment_mode'] ?? 'test' ]
+		);
 
 		$webhooks_created = 0;
 		$error_message    = '';
@@ -436,7 +443,12 @@ class Payments_Settings {
 		}
 
 		if ( count( $modes ) === $webhooks_created ) {
-			$response_data['message'] = __( 'Webhooks created successfully for both test and live modes.', 'sureforms' );
+			// $response_data['message'] = __( 'Webhooks created successfully for both test and live modes.', 'sureforms' );
+			$response_data['message'] = sprintf(
+				/* translators: %1$d: number of webhooks created */
+				__( 'Webhooks created successfully for %1$d mode(s).', 'sureforms' ),
+				$webhooks_created
+			);
 		} elseif ( $webhooks_created > 0 ) {
 			$response_data['message'] = sprintf( 
 				/* translators: %1$d: number of webhooks created, %2$s: error message */
@@ -666,6 +678,18 @@ class Payments_Settings {
 
 		// Clean up transients.
 		delete_transient( 'srfm_stripe_connect_nonce_' . get_current_user_id() );
+
+		// create webhooks for both live and test mode
+		add_filter(
+				'sureforms_webhook_payment_modes',
+				function( $modes ) {
+					$modes[] = 'live';
+					$modes[] = 'test';
+					return $modes;
+				}
+		);
+
+		$this->create_payment_webhooks();
 
 		// Redirect to SureForms payments settings.
 		wp_safe_redirect( admin_url( 'admin.php?page=sureforms_form_settings&tab=payments-settings&connected=1' ) );
