@@ -82,6 +82,30 @@ class Payments_Settings {
 				],
 			]
 		);
+
+		register_rest_route(
+			'sureforms/v1',
+			'/payments/create-payment-webhook',
+			[
+				[
+					'methods'             => \WP_REST_Server::CREATABLE,
+					'callback'            => [ $this, 'create_payment_webhooks' ],
+					'permission_callback' => [ $this, 'permission_check' ],
+				],
+			]
+		);
+
+		register_rest_route(
+			'sureforms/v1',
+			'/payments/delete-payment-webhook',
+			[
+				[
+					'methods'             => \WP_REST_Server::CREATABLE,
+					'callback'            => [ $this, 'delete_payment_webhooks' ],
+					'permission_callback' => [ $this, 'permission_check' ],
+				],
+			]
+		);
 	}
 
 	/**
@@ -277,6 +301,256 @@ class Payments_Settings {
 	}
 
 	/**
+	 * Create payment webhooks
+	 *
+	 * @return \WP_REST_Response
+	 * @since x.x.x
+	 */
+	public function create_payment_webhooks() {
+		$settings = get_option( self::OPTION_NAME, $this->get_default_settings() );
+
+		if ( empty( $settings['stripe_connected'] ) ) {
+			return rest_ensure_response(
+				[
+					'success' => false,
+					'message' => __( 'Stripe is not connected.', 'sureforms' ),
+				]
+			);
+		}
+
+		// Check if Stripe SDK is available.
+		if ( ! $this->is_stripe_sdk_available() ) {
+			return rest_ensure_response(
+				[
+					'success' => false,
+					'message' => __( 'Stripe SDK not found. Please ensure checkout-plugins-stripe-woo plugin is installed and active.', 'sureforms' ),
+				]
+			);
+		}
+
+		$modes            = [ 'test', 'live' ];
+		$webhooks_created = 0;
+		$error_message    = '';
+
+		foreach ( $modes as $mode ) {
+			$secret_key = 'live' === $mode 
+				? $settings['stripe_live_secret_key'] 
+				: $settings['stripe_test_secret_key'];
+
+			if ( empty( $secret_key ) ) {
+				continue;
+			}
+
+			try {
+				// Set API key for current mode.
+				\Stripe\Stripe::setApiKey( $secret_key );
+
+				// Create webhook endpoint.
+				$webhook = \Stripe\WebhookEndpoint::create(
+					[
+						// 'api_version'    => '2020-03-02',
+						'api_version'    => '2025-06-30.basil',
+						'url'            => esc_url( get_home_url() . '/wp-json/sureforms/webhook' ),
+						'enabled_events' => [
+							'charge.failed',
+							'charge.succeeded',
+							'payment_intent.succeeded',
+							'charge.refunded',
+							'charge.dispute.created',
+							'charge.dispute.closed',
+							'review.opened',
+							'review.closed',
+						],
+					]
+				);
+
+				// Store webhook data.
+				if ( 'live' === $mode ) {
+					update_option( 'srfm_live_webhook_secret', $webhook->secret );
+					update_option( 'srfm_live_webhook_id', $webhook->id );
+				} else {
+					update_option( 'srfm_test_webhook_secret', $webhook->secret );
+					update_option( 'srfm_test_webhook_id', $webhook->id );
+				}
+
+				$webhooks_created++;
+
+			} catch ( \Stripe\Exception\ApiErrorException $e ) {
+				$error_message = $e->getMessage();
+				error_log( 'SureForms Webhook Creation Error (' . $mode . '): ' . $e->getMessage() );
+			} catch ( \Exception $e ) {
+				$error_message = $e->getMessage();
+				error_log( 'SureForms Webhook Creation Error (' . $mode . '): ' . $e->getMessage() );
+			}
+		}
+
+		// Update settings with webhook secret if any webhooks were created.
+		if ( $webhooks_created > 0 ) {
+			$current_mode        = $settings['payment_mode'] ?? 'test';
+			$webhook_secret_key  = 'live' === $current_mode ? 'srfm_live_webhook_secret' : 'srfm_test_webhook_secret';
+			$webhook_secret      = get_option( $webhook_secret_key, '' );
+			
+			if ( ! empty( $webhook_secret ) ) {
+				$settings['webhook_secret'] = $webhook_secret;
+				update_option( self::OPTION_NAME, $settings );
+			}
+		}
+
+		if ( count( $modes ) === $webhooks_created ) {
+			return rest_ensure_response(
+				[
+					'success' => true,
+					'message' => __( 'Webhooks created successfully for both test and live modes.', 'sureforms' ),
+				]
+			);
+		} elseif ( $webhooks_created > 0 ) {
+			return rest_ensure_response(
+				[
+					'success' => true,
+					'message' => sprintf( 
+						/* translators: %1$d: number of webhooks created, %2$s: error message */
+						__( 'Webhooks created for %1$d mode(s). Some modes may have failed: %2$s', 'sureforms' ), 
+						$webhooks_created, 
+						$error_message 
+					),
+				]
+			);
+		} else {
+			return rest_ensure_response(
+				[
+					'success' => false,
+					'message' => $error_message ?: __( 'Failed to create webhooks.', 'sureforms' ),
+				]
+			);
+		}
+	}
+
+	/**
+	 * Delete payment webhooks
+	 *
+	 * @return \WP_REST_Response
+	 * @since x.x.x
+	 */
+	public function delete_payment_webhooks() {
+		$settings = get_option( self::OPTION_NAME, $this->get_default_settings() );
+
+		if ( empty( $settings['stripe_connected'] ) ) {
+			return rest_ensure_response(
+				[
+					'success' => false,
+					'message' => __( 'Stripe is not connected.', 'sureforms' ),
+				]
+			);
+		}
+
+		// Check if Stripe SDK is available.
+		if ( ! $this->is_stripe_sdk_available() ) {
+			return rest_ensure_response(
+				[
+					'success' => false,
+					'message' => __( 'Stripe SDK not found. Please ensure checkout-plugins-stripe-woo plugin is installed and active.', 'sureforms' ),
+				]
+			);
+		}
+
+		$modes            = [ 'test', 'live' ];
+		$webhooks_deleted = 0;
+		$error_message    = '';
+
+		foreach ( $modes as $mode ) {
+			$secret_key = 'live' === $mode 
+				? $settings['stripe_live_secret_key'] 
+				: $settings['stripe_test_secret_key'];
+
+			$webhook_id = get_option( 'live' === $mode ? 'srfm_live_webhook_id' : 'srfm_test_webhook_id', '' );
+
+			if ( empty( $secret_key ) || empty( $webhook_id ) ) {
+				continue;
+			}
+
+			try {
+				// Set API key for current mode.
+				\Stripe\Stripe::setApiKey( $secret_key );
+
+				// Delete webhook endpoint.
+				\Stripe\WebhookEndpoint::retrieve( $webhook_id )->delete();
+
+				// Clean up stored webhook data.
+				if ( 'live' === $mode ) {
+					delete_option( 'srfm_live_webhook_secret' );
+					delete_option( 'srfm_live_webhook_id' );
+				} else {
+					delete_option( 'srfm_test_webhook_secret' );
+					delete_option( 'srfm_test_webhook_id' );
+				}
+
+				$webhooks_deleted++;
+
+			} catch ( \Stripe\Exception\InvalidRequestException $e ) {
+				// Webhook might already be deleted, consider it successful.
+				if ( 'live' === $mode ) {
+					delete_option( 'srfm_live_webhook_secret' );
+					delete_option( 'srfm_live_webhook_id' );
+				} else {
+					delete_option( 'srfm_test_webhook_secret' );
+					delete_option( 'srfm_test_webhook_id' );
+				}
+				$webhooks_deleted++;
+			} catch ( \Stripe\Exception\ApiErrorException $e ) {
+				$error_message = $e->getMessage();
+				error_log( 'SureForms Webhook Deletion Error (' . $mode . '): ' . $e->getMessage() );
+			} catch ( \Exception $e ) {
+				$error_message = $e->getMessage();
+				error_log( 'SureForms Webhook Deletion Error (' . $mode . '): ' . $e->getMessage() );
+			}
+		}
+
+		// Update settings to clear webhook secret.
+		if ( $webhooks_deleted > 0 ) {
+			$settings['webhook_secret'] = '';
+			update_option( self::OPTION_NAME, $settings );
+		}
+
+		if ( count( $modes ) === $webhooks_deleted ) {
+			return rest_ensure_response(
+				[
+					'success' => true,
+					'message' => __( 'Webhooks deleted successfully for both test and live modes.', 'sureforms' ),
+				]
+			);
+		} elseif ( $webhooks_deleted > 0 ) {
+			return rest_ensure_response(
+				[
+					'success' => true,
+					'message' => sprintf( 
+						/* translators: %1$d: number of webhooks deleted, %2$s: error message */
+						__( 'Webhooks deleted for %1$d mode(s). Some modes may have failed: %2$s', 'sureforms' ), 
+						$webhooks_deleted, 
+						$error_message 
+					),
+				]
+			);
+		} else {
+			return rest_ensure_response(
+				[
+					'success' => false,
+					'message' => $error_message ?: __( 'Failed to delete webhooks.', 'sureforms' ),
+				]
+			);
+		}
+	}
+
+	/**
+	 * Check if Stripe SDK is available
+	 *
+	 * @return bool
+	 * @since x.x.x
+	 */
+	private function is_stripe_sdk_available() {
+		return class_exists( '\\Stripe\\Stripe' ) && class_exists( '\\Stripe\\WebhookEndpoint' );
+	}
+
+	/**
 	 * Get default settings
 	 *
 	 * @return array
@@ -293,6 +567,7 @@ class Payments_Settings {
 			'stripe_test_secret_key'      => '',
 			'currency'                    => 'USD',
 			'payment_mode'                => 'test',
+			'webhook_secret'              => '',
 		];
 	}
 

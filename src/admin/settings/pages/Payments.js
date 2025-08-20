@@ -21,6 +21,8 @@ const Payments = ( {
 	);
 	const [ isConnecting, setIsConnecting ] = useState( false );
 	const [ isDisconnecting, setIsDisconnecting ] = useState( false );
+	const [ isCreatingWebhook, setIsCreatingWebhook ] = useState( false );
+	const [ isDeletingWebhook, setIsDeletingWebhook ] = useState( false );
 
 	// Update local state when props change
 	useEffect( () => {
@@ -114,6 +116,81 @@ const Payments = ( {
 			);
 		} finally {
 			setIsDisconnecting( false );
+		}
+	};
+
+	// Handle Webhook Creation
+	const handleWebhookCreation = async () => {
+		setIsCreatingWebhook( true );
+		try {
+			const response = await apiFetch( {
+				path: '/sureforms/v1/payments/create-payment-webhook',
+				method: 'POST',
+			} );
+
+			if ( response.success ) {
+				toast.success(
+					response.message || __( 'Webhook created successfully!', 'sureforms' )
+				);
+
+				// Update local state to reflect webhook creation
+				setPaymentsSettings( {
+					...paymentsSettings,
+					webhook_secret: 'created', // Will be updated by global settings
+				} );
+			} else {
+				toast.error(
+					response.message || __( 'Failed to create webhook.', 'sureforms' )
+				);
+			}
+		} catch ( error ) {
+			const errorMessage = error.message || __( 'Failed to create webhook.', 'sureforms' );
+			toast.error( errorMessage );
+		} finally {
+			setIsCreatingWebhook( false );
+		}
+	};
+
+	// Handle Webhook Deletion
+	const handleWebhookDeletion = async () => {
+		if (
+			! confirm(
+				__(
+					'Are you sure you want to delete the webhook? This will stop webhook notifications from Stripe.',
+					'sureforms'
+				)
+			)
+		) {
+			return;
+		}
+
+		setIsDeletingWebhook( true );
+		try {
+			const response = await apiFetch( {
+				path: '/sureforms/v1/payments/delete-payment-webhook',
+				method: 'POST',
+			} );
+
+			if ( response.success ) {
+				toast.success(
+					response.message || __( 'Webhook deleted successfully!', 'sureforms' )
+				);
+
+				// Update local state to reflect webhook deletion
+				setPaymentsSettings( {
+					...paymentsSettings,
+					webhook_secret: '',
+				} );
+			} else {
+				toast.error(
+					response.message || __( 'Failed to delete webhook.', 'sureforms' )
+				);
+			}
+		} catch ( error ) {
+			const errorMessage = error.message || __( 'Failed to delete webhook.', 'sureforms' );
+			toast.error( errorMessage );
+		} finally {
+			setIsDeletingWebhook( false );
 		}
 	};
 
@@ -214,6 +291,43 @@ const Payments = ( {
 							</p>
 						</div>
 					</div>
+
+					{ paymentsSettings.webhook_secret ? (
+						<Button
+							onClick={ handleWebhookDeletion }
+							disabled={ isDeletingWebhook || loading }
+							icon={ isDeletingWebhook && <Loader /> }
+							iconPosition="left"
+							variant="outline"
+							size="xs"
+							className="text-red-600 border-red-200 hover:border-red-300 hover:text-red-700"
+						>
+							{ isDeletingWebhook ? (
+								__( 'Deleting…', 'sureforms' )
+							) : (
+								<>
+									<X className="w-3.5 h-3.5 mr-1.5" />
+									{ __( 'Delete Webhook', 'sureforms' ) }
+								</>
+							) }
+						</Button>
+					) : (
+						<Button
+							onClick={ handleWebhookCreation }
+							disabled={ isCreatingWebhook || loading }
+							icon={ isCreatingWebhook && <Loader /> }
+							iconPosition="left"
+							variant="primary"
+							size="xs"
+							className="bg-blue-600 hover:bg-blue-700 text-white border-blue-600 hover:border-blue-700"
+						>
+							{ isCreatingWebhook ? (
+								__( 'Creating…', 'sureforms' )
+							) : (
+								__( 'Create Webhook', 'sureforms' )
+							) }
+						</Button>
+					) }
 
 					<Button
 						onClick={ handleStripeDisconnect }
