@@ -377,35 +377,34 @@ class Payments_Settings {
 			}
 
 			try {
-				// Set API key for current mode.
-				\Stripe\Stripe::setApiKey( $secret_key );
+				$webhook_data = [
+					'secret_key' => $secret_key,
+					'webhook_url' => esc_url( get_home_url() . '/wp-json/sureforms/webhook' ),
+				];
 
-				// Create webhook endpoint.
-				$webhook = \Stripe\WebhookEndpoint::create(
+				$webhook = wp_remote_post(
+					'prod' === SRFM_PAYMENTS_ENV ? SRFM_PAYMENTS_PROD . 'webhook/create' : SRFM_PAYMENTS_LOCAL . 'webhook/create',
 					[
-						// 'api_version'    => '2020-03-02',
-						'api_version'    => '2025-07-30.basil',
-						'url'            => esc_url( get_home_url() . '/wp-json/sureforms/webhook' ),
-						'enabled_events' => [
-							'charge.failed',
-							'charge.succeeded',
-							'payment_intent.succeeded',
-							'charge.refunded',
-							'charge.dispute.created',
-							'charge.dispute.closed',
-							'review.opened',
-							'review.closed',
+						'body'    => base64_encode( wp_json_encode( $webhook_data ) ),
+						'headers' => [
+							'Content-Type' => 'application/json',
 						],
 					]
 				);
 
+				if ( is_wp_error( $webhook ) ) {
+					throw new \Exception( __( 'Failed to create webhook.', 'sureforms' ) );
+				}
+
+				$webhook = json_decode( wp_remote_retrieve_body( $webhook ), true );
+
 				// Store webhook data in settings
 				if ( 'live' === $mode ) {
-					$settings['webhook_live_secret'] = $webhook->secret;
-					$settings['webhook_live_id']     = $webhook->id;
+					$settings['webhook_live_secret'] = $webhook['secret'];
+					$settings['webhook_live_id']     = $webhook['id'];
 				} else {
-					$settings['webhook_test_secret'] = $webhook->secret;
-					$settings['webhook_test_id']     = $webhook->id;
+					$settings['webhook_test_secret'] = $webhook['secret'];
+					$settings['webhook_test_id']     = $webhook['id'];
 				}
 
 				$webhooks_created++;
@@ -555,11 +554,27 @@ class Payments_Settings {
 			}
 
 			try {
-				// Set API key for current mode.
-				\Stripe\Stripe::setApiKey( $secret_key );
+				// // Set API key for current mode.
+				// \Stripe\Stripe::setApiKey( $secret_key );
 
-				// Delete webhook endpoint.
-				\Stripe\WebhookEndpoint::retrieve( $webhook_id )->delete();
+				// // Delete webhook endpoint.
+				// \Stripe\WebhookEndpoint::retrieve( $webhook_id )->delete();
+
+				$webhook_data = [
+					'id'     => $webhook_id,
+					'secret' => $secret_key,
+				];
+
+				$request = wp_remote_request(
+					'prod' === SRFM_PAYMENTS_ENV ? SRFM_PAYMENTS_PROD . 'webhook/create' : SRFM_PAYMENTS_LOCAL . 'webhook/create',
+					[
+						'method'  => 'DELETE',
+						'body'    => base64_encode( wp_json_encode( $webhook_data ) ),
+						'headers' => [
+							'Content-Type' => 'application/json',
+						],
+					]
+				);
 
 				// Clean up stored webhook data from settings
 				if ( 'live' === $mode ) {
