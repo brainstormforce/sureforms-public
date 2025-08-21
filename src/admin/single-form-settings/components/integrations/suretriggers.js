@@ -1,11 +1,14 @@
 import { __ } from '@wordpress/i18n';
 import { Title } from '@bsf/force-ui';
+import { useEffect } from '@wordpress/element';
 
 const Suretriggers = () => {
 	// Adding validation for the SureTriggersConfig and SureTriggers object
-	if ( window?.SureTriggers && window?.SureTriggersConfig ) {
-		window.SureTriggers.init( window.SureTriggersConfig );
-	}
+	useEffect( () => {
+		if ( window?.SureTriggers && window?.SureTriggersConfig ) {
+			window.SureTriggers.init( window.SureTriggersConfig );
+		}
+	}, [] );
 
 	return (
 		<div className="h-full bg-background-primary rounded-xl p-4 mb-6 flex flex-col gap-2">

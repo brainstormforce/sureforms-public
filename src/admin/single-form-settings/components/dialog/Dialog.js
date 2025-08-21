@@ -118,7 +118,6 @@ const Dialog = ( {
 				icon: (
 					<img
 						src={ ottoKitIcon }
-						className="size-4"
 						alt={ __( 'OttoKit', 'sureforms' ) }
 					/>
 				),
