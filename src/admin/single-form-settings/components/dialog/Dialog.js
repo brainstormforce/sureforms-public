@@ -75,9 +75,6 @@ const Dialog = ( {
 	);
 
 	const [ parentTab, setParentTab ] = useState( null );
-	const [ action, setAction ] = useState();
-	const [ CTA, setCTA ] = useState();
-	const [ pluginConnected, setPluginConnected ] = useState( null );
 
 	const tabs = applyFilters(
 		'srfm.formSettings.tabs',
@@ -135,19 +132,7 @@ const Dialog = ( {
 				id: 'integrations',
 				label: __( 'Integrations', 'sureforms' ),
 				icon: <CpuIcon />,
-				component: (
-					<Integrations
-						{ ...{
-							setSelectedTab,
-							action,
-							setAction,
-							CTA,
-							setCTA,
-							pluginConnected,
-							setPluginConnected,
-						} }
-					/>
-				),
+				component: <Integrations setSelectedTab={ setSelectedTab } />,
 			},
 			{
 				id: 'form_custom_css',
