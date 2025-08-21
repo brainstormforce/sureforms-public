@@ -43,14 +43,6 @@ class Payment_Markup extends Base {
 	protected $description;
 
 	/**
-	 * Application fee percentage.
-	 *
-	 * @var float
-	 * @since x.x.x
-	 */
-	protected $application_fee;
-
-	/**
 	 * Stripe publishable key.
 	 *
 	 * @var string
@@ -103,7 +95,6 @@ class Payment_Markup extends Base {
 		$this->amount          = $attributes['amount'] ?? 10;
 		$this->currency        = $attributes['currency'] ?? 'USD';
 		$this->description     = $attributes['description'] ?? 'Payment';
-		$this->application_fee = $attributes['applicationFee'] ?? 3;
 
 		// Get payment settings from SureForms settings.
 		$payment_settings = get_option( 'srfm_payments_settings', [] );

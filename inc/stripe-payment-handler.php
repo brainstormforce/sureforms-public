@@ -180,11 +180,10 @@ class Stripe_Payment_Handler {
 			return;
 		}
 
-		$amount          = intval( $_POST['amount'] ?? 0 );
-		$currency        = sanitize_text_field( wp_unslash( $_POST['currency'] ?? 'usd' ) );
-		$description     = sanitize_text_field( wp_unslash( $_POST['description'] ?? 'SureForms Payment' ) );
-		$application_fee = $this->application_fee;
-		$block_id        = sanitize_text_field( wp_unslash( $_POST['block_id'] ?? '' ) );
+		$amount      = intval( $_POST['amount'] ?? 0 );
+		$currency    = sanitize_text_field( wp_unslash( $_POST['currency'] ?? 'usd' ) );
+		$description = sanitize_text_field( wp_unslash( $_POST['description'] ?? 'SureForms Payment' ) );
+		$block_id    = sanitize_text_field( wp_unslash( $_POST['block_id'] ?? '' ) );
 
 		if ( $amount <= 0 ) {
 			wp_send_json_error( __( 'Invalid payment amount.', 'sureforms' ) );
@@ -208,48 +207,46 @@ class Stripe_Payment_Handler {
 				throw new \Exception( __( 'Stripe secret key not found.', 'sureforms' ) );
 			}
 
-			// Initialize Stripe.
-			if ( ! class_exists( '\Stripe\Stripe' ) ) {
-				throw new \Exception( __( 'Stripe library not found.', 'sureforms' ) );
-			}
-
-			\Stripe\Stripe::setApiKey( $secret_key );
-
-			// Calculate application fee - set to 0 if Pro license is active.
-			$application_fee_amount = 0;
-			if ( $application_fee > 0 && ! $this->is_pro_license_active() ) {
-				$application_fee_amount = intval( $amount * $application_fee / 100 );
-			}
-
 			// Create payment intent.
-			$payment_intent_data = [
-				'amount'                    => $amount,
-				'currency'                  => strtolower( $currency ),
-				'description'               => $description,
-				'capture_method'            => 'manual',
-				'automatic_payment_methods' => [
-					'enabled' => true,
-				],
-				'metadata'                  => [
-					'source'          => 'SureForms',
-					'block_id'        => $block_id,
-					'original_amount' => $amount,
-					'application_fee' => $application_fee_amount,
-				],
-			];
+			$payment_intent_data = apply_filters(
+				'srfm_create_payment_intent_data',
+				[
+					'secret_key'                => $secret_key,
+					'amount'                    => $amount,
+					'currency'                  => strtolower( $currency ),
+					'description'               => $description,
+					'capture_method'            => 'manual',
+					'automatic_payment_methods' => [
+						'enabled' => true,
+					],
+					'metadata'                  => [
+						'source'          => 'SureForms',
+						'block_id'        => $block_id,
+						'original_amount' => $amount,
+					],
+				]
+			);
 
-			// Add application fee for connected accounts if needed.
-			$stripe_account_id = $payment_settings['stripe_account_id'] ?? '';
-			if ( ! empty( $stripe_account_id ) && $application_fee_amount > 0 ) {
-				$payment_intent_data['application_fee_amount'] = $application_fee_amount;
+			$payment_intent = wp_remote_post(
+				'prod' === SRFM_PAYMENTS_ENV ? SRFM_PAYMENTS_PROD . 'payment-intent/create' : SRFM_PAYMENTS_LOCAL . 'payment-intent/create',
+				[
+					'body'    => base64_encode( wp_json_encode( $payment_intent_data ) ),
+					'headers' => [
+						'Content-Type' => 'application/json',
+					],
+				]
+			);
+
+			if ( is_wp_error( $payment_intent ) ) {
+				throw new \Exception( __( 'Failed to create payment intent.', 'sureforms' ) );
 			}
 
-			$payment_intent = \Stripe\PaymentIntent::create( $payment_intent_data );
+			$payment_intent = json_decode( wp_remote_retrieve_body( $payment_intent ), true );
 
 			wp_send_json_success(
 				[
-					'client_secret'     => $payment_intent->client_secret,
-					'payment_intent_id' => $payment_intent->id,
+					'client_secret'     => $payment_intent['client_secret'],
+					'payment_intent_id' => $payment_intent['id'],
 				]
 			);
 
