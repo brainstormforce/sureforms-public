@@ -264,6 +264,8 @@ We take plugin security extremely seriously. If you discover a security vulnerab
 You can report the issue through our [Bug Bounty Program](https://brainstormforce.com/bug-bounty-program/). We collaborate with Patchstack to provide opportunities for researchers to report vulnerabilities. The Patchstack team will help validate, triage, and handle any reported security issues.
 
 == Changelog ==
+= x.x.x =
+* Fix: Resolved an issue where icon block styles were not implemented when using inside Spectra Modal.
 = 1.10.1 - 19th August 2025 =
 * New: Introduced Form Restriction.
 * Improvement: Optimized API usage for better performance in SureForms.
