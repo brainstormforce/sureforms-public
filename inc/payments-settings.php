@@ -322,16 +322,6 @@ class Payments_Settings {
 			);
 		}
 
-		// Check if Stripe SDK is available.
-		if ( ! $this->is_stripe_sdk_available() ) {
-			return rest_ensure_response(
-				[
-					'success' => false,
-					'message' => __( 'Stripe SDK not found. Please ensure checkout-plugins-stripe-woo plugin is installed and active.', 'sureforms' ),
-				]
-			);
-		}
-
 		// Determine modes to create webhooks for
 		$modes = [];
 		
@@ -409,9 +399,6 @@ class Payments_Settings {
 
 				$webhooks_created++;
 
-			} catch ( \Stripe\Exception\ApiErrorException $e ) {
-				$error_message = $e->getMessage();
-				error_log( 'SureForms Webhook Creation Error (' . $mode . '): ' . $e->getMessage() );
 			} catch ( \Exception $e ) {
 				$error_message = $e->getMessage();
 				error_log( 'SureForms Webhook Creation Error (' . $mode . '): ' . $e->getMessage() );
@@ -496,16 +483,6 @@ class Payments_Settings {
 			);
 		}
 
-		// Check if Stripe SDK is available.
-		if ( ! $this->is_stripe_sdk_available() ) {
-			return rest_ensure_response(
-				[
-					'success' => false,
-					'message' => __( 'Stripe SDK not found. Please ensure checkout-plugins-stripe-woo plugin is installed and active.', 'sureforms' ),
-				]
-			);
-		}
-
 		// Determine modes to delete
 		$modes = [];
 		
@@ -554,19 +531,13 @@ class Payments_Settings {
 			}
 
 			try {
-				// // Set API key for current mode.
-				// \Stripe\Stripe::setApiKey( $secret_key );
-
-				// // Delete webhook endpoint.
-				// \Stripe\WebhookEndpoint::retrieve( $webhook_id )->delete();
-
 				$webhook_data = [
 					'id'     => $webhook_id,
-					'secret' => $secret_key,
+					'secret_key' => $secret_key,
 				];
 
-				$request = wp_remote_request(
-					'prod' === SRFM_PAYMENTS_ENV ? SRFM_PAYMENTS_PROD . 'webhook/create' : SRFM_PAYMENTS_LOCAL . 'webhook/create',
+				wp_remote_request(
+					'prod' === SRFM_PAYMENTS_ENV ? SRFM_PAYMENTS_PROD . 'webhook/delete' : SRFM_PAYMENTS_LOCAL . 'webhook/delete',
 					[
 						'method'  => 'DELETE',
 						'body'    => base64_encode( wp_json_encode( $webhook_data ) ),
@@ -589,21 +560,6 @@ class Payments_Settings {
 
 				$webhooks_deleted++;
 
-			} catch ( \Stripe\Exception\InvalidRequestException $e ) {
-				// Webhook might already be deleted, consider it successful and clean up settings
-				if ( 'live' === $mode ) {
-					$settings['webhook_live_secret'] = '';
-					$settings['webhook_live_id']     = '';
-					$settings['webhook_live_url']    = '';
-				} else {
-					$settings['webhook_test_secret'] = '';
-					$settings['webhook_test_id']     = '';
-					$settings['webhook_test_url']    = '';
-				}
-				$webhooks_deleted++;
-			} catch ( \Stripe\Exception\ApiErrorException $e ) {
-				$error_message = $e->getMessage();
-				error_log( 'SureForms Webhook Deletion Error (' . $mode . '): ' . $e->getMessage() );
 			} catch ( \Exception $e ) {
 				$error_message = $e->getMessage();
 				error_log( 'SureForms Webhook Deletion Error (' . $mode . '): ' . $e->getMessage() );
@@ -644,16 +600,6 @@ class Payments_Settings {
 				]
 			);
 		}
-	}
-
-	/**
-	 * Check if Stripe SDK is available
-	 *
-	 * @return bool
-	 * @since x.x.x
-	 */
-	private function is_stripe_sdk_available() {
-		return class_exists( '\\Stripe\\Stripe' ) && class_exists( '\\Stripe\\WebhookEndpoint' );
 	}
 
 	/**
