@@ -126,7 +126,9 @@ const Dialog = ( {
 					/>
 				),
 				component: (
-					<OttoKitPage { ...{ isFormSettings: true, setSelectedTab } } />
+					<OttoKitPage
+						{ ...{ isFormSettings: true, setSelectedTab } }
+					/>
 				),
 			},
 			{
@@ -191,11 +193,11 @@ const Dialog = ( {
 	const containerClassName = cn(
 		'w-full mx-auto',
 		selectedTab === 'suretriggers'
-		  ? 'h-full min-w-[800px] bg-background-primary shadow-sm rounded-xl'
-		  : selectedTab === 'ottokit'
-			? 'min-w-[800px] bg-background-primary p-4 shadow-sm rounded-xl border-subtle'
-			: 'h-full max-w-[43.5rem]'
-	  );	  
+			? 'h-full min-w-[800px] bg-background-primary shadow-sm rounded-xl'
+			: selectedTab === 'ottokit'
+				? 'min-w-[800px] bg-background-primary p-4 shadow-sm rounded-xl border-subtle'
+				: 'h-full max-w-[43.5rem]'
+	);
 
 	return (
 		renderRoot &&
