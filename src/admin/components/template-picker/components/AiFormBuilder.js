@@ -49,6 +49,8 @@ const AiFormBuilder = () => {
 			return;
 		}
 
+		console.log( 'Creating AI form with command:', formTypeObj );
+
 		// Prepare the data to be sent to the API.
 		const messageArray =
 			previousMessages?.map( ( chat ) => ( {

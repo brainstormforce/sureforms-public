@@ -3,7 +3,7 @@ import { applyFilters } from '@wordpress/hooks';
 import PremiumBadge from '../../../components/PremiumBadge';
 import { Container, Title, Select, Label, Badge } from '@bsf/force-ui';
 
-const FormTypeSelector = ({ formType, setFormType, setformLayout }) => {
+const FormTypeSelectorNew = ({ formTypeObj, setFormTypeObj, formType, setFormType, setformLayout }) => {
 	const formTypeOptions = applyFilters(
 		'srfm.ai_form_builder.form_type_options',
 		[
@@ -22,16 +22,44 @@ const FormTypeSelector = ({ formType, setFormType, setformLayout }) => {
 					tooltipPosition: 'bottom',
 				},
 			},
+			{
+				label: __('Conversational Form', 'sureforms'),
+				slug: 'conversational',
+				isAvailable: false,
+				upgradeTooltipContent: {
+					tooltipHeadin: __('Unlock Conversational Forms', 'sureforms'),
+					tooltipContent: __(
+						'Upgrade to the SureForms Business Plan to create advanced forms with real-time conversations, such as project quote calculators, BMI calculators, loan calculators, and more.',
+						'sureforms'
+					),
+					utmMedium: 'ai_builder_conversational',
+					tooltipPosition: 'bottom',
+				},
+			},
 		]
 	);
 
 	const handleSelection = (option) => {
 		if (!option.isAvailable) return;
+
 		setFormType(option.slug);
-		if (option.slug !== 'simple') {
+
+		if (option.slug === 'simple') {
+			console.log('Simple form selected');
+			// Reset to default layout
+			setformLayout({});
+		} else if (option.slug === 'conversational') {
+			// Enable conversational form layout automatically (same behaviour as toggle)
+			setFormTypeObj({
+				...formTypeObj,
+				isConversationalForm: true
+			})
+		} else {
+			// calculator / others
 			setformLayout({});
 		}
 	};
+
 
 	const getFormTypeLabel = (slug) => {
 		const match = formTypeOptions.find(opt => opt.slug === slug);
@@ -90,4 +118,4 @@ const FormTypeSelector = ({ formType, setFormType, setformLayout }) => {
 	);
 };
 
-export default FormTypeSelector;
+export default FormTypeSelectorNew;

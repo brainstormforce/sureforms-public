@@ -213,7 +213,7 @@ export default (props) => {
 	};
 
 	const textAreaPlaceholder =
-		formType === 'simple'
+		formType === 'simple' || formType === 'conversational'
 			? __(
 				"E.g. Form to gather feedback from our customer for our product functionality, usability , how much you will rate it and what you don't like about it.",
 				'sureforms'
@@ -281,12 +281,18 @@ export default (props) => {
 								>
 									<Container.Item>
 										<FormTypeSelectorNew
+											formTypeObj={formTypeObj}
+											setFormTypeObj={setFormTypeObj}
 											formType={formType}
 											setFormType={setFormType}
 											setformLayout={setformLayout}
 										/>
+										{/* {false === conversationalFormAiToggle
+											? conversationalAiToggle
+											: conversationalFormAiToggle} */}
 									</Container.Item>
 									<Container.Item className="gap-4 flex flex-row">
+
 										<VoiceToggleButton />
 										<Button
 											className="gap-1"
