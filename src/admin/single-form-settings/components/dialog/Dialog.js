@@ -36,6 +36,8 @@ import { useDispatch } from '@wordpress/data';
 import { store as blockEditorStore } from '@wordpress/block-editor';
 import FormRestriction from '../form-restrictions/FormRestriction';
 import { FormRestrictionContext } from '../form-restrictions/context';
+import OttoKitPage from '@Admin/settings/pages/OttoKit';
+import ottoKitIcon from '@Image/suretriggers.svg';
 
 const Dialog = ( {
 	open,
@@ -114,6 +116,20 @@ const Dialog = ( {
 				),
 			},
 			{
+				id: 'ottokit',
+				label: __( 'Ottokit', 'sureforms' ),
+				icon: (
+					<img
+						src={ ottoKitIcon }
+						className="size-4"
+						alt={ __( 'OttoKit', 'sureforms' ) }
+					/>
+				),
+				component: (
+					<OttoKitPage { ...{ isFormSettings: true, setSelectedTab } } />
+				),
+			},
+			{
 				id: 'integrations',
 				label: __( 'Integrations', 'sureforms' ),
 				icon: <CpuIcon />,
@@ -139,10 +155,10 @@ const Dialog = ( {
 			},
 			{
 				id: 'suretriggers',
-				parent: 'integrations',
+				parent: 'ottokit',
 				label: __( 'SureTriggers', 'sureforms' ),
 				icon: {},
-				component: <Suretriggers { ...{ setSelectedTab } } />,
+				component: <Suretriggers />,
 			},
 			/* can contain child tabs not linked to nav */
 			/* add parent nav id for child tabs */
@@ -173,9 +189,13 @@ const Dialog = ( {
 	}, [ targetTab, open ] );
 
 	const containerClassName = cn(
-		'w-full h-full mx-auto',
-		selectedTab === 'suretriggers' ? 'min-w-[800px]' : 'max-w-[43.5rem]'
-	);
+		'w-full mx-auto',
+		selectedTab === 'suretriggers'
+		  ? 'h-full min-w-[800px] bg-background-primary shadow-sm rounded-xl'
+		  : selectedTab === 'ottokit'
+			? 'min-w-[800px] bg-background-primary p-4 shadow-sm rounded-xl border-subtle'
+			: 'h-full max-w-[43.5rem]'
+	  );	  
 
 	return (
 		renderRoot &&
