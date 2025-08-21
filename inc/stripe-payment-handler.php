@@ -25,6 +25,8 @@ class Stripe_Payment_Handler {
 
 	private $stripe_payment_entries = [];
 
+	private $application_fee = 3;
+
 	/**
 	 * Constructor
 	 *
@@ -35,9 +37,27 @@ class Stripe_Payment_Handler {
 		add_action( 'wp_ajax_nopriv_srfm_create_payment_intent', [ $this, 'create_payment_intent' ] ); // For non-logged-in users.
 		add_action( 'wp_ajax_srfm_update_payment_intent_amount', [ $this, 'update_payment_intent_amount' ] );
 		add_action( 'wp_ajax_nopriv_srfm_update_payment_intent_amount', [ $this, 'update_payment_intent_amount' ] ); // For non-logged-in users.
+		add_action( 'wp_ajax_srfm_refund_payment', [ $this, 'refund_payment' ] );
 		add_filter( 'srfm_form_submit_data', [ $this, 'validate_payment_fields' ], 5, 1 );
 		add_action( 'wp_head', [ $this, 'add_payment_styles' ] );
 		add_action( 'srfm_form_submit', [ $this, 'handle_form_submit' ], 10, 1 );
+		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_payment_scripts' ] );
+	}
+
+	/**
+	 * Enqueue payment scripts
+	 *
+	 * @return void
+	 * @since x.x.x
+	 */
+	public function enqueue_payment_scripts() {
+		wp_enqueue_script(
+			'srfm-payment-entries',
+			SRFM_URL . 'assets/js/payment-entries.js',
+			[ 'jquery' ],
+			SRFM_VER,
+			true
+		);
 	}
 
 	/**
@@ -163,7 +183,7 @@ class Stripe_Payment_Handler {
 		$amount          = intval( $_POST['amount'] ?? 0 );
 		$currency        = sanitize_text_field( wp_unslash( $_POST['currency'] ?? 'usd' ) );
 		$description     = sanitize_text_field( wp_unslash( $_POST['description'] ?? 'SureForms Payment' ) );
-		$application_fee = floatval( 3 );
+		$application_fee = $this->application_fee;
 		$block_id        = sanitize_text_field( wp_unslash( $_POST['block_id'] ?? '' ) );
 
 		if ( $amount <= 0 ) {
@@ -387,10 +407,8 @@ class Stripe_Payment_Handler {
 
 			// Calculate application fee for the new amount.
 			$application_fee_amount = 0;
-			if ( isset( $payment_intent->metadata->application_fee ) && $payment_intent->metadata->application_fee > 0 ) {
-				if ( ! $this->is_pro_license_active() ) {
-					$application_fee_amount = intval( $new_amount * floatval( $payment_intent->metadata->application_fee ) / 100 );
-				}
+			if ( $this->application_fee > 0 && ! $this->is_pro_license_active() ) {
+				$application_fee_amount = intval( $new_amount * $this->application_fee / 100 );
 			}
 
 			// Update payment intent with new amount.
@@ -428,6 +446,131 @@ class Stripe_Payment_Handler {
 		} catch ( \Exception $e ) {
 			error_log( 'SureForms Update Payment Intent Error: ' . $e->getMessage() );
 			wp_send_json_error( __( 'Failed to update payment intent. Please try again.', 'sureforms' ) );
+		}
+	}
+
+	/**
+	 * Process payment refund
+	 *
+	 * @return void
+	 * @since x.x.x
+	 */
+	public function refund_payment() {
+		// Verify nonce
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ?? '' ) ), 'srfm_stripe_payment_nonce' ) ) {
+			wp_send_json_error( __( 'Invalid nonce.', 'sureforms' ) );
+			return;
+		}
+
+		// Check if user has permission to refund payments (admin or manage_options capability)
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( __( 'Insufficient permissions.', 'sureforms' ) );
+			return;
+		}
+
+		$payment_id     = intval( $_POST['payment_id'] ?? 0 );
+		$transaction_id = sanitize_text_field( wp_unslash( $_POST['transaction_id'] ?? '' ) );
+		$refund_amount  = intval( $_POST['refund_amount'] ?? 0 );
+
+		if ( empty( $payment_id ) || empty( $transaction_id ) || $refund_amount <= 0 ) {
+			wp_send_json_error( __( 'Invalid payment data.', 'sureforms' ) );
+			return;
+		}
+
+		try {
+			// Get payment from database
+			$payment = Payments::get( $payment_id );
+			if ( ! $payment ) {
+				wp_send_json_error( __( 'Payment not found.', 'sureforms' ) );
+				return;
+			}
+
+			// Verify payment status
+			if ( 'succeeded' !== $payment['status'] ) {
+				wp_send_json_error( __( 'Only succeeded payments can be refunded.', 'sureforms' ) );
+				return;
+			}
+
+			// Verify transaction ID matches
+			if ( $transaction_id !== $payment['transaction_id'] ) {
+				wp_send_json_error( __( 'Transaction ID mismatch.', 'sureforms' ) );
+				return;
+			}
+
+			// Get payment settings
+			$payment_settings = get_option( 'srfm_payments_settings', [] );
+
+			if ( empty( $payment_settings['stripe_connected'] ) ) {
+				throw new \Exception( __( 'Stripe is not connected.', 'sureforms' ) );
+			}
+
+			$payment_mode = $payment_settings['payment_mode'] ?? 'test';
+			$secret_key   = 'live' === $payment_mode
+				? $payment_settings['stripe_live_secret_key'] ?? ''
+				: $payment_settings['stripe_test_secret_key'] ?? '';
+
+			if ( empty( $secret_key ) ) {
+				throw new \Exception( __( 'Stripe secret key not found.', 'sureforms' ) );
+			}
+
+			// Initialize Stripe
+			if ( ! class_exists( '\\Stripe\\Stripe' ) ) {
+				throw new \Exception( __( 'Stripe library not found.', 'sureforms' ) );
+			}
+
+			\Stripe\Stripe::setApiKey( $secret_key );
+
+			// Create refund
+			$refund_data = [
+				'payment_intent' => $transaction_id,
+				'amount'         => $refund_amount,
+				'metadata'       => [
+					'source'      => 'SureForms',
+					'payment_id'  => $payment_id,
+					'refunded_at' => time(),
+				],
+			];
+
+			$refund = \Stripe\Refund::create( $refund_data );
+
+			// Update payment status in database
+			$update_data = [
+				'status' => 'refunded',
+			];
+
+			// Add refund information to logs
+			$current_logs       = Helper::get_array_value( $payment['log'] );
+			$new_log            = [
+				'title'     => 'Payment Refunded',
+				'timestamp' => time(),
+				'messages'  => [
+					sprintf( 'Refund ID: %s', $refund->id ),
+					sprintf( 'Refund Amount: %s %s', number_format( $refund_amount / 100, 2 ), strtoupper( $payment['currency'] ) ),
+					sprintf( 'Refund Status: %s', $refund->status ),
+					sprintf( 'Refunded by: %s', wp_get_current_user()->display_name ),
+				],
+			];
+			$current_logs[]     = $new_log;
+			$update_data['log'] = $current_logs;
+
+			// Update payment record
+			$updated = Payments::update( $payment_id, $update_data );
+
+			if ( false === $updated ) {
+				throw new \Exception( __( 'Failed to update payment record.', 'sureforms' ) );
+			}
+
+			wp_send_json_success(
+				[
+					'message'   => __( 'Payment refunded successfully.', 'sureforms' ),
+					'refund_id' => $refund->id,
+					'status'    => $refund->status,
+				]
+			);
+
+		} catch ( \Exception $e ) {
+			error_log( 'SureForms Refund Error: ' . $e->getMessage() );
+			wp_send_json_error( __( 'Failed to process refund. Please try again.', 'sureforms' ) );
 		}
 	}
 
@@ -478,7 +621,7 @@ class Stripe_Payment_Handler {
 			$entry_data['form_id']        = $form_data['form-id'] ?? '';
 			$entry_data['block_id']       = $block_id;
 			$entry_data['status']         = $payment_intent->status;
-			$entry_data['total_amount']   = $payment_intent->amount;
+			$entry_data['total_amount']   = $this->amount_convert_cents_to_usd( $payment_intent->amount );
 			$entry_data['currency']       = $payment_intent->currency;
 			$entry_data['entry_id']       = 0;
 			$entry_data['gateway']        = 'stripe';
@@ -504,6 +647,28 @@ class Stripe_Payment_Handler {
 			error_log( 'SureForms Payment Verification Error: ' . $e->getMessage() );
 			return false;
 		}
+	}
+
+	/**
+	 * Convert USD amount to cents
+	 *
+	 * @param float $amount Amount in USD.
+	 * @return int Amount in cents.
+	 * @since x.x.x
+	 */
+	private function amount_convert_usd_to_cents( $amount ) {
+		return $amount * 100;
+	}
+
+	/**
+	 * Convert cents amount to USD
+	 *
+	 * @param int $amount Amount in cents.
+	 * @return float Amount in USD.
+	 * @since x.x.x
+	 */
+	private function amount_convert_cents_to_usd( $amount ) {
+		return $amount / 100;
 	}
 
 	/**

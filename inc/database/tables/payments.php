@@ -53,6 +53,7 @@ class Payments extends Base {
 		'requires_action',
 		'requires_payment_method',
 		'processing',
+		'refunded',
 	];
 
 	/**
@@ -237,12 +238,12 @@ class Payments extends Base {
 		return $instance->use_insert( $data );
 	}
 
-	public static function update( $entry_id, $data = [] ) {
-		if ( empty( $entry_id ) ) {
+	public static function update( $payment_id, $data = [] ) {
+		if ( empty( $payment_id ) ) {
 			return false;
 		}
 
-		return self::get_instance()->use_update( $data, [ 'ID' => absint( $entry_id ) ] );
+		return self::get_instance()->use_update( $data, [ 'id' => absint( $payment_id ) ] );
 	}
 
 	/**
@@ -360,5 +361,323 @@ class Payments extends Base {
 		$sanitized_key = sanitize_key( $key );
 
 		return $extra_data[ $sanitized_key ] ?? $default;
+	}
+
+	/**
+	 * Get a single payment by ID.
+	 *
+	 * @param int $payment_id Payment ID.
+	 * @since x.x.x
+	 * @return array|null Payment data or null if not found.
+	 */
+	public static function get( $payment_id ) {
+		if ( empty( $payment_id ) ) {
+			return null;
+		}
+
+		$results = self::get_instance()->get_results( [ 'id' => absint( $payment_id ) ] );
+		return isset( $results[0] ) ? $results[0] : null;
+	}
+
+	/**
+	 * Get all payments with optional parameters.
+	 *
+	 * @param array $args Query arguments.
+	 * @param bool  $set_limit Whether to apply limit to query.
+	 * @since x.x.x
+	 * @return array Array of payments.
+	 */
+	public static function get_all( $args = [], $set_limit = true ) {
+		$_args = wp_parse_args(
+			$args,
+			[
+				'where'   => [],
+				'columns' => '*',
+				'limit'   => 20,
+				'offset'  => 0,
+				'orderby' => 'created_at',
+				'order'   => 'DESC',
+			]
+		);
+
+		$extra_queries = [
+			sprintf( 'ORDER BY `%1$s` %2$s', Helper::get_string_value( esc_sql( $_args['orderby'] ) ), Helper::get_string_value( esc_sql( $_args['order'] ) ) ),
+		];
+
+		if ( $set_limit ) {
+			$extra_queries[] = sprintf( 'LIMIT %1$d, %2$d', absint( $_args['offset'] ), absint( $_args['limit'] ) );
+		}
+
+		return self::get_instance()->get_results(
+			$_args['where'],
+			$_args['columns'],
+			$extra_queries
+		);
+	}
+
+	/**
+	 * Get total payments count by status.
+	 *
+	 * @param string $status Status to filter by ('all', 'pending', 'succeeded', etc.).
+	 * @param int    $form_id Optional form ID to filter by.
+	 * @param array  $where_conditions Optional additional where conditions.
+	 * @since x.x.x
+	 * @return int Total count.
+	 */
+	public static function get_total_payments_by_status( $status = 'all', $form_id = 0, $where_conditions = [] ) {
+		$instance = self::get_instance();
+		$where    = [];
+
+		// Add status condition
+		if ( 'all' !== $status ) {
+			$where[] = [
+				[
+					'key'     => 'status',
+					'compare' => '=',
+					'value'   => sanitize_text_field( $status ),
+				],
+			];
+		}
+
+		// Add form ID condition
+		if ( $form_id > 0 ) {
+			$where[] = [
+				[
+					'key'     => 'form_id',
+					'compare' => '=',
+					'value'   => absint( $form_id ),
+				],
+			];
+		}
+
+		// Add additional where conditions
+		if ( ! empty( $where_conditions ) ) {
+			$where = array_merge( $where, $where_conditions );
+		}
+
+		return $instance->get_total_count( $where );
+	}
+
+	/**
+	 * Get payments count after specific timestamp.
+	 *
+	 * @param int $timestamp Unix timestamp.
+	 * @since x.x.x
+	 * @return int Count of payments.
+	 */
+	public static function get_payments_count_after( $timestamp ) {
+		$instance = self::get_instance();
+		$where    = [
+			[
+				[
+					'key'     => 'created_at',
+					'compare' => '>=',
+					'value'   => gmdate( 'Y-m-d H:i:s', $timestamp ),
+				],
+			],
+		];
+
+		return $instance->get_total_count( $where );
+	}
+
+	/**
+	 * Get available months for payments.
+	 *
+	 * @param array $where_conditions Optional where conditions.
+	 * @since x.x.x
+	 * @return array Array of month values and labels.
+	 */
+	public static function get_available_months( $where_conditions = [] ) {
+		$results = self::get_instance()->get_results(
+			$where_conditions,
+			'DISTINCT DATE_FORMAT(created_at, "%Y%m") as month_value, DATE_FORMAT(created_at, "%M %Y") as month_label',
+			[
+				'ORDER BY month_value DESC',
+			],
+			false
+		);
+
+		$months = [];
+		foreach ( $results as $result ) {
+			if ( is_array( $result ) && isset( $result['month_value'], $result['month_label'] ) ) {
+				$months[ $result['month_value'] ] = $result['month_label'];
+			}
+		}
+
+		return $months;
+	}
+
+	/**
+	 * Get all payment IDs for a specific form.
+	 *
+	 * @param int $form_id Form ID.
+	 * @since x.x.x
+	 * @return array Array of payment IDs.
+	 */
+	public static function get_all_payment_ids_for_form( $form_id ) {
+		if ( empty( $form_id ) ) {
+			return [];
+		}
+
+		$instance = self::get_instance();
+		$results  = $instance->get_results(
+			[
+				[
+					[
+						'key'     => 'form_id',
+						'compare' => '=',
+						'value'   => absint( $form_id ),
+					],
+				],
+			],
+			'id'
+		);
+
+		return $results;
+	}
+
+	/**
+	 * Get form IDs by payment IDs.
+	 *
+	 * @param array $payment_ids Array of payment IDs.
+	 * @since x.x.x
+	 * @return array Array of unique form IDs.
+	 */
+	public static function get_form_ids_by_payments( $payment_ids ) {
+		if ( empty( $payment_ids ) || ! is_array( $payment_ids ) ) {
+			return [];
+		}
+
+		$instance = self::get_instance();
+		$results  = $instance->get_results(
+			[
+				[
+					[
+						'key'     => 'id',
+						'compare' => 'IN',
+						'value'   => array_map( 'absint', $payment_ids ),
+					],
+				],
+			],
+			'DISTINCT form_id'
+		);
+
+		return array_unique( array_column( $results, 'form_id' ) );
+	}
+
+	/**
+	 * Delete a payment.
+	 *
+	 * @param int $payment_id Payment ID.
+	 * @since x.x.x
+	 * @return int|false Number of rows deleted or false on error.
+	 */
+	public static function delete( $payment_id ) {
+		if ( empty( $payment_id ) ) {
+			return false;
+		}
+
+		return self::get_instance()->use_delete( [ 'id' => absint( $payment_id ) ] );
+	}
+
+	/**
+	 * Get payments by entry ID.
+	 *
+	 * @param int $entry_id Entry ID.
+	 * @since x.x.x
+	 * @return array Array of payments.
+	 */
+	public static function get_by_entry_id( $entry_id ) {
+		if ( empty( $entry_id ) ) {
+			return [];
+		}
+
+		return self::get_all(
+			[
+				'where' => [
+					[
+						[
+							'key'     => 'entry_id',
+							'compare' => '=',
+							'value'   => absint( $entry_id ),
+						],
+					],
+				],
+			]
+		);
+	}
+
+	/**
+	 * Get payments by transaction ID.
+	 *
+	 * @param string $transaction_id Transaction ID.
+	 * @since x.x.x
+	 * @return array|null Payment data or null if not found.
+	 */
+	public static function get_by_transaction_id( $transaction_id ) {
+		if ( empty( $transaction_id ) ) {
+			return null;
+		}
+
+		$results = self::get_all(
+			[
+				'where' => [
+					[
+						[
+							'key'     => 'transaction_id',
+							'compare' => '=',
+							'value'   => sanitize_text_field( $transaction_id ),
+						],
+					],
+				],
+				'limit' => 1,
+			]
+		);
+
+		return isset( $results[0] ) ? $results[0] : null;
+	}
+
+	/**
+	 * Validate payment status.
+	 *
+	 * @param string $status Status to validate.
+	 * @since x.x.x
+	 * @return bool True if valid, false otherwise.
+	 */
+	public static function is_valid_status( $status ) {
+		return in_array( $status, self::$valid_statuses, true );
+	}
+
+	/**
+	 * Validate currency.
+	 *
+	 * @param string $currency Currency to validate.
+	 * @since x.x.x
+	 * @return bool True if valid, false otherwise.
+	 */
+	public static function is_valid_currency( $currency ) {
+		return in_array( strtoupper( $currency ), self::$valid_currencies, true );
+	}
+
+	/**
+	 * Validate gateway.
+	 *
+	 * @param string $gateway Gateway to validate.
+	 * @since x.x.x
+	 * @return bool True if valid, false otherwise.
+	 */
+	public static function is_valid_gateway( $gateway ) {
+		return in_array( $gateway, self::$valid_gateways, true );
+	}
+
+	/**
+	 * Validate mode.
+	 *
+	 * @param string $mode Mode to validate.
+	 * @since x.x.x
+	 * @return bool True if valid, false otherwise.
+	 */
+	public static function is_valid_mode( $mode ) {
+		return in_array( $mode, self::$valid_modes, true );
 	}
 }

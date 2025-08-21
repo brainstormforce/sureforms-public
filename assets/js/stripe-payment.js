@@ -97,63 +97,18 @@ class StripePayment {
 					paymentHiddenInput.closest( '.srfm-block' );
 				const blockId =
 					getPaymentItemBlockWrapper.getAttribute( 'data-block-id' );
-
-				const getPaymentItemWrapper =
-					getPaymentItemBlockWrapper.querySelector(
-						'.srfm-payment-items-wrapper'
-					);
 				const getPaymentItemWrapperHTML =
 					getPaymentItemBlockWrapper.querySelector(
 						'.srfm-payment-value'
 					);
 
 				// Generate HTML for payment items and calculate total in single loop
-				let paymentItemsHTML = '';
 				let totalAmount = 0;
-
 				if ( paymentDetails.length > 0 ) {
-					paymentItemsHTML = `
-						<table class="srfm-payment-items-table" style="width: 100%; border-collapse: collapse; margin: 10px 0;">
-							<thead>
-								<tr>
-									<th style="text-align: left; padding: 8px; border-bottom: 1px solid #ddd; font-weight: 600;">Payment Item</th>
-									<th style="text-align: right; padding: 8px; border-bottom: 1px solid #ddd; font-weight: 600;">Amount</th>
-								</tr>
-							</thead>
-							<tbody>
-					`;
-
 					paymentDetails.forEach( ( item ) => {
 						const itemAmount = parseFloat( item.amount || 0 );
 						totalAmount += itemAmount;
-
-						paymentItemsHTML += `
-							<tr>
-								<td style="padding: 8px; border-bottom: 1px solid #eee;">${ item.title }</td>
-								<td style="text-align: right; padding: 8px; border-bottom: 1px solid #eee;">$${ itemAmount.toFixed(
-		2
-	) }</td>
-							</tr>
-						`;
 					} );
-
-					paymentItemsHTML += `
-							</tbody>
-							<tfoot>
-								<tr>
-									<td style="padding: 8px; border-top: 2px solid #ddd; font-weight: 600;">Total:</td>
-									<td style="text-align: right; padding: 8px; border-top: 2px solid #ddd; font-weight: 600;">$${ totalAmount.toFixed(
-		2
-	) }</td>
-								</tr>
-							</tfoot>
-						</table>
-					`;
-				}
-
-				// Update the payment items wrapper with the generated HTML
-				if ( getPaymentItemWrapper ) {
-					getPaymentItemWrapper.innerHTML = paymentItemsHTML;
 				}
 
 				// Update the main payment value display
@@ -195,6 +150,8 @@ class StripePayment {
 			return;
 		}
 
+		this.set_block_loading( blockId, true );
+
 		// Prepare data for API call
 		const data = new FormData();
 		data.append( 'action', 'srfm_update_payment_intent_amount' );
@@ -212,6 +169,8 @@ class StripePayment {
 			const responseData = await response.json();
 
 			console.log( 'update intent detail responseData->', responseData );
+
+			this.set_block_loading( blockId, false );
 
 			if ( responseData.success ) {
 				console.log(
@@ -372,6 +331,8 @@ class StripePayment {
 			);
 		}
 
+		this.set_block_loading( blockId, true );
+
 		const currency = paymentInput.dataset.currency;
 		const description = paymentInput.dataset.description;
 
@@ -391,6 +352,8 @@ class StripePayment {
 
 			const responseData = await response.json();
 
+			this.set_block_loading( blockId, false );
+
 			if ( responseData.success ) {
 				StripePayment.paymentIntents[ blockId ] =
 					responseData.data.payment_intent_id;
@@ -402,6 +365,26 @@ class StripePayment {
 		} catch ( error ) {
 			console.error( 'Error creating payment intent:', error );
 			throw error;
+		}
+	}
+
+	set_block_loading( blockId, loading = true ) {
+		const block = this.form.querySelector(
+			`.srfm-block[data-block-id="${ blockId }"]`
+		);
+
+		if ( ! block ) {
+			return;
+		}
+
+		const submitButton = this.form.querySelector( '.srfm-submit-button' );
+
+		if ( loading ) {
+			block.classList.add( 'srfm-loading-block' );
+			submitButton.classList.add( 'srfm-loading-button' );
+		} else {
+			block.classList.remove( 'srfm-loading-block' );
+			submitButton.classList.remove( 'srfm-loading-button' );
 		}
 	}
 }
