@@ -155,7 +155,7 @@ class Email_Template {
 								if ( ! empty( $value ) && is_string( $value ) ) {
 									?>
 									<a target="_blank" href="<?php echo esc_attr( urldecode( $value ) ); ?>">
-										<?php echo esc_html( esc_url( $value ) ); ?>
+										<?php echo esc_html( esc_url( urldecode( $value ) ) ); ?>
 									</a>
 									<?php
 								}
