@@ -1,6 +1,9 @@
 import { __ } from '@wordpress/i18n';
 import { Button, Container, Text, Title } from '@bsf/force-ui';
-import { getPluginStatusText, handlePluginActionTrigger } from '@Utils/Helpers';
+import {
+	getPluginStatusText,
+	handlePluginActionTrigger as externalHandlePluginActionTrigger,
+} from '@Utils/Helpers';
 import { Dot, Plus } from 'lucide-react';
 import ottoKitImage from '@Image/ottokit-integration.svg';
 import LoadingSkeleton from '@Admin/components/LoadingSkeleton';
@@ -28,6 +31,8 @@ const OttoKitPage = ( { loading, isFormSettings = false, setSelectedTab } ) => {
 	const [ btnDisabled, setBtnDisabled ] = useState( false );
 	const [ buttonText, setButtonText ] = useState( '' );
 	const [ pluginConnected, setPluginConnected ] = useState( null );
+	const [ action, setAction ] = useState( '' );
+	const [ CTA, setCTA ] = useState( '' );
 
 	// Reuse the connection logic from integrations/index.js
 	const integrateWithSureTriggers = () => {
@@ -68,6 +73,7 @@ const OttoKitPage = ( { loading, isFormSettings = false, setSelectedTab } ) => {
 						const suretriggersAuthInterval = setInterval( () => {
 							setBtnDisabled( true );
 							setButtonText( __( 'Connecting…', 'sureforms' ) );
+							setCTA( __( 'Connecting…', 'sureforms' ) );
 							apiFetch( {
 								url: srfm_admin.ajax_url,
 								method: 'POST',
@@ -85,6 +91,7 @@ const OttoKitPage = ( { loading, isFormSettings = false, setSelectedTab } ) => {
 									setButtonText(
 										getButtonText( 'Activated', true )
 									);
+									setCTA( getCTA( 'Activated' ) );
 								} else {
 									iterations++;
 								}
@@ -106,6 +113,7 @@ const OttoKitPage = ( { loading, isFormSettings = false, setSelectedTab } ) => {
 										pluginConnected || plugin.connected
 									)
 								);
+								setCTA( getCTA( 'Activated' ) );
 								setBtnDisabled( false );
 							}
 						}, 500 );
@@ -114,6 +122,130 @@ const OttoKitPage = ( { loading, isFormSettings = false, setSelectedTab } ) => {
 				console.error( response.data.message );
 			}
 		} );
+	};
+
+	// Complete plugin lifecycle management from integrations/index.js
+	const handlePluginActionTrigger = ( event ) => {
+		// For global settings: always use external helper
+		if ( ! isFormSettings ) {
+			externalHandlePluginActionTrigger( { plugin, event } );
+			return;
+		}
+
+		// For form settings: handle full lifecycle using action-based logic like index.js
+		switch ( action ) {
+			case 'sureforms_recommended_plugin_activate':
+				activatePlugin();
+				break;
+
+			case 'sureforms_recommended_plugin_install':
+				installPlugin();
+				break;
+
+			default:
+				// When action is empty (plugin activated), integrate with SureTriggers
+				integrateWithSureTriggers();
+				break;
+		}
+	};
+
+	const installPlugin = () => {
+		const formData = new window.FormData();
+		formData.append( 'action', 'sureforms_recommended_plugin_install' );
+		formData.append( '_ajax_nonce', srfm_admin.plugin_installer_nonce );
+		formData.append( 'slug', plugin.slug );
+
+		setCTA( srfm_admin.plugin_installing_text );
+		setButtonText( srfm_admin.plugin_installing_text );
+
+		apiFetch( {
+			url: srfm_admin.ajax_url,
+			method: 'POST',
+			body: formData,
+		} ).then( ( data ) => {
+			if ( data.success ) {
+				setAction( 'sureforms_recommended_plugin_activate' );
+				setCTA( srfm_admin.plugin_installed_text );
+				setButtonText( srfm_admin.plugin_installed_text );
+				activatePlugin();
+			} else {
+				setAction( 'sureforms_recommended_plugin_install' );
+				setCTA( __( 'Install', 'sureforms' ) );
+				setButtonText( __( 'Install', 'sureforms' ) );
+				alert(
+					__(
+						`Plugin Installation failed, Please try again later.`,
+						'sureforms'
+					)
+				);
+			}
+		} );
+	};
+
+	const activatePlugin = () => {
+		const formData = new window.FormData();
+		formData.append( 'action', 'sureforms_recommended_plugin_activate' );
+		formData.append( 'security', srfm_admin.sfPluginManagerNonce );
+		formData.append( 'init', plugin.path );
+		setCTA( srfm_admin.plugin_activating_text );
+		setButtonText( srfm_admin.plugin_activating_text );
+		apiFetch( {
+			url: srfm_admin.ajax_url,
+			method: 'POST',
+			body: formData,
+		} ).then( ( data ) => {
+			if ( data.success ) {
+				setCTA( srfm_admin.plugin_activated_text );
+				setButtonText( srfm_admin.plugin_activated_text );
+				setAction( '' );
+				setTimeout( () => {
+					setAction( 'sureforms_integrate_with_suretriggers' );
+					setCTA( getCTA( 'Activated' ) );
+					setButtonText(
+						getButtonText(
+							'Activated',
+							pluginConnected || plugin.connected
+						)
+					);
+					if ( pluginConnected ) {
+						integrateWithSureTriggers();
+					}
+				}, 2000 );
+			} else {
+				alert(
+					__(
+						'Plugin activation failed, Please try again later.',
+						'sureforms'
+					)
+				);
+				setCTA( srfm_admin.plugin_activate_text );
+				setButtonText( srfm_admin.plugin_activate_text );
+			}
+		} );
+	};
+
+	const getAction = ( status ) => {
+		if ( status === 'Activated' ) {
+			return '';
+		} else if ( status === 'Installed' ) {
+			return 'sureforms_recommended_plugin_activate';
+		}
+		return 'sureforms_recommended_plugin_install';
+	};
+
+	const getCTA = ( status ) => {
+		if ( status === 'Activated' ) {
+			if ( isFormSettings ) {
+				if ( pluginConnected || plugin.connected ) {
+					return __( 'Get Started', 'sureforms' );
+				}
+				return __( 'Connect with OttoKit', 'sureforms' );
+			}
+			return __( 'Activated', 'sureforms' );
+		} else if ( status === 'Installed' ) {
+			return __( 'Activate', 'sureforms' );
+		}
+		return __( 'Install & Activate', 'sureforms' );
 	};
 
 	// Optimized button text logic from integrations/index.js
@@ -134,27 +266,23 @@ const OttoKitPage = ( { loading, isFormSettings = false, setSelectedTab } ) => {
 		return __( 'Install & Activate', 'sureforms' );
 	};
 
-	const handleButtonClick = ( event ) => {
-		const isActivated = plugin?.status === 'Activated';
-		// For form settings: if activated and connected, start integration
-		// For global settings: use standard plugin action trigger
-		if ( isFormSettings && isActivated ) {
-			integrateWithSureTriggers();
-		} else {
-			// Handle install/activate for both contexts
-			handlePluginActionTrigger( { plugin, event } );
-		}
-	};
-
-	// Initialize button text on component mount
+	// Initialize button text and states on component mount
 	useEffect( () => {
 		if ( null === pluginConnected ) {
 			setPluginConnected( plugin.connected );
 		}
+
+		if ( ! action ) {
+			setAction( getAction( plugin.status ) );
+			setCTA( getCTA( plugin.status ) );
+		} else if ( pluginConnected || plugin.connected ) {
+			setCTA( getCTA( plugin.status ) );
+		}
+
 		setButtonText(
 			getButtonText( plugin?.status, pluginConnected || plugin.connected )
 		);
-	}, [ plugin, pluginConnected ] );
+	}, [ plugin, pluginConnected, action ] );
 
 	return (
 		<>
@@ -223,7 +351,9 @@ const OttoKitPage = ( { loading, isFormSettings = false, setSelectedTab } ) => {
 													? 'outline'
 													: 'primary'
 											}
-											onClick={ handleButtonClick }
+											onClick={
+												handlePluginActionTrigger
+											}
 											disabled={ btnDisabled }
 											icon={
 												plugin?.status === 'Install' ? (
@@ -231,7 +361,8 @@ const OttoKitPage = ( { loading, isFormSettings = false, setSelectedTab } ) => {
 												) : null
 											}
 										>
-											{ buttonText ||
+											{ CTA ||
+												buttonText ||
 												getPluginStatusText( plugin ) }
 										</Button>
 									</Container>
