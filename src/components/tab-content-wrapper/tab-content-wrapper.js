@@ -13,6 +13,7 @@ const TabContentWrapper = ( {
 	actionBtnVariant = 'primary',
 	actionLeftContent,
 	actionBtnDisabled = false,
+	hideTitle = false, // Hide the title from the content area.
 } ) => {
 	const handleBack = () => {
 		if ( typeof onClickBack !== 'function' ) {
@@ -31,7 +32,8 @@ const TabContentWrapper = ( {
 	};
 
 	return (
-		<div className="space-y-7 pb-8">
+		// Add the spacing only if title is not hidden.
+		<div className={ cn( 'pb-8', ! hideTitle && 'space-y-7' ) }>
 			<Container align="center" justify="between">
 				<Container align="center" className="gap-2">
 					{ onClickBack && (
@@ -43,7 +45,7 @@ const TabContentWrapper = ( {
 							icon={ <ArrowLeftIcon /> }
 						/>
 					) }
-					<Title tag="h4" title={ title } size="md" />
+					{ ! hideTitle && <Title tag="h4" title={ title } size="md" /> }
 				</Container>
 				<Container align="center" className="gap-3">
 					{ actionLeftContent }

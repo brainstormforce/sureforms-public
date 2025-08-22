@@ -166,13 +166,20 @@ const Dialog = ( {
 		setSelectedTab( targetTab );
 	}, [ targetTab, open ] );
 
+	// Apply filter to allow specific classes for pro tabs.
+	const tabSpecificClasses = applyFilters(
+		'srfm.formSettings.dialog.tabClasses',
+		{
+			suretriggers: 'h-full min-w-[800px] bg-background-primary shadow-sm rounded-xl',
+			ottokit: 'min-w-[800px] bg-background-primary p-4 shadow-sm rounded-xl border-subtle',
+			default: 'h-full max-w-[43.5rem]'
+		},
+		selectedTab
+	);
+
 	const containerClassName = cn(
 		'w-full mx-auto',
-		selectedTab === 'suretriggers'
-			? 'h-full min-w-[800px] bg-background-primary shadow-sm rounded-xl'
-			: selectedTab === 'ottokit'
-				? 'min-w-[800px] bg-background-primary p-4 shadow-sm rounded-xl border-subtle'
-				: 'h-full max-w-[43.5rem]'
+		tabSpecificClasses[ selectedTab ] || tabSpecificClasses.default
 	);
 
 	return (
