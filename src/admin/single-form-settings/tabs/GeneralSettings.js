@@ -182,10 +182,6 @@ function GeneralSettings( props ) {
 			id: 'advanced-settings',
 			title: __( 'Advanced Settings', 'sureforms' ),
 		},
-		{
-			id: 'integrations',
-			title: __( 'Integrations', 'sureforms' ),
-		},
 	];
 
 	let singleSettings = applyFilters(
