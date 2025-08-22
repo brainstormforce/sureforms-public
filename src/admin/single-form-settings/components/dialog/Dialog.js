@@ -16,7 +16,6 @@ import SidebarNav from './SidebarNav';
 import {
 	Settings,
 	Code2Icon,
-	CpuIcon,
 	CircleCheckBig,
 	ShieldCheckIcon,
 	XIcon,
