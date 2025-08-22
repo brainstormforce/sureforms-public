@@ -128,6 +128,7 @@ class Email_Template {
 				<tbody>
 					<?php
 					foreach ( $fields as $field_name => $value ) {
+						$values_array = [];
 						if ( is_array( $value ) ) {
 							$values_array = $value;
 						} else {
