@@ -383,62 +383,48 @@ class Stripe_Payment_Handler {
 				? $payment_settings['stripe_live_secret_key'] ?? ''
 				: $payment_settings['stripe_test_secret_key'] ?? '';
 
-			// if ( empty( $secret_key ) ) {
-			// 	throw new \Exception( __( 'Stripe secret key not found.', 'sureforms' ) );
-			// }
+			if ( empty( $secret_key ) ) {
+				throw new \Exception( __( 'Stripe secret key not found.', 'sureforms' ) );
+			}
 
-			// // Initialize Stripe.
-			// if ( ! class_exists( '\\Stripe\\Stripe' ) ) {
-			// 	throw new \Exception( __( 'Stripe library not found.', 'sureforms' ) );
-			// }
+			// Get license key for fee calculation.
+			$license_key = $this->get_license_key();
 
-			// \Stripe\Stripe::setApiKey( $secret_key );
+			// Prepare payment intent update data.
+			$payment_intent_data = apply_filters(
+				'srfm_update_payment_intent_data',
+				[
+					'secret_key'        => $secret_key,
+					'payment_intent_id' => $payment_intent_id,
+					'amount'            => $new_amount,
+					'license_key'       => $license_key,
+				]
+			);
 
-			// // Retrieve the existing payment intent.
-			// $payment_intent = \Stripe\PaymentIntent::retrieve( $payment_intent_id );
+			$payment_intent = wp_remote_post(
+				'prod' === SRFM_PAYMENTS_ENV ? SRFM_PAYMENTS_PROD . 'payment-intent/update' : SRFM_PAYMENTS_LOCAL . 'payment-intent/update',
+				[
+					'body'    => base64_encode( wp_json_encode( $payment_intent_data ) ),
+					'headers' => [
+						'Content-Type' => 'application/json',
+					],
+				]
+			);
 
-			// // Check if payment intent can be updated (not yet confirmed).
-			// if ( 'requires_payment_method' !== $payment_intent->status && 'requires_confirmation' !== $payment_intent->status ) {
-			// 	throw new \Exception( __( 'Payment intent cannot be updated at this stage.', 'sureforms' ) );
-			// }
+			if ( is_wp_error( $payment_intent ) ) {
+				throw new \Exception( __( 'Failed to update payment intent.', 'sureforms' ) );
+			}
 
-			// // Calculate application fee for the new amount.
-			// $application_fee_amount = 0;
-			// if ( $this->application_fee > 0 && ! $this->is_pro_license_active() ) {
-			// 	$application_fee_amount = intval( $new_amount * $this->application_fee / 100 );
-			// }
+			$payment_intent = json_decode( wp_remote_retrieve_body( $payment_intent ), true );
 
-			// // Update payment intent with new amount.
-			// $update_data = [
-			// 	'amount' => $new_amount,
-			// ];
-
-			// // Add application fee if needed.
-			// $stripe_account_id = $payment_settings['stripe_account_id'] ?? '';
-			// if ( ! empty( $stripe_account_id ) && $application_fee_amount > 0 ) {
-			// 	$update_data['application_fee_amount'] = $application_fee_amount;
-			// }
-
-			// // Update metadata to track the change.
-			// $update_data['metadata'] = [
-			// 	'source'          => 'SureForms',
-			// 	'block_id'        => $block_id,
-			// 	'original_amount' => $payment_intent->metadata->original_amount ?? $payment_intent->amount,
-			// 	'application_fee' => $payment_intent->metadata->application_fee ?? 0,
-			// 	'updated_amount'  => $new_amount,
-			// 	'updated_at'      => time(),
-			// ];
-
-			// $updated_payment_intent = \Stripe\PaymentIntent::update( $payment_intent_id, $update_data );
-
-			// wp_send_json_success(
-			// 	[
-			// 		'message'           => __( 'Payment intent updated successfully.', 'sureforms' ),
-			// 		'payment_intent_id' => $updated_payment_intent->id,
-			// 		'new_amount'        => $updated_payment_intent->amount,
-			// 		'client_secret'     => $updated_payment_intent->client_secret,
-			// 	]
-			// );
+			wp_send_json_success(
+				[
+					'message'           => __( 'Payment intent updated successfully.', 'sureforms' ),
+					'payment_intent_id' => $payment_intent['id'],
+					'new_amount'        => $payment_intent['amount'],
+					'client_secret'     => $payment_intent['client_secret'],
+				]
+			);
 
 		} catch ( \Exception $e ) {
 			error_log( 'SureForms Update Payment Intent Error: ' . $e->getMessage() );
@@ -510,25 +496,46 @@ class Stripe_Payment_Handler {
 				throw new \Exception( __( 'Stripe secret key not found.', 'sureforms' ) );
 			}
 
-			// Initialize Stripe
-			if ( ! class_exists( '\\Stripe\\Stripe' ) ) {
-				throw new \Exception( __( 'Stripe library not found.', 'sureforms' ) );
+			// Get license key for consistency with other endpoints
+			$license_key = $this->get_license_key();
+
+			// Prepare refund data for middleware
+			$refund_data = apply_filters(
+				'srfm_refund_payment_data',
+				[
+					'secret_key'     => $secret_key,
+					'payment_intent' => $transaction_id,
+					'amount'         => $refund_amount,
+					'license_key'    => $license_key,
+					'metadata'       => [
+						'source'      => 'SureForms',
+						'payment_id'  => $payment_id,
+						'refunded_at' => time(),
+					],
+				]
+			);
+
+			// Call middleware refund endpoint
+			$refund_response = wp_remote_post(
+				'prod' === SRFM_PAYMENTS_ENV ? SRFM_PAYMENTS_PROD . 'refund/create' : SRFM_PAYMENTS_LOCAL . 'refund/create',
+				[
+					'body'    => base64_encode( wp_json_encode( $refund_data ) ),
+					'headers' => [
+						'Content-Type' => 'application/json',
+					],
+				]
+			);
+
+			if ( is_wp_error( $refund_response ) ) {
+				throw new \Exception( __( 'Failed to process refund through middleware.', 'sureforms' ) );
 			}
 
-			\Stripe\Stripe::setApiKey( $secret_key );
+			$refund = json_decode( wp_remote_retrieve_body( $refund_response ), true );
 
-			// Create refund
-			$refund_data = [
-				'payment_intent' => $transaction_id,
-				'amount'         => $refund_amount,
-				'metadata'       => [
-					'source'      => 'SureForms',
-					'payment_id'  => $payment_id,
-					'refunded_at' => time(),
-				],
-			];
-
-			$refund = \Stripe\Refund::create( $refund_data );
+			if ( empty( $refund ) || isset( $refund['status'] ) && 'error' === $refund['status'] ) {
+				$error_message = $refund['message'] ?? __( 'Unknown refund error.', 'sureforms' );
+				throw new \Exception( $error_message );
+			}
 
 			// Update payment status in database
 			$update_data = [
@@ -541,9 +548,9 @@ class Stripe_Payment_Handler {
 				'title'     => 'Payment Refunded',
 				'timestamp' => time(),
 				'messages'  => [
-					sprintf( 'Refund ID: %s', $refund->id ),
+					sprintf( 'Refund ID: %s', $refund['id'] ?? 'N/A' ),
 					sprintf( 'Refund Amount: %s %s', number_format( $refund_amount / 100, 2 ), strtoupper( $payment['currency'] ) ),
-					sprintf( 'Refund Status: %s', $refund->status ),
+					sprintf( 'Refund Status: %s', $refund['status'] ?? 'processed' ),
 					sprintf( 'Refunded by: %s', wp_get_current_user()->display_name ),
 				],
 			];
@@ -560,8 +567,8 @@ class Stripe_Payment_Handler {
 			wp_send_json_success(
 				[
 					'message'   => __( 'Payment refunded successfully.', 'sureforms' ),
-					'refund_id' => $refund->id,
-					'status'    => $refund->status,
+					'refund_id' => $refund['id'] ?? '',
+					'status'    => $refund['status'] ?? 'processed',
 				]
 			);
 
