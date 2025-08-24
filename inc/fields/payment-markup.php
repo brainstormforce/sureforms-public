@@ -92,9 +92,9 @@ class Payment_Markup extends Base {
 		$this->set_field_name( $this->unique_slug );
 
 		// Set payment-specific properties.
-		$this->amount          = $attributes['amount'] ?? 10;
-		$this->currency        = $attributes['currency'] ?? 'USD';
-		$this->description     = $attributes['description'] ?? 'Payment';
+		$this->amount      = $attributes['amount'] ?? 10;
+		$this->currency    = $attributes['currency'] ?? 'USD';
+		$this->description = $attributes['description'] ?? 'Payment';
 
 		// Get payment settings from SureForms settings.
 		$payment_settings = get_option( 'srfm_payments_settings', [] );

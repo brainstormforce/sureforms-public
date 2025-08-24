@@ -597,12 +597,11 @@ class Stripe_Payment_Handler {
 				return false;
 			}
 
-
 			// Prepare capture data for the payment intent.
 			$capture_data = apply_filters(
 				'srfm_capture_payment_intent_data',
 				[
-					'secret_key'     => $secret_key,
+					'secret_key'        => $secret_key,
 					'payment_intent_id' => $payment_intent_id,
 				]
 			);
