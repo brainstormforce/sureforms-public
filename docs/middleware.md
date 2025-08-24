@@ -245,6 +245,60 @@ Cancels an existing PaymentIntent.
 }
 ```
 
+### Capture Payment Intent
+
+**Endpoint**: `POST /payment-intent/capture`
+
+Captures a PaymentIntent that was created with manual capture. This is used for delayed capture scenarios where payment authorization and capture happen at different times.
+
+**Request Body**:
+```json
+{
+    "secret_key": "sk_test_...",
+    "payment_intent_id": "pi_1234567890"
+}
+```
+
+**Parameters**:
+- `secret_key` (required): Stripe secret key
+- `payment_intent_id` (required): PaymentIntent ID (format: `pi_...`)
+
+**Response** (Success - 200):
+```json
+{
+    "id": "pi_1234567890",
+    "amount": 2000,
+    "amount_capturable": 0,
+    "amount_received": 2000,
+    "currency": "usd",
+    "status": "succeeded",
+    "charges": {
+        "data": [
+            {
+                "id": "ch_1234567890",
+                "amount": 2000,
+                "captured": true,
+                "status": "succeeded"
+            }
+        ]
+    }
+}
+```
+
+**Response** (Error - 400):
+```json
+{
+    "code": "payment_intent_not_capturable",
+    "message": "PaymentIntent cannot be captured in its current status: succeeded",
+    "status": "error"
+}
+```
+
+**Common Error Scenarios**:
+- PaymentIntent not in `requires_capture` status
+- PaymentIntent already captured
+- Invalid PaymentIntent ID
+
 ---
 
 ## Subscription Endpoints
@@ -327,6 +381,73 @@ Updates an existing subscription.
 
 ---
 
+## Refund Endpoints
+
+### Create Refund
+
+**Endpoint**: `POST /refund/create`
+
+Creates a refund for an existing payment intent or charge. Supports both full and partial refunds with optional metadata and reason codes.
+
+**Request Body**:
+```json
+{
+    "secret_key": "sk_test_...",
+    "payment_intent": "pi_1234567890",
+    "amount": 1000,
+    "reason": "requested_by_customer",
+    "metadata": {
+        "source": "SureForms",
+        "payment_id": "123",
+        "refunded_by": "admin_user"
+    }
+}
+```
+
+**Parameters**:
+- `secret_key` (required): Stripe secret key
+- `payment_intent` (optional): PaymentIntent ID (format: `pi_...`) - use this OR charge
+- `charge` (optional): Charge ID (format: `ch_...`) - use this OR payment_intent  
+- `amount` (optional): Amount to refund in cents. If omitted, full refund is processed
+- `reason` (optional): Refund reason (`duplicate`, `fraudulent`, `requested_by_customer`, `expired_uncaptured_charge`)
+- `metadata` (optional): Key-value pairs for tracking refund context
+
+**Response** (Success - 200):
+```json
+{
+    "id": "re_1234567890",
+    "amount": 1000,
+    "charge": "ch_1234567890", 
+    "created": 1640995200,
+    "currency": "usd",
+    "metadata": {
+        "source": "SureForms",
+        "payment_id": "123",
+        "refunded_by": "admin_user"
+    },
+    "payment_intent": "pi_1234567890",
+    "reason": "requested_by_customer",
+    "status": "succeeded"
+}
+```
+
+**Response** (Error - 400):
+```json
+{
+    "code": "refund_failed",
+    "message": "Refund failed: Charge pi_1234567890 has already been refunded.",
+    "status": "error"
+}
+```
+
+**Common Error Scenarios**:
+- Payment already fully refunded
+- Refund amount exceeds available balance
+- Payment not eligible for refund (e.g., disputed, failed)
+- Invalid payment intent or charge ID
+
+---
+
 ## Webhook Endpoints
 
 ### Create Webhook
@@ -380,6 +501,12 @@ Creates a webhook endpoint for payment event notifications.
 | `payment_intent_failed` | Failed to create payment intent | 500 | Stripe API error |
 | `payment_intent_not_found` | PaymentIntent not found or invalid | 404 | Invalid PaymentIntent ID |
 | `stripe_authentication_failed` | Invalid Stripe secret key | 400 | Authentication error |
+| `payment_identifier_missing` | Either payment_intent or charge ID is required | 400 | Missing payment reference |
+| `invalid_charge_id` | Invalid Charge ID format | 400 | Malformed charge ID |
+| `refund_failed` | Refund failed: [Stripe error message] | 400 | Stripe refund error |
+| `refund_creation_failed` | Failed to create refund. Please try again. | 500 | General refund error |
+| `payment_intent_not_capturable` | PaymentIntent cannot be captured in its current status | 400 | Invalid capture status |
+| `payment_intent_capture_failed` | PaymentIntent capture failed: [Stripe error message] | 400 | Stripe capture error |
 
 ### Error Response Format
 
@@ -464,6 +591,51 @@ class SureFormsPayment {
             }
         );
     }
+
+    async createRefund(paymentIntentId, amount = null, reason = 'requested_by_customer', metadata = {}) {
+        const requestData = {
+            secret_key: 'sk_test_...', // Should come from secure source
+            payment_intent: paymentIntentId,
+            reason: reason,
+            metadata: {
+                source: 'SureForms',
+                refunded_at: new Date().toISOString(),
+                ...metadata
+            }
+        };
+
+        // Add amount for partial refund
+        if (amount !== null) {
+            requestData.amount = amount;
+        }
+
+        const response = await fetch(`${this.apiUrl}/refund/create`, {
+            method: 'POST',
+            body: btoa(JSON.stringify(requestData)),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        return await response.json();
+    }
+
+    async capturePaymentIntent(paymentIntentId) {
+        const requestData = {
+            secret_key: 'sk_test_...', // Should come from secure source
+            payment_intent_id: paymentIntentId
+        };
+
+        const response = await fetch(`${this.apiUrl}/payment-intent/capture`, {
+            method: 'POST',
+            body: btoa(JSON.stringify(requestData)),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        return await response.json();
+    }
 }
 
 // Usage
@@ -517,6 +689,33 @@ class SureFormsPaymentClient {
         ];
 
         return $this->makeRequest('/subscription/create', $data);
+    }
+
+    public function createRefund($paymentIntentId, $amount = null, $reason = 'requested_by_customer', $metadata = []) {
+        $data = [
+            'secret_key' => $this->secretKey,
+            'payment_intent' => $paymentIntentId,
+            'reason' => $reason,
+            'metadata' => array_merge([
+                'source' => 'SureForms',
+                'refunded_at' => date('c')
+            ], $metadata)
+        ];
+
+        if ($amount !== null) {
+            $data['amount'] = $amount;
+        }
+
+        return $this->makeRequest('/refund/create', $data);
+    }
+
+    public function capturePaymentIntent($paymentIntentId) {
+        $data = [
+            'secret_key' => $this->secretKey,
+            'payment_intent_id' => $paymentIntentId
+        ];
+
+        return $this->makeRequest('/payment-intent/capture', $data);
     }
 
     private function makeRequest($endpoint, $data) {
@@ -683,6 +882,8 @@ $handler->handleWebhook();
 - [ ] Payment intent retrieval
 - [ ] Payment intent updates
 - [ ] Payment intent cancellation
+- [ ] Payment intent capture (manual capture scenarios)
+- [ ] Refund creation (full and partial refunds)
 - [ ] Subscription creation and management
 - [ ] License key validation and fee calculation
 - [ ] Webhook creation and deletion

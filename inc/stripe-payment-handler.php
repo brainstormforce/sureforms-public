@@ -582,7 +582,7 @@ class Stripe_Payment_Handler {
 	 * Verify payment intent status
 	 *
 	 * @param string $payment_intent_id Payment intent ID.
-	 * @return bool
+	 * @return void|bool
 	 * @since x.x.x
 	 */
 	private function verify_stripe_payment_intent_and_save( $payment_intent_id, $block_id, $form_data ) {
@@ -597,41 +597,50 @@ class Stripe_Payment_Handler {
 				return false;
 			}
 
-			\Stripe\Stripe::setApiKey( $secret_key );
-			$payment_intent = \Stripe\PaymentIntent::retrieve( $payment_intent_id, [] );
 
-			// Convert Stripe PaymentIntent object to array for storage
-			$payment_intent_array = $payment_intent->toArray();
+			// Prepare capture data for the payment intent.
+			$capture_data = apply_filters(
+				'srfm_capture_payment_intent_data',
+				[
+					'secret_key'     => $secret_key,
+					'payment_intent_id' => $payment_intent_id,
+				]
+			);
 
-			$entry_data = [
-				'payment_data' => $payment_intent_array,
-			];
+			// Call middleware capture endpoint
+			$capture_response = wp_remote_post(
+				'prod' === SRFM_PAYMENTS_ENV ? SRFM_PAYMENTS_PROD . 'payment-intent/capture' : SRFM_PAYMENTS_LOCAL . 'payment-intent/capture',
+				[
+					'body'    => base64_encode( wp_json_encode( $capture_data ) ),
+					'headers' => [
+						'Content-Type' => 'application/json',
+					],
+				]
+			);
 
-			// If payment requires capture, capture it
-			if ( 'requires_capture' === $payment_intent->status ) {
-				try {
-					$stripe         = new \Stripe\StripeClient( $secret_key );
-					$payment_intent = $stripe->paymentIntents->capture( $payment_intent_id, [] );
-
-					// Update payment_data with captured payment intent
-					$payment_intent_array = $payment_intent->toArray();
-				} catch ( \Exception $capture_error ) {
-					error_log( 'SureForms Payment Capture Error: ' . $capture_error->getMessage() );
-					return false;
-				}
+			if ( is_wp_error( $capture_response ) ) {
+				throw new \Exception( __( 'Failed to capture payment intent.', 'sureforms' ) );
 			}
+
+			$captured_payment_intent = json_decode( wp_remote_retrieve_body( $capture_response ), true );
+
+			if ( empty( $captured_payment_intent ) || isset( $captured_payment_intent['status'] ) && 'error' === $captured_payment_intent['status'] ) {
+				throw new \Exception( __( 'Failed to capture payment intent.', 'sureforms' ) );
+			}
+
+			$entry_data = [];
 
 			// update payment status and save to the payment entries table.
 			$entry_data['form_id']        = $form_data['form-id'] ?? '';
 			$entry_data['block_id']       = $block_id;
-			$entry_data['status']         = $payment_intent->status;
-			$entry_data['total_amount']   = $this->amount_convert_cents_to_usd( $payment_intent->amount );
-			$entry_data['currency']       = $payment_intent->currency;
+			$entry_data['status']         = $captured_payment_intent['status'];
+			$entry_data['total_amount']   = $this->amount_convert_cents_to_usd( $captured_payment_intent['amount'] );
+			$entry_data['currency']       = $captured_payment_intent['currency'];
 			$entry_data['entry_id']       = 0;
 			$entry_data['gateway']        = 'stripe';
 			$entry_data['type']           = 'payment';
 			$entry_data['mode']           = $payment_mode;
-			$entry_data['transaction_id'] = $payment_intent->id;
+			$entry_data['transaction_id'] = $captured_payment_intent['id'];
 
 			$get_payment_entry_id = Payments::add( $entry_data );
 
@@ -645,7 +654,7 @@ class Stripe_Payment_Handler {
 				$this->stripe_payment_entries[] = $add_in_static_value;
 			}
 
-			return 'succeeded' === $payment_intent->status;
+			// return 'succeeded' === $payment_intent->status;
 
 		} catch ( \Exception $e ) {
 			error_log( 'SureForms Payment Verification Error: ' . $e->getMessage() );
