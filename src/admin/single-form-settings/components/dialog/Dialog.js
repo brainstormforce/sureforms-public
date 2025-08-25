@@ -186,14 +186,14 @@ const Dialog = ( {
 				scrollLock
 				open={ open }
 				setOpen={ setOpen }
-				className="[&>div>div]:h-full z-99999"
+				className="[&>div>div]:h-full z-99999 border-radius-none"
 			>
 				<ForceUIDialog.Backdrop />
-				<ForceUIDialog.Panel className="size-[calc(100%-80px)] m-auto">
+				<ForceUIDialog.Panel className="h-full w-full m-auto rounded-none">
 					<Container
 						direction="column"
 						gap="none"
-						className="w-full h-full py-3 divide-y divide-x-0 divide-solid divide-border-subtle"
+						className="w-full h-full pt-3 divide-y divide-x-0 divide-solid divide-border-subtle"
 					>
 						<Container className="py-2 px-4" justify="between">
 							<Title
