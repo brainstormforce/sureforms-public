@@ -208,6 +208,47 @@
 	.srfm-display-none {
 		display: none;
 	}
+
+	.srfm-loading-block {
+		position: relative;
+		opacity: 0.5;
+		pointer-events: none;
+
+		&::before {
+			content: "";
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			background-color: rgba( 255, 255, 255, 0.7 );
+			z-index: 9999;
+		}
+
+		&::after {
+			content: "";
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			width: 40px;
+			height: 40px;
+			margin: -20px 0 0 -20px;
+			border: 3px solid #f3f3f3;
+			border-top: 3px solid #3498db;
+			border-radius: 50%;
+			animation: srfm-spin 1s linear infinite;
+			z-index: 10000;
+		}
+	}
+
+	@keyframes srfm-spin {
+		0% {
+			transform: rotate( 0deg );
+		}
+		100% {
+			transform: rotate( 360deg );
+		}
+	}
 }
 
 /*

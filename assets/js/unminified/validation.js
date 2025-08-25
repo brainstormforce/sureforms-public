@@ -36,7 +36,7 @@ async function getUniqueValidationData( checkData, formId, ajaxUrl, nonce ) {
 
 /**
  * Process all payments when form is submitted
- * @param form
+ * @param {HTMLElement} form - The form element.
  */
 async function processAllPayments( form ) {
 	const paymentBlocks = form.querySelectorAll(
@@ -56,7 +56,9 @@ async function processAllPayments( form ) {
 		console.log( 'paymentData->', paymentData );
 
 		if ( paymentData ) {
-			paymentPromises.push( confirmPayment( blockId, paymentData ) );
+			paymentPromises.push(
+				confirmPayment( blockId, paymentData, form )
+			);
 		}
 	} );
 
@@ -73,10 +75,11 @@ async function processAllPayments( form ) {
 
 /**
  * Confirm payment for a specific block
- * @param blockId
- * @param paymentData
+ * @param {string}      blockId     - The block ID.
+ * @param {Object}      paymentData - The payment data.
+ * @param {HTMLElement} form        - The form element.
  */
-async function confirmPayment( blockId, paymentData ) {
+async function confirmPayment( blockId, paymentData, form ) {
 	const { stripe, elements, clientSecret } = paymentData;
 
 	// First submit the elements
@@ -87,7 +90,7 @@ async function confirmPayment( blockId, paymentData ) {
 	}
 
 	// Then confirm the payment
-	const { error, paymentIntent } = await stripe.confirmPayment( {
+	const confirmPaymentResult = await stripe.confirmPayment( {
 		elements,
 		clientSecret,
 		confirmParams: {
@@ -95,6 +98,10 @@ async function confirmPayment( blockId, paymentData ) {
 		},
 		redirect: 'if_required',
 	} );
+
+	console.log( 'confirmPaymentResult->', confirmPaymentResult );
+
+	const { error, paymentIntent } = confirmPaymentResult;
 
 	if ( error ) {
 		throw new Error( error.message );
@@ -105,6 +112,29 @@ async function confirmPayment( blockId, paymentData ) {
 		paymentIntent.status === 'requires_capture'
 	) {
 		console.log( `Payment succeeded for block ${ blockId }` );
+
+		// update the payment detail in the input value by the json stringify.
+		const getPaymentBlock = form.querySelector(
+			`[data-block-id="${ blockId }"]`
+		);
+		const getPaymentInput = getPaymentBlock.querySelector(
+			'.srfm-payment-input'
+		);
+
+		const getItems = getPaymentInput.getAttribute( 'data-payment-items' );
+		const jsonParseItems = JSON.parse( getItems );
+
+		let prepareInputValueData = {
+			paymentItems: jsonParseItems,
+			paymentId: paymentIntent.id,
+			blockId,
+			paymentType: 'stripe',
+		};
+
+		prepareInputValueData = JSON.stringify( prepareInputValueData );
+
+		getPaymentInput.value = prepareInputValueData;
+
 		return paymentIntent;
 	}
 	throw new Error( `Payment not completed for block ${ blockId }` );
@@ -112,7 +142,7 @@ async function confirmPayment( blockId, paymentData ) {
 
 /**
  * Main payment handler function called from form submission
- * @param form
+ * @param {HTMLElement} form - The form element.
  */
 export async function handleFormPayment( form ) {
 	try {

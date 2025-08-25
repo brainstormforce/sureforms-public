@@ -10,7 +10,6 @@ class StripePayment {
 	static paymentElements = {};
 	static paymentIntents = {};
 	static slugForPayment = [];
-	static debounceTimers = {};
 
 	// Initialize on page load
 	static {
@@ -39,11 +38,6 @@ class StripePayment {
 	}
 
 	listen_the_form_input_changes() {
-		console.log(
-			'listen_the_form_input_changes->',
-			StripePayment.slugForPayment
-		);
-
 		// if the slug is in the slugForPayment array, then listen the input change
 		if ( StripePayment.slugForPayment.length > 0 ) {
 			StripePayment.slugForPayment.forEach( ( slug ) => {
@@ -52,93 +46,111 @@ class StripePayment {
 						`.srfm-slug-${ slug } .srfm-input-number`
 					)
 					.forEach( ( input ) => {
-						input.addEventListener( 'input', ( event ) => {
-							console.log(
-								'form input changed',
-								event.target.value
-							);
-
-							// // Update payment intent when value changes
-							this.updatePaymentIntent( {
-								input: event.target,
-								slug,
-							} );
+						input.addEventListener( 'input', () => {
+							// Update payment intent when value changes
+							this.updatePaymentIntent( { slug } );
 						} );
+
+						// update payment intent without input change.
+						this.updatePaymentIntent( { slug } );
 					} );
 			} );
 		}
 	}
 
-	updatePaymentIntent( { input, slug } ) {
-		console.log( 'updatePaymentIntent->', { input, slug } );
-
-		const getPaymentWrapper = this.form.querySelectorAll(
+	updatePaymentIntent( args ) {
+		const fieldSlug = args.slug;
+		const getPaymentHiddenInputs = this.form.querySelectorAll(
 			'.srfm-payment-input[data-payment-items]'
 		);
 
-		for ( const paymentWrapper of getPaymentWrapper ) {
-			const getTheSlug = this.getSlugForPayment( paymentWrapper );
+		for ( const paymentHiddenInput of getPaymentHiddenInputs ) {
+			const getTheSlug = this.getSlugForPayment( paymentHiddenInput );
+
+			const paymentDetails = [];
 
 			// If in the slug array, then update the payment intent
-			if ( getTheSlug.includes( slug ) ) {
-				// Block wrapper
-				const blockWrapper = paymentWrapper.closest( '.srfm-block' );
-				// get Wrapper block id
-				const blockId = blockWrapper.getAttribute( 'data-block-id' );
+			if ( getTheSlug.includes( fieldSlug ) ) {
+				// paymentHiddenInput is the payment configuration wrapper in which we need to add all the payment details.
+				for ( const slug of getTheSlug ) {
+					const getThePaymentItem = this.form.querySelector(
+						`.srfm-slug-${ slug } .srfm-input-number`
+					);
+
+					if ( ! getThePaymentItem ) {
+						continue;
+					}
+
+					const getTheAmount = getThePaymentItem.value || 0;
+					const getTheTitle = getThePaymentItem
+						.closest( '.srfm-block' )
+						.querySelector( '.srfm-block-label' ).textContent;
+
+					paymentDetails.push( {
+						title: getTheTitle,
+						amount: getTheAmount,
+					} );
+				}
 
 				// new amount
-				const newAmount = input.value;
+				const getPaymentItemBlockWrapper =
+					paymentHiddenInput.closest( '.srfm-block' );
+				const blockId =
+					getPaymentItemBlockWrapper.getAttribute( 'data-block-id' );
+				const getPaymentItemWrapperHTML =
+					getPaymentItemBlockWrapper.querySelector(
+						'.srfm-payment-value'
+					);
 
-				// Set amount in the ".srfm-payment-value"
-				const paymentValue = blockWrapper.querySelector(
-					'.srfm-payment-value'
+				// Generate HTML for payment items and calculate total in single loop
+				let totalAmount = 0;
+				if ( paymentDetails.length > 0 ) {
+					paymentDetails.forEach( ( item ) => {
+						const itemAmount = parseFloat( item.amount || 0 );
+						totalAmount += itemAmount;
+					} );
+				}
+
+				// Update the main payment value display
+				if ( getPaymentItemWrapperHTML ) {
+					getPaymentItemWrapperHTML.textContent = `$${ totalAmount.toFixed(
+						2
+					) }`;
+				}
+
+				this.updatePaymentIntentAmount(
+					blockId,
+					totalAmount,
+					paymentHiddenInput
 				);
-				paymentValue.textContent = `$${ newAmount }`;
-
-				this.updatePaymentIntentAmount( blockId, newAmount );
 			}
 		}
 	}
 
-	debounce( func, delay, key ) {
-		return function ( ...args ) {
-			clearTimeout( StripePayment.debounceTimers[ key ] );
-			StripePayment.debounceTimers[ key ] = setTimeout(
-				() => func.apply( this, args ),
-				delay
-			);
-		};
+	updatePaymentIntentAmount( blockId, newAmount, paymentHiddenInput ) {
+		// Debounce need to add here.
+		this.createOrUpdatePaymentIntent(
+			blockId,
+			newAmount,
+			paymentHiddenInput
+		);
 	}
 
-	updatePaymentIntentAmount( blockId, newAmount ) {
-		console.log( 'updatePaymentIntentAmount->', { blockId, newAmount } );
-
-		// Create a unique key for this block
-		const debounceKey = `payment_update_${ blockId }`;
-
-		// Create debounced function if it doesn't exist
-		if ( ! this[ `debouncedUpdate_${ blockId }` ] ) {
-			this[ `debouncedUpdate_${ blockId }` ] = this.debounce(
-				this.performUpdatePaymentIntent.bind( this ),
-				500,
-				debounceKey
-			);
-		}
-
-		// Call the debounced function
-		this[ `debouncedUpdate_${ blockId }` ]( blockId, newAmount );
-	}
-
-	async performUpdatePaymentIntent( blockId, newAmount ) {
-		console.log( 'performUpdatePaymentIntent->', { blockId, newAmount } );
-
+	async createOrUpdatePaymentIntent(
+		blockId,
+		newAmount,
+		paymentHiddenInput
+	) {
 		// Get the payment intent ID for this block
 		const paymentIntentId = StripePayment.paymentIntents[ blockId ];
 
 		if ( ! paymentIntentId ) {
-			console.error( `No payment intent found for block ${ blockId }` );
+			// create the payment intent
+			this.createStripeInstance( blockId, paymentHiddenInput, newAmount );
 			return;
 		}
+
+		this.set_block_loading( blockId, true );
 
 		// Prepare data for API call
 		const data = new FormData();
@@ -155,6 +167,10 @@ class StripePayment {
 			} );
 
 			const responseData = await response.json();
+
+			console.log( 'update intent detail responseData->', responseData );
+
+			this.set_block_loading( blockId, false );
 
 			if ( responseData.success ) {
 				console.log(
@@ -193,8 +209,6 @@ class StripePayment {
 		const paymentInput = field.querySelector( 'input.srfm-payment-input' );
 		const blockId = field.getAttribute( 'data-block-id' );
 
-		console.log( 'processPayment ddd->', { paymentInput, blockId } );
-
 		if ( ! paymentInput ) {
 			console.error(
 				'SureForms: Payment input not found for block',
@@ -203,10 +217,6 @@ class StripePayment {
 			return;
 		}
 
-		const stripeKey = paymentInput.dataset.stripeKey;
-		const elementContainer = field.querySelector(
-			'.srfm-stripe-payment-element'
-		);
 		const slugForPayment = this.getSlugForPayment( paymentInput );
 
 		if ( ! slugForPayment ) {
@@ -220,17 +230,32 @@ class StripePayment {
 
 		// push the slugs in the variables
 		StripePayment.slugForPayment = [
-			...StripePayment.slugForPayment,
-			...slugForPayment,
+			...new Set( [
+				...StripePayment.slugForPayment,
+				...slugForPayment,
+			] ),
 		];
+	}
 
-		if ( ! stripeKey || ! elementContainer ) {
-			console.error(
-				'SureForms: Missing Stripe key or element container for block',
-				blockId
+	createStripeInstance( blockId, paymentInput, amount = 0 ) {
+		const stripeKey = paymentInput.dataset.stripeKey;
+
+		if ( ! stripeKey ) {
+			throw new Error(
+				'createStripeInstance: Stripe key is required in payment intent creation.'
 			);
-			return;
 		}
+
+		if ( amount <= 0 ) {
+			throw new Error(
+				'createStripeInstance: Amount is required in payment intent creation. Currently the amount is ' +
+					amount
+			);
+		}
+
+		const elementContainer = paymentInput
+			.closest( '.srfm-block' )
+			.querySelector( '.srfm-stripe-payment-element' );
 
 		// Initialize Stripe
 		if ( ! StripePayment.stripeInstances[ blockId ] ) {
@@ -240,10 +265,8 @@ class StripePayment {
 		const stripe = StripePayment.stripeInstances[ blockId ];
 
 		// Create payment intent
-		this.createPaymentIntent( blockId, paymentInput )
+		this.createPaymentIntent( blockId, paymentInput, amount )
 			.then( ( clientSecret ) => {
-				console.log( 'clientSecret cl->', clientSecret );
-
 				if ( ! clientSecret ) {
 					throw new Error( 'Failed to create payment intent' );
 				}
@@ -289,17 +312,7 @@ class StripePayment {
 				} );
 
 				paymentElement.on( 'change', ( event ) => {
-					const statusElement = document.getElementById(
-						`srfm-payment-status-${ blockId }`
-					);
-
 					console.log( 'paymentElement on change event->', event );
-
-					// if ( event.error ) {
-					// 	StripePayment.showPaymentError( blockId, event.error.message );
-					// } else if ( statusElement ) {
-					// 	statusElement.style.display = 'none';
-					// }
 				} );
 			} )
 			.catch( ( error ) => {
@@ -308,22 +321,25 @@ class StripePayment {
 					blockId,
 					error
 				);
-				showPaymentError(
-					blockId,
-					'Failed to initialize payment. Please try again.'
-				);
 			} );
 	}
 
-	async createPaymentIntent( blockId, paymentInput ) {
-		const amount = parseInt( paymentInput.dataset.paymentAmount );
+	async createPaymentIntent( blockId, paymentInput, amount = 0 ) {
+		if ( amount <= 0 ) {
+			throw new Error(
+				'createPaymentIntent: Amount is required in payment intent creation.'
+			);
+		}
+
+		this.set_block_loading( blockId, true );
+
 		const currency = paymentInput.dataset.currency;
 		const description = paymentInput.dataset.description;
 
 		const data = new FormData();
 		data.append( 'action', 'srfm_create_payment_intent' );
 		data.append( 'nonce', srfm_ajax.nonce );
-		data.append( 'amount', amount );
+		data.append( 'amount', parseInt( amount * 100 ) );
 		data.append( 'currency', currency );
 		data.append( 'description', description );
 		data.append( 'block_id', blockId );
@@ -336,6 +352,8 @@ class StripePayment {
 
 			const responseData = await response.json();
 
+			this.set_block_loading( blockId, false );
+
 			if ( responseData.success ) {
 				StripePayment.paymentIntents[ blockId ] =
 					responseData.data.payment_intent_id;
@@ -347,6 +365,26 @@ class StripePayment {
 		} catch ( error ) {
 			console.error( 'Error creating payment intent:', error );
 			throw error;
+		}
+	}
+
+	set_block_loading( blockId, loading = true ) {
+		const block = this.form.querySelector(
+			`.srfm-block[data-block-id="${ blockId }"]`
+		);
+
+		if ( ! block ) {
+			return;
+		}
+
+		const submitButton = this.form.querySelector( '.srfm-submit-button' );
+
+		if ( loading ) {
+			block.classList.add( 'srfm-loading-block' );
+			submitButton.classList.add( 'srfm-loading-button' );
+		} else {
+			block.classList.remove( 'srfm-loading-block' );
+			submitButton.classList.remove( 'srfm-loading-button' );
 		}
 	}
 }

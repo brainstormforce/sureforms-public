@@ -324,7 +324,7 @@ class Payments_Settings {
 
 		// Determine modes to create webhooks for
 		$modes = [];
-		
+
 		if ( is_array( $request_or_modes ) ) {
 			// Direct array of modes passed
 			$modes = $request_or_modes;
@@ -358,8 +358,8 @@ class Payments_Settings {
 		$error_message    = '';
 
 		foreach ( $modes as $mode ) {
-			$secret_key = 'live' === $mode 
-				? $settings['stripe_live_secret_key'] 
+			$secret_key = 'live' === $mode
+				? $settings['stripe_live_secret_key']
 				: $settings['stripe_test_secret_key'];
 
 			if ( empty( $secret_key ) ) {
@@ -368,7 +368,7 @@ class Payments_Settings {
 
 			try {
 				$webhook_data = [
-					'secret_key' => $secret_key,
+					'secret_key'  => $secret_key,
 					'webhook_url' => esc_url( get_home_url() . '/wp-json/sureforms/webhook' ),
 				];
 
@@ -408,7 +408,7 @@ class Payments_Settings {
 		// Update settings with webhook details if any webhooks were created.
 		if ( $webhooks_created > 0 ) {
 			$webhook_url = esc_url( get_home_url() . '/wp-json/sureforms/webhook' );
-			
+
 			// Set webhook URLs for created webhooks
 			if ( ! empty( $settings['webhook_test_secret'] ) ) {
 				$settings['webhook_test_url'] = $webhook_url;
@@ -416,7 +416,7 @@ class Payments_Settings {
 			if ( ! empty( $settings['webhook_live_secret'] ) ) {
 				$settings['webhook_live_url'] = $webhook_url;
 			}
-			
+
 			update_option( self::OPTION_NAME, $settings );
 		}
 
@@ -427,15 +427,15 @@ class Payments_Settings {
 
 		if ( $webhooks_created > 0 ) {
 			$webhook_url = esc_url( get_home_url() . '/wp-json/sureforms/webhook' );
-			
+
 			$response_data['webhook_details'] = [
 				'webhook_url' => $webhook_url,
-				'test' => [
+				'test'        => [
 					'webhook_secret' => $settings['webhook_test_secret'] ?? '',
 					'webhook_id'     => $settings['webhook_test_id'] ?? '',
 					'webhook_url'    => $webhook_url,
 				],
-				'live' => [
+				'live'        => [
 					'webhook_secret' => $settings['webhook_live_secret'] ?? '',
 					'webhook_id'     => $settings['webhook_live_id'] ?? '',
 					'webhook_url'    => $webhook_url,
@@ -451,14 +451,14 @@ class Payments_Settings {
 				$webhooks_created
 			);
 		} elseif ( $webhooks_created > 0 ) {
-			$response_data['message'] = sprintf( 
+			$response_data['message'] = sprintf(
 				/* translators: %1$d: number of webhooks created, %2$s: error message */
-				__( 'Webhooks created for %1$d mode(s). Some modes may have failed: %2$s', 'sureforms' ), 
-				$webhooks_created, 
-				$error_message 
+				__( 'Webhooks created for %1$d mode(s). Some modes may have failed: %2$s', 'sureforms' ),
+				$webhooks_created,
+				$error_message
 			);
 		} else {
-			$response_data['message'] = $error_message ?: __( 'Failed to create webhooks.', 'sureforms' );
+			$response_data['message'] = $error_message ? $error_message : __( 'Failed to create webhooks.', 'sureforms' );
 		}
 
 		return rest_ensure_response( $response_data );
@@ -485,7 +485,7 @@ class Payments_Settings {
 
 		// Determine modes to delete
 		$modes = [];
-		
+
 		if ( is_array( $request_or_modes ) ) {
 			// Direct array of modes passed
 			$modes = $request_or_modes;
@@ -497,7 +497,7 @@ class Payments_Settings {
 			} else {
 				// Fallback to single mode parameter for backward compatibility
 				$mode_to_delete = $request_or_modes->get_param( 'mode' ) ?? $settings['payment_mode'] ?? 'test';
-				$modes = [ $mode_to_delete ];
+				$modes          = [ $mode_to_delete ];
 			}
 		} else {
 			// Default to current payment mode
@@ -515,13 +515,13 @@ class Payments_Settings {
 				);
 			}
 		}
-		
+
 		$webhooks_deleted = 0;
 		$error_message    = '';
 
 		foreach ( $modes as $mode ) {
-			$secret_key = 'live' === $mode 
-				? $settings['stripe_live_secret_key'] 
+			$secret_key = 'live' === $mode
+				? $settings['stripe_live_secret_key']
 				: $settings['stripe_test_secret_key'];
 
 			$webhook_id = 'live' === $mode ? $settings['webhook_live_id'] ?? '' : $settings['webhook_test_id'] ?? '';
@@ -532,7 +532,7 @@ class Payments_Settings {
 
 			try {
 				$webhook_data = [
-					'id'     => $webhook_id,
+					'id'         => $webhook_id,
 					'secret_key' => $secret_key,
 				];
 
@@ -574,10 +574,10 @@ class Payments_Settings {
 		if ( $webhooks_deleted > 0 ) {
 			if ( count( $modes ) === 1 ) {
 				$mode_label = 'live' === $modes[0] ? __( 'live', 'sureforms' ) : __( 'test', 'sureforms' );
-				$message = sprintf( 
+				$message    = sprintf(
 					/* translators: %s: mode name (test/live) */
-					__( 'Webhook deleted successfully for %s mode.', 'sureforms' ), 
-					$mode_label 
+					__( 'Webhook deleted successfully for %s mode.', 'sureforms' ),
+					$mode_label
 				);
 			} else {
 				$message = sprintf(
@@ -592,14 +592,14 @@ class Payments_Settings {
 					'message' => $message,
 				]
 			);
-		} else {
+		}
 			return rest_ensure_response(
 				[
 					'success' => false,
-					'message' => $error_message ?: __( 'Failed to delete webhook.', 'sureforms' ),
+					'message' => $error_message ? $error_message : __( 'Failed to delete webhook.', 'sureforms' ),
 				]
 			);
-		}
+
 	}
 
 	/**

@@ -8,6 +8,7 @@
 
 namespace SRFM\Inc;
 
+use SRFM\Inc\Database\Tables\Payments;
 use SRFM\Inc\Traits\Get_Instance;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -22,6 +23,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Stripe_Payment_Handler {
 	use Get_Instance;
 
+	private $stripe_payment_entries = [];
+
+	private $application_fee = 3;
+
 	/**
 	 * Constructor
 	 *
@@ -30,10 +35,29 @@ class Stripe_Payment_Handler {
 	public function __construct() {
 		add_action( 'wp_ajax_srfm_create_payment_intent', [ $this, 'create_payment_intent' ] );
 		add_action( 'wp_ajax_nopriv_srfm_create_payment_intent', [ $this, 'create_payment_intent' ] ); // For non-logged-in users.
-		// add_action( 'wp_ajax_srfm_update_payment_intent_amount', [ $this, 'update_payment_intent_amount' ] );
-		// add_action( 'wp_ajax_nopriv_srfm_update_payment_intent_amount', [ $this, 'update_payment_intent_amount' ] ); // For non-logged-in users.
+		add_action( 'wp_ajax_srfm_update_payment_intent_amount', [ $this, 'update_payment_intent_amount' ] );
+		add_action( 'wp_ajax_nopriv_srfm_update_payment_intent_amount', [ $this, 'update_payment_intent_amount' ] ); // For non-logged-in users.
+		add_action( 'wp_ajax_srfm_refund_payment', [ $this, 'refund_payment' ] );
 		add_filter( 'srfm_form_submit_data', [ $this, 'validate_payment_fields' ], 5, 1 );
 		add_action( 'wp_head', [ $this, 'add_payment_styles' ] );
+		add_action( 'srfm_form_submit', [ $this, 'handle_form_submit' ], 10, 1 );
+		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_payment_scripts' ] );
+	}
+
+	/**
+	 * Enqueue payment scripts
+	 *
+	 * @return void
+	 * @since x.x.x
+	 */
+	public function enqueue_payment_scripts() {
+		wp_enqueue_script(
+			'srfm-payment-entries',
+			SRFM_URL . 'assets/js/payment-entries.js',
+			[ 'jquery' ],
+			SRFM_VER,
+			true
+		);
 	}
 
 	/**
@@ -240,46 +264,88 @@ class Stripe_Payment_Handler {
 	 * @since x.x.x
 	 */
 	public function validate_payment_fields( $form_data ) {
-		// Check if form has payment fields.
-		$has_payment = false;
-		foreach ( $form_data as $field_name => $field_value ) {
-			if ( strpos( $field_name, '-lbl-' . Helper::encrypt( 'Payment' ) ) !== false ) {
-				$has_payment = true;
-				break;
-			}
-		}
 
-		if ( ! $has_payment ) {
+		// Check if form data is valid.
+		if ( empty( $form_data ) || ! is_array( $form_data ) ) {
 			return $form_data;
 		}
 
-		// Validate payment completion.
+		// Loop through form data to find payment fields.
 		foreach ( $form_data as $field_name => $field_value ) {
-			if ( strpos( $field_name, '-lbl-' . Helper::encrypt( 'Payment' ) ) !== false ) {
-				// Check if payment intent ID is present.
-				if ( empty( $field_value ) || strpos( $field_value, 'pi_' ) !== 0 ) {
-					// Payment not completed.
-					wp_send_json_error(
-						[
-							'message' => __( 'Payment is required to submit this form.', 'sureforms' ),
-						]
-					);
-					wp_die();
-				}
-
-				// Verify payment intent status.
-				if ( ! $this->verify_payment_intent( $field_value ) ) {
-					wp_send_json_error(
-						[
-							'message' => __( 'Payment verification failed. Please try again.', 'sureforms' ),
-						]
-					);
-					wp_die();
-				}
+			// Check if field name contains "-lbl-" pattern.
+			if ( strpos( $field_name, '-lbl-' ) === false ) {
+				continue;
 			}
+
+			// Split field name by "-lbl-" delimiter.
+			$name_parts = explode( '-lbl-', $field_name );
+
+			// Check if we have the expected parts.
+			if ( count( $name_parts ) < 2 ) {
+				continue;
+			}
+
+			// Check if the first part starts with "srfm-payment-".
+			if ( ! ( strpos( $name_parts[0], 'srfm-payment-' ) === 0 ) ) {
+				continue;
+			}
+
+			// Value will be in the form of the json string.
+			$payment_value = json_decode( $field_value, true );
+
+			if ( empty( $payment_value ) || ! is_array( $payment_value ) ) {
+				continue;
+			}
+
+			$payment_id = ! empty( $payment_value['paymentId'] ) ? $payment_value['paymentId'] : '';
+
+			if ( empty( $payment_id ) ) {
+				continue;
+			}
+
+			$block_id     = ! empty( $payment_value['blockId'] ) ? $payment_value['blockId'] : '';
+			$payment_type = ! empty( $payment_value['paymentType'] ) ? $payment_value['paymentType'] : '';
+
+			if ( empty( $block_id ) || empty( $payment_type ) ) {
+				continue;
+			}
+
+			$this->verify_stripe_payment_intent_and_save( $payment_id, $block_id, $form_data );
 		}
 
 		return $form_data;
+	}
+
+	/**
+	 * Handle form submit and update payment entries with entry_id
+	 *
+	 * This function is called after a form submission to link the created entry
+	 * with any associated Stripe payment records. It matches payment entries
+	 * by form_id and updates them with the newly created entry_id.
+	 *
+	 * @param array<string,mixed> $form_submit_response The form submission response containing entry_id and form_id.
+	 * @return void
+	 * @since x.x.x
+	 */
+	public function handle_form_submit( $form_submit_response ) {
+		// Check if entry_id exists in the form_submit_response
+		if ( ! empty( $form_submit_response['entry_id'] ) && ! empty( $this->stripe_payment_entries ) ) {
+			$entry_id = intval( $form_submit_response['entry_id'] );
+
+			// Loop through stored payment entries to update with entry_id
+			foreach ( $this->stripe_payment_entries as $stripe_payment_entry ) {
+				if ( ! empty( $stripe_payment_entry['payment_id'] ) && ! empty( $stripe_payment_entry['form_id'] ) ) {
+					// Check if form_id matches
+					$stored_form_id   = intval( $stripe_payment_entry['form_id'] );
+					$response_form_id = intval( $form_submit_response['form_id'] ?? 0 );
+
+					if ( $stored_form_id === $response_form_id ) {
+						// Update the payment entry with the entry_id
+						$this->update_payment_entry_id( $stripe_payment_entry['payment_id'], $entry_id );
+					}
+				}
+			}
+		}
 	}
 
 	/**
@@ -297,7 +363,7 @@ class Stripe_Payment_Handler {
 
 		$payment_intent_id = sanitize_text_field( wp_unslash( $_POST['payment_intent_id'] ?? '' ) );
 		$new_amount        = intval( $_POST['new_amount'] ?? 0 );
-		$block_id          = sanitize_text_field( wp_unslash( $_POST['block_id'] ?? '' ) );
+		// $block_id          = sanitize_text_field( wp_unslash( $_POST['block_id'] ?? '' ) );
 
 		if ( empty( $payment_intent_id ) || $new_amount <= 0 ) {
 			wp_send_json_error( __( 'Invalid payment intent ID or amount.', 'sureforms' ) );
@@ -321,58 +387,42 @@ class Stripe_Payment_Handler {
 				throw new \Exception( __( 'Stripe secret key not found.', 'sureforms' ) );
 			}
 
-			// Initialize Stripe.
-			if ( ! class_exists( '\\Stripe\\Stripe' ) ) {
-				throw new \Exception( __( 'Stripe library not found.', 'sureforms' ) );
+			// Get license key for fee calculation.
+			$license_key = $this->get_license_key();
+
+			// Prepare payment intent update data.
+			$payment_intent_data = apply_filters(
+				'srfm_update_payment_intent_data',
+				[
+					'secret_key'        => $secret_key,
+					'payment_intent_id' => $payment_intent_id,
+					'amount'            => $new_amount,
+					'license_key'       => $license_key,
+				]
+			);
+
+			$payment_intent = wp_remote_post(
+				'prod' === SRFM_PAYMENTS_ENV ? SRFM_PAYMENTS_PROD . 'payment-intent/update' : SRFM_PAYMENTS_LOCAL . 'payment-intent/update',
+				[
+					'body'    => base64_encode( wp_json_encode( $payment_intent_data ) ),
+					'headers' => [
+						'Content-Type' => 'application/json',
+					],
+				]
+			);
+
+			if ( is_wp_error( $payment_intent ) ) {
+				throw new \Exception( __( 'Failed to update payment intent.', 'sureforms' ) );
 			}
 
-			\Stripe\Stripe::setApiKey( $secret_key );
-
-			// Retrieve the existing payment intent.
-			$payment_intent = \Stripe\PaymentIntent::retrieve( $payment_intent_id );
-
-			// Check if payment intent can be updated (not yet confirmed).
-			if ( 'requires_payment_method' !== $payment_intent->status && 'requires_confirmation' !== $payment_intent->status ) {
-				throw new \Exception( __( 'Payment intent cannot be updated at this stage.', 'sureforms' ) );
-			}
-
-			// Calculate application fee for the new amount.
-			$application_fee_amount = 0;
-			if ( isset( $payment_intent->metadata->application_fee ) && $payment_intent->metadata->application_fee > 0 ) {
-				if ( ! $this->is_pro_license_active() ) {
-					$application_fee_amount = intval( $new_amount * floatval( $payment_intent->metadata->application_fee ) / 100 );
-				}
-			}
-
-			// Update payment intent with new amount.
-			$update_data = [
-				'amount' => $new_amount,
-			];
-
-			// Add application fee if needed.
-			$stripe_account_id = $payment_settings['stripe_account_id'] ?? '';
-			if ( ! empty( $stripe_account_id ) && $application_fee_amount > 0 ) {
-				$update_data['application_fee_amount'] = $application_fee_amount;
-			}
-
-			// Update metadata to track the change.
-			$update_data['metadata'] = [
-				'source'          => 'SureForms',
-				'block_id'        => $block_id,
-				'original_amount' => $payment_intent->metadata->original_amount ?? $payment_intent->amount,
-				'application_fee' => $payment_intent->metadata->application_fee ?? 0,
-				'updated_amount'  => $new_amount,
-				'updated_at'      => time(),
-			];
-
-			$updated_payment_intent = \Stripe\PaymentIntent::update( $payment_intent_id, $update_data );
+			$payment_intent = json_decode( wp_remote_retrieve_body( $payment_intent ), true );
 
 			wp_send_json_success(
 				[
 					'message'           => __( 'Payment intent updated successfully.', 'sureforms' ),
-					'payment_intent_id' => $updated_payment_intent->id,
-					'new_amount'        => $updated_payment_intent->amount,
-					'client_secret'     => $updated_payment_intent->client_secret,
+					'payment_intent_id' => $payment_intent['id'],
+					'new_amount'        => $payment_intent['amount'],
+					'client_secret'     => $payment_intent['client_secret'],
 				]
 			);
 
@@ -383,13 +433,159 @@ class Stripe_Payment_Handler {
 	}
 
 	/**
+	 * Process payment refund
+	 *
+	 * @return void
+	 * @since x.x.x
+	 */
+	public function refund_payment() {
+		// Verify nonce
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ?? '' ) ), 'srfm_stripe_payment_nonce' ) ) {
+			wp_send_json_error( __( 'Invalid nonce.', 'sureforms' ) );
+			return;
+		}
+
+		// Check if user has permission to refund payments (admin or manage_options capability)
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( __( 'Insufficient permissions.', 'sureforms' ) );
+			return;
+		}
+
+		$payment_id     = intval( $_POST['payment_id'] ?? 0 );
+		$transaction_id = sanitize_text_field( wp_unslash( $_POST['transaction_id'] ?? '' ) );
+		$refund_amount  = intval( $_POST['refund_amount'] ?? 0 );
+
+		if ( empty( $payment_id ) || empty( $transaction_id ) || $refund_amount <= 0 ) {
+			wp_send_json_error( __( 'Invalid payment data.', 'sureforms' ) );
+			return;
+		}
+
+		try {
+			// Get payment from database
+			$payment = Payments::get( $payment_id );
+			if ( ! $payment ) {
+				wp_send_json_error( __( 'Payment not found.', 'sureforms' ) );
+				return;
+			}
+
+			// Verify payment status
+			if ( 'succeeded' !== $payment['status'] ) {
+				wp_send_json_error( __( 'Only succeeded payments can be refunded.', 'sureforms' ) );
+				return;
+			}
+
+			// Verify transaction ID matches
+			if ( $transaction_id !== $payment['transaction_id'] ) {
+				wp_send_json_error( __( 'Transaction ID mismatch.', 'sureforms' ) );
+				return;
+			}
+
+			// Get payment settings
+			$payment_settings = get_option( 'srfm_payments_settings', [] );
+
+			if ( empty( $payment_settings['stripe_connected'] ) ) {
+				throw new \Exception( __( 'Stripe is not connected.', 'sureforms' ) );
+			}
+
+			$payment_mode = $payment_settings['payment_mode'] ?? 'test';
+			$secret_key   = 'live' === $payment_mode
+				? $payment_settings['stripe_live_secret_key'] ?? ''
+				: $payment_settings['stripe_test_secret_key'] ?? '';
+
+			if ( empty( $secret_key ) ) {
+				throw new \Exception( __( 'Stripe secret key not found.', 'sureforms' ) );
+			}
+
+			// Get license key for consistency with other endpoints
+			$license_key = $this->get_license_key();
+
+			// Prepare refund data for middleware
+			$refund_data = apply_filters(
+				'srfm_refund_payment_data',
+				[
+					'secret_key'     => $secret_key,
+					'payment_intent' => $transaction_id,
+					'amount'         => $refund_amount,
+					'license_key'    => $license_key,
+					'metadata'       => [
+						'source'      => 'SureForms',
+						'payment_id'  => $payment_id,
+						'refunded_at' => time(),
+					],
+				]
+			);
+
+			// Call middleware refund endpoint
+			$refund_response = wp_remote_post(
+				'prod' === SRFM_PAYMENTS_ENV ? SRFM_PAYMENTS_PROD . 'refund/create' : SRFM_PAYMENTS_LOCAL . 'refund/create',
+				[
+					'body'    => base64_encode( wp_json_encode( $refund_data ) ),
+					'headers' => [
+						'Content-Type' => 'application/json',
+					],
+				]
+			);
+
+			if ( is_wp_error( $refund_response ) ) {
+				throw new \Exception( __( 'Failed to process refund through middleware.', 'sureforms' ) );
+			}
+
+			$refund = json_decode( wp_remote_retrieve_body( $refund_response ), true );
+
+			if ( empty( $refund ) || isset( $refund['status'] ) && 'error' === $refund['status'] ) {
+				$error_message = $refund['message'] ?? __( 'Unknown refund error.', 'sureforms' );
+				throw new \Exception( $error_message );
+			}
+
+			// Update payment status in database
+			$update_data = [
+				'status' => 'refunded',
+			];
+
+			// Add refund information to logs
+			$current_logs       = Helper::get_array_value( $payment['log'] );
+			$new_log            = [
+				'title'     => 'Payment Refunded',
+				'timestamp' => time(),
+				'messages'  => [
+					sprintf( 'Refund ID: %s', $refund['id'] ?? 'N/A' ),
+					sprintf( 'Refund Amount: %s %s', number_format( $refund_amount / 100, 2 ), strtoupper( $payment['currency'] ) ),
+					sprintf( 'Refund Status: %s', $refund['status'] ?? 'processed' ),
+					sprintf( 'Refunded by: %s', wp_get_current_user()->display_name ),
+				],
+			];
+			$current_logs[]     = $new_log;
+			$update_data['log'] = $current_logs;
+
+			// Update payment record
+			$updated = Payments::update( $payment_id, $update_data );
+
+			if ( false === $updated ) {
+				throw new \Exception( __( 'Failed to update payment record.', 'sureforms' ) );
+			}
+
+			wp_send_json_success(
+				[
+					'message'   => __( 'Payment refunded successfully.', 'sureforms' ),
+					'refund_id' => $refund['id'] ?? '',
+					'status'    => $refund['status'] ?? 'processed',
+				]
+			);
+
+		} catch ( \Exception $e ) {
+			error_log( 'SureForms Refund Error: ' . $e->getMessage() );
+			wp_send_json_error( __( 'Failed to process refund. Please try again.', 'sureforms' ) );
+		}
+	}
+
+	/**
 	 * Verify payment intent status
 	 *
 	 * @param string $payment_intent_id Payment intent ID.
-	 * @return bool
+	 * @return void|bool
 	 * @since x.x.x
 	 */
-	private function verify_payment_intent( $payment_intent_id ) {
+	private function verify_stripe_payment_intent_and_save( $payment_intent_id, $block_id, $form_data ) {
 		try {
 			$payment_settings = get_option( 'srfm_payments_settings', [] );
 			$payment_mode     = $payment_settings['payment_mode'] ?? 'test';
@@ -401,35 +597,219 @@ class Stripe_Payment_Handler {
 				return false;
 			}
 
-			$payment_intent = wp_remote_post(
-				'prod' === SRFM_PAYMENTS_ENV ? SRFM_PAYMENTS_PROD . 'payment-intent/retrieve' : SRFM_PAYMENTS_LOCAL . 'payment-intent/retrieve',
+			// Prepare capture data for the payment intent.
+			$capture_data = apply_filters(
+				'srfm_capture_payment_intent_data',
 				[
-					'method'  => 'POST',
-					'body'    => base64_encode(
-						wp_json_encode(
-							[
-								'payment_intent_id' => $payment_intent_id,
-								'secret_key'        => $secret_key,
-							]
-						)
-					),
+					'secret_key'        => $secret_key,
+					'payment_intent_id' => $payment_intent_id,
+				]
+			);
+
+			// Call middleware capture endpoint
+			$capture_response = wp_remote_post(
+				'prod' === SRFM_PAYMENTS_ENV ? SRFM_PAYMENTS_PROD . 'payment-intent/capture' : SRFM_PAYMENTS_LOCAL . 'payment-intent/capture',
+				[
+					'body'    => base64_encode( wp_json_encode( $capture_data ) ),
 					'headers' => [
 						'Content-Type' => 'application/json',
 					],
 				]
 			);
 
-			if ( is_wp_error( $payment_intent ) ) {
-				return false;
+			if ( is_wp_error( $capture_response ) ) {
+				throw new \Exception( __( 'Failed to capture payment intent.', 'sureforms' ) );
 			}
 
-			$payment_intent = json_decode( wp_remote_retrieve_body( $payment_intent ), true );
+			$captured_payment_intent = json_decode( wp_remote_retrieve_body( $capture_response ), true );
 
-			return 'succeeded' === $payment_intent['status'];
+			if ( empty( $captured_payment_intent ) || isset( $captured_payment_intent['status'] ) && 'error' === $captured_payment_intent['status'] ) {
+				throw new \Exception( __( 'Failed to capture payment intent.', 'sureforms' ) );
+			}
+
+			$entry_data = [];
+
+			// update payment status and save to the payment entries table.
+			$entry_data['form_id']        = $form_data['form-id'] ?? '';
+			$entry_data['block_id']       = $block_id;
+			$entry_data['status']         = $captured_payment_intent['status'];
+			$entry_data['total_amount']   = $this->amount_convert_cents_to_usd( $captured_payment_intent['amount'] );
+			$entry_data['currency']       = $captured_payment_intent['currency'];
+			$entry_data['entry_id']       = 0;
+			$entry_data['gateway']        = 'stripe';
+			$entry_data['type']           = 'payment';
+			$entry_data['mode']           = $payment_mode;
+			$entry_data['transaction_id'] = $captured_payment_intent['id'];
+
+			$get_payment_entry_id = Payments::add( $entry_data );
+
+			if ( $get_payment_entry_id ) {
+				$add_in_static_value = [
+					'payment_id' => $payment_intent_id,
+					'block_id'   => $block_id,
+					'form_id'    => $form_data['form-id'] ?? '',
+				];
+
+				$this->stripe_payment_entries[] = $add_in_static_value;
+			}
+
+			// return 'succeeded' === $payment_intent->status;
 
 		} catch ( \Exception $e ) {
 			error_log( 'SureForms Payment Verification Error: ' . $e->getMessage() );
 			return false;
 		}
+	}
+
+	/**
+	 * Convert USD amount to cents
+	 *
+	 * @param float $amount Amount in USD.
+	 * @return int Amount in cents.
+	 * @since x.x.x
+	 */
+	private function amount_convert_usd_to_cents( $amount ) {
+		return $amount * 100;
+	}
+
+	/**
+	 * Convert cents amount to USD
+	 *
+	 * @param int $amount Amount in cents.
+	 * @return float Amount in USD.
+	 * @since x.x.x
+	 */
+	private function amount_convert_cents_to_usd( $amount ) {
+		return $amount / 100;
+	}
+
+	/**
+	 * Update payment entry with entry_id
+	 *
+	 * @param string $payment_id Payment intent ID.
+	 * @param int    $entry_id   Entry ID to update.
+	 * @return void
+	 * @since x.x.x
+	 */
+	private function update_payment_entry_id( $payment_id, $entry_id ) {
+		try {
+			// Find the payment entry by transaction_id
+			$payment_entries = Payments::get_instance()->get_results(
+				[ 'transaction_id' => $payment_id ],
+				'id'
+			);
+
+			if ( ! empty( $payment_entries ) && isset( $payment_entries[0]['id'] ) ) {
+				$payment_entry_id = intval( $payment_entries[0]['id'] );
+
+				// Update the payment entry with entry_id using Payments class
+				$updated = Payments::update( $payment_entry_id, [ 'entry_id' => $entry_id ] );
+
+				if ( false === $updated ) {
+					error_log( 'SureForms: Failed to update payment entry_id for payment_id: ' . $payment_id );
+				}
+			} else {
+				error_log( 'SureForms: Payment entry not found for payment_id: ' . $payment_id );
+			}
+		} catch ( \Exception $e ) {
+			error_log( 'SureForms: Error updating payment entry_id: ' . $e->getMessage() );
+		}
+	}
+
+	/**
+	 * Check if the SureForms Pro license is active
+	 *
+	 * @return bool True if the SureForms Pro license is active, false otherwise.
+	 * @since x.x.x
+	 */
+	private function is_pro_license_active() {
+		// First check if Pro version is installed.
+		if ( ! defined( 'SRFM_PRO_VER' ) ) {
+			return false;
+		}
+
+		// Check if the licensing class exists and license is active.
+		if ( class_exists( 'SRFM_Pro\Admin\Licensing' ) ) {
+			$licensing = \SRFM_Pro\Admin\Licensing::get_instance();
+			if ( $licensing && method_exists( $licensing, 'is_license_active' ) ) {
+				return $licensing->is_license_active();
+			}
+		}
+
+		// Fallback: Check license status via API (similar to AI form builder).
+		return $this->check_license_via_api();
+	}
+
+	/**
+	 * Check license status via credits.startertemplates.com API
+	 *
+	 * @return bool True if license is active, false otherwise.
+	 * @since x.x.x
+	 */
+	private function check_license_via_api() {
+		// Get license key for API authentication.
+		$license_key = $this->get_license_key();
+		if ( empty( $license_key ) ) {
+			return false;
+		}
+
+		// Make API request to check license status.
+		$api_url  = SRFM_AI_MIDDLEWARE . 'license/verify';
+		$response = wp_remote_post(
+			$api_url,
+			[
+				'headers' => [
+					'X-Token'      => base64_encode( $license_key ), // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
+					'Content-Type' => 'application/json',
+					'Referer'      => site_url(),
+				],
+				'timeout' => 30,
+				'body'    => wp_json_encode(
+					[
+						'action' => 'verify_license',
+						'domain' => site_url(),
+					]
+				),
+			]
+		);
+
+		// Default to inactive if API call fails.
+		$is_active = false;
+
+		if ( ! is_wp_error( $response ) && 200 === wp_remote_retrieve_response_code( $response ) ) {
+			$response_body = wp_remote_retrieve_body( $response );
+			$data          = json_decode( $response_body, true );
+
+			if ( is_array( $data ) && isset( $data['license_active'] ) ) {
+				$is_active = (bool) $data['license_active'];
+			}
+		}
+
+		return $is_active;
+	}
+
+	/**
+	 * Get license key for API authentication
+	 *
+	 * @return string License key or empty string if not available.
+	 * @since x.x.x
+	 */
+	private function get_license_key() {
+		// Only proceed if Pro version is installed.
+		if ( ! defined( 'SRFM_PRO_VER' ) || ! class_exists( 'SRFM_Pro\Admin\Licensing' ) ) {
+			return '';
+		}
+
+		$licensing = \SRFM_Pro\Admin\Licensing::get_instance();
+		if ( ! $licensing || ! method_exists( $licensing, 'licensing_setup' ) ) {
+			return '';
+		}
+
+		$license_setup = $licensing->licensing_setup();
+		if ( ! is_object( $license_setup ) || ! method_exists( $license_setup, 'settings' ) ) {
+			return '';
+		}
+
+		return $license_setup->settings()->license_key ?? '';
 	}
 }

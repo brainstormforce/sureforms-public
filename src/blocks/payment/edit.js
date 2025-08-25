@@ -14,7 +14,6 @@ import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
 import SRFMTextControl from '@Components/text-control';
 import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
 import { PaymentComponent } from './components/default.js';
-import Range from '@Components/range/Range.js';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
 import { FieldsPreview } from '../FieldsPreview.jsx';
@@ -28,14 +27,13 @@ const Edit = ( props ) => {
 		help,
 		required,
 		block_id,
-		amount,
 		currency,
 		description,
 		errorMsg,
 		formId,
 		preview,
 		className,
-		paymentItems
+		paymentItems,
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
 	const [ availableNumberFields, setAvailableNumberFields ] = useState( [] );
@@ -105,19 +103,10 @@ const Edit = ( props ) => {
 		setCurrentMessage: setCurrentErrorMsg,
 	} = useErrMessage( 'srfm_payment_block_required_text', errorMsg );
 
-	// Handler for updating selected items
-	const handleItemToggle = ( fieldSlug ) => {
-		const currentItems = paymentItems || [];
-		let newItems;
-
-		if ( currentItems.includes( fieldSlug ) ) {
-			// Remove item from array
-			newItems = currentItems.filter( ( item ) => item !== fieldSlug );
-		} else {
-			// Add item to array
-			newItems = [ ...currentItems, fieldSlug ];
-		}
-
+	// Handler for updating selected item (single selection)
+	const handleItemChange = ( selectedValue ) => {
+		// Keep only one value in the array
+		const newItems = selectedValue ? [ selectedValue ] : [];
 		setAttributes( { paymentItems: newItems } );
 	};
 
@@ -158,26 +147,6 @@ const Edit = ( props ) => {
 	];
 
 	const attributeOptions = [
-		{
-			id: 'payment-amount',
-			component: (
-				<Range
-					label={ __( 'Payment Amount', 'sureforms' ) }
-					displayUnit={ false }
-					value={ amount }
-					min={ 1 }
-					max={ 10000 }
-					step={ 0.01 }
-					data={ {
-						value: amount,
-						label: 'amount',
-					} }
-					onChange={ ( value ) =>
-						setAttributes( { amount: parseFloat( value ) } )
-					}
-				/>
-			),
-		},
 		{
 			id: 'payment-currency',
 			component: (
@@ -237,7 +206,7 @@ const Edit = ( props ) => {
 							} }
 						>
 							{ __(
-								'Select number fields to include in payment calculations.',
+								'Select a number field to include in payment calculations.',
 								'sureforms'
 							) }
 						</p>
@@ -265,46 +234,29 @@ const Edit = ( props ) => {
 							) }
 						</p>
 					) : (
-						<div>
-							{ availableNumberFields.map( ( field ) => (
-								<div
-									key={ field.slug }
-									style={ { marginBottom: '8px' } }
-								>
-									<ToggleControl
-										label={ `${ field.label } (${ field.slug })` }
-										checked={
-											paymentItems?.includes(
-												field.slug
-											) || false
-										}
-										onChange={ () =>
-											handleItemToggle( field.slug )
-										}
-										help={ __(
-											'Include this field in payment calculations',
-											'sureforms'
-										) }
-									/>
-								</div>
-							) ) }
-						</div>
-					) }
-
-					{ paymentItems && paymentItems.length > 0 && (
-						<div
-							style={ {
-								marginTop: '12px',
-								padding: '8px',
-								backgroundColor: '#f0f6fc',
-								borderRadius: '4px',
-							} }
-						>
-							<strong style={ { fontSize: '12px' } }>
-								{ __( 'Selected Items:', 'sureforms' ) }{ ' ' }
-								{ paymentItems.join( ', ' ) }
-							</strong>
-						</div>
+						<SelectControl
+							label={ __( 'Select Payment Item', 'sureforms' ) }
+							value={
+								paymentItems && paymentItems.length > 0
+									? paymentItems[ 0 ]
+									: ''
+							}
+							options={ [
+								{
+									label: __( 'Select a field…', 'sureforms' ),
+									value: '',
+								},
+								...availableNumberFields.map( ( field ) => ( {
+									label: `${ field.label } (${ field.slug })`,
+									value: field.slug,
+								} ) ),
+							] }
+							onChange={ handleItemChange }
+							help={ __(
+								'Select one number field to include in payment calculations',
+								'sureforms'
+							) }
+						/>
 					) }
 				</div>
 			),

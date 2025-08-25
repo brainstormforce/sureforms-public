@@ -22,10 +22,6 @@
 		"block_id": {
 			"type": "string"
 		},
-		"amount": {
-			"type": "number",
-			"default": 10
-		},
 		"currency": {
 			"type": "string",
 			"default": "USD"

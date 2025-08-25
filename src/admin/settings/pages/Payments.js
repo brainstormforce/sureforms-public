@@ -130,29 +130,38 @@ const Payments = ( {
 
 			if ( response.success ) {
 				toast.success(
-					response.message || __( 'Webhook created successfully!', 'sureforms' )
+					response.message ||
+						__( 'Webhook created successfully!', 'sureforms' )
 				);
 
 				// Update local state with webhook details from API response
 				const testDetails = response.webhook_details?.test || {};
 				const liveDetails = response.webhook_details?.live || {};
-				
+
 				setPaymentsSettings( {
 					...paymentsSettings,
-					webhook_test_secret: testDetails.webhook_secret || 'created',
-					webhook_test_url: testDetails.webhook_url || `${ window.location.origin }/wp-json/sureforms/webhook`,
+					webhook_test_secret:
+						testDetails.webhook_secret || 'created',
+					webhook_test_url:
+						testDetails.webhook_url ||
+						`${ window.location.origin }/wp-json/sureforms/webhook`,
 					webhook_test_id: testDetails.webhook_id || 'created',
-					webhook_live_secret: liveDetails.webhook_secret || 'created',
-					webhook_live_url: liveDetails.webhook_url || `${ window.location.origin }/wp-json/sureforms/webhook`,
+					webhook_live_secret:
+						liveDetails.webhook_secret || 'created',
+					webhook_live_url:
+						liveDetails.webhook_url ||
+						`${ window.location.origin }/wp-json/sureforms/webhook`,
 					webhook_live_id: liveDetails.webhook_id || 'created',
 				} );
 			} else {
 				toast.error(
-					response.message || __( 'Failed to create webhook.', 'sureforms' )
+					response.message ||
+						__( 'Failed to create webhook.', 'sureforms' )
 				);
 			}
 		} catch ( error ) {
-			const errorMessage = error.message || __( 'Failed to create webhook.', 'sureforms' );
+			const errorMessage =
+				error.message || __( 'Failed to create webhook.', 'sureforms' );
 			toast.error( errorMessage );
 		} finally {
 			setIsCreatingWebhook( false );
@@ -184,7 +193,8 @@ const Payments = ( {
 
 			if ( response.success ) {
 				toast.success(
-					response.message || __( 'Webhook deleted successfully!', 'sureforms' )
+					response.message ||
+						__( 'Webhook deleted successfully!', 'sureforms' )
 				);
 
 				// Update local state to reflect webhook deletion for current mode only
@@ -206,11 +216,13 @@ const Payments = ( {
 				}
 			} else {
 				toast.error(
-					response.message || __( 'Failed to delete webhook.', 'sureforms' )
+					response.message ||
+						__( 'Failed to delete webhook.', 'sureforms' )
 				);
 			}
 		} catch ( error ) {
-			const errorMessage = error.message || __( 'Failed to delete webhook.', 'sureforms' );
+			const errorMessage =
+				error.message || __( 'Failed to delete webhook.', 'sureforms' );
 			toast.error( errorMessage );
 		} finally {
 			setIsDeletingWebhook( false );
@@ -315,7 +327,6 @@ const Payments = ( {
 						</div>
 					</div>
 
-
 					<Button
 						onClick={ handleStripeDisconnect }
 						disabled={ isDisconnecting || loading }
@@ -406,16 +417,20 @@ const Payments = ( {
 							{ __( 'Webhook Configuration', 'sureforms' ) }
 						</h3>
 						<p className="text-sm text-text-tertiary">
-							{ __( 'Manage webhook endpoints for receiving payment notifications from Stripe.', 'sureforms' ) }
+							{ __(
+								'Manage webhook endpoints for receiving payment notifications from Stripe.',
+								'sureforms'
+							) }
 						</p>
 					</div>
 					<div>
-						{ (() => {
-							const isLiveMode = paymentsSettings.payment_mode === 'live';
-							const currentWebhookSecret = isLiveMode 
-								? paymentsSettings.webhook_live_secret 
+						{ ( () => {
+							const isLiveMode =
+								paymentsSettings.payment_mode === 'live';
+							const currentWebhookSecret = isLiveMode
+								? paymentsSettings.webhook_live_secret
 								: paymentsSettings.webhook_test_secret;
-							
+
 							return currentWebhookSecret ? (
 								<Button
 									onClick={ handleWebhookDeletion }
@@ -431,7 +446,10 @@ const Payments = ( {
 									) : (
 										<>
 											<X className="w-3.5 h-3.5 mr-1.5" />
-											{ __( 'Delete Webhook', 'sureforms' ) }
+											{ __(
+												'Delete Webhook',
+												'sureforms'
+											) }
 										</>
 									) }
 								</Button>
@@ -445,35 +463,38 @@ const Payments = ( {
 									size="xs"
 									className="bg-blue-600 hover:bg-blue-700 text-white border-blue-600 hover:border-blue-700"
 								>
-									{ isCreatingWebhook ? (
-										__( 'Creating…', 'sureforms' )
-									) : (
-										__( 'Create Webhook Automatically', 'sureforms' )
-									) }
+									{ isCreatingWebhook
+										? __( 'Creating…', 'sureforms' )
+										: __(
+											'Create Webhook Automatically',
+											'sureforms'
+										  ) }
 								</Button>
 							);
-						})() }
+						} )() }
 					</div>
 				</div>
 
 				{ /* Webhook Details */ }
-				{ ( paymentsSettings.webhook_test_secret || paymentsSettings.webhook_live_secret ) && (
+				{ ( paymentsSettings.webhook_test_secret ||
+					paymentsSettings.webhook_live_secret ) && (
 					<div className="mt-4 p-4 bg-background-secondary rounded-lg border">
 						<h4 className="text-sm font-medium text-text-primary mb-3">
 							{ __( 'Webhook Details', 'sureforms' ) }
 						</h4>
 						<div className="space-y-3">
 							{ /* Current Mode Webhook Details */ }
-							{ (() => {
-								const isLiveMode = paymentsSettings.payment_mode === 'live';
-								const currentWebhookUrl = isLiveMode 
-									? paymentsSettings.webhook_live_url 
+							{ ( () => {
+								const isLiveMode =
+									paymentsSettings.payment_mode === 'live';
+								const currentWebhookUrl = isLiveMode
+									? paymentsSettings.webhook_live_url
 									: paymentsSettings.webhook_test_url;
-								const currentWebhookId = isLiveMode 
-									? paymentsSettings.webhook_live_id 
+								const currentWebhookId = isLiveMode
+									? paymentsSettings.webhook_live_id
 									: paymentsSettings.webhook_test_id;
-								const currentWebhookSecret = isLiveMode 
-									? paymentsSettings.webhook_live_secret 
+								const currentWebhookSecret = isLiveMode
+									? paymentsSettings.webhook_live_secret
 									: paymentsSettings.webhook_test_secret;
 
 								if ( ! currentWebhookSecret ) {
@@ -484,38 +505,77 @@ const Payments = ( {
 									<>
 										<div className="flex items-center justify-between mb-2">
 											<span className="text-sm font-medium text-text-primary">
-												{ isLiveMode ? __( 'Live Mode Webhook', 'sureforms' ) : __( 'Test Mode Webhook', 'sureforms' ) }
+												{ isLiveMode
+													? __(
+														'Live Mode Webhook',
+														'sureforms'
+													  )
+													: __(
+														'Test Mode Webhook',
+														'sureforms'
+													  ) }
 											</span>
-											<span className={ `px-2 py-1 text-xs rounded ${ isLiveMode ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800' }` }>
-												{ isLiveMode ? __( 'Live', 'sureforms' ) : __( 'Test', 'sureforms' ) }
+											<span
+												className={ `px-2 py-1 text-xs rounded ${
+													isLiveMode
+														? 'bg-red-100 text-red-800'
+														: 'bg-yellow-100 text-yellow-800'
+												}` }
+											>
+												{ isLiveMode
+													? __( 'Live', 'sureforms' )
+													: __(
+														'Test',
+														'sureforms'
+													  ) }
 											</span>
 										</div>
 										<div>
 											<label className="block text-xs font-medium text-text-tertiary mb-1">
-												{ __( 'Webhook URL', 'sureforms' ) }
+												{ __(
+													'Webhook URL',
+													'sureforms'
+												) }
 											</label>
 											<div className="flex items-center space-x-2">
 												<code className="flex-1 text-xs bg-background-primary p-2 rounded border font-mono text-text-secondary">
-													{ currentWebhookUrl || `${ window.location.origin }/wp-json/sureforms/webhook` }
+													{ currentWebhookUrl ||
+														`${ window.location.origin }/wp-json/sureforms/webhook` }
 												</code>
 												<Button
 													onClick={ () => {
-														const url = currentWebhookUrl || `${ window.location.origin }/wp-json/sureforms/webhook`;
-														navigator.clipboard.writeText( url );
-														toast.success( __( 'Webhook URL copied to clipboard', 'sureforms' ) );
+														const url =
+															currentWebhookUrl ||
+															`${ window.location.origin }/wp-json/sureforms/webhook`;
+														navigator.clipboard.writeText(
+															url
+														);
+														toast.success(
+															__(
+																'Webhook URL copied to clipboard',
+																'sureforms'
+															)
+														);
 													} }
 													variant="outline"
 													size="xs"
 													className="text-text-tertiary hover:text-text-primary"
 												>
-													{ __( 'Copy', 'sureforms' ) }
+													{ __(
+														'Copy',
+														'sureforms'
+													) }
 												</Button>
 											</div>
 										</div>
-										{ currentWebhookId && currentWebhookId !== 'created' && (
+										{ currentWebhookId &&
+											currentWebhookId !== 'created' && (
 											<div>
 												<label className="block text-xs font-medium text-text-tertiary mb-1">
-													{ __( 'Webhook ID', 'sureforms' ) }
+													{ __(
+														'Webhook ID',
+														'sureforms'
+													) }
 												</label>
 												<div className="flex items-center space-x-2">
 													<code className="flex-1 text-xs bg-background-primary p-2 rounded border font-mono text-text-secondary">
@@ -523,21 +583,31 @@ const Payments = ( {
 													</code>
 													<Button
 														onClick={ () => {
-															navigator.clipboard.writeText( currentWebhookId );
-															toast.success( __( 'Webhook ID copied to clipboard', 'sureforms' ) );
+															navigator.clipboard.writeText(
+																currentWebhookId
+															);
+															toast.success(
+																__(
+																	'Webhook ID copied to clipboard',
+																	'sureforms'
+																)
+															);
 														} }
 														variant="outline"
 														size="xs"
 														className="text-text-tertiary hover:text-text-primary"
 													>
-														{ __( 'Copy', 'sureforms' ) }
+														{ __(
+															'Copy',
+															'sureforms'
+														) }
 													</Button>
 												</div>
 											</div>
 										) }
 									</>
 								);
-							})() }
+							} )() }
 						</div>
 					</div>
 				) }
