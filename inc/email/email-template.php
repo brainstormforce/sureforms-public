@@ -118,7 +118,7 @@ class Email_Template {
 		$message         = $this->get_header();
 		$excluded_fields = [ 'srfm-honeypot-field', 'g-recaptcha-response', 'srfm-sender-email-field' ];
 
-		$td_style = 'font-weight: 500;font-size: 14px;line-height: 20px;padding: 12px;border-bottom: 1px solid #E5E7EB;text-align:left;word-break: break-word;';
+		$td_style = 'font-weight: 500;font-size: 14px;line-height: 20px;padding: 12px;text-align:left;word-break: break-word;border-bottom: 1px solid #E5E7EB;';
 
 		$message .= $email_body;
 		if ( strpos( $email_body, '{all_data}' ) !== false ) {
@@ -129,7 +129,7 @@ class Email_Template {
 			<table class="srfm_all_data" width="536" cellpadding="0" cellspacing="0" style="border: 1px solid #dce0e6;border-radius: 6px;margin-top: 25px;margin-bottom: 25px;overflow:hidden;">
 				<style>
 					.srfm_all_data tr:last-child td {
-						border-bottom: none !important;
+						border: none !important;
 					}
 				</style>
 				<tbody>
@@ -299,9 +299,63 @@ class Email_Template {
 			<?php
 				$table_data         = ob_get_clean();
 				$current_table_data = $table_data ? $table_data : ''; // This is done as str_replace expects array|string but ob_get_clean() returns string|false.
+				$current_table_data = $this->remove_border_from_last_tr_td_table( $current_table_data );
 			$message                = str_replace( '{all_data}', $current_table_data, $message );
 		}
 		return $message . $this->get_footer();
 	}
 
+	/**
+	 * Remove border from the last table row in repeater table HTML.
+	 *
+	 * This method finds the last <tr> element in the provided HTML content
+	 * and removes the border-bottom style from all <td> elements within it.
+	 * This is used to clean up the visual appearance of repeater tables.
+	 *
+	 * @param string $content HTML content containing table structure.
+	 *
+	 * @since x.x.x
+	 * @return string Modified HTML content with border removed from last row.
+	 */
+	public function remove_border_from_last_tr_td_table( $content ) {
+		// Check if content contains table and tr elements.
+		if ( empty( $content ) || ! preg_match( '/<tr[^>]*>/i', $content ) ) {
+			return $content;
+		}
+
+		// Find and modify the last tr in one go.
+		$modified_html = preg_replace_callback(
+			'/(.*)(<tr[^>]*>.*?<\/tr>)(?!.*<tr)/is',
+			static function( $matches ) {
+				$before_last_tr = $matches[1];
+				$last_tr        = $matches[2];
+
+				// Remove border-bottom from all td elements in this tr.
+				$modified_tr = preg_replace_callback(
+					'/(<td[^>]*style\s*=\s*["\'])([^"\']*?)(["\'][^>]*>)/i',
+					static function( $td_match ) {
+						$start = $td_match[1];
+						$style = $td_match[2];
+
+						// Remove ONLY border-bottom (not border-bottom-width, etc.).
+						$style = preg_replace( '/\s*border-bottom\s*:[^;]*;?/i', '', $style );
+						$style = is_string( $style ) ? $style : '';
+
+						// Clean up multiple semicolons and trim.
+						$style = preg_replace( '/;+/', ';', $style );
+						$style = is_string( $style ) ? trim( $style, '; ' ) : '';
+
+						$end = $td_match[3];
+						return $start . $style . $end;
+					},
+					$last_tr
+				);
+
+				return $before_last_tr . $modified_tr;
+			},
+			$content
+		);
+
+		return is_string( $modified_html ) ? $modified_html : '';
+	}
 }
