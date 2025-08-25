@@ -341,47 +341,116 @@ class Single_Payment {
 				?>
 			</div>
 			<div class="inside">
-				<?php if ( ! empty( $payment_data ) || ! empty( $extra_data ) ) { ?>
-					<table class="widefat striped">
-						<tbody>
+				<table class="widefat striped">
+					<tbody>
+						<tr>
+							<th><b><?php esc_html_e( 'Field', 'sureforms' ); ?></b></th>
+							<th><b><?php esc_html_e( 'Value', 'sureforms' ); ?></b></th>
+						</tr>
+						
+						<?php
+						// Always show payment amount and status first
+						$amount = ! empty( $this->payment['total_amount'] ) ? floatval( $this->payment['total_amount'] ) : 0;
+						$currency = ! empty( $this->payment['currency'] ) ? strtoupper( $this->payment['currency'] ) : 'USD';
+						$payment_status = $this->payment['status'];
+						
+						// Status labels for display
+						$status_labels = [
+							'pending'                 => __( 'Pending', 'sureforms' ),
+							'succeeded'               => __( 'Succeeded', 'sureforms' ),
+							'failed'                  => __( 'Failed', 'sureforms' ),
+							'canceled'                => __( 'Canceled', 'sureforms' ),
+							'requires_action'         => __( 'Requires Action', 'sureforms' ),
+							'requires_payment_method' => __( 'Requires Payment Method', 'sureforms' ),
+							'processing'              => __( 'Processing', 'sureforms' ),
+							'refunded'                => __( 'Refunded', 'sureforms' ),
+						];
+						$status_display = $status_labels[ $payment_status ] ?? ucfirst( $payment_status );
+						?>
+						
+						<tr>
+							<td><b><?php esc_html_e( 'Payment Amount', 'sureforms' ); ?></b></td>
+							<td><strong><?php echo esc_html( $currency . ' ' . number_format( $amount, 2 ) ); ?></strong></td>
+						</tr>
+						<tr>
+							<td><b><?php esc_html_e( 'Payment Status', 'sureforms' ); ?></b></td>
+							<td>
+								<span class="payment-status-<?php echo esc_attr( $payment_status ); ?>" style="
+									padding: 3px 8px; 
+									border-radius: 3px; 
+									font-size: 11px; 
+									font-weight: bold; 
+									text-transform: uppercase;
+									background-color: <?php 
+										echo esc_attr( 
+											'succeeded' === $payment_status ? '#d4edda' : 
+											( 'refunded' === $payment_status ? '#f8d7da' : 
+											( 'failed' === $payment_status ? '#f8d7da' : '#fff3cd' ) ) 
+										); 
+									?>;
+									color: <?php 
+										echo esc_attr( 
+											'succeeded' === $payment_status ? '#155724' : 
+											( 'refunded' === $payment_status ? '#721c24' : 
+											( 'failed' === $payment_status ? '#721c24' : '#856404' ) ) 
+										); 
+									?>;
+									border: 1px solid <?php 
+										echo esc_attr( 
+											'succeeded' === $payment_status ? '#c3e6cb' : 
+											( 'refunded' === $payment_status ? '#f5c6cb' : 
+											( 'failed' === $payment_status ? '#f5c6cb' : '#ffeaa7' ) ) 
+										); 
+									?>;">
+									<?php echo esc_html( $status_display ); ?>
+								</span>
+							</td>
+						</tr>
+						
+						<?php
+						// Display payment data
+						if ( ! empty( $payment_data ) && is_array( $payment_data ) ) {
+							foreach ( $payment_data as $key => $value ) {
+								$display_key   = ucwords( str_replace( [ '_', '-' ], ' ', $key ) );
+								$display_value = $this->format_payment_value( $value );
+								?>
+								<tr>
+									<td><b><?php echo esc_html( $display_key ); ?></b></td>
+									<td><?php echo wp_kses_post( $display_value ); ?></td>
+								</tr>
+								<?php
+							}
+						}
+
+						// Display extra data
+						if ( ! empty( $extra_data ) && is_array( $extra_data ) ) {
+							foreach ( $extra_data as $key => $value ) {
+								$display_key   = ucwords( str_replace( [ '_', '-' ], ' ', $key ) );
+								$display_value = $this->format_payment_value( $value );
+								?>
+								<tr>
+									<td><b><?php echo esc_html( $display_key ); ?></b></td>
+									<td><?php echo wp_kses_post( $display_value ); ?></td>
+								</tr>
+								<?php
+							}
+						}
+						
+						// Show message if no additional data
+						if ( empty( $payment_data ) && empty( $extra_data ) ) {
+							?>
 							<tr>
-								<th><b><?php esc_html_e( 'Field', 'sureforms' ); ?></b></th>
-								<th><b><?php esc_html_e( 'Value', 'sureforms' ); ?></b></th>
+								<td colspan="2">
+									<p style="margin: 10px 0; font-style: italic; color: #666;">
+										<?php esc_html_e( 'No additional payment details available.', 'sureforms' ); ?>
+									</p>
+								</td>
 							</tr>
 							<?php
-							// Display payment data
-							if ( ! empty( $payment_data ) && is_array( $payment_data ) ) {
-								foreach ( $payment_data as $key => $value ) {
-									$display_key   = ucwords( str_replace( [ '_', '-' ], ' ', $key ) );
-									$display_value = $this->format_payment_value( $value );
-									?>
-									<tr>
-										<td><b><?php echo esc_html( $display_key ); ?></b></td>
-										<td><?php echo wp_kses_post( $display_value ); ?></td>
-									</tr>
-									<?php
-								}
-							}
-
-							// Display extra data
-							if ( ! empty( $extra_data ) && is_array( $extra_data ) ) {
-								foreach ( $extra_data as $key => $value ) {
-									$display_key   = ucwords( str_replace( [ '_', '-' ], ' ', $key ) );
-									$display_value = $this->format_payment_value( $value );
-									?>
-									<tr>
-										<td><b><?php echo esc_html( $display_key ); ?></b></td>
-										<td><?php echo wp_kses_post( $display_value ); ?></td>
-									</tr>
-									<?php
-								}
-							}
-							?>
-						</tbody>
-					</table>
-				<?php } else { ?>
-					<p><?php esc_html_e( 'No additional payment details available.', 'sureforms' ); ?></p>
-				<?php } ?>
+						}
+						?>
+					</tbody>
+				</table>
 			</div>
 		</div>
 		<?php

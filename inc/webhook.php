@@ -201,35 +201,35 @@ class Webhook {
 
 		switch ( $event->type ) {
 			case 'charge.captured':
-				$charge = (object) $event->data->object;
+				$charge = (object) $event->data['object'];
 				$this->charge_capture( $charge );
 				break;
 			case 'charge.refunded':
-				$charge = (object) $event->data->object;
+				$charge = (object) $event->data['object'];
 				$this->charge_refund( $charge );
 				break;
 			case 'charge.dispute.created':
-				$charge = (object) $event->data->object;
+				$charge = (object) $event->data['object'];
 				$this->charge_dispute_created( $charge );
 				break;
 			case 'charge.dispute.closed':
-				$dispute = (object) $event->data->object;
+				$dispute = (object) $event->data['object'];
 				$this->charge_dispute_closed( $dispute );
 				break;
 			case 'payment_intent.succeeded':
-				$intent = (object) $event->data->object;
+				$intent = (object) $event->data['object'];
 				$this->payment_intent_succeeded( $intent );
 				break;
 			case 'payment_intent.payment_failed':
-				$intent = (object) $event->data->object;
+				$intent = (object) $event->data['object'];
 				$this->payment_intent_failed( $intent );
 				break;
 			case 'review.opened':
-				$review = (object) $event->data->object;
+				$review = (object) $event->data['object'];
 				$this->review_opened( $review );
 				break;
 			case 'review.closed':
-				$review = (object) $event->data->object;
+				$review = (object) $event->data['object'];
 				$this->review_closed( $review );
 				break;
 		}
@@ -295,30 +295,31 @@ class Webhook {
 	 */
 	public function charge_refund( $charge ) {
 		$payment_intent = sanitize_text_field( $charge->payment_intent ?? '' );
-		$form_entry_id  = $this->get_entry_id_from_intent( $payment_intent );
+
+
 		
-		if ( ! $form_entry_id ) {
-			error_log( 'SureForms: Could not find form entry via charge ID: ' . ( $charge->id ?? 'unknown' ) );
-			return;
-		}
+		// if ( ! $form_entry_id ) {
+		// 	error_log( 'SureForms: Could not find form entry via charge ID: ' . ( $charge->id ?? 'unknown' ) );
+		// 	return;
+		// }
 
-		$captured    = $charge->captured ?? false;
-		$currency    = strtoupper( $charge->currency ?? 'USD' );
-		$raw_amount  = $charge->refunds->data[0]->amount ?? 0;
-		$raw_amount  = $this->get_original_amount( $raw_amount, $currency );
+		// $captured    = $charge->captured ?? false;
+		// $currency    = strtoupper( $charge->currency ?? 'USD' );
+		// $raw_amount  = $charge->refunds->data[0]->amount ?? 0;
+		// $raw_amount  = $this->get_original_amount( $raw_amount, $currency );
 
-		if ( ! $captured ) {
-			$this->update_entry_payment_status( $form_entry_id, 'cancelled', 0 );
-			return;
-		}
+		// if ( ! $captured ) {
+		// 	$this->update_entry_payment_status( $form_entry_id, 'cancelled', 0 );
+		// 	return;
+		// }
 
-		$this->update_entry_payment_status( $form_entry_id, 'refunded', $raw_amount );
+		// $this->update_entry_payment_status( $form_entry_id, 'refunded', $raw_amount );
 		
-		error_log( sprintf( 
-			'SureForms: Payment refunded. Amount: %s for entry ID: %s', 
-			$raw_amount, 
-			$form_entry_id 
-		) );
+		// error_log( sprintf( 
+		// 	'SureForms: Payment refunded. Amount: %s for entry ID: %s', 
+		// 	$raw_amount, 
+		// 	$form_entry_id 
+		// ) );
 	}
 
 	/**

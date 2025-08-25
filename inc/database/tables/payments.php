@@ -680,4 +680,96 @@ class Payments extends Base {
 	public static function is_valid_mode( $mode ) {
 		return in_array( $mode, self::$valid_modes, true );
 	}
+
+	/**
+	 * Get payment data for a payment.
+	 *
+	 * @param int $payment_id Payment ID.
+	 * @since x.x.x
+	 * @return array<string,mixed> Payment data array.
+	 */
+	public static function get_payment_data( $payment_id ) {
+		if ( empty( $payment_id ) ) {
+			return [];
+		}
+
+		$result = self::get_instance()->get_results(
+			[ 'id' => absint( $payment_id ) ],
+			'payment_data'
+		);
+
+		return isset( $result[0] ) && is_array( $result[0] ) ? Helper::get_array_value( $result[0]['payment_data'] ) : [];
+	}
+
+	/**
+	 * Update specific key in payment data.
+	 *
+	 * @param int    $payment_id Payment ID.
+	 * @param string $key        Key to update.
+	 * @param mixed  $value      Value to set.
+	 * @since x.x.x
+	 * @return int|false Number of rows updated or false on error.
+	 */
+	public static function update_payment_data_key( $payment_id, $key, $value ) {
+		if ( empty( $payment_id ) || empty( $key ) ) {
+			return false;
+		}
+
+		// Get current payment data.
+		$payment_data = self::get_payment_data( $payment_id );
+
+		// Update specific key.
+		$payment_data[ sanitize_key( $key ) ] = $value;
+
+		// Update payment with new payment data.
+		return self::update( $payment_id, [ 'payment_data' => $payment_data ] );
+	}
+
+	/**
+	 * Add refund data to payment_data column.
+	 *
+	 * @param int   $payment_id Payment ID.
+	 * @param array $refund_data Refund data to add.
+	 * @since x.x.x
+	 * @return int|false Number of rows updated or false on error.
+	 */
+	public static function add_refund_to_payment_data( $payment_id, $refund_data ) {
+		if ( empty( $payment_id ) || empty( $refund_data ) || ! is_array( $refund_data ) ) {
+			return false;
+		}
+
+		// Get current payment data.
+		$payment_data = self::get_payment_data( $payment_id );
+
+		// Initialize refunds array if it doesn't exist.
+		if ( ! isset( $payment_data['refunds'] ) ) {
+			$payment_data['refunds'] = [];
+		}
+
+		// Add new refund data.
+		$payment_data['refunds'][] = $refund_data;
+
+		// Update payment with new payment data.
+		return self::update( $payment_id, [ 'payment_data' => $payment_data ] );
+	}
+
+	/**
+	 * Get specific value from payment data.
+	 *
+	 * @param int    $payment_id Payment ID.
+	 * @param string $key        Key to get.
+	 * @param mixed  $default    Default value if key not found.
+	 * @since x.x.x
+	 * @return mixed Value from payment data or default.
+	 */
+	public static function get_payment_data_value( $payment_id, $key, $default = null ) {
+		if ( empty( $payment_id ) || empty( $key ) ) {
+			return $default;
+		}
+
+		$payment_data  = self::get_payment_data( $payment_id );
+		$sanitized_key = sanitize_key( $key );
+
+		return $payment_data[ $sanitized_key ] ?? $default;
+	}
 }
