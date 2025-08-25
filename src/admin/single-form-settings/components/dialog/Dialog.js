@@ -170,9 +170,11 @@ const Dialog = ( {
 	const tabSpecificClasses = applyFilters(
 		'srfm.formSettings.dialog.tabClasses',
 		{
-			suretriggers: 'h-full min-w-[800px] bg-background-primary shadow-sm rounded-xl',
-			ottokit: 'min-w-[800px] bg-background-primary p-4 shadow-sm rounded-xl border-subtle',
-			default: 'h-full max-w-[43.5rem]'
+			suretriggers:
+				'h-full min-w-[800px] bg-background-primary shadow-sm rounded-xl',
+			ottokit:
+				'min-w-[800px] bg-background-primary p-4 shadow-sm rounded-xl border-subtle',
+			default: 'h-full max-w-[43.5rem]',
 		},
 		selectedTab
 	);

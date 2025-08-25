@@ -45,7 +45,9 @@ const TabContentWrapper = ( {
 							icon={ <ArrowLeftIcon /> }
 						/>
 					) }
-					{ ! hideTitle && <Title tag="h4" title={ title } size="md" /> }
+					{ ! hideTitle && (
+						<Title tag="h4" title={ title } size="md" />
+					) }
 				</Container>
 				<Container align="center" className="gap-3">
 					{ actionLeftContent }
