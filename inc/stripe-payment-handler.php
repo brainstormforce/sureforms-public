@@ -469,8 +469,8 @@ class Stripe_Payment_Handler {
 			}
 
 			// Verify payment status
-			if ( 'succeeded' !== $payment['status'] ) {
-				wp_send_json_error( __( 'Only succeeded payments can be refunded.', 'sureforms' ) );
+			if ( 'succeeded' !== $payment['status'] && 'partially_refunded' !== $payment['status'] ) {
+				wp_send_json_error( __( 'Only succeeded or partially refunded payments can be refunded.', 'sureforms' ) );
 				return;
 			}
 
@@ -538,7 +538,7 @@ class Stripe_Payment_Handler {
 			}
 
 			// Store refund data and update payment status/log
-			$refund_stored = $this->update_refund_data( $payment_id, $refund, $refund_amount, $payment['currency'], $payment );
+			$refund_stored = $this->update_refund_data( $payment_id, $refund, $refund_amount, $payment['currency'] );
 			if ( ! $refund_stored ) {
 				throw new \Exception( __( 'Failed to update payment record after refund.', 'sureforms' ) );
 			}
@@ -855,13 +855,13 @@ class Stripe_Payment_Handler {
 		}
 
 		// Get payment record if not provided
-		if ( null === $payment ) {
-			$payment = Payments::get( $payment_id );
-			if ( ! $payment ) {
-				error_log( 'SureForms: Payment record not found for ID: ' . $payment_id );
-				return false;
-			}
+		// if ( null === $payment ) {
+		$payment = Payments::get( $payment_id );
+		if ( ! $payment ) {
+			error_log( 'SureForms: Payment record not found for ID: ' . $payment_id );
+			return false;
 		}
+		// }
 
 		$check_if_refund_already_exists = $this->check_if_refund_already_exists( $payment, $refund_response );
 		if ( $check_if_refund_already_exists ) {

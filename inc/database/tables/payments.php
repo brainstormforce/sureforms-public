@@ -213,7 +213,7 @@ class Payments extends Base {
 			'id BIGINT(20) UNSIGNED AUTO_INCREMENT PRIMARY KEY',
 			'form_id BIGINT(20) UNSIGNED',
 			'block_id VARCHAR(255) NOT NULL',
-			'status VARCHAR(10) NOT NULL',
+			'status VARCHAR(50) NOT NULL',
 			'total_amount DECIMAL(26,8) NOT NULL',
 			'currency VARCHAR(3) NOT NULL',
 			'entry_id BIGINT(20) UNSIGNED NOT NULL',

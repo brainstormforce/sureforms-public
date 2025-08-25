@@ -516,7 +516,7 @@ class Single_Payment {
 						if ( ! empty( $payment_data ) && is_array( $payment_data ) ) {
 							foreach ( $payment_data as $key => $value ) {
 								$display_key   = ucwords( str_replace( [ '_', '-' ], ' ', $key ) );
-								$display_value = $this->format_payment_value( $value );
+								$display_value = $this->format_payment_value( $value, $key );
 								?>
 								<tr>
 									<td><b><?php echo esc_html( $display_key ); ?></b></td>
@@ -656,9 +656,15 @@ class Single_Payment {
 	 * @since x.x.x
 	 * @return string Formatted value.
 	 */
-	private function format_payment_value( $value ) {
+	private function format_payment_value( $value, $key = null ) {
 		if ( is_array( $value ) ) {
-			return '<pre>' . esc_html( wp_json_encode( $value, JSON_PRETTY_PRINT ) ) . '</pre>';
+			$reversed_value = array_reverse( $value );
+
+			if ( 'refunds' === $key ) {
+				return $this->print_refunds( $reversed_value );
+			}
+
+			return '<pre>' . esc_html( wp_json_encode( $reversed_value, JSON_PRETTY_PRINT ) ) . '</pre>';
 		}
 
 		if ( is_bool( $value ) ) {
@@ -680,5 +686,61 @@ class Single_Payment {
 		}
 
 		return esc_html( $value );
+	}
+
+	public function print_refunds( $value ) {
+		ob_start();
+		if ( ! empty( $value ) && is_array( $value ) ) {
+			?>
+			<table class="refund-details" style="width: 100%; border-collapse: collapse; margin: 10px 0; border: 1px solid #ddd;">
+				<thead>
+					<tr>
+						<th style="background-color: #f9f9f9; padding: 10px; border-bottom: 1px solid #ddd; text-align: left; font-weight: bold;">
+							<?php esc_html_e( 'Refunded Amount', 'sureforms' ); ?>
+						</th>
+						<th style="background-color: #f9f9f9; padding: 10px; border-bottom: 1px solid #ddd; text-align: left; font-weight: bold;">
+							<?php esc_html_e( 'Refund ID', 'sureforms' ); ?>
+						</th>
+						<th style="background-color: #f9f9f9; padding: 10px; border-bottom: 1px solid #ddd; text-align: left; font-weight: bold;">
+							<?php esc_html_e( 'Status', 'sureforms' ); ?>
+						</th>
+						<th style="background-color: #f9f9f9; padding: 10px; border-bottom: 1px solid #ddd; text-align: left; font-weight: bold;">
+							<?php esc_html_e( 'Refunded By', 'sureforms' ); ?>
+						</th>
+						<th style="background-color: #f9f9f9; padding: 10px; border-bottom: 1px solid #ddd; text-align: left; font-weight: bold;">
+							<?php esc_html_e( 'Time', 'sureforms' ); ?>
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<?php foreach ( $value as $refund ) { ?>
+						<tr>
+							<td style="padding: 8px; border-bottom: 1px solid #eee;">
+								<?php
+								$amount = isset( $refund['amount'] ) ? $refund['amount'] : 0;
+								$currency = isset( $refund['currency'] ) ? strtoupper( $refund['currency'] ) : 'USD';
+								echo esc_html( $currency . ' ' . number_format( $amount / 100, 2 ) );
+								?>
+							</td>
+							<td style="padding: 8px; border-bottom: 1px solid #eee;">
+								<?php echo esc_html( $refund['refund_id'] ?? 'N/A' ); ?>
+							</td>
+							<td style="padding: 8px; border-bottom: 1px solid #eee;">
+								<?php echo esc_html( ucfirst( $refund['status'] ?? 'unknown' ) ); ?>
+							</td>
+							<td style="padding: 8px; border-bottom: 1px solid #eee;">
+								<?php echo esc_html( $refund['refunded_by'] ?? 'System' ); ?>
+							</td>
+							<td style="padding: 8px; border-bottom: 1px solid #eee;">
+								<?php echo esc_html( $refund['refunded_at'] ?? 'N/A' ); ?>
+							</td>
+						</tr>
+					<?php } ?>
+				</tbody>
+			</table>
+			<?php
+			return ob_get_clean();
+		}
+		return '';
 	}
 }
