@@ -458,7 +458,7 @@ class Payments_Settings {
 				$error_message
 			);
 		} else {
-			$response_data['message'] = $error_message ?: __( 'Failed to create webhooks.', 'sureforms' );
+			$response_data['message'] = $error_message ? $error_message : __( 'Failed to create webhooks.', 'sureforms' );
 		}
 
 		return rest_ensure_response( $response_data );
@@ -592,14 +592,14 @@ class Payments_Settings {
 					'message' => $message,
 				]
 			);
-		} else {
+		}
 			return rest_ensure_response(
 				[
 					'success' => false,
-					'message' => $error_message ?: __( 'Failed to delete webhook.', 'sureforms' ),
+					'message' => $error_message ? $error_message : __( 'Failed to delete webhook.', 'sureforms' ),
 				]
 			);
-		}
+
 	}
 
 	/**

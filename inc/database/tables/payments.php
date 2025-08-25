@@ -376,7 +376,7 @@ class Payments extends Base {
 		}
 
 		$results = self::get_instance()->get_results( [ 'id' => absint( $payment_id ) ] );
-		return isset( $results[0] ) ? $results[0] : null;
+		return $results[0] ?? null;
 	}
 
 	/**
@@ -520,7 +520,7 @@ class Payments extends Base {
 		}
 
 		$instance = self::get_instance();
-		$results  = $instance->get_results(
+		return $instance->get_results(
 			[
 				[
 					[
@@ -532,8 +532,6 @@ class Payments extends Base {
 			],
 			'id'
 		);
-
-		return $results;
 	}
 
 	/**
@@ -634,7 +632,7 @@ class Payments extends Base {
 			]
 		);
 
-		return isset( $results[0] ) ? $results[0] : null;
+		return $results[0] ?? null;
 	}
 
 	/**
