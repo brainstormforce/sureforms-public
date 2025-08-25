@@ -16,13 +16,11 @@ import SidebarNav from './SidebarNav';
 import {
 	Settings,
 	Code2Icon,
-	CpuIcon,
 	CircleCheckBig,
 	ShieldCheckIcon,
 	XIcon,
 } from 'lucide-react';
 
-import Integrations from '../integrations';
 import Suretriggers from '../integrations/suretriggers';
 import Compliance from '../Compliance';
 import FormCustomCssPanel from '../FormCustomCssPanel';
@@ -126,12 +124,6 @@ const Dialog = ( {
 						{ ...{ isFormSettings: true, setSelectedTab } }
 					/>
 				),
-			},
-			{
-				id: 'integrations',
-				label: __( 'Integrations', 'sureforms' ),
-				icon: <CpuIcon />,
-				component: <Integrations setSelectedTab={ setSelectedTab } />,
 			},
 			{
 				id: 'form_custom_css',
