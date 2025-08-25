@@ -5,6 +5,7 @@ import {
 	useEffect,
 	memo,
 	useContext,
+	useMemo,
 } from '@wordpress/element';
 import {
 	Dialog as ForceUIDialog,
@@ -167,16 +168,20 @@ const Dialog = ( {
 	}, [ targetTab, open ] );
 
 	// Apply filter to allow specific classes for pro tabs.
-	const tabSpecificClasses = applyFilters(
-		'srfm.formSettings.dialog.tabClasses',
-		{
-			suretriggers:
-				'h-full min-w-[800px] bg-background-primary shadow-sm rounded-xl',
-			ottokit:
-				'min-w-[800px] bg-background-primary p-4 shadow-sm rounded-xl border-subtle',
-			default: 'h-full max-w-[43.5rem]',
-		},
-		selectedTab
+	const tabSpecificClasses = useMemo(
+		() =>
+			applyFilters(
+				'srfm.formSettings.dialog.tabClasses',
+				{
+					suretriggers:
+						'h-full min-w-[800px] bg-background-primary shadow-sm rounded-xl',
+					ottokit:
+						'min-w-[800px] bg-background-primary p-4 shadow-sm rounded-xl border-subtle',
+					default: 'h-full max-w-[43.5rem]',
+				},
+				selectedTab
+			),
+		[ selectedTab ]
 	);
 
 	const containerClassName = cn(
