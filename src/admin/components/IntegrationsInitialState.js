@@ -41,7 +41,7 @@ const IntegrationsInitialState = ( {
 					title={ title }
 					size="md"
 					className={ cn(
-						'text-center text-text-primary mb-4',
+						'text-center text-text-primary',
 						titleClassName
 					) }
 				/>
@@ -53,7 +53,7 @@ const IntegrationsInitialState = ( {
 					weight={ 400 }
 					color="secondary"
 					className={ cn(
-						'text-center max-w-2xl mb-6',
+						'text-center max-w-2xl',
 						descriptionClassName
 					) }
 				>
