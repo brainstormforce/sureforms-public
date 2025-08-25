@@ -118,7 +118,7 @@ class Email_Template {
 		$message         = $this->get_header();
 		$excluded_fields = [ 'srfm-honeypot-field', 'g-recaptcha-response', 'srfm-sender-email-field' ];
 
-		$td_style = 'font-weight: 500;font-size: 14px;line-height: 20px;padding: 12px;border-bottom: 1px solid #E5E7EB;text-align:left;word-break: break-word';
+		$td_style = 'font-weight: 500;font-size: 14px;line-height: 20px;padding: 12px;border-bottom: 1px solid #E5E7EB;text-align:left;word-break: break-word;';
 
 		$message .= $email_body;
 		if ( strpos( $email_body, '{all_data}' ) !== false ) {
