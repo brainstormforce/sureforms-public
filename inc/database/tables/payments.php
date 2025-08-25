@@ -54,6 +54,7 @@ class Payments extends Base {
 		'requires_payment_method',
 		'processing',
 		'refunded',
+		'partially_refunded',
 	];
 
 	/**

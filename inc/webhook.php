@@ -9,6 +9,8 @@
 namespace SRFM\Inc;
 
 use SRFM\Inc\Traits\Get_Instance;
+use SRFM\Inc\Database\Tables\Payments;
+use SRFM\Inc\Stripe_Payment_Handler;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -200,91 +202,15 @@ class Webhook {
 		error_log( 'SureForms webhook event type: ' . $event->type );
 
 		switch ( $event->type ) {
-			case 'charge.captured':
-				$charge = (object) $event->data['object'];
-				$this->charge_capture( $charge );
-				break;
 			case 'charge.refunded':
 				$charge = (object) $event->data['object'];
 				$this->charge_refund( $charge );
-				break;
-			case 'charge.dispute.created':
-				$charge = (object) $event->data['object'];
-				$this->charge_dispute_created( $charge );
-				break;
-			case 'charge.dispute.closed':
-				$dispute = (object) $event->data['object'];
-				$this->charge_dispute_closed( $dispute );
-				break;
-			case 'payment_intent.succeeded':
-				$intent = (object) $event->data['object'];
-				$this->payment_intent_succeeded( $intent );
-				break;
-			case 'payment_intent.payment_failed':
-				$intent = (object) $event->data['object'];
-				$this->payment_intent_failed( $intent );
-				break;
-			case 'review.opened':
-				$review = (object) $event->data['object'];
-				$this->review_opened( $review );
-				break;
-			case 'review.closed':
-				$review = (object) $event->data['object'];
-				$this->review_closed( $review );
 				break;
 		}
 		
 		$success = constant( 'self::SRFM_' . strtoupper( $mode ) . '_LAST_SUCCESS_AT' );
 		update_option( $success, time() );
 		http_response_code( 200 );
-	}
-
-	/**
-	 * Captures charge for uncaptured charges via webhook calls
-	 *
-	 * @param object $charge Payment charge object.
-	 * @return void
-	 */
-	public function charge_capture( $charge ) {
-		$payment_intent = sanitize_text_field( $charge->payment_intent ?? '' );
-		$form_entry_id  = $this->get_entry_id_from_intent( $payment_intent );
-		
-		if ( ! $form_entry_id ) {
-			error_log( 'SureForms: Could not find form entry via charge ID: ' . ( $charge->id ?? 'unknown' ) );
-			return;
-		}
-
-		$this->make_charge( $charge, $form_entry_id );
-	}
-
-	/**
-	 * Make charge via webhook call
-	 *
-	 * @param object $intent Payment intent object.
-	 * @param int    $form_entry_id Form entry ID.
-	 * @return void
-	 */
-	public function make_charge( $intent, $form_entry_id ) {
-		if ( isset( $intent->amount_refunded ) && $intent->amount_refunded > 0 ) {
-			$partial_amount = $intent->amount_captured ?? 0;
-			$currency       = strtoupper( $intent->currency ?? 'USD' );
-			$partial_amount = $this->get_original_amount( $partial_amount, $currency );
-			
-			error_log( sprintf( 
-				'SureForms: Payment partially captured with amount %1$s for entry ID - %2$s', 
-				$partial_amount, 
-				$form_entry_id 
-			) );
-			
-			$this->update_entry_payment_status( $form_entry_id, 'partial', $partial_amount );
-		} else {
-			error_log( sprintf( 
-				'SureForms: Payment completely captured for entry ID - %s', 
-				$form_entry_id 
-			) );
-			
-			$this->update_entry_payment_status( $form_entry_id, 'completed', $intent->amount ?? 0 );
-		}
 	}
 
 	/**
@@ -295,249 +221,29 @@ class Webhook {
 	 */
 	public function charge_refund( $charge ) {
 		$payment_intent = sanitize_text_field( $charge->payment_intent ?? '' );
+		$get_payment_entry = Payments::get_by_transaction_id( $payment_intent );
 
-
-		
-		// if ( ! $form_entry_id ) {
-		// 	error_log( 'SureForms: Could not find form entry via charge ID: ' . ( $charge->id ?? 'unknown' ) );
-		// 	return;
-		// }
-
-		// $captured    = $charge->captured ?? false;
-		// $currency    = strtoupper( $charge->currency ?? 'USD' );
-		// $raw_amount  = $charge->refunds->data[0]->amount ?? 0;
-		// $raw_amount  = $this->get_original_amount( $raw_amount, $currency );
-
-		// if ( ! $captured ) {
-		// 	$this->update_entry_payment_status( $form_entry_id, 'cancelled', 0 );
-		// 	return;
-		// }
-
-		// $this->update_entry_payment_status( $form_entry_id, 'refunded', $raw_amount );
-		
-		// error_log( sprintf( 
-		// 	'SureForms: Payment refunded. Amount: %s for entry ID: %s', 
-		// 	$raw_amount, 
-		// 	$form_entry_id 
-		// ) );
-	}
-
-	/**
-	 * Handles charge.dispute.create webhook
-	 *
-	 * @param object $charge Payment charge object.
-	 * @return void
-	 */
-	public function charge_dispute_created( $charge ) {
-		$payment_intent = sanitize_text_field( $charge->payment_intent ?? '' );
-		$form_entry_id  = $this->get_entry_id_from_intent( $payment_intent );
-		
-		if ( ! $form_entry_id ) {
-			error_log( 'SureForms: Could not find form entry via charge ID: ' . ( $charge->id ?? 'unknown' ) );
+		if ( ! $get_payment_entry ) {
+			error_log( 'SureForms: Could not find payment entry via charge ID: ' . ( $charge->id ?? 'unknown' ) );
 			return;
 		}
 
-		$this->update_entry_payment_status( $form_entry_id, 'disputed' );
-		error_log( 'SureForms: Payment disputed for entry ID: ' . $form_entry_id );
-	}
+		$payment_entry_id = $get_payment_entry['id'] ?? 0;
+		$refund = $charge->refunds['data'][0];
+		$refund_amount = $refund['amount'];
 
-	/**
-	 * Handles charge.dispute.closed webhook
-	 *
-	 * @param object $dispute Dispute object received from webhook.
-	 * @return void
-	 */
-	public function charge_dispute_closed( $dispute ) {
-		$payment_intent = sanitize_text_field( $dispute->payment_intent ?? '' );
-		$form_entry_id  = $this->get_entry_id_from_intent( $payment_intent );
-		
-		if ( ! $form_entry_id ) {
-			error_log( 'SureForms: Could not find form entry for dispute ID: ' . ( $dispute->id ?? 'unknown' ) );
+		$update_refund_data = Stripe_Payment_Handler::get_instance()->update_refund_data( $payment_entry_id, $refund, $refund_amount, $charge->currency, $get_payment_entry );
+
+		if ( ! $update_refund_data ) {
+			error_log( 'SureForms: Failed to update refund data for payment entry ID: ' . $payment_entry_id );
 			return;
 		}
 
-		$status = 'lost' === ( $dispute->status ?? '' ) ? 'failed' : 'completed';
-		$this->update_entry_payment_status( $form_entry_id, $status );
-		
 		error_log( sprintf( 
-			'SureForms: Dispute closed with status %s for entry ID: %s', 
-			$dispute->status ?? 'unknown', 
-			$form_entry_id 
+			'SureForms: Payment refunded. Amount: %s for entry ID: %s', 
+			$refund_amount, 
+			$payment_entry_id 
 		) );
-	}
-
-	/**
-	 * Handles webhook call of event payment_intent.succeeded
-	 *
-	 * @param object $intent Payment intent object received from webhook.
-	 * @return void
-	 */
-	public function payment_intent_succeeded( $intent ) {
-		$payment_intent = sanitize_text_field( $intent->id ?? '' );
-		$form_entry_id  = $this->get_entry_id_from_intent( $payment_intent );
-		
-		if ( ! $form_entry_id ) {
-			error_log( 'SureForms: Could not find form entry via payment intent: ' . ( $intent->id ?? 'unknown' ) );
-			return;
-		}
-
-		$this->update_entry_payment_status( $form_entry_id, 'completed', $intent->amount ?? 0 );
-		
-		error_log( sprintf( 
-			'SureForms: PaymentIntent %s succeeded for entry %s', 
-			$intent->id ?? 'unknown', 
-			$form_entry_id 
-		) );
-	}
-
-	/**
-	 * Handles webhook call payment_intent.payment_failed
-	 *
-	 * @param object $intent Payment intent object.
-	 * @return void
-	 */
-	public function payment_intent_failed( $intent ) {
-		$payment_intent = sanitize_text_field( $intent->id ?? '' );
-		$form_entry_id  = $this->get_entry_id_from_intent( $payment_intent );
-		
-		if ( ! $form_entry_id ) {
-			error_log( 'SureForms: Could not find form entry via payment intent: ' . ( $intent->id ?? 'unknown' ) );
-			return;
-		}
-
-		$error_message = isset( $intent->last_payment_error->message ) 
-			? $intent->last_payment_error->message 
-			: 'Payment failed';
-			
-		$this->update_entry_payment_status( $form_entry_id, 'failed', 0, $error_message );
-		
-		error_log( sprintf( 
-			'SureForms: Payment failed for entry %s. Reason: %s', 
-			$form_entry_id, 
-			$error_message 
-		) );
-	}
-
-	/**
-	 * Handles review.opened webhook
-	 *
-	 * @param object $review Review object from webhook.
-	 * @return void
-	 */
-	public function review_opened( $review ) {
-		$payment_intent = sanitize_text_field( $review->payment_intent ?? '' );
-		$form_entry_id  = $this->get_entry_id_from_intent( $payment_intent );
-		
-		if ( ! $form_entry_id ) {
-			error_log( 'SureForms: Could not find form entry via review ID: ' . ( $review->id ?? 'unknown' ) );
-			return;
-		}
-
-		$this->update_entry_payment_status( $form_entry_id, 'under_review' );
-		error_log( 'SureForms: Payment under review for entry ID: ' . $form_entry_id );
-	}
-
-	/**
-	 * Handles review.closed webhook
-	 *
-	 * @param object $review Review object from webhook.
-	 * @return void
-	 */
-	public function review_closed( $review ) {
-		$payment_intent = sanitize_text_field( $review->payment_intent ?? '' );
-		$form_entry_id  = $this->get_entry_id_from_intent( $payment_intent );
-		
-		if ( ! $form_entry_id ) {
-			error_log( 'SureForms: Could not find form entry via review ID: ' . ( $review->id ?? 'unknown' ) );
-			return;
-		}
-
-		$this->update_entry_payment_status( $form_entry_id, 'completed' );
-		
-		error_log( sprintf( 
-			'SureForms: Review closed for entry %s. Reason: %s', 
-			$form_entry_id, 
-			$review->reason ?? 'unknown' 
-		) );
-	}
-
-	/**
-	 * Fetch form entry ID from payment intent
-	 *
-	 * @param string $payment_intent payment intent received from webhook.
-	 * @return int|null Entry ID or null if not found.
-	 */
-	public function get_entry_id_from_intent( $payment_intent ) {
-		global $wpdb;
-		
-		if ( empty( $payment_intent ) ) {
-			return null;
-		}
-
-		$table_name = $wpdb->prefix . 'srfm_entries';
-		
-		return $wpdb->get_var( 
-			$wpdb->prepare( 
-				"SELECT id FROM {$table_name} WHERE payment_intent = %s", 
-				$payment_intent 
-			) 
-		);
-	}
-
-	/**
-	 * Update form entry payment status
-	 *
-	 * @param int    $entry_id Form entry ID.
-	 * @param string $status Payment status.
-	 * @param float  $amount Payment amount (optional).
-	 * @param string $error_message Error message (optional).
-	 * @return void
-	 */
-	public function update_entry_payment_status( $entry_id, $status, $amount = null, $error_message = null ) {
-		global $wpdb;
-		
-		$table_name = $wpdb->prefix . 'srfm_entries';
-		
-		$update_data = [
-			'payment_status' => $status,
-		];
-		
-		if ( null !== $amount ) {
-			$update_data['payment_amount'] = $amount;
-		}
-		
-		if ( $error_message ) {
-			$update_data['payment_error'] = $error_message;
-		}
-		
-		$wpdb->update(
-			$table_name,
-			$update_data,
-			[ 'id' => $entry_id ],
-			null,
-			[ '%d' ]
-		);
-	}
-
-	/**
-	 * Get original amount from cents
-	 *
-	 * @param int    $amount Amount in cents.
-	 * @param string $currency Currency code.
-	 * @return float Original amount.
-	 */
-	public function get_original_amount( $amount, $currency ) {
-		$zero_decimal_currencies = [
-			'BIF', 'CLP', 'DJF', 'GNF', 'JPY', 'KMF', 'KRW', 
-			'MGA', 'PYG', 'RWF', 'UGX', 'VND', 'VUV', 'XAF', 
-			'XOF', 'XPF',
-		];
-
-		if ( in_array( strtoupper( $currency ), $zero_decimal_currencies, true ) ) {
-			return floatval( $amount );
-		}
-
-		return floatval( $amount ) / 100;
 	}
 
 	/**

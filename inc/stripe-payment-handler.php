@@ -793,6 +793,52 @@ class Stripe_Payment_Handler {
 	}
 
 	/**
+	 * Calculate total refunded amount for a payment
+	 *
+	 * @param int $payment_id Payment record ID.
+	 * @return float Total refunded amount in dollars.
+	 * @since x.x.x
+	 */
+	private function calculate_total_refunds( $payment_id ) {
+		$payment_data = Payments::get_payment_data( $payment_id );
+		$total_refunded = 0;
+		
+		if ( ! empty( $payment_data['refunds'] ) && is_array( $payment_data['refunds'] ) ) {
+			foreach ( $payment_data['refunds'] as $refund ) {
+				$refund_amount = isset( $refund['amount'] ) ? floatval( $refund['amount'] ) : 0;
+				// Convert from cents to dollars
+				$total_refunded += ( $refund_amount / 100 );
+			}
+		}
+		
+		return $total_refunded;
+	}
+
+	/**
+	 * Check if the refund already exists
+	 *
+	 * @param array $payment Payment record data.
+	 * @param array $refund Refund response from Stripe.
+	 * @return bool True if refund already exists, false otherwise.
+	 * @since x.x.x
+	 */
+	private function check_if_refund_already_exists( $payment, $refund ){
+		$refund_id = $refund['id'] ?? '';
+
+		$payment_refunds = isset( $payment['payment_data'] ) && isset( $payment['payment_data']['refunds'] ) ? $payment['payment_data']['refunds'] : [];
+
+		if ( ! empty( $payment_refunds ) && is_array( $payment_refunds ) ) {
+			foreach ( $payment_refunds as $refund ) {
+				if ( isset( $refund['refund_id'] ) && $refund['refund_id'] === $refund_id ) {
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
+	/**
 	 * Update refund data in payment_data column and log
 	 *
 	 * @param int   $payment_id Payment record ID.
@@ -817,6 +863,11 @@ class Stripe_Payment_Handler {
 			}
 		}
 
+		$check_if_refund_already_exists = $this->check_if_refund_already_exists( $payment, $refund_response );
+		if ( $check_if_refund_already_exists ) {
+			return true;
+		}
+
 		// Prepare refund data for payment_data column
 		$refund_data = [
 			'refund_id'      => sanitize_text_field( $refund_response['id'] ?? '' ),
@@ -831,25 +882,58 @@ class Stripe_Payment_Handler {
 			'refunded_at'    => gmdate( 'Y-m-d H:i:s' ),
 		];
 
+		// Validate refund amount to prevent over-refunding
+		$original_amount = floatval( $payment['total_amount'] );
+		$existing_refunds = $this->calculate_total_refunds( $payment_id );
+		$new_refund_amount = $refund_amount / 100; // Convert cents to dollars
+		$total_after_refund = $existing_refunds + $new_refund_amount;
+		
+		if ( $total_after_refund > $original_amount ) {
+			error_log( sprintf(
+				'SureForms: Over-refund attempt blocked. Payment ID: %d, Original: $%s, Existing refunds: $%s, New refund: $%s',
+				$payment_id,
+				number_format( $original_amount, 2 ),
+				number_format( $existing_refunds, 2 ),
+				number_format( $new_refund_amount, 2 )
+			) );
+			return false;
+		}
+
 		// Add refund data to payment_data column
 		$payment_data_result = Payments::add_refund_to_payment_data( $payment_id, $refund_data );
 
+		// Calculate appropriate payment status
+		$payment_status = 'succeeded'; // Default to current status
+		if ( $total_after_refund >= $original_amount ) {
+			$payment_status = 'refunded'; // Fully refunded
+		} elseif ( $total_after_refund > 0 ) {
+			$payment_status = 'partially_refunded'; // Partially refunded
+		}
+
 		// Update payment status and log
 		$current_logs = Helper::get_array_value( $payment['log'] );
+		$refund_type = ( $total_after_refund >= $original_amount ) ? 'Full' : 'Partial';
 		$new_log = [
-			'title'     => 'Payment Refunded',
+			'title'     => sprintf( '%s Payment Refund', $refund_type ),
 			'timestamp' => time(),
 			'messages'  => [
 				sprintf( 'Refund ID: %s', $refund_response['id'] ?? 'N/A' ),
 				sprintf( 'Refund Amount: %s %s', number_format( $refund_amount / 100, 2 ), strtoupper( $currency ) ),
+				sprintf( 'Total Refunded: %s %s of %s %s', 
+					number_format( $total_after_refund, 2 ), 
+					strtoupper( $currency ),
+					number_format( $original_amount, 2 ), 
+					strtoupper( $currency ) 
+				),
 				sprintf( 'Refund Status: %s', $refund_response['status'] ?? 'processed' ),
+				sprintf( 'Payment Status: %s', ucfirst( str_replace( '_', ' ', $payment_status ) ) ),
 				sprintf( 'Refunded by: %s', wp_get_current_user()->display_name ),
 			],
 		];
 		$current_logs[] = $new_log;
 
 		$update_data = [
-			'status' => 'refunded',
+			'status' => $payment_status,
 			'log'    => $current_logs,
 		];
 
