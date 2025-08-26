@@ -51,7 +51,7 @@ class Webhook {
 			$settings = get_option( Payments_Settings::OPTION_NAME, [] );
 			$mode     = $settings['payment_mode'] ?? 'test';
 		}
-		
+
 		$last_success    = constant( 'self::SRFM_' . strtoupper( $mode ) . '_LAST_SUCCESS_AT' );
 		$last_success_at = get_option( $last_success );
 
@@ -75,34 +75,34 @@ class Webhook {
 
 		switch ( $status ) {
 			case 'success':
-				return sprintf( 
+				return sprintf(
 					/* translators: time, status */
-					__( 'Last webhook call was %1$s. Status : %2$s', 'sureforms' ), 
-					self::time_elapsed_string( gmdate( 'Y-m-d H:i:s e', $last_success_at ) ), 
-					'<b>' . ucfirst( $status ) . '</b>' 
+					__( 'Last webhook call was %1$s. Status : %2$s', 'sureforms' ),
+					self::time_elapsed_string( gmdate( 'Y-m-d H:i:s e', $last_success_at ) ),
+					'<b>' . ucfirst( $status ) . '</b>'
 				);
 
 			case 'failure':
 				$err_const = constant( 'self::SRFM_' . strtoupper( $mode ) . '_LAST_ERROR' );
 				$error     = get_option( $err_const );
-				$reason    = ( $error ) ? sprintf( 
+				$reason    = ( $error ) ? sprintf(
 					/* translators: error message */
-					__( 'Reason : %s', 'sureforms' ), 
-					'<b>' . $error . '</b>' 
+					__( 'Reason : %s', 'sureforms' ),
+					'<b>' . $error . '</b>'
 				) : '';
-				return sprintf( 
+				return sprintf(
 					/* translators: time, status, reason */
-					__( 'Last webhook call was %1$s. Status : %2$s. %3$s', 'sureforms' ), 
-					self::time_elapsed_string( gmdate( 'Y-m-d H:i:s e', $last_failure_at ) ), 
-					'<b>' . ucfirst( $status ) . '</b>', 
-					$reason 
+					__( 'Last webhook call was %1$s. Status : %2$s. %3$s', 'sureforms' ),
+					self::time_elapsed_string( gmdate( 'Y-m-d H:i:s e', $last_failure_at ) ),
+					'<b>' . ucfirst( $status ) . '</b>',
+					$reason
 				);
 
 			case 'began':
-				return sprintf( 
+				return sprintf(
 					/* translators: timestamp */
-					__( 'No webhook call since %s.', 'sureforms' ), 
-					gmdate( 'Y-m-d H:i:s e', $began_at ) 
+					__( 'No webhook call since %s.', 'sureforms' ),
+					gmdate( 'Y-m-d H:i:s e', $began_at )
 				);
 
 			default:
@@ -112,14 +112,14 @@ class Webhook {
 				} elseif ( 'test' === $mode ) {
 					$endpoint_secret = $settings['webhook_test_secret'] ?? '';
 				}
-				
+
 				if ( ! empty( trim( $endpoint_secret ) ) ) {
 					$current_time = time();
 					update_option( $began, $current_time );
-					return sprintf( 
+					return sprintf(
 						/* translators: timestamp */
-						__( 'No webhook call since %s.', 'sureforms' ), 
-						gmdate( 'Y-m-d H:i:s e', $current_time ) 
+						__( 'No webhook call since %s.', 'sureforms' ),
+						gmdate( 'Y-m-d H:i:s e', $current_time )
 					);
 				}
 				return '';
@@ -136,8 +136,8 @@ class Webhook {
 			'sureforms',
 			'/webhook',
 			[
-				'methods'             => 'POST',
-				'callback'            => [ $this, 'webhook_listener' ],
+				'methods'  => 'POST',
+				'callback' => [ $this, 'webhook_listener' ],
 				// 'permission_callback' => [ $this, 'validate_webhook_signature' ],
 			]
 		);
@@ -160,22 +160,22 @@ class Webhook {
 	 */
 	public function webhook_listener() {
 		// $settings = get_option( Payments_Settings::OPTION_NAME, [] );
-		$mode     = $settings['payment_mode'] ?? 'test';
-		
+		$mode = $settings['payment_mode'] ?? 'test';
+
 		// if ( 'live' === $mode ) {
-		// 	$endpoint_secret = $settings['webhook_live_secret'] ?? '';
+		// $endpoint_secret = $settings['webhook_live_secret'] ?? '';
 		// } else {
-		// 	$endpoint_secret = $settings['webhook_test_secret'] ?? '';
+		// $endpoint_secret = $settings['webhook_test_secret'] ?? '';
 		// }
 
 		// if ( empty( trim( $endpoint_secret ) ) ) {
-		// 	http_response_code( 400 );
-		// 	exit();
+		// http_response_code( 400 );
+		// exit();
 		// }
 
 		// $began = constant( 'self::SRFM_' . strtoupper( $mode ) . '_BEGAN_AT' );
 		// if ( ! get_option( $began ) ) {
-		// 	update_option( $began, time() );
+		// update_option( $began, time() );
 		// }
 
 		$payload = file_get_contents( 'php://input' );
@@ -183,7 +183,7 @@ class Webhook {
 
 		try {
 			$event_data = json_decode( $payload, true );
-			
+
 			if ( ! $event_data || ! isset( $event_data['type'] ) ) {
 				throw new \Exception( 'Invalid payload format' );
 			}
@@ -207,7 +207,7 @@ class Webhook {
 				$this->charge_refund( $charge );
 				break;
 		}
-		
+
 		$success = constant( 'self::SRFM_' . strtoupper( $mode ) . '_LAST_SUCCESS_AT' );
 		update_option( $success, time() );
 		http_response_code( 200 );
@@ -220,7 +220,7 @@ class Webhook {
 	 * @return void
 	 */
 	public function charge_refund( $charge ) {
-		$payment_intent = sanitize_text_field( $charge->payment_intent ?? '' );
+		$payment_intent    = sanitize_text_field( $charge->payment_intent ?? '' );
 		$get_payment_entry = Payments::get_by_transaction_id( $payment_intent );
 
 		if ( ! $get_payment_entry ) {
@@ -229,8 +229,8 @@ class Webhook {
 		}
 
 		$payment_entry_id = $get_payment_entry['id'] ?? 0;
-		$refund = $charge->refunds['data'][0];
-		$refund_amount = $refund['amount'];
+		$refund           = $charge->refunds['data'][0];
+		$refund_amount    = $refund['amount'];
 
 		$update_refund_data = $this->update_refund_data( $payment_entry_id, $refund, $refund_amount, $charge->currency, 'webhook' );
 
@@ -239,11 +239,13 @@ class Webhook {
 			return;
 		}
 
-		error_log( sprintf( 
-			'SureForms: Payment refunded. Amount: %s for entry ID: %s', 
-			$refund_amount, 
-			$payment_entry_id 
-		) );
+		error_log(
+			sprintf(
+				'SureForms: Payment refunded. Amount: %s for entry ID: %s',
+				$refund_amount,
+				$payment_entry_id
+			)
+		);
 	}
 
 	public function calculate_total_refunds( $payment_id ) {
@@ -259,7 +261,7 @@ class Webhook {
 	 * @return bool True if refund already exists, false otherwise.
 	 * @since x.x.x
 	 */
-	private function check_if_refund_already_exists( $payment, $refund ){
+	private function check_if_refund_already_exists( $payment, $refund ) {
 		$refund_id = $refund['id'] ?? '';
 
 		$payment_refunds = isset( $payment['payment_data'] ) && isset( $payment['payment_data']['refunds'] ) ? $payment['payment_data']['refunds'] : [];
@@ -307,19 +309,21 @@ class Webhook {
 		];
 
 		// Validate refund amount to prevent over-refunding
-		$original_amount = floatval( $payment['total_amount'] );
-		$existing_refunds = floatval( $payment['refunded_amount'] ?? 0 ); // Use column directly
-		$new_refund_amount = $refund_amount / 100; // Convert cents to dollars
+		$original_amount    = floatval( $payment['total_amount'] );
+		$existing_refunds   = floatval( $payment['refunded_amount'] ?? 0 ); // Use column directly
+		$new_refund_amount  = $refund_amount / 100; // Convert cents to dollars
 		$total_after_refund = $existing_refunds + $new_refund_amount;
-		
+
 		if ( $total_after_refund > $original_amount ) {
-			error_log( sprintf(
-				'SureForms: Over-refund attempt blocked. Payment ID: %d, Original: $%s, Existing refunds: $%s, New refund: $%s',
-				$payment_id,
-				number_format( $original_amount, 2 ),
-				number_format( $existing_refunds, 2 ),
-				number_format( $new_refund_amount, 2 )
-			) );
+			error_log(
+				sprintf(
+					'SureForms: Over-refund attempt blocked. Payment ID: %d, Original: $%s, Existing refunds: $%s, New refund: $%s',
+					$payment_id,
+					number_format( $original_amount, 2 ),
+					number_format( $existing_refunds, 2 ),
+					number_format( $new_refund_amount, 2 )
+				)
+			);
 			return false;
 		}
 
@@ -338,19 +342,20 @@ class Webhook {
 		}
 
 		// Update payment status and log
-		$current_logs = Helper::get_array_value( $payment['log'] );
-		$refund_type = ( $total_after_refund >= $original_amount ) ? 'Full' : 'Partial';
-		$new_log = [
+		$current_logs   = Helper::get_array_value( $payment['log'] );
+		$refund_type    = ( $total_after_refund >= $original_amount ) ? 'Full' : 'Partial';
+		$new_log        = [
 			'title'     => sprintf( '%s Payment Refund', $refund_type ),
 			'timestamp' => time(),
 			'messages'  => [
 				sprintf( 'Refund ID: %s', $refund_response['id'] ?? 'N/A' ),
 				sprintf( 'Refund Amount: %s %s', number_format( $refund_amount / 100, 2 ), strtoupper( $currency ) ),
-				sprintf( 'Total Refunded: %s %s of %s %s', 
-					number_format( $total_after_refund, 2 ), 
+				sprintf(
+					'Total Refunded: %s %s of %s %s',
+					number_format( $total_after_refund, 2 ),
 					strtoupper( $currency ),
-					number_format( $original_amount, 2 ), 
-					strtoupper( $currency ) 
+					number_format( $original_amount, 2 ),
+					strtoupper( $currency )
 				),
 				sprintf( 'Refund Status: %s', $refund_response['status'] ?? 'processed' ),
 				sprintf( 'Payment Status: %s', ucfirst( str_replace( '_', ' ', $payment_status ) ) ),
@@ -382,13 +387,15 @@ class Webhook {
 			return false;
 		}
 
-		error_log( sprintf(
-			'SureForms: Refund processed successfully. Payment ID: %d, Refund ID: %s, Amount: %s %s',
-			$payment_id,
-			$refund_data['refund_id'],
-			number_format( $refund_amount / 100, 2 ),
-			$currency
-		) );
+		error_log(
+			sprintf(
+				'SureForms: Refund processed successfully. Payment ID: %d, Refund ID: %s, Amount: %s %s',
+				$payment_id,
+				$refund_data['refund_id'],
+				number_format( $refund_amount / 100, 2 ),
+				$currency
+			)
+		);
 
 		return true;
 	}
@@ -417,7 +424,7 @@ class Webhook {
 			'i' => 'minute',
 			's' => 'second',
 		];
-		
+
 		foreach ( $string as $k => &$v ) {
 			if ( $diff->$k ) {
 				$v = $diff->$k . ' ' . $v . ( $diff->$k > 1 ? 's' : '' );
@@ -429,7 +436,7 @@ class Webhook {
 		if ( ! $full ) {
 			$string = array_slice( $string, 0, 1 );
 		}
-		
+
 		return $string ? implode( ', ', $string ) . ' ago' : 'just now';
 	}
 }

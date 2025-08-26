@@ -259,12 +259,12 @@ class Single_Payment {
 				// Add refund section for succeeded and partially refunded payments
 				if ( ( 'succeeded' === $payment_status || 'partially_refunded' === $payment_status ) && ! empty( $this->payment['transaction_id'] ) && 'stripe' === $this->payment['gateway'] ) {
 					// Calculate refundable amount using the new column
-					$total_refunded = floatval( $this->payment['refunded_amount'] ?? 0 );
+					$total_refunded    = floatval( $this->payment['refunded_amount'] ?? 0 );
 					$refundable_amount = $amount - $total_refunded;
-					$currency_symbol = $currency === 'USD' ? '$' : strtoupper( $currency ) . ' ';
-					
+					$currency_symbol   = $currency === 'USD' ? '$' : strtoupper( $currency ) . ' ';
+
 					// Get refund history from payment_data for display
-					$payment_data = Helper::get_array_value( $this->payment['payment_data'] );
+					$payment_data   = Helper::get_array_value( $this->payment['payment_data'] );
 					$refund_history = [];
 					if ( ! empty( $payment_data['refunds'] ) && is_array( $payment_data['refunds'] ) ) {
 						$refund_history = $payment_data['refunds'];
@@ -365,10 +365,10 @@ class Single_Payment {
 		// Add refund nonce for JavaScript if payment can be refunded
 		if ( ( 'succeeded' === $payment_status || 'partially_refunded' === $payment_status ) && ! empty( $this->payment['transaction_id'] ) && 'stripe' === $this->payment['gateway'] ) {
 			// Calculate refundable amount for JS using the column
-			$total_refunded = floatval( $this->payment['refunded_amount'] ?? 0 );
+			$total_refunded    = floatval( $this->payment['refunded_amount'] ?? 0 );
 			$refundable_amount = $amount - $total_refunded;
-			$currency_symbol = $currency === 'USD' ? '$' : strtoupper( $currency ) . ' ';
-			
+			$currency_symbol   = $currency === 'USD' ? '$' : strtoupper( $currency ) . ' ';
+
 			wp_localize_script(
 				'srfm-payment-entries',
 				'sureformsRefundData',
@@ -382,20 +382,20 @@ class Single_Payment {
 						'currency_symbol'   => $currency_symbol,
 					],
 					'strings' => [
-						'confirm_message'      => __( 'Are you sure you want to refund this payment? This action cannot be undone.', 'sureforms' ),
-						'confirm_full_refund'  => sprintf( __( 'Are you sure you want to refund the full amount (%s)? This action cannot be undone.', 'sureforms' ), $currency_symbol . number_format( $refundable_amount, 2 ) ),
+						'confirm_message'        => __( 'Are you sure you want to refund this payment? This action cannot be undone.', 'sureforms' ),
+						'confirm_full_refund'    => sprintf( __( 'Are you sure you want to refund the full amount (%s)? This action cannot be undone.', 'sureforms' ), $currency_symbol . number_format( $refundable_amount, 2 ) ),
 						'confirm_partial_refund' => __( 'Are you sure you want to refund %amount%? This action cannot be undone.', 'sureforms' ),
-						'processing'           => __( 'Processing Refund...', 'sureforms' ),
-						'success_message'      => __( 'Payment refunded successfully!', 'sureforms' ),
-						'error_prefix'         => __( 'Error: ', 'sureforms' ),
-						'error_fallback'       => __( 'Failed to process refund.', 'sureforms' ),
-						'network_error'        => __( 'Network error. Please try again.', 'sureforms' ),
-						'issue_refund'         => __( 'Issue Refund', 'sureforms' ),
-						'amount_required'      => __( 'Please enter a refund amount.', 'sureforms' ),
-						'amount_invalid'       => __( 'Please enter a valid amount.', 'sureforms' ),
-						'amount_too_low'       => __( 'Refund amount must be at least $0.01.', 'sureforms' ),
-						'amount_too_high'      => sprintf( __( 'Refund amount cannot exceed %s.', 'sureforms' ), $currency_symbol . number_format( $refundable_amount, 2 ) ),
-						'select_refund_type'   => __( 'Please select a refund type.', 'sureforms' ),
+						'processing'             => __( 'Processing Refund...', 'sureforms' ),
+						'success_message'        => __( 'Payment refunded successfully!', 'sureforms' ),
+						'error_prefix'           => __( 'Error: ', 'sureforms' ),
+						'error_fallback'         => __( 'Failed to process refund.', 'sureforms' ),
+						'network_error'          => __( 'Network error. Please try again.', 'sureforms' ),
+						'issue_refund'           => __( 'Issue Refund', 'sureforms' ),
+						'amount_required'        => __( 'Please enter a refund amount.', 'sureforms' ),
+						'amount_invalid'         => __( 'Please enter a valid amount.', 'sureforms' ),
+						'amount_too_low'         => __( 'Refund amount must be at least $0.01.', 'sureforms' ),
+						'amount_too_high'        => sprintf( __( 'Refund amount cannot exceed %s.', 'sureforms' ), $currency_symbol . number_format( $refundable_amount, 2 ) ),
+						'select_refund_type'     => __( 'Please select a refund type.', 'sureforms' ),
 					],
 				]
 			);
@@ -437,12 +437,12 @@ class Single_Payment {
 						
 						<?php
 						// Always show payment amount and status first
-						$amount = ! empty( $this->payment['total_amount'] ) ? floatval( $this->payment['total_amount'] ) : 0;
-						$currency = ! empty( $this->payment['currency'] ) ? strtoupper( $this->payment['currency'] ) : 'USD';
+						$amount         = ! empty( $this->payment['total_amount'] ) ? floatval( $this->payment['total_amount'] ) : 0;
+						$currency       = ! empty( $this->payment['currency'] ) ? strtoupper( $this->payment['currency'] ) : 'USD';
 						$payment_status = $this->payment['status'];
-						
+
 						// Status labels for display
-						$status_labels = [
+						$status_labels  = [
 							'pending'                 => __( 'Pending', 'sureforms' ),
 							'succeeded'               => __( 'Succeeded', 'sureforms' ),
 							'failed'                  => __( 'Failed', 'sureforms' ),
@@ -469,30 +469,36 @@ class Single_Payment {
 									font-size: 11px; 
 									font-weight: bold; 
 									text-transform: uppercase;
-									background-color: <?php 
-										echo esc_attr( 
-											'succeeded' === $payment_status ? '#d4edda' : 
-											( 'refunded' === $payment_status ? '#f8d7da' : 
-											( 'failed' === $payment_status ? '#f8d7da' : 
-											( 'partially_refunded' === $payment_status ? '#fff3cd' : '#fff3cd' ) ) ) 
-										); 
-									?>;
-									color: <?php 
-										echo esc_attr( 
-											'succeeded' === $payment_status ? '#155724' : 
-											( 'refunded' === $payment_status ? '#721c24' : 
-											( 'failed' === $payment_status ? '#721c24' : 
-											( 'partially_refunded' === $payment_status ? '#856404' : '#856404' ) ) ) 
-										); 
-									?>;
-									border: 1px solid <?php 
-										echo esc_attr( 
-											'succeeded' === $payment_status ? '#c3e6cb' : 
-											( 'refunded' === $payment_status ? '#f5c6cb' : 
-											( 'failed' === $payment_status ? '#f5c6cb' : 
-											( 'partially_refunded' === $payment_status ? '#ffeaa7' : '#ffeaa7' ) ) ) 
-										); 
-									?>;">
+									background-color: 
+									<?php
+										echo esc_attr(
+											'succeeded' === $payment_status ? '#d4edda' :
+											( 'refunded' === $payment_status ? '#f8d7da' :
+											( 'failed' === $payment_status ? '#f8d7da' :
+											( 'partially_refunded' === $payment_status ? '#fff3cd' : '#fff3cd' ) ) )
+										);
+									?>
+									;
+									color: 
+									<?php
+										echo esc_attr(
+											'succeeded' === $payment_status ? '#155724' :
+											( 'refunded' === $payment_status ? '#721c24' :
+											( 'failed' === $payment_status ? '#721c24' :
+											( 'partially_refunded' === $payment_status ? '#856404' : '#856404' ) ) )
+										);
+									?>
+									;
+									border: 1px solid 
+									<?php
+										echo esc_attr(
+											'succeeded' === $payment_status ? '#c3e6cb' :
+											( 'refunded' === $payment_status ? '#f5c6cb' :
+											( 'failed' === $payment_status ? '#f5c6cb' :
+											( 'partially_refunded' === $payment_status ? '#ffeaa7' : '#ffeaa7' ) ) )
+										);
+									?>
+									;">
 									<?php echo esc_html( $status_display ); ?>
 								</span>
 							</td>
@@ -526,7 +532,7 @@ class Single_Payment {
 								<?php
 							}
 						}
-						
+
 						// Show message if no additional data
 						if ( empty( $payment_data ) && empty( $extra_data ) ) {
 							?>
@@ -704,7 +710,7 @@ class Single_Payment {
 						<tr>
 							<td style="padding: 8px; border-bottom: 1px solid #eee;">
 								<?php
-								$amount = isset( $refund['amount'] ) ? $refund['amount'] : 0;
+								$amount   = isset( $refund['amount'] ) ? $refund['amount'] : 0;
 								$currency = isset( $refund['currency'] ) ? strtoupper( $refund['currency'] ) : 'USD';
 								echo esc_html( $currency . ' ' . number_format( $amount / 100, 2 ) );
 								?>

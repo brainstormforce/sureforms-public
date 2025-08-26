@@ -812,7 +812,7 @@ class Stripe_Payment_Handler {
 	 * @return bool True if refund already exists, false otherwise.
 	 * @since x.x.x
 	 */
-	private function check_if_refund_already_exists( $payment, $refund ){
+	private function check_if_refund_already_exists( $payment, $refund ) {
 		$refund_id = $refund['id'] ?? '';
 
 		$payment_refunds = isset( $payment['payment_data'] ) && isset( $payment['payment_data']['refunds'] ) ? $payment['payment_data']['refunds'] : [];
@@ -831,11 +831,11 @@ class Stripe_Payment_Handler {
 	/**
 	 * Update refund data in payment_data column and log
 	 *
-	 * @param int   $payment_id Payment record ID.
-	 * @param array $refund_response Refund response from Stripe.
-	 * @param int   $refund_amount Refund amount in cents.
+	 * @param int    $payment_id Payment record ID.
+	 * @param array  $refund_response Refund response from Stripe.
+	 * @param int    $refund_amount Refund amount in cents.
 	 * @param string $currency Currency code.
-	 * @param array $payment Payment record data.
+	 * @param array  $payment Payment record data.
 	 * @return bool True if successful, false otherwise.
 	 * @since x.x.x
 	 */
@@ -873,19 +873,21 @@ class Stripe_Payment_Handler {
 		];
 
 		// Validate refund amount to prevent over-refunding
-		$original_amount = floatval( $payment['total_amount'] );
-		$existing_refunds = floatval( $payment['refunded_amount'] ?? 0 ); // Use column directly
-		$new_refund_amount = $refund_amount / 100; // Convert cents to dollars
+		$original_amount    = floatval( $payment['total_amount'] );
+		$existing_refunds   = floatval( $payment['refunded_amount'] ?? 0 ); // Use column directly
+		$new_refund_amount  = $refund_amount / 100; // Convert cents to dollars
 		$total_after_refund = $existing_refunds + $new_refund_amount;
-		
+
 		if ( $total_after_refund > $original_amount ) {
-			error_log( sprintf(
-				'SureForms: Over-refund attempt blocked. Payment ID: %d, Original: $%s, Existing refunds: $%s, New refund: $%s',
-				$payment_id,
-				number_format( $original_amount, 2 ),
-				number_format( $existing_refunds, 2 ),
-				number_format( $new_refund_amount, 2 )
-			) );
+			error_log(
+				sprintf(
+					'SureForms: Over-refund attempt blocked. Payment ID: %d, Original: $%s, Existing refunds: $%s, New refund: $%s',
+					$payment_id,
+					number_format( $original_amount, 2 ),
+					number_format( $existing_refunds, 2 ),
+					number_format( $new_refund_amount, 2 )
+				)
+			);
 			return false;
 		}
 
@@ -904,19 +906,20 @@ class Stripe_Payment_Handler {
 		}
 
 		// Update payment status and log
-		$current_logs = Helper::get_array_value( $payment['log'] );
-		$refund_type = ( $total_after_refund >= $original_amount ) ? 'Full' : 'Partial';
-		$new_log = [
+		$current_logs   = Helper::get_array_value( $payment['log'] );
+		$refund_type    = ( $total_after_refund >= $original_amount ) ? 'Full' : 'Partial';
+		$new_log        = [
 			'title'     => sprintf( '%s Payment Refund', $refund_type ),
 			'timestamp' => time(),
 			'messages'  => [
 				sprintf( 'Refund ID: %s', $refund_response['id'] ?? 'N/A' ),
 				sprintf( 'Refund Amount: %s %s', number_format( $refund_amount / 100, 2 ), strtoupper( $currency ) ),
-				sprintf( 'Total Refunded: %s %s of %s %s', 
-					number_format( $total_after_refund, 2 ), 
+				sprintf(
+					'Total Refunded: %s %s of %s %s',
+					number_format( $total_after_refund, 2 ),
 					strtoupper( $currency ),
-					number_format( $original_amount, 2 ), 
-					strtoupper( $currency ) 
+					number_format( $original_amount, 2 ),
+					strtoupper( $currency )
 				),
 				sprintf( 'Refund Status: %s', $refund_response['status'] ?? 'processed' ),
 				sprintf( 'Payment Status: %s', ucfirst( str_replace( '_', ' ', $payment_status ) ) ),
@@ -948,13 +951,15 @@ class Stripe_Payment_Handler {
 			return false;
 		}
 
-		error_log( sprintf(
-			'SureForms: Refund processed successfully. Payment ID: %d, Refund ID: %s, Amount: %s %s',
-			$payment_id,
-			$refund_data['refund_id'],
-			number_format( $refund_amount / 100, 2 ),
-			$currency
-		) );
+		error_log(
+			sprintf(
+				'SureForms: Refund processed successfully. Payment ID: %d, Refund ID: %s, Amount: %s %s',
+				$payment_id,
+				$refund_data['refund_id'],
+				number_format( $refund_amount / 100, 2 ),
+				$currency
+			)
+		);
 
 		return true;
 	}

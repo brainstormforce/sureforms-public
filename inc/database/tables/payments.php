@@ -800,7 +800,7 @@ class Payments extends Base {
 		}
 
 		// Calculate new refunded amount
-		$current_refunded = floatval( $payment['refunded_amount'] ?? 0 );
+		$current_refunded   = floatval( $payment['refunded_amount'] ?? 0 );
 		$new_total_refunded = $current_refunded + floatval( $refund_amount );
 
 		// Update refunded amount
@@ -844,7 +844,7 @@ class Payments extends Base {
 			return 0.0;
 		}
 
-		$total_amount = floatval( $payment['total_amount'] ?? 0 );
+		$total_amount    = floatval( $payment['total_amount'] ?? 0 );
 		$refunded_amount = floatval( $payment['refunded_amount'] ?? 0 );
 
 		return max( 0, $total_amount - $refunded_amount );
@@ -867,7 +867,7 @@ class Payments extends Base {
 			return false;
 		}
 
-		$total_amount = floatval( $payment['total_amount'] ?? 0 );
+		$total_amount    = floatval( $payment['total_amount'] ?? 0 );
 		$refunded_amount = floatval( $payment['refunded_amount'] ?? 0 );
 
 		return $refunded_amount >= $total_amount && $total_amount > 0;

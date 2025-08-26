@@ -3,7 +3,7 @@ if ( window?.sureformsRefundData && jQuery( '#srfm-refund-button' ).length ) {
 	jQuery( '#srfm-refund-type' ).on( 'change', function () {
 		const refundType = jQuery( this ).val();
 		const partialContainer = jQuery( '#srfm-partial-amount-container' );
-		
+
 		if ( refundType === 'partial' ) {
 			partialContainer.show();
 			jQuery( '#srfm-refund-amount' ).focus();
@@ -18,10 +18,10 @@ if ( window?.sureformsRefundData && jQuery( '#srfm-refund-button' ).length ) {
 		const amount = parseFloat( jQuery( this ).val() );
 		const maxAmount = parseFloat( jQuery( this ).attr( 'max' ) );
 		const input = jQuery( this );
-		
+
 		// Remove existing validation styles
 		input.css( 'border-color', '' );
-		
+
 		if ( jQuery( this ).val() !== '' ) {
 			if ( isNaN( amount ) || amount <= 0 ) {
 				input.css( 'border-color', '#d63384' );
@@ -39,28 +39,36 @@ if ( window?.sureformsRefundData && jQuery( '#srfm-refund-button' ).length ) {
 		const paymentId = button.data( 'payment-id' );
 		const transactionId = button.data( 'transaction-id' );
 		const refundType = jQuery( '#srfm-refund-type' ).val();
-		
+
 		let refundAmount;
 		let confirmMessage;
-		
+
 		// Validate and get refund amount
 		if ( refundType === 'full' ) {
 			refundAmount = sureformsRefundData.payment.refundable_amount;
 			confirmMessage = sureformsRefundData.strings.confirm_full_refund;
 		} else if ( refundType === 'partial' ) {
 			const inputAmount = jQuery( '#srfm-refund-amount' ).val();
-			
+
 			// Validate partial refund amount
 			const validation = validateRefundAmount( inputAmount );
 			if ( ! validation.isValid ) {
 				alert( validation.message );
-				jQuery( '#srfm-refund-amount' ).focus().css( 'border-color', '#d63384' );
+				jQuery( '#srfm-refund-amount' )
+					.focus()
+					.css( 'border-color', '#d63384' );
 				return;
 			}
-			
+
 			refundAmount = parseFloat( inputAmount );
-			const formattedAmount = sureformsRefundData.payment.currency_symbol + refundAmount.toFixed( 2 );
-			confirmMessage = sureformsRefundData.strings.confirm_partial_refund.replace( '%amount%', formattedAmount );
+			const formattedAmount =
+				sureformsRefundData.payment.currency_symbol +
+				refundAmount.toFixed( 2 );
+			confirmMessage =
+				sureformsRefundData.strings.confirm_partial_refund.replace(
+					'%amount%',
+					formattedAmount
+				);
 		} else {
 			alert( sureformsRefundData.strings.select_refund_type );
 			return;
@@ -80,7 +88,10 @@ if ( window?.sureformsRefundData && jQuery( '#srfm-refund-button' ).length ) {
 			.text( sureformsRefundData.strings.processing );
 
 		// Disable form controls during processing
-		jQuery( '#srfm-refund-type, #srfm-refund-amount' ).prop( 'disabled', true );
+		jQuery( '#srfm-refund-type, #srfm-refund-amount' ).prop(
+			'disabled',
+			true
+		);
 
 		// Prepare AJAX data
 		const ajaxData = {
@@ -125,23 +136,35 @@ if ( window?.sureformsRefundData && jQuery( '#srfm-refund-button' ).length ) {
 	function validateRefundAmount( inputAmount ) {
 		const amount = parseFloat( inputAmount );
 		const maxAmount = sureformsRefundData.payment.refundable_amount;
-		
+
 		if ( ! inputAmount || inputAmount.trim() === '' ) {
-			return { isValid: false, message: sureformsRefundData.strings.amount_required };
+			return {
+				isValid: false,
+				message: sureformsRefundData.strings.amount_required,
+			};
 		}
-		
+
 		if ( isNaN( amount ) ) {
-			return { isValid: false, message: sureformsRefundData.strings.amount_invalid };
+			return {
+				isValid: false,
+				message: sureformsRefundData.strings.amount_invalid,
+			};
 		}
-		
+
 		if ( amount < 0.01 ) {
-			return { isValid: false, message: sureformsRefundData.strings.amount_too_low };
+			return {
+				isValid: false,
+				message: sureformsRefundData.strings.amount_too_low,
+			};
 		}
-		
+
 		if ( amount > maxAmount ) {
-			return { isValid: false, message: sureformsRefundData.strings.amount_too_high };
+			return {
+				isValid: false,
+				message: sureformsRefundData.strings.amount_too_high,
+			};
 		}
-		
+
 		return { isValid: true };
 	}
 
@@ -150,8 +173,11 @@ if ( window?.sureformsRefundData && jQuery( '#srfm-refund-button' ).length ) {
 		button
 			.prop( 'disabled', false )
 			.text( sureformsRefundData.strings.issue_refund );
-		
-		jQuery( '#srfm-refund-type, #srfm-refund-amount' ).prop( 'disabled', false );
+
+		jQuery( '#srfm-refund-type, #srfm-refund-amount' ).prop(
+			'disabled',
+			false
+		);
 		jQuery( '#srfm-refund-amount' ).css( 'border-color', '' );
 	}
 }
