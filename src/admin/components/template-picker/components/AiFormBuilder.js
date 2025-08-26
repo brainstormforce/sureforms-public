@@ -14,7 +14,6 @@ import { AuthErrorPopup } from './AuthErrorPopup.js';
 import { applyFilters } from '@wordpress/hooks';
 import { Container, Toaster } from '@bsf/force-ui';
 import AiFormBuilderForm from '../ai-form-builder-components/AiFormBuilderForm.js';
-import AiFormBuilderFormNew from '../ai-form-builder-components/AiFormBuilderFormNew.js';
 import AiFormProgressPage from '../ai-form-builder-components/AiFormProgressPage.js';
 
 const AiFormBuilder = () => {
@@ -23,7 +22,6 @@ const AiFormBuilder = () => {
 	);
 	const [ isBuildingForm, setIsBuildingForm ] = useState( false );
 	const [ percentBuild, setPercentBuild ] = useState( 0 );
-	const [ showEmptyError, setShowEmptyError ] = useState( false );
 	const [ showFormCreationErr, setShowFormCreationErr ] = useState( false );
 	const [ showAuthErrorPopup, setShowAuthErrorPopup ] = useState( false );
 	const urlParams = new URLSearchParams( window.location.search );
@@ -42,14 +40,6 @@ const AiFormBuilder = () => {
 			console.error( 'User does not have permission to create posts' );
 			return;
 		}
-
-		// Check if the user has entered a prompt in textarea.
-		if ( ! userCommand ) {
-			setShowEmptyError( true );
-			return;
-		}
-
-		console.log( 'Creating AI form with command:', formTypeObj );
 
 		// Prepare the data to be sent to the API.
 		const messageArray =
@@ -198,7 +188,7 @@ const AiFormBuilder = () => {
 	const toasterPosition = isRTL ? 'bottom-left' : 'bottom-right';
 
 	return (
-		<div className="max-h-screen overflow-y-auto">
+		<div className="max-h-screen">
 			<Toaster
 				className={ cn(
 					'z-[999999]',
@@ -212,22 +202,10 @@ const AiFormBuilder = () => {
 				dismissAfter={ 5000 }
 			/>
 			<Header />
-			{/* <AiFormBuilderForm
+			<AiFormBuilderForm
 				handleCreateAiForm={ handleCreateAiForm }
 				setIsBuildingForm={ setIsBuildingForm }
 				formTypeObj={ formTypeObj }
-				showEmptyError={ showEmptyError }
-				setShowEmptyError={ setShowEmptyError }
-				setFormTypeObj={ setFormTypeObj }
-				setFormType={ setFormType }
-				formType={ formType }
-			/> */}
-			<AiFormBuilderFormNew
-				handleCreateAiForm={ handleCreateAiForm }
-				setIsBuildingForm={ setIsBuildingForm }
-				formTypeObj={ formTypeObj }
-				showEmptyError={ showEmptyError }
-				setShowEmptyError={ setShowEmptyError }
 				setFormTypeObj={ setFormTypeObj }
 				setFormType={ setFormType }
 				formType={ formType }

@@ -1,11 +1,8 @@
 import { useEffect, render } from '@wordpress/element';
-import Header from './components/Header.js';
-import { BrowserRouter as Router, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router } from 'react-router-dom';
 import AiFormBuilder, {
 	getLimitReachedPopup,
 } from './components/AiFormBuilder.js';
-import AddNewForm from './ai-form-builder-components/AddNewForm.js';
-import { Container } from '@bsf/force-ui';
 
 const TemplatePicker = () => {
 	// Remove admin bar padding.
@@ -13,14 +10,7 @@ const TemplatePicker = () => {
 		document.querySelector( 'html.wp-toolbar' ).style.paddingTop = 0;
 	}, [] );
 
-	// Starting screen navigation
-	function useQuery() {
-		return new URLSearchParams( useLocation().search );
-	}
-
 	function QueryScreen() {
-		const query = useQuery();
-		const method = query.get( 'method' );
 		return (
 			// Check if the user has reached the limit of AI usage. If not, show the AI form builder.
 			srfm_admin?.srfm_ai_usage_details?.remaining === 0 ||
@@ -30,27 +20,6 @@ const TemplatePicker = () => {
 					<AiFormBuilder />
 				)
 		);
-		// switch ( method ) {
-		// 	case 'ai':
-		// 		return (
-		// 			// Check if the user has reached the limit of AI usage. If not, show the AI form builder.
-		// 			srfm_admin?.srfm_ai_usage_details?.remaining === 0 ||
-		// 				srfm_admin?.srfm_ai_usage_details?.code ? (
-		// 					getLimitReachedPopup()
-		// 				) : (
-		// 					<AiFormBuilder />
-		// 				)
-		// 		);
-
-		// 	default:
-		// 		return (
-		// 			<Container className="max-h-screen overflow-y-auto">
-		// 				<Header />
-		// 				{/* <AddNewForm /> */}
-		// 				<AiFormBuilder />
-		// 			</Container>
-		// 		);
-		// }
 	}
 
 	return (

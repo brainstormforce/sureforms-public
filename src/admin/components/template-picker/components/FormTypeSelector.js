@@ -1,11 +1,15 @@
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
 import PremiumBadge from '../../../components/PremiumBadge';
-import { Container, Label, Title } from '@bsf/force-ui';
-import { cn } from '@Utils/Helpers';
+import { Container, Select, Label, Badge } from '@bsf/force-ui';
 
-const FormTypeSelector = ( { formType, setFormType, setformLayout } ) => {
-	// filter to add more form types
+const FormTypeSelectorNew = ( {
+	formTypeObj,
+	setFormTypeObj,
+	formType,
+	setFormType,
+	setformLayout,
+} ) => {
 	const formTypeOptions = applyFilters(
 		'srfm.ai_form_builder.form_type_options',
 		[
@@ -14,7 +18,6 @@ const FormTypeSelector = ( { formType, setFormType, setformLayout } ) => {
 				slug: 'simple',
 				isAvailable: true,
 			},
-			// this is added to show a preview of Calculator form type in free plugin
 			{
 				label: __( 'Calculator', 'sureforms' ),
 				slug: 'calculator',
@@ -29,79 +32,127 @@ const FormTypeSelector = ( { formType, setFormType, setformLayout } ) => {
 					tooltipPosition: 'bottom',
 				},
 			},
+			{
+				label: __( 'Conversational Form', 'sureforms' ),
+				slug: 'conversational',
+				isAvailable: false,
+				upgradeTooltipContent: {
+					tooltipHeadin: __(
+						'Unlock Conversational Forms',
+						'sureforms'
+					),
+					tooltipContent: __(
+						'Upgrade to the SureForms Business Plan to create advanced forms with real-time conversations, such as project quote calculators, BMI calculators, loan calculators, and more.',
+						'sureforms'
+					),
+					utmMedium: 'ai_builder_conversational',
+					tooltipPosition: 'bottom',
+				},
+			},
 		]
 	);
 
-	const handleSelection = ( type ) => {
-		setFormType( type );
-		// If the form type is not simple, reset the form layout object
-		if ( type !== 'simple' ) {
+	const handleSelection = ( option ) => {
+		if ( ! option.isAvailable ) {
+			return;
+		}
+
+		setFormType( option.slug );
+
+		if ( option.slug === 'simple' ) {
+			console.log( 'Simple form selected' );
+			// Reset to default layout
+			setformLayout( {} );
+		} else if ( option.slug === 'conversational' ) {
+			// Enable conversational form layout automatically (same behaviour as toggle)
+			setFormTypeObj( {
+				...formTypeObj,
+				isConversationalForm: true,
+			} );
+		} else {
+			// calculator / others
 			setformLayout( {} );
 		}
 	};
 
+	const getFormTypeLabel = ( slug ) => {
+		const match = formTypeOptions.find( ( opt ) => opt.slug === slug );
+		return match ? match.label : __( 'Select…', 'sureforms' );
+	};
+
 	return (
-		<Container.Item className="flex flex-col p-2 gap-2">
-			<Title
-				tag="h4"
-				size="md"
-				className="text-text-primary"
-				title={ __( 'Please select form type', 'sureforms' ) }
-			/>
-			<Container className="p-1 gap-1 bg-tab-background border-0.5 border-solid border-tab-border rounded-md">
-				{ formTypeOptions.map( ( option, index ) =>
-					option.isAvailable ? (
-						<div
-							key={ index }
-							className={ cn(
-								'flex p-1.5 items-center justify-center w-full gap-1',
-								formType === option.slug &&
-									'rounded-md bg-background-primary shadow-sm-blur-2'
-							) }
-							onClick={ () => handleSelection( option.slug ) }
-						>
-							<Title
-								icon={ option.icon && option.icon }
-								iconPosition="right"
-								className={ cn(
-									'text-text-secondary',
-									formType === option.slug &&
-										'text-text-primary'
-								) }
-								size="xs"
-								title={ option.label }
-							/>
-						</div>
-					) : (
-						<div
-							key={ index }
-							className="flex p-1.5 items-center justify-center w-full gap-1"
-						>
-							<Label size="md" variant="disabled">
-								{ option.label }
-							</Label>
-							<PremiumBadge
-								tooltipHeading={
-									option?.upgradeTooltipContent?.tooltipHeadin
-								}
-								tooltipContent={
-									option?.upgradeTooltipContent
-										?.tooltipContent
-								}
-								utmMedium={
-									option?.upgradeTooltipContent?.utmMedium
-								}
-								tooltipPosition={
-									option?.upgradeTooltipContent
-										?.tooltipPosition
-								}
-							/>
-						</div>
-					)
+		<Container.Item className="flex flex-col gap-2">
+			<Select
+				value={ formTypeOptions.find(
+					( opt ) => opt.slug === formType
 				) }
-			</Container>
+				onChange={ ( selectedOption ) =>
+					handleSelection( selectedOption )
+				}
+				size="sm"
+			>
+				<Select.Button
+					placeholder={ __( 'Select…', 'sureforms' ) }
+					className="rounded-full px-1.5 !py-1 border-0.5 bg-badge-background-gray"
+				>
+					<Badge
+						label={ getFormTypeLabel( formType ) }
+						size="md"
+						type="pill"
+						variant="neutral"
+						className="border-0 p-0 text-sm font-medium"
+					/>
+				</Select.Button>
+
+				<Select.Options className="z-50 !max-w-[274px] p-1">
+					{ formTypeOptions.map( ( option, index ) =>
+						option.isAvailable ? (
+							<Select.Option
+								key={ index }
+								value={ option }
+								selected={ formType === option.slug }
+								className=""
+							>
+								<span className="whitespace-normal break-words text-base font-normal p-1 gap-1">
+									{ option.label }
+								</span>
+							</Select.Option>
+						) : (
+							<div
+								key={ index }
+								className="flex items-center justify-between"
+							>
+								<Label
+									size="xs"
+									variant="disabled"
+									className="text-text-on-button-disabled text-base font-normal px-2 py-1 gap-1"
+								>
+									{ option.label }
+								</Label>
+								<PremiumBadge
+									tooltipHeading={
+										option?.upgradeTooltipContent
+											?.tooltipHeadin
+									}
+									tooltipContent={
+										option?.upgradeTooltipContent
+											?.tooltipContent
+									}
+									utmMedium={
+										option?.upgradeTooltipContent?.utmMedium
+									}
+									tooltipPosition={
+										option?.upgradeTooltipContent
+											?.tooltipPosition
+									}
+								/>
+							</div>
+						)
+					) }
+				</Select.Options>
+			</Select>
 		</Container.Item>
 	);
 };
 
-export default FormTypeSelector;
+export default FormTypeSelectorNew;

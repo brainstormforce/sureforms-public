@@ -33,6 +33,9 @@ const LimitReachedPopup = ( {
 			</Button>
 		);
 
+	const is_pro_active =
+		srfm_admin?.is_pro_active && srfm_admin?.is_pro_license_active;
+
 	const renderLimitReachedContent = () => (
 		<Container
 			direction="column"
@@ -81,8 +84,22 @@ const LimitReachedPopup = ( {
 					</Label>
 				</Container.Item>
 
-				<Container.Item className="flex flex-col w-full gap-4 pb-2">
+				<Container.Item className="flex flex-col w-full gap-3 pb-2">
 					{ FinalButton }
+
+					{ ! is_pro_active ? (
+						<Button
+							size="md"
+							variant="outline"
+							onClick={ () => {
+								window.location.href = `${ srfm_admin.site_url }/wp-admin/post-new.php?post_type=sureforms_form`;
+							} }
+						>
+							{ __( 'Build From Scratch', 'sureforms' ) }
+						</Button>
+					) : (
+						''
+					) }
 				</Container.Item>
 			</Container>
 		</Container>
