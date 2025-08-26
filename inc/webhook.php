@@ -8,9 +8,8 @@
 
 namespace SRFM\Inc;
 
-use SRFM\Inc\Traits\Get_Instance;
 use SRFM\Inc\Database\Tables\Payments;
-use SRFM\Inc\Stripe_Payment_Handler;
+use SRFM\Inc\Traits\Get_Instance;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -21,19 +20,18 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class Webhook {
 
-	const SRFM_LIVE_BEGAN_AT        = 'srfm_live_webhook_began_at';
-	const SRFM_LIVE_LAST_SUCCESS_AT = 'srfm_live_webhook_last_success_at';
-	const SRFM_LIVE_LAST_FAILURE_AT = 'srfm_live_webhook_last_failure_at';
-	const SRFM_LIVE_LAST_ERROR      = 'srfm_live_webhook_last_error';
-
-	const SRFM_TEST_BEGAN_AT        = 'srfm_test_webhook_began_at';
-	const SRFM_TEST_LAST_SUCCESS_AT = 'srfm_test_webhook_last_success_at';
-	const SRFM_TEST_LAST_FAILURE_AT = 'srfm_test_webhook_last_failure_at';
-	const SRFM_TEST_LAST_ERROR      = 'srfm_test_webhook_last_error';
-
-	private $mode = 'test';
-
 	use Get_Instance;
+	public const SRFM_LIVE_BEGAN_AT        = 'srfm_live_webhook_began_at';
+	public const SRFM_LIVE_LAST_SUCCESS_AT = 'srfm_live_webhook_last_success_at';
+	public const SRFM_LIVE_LAST_FAILURE_AT = 'srfm_live_webhook_last_failure_at';
+	public const SRFM_LIVE_LAST_ERROR      = 'srfm_live_webhook_last_error';
+
+	public const SRFM_TEST_BEGAN_AT        = 'srfm_test_webhook_began_at';
+	public const SRFM_TEST_LAST_SUCCESS_AT = 'srfm_test_webhook_last_success_at';
+	public const SRFM_TEST_LAST_FAILURE_AT = 'srfm_test_webhook_last_failure_at';
+	public const SRFM_TEST_LAST_ERROR      = 'srfm_test_webhook_last_error';
+
+	private string $mode = 'test';
 
 	/**
 	 * Constructor function
@@ -62,13 +60,13 @@ class Webhook {
 	/**
 	 * Validates the Stripe signature for webhook requests through middleware.
 	 *
-	 * @return array|bool
+	 * @return array<string, mixed>|bool
 	 */
-	public function validate_stripe_signature() {
+	public function validate_stripe_signature(): array|bool {
 		// Get the raw payload and Stripe signature header
-		$payload = file_get_contents( 'php://input' );
+		$payload   = file_get_contents( 'php://input' );
 		$signature = $_SERVER['HTTP_STRIPE_SIGNATURE'] ?? '';
-		
+
 		if ( empty( $payload ) || empty( $signature ) ) {
 			error_log( 'SureForms: Missing webhook payload or signature' );
 			return false;
@@ -76,16 +74,19 @@ class Webhook {
 
 		// Get payment settings
 		$settings = get_option( Payments_Settings::OPTION_NAME, [] );
+		if ( ! is_array( $settings ) ) {
+			$settings = [];
+		}
 		$this->mode = $settings['payment_mode'] ?? 'test';
-		
+
 		// Get the appropriate webhook secret based on payment mode
 		$webhook_secret = '';
 		if ( 'live' === $this->mode ) {
-			$webhook_secret = $settings['webhook_live_secret'] ?? '';
+			$webhook_secret = is_string( $settings['webhook_live_secret'] ?? '' ) ? $settings['webhook_live_secret'] : '';
 		} else {
-			$webhook_secret = $settings['webhook_test_secret'] ?? '';
+			$webhook_secret = is_string( $settings['webhook_test_secret'] ?? '' ) ? $settings['webhook_test_secret'] : '';
 		}
-		
+
 		if ( empty( $webhook_secret ) ) {
 			error_log( 'SureForms: Webhook secret not configured for mode: ' . $this->mode );
 			return false;
@@ -93,20 +94,20 @@ class Webhook {
 
 		// Prepare request data for middleware
 		$middleware_request_data = [
-			'payload' => $payload,
-			'signature' => $signature,
-			'webhook_secret' => $webhook_secret
+			'payload'        => $payload,
+			'signature'      => $signature,
+			'webhook_secret' => $webhook_secret,
 		];
 
 		// Make request to middleware for signature verification
 		$response = wp_remote_post(
 			'prod' === SRFM_PAYMENTS_ENV ? SRFM_PAYMENTS_PROD . 'webhook/validate-signature' : SRFM_PAYMENTS_LOCAL . 'webhook/validate-signature',
 			[
-				'body' => base64_encode( wp_json_encode( $middleware_request_data ) ),
-				'headers' => [
+				'body'      => base64_encode( wp_json_encode( $middleware_request_data ) ?: '' ),
+				'headers'   => [
 					'Content-Type' => 'application/json',
 				],
-				'timeout' => 10, // 10 second timeout
+				'timeout'   => 10, // 10 second timeout
 				'sslverify' => true,
 			]
 		);
@@ -119,10 +120,10 @@ class Webhook {
 
 		$response_code = wp_remote_retrieve_response_code( $response );
 		$response_body = wp_remote_retrieve_body( $response );
-		
+
 		// Parse middleware response
 		$validation_result = json_decode( $response_body, true );
-		
+
 		if ( 200 === $response_code && is_array( $validation_result ) ) {
 			return $validation_result;
 		}
@@ -135,7 +136,7 @@ class Webhook {
 	 *
 	 * @return void
 	 */
-	public function webhook_listener() {
+	public function webhook_listener(): void {
 		$event = $this->validate_stripe_signature();
 
 		// error_log( 'SureForms webhook event type: ' . $event->type );
@@ -157,31 +158,34 @@ class Webhook {
 				$this->charge_refund( $charge );
 				break;
 		}
-		
+
 		$success = constant( 'self::SRFM_' . strtoupper( $this->mode ) . '_LAST_SUCCESS_AT' );
-		update_option( $success, time() );
+		if ( is_string( $success ) ) {
+			update_option( $success, time() );
+		}
 		http_response_code( 200 );
 	}
 
 	/**
 	 * Refunds form entry payment via webhook call
 	 *
-	 * @param object $charge Payment charge object.
+	 * @param array<string, mixed> $charge Payment charge object.
 	 * @return void
 	 */
-	public function charge_refund( $charge ) {
-		$payment_intent    = sanitize_text_field( $charge['payment_intent'] ?? '' );
+	public function charge_refund( array $charge ): void {
+		$payment_intent = sanitize_text_field( $charge['payment_intent'] ?? '' );
 		$get_payment_entry = Payments::get_by_transaction_id( $payment_intent );
 
 		if ( ! $get_payment_entry ) {
-			error_log( 'SureForms: Could not find payment entry via charge ID: ' . ( $charge->id ?? 'unknown' ) );
+			error_log( 'SureForms: Could not find payment entry via charge ID: ' . ( $charge['id'] ?? 'unknown' ) );
 			return;
 		}
 
 		$payment_entry_id = $get_payment_entry['id'] ?? 0;
-		$refund_amount    = $charge['amount'];
+		$refund_amount = is_numeric( $charge['amount'] ?? 0 ) ? (int) $charge['amount'] : 0;
 
-		$update_refund_data = $this->update_refund_data( $payment_entry_id, $charge, $refund_amount, $charge['currency'], 'webhook' );
+		$currency = is_string( $charge['currency'] ?? '' ) ? $charge['currency'] : 'usd';
+		$update_refund_data = $this->update_refund_data( $payment_entry_id, $charge, $refund_amount, $currency, 'webhook' );
 
 		if ( ! $update_refund_data ) {
 			error_log( 'SureForms: Failed to update refund data for payment entry ID: ' . $payment_entry_id );
@@ -197,36 +201,28 @@ class Webhook {
 		);
 	}
 
-	public function calculate_total_refunds( $payment_id ) {
+	/**
+	 * Calculate total refunds for a payment.
+	 *
+	 * @param int $payment_id Payment ID.
+	 * @return float Total refunded amount.
+	 */
+	public function calculate_total_refunds( int $payment_id ): float {
 		// Use the new refunded_amount column for direct access
 		return Payments::get_refunded_amount( $payment_id );
 	}
 
 	/**
-	 * Check if the refund already exists
+	 * Update refund data for a payment.
 	 *
-	 * @param array $payment Payment record data.
-	 * @param array $refund Refund response from Stripe.
-	 * @return bool True if refund already exists, false otherwise.
-	 * @since x.x.x
+	 * @param int $payment_id Payment ID.
+	 * @param array<string, mixed> $refund_response Refund response data.
+	 * @param int $refund_amount Refund amount in cents.
+	 * @param string $currency Currency code.
+	 * @param string|null $payment Payment method.
+	 * @return bool Whether the update was successful.
 	 */
-	private function check_if_refund_already_exists( $payment, $refund ) {
-		$refund_id = $refund['id'] ?? '';
-
-		$payment_refunds = isset( $payment['payment_data'] ) && isset( $payment['payment_data']['refunds'] ) ? $payment['payment_data']['refunds'] : [];
-
-		if ( ! empty( $payment_refunds ) && is_array( $payment_refunds ) ) {
-			foreach ( $payment_refunds as $refund ) {
-				if ( isset( $refund['refund_id'] ) && $refund['refund_id'] === $refund_id ) {
-					return true;
-				}
-			}
-		}
-
-		return false;
-	}
-
-	public function update_refund_data( $payment_id, $refund_response, $refund_amount, $currency, $payment = null ) {
+	public function update_refund_data( int $payment_id, array $refund_response, int $refund_amount, string $currency, ?string $payment = null ): bool {
 		if ( empty( $payment_id ) || empty( $refund_response ) ) {
 			return false;
 		}
@@ -292,7 +288,7 @@ class Webhook {
 
 		// Update payment status and log
 		$current_logs   = Helper::get_array_value( $payment['log'] );
-		$refund_type    = ( $total_after_refund >= $original_amount ) ? 'Full' : 'Partial';
+		$refund_type    = $total_after_refund >= $original_amount ? 'Full' : 'Partial';
 		$new_log        = [
 			'title'     => sprintf( '%s Payment Refund', $refund_type ),
 			'timestamp' => time(),
@@ -350,45 +346,26 @@ class Webhook {
 	}
 
 	/**
-	 * Shows time difference as - XX minutes ago.
+	 * Check if the refund already exists
 	 *
-	 * @param string  $datetime time of last event.
-	 * @param boolean $full show full time difference.
-	 * @return string
+	 * @param array<string, mixed> $payment Payment record data.
+	 * @param array<string, mixed> $refund Refund response from Stripe.
+	 * @return bool True if refund already exists, false otherwise.
+	 * @since x.x.x
 	 */
-	public static function time_elapsed_string( $datetime, $full = false ) {
-		$now  = new \DateTime();
-		$ago  = new \DateTime( $datetime );
-		$diff = $now->diff( $ago );
+	private function check_if_refund_already_exists( array $payment, array $refund ): bool {
+		$refund_id = $refund['id'] ?? '';
 
-		$diff->w  = floor( $diff->d / 7 );
-		$diff->d -= $diff->w * 7;
+		$payment_refunds = isset( $payment['payment_data'] ) && isset( $payment['payment_data']['refunds'] ) ? $payment['payment_data']['refunds'] : [];
 
-		$string = [
-			'y' => 'year',
-			'm' => 'month',
-			'w' => 'week',
-			'd' => 'day',
-			'h' => 'hour',
-			'i' => 'minute',
-			's' => 'second',
-		];
-
-		foreach ( $string as $k => &$v ) {
-			if ( $diff->$k ) {
-				$v = $diff->$k . ' ' . $v . ( $diff->$k > 1 ? 's' : '' );
-			} else {
-				unset( $string[ $k ] );
+		if ( ! empty( $payment_refunds ) && is_array( $payment_refunds ) ) {
+			foreach ( $payment_refunds as $payment_refund ) {
+				if ( isset( $payment_refund['refund_id'] ) && $payment_refund['refund_id'] === $refund_id ) {
+					return true;
+				}
 			}
 		}
 
-		if ( ! $full ) {
-			$string = array_slice( $string, 0, 1 );
-		}
-
-		return $string ? implode( ', ', $string ) . ' ago' : 'just now';
+		return false;
 	}
 }
-
-// Initialize the class.
-Webhook::get_instance();

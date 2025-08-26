@@ -115,12 +115,10 @@ class Payments_List_Table extends \WP_List_Table {
 	 * @return array $actions Bulk actions.
 	 */
 	public function get_bulk_actions() {
-		$bulk_actions = [
+		return [
 			'delete' => __( 'Delete', 'sureforms' ),
 			'export' => __( 'Export', 'sureforms' ),
 		];
-
-		return $bulk_actions;
 	}
 
 	/**
