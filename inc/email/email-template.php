@@ -155,8 +155,8 @@ class Email_Template {
 								if ( ! empty( $value ) && is_string( $value ) ) {
 									$decoded_value = urldecode( $value );
 									?>
-									<a target="_blank" href="<?php echo esc_attr( $decoded_value ); ?>">
-										<?php echo esc_html( esc_url( $decoded_value ) ); ?>
+									<a target="_blank" rel="noopener noreferrer" href="<?php echo esc_url( $decoded_value ); ?>">
+										<?php echo esc_html( $decoded_value ); ?>
 									</a>
 									<?php
 								}

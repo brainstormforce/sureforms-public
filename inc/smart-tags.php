@@ -348,7 +348,7 @@ class Smart_Tags {
 					} else {
 						foreach ( $submission_item_value as $value ) {
 							$decoded_value     = urldecode( $value );
-							$replacement_data .= '<a href="' . esc_url( $decoded_value ) . '" target="_blank">' . esc_html( esc_url( $decoded_value ) ) . '</a><br>';
+							$replacement_data .= '<a rel="noopener noreferrer" href="' . esc_url( $decoded_value ) . '" target="_blank">' . esc_html( $decoded_value ) . '</a><br>';
 						}
 					}
 				} elseif ( 0 === strpos( $block_type, 'srfm-textarea' ) ) {
@@ -362,7 +362,7 @@ class Smart_Tags {
 					// if $submission_item_value is a url then add <a> tag. with view text.
 					if ( is_string( $submission_item_value ) && filter_var( $submission_item_value, FILTER_VALIDATE_URL ) ) {
 						$decoded_submission_item_value = urldecode( $submission_item_value );
-						$view_link                     = '<a href="' . esc_url( $decoded_submission_item_value ) . '" target="_blank">' . esc_html( esc_url( $decoded_submission_item_value ) ) . '</a>';
+						$view_link                     = '<a rel="noopener noreferrer" href="' . esc_url( $decoded_submission_item_value ) . '" target="_blank">' . esc_html( $decoded_submission_item_value ) . '</a>';
 
 						// Add filter to modify the view link.
 						$view_link = apply_filters(
