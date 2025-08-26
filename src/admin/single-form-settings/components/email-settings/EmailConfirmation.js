@@ -6,6 +6,7 @@ import { Container } from '@bsf/force-ui';
 import ModalInputBox from '@Components/force-ui-components/ModalInputBox';
 import TabContentWrapper from '@Components/tab-content-wrapper';
 import FromEmail from './FromEmail';
+import { singleFormEmailOptionsWithFilter } from '@Components/hooks';
 
 const EmailConfirmation = ( props ) => {
 	const {
@@ -125,15 +126,10 @@ const EmailConfirmation = ( props ) => {
 		'sureforms'
 	);
 
-	return (
-		<TabContentWrapper
-			title={ __( 'Email Notifications', 'sureforms' ) }
-			actionBtnText={ __( 'Cancel', 'sureforms' ) }
-			actionBtnVariant="outline"
-			onClickAction={ onCancel }
-			onClickBack={ onClickBack }
-		>
-			<Container direction="column" className="gap-4 px-2">
+	const emailNotificationOptions = [
+		{
+			id: 'name',
+			component: (
 				<ModalInputBox
 					label={ __( 'Name', 'sureforms' ) }
 					id="srfm-email-notification-name"
@@ -160,7 +156,11 @@ const EmailConfirmation = ( props ) => {
 						setDynamicSubject( dynamicSubject + tag )
 					}
 				/>
-
+			),
+		},
+		{
+			id: 'send-email-to',
+			component: (
 				<ModalInputBox
 					label={ __( 'Send Email To', 'sureforms' ) }
 					id="srfm-email-notification-to"
@@ -192,7 +192,11 @@ const EmailConfirmation = ( props ) => {
 						} )
 					}
 				/>
-
+			),
+		},
+		{
+			id: 'subject',
+			component: (
 				<ModalInputBox
 					label={ __( 'Subject', 'sureforms' ) }
 					id="srfm-email-notification-subject"
@@ -217,7 +221,11 @@ const EmailConfirmation = ( props ) => {
 						setDynamicSubject( dynamicSubject + tag )
 					}
 				/>
-
+			),
+		},
+		{
+			id: 'email-body',
+			component: (
 				<div className="py-2 gap-6">
 					<Editor
 						handleContentChange={ handleOnChangeEmailBodyContent }
@@ -227,7 +235,11 @@ const EmailConfirmation = ( props ) => {
 						allData={ true }
 					/>
 				</div>
-
+			),
+		},
+		{
+			id: 'from-email',
+			component: (
 				<FromEmail
 					formData={ formData }
 					setFormData={ setFormData }
@@ -236,70 +248,81 @@ const EmailConfirmation = ( props ) => {
 					formSmartTags={ formSmartTags }
 					formEmailSmartTags={ formEmailSmartTags }
 				/>
-
-				<Container className="gap-2">
-					<ModalInputBox
-						label={ __( 'CC', 'sureforms' ) }
-						id="srfm-email-notification-cc"
-						value={ formData.email_cc }
-						onChange={ ( e ) =>
-							setFormData( {
-								...formData,
-								email_cc: e,
-							} )
-						}
-						helpText={ emailHelpText }
-						required={ false }
-						smartTagList={ [
-							{
-								tags: formEmailSmartTags,
-								label: __( 'Form input tags', 'sureforms' ),
-							},
-							{
-								tags: genericEmailSmartTags,
-								label: __( 'Generic tags', 'sureforms' ),
-							},
-						] }
-						tagFor="emailConfirmation.CC"
-						setTargetData={ ( tag ) =>
-							setFormData( {
-								...formData,
-								email_cc: formData.email_cc + tag,
-							} )
-						}
-					/>
-					<ModalInputBox
-						label={ __( 'BCC', 'sureforms' ) }
-						id="srfm-email-notification-bcc"
-						value={ formData.email_bcc }
-						onChange={ ( e ) =>
-							setFormData( {
-								...formData,
-								email_bcc: e,
-							} )
-						}
-						required={ false }
-						helpText={ emailHelpText }
-						smartTagList={ [
-							{
-								tags: formEmailSmartTags,
-								label: __( 'Form input tags', 'sureforms' ),
-							},
-							{
-								tags: genericEmailSmartTags,
-								label: __( 'Generic tags', 'sureforms' ),
-							},
-						] }
-						tagFor="emailConfirmation.BCC"
-						setTargetData={ ( tag ) =>
-							setFormData( {
-								...formData,
-								email_bcc: formData.email_bcc + tag,
-							} )
-						}
-					/>
-				</Container>
-
+			),
+		},
+		{
+			id: 'cc',
+			component: (
+				<ModalInputBox
+					label={ __( 'CC', 'sureforms' ) }
+					id="srfm-email-notification-cc"
+					value={ formData.email_cc }
+					onChange={ ( e ) =>
+						setFormData( {
+							...formData,
+							email_cc: e,
+						} )
+					}
+					helpText={ emailHelpText }
+					required={ false }
+					smartTagList={ [
+						{
+							tags: formEmailSmartTags,
+							label: __( 'Form input tags', 'sureforms' ),
+						},
+						{
+							tags: genericEmailSmartTags,
+							label: __( 'Generic tags', 'sureforms' ),
+						},
+					] }
+					tagFor="emailConfirmation.CC"
+					setTargetData={ ( tag ) =>
+						setFormData( {
+							...formData,
+							email_cc: formData.email_cc + tag,
+						} )
+					}
+				/>
+			),
+		},
+		{
+			id: 'bcc',
+			component: (
+				<ModalInputBox
+					label={ __( 'BCC', 'sureforms' ) }
+					id="srfm-email-notification-bcc"
+					value={ formData.email_bcc }
+					onChange={ ( e ) =>
+						setFormData( {
+							...formData,
+							email_bcc: e,
+						} )
+					}
+					required={ false }
+					helpText={ emailHelpText }
+					smartTagList={ [
+						{
+							tags: formEmailSmartTags,
+							label: __( 'Form input tags', 'sureforms' ),
+						},
+						{
+							tags: genericEmailSmartTags,
+							label: __( 'Generic tags', 'sureforms' ),
+						},
+					] }
+					tagFor="emailConfirmation.BCC"
+					setTargetData={ ( tag ) =>
+						setFormData( {
+							...formData,
+							email_bcc: formData.email_bcc + tag,
+						} )
+					}
+				/>
+			),
+		},
+		{
+			id: 'reply-to',
+			component: (
 				<ModalInputBox
 					label={ __( 'Reply To', 'sureforms' ) }
 					id="srfm-email-notification-reply-to"
@@ -330,6 +353,32 @@ const EmailConfirmation = ( props ) => {
 						} )
 					}
 				/>
+			),
+		},
+	];
+
+	// Apply filters to the email options.
+	// This allows us to modify the email notification options.
+	let filterOptions = singleFormEmailOptionsWithFilter(
+		emailNotificationOptions,
+		props
+	);
+
+	// if filterOptions is empty, return null to avoid rendering
+	if ( ! filterOptions || filterOptions.length === 0 ) {
+		filterOptions = emailNotificationOptions;
+	}
+
+	return (
+		<TabContentWrapper
+			title={ __( 'Email Notifications', 'sureforms' ) }
+			actionBtnText={ __( 'Cancel', 'sureforms' ) }
+			actionBtnVariant="outline"
+			onClickAction={ onCancel }
+			onClickBack={ onClickBack }
+		>
+			<Container direction="column" className="gap-4 px-2">
+				{ filterOptions.map( ( option ) => option.component ) }
 			</Container>
 		</TabContentWrapper>
 	);
