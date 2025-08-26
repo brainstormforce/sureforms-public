@@ -16,13 +16,11 @@ import SidebarNav from './SidebarNav';
 import {
 	Settings,
 	Code2Icon,
-	CpuIcon,
 	CircleCheckBig,
 	ShieldCheckIcon,
 	XIcon,
 } from 'lucide-react';
 
-import Integrations from '../integrations';
 import Suretriggers from '../integrations/suretriggers';
 import Compliance from '../Compliance';
 import FormCustomCssPanel from '../FormCustomCssPanel';
@@ -36,6 +34,8 @@ import { useDispatch } from '@wordpress/data';
 import { store as blockEditorStore } from '@wordpress/block-editor';
 import FormRestriction from '../form-restrictions/FormRestriction';
 import { FormRestrictionContext } from '../form-restrictions/context';
+import OttoKitPage from '@Admin/settings/pages/OttoKit';
+import ottoKitIcon from '@Image/suretriggers.svg';
 
 const Dialog = ( {
 	open,
@@ -73,9 +73,6 @@ const Dialog = ( {
 	);
 
 	const [ parentTab, setParentTab ] = useState( null );
-	const [ action, setAction ] = useState();
-	const [ CTA, setCTA ] = useState();
-	const [ pluginConnected, setPluginConnected ] = useState( null );
 
 	const tabs = applyFilters(
 		'srfm.formSettings.tabs',
@@ -114,20 +111,17 @@ const Dialog = ( {
 				),
 			},
 			{
-				id: 'integrations',
-				label: __( 'Integrations', 'sureforms' ),
-				icon: <CpuIcon />,
+				id: 'ottokit',
+				label: __( 'Ottokit', 'sureforms' ),
+				icon: (
+					<img
+						src={ ottoKitIcon }
+						alt={ __( 'OttoKit', 'sureforms' ) }
+					/>
+				),
 				component: (
-					<Integrations
-						{ ...{
-							setSelectedTab,
-							action,
-							setAction,
-							CTA,
-							setCTA,
-							pluginConnected,
-							setPluginConnected,
-						} }
+					<OttoKitPage
+						{ ...{ isFormSettings: true, setSelectedTab } }
 					/>
 				),
 			},
@@ -139,10 +133,10 @@ const Dialog = ( {
 			},
 			{
 				id: 'suretriggers',
-				parent: 'integrations',
+				parent: 'ottokit',
 				label: __( 'SureTriggers', 'sureforms' ),
 				icon: {},
-				component: <Suretriggers { ...{ setSelectedTab } } />,
+				component: <Suretriggers />,
 			},
 			/* can contain child tabs not linked to nav */
 			/* add parent nav id for child tabs */
@@ -173,8 +167,12 @@ const Dialog = ( {
 	}, [ targetTab, open ] );
 
 	const containerClassName = cn(
-		'w-full h-full mx-auto',
-		selectedTab === 'suretriggers' ? 'min-w-[800px]' : 'max-w-[43.5rem]'
+		'w-full mx-auto',
+		selectedTab === 'suretriggers'
+			? 'h-full min-w-[800px] bg-background-primary shadow-sm rounded-xl'
+			: selectedTab === 'ottokit'
+				? 'min-w-[800px] bg-background-primary p-4 shadow-sm rounded-xl border-subtle'
+				: 'h-full max-w-[43.5rem]'
 	);
 
 	return (
