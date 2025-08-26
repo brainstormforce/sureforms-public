@@ -252,9 +252,7 @@ export default ( props ) => {
 													iconPosition="right"
 													size="md"
 													variant="primary"
-													disabled={
-														! characterCount > 0
-													}
+													disabled={ characterCount <= 0 }
 													onClick={ () => {
 														if (
 															! text ||
