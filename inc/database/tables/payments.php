@@ -709,30 +709,6 @@ class Payments extends Base {
 	}
 
 	/**
-	 * Update specific key in payment data.
-	 *
-	 * @param int    $payment_id Payment ID.
-	 * @param string $key        Key to update.
-	 * @param mixed  $value      Value to set.
-	 * @since x.x.x
-	 * @return int|false Number of rows updated or false on error.
-	 */
-	public static function update_payment_data_key( $payment_id, $key, $value ) {
-		if ( empty( $payment_id ) || empty( $key ) ) {
-			return false;
-		}
-
-		// Get current payment data.
-		$payment_data = self::get_payment_data( $payment_id );
-
-		// Update specific key.
-		$payment_data[ sanitize_key( $key ) ] = $value;
-
-		// Update payment with new payment data.
-		return self::update( $payment_id, [ 'payment_data' => $payment_data ] );
-	}
-
-	/**
 	 * Add refund data to payment_data column.
 	 *
 	 * @param int   $payment_id Payment ID.
@@ -758,26 +734,6 @@ class Payments extends Base {
 
 		// Update payment with new payment data.
 		return self::update( $payment_id, [ 'payment_data' => $payment_data ] );
-	}
-
-	/**
-	 * Get specific value from payment data.
-	 *
-	 * @param int    $payment_id Payment ID.
-	 * @param string $key        Key to get.
-	 * @param mixed  $default    Default value if key not found.
-	 * @since x.x.x
-	 * @return mixed Value from payment data or default.
-	 */
-	public static function get_payment_data_value( $payment_id, $key, $default = null ) {
-		if ( empty( $payment_id ) || empty( $key ) ) {
-			return $default;
-		}
-
-		$payment_data  = self::get_payment_data( $payment_id );
-		$sanitized_key = sanitize_key( $key );
-
-		return $payment_data[ $sanitized_key ] ?? $default;
 	}
 
 	/**
