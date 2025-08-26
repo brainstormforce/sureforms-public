@@ -31,6 +31,8 @@ class Webhook {
 	const SRFM_TEST_LAST_FAILURE_AT = 'srfm_test_webhook_last_failure_at';
 	const SRFM_TEST_LAST_ERROR      = 'srfm_test_webhook_last_error';
 
+	private $mode = 'test';
+
 	use Get_Instance;
 
 	/**
@@ -38,92 +40,6 @@ class Webhook {
 	 */
 	public function __construct() {
 		add_action( 'rest_api_init', [ $this, 'register_endpoints' ] );
-	}
-
-	/**
-	 * Returns message about interaction with webhook
-	 *
-	 * @param mixed $mode mode of operation.
-	 * @return string
-	 */
-	public static function get_webhook_interaction_message( $mode = false ) {
-		if ( ! $mode ) {
-			$settings = get_option( Payments_Settings::OPTION_NAME, [] );
-			$mode     = $settings['payment_mode'] ?? 'test';
-		}
-
-		$last_success    = constant( 'self::SRFM_' . strtoupper( $mode ) . '_LAST_SUCCESS_AT' );
-		$last_success_at = get_option( $last_success );
-
-		$last_failure    = constant( 'self::SRFM_' . strtoupper( $mode ) . '_LAST_FAILURE_AT' );
-		$last_failure_at = get_option( $last_failure );
-
-		$began    = constant( 'self::SRFM_' . strtoupper( $mode ) . '_BEGAN_AT' );
-		$began_at = get_option( $began );
-
-		$status = 'none';
-
-		if ( $last_success_at && $last_failure_at ) {
-			$status = ( $last_success_at >= $last_failure_at ) ? 'success' : 'failure';
-		} elseif ( $last_success_at ) {
-			$status = 'success';
-		} elseif ( $last_failure_at ) {
-			$status = 'failure';
-		} elseif ( $began_at ) {
-			$status = 'began';
-		}
-
-		switch ( $status ) {
-			case 'success':
-				return sprintf(
-					/* translators: time, status */
-					__( 'Last webhook call was %1$s. Status : %2$s', 'sureforms' ),
-					self::time_elapsed_string( gmdate( 'Y-m-d H:i:s e', $last_success_at ) ),
-					'<b>' . ucfirst( $status ) . '</b>'
-				);
-
-			case 'failure':
-				$err_const = constant( 'self::SRFM_' . strtoupper( $mode ) . '_LAST_ERROR' );
-				$error     = get_option( $err_const );
-				$reason    = ( $error ) ? sprintf(
-					/* translators: error message */
-					__( 'Reason : %s', 'sureforms' ),
-					'<b>' . $error . '</b>'
-				) : '';
-				return sprintf(
-					/* translators: time, status, reason */
-					__( 'Last webhook call was %1$s. Status : %2$s. %3$s', 'sureforms' ),
-					self::time_elapsed_string( gmdate( 'Y-m-d H:i:s e', $last_failure_at ) ),
-					'<b>' . ucfirst( $status ) . '</b>',
-					$reason
-				);
-
-			case 'began':
-				return sprintf(
-					/* translators: timestamp */
-					__( 'No webhook call since %s.', 'sureforms' ),
-					gmdate( 'Y-m-d H:i:s e', $began_at )
-				);
-
-			default:
-				$settings = get_option( Payments_Settings::OPTION_NAME, [] );
-				if ( 'live' === $mode ) {
-					$endpoint_secret = $settings['webhook_live_secret'] ?? '';
-				} elseif ( 'test' === $mode ) {
-					$endpoint_secret = $settings['webhook_test_secret'] ?? '';
-				}
-
-				if ( ! empty( trim( $endpoint_secret ) ) ) {
-					$current_time = time();
-					update_option( $began, $current_time );
-					return sprintf(
-						/* translators: timestamp */
-						__( 'No webhook call since %s.', 'sureforms' ),
-						gmdate( 'Y-m-d H:i:s e', $current_time )
-					);
-				}
-				return '';
-		}
 	}
 
 	/**
@@ -138,7 +54,7 @@ class Webhook {
 			[
 				'methods'             => 'POST',
 				'callback'            => [ $this, 'webhook_listener' ],
-				'permission_callback' => [ $this, 'validate_stripe_signature' ],
+				'permission_callback' => '__return_true',
 			]
 		);
 	}
@@ -146,7 +62,7 @@ class Webhook {
 	/**
 	 * Validates the Stripe signature for webhook requests through middleware.
 	 *
-	 * @return bool
+	 * @return array|bool
 	 */
 	public function validate_stripe_signature() {
 		// Get the raw payload and Stripe signature header
@@ -160,18 +76,18 @@ class Webhook {
 
 		// Get payment settings
 		$settings = get_option( Payments_Settings::OPTION_NAME, [] );
-		$payment_mode = $settings['payment_mode'] ?? 'test';
+		$this->mode = $settings['payment_mode'] ?? 'test';
 		
 		// Get the appropriate webhook secret based on payment mode
 		$webhook_secret = '';
-		if ( 'live' === $payment_mode ) {
+		if ( 'live' === $this->mode ) {
 			$webhook_secret = $settings['webhook_live_secret'] ?? '';
 		} else {
 			$webhook_secret = $settings['webhook_test_secret'] ?? '';
 		}
 		
 		if ( empty( $webhook_secret ) ) {
-			error_log( 'SureForms: Webhook secret not configured for mode: ' . $payment_mode );
+			error_log( 'SureForms: Webhook secret not configured for mode: ' . $this->mode );
 			return false;
 		}
 
@@ -207,23 +123,11 @@ class Webhook {
 		// Parse middleware response
 		$validation_result = json_decode( $response_body, true );
 		
-		if ( 200 !== $response_code || ! is_array( $validation_result ) ) {
-			error_log( 'SureForms: Invalid middleware response. Code: ' . $response_code );
-			return false;
+		if ( 200 === $response_code && is_array( $validation_result ) ) {
+			return $validation_result;
 		}
-		
-		// Check validation result from middleware
-		$is_valid = $validation_result['valid'] ?? false;
-		
-		if ( ! $is_valid ) {
-			$error_message = $validation_result['error'] ?? 'Unknown validation error';
-			error_log( 'SureForms: Webhook signature validation failed: ' . $error_message );
-			return false;
-		}
-		
-		// Log successful validation
-		error_log( 'SureForms: Webhook signature validated successfully via middleware' );
-		return true;
+
+		return false;
 	}
 
 	/**
@@ -232,56 +136,29 @@ class Webhook {
 	 * @return void
 	 */
 	public function webhook_listener() {
-		// $settings = get_option( Payments_Settings::OPTION_NAME, [] );
-		$mode = $settings['payment_mode'] ?? 'test';
+		$event = $this->validate_stripe_signature();
 
-		// if ( 'live' === $mode ) {
-		// $endpoint_secret = $settings['webhook_live_secret'] ?? '';
-		// } else {
-		// $endpoint_secret = $settings['webhook_test_secret'] ?? '';
-		// }
+		// error_log( 'SureForms webhook event type: ' . $event->type );
 
-		// if ( empty( trim( $endpoint_secret ) ) ) {
-		// http_response_code( 400 );
-		// exit();
-		// }
-
-		// $began = constant( 'self::SRFM_' . strtoupper( $mode ) . '_BEGAN_AT' );
-		// if ( ! get_option( $began ) ) {
-		// update_option( $began, time() );
-		// }
-
-		$payload = file_get_contents( 'php://input' );
-		$event   = null;
-
-		try {
-			$event_data = json_decode( $payload, true );
-
-			if ( ! $event_data || ! isset( $event_data['type'] ) ) {
-				throw new \Exception( 'Invalid payload format' );
-			}
-
-			$event = (object) $event_data;
-		} catch ( \Exception $e ) {
-			error_log( 'SureForms Webhook error: ' . $e->getMessage() );
-			$error_at = constant( 'self::SRFM_' . strtoupper( $mode ) . '_LAST_FAILURE_AT' );
-			update_option( $error_at, time() );
-			$error = constant( 'self::SRFM_' . strtoupper( $mode ) . '_LAST_ERROR' );
-			update_option( $error, $e->getMessage() );
-			http_response_code( 400 );
-			exit();
+		if ( ! $event || ! isset( $event['type'] ) ) {
+			error_log( 'SureForms: Invalid webhook event' );
+			return;
 		}
 
-		error_log( 'SureForms webhook event type: ' . $event->type );
+		switch ( $event['type'] ) {
+			case 'charge.refund.updated':
+				// If not available event.data['object'] then return.
+				if ( ! isset( $event['data']['object'] ) ) {
+					error_log( 'SureForms: Invalid webhook event' );
+					return;
+				}
 
-		switch ( $event->type ) {
-			case 'charge.refunded':
-				$charge = (object) $event->data['object'];
+				$charge = $event['data']['object'];
 				$this->charge_refund( $charge );
 				break;
 		}
-
-		$success = constant( 'self::SRFM_' . strtoupper( $mode ) . '_LAST_SUCCESS_AT' );
+		
+		$success = constant( 'self::SRFM_' . strtoupper( $this->mode ) . '_LAST_SUCCESS_AT' );
 		update_option( $success, time() );
 		http_response_code( 200 );
 	}
@@ -293,7 +170,7 @@ class Webhook {
 	 * @return void
 	 */
 	public function charge_refund( $charge ) {
-		$payment_intent    = sanitize_text_field( $charge->payment_intent ?? '' );
+		$payment_intent    = sanitize_text_field( $charge['payment_intent'] ?? '' );
 		$get_payment_entry = Payments::get_by_transaction_id( $payment_intent );
 
 		if ( ! $get_payment_entry ) {
@@ -302,10 +179,9 @@ class Webhook {
 		}
 
 		$payment_entry_id = $get_payment_entry['id'] ?? 0;
-		$refund           = $charge->refunds['data'][0];
-		$refund_amount    = $refund['amount'];
+		$refund_amount    = $charge['amount'];
 
-		$update_refund_data = $this->update_refund_data( $payment_entry_id, $refund, $refund_amount, $charge->currency, 'webhook' );
+		$update_refund_data = $this->update_refund_data( $payment_entry_id, $charge, $refund_amount, $charge['currency'], 'webhook' );
 
 		if ( ! $update_refund_data ) {
 			error_log( 'SureForms: Failed to update refund data for payment entry ID: ' . $payment_entry_id );
