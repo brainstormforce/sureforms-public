@@ -157,6 +157,7 @@ class Email_Template {
 									<a target="_blank" href="<?php echo esc_attr( urldecode( $value ) ); ?>">
 										<?php echo esc_html( esc_url( $value ) ); ?>
 									</a>
+									</br>
 									<?php
 								}
 							}
