@@ -136,20 +136,93 @@ class Webhook {
 			'sureforms',
 			'/webhook',
 			[
-				'methods'  => 'POST',
-				'callback' => [ $this, 'webhook_listener' ],
-				// 'permission_callback' => [ $this, 'validate_webhook_signature' ],
+				'methods'             => 'POST',
+				'callback'            => [ $this, 'webhook_listener' ],
+				'permission_callback' => [ $this, 'validate_stripe_signature' ],
 			]
 		);
 	}
 
 	/**
-	 * Validates the Stripe signature for webhook requests.
+	 * Validates the Stripe signature for webhook requests through middleware.
 	 *
 	 * @return bool
 	 */
 	public function validate_stripe_signature() {
-		// Check if this is a POST request with Stripe signature header.
+		// Get the raw payload and Stripe signature header
+		$payload = file_get_contents( 'php://input' );
+		$signature = $_SERVER['HTTP_STRIPE_SIGNATURE'] ?? '';
+		
+		if ( empty( $payload ) || empty( $signature ) ) {
+			error_log( 'SureForms: Missing webhook payload or signature' );
+			return false;
+		}
+
+		// Get payment settings
+		$settings = get_option( Payments_Settings::OPTION_NAME, [] );
+		$payment_mode = $settings['payment_mode'] ?? 'test';
+		
+		// Get the appropriate webhook secret based on payment mode
+		$webhook_secret = '';
+		if ( 'live' === $payment_mode ) {
+			$webhook_secret = $settings['webhook_live_secret'] ?? '';
+		} else {
+			$webhook_secret = $settings['webhook_test_secret'] ?? '';
+		}
+		
+		if ( empty( $webhook_secret ) ) {
+			error_log( 'SureForms: Webhook secret not configured for mode: ' . $payment_mode );
+			return false;
+		}
+
+		// Prepare request data for middleware
+		$middleware_request_data = [
+			'payload' => $payload,
+			'signature' => $signature,
+			'webhook_secret' => $webhook_secret
+		];
+
+		// Make request to middleware for signature verification
+		$response = wp_remote_post(
+			'prod' === SRFM_PAYMENTS_ENV ? SRFM_PAYMENTS_PROD . 'webhook/validate-signature' : SRFM_PAYMENTS_LOCAL . 'webhook/validate-signature',
+			[
+				'body' => base64_encode( wp_json_encode( $middleware_request_data ) ),
+				'headers' => [
+					'Content-Type' => 'application/json',
+				],
+				'timeout' => 10, // 10 second timeout
+				'sslverify' => true,
+			]
+		);
+
+		// Handle middleware communication errors
+		if ( is_wp_error( $response ) ) {
+			error_log( 'SureForms: Middleware request failed: ' . $response->get_error_message() );
+			return false;
+		}
+
+		$response_code = wp_remote_retrieve_response_code( $response );
+		$response_body = wp_remote_retrieve_body( $response );
+		
+		// Parse middleware response
+		$validation_result = json_decode( $response_body, true );
+		
+		if ( 200 !== $response_code || ! is_array( $validation_result ) ) {
+			error_log( 'SureForms: Invalid middleware response. Code: ' . $response_code );
+			return false;
+		}
+		
+		// Check validation result from middleware
+		$is_valid = $validation_result['valid'] ?? false;
+		
+		if ( ! $is_valid ) {
+			$error_message = $validation_result['error'] ?? 'Unknown validation error';
+			error_log( 'SureForms: Webhook signature validation failed: ' . $error_message );
+			return false;
+		}
+		
+		// Log successful validation
+		error_log( 'SureForms: Webhook signature validated successfully via middleware' );
 		return true;
 	}
 
