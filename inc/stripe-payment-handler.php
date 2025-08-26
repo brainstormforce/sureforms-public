@@ -800,18 +800,8 @@ class Stripe_Payment_Handler {
 	 * @since x.x.x
 	 */
 	private function calculate_total_refunds( $payment_id ) {
-		$payment_data = Payments::get_payment_data( $payment_id );
-		$total_refunded = 0;
-		
-		if ( ! empty( $payment_data['refunds'] ) && is_array( $payment_data['refunds'] ) ) {
-			foreach ( $payment_data['refunds'] as $refund ) {
-				$refund_amount = isset( $refund['amount'] ) ? floatval( $refund['amount'] ) : 0;
-				// Convert from cents to dollars
-				$total_refunded += ( $refund_amount / 100 );
-			}
-		}
-		
-		return $total_refunded;
+		// Use the new refunded_amount column for direct access
+		return Payments::get_refunded_amount( $payment_id );
 	}
 
 	/**
@@ -884,7 +874,7 @@ class Stripe_Payment_Handler {
 
 		// Validate refund amount to prevent over-refunding
 		$original_amount = floatval( $payment['total_amount'] );
-		$existing_refunds = $this->calculate_total_refunds( $payment_id );
+		$existing_refunds = floatval( $payment['refunded_amount'] ?? 0 ); // Use column directly
 		$new_refund_amount = $refund_amount / 100; // Convert cents to dollars
 		$total_after_refund = $existing_refunds + $new_refund_amount;
 		
@@ -899,8 +889,11 @@ class Stripe_Payment_Handler {
 			return false;
 		}
 
-		// Add refund data to payment_data column
+		// Add refund data to payment_data column (for audit trail)
 		$payment_data_result = Payments::add_refund_to_payment_data( $payment_id, $refund_data );
+
+		// Update the refunded_amount column
+		$refund_amount_result = Payments::add_refund_amount( $payment_id, $new_refund_amount );
 
 		// Calculate appropriate payment status
 		$payment_status = 'succeeded'; // Default to current status
@@ -940,9 +933,14 @@ class Stripe_Payment_Handler {
 		// Update payment record with status and log
 		$payment_update_result = Payments::update( $payment_id, $update_data );
 
-		// Check if both operations succeeded
+		// Check if all operations succeeded
 		if ( false === $payment_data_result ) {
 			error_log( 'SureForms: Failed to store refund data in payment_data for payment ID: ' . $payment_id );
+		}
+
+		if ( false === $refund_amount_result ) {
+			error_log( 'SureForms: Failed to update refunded_amount column for payment ID: ' . $payment_id );
+			return false;
 		}
 
 		if ( false === $payment_update_result ) {

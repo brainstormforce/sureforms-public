@@ -258,21 +258,17 @@ class Single_Payment {
 				<?php
 				// Add refund section for succeeded and partially refunded payments
 				if ( ( 'succeeded' === $payment_status || 'partially_refunded' === $payment_status ) && ! empty( $this->payment['transaction_id'] ) && 'stripe' === $this->payment['gateway'] ) {
-					// Calculate refundable amount
-					$payment_data = Helper::get_array_value( $this->payment['payment_data'] );
-					$total_refunded = 0;
-					$refund_history = [];
-					
-					if ( ! empty( $payment_data['refunds'] ) && is_array( $payment_data['refunds'] ) ) {
-						foreach ( $payment_data['refunds'] as $refund ) {
-							$refund_amount = isset( $refund['amount'] ) ? floatval( $refund['amount'] ) / 100 : 0;
-							$total_refunded += $refund_amount;
-							$refund_history[] = $refund;
-						}
-					}
-					
+					// Calculate refundable amount using the new column
+					$total_refunded = floatval( $this->payment['refunded_amount'] ?? 0 );
 					$refundable_amount = $amount - $total_refunded;
 					$currency_symbol = $currency === 'USD' ? '$' : strtoupper( $currency ) . ' ';
+					
+					// Get refund history from payment_data for display
+					$payment_data = Helper::get_array_value( $this->payment['payment_data'] );
+					$refund_history = [];
+					if ( ! empty( $payment_data['refunds'] ) && is_array( $payment_data['refunds'] ) ) {
+						$refund_history = $payment_data['refunds'];
+					}
 					?>
 					<div class="srfm-refund-section" style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #ddd;">
 						<div style="margin-bottom: 15px;">
@@ -368,17 +364,8 @@ class Single_Payment {
 		<?php
 		// Add refund nonce for JavaScript if payment can be refunded
 		if ( ( 'succeeded' === $payment_status || 'partially_refunded' === $payment_status ) && ! empty( $this->payment['transaction_id'] ) && 'stripe' === $this->payment['gateway'] ) {
-			// Calculate refundable amount for JS
-			$payment_data = Helper::get_array_value( $this->payment['payment_data'] );
-			$total_refunded = 0;
-			
-			if ( ! empty( $payment_data['refunds'] ) && is_array( $payment_data['refunds'] ) ) {
-				foreach ( $payment_data['refunds'] as $refund ) {
-					$refund_amount = isset( $refund['amount'] ) ? floatval( $refund['amount'] ) / 100 : 0;
-					$total_refunded += $refund_amount;
-				}
-			}
-			
+			// Calculate refundable amount for JS using the column
+			$total_refunded = floatval( $this->payment['refunded_amount'] ?? 0 );
 			$refundable_amount = $amount - $total_refunded;
 			$currency_symbol = $currency === 'USD' ? '$' : strtoupper( $currency ) . ' ';
 			

@@ -79,14 +79,15 @@ class Payments_List_Table extends \WP_List_Table {
 	 */
 	public function get_columns() {
 		return [
-			'cb'      => '<input type="checkbox" />',
-			'id'      => __( 'ID', 'sureforms' ),
-			'date'    => __( 'Date', 'sureforms' ),
-			'type'    => __( 'Type', 'sureforms' ),
-			'form_id' => __( 'Form', 'sureforms' ),
-			'status'  => __( 'Status', 'sureforms' ),
-			'amount'  => __( 'Amount', 'sureforms' ),
-			'gateway' => __( 'Gateway', 'sureforms' ),
+			'cb'             => '<input type="checkbox" />',
+			'id'             => __( 'ID', 'sureforms' ),
+			'date'           => __( 'Date', 'sureforms' ),
+			'type'           => __( 'Type', 'sureforms' ),
+			'form_id'        => __( 'Form', 'sureforms' ),
+			'status'         => __( 'Status', 'sureforms' ),
+			'amount'         => __( 'Amount', 'sureforms' ),
+			'refunded_amount'=> __( 'Refunded', 'sureforms' ),
+			'gateway'        => __( 'Gateway', 'sureforms' ),
 		];
 	}
 
@@ -98,11 +99,12 @@ class Payments_List_Table extends \WP_List_Table {
 	 */
 	public function get_sortable_columns() {
 		return [
-			'id'      => [ 'id', false ],
-			'date'    => [ 'created_at', false ],
-			'status'  => [ 'status', false ],
-			'amount'  => [ 'total_amount', false ],
-			'form_id' => [ 'form_id', false ],
+			'id'             => [ 'id', false ],
+			'date'           => [ 'created_at', false ],
+			'status'         => [ 'status', false ],
+			'amount'         => [ 'total_amount', false ],
+			'refunded_amount'=> [ 'refunded_amount', false ],
+			'form_id'        => [ 'form_id', false ],
 		];
 	}
 
@@ -193,6 +195,8 @@ class Payments_List_Table extends \WP_List_Table {
 				return $this->column_status( $item );
 			case 'amount':
 				return $this->column_amount( $item );
+			case 'refunded_amount':
+				return $this->column_refunded_amount( $item );
 			case 'gateway':
 				return $this->column_gateway( $item );
 			default:
@@ -500,14 +504,48 @@ class Payments_List_Table extends \WP_List_Table {
 	 * @return string
 	 */
 	protected function column_amount( $item ) {
-		$amount   = ! empty( $item['total_amount'] ) ? floatval( $item['total_amount'] ) : 0;
+		$amount = ! empty( $item['total_amount'] ) ? floatval( $item['total_amount'] ) : 0;
+		$refunded_amount = ! empty( $item['refunded_amount'] ) ? floatval( $item['refunded_amount'] ) : 0;
 		$currency = ! empty( $item['currency'] ) ? strtoupper( $item['currency'] ) : 'USD';
+
+		// Show net amount if there are refunds
+		if ( $refunded_amount > 0 ) {
+			$net_amount = $amount - $refunded_amount;
+			return sprintf(
+				'<span>%1$s %2$s <small style="color: #6c757d;">(net)</small></span>',
+				esc_html( $currency ),
+				number_format( $net_amount, 2 )
+			);
+		}
 
 		return sprintf(
 			'<span>%1$s %2$s</span>',
 			esc_html( $currency ),
 			number_format( $amount, 2 )
 		);
+	}
+
+	/**
+	 * Define the data for the "refunded_amount" column and return the markup.
+	 *
+	 * @param array $item Column data.
+	 *
+	 * @since x.x.x
+	 * @return string
+	 */
+	protected function column_refunded_amount( $item ) {
+		$refunded_amount = ! empty( $item['refunded_amount'] ) ? floatval( $item['refunded_amount'] ) : 0;
+		$currency = ! empty( $item['currency'] ) ? strtoupper( $item['currency'] ) : 'USD';
+
+		if ( $refunded_amount > 0 ) {
+			return sprintf(
+				'<span style="color: #d63384;">%1$s %2$s</span>',
+				esc_html( $currency ),
+				number_format( $refunded_amount, 2 )
+			);
+		}
+
+		return '<span style="color: #6c757d;">—</span>';
 	}
 
 	/**

@@ -134,6 +134,11 @@ class Payments extends Base {
 				'type'    => 'string',
 				'default' => '0.00000000',
 			],
+			// Total refunded amount.
+			'refunded_amount'     => [
+				'type'    => 'string',
+				'default' => '0.00000000',
+			],
 			// Currency code.
 			'currency'            => [
 				'type'    => 'string',
@@ -215,6 +220,7 @@ class Payments extends Base {
 			'block_id VARCHAR(255) NOT NULL',
 			'status VARCHAR(50) NOT NULL',
 			'total_amount DECIMAL(26,8) NOT NULL',
+			'refunded_amount DECIMAL(26,8) NOT NULL',
 			'currency VARCHAR(3) NOT NULL',
 			'entry_id BIGINT(20) UNSIGNED NOT NULL',
 			'gateway VARCHAR(20) NOT NULL',
@@ -772,5 +778,114 @@ class Payments extends Base {
 		$sanitized_key = sanitize_key( $key );
 
 		return $payment_data[ $sanitized_key ] ?? $default;
+	}
+
+	/**
+	 * Add refund amount to the refunded_amount column.
+	 *
+	 * @param int   $payment_id Payment ID.
+	 * @param float $refund_amount Refund amount to add (in dollars).
+	 * @since x.x.x
+	 * @return int|false Number of rows updated or false on error.
+	 */
+	public static function add_refund_amount( $payment_id, $refund_amount ) {
+		if ( empty( $payment_id ) || $refund_amount <= 0 ) {
+			return false;
+		}
+
+		// Get current payment data
+		$payment = self::get( $payment_id );
+		if ( ! $payment ) {
+			return false;
+		}
+
+		// Calculate new refunded amount
+		$current_refunded = floatval( $payment['refunded_amount'] ?? 0 );
+		$new_total_refunded = $current_refunded + floatval( $refund_amount );
+
+		// Update refunded amount
+		return self::update( $payment_id, [ 'refunded_amount' => $new_total_refunded ] );
+	}
+
+	/**
+	 * Get refunded amount for a payment.
+	 *
+	 * @param int $payment_id Payment ID.
+	 * @since x.x.x
+	 * @return float Refunded amount in dollars.
+	 */
+	public static function get_refunded_amount( $payment_id ) {
+		if ( empty( $payment_id ) ) {
+			return 0.0;
+		}
+
+		$payment = self::get( $payment_id );
+		if ( ! $payment ) {
+			return 0.0;
+		}
+
+		return floatval( $payment['refunded_amount'] ?? 0 );
+	}
+
+	/**
+	 * Get refundable amount for a payment.
+	 *
+	 * @param int $payment_id Payment ID.
+	 * @since x.x.x
+	 * @return float Remaining refundable amount in dollars.
+	 */
+	public static function get_refundable_amount( $payment_id ) {
+		if ( empty( $payment_id ) ) {
+			return 0.0;
+		}
+
+		$payment = self::get( $payment_id );
+		if ( ! $payment ) {
+			return 0.0;
+		}
+
+		$total_amount = floatval( $payment['total_amount'] ?? 0 );
+		$refunded_amount = floatval( $payment['refunded_amount'] ?? 0 );
+
+		return max( 0, $total_amount - $refunded_amount );
+	}
+
+	/**
+	 * Check if payment is fully refunded.
+	 *
+	 * @param int $payment_id Payment ID.
+	 * @since x.x.x
+	 * @return bool True if fully refunded, false otherwise.
+	 */
+	public static function is_fully_refunded( $payment_id ) {
+		if ( empty( $payment_id ) ) {
+			return false;
+		}
+
+		$payment = self::get( $payment_id );
+		if ( ! $payment ) {
+			return false;
+		}
+
+		$total_amount = floatval( $payment['total_amount'] ?? 0 );
+		$refunded_amount = floatval( $payment['refunded_amount'] ?? 0 );
+
+		return $refunded_amount >= $total_amount && $total_amount > 0;
+	}
+
+	/**
+	 * Check if payment is partially refunded.
+	 *
+	 * @param int $payment_id Payment ID.
+	 * @since x.x.x
+	 * @return bool True if partially refunded, false otherwise.
+	 */
+	public static function is_partially_refunded( $payment_id ) {
+		if ( empty( $payment_id ) ) {
+			return false;
+		}
+
+		$refunded_amount = self::get_refunded_amount( $payment_id );
+		return $refunded_amount > 0 && ! self::is_fully_refunded( $payment_id );
 	}
 }
