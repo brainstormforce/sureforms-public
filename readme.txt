@@ -265,6 +265,7 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 
 == Changelog ==
 = x.x.x =
+* Improvement: Added Ultimate Addons for Elementor in SureForms dashboard.
 * Fix: Resolved an issue where icon block styles were not implemented when using inside Spectra Modal.
 = 1.10.1 - 19th August 2025 =
 * New: Introduced Form Restriction.
