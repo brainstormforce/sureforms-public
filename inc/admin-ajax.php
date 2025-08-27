@@ -260,6 +260,18 @@ class Admin_Ajax {
 
 		$blocks = parse_blocks( $post->post_content );
 
+		$blocks = array_filter(
+			$blocks,
+			function( $block ) {
+				if ( isset( $block['blockName'] ) && 'srfm/html' === $block['blockName'] ) {
+					return false;
+				}
+				return true;
+			}
+		);
+
+		$blocks = array_values( $blocks );
+
 		if ( empty( $blocks ) ) {
 			return [];
 		}
