@@ -255,7 +255,22 @@ class Single_Payment {
 						</tr>
 						<tr>
 							<td><b><?php esc_html_e( 'Amount:', 'sureforms' ); ?></b></td>
-							<td><?php echo esc_html( $currency . ' ' . number_format( $amount, 2 ) ); ?></td>
+							<td>
+								<?php
+								$refunded_amount = floatval( $this->payment['refunded_amount'] ?? 0 );
+								if ( $refunded_amount > 0 ) {
+									$net_amount = $amount - $refunded_amount;
+									echo sprintf(
+										'<span style="display: flex;gap: 8px;"><span style="text-decoration: line-through; color: #6c757d;">%1$s %3$s</span><strong>%1$s %2$s</strong></span>',
+										esc_html( $currency ),
+										number_format( $net_amount, 2 ),
+										number_format( $amount, 2 )
+									);
+								} else {
+									echo esc_html( $currency . ' ' . number_format( $amount, 2 ) );
+								}
+								?>
+							</td>
 						</tr>
 						<tr>
 							<td><b><?php esc_html_e( 'Status:', 'sureforms' ); ?></b></td>
@@ -514,7 +529,22 @@ class Single_Payment {
 						
 						<tr>
 							<td><b><?php esc_html_e( 'Payment Amount', 'sureforms' ); ?></b></td>
-							<td><strong><?php echo esc_html( $currency . ' ' . number_format( $amount, 2 ) ); ?></strong></td>
+							<td>
+								<?php
+								$refunded_amount = floatval( $this->payment['refunded_amount'] ?? 0 );
+								if ( $refunded_amount > 0 ) {
+									$net_amount = $amount - $refunded_amount;
+									echo sprintf(
+										'<span style="display: flex;gap: 8px;"><span style="text-decoration: line-through; color: #6c757d;"><strong>%1$s %3$s</strong></span><strong>%1$s %2$s</strong></span>',
+										esc_html( $currency ),
+										number_format( $net_amount, 2 ),
+										number_format( $amount, 2 )
+									);
+								} else {
+									echo '<strong>' . esc_html( $currency . ' ' . number_format( $amount, 2 ) ) . '</strong>';
+								}
+								?>
+							</td>
 						</tr>
 						<tr>
 							<td><b><?php esc_html_e( 'Payment Status', 'sureforms' ); ?></b></td>

@@ -486,32 +486,32 @@ class Payments_List_Table extends \WP_List_Table {
 
 		$status_label = $status_labels[ $item['status'] ] ?? ucfirst( $item['status'] );
 
-		$style = "    padding: 3px 8px;
+		$style = 'padding: 3px 8px;
 				border-radius: 3px;
 				font-size: 11px;
 				font-weight: bold;
 				text-transform: uppercase;
-				border: 1px solid;";
+				border: 1px solid;';
 
-				$for_success = "color: #155724;
+				$for_success = 'color: #155724;
 				background-color: #d4edda;
-				border-color: #c3e6cb;";
+				border-color: #c3e6cb;';
 
-				$for_refund_partially = "background-color: #fff3cd;
+				$for_refund_partially = 'background-color: #fff3cd;
 				color: #856404;
-				border-color: #ffeaa7;";
+				border-color: #ffeaa7;';
 
-				$for_refund_fully = "background-color: #f8d7da;
+				$for_refund_fully = 'background-color: #f8d7da;
 				color: #721c24;
-				border-color: #f5c6cb;";
+				border-color: #f5c6cb;';
 
-				if ( 'succeeded' === $item['status'] ) {
-					$style = $style . $for_success;
-				} elseif ( 'partially_refunded' === $item['status'] ) {
-					$style = $style . $for_refund_partially;
-				} else if ( 'refunded' === $item['status'] ) {
-					$style = $style . $for_refund_fully;
-				}
+		if ( 'succeeded' === $item['status'] ) {
+			$style = $style . $for_success;
+		} elseif ( 'partially_refunded' === $item['status'] ) {
+			$style = $style . $for_refund_partially;
+		} elseif ( 'refunded' === $item['status'] ) {
+			$style = $style . $for_refund_fully;
+		}
 
 		return sprintf(
 			'<span class="payment-status-%1$s" style="%3$s">%2$s</span>',
