@@ -510,14 +510,15 @@ class Payments_List_Table extends \WP_List_Table {
 		if ( $refunded_amount > 0 ) {
 			$net_amount = $amount - $refunded_amount;
 			return sprintf(
-				'<span>%1$s %2$s <small style="color: #6c757d;">(net)</small></span>',
+				'<span style="display: flex;gap: 8px;"><span style="text-decoration: line-through; color: #6c757d;">%1$s %3$s</span><strong>%1$s %2$s</strong></span>',
 				esc_html( $currency ),
-				number_format( $net_amount, 2 )
+				number_format( $net_amount, 2 ),
+				number_format( $amount, 2 )
 			);
 		}
 
 		return sprintf(
-			'<span>%1$s %2$s</span>',
+			'<span><strong>%1$s %2$s</strong></span>',
 			esc_html( $currency ),
 			number_format( $amount, 2 )
 		);

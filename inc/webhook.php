@@ -19,7 +19,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Webhook endpoints
  */
 class Webhook {
-
 	use Get_Instance;
 	public const SRFM_LIVE_BEGAN_AT        = 'srfm_live_webhook_began_at';
 	public const SRFM_LIVE_LAST_SUCCESS_AT = 'srfm_live_webhook_last_success_at';
@@ -173,7 +172,7 @@ class Webhook {
 	 * @return void
 	 */
 	public function charge_refund( array $charge ): void {
-		$payment_intent = sanitize_text_field( $charge['payment_intent'] ?? '' );
+		$payment_intent    = sanitize_text_field( $charge['payment_intent'] ?? '' );
 		$get_payment_entry = Payments::get_by_transaction_id( $payment_intent );
 
 		if ( ! $get_payment_entry ) {
@@ -182,9 +181,9 @@ class Webhook {
 		}
 
 		$payment_entry_id = $get_payment_entry['id'] ?? 0;
-		$refund_amount = is_numeric( $charge['amount'] ?? 0 ) ? (int) $charge['amount'] : 0;
+		$refund_amount    = is_numeric( $charge['amount'] ?? 0 ) ? (int) $charge['amount'] : 0;
 
-		$currency = is_string( $charge['currency'] ?? '' ) ? $charge['currency'] : 'usd';
+		$currency           = is_string( $charge['currency'] ?? '' ) ? $charge['currency'] : 'usd';
 		$update_refund_data = $this->update_refund_data( $payment_entry_id, $charge, $refund_amount, $currency, 'webhook' );
 
 		if ( ! $update_refund_data ) {
@@ -215,11 +214,11 @@ class Webhook {
 	/**
 	 * Update refund data for a payment.
 	 *
-	 * @param int $payment_id Payment ID.
+	 * @param int                  $payment_id Payment ID.
 	 * @param array<string, mixed> $refund_response Refund response data.
-	 * @param int $refund_amount Refund amount in cents.
-	 * @param string $currency Currency code.
-	 * @param string|null $payment Payment method.
+	 * @param int                  $refund_amount Refund amount in cents.
+	 * @param string               $currency Currency code.
+	 * @param string|null          $payment Payment method.
 	 * @return bool Whether the update was successful.
 	 */
 	public function update_refund_data( int $payment_id, array $refund_response, int $refund_amount, string $currency, ?string $payment = null ): bool {

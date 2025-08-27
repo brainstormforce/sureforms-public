@@ -599,7 +599,6 @@ class Payments_Settings {
 					'message' => $error_message ? $error_message : __( 'Failed to delete webhook.', 'sureforms' ),
 				]
 			);
-
 	}
 
 	/**
