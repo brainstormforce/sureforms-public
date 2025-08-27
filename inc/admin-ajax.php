@@ -262,8 +262,8 @@ class Admin_Ajax {
 
 		$blocks = array_filter(
 			$blocks,
-			function( $block ) {
-				if ( isset( $block['blockName'] ) && 'srfm/html' === $block['blockName'] ) {
+			static function( $block ) {
+				if ( 'srfm/html' === $block['blockName'] ) {
 					return false;
 				}
 				return true;
