@@ -22,8 +22,7 @@ const FromEmail = ( {
 	const validateAndShowFromEmailWarning = () => {
 		const fromEmail = formData?.from_email || '';
 		const userEnteredUrl = fromEmail?.split( '@' )[ 1 ] || '';
-		const url = window?.srfm_block_data?.site_url || '';
-		const siteUrl = url.replace( /^www\./, '' );
+		const siteUrl = window?.srfm_block_data?.site_url || '';
 		const isValidEmail =
 			/^[\p{L}\p{N}._%+-]+@[\p{L}\p{N}.-]+\.[\p{L}]{2,}$/u.test(
 				fromEmail
