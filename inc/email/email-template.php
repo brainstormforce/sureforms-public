@@ -67,7 +67,7 @@ class Email_Template {
 																	<tbody>
 																		<tr>
 																			<td valign="top" style="padding:32px">
-																				<div id="srfm_body_content_inner" style="color: #384860;font-family: Roboto-Medium,Roboto,-apple-system,BlinkMacSystemFont,Helvetica Neue,Helvetica,Arial,sans-serif;font-size: 14px;line-height: 1;text-align: left;">
+																				<div id="srfm_body_content_inner" style="color: #384860;font-family: Roboto-Medium,Roboto,-apple-system,BlinkMacSystemFont,Helvetica Neue,Helvetica,Arial,sans-serif;font-size: 14px;line-height: 20px;text-align: left;">
 		<?php
 		return ob_get_clean();
 	}
@@ -150,16 +150,34 @@ class Email_Template {
 						<td style="font-size: 14px;color: #475569;padding: 8px 16px 16px 16px;padding-bottom: 10px;">
 						<?php
 						if ( ! empty( $values_array ) && is_array( $values_array ) ) {
+							$clean_values = [];
+
 							foreach ( $values_array as $value ) {
 								$value = Helper::get_string_value( $value );
 								if ( ! empty( $value ) && is_string( $value ) ) {
-									?>
-									<a target="_blank" href="<?php echo esc_attr( urldecode( $value ) ); ?>">
-										<?php echo esc_html( esc_url( $value ) ); ?>
-									</a>
-									<br>
-									<?php
+									$clean_values[] = $value;
 								}
+							}
+
+							if ( count( $clean_values ) === 1 ) {
+								$value = reset( $clean_values );
+								?>
+								<a target="_blank" href="<?php echo esc_attr( urldecode( $value ) ); ?>">
+									<?php echo esc_html( esc_url( $value ) ); ?>
+								</a>
+								<?php
+							} elseif ( count( $clean_values ) > 1 ) {
+								?>
+								<ol style="list-style: decimal; padding-left: 20px; margin: 0;">
+									<?php foreach ( $clean_values as $value ) : ?>
+										<li style="margin-bottom: 6px;">
+											<a target="_blank" href="<?php echo esc_attr( urldecode( $value ) ); ?>">
+												<?php echo esc_html( esc_url( $value ) ); ?>
+											</a>
+										</li>
+									<?php endforeach; ?>
+								</ol>
+								<?php
 							}
 						} elseif ( ! empty( $value ) && is_string( $value ) && filter_var( $value, FILTER_VALIDATE_URL ) ) {
 							ob_start();
