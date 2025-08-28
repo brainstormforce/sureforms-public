@@ -677,7 +677,10 @@ export function activatePlugin( { plugin, event } ) {
 		formData,
 		successCallback: () => {
 			if ( srfm_admin?.current_screen_id === 'sureforms_menu' ) {
-				event.target.style.color = '#16A34A';
+				const button = event.target.closest( 'button' );
+				if ( button ) {
+					button.style.backgroundColor = '#F0FDF4';
+				}
 			}
 			event.target.innerText = srfm_admin.plugin_activated_text;
 			if ( plugin?.redirection ) {
