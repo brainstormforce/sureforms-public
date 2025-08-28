@@ -59,19 +59,16 @@ const FormTypeSelectorNew = ( {
 
 		setFormType( option.slug );
 
-		if ( option.slug === 'simple' ) {
-			console.log( 'Simple form selected' );
-			// Reset to default layout
+		if ( option.slug === 'calculator' ) {
 			setformLayout( {} );
-		} else if ( option.slug === 'conversational' ) {
-			// Enable conversational form layout automatically (same behaviour as toggle)
+		}
+
+		if ( option.slug === 'conversational' ) {
+			setformLayout( {} );
 			setFormTypeObj( {
 				...formTypeObj,
 				isConversationalForm: true,
 			} );
-		} else {
-			// calculator / others
-			setformLayout( {} );
 		}
 	};
 

@@ -1,12 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import { useState, useRef } from '@wordpress/element';
-import {
-	Button,
-	Container,
-	TextArea,
-	Title,
-	toast,
-} from '@bsf/force-ui';
+import { Button, Container, TextArea, Title, toast } from '@bsf/force-ui';
 import { ArrowRight, SendHorizontal, MicOff, Mic } from 'lucide-react';
 import { applyFilters } from '@wordpress/hooks';
 import { cn } from '@Utils/Helpers';
@@ -252,7 +246,9 @@ export default ( props ) => {
 													iconPosition="right"
 													size="md"
 													variant="primary"
-													disabled={ characterCount <= 0 }
+													disabled={
+														characterCount <= 0
+													}
 													onClick={ () => {
 														if (
 															! text ||
