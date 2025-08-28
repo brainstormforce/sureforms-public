@@ -44,6 +44,7 @@ use SRFM\Inc\Single_Form_Settings\Compliance_Settings;
 use SRFM\Inc\Smart_Tags;
 use SRFM\Inc\Stripe_Payment_Handler;
 use SRFM\Inc\Updater;
+use SRFM\Inc\Stripe_Webhook;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -302,6 +303,7 @@ class Plugin_Loader {
 		Updater::get_instance();
 		Payments_Settings::get_instance();
 		Stripe_Payment_Handler::get_instance();
+		Stripe_Webhook::get_instance();
 		Onboarding::get_instance();
 		DatabaseRegister::init();
 		Form_Restriction::get_instance();

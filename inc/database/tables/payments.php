@@ -54,6 +54,7 @@ class Payments extends Base {
 		'requires_payment_method',
 		'processing',
 		'refunded',
+		'partially_refunded',
 	];
 
 	/**
@@ -130,6 +131,11 @@ class Payments extends Base {
 			],
 			// Total amount after discount.
 			'total_amount'        => [
+				'type'    => 'string',
+				'default' => '0.00000000',
+			],
+			// Total refunded amount.
+			'refunded_amount'     => [
 				'type'    => 'string',
 				'default' => '0.00000000',
 			],
@@ -212,8 +218,9 @@ class Payments extends Base {
 			'id BIGINT(20) UNSIGNED AUTO_INCREMENT PRIMARY KEY',
 			'form_id BIGINT(20) UNSIGNED',
 			'block_id VARCHAR(255) NOT NULL',
-			'status VARCHAR(10) NOT NULL',
+			'status VARCHAR(50) NOT NULL',
 			'total_amount DECIMAL(26,8) NOT NULL',
+			'refunded_amount DECIMAL(26,8) NOT NULL',
 			'currency VARCHAR(3) NOT NULL',
 			'entry_id BIGINT(20) UNSIGNED NOT NULL',
 			'gateway VARCHAR(20) NOT NULL',
@@ -677,5 +684,162 @@ class Payments extends Base {
 	 */
 	public static function is_valid_mode( $mode ) {
 		return in_array( $mode, self::$valid_modes, true );
+	}
+
+	/**
+	 * Get payment data for a payment.
+	 *
+	 * @param int $payment_id Payment ID.
+	 * @since x.x.x
+	 * @return array<string,mixed> Payment data array.
+	 */
+	public static function get_payment_data( $payment_id ) {
+		if ( empty( $payment_id ) ) {
+			return [];
+		}
+
+		$result = self::get_instance()->get_results(
+			[ 'id' => absint( $payment_id ) ],
+			'payment_data'
+		);
+
+		return isset( $result[0] ) && is_array( $result[0] ) ? Helper::get_array_value( $result[0]['payment_data'] ) : [];
+	}
+
+	/**
+	 * Add refund data to payment_data column.
+	 *
+	 * @param int   $payment_id Payment ID.
+	 * @param array $refund_data Refund data to add.
+	 * @since x.x.x
+	 * @return int|false Number of rows updated or false on error.
+	 */
+	public static function add_refund_to_payment_data( $payment_id, $refund_data ) {
+		if ( empty( $payment_id ) || empty( $refund_data ) || ! is_array( $refund_data ) ) {
+			return false;
+		}
+
+		// Get current payment data.
+		$payment_data = self::get_payment_data( $payment_id );
+
+		// Initialize refunds array if it doesn't exist.
+		if ( ! isset( $payment_data['refunds'] ) ) {
+			$payment_data['refunds'] = [];
+		}
+
+		// Add new refund data.
+		$payment_data['refunds'][] = $refund_data;
+
+		// Update payment with new payment data.
+		return self::update( $payment_id, [ 'payment_data' => $payment_data ] );
+	}
+
+	/**
+	 * Add refund amount to the refunded_amount column.
+	 *
+	 * @param int   $payment_id Payment ID.
+	 * @param float $refund_amount Refund amount to add (in dollars).
+	 * @since x.x.x
+	 * @return int|false Number of rows updated or false on error.
+	 */
+	public static function add_refund_amount( $payment_id, $refund_amount ) {
+		if ( empty( $payment_id ) || $refund_amount <= 0 ) {
+			return false;
+		}
+
+		// Get current payment data
+		$payment = self::get( $payment_id );
+		if ( ! $payment ) {
+			return false;
+		}
+
+		// Calculate new refunded amount
+		$current_refunded   = floatval( $payment['refunded_amount'] ?? 0 );
+		$new_total_refunded = $current_refunded + floatval( $refund_amount );
+
+		// Update refunded amount
+		return self::update( $payment_id, [ 'refunded_amount' => $new_total_refunded ] );
+	}
+
+	/**
+	 * Get refunded amount for a payment.
+	 *
+	 * @param int $payment_id Payment ID.
+	 * @since x.x.x
+	 * @return float Refunded amount in dollars.
+	 */
+	public static function get_refunded_amount( $payment_id ) {
+		if ( empty( $payment_id ) ) {
+			return 0.0;
+		}
+
+		$payment = self::get( $payment_id );
+		if ( ! $payment ) {
+			return 0.0;
+		}
+
+		return floatval( $payment['refunded_amount'] ?? 0 );
+	}
+
+	/**
+	 * Get refundable amount for a payment.
+	 *
+	 * @param int $payment_id Payment ID.
+	 * @since x.x.x
+	 * @return float Remaining refundable amount in dollars.
+	 */
+	public static function get_refundable_amount( $payment_id ) {
+		if ( empty( $payment_id ) ) {
+			return 0.0;
+		}
+
+		$payment = self::get( $payment_id );
+		if ( ! $payment ) {
+			return 0.0;
+		}
+
+		$total_amount    = floatval( $payment['total_amount'] ?? 0 );
+		$refunded_amount = floatval( $payment['refunded_amount'] ?? 0 );
+
+		return max( 0, $total_amount - $refunded_amount );
+	}
+
+	/**
+	 * Check if payment is fully refunded.
+	 *
+	 * @param int $payment_id Payment ID.
+	 * @since x.x.x
+	 * @return bool True if fully refunded, false otherwise.
+	 */
+	public static function is_fully_refunded( $payment_id ) {
+		if ( empty( $payment_id ) ) {
+			return false;
+		}
+
+		$payment = self::get( $payment_id );
+		if ( ! $payment ) {
+			return false;
+		}
+
+		$total_amount    = floatval( $payment['total_amount'] ?? 0 );
+		$refunded_amount = floatval( $payment['refunded_amount'] ?? 0 );
+
+		return $refunded_amount >= $total_amount && $total_amount > 0;
+	}
+
+	/**
+	 * Check if payment is partially refunded.
+	 *
+	 * @param int $payment_id Payment ID.
+	 * @since x.x.x
+	 * @return bool True if partially refunded, false otherwise.
+	 */
+	public static function is_partially_refunded( $payment_id ) {
+		if ( empty( $payment_id ) ) {
+			return false;
+		}
+
+		$refunded_amount = self::get_refunded_amount( $payment_id );
+		return $refunded_amount > 0 && ! self::is_fully_refunded( $payment_id );
 	}
 }
