@@ -10,7 +10,6 @@ namespace SRFM\Inc;
 
 use SRFM\Inc\Traits\Get_Instance;
 use SRFM\Inc\Database\Tables\Payments;
-use SRFM\Inc\Stripe_Payment_Handler;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -19,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Webhook endpoints
  */
-class Webhook {
+class Stripe_Webhook {
 
 	const SRFM_LIVE_BEGAN_AT        = 'srfm_live_webhook_began_at';
 	const SRFM_LIVE_LAST_SUCCESS_AT = 'srfm_live_webhook_last_success_at';
@@ -440,6 +439,3 @@ class Webhook {
 		return $string ? implode( ', ', $string ) . ' ago' : 'just now';
 	}
 }
-
-// Initialize the class.
-Webhook::get_instance();
