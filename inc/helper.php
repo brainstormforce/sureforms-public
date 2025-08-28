@@ -1512,7 +1512,6 @@ class Helper {
 					'slug'        => 'header-footer-elementor',
 					'path'        => 'header-footer-elementor/header-footer-elementor.php',
 					'logo'        => self::encode_svg( is_string( $logo_uae ) ? $logo_uae : '' ),
-					'redirection' => admin_url( 'admin.php?page=hfe#dashboard' ),
 				],
 				'starter_templates' => [
 					'title'       => __( 'Starter Templates', 'sureforms' ),
