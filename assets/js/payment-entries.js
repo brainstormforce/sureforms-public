@@ -1,44 +1,106 @@
-if ( window?.sureformsRefundData && jQuery( '#srfm-refund-button' ).length ) {
-	// Handle refund type dropdown change
-	jQuery( '#srfm-refund-type' ).on( 'change', function () {
-		const refundType = jQuery( this ).val();
-		const partialContainer = jQuery( '#srfm-partial-amount-container' );
+/**
+ * SureForms Payment Entries Management
+ *
+ * @since x.x.x
+ */
+/* global sureformsRefundData */
+class PaymentEntries {
+	/**
+	 * Constructor for the PaymentEntries class.
+	 * Initializes refund form elements and sets up event listeners.
+	 */
+	constructor() {
+		this.refundButton = document.querySelector( '#srfm-refund-button' );
+		this.refundTypeSelect = document.querySelector( '#srfm-refund-type' );
+		this.refundAmountInput = document.querySelector(
+			'#srfm-refund-amount'
+		);
+		this.partialAmountContainer = document.querySelector(
+			'#srfm-partial-amount-container'
+		);
+
+		if ( ! this.refundButton ) {
+			return;
+		}
+
+		this.setupEventListeners();
+	}
+
+	/**
+	 * Set up all event listeners for refund functionality.
+	 */
+	setupEventListeners() {
+		// Handle refund type dropdown change
+		if ( this.refundTypeSelect ) {
+			this.refundTypeSelect.addEventListener( 'change', () => {
+				this.handleRefundTypeChange();
+			} );
+		}
+
+		// Handle refund amount input validation
+		if ( this.refundAmountInput ) {
+			this.refundAmountInput.addEventListener( 'input', () => {
+				this.validateRefundAmountInput();
+			} );
+
+			this.refundAmountInput.addEventListener( 'blur', () => {
+				this.validateRefundAmountInput();
+			} );
+		}
+
+		// Handle refund button click
+		if ( this.refundButton ) {
+			this.refundButton.addEventListener( 'click', () => {
+				this.processRefund();
+			} );
+		}
+	}
+
+	/**
+	 * Handle refund type dropdown change event.
+	 */
+	handleRefundTypeChange() {
+		const refundType = this.refundTypeSelect.value;
 
 		if ( refundType === 'partial' ) {
-			partialContainer.show();
-			jQuery( '#srfm-refund-amount' ).focus();
+			this.partialAmountContainer.style.display = 'block';
+			this.refundAmountInput.focus();
 		} else {
-			partialContainer.hide();
-			jQuery( '#srfm-refund-amount' ).val( '' );
+			this.partialAmountContainer.style.display = 'none';
+			this.refundAmountInput.value = '';
 		}
-	} );
+	}
 
-	// Handle refund amount input validation
-	jQuery( '#srfm-refund-amount' ).on( 'input blur', function () {
-		const amount = parseFloat( jQuery( this ).val() );
-		const maxAmount = parseFloat( jQuery( this ).attr( 'max' ) );
-		const input = jQuery( this );
+	/**
+	 * Validate refund amount input and provide visual feedback.
+	 */
+	validateRefundAmountInput() {
+		const amount = parseFloat( this.refundAmountInput.value );
+		const maxAmount = parseFloat(
+			this.refundAmountInput.getAttribute( 'max' )
+		);
 
 		// Remove existing validation styles
-		input.css( 'border-color', '' );
+		this.refundAmountInput.style.borderColor = '';
 
-		if ( jQuery( this ).val() !== '' ) {
+		if ( this.refundAmountInput.value !== '' ) {
 			if ( isNaN( amount ) || amount <= 0 ) {
-				input.css( 'border-color', '#d63384' );
+				this.refundAmountInput.style.borderColor = '#d63384';
 			} else if ( amount > maxAmount ) {
-				input.css( 'border-color', '#d63384' );
+				this.refundAmountInput.style.borderColor = '#d63384';
 			} else {
-				input.css( 'border-color', '#198754' );
+				this.refundAmountInput.style.borderColor = '#198754';
 			}
 		}
-	} );
+	}
 
-	// Enhanced refund button click handler
-	jQuery( '#srfm-refund-button' ).on( 'click', function () {
-		const button = jQuery( this );
-		const paymentId = button.data( 'payment-id' );
-		const transactionId = button.data( 'transaction-id' );
-		const refundType = jQuery( '#srfm-refund-type' ).val();
+	/**
+	 * Process refund request with validation and confirmation.
+	 */
+	processRefund() {
+		const paymentId = this.refundButton.dataset.paymentId;
+		const transactionId = this.refundButton.dataset.transactionId;
+		const refundType = this.refundTypeSelect.value;
 
 		let refundAmount;
 		let confirmMessage;
@@ -48,15 +110,14 @@ if ( window?.sureformsRefundData && jQuery( '#srfm-refund-button' ).length ) {
 			refundAmount = sureformsRefundData.payment.refundable_amount;
 			confirmMessage = sureformsRefundData.strings.confirm_full_refund;
 		} else if ( refundType === 'partial' ) {
-			const inputAmount = jQuery( '#srfm-refund-amount' ).val();
+			const inputAmount = this.refundAmountInput.value;
 
 			// Validate partial refund amount
-			const validation = validateRefundAmount( inputAmount );
+			const validation = this.validateRefundAmount( inputAmount );
 			if ( ! validation.isValid ) {
 				alert( validation.message );
-				jQuery( '#srfm-refund-amount' )
-					.focus()
-					.css( 'border-color', '#d63384' );
+				this.refundAmountInput.focus();
+				this.refundAmountInput.style.borderColor = '#d63384';
 				return;
 			}
 
@@ -82,58 +143,76 @@ if ( window?.sureformsRefundData && jQuery( '#srfm-refund-button' ).length ) {
 		// Convert amount to cents for backend
 		const refundAmountInCents = Math.round( refundAmount * 100 );
 
-		// Disable button and show loading state
-		button
-			.prop( 'disabled', true )
-			.text( sureformsRefundData.strings.processing );
-
-		// Disable form controls during processing
-		jQuery( '#srfm-refund-type, #srfm-refund-amount' ).prop(
-			'disabled',
-			true
+		this.makeRefundRequest(
+			paymentId,
+			transactionId,
+			refundAmountInCents,
+			refundType
 		);
+	}
+
+	/**
+	 * Make AJAX request to process refund.
+	 *
+	 * @param {string} paymentId     - The payment ID.
+	 * @param {string} transactionId - The transaction ID.
+	 * @param {number} refundAmount  - The refund amount in cents.
+	 * @param {string} refundType    - The refund type (full/partial).
+	 */
+	async makeRefundRequest(
+		paymentId,
+		transactionId,
+		refundAmount,
+		refundType
+	) {
+		// Disable button and show loading state
+		this.setLoadingState( true );
 
 		// Prepare AJAX data
-		const ajaxData = {
-			action: 'srfm_refund_payment',
-			nonce: sureformsRefundData.nonce,
-			payment_id: paymentId,
-			transaction_id: transactionId,
-			refund_amount: refundAmountInCents,
-			refund_type: refundType,
-		};
+		const data = new FormData();
+		data.append( 'action', 'srfm_refund_payment' );
+		data.append( 'nonce', sureformsRefundData.nonce );
+		data.append( 'payment_id', paymentId );
+		data.append( 'transaction_id', transactionId );
+		data.append( 'refund_amount', refundAmount );
+		data.append( 'refund_type', refundType );
 
-		// Make AJAX request
-		jQuery.ajax( {
-			url: sureformsRefundData.ajaxurl,
-			type: 'POST',
-			data: ajaxData,
-			success( response ) {
-				if ( response.success ) {
-					// Show success message
-					alert( sureformsRefundData.strings.success_message );
-					// Reload page to show updated status
-					location.reload();
-				} else {
-					alert(
-						sureformsRefundData.strings.error_prefix +
-							( response.data ||
-								sureformsRefundData.strings.error_fallback )
-					);
-					// Re-enable controls
-					resetRefundForm( button );
-				}
-			},
-			error() {
-				alert( sureformsRefundData.strings.network_error );
+		try {
+			const response = await fetch( sureformsRefundData.ajaxurl, {
+				method: 'POST',
+				body: data,
+			} );
+
+			const responseData = await response.json();
+
+			if ( responseData.success ) {
+				// Show success message
+				alert( sureformsRefundData.strings.success_message );
+				// Reload page to show updated status
+				location.reload();
+			} else {
+				alert(
+					sureformsRefundData.strings.error_prefix +
+						( responseData.data ||
+							sureformsRefundData.strings.error_fallback )
+				);
 				// Re-enable controls
-				resetRefundForm( button );
-			},
-		} );
-	} );
+				this.setLoadingState( false );
+			}
+		} catch ( error ) {
+			alert( sureformsRefundData.strings.network_error );
+			// Re-enable controls
+			this.setLoadingState( false );
+		}
+	}
 
-	// Validation function
-	function validateRefundAmount( inputAmount ) {
+	/**
+	 * Validate refund amount input.
+	 *
+	 * @param {string} inputAmount - The input amount to validate.
+	 * @return {Object} Validation result with isValid flag and message.
+	 */
+	validateRefundAmount( inputAmount ) {
 		const amount = parseFloat( inputAmount );
 		const maxAmount = sureformsRefundData.payment.refundable_amount;
 
@@ -168,16 +247,47 @@ if ( window?.sureformsRefundData && jQuery( '#srfm-refund-button' ).length ) {
 		return { isValid: true };
 	}
 
-	// Reset form function
-	function resetRefundForm( button ) {
-		button
-			.prop( 'disabled', false )
-			.text( sureformsRefundData.strings.issue_refund );
+	/**
+	 * Set loading state for refund form elements.
+	 *
+	 * @param {boolean} loading - Whether to show loading state.
+	 */
+	setLoadingState( loading = true ) {
+		if ( loading ) {
+			this.refundButton.disabled = true;
+			this.refundButton.textContent =
+				sureformsRefundData.strings.processing;
 
-		jQuery( '#srfm-refund-type, #srfm-refund-amount' ).prop(
-			'disabled',
-			false
-		);
-		jQuery( '#srfm-refund-amount' ).css( 'border-color', '' );
+			// Disable form controls during processing
+			if ( this.refundTypeSelect ) {
+				this.refundTypeSelect.disabled = true;
+			}
+			if ( this.refundAmountInput ) {
+				this.refundAmountInput.disabled = true;
+			}
+		} else {
+			this.refundButton.disabled = false;
+			this.refundButton.textContent =
+				sureformsRefundData.strings.issue_refund;
+
+			// Re-enable form controls
+			if ( this.refundTypeSelect ) {
+				this.refundTypeSelect.disabled = false;
+			}
+			if ( this.refundAmountInput ) {
+				this.refundAmountInput.disabled = false;
+				this.refundAmountInput.style.borderColor = '';
+			}
+		}
 	}
 }
+
+// Initialize PaymentEntries when DOM is ready and required data is available
+document.addEventListener( 'DOMContentLoaded', () => {
+	if (
+		window?.sureformsRefundData &&
+		document.querySelector( '#srfm-refund-button' )
+	) {
+		new PaymentEntries();
+	}
+} );
