@@ -1506,12 +1506,12 @@ class Helper {
 					'connected'   => $suretrigger_connected,
 				],
 				'uae'               => [
-					'title'       => __( 'Ultimate Addons for Elementor', 'sureforms' ),
-					'subtitle'    => __( 'Build modern websites with elementor addons.', 'sureforms' ),
-					'status'      => self::get_plugin_status( 'header-footer-elementor/header-footer-elementor.php' ),
-					'slug'        => 'header-footer-elementor',
-					'path'        => 'header-footer-elementor/header-footer-elementor.php',
-					'logo'        => self::encode_svg( is_string( $logo_uae ) ? $logo_uae : '' ),
+					'title'    => __( 'Ultimate Addons for Elementor', 'sureforms' ),
+					'subtitle' => __( 'Build modern websites with elementor addons.', 'sureforms' ),
+					'status'   => self::get_plugin_status( 'header-footer-elementor/header-footer-elementor.php' ),
+					'slug'     => 'header-footer-elementor',
+					'path'     => 'header-footer-elementor/header-footer-elementor.php',
+					'logo'     => self::encode_svg( is_string( $logo_uae ) ? $logo_uae : '' ),
 				],
 				'starter_templates' => [
 					'title'       => __( 'Starter Templates', 'sureforms' ),
