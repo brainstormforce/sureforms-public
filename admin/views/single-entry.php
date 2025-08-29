@@ -424,7 +424,7 @@ class Single_Entry {
 						 * does not know the structure of data from other packages, this action provides a way
 						 * for those packages to properly process and display their field data.
 						 *
-						 * @since x.x.x
+						 * @since 1.11.0
 						 *
 						 * @param array $field_data Field data containing:
 						 *                         'value'           => mixed  The field value
@@ -451,7 +451,7 @@ class Single_Entry {
 						 * 'srfm_entry_render_field' action to render their fields and return false here
 						 * to prevent the core plugin from attempting to process them.
 						 *
-						 * @since x.x.x
+						 * @since 1.11.0
 						 *
 						 * @param bool  $should_add_field_row Whether to add the field row. Default true.
 						 * @param array $field_data          Field data containing:

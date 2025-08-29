@@ -125,7 +125,7 @@ class Smart_Tags {
 	 * @param array<mixed>|null $submission_data data from submission.
 	 * @param array<mixed>|null $form_data data from form.
 	 * @since 0.0.1 - return string
-	 * @since x.x.x - return array<mixed>
+	 * @since 1.11.0 - return array<mixed>
 	 * @return string|array<mixed>
 	 */
 	public function process_smart_tags( $content, $submission_data = null, $form_data = null ) {
@@ -166,7 +166,7 @@ class Smart_Tags {
 				 * Default is false to maintain backwards compatibility.
 				 * Filter must explicitly return true to allow array values.
 				 *
-				 * @since x.x.x
+				 * @since 1.11.0
 				 *
 				 * @param bool  $is_verified_value Default false
 				 * @param array $args {

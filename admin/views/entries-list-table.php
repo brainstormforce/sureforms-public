@@ -763,7 +763,7 @@ class Entries_List_Table extends \WP_List_Table {
 		 * The filter is called after the core plugin determines the first field but before
 		 * it's displayed, allowing pro plugin to override the value entirely.
 		 *
-		 * @since x.x.x
+		 * @since 1.11.0
 		 *
 		 * @param string $first_field         The current first field value (empty string by default).
 		 * @param array  $field_data          Field information array containing:

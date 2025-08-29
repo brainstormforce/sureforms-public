@@ -1680,7 +1680,7 @@ class Helper {
 	 *
 	 * @param string $field_name The full field name (e.g., 'srfm-text-lbl-123').
 	 *
-	 * @since x.x.x
+	 * @since 1.11.0
 	 * @return string The block name (e.g., 'srfm-text').
 	 */
 	public static function get_block_name_from_field( $field_name ) {
