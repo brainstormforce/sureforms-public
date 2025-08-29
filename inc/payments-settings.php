@@ -717,6 +717,3 @@ class Payments_Settings {
 		exit;
 	}
 }
-
-// Initialize the class.
-Payments_Settings::get_instance();
