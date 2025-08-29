@@ -90,6 +90,7 @@ const Editor = ( { handleContentChange, content, allData = false } ) => {
 		? Object.entries( window.srfm_block_data.smart_tags_array )
 		: [];
 	const formSmartTags = window.sureforms?.formSpecificSmartTags ?? [];
+
 	let formSmartTagsAllData = {};
 	if ( allData ) {
 		formSmartTagsAllData = [

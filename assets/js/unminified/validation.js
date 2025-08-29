@@ -733,11 +733,18 @@ export async function fieldValidation(
 }
 
 /**
- * Initialize inline field validation
+ * Returns an array of default SureForms field classes that can be filtered.
+ *
+ * This function defines the core set of field classes used throughout SureForms
+ * for validation and processing. The list can be modified using the 'srfm.srfmFields'
+ * WordPress filter.
+ *
+ * @since x.x.x
+ * @return {string[]} Array of field class names that can be filtered
  */
-export function initializeInlineFieldValidation() {
-	// Array of all the fields classes that needs to be validated
-	const srfmFields = [
+export function srfmFields() {
+	// Define the default set of field classes used by SureForms
+	const defaultSrfmFields = [
 		'srfm-input-block',
 		'srfm-email-block-wrap',
 		'srfm-url-block',
@@ -755,7 +762,21 @@ export function initializeInlineFieldValidation() {
 		'srfm-password-block',
 	];
 
-	srfmFields.forEach( ( block ) => addBlurListener( block, `.${ block }` ) );
+	// Allow the field classes to be filtered
+	return applyFilters( 'srfm.srfmFields', defaultSrfmFields );
+}
+
+/**
+ * Initialize inline field validation
+ * @param {string[]} [fields] - Array of field classes to validate
+ */
+export function initializeInlineFieldValidation( fields = null ) {
+	// Array of all the fields classes that needs to be validated
+	const fieldsToValidate = fields || srfmFields();
+
+	fieldsToValidate.forEach( ( block ) =>
+		addBlurListener( block, `.srfm-form .${ block }` )
+	);
 
 	// Validate multi choice block for min and max selection.
 	validateMultiChoiceMinMax();

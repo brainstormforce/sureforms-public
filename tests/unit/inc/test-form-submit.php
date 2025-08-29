@@ -79,4 +79,61 @@ class Test_Form_Submit extends TestCase {
         $result = $this->form_submit->recaptcha_error_message('unknown-captcha', $api_response);
         $this->assertEquals($expected, $result, 'Failed asserting for unknown captcha type.');
     }
+
+    /**
+     * Test process_form_fields method.
+     */
+    public function test_process_form_fields() {
+        
+        // Test case 1: Valid sureforms fields with -lbl-
+        $form_data = [
+            'text-lbl-field-name' => 'John Doe',
+            'email-lbl-field-email' => 'john@example.com'
+        ];
+        $expected = [
+            'text-lbl-field-name' => 'John Doe',
+            'email-lbl-field-email' => 'john@example.com'
+        ];
+        $result = $this->call_private_method($this->form_submit, 'process_form_fields', [$form_data]);
+        $this->assertEquals($expected, $result);
+
+        // Test case 2: Form data without -lbl- fields (should be filtered out)
+        $form_data = [
+            'form-id' => '123',
+            'nonce' => 'test_nonce',
+            'regular_field' => 'value'
+        ];
+        $result = $this->call_private_method($this->form_submit, 'process_form_fields', [$form_data]);
+        $this->assertEquals([], $result);
+
+        // Test case 3: Array values (like file uploads)
+        $form_data = [
+            'upload-lbl-field-files' => ['file1.jpg', 'file2.pdf']
+        ];
+        $expected = [
+            'upload-lbl-field-files' => ['file1.jpg', 'file2.pdf']
+        ];
+        $result = $this->call_private_method($this->form_submit, 'process_form_fields', [$form_data]);
+        $this->assertEquals($expected, $result);
+
+        // Test case 4: HTML special characters sanitization
+        $form_data = [
+            'text-lbl-field-content' => '<script>alert("xss")</script>'
+        ];
+        $expected = [
+            'text-lbl-field-content' => '&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;'
+        ];
+        $result = $this->call_private_method($this->form_submit, 'process_form_fields', [$form_data]);
+        $this->assertEquals($expected, $result);
+    }
+
+    /**
+     * Helper method to call private methods for testing.
+     */
+    private function call_private_method($object, $method_name, $parameters = []) {
+        $reflection = new \ReflectionClass(get_class($object));
+        $method = $reflection->getMethod($method_name);
+        $method->setAccessible(true);
+        return $method->invokeArgs($object, $parameters);
+    }
 }

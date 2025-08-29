@@ -648,8 +648,28 @@ class Helper {
 			if ( false === strpos( $key, '-lbl-' ) ) {
 				continue;
 			}
-			$label                = explode( '-lbl-', $key )[1];
-			$slug                 = implode( '-', array_slice( explode( '-', $label ), 1 ) );
+			$label = explode( '-lbl-', $key )[1];
+			$slug  = implode( '-', array_slice( explode( '-', $label ), 1 ) );
+
+			// Check if value is array to handle external package field functionality.
+			// like repeater fields that need special processing.
+			if ( is_array( $value ) && ! empty( $value ) ) {
+				// Apply filter to allow external packages to process array values.
+				// Returns processed data with 'is_processed' flag if successfully handled.
+				$filtered_submission_data = apply_filters(
+					'srfm_map_slug_to_submission_data_array',
+					[
+						'value' => $value,
+						'key'   => $key,
+						'slug'  => $slug,
+					]
+				);
+				if ( isset( $filtered_submission_data['is_processed'] ) && true === $filtered_submission_data['is_processed'] ) {
+					$mapped_data[ $slug ] = $filtered_submission_data['value'];
+					continue;
+				}
+			}
+
 			$mapped_data[ $slug ] = is_string( $value ) ? html_entity_decode( esc_attr( $value ) ) : $value;
 		}
 		return $mapped_data;
@@ -989,6 +1009,10 @@ class Helper {
 
 				// Made it associative array, so that we can directly check it using block_id rather than mapping or using "in_array" for the checks.
 				$slugs[ $block['attrs']['block_id'] ] = self::get_string_value( $block['attrs']['slug'] );
+
+				if ( is_array( $block['innerBlocks'] ) && ! empty( $block['innerBlocks'] ) ) {
+					[ $blocks[ $index ]['innerBlocks'], $slugs, $updated ] = self::process_blocks( $block['innerBlocks'], $slugs, $updated, '' );
+				}
 				continue;
 			}
 
@@ -1650,6 +1674,18 @@ class Helper {
 				403
 			);
 		}
+	}
+
+	/**
+	 * Get the block name from a field name by extracting the first two parts.
+	 *
+	 * @param string $field_name The full field name (e.g., 'srfm-text-lbl-123').
+	 *
+	 * @since x.x.x
+	 * @return string The block name (e.g., 'srfm-text').
+	 */
+	public static function get_block_name_from_field( $field_name ) {
+		return implode( '-', array_slice( explode( '-', explode( '-lbl-', $field_name )[0] ), 0, 2 ) );
 	}
 
 	/**
