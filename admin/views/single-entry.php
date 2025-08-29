@@ -500,8 +500,8 @@ class Single_Entry {
 														<div class="file-card" data-fileurl-hash="<?php echo esc_attr( md5( $file_url ) ); ?>">
 													<?php if ( $is_image ) { ?>
 																<div class="file-card-image">
-																	<a target="_blank" href="<?php echo esc_attr( $file_url ); ?>">
-																		<img src="<?php echo esc_attr( $file_url ); ?>" alt="<?php esc_attr_e( 'Image', 'sureforms' ); ?>" />
+																	<a target="_blank" href="<?php echo esc_url( $file_url ); ?>">
+																		<img src="<?php echo esc_url( $file_url ); ?>" alt="<?php esc_attr_e( 'Image', 'sureforms' ); ?>" />
 																	</a>
 																</div>
 													<?php } else { ?>
@@ -514,7 +514,7 @@ class Single_Entry {
 																</div>
 													<?php } ?>
 															<div class="file-card-url">
-																<a target="_blank" href="<?php echo esc_attr( $file_url ); ?>"><?php echo esc_html__( 'Open', 'sureforms' ); ?></a>
+																<a target="_blank" href="<?php echo esc_url( $file_url ); ?>"><?php echo esc_html__( 'Open', 'sureforms' ); ?></a>
 															</div>
 														</div>
 													<?php

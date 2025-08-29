@@ -773,8 +773,8 @@ class Entries_List_Table extends \WP_List_Table {
 		 * @return string The processed first field value ready for display in the entries table.
 		 */
 		$set_entry_first_field = apply_filters(
-			'srfm_set_entry_first_field',
-			'',
+			'srfm_entry_first_field',
+			$first_field,
 			[
 				'field_name'       => $field_name,
 				'field_block_name' => $field_block_name,
@@ -782,7 +782,7 @@ class Entries_List_Table extends \WP_List_Table {
 		);
 
 		if ( ! empty( $set_entry_first_field ) ) {
-			$first_field = $set_entry_first_field;
+			$first_field = sanitize_text_field( $set_entry_first_field );
 		}
 
 		if ( false !== strpos( $field_name, 'srfm-upload' ) ) {
@@ -825,7 +825,7 @@ class Entries_List_Table extends \WP_List_Table {
 		// Return the first field value in a paragraph element.
 		return sprintf(
 			'<p>%s</p>',
-			$first_field
+			esc_html( $first_field )
 		);
 	}
 
