@@ -265,6 +265,7 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 
 == Changelog ==
 = x.x.x =
+* Improvement: Updated strings for weekly email summary for subject of the email and greeting message.
 * Fix: Resolved an issue with readability of multiple uploaded image links in notification emails.
 * Fix: Resolved an issue where form values are missing in the email notification but appear in the form entries.
 * Fix: Resolved an issue where email warning message displayed unfiltered url in email notification.

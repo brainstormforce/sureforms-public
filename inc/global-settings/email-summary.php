@@ -152,10 +152,7 @@ class Email_Summary {
 			$forms_data = Helper::get_forms_with_entry_counts( $week_ago_timestamp );
 		}
 
-		$admin_user_name = get_user_by( 'id', 1 ) ? get_user_by( 'id', 1 )->display_name : 'Admin';
-		$from_date       = date_i18n( 'F j, Y', $week_ago_timestamp );
-		$to_date         = date_i18n( 'F j, Y' );
-		$logs_url        = admin_url( 'admin.php?page=sureforms_entries' );
+		$logs_url = admin_url( 'admin.php?page=sureforms_entries' );
 
 		ob_start();
 		?>
@@ -215,24 +212,12 @@ class Email_Summary {
 					<div class="pad-16" style="padding:24px;">
 						<p class="email-greeting" style="font-size:18px;font-weight:600;color:#111827;margin:0 0 8px;">
 							<?php
-								printf(
-									/* translators: %1$s is the admin user name */
-									esc_html__( 'Hey %1$s,', 'sureforms' ),
-									esc_html( $admin_user_name )
-								);
+								echo esc_html__( 'Hey There,', 'sureforms' );
 							?>
 						</p>
 						<p style="font-size:14px;color:#4B5563;margin:0 0 16px;line-height:20px;">
 							<?php
-							printf(
-								wp_kses(
-								/* translators: %1$s is from date, %2$s is to date. */
-									__( "Here's your SureForms weekly email summary of form submissions for %1\$s to %2\$s.", 'sureforms' ),
-									[ 'strong' => [] ]
-								),
-								'<strong>' . esc_html( $from_date ) . '</strong>',
-								'<strong>' . esc_html( $to_date ) . '</strong>'
-							);
+								echo esc_html__( "Here's your SureForms report for the last 7 days.", 'sureforms' );
 							?>
 						</p>
 
@@ -363,10 +348,11 @@ class Email_Summary {
 
 		$recipients = $recipients_string ? explode( ',', $recipients_string ) : [];
 
-		$site_title = get_bloginfo( 'name' );
+		$from_date = date_i18n( 'F j, Y', $week_ago_timestamp );
+		$to_date   = date_i18n( 'F j, Y' );
 
-		// Translators: %s: Site Title.
-		$subject = sprintf( __( 'SureForms Email Summary - %s', 'sureforms' ), $site_title );
+		// Translators: %1$s: From Date, %2$s: To Date.
+		$subject = sprintf( __( 'Email Summary of your last week -  %1$s to %2$s', 'sureforms' ), $from_date, $to_date );
 		$message = $entries_count_table;
 		$headers = [
 			'Content-Type: text/html; charset=UTF-8',
