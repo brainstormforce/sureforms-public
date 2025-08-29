@@ -1479,20 +1479,11 @@ class Helper {
 		$logo_sure_triggers     = file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/suretriggers.svg' );
 		$logo_full              = file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/suretriggers_full.svg' );
 		$logo_sure_mails        = file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/suremails.svg' );
-		$logo_sure_rank         = file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/surerank.svg' );
+		$logo_uae               = file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/uae.svg' );
 		$logo_starter_templates = file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/starterTemplates.svg' );
 		return apply_filters(
 			'srfm_integrated_plugins',
 			[
-				'sure_rank'         => [
-					'title'       => __( 'SureRank', 'sureforms' ),
-					'subtitle'    => __( 'Simple SEO plugin that works without the bloat.', 'sureforms' ),
-					'status'      => self::get_plugin_status( 'surerank/surerank.php' ),
-					'slug'        => 'surerank',
-					'path'        => 'surerank/surerank.php',
-					'redirection' => admin_url( 'admin.php?page=surerank#/dashboard' ),
-					'logo'        => self::encode_svg( is_string( $logo_sure_rank ) ? $logo_sure_rank : '' ),
-				],
 				'sure_mails'        => [
 					'title'       => __( 'SureMail', 'sureforms' ),
 					'subtitle'    => __( 'Free and easy SMTP mails plugin.', 'sureforms' ),
@@ -1513,6 +1504,14 @@ class Helper {
 					'logo'        => self::encode_svg( is_string( $logo_sure_triggers ) ? $logo_sure_triggers : '' ),
 					'logo_full'   => self::encode_svg( is_string( $logo_full ) ? $logo_full : '' ),
 					'connected'   => $suretrigger_connected,
+				],
+				'uae'               => [
+					'title'    => __( 'Ultimate Addons for Elementor', 'sureforms' ),
+					'subtitle' => __( 'Build modern websites with elementor addons.', 'sureforms' ),
+					'status'   => self::get_plugin_status( 'header-footer-elementor/header-footer-elementor.php' ),
+					'slug'     => 'header-footer-elementor',
+					'path'     => 'header-footer-elementor/header-footer-elementor.php',
+					'logo'     => self::encode_svg( is_string( $logo_uae ) ? $logo_uae : '' ),
 				],
 				'starter_templates' => [
 					'title'       => __( 'Starter Templates', 'sureforms' ),

@@ -209,6 +209,9 @@ class Gutenberg_Hooks {
 
 		Helper::register_script_translations( SRFM_SLUG . $all_screen_blocks );
 
+		$site_url = Helper::get_string_value( wp_parse_url( esc_url( get_site_url() ), PHP_URL_HOST ) );
+		$site_url = preg_replace( '/^www\./', '', $site_url );
+
 		wp_localize_script(
 			SRFM_SLUG . $all_screen_blocks,
 			SRFM_SLUG . '_block_data',
@@ -226,7 +229,7 @@ class Gutenberg_Hooks {
 				'srfm_default_dynamic_block_option' => get_option( 'srfm_default_dynamic_block_option', Helper::default_dynamic_block_option() ),
 				'form_selector_nonce'               => current_user_can( 'edit_posts' ) ? wp_create_nonce( 'wp_rest' ) : '',
 				'is_admin_user'                     => current_user_can( 'manage_options' ),
-				'site_url'                          => wp_parse_url( esc_url( get_site_url() ), PHP_URL_HOST ),
+				'site_url'                          => $site_url,
 				'is_suremails_active'               => is_plugin_active( 'suremails/suremails.php' ),
 			]
 		);
