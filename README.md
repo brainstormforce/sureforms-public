@@ -265,7 +265,7 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 
 ## Changelog ##
 ### 1.11.0 - 2nd September 2025 ###
-* Improvement: Updated weekly email summary subject and greeting.
+* Improvement: Refined weekly email summary content.
 * Fix: Resolved an issue with the readability of multiple uploaded image links in notification emails.
 * Fix: Missing form values in emails now display correctly.
 * Fix: Fixed incorrect validation of "From Email" in notification.
