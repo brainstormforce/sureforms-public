@@ -506,11 +506,11 @@ class Payments_List_Table extends \WP_List_Table {
 				border-color: #f5c6cb;';
 
 		if ( 'succeeded' === $item['status'] ) {
-			$style = $style . $for_success;
+			$style .= $for_success;
 		} elseif ( 'partially_refunded' === $item['status'] ) {
-			$style = $style . $for_refund_partially;
+			$style .= $for_refund_partially;
 		} elseif ( 'refunded' === $item['status'] ) {
-			$style = $style . $for_refund_fully;
+			$style .= $for_refund_fully;
 		}
 
 		return sprintf(
