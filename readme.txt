@@ -265,6 +265,7 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 
 == Changelog ==
 = x.x.x =
+* Fix: Resolved an issue with readability of multiple uploaded image links in notification emails.
 * Fix: Resolved an issue where form values are missing in the email notification but appear in the form entries.
 * Fix: Resolved an issue where email warning message displayed unfiltered url in email notification.
 * Fix: Resolved an issue where upload field url was breaking in email notification.
