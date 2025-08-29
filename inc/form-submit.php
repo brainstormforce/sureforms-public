@@ -644,7 +644,7 @@ class Form_Submit {
 			 * during submission data preparation. Plugins can modify field values,
 			 * labels, or exclude specific fields from the final submission data.
 			 *
-			 * @since x.x.x
+			 * @since 1.11.0
 			 *
 			 * @param array $field_data {
 			 *     Field data for processing.
@@ -1109,7 +1109,7 @@ class Form_Submit {
 	 *
 	 * @param array<mixed> $form_data Raw form data from submission.
 	 *
-	 * @since x.x.x
+	 * @since 1.11.0
 	 * @return array Processed and sanitized submission data.
 	 */
 	private function process_form_fields( $form_data ) {
@@ -1143,7 +1143,7 @@ class Form_Submit {
 			 * specialized field types. When this filter is used by Pro, the core plugin will skip its
 			 * default validation.
 			 *
-			 * @since x.x.x
+			 * @since 1.11.0
 			 *
 			 * @param mixed $value            The raw field value from form submission.
 			 * @param array $field_data       Field information array containing:

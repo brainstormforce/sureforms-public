@@ -739,7 +739,7 @@ export async function fieldValidation(
  * for validation and processing. The list can be modified using the 'srfm.srfmFields'
  * WordPress filter.
  *
- * @since x.x.x
+ * @since 1.11.0
  * @return {string[]} Array of field class names that can be filtered
  */
 export function srfmFields() {

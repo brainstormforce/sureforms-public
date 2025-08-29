@@ -159,7 +159,7 @@ class Email_Template {
 						 * does not know the structure of data from other packages, this action provides a way
 						 * for those packages to properly process and display their field data.
 						 *
-						 * @since x.x.x
+						 * @since 1.11.0
 						 *
 						 * @param array $field_data Field data containing:
 						 *                         'value'           => mixed  The field value
@@ -186,7 +186,7 @@ class Email_Template {
 						 * 'srfm_before_processing_all_data_field' action to render their fields and return false here
 						 * to prevent the core plugin from attempting to process them.
 						 *
-						 * @since x.x.x
+						 * @since 1.11.0
 						 *
 						 * @param bool  $should_add_field_row Whether to add the field row. Default true.
 						 * @param array $field_data          Field data containing:
@@ -339,7 +339,7 @@ class Email_Template {
 	 *
 	 * @param string $content HTML content containing table structure.
 	 *
-	 * @since x.x.x
+	 * @since 1.11.0
 	 * @return string Modified HTML content with border removed from last row.
 	 */
 	public function remove_border_from_last_tr_td_table( $content ) {

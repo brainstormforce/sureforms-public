@@ -221,7 +221,7 @@ async function submitFormData( form ) {
 			 * Similar to how hidden fields are cleared, this filter enables custom handling
 			 * for specific field types like repeater fields.
 			 *
-			 * @since x.x.x
+			 * @since 1.11.0
 			 * hook srfm.filterFieldValue
 			 *
 			 * @param {*}       value           The current field value.
@@ -239,7 +239,7 @@ async function submitFormData( form ) {
 		/**
 		 * Filters whether a field should be skipped during form submission.
 		 *
-		 * @since x.x.x
+		 * @since 1.11.0
 		 * hook srfm.shouldSkipField
 		 *
 		 * @param {boolean} false            Default value indicating field should not be skipped.
