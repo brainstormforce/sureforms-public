@@ -351,7 +351,7 @@ class Email_Summary {
 		$from_date = date_i18n( 'F j, Y', $week_ago_timestamp );
 		$to_date   = date_i18n( 'F j, Y' );
 
-		// Translators: %s: Site Title.
+		// Translators: %1$s: From Date, %2$s: To Date.
 		$subject = sprintf( __( 'Email Summary of your last week -  %1$s to %2$s', 'sureforms' ), $from_date, $to_date );
 		$message = $entries_count_table;
 		$headers = [
