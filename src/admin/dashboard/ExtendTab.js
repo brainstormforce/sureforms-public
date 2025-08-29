@@ -48,7 +48,7 @@ export default () => {
 							<Container direction="column" className="gap-1 p-2">
 								<Container.Item className="flex flex-col gap-1 pb-1">
 									<Container
-										align="center"
+										align="start"
 										className="gap-1.5 p-1"
 									>
 										<img
