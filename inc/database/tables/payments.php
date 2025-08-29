@@ -238,6 +238,13 @@ class Payments extends Base {
 		];
 	}
 
+	/**
+	 * Add a new payment record.
+	 *
+	 * @param array<string,mixed> $data Payment data to insert.
+	 * @since x.x.x
+	 * @return int|false The payment ID on success, false on error.
+	 */
 	public static function add( $data ) {
 
 		$instance = self::get_instance();
@@ -245,6 +252,14 @@ class Payments extends Base {
 		return $instance->use_insert( $data );
 	}
 
+	/**
+	 * Update a payment record.
+	 *
+	 * @param int                 $payment_id Payment ID to update.
+	 * @param array<string,mixed> $data       Data to update.
+	 * @since x.x.x
+	 * @return int|false Number of rows updated or false on error.
+	 */
 	public static function update( $payment_id, $data = [] ) {
 		if ( empty( $payment_id ) ) {
 			return false;

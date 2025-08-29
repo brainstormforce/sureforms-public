@@ -264,7 +264,6 @@ class Stripe_Payment_Handler {
 	 * @since x.x.x
 	 */
 	public function validate_payment_fields( $form_data ) {
-
 		// Check if form data is valid.
 		if ( empty( $form_data ) || ! is_array( $form_data ) ) {
 			return $form_data;
@@ -574,13 +573,11 @@ class Stripe_Payment_Handler {
 		}
 
 		// Get payment record if not provided
-		// if ( null === $payment ) {
 		$payment = Payments::get( $payment_id );
 		if ( ! $payment ) {
 			error_log( 'SureForms: Payment record not found for ID: ' . $payment_id );
 			return false;
 		}
-		// }
 
 		$check_if_refund_already_exists = $this->check_if_refund_already_exists( $payment, $refund_response );
 		if ( $check_if_refund_already_exists ) {
