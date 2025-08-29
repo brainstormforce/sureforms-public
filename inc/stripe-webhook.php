@@ -65,6 +65,7 @@ class Stripe_Webhook {
 		// Get the raw payload and Stripe signature header
 		$payload   = file_get_contents( 'php://input' );
 		$signature = $_SERVER['HTTP_STRIPE_SIGNATURE'] ?? '';
+		$signature = trim( $signature );
 
 		if ( empty( $payload ) || empty( $signature ) ) {
 			error_log( 'SureForms: Missing webhook payload or signature' );
