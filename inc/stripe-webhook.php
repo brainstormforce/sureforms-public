@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Webhook endpoints
  */
-class Webhook {
+class Stripe_Webhook {
 	use Get_Instance;
 	public const SRFM_LIVE_BEGAN_AT        = 'srfm_live_webhook_began_at';
 	public const SRFM_LIVE_LAST_SUCCESS_AT = 'srfm_live_webhook_last_success_at';
