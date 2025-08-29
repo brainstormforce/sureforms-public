@@ -648,8 +648,28 @@ class Helper {
 			if ( false === strpos( $key, '-lbl-' ) ) {
 				continue;
 			}
-			$label                = explode( '-lbl-', $key )[1];
-			$slug                 = implode( '-', array_slice( explode( '-', $label ), 1 ) );
+			$label = explode( '-lbl-', $key )[1];
+			$slug  = implode( '-', array_slice( explode( '-', $label ), 1 ) );
+
+			// Check if value is array to handle external package field functionality.
+			// like repeater fields that need special processing.
+			if ( is_array( $value ) && ! empty( $value ) ) {
+				// Apply filter to allow external packages to process array values.
+				// Returns processed data with 'is_processed' flag if successfully handled.
+				$filtered_submission_data = apply_filters(
+					'srfm_map_slug_to_submission_data_array',
+					[
+						'value' => $value,
+						'key'   => $key,
+						'slug'  => $slug,
+					]
+				);
+				if ( isset( $filtered_submission_data['is_processed'] ) && true === $filtered_submission_data['is_processed'] ) {
+					$mapped_data[ $slug ] = $filtered_submission_data['value'];
+					continue;
+				}
+			}
+
 			$mapped_data[ $slug ] = is_string( $value ) ? html_entity_decode( esc_attr( $value ) ) : $value;
 		}
 		return $mapped_data;
@@ -989,6 +1009,10 @@ class Helper {
 
 				// Made it associative array, so that we can directly check it using block_id rather than mapping or using "in_array" for the checks.
 				$slugs[ $block['attrs']['block_id'] ] = self::get_string_value( $block['attrs']['slug'] );
+
+				if ( is_array( $block['innerBlocks'] ) && ! empty( $block['innerBlocks'] ) ) {
+					[ $blocks[ $index ]['innerBlocks'], $slugs, $updated ] = self::process_blocks( $block['innerBlocks'], $slugs, $updated, '' );
+				}
 				continue;
 			}
 
@@ -1479,20 +1503,11 @@ class Helper {
 		$logo_sure_triggers     = file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/suretriggers.svg' );
 		$logo_full              = file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/suretriggers_full.svg' );
 		$logo_sure_mails        = file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/suremails.svg' );
-		$logo_sure_rank         = file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/surerank.svg' );
+		$logo_uae               = file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/uae.svg' );
 		$logo_starter_templates = file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/starterTemplates.svg' );
 		return apply_filters(
 			'srfm_integrated_plugins',
 			[
-				'sure_rank'         => [
-					'title'       => __( 'SureRank', 'sureforms' ),
-					'subtitle'    => __( 'Simple SEO plugin that works without the bloat.', 'sureforms' ),
-					'status'      => self::get_plugin_status( 'surerank/surerank.php' ),
-					'slug'        => 'surerank',
-					'path'        => 'surerank/surerank.php',
-					'redirection' => admin_url( 'admin.php?page=surerank#/dashboard' ),
-					'logo'        => self::encode_svg( is_string( $logo_sure_rank ) ? $logo_sure_rank : '' ),
-				],
 				'sure_mails'        => [
 					'title'       => __( 'SureMail', 'sureforms' ),
 					'subtitle'    => __( 'Free and easy SMTP mails plugin.', 'sureforms' ),
@@ -1513,6 +1528,14 @@ class Helper {
 					'logo'        => self::encode_svg( is_string( $logo_sure_triggers ) ? $logo_sure_triggers : '' ),
 					'logo_full'   => self::encode_svg( is_string( $logo_full ) ? $logo_full : '' ),
 					'connected'   => $suretrigger_connected,
+				],
+				'uae'               => [
+					'title'    => __( 'Ultimate Addons for Elementor', 'sureforms' ),
+					'subtitle' => __( 'Build modern websites with elementor addons.', 'sureforms' ),
+					'status'   => self::get_plugin_status( 'header-footer-elementor/header-footer-elementor.php' ),
+					'slug'     => 'header-footer-elementor',
+					'path'     => 'header-footer-elementor/header-footer-elementor.php',
+					'logo'     => self::encode_svg( is_string( $logo_uae ) ? $logo_uae : '' ),
 				],
 				'starter_templates' => [
 					'title'       => __( 'Starter Templates', 'sureforms' ),
@@ -1650,6 +1673,18 @@ class Helper {
 				403
 			);
 		}
+	}
+
+	/**
+	 * Get the block name from a field name by extracting the first two parts.
+	 *
+	 * @param string $field_name The full field name (e.g., 'srfm-text-lbl-123').
+	 *
+	 * @since 1.11.0
+	 * @return string The block name (e.g., 'srfm-text').
+	 */
+	public static function get_block_name_from_field( $field_name ) {
+		return implode( '-', array_slice( explode( '-', explode( '-lbl-', $field_name )[0] ), 0, 2 ) );
 	}
 
 	/**

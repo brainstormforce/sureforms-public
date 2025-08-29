@@ -47,12 +47,12 @@ class Smart_Tags {
 		$form_data = [ 'form-id' => $id ];
 
 		if ( self::check_form_by_id( $id ) ) {
-			return self::process_smart_tags( $block_content, null, $form_data );
+			return Helper::get_string_value( self::process_smart_tags( $block_content, null, $form_data ) );
 		}
 
 		if ( isset( $block['blockName'] ) && ( 'srfm/form' === $block['blockName'] ) ) {
 			if ( isset( $block['attrs']['id'] ) && $block['attrs']['id'] ) {
-				return self::process_smart_tags( $block_content, null, $form_data );
+				return Helper::get_string_value( self::process_smart_tags( $block_content, null, $form_data ) );
 			}
 		}
 
@@ -124,8 +124,9 @@ class Smart_Tags {
 	 * @param string            $content Form content.
 	 * @param array<mixed>|null $submission_data data from submission.
 	 * @param array<mixed>|null $form_data data from form.
-	 * @since 0.0.1
-	 * @return string
+	 * @since 0.0.1 - return string
+	 * @since 1.11.0 - return array<mixed>
+	 * @return string|array<mixed>
 	 */
 	public function process_smart_tags( $content, $submission_data = null, $form_data = null ) {
 
@@ -151,7 +152,53 @@ class Smart_Tags {
 				continue;
 			}
 
-			$replace = Helper::get_string_value( self::smart_tags_callback( $tag, $submission_data, $form_data ) );
+			// Get the only smart tag value.
+			$smart_tag_value = self::smart_tags_callback( $tag, $submission_data, $form_data );
+
+			/**
+			 * Check if smart tag value is an array, which can happen for special field types
+			 * like repeater fields that need to preserve their array structure.
+			 */
+			if ( is_array( $smart_tag_value ) ) {
+				/**
+				 * Filters whether a smart tag value should be returned as an array.
+				 *
+				 * Default is false to maintain backwards compatibility.
+				 * Filter must explicitly return true to allow array values.
+				 *
+				 * @since 1.11.0
+				 *
+				 * @param bool  $is_verified_value Default false
+				 * @param array $args {
+				 *     Arguments passed to the filter.
+				 *
+				 *     @type string     $tag             The smart tag being processed
+				 *     @type array|null $submission_data The form submission data
+				 *     @type array|null $form_data       The form configuration data
+				 *     @type mixed      $value           The smart tag value
+				 * }
+				 */
+				$is_verified_value = apply_filters(
+					'srfm_is_smart_tag_value_verified_as_array',
+					false,
+					[
+						'tag'             => $tag,
+						'submission_data' => $submission_data,
+						'form_data'       => $form_data,
+						'value'           => $smart_tag_value,
+					]
+				);
+
+				/**
+				 * If filter verification passes, return the original array value.
+				 * This allows special field types to maintain their data structure.
+				 */
+				if ( true === $is_verified_value ) {
+					return $smart_tag_value;
+				}
+			}
+
+			$replace = Helper::get_string_value( $smart_tag_value );
 			$content = str_replace( $tag, $replace, $content );
 		}
 
@@ -339,6 +386,44 @@ class Smart_Tags {
 			$slug       = implode( '-', array_slice( explode( '-', $label ), 1 ) );
 			$block_type = explode( '-lbl-', $submission_item_key )[0];
 			if ( $slug === $target_slug ) {
+
+				/**
+				 * Filter to allow external processing of specific block types.
+				 *
+				 * Allows other components to process certain block types differently by providing
+				 * their own processing logic. If a block is processed externally, the filter should
+				 * return an array containing 'processed_value'.
+				 *
+				 * @param array $args {
+				 *     Arguments passed to the filter.
+				 *
+				 *     @type string       $submission_item_key   The key of the current submission item
+				 *     @type mixed        $submission_item_value The value of the current submission item
+				 *     @type string       $target_slug          The target field slug being processed
+				 *     @type string       $block_type           The type of block being processed
+				 *     @type array        $form_data            The complete form configuration data
+				 *     @type array        $submission_data      The complete form submission data
+				 *     @type string       $value                The original smart tag value
+				 * }
+				 */
+				$is_processed_externally = Helper::apply_filters_as_array(
+					'srfm_smart_tags_is_block_processed_externally',
+					[
+						'submission_item_key'   => $submission_item_key,
+						'submission_item_value' => $submission_item_value,
+						'target_slug'           => $target_slug,
+						'block_type'            => $block_type,
+						'form_data'             => $form_data,
+						'submission_data'       => $submission_data,
+						'value'                 => $value,
+					]
+				);
+
+				if ( isset( $is_processed_externally['processed_value'] ) ) {
+					$replacement_data = $is_processed_externally['processed_value'];
+					break;
+				}
+
 					// if $submission_item_value is an array, make a tag for each item.
 				if ( 0 === strpos( $block_type, 'srfm-upload' ) && is_array( $submission_item_value ) ) {
 					// Implemented key upload_format_type to determine what to return for urls.
@@ -347,7 +432,8 @@ class Smart_Tags {
 						$replacement_data = urldecode( implode( ', ', $submission_item_value ) );
 					} else {
 						foreach ( $submission_item_value as $value ) {
-							$replacement_data .= '<a href="' . esc_url( urldecode( $value ) ) . '" target="_blank">' . esc_html( esc_url( $value ) ) . '</a><br>';
+							$decoded_value     = urldecode( $value );
+							$replacement_data .= '<a rel="noopener noreferrer" href="' . esc_url( $decoded_value ) . '" target="_blank">' . esc_html( $decoded_value ) . '</a><br>';
 						}
 					}
 				} elseif ( 0 === strpos( $block_type, 'srfm-textarea' ) ) {
@@ -360,7 +446,8 @@ class Smart_Tags {
 				} else {
 					// if $submission_item_value is a url then add <a> tag. with view text.
 					if ( is_string( $submission_item_value ) && filter_var( $submission_item_value, FILTER_VALIDATE_URL ) ) {
-						$view_link = '<a href="' . esc_url( urldecode( $submission_item_value ) ) . '" target="_blank">' . esc_html( esc_url( $submission_item_value ) ) . '</a>';
+						$decoded_submission_item_value = urldecode( $submission_item_value );
+						$view_link                     = '<a rel="noopener noreferrer" href="' . esc_url( $decoded_submission_item_value ) . '" target="_blank">' . esc_html( $decoded_submission_item_value ) . '</a>';
 
 						// Add filter to modify the view link.
 						$view_link = apply_filters(
