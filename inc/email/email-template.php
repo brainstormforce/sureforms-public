@@ -10,6 +10,8 @@ namespace SRFM\Inc\Email;
 use SRFM\Inc\Helper;
 use SRFM\Inc\Traits\Get_Instance;
 
+use function cli\err;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
@@ -236,19 +238,21 @@ class Email_Template {
 							}
 
 							if ( count( $clean_values ) === 1 ) {
-								$value = reset( $clean_values );
+								$value         = reset( $clean_values );
+								$decoded_value = urldecode( $value );
 								?>
-								<a target="_blank" href="<?php echo esc_url( urldecode( $value ) ); ?>">
-									<?php echo esc_html( urldecode( $value ) ); ?>
+								<a target="_blank" rel="noopener noreferrer" href="<?php echo esc_url( $decoded_value ); ?>">
+									<?php echo esc_html( $decoded_value ); ?>
 								</a>
 								<?php
 							} elseif ( count( $clean_values ) > 1 ) {
 								?>
 								<ol style="list-style: decimal; padding-left: 20px; margin: 0;">
 									<?php foreach ( $clean_values as $value ) { ?>
+										<?php $decoded_value = urldecode( $value ); ?>
 										<li style="margin-bottom: 6px;">
-											<a target="_blank" href="<?php echo esc_url( urldecode( $value ) ); ?>">
-												<?php echo esc_html( urldecode( $value ) ); ?>
+											<a target="_blank" rel="noopener noreferrer" href="<?php echo esc_url( $decoded_value ); ?>">
+												<?php echo esc_html( $decoded_value ); ?>
 											</a>
 										</li>
 									<?php } ?>
