@@ -75,54 +75,6 @@ class Payment_Markup extends Base {
 	protected $payment_items;
 
 	/**
-	 * Payment type (one-time or subscription).
-	 *
-	 * @var string
-	 * @since x.x.x
-	 */
-	protected $payment_type;
-
-	/**
-	 * Subscription plans.
-	 *
-	 * @var array
-	 * @since x.x.x
-	 */
-	protected $subscription_plans;
-
-	/**
-	 * Subscription selection type.
-	 *
-	 * @var string
-	 * @since x.x.x
-	 */
-	protected $subscription_selection_type;
-
-	/**
-	 * Subscription layout class.
-	 *
-	 * @var string
-	 * @since x.x.x
-	 */
-	protected $subscription_layout_class;
-
-	/**
-	 * Enable quantity for subscriptions.
-	 *
-	 * @var bool
-	 * @since x.x.x
-	 */
-	protected $enable_quantity;
-
-	/**
-	 * Show price after labels.
-	 *
-	 * @var bool
-	 * @since x.x.x
-	 */
-	protected $show_price_after_labels;
-
-	/**
 	 * Constructor for the Payment Markup class.
 	 *
 	 * @param array<mixed> $attributes Block attributes.
@@ -163,14 +115,6 @@ class Payment_Markup extends Base {
 		}
 
 		$this->payment_items = $attributes['paymentItems'] ?? [];
-
-		// Set subscription-specific properties.
-		$this->payment_type                 = $attributes['paymentType'] ?? 'one-time';
-		$this->subscription_plans           = $attributes['subscriptionPlans'] ?? [];
-		$this->subscription_selection_type  = $attributes['subscriptionSelectionType'] ?? 'radio';
-		$this->subscription_layout_class    = $attributes['subscriptionLayoutClass'] ?? 'ff_list_buttons';
-		$this->enable_quantity              = $attributes['enableQuantity'] ?? false;
-		$this->show_price_after_labels      = $attributes['showPriceAfterLabels'] ?? true;
 	}
 
 	/**
@@ -185,7 +129,11 @@ class Payment_Markup extends Base {
 		}
 
 		$field_classes  = $this->get_field_classes();
-		$payment_config = $this->get_payment_config();
+		$payment_config = [];
+		if ( ! empty( $this->payment_items ) ) {
+			$payment_config['paymentItems'] = $this->payment_items;
+		}
+		$payment_config = json_encode( $payment_config );
 
 		ob_start();
 		?>
@@ -194,18 +142,13 @@ class Payment_Markup extends Base {
 			
 			<div class="srfm-payment-field-wrapper">
 				<div class="srfm-payment-items-wrapper"></div>
-				
-				<?php if ( 'subscription' === $this->payment_type ) : ?>
-					<?php echo $this->render_subscription_plans(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
-				<?php else : ?>
-					<!-- Payment Amount Display -->
-					<div class="srfm-payment-amount">
-						<span class="srfm-payment-label"><?php echo esc_html( $this->description ); ?>:</span>
-						<span class="srfm-payment-value">
-							<?php echo esc_html( $this->format_currency( $this->amount, $this->currency ) ); ?>
-						</span>
-					</div>
-				<?php endif; ?>
+				<!-- Payment Amount Display -->
+				<div class="srfm-payment-amount">
+					<span class="srfm-payment-label"><?php echo esc_html( $this->description ); ?>:</span>
+					<span class="srfm-payment-value">
+						<?php echo esc_html( $this->format_currency( $this->amount, $this->currency ) ); ?>
+					</span>
+				</div>
 
 				<!-- Stripe Elements Container -->
 				<div id="srfm-payment-element-<?php echo esc_attr( $this->block_id ); ?>" class="srfm-stripe-payment-element">
@@ -221,9 +164,8 @@ class Payment_Markup extends Base {
 					data-required="<?php echo esc_attr( $this->data_require_attr ); ?>"
 					data-stripe-key="<?php echo esc_attr( $this->stripe_publishable_key ); ?>"
 					data-payment-mode="<?php echo esc_attr( $this->payment_mode ); ?>"
-					data-payment-type="<?php echo esc_attr( $this->payment_type ); ?>"
 					aria-describedby="<?php echo esc_attr( trim( $this->aria_described_by ) ); ?>"
-					data-payment-config="<?php echo esc_attr( $payment_config ); ?>"
+					data-payment-items="<?php echo esc_attr( $payment_config ); ?>"
 					<?php echo $this->required ? 'required' : ''; ?>
 				/>
 
@@ -306,247 +248,5 @@ class Payment_Markup extends Base {
 		}
 
 		return $symbol . number_format( $amount, 2 );
-	}
-
-	/**
-	 * Get payment configuration data.
-	 *
-	 * @return string
-	 * @since x.x.x
-	 */
-	private function get_payment_config() {
-		$config = [];
-		
-		if ( ! empty( $this->payment_items ) ) {
-			$config['paymentItems'] = $this->payment_items;
-		}
-
-		if ( 'subscription' === $this->payment_type ) {
-			$config['paymentType'] = 'subscription';
-			$config['subscriptionPlans'] = $this->subscription_plans;
-			$config['subscriptionSelectionType'] = $this->subscription_selection_type;
-			$config['subscriptionLayoutClass'] = $this->subscription_layout_class;
-			$config['enableQuantity'] = $this->enable_quantity;
-			$config['showPriceAfterLabels'] = $this->show_price_after_labels;
-		}
-
-		return wp_json_encode( $config );
-	}
-
-	/**
-	 * Render subscription plans selection.
-	 *
-	 * @return string
-	 * @since x.x.x
-	 */
-	private function render_subscription_plans() {
-		if ( empty( $this->subscription_plans ) ) {
-			return '';
-		}
-
-		$selection_type = $this->subscription_selection_type;
-		$layout_class = $this->subscription_layout_class;
-		$group_name = $this->field_name . '_plan';
-
-		ob_start();
-		?>
-		<div class="srfm-subscription-plans-wrapper <?php echo esc_attr( $layout_class ); ?>">
-			<?php if ( 'select' === $selection_type ) : ?>
-				<?php echo $this->render_subscription_select(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
-			<?php else : ?>
-				<?php echo $this->render_subscription_choices( $selection_type, $group_name ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
-			<?php endif; ?>
-		</div>
-		<?php
-		return ob_get_clean();
-	}
-
-	/**
-	 * Render subscription plans as select dropdown.
-	 *
-	 * @return string
-	 * @since x.x.x
-	 */
-	private function render_subscription_select() {
-		$group_name = $this->field_name . '_plan';
-		
-		ob_start();
-		?>
-		<select name="<?php echo esc_attr( $group_name ); ?>" class="srfm-subscription-select">
-			<option value=""><?php esc_html_e( '--Select Plan--', 'sureforms' ); ?></option>
-			<?php foreach ( $this->subscription_plans as $index => $plan ) : ?>
-				<option value="<?php echo esc_attr( $index ); ?>" 
-					<?php echo ! empty( $plan['is_default'] ) ? 'selected' : ''; ?>
-					<?php echo $this->get_plan_data_attributes( $plan ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
-					<?php echo esc_html( $plan['name'] ); ?>
-				</option>
-			<?php endforeach; ?>
-		</select>
-		<?php
-		return ob_get_clean();
-	}
-
-	/**
-	 * Render subscription plans as radio buttons or checkboxes.
-	 *
-	 * @param string $selection_type Type of input (radio/checkbox).
-	 * @param string $group_name     Name for the input group.
-	 * @return string
-	 * @since x.x.x
-	 */
-	private function render_subscription_choices( $selection_type, $group_name ) {
-		$input_type = 'radio' === $selection_type ? 'radio' : 'checkbox';
-		
-		ob_start();
-		?>
-		<div class="srfm-subscription-choices srfm-subscription-<?php echo esc_attr( $selection_type ); ?>">
-			<?php foreach ( $this->subscription_plans as $index => $plan ) : ?>
-				<div class="srfm-subscription-choice-item">
-					<label class="srfm-subscription-choice-label">
-						<input type="<?php echo esc_attr( $input_type ); ?>" 
-							name="<?php echo esc_attr( $group_name ); ?>"
-							value="<?php echo esc_attr( $index ); ?>"
-							<?php echo ! empty( $plan['is_default'] ) ? 'checked' : ''; ?>
-							<?php echo $this->get_plan_data_attributes( $plan ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
-							class="srfm-subscription-choice-input" />
-						
-						<span class="srfm-subscription-plan-content">
-							<span class="srfm-subscription-plan-name"><?php echo esc_html( $plan['name'] ); ?></span>
-							<?php if ( $this->show_price_after_labels ) : ?>
-								<span class="srfm-subscription-plan-price">
-									<?php echo esc_html( $this->get_subscription_price_display( $plan ) ); ?>
-								</span>
-							<?php endif; ?>
-							<?php if ( ! empty( $plan['plan_features'] ) ) : ?>
-								<div class="srfm-subscription-plan-features">
-									<?php foreach ( $plan['plan_features'] as $feature ) : ?>
-										<span class="srfm-subscription-feature"><?php echo esc_html( $feature ); ?></span>
-									<?php endforeach; ?>
-								</div>
-							<?php endif; ?>
-						</span>
-					</label>
-					
-					<?php if ( ! empty( $plan['user_input'] ) ) : ?>
-						<?php echo $this->render_custom_amount_input( $plan, $index ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
-					<?php endif; ?>
-				</div>
-			<?php endforeach; ?>
-		</div>
-		<?php
-		return ob_get_clean();
-	}
-
-	/**
-	 * Get plan data attributes for Stripe integration.
-	 *
-	 * @param array $plan Subscription plan data.
-	 * @return string
-	 * @since x.x.x
-	 */
-	private function get_plan_data_attributes( $plan ) {
-		$attributes = [
-			'data-subscription-amount' => $plan['subscription_amount'] ?? 0,
-			'data-billing-interval' => $plan['billing_interval'] ?? 'month',
-			'data-bill-times' => $plan['bill_times'] ?? 0,
-			'data-trial-days' => ! empty( $plan['has_trial_days'] ) ? ( $plan['trial_days'] ?? 0 ) : 0,
-			'data-signup-fee' => ! empty( $plan['has_signup_fee'] ) ? ( $plan['signup_fee'] ?? 0 ) : 0,
-			'data-plan-name' => esc_attr( $plan['name'] ?? '' ),
-		];
-
-		$attr_string = '';
-		foreach ( $attributes as $key => $value ) {
-			$attr_string .= ' ' . $key . '="' . esc_attr( $value ) . '"';
-		}
-
-		return $attr_string;
-	}
-
-	/**
-	 * Get subscription price display text.
-	 *
-	 * @param array $plan Subscription plan data.
-	 * @return string
-	 * @since x.x.x
-	 */
-	private function get_subscription_price_display( $plan ) {
-		$amount = $plan['subscription_amount'] ?? 0;
-		$interval = $plan['billing_interval'] ?? 'month';
-		$bill_times = $plan['bill_times'] ?? 0;
-
-		$price_text = $this->format_currency( $amount, $this->currency );
-		
-		$interval_text = '';
-		switch ( $interval ) {
-			case 'day':
-				$interval_text = __( 'per day', 'sureforms' );
-				break;
-			case 'week':
-				$interval_text = __( 'per week', 'sureforms' );
-				break;
-			case 'month':
-				$interval_text = __( 'per month', 'sureforms' );
-				break;
-			case 'year':
-				$interval_text = __( 'per year', 'sureforms' );
-				break;
-		}
-
-		$display_text = $price_text . ' ' . $interval_text;
-
-		if ( $bill_times > 0 ) {
-			$display_text .= sprintf( __( ' for %d payments', 'sureforms' ), $bill_times );
-		}
-
-		if ( ! empty( $plan['has_trial_days'] ) && ! empty( $plan['trial_days'] ) ) {
-			$display_text .= sprintf( __( ' (with %d-day trial)', 'sureforms' ), $plan['trial_days'] );
-		}
-
-		if ( ! empty( $plan['has_signup_fee'] ) && ! empty( $plan['signup_fee'] ) ) {
-			$setup_fee = $this->format_currency( $plan['signup_fee'], $this->currency );
-			$display_text .= sprintf( __( ' + %s setup fee', 'sureforms' ), $setup_fee );
-		}
-
-		return $display_text;
-	}
-
-	/**
-	 * Render custom amount input for user-defined plans.
-	 *
-	 * @param array $plan  Subscription plan data.
-	 * @param int   $index Plan index.
-	 * @return string
-	 * @since x.x.x
-	 */
-	private function render_custom_amount_input( $plan, $index ) {
-		if ( empty( $plan['user_input'] ) ) {
-			return '';
-		}
-
-		$input_name = $this->field_name . '_custom_' . $index;
-		$input_id = $this->block_id . '_custom_' . $index;
-		$default_value = $plan['user_input_default_value'] ?? '';
-		$min_value = $plan['user_input_min_value'] ?? 0;
-		$label = $plan['user_input_label'] ?? __( 'Custom Amount', 'sureforms' );
-		$is_default = ! empty( $plan['is_default'] );
-
-		ob_start();
-		?>
-		<div class="srfm-subscription-custom-amount <?php echo $is_default ? '' : 'srfm-hidden'; ?>" 
-			data-plan-index="<?php echo esc_attr( $index ); ?>">
-			<label for="<?php echo esc_attr( $input_id ); ?>" class="srfm-custom-amount-label">
-				<?php echo esc_html( $label ); ?>
-			</label>
-			<input type="number" 
-				id="<?php echo esc_attr( $input_id ); ?>"
-				name="<?php echo esc_attr( $input_name ); ?>"
-				class="srfm-custom-amount-input"
-				value="<?php echo esc_attr( $default_value ); ?>"
-				min="<?php echo esc_attr( $min_value ); ?>"
-				step="0.01"
-				placeholder="<?php echo esc_attr( $label ); ?>" />
-		</div>
-		<?php
-		return ob_get_clean();
 	}
 }
