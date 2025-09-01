@@ -65,6 +65,31 @@
 		"paymentItems": {
 			"type": "array",
 			"default": []
+		},
+		"paymentType": {
+			"type": "string",
+			"default": "one-time"
+		},
+		"subscriptionPlans": {
+			"type": "array",
+			"default": [
+				{
+					"name": "Subscription Plan",
+					"subscription_amount": 9.99,
+					"billing_interval": "month",
+					"bill_times": 0,
+					"has_trial_days": false,
+					"trial_days": 0,
+					"has_signup_fee": false,
+					"signup_fee": 0,
+					"is_default": true,
+					"plan_features": [],
+					"user_input": false,
+					"user_input_default_value": "",
+					"user_input_min_value": 0,
+					"user_input_label": ""
+				}
+			]
 		}
 	}
 }

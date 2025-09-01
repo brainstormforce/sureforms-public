@@ -34,6 +34,11 @@ const Edit = ( props ) => {
 		preview,
 		className,
 		paymentItems,
+		paymentType,
+		subscriptionPlans,
+		subscriptionSelectionType,
+		subscriptionLayoutClass,
+		showPriceAfterLabels,
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
 	const [ availableNumberFields, setAvailableNumberFields ] = useState( [] );
@@ -185,6 +190,18 @@ const Edit = ( props ) => {
 			),
 		},
 		{
+			id: 'required',
+			component: (
+				<ToggleControl
+					label={ __( 'Required', 'sureforms' ) }
+					checked={ required }
+					onChange={ ( checked ) =>
+						setAttributes( { required: checked } )
+					}
+				/>
+			),
+		},
+		{
 			id: 'payment-items',
 			component: (
 				<div>
@@ -262,14 +279,18 @@ const Edit = ( props ) => {
 			),
 		},
 		{
-			id: 'required',
+			id: 'payment-type',
 			component: (
-				<ToggleControl
-					label={ __( 'Required', 'sureforms' ) }
-					checked={ required }
-					onChange={ ( checked ) =>
-						setAttributes( { required: checked } )
-					}
+				<SelectControl
+					label={ __( 'Payment Type', 'sureforms' ) }
+					value={ paymentType || 'one-time' }
+					options={ [
+						{ label: __( 'One-time Payment', 'sureforms' ), value: 'one-time' },
+						{ label: __( 'Subscription', 'sureforms' ), value: 'subscription' },
+					] }
+					onChange={ ( value ) => {
+						setAttributes( { paymentType: value } );
+					} }
 				/>
 			),
 		},
