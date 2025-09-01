@@ -264,7 +264,6 @@ class Stripe_Payment_Handler {
 	 * @since x.x.x
 	 */
 	public function validate_payment_fields( $form_data ) {
-
 		// Check if form data is valid.
 		if ( empty( $form_data ) || ! is_array( $form_data ) ) {
 			return $form_data;
@@ -558,6 +557,140 @@ class Stripe_Payment_Handler {
 	}
 
 	/**
+	 * Update refund data in payment_data column and log
+	 *
+	 * @param int    $payment_id Payment record ID.
+	 * @param array  $refund_response Refund response from Stripe.
+	 * @param int    $refund_amount Refund amount in cents.
+	 * @param string $currency Currency code.
+	 * @param array  $payment Payment record data.
+	 * @return bool True if successful, false otherwise.
+	 * @since x.x.x
+	 */
+	public function update_refund_data( $payment_id, $refund_response, $refund_amount, $currency, $payment = null ) {
+		if ( empty( $payment_id ) || empty( $refund_response ) ) {
+			return false;
+		}
+
+		// Get payment record if not provided
+		$payment = Payments::get( $payment_id );
+		if ( ! $payment ) {
+			error_log( 'SureForms: Payment record not found for ID: ' . $payment_id );
+			return false;
+		}
+
+		$check_if_refund_already_exists = $this->check_if_refund_already_exists( $payment, $refund_response );
+		if ( $check_if_refund_already_exists ) {
+			return true;
+		}
+
+		// Prepare refund data for payment_data column
+		$refund_data = [
+			'refund_id'      => sanitize_text_field( $refund_response['id'] ?? '' ),
+			'amount'         => absint( $refund_amount ),
+			'currency'       => sanitize_text_field( strtoupper( $currency ) ),
+			'status'         => sanitize_text_field( $refund_response['status'] ?? 'processed' ),
+			'created'        => time(),
+			'reason'         => sanitize_text_field( $refund_response['reason'] ?? 'requested_by_customer' ),
+			'description'    => sanitize_text_field( $refund_response['description'] ?? '' ),
+			'receipt_number' => sanitize_text_field( $refund_response['receipt_number'] ?? '' ),
+			'refunded_by'    => sanitize_text_field( wp_get_current_user()->display_name ?? 'System' ),
+			'refunded_at'    => gmdate( 'Y-m-d H:i:s' ),
+		];
+
+		// Validate refund amount to prevent over-refunding
+		$original_amount    = floatval( $payment['total_amount'] );
+		$existing_refunds   = floatval( $payment['refunded_amount'] ?? 0 ); // Use column directly
+		$new_refund_amount  = $refund_amount / 100; // Convert cents to dollars
+		$total_after_refund = $existing_refunds + $new_refund_amount;
+
+		if ( $total_after_refund > $original_amount ) {
+			error_log(
+				sprintf(
+					'SureForms: Over-refund attempt blocked. Payment ID: %d, Original: $%s, Existing refunds: $%s, New refund: $%s',
+					$payment_id,
+					number_format( $original_amount, 2 ),
+					number_format( $existing_refunds, 2 ),
+					number_format( $new_refund_amount, 2 )
+				)
+			);
+			return false;
+		}
+
+		// Add refund data to payment_data column (for audit trail)
+		$payment_data_result = Payments::add_refund_to_payment_data( $payment_id, $refund_data );
+
+		// Update the refunded_amount column
+		$refund_amount_result = Payments::add_refund_amount( $payment_id, $new_refund_amount );
+
+		// Calculate appropriate payment status
+		$payment_status = 'succeeded'; // Default to current status
+		if ( $total_after_refund >= $original_amount ) {
+			$payment_status = 'refunded'; // Fully refunded
+		} elseif ( $total_after_refund > 0 ) {
+			$payment_status = 'partially_refunded'; // Partially refunded
+		}
+
+		// Update payment status and log
+		$current_logs   = Helper::get_array_value( $payment['log'] );
+		$refund_type    = $total_after_refund >= $original_amount ? 'Full' : 'Partial';
+		$new_log        = [
+			'title'     => sprintf( '%s Payment Refund', $refund_type ),
+			'timestamp' => time(),
+			'messages'  => [
+				sprintf( 'Refund ID: %s', $refund_response['id'] ?? 'N/A' ),
+				sprintf( 'Refund Amount: %s %s', number_format( $refund_amount / 100, 2 ), strtoupper( $currency ) ),
+				sprintf(
+					'Total Refunded: %s %s of %s %s',
+					number_format( $total_after_refund, 2 ),
+					strtoupper( $currency ),
+					number_format( $original_amount, 2 ),
+					strtoupper( $currency )
+				),
+				sprintf( 'Refund Status: %s', $refund_response['status'] ?? 'processed' ),
+				sprintf( 'Payment Status: %s', ucfirst( str_replace( '_', ' ', $payment_status ) ) ),
+				sprintf( 'Refunded by: %s', wp_get_current_user()->display_name ),
+			],
+		];
+		$current_logs[] = $new_log;
+
+		$update_data = [
+			'status' => $payment_status,
+			'log'    => $current_logs,
+		];
+
+		// Update payment record with status and log
+		$payment_update_result = Payments::update( $payment_id, $update_data );
+
+		// Check if all operations succeeded
+		if ( false === $payment_data_result ) {
+			error_log( 'SureForms: Failed to store refund data in payment_data for payment ID: ' . $payment_id );
+		}
+
+		if ( false === $refund_amount_result ) {
+			error_log( 'SureForms: Failed to update refunded_amount column for payment ID: ' . $payment_id );
+			return false;
+		}
+
+		if ( false === $payment_update_result ) {
+			error_log( 'SureForms: Failed to update payment status and log for payment ID: ' . $payment_id );
+			return false;
+		}
+
+		error_log(
+			sprintf(
+				'SureForms: Refund processed successfully. Payment ID: %d, Refund ID: %s, Amount: %s %s',
+				$payment_id,
+				$refund_data['refund_id'],
+				number_format( $refund_amount / 100, 2 ),
+				$currency
+			)
+		);
+
+		return true;
+	}
+
+	/**
 	 * Verify payment intent status
 	 *
 	 * @param string $payment_intent_id Payment intent ID.
@@ -826,141 +959,5 @@ class Stripe_Payment_Handler {
 		}
 
 		return false;
-	}
-
-	/**
-	 * Update refund data in payment_data column and log
-	 *
-	 * @param int    $payment_id Payment record ID.
-	 * @param array  $refund_response Refund response from Stripe.
-	 * @param int    $refund_amount Refund amount in cents.
-	 * @param string $currency Currency code.
-	 * @param array  $payment Payment record data.
-	 * @return bool True if successful, false otherwise.
-	 * @since x.x.x
-	 */
-	public function update_refund_data( $payment_id, $refund_response, $refund_amount, $currency, $payment = null ) {
-		if ( empty( $payment_id ) || empty( $refund_response ) ) {
-			return false;
-		}
-
-		// Get payment record if not provided
-		// if ( null === $payment ) {
-		$payment = Payments::get( $payment_id );
-		if ( ! $payment ) {
-			error_log( 'SureForms: Payment record not found for ID: ' . $payment_id );
-			return false;
-		}
-		// }
-
-		$check_if_refund_already_exists = $this->check_if_refund_already_exists( $payment, $refund_response );
-		if ( $check_if_refund_already_exists ) {
-			return true;
-		}
-
-		// Prepare refund data for payment_data column
-		$refund_data = [
-			'refund_id'      => sanitize_text_field( $refund_response['id'] ?? '' ),
-			'amount'         => absint( $refund_amount ),
-			'currency'       => sanitize_text_field( strtoupper( $currency ) ),
-			'status'         => sanitize_text_field( $refund_response['status'] ?? 'processed' ),
-			'created'        => time(),
-			'reason'         => sanitize_text_field( $refund_response['reason'] ?? 'requested_by_customer' ),
-			'description'    => sanitize_text_field( $refund_response['description'] ?? '' ),
-			'receipt_number' => sanitize_text_field( $refund_response['receipt_number'] ?? '' ),
-			'refunded_by'    => sanitize_text_field( wp_get_current_user()->display_name ?? 'System' ),
-			'refunded_at'    => gmdate( 'Y-m-d H:i:s' ),
-		];
-
-		// Validate refund amount to prevent over-refunding
-		$original_amount    = floatval( $payment['total_amount'] );
-		$existing_refunds   = floatval( $payment['refunded_amount'] ?? 0 ); // Use column directly
-		$new_refund_amount  = $refund_amount / 100; // Convert cents to dollars
-		$total_after_refund = $existing_refunds + $new_refund_amount;
-
-		if ( $total_after_refund > $original_amount ) {
-			error_log(
-				sprintf(
-					'SureForms: Over-refund attempt blocked. Payment ID: %d, Original: $%s, Existing refunds: $%s, New refund: $%s',
-					$payment_id,
-					number_format( $original_amount, 2 ),
-					number_format( $existing_refunds, 2 ),
-					number_format( $new_refund_amount, 2 )
-				)
-			);
-			return false;
-		}
-
-		// Add refund data to payment_data column (for audit trail)
-		$payment_data_result = Payments::add_refund_to_payment_data( $payment_id, $refund_data );
-
-		// Update the refunded_amount column
-		$refund_amount_result = Payments::add_refund_amount( $payment_id, $new_refund_amount );
-
-		// Calculate appropriate payment status
-		$payment_status = 'succeeded'; // Default to current status
-		if ( $total_after_refund >= $original_amount ) {
-			$payment_status = 'refunded'; // Fully refunded
-		} elseif ( $total_after_refund > 0 ) {
-			$payment_status = 'partially_refunded'; // Partially refunded
-		}
-
-		// Update payment status and log
-		$current_logs   = Helper::get_array_value( $payment['log'] );
-		$refund_type    = ( $total_after_refund >= $original_amount ) ? 'Full' : 'Partial';
-		$new_log        = [
-			'title'     => sprintf( '%s Payment Refund', $refund_type ),
-			'timestamp' => time(),
-			'messages'  => [
-				sprintf( 'Refund ID: %s', $refund_response['id'] ?? 'N/A' ),
-				sprintf( 'Refund Amount: %s %s', number_format( $refund_amount / 100, 2 ), strtoupper( $currency ) ),
-				sprintf(
-					'Total Refunded: %s %s of %s %s',
-					number_format( $total_after_refund, 2 ),
-					strtoupper( $currency ),
-					number_format( $original_amount, 2 ),
-					strtoupper( $currency )
-				),
-				sprintf( 'Refund Status: %s', $refund_response['status'] ?? 'processed' ),
-				sprintf( 'Payment Status: %s', ucfirst( str_replace( '_', ' ', $payment_status ) ) ),
-				sprintf( 'Refunded by: %s', wp_get_current_user()->display_name ),
-			],
-		];
-		$current_logs[] = $new_log;
-
-		$update_data = [
-			'status' => $payment_status,
-			'log'    => $current_logs,
-		];
-
-		// Update payment record with status and log
-		$payment_update_result = Payments::update( $payment_id, $update_data );
-
-		// Check if all operations succeeded
-		if ( false === $payment_data_result ) {
-			error_log( 'SureForms: Failed to store refund data in payment_data for payment ID: ' . $payment_id );
-		}
-
-		if ( false === $refund_amount_result ) {
-			error_log( 'SureForms: Failed to update refunded_amount column for payment ID: ' . $payment_id );
-			return false;
-		}
-
-		if ( false === $payment_update_result ) {
-			error_log( 'SureForms: Failed to update payment status and log for payment ID: ' . $payment_id );
-			return false;
-		}
-
-		error_log(
-			sprintf(
-				'SureForms: Refund processed successfully. Payment ID: %d, Refund ID: %s, Amount: %s %s',
-				$payment_id,
-				$refund_data['refund_id'],
-				number_format( $refund_amount / 100, 2 ),
-				$currency
-			)
-		);
-
-		return true;
 	}
 }

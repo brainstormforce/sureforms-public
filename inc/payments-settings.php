@@ -599,7 +599,6 @@ class Payments_Settings {
 					'message' => $error_message ? $error_message : __( 'Failed to delete webhook.', 'sureforms' ),
 				]
 			);
-
 	}
 
 	/**
@@ -718,6 +717,3 @@ class Payments_Settings {
 		exit;
 	}
 }
-
-// Initialize the class.
-Payments_Settings::get_instance();

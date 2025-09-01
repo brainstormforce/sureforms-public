@@ -486,10 +486,38 @@ class Payments_List_Table extends \WP_List_Table {
 
 		$status_label = $status_labels[ $item['status'] ] ?? ucfirst( $item['status'] );
 
+		$style = 'padding: 3px 8px;
+				border-radius: 3px;
+				font-size: 11px;
+				font-weight: bold;
+				text-transform: uppercase;
+				border: 1px solid;';
+
+				$for_success = 'color: #155724;
+				background-color: #d4edda;
+				border-color: #c3e6cb;';
+
+				$for_refund_partially = 'background-color: #fff3cd;
+				color: #856404;
+				border-color: #ffeaa7;';
+
+				$for_refund_fully = 'background-color: #f8d7da;
+				color: #721c24;
+				border-color: #f5c6cb;';
+
+		if ( 'succeeded' === $item['status'] ) {
+			$style .= $for_success;
+		} elseif ( 'partially_refunded' === $item['status'] ) {
+			$style .= $for_refund_partially;
+		} elseif ( 'refunded' === $item['status'] ) {
+			$style .= $for_refund_fully;
+		}
+
 		return sprintf(
-			'<span class="payment-status-%1$s">%2$s</span>',
+			'<span class="payment-status-%1$s" style="%3$s">%2$s</span>',
 			esc_attr( $item['status'] ),
-			esc_html( $status_label )
+			esc_html( $status_label ),
+			$style
 		);
 	}
 
@@ -510,14 +538,15 @@ class Payments_List_Table extends \WP_List_Table {
 		if ( $refunded_amount > 0 ) {
 			$net_amount = $amount - $refunded_amount;
 			return sprintf(
-				'<span>%1$s %2$s <small style="color: #6c757d;">(net)</small></span>',
+				'<span style="display: flex;gap: 8px;"><span style="text-decoration: line-through; color: #6c757d;">%1$s %3$s</span><strong>%1$s %2$s</strong></span>',
 				esc_html( $currency ),
-				number_format( $net_amount, 2 )
+				number_format( $net_amount, 2 ),
+				number_format( $amount, 2 )
 			);
 		}
 
 		return sprintf(
-			'<span>%1$s %2$s</span>',
+			'<span><strong>%1$s %2$s</strong></span>',
 			esc_html( $currency ),
 			number_format( $amount, 2 )
 		);

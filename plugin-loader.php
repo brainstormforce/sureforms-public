@@ -43,8 +43,8 @@ use SRFM\Inc\Rest_Api;
 use SRFM\Inc\Single_Form_Settings\Compliance_Settings;
 use SRFM\Inc\Smart_Tags;
 use SRFM\Inc\Stripe_Payment_Handler;
-use SRFM\Inc\Updater;
 use SRFM\Inc\Stripe_Webhook;
+use SRFM\Inc\Updater;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.

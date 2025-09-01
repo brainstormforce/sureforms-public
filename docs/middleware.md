@@ -486,6 +486,137 @@ Creates a webhook endpoint for payment event notifications.
 }
 ```
 
+### Validate Webhook Signature
+
+**Endpoint**: `POST /webhook/validate-signature`
+
+Validates webhook signatures to ensure the request is genuine and comes from Stripe. This endpoint is useful for verifying webhook payloads before processing them.
+
+**Request Body**:
+```json
+{
+    "payload": "webhook_payload_string",
+    "signature": "webhook_signature_header", 
+    "webhook_secret": "whsec_your_webhook_endpoint_secret"
+}
+```
+
+**Parameters**:
+- `payload` (required): The raw webhook payload body as received from Stripe
+- `signature` (required): The `Stripe-Signature` header value from the webhook request
+- `webhook_secret` (required): Your webhook endpoint secret (starts with `whsec_`)
+
+**Response** (Valid Signature - 200):
+```json
+{
+    "valid": true,
+    "event_type": "payment_intent.succeeded",
+    "event_id": "evt_1234567890"
+}
+```
+
+**Response** (Invalid Signature - 200):
+```json
+{
+    "valid": false,
+    "error": "Invalid webhook signature: No signatures found matching the expected signature for payload"
+}
+```
+
+**Response** (Invalid Payload - 200):
+```json
+{
+    "valid": false,
+    "error": "Invalid webhook payload: Invalid JSON payload"
+}
+```
+
+**Response** (Error - 400/500):
+```json
+{
+    "code": "missing_required_field",
+    "message": "Required field 'payload' is missing or empty",
+    "status": "error"
+}
+```
+
+**Usage Example**:
+```javascript
+// Frontend JavaScript example
+async function validateWebhookSignature(payload, signature, webhookSecret) {
+    const requestData = {
+        payload: payload,
+        signature: signature,
+        webhook_secret: webhookSecret
+    };
+
+    const response = await fetch('/webhook/validate-signature', {
+        method: 'POST',
+        body: btoa(JSON.stringify(requestData)),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+
+    const result = await response.json();
+    
+    if (result.valid) {
+        console.log('Webhook signature is valid:', result.event_type);
+        return true;
+    } else {
+        console.error('Webhook signature validation failed:', result.error);
+        return false;
+    }
+}
+```
+
+**PHP Example**:
+```php
+<?php
+// PHP integration example
+function validateWebhookWithMiddleware($payload, $signature, $webhookSecret, $middlewareUrl) {
+    $data = [
+        'payload' => $payload,
+        'signature' => $signature,
+        'webhook_secret' => $webhookSecret
+    ];
+
+    $ch = curl_init();
+    curl_setopt_array($ch, [
+        CURLOPT_URL => $middlewareUrl . '/webhook/validate-signature',
+        CURLOPT_POST => true,
+        CURLOPT_POSTFIELDS => base64_encode(json_encode($data)),
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_HTTPHEADER => ['Content-Type: application/json']
+    ]);
+
+    $response = curl_exec($ch);
+    curl_close($ch);
+    
+    $result = json_decode($response, true);
+    return $result['valid'] ?? false;
+}
+
+// Usage in webhook handler
+$payload = file_get_contents('php://input');
+$signature = $_SERVER['HTTP_STRIPE_SIGNATURE'];
+$webhookSecret = 'whsec_your_secret';
+
+if (validateWebhookWithMiddleware($payload, $signature, $webhookSecret, 'https://your-middleware.com')) {
+    // Process the webhook
+    echo "Webhook is valid, processing...";
+} else {
+    http_response_code(400);
+    echo "Invalid webhook signature";
+}
+```
+
+**Common Use Cases**:
+- Validating webhooks in applications that can't directly use Stripe SDK
+- Centralized webhook signature validation for multiple services
+- Testing webhook signatures during development
+- Validating webhooks in environments where Stripe SDK installation isn't possible
+
 ---
 
 ## Error Handling

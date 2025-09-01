@@ -135,6 +135,62 @@ class Single_Payment {
 		<?php
 	}
 
+	public function print_refunds( $value ) {
+		ob_start();
+		if ( ! empty( $value ) && is_array( $value ) ) {
+			?>
+			<table class="refund-details" style="width: 100%; border-collapse: collapse; margin: 10px 0; border: 1px solid #ddd;">
+				<thead>
+					<tr>
+						<th style="background-color: #f9f9f9; padding: 10px; border-bottom: 1px solid #ddd; text-align: left; font-weight: bold;">
+							<?php esc_html_e( 'Refunded Amount', 'sureforms' ); ?>
+						</th>
+						<th style="background-color: #f9f9f9; padding: 10px; border-bottom: 1px solid #ddd; text-align: left; font-weight: bold;">
+							<?php esc_html_e( 'Refund ID', 'sureforms' ); ?>
+						</th>
+						<th style="background-color: #f9f9f9; padding: 10px; border-bottom: 1px solid #ddd; text-align: left; font-weight: bold;">
+							<?php esc_html_e( 'Status', 'sureforms' ); ?>
+						</th>
+						<th style="background-color: #f9f9f9; padding: 10px; border-bottom: 1px solid #ddd; text-align: left; font-weight: bold;">
+							<?php esc_html_e( 'Refunded By', 'sureforms' ); ?>
+						</th>
+						<th style="background-color: #f9f9f9; padding: 10px; border-bottom: 1px solid #ddd; text-align: left; font-weight: bold;">
+							<?php esc_html_e( 'Time', 'sureforms' ); ?>
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<?php foreach ( $value as $refund ) { ?>
+						<tr>
+							<td style="padding: 8px; border-bottom: 1px solid #eee;">
+								<?php
+								$amount   = $refund['amount'] ?? 0;
+								$currency = isset( $refund['currency'] ) ? strtoupper( $refund['currency'] ) : 'USD';
+								echo esc_html( $currency . ' ' . number_format( $amount / 100, 2 ) );
+								?>
+							</td>
+							<td style="padding: 8px; border-bottom: 1px solid #eee;">
+								<?php echo esc_html( $refund['refund_id'] ?? 'N/A' ); ?>
+							</td>
+							<td style="padding: 8px; border-bottom: 1px solid #eee;">
+								<?php echo esc_html( ucfirst( $refund['status'] ?? 'unknown' ) ); ?>
+							</td>
+							<td style="padding: 8px; border-bottom: 1px solid #eee;">
+								<?php echo esc_html( $refund['refunded_by'] ?? 'System' ); ?>
+							</td>
+							<td style="padding: 8px; border-bottom: 1px solid #eee;">
+								<?php echo esc_html( $refund['refunded_at'] ?? 'N/A' ); ?>
+							</td>
+						</tr>
+					<?php } ?>
+				</tbody>
+			</table>
+			<?php
+			return ob_get_clean();
+		}
+		return '';
+	}
+
 	/**
 	 * Render the payment information for a specific payment.
 	 *
@@ -199,7 +255,22 @@ class Single_Payment {
 						</tr>
 						<tr>
 							<td><b><?php esc_html_e( 'Amount:', 'sureforms' ); ?></b></td>
-							<td><?php echo esc_html( $currency . ' ' . number_format( $amount, 2 ) ); ?></td>
+							<td>
+								<?php
+								$refunded_amount = floatval( $this->payment['refunded_amount'] ?? 0 );
+								if ( $refunded_amount > 0 ) {
+									$net_amount = $amount - $refunded_amount;
+									echo sprintf(
+										'<span style="display: flex;gap: 8px;"><span style="text-decoration: line-through; color: #6c757d;">%1$s %3$s</span><strong>%1$s %2$s</strong></span>',
+										esc_html( $currency ),
+										number_format( $net_amount, 2 ),
+										number_format( $amount, 2 )
+									);
+								} else {
+									echo esc_html( $currency . ' ' . number_format( $amount, 2 ) );
+								}
+								?>
+							</td>
 						</tr>
 						<tr>
 							<td><b><?php esc_html_e( 'Status:', 'sureforms' ); ?></b></td>
@@ -458,7 +529,22 @@ class Single_Payment {
 						
 						<tr>
 							<td><b><?php esc_html_e( 'Payment Amount', 'sureforms' ); ?></b></td>
-							<td><strong><?php echo esc_html( $currency . ' ' . number_format( $amount, 2 ) ); ?></strong></td>
+							<td>
+								<?php
+								$refunded_amount = floatval( $this->payment['refunded_amount'] ?? 0 );
+								if ( $refunded_amount > 0 ) {
+									$net_amount = $amount - $refunded_amount;
+									echo sprintf(
+										'<span style="display: flex;gap: 8px;"><span style="text-decoration: line-through; color: #6c757d;"><strong>%1$s %3$s</strong></span><strong>%1$s %2$s</strong></span>',
+										esc_html( $currency ),
+										number_format( $net_amount, 2 ),
+										number_format( $amount, 2 )
+									);
+								} else {
+									echo '<strong>' . esc_html( $currency . ' ' . number_format( $amount, 2 ) ) . '</strong>';
+								}
+								?>
+							</td>
 						</tr>
 						<tr>
 							<td><b><?php esc_html_e( 'Payment Status', 'sureforms' ); ?></b></td>
@@ -679,61 +765,5 @@ class Single_Payment {
 		}
 
 		return esc_html( $value );
-	}
-
-	public function print_refunds( $value ) {
-		ob_start();
-		if ( ! empty( $value ) && is_array( $value ) ) {
-			?>
-			<table class="refund-details" style="width: 100%; border-collapse: collapse; margin: 10px 0; border: 1px solid #ddd;">
-				<thead>
-					<tr>
-						<th style="background-color: #f9f9f9; padding: 10px; border-bottom: 1px solid #ddd; text-align: left; font-weight: bold;">
-							<?php esc_html_e( 'Refunded Amount', 'sureforms' ); ?>
-						</th>
-						<th style="background-color: #f9f9f9; padding: 10px; border-bottom: 1px solid #ddd; text-align: left; font-weight: bold;">
-							<?php esc_html_e( 'Refund ID', 'sureforms' ); ?>
-						</th>
-						<th style="background-color: #f9f9f9; padding: 10px; border-bottom: 1px solid #ddd; text-align: left; font-weight: bold;">
-							<?php esc_html_e( 'Status', 'sureforms' ); ?>
-						</th>
-						<th style="background-color: #f9f9f9; padding: 10px; border-bottom: 1px solid #ddd; text-align: left; font-weight: bold;">
-							<?php esc_html_e( 'Refunded By', 'sureforms' ); ?>
-						</th>
-						<th style="background-color: #f9f9f9; padding: 10px; border-bottom: 1px solid #ddd; text-align: left; font-weight: bold;">
-							<?php esc_html_e( 'Time', 'sureforms' ); ?>
-						</th>
-					</tr>
-				</thead>
-				<tbody>
-					<?php foreach ( $value as $refund ) { ?>
-						<tr>
-							<td style="padding: 8px; border-bottom: 1px solid #eee;">
-								<?php
-								$amount   = isset( $refund['amount'] ) ? $refund['amount'] : 0;
-								$currency = isset( $refund['currency'] ) ? strtoupper( $refund['currency'] ) : 'USD';
-								echo esc_html( $currency . ' ' . number_format( $amount / 100, 2 ) );
-								?>
-							</td>
-							<td style="padding: 8px; border-bottom: 1px solid #eee;">
-								<?php echo esc_html( $refund['refund_id'] ?? 'N/A' ); ?>
-							</td>
-							<td style="padding: 8px; border-bottom: 1px solid #eee;">
-								<?php echo esc_html( ucfirst( $refund['status'] ?? 'unknown' ) ); ?>
-							</td>
-							<td style="padding: 8px; border-bottom: 1px solid #eee;">
-								<?php echo esc_html( $refund['refunded_by'] ?? 'System' ); ?>
-							</td>
-							<td style="padding: 8px; border-bottom: 1px solid #eee;">
-								<?php echo esc_html( $refund['refunded_at'] ?? 'N/A' ); ?>
-							</td>
-						</tr>
-					<?php } ?>
-				</tbody>
-			</table>
-			<?php
-			return ob_get_clean();
-		}
-		return '';
 	}
 }
