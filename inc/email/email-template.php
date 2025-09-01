@@ -10,8 +10,6 @@ namespace SRFM\Inc\Email;
 use SRFM\Inc\Helper;
 use SRFM\Inc\Traits\Get_Instance;
 
-use function cli\err;
-
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
