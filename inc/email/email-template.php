@@ -236,19 +236,21 @@ class Email_Template {
 							}
 
 							if ( count( $clean_values ) === 1 ) {
-								$value = reset( $clean_values );
+								$value         = reset( $clean_values );
+								$decoded_value = urldecode( $value );
 								?>
-								<a target="_blank" href="<?php echo esc_attr( urldecode( $value ) ); ?>">
-									<?php echo esc_html( esc_url( $value ) ); ?>
+								<a target="_blank" rel="noopener noreferrer" href="<?php echo esc_url( $decoded_value ); ?>">
+									<?php echo esc_html( $decoded_value ); ?>
 								</a>
 								<?php
 							} elseif ( count( $clean_values ) > 1 ) {
 								?>
 								<ol style="list-style: decimal; padding-left: 20px; margin: 0;">
 									<?php foreach ( $clean_values as $value ) { ?>
+										<?php $decoded_value = urldecode( $value ); ?>
 										<li style="margin-bottom: 6px;">
-											<a target="_blank" href="<?php echo esc_attr( urldecode( $value ) ); ?>">
-												<?php echo esc_html( esc_url( $value ) ); ?>
+											<a target="_blank" rel="noopener noreferrer" href="<?php echo esc_url( $decoded_value ); ?>">
+												<?php echo esc_html( $decoded_value ); ?>
 											</a>
 										</li>
 									<?php } ?>
