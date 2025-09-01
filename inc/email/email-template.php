@@ -238,8 +238,8 @@ class Email_Template {
 							if ( count( $clean_values ) === 1 ) {
 								$value = reset( $clean_values );
 								?>
-								<a target="_blank" href="<?php echo esc_attr( urldecode( $value ) ); ?>">
-									<?php echo esc_html( esc_url( $value ) ); ?>
+								<a target="_blank" href="<?php echo esc_url( urldecode( $value ) ); ?>">
+									<?php echo esc_html( urldecode( $value ) ); ?>
 								</a>
 								<?php
 							} elseif ( count( $clean_values ) > 1 ) {
@@ -247,8 +247,8 @@ class Email_Template {
 								<ol style="list-style: decimal; padding-left: 20px; margin: 0;">
 									<?php foreach ( $clean_values as $value ) { ?>
 										<li style="margin-bottom: 6px;">
-											<a target="_blank" href="<?php echo esc_attr( urldecode( $value ) ); ?>">
-												<?php echo esc_html( esc_url( $value ) ); ?>
+											<a target="_blank" href="<?php echo esc_url( urldecode( $value ) ); ?>">
+												<?php echo esc_html( urldecode( $value ) ); ?>
 											</a>
 										</li>
 									<?php } ?>
