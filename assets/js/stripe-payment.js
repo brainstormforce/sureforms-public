@@ -128,12 +128,74 @@ class StripePayment {
 	}
 
 	updatePaymentIntentAmount( blockId, newAmount, paymentHiddenInput ) {
-		// Debounce need to add here.
-		this.createOrUpdatePaymentIntent(
-			blockId,
-			newAmount,
-			paymentHiddenInput
-		);
+		// Only update display amount, don't create payment intent yet
+		// Payment intent will be created during form submission
+		console.log(`Amount updated for block ${blockId}: $${newAmount}`);
+	}
+
+	/**
+	 * Create payment intent only during form submission
+	 * This method should be called from form submission handler
+	 */
+	async createPaymentIntentOnSubmission( blockId, amount, paymentInput ) {
+		if ( amount <= 0 ) {
+			throw new Error(
+				'createPaymentIntentOnSubmission: Amount must be greater than 0'
+			);
+		}
+
+		this.set_block_loading( blockId, true );
+
+		const currency = paymentInput.dataset.currency || 'usd';
+		const description = paymentInput.dataset.description || 'SureForms Payment';
+
+		const data = new FormData();
+		data.append( 'action', 'srfm_create_payment_intent' );
+		data.append( 'nonce', srfm_ajax.nonce );
+		data.append( 'amount', parseInt( amount * 100 ) );
+		data.append( 'currency', currency );
+		data.append( 'description', description );
+		data.append( 'block_id', blockId );
+
+		try {
+			const response = await fetch( srfm_ajax.ajax_url, {
+				method: 'POST',
+				body: data,
+			} );
+
+			const responseData = await response.json();
+
+			this.set_block_loading( blockId, false );
+
+			if ( responseData.success ) {
+				const clientSecret = responseData.data.client_secret;
+				const paymentIntentId = responseData.data.payment_intent_id;
+
+				// Store payment intent ID
+				StripePayment.paymentIntents[ blockId ] = paymentIntentId;
+
+				// Update the existing elements with the client secret
+				const elementData = StripePayment.paymentElements[ blockId ];
+				if ( elementData ) {
+					elementData.clientSecret = clientSecret;
+					
+					// Update elements with the new client secret only
+					// Amount is automatically derived from the PaymentIntent
+					elementData.elements.update({
+						clientSecret: clientSecret
+					});
+				}
+
+				return { clientSecret, paymentIntentId };
+			}
+			throw new Error(
+				responseData.data || 'Failed to create payment intent'
+			);
+		} catch ( error ) {
+			this.set_block_loading( blockId, false );
+			console.error( 'Error creating payment intent:', error );
+			throw error;
+		}
 	}
 
 	async createOrUpdatePaymentIntent(
@@ -235,6 +297,81 @@ class StripePayment {
 				...slugForPayment,
 			] ),
 		];
+
+		// Initialize Stripe elements without creating payment intent
+		this.initializeStripeElements( blockId, paymentInput );
+	}
+
+	/**
+	 * Initialize Stripe elements without creating payment intent
+	 * Payment intent will be created only during form submission
+	 */
+	initializeStripeElements( blockId, paymentInput ) {
+		const stripeKey = paymentInput.dataset.stripeKey;
+
+		if ( ! stripeKey ) {
+			console.error(
+				'SureForms: Stripe key is required for payment initialization.'
+			);
+			return;
+		}
+
+		const elementContainer = paymentInput
+			.closest( '.srfm-block' )
+			.querySelector( '.srfm-stripe-payment-element' );
+
+		// Initialize Stripe
+		if ( ! StripePayment.stripeInstances[ blockId ] ) {
+			StripePayment.stripeInstances[ blockId ] = Stripe( stripeKey );
+		}
+
+		const stripe = StripePayment.stripeInstances[ blockId ];
+
+		// Initialize Elements without client secret (deferred payment intent creation)
+		const elements = stripe.elements( {
+			mode: 'payment',
+			currency: paymentInput.dataset.currency || 'usd',
+			amount: 12000, // Will be updated when payment intent is created
+			appearance: {
+				theme: 'stripe',
+				variables: {
+					colorPrimary: '#0073aa',
+					colorBackground: '#ffffff',
+					colorText: '#424242',
+					colorDanger: '#df1b41',
+					fontFamily: 'inherit',
+					spacingUnit: '4px',
+					borderRadius: '4px',
+				},
+			},
+		} );
+
+		// Create payment element
+		const paymentElement = elements.create( 'payment' );
+		paymentElement.mount( elementContainer );
+
+		// Store references without payment intent
+		StripePayment.paymentElements[ blockId ] = {
+			stripe,
+			elements,
+			paymentElement,
+			clientSecret: null, // Will be set when payment intent is created
+		};
+
+		// Update window object
+		window.srfmPaymentElements = StripePayment.paymentElements;
+
+		// Handle payment element events
+		paymentElement.on( 'ready', () => {
+			console.log(
+				'SureForms: Payment element ready for block',
+				blockId
+			);
+		} );
+
+		paymentElement.on( 'change', ( event ) => {
+			console.log( 'paymentElement on change event->', event );
+		} );
 	}
 
 	createStripeInstance( blockId, paymentInput, amount = 0 ) {
@@ -387,7 +524,93 @@ class StripePayment {
 			submitButton.classList.remove( 'srfm-loading-button' );
 		}
 	}
+
+	/**
+	 * Static method to create payment intents for all payment blocks in a form during submission
+	 * This should be called from the form submission handler
+	 */
+	static async createPaymentIntentsForForm( form ) {
+		const paymentBlocks = form.querySelectorAll('.srfm-block.srfm-payment-block');
+		const results = [];
+
+		for ( const block of paymentBlocks ) {
+			const blockId = block.getAttribute('data-block-id');
+			const paymentInput = block.querySelector('input.srfm-payment-input');
+			
+			if ( !paymentInput ) {
+				continue;
+			}
+
+			// Calculate current amount from form
+			const paymentValueElement = block.querySelector('.srfm-payment-value');
+			const amountText = paymentValueElement?.textContent || '$0.00';
+			const amount = parseFloat(amountText.replace(/[^0-9.]/g, '')) || 0;
+
+			if ( amount <= 0 ) {
+				console.warn(`Skipping payment block ${blockId} - amount is ${amount}`);
+				continue;
+			}
+
+			try {
+				// Create a temporary instance to call the method
+				const tempInstance = new StripePayment(form);
+				const result = await tempInstance.createPaymentIntentOnSubmission(blockId, amount, paymentInput);
+				results.push({ blockId, ...result });
+			} catch ( error ) {
+				console.error(`Failed to create payment intent for block ${blockId}:`, error);
+				throw error;
+			}
+		}
+
+		return results;
+	}
+
+	/**
+	 * Static method to get payment confirmation data for form submission
+	 */
+	static async confirmPaymentsForSubmission( form ) {
+		const paymentBlocks = form.querySelectorAll('.srfm-block.srfm-payment-block');
+		const confirmations = [];
+
+		for ( const block of paymentBlocks ) {
+			const blockId = block.getAttribute('data-block-id');
+			const elementData = StripePayment.paymentElements[blockId];
+
+			if ( !elementData || !elementData.clientSecret ) {
+				continue;
+			}
+
+			try {
+				const { error, paymentIntent } = await elementData.stripe.confirmPayment({
+					elements: elementData.elements,
+					confirmParams: {
+						return_url: window.location.href,
+					},
+					redirect: 'if_required'
+				});
+
+				if ( error ) {
+					throw new Error(error.message);
+				}
+
+				confirmations.push({
+					blockId,
+					paymentIntentId: paymentIntent.id,
+					status: paymentIntent.status
+				});
+
+			} catch ( error ) {
+				console.error(`Payment confirmation failed for block ${blockId}:`, error);
+				throw error;
+			}
+		}
+
+		return confirmations;
+	}
 }
+
+// Make StripePayment available globally for form submission
+window.StripePayment = StripePayment;
 
 document.addEventListener( 'srfm_form_after_initialization', ( event ) => {
 	const form = event?.detail?.form;

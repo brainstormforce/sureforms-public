@@ -47,24 +47,30 @@ async function processAllPayments( form ) {
 		return true; // No payment blocks, return success
 	}
 
-	const paymentPromises = [];
-
-	paymentBlocks.forEach( ( block ) => {
-		const blockId = block.getAttribute( 'data-block-id' );
-		const paymentData = window.srfmPaymentElements?.[ blockId ];
-
-		console.log( 'paymentData->', paymentData );
-
-		if ( paymentData ) {
-			paymentPromises.push(
-				confirmPayment( blockId, paymentData, form )
-			);
-		}
-	} );
-
-	console.log( 'paymentPromises->', paymentPromises );
-
 	try {
+		// Step 1: Create payment intents for all payment blocks
+		console.log( 'Creating payment intents...' );
+		await window.StripePayment.createPaymentIntentsForForm( form );
+
+		// Step 2: Confirm all payments
+		console.log( 'Confirming payments...' );
+		const paymentPromises = [];
+
+		paymentBlocks.forEach( ( block ) => {
+			const blockId = block.getAttribute( 'data-block-id' );
+			const paymentData = window.srfmPaymentElements?.[ blockId ];
+
+			console.log( 'paymentData->', paymentData );
+
+			if ( paymentData && paymentData.clientSecret ) {
+				paymentPromises.push(
+					confirmPayment( blockId, paymentData, form )
+				);
+			}
+		} );
+
+		console.log( 'paymentPromises->', paymentPromises );
+
 		await Promise.all( paymentPromises );
 		return true;
 	} catch ( error ) {

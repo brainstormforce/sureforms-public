@@ -35,8 +35,6 @@ class Stripe_Payment_Handler {
 	public function __construct() {
 		add_action( 'wp_ajax_srfm_create_payment_intent', [ $this, 'create_payment_intent' ] );
 		add_action( 'wp_ajax_nopriv_srfm_create_payment_intent', [ $this, 'create_payment_intent' ] ); // For non-logged-in users.
-		add_action( 'wp_ajax_srfm_update_payment_intent_amount', [ $this, 'update_payment_intent_amount' ] );
-		add_action( 'wp_ajax_nopriv_srfm_update_payment_intent_amount', [ $this, 'update_payment_intent_amount' ] ); // For non-logged-in users.
 		add_action( 'wp_ajax_srfm_refund_payment', [ $this, 'refund_payment' ] );
 		add_filter( 'srfm_form_submit_data', [ $this, 'validate_payment_fields' ], 5, 1 );
 		add_action( 'wp_head', [ $this, 'add_payment_styles' ] );
@@ -207,7 +205,7 @@ class Stripe_Payment_Handler {
 				throw new \Exception( __( 'Stripe secret key not found.', 'sureforms' ) );
 			}
 
-			// Create payment intent.
+			// Create payment intent with confirm: true for immediate processing
 			$payment_intent_data = apply_filters(
 				'srfm_create_payment_intent_data',
 				[
@@ -215,9 +213,10 @@ class Stripe_Payment_Handler {
 					'amount'                    => $amount,
 					'currency'                  => strtolower( $currency ),
 					'description'               => $description,
-					'capture_method'            => 'manual',
+					'confirm'                   => false, // Will be confirmed by frontend
 					'automatic_payment_methods' => [
-						'enabled' => true,
+						'enabled'         => true,
+						'allow_redirects' => 'never',
 					],
 					'metadata'                  => [
 						'source'          => 'SureForms',
@@ -347,89 +346,6 @@ class Stripe_Payment_Handler {
 		}
 	}
 
-	/**
-	 * Update payment intent amount
-	 *
-	 * @return void
-	 * @since x.x.x
-	 */
-	public function update_payment_intent_amount() {
-		// Verify nonce.
-		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ?? '' ) ), 'srfm_stripe_payment_nonce' ) ) {
-			wp_send_json_error( __( 'Invalid nonce.', 'sureforms' ) );
-			return;
-		}
-
-		$payment_intent_id = sanitize_text_field( wp_unslash( $_POST['payment_intent_id'] ?? '' ) );
-		$new_amount        = intval( $_POST['new_amount'] ?? 0 );
-		// $block_id          = sanitize_text_field( wp_unslash( $_POST['block_id'] ?? '' ) );
-
-		if ( empty( $payment_intent_id ) || $new_amount <= 0 ) {
-			wp_send_json_error( __( 'Invalid payment intent ID or amount.', 'sureforms' ) );
-			return;
-		}
-
-		try {
-			// Get payment settings.
-			$payment_settings = get_option( 'srfm_payments_settings', [] );
-
-			if ( empty( $payment_settings['stripe_connected'] ) ) {
-				throw new \Exception( __( 'Stripe is not connected.', 'sureforms' ) );
-			}
-
-			$payment_mode = $payment_settings['payment_mode'] ?? 'test';
-			$secret_key   = 'live' === $payment_mode
-				? $payment_settings['stripe_live_secret_key'] ?? ''
-				: $payment_settings['stripe_test_secret_key'] ?? '';
-
-			if ( empty( $secret_key ) ) {
-				throw new \Exception( __( 'Stripe secret key not found.', 'sureforms' ) );
-			}
-
-			// Get license key for fee calculation.
-			$license_key = $this->get_license_key();
-
-			// Prepare payment intent update data.
-			$payment_intent_data = apply_filters(
-				'srfm_update_payment_intent_data',
-				[
-					'secret_key'        => $secret_key,
-					'payment_intent_id' => $payment_intent_id,
-					'amount'            => $new_amount,
-					'license_key'       => $license_key,
-				]
-			);
-
-			$payment_intent = wp_remote_post(
-				'prod' === SRFM_PAYMENTS_ENV ? SRFM_PAYMENTS_PROD . 'payment-intent/update' : SRFM_PAYMENTS_LOCAL . 'payment-intent/update',
-				[
-					'body'    => base64_encode( wp_json_encode( $payment_intent_data ) ),
-					'headers' => [
-						'Content-Type' => 'application/json',
-					],
-				]
-			);
-
-			if ( is_wp_error( $payment_intent ) ) {
-				throw new \Exception( __( 'Failed to update payment intent.', 'sureforms' ) );
-			}
-
-			$payment_intent = json_decode( wp_remote_retrieve_body( $payment_intent ), true );
-
-			wp_send_json_success(
-				[
-					'message'           => __( 'Payment intent updated successfully.', 'sureforms' ),
-					'payment_intent_id' => $payment_intent['id'],
-					'new_amount'        => $payment_intent['amount'],
-					'client_secret'     => $payment_intent['client_secret'],
-				]
-			);
-
-		} catch ( \Exception $e ) {
-			error_log( 'SureForms Update Payment Intent Error: ' . $e->getMessage() );
-			wp_send_json_error( __( 'Failed to update payment intent. Please try again.', 'sureforms' ) );
-		}
-	}
 
 	/**
 	 * Process payment refund
@@ -709,34 +625,39 @@ class Stripe_Payment_Handler {
 				return false;
 			}
 
-			// Prepare capture data for the payment intent.
-			$capture_data = apply_filters(
-				'srfm_capture_payment_intent_data',
+			// Retrieve confirmed payment intent status
+			$retrieve_data = apply_filters(
+				'srfm_retrieve_payment_intent_data',
 				[
 					'secret_key'        => $secret_key,
 					'payment_intent_id' => $payment_intent_id,
 				]
 			);
 
-			// Call middleware capture endpoint
-			$capture_response = wp_remote_post(
+			// Call middleware retrieve endpoint to get confirmed payment intent
+			$retrieve_response = wp_remote_post(
 				'prod' === SRFM_PAYMENTS_ENV ? SRFM_PAYMENTS_PROD . 'payment-intent/capture' : SRFM_PAYMENTS_LOCAL . 'payment-intent/capture',
 				[
-					'body'    => base64_encode( wp_json_encode( $capture_data ) ),
+					'body'    => base64_encode( wp_json_encode( $retrieve_data ) ),
 					'headers' => [
 						'Content-Type' => 'application/json',
 					],
 				]
 			);
 
-			if ( is_wp_error( $capture_response ) ) {
-				throw new \Exception( __( 'Failed to capture payment intent.', 'sureforms' ) );
+			if ( is_wp_error( $retrieve_response ) ) {
+				throw new \Exception( __( 'Failed to retrieve payment intent.', 'sureforms' ) );
 			}
 
-			$captured_payment_intent = json_decode( wp_remote_retrieve_body( $capture_response ), true );
+			$confirmed_payment_intent = json_decode( wp_remote_retrieve_body( $retrieve_response ), true );
 
-			if ( empty( $captured_payment_intent ) || isset( $captured_payment_intent['status'] ) && 'error' === $captured_payment_intent['status'] ) {
-				throw new \Exception( __( 'Failed to capture payment intent.', 'sureforms' ) );
+			if ( empty( $confirmed_payment_intent ) || isset( $confirmed_payment_intent['status'] ) && 'error' === $confirmed_payment_intent['status'] ) {
+				throw new \Exception( __( 'Failed to retrieve payment intent.', 'sureforms' ) );
+			}
+
+			// Check if payment was actually confirmed successfully
+			if ( ! in_array( $confirmed_payment_intent['status'], [ 'succeeded', 'requires_capture' ], true ) ) {
+				throw new \Exception( __( 'Payment was not confirmed successfully.', 'sureforms' ) );
 			}
 
 			$entry_data = [];
@@ -744,14 +665,14 @@ class Stripe_Payment_Handler {
 			// update payment status and save to the payment entries table.
 			$entry_data['form_id']        = $form_data['form-id'] ?? '';
 			$entry_data['block_id']       = $block_id;
-			$entry_data['status']         = $captured_payment_intent['status'];
-			$entry_data['total_amount']   = $this->amount_convert_cents_to_usd( $captured_payment_intent['amount'] );
-			$entry_data['currency']       = $captured_payment_intent['currency'];
+			$entry_data['status']         = $confirmed_payment_intent['status'];
+			$entry_data['total_amount']   = $this->amount_convert_cents_to_usd( $confirmed_payment_intent['amount'] );
+			$entry_data['currency']       = $confirmed_payment_intent['currency'];
 			$entry_data['entry_id']       = 0;
 			$entry_data['gateway']        = 'stripe';
 			$entry_data['type']           = 'payment';
 			$entry_data['mode']           = $payment_mode;
-			$entry_data['transaction_id'] = $captured_payment_intent['id'];
+			$entry_data['transaction_id'] = $confirmed_payment_intent['id'];
 
 			$get_payment_entry_id = Payments::add( $entry_data );
 
