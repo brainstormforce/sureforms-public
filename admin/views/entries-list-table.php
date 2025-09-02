@@ -745,6 +745,46 @@ class Entries_List_Table extends \WP_List_Table {
 		$first_field     = reset( $form_data );
 		$field_name      = array_keys( $form_data )[0];
 
+		$field_block_name = Helper::get_block_name_from_field( $field_name );
+
+		/**
+		 * Filters the first field value for entries list table display.
+		 *
+		 * This filter allows the pro plugin to process and modify the first field value
+		 * that appears in the entries list table. Since pro plugin fields may contain
+		 * complex data structures or special formatting requirements that the core plugin
+		 * cannot anticipate, this filter provides a mechanism for the pro plugin to:
+		 *
+		 * - Transform complex field data into displayable format
+		 * - Apply custom formatting for pro-specific field types
+		 * - Handle data sanitization and validation
+		 * - Ensure consistent display across different field types
+		 *
+		 * The filter is called after the core plugin determines the first field but before
+		 * it's displayed, allowing pro plugin to override the value entirely.
+		 *
+		 * @since 1.11.0
+		 *
+		 * @param string $first_field         The current first field value (empty string by default).
+		 * @param array  $field_data          Field information array containing:
+		 *                                    - 'field_name': The internal field name/key
+		 *                                    - 'field_block_name': The block type identifier
+		 *
+		 * @return string The processed first field value ready for display in the entries table.
+		 */
+		$set_entry_first_field = apply_filters(
+			'srfm_entry_first_field',
+			$first_field,
+			[
+				'field_name'       => $field_name,
+				'field_block_name' => $field_block_name,
+			]
+		);
+
+		if ( ! empty( $set_entry_first_field ) ) {
+			$first_field = sanitize_text_field( $set_entry_first_field );
+		}
+
 		if ( false !== strpos( $field_name, 'srfm-upload' ) ) {
 			$filenames = [];
 			if ( ! empty( $first_field ) && is_array( $first_field ) ) {
@@ -779,13 +819,13 @@ class Entries_List_Table extends \WP_List_Table {
 			}
 		} else {
 			// Get the first field value directly.
-			$first_field = reset( $item['form_data'] );
+			$first_field = ! empty( $set_entry_first_field ) ? $set_entry_first_field : reset( $item['form_data'] );
 		}
 
 		// Return the first field value in a paragraph element.
 		return sprintf(
 			'<p>%s</p>',
-			$first_field
+			esc_html( $first_field )
 		);
 	}
 
