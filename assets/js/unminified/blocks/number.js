@@ -119,3 +119,17 @@ function initializeNumberField() {
 	}
 }
 document.addEventListener( 'DOMContentLoaded', initializeNumberField );
+
+/**
+ * Listen for the custom event 'srfm_init_number_field' that is dispatched when number fields need to be initialized.
+ * This event is triggered when number fields are dynamically added or updated in the form.
+ *
+ * The event handler calls initializeNumberField() which sets up all number input functionality including:
+ * - Input validation
+ * - Focus/blur handling
+ * - Hover states
+ * - Filled state classes
+ */
+document.addEventListener( 'srfm_init_number_field', () => {
+	initializeNumberField();
+} );

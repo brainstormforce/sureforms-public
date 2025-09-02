@@ -8,6 +8,7 @@ import clsx from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { format as format_date } from 'date-fns';
 import { toast } from '@bsf/force-ui';
+import { applyFilters } from '@wordpress/hooks';
 
 /**
  * Get Image Sizes and return an array of Size.
@@ -185,6 +186,38 @@ const pushSmartTagToArray = (
 	}
 
 	blocks.forEach( ( block ) => {
+		/**
+		 * Allows external packages to process smart tags for specific blocks before default processing.
+		 * For example, business blocks like repeater fields need custom smart tag handling.
+		 * If a block is processed externally, it will skip the default processing in this function.
+		 *
+		 * srfm.smartTags.isBlockProcessedExternally - filter to process smart tags for specific blocks before default processing.
+		 * @param {boolean}  isProcessedExternally Whether block was processed by external code
+		 * @param {Object}   args                  Arguments passed to the filter
+		 * @param {Object}   args.block            The block object being processed
+		 * @param {Object}   args.blockSlugs       Mapping of block IDs to their field slugs
+		 * @param {Array}    args.tagsArray        Array where smart tags are collected
+		 * @param {Array}    args.uniqueSlugs      Array of unique field slugs already processed
+		 * @param {Function} args.trimTextToWords  Function to trim text to words
+		 * @return {boolean} True if block was processed externally, false to use default processing
+		 */
+		const isBlockProcessedExternally = applyFilters(
+			'srfm.smartTags.isBlockProcessedExternally',
+			false,
+			{
+				block,
+				blockSlugs,
+				tagsArray,
+				uniqueSlugs,
+				trimTextToWords,
+			}
+		);
+
+		// Skip further processing if block was already handled externally
+		if ( isBlockProcessedExternally ) {
+			return;
+		}
+
 		const isInnerBlock =
 			Array.isArray( block?.innerBlocks ) &&
 			0 !== block?.innerBlocks.length;
@@ -677,7 +710,10 @@ export function activatePlugin( { plugin, event } ) {
 		formData,
 		successCallback: () => {
 			if ( srfm_admin?.current_screen_id === 'sureforms_menu' ) {
-				event.target.style.color = '#16A34A';
+				const button = event.target.closest( 'button' );
+				if ( button ) {
+					button.style.backgroundColor = '#F0FDF4';
+				}
 			}
 			event.target.innerText = srfm_admin.plugin_activated_text;
 			if ( plugin?.redirection ) {
