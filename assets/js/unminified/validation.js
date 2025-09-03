@@ -86,7 +86,7 @@ async function processAllPayments( form ) {
  * @param {HTMLElement} form        - The form element.
  */
 async function confirmPayment( blockId, paymentData, form ) {
-	const { stripe, elements, clientSecret } = paymentData;
+	const { stripe, elements, clientSecret, paymentType } = paymentData;
 
 	// First submit the elements
 	const { error: submitError } = await elements.submit();
@@ -95,7 +95,21 @@ async function confirmPayment( blockId, paymentData, form ) {
 		throw new Error( submitError.message );
 	}
 
-	// Then confirm the payment
+	// Handle subscription vs one-time payment confirmation
+	if ( paymentType === 'subscription' ) {
+		return await confirmSubscription( blockId, paymentData, form );
+	} else {
+		return await confirmOneTimePayment( blockId, paymentData, form );
+	}
+}
+
+/**
+ * Confirm one-time payment
+ */
+async function confirmOneTimePayment( blockId, paymentData, form ) {
+	const { stripe, elements, clientSecret } = paymentData;
+
+	// Confirm the payment
 	const confirmPaymentResult = await stripe.confirmPayment( {
 		elements,
 		clientSecret,
@@ -144,6 +158,68 @@ async function confirmPayment( blockId, paymentData, form ) {
 		return paymentIntent;
 	}
 	throw new Error( `Payment not completed for block ${ blockId }` );
+}
+
+/**
+ * Confirm subscription payment
+ */
+async function confirmSubscription( blockId, paymentData, form ) {
+	const { stripe, elements, clientSecret } = paymentData;
+
+	// Confirm the subscription
+	const confirmSubscriptionResult = await stripe.confirmSetup( {
+		elements,
+		clientSecret,
+		confirmParams: {
+			return_url: window.location.href,
+		},
+		redirect: 'if_required',
+	} );
+
+	console.log( 'confirmSubscriptionResult->', confirmSubscriptionResult );
+
+	const { error, setupIntent } = confirmSubscriptionResult;
+
+	if ( error ) {
+		throw new Error( error.message );
+	}
+
+	if (
+		setupIntent.status === 'succeeded' ||
+		setupIntent.status === 'requires_capture'
+	) {
+		console.log( `Subscription payment succeeded for block ${ blockId }` );
+
+		// Get subscription data
+		const subscriptionData = window.StripePayment.subscriptionIntents[ blockId ];
+
+		// update the payment detail in the input value by the json stringify.
+		const getPaymentBlock = form.querySelector(
+			`[data-block-id="${ blockId }"]`
+		);
+		const getPaymentInput = getPaymentBlock.querySelector(
+			'.srfm-payment-input'
+		);
+
+		const getItems = getPaymentInput.getAttribute( 'data-payment-items' );
+		const jsonParseItems = JSON.parse( getItems );
+
+		let prepareInputValueData = {
+			paymentItems: jsonParseItems,
+			paymentId: setupIntent.id,
+			subscriptionId: subscriptionData?.subscriptionId,
+			customerId: subscriptionData?.customerId,
+			blockId,
+			paymentType: 'stripe-subscription',
+		};
+
+		prepareInputValueData = JSON.stringify( prepareInputValueData );
+
+		getPaymentInput.value = prepareInputValueData;
+
+		return setupIntent;
+	}
+	throw new Error( `Subscription payment not completed for block ${ blockId }` );
 }
 
 /**

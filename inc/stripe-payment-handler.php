@@ -35,6 +35,8 @@ class Stripe_Payment_Handler {
 	public function __construct() {
 		add_action( 'wp_ajax_srfm_create_payment_intent', [ $this, 'create_payment_intent' ] );
 		add_action( 'wp_ajax_nopriv_srfm_create_payment_intent', [ $this, 'create_payment_intent' ] ); // For non-logged-in users.
+		add_action( 'wp_ajax_srfm_create_subscription_intent', [ $this, 'create_subscription_intent' ] );
+		add_action( 'wp_ajax_nopriv_srfm_create_subscription_intent', [ $this, 'create_subscription_intent' ] ); // For non-logged-in users.
 		add_action( 'wp_ajax_srfm_refund_payment', [ $this, 'refund_payment' ] );
 		add_filter( 'srfm_form_submit_data', [ $this, 'validate_payment_fields' ], 5, 1 );
 		add_action( 'wp_head', [ $this, 'add_payment_styles' ] );
@@ -308,10 +310,18 @@ class Stripe_Payment_Handler {
 				continue;
 			}
 
-			$this->verify_stripe_payment_intent_and_save( $payment_id, $block_id, $form_data );
+			if ( 'stripe-subscription' === $payment_type ) {
+				$this->verify_stripe_subscription_intent_and_save( $payment_value, $block_id, $form_data );
+			} else {
+				$this->verify_stripe_payment_intent_and_save( $payment_id, $block_id, $form_data );
+			}
 		}
 
 		return $form_data;
+	}
+
+	public function verify_stripe_subscription_intent_and_save( $subscription_id, $block_id, $form_data ) {
+		// $this->verify_stripe_payment_intent_and_save( $subscription_id, $block_id, $form_data );
 	}
 
 	/**
@@ -880,5 +890,516 @@ class Stripe_Payment_Handler {
 		}
 
 		return false;
+	}
+
+	public function _____confirm_subscription_payment() {
+		// Verify nonce
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce']
+	?? '' ) ), 'srfm_stripe_payment_nonce' ) ) {
+			wp_send_json_error( __( 'Invalid nonce.', 'sureforms' ) );
+			return;
+		}
+  
+		$subscription_id = sanitize_text_field( wp_unslash(
+	$_POST['subscription_id'] ?? '' ) );
+  
+		if ( empty( $subscription_id ) ) {
+			wp_send_json_error( __( 'Invalid subscription ID.', 'sureforms' ) );
+			return;
+		}
+  
+		try {
+			// Get payment settings
+			$payment_settings = get_option( 'srfm_payments_settings', [] );
+			$payment_mode = $payment_settings['payment_mode'] ?? 'test';
+			$secret_key = 'live' === $payment_mode
+				? $payment_settings['stripe_live_secret_key'] ?? ''
+				: $payment_settings['stripe_test_secret_key'] ?? '';
+  
+			if ( empty( $secret_key ) ) {
+				throw new \Exception( __( 'Stripe secret key not found.',
+	'sureforms' ) );
+			}
+  
+			\Stripe\Stripe::setApiKey( $secret_key );
+  
+			// Retrieve the subscription
+			$subscription = \Stripe\Subscription::retrieve([
+				'id' => $subscription_id,
+				'expand' => ['latest_invoice.payment_intent']
+			]);
+  
+			if ( 'incomplete' !== $subscription->status ) {
+				wp_send_json_error( __( 'Subscription is not in incomplete 
+	status.', 'sureforms' ) );
+				return;
+			}
+  
+			// Get the payment intent from the latest invoice
+			$latest_invoice = $subscription->latest_invoice;
+			if ( ! $latest_invoice || ! $latest_invoice->payment_intent ) {
+				wp_send_json_error( __( 'No payment intent found for 
+	subscription.', 'sureforms' ) );
+				return;
+			}
+  
+			$payment_intent = $latest_invoice->payment_intent;
+  
+			// Confirm the payment intent
+			$confirmed_payment = \Stripe\PaymentIntent::confirm(
+				$payment_intent->id,
+				['return_url' => home_url()]
+			);
+  
+			if ( 'succeeded' === $confirmed_payment->status ) {
+				// Payment succeeded - subscription should now be active
+				$updated_subscription = \Stripe\Subscription::retrieve(
+	$subscription_id );
+  
+				wp_send_json_success([
+					'subscription_id' => $subscription_id,
+					'status' => $updated_subscription->status,
+					'message' => __( 'Subscription activated successfully.',
+	'sureforms' )
+				]);
+			} else {
+				wp_send_json_error([
+					'message' => __( 'Payment confirmation failed.', 'sureforms'
+	),
+					'payment_status' => $confirmed_payment->status,
+					'client_secret' => $payment_intent->client_secret
+				]);
+			}
+  
+		} catch ( \Exception $e ) {
+			error_log( 'SureForms Subscription Confirmation Error: ' .
+	$e->getMessage() );
+			wp_send_json_error( __( 'Failed to confirm subscription payment.',
+	'sureforms' ) );
+		}
+	}
+
+	/**
+	 * Create subscription intent
+	 *
+	 * @return void
+	 * @throws \Exception When Stripe configuration is invalid.
+	 * @since x.x.x
+	 */
+	public function create_subscription_intent() {
+		// Verify nonce.
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ?? '' ) ), 'srfm_stripe_payment_nonce' ) ) {
+			wp_send_json_error( __( 'Invalid nonce.', 'sureforms' ) );
+			return;
+		}
+
+		$amount         = intval( $_POST['amount'] ?? 0 );
+		$currency       = sanitize_text_field( wp_unslash( $_POST['currency'] ?? 'usd' ) );
+		$description    = sanitize_text_field( wp_unslash( $_POST['description'] ?? 'SureForms Subscription' ) );
+		$block_id       = sanitize_text_field( wp_unslash( $_POST['block_id'] ?? '' ) );
+		
+		$subscription_interval       = sanitize_text_field( wp_unslash( $_POST['interval'] ?? 'month' ) );
+		$plan_name      = sanitize_text_field( wp_unslash( $_POST['plan_name'] ?? 'Subscription Plan' ) );
+		$subscription_interval_count  = absint( $_POST['subscription_interval_count'] ?? 1 );
+		$subscription_trial_days      = absint( $_POST['subscription_trial_days'] ?? 0 );
+
+		if ( $amount <= 0 ) {
+			wp_send_json_error( __( 'Invalid subscription amount.', 'sureforms' ) );
+			return;
+		}
+
+		$valid_intervals = [ 'day', 'week', 'month', 'year' ];
+		if ( ! in_array( $subscription_interval, $valid_intervals, true ) ) {
+			wp_send_json_error( __( 'Invalid subscription interval.', 'sureforms' ) );
+			return;
+		}
+
+		try {
+			// Get payment settings.
+			$payment_settings = get_option( 'srfm_payments_settings', [] );
+
+			if ( empty( $payment_settings['stripe_connected'] ) ) {
+				throw new \Exception( __( 'Stripe is not connected.', 'sureforms' ) );
+			}
+
+			$payment_mode = $payment_settings['payment_mode'] ?? 'test';
+			$secret_key   = 'live' === $payment_mode
+				? $payment_settings['stripe_live_secret_key'] ?? ''
+				: $payment_settings['stripe_test_secret_key'] ?? '';
+
+			if ( empty( $secret_key ) ) {
+				throw new \Exception( __( 'Stripe secret key not found.', 'sureforms' ) );
+			}
+
+			// Initialize Stripe SDK for subscriptions.
+			if ( ! class_exists( '\Stripe\Stripe' ) ) {
+				throw new \Exception( __( 'Stripe library not found.', 'sureforms' ) );
+			}
+
+			\Stripe\Stripe::setApiKey( $secret_key );
+
+			// Calculate application fee - set to 0 if Pro license is active.
+			$application_fee_amount = 0;
+			$application_fee = $payment_settings['application_fee'] ?? 0;
+			if ( $application_fee > 0 && ! $this->is_pro_license_active() ) {
+				$application_fee_amount = absint( ( $amount * $application_fee ) / 100 );
+			}
+
+			$stripe_account_id = $payment_settings['stripe_account_id'] ?? '';
+
+			// Get or create Stripe customer for subscriptions.
+			$customer_id = $this->get_or_create_stripe_customer();
+			if ( ! $customer_id ) {
+				throw new \Exception( __( 'Failed to create customer for subscription.', 'sureforms' ) );
+			}
+
+			// Handle subscription creation using SDK.
+			$response = $this->create_subscription(
+				$amount,
+				$currency,
+				$description,
+				$subscription_interval,
+				$subscription_interval_count,
+				$subscription_trial_days,
+				$application_fee_amount,
+				$stripe_account_id,
+				$block_id,
+				$customer_id,
+				$secret_key
+			);
+
+			wp_send_json_success( $response );
+
+		} catch ( \Exception $e ) {
+			error_log( 'SureForms Stripe Subscription Error: ' . $e->getMessage() );
+			wp_send_json_error( __( 'Failed to create subscription intent. Please try again.', 'sureforms' ) );
+		}
+	}
+
+	/**
+	 * Create subscription
+	 *
+	 * @param int    $amount Subscription amount in cents.
+	 * @param string $currency Subscription currency.
+	 * @param string $description Subscription description.
+	 * @param string $interval Billing interval (day, week, month, year).
+	 * @param int    $interval_count Billing interval count.
+	 * @param int    $trial_days Trial days.
+	 * @param int    $application_fee_amount Application fee amount in cents.
+	 * @param string $stripe_account_id Stripe account ID.
+	 * @param string $block_id Block ID for metadata.
+	 * @param string $customer_id Stripe customer ID.
+	 * @return array Response data with client_secret and subscription_id.
+	 * @throws \Exception When subscription creation fails.
+	 * @since x.x.x
+	 */
+	private function create_subscription( $amount, $currency, $description, $interval, $interval_count, $trial_days, $application_fee_amount, $stripe_account_id, $block_id, $customer_id, $secret_key ) {
+
+		// Create subscription data.
+		$subscription_data = apply_filters( 'srfm_create_subscription_data', [
+			'customer' => $customer_id,
+			'secret_key' => $secret_key,
+			'expand' => [ 'latest_invoice.payment_intent', 'pending_setup_intent' ],
+			'description' => $description,
+			'block_id' => $block_id,
+			'amount' => $amount,
+			'currency' => $currency,
+			'interval' => $interval,
+			'interval_count' => $interval_count,
+			'trial_days' => $trial_days,
+			'metadata' => [
+				'source'             => 'SureForms',
+				'type'               => 'subscription',
+				'block_id'           => $block_id,
+				'original_amount'    => $amount,
+				'application_fee'    => $application_fee_amount,
+				'billing_interval'   => $interval,
+				'interval_count'     => $interval_count,
+				'trial_days'         => $trial_days,
+			],
+		] );
+
+		// Add trial period if specified.
+		if ( $trial_days > 0 ) {
+			$subscription_data['trial_period_days'] = $trial_days;
+		}
+
+		$subscription = wp_remote_post(
+			'prod' === SRFM_PAYMENTS_ENV 
+				? SRFM_PAYMENTS_PROD . 'subscription/create' 
+				: SRFM_PAYMENTS_LOCAL . 'subscription/create',
+			[
+				'timeout' => 90,
+				'body'    => base64_encode( wp_json_encode( $subscription_data ) ),
+				'headers' => [
+					'Content-Type' => 'application/json',
+				],
+			]
+		);
+
+		// decode response
+		$subscription = json_decode( wp_remote_retrieve_body( $subscription ), true );
+
+
+		// // --------- testing to retrieve 
+        // \Stripe\Stripe::setApiKey($secret_key);
+
+		// $retrieved_subscription = \Stripe\Subscription::retrieve([
+		// 	'id' => $subscription['id'],
+		// 	'expand' => ['latest_invoice.payment_intent']
+		// ]);
+
+		// $latest_invoice = $retrieved_subscription->latest_invoice;
+
+		// $payment_intent = $latest_invoice->payment_intent;
+
+		// // Confirm the payment intent
+		// $payment_intent_obj = new \Stripe\PaymentIntent($payment_intent->id);
+		// $confirmed_payment = $payment_intent_obj->confirm([
+		// 	'return_url' => home_url()
+		// ]);
+
+		// Handle different subscription states
+		$client_secret = null;
+		$payment_intent_id = null;
+		$setup_intent_id = null;
+
+		// if ( $subscription['latest_invoice'] && $subscription['latest_invoice']['payment_intent'] ) {
+		// 	$payment_intent = $subscription['latest_invoice']['payment_intent'];
+		// 	$client_secret = $payment_intent['client_secret'];
+		// 	$payment_intent_id = $payment_intent['id'];
+			
+		// 	// Check if 3D Secure is required for the payment intent
+		// 	if ( 'requires_action' === $payment_intent['status'] && 
+		// 		 isset( $payment_intent['next_action']['type'] ) && 
+		// 		 'use_stripe_sdk' === $payment_intent['next_action']['type'] ) {
+				
+		// 		// 3D Secure is required - return response for frontend handling
+		// 		wp_send_json_success( [
+		// 			'type'                         => 'subscription',
+		// 			'action_required'              => true,
+		// 			'payment_intent_client_secret' => $payment_intent['client_secret'],
+		// 			'subscription_id'              => $subscription['id'],
+		// 			'payment_intent_id'            => $payment_intent['id'],
+		// 			'status'                       => $subscription['status'],
+		// 		] );
+		// 		return; // Early return to prevent further execution
+		// 	}
+		// } elseif ( $subscription['pending_setup_intent'] ) {
+		// 	// For subscriptions that require setup intent (like with trial periods)
+		// 	$client_secret = $subscription['pending_setup_intent']['client_secret'];
+		// 	$setup_intent_id = $subscription['pending_setup_intent']['id'];
+		// }
+
+		// If we still don't have a client secret, create a setup intent for future payments
+		if ( ! $client_secret ) {
+			$setup_intent = \Stripe\SetupIntent::create([
+				'customer' => $customer_id,
+				'payment_method_types' => ['card'],
+				'usage' => 'off_session',
+				'metadata' => [
+					'subscription_id' => $subscription['id'],
+					'source' => 'SureForms',
+					'block_id' => $block_id,
+				],
+			]);
+			$client_secret = $setup_intent['client_secret'];
+			$setup_intent_id = $setup_intent['id'];
+		}
+
+		return [
+			'type'              => 'subscription',
+			'client_secret'     => $client_secret,
+			'subscription_id'   => $subscription['id'],
+			'payment_intent_id' => $payment_intent_id,
+			'setup_intent_id'   => $setup_intent_id,
+			'status'            => $subscription['status'],
+		];
+	}
+
+	/**
+	 * Get or create Stripe customer
+	 *
+	 * @return string|false Customer ID on success, false on failure.
+	 * @since x.x.x
+	 */
+	private function get_or_create_stripe_customer() {
+		$current_user = wp_get_current_user();
+
+		if ( $current_user->ID > 0 ) {
+			// Logged-in user - check for existing customer ID in user meta
+			$customer_id = get_user_meta( $current_user->ID, 'srfm_stripe_customer_id', true );
+
+			if ( ! empty( $customer_id ) && $this->verify_stripe_customer( $customer_id ) ) {
+				return $customer_id;
+			}
+
+			// Create new customer for logged-in user
+			return $this->create_stripe_customer_for_user( $current_user );
+		} else {
+			// Non-logged-in user - create temporary customer
+			return $this->create_stripe_customer_for_guest();
+		}
+	}
+	/**
+	 * Create Stripe customer for logged-in user
+	 *
+	 * @param \WP_User $user WordPress user object.
+	 * @return string|false Customer ID on success, false on failure.
+	 * @since x.x.x
+	 */
+	private function create_stripe_customer_for_user( $user ) {
+		try {
+			$customer_data = [
+				'email'       => $user->user_email,
+				'name'        => trim( $user->first_name . ' ' . $user->last_name ) ?: $user->display_name,
+				'description' => sprintf( 'WordPress User ID: %d', $user->ID ),
+				'metadata'    => [
+					'source'         => 'SureForms',
+					'wp_user_id'     => $user->ID,
+					'wp_username'    => $user->user_login,
+					'wp_user_email'  => $user->user_email,
+				],
+			];
+
+			$customer = \Stripe\Customer::create( $customer_data );
+
+			// Save customer ID to user meta for future use
+			update_user_meta( $user->ID, 'srfm_stripe_customer_id', $customer->id );
+
+			return $customer->id;
+
+		} catch ( \Exception $e ) {
+			error_log( 'SureForms Stripe Customer Creation Error: ' . $e->getMessage() );
+			return false;
+		}
+	}
+
+	/**
+	 * Create Stripe customer for guest user
+	 *
+	 * @return string|false Customer ID on success, false on failure.
+	 * @since x.x.x
+	 */
+	private function create_stripe_customer_for_guest() {
+		try {
+			// Get form data if available for guest customer info
+			$form_data = $this->get_form_data_for_guest_customer();
+
+			$customer_data = [
+				'description' => 'Guest User - SureForms Subscription',
+				'metadata'    => [
+					'source'      => 'SureForms',
+					'user_type'   => 'guest',
+					'created_at'  => current_time( 'mysql' ),
+					'ip_address'  => $this->get_user_ip(),
+				],
+			];
+
+			// Add email and name if available from form data
+			if ( ! empty( $form_data['email'] ) ) {
+				$customer_data['email'] = sanitize_email( $form_data['email'] );
+				$customer_data['metadata']['form_email'] = $form_data['email'];
+			}
+
+			if ( ! empty( $form_data['name'] ) ) {
+				$customer_data['name'] = sanitize_text_field( $form_data['name'] );
+				$customer_data['metadata']['form_name'] = $form_data['name'];
+			}
+
+			$customer = \Stripe\Customer::create( $customer_data );
+
+			return $customer->id;
+
+		} catch ( \Exception $e ) {
+			error_log( 'SureForms Stripe Guest Customer Creation Error: ' . $e->getMessage() );
+			return false;
+		}
+	}
+
+	/**
+	 * Verify Stripe customer exists
+	 *
+	 * @param string $customer_id Stripe customer ID.
+	 * @return bool True if customer exists, false otherwise.
+	 * @since x.x.x
+	 */
+	private function verify_stripe_customer( $customer_id ) {
+		try {
+			$customer = \Stripe\Customer::retrieve( $customer_id );
+			return ! empty( $customer->id ) && 'deleted' !== $customer->object;
+		} catch ( \Exception $e ) {
+			error_log( 'SureForms Stripe Customer Verification Error: ' . $e->getMessage() );
+			return false;
+		}
+	}
+
+	/**
+	 * Get form data for guest customer creation
+	 *
+	 * @return array Form data with email and name if available.
+	 * @since x.x.x
+	 */
+	private function get_form_data_for_guest_customer() {
+		$form_data = [
+			'email' => '',
+			'name'  => '',
+		];
+
+		// Try to get email and name from common form field names
+		$email_fields = [ 'email', 'user_email', 'customer_email', 'contact_email' ];
+		$name_fields  = [ 'name', 'full_name', 'customer_name', 'first_name', 'last_name' ];
+
+		foreach ( $email_fields as $field ) {
+			if ( ! empty( $_POST[ $field ] ) && is_email( $_POST[ $field ] ) ) {
+				$form_data['email'] = sanitize_email( wp_unslash( $_POST[ $field ] ) );
+				break;
+			}
+		}
+
+		foreach ( $name_fields as $field ) {
+			if ( ! empty( $_POST[ $field ] ) ) {
+				$form_data['name'] = sanitize_text_field( wp_unslash( $_POST[ $field ] ) );
+				break;
+			}
+		}
+
+		// Try to combine first_name and last_name if available
+		if ( empty( $form_data['name'] ) ) {
+			$first_name = ! empty( $_POST['first_name'] ) ? sanitize_text_field( wp_unslash( $_POST['first_name'] ) ) : '';
+			$last_name  = ! empty( $_POST['last_name'] ) ? sanitize_text_field( wp_unslash( $_POST['last_name'] ) ) : '';
+
+			if ( $first_name || $last_name ) {
+				$form_data['name'] = trim( $first_name . ' ' . $last_name );
+			}
+		}
+
+		return $form_data;
+	}
+
+	/**
+	 * Get user IP address
+	 *
+	 * @return string User IP address.
+	 * @since x.x.x
+	 */
+	private function get_user_ip() {
+		// Check for various IP address headers
+		$ip_keys = [ 'HTTP_X_FORWARDED_FOR', 'HTTP_X_REAL_IP', 'HTTP_CLIENT_IP', 'REMOTE_ADDR' ];
+
+		foreach ( $ip_keys as $key ) {
+			if ( ! empty( $_SERVER[ $key ] ) ) {
+				$ip = sanitize_text_field( wp_unslash( $_SERVER[ $key ] ) );
+				// Handle comma-separated IPs (from proxies)
+				if ( strpos( $ip, ',' ) !== false ) {
+					$ip = trim( explode( ',', $ip )[0] );
+				}
+				if ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE ) ) {
+					return $ip;
+				}
+			}
+		}
+
+		return '127.0.0.1'; // Fallback
 	}
 }
