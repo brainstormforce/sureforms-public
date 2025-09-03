@@ -123,6 +123,15 @@ if ( ! class_exists( 'Spec_Gb_Helper' ) ) {
 		private static $seen_refs = [];
 
 		/**
+		 * Processed form IDs Array
+		 * This array will store the SRFM form IDs which have already been processed to prevent duplicate styles.
+		 *
+		 * @since 1.11.0
+		 * @var array
+		 */
+		private static $processed_srfm_ids = [];
+
+		/**
 		 *  Initiator
 		 *
 		 * @since 0.0.1
@@ -381,6 +390,58 @@ if ( ! class_exists( 'Spec_Gb_Helper' ) ) {
 		}
 
 		/**
+		 *
+		 * Recursively collects all SRFM form blocks from a given block structure.
+		 *
+		 * This method traverses the provided block array (including any nested inner blocks),
+		 * finds `srfm/form` blocks, retrieves the corresponding post content for those forms,
+		 * parses it into block data, and merges the results into the return array.
+		 *
+		 * @param array $blocks            The current block data (including attributes and inner blocks).
+		 * @param array $blocks_to_return  The array of collected SRFM form blocks to return.
+		 *
+		 * @return array Collected SRFM form blocks.
+		 * @since 1.11.0
+		 */
+		public function get_srfm_form_blocks( $blocks, $blocks_to_return = [] ) {
+			// Ensure $blocks is an array and has required structure.
+			if ( ! is_array( $blocks ) || empty( $blocks ) ) {
+				return $blocks_to_return;
+			}
+
+			// Prevent duplicate processing by checking ID early.
+			if ( isset( $blocks['attrs']['id'] ) && in_array( $blocks['attrs']['id'], self::$processed_srfm_ids, true ) ) {
+				return $blocks_to_return;
+			}
+
+			// Check for SRFM form block.
+			if ( isset( $blocks['blockName'] ) && 'srfm/form' === $blocks['blockName'] ) {
+				if ( ! empty( $blocks['attrs']['id'] ) ) {
+					$form_id                    = $blocks['attrs']['id'];
+					self::$processed_srfm_ids[] = $form_id;
+
+					$get_block_from_the_form = get_post( $form_id );
+					if ( $get_block_from_the_form && ! empty( $get_block_from_the_form->post_content ) ) {
+						$parsed_blocks = $this->parse( $get_block_from_the_form->post_content );
+						if ( is_array( $parsed_blocks ) ) {
+							$blocks_to_return = array_merge( $blocks_to_return, $parsed_blocks );
+						}
+					}
+				}
+			}
+
+			// Process inner blocks if any.
+			if ( ! empty( $blocks['innerBlocks'] ) && is_array( $blocks['innerBlocks'] ) ) {
+				foreach ( $blocks['innerBlocks'] as $inner_block ) {
+					$blocks_to_return = $this->get_srfm_form_blocks( $inner_block, $blocks_to_return );
+				}
+			}
+
+			return $blocks_to_return;
+		}
+
+
+		/**
 		 * Generates stylesheet in loop.
 		 *
 		 * @param object $this_post Current Post Object.
@@ -394,12 +455,11 @@ if ( ! class_exists( 'Spec_Gb_Helper' ) ) {
 
 				$count = count( $blocks );
 				for ( $i = 0; $i < $count; $i++ ) {
-					if ( isset( $blocks[ $i ]['blockName'] ) && 'srfm/form' === $blocks[ $i ]['blockName'] ) {
-						if ( isset( $blocks[ $i ]['attrs']['id'] ) && $blocks[ $i ]['attrs']['id'] ) {
-							$form_post = get_post( $blocks[ $i ]['attrs']['id'] );
-							if ( $form_post ) {
-								$blocks = array_merge( $blocks, $this->parse( $form_post->post_content ) );
-							}
+
+					if ( isset( $blocks[ $i ]['blockName'] ) && ! empty( $blocks[ $i ]['blockName'] ) ) {
+						$get_form_blocks = $this->get_srfm_form_blocks( $blocks[ $i ] );
+						if ( ! empty( $get_form_blocks ) ) {
+							$blocks = array_merge( $blocks, $get_form_blocks );
 						}
 					}
 

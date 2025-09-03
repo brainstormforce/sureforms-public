@@ -11,6 +11,7 @@ import { applyFilters } from '@wordpress/hooks';
 
 // Force-UI
 import Dialog from '../components/dialog/Dialog';
+import { FormRestrictionProvider } from '../components/form-restrictions/context';
 
 let prevMetaHash = '';
 
@@ -168,7 +169,7 @@ function GeneralSettings( props ) {
 		} );
 	}
 
-	const singleSettings = applyFilters( 'srfm.formSettings.singleSettings', [
+	const singleFormSettingsComponents = [
 		{
 			id: 'form_confirmation',
 			title: __( 'Form Confirmation', 'sureforms' ),
@@ -178,14 +179,24 @@ function GeneralSettings( props ) {
 			title: __( 'Email Notification', 'sureforms' ),
 		},
 		{
-			id: 'compliance_settings',
-			title: __( 'Compliance Settings', 'sureforms' ),
+			id: 'advanced-settings',
+			title: __( 'Advanced Settings', 'sureforms' ),
 		},
 		{
 			id: 'integrations',
 			title: __( 'Integrations', 'sureforms' ),
 		},
-	] );
+	];
+
+	let singleSettings = applyFilters(
+		'srfm.formSettings.singleSettings',
+		singleFormSettingsComponents
+	);
+
+	// validate the singleSettings should only contain array of objects with id and title if it fails then reset to default singleSettings.
+	if ( ! Array.isArray( singleSettings ) ) {
+		singleSettings = singleFormSettingsComponents;
+	}
 
 	function updatePageBreakSettings( option, value ) {
 		editPost( {
@@ -322,14 +333,16 @@ function GeneralSettings( props ) {
 				);
 			} ) }
 
-			<Dialog
-				open={ isOpen }
-				setOpen={ setOpen }
-				close={ closeModal }
-				sureformsKeys={ sureformsKeys }
-				targetTab={ popupTab }
-				setHasValidationErrors={ setHasValidationErrors }
-			/>
+			<FormRestrictionProvider>
+				<Dialog
+					open={ isOpen }
+					setOpen={ setOpen }
+					close={ closeModal }
+					sureformsKeys={ sureformsKeys }
+					targetTab={ popupTab }
+					setHasValidationErrors={ setHasValidationErrors }
+				/>
+			</FormRestrictionProvider>
 		</>
 	);
 }

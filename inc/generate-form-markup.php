@@ -68,6 +68,13 @@ class Generate_Form_Markup {
 		} else {
 			$id = Helper::get_integer_value( $id );
 		}
+
+		// Check for any form restrictions.
+		$form_id = Helper::get_integer_value( $id );
+		if ( Form_Restriction::is_form_restricted( $form_id ) ) {
+			return Form_Restriction::display_form_restriction_message( $form_id );
+		}
+
 		do_action( 'srfm_localize_conditional_logic_data', $id );
 		$post = get_post( Helper::get_integer_value( $id ) );
 
@@ -751,7 +758,7 @@ class Generate_Form_Markup {
 			$smart_tags = new Smart_Tags();
 			// Adding upload_format_type = 'raw' to retrieve urls as comma separated values.
 			$form_data['upload_format_type'] = 'raw';
-			$redirect_url                    = html_entity_decode( $smart_tags->process_smart_tags( $redirect_url, $submission_data, $form_data ) );
+			$redirect_url                    = html_entity_decode( Helper::get_string_value( $smart_tags->process_smart_tags( $redirect_url, $submission_data, $form_data ) ) );
 		}
 
 		return apply_filters( 'srfm_after_submit_redirect_url', $redirect_url );

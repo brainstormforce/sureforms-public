@@ -252,6 +252,22 @@ class Form_Submit {
 
 		$current_form_id = $form_data['form-id'];
 
+		/**
+		 * If someone tries to access the form submit endpoint directly, we need to check if the form is restricted.
+		 * If a form is loaded in a browser window and the limit exceeds then the form will not be submitted.
+		 */
+		$form_id = Helper::get_integer_value( $current_form_id );
+		if ( Form_Restriction::is_form_restricted( $form_id ) ) {
+			$form_restriction = Form_Restriction::get_form_restriction_setting( $form_id );
+			// If the form is restricted, return an error response.
+			$form_restriction_message = $form_restriction['message'] ?? Translatable::get_default_form_restriction_message();
+			wp_send_json_error(
+				[
+					'message' => $form_restriction_message,
+				]
+			);
+		}
+
 		// Check whether the form is valid.
 		if ( ! Helper::is_valid_form( $current_form_id ) ) {
 			wp_send_json_error(
@@ -478,41 +494,7 @@ class Form_Submit {
 
 		$form_data = apply_filters( 'srfm_before_fields_processing', $form_data );
 
-		$submission_data = [];
-
-		$form_data_keys  = array_keys( $form_data );
-		$form_data_count = count( $form_data );
-
-		for ( $i = 0; $i < $form_data_count; $i++ ) {
-			$key = strval( $form_data_keys[ $i ] );
-
-			/**
-			 * This will allow to pass only sureforms fields
-			 * checking -lbl- as thats mandatory for in key of sureforms fields.
-			 */
-			if ( false === str_contains( $key, '-lbl-' ) ) {
-				continue;
-			}
-
-			$value = $form_data[ $key ];
-
-			$field_name = htmlspecialchars( str_replace( '_', ' ', $key ) );
-
-			// If the field is an array, encode the values. This is to add support for multi-upload field.
-			if ( is_array( $value ) ) {
-				$submission_data[ $field_name ] =
-					array_map(
-						static function ( $val ) {
-							return rawurlencode( $val );
-						},
-						$value
-					);
-			} else {
-				$submission_data[ $field_name ] = htmlspecialchars( $value );
-			}
-		}
-
-		$submission_data = apply_filters( 'srfm_before_prepare_submission_data', $submission_data );
+		$submission_data = $this->process_form_fields( $form_data );
 
 		$modified_message = $this->prepare_submission_data( $submission_data );
 
@@ -666,6 +648,38 @@ class Form_Submit {
 			$parts = explode( '-lbl-', $key );
 			$label = '';
 
+			/**
+			 * Filters submission data for field processing.
+			 *
+			 * This filter allows customization of how individual fields are processed
+			 * during submission data preparation. Plugins can modify field values,
+			 * labels, or exclude specific fields from the final submission data.
+			 *
+			 * @since 1.11.0
+			 *
+			 * @param array $field_data {
+			 *     Field data for processing.
+			 *
+			 *     @type array  $block_parts  The field key split by '-lbl-' delimiter.
+			 *     @type string $field_key    The original field key from submission data.
+			 *     @type mixed  $field_value  The field value from submission data.
+			 * }
+			 */
+			$should_add_field_row = apply_filters(
+				'srfm_prepare_submission_data',
+				[
+					'block_parts' => $parts,
+					'field_key'   => $key,
+					'field_value' => $value,
+				]
+			);
+
+			// If we get the label and value from the filter, then use it.
+			if ( ! empty( $should_add_field_row['label'] ) && ! empty( $should_add_field_row['value'] ) ) {
+				$modified_message[ $should_add_field_row['label'] ] = $should_add_field_row['value'];
+				continue;
+			}
+
 			if ( ! empty( $parts[1] ) ) {
 				$tokens = explode( '-', $parts[1] );
 				if ( count( $tokens ) > 1 ) {
@@ -710,9 +724,9 @@ class Form_Submit {
 	public static function parse_email_notification_template( $submission_data, $item, $form_data = [] ) {
 		$smart_tags = Smart_Tags::get_instance();
 
-		$to             = $smart_tags->process_smart_tags( $item['email_to'], $submission_data );
-		$subject        = $smart_tags->process_smart_tags( $item['subject'], $submission_data, $form_data );
-		$email_body     = $smart_tags->process_smart_tags( $item['email_body'], $submission_data, $form_data );
+		$to             = Helper::get_string_value( $smart_tags->process_smart_tags( $item['email_to'], $submission_data ) );
+		$subject        = Helper::get_string_value( $smart_tags->process_smart_tags( $item['subject'], $submission_data, $form_data ) );
+		$email_body     = Helper::get_string_value( $smart_tags->process_smart_tags( $item['email_body'], $submission_data, $form_data ) );
 		$email_template = new Email_Template();
 		$message        = $email_template->render( $submission_data, $email_body );
 		$headers        = 'X-Mailer: PHP/' . phpversion() . "\r\n";
@@ -722,13 +736,13 @@ class Form_Submit {
 		$headers .= self::add_from_data_in_header( $submission_data, $item, $smart_tags );
 
 		if ( isset( $item['email_reply_to'] ) && ! empty( $item['email_reply_to'] ) ) {
-			$headers .= 'Reply-To:' . $smart_tags->process_smart_tags( $item['email_reply_to'], $submission_data ) . "\r\n";
+			$headers .= 'Reply-To:' . Helper::get_string_value( $smart_tags->process_smart_tags( $item['email_reply_to'], $submission_data ) ) . "\r\n";
 		}
 		if ( isset( $item['email_cc'] ) && ! empty( $item['email_cc'] ) ) {
-			$headers .= 'Cc:' . $smart_tags->process_smart_tags( $item['email_cc'], $submission_data ) . "\r\n";
+			$headers .= 'Cc:' . Helper::get_string_value( $smart_tags->process_smart_tags( $item['email_cc'], $submission_data ) ) . "\r\n";
 		}
 		if ( isset( $item['email_bcc'] ) && ! empty( $item['email_bcc'] ) ) {
-			$headers .= 'Bcc:' . $smart_tags->process_smart_tags( $item['email_bcc'], $submission_data ) . "\r\n";
+			$headers .= 'Bcc:' . Helper::get_string_value( $smart_tags->process_smart_tags( $item['email_bcc'], $submission_data ) ) . "\r\n";
 		}
 
 		return compact( 'to', 'subject', 'message', 'headers' );
@@ -766,6 +780,25 @@ class Form_Submit {
 
 						// Trigger an action before sending the email, allowing additional processing or logging.
 						do_action( 'srfm_before_email_send', $parsed, $submission_data, $item, $form_data );
+
+						$notification_id = isset( $item['id'] ) ? intval( $item['id'] ) : 0;
+
+						/**
+						 * Filter to determine whether the email should be sent.
+						 *
+						 * @since 1.10.1
+						 */
+						$should_send_email = apply_filters(
+							'srfm_should_send_email',
+							true,
+							$notification_id,
+							$id,
+							$form_data,
+						);
+
+						if ( ! wp_validate_boolean( $should_send_email ) ) {
+								continue;
+						}
 
 						/**
 						 * Temporary override the content type for wp_mail.
@@ -1083,6 +1116,101 @@ class Form_Submit {
 	}
 
 	/**
+	 * Process and sanitize SureForms field data from submitted form data.
+	 *
+	 * @param array<mixed> $form_data Raw form data from submission.
+	 *
+	 * @since 1.11.0
+	 * @return array Processed and sanitized submission data.
+	 */
+	private function process_form_fields( $form_data ) {
+		$submission_data = [];
+
+		$form_data_keys  = array_keys( $form_data );
+		$form_data_count = count( $form_data );
+
+		for ( $i = 0; $i < $form_data_count; $i++ ) {
+			$key = strval( $form_data_keys[ $i ] );
+
+			/**
+			 * This will allow to pass only sureforms fields
+			 * checking -lbl- as thats mandatory for in key of sureforms fields.
+			 */
+			if ( false === str_contains( $key, '-lbl-' ) ) {
+				continue;
+			}
+
+			$value = $form_data[ $key ];
+
+			$field_name = htmlspecialchars( str_replace( '_', ' ', $key ) );
+
+			$field_block_name = Helper::get_block_name_from_field( $field_name );
+
+			/**
+			 * Filters the field value during form submission processing.
+			 *
+			 * This filter allows the Pro plugin to process and modify field values before they are saved.
+			 * The Pro plugin can implement custom sanitization, validation and escaping logic for its
+			 * specialized field types. When this filter is used by Pro, the core plugin will skip its
+			 * default validation.
+			 *
+			 * @since 1.11.0
+			 *
+			 * @param mixed $value            The raw field value from form submission.
+			 * @param array $field_data       Field information array containing:
+			 *                                - 'field_name': The field name/key
+			 *                                - 'field_block_name': The block type identifier
+			 * @return array {
+			 *     Processed field value data
+			 *
+			 *     @type bool   $is_processed Whether the value was processed by Pro plugin
+			 *     @type mixed  $value        The processed and sanitized field value
+			 * }
+			 */
+			$process_field_value = apply_filters(
+				'srfm_process_field_value',
+				$value,
+				[
+					'field_name'       => $field_name,
+					'field_block_name' => $field_block_name,
+				]
+			);
+
+			if ( is_array( $process_field_value ) && ! empty( $process_field_value['is_processed'] ) && ! empty( $process_field_value['value'] ) ) {
+				$submission_data[ $field_name ] = $process_field_value['value'];
+				continue;
+			}
+
+			/**
+			 * Need to remove this refactor array value handling.
+			 *
+			 * The current array-based value handling needs to be replaced with:
+			 * 1. Block-specific value processing based on block type.
+			 * 2. Move premium features to pro version.
+			 * 3. Implement value processing through filters for extensibility.
+			 *
+			 * This will improve code organization and maintainability while properly
+			 * separating free/pro functionality.
+			 */
+
+			// If the field is an array, encode the values. This is to add support for multi-upload field.
+			if ( is_array( $value ) ) {
+				$submission_data[ $field_name ] =
+					array_map(
+						static function ( $val ) {
+							return rawurlencode( $val );
+						},
+						$value
+					);
+			} else {
+				$submission_data[ $field_name ] = is_string( $value ) ? htmlspecialchars( $value ) : $value;
+			}
+		}
+
+		return apply_filters( 'srfm_before_prepare_submission_data', $submission_data );
+	}
+
+	/**
 	 * Add From email and name in the header.
 	 *
 	 * @param array<mixed>  $submission_data Submission data.
@@ -1105,6 +1233,6 @@ class Form_Submit {
 			$from_email = Helper::get_string_value( get_option( 'admin_email' ) );
 		}
 
-		return 'From: ' . esc_html( $smart_tags->process_smart_tags( $from_name, $submission_data ) ) . ' <' . esc_html( $smart_tags->process_smart_tags( $from_email, $submission_data ) ) . '>' . "\r\n";
+		return 'From: ' . esc_html( Helper::get_string_value( $smart_tags->process_smart_tags( $from_name, $submission_data ) ) ) . ' <' . esc_html( Helper::get_string_value( $smart_tags->process_smart_tags( $from_email, $submission_data ) ) ) . '>' . "\r\n";
 	}
 }

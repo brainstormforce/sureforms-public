@@ -1487,4 +1487,33 @@ class Test_Helper extends TestCase {
         $this->assertTrue(Helper::is_valid_form((string) $valid_form_id), 'String numeric form ID should return true');
     }
 
+    public function test_get_timestamp_from_string_returns_valid_timestamp() {
+        $result = Helper::get_timestamp_from_string('2025-12-31', '10', '30', 'AM');
+        $this->assertIsInt($result);
+        $this->assertGreaterThan(0, $result);
+    }
+
+    /**
+     * Test get_block_name_from_field method.
+     */
+    public function test_get_block_name_from_field() {
+        // Test case 1: Standard field name with -lbl-
+        $field_name = 'srfm-input-fe439fd2-lbl-RnVsbCBOYW1l-full-name';
+        $expected = 'srfm-input';
+        $result = Helper::get_block_name_from_field($field_name);
+        $this->assertEquals($expected, $result);
+
+        // Test case 2: Email field
+        $field_name = 'srfm-email-abc123-lbl-RW1haWw-email';
+        $expected = 'srfm-email';
+        $result = Helper::get_block_name_from_field($field_name);
+        $this->assertEquals($expected, $result);
+
+        // Test case 3: Field name without -lbl- (edge case)
+        $field_name = 'srfm-textarea-12345-field-name';
+        $expected = 'srfm-textarea';
+        $result = Helper::get_block_name_from_field($field_name);
+        $this->assertEquals($expected, $result);
+    }
+
 }

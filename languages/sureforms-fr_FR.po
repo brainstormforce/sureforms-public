@@ -14,11 +14,10 @@ msgstr ""
 #. Plugin Name of the plugin
 #. Author of the plugin
 #: sureforms.php
-#: admin/admin.php:199
-#: admin/admin.php:200
-#: admin/admin.php:1324
+#: admin/admin.php:294
+#: admin/admin.php:295
+#: admin/admin.php:1354
 #: inc/gutenberg-hooks.php:107
-#: inc/nps-notice.php:108
 #: inc/page-builders/bricks/elements/form-widget.php:66
 #: inc/page-builders/bricks/service-provider.php:55
 #: inc/page-builders/elementor/form-widget.php:93
@@ -43,8 +42,8 @@ msgstr "Un moyen simple mais puissant de créer des formulaires modernes pour vo
 msgid "https://sureforms.com/"
 msgstr ""
 
-#: admin/admin.php:212
-#: admin/admin.php:213
+#: admin/admin.php:307
+#: admin/admin.php:308
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:2
 #: assets/build/page_header.js:172
@@ -53,9 +52,9 @@ msgstr ""
 msgid "Dashboard"
 msgstr "Tableau de bord"
 
-#: admin/admin.php:230
-#: admin/admin.php:231
-#: admin/admin.php:500
+#: admin/admin.php:325
+#: admin/admin.php:326
+#: admin/admin.php:607
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:2
 #: assets/build/page_header.js:172
@@ -63,18 +62,18 @@ msgstr "Tableau de bord"
 msgid "Settings"
 msgstr "Paramètres"
 
-#: admin/admin.php:361
-#: admin/admin.php:362
+#: admin/admin.php:468
+#: admin/admin.php:469
 #: inc/post-types.php:173
 msgid "New Form"
 msgstr "Nouveau formulaire"
 
-#: admin/admin.php:370
-#: admin/admin.php:371
-#: admin/admin.php:411
-#: admin/admin.php:1361
-#: inc/global-settings/email-summary.php:110
-#: inc/post-types.php:1083
+#: admin/admin.php:477
+#: admin/admin.php:478
+#: admin/admin.php:518
+#: admin/admin.php:1391
+#: inc/global-settings/email-summary.php:229
+#: inc/post-types.php:1142
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:2
 #: assets/build/page_header.js:172
@@ -83,11 +82,11 @@ msgid "Entries"
 msgstr "Entrées"
 
 #. Translators: Post Title.
-#: admin/admin.php:580
+#: admin/admin.php:687
 msgid "Edit %1$s"
 msgstr "Modifier %1$s"
 
-#: admin/admin.php:989
+#: admin/admin.php:1110
 #: api/block-patterns.php:110
 #: inc/ai-form-builder/ai-auth.php:45
 #: inc/ai-form-builder/ai-auth.php:91
@@ -97,7 +96,7 @@ msgstr "Modifier %1$s"
 #: inc/export.php:77
 #: inc/export.php:143
 #: inc/form-submit.php:94
-#: inc/form-submit.php:853
+#: inc/form-submit.php:886
 #: inc/forms-data.php:87
 #: inc/global-settings/global-settings.php:86
 #: inc/global-settings/global-settings.php:329
@@ -109,23 +108,23 @@ msgstr "Modifier %1$s"
 msgid "Nonce verification failed."
 msgstr "La vérification du nonce a échoué."
 
-#: admin/admin.php:998
+#: admin/admin.php:1119
 msgid "You cannot view this entry because it is in trash."
 msgstr "Vous ne pouvez pas voir cette entrée car elle est dans la corbeille."
 
 #. translators: %1$s: Opening anchor tag with URL, %2$s: Closing anchor tag, %3$s: SureForms Pro Plugin Name.
-#: admin/admin.php:1042
+#: admin/admin.php:1163
 msgid "Please %1$sactivate%2$s your copy of %3$s to get new features, access support, receive update notifications, and more."
 msgstr "Veuillez %1$sactiver%2$s votre copie de %3$s pour obtenir de nouvelles fonctionnalités, accéder au support, recevoir des notifications de mise à jour, et plus encore."
 
 #: admin/views/entries-list-table.php:92
-#: admin/views/entries-list-table.php:1455
+#: admin/views/entries-list-table.php:1495
 msgid "ID"
 msgstr "ID"
 
-#: admin/admin.php:1360
+#: admin/admin.php:1390
 #: admin/views/entries-list-table.php:93
-#: inc/global-settings/email-summary.php:109
+#: inc/global-settings/email-summary.php:228
 msgid "Form Name"
 msgstr "Nom du formulaire"
 
@@ -225,7 +224,7 @@ msgstr "Entrée n°"
 
 #. translators: %1$s is the word "form", %2$d is the form ID.
 #: admin/views/entries-list-table.php:696
-#: admin/views/entries-list-table.php:1010
+#: admin/views/entries-list-table.php:1050
 #: inc/page-builders/bricks/elements/form-widget.php:96
 #: assets/build/formEditor.js:172
 msgid "Form"
@@ -236,45 +235,45 @@ msgid "Read"
 msgstr "Lire"
 
 #: admin/views/entries-list-table.php:715
-#: admin/views/entries-list-table.php:1097
+#: admin/views/entries-list-table.php:1137
 msgid "Unread"
 msgstr "Non lu"
 
 #: admin/views/entries-list-table.php:718
-#: admin/views/entries-list-table.php:845
-#: admin/views/entries-list-table.php:1108
+#: admin/views/entries-list-table.php:885
+#: admin/views/entries-list-table.php:1148
 #: modules/gutenberg/icons/icons-v6-3.php:2916
 msgid "Trash"
 msgstr "Poubelle"
 
-#: admin/views/entries-list-table.php:805
+#: admin/views/entries-list-table.php:845
 msgid "Published"
 msgstr "Publié"
 
-#: admin/admin.php:1352
-#: admin/views/entries-list-table.php:844
+#: admin/admin.php:1382
+#: admin/views/entries-list-table.php:884
 msgid "View"
 msgstr "Voir"
 
-#: admin/views/entries-list-table.php:878
-#: admin/views/entries-list-table.php:1303
+#: admin/views/entries-list-table.php:918
+#: admin/views/entries-list-table.php:1343
 msgid "Restore"
 msgstr "Restaurer"
 
-#: admin/views/entries-list-table.php:879
-#: admin/views/entries-list-table.php:1304
+#: admin/views/entries-list-table.php:919
+#: admin/views/entries-list-table.php:1344
 msgid "Delete Permanently"
 msgstr "Supprimer définitivement"
 
-#: admin/views/entries-list-table.php:1008
+#: admin/views/entries-list-table.php:1048
 msgid "All Form Entries"
 msgstr "Toutes les entrées de formulaire"
 
-#: admin/views/entries-list-table.php:1038
+#: admin/views/entries-list-table.php:1078
 msgid "All Dates"
 msgstr "Toutes les dates"
 
-#: admin/views/entries-list-table.php:1090
+#: admin/views/entries-list-table.php:1130
 msgid "All"
 msgstr "Tous"
 
@@ -323,16 +322,16 @@ msgstr "Soumis le :"
 msgid "Form Data"
 msgstr "Données du formulaire"
 
-#: admin/views/single-entry.php:363
+#: admin/views/single-entry.php:400
 #: assets/build/formEditor.js:172
 msgid "Fields"
 msgstr "Champs"
 
-#: admin/views/single-entry.php:364
+#: admin/views/single-entry.php:401
 msgid "Values"
 msgstr "Valeurs"
 
-#: admin/views/single-entry.php:440
+#: admin/views/single-entry.php:504
 #: modules/gutenberg/classes/class-spec-block-config.php:562
 #: modules/gutenberg/icons/icons-v6-1.php:5470
 #: assets/build/blocks.js:172
@@ -344,15 +343,15 @@ msgstr "Valeurs"
 msgid "Image"
 msgstr "Image"
 
-#: admin/views/single-entry.php:453
+#: admin/views/single-entry.php:517
 msgid "Open"
 msgstr "Ouvrir"
 
-#: admin/views/single-entry.php:496
+#: admin/views/single-entry.php:560
 msgid "Entry Logs"
 msgstr "Journaux d'entrée"
 
-#: admin/views/single-entry.php:520
+#: admin/views/single-entry.php:584
 msgid "No logs found for this entry."
 msgstr "Aucun journal trouvé pour cette entrée."
 
@@ -428,11 +427,11 @@ msgstr "Aucun plugin spécifié"
 msgid "Plugin Successfully Activated"
 msgstr "Plugin activé avec succès"
 
-#: admin/admin.php:642
+#: admin/admin.php:752
 msgid "Activating..."
 msgstr "Activation..."
 
-#: admin/admin.php:643
+#: admin/admin.php:753
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:2
 #: assets/build/page_header.js:172
@@ -440,16 +439,16 @@ msgstr "Activation..."
 msgid "Activated"
 msgstr "Activé"
 
-#: admin/admin.php:644
+#: admin/admin.php:754
 #: assets/build/formEditor.js:172
 msgid "Activate"
 msgstr "Activer"
 
-#: admin/admin.php:645
+#: admin/admin.php:755
 msgid "Installing..."
 msgstr "Installation en cours..."
 
-#: admin/admin.php:646
+#: admin/admin.php:756
 msgid "Installed"
 msgstr "Installé"
 
@@ -457,9 +456,9 @@ msgstr "Installé"
 msgid "You do not have permission to access this page."
 msgstr "Vous n'avez pas la permission d'accéder à cette page."
 
-#: admin/admin.php:1224
-#: admin/admin.php:1262
-#: admin/admin.php:1283
+#: admin/admin.php:1254
+#: admin/admin.php:1292
+#: admin/admin.php:1313
 #: inc/admin-ajax.php:165
 msgid "Invalid nonce."
 msgstr "Nonce invalide."
@@ -469,7 +468,7 @@ msgid "Form ID is required."
 msgstr "L'identifiant du formulaire est requis."
 
 #: inc/admin-ajax.php:185
-#: inc/form-submit.php:865
+#: inc/form-submit.php:898
 msgid "Invalid form ID."
 msgstr "ID de formulaire invalide."
 
@@ -487,7 +486,7 @@ msgid "Runs when a form is submitted"
 msgstr "S'exécute lorsqu'un formulaire est soumis"
 
 #: inc/admin-ajax.php:293
-#: inc/admin-ajax.php:322
+#: inc/admin-ajax.php:344
 msgid "Sample data"
 msgstr "Données d'exemple"
 
@@ -676,11 +675,11 @@ msgstr "Case à cocher"
 msgid "Required"
 msgstr "Requis"
 
-#: inc/fields/dropdown-markup.php:59
+#: inc/fields/dropdown-markup.php:75
 msgid "Dropdown"
 msgstr "Menu déroulant"
 
-#: inc/fields/dropdown-markup.php:66
+#: inc/fields/dropdown-markup.php:82
 #: assets/build/blocks.js:172
 msgid "Select an option"
 msgstr "Sélectionnez une option"
@@ -703,7 +702,7 @@ msgid "I consent to have this website store my submitted information so they can
 msgstr "Je consens à ce que ce site web stocke les informations que j'ai soumises afin qu'ils puissent répondre à ma demande."
 
 #: inc/fields/inlinebutton-markup.php:183
-#: inc/generate-form-markup.php:495
+#: inc/generate-form-markup.php:502
 msgid "Please verify that you are not a robot."
 msgstr "Veuillez vérifier que vous n'êtes pas un robot."
 
@@ -753,8 +752,8 @@ msgid "hCaptcha response is missing."
 msgstr "La réponse hCaptcha est manquante."
 
 #: inc/form-submit.php:104
-#: inc/form-submit.php:435
-#: inc/form-submit.php:442
+#: inc/form-submit.php:451
+#: inc/form-submit.php:458
 msgid "Form data is not found."
 msgstr "Les données du formulaire sont introuvables."
 
@@ -762,11 +761,11 @@ msgstr "Les données du formulaire sont introuvables."
 msgid "Form Id is missing."
 msgstr "L'identifiant du formulaire est manquant."
 
-#: inc/form-submit.php:417
+#: inc/form-submit.php:433
 msgid "Spam Detected"
 msgstr "Spam détecté"
 
-#: inc/form-submit.php:638
+#: inc/form-submit.php:620
 msgid "Error submitting form"
 msgstr "Erreur lors de la soumission du formulaire"
 
@@ -774,9 +773,9 @@ msgstr "Erreur lors de la soumission du formulaire"
 msgid "Sorry, you are not allowed to view the form."
 msgstr "Désolé, vous n'êtes pas autorisé à voir le formulaire."
 
-#: inc/generate-form-markup.php:644
+#: inc/generate-form-markup.php:651
 #: assets/build/formSubmit.js:2
-#: assets/js/unminified/form-submit.js:322
+#: assets/js/unminified/form-submit.js:396
 msgid "There was an error trying to submit your form. Please try again."
 msgstr "Une erreur s'est produite lors de la soumission de votre formulaire. Veuillez réessayer."
 
@@ -784,24 +783,11 @@ msgstr "Une erreur s'est produite lors de la soumission de votre formulaire. Veu
 msgid "Test Email Sent Successfully."
 msgstr "E-mail de test envoyé avec succès."
 
-#: inc/global-settings/email-summary.php:104
-msgid "Hello"
-msgstr "Bonjour"
-
-#: inc/global-settings/email-summary.php:105
-msgid "Let's see how your forms performed in the last week"
-msgstr "Voyons comment vos formulaires ont performé la semaine dernière"
-
 #: inc/post-types.php:180
 msgid "No forms found."
 msgstr "Aucun formulaire trouvé."
 
-#. Translators: %s: Site Title.
-#: inc/global-settings/email-summary.php:176
-msgid "SureForms Email Summary - %s"
-msgstr "Résumé de l'email SureForms - %s"
-
-#: inc/global-settings/email-summary.php:201
+#: inc/global-settings/email-summary.php:380
 #: inc/global-settings/global-settings.php:256
 #: inc/global-settings/global-settings.php:370
 #: assets/build/settings.js:172
@@ -904,7 +890,7 @@ msgstr "Créer un nouveau formulaire"
 msgid "Create"
 msgstr "Créer"
 
-#: admin/admin.php:806
+#: admin/admin.php:927
 #: inc/post-types.php:132
 msgid "Import Form"
 msgstr "Formulaire d'importation"
@@ -976,19 +962,19 @@ msgstr "Email de notification d'administration"
 msgid "New Form Submission - %s"
 msgstr "Nouvelle soumission de formulaire - %s"
 
-#: inc/post-types.php:1082
+#: inc/post-types.php:1141
 msgid "Shortcode"
 msgstr "Code court"
 
-#: inc/post-types.php:1146
+#: inc/post-types.php:1205
 msgid "Please choose the SureForms export file (.json) that you wish to import."
 msgstr "Veuillez choisir le fichier d'exportation SureForms (.json) que vous souhaitez importer."
 
-#: inc/post-types.php:1149
+#: inc/post-types.php:1208
 msgid "Import Now"
 msgstr "Importer maintenant"
 
-#: inc/post-types.php:1151
+#: inc/post-types.php:1210
 msgid "There is some error in json file, please export the SureForms Forms again."
 msgstr "Il y a une erreur dans le fichier JSON, veuillez exporter à nouveau les formulaires SureForms."
 
@@ -8472,7 +8458,7 @@ msgstr "Social"
 msgid "Travel"
 msgstr "Voyage"
 
-#: inc/helper.php:1702
+#: inc/helper.php:1791
 #: templates/forms/blank-form.php:16
 msgid "Blank Form"
 msgstr "Formulaire vierge"
@@ -8594,7 +8580,7 @@ msgid "Change Form"
 msgstr "Changer de formulaire"
 
 #: inc/blocks/sform/block.php:42
-#: inc/post-types.php:1068
+#: inc/post-types.php:1127
 #: assets/build/blocks.js:2
 msgid "This form has been deleted or is unavailable."
 msgstr "Ce formulaire a été supprimé ou est indisponible."
@@ -9158,9 +9144,9 @@ msgstr "Ajouter des blocs à la barre d'action rapide"
 msgid "Re-arrange block inside Quick Action Bar"
 msgstr "Réorganiser le bloc dans la barre d'action rapide"
 
-#: admin/admin.php:288
-#: admin/admin.php:289
-#: admin/admin.php:1455
+#: admin/admin.php:395
+#: admin/admin.php:396
+#: admin/admin.php:1485
 #: admin/views/single-entry.php:164
 #: assets/build/blocks.js:172
 #: assets/build/dashboard.js:172
@@ -9427,7 +9413,6 @@ msgstr "Utilisez des étiquettes comme espaces réservés"
 msgid "Above setting will place the labels inside the fields as placeholders (where possible). This setting takes effect only on the live page, not in the editor preview."
 msgstr "Ce paramètre placera les étiquettes à l'intérieur des champs en tant que placeholders (lorsque c'est possible). Ce paramètre prend effet uniquement sur la page en direct, pas dans l'aperçu de l'éditeur."
 
-#: assets/build/dashboard.js:172
 #: assets/build/formEditor.js:172
 msgid "Page Break"
 msgstr "Saut de page"
@@ -9544,7 +9529,7 @@ msgstr "Paramètres Anti-Spam"
 msgid "Security Type"
 msgstr "Type de sécurité"
 
-#: inc/form-submit.php:1038
+#: inc/form-submit.php:1071
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
 msgid "Google reCAPTCHA"
@@ -9554,7 +9539,7 @@ msgstr "Google reCAPTCHA"
 msgid "CloudFlare Turnstile"
 msgstr "Tourniquet CloudFlare"
 
-#: inc/form-submit.php:1042
+#: inc/form-submit.php:1075
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
 msgid "hCaptcha"
@@ -9838,7 +9823,7 @@ msgstr "Clé du site"
 msgid "Secret Key"
 msgstr "Clé secrète"
 
-#: inc/form-submit.php:1046
+#: inc/form-submit.php:1079
 #: assets/build/settings.js:172
 msgid "Cloudflare Turnstile"
 msgstr "Tourniquet Cloudflare"
@@ -10849,11 +10834,11 @@ msgid "icon"
 msgstr "icône"
 
 #. translators: %1$s: SureForms version, %2$s: SureForms Pro Plugin Name, %3$s: SureForms Pro Version, %4$s: Anchor tag open, %5$s: Closing anchor tag.
-#: admin/admin.php:1052
+#: admin/admin.php:1173
 msgid "SureForms %1$s requires minimum %2$s %3$s to work properly. Please update to the latest version from %4$shere%5$s."
 msgstr "SureForms %1$s nécessite au minimum %2$s %3$s pour fonctionner correctement. Veuillez mettre à jour vers la dernière version depuis %4$scet endroit%5$s."
 
-#: admin/views/entries-list-table.php:913
+#: admin/views/entries-list-table.php:953
 msgid "Clear Filter"
 msgstr "Effacer le filtre"
 
@@ -10873,13 +10858,9 @@ msgstr "Pot de miel"
 msgid "You do not have permission to export forms."
 msgstr "Vous n'avez pas la permission d'exporter des formulaires."
 
-#: inc/form-submit.php:811
+#: inc/form-submit.php:844
 msgid "Unknown"
 msgstr "Inconnu"
-
-#: inc/nps-notice.php:109
-msgid "How likely are you to recommend SureForms to your friends or colleagues?"
-msgstr "Quelle est la probabilité que vous recommandiez SureForms à vos amis ou collègues ?"
 
 #: inc/nps-notice.php:110
 msgid "Thanks a lot for your feedback! 😍"
@@ -10954,21 +10935,21 @@ msgstr "Déverrouiller Ajouter une note"
 msgid "With the SureForms Starter plan, enhance your submitted form entries by adding personalized notes for better clarity and tracking."
 msgstr "Avec le plan SureForms Starter, améliorez vos entrées de formulaire soumises en ajoutant des notes personnalisées pour une meilleure clarté et un suivi amélioré."
 
-#: inc/form-submit.php:745
+#: inc/form-submit.php:759
 msgid "Email notification passed to the sending server"
 msgstr "Notification par e-mail transmise au serveur d'envoi"
 
 #. translators: Here, %s is the comma separated emails list.
-#: inc/form-submit.php:799
+#: inc/form-submit.php:832
 msgid "Email notification recipient: %s"
 msgstr "Destinataire de la notification par e-mail : %s"
 
 #. translators: Here, %1$s is the comma separated emails list and %2$s is error report ( if any ).
-#: inc/form-submit.php:809
+#: inc/form-submit.php:842
 msgid "Email server was unable to send the email notification. Recipient: %1$s. Reason: %2$s"
 msgstr "Le serveur de messagerie n'a pas pu envoyer la notification par e-mail. Destinataire : %1$s. Raison : %2$s"
 
-#: inc/form-submit.php:835
+#: inc/form-submit.php:868
 msgid "No emails were sent"
 msgstr "Aucun e-mail n'a été envoyé"
 
@@ -11033,7 +11014,7 @@ msgstr "Avec le plan SureForms Pro, vous pouvez transformer vos formulaires en m
 msgid "Create Conversational Form"
 msgstr "Créer un formulaire conversationnel"
 
-#: admin/admin.php:120
+#: admin/admin.php:215
 msgid "Get SureForms Pro"
 msgstr "Obtenez SureForms Pro"
 
@@ -11124,13 +11105,13 @@ msgstr "Bouton"
 msgid "Please connect your website with SureForms AI to create 10 more forms with AI."
 msgstr "Veuillez connecter votre site web avec SureForms AI pour créer 10 formulaires supplémentaires avec l'IA."
 
-#: inc/helper.php:1506
+#: inc/helper.php:1521
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
 msgid "OttoKit"
 msgstr "OttoKit"
 
-#: inc/helper.php:1508
+#: inc/helper.php:1523
 msgid "OttoKit is a powerful automation platform that helps you connect your various plugins and apps together. It allows you to automate repetitive tasks, so you can focus on more important work."
 msgstr "OttoKit est une plateforme d'automatisation puissante qui vous aide à connecter vos différents plugins et applications. Elle vous permet d'automatiser les tâches répétitives, afin que vous puissiez vous concentrer sur un travail plus important."
 
@@ -11254,29 +11235,29 @@ msgstr "Sélectionner le dégradé"
 msgid "reCAPTCHA"
 msgstr ""
 
-#: inc/form-submit.php:366
-#: inc/form-submit.php:401
+#: inc/form-submit.php:382
+#: inc/form-submit.php:417
 msgid "reCAPTCHA error: Submit nonce is not available."
 msgstr "Erreur reCAPTCHA : le nonce de soumission n'est pas disponible."
 
-#: inc/form-submit.php:982
+#: inc/form-submit.php:1015
 msgid "Captcha validation failed. No error code provided."
 msgstr "La validation du captcha a échoué. Aucun code d'erreur fourni."
 
-#: inc/form-submit.php:983
+#: inc/form-submit.php:1016
 msgid "Captcha validation failed."
 msgstr "La validation du captcha a échoué."
 
-#: inc/form-submit.php:1050
+#: inc/form-submit.php:1083
 msgid "Unknown Captcha"
 msgstr "Captcha inconnu"
 
-#: inc/form-submit.php:1051
+#: inc/form-submit.php:1084
 msgid "Invalid captcha type."
 msgstr "Type de captcha invalide."
 
 #. translators: %s is the captcha title.
-#: inc/form-submit.php:1064
+#: inc/form-submit.php:1097
 msgid "%s verification failed. Please contact your site administrator."
 msgstr "La vérification de %s a échoué. Veuillez contacter votre administrateur de site."
 
@@ -11293,27 +11274,27 @@ msgid "HCaptcha sitekey verification failed. Please contact your site administra
 msgstr "La vérification de la clé de site HCaptcha a échoué. Veuillez contacter votre administrateur de site."
 
 #. translators: %s: Provider name like HCaptcha, Google reCAPTCHA, Turnstile
-#: inc/helper.php:947
+#: inc/helper.php:967
 msgid "%s sitekey is missing. Please contact your site administrator."
 msgstr "La clé de site %s est manquante. Veuillez contacter votre administrateur de site."
 
-#: inc/helper.php:1507
+#: inc/helper.php:1522
 msgid "No-code automation tool for WordPress."
 msgstr "Outil d'automatisation sans code pour WordPress."
 
-#: inc/helper.php:1497
+#: inc/helper.php:1512
 msgid "SureMail"
 msgstr "SureMail"
 
-#: inc/helper.php:1498
+#: inc/helper.php:1513
 msgid "Free and easy SMTP mails plugin."
 msgstr "Plugin de mails SMTP gratuit et facile."
 
-#: inc/helper.php:1518
+#: inc/helper.php:1541
 msgid "Starter Templates"
 msgstr "Modèles de démarrage"
 
-#: inc/helper.php:1519
+#: inc/helper.php:1542
 msgid "Build your dream website in minutes with AI."
 msgstr "Créez votre site web de rêve en quelques minutes avec l'IA."
 
@@ -11403,40 +11384,8 @@ msgid "Quick Access"
 msgstr "Accès rapide"
 
 #: assets/build/dashboard.js:172
-msgid "File Upload"
-msgstr "Téléversement de fichier"
-
-#: assets/build/dashboard.js:172
-msgid "Rating Fields"
-msgstr "Champs de notation"
-
-#: assets/build/dashboard.js:172
-msgid "Date & Time Pickers"
-msgstr "Sélecteurs de date et d'heure"
-
-#: assets/build/dashboard.js:172
-msgid "And much more…"
-msgstr "Et bien plus encore…"
-
-#: assets/build/dashboard.js:172
-msgid "Upgrade to Premium"
-msgstr "Passer à Premium"
-
-#: assets/build/dashboard.js:172
-msgid "Upgrade to Unlock SureForms Premium Features!"
-msgstr "Mettez à niveau pour débloquer les fonctionnalités Premium de SureForms !"
-
-#: assets/build/dashboard.js:172
-msgid "Access smarter fields, powerful tools, and advanced features that help you build better forms, faster than ever."
-msgstr "Accédez à des champs plus intelligents, des outils puissants et des fonctionnalités avancées qui vous aident à créer de meilleurs formulaires, plus rapidement que jamais."
-
-#: assets/build/dashboard.js:172
 msgid "Upgrade Now"
 msgstr "Mettez à niveau maintenant"
-
-#: assets/build/dashboard.js:172
-msgid "Upgrade To Pro"
-msgstr "Passer à la version Pro"
 
 #: assets/build/dashboard.js:172
 msgid "Clear Filters"
@@ -11685,8 +11634,8 @@ msgstr "Décrivez le formulaire que vous souhaitez créer"
 msgid "We are building your form…"
 msgstr "Nous construisons votre formulaire…"
 
-#: admin/admin.php:304
-#: admin/admin.php:305
+#: admin/admin.php:411
+#: admin/admin.php:412
 msgid "SMTP"
 msgstr ""
 
@@ -11822,26 +11771,26 @@ msgstr "Les notifications administratives vous informent des nouvelles entrées 
 msgid "Contribute to SureForms"
 msgstr "Contribuez à SureForms"
 
-#: admin/admin.php:1220
-#: admin/admin.php:1258
-#: admin/admin.php:1279
+#: admin/admin.php:1250
+#: admin/admin.php:1288
+#: admin/admin.php:1309
 msgid "Unauthorized user."
 msgstr "Utilisateur non autorisé."
 
 #. translators: 1: opening span, 2: opening strong (inline), 3: closing strong, 4: closing span, 5: opening strong (block), 6: closing strong
-#: admin/admin.php:1229
+#: admin/admin.php:1259
 msgid "%1$sGet started by %2$sbuilding your first form%3$s.%4$s%5$sExperience the power of our intuitive AI Form Builder%6$s"
 msgstr "%1$sCommencez par %2$scréer votre premier formulaire%3$s.%4$s%5$sDécouvrez la puissance de notre créateur de formulaires intuitif alimenté par l'IA%6$s"
 
-#: admin/admin.php:1240
+#: admin/admin.php:1270
 msgid "SureForms is waiting for you!"
 msgstr "SureForms vous attend !"
 
-#: admin/admin.php:1242
+#: admin/admin.php:1272
 msgid "Build My First Form"
 msgstr "Construire mon premier formulaire"
 
-#: admin/admin.php:1243
+#: admin/admin.php:1273
 msgid "Dismiss"
 msgstr "Rejeter"
 
@@ -11849,21 +11798,9 @@ msgstr "Rejeter"
 msgid "Invalid email address."
 msgstr "Adresse e-mail invalide."
 
-#: inc/global-settings/email-summary.php:139
+#: inc/global-settings/email-summary.php:253
 msgid "Total Entries"
 msgstr "Total des entrées"
-
-#: inc/global-settings/email-summary.php:145
-msgid "No entries found in the last week."
-msgstr "Aucune entrée trouvée la semaine dernière."
-
-#: inc/helper.php:1488
-msgid "SureRank"
-msgstr ""
-
-#: inc/helper.php:1489
-msgid "Simple SEO plugin that works without the bloat."
-msgstr "Plugin SEO simple qui fonctionne sans surcharge."
 
 #: assets/build/formEditor.js:172
 msgid "Login"
@@ -11877,60 +11814,55 @@ msgstr "Inscrire"
 msgid "Thanks for being part of the SureForms community! Got feedback or suggestions? We'd love to hear it."
 msgstr "Merci de faire partie de la communauté SureForms ! Vous avez des commentaires ou des suggestions ? Nous serions ravis de les entendre."
 
-#. translators: 1: line break, 2: SureMail link opening tag, 3: SureMail link closing tag
-#: admin/admin.php:1118
-msgid "It looks like there's no SMTP plugin running on your site. That means emails sent from SureForms might not go through.%1$sYou can use %2$sSureMail%3$s to get email delivery working."
-msgstr "Il semble qu'aucun plugin SMTP ne soit en cours d'exécution sur votre site. Cela signifie que les e-mails envoyés depuis SureForms pourraient ne pas être délivrés.%1$sVous pouvez utiliser %2$sSureMail%3$s pour faire fonctionner la livraison des e-mails."
-
-#: admin/admin.php:1348
+#: admin/admin.php:1378
 msgid "Recent Entries"
 msgstr "Entrées récentes"
 
-#: admin/admin.php:1349
+#: admin/admin.php:1379
 msgid "( Last 7 days )"
 msgstr "( 7 derniers jours )"
 
-#: admin/admin.php:1391
+#: admin/admin.php:1421
 msgid "Use Conditional Logic to show only what matters"
 msgstr "Utilisez la logique conditionnelle pour montrer uniquement ce qui compte"
 
-#: admin/admin.php:1392
+#: admin/admin.php:1422
 msgid "Split your form into steps to keep it easy"
 msgstr "Divisez votre formulaire en étapes pour le rendre facile."
 
-#: admin/admin.php:1393
+#: admin/admin.php:1423
 msgid "Let people upload files directly to your form"
 msgstr "Permettez aux gens de télécharger des fichiers directement sur votre formulaire"
 
-#: admin/admin.php:1394
+#: admin/admin.php:1424
 msgid "Turn responses into downloadable PDFs automatically"
 msgstr "Transformez les réponses en PDF téléchargeables automatiquement"
 
-#: admin/admin.php:1395
+#: admin/admin.php:1425
 msgid "Let users sign with a simple signature field"
 msgstr "Permettez aux utilisateurs de signer avec un simple champ de signature"
 
-#: admin/admin.php:1396
+#: admin/admin.php:1426
 msgid "Connect your form to other tools using webhooks"
 msgstr "Connectez votre formulaire à d'autres outils en utilisant des webhooks"
 
-#: admin/admin.php:1397
+#: admin/admin.php:1427
 msgid "Use Conversational Forms for a chat-like experience"
 msgstr "Utilisez des formulaires conversationnels pour une expérience de type chat"
 
-#: admin/admin.php:1398
+#: admin/admin.php:1428
 msgid "Let users register or log in through your form"
 msgstr "Permettez aux utilisateurs de s'inscrire ou de se connecter via votre formulaire"
 
-#: admin/admin.php:1399
+#: admin/admin.php:1429
 msgid "Build forms that create WordPress user accounts"
 msgstr "Créez des formulaires qui génèrent des comptes utilisateurs WordPress"
 
-#: admin/admin.php:1400
+#: admin/admin.php:1430
 msgid "Add calculations to auto-total scores or prices"
 msgstr "Ajoutez des calculs pour totaliser automatiquement les scores ou les prix"
 
-#: inc/form-submit.php:260
+#: inc/form-submit.php:276
 msgid "Form does not exist."
 msgstr "Le formulaire n'existe pas."
 
@@ -12062,6 +11994,7 @@ msgstr "Génération de formulaires par IA"
 msgid "Tired of building forms manually? Let AI do the work for you. Just describe and our AI will create your perfect form in seconds."
 msgstr "Fatigué de créer des formulaires manuellement ? Laissez l'IA faire le travail pour vous. Décrivez simplement et notre IA créera votre formulaire parfait en quelques secondes."
 
+#: inc/global-settings/email-summary.php:266
 #: assets/build/dashboard.js:172
 msgid "View Entries"
 msgstr "Voir les entrées"
@@ -12201,6 +12134,168 @@ msgstr "Créez votre premier formulaire"
 #: assets/build/templatePicker.js:172
 msgid "Connect your website with SureForms AI to get 10 more AI form generations."
 msgstr "Connectez votre site web avec SureForms AI pour obtenir 10 générations de formulaires AI supplémentaires."
+
+#: inc/helper.php:1639
+msgid "Invalid nonce action or name."
+msgstr "Action ou nom de nonce invalide."
+
+#: inc/helper.php:1649
+#: inc/helper.php:1657
+msgid "Invalid security token."
+msgstr "Jeton de sécurité invalide."
+
+#: inc/helper.php:1664
+msgid "Invalid request type."
+msgstr "Type de demande invalide."
+
+#: inc/helper.php:1672
+msgid "You do not have permission to perform this action."
+msgstr "Vous n'avez pas la permission d'effectuer cette action."
+
+#: inc/global-settings/email-summary.php:166
+msgid "Weekly Summary"
+msgstr "Résumé hebdomadaire"
+
+#: inc/global-settings/email-summary.php:201
+#: inc/global-settings/email-summary.php:307
+msgid "SureForms Logo"
+msgstr "Logo SureForms"
+
+#: inc/global-settings/email-summary.php:207
+#: inc/global-settings/email-summary.php:309
+msgid "SureForms Logo Dark"
+msgstr "Logo SureForms Sombre"
+
+#: inc/global-settings/email-summary.php:281
+msgid "Automate Workflows with OttoKit"
+msgstr "Automatisez les flux de travail avec OttoKit"
+
+#: inc/global-settings/email-summary.php:284
+msgid "Connect your apps and automate repetitive tasks with ease. Build workflows that save time, reduce errors, and keep your business running smoothly around the clock."
+msgstr "Connectez vos applications et automatisez les tâches répétitives en toute simplicité. Créez des flux de travail qui vous font gagner du temps, réduisent les erreurs et assurent le bon fonctionnement de votre entreprise 24 heures sur 24."
+
+#: inc/global-settings/email-summary.php:288
+msgid "Explore OttoKit"
+msgstr "Explorez OttoKit"
+
+#. translators: %s: opening and closing anchor tag for SureForms settings link
+#: inc/global-settings/email-summary.php:296
+msgid "Manage Email Summaries from your %1$sSureForms settings%2$s"
+msgstr "Gérez les résumés d'e-mails depuis vos %1$sparamètres SureForms%2$s"
+
+#: inc/translatable.php:120
+#: assets/build/formEditor.js:172
+msgid "This form is now closed as we've received all the entries."
+msgstr "Ce formulaire est maintenant fermé car nous avons reçu toutes les inscriptions."
+
+#: assets/build/dashboard.js:172
+msgid "File Uploads"
+msgstr "Téléversements de fichiers"
+
+#: assets/build/dashboard.js:172
+msgid "Signature & Rating"
+msgstr "Signature et évaluation"
+
+#: assets/build/dashboard.js:172
+msgid "Calculation Forms"
+msgstr "Formulaires de calcul"
+
+#: assets/build/dashboard.js:172
+msgid "And Much More…"
+msgstr "Et bien plus encore…"
+
+#: assets/build/dashboard.js:172
+msgid "Upgrade to Pro"
+msgstr "Passer à Pro"
+
+#: assets/build/dashboard.js:172
+msgid "Unlock Premium Features"
+msgstr "Débloquez les fonctionnalités Premium"
+
+#: assets/build/dashboard.js:172
+msgid "Build Better Forms with SureForms"
+msgstr "Créez de meilleurs formulaires avec SureForms"
+
+#: assets/build/dashboard.js:172
+msgid "Add advanced fields, conversational layouts, and smart logic to create forms that engage users and capture better data."
+msgstr "Ajoutez des champs avancés, des mises en page conversationnelles et une logique intelligente pour créer des formulaires qui engagent les utilisateurs et capturent de meilleures données."
+
+#: assets/build/formEditor.js:172
+msgid "Date"
+msgstr "Date"
+
+#: assets/build/formEditor.js:172
+msgid "Advanced Settings"
+msgstr "Paramètres avancés"
+
+#: assets/build/formEditor.js:172
+msgid "Form Restriction"
+msgstr "Restriction de formulaire"
+
+#: assets/build/formEditor.js:172
+msgid "Maximum Number of Entries"
+msgstr "Nombre maximum d'entrées"
+
+#: assets/build/formEditor.js:172
+msgid "Set the maximum number of entries allowed for this form. Once the limit is reached, the form will automatically be disabled."
+msgstr "Définissez le nombre maximum d'entrées autorisées pour ce formulaire. Une fois la limite atteinte, le formulaire sera automatiquement désactivé."
+
+#: assets/build/formEditor.js:172
+msgid "Maximum Entries"
+msgstr "Entrées maximales"
+
+#: assets/build/formEditor.js:172
+msgid "Date & Time"
+msgstr "Date et heure"
+
+#: assets/build/formEditor.js:172
+msgid "The Time Period setting works according to your WordPress site's time zone. <a>Click here</a> to open your WordPress General Settings, where you can check and update it."
+msgstr "Le paramètre de période fonctionne selon le fuseau horaire de votre site WordPress. <a>Cliquez ici</a> pour ouvrir les paramètres généraux de WordPress, où vous pouvez le vérifier et le mettre à jour."
+
+#: assets/build/formEditor.js:172
+msgid "Click here"
+msgstr "Cliquez ici"
+
+#: assets/build/formEditor.js:172
+msgid "Response Description After Maximum Entries"
+msgstr "Description de la réponse après le nombre maximum d'entrées"
+
+#: inc/global-settings/email-summary.php:215
+msgid "Hey There,"
+msgstr "Salut,"
+
+#: inc/global-settings/email-summary.php:220
+msgid "Here's your SureForms report for the last 7 days."
+msgstr "Voici votre rapport SureForms pour les 7 derniers jours."
+
+#. Translators: %1$s: From Date, %2$s: To Date.
+#: inc/global-settings/email-summary.php:355
+msgid "Email Summary of your last week -  %1$s to %2$s"
+msgstr "Résumé des e-mails de votre dernière semaine -  %1$s à %2$s"
+
+#: inc/helper.php:1533
+msgid "Ultimate Addons for Elementor"
+msgstr "Modules Ultimes pour Elementor"
+
+#: inc/helper.php:1534
+msgid "Build modern websites with elementor addons."
+msgstr "Créez des sites web modernes avec des modules complémentaires Elementor."
+
+#: inc/nps-notice.php:108
+msgid "Quick Question!"
+msgstr "Question rapide !"
+
+#: inc/nps-notice.php:109
+msgid "How would you rate SureForms? Love it, hate it, or somewhere in between? Your honest answer helps us understand how we're doing."
+msgstr "Comment évalueriez-vous SureForms ? Vous l'adorez, vous le détestez, ou vous êtes quelque part entre les deux ? Votre réponse honnête nous aide à comprendre comment nous nous en sortons."
+
+#: inc/nps-notice.php:116
+msgid "Hate it!"
+msgstr "Je déteste ça !"
+
+#: inc/nps-notice.php:117
+msgid "Love it!"
+msgstr "J'adore !"
 
 #: inc/post-types.php:168
 msgctxt "post type general name"

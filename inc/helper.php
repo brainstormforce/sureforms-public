@@ -648,8 +648,28 @@ class Helper {
 			if ( false === strpos( $key, '-lbl-' ) ) {
 				continue;
 			}
-			$label                = explode( '-lbl-', $key )[1];
-			$slug                 = implode( '-', array_slice( explode( '-', $label ), 1 ) );
+			$label = explode( '-lbl-', $key )[1];
+			$slug  = implode( '-', array_slice( explode( '-', $label ), 1 ) );
+
+			// Check if value is array to handle external package field functionality.
+			// like repeater fields that need special processing.
+			if ( is_array( $value ) && ! empty( $value ) ) {
+				// Apply filter to allow external packages to process array values.
+				// Returns processed data with 'is_processed' flag if successfully handled.
+				$filtered_submission_data = apply_filters(
+					'srfm_map_slug_to_submission_data_array',
+					[
+						'value' => $value,
+						'key'   => $key,
+						'slug'  => $slug,
+					]
+				);
+				if ( isset( $filtered_submission_data['is_processed'] ) && true === $filtered_submission_data['is_processed'] ) {
+					$mapped_data[ $slug ] = $filtered_submission_data['value'];
+					continue;
+				}
+			}
+
 			$mapped_data[ $slug ] = is_string( $value ) ? html_entity_decode( esc_attr( $value ) ) : $value;
 		}
 		return $mapped_data;
@@ -989,6 +1009,10 @@ class Helper {
 
 				// Made it associative array, so that we can directly check it using block_id rather than mapping or using "in_array" for the checks.
 				$slugs[ $block['attrs']['block_id'] ] = self::get_string_value( $block['attrs']['slug'] );
+
+				if ( is_array( $block['innerBlocks'] ) && ! empty( $block['innerBlocks'] ) ) {
+					[ $blocks[ $index ]['innerBlocks'], $slugs, $updated ] = self::process_blocks( $block['innerBlocks'], $slugs, $updated, '' );
+				}
 				continue;
 			}
 
@@ -1479,20 +1503,11 @@ class Helper {
 		$logo_sure_triggers     = file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/suretriggers.svg' );
 		$logo_full              = file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/suretriggers_full.svg' );
 		$logo_sure_mails        = file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/suremails.svg' );
-		$logo_sure_rank         = file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/surerank.svg' );
+		$logo_uae               = file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/uae.svg' );
 		$logo_starter_templates = file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/starterTemplates.svg' );
 		return apply_filters(
 			'srfm_integrated_plugins',
 			[
-				'sure_rank'         => [
-					'title'       => __( 'SureRank', 'sureforms' ),
-					'subtitle'    => __( 'Simple SEO plugin that works without the bloat.', 'sureforms' ),
-					'status'      => self::get_plugin_status( 'surerank/surerank.php' ),
-					'slug'        => 'surerank',
-					'path'        => 'surerank/surerank.php',
-					'redirection' => admin_url( 'admin.php?page=surerank#/dashboard' ),
-					'logo'        => self::encode_svg( is_string( $logo_sure_rank ) ? $logo_sure_rank : '' ),
-				],
 				'sure_mails'        => [
 					'title'       => __( 'SureMail', 'sureforms' ),
 					'subtitle'    => __( 'Free and easy SMTP mails plugin.', 'sureforms' ),
@@ -1513,6 +1528,14 @@ class Helper {
 					'logo'        => self::encode_svg( is_string( $logo_sure_triggers ) ? $logo_sure_triggers : '' ),
 					'logo_full'   => self::encode_svg( is_string( $logo_full ) ? $logo_full : '' ),
 					'connected'   => $suretrigger_connected,
+				],
+				'uae'               => [
+					'title'    => __( 'Ultimate Addons for Elementor', 'sureforms' ),
+					'subtitle' => __( 'Build modern websites with elementor addons.', 'sureforms' ),
+					'status'   => self::get_plugin_status( 'header-footer-elementor/header-footer-elementor.php' ),
+					'slug'     => 'header-footer-elementor',
+					'path'     => 'header-footer-elementor/header-footer-elementor.php',
+					'logo'     => self::encode_svg( is_string( $logo_uae ) ? $logo_uae : '' ),
 				],
 				'starter_templates' => [
 					'title'       => __( 'Starter Templates', 'sureforms' ),
@@ -1596,6 +1619,72 @@ class Helper {
 	 */
 	public static function has_pro() {
 		return defined( 'SRFM_PRO_VER' );
+	}
+
+	/**
+	 * Verifies the request by checking the nonce and user capabilities.
+	 *
+	 * @param string $request_type The type of request, either 'rest' or 'ajax'.
+	 * @param string $nonce_action The action name for the nonce.
+	 * @param string $nonce_name   The name of the nonce field.
+	 * @param string $capability   The capability required to perform the action. Default is 'manage_options'.
+	 *
+	 * @since 1.10.0
+	 * @return void
+	 */
+	public static function verify_nonce_and_capabilities( $request_type, $nonce_action, $nonce_name, $capability = 'manage_options' ) {
+
+		if ( ! is_string( $nonce_action ) || ! is_string( $nonce_name ) || empty( $nonce_action ) || empty( $nonce_name ) ) {
+			wp_send_json_error(
+				[ 'message' => __( 'Invalid nonce action or name.', 'sureforms' ) ],
+				400
+			);
+		}
+
+		// Verify nonce for security.
+		if ( 'rest' === $request_type ) {
+			// For REST API requests, use the WP_REST_Request object to verify the nonce.
+			if ( ! wp_verify_nonce( $nonce_action, $nonce_name ) ) {
+				wp_send_json_error(
+					[ 'message' => __( 'Invalid security token.', 'sureforms' ) ],
+					403
+				);
+			}
+		} elseif ( 'ajax' === $request_type ) {
+			// For non-REST requests, use the standard nonce verification.
+			if ( ! check_ajax_referer( $nonce_action, $nonce_name, false ) ) {
+				wp_send_json_error(
+					[ 'message' => __( 'Invalid security token.', 'sureforms' ) ],
+					403
+				);
+			}
+		} else {
+			// If the request type is not recognized, return an error.
+			wp_send_json_error(
+				[ 'message' => __( 'Invalid request type.', 'sureforms' ) ],
+				400
+			);
+		}
+
+		// Check user capabilities.
+		if ( ! current_user_can( $capability ) ) {
+			wp_send_json_error(
+				[ 'message' => esc_html__( 'You do not have permission to perform this action.', 'sureforms' ) ],
+				403
+			);
+		}
+	}
+
+	/**
+	 * Get the block name from a field name by extracting the first two parts.
+	 *
+	 * @param string $field_name The full field name (e.g., 'srfm-text-lbl-123').
+	 *
+	 * @since 1.11.0
+	 * @return string The block name (e.g., 'srfm-text').
+	 */
+	public static function get_block_name_from_field( $field_name ) {
+		return implode( '-', array_slice( explode( '-', explode( '-lbl-', $field_name )[0] ), 0, 2 ) );
 	}
 
 	/**
@@ -1757,5 +1846,40 @@ class Helper {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Get the timestamp from a string.
+	 *
+	 * @param string $date The date in a specific format (e.g., '2025.10.01').
+	 * @param string $hours The hours in a specific format (e.g., '12').
+	 * @param string $minutes The minutes in a specific format (e.g., '00').
+	 * @param string $meridiem The meridiem in a specific format (e.g., 'AM' or 'PM').
+	 *
+	 * @since 1.10.1
+	 * @return int|false The timestamp if successful, false otherwise.
+	 */
+	public static function get_timestamp_from_string( $date, $hours = '12', $minutes = '00', $meridiem = 'AM' ) {
+
+		if ( empty( $date ) || ! is_string( $date ) ) {
+			return false; // Invalid input.
+		}
+
+		// Ensure the date is in a valid format of YYYY-MM-DD.
+		if ( ! preg_match( '/^\d{4}-\d{2}-\d{2}$/', $date ) ) {
+			return false; // Invalid date format.
+		}
+
+		$time_string = $date . ' ' . $hours . ':' . $minutes . ' ' . $meridiem;
+
+		// Convert to timestamp.
+		$timestamp = strtotime( $time_string );
+
+		if ( false !== $timestamp && is_int( $timestamp ) && $timestamp > 0 ) {
+			return $timestamp;
+		}
+
+		// If conversion fails, return false.
+		return false;
 	}
 }

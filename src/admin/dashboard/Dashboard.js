@@ -11,17 +11,21 @@ import FormsOverview from './FormsOverview';
 export default () => {
 	const nav = <Header />;
 
+	const isFirstFormCreated = srfm_admin?.is_first_form_created || false;
+	const isProActive = srfm_admin?.is_pro_active || false;
+
 	const leftSidebar = (
 		<>
 			<GetStarted />
 			<FormsOverview />
-			{ ! srfm_admin?.is_pro_active && <UpgradeToPro /> }
+			{ ! isProActive && isFirstFormCreated && <ExtendTab /> }
 		</>
 	);
 
 	const rightSidebar = (
 		<>
-			<ExtendTab />
+			{ isProActive || ! isFirstFormCreated ? <ExtendTab /> : null }
+			{ ! isProActive && isFirstFormCreated && <UpgradeToPro /> }
 			<QuickAccessTab />
 		</>
 	);

@@ -877,6 +877,10 @@ button.components-button.srfm-review-select-btn.is-secondary {
 	}
 }
 
+.post-type-sureforms_form .block-editor-block-inspector .block-editor-block-card__description {
+	display: none;
+}
+
 @import "styles/gutenberg-override";
 @import "styles/control-responsive";
 @import "styles/control-header";

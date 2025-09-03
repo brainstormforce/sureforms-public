@@ -8,6 +8,7 @@ import clsx from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { format as format_date } from 'date-fns';
 import { toast } from '@bsf/force-ui';
+import { applyFilters } from '@wordpress/hooks';
 
 /**
  * Get Image Sizes and return an array of Size.
@@ -185,6 +186,38 @@ const pushSmartTagToArray = (
 	}
 
 	blocks.forEach( ( block ) => {
+		/**
+		 * Allows external packages to process smart tags for specific blocks before default processing.
+		 * For example, business blocks like repeater fields need custom smart tag handling.
+		 * If a block is processed externally, it will skip the default processing in this function.
+		 *
+		 * srfm.smartTags.isBlockProcessedExternally - filter to process smart tags for specific blocks before default processing.
+		 * @param {boolean}  isProcessedExternally Whether block was processed by external code
+		 * @param {Object}   args                  Arguments passed to the filter
+		 * @param {Object}   args.block            The block object being processed
+		 * @param {Object}   args.blockSlugs       Mapping of block IDs to their field slugs
+		 * @param {Array}    args.tagsArray        Array where smart tags are collected
+		 * @param {Array}    args.uniqueSlugs      Array of unique field slugs already processed
+		 * @param {Function} args.trimTextToWords  Function to trim text to words
+		 * @return {boolean} True if block was processed externally, false to use default processing
+		 */
+		const isBlockProcessedExternally = applyFilters(
+			'srfm.smartTags.isBlockProcessedExternally',
+			false,
+			{
+				block,
+				blockSlugs,
+				tagsArray,
+				uniqueSlugs,
+				trimTextToWords,
+			}
+		);
+
+		// Skip further processing if block was already handled externally
+		if ( isBlockProcessedExternally ) {
+			return;
+		}
+
 		const isInnerBlock =
 			Array.isArray( block?.innerBlocks ) &&
 			0 !== block?.innerBlocks.length;
@@ -272,8 +305,10 @@ export const setFormSpecificSmartTags = ( updateBlockAttributes ) => {
 
 	const formSmartTags = [];
 	const formEmailSmartTags = [];
+	const formUploadSmartTags = [];
 	const formSmartTagsUniqueSlugs = [];
 	const formEmailSmartTagsUniqueSlugs = [];
+	const formUploadSmartTagsUniqueSlugs = [];
 
 	if ( typeof window.sureforms === 'undefined' ) {
 		window.sureforms = {};
@@ -281,6 +316,7 @@ export const setFormSpecificSmartTags = ( updateBlockAttributes ) => {
 
 	window.sureforms.formSpecificSmartTags = formSmartTags;
 	window.sureforms.formSpecificEmailSmartTags = formEmailSmartTags;
+	window.sureforms.formSpecificUploadSmartTags = formUploadSmartTags;
 
 	if ( ! savedBlocks?.length ) {
 		return;
@@ -304,8 +340,17 @@ export const setFormSpecificSmartTags = ( updateBlockAttributes ) => {
 		[ 'srfm/email' ]
 	);
 
+	pushSmartTagToArray(
+		savedBlocks,
+		blockSlugs,
+		formUploadSmartTags,
+		formUploadSmartTagsUniqueSlugs,
+		[ 'srfm/upload' ]
+	);
+
 	window.sureforms.formSpecificSmartTags = formSmartTags;
 	window.sureforms.formSpecificEmailSmartTags = formEmailSmartTags;
+	window.sureforms.formSpecificUploadSmartTags = formUploadSmartTags;
 };
 
 /**
@@ -665,7 +710,10 @@ export function activatePlugin( { plugin, event } ) {
 		formData,
 		successCallback: () => {
 			if ( srfm_admin?.current_screen_id === 'sureforms_menu' ) {
-				event.target.style.color = '#16A34A';
+				const button = event.target.closest( 'button' );
+				if ( button ) {
+					button.style.backgroundColor = '#F0FDF4';
+				}
 			}
 			event.target.innerText = srfm_admin.plugin_activated_text;
 			if ( plugin?.redirection ) {
@@ -842,4 +890,36 @@ export const getWordPressPages = ( setPageOptions ) => {
 			}
 		} )
 		.catch( ( error ) => console.error( 'Error:', error ) );
+};
+
+/**
+ * Converts a JSON-encoded string to an object if valid, otherwise returns null.
+ *
+ * @param {string} obj - The JSON-encoded string to decode.
+ * @return {Object|null} The decoded object value for the given key, or null if invalid JSON or key not found.
+ */
+export const decodeJson = ( obj ) => {
+	if ( ! obj ) {
+		return null;
+	}
+
+	try {
+		const decoded = JSON.parse( obj );
+		if ( decoded && typeof decoded === 'object' ) {
+			return decoded;
+		}
+	} catch ( e ) {
+		console.warn( 'SRFM message: Invalid JSON string:', obj, e );
+	}
+	return null;
+};
+
+/**
+ * * Creates a deep copy of an array or object using JSON serialization.
+ *
+ * @param {Array|Object} arrayOrObject - The array or object to copy.
+ * @return {Array|Object} - A deep copy of the input array or object.
+ */
+export const deepCopy = ( arrayOrObject ) => {
+	return JSON.parse( JSON.stringify( arrayOrObject, null, 2 ) );
 };
