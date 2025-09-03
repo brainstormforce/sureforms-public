@@ -357,6 +357,43 @@ class Single_Entry {
 				?>
 			</div>
 			<div class="inside">
+			<style>
+				.file-cards-container {
+					display: flex;
+					flex-wrap: wrap;
+					gap: 10px;
+				}
+				.file-card {
+					border: 1px solid #ddd;
+					border-radius: 4px;
+					padding: 10px;
+					width: 100px; /* Reduced width */
+					text-align: center;
+					background: #f9f9f9;
+					font-size: 12px; /* Reduced font size for smaller cards */
+				}
+				.file-card-image img {
+					max-width: 80px; /* Reduced max width */
+					max-height: 80px; /* Reduced max height */
+					object-fit: cover;
+				}
+				.file-card-icon {
+					font-size: 24px; /* Reduced icon size */
+					margin-bottom: 5px;
+				}
+				.file-card-details {
+					margin-bottom: 5px;
+					font-weight: bold;
+				}
+				.file-card-url a {
+					color: #007bff;
+					text-decoration: none;
+					font-size: 12px; /* Reduced font size */
+				}
+				.file-card-url a:hover {
+					text-decoration: underline;
+				}
+			</style>
 				<table class="widefat striped">
 					<tbody>
 						<tr>
@@ -374,92 +411,119 @@ class Single_Entry {
 						$label = explode( '-lbl-', $field_name )[1];
 						// Getting the encrypted label. we are removing the block slug here.
 						$label = explode( '-', $label )[0];
+
+						$label = $label ? Helper::decrypt( $label ) : '';
+
+						$field_block_name = Helper::get_block_name_from_field( $field_name );
+
+						/**
+						 * Fires before rendering a field in the entry details view.
+						 *
+						 * This action allows other packages (like Pro, Business) to process and render fields
+						 * with custom data structures that the core plugin cannot handle. Since the core plugin
+						 * does not know the structure of data from other packages, this action provides a way
+						 * for those packages to properly process and display their field data.
+						 *
+						 * @since 1.11.0
+						 *
+						 * @param array $field_data Field data containing:
+						 *                         'value'           => mixed  The field value
+						 *                         'label'           => string The field name/key
+						 *                         'block_name'      => string The block type identifier
+						 *                         'processed_label' => string The decrypted human readable label
+						 */
+						do_action(
+							'srfm_entry_render_field',
+							[
+								'value'           => $value,
+								'label'           => $field_name,
+								'block_name'      => $field_block_name,
+								'processed_label' => $label,
+							]
+						);
+
+						/**
+						 * Filters whether to add a field row in the entry details table.
+						 *
+						 * This filter allows skipping rows for fields that cannot be processed with the
+						 * core plugin's structure. Fields from other packages may have complex data structures
+						 * that could cause fatal errors if processed normally. Those packages can use the
+						 * 'srfm_entry_render_field' action to render their fields and return false here
+						 * to prevent the core plugin from attempting to process them.
+						 *
+						 * @since 1.11.0
+						 *
+						 * @param bool  $should_add_field_row Whether to add the field row. Default true.
+						 * @param array $field_data          Field data containing:
+						 *                                   'value'      => mixed  The field value
+						 *                                   'field_name' => string The field name/key
+						 *                                   'block_name' => string The block type identifier
+						 *
+						 * @return bool Whether to add the field row to the table.
+						 */
+						$should_add_field_row = apply_filters(
+							'srfm_should_add_field_row',
+							true,
+							[
+								'value'      => $value,
+								'field_name' => $field_name,
+								'block_name' => $field_block_name,
+							]
+						);
+
+						if ( true !== $should_add_field_row ) {
+							continue;
+						}
+
 						?>
 						<tr>
-						<style>
-											.file-cards-container {
-												display: flex;
-												flex-wrap: wrap;
-												gap: 10px;
-											}
-											.file-card {
-												border: 1px solid #ddd;
-												border-radius: 4px;
-												padding: 10px;
-												width: 100px; /* Reduced width */
-												text-align: center;
-												background: #f9f9f9;
-												font-size: 12px; /* Reduced font size for smaller cards */
-											}
-											.file-card-image img {
-												max-width: 80px; /* Reduced max width */
-												max-height: 80px; /* Reduced max height */
-												object-fit: cover;
-											}
-											.file-card-icon {
-												font-size: 24px; /* Reduced icon size */
-												margin-bottom: 5px;
-											}
-											.file-card-details {
-												margin-bottom: 5px;
-												font-weight: bold;
-											}
-											.file-card-url a {
-												color: #007bff;
-												text-decoration: none;
-												font-size: 12px; /* Reduced font size */
-											}
-											.file-card-url a:hover {
-												text-decoration: underline;
-											}
-										</style>
-							<td style="word-break: break-word;"><b><?php echo $label ? wp_kses_post( html_entity_decode( Helper::decrypt( $label ) ) ) : ''; ?></b></td>
+							<td style="word-break: break-word;"><b><?php echo $label ? wp_kses_post( $label ) : ''; ?></b></td>
 							<?php
 							if ( false !== strpos( $field_name, 'srfm-upload' ) ) {
 								?>
-										<td>
-											<div class="file-cards-container">
-											<?php
-											$upload_values = $value;
-											if ( ! empty( $upload_values ) && is_array( $upload_values ) ) {
-												foreach ( $upload_values as $file_url ) {
-													$file_url = urldecode( Helper::get_string_value( $file_url ) );
+								<td>
+									<div class="file-cards-container">
+									<?php
+									$upload_values = $value;
+									if ( ! empty( $upload_values ) && is_array( $upload_values ) ) {
+										foreach ( $upload_values as $file_url ) {
+											$file_url = urldecode( Helper::get_string_value( $file_url ) );
 
-													if ( ! empty( $file_url ) ) {
-														if ( ! file_exists( Helper::convert_fileurl_to_filepath( $file_url ) ) ) {
-															continue;
-														}
-
-														$file_type = pathinfo( $file_url, PATHINFO_EXTENSION );
-														$is_image  = in_array( $file_type, [ 'gif', 'png', 'bmp', 'jpg', 'jpeg', 'svg' ], true );
-														?>
-																<div class="file-card" data-fileurl-hash="<?php echo esc_attr( md5( $file_url ) ); ?>">
-															<?php if ( $is_image ) { ?>
-																		<div class="file-card-image">
-																			<a target="_blank" href="<?php echo esc_attr( $file_url ); ?>">
-																				<img src="<?php echo esc_attr( $file_url ); ?>" alt="<?php esc_attr_e( 'Image', 'sureforms' ); ?>" />
-																			</a>
-																		</div>
-															<?php } else { ?>
-																		<div class="file-card-icon">
-																			<?php // Display a file icon for non-image files. ?>
-																			<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16.333V4.667a1.333 1.333 0 011.333-1.333h13.334a1.333 1.333 0 011.333 1.333v11.666a1.333 1.333 0 01-1.333 1.333H5.333A1.333 1.333 0 014 16.333zm8-8h2v6h-2v-6zm-2 8h6v2H10v-2zm-6-6h4v6H4v-6zm0-4h16v2H4V6z"/></svg>
-																		</div>
-																		<div class="file-card-details">
-																			<span><?php echo esc_html( strtoupper( $file_type ) ); ?></span>
-																		</div>
-															<?php } ?>
-																	<div class="file-card-url">
-																		<a target="_blank" href="<?php echo esc_attr( $file_url ); ?>"><?php echo esc_html__( 'Open', 'sureforms' ); ?></a>
-																	</div>
-																</div>
-															<?php
-													}
+											if ( ! empty( $file_url ) ) {
+												if ( ! file_exists( Helper::convert_fileurl_to_filepath( $file_url ) ) ) {
+													continue;
 												}
+
+												$file_type = pathinfo( $file_url, PATHINFO_EXTENSION );
+												$is_image  = in_array( $file_type, [ 'gif', 'png', 'bmp', 'jpg', 'jpeg', 'svg' ], true );
+												?>
+														<div class="file-card" data-fileurl-hash="<?php echo esc_attr( md5( $file_url ) ); ?>">
+													<?php if ( $is_image ) { ?>
+																<div class="file-card-image">
+																	<a target="_blank" href="<?php echo esc_url( $file_url ); ?>">
+																		<img src="<?php echo esc_url( $file_url ); ?>" alt="<?php esc_attr_e( 'Image', 'sureforms' ); ?>" />
+																	</a>
+																</div>
+													<?php } else { ?>
+																<div class="file-card-icon">
+																	<?php // Display a file icon for non-image files. ?>
+																	<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16.333V4.667a1.333 1.333 0 011.333-1.333h13.334a1.333 1.333 0 011.333 1.333v11.666a1.333 1.333 0 01-1.333 1.333H5.333A1.333 1.333 0 014 16.333zm8-8h2v6h-2v-6zm-2 8h6v2H10v-2zm-6-6h4v6H4v-6zm0-4h16v2H4V6z"/></svg>
+																</div>
+																<div class="file-card-details">
+																	<span><?php echo esc_html( strtoupper( $file_type ) ); ?></span>
+																</div>
+													<?php } ?>
+															<div class="file-card-url">
+																<a target="_blank" href="<?php echo esc_url( $file_url ); ?>"><?php echo esc_html__( 'Open', 'sureforms' ); ?></a>
+															</div>
+														</div>
+													<?php
 											}
-											?>
-											</div>
-										</td>
+										}
+									}
+									?>
+									</div>
+								</td>
 							<?php } elseif ( false !== strpos( $field_name, 'srfm-url' ) ) { ?>
 									<td><a target="_blank" href="<?php echo esc_url( $value ); ?>"><?php echo esc_url( $value ); ?></a></td>
 									<?php
