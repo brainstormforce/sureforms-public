@@ -181,7 +181,7 @@ class Field_Validation {
 			 * The '-lbl-' substring is mandatory in SureForms field keys.
 			 * Example: $key = 'srfm-email-c867d9d9-lbl-email'
 			 */
-			if ( false === str_contains( $key, '-lbl-' ) ) {
+			if ( false === strpos( $key, '-lbl-' ) ) {
 				continue;
 			}
 
