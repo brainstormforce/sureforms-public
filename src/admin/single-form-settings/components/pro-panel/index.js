@@ -5,6 +5,7 @@ import {
 	MdOutlineStarBorder,
 	MdOutlineCloudUpload,
 	MdAccessTime,
+	MdCode,
 } from 'react-icons/md';
 import { FaRegEyeSlash } from 'react-icons/fa';
 import svgIcons from '@Svg/svgs.json';
@@ -60,6 +61,10 @@ const iconBlocks = [
 	{
 		icon: <MdOutlineCloudUpload size={ 24 } color="#B4B4B4" />,
 		label: __( 'Upload', 'sureforms' ),
+	},
+	{
+		icon: <MdCode size={ 24 } color="#B4B4B4" />,
+		label: __( 'HTML', 'sureforms' ),
 	},
 	{
 		icon: parse( svgIcons.signature ),
