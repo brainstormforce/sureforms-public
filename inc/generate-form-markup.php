@@ -80,6 +80,13 @@ class Generate_Form_Markup {
 
 		$content = '';
 
+		$active_plugins      = Helper::get_array_value( get_option( 'active_plugins', [] ) );
+		$is_learndash_active = in_array( 'sfwd-lms/sfwd_lms.php', $active_plugins, true );
+
+		if ( $is_learndash_active ) {
+			$do_blocks = true;
+		}
+
 		if ( $post && ! empty( $post->post_content ) ) {
 			if ( ! empty( $do_blocks ) ) {
 				$content = do_blocks( $post->post_content );
