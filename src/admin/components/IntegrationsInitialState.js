@@ -22,7 +22,7 @@ const IntegrationsInitialState = ( {
 	return (
 		<Container
 			className={ cn(
-				'flex flex-col items-center justify-center bg-background-primary',
+				'flex flex-col items-center justify-center bg-background-primary p-4',
 				containerPadding && 'py-16',
 				className
 			) }
@@ -31,7 +31,7 @@ const IntegrationsInitialState = ( {
 				<img
 					src={ image }
 					alt={ __( 'No Integrations', 'sureforms' ) }
-					className={ cn( 'h-20 w-20 mx-auto mb-6', imageClassName ) }
+					className={ cn( 'h-20 w-20 mx-auto', imageClassName ) }
 				/>
 			) }
 
