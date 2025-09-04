@@ -264,6 +264,8 @@ We take plugin security extremely seriously. If you discover a security vulnerab
 You can report the issue through our [Bug Bounty Program](https://brainstormforce.com/bug-bounty-program/). We collaborate with Patchstack to provide opportunities for researchers to report vulnerabilities. The Patchstack team will help validate, triage, and handle any reported security issues.
 
 == Changelog ==
+= x.x.x =
+* Fix: Resolved an issue with where form will not submit when embedding inside a LearnDash lesson.
 = 1.11.0 - 2nd September 2025 =
 * Improvement: Refined weekly email summary content.
 * Fix: Resolved an issue with the readability of multiple uploaded image links in notification emails.
