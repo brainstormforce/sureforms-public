@@ -52,29 +52,64 @@ async function processAllPayments( form ) {
 		console.log( 'Creating payment intents...' );
 		await window.StripePayment.createPaymentIntentsForForm( form );
 
-		// Step 2: Confirm all payments
+		// Step 2: Confirm all payments with enhanced error handling
 		console.log( 'Confirming payments...' );
 		const paymentPromises = [];
 
 		paymentBlocks.forEach( ( block ) => {
 			const blockId = block.getAttribute( 'data-block-id' );
 			const paymentData = window.srfmPaymentElements?.[ blockId ];
+			const paymentType = paymentData?.paymentType || 'one-time';
 
-			console.log( 'paymentData->', paymentData );
+			console.log( `Processing ${ paymentType } payment for block ${ blockId }:`, paymentData );
 
 			if ( paymentData && paymentData.clientSecret ) {
-				paymentPromises.push(
-					confirmPayment( blockId, paymentData, form )
-				);
+				// Wrap each confirmation in individual error handling
+				const paymentPromise = confirmPayment( blockId, paymentData, form )
+					.catch( error => {
+						// Enhanced error reporting per block
+						const errorMessage = `${ paymentType.charAt(0).toUpperCase() + paymentType.slice(1) } payment failed for block ${ blockId }: ${ error.message }`;
+						console.error( errorMessage );
+						
+						// Re-throw with enhanced context
+						const enhancedError = new Error( errorMessage );
+						enhancedError.blockId = blockId;
+						enhancedError.paymentType = paymentType;
+						enhancedError.originalError = error;
+						throw enhancedError;
+					} );
+					
+				paymentPromises.push( paymentPromise );
+			} else {
+				console.warn( `Skipping block ${ blockId } - missing payment data or client secret` );
 			}
 		} );
 
-		console.log( 'paymentPromises->', paymentPromises );
+		console.log( `Processing ${ paymentPromises.length } payment confirmations...` );
 
-		await Promise.all( paymentPromises );
+		// Wait for all payments to complete
+		const paymentResults = await Promise.all( paymentPromises );
+		
+		console.log( 'All payments completed successfully:', paymentResults );
 		return true;
+		
 	} catch ( error ) {
-		console.error( 'Payment processing failed:', error );
+		// Enhanced error logging
+		if ( error.blockId && error.paymentType ) {
+			console.error( `Payment processing failed on ${ error.paymentType } payment for block ${ error.blockId }:`, error.originalError || error );
+		} else {
+			console.error( 'Payment processing failed:', error );
+		}
+		
+		// Show user-friendly error message if possible
+		if ( error.message && error.message.includes( 'Card declined' ) ) {
+			alert( 'Your card was declined. Please check your payment details and try again.' );
+		} else if ( error.message && error.message.includes( 'requires additional' ) ) {
+			alert( 'Additional authentication is required. Please complete the verification and try again.' );
+		} else {
+			alert( 'Payment processing failed. Please try again or contact support if the problem persists.' );
+		}
+		
 		return false;
 	}
 }
@@ -161,65 +196,241 @@ async function confirmOneTimePayment( blockId, paymentData, form ) {
 }
 
 /**
- * Confirm subscription payment
+ * Confirm subscription payment with proper Payment Method creation and client secret handling
  */
 async function confirmSubscription( blockId, paymentData, form ) {
 	const { stripe, elements, clientSecret } = paymentData;
+	const subscriptionData = window.StripePayment.subscriptionIntents[ blockId ];
 
-	// Confirm the subscription
-	const confirmSubscriptionResult = await stripe.confirmSetup( {
-		elements,
-		clientSecret,
-		confirmParams: {
-			return_url: window.location.href,
-		},
-		redirect: 'if_required',
-	} );
+	console.log( `Confirming subscription for block ${ blockId }, client secret type: ${ clientSecret.substring(0, 5) }...` );
 
-	console.log( 'confirmSubscriptionResult->', confirmSubscriptionResult );
+	// Step 1: Create Payment Method first (critical for subscription completion)
+	let paymentMethod;
+	try {
+		console.log( `Creating payment method for subscription block ${ blockId }...` );
+		
+		const paymentMethodResult = await stripe.createPaymentMethod({
+			elements: elements,
+			params: {
+				billing_details: {
+					// Extract billing details from form if available
+					name: extractBillingName( form, blockId ),
+					email: extractBillingEmail( form, blockId ),
+				}
+			}
+		});
 
-	const { error, setupIntent } = confirmSubscriptionResult;
+		if ( paymentMethodResult.error ) {
+			throw new Error( `Payment Method creation failed: ${ paymentMethodResult.error.message }` );
+		}
 
-	if ( error ) {
-		throw new Error( error.message );
+		paymentMethod = paymentMethodResult.paymentMethod;
+		console.log( `Payment Method created successfully: ${ paymentMethod.id }` );
+
+	} catch ( error ) {
+		console.error( `Payment Method creation failed for block ${ blockId }:`, error );
+		throw error;
 	}
 
-	if (
-		setupIntent.status === 'succeeded' ||
-		setupIntent.status === 'requires_capture'
-	) {
-		console.log( `Subscription payment succeeded for block ${ blockId }` );
-
-		// Get subscription data
-		const subscriptionData = window.StripePayment.subscriptionIntents[ blockId ];
-
-		// update the payment detail in the input value by the json stringify.
-		const getPaymentBlock = form.querySelector(
-			`[data-block-id="${ blockId }"]`
-		);
-		const getPaymentInput = getPaymentBlock.querySelector(
-			'.srfm-payment-input'
-		);
-
-		const getItems = getPaymentInput.getAttribute( 'data-payment-items' );
-		const jsonParseItems = JSON.parse( getItems );
-
-		let prepareInputValueData = {
-			paymentItems: jsonParseItems,
-			paymentId: setupIntent.id,
-			subscriptionId: subscriptionData?.subscriptionId,
-			customerId: subscriptionData?.customerId,
-			blockId,
-			paymentType: 'stripe-subscription',
-		};
-
-		prepareInputValueData = JSON.stringify( prepareInputValueData );
-
-		getPaymentInput.value = prepareInputValueData;
-
-		return setupIntent;
+	// Step 2: Store Payment Method ID for backend processing  
+	if ( !window.StripePayment.subscriptionIntents[ blockId ] ) {
+		window.StripePayment.subscriptionIntents[ blockId ] = {};
 	}
-	throw new Error( `Subscription payment not completed for block ${ blockId }` );
+	window.StripePayment.subscriptionIntents[ blockId ].paymentMethodId = paymentMethod.id;
+
+	// Step 3: Detect client secret type and confirm accordingly
+	if ( clientSecret.startsWith( 'seti_' ) ) {
+		// Setup Intent - for trial subscriptions or future payments
+		return await confirmSubscriptionSetupIntent( blockId, stripe, elements, clientSecret, subscriptionData, paymentMethod, form );
+	} else if ( clientSecret.startsWith( 'pi_' ) ) {
+		// Payment Intent - for immediate payment subscriptions  
+		return await confirmSubscriptionPaymentIntent( blockId, stripe, elements, clientSecret, subscriptionData, paymentMethod, form );
+	} else {
+		throw new Error( `Unknown client secret type for subscription block ${ blockId }` );
+	}
+}
+
+/**
+ * Extract billing name from form fields
+ */
+function extractBillingName( form, blockId ) {
+	// Try to find name fields in the form
+	const nameInputs = form.querySelectorAll('input[name*="name"], input[type="text"]');
+	for ( const input of nameInputs ) {
+		if ( input.value && input.value.trim() ) {
+			return input.value.trim();
+		}
+	}
+	return 'SureForms Customer';
+}
+
+/**
+ * Extract billing email from form fields
+ */
+function extractBillingEmail( form, blockId ) {
+	// Try to find email fields in the form
+	const emailInputs = form.querySelectorAll('input[type="email"], input[name*="email"]');
+	for ( const input of emailInputs ) {
+		if ( input.value && input.value.trim() ) {
+			return input.value.trim();
+		}
+	}
+	return 'customer@example.com';
+}
+
+/**
+ * Confirm subscription using Setup Intent (for trials or future payments)
+ */
+async function confirmSubscriptionSetupIntent( blockId, stripe, elements, clientSecret, subscriptionData, paymentMethod, form ) {
+	try {
+		const confirmResult = await stripe.confirmSetup( {
+			elements,
+			clientSecret,
+			confirmParams: {
+				return_url: window.location.href,
+			},
+			redirect: 'if_required',
+		} );
+
+		console.log( `Setup Intent confirmation result for block ${ blockId }:`, confirmResult );
+
+		const { error, setupIntent } = confirmResult;
+
+		if ( error ) {
+			// Handle specific error types
+			if ( error.type === 'card_error' ) {
+				throw new Error( `Card error: ${ error.message }` );
+			} else if ( error.type === 'validation_error' ) {
+				throw new Error( `Validation error: ${ error.message }` );
+			}
+			throw new Error( error.message );
+		}
+
+		// Handle different setup intent statuses
+		if ( setupIntent.status === 'succeeded' ) {
+			console.log( `Setup Intent succeeded for subscription block ${ blockId }` );
+			return updateSubscriptionInputData( blockId, form, {
+				paymentId: setupIntent.id,
+				paymentMethodId: paymentMethod.id,
+				subscriptionId: subscriptionData?.subscriptionId,
+				customerId: subscriptionData?.customerId,
+				confirmationType: 'setup_intent'
+			} );
+		} else if ( setupIntent.status === 'requires_action' ) {
+			// This case should be handled by the redirect: 'if_required' option
+			console.warn( `Setup Intent requires additional action for block ${ blockId }. Status: ${ setupIntent.status }` );
+			throw new Error( `Setup Intent requires additional customer action for subscription block ${ blockId }` );
+		} else if ( setupIntent.status === 'processing' ) {
+			// Wait a bit and check status again
+			console.log( `Setup Intent processing for block ${ blockId }, waiting for completion...` );
+			throw new Error( `Setup Intent is still processing for subscription block ${ blockId }. Please wait and try again.` );
+		}
+
+		throw new Error( `Setup Intent not completed for subscription block ${ blockId }. Status: ${ setupIntent.status }` );
+	} catch ( error ) {
+		console.error( `Setup Intent confirmation failed for block ${ blockId }:`, error );
+		throw error;
+	}
+}
+
+/**
+ * Confirm subscription using Payment Intent (for immediate payments)
+ */
+async function confirmSubscriptionPaymentIntent( blockId, stripe, elements, clientSecret, subscriptionData, paymentMethod, form ) {
+	try {
+		const confirmResult = await stripe.confirmPayment( {
+			elements,
+			clientSecret,
+			confirmParams: {
+				return_url: window.location.href,
+			},
+			redirect: 'if_required',
+		} );
+
+		console.log( `Payment Intent confirmation result for subscription block ${ blockId }:`, confirmResult );
+
+		const { error, paymentIntent } = confirmResult;
+
+		if ( error ) {
+			// Handle specific error types
+			if ( error.type === 'card_error' ) {
+				throw new Error( `Card declined: ${ error.message }` );
+			} else if ( error.type === 'validation_error' ) {
+				throw new Error( `Payment validation error: ${ error.message }` );
+			} else if ( error.code === 'payment_intent_unexpected_state' ) {
+				throw new Error( `Payment already processed. Please refresh the page.` );
+			}
+			throw new Error( error.message );
+		}
+
+		// Handle different payment intent statuses
+		if ( paymentIntent.status === 'succeeded' ) {
+			console.log( `Payment Intent succeeded for subscription block ${ blockId }` );
+			return updateSubscriptionInputData( blockId, form, {
+				paymentId: paymentIntent.id,
+				paymentMethodId: paymentMethod.id,
+				subscriptionId: subscriptionData?.subscriptionId,
+				customerId: subscriptionData?.customerId,
+				confirmationType: 'payment_intent'
+			} );
+		} else if ( paymentIntent.status === 'requires_capture' ) {
+			console.log( `Payment Intent requires capture for subscription block ${ blockId }` );
+			return updateSubscriptionInputData( blockId, form, {
+				paymentId: paymentIntent.id,
+				paymentMethodId: paymentMethod.id,
+				subscriptionId: subscriptionData?.subscriptionId,
+				customerId: subscriptionData?.customerId,
+				confirmationType: 'payment_intent'
+			} );
+		} else if ( paymentIntent.status === 'requires_action' ) {
+			console.warn( `Payment Intent requires additional action for block ${ blockId }. Status: ${ paymentIntent.status }` );
+			throw new Error( `Payment requires additional customer authentication for subscription block ${ blockId }` );
+		} else if ( paymentIntent.status === 'processing' ) {
+			console.log( `Payment Intent processing for block ${ blockId }, waiting for completion...` );
+			throw new Error( `Payment is still processing for subscription block ${ blockId }. Please wait and try again.` );
+		} else if ( paymentIntent.status === 'requires_payment_method' ) {
+			throw new Error( `Payment method required for subscription block ${ blockId }. Please check your payment details.` );
+		}
+
+		throw new Error( `Payment Intent not completed for subscription block ${ blockId }. Status: ${ paymentIntent.status }` );
+	} catch ( error ) {
+		console.error( `Payment Intent confirmation failed for block ${ blockId }:`, error );
+		throw error;
+	}
+}
+
+/**
+ * Update subscription input data with confirmation results
+ */
+function updateSubscriptionInputData( blockId, form, confirmationData ) {
+	const getPaymentBlock = form.querySelector( `[data-block-id="${ blockId }"]` );
+	const getPaymentInput = getPaymentBlock.querySelector( '.srfm-payment-input' );
+
+	const getItems = getPaymentInput.getAttribute( 'data-payment-items' );
+	const jsonParseItems = JSON.parse( getItems );
+
+	let prepareInputValueData = {
+		paymentItems: jsonParseItems,
+		paymentId: confirmationData.paymentId,
+		paymentMethodId: confirmationData.paymentMethodId, // Critical: Payment Method ID for backend
+		subscriptionId: confirmationData.subscriptionId,
+		customerId: confirmationData.customerId,
+		blockId,
+		paymentType: 'stripe-subscription',
+		confirmationType: confirmationData.confirmationType, // Track what type of confirmation was used
+	};
+
+	prepareInputValueData = JSON.stringify( prepareInputValueData );
+	getPaymentInput.value = prepareInputValueData;
+
+	console.log( `Updated input data for subscription block ${ blockId }:`, prepareInputValueData );
+
+	return { 
+		id: confirmationData.paymentId, 
+		status: 'succeeded',
+		subscriptionId: confirmationData.subscriptionId,
+		confirmationType: confirmationData.confirmationType
+	};
 }
 
 /**

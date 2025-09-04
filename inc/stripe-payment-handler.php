@@ -320,8 +320,272 @@ class Stripe_Payment_Handler {
 		return $form_data;
 	}
 
-	public function verify_stripe_subscription_intent_and_save( $subscription_id, $block_id, $form_data ) {
-		// $this->verify_stripe_payment_intent_and_save( $subscription_id, $block_id, $form_data );
+	public function verify_stripe_subscription_intent_and_save( $subscription_value, $block_id, $form_data ) {
+		$subscription_id = ! empty( $subscription_value['subscriptionId'] ) ? $subscription_value['subscriptionId'] : '';
+		$setup_intent_id = ! empty( $subscription_value['paymentId'] ) ? $subscription_value['paymentId'] : '';
+		$payment_method_id = ! empty( $subscription_value['paymentMethodId'] ) ? $subscription_value['paymentMethodId'] : '';
+		$block_id = ! empty( $subscription_value['blockId'] ) ? $subscription_value['blockId'] : '';
+
+		// Debug logging
+		error_log( 'SureForms: Starting subscription verification. Payment Method ID: ' . $payment_method_id . ', Data: ' . wp_json_encode( $subscription_value ) );
+
+		if ( empty( $subscription_id ) ) {
+			error_log( 'SureForms: Missing subscription ID for subscription confirmation' );
+			return false;
+		}
+
+		if ( empty( $setup_intent_id ) ) {
+			error_log( 'SureForms: Missing setup intent ID for subscription confirmation' );
+			return false;
+		}
+
+		if ( empty( $payment_method_id ) ) {
+			error_log( 'SureForms: Missing payment method ID for subscription confirmation' );
+			return false;
+		}
+
+		try {
+			// Get payment settings
+			$payment_settings = get_option( 'srfm_payments_settings', [] );
+			$payment_mode = $payment_settings['payment_mode'] ?? 'test';
+			$secret_key = 'live' === $payment_mode
+				? $payment_settings['stripe_live_secret_key'] ?? ''
+				: $payment_settings['stripe_test_secret_key'] ?? '';
+
+			if ( empty( $secret_key ) ) {
+				throw new \Exception( __( 'Stripe secret key not found.', 'sureforms' ) );
+			}
+
+			// Initialize Stripe SDK
+			if ( ! class_exists( '\Stripe\Stripe' ) ) {
+				throw new \Exception( __( 'Stripe library not found.', 'sureforms' ) );
+			}
+
+			\Stripe\Stripe::setApiKey( $secret_key );
+
+			// Retrieve the subscription with expanded objects to understand current state
+			$subscription = \Stripe\Subscription::retrieve([
+				'id' => $subscription_id,
+				'expand' => ['latest_invoice.payment_intent', 'pending_setup_intent']
+			]);
+
+			error_log( 'SureForms: Retrieved subscription. Status: ' . $subscription->status );
+
+			// Check if subscription is already complete
+			if ( in_array( $subscription->status, [ 'active', 'trialing' ] ) ) {
+				error_log( 'SureForms: Subscription already complete with status: ' . $subscription->status );
+				
+				// Save the already completed subscription
+				$this->save_completed_subscription( $subscription, $setup_intent_id, $form_data, $block_id, $payment_mode );
+				return true;
+			}
+
+			// Check for failed/expired subscriptions
+			if ( in_array( $subscription->status, [ 'incomplete_expired', 'canceled', 'unpaid' ] ) ) {
+				error_log( 'SureForms: Subscription in failed state: ' . $subscription->status );
+				return false;
+			}
+
+			$confirmed_payment = null;
+			$payment_method_confirmed = false;
+
+			// Handle different subscription confirmation scenarios based on current state
+			if ( 'incomplete' === $subscription->status && $subscription->latest_invoice && $subscription->latest_invoice->payment_intent ) {
+				// Scenario 1: Subscription has a payment intent that needs confirmation
+				$payment_intent = $subscription->latest_invoice->payment_intent;
+				
+				error_log( 'SureForms: Found payment intent with status: ' . $payment_intent->status );
+				
+				if ( 'requires_payment_method' === $payment_intent->status ) {
+					// Need to attach payment method from setup intent and confirm
+					$setup_intent = \Stripe\SetupIntent::retrieve( $setup_intent_id );
+					if ( 'succeeded' === $setup_intent->status && $setup_intent->payment_method ) {
+						$payment_intent = $payment_intent->confirm([
+							'payment_method' => $setup_intent->payment_method,
+							'return_url' => home_url()
+						]);
+						$confirmed_payment = $payment_intent;
+						$payment_method_confirmed = 'succeeded' === $payment_intent->status;
+					}
+				} elseif ( 'requires_action' === $payment_intent->status || 'requires_confirmation' === $payment_intent->status ) {
+					$confirmed_payment = $payment_intent->confirm([
+						'return_url' => home_url()
+					]);
+					$payment_method_confirmed = 'succeeded' === $confirmed_payment->status;
+				} elseif ( 'succeeded' === $payment_intent->status ) {
+					$confirmed_payment = $payment_intent;
+					$payment_method_confirmed = true;
+				}
+			} elseif ( ! empty( $setup_intent_id ) ) {
+				// Scenario 2: Handle setup intent for subscription (trial or future payments)
+				$setup_intent = \Stripe\SetupIntent::retrieve( $setup_intent_id );
+				
+				error_log( 'SureForms: Found setup intent with status: ' . $setup_intent->status );
+				
+				if ( 'requires_action' === $setup_intent->status || 'requires_confirmation' === $setup_intent->status ) {
+					$confirmed_setup = $setup_intent->confirm([
+						'return_url' => home_url()
+					]);
+					$confirmed_payment = $confirmed_setup;
+					$payment_method_confirmed = 'succeeded' === $confirmed_setup->status;
+				} elseif ( 'succeeded' === $setup_intent->status ) {
+					$confirmed_payment = $setup_intent;
+					$payment_method_confirmed = true;
+				}
+			} else {
+				error_log( 'SureForms: No payment intent or setup intent found for subscription: ' . $subscription_id );
+			}
+
+			// Critical: Update subscription with payment method (use Payment Method ID from frontend)
+			if ( $payment_method_confirmed && ! empty( $payment_method_id ) ) {
+				// Update subscription with default payment method using Payment Method ID
+				$updated_subscription_object = \Stripe\Subscription::update( $subscription_id, [
+					'default_payment_method' => $payment_method_id
+				]);
+
+				error_log( 'SureForms: Updated subscription with Payment Method ID: ' . $payment_method_id );
+				
+				// For incomplete subscriptions, we need to handle the first invoice
+				if ( 'incomplete' === $updated_subscription_object->status && $updated_subscription_object->latest_invoice ) {
+					$latest_invoice = $updated_subscription_object->latest_invoice;
+					
+					// If invoice has amount due and payment intent, confirm it
+					if ( $latest_invoice->amount_due > 0 && $latest_invoice->payment_intent ) {
+						$invoice_payment_intent = \Stripe\PaymentIntent::retrieve( $latest_invoice->payment_intent );
+						
+						if ( in_array( $invoice_payment_intent->status, [ 'requires_payment_method', 'requires_confirmation' ] ) ) {
+							// Confirm the payment intent with the Payment Method ID
+							$invoice_payment_intent->confirm([
+								'payment_method' => $payment_method_id,
+								'return_url' => home_url()
+							]);
+							
+							error_log( 'SureForms: Confirmed invoice payment intent with Payment Method ID: ' . $payment_method_id );
+						}
+					} elseif ( $latest_invoice->amount_due == 0 ) {
+						// For zero amount invoices (like trials), pay the invoice to activate subscription
+						$invoice_obj = \Stripe\Invoice::retrieve( $latest_invoice->id );
+						$invoice_obj->pay();
+					}
+				}
+				
+				error_log( 
+					sprintf( 
+						'SureForms: Updated subscription %s with default payment method %s',
+						$subscription_id,
+						$confirmed_payment->payment_method
+					)
+				);
+			}
+
+			// Refresh subscription to get updated status
+			$updated_subscription = \Stripe\Subscription::retrieve( $subscription_id );
+
+			// Debug: Log final subscription status
+			error_log( 
+				sprintf( 
+					'SureForms: Final subscription status after processing. ID: %s, Status: %s, Default PM: %s',
+					$subscription_id,
+					$updated_subscription->status,
+					$updated_subscription->default_payment_method ?? 'Not Set'
+				)
+			);
+
+			// Determine final subscription status after processing
+			$is_subscription_complete = in_array( $updated_subscription->status, [ 'active', 'trialing' ] );
+			$final_status = $is_subscription_complete ? 'succeeded' : 'failed';
+			
+			// Log final status determination
+			error_log( 
+				sprintf( 
+					'SureForms: Status determination - Subscription Status: %s, Payment Confirmed: %s, Final Status: %s',
+					$updated_subscription->status,
+					$payment_method_confirmed ? 'Yes' : 'No',
+					$final_status
+				)
+			);
+
+			// Prepare subscription data for database
+			$entry_data = [];
+			$entry_data['form_id']             = $form_data['form-id'] ?? '';
+			$entry_data['block_id']            = $block_id;
+			$entry_data['status']              = $final_status;
+			$entry_data['total_amount']        = $this->amount_convert_cents_to_usd( $updated_subscription->latest_invoice ? $updated_subscription->latest_invoice->amount_paid : 0 );
+			$entry_data['currency']            = $updated_subscription->currency ?? 'usd';
+			$entry_data['entry_id']            = 0;
+			$entry_data['gateway']             = 'stripe';
+			$entry_data['type']                = 'subscription';
+			$entry_data['mode']                = $payment_mode;
+			$entry_data['transaction_id']      = $confirmed_payment ? $confirmed_payment->id : $setup_intent_id;
+			$entry_data['customer_id']         = $updated_subscription->customer;
+			$entry_data['subscription_id']     = $subscription_id;
+			$entry_data['subscription_status'] = $updated_subscription->status;
+
+			// Store detailed subscription data
+			$entry_data['payment_data'] = [
+				'subscription' => [
+					'id' => $subscription_id,
+					'status' => $updated_subscription->status,
+					'customer_id' => $updated_subscription->customer,
+					'payment_method_id' => $payment_method_id, // Store Payment Method ID for reference
+					'current_period_start' => $updated_subscription->current_period_start,
+					'current_period_end' => $updated_subscription->current_period_end,
+					'trial_start' => $updated_subscription->trial_start,
+					'trial_end' => $updated_subscription->trial_end,
+				],
+				'payment_method_confirmed' => $payment_method_confirmed,
+				'confirmation_type' => $confirmed_payment ? 'payment_intent' : 'setup_intent',
+				'confirmed_at' => time(),
+			];
+
+			// Add log entry
+			$entry_data['log'] = [
+				[
+					'title' => 'Subscription Payment Confirmation',
+					'timestamp' => time(),
+					'messages' => [
+						sprintf( 'Subscription ID: %s', $subscription_id ),
+						sprintf( 'Setup Intent ID: %s', $setup_intent_id ),
+						sprintf( 'Subscription Status: %s', $updated_subscription->status ),
+						sprintf( 'Payment Method Confirmed: %s', $payment_method_confirmed ? 'Yes' : 'No' ),
+						sprintf( 'Default Payment Method: %s', $updated_subscription->default_payment_method ?? 'Not Set' ),
+						sprintf( 'Customer ID: %s', $updated_subscription->customer ),
+						sprintf( 'Total Amount: %s %s', number_format( $entry_data['total_amount'], 2 ), strtoupper( $entry_data['currency'] ) ),
+					],
+				],
+			];
+
+			// Save to database
+			$payment_entry_id = Payments::add( $entry_data );
+
+			if ( $payment_entry_id ) {
+				// Store in static array for later entry linking
+				$this->stripe_payment_entries[] = [
+					'payment_id' => $subscription_id,
+					'block_id'   => $block_id,
+					'form_id'    => $form_data['form-id'] ?? '',
+				];
+
+				error_log( 
+					sprintf( 
+						'SureForms: Subscription processing complete. ID: %s, Status: %s, Final Entry Status: %s, Payment Entry ID: %d',
+						$subscription_id,
+						$updated_subscription->status,
+						$final_status,
+						$payment_entry_id
+					)
+				);
+				
+				// Return success only if subscription is actually complete
+				return $is_subscription_complete;
+			} else {
+				throw new \Exception( __( 'Failed to save subscription payment data.', 'sureforms' ) );
+			}
+
+		} catch ( \Exception $e ) {
+			error_log( 'SureForms Subscription Confirmation Error: ' . $e->getMessage() );
+			return false;
+		}
 	}
 
 	/**
@@ -946,10 +1210,9 @@ class Stripe_Payment_Handler {
 			$payment_intent = $latest_invoice->payment_intent;
   
 			// Confirm the payment intent
-			$confirmed_payment = \Stripe\PaymentIntent::confirm(
-				$payment_intent->id,
-				['return_url' => home_url()]
-			);
+			$confirmed_payment = $payment_intent->confirm([
+				'return_url' => home_url()
+			]);
   
 			if ( 'succeeded' === $confirmed_payment->status ) {
 				// Payment succeeded - subscription should now be active
@@ -1095,104 +1358,143 @@ class Stripe_Payment_Handler {
 	 */
 	private function create_subscription( $amount, $currency, $description, $interval, $interval_count, $trial_days, $application_fee_amount, $stripe_account_id, $block_id, $customer_id, $secret_key ) {
 
-		// Create subscription data.
-		$subscription_data = apply_filters( 'srfm_create_subscription_data', [
-			'customer' => $customer_id,
-			'secret_key' => $secret_key,
-			'expand' => [ 'latest_invoice.payment_intent', 'pending_setup_intent' ],
-			'description' => $description,
-			'block_id' => $block_id,
-			'amount' => $amount,
-			'currency' => $currency,
-			'interval' => $interval,
-			'interval_count' => $interval_count,
-			'trial_days' => $trial_days,
-			'metadata' => [
-				'source'             => 'SureForms',
-				'type'               => 'subscription',
-				'block_id'           => $block_id,
-				'original_amount'    => $amount,
-				'application_fee'    => $application_fee_amount,
-				'billing_interval'   => $interval,
-				'interval_count'     => $interval_count,
-				'trial_days'         => $trial_days,
-			],
-		] );
+		// Initialize Stripe API key first
+		\Stripe\Stripe::setApiKey( $secret_key );
 
-		// Add trial period if specified.
+		// Create product first
+		$product = \Stripe\Product::create([
+			'name' => $description,
+			'metadata' => [
+				'source' => 'SureForms',
+				'block_id' => $block_id,
+				'type' => 'subscription',
+			],
+		]);
+
+		// Create price object referencing the product
+		$price = \Stripe\Price::create([
+			'unit_amount' => $amount,
+			'currency' => strtolower( $currency ),
+			'recurring' => [
+				'interval' => $interval,
+				'interval_count' => $interval_count,
+			],
+			'product' => $product->id,
+		]);
+
+		// Create subscription data using direct Stripe SDK
+		$subscription_create_data = [
+			'customer' => $customer_id,
+			'items' => [
+				[
+					'price' => $price->id,  // Use 'price' not 'plan' (modern API)
+				],
+			],
+			'payment_behavior' => 'default_incomplete',
+			'payment_settings' => [
+				'save_default_payment_method' => 'on_subscription',
+				'payment_method_types' => ['card'],
+			],
+			'expand' => ['latest_invoice.payment_intent', 'pending_setup_intent'],
+			'metadata' => [
+				'source' => 'SureForms',
+				'type' => 'subscription',
+				'block_id' => $block_id,
+				'original_amount' => $amount,
+				'application_fee' => $application_fee_amount,
+				'billing_interval' => $interval,
+				'interval_count' => $interval_count,
+				'trial_days' => $trial_days,
+			],
+		];
+
+		// Handle trial period differently
 		if ( $trial_days > 0 ) {
-			$subscription_data['trial_period_days'] = $trial_days;
+			$subscription_create_data['trial_period_days'] = $trial_days;
+			// For trial subscriptions, we might need to create a setup intent instead
+			error_log( 'SureForms: Creating subscription with trial period: ' . $trial_days . ' days' );
+		} else {
+			// For immediate payment subscriptions, ensure we get a payment intent
+			error_log( 'SureForms: Creating subscription with immediate payment' );
 		}
 
-		$subscription = wp_remote_post(
-			'prod' === SRFM_PAYMENTS_ENV 
-				? SRFM_PAYMENTS_PROD . 'subscription/create' 
-				: SRFM_PAYMENTS_LOCAL . 'subscription/create',
-			[
-				'timeout' => 90,
-				'body'    => base64_encode( wp_json_encode( $subscription_data ) ),
-				'headers' => [
-					'Content-Type' => 'application/json',
-				],
-			]
-		);
+		// Add application fee if applicable
+		if ( $application_fee_amount > 0 ) {
+			$subscription_create_data['application_fee_percent'] = ( $application_fee_amount / $amount ) * 100;
+		}
 
-		// decode response
-		$subscription = json_decode( wp_remote_retrieve_body( $subscription ), true );
+		// Create subscription via Stripe SDK (API key already set)
+		$subscription_object = \Stripe\Subscription::create( $subscription_create_data );
 
+		// Convert to array for compatibility with existing code
+		$subscription = $subscription_object->toArray();
 
-		// // --------- testing to retrieve 
-        // \Stripe\Stripe::setApiKey($secret_key);
-
-		// $retrieved_subscription = \Stripe\Subscription::retrieve([
-		// 	'id' => $subscription['id'],
-		// 	'expand' => ['latest_invoice.payment_intent']
-		// ]);
-
-		// $latest_invoice = $retrieved_subscription->latest_invoice;
-
-		// $payment_intent = $latest_invoice->payment_intent;
-
-		// // Confirm the payment intent
-		// $payment_intent_obj = new \Stripe\PaymentIntent($payment_intent->id);
-		// $confirmed_payment = $payment_intent_obj->confirm([
-		// 	'return_url' => home_url()
-		// ]);
+		// Debug: Log the complete subscription object to see what we got
+		error_log( 'SureForms: Subscription created. Status: ' . $subscription_object->status );
+		error_log( 'SureForms: Raw subscription object: ' . wp_json_encode( $subscription_object->toArray() ) );
+		error_log( 'SureForms: Has latest_invoice: ' . ( $subscription_object->latest_invoice ? 'Yes' : 'No' ) );
+		error_log( 'SureForms: Has pending_setup_intent: ' . ( $subscription_object->pending_setup_intent ? 'Yes' : 'No' ) );
+		
+		if ( $subscription_object->latest_invoice ) {
+			error_log( 'SureForms: Latest invoice ID: ' . $subscription_object->latest_invoice->id );
+			error_log( 'SureForms: Latest invoice status: ' . $subscription_object->latest_invoice->status );
+			error_log( 'SureForms: Latest invoice amount_due: ' . $subscription_object->latest_invoice->amount_due );
+			error_log( 'SureForms: Invoice has payment_intent: ' . ( $subscription_object->latest_invoice->payment_intent ? 'Yes' : 'No' ) );
+		}
 
 		// Handle different subscription states
 		$client_secret = null;
 		$payment_intent_id = null;
 		$setup_intent_id = null;
 
-		// if ( $subscription['latest_invoice'] && $subscription['latest_invoice']['payment_intent'] ) {
-		// 	$payment_intent = $subscription['latest_invoice']['payment_intent'];
-		// 	$client_secret = $payment_intent['client_secret'];
-		// 	$payment_intent_id = $payment_intent['id'];
+		// Check for payment intent in latest invoice
+		if ( $subscription_object->latest_invoice && $subscription_object->latest_invoice->payment_intent ) {
+			$payment_intent = $subscription_object->latest_invoice->payment_intent;
+			$client_secret = $payment_intent->client_secret;
+			$payment_intent_id = $payment_intent->id;
+			error_log( 'SureForms: Found payment intent: ' . $payment_intent_id );
+		}
+		// Check for setup intent (trial subscriptions)
+		elseif ( $subscription_object->pending_setup_intent ) {
+			$setup_intent = $subscription_object->pending_setup_intent;
+			$client_secret = $setup_intent->client_secret;
+			$setup_intent_id = $setup_intent->id;
+			error_log( 'SureForms: Found setup intent: ' . $setup_intent_id );
+		}
+		// Manual payment intent creation for immediate payments
+		elseif ( $trial_days <= 0 && $subscription_object->latest_invoice ) {
+			error_log( 'SureForms: No payment intent found, manually creating one for immediate payment subscription' );
 			
-		// 	// Check if 3D Secure is required for the payment intent
-		// 	if ( 'requires_action' === $payment_intent['status'] && 
-		// 		 isset( $payment_intent['next_action']['type'] ) && 
-		// 		 'use_stripe_sdk' === $payment_intent['next_action']['type'] ) {
+			// Get the invoice and create a payment intent for it
+			$latest_invoice = $subscription_object->latest_invoice;
+			
+			if ( $latest_invoice->amount_due > 0 ) {
+				// Create payment intent for the invoice amount
+				$payment_intent = \Stripe\PaymentIntent::create([
+					'amount' => $latest_invoice->amount_due,
+					'currency' => strtolower( $currency ),
+					'customer' => $customer_id,
+					'invoice' => $latest_invoice->id,
+					'automatic_payment_methods' => [
+						'enabled' => true,
+					],
+					'metadata' => [
+						'subscription_id' => $subscription['id'],
+						'invoice_id' => $latest_invoice->id,
+						'source' => 'SureForms',
+						'block_id' => $block_id,
+					],
+				]);
 				
-		// 		// 3D Secure is required - return response for frontend handling
-		// 		wp_send_json_success( [
-		// 			'type'                         => 'subscription',
-		// 			'action_required'              => true,
-		// 			'payment_intent_client_secret' => $payment_intent['client_secret'],
-		// 			'subscription_id'              => $subscription['id'],
-		// 			'payment_intent_id'            => $payment_intent['id'],
-		// 			'status'                       => $subscription['status'],
-		// 		] );
-		// 		return; // Early return to prevent further execution
-		// 	}
-		// } elseif ( $subscription['pending_setup_intent'] ) {
-		// 	// For subscriptions that require setup intent (like with trial periods)
-		// 	$client_secret = $subscription['pending_setup_intent']['client_secret'];
-		// 	$setup_intent_id = $subscription['pending_setup_intent']['id'];
-		// }
-
-		// If we still don't have a client secret, create a setup intent for future payments
-		if ( ! $client_secret ) {
+				$client_secret = $payment_intent->client_secret;
+				$payment_intent_id = $payment_intent->id;
+				error_log( 'SureForms: Created manual payment intent: ' . $payment_intent_id );
+			}
+		}
+		
+		// Final fallback: Create setup intent if none found
+		if ( empty( $client_secret ) ) {
+			error_log( 'SureForms: No payment/setup intent found, creating setup intent as final fallback' );
 			$setup_intent = \Stripe\SetupIntent::create([
 				'customer' => $customer_id,
 				'payment_method_types' => ['card'],
@@ -1203,18 +1505,30 @@ class Stripe_Payment_Handler {
 					'block_id' => $block_id,
 				],
 			]);
-			$client_secret = $setup_intent['client_secret'];
-			$setup_intent_id = $setup_intent['id'];
+			$client_secret = $setup_intent->client_secret;
+			$setup_intent_id = $setup_intent->id;
 		}
 
-		return [
+		// Validate we have a client secret before returning
+		if ( empty( $client_secret ) ) {
+			throw new \Exception( 'Failed to obtain client secret for subscription confirmation' );
+		}
+
+		// Return comprehensive subscription data
+		$response = [
 			'type'              => 'subscription',
 			'client_secret'     => $client_secret,
 			'subscription_id'   => $subscription['id'],
+			'customer_id'       => $customer_id,
 			'payment_intent_id' => $payment_intent_id,
 			'setup_intent_id'   => $setup_intent_id,
 			'status'            => $subscription['status'],
+			'created'           => $subscription_object->created,
 		];
+
+		error_log( 'SureForms: Subscription creation successful. Response: ' . wp_json_encode( $response ) );
+
+		return $response;
 	}
 
 	/**
@@ -1401,5 +1715,94 @@ class Stripe_Payment_Handler {
 		}
 
 		return '127.0.0.1'; // Fallback
+	}
+
+	/**
+	 * Save already completed subscription to database
+	 *
+	 * @param object $subscription Stripe subscription object.
+	 * @param string $setup_intent_id Setup intent ID.
+	 * @param array  $form_data Form data.
+	 * @param string $block_id Block ID.
+	 * @param string $payment_mode Payment mode.
+	 * @return bool True on success, false on failure.
+	 * @since x.x.x
+	 */
+	private function save_completed_subscription( $subscription, $setup_intent_id, $form_data, $block_id, $payment_mode ) {
+		try {
+			// Prepare subscription data for database
+			$entry_data = [];
+			$entry_data['form_id']             = $form_data['form-id'] ?? '';
+			$entry_data['block_id']            = $block_id;
+			$entry_data['status']              = 'succeeded';
+			$entry_data['total_amount']        = $this->amount_convert_cents_to_usd( $subscription->latest_invoice ? $subscription->latest_invoice->amount_paid : 0 );
+			$entry_data['currency']            = $subscription->currency ?? 'usd';
+			$entry_data['entry_id']            = 0;
+			$entry_data['gateway']             = 'stripe';
+			$entry_data['type']                = 'subscription';
+			$entry_data['mode']                = $payment_mode;
+			$entry_data['transaction_id']      = $setup_intent_id;
+			$entry_data['customer_id']         = $subscription->customer;
+			$entry_data['subscription_id']     = $subscription->id;
+			$entry_data['subscription_status'] = $subscription->status;
+
+			// Store detailed subscription data
+			$entry_data['payment_data'] = [
+				'subscription' => [
+					'id' => $subscription->id,
+					'status' => $subscription->status,
+					'customer_id' => $subscription->customer,
+					'current_period_start' => $subscription->current_period_start,
+					'current_period_end' => $subscription->current_period_end,
+					'trial_start' => $subscription->trial_start,
+					'trial_end' => $subscription->trial_end,
+				],
+				'already_complete' => true,
+				'confirmed_at' => time(),
+			];
+
+			// Add log entry
+			$entry_data['log'] = [
+				[
+					'title' => 'Subscription Already Complete',
+					'timestamp' => time(),
+					'messages' => [
+						sprintf( 'Subscription ID: %s', $subscription->id ),
+						sprintf( 'Subscription Status: %s', $subscription->status ),
+						sprintf( 'Customer ID: %s', $subscription->customer ),
+						sprintf( 'Total Amount: %s %s', number_format( $entry_data['total_amount'], 2 ), strtoupper( $entry_data['currency'] ) ),
+					],
+				],
+			];
+
+			// Save to database
+			$payment_entry_id = Payments::add( $entry_data );
+
+			if ( $payment_entry_id ) {
+				// Store in static array for later entry linking
+				$this->stripe_payment_entries[] = [
+					'payment_id' => $subscription->id,
+					'block_id'   => $block_id,
+					'form_id'    => $form_data['form-id'] ?? '',
+				];
+
+				error_log( 
+					sprintf( 
+						'SureForms: Already completed subscription saved. ID: %s, Status: %s, Payment Entry ID: %d',
+						$subscription->id,
+						$subscription->status,
+						$payment_entry_id
+					)
+				);
+				
+				return true;
+			} else {
+				throw new \Exception( __( 'Failed to save completed subscription data.', 'sureforms' ) );
+			}
+
+		} catch ( \Exception $e ) {
+			error_log( 'SureForms Save Completed Subscription Error: ' . $e->getMessage() );
+			return false;
+		}
 	}
 }
