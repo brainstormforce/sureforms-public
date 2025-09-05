@@ -2,7 +2,7 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { useState, useEffect } from '@wordpress/element';
+import { useEffect, useMemo } from '@wordpress/element';
 import { ToggleControl } from '@wordpress/components';
 import { InspectorControls } from '@wordpress/block-editor';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
@@ -19,16 +19,7 @@ import { compose } from '@wordpress/compose';
 import { FieldsPreview } from '../FieldsPreview.jsx';
 import { useErrMessage } from '@Blocks/util';
 import ConditionalLogic from '@Components/conditional-logic';
-import countries from '../address/countries.json';
-
-// Create country options from the countries JSON
-const countryOptions = [
-	{ label: __( 'Select Country', 'sureforms' ), value: '' },
-	...countries.map( ( country ) => ( {
-		label: country.name,
-		value: country.code.toLowerCase(),
-	} ) ),
-];
+import countries from './countries.json';
 
 const Edit = ( { attributes, setAttributes, clientId } ) => {
 	const {
@@ -45,12 +36,14 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 		className,
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
-	// eslint-disable-next-line no-unused-vars
-	const [ code, setCode ] = useState( null );
-
-	function handleChange( e ) {
-		setCode( e.target.value );
-	}
+	// Create translatable country options using useMemo
+	const countryOptions = useMemo( () => [
+		{ label: __( 'Select Country', 'sureforms' ), value: '' },
+		...Object.entries( countries ).map( ( [ code, name ] ) => ( {
+			label: name,
+			value: code,
+		} ) ),
+	], [] );
 
 	useEffect( () => {
 		if ( formId !== currentFormId ) {
@@ -184,7 +177,6 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 			<PhoneComponent
 				attributes={ attributes }
 				blockID={ block_id }
-				handleChange={ handleChange }
 				setAttributes={ setAttributes }
 			/>
 			<div className="srfm-error-wrap"></div>
