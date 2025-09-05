@@ -1793,7 +1793,7 @@ class Helper {
 
 			// Get form title directly from post object, use "Blank Form" if empty.
 			$form_title = $form->post_title;
-			if ( empty( trim( (string) $form_title ) ) ) {
+			if ( empty( trim( self::get_string_value( $form_title ) ) ) ) {
 				$form_title = __( 'Blank Form', 'sureforms' );
 			}
 
