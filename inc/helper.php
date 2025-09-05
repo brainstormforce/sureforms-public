@@ -1756,38 +1756,40 @@ class Helper {
 	 * @since 1.9.1
 	 */
 	public static function get_forms_with_entry_counts( $timestamp, $limit = 0, $sort = true ) {
-		// Get all published forms.
+		// Get all published forms. Fetch only IDs to avoid touching global $post.
 		$args = [
-			'post_type'      => SRFM_FORMS_POST_TYPE,
-			'posts_per_page' => -1,
-			'post_status'    => 'publish',
-			'orderby'        => 'ID',
-			'order'          => 'DESC',
+			'post_type'              => SRFM_FORMS_POST_TYPE,
+			'posts_per_page'         => -1,
+			'post_status'            => 'publish',
+			'orderby'                => 'ID',
+			'order'                  => 'DESC',
+			'fields'                 => 'ids',
+			'no_found_rows'          => true,
+			'update_post_term_cache' => false,
+			'update_post_meta_cache' => false,
 		];
 
 		$query = new \WP_Query( $args );
 
-		if ( ! $query->have_posts() ) {
+		if ( empty( $query->posts ) ) {
 			return [];
 		}
 
 		$all_forms = [];
 
-		while ( $query->have_posts() ) {
-			$query->the_post();
-			$form_id = get_the_ID();
-
-			// Skip if form_id is false.
-			if ( false === $form_id ) {
+		foreach ( $query->posts as $form_id ) {
+			// Ensure we have a valid form ID.
+			$form_id = is_numeric( $form_id ) ? intval( $form_id ) : 0;
+			if ( $form_id <= 0 ) {
 				continue;
 			}
 
 			// Get entries count after the timestamp for this specific form.
 			$entry_count = Entries::get_entries_count_after( $timestamp, $form_id );
 
-			// Get form title, use "Blank Form" if empty.
-			$form_title = get_the_title();
-			if ( empty( trim( $form_title ) ) ) {
+			// Get form title by ID, use "Blank Form" if empty.
+			$form_title = get_the_title( $form_id );
+			if ( empty( trim( (string) $form_title ) ) ) {
 				$form_title = __( 'Blank Form', 'sureforms' );
 			}
 
@@ -1797,8 +1799,6 @@ class Helper {
 				'count'   => $entry_count,
 			];
 		}
-
-		wp_reset_postdata();
 
 		// Sort by count descending, then by form_id descending for consistency.
 		if ( $sort ) {
