@@ -11,6 +11,7 @@ import InspectorTab, {
 } from '@Components/inspector-tabs/InspectorTab.js';
 import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
 import SRFMTextControl from '@Components/text-control';
+import SRFMSelectControl from '@Components/select-control';
 import { PhoneComponent } from './components/default';
 import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
 import AddInitialAttr from '@Controls/addInitialAttr';
@@ -18,6 +19,16 @@ import { compose } from '@wordpress/compose';
 import { FieldsPreview } from '../FieldsPreview.jsx';
 import { useErrMessage } from '@Blocks/util';
 import ConditionalLogic from '@Components/conditional-logic';
+import countries from '../address/countries.json';
+
+// Create country options from the countries JSON
+const countryOptions = [
+	{ label: __( 'Select Country', 'sureforms' ), value: '' },
+	...countries.map( ( country ) => ( {
+		label: country.name,
+		value: country.code.toLowerCase(),
+	} ) ),
+];
 
 const Edit = ( { attributes, setAttributes, clientId } ) => {
 	const {
@@ -30,6 +41,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 		errorMsg,
 		formId,
 		autoCountry,
+		defaultCountry,
 		className,
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
@@ -134,6 +146,20 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 									setAttributes( { autoCountry: value } )
 								}
 							/>
+							{ ! autoCountry && (
+								<SRFMSelectControl
+									label={ __(
+										'Default Country',
+										'sureforms'
+									) }
+									data={ {
+										value: defaultCountry,
+										label: 'defaultCountry',
+									} }
+									setAttributes={ setAttributes }
+									options={ countryOptions }
+								/>
+							) }
 							<SRFMTextControl
 								label={ __( 'Help Text', 'sureforms' ) }
 								value={ help }

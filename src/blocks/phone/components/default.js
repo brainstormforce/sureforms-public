@@ -6,7 +6,8 @@ import { decodeHtmlEntities } from '@Blocks/util';
 import HelpText from '@Components/misc/HelpText';
 
 export const PhoneComponent = ( { setAttributes, attributes, blockID } ) => {
-	const { label, placeholder, required, autoCountry, help } = attributes;
+	const { label, placeholder, required, autoCountry, defaultCountry, help } =
+		attributes;
 	const [ country, setCountry ] = useState( '' );
 
 	const isRequired = required ? ' srfm-required' : '';
@@ -48,7 +49,9 @@ export const PhoneComponent = ( { setAttributes, attributes, blockID } ) => {
 					placeholder={ placeholder }
 					autoPlaceholder={ false }
 					pattern="[0-9]{10}"
-					defaultCountry={ autoCountry ? country : 'us' }
+					defaultCountry={
+						autoCountry ? country : defaultCountry || 'us'
+					}
 					separateDialCode={ true }
 				/>
 			</div>
