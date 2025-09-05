@@ -13,14 +13,16 @@ export const PhoneComponent = ( { setAttributes, attributes, blockID } ) => {
 	const isRequired = required ? ' srfm-required' : '';
 	const slug = 'phone';
 	useEffect( () => {
-		fetch( 'https://ipapi.co/json' )
-			.then( ( res ) => res.json() )
-			.then( ( res ) => {
-				let current_loc = res.country_code;
-				current_loc = current_loc.toLowerCase();
-				setCountry( current_loc );
-			} )
-			.catch( ( e ) => console.log( e ) );
+		if ( autoCountry ) {
+			fetch( 'https://ipapi.co/json' )
+				.then( ( res ) => res.json() )
+				.then( ( res ) => {
+					let current_loc = res.country_code;
+					current_loc = current_loc.toLowerCase();
+					setCountry( current_loc );
+				} )
+				.catch( ( e ) => console.log( e ) );
+		}
 	}, [ autoCountry ] );
 
 	return (
