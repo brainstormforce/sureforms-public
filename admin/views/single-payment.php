@@ -328,6 +328,7 @@ class Single_Payment {
 				</table>
 				<?php
 				// Add refund section for succeeded and partially refunded payments
+				$is_subscription = ! empty( $this->payment['type'] ) && 'subscription' === $this->payment['type'];
 				if ( ( 'succeeded' === $payment_status || 'partially_refunded' === $payment_status ) && ! empty( $this->payment['transaction_id'] ) && 'stripe' === $this->payment['gateway'] ) {
 					// Calculate refundable amount using the new column
 					$total_refunded    = floatval( $this->payment['refunded_amount'] ?? 0 );
@@ -343,10 +344,17 @@ class Single_Payment {
 					?>
 					<div class="srfm-refund-section" style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #ddd;">
 						<div style="margin-bottom: 15px;">
-							<strong><?php esc_html_e( 'Refund Payment', 'sureforms' ); ?></strong>
-							<p style="margin: 5px 0 10px 0; color: #666; font-size: 13px;">
-								<?php esc_html_e( 'Issue a full or partial refund for this payment through Stripe.', 'sureforms' ); ?>
-							</p>
+							<?php if ( $is_subscription ) { ?>
+								<strong><?php esc_html_e( 'Subscription Management', 'sureforms' ); ?></strong>
+								<p style="margin: 5px 0 10px 0; color: #666; font-size: 13px;">
+									<?php esc_html_e( 'Refund the current billing payment or cancel the entire subscription.', 'sureforms' ); ?>
+								</p>
+							<?php } else { ?>
+								<strong><?php esc_html_e( 'Refund Payment', 'sureforms' ); ?></strong>
+								<p style="margin: 5px 0 10px 0; color: #666; font-size: 13px;">
+									<?php esc_html_e( 'Issue a full or partial refund for this payment through Stripe.', 'sureforms' ); ?>
+								</p>
+							<?php } ?>
 							
 							<?php if ( $total_refunded > 0 ) { ?>
 								<div style="margin: 10px 0; padding: 8px 12px; background: #f0f6fc; border: 1px solid #c3ddfd; border-radius: 4px; font-size: 13px;">
@@ -398,16 +406,43 @@ class Single_Payment {
 										</div>
 									</div>
 									
-									<div>
-										<button type="button" id="srfm-refund-button" class="button button-secondary" 
-												data-payment-id="<?php echo esc_attr( $this->payment_id ); ?>"
-												data-transaction-id="<?php echo esc_attr( $this->payment['transaction_id'] ); ?>"
-												data-amount="<?php echo esc_attr( $amount ); ?>"
-												data-currency="<?php echo esc_attr( $currency ); ?>"
-												data-refundable-amount="<?php echo esc_attr( $refundable_amount ); ?>"
-												data-currency-symbol="<?php echo esc_attr( $currency_symbol ); ?>">
-											<?php esc_html_e( 'Issue Refund', 'sureforms' ); ?>
-										</button>
+									<div style="display: flex; gap: 10px; flex-wrap: wrap;">
+										<?php if ( $is_subscription ) { ?>
+											<!-- Subscription Payment Refund Button -->
+											<button type="button" id="srfm-subscription-refund-button" class="button button-secondary" 
+													data-payment-id="<?php echo esc_attr( $this->payment_id ); ?>"
+													data-transaction-id="<?php echo esc_attr( $this->payment['transaction_id'] ); ?>"
+													data-amount="<?php echo esc_attr( $amount ); ?>"
+													data-currency="<?php echo esc_attr( $currency ); ?>"
+													data-refundable-amount="<?php echo esc_attr( $refundable_amount ); ?>"
+													data-currency-symbol="<?php echo esc_attr( $currency_symbol ); ?>">
+												<?php esc_html_e( 'Refund Payment', 'sureforms' ); ?>
+											</button>
+											<!-- Cancel Subscription Button -->
+											<?php if ( ! empty( $this->payment['subscription_id'] ) && ! empty( $this->payment['subscription_status'] ) && 'cancelled' !== $this->payment['subscription_status'] ) { ?>
+												<button type="button" id="srfm-cancel-subscription-button" class="button button-primary" 
+														style="background-color: #dc3545; border-color: #dc3545;"
+														data-payment-id="<?php echo esc_attr( $this->payment_id ); ?>"
+														data-subscription-id="<?php echo esc_attr( $this->payment['subscription_id'] ); ?>">
+													<?php esc_html_e( 'Cancel Subscription', 'sureforms' ); ?>
+												</button>
+											<?php } elseif ( ! empty( $this->payment['subscription_status'] ) && 'cancelled' === $this->payment['subscription_status'] ) { ?>
+												<span style="padding: 6px 12px; background: #f8d7da; color: #721c24; border-radius: 4px; font-size: 13px; font-weight: 500;">
+													<?php esc_html_e( 'Subscription Cancelled', 'sureforms' ); ?>
+												</span>
+											<?php } ?>
+										<?php } else { ?>
+											<!-- Regular Payment Refund Button -->
+											<button type="button" id="srfm-refund-button" class="button button-secondary" 
+													data-payment-id="<?php echo esc_attr( $this->payment_id ); ?>"
+													data-transaction-id="<?php echo esc_attr( $this->payment['transaction_id'] ); ?>"
+													data-amount="<?php echo esc_attr( $amount ); ?>"
+													data-currency="<?php echo esc_attr( $currency ); ?>"
+													data-refundable-amount="<?php echo esc_attr( $refundable_amount ); ?>"
+													data-currency-symbol="<?php echo esc_attr( $currency_symbol ); ?>">
+												<?php esc_html_e( 'Issue Refund', 'sureforms' ); ?>
+											</button>
+										<?php } ?>
 									</div>
 								</div>
 							<?php } else { ?>
@@ -445,23 +480,37 @@ class Single_Payment {
 				'sureformsRefundData',
 				[
 					'ajaxurl' => admin_url( 'admin-ajax.php' ),
-					'nonce'   => wp_create_nonce( 'srfm_stripe_payment_nonce' ),
+					'nonce'   => wp_create_nonce( 'sureforms_admin_nonce' ),
 					'payment' => [
 						'original_amount'   => $amount,
 						'refundable_amount' => $refundable_amount,
 						'currency'          => $currency,
 						'currency_symbol'   => $currency_symbol,
+						'is_subscription'   => $is_subscription,
+						'subscription_id'   => $this->payment['subscription_id'] ?? '',
+						'subscription_status' => $this->payment['subscription_status'] ?? '',
 					],
 					'strings' => [
 						'confirm_message'        => __( 'Are you sure you want to refund this payment? This action cannot be undone.', 'sureforms' ),
 						'confirm_full_refund'    => sprintf( __( 'Are you sure you want to refund the full amount (%s)? This action cannot be undone.', 'sureforms' ), $currency_symbol . number_format( $refundable_amount, 2 ) ),
 						'confirm_partial_refund' => __( 'Are you sure you want to refund %amount%? This action cannot be undone.', 'sureforms' ),
-						'processing'             => __( 'Processing Refund...', 'sureforms' ),
+						'processing'             => __( 'Processing...', 'sureforms' ),
 						'success_message'        => __( 'Payment refunded successfully!', 'sureforms' ),
 						'error_prefix'           => __( 'Error: ', 'sureforms' ),
 						'error_fallback'         => __( 'Failed to process refund.', 'sureforms' ),
 						'network_error'          => __( 'Network error. Please try again.', 'sureforms' ),
 						'issue_refund'           => __( 'Issue Refund', 'sureforms' ),
+						
+						// Subscription-specific strings (following WPForms pattern)
+						'confirm_subscription_refund' => __( 'Are you sure you want to refund this subscription payment? This will refund the current billing cycle only.', 'sureforms' ),
+						'confirm_partial_subscription_refund' => __( 'Are you sure you want to refund %amount% from this subscription payment?', 'sureforms' ),
+						'confirm_subscription_cancel' => __( 'Are you sure you want to cancel this subscription? This will stop all future billing and cannot be undone.', 'sureforms' ),
+						'subscription_refund_success' => __( 'Subscription payment refunded successfully!', 'sureforms' ),
+						'subscription_refund_failed' => __( 'Subscription refund failed. Please try again.', 'sureforms' ),
+						'subscription_cancel_success' => __( 'Subscription cancelled successfully!', 'sureforms' ),
+						'subscription_cancel_failed' => __( 'Subscription cancellation failed. Please try again.', 'sureforms' ),
+						'refund_subscription' => __( 'Refund Payment', 'sureforms' ),
+						'cancel_subscription' => __( 'Cancel Subscription', 'sureforms' ),
 						'amount_required'        => __( 'Please enter a refund amount.', 'sureforms' ),
 						'amount_invalid'         => __( 'Please enter a valid amount.', 'sureforms' ),
 						'amount_too_low'         => __( 'Refund amount must be at least $0.01.', 'sureforms' ),
