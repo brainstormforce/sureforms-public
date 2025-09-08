@@ -463,10 +463,10 @@ async function handleFormSubmission(
 		const paymentResult = await handleFormPayment( form );
 		console.log( 'paymentResult->', paymentResult );
 		if ( ! paymentResult ) {
+			// Remove loading.
+			loader.classList.remove( 'srfm-active' );
 			return;
 		}
-
-		// return;
 
 		const formStatus = await submitFormData( form );
 		if ( formStatus?.success ) {

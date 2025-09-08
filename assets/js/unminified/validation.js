@@ -63,7 +63,7 @@ async function processAllPayments( form ) {
 
 			if ( paymentData && paymentData.clientSecret ) {
 				// Wrap each confirmation in individual error handling
-				const paymentPromise = confirmPayment( blockId, paymentData, form )
+				const paymentPromise = srfmConfirmPayment( blockId, paymentData, form )
 					.catch( error => {
 						// Enhanced error reporting per block
 						const errorMessage = `${ paymentType.charAt(0).toUpperCase() + paymentType.slice(1) } payment failed for block ${ blockId }: ${ error.message }`;
@@ -118,8 +118,8 @@ async function processAllPayments( form ) {
  * @param {Object}      paymentData - The payment data.
  * @param {HTMLElement} form        - The form element.
  */
-async function confirmPayment( blockId, paymentData, form ) {
-	const { stripe, elements, clientSecret, paymentType } = paymentData;
+async function srfmConfirmPayment( blockId, paymentData, form ) {
+	const { elements, paymentType } = paymentData;
 
 	// First submit the elements
 	const { error: submitError } = await elements.submit();
@@ -210,17 +210,17 @@ async function confirmSubscription( blockId, paymentData, form ) {
 			clientSecret: clientSecret,
 			confirmParams: {
 				return_url: window.location.href,
-				payment_method_data: {
-					billing_details: {
-						name: extractBillingName( form, blockId ),
-						email: extractBillingEmail( form, blockId ),
-					}
-				}
+				// payment_method_data: {
+				// 	billing_details: {
+				// 		name: extractBillingName( form, blockId ),
+				// 		email: extractBillingEmail( form, blockId ),
+				// 	}
+				// }
 			},
 			redirect: 'if_required'
 		});
 
-		console.log( `SureForms: Subscription confirmation result for block ${ blockId }:`, result );
+		console.log( `confirmPaymentResult SureForms: Subscription confirmation result for block ${ blockId }:`, result );
 
 		if ( result.error ) {
 			console.error( `SureForms: Subscription confirmation failed for block ${ blockId }:`, result.error );
