@@ -131,12 +131,15 @@ class StripePayment {
 	updatePaymentIntentAmount( blockId, newAmount, paymentHiddenInput ) {
 		// Only update display amount, don't create payment intent yet
 		// Payment intent will be created during form submission
-		console.log(`Amount updated for block ${blockId}: $${newAmount}`);
+		console.log( `Amount updated for block ${ blockId }: $${ newAmount }` );
 	}
 
 	/**
 	 * Create payment intent only during form submission
 	 * This method should be called from form submission handler
+	 * @param blockId
+	 * @param amount
+	 * @param paymentInput
 	 */
 	async createPaymentIntentOnSubmission( blockId, amount, paymentInput ) {
 		if ( amount <= 0 ) {
@@ -148,7 +151,8 @@ class StripePayment {
 		this.set_block_loading( blockId, true );
 
 		const currency = paymentInput.dataset.currency || 'usd';
-		const description = paymentInput.dataset.description || 'SureForms Payment';
+		const description =
+			paymentInput.dataset.description || 'SureForms Payment';
 
 		const data = new FormData();
 		data.append( 'action', 'srfm_create_payment_intent' );
@@ -179,17 +183,22 @@ class StripePayment {
 				const elementData = StripePayment.paymentElements[ blockId ];
 				if ( elementData ) {
 					elementData.clientSecret = clientSecret;
-					
+
 					try {
 						// Update elements with the new client secret only
 						// Amount is automatically derived from the PaymentIntent
-						elementData.elements.update({
-							clientSecret: clientSecret
-						});
-						
-						console.log( `SureForms: Payment elements updated with client secret for block ${ blockId }` );
+						elementData.elements.update( {
+							clientSecret,
+						} );
+
+						console.log(
+							`SureForms: Payment elements updated with client secret for block ${ blockId }`
+						);
 					} catch ( updateError ) {
-						console.warn( `SureForms: Element update warning for block ${ blockId }:`, updateError );
+						console.warn(
+							`SureForms: Element update warning for block ${ blockId }:`,
+							updateError
+						);
 						// Continue processing even if element update has minor issues
 					}
 				}
@@ -253,8 +262,9 @@ class StripePayment {
 		];
 
 		// Check payment type from data attribute
-		const paymentType = field.getAttribute( 'data-payment-type' ) || 'one-time';
-		
+		const paymentType =
+			field.getAttribute( 'data-payment-type' ) || 'one-time';
+
 		// Initialize Stripe elements based on payment type
 		if ( paymentType === 'subscription' ) {
 			this.initializeSubscriptionElements( blockId, paymentInput );
@@ -266,6 +276,8 @@ class StripePayment {
 	/**
 	 * Initialize Stripe elements without creating payment intent
 	 * Payment intent will be created only during form submission
+	 * @param blockId
+	 * @param paymentInput
 	 */
 	initializeStripeElements( blockId, paymentInput ) {
 		const stripeKey = paymentInput.dataset.stripeKey;
@@ -335,43 +347,59 @@ class StripePayment {
 		paymentElement.on( 'change', ( event ) => {
 			// Handle element validation errors without disrupting payment flow
 			if ( event.error ) {
-				console.warn( `SureForms: Card element validation warning for block ${ blockId }:`, event.error );
+				console.warn(
+					`SureForms: Card element validation warning for block ${ blockId }:`,
+					event.error
+				);
 				// Don't throw errors here as they're often non-fatal validation warnings
 			} else if ( event.complete ) {
-				console.log( `SureForms: Card element completed for block ${ blockId }` );
+				console.log(
+					`SureForms: Card element completed for block ${ blockId }`
+				);
 			}
 		} );
 	}
 
 	/**
 	 * Validate that Stripe element is properly initialized and mounted
+	 * @param blockId
 	 */
 	validateElementState( blockId ) {
 		const elementData = StripePayment.paymentElements[ blockId ];
-		
+
 		if ( ! elementData ) {
-			console.warn( `SureForms: No element data found for block ${ blockId }` );
+			console.warn(
+				`SureForms: No element data found for block ${ blockId }`
+			);
 			return false;
 		}
-		
+
 		const { stripe, elements, paymentElement } = elementData;
-		
+
 		if ( ! stripe ) {
-			console.error( `SureForms: Stripe instance missing for block ${ blockId }` );
+			console.error(
+				`SureForms: Stripe instance missing for block ${ blockId }`
+			);
 			return false;
 		}
-		
+
 		if ( ! elements ) {
-			console.error( `SureForms: Stripe elements missing for block ${ blockId }` );
+			console.error(
+				`SureForms: Stripe elements missing for block ${ blockId }`
+			);
 			return false;
 		}
-		
+
 		if ( ! paymentElement ) {
-			console.error( `SureForms: Payment element missing for block ${ blockId }` );
+			console.error(
+				`SureForms: Payment element missing for block ${ blockId }`
+			);
 			return false;
 		}
-		
-		console.log( `SureForms: Element state validation passed for block ${ blockId }` );
+
+		console.log(
+			`SureForms: Element state validation passed for block ${ blockId }`
+		);
 		return true;
 	}
 
@@ -397,6 +425,8 @@ class StripePayment {
 
 	/**
 	 * Initialize Stripe elements for subscriptions
+	 * @param blockId
+	 * @param paymentInput
 	 */
 	initializeSubscriptionElements( blockId, paymentInput ) {
 		const stripeKey = paymentInput.dataset.stripeKey;
@@ -467,18 +497,30 @@ class StripePayment {
 		paymentElement.on( 'change', ( event ) => {
 			// Handle element validation errors without disrupting payment flow
 			if ( event.error ) {
-				console.warn( `SureForms: Subscription element validation warning for block ${ blockId }:`, event.error );
+				console.warn(
+					`SureForms: Subscription element validation warning for block ${ blockId }:`,
+					event.error
+				);
 				// Don't throw errors here as they're often non-fatal validation warnings
 			} else if ( event.complete ) {
-				console.log( `SureForms: Subscription element completed for block ${ blockId }` );
+				console.log(
+					`SureForms: Subscription element completed for block ${ blockId }`
+				);
 			}
 		} );
 	}
 
 	/**
 	 * Create subscription intent using simplified approach like simple-stripe-subscriptions
+	 * @param blockId
+	 * @param amount
+	 * @param paymentInput
 	 */
-	async createSubscriptionIntentOnSubmission( blockId, amount, paymentInput ) {
+	async createSubscriptionIntentOnSubmission(
+		blockId,
+		amount,
+		paymentInput
+	) {
 		if ( amount <= 0 ) {
 			throw new Error(
 				'createSubscriptionIntentOnSubmission: Amount must be greater than 0'
@@ -488,8 +530,9 @@ class StripePayment {
 		this.set_block_loading( blockId, true );
 
 		const currency = paymentInput.dataset.currency || 'usd';
-		const description = paymentInput.dataset.description || 'SureForms Subscription';
-		
+		const description =
+			paymentInput.dataset.description || 'SureForms Subscription';
+
 		// Extract customer data from form
 		const customerData = this.extractCustomerData( paymentInput );
 
@@ -513,7 +556,7 @@ class StripePayment {
 
 			const responseData = await response.json();
 
-			console.log("SureForms: Subscription response:", responseData);
+			console.log( 'SureForms: Subscription response:', responseData );
 
 			this.set_block_loading( blockId, false );
 
@@ -528,31 +571,43 @@ class StripePayment {
 					subscriptionId,
 					customerId,
 					paymentIntentId,
-					amount: amount,
-					interval: customerData.interval
+					amount,
+					interval: customerData.interval,
 				};
 
 				// Update elements with client secret
 				const elementData = StripePayment.paymentElements[ blockId ];
 				if ( elementData ) {
 					elementData.clientSecret = clientSecret;
-					
+
 					try {
-						elementData.elements.update({
-							clientSecret: clientSecret
-						});
-						
-						console.log( `SureForms: Subscription elements updated with client secret for block ${ blockId }` );
+						elementData.elements.update( {
+							clientSecret,
+						} );
+
+						console.log(
+							`SureForms: Subscription elements updated with client secret for block ${ blockId }`
+						);
 					} catch ( updateError ) {
-						console.warn( `SureForms: Subscription element update warning for block ${ blockId }:`, updateError );
+						console.warn(
+							`SureForms: Subscription element update warning for block ${ blockId }:`,
+							updateError
+						);
 						// Continue processing even if element update has minor issues
 					}
 				}
 
-				return { clientSecret, subscriptionId, customerId, paymentIntentId };
+				return {
+					clientSecret,
+					subscriptionId,
+					customerId,
+					paymentIntentId,
+				};
 			}
 			throw new Error(
-				responseData.data?.message || responseData.data || 'Failed to create subscription'
+				responseData.data?.message ||
+					responseData.data ||
+					'Failed to create subscription'
 			);
 		} catch ( error ) {
 			this.set_block_loading( blockId, false );
@@ -563,83 +618,121 @@ class StripePayment {
 
 	/**
 	 * Extract customer data from form fields or use dummy data
+	 * @param paymentInput
 	 */
 	extractCustomerData( paymentInput ) {
 		const form = paymentInput.closest( 'form' );
 		const block = paymentInput.closest( '.srfm-block' );
-		
+
 		// Get subscription plan data from block attributes
-		const planName = block.dataset.subscriptionPlanName || 'Subscription Plan';
+		const planName =
+			block.dataset.subscriptionPlanName || 'Subscription Plan';
 		const interval = block.dataset.subscriptionInterval || 'month';
 		const customerNameField = block.dataset.customerNameField;
 		const customerEmailField = block.dataset.customerEmailField;
-		
+
 		// Try to extract customer data from mapped form fields
 		let customerName = 'SureForms Customer';
 		let customerEmail = 'customer@example.com';
-		
+
 		if ( customerNameField && form ) {
-			const nameInput = form.querySelector( `[name*="${customerNameField}"]` );
+			const nameInput = form.querySelector(
+				`[name*="${ customerNameField }"]`
+			);
 			if ( nameInput && nameInput.value.trim() ) {
 				customerName = nameInput.value.trim();
 			}
 		}
-		
+
 		if ( customerEmailField && form ) {
-			const emailInput = form.querySelector( `[name*="${customerEmailField}"]` );
+			const emailInput = form.querySelector(
+				`[name*="${ customerEmailField }"]`
+			);
 			if ( emailInput && emailInput.value.trim() ) {
 				customerEmail = emailInput.value.trim();
 			}
 		}
-		
+
 		return {
 			name: customerName,
 			email: customerEmail,
-			interval: interval,
-			planName: planName,
+			interval,
+			planName,
 		};
 	}
 
 	/**
 	 * Static method to create payment intents for all payment blocks in a form during submission
 	 * This should be called from the form submission handler
+	 * @param form
 	 */
 	static async createPaymentIntentsForForm( form ) {
-		const paymentBlocks = form.querySelectorAll('.srfm-block.srfm-payment-block');
+		const paymentBlocks = form.querySelectorAll(
+			'.srfm-block.srfm-payment-block'
+		);
 		const results = [];
 
 		for ( const block of paymentBlocks ) {
-			const blockId = block.getAttribute('data-block-id');
-			const paymentInput = block.querySelector('input.srfm-payment-input');
-			const paymentType = block.getAttribute('data-payment-type') || 'one-time';
-			
-			if ( !paymentInput ) {
+			const blockId = block.getAttribute( 'data-block-id' );
+			const paymentInput = block.querySelector(
+				'input.srfm-payment-input'
+			);
+			const paymentType =
+				block.getAttribute( 'data-payment-type' ) || 'one-time';
+
+			if ( ! paymentInput ) {
 				continue;
 			}
 
 			// Calculate current amount from form
-			const paymentValueElement = block.querySelector('.srfm-payment-value');
+			const paymentValueElement = block.querySelector(
+				'.srfm-payment-value'
+			);
 			const amountText = paymentValueElement?.textContent || '$0.00';
-			const amount = parseFloat(amountText.replace(/[^0-9.]/g, '')) || 0;
+			const amount =
+				parseFloat( amountText.replace( /[^0-9.]/g, '' ) ) || 0;
 
 			if ( amount <= 0 ) {
-				console.warn(`Skipping payment block ${blockId} - amount is ${amount}`);
+				console.warn(
+					`Skipping payment block ${ blockId } - amount is ${ amount }`
+				);
 				continue;
 			}
 
 			try {
 				// Create a temporary instance to call the method
-				const tempInstance = new StripePayment(form);
-				
+				const tempInstance = new StripePayment( form );
+
 				if ( paymentType === 'subscription' ) {
-					const result = await tempInstance.createSubscriptionIntentOnSubmission(blockId, amount, paymentInput);
-					results.push({ blockId, paymentType: 'subscription', ...result });
+					const result =
+						await tempInstance.createSubscriptionIntentOnSubmission(
+							blockId,
+							amount,
+							paymentInput
+						);
+					results.push( {
+						blockId,
+						paymentType: 'subscription',
+						...result,
+					} );
 				} else {
-					const result = await tempInstance.createPaymentIntentOnSubmission(blockId, amount, paymentInput);
-					results.push({ blockId, paymentType: 'one-time', ...result });
+					const result =
+						await tempInstance.createPaymentIntentOnSubmission(
+							blockId,
+							amount,
+							paymentInput
+						);
+					results.push( {
+						blockId,
+						paymentType: 'one-time',
+						...result,
+					} );
 				}
 			} catch ( error ) {
-				console.error(`Failed to create ${paymentType} intent for block ${blockId}:`, error);
+				console.error(
+					`Failed to create ${ paymentType } intent for block ${ blockId }:`,
+					error
+				);
 				throw error;
 			}
 		}
@@ -652,107 +745,153 @@ class StripePayment {
 	/**
 	 * Confirm payments using simple-stripe-subscriptions approach with enhanced error handling
 	 * This should be called after payment intents are created
+	 * @param form
+	 * @param paymentResults
 	 */
 	static async confirmPaymentsForForm( form, paymentResults ) {
 		const confirmationResults = [];
 
 		// Validate inputs
-		if ( !Array.isArray( paymentResults ) || paymentResults.length === 0 ) {
+		if (
+			! Array.isArray( paymentResults ) ||
+			paymentResults.length === 0
+		) {
 			console.warn( 'SureForms: No payment results to confirm' );
 			return confirmationResults;
 		}
 
 		for ( const result of paymentResults ) {
 			const { blockId, paymentType, clientSecret } = result;
-			
+
 			// Enhanced validation like simple-stripe-subscriptions
-			if ( !blockId ) {
+			if ( ! blockId ) {
 				console.error( 'SureForms: Missing blockId in payment result' );
 				continue;
 			}
 
-			if ( !clientSecret ) {
-				console.error( `SureForms: No client secret for block ${blockId}` );
-				throw new Error( `Payment confirmation failed: No client secret for ${paymentType}` );
+			if ( ! clientSecret ) {
+				console.error(
+					`SureForms: No client secret for block ${ blockId }`
+				);
+				throw new Error(
+					`Payment confirmation failed: No client secret for ${ paymentType }`
+				);
 			}
 
 			const elementData = StripePayment.paymentElements[ blockId ];
-			if ( !elementData ) {
-				console.error( `SureForms: No Stripe elements found for block ${blockId}` );
-				throw new Error( `Payment confirmation failed: Stripe elements not initialized for ${paymentType}` );
+			if ( ! elementData ) {
+				console.error(
+					`SureForms: No Stripe elements found for block ${ blockId }`
+				);
+				throw new Error(
+					`Payment confirmation failed: Stripe elements not initialized for ${ paymentType }`
+				);
 			}
 
 			const { stripe, elements } = elementData;
 
 			// Validate Stripe instances
-			if ( !stripe || !elements ) {
-				console.error( `SureForms: Invalid Stripe instances for block ${blockId}` );
-				throw new Error( `Payment confirmation failed: Invalid Stripe configuration for ${paymentType}` );
+			if ( ! stripe || ! elements ) {
+				console.error(
+					`SureForms: Invalid Stripe instances for block ${ blockId }`
+				);
+				throw new Error(
+					`Payment confirmation failed: Invalid Stripe configuration for ${ paymentType }`
+				);
 			}
 
 			try {
-				console.log( `SureForms: Confirming ${paymentType} for block ${blockId}` );
+				console.log(
+					`SureForms: Confirming ${ paymentType } for block ${ blockId }`
+				);
 
 				// Use single confirmPayment approach from simple-stripe-subscriptions
-				const confirmationResult = await stripe.confirmPayment({
+				const confirmationResult = await stripe.confirmPayment( {
 					elements,
-					clientSecret: clientSecret,
+					clientSecret,
 					confirmParams: {
 						return_url: window.location.href,
 						payment_method_data: {
 							billing_details: {
-								email: this.extractCustomerEmail( form ) || 'customer@example.com'
-							}
-						}
+								email:
+									this.extractCustomerEmail( form ) ||
+									'customer@example.com',
+							},
+						},
 					},
-					redirect: 'if_required'
-				});
+					redirect: 'if_required',
+				} );
 
 				if ( confirmationResult.error ) {
-					console.error( `SureForms: ${paymentType} confirmation failed:`, confirmationResult.error );
-					
+					console.error(
+						`SureForms: ${ paymentType } confirmation failed:`,
+						confirmationResult.error
+					);
+
 					// Provide specific error messages like simple-stripe-subscriptions
 					let errorMessage = confirmationResult.error.message;
 					if ( confirmationResult.error.code === 'card_declined' ) {
-						errorMessage = 'Your card was declined. Please try a different payment method.';
-					} else if ( confirmationResult.error.code === 'insufficient_funds' ) {
-						errorMessage = 'Your card has insufficient funds. Please try a different card.';
+						errorMessage =
+							'Your card was declined. Please try a different payment method.';
+					} else if (
+						confirmationResult.error.code === 'insufficient_funds'
+					) {
+						errorMessage =
+							'Your card has insufficient funds. Please try a different card.';
 					}
-					
+
 					throw new Error( errorMessage );
 				} else {
-					console.log( `SureForms: ${paymentType} confirmed successfully for block ${blockId}` );
-					
+					console.log(
+						`SureForms: ${ paymentType } confirmed successfully for block ${ blockId }`
+					);
+
 					// Prepare payment data for form submission like simple-stripe-subscriptions
 					const paymentData = {
-						blockId: blockId,
-						paymentType: paymentType,
-						paymentId: paymentType === 'subscription' ? result.subscriptionId : result.paymentIntentId,
-						subscriptionId: paymentType === 'subscription' ? result.subscriptionId : null,
+						blockId,
+						paymentType,
+						paymentId:
+							paymentType === 'subscription'
+								? result.subscriptionId
+								: result.paymentIntentId,
+						subscriptionId:
+							paymentType === 'subscription'
+								? result.subscriptionId
+								: null,
 						amount: result.amount,
 						interval: result.interval || null,
-						status: 'succeeded'
+						status: 'succeeded',
 					};
 
 					confirmationResults.push( paymentData );
 				}
-
 			} catch ( error ) {
-				console.error( `SureForms: Error confirming ${paymentType} for block ${blockId}:`, error );
-				throw new Error( `${paymentType} confirmation failed: ${error.message}` );
+				console.error(
+					`SureForms: Error confirming ${ paymentType } for block ${ blockId }:`,
+					error
+				);
+				throw new Error(
+					`${ paymentType } confirmation failed: ${ error.message }`
+				);
 			}
 		}
 
-		console.log( "SureForms: Payment confirmations complete:", confirmationResults );
+		console.log(
+			'SureForms: Payment confirmations complete:',
+			confirmationResults
+		);
 		return confirmationResults;
 	}
 
 	/**
 	 * Extract customer email from form for billing details
+	 * @param form
 	 */
 	static extractCustomerEmail( form ) {
 		// Try to find email field in form
-		const emailFields = form.querySelectorAll( 'input[type="email"], input[name*="email"]' );
+		const emailFields = form.querySelectorAll(
+			'input[type="email"], input[name*="email"]'
+		);
 		for ( const field of emailFields ) {
 			if ( field.value && field.value.includes( '@' ) ) {
 				return field.value.trim();

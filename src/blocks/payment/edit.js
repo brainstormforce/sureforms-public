@@ -107,9 +107,13 @@ const Edit = ( props ) => {
 					// Check if block has a slug (is a form field)
 					if ( block.attributes?.slug ) {
 						const slug = block.attributes.slug;
-						const label = block.attributes.label || block.name || __( 'Form Field', 'sureforms' );
-						const fieldType = block.name?.replace( 'srfm/', '' ) || 'field';
-						
+						const label =
+							block.attributes.label ||
+							block.name ||
+							__( 'Form Field', 'sureforms' );
+						const fieldType =
+							block.name?.replace( 'srfm/', '' ) || 'field';
+
 						formFields.push( {
 							slug,
 							label: `${ label } (${ fieldType })`,
@@ -327,8 +331,14 @@ const Edit = ( props ) => {
 					label={ __( 'Payment Type', 'sureforms' ) }
 					value={ paymentType || 'one-time' }
 					options={ [
-						{ label: __( 'One-time Payment', 'sureforms' ), value: 'one-time' },
-						{ label: __( 'Subscription', 'sureforms' ), value: 'subscription' },
+						{
+							label: __( 'One-time Payment', 'sureforms' ),
+							value: 'one-time',
+						},
+						{
+							label: __( 'Subscription', 'sureforms' ),
+							value: 'subscription',
+						},
 					] }
 					onChange={ ( value ) => {
 						setAttributes( { paymentType: value } );
@@ -336,106 +346,209 @@ const Edit = ( props ) => {
 				/>
 			),
 		},
-		...(paymentType === 'subscription' ? [
-			{
-				id: 'subscription-plan-name',
-				component: (
-					<SRFMTextControl
-						label={ __( 'Subscription Plan Name', 'sureforms' ) }
-						value={ subscriptionPlans?.[0]?.name || 'Subscription Plan' }
-						data={ {
-							value: subscriptionPlans?.[0]?.name || 'Subscription Plan',
-							label: 'subscription-plan-name',
-						} }
-						onChange={ ( value ) => {
-							const updatedPlans = [...(subscriptionPlans || [])];
-							if ( updatedPlans.length === 0 ) {
-								updatedPlans.push( { name: value, interval: 'month', customer_name: '', customer_email: '' } );
-							} else {
-								updatedPlans[0] = { ...updatedPlans[0], name: value };
+		...( paymentType === 'subscription'
+			? [
+				{
+					id: 'subscription-plan-name',
+					component: (
+						<SRFMTextControl
+							label={ __(
+								'Subscription Plan Name',
+								'sureforms'
+							) }
+							value={
+								subscriptionPlans?.[ 0 ]?.name ||
+									'Subscription Plan'
 							}
-							setAttributes( { subscriptionPlans: updatedPlans } );
-						} }
-					/>
-				),
-			},
-			{
-				id: 'subscription-interval',
-				component: (
-					<SelectControl
-						label={ __( 'Billing Interval', 'sureforms' ) }
-						value={ subscriptionPlans?.[0]?.interval || 'month' }
-						options={ [
-							{ label: __( 'Daily', 'sureforms' ), value: 'day' },
-							{ label: __( 'Weekly', 'sureforms' ), value: 'week' },
-							{ label: __( 'Monthly', 'sureforms' ), value: 'month' },
-							{ label: __( 'Yearly', 'sureforms' ), value: 'year' },
-						] }
-						onChange={ ( value ) => {
-							const updatedPlans = [...(subscriptionPlans || [])];
-							if ( updatedPlans.length === 0 ) {
-								updatedPlans.push( { name: 'Subscription Plan', interval: value, customer_name: '', customer_email: '' } );
-							} else {
-								updatedPlans[0] = { ...updatedPlans[0], interval: value };
+							data={ {
+								value:
+										subscriptionPlans?.[ 0 ]?.name ||
+										'Subscription Plan',
+								label: 'subscription-plan-name',
+							} }
+							onChange={ ( value ) => {
+								const updatedPlans = [
+									...( subscriptionPlans || [] ),
+								];
+								if ( updatedPlans.length === 0 ) {
+									updatedPlans.push( {
+										name: value,
+										interval: 'month',
+										customer_name: '',
+										customer_email: '',
+									} );
+								} else {
+									updatedPlans[ 0 ] = {
+										...updatedPlans[ 0 ],
+										name: value,
+									};
+								}
+								setAttributes( {
+									subscriptionPlans: updatedPlans,
+								} );
+							} }
+						/>
+					),
+				},
+				{
+					id: 'subscription-interval',
+					component: (
+						<SelectControl
+							label={ __( 'Billing Interval', 'sureforms' ) }
+							value={
+								subscriptionPlans?.[ 0 ]?.interval ||
+									'month'
 							}
-							setAttributes( { subscriptionPlans: updatedPlans } );
-						} }
-					/>
-				),
-			},
-			{
-				id: 'customer-name-field',
-				component: (
-					<SelectControl
-						label={ __( 'Customer Name Field', 'sureforms' ) }
-						value={ subscriptionPlans?.[0]?.customer_name || '' }
-						options={ [
-							{ label: __( 'Select a field…', 'sureforms' ), value: '' },
-							...availableFormFields.map( ( field ) => ({
-								label: field.label,
-								value: field.slug,
-							}) ),
-						] }
-						onChange={ ( value ) => {
-							const updatedPlans = [...(subscriptionPlans || [])];
-							if ( updatedPlans.length === 0 ) {
-								updatedPlans.push( { name: 'Subscription Plan', interval: 'month', customer_name: value, customer_email: '' } );
-							} else {
-								updatedPlans[0] = { ...updatedPlans[0], customer_name: value };
+							options={ [
+								{
+									label: __( 'Daily', 'sureforms' ),
+									value: 'day',
+								},
+								{
+									label: __( 'Weekly', 'sureforms' ),
+									value: 'week',
+								},
+								{
+									label: __( 'Monthly', 'sureforms' ),
+									value: 'month',
+								},
+								{
+									label: __( 'Yearly', 'sureforms' ),
+									value: 'year',
+								},
+							] }
+							onChange={ ( value ) => {
+								const updatedPlans = [
+									...( subscriptionPlans || [] ),
+								];
+								if ( updatedPlans.length === 0 ) {
+									updatedPlans.push( {
+										name: 'Subscription Plan',
+										interval: value,
+										customer_name: '',
+										customer_email: '',
+									} );
+								} else {
+									updatedPlans[ 0 ] = {
+										...updatedPlans[ 0 ],
+										interval: value,
+									};
+								}
+								setAttributes( {
+									subscriptionPlans: updatedPlans,
+								} );
+							} }
+						/>
+					),
+				},
+				{
+					id: 'customer-name-field',
+					component: (
+						<SelectControl
+							label={ __(
+								'Customer Name Field',
+								'sureforms'
+							) }
+							value={
+								subscriptionPlans?.[ 0 ]?.customer_name ||
+									''
 							}
-							setAttributes( { subscriptionPlans: updatedPlans } );
-						} }
-						help={ __( 'Select the field that contains the customer name', 'sureforms' ) }
-					/>
-				),
-			},
-			{
-				id: 'customer-email-field',
-				component: (
-					<SelectControl
-						label={ __( 'Customer Email Field', 'sureforms' ) }
-						value={ subscriptionPlans?.[0]?.customer_email || '' }
-						options={ [
-							{ label: __( 'Select a field…', 'sureforms' ), value: '' },
-							...availableFormFields.map( ( field ) => ({
-								label: field.label,
-								value: field.slug,
-							}) ),
-						] }
-						onChange={ ( value ) => {
-							const updatedPlans = [...(subscriptionPlans || [])];
-							if ( updatedPlans.length === 0 ) {
-								updatedPlans.push( { name: 'Subscription Plan', interval: 'month', customer_name: '', customer_email: value } );
-							} else {
-								updatedPlans[0] = { ...updatedPlans[0], customer_email: value };
+							options={ [
+								{
+									label: __(
+										'Select a field…',
+										'sureforms'
+									),
+									value: '',
+								},
+								...availableFormFields.map( ( field ) => ( {
+									label: field.label,
+									value: field.slug,
+								} ) ),
+							] }
+							onChange={ ( value ) => {
+								const updatedPlans = [
+									...( subscriptionPlans || [] ),
+								];
+								if ( updatedPlans.length === 0 ) {
+									updatedPlans.push( {
+										name: 'Subscription Plan',
+										interval: 'month',
+										customer_name: value,
+										customer_email: '',
+									} );
+								} else {
+									updatedPlans[ 0 ] = {
+										...updatedPlans[ 0 ],
+										customer_name: value,
+									};
+								}
+								setAttributes( {
+									subscriptionPlans: updatedPlans,
+								} );
+							} }
+							help={ __(
+								'Select the field that contains the customer name',
+								'sureforms'
+							) }
+						/>
+					),
+				},
+				{
+					id: 'customer-email-field',
+					component: (
+						<SelectControl
+							label={ __(
+								'Customer Email Field',
+								'sureforms'
+							) }
+							value={
+								subscriptionPlans?.[ 0 ]?.customer_email ||
+									''
 							}
-							setAttributes( { subscriptionPlans: updatedPlans } );
-						} }
-						help={ __( 'Select the field that contains the customer email', 'sureforms' ) }
-					/>
-				),
-			},
-		] : []),
+							options={ [
+								{
+									label: __(
+										'Select a field…',
+										'sureforms'
+									),
+									value: '',
+								},
+								...availableFormFields.map( ( field ) => ( {
+									label: field.label,
+									value: field.slug,
+								} ) ),
+							] }
+							onChange={ ( value ) => {
+								const updatedPlans = [
+									...( subscriptionPlans || [] ),
+								];
+								if ( updatedPlans.length === 0 ) {
+									updatedPlans.push( {
+										name: 'Subscription Plan',
+										interval: 'month',
+										customer_name: '',
+										customer_email: value,
+									} );
+								} else {
+									updatedPlans[ 0 ] = {
+										...updatedPlans[ 0 ],
+										customer_email: value,
+									};
+								}
+								setAttributes( {
+									subscriptionPlans: updatedPlans,
+								} );
+							} }
+							help={ __(
+								'Select the field that contains the customer email',
+								'sureforms'
+							) }
+						/>
+					),
+				},
+			  ]
+			: [] ),
 		{
 			id: 'error-message',
 			component: required ? (
