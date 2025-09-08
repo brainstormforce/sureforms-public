@@ -13,7 +13,7 @@ export const PhoneComponent = ( { setAttributes, attributes, blockID } ) => {
 	const isRequired = required ? ' srfm-required' : '';
 	const slug = 'phone';
 	useEffect( () => {
-		if ( autoCountry ) {
+		if ( autoCountry && country === '' ) {
 			fetch( 'https://ipapi.co/json' )
 				.then( ( res ) => res.json() )
 				.then( ( res ) => {
