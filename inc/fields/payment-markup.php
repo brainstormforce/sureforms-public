@@ -157,12 +157,12 @@ class Payment_Markup extends Base {
 		?>
 		<div data-block-id="<?php echo esc_attr( $this->block_id ); ?>" 
 			 data-payment-type="<?php echo esc_attr( $this->payment_type ); ?>"
-			 <?php if ( 'subscription' === $this->payment_type && ! empty( $this->subscription_plans[0] ) ) : ?>
+			 <?php if ( 'subscription' === $this->payment_type && ! empty( $this->subscription_plans[0] ) ) { ?>
 			 data-subscription-plan-name="<?php echo esc_attr( $this->subscription_plans[0]['name'] ?? 'Subscription Plan' ); ?>"
 			 data-subscription-interval="<?php echo esc_attr( $this->subscription_plans[0]['interval'] ?? 'month' ); ?>"
 			 data-customer-name-field="<?php echo esc_attr( $this->subscription_plans[0]['customer_name'] ?? '' ); ?>"
 			 data-customer-email-field="<?php echo esc_attr( $this->subscription_plans[0]['customer_email'] ?? '' ); ?>"
-			 <?php endif; ?>
+			 <?php } ?>
 			 class="<?php echo esc_attr( $field_classes ); ?>">
 			<?php echo $this->label_markup; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 			
