@@ -180,11 +180,18 @@ class StripePayment {
 				if ( elementData ) {
 					elementData.clientSecret = clientSecret;
 					
-					// Update elements with the new client secret only
-					// Amount is automatically derived from the PaymentIntent
-					elementData.elements.update({
-						clientSecret: clientSecret
-					});
+					try {
+						// Update elements with the new client secret only
+						// Amount is automatically derived from the PaymentIntent
+						elementData.elements.update({
+							clientSecret: clientSecret
+						});
+						
+						console.log( `SureForms: Payment elements updated with client secret for block ${ blockId }` );
+					} catch ( updateError ) {
+						console.warn( `SureForms: Element update warning for block ${ blockId }:`, updateError );
+						// Continue processing even if element update has minor issues
+					}
 				}
 
 				return { clientSecret, paymentIntentId };
@@ -321,11 +328,51 @@ class StripePayment {
 				'SureForms: Payment element ready for block',
 				blockId
 			);
+			// Ensure element is properly mounted and accessible
+			this.validateElementState( blockId );
 		} );
 
 		paymentElement.on( 'change', ( event ) => {
-			console.log( 'paymentElement on change event->', event );
+			// Handle element validation errors without disrupting payment flow
+			if ( event.error ) {
+				console.warn( `SureForms: Card element validation warning for block ${ blockId }:`, event.error );
+				// Don't throw errors here as they're often non-fatal validation warnings
+			} else if ( event.complete ) {
+				console.log( `SureForms: Card element completed for block ${ blockId }` );
+			}
 		} );
+	}
+
+	/**
+	 * Validate that Stripe element is properly initialized and mounted
+	 */
+	validateElementState( blockId ) {
+		const elementData = StripePayment.paymentElements[ blockId ];
+		
+		if ( ! elementData ) {
+			console.warn( `SureForms: No element data found for block ${ blockId }` );
+			return false;
+		}
+		
+		const { stripe, elements, paymentElement } = elementData;
+		
+		if ( ! stripe ) {
+			console.error( `SureForms: Stripe instance missing for block ${ blockId }` );
+			return false;
+		}
+		
+		if ( ! elements ) {
+			console.error( `SureForms: Stripe elements missing for block ${ blockId }` );
+			return false;
+		}
+		
+		if ( ! paymentElement ) {
+			console.error( `SureForms: Payment element missing for block ${ blockId }` );
+			return false;
+		}
+		
+		console.log( `SureForms: Element state validation passed for block ${ blockId }` );
+		return true;
 	}
 
 	set_block_loading( blockId, loading = true ) {
@@ -409,14 +456,22 @@ class StripePayment {
 
 		// Handle payment element events
 		paymentElement.on( 'ready', () => {
-			// console.log(
-			// 	'SureForms: Subscription element ready for block',
-			// 	blockId
-			// );
+			console.log(
+				'SureForms: Subscription element ready for block',
+				blockId
+			);
+			// Ensure element is properly mounted and accessible
+			this.validateElementState( blockId );
 		} );
 
 		paymentElement.on( 'change', ( event ) => {
-			// console.log( 'subscriptionElement on change event->', event );
+			// Handle element validation errors without disrupting payment flow
+			if ( event.error ) {
+				console.warn( `SureForms: Subscription element validation warning for block ${ blockId }:`, event.error );
+				// Don't throw errors here as they're often non-fatal validation warnings
+			} else if ( event.complete ) {
+				console.log( `SureForms: Subscription element completed for block ${ blockId }` );
+			}
 		} );
 	}
 
@@ -481,9 +536,17 @@ class StripePayment {
 				const elementData = StripePayment.paymentElements[ blockId ];
 				if ( elementData ) {
 					elementData.clientSecret = clientSecret;
-					elementData.elements.update({
-						clientSecret: clientSecret
-					});
+					
+					try {
+						elementData.elements.update({
+							clientSecret: clientSecret
+						});
+						
+						console.log( `SureForms: Subscription elements updated with client secret for block ${ blockId }` );
+					} catch ( updateError ) {
+						console.warn( `SureForms: Subscription element update warning for block ${ blockId }:`, updateError );
+						// Continue processing even if element update has minor issues
+					}
 				}
 
 				return { clientSecret, subscriptionId, customerId, paymentIntentId };

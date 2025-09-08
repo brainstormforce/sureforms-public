@@ -130,8 +130,8 @@ class Payment_Markup extends Base {
 			$this->stripe_publishable_key = $payment_settings['stripe_test_publishable_key'] ?? '';
 		}
 
-		$this->payment_items = $attributes['paymentItems'] ?? [];
-		$this->payment_type = $attributes['paymentType'] ?? 'one-time';
+		$this->payment_items      = $attributes['paymentItems'] ?? [];
+		$this->payment_type       = $attributes['paymentType'] ?? 'one-time';
 		$this->subscription_plans = $attributes['subscriptionPlans'] ?? [];
 	}
 

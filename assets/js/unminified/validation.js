@@ -157,7 +157,28 @@ async function confirmOneTimePayment( blockId, paymentData, form ) {
 	const { error, paymentIntent } = confirmPaymentResult;
 
 	if ( error ) {
-		throw new Error( error.message );
+		// Categorize errors to distinguish between fatal and non-fatal
+		const errorCode = error.code;
+		const errorType = error.type;
+		
+		// Card element validation errors (often non-fatal)
+		const cardElementErrors = ['incomplete_number', 'incomplete_expiry', 'incomplete_cvc', 'invalid_number', 'invalid_expiry_month', 'invalid_expiry_year', 'invalid_cvc'];
+		
+		// Provide specific error handling based on error type
+		let errorMessage = error.message;
+		if ( errorCode === 'card_declined' ) {
+			errorMessage = 'Your card was declined. Please try a different payment method.';
+		} else if ( errorCode === 'insufficient_funds' ) {
+			errorMessage = 'Your card has insufficient funds. Please try a different card.';
+		} else if ( cardElementErrors.includes( errorCode ) ) {
+			console.warn( `SureForms: Card element validation error for block ${ blockId }:`, error );
+			errorMessage = `Please complete your card information: ${ error.message }`;
+		} else if ( errorType === 'validation_error' ) {
+			console.warn( `SureForms: Validation error for block ${ blockId }:`, error );
+			errorMessage = `Please check your payment information: ${ error.message }`;
+		}
+		
+		throw new Error( errorMessage );
 	}
 
 	if (
@@ -202,6 +223,8 @@ async function confirmSubscription( blockId, paymentData, form ) {
 
 	console.log( `SureForms: Confirming subscription for block ${ blockId } using simple-stripe-subscriptions approach` );
 
+	console.log("paymentData:", paymentData );
+
 	try {
 		// Use single confirmPayment approach from simple-stripe-subscriptions
 		// This works for both payment intents and subscription confirmations
@@ -210,12 +233,13 @@ async function confirmSubscription( blockId, paymentData, form ) {
 			clientSecret: clientSecret,
 			confirmParams: {
 				return_url: window.location.href,
-				// payment_method_data: {
-				// 	billing_details: {
-				// 		name: extractBillingName( form, blockId ),
-				// 		email: extractBillingEmail( form, blockId ),
-				// 	}
-				// }
+				payment_method_data: {
+					billing_details: {
+						// name: extractBillingName( form, blockId ),
+						// email: extractBillingEmail( form, blockId ),
+						email: "test@gmail.com",
+					}
+				}
 			},
 			redirect: 'if_required'
 		});
@@ -225,12 +249,25 @@ async function confirmSubscription( blockId, paymentData, form ) {
 		if ( result.error ) {
 			console.error( `SureForms: Subscription confirmation failed for block ${ blockId }:`, result.error );
 			
-			// Provide user-friendly error messages like simple-stripe-subscriptions
+			// Categorize errors to distinguish between fatal and non-fatal
+			const errorCode = result.error.code;
+			const errorType = result.error.type;
+			
+			// Card element validation errors (often non-fatal)
+			const cardElementErrors = ['incomplete_number', 'incomplete_expiry', 'incomplete_cvc', 'invalid_number', 'invalid_expiry_month', 'invalid_expiry_year', 'invalid_cvc'];
+			
+			// Provide specific error handling based on error type
 			let errorMessage = result.error.message;
-			if ( result.error.code === 'card_declined' ) {
+			if ( errorCode === 'card_declined' ) {
 				errorMessage = 'Your card was declined. Please try a different payment method.';
-			} else if ( result.error.code === 'insufficient_funds' ) {
+			} else if ( errorCode === 'insufficient_funds' ) {
 				errorMessage = 'Your card has insufficient funds. Please try a different card.';
+			} else if ( cardElementErrors.includes( errorCode ) ) {
+				console.warn( `SureForms: Card element validation error for block ${ blockId }:`, result.error );
+				errorMessage = `Please complete your card information: ${ result.error.message }`;
+			} else if ( errorType === 'validation_error' ) {
+				console.warn( `SureForms: Validation error for block ${ blockId }:`, result.error );
+				errorMessage = `Please check your payment information: ${ result.error.message }`;
 			}
 			
 			throw new Error( errorMessage );
@@ -259,13 +296,14 @@ async function confirmSubscription( blockId, paymentData, form ) {
 			console.log( `SureForms: Updated input data for subscription block ${ blockId }:`, inputValueData );
 			
 			// Return subscription data for form processing
-			return {
-				paymentId: subscriptionData?.subscriptionId || result.paymentIntent?.id,
-				subscriptionId: subscriptionData?.subscriptionId,
-				customerId: subscriptionData?.customerId,
-				status: 'succeeded',
-				blockId: blockId
-			};
+			// return {
+			// 	paymentId: subscriptionData?.subscriptionId || result.paymentIntent?.id,
+			// 	subscriptionId: subscriptionData?.subscriptionId,
+			// 	customerId: subscriptionData?.customerId,
+			// 	status: 'succeeded',
+			// 	blockId: blockId
+			// };
+			return result.paymentIntent;
 		}
 
 	} catch ( error ) {
@@ -278,13 +316,30 @@ async function confirmSubscription( blockId, paymentData, form ) {
  * Extract billing name from form fields
  */
 function extractBillingName( form, blockId ) {
-	// Try to find name fields in the form
-	const nameInputs = form.querySelectorAll('input[name*="name"], input[type="text"]');
-	for ( const input of nameInputs ) {
-		if ( input.value && input.value.trim() ) {
-			return input.value.trim();
+	// Try to find name fields in the form with priority order
+	const nameSelectors = [
+		'input[name*="first_name"], input[name*="last_name"]', // Full name fields
+		'input[name*="name"]', // General name fields
+		'input[name*="billing_name"]', // Billing specific
+		'input[type="text"]' // Fallback to any text input
+	];
+	
+	for ( const selector of nameSelectors ) {
+		const nameInputs = form.querySelectorAll( selector );
+		const names = [];
+		
+		for ( const input of nameInputs ) {
+			if ( input.value && input.value.trim() && !input.hidden ) {
+				names.push( input.value.trim() );
+			}
+		}
+		
+		if ( names.length > 0 ) {
+			return names.join( ' ' );
 		}
 	}
+	
+	console.warn( `SureForms: No billing name found for block ${ blockId }, using default` );
 	return 'SureForms Customer';
 }
 
@@ -292,13 +347,29 @@ function extractBillingName( form, blockId ) {
  * Extract billing email from form fields
  */
 function extractBillingEmail( form, blockId ) {
-	// Try to find email fields in the form
-	const emailInputs = form.querySelectorAll('input[type="email"], input[name*="email"]');
-	for ( const input of emailInputs ) {
-		if ( input.value && input.value.trim() ) {
-			return input.value.trim();
+	// Try to find email fields in the form with priority order
+	const emailSelectors = [
+		'input[name*="billing_email"]', // Billing specific email
+		'input[type="email"]', // Email input type
+		'input[name*="email"]' // General email fields
+	];
+	
+	for ( const selector of emailSelectors ) {
+		const emailInputs = form.querySelectorAll( selector );
+		
+		for ( const input of emailInputs ) {
+			if ( input.value && input.value.trim() && !input.hidden ) {
+				const email = input.value.trim();
+				// Validate email format
+				const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+				if ( emailRegex.test( email ) ) {
+					return email;
+				}
+			}
 		}
 	}
+	
+	console.warn( `SureForms: No valid billing email found for block ${ blockId }, using default` );
 	return 'customer@example.com';
 }
 
