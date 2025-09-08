@@ -284,6 +284,16 @@ class Email_Summary {
 		return false !== $content ? $content : '';
 	}
 
+	/**
+	 * Retrieve all available promo banners.
+	 *
+	 * Returns an associative array of promo plugin data,
+	 * including logo, title, description, and link info.
+	 *
+	 * @since x.x.x
+	 *
+	 * @return array List of promo banners with details.
+	 */
 	public static function get_promo_banners() {
 		return [
 			'ottokit'  => [
@@ -324,11 +334,23 @@ class Email_Summary {
 		];
 	}
 
+	/**
+	 * Render a promo banner for a given plugin.
+	 *
+	 * Outputs the banner HTML for the specified plugin key.
+	 * If the key is invalid, nothing is rendered.
+	 *
+	 * @since x.x.x
+	 *
+	 * @param string $plugin_key The key of the promo plugin to render.
+	 *
+	 * @return void
+	 */
 	public static function render_promo_banner( $plugin_key ) {
 		$banners = self::get_promo_banners();
 
 		if ( ! isset( $banners[ $plugin_key ] ) ) {
-			return; // Invalid plugin key
+			return;
 		}
 
 		$args = $banners[ $plugin_key ];
@@ -356,6 +378,12 @@ class Email_Summary {
 		<?php
 	}
 
+	/**
+	 * Get the next promo plugin.
+	 *
+	 * @return string The plugin key for the next promo banner.
+	 * @since x.x.x
+	 */
 	public static function get_next_promo_plugin() {
 		$plugins = array_keys( self::get_promo_banners() );
 		$count   = count( $plugins );
@@ -366,7 +394,6 @@ class Email_Summary {
 
 		update_option( 'srfm_last_promo_index', $next_index );
 
-		// Return the plugin key
 		return $plugins[ $next_index ];
 	}
 
