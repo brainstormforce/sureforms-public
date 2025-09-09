@@ -819,24 +819,6 @@ class Stripe_Payment_Handler {
 
 			wp_send_json_success( $response );
 
-		} catch ( \Stripe\Exception\CardException $e ) {
-			error_log( 'SureForms Stripe Card Error: ' . $e->getMessage() );
-			wp_send_json_error( $e->getError()->message );
-		} catch ( \Stripe\Exception\RateLimitException $e ) {
-			error_log( 'SureForms Stripe Rate Limit Error: ' . $e->getMessage() );
-			wp_send_json_error( __( 'Too many requests made to the API too quickly', 'sureforms' ) );
-		} catch ( \Stripe\Exception\InvalidRequestException $e ) {
-			error_log( 'SureForms Stripe Invalid Request: ' . $e->getMessage() );
-			wp_send_json_error( sprintf( __( 'Invalid request: %s', 'sureforms' ), $e->getMessage() ) );
-		} catch ( \Stripe\Exception\AuthenticationException $e ) {
-			error_log( 'SureForms Stripe Auth Error: ' . $e->getMessage() );
-			wp_send_json_error( __( 'Authentication failed. Please check your Stripe keys.', 'sureforms' ) );
-		} catch ( \Stripe\Exception\ApiConnectionException $e ) {
-			error_log( 'SureForms Stripe Connection Error: ' . $e->getMessage() );
-			wp_send_json_error( __( 'Network communication with Stripe failed', 'sureforms' ) );
-		} catch ( \Stripe\Exception\ApiErrorException $e ) {
-			error_log( 'SureForms Stripe API Error: ' . $e->getMessage() );
-			wp_send_json_error( sprintf( __( 'Stripe API error: %s', 'sureforms' ), $e->getMessage() ) );
 		} catch ( \Exception $e ) {
 			error_log( 'SureForms Subscription Error: ' . $e->getMessage() );
 			wp_send_json_error( sprintf( __( 'Unexpected error: %s', 'sureforms' ), $e->getMessage() ) );
@@ -1083,24 +1065,6 @@ class Stripe_Payment_Handler {
 				]
 			);
 
-		} catch ( \Stripe\Exception\CardException $e ) {
-			error_log( 'SureForms Subscription Refund Card Error: ' . $e->getMessage() );
-			wp_send_json_error( $e->getError()->message );
-		} catch ( \Stripe\Exception\RateLimitException $e ) {
-			error_log( 'SureForms Subscription Refund Rate Limit: ' . $e->getMessage() );
-			wp_send_json_error( __( 'Too many requests to Stripe. Please try again later.', 'sureforms' ) );
-		} catch ( \Stripe\Exception\InvalidRequestException $e ) {
-			error_log( 'SureForms Subscription Refund Invalid Request: ' . $e->getMessage() );
-			wp_send_json_error( sprintf( __( 'Invalid refund request: %s', 'sureforms' ), $e->getMessage() ) );
-		} catch ( \Stripe\Exception\AuthenticationException $e ) {
-			error_log( 'SureForms Subscription Refund Auth Error: ' . $e->getMessage() );
-			wp_send_json_error( __( 'Stripe authentication failed. Please check your keys.', 'sureforms' ) );
-		} catch ( \Stripe\Exception\ApiConnectionException $e ) {
-			error_log( 'SureForms Subscription Refund Connection Error: ' . $e->getMessage() );
-			wp_send_json_error( __( 'Network error connecting to Stripe.', 'sureforms' ) );
-		} catch ( \Stripe\Exception\ApiErrorException $e ) {
-			error_log( 'SureForms Subscription Refund API Error: ' . $e->getMessage() );
-			wp_send_json_error( sprintf( __( 'Stripe API error: %s', 'sureforms' ), $e->getMessage() ) );
 		} catch ( \Exception $e ) {
 			error_log( 'SureForms Subscription Refund Error: ' . $e->getMessage() );
 			wp_send_json_error( sprintf( __( 'Subscription refund failed: %s', 'sureforms' ), $e->getMessage() ) );
@@ -1625,18 +1589,6 @@ class Stripe_Payment_Handler {
 
 			return $response;
 
-		} catch ( \Stripe\Exception\CardException $e ) {
-			throw new \Exception( $e->getError()->message );
-		} catch ( \Stripe\Exception\RateLimitException $e ) {
-			throw new \Exception( 'Too many requests made to the API too quickly' );
-		} catch ( \Stripe\Exception\InvalidRequestException $e ) {
-			throw new \Exception( 'Invalid request: ' . $e->getMessage() );
-		} catch ( \Stripe\Exception\AuthenticationException $e ) {
-			throw new \Exception( 'Authentication failed. Please check your Stripe keys.' );
-		} catch ( \Stripe\Exception\ApiConnectionException $e ) {
-			throw new \Exception( 'Network communication with Stripe failed' );
-		} catch ( \Stripe\Exception\ApiErrorException $e ) {
-			throw new \Exception( 'Stripe API error: ' . $e->getMessage() );
 		} catch ( \Exception $e ) {
 			throw new \Exception( 'Unexpected error: ' . $e->getMessage() );
 		}
