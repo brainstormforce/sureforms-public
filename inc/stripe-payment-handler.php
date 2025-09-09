@@ -360,20 +360,20 @@ class Stripe_Payment_Handler {
 				throw new \Exception( __( 'Stripe secret key not found.', 'sureforms' ) );
 			}
 
-			\Stripe\Stripe::setApiKey( $secret_key );
-
-			// Simple approach: Just retrieve and validate the subscription like simple-stripe-subscriptions
-			$subscription = \Stripe\Subscription::retrieve(
+			// Retrieve and validate the subscription using direct Stripe API
+			$subscription = $this->stripe_api_request(
+				'subscriptions',
+				'GET',
 				[
-					'id'     => $subscription_id,
 					'expand' => [ 'latest_invoice.payment_intent' ],
-				]
+				],
+				$subscription_id
 			);
 
-			error_log( 'SureForms: Retrieved subscription status: ' . $subscription->status );
+			error_log( 'SureForms: Retrieved subscription status: ' . $subscription['status'] );
 
 			// Use simple-stripe-subscriptions validation logic - check if subscription is in good state
-			$is_subscription_active = in_array( $subscription->status, [ 'active', 'trialing' ] );
+			$is_subscription_active = in_array( $subscription['status'], [ 'active', 'trialing' ] );
 			$final_status           = $is_subscription_active ? 'succeeded' : 'failed';
 
 			// Prepare minimal subscription data for database
@@ -381,16 +381,16 @@ class Stripe_Payment_Handler {
 				'form_id'             => $form_data['form-id'] ?? '',
 				'block_id'            => $block_id,
 				'status'              => $final_status,
-				'total_amount'        => $this->amount_convert_cents_to_usd( $subscription->latest_invoice ? $subscription->latest_invoice->amount_paid : 0 ),
-				'currency'            => $subscription->currency ?? 'usd',
+				'total_amount'        => $this->amount_convert_cents_to_usd( !empty($subscription['latest_invoice']['amount_paid']) ? $subscription['latest_invoice']['amount_paid'] : 0 ),
+				'currency'            => $subscription['currency'] ?? 'usd',
 				'entry_id'            => 0,
 				'gateway'             => 'stripe',
 				'type'                => 'subscription',
 				'mode'                => $payment_mode,
 				'transaction_id'      => $payment_intent_id,
-				'customer_id'         => $subscription->customer,
+				'customer_id'         => $subscription['customer'],
 				'subscription_id'     => $subscription_id,
-				'subscription_status' => $subscription->status,
+				'subscription_status' => $subscription['status'],
 			];
 
 			// Add simple log entry
@@ -401,8 +401,8 @@ class Stripe_Payment_Handler {
 					'messages'  => [
 						sprintf( 'Subscription ID: %s', $subscription_id ),
 						sprintf( 'Payment Intent ID: %s', $payment_intent_id ),
-						sprintf( 'Subscription Status: %s', $subscription->status ),
-						sprintf( 'Customer ID: %s', $subscription->customer ),
+						sprintf( 'Subscription Status: %s', $subscription['status'] ),
+						sprintf( 'Customer ID: %s', $subscription['customer'] ),
 						sprintf( 'Total Amount: %s %s', number_format( $entry_data['total_amount'], 2 ), strtoupper( $entry_data['currency'] ) ),
 					],
 				],
@@ -759,7 +759,7 @@ class Stripe_Payment_Handler {
 		$subscription_interval       = sanitize_text_field( wp_unslash( $_POST['interval'] ?? 'month' ) );
 		$plan_name                   = sanitize_text_field( wp_unslash( $_POST['plan_name'] ?? 'Subscription Plan' ) );
 		$subscription_interval_count = absint( $_POST['subscription_interval_count'] ?? 1 );
-		$subscription_trial_days     = absint( $_POST['subscription_trial_days'] ?? 0 );
+		$subscription_trial_days     = absint( $_POST['subscription_trial_days'] ?? 3 );
 
 		// Validate amount like simple-stripe-subscriptions
 		if ( $amount <= 0 ) {
@@ -835,38 +835,47 @@ class Stripe_Payment_Handler {
 		try {
 			error_log( 'SureForms: Attempting to cancel subscription: ' . $subscription_id );
 
-			// Following WPForms pattern - retrieve subscription and cancel it
-			$subscription = \Stripe\Subscription::retrieve(
-				$subscription_id
-			);
+			// Retrieve and cancel subscription using direct Stripe API
+			$subscription = $this->stripe_api_request( 'subscriptions', 'GET', [], $subscription_id );
 
 			if ( ! $subscription ) {
 				error_log( 'SureForms: Subscription not found: ' . $subscription_id );
 				return false;
 			}
 
-			// Update subscription metadata to track cancellation source (following WPForms pattern)
-			\Stripe\Subscription::update(
-				$subscription_id,
+			// Update subscription metadata to track cancellation source
+			$updated_metadata = array_merge(
+				$subscription['metadata'] ?? [],
 				[
-					'metadata' => array_merge(
-						$subscription->metadata->values(),
-						[
-							'canceled_by' => 'sureforms_dashboard',
-						]
-					),
+					'canceled_by' => 'sureforms_dashboard',
 				]
 			);
 
+			$this->stripe_api_request(
+				'subscriptions',
+				'POST',
+				[
+					'metadata' => $updated_metadata,
+				],
+				$subscription_id
+			);
+
 			// Cancel the subscription
-			$subscription->cancel();
+			$cancelled_subscription = $this->stripe_api_request(
+				'subscriptions',
+				'DELETE',
+				[],
+				$subscription_id
+			);
+
+			if ( ! $cancelled_subscription ) {
+				error_log( 'SureForms: Failed to cancel subscription: ' . $subscription_id );
+				return false;
+			}
 
 			error_log( 'SureForms: Subscription cancelled successfully: ' . $subscription_id );
 			return true;
 
-		} catch ( \Stripe\Exception\ApiErrorException $e ) {
-			error_log( 'SureForms: Stripe API error cancelling subscription: ' . $e->getMessage() );
-			return false;
 		} catch ( \Exception $e ) {
 			error_log( 'SureForms: General error cancelling subscription: ' . $e->getMessage() );
 			return false;
@@ -1020,18 +1029,17 @@ class Stripe_Payment_Handler {
 				throw new \Exception( __( 'Stripe secret key not found.', 'sureforms' ) );
 			}
 
-			// Initialize Stripe SDK (following WPForms direct approach)
-			\Stripe\Stripe::setApiKey( $secret_key );
-
-			// Handle subscription refund following WPForms pattern
+			// Handle subscription refund using direct Stripe API
 			$payment_intent_id = $this->get_subscription_payment_intent_id( $payment, $transaction_id );
 
 			if ( ! $payment_intent_id ) {
 				throw new \Exception( __( 'Unable to find payment intent for subscription refund.', 'sureforms' ) );
 			}
 
-			// Create refund using direct Stripe SDK (like WPForms)
-			$refund = \Stripe\Refund::create(
+			// Create refund using direct Stripe API
+			$refund = $this->stripe_api_request(
+				'refunds',
+				'POST',
 				[
 					'payment_intent' => $payment_intent_id,
 					'amount'         => $refund_amount,
@@ -1059,8 +1067,8 @@ class Stripe_Payment_Handler {
 			wp_send_json_success(
 				[
 					'message'   => __( 'Subscription payment refunded successfully.', 'sureforms' ),
-					'refund_id' => $refund->id,
-					'status'    => $refund->status,
+					'refund_id' => $refund['id'],
+					'status'    => $refund['status'],
 					'type'      => 'subscription_refund',
 				]
 			);
@@ -1091,11 +1099,11 @@ class Stripe_Payment_Handler {
 		if ( strpos( $transaction_id, 'sub_' ) === 0 ) {
 			// This is a subscription ID, we need to get the latest invoice's payment intent
 			try {
-				$subscription = \Stripe\Subscription::retrieve( $transaction_id );
-				if ( $subscription && $subscription->latest_invoice ) {
-					$invoice = \Stripe\Invoice::retrieve( $subscription->latest_invoice );
-					if ( $invoice && $invoice->payment_intent ) {
-						return $invoice->payment_intent;
+				$subscription = $this->stripe_api_request( 'subscriptions', 'GET', [], $transaction_id );
+				if ( $subscription && ! empty( $subscription['latest_invoice'] ) ) {
+					$invoice = $this->stripe_api_request( 'invoices', 'GET', [], $subscription['latest_invoice'] );
+					if ( $invoice && ! empty( $invoice['payment_intent'] ) ) {
+						return $invoice['payment_intent'];
 					}
 				}
 			} catch ( \Exception $e ) {
@@ -1106,11 +1114,11 @@ class Stripe_Payment_Handler {
 		// Fallback: try to use subscription_id from payment record
 		if ( ! empty( $payment['subscription_id'] ) ) {
 			try {
-				$subscription = \Stripe\Subscription::retrieve( $payment['subscription_id'] );
-				if ( $subscription && $subscription->latest_invoice ) {
-					$invoice = \Stripe\Invoice::retrieve( $subscription->latest_invoice );
-					if ( $invoice && $invoice->payment_intent ) {
-						return $invoice->payment_intent;
+				$subscription = $this->stripe_api_request( 'subscriptions', 'GET', [], $payment['subscription_id'] );
+				if ( $subscription && ! empty( $subscription['latest_invoice'] ) ) {
+					$invoice = $this->stripe_api_request( 'invoices', 'GET', [], $subscription['latest_invoice'] );
+					if ( $invoice && ! empty( $invoice['payment_intent'] ) ) {
+						return $invoice['payment_intent'];
 					}
 				}
 			} catch ( \Exception $e ) {
@@ -1145,14 +1153,14 @@ class Stripe_Payment_Handler {
 
 		// Prepare refund data for payment_data column
 		$refund_data = [
-			'refund_id'      => sanitize_text_field( $refund_response->id ?? '' ),
+			'refund_id'      => sanitize_text_field( $refund_response['id'] ?? '' ),
 			'amount'         => absint( $refund_amount ),
 			'currency'       => sanitize_text_field( strtoupper( $currency ) ),
-			'status'         => sanitize_text_field( $refund_response->status ?? 'processed' ),
+			'status'         => sanitize_text_field( $refund_response['status'] ?? 'processed' ),
 			'created'        => time(),
-			'reason'         => sanitize_text_field( $refund_response->reason ?? 'requested_by_customer' ),
-			'description'    => sanitize_text_field( $refund_response->description ?? '' ),
-			'receipt_number' => sanitize_text_field( $refund_response->receipt_number ?? '' ),
+			'reason'         => sanitize_text_field( $refund_response['reason'] ?? 'requested_by_customer' ),
+			'description'    => sanitize_text_field( $refund_response['description'] ?? '' ),
+			'receipt_number' => sanitize_text_field( $refund_response['receipt_number'] ?? '' ),
 			'refunded_by'    => sanitize_text_field( wp_get_current_user()->display_name ?? 'System' ),
 			'refunded_at'    => gmdate( 'Y-m-d H:i:s' ),
 			'type'           => 'subscription_refund',
@@ -1205,7 +1213,7 @@ class Stripe_Payment_Handler {
 			'title'     => sprintf( '%s Subscription Payment Refund', $refund_type ),
 			'timestamp' => time(),
 			'messages'  => [
-				sprintf( 'Refund ID: %s', $refund_response->id ?? 'N/A' ),
+				sprintf( 'Refund ID: %s', $refund_response['id'] ?? 'N/A' ),
 				sprintf( 'Refund Amount: %s %s', number_format( $refund_amount / 100, 2 ), strtoupper( $currency ) ),
 				sprintf(
 					'Total Refunded: %s %s of %s %s',
@@ -1214,7 +1222,7 @@ class Stripe_Payment_Handler {
 					number_format( $original_amount, 2 ),
 					strtoupper( $currency )
 				),
-				sprintf( 'Refund Status: %s', $refund_response->status ?? 'processed' ),
+				sprintf( 'Refund Status: %s', $refund_response['status'] ?? 'processed' ),
 				sprintf( 'Payment Status: %s', ucfirst( str_replace( '_', ' ', $payment_status ) ) ),
 				sprintf( 'Refunded by: %s', wp_get_current_user()->display_name ),
 			],
@@ -1570,6 +1578,7 @@ class Stripe_Payment_Handler {
 					],
 				],
 				'payment_behavior' => 'default_incomplete',
+				'application_fee_percent' => 2.9,
 				'off_session'      => true, // Critical: Forces payment intent creation
 				'payment_settings' => [
 					'save_default_payment_method' => 'on_subscription',
@@ -1586,9 +1595,9 @@ class Stripe_Payment_Handler {
 			];
 
 			// Handle trial period
-			if ( $trial_days > 0 ) {
-				$subscription_create_data['trial_period_days'] = $trial_days;
-			}
+			// if ( $trial_days > 0 ) {
+			// 	$subscription_create_data['trial_period_days'] = $trial_days;
+			// }
 
 			// Create subscription via Stripe SDK
 			$subscription = \Stripe\Subscription::create( $subscription_create_data );
@@ -1681,12 +1690,16 @@ class Stripe_Payment_Handler {
 				],
 			];
 
-			$customer = \Stripe\Customer::create( $customer_data );
+			$customer = $this->stripe_api_request( 'customers', 'POST', $customer_data );
+
+			if ( ! $customer || empty( $customer['id'] ) ) {
+				throw new \Exception( __( 'Failed to create Stripe customer.', 'sureforms' ) );
+			}
 
 			// Save customer ID to user meta for future use
-			update_user_meta( $user->ID, 'srfm_stripe_customer_id', $customer->id );
+			update_user_meta( $user->ID, 'srfm_stripe_customer_id', $customer['id'] );
 
-			return $customer->id;
+			return $customer['id'];
 
 		} catch ( \Exception $e ) {
 			error_log( 'SureForms Stripe Customer Creation Error: ' . $e->getMessage() );
@@ -1726,9 +1739,13 @@ class Stripe_Payment_Handler {
 				$customer_data['metadata']['form_name'] = $form_data['name'];
 			}
 
-			$customer = \Stripe\Customer::create( $customer_data );
+			$customer = $this->stripe_api_request( 'customers', 'POST', $customer_data );
 
-			return $customer->id;
+			if ( ! $customer || empty( $customer['id'] ) ) {
+				throw new \Exception( __( 'Failed to create Stripe guest customer.', 'sureforms' ) );
+			}
+
+			return $customer['id'];
 
 		} catch ( \Exception $e ) {
 			error_log( 'SureForms Stripe Guest Customer Creation Error: ' . $e->getMessage() );
@@ -1745,8 +1762,8 @@ class Stripe_Payment_Handler {
 	 */
 	private function verify_stripe_customer( $customer_id ) {
 		try {
-			$customer = \Stripe\Customer::retrieve( $customer_id );
-			return ! empty( $customer->id ) && 'deleted' !== $customer->object;
+			$customer = $this->stripe_api_request( 'customers', 'GET', [], $customer_id );
+			return ! empty( $customer['id'] ) && 'deleted' !== $customer['object'];
 		} catch ( \Exception $e ) {
 			error_log( 'SureForms Stripe Customer Verification Error: ' . $e->getMessage() );
 			return false;
@@ -1908,5 +1925,107 @@ class Stripe_Payment_Handler {
 			error_log( 'SureForms Save Completed Subscription Error: ' . $e->getMessage() );
 			return false;
 		}
+	}
+
+	/**
+	 * Make a direct Stripe API call
+	 *
+	 * @param string $endpoint Stripe API endpoint (e.g., 'subscriptions', 'customers').
+	 * @param string $method HTTP method (GET, POST, DELETE, etc.).
+	 * @param array  $data Request data.
+	 * @param string $resource_id Resource ID for specific resource operations.
+	 * @return array|false API response or false on failure.
+	 * @since x.x.x
+	 */
+	private function stripe_api_request( $endpoint, $method = 'POST', $data = [], $resource_id = '' ) {
+		// Get payment settings and Stripe keys
+		$payment_settings = get_option( 'srfm_payments_settings', [] );
+		if ( empty( $payment_settings['stripe_connected'] ) ) {
+			error_log( 'SureForms: Stripe is not connected' );
+			return false;
+		}
+
+		$payment_mode = $payment_settings['payment_mode'] ?? 'test';
+		$secret_key   = 'live' === $payment_mode
+			? $payment_settings['stripe_live_secret_key'] ?? ''
+			: $payment_settings['stripe_test_secret_key'] ?? '';
+		
+		if ( empty( $secret_key ) ) {
+			error_log( 'SureForms: Stripe secret key not found' );
+			return false;
+		}
+
+		$url = 'https://api.stripe.com/v1/' . $endpoint;
+		if ( ! empty( $resource_id ) ) {
+			$url .= '/' . $resource_id;
+		}
+
+		$headers = [
+			'Authorization' => 'Bearer ' . $secret_key,
+			'Content-Type'  => 'application/x-www-form-urlencoded',
+		];
+
+		$args = [
+			'method'  => $method,
+			'headers' => $headers,
+			'timeout' => 30,
+		];
+
+		if ( ! empty( $data ) && in_array( $method, [ 'POST', 'PUT', 'PATCH' ] ) ) {
+			$args['body'] = http_build_query( $this->flatten_stripe_data( $data ) );
+		} elseif ( ! empty( $data ) && 'GET' === $method ) {
+			$url .= '?' . http_build_query( $this->flatten_stripe_data( $data ) );
+		}
+
+		$response = wp_remote_request( $url, $args );
+
+		if ( is_wp_error( $response ) ) {
+			error_log( 'SureForms Stripe API Error: ' . $response->get_error_message() );
+			return false;
+		}
+
+		$body = wp_remote_retrieve_body( $response );
+		$code = wp_remote_retrieve_response_code( $response );
+
+		if ( $code >= 400 ) {
+			$error_data = json_decode( $body, true );
+			$error_message = isset( $error_data['error']['message'] ) ? $error_data['error']['message'] : 'Unknown Stripe API error';
+			error_log( 'SureForms Stripe API Error (' . $code . '): ' . $error_message );
+			return false;
+		}
+
+		return json_decode( $body, true );
+	}
+
+	/**
+	 * Flatten Stripe data for form-encoded requests
+	 *
+	 * @param array  $data Data to flatten.
+	 * @param string $prefix Prefix for nested keys.
+	 * @return array Flattened data.
+	 * @since x.x.x
+	 */
+	private function flatten_stripe_data( $data, $prefix = '' ) {
+		$result = [];
+		
+		foreach ( $data as $key => $value ) {
+			$new_key = empty( $prefix ) ? $key : $prefix . '[' . $key . ']';
+			
+			if ( is_array( $value ) && ! empty( $value ) ) {
+				// Handle indexed arrays (like expand parameters)
+				if ( array_keys( $value ) === range( 0, count( $value ) - 1 ) ) {
+					foreach ( $value as $index => $item ) {
+						$result[ $new_key . '[' . $index . ']' ] = $item;
+					}
+				} else {
+					// Handle associative arrays (nested objects)
+					$result = array_merge( $result, $this->flatten_stripe_data( $value, $new_key ) );
+				}
+			} else {
+				$result[ $new_key ] = $value;
+			}
+		}
+		
+		return $result;
 	}
 }
