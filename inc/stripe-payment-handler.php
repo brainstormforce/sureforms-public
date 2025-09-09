@@ -381,7 +381,7 @@ class Stripe_Payment_Handler {
 				'form_id'             => $form_data['form-id'] ?? '',
 				'block_id'            => $block_id,
 				'status'              => $final_status,
-				'total_amount'        => $this->amount_convert_cents_to_usd( !empty($subscription['latest_invoice']['amount_paid']) ? $subscription['latest_invoice']['amount_paid'] : 0 ),
+				'total_amount'        => $this->amount_convert_cents_to_usd( ! empty( $subscription['latest_invoice']['amount_paid'] ) ? $subscription['latest_invoice']['amount_paid'] : 0 ),
 				'currency'            => $subscription['currency'] ?? 'usd',
 				'entry_id'            => 0,
 				'gateway'             => 'stripe',
@@ -1205,11 +1205,11 @@ class Stripe_Payment_Handler {
 		$payment_status = $total_refunded >= $total_amount ? 'refunded' : 'partially_refunded';
 
 		// Prepare comprehensive log entry
-		$current_logs   = Helper::get_array_value( $payment['log'] );
-		$original_amount = $total_amount;
+		$current_logs       = Helper::get_array_value( $payment['log'] );
+		$original_amount    = $total_amount;
 		$total_after_refund = $total_refunded;
-		$refund_type    = $total_after_refund >= $original_amount ? 'Full' : 'Partial';
-		$new_log        = [
+		$refund_type        = $total_after_refund >= $original_amount ? 'Full' : 'Partial';
+		$new_log            = [
 			'title'     => sprintf( '%s Subscription Payment Refund', $refund_type ),
 			'timestamp' => time(),
 			'messages'  => [
@@ -1227,7 +1227,7 @@ class Stripe_Payment_Handler {
 				sprintf( 'Refunded by: %s', wp_get_current_user()->display_name ),
 			],
 		];
-		$current_logs[] = $new_log;
+		$current_logs[]     = $new_log;
 
 		$update_data = [
 			'status' => $payment_status,
@@ -1236,7 +1236,7 @@ class Stripe_Payment_Handler {
 
 		// Update payment record with status and log
 		$payment_update_result = Payments::update( $payment_id, $update_data );
-		
+
 		if ( ! $payment_update_result ) {
 			error_log( 'SureForms: Failed to update subscription payment status and log' );
 			return false;
@@ -1571,21 +1571,21 @@ class Stripe_Payment_Handler {
 
 			// Create subscription following simple-stripe-subscriptions exact approach
 			$subscription_create_data = [
-				'customer'         => $customer_id,
-				'items'            => [
+				'customer'                => $customer_id,
+				'items'                   => [
 					[
 						'price' => $price->id,
 					],
 				],
-				'payment_behavior' => 'default_incomplete',
+				'payment_behavior'        => 'default_incomplete',
 				'application_fee_percent' => 2.9,
-				'off_session'      => true, // Critical: Forces payment intent creation
-				'payment_settings' => [
+				'off_session'             => true, // Critical: Forces payment intent creation
+				'payment_settings'        => [
 					'save_default_payment_method' => 'on_subscription',
 					'payment_method_types'        => [ 'card', 'link' ],
 				],
-				'expand'           => [ 'latest_invoice.payment_intent' ],
-				'metadata'         => [
+				'expand'                  => [ 'latest_invoice.payment_intent' ],
+				'metadata'                => [
 					'source'           => 'SureForms',
 					'block_id'         => $block_id,
 					'original_amount'  => $amount,
@@ -1596,7 +1596,7 @@ class Stripe_Payment_Handler {
 
 			// Handle trial period
 			// if ( $trial_days > 0 ) {
-			// 	$subscription_create_data['trial_period_days'] = $trial_days;
+			// $subscription_create_data['trial_period_days'] = $trial_days;
 			// }
 
 			// Create subscription via Stripe SDK
@@ -1667,7 +1667,6 @@ class Stripe_Payment_Handler {
 		}
 			// Non-logged-in user - create temporary customer
 			return $this->create_stripe_customer_for_guest();
-
 	}
 	/**
 	 * Create Stripe customer for logged-in user
@@ -1949,7 +1948,7 @@ class Stripe_Payment_Handler {
 		$secret_key   = 'live' === $payment_mode
 			? $payment_settings['stripe_live_secret_key'] ?? ''
 			: $payment_settings['stripe_test_secret_key'] ?? '';
-		
+
 		if ( empty( $secret_key ) ) {
 			error_log( 'SureForms: Stripe secret key not found' );
 			return false;
@@ -1988,8 +1987,8 @@ class Stripe_Payment_Handler {
 		$code = wp_remote_retrieve_response_code( $response );
 
 		if ( $code >= 400 ) {
-			$error_data = json_decode( $body, true );
-			$error_message = isset( $error_data['error']['message'] ) ? $error_data['error']['message'] : 'Unknown Stripe API error';
+			$error_data    = json_decode( $body, true );
+			$error_message = $error_data['error']['message'] ?? 'Unknown Stripe API error';
 			error_log( 'SureForms Stripe API Error (' . $code . '): ' . $error_message );
 			return false;
 		}
@@ -2007,10 +2006,10 @@ class Stripe_Payment_Handler {
 	 */
 	private function flatten_stripe_data( $data, $prefix = '' ) {
 		$result = [];
-		
+
 		foreach ( $data as $key => $value ) {
 			$new_key = empty( $prefix ) ? $key : $prefix . '[' . $key . ']';
-			
+
 			if ( is_array( $value ) && ! empty( $value ) ) {
 				// Handle indexed arrays (like expand parameters)
 				if ( array_keys( $value ) === range( 0, count( $value ) - 1 ) ) {
@@ -2025,7 +2024,7 @@ class Stripe_Payment_Handler {
 				$result[ $new_key ] = $value;
 			}
 		}
-		
+
 		return $result;
 	}
 }
