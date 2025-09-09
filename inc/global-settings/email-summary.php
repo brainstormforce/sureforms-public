@@ -388,11 +388,16 @@ class Email_Summary {
 		$plugins = array_keys( self::get_promo_banners() );
 		$count   = count( $plugins );
 
-		$last_index = Helper::get_integer_value( get_option( 'srfm_last_promo_index', -1 ) );
+		$options = Helper::get_array_value( get_option( 'srfm_options', [] ) );
+
+		$last_index = isset( $options['last_promo_index'] )
+			? Helper::get_integer_value( $options['last_promo_index'] )
+			: -1;
 
 		$next_index = ( $last_index + 1 ) % $count;
 
-		update_option( 'srfm_last_promo_index', $next_index );
+		$options['last_promo_index'] = $next_index;
+		update_option( 'srfm_options', $options );
 
 		return $plugins[ $next_index ];
 	}
