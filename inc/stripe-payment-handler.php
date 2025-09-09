@@ -470,7 +470,7 @@ class Stripe_Payment_Handler {
 	 */
 	public function refund_payment() {
 		// Verify nonce
-		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ?? '' ) ), 'srfm_stripe_payment_nonce' ) ) {
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ?? '' ) ), 'sureforms_admin_nonce' ) ) {
 			wp_send_json_error( __( 'Invalid nonce.', 'sureforms' ) );
 			return;
 		}
@@ -1053,7 +1053,7 @@ class Stripe_Payment_Handler {
 			// Update database following WPForms pattern
 			$refund_stored = $this->update_subscription_refund_data( $payment_id, $refund, $refund_amount, $payment['currency'] );
 			if ( ! $refund_stored ) {
-				throw new \Exception( __( 'Failed to update subscription payment record after refund.', 'sureforms' ) );
+				wp_send_json_error( __( 'Payment has been processed but could not update the payment table.', 'sureforms' ) );
 			}
 
 			wp_send_json_success(
@@ -1145,26 +1145,48 @@ class Stripe_Payment_Handler {
 
 		// Prepare refund data for payment_data column
 		$refund_data = [
-			'refund_id'   => $refund_response->id,
-			'amount'      => $this->amount_convert_cents_to_usd( $refund_amount ),
-			'currency'    => strtoupper( $currency ),
-			'status'      => $refund_response->status,
-			'reason'      => $refund_response->reason ?? 'requested_by_customer',
-			'refunded_at' => time(),
-			'refunded_by' => 'sureforms_dashboard',
-			'type'        => 'subscription_refund',
+			'refund_id'      => sanitize_text_field( $refund_response->id ?? '' ),
+			'amount'         => absint( $refund_amount ),
+			'currency'       => sanitize_text_field( strtoupper( $currency ) ),
+			'status'         => sanitize_text_field( $refund_response->status ?? 'processed' ),
+			'created'        => time(),
+			'reason'         => sanitize_text_field( $refund_response->reason ?? 'requested_by_customer' ),
+			'description'    => sanitize_text_field( $refund_response->description ?? '' ),
+			'receipt_number' => sanitize_text_field( $refund_response->receipt_number ?? '' ),
+			'refunded_by'    => sanitize_text_field( wp_get_current_user()->display_name ?? 'System' ),
+			'refunded_at'    => gmdate( 'Y-m-d H:i:s' ),
+			'type'           => 'subscription_refund',
 		];
 
-		// Add refund to payment data
-		$refund_added = Payments::add_refund_to_payment_data( $payment_id, $refund_data );
-		if ( ! $refund_added ) {
+		// Validate refund amount to prevent over-refunding
+		$original_amount    = floatval( $payment['total_amount'] );
+		$existing_refunds   = floatval( $payment['refunded_amount'] ?? 0 ); // Use column directly
+		$new_refund_amount  = $refund_amount / 100; // Convert cents to dollars
+		$total_after_refund = $existing_refunds + $new_refund_amount;
+
+		if ( $total_after_refund > $original_amount ) {
+			error_log(
+				sprintf(
+					'SureForms: Over-refund attempt blocked for subscription. Payment ID: %d, Original: $%s, Existing refunds: $%s, New refund: $%s',
+					$payment_id,
+					number_format( $original_amount, 2 ),
+					number_format( $existing_refunds, 2 ),
+					number_format( $new_refund_amount, 2 )
+				)
+			);
+			return false;
+		}
+
+		// Add refund data to payment_data column (for audit trail)
+		$payment_data_result = Payments::add_refund_to_payment_data( $payment_id, $refund_data );
+		if ( ! $payment_data_result ) {
 			error_log( 'SureForms: Failed to add subscription refund data to payment_data column' );
 			return false;
 		}
 
-		// Update refunded amount
-		$refund_amount_updated = Payments::add_refund_amount( $payment_id, $this->amount_convert_cents_to_usd( $refund_amount ) );
-		if ( ! $refund_amount_updated ) {
+		// Update the refunded_amount column
+		$refund_amount_result = Payments::add_refund_amount( $payment_id, $new_refund_amount );
+		if ( ! $refund_amount_result ) {
 			error_log( 'SureForms: Failed to update subscription refunded amount' );
 			return false;
 		}
@@ -1172,25 +1194,45 @@ class Stripe_Payment_Handler {
 		// Determine new payment status
 		$total_amount   = (float) $payment['total_amount'];
 		$total_refunded = Payments::get_refunded_amount( $payment_id );
-		$new_status     = $total_refunded >= $total_amount ? 'refunded' : 'partially_refunded';
+		$payment_status = $total_refunded >= $total_amount ? 'refunded' : 'partially_refunded';
 
-		// Update payment status
-		$status_updated = Payments::update( $payment_id, [ 'status' => $new_status ] );
-		if ( ! $status_updated ) {
-			error_log( 'SureForms: Failed to update subscription payment status after refund' );
+		// Prepare comprehensive log entry
+		$current_logs   = Helper::get_array_value( $payment['log'] );
+		$original_amount = $total_amount;
+		$total_after_refund = $total_refunded;
+		$refund_type    = $total_after_refund >= $original_amount ? 'Full' : 'Partial';
+		$new_log        = [
+			'title'     => sprintf( '%s Subscription Payment Refund', $refund_type ),
+			'timestamp' => time(),
+			'messages'  => [
+				sprintf( 'Refund ID: %s', $refund_response->id ?? 'N/A' ),
+				sprintf( 'Refund Amount: %s %s', number_format( $refund_amount / 100, 2 ), strtoupper( $currency ) ),
+				sprintf(
+					'Total Refunded: %s %s of %s %s',
+					number_format( $total_after_refund, 2 ),
+					strtoupper( $currency ),
+					number_format( $original_amount, 2 ),
+					strtoupper( $currency )
+				),
+				sprintf( 'Refund Status: %s', $refund_response->status ?? 'processed' ),
+				sprintf( 'Payment Status: %s', ucfirst( str_replace( '_', ' ', $payment_status ) ) ),
+				sprintf( 'Refunded by: %s', wp_get_current_user()->display_name ),
+			],
+		];
+		$current_logs[] = $new_log;
+
+		$update_data = [
+			'status' => $payment_status,
+			'log'    => $current_logs,
+		];
+
+		// Update payment record with status and log
+		$payment_update_result = Payments::update( $payment_id, $update_data );
+		
+		if ( ! $payment_update_result ) {
+			error_log( 'SureForms: Failed to update subscription payment status and log' );
 			return false;
 		}
-
-		// Add log entry
-		$log_message = sprintf(
-			'Subscription payment refunded from SureForms dashboard. Refund ID: %s, Amount: %s %s, Status: %s',
-			$refund_response->id,
-			number_format( $this->amount_convert_cents_to_usd( $refund_amount ), 2 ),
-			strtoupper( $currency ),
-			$refund_response->status
-		);
-
-		Payments::add_log( $payment_id, $log_message );
 
 		return true;
 	}
