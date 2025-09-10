@@ -75,6 +75,22 @@ class Payment_Markup extends Base {
 	protected $payment_items;
 
 	/**
+	 * Payment type.
+	 *
+	 * @var string
+	 * @since x.x.x
+	 */
+	protected $payment_type;
+
+	/**
+	 * Subscription plans.
+	 *
+	 * @var array
+	 * @since x.x.x
+	 */
+	protected $subscription_plans;
+
+	/**
 	 * Constructor for the Payment Markup class.
 	 *
 	 * @param array<mixed> $attributes Block attributes.
@@ -114,7 +130,9 @@ class Payment_Markup extends Base {
 			$this->stripe_publishable_key = $payment_settings['stripe_test_publishable_key'] ?? '';
 		}
 
-		$this->payment_items = $attributes['paymentItems'] ?? [];
+		$this->payment_items      = $attributes['paymentItems'] ?? [];
+		$this->payment_type       = $attributes['paymentType'] ?? 'one-time';
+		$this->subscription_plans = $attributes['subscriptionPlans'] ?? [];
 	}
 
 	/**
@@ -137,7 +155,15 @@ class Payment_Markup extends Base {
 
 		ob_start();
 		?>
-		<div data-block-id="<?php echo esc_attr( $this->block_id ); ?>" class="<?php echo esc_attr( $field_classes ); ?>">
+		<div data-block-id="<?php echo esc_attr( $this->block_id ); ?>" 
+			 data-payment-type="<?php echo esc_attr( $this->payment_type ); ?>"
+			 <?php if ( 'subscription' === $this->payment_type && ! empty( $this->subscription_plans[0] ) ) { ?>
+			 data-subscription-plan-name="<?php echo esc_attr( $this->subscription_plans[0]['name'] ?? 'Subscription Plan' ); ?>"
+			 data-subscription-interval="<?php echo esc_attr( $this->subscription_plans[0]['interval'] ?? 'month' ); ?>"
+			 data-customer-name-field="<?php echo esc_attr( $this->subscription_plans[0]['customer_name'] ?? '' ); ?>"
+			 data-customer-email-field="<?php echo esc_attr( $this->subscription_plans[0]['customer_email'] ?? '' ); ?>"
+			 <?php } ?>
+			 class="<?php echo esc_attr( $field_classes ); ?>">
 			<?php echo $this->label_markup; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 			
 			<div class="srfm-payment-field-wrapper">
