@@ -59,8 +59,6 @@ async function processAllPayments( form ) {
 			const paymentData = window.srfmPaymentElements?.[ blockId ];
 			const paymentType = paymentData?.paymentType || 'one-time';
 
-			console.log( 'paymentData:', paymentData );
-
 			if ( paymentData && paymentData.clientSecret ) {
 				// Wrap each confirmation in individual error handling
 				const paymentPromise = srfmConfirmPayment(
@@ -198,8 +196,6 @@ async function confirmSubscription( blockId, paymentData, form ) {
 	console.log(
 		`SureForms: Confirming subscription for block ${ blockId } using simple-stripe-subscriptions approach`
 	);
-
-	console.log( 'paymentData:', paymentData );
 
 	try {
 		// Use single confirmPayment approach from simple-stripe-subscriptions
