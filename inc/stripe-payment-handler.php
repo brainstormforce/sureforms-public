@@ -37,7 +37,7 @@ class Stripe_Payment_Handler {
 		add_action( 'wp_ajax_nopriv_srfm_create_payment_intent', [ $this, 'create_payment_intent' ] ); // For non-logged-in users.
 		add_action( 'wp_ajax_srfm_create_subscription_intent', [ $this, 'create_subscription_intent' ] );
 		add_action( 'wp_ajax_nopriv_srfm_create_subscription_intent', [ $this, 'create_subscription_intent' ] ); // For non-logged-in users.
-		
+
 		add_action( 'wp_ajax_srfm_refund_payment', [ $this, 'refund_payment' ] );
 		add_filter( 'srfm_form_submit_data', [ $this, 'validate_payment_fields' ], 5, 1 );
 		add_action( 'wp_head', [ $this, 'add_payment_styles' ] );
@@ -311,120 +311,10 @@ class Stripe_Payment_Handler {
 				continue;
 			}
 
-			if ( 'stripe-subscription' === $payment_type ) {
-				$this->verify_stripe_subscription_intent_and_save( $payment_value, $block_id, $form_data );
-			} else {
-				$this->verify_stripe_payment_intent_and_save( $payment_id, $block_id, $form_data );
-			}
+			$this->verify_stripe_payment_intent_and_save( $payment_id, $block_id, $form_data );
 		}
 
 		return $form_data;
-	}
-
-	/**
-	 * Simplified subscription verification using simple-stripe-subscriptions approach
-	 *
-	 * @param array  $subscription_value Subscription data from frontend.
-	 * @param string $block_id Block ID.
-	 * @param array  $form_data Form data.
-	 * @return bool True if subscription is verified and saved successfully.
-	 */
-	public function verify_stripe_subscription_intent_and_save( $subscription_value, $block_id, $form_data ) {
-		$subscription_id   = ! empty( $subscription_value['subscriptionId'] ) ? $subscription_value['subscriptionId'] : '';
-		$payment_intent_id = ! empty( $subscription_value['paymentId'] ) ? $subscription_value['paymentId'] : '';
-
-		error_log( 'SureForms: Starting simplified subscription verification. Subscription ID: ' . $subscription_id );
-
-		if ( empty( $subscription_id ) ) {
-			error_log( 'SureForms: Missing subscription ID' );
-			return false;
-		}
-
-		if ( empty( $payment_intent_id ) ) {
-			error_log( 'SureForms: Missing payment intent ID' );
-			return false;
-		}
-
-		try {
-			// Get payment settings
-			$payment_settings = get_option( 'srfm_payments_settings', [] );
-			$payment_mode     = $payment_settings['payment_mode'] ?? 'test';
-			$secret_key       = 'live' === $payment_mode
-				? $payment_settings['stripe_live_secret_key'] ?? ''
-				: $payment_settings['stripe_test_secret_key'] ?? '';
-
-			if ( empty( $secret_key ) ) {
-				throw new \Exception( __( 'Stripe secret key not found.', 'sureforms' ) );
-			}
-
-			// Retrieve and validate the subscription using direct Stripe API
-			$subscription = $this->stripe_api_request(
-				'subscriptions',
-				'GET',
-				[
-					'expand' => [ 'latest_invoice.payment_intent' ],
-				],
-				$subscription_id
-			);
-
-			error_log( 'SureForms: Retrieved subscription status: ' . $subscription['status'] );
-
-			// Use simple-stripe-subscriptions validation logic - check if subscription is in good state
-			$is_subscription_active = in_array( $subscription['status'], [ 'active', 'trialing' ] );
-			$final_status           = $is_subscription_active ? 'succeeded' : 'failed';
-
-			// Prepare minimal subscription data for database
-			$entry_data = [
-				'form_id'             => $form_data['form-id'] ?? '',
-				'block_id'            => $block_id,
-				'status'              => $final_status,
-				'total_amount'        => $this->amount_convert_cents_to_usd( ! empty( $subscription['latest_invoice']['amount_paid'] ) ? $subscription['latest_invoice']['amount_paid'] : 0 ),
-				'currency'            => $subscription['currency'] ?? 'usd',
-				'entry_id'            => 0,
-				'gateway'             => 'stripe',
-				'type'                => 'subscription',
-				'mode'                => $payment_mode,
-				'transaction_id'      => $payment_intent_id,
-				'customer_id'         => $subscription['customer'],
-				'subscription_id'     => $subscription_id,
-				'subscription_status' => $subscription['status'],
-			];
-
-			// Add simple log entry
-			$entry_data['log'] = [
-				[
-					'title'     => 'Subscription Verification',
-					'timestamp' => time(),
-					'messages'  => [
-						sprintf( 'Subscription ID: %s', $subscription_id ),
-						sprintf( 'Payment Intent ID: %s', $payment_intent_id ),
-						sprintf( 'Subscription Status: %s', $subscription['status'] ),
-						sprintf( 'Customer ID: %s', $subscription['customer'] ),
-						sprintf( 'Total Amount: %s %s', number_format( $entry_data['total_amount'], 2 ), strtoupper( $entry_data['currency'] ) ),
-					],
-				],
-			];
-
-			// Save to database
-			$payment_entry_id = Payments::add( $entry_data );
-
-			if ( $payment_entry_id ) {
-				// Store in static array for later entry linking
-				$this->stripe_payment_entries[] = [
-					'payment_id' => $subscription_id,
-					'block_id'   => $block_id,
-					'form_id'    => $form_data['form-id'] ?? '',
-				];
-
-				error_log( 'SureForms: Subscription verification complete. Status: ' . $final_status );
-				return $is_subscription_active;
-			}
-				throw new \Exception( __( 'Failed to save subscription data.', 'sureforms' ) );
-
-		} catch ( \Exception $e ) {
-			error_log( 'SureForms Subscription Verification Error: ' . $e->getMessage() );
-			return false;
-		}
 	}
 
 	/**
@@ -1406,94 +1296,6 @@ class Stripe_Payment_Handler {
 		}
 
 		return '127.0.0.1'; // Fallback
-	}
-
-	/**
-	 * Save already completed subscription to database
-	 *
-	 * @param object $subscription Stripe subscription object.
-	 * @param string $setup_intent_id Setup intent ID.
-	 * @param array  $form_data Form data.
-	 * @param string $block_id Block ID.
-	 * @param string $payment_mode Payment mode.
-	 * @return bool True on success, false on failure.
-	 * @since x.x.x
-	 */
-	private function save_completed_subscription( $subscription, $setup_intent_id, $form_data, $block_id, $payment_mode ) {
-		try {
-			// Prepare subscription data for database
-			$entry_data                        = [];
-			$entry_data['form_id']             = $form_data['form-id'] ?? '';
-			$entry_data['block_id']            = $block_id;
-			$entry_data['status']              = 'succeeded';
-			$entry_data['total_amount']        = $this->amount_convert_cents_to_usd( $subscription->latest_invoice ? $subscription->latest_invoice->amount_paid : 0 );
-			$entry_data['currency']            = $subscription->currency ?? 'usd';
-			$entry_data['entry_id']            = 0;
-			$entry_data['gateway']             = 'stripe';
-			$entry_data['type']                = 'subscription';
-			$entry_data['mode']                = $payment_mode;
-			$entry_data['transaction_id']      = $setup_intent_id;
-			$entry_data['customer_id']         = $subscription->customer;
-			$entry_data['subscription_id']     = $subscription->id;
-			$entry_data['subscription_status'] = $subscription->status;
-
-			// Store detailed subscription data
-			$entry_data['payment_data'] = [
-				'subscription'     => [
-					'id'                   => $subscription->id,
-					'status'               => $subscription->status,
-					'customer_id'          => $subscription->customer,
-					'current_period_start' => $subscription->current_period_start,
-					'current_period_end'   => $subscription->current_period_end,
-					'trial_start'          => $subscription->trial_start,
-					'trial_end'            => $subscription->trial_end,
-				],
-				'already_complete' => true,
-				'confirmed_at'     => time(),
-			];
-
-			// Add log entry
-			$entry_data['log'] = [
-				[
-					'title'     => 'Subscription Already Complete',
-					'timestamp' => time(),
-					'messages'  => [
-						sprintf( 'Subscription ID: %s', $subscription->id ),
-						sprintf( 'Subscription Status: %s', $subscription->status ),
-						sprintf( 'Customer ID: %s', $subscription->customer ),
-						sprintf( 'Total Amount: %s %s', number_format( $entry_data['total_amount'], 2 ), strtoupper( $entry_data['currency'] ) ),
-					],
-				],
-			];
-
-			// Save to database
-			$payment_entry_id = Payments::add( $entry_data );
-
-			if ( $payment_entry_id ) {
-				// Store in static array for later entry linking
-				$this->stripe_payment_entries[] = [
-					'payment_id' => $subscription->id,
-					'block_id'   => $block_id,
-					'form_id'    => $form_data['form-id'] ?? '',
-				];
-
-				error_log(
-					sprintf(
-						'SureForms: Already completed subscription saved. ID: %s, Status: %s, Payment Entry ID: %d',
-						$subscription->id,
-						$subscription->status,
-						$payment_entry_id
-					)
-				);
-
-				return true;
-			}
-				throw new \Exception( __( 'Failed to save completed subscription data.', 'sureforms' ) );
-
-		} catch ( \Exception $e ) {
-			error_log( 'SureForms Save Completed Subscription Error: ' . $e->getMessage() );
-			return false;
-		}
 	}
 
 	/**
