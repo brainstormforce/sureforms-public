@@ -34,9 +34,12 @@ const Edit = ( props ) => {
 		preview,
 		className,
 		paymentItems,
+		paymentType,
+		subscriptionPlans,
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
 	const [ availableNumberFields, setAvailableNumberFields ] = useState( [] );
+	const [ availableFormFields, setAvailableFormFields ] = useState( [] );
 
 	// Get all blocks from the current form
 	const { getBlocks } = useSelect(
@@ -86,10 +89,55 @@ const Edit = ( props ) => {
 		}
 	};
 
+	// Function to extract all form field slugs for customer mapping
+	const extractAllFieldSlugs = () => {
+		if ( ! currentFormId ) {
+			return [];
+		}
+
+		try {
+			const blocks = getBlocks();
+			const formFields = [];
+
+			const findFormFields = ( blockList ) => {
+				blockList.forEach( ( block ) => {
+					// Check if block has a slug (is a form field)
+					if ( block.attributes?.slug ) {
+						const slug = block.attributes.slug;
+						const label =
+							block.attributes.label ||
+							block.name ||
+							__( 'Form Field', 'sureforms' );
+						const fieldType =
+							block.name?.replace( 'srfm/', '' ) || 'field';
+
+						formFields.push( {
+							slug,
+							label: `${ label } (${ fieldType })`,
+							type: fieldType,
+						} );
+					}
+					// Recursively check inner blocks
+					if ( block.innerBlocks?.length > 0 ) {
+						findFormFields( block.innerBlocks );
+					}
+				} );
+			};
+
+			findFormFields( blocks );
+			return formFields;
+		} catch ( error ) {
+			console.error( 'Error extracting form field slugs:', error );
+			return [];
+		}
+	};
+
 	// Update available fields when form changes
 	useEffect( () => {
-		const fields = extractNumberFieldSlugs();
-		setAvailableNumberFields( fields );
+		const numberFields = extractNumberFieldSlugs();
+		const allFields = extractAllFieldSlugs();
+		setAvailableNumberFields( numberFields );
+		setAvailableFormFields( allFields );
 	}, [ currentFormId, paymentItems ] );
 
 	useEffect( () => {
@@ -185,6 +233,18 @@ const Edit = ( props ) => {
 			),
 		},
 		{
+			id: 'required',
+			component: (
+				<ToggleControl
+					label={ __( 'Required', 'sureforms' ) }
+					checked={ required }
+					onChange={ ( checked ) =>
+						setAttributes( { required: checked } )
+					}
+				/>
+			),
+		},
+		{
 			id: 'payment-items',
 			component: (
 				<div>
@@ -262,17 +322,230 @@ const Edit = ( props ) => {
 			),
 		},
 		{
-			id: 'required',
+			id: 'payment-type',
 			component: (
-				<ToggleControl
-					label={ __( 'Required', 'sureforms' ) }
-					checked={ required }
-					onChange={ ( checked ) =>
-						setAttributes( { required: checked } )
-					}
+				<SelectControl
+					label={ __( 'Payment Type', 'sureforms' ) }
+					value={ paymentType || 'one-time' }
+					options={ [
+						{
+							label: __( 'One-time Payment', 'sureforms' ),
+							value: 'one-time',
+						},
+						{
+							label: __( 'Subscription', 'sureforms' ),
+							value: 'subscription',
+						},
+					] }
+					onChange={ ( value ) => {
+						setAttributes( { paymentType: value } );
+					} }
 				/>
 			),
 		},
+		...( paymentType === 'subscription'
+			? [
+				{
+					id: 'subscription-plan-name',
+					component: (
+						<SRFMTextControl
+							label={ __(
+								'Subscription Plan Name',
+								'sureforms'
+							) }
+							value={
+								subscriptionPlans?.[ 0 ]?.name ||
+									'Subscription Plan'
+							}
+							data={ {
+								value:
+										subscriptionPlans?.[ 0 ]?.name ||
+										'Subscription Plan',
+								label: 'subscription-plan-name',
+							} }
+							onChange={ ( value ) => {
+								const updatedPlans = [
+									...( subscriptionPlans || [] ),
+								];
+								if ( updatedPlans.length === 0 ) {
+									updatedPlans.push( {
+										name: value,
+										interval: 'month',
+										customer_name: '',
+										customer_email: '',
+									} );
+								} else {
+									updatedPlans[ 0 ] = {
+										...updatedPlans[ 0 ],
+										name: value,
+									};
+								}
+								setAttributes( {
+									subscriptionPlans: updatedPlans,
+								} );
+							} }
+						/>
+					),
+				},
+				{
+					id: 'subscription-interval',
+					component: (
+						<SelectControl
+							label={ __( 'Billing Interval', 'sureforms' ) }
+							value={
+								subscriptionPlans?.[ 0 ]?.interval ||
+									'month'
+							}
+							options={ [
+								{
+									label: __( 'Daily', 'sureforms' ),
+									value: 'day',
+								},
+								{
+									label: __( 'Weekly', 'sureforms' ),
+									value: 'week',
+								},
+								{
+									label: __( 'Monthly', 'sureforms' ),
+									value: 'month',
+								},
+								{
+									label: __( 'Yearly', 'sureforms' ),
+									value: 'year',
+								},
+							] }
+							onChange={ ( value ) => {
+								const updatedPlans = [
+									...( subscriptionPlans || [] ),
+								];
+								if ( updatedPlans.length === 0 ) {
+									updatedPlans.push( {
+										name: 'Subscription Plan',
+										interval: value,
+										customer_name: '',
+										customer_email: '',
+									} );
+								} else {
+									updatedPlans[ 0 ] = {
+										...updatedPlans[ 0 ],
+										interval: value,
+									};
+								}
+								setAttributes( {
+									subscriptionPlans: updatedPlans,
+								} );
+							} }
+						/>
+					),
+				},
+				{
+					id: 'customer-name-field',
+					component: (
+						<SelectControl
+							label={ __(
+								'Customer Name Field',
+								'sureforms'
+							) }
+							value={
+								subscriptionPlans?.[ 0 ]?.customer_name ||
+									''
+							}
+							options={ [
+								{
+									label: __(
+										'Select a field…',
+										'sureforms'
+									),
+									value: '',
+								},
+								...availableFormFields.map( ( field ) => ( {
+									label: field.label,
+									value: field.slug,
+								} ) ),
+							] }
+							onChange={ ( value ) => {
+								const updatedPlans = [
+									...( subscriptionPlans || [] ),
+								];
+								if ( updatedPlans.length === 0 ) {
+									updatedPlans.push( {
+										name: 'Subscription Plan',
+										interval: 'month',
+										customer_name: value,
+										customer_email: '',
+									} );
+								} else {
+									updatedPlans[ 0 ] = {
+										...updatedPlans[ 0 ],
+										customer_name: value,
+									};
+								}
+								setAttributes( {
+									subscriptionPlans: updatedPlans,
+								} );
+							} }
+							help={ __(
+								'Select the field that contains the customer name',
+								'sureforms'
+							) }
+						/>
+					),
+				},
+				{
+					id: 'customer-email-field',
+					component: (
+						<SelectControl
+							label={ __(
+								'Customer Email Field',
+								'sureforms'
+							) }
+							value={
+								subscriptionPlans?.[ 0 ]?.customer_email ||
+									''
+							}
+							options={ [
+								{
+									label: __(
+										'Select a field…',
+										'sureforms'
+									),
+									value: '',
+								},
+								...availableFormFields.map( ( field ) => ( {
+									label: field.label,
+									value: field.slug,
+								} ) ),
+							] }
+							onChange={ ( value ) => {
+								const updatedPlans = [
+									...( subscriptionPlans || [] ),
+								];
+								if ( updatedPlans.length === 0 ) {
+									updatedPlans.push( {
+										name: 'Subscription Plan',
+										interval: 'month',
+										customer_name: '',
+										customer_email: value,
+									} );
+								} else {
+									updatedPlans[ 0 ] = {
+										...updatedPlans[ 0 ],
+										customer_email: value,
+									};
+								}
+								setAttributes( {
+									subscriptionPlans: updatedPlans,
+								} );
+							} }
+							help={ __(
+								'Select the field that contains the customer email',
+								'sureforms'
+							) }
+						/>
+					),
+				},
+			  ]
+			: [] ),
 		{
 			id: 'error-message',
 			component: required ? (
