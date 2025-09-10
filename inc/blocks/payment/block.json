@@ -65,6 +65,21 @@
 		"paymentItems": {
 			"type": "array",
 			"default": []
+		},
+		"paymentType": {
+			"type": "string",
+			"default": "one-time"
+		},
+		"subscriptionPlans": {
+			"type": "array",
+			"default": [
+				{
+					"name": "Subscription Plan",
+					"interval": "month",
+					"customer_name": "field_id",
+					"customer_email": "field_id"
+				}
+			]
 		}
 	}
 }
