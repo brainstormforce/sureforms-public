@@ -483,7 +483,11 @@ class Stripe_Payment_Handler {
 
 		$payment_id     = intval( $_POST['payment_id'] ?? 0 );
 		$transaction_id = sanitize_text_field( wp_unslash( $_POST['transaction_id'] ?? '' ) );
-		$refund_amount  = intval( $_POST['refund_amount'] ?? 0 );
+
+		$refund_amount = isset( $_POST['refund_amount'] ) ? absint( $_POST['refund_amount'] ) : 0;
+		if ( $refund_amount <= 0 ) {
+			wp_send_json_error( [ 'message' => esc_html__( 'Invalid refund amount.', 'sureforms' ) ] );
+		}
 
 		if ( empty( $payment_id ) || empty( $transaction_id ) || $refund_amount <= 0 ) {
 			wp_send_json_error( __( 'Invalid payment data.', 'sureforms' ) );
@@ -900,7 +904,12 @@ class Stripe_Payment_Handler {
 		check_ajax_referer( 'sureforms_admin_nonce', 'nonce' );
 
 		$payment_id    = absint( $_POST['payment_id'] );
-		$refund_amount = isset( $_POST['refund_amount'] ) ? absint( $_POST['refund_amount'] ) : null;
+		$refund_amount = isset( $_POST['refund_amount'] ) ? absint( $_POST['refund_amount'] ) : 0;
+
+		if ( $refund_amount <= 0 ) {
+			wp_send_json_error( __( 'Invalid refund amount.', 'sureforms' ) );
+			return;
+		}
 
 		// Get payment record
 		$payment = Payments::get( $payment_id );
@@ -1027,6 +1036,11 @@ class Stripe_Payment_Handler {
 
 			if ( empty( $secret_key ) ) {
 				throw new \Exception( __( 'Stripe secret key not found.', 'sureforms' ) );
+			}
+
+			if ( $refund_amount <= 0 ) {
+				wp_send_json_error( __( 'Invalid refund amount.', 'sureforms' ) );
+				return;
 			}
 
 			// Handle subscription refund using direct Stripe API

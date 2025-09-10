@@ -401,7 +401,7 @@ class PaymentEntries {
 		this.setSubscriptionRefundLoadingState( true );
 
 		try {
-			const response = await fetch( ajaxurl, {
+			const response = await fetch( sureformsRefundData.ajaxurl, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/x-www-form-urlencoded',
@@ -456,7 +456,7 @@ class PaymentEntries {
 		this.setSubscriptionCancelLoadingState( true );
 
 		try {
-			const response = await fetch( ajaxurl, {
+			const response = await fetch( sureformsRefundData.ajaxurl, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/x-www-form-urlencoded',
