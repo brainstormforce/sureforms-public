@@ -26,7 +26,7 @@ Our mission at SureForms is to empower you to build **beautiful forms without an
 
 We're taking a fresh approach with Gutenberg, WordPress's native drag-and-drop builder, to make creating forms seamless and intuitive with no new interface to learn.
 
-SureForms is a beginner-friendly form plugin that makes building contact forms and other high-converting custom forms fast and simple with advanced features like multi-step forms, conversational forms, conditional logic and etc.
+SureForms is a beginner-friendly form plugin that makes building contact forms and other high-converting custom forms fast and simple with advanced features like multi-step forms, conversational forms, conditional logic, etc.
 
 Good design and user experience are crucial for forms. Yet many website owners struggle to make their forms blend seamlessly with their site's look and feel, often leading to lower response rates.
 
@@ -34,13 +34,13 @@ In this regard, SureForms addresses several pain points commonly experienced by 
 
 -   Complex Process of Form Building
 -   Design Limitations
--   Lack of Mobile Friendliness and Accessibility
+-   Lack of mobile-friendliness and Accessibility
 -   Limited Engagement in Their Forms
 -   Spam and Security Issues
 
 SureForms is packed with features to address these pain points of WordPress users.
 
-### SOME POWERFUL FEATURES OF SUREFORMS 💪
+### POWERFUL FEATURES OF SUREFORMS 💪
 
 Below are some of the top features SureForms offers:
 
@@ -291,7 +291,7 @@ This plugin provides 16 blocks for all users:
 
 -   **Multiple Choice:** Displays a SureForms Multiple Choice Field
 
--   **Check Box:** Displays a SureForms Check Box Field
+-   **Checkbox:** Displays a SureForms Check Box Field
 
 -   **Separator:** Displays a SureForms Separator Field
 
