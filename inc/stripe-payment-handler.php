@@ -791,11 +791,6 @@ class Stripe_Payment_Handler {
 				throw new \Exception( __( 'Stripe secret key not found.', 'sureforms' ) );
 			}
 
-			// Initialize Stripe SDK
-			if ( ! class_exists( '\Stripe\Stripe' ) ) {
-				throw new \Exception( __( 'Stripe library not found.', 'sureforms' ) );
-			}
-
 			// Get or create Stripe customer for subscriptions
 			$customer_id = $this->get_or_create_stripe_customer();
 			if ( ! $customer_id ) {
@@ -1539,6 +1534,75 @@ class Stripe_Payment_Handler {
 	 * @since x.x.x
 	 */
 	private function create_subscription( $amount, $currency, $description, $interval, $interval_count, $trial_days, $application_fee_amount, $stripe_account_id, $block_id, $customer_id, $secret_key ) {
+		$license_key = $this->get_license_key();
+		// Prepare subscription data for middleware
+		$subscription_data = apply_filters(
+			'srfm_create_subscription_data',
+			[
+				'secret_key'            => $secret_key,
+				'customer_id'           => $customer_id,
+				'amount'                => $amount,
+				'currency'              => strtolower( $currency ),
+				'description'           => $description,
+				'interval'              => $interval,
+				'interval_count'        => $interval_count,
+				// 'trial_days'            => $trial_days,
+				'application_fee_amount' => $application_fee_amount,
+				'stripe_account_id'     => $stripe_account_id,
+				'license_key'           => $license_key,
+				'block_id'              => $block_id,
+				// 'price_id'              => $price->id,
+				'metadata'              => [
+					'source'           => 'SureForms',
+					'block_id'         => $block_id,
+					'original_amount'  => $amount,
+					'billing_interval' => $interval,
+					'interval_count'   => $interval_count,
+				],
+			]
+		);
+
+		$endpoint = 'prod' === SRFM_PAYMENTS_ENV ? SRFM_PAYMENTS_PROD . 'subscription/create' : SRFM_PAYMENTS_LOCAL . 'subscription/create';
+
+		// Call middleware subscription creation endpoint
+		$subscription_response = wp_remote_post(
+			$endpoint,
+			[
+				'body'    => base64_encode( wp_json_encode( $subscription_data ) ),
+				'headers' => [
+					'Content-Type' => 'application/json',
+				],
+				'timeout' => 60, // Subscription creation can take longer
+			]
+		);
+
+		if ( is_wp_error( $subscription_response ) ) {
+			throw new \Exception( __( 'Failed to create subscription through middleware.', 'sureforms' ) );
+		}
+
+		$subscription = json_decode( wp_remote_retrieve_body( $subscription_response ), true );
+
+
+
+
+
+		///////////////////////////////////// temp
+		$response = [
+			'type'              => 'subscription',
+			'client_secret'     => $subscription["client_secrete"],
+			'subscription_id'   => $subscription['subscription_data']['id'],
+			'customer_id'       => $customer_id,
+			'payment_intent_id' => $subscription['payment_intent']['id'],
+			// 'status'            => $subscription->status,
+			'amount'            => $this->amount_convert_cents_to_usd( $amount ),
+			'interval'          => $interval,
+		];
+		///////////////////////////////////// temp
+
+		return $response;
+	}
+
+	private function create_subscription_2( $amount, $currency, $description, $interval, $interval_count, $trial_days, $application_fee_amount, $stripe_account_id, $block_id, $customer_id, $secret_key ) {
 
 		// Initialize Stripe API key first
 		\Stripe\Stripe::setApiKey( $secret_key );
