@@ -9,7 +9,7 @@ import Breadcrumbs from './Breadcrumbs';
 import ICONS from './icons';
 
 const Header = () => {
-	const [ showRevokePopover, setShowRevokePopover ] = useState( true );
+	const [ showRevokePopover, setShowRevokePopover ] = useState( false );
 	const formCreationleft = srfm_admin?.srfm_ai_usage_details?.remaining ?? 0;
 
 	function useQuery() {

@@ -1,5 +1,5 @@
 import { __ } from '@wordpress/i18n';
-import { useState, useRef } from '@wordpress/element';
+import { useState, useRef, useEffect } from '@wordpress/element';
 import { Button, Container, TextArea, Title, toast, Label } from '@bsf/force-ui';
 import { ArrowRight, SendHorizontal, MicOff, Mic } from 'lucide-react';
 import { applyFilters } from '@wordpress/hooks';
@@ -23,6 +23,8 @@ export default (props) => {
 	const [text, setText] = useState('');
 	const recognitionRef = useRef(null); // To store SpeechRecognition instance
 	const [formLayout, setformLayout] = useState({});
+	const [placeholderIndex, setPlaceholderIndex] = useState(0);
+	const [aiPlaceholderIndex, setAiPlaceholderIndex] = useState(0);
 
 	const handlePromptClick = (prompt) => {
 		setText(prompt);
@@ -113,12 +115,89 @@ export default (props) => {
 		}
 	};
 
+	const examplePrompts = applyFilters(
+		'srfm.aiFormScreen.examplePrompts',
+		[
+			{
+				title: __('Create simple contact form', 'sureforms'),
+			},
+			{
+				title: __('Create a lead generation form', 'sureforms'),
+			},
+			{
+				title: __('Generate a user feedback form', 'sureforms'),
+			},
+			{
+				title: __('Create a job application form', 'sureforms'),
+			},
+			{
+				title: __('Make an event registration form', 'sureforms'),
+			},
+		],
+		formTypeObj,
+		formType
+	);
+
+	const rotatingPlaceholders = examplePrompts
+		.map((prompt) =>
+			typeof prompt === 'string' ? prompt : prompt.title
+		)
+		.filter(Boolean); // remove empty values
+
+	useEffect(() => {
+		if ((formType === 'simple' || formType === 'conversational') && rotatingPlaceholders.length > 1) {
+			const interval = setInterval(() => {
+				setPlaceholderIndex(
+					(prevIndex) => (prevIndex + 1) % rotatingPlaceholders.length
+				);
+			}, 4000); // rotate every 4 seconds
+
+			return () => clearInterval(interval);
+		}
+	}, [formType, rotatingPlaceholders]);
+
+
+	useEffect(() => {
+		if (aiPromptPlaceholders.length > 1) {
+			const interval = setInterval(() => {
+				setAiPlaceholderIndex(
+					(prev) => (prev + 1) % aiPromptPlaceholders.length
+				);
+			}, 4000);
+			return () => clearInterval(interval);
+		}
+	}, [formType, formLayout, aiPromptPlaceholders]);
+
+	const aiPromptPlaceholderRaw = applyFilters(
+		'srfm.aiFormScreen.aiPromptPlaceholder',
+		'',
+		formLayout,
+		formType
+	);
+
+	const aiPromptPlaceholders = Array.isArray(aiPromptPlaceholderRaw)
+		? aiPromptPlaceholderRaw
+		: [aiPromptPlaceholderRaw];
+
 	const aiPromptPlaceholder = applyFilters(
 		'srfm.aiFormScreen.aiPromptPlaceholder',
 		'',
 		formLayout,
 		formType
 	);
+
+	const textAreaPlaceholder =
+		formType === 'simple' || formType === 'conversational'
+			? rotatingPlaceholders[placeholderIndex]
+			: aiPromptPlaceholders[aiPlaceholderIndex];
+
+	const handlePlaceholderFocus = () => {
+		// If textarea is empty, take the current placeholder as starting text
+		if (!text.trim()) {
+			setText(textAreaPlaceholder);
+			setCharacterCount(textAreaPlaceholder.length);
+		}
+	};
 
 	const is_pro_active =
 		srfm_admin?.is_pro_active && srfm_admin?.is_pro_license_active;
@@ -156,14 +235,6 @@ export default (props) => {
 			</Button>
 		);
 	};
-
-	const textAreaPlaceholder =
-		formType === 'simple' || formType === 'conversational'
-			? __(
-				"E.g. Form to gather feedback from our customer for our product functionality, usability , how much you will rate it and what you don't like about it.",
-				'sureforms'
-			)
-			: aiPromptPlaceholder;
 
 	const type = srfm_admin?.srfm_ai_usage_details?.type;
 	const formCreationleft = srfm_admin?.srfm_ai_usage_details?.remaining ?? 0;
@@ -230,6 +301,7 @@ export default (props) => {
 											}}
 											onInput={handleTyping}
 											maxLength={2000}
+											onFocus={handlePlaceholderFocus}
 										/>
 										<Container
 											className="flex-wrap py-2 px-4"
