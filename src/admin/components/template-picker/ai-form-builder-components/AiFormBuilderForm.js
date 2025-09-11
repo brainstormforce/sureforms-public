@@ -1,6 +1,13 @@
 import { __ } from '@wordpress/i18n';
 import { useState, useRef, useEffect } from '@wordpress/element';
-import { Button, Container, TextArea, Title, toast, Label } from '@bsf/force-ui';
+import {
+	Button,
+	Container,
+	TextArea,
+	Title,
+	toast,
+	Label,
+} from '@bsf/force-ui';
 import { ArrowRight, SendHorizontal, MicOff, Mic } from 'lucide-react';
 import { applyFilters } from '@wordpress/hooks';
 import { cn, srfmClassNames } from '@Utils/Helpers';
@@ -8,7 +15,7 @@ import ConnectWithAIBanner from '../ai-form-builder-components/ConnectWithAIBann
 import LimitReachedBanner from '../ai-form-builder-components/LimitReachedBanner.js';
 import FormTypeSelector from '../components/FormTypeSelector.js';
 
-export default (props) => {
+export default ( props ) => {
 	const {
 		handleCreateAiForm,
 		setIsBuildingForm,
@@ -18,23 +25,23 @@ export default (props) => {
 		formType,
 	} = props;
 
-	const [isListening, setIsListening] = useState(false); // State to manage voice recording
-	const [characterCount, setCharacterCount] = useState(0);
-	const [text, setText] = useState('');
-	const recognitionRef = useRef(null); // To store SpeechRecognition instance
-	const [formLayout, setformLayout] = useState({});
-	const [placeholderIndex, setPlaceholderIndex] = useState(0);
-	const [aiPlaceholderIndex, setAiPlaceholderIndex] = useState(0);
+	const [ isListening, setIsListening ] = useState( false ); // State to manage voice recording
+	const [ characterCount, setCharacterCount ] = useState( 0 );
+	const [ text, setText ] = useState( '' );
+	const recognitionRef = useRef( null ); // To store SpeechRecognition instance
+	const [ formLayout, setformLayout ] = useState( {} );
+	const [ placeholderIndex, setPlaceholderIndex ] = useState( 0 );
+	const [ aiPlaceholderIndex, setAiPlaceholderIndex ] = useState( 0 );
 
-	const handlePromptClick = (prompt) => {
-		setText(prompt);
-		setCharacterCount(prompt.length);
+	const handlePromptClick = ( prompt ) => {
+		setText( prompt );
+		setCharacterCount( prompt.length );
 	};
 
 	const initSpeechRecognition = () => {
 		const SpeechRecognition =
 			window.SpeechRecognition || window.webkitSpeechRecognition;
-		if (!SpeechRecognition) {
+		if ( ! SpeechRecognition ) {
 			return null;
 		}
 		const recognition = new SpeechRecognition();
@@ -47,49 +54,49 @@ export default (props) => {
 
 	// Stops voice input if typing begins
 	const handleTyping = () => {
-		if (isListening && recognitionRef.current) {
+		if ( isListening && recognitionRef.current ) {
 			recognitionRef.current.stop();
-			setIsListening(false);
+			setIsListening( false );
 		}
 	};
 
 	const toggleListening = () => {
 		// initialize SpeechRecognition instance if not already initialized
-		if (!recognitionRef.current) {
+		if ( ! recognitionRef.current ) {
 			recognitionRef.current = initSpeechRecognition();
 		}
 
 		// if SpeechRecognition is not supported, show error message
-		if (!recognitionRef.current) {
+		if ( ! recognitionRef.current ) {
 			return;
 		}
 
 		const recognition = recognitionRef.current;
 
-		if (isListening) {
+		if ( isListening ) {
 			// Stop recording if already started
 			recognition.stop();
-			setIsListening(false);
+			setIsListening( false );
 		} else {
 			// Start recording if not started
 			recognition.start();
-			setIsListening(true);
-			recognition.onresult = (event) => {
+			setIsListening( true );
+			recognition.onresult = ( event ) => {
 				// keep on appending the result to the textarea
 				const speechResult =
-					event.results[event.results.length - 1][0].transcript;
-				setText((prevText) => {
+					event.results[ event.results.length - 1 ][ 0 ].transcript;
+				setText( ( prevText ) => {
 					const updatedText = prevText + speechResult;
-					setCharacterCount(updatedText.length);
+					setCharacterCount( updatedText.length );
 					return updatedText;
-				});
+				} );
 			};
-			recognition.onerror = (e) => {
+			recognition.onerror = ( e ) => {
 				recognition.stop();
-				setIsListening(false);
+				setIsListening( false );
 				toast.dismiss();
 
-				if (e.error === 'not-allowed') {
+				if ( e.error === 'not-allowed' ) {
 					toast.error(
 						__(
 							'Please allow microphone access to use voice input.',
@@ -119,19 +126,19 @@ export default (props) => {
 		'srfm.aiFormScreen.examplePrompts',
 		[
 			{
-				title: __('Create simple contact form', 'sureforms'),
+				title: __( 'Create simple contact form', 'sureforms' ),
 			},
 			{
-				title: __('Create a lead generation form', 'sureforms'),
+				title: __( 'Create a lead generation form', 'sureforms' ),
 			},
 			{
-				title: __('Generate a user feedback form', 'sureforms'),
+				title: __( 'Generate a user feedback form', 'sureforms' ),
 			},
 			{
-				title: __('Create a job application form', 'sureforms'),
+				title: __( 'Create a job application form', 'sureforms' ),
 			},
 			{
-				title: __('Make an event registration form', 'sureforms'),
+				title: __( 'Make an event registration form', 'sureforms' ),
 			},
 		],
 		formTypeObj,
@@ -139,34 +146,37 @@ export default (props) => {
 	);
 
 	const rotatingPlaceholders = examplePrompts
-		.map((prompt) =>
+		.map( ( prompt ) =>
 			typeof prompt === 'string' ? prompt : prompt.title
 		)
-		.filter(Boolean); // remove empty values
+		.filter( Boolean ); // remove empty values
 
-	useEffect(() => {
-		if ((formType === 'simple' || formType === 'conversational') && rotatingPlaceholders.length > 1) {
-			const interval = setInterval(() => {
+	useEffect( () => {
+		if (
+			( formType === 'simple' || formType === 'conversational' ) &&
+			rotatingPlaceholders.length > 1
+		) {
+			const interval = setInterval( () => {
 				setPlaceholderIndex(
-					(prevIndex) => (prevIndex + 1) % rotatingPlaceholders.length
+					( prevIndex ) =>
+						( prevIndex + 1 ) % rotatingPlaceholders.length
 				);
-			}, 4000); // rotate every 4 seconds
+			}, 4000 ); // rotate every 4 seconds
 
-			return () => clearInterval(interval);
+			return () => clearInterval( interval );
 		}
-	}, [formType, rotatingPlaceholders]);
+	}, [ formType, rotatingPlaceholders ] );
 
-
-	useEffect(() => {
-		if (aiPromptPlaceholders.length > 1) {
-			const interval = setInterval(() => {
+	useEffect( () => {
+		if ( aiPromptPlaceholders.length > 1 ) {
+			const interval = setInterval( () => {
 				setAiPlaceholderIndex(
-					(prev) => (prev + 1) % aiPromptPlaceholders.length
+					( prev ) => ( prev + 1 ) % aiPromptPlaceholders.length
 				);
-			}, 4000);
-			return () => clearInterval(interval);
+			}, 4000 );
+			return () => clearInterval( interval );
 		}
-	}, [formType, formLayout, aiPromptPlaceholders]);
+	}, [ formType, formLayout, aiPromptPlaceholders ] );
 
 	const aiPromptPlaceholderRaw = applyFilters(
 		'srfm.aiFormScreen.aiPromptPlaceholder',
@@ -175,27 +185,19 @@ export default (props) => {
 		formType
 	);
 
-	const aiPromptPlaceholders = Array.isArray(aiPromptPlaceholderRaw)
+	const aiPromptPlaceholders = Array.isArray( aiPromptPlaceholderRaw )
 		? aiPromptPlaceholderRaw
-		: [aiPromptPlaceholderRaw];
-
-	const aiPromptPlaceholder = applyFilters(
-		'srfm.aiFormScreen.aiPromptPlaceholder',
-		'',
-		formLayout,
-		formType
-	);
+		: [ aiPromptPlaceholderRaw ];
 
 	const textAreaPlaceholder =
 		formType === 'simple' || formType === 'conversational'
-			? rotatingPlaceholders[placeholderIndex]
-			: aiPromptPlaceholders[aiPlaceholderIndex];
+			? rotatingPlaceholders[ placeholderIndex ]
+			: aiPromptPlaceholders[ aiPlaceholderIndex ];
 
 	const handlePlaceholderFocus = () => {
-		// If textarea is empty, take the current placeholder as starting text
-		if (!text.trim()) {
-			setText(textAreaPlaceholder);
-			setCharacterCount(textAreaPlaceholder.length);
+		if ( ! text.trim() ) {
+			setText( textAreaPlaceholder );
+			setCharacterCount( textAreaPlaceholder.length );
 		}
 	};
 
@@ -205,34 +207,33 @@ export default (props) => {
 	const VoiceToggleButton = () => {
 		const buttonProps = isListening
 			? {
-				icon: <Mic size={12} />,
+				icon: <Mic size={ 12 } />,
 				required_className: [
 					'bg-badge-background-green',
 					'border-badge-border-green',
 					'text-badge-color-green',
 					'hover:bg-badge-background-green',
 				],
-			}
+			  }
 			: {
-				icon: <MicOff size={12} />,
+				icon: <MicOff size={ 12 } />,
 				required_className: [
 					'border-badge-border-gray',
 					'bg-badge-background-gray',
 				],
-			};
+			  };
 
 		return (
 			<Button
-				icon={buttonProps.icon}
+				icon={ buttonProps.icon }
 				iconPosition="left"
 				variant="outline"
 				size="xs"
-				className={`p-3 rounded-full border-0.5 border-solid font-medium hover:cursor-pointer ${srfmClassNames(
+				className={ `p-3 rounded-full border-0.5 border-solid font-medium hover:cursor-pointer ${ srfmClassNames(
 					buttonProps.required_className
-				)}`}
-				onClick={toggleListening}
-			>
-			</Button>
+				) }` }
+				onClick={ toggleListening }
+			></Button>
 		);
 	};
 
@@ -248,10 +249,10 @@ export default (props) => {
 
 	return (
 		<Container
-			className={cn('gap-0', is_pro_active && 'mt-12')}
+			className={ cn( 'gap-0', is_pro_active && 'mt-12' ) }
 			direction="column"
 		>
-			<Container.Item>{!is_pro_active && banner}</Container.Item>
+			<Container.Item>{ ! is_pro_active && banner }</Container.Item>
 			<Container.Item>
 				<Container
 					className="p-8 gap-8 mx-auto w-full h-screen bg-background-secondary"
@@ -270,10 +271,10 @@ export default (props) => {
 								<Title
 									tag="h4"
 									size="md"
-									title={__(
+									title={ __(
 										'Start with AI. Just describe your form…',
 										'sureforms'
-									)}
+									) }
 								/>
 							</Container.Item>
 							<Container.Item>
@@ -283,25 +284,25 @@ export default (props) => {
 								>
 									<Container.Item className="flex flex-col gap-2 shadow-md-blur-32 border border-solid border-field-border rounded-lg bg-background-primary">
 										<TextArea
-											aria-label={__(
+											aria-label={ __(
 												'Describe the form you want to create',
 												'sureforms'
-											)}
-											placeholder={textAreaPlaceholder}
+											) }
+											placeholder={ textAreaPlaceholder }
 											id="textarea"
-											value={text}
+											value={ text }
 											size="lg"
-											className={cn(
+											className={ cn(
 												'focus:[box-shadow:none] focus:outline-none resize-none gap-2 w-full min-h-[120px] max-h-[180px] text-field-placeholder py-2 px-4 border-0',
 												characterCount > 0 &&
-												'text-text-primary'
-											)}
-											onChange={(e) => {
-												handlePromptClick(e);
-											}}
-											onInput={handleTyping}
-											maxLength={2000}
-											onFocus={handlePlaceholderFocus}
+													'text-text-primary'
+											) }
+											onChange={ ( e ) => {
+												handlePromptClick( e );
+											} }
+											onInput={ handleTyping }
+											maxLength={ 2000 }
+											onFocus={ handlePlaceholderFocus }
 										/>
 										<Container
 											className="flex-wrap py-2 px-4"
@@ -310,12 +311,12 @@ export default (props) => {
 										>
 											<Container.Item className="flex flex-row gap-4 items-center">
 												<FormTypeSelector
-													formTypeObj={formTypeObj}
+													formTypeObj={ formTypeObj }
 													setFormTypeObj={
 														setFormTypeObj
 													}
-													formType={formType}
-													setFormType={setFormType}
+													formType={ formType }
+													setFormType={ setFormType }
 													setformLayout={
 														setformLayout
 													}
@@ -325,7 +326,7 @@ export default (props) => {
 													size="sm"
 													className="font-semibold"
 												>
-													{characterCount}/2000
+													{ characterCount }/2000
 												</Label>
 											</Container.Item>
 											<Container.Item className="gap-4 flex flex-row">
@@ -334,7 +335,7 @@ export default (props) => {
 													className="gap-1"
 													icon={
 														<SendHorizontal
-															size={20}
+															size={ 20 }
 														/>
 													}
 													iconPosition="right"
@@ -343,10 +344,10 @@ export default (props) => {
 													disabled={
 														characterCount <= 0
 													}
-													onClick={() => {
+													onClick={ () => {
 														if (
-															!text ||
-															!text.trim()
+															! text ||
+															! text.trim()
 														) {
 															const textArea =
 																document.getElementById(
@@ -364,9 +365,9 @@ export default (props) => {
 														setIsBuildingForm(
 															true
 														);
-													}}
+													} }
 												>
-													{''}
+													{ '' }
 												</Button>
 											</Container.Item>
 										</Container>
@@ -381,15 +382,15 @@ export default (props) => {
 					<Container.Item className="flex p-2 gap-6 justify-center">
 						<Button
 							className="text-text-tertiary hover:cursor-pointer"
-							icon={<ArrowRight size={16} />}
+							icon={ <ArrowRight size={ 16 } /> }
 							iconPosition="right"
 							size="md"
 							variant="ghost"
-							onClick={() => {
-								window.location.href = `${srfm_admin.site_url}/wp-admin/post-new.php?post_type=sureforms_form`;
-							}}
+							onClick={ () => {
+								window.location.href = `${ srfm_admin.site_url }/wp-admin/post-new.php?post_type=sureforms_form`;
+							} }
 						>
-							{__('Build from Scratch', 'sureforms')}
+							{ __( 'Build from Scratch', 'sureforms' ) }
 						</Button>
 					</Container.Item>
 				</Container>
