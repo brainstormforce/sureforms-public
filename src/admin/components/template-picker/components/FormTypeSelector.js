@@ -90,7 +90,7 @@ const FormTypeSelectorNew = ( {
 			>
 				<Select.Button
 					placeholder={ __( 'Select…', 'sureforms' ) }
-					className="rounded-full px-1.5 !py-1 border-0.5 bg-badge-background-gray"
+					className="rounded-full px-1.5 !py-0.5 border-0.5 bg-badge-background-gray"
 				>
 					<Badge
 						label={ getFormTypeLabel( formType ) }
@@ -110,7 +110,7 @@ const FormTypeSelectorNew = ( {
 								selected={ formType === option.slug }
 								className=""
 							>
-								<span className="whitespace-normal break-words text-base font-normal p-1 gap-1">
+								<span className="whitespace-normal break-words text-sm font-normal p-1 gap-1">
 									{ option.label }
 								</span>
 							</Select.Option>
@@ -122,7 +122,7 @@ const FormTypeSelectorNew = ( {
 								<Label
 									size="xs"
 									variant="disabled"
-									className="text-text-on-button-disabled text-base font-normal px-2 py-1 gap-1"
+									className="text-text-on-button-disabled text-sm font-normal px-2 py-1 gap-1"
 								>
 									{ option.label }
 								</Label>

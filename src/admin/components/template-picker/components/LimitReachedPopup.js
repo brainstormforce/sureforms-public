@@ -61,7 +61,7 @@ const LimitReachedPopup = ( {
 							onClick={ () =>
 								( window.location.href =
 									srfm_admin.site_url +
-									'/wp-admin/admin.php?page=add-new-form' )
+									'/wp-admin/post-new.php?post_type=sureforms_form' )
 							}
 						>
 							{ ICONS.close }

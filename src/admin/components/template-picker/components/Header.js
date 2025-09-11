@@ -57,7 +57,6 @@ const Header = () => {
 				</Topbar.Left>
 				<Topbar.Right>
 					{ page === 'add-new-form' &&
-						method === 'ai' &&
 						( ! srfm_admin?.is_pro_active ||
 							! srfm_admin?.is_pro_license_active ) && (
 						<>
