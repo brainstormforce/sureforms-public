@@ -95,7 +95,6 @@ async function processAllPayments( form ) {
 		return true;
 	} catch ( error ) {
 		console.error( 'Payment processing failed:', error );
-
 		return false;
 	}
 }

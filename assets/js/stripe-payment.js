@@ -340,8 +340,6 @@ class StripePayment {
 				'SureForms: Payment element ready for block',
 				blockId
 			);
-			// Ensure element is properly mounted and accessible
-			this.validateElementState( blockId );
 		} );
 
 		paymentElement.on( 'change', ( event ) => {
