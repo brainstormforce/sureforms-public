@@ -59,8 +59,6 @@ async function processAllPayments( form ) {
 			const paymentData = window.srfmPaymentElements?.[ blockId ];
 			const paymentType = paymentData?.paymentType || 'one-time';
 
-			console.log( 'paymentData:', paymentData );
-
 			if ( paymentData && paymentData.clientSecret ) {
 				// Wrap each confirmation in individual error handling
 				const paymentPromise = srfmConfirmPayment(
@@ -76,13 +74,6 @@ async function processAllPayments( form ) {
 						error.message
 					}`;
 					console.error( 'error from confirmPayment:', errorMessage );
-
-					// Re-throw with enhanced context
-					const enhancedError = new Error( errorMessage );
-					enhancedError.blockId = blockId;
-					enhancedError.paymentType = paymentType;
-					enhancedError.originalError = error;
-					throw enhancedError;
 				} );
 
 				paymentPromises.push( paymentPromise );
@@ -182,44 +173,7 @@ async function confirmOneTimePayment( blockId, paymentData, form ) {
 	const { error, paymentIntent } = confirmPaymentResult;
 
 	if ( error ) {
-		// Categorize errors to distinguish between fatal and non-fatal
-		const errorCode = error.code;
-		const errorType = error.type;
-
-		// Card element validation errors (often non-fatal)
-		const cardElementErrors = [
-			'incomplete_number',
-			'incomplete_expiry',
-			'incomplete_cvc',
-			'invalid_number',
-			'invalid_expiry_month',
-			'invalid_expiry_year',
-			'invalid_cvc',
-		];
-
-		// Provide specific error handling based on error type
-		let errorMessage = error.message;
-		if ( errorCode === 'card_declined' ) {
-			errorMessage =
-				'Your card was declined. Please try a different payment method.';
-		} else if ( errorCode === 'insufficient_funds' ) {
-			errorMessage =
-				'Your card has insufficient funds. Please try a different card.';
-		} else if ( cardElementErrors.includes( errorCode ) ) {
-			console.warn(
-				`SureForms: Card element validation error for block ${ blockId }:`,
-				error
-			);
-			errorMessage = `Please complete your card information: ${ error.message }`;
-		} else if ( errorType === 'validation_error' ) {
-			console.warn(
-				`SureForms: Validation error for block ${ blockId }:`,
-				error
-			);
-			errorMessage = `Please check your payment information: ${ error.message }`;
-		}
-
-		throw new Error( errorMessage );
+		throw new Error( error );
 	}
 
 	if (
@@ -270,8 +224,6 @@ async function confirmSubscription( blockId, paymentData, form ) {
 		`SureForms: Confirming subscription for block ${ blockId } using simple-stripe-subscriptions approach`
 	);
 
-	console.log( 'paymentData:', paymentData );
-
 	try {
 		// Use single confirmPayment approach from simple-stripe-subscriptions
 		// This works for both payment intents and subscription confirmations
@@ -300,45 +252,6 @@ async function confirmSubscription( blockId, paymentData, form ) {
 				`SureForms: Subscription confirmation failed for block ${ blockId }:`,
 				result.error
 			);
-
-			// Categorize errors to distinguish between fatal and non-fatal
-			const errorCode = result.error.code;
-			const errorType = result.error.type;
-
-			// Card element validation errors (often non-fatal)
-			const cardElementErrors = [
-				'incomplete_number',
-				'incomplete_expiry',
-				'incomplete_cvc',
-				'invalid_number',
-				'invalid_expiry_month',
-				'invalid_expiry_year',
-				'invalid_cvc',
-			];
-
-			// Provide specific error handling based on error type
-			let errorMessage = result.error.message;
-			if ( errorCode === 'card_declined' ) {
-				errorMessage =
-					'Your card was declined. Please try a different payment method.';
-			} else if ( errorCode === 'insufficient_funds' ) {
-				errorMessage =
-					'Your card has insufficient funds. Please try a different card.';
-			} else if ( cardElementErrors.includes( errorCode ) ) {
-				console.warn(
-					`SureForms: Card element validation error for block ${ blockId }:`,
-					result.error
-				);
-				errorMessage = `Please complete your card information: ${ result.error.message }`;
-			} else if ( errorType === 'validation_error' ) {
-				console.warn(
-					`SureForms: Validation error for block ${ blockId }:`,
-					result.error
-				);
-				errorMessage = `Please check your payment information: ${ result.error.message }`;
-			}
-
-			throw new Error( errorMessage );
 		} else {
 			// Payment succeeded - subscription automatically activated by Stripe like simple-stripe-subscriptions
 			// Update form input with subscription data for backend processing

@@ -490,8 +490,6 @@ class StripePayment {
 				'SureForms: Subscription element ready for block',
 				blockId
 			);
-			// Ensure element is properly mounted and accessible
-			this.validateElementState( blockId );
 		} );
 
 		paymentElement.on( 'change', ( event ) => {
@@ -827,20 +825,6 @@ class StripePayment {
 						`SureForms: ${ paymentType } confirmation failed:`,
 						confirmationResult.error
 					);
-
-					// Provide specific error messages like simple-stripe-subscriptions
-					let errorMessage = confirmationResult.error.message;
-					if ( confirmationResult.error.code === 'card_declined' ) {
-						errorMessage =
-							'Your card was declined. Please try a different payment method.';
-					} else if (
-						confirmationResult.error.code === 'insufficient_funds'
-					) {
-						errorMessage =
-							'Your card has insufficient funds. Please try a different card.';
-					}
-
-					throw new Error( errorMessage );
 				} else {
 					console.log(
 						`SureForms: ${ paymentType } confirmed successfully for block ${ blockId }`
@@ -869,9 +853,6 @@ class StripePayment {
 				console.error(
 					`SureForms: Error confirming ${ paymentType } for block ${ blockId }:`,
 					error
-				);
-				throw new Error(
-					`${ paymentType } confirmation failed: ${ error.message }`
 				);
 			}
 		}

@@ -461,7 +461,6 @@ async function handleFormSubmission(
 
 		// Process payment submission
 		const paymentResult = await handleFormPayment( form );
-		console.log( 'paymentResult->', paymentResult );
 		if ( ! paymentResult ) {
 			// Remove loading.
 			loader.classList.remove( 'srfm-active' );

@@ -36,9 +36,6 @@ const Edit = ( props ) => {
 		paymentItems,
 		paymentType,
 		subscriptionPlans,
-		subscriptionSelectionType,
-		subscriptionLayoutClass,
-		showPriceAfterLabels,
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
 	const [ availableNumberFields, setAvailableNumberFields ] = useState( [] );
