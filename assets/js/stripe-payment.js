@@ -360,49 +360,6 @@ class StripePayment {
 		} );
 	}
 
-	/**
-	 * Validate that Stripe element is properly initialized and mounted
-	 * @param blockId
-	 */
-	validateElementState( blockId ) {
-		const elementData = StripePayment.paymentElements[ blockId ];
-
-		if ( ! elementData ) {
-			console.warn(
-				`SureForms: No element data found for block ${ blockId }`
-			);
-			return false;
-		}
-
-		const { stripe, elements, paymentElement } = elementData;
-
-		if ( ! stripe ) {
-			console.error(
-				`SureForms: Stripe instance missing for block ${ blockId }`
-			);
-			return false;
-		}
-
-		if ( ! elements ) {
-			console.error(
-				`SureForms: Stripe elements missing for block ${ blockId }`
-			);
-			return false;
-		}
-
-		if ( ! paymentElement ) {
-			console.error(
-				`SureForms: Payment element missing for block ${ blockId }`
-			);
-			return false;
-		}
-
-		console.log(
-			`SureForms: Element state validation passed for block ${ blockId }`
-		);
-		return true;
-	}
-
 	set_block_loading( blockId, loading = true ) {
 		const block = this.form.querySelector(
 			`.srfm-block[data-block-id="${ blockId }"]`

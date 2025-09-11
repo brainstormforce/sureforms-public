@@ -94,33 +94,7 @@ async function processAllPayments( form ) {
 		console.log( 'All payments completed successfully:', paymentResults );
 		return true;
 	} catch ( error ) {
-		// Enhanced error logging
-		if ( error.blockId && error.paymentType ) {
-			console.error(
-				`Payment processing failed on ${ error.paymentType } payment for block ${ error.blockId }:`,
-				error.originalError || error
-			);
-		} else {
-			console.error( 'Payment processing failed:', error );
-		}
-
-		// Show user-friendly error message if possible
-		if ( error.message && error.message.includes( 'Card declined' ) ) {
-			alert(
-				'Your card was declined. Please check your payment details and try again.'
-			);
-		} else if (
-			error.message &&
-			error.message.includes( 'requires additional' )
-		) {
-			alert(
-				'Additional authentication is required. Please complete the verification and try again.'
-			);
-		} else {
-			alert(
-				'Payment processing failed. Please try again or contact support if the problem persists.'
-			);
-		}
+		console.error( 'Payment processing failed:', error );
 
 		return false;
 	}
