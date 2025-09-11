@@ -280,6 +280,7 @@ class Email_Summary {
 		</body>
 		</html>
 		<?php
+		self::mark_promo_sent( $plugin_key );
 		$content = ob_get_clean();
 		return false !== $content ? $content : '';
 	}
@@ -385,16 +386,34 @@ class Email_Summary {
 	 * @since x.x.x
 	 */
 	public static function get_next_promo_plugin() {
-		$plugins = array_keys( self::get_promo_banners() );
-		$count   = count( $plugins );
+		$all_plugins = array_keys( self::get_promo_banners() );
 
-		$last_index = Helper::get_srfm_option( 'last_promo_index', -1 );
+		$remaining = Helper::get_array_value( Helper::get_srfm_option( 'remaining_promos', [] ) );
 
-		$next_index = ( $last_index + 1 ) % $count;
+		if ( empty( $remaining ) ) {
+			$remaining = $all_plugins;
+		}
 
-		Helper::update_srfm_option( 'last_promo_index', $next_index );
+		return Helper::get_string_value( reset( $remaining ) );
+	}
 
-		return $plugins[ $next_index ];
+	/**
+	 * Mark a promo as sent by removing it from the remaining list.
+	 *
+	 * @param string $plugin_key The plugin key to mark as sent.
+	 * @return void
+	 * @since x.x.x
+	 */
+	public static function mark_promo_sent( $plugin_key ) {
+		$remaining = Helper::get_array_value( Helper::get_srfm_option( 'remaining_promos', [] ) );
+
+		if ( empty( $remaining ) ) {
+			$remaining = array_keys( self::get_promo_banners() );
+		}
+
+		$remaining = array_diff( $remaining, [ $plugin_key ] );
+
+		Helper::update_srfm_option( 'remaining_promos', $remaining );
 	}
 
 	/**
