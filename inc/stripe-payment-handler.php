@@ -302,8 +302,9 @@ class Stripe_Payment_Handler {
 			}
 
 			$payment_id = ! empty( $payment_value['paymentId'] ) ? $payment_value['paymentId'] : '';
+			$setup_intent = ! empty( $payment_value['setup_intent'] ) ? $payment_value['setup_intent'] : '';
 
-			if ( empty( $payment_id ) ) {
+			if ( empty( $payment_id ) && empty( $setup_intent ) ) {
 				continue;
 			}
 
@@ -333,8 +334,8 @@ class Stripe_Payment_Handler {
 	 * @return bool True if subscription is verified and saved successfully.
 	 */
 	public function verify_stripe_subscription_intent_and_save( $subscription_value, $block_id, $form_data ) {
-		$subscription_id   = ! empty( $subscription_value['subscriptionId'] ) ? $subscription_value['subscriptionId'] : '';
-		$payment_intent_id = ! empty( $subscription_value['paymentId'] ) ? $subscription_value['paymentId'] : '';
+		$subscription_id   = ! empty( $subscription_value['subscription_id'] ) ? $subscription_value['subscription_id'] : '';
+		$payment_method = ! empty( $subscription_value['payment_method'] ) ? $subscription_value['payment_method'] : '';
 
 		error_log( 'SureForms: Starting simplified subscription verification. Subscription ID: ' . $subscription_id );
 
@@ -343,7 +344,7 @@ class Stripe_Payment_Handler {
 			return false;
 		}
 
-		if ( empty( $payment_intent_id ) ) {
+		if ( empty( $payment_method ) ) {
 			error_log( 'SureForms: Missing payment intent ID' );
 			return false;
 		}
@@ -358,6 +359,30 @@ class Stripe_Payment_Handler {
 
 			if ( empty( $secret_key ) ) {
 				throw new \Exception( __( 'Stripe secret key not found.', 'sureforms' ) );
+			}
+
+			// Update subscription with payment method from setup intent if available
+			$setup_intent_id = ! empty( $subscription_value['setup_intent'] ) ? $subscription_value['setup_intent'] : '';
+			if ( ! empty( $setup_intent_id ) ) {
+				\Stripe\Stripe::setApiKey( $secret_key );
+				
+				try {
+					$setup_intent = \Stripe\SetupIntent::retrieve( $setup_intent_id );
+					if ( ! empty( $setup_intent->payment_method ) ) {
+						$subscription_update = \Stripe\Subscription::update( $subscription_id, [
+							'default_payment_method' => $setup_intent->payment_method,
+						]);
+
+						$invoice = \Stripe\Invoice::retrieve($subscription_update->latest_invoice);
+
+						// Explicitly attempt to pay the invoice
+						$paid_invoice = $invoice->pay();
+
+						error_log( 'SureForms: Updated subscription default payment method: ' . $setup_intent->payment_method );
+					}
+				} catch ( \Exception $e ) {
+					error_log( 'SureForms: Failed to update subscription payment method: ' . $e->getMessage() );
+				}
 			}
 
 			// Retrieve and validate the subscription using direct Stripe API
@@ -1601,17 +1626,16 @@ class Stripe_Payment_Handler {
 
 		$subscription = json_decode( wp_remote_retrieve_body( $subscription_response ), true );
 
-
-
-
-
+		$payment_intent_id = $subscription["setup_intent"]["id"];
+		$subscription_id = $subscription["subscription_data"]["id"];
+		$client_secret = $subscription["client_secrete"];
 		///////////////////////////////////// temp
 		$response = [
 			'type'              => 'subscription',
-			'client_secret'     => $subscription["client_secrete"],
-			'subscription_id'   => $subscription['subscription_data']['id'],
+			'client_secret'     => $client_secret,
+			'subscription_id'   => $subscription_id,
 			'customer_id'       => $customer_id,
-			'payment_intent_id' => $subscription['payment_intent']['id'],
+			'payment_intent_id' => $payment_intent_id,
 			// 'status'            => $subscription->status,
 			'amount'            => $this->amount_convert_cents_to_usd( $amount ),
 			'interval'          => $interval,
