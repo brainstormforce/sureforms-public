@@ -19,7 +19,15 @@ class PaymentEntries {
 			'#srfm-partial-amount-container'
 		);
 
-		if ( ! this.refundButton ) {
+		// Subscription-specific elements (following WPForms pattern)
+		this.subscriptionRefundButton = document.querySelector(
+			'#srfm-subscription-refund-button'
+		);
+		this.cancelSubscriptionButton = document.querySelector(
+			'#srfm-cancel-subscription-button'
+		);
+
+		if ( ! this.refundButton && ! this.subscriptionRefundButton ) {
 			return;
 		}
 
@@ -52,6 +60,20 @@ class PaymentEntries {
 		if ( this.refundButton ) {
 			this.refundButton.addEventListener( 'click', () => {
 				this.processRefund();
+			} );
+		}
+
+		// Handle subscription refund button click (following WPForms pattern)
+		if ( this.subscriptionRefundButton ) {
+			this.subscriptionRefundButton.addEventListener( 'click', () => {
+				this.processSubscriptionRefund();
+			} );
+		}
+
+		// Handle subscription cancellation button click (following WPForms pattern)
+		if ( this.cancelSubscriptionButton ) {
+			this.cancelSubscriptionButton.addEventListener( 'click', () => {
+				this.processSubscriptionCancellation();
 			} );
 		}
 	}
@@ -280,13 +302,263 @@ class PaymentEntries {
 			}
 		}
 	}
+
+	/**
+	 * Process subscription payment refund (following WPForms pattern)
+	 */
+	processSubscriptionRefund() {
+		const paymentId = this.subscriptionRefundButton.dataset.paymentId;
+		const transactionId =
+			this.subscriptionRefundButton.dataset.transactionId;
+		const refundType = this.refundTypeSelect
+			? this.refundTypeSelect.value
+			: 'full';
+
+		let refundAmount;
+		let confirmMessage;
+
+		// Validate and get refund amount
+		if ( refundType === 'full' ) {
+			refundAmount = sureformsRefundData.payment.refundable_amount;
+			confirmMessage =
+				sureformsRefundData.strings.confirm_subscription_refund ||
+				'Are you sure you want to refund this subscription payment?';
+		} else if ( refundType === 'partial' ) {
+			const inputAmount = this.refundAmountInput.value;
+
+			// Validate partial refund amount
+			const validation = this.validateRefundAmount( inputAmount );
+			if ( ! validation.isValid ) {
+				alert( validation.message );
+				this.refundAmountInput.focus();
+				this.refundAmountInput.style.borderColor = '#d63384';
+				return;
+			}
+
+			refundAmount = parseFloat( inputAmount );
+			const formattedAmount =
+				sureformsRefundData.payment.currency_symbol +
+				refundAmount.toFixed( 2 );
+			confirmMessage = (
+				sureformsRefundData.strings
+					.confirm_partial_subscription_refund ||
+				'Are you sure you want to refund %amount% from this subscription payment?'
+			).replace( '%amount%', formattedAmount );
+		} else {
+			alert( sureformsRefundData.strings.select_refund_type );
+			return;
+		}
+
+		// Show confirmation dialog
+		if ( ! confirm( confirmMessage ) ) {
+			return;
+		}
+
+		// Convert amount to cents for backend
+		const refundAmountInCents = Math.round( refundAmount * 100 );
+
+		this.makeSubscriptionRefundRequest(
+			paymentId,
+			transactionId,
+			refundAmountInCents,
+			refundType
+		);
+	}
+
+	/**
+	 * Process subscription cancellation (following WPForms pattern)
+	 */
+	processSubscriptionCancellation() {
+		const paymentId = this.cancelSubscriptionButton.dataset.paymentId;
+		const subscriptionId =
+			this.cancelSubscriptionButton.dataset.subscriptionId;
+
+		const confirmMessage =
+			sureformsRefundData.strings.confirm_subscription_cancel ||
+			'Are you sure you want to cancel this subscription? This action cannot be undone.';
+
+		// Show confirmation dialog
+		if ( ! confirm( confirmMessage ) ) {
+			return;
+		}
+
+		this.makeSubscriptionCancelRequest( paymentId, subscriptionId );
+	}
+
+	/**
+	 * Make AJAX request to refund subscription payment
+	 * @param paymentId
+	 * @param transactionId
+	 * @param refundAmountInCents
+	 * @param refundType
+	 */
+	async makeSubscriptionRefundRequest(
+		paymentId,
+		transactionId,
+		refundAmountInCents,
+		refundType
+	) {
+		this.setSubscriptionRefundLoadingState( true );
+
+		try {
+			const response = await fetch( sureformsRefundData.ajaxurl, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded',
+				},
+				body: new URLSearchParams( {
+					action: 'srfm_refund_subscription_payment',
+					payment_id: paymentId,
+					transaction_id: transactionId,
+					refund_amount: refundAmountInCents,
+					refund_type: refundType,
+					nonce: sureformsRefundData.nonce,
+				} ),
+			} );
+
+			const result = await response.json();
+
+			if ( result.success ) {
+				alert(
+					result.data.message ||
+						sureformsRefundData.strings
+							.subscription_refund_success ||
+						'Subscription payment refunded successfully!'
+				);
+				// Reload the page to reflect changes
+				window.location.reload();
+			} else {
+				alert(
+					result.data.message ||
+						sureformsRefundData.strings
+							.subscription_refund_failed ||
+						'Subscription refund failed. Please try again.'
+				);
+				// Re-enable controls
+				this.setSubscriptionRefundLoadingState( false );
+			}
+		} catch ( error ) {
+			alert(
+				sureformsRefundData.strings.network_error ||
+					'Network error occurred. Please try again.'
+			);
+			// Re-enable controls
+			this.setSubscriptionRefundLoadingState( false );
+		}
+	}
+
+	/**
+	 * Make AJAX request to cancel subscription
+	 * @param paymentId
+	 * @param subscriptionId
+	 */
+	async makeSubscriptionCancelRequest( paymentId, subscriptionId ) {
+		this.setSubscriptionCancelLoadingState( true );
+
+		try {
+			const response = await fetch( sureformsRefundData.ajaxurl, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded',
+				},
+				body: new URLSearchParams( {
+					action: 'srfm_cancel_subscription',
+					payment_id: paymentId,
+					subscription_id: subscriptionId,
+					nonce: sureformsRefundData.nonce,
+				} ),
+			} );
+
+			const result = await response.json();
+
+			if ( result.success ) {
+				alert(
+					result.data.message ||
+						sureformsRefundData.strings
+							.subscription_cancel_success ||
+						'Subscription cancelled successfully!'
+				);
+				// Reload the page to reflect changes
+				window.location.reload();
+			} else {
+				alert(
+					result.data.message ||
+						sureformsRefundData.strings
+							.subscription_cancel_failed ||
+						'Subscription cancellation failed. Please try again.'
+				);
+				// Re-enable controls
+				this.setSubscriptionCancelLoadingState( false );
+			}
+		} catch ( error ) {
+			alert(
+				sureformsRefundData.strings.network_error ||
+					'Network error occurred. Please try again.'
+			);
+			// Re-enable controls
+			this.setSubscriptionCancelLoadingState( false );
+		}
+	}
+
+	/**
+	 * Set loading state for subscription refund button
+	 * @param isLoading
+	 */
+	setSubscriptionRefundLoadingState( isLoading ) {
+		if ( isLoading ) {
+			this.subscriptionRefundButton.disabled = true;
+			this.subscriptionRefundButton.textContent =
+				sureformsRefundData.strings.processing || 'Processing...';
+
+			// Disable form controls
+			if ( this.refundTypeSelect ) {
+				this.refundTypeSelect.disabled = true;
+			}
+			if ( this.refundAmountInput ) {
+				this.refundAmountInput.disabled = true;
+			}
+		} else {
+			this.subscriptionRefundButton.disabled = false;
+			this.subscriptionRefundButton.textContent =
+				sureformsRefundData.strings.refund_subscription ||
+				'Refund Payment';
+
+			// Re-enable form controls
+			if ( this.refundTypeSelect ) {
+				this.refundTypeSelect.disabled = false;
+			}
+			if ( this.refundAmountInput ) {
+				this.refundAmountInput.disabled = false;
+				this.refundAmountInput.style.borderColor = '';
+			}
+		}
+	}
+
+	/**
+	 * Set loading state for subscription cancel button
+	 * @param isLoading
+	 */
+	setSubscriptionCancelLoadingState( isLoading ) {
+		if ( isLoading ) {
+			this.cancelSubscriptionButton.disabled = true;
+			this.cancelSubscriptionButton.textContent =
+				sureformsRefundData.strings.processing || 'Processing...';
+		} else {
+			this.cancelSubscriptionButton.disabled = false;
+			this.cancelSubscriptionButton.textContent =
+				sureformsRefundData.strings.cancel_subscription ||
+				'Cancel Subscription';
+		}
+	}
 }
 
 // Initialize PaymentEntries when DOM is ready and required data is available
 document.addEventListener( 'DOMContentLoaded', () => {
 	if (
 		window?.sureformsRefundData &&
-		document.querySelector( '#srfm-refund-button' )
+		( document.querySelector( '#srfm-refund-button' ) ||
+			document.querySelector( '#srfm-subscription-refund-button' ) ||
+			document.querySelector( '#srfm-cancel-subscription-button' ) )
 	) {
 		new PaymentEntries();
 	}
