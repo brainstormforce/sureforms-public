@@ -1,4 +1,4 @@
-=== SureForms - Drag and Drop Contact Form Builder - Multi-step Forms, Conversational Forms, Login and Registration Forms and more ===
+=== SureForms - Drag and Drop Contact Form Builder - Multi-step Forms, Conversational Forms and more ===
 Contributors: brainstormforce
 Tags: contact form, custom form, forms,  WP Forms, form builder
 Requires at least: 6.4
@@ -8,7 +8,7 @@ Stable tag: 1.12.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-SureForms: Beginner-friendly, No-Code, AI Form Builder for WordPress
+The most beginner-friendly, AI Form Builder for WordPress to create contact forms & other custom forms with advanced features, without any code.
 
 == Description ==
 
@@ -34,7 +34,7 @@ In this regard, SureForms addresses several pain points commonly experienced by 
 
 -   Complex Process of Form Building
 -   Design Limitations
--   Lack of mobile-friendliness and Accessibility
+-   Lack of Mobile-friendliness and Accessibility
 -   Limited Engagement in Their Forms
 -   Spam and Security Issues
 
@@ -56,7 +56,7 @@ It's fast, simple, and the most beginner-friendly form builder for WordPress.
 
 SureForms is the first AI-powered form builder for WordPress, which makes form creation faster and smarter. From simple contact forms to advanced calculators, AI handles the details, offers smart suggestions, and helps you build functional, user friendly forms in just a few clicks.
 
-#### **Here are a few examples of forms you can create with SureForms AI:**
+**Here are a few examples of forms you can create with SureForms AI:**
 
 -   Contact Form
 -   Feedback / Survey Form
@@ -64,12 +64,13 @@ SureForms is the first AI-powered form builder for WordPress, which makes form c
 -   Job Application Form
 -   Newsletter Form
 -   Support Form
--   Any conversational form
--   Calorie counter or any other Calculators
+-   Calorie Counter
+-   Calculators
+-   Conversational Forms
 
 #### No-Code Flexibility
 
-SureForms makes advanced features like conditional logic, multi-step forms, dynamic data handling, query parameters and etc.---simple to use through a no-code interface. This empowers anyone to create powerful, interactive forms without writing a single line of code.
+SureForms makes advanced features like conditional logic, multi-step forms, query parameters and etc. simple to use through a no-code interface. This empowers anyone to create powerful, interactive forms without writing a single line of code.
 
 #### Mobile-First Approach
 
@@ -81,11 +82,11 @@ SureForms recognizes the importance of mobile friendly forms. The forms created 
 
 With SureForms' own Instant Form feature, you can publish forms with a unique shareable URL. No embedding needed. Share them anywhere and make your forms instantly accessible.
 
-#### **Multi-Column Layouts**
+#### Multi-Column Layouts
 
 SureForms makes it easy to arrange input fields into multiple columns for a clean, efficient form layout. This makes your forms look organized, visually appealing, and encourages higher completion rates. You can customize the columns to fit your design.
 
-#### **Input Fields**
+#### Input Fields
 
 **SureForms comes with 15+ fields to build your form:**
 
@@ -112,7 +113,7 @@ Real-time validation for form fields provides instant feedback to users if they 
 
 #### GDPR Compliance
 
-Ensure your forms are compliant with GDPR regulations to protect user data and privacy.
+Ensure your forms are GDPR compliant and protect user data by simply enabling the built-in GDPR setting.
 
 #### Anti-Spam Forms
 
@@ -130,7 +131,7 @@ Configure customized email notifications triggered by form submissions. Specify 
 
 #### Form Entries
 
-Stores form entries securely to access and manage form submission data within the WordPress dashboard. You can also review, export, or perform actions on form entries as needed.
+Stores form entries securely to access and manage form submission data within your WordPress dashboard. You can also review, export, or perform actions on form entries as needed.
 
 #### Visual Data Reporting
 
@@ -140,7 +141,7 @@ Analyze and gain insights from form submissions through interactive charts, grap
 
 SureForms gives developers clean APIs, hooks, and well-structured code, making it easy to customize, extend, and integrate forms with other systems, plugins, or themes.
 
-### Some Features of SureForms PRO 🔥
+### Premium Features of SureForms 🔥
 
 [**Conversational Forms**](https://sureforms.com/features/conversational-form/):
 Chat-like forms, one question at a time, for more conversions.
@@ -149,7 +150,7 @@ Chat-like forms, one question at a time, for more conversions.
 Bite-sized forms, less form fatigue for your users.
 
 [**Conditional Logic Forms**](https://sureforms.com/features/conditional-logic/):
-Personalized forms based on users\' answers
+Personalized forms based on users' answers.
 
 [**PDF Generation**](https://sureforms.com/features/pdf-generator/):
 Instantly create downloadable PDFs of form submissions for records or sharing.
@@ -163,7 +164,7 @@ Connect your forms with leading apps and services to automate workflows and save
 [**Calculators**](https://sureforms.com/features/calculator-form/):
 Provide instant quotes or results with interactive calculators in your site. Designed to bring more traffic to your site.
 
-With SureForms, we are here to fix some real issues users face with WordPress Forms. That's why **200,000+ websites** have embraced SureForms just in the 6 months of its initial release.
+With SureForms, we are here to fix some real issues users face with WordPress Forms. That's why **300,000+ websites** have embraced SureForms for all their form related needs.
 
 ### HOW IT WORKS ❓
 
@@ -195,7 +196,7 @@ SureForms is built for anyone who needs contact forms, custom forms, or advanced
 
 Don't think this is just it. There is no limit to the types of businesses and organizations that can benefit from using SureForms.
 
-### SOME OF THE WORDPRESS THEMES & PLUGINS SUREFORMS SUPPORTS 🔗
+### WORDPRESS THEMES & PLUGINS THAT SUREFORMS SUPPORTS 🔗
 
 #### SureForms works with any theme, including:
 
@@ -222,7 +223,7 @@ Don't think this is just it. There is no limit to the types of businesses and or
 -   Restrict Content Pro
 -   SureCart
 -   SureMembers
--   SureTriggers
+-   OttoKit
 -   The Events Calendar
 -   TutorLMS
 -   Wishlist Member
@@ -231,7 +232,6 @@ Don't think this is just it. There is no limit to the types of businesses and or
 -   Elementor Pro
 -   Beaver Builder
 -   Divi Builder
--   Yoast SEO
 -   And many more
 
 ### BRANDING GUIDELINE
@@ -267,23 +267,23 @@ To improve the user experience, SureForms may use the following 3rd party servic
 
 -   **reCAPTCHA** -- is used for spam prevention and to ensure that the submissions made through the form are done by real human users. [TOS](https://policies.google.com/terms) and [Privacy Policy](https://policies.google.com/privacy)
 
-### Blocks
+== Blocks ==
 
 This plugin provides 16 blocks for all users:
 
 -   **Address:** Displays a SureForms Address Field
 
--    **Phone Number:** Displays a SureForms Phone Field
+-   **Phone Number:** Displays a SureForms Phone Field
 
 -   **Email:** Displays a SureForms Email Field
 
 -   **Textarea:** Displays a SureForms Textarea Field
 
--    **Number:** Displays a SureForms Number Field
+-   **Number:** Displays a SureForms Number Field
 
--    **URL:** Displays a SureForms URL Field
+-   **URL:** Displays a SureForms URL Field
 
--    **Dropdown:** Displays a SureForms Dropdown Field
+-   **Dropdown:** Displays a SureForms Dropdown Field
 
 -   **Custom Button:** Displays a SureForms Custom Button
 
@@ -358,7 +358,7 @@ easy.
 
 1. SureForms Dashboard
 2. Start building your forms within minutes using SureForms. You can build a form from scratch or choose AI to build one for you.
-3. Build forms instantly with just a prompt. AI creates with smart field suggestions, then add, remove, or rearrange fields as you need.
+3. Build forms instantly with just a prompt. AI creates your forms with smart field suggestions. Then add, remove, or rearrange fields as you need.
 4. Beautify your forms with Instant Form Styling and a wide range of Block and Form Settings to customize every detail.
 5. Lastly, publish your forms instantly or easily embed forms in any pages with SureForms' native block.
 
