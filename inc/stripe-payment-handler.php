@@ -1640,7 +1640,15 @@ class Stripe_Payment_Handler {
 			throw new \Exception( __( 'Failed to create subscription through middleware.', 'sureforms' ) );
 		}
 
-		$subscription = json_decode( wp_remote_retrieve_body( $subscription_response ), true );
+		$response_body = wp_remote_retrieve_body( $subscription_response );
+		if ( empty( $response_body ) ) {
+			throw new \Exception( __( 'Empty response from subscription creation.', 'sureforms' ) );
+		}
+
+		$subscription = json_decode( $response_body, true );
+		if ( json_last_error() !== JSON_ERROR_NONE ) {
+			throw new \Exception( __( 'Invalid JSON response from subscription creation.', 'sureforms' ) );
+		}
 
 		$payment_intent_id = $subscription["setup_intent"]["id"];
 		$subscription_id = $subscription["subscription_data"]["id"];
