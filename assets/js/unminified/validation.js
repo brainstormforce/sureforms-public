@@ -239,18 +239,6 @@ async function confirmSubscription( blockId, paymentData, form ) {
 				paymentInput.getAttribute( 'data-payment-items' );
 			const jsonParseItems = JSON.parse( existingItems );
 
-			// const inputValueData = {
-			// 	paymentItems: jsonParseItems,
-			// 	paymentId: 
-			// 		subscriptionData?.subscriptionId ||
-			// 		result.paymentIntent?.id,
-			// 	subscriptionId: subscriptionData?.subscriptionId,
-			// 	customerId: subscriptionData?.customerId,
-			// 	blockId,
-			// 	paymentType: 'stripe-subscription',
-			// 	status: 'succeeded',
-			// };
-
 			const inputValueData = {
 				payment_method: result.setupIntent.payment_method,
 				setup_intent: result.setupIntent.id,
