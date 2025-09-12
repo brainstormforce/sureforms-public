@@ -240,14 +240,14 @@ async function confirmSubscription( blockId, paymentData, form ) {
 			const jsonParseItems = JSON.parse( existingItems );
 
 			const inputValueData = {
-				payment_method: result.setupIntent.payment_method,
-				setup_intent: result.setupIntent.id,
-				subscription_id: subscriptionData?.subscriptionId,
-				customer_id: subscriptionData?.customerId,
+				paymentMethod: result.setupIntent.payment_method,
+				setupIntent: result.setupIntent.id,
+				subscriptionId: subscriptionData?.subscriptionId,
+				customerId: subscriptionData?.customerId,
 				blockId: blockId,
 				paymentType: 'stripe-subscription',
 				status: 'succeeded',
-				payment_items: jsonParseItems,
+				paymentItems: jsonParseItems,
 			}
 
 			paymentInput.value = JSON.stringify( inputValueData );

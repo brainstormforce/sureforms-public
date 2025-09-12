@@ -302,7 +302,7 @@ class Stripe_Payment_Handler {
 			}
 
 			$payment_id = ! empty( $payment_value['paymentId'] ) ? $payment_value['paymentId'] : '';
-			$setup_intent = ! empty( $payment_value['setup_intent'] ) ? $payment_value['setup_intent'] : '';
+			$setup_intent = ! empty( $payment_value['setupIntent'] ) ? $payment_value['setupIntent'] : '';
 
 			if ( empty( $payment_id ) && empty( $setup_intent ) ) {
 				continue;
@@ -334,14 +334,14 @@ class Stripe_Payment_Handler {
 	 * @return bool True if subscription is verified and saved successfully.
 	 */
 	public function verify_stripe_subscription_intent_and_save( $subscription_value, $block_id, $form_data ) {
-		$subscription_id   = ! empty( $subscription_value['subscription_id'] ) ? $subscription_value['subscription_id'] : '';
+		$subscription_id   = ! empty( $subscription_value['subscriptionId'] ) ? $subscription_value['subscriptionId'] : '';
 
 		if ( empty( $subscription_id ) ) {
 			error_log( 'SureForms: Missing subscription ID' );
 			return false;
 		}
 
-		$customer_id = ! empty( $subscription_value['customer_id'] ) ? $subscription_value['customer_id'] : '';
+		$customer_id = ! empty( $subscription_value['customerId'] ) ? $subscription_value['customerId'] : '';
 
 		if ( empty( $customer_id ) ) {
 			error_log( 'SureForms: Missing customer ID' );
@@ -361,7 +361,7 @@ class Stripe_Payment_Handler {
 			}
 
 			// Update subscription with payment method from setup intent if available
-			$setup_intent_id = ! empty( $subscription_value['setup_intent'] ) ? $subscription_value['setup_intent'] : '';
+			$setup_intent_id = ! empty( $subscription_value['setupIntent'] ) ? $subscription_value['setupIntent'] : '';
 			$paid_invoice = [];
 			if ( ! empty( $setup_intent_id ) ) {
 				try {
@@ -1607,12 +1607,11 @@ class Stripe_Payment_Handler {
 				'description'           => $description,
 				'interval'              => $interval,
 				'interval_count'        => $interval_count,
-				// 'trial_days'            => $trial_days,
+				'trial_days'            => $trial_days,
 				'application_fee_amount' => $application_fee_amount,
 				'stripe_account_id'     => $stripe_account_id,
 				'license_key'           => $license_key,
 				'block_id'              => $block_id,
-				// 'price_id'              => $price->id,
 				'metadata'              => [
 					'source'           => 'SureForms',
 					'block_id'         => $block_id,
