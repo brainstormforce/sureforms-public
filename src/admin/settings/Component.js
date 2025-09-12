@@ -240,6 +240,8 @@ const Component = ( { path } ) => {
 		}
 		debouncedSave( updatedTabOptions, tab );
 	}
+	const pathsForFullWidth = [ 'ottokit-settings', 'integration-settings' ];
+	const isFullWidth = pathsForFullWidth.includes( path );
 
 	return (
 		<>
@@ -253,9 +255,7 @@ const Component = ( { path } ) => {
 			<div
 				className={ cn(
 					'mx-auto p-4 rounded-xl bg-background-primary shadow-sm',
-					'ottokit-settings' === path
-						? 'w-full'
-						: 'max-w-content-container'
+					isFullWidth ? 'w-full' : 'max-w-content-container'
 				) }
 			>
 				{ 'general-settings' === path && (

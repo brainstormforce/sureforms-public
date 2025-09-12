@@ -1,30 +1,44 @@
+import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
-import ContentCard from '../components/ContentCard';
-import Webhooks from '../components/integrations/webhooks';
-import Zapier from '../components/integrations/zapier';
+import IntegrationsInitialState from '@Admin/components/IntegrationsInitialState';
+import NoIntegrationsImage from '@Image/no-integrations.svg';
+import { addQueryParam } from '@Utils/Helpers';
 
 const IntegrationsPage = ( { loading } ) => {
-	// Apply filter to allow Pro plugin to add additional integrations
-	const additionalContent = applyFilters(
-		'srfm.settings.integrations.additional.content',
-		[]
+	// Default free plugin UI using reusable IntegrationsInitialState component
+	const freePluginUI = (
+		<IntegrationsInitialState
+			image={ NoIntegrationsImage }
+			title={ __( 'Unlock Powerful Integrations', 'sureforms' ) }
+			description={ __(
+				'Connect your forms with popular tools like Google Sheets, Mailchimp, and Brevo. Automatically send leads, save entries to spreadsheets, trigger workflows, and much more—without any manual work.',
+				'sureforms'
+			) }
+			buttonText={ __( 'Upgrade Now', 'sureforms' ) }
+			onButtonClick={ () => {
+				window.open(
+					addQueryParam(
+						srfm_admin?.pricing_page_url ||
+							srfm_admin?.sureforms_pricing_page,
+						'global-integrations'
+					),
+					'_blank',
+					'noreferrer'
+				);
+			} }
+			containerPadding={ false }
+			imageClassName="mb-0"
+		/>
 	);
 
-	return (
-		<div className="flex flex-col gap-1 bg-background-secondary rounded-lg p-1">
-			<ContentCard loading={ loading } content={ <Webhooks /> } />
-			<ContentCard loading={ loading } content={ <Zapier /> } />
-
-			{ /* Additional integrations from Pro plugin */ }
-			{ additionalContent.map( ( content, index ) => (
-				<ContentCard
-					key={ `additional-integration-${ index }` }
-					loading={ loading }
-					content={ content }
-				/>
-			) ) }
-		</div>
+	// Apply filter to allow Pro plugin to completely replace the UI
+	const integrationsUI = applyFilters(
+		'srfm.settings.integrations.page.content',
+		freePluginUI,
+		loading
 	);
+
+	return integrationsUI;
 };
 
 export default IntegrationsPage;
