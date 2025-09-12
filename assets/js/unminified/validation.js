@@ -200,7 +200,7 @@ async function confirmSubscription( blockId, paymentData, form ) {
 	try {
 		// Use single confirmPayment approach from simple-stripe-subscriptions
 		// This works for both payment intents and subscription confirmations
-		const result = await stripe.confirmPayment( {
+		const result = await stripe.confirmSetup( {
 			elements,
 			clientSecret,
 			confirmParams: {
@@ -240,20 +240,19 @@ async function confirmSubscription( blockId, paymentData, form ) {
 			const jsonParseItems = JSON.parse( existingItems );
 
 			const inputValueData = {
-				paymentItems: jsonParseItems,
-				paymentId:
-					subscriptionData?.subscriptionId ||
-					result.paymentIntent?.id,
+				paymentMethod: result.setupIntent.payment_method,
+				setupIntent: result.setupIntent.id,
 				subscriptionId: subscriptionData?.subscriptionId,
 				customerId: subscriptionData?.customerId,
-				blockId,
+				blockId: blockId,
 				paymentType: 'stripe-subscription',
 				status: 'succeeded',
-			};
+				paymentItems: jsonParseItems,
+			}
 
 			paymentInput.value = JSON.stringify( inputValueData );
 
-			return result.paymentIntent;
+			return result.setupIntent.id;
 		}
 	} catch ( error ) {
 		console.error(
