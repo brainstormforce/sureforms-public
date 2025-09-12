@@ -1644,7 +1644,7 @@ class Stripe_Payment_Handler {
 
 		$payment_intent_id = $subscription["setup_intent"]["id"];
 		$subscription_id = $subscription["subscription_data"]["id"];
-		$client_secret = $subscription["client_secrete"];
+		$client_secret = $subscription["client_secret"];
 		$response = [
 			'type'              => 'subscription',
 			'client_secret'     => $client_secret,
