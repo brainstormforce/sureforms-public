@@ -4,7 +4,7 @@ Tags: contact form, custom form, forms, contact form plugin, form builder
 Requires at least: 6.4
 Tested up to: 6.8.2
 Requires PHP: 7.4
-Stable tag: 1.11.0
+Stable tag: 1.12.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -264,6 +264,8 @@ We take plugin security extremely seriously. If you discover a security vulnerab
 You can report the issue through our [Bug Bounty Program](https://brainstormforce.com/bug-bounty-program/). We collaborate with Patchstack to provide opportunities for researchers to report vulnerabilities. The Patchstack team will help validate, triage, and handle any reported security issues.
 
 == Changelog ==
+= 1.12.0 - 4th September 2025 =
+* Fix: Fixed form submission issue when embedded in LearnDash lessons.
 = 1.11.0 - 2nd September 2025 =
 * Improvement: Refined weekly email summary content.
 * Fix: Resolved an issue with the readability of multiple uploaded image links in notification emails.
@@ -276,9 +278,6 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 * Improvement: Optimized API usage for better performance in SureForms.
 * Improvement: Redesigned email summary template with an updated layout and styling.
 * Fix: Resolved an issue where long label strings would overflow, causing the form layout to break.
-= 1.10.0 - 7th August 2025 =
-* New: Introduced CPT Creation in Business Plan.
-* Fix: Resolved an issue with dropdown block when same form is embedded twice in a single page.
 
 The full changelog is available [here](https://sureforms.com/whats-new/).
 
