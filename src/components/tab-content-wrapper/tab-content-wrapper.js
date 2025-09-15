@@ -32,7 +32,7 @@ const TabContentWrapper = ( {
 		onClickAction( data );
 	};
 
-	const autoSaveHelpText = __('All changes will be saved automatically when you press back', 'sureforms');
+	const autoSaveHelpText = __( 'All changes will be saved automatically when you press back', 'sureforms' );
 
 	return (
 		<div className="space-y-7 pb-8">
@@ -47,7 +47,7 @@ const TabContentWrapper = ( {
 							icon={ <ArrowLeftIcon /> }
 						/>
 					) }
-					<Title tag="h4" title={ title } size="md" description= { shouldShowAutoSaveText && autoSaveHelpText } />
+					<Title tag="h4" title={ title } size="md" description={ shouldShowAutoSaveText && autoSaveHelpText } />
 				</Container>
 				<Container align="center" className="gap-3">
 					{ actionLeftContent }
