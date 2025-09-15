@@ -32,7 +32,7 @@ import EmailNotification from '../email-settings/EmailNotification';
 import FormConfirmSetting from '../form-confirm-setting';
 import { setFormSpecificSmartTags, cn } from '@Utils/Helpers';
 import toast from 'react-hot-toast';
-import { useDispatch } from '@wordpress/data';
+import { useDispatch, useSelect } from '@wordpress/data';
 import { store as blockEditorStore } from '@wordpress/block-editor';
 import FormRestriction from '../form-restrictions/FormRestriction';
 import { FormRestrictionContext } from '../form-restrictions/context';
@@ -71,29 +71,37 @@ const Dialog = ( {
 		return width + 40;
 	};
 
-	const isEditorFullscreen = () => {
-		return document.body.classList.contains( 'is-fullscreen-mode' );
-	};
+	const isFullscreen = useSelect(
+		( select ) =>
+			select( 'core/edit-post' ).isFeatureActive( 'fullscreenMode' ),
+		[]
+	);
 
 	useLayoutEffect( () => {
 		const updateMargin = () => {
-			const dialogWrapper =
-				document.querySelector( '.srfm-dialog-panel' );
+			setTimeout( () => {
+				const dialogWrapper =
+					document.querySelector( '.srfm-dialog-panel' );
+				if ( ! dialogWrapper ) {
+					return;
+				}
 
-			if ( ! dialogWrapper ) {
-				return;
-			}
+				const width = getAdminMenuWidth();
 
-			if ( ! isEditorFullscreen() ) {
-				dialogWrapper.style.marginLeft = `${ getAdminMenuWidth() }px`;
-				dialogWrapper.style.marginRight = '40px';
-			}
+				if ( ! isFullscreen ) {
+					dialogWrapper.style.marginLeft = `${ width }px`;
+					dialogWrapper.style.marginRight = '40px';
+				} else {
+					dialogWrapper.style.removeProperty( 'margin-left' );
+					dialogWrapper.style.removeProperty( 'margin-right' );
+				}
+			}, 0 );
 		};
 		updateMargin();
 
 		window.addEventListener( 'resize', updateMargin );
 		return () => window.removeEventListener( 'resize', updateMargin );
-	}, [ open ] );
+	}, [ open, isFullscreen ] );
 
 	const emailNotificationData = sureformsKeys._srfm_email_notification || [];
 	const complianceData = sureformsKeys._srfm_compliance || [];
