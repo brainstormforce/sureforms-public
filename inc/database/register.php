@@ -37,6 +37,12 @@ class Register {
 		 * 5. Finally, stop the DB upgrade and update the current version in option table.
 		 */
 		foreach ( static::get_db_tables() as $instance ) {
+
+			// check if instance is of type Base.
+			if ( ! $instance instanceof Base ) {
+				continue;
+			}
+
 			$instance->start_db_upgrade();
 
 			if ( $instance->is_db_upgradable() ) {
