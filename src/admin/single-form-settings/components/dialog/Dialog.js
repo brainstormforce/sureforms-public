@@ -65,6 +65,36 @@ const Dialog = ( {
 		setRenderRoot( dialogRoot );
 	}, [] );
 
+	const getAdminMenuWidth = () => {
+		const adminMenu = document.getElementById( 'adminmenu' );
+		const width = adminMenu ? adminMenu.offsetWidth : 0;
+		return width + 40;
+	};
+
+	const isEditorFullscreen = () => {
+		return document.body.classList.contains( 'is-fullscreen-mode' );
+	};
+
+	useLayoutEffect( () => {
+		const updateMargin = () => {
+			const dialogWrapper =
+				document.querySelector( '.srfm-dialog-panel' );
+
+			if ( ! dialogWrapper ) {
+				return;
+			}
+
+			if ( ! isEditorFullscreen() ) {
+				dialogWrapper.style.marginLeft = `${ getAdminMenuWidth() }px`;
+				dialogWrapper.style.marginRight = '40px';
+			}
+		};
+		updateMargin();
+
+		window.addEventListener( 'resize', updateMargin );
+		return () => window.removeEventListener( 'resize', updateMargin );
+	}, [ open ] );
+
 	const emailNotificationData = sureformsKeys._srfm_email_notification || [];
 	const complianceData = sureformsKeys._srfm_compliance || [];
 	const formCustomCssData = sureformsKeys._srfm_form_custom_css || [];
@@ -189,7 +219,7 @@ const Dialog = ( {
 				className="[&>div>div]:h-full z-99999"
 			>
 				<ForceUIDialog.Backdrop />
-				<ForceUIDialog.Panel className="size-[calc(100%-80px)] m-auto">
+				<ForceUIDialog.Panel className="srfm-dialog-panel size-[calc(100%-80px)] m-auto">
 					<Container
 						direction="column"
 						gap="none"
