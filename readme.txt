@@ -264,6 +264,8 @@ We take plugin security extremely seriously. If you discover a security vulnerab
 You can report the issue through our [Bug Bounty Program](https://brainstormforce.com/bug-bounty-program/). We collaborate with Patchstack to provide opportunities for researchers to report vulnerabilities. The Patchstack team will help validate, triage, and handle any reported security issues.
 
 == Changelog ==
+= x.x.x =
+* Improvement: Single form settings now include help text about auto-save.
 = 1.12.0 - 4th September 2025 =
 * Fix: Fixed form submission issue when embedded in LearnDash lessons.
 = 1.11.0 - 2nd September 2025 =

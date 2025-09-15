@@ -1,6 +1,7 @@
 import { Button, Container, Title } from '@bsf/force-ui';
 import { cn } from '@Utils/Helpers';
 import { ArrowLeftIcon } from 'lucide-react';
+import { __ } from '@wordpress/i18n';
 
 const TabContentWrapper = ( {
 	children,
@@ -13,6 +14,7 @@ const TabContentWrapper = ( {
 	actionBtnVariant = 'primary',
 	actionLeftContent,
 	actionBtnDisabled = false,
+	shouldShowAutoSaveText = false,
 } ) => {
 	const handleBack = () => {
 		if ( typeof onClickBack !== 'function' ) {
@@ -30,6 +32,8 @@ const TabContentWrapper = ( {
 		onClickAction( data );
 	};
 
+	const autoSaveHelpText = __('All changes will be saved automatically when you press back', 'sureforms');
+
 	return (
 		<div className="space-y-7 pb-8">
 			<Container align="center" justify="between">
@@ -43,7 +47,7 @@ const TabContentWrapper = ( {
 							icon={ <ArrowLeftIcon /> }
 						/>
 					) }
-					<Title tag="h4" title={ title } size="md" />
+					<Title tag="h4" title={ title } size="md" description= { shouldShowAutoSaveText && autoSaveHelpText } />
 				</Container>
 				<Container align="center" className="gap-3">
 					{ actionLeftContent }
