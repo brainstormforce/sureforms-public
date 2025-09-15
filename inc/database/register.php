@@ -38,7 +38,8 @@ class Register {
 		 */
 		foreach ( static::get_db_tables() as $instance ) {
 
-			// check if instance is of type Base.
+			// check if $instance is of type Base.
+			// This is to avoid any fatal errors in case of wrong instance.
 			if ( ! $instance instanceof Base ) {
 				continue;
 			}
