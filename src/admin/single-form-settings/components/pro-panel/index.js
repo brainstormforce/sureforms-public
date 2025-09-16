@@ -70,7 +70,7 @@ const iconBlocks = [
 	{
 		icon: <MdFormatListBulletedAdd size={ 24 } color="#B4B4B4" />,
 		label: __( 'Repeater', 'sureforms' ),
-		showIn: [ 'business' ],
+		showIn: [ 'free', 'starter', 'pro' ],
 	},
 	{
 		icon: parse( svgIcons.signature ),

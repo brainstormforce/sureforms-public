@@ -266,6 +266,7 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 == Changelog ==
 = x.x.x =
 * Fix: Resolved an issue where single form settings popup overlaps over the admin menu when full screen mode for editor is disabled.
+* Improvement: Added filter 'srfm_value_after_label_placeholder' to modify required field sign.
 = 1.12.0 - 4th September 2025 =
 * Fix: Fixed form submission issue when embedded in LearnDash lessons.
 = 1.11.0 - 2nd September 2025 =
