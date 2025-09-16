@@ -79,7 +79,7 @@ const Dialog = ( {
 
 	useLayoutEffect( () => {
 		const updateMargin = () => {
-			setTimeout( () => {
+			window.requestAnimationFrame( () => {
 				const dialogWrapper =
 					document.querySelector( '.srfm-dialog-panel' );
 				if ( ! dialogWrapper ) {
@@ -95,10 +95,9 @@ const Dialog = ( {
 					dialogWrapper.style.removeProperty( 'margin-left' );
 					dialogWrapper.style.removeProperty( 'margin-right' );
 				}
-			}, 0 );
+			} );
 		};
 		updateMargin();
-
 		window.addEventListener( 'resize', updateMargin );
 		return () => window.removeEventListener( 'resize', updateMargin );
 	}, [ open, isFullscreen ] );
