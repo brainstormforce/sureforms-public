@@ -116,7 +116,9 @@ if ( ! class_exists( 'Nps_Notice' ) ) {
 						'rating_min_label'            => __( 'Hate it!', 'sureforms' ),
 						'rating_max_label'            => __( 'Love it!', 'sureforms' ),
 					],
-
+					'privacy_policy'   => [
+						'url' => 'https://sureforms.com/privacy-policy',
+					],
 				]
 			);
 		}
