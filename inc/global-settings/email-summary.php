@@ -201,7 +201,17 @@ class Email_Summary {
 						</p>
 						<p style="font-size:14px;color:#4B5563;margin:0 0 16px;line-height:20px;">
 							<?php
-								echo esc_html__( "Here's your SureForms report for the last 7 days.", 'sureforms' );
+							$site_url  = home_url();
+							$site_name = get_bloginfo( 'name' ) ? get_bloginfo( 'name' ) : $site_url;
+								printf(
+									/* translators: 1: site URL, 2: site name */
+									esc_html__( "Here's your SureForms report for the last 7 days of %s.", 'sureforms' ),
+									sprintf(
+										'<a href="%1$s" target="_blank" rel="noopener noreferrer" style="color:#4B5563;text-decoration:underline;">%2$s</a>',
+										esc_url( $site_url ),
+										esc_html( $site_name )
+									)
+								);
 							?>
 						</p>
 
