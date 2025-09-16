@@ -1756,13 +1756,16 @@ class Helper {
 	 * @since 1.9.1
 	 */
 	public static function get_forms_with_entry_counts( $timestamp, $limit = 0, $sort = true ) {
-		// Get all published forms.
+		// Get all published forms with post objects for bulk title access.
 		$args = [
-			'post_type'      => SRFM_FORMS_POST_TYPE,
-			'posts_per_page' => -1,
-			'post_status'    => 'publish',
-			'orderby'        => 'ID',
-			'order'          => 'DESC',
+			'post_type'              => SRFM_FORMS_POST_TYPE,
+			'posts_per_page'         => -1,
+			'post_status'            => 'publish',
+			'orderby'                => 'ID',
+			'order'                  => 'DESC',
+			'no_found_rows'          => true,
+			'update_post_term_cache' => false,
+			'update_post_meta_cache' => false,
 		];
 
 		$query = new \WP_Query( $args );
@@ -1773,21 +1776,24 @@ class Helper {
 
 		$all_forms = [];
 
-		while ( $query->have_posts() ) {
-			$query->the_post();
-			$form_id = get_the_ID();
+		// Process posts directly from the query results without touching global $post.
+		foreach ( $query->posts as $form ) {
+			// Ensure we have a valid post object.
+			if ( ! $form instanceof \WP_Post ) {
+				continue;
+			}
 
-			// Skip if form_id is false.
-			if ( false === $form_id ) {
+			$form_id = (int) $form->ID;
+			if ( $form_id <= 0 ) {
 				continue;
 			}
 
 			// Get entries count after the timestamp for this specific form.
 			$entry_count = Entries::get_entries_count_after( $timestamp, $form_id );
 
-			// Get form title, use "Blank Form" if empty.
-			$form_title = get_the_title();
-			if ( empty( trim( $form_title ) ) ) {
+			// Get form title directly from post object, use "Blank Form" if empty.
+			$form_title = $form->post_title;
+			if ( empty( trim( self::get_string_value( $form_title ) ) ) ) {
 				$form_title = __( 'Blank Form', 'sureforms' );
 			}
 
@@ -1797,8 +1803,6 @@ class Helper {
 				'count'   => $entry_count,
 			];
 		}
-
-		wp_reset_postdata();
 
 		// Sort by count descending, then by form_id descending for consistency.
 		if ( $sort ) {
