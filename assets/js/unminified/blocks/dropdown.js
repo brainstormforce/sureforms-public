@@ -6,9 +6,15 @@ function initializeDropdown() {
 	dropDownSelector.forEach( ( element ) => {
 		if ( element ) {
 			// Skip if element already has TomSelect initialized
-			if ( element.classList.contains( 'tomselected' ) ) {
+			if (
+				element.classList.contains( 'tomselected' ) ||
+				element.getAttribute( 'data-srfm-dropdown-initialized' ) ===
+					'true'
+			) {
 				destroyTomSelect( element );
 			}
+
+			element.setAttribute( 'data-srfm-dropdown-initialized', 'true' );
 
 			// Check for at least one valid option (skip placeholder)
 			const checkOptions = Array.from( element.options || [] );
@@ -318,6 +324,7 @@ function destroyTomSelect( dropdown ) {
 		const tsWrappers = getTheWrapper.querySelectorAll( 'div.ts-wrapper' );
 		tsWrappers?.forEach( ( wrapper ) => wrapper.remove() );
 	}
+	dropdown.removeAttribute( 'data-srfm-dropdown-initialized' );
 }
 
 // Re-initialize dropdowns when the block is updated in the editor.
@@ -341,3 +348,7 @@ document.addEventListener( 'srfm_form_before_submission', ( e ) => {
 		initializeDropdown();
 	}, 150 );
 } );
+
+// Make dropdown initialization function available globally for repeater fields
+window.srfmInitializeDropdownField = initializeDropdown;
+window.srfmDestroyDropdownField = destroyTomSelect;
