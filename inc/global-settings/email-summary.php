@@ -301,7 +301,7 @@ class Email_Summary {
 	 * Returns an associative array of promo plugin data,
 	 * including logo, title, description, and link info.
 	 *
-	 * @since x.x.x
+	 * @since 1.12.1
 	 *
 	 * @return array List of promo banners with details.
 	 */
@@ -351,7 +351,7 @@ class Email_Summary {
 	 * Outputs the banner HTML for the specified plugin key.
 	 * If the key is invalid, nothing is rendered.
 	 *
-	 * @since x.x.x
+	 * @since 1.12.1
 	 *
 	 * @param string $plugin_key The key of the promo plugin to render.
 	 *
@@ -393,7 +393,7 @@ class Email_Summary {
 	 * Get the next promo plugin.
 	 *
 	 * @return string The plugin key for the next promo banner.
-	 * @since x.x.x
+	 * @since 1.12.1
 	 */
 	public static function get_next_promo_plugin() {
 		$all_plugins = array_keys( self::get_promo_banners() );
@@ -412,7 +412,7 @@ class Email_Summary {
 	 *
 	 * @param string $plugin_key The plugin key to mark as sent.
 	 * @return void
-	 * @since x.x.x
+	 * @since 1.12.1
 	 */
 	public static function mark_promo_sent( $plugin_key ) {
 		$remaining = Helper::get_array_value( Helper::get_srfm_option( 'remaining_promos', [] ) );
