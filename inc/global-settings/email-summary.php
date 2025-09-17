@@ -152,10 +152,7 @@ class Email_Summary {
 			$forms_data = Helper::get_forms_with_entry_counts( $week_ago_timestamp );
 		}
 
-		$admin_user_name = get_user_by( 'id', 1 ) ? get_user_by( 'id', 1 )->display_name : 'Admin';
-		$from_date       = date_i18n( 'F j, Y', $week_ago_timestamp );
-		$to_date         = date_i18n( 'F j, Y' );
-		$logs_url        = admin_url( 'admin.php?page=sureforms_entries' );
+		$logs_url = admin_url( 'admin.php?page=sureforms_entries' );
 
 		ob_start();
 		?>
@@ -172,15 +169,6 @@ class Email_Summary {
 				echo '<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">';
 			?>
 			<style>
-				@media (prefers-color-scheme: dark) {
-					.logo-light { display: none !important; }
-					.logo-dark { display: block !important; }
-				}
-				@media (prefers-color-scheme: light) {
-					.logo-dark { display: none !important; }
-					.logo-light { display: block !important; }
-				}
-
 				/* Mobile-specific styles */
 				@media only screen and (max-width: 600px) {
 					.email-greeting {
@@ -198,41 +186,32 @@ class Email_Summary {
 		<body class="pad-24" style="font-family:Figtree,Arial,sans-serif;background-color:#F1F5F9;margin:0;padding:32px;">
 			<div style="max-width:640px;margin:0 auto;">
 				<div style="margin-bottom:24px;text-align:left;">
-					<!-- Light logo -->
-					<img class="logo-light"
+					<img
 						src="<?php echo esc_url( self::get_public_image_url( 'sureforms-logo-full.png', 'admin/assets/' ) ); ?>"
 						alt="<?php esc_attr_e( 'SureForms Logo', 'sureforms' ); ?>"
 						width="192" height="32"
 						style="display:block;">
-					<!-- Dark logo -->
-					<img class="logo-dark"
-						src="<?php echo esc_url( self::get_public_image_url( 'sureforms-logo-dark.png', 'admin/assets/' ) ); ?>"
-						alt="<?php esc_attr_e( 'SureForms Logo Dark', 'sureforms' ); ?>"
-						width="192" height="32"
-						style="display:none;">
 				</div>
 				<div style="background-color:#FFFFFF;padding-bottom:40px;">
 					<div class="pad-16" style="padding:24px;">
 						<p class="email-greeting" style="font-size:18px;font-weight:600;color:#111827;margin:0 0 8px;">
 							<?php
-								printf(
-									/* translators: %1$s is the admin user name */
-									esc_html__( 'Hey %1$s,', 'sureforms' ),
-									esc_html( $admin_user_name )
-								);
+								echo esc_html__( 'Hey There,', 'sureforms' );
 							?>
 						</p>
 						<p style="font-size:14px;color:#4B5563;margin:0 0 16px;line-height:20px;">
 							<?php
-							printf(
-								wp_kses(
-								/* translators: %1$s is from date, %2$s is to date. */
-									__( "Here's your SureForms weekly email summary of form submissions for %1\$s to %2\$s.", 'sureforms' ),
-									[ 'strong' => [] ]
-								),
-								'<strong>' . esc_html( $from_date ) . '</strong>',
-								'<strong>' . esc_html( $to_date ) . '</strong>'
-							);
+							$site_url  = home_url();
+							$site_name = get_bloginfo( 'name' ) ? get_bloginfo( 'name' ) : $site_url;
+								printf(
+									/* translators: 1: site URL, 2: site name */
+									esc_html__( "Here's your SureForms report for the last 7 days of %s.", 'sureforms' ),
+									sprintf(
+										'<a href="%1$s" target="_blank" rel="noopener noreferrer" style="color:#4B5563;text-decoration:underline;">%2$s</a>',
+										esc_url( $site_url ),
+										esc_html( $site_name )
+									)
+								);
 							?>
 						</p>
 
@@ -284,25 +263,11 @@ class Email_Summary {
 
 					<hr style="border:none;border-top:1px solid #eee;">
 
-					<!-- OttoKit Promotion Section -->
-					<div class="margin-mob" style="margin:32px 24px;padding:16px;border:0.5px solid #E5E7EB;border-radius:8px;background:#FFFFFF;text-align:left;">
-						<div style="margin-bottom:4px;">
-							<!-- Light OttoKit logo -->
-							<img class="logo-light" src="<?php echo esc_url( self::get_public_image_url( 'ottokit.png', 'admin/assets/' ) ); ?>" alt="OttoKit Logo" width="20" height="20" style="border-radius:6px;display:block;">
-							<!-- Dark OttoKit logo -->
-							<img class="logo-dark" src="<?php echo esc_url( self::get_public_image_url( 'ottokit-dark.png', 'admin/assets/' ) ); ?>" alt="OttoKit Logo Dark" width="20" height="20" style="border-radius:6px;display:none;">
-						</div>
-						<p style="font-size:14px;line-height:20px;font-weight:600;color:#111827;margin:0 0 4px;">
-							<?php esc_html_e( 'Automate Workflows with OttoKit', 'sureforms' ); ?>
-						</p>
-						<p style="font-size:12px;color:#4B5563;margin:0 0 4px;line-height:16px;font-weight:400;">
-							<?php esc_html_e( 'Connect your apps and automate repetitive tasks with ease. Build workflows that save time, reduce errors, and keep your business running smoothly around the clock.', 'sureforms' ); ?>
-						</p>
-						<a href="https://ottokit.com?utm_medium=sureforms-email-summary" target="_blank" rel="noopener noreferrer"
-							style="font-size:12px;font-weight:600;color:#EF4444;text-decoration:none;line-height:16px;">
-							<?php esc_html_e( 'Explore OttoKit', 'sureforms' ); ?> →
-						</a>
-					</div>
+					<!-- Promotion Section -->
+					<?php
+						$plugin_key = self::get_next_promo_plugin();
+						self::render_promo_banner( $plugin_key );
+					?>
 
 					<p style="font-size:12px;color:#9CA3AF;text-align:center;margin:16px 16px;">
 						<?php
@@ -318,18 +283,147 @@ class Email_Summary {
 					<hr style="margin:16px 24px;border:none;border-top:1px solid #eee;">
 
 					<div style="text-align:center;margin-top:16px;">
-						<!-- Light footer logo -->
-						<img class="logo-light" src="<?php echo esc_url( self::get_public_image_url( 'sureforms-logo-full.png', 'admin/assets/' ) ); ?>" alt="<?php esc_attr_e( 'SureForms Logo', 'sureforms' ); ?>" height="20" style="display:block;margin:0 auto;">
-						<!-- Dark footer logo -->
-						<img class="logo-dark" src="<?php echo esc_url( self::get_public_image_url( 'sureforms-logo-dark.png', 'admin/assets/' ) ); ?>" alt="<?php esc_attr_e( 'SureForms Logo Dark', 'sureforms' ); ?>" height="20" style="display:none;margin:0 auto;">
+						<img src="<?php echo esc_url( self::get_public_image_url( 'sureforms-logo-full.png', 'admin/assets/' ) ); ?>" alt="<?php esc_attr_e( 'SureForms Logo', 'sureforms' ); ?>" height="20" style="display:block;margin:0 auto;">
 					</div>
 				</div>
 			</div>
 		</body>
 		</html>
 		<?php
+		self::mark_promo_sent( $plugin_key );
 		$content = ob_get_clean();
 		return false !== $content ? $content : '';
+	}
+
+	/**
+	 * Retrieve all available promo banners.
+	 *
+	 * Returns an associative array of promo plugin data,
+	 * including logo, title, description, and link info.
+	 *
+	 * @since 1.12.1
+	 *
+	 * @return array List of promo banners with details.
+	 */
+	public static function get_promo_banners() {
+		return [
+			'ottokit'  => [
+				'logo'        => 'ottokit.png',
+				'title'       => __( 'Automate Workflows with OttoKit', 'sureforms' ),
+				'description' => __( 'Connect your apps and automate repetitive tasks with ease. Build workflows that save time, reduce errors, and keep your business running smoothly around the clock.', 'sureforms' ),
+				'link'        => 'https://ottokit.com?utm_medium=sureforms-email-summary',
+				'link_text'   => __( 'Explore OttoKit', 'sureforms' ),
+			],
+			'surerank' => [
+				'logo'        => 'surerank.png',
+				'title'       => __( 'Optimize Your Site with SureRank', 'sureforms' ),
+				'description' => __( 'Fix common SEO issues and make your site search-friendly without the clutter. Check pages, add titles, meta, and schema — all in one simple plugin.', 'sureforms' ),
+				'link'        => 'https://surerank.com?utm_medium=sureforms-email-summary',
+				'link_text'   => __( 'Explore SureRank', 'sureforms' ),
+			],
+			'suremail' => [
+				'logo'        => 'suremail.png',
+				'title'       => __( 'Send Emails Reliably with SureMail', 'sureforms' ),
+				'description' => __( 'Make sure every WordPress email gets delivered. View logs, debug errors, and send with confidence using a lightweight SMTP solution.', 'sureforms' ),
+				'link'        => 'https://suremails.com?utm_medium=sureforms-email-summary',
+				'link_text'   => __( 'Explore SureMail', 'sureforms' ),
+			],
+			'surecart' => [
+				'logo'        => 'surecart.png',
+				'title'       => __( 'Sell with Ease using SureCart', 'sureforms' ),
+				'description' => __( 'Run your online store on WordPress with a modern checkout, subscriptions, and payments. Fast, flexible, and built for growth.', 'sureforms' ),
+				'link'        => 'https://surecart.com?utm_medium=sureforms-email-summary',
+				'link_text'   => __( 'Explore SureCart', 'sureforms' ),
+			],
+			'suredash' => [
+				'logo'        => 'suredash.png',
+				'title'       => __( 'Build Your Community with SureDash', 'sureforms' ),
+				'description' => __( 'Create a central hub where members can connect, share, and grow together. Manage discussions, courses, and events — all from your own WordPress site.', 'sureforms' ),
+				'link'        => 'https://suredash.com?utm_medium=sureforms-email-summary',
+				'link_text'   => __( 'Explore SureDash', 'sureforms' ),
+			],
+		];
+	}
+
+	/**
+	 * Render a promo banner for a given plugin.
+	 *
+	 * Outputs the banner HTML for the specified plugin key.
+	 * If the key is invalid, nothing is rendered.
+	 *
+	 * @since 1.12.1
+	 *
+	 * @param string $plugin_key The key of the promo plugin to render.
+	 *
+	 * @return void
+	 */
+	public static function render_promo_banner( $plugin_key ) {
+		$banners = self::get_promo_banners();
+
+		if ( ! isset( $banners[ $plugin_key ] ) ) {
+			return;
+		}
+
+		$args = $banners[ $plugin_key ];
+		?>
+		<div class="margin-mob" style="margin:32px 24px;padding:16px;border:0.5px solid #E5E7EB;border-radius:8px;background:#FFFFFF;text-align:left;">
+			<div style="margin-bottom:4px;">
+				<img
+					src="<?php echo esc_url( self::get_public_image_url( $args['logo'], 'admin/assets/' ) ); ?>"
+					alt="<?php echo esc_attr( $args['title'] ); ?> Logo"
+					width="20" height="20"
+					style="display:block;">
+			</div>
+
+			<p style="font-size:14px;line-height:20px;font-weight:600;color:#111827;margin:0 0 4px;">
+				<?php echo esc_html( $args['title'] ); ?>
+			</p>
+			<p style="font-size:12px;color:#4B5563;margin:0 0 4px;line-height:16px;font-weight:400;">
+				<?php echo esc_html( $args['description'] ); ?>
+			</p>
+			<a href="<?php echo esc_url( $args['link'] ); ?>" target="_blank" rel="noopener noreferrer"
+				style="font-size:12px;font-weight:600;color:#EF4444;text-decoration:none;line-height:16px;">
+				<?php echo esc_html( $args['link_text'] ); ?> →
+			</a>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Get the next promo plugin.
+	 *
+	 * @return string The plugin key for the next promo banner.
+	 * @since 1.12.1
+	 */
+	public static function get_next_promo_plugin() {
+		$all_plugins = array_keys( self::get_promo_banners() );
+
+		$remaining = Helper::get_array_value( Helper::get_srfm_option( 'remaining_promos', [] ) );
+
+		if ( empty( $remaining ) ) {
+			$remaining = $all_plugins;
+		}
+
+		return Helper::get_string_value( reset( $remaining ) );
+	}
+
+	/**
+	 * Mark a promo as sent by removing it from the remaining list.
+	 *
+	 * @param string $plugin_key The plugin key to mark as sent.
+	 * @return void
+	 * @since 1.12.1
+	 */
+	public static function mark_promo_sent( $plugin_key ) {
+		$remaining = Helper::get_array_value( Helper::get_srfm_option( 'remaining_promos', [] ) );
+
+		if ( empty( $remaining ) ) {
+			$remaining = array_keys( self::get_promo_banners() );
+		}
+
+		$remaining = array_diff( $remaining, [ $plugin_key ] );
+
+		Helper::update_srfm_option( 'remaining_promos', $remaining );
 	}
 
 	/**
@@ -363,10 +457,11 @@ class Email_Summary {
 
 		$recipients = $recipients_string ? explode( ',', $recipients_string ) : [];
 
-		$site_title = get_bloginfo( 'name' );
+		$from_date = date_i18n( 'F j, Y', $week_ago_timestamp );
+		$to_date   = date_i18n( 'F j, Y' );
 
-		// Translators: %s: Site Title.
-		$subject = sprintf( __( 'SureForms Email Summary - %s', 'sureforms' ), $site_title );
+		// Translators: %1$s: From Date, %2$s: To Date.
+		$subject = sprintf( __( 'Email Summary of your last week -  %1$s to %2$s', 'sureforms' ), $from_date, $to_date );
 		$message = $entries_count_table;
 		$headers = [
 			'Content-Type: text/html; charset=UTF-8',

@@ -260,6 +260,18 @@ class Admin_Ajax {
 
 		$blocks = parse_blocks( $post->post_content );
 
+		$blocks = array_filter(
+			$blocks,
+			static function( $block ) {
+				if ( 'srfm/html' === $block['blockName'] ) {
+					return false;
+				}
+				return true;
+			}
+		);
+
+		$blocks = array_values( $blocks );
+
 		if ( empty( $blocks ) ) {
 			return [];
 		}
@@ -315,6 +327,28 @@ class Admin_Ajax {
 			'srfm/rating'           => 4,
 			'srfm/upload'           => 'https://example.com/uploads/file.pdf',
 		];
+
+		/**
+		 * Filter the sample data for specific block types.
+		 *
+		 * Allows plugins and themes to add custom sample data for their block types
+		 * or modify existing sample data. This is particularly useful for dynamic
+		 * block types that require complex sample data structures.
+		 *
+		 * @since 0.0.8
+		 *
+		 * @param array $dummy_data {
+		 *     Array of sample data keyed by block name.
+		 *
+		 *     @type string|array $block_name Sample data for the block.
+		 * }
+		 * @param array $filter_args {
+		 *     Additional filter arguments.
+		 *
+		 *     @type string $block_name The name of the block being processed.
+		 * }
+		 */
+		$dummy_data = Helper::apply_filters_as_array( 'srfm_sample_data_filter', $dummy_data, [ 'block_name' => $block_name ] );
 
 		if ( ! empty( $dummy_data[ $block_name ] ) ) {
 			return $dummy_data[ $block_name ];

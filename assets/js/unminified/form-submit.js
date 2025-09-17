@@ -4,10 +4,43 @@ import {
 	initializeInlineFieldValidation,
 	handleScrollAndFocusOnError,
 	handleCaptchaValidation,
+<<<<<<< HEAD
 	handleFormPayment,
+=======
+	srfmFields,
+>>>>>>> 22b4e4c893d3bde1f208270d763182f3d0fb9411
 } from './validation';
 import { applyFilters } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
+
+/**
+ * Event listener for external validation initialization.
+ *
+ * Allows external code to trigger form validation initialization by dispatching
+ * the 'srfm_initialize_validation' custom event. When triggered, this will
+ * initialize inline field validation for specified fields or all fields if none specified.
+ *
+ * @param {CustomEvent} event                 - The custom event object
+ * @param {Object}      event.detail          - Event details
+ * @param {Array}       [event.detail.fields] - Optional array of field types to initialize validation for
+ */
+document.addEventListener( 'srfm_initialize_validation', ( event ) => {
+	const fields = event?.detail?.fields;
+
+	if ( ! fields || ! Array.isArray( fields ) ) {
+		// If no fields specified, initialize validation for all field types
+		initializeInlineFieldValidation();
+		return;
+	}
+
+	// Filter the fields array to only include valid field types
+	const validFields = fields.filter( ( field ) =>
+		srfmFields().includes( field )
+	);
+
+	// Initialize validation with the filtered fields
+	initializeInlineFieldValidation( validFields );
+} );
 
 /**
  * Initializes form handlers for all forms with the class `.srfm-form`.
@@ -192,6 +225,50 @@ async function submitFormData( form ) {
 			if ( parentBlock?.classList.contains( 'hide-element' ) ) {
 				value = '';
 			}
+
+			/**
+			 * Filters the field value during form submission.
+			 *
+			 * Allows modifying or clearing field values before they are submitted.
+			 * Similar to how hidden fields are cleared, this filter enables custom handling
+			 * for specific field types like repeater fields.
+			 *
+			 * @since 1.11.0
+			 * hook srfm.filterFieldValue
+			 *
+			 * @param {*}       value           The current field value.
+			 * @param {Object}  filterArgs      Arguments passed to the filter.
+			 * @param {string}  filterArgs.key  The field key/name.
+			 * @param {Element} filterArgs.form The form DOM element.
+			 * @return {*} The filtered field value.
+			 */
+			value = applyFilters( 'srfm.filterFieldValue', value, {
+				key,
+				form,
+			} );
+		}
+
+		/**
+		 * Filters whether a field should be skipped during form submission.
+		 *
+		 * @since 1.11.0
+		 * hook srfm.shouldSkipField
+		 *
+		 * @param {boolean} false            Default value indicating field should not be skipped.
+		 * @param {Object}  filterArgs       Arguments passed to the filter.
+		 * @param {string}  filterArgs.key   The field key/name.
+		 * @param {*}       filterArgs.value The field value.
+		 * @param {Element} filterArgs.form  The form DOM element.
+		 * @return {boolean} Whether to skip the field.
+		 */
+		const shouldSkipField = applyFilters( 'srfm.shouldSkipField', false, {
+			key,
+			value,
+			form,
+		} );
+
+		if ( shouldSkipField ) {
+			continue;
 		}
 
 		// Append the (possibly modified) key-value pair to filteredFormData
