@@ -265,6 +265,7 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 
 == Changelog ==
 = x.x.x =
+* Improvement: Smart tag output for file uploads now shows single files as links and multiple files as an unordered list.
 * Fix: Addressed a security bug. Props to Wordfence for reporting it responsibly.
 * Fix: Resolved an issue where single form settings popup overlaps over the admin menu when full screen mode for editor is disabled.
 * Improvement: Added filter 'srfm_value_after_label_placeholder' to modify required field sign.
