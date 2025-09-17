@@ -267,7 +267,9 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 
 = x.x.x =
 * New: Added default country selection option for Phone field when auto country detection is disabled.
-
+* Improvement: Added filter 'srfm_value_after_label_placeholder' to modify required field sign.
+* Fix: Addressed a security bug. Props to Wordfence for reporting it responsibly.
+* Fix: Resolved an issue where single form settings popup overlaps over the admin menu when full screen mode for editor is disabled.
 = 1.12.0 - 4th September 2025 =
 * Fix: Fixed form submission issue when embedded in LearnDash lessons.
 = 1.11.0 - 2nd September 2025 =
