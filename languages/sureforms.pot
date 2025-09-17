@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: SureForms 1.12.0\n"
+"Project-Id-Version: SureForms 1.12.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/sureforms\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-09-04T07:38:19+00:00\n"
+"POT-Creation-Date: 2025-09-17T07:40:20+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: sureforms\n"
@@ -899,7 +899,7 @@ msgstr ""
 msgid "Number"
 msgstr ""
 
-#: inc/fields/phone-markup.php:37
+#: inc/fields/phone-markup.php:45
 #: modules/gutenberg/icons/icons-v6-2.php:3665
 msgid "Phone"
 msgstr ""
@@ -9532,7 +9532,15 @@ msgid "Four Columns"
 msgstr ""
 
 #: assets/build/blocks.js:172
+msgid "Select Country"
+msgstr ""
+
+#: assets/build/blocks.js:172
 msgid "Enable Auto Country Detection"
+msgstr ""
+
+#: assets/build/blocks.js:172
+msgid "Default Country"
 msgstr ""
 
 #: assets/build/blocks.js:172

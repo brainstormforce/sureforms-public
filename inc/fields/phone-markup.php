@@ -30,7 +30,7 @@ class Phone_Markup extends Base {
 	 * Stores the default country code when auto country is disabled.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 1.12.1
 	 */
 	protected $default_country;
 
