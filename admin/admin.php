@@ -11,6 +11,7 @@ use SRFM\Admin\Views\Entries_List_Table;
 use SRFM\Admin\Views\Payments_List_Table;
 use SRFM\Admin\Views\Single_Entry;
 use SRFM\Admin\Views\Single_Payment;
+use SRFM\Admin\Views\Single_Subscription;
 use SRFM\Inc\AI_Form_Builder\AI_Helper;
 use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Helper;
@@ -552,6 +553,13 @@ class Admin {
 	 * @return void
 	 */
 	public function render_payments() {
+		// Check if we need to render subscription view
+		if ( isset( $_GET['payment_id'] ) && is_numeric( $_GET['payment_id'] ) && isset( $_GET['view'] ) && 'subscription' === $_GET['view'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verification is not needed here as no database operations are performed.
+			$single_subscription_view = new Single_Subscription();
+			$single_subscription_view->render();
+			return;
+		}
+
 		// Render single payment view.
 		// Adding the phpcs ignore nonce verification as no database operations are performed in this function, it is used to display the single payment view.
 		if ( isset( $_GET['payment_id'] ) && is_numeric( $_GET['payment_id'] ) && isset( $_GET['view'] ) && 'details' === $_GET['view'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verification is not needed here and explained in the comments above as well.
