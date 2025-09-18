@@ -739,11 +739,11 @@ class Entries_List_Table extends \WP_List_Table {
 	 */
 	protected function column_first_field( $item ) {
 		// Get the first field key.
-		$first_key       = key( $item['form_data'] );
+		$first_key       = Helper::get_string_value( key( $item['form_data'] ) );
 		$excluded_fields = Helper::get_excluded_fields();
 		$form_data       = array_diff_key( $item['form_data'], array_flip( $excluded_fields ) );
 		$first_field     = reset( $form_data );
-		$field_name      = array_keys( $form_data )[0];
+		$field_name      = ! empty( $form_data ) ? array_keys( $form_data )[0] : '';
 
 		$field_block_name = Helper::get_block_name_from_field( $field_name );
 
@@ -781,25 +781,29 @@ class Entries_List_Table extends \WP_List_Table {
 			]
 		);
 
-		if ( ! empty( $set_entry_first_field ) ) {
-			$first_field = sanitize_text_field( $set_entry_first_field );
+		if ( false !== strpos( $field_name, 'srfm-repeater' ) ) {
+			$set_entry_first_field = __( 'Repeater', 'sureforms' );
 		}
 
 		if ( false !== strpos( $field_name, 'srfm-upload' ) ) {
 			$filenames = [];
-			if ( ! empty( $first_field ) && is_array( $first_field ) ) {
-				foreach ( $first_field as $file ) {
+			if ( ! empty( $set_entry_first_field ) && is_array( $set_entry_first_field ) ) {
+				foreach ( $set_entry_first_field as $file ) {
 					$file_url    = urldecode( strval( $file ) );
 					$filenames[] = pathinfo( $file_url, PATHINFO_BASENAME );
 				}
 			}
-			$first_field = implode( ', ', $filenames );
+			$set_entry_first_field = implode( ', ', $filenames );
+		}
+
+		if ( ! empty( $set_entry_first_field ) && ! is_array( $set_entry_first_field ) ) {
+			$set_entry_first_field = sanitize_text_field( $set_entry_first_field );
 		}
 
 		$max_length = 28;
 
-		if ( strlen( $first_field ) > $max_length ) {
-			$first_field = substr( $first_field, 0, $max_length - 3 ) . '...';
+		if ( strlen( $set_entry_first_field ) > $max_length ) {
+			$set_entry_first_field = substr( $set_entry_first_field, 0, $max_length - 3 ) . '...';
 		}
 
 		// Check if the first field is a textarea.
@@ -811,11 +815,11 @@ class Entries_List_Table extends \WP_List_Table {
 			$decode_html_content = html_entity_decode( reset( $item['form_data'] ) );
 
 			// Replace HTML tags with empty string.
-			$first_field = preg_replace( $regex, '', $decode_html_content );
+			$set_entry_first_field = preg_replace( $regex, '', $decode_html_content );
 
 			// Truncate the textarea value to 15 characters if it's too long.
-			if ( strlen( $first_field ) > 12 ) {
-				$first_field = substr( $first_field, 0, 12 ) . '...';
+			if ( strlen( $set_entry_first_field ) > 12 ) {
+				$set_entry_first_field = substr( $set_entry_first_field, 0, 12 ) . '...';
 			}
 		} else {
 			// Get the first field value directly.
