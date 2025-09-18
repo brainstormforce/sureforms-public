@@ -558,13 +558,7 @@ class Stripe_Webhook {
 		];
 
 		// Create the renewal payment record
-		$payment_id = Payments::add( $payment_data );
-
-		if ( false === $payment_id ) {
-			error_log( 'SureForms: Failed to create renewal payment record for subscription: ' . ( $subscription_record['subscription_id'] ?? 'unknown' ) );
-		} else {
-			error_log( 'SureForms: Subscription renewal payment created successfully. Payment ID: ' . $payment_id );
-		}
+		Payments::add( $payment_data );
 	}
 
 	/**
