@@ -68,7 +68,7 @@ class Payments_List_Table extends \WP_List_Table {
 	 */
 	public function __construct() {
 		parent::__construct();
-		$this->all_payments_count = Payments::get_total_payments_by_status( 'all' );
+		$this->all_payments_count = Payments::get_total_main_payments_by_status( 'all' );
 	}
 
 	/**
@@ -397,12 +397,18 @@ class Payments_List_Table extends \WP_List_Table {
 	protected function column_id( $item ) {
 		$payment_id = esc_attr( $item['id'] );
 
+		// Determine view type based on payment type
+		$view_type = 'details'; // Default for regular payments
+		if ( ! empty( $item['type'] ) && 'subscription' === $item['type'] ) {
+			$view_type = 'subscription';
+		}
+
 		$view_url =
 		wp_nonce_url(
 			add_query_arg(
 				[
 					'payment_id' => $payment_id,
-					'view'       => 'details',
+					'view'       => $view_type,
 				],
 				admin_url( 'admin.php?page=sureforms_payments' )
 			),
@@ -443,10 +449,35 @@ class Payments_List_Table extends \WP_List_Table {
 	 * @return string
 	 */
 	protected function column_type( $item ) {
-		$type = ! empty( $item['type'] ) ? $item['type'] : __( 'One-time', 'sureforms' );
+		$type            = ! empty( $item['type'] ) ? $item['type'] : 'payment';
+		$subscription_id = ! empty( $item['subscription_id'] ) ? $item['subscription_id'] : '';
+
+		// Determine display label based on type and subscription_id
+		$display_label = '';
+		$icon          = '';
+		$title         = '';
+
+		if ( 'subscription' === $type ) {
+			$display_label = __( 'Subscription', 'sureforms' );
+			$icon          = '<span class="dashicons dashicons-update" style="font-size: 14px; line-height: 1; margin-right: 4px; color: #0073aa;"></span>';
+			$title         = esc_attr__( 'Recurring Subscription', 'sureforms' );
+		} elseif ( 'payment' === $type && ! empty( $subscription_id ) ) {
+			// This is a subscription-related payment (shouldn't appear in main table, but just in case)
+			$display_label = __( 'Subscription Payment', 'sureforms' );
+			$icon          = '<span class="dashicons dashicons-minus" style="font-size: 14px; line-height: 1; margin-right: 4px; color: #666;"></span>';
+			$title         = esc_attr__( 'Individual Subscription Payment Transaction', 'sureforms' );
+		} else {
+			// Regular one-time payment
+			$display_label = __( 'One-time', 'sureforms' );
+			$icon          = '<span class="dashicons dashicons-admin-generic" style="font-size: 14px; line-height: 1; margin-right: 4px; color: #50575e;"></span>';
+			$title         = esc_attr__( 'One-time Payment', 'sureforms' );
+		}
+
 		return sprintf(
-			'<span>%s</span>',
-			esc_html( ucfirst( $type ) )
+			'<span style="display: inline-flex; align-items: center;" title="%s">%s%s</span>',
+			$title,
+			$icon,
+			esc_html( $display_label )
 		);
 	}
 
@@ -600,12 +631,18 @@ class Payments_List_Table extends \WP_List_Table {
 	 * @return array
 	 */
 	protected function package_row_actions( $item ) {
+		// Determine view type based on payment type
+		$view_type = 'details'; // Default for regular payments
+		if ( ! empty( $item['type'] ) && 'subscription' === $item['type'] ) {
+			$view_type = 'subscription';
+		}
+
 		$view_url   =
 		wp_nonce_url(
 			add_query_arg(
 				[
 					'payment_id' => esc_attr( $item['id'] ),
-					'view'       => 'details',
+					'view'       => $view_type,
 				],
 				admin_url( 'admin.php?page=sureforms_payments' )
 			),
@@ -814,10 +851,10 @@ class Payments_List_Table extends \WP_List_Table {
 	 * @return array<string,string>
 	 */
 	protected function get_views() {
-		// Get the status count of the payments.
-		$pending_payments_count   = Payments::get_total_payments_by_status( 'pending' );
-		$succeeded_payments_count = Payments::get_total_payments_by_status( 'succeeded' );
-		$failed_payments_count    = Payments::get_total_payments_by_status( 'failed' );
+		// Get the status count of the payments (excluding single_payment types).
+		$pending_payments_count   = Payments::get_total_main_payments_by_status( 'pending' );
+		$succeeded_payments_count = Payments::get_total_main_payments_by_status( 'succeeded' );
+		$failed_payments_count    = Payments::get_total_main_payments_by_status( 'failed' );
 
 		// Get the current view to highlight the selected one.
 		// Adding the phpcs ignore nonce verification as no complex operations are performed here only the count of the payments is required.
@@ -890,7 +927,7 @@ class Payments_List_Table extends \WP_List_Table {
 
 		$offset               = ( $current_page - 1 ) * $per_page;
 		$where_condition      = self::get_where_conditions( $form_id, $view );
-		$this->data           = Payments::get_all(
+		$this->data           = Payments::get_all_main_payments(
 			[
 				'limit'   => $per_page,
 				'offset'  => $offset,
@@ -899,7 +936,7 @@ class Payments_List_Table extends \WP_List_Table {
 				'order'   => $order,
 			]
 		);
-		$this->payments_count = Payments::get_total_payments_by_status( $view, $form_id, $where_condition );
+		$this->payments_count = Payments::get_total_main_payments_by_status( $view, $form_id, $where_condition );
 		return $this->data;
 	}
 
