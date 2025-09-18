@@ -301,7 +301,9 @@ class Stripe_Payment_Handler {
 				continue;
 			}
 
-			$payment_id = ! empty( $payment_value['paymentId'] ) ? $payment_value['paymentId'] : '';
+			// Extract payment ID - this will be the payment intent ID for one-time payments,
+			// or the payment method ID (result.setupIntent.payment_method) for subscriptions.
+			$payment_id   = ! empty( $payment_value['paymentId'] ) ? $payment_value['paymentId'] : '';
 			$setup_intent = ! empty( $payment_value['setupIntent'] ) ? $payment_value['setupIntent'] : '';
 
 			if ( empty( $payment_id ) && empty( $setup_intent ) ) {
@@ -316,6 +318,18 @@ class Stripe_Payment_Handler {
 			}
 
 			if ( 'stripe-subscription' === $payment_type ) {
+
+				/**
+				 * For subscription payments, we receive the following data structure:
+				 * - paymentMethod: Stripe payment method ID (e.g., "pm_1S82ZkHqS7N4oFQhruGV67u1")
+				 * - setupIntent: Stripe setup intent ID (e.g., "seti_1S82ZkHqS7N4oFQhPa4LYPYg")
+				 * - subscriptionId: Stripe subscription ID (e.g., "sub_1S82ZiHqS7N4oFQhPGhm2eNR")
+				 * - customerId: Stripe customer ID (e.g., "cus_T4Apjla33GlYAk")
+				 * - blockId: Form block identifier (e.g., "be920796")
+				 * - paymentType: Payment type identifier ("stripe-subscription")
+				 * - status: Payment status ("succeeded")
+				 * - paymentItems: Array containing subscription item details
+				 */
 				$this->verify_stripe_subscription_intent_and_save( $payment_value, $block_id, $form_data );
 			} else {
 				$this->verify_stripe_payment_intent_and_save( $payment_id, $block_id, $form_data );
@@ -324,7 +338,7 @@ class Stripe_Payment_Handler {
 
 		return $form_data;
 	}
-	
+
 	/**
 	 * Simplified subscription verification using simple-stripe-subscriptions approach
 	 *
@@ -334,7 +348,7 @@ class Stripe_Payment_Handler {
 	 * @return bool True if subscription is verified and saved successfully.
 	 */
 	public function verify_stripe_subscription_intent_and_save( $subscription_value, $block_id, $form_data ) {
-		$subscription_id   = ! empty( $subscription_value['subscriptionId'] ) ? $subscription_value['subscriptionId'] : '';
+		$subscription_id = ! empty( $subscription_value['subscriptionId'] ) ? $subscription_value['subscriptionId'] : '';
 
 		if ( empty( $subscription_id ) ) {
 			error_log( 'SureForms: Missing subscription ID' );
@@ -362,7 +376,7 @@ class Stripe_Payment_Handler {
 
 			// Update subscription with payment method from setup intent if available
 			$setup_intent_id = ! empty( $subscription_value['setupIntent'] ) ? $subscription_value['setupIntent'] : '';
-			$paid_invoice = [];
+			$paid_invoice    = [];
 			if ( ! empty( $setup_intent_id ) ) {
 				try {
 					$setup_intent = $this->stripe_api_request(
@@ -371,7 +385,7 @@ class Stripe_Payment_Handler {
 						[],
 						$setup_intent_id
 					);
-					
+
 					if ( ! empty( $setup_intent['payment_method'] ) ) {
 						$subscription_update = $this->stripe_api_request(
 							'subscriptions',
@@ -429,10 +443,14 @@ class Stripe_Payment_Handler {
 				'gateway'             => 'stripe',
 				'type'                => 'subscription',
 				'mode'                => $payment_mode,
-				'transaction_id'      => $setup_intent_id,
+				'transaction_id'      => $subscription_id,
 				'customer_id'         => $customer_id,
 				'subscription_id'     => $subscription_id,
 				'subscription_status' => $paid_invoice['status'],
+				'payment_data'        => [
+					'initial_invoice' => $paid_invoice,
+					'subscription'    => $subscription,
+				],
 			];
 
 			// Add simple log entry
@@ -461,15 +479,113 @@ class Stripe_Payment_Handler {
 					'form_id'    => $form_data['form-id'] ?? '',
 				];
 
+				// Create the first individual payment record for this subscription if payment was successful
+				if ( $is_subscription_active && ! empty( $paid_invoice ) ) {
+					$this->create_subscription_single_payment(
+						$subscription_id,
+						$setup_intent_id, // Use setup intent ID as transaction ID for first payment
+						$paid_invoice,
+						$form_data['form-id'] ?? 0,
+						$block_id
+					);
+				}
+
 				error_log( 'SureForms: Subscription verification complete. Status: ' . $final_status );
 				return $is_subscription_active;
 			}
-				throw new \Exception( __( 'Failed to save subscription data.', 'sureforms' ) );
-
 		} catch ( \Exception $e ) {
 			error_log( 'SureForms Subscription Verification Error: ' . $e->getMessage() );
 			return false;
 		}
+	}
+
+	/**
+	 * Create individual payment record for subscription billing cycle.
+	 * This method can be called by webhooks or other processes to track individual subscription payments.
+	 *
+	 * @param string $subscription_id Stripe subscription ID.
+	 * @param string $payment_intent_id Stripe payment intent ID.
+	 * @param array  $invoice_data Invoice data from Stripe.
+	 * @param int    $form_id Form ID associated with the subscription.
+	 * @param string $block_id Block ID associated with the subscription.
+	 * @since x.x.x
+	 * @return int|false Payment ID if successful, false otherwise.
+	 */
+	public function create_subscription_single_payment( $subscription_id, $payment_intent_id, $invoice_data, $form_id = 0, $block_id = '' ) {
+		if ( empty( $subscription_id ) || empty( $payment_intent_id ) || empty( $invoice_data ) ) {
+			error_log( 'SureForms: Missing required data for creating subscription single payment' );
+			return false;
+		}
+
+		// Get the main subscription record to inherit form and block details if not provided
+		$main_subscription = Payments::get_main_subscription_record( $subscription_id );
+		if ( ! $main_subscription ) {
+			error_log( 'SureForms: Could not find main subscription record for ID: ' . $subscription_id );
+			return false;
+		}
+
+		// Use provided form_id and block_id, or fall back to subscription record values
+		$form_id  = ! empty( $form_id ) ? $form_id : ( $main_subscription['form_id'] ?? 0 );
+		$block_id = ! empty( $block_id ) ? $block_id : ( $main_subscription['block_id'] ?? '' );
+
+		// Get payment settings for mode detection
+		$payment_settings = get_option( 'srfm_payments_settings', [] );
+		$payment_mode     = $payment_settings['payment_mode'] ?? 'test';
+
+		// Prepare subscription individual payment entry data
+		$entry_data = [
+			'form_id'             => $form_id,
+			'block_id'            => $block_id,
+			'status'              => $invoice_data['status'] === 'paid' ? 'succeeded' : 'failed',
+			'total_amount'        => $this->amount_convert_cents_to_usd( $invoice_data['amount_paid'] ?? 0 ),
+			'refunded_amount'     => '0.00000000', // Required field - default to 0
+			'currency'            => $invoice_data['currency'] ?? 'usd',
+			'entry_id'            => $main_subscription['entry_id'] ?? 0, // Link to same entry as subscription
+			'gateway'             => 'stripe',
+			'type'                => 'payment', // This is a payment transaction linked to subscription
+			'mode'                => $payment_mode,
+			'transaction_id'      => $payment_intent_id,
+			'customer_id'         => $invoice_data['customer'] ?? '',
+			'subscription_id'     => $subscription_id, // Link back to subscription
+			'subscription_status' => '', // Not applicable for individual payments
+		];
+
+		// Add log entry for audit trail
+		$entry_data['log'] = [
+			[
+				'title'     => 'Subscription Single Payment',
+				'timestamp' => time(),
+				'messages'  => [
+					sprintf( 'Subscription ID: %s', $subscription_id ),
+					sprintf( 'Payment Intent ID: %s', $payment_intent_id ),
+					sprintf( 'Invoice ID: %s', $invoice_data['id'] ?? 'N/A' ),
+					sprintf( 'Amount: %s %s', number_format( $entry_data['total_amount'], 2 ), strtoupper( $entry_data['currency'] ) ),
+					sprintf( 'Status: %s', $entry_data['status'] ),
+					'Created via subscription billing cycle',
+				],
+			],
+		];
+
+		// Log the data being inserted for debugging
+		error_log( 'SureForms: Attempting to create subscription payment with data: ' . wp_json_encode( $entry_data ) );
+
+		// Save to database
+		$payment_entry_id = Payments::add( $entry_data );
+
+		if ( $payment_entry_id ) {
+			// Store in static array for later entry linking
+			$this->stripe_payment_entries[] = [
+				'payment_id' => $payment_intent_id,
+				'block_id'   => $block_id,
+				'form_id'    => $form_id,
+			];
+
+			error_log( 'SureForms: Created subscription single payment record. ID: ' . $payment_entry_id );
+			return $payment_entry_id;
+		}
+			error_log( 'SureForms: Failed to create subscription single payment record. Data: ' . wp_json_encode( $entry_data ) );
+			return false;
+
 	}
 
 	/**
@@ -545,9 +661,9 @@ class Stripe_Payment_Handler {
 			}
 
 			// Detect subscription payments and route to specialized handler (following WPForms pattern)
-			if ( ! empty( $payment['type'] ) && 'subscription' === $payment['type'] ) {
+			if ( ! empty( $payment['type'] ) && ! empty( $payment['subscription_id'] ) ) {
 				error_log( 'SureForms: Routing subscription payment to specialized refund handler' );
-				$this->refund_subscription_payment( $payment_id, $transaction_id, $refund_amount );
+				$this->refund_subscription_payment( $payment, $refund_amount );
 				return;
 			}
 
@@ -580,40 +696,51 @@ class Stripe_Payment_Handler {
 			}
 
 			// Get license key for consistency with other endpoints
-			$license_key = $this->get_license_key();
+			// $license_key = $this->get_license_key();
 
 			// Prepare refund data for middleware
-			$refund_data = apply_filters(
-				'srfm_refund_payment_data',
-				[
-					'secret_key'     => $secret_key,
-					'payment_intent' => $transaction_id,
-					'amount'         => $refund_amount,
-					'license_key'    => $license_key,
-					'metadata'       => [
-						'source'      => 'SureForms',
-						'payment_id'  => $payment_id,
-						'refunded_at' => time(),
-					],
-				]
-			);
+			// $refund_data = apply_filters(
+			// 'srfm_refund_payment_data',
+			// [
+			// 'secret_key'     => $secret_key,
+			// 'payment_intent' => $transaction_id,
+			// 'amount'         => $refund_amount,
+			// 'license_key'    => $license_key,
+			// 'metadata'       => [
+			// 'source'      => 'SureForms',
+			// 'payment_id'  => $payment_id,
+			// 'refunded_at' => time(),
+			// ],
+			// ]
+			// );
 
-			// Call middleware refund endpoint
-			$refund_response = wp_remote_post(
-				'prod' === SRFM_PAYMENTS_ENV ? SRFM_PAYMENTS_PROD . 'refund/create' : SRFM_PAYMENTS_LOCAL . 'refund/create',
-				[
-					'body'    => base64_encode( wp_json_encode( $refund_data ) ),
-					'headers' => [
-						'Content-Type' => 'application/json',
-					],
-				]
-			);
+			// Create refund using Stripe API directly
+			$stripe_refund_data = [
+				'amount'   => $refund_amount,
+				'metadata' => [
+					'source'      => 'SureForms',
+					'payment_id'  => $payment_id,
+					'refunded_at' => time(),
+					'refunded_by' => get_current_user_id(),
+				],
+			];
 
-			if ( is_wp_error( $refund_response ) ) {
-				throw new \Exception( __( 'Failed to process refund through middleware.', 'sureforms' ) );
+			// Determine if we're refunding by charge ID or payment intent ID
+			if ( strpos( $transaction_id, 'ch_' ) === 0 ) {
+				// Refunding by charge ID
+				$stripe_refund_data['charge'] = $transaction_id;
+			} elseif ( strpos( $transaction_id, 'pi_' ) === 0 ) {
+				// Refunding by payment intent ID
+				$stripe_refund_data['payment_intent'] = $transaction_id;
+			} else {
+				throw new \Exception( __( 'Invalid transaction ID format for refund.', 'sureforms' ) );
 			}
 
-			$refund = json_decode( wp_remote_retrieve_body( $refund_response ), true );
+			$refund = $this->stripe_api_request( 'refunds', 'POST', $stripe_refund_data );
+
+			if ( false === $refund ) {
+				throw new \Exception( __( 'Failed to process refund through Stripe API.', 'sureforms' ) );
+			}
 
 			if ( empty( $refund ) || isset( $refund['status'] ) && 'error' === $refund['status'] ) {
 				$error_message = $refund['message'] ?? __( 'Unknown refund error.', 'sureforms' );
@@ -804,7 +931,7 @@ class Stripe_Payment_Handler {
 
 		$subscription_interval       = sanitize_text_field( wp_unslash( $_POST['interval'] ?? 'month' ) );
 		$plan_name                   = sanitize_text_field( wp_unslash( $_POST['plan_name'] ?? 'Subscription Plan' ) );
-		$subscription_interval_count = absint( $_POST['subscription_interval_count'] ?? 1 );
+		$subscription_interval_count = absint( $_POST['subscription_interval_count'] ?? 6 );
 		$subscription_trial_days     = absint( $_POST['subscription_trial_days'] ?? 3 );
 
 		// Validate amount like simple-stripe-subscriptions
@@ -966,7 +1093,7 @@ class Stripe_Payment_Handler {
 
 		// Process the subscription refund
 		try {
-			$this->refund_subscription_payment( $payment_id, $payment['transaction_id'], $refund_amount );
+			$this->refund_subscription_payment( $payment, $refund_amount );
 			wp_send_json_success( [ 'message' => esc_html__( 'Subscription payment refunded successfully.', 'sureforms' ) ] );
 		} catch ( \Exception $e ) {
 			error_log( 'SureForms AJAX Subscription Refund Error: ' . $e->getMessage() );
@@ -1032,111 +1159,344 @@ class Stripe_Payment_Handler {
 	}
 
 	/**
-	 * Refund subscription payment following WPForms pattern
+	 * Refund subscription payment with enhanced validation and error handling
 	 *
 	 * This method handles refunding the payment intent associated with a subscription,
-	 * similar to how WPForms handles subscription refunds.
+	 * with comprehensive validation and detailed error reporting.
 	 *
 	 * @param int    $payment_id Payment record ID.
-	 * @param string $transaction_id Transaction ID (should be payment_intent_id for subscriptions).
+	 * @param string $transaction_id Transaction ID (subscription ID or payment intent ID).
 	 * @param int    $refund_amount Refund amount in cents.
 	 * @return void
 	 * @since x.x.x
 	 */
-	private function refund_subscription_payment( $payment_id, $transaction_id, $refund_amount ) {
+	private function refund_subscription_payment( $payment, $refund_amount ) {
+		$payment_id     = $payment['id'] ?? 0;
+		$transaction_id = $payment['transaction_id'] ?? '';
+
+		error_log( 'SureForms: Starting subscription refund process. Payment ID: ' . $payment_id . ', Transaction ID: ' . $transaction_id . ', Amount: ' . $refund_amount );
+
 		try {
-			// Get payment record
-			$payment = Payments::get( $payment_id );
-			if ( ! $payment ) {
-				wp_send_json_error( __( 'Subscription payment not found.', 'sureforms' ) );
+			// Step 1: Validate input parameters
+			if ( empty( $payment ) || ! is_array( $payment ) || $refund_amount <= 0 ) {
+				error_log( 'SureForms: Invalid refund parameters provided' );
+				wp_send_json_error( __( 'Invalid refund parameters provided.', 'sureforms' ) );
 				return;
 			}
 
-			// Verify this is a subscription payment
-			if ( 'subscription' !== $payment['type'] ) {
-				wp_send_json_error( __( 'This is not a subscription payment.', 'sureforms' ) );
+			// Step 2: Verify this is a subscription-related payment
+			$is_subscription_payment = $this->is_subscription_related_payment( $payment );
+			if ( ! $is_subscription_payment ) {
+				error_log( 'SureForms: Payment is not subscription-related. Type: ' . ( $payment['type'] ?? 'unknown' ) . ', Subscription ID: ' . ( $payment['subscription_id'] ?? 'none' ) );
+				wp_send_json_error( __( 'This payment is not related to a subscription.', 'sureforms' ) );
 				return;
 			}
 
-			// Verify subscription payment status
-			if ( 'succeeded' !== $payment['status'] && 'partially_refunded' !== $payment['status'] ) {
+			// Step 3: Verify subscription payment status
+			$refundable_statuses = [ 'succeeded', 'partially_refunded' ];
+			if ( empty( $payment['status'] ) || ! in_array( $payment['status'], $refundable_statuses, true ) ) {
+				error_log( 'SureForms: Subscription payment not in refundable status. Status: ' . ( $payment['status'] ?? 'unknown' ) );
 				wp_send_json_error( __( 'Only succeeded or partially refunded subscription payments can be refunded.', 'sureforms' ) );
 				return;
 			}
 
-			// Get payment settings
-			$payment_settings = get_option( 'srfm_payments_settings', [] );
-
-			if ( empty( $payment_settings['stripe_connected'] ) ) {
-				throw new \Exception( __( 'Stripe is not connected.', 'sureforms' ) );
-			}
-
-			$payment_mode = $payment_settings['payment_mode'] ?? 'test';
-			$secret_key   = 'live' === $payment_mode
-				? $payment_settings['stripe_live_secret_key'] ?? ''
-				: $payment_settings['stripe_test_secret_key'] ?? '';
-
-			if ( empty( $secret_key ) ) {
-				throw new \Exception( __( 'Stripe secret key not found.', 'sureforms' ) );
-			}
-
-			if ( $refund_amount <= 0 ) {
-				wp_send_json_error( __( 'Invalid refund amount.', 'sureforms' ) );
+			// Step 4: Validate refund amount limits
+			$validation_result = $this->validate_subscription_refund_amount( $payment, $refund_amount );
+			if ( ! $validation_result['valid'] ) {
+				error_log( 'SureForms: Refund amount validation failed: ' . $validation_result['message'] );
+				wp_send_json_error( $validation_result['message'] );
 				return;
 			}
 
-			// Handle subscription refund using direct Stripe API
-			$payment_intent_id = $this->get_subscription_payment_intent_id( $payment, $transaction_id );
-
-			if ( ! $payment_intent_id ) {
-				throw new \Exception( __( 'Unable to find payment intent for subscription refund.', 'sureforms' ) );
+			// Step 5: Get payment settings and validate Stripe connection
+			$payment_settings = get_option( 'srfm_payments_settings', [] );
+			if ( empty( $payment_settings['stripe_connected'] ) ) {
+				error_log( 'SureForms: Stripe is not connected' );
+				throw new \Exception( __( 'Stripe is not connected.', 'sureforms' ) );
 			}
 
-			// Create refund using direct Stripe API
-			$refund = $this->stripe_api_request(
-				'refunds',
-				'POST',
-				[
-					'payment_intent' => $payment_intent_id,
-					'amount'         => $refund_amount,
-					'metadata'       => [
-						'refunded_by'     => 'sureforms_dashboard',
-						'subscription_id' => $payment['subscription_id'] ?? '',
-						'source'          => 'SureForms',
-						'payment_id'      => $payment_id,
-						'refunded_at'     => time(),
-					],
-					'reason'         => 'requested_by_customer',
-				]
-			);
+			// Step 6: Create refund using appropriate method based on transaction ID type
+			$refund = $this->create_subscription_refund( $payment, $transaction_id, $refund_amount );
 
-			if ( ! $refund ) {
-				throw new \Exception( __( 'Stripe refund creation failed.', 'sureforms' ) );
+			if ( ! $refund || empty( $refund['id'] ) ) {
+				error_log( 'SureForms: Stripe refund creation returned empty result' );
+				throw new \Exception( __( 'Stripe refund creation failed. Please check your Stripe dashboard for more details.', 'sureforms' ) );
 			}
 
-			// Update database following WPForms pattern
+			// Step 7: Update database with refund information
+			error_log( 'SureForms: Updating database with refund information. Refund ID: ' . $refund['id'] );
 			$refund_stored = $this->update_subscription_refund_data( $payment_id, $refund, $refund_amount, $payment['currency'] );
+
 			if ( ! $refund_stored ) {
-				wp_send_json_error( __( 'Payment has been processed but could not update the payment table.', 'sureforms' ) );
+				error_log( 'SureForms: Failed to update payment record with refund data' );
+				wp_send_json_error( __( 'Refund was processed by Stripe but failed to update local records. Please check your payment records manually.', 'sureforms' ) );
+				return;
 			}
 
+			// Step 8: Success response
+			error_log( 'SureForms: Subscription refund completed successfully. Refund ID: ' . $refund['id'] );
 			wp_send_json_success(
 				[
-					'message'   => __( 'Subscription payment refunded successfully.', 'sureforms' ),
-					'refund_id' => $refund['id'],
-					'status'    => $refund['status'],
-					'type'      => 'subscription_refund',
+					'message'       => __( 'Subscription payment refunded successfully.', 'sureforms' ),
+					'refund_id'     => $refund['id'],
+					'status'        => $refund['status'],
+					'type'          => 'subscription_refund',
+					'charge_id'     => $refund['charge'] ?? '',
+					'refund_amount' => number_format( $refund_amount / 100, 2 ),
+					'currency'      => strtoupper( $payment['currency'] ?? 'USD' ),
 				]
 			);
 
 		} catch ( \Exception $e ) {
 			error_log( 'SureForms Subscription Refund Error: ' . $e->getMessage() );
-			wp_send_json_error( sprintf( __( 'Subscription refund failed: %s', 'sureforms' ), $e->getMessage() ) );
+
+			// Provide more specific error messages based on error type
+			$error_message = $this->get_user_friendly_refund_error( $e->getMessage() );
+			wp_send_json_error( $error_message );
 		}
 	}
 
 	/**
-	 * Get payment intent ID for subscription refunds (following WPForms pattern)
+	 * Check if payment is subscription-related
+	 *
+	 * @param array $payment Payment record.
+	 * @return bool True if payment is subscription-related, false otherwise.
+	 * @since x.x.x
+	 */
+	private function is_subscription_related_payment( $payment ) {
+		// Check if it's a main subscription record
+		if ( ! empty( $payment['type'] ) && 'subscription' === $payment['type'] ) {
+			return true;
+		}
+
+		// Check if it's a subscription billing cycle payment (has subscription_id)
+		if ( ! empty( $payment['subscription_id'] ) ) {
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Create refund for subscription payment using the most appropriate method
+	 *
+	 * @param array  $payment Payment record.
+	 * @param string $transaction_id Transaction ID.
+	 * @param int    $refund_amount Refund amount in cents.
+	 * @return array|false Refund data or false on failure.
+	 * @since x.x.x
+	 */
+	private function create_subscription_refund( $payment, $transaction_id, $refund_amount ) {
+		// Method 1: Use charge ID directly (most common for subscription billing payments)
+		if ( strpos( $transaction_id, 'ch_' ) === 0 ) {
+			error_log( 'SureForms: Creating refund using charge ID: ' . $transaction_id );
+			return $this->create_refund_by_charge( $payment, $transaction_id, $refund_amount );
+		}
+
+		// Method 2: Use payment intent ID if provided
+		if ( strpos( $transaction_id, 'pi_' ) === 0 ) {
+			error_log( 'SureForms: Creating refund using payment intent ID: ' . $transaction_id );
+			return $this->create_refund_by_payment_intent( $payment, $transaction_id, $refund_amount );
+		}
+
+		// Method 3: Try to resolve from subscription or setup intent
+		error_log( 'SureForms: Attempting to resolve refund method for transaction: ' . $transaction_id );
+
+		// First try to find charge ID in payment data
+		$charge_id = $this->get_charge_id_from_payment( $payment );
+		if ( $charge_id ) {
+			error_log( 'SureForms: Found charge ID in payment data: ' . $charge_id );
+			return $this->create_refund_by_charge( $payment, $charge_id, $refund_amount );
+		}
+
+		// Fallback to the complex payment intent resolution method
+		$payment_intent_id = $this->get_subscription_payment_intent_id( $payment, $transaction_id );
+		if ( $payment_intent_id ) {
+			error_log( 'SureForms: Resolved payment intent ID: ' . $payment_intent_id );
+			return $this->create_refund_by_payment_intent( $payment, $payment_intent_id, $refund_amount );
+		}
+
+		throw new \Exception( __( 'Unable to determine the appropriate refund method for this subscription payment.', 'sureforms' ) );
+	}
+
+	/**
+	 * Create refund using charge ID
+	 *
+	 * @param array  $payment Payment record.
+	 * @param string $charge_id Stripe charge ID.
+	 * @param int    $refund_amount Refund amount in cents.
+	 * @return array|false Refund data or false on failure.
+	 * @since x.x.x
+	 */
+	private function create_refund_by_charge( $payment, $charge_id, $refund_amount ) {
+		return $this->stripe_api_request(
+			'refunds',
+			'POST',
+			[
+				'charge'   => $charge_id,
+				'amount'   => $refund_amount,
+				'reason'   => 'requested_by_customer',
+				'metadata' => [
+					'refunded_by'     => 'sureforms_dashboard',
+					'subscription_id' => $payment['subscription_id'] ?? '',
+					'source'          => 'SureForms',
+					'payment_id'      => $payment['id'] ?? '',
+					'refunded_at'     => time(),
+					'refund_type'     => 'subscription_billing',
+					'refund_method'   => 'charge_refund',
+				],
+			]
+		);
+	}
+
+	/**
+	 * Create refund using payment intent ID
+	 *
+	 * @param array  $payment Payment record.
+	 * @param string $payment_intent_id Stripe payment intent ID.
+	 * @param int    $refund_amount Refund amount in cents.
+	 * @return array|false Refund data or false on failure.
+	 * @since x.x.x
+	 */
+	private function create_refund_by_payment_intent( $payment, $payment_intent_id, $refund_amount ) {
+		return $this->stripe_api_request(
+			'refunds',
+			'POST',
+			[
+				'payment_intent' => $payment_intent_id,
+				'amount'         => $refund_amount,
+				'reason'         => 'requested_by_customer',
+				'metadata'       => [
+					'refunded_by'     => 'sureforms_dashboard',
+					'subscription_id' => $payment['subscription_id'] ?? '',
+					'source'          => 'SureForms',
+					'payment_id'      => $payment['id'] ?? '',
+					'refunded_at'     => time(),
+					'refund_type'     => 'subscription_billing',
+					'refund_method'   => 'payment_intent_refund',
+				],
+			]
+		);
+	}
+
+	/**
+	 * Get charge ID from payment data
+	 *
+	 * @param array $payment Payment record.
+	 * @return string|null Charge ID or null if not found.
+	 * @since x.x.x
+	 */
+	private function get_charge_id_from_payment( $payment ) {
+		// Check if transaction_id is already a charge ID
+		if ( ! empty( $payment['transaction_id'] ) && strpos( $payment['transaction_id'], 'ch_' ) === 0 ) {
+			return $payment['transaction_id'];
+		}
+
+		// Look in payment_data for charge_id
+		if ( empty( $payment['payment_data'] ) ) {
+			return null;
+		}
+
+		$payment_data = Helper::get_array_value( $payment['payment_data'] );
+		if ( empty( $payment_data ) ) {
+			return null;
+		}
+
+		// Look for charge ID in various places in payment_data
+		$charge_keys = [
+			'charge_id',
+			'charge',
+			'invoice_charge_id',
+		];
+
+		foreach ( $charge_keys as $key ) {
+			$charge_id = $this->get_nested_value( $payment_data, $key );
+			if ( ! empty( $charge_id ) && strpos( $charge_id, 'ch_' ) === 0 ) {
+				return $charge_id;
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * Validate subscription refund amount
+	 *
+	 * @param array $payment Payment record.
+	 * @param int   $refund_amount Refund amount in cents.
+	 * @return array Validation result with 'valid' boolean and 'message' string.
+	 * @since x.x.x
+	 */
+	private function validate_subscription_refund_amount( $payment, $refund_amount ) {
+		$original_amount      = floatval( $payment['total_amount'] ) * 100; // Convert to cents
+		$already_refunded     = floatval( $payment['refunded_amount'] ?? 0 ) * 100; // Convert to cents
+		$available_for_refund = $original_amount - $already_refunded;
+
+		if ( $refund_amount > $available_for_refund ) {
+			return [
+				'valid'   => false,
+				'message' => sprintf(
+					__( 'Refund amount exceeds available amount. Maximum refundable: %1$s %2$s', 'sureforms' ),
+					number_format( $available_for_refund / 100, 2 ),
+					strtoupper( $payment['currency'] ?? 'USD' )
+				),
+			];
+		}
+
+		if ( $refund_amount <= 0 ) {
+			return [
+				'valid'   => false,
+				'message' => __( 'Refund amount must be greater than zero.', 'sureforms' ),
+			];
+		}
+
+		// Stripe minimum refund amount (usually $0.50 for most currencies)
+		if ( $refund_amount < 50 ) {
+			return [
+				'valid'   => false,
+				'message' => __( 'Refund amount must be at least $0.50.', 'sureforms' ),
+			];
+		}
+
+		return [
+			'valid'   => true,
+			'message' => '',
+		];
+	}
+
+	/**
+	 * Convert technical error messages to user-friendly ones
+	 *
+	 * @param string $technical_error Technical error message.
+	 * @return string User-friendly error message.
+	 * @since x.x.x
+	 */
+	private function get_user_friendly_refund_error( $technical_error ) {
+		$error_patterns = [
+			'/charge.*already.*refunded/i'                 => __( 'This payment has already been fully refunded.', 'sureforms' ),
+			'/charge.*not.*found/i'                        => __( 'The payment could not be found in Stripe.', 'sureforms' ),
+			'/amount.*exceeds/i'                           => __( 'The refund amount exceeds the available refundable amount.', 'sureforms' ),
+			'/payment.*intent.*not.*found/i'               => __( 'The payment for this subscription could not be found.', 'sureforms' ),
+			'/subscription.*not.*found/i'                  => __( 'The subscription could not be found in Stripe.', 'sureforms' ),
+			'/no.*successful.*payments/i'                  => __( 'This subscription has no successful payments to refund.', 'sureforms' ),
+			'/invalid.*payment.*method/i'                  => __( 'The payment method for this subscription is invalid.', 'sureforms' ),
+			'/insufficient.*permissions/i'                 => __( 'Insufficient permissions to process refunds.', 'sureforms' ),
+			'/rate.*limit/i'                               => __( 'Too many requests. Please try again in a moment.', 'sureforms' ),
+			'/network.*error|connection.*failed|timeout/i' => __( 'Network error. Please check your connection and try again.', 'sureforms' ),
+		];
+
+		foreach ( $error_patterns as $pattern => $friendly_message ) {
+			if ( preg_match( $pattern, $technical_error ) ) {
+				return $friendly_message;
+			}
+		}
+
+		// Default fallback message
+		return sprintf( __( 'Subscription refund failed: %s', 'sureforms' ), $technical_error );
+	}
+
+	/**
+	 * Get payment intent ID for subscription refunds with enhanced validation and error handling
 	 *
 	 * @param array  $payment Payment record.
 	 * @param string $transaction_id Transaction ID from request.
@@ -1144,45 +1504,297 @@ class Stripe_Payment_Handler {
 	 * @since x.x.x
 	 */
 	private function get_subscription_payment_intent_id( $payment, $transaction_id ) {
-		// For subscriptions, the transaction_id might be the subscription_id or payment_intent_id
-		// We need to determine which one it is and get the correct payment_intent_id
+		error_log( 'SureForms: Starting payment intent resolution for subscription refund. Transaction ID: ' . $transaction_id );
 
-		if ( strpos( $transaction_id, 'pi_' ) === 0 ) {
-			// Already a payment intent ID
-			return $transaction_id;
+		// Validate payment record
+		if ( empty( $payment ) || ! is_array( $payment ) ) {
+			error_log( 'SureForms: Invalid payment record provided for payment intent resolution' );
+			return null;
 		}
 
-		if ( strpos( $transaction_id, 'sub_' ) === 0 ) {
-			// This is a subscription ID, we need to get the latest invoice's payment intent
-			try {
-				$subscription = $this->stripe_api_request( 'subscriptions', 'GET', [], $transaction_id );
-				if ( $subscription && ! empty( $subscription['latest_invoice'] ) ) {
-					$invoice = $this->stripe_api_request( 'invoices', 'GET', [], $subscription['latest_invoice'] );
-					if ( $invoice && ! empty( $invoice['payment_intent'] ) ) {
-						return $invoice['payment_intent'];
-					}
-				}
-			} catch ( \Exception $e ) {
-				error_log( 'SureForms: Error retrieving subscription payment intent: ' . $e->getMessage() );
+		// Validate subscription payment type
+		if ( empty( $payment['type'] ) || 'subscription' !== $payment['type'] ) {
+			error_log( 'SureForms: Payment is not a subscription type. Type: ' . ( $payment['type'] ?? 'unknown' ) );
+			return null;
+		}
+
+		// Validate subscription payment status - only allow refunds for succeeded or partially_refunded payments
+		$refundable_statuses = [ 'succeeded', 'partially_refunded' ];
+		if ( empty( $payment['status'] ) || ! in_array( $payment['status'], $refundable_statuses, true ) ) {
+			error_log( 'SureForms: Subscription payment not in refundable status. Current status: ' . ( $payment['status'] ?? 'unknown' ) );
+			return null;
+		}
+
+		// Method 1: Check if transaction_id is already a payment intent ID
+		if ( ! empty( $transaction_id ) && strpos( $transaction_id, 'pi_' ) === 0 ) {
+			error_log( 'SureForms: Transaction ID is already a payment intent: ' . $transaction_id );
+			// Validate the payment intent exists and is refundable
+			if ( $this->validate_payment_intent_for_refund( $transaction_id ) ) {
+				return $transaction_id;
 			}
 		}
 
-		// Fallback: try to use subscription_id from payment record
+		// Method 2: Check if transaction_id is a setup intent (common for subscriptions)
+		if ( ! empty( $transaction_id ) && strpos( $transaction_id, 'seti_' ) === 0 ) {
+			error_log( 'SureForms: Transaction ID is a setup intent, looking for associated payment intent' );
+			$payment_intent_id = $this->get_payment_intent_from_setup_intent( $transaction_id, $payment );
+			if ( $payment_intent_id ) {
+				return $payment_intent_id;
+			}
+		}
+
+		// Method 3: Use subscription ID to get latest paid invoice
+		$subscription_id = $this->get_subscription_id_from_payment( $payment, $transaction_id );
+		if ( $subscription_id ) {
+			error_log( 'SureForms: Attempting to resolve payment intent from subscription: ' . $subscription_id );
+			$payment_intent_id = $this->get_payment_intent_from_subscription( $subscription_id );
+			if ( $payment_intent_id ) {
+				return $payment_intent_id;
+			}
+		}
+
+		// Method 4: Look for payment intent in payment_data
+		$payment_intent_id = $this->get_payment_intent_from_payment_data( $payment );
+		if ( $payment_intent_id ) {
+			error_log( 'SureForms: Found payment intent in payment_data: ' . $payment_intent_id );
+			return $payment_intent_id;
+		}
+
+		error_log( 'SureForms: Failed to resolve payment intent ID for subscription refund. Payment ID: ' . ( $payment['id'] ?? 'unknown' ) );
+		return null;
+	}
+
+	/**
+	 * Validate that a payment intent is refundable
+	 *
+	 * @param string $payment_intent_id Payment intent ID to validate.
+	 * @return bool True if payment intent is refundable, false otherwise.
+	 * @since x.x.x
+	 */
+	private function validate_payment_intent_for_refund( $payment_intent_id ) {
+		try {
+			$payment_intent = $this->stripe_api_request( 'payment_intents', 'GET', [], $payment_intent_id );
+
+			if ( ! $payment_intent ) {
+				error_log( 'SureForms: Payment intent not found: ' . $payment_intent_id );
+				return false;
+			}
+
+			// Check if payment intent is in a refundable status
+			$refundable_statuses = [ 'succeeded' ];
+			if ( ! in_array( $payment_intent['status'], $refundable_statuses, true ) ) {
+				error_log( 'SureForms: Payment intent not in refundable status. Status: ' . $payment_intent['status'] );
+				return false;
+			}
+
+			error_log( 'SureForms: Payment intent validated for refund: ' . $payment_intent_id );
+			return true;
+
+		} catch ( \Exception $e ) {
+			error_log( 'SureForms: Error validating payment intent: ' . $e->getMessage() );
+			return false;
+		}
+	}
+
+	/**
+	 * Get payment intent from setup intent (for subscription first payments)
+	 *
+	 * @param string $setup_intent_id Setup intent ID.
+	 * @param array  $payment Payment record.
+	 * @return string|null Payment intent ID or null if not found.
+	 * @since x.x.x
+	 */
+	private function get_payment_intent_from_setup_intent( $setup_intent_id, $payment ) {
+		try {
+			// For subscriptions using setup intents, we need to find the actual payment intent
+			// This usually means looking at the subscription's invoices
+			if ( ! empty( $payment['subscription_id'] ) ) {
+				return $this->get_payment_intent_from_subscription( $payment['subscription_id'] );
+			}
+			return null;
+
+		} catch ( \Exception $e ) {
+			error_log( 'SureForms: Error getting payment intent from setup intent: ' . $e->getMessage() );
+			return null;
+		}
+	}
+
+	/**
+	 * Get subscription ID from payment record or transaction ID
+	 *
+	 * @param array  $payment Payment record.
+	 * @param string $transaction_id Transaction ID.
+	 * @return string|null Subscription ID or null if not found.
+	 * @since x.x.x
+	 */
+	private function get_subscription_id_from_payment( $payment, $transaction_id ) {
+		// Check payment record first
 		if ( ! empty( $payment['subscription_id'] ) ) {
-			try {
-				$subscription = $this->stripe_api_request( 'subscriptions', 'GET', [], $payment['subscription_id'] );
-				if ( $subscription && ! empty( $subscription['latest_invoice'] ) ) {
-					$invoice = $this->stripe_api_request( 'invoices', 'GET', [], $subscription['latest_invoice'] );
-					if ( $invoice && ! empty( $invoice['payment_intent'] ) ) {
-						return $invoice['payment_intent'];
-					}
+			return $payment['subscription_id'];
+		}
+
+		// Check if transaction_id is a subscription ID
+		if ( ! empty( $transaction_id ) && strpos( $transaction_id, 'sub_' ) === 0 ) {
+			return $transaction_id;
+		}
+
+		return null;
+	}
+
+	/**
+	 * Get payment intent from subscription's latest paid invoice
+	 *
+	 * @param string $subscription_id Subscription ID.
+	 * @return string|null Payment intent ID or null if not found.
+	 * @since x.x.x
+	 */
+	private function get_payment_intent_from_subscription( $subscription_id ) {
+		try {
+			// Get subscription details
+			$subscription = $this->stripe_api_request( 'subscriptions', 'GET', [], $subscription_id );
+			if ( ! $subscription ) {
+				error_log( 'SureForms: Subscription not found: ' . $subscription_id );
+				return null;
+			}
+
+			// Check subscription status
+			$active_statuses = [ 'active', 'trialing', 'past_due' ];
+			if ( ! in_array( $subscription['status'], $active_statuses, true ) ) {
+				error_log( 'SureForms: Subscription not in active status: ' . $subscription['status'] );
+			}
+
+			// Get latest invoice
+			if ( empty( $subscription['latest_invoice'] ) ) {
+				error_log( 'SureForms: No latest invoice found for subscription: ' . $subscription_id );
+				return null;
+			}
+
+			$invoice = $this->stripe_api_request( 'invoices', 'GET', [], $subscription['latest_invoice'] );
+			if ( ! $invoice ) {
+				error_log( 'SureForms: Invoice not found: ' . $subscription['latest_invoice'] );
+				return null;
+			}
+
+			// Check if invoice was paid
+			if ( 'paid' !== $invoice['status'] ) {
+				error_log( 'SureForms: Latest invoice not paid. Status: ' . $invoice['status'] );
+
+				// Try to find the last paid invoice
+				$paid_invoice = $this->find_last_paid_invoice( $subscription_id );
+				if ( $paid_invoice && ! empty( $paid_invoice['payment_intent'] ) ) {
+					error_log( 'SureForms: Found last paid invoice with payment intent: ' . $paid_invoice['payment_intent'] );
+					return $paid_invoice['payment_intent'];
 				}
-			} catch ( \Exception $e ) {
-				error_log( 'SureForms: Error retrieving subscription from payment record: ' . $e->getMessage() );
+
+				return null;
+			}
+
+			// Get payment intent from invoice
+			if ( empty( $invoice['payment_intent'] ) ) {
+				error_log( 'SureForms: No payment intent found in invoice: ' . $subscription['latest_invoice'] );
+				return null;
+			}
+
+			error_log( 'SureForms: Successfully resolved payment intent from subscription: ' . $invoice['payment_intent'] );
+			return $invoice['payment_intent'];
+
+		} catch ( \Exception $e ) {
+			error_log( 'SureForms: Error getting payment intent from subscription: ' . $e->getMessage() );
+			return null;
+		}
+	}
+
+	/**
+	 * Find the last paid invoice for a subscription
+	 *
+	 * @param string $subscription_id Subscription ID.
+	 * @return array|null Invoice data or null if not found.
+	 * @since x.x.x
+	 */
+	private function find_last_paid_invoice( $subscription_id ) {
+		try {
+			// Get invoices for the subscription
+			$invoices = $this->stripe_api_request(
+				'invoices',
+				'GET',
+				[
+					'subscription' => $subscription_id,
+					'status'       => 'paid',
+					'limit'        => 10,
+				]
+			);
+
+			if ( empty( $invoices['data'] ) ) {
+				error_log( 'SureForms: No paid invoices found for subscription: ' . $subscription_id );
+				return null;
+			}
+
+			// Return the most recent paid invoice
+			$last_paid_invoice = $invoices['data'][0];
+			error_log( 'SureForms: Found last paid invoice: ' . $last_paid_invoice['id'] );
+			return $last_paid_invoice;
+
+		} catch ( \Exception $e ) {
+			error_log( 'SureForms: Error finding last paid invoice: ' . $e->getMessage() );
+			return null;
+		}
+	}
+
+	/**
+	 * Get payment intent from payment_data stored in database
+	 *
+	 * @param array $payment Payment record.
+	 * @return string|null Payment intent ID or null if not found.
+	 * @since x.x.x
+	 */
+	private function get_payment_intent_from_payment_data( $payment ) {
+		if ( empty( $payment['payment_data'] ) ) {
+			return null;
+		}
+
+		$payment_data = Helper::get_array_value( $payment['payment_data'] );
+		if ( empty( $payment_data ) ) {
+			return null;
+		}
+
+		// Look for payment intent in various places in payment_data
+		$payment_intent_keys = [
+			'initial_invoice.payment_intent',
+			'subscription.latest_invoice.payment_intent',
+			'payment_intent_id',
+			'payment_intent',
+		];
+
+		foreach ( $payment_intent_keys as $key ) {
+			$payment_intent_id = $this->get_nested_value( $payment_data, $key );
+			if ( ! empty( $payment_intent_id ) && strpos( $payment_intent_id, 'pi_' ) === 0 ) {
+				return $payment_intent_id;
 			}
 		}
 
 		return null;
+	}
+
+	/**
+	 * Get nested value from array using dot notation
+	 *
+	 * @param array  $array Array to search.
+	 * @param string $key Dot-separated key path.
+	 * @return mixed Value or null if not found.
+	 * @since x.x.x
+	 */
+	private function get_nested_value( $array, $key ) {
+		$keys  = explode( '.', $key );
+		$value = $array;
+
+		foreach ( $keys as $k ) {
+			if ( ! is_array( $value ) || ! isset( $value[ $k ] ) ) {
+				return null;
+			}
+			$value = $value[ $k ];
+		}
+
+		return $value;
 	}
 
 	/**
@@ -1600,19 +2212,19 @@ class Stripe_Payment_Handler {
 		$subscription_data = apply_filters(
 			'srfm_create_subscription_data',
 			[
-				'secret_key'            => $secret_key,
-				'customer_id'           => $customer_id,
-				'amount'                => $amount,
-				'currency'              => strtolower( $currency ),
-				'description'           => $description,
-				'interval'              => $interval,
-				'interval_count'        => $interval_count,
-				'trial_days'            => $trial_days,
+				'secret_key'             => $secret_key,
+				'customer_id'            => $customer_id,
+				'amount'                 => $amount,
+				'currency'               => strtolower( $currency ),
+				'description'            => $description,
+				'interval'               => $interval,
+				'interval_count'         => $interval_count,
+				'trial_days'             => $trial_days,
 				'application_fee_amount' => $application_fee_amount,
-				'stripe_account_id'     => $stripe_account_id,
-				'license_key'           => $license_key,
-				'block_id'              => $block_id,
-				'metadata'              => [
+				'stripe_account_id'      => $stripe_account_id,
+				'license_key'            => $license_key,
+				'block_id'               => $block_id,
+				'metadata'               => [
 					'source'           => 'SureForms',
 					'block_id'         => $block_id,
 					'original_amount'  => $amount,
@@ -1650,10 +2262,10 @@ class Stripe_Payment_Handler {
 			throw new \Exception( __( 'Invalid JSON response from subscription creation.', 'sureforms' ) );
 		}
 
-		$payment_intent_id = $subscription["setup_intent"]["id"];
-		$subscription_id = $subscription["subscription_data"]["id"];
-		$client_secret = $subscription["client_secret"];
-		$response = [
+		$payment_intent_id = $subscription['setup_intent']['id'];
+		$subscription_id   = $subscription['subscription_data']['id'];
+		$client_secret     = $subscription['client_secret'];
+		return [
 			'type'              => 'subscription',
 			'client_secret'     => $client_secret,
 			'subscription_id'   => $subscription_id,
@@ -1662,8 +2274,6 @@ class Stripe_Payment_Handler {
 			'amount'            => $this->amount_convert_cents_to_usd( $amount ),
 			'interval'          => $interval,
 		];
-
-		return $response;
 	}
 
 	/**
@@ -1783,7 +2393,21 @@ class Stripe_Payment_Handler {
 	private function verify_stripe_customer( $customer_id ) {
 		try {
 			$customer = $this->stripe_api_request( 'customers', 'GET', [], $customer_id );
-			return ! empty( $customer['id'] ) && 'deleted' !== $customer['object'];
+			/**
+			 * Stripe API returns customer object with the following structure:
+			 * {
+			 *     "id": "cus_Syq4hfWO9S5XC2",
+			 *     "object": "customer",
+			 *     "deleted": true // Present and true only if customer is deleted
+			 * }
+			 *
+			 * When a customer is deleted, the 'deleted' property is set to true.
+			 * Active customers do not have this property or it's set to false.
+			 */
+
+			$is_deleted_customer = isset( $customer['deleted'] ) && true === $customer['deleted'];
+
+			return ! empty( $customer['id'] ) && false === $is_deleted_customer;
 		} catch ( \Exception $e ) {
 			error_log( 'SureForms Stripe Customer Verification Error: ' . $e->getMessage() );
 			return false;
