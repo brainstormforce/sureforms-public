@@ -60,6 +60,10 @@
 			"type": "boolean",
 			"default": true
 		},
+		"defaultCountry": {
+			"type": "string",
+			"default": ""
+		},
 		"isConditionalLogic":{
 			"type":"boolean",
 			"default":false
