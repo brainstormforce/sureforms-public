@@ -36,7 +36,14 @@ class Register {
 		 * 4. Init maybe_rename_columns, it only runs if got any columns to rename and DB is upgradable ( has new version ).
 		 * 5. Finally, stop the DB upgrade and update the current version in option table.
 		 */
-		foreach ( self::get_db_tables() as $instance ) {
+		foreach ( static::get_db_tables() as $instance ) {
+
+			// check if $instance is of type Base.
+			// This is to avoid any fatal errors in case of wrong instance.
+			if ( ! $instance instanceof Base ) {
+				continue;
+			}
+
 			$instance->start_db_upgrade();
 
 			if ( $instance->is_db_upgradable() ) {
