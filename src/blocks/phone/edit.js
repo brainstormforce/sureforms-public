@@ -2,7 +2,7 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { useState, useEffect } from '@wordpress/element';
+import { useEffect, useMemo } from '@wordpress/element';
 import { ToggleControl } from '@wordpress/components';
 import { InspectorControls } from '@wordpress/block-editor';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
@@ -11,6 +11,7 @@ import InspectorTab, {
 } from '@Components/inspector-tabs/InspectorTab.js';
 import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
 import SRFMTextControl from '@Components/text-control';
+import SRFMSelectControl from '@Components/select-control';
 import { PhoneComponent } from './components/default';
 import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
 import AddInitialAttr from '@Controls/addInitialAttr';
@@ -18,6 +19,7 @@ import { compose } from '@wordpress/compose';
 import { FieldsPreview } from '../FieldsPreview.jsx';
 import { useErrMessage } from '@Blocks/util';
 import ConditionalLogic from '@Components/conditional-logic';
+import countries from './countries.json';
 
 const Edit = ( { attributes, setAttributes, clientId } ) => {
 	const {
@@ -30,15 +32,18 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 		errorMsg,
 		formId,
 		autoCountry,
+		defaultCountry,
 		className,
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
-	// eslint-disable-next-line no-unused-vars
-	const [ code, setCode ] = useState( null );
-
-	function handleChange( e ) {
-		setCode( e.target.value );
-	}
+	// Create translatable country options using useMemo
+	const countryOptions = useMemo( () => [
+		{ label: __( 'Select Country', 'sureforms' ), value: '' },
+		...Object.entries( countries ).map( ( [ code, name ] ) => ( {
+			label: name,
+			value: code,
+		} ) ),
+	], [] );
 
 	useEffect( () => {
 		if ( formId !== currentFormId ) {
@@ -134,6 +139,20 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 									setAttributes( { autoCountry: value } )
 								}
 							/>
+							{ ! autoCountry && (
+								<SRFMSelectControl
+									label={ __(
+										'Default Country',
+										'sureforms'
+									) }
+									data={ {
+										value: defaultCountry,
+										label: 'defaultCountry',
+									} }
+									setAttributes={ setAttributes }
+									options={ countryOptions }
+								/>
+							) }
 							<SRFMTextControl
 								label={ __( 'Help Text', 'sureforms' ) }
 								value={ help }
@@ -158,7 +177,6 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 			<PhoneComponent
 				attributes={ attributes }
 				blockID={ block_id }
-				handleChange={ handleChange }
 				setAttributes={ setAttributes }
 			/>
 			<div className="srfm-error-wrap"></div>

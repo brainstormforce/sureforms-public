@@ -194,6 +194,16 @@ class Post_Types {
 				'supports'          => [ 'title', 'author', 'editor', 'custom-fields' ],
 				'show_in_menu'      => 'sureforms_menu',
 				'show_in_nav_menus' => true,
+				'capabilities'      => [
+					'edit_post'          => 'manage_options',
+					'read_post'          => 'manage_options',
+					'delete_post'        => 'manage_options',
+					'edit_posts'         => 'manage_options',
+					'edit_others_posts'  => 'manage_options',
+					'publish_posts'      => 'manage_options',
+					'read_private_posts' => 'manage_options',
+					'create_posts'       => 'manage_options',
+				],
 			]
 		);
 		// will be used later.
