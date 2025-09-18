@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Single payment page.
+ * Single one-time payment page.
  *
  * @since x.x.x
  */
@@ -33,9 +33,9 @@ class Single_Payment {
 	private $payment_id;
 
 	/**
-	 * Stores the payment data for the specified payment ID.
+	 * Stores the one-time payment data for the specified payment ID.
 	 *
-	 * @var array<mixed>|null $payment Payment data for the specified payment ID.
+	 * @var array<mixed>|null $payment One-time payment data for the specified payment ID.
 	 * @since x.x.x
 	 */
 	private $payment;
@@ -54,7 +54,7 @@ class Single_Payment {
 	}
 
 	/**
-	 * Render the single payment page if a payment is found.
+	 * Render the single one-time payment page if a payment is found.
 	 *
 	 * @since x.x.x
 	 * @return void
@@ -92,7 +92,8 @@ class Single_Payment {
 
 				<div id="poststuff">
 					<div id="post-body" class="metabox-holder columns-2">
-						<div id="postbox-container-1" class="postbox-container">
+						<div id="postbox-container-1" class="postbox-container"></div>
+						<div id="postbox-container-2" class="postbox-container">
 							<?php
 							/**
 							 * Action hook right before payment submission info.
@@ -192,7 +193,7 @@ class Single_Payment {
 	}
 
 	/**
-	 * Render the payment information for a specific payment.
+	 * Render the one-time payment information postbox.
 	 *
 	 * @param string $form_name The form title/name.
 	 * @param string $payment_status The payment status.
@@ -201,10 +202,11 @@ class Single_Payment {
 	 * @return void
 	 */
 	private function render_payment_info( $form_name, $payment_status, $created_at ) {
-		$amount       = ! empty( $this->payment['total_amount'] ) ? floatval( $this->payment['total_amount'] ) : 0;
-		$currency     = ! empty( $this->payment['currency'] ) ? strtoupper( $this->payment['currency'] ) : 'USD';
-		$gateway      = ! empty( $this->payment['gateway'] ) ? ucfirst( $this->payment['gateway'] ) : __( 'Unknown', 'sureforms' );
-		$payment_type = ! empty( $this->payment['type'] ) ? ucfirst( $this->payment['type'] ) : __( 'One-time', 'sureforms' );
+		$amount   = ! empty( $this->payment['total_amount'] ) ? floatval( $this->payment['total_amount'] ) : 0;
+		$currency = ! empty( $this->payment['currency'] ) ? strtoupper( $this->payment['currency'] ) : 'USD';
+		$gateway  = ! empty( $this->payment['gateway'] ) ? ucfirst( $this->payment['gateway'] ) : __( 'Unknown', 'sureforms' );
+		// Determine payment type - this page only handles regular payments
+		$payment_type = __( 'One-time', 'sureforms' );
 		$mode         = ! empty( $this->payment['mode'] ) ? ucfirst( $this->payment['mode'] ) : __( 'Unknown', 'sureforms' );
 
 		// Get related entry if exists
@@ -328,33 +330,19 @@ class Single_Payment {
 				</table>
 				<?php
 				// Add refund section for succeeded and partially refunded payments
-				$is_subscription = ! empty( $this->payment['type'] ) && 'subscription' === $this->payment['type'];
 				if ( ( 'succeeded' === $payment_status || 'partially_refunded' === $payment_status ) && ! empty( $this->payment['transaction_id'] ) && 'stripe' === $this->payment['gateway'] ) {
 					// Calculate refundable amount using the new column
 					$total_refunded    = floatval( $this->payment['refunded_amount'] ?? 0 );
 					$refundable_amount = $amount - $total_refunded;
 					$currency_symbol   = $currency === 'USD' ? '$' : strtoupper( $currency ) . ' ';
 
-					// Get refund history from payment_data for display
-					$payment_data   = Helper::get_array_value( $this->payment['payment_data'] );
-					$refund_history = [];
-					if ( ! empty( $payment_data['refunds'] ) && is_array( $payment_data['refunds'] ) ) {
-						$refund_history = $payment_data['refunds'];
-					}
 					?>
 					<div class="srfm-refund-section" style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #ddd;">
 						<div style="margin-bottom: 15px;">
-							<?php if ( $is_subscription ) { ?>
-								<strong><?php esc_html_e( 'Subscription Management', 'sureforms' ); ?></strong>
-								<p style="margin: 5px 0 10px 0; color: #666; font-size: 13px;">
-									<?php esc_html_e( 'Refund the current billing payment or cancel the entire subscription.', 'sureforms' ); ?>
-								</p>
-							<?php } else { ?>
-								<strong><?php esc_html_e( 'Refund Payment', 'sureforms' ); ?></strong>
-								<p style="margin: 5px 0 10px 0; color: #666; font-size: 13px;">
-									<?php esc_html_e( 'Issue a full or partial refund for this payment through Stripe.', 'sureforms' ); ?>
-								</p>
-							<?php } ?>
+							<strong><?php esc_html_e( 'Refund Payment', 'sureforms' ); ?></strong>
+							<p style="margin: 5px 0 10px 0; color: #666; font-size: 13px;">
+								<?php esc_html_e( 'Issue a full or partial refund for this payment through Stripe.', 'sureforms' ); ?>
+							</p>
 							
 							<?php if ( $total_refunded > 0 ) { ?>
 								<div style="margin: 10px 0; padding: 8px 12px; background: #f0f6fc; border: 1px solid #c3ddfd; border-radius: 4px; font-size: 13px;">
@@ -407,42 +395,16 @@ class Single_Payment {
 									</div>
 									
 									<div style="display: flex; gap: 10px; flex-wrap: wrap;">
-										<?php if ( $is_subscription ) { ?>
-											<!-- Subscription Payment Refund Button -->
-											<button type="button" id="srfm-subscription-refund-button" class="button button-secondary" 
-													data-payment-id="<?php echo esc_attr( $this->payment_id ); ?>"
-													data-transaction-id="<?php echo esc_attr( $this->payment['transaction_id'] ); ?>"
-													data-amount="<?php echo esc_attr( $amount ); ?>"
-													data-currency="<?php echo esc_attr( $currency ); ?>"
-													data-refundable-amount="<?php echo esc_attr( $refundable_amount ); ?>"
-													data-currency-symbol="<?php echo esc_attr( $currency_symbol ); ?>">
-												<?php esc_html_e( 'Refund Payment', 'sureforms' ); ?>
-											</button>
-											<!-- Cancel Subscription Button -->
-											<?php if ( ! empty( $this->payment['subscription_id'] ) && ! empty( $this->payment['subscription_status'] ) && 'cancelled' !== $this->payment['subscription_status'] ) { ?>
-												<button type="button" id="srfm-cancel-subscription-button" class="button button-primary" 
-														style="background-color: #dc3545; border-color: #dc3545;"
-														data-payment-id="<?php echo esc_attr( $this->payment_id ); ?>"
-														data-subscription-id="<?php echo esc_attr( $this->payment['subscription_id'] ); ?>">
-													<?php esc_html_e( 'Cancel Subscription', 'sureforms' ); ?>
-												</button>
-											<?php } elseif ( ! empty( $this->payment['subscription_status'] ) && 'cancelled' === $this->payment['subscription_status'] ) { ?>
-												<span style="padding: 6px 12px; background: #f8d7da; color: #721c24; border-radius: 4px; font-size: 13px; font-weight: 500;">
-													<?php esc_html_e( 'Subscription Cancelled', 'sureforms' ); ?>
-												</span>
-											<?php } ?>
-										<?php } else { ?>
-											<!-- Regular Payment Refund Button -->
-											<button type="button" id="srfm-refund-button" class="button button-secondary" 
-													data-payment-id="<?php echo esc_attr( $this->payment_id ); ?>"
-													data-transaction-id="<?php echo esc_attr( $this->payment['transaction_id'] ); ?>"
-													data-amount="<?php echo esc_attr( $amount ); ?>"
-													data-currency="<?php echo esc_attr( $currency ); ?>"
-													data-refundable-amount="<?php echo esc_attr( $refundable_amount ); ?>"
-													data-currency-symbol="<?php echo esc_attr( $currency_symbol ); ?>">
-												<?php esc_html_e( 'Issue Refund', 'sureforms' ); ?>
-											</button>
-										<?php } ?>
+										<!-- Regular Payment Refund Button -->
+										<button type="button" id="srfm-refund-button" class="button button-secondary" 
+												data-payment-id="<?php echo esc_attr( $this->payment_id ); ?>"
+												data-transaction-id="<?php echo esc_attr( $this->payment['transaction_id'] ); ?>"
+												data-amount="<?php echo esc_attr( $amount ); ?>"
+												data-currency="<?php echo esc_attr( $currency ); ?>"
+												data-refundable-amount="<?php echo esc_attr( $refundable_amount ); ?>"
+												data-currency-symbol="<?php echo esc_attr( $currency_symbol ); ?>">
+											<?php esc_html_e( 'Issue Refund', 'sureforms' ); ?>
+										</button>
 									</div>
 								</div>
 							<?php } else { ?>
@@ -482,40 +444,26 @@ class Single_Payment {
 					'ajaxurl' => admin_url( 'admin-ajax.php' ),
 					'nonce'   => wp_create_nonce( 'sureforms_admin_nonce' ),
 					'payment' => [
-						'original_amount'     => $amount,
-						'refundable_amount'   => $refundable_amount,
-						'currency'            => $currency,
-						'currency_symbol'     => $currency_symbol,
-						'is_subscription'     => $is_subscription,
-						'subscription_id'     => $this->payment['subscription_id'] ?? '',
-						'subscription_status' => $this->payment['subscription_status'] ?? '',
+						'original_amount'   => $amount,
+						'refundable_amount' => $refundable_amount,
+						'currency'          => $currency,
+						'currency_symbol'   => $currency_symbol,
 					],
 					'strings' => [
-						'confirm_message'             => __( 'Are you sure you want to refund this payment? This action cannot be undone.', 'sureforms' ),
-						'confirm_full_refund'         => sprintf( __( 'Are you sure you want to refund the full amount (%s)? This action cannot be undone.', 'sureforms' ), $currency_symbol . number_format( $refundable_amount, 2 ) ),
-						'confirm_partial_refund'      => __( 'Are you sure you want to refund %amount%? This action cannot be undone.', 'sureforms' ),
-						'processing'                  => __( 'Processing...', 'sureforms' ),
-						'success_message'             => __( 'Payment refunded successfully!', 'sureforms' ),
-						'error_prefix'                => __( 'Error: ', 'sureforms' ),
-						'error_fallback'              => __( 'Failed to process refund.', 'sureforms' ),
-						'network_error'               => __( 'Network error. Please try again.', 'sureforms' ),
-						'issue_refund'                => __( 'Issue Refund', 'sureforms' ),
-
-						// Subscription-specific strings (following WPForms pattern)
-						'confirm_subscription_refund' => __( 'Are you sure you want to refund this subscription payment? This will refund the current billing cycle only.', 'sureforms' ),
-						'confirm_partial_subscription_refund' => __( 'Are you sure you want to refund %amount% from this subscription payment?', 'sureforms' ),
-						'confirm_subscription_cancel' => __( 'Are you sure you want to cancel this subscription? This will stop all future billing and cannot be undone.', 'sureforms' ),
-						'subscription_refund_success' => __( 'Subscription payment refunded successfully!', 'sureforms' ),
-						'subscription_refund_failed'  => __( 'Subscription refund failed. Please try again.', 'sureforms' ),
-						'subscription_cancel_success' => __( 'Subscription cancelled successfully!', 'sureforms' ),
-						'subscription_cancel_failed'  => __( 'Subscription cancellation failed. Please try again.', 'sureforms' ),
-						'refund_subscription'         => __( 'Refund Payment', 'sureforms' ),
-						'cancel_subscription'         => __( 'Cancel Subscription', 'sureforms' ),
-						'amount_required'             => __( 'Please enter a refund amount.', 'sureforms' ),
-						'amount_invalid'              => __( 'Please enter a valid amount.', 'sureforms' ),
-						'amount_too_low'              => __( 'Refund amount must be at least $0.01.', 'sureforms' ),
-						'amount_too_high'             => sprintf( __( 'Refund amount cannot exceed %s.', 'sureforms' ), $currency_symbol . number_format( $refundable_amount, 2 ) ),
-						'select_refund_type'          => __( 'Please select a refund type.', 'sureforms' ),
+						'confirm_message'        => __( 'Are you sure you want to refund this payment? This action cannot be undone.', 'sureforms' ),
+						'confirm_full_refund'    => sprintf( __( 'Are you sure you want to refund the full amount (%s)? This action cannot be undone.', 'sureforms' ), $currency_symbol . number_format( $refundable_amount, 2 ) ),
+						'confirm_partial_refund' => __( 'Are you sure you want to refund %amount%? This action cannot be undone.', 'sureforms' ),
+						'processing'             => __( 'Processing...', 'sureforms' ),
+						'success_message'        => __( 'Payment refunded successfully!', 'sureforms' ),
+						'error_prefix'           => __( 'Error: ', 'sureforms' ),
+						'error_fallback'         => __( 'Failed to process refund.', 'sureforms' ),
+						'network_error'          => __( 'Network error. Please try again.', 'sureforms' ),
+						'issue_refund'           => __( 'Issue Refund', 'sureforms' ),
+						'amount_required'        => __( 'Please enter a refund amount.', 'sureforms' ),
+						'amount_invalid'         => __( 'Please enter a valid amount.', 'sureforms' ),
+						'amount_too_low'         => __( 'Refund amount must be at least $0.01.', 'sureforms' ),
+						'amount_too_high'        => sprintf( __( 'Refund amount cannot exceed %s.', 'sureforms' ), $currency_symbol . number_format( $refundable_amount, 2 ) ),
+						'select_refund_type'     => __( 'Please select a refund type.', 'sureforms' ),
 					],
 				]
 			);
@@ -526,7 +474,7 @@ class Single_Payment {
 	}
 
 	/**
-	 * Render the payment details for a specific payment.
+	 * Render the one-time payment details postbox.
 	 *
 	 * @param array<mixed> $payment_data The payment data.
 	 * @param array<mixed> $extra_data The extra data.
@@ -689,7 +637,7 @@ class Single_Payment {
 	}
 
 	/**
-	 * Render the payment logs for a specific payment.
+	 * Render the one-time payment logs postbox.
 	 *
 	 * @param array<mixed> $payment_logs Payment logs stored in the database.
 	 * @since x.x.x
@@ -778,9 +726,10 @@ class Single_Payment {
 	}
 
 	/**
-	 * Format payment value for display.
+	 * Format one-time payment value for display.
 	 *
-	 * @param mixed $value The value to format.
+	 * @param mixed       $value The value to format.
+	 * @param string|null $key Optional key for special formatting.
 	 * @since x.x.x
 	 * @return string Formatted value.
 	 */
@@ -815,4 +764,5 @@ class Single_Payment {
 
 		return esc_html( $value );
 	}
+
 }

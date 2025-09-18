@@ -857,4 +857,250 @@ class Payments extends Base {
 		$refunded_amount = self::get_refunded_amount( $payment_id );
 		return $refunded_amount > 0 && ! self::is_fully_refunded( $payment_id );
 	}
+
+	/**
+	 * Get all individual payment transactions related to a subscription.
+	 *
+	 * @param string $subscription_id Stripe subscription ID.
+	 * @since x.x.x
+	 * @return array Array of payment records linked to the subscription.
+	 */
+	public static function get_subscription_related_payments( $subscription_id ) {
+		if ( empty( $subscription_id ) ) {
+			return [];
+		}
+
+		return self::get_all(
+			[
+				'where'   => [
+					[
+						[
+							'key'     => 'subscription_id',
+							'compare' => '=',
+							'value'   => sanitize_text_field( $subscription_id ),
+						],
+						[
+							'key'     => 'type',
+							'compare' => '=',
+							'value'   => 'payment',
+						],
+					],
+				],
+				'orderby' => 'created_at',
+				'order'   => 'DESC',
+			],
+			false
+		);
+	}
+
+	/**
+	 * Get the main subscription record by subscription ID.
+	 *
+	 * @param string $subscription_id Stripe subscription ID.
+	 * @since x.x.x
+	 * @return array|null Subscription payment record or null if not found.
+	 */
+	public static function get_main_subscription_record( $subscription_id ) {
+		if ( empty( $subscription_id ) ) {
+			return null;
+		}
+
+		$results = self::get_all(
+			[
+				'where' => [
+					[
+						[
+							'key'     => 'subscription_id',
+							'compare' => '=',
+							'value'   => sanitize_text_field( $subscription_id ),
+						],
+						[
+							'key'     => 'type',
+							'compare' => '=',
+							'value'   => 'subscription',
+						],
+					],
+				],
+				'limit' => 1,
+			]
+		);
+
+		return $results[0] ?? null;
+	}
+
+	/**
+	 * Get all payments for main payments table (excluding subscription-related payments).
+	 * Shows: subscription records OR one-time payments (payment type with no subscription_id)
+	 * Hides: payment records that have subscription_id (individual subscription transactions)
+	 *
+	 * @param array $args Query arguments.
+	 * @param bool  $set_limit Whether to apply limit to query.
+	 * @since x.x.x
+	 * @return array Array of payments for main table display.
+	 */
+	public static function get_all_main_payments( $args = [], $set_limit = true ) {
+		global $wpdb;
+
+		$_args = wp_parse_args(
+			$args,
+			[
+				'where'   => [],
+				'columns' => '*',
+				'limit'   => 20,
+				'offset'  => 0,
+				'orderby' => 'created_at',
+				'order'   => 'DESC',
+			]
+		);
+
+		$instance   = self::get_instance();
+		$table_name = $instance->get_tablename();
+
+		// Build the main filter condition using raw SQL for OR logic
+		// Show: type = 'subscription' OR (type = 'payment' AND subscription_id = '')
+		$main_condition = "(type = 'subscription' OR (type = 'payment' AND subscription_id = ''))";
+
+		// Start building the query
+		$where_clause = "WHERE {$main_condition}";
+		$params       = [];
+
+		// Handle additional where conditions if provided
+		if ( ! empty( $_args['where'] ) ) {
+			foreach ( $_args['where'] as $where_group ) {
+				if ( is_array( $where_group ) ) {
+					foreach ( $where_group as $condition ) {
+						if ( isset( $condition['key'], $condition['compare'], $condition['value'] ) ) {
+							$where_clause .= " AND {$condition['key']} {$condition['compare']} %s";
+							$params[]      = $condition['value'];
+						}
+					}
+				}
+			}
+		}
+
+		// Order by
+		$order        = strtoupper( $_args['order'] ) === 'ASC' ? 'ASC' : 'DESC';
+		$orderby      = esc_sql( $_args['orderby'] );
+		$order_clause = "ORDER BY {$orderby} {$order}";
+
+		// Limit clause
+		$limit_clause = '';
+		if ( $set_limit ) {
+			$limit_clause = $wpdb->prepare( 'LIMIT %d, %d', absint( $_args['offset'] ), absint( $_args['limit'] ) );
+		}
+
+		// Build final query
+		$columns = $_args['columns'] === '*' ? '*' : esc_sql( $_args['columns'] );
+		$query   = "SELECT {$columns} FROM {$table_name} {$where_clause} {$order_clause} {$limit_clause}";
+
+		// Execute query with parameters
+		if ( ! empty( $params ) ) {
+			$query = $wpdb->prepare( $query, $params );
+		}
+
+		$results = $wpdb->get_results( $query, ARRAY_A );
+
+		return is_array( $results ) ? $results : [];
+	}
+
+	/**
+	 * Get total payments count by status for main payments table.
+	 * Counts: subscription records OR one-time payments (payment type with no subscription_id)
+	 * Excludes: payment records that have subscription_id (individual subscription transactions)
+	 *
+	 * @param string $status Status to filter by ('all', 'pending', 'succeeded', etc.).
+	 * @param int    $form_id Optional form ID to filter by.
+	 * @param array  $where_conditions Optional additional where conditions.
+	 * @since x.x.x
+	 * @return int Total count.
+	 */
+	public static function get_total_main_payments_by_status( $status = 'all', $form_id = 0, $where_conditions = [] ) {
+		global $wpdb;
+
+		$instance   = self::get_instance();
+		$table_name = $instance->get_tablename();
+
+		// Build the main filter condition using raw SQL for OR logic
+		// Count: type = 'subscription' OR (type = 'payment' AND subscription_id = '')
+		$where_clause = "(type = 'subscription' OR (type = 'payment' AND subscription_id = ''))";
+		$params       = [];
+
+		// Add status condition
+		if ( 'all' !== $status ) {
+			$where_clause .= ' AND status = %s';
+			$params[]      = sanitize_text_field( $status );
+		}
+
+		// Add form ID condition
+		if ( $form_id > 0 ) {
+			$where_clause .= ' AND form_id = %d';
+			$params[]      = absint( $form_id );
+		}
+
+		// Handle additional where conditions if provided
+		if ( ! empty( $where_conditions ) ) {
+			foreach ( $where_conditions as $where_group ) {
+				if ( is_array( $where_group ) ) {
+					foreach ( $where_group as $condition ) {
+						if ( isset( $condition['key'], $condition['compare'], $condition['value'] ) ) {
+							$where_clause .= " AND {$condition['key']} {$condition['compare']} %s";
+							$params[]      = $condition['value'];
+						}
+					}
+				}
+			}
+		}
+
+		// Build and execute query
+		$query = "SELECT COUNT(*) FROM {$table_name} WHERE {$where_clause}";
+
+		if ( ! empty( $params ) ) {
+			$query = $wpdb->prepare( $query, $params );
+		}
+
+		$result = $wpdb->get_var( $query );
+
+		return absint( $result );
+	}
+
+	/**
+	 * Check if payment is a subscription record.
+	 *
+	 * @param int $payment_id Payment ID.
+	 * @since x.x.x
+	 * @return bool True if it's a subscription record, false otherwise.
+	 */
+	public static function is_subscription_record( $payment_id ) {
+		if ( empty( $payment_id ) ) {
+			return false;
+		}
+
+		$payment = self::get( $payment_id );
+		if ( ! $payment ) {
+			return false;
+		}
+
+		return 'subscription' === ( $payment['type'] ?? '' );
+	}
+
+	/**
+	 * Check if payment is a subscription-related individual payment transaction.
+	 * These are payment records that have a subscription_id (part of a subscription billing cycle).
+	 *
+	 * @param int $payment_id Payment ID.
+	 * @since x.x.x
+	 * @return bool True if it's a subscription-related payment transaction, false otherwise.
+	 */
+	public static function is_subscription_payment_transaction( $payment_id ) {
+		if ( empty( $payment_id ) ) {
+			return false;
+		}
+
+		$payment = self::get( $payment_id );
+		if ( ! $payment ) {
+			return false;
+		}
+
+		return 'payment' === ( $payment['type'] ?? '' ) && ! empty( $payment['subscription_id'] );
+	}
 }
