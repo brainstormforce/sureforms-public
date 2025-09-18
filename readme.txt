@@ -365,7 +365,8 @@ easy.
 You can report the issue through our [Bug Bounty Program](https://brainstormforce.com/bug-bounty-program/). We collaborate with Patchstack to provide opportunities for researchers to report vulnerabilities. The Patchstack team will help validate, triage, and handle any reported security issues.
 
 == Changelog ==
-
+= x.x.x =
+* Improvement: Revamped add new form screen.
 = 1.12.1 - 18th September 2025 =
 * New: Added default country selection option for Phone field when auto country detection is disabled.
 * Improvement: Added filter 'srfm_value_after_label_placeholder' to customize required field sign.
