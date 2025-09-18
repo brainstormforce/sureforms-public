@@ -132,30 +132,75 @@ class Stripe_Webhook {
 	}
 
 	/**
+	 * Development version - skips signature validation for testing
+	 *
+	 * @return array<string, mixed>|bool
+	 */
+	public function dev_validate_stripe_signature(): array|bool {
+		// Get the raw payload
+		$payload = file_get_contents( 'php://input' );
+
+		// error_log( 'SureForms DEV: Payload: ' . print_r( $payload, true ) );
+
+		if ( empty( $payload ) ) {
+			error_log( 'SureForms DEV: Missing webhook payload' );
+			return false;
+		}
+
+		// Parse JSON payload directly (no signature verification)
+		$event = json_decode( $payload, true );
+
+		if ( ! $event || ! is_array( $event ) ) {
+			error_log( 'SureForms DEV: Invalid JSON payload' );
+			return false;
+		}
+
+		error_log( 'SureForms DEV: Event type: ' . ( $event['type'] ?? 'unknown' ) );
+
+		return $event;
+	}
+
+	/**
 	 * This function listens webhook events.
 	 *
 	 * @return void
 	 */
 	public function webhook_listener(): void {
-		$event = $this->validate_stripe_signature();
+		// For development - use dev validation (no signature check)
+		$event = $this->dev_validate_stripe_signature();
 
-		// error_log( 'SureForms webhook event type: ' . $event->type );
+		// For production - uncomment this line:
+		// $event = $this->validate_stripe_signature();
 
 		if ( ! $event || ! isset( $event['type'] ) ) {
 			error_log( 'SureForms: Invalid webhook event' );
 			return;
 		}
 
+		error_log( 'SureForms: Processing event type: ' . $event['type'] );
+
 		switch ( $event['type'] ) {
 			case 'charge.refund.updated':
-				// If not available event.data['object'] then return.
+				// Existing refund logic
 				if ( ! isset( $event['data']['object'] ) ) {
 					error_log( 'SureForms: Invalid webhook event' );
 					return;
 				}
-
 				$charge = $event['data']['object'];
 				$this->charge_refund( $charge );
+				break;
+
+			case 'invoice.payment_succeeded':
+				if ( ! isset( $event['data']['object'] ) ) {
+					error_log( 'SureForms: Invalid webhook event' );
+					return;
+				}
+				$invoice = $event['data']['object'];
+				$this->handle_invoice_payment_succeeded( $invoice );
+				break;
+
+			default:
+				error_log( 'SureForms: Unhandled event type: ' . $event['type'] );
 				break;
 		}
 
@@ -197,6 +242,76 @@ class Stripe_Webhook {
 				'SureForms: Payment refunded. Amount: %s for entry ID: %s',
 				$refund_amount,
 				$payment_entry_id
+			)
+		);
+	}
+
+	/**
+	 * Handles invoice.payment_succeeded webhook for subscription payments
+	 *
+	 * @param array<string, mixed> $invoice Invoice object from Stripe.
+	 * @return void
+	 */
+	public function handle_invoice_payment_succeeded( array $invoice ): void {
+		error_log( 'SureForms: Processing invoice.payment_succeeded webhook' );
+
+		// Validate billing reason is subscription cycle
+		$billing_reason = sanitize_text_field( $invoice['billing_reason'] ?? '' );
+		if ( 'subscription_cycle' !== $billing_reason ) {
+			error_log( 'SureForms: Invoice payment succeeded - not a subscription cycle payment. Billing reason: ' . $billing_reason );
+			return;
+		}
+
+		// Extract subscription ID
+		$subscription_id = sanitize_text_field( $invoice['subscription'] ?? '' );
+		if ( empty( $subscription_id ) ) {
+			error_log( 'SureForms: Invoice payment succeeded - missing subscription ID' );
+			return;
+		}
+
+		// Find subscription record in database
+		$subscription_record = Payments::get_main_subscription_record( $subscription_id );
+		if ( ! $subscription_record ) {
+			error_log( 'SureForms: Invoice payment succeeded - subscription not found: ' . $subscription_id );
+			return;
+		}
+
+		// Extract invoice data
+		$charge_id   = sanitize_text_field( $invoice['charge'] ?? '' );
+		$amount_paid = intval( $invoice['amount_paid'] ?? 0 );
+		$currency    = sanitize_text_field( strtoupper( $invoice['currency'] ?? 'USD' ) );
+
+		// Check if this payment was already processed
+		if ( ! empty( $charge_id ) ) {
+			$existing_payment = Payments::get_by_transaction_id( $charge_id );
+			if ( $existing_payment ) {
+				error_log( 'SureForms: Invoice payment already processed. Charge ID: ' . $charge_id );
+				return;
+			}
+		}
+
+		// Extract block_id from line items metadata
+		$block_id = '';
+		if ( isset( $invoice['lines']['data'][0]['metadata']['block_id'] ) ) {
+			$block_id = sanitize_text_field( $invoice['lines']['data'][0]['metadata']['block_id'] );
+		}
+
+		// Check if this is the initial payment or a renewal
+		$is_initial_payment = empty( $subscription_record['transaction_id'] ?? '' );
+
+		if ( $is_initial_payment ) {
+			$this->process_initial_subscription_payment( $subscription_record, $invoice, $charge_id );
+		} else {
+			$this->process_subscription_renewal_payment( $subscription_record, $invoice, $charge_id, $block_id );
+		}
+
+		error_log(
+			sprintf(
+				'SureForms: Subscription payment processed successfully. Type: %s, Subscription ID: %s, Amount: %s %s',
+				$is_initial_payment ? 'Initial' : 'Renewal',
+				$subscription_id,
+				number_format( $amount_paid / 100, 2 ),
+				$currency
 			)
 		);
 	}
@@ -343,6 +458,107 @@ class Stripe_Webhook {
 		);
 
 		return true;
+	}
+
+	/**
+	 * Process initial subscription payment
+	 *
+	 * @param array<string, mixed> $subscription_record Subscription record from database.
+	 * @param array<string, mixed> $invoice Invoice object from Stripe.
+	 * @param string               $charge_id Charge ID from Stripe.
+	 * @return void
+	 */
+	private function process_initial_subscription_payment( array $subscription_record, array $invoice, string $charge_id ): void {
+		$subscription_id = intval( $subscription_record['id'] ?? 0 );
+
+		if ( ! $subscription_id ) {
+			error_log( 'SureForms: Invalid subscription record for initial payment processing' );
+			return;
+		}
+
+		// Update subscription record with transaction ID and set status to active
+		$update_data = [
+			'transaction_id' => $charge_id,
+			'status'         => 'succeeded',
+		];
+
+		// Add log entry for initial payment success
+		$current_logs       = Helper::get_array_value( $subscription_record['log'] ?? [] );
+		$new_log            = [
+			'title'     => 'Initial Subscription Payment Succeeded',
+			'timestamp' => time(),
+			'messages'  => [
+				sprintf( 'Charge ID: %s', $charge_id ),
+				sprintf( 'Invoice ID: %s', sanitize_text_field( $invoice['id'] ?? '' ) ),
+				sprintf( 'Amount: %s %s', number_format( intval( $invoice['amount_paid'] ?? 0 ) / 100, 2 ), strtoupper( $invoice['currency'] ?? 'USD' ) ),
+				'Payment Status: Succeeded',
+				'Subscription Status: Active',
+			],
+		];
+		$current_logs[]     = $new_log;
+		$update_data['log'] = $current_logs;
+
+		$result = Payments::update( $subscription_id, $update_data );
+
+		if ( false === $result ) {
+			error_log( 'SureForms: Failed to update subscription record for initial payment. Subscription ID: ' . $subscription_id );
+		} else {
+			error_log( 'SureForms: Initial subscription payment processed successfully. Subscription ID: ' . $subscription_id );
+		}
+	}
+
+	/**
+	 * Process subscription renewal payment
+	 *
+	 * @param array<string, mixed> $subscription_record Subscription record from database.
+	 * @param array<string, mixed> $invoice Invoice object from Stripe.
+	 * @param string               $charge_id Charge ID from Stripe.
+	 * @param string               $block_id Block ID from metadata.
+	 * @return void
+	 */
+	private function process_subscription_renewal_payment( array $subscription_record, array $invoice, string $charge_id, string $block_id ): void {
+		// Prepare renewal payment data
+		$payment_data = [
+			'form_id'         => intval( $subscription_record['form_id'] ?? 0 ),
+			'block_id'        => $block_id ? $block_id : sanitize_text_field( $subscription_record['block_id'] ?? '' ),
+			'status'          => 'succeeded',
+			'total_amount'    => number_format( intval( $invoice['amount_paid'] ?? 0 ) / 100, 8 ),
+			'currency'        => sanitize_text_field( strtoupper( $invoice['currency'] ?? 'USD' ) ),
+			'entry_id'        => intval( $subscription_record['entry_id'] ?? 0 ),
+			'type'            => 'payment',
+			'transaction_id'  => $charge_id,
+			'gateway'         => 'stripe',
+			'mode'            => $this->mode,
+			'subscription_id' => sanitize_text_field( $subscription_record['subscription_id'] ?? '' ),
+			'customer_email'  => sanitize_text_field( $invoice['customer_email'] ?? '' ),
+			'customer_name'   => sanitize_text_field( $invoice['customer_name'] ?? '' ),
+			'payment_data'    => [
+				'invoice_id'     => sanitize_text_field( $invoice['id'] ?? '' ),
+				'payment_intent' => sanitize_text_field( $invoice['payment_intent'] ?? '' ),
+				'billing_reason' => sanitize_text_field( $invoice['billing_reason'] ?? '' ),
+				'period_start'   => intval( $invoice['period_start'] ?? 0 ),
+				'period_end'     => intval( $invoice['period_end'] ?? 0 ),
+				'amount_due'     => intval( $invoice['amount_due'] ?? 0 ),
+				'amount_paid'    => intval( $invoice['amount_paid'] ?? 0 ),
+				'created'        => intval( $invoice['created'] ?? 0 ),
+			],
+			'log'             => [
+				[
+					'title'     => 'Subscription Renewal Payment',
+					'timestamp' => time(),
+					'messages'  => [
+						sprintf( 'Charge ID: %s', $charge_id ),
+						sprintf( 'Invoice ID: %s', sanitize_text_field( $invoice['id'] ?? '' ) ),
+						sprintf( 'Amount: %s %s', number_format( intval( $invoice['amount_paid'] ?? 0 ) / 100, 2 ), strtoupper( $invoice['currency'] ?? 'USD' ) ),
+						'Payment Status: Succeeded',
+						'Type: Subscription Renewal',
+					],
+				],
+			],
+		];
+
+		// Create the renewal payment record
+		Payments::add( $payment_data );
 	}
 
 	/**
