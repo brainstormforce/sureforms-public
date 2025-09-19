@@ -1,4 +1,4 @@
-import { Button, Container, Title } from '@bsf/force-ui';
+import { Button, Container, Title, Label } from '@bsf/force-ui';
 import { cn } from '@Utils/Helpers';
 import { ArrowLeftIcon } from 'lucide-react';
 import { __ } from '@wordpress/i18n';
@@ -37,17 +37,26 @@ const TabContentWrapper = ( {
 	return (
 		<div className="space-y-7 pb-8">
 			<Container align="center" justify="between">
-				<Container align="center" className="gap-2">
-					{ onClickBack && (
-						<Button
-							className="p-0"
-							size="md"
-							variant="ghost"
-							onClick={ handleBack }
-							icon={ <ArrowLeftIcon /> }
-						/>
-					) }
-					<Title tag="h4" title={ title } size="md" description={ shouldShowAutoSaveText && autoSaveHelpText } />
+				<Container className="gap-0" direction="column">
+					<Container.Item className="flex items-center gap-2">
+						{ onClickBack && (
+							<Button
+								className="p-0"
+								size="md"
+								variant="ghost"
+								onClick={ handleBack }
+								icon={ <ArrowLeftIcon /> }
+							/>
+						) }
+						<Title tag="h4" title={ title } size="md" />
+					</Container.Item>
+					<Container.Item className="pl-7">
+						{ shouldShowAutoSaveText && (
+							<Label size="sm" variant="help" className="font-normal">
+								{ autoSaveHelpText }
+							</Label>
+						) }
+					</Container.Item>
 				</Container>
 				<Container align="center" className="gap-3">
 					{ actionLeftContent }
