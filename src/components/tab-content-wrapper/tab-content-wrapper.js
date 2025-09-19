@@ -52,7 +52,7 @@ const TabContentWrapper = ( {
 					</Container.Item>
 					<Container.Item className="pl-7">
 						{ shouldShowAutoSaveText && (
-							<Label size="sm" variant="help" className="font-normal">
+							<Label size="sm" variant="help" className="text-text-on-button-disabled font-normal">
 								{ autoSaveHelpText }
 							</Label>
 						) }
