@@ -535,16 +535,18 @@ class Generate_Form_Markup {
 							</div>
 						</div>
 						',
-						$id,
-						$is_page_break,
-						$should_show_submit_button,
-						$full,
-						$submit_button_alignment,
-						$srfm_button_classes,
-						$recaptcha_version,
-						$google_captcha_site_key,
-						$button_text,
-						$is_inline_button
+						[
+							'id'                     => $id,
+							'should_show_submit_btn' => $should_show_submit_button,
+							'button_text'            => $button_text,
+							'submit_button_alignment'=> $submit_button_alignment,
+							'full'                   => $full,
+							'btn_from_theme'         => $btn_from_theme,
+							'is_page_break'          => $is_page_break,
+							'recaptcha_version'      => $recaptcha_version,
+							'google_captcha_site_key'=> $google_captcha_site_key,
+							'srfm_button_classes'    => $srfm_button_classes,
+						]
 					);
 		}
 				self::common_error_message( 'footer' );
