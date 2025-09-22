@@ -33,6 +33,8 @@ export default ( props ) => {
 	const [ placeholderIndex, setPlaceholderIndex ] = useState( 0 );
 	const [ aiPlaceholderIndex, setAiPlaceholderIndex ] = useState( 0 );
 
+	const [ displayedPlaceholder, setDisplayedPlaceholder ] = useState( '' );
+
 	const handlePromptClick = ( prompt ) => {
 		setText( prompt );
 		setCharacterCount( prompt.length );
@@ -161,7 +163,7 @@ export default ( props ) => {
 					( prevIndex ) =>
 						( prevIndex + 1 ) % rotatingPlaceholders.length
 				);
-			}, 4000 ); // rotate every 4 seconds
+			}, 2000 ); // rotate every 4 seconds
 
 			return () => clearInterval( interval );
 		}
@@ -193,6 +195,38 @@ export default ( props ) => {
 		formType === 'simple' || formType === 'conversational'
 			? rotatingPlaceholders[ placeholderIndex ]
 			: aiPromptPlaceholders[ aiPlaceholderIndex ];
+
+	useEffect( () => {
+		if ( ! textAreaPlaceholder ) {
+			return;
+		}
+
+		let i = displayedPlaceholder.length;
+		let typingPhase = false;
+
+		const interval = setInterval( () => {
+			if ( ! typingPhase ) {
+				// Backspacing faster
+				if ( i > 0 ) {
+					setDisplayedPlaceholder( ( prev ) => prev.slice( 0, -1 ) );
+					i--;
+				} else {
+					typingPhase = true;
+					i = 0;
+				}
+			} else if ( i < textAreaPlaceholder.length ) {
+				// Typing new text
+				setDisplayedPlaceholder(
+					( prev ) => prev + textAreaPlaceholder.charAt( i )
+				);
+				i++;
+			} else {
+				clearInterval( interval );
+			}
+		}, 50 );
+
+		return () => clearInterval( interval );
+	}, [ textAreaPlaceholder ] );
 
 	const handlePlaceholderFocus = () => {
 		if ( ! text.trim() ) {
@@ -288,7 +322,7 @@ export default ( props ) => {
 												'Describe the form you want to create',
 												'sureforms'
 											) }
-											placeholder={ textAreaPlaceholder }
+											placeholder={ displayedPlaceholder }
 											id="textarea"
 											value={ text }
 											size="lg"
