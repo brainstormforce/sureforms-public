@@ -275,7 +275,7 @@ class Rest_Api {
 				'generate-form'         => [
 					'methods'             => 'POST',
 					'callback'            => [ AI_Form_Builder::get_instance(), 'generate_ai_form' ],
-					'permission_callback' => [ $this, 'can_edit_posts' ],
+					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
 					'args'                => [
 						'use_system_message' => [
 							'sanitize_callback' => [ $this, 'sanitize_boolean_field' ],
@@ -286,48 +286,48 @@ class Rest_Api {
 				'map-fields'            => [
 					'methods'             => 'POST',
 					'callback'            => [ Field_Mapping::get_instance(), 'generate_gutenberg_fields_from_questions' ],
-					'permission_callback' => [ $this, 'can_edit_posts' ],
+					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
 				],
 				// This route is used to initiate auth process when user tries to authenticate on billing portal.
 				'initiate-auth'         => [
 					'methods'             => 'GET',
 					'callback'            => [ AI_Auth::get_instance(), 'get_auth_url' ],
-					'permission_callback' => [ $this, 'can_edit_posts' ],
+					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
 				],
 				// This route is to used to decrypt the access key and save it in the database.
 				'handle-access-key'     => [
 					'methods'             => 'POST',
 					'callback'            => [ AI_Auth::get_instance(), 'handle_access_key' ],
-					'permission_callback' => [ $this, 'can_edit_posts' ],
+					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
 				],
 				// This route is to get the form submissions for the last 30 days.
 				'entries-chart-data'    => [
 					'methods'             => 'GET',
 					'callback'            => [ $this, 'get_entries_chart_data' ],
-					'permission_callback' => [ $this, 'can_edit_posts' ],
+					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
 				],
 				// This route is to get all forms data.
 				'form-data'             => [
 					'methods'             => 'GET',
 					'callback'            => [ $this, 'get_form_data' ],
-					'permission_callback' => [ $this, 'can_edit_posts' ],
+					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
 				],
 				// Onboarding endpoints.
 				'onboarding/set-status' => [
 					'methods'             => 'POST',
 					'callback'            => [ $this, 'set_onboarding_status' ],
-					'permission_callback' => [ $this, 'can_edit_posts' ],
+					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
 				],
 				'onboarding/get-status' => [
 					'methods'             => 'GET',
 					'callback'            => [ $this, 'get_onboarding_status' ],
-					'permission_callback' => [ $this, 'can_edit_posts' ],
+					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
 				],
 				// Plugin status endpoint.
 				'plugin-status'         => [
 					'methods'             => 'GET',
 					'callback'            => [ $this, 'get_plugin_status' ],
-					'permission_callback' => [ $this, 'can_edit_posts' ],
+					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
 					'args'                => [
 						'plugin' => [
 							'required'          => true,
