@@ -58,16 +58,6 @@ class Rest_Api {
 	}
 
 	/**
-	 * Check if user can edit posts
-	 *
-	 * @since 0.0.7
-	 * @return bool
-	 */
-	public function can_edit_posts() {
-		return current_user_can( 'edit_posts' );
-	}
-
-	/**
 	 * Checks whether the value is boolean or not.
 	 *
 	 * @param mixed $value value to be checked.
