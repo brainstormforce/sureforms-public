@@ -403,7 +403,7 @@ class Post_Types {
 				'type'              => 'string',
 				'single'            => true,
 				'auth_callback'     => static function() {
-					return current_user_can( 'edit_posts' );
+					return current_user_can( 'manage_options' );
 				},
 				'sanitize_callback' => static function( $meta_value ) {
 					return wp_kses_post( $meta_value );
@@ -422,7 +422,7 @@ class Post_Types {
 					'type'              => $type,
 					'sanitize_callback' => 'sanitize_text_field',
 					'auth_callback'     => static function() {
-						return current_user_can( 'edit_posts' );
+						return current_user_can( 'manage_options' );
 					},
 				]
 			);

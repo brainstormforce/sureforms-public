@@ -59,9 +59,6 @@ class Create_New_Form {
 	 * @since 0.0.1
 	 */
 	public function get_items_permissions_check() {
-		if ( current_user_can( 'edit_posts' ) ) {
-			return true;
-		}
 		foreach ( get_post_types( [ 'show_in_rest' => true ], 'objects' ) as $post_type ) {
 			/**
 			 * The post type.

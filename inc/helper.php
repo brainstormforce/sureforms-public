@@ -475,7 +475,7 @@ class Helper {
 	 * @return array<mixed> Live preview data.
 	 */
 	public static function get_instant_form_live_data() {
-		$srfm_live_mode_data = isset( $_GET['live_mode'] ) && current_user_can( 'edit_posts' ) ? self::sanitize_recursively( 'sanitize_text_field', wp_unslash( $_GET ) ) : []; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verification is not needed here.
+		$srfm_live_mode_data = isset( $_GET['live_mode'] ) && current_user_can( 'manage_options' ) ? self::sanitize_recursively( 'sanitize_text_field', wp_unslash( $_GET ) ) : []; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verification is not needed here.
 
 		return $srfm_live_mode_data ? array_map(
 			// Normalize falsy values.
