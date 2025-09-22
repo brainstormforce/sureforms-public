@@ -725,13 +725,13 @@ class Form_Submit {
 		$headers .= self::add_from_data_in_header( $submission_data, $item, $smart_tags );
 
 		if ( isset( $item['email_reply_to'] ) && ! empty( $item['email_reply_to'] ) ) {
-			$headers .= 'Reply-To:' . Helper::get_string_value( $smart_tags->process_smart_tags( $item['email_reply_to'], $submission_data ) ) . "\r\n";
+			$headers .= 'Reply-To:' . esc_html( Helper::get_string_value( $smart_tags->process_smart_tags( $item['email_reply_to'], $submission_data ) ) ) . "\r\n";
 		}
 		if ( isset( $item['email_cc'] ) && ! empty( $item['email_cc'] ) ) {
-			$headers .= 'Cc:' . Helper::get_string_value( $smart_tags->process_smart_tags( $item['email_cc'], $submission_data ) ) . "\r\n";
+			$headers .= 'Cc:' . esc_html( Helper::get_string_value( $smart_tags->process_smart_tags( $item['email_cc'], $submission_data ) ) ) . "\r\n";
 		}
 		if ( isset( $item['email_bcc'] ) && ! empty( $item['email_bcc'] ) ) {
-			$headers .= 'Bcc:' . Helper::get_string_value( $smart_tags->process_smart_tags( $item['email_bcc'], $submission_data ) ) . "\r\n";
+			$headers .= 'Bcc:' . esc_html( Helper::get_string_value( $smart_tags->process_smart_tags( $item['email_bcc'], $submission_data ) ) ) . "\r\n";
 		}
 
 		return compact( 'to', 'subject', 'message', 'headers' );
