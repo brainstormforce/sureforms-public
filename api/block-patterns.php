@@ -56,37 +56,10 @@ class Block_Patterns extends WP_REST_Controller {
 				[
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => [ $this, 'get_items' ],
-					'permission_callback' => [ $this, 'get_items_permissions_check' ],
+					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
 				],
 				'schema' => [ $this, 'get_public_item_schema' ],
 			]
-		);
-	}
-
-	/**
-	 * Checks whether a given request has permission to read block patterns.
-	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return true|WP_Error True if the request has read access, WP_Error object otherwise.
-	 * @since 0.0.1
-	 */
-	public function get_items_permissions_check( $request ) {
-		unset( $request );
-		foreach ( get_post_types( [ 'show_in_rest' => true ], 'objects' ) as $post_type ) {
-			/**
-			 * The post type.
-			 *
-			 * @var WP_Post_Type $post_type
-			 */
-			if ( current_user_can( $post_type->cap->edit_posts ) ) {
-				return true;
-			}
-		}
-
-		return new \WP_Error(
-			'rest_cannot_view',
-			__( 'Sorry, you are not allowed to view the registered form patterns.', 'sureforms' ),
-			[ 'status' => \rest_authorization_required_code() ]
 		);
 	}
 

@@ -543,15 +543,8 @@ class Helper {
 	 * @since 0.0.1
 	 */
 	public static function get_items_permissions_check() {
-		foreach ( get_post_types( [ 'show_in_rest' => true ], 'objects' ) as $post_type ) {
-			/**
-			 * The post type.
-			 *
-			 * @var WP_Post_Type $post_type
-			 */
-			if ( current_user_can( $post_type->cap->edit_posts ) ) {
-				return true;
-			}
+		if( current_user_can( 'manage_options' ) ) {
+			return true;
 		}
 
 		return new WP_Error(
