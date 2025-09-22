@@ -431,12 +431,24 @@ class Smart_Tags {
 					if ( ! empty( $form_data['upload_format_type'] ) && 'raw' === $form_data['upload_format_type'] ) {
 						$replacement_data = urldecode( implode( ', ', $submission_item_value ) );
 					} else {
-						foreach ( $submission_item_value as $value ) {
+						if ( count( $submission_item_value ) === 1 ) {
+							$decoded_value = urldecode( reset( $submission_item_value ) );
 							ob_start();
 							?>
-							<a href="<?php echo esc_url( urldecode( $value ) ); ?>" target="_blank" rel="noopener noreferrer><?php echo esc_html( esc_url( $value ) ); ?></a><br>
+							<a rel="noopener noreferrer" href="<?php echo esc_url( $decoded_value ); ?>" target="_blank"><?php echo esc_html( $decoded_value ); ?></a>
 							<?php
-							$replacement_data .= ob_get_clean();
+							$replacement_data = ob_get_clean();
+						} else {
+							ob_start();
+							?>
+							<ul style="margin: 0;">
+								<?php foreach ( $submission_item_value as $file_url ) : ?>
+									<?php $decoded_value = urldecode( $file_url ); ?>
+									<li><a rel="noopener noreferrer" href="<?php echo esc_url( $decoded_value ); ?>" target="_blank"><?php echo esc_html( $decoded_value ); ?></a></li>
+								<?php endforeach; ?>
+							</ul>
+							<?php
+							$replacement_data = ob_get_clean();
 						}
 					}
 				} elseif ( 0 === strpos( $block_type, 'srfm-textarea' ) ) {
