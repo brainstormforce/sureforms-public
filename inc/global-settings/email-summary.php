@@ -216,14 +216,18 @@ class Email_Summary {
 						</p>
 
 						<?php
-						$table_html = '<table style="border:1px solid #E5E7EB;border-radius:8px;box-shadow:0 1px 1px rgba(0,0,0,0.05);margin-top:16px;width:100%;border-collapse:separate;border-spacing:0;table-layout:fixed;">
+						ob_start();
+						?>
+						<table style="border:1px solid #E5E7EB;border-radius:8px;box-shadow:0 1px 1px rgba(0,0,0,0.05);margin-top:16px;width:100%;border-collapse:separate;border-spacing:0;table-layout:fixed;">
 							<thead>
 								<tr style="background-color:#F9FAFB;">
-									<th style="padding:8px 12px;font-size:14px;font-weight:500;color:#111827;text-align:left;border-top-left-radius:8px;border-bottom:0.5px solid #E5E7EB;white-space:nowrap;width:auto;">' . esc_html__( 'Form Name', 'sureforms' ) . '</th>
-									<th style="padding:8px 12px;font-size:14px;font-weight:500;color:#111827;text-align:right;width:80px;border-top-right-radius:8px;border-bottom:0.5px solid #E5E7EB;white-space:nowrap;">' . esc_html__( 'Entries', 'sureforms' ) . '</th>
+									<th style="padding:8px 12px;font-size:14px;font-weight:500;color:#111827;text-align:left;border-top-left-radius:8px;border-bottom:0.5px solid #E5E7EB;white-space:nowrap;width:auto;"><?php esc_html_e( 'Form Name', 'sureforms' ); ?></th>
+									<th style="padding:8px 12px;font-size:14px;font-weight:500;color:#111827;text-align:right;width:80px;border-top-right-radius:8px;border-bottom:0.5px solid #E5E7EB;white-space:nowrap;"><?php esc_html_e( 'Entries', 'sureforms' ); ?></th>
 								</tr>
 							</thead>
-							<tbody>';
+							<tbody>
+						<?php
+						$table_html = ob_get_clean();
 
 						$total_entries = 0;
 
@@ -235,22 +239,34 @@ class Email_Summary {
 
 								$total_entries += $form['count'];
 
-								$table_html .= '<tr style="background-color:#FFFFFF;">
-									<td style="padding:12px;font-size:14px;color:#4B5563;border-bottom:0.5px solid #E5E7EB;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' . esc_html( $form['title'] ) . '</td>
-									<td style="padding:12px;font-size:14px;color:#4B5563;text-align:right;border-bottom:0.5px solid #E5E7EB;white-space:nowrap;width:80px;">' . esc_html( Helper::get_string_value( $form['count'] ) ) . '</td>
-								</tr>';
+								ob_start();
+								?>
+								<tr style="background-color:#FFFFFF;">
+									<td style="padding:12px;font-size:14px;color:#4B5563;border-bottom:0.5px solid #E5E7EB;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"><?php echo esc_html( $form['title'] ); ?></td>
+									<td style="padding:12px;font-size:14px;color:#4B5563;text-align:right;border-bottom:0.5px solid #E5E7EB;white-space:nowrap;width:80px;"><?php echo esc_html( Helper::get_string_value( $form['count'] ) ); ?></td>
+								</tr>
+								<?php
+								$table_html .= ob_get_clean();
 							}
 
-							$table_html .= '</tbody>
+							ob_start();
+							?>
+							</tbody>
 							<tfoot>
 								<tr style="background-color:#F9FAFB;font-weight:bold;">
-									<td style="padding:8px 12px;font-size:14px;color:#111827;border-bottom-left-radius:8px;white-space:nowrap;">' . esc_html__( 'Total Entries', 'sureforms' ) . '</td>
-									<td style="padding:8px 12px;font-size:14px;color:#111827;text-align:right;border-bottom-right-radius:8px;white-space:nowrap;width:80px;">' . esc_html( Helper::get_string_value( $total_entries ) ) . '</td>
+									<td style="padding:8px 12px;font-size:14px;color:#111827;border-bottom-left-radius:8px;white-space:nowrap;"><?php echo esc_html__( 'Total Entries', 'sureforms' ); ?></td>
+									<td style="padding:8px 12px;font-size:14px;color:#111827;text-align:right;border-bottom-right-radius:8px;white-space:nowrap;width:80px;"><?php echo esc_html( Helper::get_string_value( $total_entries ) ); ?></td>
 								</tr>
-							</tfoot>';
+							</tfoot>
+							<?php
+							$table_html .= ob_get_clean();
 						}
 
-						$table_html .= '</table>';
+						ob_start();
+						?>
+						</table>
+						<?php
+						$table_html .= ob_get_clean();
 
 						echo wp_kses_post( $table_html );
 						?>
@@ -301,7 +317,7 @@ class Email_Summary {
 	 * Returns an associative array of promo plugin data,
 	 * including logo, title, description, and link info.
 	 *
-	 * @since x.x.x
+	 * @since 1.12.1
 	 *
 	 * @return array List of promo banners with details.
 	 */
@@ -351,7 +367,7 @@ class Email_Summary {
 	 * Outputs the banner HTML for the specified plugin key.
 	 * If the key is invalid, nothing is rendered.
 	 *
-	 * @since x.x.x
+	 * @since 1.12.1
 	 *
 	 * @param string $plugin_key The key of the promo plugin to render.
 	 *
@@ -393,7 +409,7 @@ class Email_Summary {
 	 * Get the next promo plugin.
 	 *
 	 * @return string The plugin key for the next promo banner.
-	 * @since x.x.x
+	 * @since 1.12.1
 	 */
 	public static function get_next_promo_plugin() {
 		$all_plugins = array_keys( self::get_promo_banners() );
@@ -412,7 +428,7 @@ class Email_Summary {
 	 *
 	 * @param string $plugin_key The plugin key to mark as sent.
 	 * @return void
-	 * @since x.x.x
+	 * @since 1.12.1
 	 */
 	public static function mark_promo_sent( $plugin_key ) {
 		$remaining = Helper::get_array_value( Helper::get_srfm_option( 'remaining_promos', [] ) );
