@@ -442,10 +442,10 @@ class Smart_Tags {
 							ob_start();
 							?>
 							<ul style="margin: 0;">
-								<?php foreach ( $submission_item_value as $file_url ) : ?>
+								<?php foreach ( $submission_item_value as $file_url ) { ?>
 									<?php $decoded_value = urldecode( $file_url ); ?>
 									<li><a rel="noopener noreferrer" href="<?php echo esc_url( $decoded_value ); ?>" target="_blank"><?php echo esc_html( $decoded_value ); ?></a></li>
-								<?php endforeach; ?>
+								<?php } ?>
 							</ul>
 							<?php
 							$replacement_data = ob_get_clean();
