@@ -12,7 +12,6 @@ use SRFM\Inc\Helper;
 use SRFM\Inc\Traits\Get_Instance;
 use WP_Block_Patterns_Registry;
 use WP_Error;
-use WP_Post_Type;
 use WP_REST_Controller;
 use WP_REST_Request;
 use WP_REST_Response;

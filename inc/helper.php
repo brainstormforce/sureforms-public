@@ -12,7 +12,6 @@ use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Traits\Get_Instance;
 use WP_Error;
 use WP_Post;
-use WP_Post_Type;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -543,7 +542,7 @@ class Helper {
 	 * @since 0.0.1
 	 */
 	public static function get_items_permissions_check() {
-		if( current_user_can( 'manage_options' ) ) {
+		if ( current_user_can( 'manage_options' ) ) {
 			return true;
 		}
 

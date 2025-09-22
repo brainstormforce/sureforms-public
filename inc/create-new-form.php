@@ -8,10 +8,8 @@
 
 namespace SRFM\Inc;
 
-use PHPUnit\TextUI\Help;
 use SRFM\Inc\Traits\Get_Instance;
 use WP_Error;
-use WP_Post_Type;
 use WP_REST_Response;
 
 if ( ! defined( 'ABSPATH' ) ) {
