@@ -16,6 +16,7 @@ function initializePhoneField() {
 
 		const errorMessage = element.querySelector( '.srfm-error-message' );
 		const isAutoCountry = phoneNumber.getAttribute( 'auto-country' );
+		const defaultCountry = phoneNumber.getAttribute( 'default-country' );
 		const phoneFieldName = phoneNumber.getAttribute( 'name' );
 		const itlOptions = {
 			autoPlaceholder: 'off',
@@ -24,7 +25,7 @@ function initializePhoneField() {
 				phone: phoneFieldName,
 			} ),
 			countrySearch: true,
-			initialCountry: 'us',
+			initialCountry: defaultCountry || 'us',
 		};
 
 		if ( isAutoCountry === 'true' ) {
