@@ -172,13 +172,13 @@ class Inlinebutton_Markup extends Base {
 				<?php if ( $this->captcha_security_type && 'none' !== $this->captcha_security_type ) { ?>
 			<div class="srfm-captcha-container <?php echo esc_attr( $container_hidden_class ); ?>">
 					<?php if ( 'g-recaptcha' === $this->captcha_security_type && 'v2-checkbox' === $this->recaptcha_version ) { ?>
-						<?php echo "<div class='g-recaptcha' data-callback='onSuccess' data-error-callback='onGCaptchaV2CheckBoxError' recaptcha-type='" . esc_attr( $this->recaptcha_version ) . "' data-sitekey='" . esc_attr( strval( $this->google_captcha_site_key ) ) . "'></div>"; ?>
+						<div class='g-recaptcha' data-callback='onSuccess' data-error-callback='onGCaptchaV2CheckBoxError' recaptcha-type='<?php echo esc_attr( $this->recaptcha_version ); ?>' data-sitekey='<?php echo esc_attr( strval( $this->google_captcha_site_key ) ); ?>'></div>
 					<?php } ?>
 					<?php if ( 'cf-turnstile' === $this->captcha_security_type && $this->cf_turnstile_site_key ) { ?>
-						<?php echo "<div id='srfm-cf-sitekey' class='cf-turnstile' data-callback='onSuccess' data-error-callback='onTurnstileError' data-theme='" . esc_attr( strval( $this->cf_appearance_mode ) ) . "' data-sitekey='" . esc_attr( strval( $this->cf_turnstile_site_key ) ) . "'></div>"; ?>
+						<div id='srfm-cf-sitekey' class='cf-turnstile' data-callback='onSuccess' data-error-callback='onTurnstileError' data-theme='<?php echo esc_attr( strval( $this->cf_appearance_mode ) ); ?>' data-sitekey='<?php echo esc_attr( strval( $this->cf_turnstile_site_key ) ); ?>'></div>
 					<?php } ?>
 					<?php if ( 'hcaptcha' === $this->captcha_security_type && $this->hcaptcha_site_key ) { ?>
-						<?php echo "<div id='srfm-hcaptcha-sitekey' data-callback='onSuccess' data-error-callback='onHCaptchaError' class='h-captcha' data-sitekey='" . esc_attr( strval( $this->hcaptcha_site_key ) ) . "'></div>"; ?>
+						<div id='srfm-hcaptcha-sitekey' data-callback='onSuccess' data-error-callback='onHCaptchaError' class='h-captcha' data-sitekey='<?php echo esc_attr( strval( $this->hcaptcha_site_key ) ); ?>'></div>
 					<?php } ?>
 			<div class="srfm-validation-error" id="captcha-error" style="display: none;"><?php echo esc_attr__( 'Please verify that you are not a robot.', 'sureforms' ); ?></div>
 			</div>
