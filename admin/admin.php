@@ -1040,7 +1040,7 @@ class Admin {
 		$quick_sidebar_allowed_blocks = ! empty( $quick_sidebar_allowed_blocks ) && is_array( $quick_sidebar_allowed_blocks ) ? $quick_sidebar_allowed_blocks : $default_allowed_quick_sidebar_blocks;
 		$srfm_ajax_nonce              = wp_create_nonce( 'srfm_ajax_nonce' );
 
-		if ( 'sureforms_form' === $current_screen->id ) {
+		if ( Helper::is_sureforms_admin_page() ) {
 			wp_enqueue_script( SRFM_SLUG . '-quick-action-siderbar', SRFM_URL . 'assets/build/quickActionSidebar.js', [], SRFM_VER, true );
 			wp_localize_script(
 				SRFM_SLUG . '-quick-action-siderbar',
