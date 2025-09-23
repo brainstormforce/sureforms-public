@@ -36,6 +36,14 @@ class Admin {
 	private $dashboard_widget_data = [];
 
 	/**
+	 * SureForms Page Default permission.
+	 *
+	 * @var string
+	 * @since x.x.x
+	 */
+	private static $sureforms_page_default_capability = 'manage_options';
+
+	/**
 	 * Class constructor.
 	 *
 	 * @return void
@@ -282,18 +290,13 @@ class Admin {
 	 * @since 0.0.1
 	 */
 	public function add_menu_page() {
-		if ( ! Helper::current_user_can() ) {
-			return;
-		}
-
-		$capability = 'manage_options';
-		$menu_slug  = 'sureforms_menu';
+		$menu_slug = 'sureforms_menu';
 
 		$logo = file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/icon.svg' );
 		add_menu_page(
 			__( 'SureForms', 'sureforms' ),
 			__( 'SureForms', 'sureforms' ),
-			'edit_others_posts',
+			self::$sureforms_page_default_capability,
 			$menu_slug,
 			static function () {
 			},
@@ -306,7 +309,7 @@ class Admin {
 			$menu_slug,
 			__( 'Dashboard', 'sureforms' ),
 			__( 'Dashboard', 'sureforms' ),
-			$capability,
+			self::$sureforms_page_default_capability,
 			$menu_slug,
 			[ $this, 'render_dashboard' ]
 		);
@@ -324,7 +327,7 @@ class Admin {
 			'sureforms_menu',
 			__( 'Settings', 'sureforms' ),
 			__( 'Settings', 'sureforms' ),
-			'edit_others_posts',
+			self::$sureforms_page_default_capability,
 			'sureforms_form_settings',
 			$callback
 		);
@@ -394,7 +397,7 @@ class Admin {
 			'sureforms_menu',
 			__( 'Upgrade', 'sureforms' ),
 			__( 'Upgrade', 'sureforms' ),
-			'edit_others_posts',
+			self::$sureforms_page_default_capability,
 			$upgrade_url
 		);
 	}
@@ -410,7 +413,7 @@ class Admin {
 			'sureforms_menu',
 			__( 'SMTP', 'sureforms' ),
 			__( 'SMTP', 'sureforms' ),
-			'edit_others_posts',
+			self::$sureforms_page_default_capability,
 			'sureforms_smtp',
 			[ $this, 'suremail_page_callback' ]
 		);
@@ -467,7 +470,7 @@ class Admin {
 			'sureforms_menu',
 			__( 'New Form', 'sureforms' ),
 			__( 'New Form', 'sureforms' ),
-			'edit_others_posts',
+			self::$sureforms_page_default_capability,
 			'add-new-form',
 			[ $this, 'add_new_form_callback' ],
 			2
@@ -476,7 +479,7 @@ class Admin {
 			'sureforms_menu',
 			__( 'Entries', 'sureforms' ),
 			__( 'Entries', 'sureforms' ),
-			'edit_others_posts',
+			self::$sureforms_page_default_capability,
 			SRFM_ENTRIES,
 			[ $this, 'render_entries' ],
 			3

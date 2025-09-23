@@ -99,15 +99,6 @@ class Create_New_Form {
 			);
 		}
 
-		if ( ! is_user_logged_in() ) {
-			// Return error if user is not logged in.
-			wp_send_json_error(
-				[
-					'message' => esc_html__( 'You must be logged in to make this request.', 'sureforms' ),
-				]
-			);
-		}
-
 		$form_info     = $data->get_body();
 		$form_info_obj = json_decode( $form_info );
 
