@@ -556,8 +556,8 @@ class Helper {
 	/**
 	 * Check if the current user has a given capability.
 	 *
-	 * @param string  $capability The capability to check.
-	 * @param mixed[] $args Optional. Additional arguments to pass to the capability check.
+	 * @param string       $capability The capability to check.
+	 * @param array<mixed> $args Optional. Additional arguments to pass to the capability check.
 	 *
 	 * @since 0.0.3
 	 * @return bool Whether the current user has the given capability or role.
