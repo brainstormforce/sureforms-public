@@ -802,12 +802,6 @@ class Entries_List_Table extends \WP_List_Table {
 			$first_field = implode( ', ', $filenames );
 		}
 
-		$max_length = 28;
-
-		if ( strlen( $first_field ) > $max_length ) {
-			$first_field = substr( $first_field, 0, $max_length - 3 ) . '...';
-		}
-
 		// Check if the first field is a textarea.
 		if ( strpos( $first_key, 'srfm-textarea' ) !== false ) {
 			// Strip HTML tags from the textarea value.
@@ -826,6 +820,10 @@ class Entries_List_Table extends \WP_List_Table {
 		} else {
 			// Get the first field value directly.
 			$first_field = ! empty( $set_entry_first_field ) ? ( is_array( $set_entry_first_field ) ? __( 'Array', 'sureforms' ) : $set_entry_first_field ) : reset( $item['form_data'] );
+			$max_length  = 28;
+			if ( strlen( $first_field ) > $max_length ) {
+				$first_field = substr( $first_field, 0, $max_length - 3 ) . '...';
+			}
 		}
 
 		// Return the first field value in a paragraph element.
