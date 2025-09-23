@@ -227,7 +227,7 @@ class Gutenberg_Hooks {
 				'get_form_markup_url'               => 'sureforms/v1/generate-form-markup',
 				'is_pro_active'                     => Helper::has_pro(),
 				'srfm_default_dynamic_block_option' => get_option( 'srfm_default_dynamic_block_option', Helper::default_dynamic_block_option() ),
-				'form_selector_nonce'               => Helper::current_user_can() ? wp_create_nonce( 'wp_rest' ) : '',
+				'form_selector_nonce'               => Helper::current_user_can( 'edit_posts' ) ? wp_create_nonce( 'wp_rest' ) : '',
 				'is_admin_user'                     => Helper::current_user_can(),
 				'site_url'                          => $site_url,
 				'is_suremails_active'               => is_plugin_active( 'suremails/suremails.php' ),
@@ -317,7 +317,7 @@ class Gutenberg_Hooks {
 	 */
 	public function maybe_migrate_form_stylings() {
 		$post_id = isset( $_GET['post'] ) ? Helper::get_integer_value( sanitize_text_field( wp_unslash( $_GET['post'] ) ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- $_GET['post'] does not provide nonce.
-		if ( empty( $post_id ) || ! Helper::current_user_can( 'manage_options', [ $post_id ] ) ) {
+		if ( empty( $post_id ) || ! Helper::current_user_can( 'manage_options' ) ) {
 			return;
 		}
 
