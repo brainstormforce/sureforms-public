@@ -1397,20 +1397,6 @@ class Helper {
 	 * @return string The cleaned HTML content without JavaScript attributes.
 	 */
 	public static function strip_js_attributes( $html ) {
-
-		// Replace <p> around block-level elements with <div>.
-		$html = preg_replace(
-			'/<p([^>]*)>\s*(<(table|div|h[1-6]|ul|ol|style|script)\b)/i',
-			'<div$1>$2',
-			self::get_string_value( $html )
-		);
-
-		$html = preg_replace(
-			'/(<\/(table|div|h[1-6]|ul|ol|style|script)>)\s*<\/p>/i',
-			'$1</div>',
-			self::get_string_value( $html )
-		);
-
 		$dom = new \DOMDocument();
 
 		// Suppress warnings due to malformed HTML.
@@ -1419,7 +1405,7 @@ class Helper {
 		libxml_clear_errors();
 
 		if ( ! $loaded ) {
-			return self::get_string_value( $html ); // Return original HTML if loading fails.
+			return $html; // Return original HTML if loading fails.
 		}
 
 		$xpath = new \DOMXPath( $dom );
