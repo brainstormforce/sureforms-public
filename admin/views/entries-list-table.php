@@ -787,29 +787,25 @@ class Entries_List_Table extends \WP_List_Table {
 			]
 		);
 
-		if ( false !== strpos( $field_name, 'srfm-repeater' ) ) {
-			$set_entry_first_field = __( 'Repeater', 'sureforms' );
+		if ( ! empty( $set_entry_first_field ) ) {
+			$first_field = sanitize_text_field( $set_entry_first_field );
 		}
 
 		if ( false !== strpos( $field_name, 'srfm-upload' ) ) {
 			$filenames = [];
-			if ( ! empty( $set_entry_first_field ) && is_array( $set_entry_first_field ) ) {
-				foreach ( $set_entry_first_field as $file ) {
+			if ( ! empty( $first_field ) && is_array( $first_field ) ) {
+				foreach ( $first_field as $file ) {
 					$file_url    = urldecode( strval( $file ) );
 					$filenames[] = pathinfo( $file_url, PATHINFO_BASENAME );
 				}
 			}
-			$set_entry_first_field = implode( ', ', $filenames );
-		}
-
-		if ( ! empty( $set_entry_first_field ) && ! is_array( $set_entry_first_field ) ) {
-			$set_entry_first_field = sanitize_text_field( $set_entry_first_field );
+			$first_field = implode( ', ', $filenames );
 		}
 
 		$max_length = 28;
 
-		if ( strlen( $set_entry_first_field ) > $max_length ) {
-			$set_entry_first_field = substr( $set_entry_first_field, 0, $max_length - 3 ) . '...';
+		if ( strlen( $first_field ) > $max_length ) {
+			$first_field = substr( $first_field, 0, $max_length - 3 ) . '...';
 		}
 
 		// Check if the first field is a textarea.
@@ -821,15 +817,15 @@ class Entries_List_Table extends \WP_List_Table {
 			$decode_html_content = html_entity_decode( reset( $item['form_data'] ) );
 
 			// Replace HTML tags with empty string.
-			$set_entry_first_field = preg_replace( $regex, '', $decode_html_content );
+			$first_field = preg_replace( $regex, '', $decode_html_content );
 
 			// Truncate the textarea value to 15 characters if it's too long.
-			if ( strlen( $set_entry_first_field ) > 12 ) {
-				$set_entry_first_field = substr( $set_entry_first_field, 0, 12 ) . '...';
+			if ( strlen( $first_field ) > 12 ) {
+				$first_field = substr( $first_field, 0, 12 ) . '...';
 			}
 		} else {
 			// Get the first field value directly.
-			$first_field = ! empty( $set_entry_first_field ) ? $set_entry_first_field : reset( $item['form_data'] );
+			$first_field = ! empty( $set_entry_first_field ) ? ( is_array( $set_entry_first_field ) ? __( 'Array', 'sureforms' ) : $set_entry_first_field ) : reset( $item['form_data'] );
 		}
 
 		// Return the first field value in a paragraph element.
