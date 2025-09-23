@@ -82,6 +82,15 @@ class Export {
 			wp_send_json_error( $error_data );
 		}
 
+		// check if the user has permission to export forms.
+		if ( ! Helper::current_user_can() ) {
+			wp_send_json_error(
+				[
+					'error' => __( 'You do not have permission to export forms.', 'sureforms' ),
+				]
+			);
+		}
+
 		if ( isset( $_POST['post_id'] ) ) {
 			$post_ids = explode( ',', sanitize_text_field( wp_unslash( $_POST['post_id'] ) ) );
 		} else {
@@ -217,7 +226,9 @@ class Export {
 			[
 				'methods'             => WP_REST_Server::EDITABLE,
 				'callback'            => [ $this, 'handle_import_form' ],
-				'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
+				'permission_callback' => static function () {
+					return Helper::current_user_can();
+				},
 			]
 		);
 	}
