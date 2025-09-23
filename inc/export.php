@@ -83,7 +83,7 @@ class Export {
 		}
 
 		// check if the user has permission to export forms.
-		if ( ! Helper::current_user_can( 'manage_options' ) ) {
+		if ( ! Helper::current_user_can() ) {
 			wp_send_json_error(
 				[
 					'error' => __( 'You do not have permission to export forms.', 'sureforms' ),
@@ -227,7 +227,7 @@ class Export {
 				'methods'             => WP_REST_Server::EDITABLE,
 				'callback'            => [ $this, 'handle_import_form' ],
 				'permission_callback' => static function () {
-					return Helper::current_user_can( 'manage_options' );
+					return Helper::current_user_can();
 				},
 			]
 		);

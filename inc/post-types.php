@@ -403,7 +403,7 @@ class Post_Types {
 				'type'              => 'string',
 				'single'            => true,
 				'auth_callback'     => static function() {
-					return current_user_can( 'manage_options' );
+					return Helper::current_user_can();
 				},
 				'sanitize_callback' => static function( $meta_value ) {
 					return wp_kses_post( $meta_value );
@@ -422,7 +422,7 @@ class Post_Types {
 					'type'              => $type,
 					'sanitize_callback' => 'sanitize_text_field',
 					'auth_callback'     => static function() {
-						return current_user_can( 'manage_options' );
+						return Helper::current_user_can();
 					},
 				]
 			);
@@ -954,7 +954,7 @@ class Post_Types {
 				'single'            => true,
 				'type'              => 'array',
 				'auth_callback'     => static function() {
-					return current_user_can( 'manage_options' );
+					return Helper::current_user_can();
 				},
 				'sanitize_callback' => static function( $meta_value ) {
 					if ( ! is_array( $meta_value ) ) {
@@ -1062,7 +1062,7 @@ class Post_Types {
 				'sanitize_callback' => [ $this, 'sanitize_form_restriction_data' ],
 				'object_subtype'    => SRFM_FORMS_POST_TYPE,
 				'auth_callback'     => static function () {
-					return current_user_can( 'manage_options' );
+					return Helper::current_user_can();
 				},
 				'default'           => wp_json_encode(
 					[
@@ -1249,7 +1249,7 @@ class Post_Types {
 			$form_preview = filter_var( $form_preview_attr, FILTER_VALIDATE_BOOLEAN );
 		}
 
-		if ( is_singular( 'sureforms_form' ) && ! $form_preview && ! current_user_can( 'manage_options' ) ) {
+		if ( is_singular( 'sureforms_form' ) && ! $form_preview && ! Helper::current_user_can() ) {
 			wp_safe_redirect( home_url() );
 			return;
 		}

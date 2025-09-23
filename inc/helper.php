@@ -474,7 +474,7 @@ class Helper {
 	 * @return array<mixed> Live preview data.
 	 */
 	public static function get_instant_form_live_data() {
-		$srfm_live_mode_data = isset( $_GET['live_mode'] ) && current_user_can( 'manage_options' ) ? self::sanitize_recursively( 'sanitize_text_field', wp_unslash( $_GET ) ) : []; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verification is not needed here.
+		$srfm_live_mode_data = isset( $_GET['live_mode'] ) && self::current_user_can() ? self::sanitize_recursively( 'sanitize_text_field', wp_unslash( $_GET ) ) : []; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verification is not needed here.
 
 		return $srfm_live_mode_data ? array_map(
 			// Normalize falsy values.
@@ -542,7 +542,7 @@ class Helper {
 	 * @since 0.0.1
 	 */
 	public static function get_items_permissions_check() {
-		if ( current_user_can( 'manage_options' ) ) {
+		if ( self::current_user_can() ) {
 			return true;
 		}
 
@@ -556,21 +556,24 @@ class Helper {
 	/**
 	 * Check if the current user has a given capability.
 	 *
-	 * @param string $capability The capability to check.
+	 * @param string  $capability The capability to check.
+	 * @param mixed[] $args Optional. Additional arguments to pass to the capability check.
+	 *
 	 * @since 0.0.3
 	 * @return bool Whether the current user has the given capability or role.
 	 */
-	public static function current_user_can( $capability = '' ) {
-
+	public static function current_user_can( $capability = '', $args = [] ) {
 		if ( ! function_exists( 'current_user_can' ) ) {
 			return false;
 		}
 
 		if ( ! is_string( $capability ) || empty( $capability ) ) {
-			$capability = 'edit_posts';
+			$capability = 'manage_options';
 		}
 
-		return current_user_can( $capability );
+		return ! empty( $args ) && is_array( $args ) && count( $args ) > 0
+			? current_user_can( $capability, ...$args )
+			: current_user_can( $capability );
 	}
 
 	/**

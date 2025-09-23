@@ -125,7 +125,7 @@ class Form_Submit {
 	 * @return WP_Error|bool
 	 */
 	public function permissions_check() {
-		if ( ! current_user_can( 'manage_options' ) ) {
+		if ( ! Helper::current_user_can() ) {
 			return new WP_Error( 'rest_forbidden', __( 'Sorry, you cannot access this route', 'sureforms' ), [ 'status' => rest_authorization_required_code() ] );
 		}
 		return true;
@@ -941,7 +941,7 @@ class Form_Submit {
 	 * @return void
 	 */
 	public function srfm_global_update_allowed_block() {
-		if ( ! current_user_can( 'manage_options' ) ) {
+		if ( ! Helper::current_user_can() ) {
 			wp_send_json_error();
 		}
 
@@ -964,7 +964,7 @@ class Form_Submit {
 	 * @return void
 	 */
 	public function srfm_global_sidebar_enabled() {
-		if ( ! current_user_can( 'manage_options' ) ) {
+		if ( ! Helper::current_user_can() ) {
 			wp_send_json_error();
 		}
 
