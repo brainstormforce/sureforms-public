@@ -31,8 +31,6 @@ export default ( props ) => {
 	const recognitionRef = useRef( null ); // To store SpeechRecognition instance
 	const [ formLayout, setformLayout ] = useState( {} );
 	const [ placeholderIndex, setPlaceholderIndex ] = useState( 0 );
-	const [ aiPlaceholderIndex, setAiPlaceholderIndex ] = useState( 0 );
-
 	const [ displayedPlaceholder, setDisplayedPlaceholder ] = useState( '' );
 
 	const handlePromptClick = ( prompt ) => {
@@ -154,47 +152,19 @@ export default ( props ) => {
 		.filter( Boolean ); // remove empty values
 
 	useEffect( () => {
-		if (
-			( formType === 'simple' || formType === 'conversational' ) &&
-			rotatingPlaceholders.length > 1
-		) {
+		if ( rotatingPlaceholders.length > 1 ) {
 			const interval = setInterval( () => {
 				setPlaceholderIndex(
 					( prevIndex ) =>
 						( prevIndex + 1 ) % rotatingPlaceholders.length
 				);
-			}, 2000 ); // rotate every 4 seconds
+			}, 2000 );
 
 			return () => clearInterval( interval );
 		}
-	}, [ formType, rotatingPlaceholders ] );
+	}, [ formType, rotatingPlaceholders, formLayout ] );
 
-	useEffect( () => {
-		if ( aiPromptPlaceholders.length > 1 ) {
-			const interval = setInterval( () => {
-				setAiPlaceholderIndex(
-					( prev ) => ( prev + 1 ) % aiPromptPlaceholders.length
-				);
-			}, 4000 );
-			return () => clearInterval( interval );
-		}
-	}, [ formType, formLayout, aiPromptPlaceholders ] );
-
-	const aiPromptPlaceholderRaw = applyFilters(
-		'srfm.aiFormScreen.aiPromptPlaceholder',
-		'',
-		formLayout,
-		formType
-	);
-
-	const aiPromptPlaceholders = Array.isArray( aiPromptPlaceholderRaw )
-		? aiPromptPlaceholderRaw
-		: [ aiPromptPlaceholderRaw ];
-
-	const textAreaPlaceholder =
-		formType === 'simple' || formType === 'conversational'
-			? rotatingPlaceholders[ placeholderIndex ]
-			: aiPromptPlaceholders[ aiPlaceholderIndex ];
+	const textAreaPlaceholder = rotatingPlaceholders[ placeholderIndex ];
 
 	useEffect( () => {
 		if ( ! textAreaPlaceholder ) {
