@@ -72,7 +72,7 @@ class Admin_Ajax {
 			wp_send_json_error( $response_data );
 		}
 
-		if ( ! Helper::current_user_can() || ! isset( $_POST['init'] ) || ! sanitize_text_field( wp_unslash( $_POST['init'] ) ) ) {
+		if ( ! Helper::current_user_can( 'install_plugins' ) || ! isset( $_POST['init'] ) || ! sanitize_text_field( wp_unslash( $_POST['init'] ) ) ) {
 			wp_send_json_error(
 				[
 					'success' => false,
