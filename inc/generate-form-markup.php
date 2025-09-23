@@ -44,7 +44,7 @@ class Generate_Form_Markup {
 			[
 				'methods'             => 'GET',
 				'callback'            => [ $this, 'get_form_markup' ],
-				'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
+				'permission_callback' => '_return_true',
 			]
 		);
 	}
