@@ -1,5 +1,5 @@
 import { __ } from '@wordpress/i18n';
-import { useState, useRef, useEffect } from '@wordpress/element';
+import { useState, useRef, useEffect, memo } from '@wordpress/element';
 import {
 	Button,
 	Container,
@@ -7,6 +7,7 @@ import {
 	Title,
 	toast,
 	Label,
+	Tooltip,
 } from '@bsf/force-ui';
 import { ArrowRight, SendHorizontal, MicOff, Mic } from 'lucide-react';
 import { applyFilters } from '@wordpress/hooks';
@@ -14,6 +15,48 @@ import { cn, srfmClassNames } from '@Utils/Helpers';
 import ConnectWithAIBanner from '../ai-form-builder-components/ConnectWithAIBanner.js';
 import LimitReachedBanner from '../ai-form-builder-components/LimitReachedBanner.js';
 import FormTypeSelector from '../components/FormTypeSelector.js';
+
+const VoiceToggleButton = memo( ( { isListening, toggleListening } ) => {
+	const buttonProps = isListening
+		? {
+			icon: <Mic size={ 12 } />,
+			required_className: [
+				'bg-badge-background-green',
+				'border-badge-border-green',
+				'text-badge-color-green',
+				'hover:bg-badge-background-green',
+			],
+		  }
+		: {
+			icon: <MicOff size={ 12 } />,
+			required_className: [
+				'border-badge-border-gray',
+				'bg-badge-background-gray',
+			],
+		  };
+
+	return (
+		<Tooltip
+			tooltipPortalId="srfm-add-new-form-container"
+			arrow
+			className="z-999999"
+			title={ __( 'Voice Input', 'sureforms' ) }
+			placement="bottom"
+			triggers={ [ 'hover', 'focus' ] }
+		>
+			<Button
+				icon={ buttonProps.icon }
+				iconPosition="left"
+				variant="outline"
+				size="xs"
+				className={ `p-3 rounded-full border-0.5 border-solid font-medium hover:cursor-pointer ${ srfmClassNames(
+					buttonProps.required_className
+				) }` }
+				onClick={ toggleListening }
+			/>
+		</Tooltip>
+	);
+} );
 
 export default ( props ) => {
 	const {
@@ -208,39 +251,6 @@ export default ( props ) => {
 	const is_pro_active =
 		srfm_admin?.is_pro_active && srfm_admin?.is_pro_license_active;
 
-	const VoiceToggleButton = () => {
-		const buttonProps = isListening
-			? {
-				icon: <Mic size={ 12 } />,
-				required_className: [
-					'bg-badge-background-green',
-					'border-badge-border-green',
-					'text-badge-color-green',
-					'hover:bg-badge-background-green',
-				],
-			  }
-			: {
-				icon: <MicOff size={ 12 } />,
-				required_className: [
-					'border-badge-border-gray',
-					'bg-badge-background-gray',
-				],
-			  };
-
-		return (
-			<Button
-				icon={ buttonProps.icon }
-				iconPosition="left"
-				variant="outline"
-				size="xs"
-				className={ `p-3 rounded-full border-0.5 border-solid font-medium hover:cursor-pointer ${ srfmClassNames(
-					buttonProps.required_className
-				) }` }
-				onClick={ toggleListening }
-			></Button>
-		);
-	};
-
 	const handleAutoResize = ( e ) => {
 		e.target.style.height = 'auto';
 		e.target.style.height = `${ e.target.scrollHeight }px`;
@@ -342,7 +352,12 @@ export default ( props ) => {
 												</Label>
 											</Container.Item>
 											<Container.Item className="gap-4 flex flex-row">
-												<VoiceToggleButton />
+												<VoiceToggleButton
+													isListening={ isListening }
+													toggleListening={
+														toggleListening
+													}
+												/>
 												<Button
 													className="gap-1"
 													icon={
