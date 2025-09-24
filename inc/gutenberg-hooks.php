@@ -294,7 +294,7 @@ class Gutenberg_Hooks {
 	 */
 	public function maybe_migrate_form_stylings() {
 		$post_id = isset( $_GET['post'] ) ? Helper::get_integer_value( sanitize_text_field( wp_unslash( $_GET['post'] ) ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- $_GET['post'] does not provide nonce.
-		if ( empty( $post_id ) || ! Helper::current_user_can( 'manage_options' ) ) {
+		if ( empty( $post_id ) || ! Helper::current_user_can() ) {
 			return;
 		}
 
