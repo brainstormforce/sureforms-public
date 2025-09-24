@@ -241,7 +241,12 @@ export default ( props ) => {
 		);
 	};
 
-	const type = srfm_admin?.srfm_ai_usage_details?.type;
+	const handleAutoResize = ( e ) => {
+		e.target.style.height = 'auto';
+		e.target.style.height = `${ e.target.scrollHeight }px`;
+	};
+
+	const type = srfm_admin?.srfm_ai_1usage_details?.type;
 	const formCreationleft = srfm_admin?.srfm_ai_usage_details?.remaining ?? 0;
 
 	const banner =
@@ -304,7 +309,10 @@ export default ( props ) => {
 											onChange={ ( e ) => {
 												handlePromptClick( e );
 											} }
-											onInput={ handleTyping }
+											onInput={ ( e ) => {
+												handleTyping();
+												handleAutoResize( e );
+											} }
 											maxLength={ 2000 }
 											onFocus={ handlePlaceholderFocus }
 										/>
@@ -385,7 +393,7 @@ export default ( props ) => {
 
 					<Container.Item className="flex p-2 gap-6 justify-center">
 						<Button
-							className="text-text-tertiary hover:cursor-pointer"
+							className="text-text-tertiary hover:cursor-pointer hover:text-text-secondary"
 							icon={ <ArrowRight size={ 16 } /> }
 							iconPosition="right"
 							size="md"
