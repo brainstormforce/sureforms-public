@@ -49,7 +49,6 @@ class Gutenberg_Hooks {
 		add_action( 'enqueue_block_editor_assets', [ $this, 'form_editor_screen_assets' ] );
 		add_action( 'enqueue_block_editor_assets', [ $this, 'block_editor_assets' ] );
 		add_filter( 'block_categories_all', [ $this, 'register_block_categories' ], 10, 1 );
-		add_action( 'init', [ $this, 'register_block_patterns' ], 9 );
 		add_filter( 'allowed_block_types_all', [ $this, 'disable_forms_wrapper_block' ], 10, 2 );
 		add_action( 'save_post_sureforms_form', [ $this, 'update_field_slug' ], 10, 2 );
 		add_action( 'load-post.php', [ $this, 'maybe_migrate_form_stylings' ] );
@@ -119,28 +118,6 @@ class Gutenberg_Hooks {
 		];
 
 		return array_merge( $custom_categories, $categories );
-	}
-
-	/**
-	 * Register our block patterns.
-	 *
-	 * @return void
-	 * @since 0.0.1
-	 */
-	public function register_block_patterns() {
-		// Apply filters to the patterns.
-		$this->patterns = apply_filters( 'srfm_block_patterns', $this->patterns );
-
-		// Iterate over each block pattern.
-		foreach ( $this->patterns as $block_pattern ) {
-			// Attempt to register block pattern from the main directory.
-			if ( ! $this->register_block_pattern_from_directory( $block_pattern, plugin_dir_path( SRFM_FILE ) . 'templates/forms/' ) ) {
-				// If unsuccessful, attempt to register block pattern from the pro directory.
-				if ( Helper::has_pro() ) {
-					$this->register_block_pattern_from_directory( $block_pattern, SRFM_PRO_DIR . 'templates/forms/' );
-				}
-			}
-		}
 	}
 
 	/**
@@ -350,22 +327,4 @@ class Gutenberg_Hooks {
 		}
 	}
 
-	/**
-	 * Register block pattern from the specified directory.
-	 *
-	 * @param string|mixed $block_pattern The block pattern name.
-	 * @param string       $directory The directory path.
-	 * @since 0.0.2
-	 * @return bool True if the block pattern was registered, false otherwise.
-	 */
-	private function register_block_pattern_from_directory( $block_pattern, $directory ) {
-		$pattern_file = $directory . $block_pattern . '.php';
-
-		if ( is_readable( $pattern_file ) ) {
-			register_block_pattern( 'srfm/' . $block_pattern, require $pattern_file );
-			return true;
-		}
-
-		return false;
-	}
 }
