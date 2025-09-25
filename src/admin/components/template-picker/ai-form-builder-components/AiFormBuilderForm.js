@@ -296,7 +296,7 @@ export default ( props ) => {
 									className="gap-1.5 w-full h-full min-w-[750px] mx-auto"
 									direction="column"
 								>
-									<Container.Item className="flex flex-col gap-2 shadow-md-blur-32 border border-solid border-field-border rounded-lg bg-background-primary focus-within:border-button-primary focus-within:ring-1 focus-within:ring-button-primary">
+									<Container.Item className="flex flex-col gap-2 shadow-md-blur-32 border border-solid border-field-border rounded-lg bg-background-primary">
 										<TextArea
 											aria-label={ __(
 												'Describe the form you want to create',
@@ -307,7 +307,7 @@ export default ( props ) => {
 											value={ text }
 											size="lg"
 											className={ cn(
-												'focus:[box-shadow:none] focus:outline-none resize-none gap-2 w-full min-h-[120px] text-field-placeholder py-2 px-4 border-0',
+												'focus:[box-shadow:none] focus:outline-none resize-none gap-2 w-full min-h-[140px] text-field-placeholder py-2 px-4 border-0',
 												characterCount > 0 &&
 													'text-text-primary'
 											) }
