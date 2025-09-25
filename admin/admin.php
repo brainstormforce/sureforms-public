@@ -1327,6 +1327,12 @@ class Admin {
 	 * @since 1.9.1
 	 */
 	public function maybe_register_dashboard_widget() {
+
+		// Only for users with manage_options capability.
+		if ( ! Helper::current_user_can() ) {
+			return;
+		}
+
 		// Quick check if there are any entries in the last 7 days.
 		$seven_days_ago = strtotime( '-7 days' );
 		$total_entries  = Entries::get_entries_count_after( $seven_days_ago );
