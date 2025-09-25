@@ -142,12 +142,16 @@ class Form_Widget extends \Bricks\Element {
 		$styles = Spec_Gb_Helper::get_instance()->get_assets( $blocks );
 
 		if ( $form_id > 0 ) {
-			// phpcs:ignore -- WordPress.Security.EscapeOutput.OutputNotEscaped - Escaping not required.
-			echo '<div ' . $this->render_attributes( '_root' ) . '>' . do_shortcode( sprintf( '[sureforms id="%s" show_title="%s"]', $form_id, ! $form_title ) );
-			// phpcs:ignore -- WordPress.Security.EscapeOutput.OutputNotEscaped - Escaping not required.
-			echo '<style>' . $styles['css'] . '</style>';
-			// phpcs:ignore -- WordPress.Security.EscapeOutput.OutputNotEscaped - Escaping not required.
-			echo '<script>' . $styles['js'] . '</script></div>';
+			?>
+			<div <?php echo $this->render_attributes( '_root' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
+				<?php
+				// phpcs:ignore -- WordPress.Security.EscapeOutput.OutputNotEscaped - Escaping not required.
+				echo do_shortcode( sprintf( '[sureforms id="%s" show_title="%s"]', (int) $form_id, ! $form_title ) );
+				?>
+				<style><?php echo $styles['css']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></style>
+				<script><?php echo $styles['js']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></script>
+			</div>
+			<?php
 		} else {
 			// Show placeholder when no form is selected.
 			// phpcs:ignore -- WordPress.Security.EscapeOutput.OutputNotEscaped - Escaping not required.
