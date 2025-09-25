@@ -367,6 +367,7 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 == Changelog ==
 = x.x.x =
 * Improvement: Smart tag output for file uploads now shows single files as links and multiple files as an unordered list.
+* Fix: Resolved and issue where scripts related to SureForms were loading in all the screens causing console errors.
 = 1.12.1 - 18th September 2025 =
 * New: Added default country selection option for Phone field when auto country detection is disabled.
 * Improvement: Added filter 'srfm_value_after_label_placeholder' to customize required field sign.
