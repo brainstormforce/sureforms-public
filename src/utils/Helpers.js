@@ -711,7 +711,7 @@ export function activatePlugin( { plugin, event } ) {
 		formData,
 		successCallback: () => {
 			if ( srfm_admin?.current_screen_id === 'sureforms_menu' ) {
-				const button = event.target.closest( 'button' );
+				const button = event.target.closest?.( 'button' );
 				if ( button ) {
 					button.style.backgroundColor = '#F0FDF4';
 				}
