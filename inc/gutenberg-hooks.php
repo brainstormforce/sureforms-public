@@ -344,7 +344,7 @@ class Gutenberg_Hooks {
 	 *
 	 * @param int      $post_id The ID of the post being saved.
 	 * @param \WP_Post $post    The post object containing the block content.
-	 * @since x.x.x
+	 * @since 1.12.2
 	 * @return void
 	 */
 	public function add_block_configuration( $post_id, $post ) {
@@ -370,7 +370,7 @@ class Gutenberg_Hooks {
 	 * it returns the cached result.
 	 *
 	 * @param \WP_Post $post The post object containing the block content.
-	 * @since x.x.x
+	 * @since 1.12.2
 	 * @return array The array of parsed blocks.
 	 */
 	public function prepare_process_blocks( $post ) {

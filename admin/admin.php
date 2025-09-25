@@ -39,7 +39,7 @@ class Admin {
 	 * SureForms Page Default permission.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 1.12.2
 	 */
 	private static $sureforms_page_default_capability = 'manage_options';
 
