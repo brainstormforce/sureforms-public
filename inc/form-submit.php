@@ -278,6 +278,17 @@ class Form_Submit {
 			);
 		}
 
+		$validated_form_data = Field_Validation::validate_form_data( $form_data, $current_form_id );
+
+		if ( ! empty( $validated_form_data ) ) {
+			wp_send_json_error(
+				[
+					'message'      => __( 'Form data is not valid.', 'sureforms' ),
+					'field_errors' => $validated_form_data,
+				]
+			);
+		}
+
 		$security_type         = Helper::get_meta_value( Helper::get_integer_value( $current_form_id ), '_srfm_captcha_security_type' );
 		$selected_captcha_type = get_post_meta( Helper::get_integer_value( $current_form_id ), '_srfm_form_recaptcha', true ) ? Helper::get_string_value( get_post_meta( Helper::get_integer_value( $current_form_id ), '_srfm_form_recaptcha', true ) ) : '';
 
@@ -725,13 +736,13 @@ class Form_Submit {
 		$headers .= self::add_from_data_in_header( $submission_data, $item, $smart_tags );
 
 		if ( isset( $item['email_reply_to'] ) && ! empty( $item['email_reply_to'] ) ) {
-			$headers .= 'Reply-To:' . Helper::get_string_value( $smart_tags->process_smart_tags( $item['email_reply_to'], $submission_data ) ) . "\r\n";
+			$headers .= 'Reply-To:' . esc_html( Helper::get_string_value( $smart_tags->process_smart_tags( $item['email_reply_to'], $submission_data ) ) ) . "\r\n";
 		}
 		if ( isset( $item['email_cc'] ) && ! empty( $item['email_cc'] ) ) {
-			$headers .= 'Cc:' . Helper::get_string_value( $smart_tags->process_smart_tags( $item['email_cc'], $submission_data ) ) . "\r\n";
+			$headers .= 'Cc:' . esc_html( Helper::get_string_value( $smart_tags->process_smart_tags( $item['email_cc'], $submission_data ) ) ) . "\r\n";
 		}
 		if ( isset( $item['email_bcc'] ) && ! empty( $item['email_bcc'] ) ) {
-			$headers .= 'Bcc:' . Helper::get_string_value( $smart_tags->process_smart_tags( $item['email_bcc'], $submission_data ) ) . "\r\n";
+			$headers .= 'Bcc:' . esc_html( Helper::get_string_value( $smart_tags->process_smart_tags( $item['email_bcc'], $submission_data ) ) ) . "\r\n";
 		}
 
 		return compact( 'to', 'subject', 'message', 'headers' );

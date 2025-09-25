@@ -432,15 +432,23 @@ class Smart_Tags {
 						$replacement_data = urldecode( implode( ', ', $submission_item_value ) );
 					} else {
 						if ( count( $submission_item_value ) === 1 ) {
-							$decoded_value    = urldecode( reset( $submission_item_value ) );
-							$replacement_data = '<a rel="noopener noreferrer" href="' . esc_url( $decoded_value ) . '" target="_blank">' . esc_html( $decoded_value ) . '</a>';
+							$decoded_value = urldecode( reset( $submission_item_value ) );
+							ob_start();
+							?>
+							<a rel="noopener noreferrer" href="<?php echo esc_url( $decoded_value ); ?>" target="_blank"><?php echo esc_html( $decoded_value ); ?></a>
+							<?php
+							$replacement_data = ob_get_clean();
 						} else {
-							$replacement_data = '<ul style="margin: 0;">';
-							foreach ( $submission_item_value as $file_url ) {
-								$decoded_value     = urldecode( $file_url );
-								$replacement_data .= '<li><a rel="noopener noreferrer" href="' . esc_url( $decoded_value ) . '" target="_blank">' . esc_html( $decoded_value ) . '</a></li>';
-							}
-							$replacement_data .= '</ul>';
+							ob_start();
+							?>
+							<ul style="margin: 0;">
+								<?php foreach ( $submission_item_value as $file_url ) { ?>
+									<?php $decoded_value = urldecode( $file_url ); ?>
+									<li><a rel="noopener noreferrer" href="<?php echo esc_url( $decoded_value ); ?>" target="_blank"><?php echo esc_html( $decoded_value ); ?></a></li>
+								<?php } ?>
+							</ul>
+							<?php
+							$replacement_data = ob_get_clean();
 						}
 					}
 				} elseif ( 0 === strpos( $block_type, 'srfm-textarea' ) ) {
@@ -453,8 +461,11 @@ class Smart_Tags {
 				} else {
 					// if $submission_item_value is a url then add <a> tag. with view text.
 					if ( is_string( $submission_item_value ) && filter_var( $submission_item_value, FILTER_VALIDATE_URL ) ) {
-						$decoded_submission_item_value = urldecode( $submission_item_value );
-						$view_link                     = '<a rel="noopener noreferrer" href="' . esc_url( $decoded_submission_item_value ) . '" target="_blank">' . esc_html( $decoded_submission_item_value ) . '</a>';
+						ob_start();
+						?>
+						<a href="<?php echo esc_url( urldecode( $submission_item_value ) ); ?>" target="_blank"><?php echo esc_html( esc_url( $submission_item_value ) ); ?></a>
+						<?php
+						$view_link = ob_get_clean();
 
 						// Add filter to modify the view link.
 						$view_link = apply_filters(

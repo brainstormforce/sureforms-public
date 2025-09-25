@@ -329,29 +329,73 @@ class Helper {
 
 		switch ( $type ) {
 			case 'label':
-				$markup = $label ? '<label id="srfm-label-' . esc_attr( $block_id ) . '" for="srfm-' . $slug . '-' . esc_attr( $block_id ) . '" class="srfm-block-label">' . wp_kses_post( $label ) . ( $required ? '<span class="srfm-required" aria-hidden="true"> *</span>' : '' ) . '</label>' : '';
+				if ( $label ) {
+					ob_start();
+					?>
+					<label id="srfm-label-<?php echo esc_attr( $block_id ); ?>" for="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>" class="srfm-block-label">
+						<?php echo wp_kses_post( $label ); ?>
+						<?php if ( $required ) { ?>
+							<span class="srfm-required" aria-hidden="true"> *</span>
+						<?php } ?>
+					</label>
+					<?php
+					$markup = ob_get_clean();
+				}
 				break;
 			case 'help':
-				$markup = $help ? '<div class="srfm-description" id="srfm-description-' . esc_attr( $block_id ) . '">' . wp_kses_post( $help ) . '</div>' : '';
+				if ( $help ) {
+					ob_start();
+					?>
+					<div class="srfm-description" id="srfm-description-<?php echo esc_attr( $block_id ); ?>">
+						<?php echo wp_kses_post( $help ); ?>
+					</div>
+					<?php
+					$markup = ob_get_clean();
+				}
 				break;
 			case 'error':
-				$markup = $required || $override ? '<div class="srfm-error-message" data-srfm-id="srfm-error-' . esc_attr( $block_id ) . '" data-error-msg="' . esc_attr( $error_msg ) . '"' . $duplicate_msg . '>' . esc_html( $error_msg ) . '</div>' : '';
+				if ( $required || $override ) {
+					ob_start();
+					?>
+					<div class="srfm-error-message" data-srfm-id="srfm-error-<?php echo esc_attr( $block_id ); ?>" data-error-msg="<?php echo esc_attr( $error_msg ); ?>"<?php echo $duplicate_msg; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
+						<?php echo esc_html( $error_msg ); ?>
+					</div>
+					<?php
+					$markup = ob_get_clean();
+				}
 				break;
 			case 'is_unique':
-				$markup = $is_unique ? '<div class="srfm-error">' . esc_html( $duplicate_msg ) . '</div>' : '';
+				if ( $is_unique ) {
+					ob_start();
+					?>
+					<div class="srfm-error">
+						<?php echo esc_html( $duplicate_msg ); ?>
+					</div>
+					<?php
+					$markup = ob_get_clean();
+				}
 				break;
 			case 'placeholder':
 				$markup = $label && '1' === $show_labels_as_placeholder ? wp_kses_post( $label ) . ( $required ? esc_attr( $required_sign ) : '' ) : '';
 				break;
 			case 'label_text':
 				// This has been added for generating label text for the form markup instead of adding it in the label tag.
-				$markup = $label ? wp_kses_post( $label ) . ( $required ? '<span class="srfm-required" aria-hidden="true"> *</span>' : '' ) . '</label>' : '';
+				if ( $label ) {
+					ob_start();
+					?>
+					<?php echo wp_kses_post( $label ); ?>
+					<?php if ( $required ) { ?>
+						<span class="srfm-required" aria-hidden="true"> *</span>
+					<?php } ?>
+					<?php
+					$markup = ob_get_clean();
+				}
 				break;
 			default:
 				$markup = '';
 		}
 
-		return $markup;
+		return is_string( $markup ) ? $markup : '';
 	}
 
 	/**
@@ -366,7 +410,6 @@ class Helper {
 	public static function fetch_svg( $icon = '', $class = '', $html = '' ) {
 		$class = $class ? ' ' . $class : '';
 
-		$output = '<span class="srfm-icon' . $class . '" ' . $html . '>';
 		if ( ! self::$srfm_svgs ) {
 			ob_start();
 
@@ -375,10 +418,14 @@ class Helper {
 			self::$srfm_svgs = apply_filters( 'srfm_svg_icons', self::$srfm_svgs );
 		}
 
-		$output .= self::$srfm_svgs[ $icon ] ?? '';
-		$output .= '</span>';
-
-		return $output;
+		ob_start();
+		?>
+		<span class="srfm-icon<?php echo esc_attr( $class ); ?>" <?php echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
+			<?php echo self::$srfm_svgs[ $icon ] ?? ''; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+		</span>
+		<?php
+		$output = ob_get_clean();
+		return is_string( $output ) ? $output : '';
 	}
 
 	/**

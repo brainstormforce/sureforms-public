@@ -479,9 +479,8 @@ class Generate_Form_Markup {
 				if ( $is_page_break ) {
 					do_action( 'srfm_page_break_pagination', $post, $id );
 				} elseif ( ! apply_filters( 'srfm_use_custom_field_content', false ) ) {
-					// phpcs:ignore
+					// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Content is filtered and sanitized by WordPress core blocks and filters.
 					echo $content;
-					// phpcs:ignoreEnd
 				}
 
 				do_action( 'srfm_after_field_content', $post, $id );
@@ -768,6 +767,6 @@ class Generate_Form_Markup {
 			$redirect_url                    = html_entity_decode( Helper::get_string_value( $smart_tags->process_smart_tags( $redirect_url, $submission_data, $form_data ) ) );
 		}
 
-		return apply_filters( 'srfm_after_submit_redirect_url', $redirect_url );
+		return esc_url( apply_filters( 'srfm_after_submit_redirect_url', $redirect_url ) );
 	}
 }
