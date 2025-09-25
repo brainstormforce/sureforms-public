@@ -365,7 +365,7 @@ easy.
 You can report the issue through our [Bug Bounty Program](https://brainstormforce.com/bug-bounty-program/). We collaborate with Patchstack to provide opportunities for researchers to report vulnerabilities. The Patchstack team will help validate, triage, and handle any reported security issues.
 
 == Changelog ==
-= 1.12.2 - 25th September 2025 =
+= 1.12.2 - 26th September 2025 =
 * Improvement: Enhanced admin permission checks.
 * Improvement: Made the submit note button responsive in single entries to prevent overflow in translations.
 * Improvement: Smart tag output now shows single file uploads as links and multiple files as a list.
