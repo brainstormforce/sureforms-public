@@ -366,9 +366,9 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 
 == Changelog ==
 = 1.12.2 - 25th September 2025 =
-* Improvement: Added responsiveness to submit note button in single entires so translated strings do not overflow.
-* Improvement: Smart tag output for file uploads now shows single files as links and multiple files as an unordered list.
-* Improvement: Admin permission check.
+* Improvement: Enhanced admin permission checks.
+* Improvement: Made the submit note button responsive in single entries to prevent overflow in translations.
+* Improvement: Smart tag output now shows single file uploads as links and multiple files as a list.
 = 1.12.1 - 18th September 2025 =
 * New: Added default country selection option for Phone field when auto country detection is disabled.
 * Improvement: Added filter 'srfm_value_after_label_placeholder' to customize required field sign.
