@@ -4,7 +4,7 @@ Tags: contact form, custom form, forms,  WP Forms, form builder
 Requires at least: 6.4
 Tested up to: 6.8.2
 Requires PHP: 7.4
-Stable tag: 1.12.1
+Stable tag: 1.12.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -367,7 +367,10 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 == Changelog ==
 = x.x.x =
 * Fix: Resolved an issue where empty <p> tag in being added before and after repeater field table in form confirmation success message.
+= 1.12.2 - 25th September 2025 =
+* Improvement: Added responsiveness to submit note button in single entires so translated strings do not overflow.
 * Improvement: Smart tag output for file uploads now shows single files as links and multiple files as an unordered list.
+* Improvement: Admin permission check.
 = 1.12.1 - 18th September 2025 =
 * New: Added default country selection option for Phone field when auto country detection is disabled.
 * Improvement: Added filter 'srfm_value_after_label_placeholder' to customize required field sign.

@@ -10,7 +10,6 @@ namespace SRFM;
 
 use SRFM\Admin\Admin;
 use SRFM\Admin\Analytics;
-use SRFM\API\Block_Patterns;
 use SRFM\Inc\Activator;
 use SRFM\Inc\Admin_Ajax;
 use SRFM\Inc\AI_Form_Builder\AI_Auth;
@@ -275,7 +274,6 @@ class Plugin_Loader {
 	public function load_plugin() {
 		Post_Types::get_instance();
 		Form_Submit::get_instance();
-		Block_Patterns::get_instance();
 		Gutenberg_Hooks::get_instance();
 		Frontend_Assets::get_instance();
 		Helper::get_instance();
