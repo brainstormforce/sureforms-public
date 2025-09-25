@@ -5,7 +5,7 @@
  * Handles all field validation for SureForms
  *
  * @package SureForms
- * @since x.x.x
+ * @since 1.12.2
  */
 
 namespace SRFM\Inc;
@@ -28,7 +28,7 @@ class Field_Validation {
 	 * @param array<mixed> $blocks  Array of blocks to process.
 	 * @param int          $form_id Form post ID.
 	 * @return void
-	 * @since x.x.x
+	 * @since 1.12.2
 	 */
 	public static function add_block_config( $blocks, $form_id ) {
 		// Initialize array to store processed block configurations.
@@ -76,7 +76,7 @@ class Field_Validation {
 	 *          the function will parse those blocks and call add_block_config() to generate and store the config.
 	 *
 	 * @param int $form_id The ID of the form post.
-	 * @since x.x.x
+	 * @since 1.12.2
 	 * @return array|null The block configuration array, or null if not found or invalid.
 	 */
 	public static function get_or_migrate_block_config_for_legacy_form( $form_id ) {
@@ -125,7 +125,7 @@ class Field_Validation {
 	 * key to each block, which is a unique identifier for the field (used for validation).
 	 *
 	 * @param int $current_form_id The ID of the form post.
-	 * @since x.x.x
+	 * @since 1.12.2
 	 * @return array|null The processed form configuration array, or null if not found.
 	 */
 	public static function prepared_validation_data( $current_form_id ) {
@@ -158,7 +158,7 @@ class Field_Validation {
 	 *
 	 * @param array<mixed> $form_data        The submitted form data (sanitized).
 	 * @param int|mixed    $current_form_id  The ID of the form being validated.
-	 * @since x.x.x
+	 * @since 1.12.2
 	 * @return array An array of invalid fields and their error messages. Empty if all fields are valid.
 	 */
 	public static function validate_form_data( $form_data, $current_form_id ) {
