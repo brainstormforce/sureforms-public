@@ -30,8 +30,9 @@ class Frontend_Assets {
 	 * @var array<string>
 	 */
 	public static $js_assets = [
-		'form-submit' => 'formSubmit',
-		'frontend'    => 'frontend',
+		'form-submit'    => 'formSubmit',
+		'frontend'       => 'frontend',
+		'stripe-payment' => 'stripe-payment',
 	];
 
 	/**
@@ -100,6 +101,15 @@ class Frontend_Assets {
 			wp_register_style( SRFM_SLUG . '-' . $handle, $css_vendor . $path . '.css', [], SRFM_VER );
 		}
 
+		// Register Stripe.js library from CDN.
+		wp_register_script(
+			'stripe-js',
+			'https://js.stripe.com/v3/',
+			[],
+			null,
+			true
+		);
+
 		// Scripts.
 		foreach ( self::$js_assets as $handle => $name ) {
 			if ( 'form-submit' === $handle ) {
@@ -107,6 +117,14 @@ class Frontend_Assets {
 					SRFM_SLUG . '-' . $handle,
 					SRFM_URL . 'assets/build/' . $name . '.js',
 					[ 'wp-api-fetch' ],
+					SRFM_VER,
+					true
+				);
+			} elseif ( 'stripe-payment' === $handle ) {
+				wp_register_script(
+					SRFM_SLUG . '-' . $handle,
+					SRFM_URL . 'assets/js/' . $name . '.js',
+					[ 'stripe-js' ],
 					SRFM_VER,
 					true
 				);
@@ -136,6 +154,16 @@ class Frontend_Assets {
 					]
 				),
 				'is_rtl'   => $is_rtl,
+			]
+		);
+
+		// Localize script for Stripe payment functionality.
+		wp_localize_script(
+			SRFM_SLUG . '-stripe-payment',
+			'srfm_ajax',
+			[
+				'ajax_url' => admin_url( 'admin-ajax.php' ),
+				'nonce'    => wp_create_nonce( 'srfm_stripe_payment_nonce' ),
 			]
 		);
 
@@ -178,7 +206,17 @@ class Frontend_Assets {
 
 		// Load the scripts.
 		foreach ( self::$js_assets as $handle => $path ) {
-			wp_enqueue_script( SRFM_SLUG . '-' . $handle );
+			// Only load stripe payment script if there are payment blocks.
+			if ( 'stripe-payment' === $handle ) {
+				$current_post      = get_post();
+				$has_payment_block = $current_post && ( false !== strpos( $current_post->post_content, 'wp:srfm/payment' ) );
+
+				if ( $has_payment_block ) {
+					wp_enqueue_script( SRFM_SLUG . '-' . $handle );
+				}
+			} else {
+				wp_enqueue_script( SRFM_SLUG . '-' . $handle );
+			}
 		}
 	}
 

@@ -948,6 +948,7 @@ class Helper {
 				'srfm/radio',
 				'srfm/submit',
 				'srfm/url',
+				'srfm/payment',
 			]
 		);
 	}

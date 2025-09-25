@@ -125,6 +125,9 @@ class Global_Settings {
 			case 'security-settings':
 				$is_option_saved = self::srfm_save_security_settings( $setting_options );
 				break;
+			case 'payments-settings':
+				$is_option_saved = self::srfm_save_payments_settings( $setting_options );
+				break;
 			default:
 				$is_option_saved = false;
 				break;
@@ -313,6 +316,33 @@ class Global_Settings {
 	}
 
 	/**
+	 * Save Payments Settings
+	 *
+	 * @param array<mixed> $setting_options Setting options.
+	 * @return bool
+	 * @since x.x.x
+	 */
+	public static function srfm_save_payments_settings( $setting_options ) {
+		// Get current settings to preserve connection data.
+		$current_settings = get_option( 'srfm_payments_settings', [] );
+
+		// Only update the fields that can be changed via settings.
+		$currency     = $setting_options['currency'] ?? 'USD';
+		$payment_mode = $setting_options['payment_mode'] ?? 'test';
+
+		// Preserve existing connection data.
+		$updated_settings = array_merge(
+			$current_settings,
+			[
+				'currency'     => sanitize_text_field( $currency ),
+				'payment_mode' => sanitize_text_field( $payment_mode ),
+			]
+		);
+
+		return update_option( 'srfm_payments_settings', $updated_settings );
+	}
+
+	/**
 	 * Get Settings Form Data
 	 *
 	 * @param \WP_REST_Request $request Request object or array containing form data.
@@ -386,6 +416,9 @@ class Global_Settings {
 				'srfm_honeypot'                => false,
 			];
 		}
+
+		// Apply filter to allow other modules to add their settings.
+		$global_setting_options = apply_filters( 'srfm_global_settings_data', $global_setting_options );
 
 		wp_send_json( $global_setting_options );
 	}

@@ -37,10 +37,13 @@ use SRFM\Inc\Lib\SRFM_Nps_Survey;
 use SRFM\Inc\Nps_Notice;
 use SRFM\Inc\Onboarding;
 use SRFM\Inc\Page_Builders\Page_Builders;
+use SRFM\Inc\Payments_Settings;
 use SRFM\Inc\Post_Types;
 use SRFM\Inc\Rest_Api;
 use SRFM\Inc\Single_Form_Settings\Compliance_Settings;
 use SRFM\Inc\Smart_Tags;
+use SRFM\Inc\Stripe_Payment_Handler;
+use SRFM\Inc\Stripe_Webhook;
 use SRFM\Inc\Updater;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -298,6 +301,9 @@ class Plugin_Loader {
 		AI_Helper::get_instance();
 		AI_Auth::get_instance();
 		Updater::get_instance();
+		Payments_Settings::get_instance();
+		Stripe_Payment_Handler::get_instance();
+		Stripe_Webhook::get_instance();
 		Onboarding::get_instance();
 		DatabaseRegister::init();
 		Form_Restriction::get_instance();

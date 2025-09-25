@@ -8,7 +8,10 @@
 namespace SRFM\Admin;
 
 use SRFM\Admin\Views\Entries_List_Table;
+use SRFM\Admin\Views\Payments_List_Table;
 use SRFM\Admin\Views\Single_Entry;
+use SRFM\Admin\Views\Single_Payment;
+use SRFM\Admin\Views\Single_Subscription;
 use SRFM\Inc\AI_Form_Builder\AI_Helper;
 use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Helper;
@@ -66,6 +69,10 @@ class Admin {
 		// Handle entry actions.
 		add_action( 'admin_init', [ $this, 'handle_entry_actions' ] );
 		add_action( 'admin_notices', [ Entries_List_Table::class, 'display_bulk_action_notice' ] );
+
+		// Handle payment actions.
+		add_action( 'admin_init', [ $this, 'handle_payment_actions' ] );
+		add_action( 'admin_notices', [ Payments_List_Table::class, 'display_bulk_action_notice' ] );
 
 		// This action enqueues translations for NPS Survey library.
 		// A better solution will be required from library to resolve plugin conflict.
@@ -482,6 +489,16 @@ class Admin {
 			3
 		);
 
+		$entries_hook = add_submenu_page(
+			'sureforms_menu',
+			__( 'Payment Summary', 'sureforms' ),
+			__( 'Payments', 'sureforms' ),
+			'edit_others_posts',
+			SRFM_PAYMENTS,
+			[ $this, 'render_payments' ],
+			4
+		);
+
 		if ( $entries_hook ) {
 			add_action( 'load-' . $entries_hook, [ $this, 'mark_entries_page_visit' ] );
 		}
@@ -525,6 +542,44 @@ class Admin {
 		echo '<form method="get">';
 		echo '<input type="hidden" name="page" value="sureforms_entries">';
 		$entries_table->display();
+		echo '</form>';
+		echo '</div>';
+	}
+
+	/**
+	 * Payments page callback.
+	 *
+	 * @since x.x.x
+	 * @return void
+	 */
+	public function render_payments() {
+		// Check if we need to render subscription view
+		if ( isset( $_GET['payment_id'] ) && is_numeric( $_GET['payment_id'] ) && isset( $_GET['view'] ) && 'subscription' === $_GET['view'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verification is not needed here as no database operations are performed.
+			$single_subscription_view = new Single_Subscription();
+			$single_subscription_view->render();
+			return;
+		}
+
+		// Render single payment view.
+		// Adding the phpcs ignore nonce verification as no database operations are performed in this function, it is used to display the single payment view.
+		if ( isset( $_GET['payment_id'] ) && is_numeric( $_GET['payment_id'] ) && isset( $_GET['view'] ) && 'details' === $_GET['view'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verification is not needed here and explained in the comments above as well.
+			$single_payment_view = new Single_Payment();
+			$single_payment_view->render();
+			return;
+		}
+
+		// Render all payments view.
+		$payments_table = new Payments_List_Table();
+		$payments_table->prepare_items();
+		echo '<div class="wrap"><h1 class="wp-heading-inline">' . esc_html__( 'Payments', 'sureforms' ) . '</h1>';
+		if ( empty( $payments_table->all_payments_count ) ) {
+			echo '<div class="sureforms-no-payments-found"><p>' . esc_html__( 'No payments found. Payments will appear here when forms with payment fields are submitted.', 'sureforms' ) . '</p></div>';
+			echo '</div>';
+			return;
+		}
+		echo '<form method="get">';
+		echo '<input type="hidden" name="page" value="sureforms_payments">';
+		$payments_table->display();
 		echo '</form>';
 		echo '</div>';
 	}
@@ -1120,6 +1175,31 @@ class Admin {
 				}
 			}
 			Entries_List_Table::handle_entry_status( $entry_id, $action, $view );
+		}
+	}
+
+	/**
+	 * Handle payment actions.
+	 *
+	 * @since x.x.x
+	 * @return void
+	 */
+	public function handle_payment_actions() {
+		Payments_List_Table::process_bulk_actions();
+
+		if ( ! isset( $_GET['page'] ) || SRFM_PAYMENTS !== $_GET['page'] ) {
+			return;
+		}
+		if ( ! isset( $_GET['payment_id'] ) || ! isset( $_GET['action'] ) ) {
+			return;
+		}
+		if ( ! isset( $_GET['_wpnonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'srfm_payments_action' ) ) {
+			wp_die( esc_html__( 'Nonce verification failed.', 'sureforms' ) );
+		}
+		$action     = isset( $_GET['action'] ) ? sanitize_text_field( wp_unslash( $_GET['action'] ) ) : '';
+		$payment_id = Helper::get_integer_value( sanitize_text_field( wp_unslash( $_GET['payment_id'] ) ) );
+		if ( $payment_id > 0 ) {
+			Payments_List_Table::handle_payment_action( $payment_id, $action );
 		}
 	}
 

@@ -18,6 +18,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
+// Load Composer autoloader for libraries in inc/lib directory.
+if ( file_exists( __DIR__ . '/inc/lib/vendor/autoload.php' ) ) {
+	require_once __DIR__ . '/inc/lib/vendor/autoload.php';
+}
+
 /**
  * Set constants
  */
@@ -30,11 +35,16 @@ define( 'SRFM_SLUG', 'srfm' );
 // ------ ADDITIONAL CONSTANTS ------- //
 define( 'SRFM_FORMS_POST_TYPE', 'sureforms_form' );
 define( 'SRFM_ENTRIES', 'sureforms_entries' );
+define( 'SRFM_PAYMENTS', 'sureforms_payments' );
 define( 'SRFM_WEBSITE', 'https://sureforms.com/' );
 define( 'SRFM_AI_MIDDLEWARE', 'https://credits.startertemplates.com/sureforms/' );
 define( 'SRFM_BILLING_PORTAL', 'https://billing.sureforms.com/' );
 define( 'SRFM_PRO_RECOMMENDED_VER', '1.12.1' );
 
 define( 'SRFM_SURETRIGGERS_INTEGRATION_BASE_URL', 'https://app.ottokit.com/' );
+
+define( 'SRFM_PAYMENTS_ENV', 'dev' ); // Can be 'dev' / 'prod'
+define( 'SRFM_PAYMENTS_PROD', 'https://payments.sureforms.com/' );
+define( 'SRFM_PAYMENTS_LOCAL', 'http://sureforms-payments-middleware.test/' ); // replace as per your local setup
 
 require_once 'plugin-loader.php';

@@ -8,6 +8,7 @@ import GeneralPage from './pages/General';
 import ValidationsPage from './pages/Validations';
 import SecurityPage from './pages/Security';
 import IntegrationPage from './pages/Integrations';
+import PaymentsPage from './pages/Payments';
 import { applyFilters } from '@wordpress/hooks';
 import PageTitleSection from '@Admin/components/PageTitleSection';
 
@@ -45,6 +46,13 @@ const Component = ( { path } ) => {
 	const [ preDynamicBlockOptions, setPreDynamicBlockOptions ] = useState(
 		{}
 	);
+	const [ paymentsSettings, setPaymentsSettings ] = useState( {
+		stripe_connected: false,
+		stripe_account_id: '',
+		stripe_account_email: '',
+		currency: 'USD',
+		payment_mode: 'test',
+	} );
 
 	// Options to fetch from API.
 	const optionsToFetch = [
@@ -52,6 +60,7 @@ const Component = ( { path } ) => {
 		'srfm_email_summary_settings_options',
 		'srfm_security_settings_options',
 		'srfm_default_dynamic_block_option',
+		'srfm_payments_settings',
 	];
 
 	// set page title and icon based on the path.
@@ -155,6 +164,11 @@ const Component = ( { path } ) => {
 						...data.srfm_default_dynamic_block_option,
 					} );
 				}
+
+				if ( data.srfm_payments_settings ) {
+					setPaymentsSettings( data.srfm_payments_settings );
+				}
+
 				setLoading( false );
 			} catch ( error ) {
 				console.error( 'Error fetching data:', error );
@@ -228,6 +242,13 @@ const Component = ( { path } ) => {
 				[ setting ]: value,
 			};
 			setDynamicBlockOptions( updatedTabOptions );
+		} else if ( tab === 'payments-settings' ) {
+			updatedTabOptions = {
+				...paymentsSettings,
+				srfm_tab: tab,
+				[ setting ]: value,
+			};
+			setPaymentsSettings( updatedTabOptions );
 		} else {
 			return;
 		}
@@ -264,6 +285,13 @@ const Component = ( { path } ) => {
 
 				{ 'integration-settings' === path && (
 					<IntegrationPage loading={ loading } />
+				) }
+				{ 'payments-settings' === path && (
+					<PaymentsPage
+						loading={ loading }
+						paymentsSettings={ paymentsSettings }
+						updateGlobalSettings={ updateGlobalSettings }
+					/>
 				) }
 				{ applyFilters(
 					'srfm.settings.page.content',

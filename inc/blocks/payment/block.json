@@ -1,0 +1,85 @@
+{
+	"name": "srfm/payment",
+	"title": "Payment",
+	"description": "Displays a SureForms Payment Field with Stripe integration",
+	"category": "sureforms",
+	"keywords": [ "payment", "stripe", "money", "charge", "billing" ],
+	"textdomain": "sureforms",
+	"supports": {
+		"reusable": false,
+		"html": false
+	},
+	"example": {
+		"attributes": {
+			"preview": true
+		}
+	},
+	"attributes": {
+		"preview": {
+			"type": "boolean",
+			"default": false
+		},
+		"block_id": {
+			"type": "string"
+		},
+		"currency": {
+			"type": "string",
+			"default": "USD"
+		},
+		"description": {
+			"type": "string",
+			"default": "Payment"
+		},
+		"required": {
+			"type": "boolean",
+			"default": true
+		},
+		"fieldWidth": {
+			"type": "number",
+			"default": 100
+		},
+		"label": {
+			"type": "string",
+			"default": "Payment Details"
+		},
+		"help": {
+			"type": "string",
+			"default": ""
+		},
+		"errorMsg": {
+			"type": "string",
+			"default": ""
+		},
+		"formId": {
+			"type": "number",
+			"default": ""
+		},
+		"isConditionalLogic": {
+			"type": "boolean",
+			"default": false
+		},
+		"slug": {
+			"type": "string",
+			"default": ""
+		},
+		"paymentItems": {
+			"type": "array",
+			"default": []
+		},
+		"paymentType": {
+			"type": "string",
+			"default": "one-time"
+		},
+		"subscriptionPlans": {
+			"type": "array",
+			"default": [
+				{
+					"name": "Subscription Plan",
+					"interval": "month",
+					"customer_name": "field_id",
+					"customer_email": "field_id"
+				}
+			]
+		}
+	}
+}

@@ -382,6 +382,11 @@ class Smart_Tags {
 			return $replacement_data;
 		}
 		foreach ( $submission_data as $submission_item_key => $submission_item_value ) {
+			// If submission item key has not "-lbl-" then continue.
+			if ( strpos( $submission_item_key, '-lbl-' ) === false ) {
+				continue;
+			}
+
 			$label      = explode( '-lbl-', $submission_item_key )[1];
 			$slug       = implode( '-', array_slice( explode( '-', $label ), 1 ) );
 			$block_type = explode( '-lbl-', $submission_item_key )[0];

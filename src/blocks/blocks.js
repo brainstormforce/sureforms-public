@@ -11,6 +11,7 @@ import * as select from '@Blocks/dropdown';
 import * as address from '@Blocks/address';
 import * as url from '@Blocks/url';
 import * as inlineButton from '@Blocks/inline-button';
+import * as payment from '@Blocks/payment';
 import { registerBlocks } from '@Blocks/register-block';
 import { createHigherOrderComponent } from '@wordpress/compose';
 import { addFilter, applyFilters } from '@wordpress/hooks';
@@ -38,6 +39,7 @@ const registerBlock = [
 	select,
 	address,
 	inlineButton,
+	payment,
 ];
 
 if ( 'sureforms_form' === srfm_block_data?.current_screen?.id ) {

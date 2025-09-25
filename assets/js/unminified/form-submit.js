@@ -4,6 +4,7 @@ import {
 	initializeInlineFieldValidation,
 	handleScrollAndFocusOnError,
 	handleCaptchaValidation,
+	handleFormPayment,
 	srfmFields,
 } from './validation';
 import { applyFilters } from '@wordpress/hooks';
@@ -134,6 +135,14 @@ function initializeFormHandlers() {
 			// Set the login completion status to true after form submission.
 			form.__loginSuccess = true;
 		} );
+
+		// // Add the event after the form initialization to ensure that all third party libraries are loaded and initialized.
+		// Dispatch a custom event *before* the form is submitted.
+		document.dispatchEvent(
+			new CustomEvent( 'srfm_form_after_initialization', {
+				detail: { form },
+			} )
+		);
 	}
 }
 
@@ -522,6 +531,14 @@ async function handleFormSubmission(
 		if ( ! document.dispatchEvent( event ) ) {
 			loader.classList.remove( 'srfm-active' );
 			return; // Stop further execution if event.preventDefault() was called.
+		}
+
+		// Process payment submission
+		const paymentResult = await handleFormPayment( form );
+		if ( ! paymentResult ) {
+			// Remove loading.
+			loader.classList.remove( 'srfm-active' );
+			return;
 		}
 
 		const formStatus = await submitFormData( form );
