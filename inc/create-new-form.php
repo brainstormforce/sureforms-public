@@ -59,7 +59,7 @@ class Create_New_Form {
 	 */
 	public static function get_default_meta_keys() {
 		return [
-			'_srfm_submit_button_text'       => [ 'Submit' ],
+			'_srfm_submit_button_text'       => [ __( 'Submit', 'sureforms' ) ],
 			'_srfm_use_label_as_placeholder' => [ '' ],
 			'_srfm_single_page_form_title'   => [ 1 ],
 			'_srfm_instant_form'             => [ '' ],

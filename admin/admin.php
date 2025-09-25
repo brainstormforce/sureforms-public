@@ -220,7 +220,14 @@ class Admin {
 				],
 				Helper::get_sureforms_website_url( 'pricing' )
 			);
-			$links[]     = '<a href="' . esc_url( $upsell_link ) . '" target="_blank" rel="noreferrer" class="sureforms-plugins-go-pro">' . esc_html__( 'Get SureForms Pro', 'sureforms' ) . '</a>';
+
+			ob_start();
+			?>
+			<a href="<?php echo esc_url( $upsell_link ); ?>" target="_blank" rel="noreferrer" class="sureforms-plugins-go-pro">
+				<?php echo esc_html__( 'Get SureForms Pro', 'sureforms' ); ?>
+			</a>
+			<?php
+			$links[] = trim( ob_get_clean() );
 		}
 
 		return $links;
@@ -436,7 +443,9 @@ class Admin {
 	 * @since 1.7.1
 	 */
 	public function suremail_page_callback() {
-		echo '<div id="srfm-suremail-container" class="srfm-admin-wrapper"></div>';
+		?>
+		<div id="srfm-suremail-container" class="srfm-admin-wrapper"></div>
+		<?php
 	}
 
 	/**
@@ -446,7 +455,9 @@ class Admin {
 	 * @since 0.0.1
 	 */
 	public function render_dashboard() {
-		echo '<div id="srfm-dashboard-container" class="srfm-admin-wrapper"></div>';
+		?>
+		<div id="srfm-dashboard-container" class="srfm-admin-wrapper"></div>
+		<?php
 	}
 
 	/**
@@ -456,7 +467,9 @@ class Admin {
 	 * @since 0.0.1
 	 */
 	public function settings_page_callback() {
-		echo '<div id="srfm-settings-container" class="srfm-admin-wrapper"></div>';
+		?>
+		<div id="srfm-settings-container" class="srfm-admin-wrapper"></div>
+		<?php
 	}
 
 	/**
@@ -497,7 +510,9 @@ class Admin {
 	 * @since 0.0.1
 	 */
 	public function add_new_form_callback() {
-		echo '<div id="srfm-add-new-form-container" class="srfm-admin-wrapper"></div>';
+		?>
+		<div id="srfm-add-new-form-container" class="srfm-admin-wrapper"></div>
+		<?php
 	}
 
 	/**
@@ -518,18 +533,23 @@ class Admin {
 		// Render all entries view.
 		$entries_table = new Entries_List_Table();
 		$entries_table->prepare_items();
-		echo '<div class="wrap"><h1 class="wp-heading-inline">' . esc_html__( 'Entries', 'sureforms' ) . '</h1>';
-		if ( empty( $entries_table->all_entries_count ) && empty( $entries_table->trash_entries_count ) ) {
-			$instance = Post_Types::get_instance();
-			$instance->sureforms_render_blank_state( SRFM_ENTRIES );
-			$instance->get_blank_state_styles();
-			return;
-		}
-		echo '<form method="get">';
-		echo '<input type="hidden" name="page" value="sureforms_entries">';
-		$entries_table->display();
-		echo '</form>';
-		echo '</div>';
+		?>
+		<div class="wrap">
+			<h1 class="wp-heading-inline"><?php echo esc_html__( 'Entries', 'sureforms' ); ?></h1>
+			<?php
+			if ( empty( $entries_table->all_entries_count ) && empty( $entries_table->trash_entries_count ) ) {
+				$instance = Post_Types::get_instance();
+				$instance->sureforms_render_blank_state( SRFM_ENTRIES );
+				$instance->get_blank_state_styles();
+				return;
+			}
+			?>
+			<form method="get">
+				<input type="hidden" name="page" value="sureforms_entries">
+				<?php $entries_table->display(); ?>
+			</form>
+		</div>
+		<?php
 	}
 
 	/**
@@ -560,8 +580,13 @@ class Admin {
 		global $menu;
 		foreach ( $menu as $index => $item ) {
 			if ( isset( $item[2] ) && 'sureforms_menu' === $item[2] ) {
+				ob_start();
+				?>
+				<span class="srfm-update-dot"></span>
+				<?php
+				$dot_html = ob_get_clean();
 				// phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- Adding notifications for menu item.
-				$menu[ $index ][0] .= ' <span class="srfm-update-dot"></span>';
+				$menu[ $index ][0] .= $dot_html;
 				break;
 			}
 		}
@@ -570,10 +595,15 @@ class Admin {
 		if ( isset( $submenu['sureforms_menu'] ) ) {
 			foreach ( $submenu['sureforms_menu'] as $index => $sub_item ) {
 				if ( isset( $sub_item[2] ) && SRFM_ENTRIES === $sub_item[2] ) {
-					$submenu['sureforms_menu'][ $index ][0] .= sprintf( // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- Adding notifications for submenu item.
-						' <span class="update-plugins count-%1$d"><span class="plugin-count">%1$d</span></span>',
-						absint( $new_entries )
-					);
+					ob_start();
+					?>
+					<span class="update-plugins count-<?php echo absint( $new_entries ); ?>">
+						<span class="plugin-count"><?php echo absint( $new_entries ); ?></span>
+					</span>
+					<?php
+					$badge_html = ob_get_clean();
+					// phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- Adding notifications for submenu item.
+					$submenu['sureforms_menu'][ $index ][0] .= $badge_html;
 					break;
 				}
 			}
@@ -604,13 +634,20 @@ class Admin {
 	 */
 	public function add_settings_link( $links, $file ) {
 		if ( 'sureforms/sureforms.php' === $file ) {
-			$plugin_links = apply_filters(
+			ob_start();
+			?>
+			<a href="<?php echo esc_url( admin_url( 'admin.php?page=sureforms_form_settings&tab=general-settings' ) ); ?>">
+				<?php echo esc_html__( 'Settings', 'sureforms' ); ?>
+			</a>
+			<?php
+			$settings_link_html = ob_get_clean();
+			$plugin_links       = apply_filters(
 				'sureforms_plugin_action_links',
 				[
-					'sureforms_settings' => '<a href="' . esc_url( admin_url( 'admin.php?page=sureforms_form_settings&tab=general-settings' ) ) . '">' . esc_html__( 'Settings', 'sureforms' ) . '</a>',
+					'sureforms_settings' => $settings_link_html,
 				]
 			);
-			$links        = array_merge( $plugin_links, $links );
+			$links              = array_merge( $plugin_links, $links );
 		}
 		return $links;
 	}
@@ -1160,30 +1197,48 @@ class Admin {
 		$message         = '';
 		$url             = admin_url( 'admin.php?page=sureforms_form_settings&tab=account-settings' );
 		if ( 'unlicensed' === $srfm_pro_license_status ) {
-			$message = '<p>' . sprintf(
-				// translators: %1$s: Opening anchor tag with URL, %2$s: Closing anchor tag, %3$s: SureForms Pro Plugin Name.
-				esc_html__( 'Please %1$sactivate%2$s your copy of %3$s to get new features, access support, receive update notifications, and more.', 'sureforms' ),
-				'<a href="' . esc_url( $url ) . '">',
-				'</a>',
-				'<i>' . esc_html( $pro_plugin_name ) . '</i>'
-			) . '</p>';
+			ob_start();
+			?>
+			<p>
+				<?php
+				printf(
+					// translators: %1$s: Opening anchor tag with URL, %2$s: Closing anchor tag, %3$s: SureForms Pro Plugin Name.
+					esc_html__( 'Please %1$sactivate%2$s your copy of %3$s to get new features, access support, receive update notifications, and more.', 'sureforms' ),
+					'<a href="' . esc_url( $url ) . '">',
+					'</a>',
+					'<i>' . esc_html( $pro_plugin_name ) . '</i>'
+				);
+				?>
+			</p>
+			<?php
+			$message = ob_get_clean();
 		}
 
 		if ( ! version_compare( SRFM_PRO_VER, SRFM_PRO_RECOMMENDED_VER, '>=' ) ) {
-			$message .= '<p>' . sprintf(
-				// translators: %1$s: SureForms version, %2$s: SureForms Pro Plugin Name, %3$s: SureForms Pro Version, %4$s: Anchor tag open, %5$s: Closing anchor tag.
-				esc_html__( 'SureForms %1$s requires minimum %2$s %3$s to work properly. Please update to the latest version from %4$shere%5$s.', 'sureforms' ),
-				esc_html( SRFM_VER ),
-				esc_html( $pro_plugin_name ),
-				esc_html( SRFM_PRO_RECOMMENDED_VER ),
-				'<a href=' . esc_url( admin_url( 'update-core.php' ) ) . '>',
-				'</a>'
-			) . '</p>';
+			ob_start();
+			?>
+			<p>
+				<?php
+				printf(
+					// translators: %1$s: SureForms version, %2$s: SureForms Pro Plugin Name, %3$s: SureForms Pro Version, %4$s: Anchor tag open, %5$s: Closing anchor tag.
+					esc_html__( 'SureForms %1$s requires minimum %2$s %3$s to work properly. Please update to the latest version from %4$shere%5$s.', 'sureforms' ),
+					esc_html( SRFM_VER ),
+					esc_html( $pro_plugin_name ),
+					esc_html( SRFM_PRO_RECOMMENDED_VER ),
+					'<a href="' . esc_url( admin_url( 'update-core.php' ) ) . '">',
+					'</a>'
+				);
+				?>
+			</p>
+			<?php
+			$message .= ob_get_clean();
 		}
 
 		if ( ! empty( $message ) ) {
 			// Phpcs ignore comment is required as $message variable is already escaped.
-			echo '<div class="notice notice-warning">' . wp_kses_post( $message ) . '</div>';
+			?>
+			<div class="notice notice-warning"><?php echo wp_kses_post( $message ); ?></div>
+			<?php
 		}
 	}
 
