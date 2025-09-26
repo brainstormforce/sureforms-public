@@ -45,9 +45,9 @@ msgstr ""
 #: admin/admin.php:317
 #: admin/admin.php:318
 #: assets/build/dashboard.js:172
-#: assets/build/entries.js:172
+#: assets/build/entries.js:2
 #: assets/build/page_header.js:172
-#: assets/build/settings.js:172
+#: assets/build/settings.js:2
 #: assets/build/templatePicker.js:172
 msgid "Dashboard"
 msgstr "Tablero"
@@ -56,9 +56,9 @@ msgstr "Tablero"
 #: admin/admin.php:336
 #: admin/admin.php:640
 #: assets/build/dashboard.js:172
-#: assets/build/entries.js:172
+#: assets/build/entries.js:2
 #: assets/build/page_header.js:172
-#: assets/build/settings.js:172
+#: assets/build/settings.js:2
 msgid "Settings"
 msgstr "Configuraciones"
 
@@ -75,9 +75,9 @@ msgstr "Nuevo formulario"
 #: inc/global-settings/email-summary.php:225
 #: inc/post-types.php:1215
 #: assets/build/dashboard.js:172
-#: assets/build/entries.js:172
+#: assets/build/entries.js:2
 #: assets/build/page_header.js:172
-#: assets/build/settings.js:172
+#: assets/build/settings.js:2
 msgid "Entries"
 msgstr "Entradas"
 
@@ -377,16 +377,14 @@ msgstr "Activando..."
 
 #: admin/admin.php:793
 #: assets/build/dashboard.js:172
-#: assets/build/entries.js:172
-#: assets/build/formEditor.js:172
+#: assets/build/entries.js:2
 #: assets/build/page_header.js:172
-#: assets/build/settings.js:172
+#: assets/build/settings.js:2
 msgid "Activated"
 msgstr "Activado"
 
 #: admin/admin.php:794
 #: assets/build/formEditor.js:172
-#: assets/build/settings.js:172
 msgid "Activate"
 msgstr "Activar"
 
@@ -866,9 +864,9 @@ msgstr "Ver formularios"
 
 #: inc/post-types.php:184
 #: assets/build/dashboard.js:172
-#: assets/build/entries.js:172
+#: assets/build/entries.js:2
 #: assets/build/page_header.js:172
-#: assets/build/settings.js:172
+#: assets/build/settings.js:2
 msgid "Forms"
 msgstr "Formularios"
 
@@ -8266,7 +8264,7 @@ msgstr "WPExplorer"
 
 #: modules/gutenberg/icons/icons-v6-3.php:4932
 msgid "WPForms"
-msgstr ""
+msgstr "WPForms"
 
 #: modules/gutenberg/icons/icons-v6-3.php:4943
 msgid "wpressr"
@@ -8927,51 +8925,46 @@ msgid "This is where your form views will appear"
 msgstr "Aquí es donde aparecerán las vistas de su formulario"
 
 #: assets/build/dashboard.js:172
-#: assets/build/formEditor.js:2
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:2
-#: assets/build/settings.js:172
 msgid "Install"
 msgstr "Instalar"
 
 #: assets/build/dashboard.js:172
-#: assets/build/formEditor.js:2
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:2
-#: assets/build/settings.js:172
 msgid "Plugin Installation failed, Please try again later."
 msgstr "La instalación del complemento falló, por favor intente de nuevo más tarde."
 
 #: assets/build/dashboard.js:172
-#: assets/build/formEditor.js:2
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:2
-#: assets/build/settings.js:172
 msgid "Plugin activation failed, Please try again later."
 msgstr "La activación del complemento falló, por favor intente de nuevo más tarde."
 
+#: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
 msgid "Integrations"
 msgstr "Integraciones"
 
 #: assets/build/dashboard.js:172
-#: assets/build/entries.js:172
+#: assets/build/entries.js:2
 #: assets/build/page_header.js:172
-#: assets/build/settings.js:172
+#: assets/build/settings.js:2
 msgid "What's New?"
 msgstr "¿Qué hay de nuevo?"
 
 #: assets/build/dashboard.js:172
-#: assets/build/entries.js:172
+#: assets/build/entries.js:2
 #: assets/build/page_header.js:172
-#: assets/build/settings.js:172
+#: assets/build/settings.js:2
 msgid "Core"
 msgstr "Núcleo"
 
 #: assets/build/dashboard.js:172
-#: assets/build/entries.js:172
+#: assets/build/entries.js:2
 #: assets/build/page_header.js:172
-#: assets/build/settings.js:172
+#: assets/build/settings.js:2
 msgid "Unlicensed"
 msgstr "Sin licencia"
 
@@ -9024,24 +9017,24 @@ msgstr "Reorganizar bloque dentro de la Barra de Acción Rápida"
 #: assets/build/blocks.js:172
 #: assets/build/dashboard.js:172
 #: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
 #: assets/build/templatePicker.js:172
 msgid "Upgrade"
 msgstr "Actualizar"
 
 #: assets/build/dashboard.js:172
+#: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
 msgid "Webhooks"
 msgstr "Webhooks"
 
 #: assets/build/formEditor.js:172
-#: assets/build/settings.js:172
 msgid "Connecting…"
 msgstr "Conectando…"
 
 #: assets/build/dashboard.js:172
-#: assets/build/formEditor.js:2
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:2
-#: assets/build/settings.js:172
 msgid "Install & Activate"
 msgstr "Instalar y activar"
 
@@ -10827,6 +10820,7 @@ msgstr "Obtén SureForms Pro"
 #: assets/build/blocks.js:172
 #: assets/build/dashboard.js:172
 #: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
 #: assets/build/templatePicker.js:172
 msgid "Premium"
 msgstr "Premium"
@@ -10922,7 +10916,6 @@ msgid "Suffix Label"
 msgstr "Etiqueta de sufijo"
 
 #: assets/build/formEditor.js:172
-#: assets/build/settings.js:172
 msgid "Connect with OttoKit"
 msgstr "Conéctate con OttoKit"
 
@@ -11114,7 +11107,6 @@ msgid "Invalid Date"
 msgstr "Fecha no válida"
 
 #: assets/build/dashboard.js:172
-#: assets/build/formEditor.js:2
 #: assets/build/settings.js:2
 msgid "An error occurred. Please try again later."
 msgstr "Ocurrió un error. Por favor, inténtelo de nuevo más tarde."
@@ -11124,30 +11116,30 @@ msgid "Extend Your Website"
 msgstr "Amplía tu sitio web"
 
 #: assets/build/dashboard.js:172
-#: assets/build/entries.js:172
+#: assets/build/entries.js:2
 #: assets/build/page_header.js:172
-#: assets/build/settings.js:172
+#: assets/build/settings.js:2
 msgid "Ready to go beyond free plan?"
 msgstr "¿Listo para ir más allá del plan gratuito?"
 
 #: assets/build/dashboard.js:172
-#: assets/build/entries.js:172
+#: assets/build/entries.js:2
 #: assets/build/page_header.js:172
-#: assets/build/settings.js:172
+#: assets/build/settings.js:2
 msgid "Upgrade now"
 msgstr "Actualiza ahora"
 
 #: assets/build/dashboard.js:172
-#: assets/build/entries.js:172
+#: assets/build/entries.js:2
 #: assets/build/page_header.js:172
-#: assets/build/settings.js:172
+#: assets/build/settings.js:2
 msgid "and unlock the full power of SureForms!"
 msgstr "y desbloquea todo el poder de SureForms!"
 
 #: assets/build/dashboard.js:172
-#: assets/build/entries.js:172
+#: assets/build/entries.js:2
 #: assets/build/page_header.js:172
-#: assets/build/settings.js:172
+#: assets/build/settings.js:2
 msgid "Upgrade SureForms"
 msgstr "Actualizar SureForms"
 
@@ -11172,7 +11164,6 @@ msgid "Quick Access"
 msgstr "Acceso Rápido"
 
 #: assets/build/dashboard.js:172
-#: assets/build/settings.js:172
 msgid "Upgrade Now"
 msgstr "Actualiza ahora"
 
@@ -11221,6 +11212,8 @@ msgid "SureTriggers"
 msgstr "SureTriggers"
 
 #: assets/build/dashboard.js:172
+#: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
 msgid "Free"
 msgstr "Gratis"
 
@@ -12119,6 +12112,105 @@ msgstr "Crea un centro central donde los miembros puedan conectarse, compartir y
 msgid "Explore SureDash"
 msgstr "Explora SureDash"
 
+#: inc/background-process.php:124
+msgid "Something went wrong. We have logged the error for further investigation"
+msgstr "Algo salió mal. Hemos registrado el error para una investigación posterior."
+
+#: inc/field-validation.php:233
+msgid "Field is not valid."
+msgstr "El campo no es válido."
+
+#: inc/form-submit.php:286
+msgid "Form data is not valid."
+msgstr "Los datos del formulario no son válidos."
+
+#: assets/build/blocks.js:172
+msgid "Select Country"
+msgstr "Seleccionar país"
+
+#: assets/build/blocks.js:172
+msgid "Default Country"
+msgstr "País predeterminado"
+
+#: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
+msgid "Unlock Webhooks"
+msgstr "Desbloquear Webhooks"
+
+#: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
+msgid "With the SureForms Starter Plan, you can enable webhooks to seamlessly connect with your favorite apps for real-time data transfer and automation."
+msgstr "Con el Plan Starter de SureForms, puedes habilitar webhooks para conectarte sin problemas con tus aplicaciones favoritas para la transferencia de datos en tiempo real y la automatización."
+
+#: assets/build/formEditor.js:172
+msgid "Effortlessly broadcast your SureForms Submission to any web API endpoint with the advanced webhook module."
+msgstr "Transmite sin esfuerzo tu envío de SureForms a cualquier endpoint de API web con el módulo avanzado de webhook."
+
+#: assets/build/formEditor.js:172
+msgid "All changes will be saved automatically when you press back."
+msgstr "Todos los cambios se guardarán automáticamente cuando presiones atrás."
+
+#: assets/build/formEditor.js:172
+msgid "No Integrations Enabled"
+msgstr "No hay integraciones habilitadas"
+
+#: assets/build/formEditor.js:172
+msgid "Please enable Integrations from Global Settings."
+msgstr "Por favor, habilite las Integraciones desde la Configuración Global."
+
+#: assets/build/formEditor.js:172
+msgid "Enable from Settings"
+msgstr "Habilitar desde Configuración"
+
+#: assets/build/formEditor.js:172
+msgid "View Integrations"
+msgstr "Ver integraciones"
+
+#: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
+msgid "Effortlessly connect your forms to hundreds of apps, automating tasks like sending entries to your favourite CRM."
+msgstr "Conecta tus formularios sin esfuerzo a cientos de aplicaciones, automatizando tareas como enviar entradas a tu CRM favorito."
+
+#: assets/build/formEditor.js:172
+msgid "All Integrations"
+msgstr "Todas las integraciones"
+
+#: assets/build/formEditor.js:172
+msgid "Integrations via OttoKit"
+msgstr "Integraciones a través de OttoKit"
+
+#: assets/build/formEditor.js:172
+msgid "OttoKit Integrations"
+msgstr "Integraciones de OttoKit"
+
+#: assets/build/formEditor.js:172
+msgid "Repeater"
+msgstr "Repetidor"
+
+#: assets/build/settings.js:172
+msgid "OttoKit Logo"
+msgstr "Logotipo de OttoKit"
+
+#: assets/build/settings.js:172
+msgid "Broadcast your SureForms submission to any web API endpoint with the powerful webhook module."
+msgstr "Transmite tu envío de SureForms a cualquier endpoint de API web con el potente módulo de webhook."
+
+#: assets/build/settings.js:172
+msgid "Zapier"
+msgstr "Zapier"
+
+#: assets/build/settings.js:172
+msgid "Unlock Zapier Integration"
+msgstr "Desbloquear la integración de Zapier"
+
+#: assets/build/settings.js:172
+msgid "With the SureForms Pro Plan, you can enable Zapier integration to seamlessly connect with thousands of apps for powerful workflow automation."
+msgstr "Con el Plan SureForms Pro, puedes habilitar la integración con Zapier para conectarte sin problemas con miles de aplicaciones y lograr una potente automatización del flujo de trabajo."
+
+#: assets/build/settings.js:172
+msgid "SureForms and Zapier Integration allows you to connect your WordPress forms with a number of web apps."
+msgstr "La integración de SureForms y Zapier te permite conectar tus formularios de WordPress con varias aplicaciones web."
+
 #: inc/post-types.php:175
 msgctxt "post type general name"
 msgid "Forms"
@@ -12470,65 +12562,3 @@ msgstr "enlace"
 msgctxt "block keyword"
 msgid "website"
 msgstr "sitio web"
-
-#: inc/background-process.php:124
-msgid "Something went wrong. We have logged the error for further investigation"
-msgstr ""
-
-#: inc/field-validation.php:233
-msgid "Field is not valid."
-msgstr ""
-
-#: inc/form-submit.php:286
-msgid "Form data is not valid."
-msgstr ""
-
-#: assets/build/formEditor.js:172
-msgid "OttoKit Settings"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-#: assets/build/settings.js:172
-msgid "Instantly send form entries to Slack, Mailchimp, or other apps"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-#: assets/build/settings.js:172
-msgid "Set up alerts, notifications, or actions based on form submissions"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-#: assets/build/settings.js:172
-msgid "Automate tasks like follow-ups, lead assignments, or data sync"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-#: assets/build/settings.js:172
-msgid "Get Started"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-#: assets/build/settings.js:172
-msgid "Setup Integration via OttoKit"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-#: assets/build/settings.js:172
-msgid "OttoKit connects with SureForms to help you send form data to your favorite tools and trigger automated workflows, no code needed."
-msgstr ""
-
-#: assets/build/formEditor.js:172
-msgid "Ottokit"
-msgstr ""
-
-#: assets/build/settings.js:172
-msgid "No Integrations"
-msgstr ""
-
-#: assets/build/settings.js:172
-msgid "Unlock Powerful Integrations"
-msgstr ""
-
-#: assets/build/settings.js:172
-msgid "Connect your forms with popular tools like Google Sheets, Mailchimp, and Brevo. Automatically send leads, save entries to spreadsheets, trigger workflows, and much more—without any manual work."
-msgstr ""
