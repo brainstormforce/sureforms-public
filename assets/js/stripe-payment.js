@@ -129,14 +129,79 @@ class StripePayment {
 	}
 
 	updatePaymentIntentAmount( blockId, newAmount, paymentHiddenInput ) {
-		// Only update display amount, don't create payment intent yet
-		// Payment intent will be created during form submission
 		console.log( `Amount updated for block ${ blockId }: $${ newAmount }` );
+
+		// In deferred mode, we update the Elements configuration instead of payment intent
+		const elementData = StripePayment.paymentElements[ blockId ];
+		if ( ! elementData ) {
+			return;
+		}
+
+		// Don't update if amount hasn't changed significantly
+		const previousAmount = elementData.currentAmount || 0;
+		if ( Math.abs( newAmount - previousAmount ) < 0.01 ) {
+			return;
+		}
+
+		try {
+			// Update elements with new amount (deferred payment intent pattern)
+			const currency = paymentHiddenInput.dataset.currency || 'usd';
+
+			elementData.elements.update( {
+				mode: 'payment',
+				currency,
+				amount: Math.round( newAmount * 100 ), // Convert to cents
+			} );
+
+			// Store new amount for later use
+			elementData.currentAmount = newAmount;
+
+			console.log(
+				`SureForms: Elements updated with new amount for block ${ blockId }`
+			);
+		} catch ( error ) {
+			console.warn(
+				`SureForms: Failed to update elements amount for block ${ blockId }:`,
+				error
+			);
+			// Continue without throwing - non-critical failure
+		}
 	}
 
 	/**
-	 * Create payment intent only during form submission
-	 * This method should be called from form submission handler
+	 * Determine if validation error should be displayed to user
+	 * Filters out common typing-related incomplete warnings
+	 * @param  error
+	 * @return {boolean}
+	 */
+	shouldDisplayValidationError( error ) {
+		// Don't show incomplete errors while user is still typing
+		const incompleteErrors = [
+			'incomplete_number',
+			'incomplete_cvc',
+			'incomplete_expiry',
+			'incomplete_zip',
+		];
+
+		// Don't show these common incomplete errors that occur during typing
+		if ( incompleteErrors.includes( error.code ) ) {
+			return false;
+		}
+
+		// Show invalid format errors and other validation errors
+		return (
+			error.type === 'validation_error' &&
+			( error.code === 'invalid_number' ||
+				error.code === 'invalid_expiry_month' ||
+				error.code === 'invalid_expiry_year' ||
+				error.code === 'invalid_cvc' ||
+				error.code === 'card_declined' )
+		);
+	}
+
+	/**
+	 * Create payment intent only during form submission (deferred pattern)
+	 * This method creates payment intent and updates elements with client secret
 	 * @param blockId
 	 * @param amount
 	 * @param paymentInput
@@ -148,6 +213,10 @@ class StripePayment {
 			);
 		}
 
+		// In deferred mode, we always create a new payment intent during submission
+		console.log(
+			`SureForms: Creating payment intent for block ${ blockId } during form submission`
+		);
 		this.set_block_loading( blockId, true );
 
 		const currency = paymentInput.dataset.currency || 'usd';
@@ -274,7 +343,8 @@ class StripePayment {
 	}
 
 	/**
-	 * Initialize Stripe elements without creating payment intent
+	 * Initialize Stripe elements with deferred payment intent creation
+	 * Uses real amount calculation to fix "card element is incomplete" errors
 	 * Payment intent will be created only during form submission
 	 * @param blockId
 	 * @param paymentInput
@@ -300,11 +370,14 @@ class StripePayment {
 
 		const stripe = StripePayment.stripeInstances[ blockId ];
 
-		// Initialize Elements without client secret (deferred payment intent creation)
+		// Get real payment amount from form (not placeholder)
+		const currentAmount = this.calculateCurrentAmount( paymentInput );
+
+		// Initialize Elements with real amount but no client secret (deferred payment intent)
 		const elements = stripe.elements( {
 			mode: 'payment',
 			currency: paymentInput.dataset.currency || 'usd',
-			amount: 12000, // Will be updated when payment intent is created
+			amount: Math.round( currentAmount * 100 ), // Convert to cents, use real amount
 			appearance: {
 				theme: 'stripe',
 				variables: {
@@ -323,12 +396,13 @@ class StripePayment {
 		const paymentElement = elements.create( 'payment' );
 		paymentElement.mount( elementContainer );
 
-		// Store references without payment intent
+		// Store references without payment intent (will be created on submission)
 		StripePayment.paymentElements[ blockId ] = {
 			stripe,
 			elements,
 			paymentElement,
 			clientSecret: null, // Will be set when payment intent is created
+			currentAmount, // Store current amount for later comparison
 		};
 
 		// Update window object
@@ -343,19 +417,67 @@ class StripePayment {
 		} );
 
 		paymentElement.on( 'change', ( event ) => {
-			// Handle element validation errors without disrupting payment flow
+			// Handle element validation with improved error filtering
 			if ( event.error ) {
-				console.warn(
-					`SureForms: Card element validation warning for block ${ blockId }:`,
-					event.error
-				);
-				// Don't throw errors here as they're often non-fatal validation warnings
+				// Only show meaningful validation errors, skip incomplete warnings during typing
+				if ( this.shouldDisplayValidationError( event.error ) ) {
+					console.warn(
+						`SureForms: Card element validation for block ${ blockId }:`,
+						event.error
+					);
+					this.displayElementError( blockId, event.error );
+				}
 			} else if ( event.complete ) {
 				console.log(
 					`SureForms: Card element completed for block ${ blockId }`
 				);
+				// Clear any previous error messages
+				this.clearElementError( blockId );
 			}
 		} );
+	}
+
+	/**
+	 * Calculate current payment amount from form
+	 * @param  paymentInput
+	 * @return {number} Amount in dollars
+	 */
+	calculateCurrentAmount( paymentInput ) {
+		// Get payment items configuration
+		const slugForPayment = this.getSlugForPayment( paymentInput );
+
+		if ( ! slugForPayment || slugForPayment.length === 0 ) {
+			// No dynamic items, check for fixed amount in payment input
+			const fixedAmount =
+				paymentInput.dataset.amount || paymentInput.value || '10.00';
+			return parseFloat( fixedAmount ) || 10.0; // Default to $10 if no amount found
+		}
+
+		// Calculate total from dynamic payment items
+		let totalAmount = 0;
+		for ( const slug of slugForPayment ) {
+			const paymentItem = this.form.querySelector(
+				`.srfm-slug-${ slug } .srfm-input-number`
+			);
+
+			if ( paymentItem ) {
+				const itemAmount = parseFloat( paymentItem.value || 0 );
+				totalAmount += itemAmount;
+			}
+		}
+
+		// Return at least $1.00 minimum for Stripe
+		const finalAmount = Math.max( totalAmount, 1.0 );
+
+		// Validate the amount
+		if ( ! StripePayment.validatePaymentAmount( finalAmount ) ) {
+			console.warn(
+				'SureForms: Invalid payment amount, using minimum $1.00'
+			);
+			return 1.0;
+		}
+
+		return finalAmount;
 	}
 
 	set_block_loading( blockId, loading = true ) {
@@ -834,6 +956,94 @@ class StripePayment {
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * Display element error message in the UI
+	 * @param blockId
+	 * @param error
+	 */
+	displayElementError( blockId, error ) {
+		const block = this.form.querySelector(
+			`.srfm-block[data-block-id="${ blockId }"]`
+		);
+
+		if ( ! block ) {
+			return;
+		}
+
+		// Remove any existing error messages first
+		this.clearElementError( blockId );
+
+		// Only show user-friendly errors, skip technical validation warnings
+		if (
+			error.type === 'validation_error' ||
+			error.code === 'incomplete_number' ||
+			error.code === 'incomplete_cvc'
+		) {
+			const errorContainer = document.createElement( 'div' );
+			errorContainer.className = 'srfm-stripe-error';
+			errorContainer.style.cssText =
+				'color: #df1b41; font-size: 14px; margin-top: 8px;';
+			errorContainer.textContent =
+				error.message || 'Please check your card information.';
+
+			const paymentElement = block.querySelector(
+				'.srfm-stripe-payment-element'
+			);
+			if ( paymentElement ) {
+				paymentElement.parentNode.insertBefore(
+					errorContainer,
+					paymentElement.nextSibling
+				);
+			}
+		}
+	}
+
+	/**
+	 * Clear element error messages
+	 * @param blockId
+	 */
+	clearElementError( blockId ) {
+		const block = this.form.querySelector(
+			`.srfm-block[data-block-id="${ blockId }"]`
+		);
+
+		if ( ! block ) {
+			return;
+		}
+
+		const errorElements = block.querySelectorAll( '.srfm-stripe-error' );
+		errorElements.forEach( ( element ) => {
+			element.remove();
+		} );
+	}
+
+	/**
+	 * Validate payment amount before processing
+	 * @param  amount
+	 * @return {boolean}
+	 */
+	static validatePaymentAmount( amount ) {
+		// Stripe minimum is $0.50 for most currencies
+		const minAmount = 0.5;
+		const maxAmount = 999999.99; // Reasonable maximum
+
+		if ( isNaN( amount ) || amount < minAmount ) {
+			console.error(
+				`SureForms: Payment amount must be at least $${ minAmount }`
+			);
+			return false;
+		}
+
+		if ( amount > maxAmount ) {
+			console.error(
+				`SureForms: Payment amount cannot exceed $${ maxAmount }`
+			);
+			return false;
+		}
+
+		return true;
 	}
 }
 

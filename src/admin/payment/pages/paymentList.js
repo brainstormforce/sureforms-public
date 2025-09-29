@@ -1,0 +1,705 @@
+import { useContext, useState, useEffect } from '@wordpress/element';
+import { applyFilters } from '@wordpress/hooks';
+import {
+	Table,
+	Badge,
+	Button,
+	Input,
+	Select,
+	DatePicker,
+	Pagination,
+} from '@bsf/force-ui';
+import {
+	Eye as ViewIcon,
+	MoreHorizontal as EditIcon,
+	Search,
+	Calendar,
+	X,
+	RefreshCw as ResendIcon,
+	Trash as DeleteIcon,
+} from 'lucide-react';
+import { __ } from '@wordpress/i18n';
+import { useQuery } from '@tanstack/react-query';
+import { PaymentContext } from '../components/context';
+import { fetchPayments } from '../components/apiCalls';
+import { getPaginationRange } from '../components/utils';
+
+// Payment status filters - mapped to database statuses
+const STATUS_FILTERS = [
+	{ value: 'succeeded', label: __( 'Paid', 'sureforms' ) },
+	{
+		value: 'partially_refunded',
+		label: __( 'Partially Refunded', 'sureforms' ),
+	},
+	{ value: 'pending', label: __( 'Pending', 'sureforms' ) },
+	{ value: 'failed', label: __( 'Failed', 'sureforms' ) },
+	{ value: 'refunded', label: __( 'Refunded', 'sureforms' ) },
+	{ value: 'cancelled', label: __( 'Cancelled', 'sureforms' ) },
+];
+
+const PaymentTable = () => {
+	// Selection state management
+	const [ selectedRows, setSelectedRows ] = useState( [] );
+
+	const { setViewSinglePayment, setSinglePaymentType } =
+		useContext( PaymentContext );
+
+	// Filter and search state
+	const [ searchTerm, setSearchTerm ] = useState( '' );
+	const [ filter, setFilter ] = useState( '' );
+	const [ selectedDates, setSelectedDates ] = useState( {
+		from: null,
+		to: null,
+	} );
+	const [ isDatePickerOpen, setIsDatePickerOpen ] = useState( false );
+
+	// Pagination state
+	const [ page, setPage ] = useState( 1 );
+	const [ itemsPerPage, setItemsPerPage ] = useState( 10 );
+
+	// Fetch payments data using React Query
+	const queryData = useQuery( {
+		queryKey: [
+			'payments',
+			{ searchTerm, filter, selectedDates, page, itemsPerPage },
+		],
+		queryFn: () =>
+			fetchPayments( {
+				searchTerm,
+				filter,
+				selectedDates,
+				page,
+				itemsPerPage,
+			} ),
+		staleTime: 5 * 60 * 1000, // 5 minutes
+		refetchOnWindowFocus: false,
+	} );
+
+	const { data: paymentsData, isLoading, error } = queryData;
+
+	console.log( {
+		queryData,
+		data: paymentsData,
+		update: '12',
+	} );
+
+	// Use API data or fallback to dummy data
+	const allPayments = paymentsData?.payments || [];
+	const totalPayments = paymentsData?.total || allPayments.length;
+	const totalPages = Math.ceil( totalPayments / itemsPerPage );
+
+	// Get current page data (for client-side pagination fallback)
+	const startIndex = ( page - 1 ) * itemsPerPage;
+	const endIndex = startIndex + itemsPerPage;
+	const payments = paymentsData?.payments
+		? allPayments
+		: allPayments.slice( startIndex, endIndex );
+
+	// Reset page to 1 when filters or items per page change
+	useEffect( () => {
+		setPage( 1 );
+	}, [ searchTerm, filter, selectedDates, itemsPerPage ] );
+
+	// Format amount to currency
+	const formatAmount = ( amount ) => {
+		return `$${ amount.toFixed( 2 ) }`;
+	};
+
+	// Format datetime to readable format
+	const formatDateTime = ( datetime ) => {
+		const date = new Date( datetime );
+		return date.toLocaleString( 'en-US', {
+			month: 'short',
+			day: 'numeric',
+			year: 'numeric',
+			hour: 'numeric',
+			minute: '2-digit',
+			hour12: true,
+		} );
+	};
+
+	// Get status badge variant based on status
+	const getStatusVariant = ( status ) => {
+		switch ( status ) {
+			case 'succeeded':
+				return 'green';
+			case 'pending':
+			case 'partially_refunded':
+				return 'yellow';
+			case 'failed':
+				return 'red';
+			case 'refunded':
+				return 'blue';
+			case 'cancelled':
+				return 'gray';
+			default:
+				return 'gray';
+		}
+	};
+
+	// Handle individual row selection
+	const handleSelectRow = ( rowId ) => {
+		setSelectedRows( ( prev ) =>
+			prev.includes( rowId )
+				? prev.filter( ( id ) => id !== rowId )
+				: [ ...prev, rowId ]
+		);
+	};
+
+	// Handle select all rows
+	const handleSelectAll = () => {
+		setSelectedRows(
+			selectedRows.length === payments.length
+				? []
+				: payments.map( ( row ) => row.id )
+		);
+	};
+
+	// Action handlers - replace with actual functionality in production
+	const handleView = ( { id, type } ) => {
+		setViewSinglePayment( id );
+		setSinglePaymentType( type );
+	};
+
+	const handleDeleteSingle = ( id ) => {
+		console.log( 'delete single', id );
+		// TODO: Implement edit payment functionality
+	};
+
+	// Placeholder handlers for batch actions
+	const handleResend = ( paymentIds ) => {
+		console.log( 'resend', paymentIds );
+		// TODO: Implement resend payment functionality
+	};
+
+	const handleDelete = ( paymentIds ) => {
+		console.log( 'delete', paymentIds );
+		// TODO: Implement delete payment functionality
+	};
+
+	// Placeholder handlers for filters
+	const handleDateApply = ( dates ) => {
+		console.log( 'date filter', dates );
+		setSelectedDates( dates );
+		setIsDatePickerOpen( false );
+		// TODO: Implement date filtering
+	};
+
+	const handleDateCancel = () => {
+		setIsDatePickerOpen( false );
+	};
+
+	const getSelectedDate = ( dates ) => {
+		if ( dates.from && dates.to ) {
+			return `${ dates.from.toLocaleDateString() } - ${ dates.to.toLocaleDateString() }`;
+		}
+		return '';
+	};
+
+	const getStatusLabel = ( status ) => {
+		const statusFilter = STATUS_FILTERS.find( ( f ) => f.value === status );
+		return statusFilter ? statusFilter.label : status;
+	};
+
+	// Pagination event handlers
+	const handlePageChange = ( newPage ) => {
+		setPage( newPage );
+		setSelectedRows( [] ); // Clear selections when changing pages
+	};
+
+	const handleItemsPerPageChange = ( newItemsPerPage ) => {
+		setItemsPerPage( newItemsPerPage );
+		setSelectedRows( [] ); // Clear selections when changing page size
+	};
+
+	const tableLoading = () => (
+		<Table.Row>
+			<Table.Cell colSpan={ 7 } className="text-center py-8">
+				{ __( 'Loading payments…', 'sureforms' ) }
+			</Table.Cell>
+		</Table.Row>
+	);
+
+	const tableError = () => (
+		<Table.Row>
+			<Table.Cell colSpan={ 7 } className="text-center py-8 text-red-600">
+				{ __(
+					'Error loading payments. Please try again.',
+					'sureforms'
+				) }
+			</Table.Cell>
+		</Table.Row>
+	);
+
+	const tableNoPayments = () => (
+		<Table.Row>
+			<Table.Cell colSpan={ 7 } className="text-center py-8">
+				{ __( 'No payments found.', 'sureforms' ) }
+			</Table.Cell>
+		</Table.Row>
+	);
+
+	const tableHead = () => {
+		const tableHeadContent = applyFilters(
+			'srfm_payment_admin_table_head_content',
+			[
+				{
+					key: 'form',
+					title: __( 'Form', 'sureforms' ),
+					className: 'w-1/6',
+				},
+				{
+					key: 'type',
+					title: __( 'Type', 'sureforms' ),
+					className: 'w-1/8',
+				},
+				{
+					key: 'customer',
+					title: __( 'Customer', 'sureforms' ),
+					className: 'w-1/6',
+				},
+				{
+					key: 'amountPaid',
+					title: __( 'Amount Paid', 'sureforms' ),
+					className: 'w-1/8',
+				},
+				{
+					key: 'status',
+					title: __( 'Status', 'sureforms' ),
+					className: 'w-1/6',
+				},
+				{
+					key: 'dateTime',
+					title: __( 'Date & Time', 'sureforms' ),
+					className: 'w-1/6',
+				},
+				{
+					key: 'actions',
+					title: __( 'Actions', 'sureforms' ),
+					className: 'w-1/8',
+				},
+			]
+		);
+
+		return (
+			<Table.Head
+				onChangeSelection={ handleSelectAll }
+				indeterminate={
+					selectedRows.length > 0 &&
+					selectedRows.length < payments.length
+				}
+				selected={ selectedRows.length > 0 }
+			>
+				{ tableHeadContent.map( ( head ) => (
+					<Table.HeadCell
+						key={ head.key }
+						className={ head.className }
+					>
+						{ head.title }
+					</Table.HeadCell>
+				) ) }
+			</Table.Head>
+		);
+	};
+
+	const tableRow = ( payment ) => {
+		const rowAction = (
+			<div className="flex items-center gap-2">
+				<Button
+					variant="ghost"
+					size="sm"
+					onClick={ () =>
+						handleView( {
+							id: payment.id,
+							type: payment.type,
+						} )
+					}
+				>
+					<ViewIcon className="w-4 h-4" />
+				</Button>
+				<Button
+					variant="ghost"
+					size="sm"
+					onClick={ () => handleDeleteSingle( payment.id ) }
+				>
+					<DeleteIcon className="w-4 h-4" />
+				</Button>
+			</div>
+		);
+
+		const rowStatusBadge = (
+			<Badge
+				label={ getStatusLabel( payment.status ) }
+				variant={ getStatusVariant( payment.status ) }
+				size="sm"
+				className="max-w-fit"
+				disableHover
+			/>
+		);
+
+		const paymentType = (
+			<Badge
+				label={ payment.payment_type }
+				variant="neutral"
+				size="sm"
+				className="max-w-fit"
+				disableHover
+			/>
+		);
+
+		// Check if payment is partially refunded
+		const isPartiallyRefunded =
+			payment.status === 'partially_refunded' &&
+			payment.refunded_amount &&
+			parseFloat( payment.refunded_amount ) > 0;
+
+		// Calculate remaining amount after refund
+		const originalAmount = parseFloat(
+			payment.total_amount || payment.amount
+		);
+		const refundedAmount = parseFloat( payment.refunded_amount || 0 );
+		const remainingAmount = originalAmount - refundedAmount;
+
+		// Format amount display based on refund status
+		const rowAmountPaid = isPartiallyRefunded ? (
+			<span style={ { display: 'flex', gap: '8px' } }>
+				<span
+					style={ {
+						textDecoration: 'line-through',
+						color: '#6c757d',
+					} }
+				>
+					{ formatAmount( originalAmount ) }
+				</span>
+				<strong>{ formatAmount( remainingAmount ) }</strong>
+			</span>
+		) : (
+			formatAmount( originalAmount )
+		);
+
+		const tableRowContent = applyFilters(
+			'srfm_payment_admin_table_row_content',
+			[
+				{ key: 'form', content: payment.form },
+				{ key: 'type', content: paymentType },
+				{ key: 'customer', content: payment.customer },
+				{ key: 'amountPaid', content: rowAmountPaid },
+				{ key: 'status', content: rowStatusBadge },
+				{
+					key: 'dateTime',
+					content: formatDateTime( payment.datetime ),
+				},
+				{ key: 'actions', content: rowAction },
+			],
+			payment
+		);
+
+		return (
+			<Table.Row
+				key={ payment.id }
+				selected={ selectedRows.includes( payment.id ) }
+				onChangeSelection={ () => handleSelectRow( payment.id ) }
+			>
+				{ tableRowContent.map( ( row ) => (
+					<Table.Cell key={ row.key }>{ row.content }</Table.Cell>
+				) ) }
+			</Table.Row>
+		);
+	};
+
+	return (
+		<div className="min-h-screen px-8 py-8 bg-background-secondary">
+			<div className="p-4 space-y-2 border-0.5 border-solid shadow-sm bg-background-primary rounded-xl border-border-subtle">
+				<div>
+					{ /* Filters or Batch Actions */ }
+					<div className="flex items-center justify-between p-1.25">
+						<h1 className="text-xl font-semibold text-text-primary">
+							{ __( 'Payment Logs', 'sureforms' ) }
+						</h1>
+						<div className="flex space-x-4">
+							{ selectedRows.length > 0 ? (
+								// Batch Action Buttons
+								<>
+									<Button
+										variant="primary"
+										icon={ <ResendIcon /> }
+										size="sm"
+										onClick={ () =>
+											handleResend( selectedRows )
+										}
+										className="font-medium"
+									>
+										{ __( 'Resend Payments', 'sureforms' ) }
+									</Button>
+									<Button
+										variant="outline"
+										icon={ <DeleteIcon /> }
+										size="sm"
+										onClick={ () =>
+											handleDelete( selectedRows )
+										}
+										destructive
+									>
+										{ __( 'Delete', 'sureforms' ) }
+									</Button>
+								</>
+							) : (
+								// Filter Controls
+								<>
+									{ /* Conditionally Render Reset Filters Button */ }
+									{ ( selectedDates.from ||
+										selectedDates.to ||
+										filter ||
+										searchTerm ) && (
+										<Button
+											variant="link"
+											size="sm"
+											icon={ <X /> }
+											onClick={ () => {
+												setSelectedDates( {
+													from: null,
+													to: null,
+												} );
+												setFilter( '' );
+												setSearchTerm( '' );
+												setPage( 1 );
+											} }
+											destructive
+											className="leading-4 no-underline hover:no-underline min-w-fit focus:[box-shadow:none]"
+										>
+											{ __(
+												'Clear Filters',
+												'sureforms'
+											) }
+										</Button>
+									) }
+
+									<Input
+										className="w-52"
+										type="text"
+										size="sm"
+										onChange={ setSearchTerm }
+										value={ searchTerm }
+										placeholder={ __(
+											'Search…',
+											'sureforms'
+										) }
+										prefix={
+											<Search className="text-icon-secondary" />
+										}
+									/>
+
+									{ /* Status Filter */ }
+									<div className="min-w-[200px]">
+										<Select
+											value={ filter }
+											onChange={ setFilter }
+											size="sm"
+										>
+											<Select.Button
+												className="w-52 h-[2rem] [&_div]:text-xs"
+												placeholder={ __(
+													'Status',
+													'sureforms'
+												) }
+											>
+												{ ( { value: renderValue } ) =>
+													renderValue
+														? getStatusLabel(
+															renderValue
+														  )
+														: __(
+															'Select Status',
+															'sureforms'
+														  )
+												}
+											</Select.Button>
+											<Select.Options>
+												{ STATUS_FILTERS.map(
+													( option ) => (
+														<Select.Option
+															key={ option.value }
+															value={
+																option.value
+															}
+															className="text-xs"
+														>
+															<span>
+																{ option.label }
+															</span>
+														</Select.Option>
+													)
+												) }
+											</Select.Options>
+										</Select>
+									</div>
+									{ /* Date Range Picker */ }
+									<div className="relative">
+										<Input
+											type="text"
+											size="sm"
+											value={ getSelectedDate(
+												selectedDates
+											) }
+											suffix={
+												<Calendar className="text-icon-secondary" />
+											}
+											onClick={ () =>
+												setIsDatePickerOpen(
+													! isDatePickerOpen
+												)
+											}
+											placeholder={ __(
+												'mm/dd/yyyy - mm/dd/yyyy',
+												'sureforms'
+											) }
+											className="cursor-pointer w-52"
+											readOnly
+										/>
+										{ isDatePickerOpen && (
+											<div className="absolute right-0 z-10 mt-2 rounded-lg shadow-lg">
+												<DatePicker
+													applyButtonText={ __(
+														'Apply',
+														'sureforms'
+													) }
+													cancelButtonText={ __(
+														'Cancel',
+														'sureforms'
+													) }
+													selectionType="range"
+													showOutsideDays={ false }
+													variant="presets"
+													onApply={ handleDateApply }
+													onCancel={
+														handleDateCancel
+													}
+													selected={ selectedDates }
+												/>
+											</div>
+										) }
+									</div>
+								</>
+							) }
+						</div>
+					</div>
+				</div>
+
+				{ /* Payment Table Content */ }
+				<div className="overflow-hidden bg-background-primary">
+					<div className="overflow-x-auto">
+						<Table className="w-full" checkboxSelection>
+							{ tableHead() }
+							<Table.Body>
+								{ isLoading
+									? tableLoading()
+									: error
+										? tableError()
+										: payments.length === 0
+											? tableNoPayments()
+											: payments.map( tableRow ) }
+							</Table.Body>
+							<Table.Footer className="flex items-center justify-between">
+								{ /* Page Label - aligned to the left */ }
+								<div className="text-sm font-normal text-text-secondary whitespace-nowrap flex items-center gap-2">
+									<div>
+										{ __( 'Page', 'sureforms' ) } { page }{ ' ' }
+										{ __( 'out of', 'sureforms' ) }{ ' ' }
+										{ totalPages }
+									</div>
+									<div>
+										{ /* Items per page dropdown */ }
+										<Select
+											value={ itemsPerPage }
+											onChange={
+												handleItemsPerPageChange
+											}
+											size="sm"
+										>
+											<Select.Button className="w-16 h-[1.75rem]">
+												{ ( { value: renderValue } ) =>
+													renderValue || itemsPerPage
+												}
+											</Select.Button>
+											<Select.Options>
+												{ [ 3, 5, 7, 10, 12 ].map(
+													( count ) => (
+														<Select.Option
+															key={ count }
+															value={ count }
+														>
+															{ count }
+														</Select.Option>
+													)
+												) }
+											</Select.Options>
+										</Select>
+									</div>
+								</div>
+
+								{ /* Pagination Controls - aligned to the right */ }
+								<div className="flex items-center space-x-2">
+									<Pagination size="sm">
+										<Pagination.Content className="[&>li]:m-0">
+											<Pagination.Previous
+												tag="button"
+												onClick={ () =>
+													setPage( ( prev ) =>
+														Math.max( prev - 1, 1 )
+													)
+												}
+												disabled={ page === 1 }
+											/>
+											{ getPaginationRange(
+												page,
+												totalPages,
+												1
+											).map( ( item, index ) => {
+												if ( item === 'ellipsis' ) {
+													return (
+														<Pagination.Ellipsis
+															key={ `ellipsis-${ index }` }
+														/>
+													);
+												}
+												return (
+													<Pagination.Item
+														key={ item }
+														isActive={
+															page === item
+														}
+														onClick={ () =>
+															handlePageChange(
+																item
+															)
+														}
+													>
+														{ item }
+													</Pagination.Item>
+												);
+											} ) }
+											<Pagination.Next
+												tag="button"
+												onClick={ () =>
+													setPage( ( prev ) =>
+														Math.min(
+															prev + 1,
+															totalPages
+														)
+													)
+												}
+												disabled={ page === totalPages }
+											/>
+										</Pagination.Content>
+									</Pagination>
+								</div>
+							</Table.Footer>
+						</Table>
+					</div>
+				</div>
+			</div>
+		</div>
+	);
+};
+
+export default PaymentTable;
