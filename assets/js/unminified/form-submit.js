@@ -4,9 +4,9 @@ import {
 	initializeInlineFieldValidation,
 	handleScrollAndFocusOnError,
 	handleCaptchaValidation,
-	handleFormPayment,
 	srfmFields,
 } from './validation';
+import { handleFormPayment } from './payment';
 import { applyFilters } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
 

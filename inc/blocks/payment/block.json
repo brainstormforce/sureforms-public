@@ -22,10 +22,6 @@
 		"block_id": {
 			"type": "string"
 		},
-		"currency": {
-			"type": "string",
-			"default": "USD"
-		},
 		"description": {
 			"type": "string",
 			"default": "Payment"
@@ -76,6 +72,7 @@
 				{
 					"name": "Subscription Plan",
 					"interval": "month",
+					"billingCycles": 2,
 					"customer_name": "field_id",
 					"customer_email": "field_id"
 				}
