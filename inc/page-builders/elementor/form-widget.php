@@ -222,9 +222,11 @@ class Form_Widget extends Widget_Base {
 		$is_editor = Plugin::instance()->editor->is_edit_mode();
 
 		if ( $is_editor && isset( $settings['srfm_form_block'] ) && '' === $settings['srfm_form_block'] ) {
-			echo '<div style="background: #D9DEE1; color: #9DA5AE; padding: 10px; font-family: Roboto, sans-serif">' .
-					esc_html__( 'Select the form that you wish to add here.', 'sureforms' ) .
-				'</div>';
+			?>
+			<div style="background: #D9DEE1; color: #9DA5AE; padding: 10px; font-family: Roboto, sans-serif">
+				<?php echo esc_html__( 'Select the form that you wish to add here.', 'sureforms' ); ?>
+			</div>
+			<?php
 			return;
 		}
 
@@ -239,10 +241,10 @@ class Form_Widget extends Widget_Base {
 
 		// phpcs:ignore -- WordPress.Security.EscapeOutput.OutputNotEscaped - Escaping not required.
 		echo do_shortcode( '[sureforms id="' . $settings['srfm_form_block'] . '" show_title="' . ! $show_form_title . '"]' );
-		// phpcs:ignore -- WordPress.Security.EscapeOutput.OutputNotEscaped - Escaping not required.
-		echo '<style>' . $styles['css'] . '</style>';
-		// phpcs:ignore -- WordPress.Security.EscapeOutput.OutputNotEscaped - Escaping not required.
-		echo '<script>' . $styles['js'] . '</script>';
+		?>
+		<style><?php echo $styles['css']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></style>
+		<script><?php echo $styles['js']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></script>
+		<?php
 	}
 
 }

@@ -28,6 +28,13 @@ class Gutenberg_Hooks {
 	protected $patterns = [];
 
 	/**
+	 * Processed blocks.
+	 *
+	 * @var array
+	 */
+	protected $processed_blocks = [];
+
+	/**
 	 * Class constructor.
 	 *
 	 * @return void
@@ -49,9 +56,10 @@ class Gutenberg_Hooks {
 		add_action( 'enqueue_block_editor_assets', [ $this, 'form_editor_screen_assets' ] );
 		add_action( 'enqueue_block_editor_assets', [ $this, 'block_editor_assets' ] );
 		add_filter( 'block_categories_all', [ $this, 'register_block_categories' ], 10, 1 );
-		add_action( 'init', [ $this, 'register_block_patterns' ], 9 );
 		add_filter( 'allowed_block_types_all', [ $this, 'disable_forms_wrapper_block' ], 10, 2 );
 		add_action( 'save_post_sureforms_form', [ $this, 'update_field_slug' ], 10, 2 );
+		// Priority 11: This action is called after update_field_slug (priority 10) to ensure slugs are created for all blocks before adding block configuration.
+		add_action( 'save_post_sureforms_form', [ $this, 'add_block_configuration' ], 11, 2 );
 		add_action( 'load-post.php', [ $this, 'maybe_migrate_form_stylings' ] );
 	}
 
@@ -119,28 +127,6 @@ class Gutenberg_Hooks {
 		];
 
 		return array_merge( $custom_categories, $categories );
-	}
-
-	/**
-	 * Register our block patterns.
-	 *
-	 * @return void
-	 * @since 0.0.1
-	 */
-	public function register_block_patterns() {
-		// Apply filters to the patterns.
-		$this->patterns = apply_filters( 'srfm_block_patterns', $this->patterns );
-
-		// Iterate over each block pattern.
-		foreach ( $this->patterns as $block_pattern ) {
-			// Attempt to register block pattern from the main directory.
-			if ( ! $this->register_block_pattern_from_directory( $block_pattern, plugin_dir_path( SRFM_FILE ) . 'templates/forms/' ) ) {
-				// If unsuccessful, attempt to register block pattern from the pro directory.
-				if ( Helper::has_pro() ) {
-					$this->register_block_pattern_from_directory( $block_pattern, SRFM_PRO_DIR . 'templates/forms/' );
-				}
-			}
-		}
 	}
 
 	/**
@@ -227,8 +213,8 @@ class Gutenberg_Hooks {
 				'get_form_markup_url'               => 'sureforms/v1/generate-form-markup',
 				'is_pro_active'                     => Helper::has_pro(),
 				'srfm_default_dynamic_block_option' => get_option( 'srfm_default_dynamic_block_option', Helper::default_dynamic_block_option() ),
-				'form_selector_nonce'               => current_user_can( 'edit_posts' ) ? wp_create_nonce( 'wp_rest' ) : '',
-				'is_admin_user'                     => current_user_can( 'manage_options' ),
+				'form_selector_nonce'               => Helper::current_user_can( 'edit_posts' ) ? wp_create_nonce( 'wp_rest' ) : '',
+				'is_admin_user'                     => Helper::current_user_can(),
 				'site_url'                          => $site_url,
 				'is_suremails_active'               => is_plugin_active( 'suremails/suremails.php' ),
 			]
@@ -278,7 +264,7 @@ class Gutenberg_Hooks {
 	 * @return void
 	 */
 	public function update_field_slug( $post_id, $post ) {
-		$blocks = parse_blocks( $post->post_content );
+		$blocks = $this->prepare_process_blocks( $post );
 
 		if ( empty( $blocks ) ) {
 			return;
@@ -317,7 +303,7 @@ class Gutenberg_Hooks {
 	 */
 	public function maybe_migrate_form_stylings() {
 		$post_id = isset( $_GET['post'] ) ? Helper::get_integer_value( sanitize_text_field( wp_unslash( $_GET['post'] ) ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- $_GET['post'] does not provide nonce.
-		if ( empty( $post_id ) || ! current_user_can( 'edit_post', $post_id ) ) {
+		if ( empty( $post_id ) || ! Helper::current_user_can() ) {
 			return;
 		}
 
@@ -351,21 +337,52 @@ class Gutenberg_Hooks {
 	}
 
 	/**
-	 * Register block pattern from the specified directory.
+	 * Add block configuration for the given post.
 	 *
-	 * @param string|mixed $block_pattern The block pattern name.
-	 * @param string       $directory The directory path.
-	 * @since 0.0.2
-	 * @return bool True if the block pattern was registered, false otherwise.
+	 * This function processes the Gutenberg blocks from the provided post object,
+	 * and stores the block configuration for the form fields using the Helper class.
+	 *
+	 * @param int      $post_id The ID of the post being saved.
+	 * @param \WP_Post $post    The post object containing the block content.
+	 * @since 1.12.2
+	 * @return void
 	 */
-	private function register_block_pattern_from_directory( $block_pattern, $directory ) {
-		$pattern_file = $directory . $block_pattern . '.php';
-
-		if ( is_readable( $pattern_file ) ) {
-			register_block_pattern( 'srfm/' . $block_pattern, require $pattern_file );
-			return true;
+	public function add_block_configuration( $post_id, $post ) {
+		if ( ! $post instanceof \WP_Post ) {
+			return;
 		}
 
-		return false;
+		$blocks = $this->prepare_process_blocks( $post );
+
+		if ( empty( $blocks ) ) {
+			return;
+		}
+
+		// Process and store block configurations for form fields.
+		Field_Validation::add_block_config( $blocks, $post_id );
 	}
+
+	/**
+	 * Prepare and process Gutenberg blocks from the given post.
+	 *
+	 * This function parses the post content into blocks and stores them in the
+	 * $processed_blocks property. If the blocks have already been processed,
+	 * it returns the cached result.
+	 *
+	 * @param \WP_Post $post The post object containing the block content.
+	 * @since 1.12.2
+	 * @return array The array of parsed blocks.
+	 */
+	public function prepare_process_blocks( $post ) {
+		// Return cached processed blocks if already set.
+		if ( ! empty( $this->processed_blocks ) ) {
+			return $this->processed_blocks;
+		}
+
+		// Parse the post content into blocks and store the result.
+		$this->processed_blocks = parse_blocks( $post->post_content );
+
+		return $this->processed_blocks;
+	}
+
 }

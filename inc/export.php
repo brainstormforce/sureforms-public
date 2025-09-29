@@ -82,15 +82,6 @@ class Export {
 			wp_send_json_error( $error_data );
 		}
 
-		// check if the user has permission to export forms.
-		if ( ! Helper::current_user_can( 'manage_options' ) ) {
-			wp_send_json_error(
-				[
-					'error' => __( 'You do not have permission to export forms.', 'sureforms' ),
-				]
-			);
-		}
-
 		if ( isset( $_POST['post_id'] ) ) {
 			$post_ids = explode( ',', sanitize_text_field( wp_unslash( $_POST['post_id'] ) ) );
 		} else {
@@ -146,16 +137,6 @@ class Export {
 			);
 		}
 
-		if ( ! current_user_can( 'manage_options' ) ) {
-			// Return error if user does not have permissions to manage options.
-			wp_send_json_error(
-				[
-					'data'   => esc_html__( 'You do not have permissions to manage options.', 'sureforms' ),
-					'status' => false,
-				]
-			);
-		}
-
 		// Get the raw POST data.
 		$post_data = file_get_contents( 'php://input' );
 		if ( ! $post_data ) {
@@ -186,7 +167,11 @@ class Export {
 				$post_id = wp_insert_post( $new_post );
 
 				// Update the post content formId to the new post id.
-				$post_content = str_replace( '\"formId\":' . $form_data['post']['ID'], '\"formId\":' . $post_id, $post_content );
+				$post_content = str_replace(
+					'\"formId\":' . intval( $form_data['post']['ID'] ),
+					'\"formId\":' . intval( $post_id ),
+					$post_content
+				);
 
 				// update the post content.
 				wp_update_post(
@@ -236,9 +221,7 @@ class Export {
 			[
 				'methods'             => WP_REST_Server::EDITABLE,
 				'callback'            => [ $this, 'handle_import_form' ],
-				'permission_callback' => static function () {
-					return Helper::current_user_can( 'manage_options' );
-				},
+				'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
 			]
 		);
 	}

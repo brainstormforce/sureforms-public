@@ -12,7 +12,6 @@ use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Traits\Get_Instance;
 use WP_Error;
 use WP_Post;
-use WP_Post_Type;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -321,31 +320,81 @@ class Helper {
 		$show_labels_as_placeholder = get_post_meta( self::get_integer_value( $form_id ), '_srfm_use_label_as_placeholder', true );
 		$show_labels_as_placeholder = $show_labels_as_placeholder ? self::get_string_value( $show_labels_as_placeholder ) : false;
 
+		$required_sign = apply_filters( 'srfm_value_after_label_placeholder', ' *' );
+
+		if ( ! is_string( $required_sign ) ) {
+			$required_sign = ' *';
+		}
+
 		switch ( $type ) {
 			case 'label':
-				$markup = $label ? '<label id="srfm-label-' . esc_attr( $block_id ) . '" for="srfm-' . $slug . '-' . esc_attr( $block_id ) . '" class="srfm-block-label">' . wp_kses_post( $label ) . ( $required ? '<span class="srfm-required" aria-hidden="true"> *</span>' : '' ) . '</label>' : '';
+				if ( $label ) {
+					ob_start();
+					?>
+					<label id="srfm-label-<?php echo esc_attr( $block_id ); ?>" for="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>" class="srfm-block-label">
+						<?php echo wp_kses_post( $label ); ?>
+						<?php if ( $required ) { ?>
+							<span class="srfm-required" aria-hidden="true"> *</span>
+						<?php } ?>
+					</label>
+					<?php
+					$markup = ob_get_clean();
+				}
 				break;
 			case 'help':
-				$markup = $help ? '<div class="srfm-description" id="srfm-description-' . esc_attr( $block_id ) . '">' . wp_kses_post( $help ) . '</div>' : '';
+				if ( $help ) {
+					ob_start();
+					?>
+					<div class="srfm-description" id="srfm-description-<?php echo esc_attr( $block_id ); ?>">
+						<?php echo wp_kses_post( $help ); ?>
+					</div>
+					<?php
+					$markup = ob_get_clean();
+				}
 				break;
 			case 'error':
-				$markup = $required || $override ? '<div class="srfm-error-message" data-srfm-id="srfm-error-' . esc_attr( $block_id ) . '" data-error-msg="' . esc_attr( $error_msg ) . '"' . $duplicate_msg . '>' . esc_html( $error_msg ) . '</div>' : '';
+				if ( $required || $override ) {
+					ob_start();
+					?>
+					<div class="srfm-error-message" data-srfm-id="srfm-error-<?php echo esc_attr( $block_id ); ?>" data-error-msg="<?php echo esc_attr( $error_msg ); ?>"<?php echo $duplicate_msg; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
+						<?php echo esc_html( $error_msg ); ?>
+					</div>
+					<?php
+					$markup = ob_get_clean();
+				}
 				break;
 			case 'is_unique':
-				$markup = $is_unique ? '<div class="srfm-error">' . esc_html( $duplicate_msg ) . '</div>' : '';
+				if ( $is_unique ) {
+					ob_start();
+					?>
+					<div class="srfm-error">
+						<?php echo esc_html( $duplicate_msg ); ?>
+					</div>
+					<?php
+					$markup = ob_get_clean();
+				}
 				break;
 			case 'placeholder':
-				$markup = $label && '1' === $show_labels_as_placeholder ? wp_kses_post( $label ) . ( $required ? ' *' : '' ) : '';
+				$markup = $label && '1' === $show_labels_as_placeholder ? wp_kses_post( $label ) . ( $required ? esc_attr( $required_sign ) : '' ) : '';
 				break;
 			case 'label_text':
 				// This has been added for generating label text for the form markup instead of adding it in the label tag.
-				$markup = $label ? wp_kses_post( $label ) . ( $required ? '<span class="srfm-required" aria-hidden="true"> *</span>' : '' ) . '</label>' : '';
+				if ( $label ) {
+					ob_start();
+					?>
+					<?php echo wp_kses_post( $label ); ?>
+					<?php if ( $required ) { ?>
+						<span class="srfm-required" aria-hidden="true"> *</span>
+					<?php } ?>
+					<?php
+					$markup = ob_get_clean();
+				}
 				break;
 			default:
 				$markup = '';
 		}
 
-		return $markup;
+		return is_string( $markup ) ? $markup : '';
 	}
 
 	/**
@@ -360,7 +409,6 @@ class Helper {
 	public static function fetch_svg( $icon = '', $class = '', $html = '' ) {
 		$class = $class ? ' ' . $class : '';
 
-		$output = '<span class="srfm-icon' . $class . '" ' . $html . '>';
 		if ( ! self::$srfm_svgs ) {
 			ob_start();
 
@@ -369,10 +417,14 @@ class Helper {
 			self::$srfm_svgs = apply_filters( 'srfm_svg_icons', self::$srfm_svgs );
 		}
 
-		$output .= self::$srfm_svgs[ $icon ] ?? '';
-		$output .= '</span>';
-
-		return $output;
+		ob_start();
+		?>
+		<span class="srfm-icon<?php echo esc_attr( $class ); ?>" <?php echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
+			<?php echo self::$srfm_svgs[ $icon ] ?? ''; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+		</span>
+		<?php
+		$output = ob_get_clean();
+		return is_string( $output ) ? $output : '';
 	}
 
 	/**
@@ -469,7 +521,7 @@ class Helper {
 	 * @return array<mixed> Live preview data.
 	 */
 	public static function get_instant_form_live_data() {
-		$srfm_live_mode_data = isset( $_GET['live_mode'] ) && current_user_can( 'edit_posts' ) ? self::sanitize_recursively( 'sanitize_text_field', wp_unslash( $_GET ) ) : []; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verification is not needed here.
+		$srfm_live_mode_data = isset( $_GET['live_mode'] ) && self::current_user_can() ? self::sanitize_recursively( 'sanitize_text_field', wp_unslash( $_GET ) ) : []; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verification is not needed here.
 
 		return $srfm_live_mode_data ? array_map(
 			// Normalize falsy values.
@@ -537,19 +589,8 @@ class Helper {
 	 * @since 0.0.1
 	 */
 	public static function get_items_permissions_check() {
-		if ( current_user_can( 'edit_posts' ) ) {
+		if ( self::current_user_can() ) {
 			return true;
-		}
-
-		foreach ( get_post_types( [ 'show_in_rest' => true ], 'objects' ) as $post_type ) {
-			/**
-			 * The post type.
-			 *
-			 * @var WP_Post_Type $post_type
-			 */
-			if ( current_user_can( $post_type->cap->edit_posts ) ) {
-				return true;
-			}
 		}
 
 		return new WP_Error(
@@ -562,21 +603,24 @@ class Helper {
 	/**
 	 * Check if the current user has a given capability.
 	 *
-	 * @param string $capability The capability to check.
+	 * @param string       $capability The capability to check.
+	 * @param array<mixed> $args Optional. Additional arguments to pass to the capability check.
+	 *
 	 * @since 0.0.3
 	 * @return bool Whether the current user has the given capability or role.
 	 */
-	public static function current_user_can( $capability = '' ) {
-
+	public static function current_user_can( $capability = '', $args = [] ) {
 		if ( ! function_exists( 'current_user_can' ) ) {
 			return false;
 		}
 
 		if ( ! is_string( $capability ) || empty( $capability ) ) {
-			$capability = 'edit_posts';
+			$capability = 'manage_options';
 		}
 
-		return current_user_can( $capability );
+		return ! empty( $args ) && is_array( $args ) && count( $args ) > 0
+			? current_user_can( $capability, ...$args )
+			: current_user_can( $capability );
 	}
 
 	/**
@@ -1756,13 +1800,16 @@ class Helper {
 	 * @since 1.9.1
 	 */
 	public static function get_forms_with_entry_counts( $timestamp, $limit = 0, $sort = true ) {
-		// Get all published forms.
+		// Get all published forms with post objects for bulk title access.
 		$args = [
-			'post_type'      => SRFM_FORMS_POST_TYPE,
-			'posts_per_page' => -1,
-			'post_status'    => 'publish',
-			'orderby'        => 'ID',
-			'order'          => 'DESC',
+			'post_type'              => SRFM_FORMS_POST_TYPE,
+			'posts_per_page'         => -1,
+			'post_status'            => 'publish',
+			'orderby'                => 'ID',
+			'order'                  => 'DESC',
+			'no_found_rows'          => true,
+			'update_post_term_cache' => false,
+			'update_post_meta_cache' => false,
 		];
 
 		$query = new \WP_Query( $args );
@@ -1773,21 +1820,24 @@ class Helper {
 
 		$all_forms = [];
 
-		while ( $query->have_posts() ) {
-			$query->the_post();
-			$form_id = get_the_ID();
+		// Process posts directly from the query results without touching global $post.
+		foreach ( $query->posts as $form ) {
+			// Ensure we have a valid post object.
+			if ( ! $form instanceof \WP_Post ) {
+				continue;
+			}
 
-			// Skip if form_id is false.
-			if ( false === $form_id ) {
+			$form_id = (int) $form->ID;
+			if ( $form_id <= 0 ) {
 				continue;
 			}
 
 			// Get entries count after the timestamp for this specific form.
 			$entry_count = Entries::get_entries_count_after( $timestamp, $form_id );
 
-			// Get form title, use "Blank Form" if empty.
-			$form_title = get_the_title();
-			if ( empty( trim( $form_title ) ) ) {
+			// Get form title directly from post object, use "Blank Form" if empty.
+			$form_title = $form->post_title;
+			if ( empty( trim( self::get_string_value( $form_title ) ) ) ) {
 				$form_title = __( 'Blank Form', 'sureforms' );
 			}
 
@@ -1797,8 +1847,6 @@ class Helper {
 				'count'   => $entry_count,
 			];
 		}
-
-		wp_reset_postdata();
 
 		// Sort by count descending, then by form_id descending for consistency.
 		if ( $sort ) {

@@ -31,7 +31,7 @@ import EmailNotification from '../email-settings/EmailNotification';
 import FormConfirmSetting from '../form-confirm-setting';
 import { setFormSpecificSmartTags, cn } from '@Utils/Helpers';
 import toast from 'react-hot-toast';
-import { useDispatch } from '@wordpress/data';
+import { useDispatch, useSelect } from '@wordpress/data';
 import { store as blockEditorStore } from '@wordpress/block-editor';
 import FormRestriction from '../form-restrictions/FormRestriction';
 import { FormRestrictionContext } from '../form-restrictions/context';
@@ -65,6 +65,43 @@ const Dialog = ( {
 		}
 		setRenderRoot( dialogRoot );
 	}, [] );
+
+	const getAdminMenuWidth = () => {
+		const adminMenu = document.getElementById( 'adminmenu' );
+		const width = adminMenu ? adminMenu.offsetWidth : 0;
+		return width + 40;
+	};
+
+	const isFullscreen = useSelect(
+		( select ) =>
+			select( 'core/edit-post' ).isFeatureActive( 'fullscreenMode' ),
+		[]
+	);
+
+	useLayoutEffect( () => {
+		const updateMargin = () => {
+			window.requestAnimationFrame( () => {
+				const dialogWrapper =
+					document.querySelector( '.srfm-dialog-panel' );
+				if ( ! dialogWrapper ) {
+					return;
+				}
+
+				const width = getAdminMenuWidth();
+
+				if ( ! isFullscreen ) {
+					dialogWrapper.style.marginLeft = `${ width }px`;
+					dialogWrapper.style.marginRight = '40px';
+				} else {
+					dialogWrapper.style.removeProperty( 'margin-left' );
+					dialogWrapper.style.removeProperty( 'margin-right' );
+				}
+			} );
+		};
+		updateMargin();
+		window.addEventListener( 'resize', updateMargin );
+		return () => window.removeEventListener( 'resize', updateMargin );
+	}, [ open, isFullscreen ] );
 
 	const emailNotificationData = sureformsKeys._srfm_email_notification || [];
 	const complianceData = sureformsKeys._srfm_compliance || [];
@@ -201,7 +238,7 @@ const Dialog = ( {
 				className="[&>div>div]:h-full z-99999 border-radius-none"
 			>
 				<ForceUIDialog.Backdrop />
-				<ForceUIDialog.Panel className="h-full w-full m-auto rounded-none">
+				<ForceUIDialog.Panel className="h-full w-full m-auto rounded-none srfm-dialog-panel">
 					<Container
 						direction="column"
 						gap="none"

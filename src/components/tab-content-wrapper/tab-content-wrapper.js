@@ -1,6 +1,7 @@
-import { Button, Container, Title } from '@bsf/force-ui';
+import { Button, Container, Title, Label } from '@bsf/force-ui';
 import { cn } from '@Utils/Helpers';
 import { ArrowLeftIcon } from 'lucide-react';
+import { __ } from '@wordpress/i18n';
 
 const TabContentWrapper = ( {
 	children,
@@ -14,6 +15,7 @@ const TabContentWrapper = ( {
 	actionLeftContent,
 	actionBtnDisabled = false,
 	hideTitle = false, // Hide the title from the content area.
+	shouldShowAutoSaveText = false,
 } ) => {
 	const handleBack = () => {
 		if ( typeof onClickBack !== 'function' ) {
@@ -31,23 +33,34 @@ const TabContentWrapper = ( {
 		onClickAction( data );
 	};
 
+	const autoSaveHelpText = __( 'All changes will be saved automatically when you press back.', 'sureforms' );
+
 	return (
 		// Add the spacing only if title is not hidden.
 		<div className={ cn( 'pb-8', ! hideTitle && 'space-y-7' ) }>
 			<Container align="center" justify="between">
-				<Container align="center" className="gap-2">
-					{ onClickBack && (
-						<Button
-							className="p-0"
-							size="md"
-							variant="ghost"
-							onClick={ handleBack }
-							icon={ <ArrowLeftIcon /> }
-						/>
-					) }
-					{ ! hideTitle && (
-						<Title tag="h4" title={ title } size="md" />
-					) }
+				<Container className="gap-0" direction="column">
+					<Container.Item className="flex items-center gap-2">
+						{ onClickBack && (
+							<Button
+								className="p-0"
+								size="md"
+								variant="ghost"
+								onClick={ handleBack }
+								icon={ <ArrowLeftIcon /> }
+							/>
+						) }
+						{ ! hideTitle && (
+							<Title tag="h4" title={ title } size="md" />
+						) }
+					</Container.Item>
+					<Container.Item className="pl-7">
+						{ shouldShowAutoSaveText && (
+							<Label size="sm" variant="help" className="text-text-on-button-disabled font-normal">
+								{ autoSaveHelpText }
+							</Label>
+						) }
+					</Container.Item>
 				</Container>
 				<Container align="center" className="gap-3">
 					{ actionLeftContent }
