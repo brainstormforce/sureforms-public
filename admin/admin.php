@@ -499,9 +499,23 @@ class Admin {
 			4
 		);
 
+		add_submenu_page(
+			'sureforms_menu',
+			__( 'Payment Summary React', 'sureforms' ),
+			__( 'Payments React', 'sureforms' ),
+			'edit_others_posts',
+			SRFM_PAYMENTS_REACT,
+			[ $this, 'render_payments_react' ],
+			5
+		);
+
 		if ( $entries_hook ) {
 			add_action( 'load-' . $entries_hook, [ $this, 'mark_entries_page_visit' ] );
 		}
+	}
+
+	public function render_payments_react() {
+		echo '<div id="srfm-payments-react-container" class="srfm-admin-wrapper"><h1>Payments React</h1></div>';
 	}
 
 	/**
