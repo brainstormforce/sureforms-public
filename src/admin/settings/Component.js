@@ -8,7 +8,7 @@ import GeneralPage from './pages/General';
 import ValidationsPage from './pages/Validations';
 import SecurityPage from './pages/Security';
 import IntegrationPage from './pages/Integrations';
-import PaymentsPage from './pages/Payments';
+import PaymentsPage from '../payment/global-setting-page';
 import { applyFilters } from '@wordpress/hooks';
 import PageTitleSection from '@Admin/components/PageTitleSection';
 
@@ -91,6 +91,8 @@ const Component = ( { path } ) => {
 						'X-WP-Nonce': srfm_admin.global_settings_nonce,
 					},
 				} );
+
+				console.log( 'global settings data:', data );
 
 				const {
 					srfm_general_settings_options,
