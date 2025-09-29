@@ -241,13 +241,6 @@ export default ( props ) => {
 		return () => clearInterval( interval );
 	}, [ textAreaPlaceholder ] );
 
-	const handlePlaceholderFocus = () => {
-		if ( ! text.trim() ) {
-			setText( textAreaPlaceholder );
-			setCharacterCount( textAreaPlaceholder.length );
-		}
-	};
-
 	const is_pro_active =
 		srfm_admin?.is_pro_active && srfm_admin?.is_pro_license_active;
 
@@ -316,7 +309,6 @@ export default ( props ) => {
 											} }
 											onInput={ handleTyping }
 											maxLength={ 2000 }
-											onFocus={ handlePlaceholderFocus }
 										/>
 										<Container
 											className="flex-wrap py-2 px-4"

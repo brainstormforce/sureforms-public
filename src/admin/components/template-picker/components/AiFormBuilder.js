@@ -150,7 +150,7 @@ const AiFormBuilder = () => {
 		if ( response?.success ) {
 			window.location.href =
 				srfm_admin.site_url +
-				`/wp-admin/admin.php?page=add-new-form&method=ai`;
+				`/wp-admin/admin.php?page=add-new-form`;
 		} else {
 			setShowAuthErrorPopup( true );
 			console.error( 'Error handling access key: ', response.message );
@@ -230,7 +230,7 @@ export const getLimitReachedPopup = () => {
 				onclick={ () => {
 					window.location.href =
 						srfm_admin.site_url +
-						'/wp-admin/admin.php?page=add-new-form&method=ai';
+						'/wp-admin/admin.php?page=add-new-form';
 				} }
 			/>
 		);
@@ -260,7 +260,7 @@ export const getLimitReachedPopup = () => {
 				onclick={ () => {
 					window.location.href =
 						srfm_admin.site_url +
-						'/wp-admin/admin.php?page=add-new-form&method=ai';
+						'/wp-admin/admin.php?page=add-new-form';
 				} }
 			/>
 		);
