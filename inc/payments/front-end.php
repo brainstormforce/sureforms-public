@@ -20,7 +20,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 1.0.0
  */
 class Front_End {
-
 	use Get_Instance;
 
 	/**

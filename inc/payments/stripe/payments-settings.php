@@ -715,6 +715,48 @@ class Payments_Settings {
 	}
 
 	/**
+	 * Get Stripe account information using stored account ID
+	 *
+	 * @return array Array containing account information or error details
+	 * @since x.x.x
+	 */
+	public function get_account_info() {
+		$settings = get_option( self::OPTION_NAME, $this->get_default_settings() );
+
+		// Check if Stripe is connected
+		if ( empty( $settings['stripe_connected'] ) ) {
+			return [
+				'success' => false,
+				'error'   => [
+					'message' => __( 'Stripe is not connected.', 'sureforms' ),
+					'code'    => 'stripe_not_connected',
+				],
+			];
+		}
+
+		// Get account ID
+		$account_id = $settings['stripe_account_id'] ?? '';
+		if ( empty( $account_id ) ) {
+			return [
+				'success' => false,
+				'error'   => [
+					'message' => __( 'Stripe account ID not found.', 'sureforms' ),
+					'code'    => 'missing_account_id',
+				],
+			];
+		}
+
+		// Call Stripe API to get account information
+		$api_response = Stripe_Helper::stripe_api_request( 'accounts', 'GET', [], $account_id );
+
+		if ( ! $api_response['success'] ) {
+			return $api_response; // Return the error from API
+		}
+
+		return $api_response;
+	}
+
+	/**
 	 * Get default settings
 	 *
 	 * @return array
@@ -800,48 +842,6 @@ class Payments_Settings {
 		// Redirect to SureForms payments settings.
 		wp_safe_redirect( admin_url( 'admin.php?page=sureforms_form_settings&tab=payments-settings&connected=1' ) );
 		exit;
-	}
-
-	/**
-	 * Get Stripe account information using stored account ID
-	 *
-	 * @return array Array containing account information or error details
-	 * @since x.x.x
-	 */
-	public function get_account_info() {
-		$settings = get_option( self::OPTION_NAME, $this->get_default_settings() );
-
-		// Check if Stripe is connected
-		if ( empty( $settings['stripe_connected'] ) ) {
-			return [
-				'success' => false,
-				'error'   => [
-					'message' => __( 'Stripe is not connected.', 'sureforms' ),
-					'code'    => 'stripe_not_connected',
-				],
-			];
-		}
-
-		// Get account ID
-		$account_id = $settings['stripe_account_id'] ?? '';
-		if ( empty( $account_id ) ) {
-			return [
-				'success' => false,
-				'error'   => [
-					'message' => __( 'Stripe account ID not found.', 'sureforms' ),
-					'code'    => 'missing_account_id',
-				],
-			];
-		}
-
-		// Call Stripe API to get account information
-		$api_response = Stripe_Helper::stripe_api_request( 'accounts', 'GET', [], $account_id );
-
-		if ( ! $api_response['success'] ) {
-			return $api_response; // Return the error from API
-		}
-
-		return $api_response;
 	}
 
 	/**

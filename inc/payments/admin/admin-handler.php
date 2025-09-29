@@ -7,8 +7,8 @@
 
 namespace SRFM\Inc\Payments\Admin;
 
-use SRFM\Inc\Traits\Get_Instance;
 use SRFM\Inc\Database\Tables\Payments;
+use SRFM\Inc\Traits\Get_Instance;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -143,6 +143,134 @@ class Admin_Handler {
 
 		} catch ( \Exception $e ) {
 			wp_send_json_error( [ 'message' => __( 'An error occurred while fetching payments.', 'sureforms' ) ] );
+		}
+	}
+
+	/**
+	 * AJAX handler for fetching single payment data.
+	 *
+	 * @return void
+	 * @since 1.0.0
+	 */
+	public function fetch_single_payment() {
+		// Verify nonce for security
+		if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'srfm_payment_admin_nonce' ) ) {
+			wp_send_json_error( [ 'message' => __( 'Security verification failed.', 'sureforms' ) ] );
+			return;
+		}
+
+		// Check user capabilities
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( [ 'message' => __( 'Insufficient permissions.', 'sureforms' ) ] );
+			return;
+		}
+
+		// Validate payment ID
+		$payment_id = isset( $_POST['payment_id'] ) ? absint( $_POST['payment_id'] ) : 0;
+		if ( empty( $payment_id ) ) {
+			wp_send_json_error( [ 'message' => __( 'Payment ID is required.', 'sureforms' ) ] );
+			return;
+		}
+
+		try {
+			// Get single payment from database
+			$payment = Payments::get( $payment_id );
+
+			if ( ! $payment ) {
+				wp_send_json_error( [ 'message' => __( 'Payment not found.', 'sureforms' ) ] );
+				return;
+			}
+
+			// Transform payment data for frontend
+			$payment_data = $this->transform_payment_for_frontend( $payment );
+
+			wp_send_json_success( $payment_data );
+
+		} catch ( \Exception $e ) {
+			wp_send_json_error( [ 'message' => __( 'An error occurred while fetching payment details.', 'sureforms' ) ] );
+		}
+	}
+
+	/**
+	 * AJAX handler for fetching subscription data with billing history.
+	 *
+	 * @return void
+	 * @since 1.0.0
+	 */
+	public function fetch_subscription() {
+		// Verify nonce for security
+		if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'srfm_payment_admin_nonce' ) ) {
+			wp_send_json_error( [ 'message' => __( 'Security verification failed.', 'sureforms' ) ] );
+			return;
+		}
+
+		// Check user capabilities
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( [ 'message' => __( 'Insufficient permissions.', 'sureforms' ) ] );
+			return;
+		}
+
+		// Validate subscription ID - could be main subscription record ID or subscription_id
+		$subscription_id = isset( $_POST['subscription_id'] ) ? sanitize_text_field( wp_unslash( $_POST['subscription_id'] ) ) : '';
+		if ( empty( $subscription_id ) ) {
+			wp_send_json_error( [ 'message' => __( 'Subscription ID is required.', 'sureforms' ) ] );
+			return;
+		}
+
+		try {
+			// Check if the ID is a payment record ID first
+			if ( is_numeric( $subscription_id ) ) {
+				$payment_record = Payments::get( absint( $subscription_id ) );
+				if ( $payment_record && 'subscription' === ( $payment_record['type'] ?? '' ) ) {
+					// This is a main subscription record ID, get the Stripe subscription ID
+					$stripe_subscription_id = $payment_record['subscription_id'] ?? '';
+					if ( empty( $stripe_subscription_id ) ) {
+						wp_send_json_error( [ 'message' => __( 'Stripe subscription ID not found in payment record.', 'sureforms' ) ] );
+						return;
+					}
+					$main_subscription = $payment_record;
+				} else {
+					wp_send_json_error( [ 'message' => __( 'Invalid subscription record.', 'sureforms' ) ] );
+					return;
+				}
+			} else {
+				// This should be a Stripe subscription ID, get the main subscription record
+				$main_subscription = Payments::get_main_subscription_record( $subscription_id );
+				if ( ! $main_subscription ) {
+					wp_send_json_error( [ 'message' => __( 'Subscription not found.', 'sureforms' ) ] );
+					return;
+				}
+				$stripe_subscription_id = $subscription_id;
+			}
+
+			// Get all related billing transactions for this subscription
+			$billing_payments = Payments::get_subscription_related_payments( $stripe_subscription_id );
+
+			// Transform main subscription data for frontend
+			$subscription_data = $this->transform_payment_for_frontend( $main_subscription );
+
+			// Transform billing payments for frontend
+			$billing_data = [];
+			foreach ( $billing_payments as $payment ) {
+				$billing_data[] = $this->transform_payment_for_frontend( $payment );
+			}
+
+			// Add subscription-specific fields
+			$subscription_data['stripe_subscription_id'] = $stripe_subscription_id;
+			$subscription_data['interval']               = $this->get_subscription_interval( $main_subscription );
+			$subscription_data['next_payment_date']      = $this->get_next_payment_date( $main_subscription );
+			$subscription_data['amount_per_cycle']       = $subscription_data['total_amount']; // Use total_amount as cycle amount
+
+			// Combine data
+			$response_data = [
+				'subscription' => $subscription_data,
+				'payments'     => $billing_data,
+			];
+
+			wp_send_json_success( $response_data );
+
+		} catch ( \Exception $e ) {
+			wp_send_json_error( [ 'message' => __( 'An error occurred while fetching subscription details.', 'sureforms' ) ] );
 		}
 	}
 
@@ -453,134 +581,6 @@ class Admin_Handler {
 		}
 
 		return Payments::get_total_main_payments_by_status( 'all', 0, $where_conditions );
-	}
-
-	/**
-	 * AJAX handler for fetching single payment data.
-	 *
-	 * @return void
-	 * @since 1.0.0
-	 */
-	public function fetch_single_payment() {
-		// Verify nonce for security
-		if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'srfm_payment_admin_nonce' ) ) {
-			wp_send_json_error( [ 'message' => __( 'Security verification failed.', 'sureforms' ) ] );
-			return;
-		}
-
-		// Check user capabilities
-		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_send_json_error( [ 'message' => __( 'Insufficient permissions.', 'sureforms' ) ] );
-			return;
-		}
-
-		// Validate payment ID
-		$payment_id = isset( $_POST['payment_id'] ) ? absint( $_POST['payment_id'] ) : 0;
-		if ( empty( $payment_id ) ) {
-			wp_send_json_error( [ 'message' => __( 'Payment ID is required.', 'sureforms' ) ] );
-			return;
-		}
-
-		try {
-			// Get single payment from database
-			$payment = Payments::get( $payment_id );
-
-			if ( ! $payment ) {
-				wp_send_json_error( [ 'message' => __( 'Payment not found.', 'sureforms' ) ] );
-				return;
-			}
-
-			// Transform payment data for frontend
-			$payment_data = $this->transform_payment_for_frontend( $payment );
-
-			wp_send_json_success( $payment_data );
-
-		} catch ( \Exception $e ) {
-			wp_send_json_error( [ 'message' => __( 'An error occurred while fetching payment details.', 'sureforms' ) ] );
-		}
-	}
-
-	/**
-	 * AJAX handler for fetching subscription data with billing history.
-	 *
-	 * @return void
-	 * @since 1.0.0
-	 */
-	public function fetch_subscription() {
-		// Verify nonce for security
-		if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'srfm_payment_admin_nonce' ) ) {
-			wp_send_json_error( [ 'message' => __( 'Security verification failed.', 'sureforms' ) ] );
-			return;
-		}
-
-		// Check user capabilities
-		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_send_json_error( [ 'message' => __( 'Insufficient permissions.', 'sureforms' ) ] );
-			return;
-		}
-
-		// Validate subscription ID - could be main subscription record ID or subscription_id
-		$subscription_id = isset( $_POST['subscription_id'] ) ? sanitize_text_field( wp_unslash( $_POST['subscription_id'] ) ) : '';
-		if ( empty( $subscription_id ) ) {
-			wp_send_json_error( [ 'message' => __( 'Subscription ID is required.', 'sureforms' ) ] );
-			return;
-		}
-
-		try {
-			// Check if the ID is a payment record ID first
-			if ( is_numeric( $subscription_id ) ) {
-				$payment_record = Payments::get( absint( $subscription_id ) );
-				if ( $payment_record && 'subscription' === ( $payment_record['type'] ?? '' ) ) {
-					// This is a main subscription record ID, get the Stripe subscription ID
-					$stripe_subscription_id = $payment_record['subscription_id'] ?? '';
-					if ( empty( $stripe_subscription_id ) ) {
-						wp_send_json_error( [ 'message' => __( 'Stripe subscription ID not found in payment record.', 'sureforms' ) ] );
-						return;
-					}
-					$main_subscription = $payment_record;
-				} else {
-					wp_send_json_error( [ 'message' => __( 'Invalid subscription record.', 'sureforms' ) ] );
-					return;
-				}
-			} else {
-				// This should be a Stripe subscription ID, get the main subscription record
-				$main_subscription = Payments::get_main_subscription_record( $subscription_id );
-				if ( ! $main_subscription ) {
-					wp_send_json_error( [ 'message' => __( 'Subscription not found.', 'sureforms' ) ] );
-					return;
-				}
-				$stripe_subscription_id = $subscription_id;
-			}
-
-			// Get all related billing transactions for this subscription
-			$billing_payments = Payments::get_subscription_related_payments( $stripe_subscription_id );
-
-			// Transform main subscription data for frontend
-			$subscription_data = $this->transform_payment_for_frontend( $main_subscription );
-
-			// Transform billing payments for frontend
-			$billing_data = [];
-			foreach ( $billing_payments as $payment ) {
-				$billing_data[] = $this->transform_payment_for_frontend( $payment );
-			}
-
-			// Add subscription-specific fields
-			$subscription_data['stripe_subscription_id'] = $stripe_subscription_id;
-			$subscription_data['interval']               = $this->get_subscription_interval( $main_subscription );
-			$subscription_data['next_payment_date']      = $this->get_next_payment_date( $main_subscription );
-			$subscription_data['amount_per_cycle']       = $subscription_data['total_amount']; // Use total_amount as cycle amount
-
-			// Combine data
-			$response_data = [
-				'subscription' => $subscription_data,
-				'payments'     => $billing_data,
-			];
-
-			wp_send_json_success( $response_data );
-
-		} catch ( \Exception $e ) {
-			wp_send_json_error( [ 'message' => __( 'An error occurred while fetching subscription details.', 'sureforms' ) ] );
-		}
 	}
 
 	/**

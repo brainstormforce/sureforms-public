@@ -10,9 +10,9 @@
 
 namespace SRFM\Inc\Payments\Stripe;
 
-use SRFM\Inc\Traits\Get_Instance;
 use SRFM\Inc\Database\Tables\Payments;
 use SRFM\Inc\Helper;
+use SRFM\Inc\Traits\Get_Instance;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
@@ -26,7 +26,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  * and payment management for both one-time and subscription payments.
  */
 class Admin_Stripe_Handler {
-
 	use Get_Instance;
 
 	/**
@@ -34,17 +33,6 @@ class Admin_Stripe_Handler {
 	 */
 	public function __construct() {
 		$this->init_hooks();
-	}
-
-	/**
-	 * Initialize WordPress hooks
-	 *
-	 * @since 1.0.0
-	 */
-	private function init_hooks() {
-		// AJAX handlers for admin refund operations
-		add_action( 'wp_ajax_srfm_stripe_cancel_subscription', [ $this, 'ajax_cancel_subscription' ] );
-		add_action( 'wp_ajax_srfm_stripe_refund_payment', [ $this, 'refund_payment' ] );
 	}
 
 	/**
@@ -229,100 +217,6 @@ class Admin_Stripe_Handler {
 		} catch ( \Exception $e ) {
 			error_log( 'SureForms Refund Error: ' . $e->getMessage() );
 			wp_send_json_error( __( 'Failed to process refund. Please try again.', 'sureforms' ) );
-		}
-	}
-
-	/**
-	 * Refund subscription payment with enhanced validation and error handling
-	 *
-	 * @param array $payment Payment record.
-	 * @param int   $refund_amount Refund amount in cents.
-	 * @return void
-	 * @since 1.0.0
-	 */
-	private function refund_subscription_payment( $payment, $refund_amount ) {
-		$payment_id     = $payment['id'] ?? 0;
-		$transaction_id = $payment['transaction_id'] ?? '';
-
-		error_log( 'SureForms: Starting subscription refund process. Payment ID: ' . $payment_id . ', Transaction ID: ' . $transaction_id . ', Amount: ' . $refund_amount );
-
-		try {
-			// Step 1: Validate input parameters
-			if ( empty( $payment ) || ! is_array( $payment ) || $refund_amount <= 0 ) {
-				error_log( 'SureForms: Invalid refund parameters provided' );
-				wp_send_json_error( __( 'Invalid refund parameters provided.', 'sureforms' ) );
-				return;
-			}
-
-			// Step 2: Verify this is a subscription-related payment
-			$is_subscription_payment = $this->is_subscription_related_payment( $payment );
-			if ( ! $is_subscription_payment ) {
-				error_log( 'SureForms: Payment is not subscription-related. Type: ' . ( $payment['type'] ?? 'unknown' ) . ', Subscription ID: ' . ( $payment['subscription_id'] ?? 'none' ) );
-				wp_send_json_error( __( 'This payment is not related to a subscription.', 'sureforms' ) );
-				return;
-			}
-
-			// Step 3: Verify subscription payment status
-			$refundable_statuses = [ 'succeeded', 'partially_refunded' ];
-			if ( empty( $payment['status'] ) || ! in_array( $payment['status'], $refundable_statuses, true ) ) {
-				error_log( 'SureForms: Subscription payment not in refundable status. Status: ' . ( $payment['status'] ?? 'unknown' ) );
-				wp_send_json_error( __( 'Only succeeded or partially refunded subscription payments can be refunded.', 'sureforms' ) );
-				return;
-			}
-
-			// Step 4: Validate refund amount limits
-			$validation_result = $this->validate_subscription_refund_amount( $payment, $refund_amount );
-			if ( ! $validation_result['valid'] ) {
-				error_log( 'SureForms: Refund amount validation failed: ' . $validation_result['message'] );
-				wp_send_json_error( $validation_result['message'] );
-				return;
-			}
-
-			// Step 5: Get payment settings and validate Stripe connection
-			$payment_settings = get_option( 'srfm_payments_settings', [] );
-			if ( empty( $payment_settings['stripe_connected'] ) ) {
-				error_log( 'SureForms: Stripe is not connected' );
-				throw new \Exception( __( 'Stripe is not connected.', 'sureforms' ) );
-			}
-
-			// Step 6: Create refund using appropriate method based on transaction ID type
-			$refund = $this->create_subscription_refund( $payment, $transaction_id, $refund_amount );
-
-			if ( ! $refund || empty( $refund['id'] ) ) {
-				error_log( 'SureForms: Stripe refund creation returned empty result' );
-				throw new \Exception( __( 'Stripe refund creation failed. Please check your Stripe dashboard for more details.', 'sureforms' ) );
-			}
-
-			// Step 7: Update database with refund information
-			error_log( 'SureForms: Updating database with refund information. Refund ID: ' . $refund['id'] );
-			$refund_stored = $this->update_subscription_refund_data( $payment_id, $refund, $refund_amount, $payment['currency'] );
-
-			if ( ! $refund_stored ) {
-				error_log( 'SureForms: Failed to update payment record with refund data' );
-				wp_send_json_error( __( 'Refund was processed by Stripe but failed to update local records. Please check your payment records manually.', 'sureforms' ) );
-				return;
-			}
-
-			// Step 8: Success response
-			error_log( 'SureForms: Subscription refund completed successfully. Refund ID: ' . $refund['id'] );
-			wp_send_json_success(
-				[
-					'message'       => __( 'Subscription payment refunded successfully.', 'sureforms' ),
-					'refund_id'     => $refund['id'],
-					'status'        => $refund['status'],
-					'type'          => 'subscription_refund',
-					'charge_id'     => $refund['charge'] ?? '',
-					'refund_amount' => number_format( $refund_amount / 100, 2 ),
-					'currency'      => strtoupper( $payment['currency'] ?? 'USD' ),
-				]
-			);
-
-		} catch ( \Exception $e ) {
-			error_log( 'SureForms Subscription Refund Error: ' . $e->getMessage() );
-
-			// Provide more specific error messages based on error type
-			$error_message = $this->get_user_friendly_refund_error( $e->getMessage() );
-			wp_send_json_error( $error_message );
 		}
 	}
 
@@ -516,6 +410,111 @@ class Admin_Stripe_Handler {
 		);
 
 		return true;
+	}
+
+	/**
+	 * Initialize WordPress hooks
+	 *
+	 * @since 1.0.0
+	 */
+	private function init_hooks() {
+		// AJAX handlers for admin refund operations
+		add_action( 'wp_ajax_srfm_stripe_cancel_subscription', [ $this, 'ajax_cancel_subscription' ] );
+		add_action( 'wp_ajax_srfm_stripe_refund_payment', [ $this, 'refund_payment' ] );
+	}
+
+	/**
+	 * Refund subscription payment with enhanced validation and error handling
+	 *
+	 * @param array $payment Payment record.
+	 * @param int   $refund_amount Refund amount in cents.
+	 * @return void
+	 * @since 1.0.0
+	 */
+	private function refund_subscription_payment( $payment, $refund_amount ) {
+		$payment_id     = $payment['id'] ?? 0;
+		$transaction_id = $payment['transaction_id'] ?? '';
+
+		error_log( 'SureForms: Starting subscription refund process. Payment ID: ' . $payment_id . ', Transaction ID: ' . $transaction_id . ', Amount: ' . $refund_amount );
+
+		try {
+			// Step 1: Validate input parameters
+			if ( empty( $payment ) || ! is_array( $payment ) || $refund_amount <= 0 ) {
+				error_log( 'SureForms: Invalid refund parameters provided' );
+				wp_send_json_error( __( 'Invalid refund parameters provided.', 'sureforms' ) );
+				return;
+			}
+
+			// Step 2: Verify this is a subscription-related payment
+			$is_subscription_payment = $this->is_subscription_related_payment( $payment );
+			if ( ! $is_subscription_payment ) {
+				error_log( 'SureForms: Payment is not subscription-related. Type: ' . ( $payment['type'] ?? 'unknown' ) . ', Subscription ID: ' . ( $payment['subscription_id'] ?? 'none' ) );
+				wp_send_json_error( __( 'This payment is not related to a subscription.', 'sureforms' ) );
+				return;
+			}
+
+			// Step 3: Verify subscription payment status
+			$refundable_statuses = [ 'succeeded', 'partially_refunded' ];
+			if ( empty( $payment['status'] ) || ! in_array( $payment['status'], $refundable_statuses, true ) ) {
+				error_log( 'SureForms: Subscription payment not in refundable status. Status: ' . ( $payment['status'] ?? 'unknown' ) );
+				wp_send_json_error( __( 'Only succeeded or partially refunded subscription payments can be refunded.', 'sureforms' ) );
+				return;
+			}
+
+			// Step 4: Validate refund amount limits
+			$validation_result = $this->validate_subscription_refund_amount( $payment, $refund_amount );
+			if ( ! $validation_result['valid'] ) {
+				error_log( 'SureForms: Refund amount validation failed: ' . $validation_result['message'] );
+				wp_send_json_error( $validation_result['message'] );
+				return;
+			}
+
+			// Step 5: Get payment settings and validate Stripe connection
+			$payment_settings = get_option( 'srfm_payments_settings', [] );
+			if ( empty( $payment_settings['stripe_connected'] ) ) {
+				error_log( 'SureForms: Stripe is not connected' );
+				throw new \Exception( __( 'Stripe is not connected.', 'sureforms' ) );
+			}
+
+			// Step 6: Create refund using appropriate method based on transaction ID type
+			$refund = $this->create_subscription_refund( $payment, $transaction_id, $refund_amount );
+
+			if ( ! $refund || empty( $refund['id'] ) ) {
+				error_log( 'SureForms: Stripe refund creation returned empty result' );
+				throw new \Exception( __( 'Stripe refund creation failed. Please check your Stripe dashboard for more details.', 'sureforms' ) );
+			}
+
+			// Step 7: Update database with refund information
+			error_log( 'SureForms: Updating database with refund information. Refund ID: ' . $refund['id'] );
+			$refund_stored = $this->update_subscription_refund_data( $payment_id, $refund, $refund_amount, $payment['currency'] );
+
+			if ( ! $refund_stored ) {
+				error_log( 'SureForms: Failed to update payment record with refund data' );
+				wp_send_json_error( __( 'Refund was processed by Stripe but failed to update local records. Please check your payment records manually.', 'sureforms' ) );
+				return;
+			}
+
+			// Step 8: Success response
+			error_log( 'SureForms: Subscription refund completed successfully. Refund ID: ' . $refund['id'] );
+			wp_send_json_success(
+				[
+					'message'       => __( 'Subscription payment refunded successfully.', 'sureforms' ),
+					'refund_id'     => $refund['id'],
+					'status'        => $refund['status'],
+					'type'          => 'subscription_refund',
+					'charge_id'     => $refund['charge'] ?? '',
+					'refund_amount' => number_format( $refund_amount / 100, 2 ),
+					'currency'      => strtoupper( $payment['currency'] ?? 'USD' ),
+				]
+			);
+
+		} catch ( \Exception $e ) {
+			error_log( 'SureForms Subscription Refund Error: ' . $e->getMessage() );
+
+			// Provide more specific error messages based on error type
+			$error_message = $this->get_user_friendly_refund_error( $e->getMessage() );
+			wp_send_json_error( $error_message );
+		}
 	}
 
 	/**

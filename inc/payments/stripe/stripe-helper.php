@@ -7,7 +7,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 class Stripe_Helper {
-
 	public static function stripe_api_request( $endpoint, $method = 'POST', $data = [], $resource_id = '' ) {
 		$payment_settings = get_option( 'srfm_payments_settings', [] );
 		if ( empty( $payment_settings['stripe_connected'] ) ) {

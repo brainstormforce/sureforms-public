@@ -8,11 +8,10 @@
 
 namespace SRFM\Inc\Payments;
 
-use SRFM\Inc\Traits\Get_Instance;
 use SRFM\Inc\Payments\Admin\Admin_Handler;
 use SRFM\Inc\Payments\Stripe\Admin_Stripe_Handler;
 use SRFM\Inc\Payments\Stripe\Payments_Settings;
-use SRFM\Inc\Payments\Front_End;
+use SRFM\Inc\Traits\Get_Instance;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -24,7 +23,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 1.0.0
  */
 class Payments {
-
 	use Get_Instance;
 
 	/**

@@ -37,14 +37,15 @@ use SRFM\Inc\Lib\SRFM_Nps_Survey;
 use SRFM\Inc\Nps_Notice;
 use SRFM\Inc\Onboarding;
 use SRFM\Inc\Page_Builders\Page_Builders;
+use SRFM\Inc\Payments\Payments;
 use SRFM\Inc\Post_Types;
 use SRFM\Inc\Rest_Api;
 use SRFM\Inc\Single_Form_Settings\Compliance_Settings;
 use SRFM\Inc\Smart_Tags;
-use SRFM\Inc\Stripe_Payment_Handler;  // Need to remove
+use SRFM\Inc\Stripe_Payment_Handler;
+// Need to remove
 use SRFM\Inc\Stripe_Webhook;  // Need to remove
 use SRFM\Inc\Updater;
-use SRFM\Inc\Payments\Payments;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.

@@ -585,7 +585,6 @@ class Stripe_Payment_Handler {
 		}
 			error_log( 'SureForms: Failed to create subscription single payment record. Data: ' . wp_json_encode( $entry_data ) );
 			return false;
-
 	}
 
 	/**
