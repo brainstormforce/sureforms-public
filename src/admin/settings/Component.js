@@ -8,7 +8,7 @@ import GeneralPage from './pages/General';
 import ValidationsPage from './pages/Validations';
 import SecurityPage from './pages/Security';
 import IntegrationPage from './pages/Integrations';
-import PaymentsPage from './pages/Payments';
+import PaymentsPage from '../payment/global-setting-page';
 import { applyFilters } from '@wordpress/hooks';
 import PageTitleSection from '@Admin/components/PageTitleSection';
 
