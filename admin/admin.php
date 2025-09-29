@@ -36,6 +36,14 @@ class Admin {
 	private $dashboard_widget_data = [];
 
 	/**
+	 * SureForms Page Default permission.
+	 *
+	 * @var string
+	 * @since 1.12.2
+	 */
+	private static $sureforms_page_default_capability = 'manage_options';
+
+	/**
 	 * Class constructor.
 	 *
 	 * @return void
@@ -140,7 +148,7 @@ class Admin {
 	 * @return void
 	 */
 	public static function save_first_form_creation_time_stamp() {
-		if ( ! current_user_can( 'manage_options' ) || self::is_first_form_created() || ! defined( 'SRFM_FORMS_POST_TYPE' ) || ! post_type_exists( SRFM_FORMS_POST_TYPE ) ) {
+		if ( ! Helper::current_user_can() || self::is_first_form_created() || ! defined( 'SRFM_FORMS_POST_TYPE' ) || ! post_type_exists( SRFM_FORMS_POST_TYPE ) ) {
 			return;
 		}
 
@@ -289,18 +297,13 @@ class Admin {
 	 * @since 0.0.1
 	 */
 	public function add_menu_page() {
-		if ( ! current_user_can( 'manage_options' ) ) {
-			return;
-		}
-
-		$capability = 'manage_options';
-		$menu_slug  = 'sureforms_menu';
+		$menu_slug = 'sureforms_menu';
 
 		$logo = file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/icon.svg' );
 		add_menu_page(
 			__( 'SureForms', 'sureforms' ),
 			__( 'SureForms', 'sureforms' ),
-			'edit_others_posts',
+			self::$sureforms_page_default_capability,
 			$menu_slug,
 			static function () {
 			},
@@ -313,7 +316,7 @@ class Admin {
 			$menu_slug,
 			__( 'Dashboard', 'sureforms' ),
 			__( 'Dashboard', 'sureforms' ),
-			$capability,
+			self::$sureforms_page_default_capability,
 			$menu_slug,
 			[ $this, 'render_dashboard' ]
 		);
@@ -331,7 +334,7 @@ class Admin {
 			'sureforms_menu',
 			__( 'Settings', 'sureforms' ),
 			__( 'Settings', 'sureforms' ),
-			'edit_others_posts',
+			self::$sureforms_page_default_capability,
 			'sureforms_form_settings',
 			$callback
 		);
@@ -401,7 +404,7 @@ class Admin {
 			'sureforms_menu',
 			__( 'Upgrade', 'sureforms' ),
 			__( 'Upgrade', 'sureforms' ),
-			'edit_others_posts',
+			self::$sureforms_page_default_capability,
 			$upgrade_url
 		);
 	}
@@ -417,7 +420,7 @@ class Admin {
 			'sureforms_menu',
 			__( 'SMTP', 'sureforms' ),
 			__( 'SMTP', 'sureforms' ),
-			'edit_others_posts',
+			self::$sureforms_page_default_capability,
 			'sureforms_smtp',
 			[ $this, 'suremail_page_callback' ]
 		);
@@ -480,7 +483,7 @@ class Admin {
 			'sureforms_menu',
 			__( 'New Form', 'sureforms' ),
 			__( 'New Form', 'sureforms' ),
-			'edit_others_posts',
+			self::$sureforms_page_default_capability,
 			'add-new-form',
 			[ $this, 'add_new_form_callback' ],
 			2
@@ -489,7 +492,7 @@ class Admin {
 			'sureforms_menu',
 			__( 'Entries', 'sureforms' ),
 			__( 'Entries', 'sureforms' ),
-			'edit_others_posts',
+			self::$sureforms_page_default_capability,
 			SRFM_ENTRIES,
 			[ $this, 'render_entries' ],
 			3
@@ -556,7 +559,7 @@ class Admin {
 	 * @return void
 	 */
 	public function maybe_add_entries_badge() {
-		if ( ! current_user_can( 'edit_others_posts' ) ) {
+		if ( ! Helper::current_user_can() ) {
 			return;
 		}
 
@@ -614,7 +617,7 @@ class Admin {
 	 * @return void
 	 */
 	public function mark_entries_page_visit() {
-		if ( current_user_can( 'edit_others_posts' ) ) {
+		if ( Helper::current_user_can() ) {
 			$srfm_options                         = get_option( 'srfm_options', [] );
 			$srfm_options['entries_last_visited'] = time();
 			\SRFM\Inc\Helper::update_admin_settings_option( 'srfm_options', $srfm_options );
@@ -772,7 +775,7 @@ class Admin {
 			'breadcrumbs'                => $this->get_breadcrumbs_for_current_page(),
 			'sureforms_dashboard_url'    => admin_url( '/admin.php?page=sureforms_menu' ),
 			'plugin_version'             => SRFM_VER,
-			'global_settings_nonce'      => current_user_can( 'manage_options' ) ? wp_create_nonce( 'wp_rest' ) : '',
+			'global_settings_nonce'      => Helper::current_user_can() ? wp_create_nonce( 'wp_rest' ) : '',
 			'is_pro_active'              => Helper::has_pro(),
 			'is_first_form_created'      => self::is_first_form_created(),
 			'check_three_days_threshold' => self::check_first_form_creation_threshold(),
@@ -960,7 +963,7 @@ class Admin {
 					'ajaxurl'           => admin_url( 'admin-ajax.php' ),
 					'srfm_export_nonce' => wp_create_nonce( 'export_form_nonce' ),
 					'site_url'          => get_site_url(),
-					'import_form_nonce' => current_user_can( 'edit_posts' ) ? wp_create_nonce( 'wp_rest' ) : '',
+					'import_form_nonce' => Helper::current_user_can() ? wp_create_nonce( 'wp_rest' ) : '',
 					'import_btn_string' => __( 'Import Form', 'sureforms' ),
 				]
 			);
@@ -999,11 +1002,10 @@ class Admin {
 				[
 					'site_url'                     => get_site_url(),
 					'plugin_url'                   => SRFM_URL,
-					'preview_images_url'           => SRFM_URL . 'images/template-previews/',
 					'admin_url'                    => admin_url( 'admin.php' ),
 					'new_template_picker_base_url' => admin_url( 'post-new.php?post_type=sureforms_form' ),
-					'capability'                   => current_user_can( 'edit_posts' ),
-					'template_picker_nonce'        => current_user_can( 'edit_posts' ) ? wp_create_nonce( 'wp_rest' ) : '',
+					'capability'                   => Helper::current_user_can(),
+					'template_picker_nonce'        => Helper::current_user_can() ? wp_create_nonce( 'wp_rest' ) : '',
 					'is_pro_active'                => Helper::has_pro(),
 					'srfm_ai_usage_details'        => AI_Helper::get_current_usage_details(),
 					'is_pro_license_active'        => AI_Helper::is_pro_license_active(),
@@ -1177,7 +1179,7 @@ class Admin {
 			return;
 		}
 
-		if ( ! current_user_can( 'update_plugins' ) ) {
+		if ( ! Helper::current_user_can() ) {
 			return;
 		}
 
@@ -1301,7 +1303,7 @@ class Admin {
 	 */
 	public function pointer_should_show() {
 		// Security: Check user capability.
-		if ( ! current_user_can( 'manage_options' ) ) {
+		if ( ! Helper::current_user_can() ) {
 			wp_send_json_error( [ 'message' => __( 'Unauthorized user.', 'sureforms' ) ], 403 );
 		}
 		// Security: Nonce check.
@@ -1339,7 +1341,7 @@ class Admin {
 	 */
 	public function pointer_dismissed() {
 		// Security: Check user capability.
-		if ( ! current_user_can( 'manage_options' ) ) {
+		if ( ! Helper::current_user_can() ) {
 			wp_send_json_error( [ 'message' => __( 'Unauthorized user.', 'sureforms' ) ], 403 );
 		}
 		// Security: Nonce check.
@@ -1360,7 +1362,7 @@ class Admin {
 	 */
 	public function pointer_accepted_cta() {
 		// Security: Check user capability.
-		if ( ! current_user_can( 'manage_options' ) ) {
+		if ( ! Helper::current_user_can() ) {
 			wp_send_json_error( [ 'message' => __( 'Unauthorized user.', 'sureforms' ) ], 403 );
 		}
 		// Security: Nonce check.
@@ -1380,6 +1382,12 @@ class Admin {
 	 * @since 1.9.1
 	 */
 	public function maybe_register_dashboard_widget() {
+
+		// Only for users with manage_options capability.
+		if ( ! Helper::current_user_can() ) {
+			return;
+		}
+
 		// Quick check if there are any entries in the last 7 days.
 		$seven_days_ago = strtotime( '-7 days' );
 		$total_entries  = Entries::get_entries_count_after( $seven_days_ago );

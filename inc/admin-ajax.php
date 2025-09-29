@@ -55,7 +55,7 @@ class Admin_Ajax {
 
 		$response_data = [ 'message' => $this->get_error_msg( 'permission' ) ];
 
-		if ( ! current_user_can( 'manage_options' ) ) {
+		if ( ! Helper::current_user_can() ) {
 			wp_send_json_error( $response_data );
 		}
 
@@ -72,7 +72,7 @@ class Admin_Ajax {
 			wp_send_json_error( $response_data );
 		}
 
-		if ( ! current_user_can( 'install_plugins' ) || ! isset( $_POST['init'] ) || ! sanitize_text_field( wp_unslash( $_POST['init'] ) ) ) {
+		if ( ! isset( $_POST['init'] ) || ! sanitize_text_field( wp_unslash( $_POST['init'] ) ) ) {
 			wp_send_json_error(
 				[
 					'success' => false,
@@ -157,7 +157,7 @@ class Admin_Ajax {
 	 * @return void
 	 */
 	public function generate_data_for_suretriggers_integration() {
-		if ( ! current_user_can( 'manage_options' ) ) {
+		if ( ! Helper::current_user_can() ) {
 			wp_send_json_error( [ 'message' => __( 'You do not have permission to access this page.', 'sureforms' ) ] );
 		}
 
