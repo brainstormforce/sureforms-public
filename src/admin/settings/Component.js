@@ -92,8 +92,6 @@ const Component = ( { path } ) => {
 					},
 				} );
 
-				console.log( 'global settings data:', data );
-
 				const {
 					srfm_general_settings_options,
 					srfm_email_summary_settings_options,

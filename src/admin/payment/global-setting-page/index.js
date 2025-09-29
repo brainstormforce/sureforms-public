@@ -1,6 +1,6 @@
 import { useState, useEffect } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
-import { CreditCard, ExternalLink, X } from 'lucide-react';
+import { CreditCard, X } from 'lucide-react';
 import apiFetch from '@wordpress/api-fetch';
 import {
 	Badge,
@@ -9,9 +9,6 @@ import {
 	RadioButton,
 	Select,
 	toast,
-	Container,
-	Label,
-	Alert,
 } from '@bsf/force-ui';
 import ContentSection from '@Admin/settings/components/ContentSection';
 import { currencies, AlertForFee } from '../components/utils';
@@ -138,8 +135,6 @@ const Payments = ( {
 				path: '/sureforms/v1/payments/create-payment-webhook',
 				method: 'POST',
 			} );
-
-			console.log( 'response webhook:', response );
 
 			if ( response.success ) {
 				toast.success(
@@ -566,21 +561,21 @@ const Payments = ( {
 					variant="primary"
 					size="sm"
 				>
-					{ isConnecting ? (
-						__( 'Connecting…', 'sureforms' )
-					) : (
-						<>{ __( 'Connect to Stripe', 'sureforms' ) }</>
-					) }
+					{ isConnecting
+						? __( 'Connecting…', 'sureforms' )
+						: __( 'Connect to Stripe', 'sureforms' ) }
 				</Button>
 				<p className="text-text-primary">
-					Securely connect to Stripe with just a few clicks to begin
-					accepting payments!
+					{ __(
+						'Securely connect to Stripe with just a few clicks to begin accepting payments!',
+						'sureforms'
+					) }
 					<a
 						href="https://sureforms.com/docs/stripe-connect"
 						target="_blank"
 						rel="noopener noreferrer"
 					>
-						Learn More
+						{ __( 'Learn More', 'sureforms' ) }
 					</a>
 				</p>
 				<AlertForFee />
