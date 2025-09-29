@@ -37,14 +37,14 @@ use SRFM\Inc\Lib\SRFM_Nps_Survey;
 use SRFM\Inc\Nps_Notice;
 use SRFM\Inc\Onboarding;
 use SRFM\Inc\Page_Builders\Page_Builders;
-use SRFM\Inc\Payments_Settings;
 use SRFM\Inc\Post_Types;
 use SRFM\Inc\Rest_Api;
 use SRFM\Inc\Single_Form_Settings\Compliance_Settings;
 use SRFM\Inc\Smart_Tags;
-use SRFM\Inc\Stripe_Payment_Handler;
-use SRFM\Inc\Stripe_Webhook;
+use SRFM\Inc\Stripe_Payment_Handler;  // Need to remove
+use SRFM\Inc\Stripe_Webhook;  // Need to remove
 use SRFM\Inc\Updater;
+use SRFM\Inc\Payments\Payments;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -212,6 +212,7 @@ class Plugin_Loader {
 		if ( is_admin() ) {
 			Admin::get_instance();
 		}
+		Payments::get_instance();
 	}
 
 	/**
@@ -301,7 +302,6 @@ class Plugin_Loader {
 		AI_Helper::get_instance();
 		AI_Auth::get_instance();
 		Updater::get_instance();
-		Payments_Settings::get_instance();
 		Stripe_Payment_Handler::get_instance();
 		Stripe_Webhook::get_instance();
 		Onboarding::get_instance();
