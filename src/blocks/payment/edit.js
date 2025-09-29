@@ -20,6 +20,7 @@ import { FieldsPreview } from '../FieldsPreview.jsx';
 import { useErrMessage } from '@Blocks/util';
 import ConditionalLogic from '@Components/conditional-logic';
 import { attributeOptionsWithFilter } from '@Components/hooks';
+import Separator from '@Components/separator';
 
 const Edit = ( props ) => {
 	const { clientId, attributes, setAttributes } = props;
@@ -27,7 +28,6 @@ const Edit = ( props ) => {
 		help,
 		required,
 		block_id,
-		currency,
 		description,
 		errorMsg,
 		formId,
@@ -170,68 +170,7 @@ const Edit = ( props ) => {
 		return <FieldsPreview fieldName={ fieldName } />;
 	}
 
-	// Available currencies
-	const currencyOptions = [
-		{ label: __( 'USD - US Dollar', 'sureforms' ), value: 'USD' },
-		{ label: __( 'EUR - Euro', 'sureforms' ), value: 'EUR' },
-		{ label: __( 'GBP - British Pound', 'sureforms' ), value: 'GBP' },
-		{ label: __( 'JPY - Japanese Yen', 'sureforms' ), value: 'JPY' },
-		{ label: __( 'AUD - Australian Dollar', 'sureforms' ), value: 'AUD' },
-		{ label: __( 'CAD - Canadian Dollar', 'sureforms' ), value: 'CAD' },
-		{ label: __( 'CHF - Swiss Franc', 'sureforms' ), value: 'CHF' },
-		{ label: __( 'CNY - Chinese Yuan', 'sureforms' ), value: 'CNY' },
-		{ label: __( 'SEK - Swedish Krona', 'sureforms' ), value: 'SEK' },
-		{ label: __( 'NZD - New Zealand Dollar', 'sureforms' ), value: 'NZD' },
-		{ label: __( 'MXN - Mexican Peso', 'sureforms' ), value: 'MXN' },
-		{ label: __( 'SGD - Singapore Dollar', 'sureforms' ), value: 'SGD' },
-		{ label: __( 'HKD - Hong Kong Dollar', 'sureforms' ), value: 'HKD' },
-		{ label: __( 'NOK - Norwegian Krone', 'sureforms' ), value: 'NOK' },
-		{ label: __( 'KRW - South Korean Won', 'sureforms' ), value: 'KRW' },
-		{ label: __( 'INR - Indian Rupee', 'sureforms' ), value: 'INR' },
-		{ label: __( 'BRL - Brazilian Real', 'sureforms' ), value: 'BRL' },
-		{ label: __( 'ZAR - South African Rand', 'sureforms' ), value: 'ZAR' },
-		{ label: __( 'AED - UAE Dirham', 'sureforms' ), value: 'AED' },
-		{ label: __( 'THB - Thai Baht', 'sureforms' ), value: 'THB' },
-	];
-
 	const attributeOptions = [
-		{
-			id: 'payment-currency',
-			component: (
-				<SelectControl
-					label={ __( 'Currency', 'sureforms' ) }
-					value={ currency }
-					options={ currencyOptions }
-					onChange={ ( value ) => {
-						setAttributes( { currency: value } );
-					} }
-					help={ __(
-						'Note: The default currency from payment settings will be used if different from this setting.',
-						'sureforms'
-					) }
-				/>
-			),
-		},
-		{
-			id: 'payment-description',
-			component: (
-				<SRFMTextControl
-					label={ __( 'Payment Description', 'sureforms' ) }
-					value={ description }
-					data={ {
-						value: description,
-						label: 'description',
-					} }
-					onChange={ ( value ) =>
-						setAttributes( { description: value } )
-					}
-					help={ __(
-						'This will appear on the payment receipt and in Stripe dashboard.',
-						'sureforms'
-					) }
-				/>
-			),
-		},
 		{
 			id: 'required',
 			component: (
@@ -245,10 +184,46 @@ const Edit = ( props ) => {
 			),
 		},
 		{
+			id: 'error-message',
+			component: required ? (
+				<SRFMTextControl
+					label={ __( 'Error Message', 'sureforms' ) }
+					data={ {
+						value: errorMsg,
+						label: 'errorMsg',
+					} }
+					value={ currentErrorMsg }
+					onChange={ ( value ) => {
+						setCurrentErrorMsg( value );
+						setAttributes( { errorMsg: value } );
+					} }
+				/>
+			) : null,
+		},
+		{
+			id: 'help-text',
+			component: (
+				<SRFMTextControl
+					label={ __( 'Help Text', 'sureforms' ) }
+					value={ help }
+					data={ {
+						value: help,
+						label: 'help',
+					} }
+					onChange={ ( value ) => setAttributes( { help: value } ) }
+				/>
+			),
+		},
+		{
+			id: 'separator',
+			component: <Separator />,
+		},
+
+		{
 			id: 'payment-items',
 			component: (
-				<div>
-					<div style={ { marginBottom: '16px' } }>
+				<div className="components-base-control">
+					<div className="components-base-control srfm-text-control srfm-size-type-field-tabs">
 						<label
 							style={ {
 								display: 'block',
@@ -319,6 +294,27 @@ const Edit = ( props ) => {
 						/>
 					) }
 				</div>
+			),
+		},
+		{
+			id: 'payment-description',
+			component: (
+				<SRFMTextControl
+					label={ __( 'Payment Description', 'sureforms' ) }
+					value={ description }
+					variant="textarea"
+					data={ {
+						value: description,
+						label: 'description',
+					} }
+					onChange={ ( value ) =>
+						setAttributes( { description: value } )
+					}
+					help={ __(
+						'This will appear on the payment receipt and in Stripe dashboard.',
+						'sureforms'
+					) }
+				/>
 			),
 		},
 		{
@@ -410,6 +406,10 @@ const Edit = ( props ) => {
 									value: 'month',
 								},
 								{
+									label: __( 'Quarterly', 'sureforms' ),
+									value: 'quarter',
+								},
+								{
 									label: __( 'Yearly', 'sureforms' ),
 									value: 'year',
 								},
@@ -435,6 +435,57 @@ const Edit = ( props ) => {
 									subscriptionPlans: updatedPlans,
 								} );
 							} }
+						/>
+					),
+				},
+				{
+					id: 'billing-cycles',
+					component: (
+						<SelectControl
+							label={ __( 'Billing Cycles', 'sureforms' ) }
+							value={
+								subscriptionPlans?.[ 0 ]?.billingCycles ||
+									'ongoing'
+							}
+							options={ [
+								{
+									label: __( 'Ongoing', 'sureforms' ),
+									value: 'ongoing',
+								},
+								...Array.from(
+									{ length: 23 },
+									( _, i ) => ( {
+										label: `${ i + 2 } cycles`,
+										value: i + 2,
+									} )
+								),
+							] }
+							onChange={ ( value ) => {
+								const updatedPlans = [
+									...( subscriptionPlans || [] ),
+								];
+								if ( updatedPlans.length === 0 ) {
+									updatedPlans.push( {
+										name: 'Subscription Plan',
+										interval: 'month',
+										billingCycles: value,
+										customer_name: '',
+										customer_email: '',
+									} );
+								} else {
+									updatedPlans[ 0 ] = {
+										...updatedPlans[ 0 ],
+										billingCycles: value,
+									};
+								}
+								setAttributes( {
+									subscriptionPlans: updatedPlans,
+								} );
+							} }
+							help={ __(
+								'Select the number of billing cycles or ongoing for unlimited',
+								'sureforms'
+							) }
 						/>
 					),
 				},
@@ -546,37 +597,6 @@ const Edit = ( props ) => {
 				},
 			  ]
 			: [] ),
-		{
-			id: 'error-message',
-			component: required ? (
-				<SRFMTextControl
-					label={ __( 'Error Message', 'sureforms' ) }
-					data={ {
-						value: errorMsg,
-						label: 'errorMsg',
-					} }
-					value={ currentErrorMsg }
-					onChange={ ( value ) => {
-						setCurrentErrorMsg( value );
-						setAttributes( { errorMsg: value } );
-					} }
-				/>
-			) : null,
-		},
-		{
-			id: 'help-text',
-			component: (
-				<SRFMTextControl
-					label={ __( 'Help Text', 'sureforms' ) }
-					value={ help }
-					data={ {
-						value: help,
-						label: 'help',
-					} }
-					onChange={ ( value ) => setAttributes( { help: value } ) }
-				/>
-			),
-		},
 	];
 
 	const filterOptions = attributeOptionsWithFilter( attributeOptions, props );
@@ -590,7 +610,7 @@ const Edit = ( props ) => {
 				>
 					<InspectorTab { ...SRFMTabs.general }>
 						<SRFMAdvancedPanelBody
-							title={ __( 'Payment Settings', 'sureforms' ) }
+							title={ __( 'Attributes', 'sureforms' ) }
 							initialOpen={ true }
 						>
 							{ filterOptions.map(
