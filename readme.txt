@@ -4,7 +4,7 @@ Tags: contact form, custom form, forms,  WP Forms, form builder
 Requires at least: 6.4
 Tested up to: 6.8.2
 Requires PHP: 7.4
-Stable tag: 1.12.2
+Stable tag: 1.12.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -365,6 +365,9 @@ easy.
 You can report the issue through our [Bug Bounty Program](https://brainstormforce.com/bug-bounty-program/). We collaborate with Patchstack to provide opportunities for researchers to report vulnerabilities. The Patchstack team will help validate, triage, and handle any reported security issues.
 
 == Changelog ==
+= 1.12.3 - 30th September 2025 =
+* Fix: AI form generation not redirecting to the SureForms editor after creation.
+* Fix: Forms not publishing or saving with certain blocks on low PHP memory servers.
 = 1.12.2 - 26th September 2025 =
 * Improvement: Made the submit note button responsive in single entries to prevent overflow in translations.
 * Improvement: Smart tag output now shows single file uploads as links and multiple files as a list.
