@@ -366,7 +366,7 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 
 == Changelog ==
 = x.x.x =
-* Fix: 500 internal server error on AI Form creation.
+* Fix: AI form generation not redirecting to the SureForms editor after creation.
 = 1.12.2 - 26th September 2025 =
 * Improvement: Made the submit note button responsive in single entries to prevent overflow in translations.
 * Improvement: Smart tag output now shows single file uploads as links and multiple files as a list.
