@@ -28,13 +28,6 @@ class Gutenberg_Hooks {
 	protected $patterns = [];
 
 	/**
-	 * Processed blocks.
-	 *
-	 * @var array
-	 */
-	protected $processed_blocks = [];
-
-	/**
 	 * Class constructor.
 	 *
 	 * @return void
