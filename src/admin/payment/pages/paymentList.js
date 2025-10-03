@@ -23,6 +23,11 @@ import { useQuery } from '@tanstack/react-query';
 import { PaymentContext } from '../components/context';
 import { fetchPayments } from '../components/apiCalls';
 import { getPaginationRange } from '../components/utils';
+import {
+	getUrlParams,
+	updateUrlParams,
+	clearUrlParams,
+} from '../components/urlUtils';
 
 // Payment status filters - mapped to database statuses
 const STATUS_FILTERS = [
@@ -95,10 +100,128 @@ const PaymentTable = () => {
 		? allPayments
 		: allPayments.slice( startIndex, endIndex );
 
+	// Initialize state from URL on mount
+	useEffect( () => {
+		const urlParams = getUrlParams();
+
+		// Initialize from URL params
+		if ( urlParams.srfm_payment_page ) {
+			setPage( parseInt( urlParams.srfm_payment_page ) );
+		}
+		if ( urlParams.srfm_payment_search ) {
+			setSearchTerm( urlParams.srfm_payment_search );
+		}
+		if ( urlParams.srfm_payment_status ) {
+			setFilter( urlParams.srfm_payment_status );
+		}
+		if ( urlParams.srfm_payment_per_page ) {
+			setItemsPerPage( parseInt( urlParams.srfm_payment_per_page ) );
+		}
+
+		// Parse date range
+		if (
+			urlParams.srfm_payment_date_from &&
+			urlParams.srfm_payment_date_to
+		) {
+			setSelectedDates( {
+				from: new Date( urlParams.srfm_payment_date_from ),
+				to: new Date( urlParams.srfm_payment_date_to ),
+			} );
+		}
+	}, [] ); // Run once on mount
+
 	// Reset page to 1 when filters or items per page change
 	useEffect( () => {
 		setPage( 1 );
 	}, [ searchTerm, filter, selectedDates, itemsPerPage ] );
+
+	// Sync page to URL
+	useEffect( () => {
+		if ( page > 1 ) {
+			updateUrlParams( { srfm_payment_page: page } );
+		} else {
+			updateUrlParams( { srfm_payment_page: undefined } );
+		}
+	}, [ page ] );
+
+	// Sync search to URL
+	useEffect( () => {
+		updateUrlParams( {
+			srfm_payment_search: searchTerm || undefined,
+		} );
+	}, [ searchTerm ] );
+
+	// Sync status filter to URL
+	useEffect( () => {
+		updateUrlParams( {
+			srfm_payment_status: filter || undefined,
+		} );
+	}, [ filter ] );
+
+	// Sync items per page to URL (only if not default)
+	useEffect( () => {
+		if ( itemsPerPage !== 10 ) {
+			updateUrlParams( { srfm_payment_per_page: itemsPerPage } );
+		} else {
+			updateUrlParams( { srfm_payment_per_page: undefined } );
+		}
+	}, [ itemsPerPage ] );
+
+	// Sync date range to URL
+	useEffect( () => {
+		const params = {};
+
+		if ( selectedDates.from ) {
+			params.srfm_payment_date_from = selectedDates.from
+				.toISOString()
+				.split( 'T' )[ 0 ];
+		} else {
+			params.srfm_payment_date_from = undefined;
+		}
+
+		if ( selectedDates.to ) {
+			params.srfm_payment_date_to = selectedDates.to
+				.toISOString()
+				.split( 'T' )[ 0 ];
+		} else {
+			params.srfm_payment_date_to = undefined;
+		}
+
+		updateUrlParams( params );
+	}, [ selectedDates ] );
+
+	// Handle browser back/forward buttons
+	useEffect( () => {
+		const handlePopState = () => {
+			const urlParams = getUrlParams();
+
+			// Update state from URL when user uses back/forward buttons
+			setPage( parseInt( urlParams.srfm_payment_page ) || 1 );
+			setSearchTerm( urlParams.srfm_payment_search || '' );
+			setFilter( urlParams.srfm_payment_status || '' );
+			setItemsPerPage(
+				parseInt( urlParams.srfm_payment_per_page ) || 10
+			);
+
+			if (
+				urlParams.srfm_payment_date_from &&
+				urlParams.srfm_payment_date_to
+			) {
+				setSelectedDates( {
+					from: new Date( urlParams.srfm_payment_date_from ),
+					to: new Date( urlParams.srfm_payment_date_to ),
+				} );
+			} else {
+				setSelectedDates( { from: null, to: null } );
+			}
+		};
+
+		window.addEventListener( 'popstate', handlePopState );
+
+		return () => {
+			window.removeEventListener( 'popstate', handlePopState );
+		};
+	}, [] );
 
 	// Format amount to currency
 	const formatAmount = ( amount ) => {
@@ -463,6 +586,16 @@ const PaymentTable = () => {
 												setFilter( '' );
 												setSearchTerm( '' );
 												setPage( 1 );
+
+												// Clear URL params
+												clearUrlParams( [
+													'srfm_payment_search',
+													'srfm_payment_status',
+													'srfm_payment_date_from',
+													'srfm_payment_date_to',
+													'srfm_payment_page',
+													'srfm_payment_per_page',
+												] );
 											} }
 											destructive
 											className="leading-4 no-underline hover:no-underline min-w-fit focus:[box-shadow:none]"

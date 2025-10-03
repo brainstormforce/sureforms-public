@@ -385,9 +385,9 @@ class StripePayment {
 					colorBackground: '#ffffff',
 					colorText: '#424242',
 					colorDanger: '#df1b41',
-					fontFamily: 'inherit',
 					spacingUnit: '4px',
 					borderRadius: '4px',
+					fontFamily: '"Manrope", sans-serif', // ✅ Use quotes for fonts with name + fallback
 				},
 			},
 		} );
@@ -538,9 +538,9 @@ class StripePayment {
 					colorBackground: '#ffffff',
 					colorText: '#424242',
 					colorDanger: '#df1b41',
-					fontFamily: 'inherit',
 					spacingUnit: '4px',
 					borderRadius: '4px',
+					fontFamily: '"Manrope", sans-serif', // ✅ Use quotes for fonts with name + fallback
 				},
 			},
 		} );

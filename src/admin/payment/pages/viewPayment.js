@@ -1,4 +1,4 @@
-import { useState, useContext } from '@wordpress/element';
+import { useState, useContext, useEffect } from '@wordpress/element';
 import {
 	Card,
 	Button,
@@ -11,6 +11,7 @@ import {
 	DropdownMenu,
 	Dialog,
 	Input,
+	TextArea,
 } from '@bsf/force-ui';
 import {
 	ChevronLeft,
@@ -21,11 +22,19 @@ import {
 	Trash2,
 	User,
 	EllipsisVertical,
+	FileSearch2,
 } from 'lucide-react';
 import { __ } from '@wordpress/i18n';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { PaymentContext } from '../components/context';
-import { fetchSinglePayment, refundPayment } from '../components/apiCalls';
+import {
+	fetchSinglePayment,
+	refundPayment,
+	addPaymentNote,
+	deletePaymentNote,
+	deletePaymentLog,
+} from '../components/apiCalls';
+import { currencies } from '../components/utils';
 
 const ViewPayment = () => {
 	const { viewSinglePayment, setViewSinglePayment } =
@@ -60,8 +69,70 @@ const ViewPayment = () => {
 	} );
 
 	const [ notes, setNotes ] = useState( [] );
+	const [ logs, setLogs ] = useState( [] );
 	const [ isRefundDialogOpen, setIsRefundDialogOpen ] = useState( false );
 	const [ refundAmount, setRefundAmount ] = useState( '' );
+	const [ isAddingNote, setIsAddingNote ] = useState( false );
+	const [ newNoteText, setNewNoteText ] = useState( '' );
+
+	// Sync notes from paymentData when it loads
+	useEffect( () => {
+		if ( paymentData?.notes ) {
+			setNotes( paymentData.notes );
+		}
+	}, [ paymentData?.notes ] );
+
+	// Sync logs from paymentData when it loads
+	useEffect( () => {
+		if ( paymentData?.logs ) {
+			setLogs( paymentData.logs );
+		}
+	}, [ paymentData?.logs ] );
+
+	// Add note mutation
+	const addNoteMutation = useMutation( {
+		mutationFn: ( { paymentId, noteText } ) =>
+			addPaymentNote( paymentId, noteText ),
+		onSuccess: ( updatedNotes ) => {
+			setNotes( updatedNotes );
+			setNewNoteText( '' );
+			setIsAddingNote( false );
+			queryClient.invalidateQueries( [ 'payment', viewSinglePayment ] );
+		},
+		onError: ( error ) => {
+			alert( __( 'Failed to add note. Please try again.', 'sureforms' ) );
+		},
+	} );
+
+	// Delete note mutation
+	const deleteNoteMutation = useMutation( {
+		mutationFn: ( { paymentId, noteIndex } ) =>
+			deletePaymentNote( paymentId, noteIndex ),
+		onSuccess: ( updatedNotes ) => {
+			setNotes( updatedNotes );
+			queryClient.invalidateQueries( [ 'payment', viewSinglePayment ] );
+		},
+		onError: ( error ) => {
+			alert(
+				__( 'Failed to delete note. Please try again.', 'sureforms' )
+			);
+		},
+	} );
+
+	// Delete log mutation
+	const deleteLogMutation = useMutation( {
+		mutationFn: ( { paymentId, logIndex } ) =>
+			deletePaymentLog( paymentId, logIndex ),
+		onSuccess: ( updatedLogs ) => {
+			setLogs( updatedLogs );
+			queryClient.invalidateQueries( [ 'payment', viewSinglePayment ] );
+		},
+		onError: ( error ) => {
+			alert(
+				__( 'Failed to delete log. Please try again.', 'sureforms' )
+			);
+		},
+	} );
 
 	// Set default refund amount when dialog opens
 	const openRefundDialog = () => {
@@ -134,14 +205,6 @@ const ViewPayment = () => {
 		);
 	}
 
-	const handlePrevious = () => {
-		console.log( 'Navigate to previous payment' );
-	};
-
-	const handleNext = () => {
-		console.log( 'Navigate to next payment' );
-	};
-
 	const handleViewInStripe = () => {
 		console.log( 'Open Stripe dashboard' );
 	};
@@ -168,6 +231,51 @@ const ViewPayment = () => {
 
 	const handleCancelRefund = ( id ) => {
 		console.log( 'Cancel refund:', id );
+	};
+
+	const handleAddNoteClick = () => {
+		setIsAddingNote( true );
+	};
+
+	const handleSaveNote = () => {
+		if ( ! newNoteText.trim() ) {
+			return;
+		}
+		addNoteMutation.mutate( {
+			paymentId: paymentData.id,
+			noteText: newNoteText,
+		} );
+	};
+
+	const handleCancelNote = () => {
+		setNewNoteText( '' );
+		setIsAddingNote( false );
+	};
+
+	const handleDeleteNote = ( noteIndex ) => {
+		if (
+			confirm(
+				__( 'Are you sure you want to delete this note?', 'sureforms' )
+			)
+		) {
+			deleteNoteMutation.mutate( {
+				paymentId: paymentData.id,
+				noteIndex,
+			} );
+		}
+	};
+
+	const handleDeleteLog = ( logIndex ) => {
+		if (
+			confirm(
+				__( 'Are you sure you want to delete this log entry?', 'sureforms' )
+			)
+		) {
+			deleteLogMutation.mutate( {
+				paymentId: paymentData.id,
+				logIndex,
+			} );
+		}
 	};
 
 	const closeRefundDialog = () => {
@@ -200,8 +308,16 @@ const ViewPayment = () => {
 		} );
 	};
 
+	// Get currency symbol from currency code
+	const getCurrencySymbol = ( currencyCode ) => {
+		const upperCurrencyCode = currencyCode?.toUpperCase();
+		const currency = currencies.find( ( c ) => c.value === upperCurrencyCode );
+		return currency ? currency.symbol : currencyCode;
+	};
+
+	// Format amount with currency symbol (no space between symbol and amount)
 	const formatAmount = ( amount, currency = 'USD' ) => {
-		const symbol = currency === 'USD' ? '$' : currency + ' ';
+		const symbol = getCurrencySymbol( currency );
 		return `${ symbol }${ parseFloat( amount ).toFixed( 2 ) }`;
 	};
 
@@ -283,42 +399,8 @@ const ViewPayment = () => {
 				{ formatAmount(
 					paymentData.total_amount,
 					paymentData.currency
-				) }{ ' ' }
-				From { paymentData.customer }
+				) } From { paymentData.customer }
 			</h1>
-			<div className="flex gap-2">
-				<Button
-					icon={ <ChevronLeft aria-label="icon" role="img" /> }
-					iconPosition="left"
-					size="sm"
-					tag="button"
-					type="button"
-					variant="outline"
-					onClick={ () => setViewSinglePayment( false ) }
-				>
-					Back
-				</Button>
-				<Button
-					icon={ <ChevronLeft aria-label="icon" role="img" /> }
-					iconPosition="left"
-					size="sm"
-					tag="button"
-					type="button"
-					variant="outline"
-				>
-					Previous
-				</Button>
-				<Button
-					icon={ <ChevronRight aria-label="icon" role="img" /> }
-					iconPosition="right"
-					size="sm"
-					tag="button"
-					type="button"
-					variant="outline"
-				>
-					Next
-				</Button>
-			</div>
 		</Container>
 	);
 
@@ -552,7 +634,7 @@ const ViewPayment = () => {
 						<Table.HeadCell>
 							{ __( 'Date & Time', 'sureforms' ) }
 						</Table.HeadCell>
-						<Table.HeadCell>
+						<Table.HeadCell className='w-1/10'>
 							{ __( 'Action', 'sureforms' ) }
 						</Table.HeadCell>
 					</Table.Head>
@@ -606,6 +688,7 @@ const ViewPayment = () => {
 												: row.status
 										}
 										type="pill"
+										className='w-fit'
 									/>
 								</Table.Cell>
 								<Table.Cell>
@@ -805,26 +888,115 @@ const ViewPayment = () => {
 		</>
 	);
 
-	const paymentLogs = [
-		{
-			EmailNotification: 'Email Sending Initiated',
-			Timestamp: '2023-03-09 15:29:24',
-			Details: 'Email Notification broadcasted to support@sureforms.com.',
-			Subject: 'Test the form',
-		},
-		{
-			EmailNotification: 'Email Sending Initiated',
-			Timestamp: '2023-03-09 15:29:24',
-			Details: 'Email Notification broadcasted to support@sureforms.com.',
-			Subject: 'Test the form',
-		},
-		{
-			EmailNotification: 'Email Sending Initiated',
-			Timestamp: '2023-03-09 15:29:24',
-			Details: 'Email Notification broadcasted to support@sureforms.com.',
-			Subject: 'Test the form',
-		},
-	];
+	// Format timestamp from unix timestamp to readable date
+	const formatLogTimestamp = ( timestamp ) => {
+		// Validate timestamp
+		if ( ! timestamp || isNaN( timestamp ) || timestamp <= 0 ) {
+			return __( 'N/A', 'sureforms' );
+		}
+
+		const date = new Date( timestamp * 1000 );
+
+		// Check if date is valid
+		if ( isNaN( date.getTime() ) ) {
+			return __( 'Invalid Date', 'sureforms' );
+		}
+
+		return date.toLocaleString( 'en-US', {
+			year: 'numeric',
+			month: '2-digit',
+			day: '2-digit',
+			hour: '2-digit',
+			minute: '2-digit',
+			second: '2-digit',
+			hour12: false,
+		} );
+	};
+
+	const notesSection = (
+		<>
+			{ /* Existing notes list */ }
+			{ notes && notes.length > 0 ? (
+				notes.map( ( note, index ) => (
+					<div
+						key={ index }
+						className="w-full flex justify-between items-start gap-2 p-3 bg-background-primary rounded-lg border border-border-subtle"
+					>
+						<div className="flex-1">
+							<Text className="text-sm whitespace-pre-wrap break-words">
+								{ note.text || note }
+							</Text>
+							{ note.created_at && (
+								<Text className="text-xs text-text-tertiary mt-1">
+									{ new Date(
+										note.created_at
+									).toLocaleString() }
+								</Text>
+							) }
+						</div>
+						<Button
+							variant="ghost"
+							size="xs"
+							icon={ <Trash2 className="!size-4" /> }
+							onClick={ () => handleDeleteNote( index ) }
+							disabled={ deleteNoteMutation.isPending }
+							className="text-icon-secondary hover:text-red-700"
+						/>
+					</div>
+				) )
+			) : (
+				! isAddingNote && (
+					<Text className="text-sm text-text-secondary p-3 text-center flex items-center justify-center gap-2">
+						<FileSearch2 className="!size-5" />
+						{ __(
+							'Add an internal note about this payment',
+							'sureforms'
+						) }
+					</Text>
+				)
+			) }
+
+			{ /* Add note textarea */ }
+			{ isAddingNote && (
+				<div className="w-full p-3 bg-background-primary rounded-lg border border-border-subtle">
+					<TextArea
+						value={ newNoteText }
+						onChange={ ( value ) => setNewNoteText( value ) }
+						placeholder={ __(
+							'Enter your note here...',
+							'sureforms'
+						) }
+						size="sm"
+						className='w-full'
+						autoFocus
+					/>
+					<div className="flex gap-2 mt-2 justify-end">
+						<Button
+							variant="outline"
+							size="sm"
+							onClick={ handleCancelNote }
+							disabled={ addNoteMutation.isPending }
+						>
+							{ __( 'Cancel', 'sureforms' ) }
+						</Button>
+						<Button
+							variant="primary"
+							size="sm"
+							onClick={ handleSaveNote }
+							disabled={
+								addNoteMutation.isPending ||
+								! newNoteText.trim()
+							}
+						>
+							{ addNoteMutation.isPending
+								? __( 'Adding...', 'sureforms' )
+								: __( 'Add Note', 'sureforms' ) }
+						</Button>
+					</div>
+				</div>
+			) }
+		</>
+	);
 
 	const PAYMENT_SECTION_COLUMN_2 = (
 		<>
@@ -841,17 +1013,19 @@ const ViewPayment = () => {
 						{ __( 'Notes', 'sureforms' ) }
 					</Label>
 					<Button
-						icon={ <ArrowUpRight className="!size-5" /> }
+						icon={ <Plus className="!size-5" /> }
+						iconPosition="left"
 						variant="link"
 						size="sm"
 						className="h-full text-link-primary text-sm font-semibold no-underline hover:no-underline hover:text-link-primary-hover px-1 content-center [box-shadow:none] focus:[box-shadow:none] focus:outline-none"
-						onClick={ () => {} }
+						onClick={ handleAddNoteClick }
+						disabled={ isAddingNote }
 					>
 						{ __( 'Add Note', 'sureforms' ) }
 					</Button>
 				</Container>
-				<Container className="flex flex-col bg-background-secondary gap-1 p-1 rounded-lg">
-					<h1>Add Notes Place Holder</h1>
+				<Container className="flex flex-col items-center justify-center bg-background-secondary gap-1 p-1 rounded-lg min-h-[89px]">
+					{notesSection}
 				</Container>
 			</Container>
 			{ /* Payment log */ }
@@ -868,31 +1042,60 @@ const ViewPayment = () => {
 						{ __( 'Payment Log', 'sureforms' ) }
 					</Label>
 				</Container>
-				<Container className="flex flex-col bg-background-secondary gap-1 p-1 rounded-lg">
-					{ paymentLogs.map( ( log, index ) => (
-						<div key={ index } className="flex flex-col gap-1">
-							<div className="flex justify-between items-center gap-1">
-								<p className="flex-1">
-									<bold>{ log.EmailNotification }</bold>
-								</p>
-								<Button
-									variant="link"
-									size="sm"
-									onClick={ () => {
-										console.log(
-											'Delete log entry:',
-											log.id
-										);
-									} }
+				<Container className="flex flex-col items-center justify-center bg-background-secondary gap-1 p-1 rounded-lg min-h-[89px]">
+					{ logs && logs.length > 0 ? (
+						logs.map( ( log, index ) => {
+							// Defensive checks for log data
+							if ( ! log || typeof log !== 'object' ) {
+								return null;
+							}
+
+							const logTitle = log.title || __( 'Untitled Log', 'sureforms' );
+							const logMessages = Array.isArray( log.messages ) ? log.messages : [];
+
+							return (
+								<div
+									key={ index }
+									className="w-full flex flex-col gap-2 p-3 bg-background-primary rounded-lg border border-border-subtle"
 								>
-									<Trash2 />
-								</Button>
-							</div>
-							<p>{ log.Timestamp }</p>
-							<p>{ log.Details }</p>
-							<p>{ log.Subject }</p>
-						</div>
-					) ) }
+									<div className="flex justify-between items-start gap-2">
+										<div className="flex-1">
+											<Text className="text-sm font-semibold">
+												{ logTitle }
+											</Text>
+											<Text className="text-xs text-text-tertiary mt-1">
+												{ formatLogTimestamp( log.timestamp ) }
+											</Text>
+										</div>
+										<Button
+											variant="ghost"
+											size="xs"
+											icon={ <Trash2 className="!size-4" /> }
+											onClick={ () => handleDeleteLog( index ) }
+											disabled={ deleteLogMutation.isPending }
+											className="text-icon-secondary hover:text-red-700"
+										/>
+									</div>
+									{ logMessages.length > 0 && (
+										<div className="flex flex-col gap-1 mt-1">
+											{ logMessages.map( ( message, msgIndex ) => (
+												<Text
+													key={ msgIndex }
+													className="text-xs text-text-secondary"
+												>
+													{ message || '' }
+												</Text>
+											) ) }
+										</div>
+									) }
+								</div>
+							);
+						} )
+					) : (
+						<Text className="text-sm text-text-secondary p-3 text-center">
+							{ __( 'No payment logs available', 'sureforms' ) }
+						</Text>
+					) }
 				</Container>
 			</Container>
 		</>
@@ -911,7 +1114,6 @@ const ViewPayment = () => {
 					className="w-full gap-8"
 					containerType="grid"
 					cols={ 12 }
-					align="center"
 				>
 					<div className="flex flex-col gap-8 col-span-12 xl:col-span-8">
 						{ PAYMENT_SECTION_COLUMN_1 }

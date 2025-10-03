@@ -85,11 +85,7 @@ async function processAllPayments( form ) {
 		console.log( 'All payments completed successfully:', paymentResults );
 
 		// print the paymentResults is contain the true payment then return true else return false.
-		const paymentResult = paymentResults.some(
-			( result ) =>
-				result &&
-				( result?.status === 'requires_capture' || result?.id )
-		);
+		const paymentResult = paymentResults.some( ( result ) => result && "" !== result );
 		return paymentResult;
 	} catch ( error ) {
 		console.error( 'Payment processing failed:', error );
@@ -180,7 +176,7 @@ async function confirmOneTimePayment( blockId, paymentData, form ) {
 
 		getPaymentInput.value = prepareInputValueData;
 
-		return paymentIntent;
+		return paymentIntent.id;
 	}
 	throw new Error( `Payment not completed for block ${ blockId }` );
 }

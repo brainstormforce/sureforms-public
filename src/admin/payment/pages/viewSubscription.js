@@ -1,4 +1,4 @@
-import { useState, useContext } from '@wordpress/element';
+import { useState, useContext, useEffect } from '@wordpress/element';
 import {
 	Card,
 	Button,
@@ -11,6 +11,7 @@ import {
 	DropdownMenu,
 	Dialog,
 	Input,
+	TextArea,
 } from '@bsf/force-ui';
 import {
 	ChevronLeft,
@@ -21,6 +22,7 @@ import {
 	Trash2,
 	User,
 	EllipsisVertical,
+	FileSearch2,
 } from 'lucide-react';
 import { __ } from '@wordpress/i18n';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -29,6 +31,10 @@ import {
 	fetchSubscription,
 	refundPayment,
 	cancelSubscription,
+	pauseSubscription,
+	addPaymentNote,
+	deletePaymentNote,
+	deletePaymentLog,
 } from '../components/apiCalls';
 
 const ViewSubscription = () => {
@@ -95,12 +101,115 @@ const ViewSubscription = () => {
 		},
 	} );
 
+	// Pause subscription mutation
+	const pauseMutation = useMutation( {
+		mutationFn: pauseSubscription,
+		onSuccess: () => {
+			// Refresh subscription data
+			queryClient.invalidateQueries( [
+				'subscription',
+				viewSingleSubscription,
+			] );
+			queryClient.invalidateQueries( [ 'payments' ] );
+			setIsPauseDialogOpen( false );
+		},
+		onError: ( error ) => {
+			console.error( 'Pause failed:', error );
+			alert(
+				__(
+					'Failed to pause subscription. Please try again.',
+					'sureforms'
+				)
+			);
+		},
+	} );
+
+	// Add note mutation
+	const addNoteMutation = useMutation( {
+		mutationFn: ( { paymentId, noteText } ) =>
+			addPaymentNote( paymentId, noteText ),
+		onSuccess: ( updatedNotes ) => {
+			setNotes( updatedNotes );
+			setNewNoteText( '' );
+			setIsAddingNote( false );
+			queryClient.invalidateQueries( [ 'subscription', viewSingleSubscription ] );
+		},
+		onError: ( error ) => {
+			alert( __( 'Failed to add note. Please try again.', 'sureforms' ) );
+		},
+	} );
+
+	// Delete note mutation
+	const deleteNoteMutation = useMutation( {
+		mutationFn: ( { paymentId, noteIndex } ) =>
+			deletePaymentNote( paymentId, noteIndex ),
+		onSuccess: ( updatedNotes ) => {
+			setNotes( updatedNotes );
+			queryClient.invalidateQueries( [ 'subscription', viewSingleSubscription ] );
+		},
+		onError: ( error ) => {
+			alert(
+				__( 'Failed to delete note. Please try again.', 'sureforms' )
+			);
+		},
+	} );
+
+	// Delete log mutation
+	const deleteLogMutation = useMutation( {
+		mutationFn: ( { paymentId, logIndex } ) =>
+			deletePaymentLog( paymentId, logIndex ),
+		onSuccess: ( updatedLogs ) => {
+			setLogs( updatedLogs );
+			queryClient.invalidateQueries( [ 'subscription', viewSingleSubscription ] );
+		},
+		onError: ( error ) => {
+			alert(
+				__( 'Failed to delete log. Please try again.', 'sureforms' )
+			);
+		},
+	} );
+
 	const [ notes, setNotes ] = useState( [] );
+	const [ logs, setLogs ] = useState( [] );
 	const [ isRefundDialogOpen, setIsRefundDialogOpen ] = useState( false );
 	const [ isCancelDialogOpen, setIsCancelDialogOpen ] = useState( false );
+	const [ isPauseDialogOpen, setIsPauseDialogOpen ] = useState( false );
 	const [ refundAmount, setRefundAmount ] = useState( '' );
 	const [ selectedPaymentForRefund, setSelectedPaymentForRefund ] =
 		useState( null );
+	const [ isAddingNote, setIsAddingNote ] = useState( false );
+	const [ newNoteText, setNewNoteText ] = useState( '' );
+
+	// Sync notes from subscriptionData when it loads
+	useEffect( () => {
+		if ( subscriptionData?.notes ) {
+			setNotes( subscriptionData.notes );
+		}
+	}, [ subscriptionData?.notes ] );
+
+	// Sync logs from subscriptionData when it loads
+	useEffect( () => {
+		if ( subscriptionData?.logs ) {
+			setLogs( subscriptionData.logs );
+		}
+	}, [ subscriptionData?.logs ] );
+
+	// Utility function to format date and time
+	const formatDateTime = ( dateString ) => {
+		if ( ! dateString ) return 'N/A';
+		const date = new Date( dateString );
+		const formattedDate = date.toLocaleDateString( 'en-US', {
+			month: 'short',
+			day: 'numeric',
+			year: 'numeric',
+		} );
+		const formattedTime = date.toLocaleTimeString( 'en-US', {
+			hour: '2-digit',
+			minute: '2-digit',
+			hour12: true,
+		} );
+		return `${ formattedDate } at ${ formattedTime }`;
+	};
 
 	// Set default refund amount when dialog opens for individual payment
 	const openRefundDialog = ( payment ) => {
@@ -177,30 +286,37 @@ const ViewSubscription = () => {
 		);
 	}
 
+	// TODO: Implement navigation to previous payment
 	const handlePrevious = () => {
 		console.log( 'Navigate to previous payment' );
 	};
 
+	// TODO: Implement navigation to next payment
 	const handleNext = () => {
 		console.log( 'Navigate to next payment' );
 	};
 
+	// TODO: Implement Stripe dashboard integration
 	const handleViewInStripe = () => {
 		console.log( 'Open Stripe dashboard' );
 	};
 
+	// TODO: Implement email resend functionality
 	const handleResendEmail = () => {
 		console.log( 'Resend email notification' );
 	};
 
+	// TODO: Implement add note functionality
 	const handleAddNote = () => {
 		console.log( 'Add new note' );
 	};
 
+	// TODO: Implement refund payment functionality
 	const handleRefundPayment = () => {
 		console.log( 'Refund payment' );
 	};
 
+	// TODO: Implement delete log entry functionality
 	const handleDeleteLogEntry = ( id ) => {
 		console.log( 'Delete log entry:', id );
 	};
@@ -215,8 +331,104 @@ const ViewSubscription = () => {
 		}
 	};
 
+	// TODO: Implement cancel refund functionality
 	const handleCancelRefund = ( id ) => {
 		console.log( 'Cancel refund:', id );
+	};
+
+	const handleAddNoteClick = () => {
+		setIsAddingNote( true );
+	};
+
+	const handleSaveNote = () => {
+		if ( ! newNoteText.trim() ) {
+			return;
+		}
+		addNoteMutation.mutate( {
+			paymentId: subscriptionData.id,
+			noteText: newNoteText,
+		} );
+	};
+
+	const handleCancelNote = () => {
+		setNewNoteText( '' );
+		setIsAddingNote( false );
+	};
+
+	const handleDeleteNote = ( noteIndex ) => {
+		if (
+			confirm(
+				__( 'Are you sure you want to delete this note?', 'sureforms' )
+			)
+		) {
+			deleteNoteMutation.mutate( {
+				paymentId: subscriptionData.id,
+				noteIndex,
+			} );
+		}
+	};
+
+	const handleDeleteLog = ( logIndex ) => {
+		if (
+			confirm(
+				__( 'Are you sure you want to delete this log entry?', 'sureforms' )
+			)
+		) {
+			deleteLogMutation.mutate( {
+				paymentId: subscriptionData.id,
+				logIndex,
+			} );
+		}
+	};
+
+	const formatLogTimestamp = ( timestamp ) => {
+		// Validate timestamp
+		if ( ! timestamp || isNaN( timestamp ) || timestamp <= 0 ) {
+			return __( 'N/A', 'sureforms' );
+		}
+
+		const date = new Date( timestamp * 1000 );
+
+		// Check if date is valid
+		if ( isNaN( date.getTime() ) ) {
+			return __( 'Invalid Date', 'sureforms' );
+		}
+
+		return date.toLocaleString( 'en-US', {
+			year: 'numeric',
+			month: '2-digit',
+			day: '2-digit',
+			hour: '2-digit',
+			minute: '2-digit',
+			second: '2-digit',
+			hour12: false,
+		} );
+	};
+
+	const handleRefundLatestEMI = () => {
+		// Find the latest (most recent) paid EMI transaction
+		const latestPaidEMI = subscriptionBillingData
+			.filter(
+				( payment ) =>
+					payment.status === 'paid' ||
+					payment.status === 'succeeded'
+			)
+			.sort(
+				( a, b ) =>
+					new Date( b.date_time ) - new Date( a.date_time )
+			)[ 0 ];
+
+		if ( ! latestPaidEMI ) {
+			alert( __( 'No paid EMI found to refund.', 'sureforms' ) );
+			return;
+		}
+
+		// Open refund dialog with latest EMI
+		openRefundDialog( latestPaidEMI );
+	};
+
+	const openPauseDialog = () => {
+		setIsPauseDialogOpen( true );
 	};
 
 	const closeRefundDialog = () => {
@@ -345,32 +557,10 @@ const ViewSubscription = () => {
 					icon={ <ChevronLeft aria-label="icon" role="img" /> }
 					iconPosition="left"
 					size="sm"
-					tag="button"
-					type="button"
 					variant="outline"
 					onClick={ () => setViewSingleSubscription( false ) }
 				>
-					Back
-				</Button>
-				<Button
-					icon={ <ChevronLeft aria-label="icon" role="img" /> }
-					iconPosition="left"
-					size="sm"
-					tag="button"
-					type="button"
-					variant="outline"
-				>
-					Previous
-				</Button>
-				<Button
-					icon={ <ChevronRight aria-label="icon" role="img" /> }
-					iconPosition="right"
-					size="sm"
-					tag="button"
-					type="button"
-					variant="outline"
-				>
-					Next
+					{ __( 'Back', 'sureforms' ) }
 				</Button>
 			</div>
 		</Container>
@@ -439,19 +629,6 @@ const ViewSubscription = () => {
 
 	// Subscription billing history data - use fetched billing data or empty array
 	const subscriptionBillingData = billingData || [];
-
-	// Format date time for billing table
-	const formatDateTime = ( datetime ) => {
-		const date = new Date( datetime );
-		return date.toLocaleString( 'en-US', {
-			month: 'short',
-			day: 'numeric',
-			year: 'numeric',
-			hour: 'numeric',
-			minute: '2-digit',
-			hour12: true,
-		} );
-	};
 
 	// Get status badge variant for billing table
 	const getStatusVariant = ( status ) => {
@@ -668,6 +845,69 @@ const ViewSubscription = () => {
 		</Dialog>
 	);
 
+	// Pause subscription dialog
+	const pauseDialog = (
+		<Dialog
+			open={ isPauseDialogOpen }
+			setOpen={ setIsPauseDialogOpen }
+			design="simple"
+			exitOnEsc
+			scrollLock
+		>
+			<Dialog.Backdrop />
+			<Dialog.Panel>
+				<Dialog.Header>
+					<div className="flex items-center justify-between">
+						<Dialog.Title>
+							{ __( 'Pause Subscription', 'sureforms' ) }
+						</Dialog.Title>
+						<Dialog.CloseButton
+							onClick={ () => setIsPauseDialogOpen( false ) }
+						/>
+					</div>
+					<Dialog.Description>
+						{ __(
+							`Are you sure you want to pause subscription #${ subscriptionData.id }? The customer will not be charged until you resume the subscription.`,
+							'sureforms'
+						) }
+					</Dialog.Description>
+				</Dialog.Header>
+				<Dialog.Body>
+					<div className="space-y-4">
+						<div className="p-3 border border-yellow-200 rounded-md bg-yellow-50">
+							<Text className="text-sm text-yellow-700">
+								{ __(
+									'Note: Pausing this subscription will stop billing temporarily. You can resume it later from the subscription details.',
+									'sureforms'
+								) }
+							</Text>
+						</div>
+					</div>
+				</Dialog.Body>
+				<Dialog.Footer className="flex justify-end gap-2">
+					<Button
+						variant="outline"
+						onClick={ () => setIsPauseDialogOpen( false ) }
+						disabled={ pauseMutation.isPending }
+					>
+						{ __( 'Cancel', 'sureforms' ) }
+					</Button>
+					<Button
+						variant="warning"
+						onClick={ () =>
+							pauseMutation.mutate( subscriptionData.id )
+						}
+						disabled={ pauseMutation.isPending }
+					>
+						{ pauseMutation.isPending
+							? __( 'Pausing…', 'sureforms' )
+							: __( 'Pause Subscription', 'sureforms' ) }
+					</Button>
+				</Dialog.Footer>
+			</Dialog.Panel>
+		</Dialog>
+	);
+
 	const billingDetails = (
 		<div className="overflow-hidden bg-background-primary">
 			<div className="overflow-x-auto">
@@ -681,9 +921,6 @@ const ViewSubscription = () => {
 						</Table.HeadCell>
 						<Table.HeadCell>
 							{ __( 'Date & Time', 'sureforms' ) }
-						</Table.HeadCell>
-						<Table.HeadCell>
-							{ __( 'Action', 'sureforms' ) }
 						</Table.HeadCell>
 					</Table.Head>
 					<Table.Body>
@@ -705,13 +942,13 @@ const ViewSubscription = () => {
 												} }
 											>
 												{ formatAmount(
-													row.amount_paid,
+													row.total_amount,
 													subscriptionData.currency
 												) }
 											</span>
 											<strong>
 												{ formatAmount(
-													row.amount_paid -
+													row.total_amount -
 														row.refunded_amount,
 													subscriptionData.currency
 												) }
@@ -719,7 +956,7 @@ const ViewSubscription = () => {
 										</span>
 									) : (
 										formatAmount(
-											row.amount_paid,
+											row.total_amount,
 											subscriptionData.currency
 										)
 									) }
@@ -731,58 +968,16 @@ const ViewSubscription = () => {
 										) }
 										size="xs"
 										label={
-											row.status === 'succeeded'
+											row.status === 'paid'
 												? __( 'Paid', 'sureforms' )
 												: row.status
 										}
 										type="pill"
+										className='w-fit'
 									/>
 								</Table.Cell>
 								<Table.Cell>
 									{ formatDateTime( row.date_time ) }
-								</Table.Cell>
-								<Table.Cell>
-									<DropdownMenu placement="bottom-end">
-										<DropdownMenu.Trigger>
-											<EllipsisVertical />
-											<span className="sr-only">
-												{ __(
-													'Open Menu',
-													'sureforms'
-												) }
-											</span>
-										</DropdownMenu.Trigger>
-										<DropdownMenu.ContentWrapper>
-											<DropdownMenu.Content className="w-60">
-												<DropdownMenu.List>
-													<DropdownMenu.Item
-														onClick={ () =>
-															handleRefund(
-																row.id
-															)
-														}
-													>
-														{ __(
-															'Refund',
-															'sureforms'
-														) }
-													</DropdownMenu.Item>
-													<DropdownMenu.Item
-														onClick={ () =>
-															handleCancelRefund(
-																row.id
-															)
-														}
-													>
-														{ __(
-															'Cancel Payment',
-															'sureforms'
-														) }
-													</DropdownMenu.Item>
-												</DropdownMenu.List>
-											</DropdownMenu.Content>
-										</DropdownMenu.ContentWrapper>
-									</DropdownMenu>
 								</Table.Cell>
 							</Table.Row>
 						) ) }
@@ -904,7 +1099,7 @@ const ViewSubscription = () => {
 					justify="between"
 				>
 					<Label size="sm" className="font-semibold">
-						{ __( 'Billing History', 'sureforms' ) }
+						{ __( 'Subscription Details', 'sureforms' ) }
 					</Label>
 					<Badge
 						variant={
@@ -919,6 +1114,39 @@ const ViewSubscription = () => {
 						{ subscriptionData.status ||
 							__( 'Unknown', 'sureforms' ) }
 					</Badge>
+					<DropdownMenu placement="right-end">
+						<DropdownMenu.Trigger>
+							<Button
+								icon={<EllipsisVertical className="!size-5" />}
+								iconPosition="right"
+								size="sm"
+								variant="outline"
+							>
+								{__('Actions', 'sureforms')}
+							</Button>
+						</DropdownMenu.Trigger>
+						<DropdownMenu.ContentWrapper>
+							<DropdownMenu.Content className="w-60">
+								<DropdownMenu.List>
+									<DropdownMenu.Item
+										onClick={openCancelDialog}
+									>
+										{__('Cancel Subscription', 'sureforms')}
+									</DropdownMenu.Item>
+									<DropdownMenu.Item
+										onClick={openPauseDialog}
+									>
+										{__('Pause Subscription', 'sureforms')}
+									</DropdownMenu.Item>
+									<DropdownMenu.Item
+										onClick={handleRefundLatestEMI}
+									>
+										{__('Refund Latest EMI', 'sureforms')}
+									</DropdownMenu.Item>
+								</DropdownMenu.List>
+							</DropdownMenu.Content>
+						</DropdownMenu.ContentWrapper>
+					</DropdownMenu>
 				</Container>
 				<Container className="flex flex-col bg-background-secondary gap-1 p-1 rounded-lg">
 					{ billingDetails }
@@ -935,29 +1163,18 @@ const ViewSubscription = () => {
 					justify="between"
 				>
 					<Label size="sm" className="font-semibold">
-						{ __( 'Subscription Details', 'sureforms' ) }
+						{ __( 'Payment Info', 'sureforms' ) }
 					</Label>
-					<div className="flex gap-2">
-						<Button
-							icon={ <ArrowUpRight className="!size-5" /> }
-							iconPosition="right"
-							variant="link"
-							size="sm"
-							className="h-full text-link-primary text-sm font-semibold no-underline hover:no-underline hover:text-link-primary-hover px-1 content-center [box-shadow:none] focus:[box-shadow:none] focus:outline-none"
-							onClick={ () => {} }
-						>
-							{ __( 'View In Stripe', 'sureforms' ) }
-						</Button>
-						{ subscriptionData.status === 'active' && (
-							<Button
-								variant="outline"
-								size="sm"
-								onClick={ openCancelDialog }
-							>
-								{ __( 'Cancel Subscription', 'sureforms' ) }
-							</Button>
-						) }
-					</div>
+					<Button
+						icon={ <ArrowUpRight className="!size-5" /> }
+						iconPosition="right"
+						variant="link"
+						size="sm"
+						className="h-full text-link-primary text-sm font-semibold no-underline hover:no-underline hover:text-link-primary-hover px-1 content-center [box-shadow:none] focus:[box-shadow:none] focus:outline-none"
+						onClick={ () => {} }
+					>
+						{ __( 'View In Stripe', 'sureforms' ) }
+					</Button>
 				</Container>
 				<Container className="flex flex-col gap-1 p-1 rounded-lg">
 					{ subscriptionDetails }
@@ -965,27 +1182,6 @@ const ViewSubscription = () => {
 			</Container>
 		</>
 	);
-
-	const paymentLogs = [
-		{
-			EmailNotification: 'Email Sending Initiated',
-			Timestamp: '2023-03-09 15:29:24',
-			Details: 'Email Notification broadcasted to support@sureforms.com.',
-			Subject: 'Test the form',
-		},
-		{
-			EmailNotification: 'Email Sending Initiated',
-			Timestamp: '2023-03-09 15:29:24',
-			Details: 'Email Notification broadcasted to support@sureforms.com.',
-			Subject: 'Test the form',
-		},
-		{
-			EmailNotification: 'Email Sending Initiated',
-			Timestamp: '2023-03-09 15:29:24',
-			Details: 'Email Notification broadcasted to support@sureforms.com.',
-			Subject: 'Test the form',
-		},
-	];
 
 	const PAYMENT_SECTION_COLUMN_2 = (
 		<>
@@ -1002,17 +1198,85 @@ const ViewSubscription = () => {
 						{ __( 'Notes', 'sureforms' ) }
 					</Label>
 					<Button
-						icon={ <ArrowUpRight className="!size-5" /> }
+						icon={ <Plus className="!size-5" /> }
+						iconPosition="left"
 						variant="link"
 						size="sm"
 						className="h-full text-link-primary text-sm font-semibold no-underline hover:no-underline hover:text-link-primary-hover px-1 content-center [box-shadow:none] focus:[box-shadow:none] focus:outline-none"
-						onClick={ () => {} }
+						onClick={ handleAddNoteClick }
+						disabled={ isAddingNote }
 					>
 						{ __( 'Add Note', 'sureforms' ) }
 					</Button>
 				</Container>
-				<Container className="flex flex-col bg-background-secondary gap-1 p-1 rounded-lg">
-					<h1>Add Notes Place Holder</h1>
+				<Container className="flex flex-col items-center justify-center bg-background-secondary gap-1 p-1 rounded-lg min-h-[89px]">
+					{ notes && notes.length > 0 ? (
+						notes.map( ( note, index ) => (
+							<div
+								key={ index }
+								className="w-full flex justify-between items-start gap-2 p-3 bg-background-primary rounded-lg border border-border-subtle"
+							>
+								<div className="flex-1">
+									<Text className="text-sm text-text-primary">
+										{ note.text || note }
+									</Text>
+									{ note.created_at && (
+										<Text className="text-xs text-text-tertiary mt-1">
+											{ new Date( note.created_at ).toLocaleString() }
+										</Text>
+									) }
+								</div>
+								<Button
+									variant="ghost"
+									size="xs"
+									icon={ <Trash2 className="!size-4" /> }
+									onClick={ () => handleDeleteNote( index ) }
+									disabled={ deleteNoteMutation.isPending }
+									className="text-icon-secondary hover:text-red-700"
+								/>
+							</div>
+						) )
+					) : (
+						! isAddingNote && (
+							<Text className="text-sm text-text-secondary p-3 text-center flex items-center justify-center gap-2">
+								<FileSearch2 className="!size-5" />
+								{ __( 'Add an internal note about this subscription', 'sureforms' ) }
+							</Text>
+						)
+					) }
+
+					{ isAddingNote && (
+						<div className="w-full p-3 bg-background-primary rounded-lg border border-border-subtle">
+							<TextArea
+								value={ newNoteText }
+								onChange={ ( value ) => setNewNoteText( value ) }
+								placeholder={ __( 'Enter your note here...', 'sureforms' ) }
+								size="sm"
+								className="w-full"
+								autoFocus
+							/>
+							<div className="flex gap-2 mt-2 justify-end">
+								<Button
+									variant="outline"
+									size="sm"
+									onClick={ handleCancelNote }
+									disabled={ addNoteMutation.isPending }
+								>
+									{ __( 'Cancel', 'sureforms' ) }
+								</Button>
+								<Button
+									variant="primary"
+									size="sm"
+									onClick={ handleSaveNote }
+									disabled={ addNoteMutation.isPending || ! newNoteText.trim() }
+								>
+									{ addNoteMutation.isPending
+										? __( 'Adding...', 'sureforms' )
+										: __( 'Add Note', 'sureforms' ) }
+								</Button>
+							</div>
+						</div>
+					) }
 				</Container>
 			</Container>
 			{ /* Payment log */ }
@@ -1029,31 +1293,60 @@ const ViewSubscription = () => {
 						{ __( 'Payment Log', 'sureforms' ) }
 					</Label>
 				</Container>
-				<Container className="flex flex-col bg-background-secondary gap-1 p-1 rounded-lg">
-					{ paymentLogs.map( ( log, index ) => (
-						<div key={ index } className="flex flex-col gap-1">
-							<div className="flex justify-between items-center gap-1">
-								<p className="flex-1">
-									<bold>{ log.EmailNotification }</bold>
-								</p>
-								<Button
-									variant="link"
-									size="sm"
-									onClick={ () => {
-										console.log(
-											'Delete log entry:',
-											log.id
-										);
-									} }
+				<Container className="flex flex-col items-center justify-center bg-background-secondary gap-1 p-1 rounded-lg min-h-[89px]">
+					{ logs && logs.length > 0 ? (
+						logs.map( ( log, index ) => {
+							// Defensive checks for log data
+							if ( ! log || typeof log !== 'object' ) {
+								return null;
+							}
+
+							const logTitle = log.title || __( 'Untitled Log', 'sureforms' );
+							const logMessages = Array.isArray( log.messages ) ? log.messages : [];
+
+							return (
+								<div
+									key={ index }
+									className="w-full flex flex-col gap-2 p-3 bg-background-primary rounded-lg border border-border-subtle"
 								>
-									<Trash2 />
-								</Button>
-							</div>
-							<p>{ log.Timestamp }</p>
-							<p>{ log.Details }</p>
-							<p>{ log.Subject }</p>
-						</div>
-					) ) }
+									<div className="flex justify-between items-start gap-2">
+										<div className="flex-1">
+											<Text className="text-sm font-semibold">
+												{ logTitle }
+											</Text>
+											<Text className="text-xs text-text-tertiary mt-1">
+												{ formatLogTimestamp( log.timestamp ) }
+											</Text>
+										</div>
+										<Button
+											variant="ghost"
+											size="xs"
+											icon={ <Trash2 className="!size-4" /> }
+											onClick={ () => handleDeleteLog( index ) }
+											disabled={ deleteLogMutation.isPending }
+											className="text-icon-secondary hover:text-red-700"
+										/>
+									</div>
+									{ logMessages.length > 0 && (
+										<div className="flex flex-col gap-1 mt-1">
+											{ logMessages.map( ( message, msgIndex ) => (
+												<Text
+													key={ msgIndex }
+													className="text-xs text-text-secondary"
+												>
+													{ message || '' }
+												</Text>
+											) ) }
+										</div>
+									) }
+								</div>
+							);
+						} )
+					) : (
+						<Text className="text-sm text-text-secondary p-3 text-center">
+							{ __( 'No payment logs available', 'sureforms' ) }
+						</Text>
+					) }
 				</Container>
 			</Container>
 		</>
@@ -1072,7 +1365,6 @@ const ViewSubscription = () => {
 					className="w-full gap-8"
 					containerType="grid"
 					cols={ 12 }
-					align="center"
 				>
 					<div className="flex flex-col gap-8 col-span-12 xl:col-span-8">
 						{ PAYMENT_SECTION_COLUMN_1 }
@@ -1084,6 +1376,7 @@ const ViewSubscription = () => {
 			</Container>
 			{ refundDialog }
 			{ cancelDialog }
+			{ pauseDialog }
 		</div>
 	);
 };
