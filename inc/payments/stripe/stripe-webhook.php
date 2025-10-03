@@ -6,9 +6,10 @@
  * @since x.x.x
  */
 
-namespace SRFM\Inc;
+namespace SRFM\Inc\Payments\Stripe;
 
 use SRFM\Inc\Database\Tables\Payments;
+use SRFM\Inc\Helper;
 use SRFM\Inc\Traits\Get_Instance;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -129,6 +130,121 @@ class Stripe_Webhook {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Validates the Stripe signature manually without using Stripe SDK.
+	 * Uses native PHP HMAC-SHA256 verification.
+	 *
+	 * @return array<string, mixed>|bool
+	 */
+	public function validate_stripe_signature_wsdk(): array|bool {
+		// Get the raw payload and Stripe signature header
+		$payload   = file_get_contents( 'php://input' );
+		$signature = $_SERVER['HTTP_STRIPE_SIGNATURE'] ?? '';
+		$signature = trim( $signature );
+
+		if ( empty( $payload ) || empty( $signature ) ) {
+			error_log( 'SureForms: Missing webhook payload or signature' );
+			return false;
+		}
+
+		// Get payment settings
+		$settings = get_option( Payments_Settings::OPTION_NAME, [] );
+		if ( ! is_array( $settings ) ) {
+			$settings = [];
+		}
+		$this->mode = $settings['payment_mode'] ?? 'test';
+
+		// Get the appropriate webhook secret based on payment mode
+		$webhook_secret = '';
+		if ( 'live' === $this->mode ) {
+			$webhook_secret = is_string( $settings['webhook_live_secret'] ?? '' ) ? $settings['webhook_live_secret'] : '';
+		} else {
+			$webhook_secret = is_string( $settings['webhook_test_secret'] ?? '' ) ? $settings['webhook_test_secret'] : '';
+		}
+
+		if ( empty( $webhook_secret ) ) {
+			error_log( 'SureForms: Webhook secret not configured for mode: ' . $this->mode );
+			return false;
+		}
+
+		// Step 1: Parse the signature header
+		// Format: t=timestamp,v1=signature,v0=old_signature
+		$sig_parts  = explode( ',', $signature );
+		$timestamp  = null;
+		$signatures = [];
+
+		foreach ( $sig_parts as $part ) {
+			$key_value = explode( '=', $part, 2 );
+			if ( count( $key_value ) !== 2 ) {
+				continue;
+			}
+
+			list( $key, $value ) = $key_value;
+
+			if ( 't' === $key ) {
+				$timestamp = is_numeric( $value ) ? (int) $value : null;
+			} elseif ( 'v1' === $key ) {
+				$signatures[] = $value;
+			}
+		}
+
+		// Step 2: Validate we have required parts
+		if ( null === $timestamp || empty( $signatures ) ) {
+			error_log( 'SureForms: Invalid signature header format - missing timestamp or v1 signature' );
+			return false;
+		}
+
+		// Step 3: Construct the signed payload
+		// Format: {timestamp}.{raw_payload}
+		$signed_payload = $timestamp . '.' . $payload;
+
+		// Step 4: Compute the expected signature using HMAC-SHA256
+		$expected_signature = hash_hmac( 'sha256', $signed_payload, $webhook_secret );
+
+		// Step 5: Compare signatures using timing-safe comparison
+		$signature_valid = false;
+		foreach ( $signatures as $sig ) {
+			if ( hash_equals( $expected_signature, $sig ) ) {
+				$signature_valid = true;
+				break;
+			}
+		}
+
+		if ( ! $signature_valid ) {
+			error_log( 'SureForms: Signature verification failed - computed signature does not match' );
+			return false;
+		}
+
+		// Step 6: Verify timestamp is within tolerance (prevent replay attacks)
+		// Default tolerance: 300 seconds (5 minutes)
+		$tolerance    = 300;
+		$current_time = time();
+
+		if ( abs( $current_time - $timestamp ) > $tolerance ) {
+			error_log(
+				sprintf(
+					'SureForms: Timestamp outside tolerance zone. Current: %d, Webhook: %d, Diff: %d seconds',
+					$current_time,
+					$timestamp,
+					abs( $current_time - $timestamp )
+				)
+			);
+			return false;
+		}
+
+		// Step 7: Parse and return the event
+		$event = json_decode( $payload, true );
+
+		if ( ! $event || ! is_array( $event ) || ! isset( $event['type'] ) ) {
+			error_log( 'SureForms: Invalid JSON payload in webhook' );
+			return false;
+		}
+
+		error_log( 'SureForms: Webhook signature verified successfully (manual verification)' );
+
+		return $event;
 	}
 
 	/**

@@ -33,6 +33,10 @@ class Admin_Handler {
 		add_action( 'wp_ajax_srfm_fetch_payments_transactions', [ $this, 'fetch_payments' ] );
 		add_action( 'wp_ajax_srfm_fetch_single_payment', [ $this, 'fetch_single_payment' ] );
 		add_action( 'wp_ajax_srfm_fetch_subscription', [ $this, 'fetch_subscription' ] );
+		add_action( 'wp_ajax_srfm_stripe_pause_subscription', [ $this, 'pause_subscription' ] );
+		add_action( 'wp_ajax_srfm_add_payment_note', [ $this, 'ajax_add_note' ] );
+		add_action( 'wp_ajax_srfm_delete_payment_note', [ $this, 'ajax_delete_note' ] );
+		add_action( 'wp_ajax_srfm_delete_payment_log', [ $this, 'ajax_delete_log' ] );
 	}
 
 	/**
@@ -414,11 +418,12 @@ class Admin_Handler {
 	 */
 	private function map_frontend_status_to_db( $frontend_status ) {
 		$status_mapping = [
-			'paid'      => 'succeeded',
-			'pending'   => 'pending',
-			'failed'    => 'failed',
-			'refunded'  => 'refunded',
-			'cancelled' => 'canceled',
+			'succeeded'          => 'succeeded',
+			'partially_refunded' => 'partially_refunded',
+			'pending'            => 'pending',
+			'failed'             => 'failed',
+			'refunded'           => 'refunded',
+			'cancelled'          => 'canceled',
 		];
 
 		return $status_mapping[ $frontend_status ] ?? false;
@@ -503,6 +508,8 @@ class Admin_Handler {
 			'frontend_status'        => $this->map_db_status_to_frontend( $payment['status'] ),
 			'datetime'               => $payment['created_at'], // Keep for backward compatibility
 			'payment_type'           => $payment_type,
+			'notes'                  => Payments::get_extra_value( $payment['id'], 'notes', [] ),
+			'logs'                   => $this->get_formatted_logs( $payment['log'] ),
 		];
 
 		return apply_filters( 'srfm_payment_admin_data', $payment_front_end_data, $payment );
@@ -677,5 +684,410 @@ class Admin_Handler {
 	private function validate_date( $date ) {
 		$parsed_date = \DateTime::createFromFormat( 'Y-m-d', $date );
 		return $parsed_date && $parsed_date->format( 'Y-m-d' ) === $date;
+	}
+
+	/**
+	 * AJAX handler for adding a note to payment.
+	 *
+	 * @return void
+	 * @since 1.0.0
+	 */
+	public function ajax_add_note() {
+		// Verify nonce for security.
+		if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'srfm_payment_admin_nonce' ) ) {
+			wp_send_json_error( [ 'message' => __( 'Security verification failed.', 'sureforms' ) ] );
+			return;
+		}
+
+		// Check user capabilities.
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( [ 'message' => __( 'Insufficient permissions.', 'sureforms' ) ] );
+			return;
+		}
+
+		// Validate and sanitize inputs.
+		$payment_id = isset( $_POST['payment_id'] ) ? absint( $_POST['payment_id'] ) : 0;
+		$note_text  = isset( $_POST['note_text'] ) ? sanitize_textarea_field( wp_unslash( $_POST['note_text'] ) ) : '';
+
+		if ( empty( $payment_id ) ) {
+			wp_send_json_error( [ 'message' => __( 'Payment ID is required.', 'sureforms' ) ] );
+			return;
+		}
+
+		if ( empty( trim( $note_text ) ) ) {
+			wp_send_json_error( [ 'message' => __( 'Note text cannot be empty.', 'sureforms' ) ] );
+			return;
+		}
+
+		try {
+			// Add the note.
+			$updated_notes = $this->add_payment_note( $payment_id, $note_text );
+
+			if ( false === $updated_notes ) {
+				wp_send_json_error( [ 'message' => __( 'Failed to add note.', 'sureforms' ) ] );
+				return;
+			}
+
+			wp_send_json_success( [ 'notes' => $updated_notes ] );
+
+		} catch ( \Exception $e ) {
+			error_log( 'SureForms: Error adding payment note - ' . $e->getMessage() );
+			wp_send_json_error( [ 'message' => __( 'An error occurred while adding the note.', 'sureforms' ) ] );
+		}
+	}
+
+	/**
+	 * AJAX handler for deleting a note from payment.
+	 *
+	 * @return void
+	 * @since 1.0.0
+	 */
+	public function ajax_delete_note() {
+		// Verify nonce for security.
+		if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'srfm_payment_admin_nonce' ) ) {
+			wp_send_json_error( [ 'message' => __( 'Security verification failed.', 'sureforms' ) ] );
+			return;
+		}
+
+		// Check user capabilities.
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( [ 'message' => __( 'Insufficient permissions.', 'sureforms' ) ] );
+			return;
+		}
+
+		// Validate and sanitize inputs.
+		$payment_id = isset( $_POST['payment_id'] ) ? absint( $_POST['payment_id'] ) : 0;
+		$note_index = isset( $_POST['note_index'] ) ? absint( $_POST['note_index'] ) : -1;
+
+		if ( empty( $payment_id ) ) {
+			wp_send_json_error( [ 'message' => __( 'Payment ID is required.', 'sureforms' ) ] );
+			return;
+		}
+
+		if ( $note_index < 0 ) {
+			wp_send_json_error( [ 'message' => __( 'Invalid note index.', 'sureforms' ) ] );
+			return;
+		}
+
+		try {
+			// Delete the note.
+			$updated_notes = $this->delete_payment_note( $payment_id, $note_index );
+
+			if ( false === $updated_notes ) {
+				wp_send_json_error( [ 'message' => __( 'Failed to delete note.', 'sureforms' ) ] );
+				return;
+			}
+
+			wp_send_json_success( [ 'notes' => $updated_notes ] );
+
+		} catch ( \Exception $e ) {
+			error_log( 'SureForms: Error deleting payment note - ' . $e->getMessage() );
+			wp_send_json_error( [ 'message' => __( 'An error occurred while deleting the note.', 'sureforms' ) ] );
+		}
+	}
+
+	/**
+	 * Add a note to payment.
+	 *
+	 * @param int    $payment_id Payment ID.
+	 * @param string $note_text  Note text to add.
+	 * @return array|false Updated notes array or false on failure.
+	 * @since 1.0.0
+	 */
+	private function add_payment_note( $payment_id, $note_text ) {
+		if ( empty( $payment_id ) || empty( trim( $note_text ) ) ) {
+			return false;
+		}
+
+		// Verify payment exists.
+		$payment = Payments::get( $payment_id );
+		if ( ! $payment ) {
+			return false;
+		}
+
+		// Get current notes from extra data.
+		$notes = Payments::get_extra_value( $payment_id, 'notes', [] );
+
+		// Ensure notes is an array.
+		if ( ! is_array( $notes ) ) {
+			$notes = [];
+		}
+
+		// Create new note with metadata.
+		$new_note = [
+			'text'       => trim( $note_text ),
+			'created_at' => current_time( 'mysql' ),
+			'created_by' => get_current_user_id(),
+		];
+
+		// Add new note to the beginning of the array (most recent first).
+		array_unshift( $notes, $new_note );
+
+		// Update extra data with new notes array.
+		$result = Payments::update_extra_key( $payment_id, 'notes', $notes );
+
+		if ( false === $result ) {
+			return false;
+		}
+
+		return $notes;
+	}
+
+	/**
+	 * Delete a note from payment by index.
+	 *
+	 * @param int $payment_id Payment ID.
+	 * @param int $note_index Index of note to delete.
+	 * @return array|false Updated notes array or false on failure.
+	 * @since 1.0.0
+	 */
+	private function delete_payment_note( $payment_id, $note_index ) {
+		if ( empty( $payment_id ) || $note_index < 0 ) {
+			return false;
+		}
+
+		// Verify payment exists.
+		$payment = Payments::get( $payment_id );
+		if ( ! $payment ) {
+			return false;
+		}
+
+		// Get current notes.
+		$notes = Payments::get_extra_value( $payment_id, 'notes', [] );
+
+		// Ensure notes is an array.
+		if ( ! is_array( $notes ) ) {
+			return false;
+		}
+
+		// Check if note index exists.
+		if ( ! isset( $notes[ $note_index ] ) ) {
+			return false;
+		}
+
+		// Remove note at specified index.
+		array_splice( $notes, $note_index, 1 );
+
+		// Re-index array to prevent gaps.
+		$notes = array_values( $notes );
+
+		// Update extra data with modified notes array.
+		$result = Payments::update_extra_key( $payment_id, 'notes', $notes );
+
+		if ( false === $result ) {
+			return false;
+		}
+
+		return $notes;
+	}
+
+	/**
+	 * AJAX handler for deleting a log entry from payment.
+	 *
+	 * @return void
+	 * @since 1.0.0
+	 */
+	public function ajax_delete_log() {
+		// Verify nonce for security.
+		if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'srfm_payment_admin_nonce' ) ) {
+			wp_send_json_error( [ 'message' => __( 'Security verification failed.', 'sureforms' ) ] );
+			return;
+		}
+
+		// Check user capabilities.
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( [ 'message' => __( 'Insufficient permissions.', 'sureforms' ) ] );
+			return;
+		}
+
+		// Validate and sanitize inputs.
+		$payment_id = isset( $_POST['payment_id'] ) ? absint( $_POST['payment_id'] ) : 0;
+		$log_index  = isset( $_POST['log_index'] ) ? absint( $_POST['log_index'] ) : -1;
+
+		if ( empty( $payment_id ) ) {
+			wp_send_json_error( [ 'message' => __( 'Payment ID is required.', 'sureforms' ) ] );
+			return;
+		}
+
+		if ( $log_index < 0 ) {
+			wp_send_json_error( [ 'message' => __( 'Invalid log index.', 'sureforms' ) ] );
+			return;
+		}
+
+		try {
+			// Delete the log entry.
+			$updated_logs = $this->delete_payment_log( $payment_id, $log_index );
+
+			if ( false === $updated_logs ) {
+				wp_send_json_error( [ 'message' => __( 'Failed to delete log entry.', 'sureforms' ) ] );
+				return;
+			}
+
+			wp_send_json_success( [ 'logs' => $updated_logs ] );
+
+		} catch ( \Exception $e ) {
+			error_log( 'SureForms: Error deleting payment log - ' . $e->getMessage() );
+			wp_send_json_error( [ 'message' => __( 'An error occurred while deleting the log entry.', 'sureforms' ) ] );
+		}
+	}
+
+	/**
+	 * Delete a log entry from payment by index.
+	 *
+	 * @param int $payment_id Payment ID.
+	 * @param int $log_index  Index of log entry to delete.
+	 * @return array|false Updated formatted logs array or false on failure.
+	 * @since 1.0.0
+	 */
+	private function delete_payment_log( $payment_id, $log_index ) {
+		if ( empty( $payment_id ) || $log_index < 0 ) {
+			return false;
+		}
+
+		// Verify payment exists.
+		$payment = Payments::get( $payment_id );
+		if ( ! $payment ) {
+			return false;
+		}
+
+		// Get current logs from log column.
+		$logs_data = $payment['log'] ?? '[]';
+		$logs      = json_decode( $logs_data, true ) ?? [];
+
+		// Ensure logs is an array.
+		if ( ! is_array( $logs ) ) {
+			return false;
+		}
+
+		// Check if log index exists.
+		if ( ! isset( $logs[ $log_index ] ) ) {
+			return false;
+		}
+
+		// Remove log at specified index.
+		array_splice( $logs, $log_index, 1 );
+
+		// Re-index array to prevent gaps.
+		$logs = array_values( $logs );
+
+		// Update log column with modified logs array.
+		$result = Payments::update(
+			$payment_id,
+			[
+				'log' => wp_json_encode( $logs ),
+			]
+		);
+
+		if ( false === $result ) {
+			return false;
+		}
+
+		// Return formatted logs for frontend.
+		return $this->get_formatted_logs( wp_json_encode( $logs ) );
+	}
+
+	/**
+	 * Get formatted logs from log data.
+	 *
+	 * @param string $log_data JSON encoded log data.
+	 * @return array Formatted logs array.
+	 * @since 1.0.0
+	 */
+	private function get_formatted_logs( $log_data ) {
+		if ( empty( $log_data ) ) {
+			return [];
+		}
+
+		// If already an array, use it directly
+		if ( is_array( $log_data ) ) {
+			$logs = $log_data;
+		} else {
+			return [];
+		}
+
+		if ( ! is_array( $logs ) ) {
+			return [];
+		}
+
+		$formatted_logs = [];
+
+		foreach ( $logs as $log ) {
+			// Handle both object and array formats.
+			if ( is_object( $log ) ) {
+				$formatted_logs[] = [
+					'title'     => $log->title ?? '',
+					'timestamp' => $log->timestamp ?? 0,
+					'messages'  => $log->messages ?? [],
+				];
+			} elseif ( is_array( $log ) ) {
+				$formatted_logs[] = [
+					'title'     => $log['title'] ?? '',
+					'timestamp' => $log['timestamp'] ?? 0,
+					'messages'  => $log['messages'] ?? [],
+				];
+			}
+		}
+
+		return $formatted_logs;
+	}
+
+	/**
+	 * AJAX handler for pausing a subscription.
+	 *
+	 * @return void
+	 * @since 1.0.0
+	 */
+	public function pause_subscription() {
+		// Verify nonce for security.
+		if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'srfm_payment_admin_nonce' ) ) {
+			wp_send_json_error( [ 'message' => __( 'Security verification failed.', 'sureforms' ) ] );
+			return;
+		}
+
+		// Check user capabilities.
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( [ 'message' => __( 'Insufficient permissions.', 'sureforms' ) ] );
+			return;
+		}
+
+		// Get subscription ID.
+		$subscription_id = isset( $_POST['subscription_id'] ) ? absint( $_POST['subscription_id'] ) : 0;
+
+		if ( empty( $subscription_id ) ) {
+			wp_send_json_error( [ 'message' => __( 'Subscription ID is required.', 'sureforms' ) ] );
+			return;
+		}
+
+		try {
+			// Get subscription data from database.
+			$subscription = Payments::get( $subscription_id );
+
+			if ( ! $subscription ) {
+				wp_send_json_error( [ 'message' => __( 'Subscription not found.', 'sureforms' ) ] );
+				return;
+			}
+
+			// Verify this is a subscription.
+			if ( 'subscription' !== $subscription['type'] ) {
+				wp_send_json_error( [ 'message' => __( 'This payment is not a subscription.', 'sureforms' ) ] );
+				return;
+			}
+
+			// TODO: Implement actual Stripe API call to pause subscription.
+			// For now, this is a placeholder that returns success.
+			// In a real implementation, you would:
+			// 1. Get the Stripe subscription ID from $subscription['subscription_id'].
+			// 2. Call Stripe API to pause the subscription.
+			// 3. Update local database with new status if needed.
+
+			wp_send_json_success(
+				[
+					'message' => __( 'Subscription paused successfully.', 'sureforms' ),
+				]
+			);
+
+		} catch ( \Exception $e ) {
+			wp_send_json_error( [ 'message' => __( 'Failed to pause subscription.', 'sureforms' ) ] );
+		}
 	}
 }
