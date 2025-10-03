@@ -1553,12 +1553,12 @@ class Helper {
 			'srfm_integrated_plugins',
 			[
 				'sure_mails'        => [
-					'title'       => __( 'SureMail', 'sureforms' ),
-					'subtitle'    => __( 'Free and easy SMTP mails plugin.', 'sureforms' ),
-					'status'      => self::get_plugin_status( 'suremails/suremails.php' ),
-					'slug'        => 'suremails',
-					'path'        => 'suremails/suremails.php',
-					'logo'        => self::encode_svg( is_string( $logo_sure_mails ) ? $logo_sure_mails : '' ),
+					'title'    => __( 'SureMail', 'sureforms' ),
+					'subtitle' => __( 'Free and easy SMTP mails plugin.', 'sureforms' ),
+					'status'   => self::get_plugin_status( 'suremails/suremails.php' ),
+					'slug'     => 'suremails',
+					'path'     => 'suremails/suremails.php',
+					'logo'     => self::encode_svg( is_string( $logo_sure_mails ) ? $logo_sure_mails : '' ),
 				],
 				'sure_triggers'     => [
 					'title'       => __( 'OttoKit', 'sureforms' ),
@@ -1580,12 +1580,12 @@ class Helper {
 					'logo'     => self::encode_svg( is_string( $logo_uae ) ? $logo_uae : '' ),
 				],
 				'starter_templates' => [
-					'title'       => __( 'Starter Templates', 'sureforms' ),
-					'subtitle'    => __( 'Build your dream website in minutes with AI.', 'sureforms' ),
-					'status'      => self::get_plugin_status( self::check_starter_template_plugin() ),
-					'slug'        => 'astra-sites',
-					'path'        => self::check_starter_template_plugin(),
-					'logo'        => self::encode_svg( is_string( $logo_starter_templates ) ? $logo_starter_templates : '' ),
+					'title'    => __( 'Starter Templates', 'sureforms' ),
+					'subtitle' => __( 'Build your dream website in minutes with AI.', 'sureforms' ),
+					'status'   => self::get_plugin_status( self::check_starter_template_plugin() ),
+					'slug'     => 'astra-sites',
+					'path'     => self::check_starter_template_plugin(),
+					'logo'     => self::encode_svg( is_string( $logo_starter_templates ) ? $logo_starter_templates : '' ),
 				],
 			]
 		);
