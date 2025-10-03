@@ -717,9 +717,6 @@ export function activatePlugin( { plugin, event } ) {
 				}
 			}
 			event.target.innerText = srfm_admin.plugin_activated_text;
-			if ( plugin?.redirection ) {
-				window.location = plugin.redirection;
-			}
 		},
 		errorCallback: () => {
 			toast.error(

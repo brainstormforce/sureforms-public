@@ -1558,7 +1558,6 @@ class Helper {
 					'status'      => self::get_plugin_status( 'suremails/suremails.php' ),
 					'slug'        => 'suremails',
 					'path'        => 'suremails/suremails.php',
-					'redirection' => admin_url( 'options-general.php?page=suremail#/dashboard' ),
 					'logo'        => self::encode_svg( is_string( $logo_sure_mails ) ? $logo_sure_mails : '' ),
 				],
 				'sure_triggers'     => [
@@ -1568,7 +1567,6 @@ class Helper {
 					'status'      => self::get_plugin_status( 'suretriggers/suretriggers.php' ),
 					'slug'        => 'suretriggers',
 					'path'        => 'suretriggers/suretriggers.php',
-					'redirection' => admin_url( 'admin.php?page=suretriggers' ),
 					'logo'        => self::encode_svg( is_string( $logo_sure_triggers ) ? $logo_sure_triggers : '' ),
 					'logo_full'   => self::encode_svg( is_string( $logo_full ) ? $logo_full : '' ),
 					'connected'   => $suretrigger_connected,
@@ -1587,7 +1585,6 @@ class Helper {
 					'status'      => self::get_plugin_status( self::check_starter_template_plugin() ),
 					'slug'        => 'astra-sites',
 					'path'        => self::check_starter_template_plugin(),
-					'redirection' => admin_url( 'admin.php?page=starter-templates' ),
 					'logo'        => self::encode_svg( is_string( $logo_starter_templates ) ? $logo_starter_templates : '' ),
 				],
 			]
