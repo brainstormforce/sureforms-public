@@ -1,5 +1,5 @@
 import SmartTagList from '@Components/misc/SmartTagList';
-import { Label, Input, Container } from '@bsf/force-ui';
+import { Label, Input, Container, Tooltip } from '@bsf/force-ui';
 import { cn } from '@Utils/Helpers';
 
 const ModalInputBox = ( {
@@ -17,21 +17,40 @@ const ModalInputBox = ( {
 	smartTagWrapperClasses = 'mt-6',
 	inputProps = {},
 	placeholder = '',
+	isNativeIntegrations = false,
 } ) => {
+	const nativeIntegrationLabel = () => (
+		<Tooltip
+			content={ helpText }
+			placement="bottom-start"
+			triggers={ [ 'hover', 'focus' ] }
+			variant="dark"
+			tooltipPortalId="srfm-settings-container"
+		>
+			<Label htmlFor={ id } size="sm" className="font-medium">
+				{ label }
+			</Label>
+		</Tooltip>
+	);
+
 	return (
 		<Container
 			direction="column"
 			className={ cn( 'w-full gap-2', padding ) }
 		>
 			<Container align="center" className="gap-1.5">
-				<div className="flex-1">
+				<div className="flex-1 space-y-1.5">
 					<Input
 						aria-label={ label }
 						type="text"
 						id={ id }
 						onChange={ ( val ) => onChange( val ) }
 						value={ value }
-						label={ label }
+						label={
+							! isNativeIntegrations
+								? label
+								: nativeIntegrationLabel()
+						}
 						required={ required }
 						placeholder={ placeholder }
 						size="md"
@@ -39,6 +58,7 @@ const ModalInputBox = ( {
 						{ ...inputProps }
 					/>
 				</div>
+
 				{ showSmartTagList && (
 					<div className={ cn( smartTagWrapperClasses ) }>
 						<SmartTagList
@@ -51,7 +71,8 @@ const ModalInputBox = ( {
 					</div>
 				) }
 			</Container>
-			{ helpText && (
+
+			{ helpText && ! isNativeIntegrations && (
 				<Label size="sm" variant="help" className="font-normal">
 					{ helpText }
 				</Label>
