@@ -28,13 +28,6 @@ class Gutenberg_Hooks {
 	protected $patterns = [];
 
 	/**
-	 * Processed blocks.
-	 *
-	 * @var array
-	 */
-	protected $processed_blocks = [];
-
-	/**
 	 * Class constructor.
 	 *
 	 * @return void
@@ -58,8 +51,6 @@ class Gutenberg_Hooks {
 		add_filter( 'block_categories_all', [ $this, 'register_block_categories' ], 10, 1 );
 		add_filter( 'allowed_block_types_all', [ $this, 'disable_forms_wrapper_block' ], 10, 2 );
 		add_action( 'save_post_sureforms_form', [ $this, 'update_field_slug' ], 10, 2 );
-		// Priority 11: This action is called after update_field_slug (priority 10) to ensure slugs are created for all blocks before adding block configuration.
-		add_action( 'save_post_sureforms_form', [ $this, 'add_block_configuration' ], 11, 2 );
 		add_action( 'load-post.php', [ $this, 'maybe_migrate_form_stylings' ] );
 	}
 
@@ -264,7 +255,7 @@ class Gutenberg_Hooks {
 	 * @return void
 	 */
 	public function update_field_slug( $post_id, $post ) {
-		$blocks = $this->prepare_process_blocks( $post );
+		$blocks = parse_blocks( $post->post_content );
 
 		if ( empty( $blocks ) ) {
 			return;
@@ -285,6 +276,9 @@ class Gutenberg_Hooks {
 		}
 
 		$post_content = addslashes( serialize_blocks( $blocks ) );
+
+		// Process and store block configurations for form fields.
+		Field_Validation::add_block_config( $blocks, $post_id );
 
 		wp_update_post(
 			[
@@ -335,54 +329,4 @@ class Gutenberg_Hooks {
 			update_post_meta( $post_id, '_srfm_forms_styling', $form_styling );
 		}
 	}
-
-	/**
-	 * Add block configuration for the given post.
-	 *
-	 * This function processes the Gutenberg blocks from the provided post object,
-	 * and stores the block configuration for the form fields using the Helper class.
-	 *
-	 * @param int      $post_id The ID of the post being saved.
-	 * @param \WP_Post $post    The post object containing the block content.
-	 * @since 1.12.2
-	 * @return void
-	 */
-	public function add_block_configuration( $post_id, $post ) {
-		if ( ! $post instanceof \WP_Post ) {
-			return;
-		}
-
-		$blocks = $this->prepare_process_blocks( $post );
-
-		if ( empty( $blocks ) ) {
-			return;
-		}
-
-		// Process and store block configurations for form fields.
-		Field_Validation::add_block_config( $blocks, $post_id );
-	}
-
-	/**
-	 * Prepare and process Gutenberg blocks from the given post.
-	 *
-	 * This function parses the post content into blocks and stores them in the
-	 * $processed_blocks property. If the blocks have already been processed,
-	 * it returns the cached result.
-	 *
-	 * @param \WP_Post $post The post object containing the block content.
-	 * @since 1.12.2
-	 * @return array The array of parsed blocks.
-	 */
-	public function prepare_process_blocks( $post ) {
-		// Return cached processed blocks if already set.
-		if ( ! empty( $this->processed_blocks ) ) {
-			return $this->processed_blocks;
-		}
-
-		// Parse the post content into blocks and store the result.
-		$this->processed_blocks = parse_blocks( $post->post_content );
-
-		return $this->processed_blocks;
-	}
-
 }
