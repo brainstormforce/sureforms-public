@@ -58,3 +58,13 @@
 		@apply z-999999;
 	}
 }
+
+.sureforms_page_sureforms_payments {
+	.update-nag,
+	.updated,
+	.error,
+	.is-dismissible,
+	.notice-warning {
+		display: none !important;
+	}
+}

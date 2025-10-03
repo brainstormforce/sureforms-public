@@ -2,7 +2,6 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { MdOutlinePayment } from 'react-icons/md';
 
 /**
  * Payment Component
@@ -61,52 +60,7 @@ export const PaymentComponent = ( props ) => {
 			) }
 
 			<div className="srfm-payment-field-wrapper">
-				{ /* Payment Amount Display */ }
-				<div className="srfm-payment-amount">
-					<div className="srfm-payment-amount-display">
-						<MdOutlinePayment
-							className="srfm-payment-icon"
-							size={ 16 }
-						/>
-						<span className="srfm-payment-label">
-							{ description }:
-						</span>
-						<span className="srfm-payment-value">
-							{ formatCurrency( amount, currency ) }
-						</span>
-					</div>
-				</div>
-
-				{ /* Stripe Elements Placeholder */ }
-				<div className="srfm-stripe-elements-preview">
-					<div className="srfm-stripe-card-preview">
-						<div className="srfm-stripe-field-preview">
-							<span className="srfm-stripe-placeholder">
-								{ __( 'Card number', 'sureforms' ) }
-							</span>
-						</div>
-						<div className="srfm-stripe-field-row">
-							<div className="srfm-stripe-field-preview srfm-stripe-field-small">
-								<span className="srfm-stripe-placeholder">
-									{ __( 'MM / YY', 'sureforms' ) }
-								</span>
-							</div>
-							<div className="srfm-stripe-field-preview srfm-stripe-field-small">
-								<span className="srfm-stripe-placeholder">
-									{ __( 'CVC', 'sureforms' ) }
-								</span>
-							</div>
-						</div>
-					</div>
-					<div className="srfm-stripe-preview-notice">
-						<small>
-							{ __(
-								'Preview mode - Stripe Elements will appear here on the frontend',
-								'sureforms'
-							) }
-						</small>
-					</div>
-				</div>
+				<p>{__("This is a placeholder for the Stripe Payment block. The actual payment fields will only appear when you preview or publish the form.", "sureforms")}</p>				
 			</div>
 
 			{ help && <div className="srfm-help-text">{ help }</div> }

@@ -293,3 +293,21 @@
 		background-color: red;
 	}
 }
+
+// Payment styles.
+.srfm-payment-block-wrap{
+	.srfm-payment-field-wrapper{
+		border: 1px dashed #1E1E1E40;
+		border-radius: 6px;
+		padding: 16px;
+		margin-top: var(--srfm-input-field-margin-top);
+		> p{
+			font-weight: 400;
+			font-size: 14px;
+			line-height: 20px;
+			margin: 0;
+			padding: 0;
+			color: #1E1E1EA6;
+		}
+	}
+}

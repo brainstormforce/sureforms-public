@@ -36,7 +36,7 @@
 		},
 		"label": {
 			"type": "string",
-			"default": "Payment Details"
+			"default": "Payment Block"
 		},
 		"help": {
 			"type": "string",

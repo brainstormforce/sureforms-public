@@ -23,7 +23,7 @@ import { attributeOptionsWithFilter } from '@Components/hooks';
 import Separator from '@Components/separator';
 
 const Edit = ( props ) => {
-	const { clientId, attributes, setAttributes } = props;
+	const { clientId, attributes, setAttributes, isSelected } = props;
 	const {
 		help,
 		required,
@@ -47,98 +47,63 @@ const Edit = ( props ) => {
 		[]
 	);
 
-	// Function to extract number input field slugs from form blocks
-	const extractNumberFieldSlugs = () => {
+	// Function to extract both number fields and all form fields in a single traversal
+	const extractFormFields = () => {
 		if ( ! currentFormId ) {
-			return [];
+			return { numberFields: [], allFields: [] };
 		}
 
 		try {
 			const blocks = getBlocks();
 			const numberFields = [];
+			const allFields = [];
 
-			const findNumberFields = ( blockList ) => {
-				blockList.forEach( ( block ) => {
-					// Check if block is a number input field
-					if (
-						block.name === 'srfm/number' &&
-						block.attributes?.slug
-					) {
-						const slug = block.attributes.slug;
-						const label =
-							block.attributes.label ||
-							__( 'Number Field', 'sureforms' );
+			blocks.forEach( ( block ) => {
+				// Check if block has a slug (is a form field)
+				if ( block.attributes?.slug ) {
+					const slug = block.attributes.slug;
+					const label =
+						block.attributes.label ||
+						block.name ||
+						__( 'Form Field', 'sureforms' );
+					const fieldType =
+						block.name?.replace( 'srfm/', '' ) || 'field';
+
+					// Add to all fields array
+					allFields.push( {
+						slug,
+						label: `${ label } (${ fieldType })`,
+						type: fieldType,
+					} );
+
+					// If it's a number field, also add to number fields array
+					if ( block.name === 'srfm/number' ) {
 						numberFields.push( {
 							slug,
-							label,
+							label:
+								block.attributes.label ||
+								__( 'Number Field', 'sureforms' ),
 							selected: paymentItems?.includes( slug ) || false,
 						} );
 					}
-					// Recursively check inner blocks
-					if ( block.innerBlocks?.length > 0 ) {
-						findNumberFields( block.innerBlocks );
-					}
-				} );
-			};
+				}
+			} );
 
-			findNumberFields( blocks );
-			return numberFields;
+			return { numberFields, allFields };
 		} catch ( error ) {
-			console.error( 'Error extracting number field slugs:', error );
-			return [];
-		}
-	};
-
-	// Function to extract all form field slugs for customer mapping
-	const extractAllFieldSlugs = () => {
-		if ( ! currentFormId ) {
-			return [];
-		}
-
-		try {
-			const blocks = getBlocks();
-			const formFields = [];
-
-			const findFormFields = ( blockList ) => {
-				blockList.forEach( ( block ) => {
-					// Check if block has a slug (is a form field)
-					if ( block.attributes?.slug ) {
-						const slug = block.attributes.slug;
-						const label =
-							block.attributes.label ||
-							block.name ||
-							__( 'Form Field', 'sureforms' );
-						const fieldType =
-							block.name?.replace( 'srfm/', '' ) || 'field';
-
-						formFields.push( {
-							slug,
-							label: `${ label } (${ fieldType })`,
-							type: fieldType,
-						} );
-					}
-					// Recursively check inner blocks
-					if ( block.innerBlocks?.length > 0 ) {
-						findFormFields( block.innerBlocks );
-					}
-				} );
-			};
-
-			findFormFields( blocks );
-			return formFields;
-		} catch ( error ) {
-			console.error( 'Error extracting form field slugs:', error );
-			return [];
+			console.error( 'Error extracting form fields:', error );
+			return { numberFields: [], allFields: [] };
 		}
 	};
 
 	// Update available fields when form changes
 	useEffect( () => {
-		const numberFields = extractNumberFieldSlugs();
-		const allFields = extractAllFieldSlugs();
-		setAvailableNumberFields( numberFields );
-		setAvailableFormFields( allFields );
-	}, [ currentFormId, paymentItems ] );
+		if( isSelected ){
+			const { numberFields, allFields } = extractFormFields();
+			setAvailableNumberFields( numberFields );
+			setAvailableFormFields( allFields );
+		}
+	}, [ isSelected ] );
 
 	useEffect( () => {
 		if ( formId !== currentFormId ) {
@@ -156,12 +121,6 @@ const Edit = ( props ) => {
 		// Keep only one value in the array
 		const newItems = selectedValue ? [ selectedValue ] : [];
 		setAttributes( { paymentItems: newItems } );
-	};
-
-	// Handler for refreshing available fields
-	const refreshNumberFields = () => {
-		const fields = extractNumberFieldSlugs();
-		setAvailableNumberFields( fields );
 	};
 
 	// Show the block preview on hover.
@@ -218,43 +177,10 @@ const Edit = ( props ) => {
 			id: 'separator',
 			component: <Separator />,
 		},
-
 		{
 			id: 'payment-items',
 			component: (
 				<div className="components-base-control">
-					<div className="components-base-control srfm-text-control srfm-size-type-field-tabs">
-						<label
-							style={ {
-								display: 'block',
-								marginBottom: '8px',
-								fontWeight: '600',
-							} }
-						>
-							{ __( 'Payment Items Configuration', 'sureforms' ) }
-						</label>
-						<p
-							style={ {
-								fontSize: '12px',
-								color: '#757575',
-								margin: '0 0 12px 0',
-							} }
-						>
-							{ __(
-								'Select a number field to include in payment calculations.',
-								'sureforms'
-							) }
-						</p>
-						<Button
-							variant="secondary"
-							size="small"
-							onClick={ refreshNumberFields }
-							style={ { marginBottom: '12px' } }
-						>
-							{ __( 'Refresh Available Fields', 'sureforms' ) }
-						</Button>
-					</div>
-
 					{ availableNumberFields.length === 0 ? (
 						<p
 							style={ {
