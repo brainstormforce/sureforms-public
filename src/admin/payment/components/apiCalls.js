@@ -219,3 +219,162 @@ export const cancelSubscription = async ( subscriptionId ) => {
 		throw error;
 	}
 };
+
+export const pauseSubscription = async ( subscriptionId ) => {
+	try {
+		// Prepare form data for subscription pause
+		const formData = new URLSearchParams();
+		formData.append( 'action', 'srfm_stripe_pause_subscription' );
+		formData.append(
+			'nonce',
+			window.srfm_payment_admin.srfm_payment_admin_nonce || ''
+		);
+		formData.append( 'subscription_id', subscriptionId );
+
+		// Use apiFetch with proper configuration for admin-ajax.php
+		const data = await apiFetch( {
+			url: window.srfm_payment_admin.ajax_url,
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded',
+			},
+			body: formData.toString(),
+		} );
+
+		console.log( 'Pause subscription AJAX response:', data );
+
+		// Check WordPress AJAX response format
+		if ( ! data.success ) {
+			const errorMessage =
+				data.data?.message || 'Failed to pause subscription';
+			console.error( 'Pause subscription AJAX error:', errorMessage );
+			throw new Error( errorMessage );
+		}
+
+		// Return the data portion of WordPress AJAX response
+		return data.data;
+	} catch ( error ) {
+		console.error( 'Error pausing subscription:', error );
+		throw error;
+	}
+};
+
+export const addPaymentNote = async ( paymentId, noteText ) => {
+	try {
+		// Prepare form data for adding note
+		const formData = new URLSearchParams();
+		formData.append( 'action', 'srfm_add_payment_note' );
+		formData.append(
+			'nonce',
+			window.srfm_payment_admin.srfm_payment_admin_nonce || ''
+		);
+		formData.append( 'payment_id', paymentId );
+		formData.append( 'note_text', noteText );
+
+		// Use apiFetch with proper configuration for admin-ajax.php
+		const data = await apiFetch( {
+			url: window.srfm_payment_admin.ajax_url,
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded',
+			},
+			body: formData.toString(),
+		} );
+
+		console.log( 'Add note AJAX response:', data );
+
+		// Check WordPress AJAX response format
+		if ( ! data.success ) {
+			const errorMessage =
+				data.data?.message || 'Failed to add note';
+			console.error( 'Add note AJAX error:', errorMessage );
+			throw new Error( errorMessage );
+		}
+
+		// Return the notes array from response
+		return data.data.notes;
+	} catch ( error ) {
+		console.error( 'Error adding note:', error );
+		throw error;
+	}
+};
+
+export const deletePaymentNote = async ( paymentId, noteIndex ) => {
+	try {
+		// Prepare form data for deleting note
+		const formData = new URLSearchParams();
+		formData.append( 'action', 'srfm_delete_payment_note' );
+		formData.append(
+			'nonce',
+			window.srfm_payment_admin.srfm_payment_admin_nonce || ''
+		);
+		formData.append( 'payment_id', paymentId );
+		formData.append( 'note_index', noteIndex );
+
+		// Use apiFetch with proper configuration for admin-ajax.php
+		const data = await apiFetch( {
+			url: window.srfm_payment_admin.ajax_url,
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded',
+			},
+			body: formData.toString(),
+		} );
+
+		console.log( 'Delete note AJAX response:', data );
+
+		// Check WordPress AJAX response format
+		if ( ! data.success ) {
+			const errorMessage =
+				data.data?.message || 'Failed to delete note';
+			console.error( 'Delete note AJAX error:', errorMessage );
+			throw new Error( errorMessage );
+		}
+
+		// Return the updated notes array from response
+		return data.data.notes;
+	} catch ( error ) {
+		console.error( 'Error deleting note:', error );
+		throw error;
+	}
+};
+
+export const deletePaymentLog = async ( paymentId, logIndex ) => {
+	try {
+		// Prepare form data for deleting log
+		const formData = new URLSearchParams();
+		formData.append( 'action', 'srfm_delete_payment_log' );
+		formData.append(
+			'nonce',
+			window.srfm_payment_admin.srfm_payment_admin_nonce || ''
+		);
+		formData.append( 'payment_id', paymentId );
+		formData.append( 'log_index', logIndex );
+
+		// Use apiFetch with proper configuration for admin-ajax.php
+		const data = await apiFetch( {
+			url: window.srfm_payment_admin.ajax_url,
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded',
+			},
+			body: formData.toString(),
+		} );
+
+		console.log( 'Delete log AJAX response:', data );
+
+		// Check WordPress AJAX response format
+		if ( ! data.success ) {
+			const errorMessage =
+				data.data?.message || 'Failed to delete log';
+			console.error( 'Delete log AJAX error:', errorMessage );
+			throw new Error( errorMessage );
+		}
+
+		// Return the updated logs array from response
+		return data.data.logs;
+	} catch ( error ) {
+		console.error( 'Error deleting log:', error );
+		throw error;
+	}
+};
