@@ -125,7 +125,7 @@ class Form_Submit {
 	 * @return WP_Error|bool
 	 */
 	public function permissions_check() {
-		if ( ! current_user_can( 'manage_options' ) ) {
+		if ( ! Helper::current_user_can() ) {
 			return new WP_Error( 'rest_forbidden', __( 'Sorry, you cannot access this route', 'sureforms' ), [ 'status' => rest_authorization_required_code() ] );
 		}
 		return true;
@@ -274,6 +274,17 @@ class Form_Submit {
 				[
 					'code'    => 'srfm_invalid_form_id',
 					'message' => __( 'Form does not exist.', 'sureforms' ),
+				]
+			);
+		}
+
+		$validated_form_data = Field_Validation::validate_form_data( $form_data, $current_form_id );
+
+		if ( ! empty( $validated_form_data ) ) {
+			wp_send_json_error(
+				[
+					'message'      => __( 'Form data is not valid.', 'sureforms' ),
+					'field_errors' => $validated_form_data,
 				]
 			);
 		}
@@ -725,13 +736,13 @@ class Form_Submit {
 		$headers .= self::add_from_data_in_header( $submission_data, $item, $smart_tags );
 
 		if ( isset( $item['email_reply_to'] ) && ! empty( $item['email_reply_to'] ) ) {
-			$headers .= 'Reply-To:' . Helper::get_string_value( $smart_tags->process_smart_tags( $item['email_reply_to'], $submission_data ) ) . "\r\n";
+			$headers .= 'Reply-To:' . esc_html( Helper::get_string_value( $smart_tags->process_smart_tags( $item['email_reply_to'], $submission_data ) ) ) . "\r\n";
 		}
 		if ( isset( $item['email_cc'] ) && ! empty( $item['email_cc'] ) ) {
-			$headers .= 'Cc:' . Helper::get_string_value( $smart_tags->process_smart_tags( $item['email_cc'], $submission_data ) ) . "\r\n";
+			$headers .= 'Cc:' . esc_html( Helper::get_string_value( $smart_tags->process_smart_tags( $item['email_cc'], $submission_data ) ) ) . "\r\n";
 		}
 		if ( isset( $item['email_bcc'] ) && ! empty( $item['email_bcc'] ) ) {
-			$headers .= 'Bcc:' . Helper::get_string_value( $smart_tags->process_smart_tags( $item['email_bcc'], $submission_data ) ) . "\r\n";
+			$headers .= 'Bcc:' . esc_html( Helper::get_string_value( $smart_tags->process_smart_tags( $item['email_bcc'], $submission_data ) ) ) . "\r\n";
 		}
 
 		return compact( 'to', 'subject', 'message', 'headers' );
@@ -941,7 +952,7 @@ class Form_Submit {
 	 * @return void
 	 */
 	public function srfm_global_update_allowed_block() {
-		if ( ! current_user_can( 'manage_options' ) ) {
+		if ( ! Helper::current_user_can() ) {
 			wp_send_json_error();
 		}
 
@@ -964,7 +975,7 @@ class Form_Submit {
 	 * @return void
 	 */
 	public function srfm_global_sidebar_enabled() {
-		if ( ! current_user_can( 'manage_options' ) ) {
+		if ( ! Helper::current_user_can() ) {
 			wp_send_json_error();
 		}
 

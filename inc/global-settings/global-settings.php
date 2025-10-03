@@ -47,14 +47,13 @@ class Global_Settings {
 	 * @since 0.0.1
 	 */
 	public function register_custom_endpoint() {
-		$sureforms_helper = new Helper();
 		register_rest_route(
 			$this->namespace,
 			'/srfm-global-settings',
 			[
 				'methods'             => WP_REST_Server::EDITABLE,
 				'callback'            => [ $this, 'srfm_save_global_settings' ],
-				'permission_callback' => [ $sureforms_helper, 'get_items_permissions_check' ],
+				'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
 			]
 		);
 		register_rest_route(
@@ -63,7 +62,7 @@ class Global_Settings {
 			[
 				'methods'             => WP_REST_Server::READABLE,
 				'callback'            => [ $this, 'srfm_get_general_settings' ],
-				'permission_callback' => [ $sureforms_helper, 'get_items_permissions_check' ],
+				'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
 			]
 		);
 	}
@@ -84,24 +83,6 @@ class Global_Settings {
 			wp_send_json_error(
 				[
 					'data' => __( 'Nonce verification failed.', 'sureforms' ),
-				]
-			);
-		}
-
-		if ( ! is_user_logged_in() ) {
-			// Return error if user is not logged in.
-			wp_send_json_error(
-				[
-					'data' => esc_html__( 'You must be logged in to make this request.', 'sureforms' ),
-				]
-			);
-		}
-
-		if ( ! current_user_can( 'manage_options' ) ) {
-			// Return error if user does not have permissions to manage options.
-			wp_send_json_error(
-				[
-					'data' => esc_html__( 'You do not have permissions to manage options.', 'sureforms' ),
 				]
 			);
 		}

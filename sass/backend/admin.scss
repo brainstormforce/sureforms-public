@@ -522,9 +522,19 @@ $placeholder_color: #9ca3af;
 		gap: 16px;
 		flex-direction: column;
 		justify-content: center;
+		align-items: flex-start;
+
+		textarea {
+			width: 100%;
+		}
 
 		button.button#srfm-add-note {
-			width: 116px;
+			min-width: 116px;
+			width: auto;
+			max-width: 100%;
+			white-space: nowrap;
+			text-overflow: ellipsis;
+			overflow: hidden;
 			padding: 8px 16px;
 			border-radius: 6px;
 			border: 1px solid;

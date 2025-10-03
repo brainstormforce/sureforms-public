@@ -10,7 +10,6 @@ namespace SRFM\Inc;
 
 use SRFM\Inc\Traits\Get_Instance;
 use WP_Error;
-use WP_Post_Type;
 use WP_REST_Response;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -47,36 +46,8 @@ class Create_New_Form {
 			[
 				'methods'             => 'POST',
 				'callback'            => [ $this, 'create_form' ],
-				'permission_callback' => [ $this, 'get_items_permissions_check' ],
+				'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
 			]
-		);
-	}
-
-	/**
-	 * Checks whether a given request has permission to create new forms.
-	 *
-	 * @return true|WP_Error True if the request has read access, WP_Error object otherwise.
-	 * @since 0.0.1
-	 */
-	public function get_items_permissions_check() {
-		if ( current_user_can( 'edit_posts' ) ) {
-			return true;
-		}
-		foreach ( get_post_types( [ 'show_in_rest' => true ], 'objects' ) as $post_type ) {
-			/**
-			 * The post type.
-			 *
-			 * @var WP_Post_Type $post_type
-			 */
-			if ( current_user_can( $post_type->cap->edit_posts ) ) {
-				return true;
-			}
-		}
-
-		return new \WP_Error(
-			'rest_cannot_view',
-			__( 'Sorry, you are not allowed to create forms.', 'sureforms' ),
-			[ 'status' => \rest_authorization_required_code() ]
 		);
 	}
 
@@ -88,7 +59,7 @@ class Create_New_Form {
 	 */
 	public static function get_default_meta_keys() {
 		return [
-			'_srfm_submit_button_text'       => [ 'Submit' ],
+			'_srfm_submit_button_text'       => [ __( 'Submit', 'sureforms' ) ],
 			'_srfm_use_label_as_placeholder' => [ '' ],
 			'_srfm_single_page_form_title'   => [ 1 ],
 			'_srfm_instant_form'             => [ '' ],
@@ -124,24 +95,6 @@ class Create_New_Form {
 			wp_send_json_error(
 				[
 					'message' => __( 'Nonce verification failed.', 'sureforms' ),
-				]
-			);
-		}
-
-		if ( ! is_user_logged_in() ) {
-			// Return error if user is not logged in.
-			wp_send_json_error(
-				[
-					'message' => esc_html__( 'You must be logged in to make this request.', 'sureforms' ),
-				]
-			);
-		}
-
-		if ( ! current_user_can( 'manage_options' ) ) {
-			// Return error if user does not have permissions to manage options.
-			wp_send_json_error(
-				[
-					'message' => esc_html__( 'You do not have permissions to manage options.', 'sureforms' ),
 				]
 			);
 		}

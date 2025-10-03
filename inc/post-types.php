@@ -103,18 +103,21 @@ class Post_Types {
 	 * @since 0.0.1
 	 */
 	public function get_blank_page_markup( $title, $subtitle, $image, $button_text = '', $button_url = '', $after_button = '' ) {
-		echo '<div class="sureform-add-new-form">';
-
-		echo '<p class="sureform-blank-page-title">' . esc_html( $title ) . '</p>';
-
-		echo '<p class="sureform-blank-page-subtitle">' . esc_html( $subtitle ) . '</p>';
-
-		echo '<img src="' . esc_url( SRFM_URL . '/images/' . $image . '.svg' ) . '">';
-
-		if ( ! empty( $button_text ) && ! empty( $button_url ) ) {
-			echo '<div class="sureforms-add-new-form-container"><a class="sf-add-new-form-button" href="' . esc_url( $button_url ) . '"><div class="button-secondary">' . esc_html( $button_text ) . '</div></a>' . wp_kses_post( $after_button ) . '</div>';
-		}
-		echo '</div>';
+		?>
+		<div class="sureform-add-new-form">
+			<p class="sureform-blank-page-title"><?php echo esc_html( $title ); ?></p>
+			<p class="sureform-blank-page-subtitle"><?php echo esc_html( $subtitle ); ?></p>
+			<img src="<?php echo esc_url( SRFM_URL . '/images/' . $image . '.svg' ); ?>" alt=""/>
+			<?php if ( ! empty( $button_text ) && ! empty( $button_url ) ) { ?>
+				<div class="sureforms-add-new-form-container">
+					<a class="sf-add-new-form-button" href="<?php echo esc_url( $button_url ); ?>">
+						<div class="button-secondary"><?php echo esc_html( $button_text ); ?></div>
+					</a>
+					<?php echo wp_kses_post( $after_button ); ?>
+				</div>
+			<?php } ?>
+		</div>
+		<?php
 	}
 
 	/**
@@ -127,9 +130,13 @@ class Post_Types {
 	public function sureforms_render_blank_state( $post_type ) {
 
 		if ( SRFM_FORMS_POST_TYPE === $post_type ) {
-			$page_name     = 'add-new-form';
-			$new_form_url  = admin_url( 'admin.php?page=' . $page_name );
-			$import_button = '<button class="button button-secondary srfm-import-btn">' . __( 'Import Form', 'sureforms' ) . '</button>';
+			$page_name    = 'add-new-form';
+			$new_form_url = admin_url( 'admin.php?page=' . $page_name );
+			ob_start();
+			?>
+			<button class="button button-secondary srfm-import-btn"><?php echo esc_html__( 'Import Form', 'sureforms' ); ?></button>
+			<?php
+			$import_button = ob_get_clean();
 
 			$this->get_blank_page_markup(
 				esc_html__( 'Let’s build your first form', 'sureforms' ),
@@ -140,7 +147,7 @@ class Post_Types {
 				'add-new-form',
 				esc_html__( 'Add New Form', 'sureforms' ),
 				$new_form_url,
-				$import_button
+				$import_button ? $import_button : ''
 			);
 		}
 
@@ -257,7 +264,12 @@ class Post_Types {
 	 */
 	public function modify_entries_list_row_actions( $actions, $post ) {
 		if ( 'sureforms_form' === $post->post_type ) {
-			$actions['export'] = '<a href="#" onclick="exportForm(' . $post->ID . ')">' . __( 'Export', 'sureforms' ) . '</a>';
+			ob_start();
+			?>
+			<a href="#" onclick="exportForm(<?php echo esc_attr( strval( $post->ID ) ); ?>)"><?php echo esc_html__( 'Export', 'sureforms' ); ?></a>
+			<?php
+			$export_link       = ob_get_clean();
+			$actions['export'] = $export_link;
 		}
 
 		return $actions;
@@ -297,7 +309,49 @@ class Post_Types {
 	 * @since  0.0.1
 	 */
 	public function get_blank_state_styles() {
-		echo '<style type="text/css">.sf-add-new-form-button:focus { box-shadow:none !important; outline:none !important; } #posts-filter .wp-list-table, #posts-filter .tablenav.top, .tablenav.bottom .actions, .wrap .subsubsub  { display: none; } #posts-filter .tablenav.bottom { height: auto; } .sureform-add-new-form{ display: flex; flex-direction: column; gap: 8px; justify-content: center; align-items: center; padding: 24px 0 24px 0; } .sureform-blank-page-title { color: var(--dashboard-heading); font-family: Inter; font-size: 22px; font-style: normal; font-weight: 600; line-height: 28px; margin: 0; } .sureform-blank-page-subtitle { color: var(--dashboard-text); margin: 0; font-family: Inter; font-size: 14px; font-style: normal; font-weight: 400; line-height: 16px; }</style>';
+		?>
+		<style type="text/css">
+			.sf-add-new-form-button:focus { 
+				box-shadow: none !important; 
+				outline: none !important; 
+			} 
+			#posts-filter .wp-list-table, 
+			#posts-filter .tablenav.top, 
+			.tablenav.bottom .actions, 
+			.wrap .subsubsub { 
+				display: none; 
+			} 
+			#posts-filter .tablenav.bottom { 
+				height: auto; 
+			} 
+			.sureform-add-new-form { 
+				display: flex; 
+				flex-direction: column; 
+				gap: 8px; 
+				justify-content: center; 
+				align-items: center; 
+				padding: 24px 0 24px 0; 
+			} 
+			.sureform-blank-page-title { 
+				color: var(--dashboard-heading); 
+				font-family: Inter; 
+				font-size: 22px; 
+				font-style: normal; 
+				font-weight: 600; 
+				line-height: 28px; 
+				margin: 0; 
+			} 
+			.sureform-blank-page-subtitle { 
+				color: var(--dashboard-text); 
+				margin: 0; 
+				font-family: Inter; 
+				font-size: 14px; 
+				font-style: normal; 
+				font-weight: 400; 
+				line-height: 16px; 
+			}
+		</style>
+		<?php
 	}
 
 	/**
@@ -403,7 +457,7 @@ class Post_Types {
 				'type'              => 'string',
 				'single'            => true,
 				'auth_callback'     => static function() {
-					return current_user_can( 'edit_posts' );
+					return Helper::current_user_can();
 				},
 				'sanitize_callback' => static function( $meta_value ) {
 					return wp_kses_post( $meta_value );
@@ -422,7 +476,7 @@ class Post_Types {
 					'type'              => $type,
 					'sanitize_callback' => 'sanitize_text_field',
 					'auth_callback'     => static function() {
-						return current_user_can( 'edit_posts' );
+						return Helper::current_user_can();
 					},
 				]
 			);
@@ -946,6 +1000,15 @@ class Post_Types {
 			]
 		);
 
+		ob_start();
+		?>
+		<p style="text-align: center;">
+			<img src="<?php echo esc_attr( $check_icon ); ?>" alt="" aria-hidden="true" />
+		</p>
+		<h2 style="text-align: center;"><?php echo esc_html__( 'Thank you', 'sureforms' ); ?></h2>
+		<?php
+		$default_confirmation_message = ob_get_clean();
+
 		// form confirmation.
 		register_post_meta(
 			'sureforms_form',
@@ -954,7 +1017,7 @@ class Post_Types {
 				'single'            => true,
 				'type'              => 'array',
 				'auth_callback'     => static function() {
-					return current_user_can( 'manage_options' );
+					return Helper::current_user_can();
 				},
 				'sanitize_callback' => static function( $meta_value ) {
 					if ( ! is_array( $meta_value ) ) {
@@ -1037,7 +1100,7 @@ class Post_Types {
 						'confirmation_type' => 'same page',
 						'page_url'          => '',
 						'custom_url'        => '',
-						'message'           => '<p style="text-align: center;"><img src="' . esc_attr( $check_icon ) . '" alt="" aria-hidden="true"></img></p><h2 style="text-align: center;">' . esc_html__( 'Thank you', 'sureforms' ) . '</h2>',
+						'message'           => $default_confirmation_message,
 						'submission_action' => 'hide form',
 					],
 				],
@@ -1062,7 +1125,7 @@ class Post_Types {
 				'sanitize_callback' => [ $this, 'sanitize_form_restriction_data' ],
 				'object_subtype'    => SRFM_FORMS_POST_TYPE,
 				'auth_callback'     => static function () {
-					return current_user_can( 'manage_options' );
+					return Helper::current_user_can();
 				},
 				'default'           => wp_json_encode(
 					[
@@ -1249,7 +1312,7 @@ class Post_Types {
 			$form_preview = filter_var( $form_preview_attr, FILTER_VALIDATE_BOOLEAN );
 		}
 
-		if ( is_singular( 'sureforms_form' ) && ! $form_preview && ! current_user_can( 'manage_options' ) ) {
+		if ( is_singular( 'sureforms_form' ) && ! $form_preview && ! Helper::current_user_can() ) {
 			wp_safe_redirect( home_url() );
 			return;
 		}

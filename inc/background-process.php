@@ -121,7 +121,7 @@ class Background_Process {
 		if ( ! $this->trigger_after_submission_process() ) {
 			return new \WP_Error(
 				'process_failed',
-				__( 'Something went wrong. We haved logged the error for further investigation', 'sureforms' ),
+				__( 'Something went wrong. We have logged the error for further investigation', 'sureforms' ),
 				[ 'status' => 403 ]
 			);
 		}

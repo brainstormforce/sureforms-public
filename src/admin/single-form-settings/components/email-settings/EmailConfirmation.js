@@ -376,6 +376,7 @@ const EmailConfirmation = ( props ) => {
 			actionBtnVariant="outline"
 			onClickAction={ onCancel }
 			onClickBack={ onClickBack }
+			shouldShowAutoSaveText={ true }
 		>
 			<Container direction="column" className="gap-4 px-2">
 				{ filterOptions.map( ( option ) => option.component ) }
