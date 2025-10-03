@@ -10,6 +10,7 @@ namespace SRFM;
 
 use SRFM\Admin\Admin;
 use SRFM\Admin\Analytics;
+use SRFM\API\Block_Patterns;
 use SRFM\Inc\Activator;
 use SRFM\Inc\Admin_Ajax;
 use SRFM\Inc\AI_Form_Builder\AI_Auth;
@@ -41,9 +42,6 @@ use SRFM\Inc\Post_Types;
 use SRFM\Inc\Rest_Api;
 use SRFM\Inc\Single_Form_Settings\Compliance_Settings;
 use SRFM\Inc\Smart_Tags;
-use SRFM\Inc\Stripe_Payment_Handler;
-// Need to remove
-use SRFM\Inc\Stripe_Webhook;  // Need to remove
 use SRFM\Inc\Updater;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -279,6 +277,7 @@ class Plugin_Loader {
 	public function load_plugin() {
 		Post_Types::get_instance();
 		Form_Submit::get_instance();
+		Block_Patterns::get_instance();
 		Gutenberg_Hooks::get_instance();
 		Frontend_Assets::get_instance();
 		Helper::get_instance();
@@ -301,8 +300,6 @@ class Plugin_Loader {
 		AI_Helper::get_instance();
 		AI_Auth::get_instance();
 		Updater::get_instance();
-		Stripe_Payment_Handler::get_instance();
-		Stripe_Webhook::get_instance();
 		Onboarding::get_instance();
 		DatabaseRegister::init();
 		Form_Restriction::get_instance();

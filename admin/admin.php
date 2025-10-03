@@ -8,10 +8,7 @@
 namespace SRFM\Admin;
 
 use SRFM\Admin\Views\Entries_List_Table;
-use SRFM\Admin\Views\Payments_List_Table;
 use SRFM\Admin\Views\Single_Entry;
-use SRFM\Admin\Views\Single_Payment;
-use SRFM\Admin\Views\Single_Subscription;
 use SRFM\Inc\AI_Form_Builder\AI_Helper;
 use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Helper;
@@ -37,14 +34,6 @@ class Admin {
 	 * @since 1.9.1
 	 */
 	private $dashboard_widget_data = [];
-
-	/**
-	 * SureForms Page Default permission.
-	 *
-	 * @var string
-	 * @since 1.12.2
-	 */
-	private static $sureforms_page_default_capability = 'manage_options';
 
 	/**
 	 * Class constructor.
@@ -77,10 +66,6 @@ class Admin {
 		// Handle entry actions.
 		add_action( 'admin_init', [ $this, 'handle_entry_actions' ] );
 		add_action( 'admin_notices', [ Entries_List_Table::class, 'display_bulk_action_notice' ] );
-
-		// Handle payment actions.
-		add_action( 'admin_init', [ $this, 'handle_payment_actions' ] );
-		add_action( 'admin_notices', [ Payments_List_Table::class, 'display_bulk_action_notice' ] );
 
 		// This action enqueues translations for NPS Survey library.
 		// A better solution will be required from library to resolve plugin conflict.
@@ -155,7 +140,7 @@ class Admin {
 	 * @return void
 	 */
 	public static function save_first_form_creation_time_stamp() {
-		if ( ! Helper::current_user_can() || self::is_first_form_created() || ! defined( 'SRFM_FORMS_POST_TYPE' ) || ! post_type_exists( SRFM_FORMS_POST_TYPE ) ) {
+		if ( ! current_user_can( 'manage_options' ) || self::is_first_form_created() || ! defined( 'SRFM_FORMS_POST_TYPE' ) || ! post_type_exists( SRFM_FORMS_POST_TYPE ) ) {
 			return;
 		}
 
@@ -227,14 +212,7 @@ class Admin {
 				],
 				Helper::get_sureforms_website_url( 'pricing' )
 			);
-
-			ob_start();
-			?>
-			<a href="<?php echo esc_url( $upsell_link ); ?>" target="_blank" rel="noreferrer" class="sureforms-plugins-go-pro">
-				<?php echo esc_html__( 'Get SureForms Pro', 'sureforms' ); ?>
-			</a>
-			<?php
-			$links[] = trim( ob_get_clean() );
+			$links[]     = '<a href="' . esc_url( $upsell_link ) . '" target="_blank" rel="noreferrer" class="sureforms-plugins-go-pro">' . esc_html__( 'Get SureForms Pro', 'sureforms' ) . '</a>';
 		}
 
 		return $links;
@@ -304,13 +282,18 @@ class Admin {
 	 * @since 0.0.1
 	 */
 	public function add_menu_page() {
-		$menu_slug = 'sureforms_menu';
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+
+		$capability = 'manage_options';
+		$menu_slug  = 'sureforms_menu';
 
 		$logo = file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/icon.svg' );
 		add_menu_page(
 			__( 'SureForms', 'sureforms' ),
 			__( 'SureForms', 'sureforms' ),
-			self::$sureforms_page_default_capability,
+			'edit_others_posts',
 			$menu_slug,
 			static function () {
 			},
@@ -323,7 +306,7 @@ class Admin {
 			$menu_slug,
 			__( 'Dashboard', 'sureforms' ),
 			__( 'Dashboard', 'sureforms' ),
-			self::$sureforms_page_default_capability,
+			$capability,
 			$menu_slug,
 			[ $this, 'render_dashboard' ]
 		);
@@ -341,7 +324,7 @@ class Admin {
 			'sureforms_menu',
 			__( 'Settings', 'sureforms' ),
 			__( 'Settings', 'sureforms' ),
-			self::$sureforms_page_default_capability,
+			'edit_others_posts',
 			'sureforms_form_settings',
 			$callback
 		);
@@ -411,7 +394,7 @@ class Admin {
 			'sureforms_menu',
 			__( 'Upgrade', 'sureforms' ),
 			__( 'Upgrade', 'sureforms' ),
-			self::$sureforms_page_default_capability,
+			'edit_others_posts',
 			$upgrade_url
 		);
 	}
@@ -427,7 +410,7 @@ class Admin {
 			'sureforms_menu',
 			__( 'SMTP', 'sureforms' ),
 			__( 'SMTP', 'sureforms' ),
-			self::$sureforms_page_default_capability,
+			'edit_others_posts',
 			'sureforms_smtp',
 			[ $this, 'suremail_page_callback' ]
 		);
@@ -450,9 +433,7 @@ class Admin {
 	 * @since 1.7.1
 	 */
 	public function suremail_page_callback() {
-		?>
-		<div id="srfm-suremail-container" class="srfm-admin-wrapper"></div>
-		<?php
+		echo '<div id="srfm-suremail-container" class="srfm-admin-wrapper"></div>';
 	}
 
 	/**
@@ -462,9 +443,7 @@ class Admin {
 	 * @since 0.0.1
 	 */
 	public function render_dashboard() {
-		?>
-		<div id="srfm-dashboard-container" class="srfm-admin-wrapper"></div>
-		<?php
+		echo '<div id="srfm-dashboard-container" class="srfm-admin-wrapper"></div>';
 	}
 
 	/**
@@ -474,9 +453,7 @@ class Admin {
 	 * @since 0.0.1
 	 */
 	public function settings_page_callback() {
-		?>
-		<div id="srfm-settings-container" class="srfm-admin-wrapper"></div>
-		<?php
+		echo '<div id="srfm-settings-container" class="srfm-admin-wrapper"></div>';
 	}
 
 	/**
@@ -490,7 +467,7 @@ class Admin {
 			'sureforms_menu',
 			__( 'New Form', 'sureforms' ),
 			__( 'New Form', 'sureforms' ),
-			self::$sureforms_page_default_capability,
+			'edit_others_posts',
 			'add-new-form',
 			[ $this, 'add_new_form_callback' ],
 			2
@@ -499,7 +476,7 @@ class Admin {
 			'sureforms_menu',
 			__( 'Entries', 'sureforms' ),
 			__( 'Entries', 'sureforms' ),
-			self::$sureforms_page_default_capability,
+			'edit_others_posts',
 			SRFM_ENTRIES,
 			[ $this, 'render_entries' ],
 			3
@@ -515,22 +492,12 @@ class Admin {
 			4
 		);
 
-		add_submenu_page(
-			'sureforms_menu',
-			__( 'Payment Summary React', 'sureforms' ),
-			__( 'Payments React', 'sureforms' ),
-			'edit_others_posts',
-			SRFM_PAYMENTS_REACT,
-			[ $this, 'render_payments_react' ],
-			5
-		);
-
 		if ( $entries_hook ) {
 			add_action( 'load-' . $entries_hook, [ $this, 'mark_entries_page_visit' ] );
 		}
 	}
 
-	public function render_payments_react() {
+	public function render_payments() {
 		echo '<div id="srfm-payments-react-container" class="srfm-admin-wrapper"><h1>Payments React</h1></div>';
 	}
 
@@ -541,9 +508,7 @@ class Admin {
 	 * @since 0.0.1
 	 */
 	public function add_new_form_callback() {
-		?>
-		<div id="srfm-add-new-form-container" class="srfm-admin-wrapper"></div>
-		<?php
+		echo '<div id="srfm-add-new-form-container" class="srfm-admin-wrapper"></div>';
 	}
 
 	/**
@@ -564,59 +529,16 @@ class Admin {
 		// Render all entries view.
 		$entries_table = new Entries_List_Table();
 		$entries_table->prepare_items();
-		?>
-		<div class="wrap">
-			<h1 class="wp-heading-inline"><?php echo esc_html__( 'Entries', 'sureforms' ); ?></h1>
-			<?php
-			if ( empty( $entries_table->all_entries_count ) && empty( $entries_table->trash_entries_count ) ) {
-				$instance = Post_Types::get_instance();
-				$instance->sureforms_render_blank_state( SRFM_ENTRIES );
-				$instance->get_blank_state_styles();
-				return;
-			}
-			?>
-			<form method="get">
-				<input type="hidden" name="page" value="sureforms_entries">
-				<?php $entries_table->display(); ?>
-			</form>
-		</div>
-		<?php
-	}
-
-	/**
-	 * Payments page callback.
-	 *
-	 * @since x.x.x
-	 * @return void
-	 */
-	public function render_payments() {
-		// Check if we need to render subscription view
-		if ( isset( $_GET['payment_id'] ) && is_numeric( $_GET['payment_id'] ) && isset( $_GET['view'] ) && 'subscription' === $_GET['view'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verification is not needed here as no database operations are performed.
-			$single_subscription_view = new Single_Subscription();
-			$single_subscription_view->render();
-			return;
-		}
-
-		// Render single payment view.
-		// Adding the phpcs ignore nonce verification as no database operations are performed in this function, it is used to display the single payment view.
-		if ( isset( $_GET['payment_id'] ) && is_numeric( $_GET['payment_id'] ) && isset( $_GET['view'] ) && 'details' === $_GET['view'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verification is not needed here and explained in the comments above as well.
-			$single_payment_view = new Single_Payment();
-			$single_payment_view->render();
-			return;
-		}
-
-		// Render all payments view.
-		$payments_table = new Payments_List_Table();
-		$payments_table->prepare_items();
-		echo '<div class="wrap"><h1 class="wp-heading-inline">' . esc_html__( 'Payments', 'sureforms' ) . '</h1>';
-		if ( empty( $payments_table->all_payments_count ) ) {
-			echo '<div class="sureforms-no-payments-found"><p>' . esc_html__( 'No payments found. Payments will appear here when forms with payment fields are submitted.', 'sureforms' ) . '</p></div>';
-			echo '</div>';
+		echo '<div class="wrap"><h1 class="wp-heading-inline">' . esc_html__( 'Entries', 'sureforms' ) . '</h1>';
+		if ( empty( $entries_table->all_entries_count ) && empty( $entries_table->trash_entries_count ) ) {
+			$instance = Post_Types::get_instance();
+			$instance->sureforms_render_blank_state( SRFM_ENTRIES );
+			$instance->get_blank_state_styles();
 			return;
 		}
 		echo '<form method="get">';
-		echo '<input type="hidden" name="page" value="sureforms_payments">';
-		$payments_table->display();
+		echo '<input type="hidden" name="page" value="sureforms_entries">';
+		$entries_table->display();
 		echo '</form>';
 		echo '</div>';
 	}
@@ -628,7 +550,7 @@ class Admin {
 	 * @return void
 	 */
 	public function maybe_add_entries_badge() {
-		if ( ! Helper::current_user_can() ) {
+		if ( ! current_user_can( 'edit_others_posts' ) ) {
 			return;
 		}
 
@@ -649,13 +571,8 @@ class Admin {
 		global $menu;
 		foreach ( $menu as $index => $item ) {
 			if ( isset( $item[2] ) && 'sureforms_menu' === $item[2] ) {
-				ob_start();
-				?>
-				<span class="srfm-update-dot"></span>
-				<?php
-				$dot_html = ob_get_clean();
 				// phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- Adding notifications for menu item.
-				$menu[ $index ][0] .= $dot_html;
+				$menu[ $index ][0] .= ' <span class="srfm-update-dot"></span>';
 				break;
 			}
 		}
@@ -664,15 +581,10 @@ class Admin {
 		if ( isset( $submenu['sureforms_menu'] ) ) {
 			foreach ( $submenu['sureforms_menu'] as $index => $sub_item ) {
 				if ( isset( $sub_item[2] ) && SRFM_ENTRIES === $sub_item[2] ) {
-					ob_start();
-					?>
-					<span class="update-plugins count-<?php echo absint( $new_entries ); ?>">
-						<span class="plugin-count"><?php echo absint( $new_entries ); ?></span>
-					</span>
-					<?php
-					$badge_html = ob_get_clean();
-					// phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- Adding notifications for submenu item.
-					$submenu['sureforms_menu'][ $index ][0] .= $badge_html;
+					$submenu['sureforms_menu'][ $index ][0] .= sprintf( // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- Adding notifications for submenu item.
+						' <span class="update-plugins count-%1$d"><span class="plugin-count">%1$d</span></span>',
+						absint( $new_entries )
+					);
 					break;
 				}
 			}
@@ -686,7 +598,7 @@ class Admin {
 	 * @return void
 	 */
 	public function mark_entries_page_visit() {
-		if ( Helper::current_user_can() ) {
+		if ( current_user_can( 'edit_others_posts' ) ) {
 			$srfm_options                         = get_option( 'srfm_options', [] );
 			$srfm_options['entries_last_visited'] = time();
 			\SRFM\Inc\Helper::update_admin_settings_option( 'srfm_options', $srfm_options );
@@ -703,20 +615,13 @@ class Admin {
 	 */
 	public function add_settings_link( $links, $file ) {
 		if ( 'sureforms/sureforms.php' === $file ) {
-			ob_start();
-			?>
-			<a href="<?php echo esc_url( admin_url( 'admin.php?page=sureforms_form_settings&tab=general-settings' ) ); ?>">
-				<?php echo esc_html__( 'Settings', 'sureforms' ); ?>
-			</a>
-			<?php
-			$settings_link_html = ob_get_clean();
-			$plugin_links       = apply_filters(
+			$plugin_links = apply_filters(
 				'sureforms_plugin_action_links',
 				[
-					'sureforms_settings' => $settings_link_html,
+					'sureforms_settings' => '<a href="' . esc_url( admin_url( 'admin.php?page=sureforms_form_settings&tab=general-settings' ) ) . '">' . esc_html__( 'Settings', 'sureforms' ) . '</a>',
 				]
 			);
-			$links              = array_merge( $plugin_links, $links );
+			$links        = array_merge( $plugin_links, $links );
 		}
 		return $links;
 	}
@@ -844,7 +749,7 @@ class Admin {
 			'breadcrumbs'                => $this->get_breadcrumbs_for_current_page(),
 			'sureforms_dashboard_url'    => admin_url( '/admin.php?page=sureforms_menu' ),
 			'plugin_version'             => SRFM_VER,
-			'global_settings_nonce'      => Helper::current_user_can() ? wp_create_nonce( 'wp_rest' ) : '',
+			'global_settings_nonce'      => current_user_can( 'manage_options' ) ? wp_create_nonce( 'wp_rest' ) : '',
 			'is_pro_active'              => Helper::has_pro(),
 			'is_first_form_created'      => self::is_first_form_created(),
 			'check_three_days_threshold' => self::check_first_form_creation_threshold(),
@@ -1032,7 +937,7 @@ class Admin {
 					'ajaxurl'           => admin_url( 'admin-ajax.php' ),
 					'srfm_export_nonce' => wp_create_nonce( 'export_form_nonce' ),
 					'site_url'          => get_site_url(),
-					'import_form_nonce' => Helper::current_user_can() ? wp_create_nonce( 'wp_rest' ) : '',
+					'import_form_nonce' => current_user_can( 'edit_posts' ) ? wp_create_nonce( 'wp_rest' ) : '',
 					'import_btn_string' => __( 'Import Form', 'sureforms' ),
 				]
 			);
@@ -1071,10 +976,11 @@ class Admin {
 				[
 					'site_url'                     => get_site_url(),
 					'plugin_url'                   => SRFM_URL,
+					'preview_images_url'           => SRFM_URL . 'images/template-previews/',
 					'admin_url'                    => admin_url( 'admin.php' ),
 					'new_template_picker_base_url' => admin_url( 'post-new.php?post_type=sureforms_form' ),
-					'capability'                   => Helper::current_user_can(),
-					'template_picker_nonce'        => Helper::current_user_can() ? wp_create_nonce( 'wp_rest' ) : '',
+					'capability'                   => current_user_can( 'edit_posts' ),
+					'template_picker_nonce'        => current_user_can( 'edit_posts' ) ? wp_create_nonce( 'wp_rest' ) : '',
 					'is_pro_active'                => Helper::has_pro(),
 					'srfm_ai_usage_details'        => AI_Helper::get_current_usage_details(),
 					'is_pro_license_active'        => AI_Helper::is_pro_license_active(),
@@ -1232,31 +1138,6 @@ class Admin {
 	}
 
 	/**
-	 * Handle payment actions.
-	 *
-	 * @since x.x.x
-	 * @return void
-	 */
-	public function handle_payment_actions() {
-		Payments_List_Table::process_bulk_actions();
-
-		if ( ! isset( $_GET['page'] ) || SRFM_PAYMENTS !== $_GET['page'] ) {
-			return;
-		}
-		if ( ! isset( $_GET['payment_id'] ) || ! isset( $_GET['action'] ) ) {
-			return;
-		}
-		if ( ! isset( $_GET['_wpnonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'srfm_payments_action' ) ) {
-			wp_die( esc_html__( 'Nonce verification failed.', 'sureforms' ) );
-		}
-		$action     = isset( $_GET['action'] ) ? sanitize_text_field( wp_unslash( $_GET['action'] ) ) : '';
-		$payment_id = Helper::get_integer_value( sanitize_text_field( wp_unslash( $_GET['payment_id'] ) ) );
-		if ( $payment_id > 0 ) {
-			Payments_List_Table::handle_payment_action( $payment_id, $action );
-		}
-	}
-
-	/**
 	 * Admin Notice Callback if sureforms pro is out of date.
 	 *
 	 * Hooked - admin_notices
@@ -1273,7 +1154,7 @@ class Admin {
 			return;
 		}
 
-		if ( ! Helper::current_user_can() ) {
+		if ( ! current_user_can( 'update_plugins' ) ) {
 			return;
 		}
 
@@ -1291,48 +1172,30 @@ class Admin {
 		$message         = '';
 		$url             = admin_url( 'admin.php?page=sureforms_form_settings&tab=account-settings' );
 		if ( 'unlicensed' === $srfm_pro_license_status ) {
-			ob_start();
-			?>
-			<p>
-				<?php
-				printf(
-					// translators: %1$s: Opening anchor tag with URL, %2$s: Closing anchor tag, %3$s: SureForms Pro Plugin Name.
-					esc_html__( 'Please %1$sactivate%2$s your copy of %3$s to get new features, access support, receive update notifications, and more.', 'sureforms' ),
-					'<a href="' . esc_url( $url ) . '">',
-					'</a>',
-					'<i>' . esc_html( $pro_plugin_name ) . '</i>'
-				);
-				?>
-			</p>
-			<?php
-			$message = ob_get_clean();
+			$message = '<p>' . sprintf(
+				// translators: %1$s: Opening anchor tag with URL, %2$s: Closing anchor tag, %3$s: SureForms Pro Plugin Name.
+				esc_html__( 'Please %1$sactivate%2$s your copy of %3$s to get new features, access support, receive update notifications, and more.', 'sureforms' ),
+				'<a href="' . esc_url( $url ) . '">',
+				'</a>',
+				'<i>' . esc_html( $pro_plugin_name ) . '</i>'
+			) . '</p>';
 		}
 
 		if ( ! version_compare( SRFM_PRO_VER, SRFM_PRO_RECOMMENDED_VER, '>=' ) ) {
-			ob_start();
-			?>
-			<p>
-				<?php
-				printf(
-					// translators: %1$s: SureForms version, %2$s: SureForms Pro Plugin Name, %3$s: SureForms Pro Version, %4$s: Anchor tag open, %5$s: Closing anchor tag.
-					esc_html__( 'SureForms %1$s requires minimum %2$s %3$s to work properly. Please update to the latest version from %4$shere%5$s.', 'sureforms' ),
-					esc_html( SRFM_VER ),
-					esc_html( $pro_plugin_name ),
-					esc_html( SRFM_PRO_RECOMMENDED_VER ),
-					'<a href="' . esc_url( admin_url( 'update-core.php' ) ) . '">',
-					'</a>'
-				);
-				?>
-			</p>
-			<?php
-			$message .= ob_get_clean();
+			$message .= '<p>' . sprintf(
+				// translators: %1$s: SureForms version, %2$s: SureForms Pro Plugin Name, %3$s: SureForms Pro Version, %4$s: Anchor tag open, %5$s: Closing anchor tag.
+				esc_html__( 'SureForms %1$s requires minimum %2$s %3$s to work properly. Please update to the latest version from %4$shere%5$s.', 'sureforms' ),
+				esc_html( SRFM_VER ),
+				esc_html( $pro_plugin_name ),
+				esc_html( SRFM_PRO_RECOMMENDED_VER ),
+				'<a href=' . esc_url( admin_url( 'update-core.php' ) ) . '>',
+				'</a>'
+			) . '</p>';
 		}
 
 		if ( ! empty( $message ) ) {
 			// Phpcs ignore comment is required as $message variable is already escaped.
-			?>
-			<div class="notice notice-warning"><?php echo wp_kses_post( $message ); ?></div>
-			<?php
+			echo '<div class="notice notice-warning">' . wp_kses_post( $message ) . '</div>';
 		}
 	}
 
@@ -1397,7 +1260,7 @@ class Admin {
 	 */
 	public function pointer_should_show() {
 		// Security: Check user capability.
-		if ( ! Helper::current_user_can() ) {
+		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_send_json_error( [ 'message' => __( 'Unauthorized user.', 'sureforms' ) ], 403 );
 		}
 		// Security: Nonce check.
@@ -1435,7 +1298,7 @@ class Admin {
 	 */
 	public function pointer_dismissed() {
 		// Security: Check user capability.
-		if ( ! Helper::current_user_can() ) {
+		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_send_json_error( [ 'message' => __( 'Unauthorized user.', 'sureforms' ) ], 403 );
 		}
 		// Security: Nonce check.
@@ -1456,7 +1319,7 @@ class Admin {
 	 */
 	public function pointer_accepted_cta() {
 		// Security: Check user capability.
-		if ( ! Helper::current_user_can() ) {
+		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_send_json_error( [ 'message' => __( 'Unauthorized user.', 'sureforms' ) ], 403 );
 		}
 		// Security: Nonce check.
@@ -1476,12 +1339,6 @@ class Admin {
 	 * @since 1.9.1
 	 */
 	public function maybe_register_dashboard_widget() {
-
-		// Only for users with manage_options capability.
-		if ( ! Helper::current_user_can() ) {
-			return;
-		}
-
 		// Quick check if there are any entries in the last 7 days.
 		$seven_days_ago = strtotime( '-7 days' );
 		$total_entries  = Entries::get_entries_count_after( $seven_days_ago );
