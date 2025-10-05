@@ -250,8 +250,8 @@ class Payments_Settings {
 	 * @since x.x.x
 	 */
 	public function disconnect_stripe() {
-		// Delete Stripe webhook endpoints for both test and live modes
-		$this->delete_stripe_webhooks();
+		// Delete Stripe webhook endpoints for both test and live modes.
+		$webhook_result = $this->delete_stripe_webhooks();
 
 		$settings                                = get_option( self::OPTION_NAME, $this->get_default_settings() );
 		$settings['stripe_connected']            = false;
@@ -261,11 +261,30 @@ class Payments_Settings {
 		$settings['stripe_live_secret_key']      = '';
 		$settings['stripe_test_publishable_key'] = '';
 		$settings['stripe_test_secret_key']      = '';
+		$settings['webhook_test_secret']         = '';
+		$settings['webhook_test_url']            = '';
+		$settings['webhook_test_id']             = '';
+		$settings['webhook_live_secret']         = '';
+		$settings['webhook_live_url']            = '';
+		$settings['webhook_live_id']             = '';
 		$settings['account_data']                = [];
 
-		update_option( self::OPTION_NAME, $settings );
+		$updated = update_option( self::OPTION_NAME, $settings );
 
-		return rest_ensure_response( [ 'success' => true ] );
+		// Log webhook deletion status for debugging
+		if ( ! empty( $webhook_result['success'] ) ) {
+			error_log( 'SureForms: Webhooks deleted during disconnect - ' . ( $webhook_result['message'] ?? 'Success' ) );
+		} else {
+			error_log( 'SureForms: Webhook deletion failed during disconnect - ' . ( $webhook_result['message'] ?? 'Unknown error' ) );
+		}
+
+		return rest_ensure_response(
+			[
+				'success' => true,
+				'message' => __( 'Stripe account disconnected successfully.', 'sureforms' ),
+				'updated' => $updated,
+			]
+		);
 	}
 
 	/**
@@ -311,7 +330,7 @@ class Payments_Settings {
 	 * @since x.x.x
 	 */
 	public function handle_webhook_creation_request() {
-		// Call the core webhook creation function
+		// Call the core webhook creation function.
 		$result = $this->setup_stripe_webhooks();
 
 		return rest_ensure_response( $result );
@@ -369,7 +388,7 @@ class Payments_Settings {
 					$error_details = $api_response['error'];
 					$error_message = $error_details['message'];
 
-					// Log detailed error for debugging
+					// Log detailed error for debugging.
 					error_log( 'SureForms Webhook Creation API Error (' . $mode . '): ' . wp_json_encode( $error_details ) );
 
 					throw new \Exception( $error_message );
@@ -377,7 +396,7 @@ class Payments_Settings {
 
 				$webhook = $api_response['data'];
 
-				// Validate webhook response structure
+				// Validate webhook response structure.
 				if ( ! is_array( $webhook ) ) {
 					throw new \Exception( __( 'Invalid webhook response format.', 'sureforms' ) );
 				}
@@ -390,9 +409,7 @@ class Payments_Settings {
 					throw new \Exception( __( 'Webhook created but no secret returned.', 'sureforms' ) );
 				}
 
-				error_log( 'SureForms Webhook Creation Response: ' . print_r( $webhook, true ) );
-
-				// Store webhook data in settings
+				// Store webhook data in settings.
 				if ( 'live' === $mode ) {
 					$settings['webhook_live_secret'] = $webhook['secret'];
 					$settings['webhook_live_id']     = $webhook['id'];
@@ -411,12 +428,12 @@ class Payments_Settings {
 			}
 		}
 
-		// Update settings if any webhooks were created
+		// Update settings if any webhooks were created.
 		if ( $webhooks_created > 0 ) {
 			update_option( self::OPTION_NAME, $settings );
 		}
 
-		// Prepare response with webhook details
+		// Prepare response with webhook details.
 		$response_data = [
 			'success' => $webhooks_created > 0,
 		];
@@ -465,7 +482,7 @@ class Payments_Settings {
 	 * @since x.x.x
 	 */
 	public function handle_webhook_deletion_request() {
-		// Call the core webhook deletion function
+		// Call the core webhook deletion function.
 		$result = $this->delete_stripe_webhooks();
 
 		return rest_ensure_response( $result );
@@ -511,7 +528,7 @@ class Payments_Settings {
 					$error_details = $api_response['error'];
 					$error_message = $error_details['message'];
 
-					// Log detailed error for debugging
+					// Log detailed error for debugging.
 					error_log( 'SureForms Webhook Deletion API Error (' . $mode . '): ' . wp_json_encode( $error_details ) );
 
 					throw new \Exception( $error_message );
@@ -519,7 +536,7 @@ class Payments_Settings {
 
 				$delete_result = $api_response['data'];
 
-				// Validate deletion response
+				// Validate deletion response.
 				if ( ! is_array( $delete_result ) ) {
 					throw new \Exception( __( 'Invalid webhook deletion response format.', 'sureforms' ) );
 				}
@@ -528,7 +545,7 @@ class Payments_Settings {
 					throw new \Exception( __( 'Webhook deletion was not confirmed by Stripe.', 'sureforms' ) );
 				}
 
-				// Clean up stored webhook data from settings
+				// Clean up stored webhook data from settings.
 				if ( 'live' === $mode ) {
 					$settings['webhook_live_secret'] = '';
 					$settings['webhook_live_id']     = '';
@@ -547,12 +564,12 @@ class Payments_Settings {
 			}
 		}
 
-		// Update settings if any webhooks were deleted
+		// Update settings if any webhooks were deleted.
 		if ( $webhooks_deleted > 0 ) {
 			update_option( self::OPTION_NAME, $settings );
 		}
 
-		// Prepare response
+		// Prepare response.
 		$response_data = [
 			'success' => $webhooks_deleted > 0,
 		];
@@ -589,28 +606,28 @@ class Payments_Settings {
 			);
 		}
 
-		// Determine modes to delete
+		// Determine modes to delete.
 		$modes = [];
 
 		if ( is_array( $request_or_modes ) ) {
-			// Direct array of modes passed
+			// Direct array of modes passed.
 			$modes = $request_or_modes;
 		} elseif ( $request_or_modes && method_exists( $request_or_modes, 'get_param' ) ) {
-			// REST request object - check for modes parameter first, then mode parameter
+			// REST request object - check for modes parameter first, then mode parameter.
 			$request_modes = $request_or_modes->get_param( 'modes' );
 			if ( ! empty( $request_modes ) && is_array( $request_modes ) ) {
 				$modes = $request_modes;
 			} else {
-				// Fallback to single mode parameter for backward compatibility
+				// Fallback to single mode parameter for backward compatibility.
 				$mode_to_delete = $request_or_modes->get_param( 'mode' ) ?? $settings['payment_mode'] ?? 'test';
 				$modes          = [ $mode_to_delete ];
 			}
 		} else {
-			// Default to current payment mode
+			// Default to current payment mode.
 			$modes = [ $settings['payment_mode'] ?? 'test' ];
 		}
 
-		// Validate modes
+		// Validate modes.
 		foreach ( $modes as $mode ) {
 			if ( ! in_array( $mode, [ 'test', 'live' ], true ) ) {
 				return rest_ensure_response(
@@ -643,7 +660,7 @@ class Payments_Settings {
 					$error_details = $api_response['error'];
 					$error_message = $error_details['message'];
 
-					// Log detailed error for debugging
+					// Log detailed error for debugging.
 					error_log( 'SureForms Webhook Deletion API Error (' . $mode . '): ' . wp_json_encode( $error_details ) );
 
 					throw new \Exception( $error_message );
@@ -651,7 +668,7 @@ class Payments_Settings {
 
 				$delete_result = $api_response['data'];
 
-				// Validate deletion response
+				// Validate deletion response.
 				if ( ! is_array( $delete_result ) ) {
 					throw new \Exception( __( 'Invalid webhook deletion response format.', 'sureforms' ) );
 				}
@@ -660,7 +677,7 @@ class Payments_Settings {
 					throw new \Exception( __( 'Webhook deletion was not confirmed by Stripe.', 'sureforms' ) );
 				}
 
-				// Clean up stored webhook data from settings
+				// Clean up stored webhook data from settings.
 				if ( 'live' === $mode ) {
 					$settings['webhook_live_secret'] = '';
 					$settings['webhook_live_id']     = '';
@@ -723,7 +740,7 @@ class Payments_Settings {
 	public function get_account_info() {
 		$settings = get_option( self::OPTION_NAME, $this->get_default_settings() );
 
-		// Check if Stripe is connected
+		// Check if Stripe is connected.
 		if ( empty( $settings['stripe_connected'] ) ) {
 			return [
 				'success' => false,
@@ -734,7 +751,7 @@ class Payments_Settings {
 			];
 		}
 
-		// Get account ID
+		// Get account ID.
 		$account_id = $settings['stripe_account_id'] ?? '';
 		if ( empty( $account_id ) ) {
 			return [
@@ -746,11 +763,11 @@ class Payments_Settings {
 			];
 		}
 
-		// Call Stripe API to get account information
+		// Call Stripe API to get account information.
 		$api_response = Stripe_Helper::stripe_api_request( 'accounts', 'GET', [], $account_id );
 
 		if ( ! $api_response['success'] ) {
-			return $api_response; // Return the error from API
+			return $api_response; // Return the error from API.
 		}
 
 		return $api_response;

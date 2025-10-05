@@ -66,17 +66,15 @@
 			"type": "string",
 			"default": "one-time"
 		},
-		"subscriptionPlans": {
-			"type": "array",
-			"default": [
-				{
-					"name": "Subscription Plan",
-					"interval": "month",
-					"billingCycles": 2,
-					"customer_name": "field_id",
-					"customer_email": "field_id"
-				}
-			]
+		"subscriptionPlan": {
+			"type": "object",
+			"default": {
+				"name": "Subscription Plan",
+				"interval": "month",
+				"billingCycles": 2,
+				"customer_name": "",
+				"customer_email": ""
+			}
 		}
 	}
 }

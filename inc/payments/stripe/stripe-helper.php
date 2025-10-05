@@ -1,4 +1,10 @@
 <?php
+/**
+ * Stripe Helper functions for SureForms Payments.
+ *
+ * @package sureforms
+ * @since x.x.x
+ */
 
 namespace SRFM\Inc\Payments\Stripe;
 
@@ -70,7 +76,6 @@ class Stripe_Helper {
 
 		if ( is_wp_error( $response ) ) {
 			$error_message = $response->get_error_message();
-			error_log( 'SureForms Stripe API Network Error: ' . $error_message );
 			return [
 				'success' => false,
 				'error'   => [
@@ -89,7 +94,7 @@ class Stripe_Helper {
 		$body = wp_remote_retrieve_body( $response );
 		$code = wp_remote_retrieve_response_code( $response );
 
-		// Try to decode the response body
+		// Try to decode the response body.
 		$decoded_body = json_decode( $body, true );
 		if ( json_last_error() !== JSON_ERROR_NONE ) {
 			error_log( 'SureForms Stripe API Invalid JSON Response: ' . $body );
@@ -110,8 +115,6 @@ class Stripe_Helper {
 			$error_message = $stripe_error['message'] ?? 'Unknown Stripe API error';
 			$error_type    = $stripe_error['type'] ?? 'api_error';
 
-			error_log( 'SureForms Stripe API Error (' . $code . '): ' . $error_message );
-
 			return [
 				'success' => false,
 				'error'   => [
@@ -125,13 +128,24 @@ class Stripe_Helper {
 			];
 		}
 
-		// Success case - return the decoded response with success indicator
+		// Success case - return the decoded response with success indicator.
 		return [
 			'success' => true,
 			'data'    => $decoded_body,
 		];
 	}
 
+	/**
+	 * Flattens a multidimensional array into a single-level array using Stripe's bracket notation.
+	 *
+	 * This is useful for preparing data to be sent to the Stripe API, which expects
+	 * nested parameters to be formatted as key[subkey]=value.
+	 *
+	 * @param array  $data   The multidimensional array to flatten.
+	 * @param string $prefix (Optional) The prefix for nested keys. Default is an empty string.
+	 *
+	 * @return array The flattened array with bracket notation keys.
+	 */
 	private static function flatten_stripe_data( $data, $prefix = '' ) {
 		$result = [];
 

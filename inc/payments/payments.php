@@ -36,8 +36,10 @@ class Payments {
 		if ( is_admin() ) {
 			Admin_Handler::get_instance();
 			Admin_Stripe_Handler::get_instance();
-			Payments_Settings::get_instance();
 		}
+
+		// Initialize Payments_Settings for both admin and REST API contexts.
+		Payments_Settings::get_instance();
 
 		Front_End::get_instance();
 		Stripe_Webhook::get_instance();

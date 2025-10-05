@@ -35,7 +35,7 @@ const Edit = ( props ) => {
 		className,
 		paymentItems,
 		paymentType,
-		subscriptionPlans,
+		subscriptionPlan,
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
 	const [ availableNumberFields, setAvailableNumberFields ] = useState( [] );
@@ -276,34 +276,21 @@ const Edit = ( props ) => {
 								'sureforms'
 							) }
 							value={
-								subscriptionPlans?.[ 0 ]?.name ||
+								subscriptionPlan?.name ||
 									'Subscription Plan'
 							}
 							data={ {
 								value:
-										subscriptionPlans?.[ 0 ]?.name ||
+										subscriptionPlan?.name ||
 										'Subscription Plan',
 								label: 'subscription-plan-name',
 							} }
 							onChange={ ( value ) => {
-								const updatedPlans = [
-									...( subscriptionPlans || [] ),
-								];
-								if ( updatedPlans.length === 0 ) {
-									updatedPlans.push( {
-										name: value,
-										interval: 'month',
-										customer_name: '',
-										customer_email: '',
-									} );
-								} else {
-									updatedPlans[ 0 ] = {
-										...updatedPlans[ 0 ],
-										name: value,
-									};
-								}
 								setAttributes( {
-									subscriptionPlans: updatedPlans,
+									subscriptionPlan: {
+										...( subscriptionPlan || {} ),
+										name: value,
+									},
 								} );
 							} }
 						/>
@@ -315,7 +302,7 @@ const Edit = ( props ) => {
 						<SelectControl
 							label={ __( 'Billing Interval', 'sureforms' ) }
 							value={
-								subscriptionPlans?.[ 0 ]?.interval ||
+								subscriptionPlan?.interval ||
 									'month'
 							}
 							options={ [
@@ -341,24 +328,11 @@ const Edit = ( props ) => {
 								},
 							] }
 							onChange={ ( value ) => {
-								const updatedPlans = [
-									...( subscriptionPlans || [] ),
-								];
-								if ( updatedPlans.length === 0 ) {
-									updatedPlans.push( {
-										name: 'Subscription Plan',
-										interval: value,
-										customer_name: '',
-										customer_email: '',
-									} );
-								} else {
-									updatedPlans[ 0 ] = {
-										...updatedPlans[ 0 ],
-										interval: value,
-									};
-								}
 								setAttributes( {
-									subscriptionPlans: updatedPlans,
+									subscriptionPlan: {
+										...( subscriptionPlan || {} ),
+										interval: value,
+									},
 								} );
 							} }
 						/>
@@ -370,7 +344,7 @@ const Edit = ( props ) => {
 						<SelectControl
 							label={ __( 'Billing Cycles', 'sureforms' ) }
 							value={
-								subscriptionPlans?.[ 0 ]?.billingCycles ||
+								subscriptionPlan?.billingCycles ||
 									'ongoing'
 							}
 							options={ [
@@ -387,25 +361,11 @@ const Edit = ( props ) => {
 								),
 							] }
 							onChange={ ( value ) => {
-								const updatedPlans = [
-									...( subscriptionPlans || [] ),
-								];
-								if ( updatedPlans.length === 0 ) {
-									updatedPlans.push( {
-										name: 'Subscription Plan',
-										interval: 'month',
-										billingCycles: value,
-										customer_name: '',
-										customer_email: '',
-									} );
-								} else {
-									updatedPlans[ 0 ] = {
-										...updatedPlans[ 0 ],
-										billingCycles: value,
-									};
-								}
 								setAttributes( {
-									subscriptionPlans: updatedPlans,
+									subscriptionPlan: {
+										...( subscriptionPlan || {} ),
+										billingCycles: value,
+									},
 								} );
 							} }
 							help={ __(
@@ -424,7 +384,7 @@ const Edit = ( props ) => {
 								'sureforms'
 							) }
 							value={
-								subscriptionPlans?.[ 0 ]?.customer_name ||
+								subscriptionPlan?.customer_name ||
 									''
 							}
 							options={ [
@@ -441,24 +401,11 @@ const Edit = ( props ) => {
 								} ) ),
 							] }
 							onChange={ ( value ) => {
-								const updatedPlans = [
-									...( subscriptionPlans || [] ),
-								];
-								if ( updatedPlans.length === 0 ) {
-									updatedPlans.push( {
-										name: 'Subscription Plan',
-										interval: 'month',
-										customer_name: value,
-										customer_email: '',
-									} );
-								} else {
-									updatedPlans[ 0 ] = {
-										...updatedPlans[ 0 ],
-										customer_name: value,
-									};
-								}
 								setAttributes( {
-									subscriptionPlans: updatedPlans,
+									subscriptionPlan: {
+										...( subscriptionPlan || {} ),
+										customer_name: value,
+									},
 								} );
 							} }
 							help={ __(
@@ -477,7 +424,7 @@ const Edit = ( props ) => {
 								'sureforms'
 							) }
 							value={
-								subscriptionPlans?.[ 0 ]?.customer_email ||
+								subscriptionPlan?.customer_email ||
 									''
 							}
 							options={ [
@@ -494,24 +441,11 @@ const Edit = ( props ) => {
 								} ) ),
 							] }
 							onChange={ ( value ) => {
-								const updatedPlans = [
-									...( subscriptionPlans || [] ),
-								];
-								if ( updatedPlans.length === 0 ) {
-									updatedPlans.push( {
-										name: 'Subscription Plan',
-										interval: 'month',
-										customer_name: '',
-										customer_email: value,
-									} );
-								} else {
-									updatedPlans[ 0 ] = {
-										...updatedPlans[ 0 ],
-										customer_email: value,
-									};
-								}
 								setAttributes( {
-									subscriptionPlans: updatedPlans,
+									subscriptionPlan: {
+										...( subscriptionPlan || {} ),
+										customer_email: value,
+									},
 								} );
 							} }
 							help={ __(

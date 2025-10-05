@@ -497,6 +497,12 @@ class Admin {
 		}
 	}
 
+	/**
+	 * Payments page callback.
+	 *
+	 * @return void
+	 * @since x.x.x
+	 */
 	public function render_payments() {
 		echo '<div id="srfm-payments-react-container" class="srfm-admin-wrapper"><h1>Payments React</h1></div>';
 	}

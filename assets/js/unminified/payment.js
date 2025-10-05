@@ -102,17 +102,16 @@ async function processAllPayments( form ) {
 async function srfmConfirmPayment( blockId, paymentData, form ) {
 	const { elements, paymentType } = paymentData;
 
-	// First submit the elements
+	// Validate card details AFTER payment intent is created but BEFORE confirmation
+	// This is the correct timing to avoid card data loss
 	const { error: submitError } = await elements.submit();
 
-	console.log( 'srfmConfirmPayment submitError', {
-		submitError,
-		paymentData,
-	} );
-
 	if ( submitError ) {
+		console.error( 'Card validation failed:', submitError );
 		throw new Error( submitError.message );
 	}
+
+	console.log( `Card validation successful for block ${ blockId } paymentType: ${ paymentType }` );
 
 	// Handle subscription vs one-time payment confirmation
 	if ( paymentType === 'subscription' ) {
@@ -136,6 +135,12 @@ async function confirmOneTimePayment( blockId, paymentData, form ) {
 		clientSecret,
 		confirmParams: {
 			return_url: window.location.href,
+			payment_method_data: {
+				billing_details: {
+					// email: extractBillingEmail( form, blockId ),
+					email: "test@gmail.com",
+				},
+			},
 		},
 		redirect: 'if_required',
 	} );
@@ -196,6 +201,13 @@ async function confirmSubscription( blockId, paymentData, form ) {
 		`SureForms: Confirming subscription for block ${ blockId } using simple-stripe-subscriptions approach`
 	);
 
+	const billingDetails = {
+		name: extractBillingName( form, blockId ),
+		email: extractBillingEmail( form, blockId ),
+	};
+
+	console.log("billingDetails:", billingDetails);
+
 	try {
 		// Use single confirmPayment approach from simple-stripe-subscriptions
 		// This works for both payment intents and subscription confirmations
@@ -205,10 +217,7 @@ async function confirmSubscription( blockId, paymentData, form ) {
 			confirmParams: {
 				return_url: window.location.href,
 				payment_method_data: {
-					billing_details: {
-						name: extractBillingName( form, blockId ),
-						email: extractBillingEmail( form, blockId ),
-					},
+					billing_details: billingDetails,
 				},
 			},
 			redirect: 'if_required',

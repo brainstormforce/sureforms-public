@@ -158,10 +158,8 @@ class Front_End {
 		$description = sanitize_text_field( wp_unslash( $_POST['description'] ?? 'SureForms Subscription' ) );
 		$block_id    = sanitize_text_field( wp_unslash( $_POST['block_id'] ?? '' ) );
 
-		$subscription_interval       = sanitize_text_field( wp_unslash( $_POST['interval'] ?? 'month' ) );
-		$plan_name                   = sanitize_text_field( wp_unslash( $_POST['plan_name'] ?? 'Subscription Plan' ) );
-		$subscription_interval_count = absint( $_POST['subscription_interval_count'] ?? 6 );
-		$subscription_trial_days     = absint( $_POST['subscription_trial_days'] ?? 3 );
+		$subscription_interval = sanitize_text_field( wp_unslash( $_POST['interval'] ?? 'month' ) );
+		$plan_name             = sanitize_text_field( wp_unslash( $_POST['plan_name'] ?? 'Subscription Plan' ) );
 
 		// Validate amount like simple-stripe-subscriptions
 		if ( $amount <= 0 ) {
@@ -204,20 +202,69 @@ class Front_End {
 				throw new \Exception( __( 'Failed to create customer for subscription.', 'sureforms' ) );
 			}
 
-			// Create subscription using simplified approach
-			$response = $this->create_subscription(
-				$amount,
-				$currency,
-				$description,
-				$subscription_interval,
-				$subscription_interval_count,
-				$subscription_trial_days,
-				0, // application_fee_amount - unused in simplified approach
-				'', // stripe_account_id - unused in simplified approach
-				$block_id,
-				$customer_id,
-				$secret_key
+			$license_key = $this->get_license_key();
+			// Prepare subscription data for middleware
+			$subscription_data = apply_filters(
+				'srfm_create_subscription_data',
+				[
+					'secret_key'  => $secret_key,
+					'customer_id' => $customer_id,
+					'amount'      => $amount,
+					'currency'    => strtolower( $currency ),
+					'description' => $description,
+					'interval'    => $subscription_interval,
+					'license_key' => $license_key,
+					'block_id'    => $block_id,
+					'plan_name'   => $plan_name,
+					'metadata'    => [
+						'source'           => 'SureForms',
+						'block_id'         => $block_id,
+						'original_amount'  => $amount,
+						'billing_interval' => $subscription_interval,
+					],
+				]
 			);
+
+			$endpoint = 'prod' === SRFM_PAYMENTS_ENV ? SRFM_PAYMENTS_PROD . 'subscription/create' : SRFM_PAYMENTS_LOCAL . 'subscription/create';
+
+			// Call middleware subscription creation endpoint
+			$subscription_response = wp_remote_post(
+				$endpoint,
+				[
+					'body'    => base64_encode( wp_json_encode( $subscription_data ) ),
+					'headers' => [
+						'Content-Type' => 'application/json',
+					],
+					'timeout' => 60, // Subscription creation can take longer
+				]
+			);
+
+			if ( is_wp_error( $subscription_response ) ) {
+				throw new \Exception( __( 'Failed to create subscription through middleware.', 'sureforms' ) );
+			}
+
+			$response_body = wp_remote_retrieve_body( $subscription_response );
+			if ( empty( $response_body ) ) {
+				throw new \Exception( __( 'Empty response from subscription creation.', 'sureforms' ) );
+			}
+
+			$subscription = json_decode( $response_body, true );
+			if ( json_last_error() !== JSON_ERROR_NONE ) {
+				throw new \Exception( __( 'Invalid JSON response from subscription creation.', 'sureforms' ) );
+			}
+
+			$payment_intent_id = $subscription['setup_intent']['id'];
+			$subscription_id   = $subscription['subscription_data']['id'];
+			$client_secret     = $subscription['client_secret'];
+			$response          = [
+				'type'              => 'subscription',
+				'client_secret'     => $client_secret,
+				'subscription_id'   => $subscription_id,
+				'customer_id'       => $customer_id,
+				'payment_intent_id' => $payment_intent_id,
+				'amount'            => $this->amount_convert_cents_to_usd( $amount ),
+				'interval'          => $subscription_interval,
+			];
 
 			wp_send_json_success( $response );
 
@@ -225,93 +272,6 @@ class Front_End {
 			error_log( 'SureForms Subscription Error: ' . $e->getMessage() );
 			wp_send_json_error( sprintf( __( 'Unexpected error: %s', 'sureforms' ), $e->getMessage() ) );
 		}
-	}
-
-	/**
-	 * Create subscription using the proven approach from simple-stripe-subscriptions
-	 *
-	 * @param int    $amount Subscription amount in cents.
-	 * @param string $currency Subscription currency.
-	 * @param string $description Subscription description.
-	 * @param string $interval Billing interval (day, week, month, year).
-	 * @param int    $interval_count Billing interval count.
-	 * @param int    $trial_days Trial days.
-	 * @param int    $application_fee_amount Application fee amount in cents.
-	 * @param string $stripe_account_id Stripe account ID.
-	 * @param string $block_id Block ID for metadata.
-	 * @param string $customer_id Stripe customer ID.
-	 * @return array Response data with client_secret and subscription_id.
-	 * @throws \Exception When subscription creation fails.
-	 * @since x.x.x
-	 */
-	private function create_subscription( $amount, $currency, $description, $interval, $interval_count, $trial_days, $application_fee_amount, $stripe_account_id, $block_id, $customer_id, $secret_key ) {
-		$license_key = $this->get_license_key();
-		// Prepare subscription data for middleware
-		$subscription_data = apply_filters(
-			'srfm_create_subscription_data',
-			[
-				'secret_key'             => $secret_key,
-				'customer_id'            => $customer_id,
-				'amount'                 => $amount,
-				'currency'               => strtolower( $currency ),
-				'description'            => $description,
-				'interval'               => $interval,
-				'interval_count'         => $interval_count,
-				'trial_days'             => $trial_days,
-				'application_fee_amount' => $application_fee_amount,
-				'stripe_account_id'      => $stripe_account_id,
-				'license_key'            => $license_key,
-				'block_id'               => $block_id,
-				'metadata'               => [
-					'source'           => 'SureForms',
-					'block_id'         => $block_id,
-					'original_amount'  => $amount,
-					'billing_interval' => $interval,
-					'interval_count'   => $interval_count,
-				],
-			]
-		);
-
-		$endpoint = 'prod' === SRFM_PAYMENTS_ENV ? SRFM_PAYMENTS_PROD . 'subscription/create' : SRFM_PAYMENTS_LOCAL . 'subscription/create';
-
-		// Call middleware subscription creation endpoint
-		$subscription_response = wp_remote_post(
-			$endpoint,
-			[
-				'body'    => base64_encode( wp_json_encode( $subscription_data ) ),
-				'headers' => [
-					'Content-Type' => 'application/json',
-				],
-				'timeout' => 60, // Subscription creation can take longer
-			]
-		);
-
-		if ( is_wp_error( $subscription_response ) ) {
-			throw new \Exception( __( 'Failed to create subscription through middleware.', 'sureforms' ) );
-		}
-
-		$response_body = wp_remote_retrieve_body( $subscription_response );
-		if ( empty( $response_body ) ) {
-			throw new \Exception( __( 'Empty response from subscription creation.', 'sureforms' ) );
-		}
-
-		$subscription = json_decode( $response_body, true );
-		if ( json_last_error() !== JSON_ERROR_NONE ) {
-			throw new \Exception( __( 'Invalid JSON response from subscription creation.', 'sureforms' ) );
-		}
-
-		$payment_intent_id = $subscription['setup_intent']['id'];
-		$subscription_id   = $subscription['subscription_data']['id'];
-		$client_secret     = $subscription['client_secret'];
-		return [
-			'type'              => 'subscription',
-			'client_secret'     => $client_secret,
-			'subscription_id'   => $subscription_id,
-			'customer_id'       => $customer_id,
-			'payment_intent_id' => $payment_intent_id,
-			'amount'            => $this->amount_convert_cents_to_usd( $amount ),
-			'interval'          => $interval,
-		];
 	}
 
 	/**

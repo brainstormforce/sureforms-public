@@ -450,7 +450,7 @@ class Payments extends Base {
 		$instance = self::get_instance();
 		$where    = [];
 
-		// Add status condition
+		// Add status condition.
 		if ( 'all' !== $status ) {
 			$where[] = [
 				[
@@ -461,7 +461,7 @@ class Payments extends Base {
 			];
 		}
 
-		// Add form ID condition
+		// Add form ID condition.
 		if ( $form_id > 0 ) {
 			$where[] = [
 				[
@@ -472,7 +472,7 @@ class Payments extends Base {
 			];
 		}
 
-		// Add additional where conditions
+		// Add additional where conditions.
 		if ( ! empty( $where_conditions ) ) {
 			$where = array_merge( $where, $where_conditions );
 		}
@@ -762,17 +762,17 @@ class Payments extends Base {
 			return false;
 		}
 
-		// Get current payment data
+		// Get current payment data.
 		$payment = self::get( $payment_id );
 		if ( ! $payment ) {
 			return false;
 		}
 
-		// Calculate new refunded amount
+		// Calculate new refunded amount.
 		$current_refunded   = floatval( $payment['refunded_amount'] ?? 0 );
 		$new_total_refunded = $current_refunded + floatval( $refund_amount );
 
-		// Update refunded amount
+		// Update refunded amount.
 		return self::update( $payment_id, [ 'refunded_amount' => $new_total_refunded ] );
 	}
 
@@ -956,15 +956,15 @@ class Payments extends Base {
 		$instance   = self::get_instance();
 		$table_name = $instance->get_tablename();
 
-		// Build the main filter condition using raw SQL for OR logic
-		// Show: type = 'subscription' OR (type = 'payment' AND subscription_id = '')
+		// Build the main filter condition using raw SQL for OR logic.
+		// Show: type = 'subscription' OR (type = 'payment' AND subscription_id = '').
 		$main_condition = "(type = 'subscription' OR (type = 'payment' AND subscription_id = ''))";
 
-		// Start building the query
+		// Start building the query.
 		$where_clause = "WHERE {$main_condition}";
 		$params       = [];
 
-		// Handle additional where conditions if provided
+		// Handle additional where conditions if provided.
 		if ( ! empty( $_args['where'] ) ) {
 			foreach ( $_args['where'] as $where_group ) {
 				if ( is_array( $where_group ) ) {
@@ -978,22 +978,22 @@ class Payments extends Base {
 			}
 		}
 
-		// Order by
+		// Order by.
 		$order        = strtoupper( $_args['order'] ) === 'ASC' ? 'ASC' : 'DESC';
 		$orderby      = esc_sql( $_args['orderby'] );
 		$order_clause = "ORDER BY {$orderby} {$order}";
 
-		// Limit clause
+		// Limit clause.
 		$limit_clause = '';
 		if ( $set_limit ) {
 			$limit_clause = $wpdb->prepare( 'LIMIT %d, %d', absint( $_args['offset'] ), absint( $_args['limit'] ) );
 		}
 
-		// Build final query
+		// Build final query.
 		$columns = $_args['columns'] === '*' ? '*' : esc_sql( $_args['columns'] );
 		$query   = "SELECT {$columns} FROM {$table_name} {$where_clause} {$order_clause} {$limit_clause}";
 
-		// Execute query with parameters
+		// Execute query with parameters.
 		if ( ! empty( $params ) ) {
 			$query = $wpdb->prepare( $query, $params );
 		}
@@ -1020,24 +1020,24 @@ class Payments extends Base {
 		$instance   = self::get_instance();
 		$table_name = $instance->get_tablename();
 
-		// Build the main filter condition using raw SQL for OR logic
-		// Count: type = 'subscription' OR (type = 'payment' AND subscription_id = '')
+		// Build the main filter condition using raw SQL for OR logic.
+		// Count: type = 'subscription' OR (type = 'payment' AND subscription_id = '').
 		$where_clause = "(type = 'subscription' OR (type = 'payment' AND subscription_id = ''))";
 		$params       = [];
 
-		// Add status condition
+		// Add status condition.
 		if ( 'all' !== $status ) {
 			$where_clause .= ' AND status = %s';
 			$params[]      = sanitize_text_field( $status );
 		}
 
-		// Add form ID condition
+		// Add form ID condition.
 		if ( $form_id > 0 ) {
 			$where_clause .= ' AND form_id = %d';
 			$params[]      = absint( $form_id );
 		}
 
-		// Handle additional where conditions if provided
+		// Handle additional where conditions if provided.
 		if ( ! empty( $where_conditions ) ) {
 			foreach ( $where_conditions as $where_group ) {
 				if ( is_array( $where_group ) ) {
@@ -1051,7 +1051,7 @@ class Payments extends Base {
 			}
 		}
 
-		// Build and execute query
+		// Build and execute query.
 		$query = "SELECT COUNT(*) FROM {$table_name} WHERE {$where_clause}";
 
 		if ( ! empty( $params ) ) {
