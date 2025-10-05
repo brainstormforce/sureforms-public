@@ -79,11 +79,19 @@ const Payments = ( {
 				method: 'GET',
 			} );
 
-			if ( response.url ) {
-				window.location.href = response.url;
+			// Validate response
+			if ( ! response || ! response.url ) {
+				throw new Error(
+					__( 'Invalid response from server. Please try again.', 'sureforms' )
+				);
 			}
+
+			// Redirect to Stripe OAuth
+			window.location.href = response.url;
 		} catch ( error ) {
-			toast.error( __( 'Failed to connect to Stripe.', 'sureforms' ) );
+			const errorMessage = error.message ||
+				__( 'Failed to connect to Stripe.', 'sureforms' );
+			toast.error( errorMessage );
 			setIsConnecting( false );
 		}
 	};
@@ -103,25 +111,54 @@ const Payments = ( {
 
 		setIsDisconnecting( true );
 		try {
-			await apiFetch( {
+			const response = await apiFetch( {
 				path: '/sureforms/v1/payments/stripe-disconnect',
 				method: 'POST',
 			} );
 
-			setPaymentsSettings( {
+			// Validate response
+			if ( ! response || ! response.success ) {
+				throw new Error(
+					response?.message ||
+						__( 'Failed to disconnect Stripe account.', 'sureforms' )
+				);
+			}
+
+			// Update local state
+			const newSettings = {
 				...paymentsSettings,
 				stripe_connected: false,
 				stripe_account_id: '',
 				stripe_account_email: '',
-			} );
+				stripe_live_publishable_key: '',
+				stripe_live_secret_key: '',
+				stripe_test_publishable_key: '',
+				stripe_test_secret_key: '',
+				webhook_test_secret: '',
+				webhook_test_url: '',
+				webhook_test_id: '',
+				webhook_live_secret: '',
+				webhook_live_url: '',
+				webhook_live_id: '',
+			};
+
+			setPaymentsSettings( newSettings );
+
+			// Update global settings to ensure parent component syncs
+			if ( updateGlobalSettings ) {
+				// Update each critical field in global settings
+				Object.keys( newSettings ).forEach( ( key ) => {
+					updateGlobalSettings( key, newSettings[ key ], 'payments-settings' );
+				} );
+			}
 
 			toast.success(
 				__( 'Stripe account disconnected successfully.', 'sureforms' )
 			);
 		} catch ( error ) {
-			toast.error(
-				__( 'Failed to disconnect Stripe account.', 'sureforms' )
-			);
+			const errorMessage = error.message ||
+				__( 'Failed to disconnect Stripe account.', 'sureforms' );
+			toast.error( errorMessage );
 		} finally {
 			setIsDisconnecting( false );
 		}
@@ -425,19 +462,17 @@ const Payments = ( {
 
 	const webhookManagement = (
 		<div>
-			{ /* Webhook Details */ }
-			{ ( paymentsSettings.webhook_test_secret ||
-				paymentsSettings.webhook_live_secret ) && (
-				<div className="mt-4 p-4 bg-background-secondary rounded-lg border">
-					<div className="flex items-center justify-between">
-						<h4 className="text-sm font-medium text-text-primary mb-3">
-							{ __( 'Webhook Details', 'sureforms' ) }
-						</h4>
-						<div>{ webhookActionButton }</div>
-					</div>
+			<div className="mt-4 p-4 bg-background-secondary rounded-lg border">
+				<div className="flex items-center justify-between mb-3">
+					<h4 className="text-sm font-medium text-text-primary">
+						{ __( 'Webhook Configuration', 'sureforms' ) }
+					</h4>
+					<div>{ webhookActionButton }</div>
+				</div>
 
+				{ currentWebhookSecret ? (
 					<div className="space-y-3">
-						{ /* Current Mode Webhook Details */ }
+						{ /* Show webhook details when configured */ }
 						{ ( () => {
 							const currentWebhookUrl = isLiveMode
 								? paymentsSettings.webhook_live_url
@@ -445,10 +480,6 @@ const Payments = ( {
 							const currentWebhookId = isLiveMode
 								? paymentsSettings.webhook_live_id
 								: paymentsSettings.webhook_test_id;
-
-							if ( ! currentWebhookSecret ) {
-								return null;
-							}
 
 							return (
 								<>
@@ -486,47 +517,66 @@ const Payments = ( {
 									</div>
 									{ currentWebhookId &&
 										currentWebhookId !== 'created' && (
-										<div>
-											<label className="block text-xs font-medium text-text-tertiary mb-1">
-												{ __(
-													'Webhook ID',
-													'sureforms'
-												) }
-											</label>
-											<div className="flex items-center space-x-2">
-												<code className="flex-1 text-xs bg-background-primary p-2 rounded border font-mono text-text-secondary">
-													{ currentWebhookId }
-												</code>
-												<Button
-													onClick={ () => {
-														navigator.clipboard.writeText(
-															currentWebhookId
-														);
-														toast.success(
-															__(
-																'Webhook ID copied to clipboard',
-																'sureforms'
-															)
-														);
-													} }
-													variant="outline"
-													size="xs"
-													className="text-text-tertiary hover:text-text-primary"
-												>
+											<div>
+												<label className="block text-xs font-medium text-text-tertiary mb-1">
 													{ __(
-														'Copy',
+														'Webhook ID',
 														'sureforms'
 													) }
-												</Button>
+												</label>
+												<div className="flex items-center space-x-2">
+													<code className="flex-1 text-xs bg-background-primary p-2 rounded border font-mono text-text-secondary">
+														{ currentWebhookId }
+													</code>
+													<Button
+														onClick={ () => {
+															navigator.clipboard.writeText(
+																currentWebhookId
+															);
+															toast.success(
+																__(
+																	'Webhook ID copied to clipboard',
+																	'sureforms'
+																)
+															);
+														} }
+														variant="outline"
+														size="xs"
+														className="text-text-tertiary hover:text-text-primary"
+													>
+														{ __(
+															'Copy',
+															'sureforms'
+														) }
+													</Button>
+												</div>
 											</div>
-										</div>
-									) }
+										) }
 								</>
 							);
 						} )() }
 					</div>
-				</div>
-			) }
+				) : (
+					<div className="text-sm text-text-tertiary">
+						<p>
+							{ __(
+								'No webhook configured for',
+								'sureforms'
+							) }{ ' ' }
+							<strong>
+								{ isLiveMode
+									? __( 'live mode', 'sureforms' )
+									: __( 'test mode', 'sureforms' ) }
+							</strong>
+							.{ ' ' }
+							{ __(
+								'Click the button above to automatically create a webhook endpoint.',
+								'sureforms'
+							) }
+						</p>
+					</div>
+				) }
+			</div>
 		</div>
 	);
 

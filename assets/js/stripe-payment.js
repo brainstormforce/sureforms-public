@@ -144,24 +144,36 @@ class StripePayment {
 		}
 
 		try {
-			// Update elements with new amount (deferred payment intent pattern)
+			// Update elements based on payment type (subscription vs one-time)
 			const currency = paymentHiddenInput.dataset.currency || 'usd';
+			const paymentType = elementData.paymentType || 'one-time';
 
-			elementData.elements.update( {
-				mode: 'payment',
-				currency,
-				amount: Math.round( newAmount * 100 ), // Convert to cents
-			} );
+			if ( paymentType === 'subscription' ) {
+				// For subscriptions: use mode 'subscription', NO captureMethod
+				elementData.elements.update( {
+					mode: 'subscription',
+					amount: Math.round( newAmount * 100 ),
+					currency,
+				} );
+			} else {
+				// For one-time payments: use mode 'payment' with captureMethod 'manual'
+				elementData.elements.update( {
+					mode: 'payment',
+					amount: Math.round( newAmount * 100 ),
+					currency,
+					captureMethod: 'manual',
+				} );
+			}
 
 			// Store new amount for later use
 			elementData.currentAmount = newAmount;
 
 			console.log(
-				`SureForms: Elements updated with new amount for block ${ blockId }`
+				`SureForms: Elements updated with new amount $${ newAmount } for block ${ blockId } (type: ${ paymentType })`
 			);
 		} catch ( error ) {
 			console.warn(
-				`SureForms: Failed to update elements amount for block ${ blockId }:`,
+				`SureForms: Failed to update amount for block ${ blockId }:`,
 				error
 			);
 			// Continue without throwing - non-critical failure
@@ -241,6 +253,8 @@ class StripePayment {
 
 			this.set_block_loading( blockId, false );
 
+			console.log( 'SureForms: Response data:', responseData );
+
 			if ( responseData.success ) {
 				const clientSecret = responseData.data.client_secret;
 				const paymentIntentId = responseData.data.payment_intent_id;
@@ -251,25 +265,15 @@ class StripePayment {
 				// Update the existing elements with the client secret
 				const elementData = StripePayment.paymentElements[ blockId ];
 				if ( elementData ) {
+					// CRITICAL FIX: Store client secret WITHOUT calling elements.update()
+					// Calling elements.update() with clientSecret causes Stripe to re-initialize
+					// the payment element, which clears all user-entered card data
+					// The clientSecret will be used directly in stripe.confirmPayment() instead
 					elementData.clientSecret = clientSecret;
 
-					try {
-						// Update elements with the new client secret only
-						// Amount is automatically derived from the PaymentIntent
-						elementData.elements.update( {
-							clientSecret,
-						} );
-
-						console.log(
-							`SureForms: Payment elements updated with client secret for block ${ blockId }`
-						);
-					} catch ( updateError ) {
-						console.warn(
-							`SureForms: Element update warning for block ${ blockId }:`,
-							updateError
-						);
-						// Continue processing even if element update has minor issues
-					}
+					console.log(
+						`SureForms: Client secret stored for block ${ blockId } (card data preserved) clientSecret : ${ clientSecret }`
+					);
 				}
 
 				return { clientSecret, paymentIntentId };
@@ -334,6 +338,10 @@ class StripePayment {
 		const paymentType =
 			field.getAttribute( 'data-payment-type' ) || 'one-time';
 
+		console.log(
+			`SureForms: Initializing payment for block ${ blockId }, type: ${ paymentType }`
+		);
+
 		// Initialize Stripe elements based on payment type
 		if ( paymentType === 'subscription' ) {
 			this.initializeSubscriptionElements( blockId, paymentInput );
@@ -350,6 +358,19 @@ class StripePayment {
 	 * @param paymentInput
 	 */
 	initializeStripeElements( blockId, paymentInput ) {
+		// CRITICAL: Check if elements already exist to prevent re-initialization
+		// Re-mounting elements destroys user-entered card data
+		if ( StripePayment.paymentElements[ blockId ] ) {
+			console.log(
+				`SureForms: ONE-TIME PAYMENT elements already initialized for block ${ blockId }, skipping re-initialization (preserving card data)`
+			);
+			return;
+		}
+
+		console.log(
+			`SureForms: Initializing ONE-TIME PAYMENT elements for block ${ blockId } with mode: payment, captureMethod: manual`
+		);
+
 		const stripeKey = paymentInput.dataset.stripeKey;
 
 		if ( ! stripeKey ) {
@@ -373,11 +394,14 @@ class StripePayment {
 		// Get real payment amount from form (not placeholder)
 		const currentAmount = this.calculateCurrentAmount( paymentInput );
 
-		// Initialize Elements with real amount but no client secret (deferred payment intent)
+		// Initialize Elements with mode and captureMethod to match backend configuration
+		// captureMethod: 'manual' tells Elements to expect manual capture PaymentIntents
+		// This prevents "capture_method mismatch" errors when backend uses manual capture
 		const elements = stripe.elements( {
 			mode: 'payment',
+			amount: Math.round( currentAmount * 100 ),
 			currency: paymentInput.dataset.currency || 'usd',
-			amount: Math.round( currentAmount * 100 ), // Convert to cents, use real amount
+			captureMethod: 'manual',
 			appearance: {
 				theme: 'stripe',
 				variables: {
@@ -506,6 +530,20 @@ class StripePayment {
 	 * @param paymentInput
 	 */
 	initializeSubscriptionElements( blockId, paymentInput ) {
+		// CRITICAL: Check if elements already exist to prevent re-initialization
+		// Re-mounting elements destroys user-entered card data
+		if ( StripePayment.paymentElements[ blockId ] ) {
+			const existingMode = StripePayment.paymentElements[ blockId ].paymentType;
+			console.log(
+				`SureForms: SUBSCRIPTION elements already initialized for block ${ blockId } (existing type: ${ existingMode }), skipping re-initialization (preserving card data)`
+			);
+			return;
+		}
+
+		console.log(
+			`SureForms: Initializing SUBSCRIPTION elements for block ${ blockId } with mode: subscription`
+		);
+
 		const stripeKey = paymentInput.dataset.stripeKey;
 
 		if ( ! stripeKey ) {
@@ -526,11 +564,13 @@ class StripePayment {
 
 		const stripe = StripePayment.stripeInstances[ blockId ];
 
-		// Initialize Elements for subscription mode
+		// Initialize Elements with subscription mode for subscriptions
+		// Subscription mode is used with confirmSetup() and SetupIntent
+		// captureMethod is NOT applicable for subscriptions (only for one-time payments)
 		const elements = stripe.elements( {
 			mode: 'subscription',
 			currency: paymentInput.dataset.currency || 'usd',
-			amount: 12000, // Will be updated when subscription intent is created
+			amount: 1200, // Placeholder amount in cents ($12.00), will be updated by backend subscription
 			appearance: {
 				theme: 'stripe',
 				variables: {
@@ -655,21 +695,11 @@ class StripePayment {
 				if ( elementData ) {
 					elementData.clientSecret = clientSecret;
 
-					try {
-						elementData.elements.update( {
-							clientSecret,
-						} );
-
-						console.log(
-							`SureForms: Subscription elements updated with client secret for block ${ blockId }`
-						);
-					} catch ( updateError ) {
-						console.warn(
-							`SureForms: Subscription element update warning for block ${ blockId }:`,
-							updateError
-						);
-						// Continue processing even if element update has minor issues
-					}
+				// CRITICAL FIX: DON NOT call elements.update() for subscriptions
+				// This would change the mode and break confirmSetup()
+				console.log(
+					`SureForms: Client secret stored for subscription block ${ blockId } (preserving subscription mode)`
+				);
 				}
 
 				return {

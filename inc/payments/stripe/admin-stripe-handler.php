@@ -41,7 +41,7 @@ class Admin_Stripe_Handler {
 	 * @since 1.0.0
 	 */
 	public function ajax_cancel_subscription() {
-		// Security checks
+		// Security checks.
 		if ( ! isset( $_POST['payment_id'] ) ) {
 			wp_send_json_error( [ 'message' => esc_html__( 'Missing payment ID.', 'sureforms' ) ] );
 		}
@@ -54,13 +54,13 @@ class Admin_Stripe_Handler {
 
 		$payment_id = absint( $_POST['payment_id'] );
 
-		// Get payment record
+		// Get payment record.
 		$payment = Payments::get( $payment_id );
 		if ( ! $payment ) {
 			wp_send_json_error( [ 'message' => esc_html__( 'Payment not found in the database.', 'sureforms' ) ] );
 		}
 
-		// Validate it's a subscription payment
+		// Validate it's a subscription payment.
 		if ( empty( $payment['type'] ) || 'subscription' !== $payment['type'] ) {
 			wp_send_json_error( [ 'message' => esc_html__( 'This is not a subscription payment.', 'sureforms' ) ] );
 		}
@@ -69,25 +69,23 @@ class Admin_Stripe_Handler {
 			wp_send_json_error( [ 'message' => esc_html__( 'Subscription ID not found.', 'sureforms' ) ] );
 		}
 
-		// Cancel the subscription
+		// Cancel the subscription.
 		$cancel_result = $this->cancel_subscription( $payment['subscription_id'] );
 		if ( ! $cancel_result ) {
 			wp_send_json_error( [ 'message' => esc_html__( 'Subscription cancellation failed.', 'sureforms' ) ] );
 		}
 
-		// Update database status to cancelled (following WPForms pattern)
+		// Update database status to cancelled (following WPForms pattern).
 		$updated = Payments::update( $payment_id, [ 'subscription_status' => 'cancelled' ] );
 		if ( ! $updated ) {
-			error_log( 'SureForms: Failed to update subscription status to cancelled in database' );
 			wp_send_json_error( [ 'message' => esc_html__( 'Failed to update subscription status in database.', 'sureforms' ) ] );
 		}
 
-		// Add log entry
+		// Add log entry.
 		$log_message = sprintf(
 			'Subscription cancelled from SureForms dashboard. Subscription ID: %s',
 			$payment['subscription_id']
 		);
-		error_log( 'SureForms: ' . $log_message );
 
 		wp_send_json_success( [ 'message' => esc_html__( 'Subscription cancelled successfully.', 'sureforms' ) ] );
 	}
@@ -99,13 +97,13 @@ class Admin_Stripe_Handler {
 	 * @since 1.0.0
 	 */
 	public function refund_payment() {
-		// Verify nonce
+		// Verify nonce.
 		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ?? '' ) ), 'srfm_payment_admin_nonce' ) ) {
 			wp_send_json_error( __( 'Invalid nonce.', 'sureforms' ) );
 			return;
 		}
 
-		// Check if user has permission to refund payments (admin or manage_options capability)
+		// Check if user has permission to refund payments (admin or manage_options capability).
 		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_send_json_error( __( 'Insufficient permissions.', 'sureforms' ) );
 			return;
@@ -125,33 +123,33 @@ class Admin_Stripe_Handler {
 		}
 
 		try {
-			// Get payment from database
+			// Get payment from database.
 			$payment = Payments::get( $payment_id );
 			if ( ! $payment ) {
 				wp_send_json_error( __( 'Payment not found.', 'sureforms' ) );
 				return;
 			}
 
-			// Detect subscription payments and route to specialized handler (following WPForms pattern)
+			// Detect subscription payments and route to specialized handler (following WPForms pattern).
 			if ( ! empty( $payment['type'] ) && ! empty( $payment['subscription_id'] ) ) {
 				error_log( 'SureForms: Routing subscription payment to specialized refund handler' );
 				$this->refund_subscription_payment( $payment, $refund_amount );
 				return;
 			}
 
-			// Verify payment status (for one-time payments)
+			// Verify payment status (for one-time payments).
 			if ( 'succeeded' !== $payment['status'] && 'partially_refunded' !== $payment['status'] ) {
 				wp_send_json_error( __( 'Only succeeded or partially refunded payments can be refunded.', 'sureforms' ) );
 				return;
 			}
 
-			// Verify transaction ID matches
+			// Verify transaction ID matches.
 			if ( $transaction_id !== $payment['transaction_id'] ) {
 				wp_send_json_error( __( 'Transaction ID mismatch.', 'sureforms' ) );
 				return;
 			}
 
-			// Get payment settings
+			// Get payment settings.
 			$payment_settings = get_option( 'srfm_payments_settings', [] );
 
 			if ( empty( $payment_settings['stripe_connected'] ) ) {
@@ -167,7 +165,7 @@ class Admin_Stripe_Handler {
 				throw new \Exception( __( 'Stripe secret key not found.', 'sureforms' ) );
 			}
 
-			// Create refund using Stripe API directly
+			// Create refund using Stripe API directly.
 			$stripe_refund_data = [
 				'amount'   => $refund_amount,
 				'metadata' => [
@@ -178,12 +176,12 @@ class Admin_Stripe_Handler {
 				],
 			];
 
-			// Determine if we're refunding by charge ID or payment intent ID
+			// Determine if we're refunding by charge ID or payment intent ID.
 			if ( strpos( $transaction_id, 'ch_' ) === 0 ) {
-				// Refunding by charge ID
+				// Refunding by charge ID.
 				$stripe_refund_data['charge'] = $transaction_id;
 			} elseif ( strpos( $transaction_id, 'pi_' ) === 0 ) {
-				// Refunding by payment intent ID
+				// Refunding by payment intent ID.
 				$stripe_refund_data['payment_intent'] = $transaction_id;
 			} else {
 				throw new \Exception( __( 'Invalid transaction ID format for refund.', 'sureforms' ) );
@@ -200,7 +198,7 @@ class Admin_Stripe_Handler {
 				throw new \Exception( $error_message );
 			}
 
-			// Store refund data and update payment status/log
+			// Store refund data and update payment status/log.
 			$refund_stored = $this->update_refund_data( $payment_id, $refund, $refund_amount, $payment['currency'] );
 			if ( ! $refund_stored ) {
 				throw new \Exception( __( 'Failed to update payment record after refund.', 'sureforms' ) );
@@ -229,9 +227,8 @@ class Admin_Stripe_Handler {
 	 */
 	public function cancel_subscription( $subscription_id ) {
 		try {
-			error_log( 'SureForms: Attempting to cancel subscription: ' . $subscription_id );
 
-			// Retrieve and cancel subscription using direct Stripe API
+			// Retrieve and cancel subscription using direct Stripe API.
 			$subscription = $this->stripe_api_request( 'subscriptions', 'GET', [], $subscription_id );
 
 			if ( ! $subscription ) {
@@ -239,7 +236,7 @@ class Admin_Stripe_Handler {
 				return false;
 			}
 
-			// Update subscription metadata to track cancellation source
+			// Update subscription metadata to track cancellation source.
 			$updated_metadata = array_merge(
 				$subscription['metadata'] ?? [],
 				[
@@ -256,7 +253,7 @@ class Admin_Stripe_Handler {
 				$subscription_id
 			);
 
-			// Cancel the subscription
+			// Cancel the subscription.
 			$cancelled_subscription = $this->stripe_api_request(
 				'subscriptions',
 				'DELETE',
@@ -265,11 +262,9 @@ class Admin_Stripe_Handler {
 			);
 
 			if ( ! $cancelled_subscription ) {
-				error_log( 'SureForms: Failed to cancel subscription: ' . $subscription_id );
 				return false;
 			}
 
-			error_log( 'SureForms: Subscription cancelled successfully: ' . $subscription_id );
 			return true;
 
 		} catch ( \Exception $e ) {
@@ -294,7 +289,7 @@ class Admin_Stripe_Handler {
 			return false;
 		}
 
-		// Get payment record if not provided
+		// Get payment record if not provided.
 		$payment = Payments::get( $payment_id );
 		if ( ! $payment ) {
 			error_log( 'SureForms: Payment record not found for ID: ' . $payment_id );
@@ -306,7 +301,7 @@ class Admin_Stripe_Handler {
 			return true;
 		}
 
-		// Prepare refund data for payment_data column
+		// Prepare refund data for payment_data column.
 		$refund_data = [
 			'refund_id'      => sanitize_text_field( $refund_response['id'] ?? '' ),
 			'amount'         => absint( $refund_amount ),
@@ -320,10 +315,10 @@ class Admin_Stripe_Handler {
 			'refunded_at'    => gmdate( 'Y-m-d H:i:s' ),
 		];
 
-		// Validate refund amount to prevent over-refunding
+		// Validate refund amount to prevent over-refunding.
 		$original_amount    = floatval( $payment['total_amount'] );
-		$existing_refunds   = floatval( $payment['refunded_amount'] ?? 0 ); // Use column directly
-		$new_refund_amount  = $refund_amount / 100; // Convert cents to dollars
+		$existing_refunds   = floatval( $payment['refunded_amount'] ?? 0 ); // Use column directly.
+		$new_refund_amount  = $refund_amount / 100; // Convert cents to dollars.
 		$total_after_refund = $existing_refunds + $new_refund_amount;
 
 		if ( $total_after_refund > $original_amount ) {
@@ -339,21 +334,21 @@ class Admin_Stripe_Handler {
 			return false;
 		}
 
-		// Add refund data to payment_data column (for audit trail)
+		// Add refund data to payment_data column (for audit trail).
 		$payment_data_result = Payments::add_refund_to_payment_data( $payment_id, $refund_data );
 
-		// Update the refunded_amount column
+		// Update the refunded_amount column.
 		$refund_amount_result = Payments::add_refund_amount( $payment_id, $new_refund_amount );
 
-		// Calculate appropriate payment status
-		$payment_status = 'succeeded'; // Default to current status
+		// Calculate appropriate payment status.
+		$payment_status = 'succeeded'; // Default to current status.
 		if ( $total_after_refund >= $original_amount ) {
-			$payment_status = 'refunded'; // Fully refunded
+			$payment_status = 'refunded'; // Fully refunded.
 		} elseif ( $total_after_refund > 0 ) {
-			$payment_status = 'partially_refunded'; // Partially refunded
+			$payment_status = 'partially_refunded'; // Partially refunded.
 		}
 
-		// Update payment status and log
+		// Update payment status and log.
 		$current_logs   = Helper::get_array_value( $payment['log'] );
 		$refund_type    = $total_after_refund >= $original_amount ? 'Full' : 'Partial';
 		$new_log        = [
@@ -381,10 +376,10 @@ class Admin_Stripe_Handler {
 			'log'    => $current_logs,
 		];
 
-		// Update payment record with status and log
+		// Update payment record with status and log.
 		$payment_update_result = Payments::update( $payment_id, $update_data );
 
-		// Check if all operations succeeded
+		// Check if all operations succeeded.
 		if ( false === $payment_data_result ) {
 			error_log( 'SureForms: Failed to store refund data in payment_data for payment ID: ' . $payment_id );
 		}
@@ -418,7 +413,7 @@ class Admin_Stripe_Handler {
 	 * @since 1.0.0
 	 */
 	private function init_hooks() {
-		// AJAX handlers for admin refund operations
+		// AJAX handlers for admin refund operations.
 		add_action( 'wp_ajax_srfm_stripe_cancel_subscription', [ $this, 'ajax_cancel_subscription' ] );
 		add_action( 'wp_ajax_srfm_stripe_refund_payment', [ $this, 'refund_payment' ] );
 	}
@@ -435,12 +430,9 @@ class Admin_Stripe_Handler {
 		$payment_id     = $payment['id'] ?? 0;
 		$transaction_id = $payment['transaction_id'] ?? '';
 
-		error_log( 'SureForms: Starting subscription refund process. Payment ID: ' . $payment_id . ', Transaction ID: ' . $transaction_id . ', Amount: ' . $refund_amount );
-
 		try {
 			// Step 1: Validate input parameters
 			if ( empty( $payment ) || ! is_array( $payment ) || $refund_amount <= 0 ) {
-				error_log( 'SureForms: Invalid refund parameters provided' );
 				wp_send_json_error( __( 'Invalid refund parameters provided.', 'sureforms' ) );
 				return;
 			}
@@ -448,7 +440,6 @@ class Admin_Stripe_Handler {
 			// Step 2: Verify this is a subscription-related payment
 			$is_subscription_payment = $this->is_subscription_related_payment( $payment );
 			if ( ! $is_subscription_payment ) {
-				error_log( 'SureForms: Payment is not subscription-related. Type: ' . ( $payment['type'] ?? 'unknown' ) . ', Subscription ID: ' . ( $payment['subscription_id'] ?? 'none' ) );
 				wp_send_json_error( __( 'This payment is not related to a subscription.', 'sureforms' ) );
 				return;
 			}
@@ -456,7 +447,6 @@ class Admin_Stripe_Handler {
 			// Step 3: Verify subscription payment status
 			$refundable_statuses = [ 'succeeded', 'partially_refunded' ];
 			if ( empty( $payment['status'] ) || ! in_array( $payment['status'], $refundable_statuses, true ) ) {
-				error_log( 'SureForms: Subscription payment not in refundable status. Status: ' . ( $payment['status'] ?? 'unknown' ) );
 				wp_send_json_error( __( 'Only succeeded or partially refunded subscription payments can be refunded.', 'sureforms' ) );
 				return;
 			}
@@ -464,7 +454,6 @@ class Admin_Stripe_Handler {
 			// Step 4: Validate refund amount limits
 			$validation_result = $this->validate_subscription_refund_amount( $payment, $refund_amount );
 			if ( ! $validation_result['valid'] ) {
-				error_log( 'SureForms: Refund amount validation failed: ' . $validation_result['message'] );
 				wp_send_json_error( $validation_result['message'] );
 				return;
 			}
@@ -480,16 +469,13 @@ class Admin_Stripe_Handler {
 			$refund = $this->create_subscription_refund( $payment, $transaction_id, $refund_amount );
 
 			if ( ! $refund || empty( $refund['id'] ) ) {
-				error_log( 'SureForms: Stripe refund creation returned empty result' );
 				throw new \Exception( __( 'Stripe refund creation failed. Please check your Stripe dashboard for more details.', 'sureforms' ) );
 			}
 
 			// Step 7: Update database with refund information
-			error_log( 'SureForms: Updating database with refund information. Refund ID: ' . $refund['id'] );
 			$refund_stored = $this->update_subscription_refund_data( $payment_id, $refund, $refund_amount, $payment['currency'] );
 
 			if ( ! $refund_stored ) {
-				error_log( 'SureForms: Failed to update payment record with refund data' );
 				wp_send_json_error( __( 'Refund was processed by Stripe but failed to update local records. Please check your payment records manually.', 'sureforms' ) );
 				return;
 			}
@@ -511,7 +497,7 @@ class Admin_Stripe_Handler {
 		} catch ( \Exception $e ) {
 			error_log( 'SureForms Subscription Refund Error: ' . $e->getMessage() );
 
-			// Provide more specific error messages based on error type
+			// Provide more specific error messages based on error type.
 			$error_message = $this->get_user_friendly_refund_error( $e->getMessage() );
 			wp_send_json_error( $error_message );
 		}
@@ -602,13 +588,13 @@ class Admin_Stripe_Handler {
 			$new_key = empty( $prefix ) ? $key : $prefix . '[' . $key . ']';
 
 			if ( is_array( $value ) && ! empty( $value ) ) {
-				// Handle indexed arrays (like expand parameters)
+				// Handle indexed arrays (like expand parameters).
 				if ( array_keys( $value ) === range( 0, count( $value ) - 1 ) ) {
 					foreach ( $value as $index => $item ) {
 						$result[ $new_key . '[' . $index . ']' ] = $item;
 					}
 				} else {
-					// Handle associative arrays (nested objects)
+					// Handle associative arrays (nested objects).
 					$result = array_merge( $result, $this->flatten_stripe_data( $value, $new_key ) );
 				}
 			} else {
@@ -627,12 +613,12 @@ class Admin_Stripe_Handler {
 	 * @since 1.0.0
 	 */
 	private function is_subscription_related_payment( $payment ) {
-		// Check if it's a main subscription record
+		// Check if it's a main subscription record.
 		if ( ! empty( $payment['type'] ) && 'subscription' === $payment['type'] ) {
 			return true;
 		}
 
-		// Check if it's a subscription billing cycle payment (has subscription_id)
+		// Check if it's a subscription billing cycle payment (has subscription_id).
 		if ( ! empty( $payment['subscription_id'] ) ) {
 			return true;
 		}
@@ -649,8 +635,8 @@ class Admin_Stripe_Handler {
 	 * @since 1.0.0
 	 */
 	private function validate_subscription_refund_amount( $payment, $refund_amount ) {
-		$original_amount      = floatval( $payment['total_amount'] ) * 100; // Convert to cents
-		$already_refunded     = floatval( $payment['refunded_amount'] ?? 0 ) * 100; // Convert to cents
+		$original_amount      = floatval( $payment['total_amount'] ) * 100; // Convert to cents.
+		$already_refunded     = floatval( $payment['refunded_amount'] ?? 0 ) * 100; // Convert to cents.
 		$available_for_refund = $original_amount - $already_refunded;
 
 		if ( $refund_amount > $available_for_refund ) {
@@ -671,7 +657,7 @@ class Admin_Stripe_Handler {
 			];
 		}
 
-		// Stripe minimum refund amount (usually $0.50 for most currencies)
+		// Stripe minimum refund amount (usually $0.50 for most currencies).
 		if ( $refund_amount < 50 ) {
 			return [
 				'valid'   => false,
@@ -695,32 +681,26 @@ class Admin_Stripe_Handler {
 	 * @since 1.0.0
 	 */
 	private function create_subscription_refund( $payment, $transaction_id, $refund_amount ) {
-		// Method 1: Use charge ID directly (most common for subscription billing payments)
+		// Method 1: Use charge ID directly (most common for subscription billing payments).
 		if ( strpos( $transaction_id, 'ch_' ) === 0 ) {
-			error_log( 'SureForms: Creating refund using charge ID: ' . $transaction_id );
 			return $this->create_refund_by_charge( $payment, $transaction_id, $refund_amount );
 		}
 
-		// Method 2: Use payment intent ID if provided
+		// Method 2: Use payment intent ID if provided.
 		if ( strpos( $transaction_id, 'pi_' ) === 0 ) {
-			error_log( 'SureForms: Creating refund using payment intent ID: ' . $transaction_id );
 			return $this->create_refund_by_payment_intent( $payment, $transaction_id, $refund_amount );
 		}
 
-		// Method 3: Try to resolve from subscription or setup intent
-		error_log( 'SureForms: Attempting to resolve refund method for transaction: ' . $transaction_id );
-
-		// First try to find charge ID in payment data
+		// First try to find charge ID in payment data.
 		$charge_id = $this->get_charge_id_from_payment( $payment );
 		if ( $charge_id ) {
 			error_log( 'SureForms: Found charge ID in payment data: ' . $charge_id );
 			return $this->create_refund_by_charge( $payment, $charge_id, $refund_amount );
 		}
 
-		// Fallback to the complex payment intent resolution method
+		// Fallback to the complex payment intent resolution method.
 		$payment_intent_id = $this->get_subscription_payment_intent_id( $payment, $transaction_id );
 		if ( $payment_intent_id ) {
-			error_log( 'SureForms: Resolved payment intent ID: ' . $payment_intent_id );
 			return $this->create_refund_by_payment_intent( $payment, $payment_intent_id, $refund_amount );
 		}
 
@@ -802,14 +782,14 @@ class Admin_Stripe_Handler {
 			return false;
 		}
 
-		// Get payment record
+		// Get payment record.
 		$payment = Payments::get( $payment_id );
 		if ( ! $payment ) {
 			error_log( 'SureForms: Subscription payment record not found for ID: ' . $payment_id );
 			return false;
 		}
 
-		// Prepare refund data for payment_data column
+		// Prepare refund data for payment_data column.
 		$refund_data = [
 			'refund_id'      => sanitize_text_field( $refund_response['id'] ?? '' ),
 			'amount'         => absint( $refund_amount ),
@@ -824,45 +804,34 @@ class Admin_Stripe_Handler {
 			'type'           => 'subscription_refund',
 		];
 
-		// Validate refund amount to prevent over-refunding
+		// Validate refund amount to prevent over-refunding.
 		$original_amount    = floatval( $payment['total_amount'] );
-		$existing_refunds   = floatval( $payment['refunded_amount'] ?? 0 ); // Use column directly
-		$new_refund_amount  = $refund_amount / 100; // Convert cents to dollars
+		$existing_refunds   = floatval( $payment['refunded_amount'] ?? 0 ); // Use column directly.
+		$new_refund_amount  = $refund_amount / 100; // Convert cents to dollars.
 		$total_after_refund = $existing_refunds + $new_refund_amount;
 
 		if ( $total_after_refund > $original_amount ) {
-			error_log(
-				sprintf(
-					'SureForms: Over-refund attempt blocked for subscription. Payment ID: %d, Original: $%s, Existing refunds: $%s, New refund: $%s',
-					$payment_id,
-					number_format( $original_amount, 2 ),
-					number_format( $existing_refunds, 2 ),
-					number_format( $new_refund_amount, 2 )
-				)
-			);
 			return false;
 		}
 
-		// Add refund data to payment_data column (for audit trail)
+		// Add refund data to payment_data column (for audit trail).
 		$payment_data_result = Payments::add_refund_to_payment_data( $payment_id, $refund_data );
 		if ( ! $payment_data_result ) {
-			error_log( 'SureForms: Failed to add subscription refund data to payment_data column' );
 			return false;
 		}
 
-		// Update the refunded_amount column
+		// Update the refunded_amount column.
 		$refund_amount_result = Payments::add_refund_amount( $payment_id, $new_refund_amount );
 		if ( ! $refund_amount_result ) {
-			error_log( 'SureForms: Failed to update subscription refunded amount' );
 			return false;
 		}
 
-		// Determine new payment status
+		// Determine new payment status.
 		$total_amount   = (float) $payment['total_amount'];
 		$total_refunded = Payments::get_refunded_amount( $payment_id );
 		$payment_status = $total_refunded >= $total_amount ? 'refunded' : 'partially_refunded';
 
-		// Prepare comprehensive log entry
+		// Prepare comprehensive log entry.
 		$current_logs       = Helper::get_array_value( $payment['log'] );
 		$original_amount    = $total_amount;
 		$total_after_refund = $total_refunded;
@@ -896,7 +865,6 @@ class Admin_Stripe_Handler {
 		$payment_update_result = Payments::update( $payment_id, $update_data );
 
 		if ( ! $payment_update_result ) {
-			error_log( 'SureForms: Failed to update subscription payment status and log' );
 			return false;
 		}
 
@@ -930,7 +898,7 @@ class Admin_Stripe_Handler {
 			}
 		}
 
-		// Default fallback message
+		// Default fallback message.
 		return sprintf( __( 'Subscription refund failed: %s', 'sureforms' ), $technical_error );
 	}
 
@@ -969,12 +937,12 @@ class Admin_Stripe_Handler {
 	 * @since 1.0.0
 	 */
 	private function get_charge_id_from_payment( $payment ) {
-		// Check if transaction_id is already a charge ID
+		// Check if transaction_id is already a charge ID.
 		if ( ! empty( $payment['transaction_id'] ) && strpos( $payment['transaction_id'], 'ch_' ) === 0 ) {
 			return $payment['transaction_id'];
 		}
 
-		// Look in payment_data for charge_id
+		// Look in payment_data for charge_id.
 		if ( empty( $payment['payment_data'] ) ) {
 			return null;
 		}
@@ -984,7 +952,7 @@ class Admin_Stripe_Handler {
 			return null;
 		}
 
-		// Look for charge ID in various places in payment_data
+		// Look for charge ID in various places in payment_data.
 		$charge_keys = [
 			'charge_id',
 			'charge',
@@ -1010,12 +978,12 @@ class Admin_Stripe_Handler {
 	 * @since 1.0.0
 	 */
 	private function get_subscription_payment_intent_id( $payment, $transaction_id ) {
-		// Check if transaction_id is already a payment intent ID
+		// Check if transaction_id is already a payment intent ID.
 		if ( ! empty( $transaction_id ) && strpos( $transaction_id, 'pi_' ) === 0 ) {
 			return $transaction_id;
 		}
 
-		// Look for payment intent in payment_data
+		// Look for payment intent in payment_data.
 		if ( ! empty( $payment['payment_data'] ) ) {
 			$payment_data = Helper::get_array_value( $payment['payment_data'] );
 			if ( ! empty( $payment_data ) ) {
@@ -1060,6 +1028,3 @@ class Admin_Stripe_Handler {
 		return $value;
 	}
 }
-
-// Initialize the admin handler
-// Admin_Stripe_Handler::get_instance();

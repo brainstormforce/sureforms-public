@@ -53,15 +53,15 @@ class Admin_Handler {
 		 */
 		$script_translations_handlers = [];
 
-		// Check if we're on payment related pages
+		// Check if we're on payment related pages.
 		if ( isset( $current_screen->id ) &&
 			( strpos( $current_screen->id, 'sureforms_payments' ) !== false ||
 			  strpos( $current_screen->id, 'sureforms_payments_react' ) !== false ) ) {
-			// Enqueue payment specific scripts
+			// Enqueue payment specific scripts.
 			wp_enqueue_script( SRFM_SLUG . '-payments', SRFM_URL . 'assets/build/payments.js', [], SRFM_VER, true );
 			wp_enqueue_style( SRFM_SLUG . '-payments', SRFM_URL . 'assets/build/payments.css', [], SRFM_VER );
 
-			// Localize script with payment admin data
+			// Localize script with payment admin data.
 			wp_localize_script(
 				SRFM_SLUG . '-payments',
 				SRFM_SLUG . '_payment_admin',
@@ -75,7 +75,7 @@ class Admin_Handler {
 			$script_translations_handlers[] = SRFM_SLUG . '-payments';
 		}
 
-		// Register script translations if needed
+		// Register script translations if needed.
 		if ( ! empty( $script_translations_handlers ) ) {
 			foreach ( $script_translations_handlers as $script_handle ) {
 				if ( function_exists( '\SRFM\Inc\Helper::register_script_translations' ) ) {
@@ -92,20 +92,20 @@ class Admin_Handler {
 	 * @since 1.0.0
 	 */
 	public function fetch_payments() {
-		// Verify nonce for security
+		// Verify nonce for security.
 		if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'srfm_payment_admin_nonce' ) ) {
 			wp_send_json_error( [ 'message' => __( 'Security verification failed.', 'sureforms' ) ] );
 			return;
 		}
 
-		// Check user capabilities
+		// Check user capabilities.
 		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_send_json_error( [ 'message' => __( 'Insufficient permissions.', 'sureforms' ) ] );
 			return;
 		}
 
 		try {
-			// Sanitize input parameters
+			// Sanitize input parameters.
 			$search    = isset( $_POST['search'] ) ? sanitize_text_field( wp_unslash( $_POST['search'] ) ) : '';
 			$status    = isset( $_POST['status'] ) ? sanitize_text_field( wp_unslash( $_POST['status'] ) ) : '';
 			$date_from = isset( $_POST['date_from'] ) ? sanitize_text_field( wp_unslash( $_POST['date_from'] ) ) : '';
@@ -113,12 +113,12 @@ class Admin_Handler {
 			$page      = isset( $_POST['page'] ) ? absint( $_POST['page'] ) : 1;
 			$per_page  = isset( $_POST['per_page'] ) ? absint( $_POST['per_page'] ) : 20;
 
-			// Validate pagination parameters
+			// Validate pagination parameters.
 			$page     = max( 1, $page );
-			$per_page = max( 1, min( 100, $per_page ) ); // Limit to 100 records per page
+			$per_page = max( 1, min( 100, $per_page ) ); // Limit to 100 records per page.
 			$offset   = ( $page - 1 ) * $per_page;
 
-			// Validate date format if provided
+			// Validate date format if provided.
 			if ( ! empty( $date_from ) && ! $this->validate_date( $date_from ) ) {
 				wp_send_json_error( [ 'message' => __( 'Invalid date format for date_from.', 'sureforms' ) ] );
 				return;
@@ -129,10 +129,10 @@ class Admin_Handler {
 				return;
 			}
 
-			// Get payments data from database
+			// Get payments data from database.
 			$payments = $this->get_payments_data( $search, $status, $date_from, $date_to, $per_page, $offset );
 
-			// Get total count for pagination
+			// Get total count for pagination.
 			$total_count = $this->get_payments_count( $search, $status, $date_from, $date_to );
 
 			wp_send_json_success(
@@ -157,19 +157,19 @@ class Admin_Handler {
 	 * @since 1.0.0
 	 */
 	public function fetch_single_payment() {
-		// Verify nonce for security
+		// Verify nonce for security.
 		if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'srfm_payment_admin_nonce' ) ) {
 			wp_send_json_error( [ 'message' => __( 'Security verification failed.', 'sureforms' ) ] );
 			return;
 		}
 
-		// Check user capabilities
+		// Check user capabilities.
 		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_send_json_error( [ 'message' => __( 'Insufficient permissions.', 'sureforms' ) ] );
 			return;
 		}
 
-		// Validate payment ID
+		// Validate payment ID.
 		$payment_id = isset( $_POST['payment_id'] ) ? absint( $_POST['payment_id'] ) : 0;
 		if ( empty( $payment_id ) ) {
 			wp_send_json_error( [ 'message' => __( 'Payment ID is required.', 'sureforms' ) ] );
@@ -177,7 +177,7 @@ class Admin_Handler {
 		}
 
 		try {
-			// Get single payment from database
+			// Get single payment from database.
 			$payment = Payments::get( $payment_id );
 
 			if ( ! $payment ) {
@@ -185,7 +185,7 @@ class Admin_Handler {
 				return;
 			}
 
-			// Transform payment data for frontend
+			// Transform payment data for frontend.
 			$payment_data = $this->transform_payment_for_frontend( $payment );
 
 			wp_send_json_success( $payment_data );
@@ -202,19 +202,19 @@ class Admin_Handler {
 	 * @since 1.0.0
 	 */
 	public function fetch_subscription() {
-		// Verify nonce for security
+		// Verify nonce for security.
 		if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'srfm_payment_admin_nonce' ) ) {
 			wp_send_json_error( [ 'message' => __( 'Security verification failed.', 'sureforms' ) ] );
 			return;
 		}
 
-		// Check user capabilities
+		// Check user capabilities.
 		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_send_json_error( [ 'message' => __( 'Insufficient permissions.', 'sureforms' ) ] );
 			return;
 		}
 
-		// Validate subscription ID - could be main subscription record ID or subscription_id
+		// Validate subscription ID - could be main subscription record ID or subscription_id.
 		$subscription_id = isset( $_POST['subscription_id'] ) ? sanitize_text_field( wp_unslash( $_POST['subscription_id'] ) ) : '';
 		if ( empty( $subscription_id ) ) {
 			wp_send_json_error( [ 'message' => __( 'Subscription ID is required.', 'sureforms' ) ] );
@@ -222,11 +222,11 @@ class Admin_Handler {
 		}
 
 		try {
-			// Check if the ID is a payment record ID first
+			// Check if the ID is a payment record ID first.
 			if ( is_numeric( $subscription_id ) ) {
 				$payment_record = Payments::get( absint( $subscription_id ) );
 				if ( $payment_record && 'subscription' === ( $payment_record['type'] ?? '' ) ) {
-					// This is a main subscription record ID, get the Stripe subscription ID
+					// This is a main subscription record ID, get the Stripe subscription ID.
 					$stripe_subscription_id = $payment_record['subscription_id'] ?? '';
 					if ( empty( $stripe_subscription_id ) ) {
 						wp_send_json_error( [ 'message' => __( 'Stripe subscription ID not found in payment record.', 'sureforms' ) ] );
@@ -238,7 +238,7 @@ class Admin_Handler {
 					return;
 				}
 			} else {
-				// This should be a Stripe subscription ID, get the main subscription record
+				// This should be a Stripe subscription ID, get the main subscription record.
 				$main_subscription = Payments::get_main_subscription_record( $subscription_id );
 				if ( ! $main_subscription ) {
 					wp_send_json_error( [ 'message' => __( 'Subscription not found.', 'sureforms' ) ] );
@@ -247,23 +247,23 @@ class Admin_Handler {
 				$stripe_subscription_id = $subscription_id;
 			}
 
-			// Get all related billing transactions for this subscription
+			// Get all related billing transactions for this subscription.
 			$billing_payments = Payments::get_subscription_related_payments( $stripe_subscription_id );
 
-			// Transform main subscription data for frontend
+			// Transform main subscription data for frontend.
 			$subscription_data = $this->transform_payment_for_frontend( $main_subscription );
 
-			// Transform billing payments for frontend
+			// Transform billing payments for frontend.
 			$billing_data = [];
 			foreach ( $billing_payments as $payment ) {
 				$billing_data[] = $this->transform_payment_for_frontend( $payment );
 			}
 
-			// Add subscription-specific fields
+			// Add subscription-specific fields.
 			$subscription_data['stripe_subscription_id'] = $stripe_subscription_id;
 			$subscription_data['interval']               = $this->get_subscription_interval( $main_subscription );
 			$subscription_data['next_payment_date']      = $this->get_next_payment_date( $main_subscription );
-			$subscription_data['amount_per_cycle']       = $subscription_data['total_amount']; // Use total_amount as cycle amount
+			$subscription_data['amount_per_cycle']       = $subscription_data['total_amount']; // Use total_amount as cycle amount.
 
 			// Combine data
 			$response_data = [
@@ -291,7 +291,7 @@ class Admin_Handler {
 	 * @since 1.0.0
 	 */
 	private function get_payments_data( $search = '', $status = '', $date_from = '', $date_to = '', $limit = 20, $offset = 0 ) {
-		// Build WHERE conditions for database query
+		// Build WHERE conditions for database query.
 		$where_conditions = [];
 
 		// Add search filter - search in form names, customer data, etc.
@@ -307,7 +307,7 @@ class Admin_Handler {
 			];
 		}
 
-		// Add status filter - map frontend status to database status
+		// Add status filter - map frontend status to database status.
 		if ( ! empty( $status ) ) {
 			$db_status = $this->map_frontend_status_to_db( $status );
 			if ( $db_status ) {
@@ -355,7 +355,7 @@ class Admin_Handler {
 			}
 		}
 
-		// Get payments from database using the main payments method
+		// Get payments from database using the main payments method.
 		$args = [
 			'where'   => $where_conditions,
 			'limit'   => $limit,
@@ -366,7 +366,7 @@ class Admin_Handler {
 
 		$db_payments = Payments::get_all_main_payments( $args, true );
 
-		// Transform database records to frontend format
+		// Transform database records to frontend format.
 		$formatted_payments = [];
 		foreach ( $db_payments as $payment ) {
 			$formatted_payments[] = $this->transform_payment_for_frontend( $payment );
@@ -385,12 +385,12 @@ class Admin_Handler {
 	private function get_payment_ids_by_search( $search_term ) {
 		global $wpdb;
 
-		// Get payments table name
+		// Get payments table name.
 		$payments_table = Payments::get_instance()->get_tablename();
 
-		// Search in multiple fields - for now, search in transaction_id and gateway
-		// In a real implementation, you might want to join with forms/entries tables
-		// to search in form names and customer data
+		// Search in multiple fields - for now, search in transaction_id and gateway.
+		// In a real implementation, you might want to join with forms/entries tables.
+		// to search in form names and customer data.
 		$query = $wpdb->prepare(
 			"SELECT DISTINCT id FROM {$payments_table} 
 			WHERE transaction_id LIKE %s 
@@ -405,7 +405,7 @@ class Admin_Handler {
 
 		$results = $wpdb->get_col( $query );
 
-		// If no results found, return array with 0 to prevent empty IN clause
+		// If no results found, return array with 0 to prevent empty IN clause.
 		return ! empty( $results ) ? array_map( 'absint', $results ) : [ 0 ];
 	}
 
@@ -460,24 +460,24 @@ class Admin_Handler {
 	 * @since 1.0.0
 	 */
 	private function transform_payment_for_frontend( $payment ) {
-		static $form_titles = []; // Cache for form titles
+		static $form_titles = []; // Cache for form titles.
 
-		// Get form title with caching using WordPress built-in function
+		// Get form title with caching using WordPress built-in function.
 		$form_id = $payment['form_id'];
 		if ( ! isset( $form_titles[ $form_id ] ) ) {
 			$form_titles[ $form_id ] = get_the_title( $form_id ) ?: __( 'Unknown Form', 'sureforms' );
 		}
 		$form_title = $form_titles[ $form_id ];
 
-		// Get customer name - for now use customer_id, in real implementation
-		// you would get customer data from entries or payment_data
+		// Get customer name - for now use customer_id, in real implementation.
+		// you would get customer data from entries or payment_data.
 		$customer_name = ! empty( $payment['customer_id'] ) ? 'Customer #' . $payment['customer_id'] : 'Guest';
 
 		// Determine payment type
 		$payment_type = 'subscription' === $payment['type'] ? __( 'Subscription', 'sureforms' ) : __( 'One-time', 'sureforms' );
 
 		$payment_front_end_data = [
-			// All original payment_data fields
+			// All original payment_data fields.
 			'id'                     => $payment['id'],
 			'form_id'                => $payment['form_id'],
 			'block_id'               => $payment['block_id'] ?? '',
@@ -500,13 +500,13 @@ class Admin_Handler {
 			'created_at'             => $payment['created_at'],
 			'updated_at'             => $payment['updated_at'],
 
-			// Additional frontend fields
+			// Additional frontend fields.
 			'form_title'             => $form_title,
-			'form'                   => $form_title, // Keep for backward compatibility
+			'form'                   => $form_title, // Keep for backward compatibility.
 			'customer'               => $customer_name,
 			'amount'                 => floatval( $payment['total_amount'] ),
 			'frontend_status'        => $this->map_db_status_to_frontend( $payment['status'] ),
-			'datetime'               => $payment['created_at'], // Keep for backward compatibility
+			'datetime'               => $payment['created_at'], // Keep for backward compatibility.
 			'payment_type'           => $payment_type,
 			'notes'                  => Payments::get_extra_value( $payment['id'], 'notes', [] ),
 			'logs'                   => $this->get_formatted_logs( $payment['log'] ),
@@ -526,7 +526,7 @@ class Admin_Handler {
 	 * @since 1.0.0
 	 */
 	private function get_payments_count( $search = '', $status = '', $date_from = '', $date_to = '' ) {
-		// Build WHERE conditions similar to get_payments_data
+		// Build WHERE conditions similar to get_payments_data.
 		$where_conditions = [];
 
 		if ( ! empty( $search ) ) {
@@ -598,11 +598,11 @@ class Admin_Handler {
 	 * @since 1.0.0
 	 */
 	private function get_subscription_interval( $subscription_record ) {
-		// Try to get interval from payment_data
+		// Try to get interval from payment_data.
 		if ( ! empty( $subscription_record['payment_data'] ) ) {
 			$payment_data = \SRFM\Inc\Helper::get_array_value( $subscription_record['payment_data'] );
 
-			// Check various possible locations for interval data
+			// Check various possible locations for interval data.
 			$interval_paths = [
 				'subscription.items.data.0.price.recurring.interval',
 				'subscription.plan.interval',
@@ -614,7 +614,7 @@ class Admin_Handler {
 			foreach ( $interval_paths as $path ) {
 				$interval = $this->get_nested_array_value( $payment_data, $path );
 				if ( ! empty( $interval ) ) {
-					return ucfirst( $interval ); // month -> Month, year -> Year
+					return ucfirst( $interval ); // month -> Month, year -> Year.
 				}
 			}
 		}
@@ -630,11 +630,11 @@ class Admin_Handler {
 	 * @since 1.0.0
 	 */
 	private function get_next_payment_date( $subscription_record ) {
-		// Try to get next payment date from payment_data
+		// Try to get next payment date from payment_data.
 		if ( ! empty( $subscription_record['payment_data'] ) ) {
 			$payment_data = \SRFM\Inc\Helper::get_array_value( $subscription_record['payment_data'] );
 
-			// Check various possible locations for next payment date
+			// Check various possible locations for next payment date.
 			$date_paths = [
 				'subscription.current_period_end',
 				'current_period_end',
@@ -998,7 +998,7 @@ class Admin_Handler {
 			return [];
 		}
 
-		// If already an array, use it directly
+		// If already an array, use it directly.
 		if ( is_array( $log_data ) ) {
 			$logs = $log_data;
 		} else {
