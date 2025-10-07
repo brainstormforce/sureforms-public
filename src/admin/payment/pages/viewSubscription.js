@@ -132,7 +132,10 @@ const ViewSubscription = () => {
 			setNotes( updatedNotes );
 			setNewNoteText( '' );
 			setIsAddingNote( false );
-			queryClient.invalidateQueries( [ 'subscription', viewSingleSubscription ] );
+			queryClient.invalidateQueries( [
+				'subscription',
+				viewSingleSubscription,
+			] );
 		},
 		onError: ( error ) => {
 			alert( __( 'Failed to add note. Please try again.', 'sureforms' ) );
@@ -145,7 +148,10 @@ const ViewSubscription = () => {
 			deletePaymentNote( paymentId, noteIndex ),
 		onSuccess: ( updatedNotes ) => {
 			setNotes( updatedNotes );
-			queryClient.invalidateQueries( [ 'subscription', viewSingleSubscription ] );
+			queryClient.invalidateQueries( [
+				'subscription',
+				viewSingleSubscription,
+			] );
 		},
 		onError: ( error ) => {
 			alert(
@@ -160,7 +166,10 @@ const ViewSubscription = () => {
 			deletePaymentLog( paymentId, logIndex ),
 		onSuccess: ( updatedLogs ) => {
 			setLogs( updatedLogs );
-			queryClient.invalidateQueries( [ 'subscription', viewSingleSubscription ] );
+			queryClient.invalidateQueries( [
+				'subscription',
+				viewSingleSubscription,
+			] );
 		},
 		onError: ( error ) => {
 			alert(
@@ -196,7 +205,9 @@ const ViewSubscription = () => {
 
 	// Utility function to format date and time
 	const formatDateTime = ( dateString ) => {
-		if ( ! dateString ) return 'N/A';
+		if ( ! dateString ) {
+			return 'N/A';
+		}
 		const date = new Date( dateString );
 		const formattedDate = date.toLocaleDateString( 'en-US', {
 			month: 'short',
@@ -286,56 +297,6 @@ const ViewSubscription = () => {
 		);
 	}
 
-	// TODO: Implement navigation to previous payment
-	const handlePrevious = () => {
-		console.log( 'Navigate to previous payment' );
-	};
-
-	// TODO: Implement navigation to next payment
-	const handleNext = () => {
-		console.log( 'Navigate to next payment' );
-	};
-
-	// TODO: Implement Stripe dashboard integration
-	const handleViewInStripe = () => {
-		console.log( 'Open Stripe dashboard' );
-	};
-
-	// TODO: Implement email resend functionality
-	const handleResendEmail = () => {
-		console.log( 'Resend email notification' );
-	};
-
-	// TODO: Implement add note functionality
-	const handleAddNote = () => {
-		console.log( 'Add new note' );
-	};
-
-	// TODO: Implement refund payment functionality
-	const handleRefundPayment = () => {
-		console.log( 'Refund payment' );
-	};
-
-	// TODO: Implement delete log entry functionality
-	const handleDeleteLogEntry = ( id ) => {
-		console.log( 'Delete log entry:', id );
-	};
-
-	const handleRefund = ( paymentId ) => {
-		// Find the payment in the billing data
-		const payment = subscriptionBillingData.find(
-			( p ) => p.id === paymentId
-		);
-		if ( payment ) {
-			openRefundDialog( payment );
-		}
-	};
-
-	// TODO: Implement cancel refund functionality
-	const handleCancelRefund = ( id ) => {
-		console.log( 'Cancel refund:', id );
-	};
-
 	const handleAddNoteClick = () => {
 		setIsAddingNote( true );
 	};
@@ -371,7 +332,10 @@ const ViewSubscription = () => {
 	const handleDeleteLog = ( logIndex ) => {
 		if (
 			confirm(
-				__( 'Are you sure you want to delete this log entry?', 'sureforms' )
+				__(
+					'Are you sure you want to delete this log entry?',
+					'sureforms'
+				)
 			)
 		) {
 			deleteLogMutation.mutate( {
@@ -411,11 +375,11 @@ const ViewSubscription = () => {
 			.filter(
 				( payment ) =>
 					payment.status === 'paid' ||
-					payment.status === 'succeeded'
+					payment.status === 'succeeded' ||
+					payment.status === 'partially_refunded'
 			)
 			.sort(
-				( a, b ) =>
-					new Date( b.date_time ) - new Date( a.date_time )
+				( a, b ) => new Date( b.date_time ) - new Date( a.date_time )
 			)[ 0 ];
 
 		if ( ! latestPaidEMI ) {
@@ -544,88 +508,12 @@ const ViewSubscription = () => {
 			gap="xs"
 			className="w-full justify-between"
 		>
-			<div>
-				<h1>{ __( 'Subscription Details', 'sureforms' ) }</h1>
-				<Text color="secondary" size={ 14 }>
-					{ __( 'Subscription ID:', 'sureforms' ) } #
-					{ subscriptionData.id } |{ __( 'Customer:', 'sureforms' ) }{ ' ' }
-					{ subscriptionData.customer || __( 'Guest', 'sureforms' ) }
-				</Text>
-			</div>
-			<div className="flex gap-2">
-				<Button
-					icon={ <ChevronLeft aria-label="icon" role="img" /> }
-					iconPosition="left"
-					size="sm"
-					variant="outline"
-					onClick={ () => setViewSingleSubscription( false ) }
-				>
-					{ __( 'Back', 'sureforms' ) }
-				</Button>
-			</div>
+			<h1>
+				{ __( 'Subscription ID', 'sureforms' ) }
+				{ ` #${ subscriptionData.id }` }
+			</h1>
 		</Container>
 	);
-
-	// Subscription info data
-	const subscriptionInfoData = [
-		{
-			'Customer Name':
-				subscriptionData.customer || __( 'Guest', 'sureforms' ),
-		},
-		{
-			Email: subscriptionData.customer_email || __( 'N/A', 'sureforms' ),
-		},
-		{
-			Status: subscriptionData.status || __( 'Unknown', 'sureforms' ),
-		},
-		{
-			'Billing Cycle':
-				subscriptionData.interval || __( 'N/A', 'sureforms' ),
-		},
-		{
-			'Next Payment': subscriptionData.next_payment_date
-				? formatDateTime( subscriptionData.next_payment_date )
-				: __( 'N/A', 'sureforms' ),
-		},
-		{
-			'Amount per Cycle': formatAmount(
-				subscriptionData.amount_per_cycle ||
-					subscriptionData.total_amount,
-				subscriptionData.currency
-			),
-		},
-	];
-
-	// Subscription info component
-	const subscriptionInfo = subscriptionInfoData.map( ( item, index ) => {
-		const [ key, value ] = Object.entries( item )[ 0 ]; // Get the first key-value pair
-		return (
-			<div
-				key={ `customer-info-${ index }` }
-				className="flex gap-1 items-center p-2 border-b last:border-b-0 bg-background-primary rounded-xl shadow-sm"
-			>
-				<Text
-					as="p"
-					color="primary"
-					lineHeight={ 20 }
-					size={ 14 }
-					weight={ 600 }
-					className="w-[160px]"
-				>
-					{ key }:
-				</Text>
-				<Text
-					as="p"
-					color="secondary"
-					lineHeight={ 20 }
-					size={ 14 }
-					weight={ 500 }
-				>
-					{ value }
-				</Text>
-			</div>
-		);
-	} );
 
 	// Subscription billing history data - use fetched billing data or empty array
 	const subscriptionBillingData = billingData || [];
@@ -832,7 +720,7 @@ const ViewSubscription = () => {
 					<Button
 						variant="danger"
 						onClick={ () =>
-							cancelMutation.mutate( subscriptionData.id )
+							cancelMutation.mutate( viewSingleSubscription )
 						}
 						disabled={ cancelMutation.isPending }
 					>
@@ -895,7 +783,7 @@ const ViewSubscription = () => {
 					<Button
 						variant="warning"
 						onClick={ () =>
-							pauseMutation.mutate( subscriptionData.id )
+							pauseMutation.mutate( viewSingleSubscription )
 						}
 						disabled={ pauseMutation.isPending }
 					>
@@ -973,7 +861,7 @@ const ViewSubscription = () => {
 												: row.status
 										}
 										type="pill"
-										className='w-fit'
+										className="w-fit"
 									/>
 								</Table.Cell>
 								<Table.Cell>
@@ -989,48 +877,61 @@ const ViewSubscription = () => {
 
 	const subscriptionDetailsData = [
 		{
-			'Subscription Id': `#${ subscriptionData.id }`,
+			title: __( 'Subscription Id', 'sureforms' ),
+			value: `#${ subscriptionData.id }`,
 		},
 		{
-			'Form Name':
+			title: __( 'Form Name', 'sureforms' ),
+			value:
 				subscriptionData.form_title ||
 				__( 'Unknown Form', 'sureforms' ),
 		},
 		{
-			'Payment Method':
-				subscriptionData.gateway || __( 'Unknown', 'sureforms' ),
+			title: __( 'Payment Method', 'sureforms' ),
+			value: subscriptionData.gateway || __( 'Unknown', 'sureforms' ),
 		},
 		{
-			'Payment Mode':
-				subscriptionData.mode || __( 'Unknown', 'sureforms' ),
+			title: __( 'Payment Mode', 'sureforms' ),
+			value: subscriptionData.mode || __( 'Unknown', 'sureforms' ),
 		},
 		{
-			'Subscription Status':
-				subscriptionData.status || __( 'Unknown', 'sureforms' ),
+			title: __( 'Payment Type', 'sureforms' ),
+			value:
+				subscriptionData.payment_type ||
+				__( 'Subscription', 'sureforms' ),
 		},
 		{
-			'Stripe Subscription ID':
+			title: __( 'Billing Cycle', 'sureforms' ),
+			value: subscriptionData.interval || __( 'N/A', 'sureforms' ),
+		},
+		{
+			title: __( 'Amount per Cycle', 'sureforms' ),
+			value: formatAmount(
+				subscriptionData.amount_per_cycle ||
+					subscriptionData.total_amount,
+				subscriptionData.currency
+			),
+		},
+		{
+			title: __( 'Stripe Subscription ID', 'sureforms' ),
+			value:
 				subscriptionData.stripe_subscription_id ||
 				__( 'N/A', 'sureforms' ),
 		},
 		{
-			'Customer ID':
-				subscriptionData.customer_id || __( 'Guest', 'sureforms' ),
+			title: __( 'Customer ID', 'sureforms' ),
+			value: subscriptionData.customer_id || __( 'Guest', 'sureforms' ),
 		},
 		{
-			'Created On': formatDateTime( subscriptionData.created_at ),
-		},
-		{
-			'Next Payment Date': subscriptionData.next_payment_date
-				? formatDateTime( subscriptionData.next_payment_date )
-				: __( 'N/A', 'sureforms' ),
+			title: __( 'Submitted On', 'sureforms' ),
+			value: formatDateTime( subscriptionData.created_at ),
 		},
 	];
 
 	// Subscription details component
 	const subscriptionDetails = subscriptionDetailsData.map(
 		( item, index ) => {
-			const [ key, value ] = Object.entries( item )[ 0 ]; // Get the first key-value pair
+			const { title, value } = item;
 			return (
 				<div
 					key={ `payment-info-${ index }` }
@@ -1044,7 +945,7 @@ const ViewSubscription = () => {
 						weight={ 600 }
 						className="w-[160px]"
 					>
-						{ key }:
+						{ title }:
 					</Text>
 					<Text
 						as="p"
@@ -1062,91 +963,75 @@ const ViewSubscription = () => {
 
 	const PAYMENT_SECTION_COLUMN_1 = (
 		<>
-			{ /* customer info */ }
 			<Container
 				className="w-full bg-background-primary border-0.5 border-solid rounded-xl border-border-subtle p-3 gap-2 shadow-sm"
 				direction="column"
 			>
 				<Container
-					className="p-1 gap-2"
-					align="center"
-					justify="between"
-				>
-					<Label size="sm" className="font-semibold">
-						{ __( 'Subscription Information', 'sureforms' ) }
-					</Label>
-					<Button
-						icon={ null }
-						iconPosition="left"
-						size="xs"
-						variant="outline"
-					>
-						{ __( 'Edit Entry', 'sureforms' ) }
-					</Button>
-				</Container>
-				<Container className="flex flex-col bg-background-secondary gap-1 p-1 rounded-lg">
-					{ subscriptionInfo }
-				</Container>
-			</Container>
-			{ /* billing details  */ }
-			<Container
-				className="w-full bg-background-primary border-0.5 border-solid rounded-xl border-border-subtle p-3 gap-2 shadow-sm"
-				direction="column"
-			>
-				<Container
-					className="p-1 gap-2"
+					className="p-1 gap-2 relative z-10"
 					align="center"
 					justify="between"
 				>
 					<Label size="sm" className="font-semibold">
 						{ __( 'Subscription Details', 'sureforms' ) }
 					</Label>
-					<Badge
-						variant={
-							subscriptionData.status === 'active'
-								? 'success'
-								: subscriptionData.status === 'canceled'
-									? 'danger'
-									: 'warning'
-						}
-					>
-						{ __( 'Status:', 'sureforms' ) }{ ' ' }
-						{ subscriptionData.status ||
-							__( 'Unknown', 'sureforms' ) }
-					</Badge>
-					<DropdownMenu placement="right-end">
-						<DropdownMenu.Trigger>
-							<Button
-								icon={<EllipsisVertical className="!size-5" />}
-								iconPosition="right"
-								size="sm"
-								variant="outline"
-							>
-								{__('Actions', 'sureforms')}
-							</Button>
-						</DropdownMenu.Trigger>
-						<DropdownMenu.ContentWrapper>
-							<DropdownMenu.Content className="w-60">
-								<DropdownMenu.List>
-									<DropdownMenu.Item
-										onClick={openCancelDialog}
-									>
-										{__('Cancel Subscription', 'sureforms')}
-									</DropdownMenu.Item>
-									<DropdownMenu.Item
-										onClick={openPauseDialog}
-									>
-										{__('Pause Subscription', 'sureforms')}
-									</DropdownMenu.Item>
-									<DropdownMenu.Item
-										onClick={handleRefundLatestEMI}
-									>
-										{__('Refund Latest EMI', 'sureforms')}
-									</DropdownMenu.Item>
-								</DropdownMenu.List>
-							</DropdownMenu.Content>
-						</DropdownMenu.ContentWrapper>
-					</DropdownMenu>
+					<div className="flex gap-2">
+						<Button
+							icon={ null }
+							iconPosition="left"
+							size="xs"
+							variant="outline"
+						>
+							{ __( 'View Entry', 'sureforms' ) }
+						</Button>
+						<DropdownMenu
+							placement="bottom-start"
+							className="min-w-fit"
+						>
+							<DropdownMenu.Trigger>
+								<Button
+									icon={
+										<EllipsisVertical className="!size-5" />
+									}
+									iconPosition="right"
+									size="sm"
+									variant="outline"
+								>
+									{ __( 'Actions', 'sureforms' ) }
+								</Button>
+							</DropdownMenu.Trigger>
+							<DropdownMenu.ContentWrapper>
+								<DropdownMenu.Content className="w-60">
+									<DropdownMenu.List>
+										<DropdownMenu.Item
+											onClick={ openCancelDialog }
+										>
+											{ __(
+												'Cancel Subscription',
+												'sureforms'
+											) }
+										</DropdownMenu.Item>
+										<DropdownMenu.Item
+											onClick={ openPauseDialog }
+										>
+											{ __(
+												'Pause Subscription',
+												'sureforms'
+											) }
+										</DropdownMenu.Item>
+										<DropdownMenu.Item
+											onClick={ handleRefundLatestEMI }
+										>
+											{ __(
+												'Refund Latest EMI',
+												'sureforms'
+											) }
+										</DropdownMenu.Item>
+									</DropdownMenu.List>
+								</DropdownMenu.Content>
+							</DropdownMenu.ContentWrapper>
+						</DropdownMenu>
+					</div>
 				</Container>
 				<Container className="flex flex-col bg-background-secondary gap-1 p-1 rounded-lg">
 					{ billingDetails }
@@ -1210,8 +1095,8 @@ const ViewSubscription = () => {
 					</Button>
 				</Container>
 				<Container className="flex flex-col items-center justify-center bg-background-secondary gap-1 p-1 rounded-lg min-h-[89px]">
-					{ notes && notes.length > 0 ? (
-						notes.map( ( note, index ) => (
+					{ notes && notes.length > 0
+						? notes.map( ( note, index ) => (
 							<div
 								key={ index }
 								className="w-full flex justify-between items-start gap-2 p-3 bg-background-primary rounded-lg border border-border-subtle"
@@ -1222,7 +1107,9 @@ const ViewSubscription = () => {
 									</Text>
 									{ note.created_at && (
 										<Text className="text-xs text-text-tertiary mt-1">
-											{ new Date( note.created_at ).toLocaleString() }
+											{ new Date(
+												note.created_at
+											).toLocaleString() }
 										</Text>
 									) }
 								</div>
@@ -1230,27 +1117,37 @@ const ViewSubscription = () => {
 									variant="ghost"
 									size="xs"
 									icon={ <Trash2 className="!size-4" /> }
-									onClick={ () => handleDeleteNote( index ) }
-									disabled={ deleteNoteMutation.isPending }
+									onClick={ () =>
+										handleDeleteNote( index )
+									}
+									disabled={
+										deleteNoteMutation.isPending
+									}
 									className="text-icon-secondary hover:text-red-700"
 								/>
 							</div>
-						) )
-					) : (
-						! isAddingNote && (
+						  ) )
+						: ! isAddingNote && (
 							<Text className="text-sm text-text-secondary p-3 text-center flex items-center justify-center gap-2">
 								<FileSearch2 className="!size-5" />
-								{ __( 'Add an internal note about this subscription', 'sureforms' ) }
+								{ __(
+									'Add an internal note about this subscription',
+									'sureforms'
+								) }
 							</Text>
-						)
-					) }
+						  ) }
 
 					{ isAddingNote && (
 						<div className="w-full p-3 bg-background-primary rounded-lg border border-border-subtle">
 							<TextArea
 								value={ newNoteText }
-								onChange={ ( value ) => setNewNoteText( value ) }
-								placeholder={ __( 'Enter your note here...', 'sureforms' ) }
+								onChange={ ( value ) =>
+									setNewNoteText( value )
+								}
+								placeholder={ __(
+									'Enter your note here…',
+									'sureforms'
+								) }
 								size="sm"
 								className="w-full"
 								autoFocus
@@ -1268,10 +1165,13 @@ const ViewSubscription = () => {
 									variant="primary"
 									size="sm"
 									onClick={ handleSaveNote }
-									disabled={ addNoteMutation.isPending || ! newNoteText.trim() }
+									disabled={
+										addNoteMutation.isPending ||
+										! newNoteText.trim()
+									}
 								>
 									{ addNoteMutation.isPending
-										? __( 'Adding...', 'sureforms' )
+										? __( 'Adding…', 'sureforms' )
 										: __( 'Add Note', 'sureforms' ) }
 								</Button>
 							</div>
@@ -1301,8 +1201,11 @@ const ViewSubscription = () => {
 								return null;
 							}
 
-							const logTitle = log.title || __( 'Untitled Log', 'sureforms' );
-							const logMessages = Array.isArray( log.messages ) ? log.messages : [];
+							const logTitle =
+								log.title || __( 'Untitled Log', 'sureforms' );
+							const logMessages = Array.isArray( log.messages )
+								? log.messages
+								: [];
 
 							return (
 								<div
@@ -1315,28 +1218,38 @@ const ViewSubscription = () => {
 												{ logTitle }
 											</Text>
 											<Text className="text-xs text-text-tertiary mt-1">
-												{ formatLogTimestamp( log.timestamp ) }
+												{ formatLogTimestamp(
+													log.timestamp
+												) }
 											</Text>
 										</div>
 										<Button
 											variant="ghost"
 											size="xs"
-											icon={ <Trash2 className="!size-4" /> }
-											onClick={ () => handleDeleteLog( index ) }
-											disabled={ deleteLogMutation.isPending }
+											icon={
+												<Trash2 className="!size-4" />
+											}
+											onClick={ () =>
+												handleDeleteLog( index )
+											}
+											disabled={
+												deleteLogMutation.isPending
+											}
 											className="text-icon-secondary hover:text-red-700"
 										/>
 									</div>
 									{ logMessages.length > 0 && (
 										<div className="flex flex-col gap-1 mt-1">
-											{ logMessages.map( ( message, msgIndex ) => (
-												<Text
-													key={ msgIndex }
-													className="text-xs text-text-secondary"
-												>
-													{ message || '' }
-												</Text>
-											) ) }
+											{ logMessages.map(
+												( message, msgIndex ) => (
+													<Text
+														key={ msgIndex }
+														className="text-xs text-text-secondary"
+													>
+														{ message || '' }
+													</Text>
+												)
+											) }
 										</div>
 									) }
 								</div>

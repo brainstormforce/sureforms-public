@@ -530,6 +530,15 @@ const PaymentTable = () => {
 		);
 	};
 
+	if ( isLoading ) {
+		return <h1>Initial Transaction Loading....</h1>;
+	}
+
+	// IF paymentsData.transactions_is_empty = "with_no_filter"
+	if ( paymentsData.transactions_is_empty === 'with_no_filter' ) {
+		return <h1>No transactions found iniaitllay.</h1>;
+	}
+
 	return (
 		<div className="min-h-screen px-8 py-8 bg-background-secondary">
 			<div className="p-4 space-y-2 border-0.5 border-solid shadow-sm bg-background-primary rounded-xl border-border-subtle">

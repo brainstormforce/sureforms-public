@@ -46,11 +46,15 @@ class Admin_Stripe_Handler {
 			wp_send_json_error( [ 'message' => esc_html__( 'Missing payment ID.', 'sureforms' ) ] );
 		}
 
+		// Verify nonce.
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ?? '' ) ), 'srfm_payment_admin_nonce' ) ) {
+			wp_send_json_error( __( 'Invalid nonce.', 'sureforms' ) );
+			return;
+		}
+
 		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_send_json_error( [ 'message' => esc_html__( 'You are not allowed to perform this action.', 'sureforms' ) ] );
 		}
-
-		check_ajax_referer( 'sureforms_admin_nonce', 'nonce' );
 
 		$payment_id = absint( $_POST['payment_id'] );
 
@@ -132,7 +136,7 @@ class Admin_Stripe_Handler {
 
 			// Detect subscription payments and route to specialized handler (following WPForms pattern).
 			if ( ! empty( $payment['type'] ) && ! empty( $payment['subscription_id'] ) ) {
-				error_log( 'SureForms: Routing subscription payment to specialized refund handler' );
+				// TODO: Handle proper error handling.
 				$this->refund_subscription_payment( $payment, $refund_amount );
 				return;
 			}
@@ -147,22 +151,6 @@ class Admin_Stripe_Handler {
 			if ( $transaction_id !== $payment['transaction_id'] ) {
 				wp_send_json_error( __( 'Transaction ID mismatch.', 'sureforms' ) );
 				return;
-			}
-
-			// Get payment settings.
-			$payment_settings = get_option( 'srfm_payments_settings', [] );
-
-			if ( empty( $payment_settings['stripe_connected'] ) ) {
-				throw new \Exception( __( 'Stripe is not connected.', 'sureforms' ) );
-			}
-
-			$payment_mode = $payment_settings['payment_mode'] ?? 'test';
-			$secret_key   = 'live' === $payment_mode
-				? $payment_settings['stripe_live_secret_key'] ?? ''
-				: $payment_settings['stripe_test_secret_key'] ?? '';
-
-			if ( empty( $secret_key ) ) {
-				throw new \Exception( __( 'Stripe secret key not found.', 'sureforms' ) );
 			}
 
 			// Create refund using Stripe API directly.
@@ -213,7 +201,7 @@ class Admin_Stripe_Handler {
 			);
 
 		} catch ( \Exception $e ) {
-			error_log( 'SureForms Refund Error: ' . $e->getMessage() );
+			// TODO: Handle proper error handling.
 			wp_send_json_error( __( 'Failed to process refund. Please try again.', 'sureforms' ) );
 		}
 	}
@@ -232,7 +220,7 @@ class Admin_Stripe_Handler {
 			$subscription = $this->stripe_api_request( 'subscriptions', 'GET', [], $subscription_id );
 
 			if ( ! $subscription ) {
-				error_log( 'SureForms: Subscription not found: ' . $subscription_id );
+				// TODO: Handle proper error handling.
 				return false;
 			}
 
@@ -268,7 +256,113 @@ class Admin_Stripe_Handler {
 			return true;
 
 		} catch ( \Exception $e ) {
-			error_log( 'SureForms: General error cancelling subscription: ' . $e->getMessage() );
+			// TODO: Handle proper error handling.
+			return false;
+		}
+	}
+
+	/**
+	 * AJAX handler for subscription pause
+	 *
+	 * @since 1.0.0
+	 */
+	public function ajax_pause_subscription() {
+		// Security checks.
+		if ( ! isset( $_POST['payment_id'] ) ) {
+			wp_send_json_error( [ 'message' => esc_html__( 'Missing payment ID.', 'sureforms' ) ] );
+		}
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( [ 'message' => esc_html__( 'You are not allowed to perform this action.', 'sureforms' ) ] );
+		}
+
+		check_ajax_referer( 'sureforms_admin_nonce', 'nonce' );
+
+		$payment_id = absint( $_POST['payment_id'] );
+
+		// Get payment record.
+		$payment = Payments::get( $payment_id );
+		if ( ! $payment ) {
+			wp_send_json_error( [ 'message' => esc_html__( 'Payment not found in the database.', 'sureforms' ) ] );
+		}
+
+		// Validate it's a subscription payment.
+		if ( empty( $payment['type'] ) || 'subscription' !== $payment['type'] ) {
+			wp_send_json_error( [ 'message' => esc_html__( 'This is not a subscription payment.', 'sureforms' ) ] );
+		}
+
+		if ( empty( $payment['subscription_id'] ) ) {
+			wp_send_json_error( [ 'message' => esc_html__( 'Subscription ID not found.', 'sureforms' ) ] );
+		}
+
+		// Pause the subscription.
+		$pause_result = $this->pause_subscription( $payment['subscription_id'] );
+		if ( ! $pause_result ) {
+			wp_send_json_error( [ 'message' => esc_html__( 'Subscription pause failed.', 'sureforms' ) ] );
+		}
+
+		// Update database status to paused.
+		$updated = Payments::update( $payment_id, [ 'subscription_status' => 'paused' ] );
+		if ( ! $updated ) {
+			wp_send_json_error( [ 'message' => esc_html__( 'Failed to update subscription status in database.', 'sureforms' ) ] );
+		}
+
+		// Add log entry.
+		$log_message = sprintf(
+			'Subscription paused from SureForms dashboard. Subscription ID: %s',
+			$payment['subscription_id']
+		);
+
+		wp_send_json_success( [ 'message' => esc_html__( 'Subscription paused successfully.', 'sureforms' ) ] );
+	}
+
+	/**
+	 * Pause subscription
+	 *
+	 * @param string $subscription_id Subscription ID.
+	 * @return bool Success status.
+	 * @since 1.0.0
+	 */
+	public function pause_subscription( $subscription_id ) {
+		try {
+
+			// Retrieve subscription using direct Stripe API.
+			$subscription = $this->stripe_api_request( 'subscriptions', 'GET', [], $subscription_id );
+
+			if ( ! $subscription ) {
+				// TODO: Handle proper error handling.
+				return false;
+			}
+
+			// Update subscription metadata to track pause source.
+			$updated_metadata = array_merge(
+				$subscription['metadata'] ?? [],
+				[
+					'paused_by' => 'sureforms_dashboard',
+				]
+			);
+
+			// Pause the subscription using pause_collection.
+			$paused_subscription = $this->stripe_api_request(
+				'subscriptions',
+				'POST',
+				[
+					'pause_collection' => [
+						'behavior' => 'void',
+					],
+					'metadata'         => $updated_metadata,
+				],
+				$subscription_id
+			);
+
+			if ( ! $paused_subscription ) {
+				return false;
+			}
+
+			return true;
+
+		} catch ( \Exception $e ) {
+			// TODO: Handle proper error handling.
 			return false;
 		}
 	}
@@ -292,7 +386,7 @@ class Admin_Stripe_Handler {
 		// Get payment record if not provided.
 		$payment = Payments::get( $payment_id );
 		if ( ! $payment ) {
-			error_log( 'SureForms: Payment record not found for ID: ' . $payment_id );
+			// TODO: Handle proper error handling.
 			return false;
 		}
 
@@ -322,15 +416,7 @@ class Admin_Stripe_Handler {
 		$total_after_refund = $existing_refunds + $new_refund_amount;
 
 		if ( $total_after_refund > $original_amount ) {
-			error_log(
-				sprintf(
-					'SureForms: Over-refund attempt blocked. Payment ID: %d, Original: $%s, Existing refunds: $%s, New refund: $%s',
-					$payment_id,
-					number_format( $original_amount, 2 ),
-					number_format( $existing_refunds, 2 ),
-					number_format( $new_refund_amount, 2 )
-				)
-			);
+			// TODO: Handle proper error handling.
 			return false;
 		}
 
@@ -381,28 +467,20 @@ class Admin_Stripe_Handler {
 
 		// Check if all operations succeeded.
 		if ( false === $payment_data_result ) {
-			error_log( 'SureForms: Failed to store refund data in payment_data for payment ID: ' . $payment_id );
+			// TODO: Handle proper error handling.
 		}
 
 		if ( false === $refund_amount_result ) {
-			error_log( 'SureForms: Failed to update refunded_amount column for payment ID: ' . $payment_id );
+			// TODO: Handle proper error handling.
 			return false;
 		}
 
 		if ( false === $payment_update_result ) {
-			error_log( 'SureForms: Failed to update payment status and log for payment ID: ' . $payment_id );
+			// TODO: Handle proper error handling.
 			return false;
 		}
 
-		error_log(
-			sprintf(
-				'SureForms: Refund processed successfully. Payment ID: %d, Refund ID: %s, Amount: %s %s',
-				$payment_id,
-				$refund_data['refund_id'],
-				number_format( $refund_amount / 100, 2 ),
-				$currency
-			)
-		);
+		// TODO: Handle proper error handling.
 
 		return true;
 	}
@@ -415,6 +493,7 @@ class Admin_Stripe_Handler {
 	private function init_hooks() {
 		// AJAX handlers for admin refund operations.
 		add_action( 'wp_ajax_srfm_stripe_cancel_subscription', [ $this, 'ajax_cancel_subscription' ] );
+		add_action( 'wp_ajax_srfm_stripe_pause_subscription', [ $this, 'ajax_pause_subscription' ] );
 		add_action( 'wp_ajax_srfm_stripe_refund_payment', [ $this, 'refund_payment' ] );
 	}
 
@@ -431,48 +510,47 @@ class Admin_Stripe_Handler {
 		$transaction_id = $payment['transaction_id'] ?? '';
 
 		try {
-			// Step 1: Validate input parameters
+			// Step 1: Validate input parameters.
 			if ( empty( $payment ) || ! is_array( $payment ) || $refund_amount <= 0 ) {
 				wp_send_json_error( __( 'Invalid refund parameters provided.', 'sureforms' ) );
 				return;
 			}
 
-			// Step 2: Verify this is a subscription-related payment
+			// Step 2: Verify this is a subscription-related payment.
 			$is_subscription_payment = $this->is_subscription_related_payment( $payment );
 			if ( ! $is_subscription_payment ) {
 				wp_send_json_error( __( 'This payment is not related to a subscription.', 'sureforms' ) );
 				return;
 			}
 
-			// Step 3: Verify subscription payment status
+			// Step 3: Verify subscription payment status.
 			$refundable_statuses = [ 'succeeded', 'partially_refunded' ];
 			if ( empty( $payment['status'] ) || ! in_array( $payment['status'], $refundable_statuses, true ) ) {
 				wp_send_json_error( __( 'Only succeeded or partially refunded subscription payments can be refunded.', 'sureforms' ) );
 				return;
 			}
 
-			// Step 4: Validate refund amount limits
+			// Step 4: Validate refund amount limits.
 			$validation_result = $this->validate_subscription_refund_amount( $payment, $refund_amount );
 			if ( ! $validation_result['valid'] ) {
 				wp_send_json_error( $validation_result['message'] );
 				return;
 			}
 
-			// Step 5: Get payment settings and validate Stripe connection
-			$payment_settings = get_option( 'srfm_payments_settings', [] );
-			if ( empty( $payment_settings['stripe_connected'] ) ) {
-				error_log( 'SureForms: Stripe is not connected' );
+			// Step 5: Validate Stripe connection.
+			if ( ! Stripe_Helper::is_stripe_connected() ) {
+				// TODO: Handle proper error handling.
 				throw new \Exception( __( 'Stripe is not connected.', 'sureforms' ) );
 			}
 
-			// Step 6: Create refund using appropriate method based on transaction ID type
+			// Step 6: Create refund using appropriate method based on transaction ID type.
 			$refund = $this->create_subscription_refund( $payment, $transaction_id, $refund_amount );
 
 			if ( ! $refund || empty( $refund['id'] ) ) {
 				throw new \Exception( __( 'Stripe refund creation failed. Please check your Stripe dashboard for more details.', 'sureforms' ) );
 			}
 
-			// Step 7: Update database with refund information
+			// Step 7: Update database with refund information.
 			$refund_stored = $this->update_subscription_refund_data( $payment_id, $refund, $refund_amount, $payment['currency'] );
 
 			if ( ! $refund_stored ) {
@@ -480,8 +558,8 @@ class Admin_Stripe_Handler {
 				return;
 			}
 
-			// Step 8: Success response
-			error_log( 'SureForms: Subscription refund completed successfully. Refund ID: ' . $refund['id'] );
+			// Step 8: Success response.
+			// TODO: Handle proper error handling.
 			wp_send_json_success(
 				[
 					'message'       => __( 'Subscription payment refunded successfully.', 'sureforms' ),
@@ -495,7 +573,7 @@ class Admin_Stripe_Handler {
 			);
 
 		} catch ( \Exception $e ) {
-			error_log( 'SureForms Subscription Refund Error: ' . $e->getMessage() );
+			// TODO: Handle proper error handling.
 
 			// Provide more specific error messages based on error type.
 			$error_message = $this->get_user_friendly_refund_error( $e->getMessage() );
@@ -514,20 +592,17 @@ class Admin_Stripe_Handler {
 	 * @since 1.0.0
 	 */
 	private function stripe_api_request( $endpoint, $method = 'POST', $data = [], $resource_id = '' ) {
-		// Get payment settings and Stripe keys
-		$payment_settings = get_option( 'srfm_payments_settings', [] );
-		if ( empty( $payment_settings['stripe_connected'] ) ) {
-			error_log( 'SureForms: Stripe is not connected' );
+		// Validate Stripe connection.
+		if ( ! Stripe_Helper::is_stripe_connected() ) {
+			// TODO: Handle proper error handling.
 			return false;
 		}
 
-		$payment_mode = $payment_settings['payment_mode'] ?? 'test';
-		$secret_key   = 'live' === $payment_mode
-			? $payment_settings['stripe_live_secret_key'] ?? ''
-			: $payment_settings['stripe_test_secret_key'] ?? '';
+		$payment_mode = Stripe_Helper::get_stripe_mode();
+		$secret_key   = Stripe_Helper::get_stripe_secret_key();
 
 		if ( empty( $secret_key ) ) {
-			error_log( 'SureForms: Stripe secret key not found' );
+			// TODO: Handle proper error handling.
 			return false;
 		}
 
@@ -556,7 +631,7 @@ class Admin_Stripe_Handler {
 		$response = wp_remote_request( $url, $args );
 
 		if ( is_wp_error( $response ) ) {
-			error_log( 'SureForms Stripe API Error: ' . $response->get_error_message() );
+			// TODO: Handle proper error handling.
 			return false;
 		}
 
@@ -566,7 +641,7 @@ class Admin_Stripe_Handler {
 		if ( $code >= 400 ) {
 			$error_data    = json_decode( $body, true );
 			$error_message = $error_data['error']['message'] ?? 'Unknown Stripe API error';
-			error_log( 'SureForms Stripe API Error (' . $code . '): ' . $error_message );
+			// TODO: Handle proper error handling.
 			return false;
 		}
 
@@ -694,14 +769,8 @@ class Admin_Stripe_Handler {
 		// First try to find charge ID in payment data.
 		$charge_id = $this->get_charge_id_from_payment( $payment );
 		if ( $charge_id ) {
-			error_log( 'SureForms: Found charge ID in payment data: ' . $charge_id );
+			// TODO: Handle proper error handling.
 			return $this->create_refund_by_charge( $payment, $charge_id, $refund_amount );
-		}
-
-		// Fallback to the complex payment intent resolution method.
-		$payment_intent_id = $this->get_subscription_payment_intent_id( $payment, $transaction_id );
-		if ( $payment_intent_id ) {
-			return $this->create_refund_by_payment_intent( $payment, $payment_intent_id, $refund_amount );
 		}
 
 		throw new \Exception( __( 'Unable to determine the appropriate refund method for this subscription payment.', 'sureforms' ) );
@@ -785,7 +854,7 @@ class Admin_Stripe_Handler {
 		// Get payment record.
 		$payment = Payments::get( $payment_id );
 		if ( ! $payment ) {
-			error_log( 'SureForms: Subscription payment record not found for ID: ' . $payment_id );
+			// TODO: Handle proper error handling.
 			return false;
 		}
 
@@ -861,7 +930,7 @@ class Admin_Stripe_Handler {
 			'log'    => $current_logs,
 		];
 
-		// Update payment record with status and log
+		// Update payment record with status and log.
 		$payment_update_result = Payments::update( $payment_id, $update_data );
 
 		if ( ! $payment_update_result ) {

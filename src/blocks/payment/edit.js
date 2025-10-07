@@ -21,6 +21,7 @@ import { useErrMessage } from '@Blocks/util';
 import ConditionalLogic from '@Components/conditional-logic';
 import { attributeOptionsWithFilter } from '@Components/hooks';
 import Separator from '@Components/separator';
+import MultiButtonsControl from '@Components/multi-buttons-control';
 
 const Edit = ( props ) => {
 	const { clientId, attributes, setAttributes, isSelected } = props;
@@ -98,7 +99,7 @@ const Edit = ( props ) => {
 
 	// Update available fields when form changes
 	useEffect( () => {
-		if( isSelected ){
+		if ( isSelected ) {
 			const { numberFields, allFields } = extractFormFields();
 			setAvailableNumberFields( numberFields );
 			setAvailableFormFields( allFields );
@@ -246,22 +247,24 @@ const Edit = ( props ) => {
 		{
 			id: 'payment-type',
 			component: (
-				<SelectControl
+				<MultiButtonsControl
+					setAttributes={ setAttributes }
 					label={ __( 'Payment Type', 'sureforms' ) }
-					value={ paymentType || 'one-time' }
+					data={ {
+						value: paymentType,
+						label: 'paymentType',
+					} }
 					options={ [
 						{
-							label: __( 'One-time Payment', 'sureforms' ),
 							value: 'one-time',
+							label: __( 'One-time', 'sureforms' ),
 						},
 						{
-							label: __( 'Subscription', 'sureforms' ),
 							value: 'subscription',
+							label: __( 'Subscription', 'sureforms' ),
 						},
 					] }
-					onChange={ ( value ) => {
-						setAttributes( { paymentType: value } );
-					} }
+					showIcons={ false }
 				/>
 			),
 		},
@@ -301,10 +304,7 @@ const Edit = ( props ) => {
 					component: (
 						<SelectControl
 							label={ __( 'Billing Interval', 'sureforms' ) }
-							value={
-								subscriptionPlan?.interval ||
-									'month'
-							}
+							value={ subscriptionPlan?.interval || 'month' }
 							options={ [
 								{
 									label: __( 'Daily', 'sureforms' ),
@@ -344,8 +344,7 @@ const Edit = ( props ) => {
 						<SelectControl
 							label={ __( 'Billing Cycles', 'sureforms' ) }
 							value={
-								subscriptionPlan?.billingCycles ||
-									'ongoing'
+								subscriptionPlan?.billingCycles || 'ongoing'
 							}
 							options={ [
 								{
@@ -383,10 +382,7 @@ const Edit = ( props ) => {
 								'Customer Name Field',
 								'sureforms'
 							) }
-							value={
-								subscriptionPlan?.customer_name ||
-									''
-							}
+							value={ subscriptionPlan?.customer_name || '' }
 							options={ [
 								{
 									label: __(
@@ -423,10 +419,7 @@ const Edit = ( props ) => {
 								'Customer Email Field',
 								'sureforms'
 							) }
-							value={
-								subscriptionPlan?.customer_email ||
-									''
-							}
+							value={ subscriptionPlan?.customer_email || '' }
 							options={ [
 								{
 									label: __(

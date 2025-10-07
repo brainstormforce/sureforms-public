@@ -8,6 +8,8 @@
 
 namespace SRFM\Inc\Fields;
 
+use SRFM\Inc\Payments\Stripe\Stripe_Helper;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
@@ -97,6 +99,10 @@ class Payment_Markup extends Base {
 	 * @since x.x.x
 	 */
 	public function __construct( $attributes ) {
+		// Get payment settings from Stripe Helper.
+		$this->stripe_connected = Stripe_Helper::is_stripe_connected();
+		$this->payment_mode     = Stripe_Helper::get_stripe_mode();
+
 		$this->slug = 'payment';
 		$this->set_properties( $attributes );
 		$this->set_input_label( 'Payment' );
@@ -112,23 +118,13 @@ class Payment_Markup extends Base {
 		$this->currency    = $attributes['currency'] ?? 'USD';
 		$this->description = $attributes['description'] ?? 'Payment';
 
-		// Get payment settings from SureForms settings.
-		$payment_settings = get_option( 'srfm_payments_settings', [] );
-
-		$this->stripe_connected = $payment_settings['stripe_connected'] ?? false;
-		$this->payment_mode     = $payment_settings['payment_mode'] ?? 'test';
-
 		// Use currency from settings if not specified in block.
 		if ( empty( $this->currency ) || 'USD' === $this->currency ) {
-			$this->currency = $payment_settings['currency'] ?? 'USD';
+			$this->currency = Stripe_Helper::get_currency();
 		}
 
-		// Get appropriate Stripe keys based on mode.
-		if ( 'live' === $this->payment_mode ) {
-			$this->stripe_publishable_key = $payment_settings['stripe_live_publishable_key'] ?? '';
-		} else {
-			$this->stripe_publishable_key = $payment_settings['stripe_test_publishable_key'] ?? '';
-		}
+		// Get appropriate Stripe publishable key based on mode.
+		$this->stripe_publishable_key = Stripe_Helper::get_stripe_publishable_key();
 
 		$this->payment_items     = $attributes['paymentItems'] ?? [];
 		$this->payment_type      = $attributes['paymentType'] ?? 'one-time';

@@ -85,7 +85,9 @@ async function processAllPayments( form ) {
 		console.log( 'All payments completed successfully:', paymentResults );
 
 		// print the paymentResults is contain the true payment then return true else return false.
-		const paymentResult = paymentResults.some( ( result ) => result && "" !== result );
+		const paymentResult = paymentResults.some(
+			( result ) => result && '' !== result
+		);
 		return paymentResult;
 	} catch ( error ) {
 		console.error( 'Payment processing failed:', error );
@@ -111,7 +113,9 @@ async function srfmConfirmPayment( blockId, paymentData, form ) {
 		throw new Error( submitError.message );
 	}
 
-	console.log( `Card validation successful for block ${ blockId } paymentType: ${ paymentType }` );
+	console.log(
+		`Card validation successful for block ${ blockId } paymentType: ${ paymentType }`
+	);
 
 	// Handle subscription vs one-time payment confirmation
 	if ( paymentType === 'subscription' ) {
@@ -138,7 +142,7 @@ async function confirmOneTimePayment( blockId, paymentData, form ) {
 			payment_method_data: {
 				billing_details: {
 					// email: extractBillingEmail( form, blockId ),
-					email: "test@gmail.com",
+					email: 'test@gmail.com',
 				},
 			},
 		},
@@ -206,7 +210,7 @@ async function confirmSubscription( blockId, paymentData, form ) {
 		email: extractBillingEmail( form, blockId ),
 	};
 
-	console.log("billingDetails:", billingDetails);
+	console.log( 'billingDetails:', billingDetails );
 
 	try {
 		// Use single confirmPayment approach from simple-stripe-subscriptions

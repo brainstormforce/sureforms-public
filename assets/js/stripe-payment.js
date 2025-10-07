@@ -533,7 +533,8 @@ class StripePayment {
 		// CRITICAL: Check if elements already exist to prevent re-initialization
 		// Re-mounting elements destroys user-entered card data
 		if ( StripePayment.paymentElements[ blockId ] ) {
-			const existingMode = StripePayment.paymentElements[ blockId ].paymentType;
+			const existingMode =
+				StripePayment.paymentElements[ blockId ].paymentType;
 			console.log(
 				`SureForms: SUBSCRIPTION elements already initialized for block ${ blockId } (existing type: ${ existingMode }), skipping re-initialization (preserving card data)`
 			);
@@ -695,11 +696,11 @@ class StripePayment {
 				if ( elementData ) {
 					elementData.clientSecret = clientSecret;
 
-				// CRITICAL FIX: DON NOT call elements.update() for subscriptions
-				// This would change the mode and break confirmSetup()
-				console.log(
-					`SureForms: Client secret stored for subscription block ${ blockId } (preserving subscription mode)`
-				);
+					// CRITICAL FIX: DON NOT call elements.update() for subscriptions
+					// This would change the mode and break confirmSetup()
+					console.log(
+						`SureForms: Client secret stored for subscription block ${ blockId } (preserving subscription mode)`
+					);
 				}
 
 				return {

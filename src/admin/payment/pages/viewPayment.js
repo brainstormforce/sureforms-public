@@ -14,13 +14,9 @@ import {
 	TextArea,
 } from '@bsf/force-ui';
 import {
-	ChevronLeft,
-	ChevronRight,
 	ArrowUpRight,
-	ExternalLink,
 	Plus,
 	Trash2,
-	User,
 	EllipsisVertical,
 	FileSearch2,
 } from 'lucide-react';
@@ -213,18 +209,6 @@ const ViewPayment = () => {
 		console.log( 'Resend email notification' );
 	};
 
-	const handleAddNote = () => {
-		console.log( 'Add new note' );
-	};
-
-	const handleRefundPayment = () => {
-		console.log( 'Refund payment' );
-	};
-
-	const handleDeleteLogEntry = ( id ) => {
-		console.log( 'Delete log entry:', id );
-	};
-
 	const handleRefund = ( id ) => {
 		openRefundDialog();
 	};
@@ -268,7 +252,10 @@ const ViewPayment = () => {
 	const handleDeleteLog = ( logIndex ) => {
 		if (
 			confirm(
-				__( 'Are you sure you want to delete this log entry?', 'sureforms' )
+				__(
+					'Are you sure you want to delete this log entry?',
+					'sureforms'
+				)
 			)
 		) {
 			deleteLogMutation.mutate( {
@@ -311,7 +298,9 @@ const ViewPayment = () => {
 	// Get currency symbol from currency code
 	const getCurrencySymbol = ( currencyCode ) => {
 		const upperCurrencyCode = currencyCode?.toUpperCase();
-		const currency = currencies.find( ( c ) => c.value === upperCurrencyCode );
+		const currency = currencies.find(
+			( c ) => c.value === upperCurrencyCode
+		);
 		return currency ? currency.symbol : currencyCode;
 	};
 
@@ -396,60 +385,11 @@ const ViewPayment = () => {
 			className="w-full justify-between"
 		>
 			<h1>
-				{ formatAmount(
-					paymentData.total_amount,
-					paymentData.currency
-				) } From { paymentData.customer }
+				{ __( 'Payment ID', 'sureforms' ) }
+				{ ` #${ paymentData.id }` }
 			</h1>
 		</Container>
 	);
-
-	// Customer info data from real payment data
-	const customerInfoData = [
-		{
-			'Customer Name': paymentData.customer || __( 'Guest', 'sureforms' ),
-		},
-		{
-			Email: paymentData.customer_email || __( 'N/A', 'sureforms' ),
-		},
-		{
-			Amount: formatAmount(
-				paymentData.total_amount,
-				paymentData.currency
-			),
-		},
-	];
-
-	// Customer info component
-	const customerInfo = customerInfoData.map( ( item, index ) => {
-		const [ key, value ] = Object.entries( item )[ 0 ]; // Get the first key-value pair
-		return (
-			<div
-				key={ `customer-info-${ index }` }
-				className="flex gap-1 items-center p-2 border-b last:border-b-0 bg-background-primary rounded-xl shadow-sm"
-			>
-				<Text
-					as="p"
-					color="primary"
-					lineHeight={ 20 }
-					size={ 14 }
-					weight={ 600 }
-					className="w-[160px]"
-				>
-					{ key }:
-				</Text>
-				<Text
-					as="p"
-					color="secondary"
-					lineHeight={ 20 }
-					size={ 14 }
-					weight={ 500 }
-				>
-					{ value }
-				</Text>
-			</div>
-		);
-	} );
 
 	// Billing data from real payment data
 	const billingData = [
@@ -634,7 +574,7 @@ const ViewPayment = () => {
 						<Table.HeadCell>
 							{ __( 'Date & Time', 'sureforms' ) }
 						</Table.HeadCell>
-						<Table.HeadCell className='w-1/10'>
+						<Table.HeadCell className="w-1/10">
 							{ __( 'Action', 'sureforms' ) }
 						</Table.HeadCell>
 					</Table.Head>
@@ -688,54 +628,22 @@ const ViewPayment = () => {
 												: row.status
 										}
 										type="pill"
-										className='w-fit'
+										className="w-fit"
 									/>
 								</Table.Cell>
 								<Table.Cell>
 									{ formatDateTime( row.date_time ) }
 								</Table.Cell>
 								<Table.Cell>
-									<DropdownMenu placement="bottom-end">
-										<DropdownMenu.Trigger>
-											<EllipsisVertical />
-											<span className="sr-only">
-												{ __(
-													'Open Menu',
-													'sureforms'
-												) }
-											</span>
-										</DropdownMenu.Trigger>
-										<DropdownMenu.ContentWrapper>
-											<DropdownMenu.Content className="w-60">
-												<DropdownMenu.List>
-													<DropdownMenu.Item
-														onClick={ () =>
-															handleRefund(
-																row.id
-															)
-														}
-													>
-														{ __(
-															'Refund',
-															'sureforms'
-														) }
-													</DropdownMenu.Item>
-													<DropdownMenu.Item
-														onClick={ () =>
-															handleCancelRefund(
-																row.id
-															)
-														}
-													>
-														{ __(
-															'Cancel Payment',
-															'sureforms'
-														) }
-													</DropdownMenu.Item>
-												</DropdownMenu.List>
-											</DropdownMenu.Content>
-										</DropdownMenu.ContentWrapper>
-									</DropdownMenu>
+									<Button
+										icon={ null }
+										iconPosition="left"
+										size="xs"
+										variant="outline"
+										onClick={ () => handleRefund( row.id ) }
+									>
+										{ __( 'Refund Payment', 'sureforms' ) }
+									</Button>
 								</Table.Cell>
 							</Table.Row>
 						) ) }
@@ -747,39 +655,42 @@ const ViewPayment = () => {
 
 	const paymentInfoData = [
 		{
-			'Payment Id': `#${ paymentData.id }`,
+			title: __( 'Payment Id', 'sureforms' ),
+			value: `#${ paymentData.id }`,
 		},
 		{
-			'Form Name':
-				paymentData.form_title || __( 'Unknown Form', 'sureforms' ),
+			title: __( 'Form Name', 'sureforms' ),
+			value: paymentData.form_title || __( 'Unknown Form', 'sureforms' ),
 		},
 		{
-			'Payment Method':
-				paymentData.gateway || __( 'Unknown', 'sureforms' ),
+			title: __( 'Payment Method', 'sureforms' ),
+			value: paymentData.gateway || __( 'Unknown', 'sureforms' ),
 		},
 		{
-			'Payment Mode': paymentData.mode || __( 'Unknown', 'sureforms' ),
+			title: __( 'Payment Mode', 'sureforms' ),
+			value: paymentData.mode || __( 'Unknown', 'sureforms' ),
 		},
 		{
-			'Payment Type':
-				paymentData.payment_type || __( 'One Time', 'sureforms' ),
+			title: __( 'Payment Type', 'sureforms' ),
+			value: paymentData.payment_type || __( 'One Time', 'sureforms' ),
 		},
 		{
-			'Transaction ID':
-				paymentData.transaction_id || __( 'N/A', 'sureforms' ),
+			title: __( 'Transaction ID', 'sureforms' ),
+			value: paymentData.transaction_id || __( 'N/A', 'sureforms' ),
 		},
 		{
-			'Customer ID':
-				paymentData.customer_id || __( 'Guest', 'sureforms' ),
+			title: __( 'Customer ID', 'sureforms' ),
+			value: paymentData.customer_id || __( 'Guest', 'sureforms' ),
 		},
 		{
-			'Submitted On': formatDateTime( paymentData.created_at ),
+			title: __( 'Submitted On', 'sureforms' ),
+			value: formatDateTime( paymentData.created_at ),
 		},
 	];
 
 	// Payment info component
 	const paymentInfo = paymentInfoData.map( ( item, index ) => {
-		const [ key, value ] = Object.entries( item )[ 0 ]; // Get the first key-value pair
+		const { title, value } = item; // Get the first key-value pair
 		return (
 			<div
 				key={ `payment-info-${ index }` }
@@ -793,7 +704,7 @@ const ViewPayment = () => {
 					weight={ 600 }
 					className="w-[160px]"
 				>
-					{ key }:
+					{ title }:
 				</Text>
 				<Text
 					as="p"
@@ -810,33 +721,6 @@ const ViewPayment = () => {
 
 	const PAYMENT_SECTION_COLUMN_1 = (
 		<>
-			{ /* customer info */ }
-			<Container
-				className="w-full bg-background-primary border-0.5 border-solid rounded-xl border-border-subtle p-3 gap-2 shadow-sm"
-				direction="column"
-			>
-				<Container
-					className="p-1 gap-2"
-					align="center"
-					justify="between"
-				>
-					<Label size="sm" className="font-semibold">
-						{ __( 'Form Submission Details', 'sureforms' ) }
-					</Label>
-					<Button
-						icon={ null }
-						iconPosition="left"
-						size="xs"
-						variant="outline"
-					>
-						{ __( 'Edit Entry', 'sureforms' ) }
-					</Button>
-				</Container>
-				<Container className="flex flex-col bg-background-secondary gap-1 p-1 rounded-lg">
-					{ customerInfo }
-				</Container>
-			</Container>
-			{ /* billing details  */ }
 			<Container
 				className="w-full bg-background-primary border-0.5 border-solid rounded-xl border-border-subtle p-3 gap-2 shadow-sm"
 				direction="column"
@@ -849,9 +733,14 @@ const ViewPayment = () => {
 					<Label size="sm" className="font-semibold">
 						{ __( 'Billing Details', 'sureforms' ) }
 					</Label>
-					<Badge variant="success">
-						{ __( 'Status: Paid', 'sureforms' ) }
-					</Badge>
+					<Button
+						icon={ null }
+						iconPosition="left"
+						size="xs"
+						variant="outline"
+					>
+						{ __( 'View Entry', 'sureforms' ) }
+					</Button>
 				</Container>
 				<Container className="flex flex-col bg-background-secondary gap-1 p-1 rounded-lg">
 					{ billingDetails }
@@ -916,8 +805,8 @@ const ViewPayment = () => {
 	const notesSection = (
 		<>
 			{ /* Existing notes list */ }
-			{ notes && notes.length > 0 ? (
-				notes.map( ( note, index ) => (
+			{ notes && notes.length > 0
+				? notes.map( ( note, index ) => (
 					<div
 						key={ index }
 						className="w-full flex justify-between items-start gap-2 p-3 bg-background-primary rounded-lg border border-border-subtle"
@@ -943,9 +832,8 @@ const ViewPayment = () => {
 							className="text-icon-secondary hover:text-red-700"
 						/>
 					</div>
-				) )
-			) : (
-				! isAddingNote && (
+				  ) )
+				: ! isAddingNote && (
 					<Text className="text-sm text-text-secondary p-3 text-center flex items-center justify-center gap-2">
 						<FileSearch2 className="!size-5" />
 						{ __(
@@ -953,8 +841,7 @@ const ViewPayment = () => {
 							'sureforms'
 						) }
 					</Text>
-				)
-			) }
+				  ) }
 
 			{ /* Add note textarea */ }
 			{ isAddingNote && (
@@ -963,11 +850,11 @@ const ViewPayment = () => {
 						value={ newNoteText }
 						onChange={ ( value ) => setNewNoteText( value ) }
 						placeholder={ __(
-							'Enter your note here...',
+							'Enter your note here…',
 							'sureforms'
 						) }
 						size="sm"
-						className='w-full'
+						className="w-full"
 						autoFocus
 					/>
 					<div className="flex gap-2 mt-2 justify-end">
@@ -989,7 +876,7 @@ const ViewPayment = () => {
 							}
 						>
 							{ addNoteMutation.isPending
-								? __( 'Adding...', 'sureforms' )
+								? __( 'Adding…', 'sureforms' )
 								: __( 'Add Note', 'sureforms' ) }
 						</Button>
 					</div>
@@ -1025,7 +912,7 @@ const ViewPayment = () => {
 					</Button>
 				</Container>
 				<Container className="flex flex-col items-center justify-center bg-background-secondary gap-1 p-1 rounded-lg min-h-[89px]">
-					{notesSection}
+					{ notesSection }
 				</Container>
 			</Container>
 			{ /* Payment log */ }
@@ -1050,8 +937,11 @@ const ViewPayment = () => {
 								return null;
 							}
 
-							const logTitle = log.title || __( 'Untitled Log', 'sureforms' );
-							const logMessages = Array.isArray( log.messages ) ? log.messages : [];
+							const logTitle =
+								log.title || __( 'Untitled Log', 'sureforms' );
+							const logMessages = Array.isArray( log.messages )
+								? log.messages
+								: [];
 
 							return (
 								<div
@@ -1064,28 +954,38 @@ const ViewPayment = () => {
 												{ logTitle }
 											</Text>
 											<Text className="text-xs text-text-tertiary mt-1">
-												{ formatLogTimestamp( log.timestamp ) }
+												{ formatLogTimestamp(
+													log.timestamp
+												) }
 											</Text>
 										</div>
 										<Button
 											variant="ghost"
 											size="xs"
-											icon={ <Trash2 className="!size-4" /> }
-											onClick={ () => handleDeleteLog( index ) }
-											disabled={ deleteLogMutation.isPending }
+											icon={
+												<Trash2 className="!size-4" />
+											}
+											onClick={ () =>
+												handleDeleteLog( index )
+											}
+											disabled={
+												deleteLogMutation.isPending
+											}
 											className="text-icon-secondary hover:text-red-700"
 										/>
 									</div>
 									{ logMessages.length > 0 && (
 										<div className="flex flex-col gap-1 mt-1">
-											{ logMessages.map( ( message, msgIndex ) => (
-												<Text
-													key={ msgIndex }
-													className="text-xs text-text-secondary"
-												>
-													{ message || '' }
-												</Text>
-											) ) }
+											{ logMessages.map(
+												( message, msgIndex ) => (
+													<Text
+														key={ msgIndex }
+														className="text-xs text-text-secondary"
+													>
+														{ message || '' }
+													</Text>
+												)
+											) }
 										</div>
 									) }
 								</div>

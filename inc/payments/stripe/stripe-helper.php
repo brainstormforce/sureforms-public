@@ -13,10 +13,88 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 class Stripe_Helper {
-	public static function stripe_api_request( $endpoint, $method = 'POST', $data = [], $resource_id = '' ) {
+	/**
+	 * Check if Stripe is connected.
+	 *
+	 * @return bool True if Stripe is connected, false otherwise.
+	 */
+	public static function is_stripe_connected() {
 		$payment_settings = get_option( 'srfm_payments_settings', [] );
-		if ( empty( $payment_settings['stripe_connected'] ) ) {
-			error_log( 'SureForms: Stripe is not connected' );
+		return ! empty( $payment_settings['stripe_connected'] );
+	}
+
+	/**
+	 * Get the current Stripe mode (test or live).
+	 *
+	 * @return string The current payment mode ('test' or 'live').
+	 */
+	public static function get_stripe_mode() {
+		$payment_settings = get_option( 'srfm_payments_settings', [] );
+		return $payment_settings['payment_mode'] ?? 'test';
+	}
+
+	/**
+	 * Get Stripe secret key for the specified mode.
+	 *
+	 * @param string|null $mode The payment mode ('test' or 'live'). If null, uses current mode.
+	 * @return string The secret key for the specified mode, or empty string if not found.
+	 */
+	public static function get_stripe_secret_key( $mode = null ) {
+		$payment_settings = get_option( 'srfm_payments_settings', [] );
+
+		if ( null === $mode ) {
+			$mode = self::get_stripe_mode();
+		}
+
+		if ( 'live' === $mode ) {
+			return $payment_settings['stripe_live_secret_key'] ?? '';
+		}
+
+		return $payment_settings['stripe_test_secret_key'] ?? '';
+	}
+
+	/**
+	 * Get Stripe publishable key for the specified mode.
+	 *
+	 * @param string|null $mode The payment mode ('test' or 'live'). If null, uses current mode.
+	 * @return string The publishable key for the specified mode, or empty string if not found.
+	 */
+	public static function get_stripe_publishable_key( $mode = null ) {
+		$payment_settings = get_option( 'srfm_payments_settings', [] );
+
+		if ( null === $mode ) {
+			$mode = self::get_stripe_mode();
+		}
+
+		if ( 'live' === $mode ) {
+			return $payment_settings['stripe_live_publishable_key'] ?? '';
+		}
+
+		return $payment_settings['stripe_test_publishable_key'] ?? '';
+	}
+
+	/**
+	 * Get the default currency from payment settings.
+	 *
+	 * @return string The currency code (e.g., 'USD').
+	 */
+	public static function get_currency() {
+		$payment_settings = get_option( 'srfm_payments_settings', [] );
+		return $payment_settings['currency'] ?? 'USD';
+	}
+
+	/**
+	 * Make a request to the Stripe API.
+	 *
+	 * @param string $endpoint    The API endpoint to call.
+	 * @param string $method      The HTTP method (GET, POST, PUT, PATCH, DELETE). Default 'POST'.
+	 * @param array  $data        The data to send with the request. Default empty array.
+	 * @param string $resource_id The resource ID to append to the endpoint. Default empty string.
+	 * @return array Response array with 'success' boolean and either 'data' or 'error' key.
+	 */
+	public static function stripe_api_request( $endpoint, $method = 'POST', $data = [], $resource_id = '' ) {
+		if ( ! self::is_stripe_connected() ) {
+			// TODO: Handle proper error handling.
 			return [
 				'success' => false,
 				'error'   => [
@@ -28,13 +106,11 @@ class Stripe_Helper {
 			];
 		}
 
-		$payment_mode = $payment_settings['payment_mode'] ?? 'test';
-		$secret_key   = 'live' === $payment_mode
-			? $payment_settings['stripe_live_secret_key'] ?? ''
-			: $payment_settings['stripe_test_secret_key'] ?? '';
+		$payment_mode = self::get_stripe_mode();
+		$secret_key   = self::get_stripe_secret_key();
 
 		if ( empty( $secret_key ) ) {
-			error_log( 'SureForms: Stripe secret key not found' );
+			// TODO: Handle proper error handling.
 			return [
 				'success' => false,
 				'error'   => [
@@ -97,7 +173,7 @@ class Stripe_Helper {
 		// Try to decode the response body.
 		$decoded_body = json_decode( $body, true );
 		if ( json_last_error() !== JSON_ERROR_NONE ) {
-			error_log( 'SureForms Stripe API Invalid JSON Response: ' . $body );
+			// TODO: Handle proper error handling.
 			return [
 				'success' => false,
 				'error'   => [

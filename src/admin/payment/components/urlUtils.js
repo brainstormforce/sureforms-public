@@ -2,7 +2,7 @@
  * URL Utilities for Payment List
  * Handles URL parameter management without React Router
  *
- * @package sureforms
+ * @package
  * @since 1.0.0
  */
 

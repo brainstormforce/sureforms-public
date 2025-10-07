@@ -108,6 +108,23 @@ class Payments extends Base {
 	];
 
 	/**
+	 * Valid subscription statuses (Stripe-specific).
+	 *
+	 * @var array<string>
+	 * @since x.x.x
+	 */
+	private static $valid_subscription_statuses = [
+		'active',
+		'canceled',
+		'past_due',
+		'unpaid',
+		'trialing',
+		'incomplete',
+		'incomplete_expired',
+		'paused',
+	];
+
+	/**
 	 * {@inheritDoc}
 	 */
 	public function get_schema() {
@@ -221,15 +238,15 @@ class Payments extends Base {
 			'status VARCHAR(50) NOT NULL',
 			'total_amount DECIMAL(26,8) NOT NULL',
 			'refunded_amount DECIMAL(26,8) NOT NULL',
-			'currency VARCHAR(3) NOT NULL',
+			'currency VARCHAR(10) NOT NULL',
 			'entry_id BIGINT(20) UNSIGNED NOT NULL',
 			'gateway VARCHAR(20) NOT NULL',
-			'type VARCHAR(12) NOT NULL',
-			'mode VARCHAR(4) NOT NULL',
-			'transaction_id VARCHAR(40) NOT NULL',
-			'customer_id VARCHAR(40) NOT NULL',
-			'subscription_id VARCHAR(40) NOT NULL',
-			'subscription_status VARCHAR(10) NOT NULL',
+			'type VARCHAR(30) NOT NULL',
+			'mode VARCHAR(20) NOT NULL',
+			'transaction_id VARCHAR(50) NOT NULL',
+			'customer_id VARCHAR(50) NOT NULL',
+			'subscription_id VARCHAR(50) NOT NULL',
+			'subscription_status VARCHAR(20) NOT NULL',
 			'payment_data LONGTEXT',
 			'extra LONGTEXT',
 			'log LONGTEXT',
@@ -702,6 +719,27 @@ class Payments extends Base {
 	}
 
 	/**
+	 * Validate subscription status.
+	 *
+	 * @param string $status Subscription status to validate.
+	 * @since x.x.x
+	 * @return bool True if valid, false otherwise.
+	 */
+	public static function is_valid_subscription_status( $status ) {
+		return in_array( $status, self::$valid_subscription_statuses, true );
+	}
+
+	/**
+	 * Get all valid subscription statuses.
+	 *
+	 * @since x.x.x
+	 * @return array<string> Array of valid subscription statuses.
+	 */
+	public static function get_valid_subscription_statuses() {
+		return self::$valid_subscription_statuses;
+	}
+
+	/**
 	 * Get payment data for a payment.
 	 *
 	 * @param int $payment_id Payment ID.
@@ -882,7 +920,7 @@ class Payments extends Base {
 						[
 							'key'     => 'type',
 							'compare' => '=',
-							'value'   => 'payment',
+							'value'   => 'renewal',
 						],
 					],
 				],
@@ -990,7 +1028,7 @@ class Payments extends Base {
 		}
 
 		// Build final query.
-		$columns = $_args['columns'] === '*' ? '*' : esc_sql( $_args['columns'] );
+		$columns = '*' === $_args['columns'] ? '*' : esc_sql( $_args['columns'] );
 		$query   = "SELECT {$columns} FROM {$table_name} {$where_clause} {$order_clause} {$limit_clause}";
 
 		// Execute query with parameters.

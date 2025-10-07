@@ -23,10 +23,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Front_End {
 	use Get_Instance;
 
+	/**
+	 * Stores payment entries for later linking with form submissions.
+	 *
+	 * @var array
+	 * @since x.x.x
+	 */
 	private $stripe_payment_entries = [];
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 *
 	 * @since 1.0.0
 	 */
@@ -64,23 +70,19 @@ class Front_End {
 		}
 
 		try {
-			// Get payment settings.
-			$payment_settings = get_option( 'srfm_payments_settings', [] );
-
-			if ( empty( $payment_settings['stripe_connected'] ) ) {
+			// Validate Stripe connection.
+			if ( ! Stripe\Stripe_Helper::is_stripe_connected() ) {
 				throw new \Exception( __( 'Stripe is not connected.', 'sureforms' ) );
 			}
 
-			$payment_mode = $payment_settings['payment_mode'] ?? 'test';
-			$secret_key   = 'live' === $payment_mode
-				? $payment_settings['stripe_live_secret_key'] ?? ''
-				: $payment_settings['stripe_test_secret_key'] ?? '';
+			$payment_mode = Stripe\Stripe_Helper::get_stripe_mode();
+			$secret_key   = Stripe\Stripe_Helper::get_stripe_secret_key();
 
 			if ( empty( $secret_key ) ) {
 				throw new \Exception( __( 'Stripe secret key not found.', 'sureforms' ) );
 			}
 
-			// Create payment intent with confirm: true for immediate processing
+			// Create payment intent with confirm: true for immediate processing.
 			$payment_intent_data = apply_filters(
 				'srfm_create_payment_intent_data',
 				[
@@ -88,7 +90,7 @@ class Front_End {
 					'amount'                    => $amount,
 					'currency'                  => strtolower( $currency ),
 					'description'               => $description,
-					'confirm'                   => false, // Will be confirmed by frontend
+					'confirm'                   => false, // Will be confirmed by frontend.
 					'automatic_payment_methods' => [
 						'enabled'         => true,
 						'allow_redirects' => 'never',
@@ -125,7 +127,7 @@ class Front_End {
 			);
 
 		} catch ( \Exception $e ) {
-			error_log( 'SureForms Stripe Error: ' . $e->getMessage() );
+			// TODO: Handle proper error handling.
 			wp_send_json_error( __( 'Failed to create payment intent. Please try again.', 'sureforms' ) );
 		}
 	}
@@ -144,7 +146,7 @@ class Front_End {
 			return;
 		}
 
-		// Validate required fields like simple-stripe-subscriptions
+		// Validate required fields like simple-stripe-subscriptions.
 		$required_fields = [ 'amount', 'currency', 'description', 'block_id', 'interval', 'plan_name' ];
 		foreach ( $required_fields as $field ) {
 			if ( empty( $_POST[ $field ] ) ) {
@@ -161,7 +163,7 @@ class Front_End {
 		$subscription_interval = sanitize_text_field( wp_unslash( $_POST['interval'] ?? 'month' ) );
 		$plan_name             = sanitize_text_field( wp_unslash( $_POST['plan_name'] ?? 'Subscription Plan' ) );
 
-		// Validate amount like simple-stripe-subscriptions
+		// Validate amount like simple-stripe-subscriptions.
 		if ( $amount <= 0 ) {
 			wp_send_json_error( __( 'Amount must be greater than 0', 'sureforms' ) );
 			return;
@@ -175,35 +177,30 @@ class Front_End {
 		}
 
 		try {
-			// Get payment settings
-			$payment_settings = get_option( 'srfm_payments_settings', [] );
-
-			if ( empty( $payment_settings['stripe_connected'] ) ) {
+			// Validate Stripe connection.
+			if ( ! Stripe\Stripe_Helper::is_stripe_connected() ) {
 				throw new \Exception( __( 'Stripe is not connected.', 'sureforms' ) );
 			}
 
-			$payment_mode = $payment_settings['payment_mode'] ?? 'test';
-			$secret_key   = 'live' === $payment_mode
-				? $payment_settings['stripe_live_secret_key'] ?? ''
-				: $payment_settings['stripe_test_secret_key'] ?? '';
+			$secret_key = Stripe\Stripe_Helper::get_stripe_secret_key();
 
 			if ( empty( $secret_key ) ) {
 				throw new \Exception( __( 'Stripe secret key not found.', 'sureforms' ) );
 			}
 
-			// Initialize Stripe SDK
+			// Initialize Stripe SDK.
 			if ( ! class_exists( '\Stripe\Stripe' ) ) {
 				throw new \Exception( __( 'Stripe library not found.', 'sureforms' ) );
 			}
 
-			// Get or create Stripe customer for subscriptions
+			// Get or create Stripe customer for subscriptions.
 			$customer_id = $this->get_or_create_stripe_customer();
 			if ( ! $customer_id ) {
 				throw new \Exception( __( 'Failed to create customer for subscription.', 'sureforms' ) );
 			}
 
 			$license_key = $this->get_license_key();
-			// Prepare subscription data for middleware
+			// Prepare subscription data for middleware.
 			$subscription_data = apply_filters(
 				'srfm_create_subscription_data',
 				[
@@ -227,15 +224,15 @@ class Front_End {
 
 			$endpoint = 'prod' === SRFM_PAYMENTS_ENV ? SRFM_PAYMENTS_PROD . 'subscription/create' : SRFM_PAYMENTS_LOCAL . 'subscription/create';
 
-			// Call middleware subscription creation endpoint
+			// Call middleware subscription creation endpoint.
 			$subscription_response = wp_remote_post(
 				$endpoint,
 				[
-					'body'    => base64_encode( wp_json_encode( $subscription_data ) ),
+					'body'    => base64_encode( wp_json_encode( $subscription_data ) ), // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
 					'headers' => [
 						'Content-Type' => 'application/json',
 					],
-					'timeout' => 60, // Subscription creation can take longer
+					'timeout' => 60, // Subscription creation can take longer.
 				]
 			);
 
@@ -269,7 +266,7 @@ class Front_End {
 			wp_send_json_success( $response );
 
 		} catch ( \Exception $e ) {
-			error_log( 'SureForms Subscription Error: ' . $e->getMessage() );
+			// TODO: Handle proper error handling.
 			wp_send_json_error( sprintf( __( 'Unexpected error: %s', 'sureforms' ), $e->getMessage() ) );
 		}
 	}
@@ -386,17 +383,14 @@ class Front_End {
 	 */
 	private function verify_stripe_payment_intent_and_save( $payment_intent_id, $block_id, $form_data ) {
 		try {
-			$payment_settings = get_option( 'srfm_payments_settings', [] );
-			$payment_mode     = $payment_settings['payment_mode'] ?? 'test';
-			$secret_key       = 'live' === $payment_mode
-				? $payment_settings['stripe_live_secret_key'] ?? ''
-				: $payment_settings['stripe_test_secret_key'] ?? '';
+			$payment_mode = Stripe\Stripe_Helper::get_stripe_mode();
+			$secret_key   = Stripe\Stripe_Helper::get_stripe_secret_key();
 
 			if ( empty( $secret_key ) ) {
 				return false;
 			}
 
-			// Retrieve confirmed payment intent status
+			// Retrieve confirmed payment intent status.
 			$retrieve_data = apply_filters(
 				'srfm_retrieve_payment_intent_data',
 				[
@@ -405,7 +399,7 @@ class Front_End {
 				]
 			);
 
-			// Call middleware retrieve endpoint to get confirmed payment intent
+			// Call middleware retrieve endpoint to get confirmed payment intent.
 			$retrieve_response = wp_remote_post(
 				'prod' === SRFM_PAYMENTS_ENV ? SRFM_PAYMENTS_PROD . 'payment-intent/capture' : SRFM_PAYMENTS_LOCAL . 'payment-intent/capture',
 				[
@@ -426,7 +420,7 @@ class Front_End {
 				throw new \Exception( __( 'Failed to retrieve payment intent.', 'sureforms' ) );
 			}
 
-			// Check if payment was actually confirmed successfully
+			// Check if payment was actually confirmed successfully.
 			if ( ! in_array( $confirmed_payment_intent['status'], [ 'succeeded', 'requires_capture' ], true ) ) {
 				throw new \Exception( __( 'Payment was not confirmed successfully.', 'sureforms' ) );
 			}
@@ -456,11 +450,8 @@ class Front_End {
 
 				$this->stripe_payment_entries[] = $add_in_static_value;
 			}
-
-			// return 'succeeded' === $payment_intent->status;
-
 		} catch ( \Exception $e ) {
-			error_log( 'SureForms Payment Verification Error: ' . $e->getMessage() );
+			// TODO: Handle proper error handling.
 			return false;
 		}
 	}
@@ -477,30 +468,27 @@ class Front_End {
 		$subscription_id = ! empty( $subscription_value['subscriptionId'] ) ? $subscription_value['subscriptionId'] : '';
 
 		if ( empty( $subscription_id ) ) {
-			error_log( 'SureForms: Missing subscription ID' );
+			// TODO: Handle proper error handling.
 			return false;
 		}
 
 		$customer_id = ! empty( $subscription_value['customerId'] ) ? $subscription_value['customerId'] : '';
 
 		if ( empty( $customer_id ) ) {
-			error_log( 'SureForms: Missing customer ID' );
+			// TODO: Handle proper error handling.
 			return false;
 		}
 
 		try {
-			// Get payment settings
-			$payment_settings = get_option( 'srfm_payments_settings', [] );
-			$payment_mode     = $payment_settings['payment_mode'] ?? 'test';
-			$secret_key       = 'live' === $payment_mode
-				? $payment_settings['stripe_live_secret_key'] ?? ''
-				: $payment_settings['stripe_test_secret_key'] ?? '';
+			// Get payment mode and secret key.
+			$payment_mode = Stripe\Stripe_Helper::get_stripe_mode();
+			$secret_key   = Stripe\Stripe_Helper::get_stripe_secret_key();
 
 			if ( empty( $secret_key ) ) {
 				throw new \Exception( __( 'Stripe secret key not found.', 'sureforms' ) );
 			}
 
-			// Update subscription with payment method from setup intent if available
+			// Update subscription with payment method from setup intent if available.
 			$setup_intent_id = ! empty( $subscription_value['setupIntent'] ) ? $subscription_value['setupIntent'] : '';
 			$paid_invoice    = [];
 			if ( ! empty( $setup_intent_id ) ) {
@@ -529,7 +517,7 @@ class Front_End {
 							$subscription_update['latest_invoice']
 						);
 
-						// Explicitly attempt to pay the invoice
+						// Explicitly attempt to pay the invoice.
 						$paid_invoice = $this->stripe_api_request(
 							'invoices',
 							'POST',
@@ -545,20 +533,20 @@ class Front_End {
 							$subscription_id
 						);
 
-						error_log( 'SureForms: Updated subscription default payment method: ' . $setup_intent['payment_method'] );
+						// TODO: Handle proper error handling.
 					}
 				} catch ( \Exception $e ) {
-					error_log( 'SureForms: Failed to update subscription payment method: ' . $e->getMessage() );
+					// TODO: Handle proper error handling.
 				}
 			}
 
-			error_log( 'SureForms: Retrieved subscription status: ' . $paid_invoice['status'] );
+			// TODO: Handle proper error handling.
 
-			// Use simple-stripe-subscriptions validation logic - check if subscription is in good state
+			// Use simple-stripe-subscriptions validation logic - check if subscription is in good state.
 			$is_subscription_active = in_array( $subscription['status'], [ 'active', 'trialing' ] );
 			$final_status           = $is_subscription_active ? 'succeeded' : 'failed';
 
-			// Prepare minimal subscription data for database
+			// Prepare minimal subscription data for database.
 			$entry_data = [
 				'form_id'             => $form_data['form-id'] ?? '',
 				'block_id'            => $block_id,
@@ -569,7 +557,7 @@ class Front_End {
 				'gateway'             => 'stripe',
 				'type'                => 'subscription',
 				'mode'                => $payment_mode,
-				'transaction_id'      => $subscription_id,
+				'transaction_id'      => $paid_invoice['charge'] ?? $paid_invoice['payment_intent'] ?? $subscription_id,
 				'customer_id'         => $customer_id,
 				'subscription_id'     => $subscription_id,
 				'subscription_status' => $paid_invoice['status'],
@@ -579,7 +567,7 @@ class Front_End {
 				],
 			];
 
-			// Add simple log entry
+			// Add simple log entry.
 			$entry_data['log'] = [
 				[
 					'title'     => 'Subscription Verification',
@@ -594,33 +582,37 @@ class Front_End {
 				],
 			];
 
-			// Save to database
+			// Save to database.
 			$payment_entry_id = Payments::add( $entry_data );
 
 			if ( $payment_entry_id ) {
-				// Store in static array for later entry linking
+				// Store in static array for later entry linking.
 				$this->stripe_payment_entries[] = [
 					'payment_id' => $subscription_id,
 					'block_id'   => $block_id,
 					'form_id'    => $form_data['form-id'] ?? '',
 				];
 
-				// Create the first individual payment record for this subscription if payment was successful
+				// Create the first individual payment record for this subscription if payment was successful.
 				if ( $is_subscription_active && ! empty( $paid_invoice ) ) {
+					// Extract the correct refundable transaction ID from the paid invoice.
+					// Prefer charge ID over payment intent as it's more directly refundable.
+					$transaction_id = $paid_invoice['charge'] ?? $paid_invoice['payment_intent'] ?? $setup_intent_id;
+
 					$this->create_subscription_single_payment(
 						$subscription_id,
-						$setup_intent_id, // Use setup intent ID as transaction ID for first payment
+						$transaction_id, // Use charge or payment_intent ID for refundability.
 						$paid_invoice,
 						$form_data['form-id'] ?? 0,
 						$block_id
 					);
 				}
 
-				error_log( 'SureForms: Subscription verification complete. Status: ' . $final_status );
+				// TODO: Handle proper error handling.
 				return $is_subscription_active;
 			}
 		} catch ( \Exception $e ) {
-			error_log( 'SureForms Subscription Verification Error: ' . $e->getMessage() );
+			// TODO: Handle proper error handling.
 			return false;
 		}
 	}
@@ -639,47 +631,47 @@ class Front_End {
 	 */
 	public function create_subscription_single_payment( $subscription_id, $payment_intent_id, $invoice_data, $form_id = 0, $block_id = '' ) {
 		if ( empty( $subscription_id ) || empty( $payment_intent_id ) || empty( $invoice_data ) ) {
-			error_log( 'SureForms: Missing required data for creating subscription single payment' );
+			// TODO: Handle proper error handling.
 			return false;
 		}
 
-		// Get the main subscription record to inherit form and block details if not provided
+		// Get the main subscription record to inherit form and block details if not provided.
 		$main_subscription = Payments::get_main_subscription_record( $subscription_id );
 		if ( ! $main_subscription ) {
-			error_log( 'SureForms: Could not find main subscription record for ID: ' . $subscription_id );
+			// TODO: Handle proper error handling.
 			return false;
 		}
 
-		// Use provided form_id and block_id, or fall back to subscription record values
+		// Use provided form_id and block_id, or fall back to subscription record values.
 		$form_id  = ! empty( $form_id ) ? $form_id : ( $main_subscription['form_id'] ?? 0 );
 		$block_id = ! empty( $block_id ) ? $block_id : ( $main_subscription['block_id'] ?? '' );
 
-		// Get payment settings for mode detection
-		$payment_settings = get_option( 'srfm_payments_settings', [] );
-		$payment_mode     = $payment_settings['payment_mode'] ?? 'test';
+		// Get payment mode.
+		$payment_mode = Stripe\Stripe_Helper::get_stripe_mode();
 
-		// Prepare subscription individual payment entry data
+		// Prepare subscription individual payment entry data.
 		$entry_data = [
 			'form_id'             => $form_id,
 			'block_id'            => $block_id,
-			'status'              => $invoice_data['status'] === 'paid' ? 'succeeded' : 'failed',
+			'status'              => 'paid' === $invoice_data['status'] ? 'succeeded' : 'failed',
 			'total_amount'        => $this->amount_convert_cents_to_usd( $invoice_data['amount_paid'] ?? 0 ),
-			'refunded_amount'     => '0.00000000', // Required field - default to 0
+			'refunded_amount'     => '0.00000000', // Required field - default to 0.
 			'currency'            => $invoice_data['currency'] ?? 'usd',
-			'entry_id'            => $main_subscription['entry_id'] ?? 0, // Link to same entry as subscription
+			'entry_id'            => $main_subscription['entry_id'] ?? 0, // Link to same entry as subscription.
 			'gateway'             => 'stripe',
-			'type'                => 'payment', // This is a payment transaction linked to subscription
+			'type'                => 'renewal', // Subscription billing cycle payment (renewal).
 			'mode'                => $payment_mode,
 			'transaction_id'      => $payment_intent_id,
 			'customer_id'         => $invoice_data['customer'] ?? '',
-			'subscription_id'     => $subscription_id, // Link back to subscription
-			'subscription_status' => '', // Not applicable for individual payments
+			'subscription_id'     => $subscription_id, // Link back to subscription.
+			'subscription_status' => '', // Not applicable for individual payments.
+			'payment_data'        => $invoice_data, // Store complete invoice data for refunds and debugging.
 		];
 
-		// Add log entry for audit trail
+		// Add log entry for audit trail.
 		$entry_data['log'] = [
 			[
-				'title'     => 'Subscription Single Payment',
+				'title'     => 'Subscription Renewal Payment',
 				'timestamp' => time(),
 				'messages'  => [
 					sprintf( 'Subscription ID: %s', $subscription_id ),
@@ -692,24 +684,23 @@ class Front_End {
 			],
 		];
 
-		// Log the data being inserted for debugging
-		error_log( 'SureForms: Attempting to create subscription payment with data: ' . wp_json_encode( $entry_data ) );
+		// TODO: Handle proper error handling.
 
-		// Save to database
+		// Save to database.
 		$payment_entry_id = Payments::add( $entry_data );
 
 		if ( $payment_entry_id ) {
-			// Store in static array for later entry linking
+			// Store in static array for later entry linking.
 			$this->stripe_payment_entries[] = [
 				'payment_id' => $payment_intent_id,
 				'block_id'   => $block_id,
 				'form_id'    => $form_id,
 			];
 
-			error_log( 'SureForms: Created subscription single payment record. ID: ' . $payment_entry_id );
+			// TODO: Handle proper error handling.
 			return $payment_entry_id;
 		}
-			error_log( 'SureForms: Failed to create subscription single payment record. Data: ' . wp_json_encode( $entry_data ) );
+			// TODO: Handle proper error handling.
 			return false;
 
 	}
@@ -734,17 +725,17 @@ class Front_End {
 		$current_user = wp_get_current_user();
 
 		if ( $current_user->ID > 0 ) {
-			// Logged-in user - check for existing customer ID in user meta
+			// Logged-in user - check for existing customer ID in user meta.
 			$customer_id = get_user_meta( $current_user->ID, 'srfm_stripe_customer_id', true );
 
 			if ( ! empty( $customer_id ) && $this->verify_stripe_customer( $customer_id ) ) {
 				return $customer_id;
 			}
 
-			// Create new customer for logged-in user
+			// Create new customer for logged-in user.
 			return $this->create_stripe_customer_for_user( $current_user );
 		}
-			// Non-logged-in user - create temporary customer
+			// Non-logged-in user - create temporary customer.
 			return $this->create_stripe_customer_for_guest();
 	}
 	/**
@@ -774,13 +765,13 @@ class Front_End {
 				throw new \Exception( __( 'Failed to create Stripe customer.', 'sureforms' ) );
 			}
 
-			// Save customer ID to user meta for future use
+			// Save customer ID to user meta for future use.
 			update_user_meta( $user->ID, 'srfm_stripe_customer_id', $customer['id'] );
 
 			return $customer['id'];
 
 		} catch ( \Exception $e ) {
-			error_log( 'SureForms Stripe Customer Creation Error: ' . $e->getMessage() );
+			// TODO: Handle proper error handling.
 			return false;
 		}
 	}
@@ -793,7 +784,7 @@ class Front_End {
 	 */
 	private function create_stripe_customer_for_guest() {
 		try {
-			// Get form data if available for guest customer info
+			// Get form data if available for guest customer info.
 			$form_data = $this->get_form_data_for_guest_customer();
 
 			$customer_data = [
@@ -806,7 +797,7 @@ class Front_End {
 				],
 			];
 
-			// Add email and name if available from form data
+			// Add email and name if available from form data.
 			if ( ! empty( $form_data['email'] ) ) {
 				$customer_data['email']                  = sanitize_email( $form_data['email'] );
 				$customer_data['metadata']['form_email'] = $form_data['email'];
@@ -826,7 +817,7 @@ class Front_End {
 			return $customer['id'];
 
 		} catch ( \Exception $e ) {
-			error_log( 'SureForms Stripe Guest Customer Creation Error: ' . $e->getMessage() );
+			// TODO: Handle proper error handling.
 			return false;
 		}
 	}
@@ -857,7 +848,7 @@ class Front_End {
 
 			return ! empty( $customer['id'] ) && false === $is_deleted_customer;
 		} catch ( \Exception $e ) {
-			error_log( 'SureForms Stripe Customer Verification Error: ' . $e->getMessage() );
+			// TODO: Handle proper error handling.
 			return false;
 		}
 	}
@@ -874,7 +865,7 @@ class Front_End {
 			'name'  => '',
 		];
 
-		// Try to get email and name from common form field names
+		// Try to get email and name from common form field names.
 		$email_fields = [ 'email', 'user_email', 'customer_email', 'contact_email' ];
 		$name_fields  = [ 'name', 'full_name', 'customer_name', 'first_name', 'last_name' ];
 
@@ -892,7 +883,7 @@ class Front_End {
 			}
 		}
 
-		// Try to combine first_name and last_name if available
+		// Try to combine first_name and last_name if available.
 		if ( empty( $form_data['name'] ) ) {
 			$first_name = ! empty( $_POST['first_name'] ) ? sanitize_text_field( wp_unslash( $_POST['first_name'] ) ) : '';
 			$last_name  = ! empty( $_POST['last_name'] ) ? sanitize_text_field( wp_unslash( $_POST['last_name'] ) ) : '';
@@ -912,13 +903,13 @@ class Front_End {
 	 * @since x.x.x
 	 */
 	private function get_user_ip() {
-		// Check for various IP address headers
+		// Check for various IP address headers.
 		$ip_keys = [ 'HTTP_X_FORWARDED_FOR', 'HTTP_X_REAL_IP', 'HTTP_CLIENT_IP', 'REMOTE_ADDR' ];
 
 		foreach ( $ip_keys as $key ) {
 			if ( ! empty( $_SERVER[ $key ] ) ) {
 				$ip = sanitize_text_field( wp_unslash( $_SERVER[ $key ] ) );
-				// Handle comma-separated IPs (from proxies)
+				// Handle comma-separated IPs (from proxies).
 				if ( strpos( $ip, ',' ) !== false ) {
 					$ip = trim( explode( ',', $ip )[0] );
 				}
@@ -928,7 +919,7 @@ class Front_End {
 			}
 		}
 
-		return '127.0.0.1'; // Fallback
+		return '127.0.0.1'; // Fallback.
 	}
 
 	/**
@@ -943,19 +934,19 @@ class Front_End {
 	 * @since x.x.x
 	 */
 	public function update_payment_entry_id_form_submit( $form_submit_response ) {
-		// Check if entry_id exists in the form_submit_response
+		// Check if entry_id exists in the form_submit_response.
 		if ( ! empty( $form_submit_response['entry_id'] ) && ! empty( $this->stripe_payment_entries ) ) {
 			$entry_id = intval( $form_submit_response['entry_id'] );
 
-			// Loop through stored payment entries to update with entry_id
+			// Loop through stored payment entries to update with entry_id.
 			foreach ( $this->stripe_payment_entries as $stripe_payment_entry ) {
 				if ( ! empty( $stripe_payment_entry['payment_id'] ) && ! empty( $stripe_payment_entry['form_id'] ) ) {
-					// Check if form_id matches
+					// Check if form_id matches.
 					$stored_form_id   = intval( $stripe_payment_entry['form_id'] );
 					$response_form_id = intval( $form_submit_response['form_id'] ?? 0 );
 
 					if ( $stored_form_id === $response_form_id ) {
-						// Update the payment entry with the entry_id
+						// Update the payment entry with the entry_id.
 						$this->update_payment_entry_id( $stripe_payment_entry['payment_id'], $entry_id );
 					}
 				}
@@ -973,7 +964,7 @@ class Front_End {
 	 */
 	private function update_payment_entry_id( $payment_id, $entry_id ) {
 		try {
-			// Find the payment entry by transaction_id
+			// Find the payment entry by transaction_id.
 			$payment_entries = Payments::get_instance()->get_results(
 				[ 'transaction_id' => $payment_id ],
 				'id'
@@ -982,17 +973,17 @@ class Front_End {
 			if ( ! empty( $payment_entries ) && isset( $payment_entries[0]['id'] ) ) {
 				$payment_entry_id = intval( $payment_entries[0]['id'] );
 
-				// Update the payment entry with entry_id using Payments class
+				// Update the payment entry with entry_id using Payments class.
 				$updated = Payments::update( $payment_entry_id, [ 'entry_id' => $entry_id ] );
 
 				if ( false === $updated ) {
-					error_log( 'SureForms: Failed to update payment entry_id for payment_id: ' . $payment_id );
+					// TODO: Handle proper error handling.
 				}
 			} else {
-				error_log( 'SureForms: Payment entry not found for payment_id: ' . $payment_id );
+				// TODO: Handle proper error handling.
 			}
 		} catch ( \Exception $e ) {
-			error_log( 'SureForms: Error updating payment entry_id: ' . $e->getMessage() );
+			// TODO: Handle proper error handling.
 		}
 	}
 
@@ -1007,20 +998,17 @@ class Front_End {
 	 * @since x.x.x
 	 */
 	private function stripe_api_request( $endpoint, $method = 'POST', $data = [], $resource_id = '' ) {
-		// Get payment settings and Stripe keys
-		$payment_settings = get_option( 'srfm_payments_settings', [] );
-		if ( empty( $payment_settings['stripe_connected'] ) ) {
-			error_log( 'SureForms: Stripe is not connected' );
+		// Validate Stripe connection.
+		if ( ! Stripe\Stripe_Helper::is_stripe_connected() ) {
+			// TODO: Handle proper error handling.
 			return false;
 		}
 
-		$payment_mode = $payment_settings['payment_mode'] ?? 'test';
-		$secret_key   = 'live' === $payment_mode
-			? $payment_settings['stripe_live_secret_key'] ?? ''
-			: $payment_settings['stripe_test_secret_key'] ?? '';
+		$payment_mode = Stripe\Stripe_Helper::get_stripe_mode();
+		$secret_key   = Stripe\Stripe_Helper::get_stripe_secret_key();
 
 		if ( empty( $secret_key ) ) {
-			error_log( 'SureForms: Stripe secret key not found' );
+			// TODO: Handle proper error handling.
 			return false;
 		}
 
@@ -1040,7 +1028,7 @@ class Front_End {
 			'timeout' => 30,
 		];
 
-		if ( ! empty( $data ) && in_array( $method, [ 'POST', 'PUT', 'PATCH' ] ) ) {
+		if ( ! empty( $data ) && in_array( $method, [ 'POST', 'PUT', 'PATCH' ], true ) ) {
 			$args['body'] = http_build_query( $this->flatten_stripe_data( $data ) );
 		} elseif ( ! empty( $data ) && 'GET' === $method ) {
 			$url .= '?' . http_build_query( $this->flatten_stripe_data( $data ) );
@@ -1049,7 +1037,7 @@ class Front_End {
 		$response = wp_remote_request( $url, $args );
 
 		if ( is_wp_error( $response ) ) {
-			error_log( 'SureForms Stripe API Error: ' . $response->get_error_message() );
+			// TODO: Handle proper error handling.
 			return false;
 		}
 
@@ -1059,7 +1047,7 @@ class Front_End {
 		if ( $code >= 400 ) {
 			$error_data    = json_decode( $body, true );
 			$error_message = $error_data['error']['message'] ?? 'Unknown Stripe API error';
-			error_log( 'SureForms Stripe API Error (' . $code . '): ' . $error_message );
+			// TODO: Handle proper error handling.
 			return false;
 		}
 
@@ -1081,13 +1069,13 @@ class Front_End {
 			$new_key = empty( $prefix ) ? $key : $prefix . '[' . $key . ']';
 
 			if ( is_array( $value ) && ! empty( $value ) ) {
-				// Handle indexed arrays (like expand parameters)
+				// Handle indexed arrays (like expand parameters).
 				if ( array_keys( $value ) === range( 0, count( $value ) - 1 ) ) {
 					foreach ( $value as $index => $item ) {
 						$result[ $new_key . '[' . $index . ']' ] = $item;
 					}
 				} else {
-					// Handle associative arrays (nested objects)
+					// Handle associative arrays (nested objects).
 					$result = array_merge( $result, $this->flatten_stripe_data( $value, $new_key ) );
 				}
 			} else {

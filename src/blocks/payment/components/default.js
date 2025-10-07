@@ -60,7 +60,12 @@ export const PaymentComponent = ( props ) => {
 			) }
 
 			<div className="srfm-payment-field-wrapper">
-				<p>{__("This is a placeholder for the Stripe Payment block. The actual payment fields will only appear when you preview or publish the form.", "sureforms")}</p>				
+				<p>
+					{ __(
+						'This is a placeholder for the Stripe Payment block. The actual payment fields will only appear when you preview or publish the form.',
+						'sureforms'
+					) }
+				</p>
 			</div>
 
 			{ help && <div className="srfm-help-text">{ help }</div> }

@@ -23,8 +23,9 @@ class Payments_Settings {
 	use Get_Instance;
 
 	/**
-	 * Option name for storing payment settings
+	 * Option name for storing payment settings.
 	 *
+	 * @var string
 	 * @since x.x.x
 	 */
 	public const OPTION_NAME = 'srfm_payments_settings';
@@ -150,7 +151,7 @@ class Payments_Settings {
 		set_transient( 'srfm_stripe_connect_nonce_' . get_current_user_id(), $nonce, HOUR_IN_SECONDS );
 
 		// Create state parameter exactly like checkout-plugins-stripe-woo.
-		$state = base64_encode(
+		$state = base64_encode( // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
 			wp_json_encode(
 				[
 					'redirect' => $redirect_with_nonce,
@@ -271,12 +272,7 @@ class Payments_Settings {
 
 		$updated = update_option( self::OPTION_NAME, $settings );
 
-		// Log webhook deletion status for debugging
-		if ( ! empty( $webhook_result['success'] ) ) {
-			error_log( 'SureForms: Webhooks deleted during disconnect - ' . ( $webhook_result['message'] ?? 'Success' ) );
-		} else {
-			error_log( 'SureForms: Webhook deletion failed during disconnect - ' . ( $webhook_result['message'] ?? 'Unknown error' ) );
-		}
+		// TODO: Handle proper error handling.
 
 		return rest_ensure_response(
 			[
@@ -370,7 +366,6 @@ class Payments_Settings {
 				$webhook_data = [
 					'api_version'    => '2025-07-30.basil',
 					'url'            => $webhook_url,
-					// 'url' => "https://sultan-summers-da84.zipwp.xyz/wp-json/sureforms/webhook",
 					'enabled_events' => [
 						'charge.failed',
 						'charge.succeeded',
@@ -388,8 +383,7 @@ class Payments_Settings {
 					$error_details = $api_response['error'];
 					$error_message = $error_details['message'];
 
-					// Log detailed error for debugging.
-					error_log( 'SureForms Webhook Creation API Error (' . $mode . '): ' . wp_json_encode( $error_details ) );
+					// TODO: Handle proper error handling.
 
 					throw new \Exception( $error_message );
 				}
@@ -424,7 +418,7 @@ class Payments_Settings {
 
 			} catch ( \Exception $e ) {
 				$error_message = $e->getMessage();
-				error_log( 'SureForms Webhook Creation Error (' . $mode . '): ' . $e->getMessage() );
+				// TODO: Handle proper error handling.
 			}
 		}
 
@@ -454,7 +448,7 @@ class Payments_Settings {
 			];
 		}
 
-		// Set appropriate message
+		// Set appropriate message.
 		if ( count( $modes ) === $webhooks_created ) {
 			$response_data['message'] = sprintf(
 				/* translators: %1$d: number of webhooks created */
@@ -528,8 +522,7 @@ class Payments_Settings {
 					$error_details = $api_response['error'];
 					$error_message = $error_details['message'];
 
-					// Log detailed error for debugging.
-					error_log( 'SureForms Webhook Deletion API Error (' . $mode . '): ' . wp_json_encode( $error_details ) );
+					// TODO: Handle proper error handling.
 
 					throw new \Exception( $error_message );
 				}
@@ -560,7 +553,7 @@ class Payments_Settings {
 
 			} catch ( \Exception $e ) {
 				$error_message = $e->getMessage();
-				error_log( 'SureForms Webhook Deletion Error (' . $mode . '): ' . $e->getMessage() );
+				// TODO: Handle proper error handling.
 			}
 		}
 
@@ -660,21 +653,36 @@ class Payments_Settings {
 					$error_details = $api_response['error'];
 					$error_message = $error_details['message'];
 
-					// Log detailed error for debugging.
-					error_log( 'SureForms Webhook Deletion API Error (' . $mode . '): ' . wp_json_encode( $error_details ) );
+					// TODO: Handle proper error handling.
 
-					throw new \Exception( $error_message );
+					return rest_ensure_response(
+						[
+							'success' => false,
+							'message' => $error_message,
+						]
+					);
 				}
 
 				$delete_result = $api_response['data'];
 
 				// Validate deletion response.
 				if ( ! is_array( $delete_result ) ) {
-					throw new \Exception( __( 'Invalid webhook deletion response format.', 'sureforms' ) );
+					// TODO: Handle proper error handling.
+					return rest_ensure_response(
+						[
+							'success' => false,
+							'message' => __( 'Invalid webhook deletion response format.', 'sureforms' ),
+						]
+					);
 				}
 
 				if ( empty( $delete_result['deleted'] ) || true !== $delete_result['deleted'] ) {
-					throw new \Exception( __( 'Webhook deletion was not confirmed by Stripe.', 'sureforms' ) );
+					return rest_ensure_response(
+						[
+							'success' => false,
+							'message' => __( 'Webhook deletion was not confirmed by Stripe.', 'sureforms' ),
+						]
+					);
 				}
 
 				// Clean up stored webhook data from settings.
@@ -692,7 +700,7 @@ class Payments_Settings {
 
 			} catch ( \Exception $e ) {
 				$error_message = $e->getMessage();
-				error_log( 'SureForms Webhook Deletion Error (' . $mode . '): ' . $e->getMessage() );
+				// TODO: Handle proper error handling.
 			}
 		}
 
@@ -801,7 +809,7 @@ class Payments_Settings {
 	}
 
 	/**
-	 * Process OAuth success response
+	 * Process OAuth success response.
 	 *
 	 * @return \WP_REST_Response
 	 * @since x.x.x
@@ -813,7 +821,7 @@ class Payments_Settings {
 		}
 
 		$response_data = sanitize_text_field( wp_unslash( $_GET['response'] ) );
-		$response      = json_decode( base64_decode( $response_data ), true );
+		$response      = json_decode( base64_decode( $response_data ), true ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_decode
 
 		if ( ! $response ) {
 			return new \WP_Error( 'invalid_response', __( 'Invalid OAuth response.', 'sureforms' ) );
@@ -853,7 +861,7 @@ class Payments_Settings {
 		// Clean up transients.
 		delete_transient( 'srfm_stripe_connect_nonce_' . get_current_user_id() );
 
-		// Create webhooks for both live and test mode
+		// Create webhooks for both live and test mode.
 		$this->setup_stripe_webhooks();
 
 		// Redirect to SureForms payments settings.
@@ -871,7 +879,7 @@ class Payments_Settings {
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		if ( isset( $_GET['error'] ) ) {
 			$error_data = sanitize_text_field( wp_unslash( $_GET['error'] ) );
-			$error      = json_decode( base64_decode( $error_data ), true );
+			$error      = json_decode( base64_decode( $error_data ), true ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_decode
 		} else {
 			$error = [];
 		}

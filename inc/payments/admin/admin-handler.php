@@ -129,19 +129,40 @@ class Admin_Handler {
 				return;
 			}
 
-			// Get payments data from database.
-			$payments = $this->get_payments_data( $search, $status, $date_from, $date_to, $per_page, $offset );
-
 			// Get total count for pagination.
 			$total_count = $this->get_payments_count( $search, $status, $date_from, $date_to );
 
+			if ( 0 === $total_count && empty( $search ) && empty( $status ) && empty( $date_from ) && empty( $date_to ) ) {
+				wp_send_json_success(
+					[
+						'payments'              => [],
+						'total'                 => 0,
+						'transactions_is_empty' => 'with_no_filter',
+					]
+				);
+			}
+
+			if ( 0 === $total_count && ( ! empty( $search ) || ! empty( $status ) || ! empty( $date_from ) || ! empty( $date_to ) ) ) {
+				wp_send_json_success(
+					[
+						'payments'              => [],
+						'total'                 => 0,
+						'transactions_is_empty' => 'with_filter',
+					]
+				);
+			}
+
+			// Get payments data from database.
+			$payments = $this->get_payments_data( $search, $status, $date_from, $date_to, $per_page, $offset );
+
 			wp_send_json_success(
 				[
-					'payments'    => $payments,
-					'total'       => $total_count,
-					'page'        => $page,
-					'per_page'    => $per_page,
-					'total_pages' => ceil( $total_count / $per_page ),
+					'payments'              => $payments,
+					'total'                 => $total_count,
+					'page'                  => $page,
+					'per_page'              => $per_page,
+					'total_pages'           => ceil( $total_count / $per_page ),
+					'transactions_is_empty' => false,
 				]
 			);
 
@@ -731,7 +752,7 @@ class Admin_Handler {
 			wp_send_json_success( [ 'notes' => $updated_notes ] );
 
 		} catch ( \Exception $e ) {
-			error_log( 'SureForms: Error adding payment note - ' . $e->getMessage() );
+			// TODO: Handle proper error handling.
 			wp_send_json_error( [ 'message' => __( 'An error occurred while adding the note.', 'sureforms' ) ] );
 		}
 	}
@@ -781,7 +802,7 @@ class Admin_Handler {
 			wp_send_json_success( [ 'notes' => $updated_notes ] );
 
 		} catch ( \Exception $e ) {
-			error_log( 'SureForms: Error deleting payment note - ' . $e->getMessage() );
+			// TODO: Handle proper error handling.
 			wp_send_json_error( [ 'message' => __( 'An error occurred while deleting the note.', 'sureforms' ) ] );
 		}
 	}
@@ -926,7 +947,7 @@ class Admin_Handler {
 			wp_send_json_success( [ 'logs' => $updated_logs ] );
 
 		} catch ( \Exception $e ) {
-			error_log( 'SureForms: Error deleting payment log - ' . $e->getMessage() );
+			// TODO: Handle proper error handling.
 			wp_send_json_error( [ 'message' => __( 'An error occurred while deleting the log entry.', 'sureforms' ) ] );
 		}
 	}
