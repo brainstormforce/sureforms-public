@@ -1554,7 +1554,7 @@ class Helper {
 			[
 				'sure_mails'        => [
 					'title'                 => __( 'SureMail', 'sureforms' ),
-					'singleLineDescription' => __( 'Supercharge Your Email Deliverability!', 'sureforms' ),
+					'singleLineDescription' => __( 'Boost Your Email Deliverability Instantly!', 'sureforms' ),
 					'subtitle'              => __( 'Access a powerful, easy-to-use email delivery service that ensures your emails land in inboxes, not spam folders. Automate your WordPress email workflows confidently with SureMail.', 'sureforms' ),
 					'status'                => self::get_plugin_status( 'suremails/suremails.php' ),
 					'slug'                  => 'suremails',
