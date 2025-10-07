@@ -1665,7 +1665,7 @@ class Helper {
 		if ( $days_since_rotation >= 2 ) {
 			// Rotate to next plugin.
 			++$plugin_index;
-			$plugin_index = $plugin_index % $total_plugins;
+			$plugin_index %= $total_plugins;
 
 			// Update the rotation data.
 			self::update_srfm_option(
