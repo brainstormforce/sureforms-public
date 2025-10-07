@@ -1,5 +1,5 @@
 import { __ } from '@wordpress/i18n';
-import { Button, Container, Label, Toaster } from '@bsf/force-ui';
+import { Button, Container, Label, Title, Toaster } from '@bsf/force-ui';
 import {
 	cn,
 	getPluginStatusText,
@@ -52,23 +52,28 @@ export default () => {
 									className="gap-1.5 p-1"
 								>
 									<img
-										className="w-5 h-5"
+										className="w-6 h-6"
 										src={ plugin.logo }
 										alt={ plugin.title }
 									/>
-									<Label size="sm">
-										{ plugin.title }
+									<Label size="md">{ plugin.title }</Label>
+								</Container>
+								<Container className="flex flex-col gap-0.5 text-[#141338] p-1">
+									<span
+										className="font-semibold text-base leading-6"
+									>
+										{ plugin.singleLineDescription }
+									</span>
+									<Label
+										size="sm"
+										variant="help"
+										className="font-normal gap-0.5"
+									>
+										{ plugin.subtitle }
 									</Label>
 								</Container>
-								<Label
-									size="sm"
-									variant="help"
-									className="font-normal p-1 gap-0.5"
-								>
-									{ plugin.subtitle }
-								</Label>
 							</Container.Item>
-							<Container.Item className="flex gap-0.5 pt-2 pb-1 px-1 mt-auto">
+							<Container.Item className="flex gap-0.5 pt-1 px-1 mt-auto pb-1">
 								<Button
 									className={ cn(
 										'w-fit focus:[box-shadow:none]',

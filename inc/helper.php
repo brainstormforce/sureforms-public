@@ -1554,6 +1554,7 @@ class Helper {
 			[
 				'sure_mails'        => [
 					'title'       => __( 'SureMail', 'sureforms' ),
+					'singleLineDescription' => __( 'Supercharge Your Email Deliverability!', 'sureforms' ),
 					'subtitle'    => __( 'Access a powerful, easy-to-use email delivery service that ensures your emails land in inboxes, not spam folders. Automate your WordPress email workflows confidently with SureMail.', 'sureforms' ),
 					'status'      => self::get_plugin_status( 'suremails/suremails.php' ),
 					'slug'        => 'suremails',
@@ -1563,7 +1564,8 @@ class Helper {
 				],
 				'sure_triggers'     => [
 					'title'       => __( 'OttoKit', 'sureforms' ),
-					'subtitle'    => __( 'Automate your WordPress workflows effortlessly. Connect apps, sync data, and run actions using a clean, visual automation builder.', 'sureforms' ),
+					'singleLineDescription' => __( 'Automate Your WordPress Workflows Like Magic!', 'sureforms' ),
+					'subtitle'    => __( 'Connect apps, sync data, and run actions using a clean, visual automation builder.', 'sureforms' ),
 					'description' => __( 'OttoKit is a powerful automation platform that helps you connect your various plugins and apps together. It allows you to automate repetitive tasks, so you can focus on more important work.', 'sureforms' ),
 					'status'      => self::get_plugin_status( 'suretriggers/suretriggers.php' ),
 					'slug'        => 'suretriggers',
@@ -1575,6 +1577,7 @@ class Helper {
 				],
 				'uae'               => [
 					'title'    => __( 'Ultimate Addons for Elementor', 'sureforms' ),
+					'singleLineDescription' => __( 'Power Up Elementor to Build Stunning Websites Faster!', 'sureforms' ),
 					'subtitle' => __( 'Enhance Elementor with powerful widgets and templates. Build stunning, high-performing websites faster with creative design elements and seamless customization.', 'sureforms' ),
 					'status'   => self::get_plugin_status( 'header-footer-elementor/header-footer-elementor.php' ),
 					'slug'     => 'header-footer-elementor',
@@ -1583,7 +1586,8 @@ class Helper {
 				],
 				'starter_templates' => [
 					'title'       => __( 'Starter Templates', 'sureforms' ),
-					'subtitle'    => __( 'Launch beautiful websites in minutes. Choose from professionally designed templates, import with one click, and customize effortlessly to match your brand.', 'sureforms' ),
+					'singleLineDescription' => __( 'Launch Beautiful Websites in Minutes!', 'sureforms' ),
+					'subtitle'    => __( 'Choose from professionally designed templates, import with one click, and customize effortlessly to match your brand.', 'sureforms' ),
 					'status'      => self::get_plugin_status( self::check_starter_template_plugin() ),
 					'slug'        => 'astra-sites',
 					'path'        => self::check_starter_template_plugin(),
