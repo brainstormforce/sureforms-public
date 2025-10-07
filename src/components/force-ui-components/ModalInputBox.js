@@ -17,9 +17,9 @@ const ModalInputBox = ( {
 	smartTagWrapperClasses = 'mt-6',
 	inputProps = {},
 	placeholder = '',
-	isNativeIntegrations = false,
+	labelWithTooltip = false,
 } ) => {
-	const nativeIntegrationLabel = () => (
+	const renderLabelWithTooltip = () => (
 		<Tooltip
 			content={ helpText }
 			title={ label }
@@ -49,9 +49,9 @@ const ModalInputBox = ( {
 						onChange={ ( val ) => onChange( val ) }
 						value={ value }
 						label={
-							! isNativeIntegrations
+							! labelWithTooltip
 								? label
-								: nativeIntegrationLabel()
+								: renderLabelWithTooltip()
 						}
 						required={ required }
 						placeholder={ placeholder }
@@ -74,7 +74,7 @@ const ModalInputBox = ( {
 				) }
 			</Container>
 
-			{ helpText && ! isNativeIntegrations && (
+			{ helpText && ! labelWithTooltip && (
 				<Label size="sm" variant="help" className="font-normal">
 					{ helpText }
 				</Label>
