@@ -366,6 +366,7 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 
 == Changelog ==
 = x.x.x =
+* Improvement: Added popup for getting started video in dashboard.
 * Fix: Resolved an issue where empty <p> tag in being added before and after repeater field table in form confirmation success message.
 = 1.12.3 - 30th September 2025 =
 * Fix: AI form generation not redirecting to the SureForms editor after creation.
