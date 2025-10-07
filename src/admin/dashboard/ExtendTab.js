@@ -1,5 +1,5 @@
 import { __ } from '@wordpress/i18n';
-import { Button, Container, Label, Title, Toaster } from '@bsf/force-ui';
+import { Button, Container, Label, Toaster } from '@bsf/force-ui';
 import {
 	cn,
 	getPluginStatusText,
@@ -59,9 +59,7 @@ export default () => {
 									<Label size="md">{ plugin.title }</Label>
 								</Container>
 								<Container className="flex flex-col gap-0.5 text-[#141338] p-1">
-									<span
-										className="font-semibold text-base leading-6"
-									>
+									<span className="font-semibold text-base leading-6">
 										{ plugin.singleLineDescription }
 									</span>
 									<Label
