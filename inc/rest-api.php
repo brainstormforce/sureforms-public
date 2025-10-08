@@ -382,7 +382,7 @@ class Rest_Api {
 						],
 					],
 				],
-				'entries/trash'  => [
+				'entries/trash'         => [
 					'methods'             => 'POST',
 					'callback'            => [ $this, 'update_entries_trash_status' ],
 					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
@@ -689,11 +689,11 @@ class Rest_Api {
 		// Return file information for download.
 		return new \WP_REST_Response(
 			[
-				'success'  => true,
-				'filename' => $result['filename'],
-				'filepath' => $result['filepath'],
-				'type'     => $result['type'],
-				'download_url' => admin_url( 'admin-ajax.php?action=srfm_download_export&file=' . urlencode( basename( $result['filepath'] ) ) ),
+				'success'      => true,
+				'filename'     => $result['filename'],
+				'filepath'     => $result['filepath'],
+				'type'         => $result['type'],
+				'download_url' => admin_url( 'admin-ajax.php?action=srfm_download_export&file=' . rawurlencode( basename( $result['filepath'] ) ) ),
 			],
 			200
 		);

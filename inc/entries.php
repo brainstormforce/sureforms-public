@@ -419,7 +419,7 @@ class Entries {
 				unlink( $csv_filepath );
 			}
 
-			$stream = fopen( $csv_filepath, 'wb' ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fopen
+			$stream = fopen( $csv_filepath, 'wb' ); // phpcs:ignore -- Using fopen to decrease the memory use.
 
 			if ( ! is_resource( $stream ) ) {
 				continue;
@@ -432,7 +432,7 @@ class Entries {
 			self::write_csv_header( $stream, $block_data['labels'] );
 			self::write_csv_rows( $stream, $results, $block_data['map'] );
 
-			fclose( $stream ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose
+			fclose( $stream ); // phpcs:ignore -- Using fopen to decrease the memory use.
 
 			// Add to ZIP if multiple forms.
 			if ( ! $is_single_form && $zip && filesize( $csv_filepath ) > 0 ) {
