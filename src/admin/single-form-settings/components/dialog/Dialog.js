@@ -36,6 +36,7 @@ import { useDispatch, useSelect } from '@wordpress/data';
 import { store as blockEditorStore } from '@wordpress/block-editor';
 import FormRestriction from '../form-restrictions/FormRestriction';
 import { FormRestrictionContext } from '../form-restrictions/context';
+import FeaturePreview from '../FeaturePreview';
 
 const Dialog = ( {
 	open,
@@ -165,6 +166,16 @@ const Dialog = ( {
 							pluginConnected,
 							setPluginConnected,
 						} }
+					/>
+				),
+			},
+			{
+				id: 'pdf-generation-preview',
+				label: __( 'PDF Generation', 'sureforms' ),
+				icon: <CpuIcon />,
+				component: (
+					<FeaturePreview
+						title={ __( 'PDF Generation', 'sureforms' ) }
 					/>
 				),
 			},
