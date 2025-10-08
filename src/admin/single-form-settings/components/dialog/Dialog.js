@@ -38,6 +38,8 @@ import FormRestriction from '../form-restrictions/FormRestriction';
 import { FormRestrictionContext } from '../form-restrictions/context';
 import FeaturePreview from '../FeaturePreview';
 
+import { FileDown } from 'lucide-react';
+
 const Dialog = ( {
 	open,
 	setOpen,
@@ -175,7 +177,60 @@ const Dialog = ( {
 				icon: <CpuIcon />,
 				component: (
 					<FeaturePreview
-						title={ __( 'PDF Generation', 'sureforms' ) }
+						featureName={ __( 'PDF Generation', 'sureforms' ) }
+						icon={ <FileDown className="text-orange-500" size={40} strokeWidth={ 1 } /> }
+						title={ __( 'Generate Submission PDFs', 'sureforms' ) }
+						subtitle={ __( 'Turn every form entry into a polished PDF file—perfect for reports, records, or sharing.', 'sureforms' ) }
+						featureList = {
+							[
+								__( 'Automatically create PDFs from form submissions.', 'sureforms' ),
+								__( 'Customize PDF templates with your branding.', 'sureforms' ),
+								__( 'Download or email PDFs instantly.', 'sureforms' ),
+							]
+						}
+						utmMedium='pdf-preview-single-form-settings'
+					/>
+				),
+			},
+			{
+				id: 'user-login-preview',
+				label: __( 'User Registration', 'sureforms' ),
+				icon: <CpuIcon />,
+				component: (
+					<FeaturePreview
+						featureName={ __( 'User Registration', 'sureforms' ) }
+						icon={ <FileDown className="text-orange-500" size={40} strokeWidth={ 1 } /> }
+						title={ __( 'Register Users with SureForms', 'sureforms' ) }
+						subtitle={ __( 'Streamline the user onboarding for your sites with form-powered registration.', 'sureforms' ) }
+						featureList = {
+							[
+								__( 'Register new users directly from form submissions.', 'sureforms' ),
+								__( 'Update existing accounts with custom data.', 'sureforms' ),
+								__( 'Assign roles and control access automatically.', 'sureforms' ),
+							]
+						}
+						utmMedium='user-registration-preview-single-form-settings'
+					/>
+				),
+			},
+			{
+				id: 'post-feed-preview',
+				label: __( 'Post Feed', 'sureforms' ),
+				icon: <CpuIcon />,
+				component: (
+					<FeaturePreview
+						featureName={ __( 'Post Feed', 'sureforms' ) }
+						icon={ <FileDown className="text-orange-500" size={40} strokeWidth={ 1 } /> }
+						title={ __( 'Register Users with SureForms', 'sureforms' ) }
+						subtitle={ __( 'Streamline the user onboarding for your sites with form-powered registration.', 'sureforms' ) }
+						featureList = {
+							[
+								__( 'Register new users directly from form submissions.', 'sureforms' ),
+								__( 'Update existing accounts with custom data.', 'sureforms' ),
+								__( 'Assign roles and control access automatically.', 'sureforms' ),
+							]
+						}
+						utmMedium='post-feed-preview-single-form-settings'
 					/>
 				),
 			},

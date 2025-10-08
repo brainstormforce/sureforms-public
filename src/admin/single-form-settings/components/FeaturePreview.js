@@ -1,90 +1,100 @@
-import { __ } from '@wordpress/i18n'
-import TabContentWrapper from '@Components/tab-content-wrapper'
-import { Button, Container, Label } from '@bsf/force-ui'
-import { Check, FileText } from 'lucide-react'
+import { __ } from '@wordpress/i18n';
+import { Button, Container, Label, Title } from '@bsf/force-ui';
+import { Dot, ArrowLeftIcon, Check } from 'lucide-react';
+import { addQueryParam, cn } from '@Utils/Helpers';
 
 const FeaturePreview = ({
-    title = __( 'Post Feed', 'sureforms' ),
-    subtitle = __( 'Automatically create WordPress posts from form submissions.', 'sureforms' ),
+    featureName = __('Post Feed', 'sureforms'),
+    icon = <Check className="text-green-500" size={40} strokeWidth={1} />,
+    title = __('Automatically create WordPress posts from form submissions.', 'sureforms'),
+    subtitle = __('Unlock the power of automation by seamlessly converting form submissions into WordPress posts. With our Post Feed feature, you can effortlessly map form fields to post fields and automate content publishing without any extra steps.', 'sureforms'),
+    featureList = [
+        __('Create posts, pages, or CPTs from form entries', 'sureforms'),
+        __('Map form fields to post fields easily', 'sureforms'),
+        __('Automate content publishing with no extra steps', 'sureforms'),
+    ],
+    utmMedium = 'pdf-preview-single-form-settings',
+    actionLeftContent,
+    shouldShowAutoSaveText = true,
+    autoSaveHelpText = __('Generate and customize PDF copies of form submissions.', 'sureforms')
 }) => {
-  return (
-		<TabContentWrapper title={ title }>
-			<div className="space-y-6">
-				<Container
-					direction="column"
-					className="bg-white p-6 rounded-xl border border-solid border-border-subtle"
-				>
-					{/* Icon */}
-					<Container.Item className="mb-6">
-						<div className="w-12 h-12 flex items-center justify-center rounded-lg bg-orange-50">
-							<FileText className="w-6 h-6 text-orange-500" strokeWidth={ 2 } />
-						</div>
-					</Container.Item>
 
-					{/* Title */}
-					<Container.Item className="mb-4">
-						<Label
-							as="h3"
-							size="lg"
-							className="text-text-primary font-semibold text-xl"
-						>
-							{ title }
-						</Label>
-					</Container.Item>
+    return (
+        <div className="space-y-7 pb-8">
+            {/* Header */}
+            <Container align="center" justify="between">
+                <Container className="gap-0" direction="column">
+                    <Container.Item className="flex items-center gap-2">
+                        <Title tag="h4" title={featureName} size="md" />
+                    </Container.Item>
+                    <Container.Item>
+                        {shouldShowAutoSaveText && (
+                            <Label size="sm" variant="help" className="text-text-on-button-disabled font-normal">
+                                {autoSaveHelpText}
+                            </Label>
+                        )}
+                    </Container.Item>
+                </Container>
+                <Container align="center" className="gap-3">
+                    {actionLeftContent}
+                </Container>
+            </Container>
 
-					{/* Description */}
-					<Container.Item className="mb-6">
-						<Label
-							size="sm"
-							className="text-text-tertiary text-base font-normal leading-relaxed"
-						>
-							{ subtitle }
-						</Label>
-					</Container.Item>
+            {/* Content */}
+            <div className={cn('bg-background-primary rounded-xl p-4 shadow-sm', 'shadow-sm border-[0.5px] border-[#E5E7EB]')}>
+                <div className="bg-background-secondary p-2 min-h-1 rounded-lg">
+                    <Container direction="column" className="bg-white p-6 rounded-md shadow-sm gap-3">
+                        {/* Icon */}
+                        <Container.Item>{icon}</Container.Item>
 
-					{/* Features List */}
-					<Container
-						direction="column"
-						className="gap-3 mb-6"
-					>
-						<Container.Item className="flex items-start gap-3">
-							<Check className="w-5 h-5 text-text-primary mt-0.5 flex-shrink-0" strokeWidth={ 2 } />
-							<Label size="sm" className="text-text-primary font-normal">
-								{ __( 'Create posts, pages, or CPTs from form entries', 'sureforms' ) }
-							</Label>
-						</Container.Item>
-						<Container.Item className="flex items-start gap-3">
-							<Check className="w-5 h-5 text-text-primary mt-0.5 flex-shrink-0" strokeWidth={ 2 } />
-							<Label size="sm" className="text-text-primary font-normal">
-								{ __( 'Map form fields to post fields easily', 'sureforms' ) }
-							</Label>
-						</Container.Item>
-						<Container.Item className="flex items-start gap-3">
-							<Check className="w-5 h-5 text-text-primary mt-0.5 flex-shrink-0" strokeWidth={ 2 } />
-							<Label size="sm" className="text-text-primary font-normal">
-								{ __( 'Automate content publishing with no extra steps', 'sureforms' ) }
-							</Label>
-						</Container.Item>
-					</Container>
+                        {/* Title */}
+                        <Container.Item>
+                            <Label as="h3" size="lg" className="text-text-primary font-semibold text-xl">
+                                {title}
+                            </Label>
+                        </Container.Item>
 
-					{/* Upgrade Button */}
-					<Container.Item>
-						<Button
-							className="w-fit px-6"
-							size="md"
-							variant="primary"
-							onClick={ () => {
-								// Add upgrade link logic here
-								window.open( srfm_admin?.pricing_page_url || '#', '_blank', 'noreferrer' )
-							} }
-						>
-							{ __( 'Upgrade Now', 'sureforms' ) }
-						</Button>
-					</Container.Item>
-				</Container>
-			</div>
-		</TabContentWrapper>
-  )
-}
+                        {/* Description */}
+                        <Container.Item>
+                            <Label size="sm" className="text-text-tertiary text-base font-normal leading-relaxed">
+                                {subtitle}
+                            </Label>
+                        </Container.Item>
 
-export default FeaturePreview
+                        {/* Features List */}
+                        <Container direction="column" className="gap-3">
+                            {featureList.map((point, index) => (
+                                <Container.Item key={index} className="flex items-start">
+                                    <Dot className="w-5 h-5 text-text-primary"strokeWidth={2} />
+                                    <Label size="sm" className="text-text-primary font-normal">
+                                        {point}
+                                    </Label>
+                                </Container.Item>
+                            ))}
+                        </Container>
+
+                        {/* Upgrade Button */}
+                        <Container.Item>
+                            <Button
+                                className="w-fit p-2.5"
+                                size="md"
+                                variant="primary"
+                                onClick={() => {
+                                    const url = addQueryParam(
+                                        srfm_admin?.pricing_page_url || srfm_admin?.sureforms_pricing_page,
+                                        utmMedium
+                                    ) || '#';
+                                    window.open(url, '_blank', 'noreferrer');
+                                }}
+                            >
+                                {__('Upgrade Now', 'sureforms')}
+                            </Button>
+                        </Container.Item>
+                    </Container>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default FeaturePreview;

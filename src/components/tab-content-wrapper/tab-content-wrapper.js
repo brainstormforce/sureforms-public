@@ -15,6 +15,7 @@ const TabContentWrapper = ( {
 	actionLeftContent,
 	actionBtnDisabled = false,
 	shouldShowAutoSaveText = false,
+	autoSaveHelpText =__( 'All changes will be saved automatically when you press back.', 'sureforms' )
 } ) => {
 	const handleBack = () => {
 		if ( typeof onClickBack !== 'function' ) {
@@ -31,8 +32,6 @@ const TabContentWrapper = ( {
 
 		onClickAction( data );
 	};
-
-	const autoSaveHelpText = __( 'All changes will be saved automatically when you press back.', 'sureforms' );
 
 	return (
 		<div className="space-y-7 pb-8">
