@@ -67,27 +67,13 @@ class Export {
 	}
 
 	/**
-	 * Handle Export form
+	 * Get forms by post IDs.
 	 *
-	 * @since 0.0.1
-	 * @return void
+	 * @since x.x.x
+	 * @param array<int, string> $post_ids Array of post IDs to retrieve forms for.
+	 * @return array Array of forms with their post data and meta data.
 	 */
-	public function handle_export_form() {
-		if ( empty( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'export_form_nonce' ) ) {
-			$error_message = __( 'Nonce verification failed.', 'sureforms' );
-
-			$error_data = [
-				'error' => $error_message,
-			];
-			wp_send_json_error( $error_data );
-		}
-
-		if ( isset( $_POST['post_id'] ) ) {
-			$post_ids = explode( ',', sanitize_text_field( wp_unslash( $_POST['post_id'] ) ) );
-		} else {
-			$post_ids = [];
-		}
-
+	public function get_forms( $post_ids = [] ) {
 		$posts = [];
 
 		foreach ( $post_ids as $post_id ) {
@@ -113,7 +99,106 @@ class Export {
 			$posts[ $key ]['post_meta'] = $post_metas;
 		}
 
+		return $posts;
+	}
+
+	/**
+	 * Handle Export form
+	 *
+	 * @since 0.0.1
+	 * @return void
+	 */
+	public function handle_export_form() {
+		if ( empty( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'export_form_nonce' ) ) {
+			$error_message = __( 'Nonce verification failed.', 'sureforms' );
+
+			$error_data = [
+				'error' => $error_message,
+			];
+			wp_send_json_error( $error_data );
+		}
+
+		if ( isset( $_POST['post_id'] ) ) {
+			$post_ids = explode( ',', sanitize_text_field( wp_unslash( $_POST['post_id'] ) ) );
+		} else {
+			$post_ids = [];
+		}
+
+		$posts = $this->get_forms( $post_ids );
 		wp_send_json( $posts );
+	}
+
+	/**
+	 * Import Forms
+	 *
+	 * @param array<array<array<string>>> $data           Form data to import.
+	 * @param string                      $default_status Default post status for imported forms. Default is 'draft'.
+	 *
+	 * @since x.x.x
+	 * @return array<int, int>|\WP_Error Returns mapping array on success, WP_Error on failure.
+	 */
+	public function import_forms( $data, $default_status = 'draft' ) {
+		$forms_mapping = [];
+		foreach ( $data as $form_data ) {
+			// sanitize the data before saving.
+			$old_id       = intval( $form_data['post']['ID'] );
+			$post_content = wp_kses_post( $form_data['post']['post_content'] );
+			$post_title   = sanitize_text_field( $form_data['post']['post_title'] );
+			$post_meta    = $form_data['post_meta'];
+			$post_type    = sanitize_text_field( $form_data['post']['post_type'] );
+
+			$post_content = addslashes( $post_content );
+
+			// Check if sureforms/form exists in post_content.
+			if ( 'sureforms_form' === $post_type ) {
+				$new_post = [
+					'post_title'  => $post_title,
+					'post_status' => $default_status,
+					'post_type'   => 'sureforms_form',
+				];
+
+				$post_id = wp_insert_post( $new_post );
+
+				// Update the post content formId to the new post id.
+				$post_content = str_replace(
+					'\"formId\":' . intval( $form_data['post']['ID'] ),
+					'\"formId\":' . intval( $post_id ),
+					$post_content
+				);
+
+				// update the post content.
+				wp_update_post(
+					[
+						'ID'           => $post_id,
+						'post_content' => $post_content,
+					]
+				);
+
+				if ( ! $post_id ) {
+					return new \WP_Error( 'import_forms_failed', __( 'Failed to import form.', 'sureforms' ) );
+				}
+
+				$forms_mapping[ $old_id ] = $post_id;
+
+				// Update post meta.
+				foreach ( $post_meta as $meta_key => $meta_value ) {
+					// Check if the meta key is one of the unserialized post metas then add it as is.
+					if ( in_array( $meta_key, $this->get_unserialized_post_metas(), true ) ) {
+						add_post_meta( $post_id, $meta_key, $meta_value );
+					} else {
+						if ( is_array( $meta_value ) && isset( $meta_value[0] ) ) {
+							add_post_meta( $post_id, $meta_key, $meta_value[0] );
+						} else {
+							add_post_meta( $post_id, $meta_key, $meta_value );
+						}
+					}
+				}
+			} else {
+				return new \WP_Error( 'import_forms_invalid_post_type', __( 'Failed to import form.', 'sureforms' ) );
+			}
+		}
+
+		return $forms_mapping;
 	}
 
 	/**
@@ -146,62 +231,11 @@ class Export {
 		if ( ! is_iterable( $data ) ) {
 			wp_send_json_error( __( 'Failed to import form.', 'sureforms' ) );
 		}
-		foreach ( $data as $form_data ) {
 
-			// sanitize the data before saving.
-			$post_content = wp_kses_post( $form_data['post']['post_content'] );
-			$post_title   = sanitize_text_field( $form_data['post']['post_title'] );
-			$post_meta    = $form_data['post_meta'];
-			$post_type    = sanitize_text_field( $form_data['post']['post_type'] );
-
-			$post_content = addslashes( $post_content );
-
-			// Check if sureforms/form exists in post_content.
-			if ( 'sureforms_form' === $post_type ) {
-				$new_post = [
-					'post_title'  => $post_title,
-					'post_status' => 'draft',
-					'post_type'   => 'sureforms_form',
-				];
-
-				$post_id = wp_insert_post( $new_post );
-
-				// Update the post content formId to the new post id.
-				$post_content = str_replace(
-					'\"formId\":' . intval( $form_data['post']['ID'] ),
-					'\"formId\":' . intval( $post_id ),
-					$post_content
-				);
-
-				// update the post content.
-				wp_update_post(
-					[
-						'ID'           => $post_id,
-						'post_content' => $post_content,
-					]
-				);
-
-				if ( ! $post_id ) {
-					http_response_code( 400 );
-					wp_send_json_error( __( 'Failed to import form.', 'sureforms' ) );
-				}
-				// Update post meta.
-				foreach ( $post_meta as $meta_key => $meta_value ) {
-					// Check if the meta key is one of the unserialized post metas then add it as is.
-					if ( in_array( $meta_key, $this->get_unserialized_post_metas(), true ) ) {
-						add_post_meta( $post_id, $meta_key, $meta_value );
-					} else {
-						if ( is_array( $meta_value ) && isset( $meta_value[0] ) ) {
-							add_post_meta( $post_id, $meta_key, $meta_value[0] );
-						} else {
-							add_post_meta( $post_id, $meta_key, $meta_value );
-						}
-					}
-				}
-			} else {
-				http_response_code( 400 );
-				wp_send_json_error( __( 'Failed to import form.', 'sureforms' ) );
-			}
+		$result = $this->import_forms( $data );
+		if ( is_wp_error( $result ) ) {
+			http_response_code( 400 );
+			wp_send_json_error( $result->get_error_message() );
 		}
 
 		// Return the responses.
