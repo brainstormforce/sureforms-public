@@ -1,4 +1,4 @@
-import { useState, forwardRef, useMemo } from '@wordpress/element';
+import { useState, useMemo } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { Search, Calendar, ChevronsUpDown, Edit3, Trash2 } from 'lucide-react';
 import {
@@ -10,36 +10,7 @@ import {
 	Input,
 	Pagination,
 } from '@bsf/force-ui';
-
-const CustomButton = forwardRef(
-	(
-		{
-			ariaLabel,
-			icon,
-			onClick,
-			variant = 'ghost',
-			classNames = 'text-icon-secondary',
-			label = '',
-			...props
-		},
-		ref
-	) => {
-		return (
-			<Button
-				aria-label={ ariaLabel }
-				className={ classNames }
-				variant={ variant }
-				size="xs"
-				onClick={ onClick }
-				icon={ icon }
-				ref={ ref }
-				{ ...props }
-			>
-				{ label || '' }
-			</Button>
-		);
-	}
-);
+import DatePicker from '@Admin/components/DatePicker';
 
 const EntriesListingPage = () => {
 	const [ selectedEntries, setSelectedEntries ] = useState( [] );
@@ -333,12 +304,22 @@ const EntriesListingPage = () => {
 								</div>
 
 								<div className="w-[200px]">
-									<Input
-										type="text"
-										placeholder="mm/dd/yyyy"
-										prefix={
-											<Calendar className="w-4 h-4 text-icon-secondary" />
-										}
+									<DatePicker
+										trigger={ ( { setShow } ) => (
+											<Input
+												type="text"
+												placeholder="mm/dd/yyyy"
+												readOnly
+												onClick={ () =>
+													setShow(
+														( prev ) => ! prev
+													)
+												}
+												prefix={
+													<Calendar className="w-4 h-4 text-icon-secondary" />
+												}
+											/>
+										) }
 									/>
 								</div>
 
@@ -417,26 +398,26 @@ const EntriesListingPage = () => {
 											className="gap-2"
 											justify="end"
 										>
-											<CustomButton
-												ariaLabel={ __(
+											<Button
+												variant="ghost"
+												aria-label={ __(
 													'Edit',
 													'sureforms'
 												) }
-												icon={
-													<Edit3 className="size-4" />
-												}
+												size="xs"
+												icon={ <Edit3 /> }
 												onClick={ () => {
 													// Handle edit
 												} }
 											/>
-											<CustomButton
-												ariaLabel={ __(
+											<Button
+												variant="ghost"
+												aria-label={ __(
 													'Delete',
 													'sureforms'
 												) }
-												icon={
-													<Trash2 className="text-icon-secondary size-4" />
-												}
+												size="xs"
+												icon={ <Trash2 /> }
 												onClick={ () => {
 													// Handle delete
 												} }
