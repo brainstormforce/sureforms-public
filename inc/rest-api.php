@@ -11,6 +11,7 @@ use SRFM\Inc\AI_Form_Builder\AI_Auth;
 use SRFM\Inc\AI_Form_Builder\AI_Form_Builder;
 use SRFM\Inc\AI_Form_Builder\Field_Mapping;
 use SRFM\Inc\Database\Tables\Entries;
+use SRFM\Inc\Entries as Entries_Class;
 use SRFM\Inc\Traits\Get_Instance;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -325,7 +326,376 @@ class Rest_Api {
 						],
 					],
 				],
+				// Entries endpoints.
+				'entries/list'          => [
+					'methods'             => 'GET',
+					'callback'            => [ $this, 'get_entries_list' ],
+					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
+					'args'                => [
+						'form_id'  => [
+							'sanitize_callback' => 'absint',
+							'default'           => 0,
+						],
+						'status'   => [
+							'sanitize_callback' => 'sanitize_text_field',
+							'default'           => 'all',
+						],
+						'search'   => [
+							'sanitize_callback' => 'sanitize_text_field',
+							'default'           => '',
+						],
+						'month'    => [
+							'sanitize_callback' => 'sanitize_text_field',
+							'default'           => '',
+						],
+						'orderby'  => [
+							'sanitize_callback' => 'sanitize_text_field',
+							'default'           => 'created_at',
+						],
+						'order'    => [
+							'sanitize_callback' => 'sanitize_text_field',
+							'default'           => 'DESC',
+						],
+						'per_page' => [
+							'sanitize_callback' => 'absint',
+							'default'           => 20,
+						],
+						'page'     => [
+							'sanitize_callback' => 'absint',
+							'default'           => 1,
+						],
+					],
+				],
+				'entries/read-status'   => [
+					'methods'             => 'POST',
+					'callback'            => [ $this, 'update_entries_read_status' ],
+					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
+					'args'                => [
+						'entry_ids' => [
+							'required'          => true,
+							'sanitize_callback' => [ $this, 'sanitize_entry_ids' ],
+						],
+						'action'    => [
+							'required'          => true,
+							'sanitize_callback' => 'sanitize_text_field',
+							'validate_callback' => [ $this, 'validate_read_action' ],
+						],
+					],
+				],
+				'entries/trash'  => [
+					'methods'             => 'POST',
+					'callback'            => [ $this, 'update_entries_trash_status' ],
+					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
+					'args'                => [
+						'entry_ids' => [
+							'required'          => true,
+							'sanitize_callback' => [ $this, 'sanitize_entry_ids' ],
+						],
+						'action'    => [
+							'required'          => true,
+							'sanitize_callback' => 'sanitize_text_field',
+							'validate_callback' => [ $this, 'validate_trash_action' ],
+						],
+					],
+				],
+				'entries/delete'        => [
+					'methods'             => 'POST',
+					'callback'            => [ $this, 'delete_entries' ],
+					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
+					'args'                => [
+						'entry_ids' => [
+							'required'          => true,
+							'sanitize_callback' => [ $this, 'sanitize_entry_ids' ],
+						],
+					],
+				],
+				'entries/export'        => [
+					'methods'             => 'POST',
+					'callback'            => [ $this, 'export_entries' ],
+					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
+					'args'                => [
+						'entry_ids' => [
+							'sanitize_callback' => [ $this, 'sanitize_entry_ids' ],
+							'default'           => [],
+						],
+						'form_id'   => [
+							'sanitize_callback' => 'absint',
+							'default'           => 0,
+						],
+						'status'    => [
+							'sanitize_callback' => 'sanitize_text_field',
+							'default'           => 'all',
+						],
+						'search'    => [
+							'sanitize_callback' => 'sanitize_text_field',
+							'default'           => '',
+						],
+						'month'     => [
+							'sanitize_callback' => 'sanitize_text_field',
+							'default'           => '',
+						],
+					],
+				],
 			]
+		);
+	}
+
+	/**
+	 * Sanitize entry IDs.
+	 *
+	 * @param mixed $value Value to sanitize.
+	 * @since 1.0.0
+	 * @return array<int>
+	 */
+	public function sanitize_entry_ids( $value ) {
+		if ( is_array( $value ) ) {
+			return array_filter( array_map( 'absint', $value ) );
+		}
+		if ( is_numeric( $value ) ) {
+			return [ absint( $value ) ];
+		}
+		if ( is_string( $value ) ) {
+			// Handle comma-separated values.
+			$ids = explode( ',', $value );
+			return array_filter( array_map( 'absint', $ids ) );
+		}
+		return [];
+	}
+
+	/**
+	 * Validate read action parameter.
+	 *
+	 * @param string $param Action parameter value.
+	 * @since 1.0.0
+	 * @return bool
+	 */
+	public function validate_read_action( $param ) {
+		return in_array( $param, [ 'read', 'unread' ], true );
+	}
+
+	/**
+	 * Validate trash action parameter.
+	 *
+	 * @param string $param Action parameter value.
+	 * @since 1.0.0
+	 * @return bool
+	 */
+	public function validate_trash_action( $param ) {
+		return in_array( $param, [ 'trash', 'restore' ], true );
+	}
+
+	/**
+	 * Get entries list with filters and pagination.
+	 *
+	 * @param \WP_REST_Request $request Full details about the request.
+	 * @since 1.0.0
+	 * @return \WP_REST_Response
+	 */
+	public function get_entries_list( $request ) {
+		$nonce = Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) );
+
+		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
+			return new \WP_REST_Response(
+				[ 'error' => __( 'Nonce verification failed.', 'sureforms' ) ],
+				403
+			);
+		}
+
+		$params = $request->get_params();
+
+		$args = [
+			'form_id'  => isset( $params['form_id'] ) ? absint( $params['form_id'] ) : 0,
+			'status'   => isset( $params['status'] ) ? sanitize_text_field( $params['status'] ) : 'all',
+			'search'   => isset( $params['search'] ) ? sanitize_text_field( $params['search'] ) : '',
+			'month'    => isset( $params['month'] ) ? sanitize_text_field( $params['month'] ) : '',
+			'orderby'  => isset( $params['orderby'] ) ? sanitize_text_field( $params['orderby'] ) : 'created_at',
+			'order'    => isset( $params['order'] ) ? sanitize_text_field( $params['order'] ) : 'DESC',
+			'per_page' => isset( $params['per_page'] ) ? absint( $params['per_page'] ) : 20,
+			'page'     => isset( $params['page'] ) ? absint( $params['page'] ) : 1,
+		];
+
+		$result = Entries_Class::get_entries( $args );
+
+		return new \WP_REST_Response( $result, 200 );
+	}
+
+	/**
+	 * Update entries read status (read/unread).
+	 *
+	 * @param \WP_REST_Request $request Full details about the request.
+	 * @since 1.0.0
+	 * @return \WP_REST_Response
+	 */
+	public function update_entries_read_status( $request ) {
+		$nonce = Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) );
+
+		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
+			return new \WP_REST_Response(
+				[ 'error' => __( 'Nonce verification failed.', 'sureforms' ) ],
+				403
+			);
+		}
+
+		$entry_ids = $request->get_param( 'entry_ids' );
+		$action    = $request->get_param( 'action' );
+
+		if ( empty( $entry_ids ) ) {
+			return new \WP_REST_Response(
+				[ 'error' => __( 'No entry IDs provided.', 'sureforms' ) ],
+				400
+			);
+		}
+
+		if ( empty( $action ) ) {
+			return new \WP_REST_Response(
+				[ 'error' => __( 'No action provided.', 'sureforms' ) ],
+				400
+			);
+		}
+
+		// Validate action.
+		if ( ! $this->validate_read_action( $action ) ) {
+			return new \WP_REST_Response(
+				[ 'error' => __( 'Invalid action. Must be "read" or "unread".', 'sureforms' ) ],
+				400
+			);
+		}
+
+		$result = Entries_Class::update_status( $entry_ids, $action );
+
+		$status_code = $result['success'] ? 200 : 400;
+
+		return new \WP_REST_Response( $result, $status_code );
+	}
+
+	/**
+	 * Update entries trash status (trash/restore).
+	 *
+	 * @param \WP_REST_Request $request Full details about the request.
+	 * @since 1.0.0
+	 * @return \WP_REST_Response
+	 */
+	public function update_entries_trash_status( $request ) {
+		$nonce = Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) );
+
+		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
+			return new \WP_REST_Response(
+				[ 'error' => __( 'Nonce verification failed.', 'sureforms' ) ],
+				403
+			);
+		}
+
+		$entry_ids = $request->get_param( 'entry_ids' );
+		$action    = $request->get_param( 'action' );
+
+		if ( empty( $entry_ids ) ) {
+			return new \WP_REST_Response(
+				[ 'error' => __( 'No entry IDs provided.', 'sureforms' ) ],
+				400
+			);
+		}
+
+		if ( empty( $action ) ) {
+			return new \WP_REST_Response(
+				[ 'error' => __( 'No action provided.', 'sureforms' ) ],
+				400
+			);
+		}
+
+		// Validate action.
+		if ( ! $this->validate_trash_action( $action ) ) {
+			return new \WP_REST_Response(
+				[ 'error' => __( 'Invalid action. Must be "trash" or "restore".', 'sureforms' ) ],
+				400
+			);
+		}
+
+		$result = Entries_Class::update_status( $entry_ids, $action );
+
+		$status_code = $result['success'] ? 200 : 400;
+
+		return new \WP_REST_Response( $result, $status_code );
+	}
+
+	/**
+	 * Permanently delete entries.
+	 *
+	 * @param \WP_REST_Request $request Full details about the request.
+	 * @since 1.0.0
+	 * @return \WP_REST_Response
+	 */
+	public function delete_entries( $request ) {
+		$nonce = Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) );
+
+		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
+			return new \WP_REST_Response(
+				[ 'error' => __( 'Nonce verification failed.', 'sureforms' ) ],
+				403
+			);
+		}
+
+		$entry_ids = $request->get_param( 'entry_ids' );
+
+		if ( empty( $entry_ids ) ) {
+			return new \WP_REST_Response(
+				[ 'error' => __( 'No entry IDs provided.', 'sureforms' ) ],
+				400
+			);
+		}
+
+		$result = Entries_Class::delete_entries( $entry_ids );
+
+		$status_code = $result['success'] ? 200 : 400;
+
+		return new \WP_REST_Response( $result, $status_code );
+	}
+
+	/**
+	 * Export entries to CSV or ZIP.
+	 *
+	 * @param \WP_REST_Request $request Full details about the request.
+	 * @since 1.0.0
+	 * @return \WP_REST_Response
+	 */
+	public function export_entries( $request ) {
+		$nonce = Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) );
+
+		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
+			return new \WP_REST_Response(
+				[ 'error' => __( 'Nonce verification failed.', 'sureforms' ) ],
+				403
+			);
+		}
+
+		$params = $request->get_params();
+
+		$args = [
+			'entry_ids' => isset( $params['entry_ids'] ) ? $this->sanitize_entry_ids( $params['entry_ids'] ) : [],
+			'form_id'   => isset( $params['form_id'] ) ? absint( $params['form_id'] ) : 0,
+			'status'    => isset( $params['status'] ) ? sanitize_text_field( $params['status'] ) : 'all',
+			'search'    => isset( $params['search'] ) ? sanitize_text_field( $params['search'] ) : '',
+			'month'     => isset( $params['month'] ) ? sanitize_text_field( $params['month'] ) : '',
+		];
+
+		$result = Entries_Class::export_entries( $args );
+
+		if ( ! $result['success'] ) {
+			return new \WP_REST_Response(
+				[ 'error' => $result['error'] ],
+				400
+			);
+		}
+
+		// Return file information for download.
+		return new \WP_REST_Response(
+			[
+				'success'  => true,
+				'filename' => $result['filename'],
+				'filepath' => $result['filepath'],
+				'type'     => $result['type'],
+				'download_url' => admin_url( 'admin-ajax.php?action=srfm_download_export&file=' . urlencode( basename( $result['filepath'] ) ) ),
+			],
+			200
 		);
 	}
 }
