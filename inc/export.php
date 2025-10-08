@@ -67,13 +67,15 @@ class Export {
 	}
 
 	/**
-	 * Get forms by post IDs.
+	 * Get forms with meta by post IDs.
+	 * Uses:
+	 *     - On websitedemos.net, for exporting the Spectra Block Patterns & Pages with SureForms form.
 	 *
 	 * @since x.x.x
 	 * @param array<int, string> $post_ids Array of post IDs to retrieve forms for.
 	 * @return array Array of forms with their post data and meta data.
 	 */
-	public function get_forms( $post_ids = [] ) {
+	public function get_forms_with_meta( $post_ids = [] ) {
 		$posts = [];
 
 		foreach ( $post_ids as $post_id ) {
@@ -124,12 +126,14 @@ class Export {
 			$post_ids = [];
 		}
 
-		$posts = $this->get_forms( $post_ids );
+		$posts = $this->get_forms_with_meta( $post_ids );
 		wp_send_json( $posts );
 	}
 
 	/**
-	 * Import Forms
+	 * Import Forms with Meta
+	 * Uses:
+	 *     - In Design Library for importing the Spectra Block Patterns and Pages with SureForms form.
 	 *
 	 * @param array<array<array<string>>> $data           Form data to import.
 	 * @param string                      $default_status Default post status for imported forms. Default is 'draft'.
@@ -137,7 +141,7 @@ class Export {
 	 * @since x.x.x
 	 * @return array<int, int>|\WP_Error Returns mapping array on success, WP_Error on failure.
 	 */
-	public function import_forms( $data, $default_status = 'draft' ) {
+	public function import_forms_with_meta( $data, $default_status = 'draft' ) {
 		$forms_mapping = [];
 		foreach ( $data as $form_data ) {
 			// sanitize the data before saving.
@@ -232,7 +236,7 @@ class Export {
 			wp_send_json_error( __( 'Failed to import form.', 'sureforms' ) );
 		}
 
-		$result = $this->import_forms( $data );
+		$result = $this->import_forms_with_meta( $data );
 		if ( is_wp_error( $result ) ) {
 			http_response_code( 400 );
 			wp_send_json_error( $result->get_error_message() );
