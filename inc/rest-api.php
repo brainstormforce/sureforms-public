@@ -249,198 +249,6 @@ class Rest_Api {
 	}
 
 	/**
-	 * Get endpoints
-	 *
-	 * @since 0.0.7
-	 * @return array<array<mixed>>
-	 */
-	private function get_endpoints() {
-		/*
-		 * @internal This filter is used to add custom endpoints.
-		 * @since 1.2.0
-		 * @param array<array<mixed>> $endpoints Endpoints.
-		 */
-		return apply_filters(
-			'srfm_rest_api_endpoints',
-			[
-				'generate-form'         => [
-					'methods'             => 'POST',
-					'callback'            => [ AI_Form_Builder::get_instance(), 'generate_ai_form' ],
-					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
-					'args'                => [
-						'use_system_message' => [
-							'sanitize_callback' => [ $this, 'sanitize_boolean_field' ],
-						],
-					],
-				],
-				// This route is used to map the AI response to SureForms fields markup.
-				'map-fields'            => [
-					'methods'             => 'POST',
-					'callback'            => [ Field_Mapping::get_instance(), 'generate_gutenberg_fields_from_questions' ],
-					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
-				],
-				// This route is used to initiate auth process when user tries to authenticate on billing portal.
-				'initiate-auth'         => [
-					'methods'             => 'GET',
-					'callback'            => [ AI_Auth::get_instance(), 'get_auth_url' ],
-					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
-				],
-				// This route is to used to decrypt the access key and save it in the database.
-				'handle-access-key'     => [
-					'methods'             => 'POST',
-					'callback'            => [ AI_Auth::get_instance(), 'handle_access_key' ],
-					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
-				],
-				// This route is to get the form submissions for the last 30 days.
-				'entries-chart-data'    => [
-					'methods'             => 'GET',
-					'callback'            => [ $this, 'get_entries_chart_data' ],
-					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
-				],
-				// This route is to get all forms data.
-				'form-data'             => [
-					'methods'             => 'GET',
-					'callback'            => [ $this, 'get_form_data' ],
-					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
-				],
-				// Onboarding endpoints.
-				'onboarding/set-status' => [
-					'methods'             => 'POST',
-					'callback'            => [ $this, 'set_onboarding_status' ],
-					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
-				],
-				'onboarding/get-status' => [
-					'methods'             => 'GET',
-					'callback'            => [ $this, 'get_onboarding_status' ],
-					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
-				],
-				// Plugin status endpoint.
-				'plugin-status'         => [
-					'methods'             => 'GET',
-					'callback'            => [ $this, 'get_plugin_status' ],
-					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
-					'args'                => [
-						'plugin' => [
-							'required'          => true,
-							'sanitize_callback' => 'sanitize_text_field',
-						],
-					],
-				],
-				// Entries endpoints.
-				'entries/list'          => [
-					'methods'             => 'GET',
-					'callback'            => [ $this, 'get_entries_list' ],
-					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
-					'args'                => [
-						'form_id'  => [
-							'sanitize_callback' => 'absint',
-							'default'           => 0,
-						],
-						'status'   => [
-							'sanitize_callback' => 'sanitize_text_field',
-							'default'           => 'all',
-						],
-						'search'   => [
-							'sanitize_callback' => 'sanitize_text_field',
-							'default'           => '',
-						],
-						'month'    => [
-							'sanitize_callback' => 'sanitize_text_field',
-							'default'           => '',
-						],
-						'orderby'  => [
-							'sanitize_callback' => 'sanitize_text_field',
-							'default'           => 'created_at',
-						],
-						'order'    => [
-							'sanitize_callback' => 'sanitize_text_field',
-							'default'           => 'DESC',
-						],
-						'per_page' => [
-							'sanitize_callback' => 'absint',
-							'default'           => 20,
-						],
-						'page'     => [
-							'sanitize_callback' => 'absint',
-							'default'           => 1,
-						],
-					],
-				],
-				'entries/read-status'   => [
-					'methods'             => 'POST',
-					'callback'            => [ $this, 'update_entries_read_status' ],
-					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
-					'args'                => [
-						'entry_ids' => [
-							'required'          => true,
-							'sanitize_callback' => [ $this, 'sanitize_entry_ids' ],
-						],
-						'action'    => [
-							'required'          => true,
-							'sanitize_callback' => 'sanitize_text_field',
-							'validate_callback' => [ $this, 'validate_read_action' ],
-						],
-					],
-				],
-				'entries/trash'         => [
-					'methods'             => 'POST',
-					'callback'            => [ $this, 'update_entries_trash_status' ],
-					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
-					'args'                => [
-						'entry_ids' => [
-							'required'          => true,
-							'sanitize_callback' => [ $this, 'sanitize_entry_ids' ],
-						],
-						'action'    => [
-							'required'          => true,
-							'sanitize_callback' => 'sanitize_text_field',
-							'validate_callback' => [ $this, 'validate_trash_action' ],
-						],
-					],
-				],
-				'entries/delete'        => [
-					'methods'             => 'POST',
-					'callback'            => [ $this, 'delete_entries' ],
-					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
-					'args'                => [
-						'entry_ids' => [
-							'required'          => true,
-							'sanitize_callback' => [ $this, 'sanitize_entry_ids' ],
-						],
-					],
-				],
-				'entries/export'        => [
-					'methods'             => 'POST',
-					'callback'            => [ $this, 'export_entries' ],
-					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
-					'args'                => [
-						'entry_ids' => [
-							'sanitize_callback' => [ $this, 'sanitize_entry_ids' ],
-							'default'           => [],
-						],
-						'form_id'   => [
-							'sanitize_callback' => 'absint',
-							'default'           => 0,
-						],
-						'status'    => [
-							'sanitize_callback' => 'sanitize_text_field',
-							'default'           => 'all',
-						],
-						'search'    => [
-							'sanitize_callback' => 'sanitize_text_field',
-							'default'           => '',
-						],
-						'month'     => [
-							'sanitize_callback' => 'sanitize_text_field',
-							'default'           => '',
-						],
-					],
-				],
-			]
-		);
-	}
-
-	/**
 	 * Sanitize entry IDs.
 	 *
 	 * @param mixed $value Value to sanitize.
@@ -696,6 +504,198 @@ class Rest_Api {
 				'download_url' => admin_url( 'admin-ajax.php?action=srfm_download_export&file=' . rawurlencode( basename( $result['filepath'] ) ) ),
 			],
 			200
+		);
+	}
+
+	/**
+	 * Get endpoints
+	 *
+	 * @since 0.0.7
+	 * @return array<array<mixed>>
+	 */
+	private function get_endpoints() {
+		/*
+		 * @internal This filter is used to add custom endpoints.
+		 * @since 1.2.0
+		 * @param array<array<mixed>> $endpoints Endpoints.
+		 */
+		return apply_filters(
+			'srfm_rest_api_endpoints',
+			[
+				'generate-form'         => [
+					'methods'             => 'POST',
+					'callback'            => [ AI_Form_Builder::get_instance(), 'generate_ai_form' ],
+					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
+					'args'                => [
+						'use_system_message' => [
+							'sanitize_callback' => [ $this, 'sanitize_boolean_field' ],
+						],
+					],
+				],
+				// This route is used to map the AI response to SureForms fields markup.
+				'map-fields'            => [
+					'methods'             => 'POST',
+					'callback'            => [ Field_Mapping::get_instance(), 'generate_gutenberg_fields_from_questions' ],
+					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
+				],
+				// This route is used to initiate auth process when user tries to authenticate on billing portal.
+				'initiate-auth'         => [
+					'methods'             => 'GET',
+					'callback'            => [ AI_Auth::get_instance(), 'get_auth_url' ],
+					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
+				],
+				// This route is to used to decrypt the access key and save it in the database.
+				'handle-access-key'     => [
+					'methods'             => 'POST',
+					'callback'            => [ AI_Auth::get_instance(), 'handle_access_key' ],
+					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
+				],
+				// This route is to get the form submissions for the last 30 days.
+				'entries-chart-data'    => [
+					'methods'             => 'GET',
+					'callback'            => [ $this, 'get_entries_chart_data' ],
+					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
+				],
+				// This route is to get all forms data.
+				'form-data'             => [
+					'methods'             => 'GET',
+					'callback'            => [ $this, 'get_form_data' ],
+					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
+				],
+				// Onboarding endpoints.
+				'onboarding/set-status' => [
+					'methods'             => 'POST',
+					'callback'            => [ $this, 'set_onboarding_status' ],
+					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
+				],
+				'onboarding/get-status' => [
+					'methods'             => 'GET',
+					'callback'            => [ $this, 'get_onboarding_status' ],
+					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
+				],
+				// Plugin status endpoint.
+				'plugin-status'         => [
+					'methods'             => 'GET',
+					'callback'            => [ $this, 'get_plugin_status' ],
+					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
+					'args'                => [
+						'plugin' => [
+							'required'          => true,
+							'sanitize_callback' => 'sanitize_text_field',
+						],
+					],
+				],
+				// Entries endpoints.
+				'entries/list'          => [
+					'methods'             => 'GET',
+					'callback'            => [ $this, 'get_entries_list' ],
+					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
+					'args'                => [
+						'form_id'  => [
+							'sanitize_callback' => 'absint',
+							'default'           => 0,
+						],
+						'status'   => [
+							'sanitize_callback' => 'sanitize_text_field',
+							'default'           => 'all',
+						],
+						'search'   => [
+							'sanitize_callback' => 'sanitize_text_field',
+							'default'           => '',
+						],
+						'month'    => [
+							'sanitize_callback' => 'sanitize_text_field',
+							'default'           => '',
+						],
+						'orderby'  => [
+							'sanitize_callback' => 'sanitize_text_field',
+							'default'           => 'created_at',
+						],
+						'order'    => [
+							'sanitize_callback' => 'sanitize_text_field',
+							'default'           => 'DESC',
+						],
+						'per_page' => [
+							'sanitize_callback' => 'absint',
+							'default'           => 20,
+						],
+						'page'     => [
+							'sanitize_callback' => 'absint',
+							'default'           => 1,
+						],
+					],
+				],
+				'entries/read-status'   => [
+					'methods'             => 'POST',
+					'callback'            => [ $this, 'update_entries_read_status' ],
+					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
+					'args'                => [
+						'entry_ids' => [
+							'required'          => true,
+							'sanitize_callback' => [ $this, 'sanitize_entry_ids' ],
+						],
+						'action'    => [
+							'required'          => true,
+							'sanitize_callback' => 'sanitize_text_field',
+							'validate_callback' => [ $this, 'validate_read_action' ],
+						],
+					],
+				],
+				'entries/trash'         => [
+					'methods'             => 'POST',
+					'callback'            => [ $this, 'update_entries_trash_status' ],
+					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
+					'args'                => [
+						'entry_ids' => [
+							'required'          => true,
+							'sanitize_callback' => [ $this, 'sanitize_entry_ids' ],
+						],
+						'action'    => [
+							'required'          => true,
+							'sanitize_callback' => 'sanitize_text_field',
+							'validate_callback' => [ $this, 'validate_trash_action' ],
+						],
+					],
+				],
+				'entries/delete'        => [
+					'methods'             => 'POST',
+					'callback'            => [ $this, 'delete_entries' ],
+					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
+					'args'                => [
+						'entry_ids' => [
+							'required'          => true,
+							'sanitize_callback' => [ $this, 'sanitize_entry_ids' ],
+						],
+					],
+				],
+				'entries/export'        => [
+					'methods'             => 'POST',
+					'callback'            => [ $this, 'export_entries' ],
+					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
+					'args'                => [
+						'entry_ids' => [
+							'sanitize_callback' => [ $this, 'sanitize_entry_ids' ],
+							'default'           => [],
+						],
+						'form_id'   => [
+							'sanitize_callback' => 'absint',
+							'default'           => 0,
+						],
+						'status'    => [
+							'sanitize_callback' => 'sanitize_text_field',
+							'default'           => 'all',
+						],
+						'search'    => [
+							'sanitize_callback' => 'sanitize_text_field',
+							'default'           => '',
+						],
+						'month'     => [
+							'sanitize_callback' => 'sanitize_text_field',
+							'default'           => '',
+						],
+					],
+				],
+			]
 		);
 	}
 }
