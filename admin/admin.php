@@ -530,7 +530,11 @@ class Admin {
 			return;
 		}
 
+		echo '<div id="srfm-root"></div>';
+
 		// Render all entries view.
+
+		/*
 		$entries_table = new Entries_List_Table();
 		$entries_table->prepare_items();
 		?>
@@ -550,6 +554,7 @@ class Admin {
 			</form>
 		</div>
 		<?php
+		*/
 	}
 
 	/**

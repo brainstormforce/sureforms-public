@@ -1,14 +1,22 @@
+import domReady from '@wordpress/dom-ready';
 import { render } from '@wordpress/element';
 import FormPageHeader from '../components/PageHeader';
+import EntriesListingPage from './EntriesListingPage';
 
-( function () {
-	const app = document.getElementById( 'srfm-page-header' );
+function renderApp() {
+	// Render page header.
+	const headerApp = document.getElementById( 'srfm-page-header' );
 
-	function renderApp() {
-		if ( null !== app ) {
-			render( <FormPageHeader />, app );
-		}
+	if ( headerApp !== null ) {
+		render( <FormPageHeader />, headerApp );
 	}
 
-	document.addEventListener( 'DOMContentLoaded', renderApp );
-}() );
+	// Render entries table.
+	const entriesApp = document.getElementById( 'srfm-root' );
+
+	if ( entriesApp !== null ) {
+		render( <EntriesListingPage />, entriesApp );
+	}
+}
+
+domReady( renderApp );
