@@ -70,7 +70,7 @@ class Export {
 	 * Get forms by post IDs.
 	 *
 	 * @since x.x.x
-	 * @param array<int> $post_ids Array of post IDs to retrieve forms for.
+	 * @param array<int, string> $post_ids Array of post IDs to retrieve forms for.
 	 * @return array Array of forms with their post data and meta data.
 	 */
 	public function get_forms( $post_ids = [] ) {
@@ -131,11 +131,11 @@ class Export {
 	/**
 	 * Import Forms
 	 *
-	 * @param array  $data           Form data to import.
-	 * @param string $default_status Default post status for imported forms. Default is 'draft'.
-	 * 
+	 * @param array<array<array<string>>> $data           Form data to import.
+	 * @param string                      $default_status Default post status for imported forms. Default is 'draft'.
+	 *
 	 * @since x.x.x
-	 * @return array|WP_Error Returns mapping array on success, WP_Error on failure.
+	 * @return array<int, int>|\WP_Error Returns mapping array on success, WP_Error on failure.
 	 */
 	public function import_forms( $data, $default_status = 'draft' ) {
 		$forms_mapping = [];
@@ -231,7 +231,7 @@ class Export {
 		if ( ! is_iterable( $data ) ) {
 			wp_send_json_error( __( 'Failed to import form.', 'sureforms' ) );
 		}
-		
+
 		$result = $this->import_forms( $data );
 		if ( is_wp_error( $result ) ) {
 			http_response_code( 400 );
