@@ -10,7 +10,6 @@ namespace SRFM\Inc;
 
 use SRFM\Inc\Database\Tables\Entries as EntriesTable;
 use SRFM\Inc\Traits\Get_Instance;
-use WP_REST_Server;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -102,97 +101,6 @@ class Entries {
 			'current_page' => absint( $args['page'] ),
 			'total_pages'  => ceil( $total / absint( $args['per_page'] ) ),
 		];
-	}
-
-	/**
-	 * Build where conditions for entry queries.
-	 *
-	 * @param array<string,mixed> $args Query arguments.
-	 *
-	 * @since 1.0.0
-	 * @return array<mixed> Where conditions array.
-	 */
-	private static function build_where_conditions( $args ) {
-		$where_conditions = [];
-
-		// Filter by entry IDs.
-		if ( ! empty( $args['entry_ids'] ) && is_array( $args['entry_ids'] ) ) {
-			$where_conditions[] = [
-				[
-					'key'     => 'ID',
-					'compare' => 'IN',
-					'value'   => array_map( 'absint', $args['entry_ids'] ),
-				],
-			];
-			return $where_conditions;
-		}
-
-		// Filter by status.
-		if ( 'all' !== $args['status'] ) {
-			$where_conditions[] = [
-				[
-					'key'     => 'status',
-					'compare' => '=',
-					'value'   => Helper::get_string_value( $args['status'] ),
-				],
-			];
-		} else {
-			// Exclude trash when status is 'all'.
-			$where_conditions[] = [
-				[
-					'key'     => 'status',
-					'compare' => '!=',
-					'value'   => 'trash',
-				],
-			];
-		}
-
-		// Filter by form ID.
-		if ( ! empty( $args['form_id'] ) && absint( $args['form_id'] ) > 0 ) {
-			$where_conditions[] = [
-				[
-					'key'     => 'form_id',
-					'compare' => '=',
-					'value'   => absint( $args['form_id'] ),
-				],
-			];
-		}
-
-		// Filter by month.
-		if ( ! empty( $args['month'] ) && 'all' !== $args['month'] ) {
-			$month = Helper::get_string_value( $args['month'] );
-			if ( strlen( $month ) === 6 ) {
-				$year  = substr( $month, 0, 4 );
-				$month = substr( $month, 4, 2 );
-
-				$where_conditions[] = [
-					[
-						'key'     => 'MONTH(created_at)',
-						'compare' => '=',
-						'value'   => $month,
-					],
-					[
-						'key'     => 'YEAR(created_at)',
-						'compare' => '=',
-						'value'   => $year,
-					],
-				];
-			}
-		}
-
-		// Filter by search (entry ID only).
-		if ( ! empty( $args['search'] ) ) {
-			$search_term        = absint( $args['search'] );
-			$where_conditions[] = [
-				[
-					'key'     => 'ID',
-					'compare' => '=',
-					'value'   => $search_term,
-				],
-			];
-		}
-
-		return $where_conditions;
 	}
 
 	/**
@@ -476,6 +384,97 @@ class Entries {
 	}
 
 	/**
+	 * Build where conditions for entry queries.
+	 *
+	 * @param array<string,mixed> $args Query arguments.
+	 *
+	 * @since 1.0.0
+	 * @return array<mixed> Where conditions array.
+	 */
+	private static function build_where_conditions( $args ) {
+		$where_conditions = [];
+
+		// Filter by entry IDs.
+		if ( ! empty( $args['entry_ids'] ) && is_array( $args['entry_ids'] ) ) {
+			$where_conditions[] = [
+				[
+					'key'     => 'ID',
+					'compare' => 'IN',
+					'value'   => array_map( 'absint', $args['entry_ids'] ),
+				],
+			];
+			return $where_conditions;
+		}
+
+		// Filter by status.
+		if ( 'all' !== $args['status'] ) {
+			$where_conditions[] = [
+				[
+					'key'     => 'status',
+					'compare' => '=',
+					'value'   => Helper::get_string_value( $args['status'] ),
+				],
+			];
+		} else {
+			// Exclude trash when status is 'all'.
+			$where_conditions[] = [
+				[
+					'key'     => 'status',
+					'compare' => '!=',
+					'value'   => 'trash',
+				],
+			];
+		}
+
+		// Filter by form ID.
+		if ( ! empty( $args['form_id'] ) && absint( $args['form_id'] ) > 0 ) {
+			$where_conditions[] = [
+				[
+					'key'     => 'form_id',
+					'compare' => '=',
+					'value'   => absint( $args['form_id'] ),
+				],
+			];
+		}
+
+		// Filter by month.
+		if ( ! empty( $args['month'] ) && 'all' !== $args['month'] ) {
+			$month = Helper::get_string_value( $args['month'] );
+			if ( strlen( $month ) === 6 ) {
+				$year  = substr( $month, 0, 4 );
+				$month = substr( $month, 4, 2 );
+
+				$where_conditions[] = [
+					[
+						'key'     => 'MONTH(created_at)',
+						'compare' => '=',
+						'value'   => $month,
+					],
+					[
+						'key'     => 'YEAR(created_at)',
+						'compare' => '=',
+						'value'   => $year,
+					],
+				];
+			}
+		}
+
+		// Filter by search (entry ID only).
+		if ( ! empty( $args['search'] ) ) {
+			$search_term        = absint( $args['search'] );
+			$where_conditions[] = [
+				[
+					'key'     => 'ID',
+					'compare' => '=',
+					'value'   => $search_term,
+				],
+			];
+		}
+
+		return $where_conditions;
+	}
+
+	/**
 	 * Get entries data for export based on entry IDs and form ID.
 	 *
 	 * @param array<int> $entry_ids Entry IDs.
@@ -585,7 +584,7 @@ class Entries {
 			$form_data = isset( $entry['form_data'] ) ? Helper::get_array_value( $entry['form_data'] ) : [];
 
 			foreach ( $block_key_map as $block_id => $srfm_key ) {
-				$field_value = isset( $form_data[ $srfm_key ] ) ? $form_data[ $srfm_key ] : '';
+				$field_value = $form_data[ $srfm_key ] ?? '';
 				$row[]       = self::normalize_field_values( $srfm_key, $field_value );
 			}
 
