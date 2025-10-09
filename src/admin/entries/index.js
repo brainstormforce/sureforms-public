@@ -1,5 +1,5 @@
 import domReady from '@wordpress/dom-ready';
-import { render } from '@wordpress/element';
+import { createRoot } from '@wordpress/element';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import FormPageHeader from '../components/PageHeader';
 import EntriesListingPage from './EntriesListingPage';
@@ -18,20 +18,20 @@ const queryClient = new QueryClient( {
 function renderApp() {
 	// Render page header.
 	const headerApp = document.getElementById( 'srfm-page-header' );
-
-	if ( headerApp !== null ) {
-		render( <FormPageHeader />, headerApp );
+	const headerRoot = createRoot( headerApp );
+	if ( headerRoot ) {
+		headerRoot.render( <FormPageHeader /> );
 	}
 
 	// Render entries table.
 	const entriesApp = document.getElementById( 'srfm-root' );
+	const entriesRoot = createRoot( entriesApp );
 
-	if ( entriesApp !== null ) {
-		render(
+	if ( entriesRoot ) {
+		entriesRoot.render(
 			<QueryClientProvider client={ queryClient }>
 				<EntriesListingPage />
-			</QueryClientProvider>,
-			entriesApp
+			</QueryClientProvider>
 		);
 	}
 }

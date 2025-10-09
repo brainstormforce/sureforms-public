@@ -1,9 +1,10 @@
-import { useMemo } from '@wordpress/element';
+import { useMemo, useState } from '@wordpress/element';
 import EntriesHeader from './components/EntriesHeader';
 import EntriesFilters from './components/EntriesFilters';
 import EntriesTable from './components/EntriesTable';
 import EntriesPagination from './components/EntriesPagination';
 import EmptyState from './components/EmptyState';
+import ConfirmationDialog from './components/ConfirmationDialog';
 import { useEntriesFilters } from './hooks/useEntriesFilters';
 import { useEntriesSelection } from './hooks/useEntriesSelection';
 import { usePagination } from './hooks/usePagination';
@@ -86,9 +87,15 @@ const EntriesListingPage = () => {
 		);
 	}, [ statusFilter, formFilter, searchQuery, dateRange ] );
 
-	// Delete mutation
-	const { mutate: deleteEntriesMutation } = useDeleteEntries();
+	// Mutations
+	const { mutate: deleteEntriesMutation, isPending: isDeleting } =
+		useDeleteEntries();
 	const { mutate: trashEntriesMutation } = useTrashEntries();
+
+	// State for confirmation dialog
+	const [ isDeleteDialogOpen, setIsDeleteDialogOpen ] = useState( false );
+	const [ selectedEntryForDelete, setSelectedEntryForDelete ] =
+		useState( null );
 
 	const {
 		selectedEntries,
@@ -104,9 +111,34 @@ const EntriesListingPage = () => {
 	};
 
 	const handleDelete = ( entry ) => {
-		// Delete single entry
-		// deleteEntriesMutation( { entry_ids: [ entry.id ] } );
-		trashEntriesMutation( { entry_ids: [ entry.id ], action: 'trash' } );
+		// If entry is already in trash, show confirmation dialog for permanent delete
+		if ( entry.status === 'trash' ) {
+			setSelectedEntryForDelete( entry );
+			setIsDeleteDialogOpen( true );
+		} else {
+			// Otherwise, move to trash
+			trashEntriesMutation( {
+				entry_ids: [ entry.id ],
+				action: 'trash',
+			} );
+		}
+	};
+
+	const handleRestore = ( entry ) => {
+		// Restore entry from trash
+		trashEntriesMutation( {
+			entry_ids: [ entry.id ],
+			action: 'restore',
+		} );
+	};
+
+	const handlePermanentDelete = () => {
+		if ( selectedEntryForDelete ) {
+			deleteEntriesMutation( {
+				entry_ids: [ selectedEntryForDelete.id ],
+			} );
+			setSelectedEntryForDelete( null );
+		}
 	};
 
 	// Show error state
@@ -166,6 +198,7 @@ const EntriesListingPage = () => {
 						indeterminate={ indeterminate }
 						onEdit={ handleEdit }
 						onDelete={ handleDelete }
+						onRestore={ handleRestore }
 						isLoading={ isLoading }
 					>
 						<EntriesPagination
@@ -180,6 +213,18 @@ const EntriesListingPage = () => {
 					</EntriesTable>
 				</div>
 			</div>
+
+			<ConfirmationDialog
+				open={ isDeleteDialogOpen }
+				setOpen={ setIsDeleteDialogOpen }
+				onConfirm={ handlePermanentDelete }
+				title={ 'Delete Entry Permanently?' }
+				description={
+					'This action cannot be undone. The entry will be permanently deleted from the database.'
+				}
+				confirmLabel={ 'Delete Permanently' }
+				isLoading={ isDeleting }
+			/>
 		</div>
 	);
 };

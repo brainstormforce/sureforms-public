@@ -15,6 +15,7 @@ import EntriesTableRow from './EntriesTableRow';
  * @param {boolean}  props.indeterminate        - Whether the header checkbox is indeterminate
  * @param {Function} props.onEdit               - Handler for edit action
  * @param {Function} props.onDelete             - Handler for delete action
+ * @param {Function} props.onRestore            - Handler for restore action
  * @param {boolean}  props.isLoading            - Whether data is loading
  * @param {Node}     props.children             - Child components (typically pagination)
  */
@@ -26,6 +27,7 @@ const EntriesTable = ( {
 	indeterminate = false,
 	onEdit,
 	onDelete,
+	onRestore,
 	isLoading = false,
 	children,
 } ) => {
@@ -77,6 +79,7 @@ const EntriesTable = ( {
 							onChangeSelection={ onChangeRowSelection }
 							onEdit={ onEdit }
 							onDelete={ onDelete }
+							onRestore={ onRestore }
 						/>
 					) )
 				) }

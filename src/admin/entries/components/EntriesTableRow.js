@@ -1,5 +1,5 @@
 import { __ } from '@wordpress/i18n';
-import { Edit3, Trash2 } from 'lucide-react';
+import { Edit3, Trash2, RotateCcw } from 'lucide-react';
 import { Button, Container, Table, Badge } from '@bsf/force-ui';
 import { getStatusBadgeVariant } from '../utils/entryHelpers';
 
@@ -13,6 +13,7 @@ import { getStatusBadgeVariant } from '../utils/entryHelpers';
  * @param {Function} props.onChangeSelection - Handler for selection change
  * @param {Function} props.onEdit            - Handler for edit action
  * @param {Function} props.onDelete          - Handler for delete action
+ * @param {Function} props.onRestore         - Handler for restore action
  */
 const EntriesTableRow = ( {
 	entry,
@@ -20,6 +21,7 @@ const EntriesTableRow = ( {
 	onChangeSelection,
 	onEdit,
 	onDelete,
+	onRestore,
 } ) => {
 	return (
 		<Table.Row
@@ -49,13 +51,35 @@ const EntriesTableRow = ( {
 						icon={ <Edit3 /> }
 						onClick={ () => onEdit( entry ) }
 					/>
-					<Button
-						variant="ghost"
-						aria-label={ __( 'Delete', 'sureforms' ) }
-						size="xs"
-						icon={ <Trash2 /> }
-						onClick={ () => onDelete( entry ) }
-					/>
+					{ entry.status === 'trash' ? (
+						<>
+							<Button
+								variant="ghost"
+								aria-label={ __( 'Restore', 'sureforms' ) }
+								size="xs"
+								icon={ <RotateCcw /> }
+								onClick={ () => onRestore( entry ) }
+							/>
+							<Button
+								variant="ghost"
+								aria-label={ __(
+									'Delete Permanently',
+									'sureforms'
+								) }
+								size="xs"
+								icon={ <Trash2 /> }
+								onClick={ () => onDelete( entry ) }
+							/>
+						</>
+					) : (
+						<Button
+							variant="ghost"
+							aria-label={ __( 'Move to Trash', 'sureforms' ) }
+							size="xs"
+							icon={ <Trash2 /> }
+							onClick={ () => onDelete( entry ) }
+						/>
+					) }
 				</Container>
 			</Table.Cell>
 		</Table.Row>
