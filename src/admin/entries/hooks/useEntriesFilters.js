@@ -9,7 +9,10 @@ export const useEntriesFilters = () => {
 	const [ statusFilter, setStatusFilter ] = useState( 'all' );
 	const [ formFilter, setFormFilter ] = useState( 'all' );
 	const [ searchQuery, setSearchQuery ] = useState( '' );
-	const [ dateRange, setDateRange ] = useState( null );
+	const [ dateRange, setDateRange ] = useState( {
+		from: null,
+		to: null,
+	} );
 
 	const resetFilters = () => {
 		setStatusFilter( 'all' );

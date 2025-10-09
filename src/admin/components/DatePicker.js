@@ -84,7 +84,12 @@ const DatePicker = ( props ) => {
 				? trigger( { show, setShow } )
 				: trigger }
 			{ show && (
-				<div className={ cn( 'absolute z-10', placementClassName ) }>
+				<div
+					className={ cn(
+						'absolute z-10 rounded-md shadow-soft-shadow-md overflow-clip',
+						placementClassName
+					) }
+				>
 					<FUIDatePicker
 						{ ...props }
 						onCancel={ handleCancel }

@@ -39,7 +39,8 @@ export const fetchFormsList = () => {
  * @param {number} params.form_id  - Form ID to filter (0 for all forms)
  * @param {string} params.status   - Entry status: 'all', 'read', 'unread', 'trash'
  * @param {string} params.search   - Search term for entry ID
- * @param {string} params.month    - Month filter in YYYYMM format
+ * @param {string} params.date_from - Start date filter in YYYY-MM-DD format
+ * @param {string} params.date_to  - End date filter in YYYY-MM-DD format
  * @param {string} params.orderby  - Column to order by
  * @param {string} params.order    - Sort direction: 'ASC' or 'DESC'
  * @param {number} params.per_page - Number of entries per page
@@ -51,7 +52,8 @@ export const fetchEntriesList = ( params = {} ) => {
 		form_id: params.form_id || 0,
 		status: params.status || 'all',
 		search: params.search || '',
-		month: params.month || '',
+		date_from: params.date_from || '',
+		date_to: params.date_to || '',
 		orderby: params.orderby || 'created_at',
 		order: params.order || 'DESC',
 		per_page: params.per_page || 20,
@@ -143,7 +145,8 @@ export const deleteEntries = ( { entry_ids } ) => {
  * @param {number}   params.form_id   - Form ID to export from (optional)
  * @param {string}   params.status    - Entry status filter (optional)
  * @param {string}   params.search    - Search term filter (optional)
- * @param {string}   params.month     - Month filter in YYYYMM format (optional)
+ * @param {string}   params.date_from - Start date filter in YYYY-MM-DD format (optional)
+ * @param {string}   params.date_to   - End date filter in YYYY-MM-DD format (optional)
  * @return {Promise<Object>} Promise resolving to export file information
  */
 export const exportEntries = ( params = {} ) => {
@@ -159,7 +162,8 @@ export const exportEntries = ( params = {} ) => {
 			form_id: params.form_id || 0,
 			status: params.status || 'all',
 			search: params.search || '',
-			month: params.month || '',
+			date_from: params.date_from || '',
+			date_to: params.date_to || '',
 		},
 	} );
 };

@@ -315,7 +315,8 @@ class Rest_Api {
 			'form_id'  => isset( $params['form_id'] ) ? absint( $params['form_id'] ) : 0,
 			'status'   => isset( $params['status'] ) ? sanitize_text_field( $params['status'] ) : 'all',
 			'search'   => isset( $params['search'] ) ? sanitize_text_field( $params['search'] ) : '',
-			'month'    => isset( $params['month'] ) ? sanitize_text_field( $params['month'] ) : '',
+			'date_from' => isset( $params['date_from'] ) ? sanitize_text_field( $params['date_from'] ) : '',
+			'date_to'  => isset( $params['date_to'] ) ? sanitize_text_field( $params['date_to'] ) : '',
 			'orderby'  => isset( $params['orderby'] ) ? sanitize_text_field( $params['orderby'] ) : 'created_at',
 			'order'    => isset( $params['order'] ) ? sanitize_text_field( $params['order'] ) : 'DESC',
 			'per_page' => isset( $params['per_page'] ) ? absint( $params['per_page'] ) : 20,
@@ -482,7 +483,8 @@ class Rest_Api {
 			'form_id'   => isset( $params['form_id'] ) ? absint( $params['form_id'] ) : 0,
 			'status'    => isset( $params['status'] ) ? sanitize_text_field( $params['status'] ) : 'all',
 			'search'    => isset( $params['search'] ) ? sanitize_text_field( $params['search'] ) : '',
-			'month'     => isset( $params['month'] ) ? sanitize_text_field( $params['month'] ) : '',
+			'date_from' => isset( $params['date_from'] ) ? sanitize_text_field( $params['date_from'] ) : '',
+			'date_to'  => isset( $params['date_to'] ) ? sanitize_text_field( $params['date_to'] ) : '',
 		];
 
 		$result = Entries_Class::export_entries( $args );
@@ -603,7 +605,11 @@ class Rest_Api {
 							'sanitize_callback' => 'sanitize_text_field',
 							'default'           => '',
 						],
-						'month'    => [
+						'date_from' => [
+							'sanitize_callback' => 'sanitize_text_field',
+							'default'           => '',
+						],
+						'date_to'  => [
 							'sanitize_callback' => 'sanitize_text_field',
 							'default'           => '',
 						],
@@ -689,7 +695,11 @@ class Rest_Api {
 							'sanitize_callback' => 'sanitize_text_field',
 							'default'           => '',
 						],
-						'month'     => [
+						'date_from' => [
+							'sanitize_callback' => 'sanitize_text_field',
+							'default'           => '',
+						],
+						'date_to'  => [
 							'sanitize_callback' => 'sanitize_text_field',
 							'default'           => '',
 						],

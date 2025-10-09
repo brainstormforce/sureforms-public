@@ -46,6 +46,28 @@ const EntriesListingPage = () => {
 		changeEntriesPerPage,
 	} = usePagination( 1, 20 );
 
+	// Convert dateRange to formatted date strings for API
+	const dateFilters = useMemo( () => {
+		if ( ! dateRange || ! dateRange.from ) {
+			return { date_from: '', date_to: '' };
+		}
+
+		const formatDate = ( date ) => {
+			const year = date.getFullYear();
+			const month = String( date.getMonth() + 1 ).padStart( 2, '0' );
+			const day = String( date.getDate() ).padStart( 2, '0' );
+			return `${ year }-${ month }-${ day }`;
+		};
+
+		const fromDate = new Date( dateRange.from );
+		const toDate = dateRange.to ? new Date( dateRange.to ) : fromDate;
+
+		return {
+			date_from: `${ formatDate( fromDate ) } 00:00:00`,
+			date_to: `${ formatDate( toDate ) } 23:59:59`,
+		};
+	}, [ dateRange ] );
+
 	// Fetch entries using React Query
 	const {
 		data: entriesData,
@@ -56,7 +78,8 @@ const EntriesListingPage = () => {
 		form_id: formFilter === 'all' ? 0 : parseInt( formFilter, 10 ),
 		status: statusFilter,
 		search: searchQuery,
-		month: dateRange || '',
+		date_from: dateFilters.date_from,
+		date_to: dateFilters.date_to,
 		orderby: 'created_at',
 		order: 'DESC',
 		per_page: entriesPerPage,

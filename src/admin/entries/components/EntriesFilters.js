@@ -1,6 +1,6 @@
 import { __ } from '@wordpress/i18n';
-import { Search, Calendar } from 'lucide-react';
-import { Select, Input } from '@bsf/force-ui';
+import { Search, Calendar, X } from 'lucide-react';
+import { Select, Input, Button } from '@bsf/force-ui';
 import DatePicker from '@Admin/components/DatePicker';
 import { STATUS_OPTIONS } from '../constants';
 
@@ -30,6 +30,40 @@ const EntriesFilters = ( {
 	onDateRangeChange,
 	formOptions = [],
 } ) => {
+	const formatDate = ( value ) => {
+		if ( ! value ) {
+			return '';
+		}
+		const date = new Date( value );
+		if ( isNaN( date ) ) {
+			return '';
+		}
+		const year = date.getFullYear();
+		const month = String( date.getMonth() + 1 ).padStart( 2, '0' );
+		const day = String( date.getDate() ).padStart( 2, '0' );
+		return `${ day }/${ month }/${ year }`;
+	};
+
+	const dateFilterProps = dateRange &&
+		dateRange?.from &&
+		dateRange?.to && {
+			value: `${ formatDate( dateRange?.from ) } - ${ formatDate(
+				dateRange?.to
+			) }`,
+			suffix: (
+				<Button
+					type="button"
+					onClick={ () => {
+						onDateRangeChange( null );
+					} }
+					variant="ghost"
+					size="xs"
+					className="bg-transparent p-0 pointer-events-auto text-icon-secondary hover:text-icon-primary transition"
+					icon={ <X /> }
+				/>
+			),
+		};
+
 	return (
 		<div className="flex items-center gap-4">
 			<div className="w-[150px]">
@@ -86,19 +120,20 @@ const EntriesFilters = ( {
 				</Select>
 			</div>
 
-			<div className="w-[200px]">
+			<div className="min-w-[210px]">
 				<DatePicker
 					value={ dateRange }
-					onChange={ onDateRangeChange }
+					onApply={ onDateRangeChange }
 					trigger={ ( { setShow } ) => (
 						<Input
 							type="text"
-							placeholder="mm/dd/yyyy"
+							placeholder="dd/mm/yyyy - dd/mm/yyyy"
 							readOnly
 							onClick={ () => setShow( ( prev ) => ! prev ) }
 							prefix={
 								<Calendar className="w-4 h-4 text-icon-secondary" />
 							}
+							{ ...dateFilterProps }
 						/>
 					) }
 				/>
