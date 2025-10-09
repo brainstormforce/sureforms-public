@@ -7,12 +7,12 @@ import { getStatusBadgeVariant } from '../utils/entryHelpers';
  * EntriesTableRow Component
  * Displays a single entry row in the table
  *
- * @param {Object}   props
- * @param {Object}   props.entry              - Entry object
- * @param {boolean}  props.isSelected         - Whether the row is selected
- * @param {Function} props.onChangeSelection  - Handler for selection change
- * @param {Function} props.onEdit             - Handler for edit action
- * @param {Function} props.onDelete           - Handler for delete action
+ * @param {Object}   props                   - Component props
+ * @param {Object}   props.entry             - Entry object
+ * @param {boolean}  props.isSelected        - Whether the row is selected
+ * @param {Function} props.onChangeSelection - Handler for selection change
+ * @param {Function} props.onEdit            - Handler for edit action
+ * @param {Function} props.onDelete          - Handler for delete action
  */
 const EntriesTableRow = ( {
 	entry,
@@ -35,7 +35,7 @@ const EntriesTableRow = ( {
 					className="w-fit"
 					variant={ getStatusBadgeVariant( entry.status ) }
 					size="md"
-					label={ entry.status }
+					label={ entry.statusLabel }
 				/>
 			</Table.Cell>
 			<Table.Cell>{ entry.firstField }</Table.Cell>

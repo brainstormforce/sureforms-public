@@ -2,13 +2,13 @@ import { __ } from '@wordpress/i18n';
 import { Search, Calendar } from 'lucide-react';
 import { Select, Input } from '@bsf/force-ui';
 import DatePicker from '@Admin/components/DatePicker';
-import { STATUS_OPTIONS, FORM_OPTIONS } from '../constants';
+import { STATUS_OPTIONS } from '../constants';
 
 /**
  * EntriesFilters Component
  * Displays all filter controls for entries
  *
- * @param {Object}   props
+ * @param {Object}   props                      - Component props
  * @param {string}   props.statusFilter         - Current status filter value
  * @param {Function} props.onStatusFilterChange - Handler for status filter change
  * @param {string}   props.formFilter           - Current form filter value
@@ -17,6 +17,7 @@ import { STATUS_OPTIONS, FORM_OPTIONS } from '../constants';
  * @param {Function} props.onSearchChange       - Handler for search input change
  * @param {Object}   props.dateRange            - Current date range
  * @param {Function} props.onDateRangeChange    - Handler for date range change
+ * @param {Array}    props.formOptions          - Array of form options
  */
 const EntriesFilters = ( {
 	statusFilter,
@@ -27,6 +28,7 @@ const EntriesFilters = ( {
 	onSearchChange,
 	dateRange,
 	onDateRangeChange,
+	formOptions = [],
 } ) => {
 	return (
 		<div className="flex items-center gap-4">
@@ -66,13 +68,13 @@ const EntriesFilters = ( {
 						placeholder={ __( 'All Forms', 'sureforms' ) }
 					>
 						{
-							FORM_OPTIONS.find(
+							formOptions.find(
 								( option ) => option.value === formFilter
 							)?.label
 						}
 					</Select.Button>
 					<Select.Options className="z-999999">
-						{ FORM_OPTIONS.map( ( option ) => (
+						{ formOptions.map( ( option ) => (
 							<Select.Option
 								key={ option.value }
 								value={ option.value }

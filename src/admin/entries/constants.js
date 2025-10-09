@@ -7,22 +7,28 @@ export const STATUS_OPTIONS = [
 	{ value: 'trash', label: __( 'Trash', 'sureforms' ) },
 ];
 
-export const FORM_OPTIONS = [
-	{ value: 'all', label: __( 'All Forms', 'sureforms' ) },
-	{ value: 'contact-us', label: __( 'Contact Us', 'sureforms' ) },
-	{ value: 'newsletter', label: __( 'Newsletter', 'sureforms' ) },
-	{
-		value: 'job-application',
-		label: __( 'Job Application Form', 'sureforms' ),
-	},
-	{
-		value: 'support-request',
-		label: __( 'Support Request', 'sureforms' ),
-	},
-];
+/**
+ * Get form options from forms map
+ *
+ * @param {Object} formsMap - Map of form IDs to form titles
+ * @return {Array} Form options array
+ */
+export const getFormOptions = ( formsMap = {} ) => {
+	const options = [ { value: 'all', label: __( 'All Forms', 'sureforms' ) } ];
+
+	Object.entries( formsMap ).forEach( ( [ id, title ] ) => {
+		options.push( {
+			value: id,
+			label: title,
+		} );
+	} );
+
+	return options;
+};
 
 export const ENTRIES_PER_PAGE_OPTIONS = [
 	{ value: 10, label: '10' },
+	{ value: 20, label: '20' },
 	{ value: 25, label: '25' },
 	{ value: 50, label: '50' },
 	{ value: 100, label: '100' },

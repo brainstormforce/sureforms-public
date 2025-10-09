@@ -3,13 +3,14 @@
  * This file contains custom hooks that use TanStack Query for data fetching
  */
 
-// import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-// import {
-// 	fetchEntries,
-// 	deleteEntry,
-// 	updateEntryStatus,
-// 	bulkDeleteEntries,
-// } from '../api/entriesApi';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import {
+	fetchEntriesList,
+	updateEntriesReadStatus,
+	updateEntriesTrashStatus,
+	deleteEntries,
+	exportEntries,
+} from '../api/entriesApi';
 
 /**
  * Query key factory for entries
@@ -28,101 +29,85 @@ export const entriesKeys = {
 
 /**
  * Hook to fetch entries with filters
- * TODO: Uncomment when TanStack Query is installed
  *
  * @param {Object} params - Query parameters
  * @return {Object} Query result
  */
 export const useEntries = ( params ) => {
-	// return useQuery({
-	// 	queryKey: entriesKeys.list(params),
-	// 	queryFn: () => fetchEntries(params),
-	// 	keepPreviousData: true, // Keep previous data while fetching new data
-	// 	staleTime: 1000 * 60 * 5, // Consider data fresh for 5 minutes
-	// });
-
-	// Temporary mock implementation
-	console.log( 'useEntries called with params:', params );
-	return {
-		data: null,
-		isLoading: false,
-		isError: false,
-		error: null,
-	};
+	return useQuery( {
+		queryKey: entriesKeys.list( params ),
+		queryFn: () => fetchEntriesList( params ),
+		keepPreviousData: true, // Keep previous data while fetching new data
+		staleTime: 1000 * 60 * 5, // Consider data fresh for 5 minutes
+	} );
 };
 
 /**
- * Hook to delete an entry
- * TODO: Uncomment when TanStack Query is installed
+ * Hook to update entries read status
  *
  * @return {Object} Mutation result
  */
-export const useDeleteEntry = () => {
-	// const queryClient = useQueryClient();
-	//
-	// return useMutation({
-	// 	mutationFn: deleteEntry,
-	// 	onSuccess: () => {
-	// 		// Invalidate and refetch entries list
-	// 		queryClient.invalidateQueries({ queryKey: entriesKeys.lists() });
-	// 	},
-	// });
+export const useUpdateEntriesReadStatus = () => {
+	const queryClient = useQueryClient();
 
-	// Temporary mock implementation
-	return {
-		mutate: ( entryId ) => {
-			console.log( 'Delete entry:', entryId );
+	return useMutation( {
+		mutationFn: updateEntriesReadStatus,
+		onSuccess: () => {
+			// Invalidate and refetch entries list
+			queryClient.invalidateQueries( { queryKey: entriesKeys.lists() } );
 		},
-		isLoading: false,
-	};
+	} );
 };
 
 /**
- * Hook to update entry status
- * TODO: Uncomment when TanStack Query is installed
+ * Hook to update entries trash status
  *
  * @return {Object} Mutation result
  */
-export const useUpdateEntryStatus = () => {
-	// const queryClient = useQueryClient();
-	//
-	// return useMutation({
-	// 	mutationFn: ({ entryId, status }) => updateEntryStatus(entryId, status),
-	// 	onSuccess: () => {
-	// 		queryClient.invalidateQueries({ queryKey: entriesKeys.lists() });
-	// 	},
-	// });
+export const useUpdateEntriesTrashStatus = () => {
+	const queryClient = useQueryClient();
 
-	// Temporary mock implementation
-	return {
-		mutate: ( { entryId, status } ) => {
-			console.log( 'Update entry status:', entryId, status );
+	return useMutation( {
+		mutationFn: updateEntriesTrashStatus,
+		onSuccess: () => {
+			// Invalidate and refetch entries list
+			queryClient.invalidateQueries( { queryKey: entriesKeys.lists() } );
 		},
-		isLoading: false,
-	};
+	} );
 };
 
 /**
- * Hook to bulk delete entries
- * TODO: Uncomment when TanStack Query is installed
+ * Hook to permanently delete entries
  *
  * @return {Object} Mutation result
  */
-export const useBulkDeleteEntries = () => {
-	// const queryClient = useQueryClient();
-	//
-	// return useMutation({
-	// 	mutationFn: bulkDeleteEntries,
-	// 	onSuccess: () => {
-	// 		queryClient.invalidateQueries({ queryKey: entriesKeys.lists() });
-	// 	},
-	// });
+export const useDeleteEntries = () => {
+	const queryClient = useQueryClient();
 
-	// Temporary mock implementation
-	return {
-		mutate: ( entryIds ) => {
-			console.log( 'Bulk delete entries:', entryIds );
+	return useMutation( {
+		mutationFn: deleteEntries,
+		onSuccess: () => {
+			// Invalidate and refetch entries list
+			queryClient.invalidateQueries( { queryKey: entriesKeys.lists() } );
 		},
-		isLoading: false,
-	};
+	} );
+};
+
+/**
+ * Hook to export entries
+ *
+ * @return {Object} Mutation result
+ */
+export const useExportEntries = () => {
+	return useMutation( {
+		mutationFn: exportEntries,
+		onSuccess: ( data ) => {
+			// Handle successful export
+			// The response contains download_url which can be used to download the file
+			if ( data.success && data.download_url ) {
+				// Trigger download
+				window.location.href = data.download_url;
+			}
+		},
+	} );
 };
