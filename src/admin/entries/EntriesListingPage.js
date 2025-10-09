@@ -3,6 +3,7 @@ import EntriesHeader from './components/EntriesHeader';
 import EntriesFilters from './components/EntriesFilters';
 import EntriesTable from './components/EntriesTable';
 import EntriesPagination from './components/EntriesPagination';
+import EmptyState from './components/EmptyState';
 import { useEntriesFilters } from './hooks/useEntriesFilters';
 import { useEntriesSelection } from './hooks/useEntriesSelection';
 import { usePagination } from './hooks/usePagination';
@@ -74,6 +75,24 @@ const EntriesListingPage = () => {
 		return getFormOptions( formsMap );
 	}, [ formsMap ] );
 
+	// Check if any filters are active
+	const hasActiveFilters = useMemo( () => {
+		return (
+			statusFilter !== 'all' ||
+			formFilter !== 'all' ||
+			searchQuery.trim() !== '' ||
+			dateRange !== null
+		);
+	}, [ statusFilter, formFilter, searchQuery, dateRange ] );
+
+	console.log( 'Entries:', entries );
+	console.log( 'Has Active Filters:', hasActiveFilters, {
+		statusFilter,
+		formFilter,
+		searchQuery,
+		dateRange,
+	} );
+
 	// Delete mutation
 	const { mutate: deleteEntriesMutation } = useDeleteEntries();
 
@@ -98,7 +117,7 @@ const EntriesListingPage = () => {
 	// Show error state
 	if ( isError ) {
 		return (
-			<div className="p-8 bg-gray-50 min-h-screen">
+			<div className="p-8 bg-background-secondary min-h-screen">
 				<div className="max-w-[1374px] mx-auto">
 					<div className="bg-white rounded-xl border-0.5 border-border-subtle shadow-sm p-8 text-center">
 						<p className="text-red-600">
@@ -111,8 +130,20 @@ const EntriesListingPage = () => {
 		);
 	}
 
+	if ( ! hasActiveFilters && entries.length === 0 && ! isLoading ) {
+		return (
+			<div className="p-8 bg-background-secondary min-h-screen">
+				<div className="max-w-[1374px] mx-auto">
+					<div className="bg-white rounded-xl border-0.5 border-border-subtle shadow-sm p-2 space-y-2">
+						<EmptyState />
+					</div>
+				</div>
+			</div>
+		);
+	}
+
 	return (
-		<div className="p-8 bg-gray-50 min-h-screen">
+		<div className="p-8 bg-background-secondary min-h-screen">
 			<div className="max-w-[1374px] mx-auto">
 				<div className="bg-white rounded-xl border-0.5 border-border-subtle shadow-sm p-4 space-y-2">
 					<div className="p-1">
