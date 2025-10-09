@@ -20,6 +20,11 @@ import {
 	CircleCheckBig,
 	ShieldCheckIcon,
 	XIcon,
+	UserPlus,
+	FileDown,
+	FilePlus,
+	File,
+	FileText,
 } from 'lucide-react';
 
 import Integrations from '../integrations';
@@ -37,8 +42,6 @@ import { store as blockEditorStore } from '@wordpress/block-editor';
 import FormRestriction from '../form-restrictions/FormRestriction';
 import { FormRestrictionContext } from '../form-restrictions/context';
 import FeaturePreview from '../FeaturePreview';
-
-import { FileDown } from 'lucide-react';
 
 const Dialog = ( {
 	open,
@@ -174,63 +177,125 @@ const Dialog = ( {
 			{
 				id: 'pdf-generation-preview',
 				label: __( 'PDF Generation', 'sureforms' ),
-				icon: <CpuIcon />,
+				icon: <File />,
 				component: (
 					<FeaturePreview
 						featureName={ __( 'PDF Generation', 'sureforms' ) }
-						icon={ <FileDown className="text-orange-500" size={40} strokeWidth={ 1 } /> }
-						title={ __( 'Generate Submission PDFs', 'sureforms' ) }
-						subtitle={ __( 'Turn every form entry into a polished PDF file—perfect for reports, records, or sharing.', 'sureforms' ) }
-						featureList = {
-							[
-								__( 'Automatically create PDFs from form submissions.', 'sureforms' ),
-								__( 'Customize PDF templates with your branding.', 'sureforms' ),
-								__( 'Download or email PDFs instantly.', 'sureforms' ),
-							]
+						icon={
+							<FileDown
+								className="text-orange-500"
+								size={ 40 }
+								strokeWidth={ 1 }
+							/>
 						}
-						utmMedium='pdf-preview-single-form-settings'
+						title={ __( 'Generate Submission PDFs', 'sureforms' ) }
+						subtitle={ __(
+							'Turn every form entry into a polished PDF file—perfect for reports, records, or sharing.',
+							'sureforms'
+						) }
+						featureList={ [
+							__(
+								'Automatically create PDFs from form submissions.',
+								'sureforms'
+							),
+							__(
+								'Customize PDF templates with your branding.',
+								'sureforms'
+							),
+							__(
+								'Download or email PDFs instantly.',
+								'sureforms'
+							),
+						] }
+						utmMedium="pdf-preview-single-form-settings"
 					/>
 				),
 			},
 			{
 				id: 'user-login-preview',
 				label: __( 'User Registration', 'sureforms' ),
-				icon: <CpuIcon />,
+				icon: <UserPlus />,
 				component: (
 					<FeaturePreview
 						featureName={ __( 'User Registration', 'sureforms' ) }
-						icon={ <FileDown className="text-orange-500" size={40} strokeWidth={ 1 } /> }
-						title={ __( 'Register Users with SureForms', 'sureforms' ) }
-						subtitle={ __( 'Streamline the user onboarding for your sites with form-powered registration.', 'sureforms' ) }
-						featureList = {
-							[
-								__( 'Register new users directly from form submissions.', 'sureforms' ),
-								__( 'Update existing accounts with custom data.', 'sureforms' ),
-								__( 'Assign roles and control access automatically.', 'sureforms' ),
-							]
+						icon={
+							<UserPlus
+								className="text-orange-500"
+								size={ 40 }
+								strokeWidth={ 1 }
+							/>
 						}
-						utmMedium='user-registration-preview-single-form-settings'
+						title={ __(
+							'Register Users with SureForms',
+							'sureforms'
+						) }
+						subtitle={ __(
+							'Streamline the user onboarding for your sites with form-powered registration.',
+							'sureforms'
+						) }
+						featureList={ [
+							__(
+								'Register new users directly from form submissions.',
+								'sureforms'
+							),
+							__(
+								'Update existing accounts with custom data.',
+								'sureforms'
+							),
+							__(
+								'Assign roles and control access automatically.',
+								'sureforms'
+							),
+						] }
+						utmMedium="user-registration-preview-single-form-settings"
+						autoSaveHelpText={ __(
+							'Register new users or update existing accounts with form submissions.',
+							'sureforms'
+						) }
 					/>
 				),
 			},
 			{
 				id: 'post-feed-preview',
 				label: __( 'Post Feed', 'sureforms' ),
-				icon: <CpuIcon />,
+				icon: <FileText />,
 				component: (
 					<FeaturePreview
 						featureName={ __( 'Post Feed', 'sureforms' ) }
-						icon={ <FileDown className="text-orange-500" size={40} strokeWidth={ 1 } /> }
-						title={ __( 'Register Users with SureForms', 'sureforms' ) }
-						subtitle={ __( 'Streamline the user onboarding for your sites with form-powered registration.', 'sureforms' ) }
-						featureList = {
-							[
-								__( 'Register new users directly from form submissions.', 'sureforms' ),
-								__( 'Update existing accounts with custom data.', 'sureforms' ),
-								__( 'Assign roles and control access automatically.', 'sureforms' ),
-							]
+						icon={
+							<FilePlus
+								className="text-orange-500"
+								size={ 40 }
+								strokeWidth={ 1 }
+							/>
 						}
-						utmMedium='post-feed-preview-single-form-settings'
+						title={ __(
+							'Automatically create WordPress posts from form submissions.',
+							'sureforms'
+						) }
+						subtitle={ __(
+							'Automatically turn form submissions into WordPress posts, pages, or custom post types. Save big on time and let your forms publish content directly.',
+							'sureforms'
+						) }
+						featureList={ [
+							__(
+								'Create posts, pages, or CPTs from your form entries.',
+								'sureforms'
+							),
+							__(
+								'Map form fields to post fields easily.',
+								'sureforms'
+							),
+							__(
+								'Automate content publishing with no extra steps.',
+								'sureforms'
+							),
+						] }
+						utmMedium="post-feed-preview-single-form-settings"
+						autoSaveHelpText={ __(
+							'Automatically create WordPress posts from form submissions.',
+							'sureforms'
+						) }
 					/>
 				),
 			},

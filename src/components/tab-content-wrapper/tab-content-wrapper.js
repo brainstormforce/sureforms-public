@@ -15,7 +15,10 @@ const TabContentWrapper = ( {
 	actionLeftContent,
 	actionBtnDisabled = false,
 	shouldShowAutoSaveText = false,
-	autoSaveHelpText =__( 'All changes will be saved automatically when you press back.', 'sureforms' )
+	autoSaveHelpText = __(
+		'All changes will be saved automatically when you press back.',
+		'sureforms'
+	),
 } ) => {
 	const handleBack = () => {
 		if ( typeof onClickBack !== 'function' ) {
@@ -51,7 +54,11 @@ const TabContentWrapper = ( {
 					</Container.Item>
 					<Container.Item className="pl-7">
 						{ shouldShowAutoSaveText && (
-							<Label size="sm" variant="help" className="text-text-on-button-disabled font-normal">
+							<Label
+								size="sm"
+								variant="help"
+								className="text-text-on-button-disabled font-normal"
+							>
 								{ autoSaveHelpText }
 							</Label>
 						) }
