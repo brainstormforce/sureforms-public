@@ -99,7 +99,7 @@ export const updateEntriesReadStatus = ( { entry_ids, action } ) => {
  * @param {string}   params.action    - Action: 'trash' or 'restore'
  * @return {Promise<Object>} Promise resolving to operation result
  */
-export const updateEntriesTrashStatus = ( { entry_ids, action } ) => {
+export const trashEntries = ( { entry_ids, action } ) => {
 	return apiFetch( {
 		path: '/sureforms/v1/entries/trash',
 		method: 'POST',

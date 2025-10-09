@@ -11,6 +11,7 @@ import {
 	useEntries,
 	useForms,
 	useDeleteEntries,
+	useTrashEntries,
 } from './hooks/useEntriesQuery';
 import { transformEntry } from './utils/entryHelpers';
 import { getFormOptions } from './constants';
@@ -85,16 +86,9 @@ const EntriesListingPage = () => {
 		);
 	}, [ statusFilter, formFilter, searchQuery, dateRange ] );
 
-	console.log( 'Entries:', entries );
-	console.log( 'Has Active Filters:', hasActiveFilters, {
-		statusFilter,
-		formFilter,
-		searchQuery,
-		dateRange,
-	} );
-
 	// Delete mutation
 	const { mutate: deleteEntriesMutation } = useDeleteEntries();
+	const { mutate: trashEntriesMutation } = useTrashEntries();
 
 	const {
 		selectedEntries,
@@ -111,7 +105,8 @@ const EntriesListingPage = () => {
 
 	const handleDelete = ( entry ) => {
 		// Delete single entry
-		deleteEntriesMutation( { entry_ids: [ entry.id ] } );
+		// deleteEntriesMutation( { entry_ids: [ entry.id ] } );
+		trashEntriesMutation( { entry_ids: [ entry.id ], action: 'trash' } );
 	};
 
 	// Show error state

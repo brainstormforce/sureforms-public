@@ -8,7 +8,7 @@ import {
 	fetchEntriesList,
 	fetchFormsList,
 	updateEntriesReadStatus,
-	updateEntriesTrashStatus,
+	trashEntries,
 	deleteEntries,
 	exportEntries,
 } from '../api/entriesApi';
@@ -89,11 +89,11 @@ export const useUpdateEntriesReadStatus = () => {
  *
  * @return {Object} Mutation result
  */
-export const useUpdateEntriesTrashStatus = () => {
+export const useTrashEntries = () => {
 	const queryClient = useQueryClient();
 
 	return useMutation( {
-		mutationFn: updateEntriesTrashStatus,
+		mutationFn: trashEntries,
 		onSuccess: () => {
 			// Invalidate and refetch entries list
 			queryClient.invalidateQueries( { queryKey: entriesKeys.lists() } );
