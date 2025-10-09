@@ -8,9 +8,7 @@ export default () => {
 	const siteUrl = srfm_admin.site_url;
 	const [ popupVideo, setPopupVideo ] = useState( null );
 
-	const videoUrl =
-		'https://www.youtube.com/embed/it16jGnZBus?showinfo=0&rel=0';
-	const videoUrlWithAutoplay = `${ videoUrl }&autoplay=1`;
+	const videoUrl = 'https://www.youtube.com/embed/it16jGnZBus?showinfo=0&rel=0&autoplay=1';
 
 	useEffect( () => {
 		const handleKeyDown = ( e ) => {
@@ -97,7 +95,7 @@ export default () => {
 				<div
 					className="relative aspect-video cursor-pointer group"
 					onClick={ () => {
-						setPopupVideo( videoUrlWithAutoplay );
+						setPopupVideo( videoUrl );
 					} }
 				>
 					<img
