@@ -1,0 +1,91 @@
+import { ChevronsUpDown } from 'lucide-react';
+import { Container, Table } from '@bsf/force-ui';
+import { TABLE_HEADERS } from '../constants';
+import EntriesTableRow from './EntriesTableRow';
+
+/**
+ * EntriesTable Component
+ * Displays the entries table with headers and rows
+ *
+ * @param {Object}   props
+ * @param {Array}    props.entries              - Array of entry objects
+ * @param {Array}    props.selectedEntries      - Array of selected entry IDs
+ * @param {Function} props.onToggleAll          - Handler for toggle all checkbox
+ * @param {Function} props.onChangeRowSelection - Handler for row selection change
+ * @param {boolean}  props.indeterminate        - Whether the header checkbox is indeterminate
+ * @param {Function} props.onEdit               - Handler for edit action
+ * @param {Function} props.onDelete             - Handler for delete action
+ * @param {boolean}  props.isLoading            - Whether data is loading
+ * @param {Node}     props.children             - Child components (typically pagination)
+ */
+const EntriesTable = ( {
+	entries = [],
+	selectedEntries = [],
+	onToggleAll,
+	onChangeRowSelection,
+	indeterminate = false,
+	onEdit,
+	onDelete,
+	isLoading = false,
+	children,
+} ) => {
+	return (
+		<Table className="rounded-md" checkboxSelection>
+			<Table.Head
+				selected={ !! selectedEntries.length }
+				onChangeSelection={ onToggleAll }
+				indeterminate={ indeterminate }
+			>
+				{ TABLE_HEADERS.map( ( header, index ) => (
+					<Table.HeadCell key={ index }>
+						<Container
+							align="center"
+							className="gap-2"
+							justify={ header.align === 'right' && 'end' }
+						>
+							{ header.label }
+							{ header.sortable && (
+								<ChevronsUpDown className="w-4 h-4 text-text-primary" />
+							) }
+						</Container>
+					</Table.HeadCell>
+				) ) }
+			</Table.Head>
+			<Table.Body>
+				{ isLoading ? (
+					<Table.Row>
+						<Table.Cell colSpan={ TABLE_HEADERS.length }>
+							<div className="text-center py-8 text-text-secondary">
+								Loading...
+							</div>
+						</Table.Cell>
+					</Table.Row>
+				) : entries.length === 0 ? (
+					<Table.Row>
+						<Table.Cell colSpan={ TABLE_HEADERS.length }>
+							<div className="text-center py-8 text-text-secondary">
+								No entries found
+							</div>
+						</Table.Cell>
+					</Table.Row>
+				) : (
+					entries.map( ( entry ) => (
+						<EntriesTableRow
+							key={ entry.id }
+							entry={ entry }
+							isSelected={ selectedEntries.includes( entry.id ) }
+							onChangeSelection={ onChangeRowSelection }
+							onEdit={ onEdit }
+							onDelete={ onDelete }
+						/>
+					) )
+				) }
+			</Table.Body>
+			<Table.Footer className="flex flex-col lg:flex-row lg:justify-between">
+				{ children }
+			</Table.Footer>
+		</Table>
+	);
+};
+
+export default EntriesTable;
