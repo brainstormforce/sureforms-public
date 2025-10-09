@@ -1,5 +1,4 @@
-import { Dialog, Button, Container, Text } from '@bsf/force-ui';
-import { XIcon } from 'lucide-react';
+import { Dialog, Button, Container } from '@bsf/force-ui';
 import { __ } from '@wordpress/i18n';
 
 /**

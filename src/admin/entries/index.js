@@ -3,6 +3,7 @@ import { createRoot } from '@wordpress/element';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import FormPageHeader from '../components/PageHeader';
 import EntriesListingPage from './EntriesListingPage';
+import { Toaster } from '@bsf/force-ui';
 
 // Create a client
 const queryClient = new QueryClient( {
@@ -31,6 +32,7 @@ function renderApp() {
 		entriesRoot.render(
 			<QueryClientProvider client={ queryClient }>
 				<EntriesListingPage />
+				<Toaster className="z-999999" />
 			</QueryClientProvider>
 		);
 	}

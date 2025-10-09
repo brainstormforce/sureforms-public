@@ -4,6 +4,8 @@
  */
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast } from '@bsf/force-ui';
+import { __ } from '@wordpress/i18n';
 import {
 	fetchEntriesList,
 	fetchFormsList,
@@ -94,9 +96,28 @@ export const useTrashEntries = () => {
 
 	return useMutation( {
 		mutationFn: trashEntries,
-		onSuccess: () => {
+		onSuccess: ( data, variables ) => {
 			// Invalidate and refetch entries list
 			queryClient.invalidateQueries( { queryKey: entriesKeys.lists() } );
+
+			// Show a toast depending on the action (trash or restore)
+			const action = variables?.action || '';
+			if ( action === 'trash' ) {
+				toast.success( __( 'Entry moved to Trash.', 'sureforms' ) );
+			} else if ( action === 'restore' ) {
+				toast.success( __( 'Entry restored.', 'sureforms' ) );
+			} else {
+				// generic success
+				toast.success(
+					data?.message || __( 'Action completed.', 'sureforms' )
+				);
+			}
+		},
+		onError: ( error ) => {
+			const msg =
+				error?.message ||
+				__( 'An error occurred. Please try again.', 'sureforms' );
+			toast.error( msg );
 		},
 	} );
 };
@@ -114,6 +135,13 @@ export const useDeleteEntries = () => {
 		onSuccess: () => {
 			// Invalidate and refetch entries list
 			queryClient.invalidateQueries( { queryKey: entriesKeys.lists() } );
+			toast.success( __( 'Entry deleted permanently.', 'sureforms' ) );
+		},
+		onError: ( error ) => {
+			const msg =
+				error?.message ||
+				__( 'An error occurred. Please try again.', 'sureforms' );
+			toast.error( msg );
 		},
 	} );
 };
