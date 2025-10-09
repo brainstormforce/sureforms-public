@@ -24,6 +24,34 @@ const EntriesTableRow = ( {
 	onDelete,
 	onRestore,
 } ) => {
+	const buttons = [];
+	buttons.push( {
+		content: __( 'Edit', 'sureforms' ),
+		ariaLabel: __( 'Edit', 'sureforms' ),
+		icon: <Edit3 />,
+		onClick: () => onEdit( entry ),
+	} );
+	if ( entry.status === 'trash' ) {
+		buttons.push( {
+			content: __( 'Restore', 'sureforms' ),
+			ariaLabel: __( 'Restore', 'sureforms' ),
+			icon: <RotateCcw />,
+			onClick: () => onRestore( entry ),
+		} );
+		buttons.push( {
+			content: __( 'Delete Permanently', 'sureforms' ),
+			ariaLabel: __( 'Delete Permanently', 'sureforms' ),
+			icon: <Trash2 />,
+			onClick: () => onDelete( entry ),
+		} );
+	} else {
+		buttons.push( {
+			content: __( 'Move to Trash', 'sureforms' ),
+			ariaLabel: __( 'Move to Trash', 'sureforms' ),
+			icon: <Trash2 />,
+			onClick: () => onDelete( entry ),
+		} );
+	}
 	return (
 		<Table.Row
 			value={ entry }
@@ -45,68 +73,21 @@ const EntriesTableRow = ( {
 			<Table.Cell>{ entry.dateTime }</Table.Cell>
 			<Table.Cell>
 				<Container align="center" className="gap-2" justify="end">
-					<Tooltip
-						placement="top"
-						content={ __( 'Edit', 'sureforms' ) }
-					>
-						<Button
-							variant="ghost"
-							aria-label={ __( 'Edit', 'sureforms' ) }
-							size="xs"
-							icon={ <Edit3 /> }
-							onClick={ () => onEdit( entry ) }
-						/>
-					</Tooltip>
-					{ entry.status === 'trash' ? (
-						<>
-							<Tooltip
-								placement="top"
-								content={ __( 'Restore', 'sureforms' ) }
-							>
-								<Button
-									variant="ghost"
-									aria-label={ __( 'Restore', 'sureforms' ) }
-									size="xs"
-									icon={ <RotateCcw /> }
-									onClick={ () => onRestore( entry ) }
-								/>
-							</Tooltip>
-							<Tooltip
-								placement="top"
-								content={ __(
-									'Delete Permanently',
-									'sureforms'
-								) }
-							>
-								<Button
-									variant="ghost"
-									aria-label={ __(
-										'Delete Permanently',
-										'sureforms'
-									) }
-									size="xs"
-									icon={ <Trash2 /> }
-									onClick={ () => onDelete( entry ) }
-								/>
-							</Tooltip>
-						</>
-					) : (
+					{ buttons.map( ( btn, index ) => (
 						<Tooltip
+							key={ index }
 							placement="top"
-							content={ __( 'Move to Trash', 'sureforms' ) }
+							content={ btn.content }
 						>
 							<Button
 								variant="ghost"
-								aria-label={ __(
-									'Move to Trash',
-									'sureforms'
-								) }
+								aria-label={ btn.ariaLabel }
 								size="xs"
-								icon={ <Trash2 /> }
-								onClick={ () => onDelete( entry ) }
+								icon={ btn.icon }
+								onClick={ btn.onClick }
 							/>
 						</Tooltip>
-					) }
+					) ) }
 				</Container>
 			</Table.Cell>
 		</Table.Row>
