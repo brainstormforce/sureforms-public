@@ -55,7 +55,7 @@ const EntriesTable = ( {
 			</Table.Head>
 			<Table.Body>
 				{ isLoading ? (
-					<Table.Row>
+					<Table.Row className="[&_div:has(label)]:invisible">
 						<Table.Cell colSpan={ TABLE_HEADERS.length }>
 							<div className="text-center py-8 text-text-secondary">
 								Loading...
@@ -63,7 +63,7 @@ const EntriesTable = ( {
 						</Table.Cell>
 					</Table.Row>
 				) : entries.length === 0 ? (
-					<Table.Row>
+					<Table.Row className="[&_div:has(label)]:invisible">
 						<Table.Cell colSpan={ TABLE_HEADERS.length }>
 							<div className="text-center py-8 text-text-secondary">
 								No entries found

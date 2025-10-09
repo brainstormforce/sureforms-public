@@ -1,6 +1,7 @@
 import { __ } from '@wordpress/i18n';
 import { Edit3, Trash2, RotateCcw } from 'lucide-react';
 import { Button, Container, Table, Badge } from '@bsf/force-ui';
+import Tooltip from '@Admin/components/Tooltip';
 import { getStatusBadgeVariant } from '../utils/entryHelpers';
 
 /**
@@ -44,41 +45,67 @@ const EntriesTableRow = ( {
 			<Table.Cell>{ entry.dateTime }</Table.Cell>
 			<Table.Cell>
 				<Container align="center" className="gap-2" justify="end">
-					<Button
-						variant="ghost"
-						aria-label={ __( 'Edit', 'sureforms' ) }
-						size="xs"
-						icon={ <Edit3 /> }
-						onClick={ () => onEdit( entry ) }
-					/>
+					<Tooltip
+						placement="top"
+						content={ __( 'Edit', 'sureforms' ) }
+					>
+						<Button
+							variant="ghost"
+							aria-label={ __( 'Edit', 'sureforms' ) }
+							size="xs"
+							icon={ <Edit3 /> }
+							onClick={ () => onEdit( entry ) }
+						/>
+					</Tooltip>
 					{ entry.status === 'trash' ? (
 						<>
-							<Button
-								variant="ghost"
-								aria-label={ __( 'Restore', 'sureforms' ) }
-								size="xs"
-								icon={ <RotateCcw /> }
-								onClick={ () => onRestore( entry ) }
-							/>
+							<Tooltip
+								placement="top"
+								content={ __( 'Restore', 'sureforms' ) }
+							>
+								<Button
+									variant="ghost"
+									aria-label={ __( 'Restore', 'sureforms' ) }
+									size="xs"
+									icon={ <RotateCcw /> }
+									onClick={ () => onRestore( entry ) }
+								/>
+							</Tooltip>
+							<Tooltip
+								placement="top"
+								content={ __(
+									'Delete Permanently',
+									'sureforms'
+								) }
+							>
+								<Button
+									variant="ghost"
+									aria-label={ __(
+										'Delete Permanently',
+										'sureforms'
+									) }
+									size="xs"
+									icon={ <Trash2 /> }
+									onClick={ () => onDelete( entry ) }
+								/>
+							</Tooltip>
+						</>
+					) : (
+						<Tooltip
+							placement="top"
+							content={ __( 'Move to Trash', 'sureforms' ) }
+						>
 							<Button
 								variant="ghost"
 								aria-label={ __(
-									'Delete Permanently',
+									'Move to Trash',
 									'sureforms'
 								) }
 								size="xs"
 								icon={ <Trash2 /> }
 								onClick={ () => onDelete( entry ) }
 							/>
-						</>
-					) : (
-						<Button
-							variant="ghost"
-							aria-label={ __( 'Move to Trash', 'sureforms' ) }
-							size="xs"
-							icon={ <Trash2 /> }
-							onClick={ () => onDelete( entry ) }
-						/>
+						</Tooltip>
 					) }
 				</Container>
 			</Table.Cell>
