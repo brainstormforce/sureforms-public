@@ -1,5 +1,4 @@
-import { useState, useEffect, useMemo } from '@wordpress/element';
-import apiFetch from '@wordpress/api-fetch';
+import { useMemo } from '@wordpress/element';
 import EntriesHeader from './components/EntriesHeader';
 import EntriesFilters from './components/EntriesFilters';
 import EntriesTable from './components/EntriesTable';
@@ -7,7 +6,11 @@ import EntriesPagination from './components/EntriesPagination';
 import { useEntriesFilters } from './hooks/useEntriesFilters';
 import { useEntriesSelection } from './hooks/useEntriesSelection';
 import { usePagination } from './hooks/usePagination';
-import { useEntries, useDeleteEntries } from './hooks/useEntriesQuery';
+import {
+	useEntries,
+	useForms,
+	useDeleteEntries,
+} from './hooks/useEntriesQuery';
 import { transformEntry } from './utils/entryHelpers';
 import { getFormOptions } from './constants';
 
@@ -17,38 +20,8 @@ import { getFormOptions } from './constants';
  * Handles data fetching with TanStack Query
  */
 const EntriesListingPage = () => {
-	const [ formsMap, setFormsMap ] = useState( {} );
-
-	// Fetch forms data for form name mapping
-	useEffect( () => {
-		const fetchForms = async () => {
-			try {
-				const forms = await apiFetch( {
-					path: '/sureforms/v1/form-data',
-					method: 'GET',
-					headers: {
-						'Content-Type': 'application/json',
-						'X-WP-Nonce': srfm_admin?.global_settings_nonce || '',
-					},
-				} );
-
-				// Create a map of form_id => form_title
-				const map = {};
-				if ( Array.isArray( forms ) ) {
-					forms.forEach( ( form ) => {
-						if ( form.ID && form.post_title ) {
-							map[ form.ID ] = form.post_title;
-						}
-					} );
-				}
-				setFormsMap( map );
-			} catch ( error ) {
-				console.error( 'Error fetching forms:', error );
-			}
-		};
-
-		fetchForms();
-	}, [] );
+	// Fetch forms data using React Query
+	const { data: formsMap = {} } = useForms();
 	// Custom hooks for state management
 	const {
 		statusFilter,

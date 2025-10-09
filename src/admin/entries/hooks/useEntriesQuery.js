@@ -6,6 +6,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
 	fetchEntriesList,
+	fetchFormsList,
 	updateEntriesReadStatus,
 	updateEntriesTrashStatus,
 	deleteEntries,
@@ -28,6 +29,16 @@ export const entriesKeys = {
 };
 
 /**
+ * Query key factory for forms
+ *
+ * @return {Array} Query key array
+ */
+export const formsKeys = {
+	all: [ 'forms' ],
+	list: () => [ ...formsKeys.all, 'list' ],
+};
+
+/**
  * Hook to fetch entries with filters
  *
  * @param {Object} params - Query parameters
@@ -39,6 +50,20 @@ export const useEntries = ( params ) => {
 		queryFn: () => fetchEntriesList( params ),
 		keepPreviousData: true, // Keep previous data while fetching new data
 		staleTime: 1000 * 60 * 5, // Consider data fresh for 5 minutes
+	} );
+};
+
+/**
+ * Hook to fetch forms list
+ * Returns a map of form IDs to form titles
+ *
+ * @return {Object} Query result
+ */
+export const useForms = () => {
+	return useQuery( {
+		queryKey: formsKeys.list(),
+		queryFn: fetchFormsList,
+		staleTime: 1000 * 60 * 10, // Consider data fresh for 10 minutes (forms don't change often)
 	} );
 };
 

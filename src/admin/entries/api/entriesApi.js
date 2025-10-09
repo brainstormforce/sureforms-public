@@ -16,6 +16,23 @@ const getNonce = () => {
 };
 
 /**
+ * Fetch forms list
+ * Returns an object mapping form IDs to form titles
+ *
+ * @return {Promise<Object>} Promise resolving to forms map { "123": "Form Title" }
+ */
+export const fetchFormsList = () => {
+	return apiFetch( {
+		path: '/sureforms/v1/form-data',
+		method: 'GET',
+		headers: {
+			'Content-Type': 'application/json',
+			'X-WP-Nonce': getNonce(),
+		},
+	} );
+};
+
+/**
  * Fetch entries list with filters and pagination
  *
  * @param {Object} params          - Query parameters
