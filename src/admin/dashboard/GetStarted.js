@@ -97,7 +97,6 @@ export default () => {
 				<div
 					className="relative aspect-video cursor-pointer group"
 					onClick={ () => {
-						console.log( '🎬 Opening popup video...' );
 						setPopupVideo( videoUrlWithAutoplay );
 					} }
 				>
