@@ -1545,7 +1545,7 @@ class Helper {
 	/**
 	 * Check which Starter Templates plugin is installed and return its main plugin file path.
 	 *
-	 * @since x.x.x
+	 * @since 1.7.3
 	 *
 	 * @return string The main plugin file path of the installed Starter Templates plugin.
 	 */
