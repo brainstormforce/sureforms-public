@@ -25,12 +25,14 @@ const EntriesTableRow = ( {
 	onRestore,
 } ) => {
 	const buttons = [];
-	buttons.push( {
-		content: __( 'Edit', 'sureforms' ),
-		ariaLabel: __( 'Edit', 'sureforms' ),
-		icon: <Edit3 />,
-		onClick: () => onEdit( entry ),
-	} );
+	if ( entry.status !== 'trash' ) {
+		buttons.push( {
+			content: __( 'Edit', 'sureforms' ),
+			ariaLabel: __( 'Edit', 'sureforms' ),
+			icon: <Edit3 />,
+			onClick: () => onEdit( entry ),
+		} );
+	}
 	if ( entry.status === 'trash' ) {
 		buttons.push( {
 			content: __( 'Restore', 'sureforms' ),
