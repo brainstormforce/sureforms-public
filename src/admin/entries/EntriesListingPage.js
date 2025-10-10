@@ -1,4 +1,5 @@
-import { useMemo, useState } from '@wordpress/element';
+import { __ } from '@wordpress/i18n';
+import { useEffect, useMemo, useState } from '@wordpress/element';
 import EntriesHeader from './components/EntriesHeader';
 import EntriesFilters from './components/EntriesFilters';
 import EntriesTable from './components/EntriesTable';
@@ -18,6 +19,7 @@ import {
 } from './hooks/useEntriesQuery';
 import { transformEntry } from './utils/entryHelpers';
 import { getFormOptions } from './constants';
+import { toast } from '@bsf/force-ui';
 
 /**
  * EntriesListingPage Component
@@ -71,7 +73,12 @@ const EntriesListingPage = () => {
 	}, [ dateRange ] );
 
 	// Fetch entries using React Query
-	const { data: entriesData, isLoading } = useEntries( {
+	const {
+		data: entriesData,
+		isLoading,
+		error,
+		isError,
+	} = useEntries( {
 		form_id: formFilter === 'all' ? 0 : parseInt( formFilter, 10 ),
 		status: statusFilter,
 		search: searchQuery,
@@ -131,6 +138,17 @@ const EntriesListingPage = () => {
 		clearSelection,
 		indeterminate,
 	} = useEntriesSelection( entries );
+
+	// Show an error toast if fetching entries fails
+	useEffect( () => {
+		if ( ! isError ) {
+			return;
+		}
+		toast.error(
+			error?.message ||
+				__( 'An error occurred while fetching entries.', 'sureforms' )
+		);
+	}, [ error ] );
 
 	// Action handlers
 	const handleEdit = ( entry ) => {

@@ -83,6 +83,15 @@ export const useUpdateEntriesReadStatus = () => {
 			// Invalidate and refetch entries list
 			queryClient.invalidateQueries( { queryKey: entriesKeys.lists() } );
 		},
+		onError: ( error ) => {
+			const msg =
+				error?.message ||
+				__(
+					'An error occurred while updating read status. Please try again.',
+					'sureforms'
+				);
+			toast.error( msg );
+		},
 	} );
 };
 
@@ -163,6 +172,15 @@ export const useExportEntries = () => {
 				// Trigger download
 				window.location.href = data.download_url;
 			}
+		},
+		onError: ( error ) => {
+			const msg =
+				error?.message ||
+				__(
+					'An error occurred during export. Please try again.',
+					'sureforms'
+				);
+			toast.error( msg );
 		},
 	} );
 };
