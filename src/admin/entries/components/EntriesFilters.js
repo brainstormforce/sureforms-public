@@ -195,22 +195,24 @@ const EntriesFilters = ( {
 							) }
 						/>
 					</div>
+					{ /* Search box */ }
+					<div className="w-48">
+						<Input
+							type="search"
+							placeholder={ __(
+								'Search your entry.',
+								'sureforms'
+							) }
+							ref={ searchInputRef }
+							onChange={ handleSearchChange }
+							onKeyDown={ handleSearchKeyDown }
+							prefix={
+								<Search className="w-4 h-4 text-icon-secondary" />
+							}
+						/>
+					</div>
 				</>
 			) }
-
-			{ /* Search box - always visible */ }
-			<div className="w-48">
-				<Input
-					type="search"
-					placeholder={ __( 'Search your entry.', 'sureforms' ) }
-					ref={ searchInputRef }
-					onChange={ handleSearchChange }
-					onKeyDown={ handleSearchKeyDown }
-					prefix={
-						<Search className="w-4 h-4 text-icon-secondary" />
-					}
-				/>
-			</div>
 
 			{ /* Show bulk action buttons when items are selected */ }
 			{ hasSelectedEntries && (
