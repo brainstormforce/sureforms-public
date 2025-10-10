@@ -71,12 +71,7 @@ const EntriesListingPage = () => {
 	}, [ dateRange ] );
 
 	// Fetch entries using React Query
-	const {
-		data: entriesData,
-		isLoading,
-		isError,
-		error,
-	} = useEntries( {
+	const { data: entriesData, isLoading } = useEntries( {
 		form_id: formFilter === 'all' ? 0 : parseInt( formFilter, 10 ),
 		status: statusFilter,
 		search: searchQuery,
@@ -119,10 +114,15 @@ const EntriesListingPage = () => {
 	const { mutate: updateReadStatusMutation } = useUpdateEntriesReadStatus();
 	const { mutate: exportEntriesMutation } = useExportEntries();
 
-	// State for confirmation dialog
-	const [ isDeleteDialogOpen, setIsDeleteDialogOpen ] = useState( false );
-	const [ selectedEntryForDelete, setSelectedEntryForDelete ] =
-		useState( null );
+	// State for confirmation dialogs
+	const [ confirmationDialog, setConfirmationDialog ] = useState( {
+		open: false,
+		title: '',
+		description: '',
+		confirmLabel: '',
+		onConfirm: null,
+		isLoading: false,
+	} );
 
 	const {
 		selectedEntries,
@@ -141,8 +141,15 @@ const EntriesListingPage = () => {
 	const handleDelete = ( entry ) => {
 		// If entry is already in trash, show confirmation dialog for permanent delete
 		if ( entry.status === 'trash' ) {
-			setSelectedEntryForDelete( entry );
-			setIsDeleteDialogOpen( true );
+			setConfirmationDialog( {
+				open: true,
+				title: 'Delete Entry Permanently?',
+				description:
+					'This action cannot be undone. The entry will be permanently deleted from the database.',
+				confirmLabel: 'Delete Permanently',
+				onConfirm: () => handlePermanentDelete( entry ),
+				isLoading: isDeleting,
+			} );
 		} else {
 			// Otherwise, move to trash
 			trashEntriesMutation( {
@@ -160,13 +167,11 @@ const EntriesListingPage = () => {
 		} );
 	};
 
-	const handlePermanentDelete = () => {
-		if ( selectedEntryForDelete ) {
-			deleteEntriesMutation( {
-				entry_ids: [ selectedEntryForDelete.id ],
-			} );
-			setSelectedEntryForDelete( null );
-		}
+	const handlePermanentDelete = ( entry ) => {
+		deleteEntriesMutation( {
+			entry_ids: [ entry.id ],
+		} );
+		setConfirmationDialog( ( prev ) => ( { ...prev, open: false } ) );
 	};
 
 	// Bulk action handlers
@@ -175,6 +180,27 @@ const EntriesListingPage = () => {
 			return;
 		}
 
+		const allInTrash = selectedEntries.every(
+			( entryId ) =>
+				entries.find( ( item ) => item.id === entryId )?.status ===
+				'trash'
+		);
+
+		setConfirmationDialog( {
+			open: true,
+			title: allInTrash
+				? 'Delete Entries Permanently?'
+				: 'Move Entries to Trash?',
+			description: allInTrash
+				? `This action cannot be undone. ${ selectedEntries.length } entries will be permanently deleted from the database.`
+				: `${ selectedEntries.length } entries will be moved to trash. You can restore them later.`,
+			confirmLabel: allInTrash ? 'Delete Permanently' : 'Move to Trash',
+			onConfirm: handleBulkDeleteConfirm,
+			isLoading: isDeleting,
+		} );
+	};
+
+	const handleBulkDeleteConfirm = () => {
 		// Check if all selected entries are in trash
 		const allInTrash = selectedEntries.every(
 			( entryId ) =>
@@ -190,6 +216,10 @@ const EntriesListingPage = () => {
 				{
 					onSuccess: () => {
 						clearSelection();
+						setConfirmationDialog( ( prev ) => ( {
+							...prev,
+							open: false,
+						} ) );
 					},
 				}
 			);
@@ -203,6 +233,10 @@ const EntriesListingPage = () => {
 				{
 					onSuccess: () => {
 						clearSelection();
+						setConfirmationDialog( ( prev ) => ( {
+							...prev,
+							open: false,
+						} ) );
 					},
 				}
 			);
@@ -267,6 +301,17 @@ const EntriesListingPage = () => {
 			return;
 		}
 
+		setConfirmationDialog( {
+			open: true,
+			title: 'Restore Entries?',
+			description: `${ selectedEntries.length } entries will be restored from trash and will be visible in the entries list again.`,
+			confirmLabel: 'Restore Entries',
+			onConfirm: handleBulkRestoreConfirm,
+			isLoading: false,
+		} );
+	};
+
+	const handleBulkRestoreConfirm = () => {
 		trashEntriesMutation(
 			{
 				entry_ids: selectedEntries,
@@ -275,26 +320,14 @@ const EntriesListingPage = () => {
 			{
 				onSuccess: () => {
 					clearSelection();
+					setConfirmationDialog( ( prev ) => ( {
+						...prev,
+						open: false,
+					} ) );
 				},
 			}
 		);
 	};
-
-	// Show error state
-	if ( isError ) {
-		return (
-			<div className="p-8 bg-background-secondary min-h-screen">
-				<div className="max-w-[1374px] mx-auto">
-					<div className="bg-white rounded-xl border-0.5 border-border-subtle shadow-sm p-8 text-center">
-						<p className="text-red-600">
-							Error loading entries:{ ' ' }
-							{ error?.message || 'Unknown error' }
-						</p>
-					</div>
-				</div>
-			</div>
-		);
-	}
 
 	if (
 		! hasActiveFilters &&
@@ -365,15 +398,15 @@ const EntriesListingPage = () => {
 			</div>
 
 			<ConfirmationDialog
-				open={ isDeleteDialogOpen }
-				setOpen={ setIsDeleteDialogOpen }
-				onConfirm={ handlePermanentDelete }
-				title={ 'Delete Entry Permanently?' }
-				description={
-					'This action cannot be undone. The entry will be permanently deleted from the database.'
+				open={ confirmationDialog.open }
+				setOpen={ ( open ) =>
+					setConfirmationDialog( ( prev ) => ( { ...prev, open } ) )
 				}
-				confirmLabel={ 'Delete Permanently' }
-				isLoading={ isDeleting }
+				onConfirm={ confirmationDialog.onConfirm }
+				title={ confirmationDialog.title }
+				description={ confirmationDialog.description }
+				confirmLabel={ confirmationDialog.confirmLabel }
+				isLoading={ confirmationDialog.isLoading }
 			/>
 		</div>
 	);

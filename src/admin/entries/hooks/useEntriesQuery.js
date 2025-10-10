@@ -103,9 +103,11 @@ export const useTrashEntries = () => {
 			// Show a toast depending on the action (trash or restore)
 			const action = variables?.action || '';
 			if ( action === 'trash' ) {
-				toast.success( __( 'Entry moved to Trash.', 'sureforms' ) );
+				toast.success( __( 'Entry(s) moved to Trash.', 'sureforms' ) );
 			} else if ( action === 'restore' ) {
-				toast.success( __( 'Entry restored.', 'sureforms' ) );
+				toast.success(
+					__( 'Entry(s) restored successfully.', 'sureforms' )
+				);
 			} else {
 				// generic success
 				toast.success(
