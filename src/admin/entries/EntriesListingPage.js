@@ -13,6 +13,8 @@ import {
 	useForms,
 	useDeleteEntries,
 	useTrashEntries,
+	useUpdateEntriesReadStatus,
+	useExportEntries,
 } from './hooks/useEntriesQuery';
 import { transformEntry } from './utils/entryHelpers';
 import { getFormOptions } from './constants';
@@ -114,6 +116,8 @@ const EntriesListingPage = () => {
 	const { mutate: deleteEntriesMutation, isPending: isDeleting } =
 		useDeleteEntries();
 	const { mutate: trashEntriesMutation } = useTrashEntries();
+	const { mutate: updateReadStatusMutation } = useUpdateEntriesReadStatus();
+	const { mutate: exportEntriesMutation } = useExportEntries();
 
 	// State for confirmation dialog
 	const [ isDeleteDialogOpen, setIsDeleteDialogOpen ] = useState( false );
@@ -124,6 +128,7 @@ const EntriesListingPage = () => {
 		selectedEntries,
 		handleChangeRowCheckbox,
 		handleToggleAll,
+		clearSelection,
 		indeterminate,
 	} = useEntriesSelection( entries );
 
@@ -162,6 +167,99 @@ const EntriesListingPage = () => {
 			} );
 			setSelectedEntryForDelete( null );
 		}
+	};
+
+	// Bulk action handlers
+	const handleBulkDelete = () => {
+		if ( selectedEntries.length === 0 ) {
+			return;
+		}
+
+		// Check if all selected entries are in trash
+		const allInTrash = selectedEntries.every(
+			( entryId ) =>
+				entries.find( ( e ) => e.id === entryId )?.status === 'trash'
+		);
+
+		if ( allInTrash ) {
+			// If all are in trash, permanently delete them
+			deleteEntriesMutation(
+				{
+					entry_ids: selectedEntries,
+				},
+				{
+					onSuccess: () => {
+						clearSelection();
+					},
+				}
+			);
+		} else {
+			// Otherwise, move to trash
+			trashEntriesMutation(
+				{
+					entry_ids: selectedEntries,
+					action: 'trash',
+				},
+				{
+					onSuccess: () => {
+						clearSelection();
+					},
+				}
+			);
+		}
+	};
+
+	const handleBulkExport = () => {
+		if ( selectedEntries.length === 0 ) {
+			return;
+		}
+
+		exportEntriesMutation(
+			{
+				entry_ids: selectedEntries,
+			},
+			{
+				onSuccess: () => {
+					clearSelection();
+				},
+			}
+		);
+	};
+
+	const handleMarkAsRead = () => {
+		if ( selectedEntries.length === 0 ) {
+			return;
+		}
+
+		updateReadStatusMutation(
+			{
+				entry_ids: selectedEntries,
+				action: 'read',
+			},
+			{
+				onSuccess: () => {
+					clearSelection();
+				},
+			}
+		);
+	};
+
+	const handleMarkAsUnread = () => {
+		if ( selectedEntries.length === 0 ) {
+			return;
+		}
+
+		updateReadStatusMutation(
+			{
+				entry_ids: selectedEntries,
+				action: 'unread',
+			},
+			{
+				onSuccess: () => {
+					clearSelection();
+				},
+			}
+		);
 	};
 
 	// Show error state
@@ -214,6 +312,11 @@ const EntriesListingPage = () => {
 								dateRange={ dateRange }
 								onDateRangeChange={ setDateRange }
 								formOptions={ formOptions }
+								selectedEntries={ selectedEntries }
+								onBulkDelete={ handleBulkDelete }
+								onBulkExport={ handleBulkExport }
+								onMarkAsRead={ handleMarkAsRead }
+								onMarkAsUnread={ handleMarkAsUnread }
 							/>
 						</div>
 					</div>
