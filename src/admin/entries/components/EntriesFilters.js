@@ -6,6 +6,7 @@ import {
 	Trash2,
 	Download,
 	MoreVertical,
+	RotateCcw,
 } from 'lucide-react';
 import { Select, Input, Button, DropdownMenu } from '@bsf/force-ui';
 import { useRef, useEffect, useMemo } from '@wordpress/element';
@@ -31,6 +32,7 @@ import { STATUS_OPTIONS } from '../constants';
  * @param {Function} props.onBulkExport         - Handler for bulk export action
  * @param {Function} props.onMarkAsRead         - Handler for mark as read action
  * @param {Function} props.onMarkAsUnread       - Handler for mark as unread action
+ * @param {Function} props.onBulkRestore        - Handler for bulk restore action
  */
 const EntriesFilters = ( {
 	statusFilter,
@@ -47,6 +49,7 @@ const EntriesFilters = ( {
 	onBulkExport,
 	onMarkAsRead,
 	onMarkAsUnread,
+	onBulkRestore,
 } ) => {
 	const searchInputRef = useRef( null );
 
@@ -212,6 +215,20 @@ const EntriesFilters = ( {
 			{ /* Show bulk action buttons when items are selected */ }
 			{ hasSelectedEntries && (
 				<>
+					{ /* Show restore button when trash filter is active */ }
+					{ statusFilter === 'trash' && (
+						<Button
+							variant="outline"
+							size="sm"
+							onClick={ onBulkRestore }
+							icon={ <RotateCcw className="w-4 h-4" /> }
+							iconPosition="left"
+							className="min-w-fit"
+						>
+							{ __( 'Restore', 'sureforms' ) }
+						</Button>
+					) }
+
 					<Button
 						variant="outline"
 						size="sm"

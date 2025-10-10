@@ -262,6 +262,24 @@ const EntriesListingPage = () => {
 		);
 	};
 
+	const handleBulkRestore = () => {
+		if ( selectedEntries.length === 0 ) {
+			return;
+		}
+
+		trashEntriesMutation(
+			{
+				entry_ids: selectedEntries,
+				action: 'restore',
+			},
+			{
+				onSuccess: () => {
+					clearSelection();
+				},
+			}
+		);
+	};
+
 	// Show error state
 	if ( isError ) {
 		return (
@@ -317,6 +335,7 @@ const EntriesListingPage = () => {
 								onBulkExport={ handleBulkExport }
 								onMarkAsRead={ handleMarkAsRead }
 								onMarkAsUnread={ handleMarkAsUnread }
+								onBulkRestore={ handleBulkRestore }
 							/>
 						</div>
 					</div>
