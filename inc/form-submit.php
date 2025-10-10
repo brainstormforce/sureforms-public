@@ -281,9 +281,12 @@ class Form_Submit {
 		$validated_form_data = Field_Validation::validate_form_data( $form_data, $current_form_id );
 
 		if ( ! empty( $validated_form_data ) ) {
+			// Get the first error message to display as the main message.
+			$first_error = reset( $validated_form_data );
+
 			wp_send_json_error(
 				[
-					'message'      => __( 'Form data is not valid.', 'sureforms' ),
+					'message'      => $first_error ?? __( 'Form data is not valid.', 'sureforms' ),
 					'field_errors' => $validated_form_data,
 				]
 			);
