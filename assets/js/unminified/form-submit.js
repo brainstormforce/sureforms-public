@@ -456,7 +456,7 @@ function hideErrorMessage( form ) {
 
 /**
  * Re-enables the submit button and restores pointer events.
- * @since x.x.x
+ * @since 1.13.0
  *
  * @param {HTMLFormElement} form - The form element containing the submit button.
  */
