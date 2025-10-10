@@ -367,6 +367,7 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 == Changelog ==
 = x.x.x =
 * Fix: Resolved an issue where entries first field value is missing for upload field.
+* Fix: Resolved and issue where scripts related to SureForms were loading in all the screens causing console errors.
 = 1.12.3 - 30th September 2025 =
 * Fix: AI form generation not redirecting to the SureForms editor after creation.
 * Fix: Forms not publishing or saving with certain blocks on low PHP memory servers.
