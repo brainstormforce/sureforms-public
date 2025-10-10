@@ -107,10 +107,10 @@ const EntriesListingPage = () => {
 	// Check if any filters are active
 	const hasActiveFilters = useMemo( () => {
 		return (
-			statusFilter !== 'all' ||
-			formFilter !== 'all' ||
+			( statusFilter !== '' && statusFilter !== 'all' ) ||
+			( formFilter !== '' && formFilter !== 'all' ) ||
 			searchQuery.trim() !== '' ||
-			dateRange !== null
+			( dateRange?.from !== null && dateRange?.to !== null )
 		);
 	}, [ statusFilter, formFilter, searchQuery, dateRange ] );
 
