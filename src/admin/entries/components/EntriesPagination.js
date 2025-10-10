@@ -1,7 +1,8 @@
 import { __ } from '@wordpress/i18n';
 import { Select, Pagination } from '@bsf/force-ui';
 import { ENTRIES_PER_PAGE_OPTIONS } from '../constants';
-import { generatePaginationItems } from '../utils/entryHelpers';
+import { getPaginationRange } from '../utils/entryHelpers';
+import { cn } from '@Utils/Helpers';
 
 /**
  * EntriesPagination Component
@@ -25,7 +26,7 @@ const EntriesPagination = ( {
 	onNextPage,
 	onPreviousPage,
 } ) => {
-	const paginationItems = generatePaginationItems( currentPage, totalPages );
+	const paginationItems = getPaginationRange( currentPage, totalPages );
 
 	return (
 		<>
@@ -57,6 +58,9 @@ const EntriesPagination = ( {
 					<Pagination.Previous
 						onClick={ onPreviousPage }
 						disabled={ currentPage === 1 }
+						className={ cn(
+							currentPage === 1 && 'opacity-50 text-text-tertiary'
+						) }
 					/>
 					{ paginationItems.map( ( item, index ) => {
 						if ( item === 'ellipsis' ) {
@@ -79,6 +83,10 @@ const EntriesPagination = ( {
 					<Pagination.Next
 						onClick={ onNextPage }
 						disabled={ currentPage === totalPages }
+						className={ cn(
+							currentPage === totalPages &&
+								'opacity-50 text-text-tertiary'
+						) }
 					/>
 				</Pagination.Content>
 			</Pagination>

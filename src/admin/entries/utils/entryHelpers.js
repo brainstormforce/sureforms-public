@@ -106,30 +106,73 @@ export const transformEntry = ( entry, formsMap = {} ) => {
 };
 
 /**
- * Generate pagination items with ellipsis
+ * Generates a range of page numbers and ellipses for pagination.
  *
- * @param {number} currentPage - Current page number
- * @param {number} totalPages  - Total number of pages
- * @return {Array} Array of page numbers with ellipsis indicators
+ * @param {number} currentPage  - The current active page.
+ * @param {number} totalPages   - The total number of pages.
+ * @param {number} siblingCount - Number of pages to show on each side of the current page.
+ * @return {Array} An array containing page numbers and 'ellipsis' strings.
  */
-export const generatePaginationItems = ( currentPage, totalPages ) => {
-	const items = [];
-	const maxVisiblePages = 7;
+export const getPaginationRange = (
+	currentPage,
+	totalPages,
+	siblingCount = 1
+) => {
+	// Calculate common values
+	const siblingFactor = siblingCount * 2; // Sibling count multiplied by 2
+	const totalPageNumbers = siblingFactor + 5; // Total numbers including ellipses and edges
 
-	if ( totalPages <= maxVisiblePages ) {
-		// Show all pages if total is less than max visible
-		for ( let i = 1; i <= totalPages; i++ ) {
-			items.push( i );
-		}
-	} else {
-		// Show first 3, ellipsis, and last 3
-		const firstPages = [ 1, 2, 3 ];
-		const lastPages = [ totalPages - 2, totalPages - 1, totalPages ];
-
-		firstPages.forEach( ( page ) => items.push( page ) );
-		items.push( 'ellipsis' );
-		lastPages.forEach( ( page ) => items.push( page ) );
+	if ( totalPageNumbers >= totalPages ) {
+		// If all pages can fit within the range
+		return Array.from( { length: totalPages }, ( _, i ) => i + 1 );
 	}
 
-	return items;
+	// Calculate indices
+	const leftSiblingIndex = Math.max( currentPage - siblingCount, 1 ); // Left sibling index
+	const rightSiblingIndex = Math.min(
+		currentPage + siblingCount,
+		totalPages
+	);
+
+	const showLeftEllipsis = leftSiblingIndex > 2;
+	const showRightEllipsis = rightSiblingIndex < totalPages - 1;
+
+	// Constants for the first and last pages
+	const firstPage = 1;
+	const lastPage = totalPages;
+
+	const pages = [];
+
+	if ( ! showLeftEllipsis && showRightEllipsis ) {
+		// Calculate range for the left side
+		const leftItemCount = 3 + siblingFactor; // Number of items on the left
+		const leftRange = Array.from(
+			{ length: leftItemCount },
+			( _, i ) => i + 1
+		);
+		pages.push( ...leftRange, 'ellipsis', lastPage );
+	} else if ( showLeftEllipsis && ! showRightEllipsis ) {
+		// Calculate range for the right side
+		const rightItemCount = 3 + siblingFactor; // Number of items on the right
+		const rightRange = Array.from(
+			{ length: rightItemCount },
+			( _, i ) => totalPages - rightItemCount + i + 1
+		);
+		pages.push( firstPage, 'ellipsis', ...rightRange );
+	} else if ( showLeftEllipsis && showRightEllipsis ) {
+		// Calculate middle range
+		const middleRange = Array.from(
+			{ length: siblingFactor + 1 },
+			( _, i ) => currentPage - siblingCount + i
+		);
+		pages.push(
+			firstPage,
+			'ellipsis',
+			...middleRange,
+			'ellipsis',
+			lastPage
+		);
+	}
+
+	return pages;
 };
