@@ -63,7 +63,7 @@ const OttoKitPage = ( { loading, isFormSettings = false, setSelectedTab } ) => {
 							top: ( screen.height - windowDimension.height ) / 2,
 						};
 						const sureTriggersAuthenticationWindow = window.open(
-							plugin.redirection,
+							plugin.connection_url,
 							'',
 							`width=${ windowDimension.width },height=${ windowDimension.height },top=${ positioning.top },left=${ positioning.left },scrollbars=0`
 						);
