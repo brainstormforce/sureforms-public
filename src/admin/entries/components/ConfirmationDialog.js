@@ -15,6 +15,7 @@ import { __ } from '@wordpress/i18n';
  * @param {string}                    props.confirmLabel - Label for confirm button (default: "Delete")
  * @param {string}                    props.cancelLabel  - Label for cancel button (default: "Cancel")
  * @param {boolean}                   props.isLoading    - Whether the action is in progress
+ * @param {boolean}                   props.destructive  - Whether the action is destructive (default: true)
  */
 const ConfirmationDialog = ( {
 	open,
@@ -26,6 +27,7 @@ const ConfirmationDialog = ( {
 	confirmLabel = __( 'Delete', 'sureforms' ),
 	cancelLabel = __( 'Cancel', 'sureforms' ),
 	isLoading = false,
+	destructive = true,
 } ) => {
 	const handleConfirm = () => {
 		onConfirm();
@@ -67,7 +69,7 @@ const ConfirmationDialog = ( {
 							variant="primary"
 							onClick={ handleConfirm }
 							disabled={ isLoading }
-							destructive
+							destructive={ destructive }
 						>
 							{ isLoading
 								? __( 'Deleting…', 'sureforms' )

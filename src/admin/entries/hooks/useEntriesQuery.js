@@ -5,7 +5,7 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from '@bsf/force-ui';
-import { __ } from '@wordpress/i18n';
+import { __, _n, sprintf } from '@wordpress/i18n';
 import {
 	fetchEntriesList,
 	fetchFormsList,
@@ -111,11 +111,32 @@ export const useTrashEntries = () => {
 
 			// Show a toast depending on the action (trash or restore)
 			const action = variables?.action || '';
+			const count = variables?.entry_ids?.length || 1;
 			if ( action === 'trash' ) {
-				toast.success( __( 'Entry(s) moved to Trash.', 'sureforms' ) );
+				toast.success(
+					sprintf(
+						// translators: %s is the number of entries moved to trash.
+						_n(
+							'%s entry moved to Trash.',
+							'%s entries moved to Trash.',
+							count,
+							'sureforms'
+						),
+						count
+					)
+				);
 			} else if ( action === 'restore' ) {
 				toast.success(
-					__( 'Entry(s) restored successfully.', 'sureforms' )
+					sprintf(
+						// translators: %s is the number of entries restored.
+						_n(
+							'%s entry restored successfully.',
+							'%s entries restored successfully.',
+							count,
+							'sureforms'
+						),
+						count
+					)
 				);
 			} else {
 				// generic success
@@ -143,10 +164,22 @@ export const useDeleteEntries = () => {
 
 	return useMutation( {
 		mutationFn: deleteEntries,
-		onSuccess: () => {
+		onSuccess: ( data, variables ) => {
 			// Invalidate and refetch entries list
 			queryClient.invalidateQueries( { queryKey: entriesKeys.lists() } );
-			toast.success( __( 'Entry deleted permanently.', 'sureforms' ) );
+			const count = variables?.entry_ids?.length || 1;
+			toast.success(
+				sprintf(
+					// translators: %s is the number of entries deleted.
+					_n(
+						'%s entry deleted permanently.',
+						'%s entries deleted permanently.',
+						count,
+						'sureforms'
+					),
+					count
+				)
+			);
 		},
 		onError: ( error ) => {
 			const msg =

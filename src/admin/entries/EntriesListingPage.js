@@ -1,4 +1,4 @@
-import { __ } from '@wordpress/i18n';
+import { __, _n, sprintf } from '@wordpress/i18n';
 import { useEffect, useMemo, useState } from '@wordpress/element';
 import EntriesHeader from './components/EntriesHeader';
 import EntriesFilters from './components/EntriesFilters';
@@ -129,6 +129,7 @@ const EntriesListingPage = () => {
 		confirmLabel: '',
 		onConfirm: null,
 		isLoading: false,
+		destructive: true,
 	} );
 
 	const {
@@ -167,6 +168,7 @@ const EntriesListingPage = () => {
 				confirmLabel: 'Delete Permanently',
 				onConfirm: () => handlePermanentDelete( entry ),
 				isLoading: isDeleting,
+				destructive: true,
 			} );
 		} else {
 			// Otherwise, move to trash
@@ -207,14 +209,45 @@ const EntriesListingPage = () => {
 		setConfirmationDialog( {
 			open: true,
 			title: allInTrash
-				? 'Delete Entries Permanently?'
-				: 'Move Entries to Trash?',
+				? _n(
+					'Delete Entry Permanently?',
+					'Delete Entries Permanently?',
+					selectedEntries.length,
+					'sureforms'
+				)
+				: _n(
+					'Move Entry to Trash?',
+					'Move Entries to Trash?',
+					selectedEntries.length,
+					'sureforms'
+				),
 			description: allInTrash
-				? `This action cannot be undone. ${ selectedEntries.length } entries will be permanently deleted from the database.`
-				: `${ selectedEntries.length } entries will be moved to trash. You can restore them later.`,
-			confirmLabel: allInTrash ? 'Delete Permanently' : 'Move to Trash',
+				? sprintf(
+					// translators: %s is the number of entries to be deleted.
+					_n(
+						'This action cannot be undone. %s entry will be permanently deleted from the database.',
+						'This action cannot be undone. %s entries will be permanently deleted from the database.',
+						selectedEntries.length,
+						'sureforms'
+					),
+					selectedEntries.length
+				)
+				: sprintf(
+					// translators: %s is the number of entries to be moved to trash.
+					_n(
+						'%s entry will be moved to trash and can be restored later.',
+						'%s entries will be moved to trash and can be restored later.',
+						selectedEntries.length,
+						'sureforms'
+					),
+					selectedEntries.length
+				),
+			confirmLabel: allInTrash
+				? __( 'Delete Permanently', 'sureforms' )
+				: __( 'Move to Trash', 'sureforms' ),
 			onConfirm: handleBulkDeleteConfirm,
 			isLoading: isDeleting,
+			destructive: true,
 		} );
 	};
 
@@ -321,11 +354,26 @@ const EntriesListingPage = () => {
 
 		setConfirmationDialog( {
 			open: true,
-			title: 'Restore Entries?',
-			description: `${ selectedEntries.length } entries will be restored from trash and will be visible in the entries list again.`,
-			confirmLabel: 'Restore Entries',
+			title: _n(
+				'Restore Entry?',
+				'Restore Entries?',
+				selectedEntries.length,
+				'sureforms'
+			),
+			description: sprintf(
+				// translators: %s is the number of entries to be restored.
+				_n(
+					'%s entry will be restored from trash and will be visible in the entries list again.',
+					'%s entries will be restored from trash and will be visible in the entries list again.',
+					selectedEntries.length,
+					'sureforms'
+				),
+				selectedEntries.length
+			),
+			confirmLabel: __( 'Restore', 'sureforms' ),
 			onConfirm: handleBulkRestoreConfirm,
 			isLoading: false,
+			destructive: false,
 		} );
 	};
 
@@ -425,6 +473,7 @@ const EntriesListingPage = () => {
 				description={ confirmationDialog.description }
 				confirmLabel={ confirmationDialog.confirmLabel }
 				isLoading={ confirmationDialog.isLoading }
+				destructive={ confirmationDialog?.destructive }
 			/>
 		</div>
 	);
