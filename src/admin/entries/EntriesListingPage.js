@@ -153,8 +153,7 @@ const EntriesListingPage = () => {
 
 	// Action handlers
 	const handleEdit = ( entry ) => {
-		// TODO: Implement edit functionality
-		console.log( 'Edit entry:', entry );
+		window.open( decodeURIComponent( srfm_admin?.view_entry_url ).replace( '[id]', entry.id ), '_self', 'noopener,noreferrer' );
 	};
 
 	const handleDelete = ( entry ) => {
