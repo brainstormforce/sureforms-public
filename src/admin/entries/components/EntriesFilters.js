@@ -53,6 +53,18 @@ const EntriesFilters = ( {
 } ) => {
 	const searchInputRef = useRef( null );
 
+	// Dropdown menu options for bulk actions
+	const DROPDOWN_MENU_OPTIONS = [
+		{
+			label: __( 'Mark as Read', 'sureforms' ),
+			onClick: onMarkAsRead,
+		},
+		{
+			label: __( 'Mark as Unread', 'sureforms' ),
+			onClick: onMarkAsUnread,
+		},
+	];
+
 	// Check if any entries are selected
 	const hasSelectedEntries = useMemo(
 		() => selectedEntries.length > 0,
@@ -266,24 +278,17 @@ const EntriesFilters = ( {
 							<DropdownMenu.ContentWrapper>
 								<DropdownMenu.Content className="w-48">
 									<DropdownMenu.List>
-										<DropdownMenu.Item
-											onClick={ onMarkAsRead }
-											className="text-sm font-normal text-text-secondary hover:bg-background-secondary hover:text-text-primary focus:bg-background-secondary focus:text-text-primary cursor-pointer"
-										>
-											{ __(
-												'Mark as Read',
-												'sureforms'
-											) }
-										</DropdownMenu.Item>
-										<DropdownMenu.Item
-											onClick={ onMarkAsUnread }
-											className="text-sm font-normal text-text-secondary hover:bg-background-secondary hover:text-text-primary focus:bg-background-secondary focus:text-text-primary cursor-pointer"
-										>
-											{ __(
-												'Mark as Unread',
-												'sureforms'
-											) }
-										</DropdownMenu.Item>
+										{ DROPDOWN_MENU_OPTIONS.map(
+											( option, index ) => (
+												<DropdownMenu.Item
+													key={ index }
+													onClick={ option.onClick }
+													className="text-sm font-normal text-text-secondary hover:bg-background-secondary hover:text-text-primary focus:bg-background-secondary focus:text-text-primary cursor-pointer"
+												>
+													{ option.label }
+												</DropdownMenu.Item>
+											)
+										) }
 									</DropdownMenu.List>
 								</DropdownMenu.Content>
 							</DropdownMenu.ContentWrapper>
