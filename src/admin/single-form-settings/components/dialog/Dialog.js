@@ -36,7 +36,7 @@ import { store as blockEditorStore } from '@wordpress/block-editor';
 import FormRestriction from '../form-restrictions/FormRestriction';
 import { FormRestrictionContext } from '../form-restrictions/context';
 import OttoKitPage from '@Admin/settings/pages/OttoKit';
-import ottoKitIcon from '@Image/suretriggers.svg';
+import ottoKitIcon from '@Image/suretriggers-grayscale.svg';
 
 const Dialog = ( {
 	open,

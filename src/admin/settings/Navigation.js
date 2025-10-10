@@ -4,7 +4,7 @@ import { applyFilters } from '@wordpress/hooks';
 import { cn } from '@Utils/Helpers';
 import { Cpu, Settings, ShieldCheck, TriangleAlert } from 'lucide-react';
 import { Accordion } from '@bsf/force-ui';
-import ottoKitIcon from '@Image/suretriggers.svg';
+import ottoKitIcon from '@Image/suretriggers-grayscale.svg';
 
 function useQuery() {
 	return new URLSearchParams( useLocation().search );
