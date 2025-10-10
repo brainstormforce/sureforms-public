@@ -250,6 +250,7 @@ const EntriesFilters = ( {
 						icon={ <Trash2 className="w-4 h-4" /> }
 						iconPosition="left"
 						className="min-w-fit"
+						destructive
 					>
 						{ __( 'Delete', 'sureforms' ) }
 					</Button>
