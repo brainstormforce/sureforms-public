@@ -180,7 +180,12 @@ const EntriesListingPage = () => {
 		);
 	}
 
-	if ( ! hasActiveFilters && entries.length === 0 && ! isLoading ) {
+	if (
+		! hasActiveFilters &&
+		entries.length === 0 &&
+		! isLoading &&
+		!! entriesData.emptyTrash
+	) {
 		return (
 			<div className="p-8 bg-background-secondary min-h-screen">
 				<div className="max-w-[1374px] mx-auto">
