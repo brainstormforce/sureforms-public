@@ -44,7 +44,7 @@ const EntriesListingPage = () => {
 		nextPage,
 		previousPage,
 		changeEntriesPerPage,
-	} = usePagination( 1, 20 );
+	} = usePagination( 1, 10 );
 
 	// Convert dateRange to formatted date strings for API
 	const dateFilters = useMemo( () => {

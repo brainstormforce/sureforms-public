@@ -26,13 +26,7 @@ export const getFormOptions = ( formsMap = {} ) => {
 	return options;
 };
 
-export const ENTRIES_PER_PAGE_OPTIONS = [
-	{ value: 10, label: '10' },
-	{ value: 20, label: '20' },
-	{ value: 25, label: '25' },
-	{ value: 50, label: '50' },
-	{ value: 100, label: '100' },
-];
+export const ENTRIES_PER_PAGE_OPTIONS = [ 10, 25, 50, 100 ];
 
 export const TABLE_HEADERS = [
 	{

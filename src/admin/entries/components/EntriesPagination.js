@@ -34,7 +34,7 @@ const EntriesPagination = ( {
 					{ __( 'Page', 'sureforms' ) } { currentPage }{ ' ' }
 					{ __( 'out of', 'sureforms' ) } { totalPages }
 				</span>
-				<div className="w-[60px]">
+				<div className="w-16">
 					<Select
 						value={ entriesPerPage }
 						onChange={ onEntriesPerPageChange }
@@ -43,11 +43,8 @@ const EntriesPagination = ( {
 						<Select.Button render={ ( value ) => value } />
 						<Select.Options className="z-999999">
 							{ ENTRIES_PER_PAGE_OPTIONS.map( ( option ) => (
-								<Select.Option
-									key={ option.value }
-									value={ option.value }
-								>
-									{ option.label }
+								<Select.Option key={ option } value={ option }>
+									{ option }
 								</Select.Option>
 							) ) }
 						</Select.Options>

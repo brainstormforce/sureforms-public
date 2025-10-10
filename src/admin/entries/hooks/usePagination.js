@@ -3,8 +3,8 @@ import { useState } from '@wordpress/element';
 /**
  * Custom hook to manage pagination state
  *
- * @param  {number} initialPage    - Initial page number
- * @param  {number} initialPerPage - Initial entries per page
+ * @param {number} initialPage    - Initial page number
+ * @param {number} initialPerPage - Initial entries per page
  * @return {Object} Pagination states and handlers
  */
 export const usePagination = ( initialPage = 1, initialPerPage = 10 ) => {
