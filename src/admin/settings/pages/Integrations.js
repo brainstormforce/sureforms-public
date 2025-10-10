@@ -9,11 +9,28 @@ const IntegrationsPage = ( { loading } ) => {
 	const freePluginUI = (
 		<IntegrationsInitialState
 			image={ NoIntegrationsImage }
-			title={ __( 'Unlock Powerful Integrations', 'sureforms' ) }
-			description={ __(
-				'Connect your forms with popular tools like Google Sheets, Mailchimp, and Brevo. Automatically send leads, save entries to spreadsheets, trigger workflows, and much more—without any manual work.',
+			title={ __(
+				'Connect Native Integrations with SureForms',
 				'sureforms'
 			) }
+			description={ __(
+				'Unlock powerful integrations in the Premium plan to automate your workflows and connect SureForms directly with your favourite tools.',
+				'sureforms'
+			) }
+			features={ [
+				__(
+					'Send form submissions straight to CRMs, email, and marketing platforms',
+					'sureforms'
+				),
+				__(
+					'Automate repetitive tasks with seamless data syncing',
+					'sureforms'
+				),
+				__(
+					'Access exclusive native integrations for faster workflows',
+					'sureforms'
+				),
+			] }
 			buttonText={ __( 'Upgrade Now', 'sureforms' ) }
 			onButtonClick={ () => {
 				window.open(
@@ -26,7 +43,6 @@ const IntegrationsPage = ( { loading } ) => {
 					'noreferrer'
 				);
 			} }
-			containerPadding={ false }
 			imageClassName="mb-0"
 		/>
 	);
