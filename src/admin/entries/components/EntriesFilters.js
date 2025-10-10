@@ -1,6 +1,7 @@
 import { __ } from '@wordpress/i18n';
 import { Search, Calendar, X } from 'lucide-react';
 import { Select, Input, Button } from '@bsf/force-ui';
+import { useRef, useEffect } from '@wordpress/element';
 import DatePicker from '@Admin/components/DatePicker';
 import { STATUS_OPTIONS } from '../constants';
 
@@ -30,6 +31,27 @@ const EntriesFilters = ( {
 	onDateRangeChange,
 	formOptions = [],
 } ) => {
+	const searchInputRef = useRef( null );
+
+	useEffect( () => {
+		if ( searchInputRef.current ) {
+			searchInputRef.current.value = searchQuery;
+		}
+	}, [ searchQuery ] );
+
+	const handleSearchKeyDown = ( event ) => {
+		if ( event.key === 'Enter' ) {
+			onSearchChange( event.target.value );
+		}
+	};
+
+	const handleSearchChange = ( value ) => {
+		// Clear search query immediately when input becomes empty
+		if ( value === '' ) {
+			onSearchChange( '' );
+		}
+	};
+
 	const formatDate = ( value ) => {
 		if ( ! value ) {
 			return '';
@@ -143,8 +165,9 @@ const EntriesFilters = ( {
 				<Input
 					type="search"
 					placeholder={ __( 'Search your entry.', 'sureforms' ) }
-					value={ searchQuery }
-					onChange={ onSearchChange }
+					ref={ searchInputRef }
+					onChange={ handleSearchChange }
+					onKeyDown={ handleSearchKeyDown }
 					prefix={
 						<Search className="w-4 h-4 text-icon-secondary" />
 					}

@@ -6,8 +6,8 @@ import { useState } from '@wordpress/element';
  * @return {Object} Filter states and setters
  */
 export const useEntriesFilters = () => {
-	const [ statusFilter, setStatusFilter ] = useState( 'all' );
-	const [ formFilter, setFormFilter ] = useState( 'all' );
+	const [ statusFilter, setStatusFilter ] = useState( '' );
+	const [ formFilter, setFormFilter ] = useState( '' );
 	const [ searchQuery, setSearchQuery ] = useState( '' );
 	const [ dateRange, setDateRange ] = useState( {
 		from: null,
@@ -15,8 +15,8 @@ export const useEntriesFilters = () => {
 	} );
 
 	const resetFilters = () => {
-		setStatusFilter( 'all' );
-		setFormFilter( 'all' );
+		setStatusFilter( '' );
+		setFormFilter( '' );
 		setSearchQuery( '' );
 		setDateRange( null );
 	};
