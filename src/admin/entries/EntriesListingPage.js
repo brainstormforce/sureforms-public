@@ -399,7 +399,7 @@ const EntriesListingPage = () => {
 		! hasActiveFilters &&
 		entries.length === 0 &&
 		! isLoading &&
-		!! entriesData.emptyTrash
+		!! entriesData?.emptyTrash
 	) {
 		return (
 			<div className="p-8 bg-background-secondary min-h-screen">
