@@ -786,6 +786,7 @@ class Admin {
 			'field_spacing_vars'         => Helper::get_css_vars(),
 			'is_ver_lower_than_6_7'      => version_compare( $wp_version, '6.6.2', '<=' ),
 			'integrations'               => Helper::sureforms_get_integration(),
+			'rotating_plugin_banner'     => Helper::get_rotating_plugin_banner(),
 			'ajax_url'                   => admin_url( 'admin-ajax.php' ),
 			'sf_plugin_manager_nonce'    => wp_create_nonce( 'sf_plugin_manager_nonce' ),
 			'plugin_installer_nonce'     => wp_create_nonce( 'updates' ),

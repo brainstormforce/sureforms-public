@@ -1554,7 +1554,7 @@ class Helper {
 			[
 				'sure_mails'        => [
 					'title'       => __( 'SureMail', 'sureforms' ),
-					'subtitle'    => __( 'Free and easy SMTP mails plugin.', 'sureforms' ),
+					'subtitle'    => __( 'Access a powerful, easy-to-use email delivery service that ensures your emails land in inboxes, not spam folders. Automate your WordPress email workflows confidently with SureMail.', 'sureforms' ),
 					'status'      => self::get_plugin_status( 'suremails/suremails.php' ),
 					'slug'        => 'suremails',
 					'path'        => 'suremails/suremails.php',
@@ -1563,7 +1563,7 @@ class Helper {
 				],
 				'sure_triggers'     => [
 					'title'       => __( 'OttoKit', 'sureforms' ),
-					'subtitle'    => __( 'No-code automation tool for WordPress.', 'sureforms' ),
+					'subtitle'    => __( 'Automate your WordPress workflows effortlessly. Connect apps, sync data, and run actions using a clean, visual automation builder.', 'sureforms' ),
 					'description' => __( 'OttoKit is a powerful automation platform that helps you connect your various plugins and apps together. It allows you to automate repetitive tasks, so you can focus on more important work.', 'sureforms' ),
 					'status'      => self::get_plugin_status( 'suretriggers/suretriggers.php' ),
 					'slug'        => 'suretriggers',
@@ -1575,7 +1575,7 @@ class Helper {
 				],
 				'uae'               => [
 					'title'    => __( 'Ultimate Addons for Elementor', 'sureforms' ),
-					'subtitle' => __( 'Build modern websites with elementor addons.', 'sureforms' ),
+					'subtitle' => __( 'Enhance Elementor with powerful widgets and templates. Build stunning, high-performing websites faster with creative design elements and seamless customization.', 'sureforms' ),
 					'status'   => self::get_plugin_status( 'header-footer-elementor/header-footer-elementor.php' ),
 					'slug'     => 'header-footer-elementor',
 					'path'     => 'header-footer-elementor/header-footer-elementor.php',
@@ -1583,7 +1583,7 @@ class Helper {
 				],
 				'starter_templates' => [
 					'title'       => __( 'Starter Templates', 'sureforms' ),
-					'subtitle'    => __( 'Build your dream website in minutes with AI.', 'sureforms' ),
+					'subtitle'    => __( 'Launch beautiful websites in minutes. Choose from professionally designed templates, import with one click, and customize effortlessly to match your brand.', 'sureforms' ),
 					'status'      => self::get_plugin_status( self::check_starter_template_plugin() ),
 					'slug'        => 'astra-sites',
 					'path'        => self::check_starter_template_plugin(),
@@ -1592,6 +1592,81 @@ class Helper {
 				],
 			]
 		);
+	}
+
+	/**
+	 * Get the current rotating plugin for the banner.
+	 *
+	 * Plugins rotate every 2 days. Only non-activated plugins are shown.
+	 * Returns false if all plugins are activated.
+	 *
+	 * @since x.x.x
+	 * @return array|false The current plugin data or false if all plugins are activated.
+	 */
+	public static function get_rotating_plugin_banner() {
+		$all_plugins = self::sureforms_get_integration();
+
+		$available_plugins = [];
+
+		// Only include non-activated plugins.
+		foreach ( $all_plugins as $plugin ) {
+			if ( isset( $plugin['status'] ) && 'Activated' !== $plugin['status'] ) {
+				$available_plugins[] = $plugin;
+			}
+		}
+
+		// Re-index the array to have sequential numeric keys.
+		$available_plugins = array_values( $available_plugins );
+		$total_plugins     = count( $available_plugins );
+
+		// Hide section if all plugins are active.
+		if ( 0 === $total_plugins ) {
+			return false;
+		}
+
+		// Get stored rotation data.
+		$rotation_data = self::get_srfm_option( 'plugin_banner_rotation', [] );
+
+		// Initialize rotation data if empty.
+		if ( empty( $rotation_data ) ) {
+			$current_time = time();
+			self::update_srfm_option(
+				'plugin_banner_rotation',
+				[
+					'last_rotation_date' => $current_time,
+					'plugin_index'       => 0,
+				]
+			);
+			return $available_plugins[0];
+		}
+
+		$last_rotation_date = isset( $rotation_data['last_rotation_date'] ) ? $rotation_data['last_rotation_date'] : 0;
+		$plugin_index       = isset( $rotation_data['plugin_index'] ) ? intval( $rotation_data['plugin_index'] ) : 0;
+
+		$current_time        = time();
+		$days_since_rotation = ( $current_time - $last_rotation_date ) / DAY_IN_SECONDS;
+
+		// Rotate every 2 days.
+		if ( $days_since_rotation >= 2 ) {
+			// Rotate to next plugin.
+			$plugin_index = ( $plugin_index + 1 ) % $total_plugins;
+
+			// Update the rotation data.
+			self::update_srfm_option(
+				'plugin_banner_rotation',
+				[
+					'last_rotation_date' => $current_time,
+					'plugin_index'       => $plugin_index,
+				]
+			);
+		}
+
+		// Ensure the index is within bounds.
+		if ( $plugin_index >= $total_plugins ) {
+			$plugin_index = 0;
+		}
+
+		return $available_plugins[ $plugin_index ];
 	}
 
 	/**
