@@ -181,6 +181,10 @@ const Dialog = ( {
 				component: (
 					<FeaturePreview
 						featureName={ __( 'PDF Generation', 'sureforms' ) }
+						autoSaveHelpText={ __(
+							'Generate and customize PDF copies of form submissions.',
+							'sureforms'
+						) }
 						icon={
 							<FileDown
 								className="text-orange-500"
@@ -190,12 +194,12 @@ const Dialog = ( {
 						}
 						title={ __( 'Generate Submission PDFs', 'sureforms' ) }
 						subtitle={ __(
-							'Turn every form entry into a polished PDF file—perfect for reports, records, or sharing.',
+							'Turn every form entry into a polished PDF file, making it perfect for reports, records, or sharing.',
 							'sureforms'
 						) }
 						featureList={ [
 							__(
-								'Automatically create PDFs from form submissions.',
+								'Automatically generate PDFs from your form submissions.',
 								'sureforms'
 							),
 							__(
@@ -218,6 +222,10 @@ const Dialog = ( {
 				component: (
 					<FeaturePreview
 						featureName={ __( 'User Registration', 'sureforms' ) }
+						autoSaveHelpText={ __(
+							'Register new users or update existing accounts with form submissions.',
+							'sureforms'
+						) }
 						icon={
 							<UserPlus
 								className="text-orange-500"
@@ -235,7 +243,7 @@ const Dialog = ( {
 						) }
 						featureList={ [
 							__(
-								'Register new users directly from form submissions.',
+								'Register new users directly from your form submissions.',
 								'sureforms'
 							),
 							__(
@@ -248,10 +256,6 @@ const Dialog = ( {
 							),
 						] }
 						utmMedium="user-registration-preview-single-form-settings"
-						autoSaveHelpText={ __(
-							'Register new users or update existing accounts with form submissions.',
-							'sureforms'
-						) }
 					/>
 				),
 			},
@@ -262,6 +266,10 @@ const Dialog = ( {
 				component: (
 					<FeaturePreview
 						featureName={ __( 'Post Feed', 'sureforms' ) }
+						autoSaveHelpText={ __(
+							'Automatically create WordPress posts from form submissions.',
+							'sureforms'
+						) }
 						icon={
 							<FilePlus
 								className="text-orange-500"
@@ -283,19 +291,15 @@ const Dialog = ( {
 								'sureforms'
 							),
 							__(
-								'Map form fields to post fields easily.',
+								'Map form fields to your post fields easily.',
 								'sureforms'
 							),
 							__(
-								'Automate content publishing with no extra steps.',
+								'Automate the content publishing flow with few simple steps.',
 								'sureforms'
 							),
 						] }
 						utmMedium="post-feed-preview-single-form-settings"
-						autoSaveHelpText={ __(
-							'Automatically create WordPress posts from form submissions.',
-							'sureforms'
-						) }
 					/>
 				),
 			},

@@ -4,28 +4,15 @@ import { Dot, Check } from 'lucide-react';
 import { addQueryParam, cn } from '@Utils/Helpers';
 
 const FeaturePreview = ( {
-	featureName = __( 'Post Feed', 'sureforms' ),
+	featureName = '',
 	icon = <Check className="text-green-500" size={ 40 } strokeWidth={ 1 } />,
-	title = __(
-		'Automatically create WordPress posts from form submissions.',
-		'sureforms'
-	),
-	subtitle = __(
-		'Unlock the power of automation by seamlessly converting form submissions into WordPress posts. With our Post Feed feature, you can effortlessly map form fields to post fields and automate content publishing without any extra steps.',
-		'sureforms'
-	),
-	featureList = [
-		__( 'Create posts, pages, or CPTs from form entries', 'sureforms' ),
-		__( 'Map form fields to post fields easily', 'sureforms' ),
-		__( 'Automate content publishing with no extra steps', 'sureforms' ),
-	],
-	utmMedium = 'pdf-preview-single-form-settings',
+	title = '',
+	subtitle = '',
+	featureList = [],
+	utmMedium = '',
 	actionLeftContent,
 	shouldShowAutoSaveText = true,
-	autoSaveHelpText = __(
-		'Generate and customize PDF copies of form submissions.',
-		'sureforms'
-	),
+	autoSaveHelpText = '',
 } ) => {
 	return (
 		<div className="space-y-7 pb-8">
