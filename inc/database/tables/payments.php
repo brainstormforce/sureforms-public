@@ -772,6 +772,12 @@ class Payments extends Base {
 			return false;
 		}
 
+		// Extract refund ID - required for using as array key.
+		$refund_id = $refund_data['refund_id'] ?? '';
+		if ( empty( $refund_id ) ) {
+			return false; // Must have a refund ID.
+		}
+
 		// Get current payment data.
 		$payment_data = self::get_payment_data( $payment_id );
 
@@ -780,8 +786,8 @@ class Payments extends Base {
 			$payment_data['refunds'] = [];
 		}
 
-		// Add new refund data.
-		$payment_data['refunds'][] = $refund_data;
+		// Use refund ID as array key - automatically prevents duplicates!
+		$payment_data['refunds'][ $refund_id ] = $refund_data;
 
 		// Update payment with new payment data.
 		return self::update( $payment_id, [ 'payment_data' => $payment_data ] );
