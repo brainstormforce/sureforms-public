@@ -10,6 +10,7 @@ import {
 	TriangleAlert,
 } from 'lucide-react';
 import { Accordion } from '@bsf/force-ui';
+import ottoKitIcon from '@Image/suretriggers-grayscale.svg';
 
 function useQuery() {
 	return new URLSearchParams( useLocation().search );
@@ -50,9 +51,22 @@ export const navigation = applyFilters( 'srfm.settings.navigation', [
 		],
 	},
 	{
+		name: __( 'OttoKit', 'sureforms' ),
+		slug: 'ottokit-settings',
+		icon: (
+			<img
+				src={ ottoKitIcon }
+				className="size-4"
+				alt={ __( 'OttoKit', 'sureforms' ) }
+			/>
+		),
+		hidePageTitle: true, // Hide the page title for the OttoKit tab.
+	},
+	{
 		name: __( 'Integrations', 'sureforms' ),
 		slug: 'integration-settings',
 		icon: <Cpu />,
+		hidePageTitle: true, // Hide the page title for the Integrations tab.
 	},
 	{
 		name: __( 'Payments', 'sureforms' ),
@@ -98,7 +112,7 @@ const NavLink = ( { label, path, icon: Icon, subPage = '' } ) => {
 		>
 			<span
 				className={ cn(
-					'flex-shrink-0 mt-0.5 [&>svg]:size-5 text-icon-secondary [&>svg]:!text-icon-secondary',
+					'flex-shrink-0 mt-0.5 [&>svg]:size-5 [&>img]:size-5 text-icon-secondary [&>svg]:!text-icon-secondary',
 					isActive() &&
 						'text-icon-interactive [&>svg]:!text-icon-interactive'
 				) }
