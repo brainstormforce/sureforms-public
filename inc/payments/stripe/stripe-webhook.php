@@ -283,10 +283,10 @@ class Stripe_Webhook {
 	 */
 	public function webhook_listener(): void {
 		// For development - use dev validation (no signature check).
-		$event = $this->dev_validate_stripe_signature();
+		// $event = $this->dev_validate_stripe_signature();
 
 		// For production - uncomment this line:
-		// $event = $this->validate_stripe_signature();
+		$event = $this->validate_stripe_signature();
 
 		if ( ! $event || ! isset( $event['type'] ) ) {
 			error_log( 'SureForms: Invalid webhook event.' );
@@ -303,7 +303,7 @@ class Stripe_Webhook {
 					return;
 				}
 				$charge = $event['data']['object'];
-				$this->charge_refund( $charge );
+				$this->create_refund_record( $charge );
 				break;
 
 			case 'invoice.payment_succeeded':
@@ -333,12 +333,36 @@ class Stripe_Webhook {
 	 * @param array<string, mixed> $charge Payment charge object.
 	 * @return void
 	 */
-	public function charge_refund( array $charge ): void {
+	public function create_refund_record( array $charge ): void {
+		// Try to find payment by payment_intent first (for regular payments).
 		$payment_intent    = sanitize_text_field( $charge['payment_intent'] ?? '' );
-		$get_payment_entry = Payments::get_by_transaction_id( $payment_intent );
+		$get_payment_entry = null;
+		$charge_id         = '';
 
+		if ( ! empty( $payment_intent ) ) {
+			$get_payment_entry = Payments::get_by_transaction_id( $payment_intent );
+		}
+
+		// Fallback: Try to find by charge ID (for subscription payments).
 		if ( ! $get_payment_entry ) {
-			error_log( 'SureForms: Could not find payment entry via charge ID: ' . ( $charge['id'] ?? 'unknown' ) . '.' );
+			$charge_id = sanitize_text_field( $charge['charge'] ?? '' );
+
+			if ( ! empty( $charge_id ) ) {
+				$get_payment_entry = Payments::get_by_transaction_id( $charge_id );
+			}
+		}
+
+		// Final check: If still not found, log detailed error and return.
+		if ( ! $get_payment_entry ) {
+			error_log(
+				sprintf(
+					'SureForms: Could not find payment entry for refund. Refund ID: %s, Payment Intent: %s, Charge: %s, Chare All data: %s',
+					$charge['id'] ?? 'unknown',
+					$payment_intent ?: 'none',
+					$charge_id ?: 'none',
+					print_r( $charge, true )
+				)
+			);
 			return;
 		}
 
@@ -355,9 +379,10 @@ class Stripe_Webhook {
 
 		error_log(
 			sprintf(
-				'SureForms: Payment refunded. Amount: %s for entry ID: %s.',
+				'SureForms: Payment refunded successfully. Amount: %s for entry ID: %s (via %s).',
 				$refund_amount,
-				$payment_entry_id
+				$payment_entry_id,
+				! empty( $payment_intent ) ? 'payment_intent' : 'charge_id'
 			)
 		);
 	}
@@ -688,16 +713,18 @@ class Stripe_Webhook {
 	private function check_if_refund_already_exists( array $payment, array $refund ): bool {
 		$refund_id = $refund['id'] ?? '';
 
-		$payment_refunds = isset( $payment['payment_data'] ) && isset( $payment['payment_data']['refunds'] ) ? $payment['payment_data']['refunds'] : [];
-
-		if ( ! empty( $payment_refunds ) && is_array( $payment_refunds ) ) {
-			foreach ( $payment_refunds as $payment_refund ) {
-				if ( isset( $payment_refund['refund_id'] ) && $payment_refund['refund_id'] === $refund_id ) {
-					return true;
-				}
-			}
+		if ( empty( $refund_id ) ) {
+			return false;
 		}
 
-		return false;
+		// Use Helper::get_array_value() to handle stdClass objects.
+		$payment_data = Helper::get_array_value( $payment['payment_data'] ?? [] );
+
+		if ( empty( $payment_data['refunds'] ) ) {
+			return false;
+		}
+
+		// O(1) lookup using refund ID as array key.
+		return isset( $payment_data['refunds'][ $refund_id ] );
 	}
 }

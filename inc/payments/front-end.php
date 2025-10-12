@@ -10,6 +10,7 @@ namespace SRFM\Inc\Payments;
 
 use SRFM\Inc\Database\Tables\Payments;
 use SRFM\Inc\Traits\Get_Instance;
+use SRFM\Inc\Payments\Stripe\Stripe_Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -71,12 +72,12 @@ class Front_End {
 
 		try {
 			// Validate Stripe connection.
-			if ( ! Stripe\Stripe_Helper::is_stripe_connected() ) {
+			if ( ! Stripe_Helper::is_stripe_connected() ) {
 				throw new \Exception( __( 'Stripe is not connected.', 'sureforms' ) );
 			}
 
-			$payment_mode = Stripe\Stripe_Helper::get_stripe_mode();
-			$secret_key   = Stripe\Stripe_Helper::get_stripe_secret_key();
+			$payment_mode = Stripe_Helper::get_stripe_mode();
+			$secret_key   = Stripe_Helper::get_stripe_secret_key();
 
 			if ( empty( $secret_key ) ) {
 				throw new \Exception( __( 'Stripe secret key not found.', 'sureforms' ) );
@@ -178,19 +179,14 @@ class Front_End {
 
 		try {
 			// Validate Stripe connection.
-			if ( ! Stripe\Stripe_Helper::is_stripe_connected() ) {
+			if ( ! Stripe_Helper::is_stripe_connected() ) {
 				throw new \Exception( __( 'Stripe is not connected.', 'sureforms' ) );
 			}
 
-			$secret_key = Stripe\Stripe_Helper::get_stripe_secret_key();
+			$secret_key = Stripe_Helper::get_stripe_secret_key();
 
 			if ( empty( $secret_key ) ) {
 				throw new \Exception( __( 'Stripe secret key not found.', 'sureforms' ) );
-			}
-
-			// Initialize Stripe SDK.
-			if ( ! class_exists( '\Stripe\Stripe' ) ) {
-				throw new \Exception( __( 'Stripe library not found.', 'sureforms' ) );
 			}
 
 			// Get or create Stripe customer for subscriptions.
@@ -248,6 +244,10 @@ class Front_End {
 			$subscription = json_decode( $response_body, true );
 			if ( json_last_error() !== JSON_ERROR_NONE ) {
 				throw new \Exception( __( 'Invalid JSON response from subscription creation.', 'sureforms' ) );
+			}
+
+			if ( 'error' === $subscription['status'] ) {
+				return wp_send_json_error( $subscription['message'] );
 			}
 
 			$payment_intent_id = $subscription['setup_intent']['id'];
@@ -383,8 +383,8 @@ class Front_End {
 	 */
 	private function verify_stripe_payment_intent_and_save( $payment_intent_id, $block_id, $form_data ) {
 		try {
-			$payment_mode = Stripe\Stripe_Helper::get_stripe_mode();
-			$secret_key   = Stripe\Stripe_Helper::get_stripe_secret_key();
+			$payment_mode = Stripe_Helper::get_stripe_mode();
+			$secret_key   = Stripe_Helper::get_stripe_secret_key();
 
 			if ( empty( $secret_key ) ) {
 				return false;
@@ -481,8 +481,8 @@ class Front_End {
 
 		try {
 			// Get payment mode and secret key.
-			$payment_mode = Stripe\Stripe_Helper::get_stripe_mode();
-			$secret_key   = Stripe\Stripe_Helper::get_stripe_secret_key();
+			$payment_mode = Stripe_Helper::get_stripe_mode();
+			$secret_key   = Stripe_Helper::get_stripe_secret_key();
 
 			if ( empty( $secret_key ) ) {
 				throw new \Exception( __( 'Stripe secret key not found.', 'sureforms' ) );
@@ -506,6 +506,7 @@ class Front_End {
 							'POST',
 							[
 								'default_payment_method' => $setup_intent['payment_method'],
+								'collection_method'      => 'charge_automatically',
 							],
 							$subscription_id
 						);
@@ -517,12 +518,38 @@ class Front_End {
 							$subscription_update['latest_invoice']
 						);
 
-						// Explicitly attempt to pay the invoice.
+						// Ensure invoice auto-advance is enabled for recurring payments.
+						// This tells Stripe to automatically finalize and charge future invoices.
+						if ( empty( $invoice['auto_advance'] ) ) {
+							$this->stripe_api_request(
+								'invoices',
+								'POST',
+								[ 'auto_advance' => true ],
+								$invoice['id']
+							);
+						}
+
+						// Extract payment intent from the invoice.
+						$payment_intent_id = $invoice['payment_intent'];
+
+						if ( empty( $payment_intent_id ) ) {
+							throw new \Exception( __( 'Payment intent not found on invoice.', 'sureforms' ) );
+						}
+
+						// Get the payment method from setup intent.
+						$payment_method_id = $setup_intent['payment_method'];
+
+						if ( empty( $payment_method_id ) ) {
+							throw new \Exception( __( 'Payment method not found on setup intent.', 'sureforms' ) );
+						}
+
+						// Confirm the payment intent with payment method.
+						// This completes the payment and activates the subscription.
 						$paid_invoice = $this->stripe_api_request(
-							'invoices',
+							'payment_intents',
 							'POST',
-							[],
-							$invoice['id'] . '/pay'
+							[ 'payment_method' => $payment_method_id ],
+							$payment_intent_id . '/confirm'
 						);
 
 						// Get the subscription.
@@ -551,7 +578,7 @@ class Front_End {
 				'form_id'             => $form_data['form-id'] ?? '',
 				'block_id'            => $block_id,
 				'status'              => $final_status,
-				'total_amount'        => $this->amount_convert_cents_to_usd( ! empty( $paid_invoice['amount_paid'] ) ? $paid_invoice['amount_paid'] : 0 ),
+				'total_amount'        => $this->amount_convert_cents_to_usd( ! empty( $paid_invoice['amount'] ) ? $paid_invoice['amount'] : 0 ),
 				'currency'            => $paid_invoice['currency'] ?? 'usd',
 				'entry_id'            => 0,
 				'gateway'             => 'stripe',
@@ -647,14 +674,14 @@ class Front_End {
 		$block_id = ! empty( $block_id ) ? $block_id : ( $main_subscription['block_id'] ?? '' );
 
 		// Get payment mode.
-		$payment_mode = Stripe\Stripe_Helper::get_stripe_mode();
+		$payment_mode = Stripe_Helper::get_stripe_mode();
 
 		// Prepare subscription individual payment entry data.
 		$entry_data = [
 			'form_id'             => $form_id,
 			'block_id'            => $block_id,
 			'status'              => 'paid' === $invoice_data['status'] ? 'succeeded' : 'failed',
-			'total_amount'        => $this->amount_convert_cents_to_usd( $invoice_data['amount_paid'] ?? 0 ),
+			'total_amount'        => $this->amount_convert_cents_to_usd( $invoice_data['amount'] ?? 0 ),
 			'refunded_amount'     => '0.00000000', // Required field - default to 0.
 			'currency'            => $invoice_data['currency'] ?? 'usd',
 			'entry_id'            => $main_subscription['entry_id'] ?? 0, // Link to same entry as subscription.
@@ -999,13 +1026,12 @@ class Front_End {
 	 */
 	private function stripe_api_request( $endpoint, $method = 'POST', $data = [], $resource_id = '' ) {
 		// Validate Stripe connection.
-		if ( ! Stripe\Stripe_Helper::is_stripe_connected() ) {
+		if ( ! Stripe_Helper::is_stripe_connected() ) {
 			// TODO: Handle proper error handling.
 			return false;
 		}
 
-		$payment_mode = Stripe\Stripe_Helper::get_stripe_mode();
-		$secret_key   = Stripe\Stripe_Helper::get_stripe_secret_key();
+		$secret_key   = Stripe_Helper::get_stripe_secret_key();
 
 		if ( empty( $secret_key ) ) {
 			// TODO: Handle proper error handling.
@@ -1079,7 +1105,13 @@ class Front_End {
 					$result = array_merge( $result, $this->flatten_stripe_data( $value, $new_key ) );
 				}
 			} else {
-				$result[ $new_key ] = $value;
+				// Convert boolean values to string for Stripe API compatibility.
+				// Stripe expects "true"/"false" strings, not 1/0 integers.
+				if ( is_bool( $value ) ) {
+					$result[ $new_key ] = $value ? 'true' : 'false';
+				} else {
+					$result[ $new_key ] = $value;
+				}
 			}
 		}
 

@@ -1,11 +1,11 @@
 import { useState, useEffect } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
-import { CreditCard, X } from 'lucide-react';
+import { CircleCheck } from 'lucide-react';
 import apiFetch from '@wordpress/api-fetch';
 import {
-	Badge,
 	Button,
 	Loader,
+	Label,
 	RadioButton,
 	Select,
 	toast,
@@ -30,7 +30,6 @@ const Payments = ( {
 	const [ isConnecting, setIsConnecting ] = useState( false );
 	const [ isDisconnecting, setIsDisconnecting ] = useState( false );
 	const [ isCreatingWebhook, setIsCreatingWebhook ] = useState( false );
-	const [ isDeletingWebhook, setIsDeletingWebhook ] = useState( false );
 
 	// Update local state when props change
 	useEffect( () => {
@@ -149,9 +148,7 @@ const Payments = ( {
 				webhook_live_id: '',
 			};
 
-			setPaymentsSettings( newSettings );
-
-			// Update global settings to ensure parent component syncs
+			// Update global settings first to ensure parent component syncs
 			if ( updateGlobalSettings ) {
 				// Update each critical field in global settings
 				Object.keys( newSettings ).forEach( ( key ) => {
@@ -162,6 +159,9 @@ const Payments = ( {
 					);
 				} );
 			}
+
+			// Update local state after global settings
+			setPaymentsSettings( newSettings );
 
 			toast.success(
 				__( 'Stripe account disconnected successfully.', 'sureforms' )
@@ -225,67 +225,6 @@ const Payments = ( {
 		}
 	};
 
-	// Handle Webhook Deletion
-	const handleWebhookDeletion = async () => {
-		if (
-			! confirm(
-				__(
-					'Are you sure you want to delete the webhook? This will stop webhook notifications from Stripe.',
-					'sureforms'
-				)
-			)
-		) {
-			return;
-		}
-
-		setIsDeletingWebhook( true );
-		try {
-			const response = await apiFetch( {
-				path: '/sureforms/v1/payments/delete-payment-webhook',
-				method: 'POST',
-				data: {
-					mode: paymentsSettings.payment_mode,
-				},
-			} );
-
-			if ( response.success ) {
-				toast.success(
-					response.message ||
-						__( 'Webhook deleted successfully!', 'sureforms' )
-				);
-
-				// Update local state to reflect webhook deletion for current mode only
-				const isLiveMode = paymentsSettings.payment_mode === 'live';
-				if ( isLiveMode ) {
-					setPaymentsSettings( {
-						...paymentsSettings,
-						webhook_live_secret: '',
-						webhook_live_url: '',
-						webhook_live_id: '',
-					} );
-				} else {
-					setPaymentsSettings( {
-						...paymentsSettings,
-						webhook_test_secret: '',
-						webhook_test_url: '',
-						webhook_test_id: '',
-					} );
-				}
-			} else {
-				toast.error(
-					response.message ||
-						__( 'Failed to delete webhook.', 'sureforms' )
-				);
-			}
-		} catch ( error ) {
-			const errorMessage =
-				error.message || __( 'Failed to delete webhook.', 'sureforms' );
-			toast.error( errorMessage );
-		} finally {
-			setIsDeletingWebhook( false );
-		}
-	};
-
 	// Handle settings change with auto-save
 	const handleSettingChange = ( key, value ) => {
 		// Update local state immediately for UI responsiveness
@@ -309,7 +248,7 @@ const Payments = ( {
 	};
 
 	const selectCountry = (
-		<div>
+		<div className="flex flex-col gap-2">
 			<Select
 				value={ paymentsSettings.currency }
 				onChange={ ( value ) =>
@@ -346,12 +285,10 @@ const Payments = ( {
 	);
 
 	const paymentMode = (
-		<div>
-			<div className="mb-3">
-				<h3 className="text-sm font-medium text-text-primary mb-1">
-					{ __( 'Payment Mode', 'sureforms' ) }
-				</h3>
-			</div>
+		<div className="flex flex-col gap-2">
+			<Label size="md" variant="neutral">
+				{ __( 'Payment Mode', 'sureforms' ) }
+			</Label>
 			<RadioButton.Group
 				columns={ 2 }
 				value={ paymentsSettings.payment_mode }
@@ -362,14 +299,6 @@ const Payments = ( {
 				className="w-fit"
 			>
 				<RadioButton.Button
-					badgeItem={
-						<Badge
-							className="mr-2"
-							size="sm"
-							type="rounded"
-							variant="red"
-						/>
-					}
 					borderOn
 					label={ {
 						heading: __( 'Live Mode', 'sureforms' ),
@@ -377,14 +306,6 @@ const Payments = ( {
 					value="live"
 				/>
 				<RadioButton.Button
-					badgeItem={
-						<Badge
-							className="mr-2"
-							size="sm"
-							type="rounded"
-							variant="yellow"
-						/>
-					}
 					borderOn
 					label={ {
 						heading: __( 'Test Mode', 'sureforms' ),
@@ -396,39 +317,36 @@ const Payments = ( {
 	);
 
 	const accountDetails = (
-		<div className="flex items-center justify-between p-4 bg-background-secondary rounded-lg">
-			<div className="flex items-center space-x-3">
-				<div className="flex items-center justify-center w-10 h-10 bg-badge-background-green rounded-full">
-					<CreditCard className="w-5 h-5 text-badge-text-green" />
+		<div className="flex flex-col gap-2">
+			<Label size="md" variant="neutral">
+				{ __( 'Connection Status', 'sureforms' ) }
+			</Label>
+			<div className="flex items-center justify-between p-4 rounded-lg border border-border-subtle solid shadow-sm">
+				<div className="flex items-center gap-2">
+					<CircleCheck className="text-support-success" />
+					<div>
+						<p className="text-sm text-text-tertiary">
+							{ paymentsSettings?.account_data?.settings
+								?.dashboard?.display_name ||
+								paymentsSettings.stripe_account_id }
+						</p>
+					</div>
 				</div>
-				<div>
-					<p className="font-medium text-badge-text-green">
-						{ __( 'Connected', 'sureforms' ) }
-					</p>
-					<p className="text-sm text-text-tertiary">
-						{ paymentsSettings.stripe_account_id }
-					</p>
-				</div>
-			</div>
 
-			<Button
-				onClick={ handleStripeDisconnect }
-				disabled={ isDisconnecting || loading }
-				icon={ isDisconnecting && <Loader /> }
-				iconPosition="left"
-				variant="outline"
-				size="xs"
-				className="text-red-600 border-red-200 hover:border-red-300 hover:text-red-700"
-			>
-				{ isDisconnecting ? (
-					__( 'Disconnecting…', 'sureforms' )
-				) : (
-					<>
-						<X className="w-3.5 h-3.5 mr-1.5" />
-						{ __( 'Disconnect', 'sureforms' ) }
-					</>
-				) }
-			</Button>
+				<Button
+					onClick={ handleStripeDisconnect }
+					disabled={ isDisconnecting || loading }
+					icon={ isDisconnecting && <Loader /> }
+					iconPosition="left"
+					variant="ghost"
+					size="xs"
+					className="text-red-600 hover:text-red-700 shadow-sm"
+				>
+					{ isDisconnecting
+						? __( 'Disconnecting…', 'sureforms' )
+						: __( 'Disconnect', 'sureforms' ) }
+				</Button>
+			</div>
 		</div>
 	);
 
@@ -437,161 +355,55 @@ const Payments = ( {
 		? paymentsSettings.webhook_live_secret
 		: paymentsSettings.webhook_test_secret;
 
-	const webhookActionButton = currentWebhookSecret ? (
-		<Button
-			onClick={ handleWebhookDeletion }
-			disabled={ isDeletingWebhook || loading }
-			icon={ isDeletingWebhook && <Loader /> }
-			iconPosition="left"
-			variant="outline"
-			size="xs"
-			className="text-red-600 border-red-200 hover:border-red-300 hover:text-red-700"
-		>
-			{ isDeletingWebhook ? (
-				__( 'Deleting…', 'sureforms' )
-			) : (
-				<>
-					<X className="w-3.5 h-3.5 mr-1.5" />
-					{ __( 'Delete Webhook', 'sureforms' ) }
-				</>
-			) }
-		</Button>
-	) : (
-		<Button
-			onClick={ handleWebhookCreation }
-			disabled={ isCreatingWebhook || loading }
-			icon={ isCreatingWebhook && <Loader /> }
-			iconPosition="left"
-			variant="primary"
-			size="xs"
-			className="bg-blue-600 hover:bg-blue-700 text-white border-blue-600 hover:border-blue-700"
-		>
-			{ isCreatingWebhook
-				? __( 'Creating…', 'sureforms' )
-				: __( 'Create Webhook Automatically', 'sureforms' ) }
-		</Button>
-	);
-
 	const webhookManagement = (
-		<div>
-			<div className="mt-4 p-4 bg-background-secondary rounded-lg border">
-				<div className="flex items-center justify-between mb-3">
-					<h4 className="text-sm font-medium text-text-primary">
-						{ __( 'Webhook Configuration', 'sureforms' ) }
-					</h4>
-					<div>{ webhookActionButton }</div>
-				</div>
+		<div className="flex flex-col gap-2">
+			<Label size="md" variant="neutral">
+				{ __( 'Webhook', 'sureforms' ) }
+			</Label>
 
-				{ currentWebhookSecret ? (
-					<div className="space-y-3">
-						{ /* Show webhook details when configured */ }
-						{ ( () => {
-							const currentWebhookUrl = isLiveMode
-								? paymentsSettings.webhook_live_url
-								: paymentsSettings.webhook_test_url;
-							const currentWebhookId = isLiveMode
-								? paymentsSettings.webhook_live_id
-								: paymentsSettings.webhook_test_id;
-
-							return (
-								<>
-									<div>
-										<label className="block text-xs font-medium text-text-tertiary mb-1">
-											{ __( 'Webhook URL', 'sureforms' ) }
-										</label>
-										<div className="flex items-center space-x-2">
-											<code className="flex-1 text-xs bg-background-primary p-2 rounded border font-mono text-text-secondary">
-												{ currentWebhookUrl ||
-													`${ window.location.origin }/wp-json/sureforms/webhook` }
-											</code>
-											<Button
-												onClick={ () => {
-													const url =
-														currentWebhookUrl ||
-														`${ window.location.origin }/wp-json/sureforms/webhook`;
-													navigator.clipboard.writeText(
-														url
-													);
-													toast.success(
-														__(
-															'Webhook URL copied to clipboard',
-															'sureforms'
-														)
-													);
-												} }
-												variant="outline"
-												size="xs"
-												className="text-text-tertiary hover:text-text-primary"
-											>
-												{ __( 'Copy', 'sureforms' ) }
-											</Button>
-										</div>
-									</div>
-									{ currentWebhookId &&
-										currentWebhookId !== 'created' && (
-										<div>
-											<label className="block text-xs font-medium text-text-tertiary mb-1">
-												{ __(
-													'Webhook ID',
-													'sureforms'
-												) }
-											</label>
-											<div className="flex items-center space-x-2">
-												<code className="flex-1 text-xs bg-background-primary p-2 rounded border font-mono text-text-secondary">
-													{ currentWebhookId }
-												</code>
-												<Button
-													onClick={ () => {
-														navigator.clipboard.writeText(
-															currentWebhookId
-														);
-														toast.success(
-															__(
-																'Webhook ID copied to clipboard',
-																'sureforms'
-															)
-														);
-													} }
-													variant="outline"
-													size="xs"
-													className="text-text-tertiary hover:text-text-primary"
-												>
-													{ __(
-														'Copy',
-														'sureforms'
-													) }
-												</Button>
-											</div>
-										</div>
-									) }
-								</>
-							);
-						} )() }
-					</div>
-				) : (
-					<div className="text-sm text-text-tertiary">
-						<p>
-							{ __( 'No webhook configured for', 'sureforms' ) }{ ' ' }
-							<strong>
-								{ isLiveMode
-									? __( 'live mode', 'sureforms' )
-									: __( 'test mode', 'sureforms' ) }
-							</strong>
-							.{ ' ' }
+			{ currentWebhookSecret ? (
+				<div className="flex items-center p-4 rounded-lg border border-border-subtle solid shadow-sm gap-2">
+					<CircleCheck className="text-support-success" />
+					<div>
+						<p className="text-base text-text-primary font-semibold">
+							{ __( 'Webhook is connected', 'sureforms' ) }
+						</p>
+						<p className="text-sm text-text-secondary font-normal">
 							{ __(
-								'Click the button above to automatically create a webhook endpoint.',
+								'Webhook successfully connected, all Stripe events are being tracked.',
 								'sureforms'
 							) }
 						</p>
 					</div>
-				) }
-			</div>
+				</div>
+			) : (
+				<div className="flex items-center justify-between gap-2">
+					<p className="text-sm text-text-secondary font-normal max-w-[70%]">
+						{ __(
+							'Webhooks let Stripe notify SureForms about payment events like successful charges or subscription updates, keeping your data in sync automatically.',
+							'sureforms'
+						) }
+					</p>
+					<Button
+						onClick={ handleWebhookCreation }
+						disabled={ isCreatingWebhook || loading }
+						icon={ isCreatingWebhook && <Loader /> }
+						iconPosition="left"
+						variant="outline"
+						size="xs"
+					>
+						{ isCreatingWebhook
+							? __( 'Creating…', 'sureforms' )
+							: __( 'Auto Create Webhook', 'sureforms' ) }
+					</Button>
+				</div>
+			) }
 		</div>
 	);
 
 	// Content for Payment Settings section
 	const paymentSettingsContent = (
-		<div className="space-y-6">
+		<div className="flex flex-col gap-4 px-2">
 			{ /* Currency Selection */ }
 			{ selectCountry }
 			{ /* Payment Mode */ }
@@ -643,7 +455,7 @@ const Payments = ( {
 	);
 
 	return (
-		<div className="space-y-6">
+		<div>
 			{ paymentsSettings?.stripe_connected ? (
 				<ContentSection
 					loading={ loading }

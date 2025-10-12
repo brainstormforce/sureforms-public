@@ -1,9 +1,7 @@
 import { useState, useContext, useEffect } from '@wordpress/element';
 import {
-	Card,
 	Button,
 	Badge,
-	Avatar,
 	Container,
 	Label,
 	Text,
@@ -11,20 +9,9 @@ import {
 	DropdownMenu,
 	Dialog,
 	Input,
-	TextArea,
 } from '@bsf/force-ui';
-import {
-	ChevronLeft,
-	ChevronRight,
-	ArrowUpRight,
-	ExternalLink,
-	Plus,
-	Trash2,
-	User,
-	EllipsisVertical,
-	FileSearch2,
-} from 'lucide-react';
-import { __ } from '@wordpress/i18n';
+import { ArrowUpRight, EllipsisVertical } from 'lucide-react';
+import { __, sprintf } from '@wordpress/i18n';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { PaymentContext } from '../components/context';
 import {
@@ -36,6 +23,16 @@ import {
 	deletePaymentNote,
 	deletePaymentLog,
 } from '../components/apiCalls';
+import {
+	getStatusVariant,
+	formatAmount,
+	formatDateTimeDetailed,
+	formatLogTimestamp,
+} from '../components/utils';
+import PaymentNotes from '../components/paymentNotes';
+import PaymentLogs from '../components/paymentLogs';
+import PaymentHeader from '../components/paymentHeader';
+import PaymentLoadingSkeleton from '../components/paymentLoadingSkeleton';
 
 const ViewSubscription = () => {
 	const {
@@ -43,6 +40,11 @@ const ViewSubscription = () => {
 		setViewSinglePayment: setViewSingleSubscription,
 	} = useContext( PaymentContext );
 	const queryClient = useQueryClient();
+
+	// Handler to navigate back to payment list
+	const handleBackToList = () => {
+		setViewSingleSubscription( false );
+	};
 
 	// Fetch subscription data (includes subscription info + billing history)
 	const {
@@ -72,8 +74,8 @@ const ViewSubscription = () => {
 			queryClient.invalidateQueries( [ 'payments' ] );
 			setIsRefundDialogOpen( false );
 		},
-		onError: ( error ) => {
-			console.error( 'Refund failed:', error );
+		onError: ( refundError ) => {
+			console.error( 'Refund failed:', refundError );
 			alert( __( 'Refund failed. Please try again.', 'sureforms' ) );
 		},
 	} );
@@ -90,8 +92,8 @@ const ViewSubscription = () => {
 			queryClient.invalidateQueries( [ 'payments' ] );
 			setIsCancelDialogOpen( false );
 		},
-		onError: ( error ) => {
-			console.error( 'Cancel failed:', error );
+		onError: ( cancelError ) => {
+			console.error( 'Cancel failed:', cancelError );
 			alert(
 				__(
 					'Failed to cancel subscription. Please try again.',
@@ -113,8 +115,8 @@ const ViewSubscription = () => {
 			queryClient.invalidateQueries( [ 'payments' ] );
 			setIsPauseDialogOpen( false );
 		},
-		onError: ( error ) => {
-			console.error( 'Pause failed:', error );
+		onError: ( pauseError ) => {
+			console.error( 'Pause failed:', pauseError );
 			alert(
 				__(
 					'Failed to pause subscription. Please try again.',
@@ -137,7 +139,7 @@ const ViewSubscription = () => {
 				viewSingleSubscription,
 			] );
 		},
-		onError: ( error ) => {
+		onError: () => {
 			alert( __( 'Failed to add note. Please try again.', 'sureforms' ) );
 		},
 	} );
@@ -153,7 +155,7 @@ const ViewSubscription = () => {
 				viewSingleSubscription,
 			] );
 		},
-		onError: ( error ) => {
+		onError: () => {
 			alert(
 				__( 'Failed to delete note. Please try again.', 'sureforms' )
 			);
@@ -171,7 +173,7 @@ const ViewSubscription = () => {
 				viewSingleSubscription,
 			] );
 		},
-		onError: ( error ) => {
+		onError: () => {
 			alert(
 				__( 'Failed to delete log. Please try again.', 'sureforms' )
 			);
@@ -203,25 +205,6 @@ const ViewSubscription = () => {
 		}
 	}, [ subscriptionData?.logs ] );
 
-	// Utility function to format date and time
-	const formatDateTime = ( dateString ) => {
-		if ( ! dateString ) {
-			return 'N/A';
-		}
-		const date = new Date( dateString );
-		const formattedDate = date.toLocaleDateString( 'en-US', {
-			month: 'short',
-			day: 'numeric',
-			year: 'numeric',
-		} );
-		const formattedTime = date.toLocaleTimeString( 'en-US', {
-			hour: '2-digit',
-			minute: '2-digit',
-			hour12: true,
-		} );
-		return `${ formattedDate } at ${ formattedTime }`;
-	};
-
 	// Set default refund amount when dialog opens for individual payment
 	const openRefundDialog = ( payment ) => {
 		if ( payment ) {
@@ -241,15 +224,7 @@ const ViewSubscription = () => {
 
 	// Loading state
 	if ( isLoading ) {
-		return (
-			<div className="srfm-single-payment-wrapper min-h-screen bg-background-secondary p-8">
-				<div className="flex items-center justify-center h-96">
-					<Text>
-						{ __( 'Loading subscription details…', 'sureforms' ) }
-					</Text>
-				</div>
-			</div>
-		);
+		return <PaymentLoadingSkeleton />;
 	}
 
 	// Error state
@@ -317,56 +292,34 @@ const ViewSubscription = () => {
 	};
 
 	const handleDeleteNote = ( noteIndex ) => {
-		if (
-			confirm(
-				__( 'Are you sure you want to delete this note?', 'sureforms' )
-			)
-		) {
-			deleteNoteMutation.mutate( {
-				paymentId: subscriptionData.id,
-				noteIndex,
-			} );
-		}
+		deleteNoteMutation.mutate( {
+			paymentId: subscriptionData.id,
+			noteIndex,
+		} );
 	};
 
 	const handleDeleteLog = ( logIndex ) => {
-		if (
-			confirm(
-				__(
-					'Are you sure you want to delete this log entry?',
-					'sureforms'
-				)
-			)
-		) {
-			deleteLogMutation.mutate( {
-				paymentId: subscriptionData.id,
-				logIndex,
-			} );
+		deleteLogMutation.mutate( {
+			paymentId: subscriptionData.id,
+			logIndex,
+		} );
+	};
+
+	const handleViewEntry = () => {
+		if ( subscriptionData?.entry_id ) {
+			window.location.href = `${ window.location.origin }/wp-admin/admin.php?page=sureforms_entries&entry_id=${ subscriptionData.entry_id }&view=details`;
 		}
 	};
 
-	const formatLogTimestamp = ( timestamp ) => {
-		// Validate timestamp
-		if ( ! timestamp || isNaN( timestamp ) || timestamp <= 0 ) {
-			return __( 'N/A', 'sureforms' );
+	const handleViewInStripe = () => {
+		if ( subscriptionData?.stripe_subscription_id ) {
+			const isTestMode = subscriptionData.mode === 'test';
+			const baseUrl = isTestMode
+				? 'https://dashboard.stripe.com/test/subscriptions'
+				: 'https://dashboard.stripe.com/subscriptions';
+			const stripeUrl = `${ baseUrl }/${ subscriptionData.stripe_subscription_id }`;
+			window.open( stripeUrl, '_blank' );
 		}
-
-		const date = new Date( timestamp * 1000 );
-
-		// Check if date is valid
-		if ( isNaN( date.getTime() ) ) {
-			return __( 'Invalid Date', 'sureforms' );
-		}
-
-		return date.toLocaleString( 'en-US', {
-			year: 'numeric',
-			month: '2-digit',
-			day: '2-digit',
-			hour: '2-digit',
-			minute: '2-digit',
-			second: '2-digit',
-			hour12: false,
-		} );
 	};
 
 	const handleRefundLatestEMI = () => {
@@ -427,11 +380,6 @@ const ViewSubscription = () => {
 		} );
 	};
 
-	const formatAmount = ( amount, currency = 'USD' ) => {
-		const symbol = currency === 'USD' ? '$' : currency + ' ';
-		return `${ symbol }${ parseFloat( amount ).toFixed( 2 ) }`;
-	};
-
 	// Generate dynamic refund message based on input amount
 	const getRefundMessage = () => {
 		if ( ! selectedPaymentForRefund || ! refundAmount ) {
@@ -459,12 +407,13 @@ const ViewSubscription = () => {
 		if ( requestedAmount > refundableAmount ) {
 			return {
 				type: 'error',
-				message: __(
-					`Amount cannot exceed ${ formatAmount(
+				message: sprintf(
+					/* translators: %s: maximum refundable amount */
+					__( 'Amount cannot exceed %s.', 'sureforms' ),
+					formatAmount(
 						refundableAmount,
 						selectedPaymentForRefund.currency
-					) }.`,
-					'sureforms'
+					)
 				),
 			};
 		}
@@ -476,63 +425,42 @@ const ViewSubscription = () => {
 		if ( isFullRefund ) {
 			return {
 				type: 'info',
-				message: __(
-					`This will issue a complete refund of ${ formatAmount(
+				message: sprintf(
+					/* translators: %s: refund amount */
+					__(
+						'This will issue a complete refund of %s. The entire payment will be refunded.',
+						'sureforms'
+					),
+					formatAmount(
 						requestedAmount,
 						selectedPaymentForRefund.currency
-					) }. The entire payment will be refunded.`,
-					'sureforms'
+					)
 				),
 			};
 		}
 		const remainingBalance = refundableAmount - requestedAmount;
 		return {
 			type: 'warning',
-			message: __(
-				`This will issue a partial refund of ${ formatAmount(
+			message: sprintf(
+				/* translators: 1: partial refund amount, 2: remaining balance */
+				__(
+					'This will issue a partial refund of %1$s. Remaining balance of %2$s will still be valid.',
+					'sureforms'
+				),
+				formatAmount(
 					requestedAmount,
 					selectedPaymentForRefund.currency
-				) }. Remaining balance of ${ formatAmount(
+				),
+				formatAmount(
 					remainingBalance,
 					selectedPaymentForRefund.currency
-				) } will still be valid.`,
-				'sureforms'
+				)
 			),
 		};
 	};
 
-	const header = (
-		<Container
-			containerType="flex"
-			direction="row"
-			gap="xs"
-			className="w-full justify-between"
-		>
-			<h1>
-				{ __( 'Subscription ID', 'sureforms' ) }
-				{ ` #${ subscriptionData.id }` }
-			</h1>
-		</Container>
-	);
-
 	// Subscription billing history data - use fetched billing data or empty array
 	const subscriptionBillingData = billingData || [];
-
-	// Get status badge variant for billing table
-	const getStatusVariant = ( status ) => {
-		switch ( status ) {
-			case 'paid':
-				return 'success';
-			case 'pending':
-				return 'warning';
-			case 'failed':
-				return 'danger';
-			case 'refunded':
-				return 'secondary';
-			default:
-				return 'secondary';
-		}
-	};
 
 	// Calculate refundable amount for selected payment
 	const totalAmount = selectedPaymentForRefund
@@ -566,9 +494,13 @@ const ViewSubscription = () => {
 					</div>
 					<Dialog.Description>
 						{ selectedPaymentForRefund &&
-							__(
-								`Process refund for payment #${ selectedPaymentForRefund.id }. The refunded amount will be sent to the customer's original payment method.`,
-								'sureforms'
+							sprintf(
+								/* translators: %s: payment ID */
+								__(
+									"Process refund for payment #%s. The refunded amount will be sent to the customer's original payment method.",
+									'sureforms'
+								),
+								selectedPaymentForRefund.id
 							) }
 					</Dialog.Description>
 				</Dialog.Header>
@@ -582,9 +514,11 @@ const ViewSubscription = () => {
 								type="number"
 								value={ refundAmount }
 								onChange={ setRefundAmount }
-								placeholder={ `Max: ${ refundableAmount.toFixed(
-									2
-								) }` }
+								placeholder={ sprintf(
+									/* translators: %s: maximum refundable amount */
+									__( 'Max: %s', 'sureforms' ),
+									refundableAmount.toFixed( 2 )
+								) }
 								max={ refundableAmount }
 								min="0.01"
 								step="0.01"
@@ -592,12 +526,16 @@ const ViewSubscription = () => {
 							/>
 							<Text className="text-xs text-text-secondary mt-1">
 								{ selectedPaymentForRefund &&
-									__(
-										`Maximum refundable amount: ${ formatAmount(
+									sprintf(
+										/* translators: %s: maximum refundable amount */
+										__(
+											'Maximum refundable amount: %s',
+											'sureforms'
+										),
+										formatAmount(
 											refundableAmount,
 											selectedPaymentForRefund.currency
-										) }`,
-										'sureforms'
+										)
 									) }
 							</Text>
 						</div>
@@ -632,12 +570,16 @@ const ViewSubscription = () => {
 							<div className="p-3 border border-border-subtle rounded-md bg-background-secondary">
 								<Text className="text-sm text-text-secondary">
 									{ selectedPaymentForRefund &&
-										__(
-											`Already refunded: ${ formatAmount(
+										sprintf(
+											/* translators: %s: already refunded amount */
+											__(
+												'Already refunded: %s',
+												'sureforms'
+											),
+											formatAmount(
 												alreadyRefunded,
 												selectedPaymentForRefund.currency
-											) }`,
-											'sureforms'
+											)
 										) }
 								</Text>
 							</div>
@@ -691,9 +633,13 @@ const ViewSubscription = () => {
 						/>
 					</div>
 					<Dialog.Description>
-						{ __(
-							`Are you sure you want to cancel subscription #${ subscriptionData.id }? This action cannot be undone and the customer will lose access to their subscription benefits.`,
-							'sureforms'
+						{ sprintf(
+							/* translators: %s: subscription ID */
+							__(
+								'Are you sure you want to cancel subscription #%s? This action cannot be undone and the customer will lose access to their subscription benefits.',
+								'sureforms'
+							),
+							subscriptionData.id
 						) }
 					</Dialog.Description>
 				</Dialog.Header>
@@ -754,9 +700,13 @@ const ViewSubscription = () => {
 						/>
 					</div>
 					<Dialog.Description>
-						{ __(
-							`Are you sure you want to pause subscription #${ subscriptionData.id }? The customer will not be charged until you resume the subscription.`,
-							'sureforms'
+						{ sprintf(
+							/* translators: %s: subscription ID */
+							__(
+								'Are you sure you want to pause subscription #%s? The customer will not be charged until you resume the subscription.',
+								'sureforms'
+							),
+							subscriptionData.id
 						) }
 					</Dialog.Description>
 				</Dialog.Header>
@@ -865,7 +815,7 @@ const ViewSubscription = () => {
 									/>
 								</Table.Cell>
 								<Table.Cell>
-									{ formatDateTime( row.date_time ) }
+									{ formatDateTimeDetailed( row.date_time ) }
 								</Table.Cell>
 							</Table.Row>
 						) ) }
@@ -924,7 +874,7 @@ const ViewSubscription = () => {
 		},
 		{
 			title: __( 'Submitted On', 'sureforms' ),
-			value: formatDateTime( subscriptionData.created_at ),
+			value: formatDateTimeDetailed( subscriptionData.created_at ),
 		},
 	];
 
@@ -981,6 +931,8 @@ const ViewSubscription = () => {
 							iconPosition="left"
 							size="xs"
 							variant="outline"
+							onClick={ handleViewEntry }
+							disabled={ ! subscriptionData?.entry_id }
 						>
 							{ __( 'View Entry', 'sureforms' ) }
 						</Button>
@@ -1056,7 +1008,8 @@ const ViewSubscription = () => {
 						variant="link"
 						size="sm"
 						className="h-full text-link-primary text-sm font-semibold no-underline hover:no-underline hover:text-link-primary-hover px-1 content-center [box-shadow:none] focus:[box-shadow:none] focus:outline-none"
-						onClick={ () => {} }
+						onClick={ handleViewInStripe }
+						disabled={ ! subscriptionData?.stripe_subscription_id }
 					>
 						{ __( 'View In Stripe', 'sureforms' ) }
 					</Button>
@@ -1070,198 +1023,24 @@ const ViewSubscription = () => {
 
 	const PAYMENT_SECTION_COLUMN_2 = (
 		<>
-			<Container
-				className="w-full bg-background-primary border-0.5 border-solid rounded-xl border-border-subtle p-3 gap-2 shadow-sm"
-				direction="column"
-			>
-				<Container
-					className="p-1 gap-2"
-					align="center"
-					justify="between"
-				>
-					<Label size="sm" className="font-semibold">
-						{ __( 'Notes', 'sureforms' ) }
-					</Label>
-					<Button
-						icon={ <Plus className="!size-5" /> }
-						iconPosition="left"
-						variant="link"
-						size="sm"
-						className="h-full text-link-primary text-sm font-semibold no-underline hover:no-underline hover:text-link-primary-hover px-1 content-center [box-shadow:none] focus:[box-shadow:none] focus:outline-none"
-						onClick={ handleAddNoteClick }
-						disabled={ isAddingNote }
-					>
-						{ __( 'Add Note', 'sureforms' ) }
-					</Button>
-				</Container>
-				<Container className="flex flex-col items-center justify-center bg-background-secondary gap-1 p-1 rounded-lg min-h-[89px]">
-					{ notes && notes.length > 0
-						? notes.map( ( note, index ) => (
-							<div
-								key={ index }
-								className="w-full flex justify-between items-start gap-2 p-3 bg-background-primary rounded-lg border border-border-subtle"
-							>
-								<div className="flex-1">
-									<Text className="text-sm text-text-primary">
-										{ note.text || note }
-									</Text>
-									{ note.created_at && (
-										<Text className="text-xs text-text-tertiary mt-1">
-											{ new Date(
-												note.created_at
-											).toLocaleString() }
-										</Text>
-									) }
-								</div>
-								<Button
-									variant="ghost"
-									size="xs"
-									icon={ <Trash2 className="!size-4" /> }
-									onClick={ () =>
-										handleDeleteNote( index )
-									}
-									disabled={
-										deleteNoteMutation.isPending
-									}
-									className="text-icon-secondary hover:text-red-700"
-								/>
-							</div>
-						  ) )
-						: ! isAddingNote && (
-							<Text className="text-sm text-text-secondary p-3 text-center flex items-center justify-center gap-2">
-								<FileSearch2 className="!size-5" />
-								{ __(
-									'Add an internal note about this subscription',
-									'sureforms'
-								) }
-							</Text>
-						  ) }
-
-					{ isAddingNote && (
-						<div className="w-full p-3 bg-background-primary rounded-lg border border-border-subtle">
-							<TextArea
-								value={ newNoteText }
-								onChange={ ( value ) =>
-									setNewNoteText( value )
-								}
-								placeholder={ __(
-									'Enter your note here…',
-									'sureforms'
-								) }
-								size="sm"
-								className="w-full"
-								autoFocus
-							/>
-							<div className="flex gap-2 mt-2 justify-end">
-								<Button
-									variant="outline"
-									size="sm"
-									onClick={ handleCancelNote }
-									disabled={ addNoteMutation.isPending }
-								>
-									{ __( 'Cancel', 'sureforms' ) }
-								</Button>
-								<Button
-									variant="primary"
-									size="sm"
-									onClick={ handleSaveNote }
-									disabled={
-										addNoteMutation.isPending ||
-										! newNoteText.trim()
-									}
-								>
-									{ addNoteMutation.isPending
-										? __( 'Adding…', 'sureforms' )
-										: __( 'Add Note', 'sureforms' ) }
-								</Button>
-							</div>
-						</div>
-					) }
-				</Container>
-			</Container>
-			{ /* Payment log */ }
-			<Container
-				className="w-full bg-background-primary border-0.5 border-solid rounded-xl border-border-subtle p-3 gap-2 shadow-sm"
-				direction="column"
-			>
-				<Container
-					className="p-1 gap-2"
-					align="center"
-					justify="between"
-				>
-					<Label size="sm" className="font-semibold">
-						{ __( 'Payment Log', 'sureforms' ) }
-					</Label>
-				</Container>
-				<Container className="flex flex-col items-center justify-center bg-background-secondary gap-1 p-1 rounded-lg min-h-[89px]">
-					{ logs && logs.length > 0 ? (
-						logs.map( ( log, index ) => {
-							// Defensive checks for log data
-							if ( ! log || typeof log !== 'object' ) {
-								return null;
-							}
-
-							const logTitle =
-								log.title || __( 'Untitled Log', 'sureforms' );
-							const logMessages = Array.isArray( log.messages )
-								? log.messages
-								: [];
-
-							return (
-								<div
-									key={ index }
-									className="w-full flex flex-col gap-2 p-3 bg-background-primary rounded-lg border border-border-subtle"
-								>
-									<div className="flex justify-between items-start gap-2">
-										<div className="flex-1">
-											<Text className="text-sm font-semibold">
-												{ logTitle }
-											</Text>
-											<Text className="text-xs text-text-tertiary mt-1">
-												{ formatLogTimestamp(
-													log.timestamp
-												) }
-											</Text>
-										</div>
-										<Button
-											variant="ghost"
-											size="xs"
-											icon={
-												<Trash2 className="!size-4" />
-											}
-											onClick={ () =>
-												handleDeleteLog( index )
-											}
-											disabled={
-												deleteLogMutation.isPending
-											}
-											className="text-icon-secondary hover:text-red-700"
-										/>
-									</div>
-									{ logMessages.length > 0 && (
-										<div className="flex flex-col gap-1 mt-1">
-											{ logMessages.map(
-												( message, msgIndex ) => (
-													<Text
-														key={ msgIndex }
-														className="text-xs text-text-secondary"
-													>
-														{ message || '' }
-													</Text>
-												)
-											) }
-										</div>
-									) }
-								</div>
-							);
-						} )
-					) : (
-						<Text className="text-sm text-text-secondary p-3 text-center">
-							{ __( 'No payment logs available', 'sureforms' ) }
-						</Text>
-					) }
-				</Container>
-			</Container>
+			<PaymentNotes
+				notes={ notes }
+				isAddingNote={ isAddingNote }
+				newNoteText={ newNoteText }
+				setNewNoteText={ setNewNoteText }
+				handleAddNoteClick={ handleAddNoteClick }
+				handleSaveNote={ handleSaveNote }
+				handleCancelNote={ handleCancelNote }
+				handleDeleteNote={ handleDeleteNote }
+				addNoteMutation={ addNoteMutation }
+				deleteNoteMutation={ deleteNoteMutation }
+			/>
+			<PaymentLogs
+				logs={ logs }
+				handleDeleteLog={ handleDeleteLog }
+				deleteLogMutation={ deleteLogMutation }
+				formatLogTimestamp={ formatLogTimestamp }
+			/>
 		</>
 	);
 
@@ -1273,7 +1052,11 @@ const ViewSubscription = () => {
 				gap="xs"
 				className="w-full h-full"
 			>
-				{ header }
+				<PaymentHeader
+					title={ __( 'Subscription ID', 'sureforms' ) }
+					id={ subscriptionData.id }
+					onBack={ handleBackToList }
+				/>
 				<Container
 					className="w-full gap-8"
 					containerType="grid"

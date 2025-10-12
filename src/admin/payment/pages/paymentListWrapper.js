@@ -3,6 +3,7 @@ import { PaymentContext } from '../components/context.js';
 import { useContext } from '@wordpress/element';
 import ViewPayment from './viewPayment.js';
 import ViewSubscription from './viewSubscription.js';
+import Header from '@Admin/components/Header.js';
 
 const PaymentListWrapper = () => {
 	const { viewSinglePayment, singlePaymentType } =
@@ -21,7 +22,14 @@ const PaymentListWrapper = () => {
 		showViewPayment = <PaymentTable />;
 	}
 
-	return <div className="sureforms-payments-app">{ showViewPayment }</div>;
+	return (
+		<>
+			<Header />
+			<div className="sureforms-payments-app max-w-[1550px] m-auto">
+				{ showViewPayment }
+			</div>
+		</>
+	);
 };
 
 export default PaymentListWrapper;

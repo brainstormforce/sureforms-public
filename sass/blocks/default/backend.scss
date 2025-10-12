@@ -301,13 +301,34 @@
 		border-radius: 6px;
 		padding: 16px;
 		margin-top: var( --srfm-input-field-margin-top );
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+
 		> p {
 			font-weight: 400;
 			font-size: 14px;
 			line-height: 20px;
-			margin: 0;
-			padding: 0;
+			margin: 0 !important;
+			padding: 0 !important;
 			color: #1e1e1ea6;
+		}
+
+		p.srfm-stripe-payment-error-text {
+			color: #dc2626 !important;
+		}
+
+		button.srfm-stripe-connect-button {
+			background-color: transparent;
+			border-radius: 4px;
+			cursor: pointer;
+			font-size: 12px;
+			font-weight: 600;
+			color: #111827;
+			padding: 8px;
+			width: fit-content;
+			border: 1px solid #d1d5db;
+			box-shadow: 0px 1px 2px 0px #0000000d;
 		}
 	}
 }

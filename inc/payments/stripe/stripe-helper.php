@@ -84,6 +84,20 @@ class Stripe_Helper {
 	}
 
 	/**
+	 * Get the Stripe settings page URL.
+	 *
+	 * This returns the URL to the SureForms Stripe settings page in the admin.
+	 * As of now, the URL is:
+	 * http://localhost:10008/wp-admin/admin.php?page=sureforms_form_settings&tab=general-settings
+	 * The site URL is dynamic and will adapt to the current WordPress installation.
+	 *
+	 * @return string The URL to the Stripe settings page.
+	 */
+	public static function get_stripe_settings_url() {
+		return admin_url( 'admin.php?page=sureforms_form_settings&tab=general-settings' );
+	}
+
+	/**
 	 * Make a request to the Stripe API.
 	 *
 	 * @param string $endpoint    The API endpoint to call.

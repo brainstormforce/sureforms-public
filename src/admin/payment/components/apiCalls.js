@@ -375,3 +375,64 @@ export const deletePaymentLog = async ( paymentId, logIndex ) => {
 		throw error;
 	}
 };
+
+export const bulkDeletePayments = async ( paymentIds ) => {
+	try {
+		// Validate input
+		if ( ! Array.isArray( paymentIds ) || paymentIds.length === 0 ) {
+			const validationError = new Error( 'Validation failed' );
+			validationError.isValidationError = true;
+			validationError.validationType = 'empty_array';
+			throw validationError;
+		}
+
+		// Prepare form data for bulk delete
+		const formData = new URLSearchParams();
+		formData.append( 'action', 'srfm_bulk_delete_payments' );
+		formData.append(
+			'nonce',
+			window.srfm_payment_admin.srfm_payment_admin_nonce || ''
+		);
+
+		// Send array as JSON string
+		formData.append( 'payment_ids', JSON.stringify( paymentIds ) );
+
+		// Use apiFetch with proper configuration for admin-ajax.php
+		const data = await apiFetch( {
+			url: window.srfm_payment_admin.ajax_url,
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded',
+			},
+			body: formData.toString(),
+		} );
+
+		console.log( 'Bulk delete AJAX response:', data );
+		console.log( 'Response success:', data.success );
+		console.log( 'Response data:', data.data );
+
+		// Check WordPress AJAX response format
+		if ( ! data.success ) {
+			// Throw error with raw backend data attached
+			const apiError = new Error( 'API request failed' );
+			apiError.response = data;
+			apiError.data = data.data;
+			apiError.isApiError = true;
+			console.error( 'Bulk delete API error:', data.data );
+			throw apiError;
+		}
+
+		// Return raw success data
+		return data.data;
+	} catch ( error ) {
+		console.error( 'Error bulk deleting payments:', error );
+
+		// Mark network errors
+		if ( ! error.response && ! error.data && ! error.isValidationError ) {
+			error.isNetworkError = true;
+		}
+
+		// Re-throw without modifying
+		throw error;
+	}
+};

@@ -989,13 +989,10 @@ class Admin_Stripe_Handler {
 			return false;
 		}
 
-		foreach ( $payment_data['refunds'] as $existing_refund ) {
-			if ( ! empty( $existing_refund['refund_id'] ) && $existing_refund['refund_id'] === $refund_response['id'] ) {
-				return true;
-			}
-		}
+		$refund_id = $refund_response['id'];
 
-		return false;
+		// O(1) lookup using refund ID as array key.
+		return isset( $payment_data['refunds'][ $refund_id ] );
 	}
 
 	/**

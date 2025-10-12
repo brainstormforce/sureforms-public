@@ -1,94 +1,255 @@
 /**
+ * Validate payment block before form submission
+ * @param {HTMLElement} form - The form element
+ * @return {Object} - Validation result object with { valid: boolean, slug: string, message: string }
+ */
+function validateThePaymentBlock( form ) {
+	// Check if payment block exists & Get payment input element
+	const paymentBlock = form.querySelector( '.srfm-block.srfm-payment-block' );
+
+	if ( ! paymentBlock ) {
+		console.warn( 'Payment block or payment input not found' );
+
+		return {
+			valid: true,
+			slug: 'no-payment-block',
+			message: '',
+		};
+	}
+
+	const paymentInput = paymentBlock.querySelector( '.srfm-payment-input' );
+
+	// Validate payment items.
+	const paymentItemsAttr = paymentInput.getAttribute( 'data-payment-items' );
+
+	if ( ! paymentItemsAttr || paymentItemsAttr.trim() === '' ) {
+		return {
+			valid: false,
+			slug: 'no-payment-items',
+			message: 'Payment Input is not configured.',
+		};
+	}
+
+	// Parse payment items JSON
+	let paymentItemsData;
+	try {
+		paymentItemsData = JSON.parse( paymentItemsAttr );
+	} catch ( error ) {
+		return {
+			valid: false,
+			slug: 'invalid-payment-items-json',
+			message: 'Payment configuration error. Please contact support.',
+		};
+	}
+
+	// Check if paymentItems array exists and has items
+	if (
+		! paymentItemsData.paymentItems ||
+		! Array.isArray( paymentItemsData.paymentItems ) ||
+		paymentItemsData.paymentItems.length === 0
+	) {
+		return {
+			valid: false,
+			slug: 'no-payment-items',
+			message: 'Payment Input is not configured.',
+		};
+	}
+
+	// Validate payment item amounts (check if linked fields have valid values)
+	const paymentItems = paymentItemsData.paymentItems;
+
+	// class="srfm-block-single srfm-block srfm-number-block srf-number-e77b36ba-block  srfm-block-width-100 srfm-slug-number"
+
+	for ( const itemSlug of paymentItems ) {
+		// Find the input field by slug
+		// Noted: As of now we are allowing the number blocks only for the items, may be latest we add other blocks for the items.
+		const itemBlock = form.querySelector(
+			`.srfm-number-block.srfm-slug-${ itemSlug }`
+		);
+		const itemInput = itemBlock?.querySelector( 'input.srfm-input-number' );
+
+		if ( ! itemInput ) {
+			return {
+				valid: false,
+				slug: 'payment-item-field-not-found',
+				message: `Payment item field '${ itemSlug }' not found in form.`,
+			};
+		}
+
+		// Get the field value and validate it's a valid positive number
+		const itemValue = parseFloat( itemInput.value.replace( /,/g, '' ) );
+
+		// Clean up the number value.
+		if ( isNaN( itemValue ) || itemValue <= 0 ) {
+			return {
+				valid: false,
+				slug: 'invalid-payment-amount',
+				message: 'Payment amount must be greater than zero.',
+			};
+		}
+	}
+
+	// Get payment type from block
+	const paymentType = paymentBlock.getAttribute( 'data-payment-type' );
+
+	// If subscription, validate name and email fields
+	if ( paymentType === 'subscription' ) {
+		// Get customer name and email field slugs from subscription plan data
+		const customerNameFieldSlug = paymentBlock.getAttribute(
+			'data-customer-name-field'
+		);
+		const customerEmailFieldSlug = paymentBlock.getAttribute(
+			'data-customer-email-field'
+		);
+
+		// Validate that name field is mapped
+		if ( ! customerNameFieldSlug || customerNameFieldSlug.trim() === '' ) {
+			return {
+				valid: false,
+				slug: 'subscription-name-not-mapped',
+				message:
+					'Name field is required for subscription payments. Please configure it in the payment block settings.',
+			};
+		}
+
+		// Validate that email field is mapped
+		if (
+			! customerEmailFieldSlug ||
+			customerEmailFieldSlug.trim() === ''
+		) {
+			return {
+				valid: false,
+				slug: 'subscription-email-not-mapped',
+				message:
+					'Email field is required for subscription payments. Please configure it in the payment block settings.',
+			};
+		}
+
+		// Find the actual name input field in the form
+		const nameInput = form.querySelector(
+			`.srfm-input-block.srfm-slug-${ customerNameFieldSlug } .srfm-input-common`
+		);
+		const nameInputValue = nameInput.value ? nameInput.value.trim() : '';
+
+		if ( ! nameInput || nameInputValue === '' ) {
+			return {
+				valid: false,
+				slug: 'subscription-name-field-not-found',
+				message:
+					'Name field is required for subscription payments. Please configure it in the payment block settings.',
+			};
+		}
+
+		// Find the actual email input field in the form
+		const emailInput = form.querySelector(
+			`.srfm-email-block.srfm-slug-${ customerEmailFieldSlug } .srfm-input-common`
+		);
+
+		const emailInputValue = emailInput.value ? emailInput.value.trim() : '';
+
+		if ( ! emailInput || emailInputValue === '' ) {
+			return {
+				valid: false,
+				slug: 'subscription-email-field-not-found',
+				message:
+					'Email field is required for subscription payments. Please configure it in the payment block settings.',
+			};
+		}
+	}
+
+	// All validations passed
+	return {
+		valid: true,
+		slug: 'payment-valid',
+		message: '',
+	};
+}
+
+/**
  * Main payment handler function called from form submission
  * @param {HTMLElement} form - The form element.
  */
 export async function handleFormPayment( form ) {
 	try {
-		// Check if form has payment blocks
-		const paymentBlocks = form.querySelectorAll(
+		const valiDatePaymentBlocks = validateThePaymentBlock( form );
+
+		if ( ! valiDatePaymentBlocks.valid ) {
+			return {
+				valid: false,
+				message: valiDatePaymentBlocks.message,
+			};
+		}
+
+		const paymentBlock = form.querySelector(
 			'.srfm-block.srfm-payment-block'
 		);
 
-		if ( paymentBlocks.length === 0 ) {
-			return true; // No payment blocks, continue with form submission
-		}
-
 		// Process all payments
-		const paymentResult = await processAllPayments( form );
+		const paymentResultOnCreateIntent = await processAllPayments( form, paymentBlock );
 
-		return paymentResult;
+		return paymentResultOnCreateIntent;
 	} catch ( error ) {
 		console.error( 'Payment processing failed:', error );
-		return false;
+		return {
+			valid: false,
+			message: 'Payment failed',
+			paymentResultOnCreateIntent: null,
+		};
 	}
 }
 
 /**
  * Process all payments when form is submitted
- * @param {HTMLElement} form - The form element.
+ * @param {HTMLElement} form         - The form element.
+ * @param {HTMLElement} paymentBlock - The payment block element.
+ * @return {Promise<boolean>} True if payment succeeded, false otherwise.
  */
-async function processAllPayments( form ) {
-	const paymentBlocks = form.querySelectorAll(
-		'.srfm-block.srfm-payment-block'
-	);
-
-	if ( paymentBlocks.length === 0 ) {
-		return true; // No payment blocks, return success
-	}
-
+async function processAllPayments( form, paymentBlock ) {
 	try {
 		// Step 1: Create payment intents for all payment blocks
-		await window.StripePayment.createPaymentIntentsForForm( form );
-
-		// Step 2: Confirm all payments with enhanced error handling
-		const paymentPromises = [];
-
-		paymentBlocks.forEach( ( block ) => {
-			const blockId = block.getAttribute( 'data-block-id' );
-			const paymentData = window.srfmPaymentElements?.[ blockId ];
-			const paymentType = paymentData?.paymentType || 'one-time';
-
-			console.log( 'blockId', { paymentData } );
-
-			if ( paymentData && paymentData.clientSecret ) {
-				// Wrap each confirmation in individual error handling
-				const paymentPromise = srfmConfirmPayment(
-					blockId,
-					paymentData,
-					form
-				).catch( ( error ) => {
-					// Enhanced error reporting per block
-					const errorMessage = `${
-						paymentType.charAt( 0 ).toUpperCase() +
-						paymentType.slice( 1 )
-					} payment failed for block ${ blockId }: ${
-						error.message
-					}`;
-					console.error( 'error from confirmPayment:', errorMessage );
-				} );
-
-				paymentPromises.push( paymentPromise );
-			} else {
-				console.warn(
-					`Skipping block ${ blockId } - missing payment data or client secret`
-				);
-			}
-		} );
-
-		console.log(
-			`Processing ${ paymentPromises.length } payment confirmations...`
+		const paymentResultOnCreateIntent = await window.StripePayment.createPaymentIntentsForForm(
+			form,
+			paymentBlock
 		);
 
-		// Wait for all payments to complete
-		const paymentResults = await Promise.all( paymentPromises );
+		if ( ! paymentResultOnCreateIntent.status ) {
+			return {
+				valid: false,
+				message: paymentResultOnCreateIntent.message,
+			};
+		}
 
-		console.log( 'All payments completed successfully:', paymentResults );
+		// Step 2: Confirm payment with error handling
+		const blockId = paymentBlock.getAttribute( 'data-block-id' );
+		const paymentData = window.srfmPaymentElements?.[ blockId ];
+		const paymentType = paymentData?.paymentType || 'one-time';
 
-		// print the paymentResults is contain the true payment then return true else return false.
-		const paymentResult = paymentResults.some(
-			( result ) => result && '' !== result
+		if ( paymentData && paymentData.clientSecret ) {
+			const paymentResult = await srfmConfirmPayment(
+				blockId,
+				paymentData,
+				form
+			).catch( ( error ) => {
+				// Enhanced error reporting
+				const errorMessage = `${
+					paymentType.charAt( 0 ).toUpperCase() +
+					paymentType.slice( 1 )
+				} payment failed for block ${ blockId }: ${ error.message }`;
+				console.error( 'error from confirmPayment:', errorMessage );
+				return null;
+			} );
+
+			console.log( 'Payment completed:', paymentResult );
+
+			// Return true if payment succeeded (result is truthy and not empty string)
+			// return paymentResult && '' !== paymentResult;
+			return paymentResult ? { valid: true, message: 'Payment successful', paymentResult } : { valid: false, message: 'Payment failed', paymentResult: null };
+		}
+
+		console.warn(
+			`Skipping block ${ blockId } - missing payment data or client secret`
 		);
-		return paymentResult;
+		return false;
 	} catch ( error ) {
 		console.error( 'Payment processing failed:', error );
 		return false;
@@ -100,6 +261,7 @@ async function processAllPayments( form ) {
  * @param {string}      blockId     - The block ID.
  * @param {Object}      paymentData - The payment data.
  * @param {HTMLElement} form        - The form element.
+ * @return {Promise<string>} The payment intent or setup intent ID if successful.
  */
 async function srfmConfirmPayment( blockId, paymentData, form ) {
 	const { elements, paymentType } = paymentData;
@@ -126,9 +288,10 @@ async function srfmConfirmPayment( blockId, paymentData, form ) {
 
 /**
  * Confirm one-time payment
- * @param blockId
- * @param paymentData
- * @param form
+ * @param {string}      blockId     - Block ID.
+ * @param {Object}      paymentData - The payment data.
+ * @param {HTMLElement} form        - The form element.
+ * @return {Promise<string>} The payment intent ID if successful.
  */
 async function confirmOneTimePayment( blockId, paymentData, form ) {
 	const { stripe, elements, clientSecret } = paymentData;
@@ -192,9 +355,10 @@ async function confirmOneTimePayment( blockId, paymentData, form ) {
 
 /**
  * Confirm subscription payment with proper Payment Method creation and client secret handling
- * @param blockId
- * @param paymentData
- * @param form
+ * @param {string}      blockId     - Block ID.
+ * @param {Object}      paymentData - The payment data.
+ * @param {HTMLElement} form        - The form element.
+ * @return {Promise<string>} The setup intent ID if successful.
  */
 async function confirmSubscription( blockId, paymentData, form ) {
 	const { stripe, elements, clientSecret } = paymentData;
@@ -279,8 +443,9 @@ async function confirmSubscription( blockId, paymentData, form ) {
 
 /**
  * Extract billing name from form fields
- * @param form
- * @param blockId
+ * @param {HTMLElement} form    - The form element.
+ * @param {string}      blockId - Block ID.
+ * @return {string} The extracted billing name or a default value.
  */
 function extractBillingName( form, blockId ) {
 	// Try to find name fields in the form with priority order
@@ -314,8 +479,8 @@ function extractBillingName( form, blockId ) {
 
 /**
  * Extract billing email from form fields
- * @param form
- * @param blockId
+ * @param {HTMLElement} form    - The form element.
+ * @param {string}      blockId - Block ID.
  */
 function extractBillingEmail( form, blockId ) {
 	// Try to find email fields in the form with priority order

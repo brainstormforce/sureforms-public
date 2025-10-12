@@ -8,26 +8,37 @@ import {
 	Select,
 	DatePicker,
 	Pagination,
+	Container,
+	Dialog,
+	toast,
 } from '@bsf/force-ui';
 import {
 	Eye as ViewIcon,
-	MoreHorizontal as EditIcon,
 	Search,
 	Calendar,
 	X,
 	RefreshCw as ResendIcon,
 	Trash as DeleteIcon,
 } from 'lucide-react';
-import { __ } from '@wordpress/i18n';
-import { useQuery } from '@tanstack/react-query';
+import { __, sprintf, _n } from '@wordpress/i18n';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { PaymentContext } from '../components/context';
-import { fetchPayments } from '../components/apiCalls';
-import { getPaginationRange } from '../components/utils';
+import { fetchPayments, bulkDeletePayments } from '../components/apiCalls';
+import {
+	getPaginationRange,
+	getStatusVariant,
+	formatAmount,
+	formatDateTime,
+	getSelectedDateRange,
+	getStatusLabel,
+} from '../components/utils';
 import {
 	getUrlParams,
 	updateUrlParams,
 	clearUrlParams,
 } from '../components/urlUtils';
+import LoadingSkeleton from '@Admin/components/LoadingSkeleton';
+import PaymentListPlaceHolder from '../components/paymentListPlaceHolder';
 
 // Payment status filters - mapped to database statuses
 const STATUS_FILTERS = [
@@ -46,8 +57,15 @@ const PaymentTable = () => {
 	// Selection state management
 	const [ selectedRows, setSelectedRows ] = useState( [] );
 
+	// Delete confirmation dialog state
+	const [ isDeleteDialogOpen, setIsDeleteDialogOpen ] = useState( false );
+	const [ deletePaymentIds, setDeletePaymentIds ] = useState( [] );
+
 	const { setViewSinglePayment, setSinglePaymentType } =
 		useContext( PaymentContext );
+
+	// React Query client for cache invalidation
+	const queryClient = useQueryClient();
 
 	// Filter and search state
 	const [ searchTerm, setSearchTerm ] = useState( '' );
@@ -86,6 +104,103 @@ const PaymentTable = () => {
 		queryData,
 		data: paymentsData,
 		update: '12',
+	} );
+
+	// Bulk delete mutation
+	const bulkDeleteMutation = useMutation( {
+		mutationFn: bulkDeletePayments,
+		onSuccess: ( data ) => {
+			console.log( 'Delete mutation success:', data );
+
+			// APP layer handles all message formatting
+			let message;
+
+			// Check if partial success (some failed, some succeeded)
+			if ( data.partial ) {
+				// Show warning toast for partial success
+				message =
+					data.message ||
+					__(
+						'Some payments could not be deleted',
+						'sureforms'
+					);
+				toast.warning( message, {
+					duration: 5000, // 5 seconds for warnings
+				} );
+			} else {
+				// Show success toast for complete success
+				message =
+					data.message ||
+					__( 'Payments deleted successfully', 'sureforms' );
+				toast.success( message, {
+					duration: 4000, // 4 seconds
+				} );
+			}
+
+			// Clear selected rows
+			setSelectedRows( [] );
+
+			// Refresh payments list
+			queryClient.invalidateQueries( [ 'payments' ] );
+
+			// Close dialog
+			setIsDeleteDialogOpen( false );
+		},
+		onError: ( error ) => {
+			console.error( 'Delete mutation error:', error );
+			console.error( 'Error type:', {
+				isApiError: error.isApiError,
+				isNetworkError: error.isNetworkError,
+				isValidationError: error.isValidationError,
+			} );
+			console.error( 'Error data:', error.data );
+
+			// APP layer extracts and formats error messages
+			let errorMessage;
+
+			// Check for backend API error message
+			if ( error.data?.message ) {
+				errorMessage = error.data.message;
+			}
+			// Check for validation error
+			else if ( error.isValidationError ) {
+				errorMessage = __(
+					'No payment IDs provided',
+					'sureforms'
+				);
+			}
+			// Check for network/connectivity error
+			else if ( error.isNetworkError ) {
+				errorMessage = __(
+					'Network error. Please check your connection and try again.',
+					'sureforms'
+				);
+			}
+			// Check for generic error message
+			else if (
+				error.message &&
+				error.message !== 'API request failed' &&
+				error.message !== 'Validation failed'
+			) {
+				errorMessage = error.message;
+			}
+			// Final fallback
+			else {
+				errorMessage = __(
+					'Failed to delete payments. Please try again.',
+					'sureforms'
+				);
+			}
+
+			console.log("error getting->", errorMessage);
+
+			// Show error toast with formatted message
+			toast.error( errorMessage, {
+			} );
+
+			// Close dialog
+			setIsDeleteDialogOpen( false );
+		},
 	} );
 
 	// Use API data or fallback to dummy data
@@ -130,10 +245,10 @@ const PaymentTable = () => {
 		}
 	}, [] ); // Run once on mount
 
-	// Reset page to 1 when filters or items per page change
-	useEffect( () => {
-		setPage( 1 );
-	}, [ searchTerm, filter, selectedDates, itemsPerPage ] );
+	// // Reset page to 1 when filters or items per page change
+	// useEffect( () => {
+	// 	setPage( 1 );
+	// }, [ searchTerm, filter, selectedDates, itemsPerPage ] );
 
 	// Sync page to URL
 	useEffect( () => {
@@ -223,43 +338,6 @@ const PaymentTable = () => {
 		};
 	}, [] );
 
-	// Format amount to currency
-	const formatAmount = ( amount ) => {
-		return `$${ amount.toFixed( 2 ) }`;
-	};
-
-	// Format datetime to readable format
-	const formatDateTime = ( datetime ) => {
-		const date = new Date( datetime );
-		return date.toLocaleString( 'en-US', {
-			month: 'short',
-			day: 'numeric',
-			year: 'numeric',
-			hour: 'numeric',
-			minute: '2-digit',
-			hour12: true,
-		} );
-	};
-
-	// Get status badge variant based on status
-	const getStatusVariant = ( status ) => {
-		switch ( status ) {
-			case 'succeeded':
-				return 'green';
-			case 'pending':
-			case 'partially_refunded':
-				return 'yellow';
-			case 'failed':
-				return 'red';
-			case 'refunded':
-				return 'blue';
-			case 'cancelled':
-				return 'gray';
-			default:
-				return 'gray';
-		}
-	};
-
 	// Handle individual row selection
 	const handleSelectRow = ( rowId ) => {
 		setSelectedRows( ( prev ) =>
@@ -285,8 +363,9 @@ const PaymentTable = () => {
 	};
 
 	const handleDeleteSingle = ( id ) => {
-		console.log( 'delete single', id );
-		// TODO: Implement edit payment functionality
+		// Open confirmation dialog for single delete
+		setDeletePaymentIds( [ id ] );
+		setIsDeleteDialogOpen( true );
 	};
 
 	// Placeholder handlers for batch actions
@@ -296,8 +375,19 @@ const PaymentTable = () => {
 	};
 
 	const handleDelete = ( paymentIds ) => {
-		console.log( 'delete', paymentIds );
-		// TODO: Implement delete payment functionality
+		// Open confirmation dialog for bulk delete
+		setDeletePaymentIds( paymentIds );
+		setIsDeleteDialogOpen( true );
+	};
+
+	const confirmDelete = () => {
+		// Execute deletion
+		bulkDeleteMutation.mutate( deletePaymentIds );
+	};
+
+	const cancelDelete = () => {
+		setIsDeleteDialogOpen( false );
+		setDeletePaymentIds( [] );
 	};
 
 	// Placeholder handlers for filters
@@ -310,18 +400,6 @@ const PaymentTable = () => {
 
 	const handleDateCancel = () => {
 		setIsDatePickerOpen( false );
-	};
-
-	const getSelectedDate = ( dates ) => {
-		if ( dates.from && dates.to ) {
-			return `${ dates.from.toLocaleDateString() } - ${ dates.to.toLocaleDateString() }`;
-		}
-		return '';
-	};
-
-	const getStatusLabel = ( status ) => {
-		const statusFilter = STATUS_FILTERS.find( ( f ) => f.value === status );
-		return statusFilter ? statusFilter.label : status;
 	};
 
 	// Pagination event handlers
@@ -531,13 +609,88 @@ const PaymentTable = () => {
 	};
 
 	if ( isLoading ) {
-		return <h1>Initial Transaction Loading....</h1>;
+		return (
+			<div className="srfm-single-payment-wrapper min-h-screen bg-background-secondary p-8">
+				<Container
+					containerType="flex"
+					direction="column"
+					gap="xs"
+					className="w-full h-full"
+				>
+					<LoadingSkeleton count={ 10 } className="min-h-[44px]" />
+				</Container>
+			</div>
+		);
 	}
 
 	// IF paymentsData.transactions_is_empty = "with_no_filter"
 	if ( paymentsData.transactions_is_empty === 'with_no_filter' ) {
-		return <h1>No transactions found iniaitllay.</h1>;
+		return <PaymentListPlaceHolder />;
 	}
+
+	// Delete confirmation dialog
+	const deleteConfirmationDialog = (
+		<Dialog
+			open={ isDeleteDialogOpen }
+			setOpen={ setIsDeleteDialogOpen }
+			design="simple"
+			exitOnEsc
+			scrollLock
+		>
+			<Dialog.Backdrop />
+			<Dialog.Panel>
+				<Dialog.Header>
+					<div className="flex items-center justify-between">
+						<Dialog.Title>
+							{ __( 'Delete Payments', 'sureforms' ) }
+						</Dialog.Title>
+						<Dialog.CloseButton onClick={ cancelDelete } />
+					</div>
+					<Dialog.Description>
+						{ sprintf(
+							/* translators: %d: number of payments */
+							_n(
+								'Are you sure you want to delete %d payment? This action cannot be undone.',
+								'Are you sure you want to delete %d payments? This action cannot be undone.',
+								deletePaymentIds.length,
+								'sureforms'
+							),
+							deletePaymentIds.length
+						) }
+					</Dialog.Description>
+				</Dialog.Header>
+				<Dialog.Body>
+					<div className="p-3 border border-red-200 rounded-md bg-red-50">
+						<p className="text-sm text-red-700">
+							{ __(
+								'Warning: Deleting payments will permanently remove all associated data including notes, logs, and transaction information.',
+								'sureforms'
+							) }
+						</p>
+					</div>
+				</Dialog.Body>
+				<Dialog.Footer className="flex justify-end gap-2">
+					<Button
+						variant="outline"
+						onClick={ cancelDelete }
+						disabled={ bulkDeleteMutation.isPending }
+					>
+						{ __( 'Cancel', 'sureforms' ) }
+					</Button>
+					<Button
+						variant="primary"
+						onClick={ confirmDelete }
+						disabled={ bulkDeleteMutation.isPending }
+						className="bg-red-600 hover:bg-red-700 border-red-600 hover:border-red-700"
+					>
+						{ bulkDeleteMutation.isPending
+							? __( 'Deleting…', 'sureforms' )
+							: __( 'Delete Payments', 'sureforms' ) }
+					</Button>
+				</Dialog.Footer>
+			</Dialog.Panel>
+		</Dialog>
+	);
 
 	return (
 		<div className="min-h-screen px-8 py-8 bg-background-secondary">
@@ -546,7 +699,7 @@ const PaymentTable = () => {
 					{ /* Filters or Batch Actions */ }
 					<div className="flex items-center justify-between p-1.25">
 						<h1 className="text-xl font-semibold text-text-primary">
-							{ __( 'Payment Logs', 'sureforms' ) }
+							{ __( 'Payment Table', 'sureforms' ) }
 						</h1>
 						<div className="flex space-x-4">
 							{ selectedRows.length > 0 ? (
@@ -680,7 +833,7 @@ const PaymentTable = () => {
 										<Input
 											type="text"
 											size="sm"
-											value={ getSelectedDate(
+											value={ getSelectedDateRange(
 												selectedDates
 											) }
 											suffix={
@@ -840,6 +993,7 @@ const PaymentTable = () => {
 					</div>
 				</div>
 			</div>
+			{ deleteConfirmationDialog }
 		</div>
 	);
 };

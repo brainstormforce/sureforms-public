@@ -15,6 +15,7 @@ use SRFM\Inc\Helper;
 use SRFM\Inc\Onboarding;
 use SRFM\Inc\Post_Types;
 use SRFM\Inc\Traits\Get_Instance;
+use SRFM\Inc\Payments\Stripe\Stripe_Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -504,7 +505,7 @@ class Admin {
 	 * @since x.x.x
 	 */
 	public function render_payments() {
-		echo '<div id="srfm-payments-react-container" class="srfm-admin-wrapper"><h1>Payments React</h1></div>';
+		echo '<div id="srfm-payments-react-container" class="srfm-admin-wrapper"></div>';
 	}
 
 	/**
@@ -779,11 +780,17 @@ class Admin {
 			'onboarding_redirect'        => isset( $_GET['srfm-activation-redirect'] ), // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce is not required for the activation redirection.
 			'pointer_nonce'              => wp_create_nonce( 'sureforms_pointer_action' ),
 			'general_settings_url'       => admin_url( '/options-general.php' ),
+			'payments' => [
+				'stripe_connected' => Stripe_Helper::is_stripe_connected(),
+				'stripe_mode' => Stripe_Helper::get_stripe_mode(),
+				'stripe_connect_url' => Stripe_Helper::get_stripe_settings_url(),
+			],
 		];
 
 		$is_screen_sureforms_menu          = Helper::validate_request_context( 'sureforms_menu', 'page' );
 		$is_screen_add_new_form            = Helper::validate_request_context( 'add-new-form', 'page' );
 		$is_screen_sureforms_form_settings = Helper::validate_request_context( 'sureforms_form_settings', 'page' );
+		$is_screen_sureforms_payments      = Helper::validate_request_context( 'sureforms_payments', 'page' );
 		$is_screen_sureforms_entries       = Helper::validate_request_context( SRFM_ENTRIES, 'page' );
 		$is_post_type_sureforms_form       = SRFM_FORMS_POST_TYPE === $current_screen->post_type;
 
@@ -798,7 +805,7 @@ class Admin {
 			];
 		}
 
-		if ( $is_screen_sureforms_menu || $is_post_type_sureforms_form || $is_screen_add_new_form || $is_screen_sureforms_form_settings || $is_screen_sureforms_entries ) {
+		if ( $is_screen_sureforms_menu || $is_post_type_sureforms_form || $is_screen_add_new_form || $is_screen_sureforms_form_settings || $is_screen_sureforms_entries || $is_screen_sureforms_payments ) {
 			$asset_handle = '-dashboard';
 
 			wp_enqueue_style( SRFM_SLUG . $asset_handle . '-font', 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap', [], SRFM_VER );
@@ -1022,22 +1029,19 @@ class Admin {
 		$quick_sidebar_allowed_blocks = get_option( 'srfm_quick_sidebar_allowed_blocks' );
 		$quick_sidebar_allowed_blocks = ! empty( $quick_sidebar_allowed_blocks ) && is_array( $quick_sidebar_allowed_blocks ) ? $quick_sidebar_allowed_blocks : $default_allowed_quick_sidebar_blocks;
 		$srfm_ajax_nonce              = wp_create_nonce( 'srfm_ajax_nonce' );
+		wp_enqueue_script( SRFM_SLUG . '-quick-action-siderbar', SRFM_URL . 'assets/build/quickActionSidebar.js', [], SRFM_VER, true );
+		wp_localize_script(
+			SRFM_SLUG . '-quick-action-siderbar',
+			SRFM_SLUG . '_quick_sidebar_blocks',
+			[
+				'allowed_blocks'                   => $quick_sidebar_allowed_blocks,
+				'srfm_enable_quick_action_sidebar' => $srfm_enable_quick_action_sidebar,
+				'srfm_ajax_nonce'                  => $srfm_ajax_nonce,
+				'srfm_ajax_url'                    => admin_url( 'admin-ajax.php' ),
+			]
+		);
 
-		if ( Helper::is_sureforms_admin_page() ) {
-			wp_enqueue_script( SRFM_SLUG . '-quick-action-siderbar', SRFM_URL . 'assets/build/quickActionSidebar.js', [], SRFM_VER, true );
-			wp_localize_script(
-				SRFM_SLUG . '-quick-action-siderbar',
-				SRFM_SLUG . '_quick_sidebar_blocks',
-				[
-					'allowed_blocks'                   => $quick_sidebar_allowed_blocks,
-					'srfm_enable_quick_action_sidebar' => $srfm_enable_quick_action_sidebar,
-					'srfm_ajax_nonce'                  => $srfm_ajax_nonce,
-					'srfm_ajax_url'                    => admin_url( 'admin-ajax.php' ),
-				]
-			);
-
-			$script_translations_handlers[] = SRFM_SLUG . '-quick-action-siderbar';
-		}
+		$script_translations_handlers[] = SRFM_SLUG . '-quick-action-siderbar';
 
 		/**
 		 * Enqueuing SureTriggers Integration script.

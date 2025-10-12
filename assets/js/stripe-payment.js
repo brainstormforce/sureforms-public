@@ -59,6 +59,51 @@ class StripePayment {
 		}
 	}
 
+	/**
+	 * Refine the amount by removing format characters based on format type.
+	 * Converts formatted numbers to clean decimal strings for calculation.
+	 *
+	 * @param {HTMLElement} input - The input element with format-type attribute.
+	 * @return {string} Clean number string (e.g., "1234.56").
+	 */
+	refineTheAmount( input ) {
+		const rawValue = input?.value || '0';
+		const formatType = input?.getAttribute( 'format-type' ) || 'us-style';
+
+		// Handle empty or invalid input
+		if ( ! rawValue || rawValue.trim() === '' ) {
+			return '0';
+		}
+
+		let cleanedValue = rawValue.trim();
+
+		if ( 'eu-style' === formatType ) {
+			// EU-style: 1.234,56
+			// Remove dots (thousands separator): 1234,56
+			// Replace comma (decimal separator) with dot: 1234.56
+			cleanedValue = cleanedValue
+				.replace( /\./g, '' ) // Remove all dots
+				.replace( ',', '.' ); // Replace comma with dot
+		} else {
+			// US-style: 1,234.56 (default)
+			// Remove commas (thousands separator): 1234.56
+			// Keep dot (decimal separator): 1234.56
+			cleanedValue = cleanedValue.replace( /,/g, '' ); // Remove all commas
+		}
+
+		// Validate the result is a valid number
+		const numericValue = parseFloat( cleanedValue );
+		if ( isNaN( numericValue ) ) {
+			console.warn(
+				'SureForms: Invalid number value after refinement:',
+				rawValue
+			);
+			return '0';
+		}
+
+		return cleanedValue;
+	}
+
 	updatePaymentIntent( args ) {
 		const fieldSlug = args.slug;
 		const getPaymentHiddenInputs = this.form.querySelectorAll(
@@ -82,7 +127,8 @@ class StripePayment {
 						continue;
 					}
 
-					const getTheAmount = getThePaymentItem.value || 0;
+					// Get and refine the amount based on format type
+					const getTheAmount = this.refineTheAmount( getThePaymentItem );
 					const getTheTitle = getThePaymentItem
 						.closest( '.srfm-block' )
 						.querySelector( '.srfm-block-label' ).textContent;
@@ -181,10 +227,11 @@ class StripePayment {
 	}
 
 	/**
-	 * Determine if validation error should be displayed to user
-	 * Filters out common typing-related incomplete warnings
-	 * @param  error
-	 * @return {boolean}
+	 * Determine if validation error should be displayed to user.
+	 * Filters out common typing-related incomplete warnings.
+	 *
+	 * @param {Object} error - The error object returned from Stripe or validation.
+	 * @return {boolean} True if the error should be displayed to the user, false otherwise.
 	 */
 	shouldDisplayValidationError( error ) {
 		// Don't show incomplete errors while user is still typing
@@ -212,11 +259,13 @@ class StripePayment {
 	}
 
 	/**
-	 * Create payment intent only during form submission (deferred pattern)
-	 * This method creates payment intent and updates elements with client secret
-	 * @param blockId
-	 * @param amount
-	 * @param paymentInput
+	 * Create payment intent only during form submission (deferred pattern).
+	 * This method creates payment intent and updates elements with client secret.
+	 *
+	 * @param {string}      blockId      - Block ID.
+	 * @param {number}      amount       - The amount to create the payment intent for.
+	 * @param {HTMLElement} paymentInput - The payment input element.
+	 * @return {Promise<Object>} Resolves with an object containing clientSecret and paymentIntentId.
 	 */
 	async createPaymentIntentOnSubmission( blockId, amount, paymentInput ) {
 		if ( amount <= 0 ) {
@@ -351,11 +400,13 @@ class StripePayment {
 	}
 
 	/**
-	 * Initialize Stripe elements with deferred payment intent creation
-	 * Uses real amount calculation to fix "card element is incomplete" errors
-	 * Payment intent will be created only during form submission
-	 * @param blockId
-	 * @param paymentInput
+	 * Initialize Stripe elements with deferred payment intent creation.
+	 * Uses real amount calculation to fix "card element is incomplete" errors.
+	 * Payment intent will be created only during form submission.
+	 *
+	 * @param {string}      blockId      - Block ID.
+	 * @param {HTMLElement} paymentInput - The payment input element.
+	 * @return {void} This function does not return a value.
 	 */
 	initializeStripeElements( blockId, paymentInput ) {
 		// CRITICAL: Check if elements already exist to prevent re-initialization
@@ -462,9 +513,10 @@ class StripePayment {
 	}
 
 	/**
-	 * Calculate current payment amount from form
-	 * @param  paymentInput
-	 * @return {number} Amount in dollars
+	 * Calculate current payment amount from form.
+	 *
+	 * @param {HTMLElement} paymentInput - The payment input element.
+	 * @return {number} The calculated amount in dollars.
 	 */
 	calculateCurrentAmount( paymentInput ) {
 		// Get payment items configuration
@@ -504,6 +556,13 @@ class StripePayment {
 		return finalAmount;
 	}
 
+	/**
+	 * Set or unset loading state for a payment block and its submit button.
+	 *
+	 * @param {string}  blockId        - The unique identifier for the payment block.
+	 * @param {boolean} [loading=true] - Whether to set (true) or unset (false) the loading state.
+	 * @return {void} This function does not return a value.
+	 */
 	set_block_loading( blockId, loading = true ) {
 		const block = this.form.querySelector(
 			`.srfm-block[data-block-id="${ blockId }"]`
@@ -525,9 +584,11 @@ class StripePayment {
 	}
 
 	/**
-	 * Initialize Stripe elements for subscriptions
-	 * @param blockId
-	 * @param paymentInput
+	 * Initialize Stripe elements for subscriptions.
+	 *
+	 * @param {string}      blockId      - Block ID.
+	 * @param {HTMLElement} paymentInput - The payment input element.
+	 * @return {void} This function does not return a value.
 	 */
 	initializeSubscriptionElements( blockId, paymentInput ) {
 		// CRITICAL: Check if elements already exist to prevent re-initialization
@@ -627,10 +688,12 @@ class StripePayment {
 	}
 
 	/**
-	 * Create subscription intent using simplified approach like simple-stripe-subscriptions
-	 * @param blockId
-	 * @param amount
-	 * @param paymentInput
+	 * Create subscription intent using simplified approach like simple-stripe-subscriptions.
+	 *
+	 * @param {string}      blockId      - Block ID.
+	 * @param {number}      amount       - The amount for the subscription.
+	 * @param {HTMLElement} paymentInput - The payment input element.
+	 * @return {Promise<Object>} Resolves with an object containing clientSecret, subscriptionId, customerId, and paymentIntentId.
 	 */
 	async createSubscriptionIntentOnSubmission(
 		blockId,
@@ -708,23 +771,30 @@ class StripePayment {
 					subscriptionId,
 					customerId,
 					paymentIntentId,
+					status: true
 				};
+			} else {
+				return {
+					status: false,
+					message: responseData.data?.message || responseData.data || 'Failed to create subscription',
+				}
 			}
-			throw new Error(
-				responseData.data?.message ||
-					responseData.data ||
-					'Failed to create subscription'
-			);
 		} catch ( error ) {
 			this.set_block_loading( blockId, false );
-			console.error( 'SureForms: Error creating subscription:', error );
-			throw error;
+			// console.error( 'SureForms: Error creating subscription:', error );
+			// throw error;
+			return {
+				status: false,
+				message: error.message || 'Failed to create subscription',
+			}
 		}
 	}
 
 	/**
-	 * Extract customer data from form fields or use dummy data
-	 * @param paymentInput
+	 * Extract customer data from form fields or use dummy data.
+	 *
+	 * @param {HTMLElement} paymentInput - The payment input element.
+	 * @return {Object} An object containing name, email, interval, and planName.
 	 */
 	extractCustomerData( paymentInput ) {
 		const form = paymentInput.closest( 'form' );
@@ -743,7 +813,7 @@ class StripePayment {
 
 		if ( customerNameField && form ) {
 			const nameInput = form.querySelector(
-				`[name*="${ customerNameField }"]`
+				`.srfm-input-block.srfm-slug-${ customerNameField } .srfm-input-common`
 			);
 			if ( nameInput && nameInput.value.trim() ) {
 				customerName = nameInput.value.trim();
@@ -752,7 +822,7 @@ class StripePayment {
 
 		if ( customerEmailField && form ) {
 			const emailInput = form.querySelector(
-				`[name*="${ customerEmailField }"]`
+				`.srfm-input-block.srfm-slug-${ customerEmailField } .srfm-input-common`
 			);
 			if ( emailInput && emailInput.value.trim() ) {
 				customerEmail = emailInput.value.trim();
@@ -768,91 +838,86 @@ class StripePayment {
 	}
 
 	/**
-	 * Static method to create payment intents for all payment blocks in a form during submission
-	 * This should be called from the form submission handler
-	 * @param form
+	 * Static method to create payment intent for a payment block during form submission.
+	 * This should be called from the form submission handler.
+	 *
+	 * @param {HTMLFormElement} form         - The form element.
+	 * @param {HTMLElement}     paymentBlock - The payment block element.
+	 * @return {Promise<Object>} Resolves with payment intent or subscription intent data.
 	 */
-	static async createPaymentIntentsForForm( form ) {
-		const paymentBlocks = form.querySelectorAll(
-			'.srfm-block.srfm-payment-block'
+	static async createPaymentIntentsForForm( form, paymentBlock ) {
+		const blockId = paymentBlock.getAttribute( 'data-block-id' );
+		const paymentInput = paymentBlock.querySelector(
+			'input.srfm-payment-input'
 		);
-		const results = [];
+		const paymentType =
+			paymentBlock.getAttribute( 'data-payment-type' ) || 'one-time';
 
-		for ( const block of paymentBlocks ) {
-			const blockId = block.getAttribute( 'data-block-id' );
-			const paymentInput = block.querySelector(
-				'input.srfm-payment-input'
-			);
-			const paymentType =
-				block.getAttribute( 'data-payment-type' ) || 'one-time';
-
-			if ( ! paymentInput ) {
-				continue;
-			}
-
-			// Calculate current amount from form
-			const paymentValueElement = block.querySelector(
-				'.srfm-payment-value'
-			);
-			const amountText = paymentValueElement?.textContent || '$0.00';
-			const amount =
-				parseFloat( amountText.replace( /[^0-9.]/g, '' ) ) || 0;
-
-			if ( amount <= 0 ) {
-				console.warn(
-					`Skipping payment block ${ blockId } - amount is ${ amount }`
-				);
-				continue;
-			}
-
-			try {
-				// Create a temporary instance to call the method
-				const tempInstance = new StripePayment( form );
-
-				if ( paymentType === 'subscription' ) {
-					const result =
-						await tempInstance.createSubscriptionIntentOnSubmission(
-							blockId,
-							amount,
-							paymentInput
-						);
-					results.push( {
-						blockId,
-						paymentType: 'subscription',
-						...result,
-					} );
-				} else {
-					const result =
-						await tempInstance.createPaymentIntentOnSubmission(
-							blockId,
-							amount,
-							paymentInput
-						);
-					results.push( {
-						blockId,
-						paymentType: 'one-time',
-						...result,
-					} );
-				}
-			} catch ( error ) {
-				console.error(
-					`Failed to create ${ paymentType } intent for block ${ blockId }:`,
-					error
-				);
-				throw error;
-			}
+		if ( ! paymentInput ) {
+			throw new Error( `Payment input not found for block ${ blockId }` );
 		}
 
-		// console.log("SureForms: Payment intents created:", results);
+		// Calculate current amount from form
+		const paymentValueElement = paymentBlock.querySelector(
+			'.srfm-payment-value'
+		);
+		const amountText = paymentValueElement?.textContent || '$0.00';
+		const amount = parseFloat( amountText.replace( /[^0-9.]/g, '' ) ) || 0;
 
-		return results;
+		if ( amount <= 0 ) {
+			throw new Error(
+				`Invalid payment amount ${ amount } for block ${ blockId }`
+			);
+		}
+
+		try {
+			// Create a temporary instance to call the method
+			const tempInstance = new StripePayment( form );
+
+			if ( paymentType === 'subscription' ) {
+				const result =
+					await tempInstance.createSubscriptionIntentOnSubmission(
+						blockId,
+						amount,
+						paymentInput
+					);
+				return {
+					blockId,
+					paymentType: 'subscription',
+					...result,
+				};
+			}
+
+			const result = await tempInstance.createPaymentIntentOnSubmission(
+				blockId,
+				amount,
+				paymentInput
+			);
+			return {
+				blockId,
+				paymentType: 'one-time',
+				...result,
+			};
+		} catch ( error ) {
+			// console.error(
+			// 	`Failed to create ${ paymentType } intent for block ${ blockId }:`,
+			// 	error
+			// );
+			// throw error;
+			return {
+				status: false,
+				message: error.message || 'Failed to create payment intent',
+			}
+		}
 	}
 
 	/**
-	 * Confirm payments using simple-stripe-subscriptions approach with enhanced error handling
-	 * This should be called after payment intents are created
-	 * @param form
-	 * @param paymentResults
+	 * Confirm payments using simple-stripe-subscriptions approach with enhanced error handling.
+	 * This should be called after payment intents are created.
+	 *
+	 * @param {HTMLFormElement} form           - The form element.
+	 * @param {Array<Object>}   paymentResults - The payment results.
+	 * @return {Promise<Array<Object>>} Resolves with an array of confirmed payment data.
 	 */
 	static async confirmPaymentsForForm( form, paymentResults ) {
 		const confirmationResults = [];
@@ -973,8 +1038,10 @@ class StripePayment {
 	}
 
 	/**
-	 * Extract customer email from form for billing details
-	 * @param form
+	 * Extract customer email from form for billing details.
+	 *
+	 * @param {HTMLFormElement} form - The form element.
+	 * @return {string|null} The customer email if found, otherwise null.
 	 */
 	static extractCustomerEmail( form ) {
 		// Try to find email field in form
@@ -990,9 +1057,11 @@ class StripePayment {
 	}
 
 	/**
-	 * Display element error message in the UI
-	 * @param blockId
-	 * @param error
+	 * Display an error message related to the Stripe payment element in the UI.
+	 *
+	 * @param {string} blockId - The unique identifier for the payment block.
+	 * @param {Object} error   - The error object returned from Stripe or validation.
+	 * @return {void} This function does not return a value.
 	 */
 	displayElementError( blockId, error ) {
 		const block = this.form.querySelector(
@@ -1032,8 +1101,10 @@ class StripePayment {
 	}
 
 	/**
-	 * Clear element error messages
-	 * @param blockId
+	 * Clear element error messages.
+	 *
+	 * @param {string} blockId - Block ID.
+	 * @return {void} This function does not return a value.
 	 */
 	clearElementError( blockId ) {
 		const block = this.form.querySelector(
@@ -1052,8 +1123,8 @@ class StripePayment {
 
 	/**
 	 * Validate payment amount before processing
-	 * @param  amount
-	 * @return {boolean}
+	 * @param {number} amount - The amount to validate.
+	 * @return {boolean} True if the amount is valid, false otherwise.
 	 */
 	static validatePaymentAmount( amount ) {
 		// Stripe minimum is $0.50 for most currencies
@@ -1066,14 +1137,12 @@ class StripePayment {
 			);
 			return false;
 		}
-
 		if ( amount > maxAmount ) {
 			console.error(
 				`SureForms: Payment amount cannot exceed $${ maxAmount }`
 			);
 			return false;
 		}
-
 		return true;
 	}
 }
@@ -1081,6 +1150,9 @@ class StripePayment {
 // Make StripePayment available globally for form submission
 window.StripePayment = StripePayment;
 
+/**
+ * Initializes StripePayment for forms after SureForms initialization event.
+ */
 document.addEventListener( 'srfm_form_after_initialization', ( event ) => {
 	const form = event?.detail?.form;
 	if ( form ) {

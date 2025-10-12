@@ -1,26 +1,16 @@
 import { useState, useContext, useEffect } from '@wordpress/element';
 import {
-	Card,
 	Button,
 	Badge,
-	Avatar,
 	Container,
 	Label,
 	Text,
 	Table,
-	DropdownMenu,
 	Dialog,
 	Input,
-	TextArea,
 } from '@bsf/force-ui';
-import {
-	ArrowUpRight,
-	Plus,
-	Trash2,
-	EllipsisVertical,
-	FileSearch2,
-} from 'lucide-react';
-import { __ } from '@wordpress/i18n';
+import { ArrowUpRight } from 'lucide-react';
+import { __, sprintf } from '@wordpress/i18n';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { PaymentContext } from '../components/context';
 import {
@@ -30,12 +20,26 @@ import {
 	deletePaymentNote,
 	deletePaymentLog,
 } from '../components/apiCalls';
-import { currencies } from '../components/utils';
+import {
+	getStatusVariant,
+	formatAmount,
+	formatDateTime,
+	formatLogTimestamp,
+} from '../components/utils';
+import PaymentNotes from '../components/paymentNotes';
+import PaymentLogs from '../components/paymentLogs';
+import PaymentHeader from '../components/paymentHeader';
+import PaymentLoadingSkeleton from '../components/paymentLoadingSkeleton';
 
 const ViewPayment = () => {
 	const { viewSinglePayment, setViewSinglePayment } =
 		useContext( PaymentContext );
 	const queryClient = useQueryClient();
+
+	// Handler to navigate back to payment list
+	const handleBackToList = () => {
+		setViewSinglePayment( false );
+	};
 
 	// Fetch single payment data
 	const {
@@ -58,8 +62,9 @@ const ViewPayment = () => {
 			queryClient.invalidateQueries( [ 'payments' ] );
 			setIsRefundDialogOpen( false );
 		},
-		onError: ( error ) => {
-			console.error( 'Refund failed:', error );
+		onError: ( refundError ) => {
+			// Use a different parameter name to avoid shadowing the outer 'error'
+			console.error( 'Refund failed:', refundError );
 			alert( __( 'Refund failed. Please try again.', 'sureforms' ) );
 		},
 	} );
@@ -95,7 +100,7 @@ const ViewPayment = () => {
 			setIsAddingNote( false );
 			queryClient.invalidateQueries( [ 'payment', viewSinglePayment ] );
 		},
-		onError: ( error ) => {
+		onError: () => {
 			alert( __( 'Failed to add note. Please try again.', 'sureforms' ) );
 		},
 	} );
@@ -108,7 +113,7 @@ const ViewPayment = () => {
 			setNotes( updatedNotes );
 			queryClient.invalidateQueries( [ 'payment', viewSinglePayment ] );
 		},
-		onError: ( error ) => {
+		onError: () => {
 			alert(
 				__( 'Failed to delete note. Please try again.', 'sureforms' )
 			);
@@ -123,7 +128,7 @@ const ViewPayment = () => {
 			setLogs( updatedLogs );
 			queryClient.invalidateQueries( [ 'payment', viewSinglePayment ] );
 		},
-		onError: ( error ) => {
+		onError: () => {
 			alert(
 				__( 'Failed to delete log. Please try again.', 'sureforms' )
 			);
@@ -145,15 +150,7 @@ const ViewPayment = () => {
 
 	// Loading state
 	if ( isLoading ) {
-		return (
-			<div className="srfm-single-payment-wrapper min-h-screen bg-background-secondary p-8">
-				<div className="flex items-center justify-center h-96">
-					<Text>
-						{ __( 'Loading payment details…', 'sureforms' ) }
-					</Text>
-				</div>
-			</div>
-		);
+		return <PaymentLoadingSkeleton />;
 	}
 
 	// Error state
@@ -201,20 +198,10 @@ const ViewPayment = () => {
 		);
 	}
 
-	const handleViewInStripe = () => {
-		console.log( 'Open Stripe dashboard' );
-	};
+	// Removed unused handlers: handleViewInStripe, handleResendEmail, handleCancelRefund
 
-	const handleResendEmail = () => {
-		console.log( 'Resend email notification' );
-	};
-
-	const handleRefund = ( id ) => {
+	const handleRefund = () => {
 		openRefundDialog();
-	};
-
-	const handleCancelRefund = ( id ) => {
-		console.log( 'Cancel refund:', id );
 	};
 
 	const handleAddNoteClick = () => {
@@ -237,31 +224,33 @@ const ViewPayment = () => {
 	};
 
 	const handleDeleteNote = ( noteIndex ) => {
-		if (
-			confirm(
-				__( 'Are you sure you want to delete this note?', 'sureforms' )
-			)
-		) {
-			deleteNoteMutation.mutate( {
-				paymentId: paymentData.id,
-				noteIndex,
-			} );
-		}
+		deleteNoteMutation.mutate( {
+			paymentId: paymentData.id,
+			noteIndex,
+		} );
 	};
 
 	const handleDeleteLog = ( logIndex ) => {
-		if (
-			confirm(
-				__(
-					'Are you sure you want to delete this log entry?',
-					'sureforms'
-				)
-			)
-		) {
-			deleteLogMutation.mutate( {
-				paymentId: paymentData.id,
-				logIndex,
-			} );
+		deleteLogMutation.mutate( {
+			paymentId: paymentData.id,
+			logIndex,
+		} );
+	};
+
+	const handleViewEntry = () => {
+		if ( paymentData?.entry_id ) {
+			window.location.href = `${ window.location.origin }/wp-admin/admin.php?page=sureforms_entries&entry_id=${ paymentData.entry_id }&view=details`;
+		}
+	};
+
+	const handleViewInStripe = () => {
+		if ( paymentData?.transaction_id ) {
+			const isTestMode = paymentData.mode === 'test';
+			const baseUrl = isTestMode
+				? 'https://dashboard.stripe.com/test/payments'
+				: 'https://dashboard.stripe.com/payments';
+			const stripeUrl = `${ baseUrl }/${ paymentData.transaction_id }`;
+			window.open( stripeUrl, '_blank' );
 		}
 	};
 
@@ -295,21 +284,6 @@ const ViewPayment = () => {
 		} );
 	};
 
-	// Get currency symbol from currency code
-	const getCurrencySymbol = ( currencyCode ) => {
-		const upperCurrencyCode = currencyCode?.toUpperCase();
-		const currency = currencies.find(
-			( c ) => c.value === upperCurrencyCode
-		);
-		return currency ? currency.symbol : currencyCode;
-	};
-
-	// Format amount with currency symbol (no space between symbol and amount)
-	const formatAmount = ( amount, currency = 'USD' ) => {
-		const symbol = getCurrencySymbol( currency );
-		return `${ symbol }${ parseFloat( amount ).toFixed( 2 ) }`;
-	};
-
 	// Generate dynamic refund message based on input amount
 	const getRefundMessage = () => {
 		if ( ! paymentData || ! refundAmount ) {
@@ -335,12 +309,10 @@ const ViewPayment = () => {
 		if ( requestedAmount > refundableAmount ) {
 			return {
 				type: 'error',
-				message: __(
-					`Amount cannot exceed ${ formatAmount(
-						refundableAmount,
-						paymentData.currency
-					) }.`,
-					'sureforms'
+				message: sprintf(
+					/* translators: %s: maximum refundable amount */
+					__( 'Amount cannot exceed %s.', 'sureforms' ),
+					formatAmount( refundableAmount, paymentData.currency )
 				),
 			};
 		}
@@ -352,44 +324,30 @@ const ViewPayment = () => {
 		if ( isFullRefund ) {
 			return {
 				type: 'info',
-				message: __(
-					`This will issue a complete refund of ${ formatAmount(
-						requestedAmount,
-						paymentData.currency
-					) }. The entire payment will be refunded.`,
-					'sureforms'
+				message: sprintf(
+					/* translators: %s: refund amount */
+					__(
+						'This will issue a complete refund of %s. The entire payment will be refunded.',
+						'sureforms'
+					),
+					formatAmount( requestedAmount, paymentData.currency )
 				),
 			};
 		}
 		const remainingBalance = refundableAmount - requestedAmount;
 		return {
 			type: 'warning',
-			message: __(
-				`This will issue a partial refund of ${ formatAmount(
-					requestedAmount,
-					paymentData.currency
-				) }. Remaining balance of ${ formatAmount(
-					remainingBalance,
-					paymentData.currency
-				) } will still be valid.`,
-				'sureforms'
+			message: sprintf(
+				/* translators: 1: partial refund amount, 2: remaining balance */
+				__(
+					'This will issue a partial refund of %1$s. Remaining balance of %2$s will still be valid.',
+					'sureforms'
+				),
+				formatAmount( requestedAmount, paymentData.currency ),
+				formatAmount( remainingBalance, paymentData.currency )
 			),
 		};
 	};
-
-	const header = (
-		<Container
-			containerType="flex"
-			direction="row"
-			gap="xs"
-			className="w-full justify-between"
-		>
-			<h1>
-				{ __( 'Payment ID', 'sureforms' ) }
-				{ ` #${ paymentData.id }` }
-			</h1>
-		</Container>
-	);
 
 	// Billing data from real payment data
 	const billingData = [
@@ -401,35 +359,6 @@ const ViewPayment = () => {
 			refunded_amount: parseFloat( paymentData.refunded_amount || 0 ),
 		},
 	];
-
-	// Format date time for billing table
-	const formatDateTime = ( datetime ) => {
-		const date = new Date( datetime );
-		return date.toLocaleString( 'en-US', {
-			month: 'short',
-			day: 'numeric',
-			year: 'numeric',
-			hour: 'numeric',
-			minute: '2-digit',
-			hour12: true,
-		} );
-	};
-
-	// Get status badge variant for billing table
-	const getStatusVariant = ( status ) => {
-		switch ( status ) {
-			case 'paid':
-				return 'success';
-			case 'pending':
-				return 'warning';
-			case 'failed':
-				return 'danger';
-			case 'refunded':
-				return 'secondary';
-			default:
-				return 'secondary';
-		}
-	};
 
 	// Calculate refundable amount
 	const totalAmount = parseFloat( paymentData.total_amount );
@@ -458,9 +387,13 @@ const ViewPayment = () => {
 						<Dialog.CloseButton onClick={ closeRefundDialog } />
 					</div>
 					<Dialog.Description>
-						{ __(
-							`Process refund for payment #${ paymentData.id }. The refunded amount will be sent to the customer's original payment method.`,
-							'sureforms'
+						{ sprintf(
+							/* translators: %s: payment ID */
+							__(
+								"Process refund for payment #%s. The refunded amount will be sent to the customer's original payment method.",
+								'sureforms'
+							),
+							paymentData.id
 						) }
 					</Dialog.Description>
 				</Dialog.Header>
@@ -483,12 +416,16 @@ const ViewPayment = () => {
 								className="mt-1"
 							/>
 							<Text className="text-xs text-text-secondary mt-1">
-								{ __(
-									`Maximum refundable amount: ${ formatAmount(
+								{ sprintf(
+									/* translators: %s: maximum refundable amount */
+									__(
+										'Maximum refundable amount: %s',
+										'sureforms'
+									),
+									formatAmount(
 										refundableAmount,
 										paymentData.currency
-									) }`,
-									'sureforms'
+									)
 								) }
 							</Text>
 						</div>
@@ -522,12 +459,16 @@ const ViewPayment = () => {
 						{ alreadyRefunded > 0 && (
 							<div className="p-3 border border-border-subtle rounded-md bg-background-secondary">
 								<Text className="text-sm text-text-secondary">
-									{ __(
-										`Already refunded: ${ formatAmount(
+									{ sprintf(
+										/* translators: %s: already refunded amount */
+										__(
+											'Already refunded: %s',
+											'sureforms'
+										),
+										formatAmount(
 											alreadyRefunded,
 											paymentData.currency
-										) }`,
-										'sureforms'
+										)
 									) }
 								</Text>
 							</div>
@@ -574,7 +515,7 @@ const ViewPayment = () => {
 						<Table.HeadCell>
 							{ __( 'Date & Time', 'sureforms' ) }
 						</Table.HeadCell>
-						<Table.HeadCell className="w-1/10">
+						<Table.HeadCell className="w-1/6">
 							{ __( 'Action', 'sureforms' ) }
 						</Table.HeadCell>
 					</Table.Head>
@@ -642,7 +583,7 @@ const ViewPayment = () => {
 										variant="outline"
 										onClick={ () => handleRefund( row.id ) }
 									>
-										{ __( 'Refund Payment', 'sureforms' ) }
+										{ __( 'Refund', 'sureforms' ) }
 									</Button>
 								</Table.Cell>
 							</Table.Row>
@@ -655,34 +596,42 @@ const ViewPayment = () => {
 
 	const paymentInfoData = [
 		{
+			id: 'payment-id',
 			title: __( 'Payment Id', 'sureforms' ),
 			value: `#${ paymentData.id }`,
 		},
 		{
+			id: 'form-name',
 			title: __( 'Form Name', 'sureforms' ),
-			value: paymentData.form_title || __( 'Unknown Form', 'sureforms' ),
+			value: <span className='text-link-primary'>{paymentData.form_title}</span> || __( 'Unknown Form', 'sureforms' ),
 		},
 		{
+			id: 'payment-method',
 			title: __( 'Payment Method', 'sureforms' ),
 			value: paymentData.gateway || __( 'Unknown', 'sureforms' ),
 		},
 		{
+			id: 'payment-mode',
 			title: __( 'Payment Mode', 'sureforms' ),
-			value: paymentData.mode || __( 'Unknown', 'sureforms' ),
+			value: <span className='text-link-primary'>{paymentData.mode}</span> || __( 'Unknown', 'sureforms' ),
 		},
 		{
+			id: 'payment-type',
 			title: __( 'Payment Type', 'sureforms' ),
 			value: paymentData.payment_type || __( 'One Time', 'sureforms' ),
 		},
 		{
+			id: 'transaction-id',
 			title: __( 'Transaction ID', 'sureforms' ),
 			value: paymentData.transaction_id || __( 'N/A', 'sureforms' ),
 		},
 		{
+			id: 'customer-id',
 			title: __( 'Customer ID', 'sureforms' ),
 			value: paymentData.customer_id || __( 'Guest', 'sureforms' ),
 		},
 		{
+			id: 'submitted-on',
 			title: __( 'Submitted On', 'sureforms' ),
 			value: formatDateTime( paymentData.created_at ),
 		},
@@ -698,10 +647,10 @@ const ViewPayment = () => {
 			>
 				<Text
 					as="p"
-					color="primary"
+					color="secondary"
 					lineHeight={ 20 }
 					size={ 14 }
-					weight={ 600 }
+					weight={ 400 }
 					className="w-[160px]"
 				>
 					{ title }:
@@ -711,7 +660,7 @@ const ViewPayment = () => {
 					color="secondary"
 					lineHeight={ 20 }
 					size={ 14 }
-					weight={ 500 }
+					weight={ 400 }
 				>
 					{ value }
 				</Text>
@@ -738,6 +687,8 @@ const ViewPayment = () => {
 						iconPosition="left"
 						size="xs"
 						variant="outline"
+						onClick={ handleViewEntry }
+						disabled={ ! paymentData?.entry_id }
 					>
 						{ __( 'View Entry', 'sureforms' ) }
 					</Button>
@@ -765,7 +716,8 @@ const ViewPayment = () => {
 						variant="link"
 						size="sm"
 						className="h-full text-link-primary text-sm font-semibold no-underline hover:no-underline hover:text-link-primary-hover px-1 content-center [box-shadow:none] focus:[box-shadow:none] focus:outline-none"
-						onClick={ () => {} }
+						onClick={ handleViewInStripe }
+						disabled={ ! paymentData?.transaction_id }
 					>
 						{ __( 'View In Stripe', 'sureforms' ) }
 					</Button>
@@ -777,227 +729,26 @@ const ViewPayment = () => {
 		</>
 	);
 
-	// Format timestamp from unix timestamp to readable date
-	const formatLogTimestamp = ( timestamp ) => {
-		// Validate timestamp
-		if ( ! timestamp || isNaN( timestamp ) || timestamp <= 0 ) {
-			return __( 'N/A', 'sureforms' );
-		}
-
-		const date = new Date( timestamp * 1000 );
-
-		// Check if date is valid
-		if ( isNaN( date.getTime() ) ) {
-			return __( 'Invalid Date', 'sureforms' );
-		}
-
-		return date.toLocaleString( 'en-US', {
-			year: 'numeric',
-			month: '2-digit',
-			day: '2-digit',
-			hour: '2-digit',
-			minute: '2-digit',
-			second: '2-digit',
-			hour12: false,
-		} );
-	};
-
-	const notesSection = (
-		<>
-			{ /* Existing notes list */ }
-			{ notes && notes.length > 0
-				? notes.map( ( note, index ) => (
-					<div
-						key={ index }
-						className="w-full flex justify-between items-start gap-2 p-3 bg-background-primary rounded-lg border border-border-subtle"
-					>
-						<div className="flex-1">
-							<Text className="text-sm whitespace-pre-wrap break-words">
-								{ note.text || note }
-							</Text>
-							{ note.created_at && (
-								<Text className="text-xs text-text-tertiary mt-1">
-									{ new Date(
-										note.created_at
-									).toLocaleString() }
-								</Text>
-							) }
-						</div>
-						<Button
-							variant="ghost"
-							size="xs"
-							icon={ <Trash2 className="!size-4" /> }
-							onClick={ () => handleDeleteNote( index ) }
-							disabled={ deleteNoteMutation.isPending }
-							className="text-icon-secondary hover:text-red-700"
-						/>
-					</div>
-				  ) )
-				: ! isAddingNote && (
-					<Text className="text-sm text-text-secondary p-3 text-center flex items-center justify-center gap-2">
-						<FileSearch2 className="!size-5" />
-						{ __(
-							'Add an internal note about this payment',
-							'sureforms'
-						) }
-					</Text>
-				  ) }
-
-			{ /* Add note textarea */ }
-			{ isAddingNote && (
-				<div className="w-full p-3 bg-background-primary rounded-lg border border-border-subtle">
-					<TextArea
-						value={ newNoteText }
-						onChange={ ( value ) => setNewNoteText( value ) }
-						placeholder={ __(
-							'Enter your note here…',
-							'sureforms'
-						) }
-						size="sm"
-						className="w-full"
-						autoFocus
-					/>
-					<div className="flex gap-2 mt-2 justify-end">
-						<Button
-							variant="outline"
-							size="sm"
-							onClick={ handleCancelNote }
-							disabled={ addNoteMutation.isPending }
-						>
-							{ __( 'Cancel', 'sureforms' ) }
-						</Button>
-						<Button
-							variant="primary"
-							size="sm"
-							onClick={ handleSaveNote }
-							disabled={
-								addNoteMutation.isPending ||
-								! newNoteText.trim()
-							}
-						>
-							{ addNoteMutation.isPending
-								? __( 'Adding…', 'sureforms' )
-								: __( 'Add Note', 'sureforms' ) }
-						</Button>
-					</div>
-				</div>
-			) }
-		</>
-	);
-
 	const PAYMENT_SECTION_COLUMN_2 = (
 		<>
-			<Container
-				className="w-full bg-background-primary border-0.5 border-solid rounded-xl border-border-subtle p-3 gap-2 shadow-sm"
-				direction="column"
-			>
-				<Container
-					className="p-1 gap-2"
-					align="center"
-					justify="between"
-				>
-					<Label size="sm" className="font-semibold">
-						{ __( 'Notes', 'sureforms' ) }
-					</Label>
-					<Button
-						icon={ <Plus className="!size-5" /> }
-						iconPosition="left"
-						variant="link"
-						size="sm"
-						className="h-full text-link-primary text-sm font-semibold no-underline hover:no-underline hover:text-link-primary-hover px-1 content-center [box-shadow:none] focus:[box-shadow:none] focus:outline-none"
-						onClick={ handleAddNoteClick }
-						disabled={ isAddingNote }
-					>
-						{ __( 'Add Note', 'sureforms' ) }
-					</Button>
-				</Container>
-				<Container className="flex flex-col items-center justify-center bg-background-secondary gap-1 p-1 rounded-lg min-h-[89px]">
-					{ notesSection }
-				</Container>
-			</Container>
-			{ /* Payment log */ }
-			<Container
-				className="w-full bg-background-primary border-0.5 border-solid rounded-xl border-border-subtle p-3 gap-2 shadow-sm"
-				direction="column"
-			>
-				<Container
-					className="p-1 gap-2"
-					align="center"
-					justify="between"
-				>
-					<Label size="sm" className="font-semibold">
-						{ __( 'Payment Log', 'sureforms' ) }
-					</Label>
-				</Container>
-				<Container className="flex flex-col items-center justify-center bg-background-secondary gap-1 p-1 rounded-lg min-h-[89px]">
-					{ logs && logs.length > 0 ? (
-						logs.map( ( log, index ) => {
-							// Defensive checks for log data
-							if ( ! log || typeof log !== 'object' ) {
-								return null;
-							}
-
-							const logTitle =
-								log.title || __( 'Untitled Log', 'sureforms' );
-							const logMessages = Array.isArray( log.messages )
-								? log.messages
-								: [];
-
-							return (
-								<div
-									key={ index }
-									className="w-full flex flex-col gap-2 p-3 bg-background-primary rounded-lg border border-border-subtle"
-								>
-									<div className="flex justify-between items-start gap-2">
-										<div className="flex-1">
-											<Text className="text-sm font-semibold">
-												{ logTitle }
-											</Text>
-											<Text className="text-xs text-text-tertiary mt-1">
-												{ formatLogTimestamp(
-													log.timestamp
-												) }
-											</Text>
-										</div>
-										<Button
-											variant="ghost"
-											size="xs"
-											icon={
-												<Trash2 className="!size-4" />
-											}
-											onClick={ () =>
-												handleDeleteLog( index )
-											}
-											disabled={
-												deleteLogMutation.isPending
-											}
-											className="text-icon-secondary hover:text-red-700"
-										/>
-									</div>
-									{ logMessages.length > 0 && (
-										<div className="flex flex-col gap-1 mt-1">
-											{ logMessages.map(
-												( message, msgIndex ) => (
-													<Text
-														key={ msgIndex }
-														className="text-xs text-text-secondary"
-													>
-														{ message || '' }
-													</Text>
-												)
-											) }
-										</div>
-									) }
-								</div>
-							);
-						} )
-					) : (
-						<Text className="text-sm text-text-secondary p-3 text-center">
-							{ __( 'No payment logs available', 'sureforms' ) }
-						</Text>
-					) }
-				</Container>
-			</Container>
+			<PaymentNotes
+				notes={ notes }
+				isAddingNote={ isAddingNote }
+				newNoteText={ newNoteText }
+				setNewNoteText={ setNewNoteText }
+				handleAddNoteClick={ handleAddNoteClick }
+				handleSaveNote={ handleSaveNote }
+				handleCancelNote={ handleCancelNote }
+				handleDeleteNote={ handleDeleteNote }
+				addNoteMutation={ addNoteMutation }
+				deleteNoteMutation={ deleteNoteMutation }
+			/>
+			<PaymentLogs
+				logs={ logs }
+				handleDeleteLog={ handleDeleteLog }
+				deleteLogMutation={ deleteLogMutation }
+				formatLogTimestamp={ formatLogTimestamp }
+			/>
 		</>
 	);
 
@@ -1006,10 +757,13 @@ const ViewPayment = () => {
 			<Container
 				containerType="flex"
 				direction="column"
-				gap="xs"
-				className="w-full h-full"
+				className="w-full h-full gap-[24px]"
 			>
-				{ header }
+				<PaymentHeader
+					title={ __( 'Payment ID', 'sureforms' ) }
+					id={ paymentData.id }
+					onBack={ handleBackToList }
+				/>
 				<Container
 					className="w-full gap-8"
 					containerType="grid"

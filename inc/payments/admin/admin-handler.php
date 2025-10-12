@@ -37,6 +37,7 @@ class Admin_Handler {
 		add_action( 'wp_ajax_srfm_add_payment_note', [ $this, 'ajax_add_note' ] );
 		add_action( 'wp_ajax_srfm_delete_payment_note', [ $this, 'ajax_delete_note' ] );
 		add_action( 'wp_ajax_srfm_delete_payment_log', [ $this, 'ajax_delete_log' ] );
+		add_action( 'wp_ajax_srfm_bulk_delete_payments', [ $this, 'ajax_bulk_delete_payments' ] );
 	}
 
 	/**
@@ -1109,6 +1110,157 @@ class Admin_Handler {
 
 		} catch ( \Exception $e ) {
 			wp_send_json_error( [ 'message' => __( 'Failed to pause subscription.', 'sureforms' ) ] );
+		}
+	}
+
+	/**
+	 * AJAX handler for bulk deleting payments.
+	 *
+	 * @return void
+	 * @since 1.0.0
+	 */
+	public function ajax_bulk_delete_payments() {
+		// Verify nonce for security.
+		if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'srfm_payment_admin_nonce' ) ) {
+			wp_send_json_error( [ 'message' => __( 'Security verification failed.', 'sureforms' ) ] );
+			return;
+		}
+
+		// Check user capabilities.
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( [ 'message' => __( 'Insufficient permissions.', 'sureforms' ) ] );
+			return;
+		}
+
+		// Get and validate payment IDs.
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Sanitized below after JSON decode.
+		$payment_ids_raw = isset( $_POST['payment_ids'] ) ? wp_unslash( $_POST['payment_ids'] ) : [];
+
+		// Handle JSON string or array format.
+		if ( is_string( $payment_ids_raw ) ) {
+			// Decode JSON string.
+			$payment_ids = json_decode( $payment_ids_raw, true );
+
+			// Check if JSON decode was successful.
+			if ( json_last_error() !== JSON_ERROR_NONE ) {
+				wp_send_json_error( [ 'message' => __( 'Invalid JSON format for payment IDs.', 'sureforms' ) ] );
+				return;
+			}
+		} else {
+			$payment_ids = $payment_ids_raw;
+		}
+
+		// Ensure it's an array.
+		if ( ! is_array( $payment_ids ) ) {
+			wp_send_json_error( [ 'message' => __( 'Invalid payment IDs format.', 'sureforms' ) ] );
+			return;
+		}
+
+		// Sanitize: Convert to integers and remove invalid values.
+		// This handles both string numbers ("169") and actual integers.
+		$payment_ids = array_map( 'absint', $payment_ids );
+		$payment_ids = array_filter(
+			$payment_ids,
+			function ( $id ) {
+				return $id > 0;
+			}
+		);
+
+		// Re-index array to ensure sequential keys.
+		$payment_ids = array_values( $payment_ids );
+
+		// wp_send_json_error( [ 'message' => __( 'No valid payment IDs provided.', 'sureforms' ) ] );
+
+
+		// Check if array is empty after sanitization.
+		if ( empty( $payment_ids ) ) {
+			wp_send_json_error( [ 'message' => __( 'No valid payment IDs provided.', 'sureforms' ) ] );
+			return;
+		}
+
+		// Limit bulk operations to prevent timeout (max 100 at once).
+		if ( count( $payment_ids ) > 100 ) {
+			wp_send_json_error(
+				[
+					'message' => __( 'Cannot delete more than 100 payments at once. Please select fewer payments.', 'sureforms' ),
+				]
+			);
+			return;
+		}
+
+		try {
+			$deleted_count = 0;
+			$failed_ids    = [];
+
+			// Delete each payment with proper error handling.
+			foreach ( $payment_ids as $payment_id ) {
+				// Verify payment exists before attempting delete.
+				$payment = Payments::get( $payment_id );
+
+				if ( ! $payment ) {
+					$failed_ids[] = $payment_id;
+					continue;
+				}
+
+				// Attempt deletion.
+				$result = Payments::delete( $payment_id );
+
+				if ( $result ) {
+					$deleted_count++;
+				} else {
+					$failed_ids[] = $payment_id;
+				}
+			}
+
+			// Prepare response message.
+			if ( $deleted_count === count( $payment_ids ) ) {
+				// All deleted successfully.
+				wp_send_json_success(
+					[
+						'message'       => sprintf(
+							/* translators: %d: number of payments deleted */
+							_n(
+								'%d payment deleted successfully.',
+								'%d payments deleted successfully.',
+								$deleted_count,
+								'sureforms'
+							),
+							$deleted_count
+						),
+						'deleted_count' => $deleted_count,
+					]
+				);
+			} elseif ( $deleted_count > 0 ) {
+				// Partial success.
+				wp_send_json_success(
+					[
+						'message'       => sprintf(
+							/* translators: 1: number deleted, 2: number failed */
+							__( '%1$d payment(s) deleted successfully. %2$d failed.', 'sureforms' ),
+							$deleted_count,
+							count( $failed_ids )
+						),
+						'deleted_count' => $deleted_count,
+						'failed_count'  => count( $failed_ids ),
+						'partial'       => true,
+					]
+				);
+			} else {
+				// All failed.
+				wp_send_json_error(
+					[
+						'message'      => __( 'Failed to delete payments. Please try again.', 'sureforms' ),
+						'failed_count' => count( $failed_ids ),
+					]
+				);
+			}
+		} catch ( \Exception $e ) {
+			error_log( 'Bulk delete payments error: ' . $e->getMessage() ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+			wp_send_json_error(
+				[
+					'message' => __( 'An error occurred while deleting payments.', 'sureforms' ),
+				]
+			);
 		}
 	}
 }
