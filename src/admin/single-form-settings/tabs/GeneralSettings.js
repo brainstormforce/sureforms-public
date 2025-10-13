@@ -259,6 +259,7 @@ function GeneralSettings( props ) {
 										value
 									)
 								}
+								isFormSpecific={ true }
 							/>
 						</>
 					) }

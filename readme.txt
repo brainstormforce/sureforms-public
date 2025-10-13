@@ -2,9 +2,9 @@
 Contributors: brainstormforce
 Tags: contact form, custom form, forms,  WP Forms, form builder
 Requires at least: 6.4
-Tested up to: 6.8.2
+Tested up to: 6.8.3
 Requires PHP: 7.4
-Stable tag: 1.12.3
+Stable tag: 1.13.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -367,6 +367,10 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 == Changelog ==
 = x.x.x =
 * Fix: Resolved an issue where block config is not updated consistently on form update.
+= 1.13.0 - 14th October 2025 =
+* Fix: Resolved an issue where multiple entries were being recorded when submit button was clicked multiple times for a single form submission.
+* Fix: Resolved an issue where empty <p> tag in being added before and after repeater field table in form confirmation success message.
+* Fix: Resolved an issue where entries first field value is missing for upload field.
 * Fix: Resolved and issue where scripts related to SureForms were loading in all the screens causing console errors.
 = 1.12.3 - 30th September 2025 =
 * Fix: AI form generation not redirecting to the SureForms editor after creation.
