@@ -307,6 +307,7 @@ const EntriesListingPage = () => {
 		exportEntriesMutation(
 			{
 				entry_ids: selectedEntries,
+				form_id: formFilter === 'all' ? 0 : parseInt( formFilter, 10 ),
 			},
 			{
 				onSuccess: () => {
