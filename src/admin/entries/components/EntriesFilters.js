@@ -125,7 +125,7 @@ const EntriesFilters = ( {
 	};
 
 	return (
-		<div className="flex items-center gap-4">
+		<div className="flex flex-wrap xl:flex-nowrap items-center justify-end gap-2 sm:gap-3 lg:gap-4 mt-4 lg:mt-0">
 			<Button
 				variant="outline"
 				size="sm"
@@ -140,7 +140,7 @@ const EntriesFilters = ( {
 			{ /* Show filters when no items are selected */ }
 			{ ! hasSelectedEntries && (
 				<>
-					<div className="w-[150px]">
+					<div className="w-fit flex-1 lg:flex-initial min-w-[120px] sm:w-[90px]">
 						<Select
 							value={ statusFilter }
 							onChange={ onStatusFilterChange }
@@ -169,7 +169,7 @@ const EntriesFilters = ( {
 						</Select>
 					</div>
 
-					<div className="w-[160px]">
+					<div className="w-full min-w-[130px] lg:w-[160px]">
 						<Select
 							value={ formFilter }
 							onChange={ onFormFilterChange }
@@ -198,7 +198,7 @@ const EntriesFilters = ( {
 						</Select>
 					</div>
 
-					<div className="min-w-[210px]">
+					<div className="w-full min-w-[180px] lg:w-auto lg:min-w-[210px]">
 						<DatePicker
 							value={ dateRange }
 							onApply={ onDateRangeChange }
@@ -219,7 +219,7 @@ const EntriesFilters = ( {
 						/>
 					</div>
 					{ /* Search box */ }
-					<div className="w-48">
+					<div className="w-full min-w-[160px] lg:w-auto">
 						<Input
 							type="search"
 							placeholder={ __(

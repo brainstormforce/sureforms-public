@@ -7,7 +7,7 @@ import { __ } from '@wordpress/i18n';
 const EntriesHeader = () => {
 	return (
 		<div>
-			<h1 className="text-xl font-semibold text-text-primary leading-[30px] tracking-[-0.005em]">
+			<h1 className="text-xl whitespace-nowrap font-semibold text-text-primary leading-[30px] tracking-[-0.005em]">
 				{ __( 'All form Entries', 'sureforms' ) }
 			</h1>
 		</div>

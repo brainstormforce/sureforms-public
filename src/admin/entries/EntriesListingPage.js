@@ -440,7 +440,7 @@ const EntriesListingPage = () => {
 			<div className="mx-auto">
 				<div className="bg-white rounded-xl border-0.5 border-border-subtle shadow-sm p-4 space-y-2">
 					<div className="p-1">
-						<div className="flex justify-between items-center gap-5">
+						<div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-[30%] xl:gap-5">
 							<EntriesHeader />
 							<EntriesFilters
 								statusFilter={ statusFilter }

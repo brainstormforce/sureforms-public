@@ -30,7 +30,7 @@ const EntriesPagination = ( {
 
 	return (
 		<>
-			<div className="flex items-center gap-3">
+			<div className="flex items-center gap-3 w-full justify-center md:justify-start md:w-auto">
 				<span className="text-sm text-text-secondary">
 					{ __( 'Page', 'sureforms' ) } { currentPage }{ ' ' }
 					{ __( 'out of', 'sureforms' ) } { totalPages }
@@ -53,7 +53,7 @@ const EntriesPagination = ( {
 				</div>
 			</div>
 
-			<Pagination className="w-fit">
+			<Pagination className="w-full md:w-fit">
 				<Pagination.Content>
 					<Pagination.Previous
 						onClick={ onPreviousPage }

@@ -146,7 +146,7 @@ const EntriesTable = ( {
 					) )
 				) }
 			</Table.Body>
-			<Table.Footer className="flex flex-col lg:flex-row lg:justify-between">
+			<Table.Footer className="flex flex-col md:flex-row md:justify-between">
 				{ isLoading ? (
 					<div className="w-full flex items-center justify-between">
 						<Skeleton className="h-8 w-24 rounded-md" />
