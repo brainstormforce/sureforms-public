@@ -1,6 +1,5 @@
 import {
 	useEffect,
-	useLayoutEffect,
 	useRef,
 	useState,
 } from '@wordpress/element';
