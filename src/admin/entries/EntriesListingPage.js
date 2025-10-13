@@ -161,10 +161,12 @@ const EntriesListingPage = () => {
 		if ( entry.status === 'trash' ) {
 			setConfirmationDialog( {
 				open: true,
-				title: 'Delete Entry Permanently?',
-				description:
+				title: __( 'Delete Entry Permanently?', 'sureforms' ),
+				description: __(
 					'This action cannot be undone. The entry will be permanently deleted from the database.',
-				confirmLabel: 'Delete Permanently',
+					'sureforms'
+				),
+				confirmLabel: __( 'Delete Permanently', 'sureforms' ),
 				onConfirm: () => handlePermanentDelete( entry ),
 				isLoading: isDeleting,
 				destructive: true,

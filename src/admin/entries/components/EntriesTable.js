@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { ChevronsUpDown } from 'lucide-react';
 import { Container, Table, Skeleton } from '@bsf/force-ui';
 import { TABLE_HEADERS } from '../constants';
@@ -73,7 +74,7 @@ const EntriesTable = ( {
 					<Table.Row className="[&_div:has(label)]:invisible">
 						<Table.Cell colSpan={ TABLE_HEADERS.length }>
 							<div className="text-center py-8 text-text-secondary">
-								No entries found
+								{ __( 'No entries found', 'sureforms' ) }
 							</div>
 						</Table.Cell>
 					</Table.Row>

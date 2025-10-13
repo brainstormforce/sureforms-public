@@ -1,9 +1,9 @@
 /**
- * Get the badge variant based on entry status
- *
- * @param {string} status - The entry status
- * @return {string} The badge variant
+ * Entry helper functions
+ * Utility functions for transforming and formatting entry data
  */
+import { __ } from '@wordpress/i18n';
+
 export const getStatusBadgeVariant = ( status ) => {
 	const normalizedStatus = status?.toLowerCase();
 	switch ( normalizedStatus ) {
@@ -28,11 +28,11 @@ export const getStatusLabel = ( status ) => {
 	const normalizedStatus = status?.toLowerCase();
 	switch ( normalizedStatus ) {
 		case 'unread':
-			return 'Unread';
+			return __( 'Unread', 'sureforms' );
 		case 'read':
-			return 'Read';
+			return __( 'Read', 'sureforms' );
 		case 'trash':
-			return 'Trash';
+			return __( 'Trash', 'sureforms' );
 		default:
 			return status;
 	}
@@ -94,9 +94,9 @@ export const formatDateTime = ( dateString ) => {
 export const transformEntry = ( entry, formsMap = {} ) => {
 	return {
 		id: parseInt( entry.ID, 10 ),
-		entryId: `Entry #${ entry.ID }`,
+		entryId: `${ __( 'Entry', 'sureforms' ) } #${ entry.ID }`,
 		formId: parseInt( entry.form_id, 10 ),
-		formName: formsMap[ entry.form_id ] || `Form #${ entry.form_id }`,
+		formName: formsMap[ entry.form_id ] || `${ __( 'Form', 'sureforms' ) } #${ entry.form_id }`,
 		status: entry.status,
 		statusLabel: getStatusLabel( entry.status ),
 		firstField: getFirstFieldValue( entry.form_data ),
