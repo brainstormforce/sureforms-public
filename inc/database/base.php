@@ -641,7 +641,7 @@ abstract class Base {
 	 * }
 	 * @param bool                $set_limit Whether to set the limit on the query. Default is true.
 	 *
-	 * @since x.x.x
+	 * @since 1.13.0
 	 * @return array<mixed> The results of the query, typically an array of objects or associative arrays.
 	 */
 	public function get_records_by_args( $args = [], $set_limit = true ) {

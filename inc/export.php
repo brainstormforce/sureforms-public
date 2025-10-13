@@ -71,7 +71,7 @@ class Export {
 	 * Uses:
 	 *     - On websitedemos.net, for exporting the Spectra Block Patterns & Pages with SureForms form.
 	 *
-	 * @since x.x.x
+	 * @since 1.13.0
 	 * @param array<int, string> $post_ids Array of post IDs to retrieve forms for.
 	 * @return array Array of forms with their post data and meta data.
 	 */
@@ -138,7 +138,7 @@ class Export {
 	 * @param array<array<array<string>>> $data           Form data to import.
 	 * @param string                      $default_status Default post status for imported forms. Default is 'draft'.
 	 *
-	 * @since x.x.x
+	 * @since 1.13.0
 	 * @return array<int, int>|\WP_Error Returns mapping array on success, WP_Error on failure.
 	 */
 	public function import_forms_with_meta( $data, $default_status = 'draft' ) {
