@@ -489,7 +489,11 @@ class Rest_Api {
 
 		$result = Entries_Class::export_entries( $args );
 
-		/** @var array{success: false, error: string} | array{success: true, filename: string, filepath: string, type: string} $result */
+		/**
+		 * Export result with success status and either error message or file details.
+		 *
+		 * @var array{success: false, error: string} | array{success: true, filename: string, filepath: string, type: string} $result
+		 */
 
 		if ( ! $result['success'] ) {
 			return new \WP_REST_Response(

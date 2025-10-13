@@ -76,7 +76,11 @@ class Entries {
 
 		$args = wp_parse_args( $args, $defaults );
 
-		/** @var array{form_id: int, status: string, search: string, date_from: string, date_to: string, orderby: string, order: string, per_page: int, page: int, entry_ids: array<int>} $args */
+		/**
+		 * Parsed and sanitized arguments for the entries query.
+		 *
+		 * @var array{form_id: int, status: string, search: string, date_from: string, date_to: string, orderby: string, order: string, per_page: int, page: int, entry_ids: array<int>} $args
+		 */
 
 		// Build where conditions.
 		$where_conditions = self::build_where_conditions( $args );
@@ -261,7 +265,11 @@ class Entries {
 
 		$args = wp_parse_args( $args, $defaults );
 
-/** @var array{entry_ids: int|array<int>, form_id: int, status: string, search: string, date_from: string, date_to: string} $args */
+		/**
+		 * Parsed and sanitized arguments for the export operation.
+		 *
+		 * @var array{entry_ids: int|array<int>, form_id: int, status: string, search: string, date_from: string, date_to: string} $args
+		 */
 
 		// Get entry IDs to export.
 		if ( empty( $args['entry_ids'] ) ) {
@@ -276,7 +284,11 @@ class Entries {
 			);
 			$entry_ids        = array_map( 'absint', array_column( $all_entries, 'ID' ) );
 		} else {
-			/** @var array<int> $entry_ids */
+			/**
+			 * Entry IDs converted to array of integers.
+			 *
+			 * @var array<int> $entry_ids
+			 */
 			$entry_ids = is_array( $args['entry_ids'] ) ? array_map( 'absint', $args['entry_ids'] ) : [ absint( (int) $args['entry_ids'] ) ];
 		}
 
