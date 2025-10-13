@@ -321,6 +321,10 @@ const EntriesListingPage = () => {
 			{
 				entry_ids: selectedEntries,
 				form_id: formFilter === 'all' ? 0 : parseInt( formFilter, 10 ),
+				status: statusFilter,
+				search: searchQuery,
+				date_from: dateFilters.date_from,
+				date_to: dateFilters.date_to,
 			},
 			{
 				onSuccess: () => {
