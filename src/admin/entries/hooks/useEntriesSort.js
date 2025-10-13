@@ -3,13 +3,13 @@ import { useState, useCallback } from '@wordpress/element';
 /**
  * Custom hook for managing entries sorting state
  *
- * @param {string} initialSortBy - Initial sort column (default: 'created_at')
- * @param {string} initialOrder  - Initial sort order (default: 'DESC')
+ * @param {string} initialSortBy - Initial sort column (default: '')
+ * @param {string} initialOrder  - Initial sort order (default: '')
  * @return {Object} Sort state and handlers
  */
 export const useEntriesSort = (
-	initialSortBy = 'created_at',
-	initialOrder = 'DESC'
+	initialSortBy = '',
+	initialOrder = ''
 ) => {
 	const [ sortBy, setSortBy ] = useState( initialSortBy );
 	const [ order, setOrder ] = useState( initialOrder );
