@@ -1,7 +1,8 @@
 import { ChevronsUpDown } from 'lucide-react';
-import { Container, Table } from '@bsf/force-ui';
+import { Container, Table, Skeleton } from '@bsf/force-ui';
 import { TABLE_HEADERS } from '../constants';
 import EntriesTableRow from './EntriesTableRow';
+import { cn } from '@Utils/Helpers';
 
 /**
  * EntriesTable Component
@@ -55,13 +56,19 @@ const EntriesTable = ( {
 			</Table.Head>
 			<Table.Body>
 				{ isLoading ? (
-					<Table.Row className="[&_div:has(label)]:invisible">
-						<Table.Cell colSpan={ TABLE_HEADERS.length }>
-							<div className="text-center py-8 text-text-secondary">
-								Loading...
-							</div>
-						</Table.Cell>
-					</Table.Row>
+					Array.from( { length: 10 }, ( _, index ) => (
+						<Table.Row key={ index } className="[&_div:has(label)]:invisible relative">
+							{ TABLE_HEADERS.map( ( header, headerIndex ) => (
+								<Table.Cell key={ headerIndex }>
+									<Skeleton className="absolute left-3.5 size-4 rounded-md" />
+									<Skeleton
+										variant="rectangular"
+										className={ cn( 'h-4 rounded-md w-28', header.align === 'right' && 'ml-auto' ) }
+									/>
+								</Table.Cell>
+							) ) }
+						</Table.Row>
+					) )
 				) : entries.length === 0 ? (
 					<Table.Row className="[&_div:has(label)]:invisible">
 						<Table.Cell colSpan={ TABLE_HEADERS.length }>
