@@ -367,7 +367,6 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 == Changelog ==
 = 1.13.0 - 14th October 2025 =
 * New: Added support for Native Integrations in Pro Plan.
-* Fix: Fixed missing first field value for upload field in entries.
 * Fix: Prevented multiple entries from being recorded when the submit button is clicked repeatedly.
 = 1.12.3 - 30th September 2025 =
 * Fix: AI form generation not redirecting to the SureForms editor after creation.
